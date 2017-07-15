@@ -1,0 +1,48 @@
+version: 2
+jobs:
+  build:
+    docker:
+      # specify the version you desire here
+      # use `-browsers` prefix for selenium tests, e.g. `3.6.1-browsers`
+      - image: circleci/python:3.6.1
+
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # - image: circleci/postgres:9.4
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "backend/requirements/base.txt" }}
+          - v1-dependencies-{{ checksum "backend/requirements/test.txt" }}
+          - v1-dependencies-{{ checksum "backend/requirements/prod.txt" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      - run:
+          name: install dependencies
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -r backend/requirements/test.txt
+
+      - save_cache:
+          paths:
+            - ./venv
+          key: v1-dependencies-{{ checksum "backend/requirements/base.txt" }}
+          key: v1-dependencies-{{ checksum "backend/requirements/test.txt" }}
+          key: v1-dependencies-{{ checksum "backend/requirements/prod.txt" }}
+
+      - run:
+          name: run tests
+          command: |
+            . venv/bin/activate
+            cd backend
+            py.test
+
