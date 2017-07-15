@@ -114,3 +114,8 @@ STATIC_ROOT = root('static')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = root('media')
+
+
+GRAPHENE = {
+    'SCHEMA': 'api.schema.schema'
+}
