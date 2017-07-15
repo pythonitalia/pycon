@@ -1,7 +1,7 @@
 import os
 
 import environ
-root = environ.Path(__file__) - 3 # three folder back (/a/b/c/ - 3 = /)
+root = environ.Path(__file__) - 3  # three folder back (/a/b/c/ - 3 = /)
 
 env = environ.Env(
     DEBUG=(bool, False),
@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'graphene_django',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -121,3 +122,6 @@ MEDIA_ROOT = root('media')
 GRAPHENE = {
     'SCHEMA': 'api.schema.schema'
 }
+
+
+AUTH_USER_MODEL = 'users.User'
