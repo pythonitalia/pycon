@@ -14,6 +14,7 @@ def test_create_user_with_email_and_password():
 
     assert user.email == 'lennon@thebeatles.com'
     assert not user.is_superuser
+    assert not user.is_staff
 
 
 @pytest.mark.django_db
@@ -24,6 +25,7 @@ def test_create_superuser_with_email_and_password():
     )
 
     assert user.email == 'lennon@thebeatles.com'
+    assert user.is_staff
     assert user.is_superuser
 
 

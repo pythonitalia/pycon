@@ -12,6 +12,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     date_joined = models.DateTimeField(_('date joined'), auto_now_add=True)
     is_active = models.BooleanField(_('active'), default=True)
+    is_staff = models.BooleanField(_('is staff'), default=False)
 
     objects = UserManager()
 
@@ -19,3 +20,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = []
 
     objects = UserManager()
+
+    def get_short_name(self):
+        return self.email
