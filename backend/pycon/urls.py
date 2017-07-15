@@ -8,6 +8,7 @@ from graphene_django.views import GraphQLView
 
 from wagtail.wagtailadmin import urls as wagtailadmin_urls
 from wagtail.wagtaildocs import urls as wagtaildocs_urls
+from wagtail.wagtailcore import urls as wagtail_urls
 
 
 urlpatterns = [
@@ -17,4 +18,6 @@ urlpatterns = [
     url(r'^django-admin/', admin.site.urls),
 
     url(r'^graphql', GraphQLView.as_view(graphiql=True)),
+
+    url(r'', include(wagtail_urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
