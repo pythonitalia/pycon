@@ -16,14 +16,14 @@ jobs:
     steps:
       - checkout
 
+      # store dependencies md5 in a single file
+      # so that it can be used with checksum
+      - run: find backend/requirements -type f -exec md5sum {} \; | sort -k 2 | md5sum > backend_deps_checksum
+
       # Download and cache dependencies
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "backend/requirements/base.txt" }}
-          - v1-dependencies-{{ checksum "backend/requirements/test.txt" }}
-          - v1-dependencies-{{ checksum "backend/requirements/prod.txt" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
+          - backend-{{ checksum "backend_deps_checksum" }}
 
       - run:
           name: install dependencies
@@ -35,9 +35,7 @@ jobs:
       - save_cache:
           paths:
             - ./venv
-          key: v1-dependencies-{{ checksum "backend/requirements/base.txt" }}
-          key: v1-dependencies-{{ checksum "backend/requirements/test.txt" }}
-          key: v1-dependencies-{{ checksum "backend/requirements/prod.txt" }}
+          key: backend-{{ checksum "backend_deps_checksum" }}
 
       - run:
           name: run tests
