@@ -3,6 +3,11 @@ import datetime
 from freezegun import freeze_time
 
 from association.models import Membership
+from association.managers import MembershipManager
+
+
+def test_model_manager():
+    assert isinstance(Membership.objects, MembershipManager)
 
 
 @pytest.mark.django_db
