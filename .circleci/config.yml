@@ -16,10 +16,9 @@ jobs:
     steps:
       - checkout
 
-      # store dependencies information in a single file
+      # store dependencies md5 in a single file
       # so that it can be used with checksum
-      - run: ls -laR backend/requirements
-      - run: ls -laR backend/requirements > backend_deps_checksum
+      - run: find backend/requirements -type f -exec md5sum {} \; | sort -k 2 | md5sum > backend_deps_checksum
 
       # Download and cache dependencies
       - restore_cache:
