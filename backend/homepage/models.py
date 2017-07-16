@@ -4,7 +4,7 @@ from wagtail.wagtailcore.models import Page
 
 
 class HomePage(Page):
-    subpage_types = ['sitepage.SitePage', ]
+    subpage_types = ['sitepages.SitePage', ]
 
     class Meta:
         verbose_name = 'Homepage'

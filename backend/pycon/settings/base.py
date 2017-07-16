@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'taggit',
 
     'homepage',
-    'sitepage',
+    'sitepages',
 ]
 
 MIDDLEWARE = [
