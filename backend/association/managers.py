@@ -31,3 +31,13 @@ class MembershipManager(models.Manager):
             user=user,
             date__year=year
         ).exists()
+
+    def create_membership(self, user):
+        """
+        Create new mebership.
+
+        TODO: generate with payaments
+        """
+        return self.create(
+            user=user,
+        )

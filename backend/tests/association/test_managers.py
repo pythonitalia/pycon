@@ -54,3 +54,10 @@ def test_never_user_is_not_a_member(memberships):
     _, _, never = memberships
 
     assert Membership.objects.is_member(never) == False
+
+@pytest.mark.django_db
+def test_create_membership(user):
+    member = Membership.objects.create_membership(user)
+
+    assert member.user == user
+    assert Membership.objects.is_member(user) == True
