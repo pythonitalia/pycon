@@ -44,3 +44,8 @@ jobs:
             cd backend
             py.test --cov-report xml --cov=.
 
+      - run:
+          name: upload codacy report
+          command: |
+            python-codacy-coverage -r coverage.xml
+
