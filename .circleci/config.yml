@@ -42,5 +42,5 @@ jobs:
           command: |
             . venv/bin/activate
             cd backend
-            py.test
+            py.test --cov-report xml --cov=.
 
