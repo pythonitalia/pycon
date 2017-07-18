@@ -47,5 +47,7 @@ jobs:
       - run:
           name: upload codacy report
           command: |
+            . venv/bin/activate
+            cd backend
             python-codacy-coverage -r coverage.xml
 
