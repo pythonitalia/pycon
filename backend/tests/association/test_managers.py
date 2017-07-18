@@ -33,3 +33,24 @@ def test_inactive_members_of_a_year(memberships):
     assert active not in not_members
     assert inactive not in not_members
     assert never in not_members
+
+
+@pytest.mark.django_db
+def test_inactive_user_is_not_a_member(memberships):
+    _, inactive, _ = memberships
+
+    assert Membership.objects.is_member(inactive) == False
+
+
+@pytest.mark.django_db
+def test_active_user_is_a_member(memberships):
+    active, _, _ = memberships
+
+    assert Membership.objects.is_member(active) == True
+
+
+@pytest.mark.django_db
+def test_never_user_is_not_a_member(memberships):
+    _, _, never = memberships
+
+    assert Membership.objects.is_member(never) == False

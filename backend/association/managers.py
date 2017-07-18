@@ -21,3 +21,13 @@ class MembershipManager(models.Manager):
         return User.objects.filter(
             date_joined__year__lte=year
         ).exclude(pk__in=members)
+
+    def is_member(self, user):
+        """Helper to check if user is a member."""
+        date = datetime.datetime.now()
+        year = date.year
+
+        return self.get_queryset().filter(
+            user=user,
+            date__year=year
+        ).exists()
