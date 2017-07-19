@@ -1,0 +1,2 @@
+# pycon
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/7472f142f7624ba4b7b735f90ad518f6)](https://www.codacy.com/app/simobasso/pycon?utm_source=github.com&utm_medium=referral&utm_content=patrick91/pycon&utm_campaign=badger)
