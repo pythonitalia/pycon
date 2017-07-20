@@ -50,4 +50,6 @@ jobs:
             . venv/bin/activate
             cd backend
             python-codacy-coverage -r coverage.xml
+          environment:
+            CODACY_PROJECT_TOKEN: 4d8665c4c7d942ef80ae124883b4ad6d
 
