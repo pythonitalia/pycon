@@ -1,4 +1,4 @@
-import os
+from django.core.urlresolvers import reverse_lazy
 
 import environ
 root = environ.Path(__file__) - 3  # three folder back (/a/b/c/ - 3 = /)
@@ -135,3 +135,5 @@ AUTHENTICATION_BACKENDS = (
 
 SOCIAL_AUTH_TWITTER_KEY = env('SOCIAL_AUTH_TWITTER_KEY', default='')
 SOCIAL_AUTH_TWITTER_SECRET = env('SOCIAL_AUTH_TWITTER_SECRET', default='')
+
+LOGIN_REDIRECT_URL = reverse_lazy('post-login')

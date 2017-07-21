@@ -1,0 +1,37 @@
+<div>
+  <a target="_blank" href="{% url 'post-login' %}">post login page</a>
+  <a target="_blank" href="{% url 'social:begin' 'twitter' %}">login via twitter</a>
+</div>
+
+<script>
+  window.onUserLogged = (token) => {
+    document.querySelector('div').textContent = 'user logged';
+  }
+
+  function open_popup(url) {
+    const title = 'login';
+    const w = 500;
+    const h = 300;
+
+    const dualScreenLeft = window.screenLeft != undefined ? window.screenLeft : screen.left;
+    const dualScreenTop = window.screenTop != undefined ? window.screenTop : screen.top;
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    const left = ((width / 2) - (w / 2)) + dualScreenLeft;
+    const top = ((height / 2) - (h / 2)) + dualScreenTop;
+
+    const newWindow = window.open(url, title, 'scrollbars=yes, width=' + w + ', height=' + h + ', top=' + top +
+      ', left=' + left);
+
+    // Puts focus on the newWindow
+    if (window.focus) {
+      newWindow.focus();
+    }
+  }
+  document.querySelectorAll('a').forEach((el) => el.addEventListener('click', (e) => {
+    e.preventDefault();
+    open_popup(el.href);
+  }));
+
+</script>

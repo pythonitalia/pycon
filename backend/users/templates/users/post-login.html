@@ -1,0 +1,14 @@
+{% comment %} TODO: design {% endcomment %}
+<div>
+  logging in...
+</div>
+
+<script>
+  try {
+    // TODO: pass user information?
+    window.opener.onUserLogged();
+    window.close();
+  } catch (e) {
+    document.querySelector('div').textContent = 'Something went wrong.';
+  }
+</script>
