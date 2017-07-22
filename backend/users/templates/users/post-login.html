@@ -5,8 +5,9 @@
 
 <script>
   try {
-    // TODO: pass user information?
-    window.opener.onUserLogged();
+    window.opener.onUserLogged({
+      email: '{{ user.email }}',
+    });
     window.close();
   } catch (e) {
     document.querySelector('div').textContent = 'Something went wrong.';

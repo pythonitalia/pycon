@@ -4,8 +4,8 @@
 </div>
 
 <script>
-  window.onUserLogged = (token) => {
-    document.querySelector('div').textContent = 'user logged';
+  window.onUserLogged = ({ email }) => {
+    document.querySelector('div').textContent = 'user logged with email = ' + email;
   }
 
   function open_popup(url) {
