@@ -1,5 +1,3 @@
-import os
-
 import environ
 root = environ.Path(__file__) - 3  # three folder back (/a/b/c/ - 3 = /)
 
@@ -24,8 +22,26 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'wagtail.wagtailforms',
+    'wagtail.wagtailredirects',
+    'wagtail.wagtailembeds',
+    'wagtail.wagtailsites',
+    'wagtail.wagtailusers',
+    'wagtail.wagtailsnippets',
+    'wagtail.wagtaildocs',
+    'wagtail.wagtailimages',
+    'wagtail.wagtailsearch',
+    'wagtail.wagtailadmin',
+    'wagtail.wagtailcore',
+
     'graphene_django',
     'users',
+
+    'modelcluster',
+    'taggit',
+
+    'homepage',
+    'sitepages',
 ]
 
 MIDDLEWARE = [
@@ -36,6 +52,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'custom_wagtail.middleware.CustomSiteMiddleware',
+    'custom_wagtail.middleware.CustomRedirectMiddleware',
 ]
 
 ROOT_URLCONF = 'pycon.urls'
@@ -118,6 +136,7 @@ STATIC_ROOT = root('static')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = root('media')
 
+WAGTAIL_SITE_NAME = 'PyCon'
 
 GRAPHENE = {
     'SCHEMA': 'api.schema.schema'
@@ -125,3 +144,8 @@ GRAPHENE = {
 
 
 AUTH_USER_MODEL = 'users.User'
+
+WAGTAIL_EXCLUDE_URLS = [
+    'graphql',
+    'django-admin',
+]
