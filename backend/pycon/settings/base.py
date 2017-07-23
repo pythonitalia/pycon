@@ -1,4 +1,4 @@
-import os
+from django.core.urlresolvers import reverse_lazy
 
 import environ
 root = environ.Path(__file__) - 3  # three folder back (/a/b/c/ - 3 = /)
@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'graphene_django',
+    'social_django',
     'users',
 ]
 
@@ -125,3 +126,14 @@ GRAPHENE = {
 
 
 AUTH_USER_MODEL = 'users.User'
+
+
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.twitter.TwitterOAuth',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+SOCIAL_AUTH_TWITTER_KEY = env('SOCIAL_AUTH_TWITTER_KEY', default='')
+SOCIAL_AUTH_TWITTER_SECRET = env('SOCIAL_AUTH_TWITTER_SECRET', default='')
+
+LOGIN_REDIRECT_URL = reverse_lazy('post-login')

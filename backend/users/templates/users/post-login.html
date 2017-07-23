@@ -1,0 +1,15 @@
+{% comment %} TODO: design {% endcomment %}
+<div>
+  logging in...
+</div>
+
+<script>
+  try {
+    window.opener.onUserLogged({
+      email: '{{ user.email }}',
+    });
+    window.close();
+  } catch (e) {
+    document.querySelector('div').textContent = 'Something went wrong.';
+  }
+</script>
