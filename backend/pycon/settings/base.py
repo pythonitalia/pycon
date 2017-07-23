@@ -52,8 +52,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'wagtail.wagtailcore.middleware.SiteMiddleware',
-    'wagtail.wagtailredirects.middleware.RedirectMiddleware',
+    'custom_wagtail.middleware.CustomSiteMiddleware',
+    'custom_wagtail.middleware.CustomRedirectMiddleware',
 ]
 
 ROOT_URLCONF = 'pycon.urls'
@@ -144,3 +144,8 @@ GRAPHENE = {
 
 
 AUTH_USER_MODEL = 'users.User'
+
+WAGTAIL_EXCLUDE_URLS = [
+    'graphql',
+    'django-admin',
+]
