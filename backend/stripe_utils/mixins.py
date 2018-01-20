@@ -1,5 +1,11 @@
+import stripe
+
+from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
 class StripeCustomerMixin:
@@ -12,3 +18,6 @@ class StripeCustomerMixin:
 
         if not hasattr(self, 'customer_id'):
             raise NotImplementedError()
+
+    def get_orders(self):
+        return stripe.Charge.list(customer=self.customer_id)
