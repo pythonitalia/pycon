@@ -1,4 +1,4 @@
 Django==1.11.6
 django-environ==0.4.4
 graphene-django==2.0.0
-social-auth-app-django==1.2.0
+social-auth-app-django==2.1.0
