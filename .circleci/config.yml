@@ -42,7 +42,7 @@ jobs:
           command: |
             . venv/bin/activate
             cd backend
-            py.test --cov-report xml --cov=.
+            py.test --cov-report xml --cov=. --cov-fail-under 100
 
       - run:
           name: upload codacy report
