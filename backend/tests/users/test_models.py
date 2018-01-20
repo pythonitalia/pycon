@@ -23,3 +23,9 @@ def test_create_user_and_authenticate():
     )
 
     assert user == authenticated_user
+
+@pytest.mark.django_db
+def test_user_get_short_name():
+    user = User.objects.create_user('lennon@thebeatles.com', 'johnpassword')
+
+    assert 'lennon@thebeatles.com' == user.get_short_name()
