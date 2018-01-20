@@ -7,7 +7,7 @@ urlpatterns = [
     path('post-login', post_login_view, name='post-login'),
 ]
 
-if settings.DEBUG:
+if settings.DEBUG: # pragma: no cover
     from django.views.generic import TemplateView
 
     urlpatterns += [
