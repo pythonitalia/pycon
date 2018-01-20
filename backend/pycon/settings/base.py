@@ -1,4 +1,4 @@
-from django.core.urlresolvers import reverse_lazy
+from django.urls import reverse_lazy
 
 import environ
 root = environ.Path(__file__) - 3  # three folder back (/a/b/c/ - 3 = /)
