@@ -26,6 +26,7 @@ INSTALLED_APPS = [
 
     'graphene_django',
     'social_django',
+    'djstripe',
     'users',
 ]
 
@@ -136,6 +137,10 @@ AUTHENTICATION_BACKENDS = (
 SOCIAL_AUTH_TWITTER_KEY = env('SOCIAL_AUTH_TWITTER_KEY', default='')
 SOCIAL_AUTH_TWITTER_SECRET = env('SOCIAL_AUTH_TWITTER_SECRET', default='')
 
-STRIPE_SECRET_KEY = env('STRIPE_SECRET_KEY', default='')
-
 LOGIN_REDIRECT_URL = reverse_lazy('post-login')
+
+STRIPE_LIVE_PUBLIC_KEY = env('STRIPE_LIVE_PUBLIC_KEY', default='')
+STRIPE_LIVE_SECRET_KEY = env('STRIPE_LIVE_SECRET_KEY', default='')
+STRIPE_TEST_PUBLIC_KEY = env('STRIPE_TEST_PUBLIC_KEY', default='')
+STRIPE_TEST_SECRET_KEY = env('STRIPE_TEST_SECRET_KEY', default='')
+STRIPE_LIVE_MODE = False

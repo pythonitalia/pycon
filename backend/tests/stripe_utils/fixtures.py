@@ -6,7 +6,7 @@ from django.conf import settings
 
 @pytest.fixture(scope='module')
 def stripe_customer_id(request):
-    stripe.api_key = settings.STRIPE_SECRET_KEY
+    stripe.api_key = settings.STRIPE_TEST_SECRET_KEY
 
     customer = stripe.Customer.create()
 

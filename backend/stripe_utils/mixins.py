@@ -3,9 +3,6 @@ import stripe
 from django.conf import settings
 
 
-stripe.api_key = settings.STRIPE_SECRET_KEY
-
-
 class StripeCustomerMixin:
     """
         Requires `customer_id`
