@@ -4,16 +4,20 @@ from django.contrib.auth.models import PermissionsMixin
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from stripe_utils.mixins import StripeCustomerMixin
+
 from .managers import UserManager
 
 
-class User(AbstractBaseUser, PermissionsMixin):
+class User(AbstractBaseUser, StripeCustomerMixin, PermissionsMixin):
     username = models.CharField(_('username'), max_length=100, null=True, blank=True)
     email = models.EmailField(_('email address'), unique=True)
 
     date_joined = models.DateTimeField(_('date joined'), auto_now_add=True)
     is_active = models.BooleanField(_('active'), default=True)
     is_staff = models.BooleanField(_('is staff'), default=False)
+
+    customer_id = models.CharField(_('Stripe Customer ID'), max_length=100, blank=True)
 
     objects = UserManager()
 
