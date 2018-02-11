@@ -87,3 +87,7 @@ class Payment(TimeStampedModel):
         blank=True,
     )
     billing_email = models.EmailField(_('billing email'), blank=True)
+
+    def __str__(self):
+        created = f'{self.created:%B %d, %Y %H:%m}'
+        return f'{self.currency} {self.total} on {created}'
