@@ -6,6 +6,8 @@ from model_utils import Choices
 from model_utils.fields import StatusField
 from model_utils.models import TimeStampedModel
 
+from .providers.stripe import StripeProvider
+
 
 class Payment(TimeStampedModel):
     STATUS = Choices(
@@ -91,3 +93,7 @@ class Payment(TimeStampedModel):
     def __str__(self):
         created = f'{self.created:%B %d, %Y %H:%m}'
         return f'{self.currency} {self.total} on {created}'
+
+    def get_provider(self):
+        if self.provider == self.PROVIDERS.stripe:
+            return StripeProvider(self)
