@@ -1,6 +1,8 @@
 const path = require('path');
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 const SRC_PATH = path.join(__dirname, '../src');
+const TSCONFIG_PATH = path.join(__dirname, '../tsconfig.json');
 
 module.exports = {
   module: {
@@ -19,6 +21,11 @@ module.exports = {
 
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
-    enforceExtension: false
+    enforceExtension: false,
+    plugins: [
+      new TsconfigPathsPlugin({
+        configFile: TSCONFIG_PATH
+      })
+    ]
   }
 };
