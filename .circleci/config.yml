@@ -1,6 +1,11 @@
 version: 2
+
+defaults_node: &defaults_node
+  docker:
+    - image: circleci/node:8.9
+
 jobs:
-  build:
+  backend-test:
     docker:
       # specify the version you desire here
       # use `-browsers` prefix for selenium tests, e.g. `3.6.1-browsers`
@@ -53,3 +58,30 @@ jobs:
           environment:
             CODACY_PROJECT_TOKEN: b371fba19b824c62ad6270d4e1f3b410
 
+  frontend-lint:
+    <<: *defaults_node
+    steps:
+      - checkout
+      - restore_cache:
+          key: frontend-cache-{{ .Branch }}-{{ checksum "frontend/yarn.lock" }}
+      - run:
+          name: yarn
+          command: yarn
+          working_directory: ./frontend
+      - save_cache:
+          key: frontend-cache-{{ .Branch }}-{{ checksum "frontend/yarn.lock" }}
+          paths:
+            - frontend/node_modules
+            - "~/.cache/yarn"
+      - run:
+          name: lint
+          command: yarn run tslint --project .
+          working_directory: ./frontend
+
+workflows:
+  version: 2
+
+  checks:
+    jobs:
+      - backend-test
+      - frontend-lint
