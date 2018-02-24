@@ -9,6 +9,10 @@ module.exports = {
         test: /\.tsx?$/,
         loader: 'ts-loader',
         include: [SRC_PATH]
+      },
+      {
+        loader: 'style-loader!css-loader',
+        test: /\.css$/
       }
     ]
   },

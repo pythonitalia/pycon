@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "emotion": "^9.0.2",
+    "modern-normalize": "^0.4.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-emotion": "^9.0.2",
@@ -26,6 +27,7 @@
     "@types/storybook__react": "^3.0.7",
     "css-loader": "^0.28.10",
     "storybook": "^1.0.0",
+    "style-loader": "^0.20.2",
     "ts-loader": "^3.5.0",
     "typescript": "^2.7.2"
   }

@@ -2622,7 +2622,7 @@ css-loader@0.28.7:
     postcss-value-parser "^3.3.0"
     source-list-map "^2.0.0"
 
-css-loader@^0.28.8:
+css-loader@^0.28.10, css-loader@^0.28.8:
   version "0.28.10"
   resolved "https://registry.yarnpkg.com/css-loader/-/css-loader-0.28.10.tgz#40282e79230f7bcb4e483efa631d670b735ebf42"
   dependencies:
@@ -5719,6 +5719,10 @@ mkdirp@0.5.x, "mkdirp@>=0.5 0", mkdirp@^0.5.0, mkdirp@^0.5.1, mkdirp@~0.5.0, mkd
   dependencies:
     minimist "0.0.8"
 
+modern-normalize@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/modern-normalize/-/modern-normalize-0.4.0.tgz#1ccbc52861e1bce258144d28e890dc709b120ed2"
+
 move-concurrently@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/move-concurrently/-/move-concurrently-1.0.1.tgz#be2c005fda32e0b29af1f05d7c4b33214c701f92"
@@ -7570,7 +7574,7 @@ schema-utils@^0.3.0:
   dependencies:
     ajv "^5.0.0"
 
-schema-utils@^0.4.0, schema-utils@^0.4.2, schema-utils@^0.4.5:
+schema-utils@^0.4.0, schema-utils@^0.4.2, schema-utils@^0.4.3, schema-utils@^0.4.5:
   version "0.4.5"
   resolved "https://registry.yarnpkg.com/schema-utils/-/schema-utils-0.4.5.tgz#21836f0608aac17b78f9e3e24daff14a5ca13a3e"
   dependencies:
@@ -8130,6 +8134,13 @@ style-loader@^0.19.1:
   dependencies:
     loader-utils "^1.0.2"
     schema-utils "^0.3.0"
+
+style-loader@^0.20.2:
+  version "0.20.2"
+  resolved "https://registry.yarnpkg.com/style-loader/-/style-loader-0.20.2.tgz#851b373c187890331776e9cde359eea9c95ecd00"
+  dependencies:
+    loader-utils "^1.1.0"
+    schema-utils "^0.4.3"
 
 stylis-rule-sheet@^0.0.5:
   version "0.0.5"
