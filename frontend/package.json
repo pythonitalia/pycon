@@ -1,0 +1,34 @@
+{
+  "name": "frontend",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "emotion": "^9.0.2",
+    "modern-normalize": "^0.4.0",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-emotion": "^9.0.2",
+    "react-scripts-ts": "2.13.0"
+  },
+  "scripts": {
+    "start": "react-scripts-ts start",
+    "build": "react-scripts-ts build",
+    "test": "react-scripts-ts test --env=jsdom",
+    "eject": "react-scripts-ts eject",
+    "storybook": "start-storybook -p 9001 -c .storybook"
+  },
+  "devDependencies": {
+    "@storybook/react": "^3.3.14",
+    "@types/jest": "^22.1.3",
+    "@types/node": "^9.4.6",
+    "@types/react": "^16.0.38",
+    "@types/react-dom": "^16.0.4",
+    "@types/storybook__addon-actions": "^3.0.2",
+    "@types/storybook__react": "^3.0.7",
+    "css-loader": "^0.28.10",
+    "storybook": "^1.0.0",
+    "style-loader": "^0.20.2",
+    "ts-loader": "^3.5.0",
+    "typescript": "^2.7.2"
+  }
+}
