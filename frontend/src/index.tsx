@@ -2,6 +2,15 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import App from './App';
 
+import { ThemeProvider } from 'emotion-theming';
+
+import { theme } from './theme';
+
 import 'modern-normalize';
 
-ReactDOM.render(<App />, document.getElementById('root') as HTMLElement);
+ReactDOM.render(
+  <ThemeProvider theme={theme}>
+    <App />
+  </ThemeProvider>,
+  document.getElementById('root') as HTMLElement
+);

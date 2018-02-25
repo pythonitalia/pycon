@@ -3075,6 +3075,12 @@ emojis-list@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/emojis-list/-/emojis-list-2.1.0.tgz#4daa4d9db00f9819880c79fa457ae5b09a1fd389"
 
+emotion-theming@^9.0.0:
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/emotion-theming/-/emotion-theming-9.0.0.tgz#3b7dd07ceae70aab98280e81df8bfd7f9254d5c3"
+  dependencies:
+    hoist-non-react-statics "^2.3.1"
+
 emotion-utils@^9.0.1:
   version "9.0.1"
   resolved "https://registry.yarnpkg.com/emotion-utils/-/emotion-utils-9.0.1.tgz#db1034410d8ac4e399845d346471c3f2db5124d7"
@@ -4122,6 +4128,10 @@ hoek@4.x.x:
 hoist-non-react-statics@1.x.x, hoist-non-react-statics@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-1.2.0.tgz#aa448cf0986d55cc40773b17174b7dd066cb7cfb"
+
+hoist-non-react-statics@^2.3.1:
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-2.5.0.tgz#d2ca2dfc19c5a91c5a6615ce8e564ef0347e2a40"
 
 home-or-tmp@^1.0.0:
   version "1.0.0"
@@ -8141,6 +8151,12 @@ style-loader@^0.20.2:
   dependencies:
     loader-utils "^1.1.0"
     schema-utils "^0.4.3"
+
+styled-system@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/styled-system/-/styled-system-2.1.1.tgz#ec7cd9c25f8413662c90a3ff1b6660cf8d744163"
+  dependencies:
+    prop-types "^15.6.0"
 
 stylis-rule-sheet@^0.0.5:
   version "0.0.5"
