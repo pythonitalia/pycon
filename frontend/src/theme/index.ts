@@ -1,21 +1,28 @@
 const breakpoints = ['40em', '52em', '64em'];
 
 const colors = {
-  text: '#024',
-  blue: '#EFEFEF',
+  text: '#333333',
+  blue: '#0c67ff',
 
-  dark: {
-    blue: '#058'
-  },
-
-  gray: ['#333', '#666', '#999', '#ccc', '#eee', '#f6f6f6']
+  grey: '#f4f4f4',
+  white: '#ffffff'
 };
 
 const space = [0, 4, 8, 16, 32, 64, 128, 256, 512];
 
-const fontSizes = [12, 14, 16, 20, 24, 32, 48, 64, 96, 128];
+const fontSizes = {
+  title1: 45.234335104,
+  title2: 31.990336,
+  title3: 22.624,
+  body: 16
+};
 
-const lineHeights = [1, 1.125, 1.25, 1.5];
+const lineHeights = {
+  title1: 1.1,
+  title2: 1.2,
+  title3: 1.3,
+  body: 1.4
+};
 
 const fontWeights = {
   normal: 500,

@@ -9,6 +9,7 @@ function loadStories() {
   require('../src/stories/navbar/index.tsx');
   require('../src/stories/logo/index.tsx');
   require('../src/stories/box/index.tsx');
+  require('../src/stories/typography/index.tsx');
 }
 
 add(wrapper());

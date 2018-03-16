@@ -106,6 +106,12 @@ declare namespace StyledSystem {
 
   export function fontWeight(...args: any[]): any;
 
+  export interface LineHeightProps {
+    lineHeight?: number | string;
+  }
+
+  export function lineHeight(...args: any[]): any;
+
   export type AlignItemsValue =
     | 'normal'
     | 'stretch'
