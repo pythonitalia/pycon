@@ -9,6 +9,8 @@ import {
   fontSize,
   color,
   lineHeight,
+  fontFamily,
+  FontFamilyProps,
   LineHeightProps,
   SpaceProps,
   FontSizeProps,
@@ -22,10 +24,12 @@ type TypographyProps = SpaceProps &
   FontSizeProps &
   LineHeightProps &
   ColorProps &
+  FontFamilyProps &
   BoxShadowProps;
 
 const BaseTypography = styled<TypographyProps, 'h1'>('h1')`
   ${space}
+  ${fontFamily}
   ${fontSize}
   ${lineHeight}
   ${color}
@@ -49,7 +53,7 @@ const BaseTitle = ({
   const X = BaseTypography.withComponent(tagName);
 
   return (
-    <X fontSize={name} lineHeight={name}>
+    <X fontSize={name} lineHeight={name} fontFamily="title">
       {children}
     </X>
   );

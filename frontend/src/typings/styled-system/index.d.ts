@@ -64,6 +64,12 @@ declare namespace StyledSystem {
 
   export function color(...args: any[]): any;
 
+  export interface FontFamilyProps {
+    fontFamily?: number | string;
+    font?: number | string;
+  }
+  export function fontFamily(...args: any[]): any;
+
   //
   // Extras
   //
