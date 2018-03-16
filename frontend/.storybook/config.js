@@ -1,6 +1,6 @@
 import { configure, addDecorator as add } from '@storybook/react';
 
-import 'modern-normalize';
+import 'reset-css';
 
 import { wrapper } from './wrapper';
 

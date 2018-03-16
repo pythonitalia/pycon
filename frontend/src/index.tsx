@@ -6,7 +6,7 @@ import { ThemeProvider } from 'emotion-theming';
 
 import { theme } from './theme';
 
-import 'modern-normalize';
+import 'reset-css';
 
 ReactDOM.render(
   <ThemeProvider theme={theme}>
