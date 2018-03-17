@@ -14,34 +14,46 @@ export class Button extends React.Component<Props> {
         px={3}
         py={2}
         borderRadius={100}
-        bg={getBackgroundColor(this.props.variant)}
-        color={getTextColor(this.props.variant)}
+        bg={getBackgroundColor(this.props.variant, false)}
+        color={getTextColor(this.props.variant, false)}
         fontSize={getFontSize(this.props.variant)}
+        hover={{
+          backgroundColor: getBackgroundColor(this.props.variant, true),
+          color: getTextColor(this.props.variant, true)
+        }}
       >
-        Hello
+        {this.props.children}
       </BaseButton>
     );
   }
 }
 
-const getBackgroundColor = (variant: Props['variant']) => {
+const getBackgroundColor = (variant: Props['variant'], hover: boolean) => {
+  let result = undefined;
   switch (variant) {
     case 'primary':
     default:
-      return 'blue';
+      hover ? (result = 'white') : (result = 'blue');
+      break;
     case 'secondary':
-      return 'grey';
+      hover ? (result = 'white') : (result = 'grey');
+      break;
   }
+  return result;
 };
 
-const getTextColor = (variant: Props['variant']) => {
+const getTextColor = (variant: Props['variant'], hover: boolean) => {
+  let result = undefined;
   switch (variant) {
     case 'primary':
     default:
-      return 'white';
+      hover ? (result = 'blue') : (result = 'white');
+      break;
     case 'secondary':
-      return 'blue';
+      hover ? (result = 'grey') : (result = 'white');
+      break;
   }
+  return result;
 };
 
 const getFontSize = (variant: Props['variant']) => {
