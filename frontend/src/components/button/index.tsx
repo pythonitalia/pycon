@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { AnchorHTMLAttributes } from 'react';
 import { Box } from '../box';
 import styled from '../../styled';
 import { ButtonVariant } from './types';
@@ -27,6 +27,7 @@ const button = (
       color ${props => props.theme.timings[0]}s ease-out;
     cursor: pointer;
     text-transform: uppercase;
+    text-decoration: none;
     font-family: ${props => props.theme.fonts.button};
     display: inline-block;
   `;
@@ -52,7 +53,7 @@ const button = (
   );
 };
 
-type ButtonLinkProps = Props & {};
+type ButtonLinkProps = Props & AnchorHTMLAttributes<HTMLAnchorElement>;
 
 export const Button = (props: Props) => button(props, 'button');
 export const ButtonLink = (props: ButtonLinkProps) => button(props, 'a');
