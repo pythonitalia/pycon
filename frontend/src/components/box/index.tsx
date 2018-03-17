@@ -1,5 +1,3 @@
-import React from 'react';
-
 import {
   space,
   width,
@@ -20,7 +18,15 @@ import {
   alignItems,
   AlignItemsProps,
   display,
-  DisplayProps
+  DisplayProps,
+  borderRadius,
+  BorderRadiusProps,
+  hover,
+  HoverProps,
+  borderColor,
+  BorderColorProps,
+  borders,
+  BordersProps
 } from 'styled-system';
 
 import styled from '../../styled';
@@ -34,9 +40,13 @@ type BoxProps = SpaceProps &
   FlexDirectionProps &
   FlexProps &
   DisplayProps &
-  AlignItemsProps;
+  BorderRadiusProps &
+  AlignItemsProps &
+  HoverProps &
+  BorderColorProps &
+  BordersProps;
 
-export const Box: React.SFC<BoxProps> = styled('div')`
+export const Box = styled<BoxProps, 'div'>('div')`
   ${space}
   ${width}
   ${fontSize}
@@ -47,4 +57,8 @@ export const Box: React.SFC<BoxProps> = styled('div')`
   ${flex}
   ${display}
   ${alignItems}
+  ${borderRadius}
+  ${hover}
+  ${borderColor}
+  ${borders}
 `;

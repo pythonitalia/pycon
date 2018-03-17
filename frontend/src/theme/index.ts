@@ -43,7 +43,10 @@ const shadows = [`0 1px 2px 0 ${colors.text}`, `0 1px 4px 0 ${colors.text}`];
 const fonts = {
   title: 'Rubik',
   base: 'Roboto Mono',
+  button: 'Rubik'
 };
+
+const timings = [0.15, 0.3];
 
 export const theme = {
   breakpoints,
@@ -56,7 +59,8 @@ export const theme = {
   radii,
   fonts,
   borders,
-  shadows
+  shadows,
+  timings
 };
 
 export type Theme = typeof theme;
