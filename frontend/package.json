@@ -4,11 +4,14 @@
   "private": true,
   "dependencies": {
     "emotion": "^9.0.2",
-    "modern-normalize": "^0.4.0",
+    "emotion-theming": "^9.0.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-emotion": "^9.0.2",
-    "react-scripts-ts": "2.13.0"
+    "react-scripts-ts": "2.13.0",
+    "recompose": "^0.26.0",
+    "reset-css": "^3.0.0",
+    "styled-system": "^2.1.1"
   },
   "scripts": {
     "start": "react-scripts-ts start",
