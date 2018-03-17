@@ -1,7 +1,12 @@
 import React from 'react';
 import { Box } from '../box';
+import styled from '../../styled';
 
-const BaseButton = Box.withComponent('button');
+const BaseButton = styled(Box.withComponent('button'))`
+  transition: background-color ${props => props.theme.timings[0]}s ease-out,
+    color ${props => props.theme.timings[0]}s ease-out;
+  cursor: pointer;
+`;
 
 type Props = {
   variant?: 'primary' | 'secondary';

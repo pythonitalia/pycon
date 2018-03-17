@@ -45,6 +45,8 @@ const fonts = {
   base: 'Roboto Mono',
 };
 
+const timings = [0.15,0.3]
+
 export const theme = {
   breakpoints,
   colors,
@@ -56,7 +58,8 @@ export const theme = {
   radii,
   fonts,
   borders,
-  shadows
+  shadows,
+  timings
 };
 
 export type Theme = typeof theme;
