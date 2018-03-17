@@ -138,7 +138,7 @@ declare namespace StyledSystem {
   export type ResponsiveAlignItemsValue = ResponsiveValue<AlignItemsValue>;
 
   export interface AlignItemsProps {
-    align?: ResponsiveAlignItemsValue;
+    alignItems?: ResponsiveAlignItemsValue;
   }
 
   export function alignItems(...args: any[]): any;
@@ -199,6 +199,15 @@ declare namespace StyledSystem {
   }
 
   export function flex(...args: any[]): any;
+
+  export type DisplayValue = string;
+  export type ResponsiveDisplayValue = ResponsiveValue<DisplayValue>;
+
+  export interface DisplayProps {
+    display?: ResponsiveDisplayValue;
+  }
+
+  export function display(...args: any[]): any;
 
   export type AlignSelfValue =
     | 'auto'
