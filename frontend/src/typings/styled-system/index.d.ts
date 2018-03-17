@@ -243,6 +243,18 @@ declare namespace StyledSystem {
 
   export function borderRadius(...args: any[]): any;
 
+  export type BordersValue = number | string;
+
+  export interface BordersProps {
+    border?: ResponsiveValue<BordersValue>;
+    borderTop?: ResponsiveValue<BordersValue>;
+    borderRight?: ResponsiveValue<BordersValue>;
+    borderBottom?: ResponsiveValue<BordersValue>;
+    borderLeft?: ResponsiveValue<BordersValue>;
+  }
+
+  export function borders(...args: any[]): any;
+
   export type BorderColorValue = string;
 
   export interface BorderColorProps {
