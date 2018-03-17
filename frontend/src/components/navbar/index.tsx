@@ -3,6 +3,7 @@ import React from 'react';
 import { Menu } from 'react-feather';
 import { Box } from '../box';
 import { Logo } from '../logo';
+import { ButtonLink } from '../button';
 
 export class Navbar extends React.Component<{}, {}> {
   render() {
@@ -13,6 +14,15 @@ export class Navbar extends React.Component<{}, {}> {
         </Box>
 
         <Logo />
+
+        <ButtonLink
+          href="/"
+          style={{
+            marginLeft: 'auto'
+          }}
+        >
+          Tickets
+        </ButtonLink>
       </Box>
     );
   }
