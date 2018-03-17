@@ -25,6 +25,7 @@ export class Button extends React.Component<Props> {
         color={getTextColor(this.props.variant, false)}
         fontSize={getFontSize(this.props.variant)}
         borderColor = {getBorderColor(this.props.variant)}
+        border = {getBorder(this.props.variant, false)}
         hover={{
           backgroundColor: getBackgroundColor(this.props.variant, true),
           color: getTextColor(this.props.variant, true)
@@ -91,3 +92,18 @@ const getBorderColor = (variant: Props['variant']) => {
   }
   return result;
 };
+
+
+const getBorder = (variant: Props['variant'], hover: boolean ) => {
+   let result = undefined;
+   switch (variant) {
+     case 'primary':
+     default:
+       result = 2;
+       break;
+     case 'secondary':
+       result = 0;
+       break;
+   }
+   return result;
+}

@@ -24,7 +24,9 @@ import {
   hover,
   HoverProps,
   borderColor,
-  BorderColorProps
+  BorderColorProps,
+  borders,
+  BordersProps
 } from 'styled-system';
 
 import styled from '../../styled';
@@ -41,7 +43,8 @@ type BoxProps = SpaceProps &
   BorderRadiusProps &
   AlignItemsProps &
   HoverProps &
-  BorderColorProps;
+  BorderColorProps &
+  BordersProps;
 
 export const Box = styled<BoxProps, 'div'>('div')`
   ${space}
@@ -57,4 +60,5 @@ export const Box = styled<BoxProps, 'div'>('div')`
   ${borderRadius}
   ${hover}
   ${borderColor}
+  ${borders}
 `;
