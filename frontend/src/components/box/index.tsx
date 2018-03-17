@@ -1,5 +1,3 @@
-import React from 'react';
-
 import {
   space,
   width,
@@ -36,7 +34,7 @@ type BoxProps = SpaceProps &
   DisplayProps &
   AlignItemsProps;
 
-export const Box: React.SFC<BoxProps> = styled('div')`
+export const Box = styled<BoxProps, 'div'>('div')`
   ${space}
   ${width}
   ${fontSize}
