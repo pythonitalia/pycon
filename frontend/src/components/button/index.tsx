@@ -10,37 +10,49 @@ import {
   getTextColor
 } from './utils';
 
-const BaseButton = styled(Box.withComponent('button'))`
-  transition: background-color ${props => props.theme.timings[0]}s ease-out,
-    color ${props => props.theme.timings[0]}s ease-out;
-  cursor: pointer;
-  text-transform: uppercase;
-  font-family: ${props => props.theme.fonts.button};
-`;
-
 type Props = {
-  variant: ButtonVariant;
+  variant?: ButtonVariant;
+  children: React.ReactNode;
 };
 
-export class Button extends React.Component<Props> {
-  render() {
-    return (
-      <BaseButton
-        px={3}
-        py={2}
-        borderRadius={100}
-        bg={getBackgroundColor(this.props.variant, false)}
-        color={getTextColor(this.props.variant, false)}
-        fontSize={getFontSize(this.props.variant)}
-        borderColor={getBorderColor(this.props.variant)}
-        border={getBorder(this.props.variant, false)}
-        hover={{
-          backgroundColor: getBackgroundColor(this.props.variant, true),
-          color: getTextColor(this.props.variant, true)
-        }}
-      >
-        {this.props.children}
-      </BaseButton>
-    );
-  }
-}
+const button = (
+  { variant, children, ...additionalProps }: Props,
+  tagName: 'a' | 'button'
+) => {
+  // looks like emotion has some bug when using withComponent when using
+  // styled with additional styles
+
+  const Component = styled(Box.withComponent(tagName))`
+    transition: background-color ${props => props.theme.timings[0]}s ease-out,
+      color ${props => props.theme.timings[0]}s ease-out;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-family: ${props => props.theme.fonts.button};
+    display: inline-block;
+  `;
+
+  return (
+    <Component
+      px={3}
+      py={2}
+      borderRadius={100}
+      bg={getBackgroundColor(variant, false)}
+      color={getTextColor(variant, false)}
+      fontSize={getFontSize(variant)}
+      borderColor={getBorderColor(variant)}
+      border={getBorder(variant, false)}
+      hover={{
+        backgroundColor: getBackgroundColor(variant, true),
+        color: getTextColor(variant, true)
+      }}
+      {...additionalProps}
+    >
+      {children}
+    </Component>
+  );
+};
+
+type ButtonLinkProps = Props & {};
+
+export const Button = (props: Props) => button(props, 'button');
+export const ButtonLink = (props: ButtonLinkProps) => button(props, 'a');
