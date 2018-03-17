@@ -7,6 +7,7 @@ const BaseButton = styled(Box.withComponent('button'))`
     color ${props => props.theme.timings[0]}s ease-out;
   cursor: pointer;
   text-transform: uppercase;
+  font-family: ${props => props.theme.fonts.button};
 `;
 
 type Props = {
