@@ -58,21 +58,29 @@ const getTextColor = (variant: Props['variant'], hover: boolean) => {
 };
 
 const getFontSize = (variant: Props['variant']) => {
+  let result = undefined
   switch (variant) {
     case 'primary':
     default:
-      return 'body';
+      result = 'body';
+      break;
     case 'secondary':
-      return 'body';
+      result = 'body';
+      break;
   }
+  return result;
 };
 
 const getBorderColor = (variant: Props['variant']) => {
+  let result = undefined;
   switch (variant) {
     case 'primary':
     default:
-      return 'blue';
+      result = 'blue';
+      break;
     case 'secondary':
-      return 'white';
+      result = 'white';
+      break;
   }
+  return result;
 };
