@@ -1,5 +1,14 @@
-import styled, { ThemedReactEmotionInterface } from 'react-emotion';
+import * as styledComponents from 'styled-components';
 
 import { Theme } from '../theme';
 
-export default styled as ThemedReactEmotionInterface<Theme>;
+const {
+  default: styled,
+  css,
+  injectGlobal,
+  keyframes,
+  ThemeProvider
+} = styledComponents as styledComponents.ThemedStyledComponentsModule<Theme>;
+
+export default styled;
+export { css, injectGlobal, keyframes, ThemeProvider };

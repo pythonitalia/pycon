@@ -1,6 +1,5 @@
 import React, { AnchorHTMLAttributes } from 'react';
 import { Box } from '../box';
-import styled from '../../styled';
 import { ButtonVariant } from './types';
 import {
   getBackgroundColor,
@@ -15,22 +14,21 @@ type Props = {
   children: React.ReactNode;
 };
 
+const Base = Box.extend`
+  transition: background-color ${props => props.theme.timings[0]}s ease-out,
+    color ${props => props.theme.timings[0]}s ease-out;
+  cursor: pointer;
+  text-transform: uppercase;
+  text-decoration: none;
+  font-family: ${props => props.theme.fonts.button};
+  display: inline-block;
+`;
+
 const button = (
   { variant, children, ...additionalProps }: Props,
   tagName: 'a' | 'button'
 ) => {
-  // looks like emotion has some bug when using withComponent when using
-  // styled with additional styles
-
-  const Component = styled(Box.withComponent(tagName))`
-    transition: background-color ${props => props.theme.timings[0]}s ease-out,
-      color ${props => props.theme.timings[0]}s ease-out;
-    cursor: pointer;
-    text-transform: uppercase;
-    text-decoration: none;
-    font-family: ${props => props.theme.fonts.button};
-    display: inline-block;
-  `;
+  const Component = Base.withComponent(tagName);
 
   return (
     <Component

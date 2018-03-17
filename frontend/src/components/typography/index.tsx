@@ -1,8 +1,5 @@
 import React from 'react';
-import { withTheme } from 'emotion-theming';
 import withProps from 'recompose/withProps';
-
-import { Theme } from '../../theme';
 
 import {
   space,
@@ -41,11 +38,7 @@ interface TitleProps {
 }
 
 // TODO spacing etc
-const BaseTitle = ({
-  theme,
-  level,
-  children
-}: TitleProps & { theme: Theme }) => {
+export const Title = ({ level, children }: TitleProps) => {
   // ugly, but works :)
   const tagName: keyof JSX.IntrinsicElements = `h${level}` as keyof JSX.IntrinsicElements;
   const name = `title${level}`;
@@ -59,13 +52,9 @@ const BaseTitle = ({
   );
 };
 
-export const Title = withTheme<TitleProps, Theme>(BaseTitle);
-
-const BaseParagraph = withProps({
+export const Paragraph = withProps({
   fontFamily: 'base',
   fontSize: 'body',
   lineHeight: 'body',
   mb: 3
 })(BaseTypography.withComponent('p'));
-
-export const Paragraph = withTheme<{}, Theme>(BaseParagraph);
