@@ -36,7 +36,7 @@ const BaseTypography = styled<TypographyProps, 'h1'>('h1')`
 `;
 
 interface TitleProps {
-  level: 1 | 2 | 3 | 4 | 5 | 6;
+  level: 1 | 2 | 3;
   children: React.ReactNode;
 }
 
@@ -62,8 +62,10 @@ const BaseTitle = ({
 export const Title = withTheme<TitleProps, Theme>(BaseTitle);
 
 const BaseParagraph = withProps({
+  fontFamily: 'base',
   fontSize: 'body',
-  lineHeight: 'body'
+  lineHeight: 'body',
+  mb: 3
 })(BaseTypography.withComponent('p'));
 
 export const Paragraph = withTheme<{}, Theme>(BaseParagraph);
