@@ -1,6 +1,14 @@
 import React from 'react';
 import { Box } from '../box';
 import styled from '../../styled';
+import { ButtonVariant } from './types';
+import {
+  getBackgroundColor,
+  getFontSize,
+  getBorderColor,
+  getBorder,
+  getTextColor
+} from './utils';
 
 const BaseButton = styled(Box.withComponent('button'))`
   transition: background-color ${props => props.theme.timings[0]}s ease-out,
@@ -11,7 +19,7 @@ const BaseButton = styled(Box.withComponent('button'))`
 `;
 
 type Props = {
-  variant?: 'primary' | 'secondary';
+  variant: ButtonVariant;
 };
 
 export class Button extends React.Component<Props> {
@@ -24,8 +32,8 @@ export class Button extends React.Component<Props> {
         bg={getBackgroundColor(this.props.variant, false)}
         color={getTextColor(this.props.variant, false)}
         fontSize={getFontSize(this.props.variant)}
-        borderColor = {getBorderColor(this.props.variant)}
-        border = {getBorder(this.props.variant, false)}
+        borderColor={getBorderColor(this.props.variant)}
+        border={getBorder(this.props.variant, false)}
         hover={{
           backgroundColor: getBackgroundColor(this.props.variant, true),
           color: getTextColor(this.props.variant, true)
@@ -35,75 +43,4 @@ export class Button extends React.Component<Props> {
       </BaseButton>
     );
   }
-}
-
-const getBackgroundColor = (variant: Props['variant'], hover: boolean) => {
-  let result = undefined;
-  switch (variant) {
-    case 'primary':
-    default:
-      hover ? (result = 'white') : (result = 'blue');
-      break;
-    case 'secondary':
-      hover ? (result = 'white') : (result = 'grey');
-      break;
-  }
-  return result;
-};
-
-const getTextColor = (variant: Props['variant'], hover: boolean) => {
-  let result = undefined;
-  switch (variant) {
-    case 'primary':
-    default:
-      hover ? (result = 'blue') : (result = 'white');
-      break;
-    case 'secondary':
-      hover ? (result = 'grey') : (result = 'white');
-      break;
-  }
-  return result;
-};
-
-const getFontSize = (variant: Props['variant']) => {
-  let result = undefined
-  switch (variant) {
-    case 'primary':
-    default:
-      result = 'body';
-      break;
-    case 'secondary':
-      result = 'body';
-      break;
-  }
-  return result;
-};
-
-const getBorderColor = (variant: Props['variant']) => {
-  let result = undefined;
-  switch (variant) {
-    case 'primary':
-    default:
-      result = 'blue';
-      break;
-    case 'secondary':
-      result = 'white';
-      break;
-  }
-  return result;
-};
-
-
-const getBorder = (variant: Props['variant'], hover: boolean ) => {
-   let result = undefined;
-   switch (variant) {
-     case 'primary':
-     default:
-       result = 2;
-       break;
-     case 'secondary':
-       result = 0;
-       break;
-   }
-   return result;
 }
