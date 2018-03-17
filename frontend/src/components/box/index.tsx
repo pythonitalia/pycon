@@ -10,7 +10,17 @@ import {
   WidthProps,
   FontSizeProps,
   ColorProps,
-  BoxShadowProps
+  BoxShadowProps,
+  flexWrap,
+  FlexWrapProps,
+  flexDirection,
+  FlexDirectionProps,
+  flex,
+  FlexProps,
+  alignItems,
+  AlignItemsProps,
+  display,
+  DisplayProps
 } from 'styled-system';
 
 import styled from '../../styled';
@@ -19,7 +29,12 @@ type BoxProps = SpaceProps &
   WidthProps &
   FontSizeProps &
   ColorProps &
-  BoxShadowProps;
+  BoxShadowProps &
+  FlexWrapProps &
+  FlexDirectionProps &
+  FlexProps &
+  DisplayProps &
+  AlignItemsProps;
 
 export const Box: React.SFC<BoxProps> = styled('div')`
   ${space}
@@ -27,4 +42,9 @@ export const Box: React.SFC<BoxProps> = styled('div')`
   ${fontSize}
   ${color}
   ${boxShadow}
+  ${flexWrap}
+  ${flexDirection}
+  ${flex}
+  ${display}
+  ${alignItems}
 `;
