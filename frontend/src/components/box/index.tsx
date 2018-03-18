@@ -26,7 +26,11 @@ import {
   borderColor,
   BorderColorProps,
   borders,
-  BordersProps
+  BordersProps,
+  fontFamily,
+  FontFamilyProps,
+  lineHeight,
+  LineHeightProps
 } from 'styled-system';
 
 import styled from '../../styled';
@@ -44,12 +48,15 @@ type BoxProps = SpaceProps &
   AlignItemsProps &
   HoverProps &
   BorderColorProps &
-  BordersProps;
+  BordersProps &
+  FontFamilyProps &
+  LineHeightProps;
 
 export const Box = styled<BoxProps, 'div'>('div')`
   ${space}
   ${width}
   ${fontSize}
+  ${fontFamily}
   ${color}
   ${boxShadow}
   ${flexWrap}
@@ -61,4 +68,5 @@ export const Box = styled<BoxProps, 'div'>('div')`
   ${hover}
   ${borderColor}
   ${borders}
+  ${lineHeight}
 `;
