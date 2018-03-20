@@ -17,4 +17,5 @@ def test_donations():
     user = User.objects.create_user('lennon@thebeatles.com', 'johnpassword')
     info = MagicMock()
     info.context.user = user
-    donate_with_stripe.mutate(info, donate_with_stripe_input)
+    resp = donate_with_stripe.mutate(info, donate_with_stripe_input)
+    assert resp.ok == True
