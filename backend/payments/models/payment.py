@@ -5,11 +5,12 @@ from django.utils.translation import ugettext_lazy as _
 from model_utils import Choices
 from model_utils.fields import StatusField
 from model_utils.models import TimeStampedModel
+from polymorphic.models import PolymorphicModel
 
-from .providers.stripe import StripeProvider
+from .provider_types import PROVIDER_TYPES, BANKTR_TYPE
 
+class Payment(TimeStampedModel, PolymorphicModel):
 
-class Payment(TimeStampedModel):
     STATUS = Choices(
         ('waiting', _('waiting')),
         ('rejected', _('rejected')),
@@ -18,26 +19,15 @@ class Payment(TimeStampedModel):
         ('error', _('error')),
     )
 
-    PROVIDERS = Choices(
-        ('stripe', _('stripe')),
-        ('bank_transfer', _('bank transfer')),
-    )
-
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     status = StatusField(_('status'))
-    provider = StatusField(_('payment provider'), choices_name='PROVIDERS')
+    provider = models.CharField(_('payment provider'), max_length=10, choices=PROVIDER_TYPES)
 
     description = models.TextField(_('description'), blank=True, default='')
 
-    transaction_id = models.CharField(
-        _('transaction id'),
-        max_length=255,
-        blank=True,
-        help_text=_('Id of the transaction, if applicable'),
-    )
     currency = models.CharField(_('currency'), max_length=10)
-    total = models.DecimalField(
-        _('total'),
+    amount = models.DecimalField(
+        _('amount'),
         max_digits=9,
         decimal_places=2,
         default='0.0',
@@ -90,10 +80,20 @@ class Payment(TimeStampedModel):
     )
     billing_email = models.EmailField(_('billing email'), blank=True)
 
+    def _get_payment_type(self):
+        return BANKTR_TYPE
+
+    def capture(self, *args):
+        raise NotImplementedError()
+
+    def refund(self):
+        self.status = 'refunded'
+        self.save()
+
     def __str__(self):
         created = f'{self.created:%B %d, %Y %H:%m}'
-        return f'{self.currency} {self.total} on {created}'
+        return f'{self.currency} {self.amount} on {created}'
 
-    def get_provider(self):
-        if self.provider == self.PROVIDERS.stripe:
-            return StripeProvider(self)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.provider = self._get_payment_type()

@@ -19,6 +19,7 @@ ALLOWED_HOSTS = env('ALLOWED_HOSTS')
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
+    'polymorphic',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -28,6 +29,7 @@ INSTALLED_APPS = [
     'social_django',
     'users',
     'payments',
+    'donations',
 ]
 
 MIDDLEWARE = [
@@ -138,3 +140,6 @@ SOCIAL_AUTH_TWITTER_KEY = env('SOCIAL_AUTH_TWITTER_KEY', default='')
 SOCIAL_AUTH_TWITTER_SECRET = env('SOCIAL_AUTH_TWITTER_SECRET', default='')
 
 LOGIN_REDIRECT_URL = reverse_lazy('post-login')
+
+RENEW_SUBSCRIPTION_AMOUNT = 1000
+RENEW_SUBSCRIPTION_DESCRIPTION = 'Renew subscription'

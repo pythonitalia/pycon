@@ -1,4 +1,5 @@
 import graphene
+from donations.api.schema import DonationsMutations
 
 
 class Query(graphene.ObjectType):
@@ -8,4 +9,10 @@ class Query(graphene.ObjectType):
         return 'world'
 
 
-schema = graphene.Schema(query=Query)
+class Mutation(
+    DonationsMutations,
+    graphene.ObjectType
+):
+    pass
+
+schema = graphene.Schema(query=Query, mutation=Mutation)
