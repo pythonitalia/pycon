@@ -48,6 +48,8 @@ const fonts = {
 
 const timings = [0.15, 0.3];
 
+const cardDimension= [370,448]
+ 
 export const theme = {
   breakpoints,
   colors,
@@ -60,7 +62,8 @@ export const theme = {
   fonts,
   borders,
   shadows,
-  timings
+  timings,
+  cardDimension
 };
 
 export type Theme = typeof theme;
