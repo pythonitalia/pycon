@@ -7,6 +7,7 @@ const BaseCard = styled(Box.withComponent('div'))`
   width: ${props => props.theme.cardDimension[0]}px;
   height: ${props => props.theme.cardDimension[1]}px;
   font-family: ${props => props.theme.fonts.card};
+  box-shadow: ${props => props.theme.shadows[2]};
 `;
 
 export class Card extends React.Component {
