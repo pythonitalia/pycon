@@ -6,7 +6,7 @@ import { Logo } from '../../components/logo';
 storiesOf('Logo', module).add('normal', () => (
   <div
     style={{
-      width: 300
+      width: 300,
     }}
   >
     <Logo />

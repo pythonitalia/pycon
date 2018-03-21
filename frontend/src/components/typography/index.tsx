@@ -12,7 +12,7 @@ import {
   SpaceProps,
   FontSizeProps,
   ColorProps,
-  BoxShadowProps
+  BoxShadowProps,
 } from 'styled-system';
 
 import styled from '../../styled';
@@ -56,5 +56,5 @@ export const Paragraph = withProps({
   fontFamily: 'base',
   fontSize: 'body',
   lineHeight: 'body',
-  mb: 3
+  mb: 3,
 })(BaseTypography.withComponent('p'));
