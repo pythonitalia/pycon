@@ -44,6 +44,10 @@ const button = (
         backgroundColor: getBackgroundColor(variant, true),
         color: getTextColor(variant, true)
       }}
+      focus={{
+        backgroundColor: getBackgroundColor(variant, true),
+        color: getTextColor(variant, true)
+      }}
       {...additionalProps}
     >
       {children}

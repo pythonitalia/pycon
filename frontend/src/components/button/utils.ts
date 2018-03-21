@@ -9,7 +9,7 @@ export const getBackgroundColor = (variant: ButtonVariant, hover: boolean) => {
       hover ? (result = 'white') : (result = 'blue');
       break;
     case 'secondary':
-      hover ? (result = 'white') : (result = 'grey');
+      hover ? (result = 'lightBlue') : (result = 'lightBlue');
       break;
   }
   return result;
@@ -24,7 +24,7 @@ export const getTextColor = (variant: ButtonVariant, hover: boolean) => {
       hover ? (result = 'blue') : (result = 'white');
       break;
     case 'secondary':
-      hover ? (result = 'grey') : (result = 'white');
+      hover ? (result = 'white') : (result = 'blue');
       break;
   }
   return result;
