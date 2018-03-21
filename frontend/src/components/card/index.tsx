@@ -14,6 +14,8 @@ export class Card extends React.Component {
       <BaseCard
         borderRadius={16}
         bg={getBackgroundColor(false)}
+        px={24}
+        py={16}
       >
         {this.props.children}
       </BaseCard>
