@@ -1,4 +1,3 @@
 [build]
     base    = "frontend"
     publish = "frontend/build_storybook"
-    command = "yarn build:storybook"
