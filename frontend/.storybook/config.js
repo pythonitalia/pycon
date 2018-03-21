@@ -11,6 +11,7 @@ function loadStories() {
   require('../src/stories/box/index.tsx');
   require('../src/stories/typography/index.tsx');
   require('../src/stories/button/index.tsx');
+  require('../src/stories/card/index.tsx');
 }
 
 add(wrapper());
