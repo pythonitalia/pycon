@@ -5,7 +5,9 @@ const colors = {
   blue: '#0c67ff',
 
   grey: '#f4f4f4',
-  white: '#ffffff'
+  white: '#ffffff',
+  
+  lightBlue: '#64B5F6'
 };
 
 const space = [0, 4, 8, 16, 32, 64, 128, 256, 512];
