@@ -32,7 +32,7 @@ import {
   lineHeight,
   LineHeightProps,
   focus,
-  FocusProps
+  FocusProps,
 } from 'styled-system';
 
 import styled from '../../styled';
@@ -53,7 +53,7 @@ type BoxProps = SpaceProps &
   BordersProps &
   FontFamilyProps &
   LineHeightProps &
-  FocusProps ;
+  FocusProps;
 
 export const Box = styled<BoxProps, 'div'>('div')`
   ${space}

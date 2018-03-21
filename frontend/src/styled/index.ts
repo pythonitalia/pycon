@@ -7,7 +7,7 @@ const {
   css,
   injectGlobal,
   keyframes,
-  ThemeProvider
+  ThemeProvider,
 } = styledComponents as styledComponents.ThemedStyledComponentsModule<Theme>;
 
 export default styled;

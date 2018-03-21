@@ -6,8 +6,8 @@ const colors = {
 
   grey: '#f4f4f4',
   white: '#ffffff',
-  
-  lightBlue: '#64B5F6'
+
+  lightBlue: '#64B5F6',
 };
 
 const space = [0, 4, 8, 16, 32, 64, 128, 256, 512];
@@ -16,24 +16,24 @@ const fontSizes = {
   title1: 45.234335104,
   title2: 31.990336,
   title3: 22.624,
-  body: 16
+  body: 16,
 };
 
 const lineHeights = {
   title1: 1.1,
   title2: 1.2,
   title3: 1.3,
-  body: 1.4
+  body: 1.4,
 };
 
 const fontWeights = {
   normal: 500,
-  bold: 700
+  bold: 700,
 };
 
 const letterSpacings = {
   normal: 'normal',
-  caps: '0.25em'
+  caps: '0.25em',
 };
 
 const radii = [0, 2, 4, 8];
@@ -45,7 +45,7 @@ const shadows = [`0 1px 2px 0 ${colors.text}`, `0 1px 4px 0 ${colors.text}`];
 const fonts = {
   title: 'Rubik',
   base: 'Roboto Mono',
-  button: 'Rubik'
+  button: 'Rubik',
 };
 
 const timings = [0.15, 0.3];
@@ -62,7 +62,7 @@ export const theme = {
   fonts,
   borders,
   shadows,
-  timings
+  timings,
 };
 
 export type Theme = typeof theme;

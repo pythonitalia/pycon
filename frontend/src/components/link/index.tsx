@@ -13,6 +13,6 @@ export const Link = withProps({
   lineHeight: 'body',
   px: 3,
   hover: {
-    color: 'blue'
-  }
+    color: 'blue',
+  },
 })(BaseLink);

@@ -6,7 +6,7 @@ import {
   getFontSize,
   getBorderColor,
   getBorder,
-  getTextColor
+  getTextColor,
 } from './utils';
 
 type Props = {
@@ -26,7 +26,7 @@ const Base = Box.extend`
 
 const button = (
   { variant, children, ...additionalProps }: Props,
-  tagName: 'a' | 'button'
+  tagName: 'a' | 'button',
 ) => {
   const Component = Base.withComponent(tagName);
 
@@ -42,11 +42,11 @@ const button = (
       border={getBorder(variant, false)}
       hover={{
         backgroundColor: getBackgroundColor(variant, true),
-        color: getTextColor(variant, true)
+        color: getTextColor(variant, true),
       }}
       focus={{
         backgroundColor: getBackgroundColor(variant, true),
-        color: getTextColor(variant, true)
+        color: getTextColor(variant, true),
       }}
       {...additionalProps}
     >
