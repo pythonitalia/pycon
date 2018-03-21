@@ -1,17 +1,19 @@
 import React from 'react';
 import { Box } from '../box';
+import { getBackgroundColor } from './utils';
+import styled from '../../styled';
 
-const BaseCard = Box.withComponent('div');
+const BaseCard = styled(Box.withComponent('div'))`
+  width: ${props => props.theme.cardDimension[0]}px;
+  height: ${props => props.theme.cardDimension[1]}px;
+`;
 
-type Props = {
-  variant?: 'primary' | 'secondary';
-};
-
-export class Card extends React.Component<Props> {
+export class Card extends React.Component {
   render() {
     return (
       <BaseCard
-        borderRadius={8}
+        borderRadius={16}
+        bg={getBackgroundColor(false)}
       >
         {this.props.children}
       </BaseCard>
