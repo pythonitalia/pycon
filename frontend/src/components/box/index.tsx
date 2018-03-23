@@ -30,7 +30,9 @@ import {
   fontFamily,
   FontFamilyProps,
   lineHeight,
-  LineHeightProps
+  LineHeightProps,
+  focus,
+  FocusProps,
 } from 'styled-system';
 
 import styled from '../../styled';
@@ -50,7 +52,8 @@ type BoxProps = SpaceProps &
   BorderColorProps &
   BordersProps &
   FontFamilyProps &
-  LineHeightProps;
+  LineHeightProps &
+  FocusProps;
 
 export const Box = styled<BoxProps, 'div'>('div')`
   ${space}
@@ -69,4 +72,5 @@ export const Box = styled<BoxProps, 'div'>('div')`
   ${borderColor}
   ${borders}
   ${lineHeight}
+  ${focus}
 `;

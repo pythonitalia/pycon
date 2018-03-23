@@ -5,7 +5,9 @@ const colors = {
   blue: '#0c67ff',
 
   grey: '#f4f4f4',
-  white: '#ffffff'
+  white: '#ffffff',
+
+  lightBlue: '#64B5F6',
 };
 
 const space = [0, 4, 8, 16, 32, 64, 128, 256, 512];
@@ -14,24 +16,24 @@ const fontSizes = {
   title1: 45.234335104,
   title2: 31.990336,
   title3: 22.624,
-  body: 16
+  body: 16,
 };
 
 const lineHeights = {
   title1: 1.1,
   title2: 1.2,
   title3: 1.3,
-  body: 1.4
+  body: 1.4,
 };
 
 const fontWeights = {
   normal: 500,
-  bold: 700
+  bold: 700,
 };
 
 const letterSpacings = {
   normal: 'normal',
-  caps: '0.25em'
+  caps: '0.25em',
 };
 
 const radii = [0, 2, 4, 8];
