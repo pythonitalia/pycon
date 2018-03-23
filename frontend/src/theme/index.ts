@@ -43,20 +43,20 @@ const borders = [0, '1px solid', '2px solid'];
 const shadows = [
   `0 1px 2px 0 ${colors.text}`,
   `0 1px 4px 0 ${colors.text}`,
-  `0 8px 24px 0 ${colors.text}`
+  `0 8px 24px 0 ${colors.text}`,
 ];
 
 const fonts = {
   title: 'Rubik',
   base: 'Roboto Mono',
   button: 'Rubik',
-  card: 'Rubik'
+  card: 'Rubik',
 };
 
 const timings = [0.15, 0.3];
 
-const cardDimension= [370,448]
- 
+const cardDimension = [370, 448];
+
 export const theme = {
   breakpoints,
   colors,
@@ -70,7 +70,7 @@ export const theme = {
   borders,
   shadows,
   timings,
-  cardDimension
+  cardDimension,
 };
 
 export type Theme = typeof theme;
