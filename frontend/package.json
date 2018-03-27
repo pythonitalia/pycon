@@ -35,6 +35,6 @@
     "storybook": "1.0.0",
     "style-loader": "0.20.3",
     "ts-loader": "3.5.0",
-    "typescript": "2.7.2"
+    "typescript": "2.8.1"
   }
 }
