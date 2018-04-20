@@ -9,6 +9,9 @@
     <a class="badge-align" href="https://www.codacy.com/app/pythonitalia/pycon?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=pythonitalia/pycon&amp;utm_campaign=Badge_Coverage"><img src="https://api.codacy.com/project/badge/Coverage/b0f6b7573fab4dbbb49d8b1ee0f510f4"/></a>
 </p>
 
+## How to contribute
+
+We will add some guidelines here soon, in the meantime if you want to help you can contact one of the folks in the [web group](https://github.com/orgs/pythonitalia/teams/web-team) or send an email to [mailto:info@pycon.it](info@pycon.it).
 
 ## Start with docker
 
