@@ -27,7 +27,7 @@
     "@types/jest": "22.2.2",
     "@types/node": "9.4.7",
     "@types/react": "16.1.0",
-    "@types/react-dom": "16.0.4",
+    "@types/react-dom": "16.0.5",
     "@types/storybook__addon-actions": "3.0.3",
     "@types/storybook__react": "3.0.7",
     "css-loader": "0.28.11",
