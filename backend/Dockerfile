@@ -1,4 +1,4 @@
-FROM python:3.6.4@sha256:bf0718e2882cabc144c9c07d758b09c65efc104a6ddc72a9a976f8b26f67c2ee
+FROM python:3.6.4@sha256:1d23941e3bb94623de621bb1d9f1d390b80a9e96f76788da5d64841c48945c26
 
 # -- Install Application into container:
 RUN set -ex && mkdir /app
