@@ -8,6 +8,7 @@ from users.managers import UserManager
 def test_that_get_user_model_returns_correct_model():
     assert get_user_model() == User
 
+
 @pytest.mark.django_db
 def test_user_manager():
     assert isinstance(User.objects, UserManager)
@@ -23,6 +24,7 @@ def test_create_user_and_authenticate():
     )
 
     assert user == authenticated_user
+
 
 @pytest.mark.django_db
 def test_user_get_short_name():
