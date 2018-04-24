@@ -1,4 +1,4 @@
-FROM node:9@sha256:59aff2d9898e2b3d35d7656bf57bf61c2dcaedac58b8c3934b8963904d27c437
+FROM node:9@sha256:bd7b9aaf77ab2ce1e83e7e79fc0969229214f9126ced222c64eab49dc0bdae90
 
 
 RUN curl -o- -L https://yarnpkg.com/install.sh | bash

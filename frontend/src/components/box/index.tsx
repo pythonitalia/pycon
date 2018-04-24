@@ -56,6 +56,7 @@ type BoxProps = SpaceProps &
   FocusProps;
 
 export const Box = styled<BoxProps, 'div'>('div')`
+  box-sizing: border-box;
   ${space}
   ${width}
   ${fontSize}

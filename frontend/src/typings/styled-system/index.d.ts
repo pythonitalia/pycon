@@ -171,7 +171,7 @@ declare namespace StyledSystem {
   export function justifyContent(...args: any[]): any;
 
   export interface FlexWrapProps {
-    wrap?: boolean;
+    flexWrap?: 'nowrap' | 'wrap' | 'wrap-reverse';
   }
 
   export function flexWrap(...args: any[]): any;
