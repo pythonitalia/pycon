@@ -1,3 +1,3 @@
-from .base import * # noqa
+from .base import *  # noqa
 
 SECRET_KEY = 'do not use this in production'
