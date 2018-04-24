@@ -11,7 +11,7 @@
 
 ## How to contribute
 
-We will add some guidelines here soon, in the meantime if you want to help you can contact one of the folks in the [web group](https://github.com/orgs/pythonitalia/teams/web-team) or send an email to [mailto:info@pycon.it](info@pycon.it).
+We will add some guidelines here soon, in the meantime if you want to help you can contact one of the folks in the [web group](https://github.com/orgs/pythonitalia/teams/web-team) or send an email to [info@pycon.it](mailto:info@pycon.it).
 
 ## Start with docker
 
