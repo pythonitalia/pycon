@@ -11,8 +11,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(
         _('username'),
         max_length=100,
-     null=True,
-     blank=True)
+        null=True,
+        blank=True
+    )
     email = models.EmailField(_('email address'), unique=True)
 
     date_joined = models.DateTimeField(_('date joined'), auto_now_add=True)
