@@ -2,7 +2,7 @@ version: 2
 
 defaults_node: &defaults_node
   docker:
-    - image: circleci/node:8.11@sha256:41517eb04d4fe284b93ae3a132a8dca0e2433ca7043d8a0bf809d3fb10a6a416
+    - image: circleci/node:8.11@sha256:dc90fd61468fbf9e6c008211fb7294c20970be9279f0d930b8ca0fdb2441eee0
 
 jobs:
   backend-test:
