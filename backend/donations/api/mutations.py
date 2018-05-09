@@ -15,12 +15,12 @@ class DonateWithStripe(graphene.Mutation):
     ok = graphene.Boolean()
     error = graphene.String(required=False)
 
-    def mutate(self, info, input):
+    def mutate(self, info, _input):
         Donation.create_donation_with_stripe(
-            input.token,
+            _input.token,
             info.context.user,
-            input.amount,
-            True if input.is_public is None else info.is_public
+            _input.amount,
+            True if _input.is_public is None else info.is_public
         )
 
         return DonateWithStripe(ok=True)
