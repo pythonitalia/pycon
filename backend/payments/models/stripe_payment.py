@@ -1,12 +1,12 @@
-import stripe
-
-from payments.models import Payment
-
-from stripe.error import StripeError
 
 from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+
+import stripe
+from stripe.error import StripeError
+
+from payments.models import Payment
 
 from .provider_types import STRIPE_TYPE
 from .error import PaymentError
@@ -15,7 +15,7 @@ from .error import PaymentError
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
-class StripePayment(Payment): 
+class StripePayment(Payment):
 
     transaction_id = models.CharField(
         _('transaction id'),

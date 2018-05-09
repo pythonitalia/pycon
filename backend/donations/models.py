@@ -12,7 +12,7 @@ class Donation(TimeStampedModel):
     public = models.BooleanField(default=True)
 
     @classmethod
-    def create_donation_with_stripe(self, token, user, amount, is_public):
+    def create_donation_with_stripe(cls, token, user, amount, is_public):
         try:
             with transaction.atomic():
                 donation = Donation(user=user, public=is_public)

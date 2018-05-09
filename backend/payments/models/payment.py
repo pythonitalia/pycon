@@ -83,7 +83,7 @@ class Payment(TimeStampedModel, PolymorphicModel):
     def _get_payment_type(self):
         return BANKTR_TYPE
 
-    def capture(self, *args):
+    def capture(self, **kwargs):
         raise NotImplementedError()
 
     def refund(self):

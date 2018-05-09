@@ -10,8 +10,8 @@ class Query(graphene.ObjectType):
 
 
 class Mutation(
-    DonationsMutations,
-    graphene.ObjectType
+        DonationsMutations,
+        graphene.ObjectType
 ):
     pass
 
