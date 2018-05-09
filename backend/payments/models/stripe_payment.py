@@ -8,7 +8,7 @@ from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from .provider_types import PROVIDER_TYPES, STRIPE_TYPE
+from .provider_types import STRIPE_TYPE
 from .error import PaymentError
 
 

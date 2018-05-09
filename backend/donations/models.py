@@ -1,12 +1,9 @@
-import uuid
-
 from django.conf import settings
 from django.db import models, transaction
-from django.utils.translation import ugettext_lazy as _
 
 from model_utils.models import TimeStampedModel
 
-from payments.models import Payment, StripePayment
+from payments.models import StripePayment
 from payments.models.error import PaymentError
 
 class Donation(TimeStampedModel):

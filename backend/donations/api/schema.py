@@ -1,7 +1,5 @@
-import graphene
-from donations.models import Donation
-
 from .mutations import DonateWithStripe
+
 
 class DonationsMutations():
 
