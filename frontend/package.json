@@ -34,7 +34,7 @@
     "prettier": "1.12.1",
     "storybook": "1.0.0",
     "style-loader": "0.21.0",
-    "ts-loader": "3.5.0",
+    "ts-loader": "4.3.0",
     "typescript": "2.8.3"
   }
 }
