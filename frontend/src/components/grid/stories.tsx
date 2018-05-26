@@ -2,7 +2,6 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 
 import styled from '../../styled';
-import { Title } from '../typography';
 import { Grid, Column } from '.';
 
 const Bar = styled.hr`
@@ -12,104 +11,70 @@ const Bar = styled.hr`
   background-image: linear-gradient(90deg, rgb(0, 255, 255), rgb(255, 0, 255));
 `;
 
-storiesOf('Grid', module)
-  .add('simple', () => (
-    <Grid>
-      <Column width={1 / 2}>
-        <Bar />
-        1/2
-      </Column>
-      <Column width={1 / 2}>
-        <Bar />
-        1/2
-      </Column>
+storiesOf('Grid', module).add('simple', () => (
+  <Grid>
+    <Column cols={6}>
+      <Bar />
+      1/2
+    </Column>
+    <Column cols={6}>
+      <Bar />
+      1/2
+    </Column>
 
-      <Column width={1 / 3}>
-        <Bar />
-        1/3
-      </Column>
-      <Column width={1 / 3}>
-        <Bar />
-        1/3
-      </Column>
-      <Column width={1 / 3}>
-        <Bar />
-        1/3
-      </Column>
+    <Column cols={4}>
+      <Bar />
+      1/3
+    </Column>
+    <Column cols={4}>
+      <Bar />
+      1/3
+    </Column>
+    <Column cols={4}>
+      <Bar />
+      1/3
+    </Column>
 
-      <Column width={1 / 4}>
-        <Bar />
-        1/4
-      </Column>
-      <Column width={1 / 4}>
-        <Bar />
-        1/4
-      </Column>
-      <Column width={1 / 4}>
-        <Bar />
-        1/4
-      </Column>
-      <Column width={1 / 4}>
-        <Bar />
-        1/4
-      </Column>
+    <Column cols={3}>
+      <Bar />
+      1/4
+    </Column>
+    <Column cols={3}>
+      <Bar />
+      1/4
+    </Column>
+    <Column cols={3}>
+      <Bar />
+      1/4
+    </Column>
+    <Column cols={3}>
+      <Bar />
+      1/4
+    </Column>
 
-      <Column width={1 / 5}>
-        <Bar />
-        1/5
-      </Column>
-      <Column width={1 / 5}>
-        <Bar />
-        1/5
-      </Column>
-      <Column width={1 / 5}>
-        <Bar />
-        1/5
-      </Column>
-      <Column width={1 / 5}>
-        <Bar />
-        1/5
-      </Column>
-      <Column width={1 / 5}>
-        <Bar />
-        1/5
-      </Column>
-
-      <Column width={1 / 6}>
-        <Bar />
-        1/6
-      </Column>
-      <Column width={1 / 6}>
-        <Bar />
-        1/6
-      </Column>
-      <Column width={1 / 6}>
-        <Bar />
-        1/6
-      </Column>
-      <Column width={1 / 6}>
-        <Bar />
-        1/6
-      </Column>
-      <Column width={1 / 6}>
-        <Bar />
-        1/6
-      </Column>
-      <Column width={1 / 6}>
-        <Bar />
-        1/6
-      </Column>
-    </Grid>
-  ))
-  .add('golden ratio', () => (
-    <Grid>
-      <Column width={(1 + Math.sqrt(5)) / 2 - 1}>
-        <Title level={1}>Golden</Title>
-        <Bar />
-      </Column>
-      <Column width={1 - ((1 + Math.sqrt(5)) / 2 - 1)}>
-        <Title level={1}>Ratio</Title>
-        <Bar />
-      </Column>
-    </Grid>
-  ));
+    <Column cols={2}>
+      <Bar />
+      1/6
+    </Column>
+    <Column cols={2}>
+      <Bar />
+      1/6
+    </Column>
+    <Column cols={2}>
+      <Bar />
+      1/6
+    </Column>
+    <Column cols={2}>
+      <Bar />
+      1/6
+    </Column>
+    <Column cols={2}>
+      <Bar />
+      1/6
+    </Column>
+    <Column cols={2}>
+      <Bar />
+      1/6
+    </Column>
+  </Grid>
+));
