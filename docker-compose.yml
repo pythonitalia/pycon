@@ -18,7 +18,7 @@ services:
       - ./backend:/app
 
   postgres:
-    image: postgres:9.6.8-alpine@sha256:a7fc064c3cfec1c32b99b22cbbcc3cc2a57a52b4a4994a271164462d565cf1c5
+    image: postgres:9.6.9-alpine@sha256:d41b91a0c93b88a545599cce0e3a881637e08cf759c80f53fd3169ef0a85b70b
     environment:
       POSTGRES_USER: pyconsite
       POSTGRES_DB: pycon
