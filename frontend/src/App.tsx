@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import Button from './vendor/react-material/button';
+
 class App extends React.Component {
   render() {
     return (
@@ -10,6 +12,8 @@ class App extends React.Component {
         <p className="App-intro">
           To get started, edit <code>src/App.tsx</code> and save to reload.
         </p>
+
+        <Button>Hello :)</Button>
       </div>
     );
   }
