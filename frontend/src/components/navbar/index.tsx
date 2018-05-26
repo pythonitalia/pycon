@@ -10,9 +10,7 @@ export class Navbar extends React.Component<{}, {}> {
         title="PyCon 10"
         navigationIcon={<MaterialIcon icon="menu" />}
         actionItems={[<MaterialIcon key="item" icon="bookmark" />]}
-      >
-        a
-      </TopAppBar>
+      />
     );
   }
 }
