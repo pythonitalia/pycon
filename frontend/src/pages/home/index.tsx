@@ -52,21 +52,21 @@ export const HomePage = () => (
 
     <div className="keynote-speakers">
       <Grid>
-        <Column width={1 / 3}>
+        <Column cols={4}>
           <Card>Example</Card>
           <Card>Example</Card>
         </Column>
-        <Column width={1 / 3}>
+        <Column cols={4}>
           <Card>Example</Card>
           <Card>Example</Card>
         </Column>
-        <Column width={1 / 3}>
+        <Column cols={4}>
           <Card>Example</Card>
           <Card>Example</Card>
         </Column>
-
-        <Button variant="secondary">See the schedule</Button>
       </Grid>
+
+      <Button variant="secondary">See the schedule</Button>
     </div>
   </div>
 );
