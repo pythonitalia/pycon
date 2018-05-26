@@ -1,7 +1,7 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 
-import { Box } from '../../components/box';
+import { Box } from '.';
 
 storiesOf('Box', module)
   .add('plain', () => <Box>Hello world</Box>)

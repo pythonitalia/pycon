@@ -4,15 +4,10 @@ import 'reset-css';
 
 import { wrapper } from './wrapper';
 
+const req = require.context('../src/components', true, /.stories.tsx$/);
+
 function loadStories() {
-  require('../src/stories/index.tsx');
-  require('../src/stories/navbar/index.tsx');
-  require('../src/stories/logo/index.tsx');
-  require('../src/stories/box/index.tsx');
-  require('../src/stories/typography/index.tsx');
-  require('../src/stories/button/index.tsx');
-  require('../src/stories/card/index.tsx');
-  require('../src/stories/grid/index.tsx');
+    req.keys().forEach(filename => req(filename));
 }
 
 add(wrapper());
