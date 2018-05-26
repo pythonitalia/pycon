@@ -1,60 +1,33 @@
 import React from 'react';
-import withProps from 'recompose/withProps';
-
-import {
-  space,
-  fontSize,
-  color,
-  lineHeight,
-  fontFamily,
-  FontFamilyProps,
-  LineHeightProps,
-  SpaceProps,
-  FontSizeProps,
-  ColorProps,
-  BoxShadowProps,
-} from 'styled-system';
-
-import styled from '../../styled';
-
-type TypographyProps = SpaceProps &
-  FontSizeProps &
-  LineHeightProps &
-  ColorProps &
-  FontFamilyProps &
-  BoxShadowProps;
-
-const BaseTypography = styled<TypographyProps, 'h1'>('h1')`
-  ${space}
-  ${fontFamily}
-  ${fontSize}
-  ${lineHeight}
-  ${color}
-`;
 
 interface TitleProps {
-  level: 1 | 2 | 3;
+  level: 1 | 2 | 3 | 4 | 5 | 6;
   children: React.ReactNode;
 }
 
-// TODO spacing etc
 export const Title = ({ level, children }: TitleProps) => {
-  // ugly, but works :)
-  const tagName: keyof JSX.IntrinsicElements = `h${level}` as keyof JSX.IntrinsicElements;
-  const name = `title${level}`;
-
-  const X = BaseTypography.withComponent(tagName);
+  const Component = `h${level}`;
 
   return (
-    <X fontSize={name} lineHeight={name} fontFamily="title">
+    <Component className={`mdc-typography mdc-typography--headline${level}`}>
       {children}
-    </X>
+    </Component>
   );
 };
 
-export const Paragraph = withProps({
-  fontFamily: 'base',
-  fontSize: 'body',
-  lineHeight: 'body',
-  mb: 3,
-})(BaseTypography.withComponent('p'));
+type ParagraphProps = {
+  variant?: 'primary' | 'secondary';
+  children: React.ReactNode;
+};
+
+export const Paragraph: React.SFC<ParagraphProps> = ({ variant, children }) => {
+  const level = variant === 'primary' ? 1 : 2;
+
+  return (
+    <p className={`mdc-typography mdc-typography--body${level}`}>{children}</p>
+  );
+};
+
+Paragraph.defaultProps = {
+  variant: 'primary',
+};
