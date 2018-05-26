@@ -1,9 +1,9 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 
-import { Grid, Column } from '../../components/grid';
 import styled from '../../styled';
-import { Title } from '../../components/typography';
+import { Title } from '../typography';
+import { Grid, Column } from '.';
 
 const Bar = styled.hr`
   margin: 0;
