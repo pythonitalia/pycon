@@ -6,4 +6,4 @@ import { Button, ButtonLink } from '.';
 storiesOf('Button', module)
   .add('default', () => <Button>Hello world</Button>)
   .add('secondary', () => <Button variant="secondary">Hello world</Button>)
-  .add('link default', () => <ButtonLink>Hello world</ButtonLink>);
+  .add('link default', () => <ButtonLink href="/">Hello world</ButtonLink>);

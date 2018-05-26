@@ -9,10 +9,12 @@ export class Button extends Component {
       className,
       raised,
       unelevated,
+      outlined,
       stroked,
       icon,
       children,
       initRipple,
+      tagName,
       unbounded, // eslint-disable-line no-unused-vars
       ...otherProps
     } = this.props;
@@ -20,18 +22,21 @@ export class Button extends Component {
     const classes = classnames('mdc-button', className, {
       'mdc-button--raised': raised,
       'mdc-button--unelevated': unelevated,
+      'mdc-button--outlined': outlined,
       'mdc-button--stroked': stroked,
     });
 
+    const Component = tagName || 'button';
+
     return (
-      <button
+      <Component
         className={classes}
         ref={initRipple}
         {...otherProps}
       >
         {icon ? this.renderIcon() : null}
         {children}
-      </button>
+      </Component>
     );
   }
 
@@ -50,7 +55,9 @@ export class Button extends Component {
 
 Button.propTypes = {
   raised: PropTypes.bool,
+  tagName: PropTypes.string,
   unelevated: PropTypes.bool,
+  outlined: PropTypes.bool,
   stroked: PropTypes.bool,
   disabled: PropTypes.bool,
   unbounded: PropTypes.bool,
@@ -63,6 +70,8 @@ Button.propTypes = {
 Button.defaultProps = {
   raised: false,
   unelevated: false,
+  outlined: false,
+  tagName: 'button',
   stroked: false,
   disabled: false,
   unbounded: false,
