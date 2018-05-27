@@ -1,11 +1,11 @@
 import React from 'react';
 
 interface TitleProps {
-  level: 1 | 2 | 3 | 4 | 5 | 6;
-  children: React.ReactNode;
+  level?: 1 | 2 | 3 | 4 | 5 | 6;
+  children: React.ReactChild;
 }
 
-export const Title = ({ level, children }: TitleProps) => {
+export const Title: React.SFC<TitleProps> = ({ level, children }) => {
   const Component = `h${level}`;
 
   return (
@@ -15,9 +15,32 @@ export const Title = ({ level, children }: TitleProps) => {
   );
 };
 
+Title.defaultProps = {
+  level: 1,
+};
+
+interface SubtitleProps {
+  level?: 1 | 2;
+  children: React.ReactChild;
+}
+
+export const Subtitle: React.SFC<SubtitleProps> = ({ level, children }) => {
+  const Component = `h${level}`;
+
+  return (
+    <Component className={`mdc-typography mdc-typography--subtitle${level}`}>
+      {children}
+    </Component>
+  );
+};
+
+Subtitle.defaultProps = {
+  level: 1,
+};
+
 type ParagraphProps = {
   variant?: 'primary' | 'secondary';
-  children: React.ReactNode;
+  children: React.ReactChild;
 };
 
 export const Paragraph: React.SFC<ParagraphProps> = ({ variant, children }) => {

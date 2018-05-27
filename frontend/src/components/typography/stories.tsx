@@ -1,7 +1,7 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 
-import { Title, Paragraph } from '.';
+import { Title, Subtitle, Paragraph } from '.';
 
 storiesOf('Typography', module)
   .add('titles', () => (
@@ -12,6 +12,8 @@ storiesOf('Typography', module)
       <Title level={4}>Title 4</Title>
       <Title level={5}>Title 5</Title>
       <Title level={6}>Title 6</Title>
+      <Subtitle level={1}>Subtitle 1</Subtitle>
+      <Subtitle level={2}>Subtitle 2</Subtitle>
     </div>
   ))
   .add('paragraphs', () => (
