@@ -32,10 +32,23 @@ const HeroContent = styled.div`
   flex-direction: column;
 `;
 
+const HeroFooter = styled.footer`
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 20px;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+`;
+
 type Props = {
   srcset?: string;
   sizes?: string;
   src?: string;
+  renderFooter?: () => React.ReactChild;
 };
 
 export class Hero extends React.Component<Props> {
@@ -46,6 +59,10 @@ export class Hero extends React.Component<Props> {
 
         {(this.props.src || this.props.srcset) && (
           <HeroBackground src={this.props.src} srcSet={this.props.srcset} />
+        )}
+
+        {this.props.renderFooter && (
+          <HeroFooter>{this.props.renderFooter()}</HeroFooter>
         )}
       </BaseHero>
     );
