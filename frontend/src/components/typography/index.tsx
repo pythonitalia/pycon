@@ -19,6 +19,25 @@ Title.defaultProps = {
   level: 1,
 };
 
+interface SubtitleProps {
+  level?: 1 | 2;
+  children: React.ReactChild;
+}
+
+export const Subtitle: React.SFC<SubtitleProps> = ({ level, children }) => {
+  const Component = `h${level}`;
+
+  return (
+    <Component className={`mdc-typography mdc-typography--subtitle${level}`}>
+      {children}
+    </Component>
+  );
+};
+
+Subtitle.defaultProps = {
+  level: 1,
+};
+
 type ParagraphProps = {
   variant?: 'primary' | 'secondary';
   children: React.ReactChild;
