@@ -3,19 +3,25 @@ import { Navbar } from 'components/navbar';
 import { Button } from 'components/button';
 import { Grid, Column } from 'components/grid';
 import { Card } from 'components/card';
+import { Hero } from 'components/hero';
+import { Title, Subtitle } from 'components/typography';
 
 export const HomePage = () => (
   <div>
     <Navbar />
 
-    <div className="hero">
-      <h1>PyCon 10</h1>
-      <h2>Florence, XX XXXX 2019</h2>
-      <p>Location</p>
-
-      <Button>Get your Ticket</Button>
-      <Button>Propose a talk</Button>
-    </div>
+    <Hero
+      renderFooter={() => (
+        <React.Fragment>
+          <Button>Get your Ticket</Button>
+          <Button variant="secondary">Propose a talk</Button>
+        </React.Fragment>
+      )}
+    >
+      <Title>PyCon 10</Title>
+      <Subtitle>Florence, XX XXXX 2019</Subtitle>
+      <Subtitle level={2}>Location</Subtitle>
+    </Hero>
 
     <div className="pitch">
       <div>
