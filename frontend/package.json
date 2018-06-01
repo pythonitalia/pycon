@@ -38,6 +38,6 @@
     "prettier": "1.13.3",
     "style-loader": "0.21.0",
     "ts-loader": "4.3.0",
-    "typescript": "2.8.4"
+    "typescript": "2.9.1"
   }
 }
