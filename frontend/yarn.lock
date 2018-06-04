@@ -8064,9 +8064,9 @@ requires-port@1.0.x, requires-port@1.x.x, requires-port@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/requires-port/-/requires-port-1.0.0.tgz#925d2601d39ac485e091cf0da5c6e694dc3dcaff"
 
-reset-css@3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/reset-css/-/reset-css-3.0.0.tgz#9b421d34fefc6e5d5b915ee7bfd72b1bc19cfbb0"
+reset-css@4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/reset-css/-/reset-css-4.0.0.tgz#1194ced61b9cda557c0d1a7773fc5650dfe8b45d"
 
 resolve-cwd@^2.0.0:
   version "2.0.0"
