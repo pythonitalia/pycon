@@ -6,7 +6,7 @@
     "@material/ripple": "^0.35.0",
     "@material/top-app-bar": "^0.35.2",
     "@types/classnames": "^2.2.4",
-    "classnames": "^2.2.5",
+    "classnames": "^2.2.6",
     "react": "16.4.0",
     "react-dom": "16.4.0",
     "react-feather": "1.1.0",
