@@ -8762,9 +8762,9 @@ styled-components@3.3.2:
     stylis-rule-sheet "^0.0.10"
     supports-color "^3.2.3"
 
-styled-system@2.2.7:
-  version "2.2.7"
-  resolved "https://registry.yarnpkg.com/styled-system/-/styled-system-2.2.7.tgz#f12d4612d9b3e89bd020470a09811f4a06a8503c"
+styled-system@2.2.9:
+  version "2.2.9"
+  resolved "https://registry.yarnpkg.com/styled-system/-/styled-system-2.2.9.tgz#1a9a2187b1856b4a385ed65a1daff771a253f3d9"
   dependencies:
     prop-types "^15.6.0"
 
