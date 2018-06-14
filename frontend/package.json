@@ -7,7 +7,7 @@
     "@material/top-app-bar": "^0.35.2",
     "@types/classnames": "^2.2.4",
     "classnames": "^2.2.6",
-    "react": "16.4.0",
+    "react": "16.4.1",
     "react-dom": "16.4.1",
     "react-feather": "1.1.0",
     "react-scripts-ts": "2.16.0",
