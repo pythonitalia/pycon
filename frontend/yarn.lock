@@ -114,13 +114,13 @@
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.0.tgz#50c1e2260ac0ed9439a181de3725a0168d59c48a"
 
-"@storybook/addon-viewport@4.0.0-alpha.8":
-  version "4.0.0-alpha.8"
-  resolved "https://registry.yarnpkg.com/@storybook/addon-viewport/-/addon-viewport-4.0.0-alpha.8.tgz#577b47a578aeede11ec93c68c7ec6441d48e511f"
+"@storybook/addon-viewport@4.0.0-alpha.9":
+  version "4.0.0-alpha.9"
+  resolved "https://registry.yarnpkg.com/@storybook/addon-viewport/-/addon-viewport-4.0.0-alpha.9.tgz#6f2b66dcf27aaaa9f91382726947396fd44b1c6b"
   dependencies:
-    "@storybook/addons" "4.0.0-alpha.8"
-    "@storybook/components" "4.0.0-alpha.8"
-    "@storybook/core-events" "4.0.0-alpha.8"
+    "@storybook/addons" "4.0.0-alpha.9"
+    "@storybook/components" "4.0.0-alpha.9"
+    "@storybook/core-events" "4.0.0-alpha.9"
     babel-runtime "^6.26.0"
     emotion "^9.1.3"
     global "^4.3.2"
@@ -137,6 +137,14 @@
     global "^4.3.2"
     util-deprecate "^1.0.2"
 
+"@storybook/addons@4.0.0-alpha.9":
+  version "4.0.0-alpha.9"
+  resolved "https://registry.yarnpkg.com/@storybook/addons/-/addons-4.0.0-alpha.9.tgz#20990e11eaf543e5abdcf872a3bb71d2d649d035"
+  dependencies:
+    "@storybook/channels" "4.0.0-alpha.9"
+    global "^4.3.2"
+    util-deprecate "^1.0.2"
+
 "@storybook/channel-postmessage@4.0.0-alpha.8":
   version "4.0.0-alpha.8"
   resolved "https://registry.yarnpkg.com/@storybook/channel-postmessage/-/channel-postmessage-4.0.0-alpha.8.tgz#8c39f4dd80f625a90d18aa6f5a3a84b35f16e8df"
@@ -148,6 +156,10 @@
 "@storybook/channels@4.0.0-alpha.8":
   version "4.0.0-alpha.8"
   resolved "https://registry.yarnpkg.com/@storybook/channels/-/channels-4.0.0-alpha.8.tgz#c97245a57dbfb55c4d623572cffcf05e3c938ffa"
+
+"@storybook/channels@4.0.0-alpha.9":
+  version "4.0.0-alpha.9"
+  resolved "https://registry.yarnpkg.com/@storybook/channels/-/channels-4.0.0-alpha.9.tgz#ad2cf3444a8bf2d205ccd491ceb0b8e9a21ae561"
 
 "@storybook/client-logger@4.0.0-alpha.8":
   version "4.0.0-alpha.8"
@@ -166,9 +178,26 @@
     react-emotion "^9.1.3"
     react-split-pane "^0.1.77"
 
+"@storybook/components@4.0.0-alpha.9":
+  version "4.0.0-alpha.9"
+  resolved "https://registry.yarnpkg.com/@storybook/components/-/components-4.0.0-alpha.9.tgz#b0036726e055d7c3e2efb5ef3c7ec2ba9c4f5a8d"
+  dependencies:
+    emotion "^9.1.3"
+    emotion-theming "^9.1.2"
+    global "^4.3.2"
+    lodash.pick "^4.4.0"
+    lodash.throttle "^4.1.1"
+    prop-types "^15.6.1"
+    react-emotion "^9.1.3"
+    react-split-pane "^0.1.77"
+
 "@storybook/core-events@4.0.0-alpha.8":
   version "4.0.0-alpha.8"
   resolved "https://registry.yarnpkg.com/@storybook/core-events/-/core-events-4.0.0-alpha.8.tgz#3c1a5544884873b3ee56e58239e429e7eb0523c1"
+
+"@storybook/core-events@4.0.0-alpha.9":
+  version "4.0.0-alpha.9"
+  resolved "https://registry.yarnpkg.com/@storybook/core-events/-/core-events-4.0.0-alpha.9.tgz#cc2c7c63a03b609cc52f3291480a7c69dc5244c2"
 
 "@storybook/core@4.0.0-alpha.8":
   version "4.0.0-alpha.8"
