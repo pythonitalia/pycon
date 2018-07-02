@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@material/ripple": "^0.35.0",
+    "@material/ripple": "^0.36.0",
     "@material/top-app-bar": "^0.35.2",
     "@types/classnames": "^2.2.4",
     "classnames": "^2.2.6",
