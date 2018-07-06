@@ -33,7 +33,7 @@
     "@types/react": "16.4.6",
     "@types/react-dom": "16.0.6",
     "@types/storybook__addon-actions": "3.0.3",
-    "@types/storybook__react": "3.0.7",
+    "@types/storybook__react": "3.0.8",
     "css-loader": "0.28.11",
     "prettier": "1.13.7",
     "style-loader": "0.21.0",
