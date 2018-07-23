@@ -352,9 +352,9 @@
     react-modal "^3.4.4"
     react-treebeard "^2.1.0"
 
-"@types/classnames@^2.2.5":
-  version "2.2.5"
-  resolved "https://registry.yarnpkg.com/@types/classnames/-/classnames-2.2.5.tgz#62945b24b48dc02fb32e89252bde3daf942c4235"
+"@types/classnames@^2.2.6":
+  version "2.2.6"
+  resolved "https://registry.yarnpkg.com/@types/classnames/-/classnames-2.2.6.tgz#dbe8a666156d556ed018e15a4c65f08937c3f628"
 
 "@types/jest@22.2.3":
   version "22.2.3"
