@@ -377,9 +377,9 @@
   dependencies:
     csstype "^2.2.0"
 
-"@types/storybook__addon-actions@3.0.3":
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/@types/storybook__addon-actions/-/storybook__addon-actions-3.0.3.tgz#99287c0b9ee6b84ea571ee4cb42d0779c56af208"
+"@types/storybook__addon-actions@3.4.0":
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/@types/storybook__addon-actions/-/storybook__addon-actions-3.4.0.tgz#9a8d9b3c7478e6557a6c50a06c8216d1bdca9fe4"
 
 "@types/storybook__react@3.0.8":
   version "3.0.8"
