@@ -75,6 +75,14 @@
     "@material/base" "^0.35.0"
     "@material/theme" "^0.35.0"
 
+"@material/ripple@^0.37.1":
+  version "0.37.1"
+  resolved "https://registry.yarnpkg.com/@material/ripple/-/ripple-0.37.1.tgz#7bfe43036c2a9066f5083ba2ac5b952d96be16a4"
+  dependencies:
+    "@material/animation" "^0.34.0"
+    "@material/base" "^0.35.0"
+    "@material/theme" "^0.35.0"
+
 "@material/rtl@^0.35.0":
   version "0.35.0"
   resolved "https://registry.yarnpkg.com/@material/rtl/-/rtl-0.35.0.tgz#caae659e35a9bf1b9d91c734c8a3315a81bcde21"
