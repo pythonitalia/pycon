@@ -35,7 +35,7 @@
     "@types/storybook__addon-actions": "3.4.0",
     "@types/storybook__react": "3.0.8",
     "css-loader": "0.28.11",
-    "prettier": "1.13.7",
+    "prettier": "1.14.0",
     "style-loader": "0.21.0",
     "ts-loader": "4.4.2",
     "typescript": "2.9.2"
