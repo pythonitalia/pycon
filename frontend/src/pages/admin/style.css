@@ -1,0 +1,12 @@
+.header {
+    border-bottom: 1px solid rgb(216, 216, 216);
+    display: flex;
+    align-items: center;
+}
+
+.header-title {
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-left: 1em;
+    color: #3E3F42;
+}

@@ -1,0 +1,14 @@
+.logo {
+    background-color: #1594E1;
+    border-radius: 2px;
+    display: inline-block;
+    width: 35px;
+    height: 35px;
+    text-align: center;
+    padding: 5px;
+}
+
+.logo svg {
+    height: 100%;
+    width: auto;
+}

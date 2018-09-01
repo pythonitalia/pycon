@@ -6,7 +6,7 @@
   "scripts": {
     "start": "concurrently \"yarn run dev\" \"yarn run dts --watch\"",
     "dev": "parcel src/index.html",
-    "dts": "tcm src -o src_gen"
+    "dts": "tcm src -c -o src_gen"
   },
   "devDependencies": {
     "parcel-bundler": "^1.9.7",
@@ -34,6 +34,10 @@
           "last 2 versions",
           "not ie < 11"
         ]
+      },
+      "postcss-modules": {
+        "camelCase": true,
+        "generateScopedName": "[name]_[local]_[hash:base64:5]"
       }
     }
   }
