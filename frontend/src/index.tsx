@@ -1,14 +1,17 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import { Router, Link, RouteComponentProps } from '@reach/router';
 
 import './index.css';
 
-import { Title } from './components/title';
+const Home = (props: RouteComponentProps) => <div>Home</div>;
+const Dash = (props: RouteComponentProps) => <div>Dash</div>;
 
 const App = () => (
-  <div>
-    <Title>Hello world!</Title>
-  </div>
+  <Router>
+    <Home path="/" />
+    <Dash path="dashboard" />
+  </Router>
 );
 
 ReactDOM.render(<App />, document.getElementById('root'));
