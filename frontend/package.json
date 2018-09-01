@@ -1,43 +1,6 @@
 {
   "name": "frontend",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@material/ripple": "^0.35.0",
-    "@material/top-app-bar": "^0.35.2",
-    "@types/classnames": "^2.2.6",
-    "classnames": "^2.2.6",
-    "react": "16.4.2",
-    "react-dom": "16.4.2",
-    "react-feather": "1.1.1",
-    "react-scripts-ts": "2.16.0",
-    "recompose": "0.27.1",
-    "reset-css": "3.0.0",
-    "styled-components": "3.4.2",
-    "styled-system": "2.3.6"
-  },
-  "scripts": {
-    "start": "react-scripts-ts start",
-    "build": "react-scripts-ts build",
-    "test": "react-scripts-ts test --env=jsdom",
-    "eject": "react-scripts-ts eject",
-    "storybook": "start-storybook -p 9001 -c .storybook",
-    "build:storybook": "build-storybook -c .storybook -o build_storybook",
-    "format": "prettier --write \"src/**/*.{js,ts,tsx}\""
-  },
-  "devDependencies": {
-    "@storybook/addon-viewport": "4.0.0-alpha.8",
-    "@storybook/react": "4.0.0-alpha.8",
-    "@types/jest": "22.2.3",
-    "@types/node": "10.5.8",
-    "@types/react": "16.4.8",
-    "@types/react-dom": "16.0.6",
-    "@types/storybook__addon-actions": "3.4.1",
-    "@types/storybook__react": "3.0.9",
-    "css-loader": "0.28.11",
-    "prettier": "1.14.2",
-    "style-loader": "0.21.0",
-    "ts-loader": "4.4.2",
-    "typescript": "2.9.2"
-  }
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT"
 }
