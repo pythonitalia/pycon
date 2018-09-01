@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "rootDirs": ["src", "src_gen"],
+    "jsx": "react"
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}
