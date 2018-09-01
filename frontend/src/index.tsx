@@ -13,7 +13,7 @@ const App = () => (
   <Router>
     <Home path="/" />
     <Dash path="dashboard" />
-    <Admin path="admin" />
+    <Admin path="/admin/*" />
   </Router>
 );
 
