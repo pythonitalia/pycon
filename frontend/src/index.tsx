@@ -1,6 +1,8 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { Router, Link, RouteComponentProps } from '@reach/router';
+import { Router, RouteComponentProps } from '@reach/router';
+
+import { Admin } from './pages/admin';
 
 import './index.css';
 
@@ -11,6 +13,7 @@ const App = () => (
   <Router>
     <Home path="/" />
     <Dash path="dashboard" />
+    <Admin path="admin" />
   </Router>
 );
 
