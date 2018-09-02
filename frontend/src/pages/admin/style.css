@@ -12,6 +12,10 @@
     color: #3E3F42;
 }
 
+.user {
+    margin-left: auto;
+}
+
 .content {
     min-height: calc(100vh - 35px);
     background-color: #FAFAFD;
