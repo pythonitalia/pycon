@@ -26,7 +26,7 @@
     "format": "prettier --write \"src/**/*.{js,ts,tsx}\""
   },
   "devDependencies": {
-    "@storybook/addon-viewport": "4.0.0-alpha.8",
+    "@storybook/addon-viewport": "4.0.0-alpha.16",
     "@storybook/react": "4.0.0-alpha.8",
     "@types/jest": "22.2.3",
     "@types/node": "10.5.8",
