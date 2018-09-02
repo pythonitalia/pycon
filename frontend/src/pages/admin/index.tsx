@@ -14,7 +14,9 @@ export const Admin = (props: RouteComponentProps) => (
       <Logo />
       <h1 className={styles.headerTitle}>Python Italia</h1>
 
-      <User>{user => <div className={styles.user}>{`hi ${user}`}</div>}</User>
+      <User>
+        {user => <div className={styles.user}>{`hi ${user.email}`}</div>}
+      </User>
     </header>
 
     <div className={styles.content}>

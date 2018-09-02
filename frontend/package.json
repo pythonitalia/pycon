@@ -4,9 +4,10 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "concurrently \"yarn run dev\" \"yarn run dts --watch\"",
+    "start": "concurrently \"yarn run dev\" \"yarn run dts --watch\" \"yarn run graphql-types --watch\"",
     "dev": "node scripts/start.js",
-    "dts": "tcm src -c -o src_gen"
+    "dts": "tcm src -c -o src_gen",
+    "graphql-types": "apollo codegen:generate --target typescript --tagName graphql --schema schema.json --globalTypesFile=src/types/global.ts types"
   },
   "devDependencies": {
     "express": "^4.16.3",
@@ -23,6 +24,7 @@
     "@types/react": "^16.4.13",
     "@types/react-dom": "^16.0.7",
     "@types/webpack-env": "^1.13.6",
+    "apollo": "^1.9.1",
     "apollo-cache-inmemory": "^1.2.9",
     "apollo-client": "^2.4.1",
     "apollo-link": "^1.2.2",

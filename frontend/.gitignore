@@ -2,6 +2,9 @@
 
 src_gen/
 
+schema.json
+types/
+
 # dependencies
 /node_modules
 

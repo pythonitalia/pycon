@@ -1,3 +1,5 @@
-{
-    user: hello
+query User {
+    me {
+        email
+    }
 }
