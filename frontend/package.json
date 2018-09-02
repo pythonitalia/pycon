@@ -5,10 +5,12 @@
   "license": "MIT",
   "scripts": {
     "start": "concurrently \"yarn run dev\" \"yarn run dts --watch\"",
-    "dev": "parcel src/index.html",
+    "dev": "node scripts/start.js",
     "dts": "tcm src -c -o src_gen"
   },
   "devDependencies": {
+    "express": "^4.16.3",
+    "http-proxy-middleware": "^0.19.0",
     "parcel-bundler": "^1.9.7",
     "postcss-modules": "^1.3.2",
     "typed-css-modules": "^0.3.5",
