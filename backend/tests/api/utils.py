@@ -31,3 +31,6 @@ class GraphQLClient():
         )
 
         return json.loads(resp.content.decode())
+
+    def force_login(self, user):
+        self._client.force_login(user)
