@@ -53,6 +53,13 @@ def test_works_when_user_is_logged_in(user, graphql_client):
     assert resp["data"]["me"]["email"] == user.email
 
 
+def test_query_all_users_works_only_when_logged_in(graphql_client):
+    resp = _query_all_users(graphql_client, 0)
+
+    assert resp["errors"]
+    assert resp["errors"][0]["message"] == "User not logged in"
+
+
 def test_query_all_users_works_only_for_superstaff_users(user, graphql_client):
     graphql_client.force_login(user)
 
