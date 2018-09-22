@@ -2,13 +2,13 @@ import * as React from 'react';
 
 import * as styles from './style.css';
 
-type Props = {
+interface Props {
   columns: string[];
   data: object[];
-};
+}
 
 export class Table extends React.Component<Props, {}> {
-  render() {
+  public render() {
     const { columns, data } = this.props;
     return (
       <table className={styles.table} cellSpacing={0}>
@@ -21,7 +21,7 @@ export class Table extends React.Component<Props, {}> {
           </tr>
         </thead>
         <tbody>
-          {data.map(data => (
+          {data.map(() => (
             <tr>
               <td />
               <td>Patrick Arminio</td>

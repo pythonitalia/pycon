@@ -2,7 +2,8 @@
   "compilerOptions": {
     "noImplicitAny": true,
     "rootDirs": ["src", "src_gen"],
-    "jsx": "react"
+    "jsx": "react",
+    "lib": ["es6", "esnext.asynciterable", "dom"]
   },
   "exclude": [
     "node_modules"

@@ -2,10 +2,10 @@ import * as React from 'react';
 
 import * as styles from './style.css';
 
-type Props = {
+interface Props {
   children: React.ReactNode;
   title: string;
-};
+}
 
 export const Card = (props: Props) => {
   const { title, children } = props;

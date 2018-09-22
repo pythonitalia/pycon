@@ -78,6 +78,26 @@ jobs:
           command: yarn run tslint --project .
           working_directory: ./frontend
 
+  frontend-tsc:
+    <<: *defaults_node
+    steps:
+      - checkout
+      - restore_cache:
+          key: frontend-cache-{{ .Branch }}-{{ checksum "frontend/yarn.lock" }}
+      - run:
+          name: yarn
+          command: yarn
+          working_directory: ./frontend
+      - save_cache:
+          key: frontend-cache-{{ .Branch }}-{{ checksum "frontend/yarn.lock" }}
+          paths:
+            - frontend/node_modules
+            - "~/.cache/yarn"
+      - run:
+          name: lint
+          command: yarn run tsc
+          working_directory: ./frontend
+
 workflows:
   version: 2
 
@@ -85,3 +105,4 @@ workflows:
     jobs:
       - backend-test
       - frontend-lint
+      - frontend-tsc
