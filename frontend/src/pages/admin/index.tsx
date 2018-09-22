@@ -7,25 +7,28 @@ import { Home } from './home';
 import { Members } from './members';
 import { Logo } from '../../components/logo/index';
 import { User } from '../../components/user/index';
+import { Container, Sizes } from '../../components/container/index';
 
 export const Admin = (props: RouteComponentProps) => (
   <>
-    <header className={styles.header}>
-      <Logo />
-      <h1 className={styles.headerTitle}>Python Italia</h1>
+    <header className={styles.headerWrapper}>
+      <Container className={styles.header} size={Sizes.large}>
+        <Logo />
+        <h1 className={styles.headerTitle}>Python Italia</h1>
 
-      <User>
-        {user => <div className={styles.user}>{`hi ${user.email}`}</div>}
-      </User>
+        <User>
+          {user => <div className={styles.user}>{`hi ${user.email}`}</div>}
+        </User>
+      </Container>
     </header>
 
-    <div className={styles.content}>
-      <div>
+    <div className={styles.container}>
+      <Container size={Sizes.large}>
         <Router>
           <Members path="/members" />
           <Home path="/" />
         </Router>
-      </div>
+      </Container>
     </div>
   </>
 );

@@ -1,29 +1,27 @@
-.header {
+.headerWrapper {
     border-bottom: 1px solid rgb(216, 216, 216);
+}
+
+.header {
     display: flex;
     align-items: center;
-    height: 35px;
+    height: 3.5rem;
 }
 
 .header-title {
     font-weight: bold;
     font-size: 1.2rem;
     margin-left: 1em;
-    color: #3E3F42;
+    color: #3e3f42;
 }
 
 .user {
     margin-left: auto;
 }
 
-.content {
-    min-height: calc(100vh - 35px);
-    background-color: #FAFAFD;
-
-    padding: 20px;
-}
-
-.content > div {
-    max-width: 960px;
-    margin: 0 auto;
+.container {
+    background-color: #fafafd;
+    padding-top: 3rem;
+    /* todo temp replace with flexbox */
+    min-height: 100vh;
 }
