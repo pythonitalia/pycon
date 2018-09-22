@@ -137,3 +137,11 @@ SOCIAL_AUTH_TWITTER_KEY = env('SOCIAL_AUTH_TWITTER_KEY', default='')
 SOCIAL_AUTH_TWITTER_SECRET = env('SOCIAL_AUTH_TWITTER_SECRET', default='')
 
 LOGIN_REDIRECT_URL = reverse_lazy('post-login')
+
+API_SETTINGS = {
+    'PAGINATION': {
+        'LIMIT_MAX_VALUE': 50,
+        'LIMIT_MIN_VALUE': 1,
+        'LIMIT_DEFAULT_VALUE': 10,
+    }
+}
