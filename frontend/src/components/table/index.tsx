@@ -15,30 +15,42 @@ type Props = {
 export class Table extends React.Component<Props, {}> {
   public render() {
     const { columns } = this.props;
+    const countColumns = columns.length;
+
     return (
-      <table className={styles.table} cellSpacing={0}>
-        <thead>
-          <tr>
-            <th>Select</th>
-            {columns.map(c => (
-              <th key={c.label}>{c.label}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>{this.renderBody()}</tbody>
-      </table>
+      <div className={styles.table}>
+        <div className={`${styles.head} ${styles.row}`}>
+          <span className={styles.checkbox} />
+          {columns.map(c => (
+            <span
+              style={{ flexBasis: `calc(95% / ${countColumns})` }}
+              key={c.label}
+            >
+              {c.label}
+            </span>
+          ))}
+        </div>
+        <div className={styles.body}>{this.renderBody()}</div>
+      </div>
     );
   }
 
   private renderBody() {
     const { columns, data } = this.props;
+    const countColumns = columns.length;
+
     return data.map((item: any, i) => (
-      <tr key={i}>
-        <td />
+      <div className={styles.row} key={i}>
+        <span className={styles.checkbox} />
         {columns.map(column => (
-          <td key={column.label}>{item[column.accessor]}</td>
+          <span
+            style={{ flexBasis: `calc(95% / ${countColumns})` }}
+            key={column.label}
+          >
+            {item[column.accessor]}
+          </span>
         ))}
-      </tr>
+      </div>
     ));
   }
 }

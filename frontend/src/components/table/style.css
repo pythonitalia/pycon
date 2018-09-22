@@ -2,16 +2,32 @@
     width: 100%;
 }
 
-.table th,
-.table td {
-    padding: 2rem 0;
-    border-bottom: 1px solid #ccc;
-}
-
 .table td:first-child {
     width: 10%;
 }
 
-.table thead {
-    text-align: left;
+.head,
+.row {
+    padding: 2rem 0;
+    border-bottom: 1px solid #ccc;
+}
+
+.head {
+}
+
+.body {
+}
+
+.row {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.row span {
+    display: inline-block;
+    padding: 0 1rem;
+}
+
+.checkbox {
+    flex: 0 0 5%;
 }
