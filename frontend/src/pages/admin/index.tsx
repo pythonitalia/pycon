@@ -26,6 +26,7 @@ export const Admin = (props: RouteComponentProps) => (
       <Container size={Sizes.large}>
         <Router>
           <Members path="/members" />
+          <Members path="/members/:page" />
           <Home path="/" />
         </Router>
       </Container>

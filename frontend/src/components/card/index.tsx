@@ -3,7 +3,7 @@ import * as React from 'react';
 import * as styles from './style.css';
 
 interface Props {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   title: string;
 }
 

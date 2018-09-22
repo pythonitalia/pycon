@@ -1,3 +1,9 @@
-query Users {
-
+query Users($offset: Int!, $limit: Int!) {
+    users(offset: $offset, limit: $limit) {
+        totalCount
+        objects {
+            id
+            email
+        }
+    }
 }

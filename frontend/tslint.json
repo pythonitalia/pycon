@@ -9,7 +9,9 @@
     "ordered-imports": false,
     "interface-name": false,
     "object-literal-sort-keys": false,
-    "no-console": [true, "log"]
+    "no-console": [true, "log"],
+    "interface-over-type-literal": false,
+    "member-ordering": false
   },
   "rulesDirectory": []
 }

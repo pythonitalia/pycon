@@ -1,0 +1,33 @@
+.pagination {
+    width: 100%;
+    padding-top: 3rem;
+
+    text-align: center;
+}
+
+.number,
+.action {
+    margin: 0 1rem;
+    cursor: pointer;
+    user-select: none;
+}
+
+.disabled {
+    opacity: 0.5;
+}
+
+.number {
+    padding: 0.5rem 1rem;
+    background-color: #fb658950;
+    transition: background-color 0.3s;
+    border-radius: 0.3rem;
+}
+
+.number:hover,
+.number.active-page {
+    background-color: #fb6589;
+}
+
+.action {
+    transition: opacity 0.3s;
+}

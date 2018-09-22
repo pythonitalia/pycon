@@ -1,21 +1,82 @@
 import * as React from 'react';
 import { RouteComponentProps } from '@reach/router';
 
-import { Title } from '../../../components/title/index';
-import { Card } from '../../../components/card/index';
-import { Table } from '../../../components/table/index';
+import { Query } from 'react-apollo';
 
-export const Members = (props: RouteComponentProps) => (
-  <Card title="Members (10)">
-    <Table
-      columns={['Nome', 'Stato', 'Scadenza']}
-      data={[
-        { nome: 'Patrick', stato: 'Attivo', scadenza: '19 Febbraio 2019' },
-        { nome: 'Patrick', stato: 'Attivo', scadenza: '19 Febbraio 2019' },
-        { nome: 'Patrick', stato: 'Attivo', scadenza: '19 Febbraio 2019' },
-        { nome: 'Patrick', stato: 'Attivo', scadenza: '19 Febbraio 2019' },
-        { nome: 'Patrick', stato: 'Attivo', scadenza: '19 Febbraio 2019' },
-      ]}
-    />
-  </Card>
-);
+import { Card } from '../../../components/card/index';
+import { Table, ColumnHeader } from '../../../components/table/index';
+import { Pagination } from '../../../components/pagination/index';
+
+import { Users } from './types/Users';
+
+import USERS from './query.graphql';
+
+const USERS_PER_PAGE = 20;
+
+const COLUMNS: ColumnHeader[] = [
+  { label: 'ID', accessor: 'id' },
+  { label: 'Email', accessor: 'email' },
+];
+
+type Props = RouteComponentProps & {
+  page?: number;
+};
+
+export class Members extends React.Component<Props, {}> {
+  constructor(props: RouteComponentProps) {
+    super(props);
+
+    this.onPageChange = this.onPageChange.bind(this);
+  }
+
+  private onPageChange(nextPage: number) {
+    this.props.navigate(`/admin/members/${nextPage + 1}`);
+  }
+
+  private getCurrentPage() {
+    if (!this.props.page) {
+      return 0;
+    }
+
+    return Math.max(this.props.page - 1, 0);
+  }
+
+  public render() {
+    const currentPage = this.getCurrentPage();
+
+    return (
+      <Query<Users>
+        query={USERS}
+        variables={{
+          offset: currentPage * USERS_PER_PAGE,
+          limit: USERS_PER_PAGE,
+        }}
+      >
+        {({ loading, error, data }) => {
+          const title =
+            !loading && !error
+              ? `Members (${data.users.totalCount})`
+              : 'Members';
+
+          return (
+            <Card title={title}>
+              {error && `Something went wrong while loading the users`}
+              {!loading &&
+                !error && (
+                  <>
+                    <Table columns={COLUMNS} data={data.users.objects} />
+                    <Pagination
+                      onPageChange={this.onPageChange}
+                      currentPage={currentPage}
+                      itemsPerPage={USERS_PER_PAGE}
+                      totalItems={data.users.totalCount}
+                    />
+                  </>
+                )}
+            </Card>
+          );
+        }}
+      </Query>
+    );
+  }
+}
