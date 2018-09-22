@@ -1,15 +1,11 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { ThemeProvider } from 'styled-components';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 
-import { HomePage } from './pages/home';
-import { theme } from './theme';
+import { App } from './components/app/index';
 
-import 'reset-css';
+ReactDOM.render(<App />, document.getElementById('root'));
 
-ReactDOM.render(
-  <ThemeProvider theme={theme}>
-    <HomePage />
-  </ThemeProvider>,
-  document.getElementById('root') as HTMLElement,
-);
+// Hot Module Replacement
+if (module.hot) {
+  module.hot.accept();
+}

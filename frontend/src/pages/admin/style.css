@@ -1,0 +1,27 @@
+.headerWrapper {
+    border-bottom: 1px solid rgb(216, 216, 216);
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    height: 3.5rem;
+}
+
+.header-title {
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-left: 1em;
+    color: #3e3f42;
+}
+
+.user {
+    margin-left: auto;
+}
+
+.container {
+    background-color: #fafafd;
+    padding-top: 3rem;
+    /* todo temp replace with flexbox */
+    min-height: 100vh;
+}

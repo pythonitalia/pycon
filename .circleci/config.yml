@@ -7,29 +7,16 @@ defaults_node: &defaults_node
 jobs:
   backend-test:
     docker:
-      # specify the version you desire here
-      # use `-browsers` prefix for selenium tests, e.g. `3.6.1-browsers`
       - image: circleci/python:3.6.5@sha256:5ed7f0d14f10f5b81c012c6011969ca5abf9f7bc53e0448844aa9274a359178e
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/postgres:9.4
 
     working_directory: ~/repo
 
     steps:
       - checkout
-
-      # store dependencies md5 in a single file
-      # so that it can be used with checksum
       - run: find backend/requirements -type f -exec md5sum {} \; | sort -k 2 | md5sum > backend_deps_checksum
-
-      # Download and cache dependencies
       - restore_cache:
           keys:
           - backend-{{ checksum "backend_deps_checksum" }}
-
       - run:
           name: install dependencies
           command: |
@@ -58,6 +45,45 @@ jobs:
           environment:
             CODACY_PROJECT_TOKEN: b371fba19b824c62ad6270d4e1f3b410
 
+  backend-schema:
+    docker:
+      - image: circleci/python:3.6.5@sha256:5ed7f0d14f10f5b81c012c6011969ca5abf9f7bc53e0448844aa9274a359178e
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+      - run: find backend/requirements -type f -exec md5sum {} \; | sort -k 2 | md5sum > backend_deps_checksum
+      - restore_cache:
+          keys:
+          - backend-{{ checksum "backend_deps_checksum" }}
+      - run:
+          name: install dependencies
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -r backend/requirements/prod.txt
+
+      - save_cache:
+          paths:
+            - ./venv
+          key: backend-{{ checksum "backend_deps_checksum" }}
+
+      - run:
+          name: run tests
+          environment:
+            DJANGO_SETTINGS_MODULE: pycon.settings.dev
+          command: |
+            . venv/bin/activate
+            cd backend
+            python manage.py graphql_schema
+            mv schema.json ../frontend/schema.json
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - frontend/schema.json
+
   frontend-lint:
     <<: *defaults_node
     steps:
@@ -78,10 +104,45 @@ jobs:
           command: yarn run tslint --project .
           working_directory: ./frontend
 
+  frontend-tsc:
+    <<: *defaults_node
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - restore_cache:
+          key: frontend-cache-{{ .Branch }}-{{ checksum "frontend/yarn.lock" }}
+      - run:
+          name: yarn
+          command: yarn
+          working_directory: ./frontend
+      - save_cache:
+          key: frontend-cache-{{ .Branch }}-{{ checksum "frontend/yarn.lock" }}
+          paths:
+            - frontend/node_modules
+            - "~/.cache/yarn"
+      - run:
+          name: graphql-types
+          command: yarn graphql-types
+          working_directory: ./frontend
+      - run:
+          name: dts
+          command: yarn run dts
+          working_directory: ./frontend
+      - run:
+          name: lint
+          command: yarn run tsc
+          working_directory: ./frontend
+
 workflows:
   version: 2
 
   checks:
     jobs:
       - backend-test
+      - backend-schema
       - frontend-lint
+
+      - frontend-tsc:
+          requires:
+            - backend-schema

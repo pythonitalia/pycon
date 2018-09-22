@@ -1,43 +1,59 @@
 {
   "name": "frontend",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@material/ripple": "^0.35.0",
-    "@material/top-app-bar": "^0.35.2",
-    "@types/classnames": "^2.2.6",
-    "classnames": "^2.2.6",
-    "react": "16.4.2",
-    "react-dom": "16.4.2",
-    "react-feather": "1.1.1",
-    "react-scripts-ts": "2.16.0",
-    "recompose": "0.27.1",
-    "reset-css": "3.0.0",
-    "styled-components": "3.4.2",
-    "styled-system": "2.3.6"
-  },
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
   "scripts": {
-    "start": "react-scripts-ts start",
-    "build": "react-scripts-ts build",
-    "test": "react-scripts-ts test --env=jsdom",
-    "eject": "react-scripts-ts eject",
-    "storybook": "start-storybook -p 9001 -c .storybook",
-    "build:storybook": "build-storybook -c .storybook -o build_storybook",
-    "format": "prettier --write \"src/**/*.{js,ts,tsx}\""
+    "start": "concurrently \"yarn run dev\" \"yarn run dts --watch\" \"yarn run graphql-types --watch\"",
+    "dev": "node scripts/start.js",
+    "dts": "tcm src -c -o src_gen",
+    "graphql-types": "apollo codegen:generate --target typescript --tagName graphql --schema schema.json --globalTypesFile=src/types/global.ts types"
   },
   "devDependencies": {
-    "@storybook/addon-viewport": "4.0.0-alpha.8",
-    "@storybook/react": "4.0.0-alpha.8",
-    "@types/jest": "22.2.3",
-    "@types/node": "10.5.8",
-    "@types/react": "16.4.8",
-    "@types/react-dom": "16.0.6",
-    "@types/storybook__addon-actions": "3.4.1",
-    "@types/storybook__react": "3.0.9",
-    "css-loader": "0.28.11",
-    "prettier": "1.14.2",
-    "style-loader": "0.21.0",
-    "ts-loader": "4.4.2",
-    "typescript": "2.9.2"
+    "express": "^4.16.3",
+    "graphql-tag": "^2.9.2",
+    "http-proxy-middleware": "^0.19.0",
+    "parcel-bundler": "^1.9.7",
+    "postcss-modules": "^1.3.2",
+    "prettier": "1.14.3",
+    "tslint": "^5.11.0",
+    "tslint-config-prettier": "^1.15.0",
+    "typed-css-modules": "^0.3.5",
+    "typescript": "^3.0.3"
+  },
+  "dependencies": {
+    "@reach/router": "^1.1.1",
+    "@types/reach__router": "^1.0.1",
+    "@types/react": "^16.4.13",
+    "@types/react-dom": "^16.0.7",
+    "@types/webpack-env": "^1.13.6",
+    "apollo": "^1.9.1",
+    "apollo-cache-inmemory": "^1.2.9",
+    "apollo-client": "^2.4.1",
+    "apollo-link": "^1.2.2",
+    "apollo-link-error": "^1.1.0",
+    "apollo-link-http": "^1.5.4",
+    "components": "^0.1.0",
+    "concurrently": "^4.0.1",
+    "graphql": "^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0",
+    "react": "^16.4.2",
+    "react-apollo": "^2.1.11",
+    "react-dom": "^16.4.2"
+  },
+  "postcss": {
+    "modules": true,
+    "plugins": {
+      "autoprefixer": {
+        "browsers": [
+          ">1%",
+          "last 2 versions",
+          "not ie < 11"
+        ]
+      },
+      "postcss-modules": {
+        "camelCase": true,
+        "generateScopedName": "[name]_[local]_[hash:base64:5]"
+      }
+    }
   }
 }
