@@ -1,33 +1,9 @@
 .table {
     width: 100%;
-}
-
-.table td:first-child {
-    width: 10%;
-}
-
-.head,
-.row {
-    padding: 2rem 0;
-    border-bottom: 1px solid #ccc;
-}
-
-.head {
-}
-
-.body {
-}
-
-.row {
-    display: flex;
-    justify-content: flex-start;
-}
-
-.row span {
-    display: inline-block;
-    padding: 0 1rem;
+    text-align: left;
+    table-layout: fixed;
 }
 
 .checkbox {
-    flex: 0 0 5%;
+    width: 10%;
 }
