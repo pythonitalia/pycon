@@ -16,6 +16,10 @@ const USERS_PER_PAGE = 20;
 const COLUMNS: ColumnHeader[] = [
   { label: 'ID', accessor: 'id' },
   { label: 'Email', accessor: 'email' },
+  {
+    label: 'Data joined',
+    accessor: obj => new Date(obj.dateJoined).toLocaleDateString(),
+  },
 ];
 
 type Props = RouteComponentProps & {

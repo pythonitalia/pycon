@@ -4,6 +4,7 @@ query Users($offset: Int!, $limit: Int!) {
         objects {
             id
             email
+            dateJoined
         }
     }
 }

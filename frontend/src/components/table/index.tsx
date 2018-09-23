@@ -4,7 +4,7 @@ import * as styles from './style.css';
 
 export type ColumnHeader = {
   label: string;
-  accessor: string;
+  accessor: (object: any) => any | string;
 };
 
 type Props = {
@@ -37,9 +37,14 @@ export class Table extends React.Component<Props, {}> {
     return data.map((item: any, i) => (
       <tr key={i}>
         <td className={styles.checkbox} />
-        {columns.map(column => (
-          <td key={column.label}>{item[column.accessor]}</td>
-        ))}
+        {columns.map(column => {
+          const value =
+            typeof column.accessor === 'function'
+              ? column.accessor(item)
+              : item[column.accessor];
+
+          return <td key={column.label}>{value}</td>;
+        })}
       </tr>
     ));
   }
