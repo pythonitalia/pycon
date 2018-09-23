@@ -9,7 +9,7 @@ from .models import User
 class MeUserType(DjangoObjectType):
     class Meta:
         model = User
-        only_fields = ("id", "email")
+        only_fields = ("id", "email", "date_joined")
 
 
 class PaginatedUsersType(ObjectType):
