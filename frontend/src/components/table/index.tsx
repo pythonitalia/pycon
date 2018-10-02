@@ -4,7 +4,7 @@ import * as styles from './style.css';
 
 export type ColumnHeader = {
   label: string;
-  accessor: (object: any) => any | string;
+  accessor: ((object: any) => any) | string;
 };
 
 type Props = {
