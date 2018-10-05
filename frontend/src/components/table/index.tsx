@@ -4,7 +4,7 @@ import * as styles from './style.css';
 
 export type ColumnHeader<T> = {
   label: string;
-  accessor: (<TReturn>(object: T) => TReturn) | string;
+  accessor: ((object: T) => string) | string;
 };
 
 
