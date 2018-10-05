@@ -2,17 +2,19 @@ import * as React from 'react';
 
 import * as styles from './style.css';
 
-export type ColumnHeader = {
+export type ColumnHeader<T> = {
   label: string;
-  accessor: ((object: any) => any) | string;
+  accessor: (<TReturn>(object: T) => TReturn) | string;
 };
 
-type Props = {
-  columns: ColumnHeader[];
-  data: object[];
+
+type Props<T> = {
+  columns: Array<ColumnHeader<T>>;
+  data: T[];
 };
 
-export class Table extends React.Component<Props, {}> {
+export class Table<T> extends React.Component<Props<T>, {}> {
+
   public render() {
     const { columns } = this.props;
 
@@ -34,14 +36,14 @@ export class Table extends React.Component<Props, {}> {
   private renderBody() {
     const { columns, data } = this.props;
 
-    return data.map((item: any, i) => (
+    return data.map((item: T, i) => (
       <tr key={i}>
         <td className={styles.checkbox} />
         {columns.map(column => {
           const value =
             typeof column.accessor === 'function'
               ? column.accessor(item)
-              : item[column.accessor];
+              : item[column.accessor as keyof(T)];
 
           return <td key={column.label}>{value}</td>;
         })}

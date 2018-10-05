@@ -7,18 +7,18 @@ import { Card } from '../../../components/card/index';
 import { Table, ColumnHeader } from '../../../components/table/index';
 import { Pagination } from '../../../components/pagination/index';
 
-import { Users } from './types/Users';
+import { Users, Users_users_objects } from './types/Users';
 
 import USERS from './query.graphql';
 
 const USERS_PER_PAGE = 20;
 
-const COLUMNS: ColumnHeader[] = [
+const COLUMNS: Array<ColumnHeader<Users_users_objects>> = [
   { label: 'ID', accessor: 'id' },
   { label: 'Email', accessor: 'email' },
   {
     label: 'Data joined',
-    accessor: obj => new Date(obj.dateJoined).toLocaleDateString(),
+    accessor: (obj: Users_users_objects): string => new Date(obj.dateJoined).toLocaleDateString(),
   },
 ];
 
@@ -68,7 +68,7 @@ export class Members extends React.Component<Props, {}> {
               {!loading &&
                 !error && (
                   <>
-                    <Table columns={COLUMNS} data={data.users.objects} />
+                    <Table<Users_users_objects> columns={COLUMNS} data={data.users.objects} />
                     <Pagination
                       onPageChange={this.onPageChange}
                       currentPage={currentPage}
