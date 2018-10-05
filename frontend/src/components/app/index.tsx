@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Router, RouteComponentProps } from '@reach/router';
 import { ApolloProvider } from 'react-apollo';
 
-import { Admin } from '../../pages/admin';
+import { Admin } from '~/pages/admin';
 
 import { client } from './client';
 

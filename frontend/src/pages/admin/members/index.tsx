@@ -3,9 +3,9 @@ import { RouteComponentProps } from '@reach/router';
 
 import { Query } from 'react-apollo';
 
-import { Card } from '../../../components/card/index';
-import { Table, ColumnHeader } from '../../../components/table/index';
-import { Pagination } from '../../../components/pagination/index';
+import { Card } from '~/components/card/index';
+import { Table, ColumnHeader } from '~/components/table/index';
+import { Pagination } from '~/components/pagination/index';
 
 import { Users, Users_users_objects } from './types/Users';
 

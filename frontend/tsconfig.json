@@ -2,6 +2,10 @@
   "compilerOptions": {
     "noImplicitAny": true,
     "rootDirs": ["src", "src_gen"],
+    "baseUrl": ".",
+    "paths": {
+      "~*": ["./src/*"]
+    },
     "jsx": "react",
     "lib": ["es6", "esnext.asynciterable", "dom"]
   },

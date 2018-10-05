@@ -1,7 +1,7 @@
 import * as React from 'react';
 import classnames from 'classnames';
 
-import { range } from '../../utils';
+import { range } from '~/utils';
 
 import * as styles from './style.css';
 
