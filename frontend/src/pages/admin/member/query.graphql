@@ -1,0 +1,6 @@
+query UserDetail($id: Int!) {
+    user(id: $id) {
+        id
+        email
+    }
+}

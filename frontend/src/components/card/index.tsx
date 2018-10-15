@@ -4,7 +4,7 @@ import * as styles from './style.css';
 
 interface Props {
   children?: React.ReactNode;
-  title: string;
+  title?: string;
 }
 
 export const Card = (props: Props) => {
@@ -12,9 +12,11 @@ export const Card = (props: Props) => {
 
   return (
     <div className={styles.card}>
-      <div className={styles.cardTitle}>
-        <h2>{title}</h2>
-      </div>
+      {title && (
+        <div className={styles.cardTitle}>
+          <h2>{title}</h2>
+        </div>
+      )}
 
       {children}
     </div>

@@ -5,6 +5,8 @@ import * as styles from './style.css';
 
 import { Home } from './home';
 import { Members } from './members';
+import { Member } from './member';
+
 import { Logo } from '~/components/logo/index';
 import { User } from '~/components/user/index';
 import { Container, Sizes } from '~/components/container/index';
@@ -26,7 +28,7 @@ export const Admin = (props: RouteComponentProps) => (
       <Container size={Sizes.large}>
         <Router>
           <Members path="/members" />
-          <Members path="/members/:page" />
+          <Member path="/members/:id" />
           <Home path="/" />
         </Router>
       </Container>

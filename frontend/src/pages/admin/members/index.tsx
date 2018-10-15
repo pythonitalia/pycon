@@ -18,31 +18,34 @@ const COLUMNS: Array<ColumnHeader<Users_users_objects>> = [
   { label: 'Email', accessor: 'email' },
   {
     label: 'Data joined',
-    accessor: (obj: Users_users_objects): string => new Date(obj.dateJoined).toLocaleDateString(),
+    accessor: (obj: Users_users_objects): string =>
+      new Date(obj.dateJoined).toLocaleDateString(),
   },
 ];
 
-type Props = RouteComponentProps & {
-  page?: number;
-};
-
-export class Members extends React.Component<Props, {}> {
+export class Members extends React.Component<RouteComponentProps, {}> {
   constructor(props: RouteComponentProps) {
     super(props);
 
     this.onPageChange = this.onPageChange.bind(this);
+    this.onUserClick = this.onUserClick.bind(this);
   }
 
   private onPageChange(nextPage: number) {
-    this.props.navigate(`/admin/members/${nextPage + 1}`);
+    this.props.navigate(`/admin/members/?page=${nextPage + 1}`);
+  }
+
+  private onUserClick(
+    user: Users_users_objects,
+    e: React.MouseEvent<HTMLTableRowElement>,
+  ) {
+    this.props.navigate(`/admin/members/${user.id}`);
   }
 
   private getCurrentPage() {
-    if (!this.props.page) {
-      return 0;
-    }
-
-    return Math.max(this.props.page - 1, 0);
+    const searchParams = new URLSearchParams(this.props.location.search);
+    const page = parseInt(searchParams.get('page'), 10) || 1;
+    return Math.max(page - 1, 0);
   }
 
   public render() {
@@ -68,7 +71,11 @@ export class Members extends React.Component<Props, {}> {
               {!loading &&
                 !error && (
                   <>
-                    <Table<Users_users_objects> columns={COLUMNS} data={data.users.objects} />
+                    <Table<Users_users_objects>
+                      columns={COLUMNS}
+                      data={data.users.objects}
+                      onRowClick={this.onUserClick}
+                    />
                     <Pagination
                       onPageChange={this.onPageChange}
                       currentPage={currentPage}
