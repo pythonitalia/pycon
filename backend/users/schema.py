@@ -14,6 +14,9 @@ class UsersQuery(graphene.AbstractType):
     users = graphene.NonNull(
         PaginatedUsersType, offset=graphene.Int(), limit=graphene.Int()
     )
+    user = graphene.NonNull(
+        MeUserType, id=graphene.Int()
+    )
 
     def resolve_me(self, info):
         if not info.context.user.is_authenticated:
@@ -34,3 +37,16 @@ class UsersQuery(graphene.AbstractType):
             limit,
             PaginatedUsersType
         )
+
+    def resolve_user(self, info, id):
+        if not info.context.user.is_authenticated:
+            raise GraphQLError("User not logged in")
+
+        if not info.context.user.is_superuser:
+            raise GraphQLError("You don't have the permissions")
+
+        try:
+            user = User.objects.get(id=id)
+            return user
+        except User.DoesNotExist:
+            raise GraphQLError(f"User with ID {id} does not exist")

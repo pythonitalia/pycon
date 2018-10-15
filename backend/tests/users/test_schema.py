@@ -21,6 +21,22 @@ def _query_all_users(client, offset, limit=LIMIT_DEFAULT_VALUE):
     )
 
 
+def _query_user(client, user_id):
+    return client.query(
+        """
+        query($user: Int!) {
+            user(id: $user) {
+                id
+                email
+            }
+        }
+        """,
+        variables={
+            "user": user_id,
+        }
+    )
+
+
 def test_fails_when_user_is_not_authenticated(graphql_client):
     resp = graphql_client.query(
         """
@@ -155,3 +171,44 @@ def test_request_users_with_limit_below_min(admin_user, user_factory, graphql_cl
     assert "errors" not in resp
     assert resp["data"]["users"]["totalCount"] == len(users)
     assert len(resp["data"]["users"]["objects"]) == LIMIT_MIN_VALUE
+
+
+def test_get_user_info(admin_user, user_factory, graphql_client):
+    graphql_client.force_login(admin_user)
+    user = user_factory()
+
+    resp = _query_user(graphql_client, user.id)
+
+    assert "errors" not in resp
+    assert {
+        'id': str(user.id),
+        'email': user.email
+    } == resp["data"]["user"]
+
+
+def test_get_user_requires_admin_permissions(user, user_factory, graphql_client):
+    graphql_client.force_login(user)
+    another_user = user_factory()
+
+    resp = _query_user(graphql_client, another_user.id)
+
+    assert "errors" in resp
+    assert resp["errors"][0]["message"] == "You don't have the permissions"
+
+
+def test_get_user_requires_logged_user(user, user_factory, graphql_client):
+    another_user = user_factory()
+
+    resp = _query_user(graphql_client, another_user.id)
+
+    assert resp["errors"]
+    assert resp["errors"][0]["message"] == "User not logged in"
+
+
+def test_get_user_info_with_invalid_id(admin_user, user_factory, graphql_client):
+    graphql_client.force_login(admin_user)
+
+    resp = _query_user(graphql_client, 999)
+
+    assert "errors" in resp
+    assert resp["errors"][0]["message"] == "User with ID 999 does not exist"
