@@ -3,6 +3,8 @@ import pytest
 from users.models import User
 
 from .api.fixtures import *  # noqa
+from .conferences.factories import *  # noqa
+from .tickets.factories import *  # noqa
 
 
 @pytest.fixture()
