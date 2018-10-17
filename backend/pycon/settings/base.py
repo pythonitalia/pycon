@@ -27,6 +27,8 @@ INSTALLED_APPS = [
     'graphene_django',
     'social_django',
     'users',
+    'conferences',
+    'tickets',
 ]
 
 MIDDLEWARE = [
