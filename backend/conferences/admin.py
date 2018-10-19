@@ -14,6 +14,11 @@ class ConferenceAdmin(admin.ModelAdmin):
             ),
         }),
         ('Deadlines', {
-            'fields': (('start', 'end'),),
+            'fields': (
+                ('start', 'end'),
+                ('cfp_start', 'cfp_end'),
+                ('voting_start', 'voting_end'),
+                ('refund_start', 'refund_end'),
+            ),
         })
     )
