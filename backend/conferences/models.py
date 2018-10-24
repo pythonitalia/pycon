@@ -1,6 +1,5 @@
 from django.db import models
 
-from django.utils import timezone
 from django.core import exceptions
 from django.utils.translation import ugettext_lazy as _
 
@@ -34,38 +33,14 @@ class Conference(TimeStampedModel, TimeFramedModel):
         for date_range in date_ranges:
             start, end, what = date_range
 
+            if not start and not end:
+                continue
+
             if start and not end or not start and end:
                 raise exceptions.ValidationError(f"{_('Please specify both start and end for')} {what}")
 
-            if not start or not end:
-                continue
-
             if start > end:
                 raise exceptions.ValidationError(f"{what} {_('start date cannot be after end')}")
-
-    @property
-    def is_voting_open(self):
-        if not self.voting_start:
-            return False
-
-        today = timezone.now()
-        return self.voting_start <= today <= self.voting_end
-
-    @property
-    def is_cfp_open(self):
-        if not self.cfp_start:
-            return False
-
-        today = timezone.now()
-        return self.cfp_start <= today <= self.cfp_end
-
-    @property
-    def can_user_refund(self):
-        if not self.refund_start:
-            return False
-
-        today = timezone.now()
-        return self.refund_start <= today <= self.refund_end
 
     def __str__(self):
         return f'{self.name} <{self.slug}>'

@@ -130,3 +130,32 @@ def test_validation_fails_without_both_refundstart_end(conference_factory):
         conference.clean()
 
     assert 'Please specify both start and end for Refund' in str(e.value)
+
+
+@mark.django_db
+def test_validation_ignores_empty_conference_dates(conference_factory):
+    conference = conference_factory(start=None, end=None)
+    conference.clean()
+
+
+@mark.django_db
+def test_validation_ignores_empty_refund_dates(conference_factory):
+    conference = conference_factory(refund_start=None, refund_end=None)
+    conference.clean()
+
+
+@mark.django_db
+def test_validation_ignores_empty_cfp_dates(conference_factory):
+    conference = conference_factory(cfp_start=None, cfp_end=None)
+    conference.clean()
+
+
+@mark.django_db
+def test_validation_ignores_empty_voting_dates(conference_factory):
+    conference = conference_factory(voting_start=None, voting_end=None)
+    conference.clean()
+
+
+@mark.django_db
+def test_conference_to_str(conference_factory):
+    assert 'Ciao Mondo <slug>' == str(conference_factory(name='Ciao Mondo', slug='slug'))
