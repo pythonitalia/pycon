@@ -386,9 +386,9 @@ apollo-client@^2.4.1:
   optionalDependencies:
     "@types/async" "2.0.49"
 
-apollo-codegen-core@0.28.0:
-  version "0.28.0"
-  resolved "https://registry.yarnpkg.com/apollo-codegen-core/-/apollo-codegen-core-0.28.0.tgz#797eef12d4a456ab7fb4cc408977aa0dd964389d"
+apollo-codegen-core@0.28.1:
+  version "0.28.1"
+  resolved "https://registry.yarnpkg.com/apollo-codegen-core/-/apollo-codegen-core-0.28.1.tgz#ebfa6095f6205aa12aeb5f4aaf3538b7c11117a6"
   dependencies:
     "@babel/generator" "7.0.0-beta.38"
     "@babel/parser" "^7.0.0"
@@ -398,49 +398,49 @@ apollo-codegen-core@0.28.0:
     core-js "^2.5.3"
     recast "^0.15.3"
 
-apollo-codegen-flow-legacy@0.28.0:
-  version "0.28.0"
-  resolved "https://registry.yarnpkg.com/apollo-codegen-flow-legacy/-/apollo-codegen-flow-legacy-0.28.0.tgz#d82116d2e955dca9252e1f565b6ef62240c2a969"
+apollo-codegen-flow-legacy@0.28.1:
+  version "0.28.1"
+  resolved "https://registry.yarnpkg.com/apollo-codegen-flow-legacy/-/apollo-codegen-flow-legacy-0.28.1.tgz#7e0cdca2c9f757ff97646c11abc41c7e6feb2fc6"
   dependencies:
-    apollo-codegen-core "0.28.0"
+    apollo-codegen-core "0.28.1"
 
-apollo-codegen-flow@0.28.0:
-  version "0.28.0"
-  resolved "https://registry.yarnpkg.com/apollo-codegen-flow/-/apollo-codegen-flow-0.28.0.tgz#2a8069d7cb44b7ca808aa8a8b459a3199da3154f"
+apollo-codegen-flow@0.28.1:
+  version "0.28.1"
+  resolved "https://registry.yarnpkg.com/apollo-codegen-flow/-/apollo-codegen-flow-0.28.1.tgz#e534f3aa9ff066af96546e1fe3262e691bbffaa4"
   dependencies:
     "@babel/types" "7.0.0-beta.38"
-    apollo-codegen-core "0.28.0"
+    apollo-codegen-core "0.28.1"
     change-case "^3.0.1"
     inflected "^2.0.3"
 
-apollo-codegen-scala@0.28.0:
-  version "0.28.0"
-  resolved "https://registry.yarnpkg.com/apollo-codegen-scala/-/apollo-codegen-scala-0.28.0.tgz#6795cdcd433a4473d6a0f50b0a946c129c2d6283"
+apollo-codegen-scala@0.28.1:
+  version "0.28.1"
+  resolved "https://registry.yarnpkg.com/apollo-codegen-scala/-/apollo-codegen-scala-0.28.1.tgz#5cd977285fa986858d609b2b0f4318f1182059e3"
   dependencies:
-    apollo-codegen-core "0.28.0"
+    apollo-codegen-core "0.28.1"
     change-case "^3.0.1"
     inflected "^2.0.3"
 
-apollo-codegen-swift@0.28.0:
-  version "0.28.0"
-  resolved "https://registry.yarnpkg.com/apollo-codegen-swift/-/apollo-codegen-swift-0.28.0.tgz#88d7e65da266a1f1c98a59daf5b8208c201d1370"
+apollo-codegen-swift@0.28.1:
+  version "0.28.1"
+  resolved "https://registry.yarnpkg.com/apollo-codegen-swift/-/apollo-codegen-swift-0.28.1.tgz#c655d984e901847df535de6e81f6b22629d50ab5"
   dependencies:
-    apollo-codegen-core "0.28.0"
+    apollo-codegen-core "0.28.1"
     change-case "^3.0.1"
     inflected "^2.0.3"
 
-apollo-codegen-typescript-legacy@0.28.0:
-  version "0.28.0"
-  resolved "https://registry.yarnpkg.com/apollo-codegen-typescript-legacy/-/apollo-codegen-typescript-legacy-0.28.0.tgz#48d52fea2ffe1c599c6cd635d70ed685f1b8bae3"
+apollo-codegen-typescript-legacy@0.28.1:
+  version "0.28.1"
+  resolved "https://registry.yarnpkg.com/apollo-codegen-typescript-legacy/-/apollo-codegen-typescript-legacy-0.28.1.tgz#490a47932ff3d6f7df6952b03be84707c5331b6b"
   dependencies:
-    apollo-codegen-core "0.28.0"
+    apollo-codegen-core "0.28.1"
 
-apollo-codegen-typescript@0.28.0:
-  version "0.28.0"
-  resolved "https://registry.yarnpkg.com/apollo-codegen-typescript/-/apollo-codegen-typescript-0.28.0.tgz#35ba5e7171d10d2b45dcbdc1ef17d294bb0b1324"
+apollo-codegen-typescript@0.28.1:
+  version "0.28.1"
+  resolved "https://registry.yarnpkg.com/apollo-codegen-typescript/-/apollo-codegen-typescript-0.28.1.tgz#f31f3712df7ef15c45c6e1ffd691b8c5cd8c9b7c"
   dependencies:
     "@babel/types" "7.0.0-beta.38"
-    apollo-codegen-core "0.28.0"
+    apollo-codegen-core "0.28.1"
     change-case "^3.0.1"
     inflected "^2.0.3"
 
@@ -506,9 +506,9 @@ apollo-utilities@1.0.20, apollo-utilities@^1.0.0, apollo-utilities@^1.0.20:
   dependencies:
     fast-json-stable-stringify "^2.0.0"
 
-apollo@^1.9.1:
-  version "1.9.1"
-  resolved "https://registry.yarnpkg.com/apollo/-/apollo-1.9.1.tgz#49ae91c374f313f959547991267053c73a2b923c"
+apollo@^1.9.2:
+  version "1.9.2"
+  resolved "https://registry.yarnpkg.com/apollo/-/apollo-1.9.2.tgz#356a3ee8cad28cc5244205a05c5125ca6ec365fe"
   dependencies:
     "@oclif/command" "^1.4.21"
     "@oclif/config" "^1.6.17"
@@ -520,13 +520,13 @@ apollo@^1.9.1:
     "@types/react" "^16.3.14"
     "@types/react-dom" "^16.0.5"
     "@types/rimraf" "^2.0.2"
-    apollo-codegen-core "0.28.0"
-    apollo-codegen-flow "0.28.0"
-    apollo-codegen-flow-legacy "0.28.0"
-    apollo-codegen-scala "0.28.0"
-    apollo-codegen-swift "0.28.0"
-    apollo-codegen-typescript "0.28.0"
-    apollo-codegen-typescript-legacy "0.28.0"
+    apollo-codegen-core "0.28.1"
+    apollo-codegen-flow "0.28.1"
+    apollo-codegen-flow-legacy "0.28.1"
+    apollo-codegen-scala "0.28.1"
+    apollo-codegen-swift "0.28.1"
+    apollo-codegen-typescript "0.28.1"
+    apollo-codegen-typescript-legacy "0.28.1"
     apollo-engine-reporting "0.0.2"
     apollo-link "^1.2.2"
     apollo-link-http "^1.5.4"
