@@ -6,4 +6,4 @@ from graphene_django import DjangoObjectType
 class TicketType(DjangoObjectType):
     class Meta:
         model = Ticket
-        only_fields = ('id', 'code', 'name', 'start', 'end', 'description')
+        only_fields = ('id', 'code', 'name', 'price', 'start', 'end', 'description')
