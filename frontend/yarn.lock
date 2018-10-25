@@ -366,21 +366,27 @@ apollo-cache-inmemory@^1.2.9:
     apollo-utilities "^1.0.20"
     graphql-anywhere "^4.1.18"
 
-apollo-cache@1.1.16, apollo-cache@^1.1.16:
+apollo-cache@1.1.18:
+  version "1.1.18"
+  resolved "https://registry.yarnpkg.com/apollo-cache/-/apollo-cache-1.1.18.tgz#384a7e1e39414fd2a09c80d5295d36f15c85b9ab"
+  dependencies:
+    apollo-utilities "^1.0.22"
+
+apollo-cache@^1.1.16:
   version "1.1.16"
   resolved "https://registry.yarnpkg.com/apollo-cache/-/apollo-cache-1.1.16.tgz#0c7460ee8eff1898462979143b4e922aaba73cf8"
   dependencies:
     apollo-utilities "^1.0.20"
 
-apollo-client@^2.4.1:
-  version "2.4.1"
-  resolved "https://registry.yarnpkg.com/apollo-client/-/apollo-client-2.4.1.tgz#d2ebaac1831fa170f7d0070bb9d581cccb5f64e3"
+apollo-client@^2.4.3:
+  version "2.4.3"
+  resolved "https://registry.yarnpkg.com/apollo-client/-/apollo-client-2.4.3.tgz#261749c531eda367a1e2a3c5def024abb09add6e"
   dependencies:
     "@types/zen-observable" "^0.8.0"
-    apollo-cache "1.1.16"
+    apollo-cache "1.1.18"
     apollo-link "^1.0.0"
     apollo-link-dedup "^1.0.0"
-    apollo-utilities "1.0.20"
+    apollo-utilities "1.0.22"
     symbol-observable "^1.0.2"
     zen-observable "^0.8.0"
   optionalDependencies:
@@ -500,9 +506,21 @@ apollo-server-env@2.0.2:
     node-fetch "^2.1.2"
     util.promisify "^1.0.0"
 
-apollo-utilities@1.0.20, apollo-utilities@^1.0.0, apollo-utilities@^1.0.20:
+apollo-utilities@1.0.22:
+  version "1.0.22"
+  resolved "https://registry.yarnpkg.com/apollo-utilities/-/apollo-utilities-1.0.22.tgz#0e11350d1220d83ae1c784115d0fa18bdc549a60"
+  dependencies:
+    fast-json-stable-stringify "^2.0.0"
+
+apollo-utilities@^1.0.0, apollo-utilities@^1.0.20:
   version "1.0.20"
   resolved "https://registry.yarnpkg.com/apollo-utilities/-/apollo-utilities-1.0.20.tgz#b14318686cb67838279fb5f009cca0ec97a4d140"
+  dependencies:
+    fast-json-stable-stringify "^2.0.0"
+
+apollo-utilities@^1.0.22:
+  version "1.0.23"
+  resolved "https://registry.yarnpkg.com/apollo-utilities/-/apollo-utilities-1.0.23.tgz#9416e5da31cc8d9d46502de6f90aa1447cd368c6"
   dependencies:
     fast-json-stable-stringify "^2.0.0"
 
