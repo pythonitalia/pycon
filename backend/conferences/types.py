@@ -15,4 +15,16 @@ class ConferenceType(DjangoObjectType):
 
     class Meta:
         model = Conference
-        only_fields = ('id', 'start', 'end', 'name', 'slug')
+        only_fields = (
+            'id',
+            'name',
+            'slug',
+            'start',
+            'end',
+            'cfp_start',
+            'cfp_end',
+            'voting_start',
+            'voting_end',
+            'refund_start',
+            'refund_end'
+        )
