@@ -1,3 +1,4 @@
+import pytz
 import factory
 
 from pytest_factoryboy import register
@@ -20,5 +21,5 @@ class TicketFactory(DjangoModelFactory):
     price = factory.Faker('random_int', min=20, max=300)
     code = factory.Faker('military_ship')
 
-    start = factory.Faker('past_date')
-    end = factory.Faker('future_date')
+    start = factory.Faker('past_datetime', tzinfo=pytz.UTC)
+    end = factory.Faker('future_datetime', tzinfo=pytz.UTC)
