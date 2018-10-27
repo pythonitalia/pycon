@@ -8,7 +8,7 @@ from tickets.types import TicketType
 
 
 class ConferenceType(DjangoObjectType):
-    tickets = graphene.List(graphene.NonNull(TicketType))
+    tickets = graphene.NonNull(graphene.List(graphene.NonNull(TicketType)))
 
     def resolve_tickets(self, info):
         return self.tickets.all()
