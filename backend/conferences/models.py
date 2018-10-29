@@ -11,6 +11,8 @@ class Conference(TimeStampedModel, TimeFramedModel):
     code = models.CharField(_('code'), max_length=10, unique=True)
     slug = models.SlugField()
 
+    tracks = models.ManyToManyField('conferences.Track', verbose_name=_('tracks'))
+
     # deadlines
     cfp_start = models.DateTimeField(_('call for proposals starts at'), blank=True, null=True)
     cfp_end = models.DateTimeField(_('call for proposals ends at'), blank=True, null=True)
@@ -48,3 +50,14 @@ class Conference(TimeStampedModel, TimeFramedModel):
     class Meta:
         verbose_name = _('Conference')
         verbose_name_plural = _('Conferences')
+
+
+class Track(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _('Track')
+        verbose_name_plural = _('Tracks')
