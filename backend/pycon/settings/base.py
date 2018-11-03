@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'users',
     'conferences.apps.ConferencesConfig',
     'tickets.apps.TicketsConfig',
+    'languages.apps.LanguagesConfig',
 ]
 
 MIDDLEWARE = [

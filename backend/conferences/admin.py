@@ -7,11 +7,16 @@ from .models import Conference, Track
 class ConferenceAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('name',)}
     readonly_fields = ('created', 'modified', )
-    filter_horizontal = ('tracks',)
+    filter_horizontal = ('tracks', 'languages', )
     fieldsets = (
         ('Details', {
             'fields': (
-                'name', 'slug', 'tracks',
+                'name', 'slug',
+            ),
+        }),
+        ('Conference', {
+            'fields': (
+                'tracks', 'languages',
             ),
         }),
         ('Deadlines', {

@@ -12,6 +12,7 @@ class Conference(TimeStampedModel, TimeFramedModel):
     slug = models.SlugField()
 
     tracks = models.ManyToManyField('conferences.Track', verbose_name=_('tracks'))
+    languages = models.ManyToManyField('languages.Language', verbose_name=_('languages'))
 
     # deadlines
     cfp_start = models.DateTimeField(_('call for proposals starts at'), blank=True, null=True)
