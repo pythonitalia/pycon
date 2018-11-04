@@ -1,3 +1,4 @@
+from django.core import exceptions
 from django.conf import settings
 from django.db import models
 
@@ -19,6 +20,17 @@ class Talk(TimeStampedModel):
         null=True,
         related_name='talks'
     )
-    helpers = models.ManyToManyField(settings.AUTH_USER_MODEL, verbose_name=_('helpers'))
 
     track = models.ForeignKey('conferences.Track', verbose_name=_('track'), on_delete=models.SET_NULL, null=True)
+    language = models.ForeignKey('languages.Language', verbose_name=_('language'), on_delete=models.SET_NULL, null=True)
+
+    def clean(self):
+        if not self.conference.tracks.filter(id=self.track_id).exists():
+            raise exceptions.ValidationError(
+                f"{str(self.track)}  {_('is not a valid track for the conference')} {self.conference.code}"
+            )
+
+        if not self.conference.languages.filter(id=self.language_id).exists():
+            raise exceptions.ValidationError(
+                f"{str(self.language)}  {_('is not a valid language for the conference')} {self.conference.code}"
+            )

@@ -2,6 +2,8 @@ import graphene
 
 from graphene_django.forms import mutation
 
+from .types import TalkType  # noqa
+
 from .forms import ProposeTalkForm
 
 
