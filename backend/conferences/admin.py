@@ -1,13 +1,13 @@
 from django.contrib import admin
 
-from .models import Conference, Track
+from .models import Conference, Topic
 
 
 @admin.register(Conference)
 class ConferenceAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('name',)}
     readonly_fields = ('created', 'modified', )
-    filter_horizontal = ('tracks', 'languages', )
+    filter_horizontal = ('topics', 'languages', )
     fieldsets = (
         ('Details', {
             'fields': (
@@ -16,7 +16,7 @@ class ConferenceAdmin(admin.ModelAdmin):
         }),
         ('Conference', {
             'fields': (
-                'tracks', 'languages',
+                'topics', 'languages',
             ),
         }),
         ('Deadlines', {
@@ -30,6 +30,6 @@ class ConferenceAdmin(admin.ModelAdmin):
     )
 
 
-@admin.register(Track)
-class TrackAdmin(admin.ModelAdmin):
+@admin.register(Topic)
+class TopicAdmin(admin.ModelAdmin):
     pass

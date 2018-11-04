@@ -11,7 +11,7 @@ class Conference(TimeStampedModel, TimeFramedModel):
     code = models.CharField(_('code'), max_length=10, unique=True)
     slug = models.SlugField()
 
-    tracks = models.ManyToManyField('conferences.Track', verbose_name=_('tracks'))
+    topics = models.ManyToManyField('conferences.Topic', verbose_name=_('topics'))
     languages = models.ManyToManyField('languages.Language', verbose_name=_('languages'))
 
     # deadlines
@@ -53,12 +53,12 @@ class Conference(TimeStampedModel, TimeFramedModel):
         verbose_name_plural = _('Conferences')
 
 
-class Track(models.Model):
+class Topic(models.Model):
     name = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
 
     class Meta:
-        verbose_name = _('Track')
-        verbose_name_plural = _('Tracks')
+        verbose_name = _('Topic')
+        verbose_name_plural = _('Topics')
