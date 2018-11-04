@@ -6,4 +6,4 @@ from .models import Talk
 class ProposeTalkForm(forms.ModelForm):
     class Meta:
         model = Talk
-        fields = ('title', 'abstract', 'track', 'language', 'conference')
+        fields = ('title', 'abstract', 'topic', 'language', 'conference')

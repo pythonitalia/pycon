@@ -21,16 +21,16 @@ class Talk(TimeStampedModel):
         related_name='talks'
     )
 
-    track = models.ForeignKey('conferences.Track', verbose_name=_('track'), on_delete=models.SET_NULL, null=True)
+    topic = models.ForeignKey('conferences.Topic', verbose_name=_('topic'), on_delete=models.SET_NULL, null=True)
     language = models.ForeignKey('languages.Language', verbose_name=_('language'), on_delete=models.SET_NULL, null=True)
 
     def clean(self):
-        if not self.conference.tracks.filter(id=self.track_id).exists():
+        if not self.conference.topics.filter(id=self.topic_id).exists():
             raise exceptions.ValidationError(
-                f"{str(self.track)}  {_('is not a valid track for the conference')} {self.conference.code}"
+                {'topic': f"{str(self.topic)} {_('is not a valid topic for the conference')} {self.conference.code}"}
             )
 
         if not self.conference.languages.filter(id=self.language_id).exists():
             raise exceptions.ValidationError(
-                f"{str(self.language)}  {_('is not a valid language for the conference')} {self.conference.code}"
+                {'language': f"{str(self.language)} {_('is not a valid language for the conference')} {self.conference.code}"}
             )

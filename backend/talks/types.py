@@ -12,5 +12,5 @@ class TalkType(DjangoObjectType):
             'abstract',
             'owner',
             'helpers',
-            'track'
+            'topic'
         )
