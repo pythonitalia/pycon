@@ -158,4 +158,4 @@ def test_validation_ignores_empty_voting_dates(conference_factory):
 
 @mark.django_db
 def test_conference_to_str(conference_factory):
-    assert 'Ciao Mondo <slug>' == str(conference_factory(name='Ciao Mondo', slug='slug'))
+    assert 'Ciao Mondo <ep1>' == str(conference_factory(name='Ciao Mondo', code='ep1'))

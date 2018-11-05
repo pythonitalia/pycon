@@ -9,7 +9,6 @@ from model_utils.models import TimeFramedModel, TimeStampedModel
 class Conference(TimeStampedModel, TimeFramedModel):
     name = models.CharField(_('name'), max_length=100)
     code = models.CharField(_('code'), max_length=10, unique=True)
-    slug = models.SlugField()
 
     topics = models.ManyToManyField('conferences.Topic', verbose_name=_('topics'))
     languages = models.ManyToManyField('languages.Language', verbose_name=_('languages'))
@@ -46,7 +45,7 @@ class Conference(TimeStampedModel, TimeFramedModel):
                 raise exceptions.ValidationError(f"{what} {_('start date cannot be after end')}")
 
     def __str__(self):
-        return f'{self.name} <{self.slug}>'
+        return f'{self.name} <{self.code}>'
 
     class Meta:
         verbose_name = _('Conference')

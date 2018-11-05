@@ -7,10 +7,10 @@ def test_get_conference_info(conference, ticket_factory, graphql_client):
 
     resp = graphql_client.query(
         """
-        query($slug: String) {
-            conference(slug: $slug) {
+        query($code: String) {
+            conference(code: $code) {
                 id
-                slug
+                code
                 name
                 tickets {
                     id
@@ -20,14 +20,14 @@ def test_get_conference_info(conference, ticket_factory, graphql_client):
         }
         """,
         variables={
-            'slug': conference.slug
+            'code': conference.code
         }
     )
 
     assert 'errors' not in resp
     assert {
         'id': str(conference.id),
-        'slug': conference.slug,
+        'code': conference.code,
         'name': conference.name,
         'tickets': [
             {
@@ -43,7 +43,7 @@ def test_get_not_existent_conference_info(conference, graphql_client):
     resp = graphql_client.query(
         """
         {
-            conference(slug: "random-conference-slug") {
+            conference(code: "random-conference-code") {
                 name
             }
         }

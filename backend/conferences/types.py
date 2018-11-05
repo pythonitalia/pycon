@@ -18,7 +18,7 @@ class ConferenceType(DjangoObjectType):
         only_fields = (
             'id',
             'name',
-            'slug',
+            'code',
             'start',
             'end',
             'cfp_start',

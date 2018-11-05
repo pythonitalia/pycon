@@ -14,7 +14,6 @@ class ConferenceFactory(DjangoModelFactory):
         model = Conference
 
     name = factory.Faker('name')
-    slug = factory.Faker('slug')
     code = factory.Faker('text', max_nb_chars=10)
 
     start = factory.Faker('past_datetime', tzinfo=pytz.UTC)

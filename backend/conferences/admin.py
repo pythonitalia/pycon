@@ -5,13 +5,12 @@ from .models import Conference, Topic
 
 @admin.register(Conference)
 class ConferenceAdmin(admin.ModelAdmin):
-    prepopulated_fields = {'slug': ('name',)}
     readonly_fields = ('created', 'modified', )
     filter_horizontal = ('topics', 'languages', )
     fieldsets = (
         ('Details', {
             'fields': (
-                'name', 'slug',
+                'name', 'code',
             ),
         }),
         ('Conference', {
