@@ -25,12 +25,12 @@ class Talk(TimeStampedModel):
     language = models.ForeignKey('languages.Language', verbose_name=_('language'), on_delete=models.SET_NULL, null=True)
 
     def clean(self):
-        if not self.conference.topics.filter(id=self.topic_id).exists():
+        if self.topic_id and not self.conference.topics.filter(id=self.topic_id).exists():
             raise exceptions.ValidationError(
                 {'topic': f"{str(self.topic)} {_('is not a valid topic for the conference')} {self.conference.code}"}
             )
 
-        if not self.conference.languages.filter(id=self.language_id).exists():
+        if self.language_id and not self.conference.languages.filter(id=self.language_id).exists():
             raise exceptions.ValidationError(
-                {'language': f"{str(self.language)} {_('is not a valid language for the conference')} {self.conference.code}"}
+                {'language': f"{str(self.language)} {_('is not an allowed language for the conference')} {self.conference.code}"}
             )
