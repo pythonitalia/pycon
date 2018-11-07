@@ -5,7 +5,7 @@ from pytest_factoryboy import register
 
 from factory.django import DjangoModelFactory
 
-from conferences.models import Conference
+from conferences.models import Conference, Topic
 
 
 @register
@@ -27,3 +27,12 @@ class ConferenceFactory(DjangoModelFactory):
 
     cfp_start = factory.Faker('past_datetime', tzinfo=pytz.UTC)
     cfp_end = factory.Faker('future_datetime', tzinfo=pytz.UTC)
+
+
+@register
+class TopicFactory(DjangoModelFactory):
+    name = factory.Faker('word')
+
+    class Meta:
+        model = Topic
+        django_get_or_create = ('name',)
