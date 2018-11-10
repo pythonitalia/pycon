@@ -27,10 +27,10 @@ class Talk(TimeStampedModel):
     def clean(self):
         if self.topic_id and not self.conference.topics.filter(id=self.topic_id).exists():
             raise exceptions.ValidationError(
-                {'topic': f"{str(self.topic)} {_('is not a valid topic for the conference')} {self.conference.code}"}
+                {'topic': _('%(topic)s is not a valid topic') % {'topic': str(self.topic)}}
             )
 
         if self.language_id and not self.conference.languages.filter(id=self.language_id).exists():
             raise exceptions.ValidationError(
-                {'language': f"{str(self.language)} {_('is not an allowed language for the conference')} {self.conference.code}"}
+                {'language': _('%(language)s is not an allowed language') % {'language': str(self.language)}}
             )

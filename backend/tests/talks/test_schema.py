@@ -73,7 +73,7 @@ def test_propose_talk_with_not_valid_conf_language(graphql_client, user, confere
     resp = _propose_talk(graphql_client, 'Test title', 'Abstract', 'en', conference, topic)
 
     assert resp['data']['proposeTalk']['talk'] is None
-    assert resp['data']['proposeTalk']['errors'][0]['messages'] == [f'English (en) is not an allowed language for the conference {conference.code}']
+    assert resp['data']['proposeTalk']['errors'][0]['messages'] == ['English (en) is not an allowed language']
     assert resp['data']['proposeTalk']['errors'][0]['field'] == 'language'
 
 
@@ -87,7 +87,7 @@ def test_propose_talk_with_not_valid_conf_topic(graphql_client, user, conference
     resp = _propose_talk(graphql_client, 'Test title', 'Abstract', 'it', conference, topic)
 
     assert resp['data']['proposeTalk']['talk'] is None
-    assert resp['data']['proposeTalk']['errors'][0]['messages'] == [f'random topic is not a valid topic for the conference {conference.code}']
+    assert resp['data']['proposeTalk']['errors'][0]['messages'] == ['random topic is not a valid topic']
     assert resp['data']['proposeTalk']['errors'][0]['field'] == 'topic'
 
 
