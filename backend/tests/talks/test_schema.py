@@ -1,5 +1,7 @@
 from pytest import mark
 
+from django.utils import timezone
+
 from talks.models import Talk
 
 
@@ -90,7 +92,7 @@ def test_propose_talk_with_not_valid_conf_topic(graphql_client, user, conference
 
 
 @mark.django_db
-def test_cannot_propose_a_talk_as_unlogged_user(graphql_client, conference_factory, topic_factory):
+def test_cannot_propose_a_talk_as_unlogged_user(graphql_client, conference_factory):
     conference = conference_factory(topics=('my-topic',), languages=('it',))
     topic = conference.topics.first()
 
@@ -98,3 +100,45 @@ def test_cannot_propose_a_talk_as_unlogged_user(graphql_client, conference_facto
 
     assert resp['errors'][0]['message'] == 'User not logged in'
     assert resp['data']['proposeTalk'] is None
+
+
+@mark.django_db
+def test_cannot_propose_a_talk_if_the_cfp_is_not_open(graphql_client, user, conference_factory):
+    graphql_client.force_login(user)
+
+    now = timezone.now()
+
+    conference = conference_factory(
+        topics=('friends',),
+        languages=('it',),
+        cfp_start=now - timezone.timedelta(days=10),
+        cfp_end=now - timezone.timedelta(days=5),
+    )
+
+    topic = conference.topics.first()
+
+    resp = _propose_talk(graphql_client, 'Test title', 'Abstract', 'it', conference, topic)
+
+    assert resp['data']['proposeTalk']['errors'][0]['messages'] == ['The call for papers is not open!']
+    assert resp['data']['proposeTalk']['errors'][0]['field'] == '__all__'
+    assert resp['data']['proposeTalk']['talk'] is None
+
+
+@mark.django_db
+def test_cannot_propose_a_talk_if_a_cfp_is_not_specified(graphql_client, user, conference_factory):
+    graphql_client.force_login(user)
+
+    conference = conference_factory(
+        topics=('friends',),
+        languages=('it',),
+        cfp_start=None,
+        cfp_end=None,
+    )
+
+    topic = conference.topics.first()
+
+    resp = _propose_talk(graphql_client, 'Test title', 'Abstract', 'it', conference, topic)
+
+    assert resp['data']['proposeTalk']['errors'][0]['messages'] == ['The call for papers is not open!']
+    assert resp['data']['proposeTalk']['errors'][0]['field'] == '__all__'
+    assert resp['data']['proposeTalk']['talk'] is None
