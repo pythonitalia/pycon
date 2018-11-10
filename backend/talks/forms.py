@@ -10,14 +10,14 @@ from .models import Talk
 
 
 class ProposeTalkForm(GrapheneModelForm):
-    conference = forms.ModelChoiceField(queryset=Conference.objects.all(), to_field_name='code')
-    language = forms.ModelChoiceField(queryset=Language.objects.all(), to_field_name='code')
+    conference = forms.ModelChoiceField(queryset=Conference.objects.all(), to_field_name='code', required=True)
+    language = forms.ModelChoiceField(queryset=Language.objects.all(), to_field_name='code', required=True)
 
     def clean(self):
         cleaned_data = super().clean()
-        conference = cleaned_data['conference']
+        conference = cleaned_data.get('conference')
 
-        if not conference.is_cfp_open:
+        if conference and not conference.is_cfp_open:
             raise forms.ValidationError(_('The call for papers is not open!'))
 
     def save(self, commit=True):
