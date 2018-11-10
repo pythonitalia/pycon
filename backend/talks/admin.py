@@ -5,4 +5,6 @@ from .models import Talk
 
 @admin.register(Talk)
 class TalkAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('conference', 'title', 'topic', 'language',)
+    list_filter = ('conference',)
+    search_fields = ('title', 'abstract',)
