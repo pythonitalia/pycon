@@ -7,153 +7,127 @@ from django.core import exceptions
 
 
 @mark.django_db
-def test_validation_does_not_fail_if_both_conference_start_and_end_are_not_specified(conference_factory):
-    conference = conference_factory(end=None, start=None)
-    conference.clean()
-
-
-@mark.django_db
-def test_validation_fails_without_both_conferencestart_and_end(conference_factory):
-    conference = conference_factory(start=None)
-
-    with raises(exceptions.ValidationError) as e:
-        conference.clean()
-
-    assert 'Please specify both start and end for Conference' in str(e.value)
-
-    conference = conference_factory(end=None)
-
-    with raises(exceptions.ValidationError) as e:
-        conference.clean()
-
-    assert 'Please specify both start and end for Conference' in str(e.value)
-
-
-@mark.django_db
-def test_conference_start_cannot_be_after_end(conference_factory):
-    conference = conference_factory(
+def test_deadline_start_cannot_be_after_end(deadline_factory):
+    deadline = deadline_factory(
         start=timezone.make_aware(datetime(2018, 5, 5)),
         end=timezone.make_aware(datetime(2018, 4, 4))
     )
 
     with raises(exceptions.ValidationError) as e:
-        conference.clean()
+        deadline.clean()
 
-    assert 'Conference start date cannot be after end' in str(e.value)
+    assert 'Start date cannot be after end' in str(e.value)
 
 
 @mark.django_db
-def test_cfp_start_cannot_be_after_end(conference_factory):
-    conference = conference_factory(
-        cfp_start=timezone.make_aware(datetime(2018, 5, 5)),
-        cfp_end=timezone.make_aware(datetime(2018, 4, 4))
+def test_conference_cannot_have_two_deadlines_of_type_event(deadline_factory):
+    deadline1 = deadline_factory(
+        type='event',
+        start=timezone.make_aware(datetime(2018, 5, 5)),
+        end=timezone.make_aware(datetime(2018, 6, 3))
+    )
+
+    deadline1.clean()
+
+    deadline2 = deadline_factory(
+        type='event',
+        conference=deadline1.conference,
+        start=timezone.make_aware(datetime(2018, 6, 5)),
+        end=timezone.make_aware(datetime(2018, 10, 4))
     )
 
     with raises(exceptions.ValidationError) as e:
-        conference.clean()
+        deadline2.clean()
 
-    assert 'CFP start date cannot be after end' in str(e.value)
+    assert 'You can only have one deadline of type event' in str(e.value)
 
 
 @mark.django_db
-def test_refund_start_cannot_be_after_end(conference_factory):
-    conference = conference_factory(
-        refund_start=timezone.make_aware(datetime(2018, 5, 5)),
-        refund_end=timezone.make_aware(datetime(2018, 4, 4))
+def test_conference_cannot_have_two_deadlines_of_type_cfp(deadline_factory):
+    deadline1 = deadline_factory(
+        type='cfp',
+        start=timezone.make_aware(datetime(2018, 5, 5)),
+        end=timezone.make_aware(datetime(2018, 6, 3))
+    )
+
+    deadline1.clean()
+
+    deadline2 = deadline_factory(
+        type='cfp',
+        conference=deadline1.conference,
+        start=timezone.make_aware(datetime(2018, 6, 5)),
+        end=timezone.make_aware(datetime(2018, 10, 4))
     )
 
     with raises(exceptions.ValidationError) as e:
-        conference.clean()
+        deadline2.clean()
 
-    assert 'Refund start date cannot be after end' in str(e.value)
+    assert 'You can only have one deadline of type cfp' in str(e.value)
 
 
 @mark.django_db
-def test_voting_start_cannot_be_after_end(conference_factory):
-    conference = conference_factory(
-        voting_start=timezone.make_aware(datetime(2018, 5, 5)),
-        voting_end=timezone.make_aware(datetime(2018, 4, 4))
+def test_conference_cannot_have_two_deadlines_of_type_voting(deadline_factory):
+    deadline1 = deadline_factory(
+        type='voting',
+        start=timezone.make_aware(datetime(2018, 5, 5)),
+        end=timezone.make_aware(datetime(2018, 6, 3))
+    )
+
+    deadline1.clean()
+
+    deadline2 = deadline_factory(
+        type='voting',
+        conference=deadline1.conference,
+        start=timezone.make_aware(datetime(2018, 6, 5)),
+        end=timezone.make_aware(datetime(2018, 10, 4))
     )
 
     with raises(exceptions.ValidationError) as e:
-        conference.clean()
+        deadline2.clean()
 
-    assert 'Voting start date cannot be after end' in str(e.value)
+    assert 'You can only have one deadline of type voting' in str(e.value)
 
 
 @mark.django_db
-def test_validation_fails_without_both_cfpstart_end(conference_factory):
-    conference = conference_factory(cfp_start=None)
+def test_conference_cannot_have_two_deadlines_of_type_refund(deadline_factory):
+    deadline1 = deadline_factory(
+        type='refund',
+        start=timezone.make_aware(datetime(2018, 5, 5)),
+        end=timezone.make_aware(datetime(2018, 6, 3))
+    )
+
+    deadline1.clean()
+
+    deadline2 = deadline_factory(
+        type='refund',
+        conference=deadline1.conference,
+        start=timezone.make_aware(datetime(2018, 6, 5)),
+        end=timezone.make_aware(datetime(2018, 10, 4))
+    )
 
     with raises(exceptions.ValidationError) as e:
-        conference.clean()
+        deadline2.clean()
 
-    assert 'Please specify both start and end for CFP' in str(e.value)
-
-    conference = conference_factory(cfp_end=None)
-
-    with raises(exceptions.ValidationError) as e:
-        conference.clean()
-
-    assert 'Please specify both start and end for CFP' in str(e.value)
+    assert 'You can only have one deadline of type refund' in str(e.value)
 
 
 @mark.django_db
-def test_validation_fails_without_both_votingstart_end(conference_factory):
-    conference = conference_factory(voting_start=None)
+def test_conference_can_have_multiple_custom_deadlines(deadline_factory):
+    deadline1 = deadline_factory(
+        type='custom',
+        start=timezone.make_aware(datetime(2018, 5, 5)),
+        end=timezone.make_aware(datetime(2018, 6, 3))
+    )
 
-    with raises(exceptions.ValidationError) as e:
-        conference.clean()
+    deadline1.clean()
 
-    assert 'Please specify both start and end for Voting' in str(e.value)
+    deadline2 = deadline_factory(
+        type='custom',
+        start=timezone.make_aware(datetime(2018, 5, 5)),
+        end=timezone.make_aware(datetime(2018, 6, 3))
+    )
 
-    conference = conference_factory(voting_end=None)
-
-    with raises(exceptions.ValidationError) as e:
-        conference.clean()
-
-    assert 'Please specify both start and end for Voting' in str(e.value)
-
-
-@mark.django_db
-def test_validation_fails_without_both_refundstart_end(conference_factory):
-    conference = conference_factory(refund_start=None)
-
-    with raises(exceptions.ValidationError) as e:
-        conference.clean()
-
-    assert 'Please specify both start and end for Refund' in str(e.value)
-
-    conference = conference_factory(refund_end=None)
-
-    with raises(exceptions.ValidationError) as e:
-        conference.clean()
-
-    assert 'Please specify both start and end for Refund' in str(e.value)
-
-
-@mark.django_db
-def test_validation_ignores_empty_conference_dates(conference_factory):
-    conference = conference_factory(start=None, end=None)
-    conference.clean()
-
-
-@mark.django_db
-def test_validation_ignores_empty_refund_dates(conference_factory):
-    conference = conference_factory(refund_start=None, refund_end=None)
-    conference.clean()
-
-
-@mark.django_db
-def test_validation_ignores_empty_cfp_dates(conference_factory):
-    conference = conference_factory(cfp_start=None, cfp_end=None)
-    conference.clean()
-
-
-@mark.django_db
-def test_validation_ignores_empty_voting_dates(conference_factory):
-    conference = conference_factory(voting_start=None, voting_end=None)
-    conference.clean()
+    deadline2.clean()
 
 
 @mark.django_db

@@ -1,6 +1,10 @@
 from django.contrib import admin
 
-from .models import Conference, Topic
+from .models import Conference, Topic, Deadline
+
+
+class DeadlineInline(admin.TabularInline):
+    model = Deadline
 
 
 @admin.register(Conference)
@@ -18,15 +22,8 @@ class ConferenceAdmin(admin.ModelAdmin):
                 'topics', 'languages',
             ),
         }),
-        ('Deadlines', {
-            'fields': (
-                ('start', 'end'),
-                ('cfp_start', 'cfp_end'),
-                ('voting_start', 'voting_end'),
-                ('refund_start', 'refund_end'),
-            ),
-        })
     )
+    inlines = [DeadlineInline, ]
 
 
 @admin.register(Topic)
