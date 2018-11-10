@@ -7,6 +7,7 @@ class TalkType(DjangoObjectType):
     class Meta:
         model = Talk
         only_fields = (
+            'id',
             'conference',
             'title',
             'abstract',
