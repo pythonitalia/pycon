@@ -28,6 +28,24 @@ class ConferenceFactory(DjangoModelFactory):
     cfp_start = factory.Faker('past_datetime', tzinfo=pytz.UTC)
     cfp_end = factory.Faker('future_datetime', tzinfo=pytz.UTC)
 
+    @factory.post_generation
+    def topics(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            for topic in extracted:
+                self.topics.add(Topic.objects.get_or_create(name=topic)[0])
+
+    @factory.post_generation
+    def languages(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            for language_code in extracted:
+                self.languages.add(Language.objects.get(code=language_code))
+
 
 @register
 class TopicFactory(DjangoModelFactory):
