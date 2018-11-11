@@ -13,6 +13,7 @@ class Conference(TimeFramedModel, TimeStampedModel):
 
     topics = models.ManyToManyField('conferences.Topic', verbose_name=_('topics'))
     languages = models.ManyToManyField('languages.Language', verbose_name=_('languages'))
+    audience_levels = models.ManyToManyField('conferences.AudienceLevel', verbose_name=_('audience levels'))
 
     def __str__(self):
         return f'{self.name} <{self.code}>'
@@ -65,3 +66,14 @@ class Topic(models.Model):
     class Meta:
         verbose_name = _('Topic')
         verbose_name_plural = _('Topics')
+
+
+class AudienceLevel(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _('Audience Level')
+        verbose_name_plural = _('Audience Levels')

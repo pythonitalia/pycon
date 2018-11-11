@@ -121,3 +121,45 @@ def test_get_not_existent_conference_info(conference, graphql_client):
 
     assert 'errors' in resp
     assert resp["errors"][0]["message"] == "Conference matching query does not exist."
+
+
+@mark.django_db
+def test_query_conference_audience_levels(graphql_client, conference, audience_level_factory):
+    level1 = audience_level_factory()
+    level2 = audience_level_factory()
+    level3 = audience_level_factory()
+
+    conference.audience_levels.add(level1, level2, level3)
+
+    resp = graphql_client.query(
+        """
+        query($code: String) {
+            conference(code: $code) {
+                audienceLevels {
+                    id
+                    name
+                }
+            }
+        }
+        """,
+        variables={
+            'code': conference.code
+        }
+    )
+
+    assert 'errors' not in resp
+
+    assert {
+        'name': level1.name,
+        'id': str(level1.id)
+    } in resp['data']['conference']['audienceLevels']
+
+    assert {
+        'name': level2.name,
+        'id': str(level2.id)
+    } in resp['data']['conference']['audienceLevels']
+
+    assert {
+        'name': level3.name,
+        'id': str(level3.id)
+    } in resp['data']['conference']['audienceLevels']

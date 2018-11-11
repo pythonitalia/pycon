@@ -8,7 +8,7 @@ from factory.django import DjangoModelFactory
 
 from django.utils import timezone
 
-from conferences.models import Conference, Topic, Deadline
+from conferences.models import Conference, Topic, Deadline, AudienceLevel
 from languages.models import Language
 
 
@@ -89,3 +89,12 @@ class DeadlineFactory(DjangoModelFactory):
 
     class Meta:
         model = Deadline
+
+
+@register
+class AudienceLevelFactory(DjangoModelFactory):
+    name = factory.Faker('word')
+
+    class Meta:
+        model = AudienceLevel
+        django_get_or_create = ('name', )
