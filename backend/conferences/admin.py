@@ -19,7 +19,9 @@ class ConferenceAdmin(admin.ModelAdmin):
         }),
         ('Conference', {
             'fields': (
-                'topics', 'languages',
+                ('start', 'end'),
+                'topics',
+                'languages',
             ),
         }),
     )

@@ -52,11 +52,11 @@ def test_get_conference_deadlines_ordered_by_start_date(graphql_client, deadline
 
     conference = deadline_voting.conference
 
-    deadline_conference = deadline_factory(
+    deadline_cfp = deadline_factory(
         start=now - timezone.timedelta(days=1),
         end=now,
         conference=conference,
-        type='event'
+        type='cfp'
     )
 
     deadline_refund = deadline_factory(
@@ -70,6 +70,8 @@ def test_get_conference_deadlines_ordered_by_start_date(graphql_client, deadline
         """
         query($code: String) {
             conference(code: $code) {
+                start
+                end
                 deadlines {
                     start
                     end
@@ -82,6 +84,9 @@ def test_get_conference_deadlines_ordered_by_start_date(graphql_client, deadline
             'code': conference.code
         }
     )
+
+    assert resp['data']['conference']['start'] == conference.start.isoformat()
+    assert resp['data']['conference']['end'] == conference.end.isoformat()
 
     assert {
         'start': deadline_voting.start.isoformat(),
@@ -96,9 +101,9 @@ def test_get_conference_deadlines_ordered_by_start_date(graphql_client, deadline
     } == resp['data']['conference']['deadlines'][1]
 
     assert {
-        'start': deadline_conference.start.isoformat(),
-        'end': deadline_conference.end.isoformat(),
-        'type': 'EVENT'
+        'start': deadline_cfp.start.isoformat(),
+        'end': deadline_cfp.end.isoformat(),
+        'type': 'CFP'
     } == resp['data']['conference']['deadlines'][2]
 
 

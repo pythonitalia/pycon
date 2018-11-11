@@ -7,7 +7,7 @@ from model_utils import Choices
 from model_utils.models import TimeFramedModel, TimeStampedModel
 
 
-class Conference(TimeStampedModel):
+class Conference(TimeFramedModel, TimeStampedModel):
     name = models.CharField(_('name'), max_length=100)
     code = models.CharField(_('code'), max_length=10, unique=True)
 
@@ -24,7 +24,6 @@ class Conference(TimeStampedModel):
 
 class Deadline(TimeFramedModel):
     TYPES = Choices(
-        ('event', _('Conference')),
         ('cfp', _('Call for proposal')),
         ('voting', _('Voting')),
         ('refund', _('Ticket refund')),

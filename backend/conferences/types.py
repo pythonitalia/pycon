@@ -35,5 +35,7 @@ class ConferenceType(DjangoObjectType):
             'id',
             'name',
             'code',
+            'start',
+            'end',
             'deadlines'
         )
