@@ -42,7 +42,7 @@ def _propose_talk(client, title, abstract, language, conference, topic):
 def test_propose_talk(graphql_client, user, conference_factory):
     graphql_client.force_login(user)
 
-    conference = conference_factory(topics=('my-topic',), languages=('it',))
+    conference = conference_factory(topics=('my-topic',), languages=('it',), active_cfp=True)
     topic = conference.topics.first()
 
     resp = _propose_talk(graphql_client, 'Test title', 'Abstract content', 'it', conference, topic)
@@ -67,7 +67,7 @@ def test_propose_talk(graphql_client, user, conference_factory):
 def test_propose_talk_with_not_valid_conf_language(graphql_client, user, conference_factory):
     graphql_client.force_login(user)
 
-    conference = conference_factory(topics=('my-topic',), languages=('it',))
+    conference = conference_factory(topics=('my-topic',), languages=('it',), active_cfp=True)
     topic = conference.topics.first()
 
     resp = _propose_talk(graphql_client, 'Test title', 'Abstract', 'en', conference, topic)
@@ -81,7 +81,7 @@ def test_propose_talk_with_not_valid_conf_language(graphql_client, user, confere
 def test_propose_talk_with_not_valid_conf_topic(graphql_client, user, conference_factory, topic_factory):
     graphql_client.force_login(user)
 
-    conference = conference_factory(topics=('my-topic',), languages=('it',))
+    conference = conference_factory(topics=('my-topic',), languages=('it',), active_cfp=True)
     topic = topic_factory(name='random topic')
 
     resp = _propose_talk(graphql_client, 'Test title', 'Abstract', 'it', conference, topic)
@@ -111,8 +111,7 @@ def test_cannot_propose_a_talk_if_the_cfp_is_not_open(graphql_client, user, conf
     conference = conference_factory(
         topics=('friends',),
         languages=('it',),
-        cfp_start=now - timezone.timedelta(days=10),
-        cfp_end=now - timezone.timedelta(days=5),
+        active_cfp=False
     )
 
     topic = conference.topics.first()
@@ -131,8 +130,6 @@ def test_cannot_propose_a_talk_if_a_cfp_is_not_specified(graphql_client, user, c
     conference = conference_factory(
         topics=('friends',),
         languages=('it',),
-        cfp_start=None,
-        cfp_end=None,
     )
 
     topic = conference.topics.first()
