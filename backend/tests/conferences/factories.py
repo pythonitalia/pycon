@@ -6,6 +6,8 @@ from pytest_factoryboy import register
 
 from factory.django import DjangoModelFactory
 
+from django.utils import timezone
+
 from conferences.models import Conference, Topic, Deadline
 from languages.models import Language
 
@@ -14,6 +16,34 @@ from languages.models import Language
 class ConferenceFactory(DjangoModelFactory):
     name = factory.Faker('name')
     code = factory.Faker('text', max_nb_chars=10)
+
+    @classmethod
+    def _create(cls, model_class, *args, **kwargs):
+        # if the user specifies active_cfp (for example) we will create a deadline to the conference
+        # if the value is True, we will create an active CFP (now is between start and end)
+        # if the value is False, we will create a CFP with dates in the past
+        specified_deadlines = {}
+
+        for deadline in Deadline.TYPES:
+            type = deadline[0]
+
+            value = kwargs.pop(f'active_{type}', None)
+            specified_deadlines[type] = value
+
+        instance = super()._create(model_class, *args, **kwargs)
+
+        for type, value in specified_deadlines.items():
+            if value is True:
+                instance.deadlines.add(DeadlineFactory(conference=instance, type=type))
+            elif value is False:
+                instance.deadlines.add(DeadlineFactory(
+                    conference=instance,
+                    type=type,
+                    start=timezone.now() - timezone.timedelta(days=10),
+                    end=timezone.now() - timezone.timedelta(days=5),
+                ))
+
+        return instance
 
     @factory.post_generation
     def topics(self, create, extracted, **kwargs):
