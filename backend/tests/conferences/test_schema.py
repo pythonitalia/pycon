@@ -163,3 +163,45 @@ def test_query_conference_audience_levels(graphql_client, conference, audience_l
         'name': level3.name,
         'id': str(level3.id)
     } in resp['data']['conference']['audienceLevels']
+
+
+@mark.django_db
+def test_query_conference_topics(graphql_client, conference, topic_factory):
+    topic1 = topic_factory()
+    topic2 = topic_factory()
+    topic3 = topic_factory()
+
+    conference.topics.add(topic1, topic2, topic3)
+
+    resp = graphql_client.query(
+        """
+        query($code: String) {
+            conference(code: $code) {
+                topics {
+                    id
+                    name
+                }
+            }
+        }
+        """,
+        variables={
+            'code': conference.code
+        }
+    )
+
+    assert 'errors' not in resp
+
+    assert {
+        'name': topic1.name,
+        'id': str(topic1.id)
+    } in resp['data']['conference']['topics']
+
+    assert {
+        'name': topic2.name,
+        'id': str(topic2.id)
+    } in resp['data']['conference']['topics']
+
+    assert {
+        'name': topic3.name,
+        'id': str(topic3.id)
+    } in resp['data']['conference']['topics']
