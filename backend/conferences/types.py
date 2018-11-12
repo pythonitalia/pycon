@@ -3,6 +3,7 @@ import graphene
 from graphene_django import DjangoObjectType
 
 from tickets.types import TicketType
+from languages.types import LanguageType
 
 from .models import Conference, Deadline, AudienceLevel, Topic
 
@@ -36,6 +37,7 @@ class ConferenceType(DjangoObjectType):
     deadlines = graphene.NonNull(graphene.List(graphene.NonNull(DeadlineModelType)))
     audience_levels = graphene.NonNull(graphene.List(graphene.NonNull(AudienceLevelType)))
     topics = graphene.NonNull(graphene.List(graphene.NonNull(TopicType)))
+    languages = graphene.NonNull(graphene.List(graphene.NonNull(LanguageType)))
 
     def resolve_tickets(self, info):
         return self.tickets.all()
@@ -49,6 +51,9 @@ class ConferenceType(DjangoObjectType):
     def resolve_topics(self, info):
         return self.topics.all()
 
+    def resolve_languages(self, info):
+        return self.languages.all()
+
     class Meta:
         model = Conference
         only_fields = (
@@ -60,4 +65,5 @@ class ConferenceType(DjangoObjectType):
             'deadlines',
             'audience_levels',
             'topics',
+            'languages',
         )

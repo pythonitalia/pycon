@@ -205,3 +205,42 @@ def test_query_conference_topics(graphql_client, conference, topic_factory):
         'name': topic3.name,
         'id': str(topic3.id)
     } in resp['data']['conference']['topics']
+
+
+@mark.django_db
+def test_query_conference_languages(graphql_client, conference, language):
+    lang_it = language('it')
+    lang_en = language('en')
+
+    conference.languages.add(lang_en, lang_it)
+
+    resp = graphql_client.query(
+        """
+        query($code: String) {
+            conference(code: $code) {
+                languages {
+                    id
+                    name
+                    code
+                }
+            }
+        }
+        """,
+        variables={
+            'code': conference.code
+        }
+    )
+
+    assert 'errors' not in resp
+
+    assert {
+        'name': lang_it.name,
+        'code': lang_it.code,
+        'id': str(lang_it.id)
+    } in resp['data']['conference']['languages']
+
+    assert {
+        'name': lang_en.name,
+        'code': lang_en.code,
+        'id': str(lang_en.id)
+    } in resp['data']['conference']['languages']
