@@ -4,8 +4,24 @@ from django.utils import timezone
 
 from talks.models import Talk
 
+from .factories import TalkFactory
 
-def _propose_talk(client, title, abstract, language, conference, topic):
+
+def _propose_talk(client, conference, **kwargs):
+    talk = TalkFactory.build()
+
+    defaults = {
+        'title': talk.title,
+        'abstract': talk.abstract,
+        'elevator_pitch': talk.elevator_pitch,
+        'notes': talk.notes,
+        'language': 'it',
+        'conference': conference.code,
+        'topic': conference.topics.first().id,
+    }
+
+    variables = {**defaults, **kwargs}
+
     return client.query(
         """
         mutation($conference: ID!, $topic: ID!, $title: String!, $abstract: String!, $language: ID!) {
@@ -28,14 +44,8 @@ def _propose_talk(client, title, abstract, language, conference, topic):
             }
         }
         """,
-        variables={
-            'title': title,
-            'abstract': abstract,
-            'language': language,
-            'conference': conference.code,
-            'topic': topic.id,
-        }
-    )
+        variables=variables,
+    ), variables
 
 
 @mark.django_db
@@ -43,20 +53,22 @@ def test_propose_talk(graphql_client, user, conference_factory):
     graphql_client.force_login(user)
 
     conference = conference_factory(topics=('my-topic',), languages=('it',), active_cfp=True)
-    topic = conference.topics.first()
 
-    resp = _propose_talk(graphql_client, 'Test title', 'Abstract content', 'it', conference, topic)
+    resp, variables = _propose_talk(
+        graphql_client,
+        conference,
+    )
 
     assert resp['data']['proposeTalk']['talk'] is not None
     assert resp['data']['proposeTalk']['errors'] == []
 
-    assert resp['data']['proposeTalk']['talk']['title'] == 'Test title'
-    assert resp['data']['proposeTalk']['talk']['abstract'] == 'Abstract content'
+    assert resp['data']['proposeTalk']['talk']['title'] == variables['title']
+    assert resp['data']['proposeTalk']['talk']['abstract'] == variables['abstract']
 
     talk = Talk.objects.get(id=resp['data']['proposeTalk']['talk']['id'])
 
-    assert talk.title == 'Test title'
-    assert talk.abstract == 'Abstract content'
+    assert talk.title == variables['title']
+    assert talk.abstract == variables['abstract']
     assert talk.language.code == 'it'
     assert talk.topic.name == 'my-topic'
     assert talk.conference == conference
@@ -68,9 +80,8 @@ def test_propose_talk_with_not_valid_conf_language(graphql_client, user, confere
     graphql_client.force_login(user)
 
     conference = conference_factory(topics=('my-topic',), languages=('it',), active_cfp=True)
-    topic = conference.topics.first()
 
-    resp = _propose_talk(graphql_client, 'Test title', 'Abstract', 'en', conference, topic)
+    resp, _ = _propose_talk(graphql_client, conference, language='en')
 
     assert resp['data']['proposeTalk']['talk'] is None
     assert resp['data']['proposeTalk']['errors'][0]['messages'] == ['English (en) is not an allowed language']
@@ -84,7 +95,7 @@ def test_propose_talk_with_not_valid_conf_topic(graphql_client, user, conference
     conference = conference_factory(topics=('my-topic',), languages=('it',), active_cfp=True)
     topic = topic_factory(name='random topic')
 
-    resp = _propose_talk(graphql_client, 'Test title', 'Abstract', 'it', conference, topic)
+    resp, _ = _propose_talk(graphql_client, conference, topic=topic.id)
 
     assert resp['data']['proposeTalk']['talk'] is None
     assert resp['data']['proposeTalk']['errors'][0]['messages'] == ['random topic is not a valid topic']
@@ -96,7 +107,7 @@ def test_cannot_propose_a_talk_as_unlogged_user(graphql_client, conference_facto
     conference = conference_factory(topics=('my-topic',), languages=('it',))
     topic = conference.topics.first()
 
-    resp = _propose_talk(graphql_client, 'Test title', 'Abstract', 'it', conference, topic)
+    resp, _ = _propose_talk(graphql_client, conference)
 
     assert resp['errors'][0]['message'] == 'User not logged in'
     assert resp['data']['proposeTalk'] is None
@@ -114,9 +125,7 @@ def test_cannot_propose_a_talk_if_the_cfp_is_not_open(graphql_client, user, conf
         active_cfp=False
     )
 
-    topic = conference.topics.first()
-
-    resp = _propose_talk(graphql_client, 'Test title', 'Abstract', 'it', conference, topic)
+    resp, _ = _propose_talk(graphql_client, conference)
 
     assert resp['data']['proposeTalk']['errors'][0]['messages'] == ['The call for papers is not open!']
     assert resp['data']['proposeTalk']['errors'][0]['field'] == '__all__'
@@ -132,9 +141,7 @@ def test_cannot_propose_a_talk_if_a_cfp_is_not_specified(graphql_client, user, c
         languages=('it',),
     )
 
-    topic = conference.topics.first()
-
-    resp = _propose_talk(graphql_client, 'Test title', 'Abstract', 'it', conference, topic)
+    resp, _ = _propose_talk(graphql_client, conference)
 
     assert resp['data']['proposeTalk']['errors'][0]['messages'] == ['The call for papers is not open!']
     assert resp['data']['proposeTalk']['errors'][0]['field'] == '__all__'
