@@ -12,6 +12,8 @@ class Talk(TimeStampedModel):
 
     title = models.CharField(_('title'), max_length=100)
     abstract = models.TextField(_('abstract'), max_length=1000)
+    elevator_pitch = models.TextField(_('elevator pitch'), max_length=300)
+    notes = models.TextField(_('notes'))
 
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,

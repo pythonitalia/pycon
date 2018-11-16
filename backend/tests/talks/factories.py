@@ -17,4 +17,6 @@ class TalkFactory(DjangoModelFactory):
     conference = factory.SubFactory(ConferenceFactory)
 
     title = factory.Faker('sentence')
-    abstract = factory.Faker('paragraphs')
+    abstract = factory.Faker('text')
+    elevator_pitch = factory.Faker('text')
+    notes = factory.Faker('text')
