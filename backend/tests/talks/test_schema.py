@@ -105,7 +105,6 @@ def test_propose_talk_with_not_valid_conf_topic(graphql_client, user, conference
 @mark.django_db
 def test_cannot_propose_a_talk_as_unlogged_user(graphql_client, conference_factory):
     conference = conference_factory(topics=('my-topic',), languages=('it',))
-    topic = conference.topics.first()
 
     resp, _ = _propose_talk(graphql_client, conference)
 
