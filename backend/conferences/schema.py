@@ -4,7 +4,7 @@ from .types import ConferenceType
 from .models import Conference
 
 
-class ConferenceQuery(graphene.AbstractType):
+class ConferenceQuery:
     conference = graphene.Field(ConferenceType, code=graphene.String())
 
     def resolve_conference(self, info, code):

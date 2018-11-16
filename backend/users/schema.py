@@ -5,7 +5,7 @@ from graphql import GraphQLError
 from .types import MeUserType
 
 
-class UsersQuery(graphene.AbstractType):
+class UsersQuery:
     me = graphene.Field(MeUserType)
 
     def resolve_me(self, info):
