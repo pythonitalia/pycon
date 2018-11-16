@@ -145,3 +145,61 @@ def test_cannot_propose_a_talk_if_a_cfp_is_not_specified(graphql_client, user, c
     assert resp['data']['proposeTalk']['errors'][0]['messages'] == ['The call for papers is not open!']
     assert resp['data']['proposeTalk']['errors'][0]['field'] == '__all__'
     assert resp['data']['proposeTalk']['talk'] is None
+
+
+@mark.django_db
+def test_same_user_can_propose_multiple_talks_to_the_same_conference(graphql_client, user, conference_factory):
+    graphql_client.force_login(user)
+
+    conference = conference_factory(
+        topics=('friends',),
+        languages=('it',),
+        active_cfp=True
+    )
+
+    resp, _ = _propose_talk(graphql_client, conference, title='My first talk')
+
+    assert resp['data']['proposeTalk']['errors'] == []
+    assert resp['data']['proposeTalk']['talk']['title'] == 'My first talk'
+
+    assert user.talks.filter(conference=conference).count() == 1
+
+    resp, _ = _propose_talk(graphql_client, conference, title='Another talk')
+
+    assert resp['data']['proposeTalk']['errors'] == []
+    assert resp['data']['proposeTalk']['talk']['title'] == 'Another talk'
+
+    assert user.talks.filter(conference=conference).count() == 2
+
+
+@mark.django_db
+def test_same_user_can_propose_talks_to_different_conferences(graphql_client, user, conference_factory):
+    graphql_client.force_login(user)
+
+    conference1 = conference_factory(
+        topics=('friends',),
+        languages=('it',),
+        active_cfp=True
+    )
+
+    conference2 = conference_factory(
+        topics=('another-stuff',),
+        languages=('it', 'en'),
+        active_cfp=True
+    )
+
+    resp, _ = _propose_talk(graphql_client, conference1, title='My first talk')
+
+    assert resp['data']['proposeTalk']['errors'] == []
+    assert resp['data']['proposeTalk']['talk']['title'] == 'My first talk'
+
+    assert user.talks.filter(conference=conference1).count() == 1
+    assert user.talks.filter(conference=conference2).count() == 0
+
+    resp, _ = _propose_talk(graphql_client, conference2, title='Another talk')
+
+    assert resp['data']['proposeTalk']['errors'] == []
+    assert resp['data']['proposeTalk']['talk']['title'] == 'Another talk'
+
+    assert user.talks.filter(conference=conference1).count() == 1
+    assert user.talks.filter(conference=conference2).count() == 1
