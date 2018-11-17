@@ -16,11 +16,10 @@ def test_user_manager():
 
 @pytest.mark.django_db
 def test_create_user_and_authenticate():
-    user = User.objects.create_user('lennon@thebeatles.com', 'johnpassword')
+    user = User.objects.create_user("lennon@thebeatles.com", "johnpassword")
 
     authenticated_user = authenticate(
-        username='lennon@thebeatles.com',
-        password='johnpassword'
+        username="lennon@thebeatles.com", password="johnpassword"
     )
 
     assert user == authenticated_user
@@ -28,6 +27,6 @@ def test_create_user_and_authenticate():
 
 @pytest.mark.django_db
 def test_user_get_short_name():
-    user = User.objects.create_user('lennon@thebeatles.com', 'johnpassword')
+    user = User.objects.create_user("lennon@thebeatles.com", "johnpassword")
 
-    assert 'lennon@thebeatles.com' == user.get_short_name()
+    assert "lennon@thebeatles.com" == user.get_short_name()

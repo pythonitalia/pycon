@@ -14,8 +14,6 @@ def user(db):
 
 @pytest.fixture()
 def admin_user(db):
-    user = User._default_manager.create_superuser(
-        "admin@example.com", "password"
-    )
+    user = User._default_manager.create_superuser("admin@example.com", "password")
 
     return user
