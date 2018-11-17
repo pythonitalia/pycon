@@ -72,7 +72,7 @@ def test_propose_talk(graphql_client, user, conference_factory):
     assert talk.language.code == 'it'
     assert talk.topic.name == 'my-topic'
     assert talk.conference == conference
-    assert talk.owner == user
+    assert talk.speaker == user
 
 
 @mark.django_db

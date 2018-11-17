@@ -21,7 +21,7 @@ class ProposeTalkForm(GrapheneModelForm):
             raise forms.ValidationError(_('The call for papers is not open!'))
 
     def save(self, commit=True):
-        self.instance.owner = self.context.user
+        self.instance.speaker = self.context.user
         return super().save(commit=commit)
 
     class Meta:

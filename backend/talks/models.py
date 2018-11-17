@@ -15,7 +15,7 @@ class Talk(TimeStampedModel):
     elevator_pitch = models.TextField(_('elevator pitch'), max_length=300)
     notes = models.TextField(_('notes'))
 
-    owner = models.ForeignKey(
+    speaker = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         verbose_name=_('owner'),
         on_delete=models.SET_NULL,
