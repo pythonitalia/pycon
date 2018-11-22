@@ -244,3 +244,45 @@ def test_query_conference_languages(graphql_client, conference, language):
         'code': lang_en.code,
         'id': str(lang_en.id)
     } in resp['data']['conference']['languages']
+
+
+
+@mark.django_db
+def test_get_conference_durations(graphql_client, duration_factory):
+    d1 = duration_factory()
+    d2 = duration_factory(conference=d1.conference)
+
+    conference = d1.conference
+
+    resp = graphql_client.query(
+        """
+        query($code: String) {
+            conference(code: $code) {
+                durations {
+                    id
+                    name
+                    duration
+                    notes
+                }
+            }
+        }
+        """,
+        variables={
+            'code': conference.code
+        }
+    )
+
+    assert 'errors' not in resp
+    assert {
+        'id': str(d1.id),
+        'name': d1.name,
+        'duration': d1.duration,
+        'notes': d1.notes,
+    } in resp['data']['conference']['durations']
+
+    assert {
+        'id': str(d2.id),
+        'name': d2.name,
+        'duration': d2.duration,
+        'notes': d2.notes,
+    } in resp['data']['conference']['durations']

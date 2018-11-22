@@ -8,7 +8,7 @@ from factory.django import DjangoModelFactory
 
 from django.utils import timezone
 
-from conferences.models import Conference, Topic, Deadline, AudienceLevel
+from conferences.models import Conference, Topic, Deadline, AudienceLevel, Duration
 from languages.models import Language
 
 
@@ -98,3 +98,15 @@ class AudienceLevelFactory(DjangoModelFactory):
     class Meta:
         model = AudienceLevel
         django_get_or_create = ('name', )
+
+
+@register
+class DurationFactory(DjangoModelFactory):
+    conference = factory.SubFactory(ConferenceFactory)
+
+    name = factory.Faker('word')
+    duration = factory.Faker('pyint')
+    notes = factory.Faker('text')
+
+    class Meta:
+        model = Duration

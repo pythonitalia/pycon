@@ -1,10 +1,14 @@
 from django.contrib import admin
 
-from .models import Conference, Topic, Deadline, AudienceLevel
+from .models import Conference, Topic, Deadline, AudienceLevel, Duration
 
 
 class DeadlineInline(admin.TabularInline):
     model = Deadline
+
+
+class DurationInline(admin.TabularInline):
+    model = Duration
 
 
 @admin.register(Conference)
@@ -26,7 +30,7 @@ class ConferenceAdmin(admin.ModelAdmin):
             ),
         }),
     )
-    inlines = [DeadlineInline, ]
+    inlines = [DeadlineInline, DurationInline, ]
 
 
 @admin.register(Topic)
