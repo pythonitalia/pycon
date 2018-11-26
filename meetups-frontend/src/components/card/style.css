@@ -1,0 +1,15 @@
+.card {
+    background-color: #fff;
+    border-radius: 0.6rem;
+    padding: 3rem;
+
+    box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.05);
+}
+
+.card-title {
+    display: flex;
+    flex-direction: row;
+
+    padding-bottom: 2rem;
+    color: #000;
+}
