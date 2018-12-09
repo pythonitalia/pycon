@@ -1,0 +1,15 @@
+query Home($conf: String!) {
+  conference(code: $conf) {
+    id
+    name
+    start
+    end
+
+    tickets {
+      name
+      start
+      end
+      price
+    }
+  }
+}

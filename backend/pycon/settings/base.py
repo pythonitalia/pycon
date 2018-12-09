@@ -27,6 +27,9 @@ INSTALLED_APPS = [
     'graphene_django',
     'social_django',
     'users',
+    'conferences.apps.ConferencesConfig',
+    'tickets.apps.TicketsConfig',
+    'languages.apps.LanguagesConfig',
 ]
 
 MIDDLEWARE = [
