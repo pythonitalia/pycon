@@ -1,9 +1,10 @@
 {
   "compilerOptions": {
     "noImplicitAny": true,
-    "rootDirs": ["src", "src_gen"],
     "jsx": "react",
-    "lib": ["es6", "esnext.asynciterable", "dom"]
+    "lib": ["es6", "esnext.asynciterable", "dom"],
+    "downlevelIteration": true
+
   },
   "exclude": [
     "node_modules"

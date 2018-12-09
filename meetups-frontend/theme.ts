@@ -21,7 +21,8 @@ scm
 const schema = scm.colors();
 
 const color = tinycolor(base);
-const accent = tinycolor(`#${schema[4]}`);
+// const accent = tinycolor(`#${schema[4]}`);
+const accent = tinycolor(`#FCB500`);
 
 const makeScale = (c: any) => {
   const method = c.isLight() ? 'darken' : 'lighten';

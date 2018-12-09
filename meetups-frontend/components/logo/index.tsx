@@ -14,7 +14,7 @@ const Svg = styled(Box.withComponent('svg'))`
   }
 `;
 
-const Logo = () => (
+export const Logo = () => (
   <Svg viewBox="0 0 360 360" mb={6}>
     <g fillRule="evenodd">
       <text fontFamily="Varela Round" fontSize={28.496} letterSpacing={0.085}>
@@ -27,4 +27,3 @@ const Logo = () => (
   </Svg>
 );
 
-export default Logo;
