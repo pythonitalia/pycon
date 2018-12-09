@@ -1,7 +1,10 @@
 module.exports = {
-    schemas: {
-        default: {
-            endpoint: 'http://localhost:8000/graphql',
+    client: {
+        service: 'meetup',
+
+        service: {
+            name: 'backend',
+            url: 'http://localhost:8000/graphql',
         },
     },
 };

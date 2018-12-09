@@ -17,11 +17,7 @@ const Svg = styled(Box.withComponent('svg'))`
 const Logo = () => (
   <Svg viewBox="0 0 360 360" mb={6}>
     <g fillRule="evenodd">
-      <text
-        fontFamily="Varela Round"
-        fontSize={28.496}
-        letterSpacing={0.085}
-      >
+      <text fontFamily="Varela Round" fontSize={28.496} letterSpacing={0.085}>
         <tspan x={60.108} y={292.588}>
           {'PYTHON ROMA'}
         </tspan>

@@ -7,7 +7,6 @@ import { Router, RouteComponentProps } from '@reach/router';
 import {
   Flex,
   Text,
-  Icon,
   Box,
   Section,
   Heading,
@@ -54,7 +53,7 @@ const Home = (props: RouteComponentProps) => (
       </Text>
     </Hero>
 
-    <Flex wrap color="white" bg="base" px={6}>
+    <Flex wrap color="white" bg="primary" px={6}>
       <Box width={3 / 4} py={6}>
         <Text fontWeight="bold">Prossimo evento</Text>
         <Text fontSize={6} color="accent">
@@ -66,7 +65,7 @@ const Home = (props: RouteComponentProps) => (
 
       <Flex width={1 / 4} py={4} align="center" justify="flex">
         <Box fontSize={3}>
-          <Button bg="accent" color="base" px={5} py={2}>
+          <Button bg="accent" color="primary" px={5} py={2}>
             Registrati
           </Button>
         </Box>
@@ -135,26 +134,9 @@ const Home = (props: RouteComponentProps) => (
       <Button mt={6}>Compila il form</Button>
     </Section>
 
-    <Section bg="smoke">
-      <Text color="dark">Python Roma</Text>
+    <Section bg="white">
+      <Text color="black">Python Roma</Text>
     </Section>
-
-    <Heading.h1>Colors</Heading.h1>
-
-    <pre>{JSON.stringify(theme.colors, null, 4)}</pre>
-
-    {Object.keys(theme.colors).map(key => (
-      <Flex wrap>
-        {' '}
-        {Array.isArray(theme.colors[key]) ? (
-          theme.colors[key].map((e, i) => (
-            <Card name={`${key}.${i}`} color={`${key}.${i}`} />
-          ))
-        ) : (
-          <Card name={key} color={key} />
-        )}
-      </Flex>
-    ))}
   </>
 );
 const Dash = (props: RouteComponentProps) => <div>Dash</div>;
