@@ -1,4 +1,4 @@
-FROM python:3.6.5@sha256:c53366caa34bf23c3da6e91ccdb31eae2a9397af655152ce49780a343c0d7597
+FROM python:3.6.5
 
 # -- Install Application into container:
 RUN set -ex && mkdir /app
@@ -20,7 +20,7 @@ ENV DJANGO_SETTINGS_MODULE=pycon.settings.prod
 
 # # uWSGI configuration (customize as needed):
 ENV UWSGI_WSGI_FILE=pycon/wsgi.py UWSGI_HTTP=:8000 UWSGI_MASTER=1 UWSGI_WORKERS=3
-ENV UWSGI_THREADS=10 UWSGI_UID=1000 UWSGI_GID=2000 UWSGI_LAZY_APPS=1 UWSGI_WSGI_ENV_BEHAVIOR=holy
+ENV UWSGI_THREADS=10 UWSGI_LAZY_APPS=1 UWSGI_WSGI_ENV_BEHAVIOR=holy
 
 # # Start uWSGI
 CMD ["uwsgi", "--http-auto-chunked", "--http-keepalive", "--static-map", "/admin-static=/app/assets"]

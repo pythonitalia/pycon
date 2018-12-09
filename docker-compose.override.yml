@@ -1,0 +1,6 @@
+version: '3'
+services:
+  nginx:
+    ports:
+      - 7070:80
+      - 7071:443

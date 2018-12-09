@@ -1,33 +1,19 @@
 version: '3'
 services:
-  backend:
+  nginx:
+    image: nginx:1.15.7-alpine
+    depends_on:
+      - pycon_backend
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+  pycon_backend:
     build: backend
     depends_on:
-      - postgres
-    ports:
-      - 8000:8000
-    environment: 
-      SECRET_KEY: 123 
-      DEBUG: 'True' 
-      SOCIAL_AUTH_TWITTER_KEY: 'your-secret-key'
-      SOCIAL_AUTH_TWITTER_SECRET: 'your-secret-key'
-      DATABASE_URL: postgres://pyconsite@postgres/pycon 
-
-    command: "python manage.py runserver 0.0.0.0:8000"    
+      - pycon_database
     volumes:
-      - ./backend:/app
-
-  postgres:
-    image: postgres:9.6.8-alpine@sha256:a7fc064c3cfec1c32b99b22cbbcc3cc2a57a52b4a4994a271164462d565cf1c5
+      - ${PYCON_BACKEND_ENV}:/app/.env:ro
+  pycon_database:
+    image: postgres:11.1-alpine
     environment:
-      POSTGRES_USER: pyconsite
-      POSTGRES_DB: pycon
-
-  frontend:
-    build: frontend
-    ports:
-      - 3000:3000
-    volumes:
-      - ./frontend/src:/app/src
-      - ./frontend/public:/app/public
-   
+      - POSTGRES_USER=pycon
+      - POSTGRES_DB=pycon
