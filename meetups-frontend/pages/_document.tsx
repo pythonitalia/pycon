@@ -1,5 +1,10 @@
 import * as React from 'react';
-import Document, { NextDocumentContext, Head, Main, NextScript } from 'next/document';
+import Document, {
+  NextDocumentContext,
+  Head,
+  Main,
+  NextScript,
+} from 'next/document';
 import { ServerStyleSheet } from 'styled-components';
 
 export default class MyDocument extends Document {
@@ -29,6 +34,7 @@ export default class MyDocument extends Document {
             href="https://fonts.googleapis.com/css?family=Roboto:400,700|Varela+Round"
             rel="stylesheet"
           />
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
         </Head>
 
         <Main />

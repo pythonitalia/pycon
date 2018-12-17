@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Section } from '@hackclub/design-system';
+import { Section, Box, Container } from '@hackclub/design-system';
 
 import styled from 'styled-components';
 
@@ -7,7 +7,7 @@ interface Props {
   backgroundImage: string;
 }
 
-export const Hero = styled(Section)`
+export const BaseHero = styled(Box)`
   background-image: url(${(props: Props) => props.backgroundImage});
   background-size: cover;
   background-position: center;
@@ -28,11 +28,21 @@ export const Hero = styled(Section)`
     display: block;
   }
 
-  > * {
+  > ${Container} {
     position: relative;
     z-index: 2;
   }
 `;
+
+export const Hero: React.SFC<Props> = ({
+  children,
+  backgroundImage,
+  ...props
+}) => (
+  <BaseHero backgroundImage={backgroundImage}>
+    <Container {...props}>{children}</Container>
+  </BaseHero>
+);
 
 Hero.defaultProps = {
   ...Section.defaultProps,
