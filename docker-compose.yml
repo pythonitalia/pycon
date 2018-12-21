@@ -1,11 +1,11 @@
 version: '3'
 services:
   nginx:
-    image: nginx:1.15.7-alpine
+    build: nginx
     depends_on:
       - pycon_backend
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - static-sites:/var/sites/:ro
   pycon_backend:
     build: backend
     depends_on:
@@ -17,3 +17,10 @@ services:
     environment:
       - POSTGRES_USER=pycon
       - POSTGRES_DB=pycon
+  pycon_frontend:
+    build: frontend
+    volumes:
+      - static-sites:/sites/
+
+volumes:
+  static-sites:

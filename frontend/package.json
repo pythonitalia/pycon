@@ -5,6 +5,8 @@
   "license": "MIT",
   "scripts": {
     "start": "concurrently \"yarn run dev\" \"yarn run dts --watch\" \"yarn run graphql-types --watch\"",
+    "build": "yarn run dts && yarn run graphql-types && yarn run prod",
+    "prod": "parcel build src/index.html",
     "dev": "node scripts/start.js",
     "dts": "tcm src -c -o src_gen",
     "graphql-types": "apollo codegen:generate --target typescript --tagName graphql --schema schema.json --globalTypesFile=src/types/global.ts types"
