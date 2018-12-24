@@ -30,7 +30,7 @@ INSTALLED_APPS = [
     'conferences.apps.ConferencesConfig',
     'tickets.apps.TicketsConfig',
     'languages.apps.LanguagesConfig',
-    'talks.apps.TalksConfig',
+    'submissions.apps.SubmissionsConfig',
 ]
 
 MIDDLEWARE = [

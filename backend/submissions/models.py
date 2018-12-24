@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 from model_utils.models import TimeStampedModel
 
 
-class Talk(TimeStampedModel):
+class Submission(TimeStampedModel):
     conference = models.ForeignKey('conferences.Conference', on_delete=models.CASCADE, verbose_name=_('conference'))
 
     title = models.CharField(_('title'), max_length=100)
@@ -20,11 +20,12 @@ class Talk(TimeStampedModel):
         verbose_name=_('owner'),
         on_delete=models.SET_NULL,
         null=True,
-        related_name='talks'
+        related_name='submissions'
     )
 
     topic = models.ForeignKey('conferences.Topic', verbose_name=_('topic'), on_delete=models.SET_NULL, null=True)
     language = models.ForeignKey('languages.Language', verbose_name=_('language'), on_delete=models.SET_NULL, null=True)
+    type = models.ForeignKey('submissions.SubmissionType', verbose_name=_('type'), on_delete=models.SET_NULL, null=True)
 
     def clean(self):
         if self.topic_id and not self.conference.topics.filter(id=self.topic_id).exists():
@@ -36,3 +37,15 @@ class Talk(TimeStampedModel):
             raise exceptions.ValidationError(
                 {'language': _('%(language)s is not an allowed language') % {'language': str(self.language)}}
             )
+
+        if self.type_id and not self.conference.submission_types.filter(id=self.type_id).exists():
+            raise exceptions.ValidationError(
+                {'type': _('%(submission_type)s is not an allowed submission type') % {'submission_type': str(self.type)}}
+            )
+
+
+class SubmissionType(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.name

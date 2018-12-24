@@ -6,10 +6,10 @@ from api.forms import GrapheneModelForm
 from languages.models import Language
 from conferences.models import Conference
 
-from .models import Talk
+from .models import Submission
 
 
-class ProposeTalkForm(GrapheneModelForm):
+class SendSubmissionForm(GrapheneModelForm):
     conference = forms.ModelChoiceField(queryset=Conference.objects.all(), to_field_name='code', required=True)
     language = forms.ModelChoiceField(queryset=Language.objects.all(), to_field_name='code', required=True)
 
@@ -25,5 +25,5 @@ class ProposeTalkForm(GrapheneModelForm):
         return super().save(commit=commit)
 
     class Meta:
-        model = Talk
-        fields = ('title', 'abstract', 'topic', 'language', 'conference')
+        model = Submission
+        fields = ('title', 'abstract', 'topic', 'language', 'conference', 'type')

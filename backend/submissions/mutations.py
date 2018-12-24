@@ -4,12 +4,12 @@ from graphql import GraphQLError
 
 from api.mutations import ContextAwareDjangoModelFormMutation
 
-from .types import TalkType  # noqa
+from .types import ModelSubmissionType  # noqa
 
-from .forms import ProposeTalkForm
+from .forms import SendSubmissionForm
 
 
-class ProposeTalk(ContextAwareDjangoModelFormMutation):
+class SendSubmission(ContextAwareDjangoModelFormMutation):
     @classmethod
     def mutate_and_get_payload(cls, root, info, **input):
         if not info.context.user.is_authenticated:
@@ -18,8 +18,8 @@ class ProposeTalk(ContextAwareDjangoModelFormMutation):
         return super().mutate_and_get_payload(root, info, **input)
 
     class Meta:
-        form_class = ProposeTalkForm
+        form_class = SendSubmissionForm
 
 
-class TalksMutations(graphene.ObjectType):
-    propose_talk = ProposeTalk.Field()
+class SubmissionsMutations(graphene.ObjectType):
+    send_submission = SendSubmission.Field()

@@ -6,13 +6,22 @@ from factory.django import DjangoModelFactory
 
 from tests.conferences.factories import ConferenceFactory
 
-from talks.models import Talk
+from submissions.models import Submission, SubmissionType
 
 
 @register
-class TalkFactory(DjangoModelFactory):
+class SubmissionTypeFactory(DjangoModelFactory):
     class Meta:
-        model = Talk
+        model = SubmissionType
+        django_get_or_create = ('name', )
+
+    name = factory.fuzzy.FuzzyChoice(['talk', 'tutorial'])
+
+
+@register
+class SubmissionFactory(DjangoModelFactory):
+    class Meta:
+        model = Submission
 
     conference = factory.SubFactory(ConferenceFactory)
 
@@ -20,3 +29,4 @@ class TalkFactory(DjangoModelFactory):
     abstract = factory.Faker('text')
     elevator_pitch = factory.Faker('text')
     notes = factory.Faker('text')
+    type = factory.SubFactory(SubmissionTypeFactory)

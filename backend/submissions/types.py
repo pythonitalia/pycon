@@ -1,11 +1,11 @@
 from graphene_django import DjangoObjectType
 
-from .models import Talk
+from .models import Submission
 
 
-class TalkType(DjangoObjectType):
+class ModelSubmissionType(DjangoObjectType):
     class Meta:
-        model = Talk
+        model = Submission
         only_fields = (
             'id',
             'conference',
@@ -13,5 +13,6 @@ class TalkType(DjangoObjectType):
             'abstract',
             'owner',
             'helpers',
-            'topic'
+            'topic',
+            'type',
         )

@@ -3,15 +3,15 @@ import graphene
 from users.schema import UsersQuery
 from conferences.schema import ConferenceQuery
 
-from talks.mutations import TalksMutations
+from submissions.mutations import SubmissionsMutations
 
 
 class Query(UsersQuery, ConferenceQuery, graphene.ObjectType):
     pass
 
 
-class Mutations(TalksMutations):
+class Mutations(SubmissionsMutations):
     pass
 
 
-schema = graphene.Schema(query=Query, mutation=TalksMutations)
+schema = graphene.Schema(query=Query, mutation=Mutations)

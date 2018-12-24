@@ -10,6 +10,7 @@ from django.utils import timezone
 
 from conferences.models import Conference, Topic, Deadline, AudienceLevel, Duration
 from languages.models import Language
+from submissions.models import SubmissionType
 
 
 @register
@@ -65,6 +66,15 @@ class ConferenceFactory(DjangoModelFactory):
         if extracted:
             for language_code in extracted:
                 self.languages.add(Language.objects.get(code=language_code))
+
+    @factory.post_generation
+    def submission_types(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            for submission_type in extracted:
+                self.submission_types.add(SubmissionType.objects.get_or_create(name=submission_type)[0])
 
     class Meta:
         model = Conference
