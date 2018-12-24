@@ -1,7 +1,7 @@
 FROM python:3.6.5
 
 # -- Install Application into container:
-RUN set -ex && mkdir /app
+RUN mkdir /app
 
 WORKDIR /app
 
