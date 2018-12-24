@@ -9,7 +9,7 @@ from .factories import SubmissionFactory
 
 def _submit_submission(client, conference, **kwargs):
     talk = SubmissionFactory.build(
-        type=SubmissionType.objects.get(name='talk')
+        type=SubmissionType.objects.get_or_create(name='talk')[0]
     )
 
     defaults = {
@@ -104,6 +104,19 @@ def test_submit_submission_with_not_valid_conf_topic(graphql_client, user, confe
     assert resp['data']['sendSubmission']['submission'] is None
     assert resp['data']['sendSubmission']['errors'][0]['messages'] == ['random topic is not a valid topic']
     assert resp['data']['sendSubmission']['errors'][0]['field'] == 'topic'
+
+
+@mark.django_db
+def test_submit_submission_with_not_valid_submission_type(graphql_client, user, conference_factory, topic_factory):
+    graphql_client.force_login(user)
+
+    conference = conference_factory(topics=('my-topic',), languages=('it',), submission_types=('tutorial',), active_cfp=True)
+
+    resp, _ = _submit_submission(graphql_client, conference)
+
+    assert resp['data']['sendSubmission']['submission'] is None
+    assert resp['data']['sendSubmission']['errors'][0]['messages'] == ['talk is not an allowed submission type']
+    assert resp['data']['sendSubmission']['errors'][0]['field'] == 'type'
 
 
 @mark.django_db
