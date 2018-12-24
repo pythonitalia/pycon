@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.utils import timezone
 from django.core import exceptions
 from django.core.validators import MinValueValidator
 from django.utils.translation import ugettext_lazy as _
@@ -15,6 +15,16 @@ class Conference(TimeFramedModel, TimeStampedModel):
     topics = models.ManyToManyField('conferences.Topic', verbose_name=_('topics'))
     languages = models.ManyToManyField('languages.Language', verbose_name=_('languages'))
     audience_levels = models.ManyToManyField('conferences.AudienceLevel', verbose_name=_('audience levels'))
+
+    @property
+    def is_cfp_open(self):
+        try:
+            cfp_deadline = self.deadlines.get(type=Deadline.TYPES.cfp)
+
+            now = timezone.now()
+            return cfp_deadline.start <= now <= cfp_deadline.end
+        except Deadline.DoesNotExist:
+            return False
 
     def __str__(self):
         return f'{self.name} <{self.code}>'
