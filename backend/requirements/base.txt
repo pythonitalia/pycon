@@ -3,4 +3,4 @@ django-environ==0.4.4
 graphene-django==2.2.0
 social-auth-app-django==2.1.0
 django-model-utils==3.1.2
-pytz==2018.5
+pytz==2018.7
