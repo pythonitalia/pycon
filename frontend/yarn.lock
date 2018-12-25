@@ -252,9 +252,9 @@
   dependencies:
     "@types/react" "*"
 
-"@types/reach__router@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@types/reach__router/-/reach__router-1.0.1.tgz#f927a0c6ae198e032b5990196c2b7606a9fb14a1"
+"@types/reach__router@^1.2.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@types/reach__router/-/reach__router-1.2.2.tgz#1bd96626c2866a61937758ef6be2f06309124805"
   dependencies:
     "@types/history" "*"
     "@types/react" "*"
