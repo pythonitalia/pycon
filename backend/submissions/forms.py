@@ -26,4 +26,4 @@ class SendSubmissionForm(GrapheneModelForm):
 
     class Meta:
         model = Submission
-        fields = ('title', 'abstract', 'topic', 'language', 'conference', 'type')
+        fields = ('title', 'abstract', 'topic', 'language', 'conference', 'type', 'duration')

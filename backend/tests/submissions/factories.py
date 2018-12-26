@@ -4,7 +4,7 @@ from pytest_factoryboy import register
 
 from factory.django import DjangoModelFactory
 
-from tests.conferences.factories import ConferenceFactory
+from tests.conferences.factories import ConferenceFactory, DurationFactory
 
 from submissions.models import Submission, SubmissionType
 
@@ -30,3 +30,4 @@ class SubmissionFactory(DjangoModelFactory):
     elevator_pitch = factory.Faker('text')
     notes = factory.Faker('text')
     type = factory.SubFactory(SubmissionTypeFactory)
+    duration = factory.SubFactory(DurationFactory)

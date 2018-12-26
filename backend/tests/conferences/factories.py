@@ -76,6 +76,20 @@ class ConferenceFactory(DjangoModelFactory):
             for submission_type in extracted:
                 self.submission_types.add(SubmissionType.objects.get_or_create(name=submission_type)[0])
 
+    @factory.post_generation
+    def durations(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            for duration in extracted:
+                self.durations.add(Duration.objects.get_or_create(
+                    duration=duration,
+                    conference=self,
+                    defaults={'name': f'{duration}m'}
+                )[0])
+
+
     class Meta:
         model = Conference
 

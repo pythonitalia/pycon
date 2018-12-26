@@ -31,6 +31,7 @@ class Submission(TimeStampedModel):
     topic = models.ForeignKey('conferences.Topic', verbose_name=_('topic'), on_delete=models.SET_NULL, null=True)
     language = models.ForeignKey('languages.Language', verbose_name=_('language'), on_delete=models.SET_NULL, null=True)
     type = models.ForeignKey('submissions.SubmissionType', verbose_name=_('type'), on_delete=models.SET_NULL, null=True)
+    duration = models.ForeignKey('conferences.Duration', verbose_name=_('duration'), on_delete=models.SET_NULL, null=True)
 
     def clean(self):
         if self.topic_id and not self.conference.topics.filter(id=self.topic_id).exists():
@@ -48,6 +49,10 @@ class Submission(TimeStampedModel):
                 {'type': _('%(submission_type)s is not an allowed submission type') % {'submission_type': str(self.type)}}
             )
 
+        if self.duration_id and not self.conference.durations.filter(id=self.duration_id).exists():
+            raise exceptions.ValidationError(
+                {'duration': _('%(duration)s is not an allowed duration type') % {'duration': str(self.duration)}}
+            )
 
 class SubmissionType(models.Model):
     name = models.CharField(max_length=100, unique=True)

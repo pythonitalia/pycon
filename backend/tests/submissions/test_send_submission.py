@@ -21,13 +21,14 @@ def _submit_talk(client, conference, **kwargs):
         'conference': conference.code,
         'topic': conference.topics.first().id,
         'type': talk.type.id,
+        'duration': conference.durations.first().id,
     }
 
     variables = {**defaults, **kwargs}
 
     return client.query(
         """
-        mutation($conference: ID!, $topic: ID!, $title: String!, $abstract: String!, $language: ID!, $type: ID!) {
+        mutation($conference: ID!, $topic: ID!, $title: String!, $abstract: String!, $language: ID!, $type: ID!, $duration: ID!) {
             sendSubmission(input: {
                 title: $title,
                 abstract: $abstract,
@@ -35,6 +36,7 @@ def _submit_talk(client, conference, **kwargs):
                 conference: $conference,
                 topic: $topic,
                 type: $type,
+                duration: $duration,
             }) {
                 submission {
                     id,
@@ -56,7 +58,13 @@ def _submit_talk(client, conference, **kwargs):
 def test_submit_talk(graphql_client, user, conference_factory):
     graphql_client.force_login(user)
 
-    conference = conference_factory(topics=('my-topic',), languages=('it',), submission_types=('talk',), active_cfp=True)
+    conference = conference_factory(
+        topics=('my-topic',),
+        languages=('it',),
+        submission_types=('talk',),
+        active_cfp=True,
+        durations=('50',),
+    )
 
     resp, variables = _submit_talk(
         graphql_client,
@@ -83,7 +91,13 @@ def test_submit_talk(graphql_client, user, conference_factory):
 def test_submit_talk_with_not_valid_conf_language(graphql_client, user, conference_factory):
     graphql_client.force_login(user)
 
-    conference = conference_factory(topics=('my-topic',), languages=('it',), submission_types=('talk',), active_cfp=True)
+    conference = conference_factory(
+        topics=('my-topic',),
+        languages=('it',),
+        submission_types=('talk',),
+        durations=('50',),
+        active_cfp=True,
+    )
 
     resp, _ = _submit_talk(graphql_client, conference, language='en')
 
@@ -93,10 +107,41 @@ def test_submit_talk_with_not_valid_conf_language(graphql_client, user, conferen
 
 
 @mark.django_db
+def test_submit_talk_with_duration_id_of_another_conf(graphql_client, user, conference_factory, duration_factory):
+    graphql_client.force_login(user)
+
+    another_conf_duration = duration_factory()
+
+    conference = conference_factory(
+        topics=('my-topic',),
+        languages=('it',),
+        submission_types=('talk',),
+        durations=('50',),
+        active_cfp=True,
+    )
+
+    resp, _ = _submit_talk(graphql_client, conference, duration=another_conf_duration.id)
+
+    assert resp['data']['sendSubmission']['submission'] is None
+    assert (
+        resp['data']['sendSubmission']['errors'][0]['messages']
+        ==
+        [f'{another_conf_duration.name} - {another_conf_duration.duration} mins ({another_conf_duration.conference.id}) is not an allowed duration type']
+    )
+    assert resp['data']['sendSubmission']['errors'][0]['field'] == 'duration'
+
+
+@mark.django_db
 def test_submit_talk_with_not_valid_conf_topic(graphql_client, user, conference_factory, topic_factory):
     graphql_client.force_login(user)
 
-    conference = conference_factory(topics=('my-topic',), languages=('it',), submission_types=('talk',), active_cfp=True)
+    conference = conference_factory(
+        topics=('my-topic',),
+        languages=('it',),
+        submission_types=('talk',),
+        active_cfp=True,
+        durations=('50',),
+    )
     topic = topic_factory(name='random topic')
 
     resp, _ = _submit_talk(graphql_client, conference, topic=topic.id)
@@ -110,7 +155,13 @@ def test_submit_talk_with_not_valid_conf_topic(graphql_client, user, conference_
 def test_submit_talk_with_not_valid_submission_type(graphql_client, user, conference_factory, topic_factory):
     graphql_client.force_login(user)
 
-    conference = conference_factory(topics=('my-topic',), languages=('it',), submission_types=('tutorial',), active_cfp=True)
+    conference = conference_factory(
+        topics=('my-topic',),
+        languages=('it',),
+        submission_types=('tutorial',),
+        active_cfp=True,
+        durations=('50',),
+    )
 
     resp, _ = _submit_talk(graphql_client, conference)
 
@@ -121,7 +172,12 @@ def test_submit_talk_with_not_valid_submission_type(graphql_client, user, confer
 
 @mark.django_db
 def test_cannot_propose_a_talk_as_unlogged_user(graphql_client, conference_factory):
-    conference = conference_factory(topics=('my-topic',), languages=('it',), submission_types=('talk',))
+    conference = conference_factory(
+        topics=('my-topic',),
+        languages=('it',),
+        submission_types=('talk',),
+        durations=('50',),
+    )
 
     resp, _ = _submit_talk(graphql_client, conference)
 
@@ -139,7 +195,8 @@ def test_cannot_propose_a_talk_if_the_cfp_is_not_open(graphql_client, user, conf
         topics=('friends',),
         languages=('it',),
         active_cfp=False,
-        submission_types=('talk',)
+        submission_types=('talk',),
+        durations=('50',),
     )
 
     resp, _ = _submit_talk(graphql_client, conference)
@@ -156,7 +213,8 @@ def test_cannot_propose_a_talk_if_a_cfp_is_not_specified(graphql_client, user, c
     conference = conference_factory(
         topics=('friends',),
         languages=('it',),
-        submission_types=('talk',)
+        submission_types=('talk',),
+        durations=('50',),
     )
 
     resp, _ = _submit_talk(graphql_client, conference)
@@ -174,7 +232,8 @@ def test_same_user_can_propose_multiple_talks_to_the_same_conference(graphql_cli
         topics=('friends',),
         languages=('it',),
         active_cfp=True,
-        submission_types=('talk',)
+        submission_types=('talk',),
+        durations=('50',),
     )
 
     resp, _ = _submit_talk(graphql_client, conference, title='My first talk')
@@ -200,14 +259,16 @@ def test_same_user_can_submit_talks_to_different_conferences(graphql_client, use
         topics=('friends',),
         languages=('it',),
         active_cfp=True,
-        submission_types=('talk',)
+        submission_types=('talk',),
+        durations=('50',),
     )
 
     conference2 = conference_factory(
         topics=('another-stuff',),
         languages=('it', 'en'),
         active_cfp=True,
-        submission_types=('talk',)
+        submission_types=('talk',),
+        durations=('50',),
     )
 
     resp, _ = _submit_talk(graphql_client, conference1, title='My first talk')

@@ -15,4 +15,5 @@ class ModelSubmissionType(DjangoObjectType):
             'helpers',
             'topic',
             'type',
+            'duration',
         )
