@@ -8,7 +8,12 @@ from model_utils.models import TimeStampedModel
 
 
 class Submission(TimeStampedModel):
-    conference = models.ForeignKey('conferences.Conference', on_delete=models.CASCADE, verbose_name=_('conference'))
+    conference = models.ForeignKey(
+        'conferences.Conference',
+        on_delete=models.CASCADE,
+        verbose_name=_('conference'),
+        related_name='submissions'
+    )
 
     title = models.CharField(_('title'), max_length=100)
     abstract = models.TextField(_('abstract'), max_length=1000)

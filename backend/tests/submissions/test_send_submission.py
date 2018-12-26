@@ -7,7 +7,7 @@ from submissions.models import Submission, SubmissionType
 from .factories import SubmissionFactory
 
 
-def _submit_submission(client, conference, **kwargs):
+def _submit_talk(client, conference, **kwargs):
     talk = SubmissionFactory.build(
         type=SubmissionType.objects.get_or_create(name='talk')[0]
     )
@@ -53,12 +53,12 @@ def _submit_submission(client, conference, **kwargs):
 
 
 @mark.django_db
-def test_submit_submission(graphql_client, user, conference_factory):
+def test_submit_talk(graphql_client, user, conference_factory):
     graphql_client.force_login(user)
 
     conference = conference_factory(topics=('my-topic',), languages=('it',), submission_types=('talk',), active_cfp=True)
 
-    resp, variables = _submit_submission(
+    resp, variables = _submit_talk(
         graphql_client,
         conference,
     )
@@ -80,12 +80,12 @@ def test_submit_submission(graphql_client, user, conference_factory):
 
 
 @mark.django_db
-def test_submit_submission_with_not_valid_conf_language(graphql_client, user, conference_factory):
+def test_submit_talk_with_not_valid_conf_language(graphql_client, user, conference_factory):
     graphql_client.force_login(user)
 
     conference = conference_factory(topics=('my-topic',), languages=('it',), submission_types=('talk',), active_cfp=True)
 
-    resp, _ = _submit_submission(graphql_client, conference, language='en')
+    resp, _ = _submit_talk(graphql_client, conference, language='en')
 
     assert resp['data']['sendSubmission']['submission'] is None
     assert resp['data']['sendSubmission']['errors'][0]['messages'] == ['English (en) is not an allowed language']
@@ -93,13 +93,13 @@ def test_submit_submission_with_not_valid_conf_language(graphql_client, user, co
 
 
 @mark.django_db
-def test_submit_submission_with_not_valid_conf_topic(graphql_client, user, conference_factory, topic_factory):
+def test_submit_talk_with_not_valid_conf_topic(graphql_client, user, conference_factory, topic_factory):
     graphql_client.force_login(user)
 
     conference = conference_factory(topics=('my-topic',), languages=('it',), submission_types=('talk',), active_cfp=True)
     topic = topic_factory(name='random topic')
 
-    resp, _ = _submit_submission(graphql_client, conference, topic=topic.id)
+    resp, _ = _submit_talk(graphql_client, conference, topic=topic.id)
 
     assert resp['data']['sendSubmission']['submission'] is None
     assert resp['data']['sendSubmission']['errors'][0]['messages'] == ['random topic is not a valid topic']
@@ -107,12 +107,12 @@ def test_submit_submission_with_not_valid_conf_topic(graphql_client, user, confe
 
 
 @mark.django_db
-def test_submit_submission_with_not_valid_submission_type(graphql_client, user, conference_factory, topic_factory):
+def test_submit_talk_with_not_valid_submission_type(graphql_client, user, conference_factory, topic_factory):
     graphql_client.force_login(user)
 
     conference = conference_factory(topics=('my-topic',), languages=('it',), submission_types=('tutorial',), active_cfp=True)
 
-    resp, _ = _submit_submission(graphql_client, conference)
+    resp, _ = _submit_talk(graphql_client, conference)
 
     assert resp['data']['sendSubmission']['submission'] is None
     assert resp['data']['sendSubmission']['errors'][0]['messages'] == ['talk is not an allowed submission type']
@@ -123,7 +123,7 @@ def test_submit_submission_with_not_valid_submission_type(graphql_client, user, 
 def test_cannot_propose_a_talk_as_unlogged_user(graphql_client, conference_factory):
     conference = conference_factory(topics=('my-topic',), languages=('it',), submission_types=('talk',))
 
-    resp, _ = _submit_submission(graphql_client, conference)
+    resp, _ = _submit_talk(graphql_client, conference)
 
     assert resp['errors'][0]['message'] == 'User not logged in'
     assert resp['data']['sendSubmission'] is None
@@ -142,7 +142,7 @@ def test_cannot_propose_a_talk_if_the_cfp_is_not_open(graphql_client, user, conf
         submission_types=('talk',)
     )
 
-    resp, _ = _submit_submission(graphql_client, conference)
+    resp, _ = _submit_talk(graphql_client, conference)
 
     assert resp['data']['sendSubmission']['errors'][0]['messages'] == ['The call for papers is not open!']
     assert resp['data']['sendSubmission']['errors'][0]['field'] == '__all__'
@@ -159,7 +159,7 @@ def test_cannot_propose_a_talk_if_a_cfp_is_not_specified(graphql_client, user, c
         submission_types=('talk',)
     )
 
-    resp, _ = _submit_submission(graphql_client, conference)
+    resp, _ = _submit_talk(graphql_client, conference)
 
     assert resp['data']['sendSubmission']['errors'][0]['messages'] == ['The call for papers is not open!']
     assert resp['data']['sendSubmission']['errors'][0]['field'] == '__all__'
@@ -177,14 +177,14 @@ def test_same_user_can_propose_multiple_talks_to_the_same_conference(graphql_cli
         submission_types=('talk',)
     )
 
-    resp, _ = _submit_submission(graphql_client, conference, title='My first talk')
+    resp, _ = _submit_talk(graphql_client, conference, title='My first talk')
 
     assert resp['data']['sendSubmission']['errors'] == []
     assert resp['data']['sendSubmission']['submission']['title'] == 'My first talk'
 
     assert user.submissions.filter(conference=conference).count() == 1
 
-    resp, _ = _submit_submission(graphql_client, conference, title='Another talk')
+    resp, _ = _submit_talk(graphql_client, conference, title='Another talk')
 
     assert resp['data']['sendSubmission']['errors'] == []
     assert resp['data']['sendSubmission']['submission']['title'] == 'Another talk'
@@ -193,7 +193,7 @@ def test_same_user_can_propose_multiple_talks_to_the_same_conference(graphql_cli
 
 
 @mark.django_db
-def test_same_user_can_submit_submissions_to_different_conferences(graphql_client, user, conference_factory):
+def test_same_user_can_submit_talks_to_different_conferences(graphql_client, user, conference_factory):
     graphql_client.force_login(user)
 
     conference1 = conference_factory(
@@ -210,7 +210,7 @@ def test_same_user_can_submit_submissions_to_different_conferences(graphql_clien
         submission_types=('talk',)
     )
 
-    resp, _ = _submit_submission(graphql_client, conference1, title='My first talk')
+    resp, _ = _submit_talk(graphql_client, conference1, title='My first talk')
 
     assert resp['data']['sendSubmission']['errors'] == []
     assert resp['data']['sendSubmission']['submission']['title'] == 'My first talk'
@@ -218,7 +218,7 @@ def test_same_user_can_submit_submissions_to_different_conferences(graphql_clien
     assert user.submissions.filter(conference=conference1).count() == 1
     assert user.submissions.filter(conference=conference2).count() == 0
 
-    resp, _ = _submit_submission(graphql_client, conference2, title='Another talk')
+    resp, _ = _submit_talk(graphql_client, conference2, title='Another talk')
 
     assert resp['data']['sendSubmission']['errors'] == []
     assert resp['data']['sendSubmission']['submission']['title'] == 'Another talk'
