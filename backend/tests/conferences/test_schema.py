@@ -248,9 +248,14 @@ def test_query_conference_languages(graphql_client, conference, language):
 
 
 @mark.django_db
-def test_get_conference_durations(graphql_client, duration_factory):
+def test_get_conference_durations(graphql_client, duration_factory, submission_type_factory):
+    talk_type = submission_type_factory(name='talk')
+    tutorial_type = submission_type_factory(name='tutorial')
+
     d1 = duration_factory()
+    d1.allowed_submission_types.add(talk_type)
     d2 = duration_factory(conference=d1.conference)
+    d2.allowed_submission_types.add(tutorial_type)
 
     conference = d1.conference
 
@@ -263,6 +268,10 @@ def test_get_conference_durations(graphql_client, duration_factory):
                     name
                     duration
                     notes
+                    allowedSubmissionTypes {
+                        id
+                        name
+                    }
                 }
             }
         }
@@ -278,6 +287,9 @@ def test_get_conference_durations(graphql_client, duration_factory):
         'name': d1.name,
         'duration': d1.duration,
         'notes': d1.notes,
+        'allowedSubmissionTypes': [
+            {'id': str(talk_type.id), 'name': talk_type.name}
+        ]
     } in resp['data']['conference']['durations']
 
     assert {
@@ -285,4 +297,7 @@ def test_get_conference_durations(graphql_client, duration_factory):
         'name': d2.name,
         'duration': d2.duration,
         'notes': d2.notes,
+        'allowedSubmissionTypes': [
+            {'id': str(tutorial_type.id), 'name': tutorial_type.name}
+        ]
     } in resp['data']['conference']['durations']
