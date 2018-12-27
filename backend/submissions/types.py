@@ -1,9 +1,18 @@
 from graphene_django import DjangoObjectType
 
-from .models import Submission
+from .models import Submission, SubmissionType as ModelSubmissionType
 
 
-class ModelSubmissionType(DjangoObjectType):
+class SubmissionTypeType(DjangoObjectType):
+    class Meta:
+        model = ModelSubmissionType
+        only_fields = (
+            'id',
+            'name'
+        )
+
+
+class SubmissionType(DjangoObjectType):
     class Meta:
         model = Submission
         only_fields = (

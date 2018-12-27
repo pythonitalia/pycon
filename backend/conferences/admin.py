@@ -7,8 +7,9 @@ class DeadlineInline(admin.TabularInline):
     model = Deadline
 
 
-class DurationInline(admin.TabularInline):
+class DurationInline(admin.StackedInline):
     model = Duration
+    filter_horizontal = ('allowed_submission_types', )
 
 
 @admin.register(Conference)

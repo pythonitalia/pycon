@@ -4,11 +4,17 @@ from graphene_django import DjangoObjectType
 
 from tickets.types import TicketType
 from languages.types import LanguageType
+from submissions.types import SubmissionTypeType
 
 from .models import Conference, Deadline, AudienceLevel, Topic, Duration
 
 
 class DurationType(DjangoObjectType):
+    allowed_submission_types = graphene.NonNull(graphene.List(graphene.NonNull(SubmissionTypeType)))
+
+    def resolve_allowed_submission_types(self, info):
+        return self.allowed_submission_types.all()
+
     class Meta:
         model = Duration
         only_fields = (
@@ -17,6 +23,7 @@ class DurationType(DjangoObjectType):
             'name',
             'duration',
             'notes',
+            'allowed_submission_types',
         )
 
 

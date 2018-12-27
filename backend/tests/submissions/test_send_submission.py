@@ -107,6 +107,43 @@ def test_submit_talk_with_not_valid_conf_language(graphql_client, user, conferen
 
 
 @mark.django_db
+def test_cannot_use_duration_if_submission_type_is_not_allowed(
+    graphql_client,
+    user,
+    conference_factory,
+    duration_factory,
+    submission_type_factory
+):
+    graphql_client.force_login(user)
+
+    talk_type = submission_type_factory(name='talk')
+    tutorial_type = submission_type_factory(name='tutorial')
+
+    conference = conference_factory(
+        topics=('my-topic',),
+        languages=('it',),
+        submission_types=('talk', 'tutorial'),
+        active_cfp=True,
+    )
+
+    duration1 = duration_factory(conference=conference)
+    duration1.allowed_submission_types.add(talk_type)
+
+    duration2 = duration_factory(conference=conference)
+    duration2.allowed_submission_types.add(tutorial_type)
+
+    resp, _ = _submit_talk(graphql_client, conference, type=talk_type.id, duration=duration2.id)
+
+    assert resp['data']['sendSubmission']['submission'] is None
+    assert (
+        resp['data']['sendSubmission']['errors'][0]['messages']
+        ==
+        [f'Duration {str(duration2)} is not an allowed for the submission type {str(talk_type)}']
+    )
+    assert resp['data']['sendSubmission']['errors'][0]['field'] == 'duration'
+
+
+@mark.django_db
 def test_submit_talk_with_duration_id_of_another_conf(graphql_client, user, conference_factory, duration_factory):
     graphql_client.force_login(user)
 
@@ -126,7 +163,7 @@ def test_submit_talk_with_duration_id_of_another_conf(graphql_client, user, conf
     assert (
         resp['data']['sendSubmission']['errors'][0]['messages']
         ==
-        [f'{another_conf_duration.name} - {another_conf_duration.duration} mins ({another_conf_duration.conference.id}) is not an allowed duration type']
+        [f'{str(another_conf_duration)} is not an allowed duration type']
     )
     assert resp['data']['sendSubmission']['errors'][0]['field'] == 'duration'
 

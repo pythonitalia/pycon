@@ -54,6 +54,15 @@ class Submission(TimeStampedModel):
                 {'duration': _('%(duration)s is not an allowed duration type') % {'duration': str(self.duration)}}
             )
 
+        if self.duration_id and self.type_id and not self.duration.allowed_submission_types.filter(id=self.type_id).exists():
+            raise exceptions.ValidationError(
+                {'duration': _('Duration %(duration)s is not an allowed for the submission type %(submission_type)s') % {
+                    'duration': str(self.duration),
+                    'submission_type': str(self.type)
+                }}
+            )
+
+
 class SubmissionType(models.Model):
     name = models.CharField(max_length=100, unique=True)
 

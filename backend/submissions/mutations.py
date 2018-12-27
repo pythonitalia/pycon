@@ -4,7 +4,7 @@ from graphql import GraphQLError
 
 from api.mutations import ContextAwareDjangoModelFormMutation
 
-from .types import ModelSubmissionType  # noqa
+from .types import SubmissionType, SubmissionTypeType  # noqa
 
 from .forms import SendSubmissionForm
 
