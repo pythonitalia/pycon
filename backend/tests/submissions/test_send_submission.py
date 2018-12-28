@@ -158,6 +158,25 @@ def test_submit_talk_with_not_valid_conf_language(graphql_client, user, conferen
 
 
 @mark.django_db
+def test_submit_talk_with_not_valid_duration(graphql_client, user, conference_factory):
+    graphql_client.force_login(user)
+
+    conference = conference_factory(
+        topics=('my-topic',),
+        languages=('it',),
+        submission_types=('talk',),
+        durations=('50',),
+        active_cfp=True,
+    )
+
+    resp, _ = _submit_talk(graphql_client, conference, duration=8)
+
+    assert resp['data']['sendSubmission']['submission'] is None
+    assert resp['data']['sendSubmission']['errors'][0]['messages'] == ['Select a valid choice. That choice is not one of the available choices.']
+    assert resp['data']['sendSubmission']['errors'][0]['field'] == 'duration'
+
+
+@mark.django_db
 def test_cannot_use_duration_if_submission_type_is_not_allowed(
     graphql_client,
     user,
@@ -240,7 +259,7 @@ def test_submit_talk_with_not_valid_conf_topic(graphql_client, user, conference_
 
 
 @mark.django_db
-def test_submit_talk_with_not_valid_submission_type(graphql_client, user, conference_factory, topic_factory):
+def test_submit_talk_with_not_valid_allowed_submission_type_in_the_conference(graphql_client, user, conference_factory, topic_factory):
     graphql_client.force_login(user)
 
     conference = conference_factory(
@@ -256,6 +275,44 @@ def test_submit_talk_with_not_valid_submission_type(graphql_client, user, confer
     assert resp['data']['sendSubmission']['submission'] is None
     assert resp['data']['sendSubmission']['errors'][0]['messages'] == ['talk is not an allowed submission type']
     assert resp['data']['sendSubmission']['errors'][0]['field'] == 'type'
+
+
+@mark.django_db
+def test_submit_talk_with_not_valid_submission_type_id(graphql_client, user, conference_factory, topic_factory):
+    graphql_client.force_login(user)
+
+    conference = conference_factory(
+        topics=('my-topic',),
+        languages=('it',),
+        submission_types=('tutorial',),
+        active_cfp=True,
+        durations=('50',),
+    )
+
+    resp, _ = _submit_talk(graphql_client, conference, type=5)
+
+    assert resp['data']['sendSubmission']['submission'] is None
+    assert resp['data']['sendSubmission']['errors'][0]['messages'] == ['Select a valid choice. That choice is not one of the available choices.']
+    assert resp['data']['sendSubmission']['errors'][0]['field'] == 'type'
+
+
+@mark.django_db
+def test_submit_talk_with_not_valid_language_code(graphql_client, user, conference_factory, topic_factory):
+    graphql_client.force_login(user)
+
+    conference = conference_factory(
+        topics=('my-topic',),
+        languages=('it',),
+        submission_types=('tutorial',),
+        active_cfp=True,
+        durations=('50',),
+    )
+
+    resp, _ = _submit_talk(graphql_client, conference, language='fit')
+
+    assert resp['data']['sendSubmission']['submission'] is None
+    assert resp['data']['sendSubmission']['errors'][0]['messages'] == ['Select a valid choice. That choice is not one of the available choices.']
+    assert resp['data']['sendSubmission']['errors'][0]['field'] == 'language'
 
 
 @mark.django_db
