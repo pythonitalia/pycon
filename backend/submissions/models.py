@@ -23,15 +23,33 @@ class Submission(TimeStampedModel):
     speaker = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         verbose_name=_('owner'),
-        on_delete=models.SET_NULL,
-        null=True,
+        on_delete=models.PROTECT,
         related_name='submissions'
     )
 
-    topic = models.ForeignKey('conferences.Topic', verbose_name=_('topic'), on_delete=models.SET_NULL, null=True)
-    language = models.ForeignKey('languages.Language', verbose_name=_('language'), on_delete=models.SET_NULL, null=True)
-    type = models.ForeignKey('submissions.SubmissionType', verbose_name=_('type'), on_delete=models.SET_NULL, null=True)
-    duration = models.ForeignKey('conferences.Duration', verbose_name=_('duration'), on_delete=models.SET_NULL, null=True)
+    topic = models.ForeignKey(
+        'conferences.Topic',
+        verbose_name=_('topic'),
+        on_delete=models.PROTECT
+    )
+
+    language = models.ForeignKey(
+        'languages.Language',
+        verbose_name=_('language'),
+        on_delete=models.PROTECT
+    )
+
+    type = models.ForeignKey(
+        'submissions.SubmissionType',
+        verbose_name=_('type'),
+        on_delete=models.PROTECT
+    )
+
+    duration = models.ForeignKey(
+        'conferences.Duration',
+        verbose_name=_('duration'),
+        on_delete=models.PROTECT
+    )
 
     def clean(self):
         if self.topic_id and not self.conference.topics.filter(id=self.topic_id).exists():
