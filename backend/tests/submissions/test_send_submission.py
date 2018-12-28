@@ -54,6 +54,53 @@ def _submit_talk(client, conference, **kwargs):
     ), variables
 
 
+def _submit_tutorial(client, conference, **kwargs):
+    talk = SubmissionFactory.build(
+        type=SubmissionType.objects.get_or_create(name='tutorial')[0]
+    )
+
+    defaults = {
+        'title': talk.title,
+        'abstract': talk.abstract,
+        'elevator_pitch': talk.elevator_pitch,
+        'notes': talk.notes,
+        'language': 'it',
+        'conference': conference.code,
+        'topic': conference.topics.first().id,
+        'type': talk.type.id,
+        'duration': conference.durations.first().id,
+    }
+
+    variables = {**defaults, **kwargs}
+
+    return client.query(
+        """
+        mutation($conference: ID!, $topic: ID!, $title: String!, $abstract: String!, $language: ID!, $type: ID!, $duration: ID!) {
+            sendSubmission(input: {
+                title: $title,
+                abstract: $abstract,
+                language: $language,
+                conference: $conference,
+                topic: $topic,
+                type: $type,
+                duration: $duration,
+            }) {
+                submission {
+                    id,
+                    title
+                    abstract
+                }
+                errors {
+                    messages
+                    field
+                }
+            }
+        }
+        """,
+        variables=variables,
+    ), variables
+
+
 @mark.django_db
 def test_submit_talk(graphql_client, user, conference_factory):
     graphql_client.force_login(user)
@@ -284,6 +331,53 @@ def test_same_user_can_propose_multiple_talks_to_the_same_conference(graphql_cli
 
     assert resp['data']['sendSubmission']['errors'] == []
     assert resp['data']['sendSubmission']['submission']['title'] == 'Another talk'
+
+    assert user.submissions.filter(conference=conference).count() == 2
+
+
+@mark.django_db
+def test_submit_tutorial(graphql_client, user, conference_factory):
+    graphql_client.force_login(user)
+
+    conference = conference_factory(
+        topics=('friends',),
+        languages=('it',),
+        active_cfp=True,
+        submission_types=('talk', 'tutorial'),
+        durations=('50',),
+    )
+
+    resp, _ = _submit_tutorial(graphql_client, conference, title='My first tutorial')
+
+    assert resp['data']['sendSubmission']['errors'] == []
+    assert resp['data']['sendSubmission']['submission']['title'] == 'My first tutorial'
+
+    assert user.submissions.filter(conference=conference).count() == 1
+
+
+@mark.django_db
+def test_submit_tutorial_and_talk_to_the_same_conference(graphql_client, user, conference_factory):
+    graphql_client.force_login(user)
+
+    conference = conference_factory(
+        topics=('friends',),
+        languages=('it',),
+        active_cfp=True,
+        submission_types=('talk', 'tutorial'),
+        durations=('50',),
+    )
+
+    resp, _ = _submit_tutorial(graphql_client, conference, title='My first tutorial')
+
+    assert resp['data']['sendSubmission']['errors'] == []
+    assert resp['data']['sendSubmission']['submission']['title'] == 'My first tutorial'
+
+    assert user.submissions.filter(conference=conference).count() == 1
+
+    resp, _ = _submit_talk(graphql_client, conference, title='My first talk')
+
+    assert resp['data']['sendSubmission']['errors'] == []
+    assert resp['data']['sendSubmission']['submission']['title'] == 'My first talk'
 
     assert user.submissions.filter(conference=conference).count() == 2
 
