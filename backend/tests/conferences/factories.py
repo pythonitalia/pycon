@@ -1,10 +1,9 @@
 import pytz
 import factory
 import factory.fuzzy
+from factory.django import DjangoModelFactory
 
 from pytest_factoryboy import register
-
-from factory.django import DjangoModelFactory
 
 from django.utils import timezone
 
@@ -29,20 +28,20 @@ class ConferenceFactory(DjangoModelFactory):
         specified_deadlines = {}
 
         for deadline in Deadline.TYPES:
-            type = deadline[0]
+            _type = deadline[0]
 
-            value = kwargs.pop(f'active_{type}', None)
-            specified_deadlines[type] = value
+            value = kwargs.pop(f'active_{_type}', None)
+            specified_deadlines[_type] = value
 
         instance = super()._create(model_class, *args, **kwargs)
 
-        for type, value in specified_deadlines.items():
+        for _type, value in specified_deadlines.items():
             if value is True:
-                instance.deadlines.add(DeadlineFactory(conference=instance, type=type))
+                instance.deadlines.add(DeadlineFactory(conference=instance, type=_type))
             elif value is False:
                 instance.deadlines.add(DeadlineFactory(
                     conference=instance,
-                    type=type,
+                    type=_type,
                     start=timezone.now() - timezone.timedelta(days=10),
                     end=timezone.now() - timezone.timedelta(days=5),
                 ))
