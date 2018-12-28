@@ -42,6 +42,8 @@ def _submit_talk(client, conference, **kwargs):
                     id,
                     title
                     abstract
+                    elevatorPitch
+                    notes
                 }
                 errors {
                     messages
@@ -89,6 +91,8 @@ def _submit_tutorial(client, conference, **kwargs):
                     id,
                     title
                     abstract
+                    elevatorPitch
+                    notes
                 }
                 errors {
                     messages
@@ -380,6 +384,27 @@ def test_submit_tutorial_and_talk_to_the_same_conference(graphql_client, user, c
     assert resp['data']['sendSubmission']['submission']['title'] == 'My first talk'
 
     assert user.submissions.filter(conference=conference).count() == 2
+
+
+@mark.django_db
+def test_elevation_pitch_and_notes_are_not_required(graphql_client, user, conference_factory):
+    graphql_client.force_login(user)
+
+    conference = conference_factory(
+        topics=('friends',),
+        languages=('it',),
+        active_cfp=True,
+        submission_types=('talk', 'tutorial'),
+        durations=('50',),
+    )
+
+    resp, _ = _submit_tutorial(graphql_client, conference, elevator_pitch='', notes='')
+
+    assert resp['data']['sendSubmission']['errors'] == []
+    assert resp['data']['sendSubmission']['submission']['elevatorPitch'] == ''
+    assert resp['data']['sendSubmission']['submission']['notes'] == ''
+
+    assert user.submissions.filter(conference=conference).count() == 1
 
 
 @mark.django_db

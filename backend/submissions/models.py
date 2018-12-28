@@ -17,8 +17,8 @@ class Submission(TimeStampedModel):
 
     title = models.CharField(_('title'), max_length=100)
     abstract = models.TextField(_('abstract'), max_length=1000)
-    elevator_pitch = models.TextField(_('elevator pitch'), max_length=300)
-    notes = models.TextField(_('notes'))
+    elevator_pitch = models.TextField(_('elevator pitch'), max_length=300, default='', blank=True)
+    notes = models.TextField(_('notes'), default='', blank=True)
 
     speaker = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -61,6 +61,9 @@ class Submission(TimeStampedModel):
                     'submission_type': str(self.type)
                 }}
             )
+
+    def __str__(self):
+        return f'{self.title} at Conference {self.conference_id}'
 
 
 class SubmissionType(models.Model):

@@ -19,6 +19,8 @@ class SubmissionType(DjangoObjectType):
             'id',
             'conference',
             'title',
+            'elevator_pitch',
+            'notes',
             'abstract',
             'owner',
             'helpers',

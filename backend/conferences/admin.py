@@ -15,7 +15,7 @@ class DurationInline(admin.StackedInline):
 @admin.register(Conference)
 class ConferenceAdmin(admin.ModelAdmin):
     readonly_fields = ('created', 'modified', )
-    filter_horizontal = ('topics', 'languages', 'audience_levels', )
+    filter_horizontal = ('topics', 'languages', 'audience_levels', 'submission_types', )
     fieldsets = (
         ('Details', {
             'fields': (
@@ -25,6 +25,7 @@ class ConferenceAdmin(admin.ModelAdmin):
         ('Conference', {
             'fields': (
                 ('start', 'end'),
+                'submission_types',
                 'topics',
                 'audience_levels',
                 'languages',
