@@ -6,7 +6,7 @@ from .models import Submission, SubmissionType
 @admin.register(Submission)
 class SubmissionAdmin(admin.ModelAdmin):
     list_display = ('title', 'type', 'conference', 'topic', 'language',)
-    list_filter = ('conference', 'type', )
+    list_filter = ('conference', 'type', 'topic',)
     search_fields = ('title', 'abstract',)
 
 
