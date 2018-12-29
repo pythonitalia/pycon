@@ -14,6 +14,6 @@ WORKDIR /pycon_frontend
 RUN mv /tmp/node_modules .
 COPY . /pycon_frontend/
 
-RUN yarn prod
+RUN yarn build
 
 COPY dist/ /sites/pycon_frontend/
