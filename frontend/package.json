@@ -27,7 +27,7 @@
     "@types/react": "^16.7.18",
     "@types/react-dom": "^16.0.11",
     "@types/webpack-env": "^1.13.6",
-    "apollo": "^1.9.1",
+    "apollo": "^2.1.9",
     "apollo-cache-inmemory": "^1.2.9",
     "apollo-client": "^2.4.1",
     "apollo-link": "^1.2.2",
