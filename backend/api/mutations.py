@@ -4,6 +4,13 @@ from graphene_django.forms import mutation
 
 
 class ContextAwareDjangoModelFormMutation(mutation.DjangoModelFormMutation):
+    """Allows the Form to access the Request object by passing it
+    in the Form constructor.
+
+    See also:
+
+    - :py:class:`api.forms.GrapheneModelForm`
+    """
     class Meta:
         abstract = True
 
@@ -15,6 +22,16 @@ class ContextAwareDjangoModelFormMutation(mutation.DjangoModelFormMutation):
 
 
 class AuthOnlyDjangoFormMutation(ContextAwareDjangoModelFormMutation):
+    """Before executing the mutation, checks if the Request object has an authenticated
+    user, if not a `GraphQLError` is thrown.
+
+    Inherits from ContextAwareDjangoModelFormMutation to allow the
+    mutation to access the Request object.
+
+    See also:
+
+    - :py:class:`api.mutations.ContextAwareDjangoModelFormMutation`
+    """
     class Meta:
         abstract = True
 

@@ -50,6 +50,13 @@ class ConferenceFactory(DjangoModelFactory):
 
     @factory.post_generation
     def topics(self, create, extracted, **kwargs):
+        """Accepts a list of topic names and adds each topic to the
+        Conference allowed submission topics.
+
+        If a topic with that name doesn't exists, a new one is created.
+
+        This fixture makes easier to add allowed topics to a Conference in the tests
+        """
         if not create:
             return
 
@@ -59,6 +66,11 @@ class ConferenceFactory(DjangoModelFactory):
 
     @factory.post_generation
     def languages(self, create, extracted, **kwargs):
+        """Accepts a list of language codes and adds each language to the
+        Conference allowed languages.
+
+        This fixture makes easier to add allowed languages to a Conference in the tests
+        """
         if not create:
             return
 
@@ -68,6 +80,13 @@ class ConferenceFactory(DjangoModelFactory):
 
     @factory.post_generation
     def submission_types(self, create, extracted, **kwargs):
+        """Accepts a list of submission type names and adds each submission type to the
+        Conference allowed submission types.
+
+        If a submission type with that name doesn't exists, a new one is created.
+
+        This fixture makes easier to add allowed submission types to a Conference in the tests
+        """
         if not create:
             return
 
@@ -77,6 +96,11 @@ class ConferenceFactory(DjangoModelFactory):
 
     @factory.post_generation
     def durations(self, create, extracted, **kwargs):
+        """Accepts a list of durations (in minutes) and creates a duration object to the
+        Conference allowed durations.
+
+        This fixture makes easier to add durations to a Conference in the tests
+        """
         if not create:
             return
 
@@ -92,7 +116,6 @@ class ConferenceFactory(DjangoModelFactory):
                     duration.allowed_submission_types.set(SubmissionType.objects.all())
 
                 self.durations.add(duration)
-
 
     class Meta:
         model = Conference
