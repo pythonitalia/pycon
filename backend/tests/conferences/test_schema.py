@@ -1,3 +1,5 @@
+import pytz
+
 from pytest import mark
 
 from django.utils import timezone
@@ -41,16 +43,17 @@ def test_get_conference_info(conference, ticket_factory, graphql_client):
 
 
 @mark.django_db
-def test_get_conference_deadlines_ordered_by_start_date(graphql_client, deadline_factory):
+def test_get_conference_deadlines_ordered_by_start_date(graphql_client, conference_factory, deadline_factory):
     now = timezone.now()
+
+    conference = conference_factory(timezone=pytz.timezone('America/Los_Angeles'))
 
     deadline_voting = deadline_factory(
         start=now - timezone.timedelta(days=20),
         end=now - timezone.timedelta(days=15),
+        conference=conference,
         type='voting'
     )
-
-    conference = deadline_voting.conference
 
     deadline_cfp = deadline_factory(
         start=now - timezone.timedelta(days=1),
@@ -72,6 +75,7 @@ def test_get_conference_deadlines_ordered_by_start_date(graphql_client, deadline
             conference(code: $code) {
                 start
                 end
+                timezone
                 deadlines {
                     start
                     end
@@ -84,6 +88,8 @@ def test_get_conference_deadlines_ordered_by_start_date(graphql_client, deadline
             'code': conference.code
         }
     )
+
+    assert resp['data']['conference']['timezone'] == 'America/Los_Angeles'
 
     assert resp['data']['conference']['start'] == conference.start.isoformat()
     assert resp['data']['conference']['end'] == conference.end.isoformat()

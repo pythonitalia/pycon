@@ -20,6 +20,8 @@ class ConferenceFactory(DjangoModelFactory):
     start = factory.Faker('past_datetime', tzinfo=pytz.UTC)
     end = factory.Faker('future_datetime', tzinfo=pytz.UTC)
 
+    timezone = pytz.timezone('Europe/Rome')
+
     @classmethod
     def _create(cls, model_class, *args, **kwargs):
         # if the user specifies active_cfp (for example) we will create a deadline to the conference

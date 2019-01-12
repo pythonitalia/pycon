@@ -19,7 +19,7 @@ class ConferenceAdmin(admin.ModelAdmin):
     fieldsets = (
         ('Details', {
             'fields': (
-                'name', 'code',
+                'name', 'code', 'timezone',
             ),
         }),
         ('Conference', {

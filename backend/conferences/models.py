@@ -7,10 +7,13 @@ from django.utils.translation import ugettext_lazy as _
 from model_utils import Choices
 from model_utils.models import TimeFramedModel, TimeStampedModel
 
+from timezone_field import TimeZoneField
+
 
 class Conference(TimeFramedModel, TimeStampedModel):
     name = models.CharField(_('name'), max_length=100)
     code = models.CharField(_('code'), max_length=10, unique=True)
+    timezone = TimeZoneField()
 
     topics = models.ManyToManyField('conferences.Topic', verbose_name=_('topics'))
     languages = models.ManyToManyField('languages.Language', verbose_name=_('languages'))

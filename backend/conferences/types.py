@@ -59,6 +59,11 @@ class ConferenceType(DjangoObjectType):
     languages = graphene.NonNull(graphene.List(graphene.NonNull(LanguageType)))
     durations = graphene.NonNull(graphene.List(graphene.NonNull(DurationType)))
 
+    timezone = graphene.String()
+
+    def resolve_timezone(self, info):
+        return str(self.timezone)
+
     def resolve_tickets(self, info):
         return self.tickets.all()
 
@@ -90,4 +95,5 @@ class ConferenceType(DjangoObjectType):
             'topics',
             'languages',
             'durations',
+            'timezone',
         )
