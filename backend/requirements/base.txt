@@ -1,4 +1,4 @@
-Django==2.1.2
+Django==2.1.5
 django-environ==0.4.4
 graphene-django==2.2.0
 social-auth-app-django==2.1.0
