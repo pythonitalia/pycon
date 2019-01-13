@@ -9,7 +9,7 @@ class ContextAwareDjangoModelFormMutation(mutation.DjangoModelFormMutation):
 
     See also:
 
-    - :py:class:`api.forms.GrapheneModelForm`
+    - :py:class:`api.forms.ContextAwareForm`
     """
     class Meta:
         abstract = True
