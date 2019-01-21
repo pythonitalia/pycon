@@ -1,15 +1,15 @@
 import pytz
 import factory
 import factory.fuzzy
+from factory.django import DjangoModelFactory
 
 from pytest_factoryboy import register
-
-from factory.django import DjangoModelFactory
 
 from django.utils import timezone
 
 from conferences.models import Conference, Topic, Deadline, AudienceLevel, Duration
 from languages.models import Language
+from submissions.models import SubmissionType
 
 
 @register
@@ -20,6 +20,8 @@ class ConferenceFactory(DjangoModelFactory):
     start = factory.Faker('past_datetime', tzinfo=pytz.UTC)
     end = factory.Faker('future_datetime', tzinfo=pytz.UTC)
 
+    timezone = pytz.timezone('Europe/Rome')
+
     @classmethod
     def _create(cls, model_class, *args, **kwargs):
         # if the user specifies active_cfp (for example) we will create a deadline to the conference
@@ -28,20 +30,20 @@ class ConferenceFactory(DjangoModelFactory):
         specified_deadlines = {}
 
         for deadline in Deadline.TYPES:
-            type = deadline[0]
+            _type = deadline[0]
 
-            value = kwargs.pop(f'active_{type}', None)
-            specified_deadlines[type] = value
+            value = kwargs.pop(f'active_{_type}', None)
+            specified_deadlines[_type] = value
 
         instance = super()._create(model_class, *args, **kwargs)
 
-        for type, value in specified_deadlines.items():
+        for _type, value in specified_deadlines.items():
             if value is True:
-                instance.deadlines.add(DeadlineFactory(conference=instance, type=type))
+                instance.deadlines.add(DeadlineFactory(conference=instance, type=_type))
             elif value is False:
                 instance.deadlines.add(DeadlineFactory(
                     conference=instance,
-                    type=type,
+                    type=_type,
                     start=timezone.now() - timezone.timedelta(days=10),
                     end=timezone.now() - timezone.timedelta(days=5),
                 ))
@@ -50,6 +52,13 @@ class ConferenceFactory(DjangoModelFactory):
 
     @factory.post_generation
     def topics(self, create, extracted, **kwargs):
+        """Accepts a list of topic names and adds each topic to the
+        Conference allowed submission topics.
+
+        If a topic with that name doesn't exists, a new one is created.
+
+        This fixture makes easier to add allowed topics to a Conference in the tests
+        """
         if not create:
             return
 
@@ -59,12 +68,56 @@ class ConferenceFactory(DjangoModelFactory):
 
     @factory.post_generation
     def languages(self, create, extracted, **kwargs):
+        """Accepts a list of language codes and adds each language to the
+        Conference allowed languages.
+
+        This fixture makes easier to add allowed languages to a Conference in the tests
+        """
         if not create:
             return
 
         if extracted:
             for language_code in extracted:
                 self.languages.add(Language.objects.get(code=language_code))
+
+    @factory.post_generation
+    def submission_types(self, create, extracted, **kwargs):
+        """Accepts a list of submission type names and adds each submission type to the
+        Conference allowed submission types.
+
+        If a submission type with that name doesn't exists, a new one is created.
+
+        This fixture makes easier to add allowed submission types to a Conference in the tests
+        """
+        if not create:
+            return
+
+        if extracted:
+            for submission_type in extracted:
+                self.submission_types.add(SubmissionType.objects.get_or_create(name=submission_type)[0])
+
+    @factory.post_generation
+    def durations(self, create, extracted, **kwargs):
+        """Accepts a list of durations (in minutes) and creates a duration object to the
+        Conference allowed durations.
+
+        This fixture makes easier to add durations to a Conference in the tests
+        """
+        if not create:
+            return
+
+        if extracted:
+            for duration in extracted:
+                duration, created = Duration.objects.get_or_create(
+                    duration=duration,
+                    conference=self,
+                    defaults={'name': f'{duration}m'}
+                )
+
+                if created:
+                    duration.allowed_submission_types.set(SubmissionType.objects.all())
+
+                self.durations.add(duration)
 
     class Meta:
         model = Conference

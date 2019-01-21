@@ -12,4 +12,4 @@
 
 ## Test
 
-`py.test --cov=. --cov-fail-under 100`
+`pytest --cov=. --cov-fail-under 100`

@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.utils import timezone
 from django.core import exceptions
 from django.core.validators import MinValueValidator
 from django.utils.translation import ugettext_lazy as _
@@ -7,14 +7,28 @@ from django.utils.translation import ugettext_lazy as _
 from model_utils import Choices
 from model_utils.models import TimeFramedModel, TimeStampedModel
 
+from timezone_field import TimeZoneField
+
 
 class Conference(TimeFramedModel, TimeStampedModel):
     name = models.CharField(_('name'), max_length=100)
     code = models.CharField(_('code'), max_length=10, unique=True)
+    timezone = TimeZoneField()
 
     topics = models.ManyToManyField('conferences.Topic', verbose_name=_('topics'))
     languages = models.ManyToManyField('languages.Language', verbose_name=_('languages'))
     audience_levels = models.ManyToManyField('conferences.AudienceLevel', verbose_name=_('audience levels'))
+    submission_types = models.ManyToManyField('submissions.SubmissionType', verbose_name=_('submission types'))
+
+    @property
+    def is_cfp_open(self):
+        try:
+            cfp_deadline = self.deadlines.get(type=Deadline.TYPES.cfp)
+
+            now = timezone.now()
+            return cfp_deadline.start <= now <= cfp_deadline.end
+        except Deadline.DoesNotExist:
+            return False
 
     def __str__(self):
         return f'{self.name} <{self.code}>'
@@ -91,6 +105,10 @@ class Duration(models.Model):
     name = models.CharField(_('name'), max_length=100)
     duration = models.PositiveIntegerField(_('duration'), validators=[MinValueValidator(1)])
     notes = models.TextField(_('notes'), blank=True)
+    allowed_submission_types = models.ManyToManyField(
+        'submissions.SubmissionType',
+        verbose_name=_('allowed submission types')
+    )
 
     def __str__(self):
         return f'{self.name} - {self.duration} mins ({self.conference_id})'

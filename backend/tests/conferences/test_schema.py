@@ -1,3 +1,5 @@
+import pytz
+
 from pytest import mark
 
 from django.utils import timezone
@@ -41,16 +43,17 @@ def test_get_conference_info(conference, ticket_factory, graphql_client):
 
 
 @mark.django_db
-def test_get_conference_deadlines_ordered_by_start_date(graphql_client, deadline_factory):
+def test_get_conference_deadlines_ordered_by_start_date(graphql_client, conference_factory, deadline_factory):
     now = timezone.now()
+
+    conference = conference_factory(timezone=pytz.timezone('America/Los_Angeles'))
 
     deadline_voting = deadline_factory(
         start=now - timezone.timedelta(days=20),
         end=now - timezone.timedelta(days=15),
+        conference=conference,
         type='voting'
     )
-
-    conference = deadline_voting.conference
 
     deadline_cfp = deadline_factory(
         start=now - timezone.timedelta(days=1),
@@ -72,6 +75,7 @@ def test_get_conference_deadlines_ordered_by_start_date(graphql_client, deadline
             conference(code: $code) {
                 start
                 end
+                timezone
                 deadlines {
                     start
                     end
@@ -84,6 +88,8 @@ def test_get_conference_deadlines_ordered_by_start_date(graphql_client, deadline
             'code': conference.code
         }
     )
+
+    assert resp['data']['conference']['timezone'] == 'America/Los_Angeles'
 
     assert resp['data']['conference']['start'] == conference.start.isoformat()
     assert resp['data']['conference']['end'] == conference.end.isoformat()
@@ -248,9 +254,14 @@ def test_query_conference_languages(graphql_client, conference, language):
 
 
 @mark.django_db
-def test_get_conference_durations(graphql_client, duration_factory):
+def test_get_conference_durations(graphql_client, duration_factory, submission_type_factory):
+    talk_type = submission_type_factory(name='talk')
+    tutorial_type = submission_type_factory(name='tutorial')
+
     d1 = duration_factory()
+    d1.allowed_submission_types.add(talk_type)
     d2 = duration_factory(conference=d1.conference)
+    d2.allowed_submission_types.add(tutorial_type)
 
     conference = d1.conference
 
@@ -263,6 +274,10 @@ def test_get_conference_durations(graphql_client, duration_factory):
                     name
                     duration
                     notes
+                    allowedSubmissionTypes {
+                        id
+                        name
+                    }
                 }
             }
         }
@@ -278,6 +293,9 @@ def test_get_conference_durations(graphql_client, duration_factory):
         'name': d1.name,
         'duration': d1.duration,
         'notes': d1.notes,
+        'allowedSubmissionTypes': [
+            {'id': str(talk_type.id), 'name': talk_type.name}
+        ]
     } in resp['data']['conference']['durations']
 
     assert {
@@ -285,4 +303,7 @@ def test_get_conference_durations(graphql_client, duration_factory):
         'name': d2.name,
         'duration': d2.duration,
         'notes': d2.notes,
+        'allowedSubmissionTypes': [
+            {'id': str(tutorial_type.id), 'name': tutorial_type.name}
+        ]
     } in resp['data']['conference']['durations']

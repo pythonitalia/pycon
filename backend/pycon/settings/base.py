@@ -24,12 +24,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'timezone_field',
     'graphene_django',
     'social_django',
+
     'users',
     'conferences.apps.ConferencesConfig',
     'tickets.apps.TicketsConfig',
     'languages.apps.LanguagesConfig',
+    'submissions.apps.SubmissionsConfig',
 ]
 
 MIDDLEWARE = [
