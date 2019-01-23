@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'tickets.apps.TicketsConfig',
     'languages.apps.LanguagesConfig',
     'submissions.apps.SubmissionsConfig',
+    'schedule.apps.ScheduleConfig',
 ]
 
 MIDDLEWARE = [
