@@ -1,10 +1,16 @@
+import pytz
 import graphene
+
+from datetime import datetime
 
 from graphene_django import DjangoObjectType
 
 from tickets.types import TicketType
 from languages.types import LanguageType
 from submissions.types import SubmissionTypeType
+from schedule.types import ModelScheduleItemType
+
+from schedule.models import ScheduleItem
 
 from .models import Conference, Deadline, AudienceLevel, Topic, Duration
 
@@ -58,11 +64,35 @@ class ConferenceType(DjangoObjectType):
     topics = graphene.NonNull(graphene.List(graphene.NonNull(TopicType)))
     languages = graphene.NonNull(graphene.List(graphene.NonNull(LanguageType)))
     durations = graphene.NonNull(graphene.List(graphene.NonNull(DurationType)))
+    schedule = graphene.NonNull(
+        graphene.List(graphene.NonNull(ModelScheduleItemType)),
+        date=graphene.String(),
+        topic=graphene.ID()
+    )
 
     timezone = graphene.String()
 
     def resolve_timezone(self, info):
         return str(self.timezone)
+
+    def resolve_schedule(self, info, date=None, topic=None):
+        qs = self.schedule_items
+
+        if date:
+            parsed_date = datetime.strptime(date, '%d/%m/%Y').date()
+
+            start_date = datetime.combine(parsed_date, datetime.min.time())
+            end_date = datetime.combine(parsed_date, datetime.max.time())
+
+            utc_start_date = pytz.utc.normalize(start_date.astimezone(pytz.utc))
+            utc_end_date = pytz.utc.normalize(end_date.astimezone(pytz.utc))
+
+            qs = qs.filter(start__gte=utc_start_date, end__lte=utc_end_date)
+
+        if topic:
+            qs = qs.filter(topic__id=topic)
+
+        return qs.order_by('start')
 
     def resolve_tickets(self, info):
         return self.tickets.all()

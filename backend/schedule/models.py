@@ -18,7 +18,8 @@ class ScheduleItem(TimeFramedModel, TimeStampedModel):
     conference = models.ForeignKey(
         Conference,
         on_delete=models.CASCADE,
-        verbose_name=_('conference')
+        verbose_name=_('conference'),
+        related_name='schedule_items'
     )
 
     title = models.CharField(_('title'), max_length=100, blank=True)
@@ -40,6 +41,7 @@ class ScheduleItem(TimeFramedModel, TimeStampedModel):
         Submission,
         on_delete=models.PROTECT,
         null=True,
+        blank=True,
         verbose_name=_('submission')
     )
 
