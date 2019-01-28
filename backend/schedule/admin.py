@@ -7,7 +7,7 @@ from .models import ScheduleItem
 @admin.register(ScheduleItem)
 class ScheduleItemAdmin(admin.ModelAdmin):
     list_display = ('conference', 'topic', 'start', 'end', 'type', 'title', 'submission')
-    ordering = ('conference', 'start',)
+    ordering = ('conference', 'topic', 'start',)
     fieldsets = (
         (_('Event'), {
             'fields': ('conference', 'type', 'title', 'description', 'submission')
