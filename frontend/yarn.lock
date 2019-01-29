@@ -357,19 +357,27 @@ anymatch@^2.0.0:
     micromatch "^3.1.4"
     normalize-path "^2.1.1"
 
-apollo-cache-inmemory@^1.2.9:
-  version "1.2.9"
-  resolved "https://registry.yarnpkg.com/apollo-cache-inmemory/-/apollo-cache-inmemory-1.2.9.tgz#26e0c8c6a6c865bf9987d741114388cdbc3fae23"
+apollo-cache-inmemory@^1.4.2:
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/apollo-cache-inmemory/-/apollo-cache-inmemory-1.4.2.tgz#c91aeb4adff45cdc7872d603cbff055fa9cd5021"
   dependencies:
-    apollo-cache "^1.1.16"
-    apollo-utilities "^1.0.20"
-    graphql-anywhere "^4.1.18"
+    apollo-cache "^1.1.25"
+    apollo-utilities "^1.1.2"
+    optimism "^0.6.9"
+    tslib "^1.9.3"
 
-apollo-cache@1.1.16, apollo-cache@^1.1.16:
+apollo-cache@1.1.16:
   version "1.1.16"
   resolved "https://registry.yarnpkg.com/apollo-cache/-/apollo-cache-1.1.16.tgz#0c7460ee8eff1898462979143b4e922aaba73cf8"
   dependencies:
     apollo-utilities "^1.0.20"
+
+apollo-cache@^1.1.25:
+  version "1.1.25"
+  resolved "https://registry.yarnpkg.com/apollo-cache/-/apollo-cache-1.1.25.tgz#87a15a2a19993bb07234ccee6839b59d6fb49ac5"
+  dependencies:
+    apollo-utilities "^1.1.2"
+    tslib "^1.9.3"
 
 apollo-client@^2.4.1:
   version "2.4.1"
@@ -499,11 +507,18 @@ apollo-server-env@2.0.2:
     node-fetch "^2.1.2"
     util.promisify "^1.0.0"
 
-apollo-utilities@1.0.20, apollo-utilities@^1.0.0, apollo-utilities@^1.0.20:
+apollo-utilities@1.0.20:
   version "1.0.20"
   resolved "https://registry.yarnpkg.com/apollo-utilities/-/apollo-utilities-1.0.20.tgz#b14318686cb67838279fb5f009cca0ec97a4d140"
   dependencies:
     fast-json-stable-stringify "^2.0.0"
+
+apollo-utilities@^1.0.0, apollo-utilities@^1.0.20, apollo-utilities@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/apollo-utilities/-/apollo-utilities-1.1.2.tgz#aa5eca9d1f1eb721c381a22e0dde03559d856db3"
+  dependencies:
+    fast-json-stable-stringify "^2.0.0"
+    tslib "^1.9.3"
 
 apollo@^1.9.1:
   version "1.9.1"
@@ -2812,12 +2827,6 @@ grapheme-breaker@^0.3.2:
     brfs "^1.2.0"
     unicode-trie "^0.3.1"
 
-graphql-anywhere@^4.1.18:
-  version "4.1.18"
-  resolved "https://registry.yarnpkg.com/graphql-anywhere/-/graphql-anywhere-4.1.18.tgz#29bfc5d42bf8ee1f5cdc9a9857c98c3eb4b7fab4"
-  dependencies:
-    apollo-utilities "^1.0.20"
-
 graphql-extensions@0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/graphql-extensions/-/graphql-extensions-0.1.2.tgz#d289cbddcf52364c066d8241a78d359c93c79c30"
@@ -3092,6 +3101,10 @@ ignore-walk@^3.0.1:
   resolved "https://registry.yarnpkg.com/ignore-walk/-/ignore-walk-3.0.1.tgz#a83e62e7d272ac0e3b551aaa82831a19b69f82f8"
   dependencies:
     minimatch "^3.0.4"
+
+immutable-tuple@^0.4.9:
+  version "0.4.10"
+  resolved "https://registry.yarnpkg.com/immutable-tuple/-/immutable-tuple-0.4.10.tgz#e0b1625384f514084a7a84b749a3bb26e9179929"
 
 indent-string@^3.0.0, indent-string@^3.2.0:
   version "3.2.0"
@@ -4153,6 +4166,12 @@ opn@^5.1.0:
   resolved "https://registry.yarnpkg.com/opn/-/opn-5.3.0.tgz#64871565c863875f052cfdf53d3e3cb5adb53b1c"
   dependencies:
     is-wsl "^1.1.0"
+
+optimism@^0.6.9:
+  version "0.6.9"
+  resolved "https://registry.yarnpkg.com/optimism/-/optimism-0.6.9.tgz#19258ff8b3be0cea29ac35f06bff818e026e30bb"
+  dependencies:
+    immutable-tuple "^0.4.9"
 
 optionator@^0.8.1:
   version "0.8.2"
