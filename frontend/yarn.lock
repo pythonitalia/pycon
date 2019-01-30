@@ -193,10 +193,6 @@
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.7.0.tgz#9a06f4f137ee84d7df0460c1fdb1135ffa6c50fd"
 
-"@types/async@2.0.49":
-  version "2.0.49"
-  resolved "https://registry.yarnpkg.com/@types/async/-/async-2.0.49.tgz#92e33d13f74c895cb9a7f38ba97db8431ed14bc0"
-
 "@types/commander@^2.11.0":
   version "2.12.2"
   resolved "https://registry.yarnpkg.com/@types/commander/-/commander-2.12.2.tgz#183041a23842d4281478fa5d23c5ca78e6fd08ae"
@@ -366,32 +362,25 @@ apollo-cache-inmemory@^1.4.2:
     optimism "^0.6.9"
     tslib "^1.9.3"
 
-apollo-cache@1.1.16:
-  version "1.1.16"
-  resolved "https://registry.yarnpkg.com/apollo-cache/-/apollo-cache-1.1.16.tgz#0c7460ee8eff1898462979143b4e922aaba73cf8"
-  dependencies:
-    apollo-utilities "^1.0.20"
-
-apollo-cache@^1.1.25:
+apollo-cache@1.1.25, apollo-cache@^1.1.25:
   version "1.1.25"
   resolved "https://registry.yarnpkg.com/apollo-cache/-/apollo-cache-1.1.25.tgz#87a15a2a19993bb07234ccee6839b59d6fb49ac5"
   dependencies:
     apollo-utilities "^1.1.2"
     tslib "^1.9.3"
 
-apollo-client@^2.4.1:
-  version "2.4.1"
-  resolved "https://registry.yarnpkg.com/apollo-client/-/apollo-client-2.4.1.tgz#d2ebaac1831fa170f7d0070bb9d581cccb5f64e3"
+apollo-client@^2.4.12:
+  version "2.4.12"
+  resolved "https://registry.yarnpkg.com/apollo-client/-/apollo-client-2.4.12.tgz#9fa15f502d04f8cc788a9fbb825163b437681504"
   dependencies:
     "@types/zen-observable" "^0.8.0"
-    apollo-cache "1.1.16"
+    apollo-cache "1.1.25"
     apollo-link "^1.0.0"
     apollo-link-dedup "^1.0.0"
-    apollo-utilities "1.0.20"
+    apollo-utilities "1.1.2"
     symbol-observable "^1.0.2"
+    tslib "^1.9.3"
     zen-observable "^0.8.0"
-  optionalDependencies:
-    "@types/async" "2.0.49"
 
 apollo-codegen-core@0.28.0:
   version "0.28.0"
@@ -507,13 +496,7 @@ apollo-server-env@2.0.2:
     node-fetch "^2.1.2"
     util.promisify "^1.0.0"
 
-apollo-utilities@1.0.20:
-  version "1.0.20"
-  resolved "https://registry.yarnpkg.com/apollo-utilities/-/apollo-utilities-1.0.20.tgz#b14318686cb67838279fb5f009cca0ec97a4d140"
-  dependencies:
-    fast-json-stable-stringify "^2.0.0"
-
-apollo-utilities@^1.0.0, apollo-utilities@^1.0.20, apollo-utilities@^1.1.2:
+apollo-utilities@1.1.2, apollo-utilities@^1.0.0, apollo-utilities@^1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/apollo-utilities/-/apollo-utilities-1.1.2.tgz#aa5eca9d1f1eb721c381a22e0dde03559d856db3"
   dependencies:
