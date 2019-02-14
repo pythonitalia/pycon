@@ -255,9 +255,9 @@
     "@types/history" "*"
     "@types/react" "*"
 
-"@types/react-dom@^16.0.11", "@types/react-dom@^16.0.5":
-  version "16.0.11"
-  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-16.0.11.tgz#bd10ccb0d9260343f4b9a49d4f7a8330a5c1f081"
+"@types/react-dom@^16.0.5", "@types/react-dom@^16.8.1":
+  version "16.8.1"
+  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-16.8.1.tgz#e43810a5e44b37854a9c7cd99e6c43e4f522c7c6"
   dependencies:
     "@types/react" "*"
 
