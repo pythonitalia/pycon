@@ -5,16 +5,16 @@ from django.utils import timezone
 from schedule.models import ScheduleItem
 
 
-def _query_conference_schedule(client, conference_code, date=None, topic=None):
+def _query_conference_schedule(client, conference_code, date=None):
     formatted_date = None
 
     if date:
         formatted_date = date.strftime('%d/%m/%Y')
 
     return client.query("""
-        query($code: String, $date: String, $topic: ID) {
+        query($code: String, $date: String) {
             conference(code: $code) {
-                schedule(date: $date, topic: $topic) {
+                schedule(date: $date) {
                     id
                     type
                     title
@@ -27,7 +27,6 @@ def _query_conference_schedule(client, conference_code, date=None, topic=None):
     """, variables={
         'code': conference_code,
         'date': formatted_date,
-        'topic': topic
     })
 
 
@@ -209,11 +208,12 @@ def test_get_specific_day_schedule(
 
 
 @mark.django_db
-def test_specific_topic_schedule(
+def test_get_scheduleitem_room(
     graphql_client,
     conference_factory,
     schedule_item_factory,
-    submission_factory
+    submission_factory,
+    room_factory
 ):
     now = timezone.now()
 
@@ -222,61 +222,56 @@ def test_specific_topic_schedule(
         end=now + timezone.timedelta(days=3)
     )
 
-    item1 = schedule_item_factory(
+    room = room_factory(conference=conference)
+    room2 = room_factory(conference=conference)
+
+    schedule_item_factory(
         conference=conference,
         type=ScheduleItem.TYPES.custom,
         title='Welcome!',
         submission=None,
         start=now,
-        end=now + timezone.timedelta(hours=1)
+        end=now + timezone.timedelta(hours=1),
+        rooms=(room,)
     )
 
-    test_submission = submission_factory(conference=conference)
+    tomorrow = now + timezone.timedelta(days=1)
 
-    item2 = schedule_item_factory(
+    schedule_item_factory(
         conference=conference,
         type=ScheduleItem.TYPES.submission,
-        submission=test_submission,
-        topic=item1.topic,
-        start=now + timezone.timedelta(days=1, hours=1),
-        end=now + timezone.timedelta(days=1, hours=2)
+        submission=submission_factory(conference=conference),
+        start=tomorrow,
+        end=tomorrow + timezone.timedelta(hours=1),
+        rooms=(room2,)
     )
 
-    test_submission_2 = submission_factory(conference=conference)
-
-    item3 = schedule_item_factory(
-        conference=conference,
-        type=ScheduleItem.TYPES.submission,
-        submission=test_submission_2,
-        start=now + timezone.timedelta(hours=1),
-        end=now + timezone.timedelta(hours=2)
+    resp = graphql_client.query("""
+        query($code: String!) {
+            conference(code: $code) {
+                schedule {
+                    rooms {
+                        name
+                    }
+                }
+            }
+        }
+        """,
+        variables={
+            'code': conference.code
+        }
     )
-
-    resp = _query_conference_schedule(graphql_client, conference.code, topic=item1.topic.id)
 
     assert len(resp['data']['conference']['schedule']) == 2
 
     assert {
-        'id': str(item1.id),
-        'type': item1.type.upper(),
-        'title': item1.title,
-        'submission': None
+        'rooms': [
+            {'name': room.name}
+        ]
     } in resp['data']['conference']['schedule']
 
     assert {
-        'id': str(item2.id),
-        'type': item2.type.upper(),
-        'title': item2.title,
-        'submission': {
-            'id': str(item2.submission.id),
-        }
+        'rooms': [
+            {'name': room2.name}
+        ]
     } in resp['data']['conference']['schedule']
-
-    assert {
-        'id': str(item3.id),
-        'type': item3.type.upper(),
-        'title': item3.title,
-        'submission': {
-            'id': str(item3.submission.id),
-        }
-    } not in resp['data']['conference']['schedule']

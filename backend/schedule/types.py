@@ -1,9 +1,16 @@
 from graphene_django import DjangoObjectType
 
-from .models import ScheduleItem
+from .models import ScheduleItem, Room
+
+
+class RoomType(DjangoObjectType):
+    class Meta:
+        model = Room
+        exclude_fields = ('id', )
 
 
 class ModelScheduleItemType(DjangoObjectType):
+
     class Meta:
         model = ScheduleItem
         only_fields = (
@@ -12,8 +19,8 @@ class ModelScheduleItemType(DjangoObjectType):
             'start',
             'end',
             'type',
-            'topic',
+            'rooms',
             'submission',
             'title',
-            'description'
+            'description',
         )

@@ -5,8 +5,25 @@ from django.utils.translation import ugettext_lazy as _
 from model_utils import Choices
 from model_utils.models import TimeFramedModel, TimeStampedModel
 
-from conferences.models import Conference, Topic
+from conferences.models import Conference
 from submissions.models import Submission
+
+
+class Room(models.Model):
+    name = models.CharField(_('name'), max_length=100)
+    conference = models.ForeignKey(
+        Conference,
+        on_delete=models.CASCADE,
+        verbose_name=_('conference'),
+        related_name='rooms'
+    )
+
+    def __str__(self):
+        return f'{self.name} at {self.conference}'
+
+    class Meta:
+        verbose_name = _('Room')
+        verbose_name_plural = _('Rooms')
 
 
 class ScheduleItem(TimeFramedModel, TimeStampedModel):
@@ -31,10 +48,10 @@ class ScheduleItem(TimeFramedModel, TimeStampedModel):
         verbose_name=_('type')
     )
 
-    topic = models.ForeignKey(
-        Topic,
-        on_delete=models.PROTECT,
-        verbose_name=_('topic')
+    rooms = models.ManyToManyField(
+        Room,
+        related_name='talks',
+        verbose_name=_('rooms')
     )
 
     submission = models.ForeignKey(

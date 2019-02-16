@@ -6,17 +6,25 @@ from pytest_factoryboy import register
 
 from factory.django import DjangoModelFactory
 
-from schedule.models import ScheduleItem
+from schedule.models import ScheduleItem, Room
 
-from tests.conferences.factories import ConferenceFactory, TopicFactory
+from tests.conferences.factories import ConferenceFactory
 from tests.submissions.factories import SubmissionFactory
+
+
+@register
+class RoomFactory(DjangoModelFactory):
+    name = factory.Faker('text', max_nb_chars=100)
+    conference = factory.SubFactory(ConferenceFactory)
+
+    class Meta:
+        model = Room
 
 
 @register
 class ScheduleItemFactory(DjangoModelFactory):
     conference = factory.SubFactory(ConferenceFactory)
     submission = factory.SubFactory(SubmissionFactory)
-    topic = factory.SubFactory(TopicFactory)
 
     start = factory.Faker('past_datetime', tzinfo=pytz.UTC)
     end = factory.Faker('future_datetime', tzinfo=pytz.UTC)
@@ -33,6 +41,15 @@ class ScheduleItemFactory(DjangoModelFactory):
             kwargs.pop('submission', None)
 
         return super()._create(model_class, *args, **kwargs)
+
+    @factory.post_generation
+    def rooms(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            for room in extracted:
+                self.rooms.add(room)
 
     class Meta:
         model = ScheduleItem

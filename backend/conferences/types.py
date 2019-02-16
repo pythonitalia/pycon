@@ -66,8 +66,7 @@ class ConferenceType(DjangoObjectType):
     durations = graphene.NonNull(graphene.List(graphene.NonNull(DurationType)))
     schedule = graphene.NonNull(
         graphene.List(graphene.NonNull(ModelScheduleItemType)),
-        date=graphene.String(),
-        topic=graphene.ID()
+        date=graphene.String()
     )
 
     timezone = graphene.String()
@@ -75,7 +74,7 @@ class ConferenceType(DjangoObjectType):
     def resolve_timezone(self, info):
         return str(self.timezone)
 
-    def resolve_schedule(self, info, date=None, topic=None):
+    def resolve_schedule(self, info, date=None, room=None):
         qs = self.schedule_items
 
         if date:
@@ -88,9 +87,6 @@ class ConferenceType(DjangoObjectType):
             utc_end_date = pytz.utc.normalize(end_date.astimezone(pytz.utc))
 
             qs = qs.filter(start__gte=utc_start_date, end__lte=utc_end_date)
-
-        if topic:
-            qs = qs.filter(topic__id=topic)
 
         return qs.order_by('start')
 
@@ -126,4 +122,5 @@ class ConferenceType(DjangoObjectType):
             'languages',
             'durations',
             'timezone',
+            'rooms',
         )
