@@ -66,7 +66,7 @@ class ConferenceType(DjangoObjectType):
     durations = graphene.NonNull(graphene.List(graphene.NonNull(DurationType)))
     schedule = graphene.NonNull(
         graphene.List(graphene.NonNull(ModelScheduleItemType)),
-        date=graphene.String()
+        date=graphene.Date()
     )
 
     timezone = graphene.String()
@@ -78,10 +78,8 @@ class ConferenceType(DjangoObjectType):
         qs = self.schedule_items
 
         if date:
-            parsed_date = datetime.strptime(date, '%d/%m/%Y').date()
-
-            start_date = datetime.combine(parsed_date, datetime.min.time())
-            end_date = datetime.combine(parsed_date, datetime.max.time())
+            start_date = datetime.combine(date, datetime.min.time())
+            end_date = datetime.combine(date, datetime.max.time())
 
             utc_start_date = pytz.utc.normalize(start_date.astimezone(pytz.utc))
             utc_end_date = pytz.utc.normalize(end_date.astimezone(pytz.utc))

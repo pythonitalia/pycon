@@ -9,10 +9,10 @@ def _query_conference_schedule(client, conference_code, date=None):
     formatted_date = None
 
     if date:
-        formatted_date = date.strftime('%d/%m/%Y')
+        formatted_date = date.isoformat()
 
     return client.query("""
-        query($code: String, $date: String) {
+        query($code: String, $date: Date) {
             conference(code: $code) {
                 schedule(date: $date) {
                     id
