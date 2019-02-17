@@ -44,6 +44,10 @@ class ScheduleItemFactory(DjangoModelFactory):
 
     @factory.post_generation
     def rooms(self, create, extracted, **kwargs):
+        """
+        Convenience post_generator that adds the rooms passed
+        as argument to the M2M `rooms` of the Schedule Item
+        """
         if not create:
             return
 
