@@ -74,7 +74,7 @@ class ConferenceType(DjangoObjectType):
     def resolve_timezone(self, info):
         return str(self.timezone)
 
-    def resolve_schedule(self, info, date=None, room=None):
+    def resolve_schedule(self, info, date=None):
         qs = self.schedule_items
 
         if date:
