@@ -1,0 +1,26 @@
+query Schedule($conf: String!) {
+    conference(code: $conf) {
+        start
+        end
+
+        schedule {
+            id
+            type
+
+            title
+            description
+
+            start
+            end
+
+            rooms {
+                name
+            }
+
+            submission {
+                title
+                abstract
+            }
+        }
+    }
+}

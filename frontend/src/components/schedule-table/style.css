@@ -1,0 +1,54 @@
+.schedule-grid {
+}
+
+.schedule-item {
+    padding: 3rem;
+    border: 1px solid #ccc;
+    border-radius: 0.4rem;
+
+    margin-left: 20rem;
+}
+
+.schedule-item + .schedule-item {
+    margin-top: 2rem;
+}
+
+.rooms {
+    display: flex;
+    list-style: none;
+    margin-top: 1rem;
+}
+
+.rooms li {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rooms li + li {
+    margin-left: 0.5rem;
+}
+
+.rooms li:before {
+    content: '';
+
+    display: inline-block;
+    width: 0.8rem;
+    height: 0.8rem;
+
+    margin-right: 0.5rem;
+
+    border-radius: 100%;
+    background: rgb(71, 104, 253);
+}
+
+.group-container {
+    position: relative;
+    margin-top: -17px;
+}
+
+.group-title {
+    position: sticky;
+    top: 0;
+    transform: translateY(17px);
+}

@@ -1,0 +1,28 @@
+.schedule {
+    padding: 1rem;
+}
+
+.title {
+    margin-bottom: 1rem;
+}
+
+.days {
+    display: flex;
+    list-style: none;
+}
+
+.day {
+    color: #1a73e8;
+    padding: 0.5rem 1rem;
+    border-radius: 0.4rem;
+    cursor: pointer;
+}
+
+.day + .day {
+    margin-left: 1rem;
+}
+
+.active-day {
+    color: #fff;
+    background: #1a73e8;
+}

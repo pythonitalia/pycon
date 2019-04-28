@@ -22,7 +22,7 @@ class Submission(TimeStampedModel):
 
     speaker = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        verbose_name=_('owner'),
+        verbose_name=_('speaker'),
         on_delete=models.PROTECT,
         related_name='submissions'
     )

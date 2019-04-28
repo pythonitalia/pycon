@@ -1,4 +1,8 @@
+import graphene
+
 from graphene_django import DjangoObjectType
+
+from users.types import UserType
 
 from .models import ScheduleItem, Room
 
@@ -10,6 +14,10 @@ class RoomType(DjangoObjectType):
 
 
 class ModelScheduleItemType(DjangoObjectType):
+    additional_speakers = graphene.NonNull(graphene.List(graphene.NonNull(UserType)))
+
+    def resolve_additional_speakers(self, info):
+        return self.additional_speakers.all()
 
     class Meta:
         model = ScheduleItem
@@ -23,4 +31,5 @@ class ModelScheduleItemType(DjangoObjectType):
             'submission',
             'title',
             'description',
+            'additional_speakers',
         )

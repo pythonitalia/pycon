@@ -10,14 +10,14 @@ class ScheduleItemAdmin(admin.ModelAdmin):
     ordering = ('conference', 'start',)
     fieldsets = (
         (_('Event'), {
-            'fields': ('conference', 'type', 'title', 'description', 'submission')
+            'fields': ('conference', 'type', 'title', 'description', 'submission', 'additional_speakers')
         }),
         (_('Schedule'), {
             'fields': ('start', 'end', 'rooms')
         }),
     )
     autocomplete_fields = ('submission',)
-    filter_horizontal = ('rooms',)
+    filter_horizontal = ('rooms', 'additional_speakers')
 
 
 @admin.register(Room)

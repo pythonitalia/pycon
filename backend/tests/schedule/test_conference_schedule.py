@@ -275,3 +275,64 @@ def test_get_scheduleitem_room(
             {'name': room2.name}
         ]
     } in resp['data']['conference']['schedule']
+
+
+@mark.django_db
+def test_get_additional_speakers(
+    graphql_client,
+    conference_factory,
+    schedule_item_factory,
+    submission_factory,
+    room_factory,
+    user_factory,
+):
+    another_speaker = user_factory()
+
+    now = timezone.now()
+
+    conference = conference_factory(
+        start=now,
+        end=now + timezone.timedelta(days=3)
+    )
+
+    room = room_factory(conference=conference)
+
+    schedule = schedule_item_factory(
+        conference=conference,
+        type=ScheduleItem.TYPES.custom,
+        title='Welcome!',
+        submission=None,
+        start=now,
+        end=now + timezone.timedelta(hours=1),
+        rooms=(room,)
+    )
+
+    schedule.additional_speakers.add(another_speaker)
+
+    resp = graphql_client.query("""
+        query($code: String!) {
+            conference(code: $code) {
+                schedule {
+                    additionalSpeakers {
+                        id
+                        username
+                    }
+                }
+            }
+        }
+        """,
+        variables={
+            'code': conference.code
+        }
+    )
+
+    assert resp['data']['conference']['schedule'] == [
+        {
+            'additionalSpeakers': [
+                {
+                    'id': str(another_speaker.id),
+                    'username': another_speaker.username
+                }
+            ]
+        }
+    ]

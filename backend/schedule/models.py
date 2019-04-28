@@ -1,4 +1,5 @@
 from django.core import exceptions
+from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -60,6 +61,11 @@ class ScheduleItem(TimeFramedModel, TimeStampedModel):
         null=True,
         blank=True,
         verbose_name=_('submission')
+    )
+
+    additional_speakers = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        verbose_name=_('additional speakers'),
     )
 
     def clean(self):
