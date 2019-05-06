@@ -7,7 +7,7 @@ from pytest_factoryboy import register
 
 from django.utils import timezone
 
-from conferences.models import Conference, Topic, Deadline, AudienceLevel, Duration
+from conferences.models import Conference, Topic, Deadline, AudienceLevel, Duration, Ticket
 from languages.models import Language
 from submissions.models import SubmissionType
 
@@ -163,3 +163,19 @@ class DurationFactory(DjangoModelFactory):
 
     class Meta:
         model = Duration
+
+
+@register
+class TicketFactory(DjangoModelFactory):
+    class Meta:
+        model = Ticket
+
+    conference = factory.SubFactory(ConferenceFactory)
+
+    name = factory.Faker('name')
+    description = factory.Faker('paragraphs')
+    price = factory.Faker('random_int', min=20, max=300)
+    code = factory.Faker('military_ship')
+
+    start = factory.Faker('past_datetime', tzinfo=pytz.UTC)
+    end = factory.Faker('future_datetime', tzinfo=pytz.UTC)

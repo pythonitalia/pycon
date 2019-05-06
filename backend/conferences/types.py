@@ -2,11 +2,10 @@ import graphene
 
 from graphene_django import DjangoObjectType
 
-from tickets.types import TicketType
 from languages.types import LanguageType
 from submissions.types import SubmissionTypeType
 
-from .models import Conference, Deadline, AudienceLevel, Topic, Duration
+from .models import Conference, Deadline, AudienceLevel, Topic, Duration, Ticket
 
 
 class DurationType(DjangoObjectType):
@@ -49,6 +48,12 @@ class TopicType(DjangoObjectType):
     class Meta:
         model = Topic
         only_fields = ('id', 'name')
+
+
+class TicketType(DjangoObjectType):
+    class Meta:
+        model = Ticket
+        only_fields = ('id', 'code', 'name', 'price', 'start', 'end', 'description')
 
 
 class ConferenceType(DjangoObjectType):
