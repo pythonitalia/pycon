@@ -11,5 +11,5 @@ class UsersQuery:
     def resolve_me(self, info):
         if not info.context.user.is_authenticated:
             raise GraphQLError("User not logged in")
-        else:
-            return info.context.user
+
+        return info.context.user

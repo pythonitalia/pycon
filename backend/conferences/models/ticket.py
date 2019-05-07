@@ -6,7 +6,12 @@ from model_utils.models import TimeFramedModel, TimeStampedModel
 
 
 class Ticket(TimeFramedModel, TimeStampedModel):
-    conference = models.ForeignKey('conferences.Conference', on_delete=models.CASCADE, verbose_name=_('conference'), related_name='tickets')
+    conference = models.ForeignKey(
+        'conferences.Conference',
+        on_delete=models.CASCADE,
+        verbose_name=_('conference'),
+        related_name='tickets'
+    )
 
     code = models.CharField(_('code'), max_length=10)
     name = models.CharField(_('name'), max_length=100)

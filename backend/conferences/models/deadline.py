@@ -31,7 +31,10 @@ class Deadline(TimeFramedModel):
             raise exceptions.ValidationError(_('Start date cannot be after end'))
 
         if self.type != Deadline.TYPES.custom:
-            if Deadline.objects.filter(conference=self.conference, type=self.type).exclude(id=self.id).exists():
+            if Deadline.objects.filter(
+                    conference=self.conference,
+                    type=self.type
+                ).exclude(id=self.id).exists():
                 raise exceptions.ValidationError(
                     _('You can only have one deadline of type %(type)s') % {'type': self.type}
                 )
