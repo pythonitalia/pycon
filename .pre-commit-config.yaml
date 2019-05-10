@@ -1,0 +1,18 @@
+repos:
+  - repo: https://github.com/pre-commit/mirrors-isort
+    rev: v4.3.4
+    hooks:
+      - id: isort
+
+  - repo: https://github.com/ambv/black
+    rev: stable
+    hooks:
+      - id: black
+        exclude: /(\.eggs|\.git|\.hg|\.mypy_cache|\.nox|\.tox|\.venv|_build|buck-out|build|dist|migrations)/
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v1.2.3
+    hooks:
+      - id: flake8
+      - id: check-merge-conflict
+      - id: debug-statements
