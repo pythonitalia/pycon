@@ -1,10 +1,13 @@
 import factory
+import factory.fuzzy
 
 from pytest_factoryboy import register
 
 from factory.django import DjangoModelFactory
 
-from tests.conferences.factories import ConferenceFactory, DurationFactory
+from tests.conferences.factories import ConferenceFactory, DurationFactory, TopicFactory
+from tests.languages.factories import LanguageFactory
+from tests.users.factories import UserFactory
 
 from submissions.models import Submission, SubmissionType
 
@@ -31,3 +34,6 @@ class SubmissionFactory(DjangoModelFactory):
     notes = factory.Faker('text')
     type = factory.SubFactory(SubmissionTypeFactory)
     duration = factory.SubFactory(DurationFactory)
+    language = factory.SubFactory(LanguageFactory)
+    speaker = factory.SubFactory(UserFactory)
+    topic = factory.SubFactory(TopicFactory)

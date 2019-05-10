@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'conferences.apps.ConferencesConfig',
     'languages.apps.LanguagesConfig',
     'submissions.apps.SubmissionsConfig',
+    'schedule.apps.ScheduleConfig',
 ]
 
 MIDDLEWARE = [

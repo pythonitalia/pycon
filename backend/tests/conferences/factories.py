@@ -121,6 +121,7 @@ class ConferenceFactory(DjangoModelFactory):
 
     class Meta:
         model = Conference
+        django_get_or_create = ('code',)
 
 
 @register

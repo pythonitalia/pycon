@@ -1,9 +1,15 @@
+import pytz
 import graphene
+
+from datetime import datetime
 
 from graphene_django import DjangoObjectType
 
 from languages.types import LanguageType
 from submissions.types import SubmissionTypeType
+from schedule.types import ModelScheduleItemType
+
+from schedule.models import ScheduleItem
 
 from .models import Conference, Deadline, AudienceLevel, Topic, Duration, Ticket
 
@@ -63,11 +69,29 @@ class ConferenceType(DjangoObjectType):
     topics = graphene.NonNull(graphene.List(graphene.NonNull(TopicType)))
     languages = graphene.NonNull(graphene.List(graphene.NonNull(LanguageType)))
     durations = graphene.NonNull(graphene.List(graphene.NonNull(DurationType)))
+    schedule = graphene.NonNull(
+        graphene.List(graphene.NonNull(ModelScheduleItemType)),
+        date=graphene.Date()
+    )
 
     timezone = graphene.String()
 
     def resolve_timezone(self, info):
         return str(self.timezone)
+
+    def resolve_schedule(self, info, date=None):
+        qs = self.schedule_items
+
+        if date:
+            start_date = datetime.combine(date, datetime.min.time())
+            end_date = datetime.combine(date, datetime.max.time())
+
+            utc_start_date = pytz.utc.normalize(start_date.astimezone(pytz.utc))
+            utc_end_date = pytz.utc.normalize(end_date.astimezone(pytz.utc))
+
+            qs = qs.filter(start__gte=utc_start_date, end__lte=utc_end_date)
+
+        return qs.order_by('start')
 
     def resolve_tickets(self, info):
         return self.tickets.all()
@@ -101,4 +125,5 @@ class ConferenceType(DjangoObjectType):
             'languages',
             'durations',
             'timezone',
+            'rooms',
         )
