@@ -16,8 +16,14 @@ class Conference(TimeFramedModel, TimeStampedModel):
 
     topics = models.ManyToManyField('conferences.Topic', verbose_name=_('topics'))
     languages = models.ManyToManyField('languages.Language', verbose_name=_('languages'))
-    audience_levels = models.ManyToManyField('conferences.AudienceLevel', verbose_name=_('audience levels'))
-    submission_types = models.ManyToManyField('submissions.SubmissionType', verbose_name=_('submission types'))
+    audience_levels = models.ManyToManyField(
+        'conferences.AudienceLevel',
+        verbose_name=_('audience levels')
+    )
+    submission_types = models.ManyToManyField(
+        'submissions.SubmissionType',
+        verbose_name=_('submission types')
+    )
 
     @property
     def is_cfp_open(self):

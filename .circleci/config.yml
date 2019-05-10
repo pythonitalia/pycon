@@ -36,15 +36,6 @@ jobs:
             cd backend
             py.test --cov-report xml --cov=. --cov-fail-under 100
 
-      - run:
-          name: upload codacy report
-          command: |
-            . venv/bin/activate
-            cd backend
-            python-codacy-coverage -r coverage.xml
-          environment:
-            CODACY_PROJECT_TOKEN: b371fba19b824c62ad6270d4e1f3b410
-
   backend-schema:
     docker:
       - image: circleci/python:3.6.5@sha256:5ed7f0d14f10f5b81c012c6011969ca5abf9f7bc53e0448844aa9274a359178e

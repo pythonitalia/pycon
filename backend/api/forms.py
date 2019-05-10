@@ -10,7 +10,7 @@ class ContextAwareForm(forms.ModelForm):
     :py:class:`api.mutations.ContextAwareDjangoModelFormMutation` (or subclasses)
     and want to access the request object using `self.context`.
     """
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):  # pylint: disable=return-in-init
         self._context = kwargs.pop('context', None)
         return super().__init__(*args, **kwargs)
 
