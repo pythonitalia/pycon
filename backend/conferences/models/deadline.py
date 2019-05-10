@@ -34,7 +34,7 @@ class Deadline(TimeFramedModel):
             if Deadline.objects.filter(
                     conference=self.conference,
                     type=self.type
-                ).exclude(id=self.id).exists():
+            ).exclude(id=self.id).exists():
                 raise exceptions.ValidationError(
                     _('You can only have one deadline of type %(type)s') % {'type': self.type}
                 )
