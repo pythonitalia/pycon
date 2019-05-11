@@ -1,26 +1,32 @@
-import pytz
-import factory
-import factory.fuzzy
-from factory.django import DjangoModelFactory
-
-from pytest_factoryboy import register
-
 from django.utils import timezone
 
-from conferences.models import Conference, Topic, Deadline, AudienceLevel, Duration, Ticket
+import factory
+import factory.fuzzy
+import pytz
+from factory.django import DjangoModelFactory
+from pytest_factoryboy import register
+
+from conferences.models import (
+    AudienceLevel,
+    Conference,
+    Deadline,
+    Duration,
+    Ticket,
+    Topic,
+)
 from languages.models import Language
 from submissions.models import SubmissionType
 
 
 @register
 class ConferenceFactory(DjangoModelFactory):
-    name = factory.Faker('name')
-    code = factory.Faker('text', max_nb_chars=10)
+    name = factory.Faker("name")
+    code = factory.Faker("text", max_nb_chars=10)
 
-    start = factory.Faker('past_datetime', tzinfo=pytz.UTC)
-    end = factory.Faker('future_datetime', tzinfo=pytz.UTC)
+    start = factory.Faker("past_datetime", tzinfo=pytz.UTC)
+    end = factory.Faker("future_datetime", tzinfo=pytz.UTC)
 
-    timezone = pytz.timezone('Europe/Rome')
+    timezone = pytz.timezone("Europe/Rome")
 
     @classmethod
     def _create(cls, model_class, *args, **kwargs):
@@ -32,7 +38,7 @@ class ConferenceFactory(DjangoModelFactory):
         for deadline in Deadline.TYPES:
             _type = deadline[0]
 
-            value = kwargs.pop(f'active_{_type}', None)
+            value = kwargs.pop(f"active_{_type}", None)
             specified_deadlines[_type] = value
 
         instance = super()._create(model_class, *args, **kwargs)
@@ -41,12 +47,14 @@ class ConferenceFactory(DjangoModelFactory):
             if value is True:
                 instance.deadlines.add(DeadlineFactory(conference=instance, type=_type))
             elif value is False:
-                instance.deadlines.add(DeadlineFactory(
-                    conference=instance,
-                    type=_type,
-                    start=timezone.now() - timezone.timedelta(days=10),
-                    end=timezone.now() - timezone.timedelta(days=5),
-                ))
+                instance.deadlines.add(
+                    DeadlineFactory(
+                        conference=instance,
+                        type=_type,
+                        start=timezone.now() - timezone.timedelta(days=10),
+                        end=timezone.now() - timezone.timedelta(days=5),
+                    )
+                )
 
         return instance
 
@@ -94,7 +102,9 @@ class ConferenceFactory(DjangoModelFactory):
 
         if extracted:
             for submission_type in extracted:
-                self.submission_types.add(SubmissionType.objects.get_or_create(name=submission_type)[0])
+                self.submission_types.add(
+                    SubmissionType.objects.get_or_create(name=submission_type)[0]
+                )
 
     @factory.post_generation
     def durations(self, create, extracted, **kwargs):
@@ -111,7 +121,7 @@ class ConferenceFactory(DjangoModelFactory):
                 duration, created = Duration.objects.get_or_create(
                     duration=duration,
                     conference=self,
-                    defaults={'name': f'{duration}m'}
+                    defaults={"name": f"{duration}m"},
                 )
 
                 if created:
@@ -121,16 +131,16 @@ class ConferenceFactory(DjangoModelFactory):
 
     class Meta:
         model = Conference
-        django_get_or_create = ('code',)
+        django_get_or_create = ("code",)
 
 
 @register
 class TopicFactory(DjangoModelFactory):
-    name = factory.Faker('word')
+    name = factory.Faker("word")
 
     class Meta:
         model = Topic
-        django_get_or_create = ('name',)
+        django_get_or_create = ("name",)
 
 
 @register
@@ -138,8 +148,8 @@ class DeadlineFactory(DjangoModelFactory):
     conference = factory.SubFactory(ConferenceFactory)
     type = factory.fuzzy.FuzzyChoice([deadline[0] for deadline in Deadline.TYPES])
 
-    start = factory.Faker('past_datetime', tzinfo=pytz.UTC)
-    end = factory.Faker('future_datetime', tzinfo=pytz.UTC)
+    start = factory.Faker("past_datetime", tzinfo=pytz.UTC)
+    end = factory.Faker("future_datetime", tzinfo=pytz.UTC)
 
     class Meta:
         model = Deadline
@@ -147,20 +157,20 @@ class DeadlineFactory(DjangoModelFactory):
 
 @register
 class AudienceLevelFactory(DjangoModelFactory):
-    name = factory.Faker('word')
+    name = factory.Faker("word")
 
     class Meta:
         model = AudienceLevel
-        django_get_or_create = ('name', )
+        django_get_or_create = ("name",)
 
 
 @register
 class DurationFactory(DjangoModelFactory):
     conference = factory.SubFactory(ConferenceFactory)
 
-    name = factory.Faker('word')
-    duration = factory.Faker('pyint')
-    notes = factory.Faker('text')
+    name = factory.Faker("word")
+    duration = factory.Faker("pyint")
+    notes = factory.Faker("text")
 
     class Meta:
         model = Duration
@@ -173,10 +183,10 @@ class TicketFactory(DjangoModelFactory):
 
     conference = factory.SubFactory(ConferenceFactory)
 
-    name = factory.Faker('name')
-    description = factory.Faker('paragraphs')
-    price = factory.Faker('random_int', min=20, max=300)
-    code = factory.Faker('military_ship')
+    name = factory.Faker("name")
+    description = factory.Faker("paragraphs")
+    price = factory.Faker("random_int", min=20, max=300)
+    code = factory.Faker("military_ship")
 
-    start = factory.Faker('past_datetime', tzinfo=pytz.UTC)
-    end = factory.Faker('future_datetime', tzinfo=pytz.UTC)
+    start = factory.Faker("past_datetime", tzinfo=pytz.UTC)
+    end = factory.Faker("future_datetime", tzinfo=pytz.UTC)

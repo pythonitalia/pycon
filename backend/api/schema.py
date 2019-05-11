@@ -1,9 +1,8 @@
 import graphene
 
-from users.schema import UsersQuery
 from conferences.schema import ConferenceQuery
-
 from submissions.mutations import SubmissionsMutations
+from users.schema import UsersQuery
 
 
 class Query(UsersQuery, ConferenceQuery, graphene.ObjectType):

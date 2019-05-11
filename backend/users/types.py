@@ -12,4 +12,4 @@ class MeUserType(DjangoObjectType):
 class UserType(DjangoObjectType):
     class Meta:
         model = User
-        only_fields = ('id', 'name', 'username',)
+        only_fields = ("id", "name", "username")

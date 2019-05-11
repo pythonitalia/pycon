@@ -132,7 +132,8 @@ disable=print-statement,
         no-self-use,
         unused-argument,
         too-few-public-methods,
-        no-member
+        no-member,
+        bad-continuation
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
@@ -307,7 +308,7 @@ indent-after-paren=4
 indent-string='    '
 
 # Maximum number of characters on a single line.
-max-line-length=100
+max-line-length=88
 
 # Maximum number of lines in a module
 max-module-lines=1000
