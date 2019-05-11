@@ -1,18 +1,14 @@
-import * as React from 'react';
 import { RouteComponentProps } from '@reach/router';
-
+import * as React from 'react';
+import { Query } from 'react-apollo';
+import { ScheduleTable } from '../../components/schedule-table/index';
+import SCHEDULE from './query.graphql';
+import * as styles from './style.css';
 import {
   Schedule as ScheduleType,
-  Schedule_conference_schedule,
   ScheduleVariables,
+  Schedule_conference_schedule,
 } from './types/Schedule';
-
-import { Query } from 'react-apollo';
-
-import SCHEDULE from './query.graphql';
-
-import * as styles from './style.css';
-import { ScheduleTable } from '../../components/schedule-table/index';
 
 export const monthIndexToName = [
   'Gennaio',
@@ -93,52 +89,6 @@ const parseSchedule = (
   schedule: Schedule_conference_schedule[],
 ): ParsedScheduleContainer => {
   const output: ParsedScheduleContainer = {};
-  let previousItem;
-  let currentGroup = 0;
-
-  for (const item of schedule) {
-    const start = new Date(item.start);
-    const end = new Date(item.end);
-    const day = start.getDate();
-
-    /* this does not really work for conferences that span multiple months!!!! */
-    /* also it's ugly */
-    if (!output.hasOwnProperty(day)) {
-      output[day] = {
-        year: start.getFullYear(),
-        month: start.getMonth(),
-        day,
-        schedule: {},
-      };
-      currentGroup = 0;
-    }
-
-    if (previousItem) {
-      const previousItemStart = new Date(previousItem.end);
-
-      if (previousItemStart.getTime() - end.getTime() > 60 * 60 * 1000) {
-        console.log('more than 20 minutes of distance');
-        currentGroup++;
-        if (!output[day].schedule.hasOwnProperty(currentGroup)) {
-          output[day].schedule[currentGroup] = { items: [] };
-        }
-        output[day].schedule[currentGroup].items.push(item);
-      } else {
-        console.log('less than 20 minutes of distance');
-
-        if (!output[day].schedule.hasOwnProperty(currentGroup)) {
-          output[day].schedule[currentGroup] = { items: [] };
-        }
-
-        output[day].schedule[currentGroup].items.push(item);
-      }
-    }
-    // output[day].schedule.push(item);
-
-    previousItem = item;
-
-    console.log(item.title, item.start);
-  }
-
+  /* removed test code */
   return output;
 };

@@ -11,7 +11,6 @@ type Props = {
 
 export const ScheduleTable = (props: Props) => {
   const schedule = props.schedule;
-  console.log('schedule:', schedule);
   return (
     <div>
       <h2>
@@ -21,7 +20,7 @@ export const ScheduleTable = (props: Props) => {
         const group = schedule.schedule[groupId];
         const firstItem = group.items[0];
         const dateFirstItem = new Date(firstItem.start);
-        console.log('group', group);
+
         return (
           <div>
             <h3>Group #{groupId}</h3>
