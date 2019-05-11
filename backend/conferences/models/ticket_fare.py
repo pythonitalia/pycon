@@ -5,12 +5,12 @@ from django.utils.translation import ugettext_lazy as _
 from model_utils.models import TimeFramedModel, TimeStampedModel
 
 
-class Ticket(TimeFramedModel, TimeStampedModel):
+class TicketFare(TimeFramedModel, TimeStampedModel):
     conference = models.ForeignKey(
         'conferences.Conference',
         on_delete=models.CASCADE,
         verbose_name=_('conference'),
-        related_name='tickets'
+        related_name='ticket_fares'
     )
 
     code = models.CharField(_('code'), max_length=10)
@@ -22,6 +22,6 @@ class Ticket(TimeFramedModel, TimeStampedModel):
         return f'{self.name} ({self.conference.name})'
 
     class Meta:
-        verbose_name = _('Ticket')
-        verbose_name_plural = _('Tickets')
+        verbose_name = _('Ticket Fare')
+        verbose_name_plural = _('Ticket fares')
         unique_together = ('conference', 'code',)
