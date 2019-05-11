@@ -1,12 +1,12 @@
 import pytest
 
-from api.forms import ContextAwareForm
+from api.forms import ContextAwareModelForm
 
 from users.models import User
 
 
 def test_cannot_use_form_context_if_its_not_passed():
-    class TestModelForm(ContextAwareForm):
+    class TestModelForm(ContextAwareModelForm):
         class Meta:
             model = User
             fields = ('id',)

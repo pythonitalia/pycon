@@ -2,14 +2,14 @@ from django import forms
 
 from django.utils.translation import ugettext_lazy as _
 
-from api.forms import ContextAwareForm
+from api.forms import ContextAwareModelForm
 from languages.models import Language
 from conferences.models import Conference
 
 from .models import Submission
 
 
-class SendSubmissionForm(ContextAwareForm):
+class SendSubmissionForm(ContextAwareModelForm):
     conference = forms.ModelChoiceField(queryset=Conference.objects.all(), to_field_name='code', required=True)
     language = forms.ModelChoiceField(queryset=Language.objects.all(), to_field_name='code', required=True)
 
