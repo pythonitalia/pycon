@@ -1,15 +1,13 @@
+from datetime import datetime
+
 import pytz
 import graphene
-
-from datetime import datetime
 
 from graphene_django import DjangoObjectType
 
 from languages.types import LanguageType
 from submissions.types import SubmissionTypeType
 from schedule.types import ModelScheduleItemType
-
-from schedule.models import ScheduleItem
 
 from .models import Conference, Deadline, AudienceLevel, Topic, Duration, TicketFare
 
