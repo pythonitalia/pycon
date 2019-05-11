@@ -1,7 +1,7 @@
+from datetime import datetime
+
 import pytz
 import graphene
-
-from datetime import datetime
 
 from graphene_django import DjangoObjectType
 
@@ -9,9 +9,7 @@ from languages.types import LanguageType
 from submissions.types import SubmissionTypeType
 from schedule.types import ModelScheduleItemType
 
-from schedule.models import ScheduleItem
-
-from .models import Conference, Deadline, AudienceLevel, Topic, Duration, Ticket
+from .models import Conference, Deadline, AudienceLevel, Topic, Duration, TicketFare
 
 
 class DurationType(DjangoObjectType):
@@ -56,14 +54,14 @@ class TopicType(DjangoObjectType):
         only_fields = ('id', 'name')
 
 
-class TicketType(DjangoObjectType):
+class TicketFareType(DjangoObjectType):
     class Meta:
-        model = Ticket
+        model = TicketFare
         only_fields = ('id', 'code', 'name', 'price', 'start', 'end', 'description')
 
 
 class ConferenceType(DjangoObjectType):
-    tickets = graphene.NonNull(graphene.List(graphene.NonNull(TicketType)))
+    ticket_fares = graphene.NonNull(graphene.List(graphene.NonNull(TicketFareType)))
     deadlines = graphene.NonNull(graphene.List(graphene.NonNull(DeadlineModelType)))
     audience_levels = graphene.NonNull(graphene.List(graphene.NonNull(AudienceLevelType)))
     topics = graphene.NonNull(graphene.List(graphene.NonNull(TopicType)))
@@ -93,8 +91,8 @@ class ConferenceType(DjangoObjectType):
 
         return qs.order_by('start')
 
-    def resolve_tickets(self, info):
-        return self.tickets.all()
+    def resolve_ticket_fares(self, info):
+        return self.ticket_fares.all()
 
     def resolve_deadlines(self, info):
         return self.deadlines.order_by('start').all()

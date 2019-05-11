@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Conference, Topic, Deadline, AudienceLevel, Duration, Ticket
+from .models import Conference, Topic, Deadline, AudienceLevel, Duration, TicketFare
 
 
 class DeadlineInline(admin.TabularInline):
@@ -45,8 +45,8 @@ class AudienceLevelAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(Ticket)
-class TicketAdmin(admin.ModelAdmin):
+@admin.register(TicketFare)
+class TicketFareAdmin(admin.ModelAdmin):
     list_display = ('conference', 'name',)
     list_filter = ('conference', )
 

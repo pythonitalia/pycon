@@ -7,7 +7,7 @@ from pytest_factoryboy import register
 
 from django.utils import timezone
 
-from conferences.models import Conference, Topic, Deadline, AudienceLevel, Duration, Ticket
+from conferences.models import Conference, Topic, Deadline, AudienceLevel, Duration, TicketFare
 from languages.models import Language
 from submissions.models import SubmissionType
 
@@ -167,9 +167,9 @@ class DurationFactory(DjangoModelFactory):
 
 
 @register
-class TicketFactory(DjangoModelFactory):
+class TicketFareFactory(DjangoModelFactory):
     class Meta:
-        model = Ticket
+        model = TicketFare
 
     conference = factory.SubFactory(ConferenceFactory)
 

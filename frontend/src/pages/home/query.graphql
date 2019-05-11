@@ -5,7 +5,7 @@ query Home($conf: String!) {
     start
     end
 
-    tickets {
+    ticketFares {
       name
       start
       end
