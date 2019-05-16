@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from django_fsm import FSMField, transition, RETURN_VALUE
 from model_utils.models import TimeStampedModel
 
-from .providers import PROVIDERS, get_provider
+from payments.providers import PROVIDERS, get_provider
 
 
 class Order(TimeStampedModel):
@@ -38,10 +38,13 @@ class Order(TimeStampedModel):
     @transition(
         field=state,
         source='new',
-        target=RETURN_VALUE('complete', 'manual'),
+        target=RETURN_VALUE(
+            'complete',
+            'manual',
+        ),
         on_error='failed'
     )
-    def charge(self, token):
+    def charge(self, payload):
         """
         Executes the payment using the provider specified
         """
@@ -56,7 +59,7 @@ class Order(TimeStampedModel):
         provider = provider_class()
         provider.charge(
             order=self,
-            token=token
+            payload=payload
         )
         # what happens now?
         pass

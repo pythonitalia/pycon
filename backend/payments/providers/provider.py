@@ -5,8 +5,9 @@ class PaymentProvider(ABC):
     """
     Generic interface for a payment provider.
     """
+
     @abstractmethod
-    def charge(self, *, order, token):
+    def charge(self, *, order, payload):
         """
         Execute the payment
         """

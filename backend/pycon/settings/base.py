@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'submissions.apps.SubmissionsConfig',
     'schedule.apps.ScheduleConfig',
     'orders.apps.OrdersConfig',
+    'payments.apps.PaymentsConfig',
 ]
 
 MIDDLEWARE = [
