@@ -6,10 +6,11 @@ import stripe
 
 from django.conf import settings
 
-from ..exceptions import Stripe3DVerificationException
+from .exceptions import Stripe3DVerificationException
 
-from .provider import PaymentProvider
-from .utils import to_cents
+from ..provider import PaymentProvider
+from ..utils import to_cents
+
 
 class Stripe(PaymentProvider):
     def __init__(self, *args, **kwargs):

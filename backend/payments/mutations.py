@@ -4,7 +4,7 @@ from graphene_form.mutations import FormMutation
 
 from .forms import BuyTicketWithStripeForm
 
-from .types import Stripe3DValidationRequired
+from .providers.stripe.types import Stripe3DValidationRequired
 
 
 class BuyTicketWithStripe(FormMutation):

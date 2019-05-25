@@ -12,9 +12,10 @@ from graphene_form.forms import FormWithContext
 from conferences.models import TicketFare
 from orders.models import Order, OrderItem
 
+from .providers.stripe.types import Stripe3DValidationRequired
+from .providers.stripe.exceptions import Stripe3DVerificationException
+
 from .fields import CartField
-from .types import Stripe3DValidationRequired
-from .exceptions import Stripe3DVerificationException
 
 
 class CommonPaymentItemsForm(FormWithContext):
