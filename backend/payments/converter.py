@@ -1,13 +1,9 @@
 from graphene import List
-from graphene_django.forms.converter import convert_form_field
 
-from .forms import PaymentPayloadField, CartField
+from graphene_form.converter import convert_form_field
+
+from .fields import CartField
 from .types import PaymentPayload, CartItem
-
-
-@convert_form_field.register(PaymentPayloadField)
-def convert_form_field_to_payment_payload(field):
-    return PaymentPayload(required=field.required)
 
 
 @convert_form_field.register(CartField)

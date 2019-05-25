@@ -62,7 +62,7 @@ class Order(TimeStampedModel):
             payload=payload
         )
         # what happens now?
-        pass
+        return 'manual'
 
 
 class OrderItem(TimeStampedModel):

@@ -1,23 +1,16 @@
 import graphene
 
-
-from graphene_django.forms.converter import convert_form_field
+from graphene import String, Int, ID, NonNull
 
 
 class CartItem(graphene.InputObjectType):
-    id = graphene.ID()
-    quantity = graphene.Int()
+    id = NonNull(ID)
+    quantity = NonNull(Int)
 
 
 class PaymentPayload(graphene.InputObjectType):
-    payment_method_id = graphene.String()
+    payment_method_id = String()
 
 
-class PaymentFailed(graphene.ObjectType):
-    # TOOD: Enum!
-    reason = graphene.NonNull(graphene.String)
-
-
-class PaymentResponse(graphene.Union):
-    class Meta:
-        types = (PaymentFailed,)
+class Stripe3DValidationRequired(graphene.ObjectType):
+    client_secret = NonNull(String)

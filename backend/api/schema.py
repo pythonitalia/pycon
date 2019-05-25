@@ -4,14 +4,14 @@ from users.schema import UsersQuery
 from conferences.schema import ConferenceQuery
 
 from submissions.mutations import SubmissionsMutations
-from conferences.mutations import ConferencesMutations
+from payments.mutations import PaymentsMutations
 
 
 class Query(UsersQuery, ConferenceQuery, graphene.ObjectType):
     pass
 
 
-class Mutations(SubmissionsMutations, ConferencesMutations):
+class Mutations(SubmissionsMutations, PaymentsMutations):
     pass
 
 

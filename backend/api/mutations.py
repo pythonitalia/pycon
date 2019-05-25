@@ -59,6 +59,8 @@ class ContextAwareDjangoMutation(mutation.DjangoFormMutation):
         # TODO: Why graphene ignores the form.save output?
         # how are we supposed to return something to the client?
         output = form.save()
+        import pdb; pdb.set_trace()
+        return output
         return cls(**output, errors=[])
 
     @classmethod
