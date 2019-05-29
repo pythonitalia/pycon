@@ -61,6 +61,9 @@ class FormMutation(Mutation):
             error_instance = error_cls()
 
             for name, messages in form.errors.items():
+                if name == '__all__':
+                    name = 'nonFieldErrors'
+
                 setattr(error_instance, name, messages)
 
             return error_instance
