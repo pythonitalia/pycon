@@ -7,6 +7,8 @@ from model_utils.models import TimeStampedModel
 
 from payments.providers import PROVIDERS, get_provider
 
+from .enums import PaymentState
+
 
 class Order(TimeStampedModel):
     user = models.ForeignKey(
@@ -55,13 +57,24 @@ class Order(TimeStampedModel):
             # manual payment?
             return
 
-        import pdb; pdb.set_trace()
         provider = provider_class()
-        provider.charge(
+        next_state = provider.charge(
             order=self,
             payload=payload
         )
-        # what happens now?
+
+        if next_state == PaymentState.COMPLETED:
+            return 'complete'
+        elif next_state == PaymentState.MANUAL:
+            return 'manual'
+        else:
+            raise ValueError(
+                _('Provider %(name)s returned an invalid value: %(response)s' % {
+                    'name': self.provider,
+                    'response': next_state
+                }
+            ))
+
         return 'manual'
 
 

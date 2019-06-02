@@ -15,7 +15,9 @@ from orders.models import Order, OrderItem
 from .providers.stripe.types import Stripe3DValidationRequired
 from .providers.stripe.exceptions import Stripe3DVerificationException
 
+from .exceptions import PaymentFailed
 from .fields import CartField
+from .types import GenericPaymentFailedError
 
 
 class CommonPaymentItemsForm(FormWithContext):
@@ -91,16 +93,19 @@ class BuyTicketWithStripeForm(CommonPaymentItemsForm):
     def save(self):
         order = self.create_order()
 
-        try:
-            payload = {
-                'payment_method_id': self.cleaned_data.get('payment_method_id', None),
-                'payment_intent_id': self.cleaned_data.get('payment_intent_id', None),
-            }
+        payload = {
+            'payment_method_id': self.cleaned_data.get('payment_method_id', None),
+            'payment_intent_id': self.cleaned_data.get('payment_intent_id', None),
+        }
 
+        try:
             order.charge(payload)
         except Stripe3DVerificationException as e:
             return Stripe3DValidationRequired(client_secret=e.client_secret)
+        except PaymentFailed as e:
+            return GenericPaymentFailedError(message=e.message)
 
+        # payment completed with success
         order.save()
         # register ticket?
         return True

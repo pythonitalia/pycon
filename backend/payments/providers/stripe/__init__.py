@@ -6,6 +6,8 @@ import stripe
 
 from django.conf import settings
 
+from orders.enums import PaymentState
+
 from .exceptions import Stripe3DVerificationException
 
 from ...exceptions import PaymentFailed
@@ -43,11 +45,12 @@ class Stripe(PaymentProvider):
             # TODO: Better exception
             raise ValueError('This payment intent amount is different from the amount of this order')
 
-        import pdb; pdb.set_trace()
+        # import pdb; pdb.set_trace()
         if intent.status == 'requires_action' and intent.next_action.type == 'use_stripe_sdk':
             raise Stripe3DVerificationException(intent.client_secret)
         elif intent.status == 'succeeded':
-            return True
+            order.transaction_id = intent.id
+            return PaymentState.COMPLETED
         else:
             # something went wrong
             raise PaymentFailed()
