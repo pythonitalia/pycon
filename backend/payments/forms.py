@@ -9,7 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from graphene_form.forms import FormWithContext
 
-from conferences.models import TicketFare
+from conferences.models import TicketFare, Conference
 from orders.models import Order, OrderItem
 
 from .providers.stripe.types import Stripe3DValidationRequired
@@ -20,25 +20,38 @@ from .fields import CartField
 
 class CommonPaymentItemsForm(FormWithContext):
     items = CartField()
+    conference = forms.ModelChoiceField(
+        Conference.objects.all(),
+        to_field_name='code',
+        required=True
+    )
 
     def clean(self):
         cleaned_data = super().clean()
-        import pdb; pdb.set_trace()
+
+        conference = cleaned_data.get('conference', None)
+
+        if not conference:
+            return
 
         items = cleaned_data['items']
 
         total_amount = Decimal(0)
 
-        for index, item in enumerate(items):
+        for item in items:
             item_id = item['id']
-            # TODO: Add conference check
 
             try:
-                fare = TicketFare.objects.get(id=item_id)
+                fare = conference.ticket_fares.get(id=item_id)
             except TicketFare.DoesNotExist:
-                raise forms.ValidationError(
-                    _('Row #%(index)s, item with id %(id)s does not exist') % {'index': index, 'id': item_id}
-                )
+                raise forms.ValidationError({
+                    'items': _('Ticket %(id)s does not exist') % {'id': item_id}
+                })
+
+            if not fare.is_available:
+                raise forms.ValidationError({
+                    'items': _('Ticket #%(id)s is not available anymore') % {'id': item_id}
+                })
 
             item['fare'] = fare
             total_amount = total_amount + fare.price
@@ -48,18 +61,11 @@ class CommonPaymentItemsForm(FormWithContext):
 
         return cleaned_data
 
-
-class BuyTicketWithStripeForm(CommonPaymentItemsForm):
-    payment_method_id = forms.CharField(required=False)
-    payment_intent_id = forms.CharField(required=False)
-
-    def save(self):
+    def create_order(self):
         user = self.context.user
 
         items = self.cleaned_data.get('items')
         total_amount = self.cleaned_data.get('total_amount')
-
-        import pdb; pdb.set_trace()
 
         order = Order(
             user=user,
@@ -75,10 +81,26 @@ class BuyTicketWithStripeForm(CommonPaymentItemsForm):
                 quantity=item['quantity']
             )
 
+        return order
+
+
+class BuyTicketWithStripeForm(CommonPaymentItemsForm):
+    payment_method_id = forms.CharField(required=False)
+    payment_intent_id = forms.CharField(required=False)
+
+    def save(self):
+        order = self.create_order()
+
         try:
-            order.charge(self.cleaned_data)
+            payload = {
+                'payment_method_id': self.cleaned_data.get('payment_method_id', None),
+                'payment_intent_id': self.cleaned_data.get('payment_intent_id', None),
+            }
+
+            order.charge(payload)
         except Stripe3DVerificationException as e:
             return Stripe3DValidationRequired(client_secret=e.client_secret)
 
-        import pdb; pdb.set_trace()
+        order.save()
+        # register ticket?
         return True

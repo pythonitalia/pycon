@@ -8,6 +8,7 @@ from django.conf import settings
 
 from .exceptions import Stripe3DVerificationException
 
+from ...exceptions import PaymentFailed
 from ..provider import PaymentProvider
 from ..utils import to_cents
 
@@ -46,10 +47,10 @@ class Stripe(PaymentProvider):
         if intent.status == 'requires_action' and intent.next_action.type == 'use_stripe_sdk':
             raise Stripe3DVerificationException(intent.client_secret)
         elif intent.status == 'succeeded':
-            pass
+            return True
         else:
             # something went wrong
-            pass
+            raise PaymentFailed()
 
         #
         #   if intent.status == 'requires_action' and intent.next_action.type == 'use_stripe_sdk':
