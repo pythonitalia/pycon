@@ -75,8 +75,6 @@ class Order(TimeStampedModel):
                 }
             ))
 
-        return 'manual'
-
 
 class OrderItem(TimeStampedModel):
     order = models.ForeignKey(

@@ -28,8 +28,6 @@ class Stripe(PaymentProvider):
             # TODO: Change Exception or error handling
             raise ValueError('Cannot specify both')
 
-        import pdb; pdb.set_trace()
-
         if payment_method_id:
             intent = stripe.PaymentIntent.create(
                 payment_method=payment_method_id,
@@ -40,6 +38,9 @@ class Stripe(PaymentProvider):
             )
         elif payment_intent_id:
             intent = stripe.PaymentIntent.confirm(payment_intent_id)
+        else:
+            # TODO: Better exception
+            raise ValueError('Specify at least method or intent id')
 
         if intent.amount != to_cents(order.amount):
             # TODO: Better exception
@@ -54,20 +55,3 @@ class Stripe(PaymentProvider):
         else:
             # something went wrong
             raise PaymentFailed()
-
-        #
-        #   if intent.status == 'requires_action' and intent.next_action.type == 'use_stripe_sdk':
-        #     # Tell the client to handle the action
-        #     return json.dumps({
-        #     'requires_action': True,
-        #     'payment_intent_client_secret': intent.client_secret,
-        #     }), 200
-        # elif intent.status == 'succeeded':
-        #     # The payment didn’t need any additional actions and completed!
-        #     # Handle post-payment fulfillment
-        #     return json.dumps({'success': True}), 200
-        # else:
-        #     # Invalid status
-        #     return json.dumps({'error': 'Invalid PaymentIntent status'}), 500
-
-        pass
