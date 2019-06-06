@@ -5,7 +5,7 @@ from graphene_form.mutations import FormMutation
 from .forms import BuyTicketWithStripeForm
 
 from .providers.stripe.types import Stripe3DValidationRequired
-from .types import GenericPaymentFailedError, TicketsPayment
+from .types import GenericPaymentError, TicketsPayment
 
 
 class BuyTicketWithStripe(FormMutation):
@@ -13,7 +13,7 @@ class BuyTicketWithStripe(FormMutation):
         form_class = BuyTicketWithStripeForm
         output_types = (
             Stripe3DValidationRequired,
-            GenericPaymentFailedError,
+            GenericPaymentError,
             TicketsPayment
         )
 

@@ -9,7 +9,7 @@ class CartItem(InputObjectType):
     quantity = NonNull(Int)
 
 
-class GenericPaymentFailedError(ObjectType):
+class GenericPaymentError(ObjectType):
     message = NonNull(String)
 
 

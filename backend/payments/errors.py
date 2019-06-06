@@ -1,7 +1,7 @@
 from django.utils.translation import ugettext_lazy as _
 
 
-class PaymentFailedError(Exception):
+class PaymentError(Exception):
     """
     This is a generic exception when we are not
     really able to give better instructions to the user.

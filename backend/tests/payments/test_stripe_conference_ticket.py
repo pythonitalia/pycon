@@ -365,7 +365,7 @@ def test_payment_fails_when_the_user_does_not_have_funds(graphql_client, user, t
           buyTicketWithStripe(input: $input) {
             __typename
 
-            ... on GenericPaymentFailedError {
+            ... on GenericPaymentError {
                 message
             }
         }
@@ -380,7 +380,7 @@ def test_payment_fails_when_the_user_does_not_have_funds(graphql_client, user, t
         }
     })
 
-    assert resp['data']['buyTicketWithStripe']['__typename'] == 'GenericPaymentFailedError'
+    assert resp['data']['buyTicketWithStripe']['__typename'] == 'GenericPaymentError'
     assert resp['data']['buyTicketWithStripe']['message'] == 'Your card has insufficient funds.'
 
     assert Order.objects.all().count() == 0
@@ -399,7 +399,7 @@ def test_payment_fails_because_declined(graphql_client, user, ticket_fare_factor
           buyTicketWithStripe(input: $input) {
             __typename
 
-            ... on GenericPaymentFailedError {
+            ... on GenericPaymentError {
                 message
             }
         }
@@ -414,7 +414,7 @@ def test_payment_fails_because_declined(graphql_client, user, ticket_fare_factor
         }
     })
 
-    assert resp['data']['buyTicketWithStripe']['__typename'] == 'GenericPaymentFailedError'
+    assert resp['data']['buyTicketWithStripe']['__typename'] == 'GenericPaymentError'
     assert resp['data']['buyTicketWithStripe']['message'] == 'Your card was declined.'
 
     assert Order.objects.all().count() == 0
@@ -475,7 +475,7 @@ def test_pay_fails_after_3d_validation(graphql_client, user, ticket_fare_factory
           buyTicketWithStripe(input: $input) {
             __typename
 
-            ... on GenericPaymentFailedError {
+            ... on GenericPaymentError {
                 message
             }
         }
@@ -491,7 +491,7 @@ def test_pay_fails_after_3d_validation(graphql_client, user, ticket_fare_factory
     })
 
     assert 'errors' not in resp
-    assert resp['data']['buyTicketWithStripe']['__typename'] == 'GenericPaymentFailedError'
+    assert resp['data']['buyTicketWithStripe']['__typename'] == 'GenericPaymentError'
     assert resp['data']['buyTicketWithStripe']['message'] == 'Your card was declined.'
 
     assert Order.objects.all().count() == 0

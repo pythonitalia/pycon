@@ -11,7 +11,7 @@ from stripe.error import CardError, RateLimitError, AuthenticationError
 
 from .errors import Stripe3DVerificationError
 
-from ...exceptions import PaymentFailedError
+from ...errors import PaymentError
 from ..provider import PaymentProvider
 from ..utils import to_cents
 
@@ -45,11 +45,11 @@ class Stripe(PaymentProvider):
             body = e.json_body
             err  = body.get('error', {})
 
-            raise PaymentFailedError(message=_(err.get('message')))
+            raise PaymentError(message=_(err.get('message')))
         except RateLimitError as e:
-            raise PaymentFailedError(message=_('Please try again in a few hours'))
+            raise PaymentError(message=_('Please try again in a few hours'))
         except AuthenticationError as e:
-            raise PaymentFailedError(message=_('Something went wrong on our side, please try again'))
+            raise PaymentError(message=_('Something went wrong on our side, please try again'))
 
         if intent.amount != to_cents(order.amount):
             # TODO: Better exception
@@ -62,4 +62,4 @@ class Stripe(PaymentProvider):
             return True
         else:
             # something went wrong
-            raise PaymentFailedError()
+            raise PaymentError()
