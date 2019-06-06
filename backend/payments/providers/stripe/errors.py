@@ -1,7 +1,7 @@
 from django.utils.translation import ugettext_lazy as _
 
 
-class Stripe3DVerificationException(Exception):
+class Stripe3DVerificationError(Exception):
     message = _("Stripe payment failed because we need to verify it's really you")
 
     def __init__(self, client_secret):

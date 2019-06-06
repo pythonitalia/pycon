@@ -7,8 +7,6 @@ from model_utils.models import TimeStampedModel
 
 from payments.providers import PROVIDERS, get_provider
 
-from .enums import PaymentState
-
 
 class Order(TimeStampedModel):
     user = models.ForeignKey(
@@ -42,7 +40,6 @@ class Order(TimeStampedModel):
         source='new',
         target=RETURN_VALUE(
             'complete',
-            'manual',
         ),
         on_error='failed'
     )
@@ -53,28 +50,11 @@ class Order(TimeStampedModel):
         provider_class = get_provider(self.provider)
 
         if not provider_class:
-            # todo implement
-            # manual payment?
-            return
+            raise ValueError(_('Provider %(provider)s not known!') % {'provider': self.provider})
 
         provider = provider_class()
-        next_state = provider.charge(
-            order=self,
-            payload=payload
-        )
-
-        if next_state == PaymentState.COMPLETED:
-            return 'complete'
-        elif next_state == PaymentState.MANUAL:
-            return 'manual'
-        else:
-            raise ValueError(
-                _('Provider %(name)s returned an invalid value: %(response)s' % {
-                    'name': self.provider,
-                    'response': next_state
-                }
-            ))
-
+        provider.charge(order=self, payload=payload)
+        return 'complete'
 
 class OrderItem(TimeStampedModel):
     order = models.ForeignKey(
@@ -96,7 +76,3 @@ class OrderItem(TimeStampedModel):
     )
 
     quantity = models.PositiveIntegerField(_('quantity'))
-
-    @property
-    def price(self):
-        return self.unit_price * self.quantity

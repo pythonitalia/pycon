@@ -9,15 +9,16 @@ from django.utils.translation import ugettext_lazy as _
 
 from graphene_form.forms import FormWithContext
 
-from conferences.models import TicketFare, Conference
+from conferences.models import TicketFare, Ticket, Conference
+from conferences.types import TicketType
 from orders.models import Order, OrderItem
 
 from .providers.stripe.types import Stripe3DValidationRequired
-from .providers.stripe.exceptions import Stripe3DVerificationException
+from .providers.stripe.exceptions import Stripe3DVerificationError
 
-from .exceptions import PaymentFailed
+from .exceptions import PaymentFailedError
 from .fields import CartField
-from .types import GenericPaymentFailedError
+from .types import GenericPaymentFailedError, TicketsPayment
 
 
 class CommonPaymentItemsForm(FormWithContext):
@@ -36,7 +37,12 @@ class CommonPaymentItemsForm(FormWithContext):
         if not conference:
             return
 
-        items = cleaned_data['items']
+        items = cleaned_data.get('items', [])
+
+        if not items:
+            raise forms.ValidationError({
+                'items': _('The cart is empty')
+            })
 
         total_amount = Decimal(0)
 
@@ -52,38 +58,43 @@ class CommonPaymentItemsForm(FormWithContext):
 
             if not fare.is_available:
                 raise forms.ValidationError({
-                    'items': _('Ticket #%(id)s is not available anymore') % {'id': item_id}
+                    'items': _('Ticket %(id)s is not available anymore') % {'id': item_id}
                 })
 
             item['fare'] = fare
-            total_amount = total_amount + fare.price
+            total_amount = total_amount + fare.price * item['quantity']
 
         cleaned_data['items'] = items
         cleaned_data['total_amount'] = total_amount
 
         return cleaned_data
 
-    def create_order(self):
+    def create_order(self, provider):
         user = self.context.user
 
-        items = self.cleaned_data.get('items')
         total_amount = self.cleaned_data.get('total_amount')
 
         order = Order(
             user=user,
-            provider='stripe',
+            provider=provider,
             amount=total_amount
         )
 
+        return order
+
+    def save_order(self, order):
+        items = self.cleaned_data.get('items')
+
+        order.save()
+
+        # todo: improve
         for item in items:
-            OrderItem(
+            OrderItem.objects.create(
                 order=order,
-                description=item['fare'].name,
+                description=item['fare'].order_description,
                 unit_price=item['fare'].price,
                 quantity=item['quantity']
             )
-
-        return order
 
 
 class BuyTicketWithStripeForm(CommonPaymentItemsForm):
@@ -91,7 +102,7 @@ class BuyTicketWithStripeForm(CommonPaymentItemsForm):
     payment_intent_id = forms.CharField(required=False)
 
     def save(self):
-        order = self.create_order()
+        order = self.create_order('stripe')
 
         payload = {
             'payment_method_id': self.cleaned_data.get('payment_method_id', None),
@@ -100,12 +111,31 @@ class BuyTicketWithStripeForm(CommonPaymentItemsForm):
 
         try:
             order.charge(payload)
-        except Stripe3DVerificationException as e:
+        except Stripe3DVerificationError as e:
             return Stripe3DValidationRequired(client_secret=e.client_secret)
-        except PaymentFailed as e:
+        except PaymentFailedError as e:
             return GenericPaymentFailedError(message=e.message)
 
-        # payment completed with success
-        order.save()
-        # register ticket?
-        return True
+        self.save_order(order)
+
+        tickets = []
+
+        # Payment confirmed
+        # Creating the tickets here
+
+        for item in self.cleaned_data.get('items'):
+            fare = item['fare']
+
+            for _ in range(0, item['quantity']):
+                tickets.append(
+                    Ticket.objects.create(
+                        user=self.context.user,
+                        ticket_fare=fare,
+                        order=order
+                    )
+                )
+
+        return TicketsPayment(
+            tickets=tickets,
+            order=order
+        )

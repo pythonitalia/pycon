@@ -9,6 +9,7 @@ from .submissions.factories import *  # noqa
 from .schedule.factories import *  # noqa
 from .languages.factories import *  # noqa
 from .users.factories import *  # noqa
+from .orders.factories import *  # noqa
 
 
 @pytest.fixture()

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Conference, Topic, Deadline, AudienceLevel, Duration, TicketFare
+from .models import Conference, Topic, Deadline, AudienceLevel, Duration, TicketFare, Ticket
 
 
 class DeadlineInline(admin.TabularInline):
@@ -62,3 +62,8 @@ class TicketFareAdmin(admin.ModelAdmin):
             )
         })
     )
+
+
+@admin.register(Ticket)
+class TicketAdmin(admin.ModelAdmin):
+    pass

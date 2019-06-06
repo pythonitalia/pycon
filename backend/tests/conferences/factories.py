@@ -180,3 +180,10 @@ class TicketFareFactory(DjangoModelFactory):
 
     start = factory.Faker('past_datetime', tzinfo=pytz.UTC)
     end = factory.Faker('future_datetime', tzinfo=pytz.UTC)
+
+register(
+    TicketFareFactory,
+    'expired_ticket_fare',
+    start=factory.Faker('past_datetime', tzinfo=pytz.UTC),
+    end=factory.Faker('past_datetime', tzinfo=pytz.UTC)
+)

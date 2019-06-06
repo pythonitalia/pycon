@@ -20,6 +20,10 @@ class TicketFare(TimeFramedModel, TimeStampedModel):
     price = models.DecimalField(_('price'), max_digits=10, decimal_places=2)
 
     @property
+    def order_description(self):
+        return f'{self.name} ({self.conference.code})'
+
+    @property
     def is_available(self):
         if not self.start or not self.end:
             return False
