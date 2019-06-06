@@ -14,7 +14,7 @@ from conferences.types import TicketType
 from orders.models import Order, OrderItem
 
 from .providers.stripe.types import Stripe3DValidationRequired
-from .providers.stripe.exceptions import Stripe3DVerificationError
+from .providers.stripe.errors import Stripe3DVerificationError
 
 from .exceptions import PaymentFailedError
 from .fields import CartField
