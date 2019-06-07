@@ -22,7 +22,7 @@ def convert_form_field(field):
 @convert_form_field.register(forms.SlugField)
 @convert_form_field.register(forms.URLField)
 @convert_form_field.register(forms.ChoiceField)
-@convert_form_field.register(forms.RegexField)
+# @convert_form_field.register(forms.RegexField)
 @convert_form_field.register(forms.Field)
 def convert_form_field_to_string(field):
     return String(description=field.help_text, required=field.required)
@@ -34,7 +34,7 @@ def convert_form_field_to_uuid(field):
 
 
 @convert_form_field.register(forms.IntegerField)
-@convert_form_field.register(forms.NumberInput)
+# @convert_form_field.register(forms.NumberInput)
 def convert_form_field_to_int(field):
     return Int(description=field.help_text, required=field.required)
 
@@ -46,7 +46,7 @@ def convert_form_field_to_boolean(field):
 
 @convert_form_field.register(forms.NullBooleanField)
 def convert_form_field_to_nullboolean(field):
-    return Boolean(description=field.help_text)
+    return Boolean(description=field.help_text, required=False)
 
 
 @convert_form_field.register(forms.DecimalField)

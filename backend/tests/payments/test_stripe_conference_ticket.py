@@ -1,5 +1,6 @@
 import stripe
 
+from unittest import mock
 from pytest import mark
 
 from django.conf import settings
@@ -496,3 +497,109 @@ def test_pay_fails_after_3d_validation(graphql_client, user, ticket_fare_factory
 
     assert Order.objects.all().count() == 0
     assert Ticket.objects.all().count() == 0
+
+
+@mark.django_db
+def test_payment_after_validation_failed_with_unkown_error(graphql_client, user, ticket_fare_factory):
+    graphql_client.force_login(user)
+
+    ticket_fare = ticket_fare_factory(price=10)
+    conference = ticket_fare.conference
+
+    class FakeResponse:
+        amount = ticket_fare.price * 100
+        status = 'error'
+
+    # It would be cool to not have to mock the payment intent here
+    # and try to find a way to make stripe fail the verification
+    # and end up in the generic error if branch
+    with mock.patch('stripe.PaymentIntent.confirm', return_value=FakeResponse()):
+        resp = graphql_client.query("""
+        mutation($input: BuyTicketWithStripeInput!) {
+            buyTicketWithStripe(input: $input) {
+                __typename
+
+                ... on GenericPaymentError {
+                    message
+                }
+            }
+        }
+        """, variables={
+            'input': {
+                'items': [{
+                    'quantity': 1, 'id': ticket_fare.id
+                }],
+                'conference': conference.code,
+                'paymentIntentId': 'ciao'
+            }
+        })
+
+    assert 'errors' not in resp
+    assert resp['data']['buyTicketWithStripe']['__typename'] == 'GenericPaymentError'
+    assert resp['data']['buyTicketWithStripe']['message'] == 'Unable to process your payment, please try again or contact your bank'
+
+
+@mark.django_db
+def test_stripe_fails_due_to_rate_limit(graphql_client, user, ticket_fare_factory):
+    graphql_client.force_login(user)
+
+    ticket_fare = ticket_fare_factory(price=10)
+    conference = ticket_fare.conference
+
+    with mock.patch('stripe.PaymentIntent.confirm', side_effect=stripe.error.RateLimitError):
+        resp = graphql_client.query("""
+        mutation($input: BuyTicketWithStripeInput!) {
+            buyTicketWithStripe(input: $input) {
+                __typename
+
+                ... on GenericPaymentError {
+                    message
+                }
+            }
+        }
+        """, variables={
+            'input': {
+                'items': [{
+                    'quantity': 1, 'id': ticket_fare.id
+                }],
+                'conference': conference.code,
+                'paymentIntentId': 'ciao'
+            }
+        })
+
+    assert 'errors' not in resp
+    assert resp['data']['buyTicketWithStripe']['__typename'] == 'GenericPaymentError'
+    assert resp['data']['buyTicketWithStripe']['message'] == 'Please try again in a few hours'
+
+
+@mark.django_db
+def test_stripe_fails_due_to_wrong_key(graphql_client, user, ticket_fare_factory):
+    graphql_client.force_login(user)
+
+    ticket_fare = ticket_fare_factory(price=10)
+    conference = ticket_fare.conference
+
+    with mock.patch('stripe.PaymentIntent.confirm', side_effect=stripe.error.AuthenticationError):
+        resp = graphql_client.query("""
+        mutation($input: BuyTicketWithStripeInput!) {
+            buyTicketWithStripe(input: $input) {
+                __typename
+
+                ... on GenericPaymentError {
+                    message
+                }
+            }
+        }
+        """, variables={
+            'input': {
+                'items': [{
+                    'quantity': 1, 'id': ticket_fare.id
+                }],
+                'conference': conference.code,
+                'paymentIntentId': 'ciao'
+            }
+        })
+
+    assert 'errors' not in resp
+    assert resp['data']['buyTicketWithStripe']['__typename'] == 'GenericPaymentError'
+    assert resp['data']['buyTicketWithStripe']['message'] == 'Something went wrong on our side, please try again'
