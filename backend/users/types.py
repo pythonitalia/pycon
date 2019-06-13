@@ -6,7 +6,7 @@ from .models import User
 class MeUserType(DjangoObjectType):
     class Meta:
         model = User
-        only_fields = ("id", "email")
+        only_fields = ('id', 'email', 'tickets')
 
 
 class UserType(DjangoObjectType):

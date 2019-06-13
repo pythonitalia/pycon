@@ -1,0 +1,16 @@
+.container {
+    display: flex;
+    flex-wrap: wrap;
+
+    margin: 2rem;
+}
+
+.ticket {
+    max-width: 30rem;
+    width: 100%;
+    padding: 1rem;
+
+    border-radius: .4rem;
+    color: #fff;
+    background: #334DCD;
+}

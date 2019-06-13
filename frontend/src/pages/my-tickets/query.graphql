@@ -1,0 +1,10 @@
+query MyTickets {
+    me {
+        tickets {
+            id
+            ticketFare {
+                name
+            }
+        }
+    }
+}
