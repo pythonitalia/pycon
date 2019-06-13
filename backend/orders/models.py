@@ -1,11 +1,16 @@
 from django.conf import settings
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from django_fsm import FSMField, transition, RETURN_VALUE
+from django_fsm import FSMIntegerField, transition, RETURN_VALUE
+
 from model_utils.models import TimeStampedModel
 
 from payments.providers import PROVIDERS, get_provider
+
+from .enums import PaymentState
 
 
 class Order(TimeStampedModel):
@@ -27,7 +32,10 @@ class Order(TimeStampedModel):
         default=''
     )
 
-    state = FSMField(default='new')
+    state = FSMIntegerField(
+        default=PaymentState.NEW,
+        choices=PaymentState.choices()
+    )
 
     amount = models.DecimalField(
         _('amount'),
@@ -35,15 +43,8 @@ class Order(TimeStampedModel):
         decimal_places=2
     )
 
-    @transition(
-        field=state,
-        source='new',
-        target=RETURN_VALUE(
-            'complete',
-        ),
-        on_error='failed'
-    )
-    def charge(self, payload):
+    @transition(field=state, source=PaymentState.NEW, target=PaymentState.PROCESSING, on_error=PaymentState.FAILED)
+    def charge(self, payload={}):
         """
         Executes the payment using the provider specified
         """
@@ -53,8 +54,28 @@ class Order(TimeStampedModel):
             raise ValueError(_('Provider %(provider)s not known!') % {'provider': self.provider})
 
         provider = provider_class()
-        provider.charge(order=self, payload=payload)
-        return 'complete'
+        response = provider.charge(order=self, payload=payload)
+
+        self.order = PaymentState.PROCESSING
+        return response
+
+    @transition(field=state, source=PaymentState.PROCESSING, target=RETURN_VALUE(PaymentState.COMPLETE), on_error=PaymentState.FAILED)
+    def fullfil(self):
+        """
+        Call this method to fullfil the order
+        """
+        for item in self.items.all():
+            item.fullfil()
+
+        return PaymentState.COMPLETE
+
+    @transition(field=state, source='*', target=RETURN_VALUE(PaymentState.FAILED), on_error=PaymentState.FAILED)
+    def fail(self):
+        """
+        If something went wrong
+        """
+        return PaymentState.FAILED
+
 
 class OrderItem(TimeStampedModel):
     order = models.ForeignKey(
@@ -76,3 +97,18 @@ class OrderItem(TimeStampedModel):
     )
 
     quantity = models.PositiveIntegerField(_('quantity'))
+
+    item_type = models.ForeignKey(
+        ContentType,
+        on_delete=models.CASCADE,
+        verbose_name=_('item type')
+    )
+    item_object_id = models.PositiveIntegerField(_('item object id'))
+    item_object = GenericForeignKey('item_type', 'item_object_id')
+
+    def fullfil(self):
+        for _ in range(0, self.quantity):
+            self.item_object.fullfil(
+                order=self.order,
+                user=self.order.user
+            )

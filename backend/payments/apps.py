@@ -6,3 +6,6 @@ class PaymentsConfig(AppConfig):
 
     def ready(self):
         import payments.converter
+
+        from payments.providers.stripe import Stripe
+        Stripe.setup()

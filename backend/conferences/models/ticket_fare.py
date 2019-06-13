@@ -31,6 +31,15 @@ class TicketFare(TimeFramedModel, TimeStampedModel):
         now = timezone.now()
         return self.start <= now <= self.end
 
+    def fullfil(self, *, user, order):
+        from . import Ticket
+
+        Ticket.objects.create(
+            user=user,
+            ticket_fare=self,
+            order=order
+        )
+
     def __str__(self):
         return f'{self.name} ({self.conference.name})'
 

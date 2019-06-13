@@ -13,6 +13,5 @@ class GenericPaymentError(ObjectType):
     message = NonNull(String)
 
 
-class TicketsPayment(ObjectType):
-    tickets = List(TicketType)
-    order = NonNull(OrderType)
+class StripeClientSecret(ObjectType):
+    client_secret = NonNull(String)

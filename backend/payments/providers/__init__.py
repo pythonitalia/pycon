@@ -20,3 +20,7 @@ PROVIDER_TO_IMPL = {
 
 def get_provider(name):
     return PROVIDER_TO_IMPL.get(name, None)
+
+
+def get_all_providers():
+    return PROVIDER_TO_IMPL

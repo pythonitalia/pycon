@@ -18,7 +18,7 @@ from .providers.stripe.errors import Stripe3DVerificationError
 
 from .errors import PaymentError
 from .fields import CartField
-from .types import GenericPaymentError, TicketsPayment
+from .types import GenericPaymentError, StripeClientSecret
 
 
 class CommonPaymentItemsForm(FormWithContext):
@@ -73,69 +73,34 @@ class CommonPaymentItemsForm(FormWithContext):
         user = self.context.user
 
         total_amount = self.cleaned_data.get('total_amount')
+        items = self.cleaned_data.get('items', [])
 
-        order = Order(
+        order = Order.objects.create(
             user=user,
             provider=provider,
             amount=total_amount
         )
 
-        return order
-
-    def save_order(self, order):
-        items = self.cleaned_data.get('items')
-
-        order.save()
-
-        # todo: improve
         for item in items:
             OrderItem.objects.create(
                 order=order,
                 description=item['fare'].order_description,
                 unit_price=item['fare'].price,
-                quantity=item['quantity']
+                quantity=item['quantity'],
+                item_object=item['fare']
             )
+
+        return order
 
 
 class BuyTicketWithStripeForm(CommonPaymentItemsForm):
-    payment_method_id = forms.CharField(required=False)
-    payment_intent_id = forms.CharField(required=False)
-
     def save(self):
         order = self.create_order('stripe')
 
-        payload = {
-            'payment_method_id': self.cleaned_data.get('payment_method_id', None),
-            'payment_intent_id': self.cleaned_data.get('payment_intent_id', None),
-        }
-
         try:
-            order.charge(payload)
-        except Stripe3DVerificationError as e:
-            return Stripe3DValidationRequired(client_secret=e.client_secret)
+            response = order.charge()
         except PaymentError as e:
             return GenericPaymentError(message=e.message)
 
-        self.save_order(order)
-
-        tickets = []
-
-        # Payment confirmed
-        # Creating the tickets here
-
-        for item in self.cleaned_data.get('items'):
-            fare = item['fare']
-
-            for _ in range(0, item['quantity']):
-                tickets.append(
-                    Ticket.objects.create(
-                        user=self.context.user,
-                        ticket_fare=fare,
-                        order=order
-                    )
-                )
-
-        return TicketsPayment(
-            tickets=tickets,
-            order=order
-        )
+        order.save()
+        return StripeClientSecret(client_secret=response.extras['client_secret'])
