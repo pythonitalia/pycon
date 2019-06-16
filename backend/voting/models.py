@@ -5,6 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from model_utils.models import TimeStampedModel
 from django.core import exceptions
 
+
 class VoteRange(TimeStampedModel):
     name = models.CharField(max_length=100, unique=True)
     first = models.IntegerField(_('first'))
@@ -48,6 +49,11 @@ class Vote(TimeStampedModel):
         related_name='votes'
     )
 
+    def clean(self):
+        super().clean()
+        if not self.range.first < self.value < self.range.last:
+            raise exceptions.ValidationError(_(
+                f'Vote must be a value between {self.range.first} and {self.range.last}'))
+
     def __str__(self):
         return f'{self.user} voted {self.value} for Submission {self.submission}'
-
