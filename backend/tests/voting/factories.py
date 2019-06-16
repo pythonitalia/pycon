@@ -13,16 +13,18 @@ class VoteRangeFactory(DjangoModelFactory):
 
     class Meta:
         model = VoteRange
-        django_get_or_create = ('name', )
 
+    name = factory.Faker('text')
+    first = 1  # factory.Faker('pyint')
+    last = 10  # factory.Faker('pyint')
+    step = 0.5  # factory.Faker('pyfloat', min_value=first, max_value=last)
 
 @register
 class VoteFactory(DjangoModelFactory):
     class Meta:
         model = Vote
 
-    conference = factory.SubFactory(ConferenceFactory)
     range = factory.SubFactory(VoteRangeFactory)
-    value = factory.fuzzy.FuzzyFloat(range.first, range.last) #?
+    value = factory.fuzzy.FuzzyFloat(1, 10) #?
     submission = factory.SubFactory(SubmissionFactory)
     user = factory.SubFactory(UserFactory)

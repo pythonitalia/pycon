@@ -11,7 +11,7 @@ from .schedule.factories import *  # noqa
 from .submissions.factories import *  # noqa
 from .tickets.factories import *  # noqa
 from .users.factories import *  # noqa
-
+from .voting.factories import *  # noga
 
 @pytest.fixture()
 def user(db):

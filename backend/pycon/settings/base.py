@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     "orders.apps.OrdersConfig",
     "payments.apps.PaymentsConfig",
     "tickets.apps.TicketsConfig",
+    "voting.apps.VotingConfig",
 ]
 
 MIDDLEWARE = [
@@ -67,7 +68,9 @@ WSGI_APPLICATION = "pycon.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
-DATABASES = {"default": env.db(default="sqlite:///{}".format(root("db.sqlite3")))}
+DATABASES = {
+    "default": env.db(default="sqlite:///{}".format(root("db.sqlite3")))
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
@@ -79,7 +82,9 @@ PASSWORD_VALIDATORS = [
     "django.contrib.auth.password_validation.NumericPasswordValidator",
 ]
 
-AUTH_PASSWORD_VALIDATORS = [{"NAME": validator} for validator in PASSWORD_VALIDATORS]
+AUTH_PASSWORD_VALIDATORS = [
+    {"NAME": validator} for validator in PASSWORD_VALIDATORS
+]
 
 
 # Internationalization
