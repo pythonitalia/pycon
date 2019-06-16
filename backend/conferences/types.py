@@ -3,18 +3,12 @@ from datetime import datetime
 import graphene
 import pytz
 from graphene_django import DjangoObjectType
+
 from languages.types import LanguageType
 from schedule.types import ModelScheduleItemType
-from submissions.types import SubmissionTypeType
+from submissions.types import SubmissionType, SubmissionTypeType
 
-from .models import (
-    AudienceLevel,
-    Conference,
-    Deadline,
-    Duration,
-    TicketFare,
-    Topic,
-)
+from .models import AudienceLevel, Conference, Deadline, Duration, TicketFare, Topic
 
 
 class DurationType(DjangoObjectType):
@@ -83,6 +77,9 @@ class ConferenceType(DjangoObjectType):
     topics = graphene.NonNull(graphene.List(graphene.NonNull(TopicType)))
     languages = graphene.NonNull(graphene.List(graphene.NonNull(LanguageType)))
     durations = graphene.NonNull(graphene.List(graphene.NonNull(DurationType)))
+    submissions = graphene.NonNull(
+        graphene.List(graphene.NonNull(SubmissionType))
+    )
     schedule = graphene.NonNull(
         graphene.List(graphene.NonNull(ModelScheduleItemType)),
         date=graphene.Date(),
@@ -127,6 +124,9 @@ class ConferenceType(DjangoObjectType):
     def resolve_durations(self, info):
         return self.durations.all()
 
+    def resolve_submissions(self, info):
+        return self.submissions.all()
+
     class Meta:
         model = Conference
         only_fields = (
@@ -143,4 +143,5 @@ class ConferenceType(DjangoObjectType):
             "durations",
             "timezone",
             "rooms",
+            "submissions",
         )
