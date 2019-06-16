@@ -1,6 +1,13 @@
 from django.contrib import admin
 
-from .models import AudienceLevel, Conference, Deadline, Duration, TicketFare, Topic
+from .models import (
+    AudienceLevel,
+    Conference,
+    Deadline,
+    Duration,
+    TicketFare,
+    Topic,
+)
 
 
 class DeadlineInline(admin.TabularInline):
@@ -15,7 +22,12 @@ class DurationInline(admin.StackedInline):
 @admin.register(Conference)
 class ConferenceAdmin(admin.ModelAdmin):
     readonly_fields = ("created", "modified")
-    filter_horizontal = ("topics", "languages", "audience_levels", "submission_types")
+    filter_horizontal = (
+        "topics",
+        "languages",
+        "audience_levels",
+        "submission_types",
+    )
     fieldsets = (
         ("Details", {"fields": ("name", "code", "timezone")}),
         (
@@ -27,6 +39,7 @@ class ConferenceAdmin(admin.ModelAdmin):
                     "topics",
                     "audience_levels",
                     "languages",
+                    "vote_range",
                 )
             },
         ),
@@ -50,6 +63,9 @@ class TicketFareAdmin(admin.ModelAdmin):
     list_filter = ("conference",)
 
     fieldsets = (
-        ("Info", {"fields": ("conference", "name", "code", "price", "description")}),
+        (
+            "Info",
+            {"fields": ("conference", "name", "code", "price", "description")},
+        ),
         ("Deadline", {"fields": ("start", "end")}),
     )

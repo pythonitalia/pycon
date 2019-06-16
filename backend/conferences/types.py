@@ -7,7 +7,14 @@ from languages.types import LanguageType
 from schedule.types import ModelScheduleItemType
 from submissions.types import SubmissionTypeType
 
-from .models import AudienceLevel, Conference, Deadline, Duration, TicketFare, Topic
+from .models import (
+    AudienceLevel,
+    Conference,
+    Deadline,
+    Duration,
+    TicketFare,
+    Topic,
+)
 
 
 class DurationType(DjangoObjectType):
@@ -64,8 +71,12 @@ class TicketFareType(DjangoObjectType):
 
 
 class ConferenceType(DjangoObjectType):
-    ticket_fares = graphene.NonNull(graphene.List(graphene.NonNull(TicketFareType)))
-    deadlines = graphene.NonNull(graphene.List(graphene.NonNull(DeadlineModelType)))
+    ticket_fares = graphene.NonNull(
+        graphene.List(graphene.NonNull(TicketFareType))
+    )
+    deadlines = graphene.NonNull(
+        graphene.List(graphene.NonNull(DeadlineModelType))
+    )
     audience_levels = graphene.NonNull(
         graphene.List(graphene.NonNull(AudienceLevelType))
     )
@@ -73,7 +84,8 @@ class ConferenceType(DjangoObjectType):
     languages = graphene.NonNull(graphene.List(graphene.NonNull(LanguageType)))
     durations = graphene.NonNull(graphene.List(graphene.NonNull(DurationType)))
     schedule = graphene.NonNull(
-        graphene.List(graphene.NonNull(ModelScheduleItemType)), date=graphene.Date()
+        graphene.List(graphene.NonNull(ModelScheduleItemType)),
+        date=graphene.Date(),
     )
 
     timezone = graphene.String()
@@ -88,7 +100,9 @@ class ConferenceType(DjangoObjectType):
             start_date = datetime.combine(date, datetime.min.time())
             end_date = datetime.combine(date, datetime.max.time())
 
-            utc_start_date = pytz.utc.normalize(start_date.astimezone(pytz.utc))
+            utc_start_date = pytz.utc.normalize(
+                start_date.astimezone(pytz.utc)
+            )
             utc_end_date = pytz.utc.normalize(end_date.astimezone(pytz.utc))
 
             qs = qs.filter(start__gte=utc_start_date, end__lte=utc_end_date)
@@ -121,6 +135,7 @@ class ConferenceType(DjangoObjectType):
             "code",
             "start",
             "end",
+            "vote_range",
             "deadlines",
             "audience_levels",
             "topics",
