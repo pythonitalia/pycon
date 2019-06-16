@@ -17,13 +17,6 @@ class VoteRange(TimeStampedModel):
 
 
 class Vote(TimeStampedModel):
-    conference = models.ForeignKey(
-        'conferences.Conference',
-        on_delete=models.CASCADE,
-        verbose_name=_('conference'),
-        related_name='vote' #?
-    )
-
     range = models.ForeignKey(
         VoteRange,
         verbose_name=_('range'),
@@ -40,10 +33,11 @@ class Vote(TimeStampedModel):
 
     submission = models.ForeignKey(
         'submissions.Submission',
+        on_delete=models.CASCADE,
         verbose_name=_('submission'),
-        on_delete=models.PROTECT
+        related_name='votes'
     )
 
     def __str__(self):
-        return f'{self.user.username} voted {self.value} at Conference {self.conference_id}'
+        return f'{self.user} voted {self.value} for Submission {self.submission}'
 
