@@ -29,6 +29,7 @@ export const MyTickets = (props: RouteComponentProps) => {
 const Ticket = (props: MyTickets_me_tickets) => {
   return <div className={styles.ticket}>
     {props.ticketFare.name}
-    <p>Paid on #{props.order.id}</p>
+    <p>Paid on #{props.order.id} by {props.order.user.email}</p>
+    <p>Ticket assigned to {props.user.email}</p>
   </div>
 }
