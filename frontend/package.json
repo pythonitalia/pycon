@@ -30,7 +30,7 @@
     "apollo": "^1.9.1",
     "apollo-cache-inmemory": "^1.4.2",
     "apollo-client": "^2.4.12",
-    "apollo-link": "^1.2.2",
+    "apollo-link": "^1.2.12",
     "apollo-link-error": "^1.1.0",
     "apollo-link-http": "^1.5.4",
     "components": "^0.1.0",
