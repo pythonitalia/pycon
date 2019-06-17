@@ -57,7 +57,7 @@ class TopicType(DjangoObjectType):
 class TicketFareType(DjangoObjectType):
     class Meta:
         model = TicketFare
-        only_fields = ('id', 'code', 'name', 'price', 'start', 'end', 'description')
+        only_fields = ('id', 'code', 'name', 'price', 'start', 'end', 'description', 'conference')
 
 
 class ConferenceType(DjangoObjectType):
@@ -130,4 +130,4 @@ class ConferenceType(DjangoObjectType):
 class TicketType(DjangoObjectType):
     class Meta:
         model = Ticket
-        only_fields = ('id', 'user', 'ticket_fare', 'order',)
+

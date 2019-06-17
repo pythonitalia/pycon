@@ -1,6 +1,6 @@
 query MyTickets {
     me {
-        tickets {
+        tickets(conference: "pypizza19") {
             id
             ticketFare {
                 name
