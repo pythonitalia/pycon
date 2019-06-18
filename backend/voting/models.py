@@ -51,7 +51,7 @@ class Vote(TimeStampedModel):
 
     def clean(self):
         super().clean()
-        if not self.range.first < self.value < self.range.last:
+        if not self.range.first <= self.value <= self.range.last:
             raise exceptions.ValidationError(_(
                 f'Vote must be a value between {self.range.first} and {self.range.last}'))
 

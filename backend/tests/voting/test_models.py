@@ -1,6 +1,5 @@
-from pytest import raises, mark
+from pytest import raises, mark, fail
 from django.core import exceptions
-
 
 @mark.django_db
 def test_range_first_cannot_be_greater_than_last(vote_range_factory):
@@ -42,3 +41,26 @@ def test_vote_must_be_beetween_first_and_last_range(vote_factory,
 
     assert f'Vote must be a value between {vote.range.first} and {vote.range.last}' in (
         str(e.value))
+
+
+@mark.django_db
+def test_vote_limits(vote_factory, vote_range_factory):
+    vote_range = vote_range_factory()
+
+    vote_minimum = vote_factory(
+        value=vote_range.first
+    )
+
+    try:
+        vote_minimum.clean()
+    except exceptions.ValidationError as e:
+        fail(f"Vote minimum Validator failed: {e}")
+
+    vote_maximum = vote_factory(
+        value=vote_range.last
+    )
+
+    try:
+        vote_maximum.clean()
+    except exceptions.ValidationError as e:
+        fail(f"Vote maximum Validator failed: {e}")
