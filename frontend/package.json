@@ -29,7 +29,7 @@
     "@types/webpack-env": "^1.13.7",
     "apollo": "^1.9.1",
     "apollo-cache-inmemory": "^1.4.2",
-    "apollo-client": "^2.4.12",
+    "apollo-client": "^2.6.3",
     "apollo-link": "^1.2.2",
     "apollo-link-error": "^1.1.0",
     "apollo-link-http": "^1.5.4",
