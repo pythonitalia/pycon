@@ -17,6 +17,7 @@ class VoteType(DjangoObjectType):
     class Meta:
         model = Vote
         only_fields = (
+            'id',
             'range',
             'value',
             'user',

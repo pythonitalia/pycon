@@ -1,9 +1,9 @@
 from django.conf import settings
+from django.core import exceptions
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from model_utils.models import TimeStampedModel
-from django.core import exceptions
 
 
 class VoteRange(TimeStampedModel):
@@ -28,6 +28,7 @@ class VoteRange(TimeStampedModel):
 
 
 class Vote(TimeStampedModel):
+    # todo next: remove it: the range is in the conference, what do I do with it here?
     range = models.ForeignKey(
         VoteRange,
         verbose_name=_('range'),
@@ -57,3 +58,15 @@ class Vote(TimeStampedModel):
 
     def __str__(self):
         return f'{self.user} voted {self.value} for Submission {self.submission}'
+
+    def save(self, *args, **kwargs):
+        """Updates the instance if already exist a User's vote for the same
+        submission
+        """
+        try:
+            _vote = Vote.objects.get(user=self.user,
+                                     submission=self.submission)
+            self.id = _vote.id
+            super().save(force_update=True, *args, **kwargs)
+        except Vote.DoesNotExist:
+            super().save(*args, **kwargs)
