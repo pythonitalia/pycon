@@ -1,8 +1,9 @@
+import random
+
 from pytest import mark
 
-from voting.models import Vote, VoteRange
-from tests.voting.factories import VoteRangeFactory
-import random
+from tests.voting.factories.vote_range import VoteRangeFactory
+from voting.models import Vote
 
 
 def _submit_vote(client, submission, user, **kwargs):
@@ -19,12 +20,11 @@ def _submit_vote(client, submission, user, **kwargs):
 
     return client.query(
         """
-        mutation($submission: ID!, $user: ID!, $value: Float!, $range: ID!) {
+        mutation($submission: ID!, $user: ID!, $value: Float!) {
             sendVote(input: {
                 submission: $submission,
                 user: $user,
-                value: $value,
-                range: $range
+                value: $value
             }) {
                 vote {
                     id
@@ -69,7 +69,6 @@ def test_submit_vote(graphql_client, user, conference_factory,
     assert vote.value == variables['value']
     assert vote.submission.id == variables['submission']
     assert vote.user.id == variables['user']
-    assert vote.range.id == variables['range']
 
 
 def test_reject_vote_when_voting_is_not_open(graphql_client, user,

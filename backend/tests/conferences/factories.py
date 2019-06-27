@@ -14,7 +14,7 @@ from factory.django import DjangoModelFactory
 from languages.models import Language
 from pytest_factoryboy import register
 from submissions.models import SubmissionType
-
+from tests.voting.factories.vote_range import VoteRangeFactory
 
 @register
 class ConferenceFactory(DjangoModelFactory):
@@ -25,6 +25,7 @@ class ConferenceFactory(DjangoModelFactory):
     end = factory.Faker("future_datetime", tzinfo=pytz.UTC)
 
     timezone = pytz.timezone("Europe/Rome")
+    vote_range = factory.SubFactory(VoteRangeFactory)
 
     @classmethod
     def _create(cls, model_class, *args, **kwargs):

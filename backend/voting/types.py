@@ -18,7 +18,6 @@ class VoteType(DjangoObjectType):
         model = Vote
         only_fields = (
             'id',
-            'range',
             'value',
             'user',
             'submission'

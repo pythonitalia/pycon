@@ -27,19 +27,14 @@ def test_step_range_cannot_be_less_than_zero(vote_range_factory):
 
 
 @mark.django_db
-def test_vote_must_be_beetween_first_and_last_range(vote_factory,
-                                                    vote_range_factory):
+def test_vote_must_be_beetween_first_and_last_range(vote_factory):
     vote = vote_factory(
         value=11,
-    )
-    vote.vote_range = vote_range_factory(
-        first=0,
-        last=10
     )
     with raises(exceptions.ValidationError) as e:
         vote.clean()
 
-    assert f'Vote must be a value between {vote.range.first} and {vote.range.last}' in (
+    assert f'Vote must be a value between {vote.submission.conference.vote_range.first} and {vote.submission.conference.vote_range.last}' in (
         str(e.value))
 
 

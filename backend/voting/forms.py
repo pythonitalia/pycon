@@ -23,5 +23,4 @@ class SendVoteForm(ContextAwareForm):
             'submission',
             'value',
             'user',
-            'range'
         )

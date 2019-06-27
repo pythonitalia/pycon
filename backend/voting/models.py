@@ -28,13 +28,6 @@ class VoteRange(TimeStampedModel):
 
 
 class Vote(TimeStampedModel):
-    # todo next: remove it: the range is in the conference, what do I do with it here?
-    range = models.ForeignKey(
-        VoteRange,
-        verbose_name=_('range'),
-        on_delete=models.PROTECT
-    )
-
     value = models.FloatField(_('vote'))
 
     user = models.ForeignKey(
@@ -52,9 +45,12 @@ class Vote(TimeStampedModel):
 
     def clean(self):
         super().clean()
-        if not self.range.first <= self.value <= self.range.last:
+        if not self.submission.conference.vote_range.first <= self.value <= \
+               self.submission.conference.vote_range.last:
             raise exceptions.ValidationError(_(
-                f'Vote must be a value between {self.range.first} and {self.range.last}'))
+                f'Vote must be a value between '
+                f'{self.submission.conference.vote_range.first} and '
+                f'{self.submission.conference.vote_range.last}'))
 
     def __str__(self):
         return f'{self.user} voted {self.value} for Submission {self.submission}'
