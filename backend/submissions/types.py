@@ -22,9 +22,9 @@ class SubmissionType(DjangoObjectType):
             'elevator_pitch',
             'notes',
             'abstract',
-            'owner',
-            'helpers',
+            'speaker',
             'topic',
             'type',
             'duration',
+            'language',
         )
