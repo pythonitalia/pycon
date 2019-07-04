@@ -29,6 +29,7 @@ class Submission:
     topic: "Topic"
     type: SubmissionType
     duration: "Duration"
+    language: "Language"
 
     @strawberry.field
     def my_vote(self, info) -> Optional[VoteType]:
