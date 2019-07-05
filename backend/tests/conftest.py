@@ -1,5 +1,7 @@
 import pytest
 
+from django.test.client import Client
+
 from users.models import User
 from languages.models import Language
 
@@ -30,3 +32,8 @@ def admin_user(db):
 @pytest.fixture
 def language():
     return lambda code: Language.objects.get(code=code)
+
+
+@pytest.fixture
+def http_client():
+    return Client()

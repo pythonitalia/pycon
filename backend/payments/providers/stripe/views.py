@@ -16,14 +16,14 @@ def order_webhook(request):
     sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
 
     event = stripe.Webhook.construct_event(request.body, sig_header, webhook_secret)
-    event_dict = event.to_dict()
-
     payment_intent = event.data.object
 
     if event.type == 'payment_intent.succeeded':
         return handle_payment_success(payment_intent)
     elif event.type == 'payment_intent.payment_failed':
         return handle_payment_fail(payment_intent)
+
+    return HttpResponse(status=400)
 
 
 def handle_payment_success(payment_intent):

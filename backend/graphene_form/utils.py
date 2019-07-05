@@ -22,7 +22,7 @@ def create_input_type(base_name, graphql_fields):
     )
 
 
-def create_errors_type(base_name, graphql_fields):
+def create_error_type(base_name, graphql_fields):
     error_fields = {name: List(NonNull(String)) for name in graphql_fields.keys()}
     error_fields['nonFieldErrors'] = List(NonNull(String))
 

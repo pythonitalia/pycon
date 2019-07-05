@@ -13,9 +13,6 @@ from conferences.models import TicketFare, Ticket, Conference
 from conferences.types import TicketType
 from orders.models import Order, OrderItem
 
-from .providers.stripe.types import Stripe3DValidationRequired
-from .providers.stripe.errors import Stripe3DVerificationError
-
 from .errors import PaymentError
 from .fields import CartField
 from .types import GenericPaymentError, StripeClientSecret
@@ -101,6 +98,7 @@ class BuyTicketWithStripeForm(CommonPaymentItemsForm):
             response = order.charge()
         except PaymentError as e:
             return GenericPaymentError(message=e.message)
+        finally:
+            order.save()
 
-        order.save()
         return StripeClientSecret(client_secret=response.extras['client_secret'])

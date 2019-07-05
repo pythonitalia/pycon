@@ -4,5 +4,5 @@ from .views import order_webhook
 
 
 urlpatterns = [
-    path('stripe/process-order/', order_webhook)
+    path('stripe/process-order/', order_webhook, name='process-order')
 ]

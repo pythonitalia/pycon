@@ -7,7 +7,7 @@ from graphene.types.union import Union
 from graphene.types.field import Field
 from graphene.types.mutation import MutationOptions
 
-from .utils import create_errors_type, convert_form_fields_to_fields, create_input_type
+from .utils import create_error_type, convert_form_fields_to_fields, create_input_type
 
 
 class FormMutationOptions(MutationOptions):
@@ -26,7 +26,7 @@ class FormMutation(Mutation):
         graphql_fields = convert_form_fields_to_fields(form_fields)
 
         input_type = create_input_type(cls_name, graphql_fields)
-        error_type = create_errors_type(cls_name, graphql_fields)
+        error_type = create_error_type(cls_name, graphql_fields)
 
         cls.Arguments = type(
             f'{cls_name}Arguments',

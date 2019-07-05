@@ -17,8 +17,6 @@ from ..response import PaymentResponse
 from ..provider import PaymentProvider
 from ..utils import to_cents
 
-from .errors import Stripe3DVerificationError
-
 
 class Stripe(PaymentProvider):
     def __init__(self, *args, **kwargs):
@@ -36,7 +34,7 @@ class Stripe(PaymentProvider):
             )
         except CardError as e:
             body = e.json_body
-            err  = body.get('error', {})
+            err = body.get('error', {})
 
             raise PaymentError(message=_(err.get('message')))
         except RateLimitError as e:
