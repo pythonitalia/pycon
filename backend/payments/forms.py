@@ -29,11 +29,7 @@ class CommonPaymentItemsForm(FormWithContext):
     def clean(self):
         cleaned_data = super().clean()
 
-        conference = cleaned_data.get('conference', None)
-
-        if not conference:
-            return
-
+        conference = cleaned_data.get('conference')
         items = cleaned_data.get('items', [])
 
         if not items:

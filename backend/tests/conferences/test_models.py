@@ -133,3 +133,15 @@ def test_conference_can_have_multiple_custom_deadlines(deadline_factory):
 @mark.django_db
 def test_conference_to_str(conference_factory):
     assert 'Ciao Mondo <ep1>' == str(conference_factory(name='Ciao Mondo', code='ep1'))
+
+
+@mark.django_db
+def test_ticket_fare_is_not_available_if_start_and_end_are_not_specified(ticket_fare_factory):
+    fare = ticket_fare_factory(start=None)
+    assert fare.is_available is False
+
+    fare = ticket_fare_factory(end=None)
+    assert fare.is_available is False
+
+    fare = ticket_fare_factory(start=None, end=None)
+    assert fare.is_available is False
