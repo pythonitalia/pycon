@@ -27,4 +27,5 @@ class SubmissionType(DjangoObjectType):
             'type',
             'duration',
             'language',
+            'audience_level'
         )

@@ -119,6 +119,19 @@ class ConferenceFactory(DjangoModelFactory):
 
                 self.durations.add(duration)
 
+    @factory.post_generation
+    def audience_levels(self, create, extracted, **kwargs):
+
+        if not create:
+            return
+
+        if extracted:
+            for audience_level in extracted:
+                self.audience_levels.add(
+                    AudienceLevel.objects.get_or_create(name=audience_level)[
+                        0])
+
+
     class Meta:
         model = Conference
         django_get_or_create = ('code',)
@@ -147,7 +160,7 @@ class DeadlineFactory(DjangoModelFactory):
 
 @register
 class AudienceLevelFactory(DjangoModelFactory):
-    name = factory.Faker('word')
+    name = factory.fuzzy.FuzzyChoice(('Beginner', 'Intermidiate', 'Advanced'))
 
     class Meta:
         model = AudienceLevel

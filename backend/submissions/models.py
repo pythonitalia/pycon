@@ -51,6 +51,12 @@ class Submission(TimeStampedModel):
         on_delete=models.PROTECT
     )
 
+    audience_level = models.ForeignKey(
+        'conferences.AudienceLevel',
+        verbose_name=_('audience level'),
+        on_delete=models.PROTECT
+    )
+
     def clean(self):
         if self.topic_id and not self.conference.topics.filter(id=self.topic_id).exists():
             raise exceptions.ValidationError(
@@ -78,6 +84,15 @@ class Submission(TimeStampedModel):
                     'duration': str(self.duration),
                     'submission_type': str(self.type)
                 }}
+            )
+
+        if self.audience_level_id and not self.conference.audience_levels.filter(
+            id=self.audience_level_id).exists():
+            raise exceptions.ValidationError(
+                {'audience_level': _(
+                    '%(audience_level)s is not an allowed audience level') % {
+                                       'audience_level': str(
+                                           self.audience_level)}}
             )
 
     def __str__(self):
