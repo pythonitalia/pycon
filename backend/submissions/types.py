@@ -2,11 +2,12 @@ from typing import Optional
 
 import strawberry
 from graphql import GraphQLError
+
 from voting.models import Vote
 from voting.types import VoteType
 
 if False:
-    from conferences.types import Conference, Topic, Duration
+    from conferences.types import Conference, Topic, Duration, AudienceLevel
     from users.types import UserType
 
 
@@ -29,6 +30,7 @@ class Submission:
     topic: "Topic"
     type: SubmissionType
     duration: "Duration"
+    audience_level: "AudienceLevel"
 
     @strawberry.field
     def my_vote(self, info) -> Optional[VoteType]:
