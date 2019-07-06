@@ -4,6 +4,9 @@ from factory.django import DjangoModelFactory
 from pytest_factoryboy import register
 from submissions.models import Submission, SubmissionType
 from tests.conferences.factories import ConferenceFactory, DurationFactory, TopicFactory
+
+from tests.conferences.factories import ConferenceFactory, DurationFactory, \
+    TopicFactory, AudienceLevelFactory
 from tests.languages.factories import LanguageFactory
 from tests.users.factories import UserFactory
 
@@ -33,3 +36,4 @@ class SubmissionFactory(DjangoModelFactory):
     language = factory.SubFactory(LanguageFactory)
     speaker = factory.SubFactory(UserFactory)
     topic = factory.SubFactory(TopicFactory)
+    audience_level = factory.SubFactory(AudienceLevelFactory)
