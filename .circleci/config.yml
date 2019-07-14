@@ -113,14 +113,6 @@ jobs:
             - frontend/node_modules
             - "~/.cache/yarn"
       - run:
-          name: graphql-types
-          command: yarn graphql-types
-          working_directory: ./frontend
-      - run:
-          name: dts
-          command: yarn run dts
-          working_directory: ./frontend
-      - run:
           name: lint
           command: yarn run tsc
           working_directory: ./frontend
