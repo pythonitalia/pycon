@@ -7,4 +7,4 @@ pytest-cov==2.6.1
 pytest-django==3.4.7
 pytest-pylint==0.14.0
 pytest-factoryboy==2.0.2
-factory-boy==2.11.1
+factory-boy==2.12.0
