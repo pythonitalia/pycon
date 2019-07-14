@@ -1,6 +1,7 @@
 import graphene
 from graphene_django import DjangoObjectType
 
+from voting.models import Vote
 from voting.types import VoteType
 
 from .models import Submission
@@ -14,7 +15,14 @@ class SubmissionTypeType(DjangoObjectType):
 
 
 class SubmissionType(DjangoObjectType):
-    votes = graphene.NonNull(graphene.List(graphene.NonNull(VoteType)))
+    votes = graphene.NonNull(graphene.List(VoteType))
+    my_vote = graphene.Field(VoteType, user_id=graphene.ID())
+
+    def resolve_my_vote(self, info, user_id):
+        try:
+            return self.votes.get(user_id=user_id)
+        except Vote.DoesNotExist:
+            return None
 
     def resolve_votes(self, info):
         return self.votes.all()
