@@ -1,11 +1,13 @@
 {
   "compilerOptions": {
-    "noImplicitAny": true,
-    "rootDirs": ["src", "src_gen"],
-    "jsx": "react",
-    "lib": ["es6", "esnext.asynciterable", "dom"]
+    "target": "esnext",
+    "module": "commonjs",
+    "lib": ["esnext", "dom"],
+    "jsx": "preserve",
+    "skipLibCheck": true,
+    "strict": true,
+    "esModuleInterop": true
   },
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["./src/**/*"],
+  "exclude": ["node_modules"]
 }

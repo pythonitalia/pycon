@@ -1,59 +1,52 @@
 {
-  "name": "frontend",
+  "name": "pycon-italia",
   "version": "1.0.0",
-  "main": "index.js",
-  "license": "MIT",
+  "author": "Patrick Arminio <patrick.arminio@gmail.com>",
   "scripts": {
-    "start": "concurrently \"yarn run dev\" \"yarn run dts --watch\" \"yarn run graphql-types --watch\"",
-    "dev": "node scripts/start.js",
-    "dts": "tcm src -c -o src_gen",
-    "graphql-types": "apollo codegen:generate --target typescript --tagName graphql --schema schema.json --globalTypesFile=src/types/global.ts types"
-  },
-  "devDependencies": {
-    "express": "^4.16.3",
-    "graphql-tag": "^2.10.1",
-    "http-proxy-middleware": "^0.19.0",
-    "parcel-bundler": "^1.9.7",
-    "postcss-modules": "^1.4.1",
-    "prettier": "1.16.4",
-    "tslint": "^5.12.1",
-    "tslint-config-prettier": "^1.18.0",
-    "typed-css-modules": "^0.3.5",
-    "typescript": "^3.3.3"
+    "build": "gatsby build",
+    "develop": "gatsby develop",
+    "start": "npm run develop",
+    "format": "prettier --write \"{,!(node_modules|public|coverage|.cache)/**/}*.{js,jsx,ts,tsx,json}\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@reach/router": "^1.1.1",
-    "@types/reach__router": "^1.2.3",
-    "@types/react": "^16.8.2",
-    "@types/react-dom": "^16.0.11",
-    "@types/webpack-env": "^1.13.7",
-    "apollo": "^1.9.1",
-    "apollo-cache-inmemory": "^1.4.2",
-    "apollo-client": "^2.4.12",
-    "apollo-link": "^1.2.2",
-    "apollo-link-error": "^1.1.0",
-    "apollo-link-http": "^1.5.4",
-    "components": "^0.1.0",
-    "concurrently": "^4.0.1",
-    "graphql": "^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0",
-    "react": "^16.8.1",
-    "react-apollo": "^2.1.11",
-    "react-dom": "^16.8.1"
+    "babel-plugin-styled-components": "^1.10.6",
+    "gatsby": "^2.13.21",
+    "gatsby-image": "^2.2.6",
+    "gatsby-plugin-favicon": "^3.1.6",
+    "gatsby-plugin-google-fonts": "^1.0.1",
+    "gatsby-plugin-manifest": "^2.2.3",
+    "gatsby-plugin-offline": "^2.2.4",
+    "gatsby-plugin-react-helmet": "^3.1.2",
+    "gatsby-plugin-sharp": "^2.2.7",
+    "gatsby-plugin-styled-components": "^3.1.2",
+    "gatsby-plugin-typescript": "^2.1.2",
+    "gatsby-remark-external-links": "0.0.4",
+    "gatsby-remark-images": "^3.1.6",
+    "gatsby-remark-responsive-iframe": "^2.2.4",
+    "gatsby-source-filesystem": "^2.1.5",
+    "gatsby-transformer-remark": "^2.6.5",
+    "gatsby-transformer-sharp": "^2.2.3",
+    "marksy": "^8.0.0",
+    "prism-react-renderer": "^0.1.7",
+    "prop-types": "^15.7.2",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-helmet": "^5.2.1",
+    "react-responsive": "^7.0.0",
+    "styled-components": "^4.3.2",
+    "typescript": "^3.5.3"
   },
-  "postcss": {
-    "modules": true,
-    "plugins": {
-      "autoprefixer": {
-        "browsers": [
-          ">1%",
-          "last 2 versions",
-          "not ie < 11"
-        ]
-      },
-      "postcss-modules": {
-        "camelCase": true,
-        "generateScopedName": "[name]_[local]_[hash:base64:5]"
-      }
-    }
+  "devDependencies": {
+    "@types/node": "^12.6.2",
+    "@types/react": "^16.8.23",
+    "@types/react-dom": "^16.8.4",
+    "@types/react-helmet": "^5.0.7",
+    "@types/react-responsive": "^3.0.3",
+    "@types/styled-components": "^4.1.18",
+    "prettier": "^1.18.2",
+    "tslint": "^5.18.0",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-react": "^4.0.0"
   }
 }
