@@ -111,8 +111,8 @@ def test_convert_custom_not_registered_type():
         convert_form_field(field)
 
     message = (
-        f"Don't know how to convert the Django form field "
-        "{field} ({field.__class__}) to Graphene type"
+        "Don't know how to convert the Django form field "
+        f"{field} ({field.__class__}) to Graphene type"
     )
 
     assert message in str(e.value)

@@ -36,3 +36,11 @@ repos:
           - id: file-contents-sorter
             files: "^requirements(-test)?.in$"
           - id: no-commit-to-branch
+
+    - repo: git://github.com/awebdeveloper/pre-commit-tslint/
+      rev: "531a369ea27be731564b302de388403670a9123d"
+      hooks:
+          - id: tslint
+            files: \.(ts|tsx)$
+            additional_dependencies: ["tslint", "typescript"]
+            args: ['--fix']

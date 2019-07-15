@@ -82,10 +82,7 @@ class Submission(TimeStampedModel):
             and not self.conference.durations.filter(id=self.duration_id).exists()
         ):
             raise exceptions.ValidationError(
-                {
-                    "duration": _("%(duration)s is not an allowed duration type")
-                    % {"duration": str(self.duration)}
-                }
+                {"duration": _(f"{str(self.duration)} is not an allowed duration type")}
             )
 
         if (
@@ -100,7 +97,7 @@ class Submission(TimeStampedModel):
                 {
                     "duration": _(
                         f"Duration {str(self.duration)} is not an allowed for "
-                        "the submission type {str(self.type)}"
+                        f"the submission type {str(self.type)}"
                     )
                 }
             )

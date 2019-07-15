@@ -226,7 +226,7 @@ def test_cannot_use_duration_if_submission_type_is_not_allowed(
     assert resp["data"]["sendSubmission"]["submission"] is None
     assert resp["data"]["sendSubmission"]["errors"][0]["messages"] == [
         f"Duration {str(duration2)} is not an allowed "
-        "for the submission type {str(talk_type)}"
+        f"for the submission type {str(talk_type)}"
     ]
     assert resp["data"]["sendSubmission"]["errors"][0]["field"] == "duration"
 
