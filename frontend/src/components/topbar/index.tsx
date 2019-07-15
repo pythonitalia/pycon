@@ -1,9 +1,10 @@
 import { Column, Columns, Link } from "fannypack";
 import React, { useState } from "react";
-import styled from "styled-components";
-import { theme } from "../../config/theme";
+import styled, { css } from "styled-components";
 import { Button } from "../button";
 import { Hamburger } from "./hamburger";
+import { ExpandedMenu } from "./expanded-menu";
+import { theme } from "../../config/theme";
 
 const LinkContainer = styled.div`
   display: flex;
@@ -20,7 +21,7 @@ const LinkContainer = styled.div`
   }
 `;
 
-const LogoContainer = styled.div`
+const LogoContainer = styled.div<{ open: boolean }>`
   justify-content: center;
   display: flex;
   height: 100%;
@@ -29,9 +30,14 @@ const LogoContainer = styled.div`
   font-style: normal;
   font-weight: normal;
   font-size: 24px;
+  ${props =>
+    props.open &&
+    css`
+      color: ${theme.palette.white};
+    `}
 `;
 
-const MenuContainer = styled.div`
+const MenuContainer = styled.div<{ open: boolean }>`
   display: flex;
   align-items: center;
   height: 100%;
@@ -42,19 +48,40 @@ const MenuContainer = styled.div`
     align-items: center;
     outline: none;
     transition: 0.25s ease-in-out;
-    &:hover span {
-      background: #435a6f;
+    &:hover {
+      ${props =>
+        props.open &&
+        css`
+          color: ${theme.palette.white};
+        `}
+      span {
+        background: #435a6f;
+        ${props =>
+          props.open &&
+          css`
+            background: ${theme.palette.white};
+          `}
+      }
     }
   }
 `;
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ open: boolean }>`
   height: 80px;
   padding: 0 16px;
-
+  ${props =>
+    props.open &&
+    css`
+      background-color: ${theme.palette.primary};
+      a {
+        color: ${theme.palette.white};
+      }
+    `}
   > div,
   > div > div {
     height: 100%;
+    margin-top: 0;
+    margin-bottom: 0;
   }
 `;
 
@@ -62,10 +89,10 @@ export const Topbar = () => {
   const [showMenu, setShowMenu] = useState(false);
 
   return (
-    <Wrapper>
+    <Wrapper open={showMenu}>
       <Columns>
         <Column spread={4}>
-          <MenuContainer>
+          <MenuContainer open={showMenu}>
             <Link
               href="#"
               onClick={e => {
@@ -78,16 +105,19 @@ export const Topbar = () => {
           </MenuContainer>
         </Column>
         <Column spread={4}>
-          <LogoContainer>PyCon Italia</LogoContainer>
+          <LogoContainer open={showMenu}>PyCon Italia</LogoContainer>
         </Column>
         <Column spread={4}>
           <LinkContainer>
             <Link href="#">Login</Link>
             <Link href="#">Schedule</Link>
-            <Button palette="primary">GET YOUR TICKET</Button>
+            <Button palette={showMenu ? "white" : "primary"}>
+              GET YOUR TICKET
+            </Button>
           </LinkContainer>
         </Column>
       </Columns>
+      {showMenu && <ExpandedMenu />}
     </Wrapper>
   );
 };

@@ -55,6 +55,9 @@ const Draw = styled.div<DrawProps>`
         top: 10px;
         transform: rotate(-135deg);
       }
+      span {
+        background: ${theme.palette.white};
+      }
     `}
 `;
 

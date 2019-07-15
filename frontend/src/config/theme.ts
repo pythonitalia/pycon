@@ -20,5 +20,6 @@ export const theme = {
   },
   palette: {
     primary: "#0C67FF",
+    white: "#fff"
   },
 };
