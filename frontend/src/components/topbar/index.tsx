@@ -9,7 +9,7 @@ import { theme } from "../../config/theme";
 const LinkContainer = styled.div`
   display: flex;
   align-items: center;
-  justify-content: right;
+  justify-content: flex-end;
   height: 100%;
 
   a {
