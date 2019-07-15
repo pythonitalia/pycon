@@ -1,4 +1,5 @@
 import React from "react";
+
 import styled, { css } from "styled-components";
 import { theme } from "../../config/theme";
 
@@ -12,7 +13,7 @@ const Draw = styled.div<DrawProps>`
   margin-right: 0.5rem;
   position: relative;
   transform: rotate(0deg);
-  transition: 0.5s ease-in-out;
+  transition: 0.5s ease-in-out transform;
   cursor: pointer;
 
   span {
@@ -20,12 +21,12 @@ const Draw = styled.div<DrawProps>`
     position: absolute;
     height: 4px;
     width: 100%;
-    background: ${theme.palette.primary};
+    background: currentColor;
     border-radius: 9px;
     opacity: 1;
     left: 0;
     transform: rotate(0deg);
-    transition: 0.25s ease-in-out;
+    transition: 0.25s ease-in-out transform;
   }
 
   span:nth-child(1) {
@@ -62,16 +63,13 @@ const Draw = styled.div<DrawProps>`
 `;
 
 export const Hamburger = ({ open }: { open: boolean }) => {
-  console.log(open);
-
   return (
     <div>
       <Draw open={open}>
-        <span></span>
-        <span></span>
-        <span></span>
+        <span />
+        <span />
+        <span />
       </Draw>
     </div>
   );
 };
-// className={open ? "open" : ""}

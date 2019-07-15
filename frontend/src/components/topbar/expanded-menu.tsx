@@ -1,7 +1,8 @@
 import React from "react";
+
+import { Column, Columns } from "fannypack";
 import styled from "styled-components";
 import { theme } from "../../config/theme";
-import { Columns, Column } from "fannypack";
 
 const Headings = styled.div`
   border-top: 1px solid ${theme.palette.white};

@@ -20,6 +20,8 @@ export const theme = {
   },
   palette: {
     primary: "#0C67FF",
-    white: "#fff"
+    white: "#fff",
+    whiteInverted: "#0C67FF",
+    text: "#333",
   },
 };

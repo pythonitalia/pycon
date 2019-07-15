@@ -1,10 +1,11 @@
-import { Column, Columns, Link } from "fannypack";
 import React, { useState } from "react";
+
+import { Column, Columns, Link } from "fannypack";
 import styled, { css } from "styled-components";
-import { Button } from "../button";
-import { Hamburger } from "./hamburger";
-import { ExpandedMenu } from "./expanded-menu";
 import { theme } from "../../config/theme";
+import { Button } from "../button";
+import { ExpandedMenu } from "./expanded-menu";
+import { Hamburger } from "./hamburger";
 
 const LinkContainer = styled.div`
   display: flex;
