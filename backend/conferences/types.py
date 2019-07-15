@@ -9,7 +9,7 @@ from languages.types import LanguageType
 from submissions.types import SubmissionTypeType
 from schedule.types import ModelScheduleItemType
 
-from .models import Conference, Deadline, AudienceLevel, Topic, Duration, TicketFare, Ticket
+from .models import Conference, Deadline, AudienceLevel, Topic, Duration, TicketFare
 
 
 class DurationType(DjangoObjectType):
@@ -126,8 +126,4 @@ class ConferenceType(DjangoObjectType):
             'rooms',
         )
 
-
-class TicketType(DjangoObjectType):
-    class Meta:
-        model = Ticket
 

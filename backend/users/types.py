@@ -2,8 +2,7 @@ from graphene import NonNull, List, ID
 
 from graphene_django import DjangoObjectType
 
-from conferences.types import TicketType
-
+from tickets.types import TicketType
 from .models import User
 
 

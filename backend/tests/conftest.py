@@ -12,6 +12,7 @@ from .schedule.factories import *  # noqa
 from .languages.factories import *  # noqa
 from .users.factories import *  # noqa
 from .orders.factories import *  # noqa
+from .tickets.factories import *  # noqa
 
 
 @pytest.fixture()
