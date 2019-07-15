@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from tickets.models import Ticket
+from tickets.models import Ticket, TicketQuestion, TicketQuestionChoices
 
 
 @admin.register(Ticket)
@@ -13,3 +13,12 @@ class TicketAdmin(admin.ModelAdmin):
 
     def user_email(self, obj):
         return obj.user.email
+
+
+class TicketQuestionChoicesInline(admin.TabularInline):
+    model = TicketQuestionChoices
+
+
+@admin.register(TicketQuestion)
+class TicketQuestionAdmin(admin.ModelAdmin):
+    inlines = [TicketQuestionChoicesInline]

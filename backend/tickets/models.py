@@ -24,3 +24,24 @@ class Ticket(TimeStampedModel):
         on_delete=models.PROTECT,
         verbose_name=_('order'),
     )
+
+
+class TicketQuestion(TimeStampedModel):
+    text = models.CharField(_('text'), max_length=256)
+
+    def __str__(self):
+        return f'{self.text}'
+
+    class Meta:
+        verbose_name = _('Ticket Question')
+        verbose_name_plural = _('Ticket Questions')
+
+
+class TicketQuestionChoices(TimeStampedModel):
+    question = models.ForeignKey(
+        TicketQuestion,
+        on_delete=models.PROTECT,
+        verbose_name=_('question')
+    )
+
+    choice = models.CharField(_('text'), max_length=256)

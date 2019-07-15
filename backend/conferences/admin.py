@@ -48,7 +48,7 @@ class AudienceLevelAdmin(admin.ModelAdmin):
 @admin.register(TicketFare)
 class TicketFareAdmin(admin.ModelAdmin):
     list_display = ('conference', 'name',)
-    list_filter = ('conference', )
+    list_filter = ('conference', 'questions')
 
     fieldsets = (
         ('Info', {
@@ -59,6 +59,11 @@ class TicketFareAdmin(admin.ModelAdmin):
         ('Deadline', {
             'fields': (
                 'start', 'end',
+            )
+        }),
+        ('TicketQuestion', {
+            'fields': (
+                'questions',
             )
         })
     )
