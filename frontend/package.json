@@ -8,7 +8,7 @@
     "build": "yarn build:gatsby",
     "develop": "gatsby develop",
     "start": "npm run develop",
-    "format": "prettier --write \"{,!(node_modules|public|coverage|.cache)/**/}*.{js,jsx,ts,tsx,json}\"",
+    "format": "prettier --write \"{,!(node_modules|public|coverage|.cache)/**/}*.{js,jsx,ts,tsx,json}\" && tslint --fix --project .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
