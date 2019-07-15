@@ -1,5 +1,4 @@
 import graphene
-
 from graphql import GraphQLError
 
 from .types import MeUserType

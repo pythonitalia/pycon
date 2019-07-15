@@ -1,8 +1,7 @@
 import json
 
 
-class GraphQLClient():
-
+class GraphQLClient:
     def __init__(self, client):
         self._client = client
 
@@ -20,14 +19,14 @@ class GraphQLClient():
                   The response has the "data" key.
                   It will have the "error" key if any error happened.
         """
-        body = {'query': query}
+        body = {"query": query}
         if op_name:
-            body['operation_name'] = op_name
+            body["operation_name"] = op_name
         if variables:
-            body['variables'] = variables
+            body["variables"] = variables
 
         resp = self._client.post(
-            '/graphql', json.dumps(body), content_type='application/json'
+            "/graphql", json.dumps(body), content_type="application/json"
         )
 
         return json.loads(resp.content.decode())

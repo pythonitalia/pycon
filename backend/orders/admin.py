@@ -9,4 +9,4 @@ class OrderItemInline(admin.TabularInline):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    inlines = [OrderItemInline,]
+    inlines = [OrderItemInline]

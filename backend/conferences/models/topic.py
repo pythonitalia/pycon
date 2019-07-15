@@ -9,5 +9,5 @@ class Topic(models.Model):
         return self.name
 
     class Meta:
-        verbose_name = _('Topic')
-        verbose_name_plural = _('Topics')
+        verbose_name = _("Topic")
+        verbose_name_plural = _("Topics")

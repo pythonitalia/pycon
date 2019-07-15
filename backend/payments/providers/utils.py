@@ -6,6 +6,8 @@ def to_cents(amount):
     # already in cents causing issues.
     # What can we do to make sure it does not happen?
     if not isinstance(amount, Decimal):
-        raise ValueError('Make sure the amount passed to `to_cents` is not already converted')
+        raise ValueError(
+            "Make sure the amount passed to `to_cents` is not already converted"
+        )
 
     return int(amount * 100)
