@@ -2,12 +2,9 @@ import React from "react";
 
 import styled, { css } from "styled-components";
 import { theme } from "../../config/theme";
+import { ExpandableProps } from "./types";
 
-type DrawProps = {
-  open: boolean;
-};
-
-const Draw = styled.div<DrawProps>`
+const Draw = styled.div<ExpandableProps>`
   width: 40px;
   height: 24px;
   margin-right: 0.5rem;
@@ -62,7 +59,7 @@ const Draw = styled.div<DrawProps>`
     `}
 `;
 
-export const Hamburger = ({ open }: { open: boolean }) => {
+export const Hamburger = ({ open }: ExpandableProps) => {
   return (
     <div>
       <Draw open={open}>

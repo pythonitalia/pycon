@@ -6,6 +6,7 @@ import { theme } from "../../config/theme";
 import { Button } from "../button";
 import { ExpandedMenu } from "./expanded-menu";
 import { Hamburger } from "./hamburger";
+import { ExpandableProps } from "./types";
 
 const LinkContainer = styled.div`
   display: flex;
@@ -22,7 +23,7 @@ const LinkContainer = styled.div`
   }
 `;
 
-const LogoContainer = styled.div<{ open: boolean }>`
+const LogoContainer = styled.div<ExpandableProps>`
   justify-content: center;
   display: flex;
   height: 100%;
@@ -38,7 +39,7 @@ const LogoContainer = styled.div<{ open: boolean }>`
     `}
 `;
 
-const MenuContainer = styled.div<{ open: boolean }>`
+const MenuContainer = styled.div<ExpandableProps>`
   display: flex;
   align-items: center;
   height: 100%;
@@ -67,7 +68,7 @@ const MenuContainer = styled.div<{ open: boolean }>`
   }
 `;
 
-const Wrapper = styled.div<{ open: boolean }>`
+const Wrapper = styled.div<ExpandableProps>`
   height: 80px;
   padding: 0 16px;
   ${props =>
