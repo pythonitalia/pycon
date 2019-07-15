@@ -102,7 +102,7 @@ def test_convert_custom_not_registered_type():
     with pytest.raises(ImproperlyConfigured) as e:
         convert_form_field(field)
 
-    assert "Don't know how to convert the Django form field %s (%s) to Graphene type" % (field, field.__class__) in str(e)
+    assert "Don't know how to convert the Django form field %s (%s) to Graphene type" % (field, field.__class__) in str(e.value)
 
 
 def test_convert_multiple_model_choice_field():

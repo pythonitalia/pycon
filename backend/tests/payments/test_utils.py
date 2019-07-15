@@ -14,4 +14,4 @@ def test_to_cents_cannot_convert_non_deciaml_numbers():
     with pytest.raises(ValueError) as exc:
         to_cents(500)
 
-    assert 'Make sure the amount passed to `to_cents` is not already converted' in str(exc)
+    assert 'Make sure the amount passed to `to_cents` is not already converted' in str(exc.value)

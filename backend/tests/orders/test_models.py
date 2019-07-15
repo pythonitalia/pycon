@@ -12,4 +12,4 @@ def test_order_charge_with_not_known_provider(order_factory):
     with pytest.raises(ValueError) as e:
         order.charge({})
 
-    assert 'Provider undefined not known' in str(e)
+    assert 'Provider undefined not known' in str(e.value)
