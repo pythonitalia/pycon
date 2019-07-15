@@ -3,15 +3,11 @@ from django.urls import reverse_lazy
 
 root = environ.Path(__file__) - 3  # three folder back (/a/b/c/ - 3 = /)
 
-<<<<<<< HEAD
-env = environ.Env(DEBUG=(bool, False), ALLOWED_HOSTS=(list, []))
-=======
 env = environ.Env(
     DEBUG=(bool, False),
     ALLOWED_HOSTS=(list, []),
-    FRONTEND_URL=(str, 'http://testfrontend.it/')
+    FRONTEND_URL=(str, "http://testfrontend.it/")
 )
->>>>>>> Implement login mutation
 
 environ.Env.read_env(root(".env"))
 
