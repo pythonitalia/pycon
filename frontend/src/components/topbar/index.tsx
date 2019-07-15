@@ -1,8 +1,8 @@
-import { Column, Columns } from "fannypack";
+import { Column, Columns, Link } from "fannypack";
 import React, { useState } from "react";
 import styled from "styled-components";
+import { theme } from "../../config/theme";
 import { Button } from "../button";
-import { Link } from "fannypack";
 import { Hamburger } from "./hamburger";
 
 const LinkContainer = styled.div`
@@ -41,6 +41,10 @@ const MenuContainer = styled.div`
     display: flex;
     align-items: center;
     outline: none;
+    transition: 0.25s ease-in-out;
+    &:hover span {
+      background: #435a6f;
+    }
   }
 `;
 

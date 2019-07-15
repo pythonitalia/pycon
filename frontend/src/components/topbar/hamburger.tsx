@@ -1,5 +1,6 @@
-import React, { Component } from "react";
+import React from "react";
 import styled, { css } from "styled-components";
+import { theme } from "../../config/theme";
 
 type DrawProps = {
   open: boolean;
@@ -19,7 +20,7 @@ const Draw = styled.div<DrawProps>`
     position: absolute;
     height: 4px;
     width: 100%;
-    background: #9f9f9f;
+    background: ${theme.palette.primary};
     border-radius: 9px;
     opacity: 1;
     left: 0;
