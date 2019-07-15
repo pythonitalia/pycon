@@ -4,6 +4,7 @@
   "jsRules": {},
   "rules": {
     "interface-name": false,
+    "interface-over-type-literal": false,
     "semicolon": [true, "always"],
     "member-access": [false],
     "ordered-imports": [true],

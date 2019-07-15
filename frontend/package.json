@@ -44,6 +44,8 @@
     "@types/react-helmet": "^5.0.7",
     "@types/react-responsive": "^3.0.3",
     "@types/styled-components": "^4.1.18",
+    "docz": "^1.2.0",
+    "docz-theme-default": "^1.2.0",
     "prettier": "^1.18.2",
     "tslint": "^5.18.0",
     "tslint-config-prettier": "^1.18.0",
