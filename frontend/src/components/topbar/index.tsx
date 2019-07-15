@@ -1,8 +1,9 @@
 import { Column, Columns } from "fannypack";
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { Button } from "../button";
 import { Link } from "fannypack";
+import { Hamburger } from "./hamburger";
 
 const LinkContainer = styled.div`
   display: flex;
@@ -11,7 +12,7 @@ const LinkContainer = styled.div`
   height: 100%;
 
   a {
-    margin-right: 1.5rem;
+    margin-right: 2rem;
     text-decoration: none;
     &:last-child {
       margin-right: 0;
@@ -30,35 +31,59 @@ const LogoContainer = styled.div`
   font-size: 24px;
 `;
 
-const Background = styled.div`
+const MenuContainer = styled.div`
+  display: flex;
+  align-items: center;
+  height: 100%;
+
+  a {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    outline: none;
+  }
+`;
+
+const Wrapper = styled.div`
   height: 80px;
+  padding: 0 16px;
+
+  > div,
+  > div > div {
+    height: 100%;
+  }
 `;
 
-const StyledColumns = styled(Columns)`
-  height: 100%;
-`;
+export const Topbar = () => {
+  const [showMenu, setShowMenu] = useState(false);
 
-const StyledColumn = styled(Column)`
-  height: 100%;
-`;
-
-export const Topbar = ({ className }: any) => {
   return (
-    <Background className={className}>
-      <StyledColumns>
-        <StyledColumn spread={4}>.</StyledColumn>
-        <StyledColumn spread={4}>
+    <Wrapper>
+      <Columns>
+        <Column spread={4}>
+          <MenuContainer>
+            <Link
+              href="#"
+              onClick={e => {
+                e.preventDefault();
+                setShowMenu(!showMenu);
+              }}
+            >
+              <Hamburger open={showMenu} /> Menu
+            </Link>
+          </MenuContainer>
+        </Column>
+        <Column spread={4}>
           <LogoContainer>PyCon Italia</LogoContainer>
-        </StyledColumn>
-        <StyledColumn spread={4}>
+        </Column>
+        <Column spread={4}>
           <LinkContainer>
+            <Link href="#">Login</Link>
             <Link href="#">Schedule</Link>
-            <Link href="#">Speaker</Link>
-            <Link href="#">FAQ</Link>
             <Button palette="primary">GET YOUR TICKET</Button>
           </LinkContainer>
-        </StyledColumn>
-      </StyledColumns>
-    </Background>
+        </Column>
+      </Columns>
+    </Wrapper>
   );
 };
