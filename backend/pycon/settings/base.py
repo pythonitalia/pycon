@@ -9,7 +9,7 @@ env = environ.Env(DEBUG=(bool, False), ALLOWED_HOSTS=(list, []))
 env = environ.Env(
     DEBUG=(bool, False),
     ALLOWED_HOSTS=(list, []),
-    FRONTEND_URL=str
+    FRONTEND_URL=(str, 'http://testfrontend.it/')
 )
 >>>>>>> Implement login mutation
 
