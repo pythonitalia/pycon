@@ -45,3 +45,18 @@ class TicketQuestionChoices(TimeStampedModel):
     )
 
     choice = models.CharField(_('text'), max_length=256)
+
+
+class UserAnswer(TimeStampedModel):
+    ticket = models.ForeignKey(
+        'tickets.Ticket',
+        on_delete=models.PROTECT,
+        verbose_name=_('ticket'),
+        related_name='answers'
+    )
+
+    answer = models.ForeignKey(
+        'tickets.TicketQuestionChoices',
+        on_delete=models.PROTECT,
+        verbose_name=_('answer')
+    )
