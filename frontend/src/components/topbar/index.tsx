@@ -11,7 +11,7 @@ const LinkContainer = styled.div`
   height: 100%;
 
   a {
-    margin-right: 1rem;
+    margin-right: 1.5rem;
     text-decoration: none;
     &:last-child {
       margin-right: 0;
@@ -21,11 +21,13 @@ const LinkContainer = styled.div`
 
 const LogoContainer = styled.div`
   justify-content: center;
-  font-size: 40px;
-  line-height: 40px;
   display: flex;
   height: 100%;
   align-items: center;
+  font-family: Rubik;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 24px;
 `;
 
 const Background = styled.div`
