@@ -1,4 +1,5 @@
-from graphene import ID, List, NonNull
+from graphene import NonNull, List, ID, String, ObjectType
+
 from graphene_django import DjangoObjectType
 from tickets.types import TicketType
 
@@ -20,3 +21,7 @@ class UserType(DjangoObjectType):
     class Meta:
         model = User
         only_fields = ("id", "email", "name", "username")
+
+
+class EmailPasswordCombinationError(ObjectType):
+    message = NonNull(String)
