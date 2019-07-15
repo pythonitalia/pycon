@@ -55,7 +55,7 @@ const MenuContainer = styled.div<{ open: boolean }>`
           color: ${theme.palette.white};
         `}
       span {
-        background: #435a6f;
+        background: currentColor;
         ${props =>
           props.open &&
           css`
