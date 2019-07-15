@@ -11,7 +11,12 @@ def _login_user(graphql_client, email, password):
 
             ... on MeUserType {
                 id
+            }
+
+            ... on LoginErrors {
                 email
+                password
+                nonFieldErrors
             }
 
             ... on EmailPasswordCombinationError {
@@ -38,9 +43,7 @@ def test_login_user(graphql_client, user_factory):
     )
 
     assert response['data']['login']['__typename'] == 'MeUserType'
-
     assert response['data']['login']['id'] == str(user.id)
-    assert response['data']['login']['email'] == user.email
 
     session = Session.objects.first()
 
@@ -87,3 +90,31 @@ def test_cannot_login_with_invalid_email(graphql_client, user_factory):
 
     assert response['data']['login']['__typename'] == 'EmailPasswordCombinationError'
     assert response['data']['login']['message'] == 'Wrong email/password combination'
+
+
+@mark.django_db
+def test_cannot_login_without_email(graphql_client, user_factory):
+    user = user_factory(password='ciao', is_active=False)
+
+    response = _login_user(
+        graphql_client,
+        '',
+        'ciao',
+    )
+
+    assert response['data']['login']['__typename'] == 'LoginErrors'
+    assert response['data']['login']['email'] == ['This field is required.']
+
+
+@mark.django_db
+def test_cannot_login_without_password(graphql_client, user_factory):
+    user = user_factory(password='ciao', is_active=False)
+
+    response = _login_user(
+        graphql_client,
+        user.email,
+        '',
+    )
+
+    assert response['data']['login']['__typename'] == 'LoginErrors'
+    assert response['data']['login']['password'] == ['This field is required.']

@@ -25,3 +25,6 @@ class UserType(DjangoObjectType):
 
 class EmailPasswordCombinationError(ObjectType):
     message = NonNull(String)
+
+class EmailAlreadyUsedError(ObjectType):
+    message = NonNull(String)
