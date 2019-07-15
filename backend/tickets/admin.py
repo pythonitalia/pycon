@@ -7,6 +7,7 @@ class UserAnswersInline(admin.TabularInline):
     model = UserAnswer
     fields = ('question', 'answer_choice')
     readonly_fields = ('question', 'answer_choice')
+    can_delete = False
 
     def question(self, instance):
         return instance.answer.question
@@ -16,6 +17,8 @@ class UserAnswersInline(admin.TabularInline):
         return instance.answer.choice
     answer_choice.short_description = 'Answer'
 
+    def has_add_permission(self, request):
+        return False
 
 @admin.register(Ticket)
 class TicketAdmin(admin.ModelAdmin):
