@@ -8,11 +8,9 @@ from django.urls import reverse
 
 from stripe.error import AuthenticationError, RateLimitError, CardError
 
-from conferences.models import Ticket
-
 from orders.models import Order
 from orders.enums import PaymentState
-
+from tickets.models import Ticket
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 

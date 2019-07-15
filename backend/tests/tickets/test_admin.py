@@ -2,9 +2,8 @@ from pytest import mark
 
 from django.contrib.admin.sites import AdminSite
 
-from conferences.admin import TicketAdmin
-
-from conferences.models import Ticket
+from tickets.admin import TicketAdmin
+from tickets.models import Ticket
 
 
 @mark.django_db

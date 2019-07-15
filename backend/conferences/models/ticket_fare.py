@@ -5,6 +5,8 @@ from django.utils.translation import ugettext_lazy as _
 
 from model_utils.models import TimeFramedModel, TimeStampedModel
 
+from tickets.models import Ticket
+
 
 class TicketFare(TimeFramedModel, TimeStampedModel):
     conference = models.ForeignKey(
@@ -32,8 +34,6 @@ class TicketFare(TimeFramedModel, TimeStampedModel):
         return self.start <= now <= self.end
 
     def fullfil(self, *, user, order):
-        from . import Ticket
-
         Ticket.objects.create(
             user=user,
             ticket_fare=self,

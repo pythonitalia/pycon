@@ -1,7 +1,4 @@
-from graphene import Int, ID, NonNull, InputObjectType, ObjectType, String, List
-
-from conferences.types import TicketType
-from orders.types import OrderType
+from graphene import Int, ID, NonNull, InputObjectType, ObjectType, String
 
 
 class CartItem(InputObjectType):

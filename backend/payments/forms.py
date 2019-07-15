@@ -9,8 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from graphene_form.forms import FormWithContext
 
-from conferences.models import TicketFare, Ticket, Conference
-from conferences.types import TicketType
+from conferences.models import TicketFare, Conference
 from orders.models import Order, OrderItem
 
 from .errors import PaymentError
