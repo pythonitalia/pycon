@@ -1,7 +1,7 @@
 from django import forms
 
 
-class ContextAwareForm(forms.ModelForm):
+class ContextAwareModelForm(forms.ModelForm):
     """A form that allows you to access the request context in `self.context`.
 
     For example, you can use the Request object to access the logged user in the `save` method.

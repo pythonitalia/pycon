@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 from django.utils.translation import ugettext_lazy as _
 
@@ -17,6 +18,27 @@ class TicketFare(TimeFramedModel, TimeStampedModel):
     name = models.CharField(_('name'), max_length=100)
     description = models.TextField(_('description'))
     price = models.DecimalField(_('price'), max_digits=10, decimal_places=2)
+
+    @property
+    def order_description(self):
+        return f'{self.name} ({self.conference.code})'
+
+    @property
+    def is_available(self):
+        if not self.start or not self.end:
+            return False
+
+        now = timezone.now()
+        return self.start <= now <= self.end
+
+    def fullfil(self, *, user, order):
+        from . import Ticket
+
+        Ticket.objects.create(
+            user=user,
+            ticket_fare=self,
+            order=order
+        )
 
     def __str__(self):
         return f'{self.name} ({self.conference.name})'

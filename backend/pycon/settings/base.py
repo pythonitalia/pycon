@@ -33,6 +33,8 @@ INSTALLED_APPS = [
     'languages.apps.LanguagesConfig',
     'submissions.apps.SubmissionsConfig',
     'schedule.apps.ScheduleConfig',
+    'orders.apps.OrdersConfig',
+    'payments.apps.PaymentsConfig',
 ]
 
 MIDDLEWARE = [
@@ -143,3 +145,6 @@ SOCIAL_AUTH_TWITTER_KEY = env('SOCIAL_AUTH_TWITTER_KEY', default='')
 SOCIAL_AUTH_TWITTER_SECRET = env('SOCIAL_AUTH_TWITTER_SECRET', default='')
 
 LOGIN_REDIRECT_URL = reverse_lazy('post-login')
+
+STRIPE_SECRET_KEY = env('STRIPE_SECRET_KEY', default='')
+STRIPE_WEBHOOK_SECRET = env('STRIPE_WEBHOOK_SECRET', default='')

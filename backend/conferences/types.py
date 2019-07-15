@@ -9,7 +9,7 @@ from languages.types import LanguageType
 from submissions.types import SubmissionTypeType
 from schedule.types import ModelScheduleItemType
 
-from .models import Conference, Deadline, AudienceLevel, Topic, Duration, TicketFare
+from .models import Conference, Deadline, AudienceLevel, Topic, Duration, TicketFare, Ticket
 
 
 class DurationType(DjangoObjectType):
@@ -57,7 +57,7 @@ class TopicType(DjangoObjectType):
 class TicketFareType(DjangoObjectType):
     class Meta:
         model = TicketFare
-        only_fields = ('id', 'code', 'name', 'price', 'start', 'end', 'description')
+        only_fields = ('id', 'code', 'name', 'price', 'start', 'end', 'description', 'conference')
 
 
 class ConferenceType(DjangoObjectType):
@@ -125,3 +125,9 @@ class ConferenceType(DjangoObjectType):
             'timezone',
             'rooms',
         )
+
+
+class TicketType(DjangoObjectType):
+    class Meta:
+        model = Ticket
+

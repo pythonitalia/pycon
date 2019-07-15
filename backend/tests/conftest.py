@@ -1,5 +1,7 @@
 import pytest
 
+from django.test.client import Client
+
 from users.models import User
 from languages.models import Language
 
@@ -9,6 +11,7 @@ from .submissions.factories import *  # noqa
 from .schedule.factories import *  # noqa
 from .languages.factories import *  # noqa
 from .users.factories import *  # noqa
+from .orders.factories import *  # noqa
 
 
 @pytest.fixture()
@@ -29,3 +32,8 @@ def admin_user(db):
 @pytest.fixture
 def language():
     return lambda code: Language.objects.get(code=code)
+
+
+@pytest.fixture
+def http_client():
+    return Client()

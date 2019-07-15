@@ -4,3 +4,4 @@ from .deadline import Deadline
 from .duration import Duration
 from .topic import Topic
 from .ticket_fare import TicketFare
+from .ticket import Ticket

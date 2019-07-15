@@ -9,7 +9,7 @@ class ContextAwareDjangoModelFormMutation(mutation.DjangoModelFormMutation):
 
     See also:
 
-    - :py:class:`api.forms.ContextAwareForm`
+    - :py:class:`api.forms.ContextAwareModelForm`
     """
     class Meta:
         abstract = True
@@ -21,7 +21,7 @@ class ContextAwareDjangoModelFormMutation(mutation.DjangoModelFormMutation):
         return kwargs
 
 
-class AuthOnlyDjangoFormMutation(ContextAwareDjangoModelFormMutation):
+class AuthOnlyDjangoModelFormMutation(ContextAwareDjangoModelFormMutation):
     """Before executing the mutation, checks if the Request object has an authenticated
     user, if not a `GraphQLError` is thrown.
 

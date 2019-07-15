@@ -307,3 +307,25 @@ def test_get_conference_durations(graphql_client, duration_factory, submission_t
             {'id': str(tutorial_type.id), 'name': tutorial_type.name}
         ]
     } in resp['data']['conference']['durations']
+
+
+@mark.django_db
+def test_query_user_tickets(graphql_client, user, ticket_factory):
+    graphql_client.force_login(user)
+
+    ticket = ticket_factory(user=user)
+
+    response = graphql_client.query("""
+    query ($conference: ID!) {
+        me {
+            tickets(conference: $conference) {
+                id
+            }
+        }
+    }
+    """, variables={
+        'conference': ticket.ticket_fare.conference.code,
+    })
+
+    assert len(response['data']['me']['tickets']) == 1
+    assert response['data']['me']['tickets'][0]['id'] == str(ticket.id)
