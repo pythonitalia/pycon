@@ -18,6 +18,11 @@ class TicketFare(TimeFramedModel, TimeStampedModel):
     description = models.TextField(_("description"))
     price = models.DecimalField(_("price"), max_digits=10, decimal_places=2)
 
+    questions = models.ManyToManyField(
+        'tickets.TicketQuestion',
+        verbose_name=_('ticket questions')
+    )
+
     @property
     def order_description(self):
         return f"{self.name} ({self.conference.code})"
