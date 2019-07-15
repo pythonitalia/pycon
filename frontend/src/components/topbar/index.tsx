@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Column, Columns, Link } from "fannypack";
 import styled, { css } from "styled-components";
 import { theme } from "../../config/theme";
+import { useToggle } from "../../helpers/use-toggle";
 import { Button } from "../button";
 import { ExpandedMenu } from "./expanded-menu";
 import { Hamburger } from "./hamburger";
@@ -88,38 +89,38 @@ const Wrapper = styled.div<ExpandableProps>`
 `;
 
 export const Topbar = () => {
-  const [showMenu, setShowMenu] = useState(false);
+  const [isMenuOpen, toggleMenu] = useToggle(false);
 
   return (
-    <Wrapper open={showMenu}>
+    <Wrapper open={isMenuOpen}>
       <Columns>
         <Column spread={4}>
-          <MenuContainer open={showMenu}>
+          <MenuContainer open={isMenuOpen}>
             <Link
               href="#"
               onClick={e => {
                 e.preventDefault();
-                setShowMenu(!showMenu);
+                toggleMenu();
               }}
             >
-              <Hamburger open={showMenu} /> Menu
+              <Hamburger open={isMenuOpen} /> Menu
             </Link>
           </MenuContainer>
         </Column>
         <Column spread={4}>
-          <LogoContainer open={showMenu}>PyCon Italia</LogoContainer>
+          <LogoContainer open={isMenuOpen}>PyCon Italia</LogoContainer>
         </Column>
         <Column spread={4}>
           <LinkContainer>
             <Link href="#">Login</Link>
             <Link href="#">Schedule</Link>
-            <Button palette={showMenu ? "white" : "primary"}>
+            <Button palette={isMenuOpen ? "white" : "primary"}>
               GET YOUR TICKET
             </Button>
           </LinkContainer>
         </Column>
       </Columns>
-      {showMenu && <ExpandedMenu />}
+      {isMenuOpen && <ExpandedMenu />}
     </Wrapper>
   );
 };
