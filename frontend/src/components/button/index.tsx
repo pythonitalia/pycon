@@ -1,8 +1,6 @@
 import React from "react";
+import { Button as FannyButton, ButtonProps } from "fannypack";
 
-type ButtonProps = {
-  children: React.ReactNode;
-  color: string;
-};
-
-export const Button = (props: ButtonProps) => <button>{props.children}</button>;
+export const Button = (props: ButtonProps) => (
+  <FannyButton {...props}>{props.children}</FannyButton>
+);
