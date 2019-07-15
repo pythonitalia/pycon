@@ -113,17 +113,18 @@ MEDIA_ROOT = root("media")
 
 GRAPHENE = {"SCHEMA": "api.schema.schema"}
 
-
 AUTH_USER_MODEL = "users.User"
-
+SOCIAL_AUTH_USER_MODEL = "users.User"
 
 AUTHENTICATION_BACKENDS = (
-    "social_core.backends.twitter.TwitterOAuth",
+    "social_core.backends.google.GoogleOAuth2",
     "django.contrib.auth.backends.ModelBackend",
 )
 
-SOCIAL_AUTH_TWITTER_KEY = env("SOCIAL_AUTH_TWITTER_KEY", default="")
-SOCIAL_AUTH_TWITTER_SECRET = env("SOCIAL_AUTH_TWITTER_SECRET", default="")
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env("SOCIAL_AUTH_GOOGLE_OAUTH2_KEY", default="")
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env("SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET", default="")
+
+SOCIAL_AUTH_POSTGRES_JSONFIELD = True
 
 LOGIN_REDIRECT_URL = reverse_lazy("post-login")
 

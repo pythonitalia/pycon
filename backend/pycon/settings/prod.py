@@ -2,5 +2,3 @@ from .base import *  # noqa
 from .base import env
 
 SECRET_KEY = env("SECRET_KEY")
-SOCIAL_AUTH_TWITTER_KEY = env("SOCIAL_AUTH_TWITTER_KEY")
-SOCIAL_AUTH_TWITTER_SECRET = env("SOCIAL_AUTH_TWITTER_SECRET")
