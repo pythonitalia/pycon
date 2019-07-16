@@ -1,18 +1,32 @@
+import datetime
 import sqlite3
+from datetime import timedelta
 
+import pytz
 from django.core.management.base import BaseCommand
+from django.db import transaction, IntegrityError
 
 from pycon.settings.base import root
 
 
 DEFAULT_DB_PATH = root('p3.db')
-
+SUPPORTED_ENTITIES = ['user', 'conference']
+OLD_DEAFAULT_TZ = pytz.timezone('Europe/Rome')
 
 def dict_factory(cursor, row):
     d = {}
     for idx, col in enumerate(cursor.description):
         d[col[0]] = row[idx]
     return d
+
+
+def string_to_tzdatetime(s, day_end=False):
+    if not s:
+        return None
+    unaware_date = datetime.datetime.fromisoformat(s)
+    if day_end:
+        unaware_date += timedelta(days=1, seconds=-1)
+    return pytz.utc.localize(unaware_date)
 
 
 class Command(BaseCommand):
@@ -24,6 +38,12 @@ class Command(BaseCommand):
             dest='db_path',
             action='store',
             help='Absolute path of the SQLite db file',
+        )
+        parser.add_argument(
+            '--entities',
+            dest='entities',
+            action='store',
+            help='List of comma separated entities to import, i.e. user,conference',
         )
 
     def import_users(self):
@@ -51,6 +71,48 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.SUCCESS(f'{len(result)} users imported.'))
 
+    def import_conferences(self):
+        from conferences.models import Conference, Deadline
+
+        self.stdout.write(f'Importing conferences...')
+
+        old_conf = list(self.c.execute('SELECT * FROM conference_conference'))
+
+        created = 0
+        for old_conf in old_conf:
+            try:
+                with transaction.atomic():
+                    conf = Conference.objects.create(
+                        name=old_conf['name'],
+                        code=old_conf['code'],
+                        timezone=OLD_DEAFAULT_TZ,
+                        # topics=None,  # TODO
+                        # languages=None,  # TODO
+                        # audience_levels=None,  # TODO
+                        # submission_types=None,  # TODO
+                        start=string_to_tzdatetime(old_conf['conference_start']),
+                        end=string_to_tzdatetime(old_conf['conference_end'], day_end=True),
+                    )
+
+                    for deadline in ['cfp', 'voting', 'refund']:
+                        Deadline.objects.create(
+                            conference=conf,
+                            name=deadline,
+                            type=deadline,
+                            start=string_to_tzdatetime(old_conf[f'{deadline}_start']),
+                            end=string_to_tzdatetime(old_conf[f'{deadline}_end'], day_end=True),
+                        )
+            except IntegrityError as exc:
+                self.stdout.write(self.style.NOTICE(f"Cannot import conference {old_conf['name']} (maybe it's already there): {exc}"))
+                continue
+            except Exception as exc:
+                self.stdout.write(self.style.NOTICE(f'Something bad happened when importing conference {old_conf["name"]}: {exc}'))
+                continue
+            else:
+                created += 1
+
+        self.stdout.write(self.style.SUCCESS(f'{created} conferences imported.'))
+
     def handle(self, *args, **options):
         self.stdout.write('Starting...')
 
@@ -64,6 +126,13 @@ class Command(BaseCommand):
         conn.row_factory = dict_factory
         self.c = conn.cursor()
 
-        self.import_users()
+        entities = SUPPORTED_ENTITIES
+        if options['entities']:
+            entities = options['entities'].split(',')
+
+        if 'user' in entities:
+            self.import_users()
+        if 'conference' in entities:
+            self.import_conferences()
 
         self.stdout.write(self.style.SUCCESS('Done!'))
