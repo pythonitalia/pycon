@@ -1,6 +1,7 @@
+import math
 import random
 
-from pytest import mark, approx
+from pytest import mark
 from tests.voting.factories.vote_range import VoteRangeFactory
 from voting.models import Vote
 
@@ -9,7 +10,7 @@ def _submit_vote(client, submission, user, **kwargs):
     range = VoteRangeFactory()
 
     defaults = {
-        "value": random.uniform(range.first, range.last),
+        "value": math.floor(random.uniform(range.first, range.last)),
         "range": range.id,
         "submission": submission.id,
         "user": user.id,
@@ -19,7 +20,7 @@ def _submit_vote(client, submission, user, **kwargs):
 
     return (
         client.query(
-            """mutation($submission: ID!, $user: ID!, $value: Float!) {
+            """mutation($submission: ID!, $user: ID!, $value: Int!) {
                 sendVote(input: {
                     submission: $submission,
                     user: $user,
@@ -55,7 +56,7 @@ def test_submit_vote(graphql_client, user, conference_factory, submission_factor
     assert resp["data"]["sendVote"]["errors"] == []
 
     vote = Vote.objects.get(id=resp["data"]["sendVote"]["vote"]["id"])
-    assert vote.value == approx(variables["value"])
+    assert vote.value == variables["value"]
     assert vote.submission.id == variables["submission"]
     assert vote.user.id == variables["user"]
 
@@ -91,7 +92,7 @@ def test_user_can_votes_differents_submissons(
     assert resp1["data"]["sendVote"]["errors"] == []
 
     vote1 = Vote.objects.get(user=user, submission=submission1)
-    assert vote1.value == approx(variables1["value"])
+    assert vote1.value == variables1["value"]
 
     submission2 = submission_factory(conference=conference)
 
@@ -100,7 +101,7 @@ def test_user_can_votes_differents_submissons(
     assert resp2["data"]["sendVote"]["errors"] == []
 
     vote2 = Vote.objects.get(user=user, submission=submission2)
-    assert vote2.value == approx(variables2["value"])
+    assert vote2.value == variables2["value"]
 
     assert Vote.objects.all().__len__() == 2
 
@@ -119,7 +120,7 @@ def test_updating_vote_when_user_votes_the_same_submission(
     assert resp["data"]["sendVote"]["errors"] == []
 
     vote1 = Vote.objects.get(user=user, submission=submission)
-    assert vote1.value == approx(variables["value"])
+    assert vote1.value == variables["value"]
 
     resp, variables = _submit_vote(graphql_client, submission, user)
 
@@ -128,4 +129,4 @@ def test_updating_vote_when_user_votes_the_same_submission(
 
     vote1 = Vote.objects.get(user=user, submission=submission)
 
-    assert vote1.value == approx(variables["value"])
+    assert vote1.value == variables["value"]

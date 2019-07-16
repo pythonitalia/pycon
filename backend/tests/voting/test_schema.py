@@ -1,4 +1,4 @@
-from pytest import mark, approx
+from pytest import mark
 
 
 @mark.django_db
@@ -21,7 +21,7 @@ def test_get_logged_user_vote_on_a_submission(graphql_client, user, vote_factory
         'conference': vote.submission.conference.code,
     })
 
-    assert response['data']['conference']['submissions'][0]['myVote']['value'] == approx(vote.value)
+    assert response['data']['conference']['submissions'][0]['myVote']['value'] == vote.value
 
 
 @mark.django_db

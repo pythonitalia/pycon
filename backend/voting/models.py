@@ -7,6 +7,7 @@ from model_utils.models import TimeStampedModel
 
 class VoteRange(TimeStampedModel):
     name = models.CharField(max_length=100, unique=True)
+
     first = models.IntegerField(_("first"))
     last = models.IntegerField(_("last"))
 
@@ -25,7 +26,7 @@ class VoteRange(TimeStampedModel):
 
 
 class Vote(TimeStampedModel):
-    value = models.FloatField(_("vote"))
+    value = models.IntegerField(_("vote"))
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, verbose_name=_("user"), on_delete=models.PROTECT
