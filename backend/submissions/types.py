@@ -1,4 +1,6 @@
 import graphene
+from graphql import GraphQLError
+
 from graphene_django import DjangoObjectType
 from voting.models import Vote
 from voting.types import VoteType
@@ -15,16 +17,16 @@ class SubmissionTypeType(DjangoObjectType):
 
 class SubmissionType(DjangoObjectType):
     votes = graphene.NonNull(graphene.List(VoteType))
-    my_vote = graphene.Field(VoteType, user_id=graphene.ID())
+    my_vote = graphene.Field(VoteType)
 
-    def resolve_my_vote(self, info, user_id):
+    def resolve_my_vote(self, info):
+        if not info.context.user.is_authenticated:
+            raise GraphQLError("User not logged in")
+
         try:
-            return self.votes.get(user_id=user_id)
+            return self.votes.get(user_id=info.context.user.id)
         except Vote.DoesNotExist:
             return None
-
-    def resolve_votes(self, info):
-        return self.votes.all()
 
     class Meta:
         model = Submission
