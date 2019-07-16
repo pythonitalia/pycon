@@ -1,7 +1,6 @@
 import factory.fuzzy
 from factory.django import DjangoModelFactory
 from pytest_factoryboy import register
-
 from tests.submissions.factories import SubmissionFactory
 from tests.users.factories import UserFactory
 from voting.models import Vote

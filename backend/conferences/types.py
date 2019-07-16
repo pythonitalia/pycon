@@ -3,7 +3,6 @@ from datetime import datetime
 import graphene
 import pytz
 from graphene_django import DjangoObjectType
-
 from languages.types import LanguageType
 from schedule.types import ModelScheduleItemType
 from submissions.types import SubmissionType, SubmissionTypeType
@@ -65,24 +64,17 @@ class TicketFareType(DjangoObjectType):
 
 
 class ConferenceType(DjangoObjectType):
-    ticket_fares = graphene.NonNull(
-        graphene.List(graphene.NonNull(TicketFareType))
-    )
-    deadlines = graphene.NonNull(
-        graphene.List(graphene.NonNull(DeadlineModelType))
-    )
+    ticket_fares = graphene.NonNull(graphene.List(graphene.NonNull(TicketFareType)))
+    deadlines = graphene.NonNull(graphene.List(graphene.NonNull(DeadlineModelType)))
     audience_levels = graphene.NonNull(
         graphene.List(graphene.NonNull(AudienceLevelType))
     )
     topics = graphene.NonNull(graphene.List(graphene.NonNull(TopicType)))
     languages = graphene.NonNull(graphene.List(graphene.NonNull(LanguageType)))
     durations = graphene.NonNull(graphene.List(graphene.NonNull(DurationType)))
-    submissions = graphene.NonNull(
-        graphene.List(graphene.NonNull(SubmissionType))
-    )
+    submissions = graphene.NonNull(graphene.List(graphene.NonNull(SubmissionType)))
     schedule = graphene.NonNull(
-        graphene.List(graphene.NonNull(ModelScheduleItemType)),
-        date=graphene.Date(),
+        graphene.List(graphene.NonNull(ModelScheduleItemType)), date=graphene.Date()
     )
 
     timezone = graphene.String()
@@ -97,9 +89,7 @@ class ConferenceType(DjangoObjectType):
             start_date = datetime.combine(date, datetime.min.time())
             end_date = datetime.combine(date, datetime.max.time())
 
-            utc_start_date = pytz.utc.normalize(
-                start_date.astimezone(pytz.utc)
-            )
+            utc_start_date = pytz.utc.normalize(start_date.astimezone(pytz.utc))
             utc_end_date = pytz.utc.normalize(end_date.astimezone(pytz.utc))
 
             qs = qs.filter(start__gte=utc_start_date, end__lte=utc_end_date)

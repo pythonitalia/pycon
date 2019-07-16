@@ -1,5 +1,4 @@
 import graphene
-
 from conferences.schema import ConferenceQuery
 from payments.mutations import PaymentsMutations
 from submissions.mutations import SubmissionsMutations

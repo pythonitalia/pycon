@@ -23,10 +23,10 @@ class Conference(TimeFramedModel, TimeStampedModel):
         "submissions.SubmissionType", verbose_name=_("submission types")
     )
     vote_range = models.ForeignKey(
-        'voting.VoteRange',
-        verbose_name=_('vote range'),
+        "voting.VoteRange",
+        verbose_name=_("vote range"),
         null=True,
-        on_delete=models.PROTECT
+        on_delete=models.PROTECT,
     )
 
     @property

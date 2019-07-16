@@ -1,6 +1,6 @@
 import graphene
-
 from api.mutations import AuthOnlyDjangoFormMutation
+
 from .forms import SendVoteForm
 
 

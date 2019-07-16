@@ -1,6 +1,5 @@
 import graphene
 from graphene_django import DjangoObjectType
-
 from voting.models import Vote
 from voting.types import VoteType
 

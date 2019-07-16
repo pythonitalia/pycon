@@ -16,6 +16,7 @@ from pytest_factoryboy import register
 from submissions.models import SubmissionType
 from tests.voting.factories.vote_range import VoteRangeFactory
 
+
 @register
 class ConferenceFactory(DjangoModelFactory):
     name = factory.Faker("name")
