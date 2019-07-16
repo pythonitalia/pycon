@@ -1,0 +1,22 @@
+---
+name: Footer
+---
+
+import { Playground, Props } from "docz";
+import { Footer } from "./";
+import { ThemeProvider } from "fannypack";
+import { theme } from "../../config/theme";
+
+# Footer
+
+## Basic usage
+
+<Playground>
+    <ThemeProvider theme={theme}>
+        <Footer></Footer>
+    </ThemeProvider>
+</Playground>
+
+## Props
+
+<Props of={Footer} />
