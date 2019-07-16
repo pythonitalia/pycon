@@ -1,6 +1,6 @@
 import random
 
-from pytest import mark
+from pytest import mark, approx
 from tests.voting.factories.vote_range import VoteRangeFactory
 from voting.models import Vote
 
@@ -55,7 +55,7 @@ def test_submit_vote(graphql_client, user, conference_factory, submission_factor
     assert resp["data"]["sendVote"]["errors"] == []
 
     vote = Vote.objects.get(id=resp["data"]["sendVote"]["vote"]["id"])
-    assert vote.value == variables["value"]
+    assert vote.value == approx(variables["value"])
     assert vote.submission.id == variables["submission"]
     assert vote.user.id == variables["user"]
 
@@ -91,7 +91,7 @@ def test_user_can_votes_differents_submissons(
     assert resp1["data"]["sendVote"]["errors"] == []
 
     vote1 = Vote.objects.get(user=user, submission=submission1)
-    assert vote1.value == variables1["value"]
+    assert vote1.value == approx(variables1["value"])
 
     submission2 = submission_factory(conference=conference)
 
@@ -100,7 +100,7 @@ def test_user_can_votes_differents_submissons(
     assert resp2["data"]["sendVote"]["errors"] == []
 
     vote2 = Vote.objects.get(user=user, submission=submission2)
-    assert vote2.value == variables2["value"]
+    assert vote2.value == approx(variables2["value"])
 
     assert Vote.objects.all().__len__() == 2
 
@@ -114,15 +114,18 @@ def test_updating_vote_when_user_votes_the_same_submission(
 
     submission = submission_factory(conference=conference, id=1)
     resp, variables = _submit_vote(graphql_client, submission, user)
+
     assert resp["data"]["sendVote"]["vote"] is not None, resp
     assert resp["data"]["sendVote"]["errors"] == []
 
     vote1 = Vote.objects.get(user=user, submission=submission)
-    assert vote1.value == variables["value"]
+    assert vote1.value == approx(variables["value"])
 
     resp, variables = _submit_vote(graphql_client, submission, user)
+
     assert resp["data"]["sendVote"]["vote"] is not None, resp
     assert resp["data"]["sendVote"]["errors"] == []
 
     vote1 = Vote.objects.get(user=user, submission=submission)
-    assert vote1.value == variables["value"]
+
+    assert vote1.value == approx(variables["value"])
