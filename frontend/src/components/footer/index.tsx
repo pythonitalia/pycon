@@ -4,6 +4,7 @@ import React, { Component } from "react";
 import styled from "styled-components";
 import { theme } from "../../config/theme";
 import { Button } from "../button";
+import { CustomColumns } from "../columns";
 import { GOOGLE_MAPS_URL } from "./constants";
 
 const Wrapper = styled.div`
@@ -15,6 +16,25 @@ const Wrapper = styled.div`
   padding-bottom: 0.5rem;
   h3 {
     margin-top: 0;
+  }
+  .margin-mobile-0-r {
+    margin-bottom: 4rem;
+  }
+  @media only screen and (min-width: 578px) {
+    .margin-mobile-0-r,
+    .margin-mobile-0-l {
+      margin: 0;
+      margin-bottom: 4rem;
+    }
+  }
+  @media only screen and (min-width: 992px) {
+    .margin-mobile-0-r {
+      margin-right: 4rem;
+    }
+    .margin-mobile-0-l {
+      margin-left: 4rem;
+      margin-bottom: 0;
+    }
   }
 `;
 
@@ -37,14 +57,16 @@ export class Footer extends Component {
   render() {
     return (
       <Wrapper>
-        <Columns
-          paddingRight="major-10"
-          paddingLeft="major-10"
-          paddingTop="major-12"
-          paddingBottom="major-12"
+        <CustomColumns
+          responsivePadding={{
+            top: { desktop: 4, mobile: 3 },
+            bottom: { desktop: 4, mobile: 3 },
+            left: { desktop: 2, mobile: 3 },
+            right: { desktop: 2, mobile: 3 },
+          }}
         >
           <Column spread={6} spreadMobile={12}>
-            <Box marginRight={"major-3"}>
+            <Box className="margin-mobile-0-r">
               <Heading use="h3">keep up to date</Heading>
               <Text>
                 Stay in the loop, sign up for email updates about events, news
@@ -67,18 +89,21 @@ export class Footer extends Component {
             </Box>
           </Column>
           <Column spread={6} spreadMobile={12}>
-            <Box marginLeft={"major-3"}>
+            <Box className="margin-mobile-0-l">
               <Heading use="h3">donations</Heading>
-              <Text>
-                Stay in the loop, sign up for email updates about events, news
-                and offers.
-              </Text>
+              <div>
+                <Text>
+                  Stay in the loop, sign up for email updates about events, news
+                  and offers.
+                </Text>
+              </div>
+
               <Button marginTop="major-2" palette={"white"}>
                 Donate now
               </Button>
             </Box>
           </Column>
-        </Columns>
+        </CustomColumns>
 
         <Columns>
           <Column spread={12}>
@@ -95,11 +120,13 @@ export class Footer extends Component {
           </Column>
         </Columns>
 
-        <Columns
-          paddingRight="major-10"
-          paddingLeft="major-10"
-          paddingTop="major-12"
-          paddingBottom="major-12"
+        <CustomColumns
+          responsivePadding={{
+            top: { desktop: 4, mobile: 3 },
+            bottom: { desktop: 4, mobile: 3 },
+            left: { desktop: 2, mobile: 3 },
+            right: { desktop: 2, mobile: 3 },
+          }}
         >
           <Column spread={3}>
             <Box>
@@ -141,7 +168,7 @@ export class Footer extends Component {
               </LinksWrapper>
             </Box>
           </Column>
-        </Columns>
+        </CustomColumns>
       </Wrapper>
     );
   }

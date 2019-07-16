@@ -1,0 +1,22 @@
+---
+name: CustomColumn
+---
+
+import { Playground, Props } from "docz";
+import { CustomColumn } from "./";
+import { ThemeProvider } from "fannypack";
+import { theme } from "../../config/theme";
+
+# CustomColumn
+
+## Basic usage
+
+<Playground>
+    <ThemeProvider theme={theme}>
+        <CustomColumn>Default</CustomColumn>
+    </ThemeProvider>
+</Playground>
+
+## Props
+
+<Props of={CustomColumn} />
