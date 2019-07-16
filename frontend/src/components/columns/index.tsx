@@ -25,7 +25,6 @@ const renderResponsiveClasses = (
             ${property}-${key}: ${element.desktop}rem;
           }
         `;
-        console.log(assambled_style);
       }
     }
     return `
@@ -54,6 +53,5 @@ export const CustomColumns = styled(BaseCustomColumns)`
     return css`
       ${assembled_style}
     `;
-    return css``;
   }}
 `;
