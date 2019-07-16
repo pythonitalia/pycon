@@ -8,8 +8,11 @@ class PaymentError(Exception):
 
     It should be possibile to override the message
     """
+
     def __init__(self, message=None):
-        self.message = message or _("Unable to process your payment, please try again or contact your bank")
+        self.message = message or _(
+            "Unable to process your payment, please try again or contact your bank"
+        )
 
     def __str__(self):
         return self.message

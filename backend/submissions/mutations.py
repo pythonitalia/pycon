@@ -1,8 +1,5 @@
 import graphene
-
 from api.mutations import AuthOnlyDjangoModelFormMutation
-
-from .types import SubmissionType, SubmissionTypeType
 
 from .forms import SendSubmissionForm
 

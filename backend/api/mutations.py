@@ -1,6 +1,5 @@
-from graphql import GraphQLError
-
 from graphene_django.forms import mutation
+from graphql import GraphQLError
 
 
 class ContextAwareDjangoModelFormMutation(mutation.DjangoModelFormMutation):
@@ -11,13 +10,14 @@ class ContextAwareDjangoModelFormMutation(mutation.DjangoModelFormMutation):
 
     - :py:class:`api.forms.ContextAwareModelForm`
     """
+
     class Meta:
         abstract = True
 
     @classmethod
     def get_form_kwargs(cls, root, info, **input_):
         kwargs = super().get_form_kwargs(root, info, **input_)
-        kwargs['context'] = info.context
+        kwargs["context"] = info.context
         return kwargs
 
 
@@ -32,12 +32,13 @@ class AuthOnlyDjangoModelFormMutation(ContextAwareDjangoModelFormMutation):
 
     - :py:class:`api.mutations.ContextAwareDjangoModelFormMutation`
     """
+
     class Meta:
         abstract = True
 
     @classmethod
     def mutate_and_get_payload(cls, root, info, **input_):
         if not info.context.user.is_authenticated:
-            raise GraphQLError('User not logged in')
+            raise GraphQLError("User not logged in")
 
         return super().mutate_and_get_payload(root, info, **input_)

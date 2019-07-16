@@ -1,0 +1,3 @@
+[flake8]
+# Recommend matching the black line length (default 88)
+max-line-length = 88

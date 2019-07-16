@@ -1,11 +1,7 @@
 import stripe
-
-from pytest import mark
-
 from django.conf import settings
-
 from orders.models import Order
-
+from pytest import mark
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -16,7 +12,8 @@ def test_buy_conference_ticket(graphql_client, user, ticket_fare_factory):
 
     fare = ticket_fare_factory()
 
-    response = graphql_client.query("""
+    response = graphql_client.query(
+        """
     mutation ($conference: ID!, $items: [CartItem]!) {
         buyTicketWithStripe(input: {
             conference: $conference,
@@ -29,15 +26,15 @@ def test_buy_conference_ticket(graphql_client, user, ticket_fare_factory):
             }
         }
     }
-    """, variables={
-        'conference': fare.conference.code,
-        'items': [
-            {'id': fare.id, 'quantity': 1}
-        ]
-    })
+    """,
+        variables={
+            "conference": fare.conference.code,
+            "items": [{"id": fare.id, "quantity": 1}],
+        },
+    )
 
-    assert response['data']['buyTicketWithStripe']['__typename'] == 'StripeClientSecret'
-    assert response['data']['buyTicketWithStripe']['clientSecret']
+    assert response["data"]["buyTicketWithStripe"]["__typename"] == "StripeClientSecret"
+    assert response["data"]["buyTicketWithStripe"]["clientSecret"]
 
     order = Order.objects.first()
 

@@ -1,7 +1,5 @@
-from pytest import mark
-
 from django.contrib.admin.sites import AdminSite
-
+from pytest import mark
 from tickets.admin import TicketAdmin
 from tickets.models import Ticket
 

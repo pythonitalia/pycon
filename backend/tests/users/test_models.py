@@ -1,8 +1,7 @@
-from django.contrib.auth import authenticate, get_user_model
-
 import pytest
-from users.models import User
+from django.contrib.auth import authenticate, get_user_model
 from users.managers import UserManager
+from users.models import User
 
 
 def test_that_get_user_model_returns_correct_model():
@@ -16,11 +15,10 @@ def test_user_manager():
 
 @pytest.mark.django_db
 def test_create_user_and_authenticate():
-    user = User.objects.create_user('lennon@thebeatles.com', 'johnpassword')
+    user = User.objects.create_user("lennon@thebeatles.com", "johnpassword")
 
     authenticated_user = authenticate(
-        username='lennon@thebeatles.com',
-        password='johnpassword'
+        username="lennon@thebeatles.com", password="johnpassword"
     )
 
     assert user == authenticated_user
@@ -28,6 +26,6 @@ def test_create_user_and_authenticate():
 
 @pytest.mark.django_db
 def test_user_get_short_name():
-    user = User.objects.create_user('lennon@thebeatles.com', 'johnpassword')
+    user = User.objects.create_user("lennon@thebeatles.com", "johnpassword")
 
-    assert 'lennon@thebeatles.com' == user.get_short_name()
+    assert "lennon@thebeatles.com" == user.get_short_name()

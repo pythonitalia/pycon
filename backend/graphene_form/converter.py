@@ -1,9 +1,7 @@
 from django import forms
 from django.core.exceptions import ImproperlyConfigured
-
-from graphene import ID, Boolean, Float, Int, List, String, UUID, Date, DateTime, Time
+from graphene import ID, UUID, Boolean, Date, DateTime, Float, Int, List, String, Time
 from graphene_django.utils import import_single_dispatch
-
 
 singledispatch = import_single_dispatch()
 
