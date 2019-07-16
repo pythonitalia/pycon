@@ -3,10 +3,12 @@ import React from "react";
 import { theme } from "fannypack";
 import styled from "styled-components";
 import { Button } from "../button";
+import { CustomColumns } from "../columns";
 
 type HeroProps = {
   // TODO: use gatsby images
   backgroundImage: string;
+  title: string;
 };
 
 const Wrapper = styled.div`
@@ -46,40 +48,27 @@ const Wrapper = styled.div`
     margin: 0;
 
     color: white;
-    padding: 0 20px;
-  }
-
-  article {
-    padding: 0 40px;
-  }
-
-  footer {
-    text-align: right;
   }
 `;
 
-export const Hero = (props: HeroProps) => (
+const padding = {
+  left: { desktop: 2, mobile: 3 },
+  right: { desktop: 2, mobile: 3 },
+};
+
+export const Hero: React.SFC<HeroProps> = props => (
   <Wrapper>
     <div className="content">
       <header>
         <img src={props.backgroundImage} />
-        <h1>Title!!1</h1>
+        <CustomColumns as="h1" responsivePadding={padding}>
+          {props.title}
+        </CustomColumns>
       </header>
 
-      <article>
-        <h2>Subssssssssssssssss</h2>
-
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt
-          recusandae cumque suscipit, quam ullam sit id placeat sequi modi ipsum
-          inventore. Tempore dolorem vero fugiat eum adipisci cupiditate eos
-          ullam!
-        </p>
-
-        <footer>
-          <Button>LOL</Button>
-        </footer>
-      </article>
+      <CustomColumns as="article" responsivePadding={padding}>
+        <p>{props.children}</p>
+      </CustomColumns>
     </div>
   </Wrapper>
 );
