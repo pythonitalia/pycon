@@ -24,6 +24,7 @@ export const Wrapper = styled.div`
   @media only screen and (min-width: 992px) {
     .margin-mobile-0-r {
       margin-right: 4rem;
+      margin-bottom: 0;
     }
     .margin-mobile-0-l {
       margin-left: 4rem;
