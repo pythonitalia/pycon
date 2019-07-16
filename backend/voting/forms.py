@@ -1,10 +1,10 @@
-from api.forms import ContextAwareForm
+from api.forms import ContextAwareModelForm
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from voting.models import Vote
 
 
-class SendVoteForm(ContextAwareForm):
+class SendVoteForm(ContextAwareModelForm):
     def clean(self):
         cleaned_data = super().clean()
         submission = cleaned_data.get("submission")

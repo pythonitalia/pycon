@@ -42,3 +42,27 @@ class AuthOnlyDjangoModelFormMutation(ContextAwareDjangoModelFormMutation):
             raise GraphQLError("User not logged in")
 
         return super().mutate_and_get_payload(root, info, **input_)
+
+
+class ContextAwareDjangoMutation(mutation.DjangoFormMutation):
+    """Allows the Form to access the Request object by passing it
+    in the Form constructor.
+    See also:
+    - :py:class:`api.forms.ContextAwareModelForm`
+    """
+
+    class Meta:
+        abstract = True
+
+    @classmethod
+    def perform_mutate(cls, form, info):
+        # TODO: Why graphene ignores the form.save output?
+        # how are we supposed to return something to the client?
+        output = form.save()
+        return cls(**output, errors=[])
+
+    @classmethod
+    def get_form_kwargs(cls, root, info, **input_):
+        kwargs = super().get_form_kwargs(root, info, **input_)
+        kwargs["context"] = info.context
+        return kwargs

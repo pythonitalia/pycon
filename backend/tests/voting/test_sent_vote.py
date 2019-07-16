@@ -19,24 +19,22 @@ def _submit_vote(client, submission, user, **kwargs):
 
     return (
         client.query(
-            """
-        mutation($submission: ID!, $user: ID!, $value: Float!) {
-            sendVote(input: {
-                submission: $submission,
-                user: $user,
-                value: $value
-            }) {
-                vote {
-                    id
-                    value
+            """mutation($submission: ID!, $user: ID!, $value: Float!) {
+                sendVote(input: {
+                    submission: $submission,
+                    user: $user,
+                    value: $value
+                }) {
+                    vote {
+                        id
+                        value
+                    }
+                    errors {
+                        messages
+                        field
+                    }
                 }
-                errors {
-                    messages
-                    field
-                }
-            }
-        }
-        """,
+            }""",
             variables=variables,
         ),
         variables,
