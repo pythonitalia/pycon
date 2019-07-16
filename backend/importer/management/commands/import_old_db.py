@@ -3,6 +3,7 @@ import sqlite3
 from datetime import timedelta
 
 import pytz
+from django.core.management import CommandError
 from django.core.management.base import BaseCommand
 from django.db import transaction, IntegrityError
 
@@ -67,8 +68,17 @@ class Command(BaseCommand):
             action='store',
             help='List of comma separated entities to import, i.e. user,conference',
         )
+        parser.add_argument(
+            '--overwrite',
+            dest='overwrite',
+            action='store_true',
+            help='Overwrite entities if found (needs --entities parameter)',
+        )
 
-    def import_users(self):
+    def import_users(self, overwrite=False):
+        if overwrite:
+            self.stdout.write(self.style.ERROR(f'Users import does not support overwriting.'))
+
         from users.models import User
 
         self.stdout.write(f'Importing users...')
@@ -76,9 +86,7 @@ class Command(BaseCommand):
         old_users = list(self.c.execute('SELECT * FROM auth_user'))
         old_usernames = {u['username'] for u in old_users}
         new_usernames = {u.username for u in User.objects.all()}
-        skipping_users = new_usernames.intersection(old_usernames)
-        if skipping_users:
-            self.stdout.write(self.style.NOTICE(f'Skipping {len(skipping_users)} because they already exist'))
+        existent_users = new_usernames.intersection(old_usernames)
         result = User.objects.bulk_create([
             User(
                 username=user['username'],
@@ -91,35 +99,54 @@ class Command(BaseCommand):
             ) for user in old_users if user['username'] not in new_usernames
         ])
 
-        self.stdout.write(self.style.SUCCESS(f'{len(result)} users imported.'))
+        self.stdout.write(self.style.SUCCESS(
+            f'Users: {len(result)} created, {len(existent_users)} skipped.'
+        ))
 
-    def create_submission_types(self):
+    def create_submission_types(self, overwrite=False):
+        if overwrite:
+            self.stdout.write(f'Overwrite has no effect on submission type')
+        created_count = updated_count = 0
         for submission_type in TALK_TYPES.values():
-            SubmissionType.objects.get_or_create(name=submission_type)
+            _, created = SubmissionType.objects.get_or_create(name=submission_type)
+            if created:
+                created_count += 1
+            else:
+                updated_count += 1
 
-    def import_conferences(self):
+        self.stdout.write(self.style.SUCCESS(
+            f'Submission Types: {created_count} created, {updated_count} updated.'
+        ))
+
+    def import_conferences(self, overwrite=False):
         from conferences.models import Conference, Deadline
 
         self.stdout.write(f'Importing conferences...')
 
         languages = create_languages()
         audience_levels = create_audience_levels()
-        self.create_submission_types()
 
-        old_conf = list(self.c.execute('SELECT * FROM conference_conference'))
+        old_conf_list = list(self.c.execute('SELECT * FROM conference_conference'))
 
-        created = 0
-        for old_conf in old_conf:
+        actions = {'create': 0, 'update': 0, 'skip': 0, 'error': 0}
+        for old_conf in old_conf_list:
+            action = 'create'
             try:
                 with transaction.atomic():
-                    conf = Conference.objects.create(
+                    key_fields = dict(code=old_conf['code'])
+                    fields = dict(
                         name=old_conf['name'],
-                        code=old_conf['code'],
                         timezone=OLD_DEAFAULT_TZ,
                         # topics=None,  # TODO
                         start=string_to_tzdatetime(old_conf['conference_start']),
                         end=string_to_tzdatetime(old_conf['conference_end'], day_end=True),
                     )
+                    if overwrite:
+                        conf, created = Conference.objects.update_or_create(**key_fields, defaults=fields)
+                        action = 'create' if created else 'update'
+                    else:
+                        conf = Conference.objects.create(**key_fields, **fields)
+                        action = 'create'
 
                     conf.languages.set(languages)
                     conf.audience_levels.set(audience_levels)
@@ -142,15 +169,25 @@ class Command(BaseCommand):
                             end=string_to_tzdatetime(old_conf[f'{deadline}_end'], day_end=True),
                         )
             except IntegrityError as exc:
-                self.stdout.write(self.style.NOTICE(f"Cannot import conference {old_conf['name']} (maybe it's already there): {exc}"))
+                self.stdout.write(f"Cannot import conference {old_conf['name']} (maybe it's already there): {exc}")
+                action = 'skip'
                 continue
             except Exception as exc:
-                self.stdout.write(self.style.NOTICE(f'Something bad happened when importing conference {old_conf["name"]}: {exc}'))
+                self.stdout.write(self.style.NOTICE(
+                    f'Something bad happened when importing conference {old_conf_list["name"]}: {exc}'
+                ))
+                action = 'error'
                 continue
-            else:
-                created += 1
+            finally:
+                actions[action] += 1
 
-        self.stdout.write(self.style.SUCCESS(f'{created} conferences imported.'))
+        self.stdout.write(self.style.SUCCESS(
+            f'Conferences: '
+            f'{actions["create"]} created, '
+            f'{actions["update"]} updated, '
+            f'{actions["skip"]} skipped, '
+            f'{actions["error"]} errors.'
+        ))
 
     def handle(self, *args, **options):
         self.stdout.write('Starting...')
@@ -166,14 +203,21 @@ class Command(BaseCommand):
         self.c = conn.cursor()
 
         entities = SUPPORTED_ENTITIES
+        overwrite = False
         if options['entities']:
             entities = options['entities'].split(',')
+            overwrite = options['overwrite']
+        elif options['overwrite']:
+            raise CommandError('Cannot overwrite without --entities parameter')
+
+        if overwrite:
+            self.stdout.write(self.style.NOTICE('This command will overwrite entities in the destination DB!!!'))
 
         if 'user' in entities:
-            self.import_users()
+            self.import_users(overwrite=overwrite)
         if 'submission_type' in entities:
-            self.create_submission_types()
+            self.create_submission_types(overwrite=overwrite)
         if 'conference' in entities:
-            self.import_conferences()
+            self.import_conferences(overwrite=overwrite)
 
         self.stdout.write(self.style.SUCCESS('Done!'))
