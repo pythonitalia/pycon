@@ -15,11 +15,11 @@ const renderResponsiveClasses = (
   property: "padding" | "margin",
 ) => {
   if (prop) {
-    let assambled_style = ``;
+    let assambledStyle = ``;
     for (const [key, element] of Object.entries(prop)) {
       if (element) {
-        assambled_style = `
-          ${assambled_style}
+        assambledStyle = `
+          ${assambledStyle}
           ${property}-${key}: ${element.mobile}rem;
           @media only screen and (min-width: 1024px) {
             ${property}-${key}: ${element.desktop}rem;
@@ -28,7 +28,7 @@ const renderResponsiveClasses = (
       }
     }
     return `
-      ${assambled_style}
+      ${assambledStyle}
     `;
   }
 
@@ -38,20 +38,20 @@ const renderResponsiveClasses = (
 export const CustomColumns = styled(BaseCustomColumns)`
   ${props => {
     const { responsivePadding, responsiveMargin } = props;
-    let assembled_style = "";
+    let assembledStyle = "";
     if (responsivePadding) {
       const stylePadding = renderResponsiveClasses(
         responsivePadding,
         "padding",
       );
-      assembled_style = `${assembled_style} ${stylePadding}`;
+      assembledStyle = `${assembledStyle} ${stylePadding}`;
     }
     if (responsiveMargin) {
       const styleMargin = renderResponsiveClasses(responsiveMargin, "margin");
-      assembled_style = `${assembled_style} ${styleMargin}`;
+      assembledStyle = `${assembledStyle} ${styleMargin}`;
     }
     return css`
-      ${assembled_style}
+      ${assembledStyle}
     `;
   }}
 `;
