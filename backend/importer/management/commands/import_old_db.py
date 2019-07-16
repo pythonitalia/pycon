@@ -6,6 +6,7 @@ import pytz
 from django.core.management.base import BaseCommand
 from django.db import transaction, IntegrityError
 
+from conferences.models import AudienceLevel
 from languages.models import Language
 from pycon.settings.base import root
 
@@ -34,6 +35,14 @@ def create_languages():
     en, _ = Language.objects.get_or_create(code='en', defaults={'name': 'English'})
     it, _ = Language.objects.get_or_create(code='it', defaults={'name': 'Italiano'})
     return [en, it]
+
+
+def create_audience_levels():
+    beginner, _ = AudienceLevel.objects.get_or_create(name='Beginner')
+    intermediate, _ = AudienceLevel.objects.get_or_create(name='Intermediate')
+    advanced, _ = AudienceLevel.objects.get_or_create(name='Advanced')
+
+    return [beginner, intermediate, advanced]
 
 
 class Command(BaseCommand):
@@ -84,6 +93,7 @@ class Command(BaseCommand):
         self.stdout.write(f'Importing conferences...')
 
         languages = create_languages()
+        audience_levels = create_audience_levels()
 
         old_conf = list(self.c.execute('SELECT * FROM conference_conference'))
 
@@ -96,13 +106,13 @@ class Command(BaseCommand):
                         code=old_conf['code'],
                         timezone=OLD_DEAFAULT_TZ,
                         # topics=None,  # TODO
-                        # audience_levels=None,  # TODO
                         # submission_types=None,  # TODO
                         start=string_to_tzdatetime(old_conf['conference_start']),
                         end=string_to_tzdatetime(old_conf['conference_end'], day_end=True),
                     )
 
                     conf.languages.set(languages)
+                    conf.audience_levels.set(audience_levels)
 
                     for deadline in ['cfp', 'voting', 'refund']:
                         Deadline.objects.create(
