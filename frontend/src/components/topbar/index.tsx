@@ -72,6 +72,10 @@ const MenuContainer = styled.div<ExpandableProps>`
 const Wrapper = styled.div<ExpandableProps>`
   height: 80px;
   padding: 0 16px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
   ${props =>
     props.open &&
     css`
