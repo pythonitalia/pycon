@@ -11,5 +11,13 @@ const Title = styled.h1`
 export default () => (
   <HomeLayout>
     <Title>Yay!!1</Title>
+    <Title>Yay!!1</Title>
+    <Title>Yay!!1</Title>
+    <Title>Yay!!1</Title>
+    <Title>Yay!!1</Title>
+    <Title>Yay!!1</Title>
+    <Title>Yay!!1</Title>
+    <Title>Yay!!1</Title>
+    <Title>Yay!!1</Title>
   </HomeLayout>
 );
