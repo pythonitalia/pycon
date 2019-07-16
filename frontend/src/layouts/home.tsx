@@ -1,10 +1,10 @@
 import React from "react";
 
 import { ThemeProvider } from "fannypack";
+import styled from "styled-components";
+import { Footer } from "../components/footer";
 import { Topbar } from "../components/topbar";
 import { theme } from "../config/theme";
-import { Footer } from "../components/footer";
-import styled from "styled-components";
 
 const Wrapper = styled.div`
   padding-top: 80px;

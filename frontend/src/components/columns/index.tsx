@@ -1,5 +1,6 @@
-import { Columns } from "fannypack";
 import React from "react";
+
+import { Columns } from "fannypack";
 import styled, { css } from "styled-components";
 import { CustomColumnSideType, CustomColumnsType } from "./types";
 
@@ -15,11 +16,11 @@ const renderResponsiveClasses = (
   property: "padding" | "margin",
 ) => {
   if (prop) {
-    let assambledStyle = ``;
+    let assembledStyle = ``;
     for (const [key, element] of Object.entries(prop)) {
       if (element) {
-        assambledStyle = `
-          ${assambledStyle}
+        assembledStyle = `
+          ${assembledStyle}
           ${property}-${key}: ${element.mobile}rem;
           @media only screen and (min-width: 1024px) {
             ${property}-${key}: ${element.desktop}rem;
@@ -28,7 +29,7 @@ const renderResponsiveClasses = (
       }
     }
     return `
-      ${assambledStyle}
+      ${assembledStyle}
     `;
   }
 

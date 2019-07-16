@@ -1,12 +1,13 @@
+import React, { Component } from "react";
+
 import { Box, Column, Columns, Heading, Input, Text } from "fannypack";
 import { Link } from "gatsby";
-import React, { Component } from "react";
 import { Button } from "../button";
 import { CustomColumns } from "../columns";
 import { GOOGLE_MAPS_URL } from "./constants";
+import { LinksWrapper } from "./links-wrapper";
 import { MapWrapper } from "./map-wrapper";
 import { Wrapper } from "./wrapper";
-import { LinksWrapper } from "./links-wrapper";
 
 export class Footer extends Component {
   render() {
