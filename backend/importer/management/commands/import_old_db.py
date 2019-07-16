@@ -45,6 +45,7 @@ class Command(BaseCommand):
                 is_active=user['is_active'],
                 date_joined=user['date_joined'],
                 is_staff=user['is_staff'],
+                is_superuser=user['is_superuser'],
             ) for user in old_users if user['username'] not in new_usernames
         ])
 
