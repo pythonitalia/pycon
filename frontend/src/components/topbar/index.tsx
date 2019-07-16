@@ -76,6 +76,8 @@ const Wrapper = styled.div<ExpandableProps>`
   left: 0;
   top: 0;
   width: 100%;
+  z-index: 2;
+  background-color: ${theme.palette.white};
   ${props =>
     props.open &&
     css`
