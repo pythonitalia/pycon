@@ -6,6 +6,7 @@ import pytz
 from django.core.management.base import BaseCommand
 from django.db import transaction, IntegrityError
 
+from languages.models import Language
 from pycon.settings.base import root
 
 
@@ -27,6 +28,12 @@ def string_to_tzdatetime(s, day_end=False):
     if day_end:
         unaware_date += timedelta(days=1, seconds=-1)
     return pytz.utc.localize(unaware_date)
+
+
+def create_languages():
+    en, _ = Language.objects.get_or_create(code='en', defaults={'name': 'English'})
+    it, _ = Language.objects.get_or_create(code='it', defaults={'name': 'Italiano'})
+    return [en, it]
 
 
 class Command(BaseCommand):
@@ -76,6 +83,8 @@ class Command(BaseCommand):
 
         self.stdout.write(f'Importing conferences...')
 
+        languages = create_languages()
+
         old_conf = list(self.c.execute('SELECT * FROM conference_conference'))
 
         created = 0
@@ -87,12 +96,13 @@ class Command(BaseCommand):
                         code=old_conf['code'],
                         timezone=OLD_DEAFAULT_TZ,
                         # topics=None,  # TODO
-                        # languages=None,  # TODO
                         # audience_levels=None,  # TODO
                         # submission_types=None,  # TODO
                         start=string_to_tzdatetime(old_conf['conference_start']),
                         end=string_to_tzdatetime(old_conf['conference_end'], day_end=True),
                     )
+
+                    conf.languages.set(languages)
 
                     for deadline in ['cfp', 'voting', 'refund']:
                         Deadline.objects.create(
