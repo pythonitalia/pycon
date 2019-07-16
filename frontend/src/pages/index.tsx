@@ -1,23 +1,15 @@
 import * as React from "react";
 
 import styled from "styled-components";
+import { Hero } from "../components/hero";
 import { HomeLayout } from "../layouts/home";
-
-
-const Title = styled.h1`
-  color: blue;
-`;
 
 export default () => (
   <HomeLayout>
-    <Title>Yay!!1</Title>
-    <Title>Yay!!1</Title>
-    <Title>Yay!!1</Title>
-    <Title>Yay!!1</Title>
-    <Title>Yay!!1</Title>
-    <Title>Yay!!1</Title>
-    <Title>Yay!!1</Title>
-    <Title>Yay!!1</Title>
-    <Title>Yay!!1</Title>
+    <Hero
+      backgroundImage={
+        "https://live.staticflickr.com/65535/33985680028_8eb0b570f9_h.jpg"
+      }
+    />
   </HomeLayout>
 );

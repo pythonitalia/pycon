@@ -1,0 +1,25 @@
+---
+name: Hero
+---
+
+import { Playground, Props } from "docz";
+import { Hero } from "./";
+import { ThemeProvider } from "fannypack";
+import { theme } from "../../config/theme";
+
+# Hero
+
+## Basic usage
+
+<Playground>
+    <ThemeProvider theme={theme}>
+        <div>
+            <Hero backgroundImage={"https://live.staticflickr.com/65535/33985680028_8eb0b570f9_h.jpg"}>Default</Hero>
+        </div>
+    </ThemeProvider>
+
+</Playground>
+
+## Props
+
+<Props of={Hero} />
