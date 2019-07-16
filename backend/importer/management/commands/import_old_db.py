@@ -7,13 +7,13 @@ from django.core.management import CommandError
 from django.core.management.base import BaseCommand
 from django.db import transaction, IntegrityError
 
-from conferences.models import AudienceLevel
+from conferences.models import AudienceLevel, Topic
 from languages.models import Language
 from pycon.settings.base import root
 from submissions.models import SubmissionType
 
 DEFAULT_DB_PATH = root('p3.db')
-SUPPORTED_ENTITIES = ['user', 'conference']
+SUPPORTED_ENTITIES = ['user', 'conference', 'submission_type', 'topic']
 OLD_DEAFAULT_TZ = pytz.timezone('Europe/Rome')
 TALK_TYPES = {
     's': 'Talk',
@@ -118,6 +118,21 @@ class Command(BaseCommand):
             f'Submission Types: {created_count} created, {updated_count} updated.'
         ))
 
+    def create_topics(self, overwrite=False):
+        if overwrite:
+            self.stdout.write(f'Overwrite has no effect on topics')
+        created_count = updated_count = 0
+        for topic in list(self.c.execute('SELECT title FROM conference_track')):
+            _, created = Topic.objects.get_or_create(name=topic['title'])
+            if created:
+                created_count += 1
+            else:
+                updated_count += 1
+
+        self.stdout.write(self.style.SUCCESS(
+            f'Topics: {created_count} created, {updated_count} updated.'
+        ))
+
     def import_conferences(self, overwrite=False):
         from conferences.models import Conference, Deadline
 
@@ -137,7 +152,6 @@ class Command(BaseCommand):
                     fields = dict(
                         name=old_conf['name'],
                         timezone=OLD_DEAFAULT_TZ,
-                        # topics=None,  # TODO
                         start=string_to_tzdatetime(old_conf['conference_start']),
                         end=string_to_tzdatetime(old_conf['conference_end'], day_end=True),
                     )
@@ -160,6 +174,16 @@ class Command(BaseCommand):
                         ])
                     )
 
+                    topic_list = list(self.c.execute(
+                        'select distinct t.title '
+                        'from conference_track t, conference_schedule s '
+                        'where s.id = t.schedule_id and s.conference=?',
+                        [conf.code]
+                    ))
+                    conf.topics.set(
+                        Topic.objects.filter(name__in=[t['title'] for t in topic_list])
+                    )
+
                     for deadline in ['cfp', 'voting', 'refund']:
                         Deadline.objects.create(
                             conference=conf,
@@ -169,7 +193,6 @@ class Command(BaseCommand):
                             end=string_to_tzdatetime(old_conf[f'{deadline}_end'], day_end=True),
                         )
             except IntegrityError as exc:
-                self.stdout.write(f"Cannot import conference {old_conf['name']} (maybe it's already there): {exc}")
                 action = 'skip'
                 continue
             except Exception as exc:
@@ -217,6 +240,8 @@ class Command(BaseCommand):
             self.import_users(overwrite=overwrite)
         if 'submission_type' in entities:
             self.create_submission_types(overwrite=overwrite)
+        if 'topic' in entities:
+            self.create_topics(overwrite=overwrite)
         if 'conference' in entities:
             self.import_conferences(overwrite=overwrite)
 
