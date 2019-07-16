@@ -9,11 +9,18 @@ from django.db import transaction, IntegrityError
 from conferences.models import AudienceLevel
 from languages.models import Language
 from pycon.settings.base import root
-
+from submissions.models import SubmissionType
 
 DEFAULT_DB_PATH = root('p3.db')
 SUPPORTED_ENTITIES = ['user', 'conference']
 OLD_DEAFAULT_TZ = pytz.timezone('Europe/Rome')
+TALK_TYPES = {
+    's': 'Talk',
+    'i': 'Interactive',
+    't': 'Training',
+    'p': 'Poster session',
+    'h': 'Help desk',
+}
 
 def dict_factory(cursor, row):
     d = {}
@@ -41,7 +48,6 @@ def create_audience_levels():
     beginner, _ = AudienceLevel.objects.get_or_create(name='Beginner')
     intermediate, _ = AudienceLevel.objects.get_or_create(name='Intermediate')
     advanced, _ = AudienceLevel.objects.get_or_create(name='Advanced')
-
     return [beginner, intermediate, advanced]
 
 
@@ -87,6 +93,10 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.SUCCESS(f'{len(result)} users imported.'))
 
+    def create_submission_types(self):
+        for submission_type in TALK_TYPES.values():
+            SubmissionType.objects.get_or_create(name=submission_type)
+
     def import_conferences(self):
         from conferences.models import Conference, Deadline
 
@@ -94,6 +104,7 @@ class Command(BaseCommand):
 
         languages = create_languages()
         audience_levels = create_audience_levels()
+        self.create_submission_types()
 
         old_conf = list(self.c.execute('SELECT * FROM conference_conference'))
 
@@ -106,13 +117,21 @@ class Command(BaseCommand):
                         code=old_conf['code'],
                         timezone=OLD_DEAFAULT_TZ,
                         # topics=None,  # TODO
-                        # submission_types=None,  # TODO
                         start=string_to_tzdatetime(old_conf['conference_start']),
                         end=string_to_tzdatetime(old_conf['conference_end'], day_end=True),
                     )
 
                     conf.languages.set(languages)
                     conf.audience_levels.set(audience_levels)
+
+                    submission_types = list(self.c.execute(
+                        'select distinct type from conference_talk where conference=?', [conf.code]
+                    ))
+                    conf.submission_types.set(
+                        SubmissionType.objects.filter(name__in=[
+                            TALK_TYPES[st['type']] for st in submission_types
+                        ])
+                    )
 
                     for deadline in ['cfp', 'voting', 'refund']:
                         Deadline.objects.create(
@@ -152,6 +171,8 @@ class Command(BaseCommand):
 
         if 'user' in entities:
             self.import_users()
+        if 'submission_type' in entities:
+            self.create_submission_types()
         if 'conference' in entities:
             self.import_conferences()
 
