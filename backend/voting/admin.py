@@ -4,7 +4,7 @@ from voting.models import Vote, VoteRange
 
 @admin.register(VoteRange)
 class VoteRangeAdmin(admin.ModelAdmin):
-    list_display = ("name", "first", "last", "step")
+    list_display = ("name", "first", "last")
 
 
 @admin.register(Vote)

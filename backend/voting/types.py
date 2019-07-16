@@ -5,7 +5,7 @@ from voting.models import Vote, VoteRange
 class VoteRangeType(DjangoObjectType):
     class Meta:
         model = VoteRange
-        only_fields = ("name", "first", "last", "step")
+        only_fields = ("name", "first", "last")
 
 
 class VoteType(DjangoObjectType):

@@ -42,5 +42,4 @@ class SubmissionType(DjangoObjectType):
             "topic",
             "type",
             "duration",
-            "votes",
         )
