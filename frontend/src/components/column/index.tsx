@@ -17,8 +17,6 @@ const renderResponsiveClasses = (
   if (prop) {
     let assambled_style = "";
     for (const [key, element] of Object.entries(prop)) {
-      // console.log(key, element);
-      console.log(`${property}-${key}`);
       if (element) {
         assambled_style = `${assambled_style}
         ${property}-${key}: ${space(element.mobile, "major")}rem;
@@ -51,6 +49,5 @@ export const CustomColumn = styled(BaseCustomColumn)`
     return css`
       ${assembled_style}
     `;
-    return css``;
   }}
 `;

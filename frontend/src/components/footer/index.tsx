@@ -1,57 +1,12 @@
 import { Box, Column, Columns, Heading, Input, Text } from "fannypack";
 import { Link } from "gatsby";
 import React, { Component } from "react";
-import styled from "styled-components";
-import { theme } from "../../config/theme";
 import { Button } from "../button";
 import { CustomColumns } from "../columns";
 import { GOOGLE_MAPS_URL } from "./constants";
-
-const Wrapper = styled.div`
-  margin-top: 3rem;
-  background-color: ${theme.palette.primary};
-  color: ${theme.palette.white};
-  position: relative;
-  display: block;
-  padding-bottom: 0.5rem;
-  h3 {
-    margin-top: 0;
-  }
-  .margin-mobile-0-r {
-    margin-bottom: 4rem;
-  }
-  @media only screen and (min-width: 578px) {
-    .margin-mobile-0-r,
-    .margin-mobile-0-l {
-      margin: 0;
-      margin-bottom: 4rem;
-    }
-  }
-  @media only screen and (min-width: 992px) {
-    .margin-mobile-0-r {
-      margin-right: 4rem;
-    }
-    .margin-mobile-0-l {
-      margin-left: 4rem;
-      margin-bottom: 0;
-    }
-  }
-`;
-
-const LinksWrapper = styled.div`
-  a {
-    display: block;
-    color: ${theme.palette.white};
-    margin-bottom: 0.5rem;
-  }
-`;
-
-const MapWrapper = styled.div`
-  position: relative;
-  img {
-    width: 100%;
-  }
-`;
+import { MapWrapper } from "./map-wrapper";
+import { Wrapper } from "./wrapper";
+import { LinksWrapper } from "./links-wrapper";
 
 export class Footer extends Component {
   render() {

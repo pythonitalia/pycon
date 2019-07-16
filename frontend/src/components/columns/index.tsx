@@ -1,6 +1,6 @@
-import { Columns, space } from "fannypack";
+import { Columns } from "fannypack";
 import React from "react";
-import styled, { css, FlattenInterpolation } from "styled-components";
+import styled, { css } from "styled-components";
 import { CustomColumnSideType, CustomColumnsType } from "./types";
 
 export const BaseCustomColumns: React.SFC<CustomColumnsType> = Columns;
