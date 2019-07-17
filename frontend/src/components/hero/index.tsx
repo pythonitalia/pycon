@@ -46,6 +46,8 @@ const Wrapper = styled.div`
     bottom: 0;
     margin: 0;
     color: white;
+    font-size: 35px;
+    line-height: 25px;
     @media (min-width: 1024px) {
       font-size: 42px;
       line-height: 32px;

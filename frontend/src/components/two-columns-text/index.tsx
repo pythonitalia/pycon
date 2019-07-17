@@ -2,6 +2,7 @@ import React from "react";
 
 import { Heading, Text } from "fannypack";
 import styled from "styled-components";
+import { STANDARD_CUSTOM_COLUMNS_PADDING } from "../../config/spacing";
 import { CustomColumn } from "../column";
 import { CustomColumns } from "../columns";
 
@@ -75,10 +76,13 @@ export const TwoColumnsText = () => {
         <CustomColumns
           paddingTop={{ desktop: 4, tablet: 4, mobile: 3 }}
           paddingBottom={{ desktop: 4, tablet: 4, mobile: 3 }}
-          paddingLeft={{ desktop: 4, tablet: 4, mobile: 3 }}
-          paddingRight={{ desktop: 4, tablet: 4, mobile: 3 }}
+          paddingLeft={STANDARD_CUSTOM_COLUMNS_PADDING}
+          paddingRight={STANDARD_CUSTOM_COLUMNS_PADDING}
         >
-          <CustomColumn paddingRight={{ desktop: 12, tablet: 12, mobile: 3 }}>
+          <CustomColumn
+            spread={4}
+            paddingRight={{ desktop: 4, tablet: 2, mobile: 0 }}
+          >
             <Heading use="h2">Why Pycon?</Heading>
             <Text>
               Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sequi
@@ -88,8 +92,9 @@ export const TwoColumnsText = () => {
             </Text>
           </CustomColumn>
           <CustomColumn
+            spread={4}
             marginTop={{ desktop: 0, tablet: 0, mobile: 3 }}
-            paddingRight={{ desktop: 12, tablet: 12, mobile: 3 }}
+            paddingRight={{ desktop: 4, tablet: 2, mobile: 0 }}
           >
             <Heading use="h2">Best conf ever!</Heading>
             <Text>
