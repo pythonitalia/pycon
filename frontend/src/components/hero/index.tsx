@@ -1,19 +1,18 @@
 import React from "react";
 
 import { theme } from "fannypack";
+import Img, { GatsbyImageProps } from "gatsby-image";
 import styled from "styled-components";
-import { Button } from "../button";
 import { CustomColumns } from "../columns";
 
 type HeroProps = {
-  // TODO: use gatsby images
-  backgroundImage: string;
+  backgroundImage: GatsbyImageProps;
   title: string;
 };
 
 const Wrapper = styled.div`
   position: relative;
-  padding: 20px 0;
+  padding: 40px 0;
   color: ${theme("palette.white")};
 
   &::before {
@@ -49,33 +48,31 @@ const Wrapper = styled.div`
 
     color: white;
   }
+
+  p {
+    margin-top: 0;
+  }
 `;
 
-const padding = {
-  left: { desktop: 2, mobile: 3 },
-  right: { desktop: 2, mobile: 3 },
-};
+const padding = { desktop: 2, mobile: 3 };
 
 export const Hero: React.SFC<HeroProps> = props => (
   <Wrapper>
     <div className="content">
       <header>
-        <img src={props.backgroundImage} />
-        <CustomColumns
-          as="h1"
-          paddingLeft={padding.left}
-          paddingRight={padding.right}
-        >
+        <Img {...props.backgroundImage} />
+        <CustomColumns as="h1" paddingLeft={padding} paddingRight={padding}>
           {props.title}
         </CustomColumns>
       </header>
 
       <CustomColumns
         as="article"
-        paddingLeft={padding.left}
-        paddingRight={padding.right}
+        paddingLeft={padding}
+        paddingRight={padding}
+        paddingTop={padding}
       >
-        <p>{props.children}</p>
+        {props.children}
       </CustomColumns>
     </div>
   </Wrapper>
