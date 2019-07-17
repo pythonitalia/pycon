@@ -27,7 +27,6 @@ class ConferenceAdmin(admin.ModelAdmin):
                     "topics",
                     "audience_levels",
                     "languages",
-                    "vote_range",
                 )
             },
         ),

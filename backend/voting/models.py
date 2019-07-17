@@ -3,30 +3,18 @@ from django.core import exceptions
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from model_utils.models import TimeStampedModel
-
-
-class VoteRange(TimeStampedModel):
-    name = models.CharField(max_length=100, unique=True)
-
-    first = models.IntegerField(_("first"))
-    last = models.IntegerField(_("last"))
-
-    def clean(self):
-        super().clean()
-
-        if self.first > self.last:
-            raise exceptions.ValidationError(
-                _("First vote cannot be greater then the last")
-            )
-
-    def __str__(self):
-        return (
-            f"{self.name} goes from {self.first} to {self.last}"
-        )
+from model_utils import Choices
 
 
 class Vote(TimeStampedModel):
-    value = models.IntegerField(_("vote"))
+    VALUES = Choices(
+        (0, 'not_interested', _('Not Interested')),
+        (1, 'maybe', _('Maybe')),
+        (2, 'want_to_see', _('Want to See')),
+        (3, 'must_see', _('Must See')),
+    )
+
+    value = models.IntegerField(_("vote"), choices=VALUES)
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, verbose_name=_("user"), on_delete=models.PROTECT
@@ -38,21 +26,6 @@ class Vote(TimeStampedModel):
         verbose_name=_("submission"),
         related_name="votes",
     )
-
-    def clean(self):
-        super().clean()
-        if (
-            not self.submission.conference.vote_range.first
-            <= self.value
-            <= self.submission.conference.vote_range.last
-        ):
-            raise exceptions.ValidationError(
-                _(
-                    f"Vote must be a value between "
-                    f"{self.submission.conference.vote_range.first} and "
-                    f"{self.submission.conference.vote_range.last}"
-                )
-            )
 
     def __str__(self):
         return f"{self.user} voted {self.value} for Submission {self.submission}"

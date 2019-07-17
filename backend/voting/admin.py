@@ -1,10 +1,5 @@
 from django.contrib import admin
-from voting.models import Vote, VoteRange
-
-
-@admin.register(VoteRange)
-class VoteRangeAdmin(admin.ModelAdmin):
-    list_display = ("name", "first", "last")
+from voting.models import Vote
 
 
 @admin.register(Vote)

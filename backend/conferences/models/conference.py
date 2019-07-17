@@ -22,12 +22,6 @@ class Conference(TimeFramedModel, TimeStampedModel):
     submission_types = models.ManyToManyField(
         "submissions.SubmissionType", verbose_name=_("submission types")
     )
-    vote_range = models.ForeignKey(
-        "voting.VoteRange",
-        verbose_name=_("vote range"),
-        null=True,
-        on_delete=models.PROTECT,
-    )
 
     @property
     def is_cfp_open(self):

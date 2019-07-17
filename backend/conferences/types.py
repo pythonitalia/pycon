@@ -125,7 +125,6 @@ class ConferenceType(DjangoObjectType):
             "code",
             "start",
             "end",
-            "vote_range",
             "deadlines",
             "audience_levels",
             "topics",

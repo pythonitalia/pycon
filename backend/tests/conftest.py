@@ -12,7 +12,6 @@ from .submissions.factories import *  # noqa
 from .tickets.factories import *  # noqa
 from .users.factories import *  # noqa
 from .voting.factories.vote import *  # noqa
-from .voting.factories.vote_range import *  # noqa
 
 
 @pytest.fixture()
