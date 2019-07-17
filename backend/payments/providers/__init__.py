@@ -5,8 +5,13 @@ from .stripe import Stripe
 
 PROVIDER_STRIPE = "stripe"
 PROVIDER_BANK = "bank"
+PROVIDER_PAYPAL = "paypal"
 
-PROVIDERS = Choices((PROVIDER_STRIPE, _("Stripe")), (PROVIDER_BANK, _("Bank Transfer")))
+PROVIDERS = Choices(
+    (PROVIDER_STRIPE, _("Stripe")),
+    (PROVIDER_BANK, _("Bank Transfer")),
+    (PROVIDER_PAYPAL, _("PayPal")),
+)
 
 PROVIDER_TO_IMPL = {PROVIDER_STRIPE: Stripe}
 

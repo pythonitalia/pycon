@@ -1,16 +1,21 @@
 import datetime
 import sqlite3
 from datetime import timedelta
+from decimal import Decimal
 
 import pytz
+from django.contrib.contenttypes.models import ContentType
 from django.core.management import CommandError
 from django.core.management.base import BaseCommand
 from django.db import transaction, IntegrityError
 
-from conferences.models import AudienceLevel, Topic, Duration, Conference
+from conferences.models import AudienceLevel, Topic, Duration, Conference, TicketFare
 from languages.models import Language
+from orders.enums import PaymentState
+from orders.models import Order, OrderItem
 from pycon.settings.base import root
 from submissions.models import SubmissionType, Submission
+from tickets.models import Ticket
 from users.models import User
 
 DEFAULT_DB_PATH = root('p3.db')
@@ -154,31 +159,31 @@ class Command(BaseCommand):
     def create_submission_types(self, overwrite=False):
         if overwrite:
             self.stdout.write(f'Overwrite has no effect on submission type')
-        created_count = updated_count = 0
+        created_count = skipped_count = 0
         for submission_type in TALK_TYPES.values():
             _, created = SubmissionType.objects.get_or_create(name=submission_type)
             if created:
                 created_count += 1
             else:
-                updated_count += 1
+                skipped_count += 1
 
         self.stdout.write(self.style.SUCCESS(
-            f'Submission Types: {created_count} created, {updated_count} updated.'
+            f'Submission Types: {created_count} created, {skipped_count} skipped.'
         ))
 
     def create_topics(self, overwrite=False):
         if overwrite:
             self.stdout.write(f'Overwrite has no effect on topics')
-        created_count = updated_count = 0
+        created_count = skipped_count = 0
         for topic in list(self.c.execute('SELECT title FROM conference_track')):
             _, created = Topic.objects.get_or_create(name=topic['title'])
             if created:
                 created_count += 1
             else:
-                updated_count += 1
+                skipped_count += 1
 
         self.stdout.write(self.style.SUCCESS(
-            f'Topics: {created_count} created, {updated_count} updated.'
+            f'Topics: {created_count} created, {skipped_count} skipped.'
         ))
 
     def import_conferences(self, overwrite=False):
@@ -361,6 +366,123 @@ class Command(BaseCommand):
             f'{actions["error"]} errors.'
         ))
 
+    def import_tickets(self, overwrite):
+        if overwrite:
+            self.stdout.write(f'Overwrite is the default for tickets')
+
+        self.stdout.write(f'Importing tickets...')
+
+        conferences = {
+            conf.code: conf.id
+            for conf in Conference.objects.all()
+        }
+        users_by_email = {
+            user.email: user.id
+            for user in User.objects.all()
+        }
+
+        ticket_list = list(self.c.execute(
+            """
+            SELECT
+                ticket2.assigned_to as ticket_user,
+                user.email as order_user,
+                fare.conference, fare.code as fare_code, fare.description as fare_description, fare.name as fare_name,
+                fare.price,
+                ord.method as payment_method, ord.payment_url, ord._complete as payment_complete,
+                ord.created as order_created,
+                orderitem.description as orderitem_description, orderitem.price as orderitem_price
+            from conference_ticket ticket
+            join p3_ticketconference ticket2 on ticket2.ticket_id = ticket.id
+            left outer join auth_user user on user.id = ticket.user_id
+            left outer join conference_fare fare on fare.id = ticket.fare_id
+            left outer join assopy_orderitem orderitem on orderitem.ticket_id = ticket.id
+            left outer join assopy_order ord on orderitem.order_id = ord.id
+            """
+        ))
+
+        actions = {'create': 0, 'update': 0, 'skip': 0, 'error': 0}
+        for orig_ticket in ticket_list:
+            action = 'create'
+            try:
+                with transaction.atomic():
+
+                    order_user = users_by_email[orig_ticket['order_user']]
+                    ticket_user = users_by_email.get(orig_ticket['ticket_user'], order_user)
+
+                    ticket_fare, _ = TicketFare.objects.update_or_create(
+                        conference_id=conferences[orig_ticket['conference']],
+                        code=orig_ticket['fare_code'],
+                        defaults=dict(
+                            name=orig_ticket['fare_name'],
+                            description=orig_ticket['fare_description'],
+                            price=Decimal(orig_ticket['price']),
+                        )
+                    )
+
+                    order, _ = Order.objects.update_or_create(
+                        created=string_to_tzdatetime(orig_ticket['order_created']),
+                        user_id=order_user,
+                        defaults=dict(
+                            provider=orig_ticket['payment_method'],
+                            transaction_id=orig_ticket['payment_url'],
+                            state=PaymentState.COMPLETE if orig_ticket['payment_complete'] == 1 else PaymentState.FAILED,
+                            amount=1,
+                        )
+                    )
+
+                    orderitem, _ = OrderItem.objects.update_or_create(
+                        order=order,
+                        item_type=ContentType.objects.get_for_model(OrderItem),
+                        item_object_id=ticket_fare.id,
+                        description=orig_ticket['orderitem_description'],
+                        unit_price=Decimal(orig_ticket['orderitem_price']),
+                        defaults=dict(
+                            created=order.created,
+                            quantity=1,
+                        )
+                    )
+
+                    ticket, created = Ticket.objects.update_or_create(
+                        user_id=ticket_user,
+                        ticket_fare=ticket_fare,
+                        order=order,
+                    )
+                    if not created:
+                        action = 'update'
+                    print(f'{action}d ticket {ticket.id}')
+
+            except IntegrityError as exc:
+                action = 'skip'
+                continue
+            except Exception as exc:
+                self.stdout.write(self.style.NOTICE(
+                    f'Something bad happened when importing ticket {orig_ticket["id"]}: {exc}'
+                ))
+                action = 'error'
+                continue
+            finally:
+                actions[action] += 1
+
+        # recalculate amounts and quantities for orders and orderitems
+        for orderitem in OrderItem.objects.select_for_update().all():
+            orderitem.quantity = Ticket.objects.filter(
+                order=orderitem.order, ticket_fare_id=orderitem.item_object_id
+            ).count()
+            orderitem.save()
+        for order in Order.objects.all():
+            order.amount = sum(order.items.all().extra(
+                select={'item_amount': 'quantity * unit_price'}
+            ).values_list('item_amount', flat=True))
+            order.save()
+
+        self.stdout.write(self.style.SUCCESS(
+            f'Tickets: '
+            f'{actions["create"]} created, '
+            f'{actions["update"]} updated, '
+            f'{actions["skip"]} skipped, '
+            f'{actions["error"]} errors.'
+        ))
+
     def db_connect(self, options):
         db_path = options['db_path']
         if not db_path:
@@ -398,5 +520,7 @@ class Command(BaseCommand):
             self.import_conferences(overwrite=overwrite)
         if 'submission' in entities or entities == 'all':
             self.import_submissions(overwrite=overwrite)
+        if 'ticket' in entities or entities == 'all':
+            self.import_tickets(overwrite=overwrite)
 
         self.stdout.write(self.style.SUCCESS('Done!'))
