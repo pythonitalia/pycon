@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.core import exceptions
 from django.db import models
+from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from model_utils.models import TimeStampedModel
 
@@ -101,6 +102,12 @@ class Submission(TimeStampedModel):
                     )
                 }
             )
+
+    def get_admin_url(self):
+        return reverse(
+            "admin:%s_%s_change" % (self._meta.app_label, self._meta.model_name),
+            args=(self.pk,),
+        )
 
     def __str__(self):
         return f"{self.title} at Conference {self.conference_id}"
