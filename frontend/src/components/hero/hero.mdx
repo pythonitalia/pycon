@@ -15,9 +15,13 @@ import { theme } from "../../config/theme";
     <ThemeProvider theme={theme}>
         <Hero
             title="Hello world"
-            backgroundImage={
-                "https://live.staticflickr.com/65535/33985680028_8eb0b570f9_h.jpg"
-            }
+            backgroundImage={{
+                "fluid": {
+                    "aspectRatio": 2.3446658851113718,
+                    "src": "https://live.staticflickr.com/65535/33985680028_8eb0b570f9_h.jpg",
+                    "sizes": "(max-width: 1600px) 100vw, 1600px"
+                }
+            }}
         >
             <p>
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias et omnis
