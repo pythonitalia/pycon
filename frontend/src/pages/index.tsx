@@ -2,6 +2,7 @@ import * as React from "react";
 
 import { graphql } from "gatsby";
 import { Hero } from "../components/hero";
+import { SectionTitle } from "../components/section-title";
 import { TwoColumnsText } from "../components/two-columns-text";
 import { HomeLayout } from "../layouts/home";
 
@@ -18,7 +19,12 @@ export default ({ data }: HomeProps) => (
         vel quidem ea, blanditiis quos harum non ipsam, soluta saepe.
       </p>
     </Hero>
+
     <TwoColumnsText />
+
+    <section>
+      <SectionTitle>Sponsors</SectionTitle>
+    </section>
   </HomeLayout>
 );
 
