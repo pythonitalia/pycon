@@ -11,6 +11,8 @@ class VoteFactory(DjangoModelFactory):
     class Meta:
         model = Vote
 
-    value = factory.fuzzy.FuzzyInteger(Vote.VALUES.not_interested, Vote.VALUES.must_see, 1)
+    value = factory.fuzzy.FuzzyInteger(
+        Vote.VALUES.not_interested, Vote.VALUES.must_see, 1
+    )
     submission = factory.SubFactory(SubmissionFactory)
     user = factory.SubFactory(UserFactory)

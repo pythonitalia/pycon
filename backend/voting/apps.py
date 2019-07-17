@@ -5,4 +5,4 @@ class VotingConfig(AppConfig):
     name = "voting"
 
     def ready(self):
-        import voting.converter
+        import voting.converter  # noqa

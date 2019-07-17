@@ -32,7 +32,7 @@ class PyConUserAdmin(UserAdmin):
     # The forms to add and change user instances
 
     fieldsets = (
-        (None, {"fields": ('username', "email", "password")}),
+        (None, {"fields": ("username", "email", "password")}),
         (
             _("Permissions"),
             {

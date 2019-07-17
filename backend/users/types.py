@@ -1,5 +1,4 @@
-from graphene import NonNull, List, ID, String, ObjectType
-
+from graphene import ID, List, NonNull
 from graphene_django import DjangoObjectType
 from tickets.types import TicketType
 

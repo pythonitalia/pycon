@@ -1,7 +1,7 @@
 from django.core.exceptions import ImproperlyConfigured
 
 from .base import *  # noqa
-from .base import env
+from .base import FRONTEND_URL, env
 
 SECRET_KEY = env("SECRET_KEY")
 
