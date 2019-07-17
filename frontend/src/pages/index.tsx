@@ -2,6 +2,7 @@ import * as React from "react";
 
 import { graphql } from "gatsby";
 import { Hero } from "../components/hero";
+import { Events } from "../components/home-events";
 import { Faq } from "../components/home-faq";
 import { SectionTitle } from "../components/section-title";
 import { TwoColumnsText } from "../components/two-columns-text";
@@ -25,6 +26,9 @@ export default ({ data }: HomeProps) => (
 
     <section>
       <SectionTitle>Sponsors</SectionTitle>
+    </section>
+    <section>
+      <Events />
     </section>
     <section>
       <Faq />
