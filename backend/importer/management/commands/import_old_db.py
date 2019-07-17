@@ -14,7 +14,6 @@ from submissions.models import SubmissionType, Submission
 from users.models import User
 
 DEFAULT_DB_PATH = root('p3.db')
-SUPPORTED_ENTITIES = ['user', 'conference', 'submission_type', 'topic', 'submission']
 OLD_DEAFAULT_TZ = pytz.timezone('Europe/Rome')
 TALK_TYPES = {
     's': 'Talk',
@@ -263,7 +262,7 @@ class Command(BaseCommand):
 
     def import_submissions(self, overwrite=False):
         if overwrite:
-            self.stdout.write(f'Overwrite has no effect on submittions')
+            self.stdout.write(f'Overwrite is the default for submissions')
 
         self.stdout.write(f'Importing submissions...')
 
@@ -362,9 +361,7 @@ class Command(BaseCommand):
             f'{actions["error"]} errors.'
         ))
 
-    def handle(self, *args, **options):
-        self.stdout.write('Starting...')
-
+    def db_connect(self, options):
         db_path = options['db_path']
         if not db_path:
             self.stdout.write(self.style.NOTICE('DB path not specified, using default.'))
@@ -375,7 +372,12 @@ class Command(BaseCommand):
         conn.row_factory = dict_factory
         self.c = conn.cursor()
 
-        entities = SUPPORTED_ENTITIES
+    def handle(self, *args, **options):
+        self.stdout.write('Starting...')
+
+        self.db_connect(options)
+
+        entities = 'all'
         overwrite = False
         if options['entities']:
             entities = options['entities'].split(',')
@@ -386,15 +388,15 @@ class Command(BaseCommand):
         if overwrite:
             self.stdout.write(self.style.NOTICE('This command will overwrite entities in the destination DB!!!'))
 
-        if 'user' in entities:
+        if 'user' in entities or entities == 'all':
             self.import_users(overwrite=overwrite)
-        if 'submission_type' in entities:
+        if 'submission_type' in entities or entities == 'all':
             self.create_submission_types(overwrite=overwrite)
-        if 'topic' in entities:
+        if 'topic' in entities or entities == 'all':
             self.create_topics(overwrite=overwrite)
-        if 'conference' in entities:
+        if 'conference' in entities or entities == 'all':
             self.import_conferences(overwrite=overwrite)
-        if 'submission' in entities:
+        if 'submission' in entities or entities == 'all':
             self.import_submissions(overwrite=overwrite)
 
         self.stdout.write(self.style.SUCCESS('Done!'))
