@@ -7,3 +7,4 @@ pytz==2019.1
 django-timezone-field==3.0
 stripe==2.32.1
 django-fsm==2.6.1
+psycopg2-binary==2.8.3
