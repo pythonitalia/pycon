@@ -8,9 +8,10 @@ from voting.types import VoteValues
 
 
 def _submit_vote(client, submission, **kwargs):
-    vote_index = math.floor(random.uniform(Vote.VALUES.not_interested, Vote.VALUES.must_see))
+    value_index = kwargs.get('value_index', math.floor(random.uniform(Vote.VALUES.not_interested, Vote.VALUES.must_see)))
+
     defaults = {
-        "value": VoteValues.get(vote_index).name,
+        "value": VoteValues.get(value_index).name,
         "submission": submission.id,
     }
 
@@ -37,7 +38,7 @@ def _submit_vote(client, submission, **kwargs):
         ),
         {
             **variables,
-            'vote_index': vote_index
+            'value_index': value_index
         },
     )
 
@@ -50,7 +51,7 @@ def test_submit_vote(graphql_client, user, conference_factory, submission_factor
 
     submission = submission_factory(conference=conference)
 
-    resp, variables = _submit_vote(graphql_client, submission, value=VoteValues.get(0).name)
+    resp, variables = _submit_vote(graphql_client, submission, value_index=0)
 
     assert resp["data"]["sendVote"]["vote"] is not None, resp
     assert resp["data"]["sendVote"]["errors"] == []
@@ -92,7 +93,7 @@ def test_user_can_vote_different_submissions(
     assert resp1["data"]["sendVote"]["errors"] == []
 
     vote1 = Vote.objects.get(user=user, submission=submission1)
-    assert vote1.value == variables1["vote_index"]
+    assert vote1.value == variables1["value_index"]
 
     submission2 = submission_factory(conference=conference)
 
@@ -101,7 +102,7 @@ def test_user_can_vote_different_submissions(
     assert resp2["data"]["sendVote"]["errors"] == []
 
     vote2 = Vote.objects.get(user=user, submission=submission2)
-    assert vote2.value == variables2["vote_index"]
+    assert vote2.value == variables2["value_index"]
 
     assert Vote.objects.all().__len__() == 2
 
@@ -114,19 +115,19 @@ def test_updating_vote_when_user_votes_the_same_submission(
     conference = conference_factory(active_voting=True)
 
     submission = submission_factory(conference=conference, id=1)
-    resp, variables = _submit_vote(graphql_client, submission)
+    resp, variables = _submit_vote(graphql_client, submission, value_index=1)
 
     assert resp["data"]["sendVote"]["vote"] is not None, resp
     assert resp["data"]["sendVote"]["errors"] == []
 
     vote1 = Vote.objects.get(user=user, submission=submission)
-    assert vote1.value == variables["vote_index"]
+    assert vote1.value == variables["value_index"]
 
-    resp, variables = _submit_vote(graphql_client, submission)
+    resp, variables = _submit_vote(graphql_client, submission, value_index=3)
 
     assert resp["data"]["sendVote"]["vote"] is not None, resp
     assert resp["data"]["sendVote"]["errors"] == []
 
     vote1 = Vote.objects.get(user=user, submission=submission)
 
-    assert vote1.value == variables["vote_index"]
+    assert vote1.value == variables["value_index"]

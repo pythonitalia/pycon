@@ -30,13 +30,8 @@ class Vote(TimeStampedModel):
     def __str__(self):
         return f"{self.user} voted {self.value} for Submission {self.submission}"
 
-    def save(self, *args, **kwargs):
-        """Updates the instance if already exist a User's vote for the same
-        submission
-        """
-        try:
-            _vote = Vote.objects.get(user=self.user, submission=self.submission)
-            self.id = _vote.id
-            super().save(force_update=True, *args, **kwargs)
-        except Vote.DoesNotExist:
-            super().save(*args, **kwargs)
+    class Meta:
+        verbose_name = _('Vote')
+        verbose_name_plural = _('Votes')
+
+        unique_together = ('user', 'submission')
