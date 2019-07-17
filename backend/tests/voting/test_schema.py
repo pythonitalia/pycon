@@ -7,8 +7,8 @@ def test_get_logged_user_vote_on_a_submission(graphql_client, user, vote_factory
 
     vote = vote_factory(user=user)
 
-    response = graphql_client.query("""
-    query MyVote($conference: String!) {
+    response = graphql_client.query(
+        """query MyVote($conference: String!) {
         conference(code: $conference) {
             submissions {
                 myVote {
@@ -17,19 +17,22 @@ def test_get_logged_user_vote_on_a_submission(graphql_client, user, vote_factory
             }
         }
     }
-    """, variables={
-        'conference': vote.submission.conference.code,
-    })
+    """,
+        variables={"conference": vote.submission.conference.code},
+    )
 
-    assert response['data']['conference']['submissions'][0]['myVote']['value'] == f'A_{vote.value}'
+    assert (
+        response["data"]["conference"]["submissions"][0]["myVote"]["value"]
+        == f"A_{vote.value}"
+    )
 
 
 @mark.django_db
 def test_cannot_get_my_vote_as_unlogged(graphql_client, user, vote_factory):
     vote = vote_factory(user=user)
 
-    response = graphql_client.query("""
-    query MyVote($conference: String!) {
+    response = graphql_client.query(
+        """query MyVote($conference: String!) {
         conference(code: $conference) {
             submissions {
                 myVote {
@@ -38,22 +41,24 @@ def test_cannot_get_my_vote_as_unlogged(graphql_client, user, vote_factory):
             }
         }
     }
-    """, variables={
-        'conference': vote.submission.conference.code,
-    })
+    """,
+        variables={"conference": vote.submission.conference.code},
+    )
 
-    assert response['errors'][0]['message'] == 'User not logged in'
-    assert response['errors'][0]['path'] == ['conference', 'submissions', 0, 'myVote']
+    assert response["errors"][0]["message"] == "User not logged in"
+    assert response["errors"][0]["path"] == ["conference", "submissions", 0, "myVote"]
 
 
 @mark.django_db
-def test_get_my_vote_when_the_user_never_voted(graphql_client, user, submission_factory):
+def test_get_my_vote_when_the_user_never_voted(
+    graphql_client, user, submission_factory
+):
     graphql_client.force_login(user)
 
     submission = submission_factory()
 
-    response = graphql_client.query("""
-    query MyVote($conference: String!) {
+    response = graphql_client.query(
+        """query MyVote($conference: String!) {
         conference(code: $conference) {
             submissions {
                 myVote {
@@ -62,8 +67,8 @@ def test_get_my_vote_when_the_user_never_voted(graphql_client, user, submission_
             }
         }
     }
-    """, variables={
-        'conference': submission.conference.code,
-    })
+    """,
+        variables={"conference": submission.conference.code},
+    )
 
-    assert response['data']['conference']['submissions'][0]['myVote'] == None
+    assert response["data"]["conference"]["submissions"][0]["myVote"] is None

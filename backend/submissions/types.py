@@ -1,7 +1,6 @@
 import graphene
-from graphql import GraphQLError
-
 from graphene_django import DjangoObjectType
+from graphql import GraphQLError
 from voting.models import Vote
 from voting.types import VoteType
 

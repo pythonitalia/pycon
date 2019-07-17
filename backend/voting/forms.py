@@ -1,10 +1,9 @@
-from graphene import Enum
 from api.forms import ContextAwareModelForm
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
-from .models import Vote
 from .fields import VoteValueField
+from .models import Vote
 
 
 class SendVoteForm(ContextAwareModelForm):
@@ -21,12 +20,14 @@ class SendVoteForm(ContextAwareModelForm):
         submission = self.cleaned_data.get("submission")
 
         try:
-            self.instance = Vote.objects.get(user=self.context.user, submission=submission)
+            self.instance = Vote.objects.get(
+                user=self.context.user, submission=submission
+            )
         except Vote.DoesNotExist:
             pass
 
         self.instance.user = self.context.user
-        self.instance.value = self.cleaned_data['value']
+        self.instance.value = self.cleaned_data["value"]
         return super().save(commit=commit)
 
     class Meta:

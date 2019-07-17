@@ -2,18 +2,17 @@ import math
 import random
 
 from pytest import mark
-
 from voting.models import Vote
 from voting.types import VoteValues
 
 
 def _submit_vote(client, submission, **kwargs):
-    value_index = kwargs.get('value_index', math.floor(random.uniform(Vote.VALUES.not_interested, Vote.VALUES.must_see)))
+    value_index = kwargs.get(
+        "value_index",
+        math.floor(random.uniform(Vote.VALUES.not_interested, Vote.VALUES.must_see)),
+    )
 
-    defaults = {
-        "value": VoteValues.get(value_index).name,
-        "submission": submission.id,
-    }
+    defaults = {"value": VoteValues.get(value_index).name, "submission": submission.id}
 
     variables = {**defaults, **kwargs}
 
@@ -36,10 +35,7 @@ def _submit_vote(client, submission, **kwargs):
             }""",
             variables=variables,
         ),
-        {
-            **variables,
-            'value_index': value_index
-        },
+        {**variables, "value_index": value_index},
     )
 
 
