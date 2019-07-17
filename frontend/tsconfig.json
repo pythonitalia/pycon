@@ -6,7 +6,13 @@
     "jsx": "preserve",
     "skipLibCheck": true,
     "strict": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "plugins": [
+      {
+        "name": "typescript-styled-plugin",
+        "validate": false
+      }
+    ]
   },
   "include": ["./src/**/*"],
   "exclude": ["node_modules"]
