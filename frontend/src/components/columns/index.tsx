@@ -60,16 +60,10 @@ export type ResponsiveProps = {
 };
 
 export const responsiveSpacing = (props: ResponsiveProps) => css`
-  ${props.marginTop && responsiveStyle("marginTop", props.marginTop)}
-  ${props.marginBottom && responsiveStyle("marginBottom", props.marginBottom)}
-  ${props.marginLeft && responsiveStyle("marginLeft", props.marginLeft)}
-  ${props.marginRight && responsiveStyle("marginRight", props.marginRight)}
-
-  ${props.paddingTop && responsiveStyle("paddingTop", props.paddingTop)}
-  ${props.paddingBottom &&
-    responsiveStyle("paddingBottom", props.paddingBottom)}
-  ${props.paddingLeft && responsiveStyle("paddingLeft", props.paddingLeft)}
-  ${props.paddingRight && responsiveStyle("paddingRight", props.paddingRight)}
+  ${Object.entries(props).map(
+    ([key, value]) =>
+      value && responsiveStyle(key as keyof ResponsiveProps, value),
+  )}
 `;
 
 export type CustomColumnsType = ResponsiveProps;
