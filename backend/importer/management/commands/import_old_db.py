@@ -14,6 +14,7 @@ from languages.models import Language
 from orders.enums import PaymentState
 from orders.models import Order, OrderItem
 from pycon.settings.base import root
+from schedule.models import Room
 from submissions.models import SubmissionType, Submission
 from tickets.models import Ticket
 from users.models import User
@@ -486,6 +487,53 @@ class Command(BaseCommand):
             f'{actions["error"]} errors.'
         ))
 
+    def import_rooms(self, overwrite=False):
+        if overwrite:
+            self.stdout.write(f'Overwrite has no effect on rooms')
+
+        self.stdout.write(f'Importing rooms...')
+
+        conferences = {
+            conf.code: conf.id
+            for conf in Conference.objects.all()
+        }
+
+        track_list = list(self.c.execute(
+            """
+            select schedule.conference, track.title
+            from conference_track track
+            left outer join conference_schedule schedule on schedule.id = track.schedule_id
+            """
+        ))
+
+        actions = {'create': 0, 'update': 0, 'skip': 0, 'error': 0}
+        for track in track_list:
+            action = 'create'
+            try:
+                with transaction.atomic():
+                    room, created = Room.objects.get_or_create(
+                        name=track['title'],
+                        conference_id=conferences[track['conference']],
+                    )
+                    if not created:
+                        action = 'skip'
+            except Exception as exc:
+                self.stdout.write(self.style.NOTICE(
+                    f'Something bad happened when importing track/room {track["title"]}: {exc}'
+                ))
+                action = 'error'
+                continue
+            finally:
+                actions[action] += 1
+
+        self.stdout.write(self.style.SUCCESS(
+            f'Rooms: '
+            f'{actions["create"]} created, '
+            f'{actions["update"]} updated, '
+            f'{actions["skip"]} skipped, '
+            f'{actions["error"]} errors.'
+        ))
+
     def db_connect(self, options):
         db_path = options['db_path']
         if not db_path:
@@ -521,6 +569,8 @@ class Command(BaseCommand):
             self.create_topics(overwrite=overwrite)
         if 'conference' in entities or entities == 'all':
             self.import_conferences(overwrite=overwrite)
+        if 'room' in entities or entities == 'all':
+            self.import_rooms(overwrite=overwrite)
         if 'submission' in entities or entities == 'all':
             self.import_submissions(overwrite=overwrite)
         if 'ticket' in entities or entities == 'all':
