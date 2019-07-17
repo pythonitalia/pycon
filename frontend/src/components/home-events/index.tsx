@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import { Text } from "fannypack";
 import styled from "styled-components";
 import { STANDARD_CUSTOM_COLUMNS_PADDING } from "../../config/spacing";
+import { theme } from "../../config/theme";
 import { CustomColumn } from "../column";
 import { CustomColumns } from "../columns";
 import { SectionTitle } from "../section-title";
@@ -25,11 +26,26 @@ const EventsContainer = styled.div`
   .event_card {
     display: inline-block;
     margin-right: 16px;
+    padding: 8px;
+    color: ${theme.palette.white};
     &:first-child {
       margin-left: 2.5rem;
       @media (min-width: 1024px) {
         margin-left: 15rem;
       }
+    }
+    .event_card_content {
+      position: absolute;
+      left: 16px;
+      bottom: 16px;
+    }
+    .event_card_content__title {
+      color: ${theme.palette.white};
+      margin: 0;
+    }
+    .event_card_content__subtitle {
+      color: ${theme.palette.white};
+      margin: 0;
     }
   }
 `;
@@ -44,7 +60,17 @@ const EventCard = styled.div`
   border-radius: 8px;
   height: 200px;
   width: 300px;
+  position: relative;
 `;
+
+const EventCardContent = () => {
+  return (
+    <div className="event_card_content">
+      <p className="event_card_content__title">h. 21:00 Pub James Joyce</p>
+      <p className="event_card_content__subtitle">PyBirra</p>
+    </div>
+  );
+};
 
 export const Events = () => {
   useEffect(() => {
@@ -111,14 +137,11 @@ export const Events = () => {
       </CustomColumns>
       <CustomColumns marginTop={{ desktop: 2, tablet: 2, mobile: 1 }}>
         <EventsContainer className="events">
-          <EventCard className="event_card">asdf</EventCard>
-          <EventCard className="event_card">asdf</EventCard>
-          <EventCard className="event_card">asdf</EventCard>
-          <EventCard className="event_card">asdf</EventCard>
-          <EventCard className="event_card">asdf</EventCard>
-          <EventCard className="event_card">asdf</EventCard>
-          <EventCard className="event_card">asdf</EventCard>
-          <EventCard className="event_card">asdf</EventCard>
+          {[1, 2, 3, 4, 5, 6, 7].map((o, i) => (
+            <EventCard key={i} className="event_card">
+              <EventCardContent />
+            </EventCard>
+          ))}
         </EventsContainer>
       </CustomColumns>
     </Wrapper>
