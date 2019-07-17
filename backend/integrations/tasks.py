@@ -42,14 +42,14 @@ def notify_new_submission(
                         "type": "section",
                         "text": {
                             "type": "mrkdwn",
-                            "text": f"*<{admin_url}|{title.capitalize()}>"
-                            f"*\n*Elevator Pitch*\n{elevator_pitch}",
+                            "text": f"*<{admin_url}|{title.capitalize()}>*\n"
+                            f"*Elevator Pitch*\n{elevator_pitch}",
                         },
                         "fields": [
                             {"type": "mrkdwn", "text": "*Topic*"},
                             {"type": "mrkdwn", "text": "*Duration*"},
                             {"type": "plain_text", "text": str(duration)},
-                            {"type": "mrkdwn", "text": f"{topic}"},
+                            {"type": "mrkdwn", "text": topic},
                         ],
                     }
                 ]
