@@ -20,10 +20,6 @@ def _register_user(graphql_client, email, password):
             ... on MeUserType {
                 id
             }
-
-            ... on EmailAlreadyUsedError {
-                message
-            }
         }
     }
     """,
@@ -57,8 +53,8 @@ def test_cannot_register_if_the_email_is_already_used(graphql_client, user_facto
 
     response = _register_user(graphql_client, 'marco@acierno.it', 'password')
 
-    assert response['data']['register']['__typename'] == 'EmailAlreadyUsedError'
-    assert response['data']['register']['message'] == 'This email is already used by another account'
+    assert response['data']['register']['__typename'] == 'RegisterErrors'
+    assert response['data']['register']['email'] == ['This email is already used by another account']
 
 
 @mark.django_db

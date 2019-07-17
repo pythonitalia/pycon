@@ -2,7 +2,7 @@ from graphene import ObjectType
 
 from graphene_form.mutations import FormMutation
 
-from .types import EmailPasswordCombinationError, MeUserType, EmailAlreadyUsedError
+from .types import MeUserType
 from .forms import LoginForm, RegisterForm
 
 
@@ -10,7 +10,6 @@ class Login(FormMutation):
     class Meta:
         form_class = LoginForm
         output_types = (
-            EmailPasswordCombinationError,
             MeUserType,
         )
 
@@ -20,7 +19,6 @@ class Register(FormMutation):
         form_class = RegisterForm
         output_types = (
             MeUserType,
-            EmailAlreadyUsedError,
         )
 
 class UsersMutations(ObjectType):

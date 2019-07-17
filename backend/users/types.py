@@ -21,10 +21,3 @@ class UserType(DjangoObjectType):
     class Meta:
         model = User
         only_fields = ("id", "email", "name", "username")
-
-
-class EmailPasswordCombinationError(ObjectType):
-    message = NonNull(String)
-
-class EmailAlreadyUsedError(ObjectType):
-    message = NonNull(String)
