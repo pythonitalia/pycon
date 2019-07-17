@@ -21,8 +21,8 @@ const Wrapper = styled.div`
     background: ${theme("palette.primary")};
     top: 0;
     bottom: 0;
-    left: 20px;
-    right: 20px;
+    left: 16px;
+    right: 16px;
     position: absolute;
     z-index: 0;
   }
@@ -45,8 +45,15 @@ const Wrapper = styled.div`
     position: absolute;
     bottom: 0;
     margin: 0;
-
     color: white;
+    @media (min-width: 1024px) {
+      font-size: 42px;
+      line-height: 32px;
+    }
+    @media (min-width: 1366px) {
+      font-size: 90px;
+      line-height: 72px;
+    }
   }
 
   p {
@@ -54,7 +61,7 @@ const Wrapper = styled.div`
   }
 `;
 
-const padding = { desktop: 2, mobile: 3 };
+const padding = { desktop: 2, tablet: 2, mobile: 3 };
 
 export const Hero: React.SFC<HeroProps> = props => (
   <Wrapper>
