@@ -4,9 +4,17 @@
   "jsRules": {},
   "rules": {
     "interface-name": false,
+    "interface-over-type-literal": false,
     "semicolon": [true, "always"],
     "member-access": [false],
-    "ordered-imports": [true],
+    "ordered-imports": [
+      true,
+      {
+        "grouped-imports": true,
+        "groups": ["^react"]
+      }
+    ],
+    "object-literal-sort-keys": [false],
     "no-console": [false],
     "no-var-requires": true,
     "jsx-no-lambda": false,

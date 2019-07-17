@@ -14,7 +14,7 @@ class PyConUserCreationForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ('email', )
+        fields = ("email",)
 
 
 class PyConUserChangeForm(UserChangeForm):
@@ -25,7 +25,7 @@ class PyConUserChangeForm(UserChangeForm):
 
     class Meta:
         model = User
-        fields = '__all__'
+        fields = "__all__"
 
 
 class PyConUserAdmin(UserAdmin):
@@ -35,34 +35,32 @@ class PyConUserAdmin(UserAdmin):
     # These override the definitions on the base UserAdmin
     # that reference the removed 'username' field
     fieldsets = (
-        (None, {
-            'fields': ('email', 'password')
-        }),
-        (_('Permissions'), {
-            'fields': (
-                'is_active',
-                'is_staff',
-                'is_superuser',
-                'groups',
-                'user_permissions',
-            )
-        }),
-        (_('Important dates'), {
-            'fields': ('last_login', 'date_joined')
-        }),
+        (None, {"fields": ("email", "password")}),
+        (
+            _("Permissions"),
+            {
+                "fields": (
+                    "is_active",
+                    "is_staff",
+                    "is_superuser",
+                    "groups",
+                    "user_permissions",
+                )
+            },
+        ),
+        (_("Important dates"), {"fields": ("last_login", "date_joined")}),
     )
 
-    add_fieldsets = ((None, {
-        'classes': ('wide', ),
-        'fields': ('email', 'password1', 'password2')
-    }), )
+    add_fieldsets = (
+        (None, {"classes": ("wide",), "fields": ("email", "password1", "password2")}),
+    )
 
     form = PyConUserChangeForm
     add_form = PyConUserCreationForm
-    readonly_fields = ('date_joined', )
-    list_display = ('email', 'is_staff', 'is_superuser')
-    search_fields = ('email', )
-    ordering = ('email', )
+    readonly_fields = ("date_joined",)
+    list_display = ("email", "is_staff", "is_superuser")
+    search_fields = ("email",)
+    ordering = ("email",)
 
 
 admin.site.register(User, PyConUserAdmin)

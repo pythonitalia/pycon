@@ -1,13 +1,10 @@
 import graphene
-
-from api.mutations import AuthOnlyDjangoFormMutation
-
-from .types import SubmissionType, SubmissionTypeType
+from api.mutations import AuthOnlyDjangoModelFormMutation
 
 from .forms import SendSubmissionForm
 
 
-class SendSubmission(AuthOnlyDjangoFormMutation):
+class SendSubmission(AuthOnlyDjangoModelFormMutation):
     class Meta:
         form_class = SendSubmissionForm
 

@@ -1,7 +1,7 @@
 import graphene
 
-from .types import ConferenceType
 from .models import Conference
+from .types import ConferenceType
 
 
 class ConferenceQuery:
