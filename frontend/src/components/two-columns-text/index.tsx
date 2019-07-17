@@ -2,14 +2,18 @@ import React from "react";
 
 import { Heading, Text } from "fannypack";
 import styled from "styled-components";
+import { STANDARD_CUSTOM_COLUMNS_PADDING } from "../../config/spacing";
 import { CustomColumn } from "../column";
 import { CustomColumns } from "../columns";
 
 const Base = styled.div`
   position: relative;
   padding: 0;
-  margin: 4rem 0;
+  margin: 2rem 0;
   @media (min-width: 1024px) {
+    padding: 6rem 0;
+  }
+  @media (min-width: 1366px) {
     padding: 12rem 0;
   }
   .background_image {
@@ -17,10 +21,10 @@ const Base = styled.div`
     height: 100%;
     position: absolute;
     display: flex;
-
     right: 0;
     top: 0;
     img {
+      max-width: 100%;
       height: 100%;
       display: none;
       @media (min-width: 768px) {
@@ -64,18 +68,21 @@ export const TwoColumnsText = () => {
     <Base>
       <div className="background_image">
         <div className="background_image__container">
-          <div className="background_image__overlay"/>
+          <div className="background_image__overlay" />
           <img src="https://placebear.com/600/400" alt="" />
         </div>
       </div>
       <div className="columns_wrapper">
         <CustomColumns
-          paddingTop={{ desktop: 4, mobile: 3 }}
-          paddingBottom={{ desktop: 4, mobile: 3 }}
-          paddingLeft={{ desktop: 4, mobile: 3 }}
-          paddingRight={{ desktop: 4, mobile: 3 }}
+          paddingTop={{ desktop: 4, tablet: 4, mobile: 3 }}
+          paddingBottom={{ desktop: 4, tablet: 4, mobile: 3 }}
+          paddingLeft={STANDARD_CUSTOM_COLUMNS_PADDING}
+          paddingRight={STANDARD_CUSTOM_COLUMNS_PADDING}
         >
-          <CustomColumn paddingRight={{ desktop: 12, mobile: 3 }}>
+          <CustomColumn
+            spread={4}
+            paddingRight={{ desktop: 4, tablet: 2, mobile: 0 }}
+          >
             <Heading use="h2">Why Pycon?</Heading>
             <Text>
               Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sequi
@@ -85,8 +92,9 @@ export const TwoColumnsText = () => {
             </Text>
           </CustomColumn>
           <CustomColumn
-            marginTop={{ desktop: 0, mobile: 3 }}
-            paddingRight={{ desktop: 12, mobile: 3 }}
+            spread={4}
+            marginTop={{ desktop: 0, tablet: 0, mobile: 3 }}
+            paddingRight={{ desktop: 4, tablet: 2, mobile: 0 }}
           >
             <Heading use="h2">Best conf ever!</Heading>
             <Text>

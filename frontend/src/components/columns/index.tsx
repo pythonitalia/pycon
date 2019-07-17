@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Columns } from "fannypack";
+import { Columns, LocalColumnsProps } from "fannypack";
 import styled, { css, CSSObject, SimpleInterpolation } from "styled-components";
 
 export type CustomColumnSideType = { desktop: number; mobile: number };
@@ -16,10 +16,21 @@ const camelToKebabCase = (str: string) =>
 
 type ResponsiveValue = {
   desktop: number;
+  tablet: number;
   mobile: number;
 };
 
 export const media = {
+  tablet: (
+    first: CSSObject | TemplateStringsArray,
+    ...interpolations: SimpleInterpolation[]
+  ) => {
+    return css`
+      @media (min-width: 768px) {
+        ${css(first, ...interpolations)}
+      }
+    `;
+  },
   desktop: (
     first: CSSObject | TemplateStringsArray,
     ...interpolations: SimpleInterpolation[]
@@ -41,6 +52,10 @@ const responsiveStyle = (
   console.log(prop);
   return css`
     ${prop}: ${values.mobile}rem;
+
+    ${media.tablet`
+      ${prop}: ${values.tablet}rem;
+    `}
 
     ${media.desktop`
       ${prop}: ${values.desktop}rem;
@@ -66,15 +81,18 @@ export type ResponsiveProps = {
 };
 
 export const responsiveSpacing = (props: ResponsiveProps) => css`
-         ${Object.entries(props)
-           .filter(([key]) => ALLOWED_RESPONSIVE_PROPS.indexOf(key as AllowedResponsiveProps) !== -1)
-           .map(
-             ([key, value]) =>
-               value && responsiveStyle(key as AllowedResponsiveProps, value),
-           )}
-       `;
+  ${Object.entries(props)
+    .filter(
+      ([key]) =>
+        ALLOWED_RESPONSIVE_PROPS.indexOf(key as AllowedResponsiveProps) !== -1,
+    )
+    .map(
+      ([key, value]) =>
+        value && responsiveStyle(key as AllowedResponsiveProps, value),
+    )}
+`;
 
-export type CustomColumnsType = ResponsiveProps;
+export type CustomColumnsType = ResponsiveProps & LocalColumnsProps;
 export const BaseCustomColumns = Columns as React.SFC<CustomColumnsType>;
 
 export const CustomColumns = styled(BaseCustomColumns)`

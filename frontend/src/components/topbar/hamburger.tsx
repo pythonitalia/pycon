@@ -21,7 +21,6 @@ const Draw = styled.div<ExpandableProps>`
     background: currentColor;
     border-radius: 9px;
     opacity: 1;
-    left: 0;
     transform: rotate(0deg);
     transition: 0.25s ease-in-out transform;
   }
@@ -55,6 +54,7 @@ const Draw = styled.div<ExpandableProps>`
       }
       span {
         background: ${theme.palette.white};
+        left: -4px;
       }
     `}
 `;

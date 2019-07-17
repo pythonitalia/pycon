@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 import { Column, Columns, Link } from "fannypack";
 import styled, { css } from "styled-components";
@@ -14,7 +14,10 @@ const LinkContainer = styled.div`
   align-items: center;
   justify-content: flex-end;
   height: 100%;
-
+  display: none;
+  @media (min-width: 992px) {
+    display: flex;
+  }
   a {
     margin-right: 2rem;
     text-decoration: none;
@@ -25,7 +28,6 @@ const LinkContainer = styled.div`
 `;
 
 const LogoContainer = styled.div<ExpandableProps>`
-  justify-content: center;
   display: flex;
   height: 100%;
   align-items: center;
@@ -33,6 +35,7 @@ const LogoContainer = styled.div<ExpandableProps>`
   font-style: normal;
   font-weight: normal;
   font-size: 24px;
+  justify-content: center;
   ${props =>
     props.open &&
     css`
@@ -51,6 +54,12 @@ const MenuContainer = styled.div<ExpandableProps>`
     align-items: center;
     outline: none;
     transition: 0.25s ease-in-out;
+    .label {
+      display: none;
+      @media (min-width: 992px) {
+        display: inline-block;
+      }
+    }
     &:hover {
       ${props =>
         props.open &&
@@ -76,7 +85,7 @@ const Wrapper = styled.div<ExpandableProps>`
   left: 0;
   top: 0;
   width: 100%;
-  z-index: 2;
+  z-index: 10;
   background-color: ${theme.palette.white};
   ${props =>
     props.open &&
@@ -100,7 +109,7 @@ export const Topbar = () => {
   return (
     <Wrapper open={isMenuOpen}>
       <Columns>
-        <Column spread={4}>
+        <Column spread={4} spreadMobile={2} spreadDesktop={4}>
           <MenuContainer open={isMenuOpen}>
             <Link
               href="#"
@@ -109,11 +118,12 @@ export const Topbar = () => {
                 toggleMenu();
               }}
             >
-              <Hamburger open={isMenuOpen} /> Menu
+              <Hamburger open={isMenuOpen} />{" "}
+              <span className="label">Menu</span>
             </Link>
           </MenuContainer>
         </Column>
-        <Column spread={4}>
+        <Column spreadMobile={8} spreadDesktop={4}>
           <LogoContainer open={isMenuOpen}>PyCon Italia</LogoContainer>
         </Column>
         <Column spread={4}>
@@ -126,7 +136,7 @@ export const Topbar = () => {
           </LinkContainer>
         </Column>
       </Columns>
-      {isMenuOpen && <ExpandedMenu />}
+      {isMenuOpen && <ExpandedMenu className="expanded_menu" />}
     </Wrapper>
   );
 };
