@@ -2,6 +2,7 @@ import React, { Component } from "react";
 
 import { Box, Column, Columns, Heading, Input, Text } from "fannypack";
 import { Link } from "gatsby";
+import { STANDARD_CUSTOM_COLUMNS_PADDING } from "../../config/spacing";
 import { Button } from "../button";
 import { CustomColumns } from "../columns";
 import { GOOGLE_MAPS_URL } from "./constants";
@@ -16,8 +17,8 @@ export class Footer extends Component {
         <CustomColumns
           paddingTop={{ desktop: 4, tablet: 4, mobile: 3 }}
           paddingBottom={{ desktop: 4, tablet: 4, mobile: 3 }}
-          paddingLeft={{ desktop: 2, tablet: 2, mobile: 3 }}
-          paddingRight={{ desktop: 2, tablet: 2, mobile: 3 }}
+          paddingLeft={STANDARD_CUSTOM_COLUMNS_PADDING}
+          paddingRight={STANDARD_CUSTOM_COLUMNS_PADDING}
         >
           <Column spread={6} spreadMobile={12}>
             <Box className="margin-mobile-0-r">

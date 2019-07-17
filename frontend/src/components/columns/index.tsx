@@ -48,8 +48,6 @@ const responsiveStyle = (
   values: ResponsiveValue,
 ) => {
   const prop = camelToKebabCase(cssProp);
-
-  console.log(prop);
   return css`
     ${prop}: ${values.mobile}rem;
 
