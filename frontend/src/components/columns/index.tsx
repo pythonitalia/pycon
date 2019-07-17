@@ -1,58 +1,74 @@
 import React from "react";
 
 import { Columns } from "fannypack";
-import styled, { css } from "styled-components";
-import { CustomColumnSideType, CustomColumnsType } from "./types";
+import styled, { css, CSSObject, SimpleInterpolation } from "styled-components";
 
-export const BaseCustomColumns: React.SFC<CustomColumnsType> = Columns;
-
-const renderResponsiveClasses = (
-  prop: {
-    top?: CustomColumnSideType;
-    bottom?: CustomColumnSideType;
-    left?: CustomColumnSideType;
-    right?: CustomColumnSideType;
-  },
-  property: "padding" | "margin",
-) => {
-  if (prop) {
-    let assembledStyle = ``;
-    for (const [key, element] of Object.entries(prop)) {
-      if (element) {
-        assembledStyle = `
-          ${assembledStyle}
-          ${property}-${key}: ${element.mobile}rem;
-          @media only screen and (min-width: 1024px) {
-            ${property}-${key}: ${element.desktop}rem;
-          }
-        `;
-      }
-    }
-    return `
-      ${assembledStyle}
-    `;
-  }
-
-  return css``;
+export type CustomColumnSideType = { desktop: number; mobile: number };
+export type CustomColumnSidesType = {
+  top?: CustomColumnSideType;
+  bottom?: CustomColumnSideType;
+  left?: CustomColumnSideType;
+  right?: CustomColumnSideType;
 };
 
-export const CustomColumns = styled(BaseCustomColumns)`
-  ${props => {
-    const { responsivePadding, responsiveMargin } = props;
-    let assembledStyle = "";
-    if (responsivePadding) {
-      const stylePadding = renderResponsiveClasses(
-        responsivePadding,
-        "padding",
-      );
-      assembledStyle = `${assembledStyle} ${stylePadding}`;
-    }
-    if (responsiveMargin) {
-      const styleMargin = renderResponsiveClasses(responsiveMargin, "margin");
-      assembledStyle = `${assembledStyle} ${styleMargin}`;
-    }
+const camelToKebabCase = (str: string) =>
+  str.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
+
+type ResponsiveValue = {
+  desktop: number;
+  mobile: number;
+};
+
+export const media = {
+  desktop: (
+    first: CSSObject | TemplateStringsArray,
+    ...interpolations: SimpleInterpolation[]
+  ) => {
     return css`
-      ${assembledStyle}
+      @media (min-width: 1024px) {
+        ${css(first, ...interpolations)}
+      }
     `;
-  }}
+  },
+};
+
+const responsiveStyle = (
+  cssProp: keyof React.CSSProperties,
+  values: ResponsiveValue,
+) => {
+  const prop = camelToKebabCase(cssProp);
+
+  console.log(prop);
+  return css`
+    ${prop}: ${values.mobile}rem;
+
+    ${media.desktop`
+      ${prop}: ${values.desktop}rem;
+    `}
+  `;
+};
+
+export type ResponsiveProps = {
+  marginTop?: ResponsiveValue;
+  marginBottom?: ResponsiveValue;
+  marginLeft?: ResponsiveValue;
+  marginRight?: ResponsiveValue;
+  paddingTop?: ResponsiveValue;
+  paddingBottom?: ResponsiveValue;
+  paddingLeft?: ResponsiveValue;
+  paddingRight?: ResponsiveValue;
+};
+
+export const responsiveSpacing = (props: ResponsiveProps) => css`
+  ${Object.entries(props).map(
+    ([key, value]) =>
+      value && responsiveStyle(key as keyof ResponsiveProps, value),
+  )}
+`;
+
+export type CustomColumnsType = ResponsiveProps;
+export const BaseCustomColumns = Columns as React.SFC<CustomColumnsType>;
+
+export const CustomColumns = styled(BaseCustomColumns)`
+  ${props => responsiveSpacing(props)}
 `;

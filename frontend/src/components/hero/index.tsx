@@ -61,12 +61,20 @@ export const Hero: React.SFC<HeroProps> = props => (
     <div className="content">
       <header>
         <img src={props.backgroundImage} />
-        <CustomColumns as="h1" responsivePadding={padding}>
+        <CustomColumns
+          as="h1"
+          paddingLeft={padding.left}
+          paddingRight={padding.right}
+        >
           {props.title}
         </CustomColumns>
       </header>
 
-      <CustomColumns as="article" responsivePadding={padding}>
+      <CustomColumns
+        as="article"
+        paddingLeft={padding.left}
+        paddingRight={padding.right}
+      >
         <p>{props.children}</p>
       </CustomColumns>
     </div>
