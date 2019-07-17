@@ -21,7 +21,7 @@ export const Faq = () => {
         </CustomColumn>
       </CustomColumns>
       <CustomColumns
-        marginTop={{ desktop: -4, tablet: -4, mobile: -1 }}
+        marginTop={{ desktop: -4, tablet: 0, mobile: -1 }}
         paddingLeft={STANDARD_CUSTOM_COLUMNS_PADDING}
         paddingRight={STANDARD_CUSTOM_COLUMNS_PADDING}
       >

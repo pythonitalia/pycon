@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 
-import { Heading, Text } from "fannypack";
+import { Text } from "fannypack";
 import styled from "styled-components";
 import { STANDARD_CUSTOM_COLUMNS_PADDING } from "../../config/spacing";
 import { CustomColumn } from "../column";
@@ -13,12 +13,23 @@ const EventsContainer = styled.div`
   overflow-x: scroll;
   width: 100%;
   white-space: nowrap;
+  &:hover {
+    cursor: pointer;
+  }
+  -ms-overflow-style: none; // IE 10+
+  scrollbar-width: none; // Firefox
+  &::-webkit-scrollbar {
+    display: none; // Safari and Chrome
+  }
 
   .event_card {
     display: inline-block;
     margin-right: 16px;
     &:first-child {
-      margin-left: 15rem;
+      margin-left: 2.5rem;
+      @media (min-width: 1024px) {
+        margin-left: 15rem;
+      }
     }
   }
 `;
@@ -36,6 +47,41 @@ const EventCard = styled.div`
 `;
 
 export const Events = () => {
+  useEffect(() => {
+    const slider: HTMLDivElement | null = document.querySelector(".events");
+    let isDown = false;
+    let startX = 0;
+    let scrollLeft = 0;
+    if (slider) {
+      slider.addEventListener("mousedown", (e: MouseEvent) => {
+        isDown = true;
+        slider.classList.add("active");
+        startX = e.pageX - slider.offsetLeft;
+        scrollLeft = slider.scrollLeft;
+      });
+      slider.addEventListener("mouseleave", () => {
+        isDown = false;
+        slider.classList.remove("active");
+      });
+      slider.addEventListener("mouseup", () => {
+        isDown = false;
+        slider.classList.remove("active");
+      });
+      slider.addEventListener("mousemove", (e: MouseEvent) => {
+        if (!isDown) {
+          return null;
+        }
+        e.preventDefault();
+        const x = e.pageX - slider.offsetLeft;
+        const walk = (x - startX) * 1.5;
+        slider.scrollLeft = scrollLeft - walk;
+      });
+    }
+    return () => {
+      // return null
+    };
+  });
+
   return (
     <Wrapper>
       <CustomColumns
@@ -47,7 +93,7 @@ export const Events = () => {
         </CustomColumn>
       </CustomColumns>
       <CustomColumns
-        marginTop={{ desktop: -4, tablet: -4, mobile: -1 }}
+        marginTop={{ desktop: -4, tablet: 0, mobile: -1 }}
         paddingLeft={STANDARD_CUSTOM_COLUMNS_PADDING}
         paddingRight={STANDARD_CUSTOM_COLUMNS_PADDING}
       >
@@ -64,7 +110,7 @@ export const Events = () => {
         </CustomColumn>
       </CustomColumns>
       <CustomColumns marginTop={{ desktop: 2, tablet: 2, mobile: 1 }}>
-        <EventsContainer>
+        <EventsContainer className="events">
           <EventCard className="event_card">asdf</EventCard>
           <EventCard className="event_card">asdf</EventCard>
           <EventCard className="event_card">asdf</EventCard>
