@@ -1,14 +1,16 @@
+import { Heading, Text } from "fannypack";
 import React from "react";
 import styled from "styled-components";
-import { CustomColumns } from "../columns";
 import { CustomColumn } from "../column";
-import { theme } from "../../config/theme";
-import { Heading, Text } from "fannypack";
+import { CustomColumns } from "../columns";
 
 const Base = styled.div`
   position: relative;
-  padding: 12rem 0;
+  padding: 0;
   margin: 4rem 0;
+  @media (min-width: 1024px) {
+    padding: 12rem 0;
+  }
   .background_image {
     width: 100%;
     height: 100%;
@@ -19,7 +21,10 @@ const Base = styled.div`
     top: 0;
     img {
       height: 100%;
-      display: block;
+      display: none;
+      @media (min-width: 768px) {
+        display: block;
+      }
     }
     .background_image__container {
       margin-left: auto;
@@ -32,8 +37,8 @@ const Base = styled.div`
       background: linear-gradient(
         90deg,
         rgba(255, 255, 255, 1) 0%,
-        rgba(255, 255, 255, 0.90) 50%,
-        rgba(255, 255, 255, 0.80) 100%
+        rgba(255, 255, 255, 0.9) 50%,
+        rgba(255, 255, 255, 0.8) 100%
       );
       height: 100%;
       width: 100%;
@@ -41,6 +46,10 @@ const Base = styled.div`
       left: 0;
       top: 0;
       z-index: 1;
+      display: none;
+      @media (min-width: 768px) {
+        display: inline-block;
+      }
     }
   }
   .columns_wrapper {
@@ -74,7 +83,10 @@ export const TwoColumnsText = () => {
               inventore quasi reiciendis?
             </Text>
           </CustomColumn>
-          <CustomColumn paddingRight={{ desktop: 12, mobile: 3 }}>
+          <CustomColumn
+            marginTop={{ desktop: 0, mobile: 3 }}
+            paddingRight={{ desktop: 12, mobile: 3 }}
+          >
             <Heading use="h2">Best conf ever!</Heading>
             <Text>
               Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sequi
