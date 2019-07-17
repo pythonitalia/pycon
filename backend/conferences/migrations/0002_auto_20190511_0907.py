@@ -9,49 +9,66 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('languages', '0001_initial'),
-        ('conferences', '0001_initial'),
-        ('submissions', '0001_initial'),
+        ("languages", "0001_initial"),
+        ("conferences", "0001_initial"),
+        ("submissions", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='duration',
-            name='allowed_submission_types',
-            field=models.ManyToManyField(to='submissions.SubmissionType', verbose_name='allowed submission types'),
+            model_name="duration",
+            name="allowed_submission_types",
+            field=models.ManyToManyField(
+                to="submissions.SubmissionType", verbose_name="allowed submission types"
+            ),
         ),
         migrations.AddField(
-            model_name='duration',
-            name='conference',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='durations', to='conferences.Conference', verbose_name='conference'),
+            model_name="duration",
+            name="conference",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="durations",
+                to="conferences.Conference",
+                verbose_name="conference",
+            ),
         ),
         migrations.AddField(
-            model_name='deadline',
-            name='conference',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='deadlines', to='conferences.Conference', verbose_name='conference'),
+            model_name="deadline",
+            name="conference",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="deadlines",
+                to="conferences.Conference",
+                verbose_name="conference",
+            ),
         ),
         migrations.AddField(
-            model_name='conference',
-            name='audience_levels',
-            field=models.ManyToManyField(to='conferences.AudienceLevel', verbose_name='audience levels'),
+            model_name="conference",
+            name="audience_levels",
+            field=models.ManyToManyField(
+                to="conferences.AudienceLevel", verbose_name="audience levels"
+            ),
         ),
         migrations.AddField(
-            model_name='conference',
-            name='languages',
-            field=models.ManyToManyField(to='languages.Language', verbose_name='languages'),
+            model_name="conference",
+            name="languages",
+            field=models.ManyToManyField(
+                to="languages.Language", verbose_name="languages"
+            ),
         ),
         migrations.AddField(
-            model_name='conference',
-            name='submission_types',
-            field=models.ManyToManyField(to='submissions.SubmissionType', verbose_name='submission types'),
+            model_name="conference",
+            name="submission_types",
+            field=models.ManyToManyField(
+                to="submissions.SubmissionType", verbose_name="submission types"
+            ),
         ),
         migrations.AddField(
-            model_name='conference',
-            name='topics',
-            field=models.ManyToManyField(to='conferences.Topic', verbose_name='topics'),
+            model_name="conference",
+            name="topics",
+            field=models.ManyToManyField(to="conferences.Topic", verbose_name="topics"),
         ),
         migrations.AlterUniqueTogether(
-            name='ticketfare',
-            unique_together={('conference', 'code')},
+            name="ticketfare", unique_together={("conference", "code")}
         ),
     ]

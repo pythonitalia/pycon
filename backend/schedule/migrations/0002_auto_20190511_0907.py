@@ -9,20 +9,31 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('conferences', '0001_initial'),
-        ('submissions', '0001_initial'),
-        ('schedule', '0001_initial'),
+        ("conferences", "0001_initial"),
+        ("submissions", "0001_initial"),
+        ("schedule", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='scheduleitem',
-            name='submission',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='submissions.Submission', verbose_name='submission'),
+            model_name="scheduleitem",
+            name="submission",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                to="submissions.Submission",
+                verbose_name="submission",
+            ),
         ),
         migrations.AddField(
-            model_name='room',
-            name='conference',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='rooms', to='conferences.Conference', verbose_name='conference'),
+            model_name="room",
+            name="conference",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="rooms",
+                to="conferences.Conference",
+                verbose_name="conference",
+            ),
         ),
     ]

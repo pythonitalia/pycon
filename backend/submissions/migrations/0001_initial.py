@@ -12,42 +12,125 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('languages', '0001_initial'),
+        ("languages", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('conferences', '0001_initial'),
+        ("conferences", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Submission',
+            name="Submission",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', model_utils.fields.AutoCreatedField(default=django.utils.timezone.now, editable=False, verbose_name='created')),
-                ('modified', model_utils.fields.AutoLastModifiedField(default=django.utils.timezone.now, editable=False, verbose_name='modified')),
-                ('title', models.CharField(max_length=100, verbose_name='title')),
-                ('abstract', models.TextField(max_length=1000, verbose_name='abstract')),
-                ('elevator_pitch', models.TextField(blank=True, default='', max_length=300, verbose_name='elevator pitch')),
-                ('notes', models.TextField(blank=True, default='', verbose_name='notes')),
-                ('conference', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='submissions', to='conferences.Conference', verbose_name='conference')),
-                ('duration', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='conferences.Duration', verbose_name='duration')),
-                ('language', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='languages.Language', verbose_name='language')),
-                ('speaker', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='submissions', to=settings.AUTH_USER_MODEL, verbose_name='speaker')),
-                ('topic', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='conferences.Topic', verbose_name='topic')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created",
+                    model_utils.fields.AutoCreatedField(
+                        default=django.utils.timezone.now,
+                        editable=False,
+                        verbose_name="created",
+                    ),
+                ),
+                (
+                    "modified",
+                    model_utils.fields.AutoLastModifiedField(
+                        default=django.utils.timezone.now,
+                        editable=False,
+                        verbose_name="modified",
+                    ),
+                ),
+                ("title", models.CharField(max_length=100, verbose_name="title")),
+                (
+                    "abstract",
+                    models.TextField(max_length=1000, verbose_name="abstract"),
+                ),
+                (
+                    "elevator_pitch",
+                    models.TextField(
+                        blank=True,
+                        default="",
+                        max_length=300,
+                        verbose_name="elevator pitch",
+                    ),
+                ),
+                (
+                    "notes",
+                    models.TextField(blank=True, default="", verbose_name="notes"),
+                ),
+                (
+                    "conference",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="submissions",
+                        to="conferences.Conference",
+                        verbose_name="conference",
+                    ),
+                ),
+                (
+                    "duration",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to="conferences.Duration",
+                        verbose_name="duration",
+                    ),
+                ),
+                (
+                    "language",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to="languages.Language",
+                        verbose_name="language",
+                    ),
+                ),
+                (
+                    "speaker",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="submissions",
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="speaker",
+                    ),
+                ),
+                (
+                    "topic",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to="conferences.Topic",
+                        verbose_name="topic",
+                    ),
+                ),
             ],
-            options={
-                'abstract': False,
-            },
+            options={"abstract": False},
         ),
         migrations.CreateModel(
-            name='SubmissionType',
+            name="SubmissionType",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100, unique=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100, unique=True)),
             ],
         ),
         migrations.AddField(
-            model_name='submission',
-            name='type',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='submissions.SubmissionType', verbose_name='type'),
+            model_name="submission",
+            name="type",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.PROTECT,
+                to="submissions.SubmissionType",
+                verbose_name="type",
+            ),
         ),
     ]

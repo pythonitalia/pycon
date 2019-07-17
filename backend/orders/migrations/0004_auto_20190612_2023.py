@@ -7,21 +7,26 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('contenttypes', '0002_remove_content_type_name'),
-        ('orders', '0003_auto_20190608_1400'),
+        ("contenttypes", "0002_remove_content_type_name"),
+        ("orders", "0003_auto_20190608_1400"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='order',
-            name='content_type',
-            field=models.ForeignKey(default=None, on_delete=django.db.models.deletion.CASCADE, to='contenttypes.ContentType', verbose_name='content type'),
+            model_name="order",
+            name="content_type",
+            field=models.ForeignKey(
+                default=None,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="contenttypes.ContentType",
+                verbose_name="content type",
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='order',
-            name='object_id',
-            field=models.PositiveIntegerField(default=None, verbose_name='object id'),
+            model_name="order",
+            name="object_id",
+            field=models.PositiveIntegerField(default=None, verbose_name="object id"),
             preserve_default=False,
         ),
     ]

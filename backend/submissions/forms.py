@@ -2,6 +2,7 @@ from api.forms import ContextAwareModelForm
 from conferences.models import Conference
 from django import forms
 from django.utils.translation import ugettext_lazy as _
+from integrations.tasks import notify_new_submission
 from languages.models import Language
 
 from .models import Submission
@@ -24,7 +25,16 @@ class SendSubmissionForm(ContextAwareModelForm):
 
     def save(self, commit=True):
         self.instance.speaker = self.context.user
-        return super().save(commit=commit)
+        instance = super().save(commit=commit)
+        notify_new_submission(
+            instance.title,
+            instance.elevator_pitch,
+            instance.type.name,
+            self.context.build_absolute_uri(instance.get_admin_url()),
+            instance.duration.duration,
+            instance.topic.name,
+        )
+        return instance
 
     class Meta:
         model = Submission

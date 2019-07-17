@@ -7,14 +7,20 @@ import orders.enums
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('orders', '0002_auto_20190608_1400'),
-    ]
+    dependencies = [("orders", "0002_auto_20190608_1400")]
 
     operations = [
         migrations.AlterField(
-            model_name='order',
-            name='state',
-            field=django_fsm.FSMIntegerField(choices=[(1, 'NEW'), (2, 'PROCESSING'), (3, 'COMPLETE'), (-1, 'FAILED')], default=orders.enums.PaymentState(1)),
-        ),
+            model_name="order",
+            name="state",
+            field=django_fsm.FSMIntegerField(
+                choices=[
+                    (1, "NEW"),
+                    (2, "PROCESSING"),
+                    (3, "COMPLETE"),
+                    (-1, "FAILED"),
+                ],
+                default=orders.enums.PaymentState(1),
+            ),
+        )
     ]

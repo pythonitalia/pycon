@@ -4,11 +4,11 @@ from django.db import migrations, models
 
 
 def create_languages(apps, schema_editor):
-    Language = apps.get_model('languages', 'Language')
+    Language = apps.get_model("languages", "Language")
     from ..languages import LANGUAGES
 
     for language in LANGUAGES:
-        Language.objects.create(name=language['English'], code=language['alpha2'])
+        Language.objects.create(name=language["English"], code=language["alpha2"])
 
 
 def do_nothing(apps, schema_editor):
@@ -19,21 +19,28 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Language',
+            name="Language",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100, verbose_name='iso name')),
-                ('code', models.CharField(max_length=2, unique=True, verbose_name='code')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100, verbose_name="iso name")),
+                (
+                    "code",
+                    models.CharField(max_length=2, unique=True, verbose_name="code"),
+                ),
             ],
-            options={
-                'verbose_name': 'Language',
-                'verbose_name_plural': 'Languages',
-            },
+            options={"verbose_name": "Language", "verbose_name_plural": "Languages"},
         ),
-        migrations.RunPython(create_languages, do_nothing)
+        migrations.RunPython(create_languages, do_nothing),
     ]

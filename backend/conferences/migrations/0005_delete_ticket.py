@@ -5,12 +5,6 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('conferences', '0004_auto_20190617_0011'),
-    ]
+    dependencies = [("conferences", "0004_auto_20190617_0011")]
 
-    operations = [
-        migrations.DeleteModel(
-            name='Ticket',
-        ),
-    ]
+    operations = [migrations.DeleteModel(name="Ticket")]

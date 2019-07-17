@@ -9,18 +9,48 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('orders', '0001_initial'),
-        ('conferences', '0002_auto_20190511_0907'),
+        ("orders", "0001_initial"),
+        ("conferences", "0002_auto_20190511_0907"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Ticket',
+            name="Ticket",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('order', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='orders.Order', verbose_name='order')),
-                ('ticket_fare', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='conferences.TicketFare', verbose_name='ticket fare')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='tickets', to=settings.AUTH_USER_MODEL, verbose_name='user')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "order",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to="orders.Order",
+                        verbose_name="order",
+                    ),
+                ),
+                (
+                    "ticket_fare",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to="conferences.TicketFare",
+                        verbose_name="ticket fare",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="tickets",
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="user",
+                    ),
+                ),
             ],
-        ),
+        )
     ]

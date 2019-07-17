@@ -95,3 +95,6 @@ ENV/
 
 # Ignore vscode configuration
 .vscode/
+
+# Ignore pycharm configuration
+.idea/*
