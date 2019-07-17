@@ -1,15 +1,20 @@
 import environ
-from django.urls import reverse_lazy
 
 root = environ.Path(__file__) - 3  # three folder back (/a/b/c/ - 3 = /)
 
-env = environ.Env(DEBUG=(bool, False), ALLOWED_HOSTS=(list, []))
+env = environ.Env(
+    DEBUG=(bool, False),
+    ALLOWED_HOSTS=(list, []),
+    FRONTEND_URL=(str, "http://testfrontend.it/"),
+)
 
 environ.Env.read_env(root(".env"))
 
 DEBUG = env("DEBUG")
 
 ALLOWED_HOSTS = env("ALLOWED_HOSTS")
+
+FRONTEND_URL = env("FRONTEND_URL")
 
 # Application definition
 
@@ -31,6 +36,7 @@ INSTALLED_APPS = [
     "orders.apps.OrdersConfig",
     "payments.apps.PaymentsConfig",
     "tickets.apps.TicketsConfig",
+    "voting.apps.VotingConfig",
 ]
 
 MIDDLEWARE = [
@@ -112,19 +118,21 @@ MEDIA_ROOT = root("media")
 
 GRAPHENE = {"SCHEMA": "api.schema.schema"}
 
-
 AUTH_USER_MODEL = "users.User"
-
+SOCIAL_AUTH_USER_MODEL = "users.User"
 
 AUTHENTICATION_BACKENDS = (
-    "social_core.backends.twitter.TwitterOAuth",
+    "social_core.backends.google.GoogleOAuth2",
     "django.contrib.auth.backends.ModelBackend",
 )
 
-SOCIAL_AUTH_TWITTER_KEY = env("SOCIAL_AUTH_TWITTER_KEY", default="")
-SOCIAL_AUTH_TWITTER_SECRET = env("SOCIAL_AUTH_TWITTER_SECRET", default="")
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env("SOCIAL_AUTH_GOOGLE_OAUTH2_KEY", default="")
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env("SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET", default="")
 
-LOGIN_REDIRECT_URL = reverse_lazy("post-login")
+SOCIAL_AUTH_POSTGRES_JSONFIELD = True
+
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = f"{FRONTEND_URL}/login/success/"
+SOCIAL_AUTH_LOGIN_ERROR_URL = f"{FRONTEND_URL}/login/error/"
 
 STRIPE_SECRET_KEY = env("STRIPE_SECRET_KEY", default="")
 STRIPE_WEBHOOK_SECRET = env("STRIPE_WEBHOOK_SECRET", default="")

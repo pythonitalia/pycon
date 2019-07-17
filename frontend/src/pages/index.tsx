@@ -1,23 +1,18 @@
 import * as React from "react";
 
-import styled from "styled-components";
+import { Hero } from "../components/hero";
+import { TwoColumnsText } from "../components/two-columns-text";
 import { HomeLayout } from "../layouts/home";
-
-
-const Title = styled.h1`
-  color: blue;
-`;
 
 export default () => (
   <HomeLayout>
-    <Title>Yay!!1</Title>
-    <Title>Yay!!1</Title>
-    <Title>Yay!!1</Title>
-    <Title>Yay!!1</Title>
-    <Title>Yay!!1</Title>
-    <Title>Yay!!1</Title>
-    <Title>Yay!!1</Title>
-    <Title>Yay!!1</Title>
-    <Title>Yay!!1</Title>
+    <Hero title="Hello world" backgroundImage={"https://placebear.com/1300/400"}>
+      <p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias et omnis
+        hic veniam nisi architecto reprehenderit voluptate magnam sed commodi
+        vel quidem ea, blanditiis quos harum non ipsam, soluta saepe.
+      </p>
+    </Hero>
+    <TwoColumnsText />
   </HomeLayout>
 );

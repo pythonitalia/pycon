@@ -1888,10 +1888,10 @@
   resolved "https://registry.yarnpkg.com/@types/mkdirp/-/mkdirp-0.3.29.tgz#7f2ad7ec55f914482fc9b1ec4bb1ae6028d46066"
   integrity sha1-fyrX7FX5FEgvybHsS7GuYCjUYGY=
 
-"@types/node@*", "@types/node@^12.6.3":
-  version "12.6.3"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.6.3.tgz#44d507c5634f85e7164707ca36bba21b5213d487"
-  integrity sha512-7TEYTQT1/6PP53NftXXabIZDaZfaoBdeBm8Md/i7zsWRoBe0YwOXguyK8vhHs8ehgB/w9U4K/6EWuTyp0W6nIA==
+"@types/node@*", "@types/node@^12.6.6":
+  version "12.6.6"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.6.6.tgz#831587377c35bb28fa33b6fe5f849a26a3f4a412"
+  integrity sha512-SMgj3x28MkJyHdWaMv/g/ca3LYDi5gR7O8mX0VKazvFOnmlDXctSEdd/8jfSqozjKFK1R9If1QZWkafX7yQTpA==
 
 "@types/node@^7.0.11":
   version "7.10.6"
@@ -7176,10 +7176,10 @@ gatsby-transformer-sharp@^2.2.3:
     semver "^5.6.0"
     sharp "^0.22.1"
 
-gatsby@^2.13.23:
-  version "2.13.23"
-  resolved "https://registry.yarnpkg.com/gatsby/-/gatsby-2.13.23.tgz#72e6e17facb0e0a227ab3ed7d9c793b5558dbd53"
-  integrity sha512-CI2yCxm9VFLo+CjFmxuHR0bUP3LyHZsCw0Wy7QEPoKFf6m068GK00Ol1o05Y2x1T+gTsIbzP1AWHeWm4L/7AZQ==
+gatsby@^2.13.25:
+  version "2.13.25"
+  resolved "https://registry.yarnpkg.com/gatsby/-/gatsby-2.13.25.tgz#8cb7614059f837c708957d06ce34819e3a073f06"
+  integrity sha512-Wsytoc4OLvX9yRK9SjzWC+2jE7l7kjjP+vUpb95qMPkqyLykxN9Ghpvl/ZqBAoXWNpqhF5hPZam87suUHz4Ygg==
   dependencies:
     "@babel/code-frame" "^7.0.0"
     "@babel/core" "^7.0.0"

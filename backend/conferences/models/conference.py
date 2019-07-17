@@ -33,6 +33,16 @@ class Conference(TimeFramedModel, TimeStampedModel):
         except Deadline.DoesNotExist:
             return False
 
+    @property
+    def is_voting_open(self):
+        try:
+            voting_deadline = self.deadlines.get(type=Deadline.TYPES.voting)
+
+            now = timezone.now()
+            return voting_deadline.start <= now <= voting_deadline.end
+        except Deadline.DoesNotExist:
+            return False
+
     def __str__(self):
         return f"{self.name} <{self.code}>"
 
