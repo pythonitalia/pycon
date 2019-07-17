@@ -7,13 +7,14 @@ from django.core.management import CommandError
 from django.core.management.base import BaseCommand
 from django.db import transaction, IntegrityError
 
-from conferences.models import AudienceLevel, Topic
+from conferences.models import AudienceLevel, Topic, Duration, Conference
 from languages.models import Language
 from pycon.settings.base import root
-from submissions.models import SubmissionType
+from submissions.models import SubmissionType, Submission
+from users.models import User
 
 DEFAULT_DB_PATH = root('p3.db')
-SUPPORTED_ENTITIES = ['user', 'conference', 'submission_type', 'topic']
+SUPPORTED_ENTITIES = ['user', 'conference', 'submission_type', 'topic', 'submission']
 OLD_DEAFAULT_TZ = pytz.timezone('Europe/Rome')
 TALK_TYPES = {
     's': 'Talk',
@@ -22,6 +23,54 @@ TALK_TYPES = {
     'p': 'Poster session',
     'h': 'Help desk',
 }
+TOPIC_MAPPING = {
+    # (track.title,       sub_community): topic
+    ('DjangoVillage',     '*'):          'DjangoVillage',
+    ('PyWebTwo',          'django'):     'DjangoVillage',
+    ('Python&Friends',    'django'):     'DjangoVillage',
+    ('PyWeb&Friends',     'django'):     'DjangoVillage',
+    ('PyWeb',             'django'):     'DjangoVillage',
+    ('PyWeb',             '*'):          'PyWeb',
+    ('PyWebTwo',          '*'):          'PyWeb',
+    ('PyWeb&Friends',     '*'):          'PyWeb&Friends',
+    ('PyWeb / DevOps',    '*'):          'PyWeb / DevOps',
+    ('PyBusiness',        '*'):          'PyBusiness',
+    ('PyTraining',        'pybusiness'): 'PyBusiness',
+    ('Python&Friends',    'pybusiness'): 'PyBusiness',
+    ('PyLang',            '*'):          'PyLang',
+    ('PyData',            '*'):          'PyData',
+    ('PyDataTwo',         '*'):          'PyData',
+    ('PyDataTwo',         '*'):          'PyData',
+    ('PyDataTrainingTwo', '*'):          'PyData',
+    ('PyDataTrainingTwo', '*'):          'PyData',
+    ('PyDataTrainingOne', '*'):          'PyData',
+    ('PyDataTrainingOne', '*'):          'PyData',
+    ('PyDataTraining',    '*'):          'PyData',
+    ('PyDatabase',        '*'):          'PyDatabase',
+    ('PyData&Friends',    '*'):          'PyData&Friends',
+    ('PyCommunity',       '*'):          'PyCommunity',
+    ('Odoo',              '*'):          'Odoo',
+    ('PyBusiness',        'odoo'):       'Odoo',
+    ('*',                 'pydata'):     'PyData',
+    ('*',                 '*'):          'Python & Friends',
+}
+
+
+def get_topic_name(track_title, sub_community):
+    topic_name = TOPIC_MAPPING.get((track_title, sub_community))
+    if topic_name:
+        return topic_name
+
+    topic_name = TOPIC_MAPPING.get((track_title, '*'))
+    if topic_name:
+        return topic_name
+
+    topic_name = TOPIC_MAPPING.get(('*', sub_community))
+    if topic_name:
+        return topic_name
+
+    return TOPIC_MAPPING.get(('*', '*'))
+
 
 def dict_factory(cursor, row):
     d = {}
@@ -212,6 +261,107 @@ class Command(BaseCommand):
             f'{actions["error"]} errors.'
         ))
 
+    def import_submissions(self, overwrite=False):
+        if overwrite:
+            self.stdout.write(f'Overwrite has no effect on submittions')
+
+        self.stdout.write(f'Importing submissions...')
+
+        conferences = {
+            conf.code: conf.id
+            for conf in Conference.objects.all()
+        }
+        languages = {
+            lang.code: lang.id
+            for lang in Language.objects.all()
+        }
+        submission_types = {
+            st.name: st.id
+            for st in SubmissionType.objects.all()
+        }
+        types = {
+            code: submission_types[name]
+            for code, name in TALK_TYPES.items()
+        }
+
+        talk_list = list(self.c.execute(
+            """
+            select talk.conference, talk.duration, talk.type, talk.created, talk.title, talk.language, talk.type, 
+                content.body, user.username,
+                track.title as track_title, talk2.sub_community
+            from conference_talk talk
+            left outer join conference_multilingualcontent content 
+                on content.object_id = talk.id and content.content_type_id = 25 and content.content = 'abstracts'
+            left outer join conference_talkspeaker speaker 
+                on speaker.talk_id = talk.id 
+            left outer join auth_user user 
+                on user.id = speaker.speaker_id             
+            left outer join conference_event event 
+                on event.talk_id = talk.id
+            left outer join conference_schedule sched 
+                on sched.conference = talk.conference and sched.id = event.schedule_id
+            left outer join conference_eventtrack et 
+                on et.event_id = event.id
+            left outer join conference_track track 
+                on track.schedule_id = sched.id and track.id = et.track_id
+            left outer join p3_p3talk talk2 
+                on talk2.talk_id = talk.id
+            """
+        ))
+
+        actions = {'create': 0, 'update': 0, 'skip': 0, 'error': 0}
+        for talk in talk_list:
+            action = 'create'
+            try:
+                with transaction.atomic():
+                    duration, _ = Duration.objects.get_or_create(
+                        conference_id=conferences[talk['conference']],
+                        duration=talk['duration'],
+                        defaults=dict(
+                            name=f"{talk['duration']} minutes"
+                        )
+                    )
+                    duration.allowed_submission_types.add(types[talk['type']])
+
+                    topic_name = get_topic_name(talk['track_title'], talk['sub_community'])
+                    topic, _ = Topic.objects.get_or_create(name=topic_name)
+
+                    conf, created = Submission.objects.update_or_create(
+                        created=string_to_tzdatetime(talk['created']),
+                        conference_id=conferences[talk['conference']],
+                        title=talk['title'],
+                        language_id=languages.get(talk['language']),
+                        defaults=dict(
+                            speaker=User.objects.get(username=talk['username']),
+                            abstract=talk['body'],
+                            topic=topic,
+                            type_id=types[talk['type']],
+                            duration=duration,
+                        )
+                    )
+                    if not created:
+                        action = 'update'
+
+            except IntegrityError as exc:
+                action = 'skip'
+                continue
+            except Exception as exc:
+                self.stdout.write(self.style.NOTICE(
+                    f'Something bad happened when importing submission {talk["title"]}: {exc}'
+                ))
+                action = 'error'
+                continue
+            finally:
+                actions[action] += 1
+
+        self.stdout.write(self.style.SUCCESS(
+            f'Submission: '
+            f'{actions["create"]} created, '
+            f'{actions["update"]} updated, '
+            f'{actions["skip"]} skipped, '
+            f'{actions["error"]} errors.'
+        ))
+
     def handle(self, *args, **options):
         self.stdout.write('Starting...')
 
@@ -244,5 +394,7 @@ class Command(BaseCommand):
             self.create_topics(overwrite=overwrite)
         if 'conference' in entities:
             self.import_conferences(overwrite=overwrite)
+        if 'submission' in entities:
+            self.import_submissions(overwrite=overwrite)
 
         self.stdout.write(self.style.SUCCESS('Done!'))
