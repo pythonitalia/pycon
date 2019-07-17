@@ -19,12 +19,12 @@ repos:
             id: black
             language_version: python3.7
     - repo: https://gitlab.com/pycqa/flake8
-      rev: 3.7.7
+      rev: 3.7.8
       hooks:
           - <<: *python_settings
             id: flake8
     - repo: https://github.com/prettier/prettier
-      rev: "1.18.2"
+      rev: 1.18.2
       hooks:
           - id: prettier
             types: [javascript, tsx, ts, json, markdown]
@@ -35,10 +35,9 @@ repos:
             files: '^.*\.(py|mjml|js|jsx|tf|tfvars|conf)$'
           - id: file-contents-sorter
             files: "^requirements(-test)?.in$"
-          - id: no-commit-to-branch
 
     - repo: git://github.com/awebdeveloper/pre-commit-tslint/
-      rev: "531a369ea27be731564b302de388403670a9123d"
+      rev: 531a369ea27be731564b302de388403670a9123d
       hooks:
           - id: tslint
             files: \.(ts|tsx)$

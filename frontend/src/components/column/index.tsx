@@ -7,6 +7,6 @@ import { ResponsiveProps, responsiveSpacing } from "../columns";
 export type CustomColumnsType = ResponsiveProps;
 export const BaseCustomColumn = Column as React.SFC<CustomColumnsType>;
 
-export const CustomColumns = styled(BaseCustomColumn)`
+export const CustomColumn = styled(BaseCustomColumn)`
   ${props => responsiveSpacing(props)}
 `;
