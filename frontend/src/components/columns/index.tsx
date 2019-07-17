@@ -48,23 +48,31 @@ const responsiveStyle = (
   `;
 };
 
+const ALLOWED_RESPONSIVE_PROPS = [
+  "marginTop",
+  "marginBottom",
+  "marginLeft",
+  "marginRight",
+  "paddingTop",
+  "paddingBottom",
+  "paddingLeft",
+  "paddingRight",
+] as const;
+
+type AllowedResponsiveProps = typeof ALLOWED_RESPONSIVE_PROPS[number];
+
 export type ResponsiveProps = {
-  marginTop?: ResponsiveValue;
-  marginBottom?: ResponsiveValue;
-  marginLeft?: ResponsiveValue;
-  marginRight?: ResponsiveValue;
-  paddingTop?: ResponsiveValue;
-  paddingBottom?: ResponsiveValue;
-  paddingLeft?: ResponsiveValue;
-  paddingRight?: ResponsiveValue;
+  [key in AllowedResponsiveProps]?: ResponsiveValue;
 };
 
 export const responsiveSpacing = (props: ResponsiveProps) => css`
-  ${Object.entries(props).map(
-    ([key, value]) =>
-      value && responsiveStyle(key as keyof ResponsiveProps, value),
-  )}
-`;
+         ${Object.entries(props)
+           .filter(([key]) => ALLOWED_RESPONSIVE_PROPS.indexOf(key as AllowedResponsiveProps) !== -1)
+           .map(
+             ([key, value]) =>
+               value && responsiveStyle(key as AllowedResponsiveProps, value),
+           )}
+       `;
 
 export type CustomColumnsType = ResponsiveProps;
 export const BaseCustomColumns = Columns as React.SFC<CustomColumnsType>;
