@@ -446,6 +446,9 @@ class Command(BaseCommand):
                         user_id=ticket_user,
                         ticket_fare=ticket_fare,
                         order=order,
+                        defaults=dict(
+                            created=order.created,
+                        )
                     )
                     if not created:
                         action = 'update'
