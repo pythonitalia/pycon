@@ -116,12 +116,20 @@ export const Footer = () => {
         </Column>
       </Row>
 
-      <Row
-        paddingLeft={STANDARD_ROW_PADDING}
-        paddingRight={STANDARD_ROW_PADDING}
-        marginTop={MARGIN_TOP_ROW}
-      >
+      <Row marginTop={MARGIN_TOP_ROW}>
         <Column
+          marginLeft={{
+            mobile: -0.5,
+            tabletPortrait: -0.5,
+            tabletLandscape: -0.5,
+            desktop: -0.5,
+          }}
+          marginRight={{
+            mobile: -0.5,
+            tabletPortrait: -0.5,
+            tabletLandscape: -0.5,
+            desktop: -0.5,
+          }}
           colWidth={{
             mobile: 12,
             tabletPortrait: 12,
