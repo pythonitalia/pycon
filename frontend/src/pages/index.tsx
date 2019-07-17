@@ -12,7 +12,7 @@ type HomeProps = {
 
 export default ({ data }: HomeProps) => (
   <HomeLayout>
-    <Hero title="Hello world" backgroundImage={data.heroImage.childImageSharp}>
+    <Hero title="Pycon XI" backgroundImage={data.heroImage.childImageSharp}>
       <p>
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias et omnis
         hic veniam nisi architecto reprehenderit voluptate magnam sed commodi

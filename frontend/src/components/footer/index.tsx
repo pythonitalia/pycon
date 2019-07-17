@@ -14,10 +14,10 @@ export class Footer extends Component {
     return (
       <Wrapper>
         <CustomColumns
-          paddingTop={{ desktop: 4, mobile: 3 }}
-          paddingBottom={{ desktop: 4, mobile: 3 }}
-          paddingLeft={{ desktop: 2, mobile: 3 }}
-          paddingRight={{ desktop: 2, mobile: 3 }}
+          paddingTop={{ desktop: 4, tablet: 4, mobile: 3 }}
+          paddingBottom={{ desktop: 4, tablet: 4, mobile: 3 }}
+          paddingLeft={{ desktop: 2, tablet: 2, mobile: 3 }}
+          paddingRight={{ desktop: 2, tablet: 2, mobile: 3 }}
         >
           <Column spread={6} spreadMobile={12}>
             <Box className="margin-mobile-0-r">
@@ -75,12 +75,12 @@ export class Footer extends Component {
         </Columns>
 
         <CustomColumns
-          paddingTop={{ desktop: 4, mobile: 3 }}
-          paddingBottom={{ desktop: 4, mobile: 3 }}
-          paddingLeft={{ desktop: 2, mobile: 3 }}
-          paddingRight={{ desktop: 2, mobile: 3 }}
+          paddingTop={{ desktop: 4, tablet: 4, mobile: 3 }}
+          paddingBottom={{ desktop: 4, tablet: 4, mobile: 3 }}
+          paddingLeft={{ desktop: 2, tablet: 2, mobile: 3 }}
+          paddingRight={{ desktop: 2, tablet: 2, mobile: 3 }}
         >
-          <Column spread={3}>
+          <Column spreadMobile={12} spread={3} spreadDesktop={3}>
             <Box>
               <Heading use="h4">our venues</Heading>
               <LinksWrapper>
@@ -90,7 +90,7 @@ export class Footer extends Component {
               </LinksWrapper>
             </Box>
           </Column>
-          <Column spread={3}>
+          <Column spreadMobile={12} spread={3} spreadDesktop={3}>
             <Box>
               <Heading use="h4">our venues</Heading>
               <LinksWrapper>
@@ -100,7 +100,7 @@ export class Footer extends Component {
               </LinksWrapper>
             </Box>
           </Column>
-          <Column spread={3}>
+          <Column spreadMobile={12} spread={3} spreadDesktop={3}>
             <Box>
               <Heading use="h4">our venues</Heading>
               <LinksWrapper>
@@ -110,7 +110,7 @@ export class Footer extends Component {
               </LinksWrapper>
             </Box>
           </Column>
-          <Column spread={3}>
+          <Column spreadMobile={12} spread={3} spreadDesktop={3}>
             <Box>
               <Heading use="h4">our venues</Heading>
               <LinksWrapper>
