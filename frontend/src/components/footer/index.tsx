@@ -14,12 +14,10 @@ export class Footer extends Component {
     return (
       <Wrapper>
         <CustomColumns
-          responsivePadding={{
-            top: { desktop: 4, mobile: 3 },
-            bottom: { desktop: 4, mobile: 3 },
-            left: { desktop: 2, mobile: 3 },
-            right: { desktop: 2, mobile: 3 },
-          }}
+          paddingTop={{ desktop: 4, mobile: 3 }}
+          paddingBottom={{ desktop: 4, mobile: 3 }}
+          paddingLeft={{ desktop: 2, mobile: 3 }}
+          paddingRight={{ desktop: 2, mobile: 3 }}
         >
           <Column spread={6} spreadMobile={12}>
             <Box className="margin-mobile-0-r">
@@ -77,12 +75,10 @@ export class Footer extends Component {
         </Columns>
 
         <CustomColumns
-          responsivePadding={{
-            top: { desktop: 4, mobile: 3 },
-            bottom: { desktop: 4, mobile: 3 },
-            left: { desktop: 2, mobile: 3 },
-            right: { desktop: 2, mobile: 3 },
-          }}
+          paddingTop={{ desktop: 4, mobile: 3 }}
+          paddingBottom={{ desktop: 4, mobile: 3 }}
+          paddingLeft={{ desktop: 2, mobile: 3 }}
+          paddingRight={{ desktop: 2, mobile: 3 }}
         >
           <Column spread={3}>
             <Box>
