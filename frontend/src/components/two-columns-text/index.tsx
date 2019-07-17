@@ -1,5 +1,6 @@
-import { Heading, Text } from "fannypack";
 import React from "react";
+
+import { Heading, Text } from "fannypack";
 import styled from "styled-components";
 import { CustomColumn } from "../column";
 import { CustomColumns } from "../columns";
@@ -63,7 +64,7 @@ export const TwoColumnsText = () => {
     <Base>
       <div className="background_image">
         <div className="background_image__container">
-          <div className="background_image__overlay"></div>
+          <div className="background_image__overlay"/>
           <img src="https://placebear.com/600/400" alt="" />
         </div>
       </div>

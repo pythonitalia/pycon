@@ -1,4 +1,5 @@
 import * as React from "react";
+
 import { Hero } from "../components/hero";
 import { TwoColumnsText } from "../components/two-columns-text";
 import { HomeLayout } from "../layouts/home";
