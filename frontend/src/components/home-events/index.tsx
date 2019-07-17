@@ -9,6 +9,32 @@ import { SectionTitle } from "../section-title";
 
 const Wrapper = styled.div``;
 
+const EventsContainer = styled.div`
+  overflow-x: scroll;
+  width: 100%;
+  white-space: nowrap;
+
+  .event_card {
+    display: inline-block;
+    margin-right: 16px;
+    &:first-child {
+      margin-left: 15rem;
+    }
+  }
+`;
+
+const EventCard = styled.div`
+  background: linear-gradient(
+    29.43deg,
+    #0c67ff 0%,
+    rgba(12, 103, 255, 0.0001) 125.98%
+  );
+  box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  height: 200px;
+  width: 300px;
+`;
+
 export const Events = () => {
   return (
     <Wrapper>
@@ -31,58 +57,23 @@ export const Events = () => {
           spread={6}
           spreadDesktop={12}
         >
-          <Heading use="h3">Where is the venue?</Heading>
           <Text>
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quibusdam
-            numquam inventore laboriosam quisquam nobis maxime reiciendis a
-            consectetur nisi temporibus. Quo autem magni eaque suscipit
-            obcaecati ad excepturi iste ab!
+            Lorem ipsum, dolor sit amet consectetur adipisicing elit maxime
+            reiciendis a consectetur nisi temporibus!
           </Text>
         </CustomColumn>
-        <CustomColumn
-          paddingRight={{ desktop: 3, tablet: 2, mobile: 0 }}
-          spreadMobile={12}
-          spread={6}
-          spreadDesktop={12}
-        >
-          <Heading use="h3">When will the event take place?</Heading>
-          <Text>
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quibusdam
-            numquam inventore laboriosam quisquam nobis maxime reiciendis a
-            consectetur nisi temporibus. Quo autem magni eaque suscipit
-            obcaecati ad excepturi iste ab!
-          </Text>
-        </CustomColumn>
-        <CustomColumn
-          marginTop={{ desktop: 2, tablet: 2, mobile: 0 }}
-          paddingRight={{ desktop: 3, tablet: 2, mobile: 0 }}
-          spreadMobile={12}
-          spread={6}
-          spreadDesktop={12}
-        >
-          <Heading use="h3">How can I contribute?</Heading>
-          <Text>
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quibusdam
-            numquam inventore laboriosam quisquam nobis maxime reiciendis a
-            consectetur nisi temporibus. Quo autem magni eaque suscipit
-            obcaecati ad excepturi iste ab!
-          </Text>
-        </CustomColumn>
-        <CustomColumn
-          marginTop={{ desktop: 2, tablet: 2, mobile: 0 }}
-          paddingRight={{ desktop: 3, tablet: 2, mobile: 0 }}
-          spreadMobile={12}
-          spread={6}
-          spreadDesktop={12}
-        >
-          <Heading use="h3">Where is the venue?</Heading>
-          <Text>
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quibusdam
-            numquam inventore laboriosam quisquam nobis maxime reiciendis a
-            consectetur nisi temporibus. Quo autem magni eaque suscipit
-            obcaecati ad excepturi iste ab!
-          </Text>
-        </CustomColumn>
+      </CustomColumns>
+      <CustomColumns marginTop={{ desktop: 2, tablet: 2, mobile: 1 }}>
+        <EventsContainer>
+          <EventCard className="event_card">asdf</EventCard>
+          <EventCard className="event_card">asdf</EventCard>
+          <EventCard className="event_card">asdf</EventCard>
+          <EventCard className="event_card">asdf</EventCard>
+          <EventCard className="event_card">asdf</EventCard>
+          <EventCard className="event_card">asdf</EventCard>
+          <EventCard className="event_card">asdf</EventCard>
+          <EventCard className="event_card">asdf</EventCard>
+        </EventsContainer>
       </CustomColumns>
     </Wrapper>
   );
