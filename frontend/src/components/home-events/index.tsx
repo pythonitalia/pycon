@@ -8,7 +8,9 @@ import { CustomColumn } from "../column";
 import { CustomColumns } from "../columns";
 import { SectionTitle } from "../section-title";
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  margin-top: 2rem;
+`;
 
 const EventsContainer = styled.div`
   overflow-x: scroll;
@@ -119,7 +121,7 @@ export const Events = () => {
         </CustomColumn>
       </CustomColumns>
       <CustomColumns
-        marginTop={{ desktop: -4, tablet: 0, mobile: -1 }}
+        marginTop={{ desktop: -4, tablet: 0, mobile: 0 }}
         paddingLeft={STANDARD_CUSTOM_COLUMNS_PADDING}
         paddingRight={STANDARD_CUSTOM_COLUMNS_PADDING}
       >

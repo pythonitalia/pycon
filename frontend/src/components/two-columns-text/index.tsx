@@ -80,8 +80,10 @@ export const TwoColumnsText = () => {
           paddingRight={STANDARD_CUSTOM_COLUMNS_PADDING}
         >
           <CustomColumn
-            spread={4}
-            paddingRight={{ desktop: 4, tablet: 2, mobile: 0 }}
+            spreadMobile={12}
+            spread={12}
+            spreadDesktop={5}
+            paddingRight={{ desktop: 4, tablet: 1, mobile: 0 }}
           >
             <Heading use="h2">Why Pycon?</Heading>
             <Text>
@@ -92,9 +94,11 @@ export const TwoColumnsText = () => {
             </Text>
           </CustomColumn>
           <CustomColumn
-            spread={4}
+            spreadMobile={12}
+            spread={12}
+            spreadDesktop={5}
             marginTop={{ desktop: 0, tablet: 0, mobile: 3 }}
-            paddingRight={{ desktop: 4, tablet: 2, mobile: 0 }}
+            paddingRight={{ desktop: 4, tablet: 1, mobile: 0 }}
           >
             <Heading use="h2">Best conf ever!</Heading>
             <Text>
