@@ -14,7 +14,7 @@ from languages.models import Language
 from orders.enums import PaymentState
 from orders.models import Order, OrderItem
 from pycon.settings.base import root
-from schedule.models import Room
+from schedule.models import Room, ScheduleItem
 from submissions.models import SubmissionType, Submission
 from tickets.models import Ticket
 from users.models import User
@@ -84,13 +84,16 @@ def dict_factory(cursor, row):
     return d
 
 
-def string_to_tzdatetime(s, day_end=False):
+def string_to_tzdatetime(s, day_end=False, timezone=None):
     if not s:
         return None
     unaware_date = datetime.datetime.fromisoformat(s)
     if day_end:
         unaware_date += timedelta(days=1, seconds=-1)
-    return pytz.utc.localize(unaware_date)
+    if timezone:
+        return unaware_date.replace(tzinfo=timezone)
+    else:
+        return pytz.utc.localize(unaware_date)
 
 
 def create_languages():
@@ -371,6 +374,121 @@ class Command(BaseCommand):
             f'{actions["error"]} errors.'
         ))
 
+    def import_schedule_items(self, overwrite=False):
+        if overwrite:
+            self.stdout.write(f'Overwrite is the default for schedule items')
+
+        self.stdout.write(f'Importing schedule items...')
+
+        conferences = {
+            conf.code: conf.id
+            for conf in Conference.objects.all()
+        }
+        rooms = {
+            room.name: room.id
+            for room in Room.objects.all()
+        }
+        submissions = {
+            (s.created, s.conference_id, s.title, s.language.code): s
+            for s in Submission.objects.all()
+        }
+        users_by_email = {
+            user.email: user.id
+            for user in User.objects.all()
+        }
+
+        si_list = list(self.c.execute(
+            """
+            select distinct
+                sched.conference, sched.date,
+                event.id as event_id, event.custom as event_custom, event.abstract as event_abstract,
+                event.start_time, event.duration,
+                talk.id as talk_id, talk.created as talk_created, talk.title as talk_title,
+                talk.language as talk_language
+            from conference_schedule sched 
+            left outer join conference_event event 
+                on sched.id = event.schedule_id
+            left outer join conference_talk talk
+                on event.talk_id = talk.id
+            order by sched.slug
+            """
+        ))
+
+        actions = {'create': 0, 'update': 0, 'skip': 0, 'error': 0}
+        for si in si_list:
+            action = 'create'
+            try:
+                with transaction.atomic():
+                    conference_id = conferences.get(si['conference'])
+                    submission = None
+
+                    if si['talk_id']:
+                        submission_key = (
+                            string_to_tzdatetime(si['talk_created']),
+                            conference_id,
+                            si['talk_title'],
+                            si['talk_language'],
+                        )
+                        submission = submissions.get(submission_key)
+
+                    start_datetime = string_to_tzdatetime(f"{si['date']} {si['start_time']}", timezone=OLD_DEAFAULT_TZ)
+                    end_datetime = start_datetime + timedelta(minutes=si['duration'])
+
+                    sched_item, _ = ScheduleItem.objects.update_or_create(
+                        conference_id=conference_id,
+                        title=si['event_custom'] or si['talk_title'],
+                        description=si['event_abstract'],
+                        type='submission' if submission else 'custom',
+                        submission=submission,
+                        start=start_datetime,
+                        end=end_datetime,
+                    )
+
+                    if submission:
+                        speakers_emails = list(self.c.execute(
+                            """
+                            select user.email 
+                            from conference_talkspeaker speaker 
+                            left outer join auth_user user on user.id = speaker.speaker_id 
+                            where speaker.talk_id = ? 
+                            and user.email <> ?
+                            """, [si['talk_id'], submission.speaker.email]
+                        ))
+                        for se in speakers_emails:
+                            sched_item.additional_speakers.add(users_by_email[se['email']])
+
+                    room_list = list(self.c.execute(
+                        """
+                        select track.title
+                        from conference_event event 
+                        join conference_eventtrack et on et.event_id = event.id
+                        join conference_track track on track.id = et.track_id
+                        where event.id = ?
+                        """, [si['event_id']]
+                    ))
+                    for room in room_list:
+                        sched_item.rooms.add(rooms[room['title']])
+
+            except IntegrityError as exc:
+                action = 'skip'
+                continue
+            except Exception as exc:
+                self.stdout.write(self.style.NOTICE(
+                    f'Something bad happened when importing submission for event_id={si["event_id"]}: {exc}'
+                ))
+                action = 'error'
+                continue
+            finally:
+                actions[action] += 1
+
+        self.stdout.write(self.style.SUCCESS(
+            f'Schedule Items: '
+            f'{actions["create"]} created, '
+            f'{actions["update"]} updated, '
+            f'{actions["skip"]} skipped, '
+            f'{actions["error"]} errors.'
+        ))
+
     def import_tickets(self, overwrite):
         if overwrite:
             self.stdout.write(f'Overwrite is the default for tickets')
@@ -577,6 +695,8 @@ class Command(BaseCommand):
             self.import_rooms(overwrite=overwrite)
         if 'submission' in entities or entities == 'all':
             self.import_submissions(overwrite=overwrite)
+        if 'schedule_item' in entities or entities == 'all':  # needs submission and room
+            self.import_schedule_items(overwrite=overwrite)
         if 'ticket' in entities or entities == 'all':
             self.import_tickets(overwrite=overwrite)
 
