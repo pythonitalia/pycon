@@ -2,20 +2,15 @@ import React from "react";
 
 import { Heading, Text } from "fannypack";
 import styled from "styled-components";
-import { STANDARD_CUSTOM_COLUMNS_PADDING } from "../../config/spacing";
-import { CustomColumn } from "../column";
-import { CustomColumns } from "../columns";
+import { STANDARD_ROW_PADDING } from "../../config/spacing";
+import { Column } from "../column";
+import { Row } from "../row";
 
 const Base = styled.div`
   position: relative;
   padding: 0;
   margin: 2rem 0;
-  @media (min-width: 1024px) {
-    padding: 6rem 0;
-  }
-  @media (min-width: 1366px) {
-    padding: 12rem 0;
-  }
+
   .background_image {
     width: 100%;
     height: 100%;
@@ -58,6 +53,14 @@ const Base = styled.div`
     }
   }
   .columns_wrapper {
+    padding: 4rem 0;
+
+    @media (min-width: 1024px) {
+      padding: 6rem 0;
+    }
+    @media (min-width: 1366px) {
+      padding: 12rem 0;
+    }
     position: relative;
     z-index: 3;
   }
@@ -73,17 +76,17 @@ export const TwoColumnsText = () => {
         </div>
       </div>
       <div className="columns_wrapper">
-        <CustomColumns
-          paddingTop={{ desktop: 4, tablet: 4, mobile: 3 }}
-          paddingBottom={{ desktop: 4, tablet: 4, mobile: 3 }}
-          paddingLeft={STANDARD_CUSTOM_COLUMNS_PADDING}
-          paddingRight={STANDARD_CUSTOM_COLUMNS_PADDING}
+        <Row
+          paddingLeft={STANDARD_ROW_PADDING}
+          paddingRight={STANDARD_ROW_PADDING}
         >
-          <CustomColumn
-            spreadMobile={12}
-            spread={12}
-            spreadDesktop={5}
-            paddingRight={{ desktop: 4, tablet: 1, mobile: 0 }}
+          <Column
+            colWidth={{
+              mobile: 12,
+              tabletPortrait: 6,
+              tabletLandscape: 5,
+              desktop: 5,
+            }}
           >
             <Heading use="h2">Why Pycon?</Heading>
             <Text>
@@ -92,23 +95,30 @@ export const TwoColumnsText = () => {
               amet atque illum, maiores tempore? At in, dolorem recusandae nihil
               inventore quasi reiciendis?
             </Text>
-          </CustomColumn>
-          <CustomColumn
-            spreadMobile={12}
-            spread={12}
-            spreadDesktop={5}
-            marginTop={{ desktop: 0, tablet: 0, mobile: 3 }}
-            paddingRight={{ desktop: 4, tablet: 1, mobile: 0 }}
+          </Column>
+          <Column
+            colWidth={{
+              mobile: 12,
+              tabletPortrait: 6,
+              tabletLandscape: 5,
+              desktop: 5,
+            }}
+            marginTop={{
+              mobile: 2,
+              tabletPortrait: 0,
+              tabletLandscape: 0,
+              desktop: 0,
+            }}
           >
-            <Heading use="h2">Best conf ever!</Heading>
+            <Heading use="h2">Why Pycon?</Heading>
             <Text>
               Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sequi
               excepturi nostrum harum minima esse corrupti possimus voluptatum
               amet atque illum, maiores tempore? At in, dolorem recusandae nihil
               inventore quasi reiciendis?
             </Text>
-          </CustomColumn>
-        </CustomColumns>
+          </Column>
+        </Row>
       </div>
     </Base>
   );
