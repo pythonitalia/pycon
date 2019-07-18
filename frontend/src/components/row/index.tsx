@@ -1,8 +1,8 @@
 import React from "react";
 
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { customTheme } from "../../config/theme";
-import { ALLOWED_RESPONSIVE_SPACING_PROPS } from "./const";
+import { ALLOWED_RESPONSIVE_ROW_PROPS } from "./const";
 import { camelToKebabCase } from "./utils";
 
 type RowResponsiveValuesType = {
@@ -12,38 +12,46 @@ type RowResponsiveValuesType = {
   desktop: number;
 };
 
-type AllowedResponsiveSpacingProps = typeof ALLOWED_RESPONSIVE_SPACING_PROPS[number];
+type RowResponsiveValuesWidthType = {
+  mobile: number;
+  tabletPortrait: number;
+  tabletLandscape: number;
+  desktop: number;
+};
+
+type AllowedResponsiveProps = typeof ALLOWED_RESPONSIVE_ROW_PROPS[number];
+
+const createProperty = (prop: string, value: number) => {
+  return prop === "justify-content"
+    ? `${prop}: ${value};`
+    : `${prop}: ${value}rem;`;
+};
 
 const responsiveStyle = (props: RowType) => {
-  let assembledStyle = ``;
+  let assembledStyle = css``;
   Object.entries(props)
     .filter(
       ([key]) =>
-        ALLOWED_RESPONSIVE_SPACING_PROPS.indexOf(
-          key as AllowedResponsiveSpacingProps,
-        ) !== -1,
+        ALLOWED_RESPONSIVE_ROW_PROPS.indexOf(key as AllowedResponsiveProps) !==
+        -1,
     )
     .map(([key, values]) => {
       const prop = camelToKebabCase(key);
-      assembledStyle = `
-      ${assembledStyle}
-      ${Object.entries(customTheme.breakPoints).map(([k, value]) => {
-        console.log(value);
-
-        return `
-        @media (min-width: ${value}) {
+      assembledStyle = css`
+        ${assembledStyle}
+        ${Object.entries(customTheme.breakPoints).map(([k, value]) => {
+          return `@media (min-width: ${value}) {
           ${prop}: ${values[k]}rem;
-        }
-        `;
-      })}
+        }`;
+        })}
       `;
     });
-  console.log(assembledStyle);
+
   return assembledStyle;
 };
 
 type RowSpacingType = {
-  marginTop?: RowResponsiveValuesType;
+  marginTop?: RowResponsiveValuesWidthType;
   marginBottom?: RowResponsiveValuesType;
   marginLeft?: RowResponsiveValuesType;
   marginRight?: RowResponsiveValuesType;
@@ -56,10 +64,11 @@ type RowSpacingType = {
 type RowType = React.FunctionComponent<RowSpacingType>;
 
 const Wrapper = styled.div<RowType>`
+  display: flex;
+  position: relative;
+  flex-wrap: wrap;
   ${props => {
     return responsiveStyle(props);
-    // console.log(props.marginBottom);
-    // return ``;
   }}
 `;
 

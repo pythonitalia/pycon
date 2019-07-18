@@ -1,9 +1,10 @@
 import React from "react";
 
 import styled from "styled-components";
+import { STANDARD_ROW_PADDING } from "../../config/spacing";
 import { theme } from "../../config/theme";
-import { CustomColumn } from "../column";
-import { CustomColumns } from "../columns";
+import { Column } from "../column";
+import { Row } from "../row";
 
 const Wrapper = styled.div`
   div[class^="columns__CustomColumns"] {
@@ -36,9 +37,19 @@ const Headings = styled.div`
 const Base = ({ ...props }) => {
   return (
     <div {...props}>
-      <Wrapper>
-        <CustomColumns>
-          <CustomColumn>
+      <Wrapper className="expanded_menu">
+        <Row
+          paddingLeft={STANDARD_ROW_PADDING}
+          paddingRight={STANDARD_ROW_PADDING}
+        >
+          <Column
+            colWidth={{
+              mobile: 12,
+              tabletPortrait: 6,
+              tabletLandscape: 4,
+              desktop: 4,
+            }}
+          >
             <Headings>
               <h3>Heading</h3>
               <p>
@@ -51,8 +62,15 @@ const Base = ({ ...props }) => {
                 <a href="#">Linkoone</a>
               </p>
             </Headings>
-          </CustomColumn>
-          <CustomColumn>
+          </Column>
+          <Column
+            colWidth={{
+              mobile: 12,
+              tabletPortrait: 6,
+              tabletLandscape: 4,
+              desktop: 4,
+            }}
+          >
             <Headings>
               <h3>Heading</h3>
               <p>
@@ -71,8 +89,15 @@ const Base = ({ ...props }) => {
                 <a href="#">Link hello</a>
               </p>
             </Headings>
-          </CustomColumn>
-          <CustomColumn>
+          </Column>
+          <Column
+            colWidth={{
+              mobile: 12,
+              tabletPortrait: 6,
+              tabletLandscape: 4,
+              desktop: 4,
+            }}
+          >
             <Headings>
               <h3>Heading</h3>
               <p>
@@ -88,8 +113,8 @@ const Base = ({ ...props }) => {
                 <a href="#">Linkoone</a>
               </p>
             </Headings>
-          </CustomColumn>
-        </CustomColumns>
+          </Column>
+        </Row>
       </Wrapper>
     </div>
   );
@@ -103,10 +128,10 @@ export const ExpandedMenu = styled(Base)`
   background-color: ${theme.palette.primary};
   color: ${theme.palette.white};
   padding: 16px;
-  overflow: scroll;
   .expanded_menu {
+    overflow-y: scroll;
+    height: calc(100% - 80px);
     div {
-      height: calc(100% - 80px);
     }
   }
 `;

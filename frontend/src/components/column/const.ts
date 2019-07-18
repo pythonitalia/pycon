@@ -1,5 +1,5 @@
-export const ALLOWED_RESPONSIVE_ROW_PROPS = [
-  "justifyContent",
+export const ALLOWED_RESPONSIVE_COLUMN_PROPS = [
+  "colWidth",
   "marginTop",
   "marginBottom",
   "marginLeft",

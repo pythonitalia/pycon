@@ -31,7 +31,7 @@ export const customTheme = {
   breakPoints: {
     mobile: "320px",
     tabletPortrait: "768px",
-    tabletLandscape: "992",
+    tabletLandscape: "992px",
     desktop: "1200px",
   },
 };

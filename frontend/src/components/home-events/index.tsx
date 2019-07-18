@@ -1,15 +1,17 @@
 import React, { useEffect } from "react";
 
-import { Text } from "fannypack";
 import styled from "styled-components";
-import { STANDARD_CUSTOM_COLUMNS_PADDING } from "../../config/spacing";
+import { STANDARD_ROW_PADDING } from "../../config/spacing";
 import { theme } from "../../config/theme";
-import { CustomColumn } from "../column";
-import { CustomColumns } from "../columns";
+import { Column } from "../column";
+import { Row } from "../row";
 import { SectionTitle } from "../section-title";
 
 const Wrapper = styled.div`
   margin-top: 2rem;
+  p {
+    margin-top: 0;
+  }
 `;
 
 const EventsContainer = styled.div`
@@ -112,32 +114,57 @@ export const Events = () => {
 
   return (
     <Wrapper>
-      <CustomColumns
-        paddingLeft={STANDARD_CUSTOM_COLUMNS_PADDING}
-        paddingRight={STANDARD_CUSTOM_COLUMNS_PADDING}
+      <Row
+        paddingLeft={STANDARD_ROW_PADDING}
+        paddingRight={STANDARD_ROW_PADDING}
       >
-        <CustomColumn>
-          <SectionTitle>EVENTS</SectionTitle>
-        </CustomColumn>
-      </CustomColumns>
-      <CustomColumns
-        marginTop={{ desktop: -4, tablet: 0, mobile: 0 }}
-        paddingLeft={STANDARD_CUSTOM_COLUMNS_PADDING}
-        paddingRight={STANDARD_CUSTOM_COLUMNS_PADDING}
-      >
-        <CustomColumn
-          paddingRight={{ desktop: 3, tablet: 2, mobile: 0 }}
-          spreadMobile={12}
-          spread={6}
-          spreadDesktop={12}
+        <Column
+          colWidth={{
+            mobile: 12,
+            tabletPortrait: 12,
+            tabletLandscape: 12,
+            desktop: 12,
+          }}
         >
-          <Text>
+          <SectionTitle>EVENTS</SectionTitle>
+        </Column>
+      </Row>
+
+      <Row
+        marginTop={{
+          desktop: -5,
+          tabletLandscape: -3,
+          tabletPortrait: 0,
+          mobile: 0,
+        }}
+        paddingLeft={STANDARD_ROW_PADDING}
+        paddingRight={STANDARD_ROW_PADDING}
+      >
+        <Column
+          colWidth={{
+            mobile: 12,
+            tabletPortrait: 6,
+            tabletLandscape: 6,
+            desktop: 6,
+          }}
+        >
+          <p>
             Lorem ipsum, dolor sit amet consectetur adipisicing elit maxime
             reiciendis a consectetur nisi temporibus!
-          </Text>
-        </CustomColumn>
-      </CustomColumns>
-      <CustomColumns marginTop={{ desktop: 2, tablet: 2, mobile: 1 }}>
+          </p>
+        </Column>
+      </Row>
+
+      <Row
+        marginTop={{
+          desktop: 2,
+          tabletLandscape: 2,
+          tabletPortrait: 0,
+          mobile: 0,
+        }}
+        paddingLeft={STANDARD_ROW_PADDING}
+        paddingRight={STANDARD_ROW_PADDING}
+      >
         <EventsContainer className="events">
           {[1, 2, 3, 4, 5, 6, 7].map((o, i) => (
             <EventCard key={i} className="event_card">
@@ -145,7 +172,7 @@ export const Events = () => {
             </EventCard>
           ))}
         </EventsContainer>
-      </CustomColumns>
+      </Row>
     </Wrapper>
   );
 };
