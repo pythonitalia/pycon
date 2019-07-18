@@ -35,7 +35,8 @@ def get_deadlines(conference):
     date_diff_end = ExpressionWrapper(TruncDate(F('end')) - TruncDate(
         F('conference__start')), output_field=fields.DurationField())
 
-    deadlines = Deadline.objects.filter(conference_id=conference.id) \
+    deadlines = Deadline.objects.filter(conference_id=conference.id,
+                                        end__lte=conference.end) \
         .annotate(days_to_start=date_diff_start,
                   days_to_end=date_diff_end) \
         .values(days_to_start=date_diff_start,
@@ -106,7 +107,6 @@ def make_sold_tickets_plot(conferences_data):
                        line_width=0.5,
                        line_color=color,
                        line_alpha=0.3, )
-
 
     p.legend.location = "top_left"
     return p
