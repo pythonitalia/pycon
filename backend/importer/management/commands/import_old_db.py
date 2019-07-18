@@ -288,19 +288,23 @@ class Command(BaseCommand):
             code: submission_types[name]
             for code, name in TALK_TYPES.items()
         }
+        users_by_email = {
+            user.email: user.id
+            for user in User.objects.all()
+        }
 
         talk_list = list(self.c.execute(
             """
-            select talk.conference, talk.duration, talk.type, talk.created, talk.title, talk.language, talk.type, 
-                content.body, user.username,
-                track.title as track_title, talk2.sub_community
+            select talk.id, talk.conference, talk.duration, talk.type, talk.created, talk.title, talk.language, talk.type, 
+                content.body,
+                track.title as track_title, talk2.sub_community,
+                (select user.email from conference_talkspeaker speaker 
+                left outer join auth_user user on user.id = speaker.speaker_id 
+                where speaker.talk_id = talk.id and speaker.helper = 0 
+                order by speaker.id limit 1) as speaker_email
             from conference_talk talk
             left outer join conference_multilingualcontent content 
                 on content.object_id = talk.id and content.content_type_id = 25 and content.content = 'abstracts'
-            left outer join conference_talkspeaker speaker 
-                on speaker.talk_id = talk.id 
-            left outer join auth_user user 
-                on user.id = speaker.speaker_id             
             left outer join conference_event event 
                 on event.talk_id = talk.id
             left outer join conference_schedule sched 
@@ -331,13 +335,13 @@ class Command(BaseCommand):
                     topic_name = get_topic_name(talk['track_title'], talk['sub_community'])
                     topic, _ = Topic.objects.get_or_create(name=topic_name)
 
-                    conf, created = Submission.objects.update_or_create(
+                    submission, created = Submission.objects.update_or_create(
                         created=string_to_tzdatetime(talk['created']),
                         conference_id=conferences[talk['conference']],
                         title=talk['title'],
                         language_id=languages.get(talk['language']),
                         defaults=dict(
-                            speaker=User.objects.get(username=talk['username']),
+                            speaker=users_by_email.get(talk['speaker_email']),
                             abstract=talk['body'],
                             topic=topic,
                             type_id=types[talk['type']],
