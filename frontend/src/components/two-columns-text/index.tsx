@@ -2,9 +2,13 @@ import React from "react";
 
 import { Heading, Text } from "fannypack";
 import styled from "styled-components";
-import { STANDARD_CUSTOM_COLUMNS_PADDING } from "../../config/spacing";
+import {
+  STANDARD_CUSTOM_COLUMNS_PADDING,
+  STANDARD_CUSTOM_ROW_PADDING,
+} from "../../config/spacing";
 import { CustomColumn } from "../column";
 import { CustomColumns } from "../columns";
+import { Row } from "../row";
 
 const Base = styled.div`
   position: relative;
@@ -66,6 +70,12 @@ const Base = styled.div`
 export const TwoColumnsText = () => {
   return (
     <Base>
+      <Row
+        paddingLeft={STANDARD_CUSTOM_ROW_PADDING}
+        paddingRight={STANDARD_CUSTOM_ROW_PADDING}
+      >
+        yolo
+      </Row>
       <div className="background_image">
         <div className="background_image__container">
           <div className="background_image__overlay" />
