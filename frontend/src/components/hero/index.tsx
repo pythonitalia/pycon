@@ -5,7 +5,6 @@ import Img, { GatsbyImageProps } from "gatsby-image";
 import styled from "styled-components";
 import { STANDARD_ROW_PADDING } from "../../config/spacing";
 import { Column } from "../column";
-import { CustomColumns } from "../columns";
 import { Row } from "../row";
 
 type HeroProps = {
