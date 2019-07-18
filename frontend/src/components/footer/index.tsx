@@ -117,35 +117,14 @@ export const Footer = () => {
       </Row>
 
       <Row marginTop={MARGIN_TOP_ROW}>
-        <Column
-          marginLeft={{
-            mobile: -0.5,
-            tabletPortrait: -0.5,
-            tabletLandscape: -0.5,
-            desktop: -0.5,
-          }}
-          marginRight={{
-            mobile: -0.5,
-            tabletPortrait: -0.5,
-            tabletLandscape: -0.5,
-            desktop: -0.5,
-          }}
-          colWidth={{
-            mobile: 12,
-            tabletPortrait: 12,
-            tabletLandscape: 12,
-            desktop: 12,
-          }}
-        >
-          <MapWrapper>
-            <a href="https://www.google.com/maps/place/hotel+mediterraneo+firenze/">
-              <img
-                src={GOOGLE_MAPS_URL}
-                alt="Google Map of hotel Mediterraneo Firenze"
-              />
-            </a>
-          </MapWrapper>
-        </Column>
+        <MapWrapper style={{width: "100%"}}>
+          <a href="https://www.google.com/maps/place/hotel+mediterraneo+firenze/">
+            <img
+              src={GOOGLE_MAPS_URL}
+              alt="Google Map of hotel Mediterraneo Firenze"
+            />
+          </a>
+        </MapWrapper>
       </Row>
 
       <Row
