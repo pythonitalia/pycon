@@ -1,6 +1,6 @@
 from django.contrib import admin
 from tickets.models import Ticket, TicketQuestion, TicketQuestionChoice, UserAnswer
-
+from tickets.graphs import render_graph
 
 class UserAnswersInline(admin.TabularInline):
     model = UserAnswer
@@ -24,6 +24,16 @@ class TicketAdmin(admin.ModelAdmin):
 
     def user_email(self, obj):
         return obj.user.email
+
+    def changelist_view(self, request, extra_context=None):
+        extra_context = extra_context or {}
+        extra_context['some_var'] = 'This is what I want to show'
+        js, resources, tag = render_graph()
+        extra_context['js'] = js
+        extra_context['resources'] = resources
+        extra_context['tag'] = tag
+        return super(TicketAdmin, self).changelist_view(request,
+                                                        extra_context=extra_context)
 
 
 class TicketQuestionChoiceInline(admin.TabularInline):
