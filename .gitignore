@@ -98,3 +98,4 @@ ENV/
 
 # Ignore pycharm configuration
 .idea/*
+media/

@@ -1,5 +1,8 @@
 import strawberry
 from conferences.schema import ConferenceQuery
+
+from blog.schema import BlogQuery
+from submissions.mutations import SubmissionsMutations
 from payments.mutations import PaymentsMutations
 from submissions.mutations import SubmissionsMutations
 from users.mutations import UsersMutations
@@ -8,7 +11,7 @@ from voting.mutations import VotesMutations
 
 
 @strawberry.type
-class Query(UsersQuery, ConferenceQuery):
+class Query(UsersQuery, ConferenceQuery, BlogQuery):
     pass
 
 
