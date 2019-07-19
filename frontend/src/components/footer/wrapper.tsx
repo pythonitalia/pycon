@@ -8,13 +8,18 @@ export const Wrapper = styled.div`
   position: relative;
   display: block;
   padding-bottom: 0.5rem;
+
   h3 {
     margin-top: 0;
   }
+
   .margin-mobile-0-r {
     margin-bottom: 4rem;
   }
+
   @media only screen and (min-width: 578px) {
+    margin-top: 3rem;
+
     .margin-mobile-0-r,
     .margin-mobile-0-l {
       margin: 0;
@@ -22,6 +27,7 @@ export const Wrapper = styled.div`
     }
   }
   @media only screen and (min-width: 992px) {
+    margin-top: 8rem;
     .margin-mobile-0-r {
       margin-right: 4rem;
       margin-bottom: 0;

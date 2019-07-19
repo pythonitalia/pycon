@@ -3,7 +3,9 @@ import React from "react";
 import { theme } from "fannypack";
 import Img, { GatsbyImageProps } from "gatsby-image";
 import styled from "styled-components";
-import { CustomColumns } from "../columns";
+import { STANDARD_ROW_PADDING } from "../../config/spacing";
+import { Column } from "../column";
+import { Row } from "../row";
 
 type HeroProps = {
   backgroundImage: GatsbyImageProps;
@@ -12,7 +14,7 @@ type HeroProps = {
 
 const Wrapper = styled.div`
   position: relative;
-  padding: 40px 0;
+  padding: 2.5rem 0 0 0;
   color: ${theme("palette.white")};
 
   &::before {
@@ -21,8 +23,8 @@ const Wrapper = styled.div`
     background: ${theme("palette.primary")};
     top: 0;
     bottom: 0;
-    left: 16px;
-    right: 16px;
+    left: 1rem;
+    right: 1rem;
     position: absolute;
     z-index: 0;
   }
@@ -44,17 +46,22 @@ const Wrapper = styled.div`
   h1 {
     position: absolute;
     bottom: 0;
+    left: 16px;
     margin: 0;
     color: white;
     font-size: 35px;
     line-height: 25px;
+    @media (min-width: 768px) {
+      font-size: 55px;
+      line-height: 45px;
+    }
     @media (min-width: 1024px) {
-      font-size: 42px;
-      line-height: 32px;
+      font-size: 92px;
+      line-height: 70px;
     }
     @media (min-width: 1366px) {
-      font-size: 90px;
-      line-height: 72px;
+      font-size: 120px;
+      line-height: 92px;
     }
   }
 
@@ -69,20 +76,51 @@ export const Hero: React.SFC<HeroProps> = props => (
   <Wrapper>
     <div className="content">
       <header>
-        <Img {...props.backgroundImage} />
-        <CustomColumns as="h1" paddingLeft={padding} paddingRight={padding}>
-          {props.title}
-        </CustomColumns>
+        <div style={{ position: "relative" }}>
+          <Img {...props.backgroundImage} />
+          <h1>{props.title}</h1>
+        </div>
       </header>
 
-      <CustomColumns
-        as="article"
-        paddingLeft={padding}
-        paddingRight={padding}
-        paddingTop={padding}
+      <Row
+        paddingLeft={STANDARD_ROW_PADDING}
+        paddingRight={STANDARD_ROW_PADDING}
       >
-        {props.children}
-      </CustomColumns>
+        <Column
+          paddingTop={{
+            mobile: 3,
+            tabletPortrait: 3,
+            tabletLandscape: 3,
+            desktop: 3,
+          }}
+          paddingBottom={{
+            mobile: 3,
+            tabletPortrait: 3,
+            tabletLandscape: 3,
+            desktop: 3,
+          }}
+          paddingLeft={{
+            mobile: 3,
+            tabletPortrait: 3,
+            tabletLandscape: 3,
+            desktop: 3,
+          }}
+          paddingRight={{
+            mobile: 3,
+            tabletPortrait: 3,
+            tabletLandscape: 3,
+            desktop: 3,
+          }}
+          colWidth={{
+            mobile: 12,
+            tabletPortrait: 12,
+            tabletLandscape: 12,
+            desktop: 12,
+          }}
+        >
+          {props.children}
+        </Column>
+      </Row>
     </div>
   </Wrapper>
 );

@@ -2,63 +2,58 @@ import React from "react";
 
 import { Heading, Text } from "fannypack";
 import styled from "styled-components";
-import { STANDARD_CUSTOM_COLUMNS_PADDING } from "../../config/spacing";
-import { CustomColumn } from "../column";
-import { CustomColumns } from "../columns";
+import { STANDARD_ROW_PADDING } from "../../config/spacing";
+import { Column } from "../column";
+import { Row } from "../row";
 import { SectionTitle } from "../section-title";
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  margin-top: 2rem;
+`;
 
 export const Faq = () => {
+  const PADDING_RIGHT = {
+    mobile: 0,
+    tabletPortrait: 3,
+    tabletLandscape: 3,
+    desktop: 3,
+  };
+
   return (
     <Wrapper>
-      <CustomColumns
-        paddingLeft={STANDARD_CUSTOM_COLUMNS_PADDING}
-        paddingRight={STANDARD_CUSTOM_COLUMNS_PADDING}
+      <Row
+        paddingLeft={STANDARD_ROW_PADDING}
+        paddingRight={STANDARD_ROW_PADDING}
       >
-        <CustomColumn>
+        <Column
+          colWidth={{
+            mobile: 12,
+            tabletPortrait: 12,
+            tabletLandscape: 12,
+            desktop: 12,
+          }}
+        >
           <SectionTitle>FAQ</SectionTitle>
-        </CustomColumn>
-      </CustomColumns>
-      <CustomColumns
-        marginTop={{ desktop: -4, tablet: -4, mobile: -1 }}
-        paddingLeft={STANDARD_CUSTOM_COLUMNS_PADDING}
-        paddingRight={STANDARD_CUSTOM_COLUMNS_PADDING}
+        </Column>
+      </Row>
+      <Row
+        marginTop={{
+          desktop: -4,
+          tabletLandscape: -3,
+          tabletPortrait: 0,
+          mobile: 0,
+        }}
+        paddingLeft={STANDARD_ROW_PADDING}
+        paddingRight={STANDARD_ROW_PADDING}
       >
-        <CustomColumn
-          paddingRight={{ desktop: 3, tablet: 2, mobile: 0 }}
-          spreadMobile={12}
-          spread={6}
-          spreadDesktop={12}
-        >
-          <Heading use="h3">Where is the venue?</Heading>
-          <Text>
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quibusdam
-            numquam inventore laboriosam quisquam nobis maxime reiciendis a
-            consectetur nisi temporibus. Quo autem magni eaque suscipit
-            obcaecati ad excepturi iste ab!
-          </Text>
-        </CustomColumn>
-        <CustomColumn
-          paddingRight={{ desktop: 3, tablet: 2, mobile: 0 }}
-          spreadMobile={12}
-          spread={6}
-          spreadDesktop={12}
-        >
-          <Heading use="h3">When will the event take place?</Heading>
-          <Text>
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quibusdam
-            numquam inventore laboriosam quisquam nobis maxime reiciendis a
-            consectetur nisi temporibus. Quo autem magni eaque suscipit
-            obcaecati ad excepturi iste ab!
-          </Text>
-        </CustomColumn>
-        <CustomColumn
-          marginTop={{ desktop: 2, tablet: 2, mobile: 0 }}
-          paddingRight={{ desktop: 3, tablet: 2, mobile: 0 }}
-          spreadMobile={12}
-          spread={6}
-          spreadDesktop={12}
+        <Column
+          paddingRight={PADDING_RIGHT}
+          colWidth={{
+            mobile: 12,
+            tabletPortrait: 6,
+            tabletLandscape: 6,
+            desktop: 6,
+          }}
         >
           <Heading use="h3">How can I contribute?</Heading>
           <Text>
@@ -67,13 +62,15 @@ export const Faq = () => {
             consectetur nisi temporibus. Quo autem magni eaque suscipit
             obcaecati ad excepturi iste ab!
           </Text>
-        </CustomColumn>
-        <CustomColumn
-          marginTop={{ desktop: 2, tablet: 2, mobile: 0 }}
-          paddingRight={{ desktop: 3, tablet: 2, mobile: 0 }}
-          spreadMobile={12}
-          spread={6}
-          spreadDesktop={12}
+        </Column>
+        <Column
+          paddingRight={PADDING_RIGHT}
+          colWidth={{
+            mobile: 12,
+            tabletPortrait: 6,
+            tabletLandscape: 6,
+            desktop: 6,
+          }}
         >
           <Heading use="h3">Where is the venue?</Heading>
           <Text>
@@ -82,8 +79,42 @@ export const Faq = () => {
             consectetur nisi temporibus. Quo autem magni eaque suscipit
             obcaecati ad excepturi iste ab!
           </Text>
-        </CustomColumn>
-      </CustomColumns>
+        </Column>
+        <Column
+          paddingRight={PADDING_RIGHT}
+          colWidth={{
+            mobile: 12,
+            tabletPortrait: 6,
+            tabletLandscape: 6,
+            desktop: 6,
+          }}
+        >
+          <Heading use="h3">When will the event take place?</Heading>
+          <Text>
+            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quibusdam
+            numquam inventore laboriosam quisquam nobis maxime reiciendis a
+            consectetur nisi temporibus. Quo autem magni eaque suscipit
+            obcaecati ad excepturi iste ab!
+          </Text>
+        </Column>
+        <Column
+          paddingRight={PADDING_RIGHT}
+          colWidth={{
+            mobile: 12,
+            tabletPortrait: 6,
+            tabletLandscape: 6,
+            desktop: 6,
+          }}
+        >
+          <Heading use="h3">Where is the venue?</Heading>
+          <Text>
+            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quibusdam
+            numquam inventore laboriosam quisquam nobis maxime reiciendis a
+            consectetur nisi temporibus. Quo autem magni eaque suscipit
+            obcaecati ad excepturi iste ab!
+          </Text>
+        </Column>
+      </Row>
     </Wrapper>
   );
 };

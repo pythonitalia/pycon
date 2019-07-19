@@ -1,10 +1,13 @@
 import React from "react";
 
-import { Column, Columns, Link } from "fannypack";
+import { Link } from "fannypack";
 import styled, { css } from "styled-components";
+import { STANDARD_ROW_PADDING } from "../../config/spacing";
 import { theme } from "../../config/theme";
 import { useToggle } from "../../helpers/use-toggle";
 import { Button } from "../button";
+import { Column } from "../column";
+import { Row } from "../row";
 import { ExpandedMenu } from "./expanded-menu";
 import { Hamburger } from "./hamburger";
 import { ExpandableProps } from "./types";
@@ -28,6 +31,9 @@ const LinkContainer = styled.div`
 `;
 
 const LogoContainer = styled.div<ExpandableProps>`
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   height: 100%;
   align-items: center;
@@ -80,7 +86,6 @@ const MenuContainer = styled.div<ExpandableProps>`
 
 const Wrapper = styled.div<ExpandableProps>`
   height: 80px;
-  padding: 0 16px;
   position: fixed;
   left: 0;
   top: 0;
@@ -108,8 +113,20 @@ export const Topbar = () => {
 
   return (
     <Wrapper open={isMenuOpen}>
-      <Columns>
-        <Column spread={4} spreadMobile={2} spreadDesktop={4}>
+      <LogoContainer open={isMenuOpen}>PyCon Italia</LogoContainer>
+
+      <Row
+        paddingLeft={STANDARD_ROW_PADDING}
+        paddingRight={STANDARD_ROW_PADDING}
+      >
+        <Column
+          colWidth={{
+            mobile: 3,
+            tabletPortrait: 6,
+            tabletLandscape: 6,
+            desktop: 6,
+          }}
+        >
           <MenuContainer open={isMenuOpen}>
             <Link
               href="#"
@@ -123,10 +140,14 @@ export const Topbar = () => {
             </Link>
           </MenuContainer>
         </Column>
-        <Column spreadMobile={8} spreadDesktop={4}>
-          <LogoContainer open={isMenuOpen}>PyCon Italia</LogoContainer>
-        </Column>
-        <Column spread={4}>
+        <Column
+          colWidth={{
+            mobile: 0,
+            tabletPortrait: 6,
+            tabletLandscape: 6,
+            desktop: 6,
+          }}
+        >
           <LinkContainer>
             <Link href="#">Login</Link>
             <Link href="#">Schedule</Link>
@@ -135,8 +156,9 @@ export const Topbar = () => {
             </Button>
           </LinkContainer>
         </Column>
-      </Columns>
-      {isMenuOpen && <ExpandedMenu className="expanded_menu" />}
+      </Row>
+
+      {isMenuOpen && <ExpandedMenu />}
     </Wrapper>
   );
 };
