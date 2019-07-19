@@ -20,9 +20,11 @@ export const theme = {
     `,
   },
   palette: {
-    primary: "#0C67FF",
+    /* primary: "#0C67FF", */
+    primary: "#0066FF",
     white: "#fff",
-    whiteInverted: "#0C67FF",
+    /* whiteInverted: "#0C67FF", */
+    whiteInverted: "#0066FF",
     text: "#333",
   },
 };
