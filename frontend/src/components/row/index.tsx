@@ -61,7 +61,11 @@ type RowSpacingType = {
   paddingRight?: RowResponsiveValuesType;
 };
 
-type RowType = React.FunctionComponent<RowSpacingType>;
+type RowProps = {
+  className?: string;
+};
+
+type RowType = React.FunctionComponent<RowSpacingType & RowProps>;
 
 const Wrapper = styled.div<RowType>`
   display: flex;

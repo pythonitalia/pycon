@@ -70,8 +70,6 @@ const Wrapper = styled.div`
   }
 `;
 
-const padding = { desktop: 2, tablet: 2, mobile: 3 };
-
 export const Hero: React.SFC<HeroProps> = props => (
   <Wrapper>
     <div className="content">
