@@ -14,17 +14,41 @@ type HomeProps = {
 
 export default ({ data }: HomeProps) => {
   const mockSponsors = [
-    {name: "python", logo: data.logoImage.childImageSharp, category: "diversity", link: "https://www.python.org/"},
-    {name: "python2", logo: data.logoImage.childImageSharp, category: "diversity", link: "https://www.python.org/"},
-    {name: "python3", logo: data.logoImage.childImageSharp, category: "beginner", link: "https://www.python.org/"}
+    {
+      category: "diversity",
+      logos: [
+        {
+          name: "python",
+          logo: data.logoImage.childImageSharp,
+          link: "https://www.python.org/",
+        },
+        {
+          name: "python2",
+          logo: data.logoImage.childImageSharp,
+          category: "diversity",
+          link: "https://www.python.org/",
+        },
+      ],
+    },
+    {
+      category: "beginner",
+      logos: [
+        {
+          name: "python3",
+          logo: data.logoImage.childImageSharp,
+          link: "https://www.python.org/",
+        },
+      ],
+    },
   ];
+
   return (
     <HomeLayout>
       <Hero title="Pycon XI" backgroundImage={data.heroImage.childImageSharp}>
         <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias et omnis
-          hic veniam nisi architecto reprehenderit voluptate magnam sed commodi
-          vel quidem ea, blanditiis quos harum non ipsam, soluta saepe.
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias et
+          omnis hic veniam nisi architecto reprehenderit voluptate magnam sed
+          commodi vel quidem ea, blanditiis quos harum non ipsam, soluta saepe.
         </p>
       </Hero>
 

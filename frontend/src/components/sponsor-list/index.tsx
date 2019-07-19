@@ -1,85 +1,100 @@
 import React from "react";
 
-import { Heading, List } from "fannypack";
+import { Heading } from "fannypack";
 import Img, { GatsbyImageProps } from "gatsby-image";
 import styled from "styled-components";
-import { STANDARD_CUSTOM_COLUMNS_PADDING } from "../../config/spacing";
-import { CustomColumn } from "../column";
-import { CustomColumns } from "../columns";
+import { STANDARD_ROW_PADDING } from "../../config/spacing";
+import { Column, ColumnWidthValuesType } from "../column";
+import { Row } from "../row";
 import { SectionTitle } from "../section-title";
 
-const Wrapper = styled.div`
-li {
-  width: 100%;
-  max-width: 250px;
-}
-`;
+const Wrapper = styled.div``;
 
-type Sponsor = Array<{name: string, logo: GatsbyImageProps, category: string, link: string}>;
+type Sponsor = Array<{
+  category: string;
+  logos: Array<{ name: string; logo: GatsbyImageProps; link: string }>;
+}>;
 
 type SponsorListProps = {
   sponsors: Sponsor;
 };
 
+const MARGIN_NEGATIVE_COLUMN = {
+  mobile: -0.5,
+  tabletPortrait: -0.5,
+  tabletLandscape: -0.5,
+  desktop: -0.5,
+};
+const FULL_WIDTH_COLUMN: ColumnWidthValuesType = {
+  mobile: 12,
+  tabletPortrait: 12,
+  tabletLandscape: 12,
+  desktop: 12,
+};
+
 export const SponsorList: React.SFC<SponsorListProps> = props => {
-
-  const grouppedSponsors = new Map<string, Sponsor>();
-
-  for (const sponsor of props.sponsors) {
-    if (grouppedSponsors.has(sponsor.category)) {
-      const categorizedSponsors = grouppedSponsors.get(sponsor.category);
-      if (!categorizedSponsors) {
-        continue;
-      }
-      categorizedSponsors.push(sponsor);
-    } else {
-      grouppedSponsors.set(sponsor.category, [sponsor]);
-    }
-  }
-
-  const sponsorsItems = Array.from(grouppedSponsors.entries()).map((value, categoryIndex) => {
-    const category = value[0];
-    const sponsors = value[1];
-    const listItems = sponsors.map((sponsor, sponsorIndex) => (
-      <List.Item key={sponsorIndex}>
-        <Img {...sponsor.logo} alt={sponsor.name}/>
-      </List.Item>
-      )
-    );
-    return (
-      <div key={categoryIndex}>
-        <CustomColumns
-          marginTop={categoryIndex === 0 ? { desktop: -4, tablet: -4, mobile: -1 } : {desktop: 0, tablet: 0, mobile: 0}}
-          paddingLeft={STANDARD_CUSTOM_COLUMNS_PADDING}
-          paddingRight={STANDARD_CUSTOM_COLUMNS_PADDING}
-        >
-          <CustomColumn
-            paddingRight={{ desktop: 3, tablet: 2, mobile: 0 }}
-            spreadMobile={12}
-            spread={6}
-            spreadDesktop={12}
-          >
-            <Heading use="h5">{category}</Heading>
-            <List isHorizontal={true}>
-              {listItems}
-            </List>
-          </CustomColumn>
-        </CustomColumns>
-      </div>
-      );
-    }
-  );
   return (
     <Wrapper>
-      <CustomColumns
-        paddingLeft={STANDARD_CUSTOM_COLUMNS_PADDING}
-        paddingRight={STANDARD_CUSTOM_COLUMNS_PADDING}
+      <Row
+        paddingLeft={STANDARD_ROW_PADDING}
+        paddingRight={STANDARD_ROW_PADDING}
       >
-        <CustomColumn>
+        <Column>
           <SectionTitle>Sponsors</SectionTitle>
-          </CustomColumn>
-      </CustomColumns>
-      { sponsorsItems }
+        </Column>
+      </Row>
+      {props.sponsors.map((o, i) => {
+        return (
+          <Row
+            key={i}
+            marginTop={
+              i === 0
+                ? {
+                    mobile: 1,
+                    tabletPortrait: -1,
+                    tabletLandscape: -4,
+                    desktop: -4,
+                  }
+                : {
+                    mobile: 1,
+                    tabletPortrait: 1,
+                    tabletLandscape: 2,
+                    desktop: 2,
+                  }
+            }
+            paddingLeft={STANDARD_ROW_PADDING}
+            paddingRight={STANDARD_ROW_PADDING}
+          >
+            <Column colWidth={FULL_WIDTH_COLUMN}>
+              <Heading use="h5">{o.category}</Heading>
+            </Column>
+            <Column colWidth={FULL_WIDTH_COLUMN}>
+              <Row
+                marginLeft={MARGIN_NEGATIVE_COLUMN}
+                marginRight={MARGIN_NEGATIVE_COLUMN}
+              >
+                {o.logos.map((sponsor, logosKey) => {
+                  return (
+                    <Column
+                      key={logosKey}
+                      colWidth={{
+                        mobile: 12,
+                        tabletPortrait: 4,
+                        tabletLandscape: 3,
+                        desktop: 3,
+                      }}
+                    >
+                      <a href={sponsor.link}>
+                        <Img {...sponsor.logo} alt={sponsor.name} />
+                      </a>
+                    </Column>
+                  );
+                })}
+              </Row>
+            </Column>
+          </Row>
+        );
+      })}
     </Wrapper>
   );
 };
