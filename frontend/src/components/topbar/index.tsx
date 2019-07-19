@@ -66,19 +66,23 @@ const MenuContainer = styled.div<ExpandableProps>`
         display: inline-block;
       }
     }
-    &:hover {
+    &:hover,
+    &:focus {
       ${props =>
         props.open &&
         css`
           color: ${theme.palette.white};
         `}
-      span {
-        background: currentColor;
+      span, span:hover, span:focus {
+        background: ${theme.palette.primary};
         ${props =>
-          props.open &&
-          css`
-            background: ${theme.palette.white};
-          `}
+          props.open
+            ? css`
+                background: ${theme.palette.white};
+              `
+            : css`
+                background: ${theme.palette.primary};
+              `}}
       }
     }
   }
