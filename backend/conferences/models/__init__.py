@@ -1,6 +1,6 @@
-from .audience_level import AudienceLevel
-from .conference import Conference
-from .deadline import Deadline
-from .duration import Duration
-from .topic import Topic
-from .ticket_fare import TicketFare
+from .audience_level import AudienceLevel  # noqa
+from .conference import Conference  # noqa
+from .deadline import Deadline  # noqa
+from .duration import Duration  # noqa
+from .ticket_fare import TicketFare  # noqa
+from .topic import Topic  # noqa

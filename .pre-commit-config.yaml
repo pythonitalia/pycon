@@ -1,0 +1,45 @@
+aliases:
+    - &python_settings
+      types: [python]
+      exclude: >
+          (?x)^(
+            .+/migrations/.+|
+          )$
+
+repos:
+    - repo: https://github.com/pre-commit/mirrors-isort
+      rev: v4.3.21
+      hooks:
+          - <<: *python_settings
+            id: isort
+    - repo: https://github.com/python/black
+      rev: 19.3b0
+      hooks:
+          - <<: *python_settings
+            id: black
+            language_version: python3.7
+    - repo: https://gitlab.com/pycqa/flake8
+      rev: 3.7.8
+      hooks:
+          - <<: *python_settings
+            id: flake8
+    - repo: https://github.com/prettier/prettier
+      rev: 1.18.2
+      hooks:
+          - id: prettier
+            types: [javascript, tsx, ts, json, markdown]
+    - repo: https://github.com/pre-commit/pre-commit-hooks
+      rev: v2.2.3
+      hooks:
+          - id: end-of-file-fixer
+            files: '^.*\.(py|mjml|js|jsx|tf|tfvars|conf)$'
+          - id: file-contents-sorter
+            files: "^requirements(-test)?.in$"
+
+    - repo: git://github.com/awebdeveloper/pre-commit-tslint/
+      rev: 531a369ea27be731564b302de388403670a9123d
+      hooks:
+          - id: tslint
+            files: \.(ts|tsx)$
+            additional_dependencies: ["tslint", "typescript"]
+            args: ['--fix']

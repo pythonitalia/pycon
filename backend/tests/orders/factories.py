@@ -1,22 +1,17 @@
-import pytz
-import factory
-import factory.fuzzy
-
 from decimal import Decimal
 
-from pytest_factoryboy import register
-
+import factory
+import factory.fuzzy
 from factory.django import DjangoModelFactory
-
-from tests.users.factories import UserFactory
-
 from orders.models import Order, OrderItem
+from pytest_factoryboy import register
+from tests.users.factories import UserFactory
 
 
 @register
 class OrderFactory(DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
-    amount = Decimal('100')
+    amount = Decimal("100")
 
     class Meta:
         model = Order
@@ -25,7 +20,7 @@ class OrderFactory(DjangoModelFactory):
 @register
 class OrderItemFactory(DjangoModelFactory):
     order = factory.SubFactory(OrderFactory)
-    quantity = factory.Faker('pyint')
+    quantity = factory.Faker("pyint")
 
     class Meta:
         model = OrderItem

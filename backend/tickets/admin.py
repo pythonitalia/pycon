@@ -22,8 +22,8 @@ class UserAnswersInline(admin.TabularInline):
 
 @admin.register(Ticket)
 class TicketAdmin(admin.ModelAdmin):
-    list_display = ('ticket_fare_name', 'user_email')
-    search_filters = ('user__email', 'conference__code',)
+    list_display = ("ticket_fare_name", "user_email")
+    search_filters = ("user__email", "conference__code")
     inlines = [UserAnswersInline, ]
 
     def ticket_fare_name(self, obj):

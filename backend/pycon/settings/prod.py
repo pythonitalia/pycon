@@ -1,6 +1,11 @@
+from django.core.exceptions import ImproperlyConfigured
+
 from .base import *  # noqa
+from .base import FRONTEND_URL, env
 
+SECRET_KEY = env("SECRET_KEY")
+CELERY_BROKER_URL = env("CELERY_BROKER_URL")
+USE_SCHEDULER = True
 
-SECRET_KEY = env('SECRET_KEY')
-SOCIAL_AUTH_TWITTER_KEY = env('SOCIAL_AUTH_TWITTER_KEY')
-SOCIAL_AUTH_TWITTER_SECRET = env('SOCIAL_AUTH_TWITTER_SECRET')
+if FRONTEND_URL == "http://testfrontend.it/":
+    raise ImproperlyConfigured("Please configure FRONTEND_URL for production")

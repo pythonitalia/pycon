@@ -1,12 +1,49 @@
 import * as React from "react";
-import styled from "styled-components";
 
-const Title = styled.h1`
-  color: blue;
-`;
+import { graphql } from "gatsby";
+import { Hero } from "../components/hero";
+import { Events } from "../components/home-events";
+import { Faq } from "../components/home-faq";
+import { SectionTitle } from "../components/section-title";
+import { TwoColumnsText } from "../components/two-columns-text";
+import { HomeLayout } from "../layouts/home";
 
-export default () => (
-  <>
-    <Title>Yay!!1</Title>
-  </>
+type HomeProps = {
+  data: any;
+};
+
+export default ({ data }: HomeProps) => (
+  <HomeLayout>
+    <Hero title="Pycon XI" backgroundImage={data.heroImage.childImageSharp}>
+      <p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias et omnis
+        hic veniam nisi architecto reprehenderit voluptate magnam sed commodi
+        vel quidem ea, blanditiis quos harum non ipsam, soluta saepe.
+      </p>
+    </Hero>
+
+    <TwoColumnsText />
+
+    <section>
+      <SectionTitle>Sponsors</SectionTitle>
+    </section>
+    <section>
+      <Events />
+    </section>
+    <section>
+      <Faq />
+    </section>
+  </HomeLayout>
 );
+
+export const query = graphql`
+  query {
+    heroImage: file(relativePath: { eq: "images/hero.jpg" }) {
+      childImageSharp {
+        fluid(maxWidth: 1600) {
+          ...GatsbyImageSharpFluid
+        }
+      }
+    }
+  }
+`;

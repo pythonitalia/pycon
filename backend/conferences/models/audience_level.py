@@ -9,5 +9,5 @@ class AudienceLevel(models.Model):
         return self.name
 
     class Meta:
-        verbose_name = _('Audience Level')
-        verbose_name_plural = _('Audience Levels')
+        verbose_name = _("Audience Level")
+        verbose_name_plural = _("Audience Levels")

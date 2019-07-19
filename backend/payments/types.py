@@ -1,4 +1,4 @@
-from graphene import Int, ID, NonNull, InputObjectType, ObjectType, String
+from graphene import ID, InputObjectType, Int, NonNull, ObjectType, String
 
 
 class CartItem(InputObjectType):

@@ -1,19 +1,19 @@
 from datetime import datetime
 
-import pytz
 import graphene
-
+import pytz
 from graphene_django import DjangoObjectType
-
 from languages.types import LanguageType
-from submissions.types import SubmissionTypeType
 from schedule.types import ModelScheduleItemType
+from submissions.types import SubmissionType, SubmissionTypeType
 
-from .models import Conference, Deadline, AudienceLevel, Topic, Duration, TicketFare
+from .models import AudienceLevel, Conference, Deadline, Duration, TicketFare, Topic
 
 
 class DurationType(DjangoObjectType):
-    allowed_submission_types = graphene.NonNull(graphene.List(graphene.NonNull(SubmissionTypeType)))
+    allowed_submission_types = graphene.NonNull(
+        graphene.List(graphene.NonNull(SubmissionTypeType))
+    )
 
     def resolve_allowed_submission_types(self, info):
         return self.allowed_submission_types.all()
@@ -21,55 +21,60 @@ class DurationType(DjangoObjectType):
     class Meta:
         model = Duration
         only_fields = (
-            'id',
-            'conference',
-            'name',
-            'duration',
-            'notes',
-            'allowed_submission_types',
+            "id",
+            "conference",
+            "name",
+            "duration",
+            "notes",
+            "allowed_submission_types",
         )
 
 
 class DeadlineModelType(DjangoObjectType):
     class Meta:
         model = Deadline
-        only_fields = (
-            'conference',
-            'type',
-            'name',
-            'start',
-            'end',
-        )
+        only_fields = ("conference", "type", "name", "start", "end")
 
 
 class AudienceLevelType(DjangoObjectType):
     class Meta:
         model = AudienceLevel
-        only_fields = ('id', 'name', )
+        only_fields = ("id", "name")
 
 
 class TopicType(DjangoObjectType):
     class Meta:
         model = Topic
-        only_fields = ('id', 'name')
+        only_fields = ("id", "name")
 
 
 class TicketFareType(DjangoObjectType):
     class Meta:
         model = TicketFare
-        only_fields = ('id', 'code', 'name', 'price', 'start', 'end', 'description', 'conference')
+        only_fields = (
+            "id",
+            "code",
+            "name",
+            "price",
+            "start",
+            "end",
+            "description",
+            "conference",
+        )
 
 
 class ConferenceType(DjangoObjectType):
     ticket_fares = graphene.NonNull(graphene.List(graphene.NonNull(TicketFareType)))
     deadlines = graphene.NonNull(graphene.List(graphene.NonNull(DeadlineModelType)))
-    audience_levels = graphene.NonNull(graphene.List(graphene.NonNull(AudienceLevelType)))
+    audience_levels = graphene.NonNull(
+        graphene.List(graphene.NonNull(AudienceLevelType))
+    )
     topics = graphene.NonNull(graphene.List(graphene.NonNull(TopicType)))
     languages = graphene.NonNull(graphene.List(graphene.NonNull(LanguageType)))
     durations = graphene.NonNull(graphene.List(graphene.NonNull(DurationType)))
+    submissions = graphene.NonNull(graphene.List(graphene.NonNull(SubmissionType)))
     schedule = graphene.NonNull(
-        graphene.List(graphene.NonNull(ModelScheduleItemType)),
-        date=graphene.Date()
+        graphene.List(graphene.NonNull(ModelScheduleItemType)), date=graphene.Date()
     )
 
     timezone = graphene.String()
@@ -89,13 +94,13 @@ class ConferenceType(DjangoObjectType):
 
             qs = qs.filter(start__gte=utc_start_date, end__lte=utc_end_date)
 
-        return qs.order_by('start')
+        return qs.order_by("start")
 
     def resolve_ticket_fares(self, info):
         return self.ticket_fares.all()
 
     def resolve_deadlines(self, info):
-        return self.deadlines.order_by('start').all()
+        return self.deadlines.order_by("start").all()
 
     def resolve_audience_levels(self, info):
         return self.audience_levels.all()
@@ -109,21 +114,23 @@ class ConferenceType(DjangoObjectType):
     def resolve_durations(self, info):
         return self.durations.all()
 
+    def resolve_submissions(self, info):
+        return self.submissions.all()
+
     class Meta:
         model = Conference
         only_fields = (
-            'id',
-            'name',
-            'code',
-            'start',
-            'end',
-            'deadlines',
-            'audience_levels',
-            'topics',
-            'languages',
-            'durations',
-            'timezone',
-            'rooms',
+            "id",
+            "name",
+            "code",
+            "start",
+            "end",
+            "deadlines",
+            "audience_levels",
+            "topics",
+            "languages",
+            "durations",
+            "timezone",
+            "rooms",
+            "submissions",
         )
-
-

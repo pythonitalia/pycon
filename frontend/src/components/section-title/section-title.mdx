@@ -1,0 +1,25 @@
+---
+name: SectionTitle
+---
+
+import { Playground, Props } from "docz";
+import { SectionTitle } from "./";
+import { ThemeProvider } from "fannypack";
+import { theme } from "../../config/theme";
+
+# SectionTitle
+
+## Basic usage
+
+<Playground>
+    <ThemeProvider theme={theme}>
+        <section>
+            <SectionTitle>Sponsor</SectionTitle>
+        </section>
+    </ThemeProvider>
+
+</Playground>
+
+## Props
+
+<Props of={SectionTitle} />

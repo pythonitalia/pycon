@@ -1,0 +1,38 @@
+---
+name: Hero
+---
+
+import { Playground, Props } from "docz";
+import { Hero } from "./";
+import { ThemeProvider } from "fannypack";
+import { theme } from "../../config/theme";
+
+# Hero
+
+## Basic usage
+
+<Playground>
+    <ThemeProvider theme={theme}>
+        <Hero
+            title="Pycon 11"
+            backgroundImage={{
+                "fluid": {
+                    "aspectRatio": 2.3446658851113718,
+                    "src": "https://live.staticflickr.com/65535/33985680028_8eb0b570f9_h.jpg",
+                    "sizes": "(max-width: 1600px) 100vw, 1600px"
+                }
+            }}
+        >
+            <p>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias et omnis
+                hic veniam nisi architecto reprehenderit voluptate magnam sed commodi
+                vel quidem ea, blanditiis quos harum non ipsam, soluta saepe.
+            </p>
+        </Hero>
+    </ThemeProvider>
+
+</Playground>
+
+## Props
+
+<Props of={Hero} />

@@ -1,28 +1,26 @@
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
-
 from model_utils.models import TimeFramedModel, TimeStampedModel
-
 from timezone_field import TimeZoneField
 
 from .deadline import Deadline
 
 
 class Conference(TimeFramedModel, TimeStampedModel):
-    name = models.CharField(_('name'), max_length=100)
-    code = models.CharField(_('code'), max_length=10, unique=True)
+    name = models.CharField(_("name"), max_length=100)
+    code = models.CharField(_("code"), max_length=10, unique=True)
     timezone = TimeZoneField()
 
-    topics = models.ManyToManyField('conferences.Topic', verbose_name=_('topics'))
-    languages = models.ManyToManyField('languages.Language', verbose_name=_('languages'))
+    topics = models.ManyToManyField("conferences.Topic", verbose_name=_("topics"))
+    languages = models.ManyToManyField(
+        "languages.Language", verbose_name=_("languages")
+    )
     audience_levels = models.ManyToManyField(
-        'conferences.AudienceLevel',
-        verbose_name=_('audience levels')
+        "conferences.AudienceLevel", verbose_name=_("audience levels")
     )
     submission_types = models.ManyToManyField(
-        'submissions.SubmissionType',
-        verbose_name=_('submission types')
+        "submissions.SubmissionType", verbose_name=_("submission types")
     )
 
     @property
@@ -35,9 +33,19 @@ class Conference(TimeFramedModel, TimeStampedModel):
         except Deadline.DoesNotExist:
             return False
 
+    @property
+    def is_voting_open(self):
+        try:
+            voting_deadline = self.deadlines.get(type=Deadline.TYPES.voting)
+
+            now = timezone.now()
+            return voting_deadline.start <= now <= voting_deadline.end
+        except Deadline.DoesNotExist:
+            return False
+
     def __str__(self):
-        return f'{self.name} <{self.code}>'
+        return f"{self.name} <{self.code}>"
 
     class Meta:
-        verbose_name = _('Conference')
-        verbose_name_plural = _('Conferences')
+        verbose_name = _("Conference")
+        verbose_name_plural = _("Conferences")

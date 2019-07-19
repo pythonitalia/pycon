@@ -4,14 +4,33 @@ name: Button
 
 import { Playground, Props } from "docz";
 import { Button } from "./";
+import { ThemeProvider } from "fannypack";
+import { theme } from "../../config/theme";
 
 # Button
-
-<Props of={Button} />
 
 ## Basic usage
 
 <Playground>
-    <Button>Click me</Button>
-    <Button kind="secondary">Click me</Button>
+    <ThemeProvider theme={theme}>
+        <div>
+            <Button>Default</Button>
+        </div>
+        <br/>
+        <div>
+            <Button palette="primary">Click me</Button>{" "}
+            <Button palette="danger">Click me</Button>
+        </div>
+        <br/>
+        <div>
+            <Button size="small" palette="primary">Click me</Button>{" "}
+            <Button size="medium" palette="primary">Click me</Button>{" "}
+            <Button size="large" palette="primary">Click me</Button>
+        </div>
+    </ThemeProvider>
+
 </Playground>
+
+## Props
+
+<Props of={Button} />

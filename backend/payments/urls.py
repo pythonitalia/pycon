@@ -1,6 +1,7 @@
-from django.urls import path, include
-
+from django.urls import include, path
 
 urlpatterns = [
-    path('', include(('payments.providers.stripe.urls', 'payments'), namespace='stripe')),
+    path(
+        "", include(("payments.providers.stripe.urls", "payments"), namespace="stripe")
+    )
 ]

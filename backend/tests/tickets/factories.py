@@ -1,10 +1,7 @@
 import factory.fuzzy
 from factory.django import DjangoModelFactory
-
 from pytest_factoryboy import register
-
 from tests.conferences.factories import TicketFareFactory
-
 from tests.orders.factories import OrderFactory
 from tests.users.factories import UserFactory
 from tickets.models import Ticket

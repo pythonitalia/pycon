@@ -1,8 +1,7 @@
-from graphene import NonNull, List, ID
-
+from graphene import ID, List, NonNull
 from graphene_django import DjangoObjectType
-
 from tickets.types import TicketType
+
 from .models import User
 
 
@@ -14,10 +13,10 @@ class MeUserType(DjangoObjectType):
 
     class Meta:
         model = User
-        only_fields = ('id', 'email', 'tickets')
+        only_fields = ("id", "email", "tickets")
 
 
 class UserType(DjangoObjectType):
     class Meta:
         model = User
-        only_fields = ('id', 'email', 'name', 'username',)
+        only_fields = ("id", "email", "name", "username")
