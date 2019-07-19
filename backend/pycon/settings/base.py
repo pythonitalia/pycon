@@ -19,7 +19,6 @@ FRONTEND_URL = env("FRONTEND_URL")
 # Application definition
 
 INSTALLED_APPS = [
-<<<<<<< HEAD
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -38,7 +37,7 @@ INSTALLED_APPS = [
     "payments.apps.PaymentsConfig",
     "tickets.apps.TicketsConfig",
     "voting.apps.VotingConfig",
-    "blog",
+    "blog.apps.BlogConfig",
 ]
 
 MIDDLEWARE = [
