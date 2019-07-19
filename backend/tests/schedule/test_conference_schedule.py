@@ -11,7 +11,7 @@ def _query_conference_schedule(client, conference_code, date=None):
 
     return client.query(
         """
-        query($code: String, $date: Date) {
+        query($code: String!, $date: Date) {
             conference(code: $code) {
                 schedule(date: $date) {
                     id
@@ -60,14 +60,14 @@ def test_query_conference_schedule(
     assert len(resp["data"]["conference"]["schedule"]) == 2
     assert {
         "id": str(item1.id),
-        "type": item1.type.upper(),
+        "type": item1.type,
         "title": item1.title,
         "submission": None,
     } in resp["data"]["conference"]["schedule"]
 
     assert {
         "id": str(item2.id),
-        "type": item2.type.upper(),
+        "type": item2.type,
         "title": item2.title,
         "submission": {"id": str(item2.submission.id)},
     } in resp["data"]["conference"]["schedule"]
@@ -114,21 +114,21 @@ def test_schedule_is_ordered_by_start_date(
 
     assert {
         "id": str(item1.id),
-        "type": item1.type.upper(),
+        "type": item1.type,
         "title": item1.title,
         "submission": None,
     } == resp["data"]["conference"]["schedule"][0]
 
     assert {
         "id": str(item3.id),
-        "type": item3.type.upper(),
+        "type": item3.type,
         "title": item3.title,
         "submission": {"id": str(item3.submission.id)},
     } == resp["data"]["conference"]["schedule"][1]
 
     assert {
         "id": str(item2.id),
-        "type": item2.type.upper(),
+        "type": item2.type,
         "title": item2.title,
         "submission": {"id": str(item2.submission.id)},
     } == resp["data"]["conference"]["schedule"][2]
@@ -166,14 +166,14 @@ def test_get_specific_day_schedule(
     assert len(resp["data"]["conference"]["schedule"]) == 1
     assert {
         "id": str(day_item.id),
-        "type": day_item.type.upper(),
+        "type": day_item.type,
         "title": day_item.title,
         "submission": None,
     } in resp["data"]["conference"]["schedule"]
 
     assert {
         "id": str(another_day_item.id),
-        "type": another_day_item.type.upper(),
+        "type": another_day_item.type,
         "title": another_day_item.title,
         "submission": {"id": str(another_day_item.submission.id)},
     } not in resp["data"]["conference"]["schedule"]

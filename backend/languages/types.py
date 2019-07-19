@@ -1,9 +1,8 @@
-from graphene_django import DjangoObjectType
-
-from .models import Language
+import strawberry
 
 
-class LanguageType(DjangoObjectType):
-    class Meta:
-        model = Language
-        only_fields = ("id", "code", "name")
+@strawberry.type
+class LanguageType:
+    id: strawberry.ID
+    code: str
+    name: str

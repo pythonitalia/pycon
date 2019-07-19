@@ -1,14 +1,17 @@
-from graphene import ID, InputObjectType, Int, NonNull, ObjectType, String
+import strawberry
 
 
-class CartItem(InputObjectType):
-    id = NonNull(ID)
-    quantity = NonNull(Int)
+@strawberry.input
+class CartItem:
+    id: strawberry.ID
+    quantity: int
 
 
-class GenericPaymentError(ObjectType):
-    message = NonNull(String)
+@strawberry.type
+class GenericPaymentError:
+    message: str
 
 
-class StripeClientSecret(ObjectType):
-    client_secret = NonNull(String)
+@strawberry.type
+class StripeClientSecret:
+    client_secret: str

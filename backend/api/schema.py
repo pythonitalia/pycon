@@ -1,4 +1,4 @@
-import graphene
+import strawberry
 from conferences.schema import ConferenceQuery
 from payments.mutations import PaymentsMutations
 from submissions.mutations import SubmissionsMutations
@@ -7,14 +7,14 @@ from users.schema import UsersQuery
 from voting.mutations import VotesMutations
 
 
-class Query(UsersQuery, ConferenceQuery, graphene.ObjectType):
+@strawberry.type
+class Query(UsersQuery, ConferenceQuery):
     pass
 
 
-class Mutations(
-    SubmissionsMutations, PaymentsMutations, VotesMutations, UsersMutations
-):
+@strawberry.type
+class Mutation(UsersMutations, PaymentsMutations, SubmissionsMutations, VotesMutations):
     pass
 
 
-schema = graphene.Schema(query=Query, mutation=Mutations)
+schema = strawberry.Schema(query=Query, mutation=Mutation)

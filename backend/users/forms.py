@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate, login
 from django.forms import CharField, EmailField, ValidationError
 from django.utils.translation import ugettext_lazy as _
-from graphene_form.forms import FormWithContext
+from strawberry_forms.forms import FormWithContext
 
 from .models import User
 

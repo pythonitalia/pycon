@@ -1,88 +1,41 @@
 from datetime import datetime
+from typing import List
 
-import graphene
 import pytz
-from graphene_django import DjangoObjectType
+import strawberry
+from api.scalars import Date, DateTime
 from languages.types import LanguageType
-from schedule.types import ModelScheduleItemType
+from schedule.types import RoomType, ScheduleItemType
 from submissions.types import SubmissionType, SubmissionTypeType
 
-from .models import AudienceLevel, Conference, Deadline, Duration, TicketFare, Topic
+
+@strawberry.type
+class AudienceLevelType:
+    id: strawberry.ID
+    name: str
 
 
-class DurationType(DjangoObjectType):
-    allowed_submission_types = graphene.NonNull(
-        graphene.List(graphene.NonNull(SubmissionTypeType))
-    )
-
-    def resolve_allowed_submission_types(self, info):
-        return self.allowed_submission_types.all()
-
-    class Meta:
-        model = Duration
-        only_fields = (
-            "id",
-            "conference",
-            "name",
-            "duration",
-            "notes",
-            "allowed_submission_types",
-        )
+@strawberry.type
+class TopicType:
+    id: strawberry.ID
+    name: str
 
 
-class DeadlineModelType(DjangoObjectType):
-    class Meta:
-        model = Deadline
-        only_fields = ("conference", "type", "name", "start", "end")
+@strawberry.type
+class ConferenceType:
+    id: strawberry.ID
 
+    name: str
+    code: str
+    start: DateTime
+    end: DateTime
 
-class AudienceLevelType(DjangoObjectType):
-    class Meta:
-        model = AudienceLevel
-        only_fields = ("id", "name")
-
-
-class TopicType(DjangoObjectType):
-    class Meta:
-        model = Topic
-        only_fields = ("id", "name")
-
-
-class TicketFareType(DjangoObjectType):
-    class Meta:
-        model = TicketFare
-        only_fields = (
-            "id",
-            "code",
-            "name",
-            "price",
-            "start",
-            "end",
-            "description",
-            "conference",
-        )
-
-
-class ConferenceType(DjangoObjectType):
-    ticket_fares = graphene.NonNull(graphene.List(graphene.NonNull(TicketFareType)))
-    deadlines = graphene.NonNull(graphene.List(graphene.NonNull(DeadlineModelType)))
-    audience_levels = graphene.NonNull(
-        graphene.List(graphene.NonNull(AudienceLevelType))
-    )
-    topics = graphene.NonNull(graphene.List(graphene.NonNull(TopicType)))
-    languages = graphene.NonNull(graphene.List(graphene.NonNull(LanguageType)))
-    durations = graphene.NonNull(graphene.List(graphene.NonNull(DurationType)))
-    submissions = graphene.NonNull(graphene.List(graphene.NonNull(SubmissionType)))
-    schedule = graphene.NonNull(
-        graphene.List(graphene.NonNull(ModelScheduleItemType)), date=graphene.Date()
-    )
-
-    timezone = graphene.String()
-
-    def resolve_timezone(self, info):
+    @strawberry.field
+    def timezone(self, info) -> str:
         return str(self.timezone)
 
-    def resolve_schedule(self, info, date=None):
+    @strawberry.field
+    def schedule(self, info, date: Date = None) -> List[ScheduleItemType]:
         qs = self.schedule_items
 
         if date:
@@ -96,41 +49,68 @@ class ConferenceType(DjangoObjectType):
 
         return qs.order_by("start")
 
-    def resolve_ticket_fares(self, info):
+    @strawberry.field
+    def ticket_fares(self, info) -> List["TicketFareType"]:
         return self.ticket_fares.all()
 
-    def resolve_deadlines(self, info):
+    @strawberry.field
+    def deadlines(self, info) -> List["DeadlineType"]:
         return self.deadlines.order_by("start").all()
 
-    def resolve_audience_levels(self, info):
+    @strawberry.field
+    def audience_levels(self, info) -> List[AudienceLevelType]:
         return self.audience_levels.all()
 
-    def resolve_topics(self, info):
+    @strawberry.field
+    def topics(self, info) -> List[TopicType]:
         return self.topics.all()
 
-    def resolve_languages(self, info):
+    @strawberry.field
+    def languages(self, info) -> List[LanguageType]:
         return self.languages.all()
 
-    def resolve_durations(self, info):
+    @strawberry.field
+    def durations(self, info) -> List["DurationType"]:
         return self.durations.all()
 
-    def resolve_submissions(self, info):
+    @strawberry.field
+    def submissions(self, info) -> List[SubmissionType]:
         return self.submissions.all()
 
-    class Meta:
-        model = Conference
-        only_fields = (
-            "id",
-            "name",
-            "code",
-            "start",
-            "end",
-            "deadlines",
-            "audience_levels",
-            "topics",
-            "languages",
-            "durations",
-            "timezone",
-            "rooms",
-            "submissions",
-        )
+    @strawberry.field
+    def rooms(self, info) -> List[RoomType]:
+        return self.rooms.all()
+
+
+@strawberry.type
+class DeadlineType:
+    type: str
+    name: str
+    start: DateTime
+    end: DateTime
+    conference: ConferenceType
+
+
+@strawberry.type
+class TicketFareType:
+    id: strawberry.ID
+    code: str
+    name: str
+    price: str
+    start: DateTime
+    end: DateTime
+    description: str
+    conference: ConferenceType
+
+
+@strawberry.type
+class DurationType:
+    id: strawberry.ID
+    conference: ConferenceType
+    name: str
+    duration: int
+    notes: str
+
+    @strawberry.field
+    def allowed_submission_types(self, info) -> List[SubmissionTypeType]:
+        return self.allowed_submission_types.all()

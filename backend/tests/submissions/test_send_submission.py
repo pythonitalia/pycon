@@ -43,16 +43,25 @@ def _submit_talk(client, conference, **kwargs):
                     type: $type,
                     duration: $duration,
                 }) {
-                    submission {
-                        id,
+                    __typename
+
+                    ... on SubmissionType {
+                        id
                         title
                         abstract
                         elevatorPitch
                         notes
                     }
-                    errors {
-                        messages
-                        field
+
+                    ... on SendSubmissionErrors {
+                        validationConference: conference
+                        validationTopic: topic
+                        validationTitle: title
+                        validationAbstract: abstract
+                        validationLanguage: language
+                        validationType: type
+                        validationDuration: duration
+                        nonFieldErrors
                     }
                 }
             }""",
@@ -101,16 +110,25 @@ def _submit_tutorial(client, conference, **kwargs):
                     type: $type,
                     duration: $duration,
                 }) {
-                    submission {
-                        id,
+                    __typename
+
+                    ... on SubmissionType {
+                        id
                         title
                         abstract
                         elevatorPitch
                         notes
                     }
-                    errors {
-                        messages
-                        field
+
+                    ... on SendSubmissionErrors {
+                        validationConference: conference
+                        validationTopic: topic
+                        validationTitle: title
+                        validationAbstract: abstract
+                        validationLanguage: language
+                        validationType: type
+                        validationDuration: duration
+                        nonFieldErrors
                     }
                 }
             }""",
@@ -134,16 +152,12 @@ def test_submit_talk(graphql_client, user, conference_factory):
 
     resp, variables = _submit_talk(graphql_client, conference)
 
-    assert resp["data"]["sendSubmission"]["submission"] is not None, resp
-    assert resp["data"]["sendSubmission"]["errors"] == []
+    assert resp["data"]["sendSubmission"]["__typename"] == "SubmissionType"
 
-    assert resp["data"]["sendSubmission"]["submission"]["title"] == variables["title"]
-    assert (
-        resp["data"]["sendSubmission"]["submission"]["abstract"]
-        == variables["abstract"]
-    )
+    assert resp["data"]["sendSubmission"]["title"] == variables["title"]
+    assert resp["data"]["sendSubmission"]["abstract"] == variables["abstract"]
 
-    talk = Submission.objects.get(id=resp["data"]["sendSubmission"]["submission"]["id"])
+    talk = Submission.objects.get(id=resp["data"]["sendSubmission"]["id"])
 
     assert talk.title == variables["title"]
     assert talk.abstract == variables["abstract"]
@@ -169,11 +183,10 @@ def test_submit_talk_with_not_valid_conf_language(
 
     resp, _ = _submit_talk(graphql_client, conference, language="en")
 
-    assert resp["data"]["sendSubmission"]["submission"] is None
-    assert resp["data"]["sendSubmission"]["errors"][0]["messages"] == [
+    assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
+    assert resp["data"]["sendSubmission"]["validationLanguage"] == [
         "English (en) is not an allowed language"
     ]
-    assert resp["data"]["sendSubmission"]["errors"][0]["field"] == "language"
 
 
 @mark.django_db
@@ -190,11 +203,10 @@ def test_submit_talk_with_not_valid_duration(graphql_client, user, conference_fa
 
     resp, _ = _submit_talk(graphql_client, conference, duration=8)
 
-    assert resp["data"]["sendSubmission"]["submission"] is None
-    assert resp["data"]["sendSubmission"]["errors"][0]["messages"] == [
+    assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
+    assert resp["data"]["sendSubmission"]["validationDuration"] == [
         "Select a valid choice. That choice is not one of the available choices."
     ]
-    assert resp["data"]["sendSubmission"]["errors"][0]["field"] == "duration"
 
 
 @mark.django_db
@@ -223,12 +235,11 @@ def test_cannot_use_duration_if_submission_type_is_not_allowed(
         graphql_client, conference, type=talk_type.id, duration=duration2.id
     )
 
-    assert resp["data"]["sendSubmission"]["submission"] is None
-    assert resp["data"]["sendSubmission"]["errors"][0]["messages"] == [
+    assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
+    assert resp["data"]["sendSubmission"]["validationDuration"] == [
         f"Duration {str(duration2)} is not an allowed "
         f"for the submission type {str(talk_type)}"
     ]
-    assert resp["data"]["sendSubmission"]["errors"][0]["field"] == "duration"
 
 
 @mark.django_db
@@ -251,11 +262,10 @@ def test_submit_talk_with_duration_id_of_another_conf(
         graphql_client, conference, duration=another_conf_duration.id
     )
 
-    assert resp["data"]["sendSubmission"]["submission"] is None
-    assert resp["data"]["sendSubmission"]["errors"][0]["messages"] == [
+    assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
+    assert resp["data"]["sendSubmission"]["validationDuration"] == [
         f"{str(another_conf_duration)} is not an allowed duration type"
     ]
-    assert resp["data"]["sendSubmission"]["errors"][0]["field"] == "duration"
 
 
 @mark.django_db
@@ -275,11 +285,10 @@ def test_submit_talk_with_not_valid_conf_topic(
 
     resp, _ = _submit_talk(graphql_client, conference, topic=topic.id)
 
-    assert resp["data"]["sendSubmission"]["submission"] is None
-    assert resp["data"]["sendSubmission"]["errors"][0]["messages"] == [
+    assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
+    assert resp["data"]["sendSubmission"]["validationTopic"] == [
         "random topic is not a valid topic"
     ]
-    assert resp["data"]["sendSubmission"]["errors"][0]["field"] == "topic"
 
 
 @mark.django_db
@@ -298,11 +307,10 @@ def test_submit_talk_with_not_valid_allowed_submission_type_in_the_conference(
 
     resp, _ = _submit_talk(graphql_client, conference)
 
-    assert resp["data"]["sendSubmission"]["submission"] is None
-    assert resp["data"]["sendSubmission"]["errors"][0]["messages"] == [
+    assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
+    assert resp["data"]["sendSubmission"]["validationType"] == [
         "talk is not an allowed submission type"
     ]
-    assert resp["data"]["sendSubmission"]["errors"][0]["field"] == "type"
 
 
 @mark.django_db
@@ -321,11 +329,10 @@ def test_submit_talk_with_not_valid_submission_type_id(
 
     resp, _ = _submit_talk(graphql_client, conference, type=5)
 
-    assert resp["data"]["sendSubmission"]["submission"] is None
-    assert resp["data"]["sendSubmission"]["errors"][0]["messages"] == [
+    assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
+    assert resp["data"]["sendSubmission"]["validationType"] == [
         "Select a valid choice. That choice is not one of the available choices."
     ]
-    assert resp["data"]["sendSubmission"]["errors"][0]["field"] == "type"
 
 
 @mark.django_db
@@ -344,11 +351,10 @@ def test_submit_talk_with_not_valid_language_code(
 
     resp, _ = _submit_talk(graphql_client, conference, language="fit")
 
-    assert resp["data"]["sendSubmission"]["submission"] is None
-    assert resp["data"]["sendSubmission"]["errors"][0]["messages"] == [
+    assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
+    assert resp["data"]["sendSubmission"]["validationLanguage"] == [
         "Select a valid choice. That choice is not one of the available choices."
     ]
-    assert resp["data"]["sendSubmission"]["errors"][0]["field"] == "language"
 
 
 @mark.django_db
@@ -363,7 +369,6 @@ def test_cannot_propose_a_talk_as_unlogged_user(graphql_client, conference_facto
     resp, _ = _submit_talk(graphql_client, conference)
 
     assert resp["errors"][0]["message"] == "User not logged in"
-    assert resp["data"]["sendSubmission"] is None
 
 
 @mark.django_db
@@ -382,11 +387,10 @@ def test_cannot_propose_a_talk_if_the_cfp_is_not_open(
 
     resp, _ = _submit_talk(graphql_client, conference)
 
-    assert resp["data"]["sendSubmission"]["errors"][0]["messages"] == [
+    assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
+    assert resp["data"]["sendSubmission"]["nonFieldErrors"] == [
         "The call for papers is not open!"
     ]
-    assert resp["data"]["sendSubmission"]["errors"][0]["field"] == "__all__"
-    assert resp["data"]["sendSubmission"]["submission"] is None
 
 
 @mark.django_db
@@ -404,11 +408,10 @@ def test_cannot_propose_a_talk_if_a_cfp_is_not_specified(
 
     resp, _ = _submit_talk(graphql_client, conference)
 
-    assert resp["data"]["sendSubmission"]["errors"][0]["messages"] == [
+    assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
+    assert resp["data"]["sendSubmission"]["nonFieldErrors"] == [
         "The call for papers is not open!"
     ]
-    assert resp["data"]["sendSubmission"]["errors"][0]["field"] == "__all__"
-    assert resp["data"]["sendSubmission"]["submission"] is None
 
 
 @mark.django_db
@@ -427,15 +430,13 @@ def test_same_user_can_propose_multiple_talks_to_the_same_conference(
 
     resp, _ = _submit_talk(graphql_client, conference, title="My first talk")
 
-    assert resp["data"]["sendSubmission"]["errors"] == []
-    assert resp["data"]["sendSubmission"]["submission"]["title"] == "My first talk"
+    assert resp["data"]["sendSubmission"]["title"] == "My first talk"
 
     assert user.submissions.filter(conference=conference).count() == 1
 
     resp, _ = _submit_talk(graphql_client, conference, title="Another talk")
 
-    assert resp["data"]["sendSubmission"]["errors"] == []
-    assert resp["data"]["sendSubmission"]["submission"]["title"] == "Another talk"
+    assert resp["data"]["sendSubmission"]["title"] == "Another talk"
 
     assert user.submissions.filter(conference=conference).count() == 2
 
@@ -454,8 +455,8 @@ def test_submit_tutorial(graphql_client, user, conference_factory):
 
     resp, _ = _submit_tutorial(graphql_client, conference, title="My first tutorial")
 
-    assert resp["data"]["sendSubmission"]["errors"] == []
-    assert resp["data"]["sendSubmission"]["submission"]["title"] == "My first tutorial"
+    assert resp["data"]["sendSubmission"]["__typename"] == "SubmissionType"
+    assert resp["data"]["sendSubmission"]["title"] == "My first tutorial"
 
     assert user.submissions.filter(conference=conference).count() == 1
 
@@ -476,15 +477,13 @@ def test_submit_tutorial_and_talk_to_the_same_conference(
 
     resp, _ = _submit_tutorial(graphql_client, conference, title="My first tutorial")
 
-    assert resp["data"]["sendSubmission"]["errors"] == []
-    assert resp["data"]["sendSubmission"]["submission"]["title"] == "My first tutorial"
+    assert resp["data"]["sendSubmission"]["title"] == "My first tutorial"
 
     assert user.submissions.filter(conference=conference).count() == 1
 
     resp, _ = _submit_talk(graphql_client, conference, title="My first talk")
 
-    assert resp["data"]["sendSubmission"]["errors"] == []
-    assert resp["data"]["sendSubmission"]["submission"]["title"] == "My first talk"
+    assert resp["data"]["sendSubmission"]["title"] == "My first talk"
 
     assert user.submissions.filter(conference=conference).count() == 2
 
@@ -505,9 +504,9 @@ def test_elevation_pitch_and_notes_are_not_required(
 
     resp, _ = _submit_tutorial(graphql_client, conference, elevator_pitch="", notes="")
 
-    assert resp["data"]["sendSubmission"]["errors"] == []
-    assert resp["data"]["sendSubmission"]["submission"]["elevatorPitch"] == ""
-    assert resp["data"]["sendSubmission"]["submission"]["notes"] == ""
+    assert resp["data"]["sendSubmission"]["__typename"] == "SubmissionType"
+    assert resp["data"]["sendSubmission"]["elevatorPitch"] == ""
+    assert resp["data"]["sendSubmission"]["notes"] == ""
 
     assert user.submissions.filter(conference=conference).count() == 1
 
@@ -536,16 +535,14 @@ def test_same_user_can_submit_talks_to_different_conferences(
 
     resp, _ = _submit_talk(graphql_client, conference1, title="My first talk")
 
-    assert resp["data"]["sendSubmission"]["errors"] == []
-    assert resp["data"]["sendSubmission"]["submission"]["title"] == "My first talk"
+    assert resp["data"]["sendSubmission"]["title"] == "My first talk"
 
     assert user.submissions.filter(conference=conference1).count() == 1
     assert user.submissions.filter(conference=conference2).count() == 0
 
     resp, _ = _submit_talk(graphql_client, conference2, title="Another talk")
 
-    assert resp["data"]["sendSubmission"]["errors"] == []
-    assert resp["data"]["sendSubmission"]["submission"]["title"] == "Another talk"
+    assert resp["data"]["sendSubmission"]["title"] == "Another talk"
 
     assert user.submissions.filter(conference=conference1).count() == 1
     assert user.submissions.filter(conference=conference2).count() == 1

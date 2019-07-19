@@ -1,7 +1,10 @@
-from graphene_django import DjangoObjectType
-from tickets.models import Ticket
+import strawberry
+from conferences.types import TicketFareType
+from users.types import UserType
 
 
-class TicketType(DjangoObjectType):
-    class Meta:
-        model = Ticket
+@strawberry.type
+class TicketType:
+    id: strawberry.ID
+    user: UserType
+    ticket_fare: TicketFareType

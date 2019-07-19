@@ -1,24 +1,37 @@
-import graphene
-from graphene_django import DjangoObjectType
+from typing import Optional
+
+import strawberry
 from graphql import GraphQLError
 from voting.models import Vote
 from voting.types import VoteType
 
-from .models import Submission
-from .models import SubmissionType as ModelSubmissionType
+if False:
+    from conferences.types import ConferenceType, TopicType, DurationType
+    from users.types import UserType
 
 
-class SubmissionTypeType(DjangoObjectType):
-    class Meta:
-        model = ModelSubmissionType
-        only_fields = ("id", "name")
+@strawberry.type
+class SubmissionTypeType:
+    id: strawberry.ID
+    name: str
 
 
-class SubmissionType(DjangoObjectType):
-    votes = graphene.NonNull(graphene.List(VoteType))
-    my_vote = graphene.Field(VoteType)
+@strawberry.type
+class SubmissionType:
+    id: strawberry.ID
+    conference: "ConferenceType"
+    title: str
+    elevator_pitch: str
+    notes: str
+    abstract: str
+    speaker: "UserType"
+    # helpers: str
+    topic: "TopicType"
+    type: SubmissionTypeType
+    duration: "DurationType"
 
-    def resolve_my_vote(self, info):
+    @strawberry.field
+    def my_vote(self, info) -> Optional[VoteType]:
         if not info.context.user.is_authenticated:
             raise GraphQLError("User not logged in")
 
@@ -26,19 +39,3 @@ class SubmissionType(DjangoObjectType):
             return self.votes.get(user_id=info.context.user.id)
         except Vote.DoesNotExist:
             return None
-
-    class Meta:
-        model = Submission
-        only_fields = (
-            "id",
-            "conference",
-            "title",
-            "elevator_pitch",
-            "notes",
-            "abstract",
-            "owner",
-            "helpers",
-            "topic",
-            "type",
-            "duration",
-        )
