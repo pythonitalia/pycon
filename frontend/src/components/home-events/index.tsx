@@ -162,8 +162,6 @@ export const Events = () => {
           tabletPortrait: 0,
           mobile: 0,
         }}
-        paddingLeft={STANDARD_ROW_PADDING}
-        paddingRight={STANDARD_ROW_PADDING}
       >
         <EventsContainer className="events">
           {[1, 2, 3, 4, 5, 6, 7].map((o, i) => (
