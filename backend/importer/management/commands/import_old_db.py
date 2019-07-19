@@ -344,7 +344,7 @@ class Command(BaseCommand):
                         title=talk['title'],
                         language_id=languages.get(talk['language']),
                         defaults=dict(
-                            speaker=users_by_email.get(talk['speaker_email']),
+                            speaker_id=users_by_email.get(talk['speaker_email']),
                             abstract=talk['body'],
                             topic=topic,
                             type_id=types[talk['type']],
@@ -510,7 +510,7 @@ class Command(BaseCommand):
                 ticket2.assigned_to as ticket_user,
                 user.email as order_user,
                 fare.conference, fare.code as fare_code, fare.description as fare_description, fare.name as fare_name,
-                fare.price,
+                fare.price, fare.start_validity, fare.end_validity,
                 ord.method as payment_method, ord.payment_url, ord._complete as payment_complete,
                 ord.created as order_created,
                 orderitem.description as orderitem_description, orderitem.price as orderitem_price
@@ -539,6 +539,8 @@ class Command(BaseCommand):
                             name=orig_ticket['fare_name'],
                             description=orig_ticket['fare_description'],
                             price=Decimal(orig_ticket['price']),
+                            start=string_to_tzdatetime(orig_ticket['start_validity']),
+                            end=string_to_tzdatetime(orig_ticket['end_validity']),
                         )
                     )
 
@@ -575,7 +577,6 @@ class Command(BaseCommand):
                     )
                     if not created:
                         action = 'update'
-                    print(f'{action}d ticket {ticket.id}')
 
             except IntegrityError as exc:
                 action = 'skip'
