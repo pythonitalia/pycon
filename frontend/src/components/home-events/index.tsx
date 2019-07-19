@@ -8,7 +8,9 @@ import { Row } from "../row";
 import { SectionTitle } from "../section-title";
 
 const Wrapper = styled.div`
-  margin-top: 2rem;
+  @media (min-width: 1024px) {
+    margin-top: 2rem;
+  }
   p {
     margin-top: 0;
   }
@@ -132,7 +134,7 @@ export const Events = () => {
 
       <Row
         marginTop={{
-          desktop: -5,
+          desktop: -4,
           tabletLandscape: -3,
           tabletPortrait: 0,
           mobile: 0,

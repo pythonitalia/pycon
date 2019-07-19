@@ -53,8 +53,9 @@ const Base = styled.div`
     }
   }
   .columns_wrapper {
-    padding: 4rem 0;
-
+    @media (min-width: 768px) {
+      padding: 4rem 0;
+    }
     @media (min-width: 1024px) {
       padding: 6rem 0;
     }
