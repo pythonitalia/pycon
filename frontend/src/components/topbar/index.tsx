@@ -119,7 +119,7 @@ export const Topbar = () => {
         paddingRight={STANDARD_ROW_PADDING}
       >
         <Column
-          colWidth={{
+          columnWidth={{
             mobile: 3,
             tabletPortrait: 6,
             tabletLandscape: 6,
@@ -140,7 +140,7 @@ export const Topbar = () => {
           </MenuContainer>
         </Column>
         <Column
-          colWidth={{
+          columnWidth={{
             mobile: 0,
             tabletPortrait: 6,
             tabletLandscape: 6,

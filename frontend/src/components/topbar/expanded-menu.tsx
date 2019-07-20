@@ -42,7 +42,7 @@ const Base = ({ ...props }) => {
           paddingRight={STANDARD_ROW_PADDING}
         >
           <Column
-            colWidth={{
+            columnWidth={{
               mobile: 12,
               tabletPortrait: 6,
               tabletLandscape: 4,
@@ -63,7 +63,7 @@ const Base = ({ ...props }) => {
             </Headings>
           </Column>
           <Column
-            colWidth={{
+            columnWidth={{
               mobile: 12,
               tabletPortrait: 6,
               tabletLandscape: 4,
@@ -90,7 +90,7 @@ const Base = ({ ...props }) => {
             </Headings>
           </Column>
           <Column
-            colWidth={{
+            columnWidth={{
               mobile: 12,
               tabletPortrait: 6,
               tabletLandscape: 4,

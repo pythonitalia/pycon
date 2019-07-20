@@ -80,7 +80,7 @@ export const TwoColumnsText = () => {
           paddingRight={STANDARD_ROW_PADDING}
         >
           <Column
-            colWidth={{
+            columnWidth={{
               mobile: 12,
               tabletPortrait: 6,
               tabletLandscape: 5,
@@ -96,7 +96,7 @@ export const TwoColumnsText = () => {
             </Text>
           </Column>
           <Column
-            colWidth={{
+            columnWidth={{
               mobile: 12,
               tabletPortrait: 6,
               tabletLandscape: 5,

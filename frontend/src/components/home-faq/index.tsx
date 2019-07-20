@@ -25,7 +25,7 @@ export const Faq = () => {
         paddingRight={STANDARD_ROW_PADDING}
       >
         <Column
-          colWidth={{
+          columnWidth={{
             mobile: 12,
             tabletPortrait: 12,
             tabletLandscape: 12,
@@ -47,7 +47,7 @@ export const Faq = () => {
       >
         <Column
           paddingRight={PADDING_RIGHT}
-          colWidth={{
+          columnWidth={{
             mobile: 12,
             tabletPortrait: 6,
             tabletLandscape: 6,
@@ -64,7 +64,7 @@ export const Faq = () => {
         </Column>
         <Column
           paddingRight={PADDING_RIGHT}
-          colWidth={{
+          columnWidth={{
             mobile: 12,
             tabletPortrait: 6,
             tabletLandscape: 6,
@@ -81,7 +81,7 @@ export const Faq = () => {
         </Column>
         <Column
           paddingRight={PADDING_RIGHT}
-          colWidth={{
+          columnWidth={{
             mobile: 12,
             tabletPortrait: 6,
             tabletLandscape: 6,
@@ -98,7 +98,7 @@ export const Faq = () => {
         </Column>
         <Column
           paddingRight={PADDING_RIGHT}
-          colWidth={{
+          columnWidth={{
             mobile: 12,
             tabletPortrait: 6,
             tabletLandscape: 6,

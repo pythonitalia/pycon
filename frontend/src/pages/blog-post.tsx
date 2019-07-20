@@ -14,7 +14,7 @@ export default ({ data }: BlogPostProps) => (
   <HomeLayout>
     <Row paddingLeft={STANDARD_ROW_PADDING} paddingRight={STANDARD_ROW_PADDING}>
       <Column
-        colWidth={{
+        columnWidth={{
           mobile: 12,
           tabletPortrait: 12,
           tabletLandscape: 12,

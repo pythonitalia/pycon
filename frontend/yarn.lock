@@ -7696,10 +7696,10 @@ gray-matter@^4.0.0:
     section-matter "^1.0.0"
     strip-bom-string "^1.0.0"
 
-grigliata@^0.0.11:
-  version "0.0.11"
-  resolved "https://registry.yarnpkg.com/grigliata/-/grigliata-0.0.11.tgz#5f3228fc206db1ed9f19cc666a40974e1b632ca8"
-  integrity sha512-sUIBmhSlhDe1VefJPtRpyqO+uRUQVribqxhdyY3duxk5a1XNLUXucXIfWUfMZCg0xOgthJU/2pu3wMSjfUU6uQ==
+grigliata@^0.0.12:
+  version "0.0.12"
+  resolved "https://registry.yarnpkg.com/grigliata/-/grigliata-0.0.12.tgz#a442d49401386dfc4c9ae9c79d63341b5996698d"
+  integrity sha512-vtS90upfAFh6gSWu2rxCsrDZsoKDUws0j/T/KyQEAVoIu+4b/0mKjOW7Z5ix7SnasTvJhvPCbaTqZJ78VFq0ig==
 
 gud@^1.0.0:
   version "1.0.0"

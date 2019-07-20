@@ -32,7 +32,7 @@ export const Footer = () => {
             tabletLandscape: 3,
             desktop: 3,
           }}
-          colWidth={{
+          columnWidth={{
             mobile: 12,
             tabletPortrait: 6,
             tabletLandscape: 6,
@@ -62,7 +62,7 @@ export const Footer = () => {
                 paddingRight={STANDARD_ROW_PADDING}
               >
                 <Column
-                  colWidth={{
+                  columnWidth={{
                     mobile: 12,
                     tabletPortrait: 9,
                     tabletLandscape: 9,
@@ -72,7 +72,7 @@ export const Footer = () => {
                   <Input placeholder="Email" type="email" />
                 </Column>
                 <Column
-                  colWidth={{
+                  columnWidth={{
                     mobile: 12,
                     tabletPortrait: 3,
                     tabletLandscape: 3,
@@ -94,7 +94,7 @@ export const Footer = () => {
             tabletLandscape: 3,
             desktop: 3,
           }}
-          colWidth={{
+          columnWidth={{
             mobile: 12,
             tabletPortrait: 6,
             tabletLandscape: 6,
@@ -136,7 +136,7 @@ export const Footer = () => {
           return (
             <Column
               key={i}
-              colWidth={{
+              columnWidth={{
                 mobile: 12,
                 tabletPortrait: 6,
                 tabletLandscape: 3,

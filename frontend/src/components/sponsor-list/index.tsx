@@ -65,10 +65,10 @@ export const SponsorList: React.SFC<SponsorListProps> = props => {
             paddingLeft={STANDARD_ROW_PADDING}
             paddingRight={STANDARD_ROW_PADDING}
           >
-            <Column colWidth={FULL_WIDTH_COLUMN}>
+            <Column columnWidth={FULL_WIDTH_COLUMN}>
               <Heading use="h5">{o.category}</Heading>
             </Column>
-            <Column colWidth={FULL_WIDTH_COLUMN}>
+            <Column columnWidth={FULL_WIDTH_COLUMN}>
               <Row
                 marginLeft={MARGIN_NEGATIVE_COLUMN}
                 marginRight={MARGIN_NEGATIVE_COLUMN}
@@ -77,7 +77,7 @@ export const SponsorList: React.SFC<SponsorListProps> = props => {
                   return (
                     <Column
                       key={logosKey}
-                      colWidth={{
+                      columnWidth={{
                         mobile: 12,
                         tabletPortrait: 4,
                         tabletLandscape: 3,

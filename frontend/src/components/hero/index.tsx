@@ -108,7 +108,7 @@ export const Hero: React.SFC<HeroProps> = props => (
             tabletLandscape: 3,
             desktop: 3,
           }}
-          colWidth={{
+          columnWidth={{
             mobile: 12,
             tabletPortrait: 12,
             tabletLandscape: 12,

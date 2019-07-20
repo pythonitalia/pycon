@@ -118,7 +118,7 @@ export const Events = () => {
         paddingRight={STANDARD_ROW_PADDING}
       >
         <Column
-          colWidth={{
+          columnWidth={{
             mobile: 12,
             tabletPortrait: 12,
             tabletLandscape: 12,
@@ -140,7 +140,7 @@ export const Events = () => {
         paddingRight={STANDARD_ROW_PADDING}
       >
         <Column
-          colWidth={{
+          columnWidth={{
             mobile: 12,
             tabletPortrait: 6,
             tabletLandscape: 6,
