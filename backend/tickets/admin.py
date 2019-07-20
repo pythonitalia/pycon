@@ -1,5 +1,6 @@
 from django.contrib import admin
 
+from tickets import QUESTION_TYPE_TEXT, QUESTION_TYPE_CHOICE
 from tickets.models import Ticket, TicketQuestion, TicketQuestionChoices, UserAnswer
 
 

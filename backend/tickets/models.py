@@ -52,8 +52,16 @@ class UserAnswer(TimeStampedModel):
         related_name='answers'
     )
 
+    question = models.ForeignKey(
+        'tickets.TicketQuestion',
+        on_delete=models.PROTECT,
+        verbose_name=_('ticket'),
+        related_name='questions'
+    )
+
     answer = models.ForeignKey(
         'tickets.TicketQuestionChoices',
         on_delete=models.PROTECT,
-        verbose_name=_('answer')
+        verbose_name=_('answer'),
+        null=True
     )
