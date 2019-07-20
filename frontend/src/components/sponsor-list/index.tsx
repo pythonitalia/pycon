@@ -52,7 +52,7 @@ export const SponsorList: React.SFC<SponsorListProps> = props => {
                 ? {
                     mobile: 1,
                     tabletPortrait: -1,
-                    tabletLandscape: -4,
+                    tabletLandscape: -3,
                     desktop: -4,
                   }
                 : {

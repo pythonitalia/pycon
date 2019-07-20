@@ -18,7 +18,7 @@ const Draw = styled.div<ExpandableProps>`
     position: absolute;
     height: 4px;
     width: 100%;
-    background: currentColor;
+    background: ${theme.palette.primary};
     border-radius: 9px;
     opacity: 1;
     transform: rotate(0deg);

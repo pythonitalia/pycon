@@ -126,11 +126,9 @@ export const ExpandedMenu = styled(Base)`
   left: 0;
   background-color: ${theme.palette.primary};
   color: ${theme.palette.white};
-  padding: 16px;
+
   .expanded_menu {
     overflow-y: scroll;
     height: calc(100% - 80px);
-    div {
-    }
   }
 `;
