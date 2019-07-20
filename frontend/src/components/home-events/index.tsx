@@ -1,10 +1,9 @@
 import React, { useEffect } from "react";
 
+import { Column, Row } from "grigliata";
 import styled from "styled-components";
 import { STANDARD_ROW_PADDING } from "../../config/spacing";
 import { theme } from "../../config/theme";
-import { Column } from "../column";
-import { Row } from "../row";
 import { SectionTitle } from "../section-title";
 
 const Wrapper = styled.div`
@@ -119,7 +118,7 @@ export const Events = () => {
         paddingRight={STANDARD_ROW_PADDING}
       >
         <Column
-          colWidth={{
+          columnWidth={{
             mobile: 12,
             tabletPortrait: 12,
             tabletLandscape: 12,
@@ -141,7 +140,7 @@ export const Events = () => {
         paddingRight={STANDARD_ROW_PADDING}
       >
         <Column
-          colWidth={{
+          columnWidth={{
             mobile: 12,
             tabletPortrait: 6,
             tabletLandscape: 6,

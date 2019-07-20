@@ -2,10 +2,9 @@ import React from "react";
 
 import { Heading, Input, Text } from "fannypack";
 import { Link } from "gatsby";
+import { Column, Row } from "grigliata";
 import { STANDARD_ROW_PADDING } from "../../config/spacing";
 import { Button } from "../button";
-import { Column } from "../column";
-import { Row } from "../row";
 import { GOOGLE_MAPS_URL } from "./constants";
 import { LinksWrapper } from "./links-wrapper";
 import { MapWrapper } from "./map-wrapper";
@@ -33,7 +32,7 @@ export const Footer = () => {
             tabletLandscape: 3,
             desktop: 3,
           }}
-          colWidth={{
+          columnWidth={{
             mobile: 12,
             tabletPortrait: 6,
             tabletLandscape: 6,
@@ -63,7 +62,7 @@ export const Footer = () => {
                 paddingRight={STANDARD_ROW_PADDING}
               >
                 <Column
-                  colWidth={{
+                  columnWidth={{
                     mobile: 12,
                     tabletPortrait: 9,
                     tabletLandscape: 9,
@@ -73,7 +72,7 @@ export const Footer = () => {
                   <Input placeholder="Email" type="email" />
                 </Column>
                 <Column
-                  colWidth={{
+                  columnWidth={{
                     mobile: 12,
                     tabletPortrait: 3,
                     tabletLandscape: 3,
@@ -95,7 +94,7 @@ export const Footer = () => {
             tabletLandscape: 3,
             desktop: 3,
           }}
-          colWidth={{
+          columnWidth={{
             mobile: 12,
             tabletPortrait: 6,
             tabletLandscape: 6,
@@ -117,7 +116,7 @@ export const Footer = () => {
       </Row>
 
       <Row marginTop={MARGIN_TOP_ROW}>
-        <MapWrapper style={{width: "100%"}}>
+        <MapWrapper style={{ width: "100%" }}>
           <a href="https://www.google.com/maps/place/hotel+mediterraneo+firenze/">
             <img
               src={GOOGLE_MAPS_URL}
@@ -137,7 +136,7 @@ export const Footer = () => {
           return (
             <Column
               key={i}
-              colWidth={{
+              columnWidth={{
                 mobile: 12,
                 tabletPortrait: 6,
                 tabletLandscape: 3,

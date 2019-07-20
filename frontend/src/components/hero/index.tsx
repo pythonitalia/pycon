@@ -2,10 +2,9 @@ import React from "react";
 
 import { theme } from "fannypack";
 import Img, { GatsbyImageProps } from "gatsby-image";
+import { Column, Row } from "grigliata";
 import styled from "styled-components";
 import { STANDARD_ROW_PADDING } from "../../config/spacing";
-import { Column } from "../column";
-import { Row } from "../row";
 
 type HeroProps = {
   backgroundImage: GatsbyImageProps;
@@ -109,7 +108,7 @@ export const Hero: React.SFC<HeroProps> = props => (
             tabletLandscape: 3,
             desktop: 3,
           }}
-          colWidth={{
+          columnWidth={{
             mobile: 12,
             tabletPortrait: 12,
             tabletLandscape: 12,

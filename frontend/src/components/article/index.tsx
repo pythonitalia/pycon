@@ -1,9 +1,9 @@
 import React from "react";
 
 import { GatsbyImageProps } from "gatsby-image";
+import { Row } from "grigliata";
 import styled from "styled-components";
 import { Hero } from "../hero";
-import { Row } from "../row";
 import { ArticleTitle } from "./title";
 
 const Wrapper = styled.div`
@@ -71,9 +71,8 @@ export const Article: React.SFC<ArticleProps> = props => (
         tabletLandscape: 2,
         desktop: 2,
       }}
-      className="content"
     >
-      {props.children}
+      <div className="content">{props.children}</div>
     </Row>
   </Wrapper>
 );
