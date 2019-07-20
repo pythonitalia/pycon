@@ -530,7 +530,7 @@ class Command(BaseCommand):
                 with transaction.atomic():
 
                     order_user = users_by_email[orig_ticket['order_user']]
-                    ticket_user = users_by_email.get(orig_ticket['ticket_user'], order_user)
+                    ticket_user = users_by_email.get(orig_ticket['ticket_user'] or None, order_user)
 
                     ticket_fare, _ = TicketFare.objects.update_or_create(
                         conference_id=conferences[orig_ticket['conference']],
