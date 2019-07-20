@@ -3,6 +3,8 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from model_utils.models import TimeStampedModel
 
+from tickets import QUESTION_TYPES, QUESTION_TYPE_CHOICE
+
 
 class Ticket(TimeStampedModel):
     user = models.ForeignKey(
@@ -25,6 +27,12 @@ class Ticket(TimeStampedModel):
 
 class TicketQuestion(TimeStampedModel):
     text = models.CharField(_('text'), max_length=256)
+    question_type = models.CharField(
+        max_length=10,
+        choices=QUESTION_TYPES,
+        default=QUESTION_TYPE_CHOICE,
+        blank=False, null=False,
+    )
 
     def __str__(self):
         return f'{self.text}'
@@ -38,7 +46,8 @@ class TicketQuestionChoices(TimeStampedModel):
     question = models.ForeignKey(
         TicketQuestion,
         on_delete=models.PROTECT,
-        verbose_name=_('question')
+        related_name='choices',
+        verbose_name=_('question'),
     )
 
     choice = models.CharField(_('text'), max_length=256)
@@ -59,9 +68,7 @@ class UserAnswer(TimeStampedModel):
         related_name='questions'
     )
 
-    answer = models.ForeignKey(
-        'tickets.TicketQuestionChoices',
-        on_delete=models.PROTECT,
-        verbose_name=_('answer'),
-        null=True
+    answer = models.CharField(
+        max_length=256,
+        null=True,
     )

@@ -6,8 +6,9 @@ from tickets.models import Ticket, TicketQuestion, TicketQuestionChoices, UserAn
 
 class UserAnswersInline(admin.TabularInline):
     model = UserAnswer
-    fields = ("question", "answer_choice")
-    readonly_fields = ("question", "answer_choice")
+    fields = ("question", "user_answer")
+    readonly_fields = ("question", "user_answer")
+
     can_delete = False
 
     def question(self, instance):
@@ -15,10 +16,16 @@ class UserAnswersInline(admin.TabularInline):
 
     question.short_description = "Question"
 
-    def answer_choice(self, instance):
-        return instance.answer.choice
+    def user_answer(self, instance):
+        q_type = instance.question.question_type
+        if q_type == QUESTION_TYPE_TEXT:
+            return instance.answer_text
+        if q_type == QUESTION_TYPE_CHOICE:
+            return instance.answer_choice.choice
+        else:
+            return "Error: malformed answer"
 
-    answer_choice.short_description = "Answer"
+    user_answer.short_description = "Answer"
 
     def has_add_permission(self, request):
         return False
