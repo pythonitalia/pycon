@@ -1,13 +1,12 @@
 import React from "react";
 
 import { Link } from "fannypack";
+import { Column, Row } from "grigliata";
 import styled, { css } from "styled-components";
 import { STANDARD_ROW_PADDING } from "../../config/spacing";
 import { theme } from "../../config/theme";
 import { useToggle } from "../../helpers/use-toggle";
 import { Button } from "../button";
-import { Column } from "../column";
-import { Row } from "../row";
 import { ExpandedMenu } from "./expanded-menu";
 import { Hamburger } from "./hamburger";
 import { ExpandableProps } from "./types";

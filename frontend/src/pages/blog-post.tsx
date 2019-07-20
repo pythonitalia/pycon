@@ -1,10 +1,8 @@
-import * as React from "react";
+import React from "react";
 
 import { graphql } from "gatsby";
+import { Column, Row } from "grigliata";
 import { Article } from "../components/article";
-import { ArticleTitle } from "../components/article/title";
-import { Column } from "../components/column";
-import { Row } from "../components/row";
 import { STANDARD_ROW_PADDING } from "../config/spacing";
 import { HomeLayout } from "../layouts/home";
 

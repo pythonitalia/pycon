@@ -1,10 +1,9 @@
 import React, { useEffect } from "react";
 
+import { Column, Row } from "grigliata";
 import styled from "styled-components";
 import { STANDARD_ROW_PADDING } from "../../config/spacing";
 import { theme } from "../../config/theme";
-import { Column } from "../column";
-import { Row } from "../row";
 import { SectionTitle } from "../section-title";
 
 const Wrapper = styled.div`

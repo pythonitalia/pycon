@@ -2,10 +2,9 @@ import React from "react";
 
 import { Heading, Input, Text } from "fannypack";
 import { Link } from "gatsby";
+import { Column, Row } from "grigliata";
 import { STANDARD_ROW_PADDING } from "../../config/spacing";
 import { Button } from "../button";
-import { Column } from "../column";
-import { Row } from "../row";
 import { GOOGLE_MAPS_URL } from "./constants";
 import { LinksWrapper } from "./links-wrapper";
 import { MapWrapper } from "./map-wrapper";
@@ -117,7 +116,7 @@ export const Footer = () => {
       </Row>
 
       <Row marginTop={MARGIN_TOP_ROW}>
-        <MapWrapper style={{width: "100%"}}>
+        <MapWrapper style={{ width: "100%" }}>
           <a href="https://www.google.com/maps/place/hotel+mediterraneo+firenze/">
             <img
               src={GOOGLE_MAPS_URL}
