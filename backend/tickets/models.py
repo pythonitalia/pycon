@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from model_utils.models import TimeStampedModel
@@ -72,3 +73,13 @@ class UserAnswer(TimeStampedModel):
         max_length=256,
         null=True,
     )
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super(UserAnswer, self).save(*args, **kwargs)
+
+    def clean(self):
+        # Don't allow draft entries to have a pub_date.
+        if self.question.question_type == QUESTION_TYPE_CHOICE:
+            if self.answer not in self.question.choices.all().values_list('choice', flat=True):
+                raise ValidationError({'answer': _('Answer not possible for this question.')})
