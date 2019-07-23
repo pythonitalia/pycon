@@ -18,7 +18,6 @@ export default class FormExampleWithoutHooks extends React.Component {
   render() {
     return (
       <HomeLayout>
-        <h1>Hello, {this.state.title}</h1>
         <Component initialState={{ title: this.state.title }}>
           {
             ({ state, setState }) =>
