@@ -5,7 +5,7 @@ import { Button, InputField } from "fannypack";
 import { HomeLayout } from "../layouts/home";
 
 
-export default class FormExample1 extends React.Component {
+export default class FormExampleWithoutHooks extends React.Component {
   state = {
     title: "my state title WOW!",
   };
@@ -19,11 +19,11 @@ export default class FormExample1 extends React.Component {
     return (
       <HomeLayout>
         <h1>Hello, {this.state.title}</h1>
-        <Component initialState={{ title: "Fannypacks rock!" }}>
+        <Component initialState={{ title: this.state.title }}>
           {
             ({ state, setState }) =>
-              <InputField a11yId="title" label="Title" onChange={e => setState({ title: e.target.value })}
-                          value={state.title}/>
+              <InputField a11yId="title" label="Title" onChange={e => this.setState({ title: e.target.value })}
+                          value={this.state.title}/>
           }
         </Component>
         <Button onClick={this.sendSubmission}>Send!</Button>
