@@ -305,3 +305,24 @@ def test_query_user_tickets(graphql_client, user, ticket_factory):
     assert "errors" not in response
     assert len(response["data"]["me"]["tickets"]) == 1
     assert response["data"]["me"]["tickets"][0]["id"] == str(ticket.id)
+
+
+@mark.django_db
+def test_query_conference_rooms(graphql_client, room_factory):
+    room = room_factory()
+
+    response = graphql_client.query(
+        """
+    query($code: String!) {
+        conference(code: $code) {
+            rooms {
+                name
+            }
+        }
+    }
+    """,
+        variables={"code": room.conference.code},
+    )
+
+    assert len(response["data"]["conference"]["rooms"]) == 1
+    assert response["data"]["conference"]["rooms"][0] == {"name": room.name}

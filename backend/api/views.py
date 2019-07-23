@@ -15,7 +15,7 @@ class GraphQLView(View):
             return render(request, "api/graphiql.html")
 
         if request.method != "POST":
-            return HttpResponseNotAllowed()
+            return HttpResponseNotAllowed(["GET", "POST"])
 
         query, variables = self.parse_body(request)
 
