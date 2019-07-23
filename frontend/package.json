@@ -12,6 +12,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "@reactions/component": "^2.0.2",
     "babel-plugin-styled-components": "^1.10.6",
     "fannypack": "^4.21.9",
     "gatsby": "^2.13.33",
