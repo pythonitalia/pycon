@@ -1,10 +1,9 @@
 import React from "react";
 
+import { Column, Row } from "grigliata";
 import styled from "styled-components";
 import { STANDARD_ROW_PADDING } from "../../config/spacing";
 import { theme } from "../../config/theme";
-import { Column } from "../column";
-import { Row } from "../row";
 
 const Wrapper = styled.div`
   div[class^="columns__CustomColumns"] {
@@ -43,7 +42,7 @@ const Base = ({ ...props }) => {
           paddingRight={STANDARD_ROW_PADDING}
         >
           <Column
-            colWidth={{
+            columnWidth={{
               mobile: 12,
               tabletPortrait: 6,
               tabletLandscape: 4,
@@ -64,7 +63,7 @@ const Base = ({ ...props }) => {
             </Headings>
           </Column>
           <Column
-            colWidth={{
+            columnWidth={{
               mobile: 12,
               tabletPortrait: 6,
               tabletLandscape: 4,
@@ -91,7 +90,7 @@ const Base = ({ ...props }) => {
             </Headings>
           </Column>
           <Column
-            colWidth={{
+            columnWidth={{
               mobile: 12,
               tabletPortrait: 6,
               tabletLandscape: 4,

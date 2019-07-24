@@ -1,10 +1,9 @@
 import React from "react";
 
 import { Heading, Text } from "fannypack";
+import { Column, Row } from "grigliata";
 import styled from "styled-components";
 import { STANDARD_ROW_PADDING } from "../../config/spacing";
-import { Column } from "../column";
-import { Row } from "../row";
 
 const Base = styled.div`
   position: relative;
@@ -82,7 +81,7 @@ export const TwoColumnsText = () => {
           paddingRight={STANDARD_ROW_PADDING}
         >
           <Column
-            colWidth={{
+            columnWidth={{
               mobile: 12,
               tabletPortrait: 6,
               tabletLandscape: 5,
@@ -98,7 +97,7 @@ export const TwoColumnsText = () => {
             </Text>
           </Column>
           <Column
-            colWidth={{
+            columnWidth={{
               mobile: 12,
               tabletPortrait: 6,
               tabletLandscape: 5,
