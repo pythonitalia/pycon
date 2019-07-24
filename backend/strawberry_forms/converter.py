@@ -90,7 +90,6 @@ def convert_form_field_to_date(field):
         type_or_optional_wrapped(str, field.required),
         strawberry.field(description=field.help_text, is_input=True),
     )
-    # return Date(description=field.help_text, required=field.required)
 
 
 @convert_form_field.register(forms.DateTimeField)
@@ -99,7 +98,6 @@ def convert_form_field_to_datetime(field):
         type_or_optional_wrapped(DateTime, field.required),
         strawberry.field(description=field.help_text, is_input=True),
     )
-    # return DateTime(description=field.help_text, required=field.required)
 
 
 @convert_form_field.register(forms.TimeField)
@@ -108,7 +106,6 @@ def convert_form_field_to_time(field):
         type_or_optional_wrapped(str, field.required),
         strawberry.field(description=field.help_text, is_input=True),
     )
-    # return Time(description=field.help_text, required=field.required)
 
 
 @convert_form_field.register(forms.ModelChoiceField)
@@ -117,4 +114,3 @@ def convert_form_field_to_id(field):
         type_or_optional_wrapped(strawberry.ID, field.required),
         strawberry.field(description=field.help_text, is_input=True),
     )
-    # return ID(required=field.required)
