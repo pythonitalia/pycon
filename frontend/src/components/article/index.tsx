@@ -41,16 +41,14 @@ const Wrapper = styled.div`
 
 type ArticleProps = {
   hero: GatsbyImageProps;
+  title: string;
+  description?: string;
 };
 
 export const Article: React.SFC<ArticleProps> = props => (
   <Wrapper>
-    <Hero title="Pycon XI" backgroundImage={props.hero}>
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias et omnis
-        hic veniam nisi architecto reprehenderit voluptate magnam sed commodi
-        vel quidem ea, blanditiis quos harum non ipsam, soluta saepe.
-      </p>
+    <Hero title={props.title} backgroundImage={props.hero}>
+      {props.description && <p> {props.description} </p>}
     </Hero>
     <Row
       marginTop={{
