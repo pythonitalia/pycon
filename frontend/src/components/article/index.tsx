@@ -11,6 +11,7 @@ const Wrapper = styled.div`
   .content {
     position: relative;
     z-index: 1;
+    width:100%;
   }
 
   img {
