@@ -4,25 +4,25 @@ from typing import List
 import pytz
 import strawberry
 from api.scalars import Date, DateTime
-from languages.types import LanguageType
-from schedule.types import RoomType, ScheduleItemType
-from submissions.types import SubmissionType, SubmissionTypeType
+from languages.types import Language
+from schedule.types import Room, ScheduleItem
+from submissions.types import Submission, SubmissionType
 
 
 @strawberry.type
-class AudienceLevelType:
+class AudienceLevel:
     id: strawberry.ID
     name: str
 
 
 @strawberry.type
-class TopicType:
+class Topic:
     id: strawberry.ID
     name: str
 
 
 @strawberry.type
-class ConferenceType:
+class Conference:
     id: strawberry.ID
 
     name: str
@@ -35,7 +35,7 @@ class ConferenceType:
         return str(self.timezone)
 
     @strawberry.field
-    def schedule(self, info, date: Date = None) -> List[ScheduleItemType]:
+    def schedule(self, info, date: Date = None) -> List[ScheduleItem]:
         qs = self.schedule_items
 
         if date:
@@ -50,49 +50,49 @@ class ConferenceType:
         return qs.order_by("start")
 
     @strawberry.field
-    def ticket_fares(self, info) -> List["TicketFareType"]:
+    def ticket_fares(self, info) -> List["TicketFare"]:
         return self.ticket_fares.all()
 
     @strawberry.field
-    def deadlines(self, info) -> List["DeadlineType"]:
+    def deadlines(self, info) -> List["Deadline"]:
         return self.deadlines.order_by("start").all()
 
     @strawberry.field
-    def audience_levels(self, info) -> List[AudienceLevelType]:
+    def audience_levels(self, info) -> List[AudienceLevel]:
         return self.audience_levels.all()
 
     @strawberry.field
-    def topics(self, info) -> List[TopicType]:
+    def topics(self, info) -> List[Topic]:
         return self.topics.all()
 
     @strawberry.field
-    def languages(self, info) -> List[LanguageType]:
+    def languages(self, info) -> List[Language]:
         return self.languages.all()
 
     @strawberry.field
-    def durations(self, info) -> List["DurationType"]:
+    def durations(self, info) -> List["Duration"]:
         return self.durations.all()
 
     @strawberry.field
-    def submissions(self, info) -> List[SubmissionType]:
+    def submissions(self, info) -> List[Submission]:
         return self.submissions.all()
 
     @strawberry.field
-    def rooms(self, info) -> List[RoomType]:
+    def rooms(self, info) -> List[Room]:
         return self.rooms.all()
 
 
 @strawberry.type
-class DeadlineType:
+class Deadline:
     type: str
     name: str
     start: DateTime
     end: DateTime
-    conference: ConferenceType
+    conference: Conference
 
 
 @strawberry.type
-class TicketFareType:
+class TicketFare:
     id: strawberry.ID
     code: str
     name: str
@@ -100,17 +100,17 @@ class TicketFareType:
     start: DateTime
     end: DateTime
     description: str
-    conference: ConferenceType
+    conference: Conference
 
 
 @strawberry.type
-class DurationType:
+class Duration:
     id: strawberry.ID
-    conference: ConferenceType
+    conference: Conference
     name: str
     duration: int
     notes: str
 
     @strawberry.field
-    def allowed_submission_types(self, info) -> List[SubmissionTypeType]:
+    def allowed_submission_types(self, info) -> List[SubmissionType]:
         return self.allowed_submission_types.all()

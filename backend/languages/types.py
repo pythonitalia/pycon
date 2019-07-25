@@ -2,7 +2,7 @@ import strawberry
 
 
 @strawberry.type
-class LanguageType:
+class Language:
     id: strawberry.ID
     code: str
     name: str

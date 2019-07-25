@@ -3,13 +3,13 @@ from strawberry_forms.mutations import FormMutation
 
 from .forms import SendSubmissionForm
 from .permissions import IsAuthenticated
-from .types import SubmissionType
+from .types import Submission
 
 
 class SendSubmission(FormMutation):
     @classmethod
     def transform(cls, result):
-        return SubmissionType(
+        return Submission(
             id=result.id,
             conference=result.conference,
             title=result.title,
@@ -25,7 +25,7 @@ class SendSubmission(FormMutation):
 
     class Meta:
         form_class = SendSubmissionForm
-        output_types = (SubmissionType,)
+        output_types = (Submission,)
         permission_classes = (IsAuthenticated,)
 
 

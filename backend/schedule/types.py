@@ -2,26 +2,26 @@ from typing import List, Optional
 
 import strawberry
 from api.scalars import DateTime
-from submissions.types import SubmissionType
+from submissions.types import Submission
 from users.types import UserType
 
 if False:
-    from conferences.types import ConferenceType
+    from conferences.types import Conference
 
 
 @strawberry.type
-class RoomType:
+class Room:
     name: str
-    conference: "ConferenceType"
+    conference: "Conference"
 
 
 @strawberry.type
-class ScheduleItemType:
+class ScheduleItem:
     id: strawberry.ID
-    conference: "ConferenceType"
+    conference: "Conference"
     start: DateTime
     end: DateTime
-    submission: Optional[SubmissionType]
+    submission: Optional[Submission]
     title: str
     description: str
     type: str
@@ -31,5 +31,5 @@ class ScheduleItemType:
         return self.additional_speakers.all()
 
     @strawberry.field
-    def rooms(self, info) -> List[RoomType]:
+    def rooms(self, info) -> List[Room]:
         return self.rooms.all()

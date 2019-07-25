@@ -6,29 +6,29 @@ from voting.models import Vote
 from voting.types import VoteType
 
 if False:
-    from conferences.types import ConferenceType, TopicType, DurationType
+    from conferences.types import Conference, Topic, Duration
     from users.types import UserType
-
-
-@strawberry.type
-class SubmissionTypeType:
-    id: strawberry.ID
-    name: str
 
 
 @strawberry.type
 class SubmissionType:
     id: strawberry.ID
-    conference: "ConferenceType"
+    name: str
+
+
+@strawberry.type
+class Submission:
+    id: strawberry.ID
+    conference: "Conference"
     title: str
     elevator_pitch: str
     notes: str
     abstract: str
     speaker: "UserType"
     # helpers: str
-    topic: "TopicType"
-    type: SubmissionTypeType
-    duration: "DurationType"
+    topic: "Topic"
+    type: SubmissionType
+    duration: "Duration"
 
     @strawberry.field
     def my_vote(self, info) -> Optional[VoteType]:

@@ -1,5 +1,5 @@
 import strawberry
-from conferences.types import TicketFareType
+from conferences.types import TicketFare
 from users.types import UserType
 
 
@@ -7,4 +7,4 @@ from users.types import UserType
 class TicketType:
     id: strawberry.ID
     user: UserType
-    ticket_fare: TicketFareType
+    ticket_fare: TicketFare

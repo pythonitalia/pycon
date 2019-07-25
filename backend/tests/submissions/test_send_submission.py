@@ -45,7 +45,7 @@ def _submit_talk(client, conference, **kwargs):
                 }) {
                     __typename
 
-                    ... on SubmissionType {
+                    ... on Submission {
                         id
                         title
                         abstract
@@ -112,7 +112,7 @@ def _submit_tutorial(client, conference, **kwargs):
                 }) {
                     __typename
 
-                    ... on SubmissionType {
+                    ... on Submission {
                         id
                         title
                         abstract
@@ -152,7 +152,7 @@ def test_submit_talk(graphql_client, user, conference_factory):
 
     resp, variables = _submit_talk(graphql_client, conference)
 
-    assert resp["data"]["sendSubmission"]["__typename"] == "SubmissionType"
+    assert resp["data"]["sendSubmission"]["__typename"] == "Submission"
 
     assert resp["data"]["sendSubmission"]["title"] == variables["title"]
     assert resp["data"]["sendSubmission"]["abstract"] == variables["abstract"]
@@ -455,7 +455,7 @@ def test_submit_tutorial(graphql_client, user, conference_factory):
 
     resp, _ = _submit_tutorial(graphql_client, conference, title="My first tutorial")
 
-    assert resp["data"]["sendSubmission"]["__typename"] == "SubmissionType"
+    assert resp["data"]["sendSubmission"]["__typename"] == "Submission"
     assert resp["data"]["sendSubmission"]["title"] == "My first tutorial"
 
     assert user.submissions.filter(conference=conference).count() == 1
@@ -504,7 +504,7 @@ def test_elevation_pitch_and_notes_are_not_required(
 
     resp, _ = _submit_tutorial(graphql_client, conference, elevator_pitch="", notes="")
 
-    assert resp["data"]["sendSubmission"]["__typename"] == "SubmissionType"
+    assert resp["data"]["sendSubmission"]["__typename"] == "Submission"
     assert resp["data"]["sendSubmission"]["elevatorPitch"] == ""
     assert resp["data"]["sendSubmission"]["notes"] == ""
 

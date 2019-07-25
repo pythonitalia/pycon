@@ -4,7 +4,7 @@ import strawberry
 from users.types import UserType
 
 if False:
-    from submissions.types import SubmissionType
+    from submissions.types import Submission
 
 
 @strawberry.enum
@@ -28,4 +28,4 @@ class VoteType:
     id: strawberry.ID
     value: VoteValues
     user: UserType
-    submission: "SubmissionType"
+    submission: "Submission"
