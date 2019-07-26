@@ -25,8 +25,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "api.apps.ApiConfig",
     "timezone_field",
-    "graphene_django",
     "social_django",
     "users",
     "conferences.apps.ConferencesConfig",
@@ -114,9 +114,6 @@ STATIC_ROOT = root("static")
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = root("media")
-
-
-GRAPHENE = {"SCHEMA": "api.schema.schema"}
 
 AUTH_USER_MODEL = "users.User"
 SOCIAL_AUTH_USER_MODEL = "users.User"

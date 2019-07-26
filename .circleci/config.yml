@@ -7,7 +7,7 @@ defaults_node: &defaults_node
 jobs:
   backend-test:
     docker:
-      - image: circleci/python:3.6.5@sha256:5ed7f0d14f10f5b81c012c6011969ca5abf9f7bc53e0448844aa9274a359178e
+      - image: circleci/python:3.7.4
         environment:
           DATABASE_URL: postgresql://root@localhost/circle_test?sslmode=disable
       - image: circleci/postgres:11
@@ -51,7 +51,7 @@ jobs:
 
   backend-schema:
     docker:
-      - image: circleci/python:3.6.5@sha256:5ed7f0d14f10f5b81c012c6011969ca5abf9f7bc53e0448844aa9274a359178e
+      - image: circleci/python:3.7.4
 
     working_directory: ~/repo
 

@@ -1,11 +1,11 @@
-import graphene
+import strawberry
 
+from . import types
 from .models import Conference
-from .types import ConferenceType
 
 
+@strawberry.type
 class ConferenceQuery:
-    conference = graphene.Field(ConferenceType, code=graphene.String())
-
-    def resolve_conference(self, info, code):
+    @strawberry.field
+    def conference(self, info, code: str) -> types.Conference:
         return Conference.objects.get(code=code)

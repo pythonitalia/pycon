@@ -9,7 +9,7 @@ def test_get_conference_info(conference, ticket_fare_factory, graphql_client):
 
     resp = graphql_client.query(
         """
-        query($code: String) {
+        query($code: String!) {
             conference(code: $code) {
                 id
                 code
@@ -64,7 +64,7 @@ def test_get_conference_deadlines_ordered_by_start_date(
 
     resp = graphql_client.query(
         """
-        query($code: String) {
+        query($code: String!) {
             conference(code: $code) {
                 start
                 end
@@ -88,19 +88,19 @@ def test_get_conference_deadlines_ordered_by_start_date(
     assert {
         "start": deadline_voting.start.isoformat(),
         "end": deadline_voting.end.isoformat(),
-        "type": "VOTING",
+        "type": "voting",
     } == resp["data"]["conference"]["deadlines"][0]
 
     assert {
         "start": deadline_refund.start.isoformat(),
         "end": deadline_refund.end.isoformat(),
-        "type": "REFUND",
+        "type": "refund",
     } == resp["data"]["conference"]["deadlines"][1]
 
     assert {
         "start": deadline_cfp.start.isoformat(),
         "end": deadline_cfp.end.isoformat(),
-        "type": "CFP",
+        "type": "cfp",
     } == resp["data"]["conference"]["deadlines"][2]
 
 
@@ -132,7 +132,7 @@ def test_query_conference_audience_levels(
 
     resp = graphql_client.query(
         """
-        query($code: String) {
+        query($code: String!) {
             conference(code: $code) {
                 audienceLevels {
                     id
@@ -169,7 +169,7 @@ def test_query_conference_topics(graphql_client, conference, topic_factory):
 
     resp = graphql_client.query(
         """
-        query($code: String) {
+        query($code: String!) {
             conference(code: $code) {
                 topics {
                     id
@@ -205,7 +205,7 @@ def test_query_conference_languages(graphql_client, conference, language):
 
     resp = graphql_client.query(
         """
-        query($code: String) {
+        query($code: String!) {
             conference(code: $code) {
                 languages {
                     id
@@ -245,7 +245,7 @@ def test_get_conference_durations(
 
     resp = graphql_client.query(
         """
-        query($code: String) {
+        query($code: String!) {
             conference(code: $code) {
                 durations {
                     id
@@ -291,7 +291,7 @@ def test_query_user_tickets(graphql_client, user, ticket_factory):
 
     response = graphql_client.query(
         """
-    query ($conference: ID!) {
+    query ($conference: String!) {
         me {
             tickets(conference: $conference) {
                 id
@@ -302,5 +302,27 @@ def test_query_user_tickets(graphql_client, user, ticket_factory):
         variables={"conference": ticket.ticket_fare.conference.code},
     )
 
+    assert "errors" not in response
     assert len(response["data"]["me"]["tickets"]) == 1
     assert response["data"]["me"]["tickets"][0]["id"] == str(ticket.id)
+
+
+@mark.django_db
+def test_query_conference_rooms(graphql_client, room_factory):
+    room = room_factory()
+
+    response = graphql_client.query(
+        """
+    query($code: String!) {
+        conference(code: $code) {
+            rooms {
+                name
+            }
+        }
+    }
+    """,
+        variables={"code": room.conference.code},
+    )
+
+    assert len(response["data"]["conference"]["rooms"]) == 1
+    assert response["data"]["conference"]["rooms"][0] == {"name": room.name}

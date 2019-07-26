@@ -1,26 +1,35 @@
-from graphene_django import DjangoObjectType
+from typing import List, Optional
 
-from .models import Room, ScheduleItem
+import strawberry
+from api.scalars import DateTime
+from submissions.types import Submission
+from users.types import UserType
+
+if False:
+    from conferences.types import Conference
 
 
-class RoomType(DjangoObjectType):
-    class Meta:
-        model = Room
-        exclude_fields = ("id",)
+@strawberry.type
+class Room:
+    name: str
+    conference: "Conference"
 
 
-class ModelScheduleItemType(DjangoObjectType):
-    class Meta:
-        model = ScheduleItem
-        only_fields = (
-            "id",
-            "conference",
-            "start",
-            "end",
-            "type",
-            "rooms",
-            "submission",
-            "title",
-            "description",
-            "additional_speakers",
-        )
+@strawberry.type
+class ScheduleItem:
+    id: strawberry.ID
+    conference: "Conference"
+    start: DateTime
+    end: DateTime
+    submission: Optional[Submission]
+    title: str
+    description: str
+    type: str
+
+    @strawberry.field
+    def additional_speakers(self, info) -> List[UserType]:
+        return self.additional_speakers.all()
+
+    @strawberry.field
+    def rooms(self, info) -> List[Room]:
+        return self.rooms.all()

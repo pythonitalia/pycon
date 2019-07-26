@@ -1,22 +1,21 @@
-from graphene import ID, List, NonNull
-from graphene_django import DjangoObjectType
-from tickets.types import TicketType
+from typing import List
 
-from .models import User
+import strawberry
 
 
-class MeUserType(DjangoObjectType):
-    tickets = NonNull(List(NonNull(TicketType)), conference=ID())
+@strawberry.type
+class MeUserType:
+    id: strawberry.ID
+    email: str
 
-    def resolve_tickets(self, info, conference):
+    @strawberry.field
+    def tickets(self, info, conference: str) -> List["TicketType"]:
         return self.tickets.filter(ticket_fare__conference__code=conference).all()
 
-    class Meta:
-        model = User
-        only_fields = ("id", "email", "tickets")
 
-
-class UserType(DjangoObjectType):
-    class Meta:
-        model = User
-        only_fields = ("id", "email", "name", "username")
+@strawberry.type
+class UserType:
+    id: strawberry.ID
+    email: str
+    name: str
+    username: str

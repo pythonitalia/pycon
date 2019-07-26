@@ -1,13 +1,34 @@
-import graphene
-from api.mutations import AuthOnlyDjangoModelFormMutation
+import strawberry
+from strawberry_forms.mutations import FormMutation
 
 from .forms import SendSubmissionForm
+from .permissions import IsAuthenticated
+from .types import Submission
 
 
-class SendSubmission(AuthOnlyDjangoModelFormMutation):
+class SendSubmission(FormMutation):
+    @classmethod
+    def transform(cls, result):
+        return Submission(
+            id=result.id,
+            conference=result.conference,
+            title=result.title,
+            elevator_pitch=result.elevator_pitch,
+            notes=result.notes,
+            abstract=result.abstract,
+            speaker=result.speaker,
+            # helpers=result.#,
+            topic=result.topic,
+            type=result.type,
+            duration=result.duration,
+        )
+
     class Meta:
         form_class = SendSubmissionForm
+        output_types = (Submission,)
+        permission_classes = (IsAuthenticated,)
 
 
-class SubmissionsMutations(graphene.ObjectType):
-    send_submission = SendSubmission.Field()
+@strawberry.type
+class SubmissionsMutations:
+    send_submission = SendSubmission.Mutation

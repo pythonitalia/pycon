@@ -5,7 +5,7 @@ from pytest import mark
 def test_get_logged_user_vote_on_a_submission(graphql_client, user, vote_factory):
     graphql_client.force_login(user)
 
-    vote = vote_factory(user=user)
+    vote = vote_factory(user=user, value=0)
 
     response = graphql_client.query(
         """query MyVote($conference: String!) {
@@ -23,7 +23,7 @@ def test_get_logged_user_vote_on_a_submission(graphql_client, user, vote_factory
 
     assert (
         response["data"]["conference"]["submissions"][0]["myVote"]["value"]
-        == f"A_{vote.value}"
+        == "NOT_INTERESTED"
     )
 
 

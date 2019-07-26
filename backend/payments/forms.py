@@ -3,8 +3,8 @@ from decimal import Decimal
 from conferences.models import Conference, TicketFare
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from graphene_form.forms import FormWithContext
 from orders.models import Order, OrderItem
+from strawberry_forms.forms import FormWithContext
 
 from .errors import PaymentError
 from .fields import CartField

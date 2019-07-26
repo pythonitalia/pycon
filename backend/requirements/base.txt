@@ -1,6 +1,5 @@
 Django==2.2.3
 django-environ==0.4.4
-graphene-django==2.4.0
 social-auth-app-django==2.1.0
 django-model-utils==3.2.0
 pytz==2019.1
@@ -19,3 +18,5 @@ chardet==3.0.4
 idna==2.8
 requests==2.22.0
 urllib3==1.25.3
+strawberry-graphql==0.13.3
+aniso8601==6.0.0

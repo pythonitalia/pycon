@@ -12,7 +12,10 @@ def _submit_vote(client, submission, **kwargs):
         math.floor(random.uniform(Vote.VALUES.not_interested, Vote.VALUES.must_see)),
     )
 
-    defaults = {"value": VoteValues.get(value_index).name, "submission": submission.id}
+    defaults = {
+        "value": VoteValues.from_int(value_index).name,
+        "submission": submission.id,
+    }
 
     variables = {**defaults, **kwargs}
 
@@ -23,13 +26,17 @@ def _submit_vote(client, submission, **kwargs):
                     submission: $submission,
                     value: $value
                 }) {
-                    vote {
+                    __typename
+
+                    ... on VoteType {
                         id
                         value
                     }
-                    errors {
-                        messages
-                        field
+
+                    ... on SendVoteErrors {
+                        validationSubmission: submission
+                        validationValue: value
+                        nonFieldErrors
                     }
                 }
             }""",
@@ -49,10 +56,10 @@ def test_submit_vote(graphql_client, user, conference_factory, submission_factor
 
     resp, variables = _submit_vote(graphql_client, submission, value_index=0)
 
-    assert resp["data"]["sendVote"]["vote"] is not None, resp
-    assert resp["data"]["sendVote"]["errors"] == []
+    assert resp["data"]["sendVote"]["__typename"] == "VoteType"
 
-    vote = Vote.objects.get(id=resp["data"]["sendVote"]["vote"]["id"])
+    vote = Vote.objects.get(id=resp["data"]["sendVote"]["id"])
+
     assert vote.value == 0
     assert vote.submission.id == variables["submission"]
     assert vote.user == user
@@ -69,11 +76,10 @@ def test_reject_vote_when_voting_is_not_open(
 
     resp, variables = _submit_vote(graphql_client, submission)
 
-    assert resp["data"]["sendVote"]["errors"]
-    assert resp["data"]["sendVote"]["errors"][0]["messages"] == [
+    assert resp["data"]["sendVote"]["__typename"] == "SendVoteErrors"
+    assert resp["data"]["sendVote"]["nonFieldErrors"] == [
         "The voting session is not open!"
     ]
-    assert resp["data"]["sendVote"]["errors"][0]["field"] == "__all__"
 
 
 def test_user_can_vote_different_submissions(
@@ -85,8 +91,8 @@ def test_user_can_vote_different_submissions(
 
     submission1 = submission_factory(conference=conference, id=1)
     resp1, variables1 = _submit_vote(graphql_client, submission1)
-    assert resp1["data"]["sendVote"]["vote"] is not None, resp1
-    assert resp1["data"]["sendVote"]["errors"] == []
+
+    assert resp1["data"]["sendVote"]["__typename"] == "VoteType"
 
     vote1 = Vote.objects.get(user=user, submission=submission1)
     assert vote1.value == variables1["value_index"]
@@ -94,13 +100,13 @@ def test_user_can_vote_different_submissions(
     submission2 = submission_factory(conference=conference)
 
     resp2, variables2 = _submit_vote(graphql_client, submission2)
-    assert resp2["data"]["sendVote"]["vote"] is not None, resp1
-    assert resp2["data"]["sendVote"]["errors"] == []
+
+    assert resp2["data"]["sendVote"]["__typename"] == "VoteType"
 
     vote2 = Vote.objects.get(user=user, submission=submission2)
     assert vote2.value == variables2["value_index"]
 
-    assert Vote.objects.all().__len__() == 2
+    assert Vote.objects.all().count() == 2
 
 
 def test_updating_vote_when_user_votes_the_same_submission(
@@ -113,16 +119,14 @@ def test_updating_vote_when_user_votes_the_same_submission(
     submission = submission_factory(conference=conference, id=1)
     resp, variables = _submit_vote(graphql_client, submission, value_index=1)
 
-    assert resp["data"]["sendVote"]["vote"] is not None, resp
-    assert resp["data"]["sendVote"]["errors"] == []
+    assert resp["data"]["sendVote"]["__typename"] == "VoteType"
 
     vote1 = Vote.objects.get(user=user, submission=submission)
     assert vote1.value == variables["value_index"]
 
     resp, variables = _submit_vote(graphql_client, submission, value_index=3)
 
-    assert resp["data"]["sendVote"]["vote"] is not None, resp
-    assert resp["data"]["sendVote"]["errors"] == []
+    assert resp["data"]["sendVote"]["__typename"] == "VoteType"
 
     vote1 = Vote.objects.get(user=user, submission=submission)
 

@@ -1,17 +1,31 @@
-from graphene import Enum
-from graphene_django import DjangoObjectType
+from enum import Enum
 
-from .models import Vote
+import strawberry
+from users.types import UserType
 
-
-class VoteType(DjangoObjectType):
-    class Meta:
-        model = Vote
-        fields = ("id", "value", "user", "submission")
+if False:
+    from submissions.types import Submission
 
 
+@strawberry.enum
 class VoteValues(Enum):
     NOT_INTERESTED = 0
     MAYBE = 1
     WANT_TO_SEE = 2
     MUST_SEE = 3
+
+    @classmethod
+    def from_int(cls, value: int):
+        for _, member in cls.__members__.items():
+            if member.value == value:
+                return member
+
+        return None
+
+
+@strawberry.type
+class VoteType:
+    id: strawberry.ID
+    value: VoteValues
+    user: UserType
+    submission: "Submission"
