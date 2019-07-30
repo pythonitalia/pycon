@@ -1,6 +1,10 @@
 import factory
 import factory.fuzzy
 import pytz
+from django.utils import timezone
+from factory.django import DjangoModelFactory
+from pytest_factoryboy import register
+
 from conferences.models import (
     AudienceLevel,
     Conference,
@@ -9,10 +13,7 @@ from conferences.models import (
     TicketFare,
     Topic,
 )
-from django.utils import timezone
-from factory.django import DjangoModelFactory
 from languages.models import Language
-from pytest_factoryboy import register
 from submissions.models import SubmissionType
 
 
@@ -134,9 +135,8 @@ class ConferenceFactory(DjangoModelFactory):
         if extracted:
             for audience_level in extracted:
                 self.audience_levels.add(
-                    AudienceLevel.objects.get_or_create(name=audience_level)[
-                        0])
-
+                    AudienceLevel.objects.get_or_create(name=audience_level)[0]
+                )
 
     class Meta:
         model = Conference

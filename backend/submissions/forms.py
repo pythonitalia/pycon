@@ -1,10 +1,10 @@
-from api.forms import ContextAwareModelForm
-from conferences.models import Conference
 from django import forms
 from django.utils.translation import ugettext_lazy as _
+
+from api.forms import ContextAwareModelForm
+from conferences.models import AudienceLevel, Conference
 from integrations.tasks import notify_new_submission
 from languages.models import Language
-from conferences.models import Conference, AudienceLevel
 
 from .models import Submission
 
@@ -17,8 +17,8 @@ class SendSubmissionForm(ContextAwareModelForm):
         queryset=Language.objects.all(), to_field_name="code", required=True
     )
     audience_level = forms.ModelChoiceField(
-        queryset=AudienceLevel.objects.all(), to_field_name='name',
-        required=True)
+        queryset=AudienceLevel.objects.all(), to_field_name="name", required=True
+    )
 
     def clean(self):
         cleaned_data = super().clean()

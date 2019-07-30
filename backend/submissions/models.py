@@ -45,9 +45,9 @@ class Submission(TimeStampedModel):
     )
 
     audience_level = models.ForeignKey(
-        'conferences.AudienceLevel',
-        verbose_name=_('audience level'),
-        on_delete=models.PROTECT
+        "conferences.AudienceLevel",
+        verbose_name=_("audience level"),
+        on_delete=models.PROTECT,
     )
 
     def clean(self):
@@ -109,20 +109,26 @@ class Submission(TimeStampedModel):
                 }
             )
 
+        if (
+            self.audience_level_id
+            and not self.conference.audience_levels.filter(
+                id=self.audience_level_id
+            ).exists()
+        ):
+            raise exceptions.ValidationError(
+                {
+                    "audience_level": _(
+                        "%(audience_level)s is not an allowed audience level"
+                    )
+                    % {"audience_level": str(self.audience_level)}
+                }
+            )
+
     def get_admin_url(self):
         return reverse(
             "admin:%s_%s_change" % (self._meta.app_label, self._meta.model_name),
             args=(self.pk,),
         )
-
-        if self.audience_level_id and not self.conference.audience_levels.filter(
-            id=self.audience_level_id).exists():
-            raise exceptions.ValidationError(
-                {'audience_level': _(
-                    '%(audience_level)s is not an allowed audience level') % {
-                                       'audience_level': str(
-                                           self.audience_level)}}
-            )
 
     def __str__(self):
         return f"{self.title} at Conference {self.conference_id}"
