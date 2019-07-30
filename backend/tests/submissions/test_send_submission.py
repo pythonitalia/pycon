@@ -68,6 +68,7 @@ def _submit_talk(client, conference, **kwargs):
                         validationLanguage: language
                         validationType: type
                         validationDuration: duration
+                        validationAudienceLevel: audienceLevel
                         nonFieldErrors
                     }
                 }
@@ -141,6 +142,7 @@ def _submit_tutorial(client, conference, **kwargs):
                         validationLanguage: language
                         validationType: type
                         validationDuration: duration
+                        validationAudienceLevel: audienceLevel
                         nonFieldErrors
                     }
                 }
@@ -396,11 +398,12 @@ def test_submit_talk_with_not_valid_audience_level(
     )
     resp, _ = _submit_talk(graphql_client, conference, audience_level="Beginners")
 
-    assert resp["data"]["sendSubmission"]["submission"] is None
-    assert resp["data"]["sendSubmission"]["errors"][0]["messages"] == [
+    assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
+    # assert resp["data"]["sendSubmission"]["submission"] is None
+    assert resp["data"]["sendSubmission"]["validationAudienceLevel"] == [
         "Select a valid choice. That choice is not one of the available choices."
     ]
-    assert resp["data"]["sendSubmission"]["errors"][0]["field"] == "audience_level"
+    # assert resp["data"]["sendSubmission"]["errors"][0]["field"] == "audience_level"
 
 
 @mark.django_db
@@ -422,11 +425,10 @@ def test_submit_talk_with_not_valid_conf_audience_level(
         graphql_client, conference, audience_level=audience_level.name
     )
 
-    assert resp["data"]["sendSubmission"]["submission"] is None
-    assert resp["data"]["sendSubmission"]["errors"][0]["messages"] == [
+    assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
+    assert resp["data"]["sendSubmission"]["validationAudienceLevel"] == [
         "Intermidiate is not an allowed audience level"
     ]
-    assert resp["data"]["sendSubmission"]["errors"][0]["field"] == "audience_level"
 
 
 @mark.django_db
