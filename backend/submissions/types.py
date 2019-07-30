@@ -6,7 +6,7 @@ from voting.models import Vote
 from voting.types import VoteType
 
 if False:
-    from conferences.types import Conference, Topic, Duration
+    from conferences.types import Conference, Topic, Duration, AudienceLevel, Language
     from users.types import UserType
 
 

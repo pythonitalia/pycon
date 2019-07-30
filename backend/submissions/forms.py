@@ -1,8 +1,7 @@
-from django import forms
-from django.utils.translation import ugettext_lazy as _
-
 from api.forms import ContextAwareModelForm
 from conferences.models import AudienceLevel, Conference
+from django import forms
+from django.utils.translation import ugettext_lazy as _
 from integrations.tasks import notify_new_submission
 from languages.models import Language
 
