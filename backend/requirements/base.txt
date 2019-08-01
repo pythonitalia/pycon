@@ -2,7 +2,7 @@ Django==2.2.3
 django-environ==0.4.4
 social-auth-app-django==2.1.0
 django-model-utils==3.2.0
-pytz==2019.1
+pytz==2019.2
 django-timezone-field==3.0
 stripe==2.33.0
 django-fsm==2.6.1
