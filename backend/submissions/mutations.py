@@ -21,6 +21,7 @@ class SendSubmission(FormMutation):
             topic=result.topic,
             type=result.type,
             duration=result.duration,
+            audience_level=result.audience_level,
         )
 
     class Meta:
