@@ -48,6 +48,12 @@ jobs:
             . venv/bin/activate
             cd backend
             py.test integration_tests/
+      - run:
+          name: upload coverage
+          command: |
+            . venv/bin/activate
+            pip install codecov
+            codecov
 
   backend-schema:
     docker:
