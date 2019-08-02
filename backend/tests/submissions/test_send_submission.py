@@ -1,4 +1,5 @@
 from pytest import mark
+
 from submissions.models import Submission, SubmissionType
 
 from .factories import SubmissionFactory
@@ -19,6 +20,7 @@ def _submit_talk(client, conference, **kwargs):
         "topic": conference.topics.first().id,
         "type": talk.type.id,
         "duration": conference.durations.first().id,
+        "audience_level": conference.audience_levels.first().name,
     }
 
     variables = {**defaults, **kwargs}
@@ -32,7 +34,8 @@ def _submit_talk(client, conference, **kwargs):
                 $abstract: String!,
                 $language: ID!,
                 $type: ID!,
-                $duration: ID!
+                $duration: ID!,
+                $audience_level: ID!
             ) {
                 sendSubmission(input: {
                     title: $title,
@@ -41,7 +44,8 @@ def _submit_talk(client, conference, **kwargs):
                     conference: $conference,
                     topic: $topic,
                     type: $type,
-                    duration: $duration,
+                    duration: $duration,,
+                    audienceLevel: $audience_level
                 }) {
                     __typename
 
@@ -50,6 +54,9 @@ def _submit_talk(client, conference, **kwargs):
                         title
                         abstract
                         elevatorPitch
+                        audienceLevel {
+                            name
+                        }
                         notes
                     }
 
@@ -61,6 +68,7 @@ def _submit_talk(client, conference, **kwargs):
                         validationLanguage: language
                         validationType: type
                         validationDuration: duration
+                        validationAudienceLevel: audienceLevel
                         nonFieldErrors
                     }
                 }
@@ -86,6 +94,7 @@ def _submit_tutorial(client, conference, **kwargs):
         "topic": conference.topics.first().id,
         "type": talk.type.id,
         "duration": conference.durations.first().id,
+        "audience_level": conference.audience_levels.first().name,
     }
 
     variables = {**defaults, **kwargs}
@@ -99,7 +108,8 @@ def _submit_tutorial(client, conference, **kwargs):
                 $abstract: String!,
                 $language: ID!,
                 $type: ID!,
-                $duration: ID!
+                $duration: ID!,
+                $audience_level: ID!
             ) {
                 sendSubmission(input: {
                     title: $title,
@@ -109,6 +119,7 @@ def _submit_tutorial(client, conference, **kwargs):
                     topic: $topic,
                     type: $type,
                     duration: $duration,
+                    audienceLevel: $audience_level
                 }) {
                     __typename
 
@@ -117,6 +128,9 @@ def _submit_tutorial(client, conference, **kwargs):
                         title
                         abstract
                         elevatorPitch
+                    audienceLevel {
+                        name
+                    }
                         notes
                     }
 
@@ -128,6 +142,7 @@ def _submit_tutorial(client, conference, **kwargs):
                         validationLanguage: language
                         validationType: type
                         validationDuration: duration
+                        validationAudienceLevel: audienceLevel
                         nonFieldErrors
                     }
                 }
@@ -148,6 +163,7 @@ def test_submit_talk(graphql_client, user, conference_factory):
         submission_types=("talk",),
         active_cfp=True,
         durations=("50",),
+        audience_levels=("Beginner",),
     )
 
     resp, variables = _submit_talk(graphql_client, conference)
@@ -165,6 +181,7 @@ def test_submit_talk(graphql_client, user, conference_factory):
     assert talk.topic.name == "my-topic"
     assert talk.conference == conference
     assert talk.speaker == user
+    assert talk.audience_level.name == "Beginner"
 
 
 @mark.django_db
@@ -179,6 +196,7 @@ def test_submit_talk_with_not_valid_conf_language(
         submission_types=("talk",),
         durations=("50",),
         active_cfp=True,
+        audience_levels=("Beginner",),
     )
 
     resp, _ = _submit_talk(graphql_client, conference, language="en")
@@ -199,6 +217,7 @@ def test_submit_talk_with_not_valid_duration(graphql_client, user, conference_fa
         submission_types=("talk",),
         durations=("50",),
         active_cfp=True,
+        audience_levels=("Beginner",),
     )
 
     resp, _ = _submit_talk(graphql_client, conference, duration=8)
@@ -223,6 +242,7 @@ def test_cannot_use_duration_if_submission_type_is_not_allowed(
         languages=("it",),
         submission_types=("talk", "tutorial"),
         active_cfp=True,
+        audience_levels=("Beginner",),
     )
 
     duration1 = duration_factory(conference=conference)
@@ -256,6 +276,7 @@ def test_submit_talk_with_duration_id_of_another_conf(
         submission_types=("talk",),
         durations=("50",),
         active_cfp=True,
+        audience_levels=("Beginner",),
     )
 
     resp, _ = _submit_talk(
@@ -280,6 +301,7 @@ def test_submit_talk_with_not_valid_conf_topic(
         submission_types=("talk",),
         active_cfp=True,
         durations=("50",),
+        audience_levels=("Beginner",),
     )
     topic = topic_factory(name="random topic")
 
@@ -303,6 +325,7 @@ def test_submit_talk_with_not_valid_allowed_submission_type_in_the_conference(
         submission_types=("tutorial",),
         active_cfp=True,
         durations=("50",),
+        audience_levels=("Beginner",),
     )
 
     resp, _ = _submit_talk(graphql_client, conference)
@@ -325,6 +348,7 @@ def test_submit_talk_with_not_valid_submission_type_id(
         submission_types=("tutorial",),
         active_cfp=True,
         durations=("50",),
+        audience_levels=("Beginner",),
     )
 
     resp, _ = _submit_talk(graphql_client, conference, type=5)
@@ -347,6 +371,7 @@ def test_submit_talk_with_not_valid_language_code(
         submission_types=("tutorial",),
         active_cfp=True,
         durations=("50",),
+        audience_levels=("Beginner",),
     )
 
     resp, _ = _submit_talk(graphql_client, conference, language="fit")
@@ -358,12 +383,62 @@ def test_submit_talk_with_not_valid_language_code(
 
 
 @mark.django_db
+def test_submit_talk_with_not_valid_audience_level(
+    graphql_client, user, conference_factory
+):
+    graphql_client.force_login(user)
+
+    conference = conference_factory(
+        topics=("my-topic",),
+        languages=("it",),
+        submission_types=("talk",),
+        durations=("50",),
+        active_cfp=True,
+        audience_levels=("Beginner",),
+    )
+    resp, _ = _submit_talk(graphql_client, conference, audience_level="Beginners")
+
+    assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
+    # assert resp["data"]["sendSubmission"]["submission"] is None
+    assert resp["data"]["sendSubmission"]["validationAudienceLevel"] == [
+        "Select a valid choice. That choice is not one of the available choices."
+    ]
+    # assert resp["data"]["sendSubmission"]["errors"][0]["field"] == "audience_level"
+
+
+@mark.django_db
+def test_submit_talk_with_not_valid_conf_audience_level(
+    graphql_client, user, conference_factory, audience_level_factory
+):
+    graphql_client.force_login(user)
+    audience_level = audience_level_factory(name="Intermidiate")
+
+    conference = conference_factory(
+        topics=("my-topic",),
+        languages=("it",),
+        submission_types=("talk",),
+        durations=("50",),
+        active_cfp=True,
+        audience_levels=("Beginner",),
+    )
+    resp, _ = _submit_talk(
+        graphql_client, conference, audience_level=audience_level.name
+    )
+
+    assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
+    assert resp["data"]["sendSubmission"]["validationAudienceLevel"] == [
+        "Intermidiate is not an allowed audience level"
+    ]
+
+
+@mark.django_db
 def test_cannot_propose_a_talk_as_unlogged_user(graphql_client, conference_factory):
     conference = conference_factory(
         topics=("my-topic",),
         languages=("it",),
         submission_types=("talk",),
         durations=("50",),
+        audience_levels=("Beginner",),
     )
 
     resp, _ = _submit_talk(graphql_client, conference)
@@ -383,6 +458,7 @@ def test_cannot_propose_a_talk_if_the_cfp_is_not_open(
         active_cfp=False,
         submission_types=("talk",),
         durations=("50",),
+        audience_levels=("Beginner",),
     )
 
     resp, _ = _submit_talk(graphql_client, conference)
@@ -404,6 +480,7 @@ def test_cannot_propose_a_talk_if_a_cfp_is_not_specified(
         languages=("it",),
         submission_types=("talk",),
         durations=("50",),
+        audience_levels=("Beginner",),
     )
 
     resp, _ = _submit_talk(graphql_client, conference)
@@ -426,6 +503,7 @@ def test_same_user_can_propose_multiple_talks_to_the_same_conference(
         active_cfp=True,
         submission_types=("talk",),
         durations=("50",),
+        audience_levels=("Beginner",),
     )
 
     resp, _ = _submit_talk(graphql_client, conference, title="My first talk")
@@ -451,6 +529,7 @@ def test_submit_tutorial(graphql_client, user, conference_factory):
         active_cfp=True,
         submission_types=("talk", "tutorial"),
         durations=("50",),
+        audience_levels=("Beginner",),
     )
 
     resp, _ = _submit_tutorial(graphql_client, conference, title="My first tutorial")
@@ -473,6 +552,7 @@ def test_submit_tutorial_and_talk_to_the_same_conference(
         active_cfp=True,
         submission_types=("talk", "tutorial"),
         durations=("50",),
+        audience_levels=("Beginner",),
     )
 
     resp, _ = _submit_tutorial(graphql_client, conference, title="My first tutorial")
@@ -500,6 +580,7 @@ def test_elevation_pitch_and_notes_are_not_required(
         active_cfp=True,
         submission_types=("talk", "tutorial"),
         durations=("50",),
+        audience_levels=("Beginner",),
     )
 
     resp, _ = _submit_tutorial(graphql_client, conference, elevator_pitch="", notes="")
@@ -523,6 +604,7 @@ def test_same_user_can_submit_talks_to_different_conferences(
         active_cfp=True,
         submission_types=("talk",),
         durations=("50",),
+        audience_levels=("Beginner",),
     )
 
     conference2 = conference_factory(
@@ -531,6 +613,7 @@ def test_same_user_can_submit_talks_to_different_conferences(
         active_cfp=True,
         submission_types=("talk",),
         durations=("50",),
+        audience_levels=("Beginner",),
     )
 
     resp, _ = _submit_talk(graphql_client, conference1, title="My first talk")
