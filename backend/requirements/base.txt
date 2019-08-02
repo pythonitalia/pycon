@@ -1,4 +1,4 @@
-Django==2.2.3
+Django==2.2.4
 django-environ==0.4.4
 social-auth-app-django==2.1.0
 django-model-utils==3.2.0
