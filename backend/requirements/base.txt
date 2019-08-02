@@ -18,5 +18,5 @@ chardet==3.0.4
 idna==2.8
 requests==2.22.0
 urllib3==1.25.3
-strawberry-graphql==0.13.3
+strawberry-graphql==0.13.4
 aniso8601==6.0.0
