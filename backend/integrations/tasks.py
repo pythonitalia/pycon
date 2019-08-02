@@ -49,7 +49,7 @@ def notify_new_submission(
                             {"type": "mrkdwn", "text": "*Topic*"},
                             {"type": "mrkdwn", "text": "*Duration*"},
                             {"type": "plain_text", "text": str(duration)},
-                            {"type": "mrkdwn", "text": topic},
+                            {"type": "mrkdwn", "text": str(topic)},
                         ],
                     }
                 ]
