@@ -26,13 +26,6 @@ const BUTTON_PADDING = {
   desktop: 2,
 };
 
-const ELEVATOR_PITCH_OPTIONS = [
-  { label: "Select", value: "" },
-  { label: "Sunny", value: "sunny" },
-  { label: "Windy", value: "windy" },
-  { label: "Overcast", value: "overcast" },
-];
-
 const TOPIC_OPTIONS = [
   { label: "Select", value: "" },
   { label: "PyWeb", value: "pyweb" },
@@ -268,9 +261,7 @@ export default ({ data }: CfpProps) => (
       >
 
         <Article hero={{ ...data.heroImage.childImageSharp }} title="Call For Proposal">
-          {/*<Wrapper>*/}
           <Form/>
-          {/*</Wrapper>*/}
         </Article>
       </Column>
     </Row>
