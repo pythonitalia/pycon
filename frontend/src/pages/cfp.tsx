@@ -27,36 +27,48 @@ const BUTTON_PADDING = {
 };
 
 const ELEVATOR_PITCH_OPTIONS = [
+  { label: "Select", value: "" },
   { label: "Sunny", value: "sunny" },
   { label: "Windy", value: "windy" },
   { label: "Overcast", value: "overcast" },
 ];
 
 const TOPIC_OPTIONS = [
+  { label: "Select", value: "" },
   { label: "PyWeb", value: "pyweb" },
   { label: "Python & Friends", value: "python_e_friends" },
   { label: "PyData", value: "pydata" },
 ];
 
 const LANGUAGE_OPTIONS = [
-  { label: "Italian", value: "ita" },
   { label: "English", value: "eng" },
+  { label: "Italian", value: "ita" },
 ];
 
 const TYPE_OPTIONS = [
+  { label: "Select", value: "" },
   { label: "Talk", value: "talk" },
   { label: "Training", value: "training" },
   { label: "Sprint", value: "sprint" },
 ];
 
 const DURATION_OPTIONS = [
+  { label: "Select", value: "" },
   { label: "2 hours", value: "2h" },
   { label: "45 minutes", value: "45m" },
   { label: "30 minutes", value: "30m" },
   { label: "5 minutes", value: "5m" },
 ];
 
+const AUDIENCE_LEVEL_OPTIONS = [
+  { label: "Select", value: "" },
+  { label: "Beginner", value: "beginner" },
+  { label: "Intermidiate", value: "intermidiate" },
+  { label: "Advanced", value: "advance" },
+];
+
 const Form = () => {
+  const [errors, setErrors] = useState({});
   const [submission, setSubmission] = useState({
     title: "",
     abstract: "",
@@ -65,22 +77,56 @@ const Form = () => {
     duration: "",
     language: "",
     type: "",
+    audienceLevel: "",
   });
 
-  const sendSubmission = e => {
-    console.log("lets send this submission!");
+  const formIsValid = () => {
+    const submissionErrors = {};
+
+    if (!submission.title) {
+      submissionErrors.title = "Title is required!";
+    }
+    if (!submission.abstract) {
+      submissionErrors.abstract = "Abstract is required!";
+    }
+    if (!submission.topic) {
+      submissionErrors.topic = "Please, select a Topic!";
+    }
+    if (!submission.language) {
+      submissionErrors.language = "Please, select a Language!";
+    }
+    if (!submission.duration) {
+      submissionErrors.duration = "Please, select a Duration!";
+    }
+    if (!submission.type) {
+      submissionErrors.type = "Please, select a Type!";
+    }
+    if (!submission.audienceLevel) {
+      submissionErrors.audienceLevel = "Please, select an Audience Level!";
+    }
+
+    setErrors(submissionErrors);
+
+    return Object.keys(submissionErrors).length === 0;
+  };
+
+  const handleSubmissionSubmit = (event) => {
+    event.preventDefault();
+    if (!formIsValid()) {
+      console.log("Sorry submission has something wrong...");
+      return;
+    }
+
+    console.log("The submission is Valid! Let's send now!");
     console.dir(submission);
     // TODO ad me (user) to submission!
   };
 
-  const onChangeForm = e => {
-    const val = e.target.value;
-    const name = e.target.id;
-    console.log({ val, name });
+  const hangleSubmissionChange = ({ target }) => {
     setSubmission(() => {
       return {
         ...submission,
-        [name]: val,
+        [target.id]: target.value,
       };
     });
   };
@@ -91,55 +137,116 @@ const Form = () => {
 
       <Row paddingBottom={ROW_PADDING}>
         <Container fullWidth={true}>
-          <InputField a11yId="title" label="Title" value={submission.title} onChange={onChangeForm}/>
+          <InputField
+            a11yId="title"
+            label="Title"
+            value={submission.title}
+            onChange={hangleSubmissionChange}
+            isRequired={true}
+            validationText={errors.title}
+          />
         </Container>
       </Row>
 
       <Row paddingBottom={ROW_PADDING}>
         <Container fullWidth={true}>
-          <TextareaField a11yId="abstract" label="Abstract" value={submission.abstract} onChange={onChangeForm}/>
+          <TextareaField
+            a11yId="abstract"
+            label="Abstract"
+            value={submission.abstract}
+            onChange={hangleSubmissionChange}
+            isRequired={true}
+            validationText={errors.abstract}
+          />
         </Container>
       </Row>
 
       <Row paddingBottom={ROW_PADDING}>
         <Container fullWidth={true}>
-          <TextareaField a11yId="elevatorPitch" label="Elevator Pitch" value={submission.elevatorPitch}
-                         onChange={onChangeForm} maxLength={300}/>
+          <TextareaField
+            a11yId="elevatorPitch"
+            label="Elevator Pitch"
+            value={submission.elevatorPitch}
+            onChange={hangleSubmissionChange}
+            maxLength={300}
+            validationText={errors.elevatorPitch}
+          />
         </Container>
       </Row>
 
       <Row paddingBottom={ROW_PADDING}>
         <Container fullWidth={true}>
-          <SelectField a11yId="topic" label="Topic" value={submission.topic} onChange={onChangeForm}
-                       options={TOPIC_OPTIONS}/>
+          <SelectField
+            a11yId="topic"
+            label="Topic"
+            value={submission.topic}
+            onChange={hangleSubmissionChange}
+            options={TOPIC_OPTIONS}
+            isRequired={true}
+            validationText={errors.topic}
+          />
         </Container>
       </Row>
 
       <Row paddingBottom={ROW_PADDING}>
         <Container fullWidth={true}>
-          <SelectField a11yId="language" label="Language" value={submission.language} onChange={onChangeForm}
-                       options={LANGUAGE_OPTIONS}/>
+          <SelectField
+            a11yId="language"
+            label="Language"
+            value={submission.language}
+            onChange={hangleSubmissionChange}
+            options={LANGUAGE_OPTIONS}
+            isRequired={true}
+            validationText={errors.language}
+          />
         </Container>
       </Row>
 
       <Row paddingBottom={ROW_PADDING}>
         <Container fullWidth={true}>
-          <SelectField a11yId="type" label="type" value={submission.type} onChange={onChangeForm}
-                       options={TYPE_OPTIONS}/>
+          <SelectField
+            a11yId="type"
+            label="type"
+            value={submission.type}
+            onChange={hangleSubmissionChange}
+            options={TYPE_OPTIONS}
+            isRequired={true}
+            validationText={errors.type}
+          />
         </Container>
       </Row>
 
       <Row paddingBottom={ROW_PADDING}>
         <Container fullWidth={true}>
-          <SelectField a11yId="duration" label="Duration" value={submission.duration} onChange={onChangeForm}
-                       options={DURATION_OPTIONS}/>
+          <SelectField
+            a11yId="duration"
+            label="Duration"
+            value={submission.duration}
+            onChange={hangleSubmissionChange}
+            options={DURATION_OPTIONS}
+            isRequired={true}
+            validationText={errors.duration}
+          />
         </Container>
       </Row>
 
+      <Row paddingBottom={ROW_PADDING}>
+        <Container fullWidth={true}>
+          <SelectField
+            a11yId="audienceLevel"
+            label="Audience Level"
+            value={submission.audienceLevel}
+            onChange={hangleSubmissionChange}
+            options={AUDIENCE_LEVEL_OPTIONS}
+            isRequired={true}
+            validationText={errors.audienceLevel}
+          />
+        </Container>
+      </Row>
 
       <Row paddingBottom={ROW_PADDING} paddingTop={BUTTON_PADDING}>
         <Container fullWidth={true}>
-          <Button onClick={sendSubmission}>Send!</Button>
+          <Button onClick={handleSubmissionSubmit}>Send!</Button>
         </Container>
       </Row>
 
@@ -182,4 +289,3 @@ export const query = graphql`
         }
     }
 `;
-
