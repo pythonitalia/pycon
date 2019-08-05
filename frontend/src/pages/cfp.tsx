@@ -1,11 +1,6 @@
 import React, { useState } from "react";
 
-import {
-  Button,
-  InputField,
-  SelectField,
-  TextareaField,
-} from "fannypack";
+import { Button, InputField, SelectField, TextareaField } from "fannypack";
 import { graphql } from "gatsby";
 import { Column, Container, Row } from "grigliata";
 import * as yup from "yup";
@@ -97,6 +92,23 @@ const AUDIENCE_LEVEL_OPTIONS = [
   { label: "Advanced", value: "advance" },
 ];
 
+const InputWrapper: React.FC = props => {
+  return (
+    <Row paddingBottom={ROW_PADDING}>
+      <Column
+        columnWidth={{
+          mobile: 12,
+          tabletPortrait: 12,
+          tabletLandscape: 12,
+          desktop: 12,
+        }}
+      >
+        {props.children}
+      </Column>
+    </Row>
+  );
+};
+
 const Form = () => {
   const [errors, setErrors] = useState({});
   const [submission, setSubmission] = useState({
@@ -150,7 +162,7 @@ const Form = () => {
 
   return (
     <div>
-      <Row paddingBottom={ROW_PADDING}>
+      <InputWrapper>
         <InputField
           a11yId="title"
           label="Title"
@@ -159,9 +171,9 @@ const Form = () => {
           isRequired={true}
           validationText={errors.title}
         />
-      </Row>
+      </InputWrapper>
 
-      <Row paddingBottom={ROW_PADDING}>
+      <InputWrapper>
         <TextareaField
           a11yId="abstract"
           label="Abstract"
@@ -170,9 +182,9 @@ const Form = () => {
           isRequired={true}
           validationText={errors.abstract}
         />
-      </Row>
+      </InputWrapper>
 
-      <Row paddingBottom={ROW_PADDING}>
+      <InputWrapper>
         <TextareaField
           a11yId="elevatorPitch"
           label="Elevator Pitch"
@@ -181,9 +193,9 @@ const Form = () => {
           maxLength={300}
           validationText={errors.elevatorPitch}
         />
-      </Row>
+      </InputWrapper>
 
-      <Row paddingBottom={ROW_PADDING}>
+      <InputWrapper>
         <SelectField
           a11yId="topic"
           label="Topic"
@@ -193,9 +205,9 @@ const Form = () => {
           isRequired={true}
           validationText={errors.topic}
         />
-      </Row>
+      </InputWrapper>
 
-      <Row paddingBottom={ROW_PADDING}>
+      <InputWrapper>
         <SelectField
           a11yId="language"
           label="Language"
@@ -205,9 +217,9 @@ const Form = () => {
           isRequired={true}
           validationText={errors.language}
         />
-      </Row>
+      </InputWrapper>
 
-      <Row paddingBottom={ROW_PADDING}>
+      <InputWrapper>
         <SelectField
           a11yId="type"
           label="type"
@@ -217,9 +229,9 @@ const Form = () => {
           isRequired={true}
           validationText={errors.type}
         />
-      </Row>
+      </InputWrapper>
 
-      <Row paddingBottom={ROW_PADDING}>
+      <InputWrapper>
         <SelectField
           a11yId="duration"
           label="Duration"
@@ -229,9 +241,9 @@ const Form = () => {
           isRequired={true}
           validationText={errors.duration}
         />
-      </Row>
+      </InputWrapper>
 
-      <Row paddingBottom={ROW_PADDING}>
+      <InputWrapper>
         <SelectField
           a11yId="audienceLevel"
           label="Audience Level"
@@ -241,7 +253,7 @@ const Form = () => {
           isRequired={true}
           validationText={errors.audienceLevel}
         />
-      </Row>
+      </InputWrapper>
 
       <Row paddingBottom={ROW_PADDING} paddingTop={BUTTON_PADDING}>
         <Button onClick={handleSubmissionSubmit}>Send!</Button>
