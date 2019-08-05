@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 
-import { Button, InputField, SelectField, TextareaField } from "fannypack";
+import { Button, InputField, Label, SelectField, TextareaField } from "fannypack";
 import { graphql } from "gatsby";
 import { Column, Container, Row } from "grigliata";
+import * as yup from "yup";
 import { Article } from "../components/article";
 import { STANDARD_ROW_PADDING } from "../config/spacing";
 import { HomeLayout } from "../layouts/home";
@@ -11,6 +12,18 @@ import { HomeLayout } from "../layouts/home";
 type CfpProps = {
   data: any;
 };
+
+
+const schema = yup.object().shape({
+  title: yup.string().required().ensure(),
+  elevatorPitch: yup.string(),
+  abstract: yup.string().required().ensure(),
+  topic: yup.string().required().ensure(),
+  duration: yup.string().required().ensure(),
+  language: yup.string().required().ensure(),
+  type: yup.string().required().ensure(),
+  audienceLevel: yup.string().required().ensure(),
+});
 
 const ROW_PADDING = {
   mobile: 0.5,
@@ -68,51 +81,38 @@ const Form = () => {
     elevatorPitch: "",
     topic: "",
     duration: "",
-    language: "",
+    language: "eng",
     type: "",
     audienceLevel: "",
   });
 
-  const formIsValid = () => {
-    const submissionErrors = {};
+  const setFormsErrors = () => {
 
-    if (!submission.title) {
-      submissionErrors.title = "Title is required!";
-    }
-    if (!submission.abstract) {
-      submissionErrors.abstract = "Abstract is required!";
-    }
-    if (!submission.topic) {
-      submissionErrors.topic = "Please, select a Topic!";
-    }
-    if (!submission.language) {
-      submissionErrors.language = "Please, select a Language!";
-    }
-    if (!submission.duration) {
-      submissionErrors.duration = "Please, select a Duration!";
-    }
-    if (!submission.type) {
-      submissionErrors.type = "Please, select a Type!";
-    }
-    if (!submission.audienceLevel) {
-      submissionErrors.audienceLevel = "Please, select an Audience Level!";
-    }
-
-    setErrors(submissionErrors);
-
-    return Object.keys(submissionErrors).length === 0;
+    schema.validate(submission).then(velue => {
+      setErrors({});
+    })
+      .catch((err) => {
+        console.log(err);
+        setErrors({
+          [err.path]: err.message,
+        });
+    });
   };
 
   const handleSubmissionSubmit = (event) => {
     event.preventDefault();
-    if (!formIsValid()) {
-      console.log("Sorry submission has something wrong...");
-      return;
-    }
-
-    console.log("The submission is Valid! Let's send now!");
-    console.dir(submission);
-    // TODO ad me (user) to submission!
+    setFormsErrors();
+    schema
+      .isValid(submission)
+      .then((valid) => {
+        if (!valid) {
+          console.log("Sorry submission has something wrong...");
+          return;
+        }
+        console.log("The submission is Valid! Let's send now!");
+        console.dir(submission);
+        // TODO ad me (user) to submission!
+      });
   };
 
   const hangleSubmissionChange = ({ target }) => {
@@ -127,7 +127,6 @@ const Form = () => {
   return (
 
     <div>
-
       <Row paddingBottom={ROW_PADDING}>
         <Container fullWidth={true}>
           <InputField
