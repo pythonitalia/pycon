@@ -88,14 +88,15 @@ const Form = () => {
 
   const setFormsErrors = () => {
 
-    schema.validate(submission).then(velue => {
+    schema.validate(submission, { abortEarly: false }).then(velue => {
       setErrors({});
     })
       .catch((err) => {
-        console.log(err);
-        setErrors({
-          [err.path]: err.message,
+        const newErrors = {};
+        err.inner.forEach(item => {
+          newErrors[item.path] = item.message;
         });
+        setErrors(newErrors);
     });
   };
 
