@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 
-import { Button, InputField, Label, SelectField, TextareaField } from "fannypack";
+import {
+  Button,
+  InputField,
+  SelectField,
+  TextareaField,
+} from "fannypack";
 import { graphql } from "gatsby";
 import { Column, Container, Row } from "grigliata";
 import * as yup from "yup";
@@ -8,21 +13,40 @@ import { Article } from "../components/article";
 import { STANDARD_ROW_PADDING } from "../config/spacing";
 import { HomeLayout } from "../layouts/home";
 
-
 type CfpProps = {
   data: any;
 };
 
-
 const schema = yup.object().shape({
-  title: yup.string().required().ensure(),
+  title: yup
+    .string()
+    .required()
+    .ensure(),
   elevatorPitch: yup.string(),
-  abstract: yup.string().required().ensure(),
-  topic: yup.string().required().ensure(),
-  duration: yup.string().required().ensure(),
-  language: yup.string().required().ensure(),
-  type: yup.string().required().ensure(),
-  audienceLevel: yup.string().required().ensure(),
+  abstract: yup
+    .string()
+    .required()
+    .ensure(),
+  topic: yup
+    .string()
+    .required()
+    .ensure(),
+  duration: yup
+    .string()
+    .required()
+    .ensure(),
+  language: yup
+    .string()
+    .required()
+    .ensure(),
+  type: yup
+    .string()
+    .required()
+    .ensure(),
+  audienceLevel: yup
+    .string()
+    .required()
+    .ensure(),
 });
 
 const ROW_PADDING = {
@@ -87,33 +111,32 @@ const Form = () => {
   });
 
   const setFormsErrors = () => {
-
-    schema.validate(submission, { abortEarly: false }).then(velue => {
-      setErrors({});
-    })
-      .catch((err) => {
+    schema
+      .validate(submission, { abortEarly: false })
+      .then(velue => {
+        setErrors({});
+      })
+      .catch(err => {
         const newErrors = {};
         err.inner.forEach(item => {
           newErrors[item.path] = item.message;
         });
         setErrors(newErrors);
-    });
+      });
   };
 
-  const handleSubmissionSubmit = (event) => {
+  const handleSubmissionSubmit = event => {
     event.preventDefault();
     setFormsErrors();
-    schema
-      .isValid(submission)
-      .then((valid) => {
-        if (!valid) {
-          console.log("Sorry submission has something wrong...");
-          return;
-        }
-        console.log("The submission is Valid! Let's send now!");
-        console.dir(submission);
-        // TODO ad me (user) to submission!
-      });
+    schema.isValid(submission).then(valid => {
+      if (!valid) {
+        console.log("Sorry submission has something wrong...");
+        return;
+      }
+      console.log("The submission is Valid! Let's send now!");
+      console.dir(submission);
+      // TODO ad me (user) to submission!
+    });
   };
 
   const hangleSubmissionChange = ({ target }) => {
@@ -126,157 +149,142 @@ const Form = () => {
   };
 
   return (
-
     <div>
       <Row paddingBottom={ROW_PADDING}>
-        <Container fullWidth={true}>
-          <InputField
-            a11yId="title"
-            label="Title"
-            value={submission.title}
-            onChange={hangleSubmissionChange}
-            isRequired={true}
-            validationText={errors.title}
-          />
-        </Container>
+        <InputField
+          a11yId="title"
+          label="Title"
+          value={submission.title}
+          onChange={hangleSubmissionChange}
+          isRequired={true}
+          validationText={errors.title}
+        />
       </Row>
 
       <Row paddingBottom={ROW_PADDING}>
-        <Container fullWidth={true}>
-          <TextareaField
-            a11yId="abstract"
-            label="Abstract"
-            value={submission.abstract}
-            onChange={hangleSubmissionChange}
-            isRequired={true}
-            validationText={errors.abstract}
-          />
-        </Container>
+        <TextareaField
+          a11yId="abstract"
+          label="Abstract"
+          value={submission.abstract}
+          onChange={hangleSubmissionChange}
+          isRequired={true}
+          validationText={errors.abstract}
+        />
       </Row>
 
       <Row paddingBottom={ROW_PADDING}>
-        <Container fullWidth={true}>
-          <TextareaField
-            a11yId="elevatorPitch"
-            label="Elevator Pitch"
-            value={submission.elevatorPitch}
-            onChange={hangleSubmissionChange}
-            maxLength={300}
-            validationText={errors.elevatorPitch}
-          />
-        </Container>
+        <TextareaField
+          a11yId="elevatorPitch"
+          label="Elevator Pitch"
+          value={submission.elevatorPitch}
+          onChange={hangleSubmissionChange}
+          maxLength={300}
+          validationText={errors.elevatorPitch}
+        />
       </Row>
 
       <Row paddingBottom={ROW_PADDING}>
-        <Container fullWidth={true}>
-          <SelectField
-            a11yId="topic"
-            label="Topic"
-            value={submission.topic}
-            onChange={hangleSubmissionChange}
-            options={TOPIC_OPTIONS}
-            isRequired={true}
-            validationText={errors.topic}
-          />
-        </Container>
+        <SelectField
+          a11yId="topic"
+          label="Topic"
+          value={submission.topic}
+          onChange={hangleSubmissionChange}
+          options={TOPIC_OPTIONS}
+          isRequired={true}
+          validationText={errors.topic}
+        />
       </Row>
 
       <Row paddingBottom={ROW_PADDING}>
-        <Container fullWidth={true}>
-          <SelectField
-            a11yId="language"
-            label="Language"
-            value={submission.language}
-            onChange={hangleSubmissionChange}
-            options={LANGUAGE_OPTIONS}
-            isRequired={true}
-            validationText={errors.language}
-          />
-        </Container>
+        <SelectField
+          a11yId="language"
+          label="Language"
+          value={submission.language}
+          onChange={hangleSubmissionChange}
+          options={LANGUAGE_OPTIONS}
+          isRequired={true}
+          validationText={errors.language}
+        />
       </Row>
 
       <Row paddingBottom={ROW_PADDING}>
-        <Container fullWidth={true}>
-          <SelectField
-            a11yId="type"
-            label="type"
-            value={submission.type}
-            onChange={hangleSubmissionChange}
-            options={TYPE_OPTIONS}
-            isRequired={true}
-            validationText={errors.type}
-          />
-        </Container>
+        <SelectField
+          a11yId="type"
+          label="type"
+          value={submission.type}
+          onChange={hangleSubmissionChange}
+          options={TYPE_OPTIONS}
+          isRequired={true}
+          validationText={errors.type}
+        />
       </Row>
 
       <Row paddingBottom={ROW_PADDING}>
-        <Container fullWidth={true}>
-          <SelectField
-            a11yId="duration"
-            label="Duration"
-            value={submission.duration}
-            onChange={hangleSubmissionChange}
-            options={DURATION_OPTIONS}
-            isRequired={true}
-            validationText={errors.duration}
-          />
-        </Container>
+        <SelectField
+          a11yId="duration"
+          label="Duration"
+          value={submission.duration}
+          onChange={hangleSubmissionChange}
+          options={DURATION_OPTIONS}
+          isRequired={true}
+          validationText={errors.duration}
+        />
       </Row>
 
       <Row paddingBottom={ROW_PADDING}>
-        <Container fullWidth={true}>
-          <SelectField
-            a11yId="audienceLevel"
-            label="Audience Level"
-            value={submission.audienceLevel}
-            onChange={hangleSubmissionChange}
-            options={AUDIENCE_LEVEL_OPTIONS}
-            isRequired={true}
-            validationText={errors.audienceLevel}
-          />
-        </Container>
+        <SelectField
+          a11yId="audienceLevel"
+          label="Audience Level"
+          value={submission.audienceLevel}
+          onChange={hangleSubmissionChange}
+          options={AUDIENCE_LEVEL_OPTIONS}
+          isRequired={true}
+          validationText={errors.audienceLevel}
+        />
       </Row>
 
       <Row paddingBottom={ROW_PADDING} paddingTop={BUTTON_PADDING}>
-        <Container fullWidth={true}>
-          <Button onClick={handleSubmissionSubmit}>Send!</Button>
-        </Container>
+        <Button onClick={handleSubmissionSubmit}>Send!</Button>
       </Row>
-
     </div>
   );
 };
 
 export default ({ data }: CfpProps) => (
   <HomeLayout>
-
-    <Row paddingLeft={STANDARD_ROW_PADDING} paddingRight={STANDARD_ROW_PADDING}>
-      <Column
-        columnWidth={{
-          mobile: 12,
-          tabletPortrait: 12,
-          tabletLandscape: 12,
-          desktop: 8,
-        }}
+    <Container fullWidth={false}>
+      <Row
+        paddingLeft={STANDARD_ROW_PADDING}
+        paddingRight={STANDARD_ROW_PADDING}
       >
-
-        <Article hero={{ ...data.heroImage.childImageSharp }} title="Call For Proposal">
-          <Form/>
-        </Article>
-      </Column>
-    </Row>
+        <Column
+          columnWidth={{
+            mobile: 12,
+            tabletPortrait: 12,
+            tabletLandscape: 12,
+            desktop: 12,
+          }}
+        >
+          <Article
+            hero={{ ...data.heroImage.childImageSharp }}
+            title="Call For Proposal"
+          >
+            <Form />
+          </Article>
+        </Column>
+      </Row>
+    </Container>
   </HomeLayout>
 );
 
-
 export const query = graphql`
-    query {
-        heroImage: file(relativePath: { eq: "images/cfp.jpg" }) {
-            childImageSharp {
-                fluid(maxWidth: 1600) {
-                    ...GatsbyImageSharpFluid
-                }
-            }
+  query {
+    heroImage: file(relativePath: { eq: "images/cfp.jpg" }) {
+      childImageSharp {
+        fluid(maxWidth: 1600) {
+          ...GatsbyImageSharpFluid
         }
+      }
     }
+  }
 `;
