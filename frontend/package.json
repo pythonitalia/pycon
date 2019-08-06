@@ -45,7 +45,7 @@
     "@types/node": "^12.6.9",
     "@types/react": "^16.8.24",
     "@types/react-dom": "^16.8.5",
-    "@types/react-helmet": "^5.0.7",
+    "@types/react-helmet": "^5.0.9",
     "@types/react-responsive": "^3.0.3",
     "@types/styled-components": "^4.1.18",
     "docz": "^1.2.0",
