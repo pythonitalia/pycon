@@ -21,10 +21,13 @@ export default ({ data }: BlogPostProps) => (
           desktop: 8,
         }}
       >
-        <Article hero={{ ...data.heroImage.childImageSharp }} title="Pycon XI"
-                 description="PyCon Italia is the national conference where professionals,
+        <Article
+          hero={{ ...data.heroImage.childImageSharp }}
+          title="Pycon XI"
+          description="PyCon Italia is the national conference where professionals,
         researchers and enthusiasts of the most beautiful programming language gather together.
-        In the wonderful setting of Florence, PyCon is a weekend for learning, meeting and discovering.">
+        In the wonderful setting of Florence, PyCon is a weekend for learning, meeting and discovering."
+        >
           <p>
             Lorem ipsum dolor, sit amet consectetur adipisicing elit. Saepe,
             illo consequatur numquam, laudantium recusandae sed voluptas odio

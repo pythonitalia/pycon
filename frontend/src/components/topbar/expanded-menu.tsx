@@ -6,35 +6,32 @@ import { STANDARD_ROW_PADDING } from "../../config/spacing";
 import { theme } from "../../config/theme";
 
 const Wrapper = styled.div`
-  div[class^="columns__CustomColumns"] {
-    display: block;
+    div[class^="columns__CustomColumns"] {
+      display: block;
+
+      @media (min-width: 992px) {
+        display: flex;
+      }
+    }
+  `,
+  Headings = styled.div`
+    border-top: 1px solid ${theme.palette.white};
+    padding-top: 0px;
+    margin: 0.5rem 0;
 
     @media (min-width: 992px) {
-      display: flex;
+      margin: 5rem auto;
     }
-  }
-`;
+    p {
+      margin-bottom: 0;
+      margin-top: 0.5rem;
 
-const Headings = styled.div`
-  border-top: 1px solid ${theme.palette.white};
-  padding-top: 0px;
-  margin: 0.5rem 0;
-
-  @media (min-width: 992px) {
-    margin: 5rem auto;
-  }
-  p {
-    margin-bottom: 0;
-    margin-top: 0.5rem;
-
-    @media (min-width: 992px) {
-      margin-top: 1rem;
+      @media (min-width: 992px) {
+        margin-top: 1rem;
+      }
     }
-  }
-`;
-
-const Base = ({ ...props }) => {
-  return (
+  `,
+  Base = ({ ...props }) => (
     <div {...props}>
       <Wrapper className="expanded_menu">
         <Row
@@ -117,7 +114,6 @@ const Base = ({ ...props }) => {
       </Wrapper>
     </div>
   );
-};
 
 export const ExpandedMenu = styled(Base)`
   position: fixed;

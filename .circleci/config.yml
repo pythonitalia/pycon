@@ -111,7 +111,7 @@ jobs:
             - "~/.cache/yarn"
       - run:
           name: lint
-          command: yarn run tslint --project .
+          command: yarn lint
           working_directory: ./frontend
 
   frontend-tsc:
@@ -132,7 +132,7 @@ jobs:
             - frontend/node_modules
             - "~/.cache/yarn"
       - run:
-          name: lint
+          name: typescript
           command: yarn run tsc
           working_directory: ./frontend
 

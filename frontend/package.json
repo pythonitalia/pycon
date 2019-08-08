@@ -8,7 +8,8 @@
     "build": "yarn build:gatsby",
     "develop": "gatsby develop",
     "start": "npm run develop",
-    "format": "prettier --write \"{,!(node_modules|public|coverage|.cache)/**/}*.{js,jsx,ts,tsx,json}\" && tslint --fix --project .",
+    "format": "prettier --write \"{,!(node_modules|public|coverage|.cache)/**/}*.{js,jsx,ts,tsx,json}\" && yarn lint --fix",
+    "lint": "eslint --ext .jsx,.js,.tsx,.ts src/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
@@ -48,11 +49,16 @@
     "@types/react-helmet": "^5.0.9",
     "@types/react-responsive": "^3.0.3",
     "@types/styled-components": "^4.1.18",
+    "@typescript-eslint/eslint-plugin": "^1.13.0",
+    "@typescript-eslint/eslint-plugin-tslint": "^1.13.0",
+    "@typescript-eslint/parser": "^1.13.0",
     "docz": "^1.2.0",
     "docz-theme-default": "^1.2.0",
+    "eslint": "^6.1.0",
+    "eslint-plugin-prettier": "^3.1.0",
+    "eslint-plugin-react": "^7.14.3",
     "prettier": "^1.18.2",
     "tslint": "^5.18.0",
-    "tslint-config-prettier": "^1.18.0",
     "tslint-react": "^4.0.0"
   }
 }
