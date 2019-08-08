@@ -5,6 +5,41 @@ defaults_node: &defaults_node
     - image: circleci/node:8.11@sha256:dc90fd61468fbf9e6c008211fb7294c20970be9279f0d930b8ca0fdb2441eee0
 
 jobs:
+  frontend-deps:
+    <<: *defaults_node
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+      - restore_cache:
+          key: frontend-cache-{{ .Branch }}-{{ checksum "frontend/yarn.lock" }}
+      - run:
+          command: yarn install
+          working_directory: ./frontend
+      - save_cache:
+          key: frontend-cache-{{ .Branch }}-{{ checksum "frontend/yarn.lock" }}
+          paths:
+            - frontend/node_modules
+            - "~/.cache/yarn"
+      - persist_to_workspace:
+            root: .
+            paths:
+                - frontend/node_modules/
+
+  check-files:
+    docker:
+      - image: circleci/python:3.7.4
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+      - attach_workspace:
+            at: .
+      - run: pip install --user pre-commit
+      - run: ~/.local/bin/pre-commit run --all-files
+
   backend-test:
     docker:
       - image: circleci/python:3.7.4
@@ -94,26 +129,6 @@ jobs:
           paths:
             - frontend/schema.json
 
-  frontend-lint:
-    <<: *defaults_node
-    steps:
-      - checkout
-      - restore_cache:
-          key: frontend-cache-{{ .Branch }}-{{ checksum "frontend/yarn.lock" }}
-      - run:
-          name: yarn
-          command: yarn
-          working_directory: ./frontend
-      - save_cache:
-          key: frontend-cache-{{ .Branch }}-{{ checksum "frontend/yarn.lock" }}
-          paths:
-            - frontend/node_modules
-            - "~/.cache/yarn"
-      - run:
-          name: lint
-          command: yarn lint
-          working_directory: ./frontend
-
   frontend-tsc:
     <<: *defaults_node
     steps:
@@ -141,10 +156,16 @@ workflows:
 
   checks:
     jobs:
+      - frontend-deps
+
+      - check-files:
+          requires:
+            - frontend-deps
+
       - backend-test
       - backend-schema
-      - frontend-lint
 
       - frontend-tsc:
           requires:
+            - frontend-deps
             - backend-schema
