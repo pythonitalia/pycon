@@ -10,14 +10,12 @@ const Wrapper = styled.div`
   padding-top: 80px;
 `;
 
-export const HomeLayout = (props: { children: React.ReactNode }) => {
-  return (
-    <ThemeProvider theme={theme}>
-      <Wrapper>
-        <Topbar />
-        <div>{props.children}</div>
-        <Footer />
-      </Wrapper>
-    </ThemeProvider>
-  );
-};
+export const HomeLayout = (props: { children: React.ReactNode }) => (
+  <ThemeProvider theme={theme}>
+    <Wrapper>
+      <Topbar />
+      <div>{props.children}</div>
+      <Footer />
+    </Wrapper>
+  </ThemeProvider>
+);

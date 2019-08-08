@@ -132,26 +132,24 @@ export const Footer = () => {
         marginTop={MARGIN_TOP_ROW}
         marginBottom={MARGIN_TOP_ROW}
       >
-        {[1, 2, 3, 4].map((o, i) => {
-          return (
-            <Column
-              key={i}
-              columnWidth={{
-                mobile: 12,
-                tabletPortrait: 6,
-                tabletLandscape: 3,
-                desktop: 3,
-              }}
-            >
-              <Heading use="h4">our venues</Heading>
-              <LinksWrapper>
-                <Link to="/">Link</Link>
-                <Link to="/">Link</Link>
-                <Link to="/">Link</Link>
-              </LinksWrapper>
-            </Column>
-          );
-        })}
+        {[1, 2, 3, 4].map((o, i) => (
+          <Column
+            key={i}
+            columnWidth={{
+              mobile: 12,
+              tabletPortrait: 6,
+              tabletLandscape: 3,
+              desktop: 3,
+            }}
+          >
+            <Heading use="h4">our venues</Heading>
+            <LinksWrapper>
+              <Link to="/">Link</Link>
+              <Link to="/">Link</Link>
+              <Link to="/">Link</Link>
+            </LinksWrapper>
+          </Column>
+        ))}
       </Row>
     </Wrapper>
   );

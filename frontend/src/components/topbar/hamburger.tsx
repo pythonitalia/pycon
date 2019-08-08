@@ -59,14 +59,12 @@ const Draw = styled.div<ExpandableProps>`
     `}
 `;
 
-export const Hamburger = ({ open }: ExpandableProps) => {
-  return (
-    <div>
-      <Draw open={open}>
-        <span />
-        <span />
-        <span />
-      </Draw>
-    </div>
-  );
-};
+export const Hamburger = ({ open }: ExpandableProps) => (
+  <div>
+    <Draw open={open}>
+      <span />
+      <span />
+      <span />
+    </Draw>
+  </div>
+);

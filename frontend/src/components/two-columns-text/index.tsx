@@ -66,60 +66,58 @@ const Base = styled.div`
   }
 `;
 
-export const TwoColumnsText = () => {
-  return (
-    <Base>
-      <div className="background_image">
-        <div className="background_image__container">
-          <div className="background_image__overlay" />
-          <img src="https://placebear.com/600/400" alt="" />
-        </div>
+export const TwoColumnsText = () => (
+  <Base>
+    <div className="background_image">
+      <div className="background_image__container">
+        <div className="background_image__overlay" />
+        <img src="https://placebear.com/600/400" alt="" />
       </div>
-      <div className="columns_wrapper">
-        <Row
-          paddingLeft={STANDARD_ROW_PADDING}
-          paddingRight={STANDARD_ROW_PADDING}
+    </div>
+    <div className="columns_wrapper">
+      <Row
+        paddingLeft={STANDARD_ROW_PADDING}
+        paddingRight={STANDARD_ROW_PADDING}
+      >
+        <Column
+          columnWidth={{
+            mobile: 12,
+            tabletPortrait: 6,
+            tabletLandscape: 5,
+            desktop: 5,
+          }}
         >
-          <Column
-            columnWidth={{
-              mobile: 12,
-              tabletPortrait: 6,
-              tabletLandscape: 5,
-              desktop: 5,
-            }}
-          >
-            <Heading use="h2">Why Pycon?</Heading>
-            <Text>
-              Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sequi
-              excepturi nostrum harum minima esse corrupti possimus voluptatum
-              amet atque illum, maiores tempore? At in, dolorem recusandae nihil
-              inventore quasi reiciendis?
-            </Text>
-          </Column>
-          <Column
-            columnWidth={{
-              mobile: 12,
-              tabletPortrait: 6,
-              tabletLandscape: 5,
-              desktop: 5,
-            }}
-            marginTop={{
-              mobile: 2,
-              tabletPortrait: 0,
-              tabletLandscape: 0,
-              desktop: 0,
-            }}
-          >
-            <Heading use="h2">Why Pycon?</Heading>
-            <Text>
-              Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sequi
-              excepturi nostrum harum minima esse corrupti possimus voluptatum
-              amet atque illum, maiores tempore? At in, dolorem recusandae nihil
-              inventore quasi reiciendis?
-            </Text>
-          </Column>
-        </Row>
-      </div>
-    </Base>
-  );
-};
+          <Heading use="h2">Why Pycon?</Heading>
+          <Text>
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sequi
+            excepturi nostrum harum minima esse corrupti possimus voluptatum
+            amet atque illum, maiores tempore? At in, dolorem recusandae nihil
+            inventore quasi reiciendis?
+          </Text>
+        </Column>
+        <Column
+          columnWidth={{
+            mobile: 12,
+            tabletPortrait: 6,
+            tabletLandscape: 5,
+            desktop: 5,
+          }}
+          marginTop={{
+            mobile: 2,
+            tabletPortrait: 0,
+            tabletLandscape: 0,
+            desktop: 0,
+          }}
+        >
+          <Heading use="h2">Why Pycon?</Heading>
+          <Text>
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sequi
+            excepturi nostrum harum minima esse corrupti possimus voluptatum
+            amet atque illum, maiores tempore? At in, dolorem recusandae nihil
+            inventore quasi reiciendis?
+          </Text>
+        </Column>
+      </Row>
+    </div>
+  </Base>
+);
