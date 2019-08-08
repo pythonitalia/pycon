@@ -93,7 +93,7 @@ module.exports = {
             "error",
             {
                 rulesDirectory: [
-                    "/Users/patrickarminio/Documents/personal/pycon/frontend/node_modules/tslint-react/rules",
+                    path.join(__dirname, "node_modules/tslint-react/rules"),
                 ],
                 rules: {
                     "comment-format": [true, "check-space"],
