@@ -1,8 +1,6 @@
 import strawberry
-from conferences.schema import ConferenceQuery
-
 from blog.schema import BlogQuery
-from submissions.mutations import SubmissionsMutations
+from conferences.schema import ConferenceQuery
 from payments.mutations import PaymentsMutations
 from submissions.mutations import SubmissionsMutations
 from users.mutations import UsersMutations

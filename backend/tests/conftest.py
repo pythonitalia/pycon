@@ -4,6 +4,7 @@ from languages.models import Language
 from users.models import User
 
 from .api.fixtures import *  # noqa
+from .blog.factories import *  # noqa
 from .conferences.factories import *  # noqa
 from .languages.factories import *  # noqa
 from .orders.factories import *  # noqa
@@ -12,7 +13,6 @@ from .submissions.factories import *  # noqa
 from .tickets.factories import *  # noqa
 from .users.factories import *  # noqa
 from .voting.factories.vote import *  # noqa
-from .blog.factories import *  # noqa
 
 
 @pytest.fixture()
