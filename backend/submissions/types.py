@@ -2,7 +2,6 @@ from typing import Optional
 
 import strawberry
 from graphql import GraphQLError
-
 from voting.models import Vote
 from voting.types import VoteType
 
