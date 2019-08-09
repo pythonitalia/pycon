@@ -1,10 +1,6 @@
 import factory
 import factory.fuzzy
 import pytz
-from django.utils import timezone
-from factory.django import DjangoModelFactory
-from pytest_factoryboy import register
-
 from conferences.models import (
     AudienceLevel,
     Conference,
@@ -13,7 +9,10 @@ from conferences.models import (
     TicketFare,
     Topic,
 )
+from django.utils import timezone
+from factory.django import DjangoModelFactory
 from languages.models import Language
+from pytest_factoryboy import register
 from submissions.models import SubmissionType
 
 

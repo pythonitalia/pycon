@@ -1,5 +1,4 @@
 from pytest import mark
-
 from submissions.models import Submission, SubmissionType
 
 from .factories import SubmissionFactory
