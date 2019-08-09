@@ -1,15 +1,17 @@
-import strawberry
+from typing import Optional
 
-from users.types import UserType
+import strawberry
 from api.scalars import DateTime
+from users.types import UserType
 
 
 @strawberry.type
 class Post:
+    id: strawberry.ID
     author: UserType
     title: str
     slug: str
-    excerpt: str
-    content: str
+    excerpt: Optional[str]
+    content: Optional[str]
     published: DateTime
-    image: str
+    image: Optional[str]

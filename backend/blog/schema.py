@@ -1,10 +1,13 @@
+from typing import List
+
 import strawberry
 
-from .types import Post as PostType
 from .models import Post
+from .types import Post as PostType
 
 
-@strawberry.query
+@strawberry.type
 class BlogQuery:
-    def blog_posts(self, info) -> PostType:
+    @strawberry.field
+    def blog_posts(self, info) -> List[PostType]:
         return Post.published_posts.all()
