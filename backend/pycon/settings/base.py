@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     "payments.apps.PaymentsConfig",
     "tickets.apps.TicketsConfig",
     "voting.apps.VotingConfig",
+    "blog.apps.BlogConfig",
 ]
 
 MIDDLEWARE = [
