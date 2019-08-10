@@ -64,6 +64,7 @@ jobs:
             python3 -m venv venv
             . venv/bin/activate
             pip install -r backend/requirements/test.txt
+            pip install codecov
 
       - save_cache:
           paths:
@@ -75,7 +76,12 @@ jobs:
           command: |
             . venv/bin/activate
             cd backend
-            py.test --cov-report xml --cov=. --cov-fail-under 100
+            set +e
+            OUTPUT=$(py.test --cov-report xml --cov=. --cov-fail-under 100)
+            STATUS=$?
+            echo "$OUTPUT"
+            codecov
+            exit $STATUS
 
       - run:
           name: run integration tests
@@ -83,12 +89,6 @@ jobs:
             . venv/bin/activate
             cd backend
             py.test integration_tests/
-      - run:
-          name: upload coverage
-          command: |
-            . venv/bin/activate
-            pip install codecov
-            codecov
 
   backend-schema:
     docker:
