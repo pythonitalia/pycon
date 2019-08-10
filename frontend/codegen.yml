@@ -1,0 +1,17 @@
+schema: http://localhost:4000/___graphql
+documents:
+    - ./src/**/*.{ts,tsx}
+    - ./node_modules/gatsby-*/**/*.js
+generates:
+    src/generated/graphql.ts:
+        plugins:
+            - add: |
+                /* eslint-disable */
+
+                import { GatsbyImageProps } from "gatsby-image";
+            - "typescript"
+            - "typescript-operations"
+        config:
+            scalars:
+                ImageSharp: GatsbyImageProps
+                ImageSharpFilterInput: GatsbyImageProps

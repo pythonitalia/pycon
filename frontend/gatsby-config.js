@@ -1,5 +1,17 @@
+const API_URL = "http://127.0.0.1:8000/graphql";
+
 module.exports = {
     plugins: [
+        {
+            resolve: "gatsby-source-graphql",
+            options: {
+                typeName: "BACKEND",
+                // This is field under which it's accessible
+                fieldName: "backend",
+                // Url to query from
+                url: API_URL,
+            },
+        },
         {
             resolve: `gatsby-source-filesystem`,
             options: {
