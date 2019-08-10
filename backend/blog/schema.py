@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 import strawberry
 
@@ -11,3 +11,7 @@ class BlogQuery:
     @strawberry.field
     def blog_posts(self, info) -> List[PostType]:
         return Post.published_posts.all()
+
+    @strawberry.field
+    def blog_post(self, info, slug: str) -> Optional[PostType]:
+        return Post.published_posts.filter(slug=slug).first()

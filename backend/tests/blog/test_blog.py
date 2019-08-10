@@ -61,3 +61,49 @@ def test_query_blog_posts(graphql_client, user_factory, post_factory):
             "email": present_post.author.email,
         },
     } == resp["data"]["blogPosts"][0]
+
+
+@mark.django_db
+def test_query_single_post(graphql_client, user_factory, post_factory):
+    post = post_factory(
+        slug="demo", published=timezone.now() - timedelta(days=1), image=None
+    )
+
+    resp = graphql_client.query(
+        """query {
+            blogPost(slug: "demo") {
+                id
+                title
+                slug
+                excerpt
+                content
+                published
+                image
+                author {
+                    id
+                    email
+                }
+            }
+        } """
+    )
+
+    assert {
+        "id": str(post.id),
+        "title": post.title,
+        "slug": post.slug,
+        "excerpt": post.excerpt,
+        "content": post.content,
+        "published": post.published.isoformat(),
+        "image": str(post.image),
+        "author": {"id": str(post.author.id), "email": post.author.email},
+    } == resp["data"]["blogPost"]
+
+    resp = graphql_client.query(
+        """query {
+            blogPost(slug: "donut") {
+                id
+            }
+        } """
+    )
+
+    assert resp["data"]["blogPost"] is None
