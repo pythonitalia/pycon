@@ -7,7 +7,7 @@ import styled from "styled-components";
 import { STANDARD_ROW_PADDING } from "../../config/spacing";
 
 type HeroProps = {
-  backgroundImage: GatsbyImageProps;
+  backgroundImage: GatsbyImageProps | null;
   title: string;
 };
 
@@ -74,7 +74,7 @@ export const Hero: React.SFC<HeroProps> = props => (
     <div className="content">
       <header>
         <div style={{ position: "relative" }}>
-          <Img {...props.backgroundImage} />
+          {props.backgroundImage && <Img {...props.backgroundImage} />}
           <h1>{props.title}</h1>
         </div>
       </header>

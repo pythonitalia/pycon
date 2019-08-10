@@ -40,7 +40,7 @@ const Wrapper = styled.div`
 `;
 
 type ArticleProps = {
-  hero: GatsbyImageProps;
+  hero: GatsbyImageProps | null;
   title: string;
   description?: string;
 };

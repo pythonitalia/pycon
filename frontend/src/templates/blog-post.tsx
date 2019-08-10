@@ -15,6 +15,8 @@ const compile = marksy({
 export default ({ data }: { data: PostQuery }) => {
   const post = data.backend.blogPost!;
 
+  console.log(post);
+
   return (
     <HomeLayout>
       <Row
@@ -30,9 +32,9 @@ export default ({ data }: { data: PostQuery }) => {
           }}
         >
           <Article
-            hero={{ ...data.heroImage!.childImageSharp }}
+            hero={post.imageFile && { ...post.imageFile.childImageSharp! }}
             title={post.title}
-            description={post.excerpt}
+            description={post.excerpt || ""}
           >
             {compile(post.content).tree}
           </Article>
@@ -43,19 +45,20 @@ export default ({ data }: { data: PostQuery }) => {
 };
 
 export const query = graphql`
-  query Post {
+  query Post($slug: String!) {
     backend {
-      blogPost(slug: "hello-world") {
+      blogPost(slug: $slug) {
         title
         excerpt
         content
-      }
-    }
+        image
 
-    heroImage: file(relativePath: { eq: "images/hero.jpg" }) {
-      childImageSharp {
-        fluid(maxWidth: 1600) {
-          ...GatsbyImageSharpFluid
+        imageFile {
+          childImageSharp {
+            fluid(maxWidth: 1600) {
+              ...GatsbyImageSharpFluid
+            }
+          }
         }
       }
     }
