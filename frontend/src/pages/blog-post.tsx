@@ -1,71 +1,57 @@
-import React from "react";
+import React, { createElement } from "react";
 
 import { graphql } from "gatsby";
 import { Column, Row } from "grigliata";
+import marksy from "marksy";
 import { Article } from "../components/article";
 import { STANDARD_ROW_PADDING } from "../config/spacing";
+import { PostQuery } from "../generated/graphql";
 import { HomeLayout } from "../layouts/home";
 
-type BlogPostProps = {
-  data: any;
+const compile = marksy({
+  createElement,
+});
+
+export default ({ data }: { data: PostQuery }) => {
+  const post = data.backend.blogPost!;
+
+  return (
+    <HomeLayout>
+      <Row
+        paddingLeft={STANDARD_ROW_PADDING}
+        paddingRight={STANDARD_ROW_PADDING}
+      >
+        <Column
+          columnWidth={{
+            mobile: 12,
+            tabletPortrait: 12,
+            tabletLandscape: 12,
+            desktop: 8,
+          }}
+        >
+          <Article
+            hero={{ ...data.heroImage!.childImageSharp }}
+            title={post.title}
+            description={post.excerpt}
+          >
+            {compile(post.content).tree}
+          </Article>
+        </Column>
+      </Row>
+    </HomeLayout>
+  );
 };
 
-export default ({ data }: BlogPostProps) => (
-  <HomeLayout>
-    <Row paddingLeft={STANDARD_ROW_PADDING} paddingRight={STANDARD_ROW_PADDING}>
-      <Column
-        columnWidth={{
-          mobile: 12,
-          tabletPortrait: 12,
-          tabletLandscape: 12,
-          desktop: 8,
-        }}
-      >
-        <Article
-          hero={{ ...data.heroImage.childImageSharp }}
-          title="Pycon XI"
-          description="PyCon Italia is the national conference where professionals,
-        researchers and enthusiasts of the most beautiful programming language gather together.
-        In the wonderful setting of Florence, PyCon is a weekend for learning, meeting and discovering."
-        >
-          <p>
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Saepe,
-            illo consequatur numquam, laudantium recusandae sed voluptas odio
-            voluptate magni hic omnis vitae mollitia porro eius illum nesciunt
-            ad blanditiis maxime!
-          </p>
-          <p>
-            Voluptas quidem accusantium alias quos doloremque, molestiae
-            quibusdam nemo iure velit cumque, quas dolore amet est a earum.
-            Quisquam amet eius error suscipit voluptate earum dolore ipsam
-            asperiores, illo quod!
-          </p>
-          <p>
-            Mollitia, at sit. Magni delectus enim laudantium a odio provident
-            eveniet doloremque quisquam molestias ut optio, blanditiis deleniti.
-            Maiores officiis distinctio pariatur, excepturi dolorem sapiente
-            quisquam facere nesciunt optio error!
-          </p>
-          <p>
-            Qui quas sequi dolorem accusantium fugiat facilis, accusamus, odit
-            eligendi rerum ipsum, labore ut perspiciatis molestiae aliquid
-            dignissimos minima exercitationem libero quae molestias nesciunt
-            veritatis laudantium. Consequatur molestiae similique vel.
-          </p>
-          <p>
-            Quis nemo at ipsum. Accusantium consectetur obcaecati dignissimos
-            nisi ad voluptatibus id nesciunt modi vitae enim similique esse
-            quasi in, possimus placeat? Unde velit veritatis magnam modi,
-            mollitia dolorum omnis!
-          </p>
-        </Article>
-      </Column>
-    </Row>
-  </HomeLayout>
-);
-
 export const query = graphql`
-  query {
+  query Post {
+    backend {
+      blogPost(slug: "hello-world") {
+        title
+        excerpt
+        content
+      }
+    }
+
     heroImage: file(relativePath: { eq: "images/hero.jpg" }) {
       childImageSharp {
         fluid(maxWidth: 1600) {
