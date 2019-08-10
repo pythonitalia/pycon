@@ -1,8 +1,12 @@
 import pytest
 from django.core.exceptions import ValidationError
 from pytest import mark
-
-from tests.tickets.factories import TicketFactory, TicketQuestionFactory, TicketQuestionChoiceFactory, UserAnswerFactory
+from tests.tickets.factories import (
+    TicketFactory,
+    TicketQuestionChoiceFactory,
+    TicketQuestionFactory,
+    UserAnswerFactory,
+)
 from tickets import QUESTION_TYPE_CHOICE, QUESTION_TYPE_TEXT
 from tickets.models import UserAnswer
 
@@ -46,7 +50,5 @@ def test_ticket_choice_answer_wrong_data():
 
     with pytest.raises(ValidationError):
         UserAnswer.objects.create(
-            ticket=ticket,
-            question=question,
-            answer=wrong_choice.choice
+            ticket=ticket, question=question, answer=wrong_choice.choice
         )

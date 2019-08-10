@@ -3,8 +3,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from model_utils.models import TimeStampedModel
-
-from tickets import QUESTION_TYPES, QUESTION_TYPE_CHOICE
+from tickets import QUESTION_TYPE_CHOICE, QUESTION_TYPES
 
 
 class Ticket(TimeStampedModel):
@@ -27,59 +26,60 @@ class Ticket(TimeStampedModel):
 
 
 class TicketQuestion(TimeStampedModel):
-    text = models.CharField(_('text'), max_length=256)
+    text = models.CharField(_("text"), max_length=256)
     question_type = models.CharField(
         max_length=10,
         choices=QUESTION_TYPES,
         default=QUESTION_TYPE_CHOICE,
-        blank=False, null=False,
+        blank=False,
+        null=False,
     )
 
     def __str__(self):
-        return f'{self.text}'
+        return self.text
 
     class Meta:
-        verbose_name = _('Ticket Question')
-        verbose_name_plural = _('Ticket Questions')
+        verbose_name = _("Ticket Question")
+        verbose_name_plural = _("Ticket Questions")
 
 
-class TicketQuestionChoices(TimeStampedModel):
+class TicketQuestionChoice(TimeStampedModel):
     question = models.ForeignKey(
         TicketQuestion,
         on_delete=models.PROTECT,
-        related_name='choices',
-        verbose_name=_('question'),
+        related_name="choices",
+        verbose_name=_("question"),
     )
 
-    choice = models.CharField(_('text'), max_length=256)
+    choice = models.CharField(_("text"), max_length=256)
 
 
 class UserAnswer(TimeStampedModel):
     ticket = models.ForeignKey(
-        'tickets.Ticket',
+        "tickets.Ticket",
         on_delete=models.PROTECT,
-        verbose_name=_('ticket'),
-        related_name='answers'
+        verbose_name=_("ticket"),
+        related_name="answers",
     )
 
     question = models.ForeignKey(
-        'tickets.TicketQuestion',
+        "tickets.TicketQuestion",
         on_delete=models.PROTECT,
-        verbose_name=_('ticket'),
-        related_name='questions'
+        verbose_name=_("ticket"),
+        related_name="questions",
     )
 
-    answer = models.CharField(
-        max_length=256,
-        null=True,
-    )
+    answer = models.CharField(max_length=256, null=True)
 
     def save(self, *args, **kwargs):
         self.full_clean()
         super(UserAnswer, self).save(*args, **kwargs)
 
     def clean(self):
-        # Don't allow draft entries to have a pub_date.
         if self.question.question_type == QUESTION_TYPE_CHOICE:
-            if self.answer not in self.question.choices.all().values_list('choice', flat=True):
-                raise ValidationError({'answer': _('Answer not possible for this question.')})
+            if self.answer not in self.question.choices.all().values_list(
+                "choice", flat=True
+            ):
+                raise ValidationError(
+                    {"answer": _("Answer not possible for this question.")}
+                )

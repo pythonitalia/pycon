@@ -1,7 +1,6 @@
 from django.contrib import admin
-
-from tickets import QUESTION_TYPE_TEXT, QUESTION_TYPE_CHOICE
-from tickets.models import Ticket, TicketQuestion, TicketQuestionChoices, UserAnswer
+from tickets import QUESTION_TYPE_CHOICE, QUESTION_TYPE_TEXT
+from tickets.models import Ticket, TicketQuestion, TicketQuestionChoice, UserAnswer
 
 
 class UserAnswersInline(admin.TabularInline):
@@ -44,10 +43,10 @@ class TicketAdmin(admin.ModelAdmin):
         return obj.user.email
 
 
-class TicketQuestionChoicesInline(admin.TabularInline):
-    model = TicketQuestionChoices
+class TicketQuestionChoiceInline(admin.TabularInline):
+    model = TicketQuestionChoice
 
 
 @admin.register(TicketQuestion)
 class TicketQuestionAdmin(admin.ModelAdmin):
-    inlines = [TicketQuestionChoicesInline]
+    inlines = [TicketQuestionChoiceInline]

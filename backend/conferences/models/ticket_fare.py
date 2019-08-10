@@ -19,8 +19,7 @@ class TicketFare(TimeFramedModel, TimeStampedModel):
     price = models.DecimalField(_("price"), max_digits=10, decimal_places=2)
 
     questions = models.ManyToManyField(
-        'tickets.TicketQuestion',
-        verbose_name=_('ticket questions')
+        "tickets.TicketQuestion", verbose_name=_("ticket questions")
     )
 
     @property
