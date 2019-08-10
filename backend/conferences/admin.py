@@ -60,6 +60,7 @@ class AudienceLevelAdmin(admin.ModelAdmin):
 class TicketFareAdmin(admin.ModelAdmin):
     list_display = ("conference", "name")
     list_filter = ("conference", "questions")
+    filter_horizontal = ("questions",)
 
     fieldsets = (
         ("Info", {"fields": ("conference", "name", "code", "price", "description")}),
