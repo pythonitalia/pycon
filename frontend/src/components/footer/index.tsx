@@ -1,11 +1,11 @@
 import React from "react";
 
 import { Heading, Input, Text } from "fannypack";
-import { Link } from "gatsby";
+import { graphql, Link, useStaticQuery } from "gatsby";
 import { Column, Row } from "grigliata";
 import { STANDARD_ROW_PADDING } from "../../config/spacing";
+import { FooterQuery } from "../../generated/graphql";
 import { Button } from "../button";
-import { GOOGLE_MAPS_URL } from "./constants";
 import { LinksWrapper } from "./links-wrapper";
 import { MapWrapper } from "./map-wrapper";
 import { Wrapper } from "./wrapper";
@@ -17,6 +17,23 @@ export const Footer = () => {
     tabletLandscape: 5,
     desktop: 5,
   };
+
+  const {
+    backend: {
+      conference: { map },
+    },
+  } = useStaticQuery<FooterQuery>(graphql`
+    query Footer {
+      backend {
+        conference(code: "pycon10") {
+          map {
+            image(width: 1280, height: 400, zoom: 15)
+            link
+          }
+        }
+      }
+    }
+  `);
 
   return (
     <Wrapper>
@@ -115,16 +132,15 @@ export const Footer = () => {
         </Column>
       </Row>
 
-      <Row marginTop={MARGIN_TOP_ROW}>
-        <MapWrapper style={{ width: "100%" }}>
-          <a href="https://www.google.com/maps/place/hotel+mediterraneo+firenze/">
-            <img
-              src={GOOGLE_MAPS_URL}
-              alt="Google Map of hotel Mediterraneo Firenze"
-            />
-          </a>
-        </MapWrapper>
-      </Row>
+      {map && (
+        <Row marginTop={MARGIN_TOP_ROW}>
+          <MapWrapper style={{ width: "100%" }}>
+            <a href={map.link || ""} target="_blank" rel="noopener">
+              <img src={map.image} />
+            </a>
+          </MapWrapper>
+        </Row>
+      )}
 
       <Row
         paddingLeft={STANDARD_ROW_PADDING}
