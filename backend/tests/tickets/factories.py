@@ -21,7 +21,7 @@ class TicketFactory(DjangoModelFactory):
 @register
 class TicketQuestionFactory(DjangoModelFactory):
     text = factory.Faker("sentence")
-    question_type = factory.fuzzy.FuzzyChoice(QUESTION_TYPES)
+    question_type = factory.fuzzy.FuzzyChoice([v[0] for v in QUESTION_TYPES])
 
     class Meta:
         model = TicketQuestion
