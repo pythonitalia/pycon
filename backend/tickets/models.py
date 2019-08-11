@@ -24,6 +24,10 @@ class Ticket(TimeStampedModel):
         "orders.Order", on_delete=models.PROTECT, verbose_name=_("order")
     )
 
+    class Meta:
+        verbose_name = _("Ticket")
+        verbose_name_plural = _("Tickets")
+
 
 class TicketQuestion(TimeStampedModel):
     text = models.CharField(_("text"), max_length=256)
@@ -53,6 +57,10 @@ class TicketQuestionChoice(TimeStampedModel):
 
     choice = models.CharField(_("text"), max_length=256)
 
+    class Meta:
+        verbose_name = _("Ticket question choice")
+        verbose_name_plural = _("Ticket question choices")
+
 
 class UserAnswer(TimeStampedModel):
     ticket = models.ForeignKey(
@@ -65,11 +73,11 @@ class UserAnswer(TimeStampedModel):
     question = models.ForeignKey(
         "tickets.TicketQuestion",
         on_delete=models.PROTECT,
-        verbose_name=_("ticket"),
+        verbose_name=_("question"),
         related_name="questions",
     )
 
-    answer = models.CharField(max_length=256, null=True)
+    answer = models.CharField(_("answer"), max_length=256, null=True)
 
     def save(self, *args, **kwargs):
         self.full_clean()
@@ -83,3 +91,7 @@ class UserAnswer(TimeStampedModel):
                 raise ValidationError(
                     {"answer": _("Answer not possible for this question.")}
                 )
+
+    class Meta:
+        verbose_name = _("User answer")
+        verbose_name_plural = _("User answers")

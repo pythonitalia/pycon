@@ -1,30 +1,13 @@
 from django.contrib import admin
-from tickets import QUESTION_TYPE_CHOICE, QUESTION_TYPE_TEXT
 from tickets.models import Ticket, TicketQuestion, TicketQuestionChoice, UserAnswer
 
 
 class UserAnswersInline(admin.TabularInline):
     model = UserAnswer
-    fields = ("question", "user_answer")
-    readonly_fields = ("question", "user_answer")
+    fields = ("question", "answer")
+    readonly_fields = ("question", "answer")
 
     can_delete = False
-
-    def question(self, instance):
-        return instance.answer.question
-
-    question.short_description = "Question"
-
-    def user_answer(self, instance):
-        q_type = instance.question.question_type
-        if q_type == QUESTION_TYPE_TEXT:
-            return instance.answer_text
-        if q_type == QUESTION_TYPE_CHOICE:
-            return instance.answer_choice.choice
-        else:
-            return "Error: malformed answer"
-
-    user_answer.short_description = "Answer"
 
     def has_add_permission(self, request):
         return False
