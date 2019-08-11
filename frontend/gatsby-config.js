@@ -6,10 +6,14 @@ module.exports = {
             resolve: "gatsby-source-graphql",
             options: {
                 typeName: "BACKEND",
-                // This is field under which it's accessible
                 fieldName: "backend",
-                // Url to query from
                 url: API_URL,
+            },
+        },
+        {
+            resolve: "gatsby-plugin-extract-schema",
+            options: {
+                dest: `${__dirname}/_schema.json`,
             },
         },
         {
