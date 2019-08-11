@@ -16,6 +16,3 @@ comment:
     layout: "header, diff"
     behavior: default
     require_changes: no
-
-fixes:
-    - "::backend/"
