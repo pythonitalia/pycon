@@ -70,6 +70,7 @@ class UserAnswer(TimeStampedModel):
         related_name="answers",
     )
 
+    # TODO: Replace with TicketFareQuestion?
     question = models.ForeignKey(
         "tickets.TicketQuestion",
         on_delete=models.PROTECT,
@@ -77,14 +78,14 @@ class UserAnswer(TimeStampedModel):
         related_name="questions",
     )
 
-    answer = models.CharField(_("answer"), max_length=256, null=True)
+    answer = models.CharField(_("answer"), max_length=256, blank=True)
 
     def save(self, *args, **kwargs):
         self.full_clean()
-        super(UserAnswer, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     def clean(self):
-        if self.question.question_type == QUESTION_TYPE_CHOICE:
+        if self.question_id and self.question.question_type == QUESTION_TYPE_CHOICE:
             if self.answer not in self.question.choices.all().values_list(
                 "choice", flat=True
             ):
@@ -95,3 +96,4 @@ class UserAnswer(TimeStampedModel):
     class Meta:
         verbose_name = _("User answer")
         verbose_name_plural = _("User answers")
+        unique_together = ("ticket", "question")

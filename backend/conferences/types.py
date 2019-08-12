@@ -14,6 +14,9 @@ from submissions.types import Submission, SubmissionType
 
 from .helpers.maps import generate_map_image
 
+if TYPE_CHECKING:
+    from tickets.types import TicketQuestion
+
 
 @strawberry.type
 class AudienceLevel:
@@ -149,6 +152,13 @@ class Deadline:
 
 
 @strawberry.type
+class TicketFareQuestion:
+    ticket_fare: "TicketFare"
+    question: "TicketQuestion"
+    is_required: bool
+
+
+@strawberry.type
 class TicketFare:
     id: strawberry.ID
     code: str
@@ -158,6 +168,10 @@ class TicketFare:
     end: DateTime
     description: str
     conference: Conference
+
+    @strawberry.field
+    def questions(self, info) -> List["TicketFareQuestion"]:
+        return self.questions.all()
 
 
 @strawberry.type

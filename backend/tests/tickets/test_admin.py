@@ -28,6 +28,6 @@ def test_cannot_manually_add_answers_to_a_ticket_in_the_admin(user_answer_factor
 
     has_permission = UserAnswersInline(
         parent_model=UserAnswer, admin_site=admin_site
-    ).has_add_permission(user_answer_factory())
+    ).has_add_permission(user_answer_factory(question__question_type="text"))
 
     assert not has_permission
