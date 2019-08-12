@@ -4,7 +4,7 @@ social-auth-app-django==2.1.0
 django-model-utils==3.2.0
 pytz==2019.2
 django-timezone-field==3.0
-stripe==2.33.2
+stripe==2.34.0
 django-fsm==2.6.1
 psycopg2-binary==2.8.3
 amqp==2.5.0
