@@ -1,0 +1,24 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-backend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@master
+      - name: Docker login
+        run:
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build the Docker image
+        working-directory: backend
+        run:
+          docker build . --file Dockerfile --tag pythonitalia/pycon-backend:latest
+      - name: Publish the image
+        working-directory: backend
+        run:
+          docker push pythonitalia/pycon-backend:latest
