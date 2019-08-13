@@ -7,7 +7,12 @@ from .types import MeUser
 class Login(FormMutation):
     @classmethod
     def transform(cls, result):
-        return MeUser(id=result.id, email=result.email)
+        return MeUser(
+            id=result.id,
+            email=result.email,
+            first_name=result.first_name,
+            last_name=result.last_name,
+        )
 
     class Meta:
         form_class = LoginForm
@@ -17,7 +22,12 @@ class Login(FormMutation):
 class Register(FormMutation):
     @classmethod
     def transform(cls, result):
-        return MeUser(id=result.id, email=result.email)
+        return MeUser(
+            id=result.id,
+            email=result.email,
+            first_name=result.first_name,
+            last_name=result.last_name,
+        )
 
     class Meta:
         form_class = RegisterForm

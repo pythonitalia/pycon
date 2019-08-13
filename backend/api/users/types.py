@@ -9,6 +9,8 @@ import strawberry
 class MeUser:
     id: strawberry.ID
     email: str
+    first_name: str
+    last_name: str
 
     # TODO: update this with pretix query
     @strawberry.field
@@ -27,3 +29,5 @@ class User:
     name: str
     full_name: str
     username: str
+    first_name: str
+    last_name: str

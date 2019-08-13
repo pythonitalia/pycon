@@ -1,4 +1,5 @@
 import pytest
+
 from users.managers import UserManager
 from users.models import User
 
@@ -18,6 +19,16 @@ def test_create_user_with_email_and_password():
     assert user.email == "lennon@thebeatles.com"
     assert not user.is_superuser
     assert not user.is_staff
+
+
+@pytest.mark.django_db
+def test_create_user_with_extra_fields():
+    user = User.objects.create_user(
+        "lennon@thebeatles.com", "johnpassword", first_name="John", last_name="Lennon"
+    )
+
+    assert user.first_name == "John"
+    assert user.last_name == "Lennon"
 
 
 @pytest.mark.django_db
