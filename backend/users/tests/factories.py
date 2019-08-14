@@ -1,3 +1,5 @@
+import datetime
+
 import factory
 import factory.fuzzy
 from factory.django import DjangoModelFactory
@@ -14,6 +16,17 @@ class UserFactory(DjangoModelFactory):
 
     first_name = factory.Faker("first_name")
     last_name = factory.Faker("last_name")
+
+    gender = factory.fuzzy.FuzzyChoice(["male", "female"])
+    date_birth = factory.fuzzy.FuzzyDate(
+        start_date=datetime.date(1, 1, 1),
+        end_date=datetime.date.today() - datetime.timedelta(days=20 * 365),
+    )
+    business_name = "ACME, Inc."
+    fiscal_code = "RSSMRA74D22AA001Q"
+    # vat_nuber = "ATU00000024"
+    pec_address = factory.Faker("email")
+    address = factory.Faker("address")
 
     password = factory.PostGenerationMethodCall("set_password", "defaultpassword")
 

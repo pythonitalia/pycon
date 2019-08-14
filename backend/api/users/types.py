@@ -11,6 +11,14 @@ class MeUser:
     email: str
     first_name: str
     last_name: str
+    gender: str
+    date_birth: str
+    business_name: str
+    fiscal_code: str
+    vat_number: str
+    recipient_code: str
+    pec_address: str
+    address: str
 
     # TODO: update this with pretix query
     @strawberry.field
@@ -30,4 +38,11 @@ class User:
     full_name: str
     username: str
     first_name: str
-    last_name: str
+    gender: str
+    date_birth: str
+    business_name: str
+    fiscal_code: str
+    vat_number: str
+    recipient_code: str
+    pec_address: str
+    address: str
