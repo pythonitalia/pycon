@@ -1,3 +1,5 @@
+import datetime
+
 import pytest
 
 from users.managers import UserManager
@@ -24,11 +26,32 @@ def test_create_user_with_email_and_password():
 @pytest.mark.django_db
 def test_create_user_with_extra_fields():
     user = User.objects.create_user(
-        "lennon@thebeatles.com", "johnpassword", first_name="John", last_name="Lennon"
+        "lennon@thebeatles.com",
+        "johnpassword",
+        first_name="John",
+        last_name="Lennon",
+        gender="male",
+        date_birth=datetime.datetime.strptime("09/10/1940", "%d/%m/%Y"),
+        business_name="John Lennon Ltd",
+        fiscal_code="LNNJHN40R09D037I",
+        vat_number="IT01234567890",
+        phone_number="+393381234567",
+        recipient_code="XXXXXXX",
+        pec_address="lennon@pec.it",
+        address="42 Wallaby Way, Sydney",
     )
 
     assert user.first_name == "John"
     assert user.last_name == "Lennon"
+    assert user.gender == "male"
+    assert user.date_birth == datetime.datetime.strptime("09/10/1940", "%d/%m/%Y")
+    assert user.business_name == "John Lennon Ltd"
+    assert user.fiscal_code == "LNNJHN40R09D037I"
+    assert user.vat_number == "IT01234567890"
+    assert user.phone_number == "+393381234567"
+    assert user.recipient_code == "XXXXXXX"
+    assert user.pec_address == "lennon@pec.it"
+    assert user.address == "42 Wallaby Way, Sydney"
 
 
 @pytest.mark.django_db

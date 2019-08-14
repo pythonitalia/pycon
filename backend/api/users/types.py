@@ -19,6 +19,7 @@ class MeUser:
     recipient_code: str
     pec_address: str
     address: str
+    phone_number: str
 
     # TODO: update this with pretix query
     @strawberry.field
@@ -46,3 +47,4 @@ class User:
     recipient_code: str
     pec_address: str
     address: str
+    phone_number: str

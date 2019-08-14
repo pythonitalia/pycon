@@ -23,6 +23,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     business_name = models.CharField(_("business name"), max_length=150, blank=True)
     fiscal_code = models.CharField(_("fiscal code"), max_length=16, blank=True)
     vat_number = models.CharField(_("VAT number"), max_length=22, blank=True)
+    phone_number = models.CharField(_("phone number"), max_length=20, blank=True)
 
     # electronic invoicing ita
     recipient_code = models.CharField(_("recipient code"), max_length=7, blank=True)
