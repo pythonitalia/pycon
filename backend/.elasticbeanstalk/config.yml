@@ -1,0 +1,19 @@
+branch-defaults:
+  default:
+    environment: production-env
+environment-defaults:
+  production-env:
+    branch: null
+    repository: null
+global:
+  application_name: pycon
+  default_ec2_keyname: null
+  default_platform: docker
+  default_region: eu-central-1
+  include_git_submodules: true
+  instance_profile: null
+  platform_name: null
+  platform_version: null
+  profile: pycon
+  sc: null
+  workspace_type: Application
