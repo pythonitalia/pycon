@@ -23,7 +23,7 @@ class UserFactory(DjangoModelFactory):
         end_date=datetime.date.today() - datetime.timedelta(days=20 * 365),
     )
     business_name = "ACME, Inc."
-    fiscal_code = "RSSMRA74D22AA001Q"
+    fiscal_code = "NGRDTH62A48H313R"
     # vat_nuber = "ATU00000024"
     pec_address = factory.Faker("email")
     address = factory.Faker("address")
