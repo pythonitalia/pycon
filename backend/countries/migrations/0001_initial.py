@@ -3,6 +3,16 @@
 from django.db import migrations, models
 
 
+
+def create_countries(apps, schema_editor):
+    from ..countries import COUNTRIES
+
+    Country = apps.get_model('countries', 'Country')
+
+    for country in COUNTRIES:
+        Country.objects.create(code=country['code'], name=country['name'])
+
+
 class Migration(migrations.Migration):
 
     initial = True
@@ -23,4 +33,5 @@ class Migration(migrations.Migration):
                 'verbose_name_plural': 'Countries',
             },
         ),
+        migrations.RunPython(create_countries, migrations.RunPython.noop)
     ]
