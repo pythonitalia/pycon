@@ -20,6 +20,7 @@ class Login(FormMutation):
             recipient_code=result.recipient_code,
             pec_address=result.pec_address,
             address=result.address,
+            country=result.country,
             phone_number=result.phone_number,
         )
 
@@ -44,6 +45,7 @@ class Register(FormMutation):
             recipient_code=result.recipient_code,
             pec_address=result.pec_address,
             address=result.address,
+            country=result.country,
             phone_number=result.phone_number,
         )
 

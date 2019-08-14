@@ -30,6 +30,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     pec_address = models.EmailField(_("PEC"), blank=True)
 
     address = models.TextField(_("address"), blank=True)
+    country = models.ForeignKey(
+        "countries.Country",
+        verbose_name=_("country"),
+        on_delete=models.PROTECT,
+        null=True,
+    )
 
     date_joined = models.DateTimeField(_("date joined"), auto_now_add=True)
     is_active = models.BooleanField(_("active"), default=True)

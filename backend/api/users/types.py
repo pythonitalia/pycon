@@ -1,6 +1,7 @@
 from typing import List
 
 import strawberry
+from countries.types import Country
 
 # TODO: merge Me User and User
 
@@ -19,6 +20,7 @@ class MeUser:
     recipient_code: str
     pec_address: str
     address: str
+    country: Country
     phone_number: str
 
     # TODO: update this with pretix query
@@ -47,4 +49,5 @@ class User:
     recipient_code: str
     pec_address: str
     address: str
+    country: Country
     phone_number: str
