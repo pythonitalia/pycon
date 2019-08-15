@@ -1,9 +1,9 @@
 terraform {
-    backend "s3" {
-      bucket = "pycon-terraform"
-      key    = "terraform.tfstate"
-      region = "eu-central-1"
-    }
+  backend "s3" {
+    bucket = "pycon-terraform"
+    key    = "terraform.tfstate"
+    region = "eu-central-1"
+  }
 }
 
 provider "aws" {

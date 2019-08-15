@@ -45,11 +45,3 @@ resource "aws_iam_user_policy" "backend" {
 
 EOF
 }
-
-output "backend_access_key" {
-  value = "${aws_iam_access_key.backend.id}"
-}
-
-output "backend_secret" {
-  value = "${aws_iam_access_key.backend.secret}"
-}
