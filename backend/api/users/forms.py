@@ -1,6 +1,8 @@
 from django.contrib.auth import authenticate, login
 from django.forms import CharField, EmailField, ValidationError
 from django.utils.translation import ugettext_lazy as _
+
+from api.forms import ContextAwareModelForm
 from strawberry_forms.forms import FormWithContext
 from users.models import User
 
@@ -57,3 +59,20 @@ class RegisterForm(FormWithContext):
         user = authenticate(email=email, password=password)
         login(self.context["request"], user)
         return user
+
+
+class UpdateUserForm(ContextAwareModelForm):
+    def clean(self):
+
+        if not self.context.user.is_authenticated:
+            raise ValidationError(_("Must authenticate to update User information"))
+
+        return super().clean()
+
+    def save(self, commit=True):
+        super().save(commit=commit)
+        return User.objects.get(id=self.context.user.id)
+
+    class Meta:
+        model = User
+        fields = ("first_name", "last_name")
