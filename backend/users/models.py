@@ -50,3 +50,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def get_short_name(self):
         return self.email
+
+    def clean(self):
+        # TODO check required field here i.e. company-required-fileds
+        pass

@@ -1,8 +1,9 @@
 from django.contrib.auth import authenticate, login
-from django.forms import CharField, EmailField, ValidationError
+from django.forms import CharField, EmailField, ModelChoiceField, ValidationError
 from django.utils.translation import ugettext_lazy as _
 
 from api.forms import ContextAwareModelForm
+from countries.models import Country
 from strawberry_forms.forms import FormWithContext
 from users.models import User
 
@@ -62,6 +63,8 @@ class RegisterForm(FormWithContext):
 
 
 class UpdateUserForm(ContextAwareModelForm):
+    country = ModelChoiceField(queryset=Country.objects.all(), required=False)
+
     def clean(self):
 
         if not self.context.user.is_authenticated:
@@ -75,4 +78,16 @@ class UpdateUserForm(ContextAwareModelForm):
 
     class Meta:
         model = User
-        fields = ("first_name", "last_name")
+        fields = (
+            "first_name",
+            "last_name",
+            "gender",
+            "date_birth",
+            "business_name",
+            "fiscal_code",
+            "vat_number",
+            "phone_number",
+            "recipient_code",
+            "pec_address",
+            "address",
+        )
