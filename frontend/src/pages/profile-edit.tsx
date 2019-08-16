@@ -6,7 +6,6 @@ import {
   Heading,
   InputField,
   LayoutSet,
-  RadioGroup,
   RadioGroupField,
   SelectField,
 } from "fannypack";
@@ -130,6 +129,8 @@ const EditPage: React.FC = me => {
 
           <InputWrapper>
             <InputField
+              type="date"
+              data-date-format="DD/MM/YYYY"
               a11yId="dateBirth"
               label="Birth Date"
               value={user.dateBirth}
@@ -256,7 +257,7 @@ export default ({ data }: UserProps) => (
               firstName: "John Winston",
               lastName: "Lennon",
               gender: "male",
-              dateBirth: "09/10/1940",
+              dateBirth: "1940-10-09",
             }}
           />
         </Column>
