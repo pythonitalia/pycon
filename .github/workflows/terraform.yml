@@ -1,4 +1,8 @@
-on: pull_request
+on:
+  push:
+    branches:
+      - master
+
 name: Terraform
 jobs:
   filter-to-pr-open-synced:

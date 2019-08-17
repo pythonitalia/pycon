@@ -1,0 +1,5 @@
+name: 'EB Action'
+author: 'Patrick Arminio'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
