@@ -1,11 +1,9 @@
 name: Deploy
 
-# on:
-#   push:
-#     branches:
-#       - master
-
-on: pull_request
+on:
+  push:
+    branches:
+      - master
 
 jobs:
   build-and-push-backend:
@@ -27,7 +25,6 @@ jobs:
 
   terraform:
     runs-on: ubuntu-latest
-    needs: build-and-push-backend
 
     steps:
     - uses: actions/checkout@master
@@ -72,7 +69,7 @@ jobs:
 
   deploy-to-eb:
     runs-on: ubuntu-latest
-    needs: terraform
+    needs: [terraform, build-and-push-backend]
 
     steps:
     - uses: actions/checkout@master
