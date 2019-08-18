@@ -1,0 +1,16 @@
+name: Frontend Lint
+
+on: pull_request
+
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@master
+
+    - name: ESLint checks
+      uses: ./.github/eslint-action
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
