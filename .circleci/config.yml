@@ -27,19 +27,6 @@ jobs:
             paths:
                 - frontend/node_modules/
 
-  check-files:
-    docker:
-      - image: circleci/python:3.7.4
-
-    working_directory: ~/repo
-
-    steps:
-      - checkout
-      - attach_workspace:
-            at: .
-      - run: pip install --user pre-commit
-      - run: ~/.local/bin/pre-commit run --all-files
-
   backend-test:
     docker:
       - image: circleci/python:3.7.4
@@ -157,10 +144,6 @@ workflows:
   checks:
     jobs:
       - frontend-deps
-
-      - check-files:
-          requires:
-            - frontend-deps
 
       - backend-test
       - backend-schema
