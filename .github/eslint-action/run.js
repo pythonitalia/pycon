@@ -45,14 +45,18 @@ async function createCheck() {
 function eslint() {
     const eslint = require("eslint");
 
-    const cli = new eslint.CLIEngine();
-    const report = cli.executeOnFiles(["."]);
+    const cli = new eslint.CLIEngine({
+        extensions: [".jsx", ".js", ".tsx", ".ts"]
+    });
+    const report = cli.executeOnFiles(["src/"]);
+
     // fixableErrorCount, fixableWarningCount are available too
     const { results, errorCount, warningCount } = report;
 
     const levels = ["", "warning", "failure"];
 
     const annotations = [];
+
     for (const result of results) {
         const { filePath, messages } = result;
         const path = filePath.substring(GITHUB_WORKSPACE.length + 1);
