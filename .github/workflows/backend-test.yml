@@ -1,0 +1,49 @@
+name: Backend tests
+
+on: pull_request
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-python@v1
+        with:
+          python-version: '3.7.4'
+      - name: Install dependencies
+        working-directory: backend
+        run: pip install -r requirements/test.txt
+      - name: Install codecov
+        working-directory: backend
+        run: pip install codecov
+
+      - name: pytest
+        working-directory: backend
+        run: py.test --cov-report xml --cov=. --cov-fail-under 100
+        env:
+          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+
+      - name: codecov
+        working-directory: backend
+        run: codecov
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+  integration-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-python@v1
+        with:
+          python-version: '3.7.4'
+      - name: Install dependencies
+        working-directory: backend
+        run: pip install -r requirements/test.txt
+
+      - name: pytest
+        working-directory: backend
+        run: py.test integration_tests/
+        env:
+          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}

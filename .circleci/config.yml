@@ -25,57 +25,6 @@ jobs:
       - persist_to_workspace:
             root: .
             paths:
-                - frontend/node_modules/
-
-  backend-test:
-    docker:
-      - image: circleci/python:3.7.4
-        environment:
-          DATABASE_URL: postgresql://root@localhost/circle_test?sslmode=disable
-      - image: circleci/postgres:11
-        environment:
-          POSTGRES_USER: root
-          POSTGRES_DB: circle_test
-
-    working_directory: ~/repo
-
-    steps:
-      - checkout
-      - run: find backend/requirements -type f -exec md5sum {} \; | sort -k 2 | md5sum > backend_deps_checksum
-      - restore_cache:
-          keys:
-          - backend-{{ checksum "backend_deps_checksum" }}
-      - run:
-          name: install dependencies
-          command: |
-            python3 -m venv venv
-            . venv/bin/activate
-            pip install -r backend/requirements/test.txt
-            pip install codecov
-
-      - save_cache:
-          paths:
-            - ./venv
-          key: backend-{{ checksum "backend_deps_checksum" }}
-
-      - run:
-          name: run tests
-          command: |
-            . venv/bin/activate
-            cd backend
-            set +e
-            OUTPUT=$(py.test --cov-report xml --cov=. --cov-fail-under 100)
-            STATUS=$?
-            echo "$OUTPUT"
-            codecov
-            exit $STATUS
-
-      - run:
-          name: run integration tests
-          command: |
-            . venv/bin/activate
-            cd backend
-            py.test integration_tests/
 
   backend-schema:
     docker:
@@ -145,7 +94,6 @@ workflows:
     jobs:
       - frontend-deps
 
-      - backend-test
       - backend-schema
 
       - frontend-tsc:
