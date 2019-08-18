@@ -1,3 +1,4 @@
+const {chunk} = require("lodash");
 const request = require("./request");
 
 const {
@@ -77,30 +78,41 @@ function eslint() {
         conclusion: errorCount > 0 ? "failure" : "success",
         output: {
             title: checkName,
-            summary: `${errorCount} error(s), ${warningCount} warning(s) found`,
-            annotations
-        }
+            summary: `${errorCount} error(s), ${warningCount} warning(s) found`
+        },
+        annotations
     };
 }
 
-async function updateCheck(id, conclusion, output) {
-    const body = {
-        name: checkName,
-        head_sha: GITHUB_SHA,
-        status: "completed",
-        completed_at: new Date(),
-        conclusion,
-        output
-    };
+async function updateCheck(id, conclusion, output, annotations) {
+    // github has a limit of 50 annotations per request so we send
+    // multiple requests
+    const annotationChunks = chunk(annotations, 50);
 
-    await request(
-        `https://api.github.com/repos/${owner}/${repo}/check-runs/${id}`,
-        {
-            method: "PATCH",
-            headers,
-            body
-        }
-    );
+    const requests = annotationChunks.map(chunk => {
+        const body = {
+            name: checkName,
+            head_sha: GITHUB_SHA,
+            status: "completed",
+            completed_at: new Date(),
+            conclusion,
+            output: {
+                ...output,
+                annotations: chunk
+            }
+        };
+
+        return request(
+            `https://api.github.com/repos/${owner}/${repo}/check-runs/${id}`,
+            {
+                method: "PATCH",
+                headers,
+                body
+            }
+        );
+    });
+
+    await Promise.all(requests);
 }
 
 function exitWithError(err) {
@@ -114,9 +126,10 @@ function exitWithError(err) {
 async function run() {
     const id = await createCheck();
     try {
-        const { conclusion, output } = eslint();
-        console.log(output.summary);
-        await updateCheck(id, conclusion, output);
+        const { conclusion, output, annotations } = eslint();
+
+        await updateCheck(id, conclusion, output, annotations);
+
         if (conclusion === "failure") {
             process.exit(78);
         }
