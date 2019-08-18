@@ -4,7 +4,7 @@ on: pull_request
 
 
 jobs:
-  lint:
+  eslint:
     runs-on: ubuntu-latest
 
     steps:
@@ -14,3 +14,14 @@ jobs:
       uses: ./.github/eslint-action
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  tsc:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@master
+
+    - run: yarn
+      working-directory: frontend
+    - run: yarn tsc
+      working-directory: frontend
