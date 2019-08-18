@@ -74,6 +74,10 @@ function eslint() {
         }
     }
 
+    const formatter = cli.getFormatter();
+
+    console.log(formatter(report.results));
+
     return {
         conclusion: errorCount > 0 ? "failure" : "success",
         output: {
