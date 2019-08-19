@@ -3,8 +3,11 @@ from django.contrib.auth.models import PermissionsMixin
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from model_utils import Choices
+from pycountry import countries
 
 from .managers import UserManager
+
+COUNTRIES = [{"code": country.alpha_2, "name": country.name} for country in countries]
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -31,11 +34,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     pec_address = models.EmailField(_("PEC"), blank=True)
 
     address = models.TextField(_("address"), blank=True)
-    country = models.ForeignKey(
-        "countries.Country",
-        verbose_name=_("country"),
-        on_delete=models.PROTECT,
-        null=True,
+    country = models.CharField(
+        choices=COUNTRIES, max_length=50, verbose_name=_("country"), null=True
     )
 
     date_joined = models.DateTimeField(_("date joined"), auto_now_add=True)

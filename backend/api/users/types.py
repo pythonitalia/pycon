@@ -22,7 +22,7 @@ class MeUser:
     recipient_code: str
     pec_address: str
     address: str
-    country: Country
+    country: str
     phone_number: str
 
     # TODO: update this with pretix query
@@ -52,5 +52,5 @@ class User:
     recipient_code: str
     pec_address: str
     address: str
-    country: Country
+    country: str
     phone_number: str

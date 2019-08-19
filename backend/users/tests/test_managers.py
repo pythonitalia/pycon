@@ -24,8 +24,7 @@ def test_create_user_with_email_and_password():
 
 
 @pytest.mark.django_db
-def test_create_user_with_extra_fields(country):
-    country_uk = country("GB")
+def test_create_user_with_extra_fields():
     user = User.objects.create_user(
         "lennon@thebeatles.com",
         "johnpassword",
@@ -40,7 +39,7 @@ def test_create_user_with_extra_fields(country):
         recipient_code="XXXXXXX",
         pec_address="lennon@pec.it",
         address="42 Wallaby Way, Sydney",
-        country=country_uk,
+        country="GB",
     )
 
     assert user.first_name == "John"
@@ -54,7 +53,7 @@ def test_create_user_with_extra_fields(country):
     assert user.recipient_code == "XXXXXXX"
     assert user.pec_address == "lennon@pec.it"
     assert user.address == "42 Wallaby Way, Sydney"
-    assert user.country == country_uk
+    assert user.country == "GB"
 
 
 @pytest.mark.django_db

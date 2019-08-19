@@ -34,7 +34,6 @@ INSTALLED_APPS = [
     "strawberry.contrib.django",
     "conferences.apps.ConferencesConfig",
     "languages.apps.LanguagesConfig",
-    "countries.apps.CountriesConfig",
     "submissions.apps.SubmissionsConfig",
     "schedule.apps.ScheduleConfig",
     "orders.apps.OrdersConfig",

@@ -20,7 +20,7 @@ def _update_user(graphql_client, user, **kwargs):
         "recipient_code": user.recipient_code,
         "pec_address": user.pec_address,
         "address": user.address,
-        "country": user.country_id if user.country else "",
+        "country": user.country if user.country else "",
     }
     variables = {**defaults, **kwargs}
 
@@ -38,7 +38,7 @@ def _update_user(graphql_client, user, **kwargs):
         $recipient_code: String,
         $pec_address: String,
         $address: String,
-        $country: ID
+        $country: String
     ){
         update(input: {
             firstName: $first_name,
@@ -70,9 +70,7 @@ def _update_user(graphql_client, user, **kwargs):
                 recipientCode
                 pecAddress
                 address
-                country {
-                    code
-                }
+                country
             }
             ... on UpdateErrors {
                 validationFirstName: firstName
@@ -97,9 +95,7 @@ def _update_user(graphql_client, user, **kwargs):
 
 
 @mark.django_db
-def test_update(graphql_client, user_factory, country):
-    country_at = country("AT")
-
+def test_update(graphql_client, user_factory):
     user = user_factory(
         first_name="John",
         last_name="Lennon",
@@ -107,7 +103,7 @@ def test_update(graphql_client, user_factory, country):
         open_to_recruiting=True,
         date_birth=datetime.datetime.strptime("1940-10-09", "%Y-%m-%d"),
         address="P Sherman, 42 Wallaby Way, Sydney",
-        country=country_at,
+        country="AT",
         business_name="John Lennon Ltd",
         fiscal_code="LNNJHN40R09H501E",
         vat_number="IT12345678901",
@@ -124,7 +120,7 @@ def test_update(graphql_client, user_factory, country):
     assert resp["data"]["update"]["lastName"] == variables["last_name"]
     assert resp["data"]["update"]["dateBirth"] == variables["date_birth"]
     assert resp["data"]["update"]["address"] == variables["address"]
-    assert resp["data"]["update"]["country"]["code"] == country_at.code
+    assert resp["data"]["update"]["country"] == variables["country"]
     assert resp["data"]["update"]["businessName"] == variables["business_name"]
     assert resp["data"]["update"]["fiscalCode"] == variables["fiscal_code"]
     assert resp["data"]["update"]["vatNumber"] == variables["vat_number"]

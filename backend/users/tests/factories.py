@@ -5,7 +5,7 @@ import factory.fuzzy
 from factory.django import DjangoModelFactory
 from pytest_factoryboy import register
 
-from users.models import User
+from users.models import COUNTRIES, User
 
 
 @register
@@ -32,6 +32,7 @@ class UserFactory(DjangoModelFactory):
     address = factory.Faker("address")
 
     password = factory.PostGenerationMethodCall("set_password", "defaultpassword")
+    country = factory.fuzzy.FuzzyChoice(COUNTRIES, getter=lambda c: c["code"])
 
     is_active = True
     is_staff = False
