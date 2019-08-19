@@ -64,6 +64,7 @@ class RegisterForm(FormWithContext):
 
 class UpdateUserForm(ContextAwareModelForm):
     country = ModelChoiceField(queryset=Country.objects.all(), required=False)
+    date_birth = CharField(required=False)
 
     def clean(self):
 
@@ -82,7 +83,6 @@ class UpdateUserForm(ContextAwareModelForm):
             "first_name",
             "last_name",
             "gender",
-            "date_birth",
             "business_name",
             "fiscal_code",
             "vat_number",
