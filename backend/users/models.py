@@ -1,5 +1,6 @@
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
+from django.core import exceptions
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from model_utils import Choices
@@ -55,3 +56,32 @@ class User(AbstractBaseUser, PermissionsMixin):
     def clean(self):
         # TODO check required field here i.e. company-required-fileds
         pass
+
+    def clean_company_fields(self):
+        if not self.business_name:
+            raise exceptions.ValidationError(
+                {"business_name": _("Missing Business Name in your user profile.")}
+            )
+
+        if not self.phone_number:
+            raise exceptions.ValidationError(
+                {"phone_number": _("Missing Phone Number in your user profile.")}
+            )
+
+        if not self.fiscal_code and not self.vat_number:
+            raise exceptions.ValidationError(
+                _("Please specify Fiscal Code or VAT number in your user profile.")
+            )
+
+        if self.country == "IT" and self.fiscal_code:
+            # TODO check fiscal code with italian roles...
+            #  but first you have to split the address for get CAP!
+            pass
+
+        if self.country == "IT" and not (self.recipient_code or self.pec_address):
+            raise exceptions.ValidationError(
+                _(
+                    "For Italian companies for electronic invoicing it is "
+                    "mandatory to specify the recipient's code or the pec address."
+                )
+            )
