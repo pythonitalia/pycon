@@ -11,6 +11,7 @@ def _update_user(graphql_client, user, **kwargs):
         "first_name": user.first_name,
         "last_name": user.last_name,
         "gender": user.gender,
+        "open_to_recruiting": user.open_to_recruiting,
         "date_birth": f"{user.date_birth:%Y-%m-%d}" if user.date_birth else "",
         "business_name": user.business_name,
         "fiscal_code": user.fiscal_code,
@@ -28,6 +29,7 @@ def _update_user(graphql_client, user, **kwargs):
         $first_name: String,
         $last_name: String,
         $gender: String,
+        $open_to_recruiting: Boolean!,
         $date_birth: String,
         $business_name: String,
         $fiscal_code: String,
@@ -42,6 +44,7 @@ def _update_user(graphql_client, user, **kwargs):
             firstName: $first_name,
             lastName: $last_name,
             gender: $gender,
+            openToRecruiting: $open_to_recruiting,
             dateBirth: $date_birth,
             businessName: $business_name,
             fiscalCode: $fiscal_code,
@@ -58,6 +61,7 @@ def _update_user(graphql_client, user, **kwargs):
                 firstName
                 lastName
                 gender
+                openToRecruiting
                 dateBirth
                 businessName
                 fiscalCode
@@ -74,6 +78,7 @@ def _update_user(graphql_client, user, **kwargs):
                 validationFirstName: firstName
                 validationLastName: lastName
                 validationGender: gender
+                validationOpenToRecruiting: openToRecruiting
                 validationDateBirth: dateBirth
                 validationBusinessName: businessName
                 validationFiscalCode: fiscalCode
@@ -99,6 +104,7 @@ def test_update(graphql_client, user_factory, country):
         first_name="John",
         last_name="Lennon",
         gender="male",
+        open_to_recruiting=True,
         date_birth=datetime.datetime.strptime("1940-10-09", "%Y-%m-%d"),
         address="P Sherman, 42 Wallaby Way, Sydney",
         country=country_at,

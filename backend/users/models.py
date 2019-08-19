@@ -19,6 +19,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     GENDERS = Choices(("male", _("Male")), ("female", _("Female")))
     gender = models.CharField(_("gender"), choices=GENDERS, max_length=10, blank=True)
     date_birth = models.DateField(_("date of birth"), null=True)
+    open_to_recruiting = models.BooleanField(_("open to recruiting"), default=False)
 
     business_name = models.CharField(_("business name"), max_length=150, blank=True)
     fiscal_code = models.CharField(_("fiscal code"), max_length=16, blank=True)

@@ -4,6 +4,7 @@ import factory
 import factory.fuzzy
 from factory.django import DjangoModelFactory
 from pytest_factoryboy import register
+
 from users.models import User
 
 
@@ -18,6 +19,8 @@ class UserFactory(DjangoModelFactory):
     last_name = factory.Faker("last_name")
 
     gender = factory.fuzzy.FuzzyChoice(["male", "female"])
+    open_to_recruiting = False
+
     date_birth = factory.fuzzy.FuzzyDate(
         start_date=datetime.date(1, 1, 1),
         end_date=datetime.date.today() - datetime.timedelta(days=20 * 365),

@@ -1,5 +1,11 @@
 from django.contrib.auth import authenticate, login
-from django.forms import CharField, EmailField, ModelChoiceField, ValidationError
+from django.forms import (
+    BooleanField,
+    CharField,
+    EmailField,
+    ModelChoiceField,
+    ValidationError,
+)
 from django.utils.translation import ugettext_lazy as _
 
 from api.forms import ContextAwareModelForm
@@ -65,6 +71,7 @@ class RegisterForm(FormWithContext):
 class UpdateUserForm(ContextAwareModelForm):
     country = ModelChoiceField(queryset=Country.objects.all(), required=False)
     date_birth = CharField(required=False)
+    open_to_recruiting = BooleanField(required=False)
 
     def clean(self):
 
