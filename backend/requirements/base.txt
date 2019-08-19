@@ -7,7 +7,7 @@ django-timezone-field==3.0
 stripe==2.34.0
 django-fsm==2.6.1
 psycopg2-binary==2.8.3
-amqp==2.5.0
+amqp==2.5.1
 billiard==3.6.0.0
 celery==4.3.0
 kombu==4.6.4
