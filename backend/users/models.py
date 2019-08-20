@@ -24,6 +24,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     gender = models.CharField(_("gender"), choices=GENDERS, max_length=10, blank=True)
     date_birth = models.DateField(_("date of birth"), null=True)
     open_to_recruiting = models.BooleanField(_("open to recruiting"), default=False)
+    open_to_newsletter = models.BooleanField(_("open to newsletter"), default=False)
 
     business_name = models.CharField(_("business name"), max_length=150, blank=True)
     fiscal_code = models.CharField(_("fiscal code"), max_length=16, blank=True)
@@ -54,7 +55,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.email
 
     def clean(self):
-        # TODO check required field here i.e. company-required-fileds
+        # TODO check required field here i.e. company-required-fileds?
         pass
 
     def clean_business_fields(self):

@@ -15,6 +15,7 @@ class MeUser:
     last_name: str
     gender: str
     open_to_recruiting: bool
+    open_to_newsletter: bool
     date_birth: str
     business_name: str
     fiscal_code: str
@@ -45,6 +46,7 @@ class User:
     first_name: str
     gender: str
     open_to_recruiting: bool
+    open_to_newsletter: bool
     date_birth: str
     business_name: str
     fiscal_code: str

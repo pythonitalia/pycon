@@ -63,7 +63,10 @@ class RegisterForm(FormWithContext):
 
 class UpdateUserForm(ContextAwareModelForm):
     date_birth = CharField(required=False)
+    # TODO: Why if I tell you required=FALSE, the mutation fail if I don't put
+    # Bool! (instead of 'Bool')?
     open_to_recruiting = BooleanField(required=False)
+    open_to_newsletter = BooleanField(required=False)
     country = CharField(required=False)
 
     def clean(self):
