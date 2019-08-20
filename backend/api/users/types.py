@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 import strawberry
 
@@ -17,14 +17,14 @@ class MeUser:
     open_to_recruiting: bool
     open_to_newsletter: bool
     date_birth: str
-    business_name: str
-    fiscal_code: str
-    vat_number: str
-    recipient_code: str
-    pec_address: str
-    address: str
+    business_name: Optional[str]
+    fiscal_code: Optional[str]
+    vat_number: Optional[str]
+    recipient_code: Optional[str]
+    pec_address: Optional[str]
+    address: Optional[str]
     country: str
-    phone_number: str
+    phone_number: Optional[str]
 
     # TODO: update this with pretix query
     @strawberry.field
@@ -44,15 +44,16 @@ class User:
     full_name: str
     username: str
     first_name: str
+    last_name: str
     gender: str
     open_to_recruiting: bool
     open_to_newsletter: bool
     date_birth: str
-    business_name: str
-    fiscal_code: str
-    vat_number: str
-    recipient_code: str
-    pec_address: str
-    address: str
+    business_name: Optional[str]
+    fiscal_code: Optional[str]
+    vat_number: Optional[str]
+    recipient_code: Optional[str]
+    pec_address: Optional[str]
+    address: Optional[str]
     country: str
-    phone_number: str
+    phone_number: Optional[str]
