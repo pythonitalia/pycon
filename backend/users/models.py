@@ -78,16 +78,15 @@ class User(AbstractBaseUser, PermissionsMixin):
                     _("Please specify Fiscal Code or VAT number in your user profile.")
                 )
 
+            if not self.recipient_code and not self.pec_address:
+                raise exceptions.ValidationError(
+                    _(
+                        "For Italian companies for electronic invoicing it is "
+                        "mandatory to specify the recipient's code or the pec address."
+                    )
+                )
         else:
             if not self.vat_number:
                 raise exceptions.ValidationError(
                     {"vat_number": _("Missing VAT Number in your user profile.")}
                 )
-
-        if self.country == "IT" and not (self.recipient_code or self.pec_address):
-            raise exceptions.ValidationError(
-                _(
-                    "For Italian companies for electronic invoicing it is "
-                    "mandatory to specify the recipient's code or the pec address."
-                )
-            )

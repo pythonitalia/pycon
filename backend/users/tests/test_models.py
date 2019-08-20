@@ -80,6 +80,28 @@ def test_clean_business_fields_foregin_country_not_vat_number():
 
 
 @pytest.mark.django_db
+def test_clean_business_fields_it_country_not_vat_number_cf_code_neither():
+    user = User.objects.create_user(
+        "lennon@thebeatles.com",
+        "johnpassword",
+        business_name="ACME, Inc.",
+        phone_number="+39 3381234567",
+        country="IT",
+        vat_number="",
+        fiscal_code="",
+    )
+    with pytest.raises(exceptions.ValidationError) as exc_info:
+        user.clean_business_fields()
+
+    assert exc_info.type is exceptions.ValidationError
+    assert exc_info.type is exceptions.ValidationError
+    assert (
+        "Please specify Fiscal Code or VAT number in your user profile."
+        in exc_info.value
+    )
+
+
+@pytest.mark.django_db
 def test_clean_business_fields_country_it_not_pec_and_not_recipient_code():
     user = User.objects.create_user(
         "lennon@thebeatles.com",
