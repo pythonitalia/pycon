@@ -34,10 +34,10 @@ def test_user_get_short_name():
 
 
 @pytest.mark.django_db
-def test_business_user_clean_missing_business_name():
+def test_clean_business_fields_missing_business_name():
     user = User.objects.create_user("lennon@thebeatles.com", "johnpassword")
     with pytest.raises(exceptions.ValidationError) as exc_info:
-        user.clean_company_fields()
+        user.clean_business_fields()
 
     assert exc_info.type is exceptions.ValidationError
     assert list(exc_info.value.args[0].keys()) == ["business_name"]
@@ -47,12 +47,12 @@ def test_business_user_clean_missing_business_name():
 
 
 @pytest.mark.django_db
-def test_business_user_clean_missing_phone_number():
+def test_clean_business_fields_missing_phone_number():
     user = User.objects.create_user(
         "lennon@thebeatles.com", "johnpassword", business_name="ACME, Inc."
     )
     with pytest.raises(exceptions.ValidationError) as exc_info:
-        user.clean_company_fields()
+        user.clean_business_fields()
 
     assert exc_info.type is exceptions.ValidationError
     assert list(exc_info.value.args[0].keys()) == ["phone_number"]
@@ -62,7 +62,7 @@ def test_business_user_clean_missing_phone_number():
 
 
 @pytest.mark.django_db
-def test_business_user_clean_specify_vat_number_or_cf_code():
+def test_clean_business_fields_foregin_country_not_vat_number():
     user = User.objects.create_user(
         "lennon@thebeatles.com",
         "johnpassword",
@@ -70,17 +70,17 @@ def test_business_user_clean_specify_vat_number_or_cf_code():
         phone_number="+39 3381234567",
     )
     with pytest.raises(exceptions.ValidationError) as exc_info:
-        user.clean_company_fields()
+        user.clean_business_fields()
 
     assert exc_info.type is exceptions.ValidationError
-    assert (
-        "Please specify Fiscal Code or VAT number in your user profile."
-        in exc_info.value
-    )
+    assert list(exc_info.value.args[0].keys()) == ["vat_number"]
+    assert list(exc_info.value.args[0].values()) == [
+        "Missing VAT Number in your user profile."
+    ]
 
 
 @pytest.mark.django_db
-def test_business_user_clean_country_it_and_not_pec_and_recipient_code():
+def test_clean_business_fields_country_it_not_pec_and_not_recipient_code():
     user = User.objects.create_user(
         "lennon@thebeatles.com",
         "johnpassword",
@@ -92,7 +92,7 @@ def test_business_user_clean_country_it_and_not_pec_and_recipient_code():
         pec_address="",
     )
     with pytest.raises(exceptions.ValidationError) as exc_info:
-        user.clean_company_fields()
+        user.clean_business_fields()
 
     assert exc_info.type is exceptions.ValidationError
     assert (
