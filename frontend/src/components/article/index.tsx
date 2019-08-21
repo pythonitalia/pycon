@@ -6,6 +6,8 @@ import styled from "styled-components";
 import { Hero } from "../hero";
 import { ArticleTitle } from "./title";
 
+const lol = 1 & 3;
+
 const Wrapper = styled.div`
   .content {
     position: relative;

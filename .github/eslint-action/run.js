@@ -1,4 +1,4 @@
-const {chunk} = require("lodash");
+const { chunk } = require("lodash");
 const request = require("./request");
 
 const {
@@ -93,6 +93,8 @@ async function updateCheck(id, conclusion, output, annotations) {
     // multiple requests
     const annotationChunks = chunk(annotations, 50);
 
+    console.log(annotationChunks);
+
     const requests = annotationChunks.map(chunk => {
         const body = {
             name: checkName,
@@ -106,6 +108,10 @@ async function updateCheck(id, conclusion, output, annotations) {
             }
         };
 
+        console.log(
+            `https://api.github.com/repos/${owner}/${repo}/check-runs/${id}`
+        );
+
         return request(
             `https://api.github.com/repos/${owner}/${repo}/check-runs/${id}`,
             {
@@ -115,6 +121,8 @@ async function updateCheck(id, conclusion, output, annotations) {
             }
         );
     });
+
+    console.log(requests);
 
     await Promise.all(requests);
 }
@@ -133,6 +141,8 @@ async function run() {
         const { conclusion, output, annotations } = eslint();
 
         await updateCheck(id, conclusion, output, annotations);
+
+        console.log("all is done");
 
         if (conclusion === "failure") {
             process.exit(78);
