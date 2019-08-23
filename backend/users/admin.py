@@ -36,6 +36,7 @@ class PyConUserAdmin(UserAdmin):
             None,
             {
                 "fields": (
+                    "image",
                     "username",
                     "email",
                     "password",
@@ -43,6 +44,8 @@ class PyConUserAdmin(UserAdmin):
                     "full_name",
                     "gender",
                     "date_birth",
+                    "open_to_recruiting",
+                    "open_to_newsletter",
                 )
             },
         ),

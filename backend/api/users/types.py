@@ -8,6 +8,11 @@ from countries.types import Country
 
 
 @strawberry.type
+class Image:
+    url: str
+
+
+@strawberry.type
 class MeUser:
     id: strawberry.ID
     email: str
@@ -35,6 +40,10 @@ class MeUser:
     def submissions(self, info, conference: str) -> List["Submission"]:
         return self.submissions.filter(conference__code=conference)
 
+    @strawberry.field
+    def image(self, info) -> Image:
+        return self.image
+
 
 @strawberry.type
 class User:
@@ -57,3 +66,7 @@ class User:
     address: Optional[str]
     country: str
     phone_number: Optional[str]
+
+    @strawberry.field
+    def image(self, info) -> Image:
+        return self.image
