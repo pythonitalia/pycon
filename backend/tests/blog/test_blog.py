@@ -26,10 +26,19 @@ def _query_blog_posts(client):
     )
 
 
+def _get_image_url(request, image):
+    if not image:
+        return None
+
+    return request.build_absolute_uri(image.url)
+
+
 @mark.django_db
-def test_query_blog_posts(graphql_client, user_factory, post_factory):
+def test_query_blog_posts(rf, graphql_client, user_factory, post_factory):
     past_post = post_factory(published=timezone.now() - timedelta(days=1), image=None)
     present_post = post_factory()
+
+    request = rf.get("/")
 
     post_factory(published=timezone.now() + timedelta(days=1))
 
@@ -44,7 +53,7 @@ def test_query_blog_posts(graphql_client, user_factory, post_factory):
         "excerpt": past_post.excerpt,
         "content": past_post.content,
         "published": past_post.published.isoformat(),
-        "image": str(past_post.image),
+        "image": _get_image_url(request, past_post.image),
         "author": {"id": str(past_post.author.id), "email": past_post.author.email},
     } == resp["data"]["blogPosts"][1]
 
@@ -55,7 +64,7 @@ def test_query_blog_posts(graphql_client, user_factory, post_factory):
         "excerpt": present_post.excerpt,
         "content": present_post.content,
         "published": present_post.published.isoformat(),
-        "image": str(present_post.image),
+        "image": _get_image_url(request, present_post.image),
         "author": {
             "id": str(present_post.author.id),
             "email": present_post.author.email,
@@ -64,7 +73,8 @@ def test_query_blog_posts(graphql_client, user_factory, post_factory):
 
 
 @mark.django_db
-def test_query_single_post(graphql_client, user_factory, post_factory):
+def test_query_single_post(rf, graphql_client, user_factory, post_factory):
+    request = rf.get("/")
     post = post_factory(
         slug="demo", published=timezone.now() - timedelta(days=1), image=None
     )
@@ -94,7 +104,7 @@ def test_query_single_post(graphql_client, user_factory, post_factory):
         "excerpt": post.excerpt,
         "content": post.content,
         "published": post.published.isoformat(),
-        "image": str(post.image),
+        "image": _get_image_url(request, post.image),
         "author": {"id": str(post.author.id), "email": post.author.email},
     } == resp["data"]["blogPost"]
 
