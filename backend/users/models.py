@@ -126,6 +126,9 @@ class User(AbstractBaseUser, PermissionsMixin):
                     _("Please specify Fiscal Code or VAT number in your user profile.")
                 )
 
+            if self.fiscal_code:
+                self.clean_fiscal_code()
+
             if not self.recipient_code and not self.pec_address:
                 raise exceptions.ValidationError(
                     _(
@@ -139,6 +142,48 @@ class User(AbstractBaseUser, PermissionsMixin):
             raise exceptions.ValidationError(
                 {"vat_number": _("Missing VAT Number in your user profile.")}
             )
+
+    def clean_fiscal_code(self):
+        msg = _("Fiscal Code is invalid")
+        if not len(self.fiscal_code) == 16:
+            raise exceptions.ValidationError(
+                {"fiscal_code": _("Fiscal Code is invalid: length != 16")}
+            )
+
+        if not self.fiscal_code[:6].isalpha():
+            raise exceptions.ValidationError({"fiscal_code": msg})
+
+        # year of birth
+        if not self.fiscal_code[6:8].isdigit():
+            raise exceptions.ValidationError({"fiscal_code": msg})
+
+        # month of birth
+        if self.fiscal_code[8:9] not in (
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "H",
+            "L",
+            "M",
+            "P",
+            "R",
+            "S",
+            "T",
+        ):
+            raise exceptions.ValidationError({"fiscal_code": msg})
+
+        # date of birth
+        if not self.fiscal_code[9:11].isdigit():
+            raise exceptions.ValidationError({"fiscal_code": msg})
+
+        # city code
+        if not self.fiscal_code[11:15]:
+            pass
+
+        if not self.fiscal_code[15:16].isalpha():
+            raise exceptions.ValidationError({"fiscal_code": msg})
 
     def is_eu(self):
         if self.country in EU_COUNTRIES:

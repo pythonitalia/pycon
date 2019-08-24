@@ -196,6 +196,28 @@ def test_clean_business_fields_country_it_not_pec_and_not_recipient_code():
 
 
 @pytest.mark.django_db
+def test_clean_business_fields_it_country_invalid_fiscal_code():
+    user = User.objects.create_user(
+        "lennon@thebeatles.com",
+        "johnpassword",
+        business_name="ACME, Inc.",
+        phone_number="+39 3381234567",
+        country="IT",
+        vat_number="",
+        fiscal_code="NGRDTH62A48H3139",
+    )
+    with pytest.raises(exceptions.ValidationError) as exc_info:
+        user.clean_business_fields()
+
+    assert exc_info.type is exceptions.ValidationError
+    assert list(exc_info.value.args[0].keys()) == ["fiscal_code"]
+    assert list(exc_info.value.args[0].values()) == ["Fiscal Code is invalid"]
+
+
+# region country_utilities
+
+
+@pytest.mark.django_db
 def test_swiss_not_in_ue():
     user = User.objects.create_user(
         "lennon@thebeatles.com", "johnpassword", country="CH"
@@ -230,3 +252,105 @@ def test_non_italian():
     )
 
     assert not user.is_italian()
+
+
+# endregion
+
+# region fiscal_code
+
+
+@pytest.mark.django_db
+def test_clean_fiscal_code():
+    user = User.objects.create_user(
+        "lennon@thebeatles.com", "johnpassword", fiscal_code="NGRDTH62A48H313R"
+    )
+    assert user.clean_fiscal_code() is None
+
+
+@pytest.mark.django_db
+def test_clean_fiscal_code_faild_length():
+    user = User.objects.create_user(
+        "lennon@thebeatles.com", "johnpassword", fiscal_code="NGRDTH"
+    )
+
+    with pytest.raises(exceptions.ValidationError) as exc_info:
+        user.clean_fiscal_code()
+
+    assert exc_info.type is exceptions.ValidationError
+    assert list(exc_info.value.args[0].keys()) == ["fiscal_code"]
+    assert list(exc_info.value.args[0].values()) == [
+        "Fiscal Code is invalid: length != 16"
+    ]
+
+
+@pytest.mark.django_db
+def test_clean_fiscal_code_fail_name_not_aplpha():
+    user = User.objects.create_user(
+        "lennon@thebeatles.com", "johnpassword", fiscal_code="NGR123XXXXXXXXXX"
+    )
+
+    with pytest.raises(exceptions.ValidationError) as exc_info:
+        user.clean_fiscal_code()
+
+    assert exc_info.type is exceptions.ValidationError
+    assert list(exc_info.value.args[0].keys()) == ["fiscal_code"]
+    assert list(exc_info.value.args[0].values()) == ["Fiscal Code is invalid"]
+
+
+@pytest.mark.django_db
+def test_clean_fiscal_code_fail_year_not_num():
+    user = User.objects.create_user(
+        "lennon@thebeatles.com", "johnpassword", fiscal_code="NGRDTHTYXXXXXXXX"
+    )
+
+    with pytest.raises(exceptions.ValidationError) as exc_info:
+        user.clean_fiscal_code()
+
+    assert exc_info.type is exceptions.ValidationError
+    assert list(exc_info.value.args[0].keys()) == ["fiscal_code"]
+    assert list(exc_info.value.args[0].values()) == ["Fiscal Code is invalid"]
+
+
+@pytest.mark.django_db
+def test_clean_fiscal_code_fail_month_not_valid():
+    user = User.objects.create_user(
+        "lennon@thebeatles.com", "johnpassword", fiscal_code="NGRDTH53VXXXXXXX"
+    )
+
+    with pytest.raises(exceptions.ValidationError) as exc_info:
+        user.clean_fiscal_code()
+
+    assert exc_info.type is exceptions.ValidationError
+    assert list(exc_info.value.args[0].keys()) == ["fiscal_code"]
+    assert list(exc_info.value.args[0].values()) == ["Fiscal Code is invalid"]
+
+
+@pytest.mark.django_db
+def test_clean_fiscal_code_fail_day_of_birth_not_num():
+    user = User.objects.create_user(
+        "lennon@thebeatles.com", "johnpassword", fiscal_code="NGRDTH53LXXXXXXX"
+    )
+
+    with pytest.raises(exceptions.ValidationError) as exc_info:
+        user.clean_fiscal_code()
+
+    assert exc_info.type is exceptions.ValidationError
+    assert list(exc_info.value.args[0].keys()) == ["fiscal_code"]
+    assert list(exc_info.value.args[0].values()) == ["Fiscal Code is invalid"]
+
+
+@pytest.mark.django_db
+def test_clean_fiscal_code_fail_last_char_not_valid():
+    user = User.objects.create_user(
+        "lennon@thebeatles.com", "johnpassword", fiscal_code="NGRDTH53L12XXXX9"
+    )
+
+    with pytest.raises(exceptions.ValidationError) as exc_info:
+        user.clean_fiscal_code()
+
+    assert exc_info.type is exceptions.ValidationError
+    assert list(exc_info.value.args[0].keys()) == ["fiscal_code"]
+    assert list(exc_info.value.args[0].values()) == ["Fiscal Code is invalid"]
+
+
+# endregion
