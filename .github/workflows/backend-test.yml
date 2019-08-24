@@ -20,14 +20,15 @@ jobs:
 
       - name: pytest
         working-directory: backend
-        run: py.test --cov-report xml --cov=. --cov-fail-under 100
+        run: |
+            set +e
+            OUTPUT=$(py.test --cov-report xml --cov=. --cov-fail-under 100)
+            STATUS=$?
+            echo "$OUTPUT"
+            codecov
+            exit $STATUS
         env:
           STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
-
-      - name: codecov
-        working-directory: backend
-        run: codecov
-        env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   integration-tests:
