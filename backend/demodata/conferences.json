@@ -1,0 +1,33 @@
+[
+  {
+    "model": "conferences.audiencelevel",
+    "pk": 1,
+    "fields": { "name": "Beginner" }
+  },
+  {
+    "model": "conferences.conference",
+    "pk": 1,
+    "fields": {
+      "created": "2019-08-24T13:18:12.148Z",
+      "modified": "2019-08-24T13:18:12.148Z",
+      "start": null,
+      "end": null,
+      "name": "PyCon 10",
+      "code": "pycon10",
+      "timezone": "Europe/Rome",
+      "latitude": null,
+      "longitude": null,
+      "map_link": "",
+      "topics": [1],
+      "languages": [1, 2],
+      "audience_levels": [1],
+      "submission_types": [1]
+    }
+  },
+  { "model": "conferences.topic", "pk": 1, "fields": { "name": "Web" } },
+  {
+    "model": "submissions.submissiontype",
+    "pk": 1,
+    "fields": { "name": "Talk" }
+  }
+]

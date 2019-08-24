@@ -2,7 +2,6 @@ schema: _schema.json
 
 documents:
     - ./src/**/*.{ts,tsx}
-    - ./node_modules/gatsby-*/**/*.js
 
 generates:
     src/generated/graphql.ts:

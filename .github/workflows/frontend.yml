@@ -20,8 +20,23 @@ jobs:
 
     steps:
     - uses: actions/checkout@master
-
+    - uses: actions/setup-python@v1
+      with:
+        python-version: '3.7.4'
+    - name: Install dependencies
+      working-directory: backend
+      run: pip install -r requirements/prod.txt
     - run: yarn
       working-directory: frontend
+    - run: |
+        cd backend/
+        DEBUG=True SECRET_KEY=DEMO python manage.py migrate
+        DEBUG=True SECRET_KEY=DEMO python manage.py loaddata demodata/conferences.json
+        DEBUG=True SECRET_KEY=DEMO python manage.py runserver &
+
+        cd ../frontend/
+        yarn build
+
+        yarn codegen
     - run: yarn tsc
       working-directory: frontend
