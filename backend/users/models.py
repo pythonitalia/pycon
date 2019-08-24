@@ -9,6 +9,42 @@ from pycountry import countries
 from .managers import UserManager
 
 COUNTRIES = [{"code": country.alpha_2, "name": country.name} for country in countries]
+EU_COUNTRIES = (
+    "AT",
+    "BE",
+    "BG",
+    "CY",
+    "CZ",
+    "DK",
+    "EE",
+    "FI",
+    "FR",
+    "DE",
+    "GR",
+    "HU",
+    "HR",
+    "IE",
+    "IT",
+    "LV",
+    "LT",
+    "LU",
+    "MT",
+    "NL",
+    "PL",
+    "PT",
+    "RO",
+    "SK",
+    "SI",
+    "ES",
+    "SE",
+    "GB",
+)
+
+[
+    {"code": country.alpha_2, "name": country.name}
+    for country in countries
+    if country.alpha_2 in EU_COUNTRIES
+]
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -61,6 +97,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         pass
 
     def clean_business_fields(self):
+
         if not self.business_name:
             raise exceptions.ValidationError(
                 {"business_name": _("Missing Business Name in your user profile.")}
@@ -71,7 +108,16 @@ class User(AbstractBaseUser, PermissionsMixin):
                 {"phone_number": _("Missing Phone Number in your user profile.")}
             )
 
-        if self.country == "IT":
+        if not self.country:
+            raise exceptions.ValidationError(
+                {"country": _("Missing Country in your user profile.")}
+            )
+
+        if not self.is_eu():
+            return
+
+        if self.is_italian():
+
             # TODO check fiscal code with italian roles...
             #  but first you have to split the address for get CAP!
 
@@ -87,8 +133,19 @@ class User(AbstractBaseUser, PermissionsMixin):
                         "mandatory to specify the recipient's code or the pec address."
                     )
                 )
-        else:
-            if not self.vat_number:
-                raise exceptions.ValidationError(
-                    {"vat_number": _("Missing VAT Number in your user profile.")}
-                )
+            return
+
+        if not self.vat_number:
+            raise exceptions.ValidationError(
+                {"vat_number": _("Missing VAT Number in your user profile.")}
+            )
+
+    def is_eu(self):
+        if self.country in EU_COUNTRIES:
+            return True
+        return False
+
+    def is_italian(self):
+        if self.country == "IT":
+            return True
+        return False
