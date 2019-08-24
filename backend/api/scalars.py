@@ -75,11 +75,11 @@ def serialize_decimal(value):
     return str(value)
 
 
-def parse_value_decimal(value):
+def parse_value_decimal(value):  # pragma: no cover
     return Decimal(value)
 
 
-def parse_literal_decimal(ast, _variables=None):
+def parse_literal_decimal(ast, _variables=None):  # pragma: no cover
     if not isinstance(ast, StringValueNode):
         return INVALID
 

@@ -38,9 +38,6 @@ class Map:
         height: Optional[int] = 400,
         zoom: Optional[int] = 15,
     ) -> str:
-        if not all((self.latitude, self.longitude)):
-            return None
-
         return generate_map_image(
             latitude=self.latitude,
             longitude=self.longitude,
