@@ -1,4 +1,5 @@
 import datetime
+from decimal import Decimal
 from typing import NewType
 
 from aniso8601 import parse_date, parse_datetime
@@ -67,4 +68,31 @@ REGISTRY[Date] = GraphQLScalarType(
     serialize=serialize_date,
     parse_value=parse_value_date,
     parse_literal=parse_literal_date,
+)
+
+
+def serialize_decimal(value):
+    return str(value)
+
+
+def parse_value_decimal(value):  # pragma: no cover
+    return Decimal(value)
+
+
+def parse_literal_decimal(ast, _variables=None):  # pragma: no cover
+    if not isinstance(ast, StringValueNode):
+        return INVALID
+
+    try:
+        return Decimal(ast.value)
+    except ValueError:
+        return INVALID
+
+
+REGISTRY[Decimal] = GraphQLScalarType(
+    name="Decimal",
+    description="Decimal",
+    serialize=serialize_decimal,
+    parse_value=parse_value_decimal,
+    parse_literal=parse_literal_decimal,
 )

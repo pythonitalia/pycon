@@ -1,0 +1,24 @@
+schema: _schema.json
+
+documents:
+    - ./src/**/*.{ts,tsx}
+    - ./node_modules/gatsby-image/**/*.js
+    - ./node_modules/gatsby-transformer-sharp/**/*.js
+
+generates:
+    src/generated/graphql.ts:
+        plugins:
+            - add: |
+                /* eslint-disable */
+
+                import { GatsbyImageProps } from 'gatsby-image'
+            - "typescript"
+            - "typescript-operations"
+        config:
+            scalars:
+                ImageSharp: GatsbyImageProps
+                ImageSharpFilterInput: GatsbyImageProps
+            namingConvention:
+                enumValues: keep
+            maybeValue: T | null
+            avoidOptionals: true

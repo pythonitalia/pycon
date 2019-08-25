@@ -14,4 +14,10 @@ class Post:
     excerpt: Optional[str]
     content: Optional[str]
     published: DateTime
-    image: Optional[str]
+
+    @strawberry.field
+    def image(self, info) -> Optional[str]:
+        if not self.image:
+            return None
+
+        return info.context.build_absolute_uri(self.image.url)

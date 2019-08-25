@@ -17,7 +17,19 @@ class ConferenceAdmin(admin.ModelAdmin):
     readonly_fields = ("created", "modified")
     filter_horizontal = ("topics", "languages", "audience_levels", "submission_types")
     fieldsets = (
-        ("Details", {"fields": ("name", "code", "timezone")}),
+        (
+            "Details",
+            {
+                "fields": (
+                    "name",
+                    "code",
+                    "timezone",
+                    "latitude",
+                    "longitude",
+                    "map_link",
+                )
+            },
+        ),
         (
             "Conference",
             {

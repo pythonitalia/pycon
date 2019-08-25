@@ -23,6 +23,14 @@ class Conference(TimeFramedModel, TimeStampedModel):
         "submissions.SubmissionType", verbose_name=_("submission types")
     )
 
+    latitude = models.DecimalField(
+        _("latitude"), max_digits=9, decimal_places=6, blank=True, null=True
+    )
+    longitude = models.DecimalField(
+        _("longitude"), max_digits=9, decimal_places=6, blank=True, null=True
+    )
+    map_link = models.URLField(_("map link"), blank=True)
+
     @property
     def is_cfp_open(self):
         try:

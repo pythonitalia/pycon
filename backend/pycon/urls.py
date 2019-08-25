@@ -1,4 +1,6 @@
 from api.views import GraphQLView
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 from django.views.decorators.csrf import csrf_exempt
@@ -9,4 +11,4 @@ urlpatterns = [
     path("user/", include("users.urls")),
     path("", include("social_django.urls", namespace="social")),
     path("", include("payments.urls")),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

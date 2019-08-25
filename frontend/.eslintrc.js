@@ -25,7 +25,6 @@ module.exports = {
         "@typescript-eslint/interface-name-prefix": "off",
         "@typescript-eslint/member-delimiter-style": "off",
         "@typescript-eslint/member-ordering": "off",
-        "@typescript-eslint/consistent-type-assertions": "error",
         "@typescript-eslint/no-empty-interface": "error",
         "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/no-misused-new": "error",

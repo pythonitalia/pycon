@@ -142,3 +142,4 @@ SLACK_INCOMING_WEBHOOK_URl = ""
 USE_SCHEDULER = False
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+MAPBOX_PUBLIC_API_KEY = env("MAPBOX_PUBLIC_API_KEY", default="")

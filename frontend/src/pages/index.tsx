@@ -1,30 +1,56 @@
 import * as React from "react";
 
-import { graphql } from "gatsby";
+import { graphql, useStaticQuery } from "gatsby";
 import { Hero } from "../components/hero";
 import { Events } from "../components/home-events";
 import { Faq } from "../components/home-faq";
 import { SponsorList } from "../components/sponsor-list";
 import { TwoColumnsText } from "../components/two-columns-text";
+import { HomePageQuery } from "../generated/graphql";
 import { HomeLayout } from "../layouts/home";
 
-type HomeProps = {
-  data: any;
-};
+export default () => {
+  const {
+    heroImage,
+    logoImage,
+    backend: { conference },
+  } = useStaticQuery<HomePageQuery>(graphql`
+    query HomePage {
+      heroImage: file(relativePath: { eq: "images/hero.jpg" }) {
+        childImageSharp {
+          fluid(maxWidth: 1600) {
+            ...GatsbyImageSharpFluid
+          }
+        }
+      }
+      logoImage: file(relativePath: { eq: "images/python-logo.png" }) {
+        childImageSharp {
+          fluid(maxWidth: 1200) {
+            ...GatsbyImageSharpFluid
+          }
+        }
+      }
 
-export default ({ data }: HomeProps) => {
+      backend {
+        conference(code: "pycon10") {
+          name
+        }
+      }
+    }
+  `);
+
   const mockSponsors = [
     {
       category: "diversity",
       logos: [
         {
           name: "python",
-          logo: data.logoImage.childImageSharp,
+          logo: logoImage!.childImageSharp!,
           link: "https://www.python.org/",
         },
         {
           name: "python2",
-          logo: data.logoImage.childImageSharp,
+          logo: logoImage!.childImageSharp!,
           category: "diversity",
           link: "https://www.python.org/",
         },
@@ -35,7 +61,7 @@ export default ({ data }: HomeProps) => {
       logos: [
         {
           name: "python3",
-          logo: data.logoImage.childImageSharp,
+          logo: logoImage!.childImageSharp!,
           link: "https://www.python.org/",
         },
       ],
@@ -44,7 +70,10 @@ export default ({ data }: HomeProps) => {
 
   return (
     <HomeLayout>
-      <Hero title="Pycon XI" backgroundImage={data.heroImage.childImageSharp}>
+      <Hero
+        title={conference.name}
+        backgroundImage={heroImage!.childImageSharp!}
+      >
         <p>
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias et
           omnis hic veniam nisi architecto reprehenderit voluptate magnam sed
@@ -66,22 +95,3 @@ export default ({ data }: HomeProps) => {
     </HomeLayout>
   );
 };
-
-export const query = graphql`
-  query {
-    heroImage: file(relativePath: { eq: "images/hero.jpg" }) {
-      childImageSharp {
-        fluid(maxWidth: 1600) {
-          ...GatsbyImageSharpFluid
-        }
-      }
-    }
-    logoImage: file(relativePath: { eq: "images/python-logo.png" }) {
-      childImageSharp {
-        fluid(maxWidth: 1200) {
-          ...GatsbyImageSharpFluid
-        }
-      }
-    }
-  }
-`;

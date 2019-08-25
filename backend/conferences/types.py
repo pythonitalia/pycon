@@ -1,5 +1,6 @@
 from datetime import datetime
-from typing import List
+from decimal import Decimal
+from typing import List, Optional
 
 import pytz
 import strawberry
@@ -7,6 +8,8 @@ from api.scalars import Date, DateTime
 from languages.types import Language
 from schedule.types import Room, ScheduleItem
 from submissions.types import Submission, SubmissionType
+
+from .helpers.maps import generate_map_image
 
 
 @strawberry.type
@@ -19,6 +22,29 @@ class AudienceLevel:
 class Topic:
     id: strawberry.ID
     name: str
+
+
+@strawberry.type
+class Map:
+    latitude: Decimal
+    longitude: Decimal
+    link: Optional[str]
+
+    @strawberry.field
+    def image(
+        self,
+        info,
+        width: Optional[int] = 1280,
+        height: Optional[int] = 400,
+        zoom: Optional[int] = 15,
+    ) -> str:
+        return generate_map_image(
+            latitude=self.latitude,
+            longitude=self.longitude,
+            width=width,
+            height=height,
+            zoom=zoom,
+        )
 
 
 @strawberry.type
@@ -48,6 +74,15 @@ class Conference:
             qs = qs.filter(start__gte=utc_start_date, end__lte=utc_end_date)
 
         return qs.order_by("start")
+
+    @strawberry.field
+    def map(self, info) -> Optional[Map]:
+        if not all((self.latitude, self.longitude)):
+            return None
+
+        return Map(
+            latitude=self.latitude, longitude=self.longitude, link=self.map_link or None
+        )
 
     @strawberry.field
     def ticket_fares(self, info) -> List["TicketFare"]:

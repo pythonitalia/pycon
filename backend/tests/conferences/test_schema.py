@@ -326,3 +326,48 @@ def test_query_conference_rooms(graphql_client, room_factory):
 
     assert len(response["data"]["conference"]["rooms"]) == 1
     assert response["data"]["conference"]["rooms"][0] == {"name": room.name}
+
+
+@mark.django_db
+def test_get_conference_without_map(conference, graphql_client):
+    resp = graphql_client.query(
+        """
+        query($code: String!) {
+            conference(code: $code) {
+                map {
+                    latitude
+                    longitude
+                    link
+                    image
+                }
+            }
+        }
+        """,
+        variables={"code": conference.code},
+    )
+
+    assert "errors" not in resp
+    assert resp["data"]["conference"]["map"] is None
+
+
+@mark.django_db
+def test_get_conference_map(conference_factory, graphql_client):
+    conference = conference_factory(latitude=1, longitude=1)
+    resp = graphql_client.query(
+        """
+        query($code: String!) {
+            conference(code: $code) {
+                map {
+                    latitude
+                    longitude
+                    link
+                    image
+                }
+            }
+        }
+        """,
+        variables={"code": conference.code},
+    )
+
+    assert "errors" not in resp
+    assert resp["data"]["conference"]["map"] is not None
