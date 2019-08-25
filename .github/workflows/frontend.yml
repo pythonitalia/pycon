@@ -30,14 +30,17 @@ jobs:
       working-directory: frontend
     - run: |
         cd backend/
-        DEBUG=True SECRET_KEY=DEMO python manage.py migrate
-        DEBUG=True SECRET_KEY=DEMO python manage.py loaddata demodata/conferences.json
-        DEBUG=True SECRET_KEY=DEMO python manage.py runserver &
+        python manage.py migrate
+        python manage.py loaddata demodata/conferences.json
+        python manage.py runserver &
 
         cd ../frontend/
         yarn build
 
         yarn codegen
+      env:
+        SECRET_KEY: demo
+        DEBUG: True
     - run: yarn tsc
       working-directory: frontend
     - uses: netlify/actions/cli@master
