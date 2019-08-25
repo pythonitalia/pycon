@@ -2,6 +2,7 @@ schema: _schema.json
 
 documents:
     - ./src/**/*.{ts,tsx}
+    - ./node_modules/gatsby-*/**/*.js
 
 generates:
     src/generated/graphql.ts:
@@ -9,10 +10,14 @@ generates:
             - add: |
                 /* eslint-disable */
 
-                import { GatsbyImageProps } from "gatsby-image";
+                import { GatsbyImageProps } from 'gatsby-image'
             - "typescript"
             - "typescript-operations"
         config:
             scalars:
                 ImageSharp: GatsbyImageProps
                 ImageSharpFilterInput: GatsbyImageProps
+            namingConvention:
+                enumValues: keep
+            maybeValue: T | null
+            avoidOptionals: true
