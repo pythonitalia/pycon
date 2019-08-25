@@ -15,7 +15,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  tsc:
+  check-and-preview:
     runs-on: ubuntu-latest
 
     steps:
@@ -40,3 +40,9 @@ jobs:
         yarn codegen
     - run: yarn tsc
       working-directory: frontend
+    - uses: netlify/actions/cli@master
+      with:
+        args: deploy --dir=frontend/public/
+      env:
+        NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
