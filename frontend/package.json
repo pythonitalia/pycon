@@ -11,7 +11,8 @@
     "format": "prettier --write \"{,!(node_modules|public|coverage|.cache)/**/}*.{js,jsx,ts,tsx,json}\" && yarn lint --fix",
     "lint": "eslint --ext .jsx,.js,.tsx,.ts src/",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "codegen": "graphql-codegen"
+    "codegen": "graphql-codegen",
+    "postinstall": "cd plugins/gatsby-source-pycon && yarn"
   },
   "dependencies": {
     "babel-plugin-styled-components": "^1.10.6",

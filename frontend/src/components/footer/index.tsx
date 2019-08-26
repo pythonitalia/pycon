@@ -25,7 +25,7 @@ export const Footer = () => {
   } = useStaticQuery<FooterQuery>(graphql`
     query Footer {
       backend {
-        conference(code: "pycon10") {
+        conference {
           map {
             image(width: 1280, height: 400, zoom: 15)
             link
