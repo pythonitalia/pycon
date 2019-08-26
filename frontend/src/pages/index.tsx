@@ -32,7 +32,7 @@ export default () => {
       }
 
       backend {
-        conference(code: "pycon10") {
+        conference {
           name
         }
       }

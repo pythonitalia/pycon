@@ -1,13 +1,15 @@
 const API_URL = "http://127.0.0.1:8000/graphql";
+const CONFERENCE_CODE = "pycon10";
 
 module.exports = {
     plugins: [
         {
-            resolve: "gatsby-source-graphql",
+            resolve: "gatsby-source-pycon",
             options: {
+                url: API_URL,
+                conferenceCode: CONFERENCE_CODE,
                 typeName: "BACKEND",
                 fieldName: "backend",
-                url: API_URL,
             },
         },
         {
