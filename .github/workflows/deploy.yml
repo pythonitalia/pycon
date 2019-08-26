@@ -55,6 +55,7 @@ jobs:
         TF_VAR_secret_key: ${{ secrets.TF_VAR_secret_key }}
         TF_ACTION_WORKING_DIR: ./infrastructure
         TF_ACTION_WORKSPACE: production
+        TF_VAR_ssl_certificate: ${{ secrets.TF_VAR_ssl_certificate }}
 
   deploy-to-eb:
     runs-on: ubuntu-latest
