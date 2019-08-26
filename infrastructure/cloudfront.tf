@@ -31,10 +31,11 @@ resource "aws_cloudfront_distribution" "frontend_distribution" {
     target_origin_id = "backend"
 
     forwarded_values {
-      query_string = false
+      query_string = true
+      headers      = ["*"]
 
       cookies {
-        forward = "none"
+        forward = "all"
       }
     }
 
