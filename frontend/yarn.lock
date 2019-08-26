@@ -7790,10 +7790,10 @@ gatsby-remark-responsive-iframe@^2.2.8:
     lodash "^4.17.15"
     unist-util-visit "^1.4.1"
 
-gatsby-source-filesystem@^2.1.17:
-  version "2.1.17"
-  resolved "https://registry.yarnpkg.com/gatsby-source-filesystem/-/gatsby-source-filesystem-2.1.17.tgz#160a4ad106a24466cf9db8232eac2cfc4efe4569"
-  integrity sha512-pi/Tteg7zhc98D4noJEkPcgM0nHH0McCPSucycJS4Sw3dVCj2upBwWxaqUIaia5avYoklndMry4LViTUkr0YUg==
+gatsby-source-filesystem@^2.1.18:
+  version "2.1.18"
+  resolved "https://registry.yarnpkg.com/gatsby-source-filesystem/-/gatsby-source-filesystem-2.1.18.tgz#fcf80c62f243f4bfdb5ff4b17e8b0a79ace3730d"
+  integrity sha512-+LHqeDsK61F1BKiH1QGUNhZBH33tQVqB/iRw4AfKf/IlhfsJo5TzpzouAQv3aZXVj+5L05MSLmP9negHPGerag==
   dependencies:
     "@babel/runtime" "^7.5.5"
     better-queue "^3.8.10"
