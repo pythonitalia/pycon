@@ -1,5 +1,5 @@
 const API_URL = "http://127.0.0.1:8000/graphql";
-const CONFERENCE_CODE = "pycon10";
+const CONFERENCE_CODE = process.env.CONFERENCE_CODE || "pycon10";
 
 module.exports = {
     plugins: [

@@ -72,3 +72,22 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+  deploy-site:
+    needs: [deploy-to-eb]
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@master
+    - run: yarn
+      working-directory: frontend
+    - run: yarn build
+      working-directory: frontend
+      env:
+        CONFERENCE_CODE: pycon11
+    - uses: netlify/actions/cli@master
+      with:
+        args: deploy --dir=frontend/public --prod
+      env:
+        NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
