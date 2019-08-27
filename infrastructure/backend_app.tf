@@ -37,6 +37,7 @@ resource "aws_security_group_rule" "allow_postgres" {
 
 variable "database_password" {}
 variable "secret_key" {}
+variable "mapbox_public_api_key" {}
 
 resource "aws_db_instance" "backend" {
   allocated_storage   = 10
@@ -196,6 +197,12 @@ resource "aws_elastic_beanstalk_environment" "pycon_env" {
     namespace = "aws:elasticbeanstalk:application:environment"
     name      = "SECRET_KEY"
     value     = "${var.secret_key}"
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "MAPBOX_PUBLIC_API_KEY"
+    value     = "${var.mapbox_public_api_key}"
   }
 
   setting {
