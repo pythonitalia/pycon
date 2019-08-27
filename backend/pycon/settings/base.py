@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "tickets.apps.TicketsConfig",
     "voting.apps.VotingConfig",
     "blog.apps.BlogConfig",
+    "importer",
 ]
 
 MIDDLEWARE = [
@@ -76,7 +77,9 @@ WSGI_APPLICATION = "pycon.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
-DATABASES = {"default": env.db(default="sqlite:///{}".format(root("db.sqlite3")))}
+DATABASES = {
+    "default": env.db(default="sqlite:///{}".format(root("db.sqlite3")))
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
@@ -88,7 +91,9 @@ PASSWORD_VALIDATORS = [
     "django.contrib.auth.password_validation.NumericPasswordValidator",
 ]
 
-AUTH_PASSWORD_VALIDATORS = [{"NAME": validator} for validator in PASSWORD_VALIDATORS]
+AUTH_PASSWORD_VALIDATORS = [
+    {"NAME": validator} for validator in PASSWORD_VALIDATORS
+]
 
 
 # Internationalization
@@ -126,8 +131,12 @@ AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
 )
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env("SOCIAL_AUTH_GOOGLE_OAUTH2_KEY", default="")
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env("SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET", default="")
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env(
+    "SOCIAL_AUTH_GOOGLE_OAUTH2_KEY", default=""
+)
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env(
+    "SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET", default=""
+)
 
 SOCIAL_AUTH_POSTGRES_JSONFIELD = True
 
