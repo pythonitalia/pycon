@@ -13,10 +13,11 @@ resource "aws_cloudfront_distribution" "frontend_distribution" {
     }
   }
 
-  enabled         = true
-  is_ipv6_enabled = true
-  comment         = "PyCon"
-  aliases         = []
+  enabled             = true
+  is_ipv6_enabled     = true
+  comment             = "PyCon"
+  aliases             = []
+  wait_for_deployment = false
 
   viewer_certificate {
     cloudfront_default_certificate = true
