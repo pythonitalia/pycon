@@ -2,6 +2,7 @@ on:
   pull_request:
     paths:
     - 'infrastructure/**/*'
+    - 'infrastructure/*'
 
 name: Terraform Lint
 
