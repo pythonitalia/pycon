@@ -139,7 +139,7 @@ EOF
 
 resource "aws_elastic_beanstalk_application" "pycon" {
   name        = "pycon"
-  description = "pycon"
+  description = "pyconaaaaaaaaaaaaaa"
 }
 
 resource "aws_elastic_beanstalk_environment" "pycon_env" {
