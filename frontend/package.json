@@ -12,6 +12,7 @@
     "lint": "eslint --ext .jsx,.js,.tsx,.ts src/",
     "test": "echo \"Error: no test specified\" && exit 1",
     "codegen": "graphql-codegen",
+    "precommit-lint": "node scripts/lint",
     "postinstall": "cd plugins/gatsby-source-pycon && yarn"
   },
   "dependencies": {

@@ -1,3 +1,7 @@
 .docz/
 public/
 plugins/
+gatsby-node.js
+gatsby-config.js
+gatsby-browser.js
+scripts/lint.js
