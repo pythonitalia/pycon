@@ -27,25 +27,33 @@ exports.createResolvers = ({
     store,
     reporter,
 }) => {
+    const imageFileResolver = (source, args, context, info) => {
+        if (!source.image) {
+            return null;
+        }
+
+        return createRemoteFileNode({
+            url: source.image,
+            store,
+            cache,
+            createNode,
+            createNodeId,
+            reporter,
+        });
+    };
+
     const { createNode } = actions;
     createResolvers({
         BACKEND_Post: {
             imageFile: {
                 type: `File`,
-                resolve(source, args, context, info) {
-                    if (!source.image) {
-                        return null;
-                    }
-
-                    return createRemoteFileNode({
-                        url: source.image,
-                        store,
-                        cache,
-                        createNode,
-                        createNodeId,
-                        reporter,
-                    });
-                },
+                resolve: imageFileResolver,
+            },
+        },
+        BACKEND_Page: {
+            imageFile: {
+                type: `File`,
+                resolve: imageFileResolver,
             },
         },
     });
@@ -53,12 +61,15 @@ exports.createResolvers = ({
 
 exports.createPages = async ({ graphql, actions, reporter }) => {
     const { createPage } = actions;
-    // Query for markdown nodes to use in creating pages.
+
     const result = await graphql(
         `
             query {
                 backend {
                     blogPosts {
+                        slug
+                    }
+                    pages {
                         slug
                     }
                 }
@@ -72,11 +83,22 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     }
 
     const blogPostTemplate = path.resolve(`src/templates/blog-post.tsx`);
+    const pageTemplate = path.resolve(`src/templates/page.tsx`);
 
     result.data.backend.blogPosts.forEach(({ slug }) => {
         createPage({
             path: `/blog/${slug}`,
             component: blogPostTemplate,
+            context: {
+                slug,
+            },
+        });
+    });
+
+    result.data.backend.pages.forEach(({ slug }) => {
+        createPage({
+            path: `/${slug}`,
+            component: pageTemplate,
             context: {
                 slug,
             },
