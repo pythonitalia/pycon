@@ -1,7 +1,10 @@
 name: Frontend
 
-on: pull_request
-
+on:
+  pull_request:
+    paths:
+    - 'backend/**/*'
+    - 'frontend/**/*'
 
 jobs:
   eslint:
