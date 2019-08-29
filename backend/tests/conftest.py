@@ -10,6 +10,7 @@ from .languages.factories import *  # noqa
 from .orders.factories import *  # noqa
 from .pages.factories import *  # noqa
 from .schedule.factories import *  # noqa
+from .sponsors.factories import *  # noqa
 from .submissions.factories import *  # noqa
 from .tickets.factories import *  # noqa
 from .users.factories import *  # noqa

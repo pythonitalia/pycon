@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "voting.apps.VotingConfig",
     "blog.apps.BlogConfig",
     "pages.apps.PagesConfig",
+    "sponsors.apps.SponsorsConfig",
     "importer",
 ]
 
