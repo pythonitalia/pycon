@@ -46,7 +46,7 @@
     "react-responsive": "^7.0.0",
     "sharp": "^0.23.0",
     "styled-components": "^4.3.2",
-    "typescript": "^3.5.3"
+    "typescript": "^3.6.2"
   },
   "devDependencies": {
     "@graphql-codegen/add": "^1.6.1",
