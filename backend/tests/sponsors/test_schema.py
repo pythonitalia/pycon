@@ -25,31 +25,26 @@ def _get_image_url(request, image):
 
 
 @mark.django_db
-def test_query_sponsors(rf, graphql_client, sponsor_factory):
+def test_query_sponsors(rf, graphql_client, sponsor_factory, sponsor_level_factory):
     request = rf.get("/")
 
+    gold_level = sponsor_level_factory(name="gold", conference__code="pycon11")
+    bronze_level = sponsor_level_factory(name="bronze", conference__code="pycon11")
+
     sponsor_factory(
-        conference__code="pycon10",
+        level__name="gold",
+        level__conference__code="pycon10",
         name="patrick",
         link="https://patrick.wtf",
-        level="gold",
         image=None,
     )
     sponsor_factory(
-        conference__code="pycon11",
-        name="patrick",
-        link="https://patrick.wtf",
-        level="gold",
-        image=None,
+        level=gold_level, name="patrick", link="https://patrick.wtf", image=None
     )
     sponsor_factory(
-        conference__code="pycon11",
-        name="marco",
-        link="https://marco.pizza",
-        level="gold",
-        image=None,
+        level=gold_level, name="marco", link="https://marco.pizza", image=None
     )
-    sponsor = sponsor_factory(conference__code="pycon11", name="jake", level="bronze")
+    sponsor = sponsor_factory(level=bronze_level, name="jake")
 
     resp = _query_sponsors(graphql_client, conference_code="pycon11")
 

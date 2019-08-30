@@ -14,9 +14,10 @@ class SponsorsQuery:
 
     @strawberry.field
     def sponsors_by_level(self, info, code: str) -> List[SponsorsByLevel]:
-        # TODO: level might need an order
-        sponsors = Sponsor.objects.filter(conference__code=code).order_by("level")
+        sponsors = Sponsor.objects.filter(level__conference__code=code).select_related(
+            "level"
+        )
 
-        by_level = groupby(sponsors, key=lambda sponsor: sponsor.level)
+        by_level = groupby(sponsors, key=lambda sponsor: sponsor.level.name)
 
         return [SponsorsByLevel(level, list(sponsors)) for level, sponsors in by_level]
