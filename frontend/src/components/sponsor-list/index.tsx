@@ -8,7 +8,37 @@ import styled from "styled-components";
 import { STANDARD_ROW_PADDING } from "../../config/spacing";
 import { SectionTitle } from "../section-title";
 
-const Wrapper = styled.div``;
+const SponsorLink = styled.a`
+  display: block;
+  border: 1px solid #ccc;
+`;
+
+const BecomeASponsorLink = styled.a`
+  display: block;
+  width: 100%;
+  position: relative;
+
+  ::before {
+    content: "";
+    display: inline-block;
+    padding-top: 48.5%;
+  }
+
+  span {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    border: 1px solid ${props => props.theme.palette.primary};
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+`;
 
 type Sponsor = {
   name: string;
@@ -52,7 +82,7 @@ const getSponsorLinkProps = (sponsor: Sponsor) => {
 };
 
 export const SponsorList: React.SFC<SponsorListProps> = props => (
-  <Wrapper>
+  <>
     <Row paddingLeft={STANDARD_ROW_PADDING} paddingRight={STANDARD_ROW_PADDING}>
       <Column>
         <SectionTitle>Sponsors</SectionTitle>
@@ -98,19 +128,35 @@ export const SponsorList: React.SFC<SponsorListProps> = props => (
                     desktop: 3,
                   }}
                 >
-                  <a {...getSponsorLinkProps(sponsor)} title={sponsor.name}>
+                  <SponsorLink
+                    {...getSponsorLinkProps(sponsor)}
+                    title={sponsor.name}
+                  >
                     {sponsor.imageFile && (
                       <Img
                         {...sponsor.imageFile.childImageSharp}
                         alt={sponsor.name}
                       />
                     )}
-                  </a>
+                  </SponsorLink>
                 </Column>
               ))}
+
+            <Column
+              columnWidth={{
+                mobile: 12,
+                tabletPortrait: 4,
+                tabletLandscape: 3,
+                desktop: 3,
+              }}
+            >
+              <BecomeASponsorLink href="#">
+                <span>Become a sponsor</span>
+              </BecomeASponsorLink>
+            </Column>
           </Row>
         </Column>
       </Row>
     ))}
-  </Wrapper>
+  </>
 );

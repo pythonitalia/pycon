@@ -44,7 +44,7 @@ export default () => {
                   fluid(
                     fit: CONTAIN
                     maxWidth: 600
-                    maxHeight: 400
+                    maxHeight: 300
                     background: "white"
                   ) {
                     ...GatsbyImageSharpFluid
