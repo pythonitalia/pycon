@@ -1,5 +1,6 @@
 from datetime import datetime
 from decimal import Decimal
+from itertools import groupby
 from typing import List, Optional
 
 import pytz
@@ -7,6 +8,7 @@ import strawberry
 from api.scalars import Date, DateTime
 from languages.types import Language
 from schedule.types import Room, ScheduleItem
+from sponsors.types import SponsorsByLevel
 from submissions.types import Submission, SubmissionType
 
 from .helpers.maps import generate_map_image
@@ -115,6 +117,18 @@ class Conference:
     @strawberry.field
     def rooms(self, info) -> List[Room]:
         return self.rooms.all()
+
+    @strawberry.field
+    def sponsors_by_level(self, info) -> List[SponsorsByLevel]:
+        from sponsors.models import Sponsor
+
+        sponsors = Sponsor.objects.filter(
+            level__conference__code=self.code
+        ).select_related("level")
+
+        by_level = groupby(sponsors, key=lambda sponsor: sponsor.level.name)
+
+        return [SponsorsByLevel(level, list(sponsors)) for level, sponsors in by_level]
 
 
 @strawberry.type

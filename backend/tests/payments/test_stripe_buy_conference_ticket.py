@@ -19,7 +19,7 @@ def test_buy_conference_ticket(graphql_client, user, ticket_fare_factory):
     fare = ticket_fare_factory()
 
     response = graphql_client.query(
-        """mutation ($conference: ID!, $items: [CartItem!]) {
+        """mutation ($conference: ID!, $items: [CartItem!]!) {
             buyTicketWithStripe(input: {
                 conference: $conference,
                 items: $items
@@ -61,7 +61,7 @@ def test_empty_items_fails(graphql_client, user, ticket_fare_factory):
 
     response = graphql_client.query(
         """
-    mutation ($conference: ID!, $items: [CartItem!]) {
+    mutation ($conference: ID!, $items: [CartItem!]!) {
         buyTicketWithStripe(input: {
             conference: $conference,
             items: $items
@@ -103,7 +103,7 @@ def test_authentication_error_fails_the_order(
     ):
         response = graphql_client.query(
             """
-        mutation ($conference: ID!, $items: [CartItem!]) {
+        mutation ($conference: ID!, $items: [CartItem!]!) {
             buyTicketWithStripe(input: {
                 conference: $conference,
                 items: $items
@@ -147,7 +147,7 @@ def test_ratelimit_error_fails_the_order(graphql_client, user, ticket_fare_facto
     ):
         response = graphql_client.query(
             """
-        mutation ($conference: ID!, $items: [CartItem!]) {
+        mutation ($conference: ID!, $items: [CartItem!]!) {
             buyTicketWithStripe(input: {
                 conference: $conference,
                 items: $items
@@ -193,7 +193,7 @@ def test_carderror_fails_the_order(graphql_client, user, ticket_fare_factory):
     ):
         response = graphql_client.query(
             """
-        mutation ($conference: ID!, $items: [CartItem!]) {
+        mutation ($conference: ID!, $items: [CartItem!]!) {
             buyTicketWithStripe(input: {
                 conference: $conference,
                 items: $items
@@ -230,7 +230,7 @@ def test_invalid_ticket_fare_id_fails(graphql_client, user, ticket_fare_factory)
 
     response = graphql_client.query(
         """
-    mutation ($conference: ID!, $items: [CartItem!]) {
+    mutation ($conference: ID!, $items: [CartItem!]!) {
         buyTicketWithStripe(input: {
             conference: $conference,
             items: $items
@@ -264,7 +264,7 @@ def test_expired_ticket_fare_fails(graphql_client, user, expired_ticket_fare):
 
     response = graphql_client.query(
         """
-    mutation ($conference: ID!, $items: [CartItem!]) {
+    mutation ($conference: ID!, $items: [CartItem!]!) {
         buyTicketWithStripe(input: {
             conference: $conference,
             items: $items

@@ -98,6 +98,7 @@ ENV/
 
 # Ignore pycharm configuration
 .idea/*
-media/
+
+backend/media/
 
 node_modules/

@@ -14,7 +14,7 @@ def test_buy_conference_ticket(graphql_client, user, ticket_fare_factory):
 
     response = graphql_client.query(
         """
-    mutation ($conference: ID!, $items: [CartItem!]) {
+    mutation ($conference: ID!, $items: [CartItem!]!) {
         buyTicketWithStripe(input: {
             conference: $conference,
             items: $items
@@ -32,6 +32,8 @@ def test_buy_conference_ticket(graphql_client, user, ticket_fare_factory):
             "items": [{"id": fare.id, "quantity": 1}],
         },
     )
+
+    assert not response.get("errors")
 
     assert response["data"]["buyTicketWithStripe"]["__typename"] == "StripeClientSecret"
     assert response["data"]["buyTicketWithStripe"]["clientSecret"]

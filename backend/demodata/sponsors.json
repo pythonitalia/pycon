@@ -1,0 +1,36 @@
+[
+  {
+    "model": "sponsors.sponsorlevel",
+    "pk": 1,
+    "fields": { "order": 0, "name": "Platinum", "conference": 1 }
+  },
+  {
+    "model": "sponsors.sponsorlevel",
+    "pk": 2,
+    "fields": { "order": 0, "name": "Diversity", "conference": 1 }
+  },
+  {
+    "model": "sponsors.sponsor",
+    "pk": 1,
+    "fields": {
+      "created": "2019-08-30T22:36:34.873Z",
+      "modified": "2019-08-31T10:49:19.398Z",
+      "name": "Snakely",
+      "link": "https://example.com",
+      "image": "sponsors/snakely.png",
+      "level": 1
+    }
+  },
+  {
+    "model": "sponsors.sponsor",
+    "pk": 2,
+    "fields": {
+      "created": "2019-08-31T10:49:38.922Z",
+      "modified": "2019-08-31T10:58:26.215Z",
+      "name": "Javapanda",
+      "link": "",
+      "image": "sponsors/javapanda.png",
+      "level": 1
+    }
+  }
+]
