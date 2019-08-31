@@ -1,9 +1,10 @@
 from enum import Enum
+from typing import TYPE_CHECKING
 
 import strawberry
 from users.types import UserType
 
-if False:
+if TYPE_CHECKING:
     from submissions.types import Submission
 
 

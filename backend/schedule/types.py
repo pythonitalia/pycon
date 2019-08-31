@@ -1,11 +1,11 @@
-from typing import List, Optional
+from typing import TYPE_CHECKING, List, Optional
 
 import strawberry
 from api.scalars import DateTime
 from submissions.types import Submission
 from users.types import UserType
 
-if False:
+if TYPE_CHECKING:
     from conferences.types import Conference
 
 

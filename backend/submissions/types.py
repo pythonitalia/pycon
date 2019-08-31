@@ -1,11 +1,11 @@
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
 
 import strawberry
 from graphql import GraphQLError
 from voting.models import Vote
 from voting.types import VoteType
 
-if False:
+if TYPE_CHECKING:
     from conferences.types import Conference, Topic, Duration, AudienceLevel
     from users.types import UserType
 

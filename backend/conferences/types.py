@@ -3,6 +3,8 @@ from decimal import Decimal
 from itertools import groupby
 from typing import List, Optional
 
+from typing import TYPE_CHECKING, List, Optional
+
 import pytz
 import strawberry
 from api.scalars import Date, DateTime
