@@ -11,12 +11,20 @@ import { SectionTitle } from "../section-title";
 const Wrapper = styled.div``;
 
 type Sponsor = {
-  category: string;
-  logos: { name: string; logo: GatsbyImageProps; link: string }[];
-}[];
+  name: string;
+  link: string | null;
+  imageFile: {
+    childImageSharp: GatsbyImageProps | null;
+  } | null;
+};
+
+type SponsorsByLevel = {
+  level: string;
+  sponsors: Sponsor[];
+};
 
 type SponsorListProps = {
-  sponsors: Sponsor;
+  sponsors: SponsorsByLevel[];
 };
 
 const MARGIN_NEGATIVE_COLUMN = {
@@ -32,6 +40,17 @@ const MARGIN_NEGATIVE_COLUMN = {
     desktop: 12,
   };
 
+const getSponsorLinkProps = (sponsor: Sponsor) => {
+  const props: React.AnchorHTMLAttributes<HTMLAnchorElement> = {};
+
+  if (sponsor.link) {
+    props.href = sponsor.link;
+    props.target = "_blank";
+  }
+
+  return props;
+};
+
 export const SponsorList: React.SFC<SponsorListProps> = props => (
   <Wrapper>
     <Row paddingLeft={STANDARD_ROW_PADDING} paddingRight={STANDARD_ROW_PADDING}>
@@ -39,9 +58,9 @@ export const SponsorList: React.SFC<SponsorListProps> = props => (
         <SectionTitle>Sponsors</SectionTitle>
       </Column>
     </Row>
-    {props.sponsors.map((o, i) => (
+    {props.sponsors.map((level, i) => (
       <Row
-        key={i}
+        key={level.level}
         marginTop={
           i === 0
             ? {
@@ -61,28 +80,34 @@ export const SponsorList: React.SFC<SponsorListProps> = props => (
         paddingRight={STANDARD_ROW_PADDING}
       >
         <Column columnWidth={FULL_WIDTH_COLUMN}>
-          <Heading use="h5">{o.category}</Heading>
+          <Heading use="h5">{level.level}</Heading>
         </Column>
         <Column columnWidth={FULL_WIDTH_COLUMN}>
           <Row
             marginLeft={MARGIN_NEGATIVE_COLUMN}
             marginRight={MARGIN_NEGATIVE_COLUMN}
           >
-            {o.logos.map((sponsor, logosKey) => (
-              <Column
-                key={logosKey}
-                columnWidth={{
-                  mobile: 12,
-                  tabletPortrait: 4,
-                  tabletLandscape: 3,
-                  desktop: 3,
-                }}
-              >
-                <a href={sponsor.link}>
-                  <Img {...sponsor.logo} alt={sponsor.name} />
-                </a>
-              </Column>
-            ))}
+            {level.sponsors &&
+              level.sponsors.map(sponsor => (
+                <Column
+                  key={sponsor.name}
+                  columnWidth={{
+                    mobile: 12,
+                    tabletPortrait: 4,
+                    tabletLandscape: 3,
+                    desktop: 3,
+                  }}
+                >
+                  <a {...getSponsorLinkProps(sponsor)} title={sponsor.name}>
+                    {sponsor.imageFile && (
+                      <Img
+                        {...sponsor.imageFile.childImageSharp}
+                        alt={sponsor.name}
+                      />
+                    )}
+                  </a>
+                </Column>
+              ))}
           </Row>
         </Column>
       </Row>

@@ -12,7 +12,6 @@ import { HomeLayout } from "../layouts/home";
 export default () => {
   const {
     heroImage,
-    logoImage,
     backend: { conference },
   } = useStaticQuery<HomePageQuery>(graphql`
     query HomePage {
@@ -34,39 +33,30 @@ export default () => {
       backend {
         conference {
           name
+          sponsorsByLevel {
+            level
+            sponsors {
+              name
+              image
+              link
+              imageFile {
+                childImageSharp {
+                  fluid(
+                    fit: CONTAIN
+                    maxWidth: 600
+                    maxHeight: 400
+                    background: "white"
+                  ) {
+                    ...GatsbyImageSharpFluid
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }
   `);
-
-  const mockSponsors = [
-    {
-      category: "diversity",
-      logos: [
-        {
-          name: "python",
-          logo: logoImage!.childImageSharp!,
-          link: "https://www.python.org/",
-        },
-        {
-          name: "python2",
-          logo: logoImage!.childImageSharp!,
-          category: "diversity",
-          link: "https://www.python.org/",
-        },
-      ],
-    },
-    {
-      category: "beginner",
-      logos: [
-        {
-          name: "python3",
-          logo: logoImage!.childImageSharp!,
-          link: "https://www.python.org/",
-        },
-      ],
-    },
-  ];
 
   return (
     <HomeLayout>
@@ -84,7 +74,7 @@ export default () => {
       <TwoColumnsText />
 
       <section>
-        <SponsorList sponsors={mockSponsors} />
+        <SponsorList sponsors={conference.sponsorsByLevel!} />
       </section>
       <section>
         <Events />
