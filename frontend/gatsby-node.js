@@ -56,6 +56,12 @@ exports.createResolvers = ({
                 resolve: imageFileResolver,
             },
         },
+        BACKEND_Sponsor: {
+            imageFile: {
+                type: `File`,
+                resolve: imageFileResolver,
+            },
+        },
     });
 };
 

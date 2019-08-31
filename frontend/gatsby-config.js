@@ -10,6 +10,7 @@ module.exports = {
                 conferenceCode: CONFERENCE_CODE,
                 typeName: "BACKEND",
                 fieldName: "backend",
+                refetchInterval: 60,
             },
         },
         {
