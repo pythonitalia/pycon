@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List
+from typing import List, Optional
 
 import strawberry
 from conferences.types import TicketFare
@@ -32,7 +32,7 @@ class TicketQuestion:
 @strawberry.type
 class UserAnswer:
     question: TicketQuestion
-    answer: str
+    answer: Optional[str]
 
 
 @strawberry.type
@@ -41,6 +41,21 @@ class TicketType:
     user: UserType
     ticket_fare: TicketFare
 
-    # @strawberry.field
-    # def answers(self, info) -> List[UserAnswer]:
-    #     return self.answers.all()
+    @strawberry.field
+    def answers(self, info) -> List[UserAnswer]:
+        # TODO: Replace with a JOIN or something else,
+        # to make everything run in a single query
+        questions = self.ticket_fare.questions.select_related("question").all()
+        answers = list(self.answers.all())
+
+        response = []
+
+        for question in questions:
+            found_answer = [
+                answer.answer for answer in answers if answer.question_id == question.id
+            ]
+            found_answer = found_answer[0] if found_answer else None
+
+            response.append(UserAnswer(question=question.question, answer=found_answer))
+
+        return response
