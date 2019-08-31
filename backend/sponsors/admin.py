@@ -1,8 +1,13 @@
-# from django.contrib import admin
+from django.contrib import admin
 
-# from .models import Post
+from .models import Sponsor, SponsorLevel
 
 
-# @admin.register(Post)
-# class PostAdmin(admin.ModelAdmin):
-#     list_display = ("title", "published", "author")
+@admin.register(SponsorLevel)
+class SponsorLevelAdmin(admin.ModelAdmin):
+    list_display = ("name", "conference")
+
+
+@admin.register(Sponsor)
+class SponsorAdmin(admin.ModelAdmin):
+    pass
