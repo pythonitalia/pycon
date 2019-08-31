@@ -19,7 +19,7 @@ class SponsorLevel(OrderedModel):
 
 class Sponsor(TimeStampedModel):
     name = models.CharField(_("name"), max_length=200)
-    link = models.URLField(_("published"), blank=True)
+    link = models.URLField(_("link"), blank=True)
     image = models.ImageField(_("image"), null=True, blank=True, upload_to="sponsors")
     level = models.ForeignKey(
         SponsorLevel,
