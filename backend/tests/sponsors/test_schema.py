@@ -4,12 +4,14 @@ from pytest import mark
 def _query_sponsors(client, conference_code):
     return client.query(
         """query Sponsors($code: String!) {
-            sponsorsByLevel(code: $code) {
-                level
-                sponsors {
-                    name
-                    image
-                    link
+            conference(code: $code) {
+                sponsorsByLevel {
+                    level
+                    sponsors {
+                        name
+                        image
+                        link
+                    }
                 }
             }
         }""",
@@ -50,7 +52,7 @@ def test_query_sponsors(rf, graphql_client, sponsor_factory, sponsor_level_facto
 
     assert not resp.get("errors")
 
-    assert len(resp["data"]["sponsorsByLevel"]) == 2
+    assert len(resp["data"]["conference"]["sponsorsByLevel"]) == 2
 
     assert {
         "level": "gold",
@@ -58,7 +60,7 @@ def test_query_sponsors(rf, graphql_client, sponsor_factory, sponsor_level_facto
             {"name": "patrick", "image": None, "link": "https://patrick.wtf"},
             {"name": "marco", "image": None, "link": "https://marco.pizza"},
         ],
-    } in resp["data"]["sponsorsByLevel"]
+    } in resp["data"]["conference"]["sponsorsByLevel"]
 
     assert {
         "level": "bronze",
@@ -69,4 +71,4 @@ def test_query_sponsors(rf, graphql_client, sponsor_factory, sponsor_level_facto
                 "link": None,
             }
         ],
-    } in resp["data"]["sponsorsByLevel"]
+    } in resp["data"]["conference"]["sponsorsByLevel"]
