@@ -4,19 +4,38 @@ import { Heading } from "fannypack";
 import Img, { GatsbyImageProps } from "gatsby-image";
 import { Column, Row } from "grigliata";
 import { ColumnWidthValuesType } from "grigliata/dist/typings/column";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { STANDARD_ROW_PADDING } from "../../config/spacing";
 import { SectionTitle } from "../section-title";
 
 const SponsorLink = styled.a`
   display: block;
   border: 1px solid #ccc;
+  transition: 0.3s ease-in-out;
+  filter: saturate(0);
+
+  :hover {
+    border-color: ${props => props.theme.palette.primary};
+    filter: none;
+  }
+`;
+
+const loveAnimation = keyframes`
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%);
+  }
+
+  50% {
+    opacity: 1;
+  }
 `;
 
 const BecomeASponsorLink = styled.a`
   display: block;
   width: 100%;
   position: relative;
+  color: ${props => props.theme.palette.primary};
 
   ::before {
     content: "";
@@ -24,7 +43,8 @@ const BecomeASponsorLink = styled.a`
     padding-top: 48.5%;
   }
 
-  span {
+  > span,
+  .love {
     position: absolute;
     top: 0;
     left: 0;
@@ -37,6 +57,30 @@ const BecomeASponsorLink = styled.a`
     border: 1px solid ${props => props.theme.palette.primary};
     text-transform: uppercase;
     letter-spacing: 1px;
+  }
+
+  .love {
+    display: flex;
+    justify-content: space-around;
+  }
+
+  .love span {
+    --x: 0;
+    --y: 0;
+    --multiplier: 50px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    display: inline-block;
+    opacity: 0;
+    transform: translate(
+      calc(-50% + var(--multiplier) * (var(--x))),
+      calc(-50% - var(--multiplier) * (var(--y)))
+    );
+  }
+
+  .love:hover span {
+    animation: ${loveAnimation} 0.4s linear;
   }
 `;
 
@@ -152,6 +196,24 @@ export const SponsorList: React.SFC<SponsorListProps> = props => (
             >
               <BecomeASponsorLink href="#">
                 <span>Become a sponsor</span>
+
+                <div className="love">
+                  {Array(20)
+                    .fill("💙")
+                    .map((value, index) => (
+                      <span
+                        key={index}
+                        style={{
+                          ["--x" as any]:
+                            Math.cos(index) + (Math.random() - 0.5),
+                          ["--y" as any]:
+                            Math.sin(index) + (Math.random() - 0.5),
+                        }}
+                      >
+                        {value}
+                      </span>
+                    ))}
+                </div>
               </BecomeASponsorLink>
             </Column>
           </Row>
