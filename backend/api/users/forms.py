@@ -1,8 +1,7 @@
+from api.forms import ContextAwareModelForm
 from django.contrib.auth import authenticate, login
 from django.forms import BooleanField, CharField, EmailField, ValidationError
 from django.utils.translation import ugettext_lazy as _
-
-from api.forms import ContextAwareModelForm
 from strawberry_forms.forms import FormWithContext
 from users.models import User
 
@@ -94,3 +93,20 @@ class UpdateUserForm(ContextAwareModelForm):
             "pec_address",
             "address",
         )
+
+
+class UpdateImageForm(FormWithContext):
+    url = CharField()
+
+    def clean(self):
+        cleaned_data = super().clean()
+        return cleaned_data
+
+    def save(self):
+
+        user = self.context.user
+
+        user.image = self.cleaned_data.get("url")
+        user.save()
+
+        return user

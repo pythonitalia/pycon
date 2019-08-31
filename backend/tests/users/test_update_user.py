@@ -99,6 +99,32 @@ def _update_user(graphql_client, user, **kwargs):
     return (graphql_client.query(query=query, variables=variables), variables)
 
 
+def _update_image(graphql_client, user, image):
+
+    variables = {"user": user.id, "url": image}
+
+    query = """
+        mutation(
+            $url: String!
+        ){
+            updateImage(input: {url: $url}) {
+                __typename
+                ... on UpdateImageErrors {
+                    validationUrl: url
+                    nonFieldErrors
+                }
+                ... on MeUserType {
+                    id
+                    image {
+                        url
+                    }
+                }
+            }
+        }
+    """
+    return (graphql_client.query(query=query, variables=variables), variables)
+
+
 @mark.django_db
 def test_update(graphql_client, user_factory):
     user = user_factory(
@@ -147,3 +173,14 @@ def test_update_not_authenticated_user_error(graphql_client):
     assert resp["data"]["update"]["nonFieldErrors"] == [
         "Must authenticate to update User information"
     ]
+
+
+@mark.django_db
+def test_update_image(graphql_client, user_factory):
+    user, _ = User.objects.get_or_create(email="user@example.it", password="password")
+    graphql_client.force_login(user)
+    image = user_factory.image.generate()
+    resp, variables = _update_image(graphql_client, user, image)
+
+    assert resp["data"]["updateImage"]["__typename"] == "MeUserType"
+    assert resp["data"]["updateImage"]["image"]["url"] == variables["url"]
