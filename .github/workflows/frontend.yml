@@ -36,7 +36,11 @@ jobs:
     - run: |
         cd backend/
         python manage.py migrate
-        python manage.py loaddata demodata/conferences.json demodata/pages.json
+        python manage.py loaddata \
+            demodata/conferences.json \
+            demodata/pages.json \
+            demodata/sponsors.json
+        cp -r demodata/media media
         python manage.py runserver &
 
         cd ../frontend/
