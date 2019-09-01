@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     "events.apps.EventsConfig",
     "i18n",
     "importer",
-    "upload",
+    "upload.apps.UploadConfig",
 ]
 
 MIDDLEWARE = [
