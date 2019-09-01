@@ -97,7 +97,7 @@ ENV/
 .vscode/
 
 # Ignore pycharm configuration
-.idea/*
+.idea/
 
 backend/media/
 
