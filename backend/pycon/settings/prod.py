@@ -17,7 +17,8 @@ DEFAULT_FILE_STORAGE = env(
 )
 AWS_STORAGE_BUCKET_NAME = env("AWS_MEDIA_BUCKET")
 AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
-
+AWS_DEFAULT_ACL = "public-read"
+AWS_QUERYSTRING_AUTH = False
 
 SENTRY_DSN = env("SENTRY_DSN", default="")
 
