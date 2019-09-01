@@ -1,3 +1,6 @@
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
 from .base import *  # noqa
 from .base import env
 
@@ -9,6 +12,14 @@ USE_SCHEDULER = False
 #     raise ImproperlyConfigured("Please configure FRONTEND_URL for production")
 
 
-DEFAULT_FILE_STORAGE = env("DEFAULT_FILE_STORAGE", default="storages.backends.s3boto3.S3Boto3Storage")
+DEFAULT_FILE_STORAGE = env(
+    "DEFAULT_FILE_STORAGE", default="storages.backends.s3boto3.S3Boto3Storage"
+)
 AWS_STORAGE_BUCKET_NAME = env("AWS_MEDIA_BUCKET")
 AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
+
+
+SENTRY_DSN = env("SENTRY_DSN", default="")
+
+if SENTRY_DSN:
+    sentry_sdk.init(dsn=SENTRY_DSN, integrations=[DjangoIntegration()])

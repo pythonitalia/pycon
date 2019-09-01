@@ -50,6 +50,7 @@ jobs:
         TF_VAR_database_password: ${{ secrets.TF_VAR_database_password }}
         TF_VAR_secret_key: ${{ secrets.TF_VAR_secret_key }}
         TF_VAR_mapbox_public_api_key: ${{ secrets.TF_VAR_mapbox_public_api_key }}
+        TF_VAR_sentry_dsn: ${{ secrets.TF_VAR_sentry_dsn }}
         TF_VAR_ssl_certificate: ${{ secrets.TF_VAR_ssl_certificate }}
         TF_ACTION_WORKING_DIR: ./infrastructure
         TF_ACTION_WORKSPACE: production
