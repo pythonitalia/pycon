@@ -12,15 +12,17 @@ class Conference(TimeFramedModel, TimeStampedModel):
     code = models.CharField(_("code"), max_length=10, unique=True)
     timezone = TimeZoneField()
 
-    topics = models.ManyToManyField("conferences.Topic", verbose_name=_("topics"))
+    topics = models.ManyToManyField(
+        "conferences.Topic", verbose_name=_("topics"), blank=True
+    )
     languages = models.ManyToManyField(
-        "languages.Language", verbose_name=_("languages")
+        "languages.Language", verbose_name=_("languages"), blank=True
     )
     audience_levels = models.ManyToManyField(
-        "conferences.AudienceLevel", verbose_name=_("audience levels")
+        "conferences.AudienceLevel", verbose_name=_("audience levels"), blank=True
     )
     submission_types = models.ManyToManyField(
-        "submissions.SubmissionType", verbose_name=_("submission types")
+        "submissions.SubmissionType", verbose_name=_("submission types"), blank=True
     )
 
     latitude = models.DecimalField(
