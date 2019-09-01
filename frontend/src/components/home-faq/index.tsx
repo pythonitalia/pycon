@@ -1,11 +1,11 @@
-import React from "react";
-
 import { Heading, Text } from "fannypack";
 import { Column, Row } from "grigliata";
+import React from "react";
 import styled from "styled-components";
+
 import { STANDARD_ROW_PADDING } from "../../config/spacing";
-import { SectionTitle } from "../section-title";
 import { MaxWidthWrapper } from "../max-width-wrapper";
+import { SectionTitle } from "../section-title";
 
 const Wrapper = styled.div`
   margin-top: 2rem;

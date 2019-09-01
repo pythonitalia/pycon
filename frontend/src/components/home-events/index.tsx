@@ -1,11 +1,11 @@
-import React, { useEffect } from "react";
-
 import { Column, Row } from "grigliata";
+import React, { useEffect } from "react";
 import styled from "styled-components";
+
 import { STANDARD_ROW_PADDING } from "../../config/spacing";
 import { theme } from "../../config/theme";
-import { SectionTitle } from "../section-title";
 import { MaxWidthWrapper } from "../max-width-wrapper";
+import { SectionTitle } from "../section-title";
 
 const Wrapper = styled.div`
     @media (min-width: 1024px) {

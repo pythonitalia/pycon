@@ -1,7 +1,7 @@
-import React from "react";
-
 import { ThemeProvider } from "fannypack";
+import React from "react";
 import styled from "styled-components";
+
 import { Footer } from "../components/footer";
 import { Topbar } from "../components/topbar";
 import { theme } from "../config/theme";

@@ -1,7 +1,7 @@
-import React from "react";
-
 import { Column, Row } from "grigliata";
+import React from "react";
 import styled from "styled-components";
+
 import { STANDARD_ROW_PADDING } from "../../config/spacing";
 import { theme } from "../../config/theme";
 

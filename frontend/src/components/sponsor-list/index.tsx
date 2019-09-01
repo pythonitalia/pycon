@@ -1,13 +1,13 @@
-import React from "react";
-
 import { Heading } from "fannypack";
 import Img, { GatsbyImageProps } from "gatsby-image";
 import { Column, Row } from "grigliata";
 import { ColumnWidthValuesType } from "grigliata/dist/typings/column";
+import React from "react";
 import styled, { keyframes } from "styled-components";
+
 import { STANDARD_ROW_PADDING } from "../../config/spacing";
-import { SectionTitle } from "../section-title";
 import { MaxWidthWrapper } from "../max-width-wrapper";
+import { SectionTitle } from "../section-title";
 
 const SponsorLink = styled.a`
   display: block;

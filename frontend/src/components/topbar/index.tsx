@@ -1,8 +1,8 @@
-import React from "react";
-
 import { Link } from "fannypack";
 import { Column, Row } from "grigliata";
+import React from "react";
 import styled, { css } from "styled-components";
+
 import { STANDARD_ROW_PADDING } from "../../config/spacing";
 import { theme } from "../../config/theme";
 import { useToggle } from "../../helpers/use-toggle";

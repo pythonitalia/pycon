@@ -1,6 +1,6 @@
+import { graphql, useStaticQuery } from "gatsby";
 import * as React from "react";
 
-import { graphql, useStaticQuery } from "gatsby";
 import { Hero } from "../components/hero";
 import { Events } from "../components/home-events";
 import { Faq } from "../components/home-faq";

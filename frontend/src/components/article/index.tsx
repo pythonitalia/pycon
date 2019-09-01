@@ -1,8 +1,8 @@
-import React from "react";
-
 import { GatsbyImageProps } from "gatsby-image";
 import { Row } from "grigliata";
+import React from "react";
 import styled from "styled-components";
+
 import { Hero } from "../hero";
 import { ArticleTitle } from "./title";
 

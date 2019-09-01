@@ -1,15 +1,15 @@
-import React from "react";
-
 import { Heading, Input, Text } from "fannypack";
 import { graphql, Link, useStaticQuery } from "gatsby";
 import { Column, Row } from "grigliata";
+import React from "react";
+
 import { STANDARD_ROW_PADDING } from "../../config/spacing";
 import { FooterQuery } from "../../generated/graphql";
 import { Button } from "../button";
+import { MaxWidthWrapper } from "../max-width-wrapper";
 import { LinksWrapper } from "./links-wrapper";
 import { MapWrapper } from "./map-wrapper";
 import { Wrapper } from "./wrapper";
-import { MaxWidthWrapper } from "../max-width-wrapper";
 
 export const Footer = () => {
   const MARGIN_TOP_ROW = {
