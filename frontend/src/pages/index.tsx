@@ -33,6 +33,7 @@ export default () => {
       backend {
         conference {
           name
+          introduction
           sponsorsByLevel {
             level
             sponsors {
@@ -64,11 +65,7 @@ export default () => {
         title={conference.name}
         backgroundImage={heroImage!.childImageSharp!}
       >
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias et
-          omnis hic veniam nisi architecto reprehenderit voluptate magnam sed
-          commodi vel quidem ea, blanditiis quos harum non ipsam, soluta saepe.
-        </p>
+        <p>{conference.introduction}</p>
       </Hero>
 
       <TwoColumnsText />
