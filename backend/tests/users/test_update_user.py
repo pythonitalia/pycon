@@ -1,7 +1,12 @@
 import datetime
+import json
+import os
 
-from pytest import mark
+import pytest
+from PIL import Image
 
+from django.test import RequestFactory, override_settings
+from upload.views import file_upload
 from users.models import User
 
 
@@ -125,7 +130,27 @@ def _update_image(graphql_client, user, image):
     return (graphql_client.query(query=query, variables=variables), variables)
 
 
-@mark.django_db
+def _upload_image(path):
+    post_data = {"file": open(path, "rb")}
+    request = RequestFactory().post("upload/", data=post_data)
+    resp = file_upload(request)
+    return json.loads(resp.content)["url"]
+
+
+@pytest.fixture()
+def create_sample_image():
+
+    img = Image.new("RGB", (60, 30), color="red")
+    path = "sample.png"
+    img.save(path)
+
+    yield (img, _upload_image(path))
+
+    if os.path.exists(path):
+        return os.remove(path)
+
+
+@pytest.mark.django_db
 def test_update(graphql_client, user_factory):
     user = user_factory(
         first_name="John",
@@ -164,7 +189,7 @@ def test_update(graphql_client, user_factory):
     assert resp["data"]["update"]["pecAddress"] == variables["pec_address"]
 
 
-@mark.django_db
+@pytest.mark.django_db
 def test_update_not_authenticated_user_error(graphql_client):
     user, _ = User.objects.get_or_create(email="user@example.it", password="password")
     resp, variables = _update_user(graphql_client, user)
@@ -175,12 +200,31 @@ def test_update_not_authenticated_user_error(graphql_client):
     ]
 
 
-@mark.django_db
-def test_update_image(graphql_client, user_factory):
+@pytest.mark.django_db
+@override_settings(MEDIA_ROOT="/tmp/django_test")
+def test_update_image(graphql_client, create_sample_image):
+    img, path = create_sample_image
+
     user, _ = User.objects.get_or_create(email="user@example.it", password="password")
     graphql_client.force_login(user)
-    image = user_factory.image.generate()
-    resp, variables = _update_image(graphql_client, user, image)
+
+    resp, variables = _update_image(graphql_client, user, path)
 
     assert resp["data"]["updateImage"]["__typename"] == "MeUserType"
-    assert resp["data"]["updateImage"]["image"]["url"] == variables["url"]
+    assert (
+        os.path.basename(variables["url"])
+        in resp["data"]["updateImage"]["image"]["url"]
+    )
+
+
+@pytest.mark.django_db
+def test_update_image_file_not_fount(graphql_client):
+    user, _ = User.objects.get_or_create(email="user@example.it", password="password")
+    graphql_client.force_login(user)
+
+    resp, variables = _update_image(graphql_client, user, "boh/file_not_found.jpg")
+
+    assert resp["data"]["updateImage"]["__typename"] == "UpdateImageErrors"
+    assert resp["data"]["updateImage"]["validationUrl"] == [
+        "File 'file_not_found.jpg' not found"
+    ]

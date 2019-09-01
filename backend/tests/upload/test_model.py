@@ -15,7 +15,7 @@ def upload_file():
     f = open(path, "w")
     f.write("Hello World")
     f.close()
-    f = open(path, "r")
+    f = open(path, "rb")
 
     post_data = {"file": f}
     request = RequestFactory().post("upload/", data=post_data)

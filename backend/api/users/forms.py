@@ -1,5 +1,9 @@
+import os
+
 from api.forms import ContextAwareModelForm
 from django.contrib.auth import authenticate, login
+from django.core import exceptions
+from django.core.files import File
 from django.forms import BooleanField, CharField, EmailField, ValidationError
 from django.utils.translation import ugettext_lazy as _
 from strawberry_forms.forms import FormWithContext
@@ -100,13 +104,15 @@ class UpdateImageForm(FormWithContext):
 
     def clean(self):
         cleaned_data = super().clean()
+        url = self.cleaned_data.get("url")
+        if not os.path.exists(url):
+            name = os.path.basename(url)
+            raise exceptions.ValidationError({"url": _(f"File '{name}' not found")})
+
         return cleaned_data
 
     def save(self):
-
         user = self.context.user
-
-        user.image = self.cleaned_data.get("url")
-        user.save()
-
+        url = self.cleaned_data.get("url")
+        user.image.save(os.path.basename(url), File(open(url, "rb")))
         return user
