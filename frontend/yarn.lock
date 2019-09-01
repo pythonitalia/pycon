@@ -13603,14 +13603,15 @@ react-remarkable@1.1.3:
   dependencies:
     remarkable "^1.x"
 
-react-responsive@^7.0.0:
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/react-responsive/-/react-responsive-7.0.0.tgz#0abde0ccbb50e5e8407e3d61dd4696447e7ebd3c"
-  integrity sha512-RukaKD+UI/MIR+P8eUgVGURfiCafRvvcVnq41scT0eEQWHwDGliH/OAlrwIr1oyz8aKLGroZa+U8mTZV5ihPfA==
+react-responsive@^8.0.0:
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/react-responsive/-/react-responsive-8.0.0.tgz#d54bccc52b450c75dcd946eaa365ea9f279ffbb9"
+  integrity sha512-l8FRTEoifVnhoFsnaWeyCHQ8O088ug9IIihUupG/8Ah3x1OITLourRDAisvKF5P+5ST4HRC08bSBYQkNfknAYA==
   dependencies:
     hyphenate-style-name "^1.0.0"
     matchmediaquery "^0.3.0"
     prop-types "^15.6.1"
+    shallow-equal "^1.1.0"
 
 react-side-effect@^1.1.0:
   version "1.1.5"
@@ -14751,6 +14752,11 @@ shallow-compare@^1.2.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/shallow-compare/-/shallow-compare-1.2.2.tgz#fa4794627bf455a47c4f56881d8a6132d581ffdb"
   integrity sha512-LUMFi+RppPlrHzbqmFnINTrazo0lPNwhcgzuAXVVcfy/mqPDrQmHAyz5bvV0gDAuRFrk804V0HpQ6u9sZ0tBeg==
+
+shallow-equal@^1.1.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/shallow-equal/-/shallow-equal-1.2.0.tgz#fd828d2029ff4e19569db7e19e535e94e2d1f5cc"
+  integrity sha512-Z21pVxR4cXsfwpMKMhCEIO1PCi5sp7KEp+CmOpBQ+E8GpHwKOw2sEzk7sgblM3d/j4z4gakoWEoPcjK0VJQogA==
 
 shallowequal@^1.0.1, shallowequal@^1.1.0:
   version "1.1.0"
