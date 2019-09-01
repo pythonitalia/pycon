@@ -4,9 +4,11 @@ RUN set -ex && mkdir /app
 
 WORKDIR /app
 
-COPY requirements.txt /app/
-COPY requirements/ /app/requirements/
-RUN pip3 install --no-cache-dir -r requirements.txt
+RUN pip3 install poetry
+COPY poetry.lock /app/
+COPY pyproject.toml /app/
+RUN poetry config settings.virtualenvs.create false
+RUN poetry install --no-dev
 
 COPY . /app/
 
