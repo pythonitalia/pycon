@@ -1,0 +1,50 @@
+[tool.poetry]
+name = "backend"
+version = "0.1.0"
+description = "PyCon Italia backend"
+authors = ["Your Name <you@example.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+Django = "=2.2.4"
+django-environ = "=0.4.4"
+social-auth-app-django = "=2.1.0"
+django-model-utils = "=3.2.0"
+pytz = "=2019.2"
+django-timezone-field = "=3.0"
+stripe = "=2.35.1"
+django-fsm = "=2.6.1"
+psycopg2-binary = "=2.8.3"
+amqp = "=2.5.1"
+billiard = "=3.6.1.0"
+celery = "=4.3.0"
+kombu = "=4.6.4"
+redis = "=3.3.8"
+vine = "=1.3.0"
+certifi = "=2019.6.16"
+chardet = "=3.0.4"
+idna = "=2.8"
+requests = "=2.22.0"
+urllib3 = "=1.25.3"
+strawberry-graphql = "=0.14.2"
+aniso8601 = "=7.0.0"
+Pillow = "=6.1.0"
+whitenoise = "=4.1.3"
+django-ordered-model = "=3.3.0"
+uWSGI = "=2.0.18"
+django-storages = "=1.7.1"
+
+[tool.poetry.dev-dependencies]
+pylint = "=2.3.1"
+pylint-django = "=2.0.11"
+pytest = "=5.1.1"
+pytest-cov = "=2.7.1"
+pytest-django = "=3.5.1"
+pytest-pylint = "=0.14.1"
+pytest-factoryboy = "=2.0.3"
+factory-boy = "=2.12.0"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"

@@ -15,9 +15,10 @@ jobs:
       - uses: actions/setup-python@v1
         with:
           python-version: '3.7.4'
+      - run: pip install poetry
       - name: Install dependencies
         working-directory: backend
-        run: pip install -r requirements/test.txt
+        run: poetry install
       - name: Install codecov
         working-directory: backend
         run: pip install codecov
@@ -26,7 +27,7 @@ jobs:
         working-directory: backend
         run: |
             set +e
-            OUTPUT=$(py.test --cov-report xml --cov=. --cov-fail-under 100)
+            OUTPUT=$(poetry run py.test --cov-report xml --cov=. --cov-fail-under 100)
             STATUS=$?
             echo "$OUTPUT"
             codecov
@@ -43,12 +44,13 @@ jobs:
       - uses: actions/setup-python@v1
         with:
           python-version: '3.7.4'
+      - run: pip install poetry
       - name: Install dependencies
         working-directory: backend
-        run: pip install -r requirements/test.txt
+        run: poetry install
 
       - name: pytest
         working-directory: backend
-        run: py.test integration_tests/
+        run: poetry run py.test integration_tests/
         env:
           STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
