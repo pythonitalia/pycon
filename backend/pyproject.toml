@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "backend"
-version = "0.1.0"
+version = "0.1.1"
 description = "PyCon Italia backend"
 authors = ["Your Name <you@example.com>"]
 license = "MIT"
@@ -36,6 +36,8 @@ uWSGI = "=2.0.18"
 django-storages = "=1.7.2"
 sentry-sdk = "^0.11.2"
 boto3 = "^1.9"
+numpy = "^1.16.4"
+pandas = "^0.25.1"
 
 [tool.poetry.dev-dependencies]
 pylint = "=2.3.1"
