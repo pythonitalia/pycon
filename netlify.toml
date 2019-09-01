@@ -1,2 +1,21 @@
 [build]
     base    = "frontend"
+
+
+[[redirects]]
+    from = "/admin/*"
+    to = "https://d1111jewijk23m.cloudfront.net/admin/:splat"
+    status = 200
+    force = true
+
+[[redirects]]
+    from = "/static/*"
+    to = "https://d1111jewijk23m.cloudfront.net/static/:splat"
+    status = 200
+    force = true
+
+[[redirects]]
+    from = "/media/*"
+    to = "https://d1111jewijk23m.cloudfront.net/media/:splat"
+    status = 200
+    force = true
