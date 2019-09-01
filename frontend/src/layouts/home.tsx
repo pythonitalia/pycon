@@ -14,7 +14,7 @@ export const HomeLayout = (props: { children: React.ReactNode }) => (
   <ThemeProvider theme={theme}>
     <Wrapper>
       <Topbar />
-      <div>{props.children}</div>
+      {props.children}
       <Footer />
     </Wrapper>
   </ThemeProvider>

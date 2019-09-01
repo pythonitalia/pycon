@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { STANDARD_ROW_PADDING } from "../../config/spacing";
 import { theme } from "../../config/theme";
 import { SectionTitle } from "../section-title";
+import { MaxWidthWrapper } from "../max-width-wrapper";
 
 const Wrapper = styled.div`
     @media (min-width: 1024px) {
@@ -126,30 +127,32 @@ export const Events = () => {
         </Column>
       </Row>
 
-      <Row
-        marginTop={{
-          desktop: -4,
-          tabletLandscape: -3,
-          tabletPortrait: 0,
-          mobile: 0,
-        }}
-        paddingLeft={STANDARD_ROW_PADDING}
-        paddingRight={STANDARD_ROW_PADDING}
-      >
-        <Column
-          columnWidth={{
-            mobile: 12,
-            tabletPortrait: 6,
-            tabletLandscape: 6,
-            desktop: 6,
+      <MaxWidthWrapper>
+        <Row
+          marginTop={{
+            desktop: -4,
+            tabletLandscape: -3,
+            tabletPortrait: 0,
+            mobile: 0,
           }}
+          paddingLeft={STANDARD_ROW_PADDING}
+          paddingRight={STANDARD_ROW_PADDING}
         >
-          <p>
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit maxime
-            reiciendis a consectetur nisi temporibus!
-          </p>
-        </Column>
-      </Row>
+          <Column
+            columnWidth={{
+              mobile: 12,
+              tabletPortrait: 6,
+              tabletLandscape: 6,
+              desktop: 6,
+            }}
+          >
+            <p>
+              Lorem ipsum, dolor sit amet consectetur adipisicing elit maxime
+              reiciendis a consectetur nisi temporibus!
+            </p>
+          </Column>
+        </Row>
+      </MaxWidthWrapper>
 
       <Row
         marginTop={{

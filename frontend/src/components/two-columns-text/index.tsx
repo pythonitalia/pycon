@@ -4,6 +4,7 @@ import { Heading, Text } from "fannypack";
 import { Column, Row } from "grigliata";
 import styled from "styled-components";
 import { STANDARD_ROW_PADDING } from "../../config/spacing";
+import { MaxWidthWrapper } from "../max-width-wrapper";
 
 const Base = styled.div`
   position: relative;
@@ -84,40 +85,43 @@ export const TwoColumnsText = (props: Props) => (
         <img src="https://placebear.com/600/400" alt="" />
       </div>
     </div>
-    <div className="columns_wrapper">
-      <Row
-        paddingLeft={STANDARD_ROW_PADDING}
-        paddingRight={STANDARD_ROW_PADDING}
-      >
-        <Column
-          columnWidth={{
-            mobile: 12,
-            tabletPortrait: 6,
-            tabletLandscape: 5,
-            desktop: 5,
-          }}
+
+    <MaxWidthWrapper>
+      <div className="columns_wrapper">
+        <Row
+          paddingLeft={STANDARD_ROW_PADDING}
+          paddingRight={STANDARD_ROW_PADDING}
         >
-          <Heading use="h2">{props.left.title}</Heading>
-          <Text>{props.left.text}</Text>
-        </Column>
-        <Column
-          columnWidth={{
-            mobile: 12,
-            tabletPortrait: 6,
-            tabletLandscape: 5,
-            desktop: 5,
-          }}
-          marginTop={{
-            mobile: 2,
-            tabletPortrait: 0,
-            tabletLandscape: 0,
-            desktop: 0,
-          }}
-        >
-          <Heading use="h2">{props.right.title}</Heading>
-          <Text>{props.right.text}</Text>
-        </Column>
-      </Row>
-    </div>
+          <Column
+            columnWidth={{
+              mobile: 12,
+              tabletPortrait: 6,
+              tabletLandscape: 5,
+              desktop: 5,
+            }}
+          >
+            <Heading use="h2">{props.left.title}</Heading>
+            <Text>{props.left.text}</Text>
+          </Column>
+          <Column
+            columnWidth={{
+              mobile: 12,
+              tabletPortrait: 6,
+              tabletLandscape: 5,
+              desktop: 5,
+            }}
+            marginTop={{
+              mobile: 2,
+              tabletPortrait: 0,
+              tabletLandscape: 0,
+              desktop: 0,
+            }}
+          >
+            <Heading use="h2">{props.right.title}</Heading>
+            <Text>{props.right.text}</Text>
+          </Column>
+        </Row>
+      </div>
+    </MaxWidthWrapper>
   </Base>
 );

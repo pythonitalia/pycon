@@ -4,6 +4,7 @@ import { graphql, useStaticQuery } from "gatsby";
 import { Hero } from "../components/hero";
 import { Events } from "../components/home-events";
 import { Faq } from "../components/home-faq";
+import { MaxWidthWrapper } from "../components/max-width-wrapper";
 import { SponsorList } from "../components/sponsor-list";
 import { TwoColumnsText } from "../components/two-columns-text";
 import { HomePageQuery } from "../generated/graphql";
@@ -67,12 +68,14 @@ export default () => {
 
   return (
     <HomeLayout>
-      <Hero
-        title={conference.name}
-        backgroundImage={heroImage!.childImageSharp!}
-      >
-        <p>{conference.introduction}</p>
-      </Hero>
+      <MaxWidthWrapper>
+        <Hero
+          title={conference.name}
+          backgroundImage={heroImage!.childImageSharp!}
+        >
+          <p>{conference.introduction}</p>
+        </Hero>
+      </MaxWidthWrapper>
 
       <TwoColumnsText
         left={{
