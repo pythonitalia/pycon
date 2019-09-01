@@ -51,6 +51,7 @@ jobs:
       env:
         SECRET_KEY: demo
         AWS_MEDIA_BUCKET: demo
+        DEFAULT_FILE_STORAGE: 'django.core.files.storage.FileSystemStorage'
         DEBUG: True
     - run: yarn tsc
       working-directory: frontend
