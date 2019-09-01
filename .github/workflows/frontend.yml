@@ -28,20 +28,21 @@ jobs:
     - uses: actions/setup-python@v1
       with:
         python-version: '3.7.4'
+    - run: pip install poetry
     - name: Install dependencies
       working-directory: backend
-      run: pip install -r requirements/prod.txt
+      run: poetry install --no-dev
     - run: yarn
       working-directory: frontend
     - run: |
         cd backend/
-        python manage.py migrate
-        python manage.py loaddata \
+        poetry run python manage.py migrate
+        poetry run python manage.py loaddata \
             demodata/conferences.json \
             demodata/pages.json \
             demodata/sponsors.json
         cp -r demodata/media media
-        python manage.py runserver &
+        poetry run python manage.py runserver &
 
         cd ../frontend/
         yarn build
@@ -49,6 +50,8 @@ jobs:
         yarn codegen
       env:
         SECRET_KEY: demo
+        AWS_MEDIA_BUCKET: demo
+        DEFAULT_FILE_STORAGE: 'django.core.files.storage.FileSystemStorage'
         DEBUG: True
     - run: yarn tsc
       working-directory: frontend

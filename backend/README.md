@@ -4,12 +4,12 @@
 
 ## Install
 
-`pip install -r requirements.txt`
+`poetry install`
 
 ## Start the project
 
-`python manage.py runserver`
+`poetry run python manage.py runserver`
 
 ## Test
 
-`pytest --cov=. --cov-fail-under 100`
+`poetry run pytest --cov=. --cov-fail-under 100`
