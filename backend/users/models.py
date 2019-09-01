@@ -48,7 +48,6 @@ EU_COUNTRIES = (
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-
     image = models.ImageField(_("image"), upload_to="user_image", null=True, blank=True)
     username = models.CharField(_("username"), max_length=100, null=True, blank=True)
     email = models.EmailField(_("email address"), unique=True)
@@ -75,7 +74,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     address = models.TextField(_("address"), blank=True)
     country = models.CharField(
-        choices=COUNTRIES, max_length=50, verbose_name=_("country"), null=True
+        choices=COUNTRIES, max_length=50, verbose_name=_("country"), blank=True
     )
 
     date_joined = models.DateTimeField(_("date joined"), auto_now_add=True)
