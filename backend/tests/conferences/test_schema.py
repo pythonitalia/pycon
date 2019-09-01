@@ -14,6 +14,7 @@ def test_get_conference_info(conference, ticket_fare_factory, graphql_client):
                 id
                 code
                 name
+                introduction
                 ticketFares {
                     id
                     name
@@ -29,6 +30,7 @@ def test_get_conference_info(conference, ticket_fare_factory, graphql_client):
         "id": str(conference.id),
         "code": conference.code,
         "name": conference.name,
+        "introduction": conference.introduction,
         "ticketFares": [{"id": str(ticket.id), "name": ticket.name}],
     } == resp["data"]["conference"]
 

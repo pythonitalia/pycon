@@ -20,6 +20,7 @@ from submissions.models import SubmissionType
 class ConferenceFactory(DjangoModelFactory):
     name = factory.Faker("name")
     code = factory.Faker("text", max_nb_chars=10)
+    introduction = factory.Faker("sentence")
 
     start = factory.Faker("past_datetime", tzinfo=pytz.UTC)
     end = factory.Faker("future_datetime", tzinfo=pytz.UTC)

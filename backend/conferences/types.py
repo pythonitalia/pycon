@@ -57,6 +57,7 @@ class Conference:
     code: str
     start: DateTime
     end: DateTime
+    introduction: str
 
     @strawberry.field
     def timezone(self, info) -> str:
