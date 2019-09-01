@@ -13,7 +13,7 @@
       "start": null,
       "end": null,
       "name": "PyCon Demo",
-      "code": "pycon10",
+      "code": "pycon-demo",
       "timezone": "Europe/Rome",
       "introduction": "This is a demo conference, sorry it is not happening!",
       "latitude": 43.766140,

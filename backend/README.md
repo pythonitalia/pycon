@@ -1,15 +1,62 @@
-# PyCon Backend
+# PyCon Italia backend
 
-[![Updates](https://pyup.io/repos/github/patrick91/pycon/shield.svg?token=1fa644e7-367a-431d-b906-0cfa23ddda9c)](https://pyup.io/repos/github/patrick91/pycon/) [![Python 3](https://pyup.io/repos/github/patrick91/pycon/python-3-shield.svg?token=1fa644e7-367a-431d-b906-0cfa23ddda9c)](https://pyup.io/repos/github/patrick91/pycon/) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/7472f142f7624ba4b7b735f90ad518f6)](https://www.codacy.com/app/simobasso/pycon?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=patrick91/pycon&amp;utm_campaign=Badge_Grade)
+The backend is using Django and Strawberry to provide a GraphQL API. The
+requirements are handled by [poetry](https://poetry.eustace.io). It will handle
+the creation of the virtual environment for you.
 
-## Install
+### Install and run backend
 
-`poetry install`
+To install the backend make you sure you have poetry installed, then run the
+following command in the backend directory:
 
-## Start the project
+    poetry install
 
-`poetry run python manage.py runserver`
+This will create the virtual environment and install all the dependencies
+(including dev ones).
 
-## Test
+To make sure everything went fine you can run the tests:
 
-`poetry run pytest --cov=. --cov-fail-under 100`
+    poetry run pytest tests/
+
+`poetry run` will run the command inside the virtual environment, without you
+having to manually activate it.
+
+To run the backend you can use the demodata we are providing, but first let's
+run the migration so our db is created:
+
+    poetry run python manage.py migrate
+
+After that we can load the data:
+
+    poetry run python manage.py loaddata demodata/*.json
+
+This will add some dummy data that will allow you test the API and admin.
+
+One last step before running the server, let's create a superuser so we can
+access the admin:
+
+    poetry run python manage.py createsuperuser
+
+And follow the steps. Once that's done we can run the dev server by running:
+
+    poetry run python manage.py runserver
+
+To check if the API is up an running go to:
+
+http://localhost:8000/graphql
+
+and submitting the following query:
+
+```gql
+{
+    conference(code: "pycon-demo") {
+        name
+    }
+}
+```
+
+And for the admin go to:
+
+http://localhost:8000/admin
+
+You should be able to login with the user we create a few moments ago.
