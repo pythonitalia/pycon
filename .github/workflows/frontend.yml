@@ -52,6 +52,7 @@ jobs:
         AWS_MEDIA_BUCKET: demo
         DEFAULT_FILE_STORAGE: 'django.core.files.storage.FileSystemStorage'
         DEBUG: True
+        CONFERENCE_CODE: "pycon-demo"
     - run: yarn tsc
       working-directory: frontend
     - uses: netlify/actions/cli@master

@@ -14,6 +14,9 @@ following command in the backend directory:
 This will create the virtual environment and install all the dependencies
 (including dev ones).
 
+Create a `.env` file by copying the `.env.sample`, this will setup basic
+environment variables for debugging.
+
 To make sure everything went fine you can run the tests:
 
     poetry run pytest tests/
