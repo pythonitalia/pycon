@@ -41,6 +41,8 @@ jobs:
         poetry run python manage.py loaddata \
             demodata/conferences.json \
             demodata/pages.json \
+            demodata/users.json \
+            demodata/blog.json \
             demodata/sponsors.json
         cp -r demodata/media media
         poetry run python manage.py runserver &
