@@ -34,6 +34,12 @@ export default () => {
         conference {
           name
           introduction
+
+          introTitle: copy(key: "intro-title-1")
+          introText: copy(key: "intro-text-1")
+          introTitle2: copy(key: "intro-title-2")
+          introText2: copy(key: "intro-text-2")
+
           sponsorsByLevel {
             level
             sponsors {
@@ -68,7 +74,16 @@ export default () => {
         <p>{conference.introduction}</p>
       </Hero>
 
-      <TwoColumnsText />
+      <TwoColumnsText
+        left={{
+          title: conference.introTitle!,
+          text: conference.introText!,
+        }}
+        right={{
+          title: conference.introTitle2!,
+          text: conference.introText2!,
+        }}
+      />
 
       <section>
         <SponsorList sponsors={conference.sponsorsByLevel!} />
