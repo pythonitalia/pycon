@@ -66,7 +66,17 @@ const Base = styled.div`
   }
 `;
 
-export const TwoColumnsText = () => (
+type TextColumn = {
+  title: string;
+  text: string;
+};
+
+type Props = {
+  left: TextColumn;
+  right: TextColumn;
+};
+
+export const TwoColumnsText = (props: Props) => (
   <Base>
     <div className="background_image">
       <div className="background_image__container">
@@ -87,13 +97,8 @@ export const TwoColumnsText = () => (
             desktop: 5,
           }}
         >
-          <Heading use="h2">Why Pycon?</Heading>
-          <Text>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sequi
-            excepturi nostrum harum minima esse corrupti possimus voluptatum
-            amet atque illum, maiores tempore? At in, dolorem recusandae nihil
-            inventore quasi reiciendis?
-          </Text>
+          <Heading use="h2">{props.left.title}</Heading>
+          <Text>{props.left.text}</Text>
         </Column>
         <Column
           columnWidth={{
@@ -109,13 +114,8 @@ export const TwoColumnsText = () => (
             desktop: 0,
           }}
         >
-          <Heading use="h2">Why Pycon?</Heading>
-          <Text>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sequi
-            excepturi nostrum harum minima esse corrupti possimus voluptatum
-            amet atque illum, maiores tempore? At in, dolorem recusandae nihil
-            inventore quasi reiciendis?
-          </Text>
+          <Heading use="h2">{props.right.title}</Heading>
+          <Text>{props.right.text}</Text>
         </Column>
       </Row>
     </div>

@@ -6,6 +6,7 @@ from typing import List, Optional
 import pytz
 import strawberry
 from api.scalars import Date, DateTime
+from cms.models import GenericCopy
 from languages.types import Language
 from schedule.types import Room, ScheduleItem
 from sponsors.types import SponsorsByLevel
@@ -57,6 +58,7 @@ class Conference:
     code: str
     start: DateTime
     end: DateTime
+    introduction: str
 
     @strawberry.field
     def timezone(self, info) -> str:
@@ -129,6 +131,12 @@ class Conference:
         by_level = groupby(sponsors, key=lambda sponsor: sponsor.level.name)
 
         return [SponsorsByLevel(level, list(sponsors)) for level, sponsors in by_level]
+
+    @strawberry.field
+    def copy(self, info, key: str) -> Optional[str]:
+        copy = GenericCopy.objects.filter(conference=self, key=key).first()
+
+        return copy.content if copy else None
 
 
 @strawberry.type

@@ -1,0 +1,46 @@
+[
+  {
+    "model": "cms.genericcopy",
+    "pk": 1,
+    "fields": {
+      "created": "2019-09-01T21:34:34.056Z",
+      "modified": "2019-09-01T21:58:29.713Z",
+      "key": "intro-title-1",
+      "content": "Why PyCon?",
+      "conference": 1
+    }
+  },
+  {
+    "model": "cms.genericcopy",
+    "pk": 2,
+    "fields": {
+      "created": "2019-09-01T21:58:36.876Z",
+      "modified": "2019-09-01T21:59:21.936Z",
+      "key": "intro-title-2",
+      "content": "Why Not!",
+      "conference": 1
+    }
+  },
+  {
+    "model": "cms.genericcopy",
+    "pk": 3,
+    "fields": {
+      "created": "2019-09-01T21:58:45.487Z",
+      "modified": "2019-09-01T21:58:52.695Z",
+      "key": "intro-text-1",
+      "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "conference": 1
+    }
+  },
+  {
+    "model": "cms.genericcopy",
+    "pk": 4,
+    "fields": {
+      "created": "2019-09-01T21:58:57.258Z",
+      "modified": "2019-09-01T21:58:57.258Z",
+      "key": "intro-text-2",
+      "content": "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      "conference": 1
+    }
+  }
+]

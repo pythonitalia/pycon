@@ -32,6 +32,7 @@ class Conference(TimeFramedModel, TimeStampedModel):
         _("longitude"), max_digits=9, decimal_places=6, blank=True, null=True
     )
     map_link = models.URLField(_("map link"), blank=True)
+    introduction = models.TextField(_("introduction"), blank=False)
 
     @property
     def is_cfp_open(self):

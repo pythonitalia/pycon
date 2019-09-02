@@ -15,6 +15,7 @@
       "name": "PyCon Demo",
       "code": "pycon10",
       "timezone": "Europe/Rome",
+      "introduction": "This is a demo conference, sorry it is not happening!",
       "latitude": null,
       "longitude": null,
       "map_link": "",

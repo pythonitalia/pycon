@@ -5,6 +5,7 @@ from users.models import User
 
 from .api.fixtures import *  # noqa
 from .blog.factories import *  # noqa
+from .cms.factories import *  # noqa
 from .conferences.factories import *  # noqa
 from .languages.factories import *  # noqa
 from .orders.factories import *  # noqa
