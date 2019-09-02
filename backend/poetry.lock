@@ -493,7 +493,7 @@ description = "pytest: simple powerful testing with Python"
 name = "pytest"
 optional = false
 python-versions = ">=3.5"
-version = "5.1.1"
+version = "5.1.2"
 
 [package.dependencies]
 atomicwrites = ">=1.0"
@@ -843,7 +843,7 @@ version = "0.6.0"
 more-itertools = "*"
 
 [metadata]
-content-hash = "73ec5c6af2c0323ab9c6503c17c8e988340d259b72b73cd61292c3fcb948c95c"
+content-hash = "520f0b8a8e82f2f955f6d5a1709e3ce73835b7024a68131aabacdb26aaf80774"
 python-versions = "^3.7"
 
 [metadata.hashes]
@@ -897,7 +897,7 @@ pylint = ["5d77031694a5fb97ea95e828c8d10fc770a1df6eb3906067aaed42201a8a6a09", "7
 pylint-django = ["6740b60dd94b6896cffa28d7fe1bb5dd167cbdcb3d9fb3db01b30390ea18b987", "e1273decd5ee60eaf9a742f62dd67bacb7ccf2cb1e7641dba0361108d0dff455"]
 pylint-plugin-utils = ["8d9e31d5ea8b7b0003e1f0f136b44a5235896a32e47c5bc2ef1143e9f6ba0b74"]
 pyparsing = ["6f98a7b9397e206d78cc01df10131398f1c8b8510a2f4d97d9abd82e1aacdd80", "d9338df12903bbf5d65a0e4e87c2161968b10d2e489652bb47001d82a9b028b4"]
-pytest = ["95b1f6db806e5b1b5b443efeb58984c24945508f93a866c1719e1a507a957d7c", "c3d5020755f70c82eceda3feaf556af9a341334414a8eca521a18f463bcead88"]
+pytest = ["95d13143cc14174ca1a01ec68e84d76ba5d9d493ac02716fd9706c949a505210", "b78fe2881323bd44fd9bd76e5317173d4316577e7b1cddebae9136a4495ec865"]
 pytest-cov = ["2b097cde81a302e1047331b48cadacf23577e431b61e9c6f49a1170bbe3d3da6", "e00ea4fdde970725482f1f35630d12f074e121a23801aabf2ae154ec6bdd343a"]
 pytest-django = ["264fb4c506db5d48a6364c311a0b00b7b48a52715bad8839b2d8bee9b99ed6bb", "4adfe5fb3ed47f0ba55506dd3daf688b1f74d5e69148c10ad2dd2f79f40c0d62"]
 pytest-factoryboy = ["ffef3fb7ddec1299d3df0d334846259023f3d1da5ab887ad880139a8253a5a1a"]
