@@ -94,6 +94,9 @@ module.exports = {
         "space-before-function-paren": "off",
         "use-isnan": "error",
         "valid-typeof": "off",
+        "simple-import-sort/sort": "error",
+        "sort-imports": "off",
+        "import/order": "off",
         "@typescript-eslint/tslint/config": [
             "error",
             {
@@ -119,13 +122,6 @@ module.exports = {
                         "allow-declarations",
                         "allow-named-functions",
                     ],
-                    "ordered-imports": [
-                        true,
-                        {
-                            "grouped-imports": true,
-                            groups: ["^react"],
-                        },
-                    ],
                     "prefer-conditional-expression": true,
                     quotemark: [true, "double", "jsx-double"],
                     semicolon: [true, "always"],
@@ -149,6 +145,11 @@ module.exports = {
         project: path.join(__dirname, "tsconfig.json"),
         sourceType: "module",
     },
-    plugins: ["prettier", "@typescript-eslint", "@typescript-eslint/tslint"],
+    plugins: [
+        "prettier",
+        "@typescript-eslint",
+        "@typescript-eslint/tslint",
+        "simple-import-sort",
+    ],
     settings: {},
 };

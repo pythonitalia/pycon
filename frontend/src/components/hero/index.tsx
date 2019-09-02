@@ -1,9 +1,9 @@
-import React from "react";
-
 import { theme } from "fannypack";
 import Img, { GatsbyImageProps } from "gatsby-image";
 import { Column, Row } from "grigliata";
+import React from "react";
 import styled from "styled-components";
+
 import { STANDARD_ROW_PADDING } from "../../config/spacing";
 
 type HeroProps = {

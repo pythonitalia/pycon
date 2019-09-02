@@ -1,0 +1,18 @@
+[
+  {
+    "model": "users.user",
+    "pk": 1,
+    "fields": {
+      "password": "demo",
+      "last_login": "2019-09-01T15:14:08.353Z",
+      "is_superuser": false,
+      "username": null,
+      "email": "demo@example.com",
+      "date_joined": "2019-09-01T14:45:48.365Z",
+      "is_active": true,
+      "is_staff": false,
+      "groups": [],
+      "user_permissions": []
+    }
+  }
+]

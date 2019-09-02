@@ -1,11 +1,12 @@
-import React from "react";
-
 import { Heading } from "fannypack";
 import Img, { GatsbyImageProps } from "gatsby-image";
 import { Column, Row } from "grigliata";
 import { ColumnWidthValuesType } from "grigliata/dist/typings/column";
+import React from "react";
 import styled, { keyframes } from "styled-components";
+
 import { STANDARD_ROW_PADDING } from "../../config/spacing";
+import { MaxWidthWrapper } from "../max-width-wrapper";
 import { SectionTitle } from "../section-title";
 
 const SponsorLink = styled.a`
@@ -132,93 +133,96 @@ export const SponsorList: React.SFC<SponsorListProps> = props => (
         <SectionTitle>Sponsors</SectionTitle>
       </Column>
     </Row>
-    {props.sponsors.map((level, i) => (
-      <Row
-        key={level.level}
-        marginTop={
-          i === 0
-            ? {
-                mobile: 1,
-                tabletPortrait: -1,
-                tabletLandscape: -3,
-                desktop: -4,
-              }
-            : {
-                mobile: 1,
-                tabletPortrait: 1,
-                tabletLandscape: 2,
-                desktop: 2,
-              }
-        }
-        paddingLeft={STANDARD_ROW_PADDING}
-        paddingRight={STANDARD_ROW_PADDING}
-      >
-        <Column columnWidth={FULL_WIDTH_COLUMN}>
-          <Heading use="h5">{level.level}</Heading>
-        </Column>
-        <Column columnWidth={FULL_WIDTH_COLUMN}>
-          <Row
-            marginLeft={MARGIN_NEGATIVE_COLUMN}
-            marginRight={MARGIN_NEGATIVE_COLUMN}
-          >
-            {level.sponsors &&
-              level.sponsors.map(sponsor => (
-                <Column
-                  key={sponsor.name}
-                  columnWidth={{
-                    mobile: 12,
-                    tabletPortrait: 4,
-                    tabletLandscape: 3,
-                    desktop: 3,
-                  }}
-                >
-                  <SponsorLink
-                    {...getSponsorLinkProps(sponsor)}
-                    title={sponsor.name}
-                  >
-                    {sponsor.imageFile && (
-                      <Img
-                        {...sponsor.imageFile.childImageSharp}
-                        alt={sponsor.name}
-                      />
-                    )}
-                  </SponsorLink>
-                </Column>
-              ))}
 
-            <Column
-              columnWidth={{
-                mobile: 12,
-                tabletPortrait: 4,
-                tabletLandscape: 3,
-                desktop: 3,
-              }}
+    <MaxWidthWrapper>
+      {props.sponsors.map((level, i) => (
+        <Row
+          key={level.level}
+          marginTop={
+            i === 0
+              ? {
+                  mobile: 1,
+                  tabletPortrait: -1,
+                  tabletLandscape: -3,
+                  desktop: -4,
+                }
+              : {
+                  mobile: 1,
+                  tabletPortrait: 1,
+                  tabletLandscape: 2,
+                  desktop: 2,
+                }
+          }
+          paddingLeft={STANDARD_ROW_PADDING}
+          paddingRight={STANDARD_ROW_PADDING}
+        >
+          <Column columnWidth={FULL_WIDTH_COLUMN}>
+            <Heading use="h5">{level.level}</Heading>
+          </Column>
+          <Column columnWidth={FULL_WIDTH_COLUMN}>
+            <Row
+              marginLeft={MARGIN_NEGATIVE_COLUMN}
+              marginRight={MARGIN_NEGATIVE_COLUMN}
             >
-              <BecomeASponsorLink href="#">
-                <span>Become a sponsor</span>
+              {level.sponsors &&
+                level.sponsors.map(sponsor => (
+                  <Column
+                    key={sponsor.name}
+                    columnWidth={{
+                      mobile: 12,
+                      tabletPortrait: 4,
+                      tabletLandscape: 3,
+                      desktop: 3,
+                    }}
+                  >
+                    <SponsorLink
+                      {...getSponsorLinkProps(sponsor)}
+                      title={sponsor.name}
+                    >
+                      {sponsor.imageFile && (
+                        <Img
+                          {...sponsor.imageFile.childImageSharp}
+                          alt={sponsor.name}
+                        />
+                      )}
+                    </SponsorLink>
+                  </Column>
+                ))}
 
-                <div className="love">
-                  {Array(20)
-                    .fill("💙")
-                    .map((value, index) => (
-                      <span
-                        key={index}
-                        style={{
-                          ["--x" as any]:
-                            Math.cos(index) + (Math.random() - 0.5),
-                          ["--y" as any]:
-                            Math.sin(index) + (Math.random() - 0.5),
-                        }}
-                      >
-                        {value}
-                      </span>
-                    ))}
-                </div>
-              </BecomeASponsorLink>
-            </Column>
-          </Row>
-        </Column>
-      </Row>
-    ))}
+              <Column
+                columnWidth={{
+                  mobile: 12,
+                  tabletPortrait: 4,
+                  tabletLandscape: 3,
+                  desktop: 3,
+                }}
+              >
+                <BecomeASponsorLink href="#">
+                  <span>Become a sponsor</span>
+
+                  <div className="love">
+                    {Array(20)
+                      .fill("💙")
+                      .map((value, index) => (
+                        <span
+                          key={index}
+                          style={{
+                            ["--x" as any]:
+                              Math.cos(index) + (Math.random() - 0.5),
+                            ["--y" as any]:
+                              Math.sin(index) + (Math.random() - 0.5),
+                          }}
+                        >
+                          {value}
+                        </span>
+                      ))}
+                  </div>
+                </BecomeASponsorLink>
+              </Column>
+            </Row>
+          </Column>
+        </Row>
+      ))}
+    </MaxWidthWrapper>
   </>
 );

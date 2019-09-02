@@ -1,10 +1,10 @@
-import React, { createElement } from "react";
-
 import { graphql } from "gatsby";
 import { Column, Row } from "grigliata";
 import marksy from "marksy";
+import React, { createElement } from "react";
+
 import { Article } from "../components/article";
-import { STANDARD_ROW_PADDING } from "../config/spacing";
+import { MaxWidthWrapper } from "../components/max-width-wrapper";
 import { PostQuery } from "../generated/graphql";
 import { HomeLayout } from "../layouts/home";
 
@@ -19,27 +19,26 @@ export default ({ data }: { data: PostQuery }) => {
 
   return (
     <HomeLayout>
-      <Row
-        paddingLeft={STANDARD_ROW_PADDING}
-        paddingRight={STANDARD_ROW_PADDING}
-      >
-        <Column
-          columnWidth={{
-            mobile: 12,
-            tabletPortrait: 12,
-            tabletLandscape: 12,
-            desktop: 8,
-          }}
-        >
-          <Article
-            hero={post.imageFile && { ...post.imageFile.childImageSharp! }}
-            title={post.title}
-            description={post.excerpt || ""}
+      <MaxWidthWrapper>
+        <Row>
+          <Column
+            columnWidth={{
+              mobile: 12,
+              tabletPortrait: 12,
+              tabletLandscape: 12,
+              desktop: 12,
+            }}
           >
-            {compile(post.content).tree}
-          </Article>
-        </Column>
-      </Row>
+            <Article
+              hero={post.imageFile && { ...post.imageFile.childImageSharp! }}
+              title={post.title}
+              description={post.excerpt || ""}
+            >
+              {compile(post.content).tree}
+            </Article>
+          </Column>
+        </Row>
+      </MaxWidthWrapper>
     </HomeLayout>
   );
 };

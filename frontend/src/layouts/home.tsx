@@ -1,7 +1,7 @@
-import React from "react";
-
 import { ThemeProvider } from "fannypack";
+import React from "react";
 import styled from "styled-components";
+
 import { Footer } from "../components/footer";
 import { Topbar } from "../components/topbar";
 import { theme } from "../config/theme";
@@ -14,7 +14,7 @@ export const HomeLayout = (props: { children: React.ReactNode }) => (
   <ThemeProvider theme={theme}>
     <Wrapper>
       <Topbar />
-      <div>{props.children}</div>
+      {props.children}
       <Footer />
     </Wrapper>
   </ThemeProvider>
