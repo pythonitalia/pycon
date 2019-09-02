@@ -33,7 +33,7 @@
     "gatsby-remark-images": "^3.1.20",
     "gatsby-remark-responsive-iframe": "^2.2.10",
     "gatsby-source-filesystem": "^2.1.18",
-    "gatsby-source-graphql": "^2.1.11",
+    "gatsby-source-graphql": "^2.1.12",
     "gatsby-transformer-remark": "^2.6.19",
     "gatsby-transformer-sharp": "^2.2.13",
     "grigliata": "^0.0.16",
