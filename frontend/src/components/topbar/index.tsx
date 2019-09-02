@@ -7,6 +7,7 @@ import { STANDARD_ROW_PADDING } from "../../config/spacing";
 import { theme } from "../../config/theme";
 import { useToggle } from "../../helpers/use-toggle";
 import { Button } from "../button";
+import { MaxWidthWrapper } from "../max-width-wrapper";
 import { ExpandedMenu } from "./expanded-menu";
 import { Hamburger } from "./hamburger";
 import { ExpandableProps } from "./types";
@@ -113,51 +114,52 @@ export const Topbar = () => {
 
   return (
     <Wrapper open={isMenuOpen}>
-      <LogoContainer open={isMenuOpen}>PyCon Italia</LogoContainer>
+      <MaxWidthWrapper>
+        <LogoContainer open={isMenuOpen}>PyCon Italia</LogoContainer>
 
-      <Row
-        paddingLeft={STANDARD_ROW_PADDING}
-        paddingRight={STANDARD_ROW_PADDING}
-      >
-        <Column
-          columnWidth={{
-            mobile: 3,
-            tabletPortrait: 6,
-            tabletLandscape: 6,
-            desktop: 6,
-          }}
+        <Row
+          paddingLeft={STANDARD_ROW_PADDING}
+          paddingRight={STANDARD_ROW_PADDING}
         >
-          <MenuContainer open={isMenuOpen}>
-            <Link
-              href="#"
-              onClick={e => {
-                e.preventDefault();
-                toggleMenu();
-              }}
-            >
-              <Hamburger open={isMenuOpen} />{" "}
-              <span className="label">Menu</span>
-            </Link>
-          </MenuContainer>
-        </Column>
-        <Column
-          columnWidth={{
-            mobile: 0,
-            tabletPortrait: 6,
-            tabletLandscape: 6,
-            desktop: 6,
-          }}
-        >
-          <LinkContainer>
-            <Link href="#">Login</Link>
-            <Link href="#">Schedule</Link>
-            <Button palette={isMenuOpen ? "white" : "primary"}>
-              GET YOUR TICKET
-            </Button>
-          </LinkContainer>
-        </Column>
-      </Row>
-
+          <Column
+            columnWidth={{
+              mobile: 3,
+              tabletPortrait: 6,
+              tabletLandscape: 6,
+              desktop: 6,
+            }}
+          >
+            <MenuContainer open={isMenuOpen}>
+              <Link
+                href="#"
+                onClick={e => {
+                  e.preventDefault();
+                  toggleMenu();
+                }}
+              >
+                <Hamburger open={isMenuOpen} />{" "}
+                <span className="label">Menu</span>
+              </Link>
+            </MenuContainer>
+          </Column>
+          <Column
+            columnWidth={{
+              mobile: 0,
+              tabletPortrait: 6,
+              tabletLandscape: 6,
+              desktop: 6,
+            }}
+          >
+            <LinkContainer>
+              <Link href="#">Login</Link>
+              <Link href="#">Schedule</Link>
+              <Button palette={isMenuOpen ? "white" : "primary"}>
+                GET YOUR TICKET
+              </Button>
+            </LinkContainer>
+          </Column>
+        </Row>
+      </MaxWidthWrapper>
       {isMenuOpen && <ExpandedMenu />}
     </Wrapper>
   );
