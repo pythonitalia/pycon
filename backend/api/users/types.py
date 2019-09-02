@@ -22,14 +22,7 @@ class MeUser:
     open_to_recruiting: bool
     open_to_newsletter: bool
     date_birth: str
-    business_name: Optional[str]
-    fiscal_code: Optional[str]
-    vat_number: Optional[str]
-    recipient_code: Optional[str]
-    pec_address: Optional[str]
-    address: Optional[str]
     country: str
-    phone_number: Optional[str]
     image: Optional[Image]
 
     # TODO: update this with pretix query
@@ -42,7 +35,7 @@ class MeUser:
         return self.submissions.filter(conference__code=conference)
 
     @strawberry.field
-    def image(self, info) -> Image:
+    def image(self, info) -> Optional[Image]:
         return self.image
 
 
@@ -59,11 +52,4 @@ class User:
     open_to_recruiting: bool
     open_to_newsletter: bool
     date_birth: str
-    business_name: Optional[str]
-    fiscal_code: Optional[str]
-    vat_number: Optional[str]
-    recipient_code: Optional[str]
-    pec_address: Optional[str]
-    address: Optional[str]
     country: str
-    phone_number: Optional[str]

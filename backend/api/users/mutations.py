@@ -39,14 +39,7 @@ class BaseUserMutation(FormMutation):
             open_to_recruiting=result.open_to_recruiting,
             open_to_newsletter=result.open_to_newsletter,
             date_birth=result.date_birth,
-            business_name=result.business_name,
-            fiscal_code=result.fiscal_code,
-            vat_number=result.vat_number,
-            recipient_code=result.recipient_code,
-            pec_address=result.pec_address,
-            address=result.address,
             country=result.country,
-            phone_number=result.phone_number,
         )
 
     class Meta:

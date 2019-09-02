@@ -76,18 +76,7 @@ class UpdateUserForm(ContextAwareModelForm):
 
     class Meta:
         model = User
-        fields = (
-            "first_name",
-            "last_name",
-            "gender",
-            "business_name",
-            "fiscal_code",
-            "vat_number",
-            "phone_number",
-            "recipient_code",
-            "pec_address",
-            "address",
-        )
+        fields = ("first_name", "last_name", "gender")
 
 
 class UpdateImageForm(FormWithContext):

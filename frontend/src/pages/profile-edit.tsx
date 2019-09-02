@@ -138,18 +138,6 @@ const EditPage: React.FC = me => {
               validationText={errors.dateBirth}
             />
           </InputWrapper>
-        </Card>
-
-        <Card title="Address">
-          <InputWrapper>
-            <InputField
-              a11yId="address"
-              label="Address"
-              value={user.address}
-              onChange={hangleUserChange}
-              validationText={errors.address}
-            />
-          </InputWrapper>
 
           <InputWrapper>
             <SelectField
@@ -164,71 +152,6 @@ const EditPage: React.FC = me => {
           </InputWrapper>
         </Card>
 
-        <Card title="Company Info">
-          <InputWrapper>
-            <InputField
-              a11yId="businessName"
-              label="Business Name"
-              value={user.businessName}
-              onChange={hangleUserChange}
-              validationText={errors.businessName}
-            />
-          </InputWrapper>
-
-          <InputWrapper>
-            <InputField
-              a11yId="fiscalCode"
-              maxLength={16}
-              label="Fiscal Code"
-              value={user.fiscalCode}
-              onChange={hangleUserChange}
-              validationText={errors.fiscalCode}
-            />
-          </InputWrapper>
-
-          <InputWrapper>
-            <InputField
-              a11yId="vatNumber"
-              label="VAT Number"
-              value={user.vatNumber}
-              onChange={hangleUserChange}
-              validationText={errors.vatNumber}
-            />
-          </InputWrapper>
-
-          <InputWrapper>
-            <InputField
-              a11yId="phoneNumber"
-              maxLength={16}
-              label="Phone Number"
-              value={user.phoneNumber}
-              onChange={hangleUserChange}
-              validationText={errors.phoneNumber}
-            />
-          </InputWrapper>
-
-          <InputWrapper>
-            <InputField
-              a11yId="recipientCode"
-              maxLength={7}
-              label="Recipient Code *(Italian Company Only)"
-              value={user.recipientCode}
-              onChange={hangleUserChange}
-              validationText={errors.recipientCode}
-            />
-          </InputWrapper>
-
-          <InputWrapper>
-            <InputField
-              a11yId="pecAddress"
-              maxLength={7}
-              label="PEC Address *(Italian Company Only)"
-              value={user.pecAddress}
-              onChange={hangleUserChange}
-              validationText={errors.pecAddress}
-            />
-          </InputWrapper>
-        </Card>
       </LayoutSet>
       <Row paddingBottom={ROW_PADDING} paddingTop={BUTTON_PADDING}>
         <Button onClick={handleUserSubmit}>Send!</Button>
