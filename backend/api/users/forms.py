@@ -70,13 +70,6 @@ class UpdateUserForm(ContextAwareModelForm):
     open_to_newsletter = BooleanField(required=False)
     country = CharField(required=False)
 
-    def clean(self):
-
-        if not self.context.user.is_authenticated:
-            raise ValidationError(_("Must authenticate to update User information"))
-
-        return super().clean()
-
     def save(self, commit=True):
         super().save(commit=commit)
         return User.objects.get(id=self.context.user.id)

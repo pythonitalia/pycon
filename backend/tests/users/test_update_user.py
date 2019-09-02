@@ -190,17 +190,6 @@ def test_update(graphql_client, user_factory):
 
 
 @pytest.mark.django_db
-def test_update_not_authenticated_user_error(graphql_client):
-    user, _ = User.objects.get_or_create(email="user@example.it", password="password")
-    resp, variables = _update_user(graphql_client, user)
-
-    assert resp["data"]["update"]["__typename"] == "UpdateErrors"
-    assert resp["data"]["update"]["nonFieldErrors"] == [
-        "Must authenticate to update User information"
-    ]
-
-
-@pytest.mark.django_db
 @override_settings(MEDIA_ROOT="/tmp/django_test")
 def test_update_image(graphql_client, create_sample_image):
     img, path = create_sample_image
