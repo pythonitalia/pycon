@@ -30,6 +30,7 @@ class MeUser:
     address: Optional[str]
     country: str
     phone_number: Optional[str]
+    image: Optional[Image]
 
     # TODO: update this with pretix query
     @strawberry.field
