@@ -1248,12 +1248,12 @@
     signedsource "^1.0.0"
     yargs "^9.0.0"
 
-"@graphql-codegen/add@^1.6.1":
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/@graphql-codegen/add/-/add-1.6.1.tgz#52bfac1ae0b4802ee370ad9d4eef2a841b2e6968"
-  integrity sha512-3X1AOTs7ssCv4L85utWzSGYXotyPRCxnx81u95ZFoD1dRV86Il88/t4OZmKYQ8PgTroZvmFTs5wzoA95wprbyw==
+"@graphql-codegen/add@^1.7.0":
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/@graphql-codegen/add/-/add-1.7.0.tgz#8969e51913c4013e2ab098205184f38ca517cf7e"
+  integrity sha512-sk561sxOurcPTUS864pXDEh0sh/E5t0BRWPEdbSIcQ80Ia6WrwA6tuZfs59rkMlw99fpDTOGwjOHzqprZ9DzwQ==
   dependencies:
-    "@graphql-codegen/plugin-helpers" "1.6.1"
+    "@graphql-codegen/plugin-helpers" "1.7.0"
     tslib "1.10.0"
 
 "@graphql-codegen/cli@^1.6.1":
@@ -1320,6 +1320,16 @@
   version "1.6.1"
   resolved "https://registry.yarnpkg.com/@graphql-codegen/plugin-helpers/-/plugin-helpers-1.6.1.tgz#406fb6a2b64f536be5612edf9b04c901f474f113"
   integrity sha512-rgmt3wIXEgv1vCMN43ZPB51b1FuxmQ07CEv1WIFDakZ8cvVNq/c/uZ1mVWt4es1cK5l0QlnJFiZMYv5cor9nSQ==
+  dependencies:
+    change-case "3.1.0"
+    common-tags "1.8.0"
+    import-from "3.0.0"
+    tslib "1.10.0"
+
+"@graphql-codegen/plugin-helpers@1.7.0":
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/@graphql-codegen/plugin-helpers/-/plugin-helpers-1.7.0.tgz#b1870a166cf34b2c67c053f2a9ec77823f78ac2d"
+  integrity sha512-lUWd5A9BQNbPqlMr38Gh5sLsBgMnn26n90/hyTw2J7CFCKFKSMnNBjxfCZU5AFHGxwi6rsNEpwBHRBx3OVWsTA==
   dependencies:
     change-case "3.1.0"
     common-tags "1.8.0"
