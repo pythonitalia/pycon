@@ -2368,12 +2368,12 @@
     "@types/unist" "*"
     "@types/vfile-message" "*"
 
-"@typescript-eslint/eslint-plugin-tslint@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@typescript-eslint/eslint-plugin-tslint/-/eslint-plugin-tslint-2.0.0.tgz#2d3f80f7e62040e9bbb3bbd9603e716faf0c1fe5"
-  integrity sha512-5RzjQE25QTIZet/MTY1eNd4hdDVOQJ53tWBDCZH1sEBqxlFH0KMA6SozFl9Qd4xbPKsftAyBKmjW8/5AAWkamg==
+"@typescript-eslint/eslint-plugin-tslint@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@typescript-eslint/eslint-plugin-tslint/-/eslint-plugin-tslint-2.1.0.tgz#b305963363fa1911efe34c67f5eb10c8beba6723"
+  integrity sha512-ERtXG6xEsqJe9YccJFyJEHXOLzECxuG1+lnjjmgxUOY9d9W2ESIWhvPMKDdGHeComTNOa48/5/PBsEdqr6VEew==
   dependencies:
-    "@typescript-eslint/experimental-utils" "2.0.0"
+    "@typescript-eslint/experimental-utils" "2.1.0"
     lodash.memoize "^4.1.2"
 
 "@typescript-eslint/eslint-plugin@^1.13.0":
