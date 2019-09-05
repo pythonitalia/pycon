@@ -7761,10 +7761,10 @@ gatsby-remark-images@^3.1.20:
     unist-util-select "^1.5.0"
     unist-util-visit-parents "^2.1.2"
 
-gatsby-remark-responsive-iframe@^2.2.12:
-  version "2.2.12"
-  resolved "https://registry.yarnpkg.com/gatsby-remark-responsive-iframe/-/gatsby-remark-responsive-iframe-2.2.12.tgz#b34322fb91d8ec7ace02e6e80f69711afe918a4e"
-  integrity sha512-l72qPxn07ubSrmY+dVzynT/EM8/GxWbD0QR9BcHU4ALhzBxugb3V00rhlVfuJjiurclAc7PkRBVne8x+3W69LA==
+gatsby-remark-responsive-iframe@^2.2.13:
+  version "2.2.13"
+  resolved "https://registry.yarnpkg.com/gatsby-remark-responsive-iframe/-/gatsby-remark-responsive-iframe-2.2.13.tgz#51a6aaed2bc71ff2f7af712c337ef7af71e47c7b"
+  integrity sha512-TtBDJ3HFLeKZAAxKhYY3U7g/5Fikl7YtDMB/IXMi/wDXW4qtcNPHShH4PXeyBhyuGZRoR2UzRyTLM4IOxoFktg==
   dependencies:
     "@babel/runtime" "^7.5.5"
     bluebird "^3.5.5"
