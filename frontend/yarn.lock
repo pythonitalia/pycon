@@ -13640,10 +13640,10 @@ react-remarkable@1.1.3:
   dependencies:
     remarkable "^1.x"
 
-react-responsive@^8.0.0:
-  version "8.0.0"
-  resolved "https://registry.yarnpkg.com/react-responsive/-/react-responsive-8.0.0.tgz#d54bccc52b450c75dcd946eaa365ea9f279ffbb9"
-  integrity sha512-l8FRTEoifVnhoFsnaWeyCHQ8O088ug9IIihUupG/8Ah3x1OITLourRDAisvKF5P+5ST4HRC08bSBYQkNfknAYA==
+react-responsive@^8.0.1:
+  version "8.0.1"
+  resolved "https://registry.yarnpkg.com/react-responsive/-/react-responsive-8.0.1.tgz#38022665dfb759227880f4221c475438a06a1771"
+  integrity sha512-caseFCvFFV4QW+JOl7inzDme+avoX4r7GPpQJ+04NCzIgbroV3BU0noPgHGxVCEFKm9IsgcKOBAf+6MqIUeQIg==
   dependencies:
     hyphenate-style-name "^1.0.0"
     matchmediaquery "^0.3.0"
