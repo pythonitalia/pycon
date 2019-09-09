@@ -1,8 +1,6 @@
 from datetime import datetime
 from decimal import Decimal
 from itertools import groupby
-from typing import List, Optional
-
 from typing import TYPE_CHECKING, List, Optional
 
 import pytz
@@ -16,7 +14,7 @@ from submissions.types import Submission, SubmissionType
 
 from .helpers.maps import generate_map_image
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from tickets.types import TicketQuestion
 
 

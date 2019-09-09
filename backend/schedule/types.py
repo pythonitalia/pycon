@@ -5,7 +5,7 @@ from api.scalars import DateTime
 from submissions.types import Submission
 from users.types import UserType
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from conferences.types import Conference
 
 

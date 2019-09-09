@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 import strawberry
 from users.types import UserType
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from submissions.types import Submission
 
 

@@ -45,17 +45,21 @@ class TicketType:
     def answers(self, info) -> List[UserAnswer]:
         # TODO: Replace with a JOIN or something else,
         # to make everything run in a single query
-        questions = self.ticket_fare.questions.select_related("question").all()
+        fare_questions = self.ticket_fare.questions.select_related("question").all()
         answers = list(self.answers.all())
 
         response = []
 
-        for question in questions:
+        for fare_question in fare_questions:
             found_answer = [
-                answer.answer for answer in answers if answer.question_id == question.id
+                answer.answer
+                for answer in answers
+                if answer.question_id == fare_question.question.id
             ]
             found_answer = found_answer[0] if found_answer else None
 
-            response.append(UserAnswer(question=question.question, answer=found_answer))
+            response.append(
+                UserAnswer(question=fare_question.question, answer=found_answer)
+            )
 
         return response

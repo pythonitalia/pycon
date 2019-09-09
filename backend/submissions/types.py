@@ -5,7 +5,7 @@ from graphql import GraphQLError
 from voting.models import Vote
 from voting.types import VoteType
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from conferences.types import Conference, Topic, Duration, AudienceLevel
     from users.types import UserType
 
