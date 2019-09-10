@@ -16,4 +16,4 @@ class Page:
         if not self.image:
             return None
 
-        return info.context.build_absolute_uri(self.image.url)
+        return info.context["request"].build_absolute_uri(self.image.url)

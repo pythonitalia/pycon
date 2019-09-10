@@ -12,7 +12,7 @@ class SendQuestionAnswerForm(ContextAwareModelForm):
 
         if self.context:
             self.fields["ticket"].queryset = Ticket.objects.filter(
-                user=self.context.user
+                user=self.context["request"].user
             )
 
     def _get_validation_exclusions(self):
@@ -52,7 +52,7 @@ class SendQuestionAnswerForm(ContextAwareModelForm):
         except UserAnswer.DoesNotExist:
             pass
 
-        self.instance.user = self.context.user
+        self.instance.user = self.context["request"].user
         self.instance.answer = self.cleaned_data["answer"]
         return super().save(commit=commit)
 

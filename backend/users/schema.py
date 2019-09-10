@@ -8,7 +8,9 @@ from .types import MeUserType
 class UsersQuery:
     @strawberry.field
     def me(self, info) -> MeUserType:
-        if not info.context.user.is_authenticated:
+        user = info.context["request"].user
+
+        if not user.is_authenticated:
             raise GraphQLError("User not logged in")
 
-        return info.context.user
+        return user

@@ -17,16 +17,16 @@ class SendVoteForm(ContextAwareModelForm):
             raise forms.ValidationError(_("The voting session is not open!"))
 
     def save(self, commit=True):
+        request = self.context["request"]
+
         submission = self.cleaned_data.get("submission")
 
         try:
-            self.instance = Vote.objects.get(
-                user=self.context.user, submission=submission
-            )
+            self.instance = Vote.objects.get(user=request.user, submission=submission)
         except Vote.DoesNotExist:
             pass
 
-        self.instance.user = self.context.user
+        self.instance.user = request.user
         self.instance.value = self.cleaned_data["value"]
         return super().save(commit=commit)
 
