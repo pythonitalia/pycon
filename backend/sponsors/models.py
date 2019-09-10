@@ -13,6 +13,9 @@ class SponsorLevel(OrderedModel):
         related_name="sponsor_levels",
     )
 
+    def __str__(self):
+        return self.name
+
     class Meta(OrderedModel.Meta):
         unique_together = ["name", "conference"]
 
