@@ -25,7 +25,7 @@
     "gatsby-plugin-google-fonts": "^1.0.1",
     "gatsby-plugin-manifest": "^2.2.14",
     "gatsby-plugin-offline": "^3.0.6",
-    "gatsby-plugin-react-helmet": "^3.1.6",
+    "gatsby-plugin-react-helmet": "^3.1.7",
     "gatsby-plugin-sharp": "^2.2.20",
     "gatsby-plugin-styled-components": "^3.1.4",
     "gatsby-plugin-typescript": "^2.1.7",
