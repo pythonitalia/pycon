@@ -39,12 +39,17 @@ def test_query_sponsors(rf, graphql_client, sponsor_factory, sponsor_level_facto
         name="patrick",
         link="https://patrick.wtf",
         image=None,
+        order=0,
     )
     sponsor_factory(
-        level=gold_level, name="patrick", link="https://patrick.wtf", image=None
+        level=gold_level,
+        name="patrick",
+        link="https://patrick.wtf",
+        image=None,
+        order=0,
     )
     sponsor_factory(
-        level=gold_level, name="marco", link="https://marco.pizza", image=None
+        level=gold_level, name="marco", link="https://marco.pizza", image=None, order=1
     )
     sponsor = sponsor_factory(level=bronze_level, name="jake")
 

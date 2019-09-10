@@ -18,7 +18,8 @@
       "name": "Snakely",
       "link": "https://example.com",
       "image": "sponsors/snakely.png",
-      "level": 1
+      "level": 1,
+      "order": 0
     }
   },
   {
@@ -30,7 +31,8 @@
       "name": "Javapanda",
       "link": "",
       "image": "sponsors/javapanda.png",
-      "level": 1
+      "level": 1,
+      "order": 1
     }
   }
 ]
