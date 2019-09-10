@@ -47,20 +47,23 @@ def _submit_vote(client, submission, **kwargs):
 
 
 @mark.django_db
-def test_submit_vote(graphql_client, user, conference_factory, submission_factory):
+@mark.parametrize("score_index", [0, 1, 2])
+def test_submit_vote(
+    graphql_client, user, conference_factory, submission_factory, score_index
+):
     graphql_client.force_login(user)
 
     conference = conference_factory(active_voting=True)
 
     submission = submission_factory(conference=conference)
 
-    resp, variables = _submit_vote(graphql_client, submission, value_index=0)
+    resp, variables = _submit_vote(graphql_client, submission, value_index=score_index)
 
     assert resp["data"]["sendVote"]["__typename"] == "VoteType"
 
     vote = Vote.objects.get(id=resp["data"]["sendVote"]["id"])
 
-    assert vote.value == 0
+    assert vote.value == score_index
     assert vote.submission.id == variables["submission"]
     assert vote.user == user
 

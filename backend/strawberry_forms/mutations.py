@@ -1,10 +1,25 @@
 import dataclasses
+import enum
 from typing import Union
 
 import strawberry
 from graphql import GraphQLError
 
 from .utils import convert_form_fields_to_fields, create_error_type, create_input_type
+
+
+def convert_enums_to_values(d) -> dict:
+    converted = {}
+
+    for key, value in d.items():
+        if isinstance(value, dict):
+            converted[key] = convert_enums_to_values(value)
+        elif isinstance(value, enum.Enum):
+            converted[key] = value.value
+        else:
+            converted[key] = value
+
+    return converted
 
 
 class FormMutation:
@@ -38,6 +53,8 @@ class FormMutation:
                         raise GraphQLError(permission.message)
 
             form_kwargs = cls.get_form_kwargs(root, info, dataclasses.asdict(input))
+            form_kwargs["data"] = convert_enums_to_values(form_kwargs["data"])
+
             form = form_class(**form_kwargs)
             error = cls.validate_form(form)
 

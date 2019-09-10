@@ -1,3 +1,4 @@
+import enum
 from typing import List, Optional, Union
 
 import pytest
@@ -24,6 +25,7 @@ from django.forms import (
 )
 from django.forms.fields import BaseTemporalField
 from strawberry_forms.converter import convert_form_field
+from strawberry_forms.mutations import convert_enums_to_values
 
 CONVERT_MAP = {
     CharField: str,
@@ -123,3 +125,12 @@ def test_convert_multiple_model_choice_field():
 
     assert not_required[0] == Optional[List[strawberry.ID]]
     assert not_required[0].__args__[0].__args__[0] == strawberry.ID
+
+
+def test_enum_convert_util():
+    class Example(enum.Enum):
+        TEST = "test"
+
+    value = {"data": {"enum": Example.TEST}, "enum": Example.TEST}
+
+    assert convert_enums_to_values(value) == {"data": {"enum": "test"}, "enum": "test"}
