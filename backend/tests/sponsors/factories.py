@@ -20,6 +20,7 @@ class SponsorFactory(DjangoModelFactory):
     level = factory.SubFactory(SponsorLevelFactory)
     name = factory.Faker("word")
     image = factory.django.ImageField()
+    order = factory.Faker("pyint", min_value=0)
 
     class Meta:
         model = Sponsor

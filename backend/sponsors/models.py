@@ -13,11 +13,14 @@ class SponsorLevel(OrderedModel):
         related_name="sponsor_levels",
     )
 
+    def __str__(self):
+        return self.name
+
     class Meta(OrderedModel.Meta):
         unique_together = ["name", "conference"]
 
 
-class Sponsor(TimeStampedModel):
+class Sponsor(TimeStampedModel, OrderedModel):
     name = models.CharField(_("name"), max_length=200)
     link = models.URLField(_("link"), blank=True)
     image = models.ImageField(_("image"), null=True, blank=True, upload_to="sponsors")
@@ -27,6 +30,9 @@ class Sponsor(TimeStampedModel):
         verbose_name=_("level"),
         related_name="sponsors",
     )
+
+    class Meta(OrderedModel.Meta):
+        pass
 
     def __str__(self):
         return self.name
