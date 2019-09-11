@@ -1,7 +1,7 @@
 from datetime import datetime
 from decimal import Decimal
 from itertools import groupby
-from typing import List, Optional
+from typing import TYPE_CHECKING, List, Optional
 
 import pytz
 import strawberry
@@ -13,6 +13,9 @@ from sponsors.types import SponsorsByLevel
 from submissions.types import Submission, SubmissionType
 
 from .helpers.maps import generate_map_image
+
+if TYPE_CHECKING:  # pragma: no cover
+    from tickets.types import TicketQuestion
 
 
 @strawberry.type
@@ -149,6 +152,13 @@ class Deadline:
 
 
 @strawberry.type
+class TicketFareQuestion:
+    ticket_fare: "TicketFare"
+    question: "TicketQuestion"
+    is_required: bool
+
+
+@strawberry.type
 class TicketFare:
     id: strawberry.ID
     code: str
@@ -158,6 +168,10 @@ class TicketFare:
     end: DateTime
     description: str
     conference: Conference
+
+    @strawberry.field
+    def questions(self, info) -> List["TicketFareQuestion"]:
+        return self.questions.all()
 
 
 @strawberry.type

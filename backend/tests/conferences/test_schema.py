@@ -409,3 +409,54 @@ def test_get_conference_copy(conference_factory, generic_copy_factory, graphql_c
 
     assert "errors" not in resp
     assert resp["data"]["conference"]["copy"] is None
+
+
+@mark.django_db
+def test_query_ticket_fare_questions(
+    graphql_client, ticket_fare_factory, ticket_fare_question_factory
+):
+    ticket_fare = ticket_fare_factory()
+
+    question1 = ticket_fare_question_factory(ticket_fare=ticket_fare)
+    question2 = ticket_fare_question_factory(ticket_fare=ticket_fare)
+
+    response = graphql_client.query(
+        """
+    query($code: String!) {
+        conference(code: $code) {
+            ticketFares {
+                name
+                questions {
+                    question {
+                        text
+                        questionType
+                        choices {
+                            choice
+                        }
+                    }
+                }
+            }
+        }
+    }
+    """,
+        variables={"code": ticket_fare.conference.code},
+    )
+
+    assert len(response["data"]["conference"]["ticketFares"]) == 1
+    assert len(response["data"]["conference"]["ticketFares"][0]["questions"]) == 2
+
+    assert {
+        "question": {
+            "text": question1.question.text,
+            "questionType": question1.question.question_type.upper(),
+            "choices": [{"choice": c.name} for c in question1.question.choices.all()],
+        }
+    } in response["data"]["conference"]["ticketFares"][0]["questions"]
+
+    assert {
+        "question": {
+            "text": question2.question.text,
+            "questionType": question2.question.question_type.upper(),
+            "choices": [{"choice": c.name} for c in question2.question.choices.all()],
+        }
+    } in response["data"]["conference"]["ticketFares"][0]["questions"]
