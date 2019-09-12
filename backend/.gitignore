@@ -3,3 +3,5 @@
 .elasticbeanstalk/*
 !.elasticbeanstalk/config.yml
 !.elasticbeanstalk/*.global.yml
+
+.mypy_cache/

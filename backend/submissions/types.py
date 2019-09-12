@@ -33,10 +33,12 @@ class Submission:
 
     @strawberry.field
     def my_vote(self, info) -> Optional[VoteType]:
-        if not info.context.user.is_authenticated:
+        request = info.context["request"]
+
+        if not request.user.is_authenticated:
             raise GraphQLError("User not logged in")
 
         try:
-            return self.votes.get(user_id=info.context.user.id)
+            return self.votes.get(user_id=request.user.id)
         except Vote.DoesNotExist:
             return None

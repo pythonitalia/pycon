@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     "timezone_field",
     "social_django",
     "users",
+    "strawberry.contrib.django",
     "conferences.apps.ConferencesConfig",
     "languages.apps.LanguagesConfig",
     "submissions.apps.SubmissionsConfig",

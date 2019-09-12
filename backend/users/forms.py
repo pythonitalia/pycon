@@ -26,7 +26,7 @@ class LoginForm(FormWithContext):
 
     def save(self):
         user = self.cleaned_data.get("user")
-        login(self.context, user)
+        login(self.context["request"], user)
         return user
 
 
@@ -56,5 +56,5 @@ class RegisterForm(FormWithContext):
 
         user = User.objects.create_user(email=email, password=password)
         user = authenticate(email=email, password=password)
-        login(self.context, user)
+        login(self.context["request"], user)
         return user

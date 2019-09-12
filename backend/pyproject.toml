@@ -46,6 +46,7 @@ pytest-django = "=3.5.1"
 pytest-pylint = "=0.14.1"
 pytest-factoryboy = "=2.0.3"
 factory-boy = "=2.12.0"
+mypy = "^0.720.0"
 
 [build-system]
 requires = ["poetry>=0.12"]

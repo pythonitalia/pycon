@@ -55,7 +55,7 @@ class CommonPaymentItemsForm(FormWithContext):
         return cleaned_data
 
     def create_order(self, provider):
-        user = self.context.user
+        user = self.context["request"].user
 
         total_amount = self.cleaned_data.get("total_amount")
         items = self.cleaned_data.get("items", [])

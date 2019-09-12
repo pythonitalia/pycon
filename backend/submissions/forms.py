@@ -27,13 +27,14 @@ class SendSubmissionForm(ContextAwareModelForm):
             raise forms.ValidationError(_("The call for papers is not open!"))
 
     def save(self, commit=True):
-        self.instance.speaker = self.context.user
+        request = self.context["request"]
+        self.instance.speaker = request.user
         instance = super().save(commit=commit)
         notify_new_submission(
             instance.title,
             instance.elevator_pitch,
             instance.type.name,
-            self.context.build_absolute_uri(instance.get_admin_url()),
+            request.build_absolute_uri(instance.get_admin_url()),
             instance.duration.duration,
             instance.topic.name,
         )
