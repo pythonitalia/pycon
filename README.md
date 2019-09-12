@@ -2,18 +2,23 @@
     <img src="https://avatars1.githubusercontent.com/u/3573467?s=96" alt="Python Italia Logo" />
 </p>
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/3173b4af-5716-44ec-9f81-ff298f1dd44f/deploy-status)](https://app.netlify.com/sites/pycon-italia/deploys)
+# PyCon Italia website
 
-## How to contribute
+> The monorepo for the new PyCon Italia website, based on Django, Strawberry,
+> Gatsby and React.
 
-We will add some guidelines here soon, in the meantime if you want to help you
-can contact one of the folks in the
-[web group](https://github.com/orgs/pythonitalia/teams/web-team) or send an
-email to [info@pycon.it](mailto:info@pycon.it).
+## How to setup
 
-## Start with docker
+This project is composed of two services, a backend and a frontend.
 
-```sh
-docker-compose build
-docker-compose up
-```
+Follow the [README in the backend service](./backend/README.md) to setup the
+backend.
+
+Note:
+
+Currently in order to run the frontend you also need the backend up and running,
+we will, in future, provide a staging environment that can be used for
+development, without you having to setup the backend as well.
+
+Follow the [README in the frontend service](./frontend/README.md) to setup the
+frontend.

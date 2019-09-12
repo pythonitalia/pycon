@@ -39,11 +39,7 @@ jobs:
         cd backend/
         poetry run python manage.py migrate
         poetry run python manage.py loaddata \
-            demodata/conferences.json \
-            demodata/pages.json \
-            demodata/users.json \
-            demodata/blog.json \
-            demodata/sponsors.json
+            demodata/*.json
         cp -r demodata/media media
         poetry run python manage.py runserver &
 
@@ -56,6 +52,7 @@ jobs:
         AWS_MEDIA_BUCKET: demo
         DEFAULT_FILE_STORAGE: 'django.core.files.storage.FileSystemStorage'
         DEBUG: True
+        CONFERENCE_CODE: "pycon-demo"
     - run: yarn tsc
       working-directory: frontend
     - uses: netlify/actions/cli@master
