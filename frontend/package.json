@@ -71,7 +71,7 @@
     "eslint-plugin-react": "^7.14.3",
     "eslint-plugin-simple-import-sort": "^4.0.0",
     "prettier": "^1.18.2",
-    "tslint": "^5.19.0",
+    "tslint": "^5.20.0",
     "tslint-react": "^4.0.0"
   },
   "resolutions": {
