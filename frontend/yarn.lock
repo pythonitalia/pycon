@@ -7659,7 +7659,7 @@ gatsby-cli@^2.7.47:
     ink "^2.3.0"
     ink-spinner "^3.0.1"
 
-gatsby-core-utils@^1.0.7, gatsby-core-utils@^1.0.8:
+gatsby-core-utils@^1.0.8:
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/gatsby-core-utils/-/gatsby-core-utils-1.0.8.tgz#e765a1338d65ff1de65238c7f0a9967e07da20fa"
   integrity sha512-080Jl8NamTbCGliKxXpMjEO1XUYU5FAow+VPR/j6hJk+Kl/gFmpE1mqa5QnHRGLZQhBP/h2T0mUwnSJn9m/Jsw==
@@ -7843,12 +7843,12 @@ gatsby-remark-images@^3.1.21:
     unist-util-select "^1.5.0"
     unist-util-visit-parents "^2.1.2"
 
-gatsby-remark-responsive-iframe@^2.2.14:
-  version "2.2.14"
-  resolved "https://registry.yarnpkg.com/gatsby-remark-responsive-iframe/-/gatsby-remark-responsive-iframe-2.2.14.tgz#325f61743e45ff743b1d6fe134aac04ea310a003"
-  integrity sha512-tbGXQ823adbygHmrR2AG+Dr3osxYqO1JZciyi+Mb/XdIK+rnG1tnm3OQf+RXzrBHujAbyyONxvGJYiu+0m8B4Q==
+gatsby-remark-responsive-iframe@^2.2.16:
+  version "2.2.16"
+  resolved "https://registry.yarnpkg.com/gatsby-remark-responsive-iframe/-/gatsby-remark-responsive-iframe-2.2.16.tgz#e826eda2ea29d91318852c271d104a9c3f7ba3d6"
+  integrity sha512-C2L9ng/9vKVcXTow0Lstc5E2AibLy6QDwk264PnOhRdMbIIMbpxuEFRF82tOSCBpyYeKtFIortf7NcQ/SgHGIg==
   dependencies:
-    "@babel/runtime" "^7.5.5"
+    "@babel/runtime" "^7.6.0"
     bluebird "^3.5.5"
     cheerio "^1.0.0-rc.3"
     lodash "^4.17.15"
