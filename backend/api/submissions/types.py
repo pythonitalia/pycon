@@ -1,13 +1,13 @@
 from typing import TYPE_CHECKING, Optional
 
 import strawberry
+from api.voting.types import VoteType
 from graphql import GraphQLError
 from voting.models import Vote
-from voting.types import VoteType
 
 if TYPE_CHECKING:  # pragma: no cover
-    from conferences.types import Conference, Topic, Duration, AudienceLevel
-    from users.types import User
+    from api.conferences.types import Conference, Topic, Duration, AudienceLevel
+    from api.users.types import User
 
 
 @strawberry.type

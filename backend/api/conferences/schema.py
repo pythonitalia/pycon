@@ -1,7 +1,7 @@
 import strawberry
+from conferences.models import Conference
 
 from . import types
-from .models import Conference
 
 
 @strawberry.type

@@ -5,17 +5,17 @@ from typing import TYPE_CHECKING, List, Optional
 
 import pytz
 import strawberry
+from api.languages.types import Language
 from api.scalars import Date, DateTime
+from api.schedule.types import Room, ScheduleItem
+from api.sponsors.types import SponsorsByLevel
+from api.submissions.types import Submission, SubmissionType
 from cms.models import GenericCopy
-from languages.types import Language
-from schedule.types import Room, ScheduleItem
-from sponsors.types import SponsorsByLevel
-from submissions.types import Submission, SubmissionType
 
 from .helpers.maps import generate_map_image
 
 if TYPE_CHECKING:  # pragma: no cover
-    from tickets.types import TicketQuestion
+    from api.tickets.types import TicketQuestion
 
 
 @strawberry.type

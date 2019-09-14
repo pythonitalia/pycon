@@ -1,8 +1,8 @@
 from typing import List, Optional
 
 import strawberry
+from blog.models import Post
 
-from .models import Post
 from .types import Post as PostType
 
 

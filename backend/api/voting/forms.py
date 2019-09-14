@@ -1,9 +1,9 @@
 from api.forms import ContextAwareModelForm
 from django import forms
 from django.utils.translation import ugettext_lazy as _
+from voting.models import Vote
 
 from .fields import VoteValueField
-from .models import Vote
 
 
 class SendVoteForm(ContextAwareModelForm):

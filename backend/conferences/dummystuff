@@ -1,8 +1,0 @@
-mutation {
-  buyTicket(input: {provider: "stripe", items: "[{\"id\": 1, \"quantity\": 1}]"}) {
-    errors {
-      messages
-      field
-    }
-  }
-}

@@ -4,9 +4,9 @@ from conferences.models import Conference, TicketFare
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from orders.models import Order, OrderItem
+from payments.errors import PaymentError
 from strawberry_forms.forms import FormWithContext
 
-from .errors import PaymentError
 from .fields import CartField
 from .types import GenericPaymentError, StripeClientSecret
 

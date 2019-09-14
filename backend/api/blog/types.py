@@ -2,7 +2,7 @@ from typing import Optional
 
 import strawberry
 from api.scalars import DateTime
-from users.types import User
+from api.users.types import User
 
 
 @strawberry.type

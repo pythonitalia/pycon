@@ -1,8 +1,8 @@
 from typing import List, Optional
 
 import strawberry
+from pages.models import Page
 
-from .models import Page
 from .types import Page as PageType
 
 

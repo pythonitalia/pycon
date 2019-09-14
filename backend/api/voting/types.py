@@ -2,10 +2,10 @@ from enum import Enum
 from typing import TYPE_CHECKING
 
 import strawberry
-from users.types import User
+from api.users.types import User
 
 if TYPE_CHECKING:  # pragma: no cover
-    from submissions.types import Submission
+    from api.submissions.types import Submission
 
 
 @strawberry.enum

@@ -2,8 +2,7 @@ from django.contrib.auth import authenticate, login
 from django.forms import CharField, EmailField, ValidationError
 from django.utils.translation import ugettext_lazy as _
 from strawberry_forms.forms import FormWithContext
-
-from .models import User
+from users.models import User
 
 
 class LoginForm(FormWithContext):

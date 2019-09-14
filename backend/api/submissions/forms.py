@@ -4,8 +4,7 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from integrations.tasks import notify_new_submission
 from languages.models import Language
-
-from .models import Submission
+from submissions.models import Submission
 
 
 class SendSubmissionForm(ContextAwareModelForm):

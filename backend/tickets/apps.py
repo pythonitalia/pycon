@@ -5,4 +5,4 @@ class TicketsConfig(AppConfig):
     name = "tickets"
 
     def ready(self):
-        import tickets.types  # noqa
+        import api.tickets.types  # noqa

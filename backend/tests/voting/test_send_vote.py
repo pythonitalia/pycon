@@ -1,9 +1,9 @@
 import math
 import random
 
+from api.voting.types import VoteValues
 from pytest import mark
 from voting.models import Vote
-from voting.types import VoteValues
 
 
 def _submit_vote(client, submission, **kwargs):

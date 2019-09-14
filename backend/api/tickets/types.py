@@ -2,10 +2,9 @@ from enum import Enum
 from typing import List, Optional
 
 import strawberry
-from conferences.types import TicketFare
-from users.types import User
-
-from . import QUESTION_TYPE_CHOICE, QUESTION_TYPE_TEXT
+from api.conferences.types import TicketFare
+from api.users.types import User
+from tickets import QUESTION_TYPE_CHOICE, QUESTION_TYPE_TEXT
 
 
 @strawberry.enum

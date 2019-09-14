@@ -2,8 +2,7 @@ from api.forms import ContextAwareModelForm
 from conferences.models import TicketFareQuestion
 from django.forms import ValidationError
 from django.utils.translation import ugettext_lazy as _
-
-from .models import Ticket, UserAnswer
+from tickets.models import Ticket, UserAnswer
 
 
 class SendQuestionAnswerForm(ContextAwareModelForm):
