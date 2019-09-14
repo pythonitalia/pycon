@@ -7,7 +7,7 @@ from voting.types import VoteType
 
 if TYPE_CHECKING:  # pragma: no cover
     from conferences.types import Conference, Topic, Duration, AudienceLevel
-    from users.types import UserType
+    from users.types import User
 
 
 @strawberry.type
@@ -24,7 +24,7 @@ class Submission:
     elevator_pitch: str
     notes: str
     abstract: str
-    speaker: "UserType"
+    speaker: "User"
     # helpers: str
     topic: "Topic"
     type: SubmissionType
