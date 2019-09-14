@@ -2,13 +2,13 @@ from typing import Optional
 
 import strawberry
 from api.scalars import DateTime
-from users.types import UserType
+from users.types import User
 
 
 @strawberry.type
 class Post:
     id: strawberry.ID
-    author: UserType
+    author: User
     title: str
     slug: str
     excerpt: Optional[str]

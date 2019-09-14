@@ -16,7 +16,7 @@ def _register_user(graphql_client, email, password):
                 nonFieldErrors
             }
 
-            ... on MeUserType {
+            ... on MeUser {
                 id
             }
         }
@@ -30,7 +30,7 @@ def _register_user(graphql_client, email, password):
 def test_register(graphql_client):
     response = _register_user(graphql_client, "test@user.it", "password")
 
-    assert response["data"]["register"]["__typename"] == "MeUserType"
+    assert response["data"]["register"]["__typename"] == "MeUser"
 
     user = User.objects.get(email="test@user.it")
 

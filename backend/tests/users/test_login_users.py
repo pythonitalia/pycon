@@ -9,7 +9,7 @@ def _login_user(graphql_client, email, password):
         login(input: {email: $email, password: $password}) {
             __typename
 
-            ... on MeUserType {
+            ... on MeUser {
                 id
             }
 
@@ -31,7 +31,7 @@ def test_login_user(graphql_client, user_factory):
 
     response = _login_user(graphql_client, user.email, "ciao")
 
-    assert response["data"]["login"]["__typename"] == "MeUserType"
+    assert response["data"]["login"]["__typename"] == "MeUser"
     assert response["data"]["login"]["id"] == str(user.id)
 
     session = Session.objects.first()

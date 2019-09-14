@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, List, Optional
 import strawberry
 from api.scalars import DateTime
 from submissions.types import Submission
-from users.types import UserType
+from users.types import User
 
 if TYPE_CHECKING:  # pragma: no cover
     from conferences.types import Conference
@@ -27,7 +27,7 @@ class ScheduleItem:
     type: str
 
     @strawberry.field
-    def additional_speakers(self, info) -> List[UserType]:
+    def additional_speakers(self, info) -> List[User]:
         return self.additional_speakers.all()
 
     @strawberry.field

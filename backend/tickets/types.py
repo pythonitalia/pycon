@@ -3,7 +3,7 @@ from typing import List, Optional
 
 import strawberry
 from conferences.types import TicketFare
-from users.types import UserType
+from users.types import User
 
 from . import QUESTION_TYPE_CHOICE, QUESTION_TYPE_TEXT
 
@@ -36,9 +36,9 @@ class UserAnswer:
 
 
 @strawberry.type
-class TicketType:
+class Ticket:
     id: strawberry.ID
-    user: UserType
+    user: User
     ticket_fare: TicketFare
 
     @strawberry.field
