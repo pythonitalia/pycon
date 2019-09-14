@@ -1,8 +1,8 @@
 import pytest
-
 from django.contrib.auth import authenticate, get_user_model
+
 from users.managers import UserManager
-from users.models import User
+from users.models import User, get_countries
 
 
 def test_that_get_user_model_returns_correct_model():
@@ -70,6 +70,13 @@ def test_non_italian():
     )
 
     assert not user.is_italian()
+
+
+def test_get_country():
+    country = "IT"
+    resp = get_countries(country)
+    assert resp["code"] == "IT"
+    assert resp["name"] == "Italy"
 
 
 # endregion

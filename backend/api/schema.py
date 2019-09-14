@@ -8,12 +8,12 @@ from .submissions.mutations import SubmissionsMutations
 from .submissions.schema import SubmissionsQuery
 from .tickets.mutations import TicketsMutations
 from .users.mutations import UsersMutations
-from .users.schema import UsersQuery
+from .users.schema import CountryQuery, UsersQuery
 from .voting.mutations import VotesMutations
 
 
 @strawberry.type
-class Query(UsersQuery, ConferenceQuery, BlogQuery, SubmissionsQuery, PagesQuery):
+class Query(UsersQuery, ConferenceQuery, BlogQuery, SubmissionsQuery, PagesQuery, CountryQuery):
     pass
 
 

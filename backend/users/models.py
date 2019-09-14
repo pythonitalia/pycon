@@ -1,7 +1,9 @@
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
+from django.core import exceptions
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+
 from model_utils import Choices
 from pycountry import countries
 
@@ -39,11 +41,14 @@ EU_COUNTRIES = (
     "GB",
 )
 
-[
-    {"code": country.alpha_2, "name": country.name}
-    for country in countries
-    if country.alpha_2 in EU_COUNTRIES
-]
+
+def get_countries(code=""):
+    if code:
+        country = [country for country in COUNTRIES if country["code"] == code]
+        if country:
+            return country[0]
+        raise exceptions.ObjectDoesNotExist(f"'{code}' is not a valid country.")
+    return COUNTRIES
 
 
 class User(AbstractBaseUser, PermissionsMixin):
