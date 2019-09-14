@@ -1,0 +1,26 @@
+name: Backend checks
+
+on:
+  pull_request:
+    paths:
+    - 'backend/**/*'
+    - 'backend/*'
+
+
+jobs:
+  check-migrations:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-python@v1
+        with:
+          python-version: '3.7.4'
+      - run: pip install poetry
+      - name: Install dependencies
+        working-directory: backend
+        run: poetry install
+      - name: Check missing not pushed migrations
+        working-directory: backend
+        run: poetry run python manage.py makemigrations --check
+        env:
+          DJANGO_SETTINGS_MODULE: pycon.settings.dev
