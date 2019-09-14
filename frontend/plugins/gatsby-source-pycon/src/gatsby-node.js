@@ -20,8 +20,6 @@ exports.sourceNodes = async (
     { actions, createNodeId, cache, createContentDigest },
     options,
 ) => {
-
-
     const { addThirdPartySchema, createNode } = actions;
     const {
         url,

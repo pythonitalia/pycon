@@ -1,4 +1,5 @@
 import environ
+from django.utils.translation import gettext_lazy as _
 
 root = environ.Path(__file__) - 3  # three folder back (/a/b/c/ - 3 = /)
 
@@ -43,6 +44,7 @@ INSTALLED_APPS = [
     "pages.apps.PagesConfig",
     "sponsors.apps.SponsorsConfig",
     "cms.apps.CMSConfig",
+    "i18n",
     "importer",
 ]
 
@@ -51,6 +53,7 @@ MIDDLEWARE = [
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
@@ -99,7 +102,9 @@ AUTH_PASSWORD_VALIDATORS = [{"NAME": validator} for validator in PASSWORD_VALIDA
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "en"
+
+LANGUAGES = [("en", _("English")), ("it", _("Italian"))]
 
 LOCALE_PATHS = [root("locale")]
 

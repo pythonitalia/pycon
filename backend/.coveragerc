@@ -29,6 +29,7 @@ omit =
   ./**/integration_tests/*
   ./pycon/settings*
   ./pycon/wsgi.py
+  ./i18n/**
   ./**/migrations/*.py
   ./manage.py
   ./conftest.py

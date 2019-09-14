@@ -24,6 +24,18 @@ jobs:
   check-and-preview:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+        - 5432/tcp
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
     steps:
     - uses: actions/checkout@master
     - uses: actions/setup-python@v1
@@ -45,14 +57,14 @@ jobs:
 
         cd ../frontend/
         yarn build
-
         yarn codegen
       env:
         SECRET_KEY: demo
         AWS_MEDIA_BUCKET: demo
         DEFAULT_FILE_STORAGE: 'django.core.files.storage.FileSystemStorage'
-        DEBUG: True
         CONFERENCE_CODE: "pycon-demo"
+        DEBUG: True
+        DATABASE_URL: postgresql://postgres:postgres@localhost:${{ job.services.postgres.ports['5432'] }}/postgres
     - run: yarn tsc
       working-directory: frontend
     - uses: netlify/actions/cli@master

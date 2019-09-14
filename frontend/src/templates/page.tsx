@@ -41,11 +41,11 @@ export default ({ data }: { data: PageQuery }) => {
 };
 
 export const query = graphql`
-  query Page($slug: String!) {
+  query Page($slug: String!, $language: String!) {
     backend {
       page(slug: $slug) {
-        title
-        content
+        title(language: $language)
+        content(language: $language)
         image
 
         imageFile {

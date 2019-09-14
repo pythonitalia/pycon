@@ -5,9 +5,9 @@
     "fields": {
       "created": "2019-08-28T21:18:06.212Z",
       "modified": "2019-08-28T21:18:06.212Z",
-      "title": "Help Us",
-      "slug": "help-us",
-      "content": "# Demo \r\n\r\nhello world",
+      "title": "{ \"en\": \"Help Us\", \"it\": \"Aiutaci\" }",
+      "slug": "{ \"en\": \"help-us\", \"it\": \"aiutaci\" }",
+      "content": "{ \"en\": \"# Demo\", \"it\": \"# Demo\" }",
       "published": true,
       "image": "",
       "conference": 1

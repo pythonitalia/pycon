@@ -76,7 +76,8 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
                         slug
                     }
                     pages {
-                        slug
+                        slugEn: slug(language: "en")
+                        slugIt: slug(language: "it")
                     }
                 }
             }
@@ -101,12 +102,22 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         });
     });
 
-    result.data.backend.pages.forEach(({ slug }) => {
+    result.data.backend.pages.forEach(({ slugEn, slugIt }) => {
         createPage({
-            path: `/${slug}`,
+            path: `/it/${slugIt}`,
             component: pageTemplate,
             context: {
-                slug,
+                language: "it",
+                slug: slugIt,
+            },
+        });
+
+        createPage({
+            path: `/en/${slugEn}`,
+            component: pageTemplate,
+            context: {
+                language: "en",
+                slug: slugEn,
             },
         });
     });
