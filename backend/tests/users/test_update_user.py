@@ -3,7 +3,7 @@ import json
 import os
 
 import pytest
-from django.conf import settings
+from django.core.files.storage import default_storage
 from django.test import RequestFactory
 from PIL import Image
 
@@ -96,13 +96,6 @@ def _update_image(graphql_client, user, image):
     return (graphql_client.query(query=query, variables=variables), variables)
 
 
-def _upload_file(path):
-    post_data = {"file": open(path, "rb")}
-    request = RequestFactory().post("upload/", data=post_data)
-    resp = file_upload(request)
-    return json.loads(resp.content)["url"]
-
-
 @pytest.fixture()
 def image_sample():
 
@@ -117,10 +110,23 @@ def image_sample():
 
 
 @pytest.fixture()
-def create_sample_image(graphql_client, image_sample):
+def upload_file(image_sample):
     img, path = image_sample
+    post_data = {"file": open(path, "rb")}
+    request = RequestFactory().post("upload/", data=post_data)
+    resp = file_upload(request)
 
-    uploaded_path = _upload_file(path)
+    url = json.loads(resp.content)["url"]
+    yield url
+
+    if default_storage.exists(url):
+        default_storage.delete(url)
+
+
+@pytest.fixture()
+def create_sample_image(graphql_client, upload_file):
+
+    uploaded_path = upload_file
 
     user, _ = User.objects.get_or_create(email="user@example.it", password="password")
     graphql_client.force_login(user)
@@ -129,10 +135,9 @@ def create_sample_image(graphql_client, image_sample):
 
     yield (resp, variables)
 
-    url = resp["data"]["updateImage"]["image"]["url"]
-    path = settings.MEDIA_ROOT + "/" + url
-    if os.path.exists(path):
-        os.remove(path)
+    path = resp["data"]["updateImage"]["image"]["url"]
+    if default_storage.exists(path):
+        default_storage.delete(path)
 
 
 @pytest.mark.django_db
@@ -164,7 +169,6 @@ def test_update(graphql_client, user_factory):
 def test_update_image(graphql_client, create_sample_image):
 
     resp, variables = create_sample_image
-    print(resp)
     assert resp["data"]["updateImage"]["__typename"] == "MeUserType"
     assert (
         os.path.basename(variables["url"])
