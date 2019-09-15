@@ -11,9 +11,8 @@ def file_upload(request):
     file = request.FILES["file"]
     upload = File(file=file)
     upload.save()
-    url = upload.file.url
     if not settings.USE_AWS_S3:
-        import os
-
-        url = os.path.dirname(settings.MEDIA_ROOT) + url
+        url = upload.file.path
+    else:
+        url = upload.file.name
     return JsonResponse({"url": url})
