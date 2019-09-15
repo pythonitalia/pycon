@@ -3,7 +3,8 @@ from typing import List
 import strawberry
 from graphql import GraphQLError
 
-from .models import get_countries
+from users.models import get_countries
+
 from .types import Country, MeUser
 
 

@@ -44,7 +44,7 @@ def _update_user(graphql_client, user, **kwargs):
             country: $country
         }){
             __typename
-            ... on MeUserType {
+            ... on MeUser {
                 id
                 firstName
                 lastName
@@ -84,7 +84,7 @@ def _update_image(graphql_client, user, image):
                     validationUrl: url
                     nonFieldErrors
                 }
-                ... on MeUserType {
+                ... on MeUser {
                     id
                     image {
                         url
@@ -154,7 +154,7 @@ def test_update(graphql_client, user_factory):
     graphql_client.force_login(user)
     resp, variables = _update_user(graphql_client, user)
 
-    assert resp["data"]["update"]["__typename"] == "MeUserType"
+    assert resp["data"]["update"]["__typename"] == "MeUser"
     assert resp["data"]["update"]["id"] == str(user.id)
     assert resp["data"]["update"]["firstName"] == variables["first_name"]
     assert resp["data"]["update"]["lastName"] == variables["last_name"]
@@ -169,7 +169,7 @@ def test_update(graphql_client, user_factory):
 def test_update_image(graphql_client, create_sample_image):
 
     resp, variables = create_sample_image
-    assert resp["data"]["updateImage"]["__typename"] == "MeUserType"
+    assert resp["data"]["updateImage"]["__typename"] == "MeUser"
     assert (
         os.path.basename(variables["url"])
         in resp["data"]["updateImage"]["image"]["url"]

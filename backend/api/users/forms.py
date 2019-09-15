@@ -73,7 +73,7 @@ class UpdateUserForm(ContextAwareModelForm):
 
     def save(self, commit=True):
         super().save(commit=commit)
-        return User.objects.get(id=self.context.user.id)
+        return User.objects.get(id=self.context["request"].user.id)
 
     class Meta:
         model = User
@@ -94,7 +94,7 @@ class UpdateImageForm(FormWithContext):
         return cleaned_data
 
     def save(self):
-        user = self.context.user
+        user = self.context["request"].user
         url = self.cleaned_data.get("url")
 
         file = default_storage.open(url)

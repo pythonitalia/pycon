@@ -1,5 +1,5 @@
+from api.submissions.permissions import IsAuthenticated
 from strawberry_forms.mutations import FormMutation
-from submissions.permissions import IsAuthenticated
 
 from .forms import LoginForm, RegisterForm, UpdateForm, UpdateImageForm
 from .types import Image, MeUser
