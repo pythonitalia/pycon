@@ -3,9 +3,10 @@ import json
 import os
 
 import pytest
+from django.conf import settings
+from django.test import RequestFactory
 from PIL import Image
 
-from django.test import RequestFactory, override_settings
 from upload.views import file_upload
 from users.models import User
 
@@ -95,7 +96,7 @@ def _update_image(graphql_client, user, image):
     return (graphql_client.query(query=query, variables=variables), variables)
 
 
-def _upload_image(path):
+def _upload_file(path):
     post_data = {"file": open(path, "rb")}
     request = RequestFactory().post("upload/", data=post_data)
     resp = file_upload(request)
@@ -103,16 +104,35 @@ def _upload_image(path):
 
 
 @pytest.fixture()
-def create_sample_image():
+def image_sample():
 
     img = Image.new("RGB", (60, 30), color="red")
     path = "sample.png"
     img.save(path)
 
-    yield (img, _upload_image(path))
+    yield (img, path)
 
     if os.path.exists(path):
-        return os.remove(path)
+        os.remove(path)
+
+
+@pytest.fixture()
+def create_sample_image(graphql_client, image_sample):
+    img, path = image_sample
+
+    uploaded_path = _upload_file(path)
+
+    user, _ = User.objects.get_or_create(email="user@example.it", password="password")
+    graphql_client.force_login(user)
+
+    resp, variables = _update_image(graphql_client, user, uploaded_path)
+
+    yield (resp, variables)
+
+    url = resp["data"]["updateImage"]["image"]["url"]
+    path = settings.MEDIA_ROOT + "/" + url
+    if os.path.exists(path):
+        os.remove(path)
 
 
 @pytest.mark.django_db
@@ -141,15 +161,10 @@ def test_update(graphql_client, user_factory):
 
 
 @pytest.mark.django_db
-@override_settings(MEDIA_ROOT="/tmp/django_test")
 def test_update_image(graphql_client, create_sample_image):
-    img, path = create_sample_image
 
-    user, _ = User.objects.get_or_create(email="user@example.it", password="password")
-    graphql_client.force_login(user)
-
-    resp, variables = _update_image(graphql_client, user, path)
-
+    resp, variables = create_sample_image
+    print(resp)
     assert resp["data"]["updateImage"]["__typename"] == "MeUserType"
     assert (
         os.path.basename(variables["url"])

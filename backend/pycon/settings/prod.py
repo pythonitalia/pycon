@@ -11,15 +11,6 @@ USE_SCHEDULER = False
 # if FRONTEND_URL == "http://testfrontend.it/":
 #     raise ImproperlyConfigured("Please configure FRONTEND_URL for production")
 
-
-DEFAULT_FILE_STORAGE = env(
-    "DEFAULT_FILE_STORAGE", default="storages.backends.s3boto3.S3Boto3Storage"
-)
-AWS_STORAGE_BUCKET_NAME = env("AWS_MEDIA_BUCKET")
-AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
-AWS_DEFAULT_ACL = "public-read"
-AWS_QUERYSTRING_AUTH = False
-
 SENTRY_DSN = env("SENTRY_DSN", default="")
 
 if SENTRY_DSN:
