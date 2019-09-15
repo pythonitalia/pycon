@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.http import HttpResponseForbidden, JsonResponse
 
-from upload.models import File
+from upload.models import Upload
 
 
 def file_upload(request):
@@ -9,7 +9,7 @@ def file_upload(request):
         return HttpResponseForbidden()
 
     file = request.FILES["file"]
-    upload = File(file=file)
+    upload = Upload(file=file)
     upload.save()
     if not settings.USE_AWS_S3:
         url = upload.file.path

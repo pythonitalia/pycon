@@ -1,8 +1,9 @@
 from django.contrib import admin
-from upload.models import File
+
+from upload.models import Upload
 
 
-@admin.register(File)
+@admin.register(Upload)
 class FileAdmin(admin.ModelAdmin):
     list_display = ("file", "date_upload")
     search_filters = ("file", "date_upload")

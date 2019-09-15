@@ -5,7 +5,7 @@ import pytest
 from django.core.files.storage import default_storage
 from django.test import RequestFactory
 
-from upload.models import File
+from upload.models import Upload
 from upload.views import file_upload
 
 
@@ -46,7 +46,7 @@ def test_file_upload(upload_file):  # Create a sample test file on the fly
     resp, path = upload_file
 
     assert resp.status_code == 200
-    assert len(File.objects.all()) == 1
+    assert len(Upload.objects.all()) == 1
 
 
 def test_forbitten(file_sample):
