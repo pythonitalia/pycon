@@ -29,6 +29,7 @@ jobs:
             OUTPUT=$(poetry run pytest --cov-report xml --cov=. --cov-fail-under 100)
             STATUS=$?
             echo "$OUTPUT"
+            cd ..
             codecov
             exit $STATUS
         env:
