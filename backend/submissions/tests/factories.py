@@ -1,16 +1,16 @@
 import factory
 import factory.fuzzy
-from factory.django import DjangoModelFactory
-from pytest_factoryboy import register
-from submissions.models import Submission, SubmissionType
-from tests.conferences.factories import (
+from conferences.tests.factories import (
     AudienceLevelFactory,
     ConferenceFactory,
     DurationFactory,
     TopicFactory,
 )
-from tests.languages.factories import LanguageFactory
-from tests.users.factories import UserFactory
+from factory.django import DjangoModelFactory
+from languages.tests.factories import LanguageFactory
+from pytest_factoryboy import register
+from submissions.models import Submission, SubmissionType
+from users.tests.factories import UserFactory
 
 
 @register

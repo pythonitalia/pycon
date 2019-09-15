@@ -4,7 +4,7 @@ from blog.models import Post
 from django.utils import timezone
 from factory.django import DjangoModelFactory
 from pytest_factoryboy import register
-from tests.users.factories import UserFactory
+from users.tests.factories import UserFactory
 
 
 @register

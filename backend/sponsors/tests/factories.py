@@ -1,9 +1,9 @@
 import factory
 import factory.fuzzy
+from conferences.tests.factories import ConferenceFactory
 from factory.django import DjangoModelFactory
 from pytest_factoryboy import register
 from sponsors.models import Sponsor, SponsorLevel
-from tests.conferences.factories import ConferenceFactory
 
 
 @register

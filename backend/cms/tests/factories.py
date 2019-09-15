@@ -1,9 +1,9 @@
 import factory
 import factory.fuzzy
 from cms.models import GenericCopy
+from conferences.tests.factories import ConferenceFactory
 from factory.django import DjangoModelFactory
 from pytest_factoryboy import register
-from tests.conferences.factories import ConferenceFactory
 
 
 @register

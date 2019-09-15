@@ -25,9 +25,10 @@ exclude_lines =
 
 
 omit =
-  ./tests/*
-  ./integration_tests/*
+  ./**/tests/*
+  ./**/integration_tests/*
   ./pycon/settings*
   ./pycon/wsgi.py
   ./**/migrations/*.py
   ./manage.py
+  ./conftest.py

@@ -1,12 +1,12 @@
 import factory.fuzzy
 from conferences.models import TicketFareQuestion
+from conferences.tests.factories import TicketFareFactory
 from factory.django import DjangoModelFactory
+from orders.tests.factories import OrderFactory
 from pytest_factoryboy import register
-from tests.conferences.factories import TicketFareFactory
-from tests.orders.factories import OrderFactory
-from tests.users.factories import UserFactory
 from tickets import QUESTION_TYPES
 from tickets.models import Ticket, TicketQuestion, TicketQuestionChoice, UserAnswer
+from users.tests.factories import UserFactory
 
 
 @register

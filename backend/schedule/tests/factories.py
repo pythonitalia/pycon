@@ -1,11 +1,11 @@
 import factory
 import factory.fuzzy
 import pytz
+from conferences.tests.factories import ConferenceFactory
 from factory.django import DjangoModelFactory
 from pytest_factoryboy import register
 from schedule.models import Room, ScheduleItem
-from tests.conferences.factories import ConferenceFactory
-from tests.submissions.factories import SubmissionFactory
+from submissions.tests.factories import SubmissionFactory
 
 
 @register

@@ -20,9 +20,6 @@ def _query_sponsors(client, conference_code):
 
 
 def _get_image_url(request, image):
-    if not image:
-        return None
-
     return request.build_absolute_uri(image.url)
 
 

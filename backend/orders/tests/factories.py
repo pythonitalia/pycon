@@ -5,7 +5,7 @@ import factory.fuzzy
 from factory.django import DjangoModelFactory
 from orders.models import Order, OrderItem
 from pytest_factoryboy import register
-from tests.users.factories import UserFactory
+from users.tests.factories import UserFactory
 
 
 @register
