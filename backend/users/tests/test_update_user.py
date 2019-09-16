@@ -72,16 +72,27 @@ def _update_user(graphql_client, user, **kwargs):
 
 def _update_image(graphql_client, user, image):
 
-    variables = {"user": user.id, "url": image}
+    variables = {
+        "user": user.id,
+        "image": image,
+        "open_to_recruiting": user.open_to_recruiting,
+        "open_to_newsletter": user.open_to_newsletter,
+    }
 
     query = """
         mutation(
-            $url: String!
+            $image: String!,
+            $open_to_recruiting: Boolean!,
+            $open_to_newsletter: Boolean!
         ){
-            updateImage(input: {url: $url}) {
+            update(input: {
+            image: $image,
+            openToRecruiting: $open_to_recruiting,
+            openToNewsletter: $open_to_newsletter
+            }) {
                 __typename
-                ... on UpdateImageErrors {
-                    validationUrl: url
+                ... on UpdateErrors {
+                    validationImage: image
                     nonFieldErrors
                 }
                 ... on MeUser {
@@ -135,7 +146,7 @@ def create_sample_image(graphql_client, upload_file):
 
     yield (resp, variables)
 
-    path = resp["data"]["updateImage"]["image"]["url"]
+    path = resp["data"]["update"]["image"]["url"]
     if default_storage.exists(path):
         default_storage.delete(path)
 
@@ -169,21 +180,20 @@ def test_update(graphql_client, user_factory):
 def test_update_image(graphql_client, create_sample_image):
 
     resp, variables = create_sample_image
-    assert resp["data"]["updateImage"]["__typename"] == "MeUser"
+    assert resp["data"]["update"]["__typename"] == "MeUser"
     assert (
-        os.path.basename(variables["url"])
-        in resp["data"]["updateImage"]["image"]["url"]
+        os.path.basename(variables["image"]) in resp["data"]["update"]["image"]["url"]
     )
 
 
 @pytest.mark.django_db
-def test_update_image_file_not_fount(graphql_client):
+def test_update_image_file_not_found(graphql_client):
     user, _ = User.objects.get_or_create(email="user@example.it", password="password")
     graphql_client.force_login(user)
 
     resp, variables = _update_image(graphql_client, user, "boh/file_not_found.jpg")
 
-    assert resp["data"]["updateImage"]["__typename"] == "UpdateImageErrors"
-    assert resp["data"]["updateImage"]["validationUrl"] == [
+    assert resp["data"]["update"]["__typename"] == "UpdateErrors"
+    assert resp["data"]["update"]["validationImage"] == [
         "File 'file_not_found.jpg' not found"
     ]

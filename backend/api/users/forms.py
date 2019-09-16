@@ -70,34 +70,33 @@ class UpdateUserForm(ContextAwareModelForm):
     open_to_recruiting = BooleanField(required=False)
     open_to_newsletter = BooleanField(required=False)
     country = CharField(required=False)
+    image = CharField(required=False)
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        image = self.cleaned_data.get("image")
+        if image:
+            if not default_storage.exists(image):
+                name = os.path.basename(image)
+                raise exceptions.ValidationError(
+                    {"image": _(f"File '{name}' not found")}
+                )
+
+        return cleaned_data
 
     def save(self, commit=True):
+        user = self.context["request"].user
+
+        image = self.cleaned_data.get("image")
+        if image:
+            file = default_storage.open(image)
+            user.image.save(os.path.basename(image), file)
+            default_storage.delete(image)
+
         super().save(commit=commit)
         return User.objects.get(id=self.context["request"].user.id)
 
     class Meta:
         model = User
         fields = ("first_name", "last_name", "gender")
-
-
-class UpdateImageForm(FormWithContext):
-    url = CharField()
-
-    def clean(self):
-        cleaned_data = super().clean()
-        url = self.cleaned_data.get("url")
-
-        if not default_storage.exists(url):
-            name = os.path.basename(url)
-            raise exceptions.ValidationError({"url": _(f"File '{name}' not found")})
-
-        return cleaned_data
-
-    def save(self):
-        user = self.context["request"].user
-        url = self.cleaned_data.get("url")
-
-        file = default_storage.open(url)
-        user.image.save(os.path.basename(url), file)
-        default_storage.delete(url)
-        return user
