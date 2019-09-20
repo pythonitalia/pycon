@@ -61,10 +61,10 @@ description = "The AWS SDK for Python"
 name = "boto3"
 optional = false
 python-versions = "*"
-version = "1.9.228"
+version = "1.9.232"
 
 [package.dependencies]
-botocore = ">=1.12.228,<1.13.0"
+botocore = ">=1.12.232,<1.13.0"
 jmespath = ">=0.7.1,<1.0.0"
 s3transfer = ">=0.2.0,<0.3.0"
 
@@ -74,7 +74,7 @@ description = "Low-level, data-driven core of boto 3."
 name = "botocore"
 optional = false
 python-versions = "*"
-version = "1.12.228"
+version = "1.12.232"
 
 [package.dependencies]
 docutils = ">=0.10,<0.16"
@@ -894,8 +894,8 @@ astroid = ["6560e1e1749f68c64a4b5dee4e091fce798d2f0d84ebe638cf0e0585a343acf4", "
 atomicwrites = ["03472c30eb2c5d1ba9227e4c2ca66ab8287fbfbbda3888aa93dc2e28fc6811b4", "75a9445bac02d8d058d5e1fe689654ba5a6556a1dfd8ce6ec55a0ed79866cfa6"]
 attrs = ["69c0dbf2ed392de1cb5ec704444b08a5ef81680a61cb899dc08127123af36a79", "f0b870f674851ecbfbbbd364d6b5cbdff9dcedbc7f3f5e18a6891057f21fe399"]
 billiard = ["01afcb4e7c4fd6480940cfbd4d9edc19d7a7509d6ada533984d0d0f49901ec82", "b8809c74f648dfe69b973c8e660bcec00603758c9db8ba89d7719f88d5f01f26"]
-boto3 = ["778e66711d7de9352b6330692ae44c0ba012559dabb4c39d7416b0135fb335a6", "c8371f1f9c52f64cef1f14a773629fc8434ecca6195b2ef2a429a7bbbf8ecf23"]
-botocore = ["7c391c46cf1f8d6c04758f84b51337a64136077e4a160eced87551fdcc051669", "c9148df92ba21a90ea32f2c7f185c31b1c8b8e48417d0ba8cad02b9b3336c09a"]
+boto3 = ["0e4d047feb4d7d701e9b2107f10bb8d674952243385cd35d0b413a273c299751", "67f957389cf56fb4c24c1093c6d58baebe6cf18139f6dca0f8a177239b0a4f8c"]
+botocore = ["724d2349198c6f15f3cee0c0e4d33ecf4435e6d0db311bb79a3a28f6cf5a4090", "a57a8fd0145c68e31bb4baab549b27a12f6695068c8dd5f2901d8dc06572dbeb"]
 celery = ["4c4532aa683f170f40bd76f928b70bc06ff171a959e06e71bf35f2f9d6031ef9", "528e56767ae7e43a16cfef24ee1062491f5754368d38fcfffa861cdb9ef219be"]
 certifi = ["e4f3620cfea4f83eedc95b24abd9cd56f3c4b146dd0177e83a21b4eb49e21e50", "fd7c7c74727ddcf00e9acd26bba8da604ffec95bf1c2144e67aff7a8b50e6cef"]
 chardet = ["84ab92ed1c4d4f16916e05906b6b75a6c0fb5db821cc65e70cbd64a3e2a5eaae", "fc323ffcaeaed0e0a02bf4d117757b98aed530d9ed4531e3e15460124c106691"]
