@@ -12,6 +12,7 @@ from api.sponsors.types import SponsorsByLevel
 from api.submissions.types import Submission, SubmissionType
 from cms.models import GenericCopy
 
+from ..helpers.i18n import make_localized_resolver
 from .helpers.maps import generate_map_image
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -57,11 +58,13 @@ class Map:
 class Conference:
     id: strawberry.ID
 
-    name: str
+    name: str = strawberry.field(resolver=make_localized_resolver("name"))
+    introduction: str = strawberry.field(
+        resolver=make_localized_resolver("introduction")
+    )
     code: str
     start: DateTime
     end: DateTime
-    introduction: str
 
     @strawberry.field
     def timezone(self, info) -> str:

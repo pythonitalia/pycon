@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+from i18n.fields import I18nCharField, I18nTextField
 from model_utils.models import TimeFramedModel, TimeStampedModel
 from timezone_field import TimeZoneField
 
@@ -8,7 +9,7 @@ from .deadline import Deadline
 
 
 class Conference(TimeFramedModel, TimeStampedModel):
-    name = models.CharField(_("name"), max_length=100)
+    name = I18nCharField(_("name"), max_length=100)
     code = models.CharField(_("code"), max_length=10, unique=True)
     timezone = TimeZoneField()
 
@@ -32,7 +33,7 @@ class Conference(TimeFramedModel, TimeStampedModel):
         _("longitude"), max_digits=9, decimal_places=6, blank=True, null=True
     )
     map_link = models.URLField(_("map link"), blank=True)
-    introduction = models.TextField(_("introduction"), blank=False)
+    introduction = I18nTextField(_("introduction"), blank=False)
 
     @property
     def is_cfp_open(self):

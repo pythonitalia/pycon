@@ -29,8 +29,8 @@ def test_get_conference_info(conference, ticket_fare_factory, graphql_client):
     assert {
         "id": str(conference.id),
         "code": conference.code,
-        "name": conference.name,
-        "introduction": conference.introduction,
+        "name": str(conference.name),
+        "introduction": str(conference.introduction),
         "ticketFares": [{"id": str(ticket.id), "name": ticket.name}],
     } == resp["data"]["conference"]
 

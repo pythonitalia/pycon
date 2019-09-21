@@ -2,6 +2,7 @@ from datetime import datetime
 
 from django.core import exceptions
 from django.utils import timezone
+from i18n.strings import LazyI18nString
 from pytest import mark, raises
 
 
@@ -131,7 +132,9 @@ def test_conference_can_have_multiple_custom_deadlines(deadline_factory):
 
 @mark.django_db
 def test_conference_to_str(conference_factory):
-    assert "Ciao Mondo <ep1>" == str(conference_factory(name="Ciao Mondo", code="ep1"))
+    assert "Ciao Mondo <ep1>" == str(
+        conference_factory(name=LazyI18nString({"en": "Ciao Mondo"}), code="ep1")
+    )
 
 
 @mark.django_db

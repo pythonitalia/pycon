@@ -91,6 +91,23 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
 
     const blogPostTemplate = path.resolve(`src/templates/blog-post.tsx`);
     const pageTemplate = path.resolve(`src/templates/page.tsx`);
+    const homeTemplate = path.resolve(`src/templates/home.tsx`);
+
+    createPage({
+        path: `/it`,
+        component: homeTemplate,
+        context: {
+            language: "it",
+        },
+    });
+
+    createPage({
+        path: `/en`,
+        component: homeTemplate,
+        context: {
+            language: "en",
+        },
+    });
 
     result.data.backend.blogPosts.forEach(({ slug }) => {
         createPage({
