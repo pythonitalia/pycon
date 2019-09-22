@@ -1,3 +1,4 @@
+# hi
 [build]
     base    = "frontend"
 
@@ -9,8 +10,8 @@
     force = true
 
 [[redirects]]
-    from = "/static/*"
-    to = "https://d1111jewijk23m.cloudfront.net/static/:splat"
+    from = "/django-static/*"
+    to = "https://d1111jewijk23m.cloudfront.net/django-static/:splat"
     status = 200
     force = true
 

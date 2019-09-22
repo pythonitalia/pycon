@@ -122,7 +122,7 @@ USE_TZ = True
 
 STATICFILES_DIRS = [root("assets")]
 
-STATIC_URL = "/static/"
+STATIC_URL = "/django-static/"
 STATIC_ROOT = root("static")
 
 MEDIA_URL = "/media/"
