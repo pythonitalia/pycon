@@ -1,5 +1,6 @@
 import pytz
 from django.utils import timezone
+from i18n.strings import LazyI18nString
 from pytest import mark
 
 
@@ -380,7 +381,9 @@ def test_get_conference_copy(conference_factory, generic_copy_factory, graphql_c
     conference = conference_factory()
     conference_b = conference_factory()
 
-    generic_copy_factory(conference=conference, key="intro", content="hello!")
+    generic_copy_factory(
+        conference=conference, key="intro", content=LazyI18nString({"en": "hello!"})
+    )
 
     resp = graphql_client.query(
         """

@@ -74,10 +74,10 @@ export const query = graphql`
         name(language: $language)
         introduction(language: $language)
 
-        introTitle: copy(key: "intro-title-1")
-        introText: copy(key: "intro-text-1")
-        introTitle2: copy(key: "intro-title-2")
-        introText2: copy(key: "intro-text-2")
+        introTitle: copy(key: "intro-title-1", language: $language)
+        introText: copy(key: "intro-text-1", language: $language)
+        introTitle2: copy(key: "intro-title-2", language: $language)
+        introText2: copy(key: "intro-text-2", language: $language)
 
         sponsorsByLevel {
           level
