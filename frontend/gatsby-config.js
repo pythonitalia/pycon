@@ -3,6 +3,7 @@ const CONFERENCE_CODE = process.env.CONFERENCE_CODE || "pycon-demo";
 
 module.exports = {
     plugins: [
+        `gatsby-plugin-netlify`,
         {
             resolve: "gatsby-source-pycon",
             options: {
