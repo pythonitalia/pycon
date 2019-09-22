@@ -21,6 +21,12 @@
     force = true
 
 [[redirects]]
+    from = "/graphql"
+    to = "https://d1111jewijk23m.cloudfront.net/graphql"
+    status = 200
+    force = true
+
+[[redirects]]
     from = "/"
     to = "/it"
     status = 301
