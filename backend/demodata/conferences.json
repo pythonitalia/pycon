@@ -12,15 +12,15 @@
       "modified": "2019-08-24T13:18:12.148Z",
       "start": null,
       "end": null,
-      "name": "PyCon Demo",
+      "name": "{ \"en\": \"PyCon Demo\", \"it\": \"PyCon Prova\" }",
       "code": "pycon-demo",
       "timezone": "Europe/Rome",
-      "introduction": "This is a demo conference, sorry it is not happening!",
+      "introduction": "{ \"en\": \"This is a demo conference, sorry it is not happening!\", \"it\": \"Questa è una conferenze di prova.\" }",
       "latitude": 43.766140,
       "longitude": 11.269985,
       "map_link": "https://goo.gl/maps/ogYFG5yr7rSHFr586",
       "topics": [1],
-      "languages": [1, 2],
+      "languages": [],
       "audience_levels": [1],
       "submission_types": [1]
     }

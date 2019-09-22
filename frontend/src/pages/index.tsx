@@ -7,15 +7,15 @@ import { Faq } from "../components/home-faq";
 import { MaxWidthWrapper } from "../components/max-width-wrapper";
 import { SponsorList } from "../components/sponsor-list";
 import { TwoColumnsText } from "../components/two-columns-text";
-import { HomePageQuery } from "../generated/graphql";
+import { HomeQuery } from "../generated/graphql";
 import { HomeLayout } from "../layouts/home";
 
 export default () => {
   const {
     heroImage,
     backend: { conference },
-  } = useStaticQuery<HomePageQuery>(graphql`
-    query HomePage {
+  } = useStaticQuery<HomeQuery>(graphql`
+    query Home {
       heroImage: file(relativePath: { eq: "images/hero.jpg" }) {
         childImageSharp {
           fluid(maxWidth: 1600) {

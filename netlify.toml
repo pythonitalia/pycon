@@ -19,3 +19,16 @@
     to = "https://d1111jewijk23m.cloudfront.net/media/:splat"
     status = 200
     force = true
+
+[[redirects]]
+    from = "/"
+    to = "/it"
+    status = 301
+    force = false
+    conditions = {Language = ["it"]}
+
+[[redirects]]
+    from = "/"
+    to = "/en"
+    status = 301
+    force = false

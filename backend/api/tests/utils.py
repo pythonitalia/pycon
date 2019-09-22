@@ -5,7 +5,7 @@ class GraphQLClient:
     def __init__(self, client):
         self._client = client
 
-    def query(self, query, op_name=None, variables=None):
+    def query(self, query, op_name=None, variables=None, headers=None):
         """
         Args:
             query (string) - GraphQL query to run
@@ -25,8 +25,10 @@ class GraphQLClient:
         if variables:
             body["variables"] = variables
 
+        headers = headers or {}
+
         resp = self._client.post(
-            "/graphql", json.dumps(body), content_type="application/json"
+            "/graphql", json.dumps(body), content_type="application/json", **headers
         )
 
         return json.loads(resp.content.decode())

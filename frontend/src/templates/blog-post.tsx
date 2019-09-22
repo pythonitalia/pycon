@@ -15,8 +15,6 @@ const compile = marksy({
 export default ({ data }: { data: PostQuery }) => {
   const post = data.backend.blogPost!;
 
-  console.log(post);
-
   return (
     <HomeLayout>
       <MaxWidthWrapper>

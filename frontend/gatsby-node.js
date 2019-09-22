@@ -66,7 +66,7 @@ exports.createResolvers = ({
 };
 
 exports.createPages = async ({ graphql, actions, reporter }) => {
-    const { createPage } = actions;
+    const { createPage, createRedirect } = actions;
 
     const result = await graphql(
         `
@@ -76,7 +76,8 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
                         slug
                     }
                     pages {
-                        slug
+                        slugEn: slug(language: "en")
+                        slugIt: slug(language: "it")
                     }
                 }
             }
@@ -90,6 +91,23 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
 
     const blogPostTemplate = path.resolve(`src/templates/blog-post.tsx`);
     const pageTemplate = path.resolve(`src/templates/page.tsx`);
+    const homeTemplate = path.resolve(`src/templates/home.tsx`);
+
+    createPage({
+        path: `/it`,
+        component: homeTemplate,
+        context: {
+            language: "it",
+        },
+    });
+
+    createPage({
+        path: `/en`,
+        component: homeTemplate,
+        context: {
+            language: "en",
+        },
+    });
 
     result.data.backend.blogPosts.forEach(({ slug }) => {
         createPage({
@@ -101,12 +119,22 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         });
     });
 
-    result.data.backend.pages.forEach(({ slug }) => {
+    result.data.backend.pages.forEach(({ slugEn, slugIt }) => {
         createPage({
-            path: `/${slug}`,
+            path: `/it/${slugIt}`,
             component: pageTemplate,
             context: {
-                slug,
+                language: "it",
+                slug: slugIt,
+            },
+        });
+
+        createPage({
+            path: `/en/${slugEn}`,
+            component: pageTemplate,
+            context: {
+                language: "en",
+                slug: slugEn,
             },
         });
     });

@@ -31,6 +31,7 @@ class ConferenceAdmin(admin.ModelAdmin):
                 "fields": (
                     "name",
                     "code",
+                    "introduction",
                     "timezone",
                     "latitude",
                     "longitude",

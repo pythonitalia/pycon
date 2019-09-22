@@ -1,11 +1,12 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from i18n.fields import I18nTextField
 from model_utils.models import TimeStampedModel
 
 
 class GenericCopy(TimeStampedModel):
     key = models.SlugField(_("slug"), max_length=200)
-    content = models.TextField(_("content"), blank=False)
+    content = I18nTextField(_("content"), blank=False)
     conference = models.ForeignKey(
         "conferences.Conference",
         on_delete=models.CASCADE,

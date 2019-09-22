@@ -17,4 +17,4 @@ class PagesQuery:
 
     @strawberry.field
     def page(self, info, code: str, slug: str) -> Optional[PageType]:
-        return Page.published_pages.filter(conference__code=code, slug=slug).first()
+        return Page.published_pages.by_slug(slug).filter(conference__code=code).first()

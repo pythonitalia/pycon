@@ -11,6 +11,7 @@ from conferences.models import (
 )
 from django.utils import timezone
 from factory.django import DjangoModelFactory
+from i18n.helpers.tests import LanguageFactory
 from languages.models import Language
 from pytest_factoryboy import register
 from submissions.models import SubmissionType
@@ -18,9 +19,9 @@ from submissions.models import SubmissionType
 
 @register
 class ConferenceFactory(DjangoModelFactory):
-    name = factory.Faker("name")
+    name = LanguageFactory("name")
     code = factory.Faker("text", max_nb_chars=10)
-    introduction = factory.Faker("sentence")
+    introduction = LanguageFactory("sentence")
 
     start = factory.Faker("past_datetime", tzinfo=pytz.UTC)
     end = factory.Faker("future_datetime", tzinfo=pytz.UTC)
