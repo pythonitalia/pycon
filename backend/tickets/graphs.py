@@ -10,6 +10,7 @@ from django.db.models.functions import Concat, TruncDate
 
 from conferences.models import Conference
 from conferences.models.deadline import Deadline
+from i18n.fields import I18nCharField
 from tickets.models import Ticket
 
 
@@ -40,13 +41,19 @@ def get_deadlines(conference):
         output_field=fields.DurationField(),
     )
 
-    deadlines = (
+    deadlines = list(
         Deadline.objects.filter(conference_id=conference.id, end__lte=conference.end)
         .annotate(days_to_start=date_diff_start, days_to_end=date_diff_end)
         .values(
             days_to_start=date_diff_start,
             days_to_end=date_diff_end,
-            description=Concat("conference__name", Value("-"), "name", Value(" start")),
+            description=Concat(
+                "conference__name",
+                Value("-"),
+                "name",
+                Value(" start"),
+                output_field=I18nCharField(),
+            ),
         )
     )
 
