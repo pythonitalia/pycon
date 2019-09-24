@@ -2442,12 +2442,12 @@
     "@types/unist" "*"
     "@types/vfile-message" "*"
 
-"@typescript-eslint/eslint-plugin-tslint@^2.3.0":
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/@typescript-eslint/eslint-plugin-tslint/-/eslint-plugin-tslint-2.3.0.tgz#e78e2d0349da525a275b59a328d00f9148d29450"
-  integrity sha512-dhkJtS40dkjPcYlTMNWRMsjz6zOTeT8ZTyNeNZqibc3HfD51LoPj6oYVWrngc4aVCzw/FabEZVu+gRKg+lvlDg==
+"@typescript-eslint/eslint-plugin-tslint@^2.3.1":
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/@typescript-eslint/eslint-plugin-tslint/-/eslint-plugin-tslint-2.3.1.tgz#6bfbd974e67388008163abf94c8e36c67e50b4f7"
+  integrity sha512-noUFbrxeUdFTbOf1DUFzbEpfzEiS10O63emB4zBZ/iR+Sw91zydF7AQjN16vKfc9IMfHHFBrpfRMytNpPE+n3w==
   dependencies:
-    "@typescript-eslint/experimental-utils" "2.3.0"
+    "@typescript-eslint/experimental-utils" "2.3.1"
     lodash.memoize "^4.1.2"
 
 "@typescript-eslint/eslint-plugin@^1.13.0":
@@ -2480,15 +2480,6 @@
     "@types/json-schema" "^7.0.3"
     "@typescript-eslint/typescript-estree" "1.13.0"
     eslint-scope "^4.0.0"
-
-"@typescript-eslint/experimental-utils@2.3.0":
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/@typescript-eslint/experimental-utils/-/experimental-utils-2.3.0.tgz#19a8e1b8fcee7d7469f3b44691d91830568de140"
-  integrity sha512-ry+fgd0Hh33LyzS30bIhX/a1HJpvtnecjQjWxxsZTavrRa1ymdmX7tz+7lPrPAxB018jnNzwNtog6s3OhxPTAg==
-  dependencies:
-    "@types/json-schema" "^7.0.3"
-    "@typescript-eslint/typescript-estree" "2.3.0"
-    eslint-scope "^5.0.0"
 
 "@typescript-eslint/experimental-utils@2.3.1":
   version "2.3.1"
@@ -2526,16 +2517,6 @@
   dependencies:
     lodash.unescape "4.0.1"
     semver "5.5.0"
-
-"@typescript-eslint/typescript-estree@2.3.0":
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/@typescript-eslint/typescript-estree/-/typescript-estree-2.3.0.tgz#fd8faff7e4c73795c65e5817c52f9038e33ef29d"
-  integrity sha512-WBxfwsTeCOsmQ7cLjow7lgysviBKUW34npShu7dxJYUQCbSG5nfZWZTgmQPKEc+3flpbSM7tjXjQOgETYp+njQ==
-  dependencies:
-    glob "^7.1.4"
-    is-glob "^4.0.1"
-    lodash.unescape "4.0.1"
-    semver "^6.3.0"
 
 "@typescript-eslint/typescript-estree@2.3.1":
   version "2.3.1"
