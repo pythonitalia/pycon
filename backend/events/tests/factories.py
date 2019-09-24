@@ -11,7 +11,7 @@ from ..models import Event
 @register
 class EventFactory(DjangoModelFactory):
     conference = factory.SubFactory(ConferenceFactory)
-    title = LanguageFactory("Sent")
+    title = LanguageFactory("sentence")
     slug = LanguageFactory("slug")
     content = LanguageFactory("text")
 

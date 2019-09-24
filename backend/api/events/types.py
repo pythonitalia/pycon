@@ -1,0 +1,19 @@
+from typing import TYPE_CHECKING, Optional
+
+import strawberry
+
+from ..helpers.i18n import make_localized_resolver
+from ..helpers.maps import Map, resolve_map
+
+if TYPE_CHECKING:  # pragma: no cover
+    from api.conferences.types import Conference
+
+
+@strawberry.type
+class Event:
+    id: strawberry.ID
+    conference: "Conference"
+    title: str = strawberry.field(resolver=make_localized_resolver("title"))
+    slug: str = strawberry.field(resolver=make_localized_resolver("slug"))
+    content: str = strawberry.field(resolver=make_localized_resolver("content"))
+    map: Optional[Map] = strawberry.field(resolver=resolve_map)
