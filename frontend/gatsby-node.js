@@ -93,6 +93,12 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     const pageTemplate = path.resolve(`src/templates/page.tsx`);
     const homeTemplate = path.resolve(`src/templates/home.tsx`);
 
+    createRedirect({
+        fromPath: `/`,
+        redirectInBrowser: true,
+        toPath: `/en`,
+    });
+
     createPage({
         path: `/it`,
         component: homeTemplate,
