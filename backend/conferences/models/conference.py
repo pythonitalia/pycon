@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+from helpers.models import GeoLocalizedModel
 from i18n.fields import I18nCharField, I18nTextField
 from model_utils.models import TimeFramedModel, TimeStampedModel
 from timezone_field import TimeZoneField
@@ -8,7 +9,7 @@ from timezone_field import TimeZoneField
 from .deadline import Deadline
 
 
-class Conference(TimeFramedModel, TimeStampedModel):
+class Conference(GeoLocalizedModel, TimeFramedModel, TimeStampedModel):
     name = I18nCharField(_("name"), max_length=100)
     code = models.CharField(_("code"), max_length=10, unique=True)
     timezone = TimeZoneField()
@@ -26,13 +27,6 @@ class Conference(TimeFramedModel, TimeStampedModel):
         "submissions.SubmissionType", verbose_name=_("submission types"), blank=True
     )
 
-    latitude = models.DecimalField(
-        _("latitude"), max_digits=9, decimal_places=6, blank=True, null=True
-    )
-    longitude = models.DecimalField(
-        _("longitude"), max_digits=9, decimal_places=6, blank=True, null=True
-    )
-    map_link = models.URLField(_("map link"), blank=True)
     introduction = I18nTextField(_("introduction"), blank=False)
 
     @property

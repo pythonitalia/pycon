@@ -1,0 +1,20 @@
+[
+  {
+    "model": "events.event",
+    "pk": 1,
+    "fields": {
+      "created": "2019-09-23T22:07:36.731Z",
+      "modified": "2019-09-23T22:08:50.200Z",
+      "start": "2019-09-23T22:07:33Z",
+      "end": "2019-09-23T22:07:35Z",
+      "latitude": null,
+      "longitude": null,
+      "map_link": "",
+      "title": { "en": "Example event", "it": "Evento d'esempio" },
+      "slug": { "en": "example", "it": "esempio" },
+      "content": { "en": "ABC", "it": "ABC" },
+      "conference": 1,
+      "image": "events/40896349283_686882463e_o.jpg"
+    }
+  }
+]
