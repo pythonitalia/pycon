@@ -85,7 +85,7 @@ export const query = graphql`
           imageFile {
             childImageSharp {
               fluid(
-                fit: CONTAIN
+                duotone: { highlight: "#0066FF", shadow: "#0B0040" }
                 maxWidth: 600
                 maxHeight: 300
                 background: "white"
@@ -100,8 +100,8 @@ export const query = graphql`
           level
           sponsors {
             name
-            image
             link
+            image
             imageFile {
               childImageSharp {
                 fluid(

@@ -1,3 +1,4 @@
+import Img, { GatsbyImageProps } from "gatsby-image";
 import { Column, Row } from "grigliata";
 import React, { useEffect } from "react";
 import styled from "styled-components";
@@ -9,73 +10,93 @@ import { SectionTitle } from "../section-title";
 
 type PyConEvent = {
   title: string;
+  imageFile: {
+    childImageSharp: GatsbyImageProps | null;
+  } | null;
 };
 
-const Wrapper = styled.div`
-    @media (min-width: 1024px) {
-      margin-top: 2rem;
-    }
-    p {
-      margin-top: 0;
-    }
-  `,
-  EventsContainer = styled.div`
-    overflow-x: scroll;
-    width: 100%;
-    white-space: nowrap;
-    &:hover {
-      cursor: pointer;
-    }
-    -ms-overflow-style: none; // IE 10+
-    scrollbar-width: none; // Firefox
-    &::-webkit-scrollbar {
-      display: none; // Safari and Chrome
-    }
+const BackgroundImage = styled(Img)`
+  position: absolute !important;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+`;
 
-    .event_card {
-      display: inline-block;
-      margin-right: 16px;
-      padding: 8px;
-      color: ${theme.palette.white};
-      &:first-child {
-        margin-left: 2.5rem;
-        @media (min-width: 1024px) {
-          margin-left: 15rem;
-        }
-      }
-      .event_card_content {
-        position: absolute;
-        left: 16px;
-        bottom: 16px;
-      }
-      .event_card_content__title {
-        color: ${theme.palette.white};
-        margin: 0;
-      }
-      .event_card_content__subtitle {
-        color: ${theme.palette.white};
-        margin: 0;
+const Wrapper = styled.div`
+  @media (min-width: 1024px) {
+    margin-top: 2rem;
+  }
+  p {
+    margin-top: 0;
+  }
+`;
+
+const EventsContainer = styled.div`
+  overflow-x: scroll;
+  width: 100%;
+  white-space: nowrap;
+  &:hover {
+    cursor: pointer;
+  }
+  -ms-overflow-style: none; // IE 10+
+  scrollbar-width: none; // Firefox
+  &::-webkit-scrollbar {
+    display: none; // Safari and Chrome
+  }
+
+  .event_card {
+    display: inline-block;
+    margin-right: 16px;
+    padding: 8px;
+    color: ${theme.palette.white};
+    &:first-child {
+      margin-left: 2.5rem;
+      @media (min-width: 1024px) {
+        margin-left: 15rem;
       }
     }
-  `,
-  EventCard = styled.div`
-    background: linear-gradient(
-      29.43deg,
-      #0c67ff 0%,
-      rgba(12, 103, 255, 0.0001) 125.98%
-    );
-    box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.08);
-    border-radius: 8px;
-    height: 200px;
-    width: 300px;
-    position: relative;
-  `,
-  EventCardContent = ({ event }: { event: PyConEvent }) => (
+    .event_card_content {
+      position: absolute;
+      left: 16px;
+      bottom: 16px;
+    }
+    .event_card_content__title {
+      color: ${theme.palette.white};
+      margin: 0;
+    }
+    .event_card_content__subtitle {
+      color: ${theme.palette.white};
+      margin: 0;
+    }
+  }
+`;
+
+const EventCard = styled.div`
+  background: linear-gradient(
+    29.43deg,
+    #0c67ff 0%,
+    rgba(12, 103, 255, 0.0001) 125.98%
+  );
+  box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  height: 200px;
+  width: 300px;
+  position: relative;
+  overflow: hidden;
+`;
+
+const EventCardContent = ({ event }: { event: PyConEvent }) => (
+  <>
+    {event.imageFile && (
+      <BackgroundImage {...event.imageFile.childImageSharp} alt="" />
+    )}
     <div className="event_card_content">
       <p className="event_card_content__title">h. 21:00 Pub James Joyce</p>
       <p className="event_card_content__subtitle">{event.title}</p>
     </div>
-  );
+  </>
+);
 
 export const Events = ({ events }: { events: PyConEvent[] }) => {
   useEffect(() => {
