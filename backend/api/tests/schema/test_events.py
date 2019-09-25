@@ -1,4 +1,5 @@
 from django.utils import timezone
+from helpers.tests import get_image_url_from_request
 from i18n.strings import LazyI18nString
 from pytest import mark
 
@@ -90,3 +91,29 @@ def test_query_events_map(graphql_client, conference_factory, event_factory):
     event = resp["data"]["conference"]["events"][0]
 
     assert event["map"] is not None
+
+
+@mark.django_db
+def test_query_events_image(rf, graphql_client, conference_factory, event_factory):
+    now = timezone.now()
+    request = rf.get("/")
+
+    conference = conference_factory(start=now, end=now + timezone.timedelta(days=3))
+    event = event_factory(conference=conference, latitude=1, longitude=1)
+
+    resp = graphql_client.query(
+        """query($code: String!) {
+            conference(code: $code) {
+                events {
+                    image
+                }
+            }
+        }""",
+        variables={"code": conference.code},
+    )
+
+    assert not resp.get("errors")
+
+    assert len(resp["data"]["conference"]["events"]) == 1
+    events = resp["data"]["conference"]["events"]
+    events[0]["image"] == get_image_url_from_request(request, event.image)

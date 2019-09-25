@@ -14,6 +14,7 @@ class EventFactory(DjangoModelFactory):
     title = LanguageFactory("sentence")
     slug = LanguageFactory("slug")
     content = LanguageFactory("text")
+    image = factory.django.ImageField()
 
     class Meta:
         model = Event
