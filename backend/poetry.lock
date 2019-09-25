@@ -531,8 +531,8 @@ category = "dev"
 description = "python code static checker"
 name = "pylint"
 optional = false
-python-versions = ">=3.4.*"
-version = "2.3.1"
+python-versions = ">=3.5.*"
+version = "2.4.0"
 
 [package.dependencies]
 astroid = ">=2.2.0,<3"
@@ -961,7 +961,7 @@ version = "0.6.0"
 more-itertools = "*"
 
 [metadata]
-content-hash = "858022603589ade66c5ec927bd550d7f3059c1a09f253440d6975f59551b4845"
+content-hash = "95b36b46c17ee7c1199849cf98ed926566c8e07d18848cb3afb4337fd1bcb5dd"
 python-versions = "^3.7"
 
 [metadata.hashes]
@@ -1019,7 +1019,7 @@ pycodestyle = ["95a2219d12372f05704562a14ec30bc76b05a5b297b21a5dfe3f6fac3491ae56
 pyflakes = ["17dbeb2e3f4d772725c777fabc446d5634d1038f234e77343108ce445ea69ce0", "d976835886f8c5b31d47970ed689944a0262b5f3afa00a5a7b4dc81e5449f8a2"]
 pygments = ["71e430bc85c88a430f000ac1d9b331d2407f681d6f6aec95e8bcfbc3df5b0127", "881c4c157e45f30af185c1ffe8d549d48ac9127433f2c380c24b84572ad66297"]
 pyjwt = ["5c6eca3c2940464d106b99ba83b00c6add741c9becaec087fb7ccdefea71350e", "8d59a976fb773f3e6a39c85636357c4f0e242707394cadadd9814f5cbaa20e96"]
-pylint = ["5d77031694a5fb97ea95e828c8d10fc770a1df6eb3906067aaed42201a8a6a09", "723e3db49555abaf9bf79dc474c6b9e2935ad82230b10c1138a71ea41ac0fff1"]
+pylint = ["92280a6085fc5e4fec67d6330c0c85eae50817696d02bdc85e9ca6bab830ad58", "ef796b99c243afeebf7a04b4426126ac837940da6bcd5fc47229c507e056fec1"]
 pylint-django = ["6740b60dd94b6896cffa28d7fe1bb5dd167cbdcb3d9fb3db01b30390ea18b987", "e1273decd5ee60eaf9a742f62dd67bacb7ccf2cb1e7641dba0361108d0dff455"]
 pylint-plugin-utils = ["8d9e31d5ea8b7b0003e1f0f136b44a5235896a32e47c5bc2ef1143e9f6ba0b74"]
 pyparsing = ["6f98a7b9397e206d78cc01df10131398f1c8b8510a2f4d97d9abd82e1aacdd80", "d9338df12903bbf5d65a0e4e87c2161968b10d2e489652bb47001d82a9b028b4"]
