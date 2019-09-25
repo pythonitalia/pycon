@@ -5,12 +5,11 @@ from bokeh.models import Label, NumeralTickFormatter
 from bokeh.palettes import Dark2_5 as palette
 from bokeh.plotting import figure
 from bokeh.resources import INLINE
-from django.db.models import Count, ExpressionWrapper, F, Value, fields
-from django.db.models.functions import Concat, TruncDate
+from django.db.models import Count, ExpressionWrapper, F, fields
+from django.db.models.functions import TruncDate
 
 from conferences.models import Conference
 from conferences.models.deadline import Deadline
-from i18n.fields import I18nCharField
 from tickets.models import Ticket
 
 
@@ -45,17 +44,18 @@ def get_deadlines(conference):
         Deadline.objects.filter(conference_id=conference.id, end__lte=conference.end)
         .annotate(days_to_start=date_diff_start, days_to_end=date_diff_end)
         .values(
+            "conference__name",
+            "name",
+            "start",
             days_to_start=date_diff_start,
             days_to_end=date_diff_end,
-            description=Concat(
-                "conference__name",
-                Value("-"),
-                "name",
-                Value(" start"),
-                output_field=I18nCharField(),
-            ),
         )
     )
+
+    for deadline in deadlines:
+        deadline[
+            "description"
+        ] = "{conference__name} - {name} - {start:%Y-%m-%d}".format(**deadline)
 
     return deadlines
 
