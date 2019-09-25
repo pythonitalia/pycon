@@ -19,3 +19,4 @@ class Event:
     content: str = strawberry.field(resolver=make_localized_resolver("content"))
     map: Optional[Map] = strawberry.field(resolver=resolve_map)
     image: Optional[str] = strawberry.field(resolver=resolve_image)
+    location_name: Optional[str]

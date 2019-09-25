@@ -10,6 +10,7 @@ import { SectionTitle } from "../section-title";
 
 type PyConEvent = {
   title: string;
+  locationName?: string;
   imageFile: {
     childImageSharp: GatsbyImageProps | null;
   } | null;
@@ -92,7 +93,7 @@ const EventCardContent = ({ event }: { event: PyConEvent }) => (
       <BackgroundImage {...event.imageFile.childImageSharp} alt="" />
     )}
     <div className="event_card_content">
-      <p className="event_card_content__title">h. 21:00 Pub James Joyce</p>
+      <p className="event_card_content__title">h. 21:00 {event.locationName}</p>
       <p className="event_card_content__subtitle">{event.title}</p>
     </div>
   </>

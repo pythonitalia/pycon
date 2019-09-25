@@ -81,6 +81,7 @@ export const query = graphql`
 
         events {
           title
+          locationName
           image
           imageFile {
             childImageSharp {

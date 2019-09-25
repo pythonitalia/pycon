@@ -21,5 +21,8 @@ class EventAdmin(admin.ModelAdmin):
                 )
             },
         ),
-        ("Location", {"fields": ("latitude", "longitude", "map_link")}),
+        (
+            "Location",
+            {"fields": ("location_name", "latitude", "longitude", "map_link")},
+        ),
     )
