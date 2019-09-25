@@ -43,26 +43,26 @@ exports.createResolvers = ({
     };
 
     const { createNode } = actions;
-    createResolvers({
-        BACKEND_Post: {
+
+    const typesWithImages = [
+        "BACKEND_Post",
+        "BACKEND_Page",
+        "BACKEND_Sponsor",
+        "BACKEND_Event",
+    ];
+
+    const resolvers = {};
+
+    typesWithImages.forEach(type => {
+        resolvers[type] = {
             imageFile: {
                 type: `File`,
                 resolve: imageFileResolver,
             },
-        },
-        BACKEND_Page: {
-            imageFile: {
-                type: `File`,
-                resolve: imageFileResolver,
-            },
-        },
-        BACKEND_Sponsor: {
-            imageFile: {
-                type: `File`,
-                resolve: imageFileResolver,
-            },
-        },
+        };
     });
+
+    createResolvers(resolvers);
 };
 
 exports.createPages = async ({ graphql, actions, reporter }) => {

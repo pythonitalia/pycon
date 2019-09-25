@@ -7,6 +7,10 @@ import { theme } from "../../config/theme";
 import { MaxWidthWrapper } from "../max-width-wrapper";
 import { SectionTitle } from "../section-title";
 
+type PyConEvent = {
+  title: string;
+};
+
 const Wrapper = styled.div`
     @media (min-width: 1024px) {
       margin-top: 2rem;
@@ -66,14 +70,14 @@ const Wrapper = styled.div`
     width: 300px;
     position: relative;
   `,
-  EventCardContent = () => (
+  EventCardContent = ({ event }: { event: PyConEvent }) => (
     <div className="event_card_content">
       <p className="event_card_content__title">h. 21:00 Pub James Joyce</p>
-      <p className="event_card_content__subtitle">PyBirra</p>
+      <p className="event_card_content__subtitle">{event.title}</p>
     </div>
   );
 
-export const Events = () => {
+export const Events = ({ events }: { events: PyConEvent[] }) => {
   useEffect(() => {
     const slider: HTMLDivElement | null = document.querySelector(".events");
     let isDown = false,
@@ -163,9 +167,9 @@ export const Events = () => {
         }}
       >
         <EventsContainer className="events">
-          {[1, 2, 3, 4, 5, 6, 7].map((o, i) => (
+          {events.map((event, i) => (
             <EventCard key={i} className="event_card">
-              <EventCardContent />
+              <EventCardContent event={event} />
             </EventCard>
           ))}
         </EventsContainer>
