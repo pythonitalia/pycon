@@ -11,6 +11,7 @@ import { SectionTitle } from "../section-title";
 type PyConEvent = {
   title: string;
   locationName?: string;
+  start: string;
   imageFile: {
     childImageSharp: GatsbyImageProps | null;
   } | null;
@@ -62,13 +63,18 @@ const EventsContainer = styled.div`
       left: 16px;
       bottom: 16px;
     }
-    .event_card_content__title {
-      color: ${theme.palette.white};
+
+    p {
       margin: 0;
+      color: ${theme.palette.white};
     }
-    .event_card_content__subtitle {
-      color: ${theme.palette.white};
-      margin: 0;
+
+    .event_card_content__date {
+      font-size: 0.8em;
+    }
+
+    .event_card_content__title {
+      font-weight: bold;
     }
   }
 `;
@@ -87,14 +93,28 @@ const EventCard = styled.div`
   overflow: hidden;
 `;
 
+const formatEventDate = (datetime: string) => {
+  const d = new Date(datetime);
+
+  const formatter = new Intl.DateTimeFormat("default", {
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+  });
+
+  return formatter.format(d);
+};
+
 const EventCardContent = ({ event }: { event: PyConEvent }) => (
   <>
     {event.imageFile && (
       <BackgroundImage {...event.imageFile.childImageSharp} alt="" />
     )}
     <div className="event_card_content">
-      <p className="event_card_content__title">h. 21:00 {event.locationName}</p>
-      <p className="event_card_content__subtitle">{event.title}</p>
+      <p className="event_card_content__location">{event.locationName}</p>
+      <p className="event_card_content__title">{event.title}</p>
+      <p className="event_card_content__date">{formatEventDate(event.start)}</p>
     </div>
   </>
 );

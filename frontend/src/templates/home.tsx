@@ -83,6 +83,7 @@ export const query = graphql`
           title
           locationName
           image
+          start
           imageFile {
             childImageSharp {
               fluid(

@@ -5,6 +5,7 @@ import strawberry
 from ..helpers.i18n import make_localized_resolver
 from ..helpers.images import resolve_image
 from ..helpers.maps import Map, resolve_map
+from ..scalars import DateTime
 
 if TYPE_CHECKING:  # pragma: no cover
     from api.conferences.types import Conference
@@ -20,3 +21,5 @@ class Event:
     map: Optional[Map] = strawberry.field(resolver=resolve_map)
     image: Optional[str] = strawberry.field(resolver=resolve_image)
     location_name: Optional[str]
+    start: DateTime
+    end: DateTime
