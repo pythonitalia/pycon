@@ -44,7 +44,7 @@ export default ({ data }: { data: HomePageQuery }) => {
 
       {conference.events.length > 0 && (
         <section>
-          <Events events={conference.events} />
+          <Events text={conference.eventsIntro!} events={conference.events} />
         </section>
       )}
 
@@ -82,6 +82,7 @@ export const query = graphql`
         introText: copy(key: "intro-text-1", language: $language)
         introTitle2: copy(key: "intro-title-2", language: $language)
         introText2: copy(key: "intro-text-2", language: $language)
+        eventsIntro: copy(key: "events-intro", language: $language)
 
         events {
           title

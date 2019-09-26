@@ -121,7 +121,9 @@ const EventCardContent = ({ event }: { event: PyConEvent }) => (
   </>
 );
 
-export const Events = ({ events }: { events: PyConEvent[] }) => {
+type EventsProps = { events: PyConEvent[]; text: string };
+
+export const Events = ({ events, text }: EventsProps) => {
   useEffect(() => {
     const slider: HTMLDivElement | null = document.querySelector(".events");
     let isDown = false,
@@ -194,10 +196,7 @@ export const Events = ({ events }: { events: PyConEvent[] }) => {
               desktop: 6,
             }}
           >
-            <p>
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit maxime
-              reiciendis a consectetur nisi temporibus!
-            </p>
+            <p>{text}</p>
           </Column>
         </Row>
       </MaxWidthWrapper>
