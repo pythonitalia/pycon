@@ -1,4 +1,3 @@
-import Img, { GatsbyImageProps } from "gatsby-image";
 import { Column, Row } from "grigliata";
 import React, { useEffect } from "react";
 import styled from "styled-components";
@@ -7,23 +6,8 @@ import { STANDARD_ROW_PADDING } from "../../config/spacing";
 import { theme } from "../../config/theme";
 import { MaxWidthWrapper } from "../max-width-wrapper";
 import { SectionTitle } from "../section-title";
-
-type PyConEvent = {
-  title: string;
-  locationName: string | null;
-  start: string;
-  imageFile: {
-    childImageSharp: GatsbyImageProps | null;
-  } | null;
-};
-
-const BackgroundImage = styled(Img)`
-  position: absolute !important;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-`;
+import { EventCard } from "./event-card";
+import { PyConEvent } from "./types";
 
 const Wrapper = styled.div`
   @media (min-width: 1024px) {
@@ -47,7 +31,7 @@ const EventsContainer = styled.div`
     display: none; // Safari and Chrome
   }
 
-  .event_card {
+  ${EventCard} {
     display: inline-block;
     margin-right: 16px;
     padding: 8px;
@@ -78,48 +62,6 @@ const EventsContainer = styled.div`
     }
   }
 `;
-
-const EventCard = styled.div`
-  background: linear-gradient(
-    29.43deg,
-    #0c67ff 0%,
-    rgba(12, 103, 255, 0.0001) 125.98%
-  );
-  box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.08);
-  border-radius: 8px;
-  height: 200px;
-  width: 300px;
-  position: relative;
-  overflow: hidden;
-`;
-
-const formatEventDate = (datetime: string) => {
-  const d = new Date(datetime);
-
-  const formatter = new Intl.DateTimeFormat("default", {
-    month: "long",
-    day: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-  });
-
-  return formatter.format(d);
-};
-
-const EventCardContent = ({ event }: { event: PyConEvent }) => (
-  <>
-    {event.imageFile && (
-      <BackgroundImage {...event.imageFile.childImageSharp} alt="" />
-    )}
-    <div className="event_card_content">
-      {event.locationName && (
-        <p className="event_card_content__location">{event.locationName}</p>
-      )}
-      <p className="event_card_content__title">{event.title}</p>
-      <p className="event_card_content__date">{formatEventDate(event.start)}</p>
-    </div>
-  </>
-);
 
 type EventsProps = { events: PyConEvent[]; text: string };
 
@@ -211,9 +153,7 @@ export const Events = ({ events, text }: EventsProps) => {
       >
         <EventsContainer className="events">
           {events.map((event, i) => (
-            <EventCard key={i} className="event_card">
-              <EventCardContent event={event} />
-            </EventCard>
+            <EventCard key={i} event={event} />
           ))}
         </EventsContainer>
       </Row>
