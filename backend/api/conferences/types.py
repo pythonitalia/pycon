@@ -1,10 +1,10 @@
 from datetime import datetime
-from decimal import Decimal
 from itertools import groupby
 from typing import TYPE_CHECKING, List, Optional
 
 import pytz
 import strawberry
+from api.events.types import Event
 from api.languages.types import Language
 from api.scalars import Date, DateTime
 from api.schedule.types import Room, ScheduleItem
@@ -15,7 +15,7 @@ from django.conf import settings
 from django.utils import translation
 
 from ..helpers.i18n import make_localized_resolver
-from .helpers.maps import generate_map_image
+from ..helpers.maps import Map, resolve_map
 
 if TYPE_CHECKING:  # pragma: no cover
     from api.tickets.types import TicketQuestion
@@ -34,29 +34,6 @@ class Topic:
 
 
 @strawberry.type
-class Map:
-    latitude: Decimal
-    longitude: Decimal
-    link: Optional[str]
-
-    @strawberry.field
-    def image(
-        self,
-        info,
-        width: Optional[int] = 1280,
-        height: Optional[int] = 400,
-        zoom: Optional[int] = 15,
-    ) -> str:
-        return generate_map_image(
-            latitude=self.latitude,
-            longitude=self.longitude,
-            width=width,
-            height=height,
-            zoom=zoom,
-        )
-
-
-@strawberry.type
 class Conference:
     id: strawberry.ID
 
@@ -67,6 +44,7 @@ class Conference:
     code: str
     start: DateTime
     end: DateTime
+    map: Optional[Map] = strawberry.field(resolver=resolve_map)
 
     @strawberry.field
     def timezone(self, info) -> str:
@@ -86,15 +64,6 @@ class Conference:
             qs = qs.filter(start__gte=utc_start_date, end__lte=utc_end_date)
 
         return qs.order_by("start")
-
-    @strawberry.field
-    def map(self, info) -> Optional[Map]:
-        if not all((self.latitude, self.longitude)):
-            return None
-
-        return Map(
-            latitude=self.latitude, longitude=self.longitude, link=self.map_link or None
-        )
 
     @strawberry.field
     def ticket_fares(self, info) -> List["TicketFare"]:
@@ -123,6 +92,10 @@ class Conference:
     @strawberry.field
     def submissions(self, info) -> List[Submission]:
         return self.submissions.all()
+
+    @strawberry.field
+    def events(self, info) -> List[Event]:
+        return self.events.all()
 
     @strawberry.field
     def rooms(self, info) -> List[Room]:

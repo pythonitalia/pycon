@@ -43,26 +43,26 @@ exports.createResolvers = ({
     };
 
     const { createNode } = actions;
-    createResolvers({
-        BACKEND_Post: {
+
+    const typesWithImages = [
+        "BACKEND_Post",
+        "BACKEND_Page",
+        "BACKEND_Sponsor",
+        "BACKEND_Event",
+    ];
+
+    const resolvers = {};
+
+    typesWithImages.forEach(type => {
+        resolvers[type] = {
             imageFile: {
                 type: `File`,
                 resolve: imageFileResolver,
             },
-        },
-        BACKEND_Page: {
-            imageFile: {
-                type: `File`,
-                resolve: imageFileResolver,
-            },
-        },
-        BACKEND_Sponsor: {
-            imageFile: {
-                type: `File`,
-                resolve: imageFileResolver,
-            },
-        },
+        };
     });
+
+    createResolvers(resolvers);
 };
 
 exports.createPages = async ({ graphql, actions, reporter }) => {
@@ -92,6 +92,12 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     const blogPostTemplate = path.resolve(`src/templates/blog-post.tsx`);
     const pageTemplate = path.resolve(`src/templates/page.tsx`);
     const homeTemplate = path.resolve(`src/templates/home.tsx`);
+
+    createRedirect({
+        fromPath: `/`,
+        redirectInBrowser: true,
+        toPath: `/en`,
+    });
 
     createPage({
         path: `/it`,

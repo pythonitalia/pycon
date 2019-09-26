@@ -41,9 +41,13 @@ export default ({ data }: { data: HomePageQuery }) => {
       <section>
         <SponsorList sponsors={conference.sponsorsByLevel!} />
       </section>
-      <section>
-        <Events />
-      </section>
+
+      {conference.events.length > 0 && (
+        <section>
+          <Events text={conference.eventsIntro!} events={conference.events} />
+        </section>
+      )}
+
       <section>
         <Faq />
       </section>
@@ -78,13 +82,33 @@ export const query = graphql`
         introText: copy(key: "intro-text-1", language: $language)
         introTitle2: copy(key: "intro-title-2", language: $language)
         introText2: copy(key: "intro-text-2", language: $language)
+        eventsIntro: copy(key: "events-intro", language: $language)
+
+        events {
+          title
+          locationName
+          image
+          start
+          imageFile {
+            childImageSharp {
+              fluid(
+                duotone: { highlight: "#0066FF", shadow: "#0B0040" }
+                maxWidth: 600
+                maxHeight: 300
+                background: "white"
+              ) {
+                ...GatsbyImageSharpFluid
+              }
+            }
+          }
+        }
 
         sponsorsByLevel {
           level
           sponsors {
             name
-            image
             link
+            image
             imageFile {
               childImageSharp {
                 fluid(

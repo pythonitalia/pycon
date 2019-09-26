@@ -65,9 +65,6 @@ jobs:
         CONFERENCE_CODE: "pycon-demo"
         DEBUG: True
         DATABASE_URL: postgresql://postgres:postgres@localhost:${{ job.services.postgres.ports['5432'] }}/postgres
-    - run: find . -name hero.jpg | xargs du -sh
-    - run: ls -la public
-      working-directory: frontend
     - run: yarn tsc
       working-directory: frontend
     - uses: netlify/actions/cli@master

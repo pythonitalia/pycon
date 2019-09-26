@@ -6,74 +6,66 @@ import { STANDARD_ROW_PADDING } from "../../config/spacing";
 import { theme } from "../../config/theme";
 import { MaxWidthWrapper } from "../max-width-wrapper";
 import { SectionTitle } from "../section-title";
+import { EventCard } from "./event-card";
+import { PyConEvent } from "./types";
 
 const Wrapper = styled.div`
-    @media (min-width: 1024px) {
-      margin-top: 2rem;
+  @media (min-width: 1024px) {
+    margin-top: 2rem;
+  }
+  p {
+    margin-top: 0;
+  }
+`;
+
+const EventsContainer = styled.div`
+  overflow-x: scroll;
+  width: 100%;
+  white-space: nowrap;
+  &:hover {
+    cursor: pointer;
+  }
+  -ms-overflow-style: none; // IE 10+
+  scrollbar-width: none; // Firefox
+  &::-webkit-scrollbar {
+    display: none; // Safari and Chrome
+  }
+
+  ${EventCard} {
+    display: inline-block;
+    margin-right: 16px;
+    padding: 8px;
+    color: ${theme.palette.white};
+    &:first-child {
+      margin-left: 2.5rem;
+      @media (min-width: 1024px) {
+        margin-left: 15rem;
+      }
     }
+    .event_card_content {
+      position: absolute;
+      left: 16px;
+      bottom: 16px;
+    }
+
     p {
-      margin-top: 0;
-    }
-  `,
-  EventsContainer = styled.div`
-    overflow-x: scroll;
-    width: 100%;
-    white-space: nowrap;
-    &:hover {
-      cursor: pointer;
-    }
-    -ms-overflow-style: none; // IE 10+
-    scrollbar-width: none; // Firefox
-    &::-webkit-scrollbar {
-      display: none; // Safari and Chrome
-    }
-
-    .event_card {
-      display: inline-block;
-      margin-right: 16px;
-      padding: 8px;
+      margin: 0;
       color: ${theme.palette.white};
-      &:first-child {
-        margin-left: 2.5rem;
-        @media (min-width: 1024px) {
-          margin-left: 15rem;
-        }
-      }
-      .event_card_content {
-        position: absolute;
-        left: 16px;
-        bottom: 16px;
-      }
-      .event_card_content__title {
-        color: ${theme.palette.white};
-        margin: 0;
-      }
-      .event_card_content__subtitle {
-        color: ${theme.palette.white};
-        margin: 0;
-      }
     }
-  `,
-  EventCard = styled.div`
-    background: linear-gradient(
-      29.43deg,
-      #0c67ff 0%,
-      rgba(12, 103, 255, 0.0001) 125.98%
-    );
-    box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.08);
-    border-radius: 8px;
-    height: 200px;
-    width: 300px;
-    position: relative;
-  `,
-  EventCardContent = () => (
-    <div className="event_card_content">
-      <p className="event_card_content__title">h. 21:00 Pub James Joyce</p>
-      <p className="event_card_content__subtitle">PyBirra</p>
-    </div>
-  );
 
-export const Events = () => {
+    .event_card_content__date {
+      font-size: 0.8em;
+    }
+
+    .event_card_content__title {
+      font-weight: bold;
+    }
+  }
+`;
+
+type EventsProps = { events: PyConEvent[]; text: string };
+
+export const Events = ({ events, text }: EventsProps) => {
   useEffect(() => {
     const slider: HTMLDivElement | null = document.querySelector(".events");
     let isDown = false,
@@ -146,10 +138,7 @@ export const Events = () => {
               desktop: 6,
             }}
           >
-            <p>
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit maxime
-              reiciendis a consectetur nisi temporibus!
-            </p>
+            <p>{text}</p>
           </Column>
         </Row>
       </MaxWidthWrapper>
@@ -163,10 +152,8 @@ export const Events = () => {
         }}
       >
         <EventsContainer className="events">
-          {[1, 2, 3, 4, 5, 6, 7].map((o, i) => (
-            <EventCard key={i} className="event_card">
-              <EventCardContent />
-            </EventCard>
+          {events.map((event, i) => (
+            <EventCard key={i} event={event} />
           ))}
         </EventsContainer>
       </Row>
