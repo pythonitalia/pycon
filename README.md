@@ -7,7 +7,19 @@
 > The monorepo for the new PyCon Italia website, based on Django, Strawberry,
 > Gatsby and React.
 
-## How to setup
+## How to setup - quick
+
+We are using [pyinvoke](http://docs.pyinvoke.org/en/1.3/) to run tasks (it is an
+alternative to make files). Top install it we recommend to use
+[pipx](https://github.com/pipxproject/pipx), with this command
+
+    pipx install invoke
+
+this will install globally invoke. To run the setup, run the following command:
+
+    invoke setup
+
+## How to setup - extended
 
 This project is composed of two services, a backend and a frontend.
 

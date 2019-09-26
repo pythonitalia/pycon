@@ -27,13 +27,8 @@ jobs:
       - uses: actions/setup-python@v1
         with:
           python-version: '3.7.4'
-      - run: pip install poetry
-      - name: Install dependencies
-        working-directory: backend
-        run: poetry install
-      - name: Install codecov
-        working-directory: backend
-        run: pip install codecov
+      - run: pip install poetry invoke codecov
+      - run: invoke setup-backend
       - name: pytest
         working-directory: backend
         run: |
@@ -57,10 +52,8 @@ jobs:
       - uses: actions/setup-python@v1
         with:
           python-version: '3.7.4'
-      - run: pip install poetry
-      - name: Install dependencies
-        working-directory: backend
-        run: poetry install
+      - run: pip install poetry invoke
+      - run: invoke setup-backend
       - name: pytest
         working-directory: backend
         run: poetry run pytest --integration

@@ -81,10 +81,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@master
-    - run: yarn
-      working-directory: frontend
-    - run: yarn build
-      working-directory: frontend
+    - run: pip install invoke
+    - run: invoke build
       env:
         CONFERENCE_CODE: pycon11
         API_URL: https://d1111jewijk23m.cloudfront.net/graphql
