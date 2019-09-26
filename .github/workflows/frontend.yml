@@ -3,6 +3,7 @@ name: Frontend
 on:
   pull_request:
     paths:
+    - '.github/workflows/*'
     - 'backend/**/*'
     - 'backend/*'
     - 'frontend/**/*'
@@ -42,7 +43,7 @@ jobs:
     - uses: actions/setup-python@v1
       with:
         python-version: '3.7.6'
-    - run: pip install poetry
+    - run: pip install poetry invoke
 
     - name: Cache Poetry
       uses: actions/cache@v1
@@ -60,7 +61,7 @@ jobs:
 
     - name: Install python dependencies
       working-directory: backend
-      run: poetry install
+      run: invoke setup-backend
       if: steps.cache.outputs.cache-hit != 'true'
 
     - name: Get yarn cache
@@ -75,14 +76,10 @@ jobs:
     - run: yarn
       working-directory: frontend
     - run: |
-        cd backend/
-        poetry run python manage.py migrate
-        poetry run python manage.py loaddata \
-            demodata/*.json
-        cp -r demodata/media media
-        poetry run python manage.py runserver &
+        invoke demo-data
+        invoke run-backend &
 
-        cd ../frontend/
+        cd frontend/
 
         bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8000/admin/login/)" != "200" ]]; do sleep 5; done'
         yarn codegen-fragments
@@ -97,6 +94,8 @@ jobs:
         DEBUG: True
         SLACK_INCOMING_WEBHOOK_URL: ${{ secrets.TF_VAR_slack_incoming_webhook_url }}
         DATABASE_URL: postgresql://postgres:postgres@localhost:${{ job.services.postgres.ports['5432'] }}/postgres
+    - run: yarn codegen
+      working-directory: frontend
     - run: yarn tsc
       working-directory: frontend
     - uses: netlify/actions/cli@master
