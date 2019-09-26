@@ -22,14 +22,17 @@ category = "dev"
 description = "An abstract syntax tree for Python with inference support."
 name = "astroid"
 optional = false
-python-versions = ">=3.4.*"
-version = "2.2.5"
+python-versions = ">=3.5.*"
+version = "2.3.0"
 
 [package.dependencies]
 lazy-object-proxy = "*"
 six = "*"
-typed-ast = ">=1.3.0"
 wrapt = "*"
+
+[package.dependencies.typed-ast]
+python = ">=3.7,<3.8"
+version = ">=1.3.0"
 
 [[package]]
 category = "dev"
@@ -532,10 +535,10 @@ description = "python code static checker"
 name = "pylint"
 optional = false
 python-versions = ">=3.5.*"
-version = "2.4.0"
+version = "2.4.1"
 
 [package.dependencies]
-astroid = ">=2.2.0,<3"
+astroid = ">=2.3.0,<3"
 colorama = "*"
 isort = ">=4.2.5,<5"
 mccabe = ">=0.6,<0.7"
@@ -961,13 +964,13 @@ version = "0.6.0"
 more-itertools = "*"
 
 [metadata]
-content-hash = "e33a71195fdf0ad421c7912ef4a6bc9faaf00b5a1329fa619e924ca2aa05a47a"
+content-hash = "bd144b0323d1b0002efc8bfc5136fa68f029ec32633989a86b3b3db784c42eff"
 python-versions = "^3.7"
 
 [metadata.hashes]
 amqp = ["19a917e260178b8d410122712bac69cb3e6db010d68f6101e7307508aded5e68", "19d851b879a471fcfdcf01df9936cff924f422baa77653289f7095dedd5fb26a"]
 aniso8601 = ["529dcb1f5f26ee0df6c0a1ee84b7b27197c3c50fc3a6321d66c544689237d072", "c033f63d028b9a58e3ab0c2c7d0532ab4bfa7452bfc788fbfe3ddabd327b181a"]
-astroid = ["6560e1e1749f68c64a4b5dee4e091fce798d2f0d84ebe638cf0e0585a343acf4", "b65db1bbaac9f9f4d190199bb8680af6f6f84fd3769a5ea883df8a91fe68b4c4"]
+astroid = ["9b3f17b0550f82e28a6776a4e5222441f48e523b0773df4bc505bb6b7c2093b7", "c7e2e5773d87ccc00d01c273e439386f4d6d63cce61317a79ccce5880162f9fb"]
 atomicwrites = ["03472c30eb2c5d1ba9227e4c2ca66ab8287fbfbbda3888aa93dc2e28fc6811b4", "75a9445bac02d8d058d5e1fe689654ba5a6556a1dfd8ce6ec55a0ed79866cfa6"]
 attrs = ["69c0dbf2ed392de1cb5ec704444b08a5ef81680a61cb899dc08127123af36a79", "f0b870f674851ecbfbbbd364d6b5cbdff9dcedbc7f3f5e18a6891057f21fe399"]
 billiard = ["01afcb4e7c4fd6480940cfbd4d9edc19d7a7509d6ada533984d0d0f49901ec82", "b8809c74f648dfe69b973c8e660bcec00603758c9db8ba89d7719f88d5f01f26"]
@@ -1019,7 +1022,7 @@ pycodestyle = ["95a2219d12372f05704562a14ec30bc76b05a5b297b21a5dfe3f6fac3491ae56
 pyflakes = ["17dbeb2e3f4d772725c777fabc446d5634d1038f234e77343108ce445ea69ce0", "d976835886f8c5b31d47970ed689944a0262b5f3afa00a5a7b4dc81e5449f8a2"]
 pygments = ["71e430bc85c88a430f000ac1d9b331d2407f681d6f6aec95e8bcfbc3df5b0127", "881c4c157e45f30af185c1ffe8d549d48ac9127433f2c380c24b84572ad66297"]
 pyjwt = ["5c6eca3c2940464d106b99ba83b00c6add741c9becaec087fb7ccdefea71350e", "8d59a976fb773f3e6a39c85636357c4f0e242707394cadadd9814f5cbaa20e96"]
-pylint = ["92280a6085fc5e4fec67d6330c0c85eae50817696d02bdc85e9ca6bab830ad58", "ef796b99c243afeebf7a04b4426126ac837940da6bcd5fc47229c507e056fec1"]
+pylint = ["2d64b4b8fa044480b1a49d47535da53557f8f426b8c5bd6a23beb65e905101a1", "6cbd124a1a5ed1fd3f3fed4178a6c2ba166862ea0dac6ab2ff8d9f0998b13e5c"]
 pylint-django = ["6740b60dd94b6896cffa28d7fe1bb5dd167cbdcb3d9fb3db01b30390ea18b987", "e1273decd5ee60eaf9a742f62dd67bacb7ccf2cb1e7641dba0361108d0dff455"]
 pylint-plugin-utils = ["8d9e31d5ea8b7b0003e1f0f136b44a5235896a32e47c5bc2ef1143e9f6ba0b74"]
 pyparsing = ["6f98a7b9397e206d78cc01df10131398f1c8b8510a2f4d97d9abd82e1aacdd80", "d9338df12903bbf5d65a0e4e87c2161968b10d2e489652bb47001d82a9b028b4"]
