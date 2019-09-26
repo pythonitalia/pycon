@@ -41,9 +41,13 @@ export default ({ data }: { data: HomePageQuery }) => {
       <section>
         <SponsorList sponsors={conference.sponsorsByLevel!} />
       </section>
-      <section>
-        <Events events={conference.events} />
-      </section>
+
+      {conference.events.length > 0 && (
+        <section>
+          <Events events={conference.events} />
+        </section>
+      )}
+
       <section>
         <Faq />
       </section>

@@ -10,7 +10,7 @@ import { SectionTitle } from "../section-title";
 
 type PyConEvent = {
   title: string;
-  locationName?: string;
+  locationName: string | null;
   start: string;
   imageFile: {
     childImageSharp: GatsbyImageProps | null;
@@ -112,7 +112,9 @@ const EventCardContent = ({ event }: { event: PyConEvent }) => (
       <BackgroundImage {...event.imageFile.childImageSharp} alt="" />
     )}
     <div className="event_card_content">
-      <p className="event_card_content__location">{event.locationName}</p>
+      {event.locationName && (
+        <p className="event_card_content__location">{event.locationName}</p>
+      )}
       <p className="event_card_content__title">{event.title}</p>
       <p className="event_card_content__date">{formatEventDate(event.start)}</p>
     </div>
