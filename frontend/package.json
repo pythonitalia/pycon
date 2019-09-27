@@ -36,7 +36,7 @@
     "gatsby-source-filesystem": "^2.1.28",
     "gatsby-source-graphql": "^2.1.15",
     "gatsby-transformer-remark": "^2.6.26",
-    "gatsby-transformer-sharp": "^2.2.17",
+    "gatsby-transformer-sharp": "^2.2.19",
     "grigliata": "^0.0.16",
     "marksy": "^8.0.0",
     "prism-react-renderer": "^0.1.7",
