@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, List, Optional
 
 import pytz
 import strawberry
+from api.cms.types import FAQ
 from api.events.types import Event
 from api.languages.types import Language
 from api.scalars import Date, DateTime
@@ -100,6 +101,10 @@ class Conference:
     @strawberry.field
     def rooms(self, info) -> List[Room]:
         return self.rooms.all()
+
+    @strawberry.field
+    def faqs(self, info) -> List[FAQ]:
+        return self.faqs.all()
 
     @strawberry.field
     def sponsors_by_level(self, info) -> List[SponsorsByLevel]:

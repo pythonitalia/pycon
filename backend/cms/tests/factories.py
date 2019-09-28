@@ -1,6 +1,6 @@
 import factory
 import factory.fuzzy
-from cms.models import GenericCopy
+from cms.models import FAQ, GenericCopy
 from conferences.tests.factories import ConferenceFactory
 from factory.django import DjangoModelFactory
 from i18n.helpers.tests import LanguageFactory
@@ -15,3 +15,13 @@ class GenericCopyFactory(DjangoModelFactory):
 
     class Meta:
         model = GenericCopy
+
+
+@register
+class FAQFactory(DjangoModelFactory):
+    conference = factory.SubFactory(ConferenceFactory)
+    question = LanguageFactory("sentence")
+    answer = LanguageFactory("sentence")
+
+    class Meta:
+        model = FAQ
