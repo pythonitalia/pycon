@@ -7,11 +7,16 @@ import { STANDARD_ROW_PADDING } from "../../config/spacing";
 import { MaxWidthWrapper } from "../max-width-wrapper";
 import { SectionTitle } from "../section-title";
 
+type FAQ = {
+  question: string;
+  answer: string;
+};
+
 const Wrapper = styled.div`
   margin-top: 2rem;
 `;
 
-export const Faq = () => {
+export const Faqs = ({ faqs }: { faqs: FAQ[] }) => {
   const PADDING_RIGHT = {
     mobile: 0,
     tabletPortrait: 3,
@@ -47,74 +52,21 @@ export const Faq = () => {
           paddingLeft={STANDARD_ROW_PADDING}
           paddingRight={STANDARD_ROW_PADDING}
         >
-          <Column
-            paddingRight={PADDING_RIGHT}
-            columnWidth={{
-              mobile: 12,
-              tabletPortrait: 6,
-              tabletLandscape: 6,
-              desktop: 6,
-            }}
-          >
-            <Heading use="h3">How can I contribute?</Heading>
-            <Text>
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-              Quibusdam numquam inventore laboriosam quisquam nobis maxime
-              reiciendis a consectetur nisi temporibus. Quo autem magni eaque
-              suscipit obcaecati ad excepturi iste ab!
-            </Text>
-          </Column>
-          <Column
-            paddingRight={PADDING_RIGHT}
-            columnWidth={{
-              mobile: 12,
-              tabletPortrait: 6,
-              tabletLandscape: 6,
-              desktop: 6,
-            }}
-          >
-            <Heading use="h3">Where is the venue?</Heading>
-            <Text>
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-              Quibusdam numquam inventore laboriosam quisquam nobis maxime
-              reiciendis a consectetur nisi temporibus. Quo autem magni eaque
-              suscipit obcaecati ad excepturi iste ab!
-            </Text>
-          </Column>
-          <Column
-            paddingRight={PADDING_RIGHT}
-            columnWidth={{
-              mobile: 12,
-              tabletPortrait: 6,
-              tabletLandscape: 6,
-              desktop: 6,
-            }}
-          >
-            <Heading use="h3">When will the event take place?</Heading>
-            <Text>
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-              Quibusdam numquam inventore laboriosam quisquam nobis maxime
-              reiciendis a consectetur nisi temporibus. Quo autem magni eaque
-              suscipit obcaecati ad excepturi iste ab!
-            </Text>
-          </Column>
-          <Column
-            paddingRight={PADDING_RIGHT}
-            columnWidth={{
-              mobile: 12,
-              tabletPortrait: 6,
-              tabletLandscape: 6,
-              desktop: 6,
-            }}
-          >
-            <Heading use="h3">Where is the venue?</Heading>
-            <Text>
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-              Quibusdam numquam inventore laboriosam quisquam nobis maxime
-              reiciendis a consectetur nisi temporibus. Quo autem magni eaque
-              suscipit obcaecati ad excepturi iste ab!
-            </Text>
-          </Column>
+          {faqs.map((faq, i) => (
+            <Column
+              key={i}
+              paddingRight={PADDING_RIGHT}
+              columnWidth={{
+                mobile: 12,
+                tabletPortrait: 6,
+                tabletLandscape: 6,
+                desktop: 6,
+              }}
+            >
+              <Heading use="h3">{faq.question}</Heading>
+              <Text>{faq.answer}</Text>
+            </Column>
+          ))}
         </Row>
       </MaxWidthWrapper>
     </Wrapper>

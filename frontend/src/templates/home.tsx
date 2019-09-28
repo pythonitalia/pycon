@@ -3,7 +3,7 @@ import * as React from "react";
 
 import { Hero } from "../components/hero";
 import { Events } from "../components/home-events";
-import { Faq } from "../components/home-faq";
+import { Faqs } from "../components/home-faq";
 import { MaxWidthWrapper } from "../components/max-width-wrapper";
 import { SponsorList } from "../components/sponsor-list";
 import { TwoColumnsText } from "../components/two-columns-text";
@@ -48,9 +48,11 @@ export default ({ data }: { data: HomePageQuery }) => {
         </section>
       )}
 
-      <section>
-        <Faq />
-      </section>
+      {conference.faqs.length > 0 && (
+        <section>
+          <Faqs faqs={conference.faqs} />
+        </section>
+      )}
     </HomeLayout>
   );
 };
@@ -83,6 +85,11 @@ export const query = graphql`
         introTitle2: copy(key: "intro-title-2", language: $language)
         introText2: copy(key: "intro-text-2", language: $language)
         eventsIntro: copy(key: "events-intro", language: $language)
+
+        faqs {
+          question(language: $language)
+          answer(language: $language)
+        }
 
         events {
           title
