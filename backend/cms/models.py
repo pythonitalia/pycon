@@ -21,3 +21,22 @@ class GenericCopy(TimeStampedModel):
         unique_together = ["key", "conference"]
         verbose_name = _("Generic Copy")
         verbose_name_plural = _("Generic Copy")
+
+
+class FAQ(TimeStampedModel):
+    question = I18nTextField(_("question"), blank=False)
+    answer = I18nTextField(_("answer"), blank=False)
+    conference = models.ForeignKey(
+        "conferences.Conference",
+        on_delete=models.CASCADE,
+        verbose_name=_("conference"),
+        related_name="faqs",
+    )
+
+    def __str__(self):
+        return f"{self.question} ({self.conference.name})"
+
+    class Meta:
+        unique_together = ["question", "conference"]
+        verbose_name = _("FAQ")
+        verbose_name_plural = _("FAQs")
