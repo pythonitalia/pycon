@@ -45,7 +45,7 @@
     "react-dom": "^16.10.1",
     "react-helmet": "^5.2.1",
     "react-responsive": "^8.0.1",
-    "sharp": "^0.23.0",
+    "sharp": "^0.23.1",
     "styled-components": "^4.4.0",
     "typescript": "^3.6.3"
   },
