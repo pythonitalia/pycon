@@ -7055,10 +7055,10 @@ facepaint@^1.2.1:
   resolved "https://registry.yarnpkg.com/facepaint/-/facepaint-1.2.1.tgz#89929e601b15227278c53c516f764fc462b09c33"
   integrity sha512-oNvBekbhsm/0PNSOWca5raHNAi6dG960Bx6LJgxDPNF59WpuspgQ17bN5MKwOr7JcFdQYc7StW3VZ28DBZLavQ==
 
-fannypack@^4.21.17:
-  version "4.21.17"
-  resolved "https://registry.yarnpkg.com/fannypack/-/fannypack-4.21.17.tgz#fb3c3fb12edec2160cddd2b8c3807600ad7235b0"
-  integrity sha512-bN9I3p3GPzP/lCEUSwBsIWBUxSC1+ZhFsAOCW7vXgv75/IQMPLPOp8RQuqsO2AzMc1vOaflgMKcHGA46kbjvSw==
+fannypack@^4.21.18:
+  version "4.21.18"
+  resolved "https://registry.yarnpkg.com/fannypack/-/fannypack-4.21.18.tgz#3949fd2614e01673b7cdf0d819c7477cbff238bb"
+  integrity sha512-476F8GkK69J7KHRljcewhdDyqRc1q48L8c7PZch8SGRNjOEfRJwvs8JCaVqwBLRPirEIagk02OUAIYpzW9KMVg==
   dependencies:
     "@fortawesome/free-solid-svg-icons" "5.9.0"
     "@types/classnames" "2.2.6"
