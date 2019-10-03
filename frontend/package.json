@@ -50,7 +50,7 @@
     "typescript": "^3.6.3"
   },
   "devDependencies": {
-    "@graphql-codegen/add": "^1.7.0",
+    "@graphql-codegen/add": "^1.8.0",
     "@graphql-codegen/cli": "^1.7.0",
     "@graphql-codegen/introspection": "1.7.0",
     "@graphql-codegen/typescript": "1.7.0",

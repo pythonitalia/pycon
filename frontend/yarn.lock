@@ -1365,12 +1365,12 @@
     signedsource "^1.0.0"
     yargs "^9.0.0"
 
-"@graphql-codegen/add@^1.7.0":
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/@graphql-codegen/add/-/add-1.7.0.tgz#8969e51913c4013e2ab098205184f38ca517cf7e"
-  integrity sha512-sk561sxOurcPTUS864pXDEh0sh/E5t0BRWPEdbSIcQ80Ia6WrwA6tuZfs59rkMlw99fpDTOGwjOHzqprZ9DzwQ==
+"@graphql-codegen/add@^1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@graphql-codegen/add/-/add-1.8.0.tgz#51a3c50e2c5b095070c8e3302cf0f67b4ad842b8"
+  integrity sha512-d6jp+j84N8IIl6StzsNhZA+DOhbeNOZzkB1OxqjMmYdZqnVL8UFrA/wnPvW8dSblppyhoP4q7IgCN43tV7Rq6A==
   dependencies:
-    "@graphql-codegen/plugin-helpers" "1.7.0"
+    "@graphql-codegen/plugin-helpers" "1.8.0"
     tslib "1.10.0"
 
 "@graphql-codegen/cli@^1.7.0":
