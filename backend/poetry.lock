@@ -828,7 +828,7 @@ description = "A library for creating GraphQL APIs"
 name = "strawberry-graphql"
 optional = false
 python-versions = ">=3.7,<4.0"
-version = "0.16.0"
+version = "0.16.1"
 
 [package.dependencies]
 click = ">=7.0,<8.0"
@@ -994,7 +994,7 @@ version = "0.6.0"
 more-itertools = "*"
 
 [metadata]
-content-hash = "19251c7ab594cbf195416366fe3ecace090c6e1cfebb305dbea006ea55b94229"
+content-hash = "616734124ac7e1320a10f2500bfd0e88e75e90ca1231330f6dc190da05bb9ed8"
 python-versions = "^3.7"
 
 [metadata.hashes]
@@ -1077,7 +1077,7 @@ social-auth-app-django = ["25295c94375d28062f65d0b3cd4b7e304c7e2fb7bac1ec51b4065
 social-auth-core = ["47cd2458c8fefd02466b0c514643e02ad8b61d8b4b69f7573e80882e3a97b0f0", "8320666548a532eb158968eda542bbe1863682357c432d8c4e28034a7f1e3b58", "d81ed681e3c0722300b61a0792c5db5d21206793f95ca810f010c1cc931c8d89"]
 sqlparse = ["40afe6b8d4b1117e7dff5504d7a8ce07d9a1b15aeeade8a2d10f130a834f8177", "7c3dca29c022744e95b547e867cee89f4fce4373f3549ccd8797d8eb52cdb873"]
 starlette = ["c2ac9a42e0e0328ad20fe444115ac5e3760c1ee2ac1ff8cdb5ec915c4a453411"]
-strawberry-graphql = ["4a4c6ef756ee2d4a4debcfe61e75c2b2a40dfb236e129e03195ec19af412811e", "ca524817d2d5590abff58e5ef92ea5a73375f2091562fa6c3a7281e303f7cf33"]
+strawberry-graphql = ["c7ecf6e9ebaf8166f68652408e03160188697a95a07240515a320af8d891a000", "f3ba7557707ce7761a40207ecb85cc84bb138d733ffa72b2b35b5bff35db5f66"]
 stripe = ["521c7c516cc828fcbd7357b7dcb57c64c38b73b4e3b9201a83b42c093dd91f8f", "de7792c863f2cd44d504bfda74eed09cb8794c7ef78fa83b66ef9addc030c765"]
 text-unidecode = ["1311f10e8b895935241623731c2ba64f4c455287888b18189350b67134a822e8", "bad6603bb14d279193107714b288be206cac565dfa49aa5b105294dd5c4aab93"]
 toml = ["229f81c57791a41d65e399fc06bf0848bab550a9dfd5ed66df18ce5f05e73d5c", "235682dd292d5899d361a811df37e04a8828a5b1da3115886b73cf81ebc9100e", "f1db651f9657708513243e61e6cc67d101a39bad662eaa9b5546f789338e07a3"]
