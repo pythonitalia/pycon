@@ -245,10 +245,10 @@ description = "A Django app providing database and form fields for pytz timezone
 name = "django-timezone-field"
 optional = false
 python-versions = "*"
-version = "3.0"
+version = "3.1"
 
 [package.dependencies]
-django = ">=1.8"
+django = ">=1.11"
 pytz = "*"
 
 [[package]]
@@ -994,7 +994,7 @@ version = "0.6.0"
 more-itertools = "*"
 
 [metadata]
-content-hash = "bd4b9d61ceaff195ea7f6b5da966fa55826040e2dc68b0e40fd2ac85cc8eacb0"
+content-hash = "19251c7ab594cbf195416366fe3ecace090c6e1cfebb305dbea006ea55b94229"
 python-versions = "^3.7"
 
 [metadata.hashes]
@@ -1021,7 +1021,7 @@ django-fsm = ["96f776736042b8cde03483cb4b27c3a62580da40fc9b942845349718afdf5d0f"
 django-model-utils = ["3f130a262e45d73e0950d2be76af4bf4ee86804dd60e5f90afc5cd948fcfe760", "682f58c1de330cedcda58cc85d5232c5b47a9e2cb67bef4541fb43fdaeb18e96"]
 django-ordered-model = ["0931f498008f91a00a32c4e0ae08a662ef608a1092bf6e6ec9af9b1a83f08acf", "abf0d963f7e607a994baf6bc300e50af647b3d243c3e592c6cc8f8b924b6d427"]
 django-storages = ["87287b7ad2e789cd603373439994e1ac6f94d9dc2e5f8173d2a87aa3ed458bd9", "f3b3def96493d3ccde37b864cea376472baf6e8a596504b209278801c510b807"]
-django-timezone-field = ["7d7a37cfeacec5b1e81cd2f0aa334d46ebaa369cd516028579ed343cbc676c38", "d9fdab77c443b78c362ffaeb50fe7d7b54692c89aaae8ca1cae67848139b82ac"]
+django-timezone-field = ["1a7bbcf984ae191c6dfe713994b4ff4062dc21e47a909356c93e76d027c87c8f", "a25af66b86d13709aa8c69a361c1ea68322cda64b5bbf9141fb67b8b44aa4e43"]
 docutils = ["6c4f696463b79f1fb8ba0c594b63840ebd41f059e92b31957c46b74a4599b6d0", "9e4d7ecfc600058e07ba661411a2b7de2fd0fafa17d1a7f7361cd47b1175c827", "a2aeea129088da402665e92e0b25b04b073c04b2dce4ab65caaa38b7ce2e1a99"]
 entrypoints = ["589f874b313739ad35be6e0cd7efde2a4e9b6fea91edcc34e58ecbb8dbe56d19", "c70dd71abe5a8c85e55e12c19bd91ccfeec11a6e99044204511f9ed547d48451"]
 factory-boy = ["728df59b372c9588b83153facf26d3d28947fc750e8e3c95cefa9bed0e6394ee", "faf48d608a1735f0d0a3c9cbf536d64f9132b547dae7ba452c4d99a79e84a370"]
