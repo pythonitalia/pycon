@@ -6,17 +6,23 @@ import React, { createElement } from "react";
 import { Article } from "../components/article";
 import { MaxWidthWrapper } from "../components/max-width-wrapper";
 import { PostQuery } from "../generated/graphql";
-import { HomeLayout } from "../layouts/home";
+import { MainLayout } from "../layouts/main";
 
 const compile = marksy({
   createElement,
 });
 
-export default ({ data }: { data: PostQuery }) => {
+export default ({
+  data,
+  pageContext,
+}: {
+  data: PostQuery;
+  pageContext: { language: string };
+}) => {
   const post = data.backend.blogPost!;
 
   return (
-    <HomeLayout>
+    <MainLayout language={pageContext.language}>
       <MaxWidthWrapper>
         <Row>
           <Column
@@ -37,7 +43,7 @@ export default ({ data }: { data: PostQuery }) => {
           </Column>
         </Row>
       </MaxWidthWrapper>
-    </HomeLayout>
+    </MainLayout>
   );
 };
 

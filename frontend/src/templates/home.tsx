@@ -8,7 +8,7 @@ import { MaxWidthWrapper } from "../components/max-width-wrapper";
 import { SponsorList } from "../components/sponsor-list";
 import { TwoColumnsText } from "../components/two-columns-text";
 import { HomePageQuery } from "../generated/graphql";
-import { HomeLayout } from "../layouts/home";
+import { MainLayout } from "../layouts/main";
 
 export default ({
   data,
@@ -23,7 +23,7 @@ export default ({
   } = data;
 
   return (
-    <HomeLayout language={pageContext.language}>
+    <MainLayout language={pageContext.language}>
       <MaxWidthWrapper>
         <Hero
           title={conference.name}
@@ -59,7 +59,7 @@ export default ({
           <Faqs faqs={conference.faqs} />
         </section>
       )}
-    </HomeLayout>
+    </MainLayout>
   );
 };
 

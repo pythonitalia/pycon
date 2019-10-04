@@ -6,17 +6,23 @@ import React, { createElement } from "react";
 import { Article } from "../components/article";
 import { MaxWidthWrapper } from "../components/max-width-wrapper";
 import { PageQuery } from "../generated/graphql";
-import { HomeLayout } from "../layouts/home";
+import { MainLayout } from "../layouts/main";
 
 const compile = marksy({
   createElement,
 });
 
-export default ({ data }: { data: PageQuery }) => {
+export default ({
+  data,
+  pageContext,
+}: {
+  data: PageQuery;
+  pageContext: { language: string };
+}) => {
   const page = data.backend.page!;
 
   return (
-    <HomeLayout>
+    <MainLayout language={pageContext.language}>
       <MaxWidthWrapper>
         <Row>
           <Column
@@ -36,7 +42,7 @@ export default ({ data }: { data: PageQuery }) => {
           </Column>
         </Row>
       </MaxWidthWrapper>
-    </HomeLayout>
+    </MainLayout>
   );
 };
 

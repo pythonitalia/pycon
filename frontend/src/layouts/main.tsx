@@ -11,7 +11,7 @@ const Wrapper = styled.div`
   padding-top: 80px;
 `;
 
-export const HomeLayout = (props: {
+export const MainLayout = (props: {
   children: React.ReactNode;
   language: string;
 }) => (
