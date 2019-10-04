@@ -127,7 +127,15 @@ export const ExpandedMenu = styled(Base)`
   top: 80px;
   left: 0;
   background-color: ${theme.palette.primary};
-  color: ${theme.palette.white};
+
+  a {
+    text-decoration: none;
+    color: ${theme.palette.white};
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
 
   .expanded_menu {
     overflow-y: scroll;
