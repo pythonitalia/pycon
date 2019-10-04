@@ -39,7 +39,7 @@
     "gatsby-transformer-sharp": "^2.2.19",
     "grigliata": "^0.0.16",
     "marksy": "^8.0.0",
-    "prism-react-renderer": "^0.1.7",
+    "prism-react-renderer": "^1.0.1",
     "prop-types": "^15.7.2",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
