@@ -45,6 +45,7 @@ class FAQ(TimeStampedModel):
 
 class Menu(TimeStampedModel):
     identifier = models.SlugField(_("identifier"))
+    title = I18nTextField(_("title"), blank=False)
     conference = models.ForeignKey(
         "conferences.Conference",
         on_delete=models.CASCADE,
@@ -65,6 +66,7 @@ class MenuLink(OrderedModel, TimeStampedModel):
     )
     title = I18nTextField(_("title"), blank=False)
     href = I18nTextField(_("Link url"), blank=True)
+    is_primary = models.BooleanField(_("Is primary"), default=False)
     page = models.ForeignKey(
         "pages.Page",
         on_delete=models.CASCADE,

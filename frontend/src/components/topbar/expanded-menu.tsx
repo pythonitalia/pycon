@@ -1,20 +1,13 @@
+import { graphql, Link, useStaticQuery } from "gatsby";
 import { Column, Row } from "grigliata";
-import React from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
 
 import { STANDARD_ROW_PADDING } from "../../config/spacing";
 import { theme } from "../../config/theme";
+import { LanguageContext } from "../../context/language";
+import { ExpandedMenuQuery } from "../../generated/graphql";
 import { MaxWidthWrapper } from "../max-width-wrapper";
-
-const Wrapper = styled.div`
-  div[class^="columns__CustomColumns"] {
-    display: block;
-
-    @media (min-width: 992px) {
-      display: flex;
-    }
-  }
-`;
 
 const Headings = styled.div`
   border-top: 1px solid ${theme.palette.white};
@@ -34,89 +27,99 @@ const Headings = styled.div`
   }
 `;
 
-const Base = ({ ...props }) => (
-  <div {...props}>
-    <MaxWidthWrapper className="expanded_menu">
-      <Row
-        paddingLeft={STANDARD_ROW_PADDING}
-        paddingRight={STANDARD_ROW_PADDING}
-      >
-        <Column
-          columnWidth={{
-            mobile: 12,
-            tabletPortrait: 6,
-            tabletLandscape: 4,
-            desktop: 4,
-          }}
+const Base = ({ ...props }) => {
+  // we can't pass variables to static queries so we have to
+  // fetch both languages
+  const {
+    backend: {
+      conference: {
+        programMenuEn,
+        conferenceMenuEn,
+        programMenuIt,
+        conferenceMenuIt,
+      },
+    },
+  } = useStaticQuery<ExpandedMenuQuery>(graphql`
+    query ExpandedMenu {
+      backend {
+        conference {
+          programMenuEn: menu(identifier: "program-nav") {
+            title(language: "en")
+            links {
+              title(language: "en")
+              href(language: "en")
+              isPrimary
+            }
+          }
+          conferenceMenuEn: menu(identifier: "conference-nav") {
+            title(language: "en")
+            links {
+              title(language: "en")
+              href(language: "en")
+              isPrimary
+            }
+          }
+          programMenuIt: menu(identifier: "program-nav") {
+            title(language: "it")
+            links {
+              title(language: "it")
+              href(language: "it")
+              isPrimary
+            }
+          }
+          conferenceMenuIt: menu(identifier: "conference-nav") {
+            title(language: "it")
+            links {
+              title(language: "it")
+              href(language: "it")
+              isPrimary
+            }
+          }
+        }
+      }
+    }
+  `);
+
+  const language = useContext(LanguageContext);
+
+  const menusEn = [programMenuEn, conferenceMenuEn].filter(menu => !!menu);
+  const menusIt = [programMenuIt, conferenceMenuIt].filter(menu => !!menu);
+
+  const menus = language === "it" ? menusIt : menusEn;
+
+  return (
+    <div {...props}>
+      <MaxWidthWrapper className="expanded_menu">
+        <Row
+          paddingLeft={STANDARD_ROW_PADDING}
+          paddingRight={STANDARD_ROW_PADDING}
         >
-          <Headings>
-            <h3>Heading</h3>
-            <p>
-              <a href="#">Linkoone</a>
-            </p>
-            <p>
-              <a href="#">Link</a>
-            </p>
-            <p>
-              <a href="#">Linkoone</a>
-            </p>
-          </Headings>
-        </Column>
-        <Column
-          columnWidth={{
-            mobile: 12,
-            tabletPortrait: 6,
-            tabletLandscape: 4,
-            desktop: 4,
-          }}
-        >
-          <Headings>
-            <h3>Heading</h3>
-            <p>
-              <a href="#">Associazione</a>
-            </p>
-            <p>
-              <a href="#">Linkoone</a>
-            </p>
-            <p>
-              <a href="#">Linkoone</a>
-            </p>
-            <p>
-              <a href="#">Linkettonino</a>
-            </p>
-            <p>
-              <a href="#">Link hello</a>
-            </p>
-          </Headings>
-        </Column>
-        <Column
-          columnWidth={{
-            mobile: 12,
-            tabletPortrait: 6,
-            tabletLandscape: 4,
-            desktop: 4,
-          }}
-        >
-          <Headings>
-            <h3>Heading</h3>
-            <p>
-              <a href="#">Linkoone</a>
-            </p>
-            <p>
-              <a href="#">Link for try</a>
-            </p>
-            <p>
-              <a href="#">Link</a>
-            </p>
-            <p>
-              <a href="#">Linkoone</a>
-            </p>
-          </Headings>
-        </Column>
-      </Row>
-    </MaxWidthWrapper>
-  </div>
-);
+          {menus.map((menu, i) => (
+            <Column
+              key={i}
+              columnWidth={{
+                mobile: 12,
+                tabletPortrait: 6,
+                tabletLandscape: 4,
+                desktop: 4,
+              }}
+            >
+              <Headings>
+                <h3>{menu!.title}</h3>
+
+                {menu!.links.map((link, index) => (
+                  <p key={index}>
+                    <Link to={link.href}>{link.title}</Link>
+                  </p>
+                ))}
+              </Headings>
+            </Column>
+          ))}
+        </Row>
+      </MaxWidthWrapper>
+    </div>
+  );
+};
 
 export const ExpandedMenu = styled(Base)`
   position: fixed;

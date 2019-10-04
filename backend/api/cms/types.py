@@ -13,13 +13,16 @@ class FAQ:
 
 @strawberry.type
 class MenuLink:
-    href: str
-    title: str
+    href: str = strawberry.field(resolver=make_localized_resolver("href"))
+    title: str = strawberry.field(resolver=make_localized_resolver("title"))
     target: typing.Optional[str]
+    is_primary: bool
 
 
 @strawberry.type
 class Menu:
+    title: str = strawberry.field(resolver=make_localized_resolver("title"))
+
     @strawberry.field
     def links(self, info) -> typing.List[MenuLink]:
         return self.links.all()

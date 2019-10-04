@@ -29,6 +29,7 @@ class FAQFactory(DjangoModelFactory):
 
 @register
 class MenuFactory(DjangoModelFactory):
+    title = LanguageFactory("sentence")
     conference = factory.SubFactory(ConferenceFactory)
     identifier = factory.Faker("slug")
 

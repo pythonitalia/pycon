@@ -10,14 +10,20 @@ import { TwoColumnsText } from "../components/two-columns-text";
 import { HomePageQuery } from "../generated/graphql";
 import { HomeLayout } from "../layouts/home";
 
-export default ({ data }: { data: HomePageQuery }) => {
+export default ({
+  data,
+  pageContext,
+}: {
+  data: HomePageQuery;
+  pageContext: { language: string };
+}) => {
   const {
     heroImage,
     backend: { conference },
   } = data;
 
   return (
-    <HomeLayout>
+    <HomeLayout language={pageContext.language}>
       <MaxWidthWrapper>
         <Hero
           title={conference.name}
