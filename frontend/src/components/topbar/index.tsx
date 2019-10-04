@@ -20,9 +20,11 @@ const LinkContainer = styled.div`
   justify-content: flex-end;
   height: 100%;
   display: none;
+
   @media (min-width: 992px) {
     display: flex;
   }
+
   a {
     margin-right: 2rem;
     text-decoration: none;
@@ -44,11 +46,7 @@ const LogoContainer = styled.div<ExpandableProps>`
   font-weight: normal;
   font-size: 24px;
   justify-content: center;
-  ${props =>
-    props.open &&
-    css`
-      color: ${theme.palette.white};
-    `}
+  color: inherit;
 `;
 
 const MenuContainer = styled.div<ExpandableProps>`
@@ -62,30 +60,17 @@ const MenuContainer = styled.div<ExpandableProps>`
     align-items: center;
     outline: none;
     transition: 0.25s ease-in-out;
+
     .label {
       display: none;
       @media (min-width: 992px) {
         display: inline-block;
       }
     }
+
     &:hover,
     &:focus {
-      ${props =>
-        props.open &&
-        css`
-          color: ${theme.palette.white};
-        `}
-      span, span:hover, span:focus {
-        background: ${theme.palette.primary};
-        ${props =>
-          props.open
-            ? css`
-                background: ${theme.palette.white};
-              `
-            : css`
-                background: ${theme.palette.primary};
-              `}
-      }
+      color: inherit;
     }
   }
 `;
@@ -98,14 +83,15 @@ const Wrapper = styled.div<ExpandableProps>`
   width: 100%;
   z-index: 10;
   background-color: ${theme.palette.white};
+  color: ${theme.palette.primary};
+
   ${props =>
     props.open &&
     css`
       background-color: ${theme.palette.primary};
-      a {
-        color: ${theme.palette.white};
-      }
+      color: ${theme.palette.white};
     `}
+
   > div,
   > div > div {
     height: 100%;
