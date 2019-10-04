@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, List, Optional
 
 import pytz
 import strawberry
-from api.cms.types import FAQ
+from api.cms.types import FAQ, Menu
 from api.events.types import Event
 from api.languages.types import Language
 from api.scalars import Date, DateTime
@@ -125,6 +125,12 @@ class Conference:
         language = language or translation.get_language() or settings.LANGUAGE_CODE
 
         return copy.content.localize(language) if copy else None
+
+    @strawberry.field
+    def menu(self, info, identifier: str) -> Optional[Menu]:
+        return (
+            self.menus.filter(identifier=identifier).prefetch_related("links").first()
+        )
 
 
 @strawberry.type

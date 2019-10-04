@@ -8,16 +8,22 @@ import { MaxWidthWrapper } from "../components/max-width-wrapper";
 import { SponsorList } from "../components/sponsor-list";
 import { TwoColumnsText } from "../components/two-columns-text";
 import { HomePageQuery } from "../generated/graphql";
-import { HomeLayout } from "../layouts/home";
+import { MainLayout } from "../layouts/main";
 
-export default ({ data }: { data: HomePageQuery }) => {
+export default ({
+  data,
+  pageContext,
+}: {
+  data: HomePageQuery;
+  pageContext: { language: string };
+}) => {
   const {
     heroImage,
     backend: { conference },
   } = data;
 
   return (
-    <HomeLayout>
+    <MainLayout language={pageContext.language}>
       <MaxWidthWrapper>
         <Hero
           title={conference.name}
@@ -53,7 +59,7 @@ export default ({ data }: { data: HomePageQuery }) => {
           <Faqs faqs={conference.faqs} />
         </section>
       )}
-    </HomeLayout>
+    </MainLayout>
   );
 };
 

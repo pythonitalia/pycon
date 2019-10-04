@@ -1,6 +1,6 @@
 import factory
 import factory.fuzzy
-from cms.models import FAQ, GenericCopy
+from cms.models import FAQ, GenericCopy, Menu, MenuLink
 from conferences.tests.factories import ConferenceFactory
 from factory.django import DjangoModelFactory
 from i18n.helpers.tests import LanguageFactory
@@ -25,3 +25,23 @@ class FAQFactory(DjangoModelFactory):
 
     class Meta:
         model = FAQ
+
+
+@register
+class MenuFactory(DjangoModelFactory):
+    title = LanguageFactory("sentence")
+    conference = factory.SubFactory(ConferenceFactory)
+    identifier = factory.Faker("slug")
+
+    class Meta:
+        model = Menu
+
+
+@register
+class MenuLinkFactory(DjangoModelFactory):
+    menu = factory.SubFactory(MenuFactory)
+    title = LanguageFactory("sentence")
+    href = LanguageFactory("slug")
+
+    class Meta:
+        model = MenuLink

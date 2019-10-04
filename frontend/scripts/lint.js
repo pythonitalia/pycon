@@ -3,7 +3,9 @@
 
 const CLIEngine = require("eslint").CLIEngine;
 
-const cli = new CLIEngine();
+const cli = new CLIEngine({
+    fix: true,
+});
 
 const filesToLint = process.argv
     .slice(2)
@@ -14,6 +16,8 @@ const report = cli.executeOnFiles(filesToLint);
 const formatter = cli.getFormatter();
 
 console.log(formatter(report.results));
+
+CLIEngine.outputFixes(report);
 
 if (report.errorCount) {
     process.exit(1);
