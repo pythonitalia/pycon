@@ -27,10 +27,9 @@ export default ({
       <MaxWidthWrapper>
         <Hero
           title={conference.name}
+          subtitle={conference.introduction}
           backgroundImage={heroImage!.childImageSharp!}
-        >
-          <p>{conference.introduction}</p>
-        </Hero>
+        />
       </MaxWidthWrapper>
 
       <TwoColumnsText
