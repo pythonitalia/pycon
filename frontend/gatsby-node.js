@@ -93,6 +93,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     const pageTemplate = path.resolve(`src/templates/page.tsx`);
     const homeTemplate = path.resolve(`src/templates/home.tsx`);
     const loginTemplate = path.resolve(`src/templates/login.tsx`);
+    const profileTemplate = path.resolve(`src/templates/profile.tsx`);
 
     createRedirect({
         fromPath: `/`,
@@ -103,6 +104,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     const pages = [
         { template: homeTemplate, path: "" },
         { template: loginTemplate, path: "/login" },
+        { template: profileTemplate, path: "/profile", matchPath: "/profile/*" },
     ];
     const languages = ["en", "it"];
 
@@ -111,6 +113,9 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
             createPage({
                 path: `/${language}${page.path}`,
                 component: page.template,
+                matchPath: page.matchPath
+                    ? `/${language}${page.matchPath}`
+                    : null,
                 context: {
                     language,
                 },
@@ -167,4 +172,22 @@ exports.onCreateWebpackConfig = ({
             ],
         },
     });
+};
+
+exports.onCreatePage = async ({ page, actions }) => {
+    const { createPage } = actions;
+
+    console.log("🔥", page.path);
+
+    if (page.path.match(/^\/en\/profile/)) {
+        page.matchPath = "/en/profile/*";
+
+        console.log("👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏");
+        console.log("👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏");
+        console.log("👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏");
+        console.log("page", page);
+
+        // Update the page.
+        createPage(page);
+    }
 };
