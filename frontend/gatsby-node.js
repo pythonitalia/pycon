@@ -92,6 +92,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     const blogPostTemplate = path.resolve(`src/templates/blog-post.tsx`);
     const pageTemplate = path.resolve(`src/templates/page.tsx`);
     const homeTemplate = path.resolve(`src/templates/home.tsx`);
+    const loginTemplate = path.resolve(`src/templates/login.tsx`);
 
     createRedirect({
         fromPath: `/`,
@@ -99,20 +100,22 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         toPath: `/en`,
     });
 
-    createPage({
-        path: `/it`,
-        component: homeTemplate,
-        context: {
-            language: "it",
-        },
-    });
+    const pages = [
+        { template: homeTemplate, path: "" },
+        { template: loginTemplate, path: "/login" },
+    ];
+    const languages = ["en", "it"];
 
-    createPage({
-        path: `/en`,
-        component: homeTemplate,
-        context: {
-            language: "en",
-        },
+    pages.forEach(page => {
+        languages.forEach(language =>
+            createPage({
+                path: `/${language}${page.path}`,
+                component: page.template,
+                context: {
+                    language,
+                },
+            }),
+        );
     });
 
     result.data.backend.blogPosts.forEach(({ slug }) => {
