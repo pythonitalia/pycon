@@ -148,3 +148,23 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         });
     });
 };
+
+exports.onCreateWebpackConfig = ({
+    stage,
+    rules,
+    loaders,
+    plugins,
+    actions,
+}) => {
+    actions.setWebpackConfig({
+        module: {
+            rules: [
+                {
+                    test: /\.graphql$/,
+                    exclude: /node_modules/,
+                    loader: "graphql-tag/loader",
+                },
+            ],
+        },
+    });
+};

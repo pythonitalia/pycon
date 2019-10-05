@@ -1,12 +1,10 @@
-schema: _schema.json
-
-documents:
-    - ./src/**/*.{ts,tsx}
-    - ./node_modules/gatsby-image/**/*.js
-    - ./node_modules/gatsby-transformer-sharp/**/*.js
-
 generates:
     src/generated/graphql.ts:
+        schema: _schema.json
+        documents:
+            - ./src/**/*.{ts,tsx}
+            - ./node_modules/gatsby-image/**/*.js
+            - ./node_modules/gatsby-transformer-sharp/**/*.js
         plugins:
             - add: |
                 /* eslint-disable */
@@ -22,3 +20,16 @@ generates:
                 enumValues: keep
             maybeValue: T | null
             avoidOptionals: true
+
+    src/generated/graphql-backend.ts:
+        schema: http://localhost:8000/graphql
+        documents: src/**/*.graphql
+        plugins:
+            - "typescript"
+            - "typescript-operations"
+
+    src/generated/fragment-types.json:
+        schema: http://localhost:8000/graphql
+        documents: src/**/*.graphql
+        plugins:
+            - fragment-matcher

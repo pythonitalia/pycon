@@ -1,9 +1,8 @@
-import { FieldSet, Input, Label } from "fannypack";
 import { graphql } from "gatsby";
 import { Column, Row } from "grigliata";
 import * as React from "react";
 
-import { Button } from "../components/button";
+import { LoginForm } from "../components/login-form";
 import { MaxWidthWrapper } from "../components/max-width-wrapper";
 import { STANDARD_ROW_PADDING } from "../config/spacing";
 import { HomePageQuery } from "../generated/graphql";
@@ -27,26 +26,17 @@ export default ({
           paddingLeft={STANDARD_ROW_PADDING}
           paddingRight={STANDARD_ROW_PADDING}
         >
-          <Column>
+          <Column
+            columnWidth={{
+              mobile: 12,
+              tabletPortrait: 6,
+              tabletLandscape: 6,
+              desktop: 6,
+            }}
+          >
             <h1>Login</h1>
 
-            <form>
-              <FieldSet>
-                <Label htmlFor="login-email">Email</Label>
-                <Input
-                  inputProps={{ id: "login-email" }}
-                  placeholder="guido@python.org"
-                  type="email"
-                />
-
-                <Label htmlFor="login-password">Password</Label>
-                <Input inputProps={{ id: "login-password" }} type="password" />
-
-                <Button size="medium" palette="primary">
-                  Login 👉
-                </Button>
-              </FieldSet>
-            </form>
+            <LoginForm />
           </Column>
         </Row>
       </MaxWidthWrapper>

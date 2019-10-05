@@ -16,6 +16,11 @@
     "postinstall": "cd plugins/gatsby-source-pycon && yarn"
   },
   "dependencies": {
+    "@apollo/react-hooks": "^3.1.2",
+    "apollo-boost": "^0.4.4",
+    "apollo-cache-inmemory": "^1.6.3",
+    "apollo-client": "^2.6.4",
+    "apollo-link-http": "^1.5.16",
     "babel-plugin-styled-components": "^1.10.6",
     "fannypack": "^4.21.18",
     "gatsby": "^2.15.28",
@@ -37,6 +42,7 @@
     "gatsby-source-graphql": "^2.1.17",
     "gatsby-transformer-remark": "^2.6.26",
     "gatsby-transformer-sharp": "^2.2.19",
+    "graphql": "^14.5.8",
     "grigliata": "^0.0.16",
     "marksy": "^8.0.0",
     "prism-react-renderer": "^1.0.1",
@@ -45,6 +51,7 @@
     "react-dom": "^16.10.2",
     "react-helmet": "^5.2.1",
     "react-responsive": "^8.0.1",
+    "react-use-form-state": "^0.11.0",
     "sharp": "^0.23.1",
     "styled-components": "^4.4.0",
     "typescript": "^3.6.3"
@@ -52,6 +59,7 @@
   "devDependencies": {
     "@graphql-codegen/add": "^1.8.0",
     "@graphql-codegen/cli": "^1.8.0",
+    "@graphql-codegen/fragment-matcher": "^1.8.1",
     "@graphql-codegen/introspection": "1.8.0",
     "@graphql-codegen/typescript": "1.8.0",
     "@graphql-codegen/typescript-operations": "^1.8.0",
