@@ -92,8 +92,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     const blogPostTemplate = path.resolve(`src/templates/blog-post.tsx`);
     const pageTemplate = path.resolve(`src/templates/page.tsx`);
     const homeTemplate = path.resolve(`src/templates/home.tsx`);
-    const loginTemplate = path.resolve(`src/templates/login.tsx`);
-    const profileTemplate = path.resolve(`src/templates/profile.tsx`);
+    const appTemplate = path.resolve(`src/templates/app.tsx`);
 
     createRedirect({
         fromPath: `/`,
@@ -103,8 +102,8 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
 
     const pages = [
         { template: homeTemplate, path: "" },
-        { template: loginTemplate, path: "/login" },
-        { template: profileTemplate, path: "/profile", matchPath: "/profile/*" },
+        { template: appTemplate, path: "/login" },
+        { template: appTemplate, path: "/profile", matchPath: "/profile/*" },
     ];
     const languages = ["en", "it"];
 

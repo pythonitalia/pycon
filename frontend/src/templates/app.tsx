@@ -1,7 +1,9 @@
 import { graphql } from "gatsby";
 import { Column, Row } from "grigliata";
 import * as React from "react";
+import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
 
+import { ProfileApp } from "../app/profile";
 import { LoginForm } from "../components/login-form";
 import { MaxWidthWrapper } from "../components/max-width-wrapper";
 import { STANDARD_ROW_PADDING } from "../config/spacing";
@@ -14,38 +16,41 @@ export default ({
 }: {
   data: HomePageQuery;
   pageContext: { language: string };
-}) => {
-  const {
-    backend: { conference },
-  } = data;
+}) => (
+  // const {
+  //   backend: { conference },
+  // } = data;
 
-  return (
-    <MainLayout language={pageContext.language}>
-      <MaxWidthWrapper>
-        <Row
-          paddingLeft={STANDARD_ROW_PADDING}
-          paddingRight={STANDARD_ROW_PADDING}
+  <MainLayout language={pageContext.language}>
+    <MaxWidthWrapper>
+      <Row
+        paddingLeft={STANDARD_ROW_PADDING}
+        paddingRight={STANDARD_ROW_PADDING}
+      >
+        <Column
+          columnWidth={{
+            mobile: 12,
+            tabletPortrait: 6,
+            tabletLandscape: 6,
+            desktop: 6,
+          }}
         >
-          <Column
-            columnWidth={{
-              mobile: 12,
-              tabletPortrait: 6,
-              tabletLandscape: 6,
-              desktop: 6,
-            }}
-          >
-            <h1>Login</h1>
-
-            <LoginForm />
-          </Column>
-        </Row>
-      </MaxWidthWrapper>
-    </MainLayout>
-  );
-};
+          <Router>
+            <Route path="/:lang/profile">
+              <ProfileApp />
+            </Route>
+            <Route path="/:lang/login">
+              <LoginForm />
+            </Route>
+          </Router>
+        </Column>
+      </Row>
+    </MaxWidthWrapper>
+  </MainLayout>
+);
 
 export const query = graphql`
-  query LoginQuery($language: String!) {
+  query AppQuery($language: String!) {
     backend {
       conference {
         introTitle: copy(key: "intro-title-1", language: $language)
