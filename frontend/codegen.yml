@@ -27,9 +27,3 @@ generates:
         plugins:
             - "typescript"
             - "typescript-operations"
-
-    src/generated/fragment-types.json:
-        schema: http://localhost:8000/graphql
-        documents: src/**/*.graphql
-        plugins:
-            - fragment-matcher
