@@ -56,7 +56,13 @@ export const query = graphql`
 
         imageFile {
           childImageSharp {
-            fluid(maxWidth: 1600) {
+            fluid(
+              maxWidth: 1600
+              maxHeight: 700
+              fit: COVER
+              cropFocus: ATTENTION
+              duotone: { highlight: "#000000", shadow: "#000000", opacity: 20 }
+            ) {
               ...GatsbyImageSharpFluid
             }
           }
