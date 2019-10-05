@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@apollo/react-hooks": "^3.1.2",
+    "@types/isomorphic-fetch": "^0.0.35",
     "apollo-boost": "^0.4.4",
     "apollo-cache-inmemory": "^1.6.3",
     "apollo-client": "^2.6.4",
@@ -46,6 +47,7 @@
     "gatsby-transformer-sharp": "^2.2.19",
     "graphql": "^14.5.8",
     "grigliata": "^0.0.16",
+    "isomorphic-fetch": "^2.2.1",
     "marksy": "^8.0.0",
     "prism-react-renderer": "^1.0.1",
     "prop-types": "^15.7.2",

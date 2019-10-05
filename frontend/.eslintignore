@@ -2,6 +2,7 @@
 public/
 plugins/
 gatsby-node.js
+gatsby-ssr.js
 gatsby-config.js
 gatsby-browser.js
 scripts/lint.js
