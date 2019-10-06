@@ -1,9 +1,10 @@
 import { useMutation } from "@apollo/react-hooks";
-import { Redirect, RouteComponentProps } from "@reach/router";
+import { navigate, Redirect, RouteComponentProps } from "@reach/router";
 import { Alert, FieldSet, Input, Label } from "fannypack";
-import * as React from "react";
+import React from "react";
 import { useFormState } from "react-use-form-state";
 
+import { useLoginState } from "../../app/profile/hooks";
 import {
   LoginMutation,
   LoginMutationVariables,
@@ -20,10 +21,22 @@ type LoginFormFields = {
 export const LoginForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
   lang,
 }) => {
-  const [login, { loading, error, data }] = useMutation<
+  const profileUrl = `/${lang}/profile`;
+
+  const [loggedIn, setLoggedIn] = useLoginState(false);
+
+  const onLoginCompleted = (data: LoginMutation) => {
+    if (data && data.login.__typename === "MeUser") {
+      setLoggedIn(true);
+
+      navigate(profileUrl);
+    }
+  };
+
+  const [login, { loading, error, data: loginData }] = useMutation<
     LoginMutation,
     LoginMutationVariables
-  >(LOGIN_MUTATION, {});
+  >(LOGIN_MUTATION, { onCompleted: onLoginCompleted });
   const [formState, { label, email, password }] = useFormState<LoginFormFields>(
     {},
     {
@@ -31,15 +44,13 @@ export const LoginForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
     },
   );
 
-  // TODO: on success, store that we are logged in
-
-  if (data && data.login.__typename === "MeUser") {
-    return <Redirect to={`/${lang}/profile`} noThrow={true} />;
+  if (loggedIn) {
+    return <Redirect to={profileUrl} noThrow={true} />;
   }
 
   const errorMessage =
-    data && data.login.__typename === "LoginErrors"
-      ? data.login.nonFieldErrors.join(" ")
+    loginData && loginData.login.__typename === "LoginErrors"
+      ? loginData.login.nonFieldErrors.join(" ")
       : error;
 
   return (

@@ -22,6 +22,7 @@
     "@reach/router": "^1.2.1",
     "@types/isomorphic-fetch": "^0.0.35",
     "@types/reach__router": "^1.2.5",
+    "@types/use-persisted-state": "^0.3.0",
     "apollo-boost": "^0.4.4",
     "apollo-cache-inmemory": "^1.6.3",
     "apollo-client": "^2.6.4",
@@ -61,7 +62,8 @@
     "react-use-form-state": "^0.11.0",
     "sharp": "^0.23.1",
     "styled-components": "^4.4.0",
-    "typescript": "^3.6.3"
+    "typescript": "^3.6.3",
+    "use-persisted-state": "^0.3.0"
   },
   "devDependencies": {
     "@graphql-codegen/add": "^1.8.0",
