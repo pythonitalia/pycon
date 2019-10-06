@@ -2,6 +2,7 @@ import { ThemeProvider } from "fannypack";
 import React from "react";
 import styled from "styled-components";
 
+import { ErrorBoundary } from "../components/error-boundary";
 import { Footer } from "../components/footer";
 import { Topbar } from "../components/topbar";
 import { theme } from "../config/theme";
@@ -19,7 +20,7 @@ export const MainLayout = (props: {
     <ThemeProvider theme={theme}>
       <Wrapper>
         <Topbar />
-        {props.children}
+        <ErrorBoundary>{props.children}</ErrorBoundary>
         <Footer />
       </Wrapper>
     </ThemeProvider>

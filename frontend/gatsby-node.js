@@ -92,6 +92,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     const blogPostTemplate = path.resolve(`src/templates/blog-post.tsx`);
     const pageTemplate = path.resolve(`src/templates/page.tsx`);
     const homeTemplate = path.resolve(`src/templates/home.tsx`);
+    const appTemplate = path.resolve(`src/templates/app.tsx`);
 
     createRedirect({
         fromPath: `/`,
@@ -99,20 +100,26 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         toPath: `/en`,
     });
 
-    createPage({
-        path: `/it`,
-        component: homeTemplate,
-        context: {
-            language: "it",
-        },
-    });
+    const pages = [
+        { template: homeTemplate, path: "" },
+        { template: appTemplate, path: "/login", matchPath: "/login/*"  },
+        { template: appTemplate, path: "/profile", matchPath: "/profile/*" },
+    ];
+    const languages = ["en", "it"];
 
-    createPage({
-        path: `/en`,
-        component: homeTemplate,
-        context: {
-            language: "en",
-        },
+    pages.forEach(page => {
+        languages.forEach(language =>
+            createPage({
+                path: `/${language}${page.path}`,
+                component: page.template,
+                matchPath: page.matchPath
+                    ? `/${language}${page.matchPath}`
+                    : null,
+                context: {
+                    language,
+                },
+            }),
+        );
     });
 
     result.data.backend.blogPosts.forEach(({ slug }) => {
@@ -143,5 +150,25 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
                 slug: slugEn,
             },
         });
+    });
+};
+
+exports.onCreateWebpackConfig = ({
+    stage,
+    rules,
+    loaders,
+    plugins,
+    actions,
+}) => {
+    actions.setWebpackConfig({
+        module: {
+            rules: [
+                {
+                    test: /\.graphql$/,
+                    exclude: /node_modules/,
+                    loader: "graphql-tag/loader",
+                },
+            ],
+        },
     });
 };

@@ -56,8 +56,11 @@ jobs:
         poetry run python manage.py runserver &
 
         cd ../frontend/
+
+        bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8000/admin/login/)" != "200" ]]; do sleep 5; done'
+        yarn codegen-fragments
         yarn build
-        yarn codegen
+        yarn codegen-queries
       env:
         SECRET_KEY: demo
         AWS_MEDIA_BUCKET: demo
