@@ -24,6 +24,8 @@ Is the topic of a submission.
 
 Example: PyData, PyWeb, Python & Friends and so on.
 
+
+
 ## [Ticket Fare](https://github.com/pythonitalia/pycon/blob/master/backend/conferences/models/ticket_fare.py)
 The conference ticket itself. It has a description of the ticket, a name, the price and a code that can be used to identify the type of ticket.
 
@@ -33,3 +35,20 @@ Example: we can use as code for the regular tickets `regularp` `regularc` `regul
 Are questions that are needed for the organisation of the conference to which every user that has a ticket must (or should) respond.
 
 Example: the size of the t-shirt, Eating preferences, a custom tagline to print in the Ticket.
+
+## Class Diagram
+![.conferences_class_diagram.png](./conferences_class_diagram.png)
+
+
+# [Submission](https://github.com/pythonitalia/pycon/blob/eddd65bc7f695e25ae28e8ce19a2ea08b818de99/backend/submissions/models.py#L9)
+When the call for proposal is open every users can send a submission . He must specify (together with the title, abstract, topic and other information) the type of submission he wants to propose. It should be one of the SubmissionsType admitted by the conference could be for example a `Talk`, a `Workshop`, a `Sprint`. Also the Duration of the submission should be one of the duration admitted by the conference.
+
+# [Voting](https://github.com/pythonitalia/pycon/blob/eddd65bc7f695e25ae28e8ce19a2ea08b818de99/backend/voting/models.py#L8)
+When the voting deadline is open any user who has a ticket can indicate his personal interest in attending to each submission arrived during the CFP.
+To understand if the voting is open, as we do for CFP, there is the [`is_voting_open`](https://github.com/pythonitalia/pycon/blob/eddd65bc7f695e25ae28e8ce19a2ea08b818de99/backend/conferences/models/conference.py#L43) method defined in the conference model.
+
+For each submission the user has 4 four choices _"not_interested"_, _"maybe"_, _"want_to_see"_ and _"must_see"_. After the talk voting phase, the votes will be used to select the talks and build a schedule.
+
+
+## Class Diagram
+![.submissions_class_diagram.png](./submissions_class_diagram.png)
