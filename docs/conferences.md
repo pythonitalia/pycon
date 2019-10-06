@@ -13,7 +13,7 @@ Represents the kind of audience you expect from a submission
 
 Example: Beginner, Intermediate, Advanced.
 
-## Duration
+## [Duration](https://github.com/pythonitalia/pycon/blob/eddd65bc7f695e25ae28e8ce19a2ea08b818de99/backend/conferences/models/duration.py#L6)
 It represents how long a Submission can last. Each duration has a list of SubmissionTypes that accepts ([`allowed_submission_types`](https://github.com/pythonitalia/pycon/blob/20fdf584b255b5ddf0a9f3dcb3c4f92da356fb02/backend/conferences/models/duration.py#L19)).
 
 Example: a duration of 45 minutes can only accept Submission of type 'Talk' (and not workshops...).
