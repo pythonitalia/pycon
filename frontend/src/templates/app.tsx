@@ -1,7 +1,7 @@
+import { Router } from "@reach/router";
 import { graphql } from "gatsby";
 import { Column, Row } from "grigliata";
 import * as React from "react";
-import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
 
 import { ProfileApp } from "../app/profile";
 import { LoginForm } from "../components/login-form";
@@ -36,12 +36,8 @@ export default ({
           }}
         >
           <Router>
-            <Route path="/:lang/profile">
-              <ProfileApp />
-            </Route>
-            <Route path="/:lang/login">
-              <LoginForm />
-            </Route>
+            <ProfileApp path="/:lang/profile" />
+            <LoginForm path="/:lang/login" />
           </Router>
         </Column>
       </Row>

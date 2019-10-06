@@ -102,7 +102,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
 
     const pages = [
         { template: homeTemplate, path: "" },
-        { template: appTemplate, path: "/login" },
+        { template: appTemplate, path: "/login", matchPath: "/login/*"  },
         { template: appTemplate, path: "/profile", matchPath: "/profile/*" },
     ];
     const languages = ["en", "it"];
@@ -171,22 +171,4 @@ exports.onCreateWebpackConfig = ({
             ],
         },
     });
-};
-
-exports.onCreatePage = async ({ page, actions }) => {
-    const { createPage } = actions;
-
-    console.log("🔥", page.path);
-
-    if (page.path.match(/^\/en\/profile/)) {
-        page.matchPath = "/en/profile/*";
-
-        console.log("👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏");
-        console.log("👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏");
-        console.log("👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏");
-        console.log("page", page);
-
-        // Update the page.
-        createPage(page);
-    }
 };

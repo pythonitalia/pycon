@@ -1,7 +1,7 @@
 import { useMutation } from "@apollo/react-hooks";
+import { Redirect, RouteComponentProps } from "@reach/router";
 import { Alert, FieldSet, Input, Label } from "fannypack";
 import * as React from "react";
-import { Redirect, useParams } from "react-router";
 import { useFormState } from "react-use-form-state";
 
 import {
@@ -17,8 +17,9 @@ type LoginFormFields = {
   password: string;
 };
 
-export const LoginForm = ({}) => {
-  const { lang } = useParams();
+export const LoginForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
+  lang,
+}) => {
   const [login, { loading, error, data }] = useMutation<
     LoginMutation,
     LoginMutationVariables
@@ -33,7 +34,7 @@ export const LoginForm = ({}) => {
   // TODO: on success, store that we are logged in
 
   if (data && data.login.__typename === "MeUser") {
-    return <Redirect to={`/${lang}/profile`} />;
+    return <Redirect to={`/${lang}/profile`} noThrow={true} />;
   }
 
   const errorMessage =
