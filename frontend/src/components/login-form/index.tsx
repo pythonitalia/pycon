@@ -2,6 +2,7 @@ import { useMutation } from "@apollo/react-hooks";
 import { navigate, Redirect, RouteComponentProps } from "@reach/router";
 import { Alert, FieldSet, Input, Label } from "fannypack";
 import React from "react";
+import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 
 import { useLoginState } from "../../app/profile/hooks";
@@ -65,7 +66,9 @@ export const LoginForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
       <FieldSet>
         {errorMessage && <Alert type="error">{errorMessage}</Alert>}
 
-        <Label {...label("email")}>Email</Label>
+        <Label {...label("email")}>
+          <FormattedMessage id="login.email" />
+        </Label>
         <Input
           inputProps={{ ...email("email"), required: true }}
           placeholder="guido@python.org"
@@ -73,7 +76,9 @@ export const LoginForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
           type="email"
         />
 
-        <Label htmlFor="login-password">Password</Label>
+        <Label htmlFor="login-password">
+          <FormattedMessage id="login.password" />
+        </Label>
         <Input
           inputProps={{
             id: "login-password",
@@ -90,7 +95,7 @@ export const LoginForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
           isLoading={loading}
           type="submit"
         >
-          Login 👉
+          <FormattedMessage id="login.loginButton" />
         </Button>
       </FieldSet>
     </Form>
