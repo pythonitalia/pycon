@@ -83,6 +83,12 @@ jobs:
     - uses: actions/checkout@master
     - run: yarn
       working-directory: frontend
+
+    - run: yarn codegen-fragments
+      working-directory: frontend
+      env:
+        API_URL: https://d1111jewijk23m.cloudfront.net/graphql
+
     - run: yarn build
       working-directory: frontend
       env:
