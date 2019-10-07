@@ -5,6 +5,9 @@ export default {
     "login.email": "Email",
     "login.password": "Password",
     "login.loginButton": "Login 👉",
+    "signup.email": "Email",
+    "signup.password": "Password",
+    "signup.signupButton": "Signup 👉",
   },
   it: {
     "profile.header": "Il mio profilo",
@@ -12,5 +15,8 @@ export default {
     "login.email": "Email",
     "login.password": "Password",
     "login.loginButton": "Accedi 👉",
+    "signup.email": "Email",
+    "signup.password": "Password",
+    "signup.signupButton": "Registrati 👉",
   },
 };

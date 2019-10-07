@@ -1,0 +1,16 @@
+mutation Signup($email: String!, $password: String!) {
+  register(input: { email: $email, password: $password }) {
+    __typename
+
+    ... on MeUser {
+      id
+      email
+    }
+
+    ... on RegisterErrors {
+      validationEmail: email
+      validationPassword: password
+      nonFieldErrors
+    }
+  }
+}
