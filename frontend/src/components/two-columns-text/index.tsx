@@ -1,10 +1,10 @@
 import { Heading, Text } from "fannypack";
-import { Column, Row } from "grigliata";
+import { Column, Container, Row } from "grigliata";
 import React from "react";
 import styled from "styled-components";
 
 import { STANDARD_ROW_PADDING } from "../../config/spacing";
-import { MaxWidthWrapper } from "../max-width-wrapper";
+// import { MaxWidthWrapper } from "../max-width-wrapper";
 
 const Base = styled.div`
   position: relative;
@@ -86,7 +86,7 @@ export const TwoColumnsText = (props: Props) => (
       </div>
     </div>
 
-    <MaxWidthWrapper>
+    <Container>
       <div className="columns_wrapper">
         <Row
           paddingLeft={STANDARD_ROW_PADDING}
@@ -122,6 +122,6 @@ export const TwoColumnsText = (props: Props) => (
           </Column>
         </Row>
       </div>
-    </MaxWidthWrapper>
+    </Container>
   </Base>
 );

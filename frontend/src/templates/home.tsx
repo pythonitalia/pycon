@@ -1,6 +1,8 @@
 import { graphql } from "gatsby";
+import { Container } from "grigliata";
 import * as React from "react";
 
+import { Deadlines } from "../components/deadlines";
 import { Hero } from "../components/hero";
 import { Events } from "../components/home-events";
 import { Faqs } from "../components/home-faq";
@@ -30,6 +32,10 @@ export default ({
           subtitle={conference.introduction}
           backgroundImage={heroImage!.childImageSharp!}
         />
+      </MaxWidthWrapper>
+
+      <MaxWidthWrapper>
+        <Deadlines />
       </MaxWidthWrapper>
 
       <TwoColumnsText
