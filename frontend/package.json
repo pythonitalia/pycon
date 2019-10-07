@@ -47,7 +47,7 @@
     "gatsby-remark-responsive-iframe": "^2.2.20",
     "gatsby-source-filesystem": "^2.1.28",
     "gatsby-source-graphql": "^2.1.17",
-    "gatsby-transformer-remark": "^2.6.26",
+    "gatsby-transformer-remark": "^2.6.27",
     "gatsby-transformer-sharp": "^2.2.20",
     "graphql": "^14.5.8",
     "grigliata": "^0.0.16",
