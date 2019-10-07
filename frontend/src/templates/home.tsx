@@ -34,7 +34,9 @@ export default ({
         />
       </MaxWidthWrapper>
 
-      <Deadlines />
+      <MaxWidthWrapper>
+        <Deadlines />
+      </MaxWidthWrapper>
 
       <TwoColumnsText
         left={{

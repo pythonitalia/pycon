@@ -10,6 +10,9 @@ export const StyledDeadlines = styled.div`
   padding: 4rem 0 0 0;
   .element {
   }
+  .section__subtitle {
+    margin-top: 0;
+  }
   .description {
     @media (min-width: 768px) {
       min-height: 6rem;
@@ -62,7 +65,9 @@ export const Deadlines = (props: {}) => (
             desktop: 12,
           }}
         >
-          <p>Here are the next deadlines that are soon arriving</p>
+          <p className="section__subtitle">
+            Here are the next deadlines that are soon arriving
+          </p>
         </Column>
         <Column
           columnWidth={{
