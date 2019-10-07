@@ -30,7 +30,7 @@
     "babel-plugin-styled-components": "^1.10.6",
     "fannypack": "^4.21.18",
     "gatsby": "^2.15.28",
-    "gatsby-image": "^2.2.23",
+    "gatsby-image": "^2.2.24",
     "gatsby-plugin-create-client-paths": "^2.1.12",
     "gatsby-plugin-extract-schema": "^0.0.5",
     "gatsby-plugin-favicon": "^3.1.6",
