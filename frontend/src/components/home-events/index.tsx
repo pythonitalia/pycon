@@ -133,9 +133,9 @@ export const Events = ({ events, text }: EventsProps) => {
           <Column
             columnWidth={{
               mobile: 12,
-              tabletPortrait: 6,
-              tabletLandscape: 6,
-              desktop: 6,
+              tabletPortrait: 10,
+              tabletLandscape: 10,
+              desktop: 10,
             }}
           >
             <p>{text}</p>

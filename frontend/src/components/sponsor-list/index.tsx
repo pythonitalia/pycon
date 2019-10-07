@@ -1,6 +1,6 @@
 import { Heading } from "fannypack";
 import Img, { GatsbyImageProps } from "gatsby-image";
-import { Column, Row } from "grigliata";
+import { Column, Container, Row } from "grigliata";
 import { ColumnWidthValuesType } from "grigliata/dist/typings/column";
 import React from "react";
 import styled, { keyframes } from "styled-components";
@@ -134,7 +134,7 @@ export const SponsorList: React.SFC<SponsorListProps> = props => (
       </Column>
     </Row>
 
-    <MaxWidthWrapper>
+    <Container>
       {props.sponsors.map((level, i) => (
         <Row
           key={level.level}
@@ -223,6 +223,6 @@ export const SponsorList: React.SFC<SponsorListProps> = props => (
           </Column>
         </Row>
       ))}
-    </MaxWidthWrapper>
+    </Container>
   </>
 );
