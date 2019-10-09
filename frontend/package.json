@@ -45,7 +45,7 @@
     "gatsby-remark-external-links": "0.0.4",
     "gatsby-remark-images": "^3.1.25",
     "gatsby-remark-responsive-iframe": "^2.2.22",
-    "gatsby-source-filesystem": "^2.1.29",
+    "gatsby-source-filesystem": "^2.1.30",
     "gatsby-source-graphql": "^2.1.17",
     "gatsby-transformer-remark": "^2.6.27",
     "gatsby-transformer-sharp": "^2.2.20",
