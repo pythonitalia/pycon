@@ -63,7 +63,7 @@
     "react-use-form-state": "^0.11.0",
     "sharp": "^0.23.1",
     "styled-components": "^4.4.0",
-    "typescript": "^3.6.3",
+    "typescript": "^3.6.4",
     "use-persisted-state": "^0.3.0"
   },
   "devDependencies": {
