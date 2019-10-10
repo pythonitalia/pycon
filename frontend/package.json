@@ -40,7 +40,7 @@
     "gatsby-plugin-offline": "^3.0.12",
     "gatsby-plugin-react-helmet": "^3.1.11",
     "gatsby-plugin-sharp": "^2.2.28",
-    "gatsby-plugin-styled-components": "^3.1.8",
+    "gatsby-plugin-styled-components": "^3.1.9",
     "gatsby-plugin-typescript": "^2.1.11",
     "gatsby-remark-external-links": "0.0.4",
     "gatsby-remark-images": "^3.1.26",
