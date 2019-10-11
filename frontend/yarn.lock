@@ -2493,10 +2493,10 @@
     "@types/prop-types" "*"
     "@types/react" "*"
 
-"@types/react-responsive@^8.0.0":
-  version "8.0.0"
-  resolved "https://registry.yarnpkg.com/@types/react-responsive/-/react-responsive-8.0.0.tgz#b5784fdd0a528f646a4aa8c03322fe248076393a"
-  integrity sha512-qZxhcjRaO3pJUxlznHARzmv+xRv0E86t9wrGiMM3gUaj+NTOwhkSTaXTmVvGyjYR8bFb5E0dZ5/B6/OS0RDMDA==
+"@types/react-responsive@^8.0.1":
+  version "8.0.1"
+  resolved "https://registry.yarnpkg.com/@types/react-responsive/-/react-responsive-8.0.1.tgz#3005c4182ebca5316ecb035a139ce891fce9a137"
+  integrity sha512-c4rWRZT0n90RwoK3MUZgkEfdfLClXNnUExZeKx5aUqqGcT4sJ4vV7OB5X59xxCtmN3vMMR72SiMXDGSYZOMqmA==
   dependencies:
     "@types/react" "*"
 
