@@ -29,7 +29,7 @@
     "apollo-link-http": "^1.5.16",
     "babel-plugin-styled-components": "^1.10.6",
     "fannypack": "^4.21.20",
-    "gatsby": "^2.15.34",
+    "gatsby": "^2.15.35",
     "gatsby-image": "^2.2.27",
     "gatsby-plugin-create-client-paths": "^2.1.13",
     "gatsby-plugin-extract-schema": "^0.0.5",
