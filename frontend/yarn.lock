@@ -1259,7 +1259,7 @@
   dependencies:
     regenerator-runtime "^0.13.2"
 
-"@babel/runtime@^7.0.0", "@babel/runtime@^7.1.2", "@babel/runtime@^7.2.0", "@babel/runtime@^7.3.4", "@babel/runtime@^7.4.2", "@babel/runtime@^7.4.4", "@babel/runtime@^7.4.5", "@babel/runtime@^7.6.2", "@babel/runtime@^7.6.3":
+"@babel/runtime@^7.0.0", "@babel/runtime@^7.1.2", "@babel/runtime@^7.2.0", "@babel/runtime@^7.3.4", "@babel/runtime@^7.4.2", "@babel/runtime@^7.4.4", "@babel/runtime@^7.4.5", "@babel/runtime@^7.6.3":
   version "7.6.3"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.6.3.tgz#935122c74c73d2240cafd32ddb5fc2a6cd35cf1f"
   integrity sha512-kq6anf9JGjW8Nt5rYfEuGRaEAaH1mkv3Bbu6rYvLOpPh/RusSJXuKPEAoZ7L7gybZkchE8+NV5g9vKF4AGAtsA==
@@ -7223,10 +7223,10 @@ facepaint@^1.2.1:
   resolved "https://registry.yarnpkg.com/facepaint/-/facepaint-1.2.1.tgz#89929e601b15227278c53c516f764fc462b09c33"
   integrity sha512-oNvBekbhsm/0PNSOWca5raHNAi6dG960Bx6LJgxDPNF59WpuspgQ17bN5MKwOr7JcFdQYc7StW3VZ28DBZLavQ==
 
-fannypack@^4.21.20:
-  version "4.21.20"
-  resolved "https://registry.yarnpkg.com/fannypack/-/fannypack-4.21.20.tgz#a5e07d8ef68f0e00e24d9abce0655861861ac81b"
-  integrity sha512-Fv3hUUr2nvAq71g6Q8r1MPQk/zJ7VOKmNpIRmXY0OwUkuYrwNhEZrp4dLueBWMaCBdRq8MNi5f9tISc0NXVEYw==
+fannypack@^4.21.21:
+  version "4.21.21"
+  resolved "https://registry.yarnpkg.com/fannypack/-/fannypack-4.21.21.tgz#fb767af9fda8dbb26ae30da947e47f448bf439b5"
+  integrity sha512-4Hugp7o9mLEU7SLp5pB2sbS32AZS3Oi/HNtvclDZ4wtGAkXsJn4wvwsB4xzOWxsnttt9Ymj8iqQOY456g1nm7w==
   dependencies:
     "@fortawesome/free-solid-svg-icons" "5.9.0"
     "@types/classnames" "2.2.6"
