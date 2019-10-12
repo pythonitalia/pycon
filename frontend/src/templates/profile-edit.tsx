@@ -1,5 +1,3 @@
-import React, { useState } from "react";
-
 import {
   Button,
   Card,
@@ -10,9 +8,11 @@ import {
   SelectField,
 } from "fannypack";
 import { Column, Container, Row } from "grigliata";
+import React, { useState } from "react";
 import styled from "styled-components";
+
 import { STANDARD_ROW_PADDING } from "../config/spacing";
-import { HomeLayout } from "../layouts/home";
+import { MainLayout } from "../layouts/main";
 
 type UserProps = {
   data: any;
@@ -151,7 +151,6 @@ const EditPage: React.FC = me => {
             />
           </InputWrapper>
         </Card>
-
       </LayoutSet>
       <Row paddingBottom={ROW_PADDING} paddingTop={BUTTON_PADDING}>
         <Button onClick={handleUserSubmit}>Send!</Button>
@@ -160,8 +159,14 @@ const EditPage: React.FC = me => {
   );
 };
 
-export default ({ data }: UserProps) => (
-  <HomeLayout>
+export default ({
+  data,
+  pageContext,
+}: {
+  data: UserProps;
+  pageContext: { language: string };
+}) => (
+  <MainLayout language={pageContext.language}>
     <Container fullWidth={false}>
       <Row
         paddingLeft={STANDARD_ROW_PADDING}
@@ -186,5 +191,5 @@ export default ({ data }: UserProps) => (
         </Column>
       </Row>
     </Container>
-  </HomeLayout>
+  </MainLayout>
 );
