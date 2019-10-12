@@ -1,7 +1,7 @@
 from api.submissions.permissions import IsAuthenticated
 from strawberry_forms.mutations import FormMutation
 
-from .forms import LoginForm, RegisterForm, UpdateForm
+from .forms import LoginForm, RegisterForm, UpdateUserForm
 from .types import Image, MeUser
 
 
@@ -62,7 +62,7 @@ class Register(BaseUserMutation):
 
 class Update(BaseUserMutation):
     class Meta:
-        form_class = UpdateForm
+        form_class = UpdateUserForm
         output_types = (MeUser,)
         permission_classes = (IsAuthenticated,)
 
