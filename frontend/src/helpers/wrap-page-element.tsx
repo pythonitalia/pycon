@@ -5,11 +5,17 @@ import { IntlProvider } from "react-intl";
 import { client } from "../apollo/client";
 import messages from "../locale";
 
+import { EnvironmentContext } from "../context/environment";
+
 type Props = {
   element: any;
   props: {
     pageContext: {
       language: "en" | "it";
+      env: {
+        stripePublishableKey: string;
+        conferenceCode: string;
+      };
     };
   };
 };
@@ -19,6 +25,10 @@ export const wrapPageElement = ({ element, props }: Props) => (
     locale={props.pageContext.language}
     messages={messages[props.pageContext.language]}
   >
-    <ApolloProvider client={client}>{element}</ApolloProvider>
+    <ApolloProvider client={client}>
+      <EnvironmentContext.Provider value={props.pageContext.env}>
+        {element}
+      </EnvironmentContext.Provider>
+    </ApolloProvider>
   </IntlProvider>
 );

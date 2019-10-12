@@ -1,0 +1,19 @@
+mutation BuyTickets($conference: ID!, $cart: [CartItem!]!) {
+    buyTicketWithStripe(input: { conference: $conference, items: $cart }) {
+        __typename
+
+        ... on BuyTicketWithStripeErrors {
+            conference
+            items
+            nonFieldErrors
+        }
+
+        ... on StripeClientSecret {
+            clientSecret
+        }
+
+        ... on GenericPaymentError {
+            message
+        }
+    }
+}

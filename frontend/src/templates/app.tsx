@@ -3,6 +3,7 @@ import { Column, Row } from "grigliata";
 import * as React from "react";
 
 import { ProfileApp } from "../app/profile";
+import { BuyTickets } from "../components/buy-tickets";
 import { LoginForm } from "../components/login-form";
 import { MaxWidthWrapper } from "../components/max-width-wrapper";
 import { SignupForm } from "../components/signup-form";
@@ -28,6 +29,7 @@ export default ({ pageContext }: { pageContext: { language: string } }) => (
             <ProfileApp path="/:lang/profile" />
             <LoginForm path="/:lang/login" />
             <SignupForm path="/:lang/signup" />
+            <BuyTickets path="/:lang/buy-tickets" />
           </Router>
         </Column>
       </Row>

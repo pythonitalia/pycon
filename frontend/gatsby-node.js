@@ -94,6 +94,13 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     const homeTemplate = path.resolve(`src/templates/home.tsx`);
     const appTemplate = path.resolve(`src/templates/app.tsx`);
 
+    const sharedContext = {
+        env: {
+            conferenceCode: process.env.CONFERENCE_CODE,
+            stripePublishableKey: process.env.STRIPE_PUBLISHABLE_KEY,
+        },
+    };
+
     createRedirect({
         fromPath: `/`,
         redirectInBrowser: true,
@@ -104,6 +111,11 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         { template: homeTemplate, path: "" },
         { template: appTemplate, path: "/login", matchPath: "/login/*" },
         { template: appTemplate, path: "/signup", matchPath: "/signup/*" },
+        {
+            template: appTemplate,
+            path: "/buy-tickets",
+            matchPath: "/buy-tickets/*",
+        },
         { template: appTemplate, path: "/profile", matchPath: "/profile/*" },
     ];
     const languages = ["en", "it"];
@@ -117,6 +129,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
                     ? `/${language}${page.matchPath}`
                     : null,
                 context: {
+                    ...sharedContext,
                     language,
                 },
             }),
@@ -128,6 +141,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
             path: `/blog/${slug}`,
             component: blogPostTemplate,
             context: {
+                ...sharedContext,
                 slug,
             },
         });
@@ -138,6 +152,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
             path: `/it/${slugIt}`,
             component: pageTemplate,
             context: {
+                ...sharedContext,
                 language: "it",
                 slug: slugIt,
             },
@@ -147,6 +162,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
             path: `/en/${slugEn}`,
             component: pageTemplate,
             context: {
+                ...sharedContext,
                 language: "en",
                 slug: slugEn,
             },

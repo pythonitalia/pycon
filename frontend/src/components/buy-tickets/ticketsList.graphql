@@ -1,0 +1,10 @@
+query ConferenceTickets($code: String!) {
+    conference(code: $code) {
+        ticketFares {
+            id
+            name
+            code
+            price
+        }
+    }
+}
