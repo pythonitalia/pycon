@@ -34,9 +34,11 @@ export default ({
         />
       </MaxWidthWrapper>
 
-      <MaxWidthWrapper>
-        <Deadlines />
-      </MaxWidthWrapper>
+      {conference.deadlines.length > 0 && (
+        <MaxWidthWrapper>
+          <Deadlines deadlines={conference.deadlines} />
+        </MaxWidthWrapper>
+      )}
 
       <TwoColumnsText
         left={{
@@ -96,6 +98,13 @@ export const query = graphql`
         introTitle2: copy(key: "intro-title-2", language: $language)
         introText2: copy(key: "intro-text-2", language: $language)
         eventsIntro: copy(key: "events-intro", language: $language)
+
+        deadlines {
+          name(language: $language)
+          description(language: $language)
+          start
+          end
+        }
 
         faqs {
           question(language: $language)

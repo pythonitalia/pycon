@@ -157,6 +157,8 @@ class TopicFactory(DjangoModelFactory):
 class DeadlineFactory(DjangoModelFactory):
     conference = factory.SubFactory(ConferenceFactory)
     type = factory.fuzzy.FuzzyChoice([deadline[0] for deadline in Deadline.TYPES])
+    name = LanguageFactory("sentence")
+    description = LanguageFactory("sentence")
 
     start = factory.Faker("past_datetime", tzinfo=pytz.UTC)
     end = factory.Faker("future_datetime", tzinfo=pytz.UTC)

@@ -1,20 +1,67 @@
 [
-  {
-    "model": "events.event",
+{
+    "model": "conferences.audiencelevel",
     "pk": 1,
     "fields": {
-      "created": "2019-09-23T22:07:36.731Z",
-      "modified": "2019-09-23T22:08:50.200Z",
-      "start": "2019-09-23T22:07:33Z",
-      "end": "2019-09-23T22:07:35Z",
-      "latitude": null,
-      "longitude": null,
-      "map_link": "",
-      "title": { "en": "Example event", "it": "Evento d'esempio" },
-      "slug": { "en": "example", "it": "esempio" },
-      "content": { "en": "ABC", "it": "ABC" },
-      "conference": 1,
-      "image": "events/event.jpg"
+        "name": "Beginner"
     }
-  }
+},
+{
+    "model": "conferences.deadline",
+    "pk": 1,
+    "fields": {
+        "start": "2019-10-12T20:41:36Z",
+        "end": "2020-11-12T20:41:37Z",
+        "conference": 1,
+        "name": {
+            "en": "Call for Proposals \ud83c\udfa4",
+            "it": "Call for Proposal \ud83c\udfa4"
+        },
+        "description": {
+            "en": "Example description",
+            "it": "Descrizione d'esempio"
+        },
+        "type": "cfp"
+    }
+},
+{
+    "model": "conferences.conference",
+    "pk": 1,
+    "fields": {
+        "latitude": "43.766140",
+        "longitude": "11.269985",
+        "map_link": "https://goo.gl/maps/ogYFG5yr7rSHFr586",
+        "created": "2019-08-24T13:18:12.148Z",
+        "modified": "2019-08-24T13:18:12.148Z",
+        "start": null,
+        "end": null,
+        "name": {
+            "en": "PyCon Demo",
+            "it": "PyCon Prova"
+        },
+        "code": "pycon-demo",
+        "timezone": "Europe/Rome",
+        "introduction": {
+            "en": "This is a demo conference, sorry it is not happening!",
+            "it": "Questa \u00e8 una conferenze di prova."
+        },
+        "topics": [
+            1
+        ],
+        "languages": [],
+        "audience_levels": [
+            1
+        ],
+        "submission_types": [
+            1
+        ]
+    }
+},
+{
+    "model": "conferences.topic",
+    "pk": 1,
+    "fields": {
+        "name": "Web"
+    }
+}
 ]
