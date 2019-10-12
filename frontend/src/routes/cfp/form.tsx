@@ -1,9 +1,14 @@
 import React, { useState } from "react";
-
+import { StaticQuery } from "gatsby";
 import { Button, InputField, SelectField, TextareaField } from "fannypack";
 import { Column, Row } from "grigliata";
 import * as yup from "yup";
-import { AUDIENCE_LEVEL_OPTIONS, BUTTON_PADDING, DURATION_OPTIONS, LANGUAGE_OPTIONS, ROW_PADDING, TOPIC_OPTIONS, TYPE_OPTIONS } from "./constants";
+import {
+  BUTTON_PADDING,
+  ROW_PADDING,
+  TYPE_OPTIONS,
+} from "./constants";
+import { graphql } from "gatsby";
 
 const schema = yup.object().shape({
   title: yup
@@ -53,6 +58,32 @@ const InputWrapper: React.FC = props => {
     </Row>
   );
 };
+
+export const constantsQuery = graphql`
+    query Constants {
+        backend {
+            conference {
+                topics {
+                    id
+                    name
+                }
+                durations{
+                    id
+                    name
+                }
+                audienceLevels{
+                    id
+                    name
+                }
+                languages{
+                    id
+                    name
+                }
+            }
+        }
+    }
+`;
+
 
 export const CFPForm = () => {
   const [errors, setErrors] = useState({});
@@ -107,98 +138,124 @@ export const CFPForm = () => {
 
   return (
     <div>
-      <InputWrapper>
-        <InputField
-          a11yId="title"
-          label="Title"
-          value={submission.title}
-          onChange={hangleSubmissionChange}
-          isRequired={true}
-          validationText={errors.title}
-        />
-      </InputWrapper>
+      <StaticQuery
+        query={constantsQuery}
+        render={data => {
+          const {
+            backend: { conference: { topics, durations, audienceLevels, languages}},
+          } = data;
+          const TOPIC_OPTIONS = [{ "label": "", "value": "" },
+            ...topics.map(item => ({ "label": item.name, "value": item.id }))];
 
-      <InputWrapper>
-        <TextareaField
-          a11yId="abstract"
-          label="Abstract"
-          value={submission.abstract}
-          onChange={hangleSubmissionChange}
-          isRequired={true}
-          validationText={errors.abstract}
-        />
-      </InputWrapper>
+          const DURATION_OPTIONS = [{ "label": "", "value": "" },
+            ...durations.map(item => ({ "label": item.name, "value": item.id }))];
 
-      <InputWrapper>
-        <TextareaField
-          a11yId="elevatorPitch"
-          label="Elevator Pitch"
-          value={submission.elevatorPitch}
-          onChange={hangleSubmissionChange}
-          maxLength={300}
-          validationText={errors.elevatorPitch}
-        />
-      </InputWrapper>
+          const LANGUAGE_OPTIONS = [{ "label": "", "value": "" },
+            ...languages.map(item => ({ "label": item.name, "value": item.id }))];
 
-      <InputWrapper>
-        <SelectField
-          a11yId="topic"
-          label="Topic"
-          value={submission.topic}
-          onChange={hangleSubmissionChange}
-          options={TOPIC_OPTIONS}
-          isRequired={true}
-          validationText={errors.topic}
-        />
-      </InputWrapper>
+          const AUDIENCE_LEVEL_OPTIONS = [{ "label": "", "value": "" },
+            ...audienceLevels.map(item => ({ "label": item.name, "value": item.id }))];
 
-      <InputWrapper>
-        <SelectField
-          a11yId="language"
-          label="Language"
-          value={submission.language}
-          onChange={hangleSubmissionChange}
-          options={LANGUAGE_OPTIONS}
-          isRequired={true}
-          validationText={errors.language}
-        />
-      </InputWrapper>
+          return (
+            <div>
 
-      <InputWrapper>
-        <SelectField
-          a11yId="type"
-          label="type"
-          value={submission.type}
-          onChange={hangleSubmissionChange}
-          options={TYPE_OPTIONS}
-          isRequired={true}
-          validationText={errors.type}
-        />
-      </InputWrapper>
+              <InputWrapper>
+                <InputField
+                  a11yId="title"
+                  label="Title"
+                  value={submission.title}
+                  onChange={hangleSubmissionChange}
+                  isRequired={true}
+                  validationText={errors.title}
+                />
+              </InputWrapper>
 
-      <InputWrapper>
-        <SelectField
-          a11yId="duration"
-          label="Duration"
-          value={submission.duration}
-          onChange={hangleSubmissionChange}
-          options={DURATION_OPTIONS}
-          isRequired={true}
-          validationText={errors.duration}
-        />
-      </InputWrapper>
+              <InputWrapper>
+                <TextareaField
+                  a11yId="abstract"
+                  label="Abstract"
+                  value={submission.abstract}
+                  onChange={hangleSubmissionChange}
+                  isRequired={true}
+                  validationText={errors.abstract}
+                />
+              </InputWrapper>
 
-      <InputWrapper>
-        <SelectField
-          a11yId="audienceLevel"
-          label="Audience Level"
-          value={submission.audienceLevel}
-          onChange={hangleSubmissionChange}
-          options={AUDIENCE_LEVEL_OPTIONS}
-          isRequired={true}
-          validationText={errors.audienceLevel}
-        />
-      </InputWrapper>
+              <InputWrapper>
+                <TextareaField
+                  a11yId="elevatorPitch"
+                  label="Elevator Pitch"
+                  value={submission.elevatorPitch}
+                  onChange={hangleSubmissionChange}
+                  maxLength={300}
+                  validationText={errors.elevatorPitch}
+                />
+              </InputWrapper>
+
+              <InputWrapper>
+                <SelectField
+                  a11yId="language"
+                  label="Language"
+                  value={submission.language}
+                  onChange={hangleSubmissionChange}
+                  options={LANGUAGE_OPTIONS}
+                  isRequired={true}
+                  validationText={errors.language}
+                />
+              </InputWrapper>
+
+              <InputWrapper>
+                <SelectField
+                  a11yId="topic"
+                  label="Topic"
+                  value={submission.topic}
+                  onChange={hangleSubmissionChange}
+                  options={TOPIC_OPTIONS}
+                  isRequired={true}
+                  validationText={errors.topic}
+                />
+              </InputWrapper>
+
+              <InputWrapper>
+                <SelectField
+                  a11yId="type"
+                  label="type"
+                  value={submission.type}
+                  onChange={hangleSubmissionChange}
+                  options={TYPE_OPTIONS}
+                  isRequired={true}
+                  validationText={errors.type}
+                />
+              </InputWrapper>
+
+              <InputWrapper>
+                <SelectField
+                  a11yId="duration"
+                  label="Duration"
+                  value={submission.duration}
+                  onChange={hangleSubmissionChange}
+                  options={DURATION_OPTIONS}
+                  isRequired={true}
+                  validationText={errors.duration}
+                />
+              </InputWrapper>
+
+              <InputWrapper>
+                <SelectField
+                  a11yId="audienceLevel"
+                  label="Audience Level"
+                  value={submission.audienceLevel}
+                  onChange={hangleSubmissionChange}
+                  options={AUDIENCE_LEVEL_OPTIONS}
+                  isRequired={true}
+                  validationText={errors.audienceLevel}
+                />
+              </InputWrapper>
+
+            </div>
+          );
+        }}
+      />
 
       <Row paddingBottom={ROW_PADDING} paddingTop={BUTTON_PADDING}>
         <Button onClick={handleSubmissionSubmit}>Send!</Button>
@@ -206,3 +263,5 @@ export const CFPForm = () => {
     </div>
   );
 };
+
+
