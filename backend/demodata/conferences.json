@@ -5,6 +5,16 @@
     "fields": { "name": "Beginner" }
   },
   {
+    "model": "conferences.audiencelevel",
+    "pk": 2,
+    "fields": { "name": "Intermidiate" }
+  },
+  {
+    "model": "conferences.audiencelevel",
+    "pk": 3,
+    "fields": { "name": "Advanced" }
+  },
+  {
     "model": "conferences.conference",
     "pk": 1,
     "fields": {
@@ -19,16 +29,42 @@
       "latitude": 43.766140,
       "longitude": 11.269985,
       "map_link": "https://goo.gl/maps/ogYFG5yr7rSHFr586",
-      "topics": [1],
-      "languages": [],
-      "audience_levels": [1],
+      "topics": [1, 2],
+      "languages": [1, 2],
+      "audience_levels": [1, 2, 3],
       "submission_types": [1]
     }
   },
   { "model": "conferences.topic", "pk": 1, "fields": { "name": "Web" } },
+  { "model": "conferences.topic", "pk": 2, "fields": { "name": "PyData" } },
   {
     "model": "submissions.submissiontype",
     "pk": 1,
     "fields": { "name": "Talk" }
+  },
+  {
+    "model": "submissions.submissiontype",
+    "pk": 2,
+    "fields": { "name": "Training" }
+  },
+  {
+    "model": "conferences.duration",
+    "pk": 1,
+    "fields": {
+      "name": "45m",
+      "duration": 45,
+      "conference": 1,
+      "allowed_submission_types": [1]
+    }
+  },
+  {
+    "model": "conferences.duration",
+    "pk": 2,
+    "fields": {
+      "name": "3h",
+      "duration": 180,
+      "conference": 1,
+      "allowed_submission_types": [2]
+    }
   }
 ]
