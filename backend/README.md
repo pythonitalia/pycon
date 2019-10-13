@@ -6,43 +6,48 @@ the creation of the virtual environment for you.
 
 ### Install and run backend
 
-To install the backend make you sure you have poetry installed, then run the
-following command in the backend directory:
+Launching invoke setup, you have installed poetry. 
+Poetry create for you the virtual environment 
+and install all the dependencies (including dev ones).
 
-    poetry install
-
-This will create the virtual environment and install all the dependencies
-(including dev ones).
-
-Create a `.env` file by copying the `.env.sample`, this will setup basic
-environment variables for debugging.
-
-To make sure everything went fine you can run the tests:
+To make sure everything went fine you can run the tests, in the backend directory:
 
     poetry run pytest tests/
 
 `poetry run` will run the command inside the virtual environment, without you
 having to manually activate it.
 
-To run the backend you can use the demodata we are providing, but first let's
-run the migration so our db is created:
 
-    poetry run python manage.py migrate
+We are using [docker](https://www.docker.com/) to install postgres DB, so install 
+and execute it.
 
-After that we can load the data:
+Then in your `backend` dir create a `.env` file by copying the `.env.sample`, this will setup basic
+environment variables for database creation end for debugging 
 
-    poetry run python manage.py loaddata demodata/*.json
+
+To create your postgres DB with docker, execute this command from root directory:
+
+    invoke setup-db
+    
+To create DB tables, execute this command from root directory:
+
+    invoke migrate
+     
+To run the backend you can use the demodata we are providing, 
+execute this command from root directory:
+
+    invoke demo-data
 
 This will add some dummy data that will allow you test the API and admin.
 
 One last step before running the server, let's create a superuser so we can
 access the admin:
 
-    poetry run python manage.py createsuperuser
+    invoke createsuperuser
 
 And follow the steps. Once that's done we can run the dev server by running:
 
-    poetry run python manage.py runserver
+    invoke run-backend
 
 To check if the API is up an running go to:
 
