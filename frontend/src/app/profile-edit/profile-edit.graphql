@@ -1,0 +1,12 @@
+query MyProfile {
+    me {
+        email
+        firstName
+        lastName
+        gender
+        openToRecruiting
+        openToNewsletter
+        dateBirth
+        country
+    }
+}
