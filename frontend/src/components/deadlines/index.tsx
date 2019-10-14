@@ -1,5 +1,6 @@
 import { Column, Container, Row } from "grigliata";
 import React from "react";
+import { FormattedMessage } from "react-intl";
 import styled from "styled-components";
 
 import { STANDARD_ROW_PADDING } from "../../config/spacing";
@@ -34,6 +35,7 @@ export const StyledDeadlines = styled.div`
 `;
 
 type Props = {
+  introduction: string;
   deadlines: {
     name: string;
     description: string;
@@ -46,10 +48,12 @@ const formatDeadlineDate = (datetime: string) => {
   const d = new Date(datetime);
 
   const formatter = new Intl.DateTimeFormat("default", {
+    year: "numeric",
     month: "long",
     day: "numeric",
     hour: "numeric",
     minute: "numeric",
+    timeZoneName: "short",
   });
 
   return formatter.format(d);
@@ -88,9 +92,7 @@ export const Deadlines = (props: Props) => (
             desktop: 12,
           }}
         >
-          <p className="section__subtitle">
-            Here are the next deadlines that are soon arriving
-          </p>
+          <p className="section__subtitle">{props.introduction}</p>
         </Column>
 
         {props.deadlines.map((deadline, index) => (
@@ -110,9 +112,13 @@ export const Deadlines = (props: Props) => (
                 // TODO: show timezone
               }
               <dl>
-                <dt>Start:</dt>
+                <dt>
+                  <FormattedMessage id="deadlines.start" />:
+                </dt>
                 <dd>{formatDeadlineDate(deadline.start)}</dd>
-                <dt>End:</dt>
+                <dt>
+                  <FormattedMessage id="deadlines.end" />:
+                </dt>
                 <dd>{formatDeadlineDate(deadline.end)}</dd>
               </dl>
             </div>

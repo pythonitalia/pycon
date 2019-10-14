@@ -8,6 +8,8 @@ export default {
     "signup.email": "Email",
     "signup.password": "Password",
     "signup.signupButton": "Signup 👉",
+    "deadlines.start": "Start",
+    "deadlines.end": "End",
   },
   it: {
     "profile.header": "Il mio profilo",
@@ -18,5 +20,7 @@ export default {
     "signup.email": "Email",
     "signup.password": "Password",
     "signup.signupButton": "Registrati 👉",
+    "deadlines.start": "Inizio",
+    "deadlines.end": "Fine",
   },
 };
