@@ -1,5 +1,6 @@
 import { Column, Container, Row } from "grigliata";
 import React from "react";
+import { FormattedMessage } from "react-intl";
 import styled from "styled-components";
 
 import { STANDARD_ROW_PADDING } from "../../config/spacing";
@@ -23,7 +24,8 @@ export const StyledDeadlines = styled.div`
       min-height: 6rem;
     }
   }
-  .date {
+
+  dd {
     font-size: 18px;
     font-weight: 700;
     color: ${theme.palette.primary};
@@ -32,7 +34,32 @@ export const StyledDeadlines = styled.div`
   }
 `;
 
-export const Deadlines = (props: {}) => (
+type Props = {
+  introduction: string;
+  deadlines: {
+    name: string;
+    description: string;
+    start: string;
+    end: string;
+  }[];
+};
+
+const formatDeadlineDate = (datetime: string) => {
+  const d = new Date(datetime);
+
+  const formatter = new Intl.DateTimeFormat("default", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    timeZoneName: "short",
+  });
+
+  return formatter.format(d);
+};
+
+export const Deadlines = (props: Props) => (
   <StyledDeadlines>
     <Row paddingLeft={STANDARD_ROW_PADDING} paddingRight={STANDARD_ROW_PADDING}>
       <Column
@@ -65,63 +92,38 @@ export const Deadlines = (props: {}) => (
             desktop: 12,
           }}
         >
-          <p className="section__subtitle">
-            Here are the next deadlines that are soon arriving
-          </p>
+          <p className="section__subtitle">{props.introduction}</p>
         </Column>
-        <Column
-          columnWidth={{
-            mobile: 12,
-            tabletPortrait: 6,
-            tabletLandscape: 4,
-            desktop: 4,
-          }}
-        >
-          <div className="element">
-            <h2 className="title">
-              Call for proposal <i>opening</i>
-            </h2>
-            <p className="description">
-              Call for proposals is the place where everyone can submit their
-              talks
-            </p>
-            <p className="date">1st November</p>
-          </div>
-        </Column>
-        <Column
-          columnWidth={{
-            mobile: 12,
-            tabletPortrait: 6,
-            tabletLandscape: 4,
-            desktop: 4,
-          }}
-        >
-          <div className="element">
-            <h2 className="title">
-              Call for proposal <i>closure</i>
-            </h2>
-            <p className="description">
-              It's the last day, game over. Everything it's up to the community
-            </p>
-            <p className="date">2rd November</p>
-          </div>
-        </Column>
-        <Column
-          columnWidth={{
-            mobile: 12,
-            tabletPortrait: 6,
-            tabletLandscape: 4,
-            desktop: 4,
-          }}
-        >
-          <div className="element">
-            <h2 className="title">Tickets Sale</h2>
-            <p className="description">
-              Here we are, you can buy the conference tickets
-            </p>
-            <p className="date">1st November</p>
-          </div>
-        </Column>
+
+        {props.deadlines.map((deadline, index) => (
+          <Column
+            key={index}
+            columnWidth={{
+              mobile: 12,
+              tabletPortrait: 6,
+              tabletLandscape: 4,
+              desktop: 4,
+            }}
+          >
+            <div className="element">
+              <h2 className="title">{deadline.name}</h2>
+              <p className="description">{deadline.description}</p>
+              {
+                // TODO: show timezone
+              }
+              <dl>
+                <dt>
+                  <FormattedMessage id="deadlines.start" />:
+                </dt>
+                <dd>{formatDeadlineDate(deadline.start)}</dd>
+                <dt>
+                  <FormattedMessage id="deadlines.end" />:
+                </dt>
+                <dd>{formatDeadlineDate(deadline.end)}</dd>
+              </dl>
+            </div>
+          </Column>
+        ))}
       </Row>
     </Container>
   </StyledDeadlines>

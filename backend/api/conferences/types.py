@@ -136,7 +136,8 @@ class Conference:
 @strawberry.type
 class Deadline:
     type: str
-    name: str
+    name: str = strawberry.field(resolver=make_localized_resolver("name"))
+    description: str = strawberry.field(resolver=make_localized_resolver("description"))
     start: DateTime
     end: DateTime
     conference: Conference

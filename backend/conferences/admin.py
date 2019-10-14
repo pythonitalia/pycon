@@ -79,3 +79,11 @@ class TicketFareAdmin(admin.ModelAdmin):
         ("Info", {"fields": ("conference", "name", "code", "price", "description")}),
         ("Deadline", {"fields": ("start", "end")}),
     )
+
+
+@admin.register(Deadline)
+class DeadlineAdmin(admin.ModelAdmin):
+    fieldsets = (
+        ("Info", {"fields": ("name", "description", "type", "conference")}),
+        ("Dates", {"fields": ("start", "end")}),
+    )

@@ -1,6 +1,7 @@
 from django.core import exceptions
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from i18n.fields import I18nCharField, I18nTextField
 from model_utils import Choices
 from model_utils.models import TimeFramedModel
 
@@ -20,7 +21,8 @@ class Deadline(TimeFramedModel):
         related_name="deadlines",
     )
 
-    name = models.CharField(_("name"), max_length=100, blank=True, default="")
+    name = I18nCharField(_("name"), max_length=100)
+    description = I18nTextField(_("description"), blank=True, null=True)
     type = models.CharField(_("type"), choices=TYPES, max_length=10)
 
     def clean(self):
