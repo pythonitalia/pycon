@@ -1,169 +1,222 @@
 [
-  {
+{
     "model": "cms.genericcopy",
     "pk": 1,
     "fields": {
-      "created": "2019-09-01T21:34:34.056Z",
-      "modified": "2019-09-01T21:58:29.713Z",
-      "key": "intro-title-1",
-      "content": { "en": "Why PyCon?", "it": "Perch\u00e9 PyCon?" },
-      "conference": 1
+        "created": "2019-09-01T21:34:34.056Z",
+        "modified": "2019-09-01T21:58:29.713Z",
+        "key": "intro-title-1",
+        "content": {
+            "en": "Why PyCon?",
+            "it": "Perch\u00e9 PyCon?"
+        },
+        "conference": 1
     }
-  },
-  {
+},
+{
     "model": "cms.genericcopy",
     "pk": 2,
     "fields": {
-      "created": "2019-09-01T21:58:36.876Z",
-      "modified": "2019-09-01T21:59:21.936Z",
-      "key": "intro-title-2",
-      "content": { "en": "Why not!", "it": "Perch\u00e9 no!" },
-      "conference": 1
+        "created": "2019-09-01T21:58:36.876Z",
+        "modified": "2019-09-01T21:59:21.936Z",
+        "key": "intro-title-2",
+        "content": {
+            "en": "Why not!",
+            "it": "Perch\u00e9 no!"
+        },
+        "conference": 1
     }
-  },
-  {
+},
+{
     "model": "cms.genericcopy",
     "pk": 3,
     "fields": {
-      "created": "2019-09-01T21:58:45.487Z",
-      "modified": "2019-09-01T21:58:52.695Z",
-      "key": "intro-text-1",
-      "content": {
-        "en": "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
-        "it": "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
-      },
-      "conference": 1
+        "created": "2019-09-01T21:58:45.487Z",
+        "modified": "2019-09-01T21:58:52.695Z",
+        "key": "intro-text-1",
+        "content": {
+            "en": "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+            "it": "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+        },
+        "conference": 1
     }
-  },
-  {
+},
+{
     "model": "cms.genericcopy",
     "pk": 4,
     "fields": {
-      "created": "2019-09-01T21:58:57.258Z",
-      "modified": "2019-09-01T21:58:57.258Z",
-      "key": "intro-text-2",
-      "content": {
-        "en": "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
-        "it": "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
-      },
-      "conference": 1
+        "created": "2019-09-01T21:58:57.258Z",
+        "modified": "2019-09-01T21:58:57.258Z",
+        "key": "intro-text-2",
+        "content": {
+            "en": "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+            "it": "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+        },
+        "conference": 1
     }
-  },
-  {
+},
+{
     "model": "cms.genericcopy",
     "pk": 5,
     "fields": {
-      "created": "2019-09-26T19:26:58.321Z",
-      "modified": "2019-09-26T19:26:58.321Z",
-      "key": "events-intro",
-      "content": {
-        "en": "Join our amazing events!",
-        "it": "Partecipa ai nostri fantastici eventi!"
-      },
-      "conference": 1
+        "created": "2019-09-26T19:26:58.321Z",
+        "modified": "2019-09-26T19:26:58.321Z",
+        "key": "events-intro",
+        "content": {
+            "en": "Join our amazing events!",
+            "it": "Partecipa ai nostri fantastici eventi!"
+        },
+        "conference": 1
     }
-  },
-  {
+},
+{
+    "model": "cms.genericcopy",
+    "pk": 6,
+    "fields": {
+        "created": "2019-10-14T20:35:26.513Z",
+        "modified": "2019-10-14T20:35:26.513Z",
+        "key": "deadlines-intro",
+        "content": {
+            "en": "What are the next deadlines?",
+            "it": "Quali sono le prossime scadenze?"
+        },
+        "conference": 1
+    }
+},
+{
     "model": "cms.faq",
     "pk": 1,
     "fields": {
-      "created": "2019-09-28T07:59:36.685Z",
-      "modified": "2019-09-28T07:59:36.685Z",
-      "question": { "en": "Did you know?", "it": "Sapevi che?" },
-      "answer": {
-        "en": "Every year we run side events, like PyDrinks and more.",
-        "it": "Ogni abbiamo eventi aggiuntivi come PyDrinks e altro."
-      },
-      "conference": 1
+        "created": "2019-09-28T07:59:36.685Z",
+        "modified": "2019-09-28T07:59:36.685Z",
+        "question": {
+            "en": "Did you know?",
+            "it": "Sapevi che?"
+        },
+        "answer": {
+            "en": "Every year we run side events, like PyDrinks and more.",
+            "it": "Ogni abbiamo eventi aggiuntivi come PyDrinks e altro."
+        },
+        "conference": 1
     }
-  },
-  {
+},
+{
     "model": "cms.menu",
     "pk": 1,
     "fields": {
-      "created": "2019-10-04T18:16:23.477Z",
-      "modified": "2019-10-04T18:16:23.477Z",
-      "identifier": "header-nav",
-      "title": {},
-      "conference": 1
+        "created": "2019-10-04T18:16:23.477Z",
+        "modified": "2019-10-04T18:16:23.477Z",
+        "identifier": "header-nav",
+        "title": {},
+        "conference": 1
     }
-  },
-  {
+},
+{
     "model": "cms.menu",
     "pk": 3,
     "fields": {
-      "created": "2019-10-04T19:32:53.953Z",
-      "modified": "2019-10-04T19:41:47.397Z",
-      "identifier": "conference-nav",
-      "title": { "en": "Conference", "it": "Conferenza" },
-      "conference": 1
+        "created": "2019-10-04T19:32:53.953Z",
+        "modified": "2019-10-04T19:41:47.397Z",
+        "identifier": "conference-nav",
+        "title": {
+            "en": "Conference",
+            "it": "Conferenza"
+        },
+        "conference": 1
     }
-  },
-  {
+},
+{
     "model": "cms.menu",
     "pk": 4,
     "fields": {
-      "created": "2019-10-04T19:34:29.970Z",
-      "modified": "2019-10-04T19:41:41.380Z",
-      "identifier": "program-nav",
-      "title": { "en": "Program", "it": "Programma" },
-      "conference": 1
+        "created": "2019-10-04T19:34:29.970Z",
+        "modified": "2019-10-04T19:41:41.380Z",
+        "identifier": "program-nav",
+        "title": {
+            "en": "Program",
+            "it": "Programma"
+        },
+        "conference": 1
     }
-  },
-  {
+},
+{
     "model": "cms.menulink",
     "pk": 1,
     "fields": {
-      "created": "2019-10-04T18:18:14.257Z",
-      "modified": "2019-10-04T18:18:14.257Z",
-      "order": 0,
-      "menu": 1,
-      "title": { "en": "Schedule", "it": "Programma" },
-      "href": { "en": "/en/schedule", "it": "/en/programma" },
-      "is_primary": false,
-      "page": null
+        "created": "2019-10-04T18:18:14.257Z",
+        "modified": "2019-10-04T18:18:14.257Z",
+        "order": 0,
+        "menu": 1,
+        "title": {
+            "en": "Schedule",
+            "it": "Programma"
+        },
+        "href": {
+            "en": "/en/schedule",
+            "it": "/en/programma"
+        },
+        "is_primary": false,
+        "page": null
     }
-  },
-  {
+},
+{
     "model": "cms.menulink",
     "pk": 2,
     "fields": {
-      "created": "2019-10-04T18:18:44.761Z",
-      "modified": "2019-10-04T18:24:23.264Z",
-      "order": 1,
-      "menu": 1,
-      "title": { "en": "Get your ticket", "it": "Compra il biglietto" },
-      "href": { "en": "/en/register", "it": "/it/registrati" },
-      "is_primary": true,
-      "page": null
+        "created": "2019-10-04T18:18:44.761Z",
+        "modified": "2019-10-04T18:24:23.264Z",
+        "order": 1,
+        "menu": 1,
+        "title": {
+            "en": "Get your ticket",
+            "it": "Compra il biglietto"
+        },
+        "href": {
+            "en": "/en/register",
+            "it": "/it/registrati"
+        },
+        "is_primary": true,
+        "page": null
     }
-  },
-  {
+},
+{
     "model": "cms.menulink",
     "pk": 3,
     "fields": {
-      "created": "2019-10-04T19:45:57.414Z",
-      "modified": "2019-10-04T19:46:00.221Z",
-      "order": 2,
-      "menu": 4,
-      "title": { "en": "Schedule", "it": "Programma" },
-      "href": { "en": "/en/schedule", "it": "/it/programma" },
-      "is_primary": false,
-      "page": null
+        "created": "2019-10-04T19:45:57.414Z",
+        "modified": "2019-10-04T19:46:00.221Z",
+        "order": 2,
+        "menu": 4,
+        "title": {
+            "en": "Schedule",
+            "it": "Programma"
+        },
+        "href": {
+            "en": "/en/schedule",
+            "it": "/it/programma"
+        },
+        "is_primary": false,
+        "page": null
     }
-  },
-  {
+},
+{
     "model": "cms.menulink",
     "pk": 4,
     "fields": {
-      "created": "2019-10-04T19:46:16.292Z",
-      "modified": "2019-10-04T19:46:16.292Z",
-      "order": 3,
-      "menu": 3,
-      "title": { "en": "Where", "it": "Dove" },
-      "href": { "en": "/en/where", "it": "/it/dove" },
-      "is_primary": false,
-      "page": null
+        "created": "2019-10-04T19:46:16.292Z",
+        "modified": "2019-10-04T19:46:16.292Z",
+        "order": 3,
+        "menu": 3,
+        "title": {
+            "en": "Where",
+            "it": "Dove"
+        },
+        "href": {
+            "en": "/en/where",
+            "it": "/it/dove"
+        },
+        "is_primary": false,
+        "page": null
     }
-  }
+}
 ]
