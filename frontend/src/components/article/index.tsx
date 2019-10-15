@@ -3,6 +3,7 @@ import { Row } from "grigliata";
 import React from "react";
 import styled from "styled-components";
 
+import { STANDARD_ROW_PADDING } from "../../config/spacing";
 import { Hero } from "../hero";
 import { ArticleTitle } from "./title";
 
@@ -57,18 +58,8 @@ export const Article: React.SFC<ArticleProps> = props => (
         tabletLandscape: 2,
         desktop: 2,
       }}
-      paddingLeft={{
-        mobile: 2,
-        tabletPortrait: 2,
-        tabletLandscape: 2,
-        desktop: 2,
-      }}
-      paddingRight={{
-        mobile: 2,
-        tabletPortrait: 2,
-        tabletLandscape: 2,
-        desktop: 2,
-      }}
+      paddingLeft={STANDARD_ROW_PADDING}
+      paddingRight={STANDARD_ROW_PADDING}
     >
       <div className="content">{props.children}</div>
     </Row>
