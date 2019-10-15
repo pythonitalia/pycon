@@ -6056,6 +6056,7 @@ dom-helpers@^3.2.1, dom-helpers@^3.4.0:
 dom-serializer@0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/dom-serializer/-/dom-serializer-0.1.0.tgz#073c697546ce0780ce23be4a28e293e40bc30c82"
+  integrity sha1-BzxpdUbOB4DOI75KKOKT5AvDDII=
   dependencies:
     domelementtype "~1.1.1"
     entities "~1.1.1"
@@ -10262,6 +10263,7 @@ loader-runner@^2.4.0:
 loader-utils@^1.0.2, loader-utils@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/loader-utils/-/loader-utils-1.1.0.tgz#c98aef488bcceda2ffb5e2de646d6a754429f5cd"
+  integrity sha1-yYrvSIvM7aL/teLeZG1qdUQp9c0=
   dependencies:
     big.js "^3.1.3"
     emojis-list "^2.0.0"
@@ -15166,6 +15168,7 @@ terser@^4.1.2:
 text-table@0.2.0, text-table@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
+  integrity sha1-f17oI66AUgfACvLfSoTsP8+lcLQ=
 
 theme-ui@^0.3.1:
   version "0.3.1"
