@@ -105,6 +105,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         { template: appTemplate, path: "/login", matchPath: "/login/*" },
         { template: appTemplate, path: "/signup", matchPath: "/signup/*" },
         { template: appTemplate, path: "/profile", matchPath: "/profile/*" },
+        { template: appTemplate, path: "/tickets", matchPath: "/tickets/*" },
     ];
     const languages = ["en", "it"];
 
