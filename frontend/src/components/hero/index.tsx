@@ -71,7 +71,7 @@ const Wrapper = styled.div<HeroProps>`
 
 const Bar = styled.div<{ subtitle?: boolean }>`
   background: ${theme("palette.primary")};
-  margin: 0 1rem;
+  margin: 0 0.5rem;
   min-height: 2rem;
 
   ${props =>

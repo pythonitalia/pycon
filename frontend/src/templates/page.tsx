@@ -1,10 +1,11 @@
 import { graphql } from "gatsby";
-import { Column, Row } from "grigliata";
+import { Column, Container, Row } from "grigliata";
 import marksy from "marksy";
 import React, { createElement } from "react";
 
 import { Article } from "../components/article";
 import { MaxWidthWrapper } from "../components/max-width-wrapper";
+import { STANDARD_ROW_PADDING } from "../config/spacing";
 import { PageQuery } from "../generated/graphql";
 import { MainLayout } from "../layouts/main";
 
@@ -23,8 +24,11 @@ export default ({
 
   return (
     <MainLayout language={pageContext.language}>
-      <MaxWidthWrapper>
-        <Row>
+      <Container>
+        <Row
+          paddingLeft={STANDARD_ROW_PADDING}
+          paddingRight={STANDARD_ROW_PADDING}
+        >
           <Column
             columnWidth={{
               mobile: 12,
@@ -41,7 +45,7 @@ export default ({
             </Article>
           </Column>
         </Row>
-      </MaxWidthWrapper>
+      </Container>
     </MainLayout>
   );
 };

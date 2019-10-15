@@ -6,7 +6,10 @@ import { Deadlines } from "../components/deadlines";
 import { Hero } from "../components/hero";
 import { Events } from "../components/home-events";
 import { Faqs } from "../components/home-faq";
-import { MaxWidthWrapper } from "../components/max-width-wrapper";
+import {
+  HomeMaxWidthWrapper,
+  MaxWidthWrapper,
+} from "../components/max-width-wrapper";
 import { SponsorList } from "../components/sponsor-list";
 import { TwoColumnsText } from "../components/two-columns-text";
 import { HomePageQuery } from "../generated/graphql";
@@ -26,49 +29,49 @@ export default ({
 
   return (
     <MainLayout language={pageContext.language}>
-      <MaxWidthWrapper>
+      <Container>
         <Hero
           title={conference.name}
           subtitle={conference.introduction}
           backgroundImage={heroImage!.childImageSharp!}
         />
-      </MaxWidthWrapper>
+      </Container>
 
-      {conference.deadlines.length > 0 && (
-        <MaxWidthWrapper>
+      <HomeMaxWidthWrapper>
+        {conference.deadlines.length > 0 && (
           <Deadlines
             introduction={conference.deadlinesIntro!}
             deadlines={conference.deadlines}
           />
-        </MaxWidthWrapper>
-      )}
+        )}
 
-      <TwoColumnsText
-        left={{
-          title: conference.introTitle!,
-          text: conference.introText!,
-        }}
-        right={{
-          title: conference.introTitle2!,
-          text: conference.introText2!,
-        }}
-      />
+        <TwoColumnsText
+          left={{
+            title: conference.introTitle!,
+            text: conference.introText!,
+          }}
+          right={{
+            title: conference.introTitle2!,
+            text: conference.introText2!,
+          }}
+        />
 
-      <section>
-        <SponsorList sponsors={conference.sponsorsByLevel!} />
-      </section>
-
-      {conference.events.length > 0 && (
         <section>
-          <Events text={conference.eventsIntro!} events={conference.events} />
+          <SponsorList sponsors={conference.sponsorsByLevel!} />
         </section>
-      )}
 
-      {conference.faqs.length > 0 && (
-        <section>
-          <Faqs faqs={conference.faqs} />
-        </section>
-      )}
+        {conference.events.length > 0 && (
+          <section>
+            <Events text={conference.eventsIntro!} events={conference.events} />
+          </section>
+        )}
+
+        {conference.faqs.length > 0 && (
+          <section>
+            <Faqs faqs={conference.faqs} />
+          </section>
+        )}
+      </HomeMaxWidthWrapper>
     </MainLayout>
   );
 };

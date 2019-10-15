@@ -1,10 +1,9 @@
 import { graphql } from "gatsby";
-import { Column, Row } from "grigliata";
+import { Column, Container, Row } from "grigliata";
 import marksy from "marksy";
 import React, { createElement } from "react";
 
 import { Article } from "../components/article";
-import { MaxWidthWrapper } from "../components/max-width-wrapper";
 import { PostQuery } from "../generated/graphql";
 import { MainLayout } from "../layouts/main";
 
@@ -23,7 +22,7 @@ export default ({
 
   return (
     <MainLayout language={pageContext.language}>
-      <MaxWidthWrapper>
+      <Container>
         <Row>
           <Column
             columnWidth={{
@@ -42,7 +41,7 @@ export default ({
             </Article>
           </Column>
         </Row>
-      </MaxWidthWrapper>
+      </Container>
     </MainLayout>
   );
 };

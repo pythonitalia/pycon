@@ -1,6 +1,6 @@
 import { Link } from "fannypack";
 import { graphql, useStaticQuery } from "gatsby";
-import { Column, Row } from "grigliata";
+import { Column, Container, Row } from "grigliata";
 import React from "react";
 import styled, { css } from "styled-components";
 
@@ -126,7 +126,7 @@ export const Topbar = () => {
 
   return (
     <Wrapper open={isMenuOpen}>
-      <MaxWidthWrapper>
+      <Container>
         <LogoContainer open={isMenuOpen}>PyCon Italia</LogoContainer>
 
         <Row
@@ -184,7 +184,7 @@ export const Topbar = () => {
             </LinkContainer>
           </Column>
         </Row>
-      </MaxWidthWrapper>
+      </Container>
       {isMenuOpen && <ExpandedMenu />}
     </Wrapper>
   );
