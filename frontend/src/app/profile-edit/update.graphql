@@ -1,0 +1,41 @@
+mutation(
+    $firstName: String,
+    $lastName: String,
+    $gender: String,
+    $openToRecruiting: Boolean!,
+    $openToNewsletter: Boolean!,
+    $dateBirth: String,
+    $country: String
+){
+    update(input: {
+        firstName: $firstName,
+        lastName: $lastName,
+        gender: $gender,
+        openToRecruiting: $openToRecruiting,
+        openToNewsletter: $openToNewsletter,
+        dateBirth: $dateBirth,
+        country: $country
+    }){
+        __typename
+        ... on MeUser {
+            id
+            firstName
+            lastName
+            gender
+            openToRecruiting
+            openToNewsletter
+            dateBirth
+            country
+        }
+        ... on UpdateErrors {
+            validationFirstName: firstName
+            validationLastName: lastName
+            validationGender: gender
+            validationOpenToRecruiting: openToRecruiting
+            validationOpenToNewsletter: openToNewsletter
+            validationDateBirth: dateBirth
+            validationCountry: country
+            nonFieldErrors
+        }
+    }
+}

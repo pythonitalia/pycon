@@ -1,4 +1,4 @@
-query MyProfile {
+query MyEditProfile {
     me {
         email
         firstName

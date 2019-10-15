@@ -2,8 +2,20 @@ export default {
   en: {
     titleTemplate: "%s | PyCon Italy",
     "home.title": "Home",
-    "profile.header": "My profile",
+    "buttons.save": "Save 💾",
+    "profile.country": "Country",
+    "profile.dateBirth": "Birth date",
     "profile.email": "Email",
+    "profile.firstName": "First Name",
+    "profile.gender": "Gender",
+    "profile.header": "My profile",
+    "profile.lastName": "Last Name",
+    "profile.openToNewsletter":
+      "I want to receive E-mail for main communications",
+    "profile.openToRecruiting":
+      "I want to receive a few selected job offers through PyCon",
+    "profile.edit.personalHeader": "Personal data",
+    "profile.edit.privacyHeader": "Privacy settings",
     "login.email": "Email",
     "login.password": "Password",
     "login.loginButton": "Login 👉",
@@ -48,8 +60,20 @@ export default {
   it: {
     titleTemplate: "%s | PyCon Italia",
     "home.title": "Home",
-    "profile.header": "Il mio profilo",
+    "buttons.save": "Salva 💾",
+    "profile.country": "Nazionalità",
+    "profile.dateBirth": "Data di nascita",
     "profile.email": "Email",
+    "profile.firstName": "Nome",
+    "profile.gender": "Sesso",
+    "profile.header": "Il mio profilo",
+    "profile.lastName": "Cognome",
+    "profile.openToNewsletter":
+      "Desidero ricevere E-mail per le comunicazioni più importanti",
+    "profile.openToRecruiting":
+      "Desidero ricevere alcune proposte di lavoro selezionate attraverso PyCon",
+    "profile.edit.personalHeader": "Dati personali",
+    "profile.edit.privacyHeader": "Impostazioni privacy",
     "login.email": "Email",
     "login.password": "Password",
     "login.loginButton": "Accedi 👉",
