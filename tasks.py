@@ -44,7 +44,7 @@ def setup_db(c):
         with c.prefix(". .env"):
             run_or_fail(c, lambda x: x.run("docker info", hide=True),
                         fail_message="ERROR! Is Docker running?")
-            run_or_fail(c, lambda x: x.run("docker volume create s$DOCKER_DB_VOLUME", hide=True),
+            run_or_fail(c, lambda x: x.run("docker volume create $DOCKER_DB_VOLUME", hide=True),
                         fail_message=f"ERROR! Docker volume '$DOCKER_DB_VOLUME' has not "
                                      f"been created\n"
                                      f"Here the results of command 'docker volume inspect $DOCKER_DB_VOLUME'",
