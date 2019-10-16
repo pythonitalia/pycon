@@ -49,19 +49,7 @@ class PyConUserAdmin(UserAdmin):
                 )
             },
         ),
-        (
-            _("Company"),
-            {
-                "fields": (
-                    "business_name",
-                    "fiscal_code",
-                    "vat_number",
-                    "recipient_code",
-                    "pec_address",
-                )
-            },
-        ),
-        (_("Address"), {"fields": ("address", "country")}),
+        (_("Address"), {"fields": ("country",)}),
         (
             _("Permissions"),
             {
