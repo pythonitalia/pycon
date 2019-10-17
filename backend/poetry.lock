@@ -820,7 +820,7 @@ description = "The little ASGI library that shines."
 name = "starlette"
 optional = false
 python-versions = ">=3.6"
-version = "0.12.9"
+version = "0.12.10"
 
 [[package]]
 category = "main"
@@ -828,14 +828,14 @@ description = "A library for creating GraphQL APIs"
 name = "strawberry-graphql"
 optional = false
 python-versions = ">=3.7,<4.0"
-version = "0.16.4"
+version = "0.16.5"
 
 [package.dependencies]
 click = ">=7.0,<8.0"
 graphql-core = ">=3.0.0a0,<4.0.0"
 hupper = ">=1.5,<2.0"
 pygments = ">=2.3,<3.0"
-starlette = "0.12.9"
+starlette = "0.12.10"
 uvicorn = "0.9.0"
 
 [[package]]
@@ -994,7 +994,7 @@ version = "0.6.0"
 more-itertools = "*"
 
 [metadata]
-content-hash = "8ae998aba504e64799f30d8358c9520c5bf40b3876a68be1b90ae0bf69f85cf9"
+content-hash = "4e5979e85243a209ceadc08a16f1043d361d28d7dd9bd56750cd931851ad0c1f"
 python-versions = "^3.7"
 
 [metadata.hashes]
@@ -1076,8 +1076,8 @@ six = ["3350809f0555b11f552448330d0b52d5f24c91a322ea4a15ef22629740f3761c", "d16a
 social-auth-app-django = ["25295c94375d28062f65d0b3cd4b7e304c7e2fb7bac1ec51b40650a654c352f4", "4e34d86709bfa51fd2938307e00f12f4e1dfef8a8ed6bfbfe9aeb4e69d57148f", "b7c28bef8fbd11ff357ddd885cb219cdb55565e01109c709dd28569e0bfb0dea"]
 social-auth-core = ["47cd2458c8fefd02466b0c514643e02ad8b61d8b4b69f7573e80882e3a97b0f0", "8320666548a532eb158968eda542bbe1863682357c432d8c4e28034a7f1e3b58", "d81ed681e3c0722300b61a0792c5db5d21206793f95ca810f010c1cc931c8d89"]
 sqlparse = ["40afe6b8d4b1117e7dff5504d7a8ce07d9a1b15aeeade8a2d10f130a834f8177", "7c3dca29c022744e95b547e867cee89f4fce4373f3549ccd8797d8eb52cdb873"]
-starlette = ["c2ac9a42e0e0328ad20fe444115ac5e3760c1ee2ac1ff8cdb5ec915c4a453411"]
-strawberry-graphql = ["371fd0232e90e29516bd94a4d21441a897bcf08192e687fb5f486174e72c8a44", "8a807a7556c9aa78caff301e5a15850c3f1986779e9f53f03c5952057eb519cb"]
+starlette = ["e41ef52e711a82ef95c195674e5d8d41c75c6b1d6f5a275637eedd4cc2150a7f"]
+strawberry-graphql = ["29137f9b4bc1ae66dce370b6f9ae89a23a9da1b17d71b4590ed341c62a79333d", "5dcc2d7302b082f6ca85f0d7a06b6f132cc888a51abc6cd4f8e746669f0d2a45"]
 stripe = ["7ad8ee6d9bdca86d6ed38c4eb48b1b67b9529ac4fee6c26d3f9aa4d5e98b50d6", "c0cc29367e704e814622d9f3282734f5b87fed04bd64f6c48a738c9a0a26ab75"]
 text-unidecode = ["1311f10e8b895935241623731c2ba64f4c455287888b18189350b67134a822e8", "bad6603bb14d279193107714b288be206cac565dfa49aa5b105294dd5c4aab93"]
 toml = ["229f81c57791a41d65e399fc06bf0848bab550a9dfd5ed66df18ce5f05e73d5c", "235682dd292d5899d361a811df37e04a8828a5b1da3115886b73cf81ebc9100e", "f1db651f9657708513243e61e6cc67d101a39bad662eaa9b5546f789338e07a3"]
