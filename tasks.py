@@ -33,36 +33,19 @@ def setup_frontend(c):
         c.run("yarn")
 
 
-@task(pre=[call(tools_check, ["docker"])])
+@task(pre=[call(tools_check, ["docker", "docker-compose"])])
 def setup_db(c):
     print("Running DB setup...")
 
     with c.cd("backend"):
-        run_or_fail(c, lambda x: x.run("ls .env", hide=True),
-                    fail_message="ERROR! Please copy backend/.env.sample "
-                                 "in backend/.env and set your .env vars")
+        run_or_fail(c, lambda x: x.run("ls .env.sample", hide=False),
+                    fail_message="Are you in project root dir?")
+        run_or_fail(c, lambda x: x.run("ls .env", hide=False),
+                    fail_message="ERROR! Have you copied backend/.env.sample "
+                                 "in backend/.env and set your .env vars?")
         with c.prefix(". .env"):
-            run_or_fail(c, lambda x: x.run("docker info", hide=True),
-                        fail_message="ERROR! Is Docker running?")
-            run_or_fail(c, lambda x: x.run("docker volume create s$DOCKER_DB_VOLUME", hide=True),
-                        fail_message=f"ERROR! Docker volume '$DOCKER_DB_VOLUME' has not "
-                                     f"been created\n"
-                                     f"Here the results of command 'docker volume inspect $DOCKER_DB_VOLUME'",
-                        fail_callback=lambda x: x.run("docker volume inspect $DOCKER_DB_VOLUME"))
-            run_or_fail(c, lambda x: x.run("docker start $DOCKER_DB_CONTAINER ||"
-                                           " docker run"
-                                           " --name=$DOCKER_DB_CONTAINER"
-                                           " -d"
-                                           " -e POSTGRES_USER=$DB_USER"
-                                           " -e POSTGRES_PASSWORD=$DB_PASSWORD"
-                                           " -e POSTGRES_DB=$DB_NAME"
-                                           " -e ALLOW_IP_RANGE=0.0.0.0/0"
-                                           " -p $DB_PORT:$DOCKER_DB_PORT"
-                                           " -v $DOCKER_DB_VOLUME:/var/lib/postgresql"
-                                           " --restart=always"
-                                           " postgres:11", hide=True),
-                        fail_message=f"ERROR! Something went wrong with launching "
-                                     f"'docker run'")
+            run_or_fail(c, lambda x: x.run("docker-compose -f docker-compose_dev.yml up", hide=False),
+                        fail_message="ERROR! Some problem with docker-compose")
 
     print("... DB setup completed!")
 

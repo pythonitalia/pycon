@@ -1,0 +1,23 @@
+version: '3.1'
+services:
+    # Postgres
+    db:
+        image: postgres:11
+        container_name: pycon2020-db-container
+        restart: always
+        volumes:
+            - db-data:/var/lib/postgresql
+        environment:
+           POSTGRES_DB: pycon
+           POSTGRES_USER: ${POSTGRES_USER:-root}
+           POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+           ALLOW_IP_RANGE: 0.0.0.0/0
+        expose:
+          - "54320"
+        ports:
+          - "54320:5432"
+
+# Volumes Setup
+volumes:
+    db-data:
+    
