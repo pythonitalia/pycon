@@ -88,14 +88,21 @@ class UpdateUserForm(ContextAwareModelForm):
     def save(self, commit=True):
         user = self.context["request"].user
 
+        try:
+            self.instance = User.objects.get(id=user.id)
+        except User.DoesNotExist:
+            pass
+
+        for key, value in self.cleaned_data.items():
+            setattr(self.instance, key, value)
+
         image = self.cleaned_data.get("image")
         if image:
             file = default_storage.open(image)
-            user.image.save(os.path.basename(image), file)
+            self.instance.image.save(os.path.basename(image), file)
             default_storage.delete(image)
 
-        super().save(commit=commit)
-        return User.objects.get(id=self.context["request"].user.id)
+        return super().save(commit=commit)
 
     class Meta:
         model = User
