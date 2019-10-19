@@ -30,7 +30,7 @@ export default ({
           }}
         >
           <Article
-            hero={{ ...data.heroImage.childImageSharp }}
+            hero={{ ...data.heroImage!.childImageSharp }}
             title="Call For Proposal"
           >
             <CFPForm />
@@ -42,10 +42,16 @@ export default ({
 );
 
 export const query = graphql`
-  query Cfp {
+  query CFP {
     heroImage: file(relativePath: { eq: "images/cfp.jpg" }) {
       childImageSharp {
-        fluid(maxWidth: 1600) {
+        fluid(
+          maxWidth: 1600
+          maxHeight: 700
+          fit: COVER
+          cropFocus: ATTENTION
+          duotone: { highlight: "#000000", shadow: "#000000", opacity: 20 }
+        ) {
           ...GatsbyImageSharpFluid
         }
       }
