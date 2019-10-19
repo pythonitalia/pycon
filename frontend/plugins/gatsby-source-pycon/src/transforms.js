@@ -12,7 +12,7 @@ const {
     createResolveType,
     fieldMapToFieldConfigMap,
 } = require(`graphql-tools/dist/stitching/schemaRecreation`);
-const fromEntries = require('fromentries')
+const fromEntries = require("fromentries");
 
 class NamespaceUnderFieldTransform {
     constructor({ typeName, fieldName, resolver }) {
@@ -135,7 +135,7 @@ class RemoveConferenceArgument {
                                     return {
                                         ...argument,
                                         defaultValue: conferenceCode,
-                                        type: GraphQLString
+                                        type: GraphQLString,
                                     };
                                 }
 

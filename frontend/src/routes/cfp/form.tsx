@@ -1,14 +1,10 @@
-import React, { useState } from "react";
-import { StaticQuery } from "gatsby";
 import { Button, InputField, SelectField, TextareaField } from "fannypack";
+import { graphql, StaticQuery } from "gatsby";
 import { Column, Row } from "grigliata";
+import React, { useState } from "react";
 import * as yup from "yup";
-import {
-  BUTTON_PADDING,
-  ROW_PADDING,
-  TYPE_OPTIONS,
-} from "./constants";
-import { graphql } from "gatsby";
+
+import { BUTTON_PADDING, ROW_PADDING, TYPE_OPTIONS } from "./constants";
 
 const schema = yup.object().shape({
   title: yup
@@ -42,48 +38,45 @@ const schema = yup.object().shape({
     .ensure(),
 });
 
-const InputWrapper: React.FC = props => {
-  return (
-    <Row paddingBottom={ROW_PADDING}>
-      <Column
-        columnWidth={{
-          mobile: 12,
-          tabletPortrait: 12,
-          tabletLandscape: 12,
-          desktop: 12,
-        }}
-      >
-        {props.children}
-      </Column>
-    </Row>
-  );
-};
+const InputWrapper: React.FC = props => (
+  <Row paddingBottom={ROW_PADDING}>
+    <Column
+      columnWidth={{
+        mobile: 12,
+        tabletPortrait: 12,
+        tabletLandscape: 12,
+        desktop: 12,
+      }}
+    >
+      {props.children}
+    </Column>
+  </Row>
+);
 
 export const constantsQuery = graphql`
-    query Constants {
-        backend {
-            conference {
-                topics {
-                    id
-                    name
-                }
-                durations{
-                    id
-                    name
-                }
-                audienceLevels{
-                    id
-                    name
-                }
-                languages{
-                    id
-                    name
-                }
-            }
+  query Constants {
+    backend {
+      conference {
+        topics {
+          id
+          name
         }
+        durations {
+          id
+          name
+        }
+        audienceLevels {
+          id
+          name
+        }
+        languages {
+          id
+          name
+        }
+      }
     }
+  }
 `;
-
 
 export const CFPForm = () => {
   const [errors, setErrors] = useState({});
@@ -128,12 +121,10 @@ export const CFPForm = () => {
   };
 
   const hangleSubmissionChange = ({ target }) => {
-    setSubmission(() => {
-      return {
-        ...submission,
-        [target.id]: target.value,
-      };
-    });
+    setSubmission(() => ({
+      ...submission,
+      [target.id]: target.value,
+    }));
   };
 
   return (
@@ -142,23 +133,35 @@ export const CFPForm = () => {
         query={constantsQuery}
         render={data => {
           const {
-            backend: { conference: { topics, durations, audienceLevels, languages}},
+            backend: {
+              conference: { topics, durations, audienceLevels, languages },
+            },
           } = data;
-          const TOPIC_OPTIONS = [{ "label": "", "value": "" },
-            ...topics.map(item => ({ "label": item.name, "value": item.id }))];
+          const TOPIC_OPTIONS = [
+            { label: "", value: "" },
+            ...topics.map(item => ({ label: item.name, value: item.id })),
+          ];
 
-          const DURATION_OPTIONS = [{ "label": "", "value": "" },
-            ...durations.map(item => ({ "label": item.name, "value": item.id }))];
+          const DURATION_OPTIONS = [
+            { label: "", value: "" },
+            ...durations.map(item => ({ label: item.name, value: item.id })),
+          ];
 
-          const LANGUAGE_OPTIONS = [{ "label": "", "value": "" },
-            ...languages.map(item => ({ "label": item.name, "value": item.id }))];
+          const LANGUAGE_OPTIONS = [
+            { label: "", value: "" },
+            ...languages.map(item => ({ label: item.name, value: item.id })),
+          ];
 
-          const AUDIENCE_LEVEL_OPTIONS = [{ "label": "", "value": "" },
-            ...audienceLevels.map(item => ({ "label": item.name, "value": item.id }))];
+          const AUDIENCE_LEVEL_OPTIONS = [
+            { label: "", value: "" },
+            ...audienceLevels.map(item => ({
+              label: item.name,
+              value: item.id,
+            })),
+          ];
 
           return (
             <div>
-
               <InputWrapper>
                 <InputField
                   a11yId="title"
@@ -251,7 +254,6 @@ export const CFPForm = () => {
                   validationText={errors.audienceLevel}
                 />
               </InputWrapper>
-
             </div>
           );
         }}
@@ -263,5 +265,3 @@ export const CFPForm = () => {
     </div>
   );
 };
-
-

@@ -27,7 +27,7 @@ repos:
       rev: 1.18.2
       hooks:
           - id: prettier
-            types: [javascript, tsx, ts, json, markdown]
+            files: 'frontend/.*\.(js|jsx|ts|tsx)$'
     - repo: https://github.com/pre-commit/pre-commit-hooks
       rev: v2.2.3
       hooks:
