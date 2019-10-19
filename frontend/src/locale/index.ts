@@ -17,6 +17,11 @@ export default {
     "cfp.form.title": "Title",
     "cfp.form.abstract": "Abstract",
     "cfp.form.elevatorPitch": "Elevator Pitch",
+    "cfp.form.elevatorPitch.description": `
+      You have 300 characters to sell your talk.
+      This is known as the "elevator pitch".
+      Make it as exciting and enticing as possible.
+    `,
     "cfp.form.language": "Language",
     "cfp.form.topic": "Topic",
     "cfp.form.submissionType": "Submission Type",

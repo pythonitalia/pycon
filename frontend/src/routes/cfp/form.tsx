@@ -1,15 +1,13 @@
 import {
   Button,
   FieldSet,
+  FieldWrapper,
   Input,
-  InputField,
   Label,
   Select,
-  SelectField,
   Textarea,
-  TextareaField,
 } from "fannypack";
-import { graphql, StaticQuery, useStaticQuery } from "gatsby";
+import { graphql, useStaticQuery } from "gatsby";
 import { Column, Row } from "grigliata";
 import React, { useState } from "react";
 import { FormattedMessage } from "react-intl";
@@ -167,23 +165,41 @@ export const CFPForm = () => {
       }}
     >
       <FieldSet>
-        <Label {...label("title")}>
-          <FormattedMessage id="cfp.form.title" />
-        </Label>
-        <Input
-          inputProps={{ ...text("title"), required: true }}
-          isRequired={true}
-        />
+        <FieldWrapper
+          label={
+            <Label {...label("title")}>
+              <FormattedMessage id="cfp.form.title" />
+            </Label>
+          }
+        >
+          <Input
+            inputProps={{ ...text("title"), required: true }}
+            isRequired={true}
+          />
+        </FieldWrapper>
 
-        <Label {...label("abstract")}>
-          <FormattedMessage id="cfp.form.abstract" />
-        </Label>
-        <Textarea {...textarea("abstract")} isRequired={true} />
+        <FieldWrapper
+          label={
+            <Label {...label("abstract")}>
+              <FormattedMessage id="cfp.form.abstract" />
+            </Label>
+          }
+        >
+          <Textarea {...textarea("abstract")} isRequired={true} />
+        </FieldWrapper>
 
-        <Label {...label("elevatorPitch")}>
-          <FormattedMessage id="cfp.form.elevatorPitch" />
-        </Label>
-        <Textarea {...textarea("elevatorPitch")} isRequired={true} />
+        <FieldWrapper
+          label={
+            <Label {...label("elevatorPitch")}>
+              <FormattedMessage id="cfp.form.elevatorPitch" />
+            </Label>
+          }
+          description={
+            <FormattedMessage id="cfp.form.elevatorPitch.description" />
+          }
+        >
+          <Textarea {...textarea("elevatorPitch")} isRequired={true} />
+        </FieldWrapper>
 
         {/* TODO: multiple languages */}
         <Label {...label("language")}>
