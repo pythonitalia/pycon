@@ -11,8 +11,8 @@
     "format": "prettier --write \"{,!(node_modules|public|coverage|.cache)/**/}*.{js,jsx,ts,tsx,json}\" && yarn lint --fix",
     "lint": "eslint --fix --ext .jsx,.js,.tsx,.ts src/",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "codegen-fragments": "graphql-codegen -c codegen-fragments.yml",
-    "codegen-queries": "graphql-codegen -c codegen.yml",
+    "codegen-fragments": "graphql-codegen -r dotenv/config -c codegen-fragments.yml",
+    "codegen-queries": "graphql-codegen -r dotenv/config -c codegen.yml",
     "codegen": "yarn codegen-fragments && yarn codegen-queries",
     "precommit-lint": "node scripts/lint",
     "postinstall": "cd plugins/gatsby-source-pycon && yarn"
@@ -85,6 +85,7 @@
     "@typescript-eslint/parser": "^2.4.0",
     "docz": "^1.3.2",
     "docz-theme-default": "^1.2.0",
+    "dotenv": "8.2.0",
     "eslint": "^6.5.1",
     "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-react": "^7.16.0",
