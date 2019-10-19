@@ -16342,10 +16342,10 @@ thunky@^1.0.2:
   resolved "https://registry.yarnpkg.com/thunky/-/thunky-1.0.3.tgz#f5df732453407b09191dae73e2a8cc73f381a826"
   integrity sha512-YwT8pjmNcAXBZqrubu22P4FYsh2D4dxRmnWBOL8Jk8bUcRUtc5326kx32tuTmFDAZtLOGEVNl8POAR8j896Iow==
 
-timed-out@^4.0.0, timed-out@^4.0.1:
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/timed-out/-/timed-out-4.0.1.tgz#f32eacac5a175bea25d7fab565ab3ed8741ef56f"
-  integrity sha1-8y6srFoXW+ol1/q1Zas+2HQe9W8=
+timed-out@5, timed-out@^4.0.0, timed-out@^4.0.1, timed-out@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/timed-out/-/timed-out-5.0.0.tgz#e49575f0ec50575913d9b535e5f2490510d1bc7c"
+  integrity sha512-+IAmaDqYnVi/HOMCeH4NDzdjTH9EHTC8xbe+PgXMKtovdMjbu25qYxeUj6u/yukMp1wDOhPeh6oTcIVepm5n7Q==
 
 timers-browserify@^2.0.4:
   version "2.0.10"
