@@ -4,6 +4,8 @@ import * as React from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 
+import { useStaticQuery, graphql } from "gatsby";
+
 import { MyProfileQuery, UpdateMutation, UpdateMutationVariables } from "../../generated/graphql-backend";
 import MY_PROFILE_QUERY from "./profile-edit.graphql";
 import UPDATE_MUTATION from "./update.graphql";
@@ -21,6 +23,7 @@ import { Column, Row } from "grigliata";
 import { useEffect } from "react";
 import { useCallback } from "react";
 import { Form } from "../../components/form";
+import { CountriesQuery } from "../../generated/graphql";
 
 const ROW_PADDING = {
   mobile: 0.5,
@@ -34,6 +37,13 @@ const BUTTON_PADDING = {
   tabletPortrait: 1,
   tabletLandscape: 1,
   desktop: 2,
+};
+
+const COLUMN_WIDTH = {
+  mobile: 12,
+  tabletPortrait: 12,
+  tabletLandscape: 12,
+  desktop: 12,
 };
 
 const InputWrapper: React.FC = props => (
@@ -50,8 +60,19 @@ const InputWrapper: React.FC = props => (
     </Column>
   </Row>
 );
+export const COUNTRIES_QUERY = graphql`
+    query countries {
+        backend{
+            countries {
+                code
+                name
+            }
+        }
+    }
+`;
 
 export const EditProfileApp: React.SFC<RouteComponentProps> = () => {
+
   // define form object
   const [formState, { text, radio, select, checkbox, date }] = useFormState(
     {},
@@ -59,10 +80,16 @@ export const EditProfileApp: React.SFC<RouteComponentProps> = () => {
       withIds: true,
     });
 
+  // region CONSTANTS
+  const { backend: { countries } } = useStaticQuery<CountriesQuery>(COUNTRIES_QUERY);
+  const COUNTRIES_OPTIONS = [{ "label": "", "value": "" },
+    ...countries.map(item => ({ "label": item.name, "value": item.id }))];
+  // endregion
+
   // region GET_USER_DATA_FROM_BACKEND
   const setProfile = (data: MyProfileQuery) => {
     const { me } = data;
-    console.log({me});
+    console.log({ me });
 
     // I know, is ugly... formState doesn't have a way to set
     // all values together
@@ -84,7 +111,7 @@ export const EditProfileApp: React.SFC<RouteComponentProps> = () => {
 
   // region UPDATE_SEND_MUTATION
   const onUpdateComplete = (updateData: UpdateMutation) => {
-    console.log({updateData});
+    console.log({ updateData });
     if (!updateData || updateData.update.__typename !== "MeUser") {
       return;
     }
@@ -132,144 +159,150 @@ export const EditProfileApp: React.SFC<RouteComponentProps> = () => {
 
       {loading && "Loading..."}
       {!loading && (
+
         <Form onSubmit={onFormSubmit} method="post">
-          <LayoutSet>
-            <Card>
-              <h3>
-                <FormattedMessage id="profile.edit.personalHeader"/>
-              </h3>
-              <InputWrapper>
 
-                <InputField
-                  inputProps={{
-                    id: "firstName",
-                    ...text("firstName"),
-                  }}
-                  a11yId="firstName"
-                  // fyi: <Label> doesn't have isRequired property, doesn't show
-                  // "*" to indicate that the field is required
-                  label={(
-                    <FormattedMessage id="profile.firstName">
-                      {msg => <b>{msg}</b>}
-                    </FormattedMessage>
-                  )}
-                  onChange={hangleUserChange}
-                  isRequired={true}
-                />
-              </InputWrapper>
+          <Row paddingBottom={ROW_PADDING} paddingTop={BUTTON_PADDING}>
+            <Column columnWidth={COLUMN_WIDTH}>
+              <LayoutSet>
+                <Card>
+                  <h3>
+                    <FormattedMessage id="profile.edit.personalHeader"/>
+                  </h3>
+                  <InputWrapper>
 
-              <InputWrapper>
-                <InputField
-                  inputProps={{
-                    id: "lastName",
-                    ...text("lastName"),
-                  }}
-                  a11yId="lastName"
-                  label={(
-                    <FormattedMessage id="profile.lastName">
-                      {msg => <b>{msg}</b>}
-                    </FormattedMessage>
-                  )}
-                  onChange={hangleUserChange}
-                  isRequired={true}
-                />
-              </InputWrapper>
+                    <InputField
+                      inputProps={{
+                        id: "firstName",
+                        ...text("firstName"),
+                      }}
+                      a11yId="firstName"
+                      // fyi: <Label> doesn't have isRequired property, doesn't show
+                      // "*" to indicate that the field is required
+                      label={(
+                        <FormattedMessage id="profile.firstName">
+                          {msg => <b>{msg}</b>}
+                        </FormattedMessage>
+                      )}
+                      onChange={hangleUserChange}
+                      isRequired={true}
+                    />
+                  </InputWrapper>
 
-              <InputWrapper>
-                <RadioGroupField
-                  {...radio("gender")}
-                  value={formState.gender}
-                  isHorizontal={true}
-                  a11yId="gender"
-                  label={(
-                    <FormattedMessage id="profile.gender">
-                      {msg => <b>{msg}</b>}
-                    </FormattedMessage>
-                  )}
-                  onChange={hangleUserChange}
-                  options={[
-                    { label: "Male", value: "male" },
-                    { label: "Female", value: "female" },
-                  ]}
-                />
-              </InputWrapper>
+                  <InputWrapper>
+                    <InputField
+                      inputProps={{
+                        id: "lastName",
+                        ...text("lastName"),
+                      }}
+                      a11yId="lastName"
+                      label={(
+                        <FormattedMessage id="profile.lastName">
+                          {msg => <b>{msg}</b>}
+                        </FormattedMessage>
+                      )}
+                      onChange={hangleUserChange}
+                      isRequired={true}
+                    />
+                  </InputWrapper>
 
-              <InputWrapper>
-                <InputField
-                  {...date("dateBirth")}
-                  value={formState.dateBirth}
-                  type="date"
-                  data-date-format="YYYY-MM-DD"
-                  a11yId="dateBirth"
-                  label={(
-                    <FormattedMessage id="profile.dateBirth">
-                      {msg => <b>{msg}</b>}
-                    </FormattedMessage>
-                  )}
-                  onChange={hangleUserChange}
-                />
-              </InputWrapper>
+                  <InputWrapper>
+                    <RadioGroupField
+                      {...radio("gender")}
+                      value={formState.gender}
+                      isHorizontal={true}
+                      a11yId="gender"
+                      label={(
+                        <FormattedMessage id="profile.gender">
+                          {msg => <b>{msg}</b>}
+                        </FormattedMessage>
+                      )}
+                      onChange={hangleUserChange}
+                      options={[
+                        { label: "Male", value: "male" },
+                        { label: "Female", value: "female" },
+                      ]}
+                    />
+                  </InputWrapper>
 
-              <InputWrapper>
-                <SelectField
-                  {...select("country")}
-                  a11yId="country"
-                  label={(
-                    <FormattedMessage id="profile.country">
-                      {msg => <b>{msg}</b>}
-                    </FormattedMessage>
-                  )}
-                  onChange={hangleUserChange}
-                  options={[
-                    { label: "Select", value: "" },
-                    { label: "Italy", value: "IT" },
-                  ]}
-                  isRequired={true}
-                />
-              </InputWrapper>
-            </Card>
-          </LayoutSet>
+                  <InputWrapper>
+                    <InputField
+                      {...date("dateBirth")}
+                      value={formState.dateBirth}
+                      type="date"
+                      data-date-format="YYYY-MM-DD"
+                      a11yId="dateBirth"
+                      label={(
+                        <FormattedMessage id="profile.dateBirth">
+                          {msg => <b>{msg}</b>}
+                        </FormattedMessage>
+                      )}
+                      onChange={hangleUserChange}
+                    />
+                  </InputWrapper>
 
-          <LayoutSet>
-            <Card>
-              <h3>
-                <FormattedMessage id="profile.edit.privacyHeader"/>
-              </h3>
+                  <InputWrapper>
+                    <SelectField
+                      {...select("country")}
+                      a11yId="country"
+                      label={(
+                        <FormattedMessage id="profile.country">
+                          {msg => <b>{msg}</b>}
+                        </FormattedMessage>
+                      )}
+                      onChange={hangleUserChange}
+                      options={COUNTRIES_OPTIONS}
+                      isRequired={true}
+                    />
 
-              <FieldWrapper
-                //validationText={}
-                //state={ ? "danger" : ""}
-              >
-                <CheckboxField
-                  checkboxProps={{
-                    id: "openToRecruiting",
-                    ...checkbox("openToRecruiting"),
-                    isRequired: true,
-                  }}
-                  type="checkbox"
-                  label={(<FormattedMessage id="profile.openToRecruiting"/>)}
-                />
-              </FieldWrapper>
+                  </InputWrapper>
+                </Card>
+              </LayoutSet>
+            </Column>
+          </Row>
+          <Row paddingBottom={ROW_PADDING} paddingTop={BUTTON_PADDING}>
+            <Column columnWidth={COLUMN_WIDTH}>
+              <LayoutSet>
+                <Card>
+                  <h3>
+                    <FormattedMessage id="profile.edit.privacyHeader"/>
+                  </h3>
+
+                  <FieldWrapper
+                    //validationText={}
+                    //state={ ? "danger" : ""}
+                  >
+                    <CheckboxField
+                      checkboxProps={{
+                        id: "openToRecruiting",
+                        ...checkbox("openToRecruiting"),
+                        isRequired: true,
+                      }}
+                      type="checkbox"
+                      label={(<FormattedMessage id="profile.openToRecruiting"/>)}
+                    />
+                  </FieldWrapper>
 
 
-              <FieldWrapper
-                //validationText={}
-                //state={ ? "danger" : ""}
-              >
-                <CheckboxField
-                  checkboxProps={{
-                    id: "openToNewsletter",
-                    ...checkbox("openToNewsletter"),
-                    isRequired: true,
-                  }}
-                  type="checkbox"
-                  label={(<FormattedMessage id="profile.openToNewsletter"/>)}
-                />
-              </FieldWrapper>
+                  <FieldWrapper
+                    //validationText={}
+                    //state={ ? "danger" : ""}
+                  >
+                    <CheckboxField
+                      checkboxProps={{
+                        id: "openToNewsletter",
+                        ...checkbox("openToNewsletter"),
+                        isRequired: true,
+                      }}
+                      type="checkbox"
+                      label={(<FormattedMessage id="profile.openToNewsletter"/>)}
+                    />
+                  </FieldWrapper>
 
-            </Card>
-          </LayoutSet>
-
+                </Card>
+              </LayoutSet>
+            </Column>
+          </Row>
           <Row paddingBottom={ROW_PADDING} paddingTop={BUTTON_PADDING}>
             <Button
               size="medium"
@@ -277,7 +310,7 @@ export const EditProfileApp: React.SFC<RouteComponentProps> = () => {
               isLoading={loading}
               type="submit"
             >
-              <FormattedMessage id="buttons.save" />
+              <FormattedMessage id="buttons.save"/>
             </Button>
           </Row>
 
