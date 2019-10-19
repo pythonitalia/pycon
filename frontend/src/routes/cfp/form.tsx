@@ -1,10 +1,22 @@
-import { Button, InputField, SelectField, TextareaField } from "fannypack";
+import {
+  Button,
+  FieldSet,
+  Input,
+  InputField,
+  Label,
+  Select,
+  SelectField,
+  Textarea,
+  TextareaField,
+} from "fannypack";
 import { graphql, StaticQuery, useStaticQuery } from "gatsby";
 import { Column, Row } from "grigliata";
 import React, { useState } from "react";
-import * as yup from "yup";
+import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
+import * as yup from "yup";
 
+import { Form } from "../../components/form";
 import { BUTTON_PADDING, ROW_PADDING, TYPE_OPTIONS } from "./constants";
 
 const schema = yup.object().shape({
@@ -79,6 +91,11 @@ export const constantsQuery = graphql`
   }
 `;
 
+const createOptions = (items: any[]) => [
+  { label: "", value: "" },
+  ...items.map(item => ({ label: item.name, value: item.id })),
+];
+
 export const CFPForm = () => {
   const [errors, setErrors] = useState({});
   const [submission, setSubmission] = useState({
@@ -99,28 +116,11 @@ export const CFPForm = () => {
       conference: { topics, durations, audienceLevels, languages },
     },
   } = data;
-  const TOPIC_OPTIONS = [
-    { label: "", value: "" },
-    ...topics.map(item => ({ label: item.name, value: item.id })),
-  ];
 
-  const DURATION_OPTIONS = [
-    { label: "", value: "" },
-    ...durations.map(item => ({ label: item.name, value: item.id })),
-  ];
-
-  const LANGUAGE_OPTIONS = [
-    { label: "", value: "" },
-    ...languages.map(item => ({ label: item.name, value: item.id })),
-  ];
-
-  const AUDIENCE_LEVEL_OPTIONS = [
-    { label: "", value: "" },
-    ...audienceLevels.map(item => ({
-      label: item.name,
-      value: item.id,
-    })),
-  ];
+  const TOPIC_OPTIONS = createOptions(topics);
+  const DURATION_OPTIONS = createOptions(durations);
+  const LANGUAGE_OPTIONS = createOptions(languages);
+  const AUDIENCE_LEVEL_OPTIONS = createOptions(audienceLevels);
 
   const setFormsErrors = () => {
     schema
@@ -151,110 +151,92 @@ export const CFPForm = () => {
     });
   };
 
-  const hangleSubmissionChange = ({ target }) => {
-    setSubmission(() => ({
-      ...submission,
-      [target.id]: target.value,
-    }));
-  };
+  // TODO: types
+  const [formState, { label, select, text, textarea }] = useFormState(
+    {},
+    {
+      withIds: true,
+    },
+  );
 
   return (
-    <div>
-      <InputWrapper>
-        <InputField
-          a11yId="title"
-          label="Title"
-          value={submission.title}
-          onChange={hangleSubmissionChange}
+    <Form
+      method="post"
+      onSubmit={e => {
+        e.preventDefault();
+      }}
+    >
+      <FieldSet>
+        <Label {...label("title")}>
+          <FormattedMessage id="cfp.form.title" />
+        </Label>
+        <Input
+          inputProps={{ ...text("title"), required: true }}
           isRequired={true}
-          validationText={errors.title}
         />
-      </InputWrapper>
 
-      <InputWrapper>
-        <TextareaField
-          a11yId="abstract"
-          label="Abstract"
-          value={submission.abstract}
-          onChange={hangleSubmissionChange}
-          isRequired={true}
-          validationText={errors.abstract}
-        />
-      </InputWrapper>
+        <Label {...label("abstract")}>
+          <FormattedMessage id="cfp.form.abstract" />
+        </Label>
+        <Textarea {...textarea("abstract")} isRequired={true} />
 
-      <InputWrapper>
-        <TextareaField
-          a11yId="elevatorPitch"
-          label="Elevator Pitch"
-          value={submission.elevatorPitch}
-          onChange={hangleSubmissionChange}
-          maxLength={300}
-          validationText={errors.elevatorPitch}
-        />
-      </InputWrapper>
+        <Label {...label("elevatorPitch")}>
+          <FormattedMessage id="cfp.form.elevatorPitch" />
+        </Label>
+        <Textarea {...textarea("elevatorPitch")} isRequired={true} />
 
-      <InputWrapper>
-        <SelectField
-          a11yId="language"
-          label="Language"
-          value={submission.language}
-          onChange={hangleSubmissionChange}
+        {/* TODO: multiple languages */}
+        <Label {...label("language")}>
+          <FormattedMessage id="cfp.form.language" />
+        </Label>
+        <Select
+          {...select("language")}
           options={LANGUAGE_OPTIONS}
           isRequired={true}
-          validationText={errors.language}
         />
-      </InputWrapper>
 
-      <InputWrapper>
-        <SelectField
-          a11yId="topic"
-          label="Topic"
-          value={submission.topic}
-          onChange={hangleSubmissionChange}
+        <Label {...label("topic")}>
+          <FormattedMessage id="cfp.form.topic" />
+        </Label>
+        <Select
+          {...select("topic")}
           options={TOPIC_OPTIONS}
           isRequired={true}
-          validationText={errors.topic}
         />
-      </InputWrapper>
 
-      <InputWrapper>
-        <SelectField
-          a11yId="type"
-          label="type"
-          value={submission.type}
-          onChange={hangleSubmissionChange}
+        <Label {...label("submissionType")}>
+          <FormattedMessage id="cfp.form.submissionType" />
+        </Label>
+        <Select
+          {...select("submissionType")}
           options={TYPE_OPTIONS}
           isRequired={true}
-          validationText={errors.type}
         />
-      </InputWrapper>
 
-      <InputWrapper>
-        <SelectField
-          a11yId="duration"
-          label="Duration"
-          value={submission.duration}
-          onChange={hangleSubmissionChange}
+        <Label {...label("duration")}>
+          <FormattedMessage id="cfp.form.duration" />
+        </Label>
+        <Select
+          {...select("duration")}
           options={DURATION_OPTIONS}
           isRequired={true}
-          validationText={errors.duration}
         />
-      </InputWrapper>
 
-      <InputWrapper>
-        <SelectField
-          a11yId="audienceLevel"
-          label="Audience Level"
-          value={submission.audienceLevel}
-          onChange={hangleSubmissionChange}
+        <Label {...label("audienceLevel")}>
+          <FormattedMessage id="cfp.form.audienceLevel" />
+        </Label>
+        <Select
+          {...select("audienceLevel")}
           options={AUDIENCE_LEVEL_OPTIONS}
           isRequired={true}
-          validationText={errors.audienceLevel}
         />
-      </InputWrapper>
-      <Row paddingBottom={ROW_PADDING} paddingTop={BUTTON_PADDING}>
-        <Button onClick={handleSubmissionSubmit}>Send!</Button>
-      </Row>
-    </div>
+
+        <Row paddingBottom={ROW_PADDING} paddingTop={BUTTON_PADDING}>
+          <Button size="medium" palette="primary" type="submit">
+            <FormattedMessage id="cfp.form.sendSubmission" />
+          </Button>
+        </Row>
+      </FieldSet>
+    </Form>
   );
 };
