@@ -22,7 +22,7 @@ generates:
             avoidOptionals: true
 
     src/generated/graphql-backend.ts:
-        schema: http://localhost:8000/graphql
+        schema: ${API_URL:http://localhost:8000/graphql}
         documents: src/**/*.graphql
         plugins:
             - "typescript"
