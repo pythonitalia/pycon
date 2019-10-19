@@ -1,4 +1,4 @@
-const {chunk} = require("lodash");
+const { chunk } = require("lodash");
 const request = require("./request");
 
 const {
@@ -106,6 +106,10 @@ async function updateCheck(id, conclusion, output, annotations) {
             }
         };
 
+        console.log(
+            `https://api.github.com/repos/${owner}/${repo}/check-runs/${id}`
+        );
+
         return request(
             `https://api.github.com/repos/${owner}/${repo}/check-runs/${id}`,
             {
@@ -116,7 +120,9 @@ async function updateCheck(id, conclusion, output, annotations) {
         );
     });
 
-    await Promise.all(requests);
+    const results = await Promise.all(requests);
+
+    console.log(results);
 }
 
 function exitWithError(err) {
@@ -133,6 +139,8 @@ async function run() {
         const { conclusion, output, annotations } = eslint();
 
         await updateCheck(id, conclusion, output, annotations);
+
+        console.log("🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥");
 
         if (conclusion === "failure") {
             process.exit(78);
