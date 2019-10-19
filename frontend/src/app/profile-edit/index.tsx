@@ -1,52 +1,40 @@
 import { useMutation, useQuery } from "@apollo/react-hooks";
 import { navigate, RouteComponentProps } from "@reach/router";
-import * as React from "react";
-import { FormattedMessage } from "react-intl";
-import { useFormState } from "react-use-form-state";
-
-import { useStaticQuery, graphql } from "gatsby";
-
-import { MyProfileQuery, UpdateMutation, UpdateMutationVariables } from "../../generated/graphql-backend";
-import MY_PROFILE_QUERY from "./profile-edit.graphql";
-import UPDATE_MUTATION from "./update.graphql";
 import {
+  Alert,
   Button,
   Card,
   CheckboxField,
+  FieldSet,
   FieldWrapper,
   InputField,
   LayoutSet,
   RadioGroupField,
   SelectField,
 } from "fannypack";
+import { graphql, useStaticQuery } from "gatsby";
 import { Column, Row } from "grigliata";
-import { useEffect } from "react";
-import { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
+import { FormattedMessage } from "react-intl";
+import { useFormState } from "react-use-form-state";
+
 import { Form } from "../../components/form";
 import { CountriesQuery } from "../../generated/graphql";
+import {
+  MyProfileQuery,
+  UpdateMutation,
+  UpdateMutationVariables,
+} from "../../generated/graphql-backend";
+import { BUTTON_PADDING, COLUMN_WIDTH, ROW_PADDING } from "./constants";
+import MY_PROFILE_QUERY from "./profile-edit.graphql";
+import UPDATE_MUTATION from "./update.graphql";
 
-const ROW_PADDING = {
-  mobile: 0.5,
-  tabletPortrait: 0.5,
-  tabletLandscape: 0.5,
-  desktop: 1,
+type InputWrapperProps = {
+  text: string;
+  isRequired: boolean;
 };
 
-const BUTTON_PADDING = {
-  mobile: 1,
-  tabletPortrait: 1,
-  tabletLandscape: 1,
-  desktop: 2,
-};
-
-const COLUMN_WIDTH = {
-  mobile: 12,
-  tabletPortrait: 12,
-  tabletLandscape: 12,
-  desktop: 12,
-};
-
-const InputWrapper: React.FC = props => (
+const InputWrapper: React.FC = (props: InputWrapperProps) => (
   <Row paddingBottom={ROW_PADDING}>
     <Column
       columnWidth={{
@@ -56,34 +44,57 @@ const InputWrapper: React.FC = props => (
         desktop: 12,
       }}
     >
-      {props.children}
+      <FieldWrapper
+        validationText={props.text}
+        state={props.text ? "danger" : ""}
+        isRequired={props.isRequired}
+      >
+        {props.children}
+      </FieldWrapper>
     </Column>
   </Row>
 );
+
 export const COUNTRIES_QUERY = graphql`
-    query countries {
-        backend{
-            countries {
-                code
-                name
-            }
-        }
+  query countries {
+    backend {
+      countries {
+        code
+        name
+      }
     }
+  }
 `;
 
-export const EditProfileApp: React.SFC<RouteComponentProps> = () => {
+const FORM_FIELDS = [
+  "firstName",
+  "lastName",
+  "gender",
+  "dateBirth",
+  "country",
+  "openToRecruiting",
+  "openToSpam",
+];
 
-  // define form object
+export const EditProfileApp: React.SFC<RouteComponentProps> = () => {
   const [formState, { text, radio, select, checkbox, date }] = useFormState(
     {},
     {
       withIds: true,
-    });
+    },
+  );
 
-  // region CONSTANTS
-  const { backend: { countries } } = useStaticQuery<CountriesQuery>(COUNTRIES_QUERY);
-  const COUNTRIES_OPTIONS = [{ "label": "", "value": "" },
-    ...countries.map(item => ({ "label": item.name, "value": item.id }))];
+  // region CONSTANTS_FROM_BE
+  const createOptions = (items: any[]) => [
+    { label: "", value: "" },
+    ...items.map(item => ({ label: item.name, value: item.id })),
+  ];
+
+  const {
+    backend: { countries },
+  } = useStaticQuery<CountriesQuery>(COUNTRIES_QUERY);
+  const COUNTRIES_OPTIONS = createOptions(countries);
+
   // endregion
 
   // region GET_USER_DATA_FROM_BACKEND
@@ -91,18 +102,11 @@ export const EditProfileApp: React.SFC<RouteComponentProps> = () => {
     const { me } = data;
     console.log({ me });
 
-    // I know, is ugly... formState doesn't have a way to set
-    // all values together
-    formState.setField("firstName", me.firstName);
-    formState.setField("lastName", me.lastName);
-    formState.setField("gender", me.gender);
-    formState.setField("dateBirth", me.dateBirth);
-    formState.setField("country", me.country);
-    formState.setField("openToRecruiting", me.openToRecruiting);
-    formState.setField("openToNewsletter", me.openToNewsletter);
+    FORM_FIELDS.forEach(field => formState.setField(field, me[field]));
   };
   const { loading, error, data: profileData } = useQuery<MyProfileQuery>(
-    MY_PROFILE_QUERY, { onCompleted: setProfile },
+    MY_PROFILE_QUERY,
+    { onCompleted: setProfile },
   );
   if (error) {
     throw new Error(`Unable to fetch profile, ${error}`);
@@ -110,67 +114,89 @@ export const EditProfileApp: React.SFC<RouteComponentProps> = () => {
   // endregion
 
   // region UPDATE_SEND_MUTATION
-  const onUpdateComplete = (updateData: UpdateMutation) => {
-    console.log({ updateData });
-    if (!updateData || updateData.update.__typename !== "MeUser") {
+  const onUpdateComplete = (data: UpdateMutation) => {
+    console.log({ data });
+    if (!data || data.update.__typename !== "MeUser") {
       return;
     }
     // navigate(profileUrl);
   };
 
-  const [update, { updateLoading, updateError, updateData }] = useMutation<UpdateMutation,
-    UpdateMutationVariables>(UPDATE_MUTATION, {
+  const [update, { updateLoading, updateError, updateData }] = useMutation<
+    UpdateMutation,
+    UpdateMutationVariables
+  >(UPDATE_MUTATION, {
     onCompleted: onUpdateComplete,
   });
-
-  if (updateError) {
-    throw new Error(`Unable to save profile, ${updateError}`);
-  }
-
-  console.log({ updateLoading, updateError, updateData });
 
   const onFormSubmit = useCallback(
     e => {
       e.preventDefault();
-      console.log("onFormSubmit! formState.values: " + JSON.stringify(formState.values));
+      console.log(
+        "onFormSubmit! formState.values: " + JSON.stringify(formState.values),
+      );
       update({
         variables: formState.values,
       });
     },
     [update, formState],
   );
+
+  // region GET_ERRORS
+  const errorMessage =
+    updateData && updateData.update.__typename === "UpdateErrors"
+      ? updateData.update.nonFieldErrors.join(" ")
+      : updateError;
+
+  console.log({ updateLoading, updateError, updateData, errorMessage });
+
+  const getFieldError = field =>
+    (updateData &&
+      updateData.update.__typename === "UpdateErrors" &&
+      updateData.update[field].join(", ")) ||
+    "";
+
+  const toTileCase = word => word.charAt(0).toUpperCase() + word.slice(1);
+
+  const errorsFields = {};
+  FORM_FIELDS.forEach(field => {
+    const validationField = "validation" + toTileCase(field);
+    errorsFields[field] = getFieldError(validationField);
+  });
+  // endregion
+
   // endregion
 
   const hangleUserChange = ({ target }) => {
-    console.log(`hangleUserChange! ${target.id}:  ${target.value} `);
     formState.setField(target.id, target.value);
   };
-  // Similar to componentDidMount and componentDidUpdate:
+
   useEffect(() => {
     // Update the document title using the browser API
-    console.log("Effect: formState.values: " + JSON.stringify(formState.values));
+    console.log(
+      "Effect: formState.values: " + JSON.stringify(formState.values),
+    );
   });
 
   return (
     <>
       <h1>
-        <FormattedMessage id="profile.header"/>
+        <FormattedMessage id="profile.header" />
       </h1>
 
       {loading && "Loading..."}
       {!loading && (
-
         <Form onSubmit={onFormSubmit} method="post">
-
+          {errorMessage && <Alert type="error">{errorMessage}</Alert>}
           <Row paddingBottom={ROW_PADDING} paddingTop={BUTTON_PADDING}>
             <Column columnWidth={COLUMN_WIDTH}>
               <LayoutSet>
                 <Card>
                   <h3>
-                    <FormattedMessage id="profile.edit.personalHeader"/>
+                    <FormattedMessage id="profile.edit.personalHeader" />
                   </h3>
-                  <InputWrapper>
 
+                  <InputWrapper text={errorsFields.firstName} isRequired={true}>
                     <InputField
                       inputProps={{
                         id: "firstName",
@@ -179,44 +205,43 @@ export const EditProfileApp: React.SFC<RouteComponentProps> = () => {
                       a11yId="firstName"
                       // fyi: <Label> doesn't have isRequired property, doesn't show
                       // "*" to indicate that the field is required
-                      label={(
+                      label={
                         <FormattedMessage id="profile.firstName">
                           {msg => <b>{msg}</b>}
                         </FormattedMessage>
-                      )}
+                      }
                       onChange={hangleUserChange}
                       isRequired={true}
                     />
                   </InputWrapper>
 
-                  <InputWrapper>
+                  <InputWrapper text={errorsFields.lastName} isRequired={true}>
                     <InputField
                       inputProps={{
                         id: "lastName",
                         ...text("lastName"),
                       }}
                       a11yId="lastName"
-                      label={(
+                      label={
                         <FormattedMessage id="profile.lastName">
                           {msg => <b>{msg}</b>}
                         </FormattedMessage>
-                      )}
+                      }
                       onChange={hangleUserChange}
-                      isRequired={true}
                     />
                   </InputWrapper>
 
-                  <InputWrapper>
+                  <InputWrapper text={errorsFields.gender} isRequired={true}>
                     <RadioGroupField
                       {...radio("gender")}
                       value={formState.gender}
                       isHorizontal={true}
                       a11yId="gender"
-                      label={(
+                      label={
                         <FormattedMessage id="profile.gender">
                           {msg => <b>{msg}</b>}
                         </FormattedMessage>
-                      )}
+                      }
                       onChange={hangleUserChange}
                       options={[
                         { label: "Male", value: "male" },
@@ -225,36 +250,35 @@ export const EditProfileApp: React.SFC<RouteComponentProps> = () => {
                     />
                   </InputWrapper>
 
-                  <InputWrapper>
+                  <InputWrapper text={errorsFields.dateBirth} isRequired={true}>
                     <InputField
                       {...date("dateBirth")}
                       value={formState.dateBirth}
                       type="date"
                       data-date-format="YYYY-MM-DD"
                       a11yId="dateBirth"
-                      label={(
+                      label={
                         <FormattedMessage id="profile.dateBirth">
                           {msg => <b>{msg}</b>}
                         </FormattedMessage>
-                      )}
+                      }
                       onChange={hangleUserChange}
                     />
                   </InputWrapper>
 
-                  <InputWrapper>
+                  <InputWrapper text={errorsFields.country} isRequired={true}>
                     <SelectField
                       {...select("country")}
                       a11yId="country"
-                      label={(
+                      label={
                         <FormattedMessage id="profile.country">
                           {msg => <b>{msg}</b>}
                         </FormattedMessage>
-                      )}
+                      }
                       onChange={hangleUserChange}
                       options={COUNTRIES_OPTIONS}
                       isRequired={true}
                     />
-
                   </InputWrapper>
                 </Card>
               </LayoutSet>
@@ -265,40 +289,30 @@ export const EditProfileApp: React.SFC<RouteComponentProps> = () => {
               <LayoutSet>
                 <Card>
                   <h3>
-                    <FormattedMessage id="profile.edit.privacyHeader"/>
+                    <FormattedMessage id="profile.edit.privacyHeader" />
                   </h3>
 
-                  <FieldWrapper
-                    //validationText={}
-                    //state={ ? "danger" : ""}
-                  >
+                  <InputWrapper text={errorsFields.openToRecruiting}>
                     <CheckboxField
                       checkboxProps={{
                         id: "openToRecruiting",
                         ...checkbox("openToRecruiting"),
-                        isRequired: true,
                       }}
                       type="checkbox"
-                      label={(<FormattedMessage id="profile.openToRecruiting"/>)}
+                      label={<FormattedMessage id="profile.openToRecruiting" />}
                     />
-                  </FieldWrapper>
+                  </InputWrapper>
 
-
-                  <FieldWrapper
-                    //validationText={}
-                    //state={ ? "danger" : ""}
-                  >
+                  <InputWrapper text={errorsFields.openToNewsletter}>
                     <CheckboxField
                       checkboxProps={{
                         id: "openToNewsletter",
                         ...checkbox("openToNewsletter"),
-                        isRequired: true,
                       }}
                       type="checkbox"
-                      label={(<FormattedMessage id="profile.openToNewsletter"/>)}
+                      label={<FormattedMessage id="profile.openToNewsletter" />}
                     />
-                  </FieldWrapper>
-
+                  </InputWrapper>
                 </Card>
               </LayoutSet>
             </Column>
@@ -310,10 +324,9 @@ export const EditProfileApp: React.SFC<RouteComponentProps> = () => {
               isLoading={loading}
               type="submit"
             >
-              <FormattedMessage id="buttons.save"/>
+              <FormattedMessage id="buttons.save" />
             </Button>
           </Row>
-
         </Form>
       )}
     </>
