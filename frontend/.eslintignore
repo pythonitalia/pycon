@@ -6,3 +6,4 @@ gatsby-ssr.js
 gatsby-config.js
 gatsby-browser.js
 scripts/lint.js
+src/generated
