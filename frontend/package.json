@@ -64,6 +64,7 @@
     "react-use-form-state": "^0.11.0",
     "sharp": "^0.23.1",
     "styled-components": "^4.4.0",
+    "timed-out": "5",
     "typescript": "^3.6.4",
     "use-persisted-state": "^0.3.0"
   },
@@ -97,6 +98,7 @@
     "tslint-react": "^4.1.0"
   },
   "resolutions": {
-    "sharp": "^0.23.0"
+    "sharp": "^0.23.0",
+    "timed-out": "^5.0.0"
   }
 }
