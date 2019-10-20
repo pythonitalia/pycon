@@ -29,6 +29,8 @@ class Conference(GeoLocalizedModel, TimeFramedModel, TimeStampedModel):
 
     introduction = I18nTextField(_("introduction"), blank=False)
 
+    pretix_event_url = models.URLField(_("pretix event url"), blank=True, default="")
+
     @property
     def is_cfp_open(self):
         try:

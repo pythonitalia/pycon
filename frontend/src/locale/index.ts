@@ -10,6 +10,7 @@ export default {
     "signup.signupButton": "Signup 👉",
     "deadlines.start": "Start",
     "deadlines.end": "End",
+    "tickets.header": "Tickets",
   },
   it: {
     "profile.header": "Il mio profilo",
@@ -22,5 +23,6 @@ export default {
     "signup.signupButton": "Registrati 👉",
     "deadlines.start": "Inizio",
     "deadlines.end": "Fine",
+    "tickets.header": "Biglietti",
   },
 };
