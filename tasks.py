@@ -10,7 +10,38 @@ def run_or_fail(c, cmd, fail_message="Error", fail_callback=None):
         print(fail_message)
         if fail_callback:
             fail_callback(c)
-        exit()
+        else:
+            exit()
+
+
+@task()
+def init_env(c):
+    with c.cd("backend"):
+        if not c.run("[ -f \".env\" ]", hide=False, warn=True):
+            c.run("cp .env.sample .env")
+            print(".env correctly initialized")
+        else:
+            print(".env already initialized")
+
+
+@task()
+def check_env_preconditions(c, env_vars=[]):
+    """
+    env_vars is an array of env variables you want to check
+    """
+    with c.cd("backend"):
+        run_or_fail(c, lambda x: x.run("[ -f \".env\" ]", hide=False),
+                    fail_message="ERROR! .env not configured."
+                                 "Launch 'invoke init-env'")
+        with c.prefix(". .env"):
+            _env_check_failed = False
+            for env_var in env_vars:
+                if c.run(f"[ -z \"${env_var}\" ]", hide=True, warn=True):
+                    print(f".env var {env_var} is required")
+                    _env_check_failed = True
+            if _env_check_failed:
+                exit()
+
 
 @task()
 def tools_check(c, tools=[]):
@@ -33,16 +64,11 @@ def setup_frontend(c):
         c.run("yarn")
 
 
-@task(pre=[call(tools_check, ["docker", "docker-compose"])])
+@task(pre=[call(tools_check, ["docker", "docker-compose"]),
+           call(check_env_preconditions, [])])
 def setup_db(c):
     print("Running DB setup...")
-
     with c.cd("backend"):
-        run_or_fail(c, lambda x: x.run("ls .env.sample", hide=False),
-                    fail_message="Are you in project root dir?")
-        run_or_fail(c, lambda x: x.run("ls .env", hide=False),
-                    fail_message="ERROR! Have you copied backend/.env.sample "
-                                 "in backend/.env and set your .env vars?")
         with c.prefix(". .env"):
             run_or_fail(c, lambda x: x.run("docker-compose -f docker-compose_dev.yml up", hide=False),
                         fail_message="ERROR! Some problem with docker-compose")
@@ -63,6 +89,7 @@ def setup_backend(c):
 @task(setup_frontend, setup_backend)
 def setup(c):
     print("Setup completed!")
+
 
 @task(setup_db)
 def migrate(c):
