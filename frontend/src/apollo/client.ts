@@ -11,10 +11,32 @@ const fragmentMatcher = new IntrospectionFragmentMatcher({
   introspectionQueryResultData,
 });
 
-const link = new HttpLink({
+const errorLink = onError(({ graphQLErrors, networkError }) => {
+  if (graphQLErrors) {
+    graphQLErrors.map(({ message, locations, path }) =>
+      console.warn(
+        `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
+      ),
+    );
+  }
+
+  if (networkError) {
+    console.warn(`[Network error]: ${networkError}`);
+  }
+  if (networkError && networkError.statusCode === 401){
+    // TODO logout()
+  }
+});
+
+const httpLink = new HttpLink({
   uri: "/graphql",
   fetch,
 });
+
+const link = ApolloLink.from([
+  errorLink,
+  httpLink,
+]);
 
 const cache = new InMemoryCache({ fragmentMatcher });
 

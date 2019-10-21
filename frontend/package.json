@@ -27,6 +27,8 @@
     "apollo-boost": "^0.4.4",
     "apollo-cache-inmemory": "^1.6.3",
     "apollo-client": "^2.6.4",
+    "apollo-link": "^1.2.13",
+    "apollo-link-error": "^1.1.12",
     "apollo-link-http": "^1.5.16",
     "babel-plugin-styled-components": "^1.10.6",
     "fannypack": "^4.21.20",
