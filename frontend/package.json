@@ -82,7 +82,7 @@
     "@types/react-helmet": "^5.0.12",
     "@types/react-responsive": "^8.0.1",
     "@types/styled-components": "^4.1.19",
-    "@typescript-eslint/eslint-plugin": "^2.4.0",
+    "@typescript-eslint/eslint-plugin": "^2.5.0",
     "@typescript-eslint/eslint-plugin-tslint": "^2.4.0",
     "@typescript-eslint/parser": "^2.5.0",
     "concurrently": "5.0.0",
