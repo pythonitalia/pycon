@@ -35,7 +35,7 @@ django-ordered-model = "=3.3.0"
 uWSGI = "=2.0.18"
 django-storages = "=1.7.2"
 sentry-sdk = "^0.12.3"
-boto3 = "^1.9"
+boto3 = "^1.10"
 
 [tool.poetry.dev-dependencies]
 pylint = "=2.4.3"
