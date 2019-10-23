@@ -59,7 +59,7 @@
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
     "react-helmet": "^5.2.1",
-    "react-intl": "^3.3.2",
+    "react-intl": "^3.4.0",
     "react-responsive": "^8.0.1",
     "react-use-form-state": "^0.11.0",
     "sharp": "^0.23.1",
