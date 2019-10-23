@@ -57,7 +57,7 @@
     "prism-react-renderer": "^1.0.2",
     "prop-types": "^15.7.2",
     "react": "^16.10.2",
-    "react-dom": "^16.10.2",
+    "react-dom": "^16.11.0",
     "react-helmet": "^5.2.1",
     "react-intl": "^3.4.0",
     "react-responsive": "^8.0.1",
