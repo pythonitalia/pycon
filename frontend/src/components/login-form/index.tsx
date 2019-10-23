@@ -21,6 +21,7 @@ type LoginFormFields = {
 
 export const LoginForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
   lang,
+  location,
 }) => {
   const profileUrl = `/${lang}/profile`;
 
@@ -63,6 +64,11 @@ export const LoginForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
         login({ variables: formState.values });
       }}
     >
+      {location && location.state && location.state.message && (
+        <Alert marginBottom="major-3" type="info">
+          {location.state.message}
+        </Alert>
+      )}
       <FieldSet>
         {errorMessage && <Alert type="error">{errorMessage}</Alert>}
 

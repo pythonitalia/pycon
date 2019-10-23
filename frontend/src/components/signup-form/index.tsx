@@ -21,6 +21,7 @@ type SignupFormProps = {
 
 export const SignupForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
   lang,
+  location,
 }) => {
   const [loggedIn, setLoggedIn] = useLoginState(false);
   const profileUrl = `/${lang}/profile`;
@@ -74,6 +75,12 @@ export const SignupForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
 
   return (
     <Form onSubmit={onFormSubmit} method="post">
+      {location && location.state && location.state.message && (
+        <Alert marginBottom="major-3" type="info">
+          {location.state.message}
+        </Alert>
+      )}
+
       <FieldSet>
         {errorMessage && <Alert type="error">{errorMessage}</Alert>}
 
