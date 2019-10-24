@@ -5,7 +5,6 @@ import {
   Button,
   Card,
   CheckboxField,
-  FieldSet,
   FieldWrapper,
   InputField,
   LayoutSet,
@@ -20,11 +19,7 @@ import { useFormState } from "react-use-form-state";
 
 import { Form } from "../../components/form";
 import { CountriesQuery } from "../../generated/graphql";
-import {
-  MyProfileQuery,
-  UpdateMutation,
-  UpdateMutationVariables,
-} from "../../generated/graphql-backend";
+import { MyProfileQuery, UpdateMutation, UpdateMutationVariables } from "../../generated/graphql-backend";
 import { BUTTON_PADDING, COLUMN_WIDTH, ROW_PADDING } from "./constants";
 import MY_PROFILE_QUERY from "./profile-edit.graphql";
 import UPDATE_MUTATION from "./update.graphql";
@@ -56,14 +51,14 @@ const InputWrapper: React.FC = (props: InputWrapperProps) => (
 );
 
 export const COUNTRIES_QUERY = graphql`
-  query countries {
-    backend {
-      countries {
-        code
-        name
-      }
+    query countries {
+        backend {
+            countries {
+                code
+                name
+            }
+        }
     }
-  }
 `;
 
 const FORM_FIELDS = [
@@ -73,11 +68,13 @@ const FORM_FIELDS = [
   "dateBirth",
   "country",
   "openToRecruiting",
-  "openToSpam",
+  "openToNewsletter",
 ];
 
-export const EditProfileApp: React.SFC<RouteComponentProps> = () => {
-  const [formState, { text, radio, select, checkbox, date }] = useFormState(
+export const EditProfileApp: React.SFC<RouteComponentProps<{ lang: string }>> = ({
+                                                                                   lang,
+                                                                                 }) => {
+  const [formState, { text, radio, select, checkbox, raw }] = useFormState(
     {},
     {
       withIds: true,
@@ -100,9 +97,8 @@ export const EditProfileApp: React.SFC<RouteComponentProps> = () => {
   // region GET_USER_DATA_FROM_BACKEND
   const setProfile = (data: MyProfileQuery) => {
     const { me } = data;
-    console.log({ me });
-
     FORM_FIELDS.forEach(field => formState.setField(field, me[field]));
+    formState.setField("dateBirth", me.dateBirth ? me.dateBirth : "");
   };
   const { loading, error, data: profileData } = useQuery<MyProfileQuery>(
     MY_PROFILE_QUERY,
@@ -115,17 +111,15 @@ export const EditProfileApp: React.SFC<RouteComponentProps> = () => {
 
   // region UPDATE_SEND_MUTATION
   const onUpdateComplete = (data: UpdateMutation) => {
-    console.log({ data });
     if (!data || data.update.__typename !== "MeUser") {
       return;
     }
-    // navigate(profileUrl);
+    const profileUrl = `/${lang}/profile`;
+    navigate(profileUrl);
   };
 
-  const [update, { updateLoading, updateError, updateData }] = useMutation<
-    UpdateMutation,
-    UpdateMutationVariables
-  >(UPDATE_MUTATION, {
+  const [update, { updateLoading, updateError, updateData }] = useMutation<UpdateMutation,
+    UpdateMutationVariables>(UPDATE_MUTATION, {
     onCompleted: onUpdateComplete,
   });
 
@@ -147,8 +141,6 @@ export const EditProfileApp: React.SFC<RouteComponentProps> = () => {
     updateData && updateData.update.__typename === "UpdateErrors"
       ? updateData.update.nonFieldErrors.join(" ")
       : updateError;
-
-  console.log({ updateLoading, updateError, updateData, errorMessage });
 
   const getFieldError = field =>
     (updateData &&
@@ -181,7 +173,7 @@ export const EditProfileApp: React.SFC<RouteComponentProps> = () => {
   return (
     <>
       <h1>
-        <FormattedMessage id="profile.header" />
+        <FormattedMessage id="profile.header"/>
       </h1>
 
       {loading && "Loading..."}
@@ -193,7 +185,7 @@ export const EditProfileApp: React.SFC<RouteComponentProps> = () => {
               <LayoutSet>
                 <Card>
                   <h3>
-                    <FormattedMessage id="profile.edit.personalHeader" />
+                    <FormattedMessage id="profile.edit.personalHeader"/>
                   </h3>
 
                   <InputWrapper text={errorsFields.firstName} isRequired={true}>
@@ -233,8 +225,15 @@ export const EditProfileApp: React.SFC<RouteComponentProps> = () => {
 
                   <InputWrapper text={errorsFields.gender} isRequired={true}>
                     <RadioGroupField
-                      {...radio("gender")}
-                      value={formState.gender}
+                      {...radio("gender",
+                        {
+                          name:"gender",
+                          onChange: event => {
+                            const gender = event.target.value;
+                            formState.setField("gender", gender);
+                            return gender;
+                          },
+                        })}
                       isHorizontal={true}
                       a11yId="gender"
                       label={
@@ -242,7 +241,6 @@ export const EditProfileApp: React.SFC<RouteComponentProps> = () => {
                           {msg => <b>{msg}</b>}
                         </FormattedMessage>
                       }
-                      onChange={hangleUserChange}
                       options={[
                         { label: "Male", value: "male" },
                         { label: "Female", value: "female" },
@@ -252,30 +250,40 @@ export const EditProfileApp: React.SFC<RouteComponentProps> = () => {
 
                   <InputWrapper text={errorsFields.dateBirth} isRequired={true}>
                     <InputField
-                      {...date("dateBirth")}
-                      value={formState.dateBirth}
+                      {...raw({
+                        name: "dateBirth",
+                        onChange: event => {
+                          const date = event.target.value;
+                          formState.setField("dateBirth", new Date(date));
+                          return date;
+                        },
+                      })}
                       type="date"
-                      data-date-format="YYYY-MM-DD"
                       a11yId="dateBirth"
                       label={
                         <FormattedMessage id="profile.dateBirth">
                           {msg => <b>{msg}</b>}
                         </FormattedMessage>
                       }
-                      onChange={hangleUserChange}
                     />
                   </InputWrapper>
 
                   <InputWrapper text={errorsFields.country} isRequired={true}>
                     <SelectField
-                      {...select("country")}
+                      {...select("country", {
+                        name: "country",
+                        onChange: event => {
+                          const country = event.target.value;
+                          formState.setField("country", country)
+                          return country;
+                        }},
+                        )}
                       a11yId="country"
                       label={
                         <FormattedMessage id="profile.country">
                           {msg => <b>{msg}</b>}
                         </FormattedMessage>
                       }
-                      onChange={hangleUserChange}
                       options={COUNTRIES_OPTIONS}
                       isRequired={true}
                     />
@@ -289,7 +297,7 @@ export const EditProfileApp: React.SFC<RouteComponentProps> = () => {
               <LayoutSet>
                 <Card>
                   <h3>
-                    <FormattedMessage id="profile.edit.privacyHeader" />
+                    <FormattedMessage id="profile.edit.privacyHeader"/>
                   </h3>
 
                   <InputWrapper text={errorsFields.openToRecruiting}>
@@ -299,7 +307,7 @@ export const EditProfileApp: React.SFC<RouteComponentProps> = () => {
                         ...checkbox("openToRecruiting"),
                       }}
                       type="checkbox"
-                      label={<FormattedMessage id="profile.openToRecruiting" />}
+                      label={<FormattedMessage id="profile.openToRecruiting"/>}
                     />
                   </InputWrapper>
 
@@ -310,7 +318,7 @@ export const EditProfileApp: React.SFC<RouteComponentProps> = () => {
                         ...checkbox("openToNewsletter"),
                       }}
                       type="checkbox"
-                      label={<FormattedMessage id="profile.openToNewsletter" />}
+                      label={<FormattedMessage id="profile.openToNewsletter"/>}
                     />
                   </InputWrapper>
                 </Card>
@@ -324,7 +332,7 @@ export const EditProfileApp: React.SFC<RouteComponentProps> = () => {
               isLoading={loading}
               type="submit"
             >
-              <FormattedMessage id="buttons.save" />
+              <FormattedMessage id="buttons.save"/>
             </Button>
           </Row>
         </Form>
