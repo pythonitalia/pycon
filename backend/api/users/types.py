@@ -8,11 +8,6 @@ from countries.types import Country
 
 
 @strawberry.type
-class Image:
-    url: str
-
-
-@strawberry.type
 class MeUser:
     id: strawberry.ID
     email: str
@@ -23,7 +18,6 @@ class MeUser:
     open_to_newsletter: Optional[bool]
     date_birth: Optional[str]
     country: Optional[str]
-    image: Optional[Image]
 
     # TODO: update this with pretix query
     @strawberry.field

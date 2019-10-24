@@ -1,14 +1,6 @@
 import datetime
-import json
-import os
 
 import pytest
-from django.core.files.storage import default_storage
-from django.test import RequestFactory
-from PIL import Image
-
-from upload.views import file_upload
-from users.models import User
 
 
 def _update_user(graphql_client, user, **kwargs):
@@ -70,87 +62,6 @@ def _update_user(graphql_client, user, **kwargs):
     return (graphql_client.query(query=query, variables=variables), variables)
 
 
-def _update_image(graphql_client, user, image):
-
-    variables = {
-        "user": user.id,
-        "image": image,
-        "open_to_recruiting": user.open_to_recruiting,
-        "open_to_newsletter": user.open_to_newsletter,
-    }
-
-    query = """
-        mutation(
-            $image: String!,
-            $open_to_recruiting: Boolean!,
-            $open_to_newsletter: Boolean!
-        ){
-            update(input: {
-            image: $image,
-            openToRecruiting: $open_to_recruiting,
-            openToNewsletter: $open_to_newsletter
-            }) {
-                __typename
-                ... on UpdateErrors {
-                    validationImage: image
-                    nonFieldErrors
-                }
-                ... on MeUser {
-                    id
-                    image {
-                        url
-                    }
-                }
-            }
-        }
-    """
-    return (graphql_client.query(query=query, variables=variables), variables)
-
-
-@pytest.fixture()
-def image_sample():
-
-    img = Image.new("RGB", (60, 30), color="red")
-    path = "sample.png"
-    img.save(path)
-
-    yield (img, path)
-
-    if os.path.exists(path):
-        os.remove(path)
-
-
-@pytest.fixture()
-def upload_file(image_sample):
-    img, path = image_sample
-    post_data = {"file": open(path, "rb")}
-    request = RequestFactory().post("upload/", data=post_data)
-    resp = file_upload(request)
-
-    url = json.loads(resp.content)["url"]
-    yield url
-
-    if default_storage.exists(url):
-        default_storage.delete(url)
-
-
-@pytest.fixture()
-def create_sample_image(graphql_client, upload_file):
-
-    uploaded_path = upload_file
-
-    user, _ = User.objects.get_or_create(email="user@example.it", password="password")
-    graphql_client.force_login(user)
-
-    resp, variables = _update_image(graphql_client, user, uploaded_path)
-
-    yield (resp, variables)
-
-    path = resp["data"]["update"]["image"]["url"]
-    if default_storage.exists(path):
-        default_storage.delete(path)
-
-
 @pytest.mark.django_db
 def test_update(graphql_client, user_factory):
     user = user_factory(
@@ -209,26 +120,3 @@ def test_update_multiple(graphql_client, user_factory):
     assert resp["data"]["update"]["openToNewsletter"] == variables["open_to_newsletter"]
     assert resp["data"]["update"]["dateBirth"] == variables["date_birth"]
     assert resp["data"]["update"]["country"] == variables["country"]
-
-
-@pytest.mark.django_db
-def test_update_image(graphql_client, create_sample_image):
-
-    resp, variables = create_sample_image
-    assert resp["data"]["update"]["__typename"] == "MeUser"
-    assert (
-        os.path.basename(variables["image"]) in resp["data"]["update"]["image"]["url"]
-    )
-
-
-@pytest.mark.django_db
-def test_update_image_file_not_found(graphql_client):
-    user, _ = User.objects.get_or_create(email="user@example.it", password="password")
-    graphql_client.force_login(user)
-
-    resp, variables = _update_image(graphql_client, user, "boh/file_not_found.jpg")
-
-    assert resp["data"]["update"]["__typename"] == "UpdateErrors"
-    assert resp["data"]["update"]["validationImage"] == [
-        "File 'file_not_found.jpg' not found"
-    ]

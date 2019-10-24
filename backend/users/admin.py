@@ -36,7 +36,6 @@ class PyConUserAdmin(UserAdmin):
             None,
             {
                 "fields": (
-                    "image",
                     "username",
                     "email",
                     "password",

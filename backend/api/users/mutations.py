@@ -2,28 +2,7 @@ from api.submissions.permissions import IsAuthenticated
 from strawberry_forms.mutations import FormMutation
 
 from .forms import LoginForm, RegisterForm, UpdateUserForm
-from .types import Image, MeUser
-
-
-def get_me_user_type(result):
-    return MeUser(
-        id=result.id,
-        email=result.email,
-        first_name=result.first_name,
-        last_name=result.last_name,
-        gender=result.gender,
-        open_to_recruiting=result.open_to_recruiting,
-        open_to_newsletter=result.open_to_newsletter,
-        date_birth=result.date_birth,
-        business_name=result.business_name,
-        fiscal_code=result.fiscal_code,
-        vat_number=result.vat_number,
-        recipient_code=result.recipient_code,
-        pec_address=result.pec_address,
-        address=result.address,
-        country=result.country,
-        phone_number=result.phone_number,
-    )
+from .types import MeUser
 
 
 class BaseUserMutation(FormMutation):
@@ -31,7 +10,6 @@ class BaseUserMutation(FormMutation):
     def transform(cls, result):
         return MeUser(
             id=result.id,
-            image=Image(url=result.image),
             email=result.email,
             first_name=result.first_name,
             last_name=result.last_name,

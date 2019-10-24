@@ -1,8 +1,4 @@
-import os
-
 from django.contrib.auth import authenticate, login
-from django.core import exceptions
-from django.core.files.storage import default_storage
 from django.forms import BooleanField, CharField, EmailField, ValidationError
 from django.utils.translation import ugettext_lazy as _
 
@@ -72,35 +68,13 @@ class UpdateUserForm(ContextAwareModelForm):
     country = CharField(required=False)
     image = CharField(required=False)
 
-    def clean(self):
-        cleaned_data = super().clean()
-
-        image = self.cleaned_data.get("image")
-        if image:
-            if not default_storage.exists(image):
-                name = os.path.basename(image)
-                raise exceptions.ValidationError(
-                    {"image": _(f"File '{name}' not found")}
-                )
-
-        return cleaned_data
-
     def save(self, commit=True):
         user = self.context["request"].user
 
-        try:
-            self.instance = User.objects.get(id=user.id)
-        except User.DoesNotExist:
-            pass
+        self.instance = User.objects.get(id=user.id)
 
         for key, value in self.cleaned_data.items():
             setattr(self.instance, key, value)
-
-        image = self.cleaned_data.get("image")
-        if image:
-            file = default_storage.open(image)
-            self.instance.image.save(os.path.basename(image), file)
-            default_storage.delete(image)
 
         return super().save(commit=commit)
 

@@ -3,7 +3,6 @@ from django.contrib.auth.models import PermissionsMixin
 from django.core import exceptions
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-
 from model_utils import Choices
 from pycountry import countries
 
@@ -52,7 +51,6 @@ def get_countries(code=""):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    image = models.ImageField(_("image"), upload_to="user_image", null=True, blank=True)
     username = models.CharField(_("username"), max_length=100, null=True, blank=True)
     email = models.EmailField(_("email address"), unique=True)
     full_name = models.CharField(_("full name"), max_length=300, blank=True)
