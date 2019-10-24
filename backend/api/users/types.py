@@ -16,13 +16,13 @@ class Image:
 class MeUser:
     id: strawberry.ID
     email: str
-    first_name: str
-    last_name: str
-    gender: str
-    open_to_recruiting: bool
-    open_to_newsletter: bool
-    date_birth: str
-    country: str
+    first_name: Optional[str]
+    last_name: Optional[str]
+    gender: Optional[str]
+    open_to_recruiting: Optional[bool]
+    open_to_newsletter: Optional[bool]
+    date_birth: Optional[str]
+    country: Optional[str]
     image: Optional[Image]
 
     # TODO: update this with pretix query
