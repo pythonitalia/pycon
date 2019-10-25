@@ -69,7 +69,7 @@
     "use-persisted-state": "^0.3.0"
   },
   "devDependencies": {
-    "@graphql-codegen/add": "^1.8.1",
+    "@graphql-codegen/add": "^1.8.2",
     "@graphql-codegen/cli": "^1.8.1",
     "@graphql-codegen/fragment-matcher": "^1.8.2",
     "@graphql-codegen/introspection": "1.8.2",
