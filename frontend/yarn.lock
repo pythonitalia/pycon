@@ -14069,10 +14069,10 @@ react-syntax-highlighter@8.0.1:
     prismjs "^1.8.4"
     refractor "^2.4.1"
 
-react-use-form-state@^0.11.0:
-  version "0.11.0"
-  resolved "https://registry.yarnpkg.com/react-use-form-state/-/react-use-form-state-0.11.0.tgz#dbc6ec89fc868a74c6ab1954f9f0132c3294f9ac"
-  integrity sha512-EEqZh03ffCGN8p0Edda9SW+TYyG4foxbd3ZFhBZ/f67Lhnezd/Q0Gc0ROM6/3CTUPxC5EtBOzn/HiU29mhbV9A==
+react-use-form-state@^0.12.0:
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/react-use-form-state/-/react-use-form-state-0.12.0.tgz#133fc0ef6f67e16bb57b43bfffd1922eb7b7a8b8"
+  integrity sha512-9/TQHnHYyx6jBk3/BINJd6xyGDiCLUNQixhG4P2GsgFjZOtPn0vXh4yZyt21zJjUwHWruDo3MtBvoiDs48S9pA==
 
 react@15:
   version "15.6.2"
