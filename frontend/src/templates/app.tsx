@@ -2,6 +2,7 @@ import { Router } from "@reach/router";
 import { Column, Row } from "grigliata";
 import * as React from "react";
 
+import { CfpForm } from "../app/cfp";
 import { ProfileApp } from "../app/profile";
 import { LoginForm } from "../components/login-form";
 import { MaxWidthWrapper } from "../components/max-width-wrapper";
@@ -28,6 +29,7 @@ export default ({ pageContext }: { pageContext: { language: string } }) => (
             <ProfileApp path="/:lang/profile" />
             <LoginForm path="/:lang/login" />
             <SignupForm path="/:lang/signup" />
+            <CfpForm path="/:lang/cfp" />
           </Router>
         </Column>
       </Row>
