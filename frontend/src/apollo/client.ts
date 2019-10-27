@@ -7,6 +7,8 @@ import { HttpLink } from "apollo-link-http";
 import fetch from "isomorphic-fetch";
 
 import introspectionQueryResultData from "../generated/fragment-types.json";
+import { onError } from "apollo-link-error";
+import { ApolloLink } from "apollo-link";
 const fragmentMatcher = new IntrospectionFragmentMatcher({
   introspectionQueryResultData,
 });
