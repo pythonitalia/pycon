@@ -19,9 +19,9 @@ export default ({ pageContext }: { pageContext: { language: string } }) => (
         <Column
           columnWidth={{
             mobile: 12,
-            tabletPortrait: 6,
-            tabletLandscape: 6,
-            desktop: 6,
+            tabletPortrait: 12,
+            tabletLandscape: 12,
+            desktop: 12,
           }}
         >
           <Router>
