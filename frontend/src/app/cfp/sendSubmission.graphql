@@ -1,0 +1,46 @@
+mutation SendSubmission(
+    $conference: ID!,
+    $topic: ID!,
+    $title: String!,
+    $abstract: String!,
+    $language: ID!,
+    $submissionType: ID!,
+    $duration: ID!,
+    $audienceLevel: ID!
+) {
+    sendSubmission(input: {
+        conference: $conference,
+        title: $title,
+        abstract: $abstract,
+        language: $language,
+        topic: $topic,
+        type: $submissionType,
+        duration: $duration,
+        audienceLevel: $audienceLevel
+    }) {
+        __typename
+
+        ... on Submission {
+            id
+            title
+            abstract
+            elevatorPitch
+            audienceLevel {
+                name
+            }
+            notes
+        }
+
+        ... on SendSubmissionErrors {
+            validationConference: conference
+            validationTopic: topic
+            validationTitle: title
+            validationAbstract: abstract
+            validationLanguage: language
+            validationType: type
+            validationDuration: duration
+            validationAudienceLevel: audienceLevel
+            nonFieldErrors
+        }
+    }
+}
