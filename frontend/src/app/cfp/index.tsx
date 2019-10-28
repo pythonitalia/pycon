@@ -1,9 +1,10 @@
-import { RouteComponentProps } from "@reach/router";
+import { navigate, RouteComponentProps } from "@reach/router";
 import * as React from "react";
 import { graphql, useStaticQuery } from "gatsby";
 import { Article } from "../../components/article";
 import { Form } from "../../components/form";
 import {
+  Alert,
   Button,
   FieldSet,
   FieldWrapper,
@@ -17,6 +18,12 @@ import { BUTTON_PADDING, ROW_PADDING, TYPE_OPTIONS } from "./constants";
 import { Row } from "grigliata";
 import { useFormState } from "react-use-form-state";
 import * as yup from "yup";
+import {
+  SendSubmissionMutation,
+  SendSubmissionMutationVariables,
+} from "../../generated/graphql-backend";
+import { useMutation } from "@apollo/react-hooks";
+import SEND_SUBMISSION_MUTATION from "./sendSubmission.graphql";
 
 const schema = yup.object().shape({
   title: yup
@@ -63,7 +70,6 @@ export const CfpForm: React.SFC<RouteComponentProps> = () => {
     },
   );
 
-  // region SETUP_CONSTANTS
   const {
     heroImage,
     backend: {
@@ -75,16 +81,56 @@ export const CfpForm: React.SFC<RouteComponentProps> = () => {
   const LANGUAGE_OPTIONS = createOptions(languages);
   const AUDIENCE_LEVEL_OPTIONS = createOptions(audienceLevels);
   // TODO SubmissionTypes options from BE!
-  // endregion
 
-  // region ERRORS
+  const titleCase = str =>
+    str
+      .split(" ")
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+
+  // region ON_SUBMIT
+  const setFieldsErrors = data => {
+    Object.keys(formState.values).forEach(field => {
+      let errorType = "validation" + titleCase(field);
+      let error =
+        (data.sendSubmission.__typename === "SendSubmissionErrors" &&
+          data.sendSubmission[errorType] &&
+          data.sendSubmission[errorType].join(", ")) ||
+        "";
+
+      formState.setFieldError(field, error);
+    });
+  };
+
+  const onSendSubmissionComplete = (submissionData: SendSubmissionMutation) => {
+    if (
+      !submissionData ||
+      submissionData.sendSubmission.__typename !== "Submission"
+    ) {
+      setFieldsErrors(submissionData);
+      return;
+    }
+  };
+
+  const [sendSubmission, { loading, error, data }] = useMutation<
+    SendSubmissionMutation,
+    SendSubmissionMutationVariables
+  >(SEND_SUBMISSION_MUTATION, {
+    onCompleted: onSendSubmissionComplete,
+  });
+
   const setFormsErrors = () => {
     schema
       .validate(formState.values, { abortEarly: false })
       .then(value => {
         formState.validity = {};
         formState.errors = {};
-        console.log("wooow it's valid!!");
+
+        let variables = formState.values;
+        variables["conference"] = "pycon-demo";
+        sendSubmission({
+          variables: variables,
+        });
       })
       .catch(err => {
         const newErrors = {};
@@ -94,6 +140,11 @@ export const CfpForm: React.SFC<RouteComponentProps> = () => {
       });
   };
   // endregion
+
+  const errorMessage =
+    data && data.sendSubmission.__typename === "SendSubmissionErrors"
+      ? data.sendSubmission.nonFieldErrors.join(" ")
+      : error;
 
   return (
     <>
@@ -108,6 +159,7 @@ export const CfpForm: React.SFC<RouteComponentProps> = () => {
             setFormsErrors();
           }}
         >
+          {errorMessage && <Alert type="error">{errorMessage}</Alert>}
           <FieldSet>
             <FieldWrapper
               label={
@@ -231,9 +283,7 @@ export const CfpForm: React.SFC<RouteComponentProps> = () => {
               isRequired={true}
               validationText={formState.errors && formState.errors.duration}
               state={
-                formState.validity && formState.validity.duration === false
-                  ? "danger"
-                  : ""
+                formState.validity && formState.errors.duration ? "danger" : ""
               }
             >
               <Select
