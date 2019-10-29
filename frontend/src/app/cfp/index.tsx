@@ -151,6 +151,9 @@ export const CfpForm: React.SFC<RouteComponentProps> = () => {
       ? data.sendSubmission.nonFieldErrors.join(" ")
       : error;
 
+  const successSendMutation =
+    data && data.sendSubmission.__typename === "Submission";
+
   return (
     <>
       <Article
@@ -165,6 +168,12 @@ export const CfpForm: React.SFC<RouteComponentProps> = () => {
           }}
         >
           {errorMessage && <Alert type="danger">{errorMessage}</Alert>}
+          {successSendMutation && (
+            <Alert type="success">
+              <FormattedMessage id="cfp.form.sendSubmissionSuccess" />
+            </Alert>
+          )}
+          <br />
           <FieldSet>
             <FieldWrapper
               label={

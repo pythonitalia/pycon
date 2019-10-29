@@ -28,6 +28,8 @@ export default {
     "cfp.form.duration": "Duration",
     "cfp.form.audienceLevel": "Audience Level",
     "cfp.form.sendSubmission": "Submit 👉",
+    "cfp.form.sendSubmissionSuccess":
+      "Proposal sent successfully! Thank you 😊!",
   },
   it: {
     "profile.header": "Il mio profilo",
@@ -53,5 +55,7 @@ export default {
     "cfp.form.duration": "Durata",
     "cfp.form.audienceLevel": "Livello del pubblico",
     "cfp.form.sendSubmission": "Invia 👉",
+    "cfp.form.sendSubmissionSuccess":
+      "Proposta inviata correttamente! Grazie 😊!",
   },
 };
