@@ -33,3 +33,4 @@ omit =
   ./**/migrations/*.py
   ./manage.py
   ./conftest.py
+  ./.venv/**
