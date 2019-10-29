@@ -1,4 +1,5 @@
 from pytest import mark
+
 from submissions.models import Submission, SubmissionType
 
 from .factories import SubmissionFactory
@@ -17,7 +18,7 @@ def _submit_talk(client, conference, **kwargs):
         "language": "it",
         "conference": conference.code,
         "topic": conference.topics.first().id,
-        "type": talk.type.id,
+        "type": talk.type.name,
         "duration": conference.durations.first().id,
         "audience_level": conference.audience_levels.first().name,
     }
@@ -91,7 +92,7 @@ def _submit_tutorial(client, conference, **kwargs):
         "language": "it",
         "conference": conference.code,
         "topic": conference.topics.first().id,
-        "type": talk.type.id,
+        "type": talk.type.name,
         "duration": conference.durations.first().id,
         "audience_level": conference.audience_levels.first().name,
     }
@@ -251,7 +252,7 @@ def test_cannot_use_duration_if_submission_type_is_not_allowed(
     duration2.allowed_submission_types.add(tutorial_type)
 
     resp, _ = _submit_talk(
-        graphql_client, conference, type=talk_type.id, duration=duration2.id
+        graphql_client, conference, type=talk_type.name, duration=duration2.id
     )
 
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
