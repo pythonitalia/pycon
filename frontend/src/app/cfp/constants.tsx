@@ -14,7 +14,7 @@ export const BUTTON_PADDING = {
 
 export const TYPE_OPTIONS = [
   { label: "Select", value: "" },
-  { label: "Talk", value: "talk" },
-  { label: "Training", value: "training" },
-  { label: "Sprint", value: "sprint" },
+  { label: "Talk", value: "Talk" },
+  { label: "Training", value: "Training" },
+  { label: "Sprint", value: "Sprint" },
 ];

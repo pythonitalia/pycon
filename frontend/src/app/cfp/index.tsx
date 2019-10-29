@@ -1,8 +1,5 @@
+import { useMutation } from "@apollo/react-hooks";
 import { navigate, RouteComponentProps } from "@reach/router";
-import * as React from "react";
-import { graphql, useStaticQuery } from "gatsby";
-import { Article } from "../../components/article";
-import { Form } from "../../components/form";
 import {
   Alert,
   Button,
@@ -13,16 +10,20 @@ import {
   Select,
   Textarea,
 } from "fannypack";
-import { FormattedMessage } from "react-intl";
-import { BUTTON_PADDING, ROW_PADDING, TYPE_OPTIONS } from "./constants";
+import { graphql, useStaticQuery } from "gatsby";
 import { Row } from "grigliata";
+import * as React from "react";
+import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import * as yup from "yup";
+
+import { Article } from "../../components/article";
+import { Form } from "../../components/form";
 import {
   SendSubmissionMutation,
   SendSubmissionMutationVariables,
 } from "../../generated/graphql-backend";
-import { useMutation } from "@apollo/react-hooks";
+import { BUTTON_PADDING, ROW_PADDING, TYPE_OPTIONS } from "./constants";
 import SEND_SUBMISSION_MUTATION from "./sendSubmission.graphql";
 
 const schema = yup.object().shape({
@@ -59,7 +60,10 @@ const schema = yup.object().shape({
 
 const createOptions = (items: any[]) => [
   { label: "", value: "" },
-  ...items.map(item => ({ label: item.name, value: item.id })),
+  ...items.map(item => ({
+    label: item.name,
+    value: item.id || item.code || item.name,
+  })),
 ];
 
 export const CfpForm: React.SFC<RouteComponentProps> = () => {
@@ -89,16 +93,17 @@ export const CfpForm: React.SFC<RouteComponentProps> = () => {
       .join(" ");
 
   // region ON_SUBMIT
-  const setFieldsErrors = data => {
+  const setFieldsErrors = sendSubmissionData => {
     Object.keys(formState.values).forEach(field => {
-      let errorType = "validation" + titleCase(field);
-      let error =
-        (data.sendSubmission.__typename === "SendSubmissionErrors" &&
-          data.sendSubmission[errorType] &&
-          data.sendSubmission[errorType].join(", ")) ||
+      const errorType = "validation" + titleCase(field);
+      const errorFieldMessage =
+        (sendSubmissionData.sendSubmission.__typename ===
+          "SendSubmissionErrors" &&
+          sendSubmissionData.sendSubmission[errorType] &&
+          sendSubmissionData.sendSubmission[errorType].join(", ")) ||
         "";
 
-      formState.setFieldError(field, error);
+      formState.setFieldError(field, errorFieldMessage);
     });
   };
 
@@ -126,10 +131,10 @@ export const CfpForm: React.SFC<RouteComponentProps> = () => {
         formState.validity = {};
         formState.errors = {};
 
-        let variables = formState.values;
-        variables["conference"] = "pycon-demo";
+        const variables = formState.values;
+        variables.conference = "pycon-demo";
         sendSubmission({
-          variables: variables,
+          variables,
         });
       })
       .catch(err => {
@@ -298,7 +303,7 @@ export const CfpForm: React.SFC<RouteComponentProps> = () => {
                 formState.errors && formState.errors.audienceLevel
               }
               state={
-                formState.validity && formState.validity.audienceLevel === false
+                formState.errors && formState.errors.audienceLevel
                   ? "danger"
                   : ""
               }
@@ -348,11 +353,10 @@ const query = graphql`
           name
         }
         audienceLevels {
-          id
           name
         }
         languages {
-          id
+          code
           name
         }
       }
