@@ -75,7 +75,7 @@ export const SignupForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
   return (
     <Form onSubmit={onFormSubmit} method="post">
       <FieldSet>
-        {errorMessage && <Alert type="error">{errorMessage}</Alert>}
+        {errorMessage && <Alert type="danger">{errorMessage}</Alert>}
 
         <Label htmlFor="signup-email" {...label("email")}>
           <FormattedMessage id="signup.email" />

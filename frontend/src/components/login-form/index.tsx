@@ -64,7 +64,7 @@ export const LoginForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
       }}
     >
       <FieldSet>
-        {errorMessage && <Alert type="error">{errorMessage}</Alert>}
+        {errorMessage && <Alert type="danger">{errorMessage}</Alert>}
 
         <Label {...label("email")}>
           <FormattedMessage id="login.email" />

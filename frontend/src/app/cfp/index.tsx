@@ -164,7 +164,7 @@ export const CfpForm: React.SFC<RouteComponentProps> = () => {
             setFormsErrors();
           }}
         >
-          {errorMessage && <Alert type="error">{errorMessage}</Alert>}
+          {errorMessage && <Alert type="danger">{errorMessage}</Alert>}
           <FieldSet>
             <FieldWrapper
               label={
