@@ -47,7 +47,7 @@ const schema = yup.object().shape({
     .string()
     .required()
     .ensure(),
-  submissionType: yup
+  type: yup
     .string()
     .required()
     .ensure(),
@@ -253,22 +253,16 @@ export const CfpForm: React.SFC<RouteComponentProps> = () => {
 
             <FieldWrapper
               label={
-                <Label {...label("submissionType")}>
-                  <FormattedMessage id="cfp.form.submissionType" />
+                <Label {...label("type")}>
+                  <FormattedMessage id="cfp.form.type" />
                 </Label>
               }
               isRequired={true}
-              validationText={
-                formState.errors && formState.errors.submissionType
-              }
-              state={
-                formState.errors && formState.errors.submissionType
-                  ? "danger"
-                  : ""
-              }
+              validationText={formState.errors && formState.errors.type}
+              state={formState.errors && formState.errors.type ? "danger" : ""}
             >
               <Select
-                {...select("submissionType")}
+                {...select("type")}
                 options={TYPE_OPTIONS}
                 isRequired={true}
               />

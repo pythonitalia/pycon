@@ -4,7 +4,7 @@ mutation SendSubmission(
     $title: String!,
     $abstract: String!,
     $language: ID!,
-    $submissionType: ID!,
+    $type: ID!,
     $duration: ID!,
     $audienceLevel: ID!
 ) {
@@ -14,7 +14,7 @@ mutation SendSubmission(
         abstract: $abstract,
         language: $language,
         topic: $topic,
-        type: $submissionType,
+        type: $type,
         duration: $duration,
         audienceLevel: $audienceLevel
     }) {
