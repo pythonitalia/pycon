@@ -188,6 +188,7 @@ export const CfpForm: React.SFC<RouteComponentProps> = () => {
               <Input
                 inputProps={{ ...text("title"), required: true }}
                 isRequired={true}
+                disabled={successSendMutation}
               />
             </FieldWrapper>
 
@@ -203,7 +204,11 @@ export const CfpForm: React.SFC<RouteComponentProps> = () => {
                 formState.errors && formState.errors.abstract ? "danger" : ""
               }
             >
-              <Textarea {...textarea("abstract")} isRequired={true} />
+              <Textarea
+                {...textarea("abstract")}
+                isRequired={true}
+                disabled={successSendMutation}
+              />
             </FieldWrapper>
 
             <FieldWrapper
@@ -224,7 +229,11 @@ export const CfpForm: React.SFC<RouteComponentProps> = () => {
                   : ""
               }
             >
-              <Textarea {...textarea("elevatorPitch")} isRequired={true} />
+              <Textarea
+                {...textarea("elevatorPitch")}
+                isRequired={true}
+                disabled={successSendMutation}
+              />
             </FieldWrapper>
 
             {/* TODO: multiple languages */}
@@ -245,6 +254,7 @@ export const CfpForm: React.SFC<RouteComponentProps> = () => {
                 {...select("language")}
                 options={LANGUAGE_OPTIONS}
                 isRequired={true}
+                disabled={successSendMutation}
               />
             </FieldWrapper>
 
@@ -262,6 +272,7 @@ export const CfpForm: React.SFC<RouteComponentProps> = () => {
                 {...select("topic")}
                 options={TOPIC_OPTIONS}
                 isRequired={true}
+                disabled={successSendMutation}
               />
             </FieldWrapper>
 
@@ -279,6 +290,7 @@ export const CfpForm: React.SFC<RouteComponentProps> = () => {
                 {...select("type")}
                 options={TYPE_OPTIONS}
                 isRequired={true}
+                disabled={successSendMutation}
               />
             </FieldWrapper>
 
@@ -298,6 +310,7 @@ export const CfpForm: React.SFC<RouteComponentProps> = () => {
                 {...select("duration")}
                 options={DURATION_OPTIONS}
                 isRequired={true}
+                disabled={successSendMutation}
               />
             </FieldWrapper>
 
@@ -321,11 +334,17 @@ export const CfpForm: React.SFC<RouteComponentProps> = () => {
                 {...select("audienceLevel")}
                 options={AUDIENCE_LEVEL_OPTIONS}
                 isRequired={true}
+                disabled={successSendMutation}
               />
             </FieldWrapper>
 
             <Row paddingBottom={ROW_PADDING} paddingTop={BUTTON_PADDING}>
-              <Button size="medium" palette="primary" type="submit">
+              <Button
+                size="medium"
+                palette="primary"
+                type="submit"
+                disabled={successSendMutation}
+              >
                 <FormattedMessage id="cfp.form.sendSubmission" />
               </Button>
             </Row>
