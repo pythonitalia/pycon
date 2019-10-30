@@ -23,7 +23,7 @@ import {
   SendSubmissionMutation,
   SendSubmissionMutationVariables,
 } from "../../generated/graphql-backend";
-import { BUTTON_PADDING, ROW_PADDING, TYPE_OPTIONS } from "./constants";
+import { BUTTON_PADDING, ROW_PADDING } from "./constants";
 import SEND_SUBMISSION_MUTATION from "./sendSubmission.graphql";
 
 const schema = yup.object().shape({
@@ -77,14 +77,20 @@ export const CfpForm: React.SFC<RouteComponentProps> = () => {
   const {
     heroImage,
     backend: {
-      conference: { topics, durations, audienceLevels, languages },
+      conference: {
+        topics,
+        durations,
+        audienceLevels,
+        languages,
+        submissionTypes,
+      },
     },
   } = useStaticQuery(query);
   const TOPIC_OPTIONS = createOptions(topics);
   const DURATION_OPTIONS = createOptions(durations);
   const LANGUAGE_OPTIONS = createOptions(languages);
   const AUDIENCE_LEVEL_OPTIONS = createOptions(audienceLevels);
-  // TODO SubmissionTypes options from BE!
+  const SUBMISSION_TYPE_OPTIONS = createOptions(submissionTypes);
 
   const titleCase = str =>
     str
@@ -288,7 +294,7 @@ export const CfpForm: React.SFC<RouteComponentProps> = () => {
             >
               <Select
                 {...select("type")}
-                options={TYPE_OPTIONS}
+                options={SUBMISSION_TYPE_OPTIONS}
                 isRequired={true}
                 disabled={successSendMutation}
               />
@@ -385,6 +391,9 @@ const query = graphql`
         }
         languages {
           code
+          name
+        }
+        submissionTypes {
           name
         }
       }

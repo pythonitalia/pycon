@@ -11,10 +11,3 @@ export const BUTTON_PADDING = {
   tabletLandscape: 1,
   desktop: 2,
 };
-
-export const TYPE_OPTIONS = [
-  { label: "Select", value: "" },
-  { label: "Talk", value: "Talk" },
-  { label: "Training", value: "Training" },
-  { label: "Sprint", value: "Sprint" },
-];
