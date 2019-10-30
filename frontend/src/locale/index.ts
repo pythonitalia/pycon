@@ -28,8 +28,11 @@ export default {
     "cfp.form.duration": "Duration",
     "cfp.form.audienceLevel": "Audience Level",
     "cfp.form.sendSubmission": "Submit 👉",
-    "cfp.form.sendSubmissionSuccess":
+    "cfp.form.messages.sendSubmissionSucces":
       "Proposal sent successfully! Thank you 😊!",
+    "cfp.form.messages.cfpTooLate": "Sorry, but the CfP has closed ",
+    "cfp.from.messages.cfpTooEarly":
+      "Sorry, but the Cfp is still not open, it will be open from ",
   },
   it: {
     "profile.header": "Il mio profilo",
@@ -55,7 +58,10 @@ export default {
     "cfp.form.duration": "Durata",
     "cfp.form.audienceLevel": "Livello del pubblico",
     "cfp.form.sendSubmission": "Invia 👉",
-    "cfp.form.sendSubmissionSuccess":
+    "cfp.form.messages.sendSubmissionSuccess":
       "Proposta inviata correttamente! Grazie 😊!",
+    "cfp.form.messages.cfpTooLate": "Ci dispiace, la Cfp si è chiusa il ",
+    "cfp.from.messages.cfpTooEarly":
+      "Ci dispiace, ma la Cfp ancora non è aperta, sarà attiva dal ",
   },
 };

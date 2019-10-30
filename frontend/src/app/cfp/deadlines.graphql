@@ -1,0 +1,10 @@
+query CfpDeadlines {
+    conference(code: "pycon-demo") {
+        isCfpOpen
+        deadlines {
+            start
+            end
+            type
+        }
+    }
+}

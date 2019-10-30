@@ -1,4 +1,4 @@
-import { useMutation } from "@apollo/react-hooks";
+import { useMutation, useQuery } from "@apollo/react-hooks";
 import { navigate, RouteComponentProps } from "@reach/router";
 import {
   Alert,
@@ -23,6 +23,7 @@ import {
   SendSubmissionMutation,
   SendSubmissionMutationVariables,
 } from "../../generated/graphql-backend";
+import { CfpOpenCheck } from "./cfp-open-check";
 import { BUTTON_PADDING, ROW_PADDING } from "./constants";
 import SEND_SUBMISSION_MUTATION from "./sendSubmission.graphql";
 
@@ -66,6 +67,12 @@ const createOptions = (items: any[]) => [
   })),
 ];
 
+const titleCase = str =>
+  str
+    .split(" ")
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+
 export const CfpForm: React.SFC<RouteComponentProps> = () => {
   const [formState, { label, select, text, textarea }] = useFormState(
     {},
@@ -91,12 +98,6 @@ export const CfpForm: React.SFC<RouteComponentProps> = () => {
   const LANGUAGE_OPTIONS = createOptions(languages);
   const AUDIENCE_LEVEL_OPTIONS = createOptions(audienceLevels);
   const SUBMISSION_TYPE_OPTIONS = createOptions(submissionTypes);
-
-  const titleCase = str =>
-    str
-      .split(" ")
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
 
   // region ON_SUBMIT
   const setFieldsErrors = sendSubmissionData => {
@@ -166,196 +167,206 @@ export const CfpForm: React.SFC<RouteComponentProps> = () => {
         hero={{ ...heroImage!.childImageSharp }}
         title="Call For Proposal"
       >
-        <Form
-          method="post"
-          onSubmit={e => {
-            e.preventDefault();
-            setFormsErrors();
-          }}
-        >
-          {errorMessage && <Alert type="danger">{errorMessage}</Alert>}
-          {successSendMutation && (
-            <Alert type="success">
-              <FormattedMessage id="cfp.form.sendSubmissionSuccess" />
-            </Alert>
-          )}
-          <br />
-          <FieldSet>
-            <FieldWrapper
-              label={
-                <Label {...label("title")}>
-                  <FormattedMessage id="cfp.form.title" />
-                </Label>
-              }
-              isRequired={true}
-              validationText={formState.errors && formState.errors.title}
-              state={formState.errors && formState.errors.title ? "danger" : ""}
-            >
-              <Input
-                inputProps={{ ...text("title"), required: true }}
+        <CfpOpenCheck>
+          <Form
+            method="post"
+            onSubmit={e => {
+              e.preventDefault();
+              setFormsErrors();
+            }}
+          >
+            {errorMessage && <Alert type="danger">{errorMessage}</Alert>}
+            {successSendMutation && (
+              <Alert type="success">
+                <FormattedMessage id="cfp.form.messages.sendSubmissionSuccess" />
+              </Alert>
+            )}
+            <br />
+            <FieldSet>
+              <FieldWrapper
+                label={
+                  <Label {...label("title")}>
+                    <FormattedMessage id="cfp.form.title" />
+                  </Label>
+                }
                 isRequired={true}
-                disabled={successSendMutation}
-              />
-            </FieldWrapper>
-
-            <FieldWrapper
-              label={
-                <Label {...label("abstract")}>
-                  <FormattedMessage id="cfp.form.abstract" />
-                </Label>
-              }
-              isRequired={true}
-              validationText={formState.errors && formState.errors.abstract}
-              state={
-                formState.errors && formState.errors.abstract ? "danger" : ""
-              }
-            >
-              <Textarea
-                {...textarea("abstract")}
-                isRequired={true}
-                disabled={successSendMutation}
-              />
-            </FieldWrapper>
-
-            <FieldWrapper
-              label={
-                <Label {...label("elevatorPitch")}>
-                  <FormattedMessage id="cfp.form.elevatorPitch" />
-                </Label>
-              }
-              description={
-                <FormattedMessage id="cfp.form.elevatorPitch.description" />
-              }
-              validationText={
-                formState.errors && formState.errors.elevatorPitch
-              }
-              state={
-                formState.errors && formState.errors.elevatorPitch
-                  ? "danger"
-                  : ""
-              }
-            >
-              <Textarea
-                {...textarea("elevatorPitch")}
-                isRequired={true}
-                disabled={successSendMutation}
-              />
-            </FieldWrapper>
-
-            {/* TODO: multiple languages */}
-
-            <FieldWrapper
-              label={
-                <Label {...label("language")}>
-                  <FormattedMessage id="cfp.form.language" />
-                </Label>
-              }
-              isRequired={true}
-              validationText={formState.errors && formState.errors.language}
-              state={
-                formState.errors && formState.errors.language ? "danger" : ""
-              }
-            >
-              <Select
-                {...select("language")}
-                options={LANGUAGE_OPTIONS}
-                isRequired={true}
-                disabled={successSendMutation}
-              />
-            </FieldWrapper>
-
-            <FieldWrapper
-              label={
-                <Label {...label("topic")}>
-                  <FormattedMessage id="cfp.form.topic" />
-                </Label>
-              }
-              isRequired={true}
-              validationText={formState.errors && formState.errors.topic}
-              state={formState.errors && formState.errors.topic ? "danger" : ""}
-            >
-              <Select
-                {...select("topic")}
-                options={TOPIC_OPTIONS}
-                isRequired={true}
-                disabled={successSendMutation}
-              />
-            </FieldWrapper>
-
-            <FieldWrapper
-              label={
-                <Label {...label("type")}>
-                  <FormattedMessage id="cfp.form.type" />
-                </Label>
-              }
-              isRequired={true}
-              validationText={formState.errors && formState.errors.type}
-              state={formState.errors && formState.errors.type ? "danger" : ""}
-            >
-              <Select
-                {...select("type")}
-                options={SUBMISSION_TYPE_OPTIONS}
-                isRequired={true}
-                disabled={successSendMutation}
-              />
-            </FieldWrapper>
-
-            <FieldWrapper
-              label={
-                <Label {...label("duration")}>
-                  <FormattedMessage id="cfp.form.duration" />
-                </Label>
-              }
-              isRequired={true}
-              validationText={formState.errors && formState.errors.duration}
-              state={
-                formState.validity && formState.errors.duration ? "danger" : ""
-              }
-            >
-              <Select
-                {...select("duration")}
-                options={DURATION_OPTIONS}
-                isRequired={true}
-                disabled={successSendMutation}
-              />
-            </FieldWrapper>
-
-            <FieldWrapper
-              label={
-                <Label {...label("audienceLevel")}>
-                  <FormattedMessage id="cfp.form.audienceLevel" />
-                </Label>
-              }
-              isRequired={true}
-              validationText={
-                formState.errors && formState.errors.audienceLevel
-              }
-              state={
-                formState.errors && formState.errors.audienceLevel
-                  ? "danger"
-                  : ""
-              }
-            >
-              <Select
-                {...select("audienceLevel")}
-                options={AUDIENCE_LEVEL_OPTIONS}
-                isRequired={true}
-                disabled={successSendMutation}
-              />
-            </FieldWrapper>
-
-            <Row paddingBottom={ROW_PADDING} paddingTop={BUTTON_PADDING}>
-              <Button
-                size="medium"
-                palette="primary"
-                type="submit"
-                disabled={successSendMutation}
+                validationText={formState.errors && formState.errors.title}
+                state={
+                  formState.errors && formState.errors.title ? "danger" : ""
+                }
               >
-                <FormattedMessage id="cfp.form.sendSubmission" />
-              </Button>
-            </Row>
-          </FieldSet>
-        </Form>
+                <Input
+                  inputProps={{ ...text("title"), required: true }}
+                  isRequired={true}
+                  disabled={successSendMutation}
+                />
+              </FieldWrapper>
+
+              <FieldWrapper
+                label={
+                  <Label {...label("abstract")}>
+                    <FormattedMessage id="cfp.form.abstract" />
+                  </Label>
+                }
+                isRequired={true}
+                validationText={formState.errors && formState.errors.abstract}
+                state={
+                  formState.errors && formState.errors.abstract ? "danger" : ""
+                }
+              >
+                <Textarea
+                  {...textarea("abstract")}
+                  isRequired={true}
+                  disabled={successSendMutation}
+                />
+              </FieldWrapper>
+
+              <FieldWrapper
+                label={
+                  <Label {...label("elevatorPitch")}>
+                    <FormattedMessage id="cfp.form.elevatorPitch" />
+                  </Label>
+                }
+                description={
+                  <FormattedMessage id="cfp.form.elevatorPitch.description" />
+                }
+                validationText={
+                  formState.errors && formState.errors.elevatorPitch
+                }
+                state={
+                  formState.errors && formState.errors.elevatorPitch
+                    ? "danger"
+                    : ""
+                }
+              >
+                <Textarea
+                  {...textarea("elevatorPitch")}
+                  isRequired={true}
+                  disabled={successSendMutation}
+                />
+              </FieldWrapper>
+
+              {/* TODO: multiple languages */}
+
+              <FieldWrapper
+                label={
+                  <Label {...label("language")}>
+                    <FormattedMessage id="cfp.form.language" />
+                  </Label>
+                }
+                isRequired={true}
+                validationText={formState.errors && formState.errors.language}
+                state={
+                  formState.errors && formState.errors.language ? "danger" : ""
+                }
+              >
+                <Select
+                  {...select("language")}
+                  options={LANGUAGE_OPTIONS}
+                  isRequired={true}
+                  disabled={successSendMutation}
+                />
+              </FieldWrapper>
+
+              <FieldWrapper
+                label={
+                  <Label {...label("topic")}>
+                    <FormattedMessage id="cfp.form.topic" />
+                  </Label>
+                }
+                isRequired={true}
+                validationText={formState.errors && formState.errors.topic}
+                state={
+                  formState.errors && formState.errors.topic ? "danger" : ""
+                }
+              >
+                <Select
+                  {...select("topic")}
+                  options={TOPIC_OPTIONS}
+                  isRequired={true}
+                  disabled={successSendMutation}
+                />
+              </FieldWrapper>
+
+              <FieldWrapper
+                label={
+                  <Label {...label("type")}>
+                    <FormattedMessage id="cfp.form.type" />
+                  </Label>
+                }
+                isRequired={true}
+                validationText={formState.errors && formState.errors.type}
+                state={
+                  formState.errors && formState.errors.type ? "danger" : ""
+                }
+              >
+                <Select
+                  {...select("type")}
+                  options={SUBMISSION_TYPE_OPTIONS}
+                  isRequired={true}
+                  disabled={successSendMutation}
+                />
+              </FieldWrapper>
+
+              <FieldWrapper
+                label={
+                  <Label {...label("duration")}>
+                    <FormattedMessage id="cfp.form.duration" />
+                  </Label>
+                }
+                isRequired={true}
+                validationText={formState.errors && formState.errors.duration}
+                state={
+                  formState.validity && formState.errors.duration
+                    ? "danger"
+                    : ""
+                }
+              >
+                <Select
+                  {...select("duration")}
+                  options={DURATION_OPTIONS}
+                  isRequired={true}
+                  disabled={successSendMutation}
+                />
+              </FieldWrapper>
+
+              <FieldWrapper
+                label={
+                  <Label {...label("audienceLevel")}>
+                    <FormattedMessage id="cfp.form.audienceLevel" />
+                  </Label>
+                }
+                isRequired={true}
+                validationText={
+                  formState.errors && formState.errors.audienceLevel
+                }
+                state={
+                  formState.errors && formState.errors.audienceLevel
+                    ? "danger"
+                    : ""
+                }
+              >
+                <Select
+                  {...select("audienceLevel")}
+                  options={AUDIENCE_LEVEL_OPTIONS}
+                  isRequired={true}
+                  disabled={successSendMutation}
+                />
+              </FieldWrapper>
+
+              <Row paddingBottom={ROW_PADDING} paddingTop={BUTTON_PADDING}>
+                <Button
+                  size="medium"
+                  palette="primary"
+                  type="submit"
+                  disabled={successSendMutation}
+                >
+                  <FormattedMessage id="cfp.form.sendSubmission" />
+                </Button>
+              </Row>
+            </FieldSet>
+          </Form>
+        </CfpOpenCheck>
       </Article>
     </>
   );
