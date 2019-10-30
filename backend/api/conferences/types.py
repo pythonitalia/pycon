@@ -137,6 +137,10 @@ class Conference:
             self.menus.filter(identifier=identifier).prefetch_related("links").first()
         )
 
+    @strawberry.field
+    def is_cfp_open(self, info) -> bool:
+        return self.is_cfp_open
+
 
 @strawberry.type
 class Deadline:
