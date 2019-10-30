@@ -3,11 +3,11 @@ import React, { Component } from "react"
 import { Redirect } from "@reach/router";
 
 
-export const PrivateRoute = ({component: Component, location, lang, ...rest}: any) => {
+export const PrivateRoute = ({component: Component, lang, ...rest}: any) => {
   const [loggedIn, _] = useLoginState(false);
   const loginUrl = `${lang}/login`;
 
-  if (!loggedIn && !location.pathname.includes("login")) {
+  if (!loggedIn) {
     return <Redirect to={loginUrl} noThrow={true} />;
   }
 
