@@ -16,6 +16,7 @@ import { Row } from "grigliata";
 import React, { useCallback } from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import { useFormState } from "react-use-form-state";
+import * as yup from "yup";
 
 import { Form } from "../../components/form";
 import { CountriesQuery } from "../../generated/graphql";
@@ -46,15 +47,45 @@ const SectionWrapper = (props: SectionWrapperProps) => (
   </Card>
 );
 
-const FORM_FIELDS = [
-  "firstName",
-  "lastName",
-  "gender",
-  "dateBirth",
-  "country",
-  "openToRecruiting",
-  "openToNewsletter",
-];
+const schema = yup.object().shape({
+  firstName: yup
+    .string()
+    .required()
+    .ensure(),
+  lastName: yup
+    .string()
+    .required()
+    .ensure(),
+  gender: yup
+    .string()
+    .required()
+    .ensure(),
+  dateBirth: yup.date(),
+  country: yup
+    .string()
+    .required()
+    .ensure(),
+  openToRecruiting: yup.boolean(),
+  openToNewsletter: yup.boolean(),
+});
+
+const toTileCase = (word: string) =>
+  word.charAt(0).toUpperCase() + word.slice(1);
+
+// TODO put this in a "utils" module...
+const getValidationFieldError = (
+  data: any,
+  field: string,
+  typename: string,
+) => {
+  const errorType = "validation" + toTileCase(field);
+  const validationError =
+    (data.__typename === typename &&
+      data[errorType] &&
+      data[errorType].join(", ")) ||
+    "";
+  return validationError;
+};
 
 export const EditProfileApp: React.SFC<
   RouteComponentProps<{ lang: string }>
@@ -67,7 +98,6 @@ export const EditProfileApp: React.SFC<
   );
 
   // region SETUP_OPTIONS
-
   const createOptions = (items: any[]) => [
     { label: "", value: "" },
     ...items.map(item => ({ label: item.name, value: item.id })),
@@ -87,14 +117,14 @@ export const EditProfileApp: React.SFC<
       id: "profile.gender.female",
     },
   });
-
   // endregion
 
   // region GET_USER_DATA
   const setProfile = (data: MyProfileQuery) => {
     const { me } = data;
-    FORM_FIELDS.forEach(field => formState.setField(field, me[field]));
-    formState.setField("dateBirth", me.dateBirth ? me.dateBirth : "");
+    Object.keys(formState.values).forEach(field =>
+      formState.setField(field, me[field]),
+    );
   };
   const { loading, error, data: profileData } = useQuery<MyProfileQuery>(
     MY_PROFILE_QUERY,
@@ -106,8 +136,18 @@ export const EditProfileApp: React.SFC<
   // endregion
 
   // region UPDATE_SEND_MUTATION
+
   const onUpdateComplete = (data: UpdateMutation) => {
     if (!data || data.update.__typename !== "MeUser") {
+      Object.keys(formState.values).forEach(field => {
+        const validationError = getValidationFieldError(
+          data.update,
+          field,
+          "UpdateError",
+        );
+        formState.setFieldError(field, validationError);
+      });
+
       return;
     }
     const profileUrl = `/${lang}/profile`;
@@ -124,36 +164,33 @@ export const EditProfileApp: React.SFC<
   const onFormSubmit = useCallback(
     e => {
       e.preventDefault();
-      console.log(
-        "onFormSubmit! formState.values: " + JSON.stringify(formState.values),
-      );
-      update({
-        variables: formState.values,
-      });
+
+      schema
+        .validate(formState.values, { abortEarly: false })
+        .then(value => {
+          formState.validity = {};
+          formState.errors = {};
+
+          console.log(
+            "VALID! formState.values: " + JSON.stringify(formState.values),
+          );
+          update({
+            variables: formState.values,
+          });
+        })
+        .catch(err => {
+          err.inner.forEach(item => {
+            formState.setFieldError(item.path, item.message);
+          });
+        });
     },
     [update, formState],
   );
 
-  // region GET_ERRORS
   const errorMessage =
     updateData && updateData.update.__typename === "UpdateErrors"
       ? updateData.update.nonFieldErrors.join(" ")
       : updateError;
-
-  const getFieldError = field =>
-    (updateData &&
-      updateData.update.__typename === "UpdateErrors" &&
-      updateData.update[field].join(", ")) ||
-    "";
-
-  const toTileCase = word => word.charAt(0).toUpperCase() + word.slice(1);
-
-  const errorsFields = {};
-  FORM_FIELDS.forEach(field => {
-    const validationField = "validation" + toTileCase(field);
-    errorsFields[field] = getFieldError(validationField);
-  });
-  // endregion
 
   // endregion
 
@@ -170,8 +207,10 @@ export const EditProfileApp: React.SFC<
 
           <SectionWrapper titleId="profile.edit.personalHeader">
             <FieldWrapper
-              validationText={errorsFields.firstaName}
-              state={errorsFields.firstName ? "danger" : ""}
+              validationText={formState.errors && formState.errors.firstName}
+              state={
+                formState.errors && formState.errors.firstName ? "danger" : ""
+              }
               isRequired={true}
               label={
                 <FormattedMessage id="profile.firstName">
@@ -190,8 +229,10 @@ export const EditProfileApp: React.SFC<
             </FieldWrapper>
 
             <FieldWrapper
-              validationText={errorsFields.lastName}
-              state={errorsFields.lastName ? "danger" : ""}
+              validationText={formState.errors && formState.errors.lastName}
+              state={
+                formState.errors && formState.errors.lastName ? "danger" : ""
+              }
               isRequired={true}
               label={
                 <FormattedMessage id="profile.lastName">
@@ -209,8 +250,10 @@ export const EditProfileApp: React.SFC<
             </FieldWrapper>
 
             <FieldWrapper
-              validationText={errorsFields.gender}
-              state={errorsFields.gender ? "danger" : ""}
+              validationText={formState.errors && formState.errors.gender}
+              state={
+                formState.errors && formState.errors.gender ? "danger" : ""
+              }
               isRequired={true}
               label={
                 <FormattedMessage id="profile.gender">
@@ -236,8 +279,10 @@ export const EditProfileApp: React.SFC<
             </FieldWrapper>
 
             <FieldWrapper
-              validationText={errorsFields.dateBirth}
-              state={errorsFields.dateBirth ? "danger" : ""}
+              validationText={formState.errors && formState.errors.dateBirth}
+              state={
+                formState.errors && formState.errors.dateBirth ? "danger" : ""
+              }
               isRequired={true}
               label={
                 <FormattedMessage id="profile.dateBirth">
@@ -245,12 +290,25 @@ export const EditProfileApp: React.SFC<
                 </FormattedMessage>
               }
             >
-              <Input {...raw("dateBirth")} type="date" a11yId="dateBirth" />
+              <Input
+                {...raw({
+                  name: "dateBirth",
+                  onChange: event => {
+                    const date = event.target.value;
+                    formState.setField("dateBirth", new Date(date));
+                    return date;
+                  },
+                })}
+                type="date"
+                a11yId="dateBirth"
+              />
             </FieldWrapper>
 
             <FieldWrapper
-              validationText={errorsFields.country}
-              state={errorsFields.country ? "danger" : ""}
+              validationText={formState.errors && formState.errors.country}
+              state={
+                formState.errors && formState.errors.country ? "danger" : ""
+              }
               isRequired={true}
               label={
                 <FormattedMessage id="profile.country">
@@ -269,8 +327,14 @@ export const EditProfileApp: React.SFC<
           <br />
           <SectionWrapper titleId="profile.edit.privacyHeader">
             <FieldWrapper
-              validationText={errorsFields.openToRecruiting}
-              state={errorsFields.openToRecruiting ? "danger" : ""}
+              validationText={
+                formState.errors && formState.errors.openToRecruiting
+              }
+              state={
+                formState.errors && formState.errors.openToRecruiting
+                  ? "danger"
+                  : ""
+              }
               label={<FormattedMessage id="profile.openToRecruiting" />}
             >
               <CheckboxField
@@ -283,8 +347,14 @@ export const EditProfileApp: React.SFC<
             </FieldWrapper>
 
             <FieldWrapper
-              validationText={errorsFields.openToNewsletter}
-              state={errorsFields.openToNewsletter ? "danger" : ""}
+              validationText={
+                formState.errors && formState.errors.openToNewsletter
+              }
+              state={
+                formState.errors && formState.errors.openToNewsletter
+                  ? "danger"
+                  : ""
+              }
               label={<FormattedMessage id="profile.openToNewsletter" />}
             >
               <CheckboxField
@@ -300,7 +370,7 @@ export const EditProfileApp: React.SFC<
             <Button
               size="medium"
               palette="primary"
-              isLoading={loading}
+              isLoading={loading || updateLoading}
               type="submit"
             >
               <FormattedMessage id="buttons.save" />
