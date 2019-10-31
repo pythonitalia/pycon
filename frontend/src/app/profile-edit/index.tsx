@@ -6,10 +6,10 @@ import {
   Card,
   CheckboxField,
   FieldWrapper,
-  InputField,
-  LayoutSet,
+  Input,
   RadioGroupField,
   SelectField,
+  FieldSet,
 } from "fannypack";
 import { graphql, useStaticQuery } from "gatsby";
 import { Column, Row } from "grigliata";
@@ -24,42 +24,26 @@ import { BUTTON_PADDING, COLUMN_WIDTH, ROW_PADDING } from "./constants";
 import MY_PROFILE_QUERY from "./profile-edit.graphql";
 import UPDATE_MUTATION from "./update.graphql";
 
-type InputWrapperProps = {
-  text: string;
-  isRequired: boolean;
+type SectionWrapperProps = {
+  titleId?: string;
+  children: React.ReactNode
 };
 
-const InputWrapper: React.FC = (props: InputWrapperProps) => (
-  <Row paddingBottom={ROW_PADDING}>
-    <Column
-      columnWidth={{
-        mobile: 12,
-        tabletPortrait: 12,
-        tabletLandscape: 12,
-        desktop: 12,
-      }}
-    >
-      <FieldWrapper
-        validationText={props.text}
-        state={props.text ? "danger" : ""}
-        isRequired={props.isRequired}
-      >
-        {props.children}
-      </FieldWrapper>
-    </Column>
-  </Row>
-);
-
-export const COUNTRIES_QUERY = graphql`
-    query countries {
-        backend {
-            countries {
-                code
-                name
-            }
+const SectionWrapper = (props: SectionWrapperProps) => {
+  return (
+    <Card>
+      <FieldSet>
+        {
+          props.titleId &&
+          <h3>
+            <FormattedMessage id={props.titleId}/>
+          </h3>
         }
-    }
-`;
+        {props.children}
+      </FieldSet>
+    </Card>
+  )
+};
 
 const FORM_FIELDS = [
   "firstName",
@@ -158,13 +142,6 @@ export const EditProfileApp: React.SFC<RouteComponentProps<{ lang: string }>> = 
 
   // endregion
 
-  useEffect(() => {
-    // Update the document title using the browser API
-    console.log(
-      "Effect: formState.values: " + JSON.stringify(formState.values),
-    );
-  });
-
   return (
     <>
       <h1>
@@ -174,128 +151,121 @@ export const EditProfileApp: React.SFC<RouteComponentProps<{ lang: string }>> = 
       {loading && "Loading..."}
       {!loading && (
         <Form onSubmit={onFormSubmit} method="post">
+
           {errorMessage && <Alert type="error">{errorMessage}</Alert>}
-          <Row paddingBottom={ROW_PADDING} paddingTop={BUTTON_PADDING}>
-            <Column columnWidth={COLUMN_WIDTH}>
-              <LayoutSet>
-                <Card>
-                  <h3>
-                    <FormattedMessage id="profile.edit.personalHeader"/>
-                  </h3>
 
-                  <InputWrapper text={errorsFields.firstName} isRequired={true}>
-                    <InputField
-                      inputProps={{
-                        id: "firstName",
-                        ...text("firstName"),
-                      }}
-                      a11yId="firstName"
-                      // fyi: <Label> doesn't have isRequired property, doesn't show
-                      // "*" to indicate that the field is required
-                      label={
-                        <FormattedMessage id="profile.firstName">
-                          {msg => <b>{msg}</b>}
-                        </FormattedMessage>
-                      }
-                      isRequired={true}
-                    />
-                  </InputWrapper>
+          <SectionWrapper titleId="profile.edit.personalHeader">
+            <FieldWrapper
+              validationText={errorsFields.firstaName}
+              state={errorsFields.firstName ? "danger" : ""}
+              isRequired={true}
 
-                  <InputWrapper text={errorsFields.lastName} isRequired={true}>
-                    <InputField
-                      inputProps={{
-                        id: "lastName",
-                        ...text("lastName"),
-                      }}
-                      a11yId="lastName"
-                      label={
-                        <FormattedMessage id="profile.lastName">
-                          {msg => <b>{msg}</b>}
-                        </FormattedMessage>
-                      }
-                    />
-                  </InputWrapper>
+              label={
+                <FormattedMessage id="profile.firstName">
+                  {msg => <b>{msg}</b>}
+                </FormattedMessage>
+              }
+            >
 
-                  <InputWrapper text={errorsFields.gender} isRequired={true}>
-                    <RadioGroupField
-                      {...radio("gender")}
-                      isHorizontal={true}
-                      a11yId="gender"
-                      label={
-                        <FormattedMessage id="profile.gender">
-                          {msg => <b>{msg}</b>}
-                        </FormattedMessage>
-                      }
-                      options={[
-                        { label: "Male", value: "male" },
-                        { label: "Female", value: "female" },
-                      ]}
-                    />
-                  </InputWrapper>
+              <Input
+                inputProps={{
+                  id: "firstName",
+                  ...text("firstName"),
+                }}
+                a11yId="firstName"
+                isRequired={true}
+              />
+            </FieldWrapper>
 
-                  <InputWrapper text={errorsFields.dateBirth} isRequired={true}>
-                    <InputField
-                      {...raw("dateBirth")}
-                      type="date"
-                      a11yId="dateBirth"
-                      label={
-                        <FormattedMessage id="profile.dateBirth">
-                          {msg => <b>{msg}</b>}
-                        </FormattedMessage>
-                      }
-                    />
-                  </InputWrapper>
+            <FieldWrapper validationText={errorsFields.lastName}
+                          state={errorsFields.lastName ? "danger" : ""} isRequired={true}
+                          label={
+                            <FormattedMessage id="profile.lastName">
+                              {msg => <b>{msg}</b>}
+                            </FormattedMessage>
+                          }>
+              <Input
+                inputProps={{
+                  id: "lastName",
+                  ...text("lastName"),
+                }}
+                a11yId="lastName"
+              />
+            </FieldWrapper>
 
-                  <InputWrapper text={errorsFields.country} isRequired={true}>
-                    <SelectField
-                      {...select("country")}
-                      a11yId="country"
-                      label={
-                        <FormattedMessage id="profile.country">
-                          {msg => <b>{msg}</b>}
-                        </FormattedMessage>
-                      }
-                      options={COUNTRIES_OPTIONS}
-                      isRequired={true}
-                    />
-                  </InputWrapper>
-                </Card>
-              </LayoutSet>
-            </Column>
-          </Row>
-          <Row paddingBottom={ROW_PADDING} paddingTop={BUTTON_PADDING}>
-            <Column columnWidth={COLUMN_WIDTH}>
-              <LayoutSet>
-                <Card>
-                  <h3>
-                    <FormattedMessage id="profile.edit.privacyHeader"/>
-                  </h3>
+            <FieldWrapper validationText={errorsFields.gender}
+                          state={errorsFields.gender ? "danger" : ""} isRequired={true}
+                          label={
+                            <FormattedMessage id="profile.gender">
+                              {msg => <b>{msg}</b>}
+                            </FormattedMessage>
+                          }>
+              <RadioGroupField
+                {...radio("gender")}
+                isHorizontal={true}
+                a11yId="gender"
+                options={[
+                  { label: "Male", value: "male" },
+                  { label: "Female", value: "female" },
+                ]}
+              />
+            </FieldWrapper>
 
-                  <InputWrapper text={errorsFields.openToRecruiting}>
-                    <CheckboxField
-                      checkboxProps={{
-                        id: "openToRecruiting",
-                        ...checkbox("openToRecruiting"),
-                      }}
-                      type="checkbox"
-                      label={<FormattedMessage id="profile.openToRecruiting"/>}
-                    />
-                  </InputWrapper>
+            <FieldWrapper validationText={errorsFields.dateBirth}
+                          state={errorsFields.dateBirth ? "danger" : ""} isRequired={true}
+                          label={
+                            <FormattedMessage id="profile.dateBirth">
+                              {msg => <b>{msg}</b>}
+                            </FormattedMessage>
+                          }>
+              <Input
+                {...raw("dateBirth")}
+                type="date"
+                a11yId="dateBirth"
+              />
+            </FieldWrapper>
 
-                  <InputWrapper text={errorsFields.openToNewsletter}>
+            <FieldWrapper validationText={errorsFields.country}
+                          state={errorsFields.country ? "danger" : ""} isRequired={true}
+                          label={
+                            <FormattedMessage id="profile.country">
+                              {msg => <b>{msg}</b>}
+                            </FormattedMessage>
+                          }>
+              <SelectField
+                {...select("country")}
+                a11yId="country"
+                options={COUNTRIES_OPTIONS}
+                isRequired={true}
+              />
+            </FieldWrapper>
+          </SectionWrapper>
+          <br/>
+          <SectionWrapper titleId="profile.edit.privacyHeader">
+            <FieldWrapper validationText={errorsFields.openToRecruiting}
+                          state={errorsFields.openToRecruiting ? "danger" : ""}
+                          label={<FormattedMessage id="profile.openToRecruiting"/>} >
+              <CheckboxField
+                checkboxProps={{
+                  id: "openToRecruiting",
+                  ...checkbox("openToRecruiting"),
+                }}
+                type="checkbox"
+              />
+            </FieldWrapper>
+
+            <FieldWrapper validationText={errorsFields.openToNewsletter}
+                                state={errorsFields.openToNewsletter ? "danger" : ""}
+                                label={<FormattedMessage id="profile.openToNewsletter"/>}>
                     <CheckboxField
                       checkboxProps={{
                         id: "openToNewsletter",
                         ...checkbox("openToNewsletter"),
                       }}
                       type="checkbox"
-                      label={<FormattedMessage id="profile.openToNewsletter"/>}
                     />
-                  </InputWrapper>
-                </Card>
-              </LayoutSet>
-            </Column>
-          </Row>
+                  </FieldWrapper>
+          </SectionWrapper>
           <Row paddingBottom={ROW_PADDING} paddingTop={BUTTON_PADDING}>
             <Button
               size="medium"
@@ -311,3 +281,15 @@ export const EditProfileApp: React.SFC<RouteComponentProps<{ lang: string }>> = 
     </>
   );
 };
+
+
+export const COUNTRIES_QUERY = graphql`
+    query countries {
+        backend {
+            countries {
+                code
+                name
+            }
+        }
+    }
+`;
