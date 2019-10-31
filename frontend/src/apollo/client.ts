@@ -3,12 +3,12 @@ import {
   IntrospectionFragmentMatcher,
 } from "apollo-cache-inmemory";
 import { ApolloClient } from "apollo-client";
+import { ApolloLink } from "apollo-link";
+import { onError } from "apollo-link-error";
 import { HttpLink } from "apollo-link-http";
 import fetch from "isomorphic-fetch";
 
 import introspectionQueryResultData from "../generated/fragment-types.json";
-import { onError } from "apollo-link-error";
-import { ApolloLink } from "apollo-link";
 const fragmentMatcher = new IntrospectionFragmentMatcher({
   introspectionQueryResultData,
 });
@@ -25,7 +25,7 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (networkError) {
     console.warn(`[Network error]: ${networkError}`);
   }
-  if (networkError && networkError.statusCode === 401){
+  if (networkError && networkError.statusCode === 401) {
     // TODO logout()
   }
 });
@@ -35,10 +35,7 @@ const httpLink = new HttpLink({
   fetch,
 });
 
-const link = ApolloLink.from([
-  errorLink,
-  httpLink,
-]);
+const link = ApolloLink.from([errorLink, httpLink]);
 
 const cache = new InMemoryCache({ fragmentMatcher });
 
