@@ -828,15 +828,16 @@ description = "A library for creating GraphQL APIs"
 name = "strawberry-graphql"
 optional = false
 python-versions = ">=3.7,<4.0"
-version = "0.16.5"
+version = "0.17.0"
 
 [package.dependencies]
+aniso8601 = ">=8.0.0,<9.0.0"
 click = ">=7.0,<8.0"
 graphql-core = ">=3.0.0a0,<4.0.0"
 hupper = ">=1.5,<2.0"
 pygments = ">=2.3,<3.0"
 starlette = "0.12.10"
-uvicorn = "0.9.0"
+uvicorn = "0.10.0"
 
 [[package]]
 category = "main"
@@ -908,13 +909,13 @@ description = "The lightning-fast ASGI server."
 name = "uvicorn"
 optional = false
 python-versions = "*"
-version = "0.9.0"
+version = "0.10.0"
 
 [package.dependencies]
 click = ">=7.0.0,<8.0.0"
 h11 = ">=0.8.0,<0.9.0"
 httptools = "0.0.13"
-uvloop = "<1.0.0"
+uvloop = "0.14.0rc2"
 websockets = ">=8.0.0,<9.0.0"
 
 [[package]]
@@ -924,7 +925,7 @@ marker = "sys_platform != \"win32\" and sys_platform != \"cygwin\" and platform_
 name = "uvloop"
 optional = false
 python-versions = "*"
-version = "0.13.0"
+version = "0.14.0rc2"
 
 [[package]]
 category = "main"
@@ -994,7 +995,7 @@ version = "0.6.0"
 more-itertools = "*"
 
 [metadata]
-content-hash = "ae086c9a89129e7f8af10b201f547f8ce26f3aec984e0a90051892bf424ad622"
+content-hash = "d300c7e456b533e3a432ca7aea2733cc1f16aff0dea5d8ed588e60e6fa720b7b"
 python-versions = "^3.7"
 
 [metadata.hashes]
@@ -1077,7 +1078,7 @@ social-auth-app-django = ["25295c94375d28062f65d0b3cd4b7e304c7e2fb7bac1ec51b4065
 social-auth-core = ["47cd2458c8fefd02466b0c514643e02ad8b61d8b4b69f7573e80882e3a97b0f0", "8320666548a532eb158968eda542bbe1863682357c432d8c4e28034a7f1e3b58", "d81ed681e3c0722300b61a0792c5db5d21206793f95ca810f010c1cc931c8d89"]
 sqlparse = ["40afe6b8d4b1117e7dff5504d7a8ce07d9a1b15aeeade8a2d10f130a834f8177", "7c3dca29c022744e95b547e867cee89f4fce4373f3549ccd8797d8eb52cdb873"]
 starlette = ["e41ef52e711a82ef95c195674e5d8d41c75c6b1d6f5a275637eedd4cc2150a7f"]
-strawberry-graphql = ["29137f9b4bc1ae66dce370b6f9ae89a23a9da1b17d71b4590ed341c62a79333d", "5dcc2d7302b082f6ca85f0d7a06b6f132cc888a51abc6cd4f8e746669f0d2a45"]
+strawberry-graphql = ["ca43d36a99658c4c538deed98be7c4b82d9f059b8e1ff9147b83df9548b3e97a", "fd8a0888ca3cd7e05174452e08b9ecd3a2da3bbd77e839034544e02fee76bf5b"]
 stripe = ["7ad8ee6d9bdca86d6ed38c4eb48b1b67b9529ac4fee6c26d3f9aa4d5e98b50d6", "c0cc29367e704e814622d9f3282734f5b87fed04bd64f6c48a738c9a0a26ab75"]
 text-unidecode = ["1311f10e8b895935241623731c2ba64f4c455287888b18189350b67134a822e8", "bad6603bb14d279193107714b288be206cac565dfa49aa5b105294dd5c4aab93"]
 toml = ["229f81c57791a41d65e399fc06bf0848bab550a9dfd5ed66df18ce5f05e73d5c", "235682dd292d5899d361a811df37e04a8828a5b1da3115886b73cf81ebc9100e", "f1db651f9657708513243e61e6cc67d101a39bad662eaa9b5546f789338e07a3"]
@@ -1085,8 +1086,8 @@ typed-ast = ["1170afa46a3799e18b4c977777ce137bb53c7485379d9706af8a59f2ea1aa161",
 typing = ["91dfe6f3f706ee8cc32d38edbbf304e9b7583fb37108fef38229617f8b3eba23", "c8cabb5ab8945cd2f54917be357d134db9cc1eb039e59d1606dc1e60cb1d9d36", "f38d83c5a7a7086543a0f649564d661859c5146a85775ab90c0d2f93ffaa9714"]
 typing-extensions = ["2ed632b30bb54fc3941c382decfd0ee4148f5c591651c9272473fea2c6397d95", "b1edbbf0652660e32ae780ac9433f4231e7339c7f9a8057d0f042fcbcea49b87", "d8179012ec2c620d3791ca6fe2bf7979d979acdbef1fca0bc56b37411db682ed"]
 urllib3 = ["3de946ffbed6e6746608990594d08faac602528ac7015ac28d33cee6a45b7398", "9a107b99a5393caf59c7aa3c1249c16e6879447533d0887f4336dde834c7be86"]
-uvicorn = ["639cdeb92cdb0205494ca36be03d08e05d57249491751feb5fc74b023a0d18f3"]
-uvloop = ["0deb6c97c5807c792dd9024bab90e6ca49e981862103cb2ea37b430c1ca0a267", "155b34d513655e753d07f499a7e811970e2d397f240dfcbec0b32a9587159c99", "1df3ddfa280206e9999ae1c777a20836eb895bcec6dc9fae2cbb6eecfafb099e", "5b19361c8767e1dc61f6367f948d4f3dc5504b9f2eba488641b3d26ec14498ba", "942cd07035510b149d6160796f4e972137130ae953871b6a98c2cf5d5ab68c2e", "c63b6c0bf33144c604dd72f7eecf2d3a3ac7405c503c67bd98128cf306efe18a", "e698a20a3b4ccb380d207f9d491d4085d7c38d364f6a0bae98684a1612a9607a"]
+uvicorn = ["ec3533a8d0aa9ebf941a4edd4735d91e10925e6825dd6e86d6163ac4e5b42835"]
+uvloop = ["117357af2b79d9183675adace1e1e1b3400be81fdd54cdc8feb6a54724f099ca", "2cffc419a627bc71285d9481c869228a84f56358e54b1f683bc1d4be19b66651", "426074b9f5ee5865fcf0818252c16e72446e97578349d8b58ae3a666dacd8e38", "61b898682e3dc3673216f1c6678013d8f758304013d897f56d8bdc1d4ffe04e3", "667463aa2a2f6ed0a51a631f204a1ae9c71c8e49e2d8d82b3b9bf32833a7de83", "7d557bf49991e3f2b70298b117fc09791eba0115af2198a5a385eab85c776130", "aa10c0246425d8e7f494c639473427a35831222af5a2b0cb59eab251715a0d09", "b5c5a51b09ef6e787faadb5bcbd88d117c5136a162c40629a0d98707ae05dc6b", "c0f69bc2e750b5370010c48c9825c6785487d60fa26025df6206f33b5027fc56"]
 uwsgi = ["4972ac538800fb2d421027f49b4a1869b66048839507ccf0aa2fda792d99f583"]
 vine = ["133ee6d7a9016f177ddeaf191c1f58421a1dcc6ee9a42c58b34bed40e1d2cd87", "ea4947cc56d1fd6f2095c8d543ee25dad966f78692528e68b4fada11ba3f98af"]
 wcwidth = ["3df37372226d6e63e1b1e1eda15c594bca98a22d33a23832a90998faa96bc65e", "f4ebe71925af7b40a864553f761ed559b43544f8f71746c2d756c7fe788ade7c"]
