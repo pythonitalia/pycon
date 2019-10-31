@@ -8,6 +8,8 @@ export default {
     "profile.email": "Email",
     "profile.firstName": "First Name",
     "profile.gender": "Gender",
+    "profile.gender.female": "Female",
+    "profile.gender.male": "Male",
     "profile.header": "My profile",
     "profile.lastName": "Last Name",
     "profile.openToNewsletter":
@@ -66,6 +68,8 @@ export default {
     "profile.email": "Email",
     "profile.firstName": "Nome",
     "profile.gender": "Sesso",
+    "profile.gender.female": "Femmina",
+    "profile.gender.male": "Maschio",
     "profile.header": "Il mio profilo",
     "profile.lastName": "Cognome",
     "profile.openToNewsletter":
