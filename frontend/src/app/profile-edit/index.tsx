@@ -81,7 +81,7 @@ export const EditProfileApp: React.SFC<RouteComponentProps<{ lang: string }>> = 
     },
   );
 
-  // region CONSTANTS_FROM_BE
+  // region SETUP_OPTIONS
   const createOptions = (items: any[]) => [
     { label: "", value: "" },
     ...items.map(item => ({ label: item.name, value: item.id })),
@@ -91,10 +91,9 @@ export const EditProfileApp: React.SFC<RouteComponentProps<{ lang: string }>> = 
     backend: { countries },
   } = useStaticQuery<CountriesQuery>(COUNTRIES_QUERY);
   const COUNTRIES_OPTIONS = createOptions(countries);
-
   // endregion
 
-  // region GET_USER_DATA_FROM_BACKEND
+  // region GET_USER_DATA
   const setProfile = (data: MyProfileQuery) => {
     const { me } = data;
     FORM_FIELDS.forEach(field => formState.setField(field, me[field]));
@@ -159,10 +158,6 @@ export const EditProfileApp: React.SFC<RouteComponentProps<{ lang: string }>> = 
 
   // endregion
 
-  const hangleUserChange = ({ target }) => {
-    formState.setField(target.id, target.value);
-  };
-
   useEffect(() => {
     // Update the document title using the browser API
     console.log(
@@ -202,7 +197,6 @@ export const EditProfileApp: React.SFC<RouteComponentProps<{ lang: string }>> = 
                           {msg => <b>{msg}</b>}
                         </FormattedMessage>
                       }
-                      onChange={hangleUserChange}
                       isRequired={true}
                     />
                   </InputWrapper>
@@ -219,21 +213,12 @@ export const EditProfileApp: React.SFC<RouteComponentProps<{ lang: string }>> = 
                           {msg => <b>{msg}</b>}
                         </FormattedMessage>
                       }
-                      onChange={hangleUserChange}
                     />
                   </InputWrapper>
 
                   <InputWrapper text={errorsFields.gender} isRequired={true}>
                     <RadioGroupField
-                      {...radio("gender",
-                        {
-                          name:"gender",
-                          onChange: event => {
-                            const gender = event.target.value;
-                            formState.setField("gender", gender);
-                            return gender;
-                          },
-                        })}
+                      {...radio("gender")}
                       isHorizontal={true}
                       a11yId="gender"
                       label={
@@ -250,14 +235,7 @@ export const EditProfileApp: React.SFC<RouteComponentProps<{ lang: string }>> = 
 
                   <InputWrapper text={errorsFields.dateBirth} isRequired={true}>
                     <InputField
-                      {...raw({
-                        name: "dateBirth",
-                        onChange: event => {
-                          const date = event.target.value;
-                          formState.setField("dateBirth", new Date(date));
-                          return date;
-                        },
-                      })}
+                      {...raw("dateBirth")}
                       type="date"
                       a11yId="dateBirth"
                       label={
@@ -270,14 +248,7 @@ export const EditProfileApp: React.SFC<RouteComponentProps<{ lang: string }>> = 
 
                   <InputWrapper text={errorsFields.country} isRequired={true}>
                     <SelectField
-                      {...select("country", {
-                        name: "country",
-                        onChange: event => {
-                          const country = event.target.value;
-                          formState.setField("country", country)
-                          return country;
-                        }},
-                        )}
+                      {...select("country")}
                       a11yId="country"
                       label={
                         <FormattedMessage id="profile.country">
