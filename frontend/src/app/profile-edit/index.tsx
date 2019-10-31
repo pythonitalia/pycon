@@ -8,11 +8,11 @@ import {
   FieldSet,
   FieldWrapper,
   Input,
-  RadioGroupField,
+  Radio,
   SelectField,
 } from "fannypack";
 import { graphql, useStaticQuery } from "gatsby";
-import { Row } from "grigliata";
+import { Column, Row } from "grigliata";
 import React, { useCallback } from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import { useFormState } from "react-use-form-state";
@@ -25,7 +25,7 @@ import {
   UpdateMutation,
   UpdateMutationVariables,
 } from "../../generated/graphql-backend";
-import { BUTTON_PADDING, ROW_PADDING } from "./constants";
+import { BUTTON_PADDING, GENDER_COLUMN, ROW_PADDING } from "./constants";
 import MY_PROFILE_QUERY from "./profile-edit.graphql";
 import UPDATE_MUTATION from "./update.graphql";
 
@@ -122,9 +122,10 @@ export const EditProfileApp: React.SFC<
   // region GET_USER_DATA
   const setProfile = (data: MyProfileQuery) => {
     const { me } = data;
-    Object.keys(formState.values).forEach(field =>
-      formState.setField(field, me[field]),
-    );
+    Object.keys(formState.values).forEach(field => {
+      console.log(field, me[field]);
+      formState.setField(field, me[field]);
+    });
   };
   const { loading, error, data: profileData } = useQuery<MyProfileQuery>(
     MY_PROFILE_QUERY,
@@ -261,21 +262,24 @@ export const EditProfileApp: React.SFC<
                 </FormattedMessage>
               }
             >
-              <RadioGroupField
-                {...radio("gender", { name: "gender" })}
-                isHorizontal={true}
-                a11yId="gender"
-                options={[
-                  {
-                    label: intl.formatMessage(genderMessages.male),
-                    value: "male",
-                  },
-                  {
-                    label: intl.formatMessage(genderMessages.female),
-                    value: "female",
-                  },
-                ]}
-              />
+              <>
+                <Row>
+                  <Column columnWidth={GENDER_COLUMN}>
+                    <Radio
+                      {...radio("gender", "male")}
+                      name="gender"
+                      label={intl.formatMessage(genderMessages.male)}
+                    />
+                  </Column>
+                  <Column columnWidth={GENDER_COLUMN}>
+                    <Radio
+                      {...radio("gender", "female")}
+                      name="gender"
+                      label={intl.formatMessage(genderMessages.female)}
+                    />
+                  </Column>
+                </Row>
+              </>
             </FieldWrapper>
 
             <FieldWrapper

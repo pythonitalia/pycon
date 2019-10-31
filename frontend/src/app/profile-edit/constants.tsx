@@ -11,3 +11,10 @@ export const BUTTON_PADDING = {
   tabletLandscape: 1,
   desktop: 2,
 };
+
+export const GENDER_COLUMN = {
+  mobile: 12,
+  tabletPortrait: 4,
+  tabletLandscape: 3,
+  desktop: 3,
+};
