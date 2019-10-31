@@ -67,11 +67,23 @@ const createOptions = (items: any[]) => [
   })),
 ];
 
-const titleCase = str =>
-  str
-    .split(" ")
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
+const toTileCase = (word: string) =>
+  word.charAt(0).toUpperCase() + word.slice(1);
+
+// TODO put this in a "utils" module...
+const getValidationFieldError = (
+  data: any,
+  field: string,
+  typename: string,
+) => {
+  const errorType = "validation" + toTileCase(field);
+  const validationError =
+    (data.__typename === typename &&
+      data[errorType] &&
+      data[errorType].join(", ")) ||
+    "";
+  return validationError;
+};
 
 export const CfpForm: React.SFC<RouteComponentProps> = () => {
   const [formState, { label, select, text, textarea }] = useFormState(
@@ -100,26 +112,22 @@ export const CfpForm: React.SFC<RouteComponentProps> = () => {
   const SUBMISSION_TYPE_OPTIONS = createOptions(submissionTypes);
 
   // region ON_SUBMIT
-  const setFieldsErrors = sendSubmissionData => {
-    Object.keys(formState.values).forEach(field => {
-      const errorType = "validation" + titleCase(field);
-      const errorFieldMessage =
-        (sendSubmissionData.sendSubmission.__typename ===
-          "SendSubmissionErrors" &&
-          sendSubmissionData.sendSubmission[errorType] &&
-          sendSubmissionData.sendSubmission[errorType].join(", ")) ||
-        "";
 
-      formState.setFieldError(field, errorFieldMessage);
-    });
-  };
-
-  const onSendSubmissionComplete = (submissionData: SendSubmissionMutation) => {
+  const onSendSubmissionComplete = (
+    sendSubmissionData: SendSubmissionMutation,
+  ) => {
     if (
-      !submissionData ||
-      submissionData.sendSubmission.__typename !== "Submission"
+      !sendSubmissionData ||
+      sendSubmissionData.sendSubmission.__typename !== "Submission"
     ) {
-      setFieldsErrors(submissionData);
+      Object.keys(formState.values).forEach(field => {
+        const errorField = getValidationFieldError(
+          sendSubmissionData.sendSubmission,
+          field,
+          "SendSubmissionErrors",
+        );
+        formState.setFieldError(field, errorField);
+      });
       return;
     }
   };
@@ -359,6 +367,7 @@ export const CfpForm: React.SFC<RouteComponentProps> = () => {
                   size="medium"
                   palette="primary"
                   type="submit"
+                  isLoading={loading}
                   disabled={successSendMutation}
                 >
                   <FormattedMessage id="cfp.form.sendSubmission" />

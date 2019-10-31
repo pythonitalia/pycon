@@ -1,8 +1,9 @@
-import * as React from "react";
 import { useQuery } from "@apollo/react-hooks";
+import * as React from "react";
+
 import { CfpDeadlinesQuery } from "../../generated/graphql-backend";
-import DEADLINES_QUERY from "./deadlines.graphql";
 import { CfpAlert } from "./alert";
+import DEADLINES_QUERY from "./deadlines.graphql";
 
 type CfpOpenCheckProps = {
   children: React.ReactNode;
@@ -15,7 +16,7 @@ export const CfpOpenCheck = (props: CfpOpenCheckProps) => {
 
   const getMessage = () => {
     const cfpDeadline = data.conference.deadlines.find(
-      deadline => deadline.type == "cfp",
+      deadline => deadline.type === "cfp",
     );
 
     if (!cfpDeadline) {
@@ -30,14 +31,14 @@ export const CfpOpenCheck = (props: CfpOpenCheckProps) => {
 
     if (now < startDate) {
       messageId = "cfp.from.messages.cfpTooEarly";
-      when = startDate.toDateString();
+      when = startDate;
     }
     if (now > endDate) {
       messageId = "cfp.form.messages.cfpTooLate";
-      when = endDate.toDateString();
+      when = endDate;
     }
 
-    return <CfpAlert messageId={messageId} when={when}></CfpAlert>;
+    return <CfpAlert messageId={messageId} when={when} />;
   };
 
   return (

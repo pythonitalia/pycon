@@ -1,17 +1,28 @@
 import { Alert } from "fannypack";
 import * as React from "react";
-import { FormattedMessage } from "react-intl";
+import { FormattedDate, FormattedMessage } from "react-intl";
 
 type CfpAlertProps = {
   messageId?: string;
-  when?: string;
+  when?: Date;
 };
 
 export const CfpAlert = (props: CfpAlertProps) => (
   <Alert type="danger">
-    <FormattedMessage id={props.messageId}>
-      {message => message + props.when}
-    </FormattedMessage>
+    {props.when && (
+      <>
+        <FormattedMessage id={props.messageId} />
+        <FormattedDate
+          value={props.when}
+          year="numeric"
+          month="long"
+          day="2-digit"
+        />
+      </>
+    )}
+    {!props.when && (
+      <FormattedMessage id="cfp.form.messages.cfpClosedGeneric" />
+    )}
   </Alert>
 );
 CfpAlert.defaultProps = {
