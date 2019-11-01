@@ -28,7 +28,7 @@ export default {
     "cfp.form.duration": "Duration",
     "cfp.form.audienceLevel": "Audience Level",
     "cfp.form.sendSubmission": "Submit 👉",
-    "cfp.form.messages.sendSubmissionSucces":
+    "cfp.form.messages.sendSubmissionSuccess":
       "Proposal sent successfully! Thank you 😊!",
 
     // in case we don't specified a date, the message is a bit different

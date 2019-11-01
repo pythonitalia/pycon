@@ -32,7 +32,7 @@ const schema = yup.object().shape({
     .string()
     .required()
     .ensure(),
-  elevatorPitch: yup.string(),
+  elevatorPitch: yup.string().max(300),
   abstract: yup
     .string()
     .required()
