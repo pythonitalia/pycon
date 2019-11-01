@@ -424,3 +424,22 @@ def test_query_ticket_fare_questions(
             "choices": [{"choice": c.name} for c in question2.question.choices.all()],
         }
     } in response["data"]["conference"]["ticketFares"][0]["questions"]
+
+
+@mark.django_db
+def test_get_conference_is_cfp_open(graphql_client, conference_factory):
+
+    conference = conference_factory(active_cfp=True)
+
+    resp = graphql_client.query(
+        """
+        query($code: String!) {
+            conference(code: $code) {
+                isCfpOpen
+            }
+        }
+        """,
+        variables={"code": conference.code},
+    )
+
+    assert resp["data"]["conference"]["isCfpOpen"] is True
