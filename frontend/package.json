@@ -62,7 +62,7 @@
     "react-intl": "^3.4.0",
     "react-responsive": "^8.0.1",
     "react-use-form-state": "^0.11.0",
-    "sharp": "^0.23.1",
+    "sharp": "^0.23.2",
     "styled-components": "^4.4.0",
     "timed-out": "5",
     "typescript": "^3.6.4",
