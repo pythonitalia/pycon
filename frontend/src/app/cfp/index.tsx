@@ -106,16 +106,32 @@ export const CfpForm: React.SFC<RouteComponentProps> = () => {
     },
   } = useStaticQuery(query);
 
-  const submissionTypes = [].concat(
-    ...durations.map(duration => duration.allowedSubmissionTypes || []),
-  );
+  const getAllowedSubmissionTypesOptions = (
+    durationsList,
+    durationSelected?: string,
+  ) => {
+    console.log(durations, durationSelected);
+    let durationsSelcted = durationsList;
+    if (durationSelected) {
+      durationsSelcted = durationsList.filter(
+        item => item.id === durationSelected,
+      );
+    }
+
+    const submissionTypes = [].concat(
+      ...durationsSelcted.map(
+        duration => duration.allowedSubmissionTypes || [],
+      ),
+    );
+    const uniqueSubmissionTypes = getUniqueObjects(submissionTypes);
+    console.log(uniqueSubmissionTypes);
+    return createOptions(uniqueSubmissionTypes);
+  };
+
   const TOPIC_OPTIONS = createOptions(topics);
   const DURATION_OPTIONS = createOptions(durations);
   const LANGUAGE_OPTIONS = createOptions(languages);
   const AUDIENCE_LEVEL_OPTIONS = createOptions(audienceLevels);
-  const SUBMISSION_TYPE_OPTIONS = createOptions(
-    getUniqueObjects(submissionTypes),
-  );
   // region ON_SUBMIT
 
   const onSendSubmissionComplete = (
@@ -303,26 +319,6 @@ export const CfpForm: React.SFC<RouteComponentProps> = () => {
 
               <FieldWrapper
                 label={
-                  <Label {...label("type")}>
-                    <FormattedMessage id="cfp.form.type" />
-                  </Label>
-                }
-                isRequired={true}
-                validationText={formState.errors && formState.errors.type}
-                state={
-                  formState.errors && formState.errors.type ? "danger" : ""
-                }
-              >
-                <Select
-                  {...select("type")}
-                  options={SUBMISSION_TYPE_OPTIONS}
-                  isRequired={true}
-                  disabled={successSendMutation}
-                />
-              </FieldWrapper>
-
-              <FieldWrapper
-                label={
                   <Label {...label("duration")}>
                     <FormattedMessage id="cfp.form.duration" />
                   </Label>
@@ -338,6 +334,29 @@ export const CfpForm: React.SFC<RouteComponentProps> = () => {
                 <Select
                   {...select("duration")}
                   options={DURATION_OPTIONS}
+                  isRequired={true}
+                  disabled={successSendMutation}
+                />
+              </FieldWrapper>
+
+              <FieldWrapper
+                label={
+                  <Label {...label("type")}>
+                    <FormattedMessage id="cfp.form.type" />
+                  </Label>
+                }
+                isRequired={true}
+                validationText={formState.errors && formState.errors.type}
+                state={
+                  formState.errors && formState.errors.type ? "danger" : ""
+                }
+              >
+                <Select
+                  {...select("type")}
+                  options={getAllowedSubmissionTypesOptions(
+                    durations,
+                    formState.values.duration,
+                  )}
                   isRequired={true}
                   disabled={successSendMutation}
                 />
@@ -411,7 +430,6 @@ const query = graphql`
           id
           name
           allowedSubmissionTypes {
-            id
             name
           }
         }
