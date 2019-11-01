@@ -85,6 +85,12 @@ const getValidationFieldError = (
   return validationError;
 };
 
+const getUniqueObjects = data => {
+  const uniqueItems = {};
+  data.forEach(item => (uniqueItems[item.id] = item));
+  return Object.values(uniqueItems);
+};
+
 export const CfpForm: React.SFC<RouteComponentProps> = () => {
   const [formState, { label, select, text, textarea }] = useFormState(
     {},
@@ -96,21 +102,20 @@ export const CfpForm: React.SFC<RouteComponentProps> = () => {
   const {
     heroImage,
     backend: {
-      conference: {
-        topics,
-        durations,
-        audienceLevels,
-        languages,
-        submissionTypes,
-      },
+      conference: { topics, durations, audienceLevels, languages },
     },
   } = useStaticQuery(query);
+
+  const submissionTypes = [].concat(
+    ...durations.map(duration => duration.allowedSubmissionTypes || []),
+  );
   const TOPIC_OPTIONS = createOptions(topics);
   const DURATION_OPTIONS = createOptions(durations);
   const LANGUAGE_OPTIONS = createOptions(languages);
   const AUDIENCE_LEVEL_OPTIONS = createOptions(audienceLevels);
-  const SUBMISSION_TYPE_OPTIONS = createOptions(submissionTypes);
-
+  const SUBMISSION_TYPE_OPTIONS = createOptions(
+    getUniqueObjects(submissionTypes),
+  );
   // region ON_SUBMIT
 
   const onSendSubmissionComplete = (
@@ -405,15 +410,16 @@ const query = graphql`
         durations {
           id
           name
+          allowedSubmissionTypes {
+            id
+            name
+          }
         }
         audienceLevels {
           name
         }
         languages {
           code
-          name
-        }
-        submissionTypes {
           name
         }
       }

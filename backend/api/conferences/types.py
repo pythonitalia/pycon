@@ -80,10 +80,6 @@ class Conference:
         return self.audience_levels.all()
 
     @strawberry.field
-    def submission_types(self, info) -> List[SubmissionType]:
-        return self.submission_types.all()
-
-    @strawberry.field
     def topics(self, info) -> List[Topic]:
         return self.topics.all()
 
