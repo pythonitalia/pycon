@@ -29,53 +29,9 @@ export default ({
   } = data;
 
   return (
-    <MainLayout language={pageContext.language}>
-      <Container>
-        <Hero
-          title={conference.name}
-          subtitle={conference.introduction}
-          backgroundImage={heroImage!.childImageSharp!}
-        />
-      </Container>
-
+    <>
       <Marquee message="Hello world" />
-
-      <HomeMaxWidthWrapper>
-        {conference.deadlines.length > 0 && (
-          <Deadlines
-            introduction={conference.deadlinesIntro!}
-            deadlines={conference.deadlines}
-          />
-        )}
-
-        <TwoColumnsText
-          left={{
-            title: conference.introTitle!,
-            text: conference.introText!,
-          }}
-          right={{
-            title: conference.introTitle2!,
-            text: conference.introText2!,
-          }}
-        />
-
-        <section>
-          <SponsorList sponsors={conference.sponsorsByLevel!} />
-        </section>
-
-        {conference.events.length > 0 && (
-          <section>
-            <Events text={conference.eventsIntro!} events={conference.events} />
-          </section>
-        )}
-
-        {conference.faqs.length > 0 && (
-          <section>
-            <Faqs faqs={conference.faqs} />
-          </section>
-        )}
-      </HomeMaxWidthWrapper>
-    </MainLayout>
+    </>
   );
 };
 
