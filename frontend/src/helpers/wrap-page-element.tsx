@@ -6,6 +6,8 @@ import { IntlProvider } from "react-intl";
 import { Styled } from "theme-ui";
 
 import { client } from "../apollo/client";
+import { ErrorBoundary } from "../components/error-boundary";
+import { LanguageContext } from "../context/language";
 import messages from "../locale";
 
 type Props = {
@@ -33,12 +35,16 @@ export const wrapPageElement = ({ element, props }: Props) => (
     </Helmet>
 
     <Styled.root>
-      <IntlProvider
-        locale={props.pageContext.language}
-        messages={messages[props.pageContext.language]}
-      >
-        <ApolloProvider client={client}>{element}</ApolloProvider>
-      </IntlProvider>
+      <LanguageContext.Provider value={props.pageContext.language}>
+        <IntlProvider
+          locale={props.pageContext.language}
+          messages={messages[props.pageContext.language]}
+        >
+          <ApolloProvider client={client}>
+            <ErrorBoundary>{element}</ErrorBoundary>
+          </ApolloProvider>
+        </IntlProvider>
+      </LanguageContext.Provider>
     </Styled.root>
   </>
 );
