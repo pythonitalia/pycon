@@ -6,6 +6,7 @@ import { Deadlines } from "../components/deadlines";
 import { Hero } from "../components/hero";
 import { Events } from "../components/home-events";
 import { Faqs } from "../components/home-faq";
+import { Marquee } from "../components/marquee";
 import {
   HomeMaxWidthWrapper,
   MaxWidthWrapper,
@@ -36,6 +37,8 @@ export default ({
           backgroundImage={heroImage!.childImageSharp!}
         />
       </Container>
+
+      <Marquee message="Hello world" />
 
       <HomeMaxWidthWrapper>
         {conference.deadlines.length > 0 && (
