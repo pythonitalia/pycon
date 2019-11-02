@@ -6,6 +6,7 @@ import { jsx } from "theme-ui";
 
 import { NavBarQuery } from "../../generated/graphql";
 import { useToggle } from "../../helpers/use-toggle";
+import SnakesColumns from "../snakes-columns";
 
 export const Topbar = () => {
   const [isMenuOpen, toggleMenu] = useToggle(false);
@@ -66,10 +67,28 @@ export const Topbar = () => {
           src={logo!.publicURL!}
         />
 
-        <Box>
+        <Flex
+          sx={{
+            alignItems: ["center", "flex-start"],
+          }}
+        >
           <Button>Login</Button>
-          <Button>Menu</Button>
-        </Box>
+          <Button
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+
+              px: ["5px", "13px"],
+              py: ["5px", "7px"],
+            }}
+            variant="white"
+          >
+            <SnakesColumns />
+            Menu
+          </Button>
+        </Flex>
       </Flex>
     </Box>
   );

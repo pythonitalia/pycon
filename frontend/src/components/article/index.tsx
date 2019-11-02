@@ -4,7 +4,6 @@ import React from "react";
 import styled from "styled-components";
 
 import { STANDARD_ROW_PADDING } from "../../config/spacing";
-import { Hero } from "../hero";
 import { ArticleTitle } from "./title";
 
 const Wrapper = styled.div`
@@ -48,9 +47,6 @@ type ArticleProps = {
 
 export const Article: React.SFC<ArticleProps> = props => (
   <Wrapper>
-    <Hero title={props.title} backgroundImage={props.hero}>
-      {props.description && <p> {props.description} </p>}
-    </Hero>
     <Row
       marginTop={{
         mobile: 2,
