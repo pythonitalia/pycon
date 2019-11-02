@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { Box, Grid, Heading, Text } from "@theme-ui/components";
+import { Box, Flex, Grid, Heading, Text } from "@theme-ui/components";
 import { graphql } from "gatsby";
 import { Fragment } from "react";
 import { jsx } from "theme-ui";
@@ -118,6 +118,63 @@ export default ({
           </Grid>
         </Fragment>
       )}
+
+      <Box
+        sx={{
+          borderBottom: "primary",
+          borderTop: "primary",
+        }}
+      >
+        <Grid
+          sx={{
+            py: 5,
+            px: 2,
+
+            gridTemplateColumns: [null, null, "8fr 2fr 10fr"],
+
+            maxWidth: "container",
+            mx: "auto",
+          }}
+        >
+          <Flex
+            sx={{
+              flexDirection: "column",
+              justifyContent: "center",
+            }}
+          >
+            <Heading as="h1">Getting there</Heading>
+            <Text
+              sx={{
+                mt: 4,
+              }}
+              as="p"
+            >
+              Donec rutrum congue leo eget malesuada. Lorem ipsum dolor sit
+              amet. Donec rutrum congue leo eget malesuada. Lorem ipsum dolor
+              sit amet, consectetur adipiscing elit. Vivamus magna justo,
+              lacinia eget consectetur sed, convallis at tellus.
+            </Text>
+          </Flex>
+
+          <Box
+            sx={{
+              width: "100%",
+              height: 420,
+
+              mt: [3, 3, 0],
+
+              gridColumnStart: [null, null, 3],
+
+              border: "3px solid #000",
+
+              backgroundImage: `url("${conference.map!.image}")`,
+              backgroundSize: "cover",
+              backgroundRepeat: "no-repeat",
+              backgroundPosition: "center",
+            }}
+          />
+        </Grid>
+      </Box>
     </Fragment>
   );
 };
@@ -138,6 +195,11 @@ export const query = graphql`
 
         eventsIntro: copy(key: "events-intro", language: $language)
         deadlinesIntro: copy(key: "deadlines-intro", language: $language)
+
+        map {
+          image(width: 1280, height: 400, zoom: 15)
+          link
+        }
 
         deadlines {
           name(language: $language)
