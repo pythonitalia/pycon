@@ -35,10 +35,10 @@ export const Header = () => {
     <Box
       sx={{
         position: "absolute",
-        top: ["30px", "60px"],
-        left: "0px",
+        top: [3, 4, 5],
+        left: 0,
 
-        px: "8px",
+        px: 2,
 
         width: "100%",
 
@@ -51,12 +51,13 @@ export const Header = () => {
           mx: "auto",
 
           justifyContent: "space-between",
-          alignItems: "center",
+          alignItems: ["center", "flex-start"],
         }}
       >
         <Logo
           sx={{
-            width: ["150px", "300px"],
+            width: ["37vw", "33vw", "25vw", "15vw"],
+            height: "auto",
           }}
         />
 
@@ -73,8 +74,8 @@ export const Header = () => {
               alignItems: "center",
               justifyContent: "center",
 
-              px: ["5px", "13px"],
-              py: ["5px", "7px"],
+              px: [1, 3],
+              py: [1, 2],
             }}
             variant="white"
           >
