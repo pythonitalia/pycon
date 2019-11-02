@@ -161,6 +161,6 @@ export default {
     },
   },
   zIndices: {
-    navbar: "10",
+    header: "10",
   },
 };
