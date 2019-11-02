@@ -3,7 +3,6 @@
 import { Box, Flex, Grid, Heading, Text } from "@theme-ui/components";
 import { graphql, useStaticQuery } from "gatsby";
 import Img from "gatsby-image";
-import { Fragment } from "react";
 import { jsx } from "theme-ui";
 
 type SpeakerProps = {
