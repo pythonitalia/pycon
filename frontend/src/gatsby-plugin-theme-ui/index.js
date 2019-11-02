@@ -40,7 +40,7 @@ export default {
       fontFamily: "body",
       fontWeight: "heading",
 
-      mx: [3, 4],
+      mx: [1, 2, 3, 4],
 
       color: "#000",
       borderWidth: ["3px", "4px"],
