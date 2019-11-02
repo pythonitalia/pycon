@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 import { Footer } from "../components/footer";
-import { Topbar } from "../components/topbar";
+import { Header } from "../components/header";
 import { LanguageContext } from "../context/language";
 
 const Wrapper = styled.div`
@@ -15,7 +15,7 @@ export const MainLayout = (props: {
 }) => (
   <LanguageContext.Provider value={props.language}>
     <Wrapper>
-      <Topbar />
+      <Header />
 
       <Footer />
     </Wrapper>

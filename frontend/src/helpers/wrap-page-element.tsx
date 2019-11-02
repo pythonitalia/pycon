@@ -7,7 +7,7 @@ import { Styled } from "theme-ui";
 
 import { client } from "../apollo/client";
 import { ErrorBoundary } from "../components/error-boundary";
-import { Topbar } from "../components/topbar";
+import { Header } from "../components/header";
 import { LanguageContext } from "../context/language";
 import messages from "../locale";
 
@@ -43,7 +43,7 @@ export const wrapPageElement = ({ element, props }: Props) => (
         >
           <ApolloProvider client={client}>
             <ErrorBoundary>
-              <Topbar />
+              <Header />
               {element}
             </ErrorBoundary>
           </ApolloProvider>
