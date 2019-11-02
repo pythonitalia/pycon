@@ -1,20 +1,9 @@
+import { Box, Grid, Heading, Text } from "@theme-ui/components";
 import { graphql } from "gatsby";
-import { Container } from "grigliata";
-import * as React from "react";
+import React from "react";
 
-import { Deadlines } from "../components/deadlines";
-import { Hero } from "../components/hero";
-import { Events } from "../components/home-events";
-import { Faqs } from "../components/home-faq";
 import { Marquee } from "../components/marquee";
-import {
-  HomeMaxWidthWrapper,
-  MaxWidthWrapper,
-} from "../components/max-width-wrapper";
-import { SponsorList } from "../components/sponsor-list";
-import { TwoColumnsText } from "../components/two-columns-text";
 import { HomePageQuery } from "../generated/graphql";
-import { MainLayout } from "../layouts/main";
 
 export default ({
   data,
@@ -24,35 +13,42 @@ export default ({
   pageContext: { language: string };
 }) => {
   const {
-    heroImage,
     backend: { conference },
   } = data;
 
   return (
     <>
       <Marquee message="Hello world" />
+
+      <Grid
+        sx={{
+          py: 5,
+          px: 2,
+          maxWidth: "container",
+          mx: "auto",
+          gridTemplateColumns: [null, "8fr 12fr"],
+        }}
+      >
+        <Heading as="h1" variant="caps">
+          {conference.name}
+        </Heading>
+
+        <Box>
+          <Heading as="h2" sx={{ color: "purple", fontSize: 3, mb: 3 }}>
+            {conference.introTitle}
+          </Heading>
+
+          <Text as="p">{conference.introText}</Text>
+        </Box>
+      </Grid>
+
+      <Box sx={{ borderBottom: "primary" }} />
     </>
   );
 };
 
 export const query = graphql`
   query HomePage($language: String!) {
-    heroImage: file(relativePath: { eq: "images/hero.jpg" }) {
-      childImageSharp {
-        fluid(maxWidth: 1600) {
-          ...GatsbyImageSharpFluid
-        }
-      }
-    }
-
-    logoImage: file(relativePath: { eq: "images/python-logo.png" }) {
-      childImageSharp {
-        fluid(maxWidth: 1200) {
-          ...GatsbyImageSharpFluid
-        }
-      }
-    }
-
     backend {
       conference {
         name(language: $language)
@@ -60,8 +56,6 @@ export const query = graphql`
 
         introTitle: copy(key: "intro-title-1", language: $language)
         introText: copy(key: "intro-text-1", language: $language)
-        introTitle2: copy(key: "intro-title-2", language: $language)
-        introText2: copy(key: "intro-text-2", language: $language)
         eventsIntro: copy(key: "events-intro", language: $language)
         deadlinesIntro: copy(key: "deadlines-intro", language: $language)
 
