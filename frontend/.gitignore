@@ -7,6 +7,7 @@ yarn-error.log*
 
 src/**/*.jsx
 src/**/*.js
+!src/gatsby-plugin-theme-ui/*
 
 # Runtime data
 pids
