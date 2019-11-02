@@ -17,6 +17,7 @@ module.exports = {
     },
     plugins: [
         `gatsby-plugin-netlify`,
+        'gatsby-plugin-theme-ui',
         {
             resolve: "gatsby-source-pycon",
             options: {
