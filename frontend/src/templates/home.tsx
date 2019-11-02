@@ -1,7 +1,10 @@
+/** @jsx jsx */
 import { Box, Grid, Heading, Text } from "@theme-ui/components";
 import { graphql } from "gatsby";
-import React from "react";
+import { Fragment } from "react";
+import { jsx } from "theme-ui";
 
+import { EventCard } from "../components/home-events/event-card";
 import { HomepageHero } from "../components/homepage-hero";
 import { KeynotersSection } from "../components/keynoters-section";
 import { Marquee } from "../components/marquee";
@@ -19,7 +22,7 @@ export default ({
   } = data;
 
   return (
-    <>
+    <Fragment>
       <HomepageHero />
 
       <Marquee message="Hello world" />
@@ -76,7 +79,46 @@ export default ({
           <Text as="p">{conference.proposalsText}</Text>
         </Box>
       </Grid>
-    </>
+
+      {conference.events.length > 0 && (
+        <Fragment>
+          <Box sx={{ borderBottom: "primary", borderTop: "primary" }}>
+            <Box sx={{ py: 4 }}>
+              <Heading
+                as="h1"
+                sx={{
+                  px: 2,
+                  maxWidth: "container",
+                  mx: "auto",
+                }}
+              >
+                Conference Highlights
+              </Heading>
+            </Box>
+          </Box>
+
+          <Grid
+            columns={4}
+            gap={"3px"}
+            sx={{ px: "3px", borderBottom: "primary", background: "black" }}
+          >
+            {conference.events.map((event, index) => (
+              <EventCard event={event} key={index} />
+            ))}
+
+            {conference.events.length < 4 && (
+              <Box
+                sx={{
+                  gridColumnStart: conference.events.length + 1,
+                  gridColumnEnd: 5,
+                  background: "white",
+                }}
+              />
+            )}
+          </Grid>
+        </Fragment>
+      )}
+    </Fragment>
   );
 };
 
@@ -116,13 +158,8 @@ export const query = graphql`
           start
           imageFile {
             childImageSharp {
-              fluid(
-                duotone: { highlight: "#0066FF", shadow: "#0B0040" }
-                maxWidth: 600
-                maxHeight: 300
-                background: "white"
-              ) {
-                ...GatsbyImageSharpFluid
+              fixed(grayscale: true, width: 600, height: 600) {
+                ...GatsbyImageSharpFixed
               }
             }
           }
