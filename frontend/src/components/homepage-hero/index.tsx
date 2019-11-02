@@ -1,12 +1,10 @@
 /** @jsx jsx */
 
 import { Box } from "@theme-ui/components";
-import { Link, useStaticQuery, graphql } from "gatsby";
-import Img, { GatsbyImageProps } from "gatsby-image";
-import React from "react";
+import { graphql, Link, useStaticQuery } from "gatsby";
 import { jsx } from "theme-ui";
-import { HomepageHeroQuery } from "../../generated/graphql";
 
+import { HomepageHeroQuery } from "../../generated/graphql";
 import { BuyTicketsCTA } from "./buy-tickets-cta";
 
 type Props = {};
