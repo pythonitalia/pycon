@@ -2,6 +2,7 @@ import { Box, Grid, Heading, Text } from "@theme-ui/components";
 import { graphql } from "gatsby";
 import React from "react";
 
+import { HomepageHero } from "../components/homepage-hero";
 import { KeynotersSection } from "../components/keynoters-section";
 import { Marquee } from "../components/marquee";
 import { HomePageQuery } from "../generated/graphql";
@@ -19,6 +20,8 @@ export default ({
 
   return (
     <>
+      <HomepageHero />
+
       <Marquee message="Hello world" />
 
       <Grid
