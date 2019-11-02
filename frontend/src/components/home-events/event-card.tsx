@@ -1,7 +1,9 @@
-import * as React from "react";
-import styled from "styled-components";
+/** @jsx jsx */
+import { Box, Flex, Heading, Text } from "@theme-ui/components";
+import Img from "gatsby-image";
+import { Fragment } from "react";
+import { jsx } from "theme-ui";
 
-import { BackgroundImage } from "./background-image";
 import { PyConEvent } from "./types";
 
 const formatEventDate = (datetime: string) => {
@@ -17,41 +19,58 @@ const formatEventDate = (datetime: string) => {
   return formatter.format(d);
 };
 
-const EventCardContent = ({ event }: { event: PyConEvent }) => (
-  <>
-    {event.imageFile && (
-      <BackgroundImage {...event.imageFile.childImageSharp} alt="" />
-    )}
-    <div className="event_card_content">
-      {event.locationName && (
-        <p className="event_card_content__location">{event.locationName}</p>
-      )}
-      <p className="event_card_content__title">{event.title}</p>
-      <p className="event_card_content__date">{formatEventDate(event.start)}</p>
-    </div>
-  </>
-);
-
 type EventCardProps = {
   event: PyConEvent;
 };
 
-const BaseCard = ({ event, ...props }: EventCardProps) => (
-  <div {...props}>
-    <EventCardContent event={event} />
-  </div>
-);
+export const EventCard = ({ event }: EventCardProps) => (
+  <Box sx={{ position: "relative", overflow: "hidden" }}>
+    <Box sx={{ paddingBottom: "100%", display: "inline-block" }} />
 
-export const EventCard = styled(BaseCard)`
-  background: linear-gradient(
-    29.43deg,
-    #0c67ff 0%,
-    rgba(12, 103, 255, 0.0001) 125.98%
-  );
-  box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.08);
-  border-radius: 8px;
-  height: 200px;
-  width: 300px;
-  position: relative;
-  overflow: hidden;
-`;
+    {event.imageFile && (
+      <Img
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+        }}
+        {...event.imageFile.childImageSharp}
+      />
+    )}
+
+    <Box
+      sx={{
+        position: "absolute",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
+        background: "#F17A5D",
+        mixBlendMode: "multiply",
+      }}
+    />
+
+    <Flex
+      sx={{
+        p: 3,
+        flexDirection: "column",
+        justifyContent: "flex-end",
+        color: "white",
+        position: "absolute",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
+      }}
+    >
+      <Heading variant="caps" sx={{ mb: "auto" }}>
+        {event.title}
+      </Heading>
+
+      <Text>{event.locationName}</Text>
+      <Text>{formatEventDate(event.start)}</Text>
+    </Flex>
+  </Box>
+);
