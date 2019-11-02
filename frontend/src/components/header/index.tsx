@@ -5,22 +5,16 @@ import { graphql, useStaticQuery } from "gatsby";
 import { jsx } from "theme-ui";
 
 import { HeaderQuery } from "../../generated/graphql";
-import { useToggle } from "../../helpers/use-toggle";
-import SnakesColumns from "../snakes-columns";
+import { Logo } from "../logo";
+import { SnakeBurger } from "./snake-burger";
 
 export const Header = () => {
-  const [isMenuOpen, toggleMenu] = useToggle(false);
   const {
-    logo,
     backend: {
       conference: { menu },
     },
   } = useStaticQuery<HeaderQuery>(graphql`
     query Header {
-      logo: file(name: { eq: "logo" }) {
-        publicURL
-      }
-
       backend {
         conference {
           menu(identifier: "header-nav") {
@@ -60,11 +54,10 @@ export const Header = () => {
           alignItems: "center",
         }}
       >
-        <img
+        <Logo
           sx={{
             width: ["150px", "300px"],
           }}
-          src={logo!.publicURL!}
         />
 
         <Flex
@@ -85,7 +78,7 @@ export const Header = () => {
             }}
             variant="white"
           >
-            <SnakesColumns />
+            <SnakeBurger />
             Menu
           </Button>
         </Flex>
