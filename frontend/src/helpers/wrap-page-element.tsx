@@ -1,5 +1,6 @@
 import { ApolloProvider } from "@apollo/react-hooks";
 import React from "react";
+import Helmet from "react-helmet";
 import { IntlProvider } from "react-intl";
 
 import { client } from "../apollo/client";
@@ -19,6 +20,9 @@ export const wrapPageElement = ({ element, props }: Props) => (
     locale={props.pageContext.language}
     messages={messages[props.pageContext.language]}
   >
+    <Helmet>
+      <link rel="stylesheet" href="https://use.typekit.net/mbr7dqb.css" />
+    </Helmet>
     <ApolloProvider client={client}>{element}</ApolloProvider>
   </IntlProvider>
 );
