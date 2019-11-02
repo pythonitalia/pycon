@@ -40,11 +40,17 @@ export default {
       fontFamily: "body",
       fontWeight: "heading",
 
+      mx: [3, 4],
+
       color: "#000",
       borderWidth: ["3px", "4px"],
       borderStyle: "solid",
       borderColor: "#000",
       background: "#F8B03D",
+    },
+    white: {
+      variant: "buttons.primary",
+      background: "#fff",
     },
   },
   text: {
