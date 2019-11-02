@@ -30,7 +30,7 @@ export const HomepageHero: React.SFC<Props> = props => {
     >
       <Box
         sx={{
-          paddingBottom: ["100vh", "53%"],
+          paddingBottom: ["70vh", "53%"],
           backgroundImage: `url(${hero!.childImageSharp!.fluid!.src})`,
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
@@ -38,21 +38,37 @@ export const HomepageHero: React.SFC<Props> = props => {
         }}
       />
 
-      <Link
-        to="/tickets"
+      <Box
         sx={{
           position: "absolute",
           bottom: [20, 30],
-          left: [20, 30],
+          left: [0],
+
+          width: "100%",
         }}
       >
-        <BuyTicketsCTA
+        <Box
           sx={{
-            width: [122, 150],
-            height: [120, 150],
+            maxWidth: "largeContainer",
+            width: "100%",
+            mx: "auto",
           }}
-        />
-      </Link>
+        >
+          <Link
+            to="/tickets"
+            sx={{
+              px: 2,
+            }}
+          >
+            <BuyTicketsCTA
+              sx={{
+                width: ["20vw", "10vw"],
+                height: ["20vw", "10vw"],
+              }}
+            />
+          </Link>
+        </Box>
+      </Box>
     </Box>
   );
 };
