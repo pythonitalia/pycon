@@ -7,6 +7,7 @@ import { Styled } from "theme-ui";
 
 import { client } from "../apollo/client";
 import { ErrorBoundary } from "../components/error-boundary";
+import { Topbar } from "../components/topbar";
 import { LanguageContext } from "../context/language";
 import messages from "../locale";
 
@@ -41,7 +42,10 @@ export const wrapPageElement = ({ element, props }: Props) => (
           messages={messages[props.pageContext.language]}
         >
           <ApolloProvider client={client}>
-            <ErrorBoundary>{element}</ErrorBoundary>
+            <ErrorBoundary>
+              <Topbar />
+              {element}
+            </ErrorBoundary>
           </ApolloProvider>
         </IntlProvider>
       </LanguageContext.Provider>
