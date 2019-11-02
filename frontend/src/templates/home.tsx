@@ -156,10 +156,15 @@ export default ({
             </Text>
           </Flex>
 
-          <Box
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href={conference.map!.link!}
             sx={{
               width: "100%",
               height: 420,
+
+              display: "block",
 
               mt: [3, 3, 0],
 
