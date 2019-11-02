@@ -56,7 +56,7 @@ export const Header = () => {
       >
         <Logo
           sx={{
-            width: ["37vw", "33vw", "25vw", "15vw"],
+            width: ["37vw", "33vw", "25vw", "18vw"],
             height: "auto",
           }}
         />
