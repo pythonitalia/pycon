@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 
-import { ErrorBoundary } from "../components/error-boundary";
 import { Footer } from "../components/footer";
 import { Topbar } from "../components/topbar";
 import { LanguageContext } from "../context/language";
@@ -17,7 +16,7 @@ export const MainLayout = (props: {
   <LanguageContext.Provider value={props.language}>
     <Wrapper>
       <Topbar />
-      <ErrorBoundary>{props.children}</ErrorBoundary>
+
       <Footer />
     </Wrapper>
   </LanguageContext.Provider>
