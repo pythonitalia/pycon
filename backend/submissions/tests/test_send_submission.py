@@ -1,20 +1,24 @@
 from pytest import mark
+
 from submissions.models import Submission, SubmissionType
 
 from .factories import SubmissionFactory
 
 
 def _submit_talk(client, conference, **kwargs):
+
     talk = SubmissionFactory.build(
         type=SubmissionType.objects.get_or_create(name="talk")[0]
     )
+
+    languages = [language.code for language in conference.languages.all()]
 
     defaults = {
         "title": talk.title,
         "abstract": talk.abstract,
         "elevator_pitch": talk.elevator_pitch,
         "notes": talk.notes,
-        "language": "it",
+        "languages": languages,
         "conference": conference.code,
         "topic": conference.topics.first().id,
         "type": talk.type.id,
@@ -31,7 +35,7 @@ def _submit_talk(client, conference, **kwargs):
                 $topic: ID!,
                 $title: String!,
                 $abstract: String!,
-                $language: ID!,
+                $languages: [ID!]!,
                 $type: ID!,
                 $duration: ID!,
                 $audience_level: ID!
@@ -39,7 +43,7 @@ def _submit_talk(client, conference, **kwargs):
                 sendSubmission(input: {
                     title: $title,
                     abstract: $abstract,
-                    language: $language,
+                    languages: $languages,
                     conference: $conference,
                     topic: $topic,
                     type: $type,
@@ -56,6 +60,10 @@ def _submit_talk(client, conference, **kwargs):
                         audienceLevel {
                             name
                         }
+                        languages {
+                            code
+                            name
+                        }
                         notes
                     }
 
@@ -64,7 +72,7 @@ def _submit_talk(client, conference, **kwargs):
                         validationTopic: topic
                         validationTitle: title
                         validationAbstract: abstract
-                        validationLanguage: language
+                        validationLanguages: languages
                         validationType: type
                         validationDuration: duration
                         validationAudienceLevel: audienceLevel
@@ -83,12 +91,14 @@ def _submit_tutorial(client, conference, **kwargs):
         type=SubmissionType.objects.get_or_create(name="tutorial")[0]
     )
 
+    languages = [language.code for language in conference.languages.all()]
+
     defaults = {
         "title": talk.title,
         "abstract": talk.abstract,
         "elevator_pitch": talk.elevator_pitch,
         "notes": talk.notes,
-        "language": "it",
+        "languages": languages,
         "conference": conference.code,
         "topic": conference.topics.first().id,
         "type": talk.type.id,
@@ -105,7 +115,7 @@ def _submit_tutorial(client, conference, **kwargs):
                 $topic: ID!,
                 $title: String!,
                 $abstract: String!,
-                $language: ID!,
+                $languages: [ID!]!,
                 $type: ID!,
                 $duration: ID!,
                 $audience_level: ID!
@@ -113,7 +123,7 @@ def _submit_tutorial(client, conference, **kwargs):
                 sendSubmission(input: {
                     title: $title,
                     abstract: $abstract,
-                    language: $language,
+                    languages: $languages,
                     conference: $conference,
                     topic: $topic,
                     type: $type,
@@ -127,9 +137,13 @@ def _submit_tutorial(client, conference, **kwargs):
                         title
                         abstract
                         elevatorPitch
-                    audienceLevel {
-                        name
-                    }
+                        audienceLevel {
+                            name
+                        }
+                        languages {
+                            code
+                            name
+                        }
                         notes
                     }
 
@@ -138,7 +152,7 @@ def _submit_tutorial(client, conference, **kwargs):
                         validationTopic: topic
                         validationTitle: title
                         validationAbstract: abstract
-                        validationLanguage: language
+                        validationLanguages: languages
                         validationType: type
                         validationDuration: duration
                         validationAudienceLevel: audienceLevel
@@ -158,7 +172,7 @@ def test_submit_talk(graphql_client, user, conference_factory):
 
     conference = conference_factory(
         topics=("my-topic",),
-        languages=("it",),
+        languages=("it", "en"),
         submission_types=("talk",),
         active_cfp=True,
         durations=("50",),
@@ -176,7 +190,10 @@ def test_submit_talk(graphql_client, user, conference_factory):
 
     assert talk.title == variables["title"]
     assert talk.abstract == variables["abstract"]
-    assert talk.language.code == "it"
+
+    assert len(talk.languages.all()) == 2
+    assert len(talk.languages.filter(code="it")) == 1
+    assert len(talk.languages.filter(code="en")) == 1
     assert talk.topic.name == "my-topic"
     assert talk.conference == conference
     assert talk.speaker == user
@@ -198,10 +215,10 @@ def test_submit_talk_with_not_valid_conf_language(
         audience_levels=("Beginner",),
     )
 
-    resp, _ = _submit_talk(graphql_client, conference, language="en")
+    resp, _ = _submit_talk(graphql_client, conference, languages=["en"])
 
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
-    assert resp["data"]["sendSubmission"]["validationLanguage"] == [
+    assert resp["data"]["sendSubmission"]["validationLanguages"] == [
         "English (en) is not an allowed language"
     ]
 
@@ -373,11 +390,11 @@ def test_submit_talk_with_not_valid_language_code(
         audience_levels=("Beginner",),
     )
 
-    resp, _ = _submit_talk(graphql_client, conference, language="fit")
+    resp, _ = _submit_talk(graphql_client, conference, languages=["fit"])
 
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
-    assert resp["data"]["sendSubmission"]["validationLanguage"] == [
-        "Select a valid choice. That choice is not one of the available choices."
+    assert resp["data"]["sendSubmission"]["validationLanguages"] == [
+        "Select a valid choice. fit is not one of the available choices."
     ]
 
 

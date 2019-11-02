@@ -5,13 +5,21 @@ from .models import Submission, SubmissionType
 
 @admin.register(Submission)
 class SubmissionAdmin(admin.ModelAdmin):
-    list_display = (
-        "title",
-        "type",
-        "conference",
-        "topic",
-        "language",
-        "audience_level",
+    list_display = ("title", "type", "conference", "topic", "audience_level")
+    fieldsets = (
+        (
+            "Submission",
+            {
+                "fields": (
+                    "title",
+                    "type",
+                    "conference",
+                    "topic",
+                    "audience_level",
+                    "languages",
+                )
+            },
+        ),
     )
     list_filter = ("conference", "type", "topic")
     search_fields = ("title", "abstract")
