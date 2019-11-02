@@ -25,6 +25,7 @@ export default {
         secondary: "#30c",
         muted: "#f6f6f6",
         purple: "#FA00FF",
+        orange: "#F8B03D",
     },
     borders: {
         primary: "3px solid #000000",

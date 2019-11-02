@@ -44,6 +44,35 @@ export default ({
       </Grid>
 
       <KeynotersSection />
+
+      <Grid
+        sx={{
+          mt: 4,
+          py: 5,
+          px: 2,
+          maxWidth: "container",
+          mx: "auto",
+          gridTemplateColumns: [null, "10fr 2fr 9fr"],
+        }}
+      >
+        <Box>
+          <Box sx={{ border: "primary" }}>
+            <Box sx={{ paddingBottom: "50%", display: "inline-block" }} />
+          </Box>
+        </Box>
+
+        <Box sx={{ gridColumnStart: [null, 3] }}>
+          <Heading as="h1" sx={{ mb: 3 }}>
+            {conference.proposalsTitle}
+          </Heading>
+
+          <Heading as="h2" sx={{ color: "orange", fontSize: 3, mb: 3 }}>
+            {conference.proposalsSubtitle}
+          </Heading>
+
+          <Text as="p">{conference.proposalsText}</Text>
+        </Box>
+      </Grid>
     </>
   );
 };
@@ -57,6 +86,11 @@ export const query = graphql`
 
         introTitle: copy(key: "intro-title-1", language: $language)
         introText: copy(key: "intro-text-1", language: $language)
+
+        proposalsTitle: copy(key: "proposals-title", language: $language)
+        proposalsSubtitle: copy(key: "proposals-subtitle", language: $language)
+        proposalsText: copy(key: "proposals-text", language: $language)
+
         eventsIntro: copy(key: "events-intro", language: $language)
         deadlinesIntro: copy(key: "deadlines-intro", language: $language)
 
