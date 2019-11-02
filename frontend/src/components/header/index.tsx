@@ -44,7 +44,7 @@ export const Header = () => {
         top: ["30px", "60px"],
         left: "0px",
 
-        px: "32px",
+        px: "8px",
 
         width: "100%",
 
