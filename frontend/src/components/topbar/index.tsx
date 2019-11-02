@@ -1,6 +1,8 @@
+/** @jsx jsx */
+
 import { Box, Button, Flex } from "@theme-ui/components";
 import { graphql, useStaticQuery } from "gatsby";
-import React from "react";
+import { jsx } from "theme-ui";
 
 import { NavBarQuery } from "../../generated/graphql";
 import { useToggle } from "../../helpers/use-toggle";
@@ -35,20 +37,40 @@ export const Topbar = () => {
   const { links } = menu!;
 
   return (
-    <Flex
+    <Box
       sx={{
-        justifyContent: "space-between",
-        alignItems: "center",
-        maxWidth: "largeContainer",
+        position: "absolute",
+        top: ["30px", "60px"],
+        left: "0px",
 
-        mx: "auto",
+        px: "32px",
+
+        width: "100%",
+
+        zIndex: "navbar",
       }}
     >
-      <img src={logo!.publicURL!} />
-      <Box>
-        <Button>Login</Button>
-        <Button>Menu</Button>
-      </Box>
-    </Flex>
+      <Flex
+        sx={{
+          maxWidth: "largeContainer",
+          mx: "auto",
+
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <img
+          sx={{
+            width: ["150px", "300px"],
+          }}
+          src={logo!.publicURL!}
+        />
+
+        <Box>
+          <Button>Login</Button>
+          <Button>Menu</Button>
+        </Box>
+      </Flex>
+    </Box>
   );
 };
