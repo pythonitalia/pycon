@@ -18,8 +18,8 @@ export const Marquee: React.SFC<MarqueeProps> = ({ message }) => (
       overflow: "hidden",
       alignItems: "center",
       height: 125,
-      borderTop: "3px solid #000000",
-      borderBottom: "3px solid #000000",
+      borderTop: "primary",
+      borderBottom: "primary",
     }}
   >
     <Text
