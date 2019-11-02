@@ -1,10 +1,6 @@
 import React from "react";
 
-type Props = {
-  className?: string;
-};
-
-export const BuyTicketsCTA: React.SFC<Props> = props => (
+export const BuyTicketsCTA: React.SFC = props => (
   <svg viewBox="0 0 151 151" width={151} height={151} fill="none" {...props}>
     <path
       d="M75.5 148.271c40.19 0 72.771-32.581 72.771-72.771S115.69 2.729 75.501 2.729C35.31 2.729 2.728 35.309 2.728 75.5c0 40.19 32.58 72.771 72.771 72.771z"
