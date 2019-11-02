@@ -16,6 +16,7 @@ export default {
         heading: 1.125,
     },
     sizes: {
+        largeContainer: 1320,
         container: 1200,
     },
     colors: {
@@ -29,6 +30,20 @@ export default {
     },
     borders: {
         primary: "3px solid #000000",
+    },
+    buttons: {
+        primary: {
+            position: 'relative',
+            padding: '18px 27px',
+
+            fontSize: 18,
+            fontFamily: 'body',
+            fontWeight: '500',
+
+            color: '#000',
+            border: '4px solid #000',
+            background: '#F8B03D',
+        }
     },
     text: {
         caps: {
