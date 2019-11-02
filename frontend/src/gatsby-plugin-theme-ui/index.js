@@ -34,7 +34,7 @@ export default {
   buttons: {
     primary: {
       position: "relative",
-      padding: ["7px 10px", "18px 27px"],
+      padding: [2, 3],
 
       fontSize: [0, 2],
       fontFamily: "body",
