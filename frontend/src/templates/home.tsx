@@ -2,6 +2,7 @@ import { Box, Grid, Heading, Text } from "@theme-ui/components";
 import { graphql } from "gatsby";
 import React from "react";
 
+import { KeynotersSection } from "../components/keynoters-section";
 import { Marquee } from "../components/marquee";
 import { HomePageQuery } from "../generated/graphql";
 
@@ -42,7 +43,7 @@ export default ({
         </Box>
       </Grid>
 
-      <Box sx={{ borderBottom: "primary" }} />
+      <KeynotersSection />
     </>
   );
 };
