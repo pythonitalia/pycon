@@ -1,9 +1,11 @@
+/** @jsx jsx */
 import { ApolloProvider } from "@apollo/react-hooks";
 import { css, Global } from "@emotion/core";
-import React from "react";
+import { Box } from "@theme-ui/components";
+import { Fragment } from "react";
 import Helmet from "react-helmet";
 import { IntlProvider } from "react-intl";
-import { Styled } from "theme-ui";
+import { jsx, Styled } from "theme-ui";
 
 import { client } from "../apollo/client";
 import { ErrorBoundary } from "../components/error-boundary";
@@ -28,7 +30,7 @@ const reset = css`
 `;
 
 export const wrapPageElement = ({ element, props }: Props) => (
-  <>
+  <Fragment>
     <Global styles={reset} />
 
     <Helmet>
@@ -44,11 +46,12 @@ export const wrapPageElement = ({ element, props }: Props) => (
           <ApolloProvider client={client}>
             <ErrorBoundary>
               <Header />
-              {element}
+
+              <Box sx={{ mt: [100, 180] }}>{element}</Box>
             </ErrorBoundary>
           </ApolloProvider>
         </IntlProvider>
       </LanguageContext.Provider>
     </Styled.root>
-  </>
+  </Fragment>
 );

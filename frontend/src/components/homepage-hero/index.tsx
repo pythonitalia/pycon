@@ -26,6 +26,7 @@ export const HomepageHero: React.SFC<Props> = props => {
     <Box
       sx={{
         position: "relative",
+        mt: [-100, -180],
       }}
     >
       <Box

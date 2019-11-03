@@ -1,6 +1,6 @@
 import { useMutation } from "@apollo/react-hooks";
 import { navigate, Redirect, RouteComponentProps } from "@reach/router";
-import { Alert, FieldSet, Input, Label } from "fannypack";
+import { Box, Button, Input, Label } from "@theme-ui/components";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
@@ -10,8 +10,6 @@ import {
   LoginMutation,
   LoginMutationVariables,
 } from "../../generated/graphql-backend";
-import { Button } from "../button";
-import { Form } from "../form";
 import LOGIN_MUTATION from "./login.graphql";
 
 type LoginFormFields = {
@@ -52,10 +50,11 @@ export const LoginForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
   const errorMessage =
     loginData && loginData.login.__typename === "LoginErrors"
       ? loginData.login.nonFieldErrors.join(" ")
-      : error;
+      : (error || "").toString();
 
   return (
-    <Form
+    <Box
+      as="form"
       method="post"
       onSubmit={e => {
         e.preventDefault();
@@ -63,41 +62,31 @@ export const LoginForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
         login({ variables: formState.values });
       }}
     >
-      <FieldSet>
-        {errorMessage && <Alert type="error">{errorMessage}</Alert>}
+      {errorMessage && <div>{errorMessage}</div>}
 
-        <Label {...label("email")}>
-          <FormattedMessage id="login.email" />
-        </Label>
-        <Input
-          inputProps={{ ...email("email"), required: true }}
-          placeholder="guido@python.org"
-          isRequired={true}
-          type="email"
-        />
+      <Label {...label("email")}>
+        <FormattedMessage id="login.email" />
+      </Label>
+      <Input
+        {...email("email")}
+        placeholder="guido@python.org"
+        required={true}
+        type="email"
+      />
 
-        <Label htmlFor="login-password">
-          <FormattedMessage id="login.password" />
-        </Label>
-        <Input
-          inputProps={{
-            id: "login-password",
-            ...password("password"),
-            required: true,
-          }}
-          isRequired={loading}
-          type="password"
-        />
+      <Label htmlFor="login-password">
+        <FormattedMessage id="login.password" />
+      </Label>
+      <Input
+        id="login-password"
+        {...password("password")}
+        required={true}
+        type="password"
+      />
 
-        <Button
-          size="medium"
-          palette="primary"
-          isLoading={loading}
-          type="submit"
-        >
-          <FormattedMessage id="login.loginButton" />
-        </Button>
-      </FieldSet>
-    </Form>
+      <Button size="medium" palette="primary" isLoading={loading} type="submit">
+        <FormattedMessage id="login.loginButton" />
+      </Button>
+    </Box>
   );
 };
