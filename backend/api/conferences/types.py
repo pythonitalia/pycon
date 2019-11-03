@@ -14,6 +14,7 @@ from api.submissions.types import Submission, SubmissionType
 from cms.models import GenericCopy
 from django.conf import settings
 from django.utils import translation
+from schedule.models import ScheduleItem as ScheduleItemModel
 
 from ..helpers.i18n import make_localized_resolver
 from ..helpers.maps import Map, resolve_map
@@ -131,6 +132,10 @@ class Conference:
         return (
             self.menus.filter(identifier=identifier).prefetch_related("links").first()
         )
+
+    @strawberry.field
+    def keynotes(self, info) -> List[ScheduleItem]:
+        return self.schedule_items.filter(type=ScheduleItemModel.TYPES.keynote).all()
 
 
 @strawberry.type
