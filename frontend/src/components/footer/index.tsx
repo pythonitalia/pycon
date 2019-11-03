@@ -1,177 +1,142 @@
-import { Heading, Input, Text } from "fannypack";
-import { graphql, Link, useStaticQuery } from "gatsby";
-import { Column, Row } from "grigliata";
-import React from "react";
+/** @jsx jsx */
 
-import { STANDARD_ROW_PADDING } from "../../config/spacing";
-import { FooterQuery } from "../../generated/graphql";
-import { Button } from "../button";
-import { MaxWidthWrapper } from "../max-width-wrapper";
-import { LinksWrapper } from "./links-wrapper";
-import { MapWrapper } from "./map-wrapper";
-import { Wrapper } from "./wrapper";
+import { Box, Flex, Grid } from "@theme-ui/components";
+import { graphql, Link, useStaticQuery } from "gatsby";
+import { jsx } from "theme-ui";
+
+import { Backend_MenuLink, FooterQuery } from "../../generated/graphql";
+import { Logo } from "../logo";
+
+const MenuItems: React.SFC = ({ children, ...props }) => (
+  <ul
+    sx={{
+      color: "white",
+      listStyle: "none",
+
+      a: {
+        color: "white",
+        textDecoration: "none",
+      },
+    }}
+    {...props}
+  >
+    {children}
+  </ul>
+);
 
 export const Footer = () => {
-  const MARGIN_TOP_ROW = {
-    mobile: 1,
-    tabletPortrait: 5,
-    tabletLandscape: 5,
-    desktop: 5,
-  };
-
   const {
     backend: {
-      conference: { map },
+      conference: { menu },
     },
   } = useStaticQuery<FooterQuery>(graphql`
     query Footer {
       backend {
         conference {
-          map {
-            image(width: 1280, height: 400, zoom: 15)
-            link
+          menu(identifier: "footer-nav") {
+            links {
+              title
+              href
+            }
           }
         }
       }
     }
   `);
 
+  const { links } = menu!;
+
+  let firstGroup = links;
+  let secondGroup: Pick<Backend_MenuLink, "title" | "href">[] = [];
+
+  console.log("links", links);
+
+  if (links.length > 4) {
+    const halfLinks = Math.round(links.length / 2);
+    firstGroup = links.slice(0, halfLinks);
+    secondGroup = links.slice(halfLinks);
+  }
+
   return (
-    <Wrapper>
-      <MaxWidthWrapper>
-        <Row
-          paddingLeft={STANDARD_ROW_PADDING}
-          paddingRight={STANDARD_ROW_PADDING}
-          paddingTop={MARGIN_TOP_ROW}
+    <Box
+      sx={{
+        background: "black",
+        py: [4, 6],
+        px: 2,
+      }}
+    >
+      <Grid
+        sx={{
+          maxWidth: "container",
+          mx: "auto",
+
+          gridTemplateColumns: [null, "6fr 5fr 2fr 2fr 3fr"],
+        }}
+      >
+        <Logo />
+
+        <MenuItems
+          sx={{
+            gridColumnStart: [null, 3],
+          }}
         >
-          <Column
-            paddingRight={{
-              mobile: 0,
-              tabletPortrait: 3,
-              tabletLandscape: 3,
-              desktop: 3,
-            }}
-            columnWidth={{
-              mobile: 12,
-              tabletPortrait: 6,
-              tabletLandscape: 6,
-              desktop: 6,
-            }}
-          >
-            <Heading use="h3">keep up to date</Heading>
-            <Text>
-              Stay in the loop, sign up for email updates about events, news and
-              offers.
-            </Text>
-            <div>
-              <form action="">
-                <Row
-                  marginLeft={{
-                    mobile: -0.5,
-                    tabletPortrait: -0.5,
-                    tabletLandscape: -0.5,
-                    desktop: -0.5,
-                  }}
-                  marginRight={{
-                    mobile: -0.5,
-                    tabletPortrait: -0.5,
-                    tabletLandscape: -0.5,
-                    desktop: -0.5,
-                  }}
-                  paddingRight={STANDARD_ROW_PADDING}
-                >
-                  <Column
-                    columnWidth={{
-                      mobile: 12,
-                      tabletPortrait: 9,
-                      tabletLandscape: 9,
-                      desktop: 9,
-                    }}
-                  >
-                    <Input placeholder="Email" type="email" />
-                  </Column>
-                  <Column
-                    columnWidth={{
-                      mobile: 12,
-                      tabletPortrait: 3,
-                      tabletLandscape: 3,
-                      desktop: 3,
-                    }}
-                  >
-                    <Button margin="0" palette={"white"}>
-                      Sign up
-                    </Button>
-                  </Column>
-                </Row>
-              </form>
-            </div>
-          </Column>
-          <Column
-            paddingRight={{
-              mobile: 0,
-              tabletPortrait: 3,
-              tabletLandscape: 3,
-              desktop: 3,
-            }}
-            columnWidth={{
-              mobile: 12,
-              tabletPortrait: 6,
-              tabletLandscape: 6,
-              desktop: 6,
-            }}
-          >
-            <Heading use="h3">donations</Heading>
-            <div>
-              <Text>
-                Stay in the loop, sign up for email updates about events, news
-                and offers.
-              </Text>
-            </div>
-
-            <Button marginTop="major-2" palette={"white"}>
-              Donate now
-            </Button>
-          </Column>
-        </Row>
-      </MaxWidthWrapper>
-
-      {map && (
-        <Row marginTop={MARGIN_TOP_ROW}>
-          <MapWrapper style={{ width: "100%" }}>
-            <a href={map.link || ""} target="_blank" rel="noopener">
-              <img src={map.image} />
-            </a>
-          </MapWrapper>
-        </Row>
-      )}
-
-      <MaxWidthWrapper>
-        <Row
-          paddingLeft={STANDARD_ROW_PADDING}
-          paddingRight={STANDARD_ROW_PADDING}
-          marginTop={MARGIN_TOP_ROW}
-          marginBottom={MARGIN_TOP_ROW}
-        >
-          {[1, 2, 3, 4].map((o, i) => (
-            <Column
-              key={i}
-              columnWidth={{
-                mobile: 12,
-                tabletPortrait: 6,
-                tabletLandscape: 3,
-                desktop: 3,
-              }}
-            >
-              <Heading use="h4">our venues</Heading>
-              <LinksWrapper>
-                <Link to="/">Link</Link>
-                <Link to="/">Link</Link>
-                <Link to="/">Link</Link>
-              </LinksWrapper>
-            </Column>
+          {firstGroup.map((link, i) => (
+            <li key={i}>
+              <Link to={link.href}>{link.title}</Link>
+            </li>
           ))}
-        </Row>
-      </MaxWidthWrapper>
-    </Wrapper>
+        </MenuItems>
+
+        <MenuItems>
+          {secondGroup.map((link, i) => (
+            <li key={i}>
+              <Link to={link.href}>{link.title}</Link>
+            </li>
+          ))}
+        </MenuItems>
+
+        <Flex
+          as="ul"
+          sx={{
+            listStyle: "none",
+
+            "li + li": {
+              marginLeft: 4,
+            },
+          }}
+        >
+          <li
+            sx={{
+              width: "40px",
+              height: "40px",
+
+              borderRadius: "100%",
+
+              backgroundColor: "#34B4A1",
+            }}
+          />
+          <li
+            sx={{
+              width: "40px",
+              height: "40px",
+
+              borderRadius: "100%",
+
+              backgroundColor: "#9473B0",
+            }}
+          />
+          <li
+            sx={{
+              width: "40px",
+              height: "40px",
+
+              borderRadius: "100%",
+
+              backgroundColor: "#F17A5D",
+            }}
+          />
+        </Flex>
+      </Grid>
+    </Box>
   );
 };
