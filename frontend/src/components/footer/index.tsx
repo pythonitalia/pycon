@@ -10,6 +10,7 @@ import { MaxWidthWrapper } from "../max-width-wrapper";
 import { LinksWrapper } from "./links-wrapper";
 import { MapWrapper } from "./map-wrapper";
 import { Wrapper } from "./wrapper";
+import { NewsletterForm } from "../newsletter";
 
 export const Footer = () => {
   const MARGIN_TOP_ROW = {
@@ -58,53 +59,7 @@ export const Footer = () => {
               desktop: 6,
             }}
           >
-            <Heading use="h3">keep up to date</Heading>
-            <Text>
-              Stay in the loop, sign up for email updates about events, news and
-              offers.
-            </Text>
-            <div>
-              <form action="">
-                <Row
-                  marginLeft={{
-                    mobile: -0.5,
-                    tabletPortrait: -0.5,
-                    tabletLandscape: -0.5,
-                    desktop: -0.5,
-                  }}
-                  marginRight={{
-                    mobile: -0.5,
-                    tabletPortrait: -0.5,
-                    tabletLandscape: -0.5,
-                    desktop: -0.5,
-                  }}
-                  paddingRight={STANDARD_ROW_PADDING}
-                >
-                  <Column
-                    columnWidth={{
-                      mobile: 12,
-                      tabletPortrait: 9,
-                      tabletLandscape: 9,
-                      desktop: 9,
-                    }}
-                  >
-                    <Input placeholder="Email" type="email" />
-                  </Column>
-                  <Column
-                    columnWidth={{
-                      mobile: 12,
-                      tabletPortrait: 3,
-                      tabletLandscape: 3,
-                      desktop: 3,
-                    }}
-                  >
-                    <Button margin="0" palette={"white"}>
-                      Sign up
-                    </Button>
-                  </Column>
-                </Row>
-              </form>
-            </div>
+            <NewsletterForm />
           </Column>
           <Column
             paddingRight={{
