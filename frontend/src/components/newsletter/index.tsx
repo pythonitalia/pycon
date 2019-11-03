@@ -1,13 +1,15 @@
+import { Button, FieldSet, Heading, Input, Text } from "fannypack";
 import React, { useState } from "react";
-import { FieldSet, Heading, Input, Text, Button } from "fannypack";
-import { useMailchimp } from "react-use-mailchimp";
 import { FormattedMessage } from "react-intl";
+import { useMailchimp } from "react-use-mailchimp";
+
 import { Form } from "../form";
 
 const url = process.env.MAILCHIMP_URL || "";
 console.log(url);
-import { theme } from "../../config/theme";
 import styled from "styled-components";
+
+import { theme } from "../../config/theme";
 
 export const InputWrapper = styled.div`
   div {
@@ -60,7 +62,7 @@ const NewsletterForm: React.SFC = () => {
         <InputWrapper>
           <Input
             placeholder="my@email.org"
-            onChange={e => setEmail(e.target.value)}
+            onChange={(e: any) => setEmail(e.target.value)}
             value={email}
             isRequired={true}
             type="email"

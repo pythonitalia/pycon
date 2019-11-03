@@ -7,10 +7,10 @@ import { STANDARD_ROW_PADDING } from "../../config/spacing";
 import { FooterQuery } from "../../generated/graphql";
 import { Button } from "../button";
 import { MaxWidthWrapper } from "../max-width-wrapper";
+import { NewsletterSection } from "../newsletter";
 import { LinksWrapper } from "./links-wrapper";
 import { MapWrapper } from "./map-wrapper";
 import { Wrapper } from "./wrapper";
-import { NewsletterSection } from "../newsletter";
 
 export const Footer = () => {
   const MARGIN_TOP_ROW = {
