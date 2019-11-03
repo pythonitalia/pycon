@@ -1,4 +1,4 @@
-import { Heading, Input, Text } from "fannypack";
+import { Heading, Text } from "fannypack";
 import { graphql, Link, useStaticQuery } from "gatsby";
 import { Column, Row } from "grigliata";
 import React from "react";
@@ -7,10 +7,10 @@ import { STANDARD_ROW_PADDING } from "../../config/spacing";
 import { FooterQuery } from "../../generated/graphql";
 import { Button } from "../button";
 import { MaxWidthWrapper } from "../max-width-wrapper";
+import { NewsletterSection } from "../newsletter";
 import { LinksWrapper } from "./links-wrapper";
 import { MapWrapper } from "./map-wrapper";
 import { Wrapper } from "./wrapper";
-import { NewsletterForm } from "../newsletter";
 
 export const Footer = () => {
   const MARGIN_TOP_ROW = {
@@ -59,7 +59,7 @@ export const Footer = () => {
               desktop: 6,
             }}
           >
-            <NewsletterForm />
+            <NewsletterSection />
           </Column>
           <Column
             paddingRight={{
