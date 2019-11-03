@@ -26,7 +26,11 @@ class Room(models.Model):
 
 
 class ScheduleItem(TimeFramedModel, TimeStampedModel):
-    TYPES = Choices(("submission", _("Submission")), ("custom", _("Custom")))
+    TYPES = Choices(
+        ("submission", _("Submission")),
+        ("keynote", _("Keynote")),
+        ("custom", _("Custom")),
+    )
 
     conference = models.ForeignKey(
         Conference,

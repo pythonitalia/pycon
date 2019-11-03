@@ -9,6 +9,8 @@ from .managers import UserManager
 class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(_("username"), max_length=100, null=True, blank=True)
     email = models.EmailField(_("email address"), unique=True)
+    full_name = models.CharField(_("full name"), max_length=300, blank=True)
+    name = models.CharField(_("name"), max_length=300, blank=True)
 
     date_joined = models.DateTimeField(_("date joined"), auto_now_add=True)
     is_active = models.BooleanField(_("active"), default=True)
