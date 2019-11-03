@@ -1,15 +1,14 @@
 import { Button, FieldSet, Heading, Input, Text } from "fannypack";
+import { graphql, useStaticQuery } from "gatsby";
 import React, { useState } from "react";
 import { FormattedMessage } from "react-intl";
+// @ts-ignore
 import { useMailchimp } from "react-use-mailchimp";
-
-import { Form } from "../form";
-
-const url = process.env.MAILCHIMP_URL || "";
-console.log(url);
 import styled from "styled-components";
 
 import { theme } from "../../config/theme";
+import { UrlMailchimpQuery } from "../../generated/graphql";
+import { Form } from "../form";
 
 export const InputWrapper = styled.div`
   div {
@@ -21,8 +20,15 @@ export const InputWrapper = styled.div`
 
 const NewsletterForm: React.SFC = () => {
   const [email, setEmail] = useState("");
+
+  const {
+    backend: {
+      conference: { urlMailchimp },
+    },
+  } = useStaticQuery<UrlMailchimpQuery>(query);
+
   const [mailchimp, subscribe] = useMailchimp({
-    url,
+    url: urlMailchimp,
   });
   const { loading, error, data } = mailchimp;
 
@@ -36,7 +42,6 @@ const NewsletterForm: React.SFC = () => {
     );
   }
   if (error) {
-    console.log(error);
     return (
       <FieldSet>
         <Text
@@ -52,7 +57,6 @@ const NewsletterForm: React.SFC = () => {
     <Form
       onSubmit={e => {
         e.preventDefault();
-        console.log(`onSubmit: ${email}`);
         if (!loading) {
           subscribe({ EMAIL: email });
         }
@@ -87,3 +91,13 @@ export const NewsletterSection: React.SFC = props => (
     <NewsletterForm />
   </>
 );
+
+const query = graphql`
+  query urlMailchimp {
+    backend {
+      conference {
+        urlMailchimp
+      }
+    }
+  }
+`;
