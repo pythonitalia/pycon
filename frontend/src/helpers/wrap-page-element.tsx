@@ -9,6 +9,7 @@ import { jsx, Styled } from "theme-ui";
 
 import { client } from "../apollo/client";
 import { ErrorBoundary } from "../components/error-boundary";
+import { Footer } from "../components/footer";
 import { Header } from "../components/header";
 import { LanguageContext } from "../context/language";
 import messages from "../locale";
@@ -48,6 +49,8 @@ export const wrapPageElement = ({ element, props }: Props) => (
               <Header />
 
               <Box sx={{ mt: [100, 180] }}>{element}</Box>
+
+              <Footer />
             </ErrorBoundary>
           </ApolloProvider>
         </IntlProvider>
