@@ -36,6 +36,7 @@ class ConferenceAdmin(admin.ModelAdmin):
                     "latitude",
                     "longitude",
                     "map_link",
+                    "url_mailchimp",
                 )
             },
         ),
