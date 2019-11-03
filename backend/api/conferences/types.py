@@ -4,6 +4,9 @@ from typing import TYPE_CHECKING, List, Optional
 
 import pytz
 import strawberry
+from django.conf import settings
+from django.utils import translation
+
 from api.cms.types import FAQ, Menu
 from api.events.types import Event
 from api.languages.types import Language
@@ -12,8 +15,6 @@ from api.schedule.types import Room, ScheduleItem
 from api.sponsors.types import SponsorsByLevel
 from api.submissions.types import Submission, SubmissionType
 from cms.models import GenericCopy
-from django.conf import settings
-from django.utils import translation
 
 from ..helpers.i18n import make_localized_resolver
 from ..helpers.maps import Map, resolve_map
@@ -46,6 +47,7 @@ class Conference:
     start: DateTime
     end: DateTime
     map: Optional[Map] = strawberry.field(resolver=resolve_map)
+    url_mailchimp: Optional[str]
 
     @strawberry.field
     def timezone(self, info) -> str:
