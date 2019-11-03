@@ -8,6 +8,8 @@ from users.models import User
 @register
 class UserFactory(DjangoModelFactory):
     email = factory.Faker("email")
+    name = factory.Faker("first_name")
+    full_name = factory.Faker("name")
     username = factory.Faker("user_name")
 
     password = factory.PostGenerationMethodCall("set_password", "defaultpassword")
