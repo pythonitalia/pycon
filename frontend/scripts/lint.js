@@ -4,12 +4,12 @@
 const CLIEngine = require("eslint").CLIEngine;
 
 const cli = new CLIEngine({
-    fix: true,
+  fix: true,
 });
 
 const filesToLint = process.argv
-    .slice(2)
-    .map(path => path.replace(/^frontend\//, ""));
+  .slice(2)
+  .map(path => path.replace(/^frontend\//, ""));
 
 const report = cli.executeOnFiles(filesToLint);
 
@@ -20,5 +20,5 @@ console.log(formatter(report.results));
 CLIEngine.outputFixes(report);
 
 if (report.errorCount) {
-    process.exit(1);
+  process.exit(1);
 }
