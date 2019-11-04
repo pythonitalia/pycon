@@ -56,7 +56,7 @@ export const LoginForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
     <Box
       as="form"
       method="post"
-      onSubmit={e => {
+      onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         login({ variables: formState.values });
