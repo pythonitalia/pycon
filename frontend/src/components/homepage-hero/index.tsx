@@ -1,75 +1,66 @@
 /** @jsx jsx */
 
 import { Box } from "@theme-ui/components";
-import { graphql, Link, useStaticQuery } from "gatsby";
+import { Link } from "gatsby";
 import { jsx } from "theme-ui";
 
-import { HomepageHeroQuery } from "../../generated/graphql";
 import { BuyTicketsCTA } from "./buy-tickets-cta";
+import { Landscape } from "./landscape";
 
-type Props = {};
-
-export const HomepageHero: React.SFC<Props> = props => {
-  const { hero } = useStaticQuery<HomepageHeroQuery>(graphql`
-    query HomepageHero {
-      hero: file(name: { eq: "homepage-hero" }) {
-        childImageSharp {
-          fluid(maxWidth: 1920) {
-            ...GatsbyImageSharpFluid
-          }
-        }
-      }
-    }
-  `);
-
-  return (
+export const HomepageHero: React.SFC = () => (
+  <Box
+    sx={{
+      position: "relative",
+      mt: [-100, -180],
+    }}
+  >
     <Box
       sx={{
-        position: "relative",
-        mt: [-100, -180],
+        display: "inline-block",
+        paddingBottom: ["70vh", "53%"],
+      }}
+    />
+
+    <Landscape
+      sx={{
+        position: "absolute",
+        left: 0,
+        top: 0,
+        height: "100%",
+        width: "100%",
+      }}
+    />
+
+    <Box
+      sx={{
+        position: "absolute",
+        bottom: [20, 30],
+        left: [0],
+
+        width: "100%",
       }}
     >
       <Box
         sx={{
-          paddingBottom: ["70vh", "53%"],
-          backgroundImage: `url(${hero!.childImageSharp!.fluid!.src})`,
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-          backgroundSize: "cover",
-        }}
-      />
-
-      <Box
-        sx={{
-          position: "absolute",
-          bottom: [20, 30],
-          left: [0],
-
+          maxWidth: "largeContainer",
           width: "100%",
+          mx: "auto",
         }}
       >
-        <Box
+        <Link
+          to="/tickets"
           sx={{
-            maxWidth: "largeContainer",
-            width: "100%",
-            mx: "auto",
+            px: 2,
           }}
         >
-          <Link
-            to="/tickets"
+          <BuyTicketsCTA
             sx={{
-              px: 2,
+              width: ["20vw", "10vw"],
+              height: ["20vw", "10vw"],
             }}
-          >
-            <BuyTicketsCTA
-              sx={{
-                width: ["20vw", "10vw"],
-                height: ["20vw", "10vw"],
-              }}
-            />
-          </Link>
-        </Box>
+          />
+        </Link>
       </Box>
     </Box>
-  );
-};
+  </Box>
+);
