@@ -16,6 +16,7 @@ class ScheduleItemAdmin(admin.ModelAdmin):
                     "conference",
                     "type",
                     "title",
+                    "image",
                     "description",
                     "submission",
                     "additional_speakers",

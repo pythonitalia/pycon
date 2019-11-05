@@ -49,6 +49,7 @@ exports.createResolvers = ({
     "BACKEND_Page",
     "BACKEND_Sponsor",
     "BACKEND_Event",
+    "BACKEND_ScheduleItem",
   ];
 
   const resolvers = {};

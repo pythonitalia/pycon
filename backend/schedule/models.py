@@ -53,6 +53,9 @@ class ScheduleItem(TimeFramedModel, TimeStampedModel):
         blank=True,
         verbose_name=_("submission"),
     )
+    image = models.ImageField(
+        _("image"), null=True, blank=True, upload_to="schedule_items"
+    )
 
     additional_speakers = models.ManyToManyField(
         settings.AUTH_USER_MODEL, verbose_name=_("additional speakers")
