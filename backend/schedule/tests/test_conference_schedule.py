@@ -1,4 +1,5 @@
 from django.utils import timezone
+from helpers.tests import get_image_url_from_request
 from pytest import mark
 from schedule.models import ScheduleItem
 
@@ -288,4 +289,32 @@ def test_get_additional_speakers(
                 {"id": str(another_speaker.id), "username": another_speaker.username}
             ]
         }
+    ]
+
+
+@mark.django_db
+def test_get_image(graphql_client, conference_factory, schedule_item_factory, rf):
+    request = rf.get("/")
+    now = timezone.now()
+    conference = conference_factory(start=now, end=now + timezone.timedelta(days=3))
+
+    schedule_item = schedule_item_factory(conference=conference)
+
+    resp = graphql_client.query(
+        """
+        query($code: String!) {
+            conference(code: $code) {
+                schedule {
+                    image
+                }
+            }
+        }
+        """,
+        variables={"code": conference.code},
+    )
+
+    assert not resp.get("errors")
+
+    assert resp["data"]["conference"]["schedule"] == [
+        {"image": get_image_url_from_request(request, schedule_item.image)}
     ]

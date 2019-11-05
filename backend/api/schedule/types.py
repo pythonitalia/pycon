@@ -33,3 +33,10 @@ class ScheduleItem:
     @strawberry.field
     def rooms(self, info) -> List[Room]:
         return self.rooms.all()
+
+    @strawberry.field
+    def image(self, info) -> Optional[str]:
+        if not self.image:
+            return None
+
+        return info.context["request"].build_absolute_uri(self.image.url)

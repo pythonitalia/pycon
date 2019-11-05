@@ -29,6 +29,7 @@ class ScheduleItemFactory(DjangoModelFactory):
     title = factory.Faker("text", max_nb_chars=100)
     description = factory.Faker("text")
     type = factory.fuzzy.FuzzyChoice(["submission", "custom"])
+    image = factory.django.ImageField()
 
     @classmethod
     def _create(cls, model_class, *args, **kwargs):
