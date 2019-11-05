@@ -1487,12 +1487,12 @@
     graphql-toolkit "0.5.18"
     tslib "1.10.0"
 
-"@graphql-codegen/fragment-matcher@^1.8.2":
-  version "1.8.2"
-  resolved "https://registry.yarnpkg.com/@graphql-codegen/fragment-matcher/-/fragment-matcher-1.8.2.tgz#cca1bfd61cf523bd8cb8994ff5015dc155889266"
-  integrity sha512-I0Ly6bG6IFEAY4m6DR9mwl7m+5VuCuupxRWnF8ZFS66d27Koe2KC1G+4ti5dxRHSZRp9NtLk6wazUL4jlkpxyQ==
+"@graphql-codegen/fragment-matcher@^1.8.3":
+  version "1.8.3"
+  resolved "https://registry.yarnpkg.com/@graphql-codegen/fragment-matcher/-/fragment-matcher-1.8.3.tgz#82564ec0ff16f59e30ab5f291eba33e076ac4876"
+  integrity sha512-lYPc38QAECnCczIwxAjDmfIm2sjNcXKdvc11DuK4q4bDJ1pCKv1e7IflzbTFNL8b2K4Ycn1wImeL8gIfxFpi3g==
   dependencies:
-    "@graphql-codegen/plugin-helpers" "1.8.2"
+    "@graphql-codegen/plugin-helpers" "1.8.3"
 
 "@graphql-codegen/introspection@1.8.2":
   version "1.8.2"
@@ -1507,6 +1507,17 @@
   resolved "https://registry.yarnpkg.com/@graphql-codegen/plugin-helpers/-/plugin-helpers-1.8.2.tgz#b982d9af9a68a3571118a1ad27ff512e49216a0c"
   integrity sha512-VMeUv/oMSVON/+8h1kor4VzamVxEWsktEybCiF92Ik3Ho5XxXGo5bweBauNFbxX6tff5gVdlPUDGMur86taKPg==
   dependencies:
+    change-case "3.1.0"
+    common-tags "1.8.0"
+    import-from "3.0.0"
+    tslib "1.10.0"
+
+"@graphql-codegen/plugin-helpers@1.8.3":
+  version "1.8.3"
+  resolved "https://registry.yarnpkg.com/@graphql-codegen/plugin-helpers/-/plugin-helpers-1.8.3.tgz#3235fe1752d622943a4ba3325c5a8d23e79bc399"
+  integrity sha512-4/wYWtnOSsY4QSRfNrnaMm+hqqjz0e3LV6KG8t2ajDyebYR9UvHUlzvpdfSj+Gptw6k3/PgJLNdtf8Y0fbjTng==
+  dependencies:
+    "@graphql-toolkit/common" "0.6.6"
     change-case "3.1.0"
     common-tags "1.8.0"
     import-from "3.0.0"
@@ -1552,6 +1563,15 @@
     graphql-tag "2.10.1"
     relay-compiler "6.0.0"
     tslib "1.10.0"
+
+"@graphql-toolkit/common@0.6.6":
+  version "0.6.6"
+  resolved "https://registry.yarnpkg.com/@graphql-toolkit/common/-/common-0.6.6.tgz#78e40a60eff843497140abf18733e170de4a1a40"
+  integrity sha512-6el8vYdtwO+LCZTfrpBsblsCYFFeUQ7W/KMGz2K/paE2V6mn93T0lzGkyGTSjxknqvqaTJOUMejzK719wAoQdQ==
+  dependencies:
+    "@kamilkisiela/graphql-tools" "4.0.6"
+    aggregate-error "3.0.1"
+    lodash "4.17.15"
 
 "@hapi/address@2.x.x":
   version "2.0.0"
@@ -15279,7 +15299,7 @@ shallowequal@^1.0.1, shallowequal@^1.1.0:
   resolved "https://registry.yarnpkg.com/shallowequal/-/shallowequal-1.1.0.tgz#188d521de95b9087404fd4dcb68b13df0ae4e7f8"
   integrity sha512-y0m1JoUZSlPAjXVtPPW70aZWfIL/dSP7AFkRnniLCrK/8MDKog3TySTBmckD+RObVxH0v4Tox67+F14PdED2oQ==
 
-sharp@^0.22.1, sharp@^0.23.0, sharp@^0.23.1, sharp@^0.23.2:
+sharp@^0.22.1, sharp@^0.23.0, sharp@^0.23.2:
   version "0.23.2"
   resolved "https://registry.yarnpkg.com/sharp/-/sharp-0.23.2.tgz#5f8b77513aa1f7e4d0dd969a3904ced75486c1d7"
   integrity sha512-BSo0tq6Jtzwa6GDKvVMNNPCP/HLczrFLGVcorYv7OtxlKx4UPHy7x9DdfT8F+PK7FCFDemVRwtsjWpvaJI9v6w==
