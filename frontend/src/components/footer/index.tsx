@@ -44,12 +44,10 @@ export const Footer = () => {
     }
   `);
 
-  const { links } = menu!;
+  const links = menu ? menu.links : [];
 
   let firstGroup = links;
   let secondGroup: Pick<Backend_MenuLink, "title" | "href">[] = [];
-
-  console.log("links", links);
 
   if (links.length > 4) {
     const halfLinks = Math.round(links.length / 2);
@@ -109,9 +107,7 @@ export const Footer = () => {
             sx={{
               width: "40px",
               height: "40px",
-
               borderRadius: "100%",
-
               backgroundColor: "#34B4A1",
             }}
           />
@@ -119,9 +115,7 @@ export const Footer = () => {
             sx={{
               width: "40px",
               height: "40px",
-
               borderRadius: "100%",
-
               backgroundColor: "#9473B0",
             }}
           />
@@ -129,9 +123,7 @@ export const Footer = () => {
             sx={{
               width: "40px",
               height: "40px",
-
               borderRadius: "100%",
-
               backgroundColor: "#F17A5D",
             }}
           />
