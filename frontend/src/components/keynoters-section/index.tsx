@@ -5,34 +5,20 @@ import { graphql, useStaticQuery } from "gatsby";
 import Img from "gatsby-image";
 import { jsx } from "theme-ui";
 
-type SpeakerProps = {
-  last?: boolean;
-};
+import { KeynotesSectionQuery } from "../../generated/graphql";
 
-const Speaker = ({ last }: SpeakerProps) => {
-  const {
-    file: { childImageSharp },
-  } = useStaticQuery(graphql`
-    {
-      file(relativePath: { eq: "images/speaker-example.jpg" }) {
-        childImageSharp {
-          fixed(width: 500, height: 500, fit: COVER, grayscale: true) {
-            ...GatsbyImageSharpFixed
-          }
-        }
-      }
-    }
-  `);
+type KeynoteProps = KeynotesSectionQuery["backend"]["conference"]["keynotes"][0];
 
-  return (
-    <Box
-      sx={{
-        position: "relative",
-        borderLeft: "primary",
-        borderRight: last ? "primary" : null,
-      }}
-    >
-      <Box sx={{ display: "inline-block", pt: "100%" }} />
+const Keynote = ({ title, additionalSpeakers, imageFile }: KeynoteProps) => (
+  <Box
+    sx={{
+      position: "relative",
+      borderLeft: "primary",
+      borderRight: "primary",
+    }}
+  >
+    <Box sx={{ display: "inline-block", pt: "100%" }} />
+    {imageFile && (
       <Img
         style={{
           position: "absolute",
@@ -41,68 +27,98 @@ const Speaker = ({ last }: SpeakerProps) => {
           width: "100%",
           height: "100%",
         }}
-        {...childImageSharp}
+        {...imageFile.childImageSharp}
       />
-      <Box
-        sx={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          background: "#79CDE0",
-          mixBlendMode: "multiply",
-        }}
-      />
+    )}
+    <Box
+      sx={{
+        position: "absolute",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
+        background: "#79CDE0",
+        mixBlendMode: "multiply",
+      }}
+    />
 
-      <Flex
-        sx={{
-          p: 3,
-          flexDirection: "column",
-          justifyContent: "flex-end",
-          color: "white",
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-        }}
-      >
-        <Heading variant="caps" as="h3">
-          Speaker name
+    <Flex
+      sx={{
+        p: 3,
+        flexDirection: "column",
+        justifyContent: "flex-end",
+        color: "white",
+        position: "absolute",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
+      }}
+    >
+      <Heading variant="caps" as="h3">
+        {additionalSpeakers.map(speaker => speaker.fullName).join(" & ")}
+      </Heading>
+      <Text>{title}</Text>
+    </Flex>
+  </Box>
+);
+
+export const KeynotersSection = () => {
+  const {
+    backend: {
+      conference: { keynotes },
+    },
+  } = useStaticQuery<KeynotesSectionQuery>(graphql`
+    query KeynotesSection {
+      backend {
+        conference {
+          keynotes {
+            id
+            title
+            image
+            imageFile {
+              childImageSharp {
+                fixed(grayscale: true, width: 600, height: 600) {
+                  ...GatsbyImageSharpFixed
+                }
+              }
+            }
+            additionalSpeakers {
+              fullName
+            }
+          }
+        }
+      }
+    }
+  `);
+
+  return (
+    <Box sx={{ borderBottom: "primary", borderTop: "primary" }}>
+      <Box sx={{ borderBottom: "primary", py: 4 }}>
+        <Heading
+          as="h1"
+          sx={{
+            px: 2,
+            maxWidth: "container",
+            mx: "auto",
+          }}
+        >
+          Keynote speakers
         </Heading>
-        <Text>Talk title</Text>
-      </Flex>
-    </Box>
-  );
-};
+      </Box>
 
-export const KeynotersSection = () => (
-  <Box sx={{ borderBottom: "primary", borderTop: "primary" }}>
-    <Box sx={{ borderBottom: "primary", py: 4 }}>
-      <Heading
-        as="h1"
+      <Grid
+        columns={[1, 3]}
+        gap={0}
         sx={{
-          px: 2,
           maxWidth: "container",
           mx: "auto",
         }}
       >
-        Keynote speakers
-      </Heading>
+        {keynotes.map(keynote => (
+          <Keynote {...keynote} key={keynote.id} />
+        ))}
+      </Grid>
     </Box>
-
-    <Grid
-      columns={3}
-      gap={0}
-      sx={{
-        maxWidth: "container",
-        mx: "auto",
-      }}
-    >
-      <Speaker />
-      <Speaker />
-      <Speaker last={true} />
-    </Grid>
-  </Box>
-);
+  );
+};
