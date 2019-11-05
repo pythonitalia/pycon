@@ -18,4 +18,5 @@ class User:
     id: strawberry.ID
     email: str
     name: str
+    full_name: str
     username: str
