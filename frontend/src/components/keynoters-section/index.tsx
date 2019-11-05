@@ -9,7 +9,14 @@ import { KeynotesSectionQuery } from "../../generated/graphql";
 
 type KeynoteProps = KeynotesSectionQuery["backend"]["conference"]["keynotes"][0];
 
-const Keynote = ({ title, additionalSpeakers, imageFile }: KeynoteProps) => (
+const colors = ["#79CDE0", "#34B4A1", "#F17A5D"];
+
+const Keynote = ({
+  title,
+  additionalSpeakers,
+  imageFile,
+  color,
+}: KeynoteProps & { color: string }) => (
   <Box
     sx={{
       position: "relative",
@@ -37,7 +44,7 @@ const Keynote = ({ title, additionalSpeakers, imageFile }: KeynoteProps) => (
         left: 0,
         width: "100%",
         height: "100%",
-        background: "#79CDE0",
+        background: color,
         mixBlendMode: "multiply",
       }}
     />
@@ -115,8 +122,12 @@ export const KeynotersSection = () => {
           mx: "auto",
         }}
       >
-        {keynotes.map(keynote => (
-          <Keynote {...keynote} key={keynote.id} />
+        {keynotes.map((keynote, index) => (
+          <Keynote
+            color={colors[index % colors.length]}
+            {...keynote}
+            key={keynote.id}
+          />
         ))}
       </Grid>
     </Box>
