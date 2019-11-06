@@ -24,6 +24,18 @@ const MenuItems: React.SFC = ({ children, ...props }) => (
   </ul>
 );
 
+const FakeSocial = () => (
+  <li
+    sx={{
+      width: "40px",
+      height: "40px",
+      borderRadius: "100%",
+      backgroundColor: "#F17A5D",
+      flexShrink: 0,
+    }}
+  />
+);
+
 export const Footer = () => {
   const {
     backend: {
@@ -59,7 +71,7 @@ export const Footer = () => {
     <Box
       sx={{
         background: "black",
-        py: [4, 6],
+        py: [4, 5],
         px: 2,
       }}
     >
@@ -68,14 +80,14 @@ export const Footer = () => {
           maxWidth: "container",
           mx: "auto",
 
-          gridTemplateColumns: [null, "6fr 5fr 2fr 2fr 3fr"],
+          gridTemplateColumns: [null, null, "5fr 1fr 2fr 2fr 3fr"],
         }}
       >
         <Logo />
 
         <MenuItems
           sx={{
-            gridColumnStart: [null, 3],
+            gridColumnStart: [null, null, 3],
           }}
         >
           {firstGroup.map((link, i) => (
@@ -99,34 +111,13 @@ export const Footer = () => {
             listStyle: "none",
 
             "li + li": {
-              marginLeft: 4,
+              marginLeft: 3,
             },
           }}
         >
-          <li
-            sx={{
-              width: "40px",
-              height: "40px",
-              borderRadius: "100%",
-              backgroundColor: "#34B4A1",
-            }}
-          />
-          <li
-            sx={{
-              width: "40px",
-              height: "40px",
-              borderRadius: "100%",
-              backgroundColor: "#9473B0",
-            }}
-          />
-          <li
-            sx={{
-              width: "40px",
-              height: "40px",
-              borderRadius: "100%",
-              backgroundColor: "#F17A5D",
-            }}
-          />
+          <FakeSocial />
+          <FakeSocial />
+          <FakeSocial />
         </Flex>
       </Grid>
     </Box>
