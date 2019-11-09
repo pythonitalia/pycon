@@ -12,7 +12,6 @@ import { HomePageQuery } from "../generated/graphql";
 
 export default ({
   data,
-  pageContext,
 }: {
   data: HomePageQuery;
   pageContext: { language: string };
@@ -25,7 +24,7 @@ export default ({
     <Fragment>
       <HomepageHero />
 
-      <Marquee message="Hello world" />
+      <Marquee message={data.backend.conference.marquee!} />
 
       <Grid
         sx={{
@@ -191,6 +190,7 @@ export const query = graphql`
         name(language: $language)
         introduction(language: $language)
 
+        marquee: copy(key: "marquee", language: $language)
         introTitle: copy(key: "intro-title-1", language: $language)
         introText: copy(key: "intro-text-1", language: $language)
 
