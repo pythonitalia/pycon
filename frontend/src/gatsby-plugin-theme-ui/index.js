@@ -25,8 +25,10 @@ export default {
     primary: "#07c",
     secondary: "#30c",
     muted: "#f6f6f6",
+    green: "#219653",
     purple: "#FA00FF",
     orange: "#F8B03D",
+    burntSienna: "#F17A5D",
   },
   borders: {
     primary: "3px solid #000000",
@@ -66,6 +68,16 @@ export default {
       variant: "text.caps",
       fontSize: 5,
       whiteSpace: "nowrap",
+    },
+    cfpLabel: {
+      textTransform: "uppercase",
+      fontWeight: "bold",
+      fontSize: 3,
+      color: "burntSienna",
+      mb: 2,
+    },
+    cfpLabelDescription: {
+      mb: 3,
     },
   },
   styles: {
