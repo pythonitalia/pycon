@@ -6,6 +6,9 @@ import { jsx } from "theme-ui";
 
 import { Backend_MenuLink, FooterQuery } from "../../generated/graphql";
 import { Logo } from "../logo";
+import Facebook from "../socials/facebook";
+import Instagram from "../socials/instagram";
+import Twitter from "../socials/twitter";
 
 const MenuItems: React.SFC = ({ children, ...props }) => (
   <ul
@@ -24,16 +27,31 @@ const MenuItems: React.SFC = ({ children, ...props }) => (
   </ul>
 );
 
-const FakeSocial = () => (
+const SocialCircle: React.SFC<{ color: string }> = ({ children, color }) => (
   <li
     sx={{
       width: "40px",
       height: "40px",
       borderRadius: "100%",
-      backgroundColor: "#F17A5D",
+      backgroundColor: color,
       flexShrink: 0,
+      cursor: "pointer",
+      a: {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        width: "100%",
+        height: "100%",
+      },
+      svg: {
+        path: {
+          fill: "white",
+        },
+      },
     }}
-  />
+  >
+    {children}
+  </li>
 );
 
 export const Footer = () => {
@@ -115,9 +133,33 @@ export const Footer = () => {
             },
           }}
         >
-          <FakeSocial />
-          <FakeSocial />
-          <FakeSocial />
+          <SocialCircle color="#34B4A1">
+            <a
+              target="_blank"
+              rel="noreferrer noopener"
+              href="https://twitter.com/pyconit"
+            >
+              <Twitter />
+            </a>
+          </SocialCircle>
+          <SocialCircle color="#9473B0">
+            <a
+              target="_blank"
+              rel="noreferrer noopener"
+              href="https://www.facebook.com/pythonitalia/"
+            >
+              <Facebook />
+            </a>
+          </SocialCircle>
+          <SocialCircle color="#F17A">
+            <a
+              target="_blank"
+              rel="noreferrer noopener"
+              href="https://www.instagram.com/python.it/"
+            >
+              <Instagram />
+            </a>
+          </SocialCircle>
         </Flex>
       </Grid>
     </Box>
