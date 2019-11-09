@@ -11,6 +11,7 @@ import { client } from "../apollo/client";
 import { ErrorBoundary } from "../components/error-boundary";
 import { Footer } from "../components/footer";
 import { Header } from "../components/header";
+import { ConferenceContext } from "../context/conference";
 import { LanguageContext } from "../context/language";
 import messages from "../locale";
 
@@ -19,6 +20,7 @@ type Props = {
   props: {
     pageContext: {
       language: "en" | "it";
+      conferenceCode: string;
     };
   };
 };
@@ -39,29 +41,31 @@ export const wrapPageElement = ({ element, props }: Props) => (
     </Helmet>
 
     <Styled.root>
-      <LanguageContext.Provider value={props.pageContext.language}>
-        <IntlProvider
-          locale={props.pageContext.language}
-          messages={messages[props.pageContext.language]}
-        >
-          <ApolloProvider client={client}>
-            <ErrorBoundary>
-              <Header />
+      <ConferenceContext.Provider value={props.pageContext.conferenceCode}>
+        <LanguageContext.Provider value={props.pageContext.language}>
+          <IntlProvider
+            locale={props.pageContext.language}
+            messages={messages[props.pageContext.language]}
+          >
+            <ApolloProvider client={client}>
+              <ErrorBoundary>
+                <Header />
 
-              <Flex
-                sx={{
-                  flexDirection: "column",
-                  minHeight: "100vh",
-                }}
-              >
-                <Box sx={{ mt: [100, 180] }}>{element}</Box>
+                <Flex
+                  sx={{
+                    flexDirection: "column",
+                    minHeight: "100vh",
+                  }}
+                >
+                  <Box sx={{ mt: [100, 180] }}>{element}</Box>
 
-                <Footer />
-              </Flex>
-            </ErrorBoundary>
-          </ApolloProvider>
-        </IntlProvider>
-      </LanguageContext.Provider>
+                  <Footer />
+                </Flex>
+              </ErrorBoundary>
+            </ApolloProvider>
+          </IntlProvider>
+        </LanguageContext.Provider>
+      </ConferenceContext.Provider>
     </Styled.root>
   </Fragment>
 );

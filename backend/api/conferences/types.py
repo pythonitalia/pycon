@@ -92,6 +92,10 @@ class Conference:
         return self.durations.all()
 
     @strawberry.field
+    def submission_types(self, info) -> List[SubmissionType]:
+        return self.submission_types.all()
+
+    @strawberry.field
     def submissions(self, info) -> List[Submission]:
         return self.submissions.all()
 

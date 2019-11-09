@@ -6,6 +6,10 @@ const {
   createRemoteFileNode,
 } = require("gatsby-source-filesystem");
 
+require("dotenv").config({
+  path: `.env`,
+});
+
 exports.onCreateNode = ({ node, actions, getNode, getNodes }) => {
   const { createNodeField } = actions;
 
@@ -94,6 +98,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   const pageTemplate = path.resolve(`src/templates/page.tsx`);
   const homeTemplate = path.resolve(`src/templates/home.tsx`);
   const appTemplate = path.resolve(`src/templates/app.tsx`);
+  const cfpTemplate = path.resolve("src/templates/cfp/index.tsx");
 
   createRedirect({
     fromPath: `/`,
@@ -106,6 +111,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     { template: appTemplate, path: "/login", matchPath: "/login/*" },
     { template: appTemplate, path: "/signup", matchPath: "/signup/*" },
     { template: appTemplate, path: "/profile", matchPath: "/profile/*" },
+    { template: cfpTemplate, path: "/cfp", matchPath: "/cfp/*" },
   ];
   const languages = ["en", "it"];
 
@@ -117,6 +123,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         matchPath: page.matchPath ? `/${language}${page.matchPath}` : null,
         context: {
           language,
+          conferenceCode: process.env.CONFERENCE_CODE || "pycon-demo",
         },
       }),
     );

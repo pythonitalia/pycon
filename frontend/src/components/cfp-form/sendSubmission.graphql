@@ -1,0 +1,22 @@
+mutation SendSubmission($input: SendSubmissionInput!) {
+  sendSubmission(input: $input) {
+    __typename
+
+    ... on Submission {
+      id
+    }
+
+    ... on SendSubmissionErrors {
+      title
+      abstract
+      topic
+      languages
+      type
+      duration
+      elevatorPitch
+      notes
+      audienceLevel
+      nonFieldErrors
+    }
+  }
+}

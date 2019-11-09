@@ -1,0 +1,33 @@
+query CfpConfig($conference: String!) {
+  conference(code: $conference) {
+    durations {
+      name
+      id
+      allowedSubmissionTypes {
+        id
+        name
+      }
+    }
+
+    audienceLevels {
+      id
+      name
+    }
+
+    submissionTypes {
+      id
+      name
+    }
+
+    topics {
+      id
+      name
+    }
+
+    languages {
+      code
+      id
+      name
+    }
+  }
+}

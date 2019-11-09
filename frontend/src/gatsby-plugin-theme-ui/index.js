@@ -25,13 +25,35 @@ export default {
     primary: "#07c",
     secondary: "#30c",
     muted: "#f6f6f6",
+    green: "#219653",
     purple: "#FA00FF",
     yellow: "#F8B03D",
     orange: "#F17A5D",
     violet: "#9473B0",
+    blue: "#79CDE0",
   },
   borders: {
     primary: "3px solid #000000",
+  },
+  forms: {
+    input: {
+      fontFamily: "body",
+      bg: "blue",
+      border: "primary",
+      borderWidth: 4,
+    },
+    textarea: {
+      fontFamily: "body",
+      bg: "blue",
+      border: "primary",
+      borderWidth: 4,
+    },
+    select: {
+      fontFamily: "body",
+      bg: "blue",
+      border: "primary",
+      borderWidth: 4,
+    },
   },
   buttons: {
     primary: {
@@ -89,6 +111,17 @@ export default {
       variant: "text.caps",
       fontSize: 5,
       whiteSpace: "nowrap",
+    },
+    cfpLabel: {
+      textTransform: "uppercase",
+      fontWeight: "bold",
+      fontSize: 3,
+      color: "orange",
+      mb: 2,
+    },
+    cfpLabelDescription: {
+      mb: 3,
+      maxWidth: 850,
     },
   },
   styles: {
