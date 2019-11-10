@@ -15,6 +15,7 @@ class SubmissionAdmin(admin.ModelAdmin):
     )
     list_filter = ("conference", "type", "topic")
     search_fields = ("title", "abstract")
+    prepopulated_fields = {"slug": ("title",)}
 
 
 @admin.register(SubmissionType)

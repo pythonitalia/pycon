@@ -2,6 +2,7 @@ from django.conf import settings
 from django.core import exceptions
 from django.db import models
 from django.urls import reverse
+from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
 from model_utils.models import TimeStampedModel
 
@@ -19,6 +20,7 @@ class Submission(TimeStampedModel):
     elevator_pitch = models.TextField(
         _("elevator pitch"), max_length=300, default="", blank=True
     )
+    slug = models.SlugField(_("slug"), max_length=200)
     notes = models.TextField(_("notes"), default="", blank=True)
 
     speaker = models.ForeignKey(
@@ -129,6 +131,12 @@ class Submission(TimeStampedModel):
             "admin:%s_%s_change" % (self._meta.app_label, self._meta.model_name),
             args=(self.pk,),
         )
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+
+        return super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.title} at Conference {self.conference_id}"

@@ -17,7 +17,7 @@ class SendSubmission(FormMutation):
             notes=result.notes,
             abstract=result.abstract,
             speaker=result.speaker,
-            # helpers=result.#,
+            slug=result.slug,
             topic=result.topic,
             type=result.type,
             duration=result.duration,
