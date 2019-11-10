@@ -2544,6 +2544,11 @@
     "@styled-system/should-forward-prop" "^5.1.2"
     "@styled-system/space" "^5.1.2"
 
+"@theme-ui/match-media@^0.2.46":
+  version "0.2.46"
+  resolved "https://registry.yarnpkg.com/@theme-ui/match-media/-/match-media-0.2.46.tgz#664c73512bae46e21d0bcf2efb9ea124c66d79b4"
+  integrity sha512-YmROxvTPlr3YWuwCgIKndJoCWphZo71UeB6KeVaSCzFLnIT2qjFnT28bORf+td4QvZJL99Gtb2McvscPVeRefw==
+
 "@tippy.js/react@^2.2.0":
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/@tippy.js/react/-/react-2.2.2.tgz#a0fbc646958cdb002d7d227f7b18dca346c76f2e"

@@ -7,6 +7,7 @@ import { useState } from "react";
 import { jsx } from "theme-ui";
 
 import { KeynotesSectionQuery } from "../../generated/graphql";
+import { useSSRResponsiveValue } from "../../helpers/use-ssr-responsive-value";
 import { ArrowIcon } from "../icons/arrow";
 
 type KeynoteProps = KeynotesSectionQuery["backend"]["conference"]["keynotes"][0];
@@ -91,8 +92,9 @@ const KeynotesList = ({
 }: {
   keynotes: KeynotesSectionQuery["backend"]["conference"]["keynotes"];
 }) => {
-  const showArrows = keynotes.length > 3;
-  const [page, increase, decrease] = useSlider(keynotes, 3);
+  const columns = useSSRResponsiveValue([1, 3]);
+  const showArrows = keynotes.length > columns;
+  const [page, increase, decrease] = useSlider(keynotes, columns);
 
   return (
     <Grid
@@ -112,7 +114,7 @@ const KeynotesList = ({
         {showArrows && <ArrowIcon />}
       </Flex>
 
-      <Grid columns={3} gap={0}>
+      <Grid columns={columns} gap={0}>
         {page.map((keynote, i) => (
           <Keynote
             color={colors[i % colors.length]}
