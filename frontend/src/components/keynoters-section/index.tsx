@@ -91,8 +91,6 @@ const KeynotesList = ({
 }: {
   keynotes: KeynotesSectionQuery["backend"]["conference"]["keynotes"];
 }) => {
-  console.log(keynotes);
-
   const showArrows = keynotes.length > 3;
   const [page, increase, decrease] = useSlider(keynotes, 3);
 
