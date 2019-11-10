@@ -1,14 +1,12 @@
 /** @jsx jsx */
 
-import { Box, Flex, Grid } from "@theme-ui/components";
+import { Box, Grid } from "@theme-ui/components";
 import { graphql, Link, useStaticQuery } from "gatsby";
 import { jsx } from "theme-ui";
 
 import { Backend_MenuLink, FooterQuery } from "../../generated/graphql";
 import { Logo } from "../logo";
-import Facebook from "../socials/facebook";
-import Instagram from "../socials/instagram";
-import Twitter from "../socials/twitter";
+import { SocialLinks } from "../social-links";
 
 const MenuItems: React.SFC = ({ children, ...props }) => (
   <ul
@@ -25,33 +23,6 @@ const MenuItems: React.SFC = ({ children, ...props }) => (
   >
     {children}
   </ul>
-);
-
-const SocialCircle: React.SFC<{ color: string }> = ({ children, color }) => (
-  <li
-    sx={{
-      width: "40px",
-      height: "40px",
-      borderRadius: "100%",
-      backgroundColor: color,
-      flexShrink: 0,
-      cursor: "pointer",
-      a: {
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        width: "100%",
-        height: "100%",
-      },
-      svg: {
-        path: {
-          fill: "white",
-        },
-      },
-    }}
-  >
-    {children}
-  </li>
 );
 
 export const Footer = () => {
@@ -123,44 +94,7 @@ export const Footer = () => {
           ))}
         </MenuItems>
 
-        <Flex
-          as="ul"
-          sx={{
-            listStyle: "none",
-
-            "li + li": {
-              marginLeft: 3,
-            },
-          }}
-        >
-          <SocialCircle color="#34B4A1">
-            <a
-              target="_blank"
-              rel="noreferrer noopener"
-              href="https://twitter.com/pyconit"
-            >
-              <Twitter />
-            </a>
-          </SocialCircle>
-          <SocialCircle color="#9473B0">
-            <a
-              target="_blank"
-              rel="noreferrer noopener"
-              href="https://www.facebook.com/pythonitalia/"
-            >
-              <Facebook />
-            </a>
-          </SocialCircle>
-          <SocialCircle color="#F17A">
-            <a
-              target="_blank"
-              rel="noreferrer noopener"
-              href="https://www.instagram.com/python.it/"
-            >
-              <Instagram />
-            </a>
-          </SocialCircle>
-        </Flex>
+        <SocialLinks />
       </Grid>
     </Box>
   );

@@ -10,12 +10,7 @@ import { KeynotersSection } from "../components/keynoters-section";
 import { Marquee } from "../components/marquee";
 import { HomePageQuery } from "../generated/graphql";
 
-export default ({
-  data,
-}: {
-  data: HomePageQuery;
-  pageContext: { language: string };
-}) => {
+export default ({ data, ...props }: { data: HomePageQuery }) => {
   const {
     backend: { conference },
   } = data;
@@ -71,7 +66,7 @@ export default ({
             {conference.proposalsTitle}
           </Heading>
 
-          <Heading as="h2" sx={{ color: "orange", fontSize: 3, mb: 3 }}>
+          <Heading as="h2" sx={{ color: "yellow", fontSize: 3, mb: 3 }}>
             {conference.proposalsSubtitle}
           </Heading>
 
