@@ -3,9 +3,11 @@
 import { Box, Flex, Grid, Heading, Text } from "@theme-ui/components";
 import { graphql, useStaticQuery } from "gatsby";
 import Img from "gatsby-image";
+import { useState } from "react";
 import { jsx } from "theme-ui";
 
 import { KeynotesSectionQuery } from "../../generated/graphql";
+import { ArrowIcon } from "../icons/arrow";
 
 type KeynoteProps = KeynotesSectionQuery["backend"]["conference"]["keynotes"][0];
 
@@ -70,6 +72,71 @@ const Keynote = ({
   </Box>
 );
 
+const useSlider = <T extends any>(
+  objects: T[],
+  perPage: number,
+): [T[], () => void, () => void] => {
+  const [index, setIndex] = useState(0);
+
+  // TODO: fix the increase to find the last page
+  const increase = () =>
+    setIndex(Math.min(index + perPage, objects.length - 1));
+  const decrease = () => setIndex(Math.max(index - perPage, 0));
+
+  return [objects.slice(index, index + perPage), increase, decrease];
+};
+
+const KeynotesList = ({
+  keynotes,
+}: {
+  keynotes: KeynotesSectionQuery["backend"]["conference"]["keynotes"];
+}) => {
+  console.log(keynotes);
+
+  const showArrows = keynotes.length > 3;
+  const [page, increase, decrease] = useSlider(keynotes, 3);
+
+  return (
+    <Grid
+      sx={{
+        justifyContent: "center",
+        gridTemplateColumns: "100px minmax(200px, 1200px) 100px",
+      }}
+      gap={0}
+    >
+      <Flex
+        onClick={decrease}
+        sx={{
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {showArrows && <ArrowIcon />}
+      </Flex>
+
+      <Grid columns={3} gap={0}>
+        {page.map((keynote, i) => (
+          <Keynote
+            color={colors[i % colors.length]}
+            key={keynote.id}
+            {...keynote}
+          />
+        ))}
+      </Grid>
+
+      <Flex
+        onClick={increase}
+        sx={{
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {showArrows && <ArrowIcon direction="right" />}
+      </Flex>
+    </Grid>
+  );
+};
+
 export const KeynotersSection = () => {
   const {
     backend: {
@@ -114,22 +181,7 @@ export const KeynotersSection = () => {
         </Heading>
       </Box>
 
-      <Grid
-        columns={[1, 3]}
-        gap={0}
-        sx={{
-          maxWidth: "container",
-          mx: "auto",
-        }}
-      >
-        {keynotes.map((keynote, index) => (
-          <Keynote
-            color={colors[index % colors.length]}
-            {...keynote}
-            key={keynote.id}
-          />
-        ))}
-      </Grid>
+      <KeynotesList keynotes={keynotes} />
     </Box>
   );
 };
