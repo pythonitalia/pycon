@@ -15,7 +15,7 @@ class SendSubmissionForm(ContextAwareModelForm):
         queryset=Language.objects.all(), to_field_name="code"
     )
     audience_level = forms.ModelChoiceField(
-        queryset=AudienceLevel.objects.all(), to_field_name="name"
+        queryset=AudienceLevel.objects.all(), to_field_name="id"
     )
 
     def clean(self):

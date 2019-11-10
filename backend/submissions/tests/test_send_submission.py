@@ -19,7 +19,7 @@ def _submit_talk(client, conference, **kwargs):
         "topic": conference.topics.first().id,
         "type": talk.type.id,
         "duration": conference.durations.first().id,
-        "audience_level": conference.audience_levels.first().name,
+        "audience_level": conference.audience_levels.first().id,
     }
 
     variables = {**defaults, **kwargs}
@@ -93,7 +93,7 @@ def _submit_tutorial(client, conference, **kwargs):
         "topic": conference.topics.first().id,
         "type": talk.type.id,
         "duration": conference.durations.first().id,
-        "audience_level": conference.audience_levels.first().name,
+        "audience_level": conference.audience_levels.first().id,
     }
 
     variables = {**defaults, **kwargs}
@@ -420,9 +420,7 @@ def test_submit_talk_with_not_valid_conf_audience_level(
         active_cfp=True,
         audience_levels=("Beginner",),
     )
-    resp, _ = _submit_talk(
-        graphql_client, conference, audience_level=audience_level.name
-    )
+    resp, _ = _submit_talk(graphql_client, conference, audience_level=audience_level.id)
 
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
     assert resp["data"]["sendSubmission"]["validationAudienceLevel"] == [
