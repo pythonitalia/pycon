@@ -26,7 +26,8 @@ export default {
     secondary: "#30c",
     muted: "#f6f6f6",
     purple: "#FA00FF",
-    orange: "#F8B03D",
+    yellow: "#F8B03D",
+    orange: "#F17A5D",
   },
   borders: {
     primary: "3px solid #000000",
@@ -53,9 +54,26 @@ export default {
       background: "#fff",
     },
   },
+  links: {
+    header: {
+      color: "white",
+      fontSize: 5,
+      textDecoration: "none",
+      "&:hover": {
+        borderBottom: "2px solid white",
+      },
+    },
+  },
   text: {
     caps: {
       textTransform: "uppercase",
+    },
+    header: {
+      variant: "text.caps",
+      fontSize: 2,
+      fontWeight: "bold",
+      mt: 20,
+      mb: 3,
     },
     heading: {
       fontFamily: "heading",
