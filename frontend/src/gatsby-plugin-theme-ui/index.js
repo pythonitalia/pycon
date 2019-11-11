@@ -28,6 +28,7 @@ export default {
     purple: "#FA00FF",
     yellow: "#F8B03D",
     orange: "#F17A5D",
+    violet: "#9473B0",
   },
   borders: {
     primary: "3px solid #000000",
@@ -74,6 +75,10 @@ export default {
       fontWeight: "bold",
       mt: 20,
       mb: 3,
+    },
+    prefooter: {
+      fontWeight: "bold",
+      color: "violet",
     },
     heading: {
       fontFamily: "heading",
