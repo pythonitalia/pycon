@@ -21,6 +21,7 @@ class Submission:
     id: strawberry.ID
     conference: "Conference"
     title: str
+    slug: str
     elevator_pitch: str
     notes: str
     abstract: str
