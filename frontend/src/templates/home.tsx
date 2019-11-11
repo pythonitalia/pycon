@@ -1,6 +1,9 @@
 /** @jsx jsx */
+import css from "@styled-system/css";
 import { Box, Flex, Grid, Heading, Text } from "@theme-ui/components";
+import { Link } from "fannypack";
 import { graphql } from "gatsby";
+import Img from "gatsby-image";
 import { Fragment } from "react";
 import { jsx } from "theme-ui";
 
@@ -10,7 +13,7 @@ import { KeynotersSection } from "../components/keynoters-section";
 import { Marquee } from "../components/marquee";
 import { HomePageQuery } from "../generated/graphql";
 
-export default ({ data, ...props }: { data: HomePageQuery }) => {
+export default ({ data }: { data: HomePageQuery }) => {
   const {
     backend: { conference },
   } = data;
@@ -19,7 +22,7 @@ export default ({ data, ...props }: { data: HomePageQuery }) => {
     <Fragment>
       <HomepageHero />
 
-      <Marquee message={data.backend.conference.marquee!} />
+      <Marquee message={conference.marquee!} />
 
       <Grid
         sx={{
@@ -116,7 +119,6 @@ export default ({ data, ...props }: { data: HomePageQuery }) => {
       <Box
         sx={{
           borderBottom: "primary",
-          borderTop: "primary",
         }}
       >
         <Grid
@@ -173,6 +175,105 @@ export default ({ data, ...props }: { data: HomePageQuery }) => {
             }}
           />
         </Grid>
+      </Box>
+
+      <Box sx={{ borderBottom: "primary" }}>
+        <Box sx={{ py: 4 }}>
+          <Heading
+            as="h1"
+            sx={{
+              px: 2,
+              maxWidth: "container",
+              mx: "auto",
+            }}
+          >
+            Sponsors
+          </Heading>
+        </Box>
+      </Box>
+
+      <Box sx={{ pb: 5 }}>
+        {conference.sponsorsByLevel.map(({ level, sponsors }) => (
+          <Box key={level}>
+            <Heading
+              sx={{
+                maxWidth: "container",
+                mx: "auto",
+                my: 3,
+              }}
+            >
+              <Box
+                as="span"
+                sx={{
+                  transform: "rotate(90deg)",
+                  transformOrigin: "0 0",
+                  top: 5,
+                  p: 2,
+                  left: -20,
+                }}
+                css={css`
+                  @media (min-width: 1310px) {
+                    position: relative;
+                    display: inline-block;
+                    padding: 0;
+                  }
+                `}
+              >
+                {level}
+              </Box>
+            </Heading>
+
+            <Grid
+              columns={3}
+              gap={1}
+              sx={{
+                maxWidth: "container",
+                mx: "auto",
+                border: "primary",
+                background: "black",
+              }}
+            >
+              {sponsors.map(sponsor => (
+                <Box
+                  sx={{
+                    backgroundColor: "yellow",
+                  }}
+                  key={sponsor.name}
+                >
+                  <Link
+                    href={sponsor.link!}
+                    sx={{
+                      filter: "saturate(0)",
+                      transition: "0.3s filter ease-in-out",
+                      position: "relative",
+                      display: "block",
+                      "&:hover": {
+                        filter: "none",
+                      },
+                    }}
+                  >
+                    <Box sx={{ display: "inline-block", pt: "40%" }} />
+
+                    <Img
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                      }}
+                      imgStyle={{
+                        objectFit: "contain",
+                      }}
+                      alt={sponsor.name}
+                      {...sponsor.imageFile!.childImageSharp}
+                    />
+                  </Link>
+                </Box>
+              ))}
+            </Grid>
+          </Box>
+        ))}
       </Box>
     </Fragment>
   );
@@ -237,9 +338,9 @@ export const query = graphql`
               childImageSharp {
                 fluid(
                   fit: CONTAIN
-                  maxWidth: 600
-                  maxHeight: 300
-                  background: "white"
+                  maxWidth: 800
+                  maxHeight: 500
+                  background: "transparent"
                 ) {
                   ...GatsbyImageSharpFluid
                 }
