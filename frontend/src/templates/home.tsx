@@ -191,9 +191,30 @@ export default ({ data }: { data: HomePageQuery }) => {
       </Box>
 
       <SponsorsSection
-        sx={{ pb: 5 }}
+        sx={{ pb: 5, borderBottom: "primary" }}
         sponsorsByLevel={conference.sponsorsByLevel}
       />
+
+      <Grid columns={[1, 2]} sx={{ px: 2, maxWidth: "container", mx: "auto" }}>
+        <Box sx={{ py: 5, borderRight: [null, "primary"] }}>
+          <Heading sx={{ fontSize: 5, mb: 4 }}>Keep up to date</Heading>
+
+          <Text variant="prefooter">
+            Nulla non orci eu magna sagittis finibus. Donec sed nunc magna. Sed
+            nec tincidunt elit, nec ultrices arcu. In massa eros, dignissim eget
+            leo nec, sodales fringilla ante.
+          </Text>
+        </Box>
+        <Box sx={{ py: 5, pl: [0, 4] }}>
+          <Heading sx={{ fontSize: 5, mb: 4 }}>FAQs</Heading>
+
+          <Text variant="prefooter">
+            Nulla non orci eu magna sagittis finibus. Donec sed nunc magna. Sed
+            nec tincidunt elit, nec ultrices arcu. In massa eros, dignissim eget
+            leo nec, sodales fringilla ante.
+          </Text>
+        </Box>
+      </Grid>
     </Fragment>
   );
 };
