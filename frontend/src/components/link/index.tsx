@@ -27,9 +27,7 @@ export const Link: React.SFC<LinkProps> = ({
 
   return (
     <ThemeLink {...additionalProps} as={LinkComponent} href={href} to={href}>
-      <Box as="span" sx={{ display: "inline-block" }}>
-        {children}
-      </Box>
+      {children}
     </ThemeLink>
   );
 };

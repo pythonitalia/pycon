@@ -1,9 +1,6 @@
 /** @jsx jsx */
-import css from "@styled-system/css";
 import { Box, Flex, Grid, Heading, Text } from "@theme-ui/components";
-import { Link } from "fannypack";
 import { graphql } from "gatsby";
-import Img from "gatsby-image";
 import { Fragment } from "react";
 import { jsx } from "theme-ui";
 
@@ -11,6 +8,7 @@ import { EventCard } from "../components/home-events/event-card";
 import { HomepageHero } from "../components/homepage-hero";
 import { KeynotersSection } from "../components/keynoters-section";
 import { Marquee } from "../components/marquee";
+import { SponsorsSection } from "../components/sponsors-section";
 import { HomePageQuery } from "../generated/graphql";
 
 export default ({ data }: { data: HomePageQuery }) => {
@@ -192,89 +190,10 @@ export default ({ data }: { data: HomePageQuery }) => {
         </Box>
       </Box>
 
-      <Box sx={{ pb: 5 }}>
-        {conference.sponsorsByLevel.map(({ level, sponsors }) => (
-          <Box key={level}>
-            <Heading
-              sx={{
-                maxWidth: "container",
-                mx: "auto",
-                my: 3,
-              }}
-            >
-              <Box
-                as="span"
-                sx={{
-                  transform: "rotate(90deg)",
-                  transformOrigin: "0 0",
-                  top: 5,
-                  p: 2,
-                  left: -20,
-                }}
-                css={css`
-                  @media (min-width: 1310px) {
-                    position: relative;
-                    display: inline-block;
-                    padding: 0;
-                  }
-                `}
-              >
-                {level}
-              </Box>
-            </Heading>
-
-            <Grid
-              columns={3}
-              gap={1}
-              sx={{
-                maxWidth: "container",
-                mx: "auto",
-                border: "primary",
-                background: "black",
-              }}
-            >
-              {sponsors.map(sponsor => (
-                <Box
-                  sx={{
-                    backgroundColor: "yellow",
-                  }}
-                  key={sponsor.name}
-                >
-                  <Link
-                    href={sponsor.link!}
-                    sx={{
-                      filter: "saturate(0)",
-                      transition: "0.3s filter ease-in-out",
-                      position: "relative",
-                      display: "block",
-                      "&:hover": {
-                        filter: "none",
-                      },
-                    }}
-                  >
-                    <Box sx={{ display: "inline-block", pt: "40%" }} />
-
-                    <Img
-                      style={{
-                        position: "absolute",
-                        top: 0,
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                      }}
-                      imgStyle={{
-                        objectFit: "contain",
-                      }}
-                      alt={sponsor.name}
-                      {...sponsor.imageFile!.childImageSharp}
-                    />
-                  </Link>
-                </Box>
-              ))}
-            </Grid>
-          </Box>
-        ))}
-      </Box>
+      <SponsorsSection
+        sx={{ pb: 5 }}
+        sponsorsByLevel={conference.sponsorsByLevel}
+      />
     </Fragment>
   );
 };
