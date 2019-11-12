@@ -131,7 +131,6 @@ export const Header = () => {
                   <Link
                     sx={{
                       color: "white",
-                      borderBottom: "1px solid white",
                     }}
                     href="mailto:sponsor@pycon.it"
                   >
@@ -143,7 +142,6 @@ export const Header = () => {
                   <Link
                     sx={{
                       color: "white",
-                      borderBottom: "1px solid white",
                     }}
                     href="mailto:info@pycon.it"
                   >
