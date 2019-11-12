@@ -62,6 +62,7 @@ export const Footer = () => {
         background: "black",
         py: [4, 5],
         px: 2,
+        mt: "auto",
       }}
     >
       <Grid
