@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { ApolloProvider } from "@apollo/react-hooks";
 import { css, Global } from "@emotion/core";
-import { Box } from "@theme-ui/components";
+import { Box, Flex } from "@theme-ui/components";
 import { Fragment } from "react";
 import Helmet from "react-helmet";
 import { IntlProvider } from "react-intl";
@@ -48,9 +48,16 @@ export const wrapPageElement = ({ element, props }: Props) => (
             <ErrorBoundary>
               <Header />
 
-              <Box sx={{ mt: [100, 180] }}>{element}</Box>
+              <Flex
+                sx={{
+                  flexDirection: "column",
+                  minHeight: "100vh",
+                }}
+              >
+                <Box sx={{ mt: [100, 180] }}>{element}</Box>
 
-              <Footer />
+                <Footer />
+              </Flex>
             </ErrorBoundary>
           </ApolloProvider>
         </IntlProvider>

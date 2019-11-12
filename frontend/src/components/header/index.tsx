@@ -43,6 +43,7 @@ export const Header = () => {
     <Box
       sx={{
         position: "absolute",
+        top: 0,
         left: 0,
         pt: 3,
         width: "100%",
