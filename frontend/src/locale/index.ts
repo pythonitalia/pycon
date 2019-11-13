@@ -37,6 +37,7 @@ export default {
     "cfp.submit": "Submit",
     "cfp.languagesLength": "Languages",
     "cfp.languagesDescription": "Languages Description TODO",
+    "tickets.header": "Tickets",
   },
   it: {
     "profile.header": "Il mio profilo",
@@ -72,5 +73,6 @@ export default {
     "cfp.languagesLength": "Lingua",
     "cfp.languagesDescription": "Languages Description TODO",
     "cfp.submit": "Invia",
+    "tickets.header": "Biglietti",
   },
 };

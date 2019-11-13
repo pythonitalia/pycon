@@ -7,6 +7,7 @@ import { PrivateRoute } from "../app/private-route/private-route";
 import { ProfileApp } from "../app/profile";
 import { LoginForm } from "../components/login-form";
 import { SignupForm } from "../components/signup-form";
+import { TicketsForm } from "../components/tickets-form";
 
 export default () => (
   <Box
@@ -19,6 +20,7 @@ export default () => (
       <PrivateRoute path="/:lang/profile" component={ProfileApp} />
       <LoginForm path="/:lang/login" />
       <SignupForm path="/:lang/signup" />
+      <TicketsForm path="/:lang/tickets" />
     </Router>
   </Box>
 );

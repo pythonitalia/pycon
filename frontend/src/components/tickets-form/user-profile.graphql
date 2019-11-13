@@ -1,0 +1,6 @@
+query UserProfile {
+  me {
+    id
+    email
+  }
+}

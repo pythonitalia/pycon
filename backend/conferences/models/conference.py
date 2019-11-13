@@ -27,6 +27,8 @@ class Conference(GeoLocalizedModel, TimeFramedModel, TimeStampedModel):
         "submissions.SubmissionType", verbose_name=_("submission types"), blank=True
     )
 
+    pretix_event_url = models.URLField(_("pretix event url"), blank=True, default="")
+
     introduction = I18nTextField(_("introduction"), blank=False)
 
     @property
