@@ -38,6 +38,7 @@
         "en": "This is a demo conference, sorry it is not happening!",
         "it": "Questa \u00e8 una conferenze di prova."
       },
+      "pretix_event_url": "https://pretix.eu/demo/democon/",
       "topics": [1],
       "languages": [1, 2],
       "audience_levels": [1],

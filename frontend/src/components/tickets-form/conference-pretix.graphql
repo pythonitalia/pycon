@@ -1,0 +1,5 @@
+query ConferencePretix($conference: String!) {
+  conference(code: $conference) {
+    pretixEventUrl
+  }
+}

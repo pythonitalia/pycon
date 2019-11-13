@@ -49,6 +49,8 @@ class Conference:
     end: DateTime
     map: Optional[Map] = strawberry.field(resolver=resolve_map)
 
+    pretix_event_url: str
+
     @strawberry.field
     def timezone(self, info) -> str:
         return str(self.timezone)
