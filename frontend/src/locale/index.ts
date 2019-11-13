@@ -70,6 +70,7 @@ export default {
     "cfp.topicLabel": "Topic",
     "cfp.topicDescription": "What this proposal is about?",
     "cfp.submit": "Submit",
+<<<<<<< HEAD
     "cfp.minutes": "minutes",
     "cfp.languagesLabel": "Languages",
     "cfp.languagesDescription":
@@ -95,6 +96,7 @@ export default {
     "signup.signupWithEmail": "Create account using a password...",
     "signup.signupWithSocial": "... or your social account",
     "signup.useGoogle": "Use Google",
+    "tickets.header": "Tickets",
   },
   it: {
     titleTemplate: "%s | PyCon Italia",
@@ -172,6 +174,7 @@ export default {
       "Puoi proporre il tuo talk sia in italiano che inglese",
     "cfp.minutes": "minuti",
     "cfp.submit": "Invia",
+<<<<<<< HEAD
     "header.profile": "Profilo",
     "header.login": "Login",
     "header.followus": "Seguici",
@@ -192,5 +195,6 @@ export default {
     "signup.signupWithEmail": "Crea un account via email...",
     "signup.signupWithSocial": "... o con i tuoi account social",
     "signup.useGoogle": "Usa Google",
+    "tickets.header": "Biglietti",
   },
 };
