@@ -61,12 +61,14 @@ export const Header = () => {
           alignItems: ["center", "flex-start"],
         }}
       >
-        <Logo
-          sx={{
-            width: ["37vw", "33vw", "25vw", "18vw"],
-            height: "auto",
-          }}
-        />
+        <Link href="/:language">
+          <Logo
+            sx={{
+              width: ["37vw", "33vw", "25vw", "18vw"],
+              height: "auto",
+            }}
+          />
+        </Link>
 
         <Flex
           sx={{
