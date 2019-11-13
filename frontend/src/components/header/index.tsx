@@ -75,7 +75,10 @@ export const Header = () => {
             alignItems: ["center", "flex-start"],
           }}
         >
-          <Button>Login</Button>
+          <Link href="/:language/login" variant="button" sx={{ mr: 3 }}>
+            Login
+          </Link>
+
           <Button
             sx={{
               display: "flex",

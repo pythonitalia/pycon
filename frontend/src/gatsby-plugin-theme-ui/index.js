@@ -64,8 +64,6 @@ export default {
       fontFamily: "body",
       fontWeight: "heading",
 
-      mx: [1, 2, 3, 4],
-
       color: "#000",
       borderWidth: ["3px", "4px"],
       borderStyle: "solid",
@@ -85,6 +83,21 @@ export default {
       "&:hover": {
         borderBottom: "2px solid white",
       },
+    },
+    button: {
+      position: "relative",
+      padding: [2, 3],
+
+      fontSize: [0, 2],
+      fontFamily: "body",
+      fontWeight: "heading",
+
+      color: "#000",
+      borderWidth: ["3px", "4px"],
+      borderStyle: "solid",
+      borderColor: "#000",
+      background: "#F8B03D",
+      textDecoration: "none",
     },
   },
   text: {
