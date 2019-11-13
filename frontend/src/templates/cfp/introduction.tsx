@@ -1,16 +1,4 @@
-import {
-  Box,
-  Button,
-  Checkbox,
-  Flex,
-  Grid,
-  Input,
-  Label,
-  Radio,
-  Select,
-  Text,
-  Textarea,
-} from "@theme-ui/components";
+import { Box, Grid, Text } from "@theme-ui/components";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
