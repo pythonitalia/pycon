@@ -19,6 +19,7 @@ class SendSubmission(FormMutation):
             speaker=result.speaker,
             slug=result.slug,
             topic=result.topic,
+            languages=result.languages,
             type=result.type,
             duration=result.duration,
             audience_level=result.audience_level,

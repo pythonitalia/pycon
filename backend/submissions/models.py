@@ -34,8 +34,8 @@ class Submission(TimeStampedModel):
         "conferences.Topic", verbose_name=_("topic"), on_delete=models.PROTECT
     )
 
-    language = models.ForeignKey(
-        "languages.Language", verbose_name=_("language"), on_delete=models.PROTECT
+    languages = models.ManyToManyField(
+        "languages.Language", verbose_name=_("languages")
     )
 
     type = models.ForeignKey(
@@ -61,17 +61,6 @@ class Submission(TimeStampedModel):
                 {
                     "topic": _("%(topic)s is not a valid topic")
                     % {"topic": str(self.topic)}
-                }
-            )
-
-        if (
-            self.language_id
-            and not self.conference.languages.filter(id=self.language_id).exists()
-        ):
-            raise exceptions.ValidationError(
-                {
-                    "language": _("%(language)s is not an allowed language")
-                    % {"language": str(self.language)}
                 }
             )
 
