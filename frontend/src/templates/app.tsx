@@ -2,6 +2,7 @@ import { Router } from "@reach/router";
 import { Column, Row } from "grigliata";
 import * as React from "react";
 
+import { PrivateRoute } from "../app/private-route/private-route";
 import { ProfileApp } from "../app/profile";
 import { LoginForm } from "../components/login-form";
 import { MaxWidthWrapper } from "../components/max-width-wrapper";
@@ -25,9 +26,9 @@ export default ({ pageContext }: { pageContext: { language: string } }) => (
           }}
         >
           <Router>
-            <ProfileApp path="/:lang/profile" />
             <LoginForm path="/:lang/login" />
             <SignupForm path="/:lang/signup" />
+            <PrivateRoute path="/:lang/profile" component={ProfileApp} />
           </Router>
         </Column>
       </Row>
