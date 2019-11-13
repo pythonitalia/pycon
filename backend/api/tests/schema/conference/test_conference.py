@@ -424,3 +424,32 @@ def test_query_ticket_fare_questions(
             "choices": [{"choice": c.name} for c in question2.question.choices.all()],
         }
     } in response["data"]["conference"]["ticketFares"][0]["questions"]
+
+
+@mark.django_db
+def test_get_conference_submission_types(
+    graphql_client, conference_factory, submission_type_factory
+):
+    talk_type = submission_type_factory(name="talk")
+    tutorial_type = submission_type_factory(name="tutorial")
+    conference = conference_factory(submission_types=[talk_type, tutorial_type])
+
+    resp = graphql_client.query(
+        """
+        query($code: String!) {
+            conference(code: $code) {
+                submissionTypes {
+                    id
+                    name
+                }
+            }
+        }
+        """,
+        variables={"code": conference.code},
+    )
+
+    assert "errors" not in resp
+    assert resp["data"]["conference"]["submissionTypes"] == [
+        {"id": str(talk_type.id), "name": talk_type.name},
+        {"id": str(tutorial_type.id), "name": tutorial_type.name},
+    ]
