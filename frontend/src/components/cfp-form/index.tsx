@@ -23,7 +23,6 @@ import { ConferenceContext } from "../../context/conference";
 import {
   CfpConfigQuery,
   CfpConfigQueryVariables,
-  SendSubmissionErrors,
   SendSubmissionMutation,
   SendSubmissionMutationVariables,
 } from "../../generated/graphql-backend";
@@ -192,6 +191,7 @@ export const CfpForm: React.SFC = () => {
         maxWidth: "container",
         mx: "auto",
         px: 2,
+        my: 5,
       }}
     >
       <Text mb={4} as="h1">

@@ -10,6 +10,10 @@ export default {
     "signup.signupButton": "Signup 👉",
     "deadlines.start": "Start",
     "deadlines.end": "End",
+    "cfp.introductionHeading": "Make a proposal",
+    "cfp.introductionCopyHead": "Lorem ipsum",
+    "cfp.introductionCopy":
+      "Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem\nipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum ",
     "cfp.youridea": "Your idea",
     "cfp.choosetype": "Choose a format",
     "cfp.talk": "Talk",
