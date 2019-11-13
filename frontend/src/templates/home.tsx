@@ -4,6 +4,7 @@ import { graphql } from "gatsby";
 import { Fragment } from "react";
 import { jsx } from "theme-ui";
 
+import { Deadlines } from "../components/dealines";
 import { EventCard } from "../components/home-events/event-card";
 import { HomepageHero } from "../components/homepage-hero";
 import { KeynotersSection } from "../components/keynoters-section";
@@ -40,7 +41,15 @@ export default ({ data }: { data: HomePageQuery }) => {
             {conference.introTitle}
           </Heading>
 
-          <Text as="p">{conference.introText}</Text>
+          <Text as="p" sx={{ mb: 3 }}>
+            {conference.introText}
+          </Text>
+
+          <Heading as="h2" sx={{ color: "purple", fontSize: 3, mb: 3 }}>
+            {conference.deadlinesTitle}
+          </Heading>
+
+          <Deadlines deadlines={conference.deadlines} />
         </Box>
       </Grid>
 
@@ -229,13 +238,13 @@ export const query = graphql`
         marquee: copy(key: "marquee", language: $language)
         introTitle: copy(key: "intro-title-1", language: $language)
         introText: copy(key: "intro-text-1", language: $language)
+        deadlinesTitle: copy(key: "deadlines-title", language: $language)
 
         proposalsTitle: copy(key: "proposals-title", language: $language)
         proposalsSubtitle: copy(key: "proposals-subtitle", language: $language)
         proposalsText: copy(key: "proposals-text", language: $language)
 
         eventsIntro: copy(key: "events-intro", language: $language)
-        deadlinesIntro: copy(key: "deadlines-intro", language: $language)
 
         map {
           image(width: 1280, height: 400, zoom: 15)
