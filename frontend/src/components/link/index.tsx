@@ -11,6 +11,16 @@ type LinkProps = {
   target?: string;
 };
 
+const ArrowRightBackground = ({ ...props }) => (
+  <svg viewBox="0 0 146 66" preserveAspectRatio="none" {...props}>
+    <path
+      d="M2 2h115.065l26.312 31-26.312 31H2V2z"
+      stroke="#000"
+      strokeWidth={4}
+    />
+  </svg>
+);
+
 export const Link: React.SFC<LinkProps> = ({
   children,
   href,
@@ -34,7 +44,23 @@ export const Link: React.SFC<LinkProps> = ({
 
   return (
     <ThemeLink {...additionalProps} as={LinkComponent} href={href} to={href}>
-      {children}
+      {additionalProps.variant === "button" && (
+        <ArrowRightBackground
+          sx={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            height: "100%",
+            width: "calc(100% + 25px)",
+            fill: "yellow",
+            stroke: "black",
+          }}
+        />
+      )}
+
+      <Box as="span" sx={{ position: "relative", zIndex: 10 }}>
+        {children}
+      </Box>
     </ThemeLink>
   );
 };

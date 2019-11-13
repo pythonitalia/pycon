@@ -68,7 +68,7 @@ export default {
       borderWidth: ["3px", "4px"],
       borderStyle: "solid",
       borderColor: "#000",
-      background: "#F8B03D",
+      backgroundColor: "yellow",
     },
     white: {
       variant: "buttons.primary",
@@ -93,11 +93,8 @@ export default {
       fontWeight: "heading",
 
       color: "#000",
-      borderWidth: ["3px", "4px"],
-      borderStyle: "solid",
-      borderColor: "#000",
-      background: "#F8B03D",
       textDecoration: "none",
+      textTransform: "uppercase",
     },
   },
   text: {
