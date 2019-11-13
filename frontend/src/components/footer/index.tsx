@@ -1,10 +1,11 @@
 /** @jsx jsx */
 
 import { Box, Grid } from "@theme-ui/components";
-import { graphql, Link, useStaticQuery } from "gatsby";
+import { graphql, useStaticQuery } from "gatsby";
 import { jsx } from "theme-ui";
 
 import { Backend_MenuLink, FooterQuery } from "../../generated/graphql";
+import { Link } from "../link";
 import { Logo } from "../logo";
 import { SocialLinks } from "../social-links";
 
@@ -73,7 +74,9 @@ export const Footer = () => {
           gridTemplateColumns: [null, null, "5fr 1fr 2fr 2fr 3fr"],
         }}
       >
-        <Logo />
+        <Link href="/:language">
+          <Logo />
+        </Link>
 
         <MenuItems
           sx={{
@@ -82,7 +85,7 @@ export const Footer = () => {
         >
           {firstGroup.map((link, i) => (
             <li key={i}>
-              <Link to={link.href}>{link.title}</Link>
+              <Link href={link.href}>{link.title}</Link>
             </li>
           ))}
         </MenuItems>
@@ -90,7 +93,7 @@ export const Footer = () => {
         <MenuItems>
           {secondGroup.map((link, i) => (
             <li key={i}>
-              <Link to={link.href}>{link.title}</Link>
+              <Link href={link.href}>{link.title}</Link>
             </li>
           ))}
         </MenuItems>
