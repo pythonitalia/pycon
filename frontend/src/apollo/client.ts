@@ -25,7 +25,11 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (networkError) {
     console.warn(`[Network error]: ${networkError}`);
   }
-  if (networkError && networkError.statusCode === 401) {
+  if (
+    networkError &&
+    "statusCode" in networkError &&
+    networkError.statusCode === 401
+  ) {
     // TODO logout()
   }
 });
