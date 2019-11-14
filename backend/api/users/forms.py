@@ -80,4 +80,4 @@ class UpdateUserForm(ContextAwareModelForm):
 
     class Meta:
         model = User
-        fields = ("first_name", "last_name", "gender")
+        fields = ("name", "full_name", "gender")

@@ -11,8 +11,8 @@ class BaseUserMutation(FormMutation):
         return MeUser(
             id=result.id,
             email=result.email,
-            first_name=result.first_name,
-            last_name=result.last_name,
+            name=result.name,
+            full_name=result.full_name,
             gender=result.gender,
             open_to_recruiting=result.open_to_recruiting,
             open_to_newsletter=result.open_to_newsletter,

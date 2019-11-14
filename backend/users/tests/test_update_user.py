@@ -6,8 +6,8 @@ import pytest
 def _update_user(graphql_client, user, **kwargs):
 
     defaults = {
-        "first_name": user.first_name,
-        "last_name": user.last_name,
+        "name": user.name,
+        "full_name": user.full_name,
         "gender": user.gender,
         "open_to_recruiting": user.open_to_recruiting,
         "open_to_newsletter": user.open_to_newsletter,
@@ -18,8 +18,8 @@ def _update_user(graphql_client, user, **kwargs):
 
     query = """
     mutation(
-        $first_name: String,
-        $last_name: String,
+        $name: String,
+        $full_name: String,
         $gender: String,
         $open_to_recruiting: Boolean!,
         $open_to_newsletter: Boolean!,
@@ -27,8 +27,8 @@ def _update_user(graphql_client, user, **kwargs):
         $country: String
     ){
         update(input: {
-            firstName: $first_name,
-            lastName: $last_name,
+            name: $name,
+            fullName: $full_name,
             gender: $gender,
             openToRecruiting: $open_to_recruiting,
             openToNewsletter: $open_to_newsletter,
@@ -38,8 +38,8 @@ def _update_user(graphql_client, user, **kwargs):
             __typename
             ... on MeUser {
                 id
-                firstName
-                lastName
+                name
+                fullName
                 gender
                 openToRecruiting
                 openToNewsletter
@@ -47,8 +47,8 @@ def _update_user(graphql_client, user, **kwargs):
                 country
             }
             ... on UpdateErrors {
-                validationFirstName: firstName
-                validationLastName: lastName
+                validationName: name
+                validationFullName: fullName
                 validationGender: gender
                 validationOpenToRecruiting: openToRecruiting
                 validationOpenToNewsletter: openToNewsletter
@@ -65,8 +65,8 @@ def _update_user(graphql_client, user, **kwargs):
 @pytest.mark.django_db
 def test_update(graphql_client, user_factory):
     user = user_factory(
-        first_name="John",
-        last_name="Lennon",
+        name="John",
+        full_name="John Lennon",
         gender="male",
         open_to_recruiting=True,
         open_to_newsletter=True,
@@ -76,11 +76,11 @@ def test_update(graphql_client, user_factory):
     graphql_client.force_login(user)
     resp, variables = _update_user(graphql_client, user)
     resp, variables = _update_user(graphql_client, user)
-
+    print(resp)
     assert resp["data"]["update"]["__typename"] == "MeUser"
     assert resp["data"]["update"]["id"] == str(user.id)
-    assert resp["data"]["update"]["firstName"] == variables["first_name"]
-    assert resp["data"]["update"]["lastName"] == variables["last_name"]
+    assert resp["data"]["update"]["name"] == variables["name"]
+    assert resp["data"]["update"]["fullName"] == variables["full_name"]
     assert resp["data"]["update"]["gender"] == variables["gender"]
     assert resp["data"]["update"]["openToRecruiting"] == variables["open_to_recruiting"]
     assert resp["data"]["update"]["openToNewsletter"] == variables["open_to_newsletter"]
@@ -91,8 +91,8 @@ def test_update(graphql_client, user_factory):
 @pytest.mark.django_db
 def test_update_multiple(graphql_client, user_factory):
     user = user_factory(
-        first_name="John",
-        last_name="Lennon",
+        name="John",
+        full_name="John Lennon",
         gender="male",
         open_to_recruiting=True,
         open_to_newsletter=True,
@@ -102,8 +102,8 @@ def test_update_multiple(graphql_client, user_factory):
     graphql_client.force_login(user)
     resp, variables = _update_user(graphql_client, user)
 
-    user.first_name = "Aretha"
-    user.last_name = "Franklin"
+    user.name = "Aretha"
+    user.full_name = "Aretha Franklin"
     user.gender = "female"
     user.open_to_newsletter = False
     user.open_to_recruiting = False
@@ -113,8 +113,8 @@ def test_update_multiple(graphql_client, user_factory):
 
     assert resp["data"]["update"]["__typename"] == "MeUser"
     assert resp["data"]["update"]["id"] == str(user.id)
-    assert resp["data"]["update"]["firstName"] == variables["first_name"]
-    assert resp["data"]["update"]["lastName"] == variables["last_name"]
+    assert resp["data"]["update"]["name"] == variables["name"]
+    assert resp["data"]["update"]["fullName"] == variables["full_name"]
     assert resp["data"]["update"]["gender"] == variables["gender"]
     assert resp["data"]["update"]["openToRecruiting"] == variables["open_to_recruiting"]
     assert resp["data"]["update"]["openToNewsletter"] == variables["open_to_newsletter"]

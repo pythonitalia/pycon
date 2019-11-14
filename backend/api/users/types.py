@@ -11,8 +11,8 @@ from countries.types import Country
 class MeUser:
     id: strawberry.ID
     email: str
-    first_name: Optional[str]
-    last_name: Optional[str]
+    name: Optional[str]
+    full_name: Optional[str]
     gender: Optional[str]
     open_to_recruiting: Optional[bool]
     open_to_newsletter: Optional[bool]
@@ -40,8 +40,8 @@ class User:
     name: str
     full_name: str
     username: str
-    first_name: str
-    last_name: str
+    name: str
+    full_name: str
     gender: str
     open_to_recruiting: bool
     open_to_newsletter: bool

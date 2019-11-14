@@ -56,9 +56,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     full_name = models.CharField(_("full name"), max_length=300, blank=True)
     name = models.CharField(_("name"), max_length=300, blank=True)
 
-    first_name = models.CharField(_("first name"), max_length=30, blank=True)
-    last_name = models.CharField(_("last name"), max_length=150, blank=True)
-
     GENDERS = Choices(("male", _("Male")), ("female", _("Female")))
     gender = models.CharField(_("gender"), choices=GENDERS, max_length=10, blank=True)
     date_birth = models.DateField(_("date of birth"), null=True)
