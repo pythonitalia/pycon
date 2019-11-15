@@ -1,6 +1,9 @@
+/** @jsx jsx */
+import { Box } from "@theme-ui/components";
 import { graphql } from "gatsby";
 import marksy from "marksy";
-import React, { createElement } from "react";
+import { createElement } from "react";
+import { jsx } from "theme-ui";
 
 import { Article } from "../components/article";
 import { PageQuery } from "../generated/graphql";
@@ -13,12 +16,14 @@ export default ({ data }: { data: PageQuery }) => {
   const page = data.backend.page!;
 
   return (
-    <Article
-      hero={page.imageFile && { ...page.imageFile.childImageSharp! }}
-      title={page.title}
-    >
-      {compile(page.content).tree}
-    </Article>
+    <Box sx={{ mx: "auto", px: 3, maxWidth: "container" }}>
+      <Article
+        hero={page.imageFile && { ...page.imageFile.childImageSharp! }}
+        title={page.title}
+      >
+        {compile(page.content).tree}
+      </Article>
+    </Box>
   );
 };
 

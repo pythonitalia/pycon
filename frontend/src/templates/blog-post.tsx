@@ -1,6 +1,9 @@
+/** @jsx jsx */
+import { Box } from "@theme-ui/components";
 import { graphql } from "gatsby";
 import marksy from "marksy";
-import React, { createElement } from "react";
+import { createElement } from "react";
+import { jsx } from "theme-ui";
 
 import { Article } from "../components/article";
 import { PostQuery } from "../generated/graphql";
@@ -13,13 +16,14 @@ export default ({ data }: { data: PostQuery }) => {
   const post = data.backend.blogPost!;
 
   return (
-    <Article
-      hero={post.imageFile && { ...post.imageFile.childImageSharp! }}
-      title={post.title}
-      description={post.excerpt || ""}
-    >
-      {compile(post.content).tree}
-    </Article>
+    <Box sx={{ mx: "auto", px: 3, maxWidth: "container" }}>
+      <Article
+        hero={post.imageFile && { ...post.imageFile.childImageSharp! }}
+        title={post.title}
+      >
+        {compile(post.content).tree}
+      </Article>
+    </Box>
   );
 };
 
