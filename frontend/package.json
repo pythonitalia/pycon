@@ -4,7 +4,6 @@
   "author": "Patrick Arminio <patrick.arminio@gmail.com>",
   "scripts": {
     "build:gatsby": "gatsby build",
-    "build:docz": "docz build",
     "build": "yarn build:gatsby",
     "develop": "gatsby develop -p 4000",
     "start": "concurrently -k -n 'gatsby,codegen' -c 'bgBlue.bold,bgMagenta.bold' 'yarn develop' 'yarn codegen:watch'",
@@ -97,8 +96,6 @@
     "@typescript-eslint/eslint-plugin-tslint": "^2.6.0",
     "@typescript-eslint/parser": "^2.6.0",
     "concurrently": "5.0.0",
-    "docz": "^1.3.2",
-    "docz-theme-default": "^1.2.0",
     "dotenv": "8.2.0",
     "eslint": "^6.6.0",
     "eslint-plugin-prettier": "^3.1.1",
