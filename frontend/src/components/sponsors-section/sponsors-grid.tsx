@@ -26,6 +26,9 @@ const SponsorItem: React.SFC<{ sponsor: Props["sponsors"][0] }> = ({
         transition: "0.3s filter ease-in-out",
         position: "relative",
         display: "block",
+        "> span": {
+          display: "block",
+        },
         "&:hover": {
           filter: "none",
         },
