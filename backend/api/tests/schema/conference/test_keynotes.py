@@ -48,6 +48,7 @@ def test_get_conference_keynotes_returns_only_keynotes(
                     title
                     additionalSpeakers {
                         name
+                        fullName
                     }
                 }
             }
@@ -67,3 +68,4 @@ def test_get_conference_keynotes_returns_only_keynotes(
     speaker_data = keynote_data["additionalSpeakers"][0]
 
     assert speaker_data["name"] == speaker.name
+    assert speaker_data["fullName"] == speaker.full_name

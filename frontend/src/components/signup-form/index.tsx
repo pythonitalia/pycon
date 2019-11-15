@@ -1,6 +1,6 @@
 import { useMutation } from "@apollo/react-hooks";
 import { navigate, Redirect, RouteComponentProps } from "@reach/router";
-import { Alert, FieldSet, FieldWrapper, Input, Label } from "fannypack";
+import { Box, Button, Input, Label } from "@theme-ui/components";
 import React, { useCallback } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
@@ -10,8 +10,6 @@ import {
   SignupMutation,
   SignupMutationVariables,
 } from "../../generated/graphql-backend";
-import { Button } from "../button";
-import { Form } from "../form";
 import SIGNUP_MUTATION from "./signup.graphql";
 
 type SignupFormProps = {
@@ -62,7 +60,7 @@ export const SignupForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
   const errorMessage =
     data && data.register.__typename === "RegisterErrors"
       ? data.register.nonFieldErrors.join(" ")
-      : error;
+      : (error || "").toString();
 
   const getFieldError = (field: "validationEmail" | "validationPassword") =>
     (data &&
@@ -73,57 +71,27 @@ export const SignupForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
   const passwordError = getFieldError("validationPassword");
 
   return (
-    <Form onSubmit={onFormSubmit} method="post">
-      <FieldSet>
-        {errorMessage && <Alert type="error">{errorMessage}</Alert>}
+    <Box as="form" onSubmit={onFormSubmit} method="post">
+      {errorMessage && <div>{errorMessage}</div>}
+      <Label {...label("email")}>
+        <FormattedMessage id="signup.email" />
+      </Label>
+      <div>{emailError}</div>
+      <Input
+        {...email("email")}
+        placeholder="guido@python.org"
+        required={true}
+        type="email"
+      />
+      <Label {...label("password")}>
+        <FormattedMessage id="signup.password" />
+      </Label>
 
-        <Label htmlFor="signup-email" {...label("email")}>
-          <FormattedMessage id="signup.email" />
-        </Label>
-
-        <FieldWrapper
-          validationText={emailError}
-          state={emailError ? "danger" : ""}
-        >
-          <Input
-            inputProps={{
-              id: "signup-email",
-              ...email("email"),
-              required: true,
-            }}
-            placeholder="guido@python.org"
-            isRequired={true}
-            type="email"
-          />
-        </FieldWrapper>
-
-        <Label htmlFor="signup-password">
-          <FormattedMessage id="signup.password" />
-        </Label>
-        <FieldWrapper
-          validationText={passwordError}
-          state={passwordError ? "danger" : ""}
-        >
-          <Input
-            inputProps={{
-              id: "signup-password",
-              ...password("password"),
-              required: true,
-            }}
-            isRequired={loading}
-            type="password"
-          />
-        </FieldWrapper>
-
-        <Button
-          size="medium"
-          palette="primary"
-          isLoading={loading}
-          type="submit"
-        >
-          <FormattedMessage id="signup.signupButton" />
-        </Button>
-      </FieldSet>
-    </Form>
+      <div>{passwordError}</div>
+      <Input {...password("password")} required={true} type="password" />
+      <Button type="submit">
+        <FormattedMessage id="signup.signupButton" />
+      </Button>
+    </Box>
   );
 };

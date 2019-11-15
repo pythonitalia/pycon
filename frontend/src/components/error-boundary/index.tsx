@@ -1,10 +1,9 @@
-import { Column, Row } from "grigliata";
-import React from "react";
+/** @jsx jsx */
+import { Box } from "@theme-ui/components";
+import { Component } from "react";
+import { jsx } from "theme-ui";
 
-import { STANDARD_ROW_PADDING } from "../../config/spacing";
-import { MaxWidthWrapper } from "../max-width-wrapper";
-
-export class ErrorBoundary extends React.Component<
+export class ErrorBoundary extends Component<
   {},
   {
     errorInfo: any | null;
@@ -27,28 +26,14 @@ export class ErrorBoundary extends React.Component<
   render() {
     if (this.state.errorInfo) {
       return (
-        <MaxWidthWrapper>
-          <Row
-            paddingLeft={STANDARD_ROW_PADDING}
-            paddingRight={STANDARD_ROW_PADDING}
-          >
-            <Column
-              columnWidth={{
-                mobile: 12,
-                tabletPortrait: 12,
-                tabletLandscape: 12,
-                desktop: 12,
-              }}
-            >
-              <h2>Something went wrong.</h2>
-              <details style={{ whiteSpace: "pre-wrap" }}>
-                {this.state.error && this.state.error.toString()}
-                <br />
-                {this.state.errorInfo.componentStack}
-              </details>
-            </Column>
-          </Row>
-        </MaxWidthWrapper>
+        <Box sx={{ mx: "auto", maxWidth: "container", pb: 6 }}>
+          <h2>Something went wrong.</h2>
+          <details style={{ whiteSpace: "pre-wrap" }}>
+            {this.state.error && this.state.error.toString()}
+            <br />
+            {this.state.errorInfo.componentStack}
+          </details>
+        </Box>
       );
     }
 

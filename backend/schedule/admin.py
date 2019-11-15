@@ -6,7 +6,7 @@ from .models import Room, ScheduleItem
 
 @admin.register(ScheduleItem)
 class ScheduleItemAdmin(admin.ModelAdmin):
-    list_display = ("conference", "start", "end", "type", "title", "submission")
+    list_display = ("title", "conference", "start", "end", "type", "submission")
     ordering = ("conference", "start")
     fieldsets = (
         (
@@ -16,6 +16,7 @@ class ScheduleItemAdmin(admin.ModelAdmin):
                     "conference",
                     "type",
                     "title",
+                    "image",
                     "description",
                     "submission",
                     "additional_speakers",

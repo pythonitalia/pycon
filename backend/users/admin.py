@@ -32,7 +32,7 @@ class PyConUserAdmin(UserAdmin):
     # The forms to add and change user instances
 
     fieldsets = (
-        (None, {"fields": ("username", "email", "password")}),
+        (None, {"fields": ("username", "full_name", "name", "email", "password")}),
         (
             _("Permissions"),
             {
@@ -55,7 +55,7 @@ class PyConUserAdmin(UserAdmin):
     form = PyConUserChangeForm
     add_form = PyConUserCreationForm
     readonly_fields = ("date_joined",)
-    list_display = ("email", "is_staff", "is_superuser")
+    list_display = ("email", "full_name", "is_staff", "is_superuser")
     search_fields = ("email",)
     ordering = ("email",)
 
