@@ -70,20 +70,20 @@ export const wrapPageElement = ({ element, props }: Props) => (
             messages={messages[props.pageContext.language]}
           >
             <ApolloProvider client={client}>
-              <ErrorBoundary>
-                <Header />
+              <Header />
 
-                <Flex
-                  sx={{
-                    flexDirection: "column",
-                    minHeight: "100vh",
-                  }}
-                >
-                  <Box sx={{ mt: [100, 180] }}>{element}</Box>
+              <Flex
+                sx={{
+                  flexDirection: "column",
+                  minHeight: "100vh",
+                }}
+              >
+                <Box sx={{ mt: [100, 180] }}>
+                  <ErrorBoundary>{element}</ErrorBoundary>
+                </Box>
 
-                  <Footer />
-                </Flex>
-              </ErrorBoundary>
+                <Footer />
+              </Flex>
             </ApolloProvider>
           </IntlProvider>
         </LanguageContext.Provider>
