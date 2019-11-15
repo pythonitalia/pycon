@@ -1,10 +1,7 @@
 /** @jsx jsx */
-import { Box, Grid, Heading } from "@theme-ui/components";
-import { jsx } from "theme-ui";
-
-import { FormattedMessage } from "react-intl";
-
 import { Fragment } from "react";
+import { FormattedMessage } from "react-intl";
+import { jsx } from "theme-ui";
 
 type Props = {
   deadlines: {
