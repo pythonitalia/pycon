@@ -38,7 +38,7 @@ sentry-sdk = "^0.13.1"
 boto3 = "^1.10"
 
 [tool.poetry.dev-dependencies]
-pylint = "=2.4.3"
+pylint = "=2.4.4"
 pylint-django = "=2.0.11"
 pytest = "=5.2.2"
 pytest-cov = "=2.8.1"
