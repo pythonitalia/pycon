@@ -1,6 +1,6 @@
 mutation(
-    $firstName: String,
-    $lastName: String,
+    $name: String,
+    $fullName: String,
     $gender: String,
     $openToRecruiting: Boolean!,
     $openToNewsletter: Boolean!,
@@ -8,8 +8,8 @@ mutation(
     $country: String
 ){
     update(input: {
-        firstName: $firstName,
-        lastName: $lastName,
+        name: $name,
+        fullName: $fullName,
         gender: $gender,
         openToRecruiting: $openToRecruiting,
         openToNewsletter: $openToNewsletter,
@@ -19,8 +19,8 @@ mutation(
         __typename
         ... on MeUser {
             id
-            firstName
-            lastName
+            name
+            fullName
             gender
             openToRecruiting
             openToNewsletter
@@ -28,8 +28,8 @@ mutation(
             country
         }
         ... on UpdateErrors {
-            validationFirstName: firstName
-            validationLastName: lastName
+            validationName: name
+            validationFullName: fullName
             validationGender: gender
             validationOpenToRecruiting: openToRecruiting
             validationOpenToNewsletter: openToNewsletter

@@ -139,6 +139,7 @@ export default {
       mb: 3,
       maxWidth: 850,
     },
+    profileEditLabel: {},
   },
   styles: {
     root: {

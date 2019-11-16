@@ -1,58 +1,80 @@
+/** @jsx jsx */
 import { useMutation, useQuery } from "@apollo/react-hooks";
 import { navigate, RouteComponentProps } from "@reach/router";
 import {
   Alert,
+  Box,
   Button,
   Card,
-  CheckboxField,
-  FieldSet,
-  FieldWrapper,
+  Checkbox,
   Input,
   Radio,
-  SelectField,
-} from "fannypack";
+  Select,
+  Text,
+} from "@theme-ui/components";
 import { graphql, useStaticQuery } from "gatsby";
-import { Column, Row } from "grigliata";
 import React, { useCallback } from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import { useFormState } from "react-use-form-state";
+import { jsx } from "theme-ui";
 import * as yup from "yup";
 
-import { Form } from "../../components/form";
 import { CountriesQuery } from "../../generated/graphql";
 import {
   MyProfileQuery,
   UpdateMutation,
   UpdateMutationVariables,
 } from "../../generated/graphql-backend";
-import { BUTTON_PADDING, GENDER_COLUMN, ROW_PADDING } from "./constants";
 import MY_PROFILE_QUERY from "./profile-edit.graphql";
 import UPDATE_MUTATION from "./update.graphql";
 
-type SectionWrapperProps = {
-  titleId?: string;
-  children: React.ReactNode;
+type MeUserFields = {
+  name: string;
+  fullName: string;
+  gender: string;
+  dateBirth: Date;
+  country: string;
+  openToRecruiting: boolean;
+  openToNewsletter: boolean;
 };
 
-const SectionWrapper = (props: SectionWrapperProps) => (
+const SectionWrapper: React.SFC<{
+  titleId?: string;
+  children: React.ReactNode;
+}> = ({ titleId, children }) => (
   <Card>
-    <FieldSet>
-      {props.titleId && (
+    <Box>
+      {titleId && (
         <h3>
-          <FormattedMessage id={props.titleId} />
+          <FormattedMessage id={titleId} />
         </h3>
       )}
-      {props.children}
-    </FieldSet>
+      {children}
+    </Box>
   </Card>
 );
 
+const InputWrapper: React.SFC<{
+  label: React.ReactElement;
+  description?: React.ReactElement;
+  error?: string;
+  isRequired?: boolean;
+}> = ({ label, error, isRequired, children }) => (
+  <Box>
+    <Text variant="profileEditLabel" as="p">
+      {label}
+    </Text>
+    {children}
+    {error && <Alert variant="alert">{error}</Alert>}
+  </Box>
+);
+
 const schema = yup.object().shape({
-  firstName: yup
+  name: yup
     .string()
     .required()
     .ensure(),
-  lastName: yup
+  fullName: yup
     .string()
     .required()
     .ensure(),
@@ -72,7 +94,6 @@ const schema = yup.object().shape({
 const toTileCase = (word: string) =>
   word.charAt(0).toUpperCase() + word.slice(1);
 
-// TODO put this in a "utils" module...
 const getValidationFieldError = (
   data: any,
   field: string,
@@ -87,11 +108,16 @@ const getValidationFieldError = (
   return validationError;
 };
 
-export const EditProfileApp: React.SFC<
-  RouteComponentProps<{ lang: string }>
-> = ({ lang }) => {
-  const [formState, { text, radio, select, checkbox, raw }] = useFormState(
-    {},
+export const EditProfileApp: React.SFC<RouteComponentProps<{
+  lang: string;
+}>> = ({ lang }) => {
+  const [formState, { text, radio, select, checkbox, raw }] = useFormState<
+    MeUserFields
+  >(
+    {
+      name: "",
+      fullName: "",
+    },
     {
       withIds: true,
     },
@@ -100,7 +126,7 @@ export const EditProfileApp: React.SFC<
   // region SETUP_OPTIONS
   const createOptions = (items: any[]) => [
     { label: "", value: "" },
-    ...items.map(item => ({ label: item.name, value: item.id })),
+    ...items.map(item => ({ label: item.name, value: item.id || item.code })),
   ];
 
   const {
@@ -196,65 +222,43 @@ export const EditProfileApp: React.SFC<
   // endregion
 
   return (
-    <>
+    <Box>
       <h1>
         <FormattedMessage id="profile.header" />
       </h1>
 
       {loading && "Loading..."}
       {!loading && (
-        <Form onSubmit={onFormSubmit} method="post">
+        <Box as="form" onSubmit={onFormSubmit}>
           {errorMessage && <Alert type="error">{errorMessage}</Alert>}
 
           <SectionWrapper titleId="profile.edit.personalHeader">
-            <FieldWrapper
-              validationText={formState.errors && formState.errors.firstName}
-              state={
-                formState.errors && formState.errors.firstName ? "danger" : ""
-              }
+            <InputWrapper
+              error={formState.errors && formState.errors.name}
               isRequired={true}
               label={
-                <FormattedMessage id="profile.firstName">
+                <FormattedMessage id="profile.name">
                   {msg => <b>{msg}</b>}
                 </FormattedMessage>
               }
             >
-              <Input
-                inputProps={{
-                  id: "firstName",
-                  ...text("firstName"),
-                }}
-                a11yId="firstName"
-                isRequired={true}
-              />
-            </FieldWrapper>
+              <Input {...text("name")} required={true} />
+            </InputWrapper>
 
-            <FieldWrapper
-              validationText={formState.errors && formState.errors.lastName}
-              state={
-                formState.errors && formState.errors.lastName ? "danger" : ""
-              }
+            <InputWrapper
+              error={formState.errors && formState.errors.fullName}
               isRequired={true}
               label={
-                <FormattedMessage id="profile.lastName">
+                <FormattedMessage id="profile.fullName">
                   {msg => <b>{msg}</b>}
                 </FormattedMessage>
               }
             >
-              <Input
-                inputProps={{
-                  id: "lastName",
-                  ...text("lastName"),
-                }}
-                a11yId="lastName"
-              />
-            </FieldWrapper>
+              <Input {...text("fullName")} required={true} />
+            </InputWrapper>
 
-            <FieldWrapper
-              validationText={formState.errors && formState.errors.gender}
-              state={
-                formState.errors && formState.errors.gender ? "danger" : ""
-              }
+            <InputWrapper
+              error={formState.errors && formState.errors.gender}
               isRequired={true}
               label={
                 <FormattedMessage id="profile.gender">
@@ -262,31 +266,28 @@ export const EditProfileApp: React.SFC<
                 </FormattedMessage>
               }
             >
-              <>
-                <Row>
-                  <Column columnWidth={GENDER_COLUMN}>
-                    <Radio
-                      {...radio("gender", "male")}
-                      name="gender"
-                      label={intl.formatMessage(genderMessages.male)}
-                    />
-                  </Column>
-                  <Column columnWidth={GENDER_COLUMN}>
-                    <Radio
-                      {...radio("gender", "female")}
-                      name="gender"
-                      label={intl.formatMessage(genderMessages.female)}
-                    />
-                  </Column>
-                </Row>
-              </>
-            </FieldWrapper>
+              <Box>
+                <Box>
+                  <Radio
+                    {...radio("gender", "male")}
+                    name="gender"
+                    label={intl.formatMessage(genderMessages.male)}
+                    value={formState.values.gender === "male"}
+                  />
+                </Box>
+                <Box>
+                  <Radio
+                    {...radio("gender", "female")}
+                    name="gender"
+                    label={intl.formatMessage(genderMessages.female)}
+                    value={formState.values.gender === "female"}
+                  />
+                </Box>
+              </Box>
+            </InputWrapper>
 
-            <FieldWrapper
-              validationText={formState.errors && formState.errors.dateBirth}
-              state={
-                formState.errors && formState.errors.dateBirth ? "danger" : ""
-              }
+            <InputWrapper
+              error={formState.errors && formState.errors.dateBirth}
               isRequired={true}
               label={
                 <FormattedMessage id="profile.dateBirth">
@@ -303,16 +304,14 @@ export const EditProfileApp: React.SFC<
                     return date;
                   },
                 })}
+                value={new Date(formState.values.dateBirth)}
                 type="date"
-                a11yId="dateBirth"
+                required={true}
               />
-            </FieldWrapper>
+            </InputWrapper>
 
-            <FieldWrapper
-              validationText={formState.errors && formState.errors.country}
-              state={
-                formState.errors && formState.errors.country ? "danger" : ""
-              }
+            <InputWrapper
+              error={formState.errors && formState.errors.country}
               isRequired={true}
               label={
                 <FormattedMessage id="profile.country">
@@ -320,57 +319,50 @@ export const EditProfileApp: React.SFC<
                 </FormattedMessage>
               }
             >
-              <SelectField
+              <Select
                 {...select("country")}
-                a11yId="country"
-                options={COUNTRIES_OPTIONS}
-                isRequired={true}
-              />
-            </FieldWrapper>
+                required={true}
+                value={formState.values.country}
+              >
+                {COUNTRIES_OPTIONS.map(c => (
+                  <option key={c.value} value={c.value}>
+                    {c.label}
+                  </option>
+                ))}
+              </Select>
+            </InputWrapper>
           </SectionWrapper>
           <br />
           <SectionWrapper titleId="profile.edit.privacyHeader">
-            <FieldWrapper
-              validationText={
-                formState.errors && formState.errors.openToRecruiting
-              }
-              state={
-                formState.errors && formState.errors.openToRecruiting
-                  ? "danger"
-                  : ""
-              }
+            <InputWrapper
+              error={formState.errors && formState.errors.openToRecruiting}
               label={<FormattedMessage id="profile.openToRecruiting" />}
             >
-              <CheckboxField
+              <Checkbox
                 checkboxProps={{
                   id: "openToRecruiting",
                   ...checkbox("openToRecruiting"),
                 }}
                 type="checkbox"
+                value={formState.values.openToRecruiting}
               />
-            </FieldWrapper>
+            </InputWrapper>
 
-            <FieldWrapper
-              validationText={
-                formState.errors && formState.errors.openToNewsletter
-              }
-              state={
-                formState.errors && formState.errors.openToNewsletter
-                  ? "danger"
-                  : ""
-              }
+            <InputWrapper
+              error={formState.errors && formState.errors.openToNewsletter}
               label={<FormattedMessage id="profile.openToNewsletter" />}
             >
-              <CheckboxField
+              <Checkbox
                 checkboxProps={{
                   id: "openToNewsletter",
                   ...checkbox("openToNewsletter"),
                 }}
                 type="checkbox"
+                value={formState.values.openToNewsletter}
               />
-            </FieldWrapper>
+            </InputWrapper>
           </SectionWrapper>
-          <Row paddingBottom={ROW_PADDING} paddingTop={BUTTON_PADDING}>
+          <Box>
             <Button
               size="medium"
               palette="primary"
@@ -379,10 +371,10 @@ export const EditProfileApp: React.SFC<
             >
               <FormattedMessage id="buttons.save" />
             </Button>
-          </Row>
-        </Form>
+          </Box>
+        </Box>
       )}
-    </>
+    </Box>
   );
 };
 
