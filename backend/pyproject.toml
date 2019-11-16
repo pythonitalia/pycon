@@ -7,7 +7,7 @@ license = "MIT"
 
 [tool.poetry.dependencies]
 python = "^3.7"
-Django = "=2.2.6"
+Django = "=2.2.7"
 django-environ = "=0.4.4"
 social-auth-app-django = "=2.1.0"
 django-model-utils = "=3.2.0"
