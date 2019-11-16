@@ -40,7 +40,7 @@ boto3 = "^1.10"
 [tool.poetry.dev-dependencies]
 pylint = "=2.4.4"
 pylint-django = "=2.0.12"
-pytest = "=5.2.2"
+pytest = "=5.2.4"
 pytest-cov = "=2.8.1"
 pytest-django = "=3.7.0"
 pytest-pylint = "=0.14.1"
