@@ -199,7 +199,15 @@ export const EditProfileApp: React.SFC<
             "VALID! formState.values: " + JSON.stringify(formState.values),
           );
           update({
-            variables: formState.values,
+            variables: {
+              name: formState.values.name,
+              fullName: formState.values.fullName,
+              gender: formState.values.gender,
+              dateBirth: formState.values.dateBirth.toISOString().split("T")[0],
+              country: formState.values.country,
+              openToRecruiting: formState.values.openToRecruiting,
+              openToNewsletter: formState.values.openToNewsletter,
+            },
           });
         })
         .catch(err => {
@@ -311,10 +319,13 @@ export const EditProfileApp: React.SFC<
                   onChange: event => {
                     const date = event.target.value;
                     formState.setField("dateBirth", new Date(date));
-                    return date;
+                    return new Date(date);
                   },
                 })}
-                value={new Date(formState.values.dateBirth)}
+                value={
+                  formState.values.dateBirth &&
+                  formState.values.dateBirth.toISOString().split("T")[0]
+                }
                 type="date"
                 required={true}
               />
