@@ -22,9 +22,10 @@ import * as yup from "yup";
 
 import { CountriesQuery } from "../../generated/graphql";
 import {
-  MyProfileQuery,
-  UpdateMutation,
-  UpdateMutationVariables,
+  MeUser,
+  MyEditProfileQuery,
+  UpdateProfileMutation,
+  UpdateProfileMutationVariables,
 } from "../../generated/graphql-backend";
 import MY_PROFILE_QUERY from "./profile-edit.graphql";
 import UPDATE_MUTATION from "./update.graphql";
@@ -95,23 +96,6 @@ const schema = yup.object().shape({
   openToNewsletter: yup.boolean(),
 });
 
-const toTileCase = (word: string) =>
-  word.charAt(0).toUpperCase() + word.slice(1);
-
-const getValidationFieldError = (
-  data: any,
-  field: string,
-  typename: string,
-) => {
-  const errorType = "validation" + toTileCase(field);
-  const validationError =
-    (data.__typename === typename &&
-      data[errorType] &&
-      data[errorType].join(", ")) ||
-    "";
-  return validationError;
-};
-
 export const EditProfileApp: React.SFC<
   RouteComponentProps<{
     lang: string;
@@ -120,10 +104,7 @@ export const EditProfileApp: React.SFC<
   const [formState, { text, radio, select, checkbox, raw }] = useFormState<
     MeUserFields
   >(
-    {
-      name: "",
-      fullName: "",
-    },
+    {},
     {
       withIds: true,
     },
@@ -139,51 +120,83 @@ export const EditProfileApp: React.SFC<
     backend: { countries },
   } = useStaticQuery<CountriesQuery>(COUNTRIES_QUERY);
   const COUNTRIES_OPTIONS = createOptions(countries);
-
   // endregion
 
-  // region GET_USER_DATA
-  const setProfile = (data: MyProfileQuery) => {
-    const { me } = data;
-    Object.keys(formState.values).forEach(field => {
-      console.log(field, me[field]);
-      formState.setField(field, me[field]);
-    });
+  const setUserFormFields = (me: MeUser) => {
+    formState.setField("name", me.name ? me.name : "");
+    formState.setField("fullName", me.fullName ? me.fullName : "");
+    formState.setField("gender", me.gender ? me.gender : "");
+    formState.setField(
+      "dateBirth",
+      me.dateBirth ? new Date(me.dateBirth) : new Date(),
+    );
+    formState.setField("country", me.country ? me.country : "");
+    formState.setField(
+      "openToRecruiting",
+      me.openToRecruiting ? me.openToRecruiting : false,
+    );
+    formState.setField(
+      "openToNewsletter",
+      me.openToNewsletter ? me.openToNewsletter : false,
+    );
   };
-  const { loading, error, data: profileData } = useQuery<MyProfileQuery>(
-    MY_PROFILE_QUERY,
-    { onCompleted: setProfile },
-  );
+
+  // region GET_USER_DATA
+  const setProfile = (profileData: MyEditProfileQuery) => {
+    const { me } = profileData;
+    setUserFormFields(me as MeUser);
+  };
+  const { loading, error } = useQuery<MyEditProfileQuery>(MY_PROFILE_QUERY, {
+    onCompleted: setProfile,
+  });
   if (error) {
     throw new Error(`Unable to fetch profile, ${error}`);
   }
   // endregion
 
   // region UPDATE_SEND_MUTATION
-
-  const onUpdateComplete = (data: UpdateMutation) => {
+  const onUpdateComplete = (data: UpdateProfileMutation) => {
     if (!data || data.update.__typename !== "MeUser") {
-      Object.keys(formState.values).forEach(field => {
-        const validationError = getValidationFieldError(
-          data.update,
-          field,
-          "UpdateError",
-        );
-        formState.setFieldError(field, validationError);
-      });
-
       return;
     }
     const profileUrl = `/${lang}/profile`;
     navigate(profileUrl);
   };
+  const toTileCase = (word: string) =>
+    word.charAt(0).toUpperCase() + word.slice(1);
 
-  const [update, { updateLoading, updateError, updateData }] = useMutation<
-    UpdateMutation,
-    UpdateMutationVariables
-  >(UPDATE_MUTATION, {
-    onCompleted: onUpdateComplete,
-  });
+  const getValidationError = (
+    key:
+      | "name"
+      | "fullName"
+      | "gender"
+      | "dateBirth"
+      | "country"
+      | "openToRecruiting"
+      | "openToNewsletter",
+  ) => {
+    const validationKey = "validation" + toTileCase(key);
+    const validationError =
+      (updateProfileData &&
+        updateProfileData.update.__typename === "UpdateErrors" &&
+        updateProfileData.update[validationKey].join(", ")) ||
+      "";
+    return validationError;
+  };
+
+  const [
+    update,
+    {
+      loading: updateProfileLoading,
+      error: updateProfileError,
+      data: updateProfileData,
+    },
+  ] = useMutation<UpdateProfileMutation, UpdateProfileMutationVariables>(
+    UPDATE_MUTATION,
+    {
+      onCompleted: onUpdateComplete,
+    },
+  );
 
   const onFormSubmit = useCallback(
     e => {
@@ -191,7 +204,7 @@ export const EditProfileApp: React.SFC<
 
       schema
         .validate(formState.values, { abortEarly: false })
-        .then(value => {
+        .then(() => {
           formState.validity = {};
           formState.errors = {};
 
@@ -210,7 +223,7 @@ export const EditProfileApp: React.SFC<
             },
           });
         })
-        .catch(err => {
+        .catch((err: { inner: any[] }) => {
           err.inner.forEach(item => {
             formState.setFieldError(item.path, item.message);
           });
@@ -220,10 +233,9 @@ export const EditProfileApp: React.SFC<
   );
 
   const errorMessage =
-    updateData && updateData.update.__typename === "UpdateErrors"
-      ? updateData.update.nonFieldErrors.join(" ")
-      : updateError;
-
+    updateProfileData && updateProfileData.update.__typename === "UpdateErrors"
+      ? updateProfileData.update.nonFieldErrors.join(" ")
+      : updateProfileError;
   // endregion
 
   return (
@@ -250,7 +262,10 @@ export const EditProfileApp: React.SFC<
 
           <SectionWrapper titleId="profile.edit.personalHeader">
             <InputWrapper
-              error={formState.errors && formState.errors.name}
+              error={
+                (formState.errors && formState.errors.name) ||
+                getValidationError("name")
+              }
               isRequired={true}
               label={
                 <FormattedMessage id="profile.name">
@@ -262,7 +277,10 @@ export const EditProfileApp: React.SFC<
             </InputWrapper>
 
             <InputWrapper
-              error={formState.errors && formState.errors.fullName}
+              error={
+                (formState.errors && formState.errors.fullName) ||
+                getValidationError("fullName")
+              }
               isRequired={true}
               label={
                 <FormattedMessage id="profile.fullName">
@@ -274,7 +292,10 @@ export const EditProfileApp: React.SFC<
             </InputWrapper>
 
             <InputWrapper
-              error={formState.errors && formState.errors.gender}
+              error={
+                (formState.errors && formState.errors.gender) ||
+                getValidationError("gender")
+              }
               isRequired={true}
               label={
                 <FormattedMessage id="profile.gender">
@@ -305,7 +326,10 @@ export const EditProfileApp: React.SFC<
             </InputWrapper>
 
             <InputWrapper
-              error={formState.errors && formState.errors.dateBirth}
+              error={
+                (formState.errors && formState.errors.dateBirth) ||
+                getValidationError("dateBirth")
+              }
               isRequired={true}
               label={
                 <FormattedMessage id="profile.dateBirth">
@@ -332,7 +356,10 @@ export const EditProfileApp: React.SFC<
             </InputWrapper>
 
             <InputWrapper
-              error={formState.errors && formState.errors.country}
+              error={
+                (formState.errors && formState.errors.country) ||
+                getValidationError("country")
+              }
               isRequired={true}
               label={
                 <FormattedMessage id="profile.country">
@@ -356,7 +383,10 @@ export const EditProfileApp: React.SFC<
           <br />
           <SectionWrapper titleId="profile.edit.privacyHeader">
             <InputWrapper
-              error={formState.errors && formState.errors.openToRecruiting}
+              error={
+                (formState.errors && formState.errors.openToRecruiting) ||
+                getValidationError("openToRecruiting")
+              }
             >
               <Label>
                 <Checkbox
@@ -368,7 +398,10 @@ export const EditProfileApp: React.SFC<
             </InputWrapper>
 
             <InputWrapper
-              error={formState.errors && formState.errors.openToNewsletter}
+              error={
+                (formState.errors && formState.errors.openToNewsletter) ||
+                getValidationError("openToNewsletter")
+              }
             >
               <Label>
                 <Checkbox
@@ -383,7 +416,7 @@ export const EditProfileApp: React.SFC<
             <Button
               size="medium"
               palette="primary"
-              isLoading={loading || updateLoading}
+              isLoading={loading || updateProfileLoading}
               type="submit"
             >
               <FormattedMessage id="buttons.save" />
