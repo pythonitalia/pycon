@@ -1,7 +1,9 @@
+/** @jsx jsx */
 import { useQuery } from "@apollo/react-hooks";
 import { RouteComponentProps } from "@reach/router";
-import * as React from "react";
+import { Box } from "@theme-ui/components";
 import { FormattedMessage } from "react-intl";
+import { jsx } from "theme-ui";
 
 import { MyProfileQuery } from "../../generated/graphql-backend";
 import MY_PROFILE_QUERY from "./profile.graphql";
@@ -16,7 +18,12 @@ export const ProfileApp: React.SFC<RouteComponentProps> = () => {
   }
 
   return (
-    <>
+    <Box
+      sx={{
+        maxWidth: "container",
+        mx: "auto",
+      }}
+    >
       <h1>
         <FormattedMessage id="profile.header" />
       </h1>
@@ -30,6 +37,6 @@ export const ProfileApp: React.SFC<RouteComponentProps> = () => {
           <dd>{profileData!.me.email}</dd>
         </dl>
       )}
-    </>
+    </Box>
   );
 };

@@ -71,7 +71,15 @@ export const SignupForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
   const passwordError = getFieldError("validationPassword");
 
   return (
-    <Box as="form" onSubmit={onFormSubmit} method="post">
+    <Box
+      sx={{
+        maxWidth: "container",
+        mx: "auto",
+      }}
+      as="form"
+      onSubmit={onFormSubmit}
+      method="post"
+    >
       {errorMessage && <div>{errorMessage}</div>}
       <Label {...label("email")}>
         <FormattedMessage id="signup.email" />

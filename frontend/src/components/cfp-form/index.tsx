@@ -199,7 +199,7 @@ export const CfpForm: React.SFC = () => {
           <Box as="ul" sx={{ px: 3 }}>
             {conferenceData!.me.submissions.map(submission => (
               <li key={submission.id}>
-                <Link href={`/:language/submissions/${submission.id}`}>
+                <Link href={`/:language/submission/${submission.id}`}>
                   {submission.title}
                 </Link>
               </li>
@@ -334,7 +334,7 @@ export const CfpForm: React.SFC = () => {
           sx={{
             mb: 5,
           }}
-          label={<FormattedMessage id="cfp.languagesLength" />}
+          label={<FormattedMessage id="cfp.languagesLabel" />}
           description={<FormattedMessage id="cfp.languagesDescription" />}
           errors={getErrors("languages")}
         >

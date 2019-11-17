@@ -1,0 +1,22 @@
+query Submission($id: ID!) {
+  submission(id: $id) {
+    id
+    title
+    abstract
+    elevatorPitch
+    notes
+    topic {
+      name
+    }
+    duration {
+      name
+      duration
+    }
+    audienceLevel {
+      name
+    }
+    languages {
+      name
+    }
+  }
+}
