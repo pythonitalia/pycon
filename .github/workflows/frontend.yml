@@ -67,6 +67,7 @@ jobs:
         DEFAULT_FILE_STORAGE: 'django.core.files.storage.FileSystemStorage'
         CONFERENCE_CODE: "pycon-demo"
         DEBUG: True
+        SLACK_INCOMING_WEBHOOK_URL: ${{ secrets.TF_VAR_slack_incoming_webhook_url }}
         DATABASE_URL: postgresql://postgres:postgres@localhost:${{ job.services.postgres.ports['5432'] }}/postgres
     - run: yarn tsc
       working-directory: frontend
