@@ -75,8 +75,7 @@ def test_update(graphql_client, user_factory):
     )
     graphql_client.force_login(user)
     resp, variables = _update_user(graphql_client, user)
-    resp, variables = _update_user(graphql_client, user)
-    print(resp)
+
     assert resp["data"]["update"]["__typename"] == "MeUser"
     assert resp["data"]["update"]["id"] == str(user.id)
     assert resp["data"]["update"]["name"] == variables["name"]
