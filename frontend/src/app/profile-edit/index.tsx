@@ -65,6 +65,7 @@ const InputWrapper: React.SFC<{
     {label && (
       <Text variant="profileEditLabel" as="p">
         {label}
+        {isRequired ? "*" : ""}
       </Text>
     )}
     {children}
