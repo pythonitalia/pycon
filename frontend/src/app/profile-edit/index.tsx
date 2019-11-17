@@ -15,7 +15,7 @@ import {
 } from "@theme-ui/components";
 import { graphql, useStaticQuery } from "gatsby";
 import React, { useCallback } from "react";
-import { defineMessages, FormattedMessage, useIntl } from "react-intl";
+import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import { Flex, jsx } from "theme-ui";
 import * as yup from "yup";
@@ -217,7 +217,6 @@ export const EditProfileApp: React.SFC<
 
   // endregion
 
-  // @ts-ignore
   return (
     <Box
       sx={{
@@ -349,11 +348,7 @@ export const EditProfileApp: React.SFC<
             >
               <Label>
                 <Checkbox
-                  checkboxProps={{
-                    id: "openToRecruiting",
-                    ...checkbox("openToRecruiting"),
-                  }}
-                  type="checkbox"
+                  {...checkbox("openToRecruiting")}
                   value={formState.values.openToRecruiting}
                 />
                 <FormattedMessage id="profile.openToRecruiting" />
@@ -365,11 +360,7 @@ export const EditProfileApp: React.SFC<
             >
               <Label>
                 <Checkbox
-                  checkboxProps={{
-                    id: "openToNewsletter",
-                    ...checkbox("openToNewsletter"),
-                  }}
-                  type="checkbox"
+                  {...checkbox("openToNewsletter")}
                   value={formState.values.openToNewsletter}
                 />
                 <FormattedMessage id="profile.openToNewsletter" />
