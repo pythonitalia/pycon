@@ -1,9 +1,8 @@
+from api.forms import ContextAwareModelForm
+from conferences.models import AudienceLevel, Conference
 from django import forms
 from django.core import exceptions
 from django.utils.translation import ugettext_lazy as _
-
-from api.forms import ContextAwareModelForm
-from conferences.models import AudienceLevel, Conference
 from integrations.tasks import notify_new_submission
 from languages.models import Language
 from submissions.models import Submission
@@ -55,6 +54,7 @@ class SendSubmissionForm(ContextAwareModelForm):
         model = Submission
         fields = (
             "title",
+            "slug",
             "abstract",
             "topic",
             "languages",
