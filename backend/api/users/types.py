@@ -2,8 +2,6 @@ from typing import List, Optional
 
 import strawberry
 
-from countries.types import Country
-
 # TODO: merge Me User and User
 
 
