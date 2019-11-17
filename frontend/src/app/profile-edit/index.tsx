@@ -18,6 +18,7 @@ import React, { useCallback } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import { Flex, jsx } from "theme-ui";
+// @ts-ignore
 import * as yup from "yup";
 
 import { CountriesQuery } from "../../generated/graphql";
@@ -197,7 +198,7 @@ export const EditProfileApp: React.SFC<
       onCompleted: onUpdateComplete,
     },
   );
-
+  console.log(formState);
   const onFormSubmit = useCallback(
     e => {
       e.preventDefault();
@@ -205,7 +206,6 @@ export const EditProfileApp: React.SFC<
       schema
         .validate(formState.values, { abortEarly: false })
         .then(() => {
-          formState.validity = {};
           formState.errors = {};
 
           console.log(
