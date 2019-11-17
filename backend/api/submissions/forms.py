@@ -54,7 +54,6 @@ class SendSubmissionForm(ContextAwareModelForm):
         model = Submission
         fields = (
             "title",
-            "slug",
             "abstract",
             "topic",
             "languages",

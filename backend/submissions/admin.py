@@ -12,6 +12,7 @@ class SubmissionAdmin(admin.ModelAdmin):
             {
                 "fields": (
                     "title",
+                    "slug",
                     "type",
                     "conference",
                     "topic",
