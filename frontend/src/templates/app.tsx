@@ -12,7 +12,7 @@ import { SubmissionPage } from "../components/submission-page";
 export default () => (
   <Router>
     <PrivateRoute path="/:lang/profile" component={ProfileApp} />
-    <PrivateRoute path="/:lang/profile-edit" component={EditProfileApp} />
+    <PrivateRoute path="/:lang/profile/edit" component={EditProfileApp} />
     <PrivateRoute path="/:lang/submission/:id" component={SubmissionPage} />
     <LoginForm path="/:lang/login" />
     <SignupForm path="/:lang/signup" />
