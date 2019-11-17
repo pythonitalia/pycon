@@ -28,10 +28,6 @@ class MeUser:
     def submissions(self, info, conference: str) -> List["Submission"]:
         return self.submissions.filter(conference__code=conference)
 
-    @strawberry.field
-    def image(self, info) -> Optional[Image]:
-        return self.image
-
 
 @strawberry.type
 class User:

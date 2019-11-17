@@ -13,7 +13,9 @@ from .voting.mutations import VotesMutations
 
 
 @strawberry.type
-class Query(UsersQuery, ConferenceQuery, BlogQuery, SubmissionsQuery, PagesQuery, CountryQuery):
+class Query(
+    UsersQuery, ConferenceQuery, BlogQuery, SubmissionsQuery, PagesQuery, CountryQuery
+):
     pass
 
 
