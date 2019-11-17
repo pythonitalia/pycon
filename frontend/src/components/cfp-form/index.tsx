@@ -27,8 +27,8 @@ import {
   SendSubmissionMutationVariables,
 } from "../../generated/graphql-backend";
 import { Alert } from "../alert";
-import CFP_CONFIG_QUERY from "./cfpConfig.graphql";
-import SEND_SUBMISSION_QUERY from "./sendSubmission.graphql";
+import CFP_CONFIG_QUERY from "./cfp-config.graphql";
+import SEND_SUBMISSION_QUERY from "./send-submission.graphql";
 
 type CfpFormFields = {
   format: string;
