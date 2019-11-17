@@ -1,4 +1,11 @@
-query CfpConfig($conference: String!) {
+query CFPPage($conference: String!) {
+  me {
+    submissions(conference: $conference) {
+      id
+      title
+    }
+  }
+
   conference(code: $conference) {
     durations {
       name

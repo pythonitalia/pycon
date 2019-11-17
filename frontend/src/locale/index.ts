@@ -12,6 +12,7 @@ export default {
     "signup.signupButton": "Signup 👉",
     "deadlines.start": "Start",
     "deadlines.end": "End",
+    "cfp.yourProposals": "Your proposals",
     "cfp.pageTitle": "Make a proposal",
     "cfp.introductionHeading": "Make a proposal",
     "cfp.introductionCopyHead": "Lorem ipsum",
@@ -60,6 +61,7 @@ export default {
     "cfp.talk": "Talk",
     "cfp.tutorial": "Tutorial",
     "cfp.title": "Titolo",
+    "cfp.yourProposals": "Le tue proposte",
     "cfp.elevatorPitchLabel": "Elevator pitch",
     "cfp.elevatorPitchDescription":
       "Hai 300 caratteri per vendere la tua idea. Ricordati di renderlo il più interessante possibile",
