@@ -175,6 +175,7 @@ export const EditProfileApp: React.SFC<RouteComponentProps<{
       | "openToNewsletter",
   ) => {
     const validationKey = "validation" + toTileCase(key);
+    // @ts-ignore
     const validationError =
       (updateProfileData &&
         updateProfileData.update.__typename === "UpdateErrors" &&
@@ -260,10 +261,7 @@ export const EditProfileApp: React.SFC<RouteComponentProps<{
 
           <SectionWrapper titleId="profile.edit.personalHeader">
             <InputWrapper
-              error={
-                (formState.errors && formState.errors.name) ||
-                getValidationError("name")
-              }
+              error={formState.errors?.name || getValidationError("name")}
               isRequired={true}
               label={
                 <FormattedMessage id="profile.name">
@@ -276,8 +274,7 @@ export const EditProfileApp: React.SFC<RouteComponentProps<{
 
             <InputWrapper
               error={
-                (formState.errors && formState.errors.fullName) ||
-                getValidationError("fullName")
+                formState.errors?.fullName || getValidationError("fullName")
               }
               isRequired={true}
               label={
@@ -290,10 +287,7 @@ export const EditProfileApp: React.SFC<RouteComponentProps<{
             </InputWrapper>
 
             <InputWrapper
-              error={
-                (formState.errors && formState.errors.gender) ||
-                getValidationError("gender")
-              }
+              error={formState.errors?.gender || getValidationError("gender")}
               isRequired={true}
               label={
                 <FormattedMessage id="profile.gender">
@@ -325,8 +319,7 @@ export const EditProfileApp: React.SFC<RouteComponentProps<{
 
             <InputWrapper
               error={
-                (formState.errors && formState.errors.dateBirth) ||
-                getValidationError("dateBirth")
+                formState.errors?.dateBirth || getValidationError("dateBirth")
               }
               isRequired={true}
               label={
@@ -339,25 +332,20 @@ export const EditProfileApp: React.SFC<RouteComponentProps<{
                 {...raw({
                   name: "dateBirth",
                   onChange: event => {
+                    // @ts-ignore
                     const date = event.target.value;
                     formState.setField("dateBirth", new Date(date));
                     return new Date(date);
                   },
                 })}
-                value={
-                  formState.values.dateBirth &&
-                  formState.values.dateBirth.toISOString().split("T")[0]
-                }
+                value={formState.values.dateBirth?.toISOString().split("T")[0]}
                 type="date"
                 required={true}
               />
             </InputWrapper>
 
             <InputWrapper
-              error={
-                (formState.errors && formState.errors.country) ||
-                getValidationError("country")
-              }
+              error={formState.errors?.country || getValidationError("country")}
               isRequired={true}
               label={
                 <FormattedMessage id="profile.country">
@@ -382,7 +370,7 @@ export const EditProfileApp: React.SFC<RouteComponentProps<{
           <SectionWrapper titleId="profile.edit.privacyHeader">
             <InputWrapper
               error={
-                (formState.errors && formState.errors.openToRecruiting) ||
+                formState.errors?.openToRecruiting ||
                 getValidationError("openToRecruiting")
               }
             >
@@ -397,7 +385,7 @@ export const EditProfileApp: React.SFC<RouteComponentProps<{
 
             <InputWrapper
               error={
-                (formState.errors && formState.errors.openToNewsletter) ||
+                formState.errors?.openToNewsletter ||
                 getValidationError("openToNewsletter")
               }
             >
