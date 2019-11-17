@@ -24,7 +24,7 @@ repos:
           - <<: *python_settings
             id: flake8
     - repo: https://github.com/prettier/prettier
-      rev: 1.18.2
+      rev: 1.19.1
       hooks:
           - id: prettier
             files: 'frontend/.*\.(js|jsx|ts|tsx)$'
