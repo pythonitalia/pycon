@@ -97,11 +97,9 @@ const schema = yup.object().shape({
   openToNewsletter: yup.boolean(),
 });
 
-export const EditProfileApp: React.SFC<
-  RouteComponentProps<{
-    lang: string;
-  }>
-> = ({ lang }) => {
+export const EditProfileApp: React.SFC<RouteComponentProps<{
+  lang: string;
+}>> = ({ lang }) => {
   const [formState, { text, radio, select, checkbox, raw }] = useFormState<
     MeUserFields
   >(
