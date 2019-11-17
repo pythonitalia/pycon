@@ -6,7 +6,7 @@ root = environ.Path(__file__) - 3  # three folder back (/a/b/c/ - 3 = /)
 env = environ.Env(
     DEBUG=(bool, False),
     ALLOWED_HOSTS=(list, []),
-    FRONTEND_URL=(str, "http://testfrontend.it/"),
+    FRONTEND_URL=(str, "http://localhost:4000"),
 )
 
 environ.Env.read_env(root(".env"))
@@ -145,7 +145,7 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env("SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET", defau
 SOCIAL_AUTH_POSTGRES_JSONFIELD = True
 
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = f"{FRONTEND_URL}/login/success/"
-SOCIAL_AUTH_LOGIN_ERROR_URL = f"{FRONTEND_URL}/login/error/"
+# SOCIAL_AUTH_LOGIN_ERROR_URL = f"{FRONTEND_URL}/login/"
 
 STRIPE_SECRET_KEY = env("STRIPE_SECRET_KEY", default="")
 STRIPE_WEBHOOK_SECRET = env("STRIPE_WEBHOOK_SECRET", default="")

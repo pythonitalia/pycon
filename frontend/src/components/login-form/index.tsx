@@ -1,6 +1,6 @@
 import { useMutation } from "@apollo/react-hooks";
 import { navigate, Redirect, RouteComponentProps } from "@reach/router";
-import { Box, Button, Input, Label } from "@theme-ui/components";
+import { Box, Button, Grid, Input, Label, Text } from "@theme-ui/components";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
@@ -11,6 +11,7 @@ import {
   LoginMutationVariables,
 } from "../../generated/graphql-backend";
 import { Alert } from "../alert";
+import { InputWrapper } from "../input-wrapper";
 import { Link } from "../link";
 import LOGIN_MUTATION from "./login.graphql";
 
@@ -55,61 +56,100 @@ export const LoginForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
       ? loginData.login.nonFieldErrors.join(" ")
       : (error || "").toString();
 
+  const getFieldErrors = (field: "validationEmail" | "validationPassword") =>
+    (loginData &&
+      loginData.login.__typename === "LoginErrors" &&
+      loginData.login[field]) ||
+    [];
+
   return (
     <Box
-      as="form"
       sx={{
-        maxWidth: "container",
-        mx: "auto",
-        px: 3,
-      }}
-      method="post"
-      onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-
-        login({ variables: formState.values });
+        px: 2,
       }}
     >
-      {errorMessage && <div>{errorMessage}</div>}
       {location?.state?.message && (
-        <Alert variant={location.state.messageVariant || "success"}>
-          {location.state.message}
-        </Alert>
+        <Alert variant="alert">{location.state.message}</Alert>
       )}
-
-      <Label {...label("email")}>
-        <FormattedMessage id="login.email" />
-      </Label>
-      <Input
-        {...email("email")}
-        placeholder="guido@python.org"
-        required={true}
-        type="email"
-      />
-
-      <Label htmlFor="login-password">
-        <FormattedMessage id="login.password" />
-      </Label>
-      <Input
-        id="login-password"
-        {...password("password")}
-        required={true}
-        type="password"
-      />
-
-      <Link
+      <Grid
         sx={{
-          display: "block",
-          my: 2,
+          maxWidth: "container",
+          mx: "auto",
+          mt: 3,
+          gridTemplateColumns: [null, null, "1fr 1fr"],
+          gridColumnGap: 5,
         }}
-        href={`/${lang}/reset-password/`}
       >
-        <FormattedMessage id="login.recoverPassword" />
-      </Link>
+        <Box
+          as="form"
+          method="post"
+          onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
+            e.preventDefault();
 
-      <Button size="medium" palette="primary" isLoading={loading} type="submit">
-        <FormattedMessage id="login.loginButton" />
-      </Button>
+            login({ variables: formState.values });
+          }}
+        >
+          <Text mb={4} as="h2">
+            <FormattedMessage id="login.loginWithEmail" />
+          </Text>
+
+          {errorMessage && <div>{errorMessage}</div>}
+
+          <InputWrapper
+            errors={getFieldErrors("validationEmail")}
+            label={<FormattedMessage id="login.email" />}
+          >
+            <Input
+              {...email("email")}
+              placeholder="guido@python.org"
+              required={true}
+              type="email"
+              mb={4}
+            />
+          </InputWrapper>
+
+          <InputWrapper
+            mb={0}
+            errors={getFieldErrors("validationPassword")}
+            label={<FormattedMessage id="login.password" />}
+          >
+            <Input
+              id="login-password"
+              {...password("password")}
+              required={true}
+              type="password"
+            />
+          </InputWrapper>
+
+          <Link
+            sx={{
+              display: "block",
+              mb: 4,
+            }}
+            href={`/${lang}/reset-password/`}
+          >
+            <FormattedMessage id="login.recoverPassword" />
+          </Link>
+
+          <Button
+            size="medium"
+            palette="primary"
+            isLoading={loading}
+            type="submit"
+          >
+            <FormattedMessage id="login.loginButton" />
+          </Button>
+        </Box>
+        <Box>
+          <Text mb={4} as="h2">
+            <FormattedMessage id="login.loginWithSocial" />
+          </Text>
+
+          <Button href="/login/google/" as="a">
+            <FormattedMessage id="login.useGoogle" />
+          </Button>
+        </Box>
+      </Grid>
     </Box>
   );
 };
