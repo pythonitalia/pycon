@@ -95,6 +95,7 @@ class Conference:
     def submission_types(self, info) -> List[SubmissionType]:
         return self.submission_types.all()
 
+    # TODO: only when current user has a ticket
     @strawberry.field
     def submissions(self, info) -> List[Submission]:
         return self.submissions.all()

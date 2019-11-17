@@ -31,6 +31,7 @@ export default {
     orange: "#F17A5D",
     violet: "#9473B0",
     blue: "#79CDE0",
+    cinderella: "#FCE8DE",
   },
   borders: {
     primary: "3px solid #000000",

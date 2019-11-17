@@ -55,6 +55,10 @@ export const LoginForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
   return (
     <Box
       as="form"
+      sx={{
+        maxWidth: "container",
+        mx: "auto",
+      }}
       method="post"
       onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();

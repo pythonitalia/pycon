@@ -21,14 +21,15 @@ import { jsx } from "theme-ui";
 
 import { ConferenceContext } from "../../context/conference";
 import {
-  CfpConfigQuery,
-  CfpConfigQueryVariables,
+  CfpPageQuery,
+  CfpPageQueryVariables,
   SendSubmissionMutation,
   SendSubmissionMutationVariables,
 } from "../../generated/graphql-backend";
 import { Alert } from "../alert";
-import CFP_CONFIG_QUERY from "./cfpConfig.graphql";
-import SEND_SUBMISSION_QUERY from "./sendSubmission.graphql";
+import { Link } from "../link";
+import CFP_PAGE_QUERY from "./cfp-page.graphql";
+import SEND_SUBMISSION_QUERY from "./send-submission.graphql";
 
 type CfpFormFields = {
   format: string;
@@ -79,7 +80,7 @@ export const CfpForm: React.SFC = () => {
     loading: conferenceLoading,
     error: conferenceError,
     data: conferenceData,
-  } = useQuery<CfpConfigQuery, CfpConfigQueryVariables>(CFP_CONFIG_QUERY, {
+  } = useQuery<CfpPageQuery, CfpPageQueryVariables>(CFP_PAGE_QUERY, {
     variables: {
       conference: conferenceCode,
     },
@@ -160,13 +161,6 @@ export const CfpForm: React.SFC = () => {
     );
   }
 
-  console.log(
-    "sendSubmissionError",
-    sendSubmissionError,
-    "sendSubmissionData",
-    sendSubmissionData,
-  );
-
   const getErrors = (
     key:
       | "title"
@@ -185,6 +179,8 @@ export const CfpForm: React.SFC = () => {
       sendSubmissionData.sendSubmission[key]) ||
     [];
 
+  console.log(conferenceData!.me.submissions);
+
   return (
     <Box
       sx={{
@@ -194,6 +190,24 @@ export const CfpForm: React.SFC = () => {
         my: 5,
       }}
     >
+      {conferenceData!.me.submissions.length > 0 && (
+        <Box sx={{ mb: 5 }}>
+          <Text mb={4} as="h1">
+            <FormattedMessage id="cfp.yourProposals" />
+          </Text>
+
+          <Box as="ul" sx={{ px: 3 }}>
+            {conferenceData!.me.submissions.map(submission => (
+              <li key={submission.id}>
+                <Link href={`/:language/submission/${submission.id}`}>
+                  {submission.title}
+                </Link>
+              </li>
+            ))}
+          </Box>
+        </Box>
+      )}
+
       <Text mb={4} as="h1">
         <FormattedMessage id="cfp.youridea" />
       </Text>
@@ -320,7 +334,7 @@ export const CfpForm: React.SFC = () => {
           sx={{
             mb: 5,
           }}
-          label={<FormattedMessage id="cfp.languagesLength" />}
+          label={<FormattedMessage id="cfp.languagesLabel" />}
           description={<FormattedMessage id="cfp.languagesDescription" />}
           errors={getErrors("languages")}
         >
@@ -371,20 +385,22 @@ export const CfpForm: React.SFC = () => {
         </InputWrapper>
 
         {getErrors("nonFieldErrors").map(error => (
-          <Alert variant="alert" key={error}>
+          <Alert sx={{ mb: 4 }} variant="alert" key={error}>
             {error}
           </Alert>
         ))}
 
         {sendSubmissionError && (
-          <Alert variant="alert">
+          <Alert sx={{ mb: 4 }} variant="alert">
             Try again: {sendSubmissionError.message}
           </Alert>
         )}
 
         {sendSubmissionData &&
           sendSubmissionData.sendSubmission.__typename === "Submission" && (
-            <Alert variant="success">Submission sent!</Alert>
+            <Alert sx={{ mb: 4 }} variant="success">
+              Submission sent!
+            </Alert>
           )}
 
         <Button>

@@ -2,15 +2,22 @@ from typing import List
 
 import strawberry
 
+# TODO: merge Me User and User
+
 
 @strawberry.type
 class MeUser:
     id: strawberry.ID
     email: str
 
+    # TODO: update this with pretix query
     @strawberry.field
     def tickets(self, info, conference: str) -> List["Ticket"]:
         return self.tickets.filter(ticket_fare__conference__code=conference).all()
+
+    @strawberry.field
+    def submissions(self, info, conference: str) -> List["Submission"]:
+        return self.submissions.filter(conference__code=conference)
 
 
 @strawberry.type
