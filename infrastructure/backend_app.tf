@@ -214,6 +214,12 @@ resource "aws_elastic_beanstalk_environment" "pycon_env" {
 
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "SLACK_INCOMING_WEBHOOK_URL"
+    value     = "${var.sentry_dsn}"
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
     name      = "ALLOWED_HOSTS"
 
     # TODO: domain

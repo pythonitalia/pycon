@@ -56,6 +56,7 @@ jobs:
         TF_VAR_ssl_certificate: ${{ secrets.TF_VAR_ssl_certificate }}
         TF_VAR_mapbox_public_api_key: ${{ secrets.TF_VAR_mapbox_public_api_key }}
         TF_VAR_sentry_dsn: ${{ secrets.TF_VAR_sentry_dsn }}
+        TF_VAR_slack_incoming_webhook_url: ${{ secrets. TF_VAR_slack_incoming_webhook_url }}
         TF_ACTION_WORKING_DIR: ./infrastructure
         TF_ACTION_WORKSPACE: production
 
