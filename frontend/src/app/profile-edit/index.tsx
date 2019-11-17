@@ -175,11 +175,10 @@ export const EditProfileApp: React.SFC<RouteComponentProps<{
       | "openToNewsletter",
   ) => {
     const validationKey = "validation" + toTileCase(key);
-    // @ts-ignore
     const validationError =
       (updateProfileData &&
         updateProfileData.update.__typename === "UpdateErrors" &&
-        updateProfileData.update[validationKey].join(", ")) ||
+        (updateProfileData.update as any)[validationKey].join(", ")) ||
       "";
     return validationError;
   };
@@ -338,7 +337,10 @@ export const EditProfileApp: React.SFC<RouteComponentProps<{
                     return new Date(date);
                   },
                 })}
-                value={formState.values.dateBirth?.toISOString().split("T")[0]}
+                value={
+                  formState.values.dateBirth &&
+                  formState.values.dateBirth.toISOString().split("T")[0]
+                }
                 type="date"
                 required={true}
               />
