@@ -11,8 +11,6 @@ export default {
     "profile.gender": "Gender",
     "profile.gender.female": "Female",
     "profile.gender.male": "Male",
-    "profile.header": "My profile",
-    "profile.lastName": "Last Name",
     "profile.openToNewsletter":
       "I want to receive E-mail for main communications",
     "profile.openToRecruiting":
@@ -72,8 +70,6 @@ export default {
     "profile.gender": "Sesso",
     "profile.gender.female": "Femmina",
     "profile.gender.male": "Maschio",
-    "profile.header": "Il mio profilo",
-    "profile.lastName": "Cognome",
     "profile.openToNewsletter":
       "Desidero ricevere E-mail per le comunicazioni più importanti",
     "profile.openToRecruiting":
