@@ -8,10 +8,10 @@ import {
   Card,
   Checkbox,
   Input,
+  Label,
   Radio,
   Select,
   Text,
-  Label,
 } from "@theme-ui/components";
 import { graphql, useStaticQuery } from "gatsby";
 import React, { useCallback } from "react";
@@ -56,15 +56,17 @@ const SectionWrapper: React.SFC<{
 );
 
 const InputWrapper: React.SFC<{
-  label: React.ReactElement;
+  label?: React.ReactElement;
   description?: React.ReactElement;
   error?: string;
   isRequired?: boolean;
 }> = ({ label, error, isRequired, children }) => (
   <Box>
-    <Text variant="profileEditLabel" as="p">
-      {label}
-    </Text>
+    {label && (
+      <Text variant="profileEditLabel" as="p">
+        {label}
+      </Text>
+    )}
     {children}
     {error && <Alert variant="alert">{error}</Alert>}
   </Box>
@@ -332,30 +334,34 @@ export const EditProfileApp: React.SFC<
           <SectionWrapper titleId="profile.edit.privacyHeader">
             <InputWrapper
               error={formState.errors && formState.errors.openToRecruiting}
-              label={<FormattedMessage id="profile.openToRecruiting" />}
             >
-              <Checkbox
-                checkboxProps={{
-                  id: "openToRecruiting",
-                  ...checkbox("openToRecruiting"),
-                }}
-                type="checkbox"
-                value={formState.values.openToRecruiting}
-              />
+              <Label>
+                <Checkbox
+                  checkboxProps={{
+                    id: "openToRecruiting",
+                    ...checkbox("openToRecruiting"),
+                  }}
+                  type="checkbox"
+                  value={formState.values.openToRecruiting}
+                />
+                <FormattedMessage id="profile.openToRecruiting" />
+              </Label>
             </InputWrapper>
 
             <InputWrapper
               error={formState.errors && formState.errors.openToNewsletter}
-              label={<FormattedMessage id="profile.openToNewsletter" />}
             >
-              <Checkbox
-                checkboxProps={{
-                  id: "openToNewsletter",
-                  ...checkbox("openToNewsletter"),
-                }}
-                type="checkbox"
-                value={formState.values.openToNewsletter}
-              />
+              <Label>
+                <Checkbox
+                  checkboxProps={{
+                    id: "openToNewsletter",
+                    ...checkbox("openToNewsletter"),
+                  }}
+                  type="checkbox"
+                  value={formState.values.openToNewsletter}
+                />
+                <FormattedMessage id="profile.openToNewsletter" />
+              </Label>
             </InputWrapper>
           </SectionWrapper>
           <Box>
