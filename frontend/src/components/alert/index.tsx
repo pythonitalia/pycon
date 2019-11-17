@@ -5,7 +5,7 @@ type Props = {
   variant: "alert" | "success";
 };
 
-export const Alert: React.SFC<Props> = ({ variant, children }) => {
+export const Alert: React.SFC<Props> = ({ variant, children, ...props }) => {
   const backgroundColor = variant === "success" ? "green" : "red";
   return (
     <Box
@@ -31,6 +31,7 @@ export const Alert: React.SFC<Props> = ({ variant, children }) => {
           backgroundColor,
         },
       }}
+      {...props}
     >
       {children}
     </Box>

@@ -371,20 +371,22 @@ export const CfpForm: React.SFC = () => {
         </InputWrapper>
 
         {getErrors("nonFieldErrors").map(error => (
-          <Alert variant="alert" key={error}>
+          <Alert sx={{ mb: 4 }} variant="alert" key={error}>
             {error}
           </Alert>
         ))}
 
         {sendSubmissionError && (
-          <Alert variant="alert">
+          <Alert sx={{ mb: 4 }} variant="alert">
             Try again: {sendSubmissionError.message}
           </Alert>
         )}
 
         {sendSubmissionData &&
           sendSubmissionData.sendSubmission.__typename === "Submission" && (
-            <Alert variant="success">Submission sent!</Alert>
+            <Alert sx={{ mb: 4 }} variant="success">
+              Submission sent!
+            </Alert>
           )}
 
         <Button>
