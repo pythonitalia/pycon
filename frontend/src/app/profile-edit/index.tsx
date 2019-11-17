@@ -44,11 +44,11 @@ const SectionWrapper: React.SFC<{
   children: React.ReactNode;
 }> = ({ titleId, children }) => (
   <Card>
-    <Box>
+    <Box mb={5}>
       {titleId && (
-        <h3>
+        <Text mb={3} as="h3">
           <FormattedMessage id={titleId} />
-        </h3>
+        </Text>
       )}
       {children}
     </Box>
@@ -61,7 +61,7 @@ const InputWrapper: React.SFC<{
   error?: string;
   isRequired?: boolean;
 }> = ({ label, error, isRequired, children }) => (
-  <Box>
+  <Box mb={4}>
     {label && (
       <Text variant="profileEditLabel" as="p">
         {label}
@@ -139,15 +139,6 @@ export const EditProfileApp: React.SFC<
   } = useStaticQuery<CountriesQuery>(COUNTRIES_QUERY);
   const COUNTRIES_OPTIONS = createOptions(countries);
 
-  const intl = useIntl();
-  const genderMessages = defineMessages({
-    male: {
-      id: "profile.gender.male",
-    },
-    female: {
-      id: "profile.gender.female",
-    },
-  });
   // endregion
 
   // region GET_USER_DATA
@@ -228,15 +219,26 @@ export const EditProfileApp: React.SFC<
 
   // @ts-ignore
   return (
-    <Box>
-      <h1>
+    <Box
+      sx={{
+        maxWidth: "container",
+        mx: "auto",
+        px: 2,
+        my: 5,
+      }}
+    >
+      <Text mb={4} as="h1">
         <FormattedMessage id="profile.header" />
-      </h1>
+      </Text>
 
       {loading && "Loading..."}
       {!loading && (
         <Box as="form" onSubmit={onFormSubmit}>
-          {errorMessage && <Alert type="error">{errorMessage}</Alert>}
+          {errorMessage && (
+            <Alert mb={3} type="error">
+              {errorMessage}
+            </Alert>
+          )}
 
           <SectionWrapper titleId="profile.edit.personalHeader">
             <InputWrapper
@@ -273,11 +275,21 @@ export const EditProfileApp: React.SFC<
               }
             >
               <Flex>
-                <Label>
+                <Label
+                  sx={{
+                    width: "auto",
+                    marginRight: 3,
+                  }}
+                >
                   <Radio {...radio("gender", "male")} name="gender" />
                   <FormattedMessage id="profile.gender.male" />
                 </Label>
-                <Label>
+                <Label
+                  sx={{
+                    width: "auto",
+                    marginRight: 3,
+                  }}
+                >
                   <Radio {...radio("gender", "female")} name="gender" />
                   <FormattedMessage id="profile.gender.female" />
                 </Label>

@@ -139,7 +139,12 @@ export default {
       mb: 3,
       maxWidth: 850,
     },
-    profileEditLabel: {},
+    profileEditLabel: {
+      textTransform: "uppercase",
+      fontWeight: "bold",
+      fontSize: 3,
+      color: "yellow",
+    },
   },
   styles: {
     root: {
