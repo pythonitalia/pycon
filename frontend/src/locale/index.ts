@@ -12,6 +12,7 @@ export default {
     "signup.signupButton": "Signup 👉",
     "deadlines.start": "Start",
     "deadlines.end": "End",
+    "cfp.pageTitle": "Make a proposal",
     "cfp.introductionHeading": "Make a proposal",
     "cfp.introductionCopyHead": "Lorem ipsum",
     "cfp.introductionCopy":
@@ -53,6 +54,7 @@ export default {
     "signup.signupButton": "Registrati 👉",
     "deadlines.start": "Inizio",
     "deadlines.end": "Fine",
+    "cfp.pageTitle": "Invia una proposta",
     "cfp.youridea": "La tua idea",
     "cfp.choosetype": "Scegli una categoria",
     "cfp.talk": "Talk",
