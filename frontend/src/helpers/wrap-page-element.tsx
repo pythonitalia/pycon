@@ -3,7 +3,7 @@ import { ApolloProvider } from "@apollo/react-hooks";
 import { css, Global } from "@emotion/core";
 import { Box, Flex } from "@theme-ui/components";
 import { Fragment } from "react";
-import Helmet from "react-helmet";
+import { Helmet } from "react-helmet";
 import { IntlProvider } from "react-intl";
 import { jsx, Styled } from "theme-ui";
 
@@ -54,40 +54,47 @@ const reset = css`
   }
 `;
 
-export const wrapPageElement = ({ element, props }: Props) => (
-  <Fragment>
-    <Global styles={reset} />
+export const wrapPageElement = ({ element, props }: Props) => {
+  const titleTemplate =
+    messages[props.pageContext.language || "en"].titleTemplate;
 
-    <Helmet>
-      <link rel="stylesheet" href="https://use.typekit.net/mbr7dqb.css" />
-    </Helmet>
+  return (
+    <Fragment>
+      <Global styles={reset} />
 
-    <Styled.root>
-      <ConferenceContext.Provider value={props.pageContext.conferenceCode}>
-        <LanguageContext.Provider value={props.pageContext.language}>
-          <IntlProvider
-            locale={props.pageContext.language}
-            messages={messages[props.pageContext.language]}
-          >
-            <ApolloProvider client={client}>
-              <Header />
+      {console.log(props.pageContext.language)}
 
-              <Flex
-                sx={{
-                  flexDirection: "column",
-                  minHeight: "100vh",
-                }}
-              >
-                <Box sx={{ mt: [100, 180] }}>
-                  <ErrorBoundary>{element}</ErrorBoundary>
-                </Box>
+      <Helmet titleTemplate={titleTemplate}>
+        <link rel="stylesheet" href="https://use.typekit.net/mbr7dqb.css" />
+      </Helmet>
 
-                <Footer />
-              </Flex>
-            </ApolloProvider>
-          </IntlProvider>
-        </LanguageContext.Provider>
-      </ConferenceContext.Provider>
-    </Styled.root>
-  </Fragment>
-);
+      <Styled.root>
+        <ConferenceContext.Provider value={props.pageContext.conferenceCode}>
+          <LanguageContext.Provider value={props.pageContext.language}>
+            <IntlProvider
+              locale={props.pageContext.language}
+              messages={messages[props.pageContext.language]}
+            >
+              <ApolloProvider client={client}>
+                <Header />
+
+                <Flex
+                  sx={{
+                    flexDirection: "column",
+                    minHeight: "100vh",
+                  }}
+                >
+                  <Box sx={{ mt: [100, 180] }}>
+                    <ErrorBoundary>{element}</ErrorBoundary>
+                  </Box>
+
+                  <Footer />
+                </Flex>
+              </ApolloProvider>
+            </IntlProvider>
+          </LanguageContext.Provider>
+        </ConferenceContext.Provider>
+      </Styled.root>
+    </Fragment>
+  );
+};

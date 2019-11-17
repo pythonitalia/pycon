@@ -130,8 +130,17 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   });
 
   result.data.backend.blogPosts.forEach(({ slug }) => {
+    // TODO: translate blog
     createPage({
-      path: `/blog/${slug}`,
+      path: `/en/blog/${slug}`,
+      component: blogPostTemplate,
+      context: {
+        slug,
+      },
+    });
+
+    createPage({
+      path: `/it/blog/${slug}`,
       component: blogPostTemplate,
       context: {
         slug,

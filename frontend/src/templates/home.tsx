@@ -2,6 +2,8 @@
 import { Box, Flex, Grid, Heading, Text } from "@theme-ui/components";
 import { graphql } from "gatsby";
 import { Fragment } from "react";
+import { Helmet } from "react-helmet";
+import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
 import { Deadlines } from "../components/dealines";
@@ -19,6 +21,14 @@ export default ({ data }: { data: HomePageQuery }) => {
 
   return (
     <Fragment>
+      <FormattedMessage id="home.title">
+        {text => (
+          <Helmet>
+            <title>{text}</title>
+          </Helmet>
+        )}
+      </FormattedMessage>
+
       <HomepageHero />
 
       <Marquee message={conference.marquee!} />

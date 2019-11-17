@@ -1,5 +1,7 @@
 export default {
   en: {
+    titleTemplate: "%s | PyCon Italy",
+    "home.title": "Home",
     "profile.header": "My profile",
     "profile.email": "Email",
     "login.email": "Email",
@@ -39,6 +41,8 @@ export default {
     "cfp.languagesDescription": "Languages Description TODO",
   },
   it: {
+    titleTemplate: "%s | PyCon Italia",
+    "home.title": "Home",
     "profile.header": "Il mio profilo",
     "profile.email": "Email",
     "login.email": "Email",
