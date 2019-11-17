@@ -11,12 +11,13 @@ import {
   Radio,
   Select,
   Text,
+  Label,
 } from "@theme-ui/components";
 import { graphql, useStaticQuery } from "gatsby";
 import React, { useCallback } from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import { useFormState } from "react-use-form-state";
-import { jsx } from "theme-ui";
+import { Flex, jsx } from "theme-ui";
 import * as yup from "yup";
 
 import { CountriesQuery } from "../../generated/graphql";
@@ -108,9 +109,11 @@ const getValidationFieldError = (
   return validationError;
 };
 
-export const EditProfileApp: React.SFC<RouteComponentProps<{
-  lang: string;
-}>> = ({ lang }) => {
+export const EditProfileApp: React.SFC<
+  RouteComponentProps<{
+    lang: string;
+  }>
+> = ({ lang }) => {
   const [formState, { text, radio, select, checkbox, raw }] = useFormState<
     MeUserFields
   >(
@@ -221,6 +224,7 @@ export const EditProfileApp: React.SFC<RouteComponentProps<{
 
   // endregion
 
+  // @ts-ignore
   return (
     <Box>
       <h1>
@@ -266,24 +270,16 @@ export const EditProfileApp: React.SFC<RouteComponentProps<{
                 </FormattedMessage>
               }
             >
-              <Box>
-                <Box>
-                  <Radio
-                    {...radio("gender", "male")}
-                    name="gender"
-                    label={intl.formatMessage(genderMessages.male)}
-                    value={formState.values.gender === "male"}
-                  />
-                </Box>
-                <Box>
-                  <Radio
-                    {...radio("gender", "female")}
-                    name="gender"
-                    label={intl.formatMessage(genderMessages.female)}
-                    value={formState.values.gender === "female"}
-                  />
-                </Box>
-              </Box>
+              <Flex>
+                <Label>
+                  <Radio {...radio("gender", "male")} name="gender" />
+                  <FormattedMessage id="profile.gender.male" />
+                </Label>
+                <Label>
+                  <Radio {...radio("gender", "female")} name="gender" />
+                  <FormattedMessage id="profile.gender.female" />
+                </Label>
+              </Flex>
             </InputWrapper>
 
             <InputWrapper
