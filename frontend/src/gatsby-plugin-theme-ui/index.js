@@ -53,6 +53,11 @@ export default {
       bg: "blue",
       border: "primary",
       borderWidth: 4,
+      option: {
+        fontSize: 3,
+        padding: 3,
+        backgroundColor: "white",
+      },
     },
   },
   buttons: {
