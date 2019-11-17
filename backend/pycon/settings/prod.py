@@ -24,3 +24,5 @@ SENTRY_DSN = env("SENTRY_DSN", default="")
 
 if SENTRY_DSN:
     sentry_sdk.init(dsn=SENTRY_DSN, integrations=[DjangoIntegration()])
+
+SLACK_INCOMING_WEBHOOK_URL = env("SLACK_INCOMING_WEBHOOK_URL")
