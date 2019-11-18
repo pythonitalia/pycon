@@ -15,7 +15,7 @@
     "codegen": "yarn codegen-fragments && yarn codegen-queries",
     "codegen:watch": "concurrently -k -n 'fragments,queries' -c 'bgGreen.black.bold,bgYellow.black.bold' 'yarn codegen-fragments --watch'  'yarn codegen-queries --watch'",
     "precommit-lint": "node scripts/lint",
-    "postinstall": "cd plugins/gatsby-source-pycon && yarn"
+    "postinstall": "cd plugins/gatsby-source-pycon && yarn && cd ../.. && cd plugins/gatsby-plugin-social-images && yarn"
   },
   "dependencies": {
     "@apollo/react-hooks": "^3.1.3",

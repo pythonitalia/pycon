@@ -2,6 +2,7 @@
 import { ApolloProvider } from "@apollo/react-hooks";
 import { css, Global } from "@emotion/core";
 import { Box, Flex } from "@theme-ui/components";
+import { graphql, useStaticQuery } from "gatsby";
 import { Fragment } from "react";
 import { Helmet } from "react-helmet";
 import { IntlProvider } from "react-intl";
@@ -18,6 +19,8 @@ import messages from "../locale";
 type Props = {
   element: any;
   props: {
+    path: string;
+    location: { pathname: string };
     pageContext: {
       language: "en" | "it";
       conferenceCode: string;
@@ -54,6 +57,52 @@ const reset = css`
   }
 `;
 
+const isSocial = (props: Props["props"]) => {
+  const suffix = "/social";
+
+  return (
+    props.location.pathname.endsWith(suffix) || props.path.endsWith(suffix)
+  );
+};
+
+const Meta = ({ titleTemplate }: { titleTemplate: string }) => {
+  const {
+    site: { siteMetadata },
+  } = useStaticQuery(graphql`
+    {
+      site {
+        siteMetadata {
+          siteUrl
+        }
+      }
+    }
+  `);
+
+  const socialCard = `${siteMetadata.siteUrl}/social/social.png`;
+
+  return (
+    <Helmet
+      titleTemplate={titleTemplate}
+      meta={[
+        {
+          name: "twitter:card",
+          content: "summary_large_image",
+        },
+        {
+          property: "og:image",
+          content: socialCard,
+        },
+        {
+          name: "twitter:image",
+          content: socialCard,
+        },
+      ]}
+    >
+      <link rel="stylesheet" href="https://use.typekit.net/mbr7dqb.css" />
+    </Helmet>
+  );
+};
+
 export const wrapPageElement = ({ element, props }: Props) => {
   const titleTemplate =
     messages[props.pageContext.language || "en"].titleTemplate;
@@ -62,38 +111,38 @@ export const wrapPageElement = ({ element, props }: Props) => {
     <Fragment>
       <Global styles={reset} />
 
-      {console.log(props.pageContext.language)}
-
-      <Helmet titleTemplate={titleTemplate}>
-        <link rel="stylesheet" href="https://use.typekit.net/mbr7dqb.css" />
-      </Helmet>
+      <Meta titleTemplate={titleTemplate} />
 
       <Styled.root>
-        <ConferenceContext.Provider value={props.pageContext.conferenceCode}>
-          <LanguageContext.Provider value={props.pageContext.language}>
-            <IntlProvider
-              locale={props.pageContext.language}
-              messages={messages[props.pageContext.language]}
-            >
-              <ApolloProvider client={client}>
-                <Header />
+        {isSocial(props) ? (
+          element
+        ) : (
+          <ConferenceContext.Provider value={props.pageContext.conferenceCode}>
+            <LanguageContext.Provider value={props.pageContext.language}>
+              <IntlProvider
+                locale={props.pageContext.language}
+                messages={messages[props.pageContext.language]}
+              >
+                <ApolloProvider client={client}>
+                  <Header />
 
-                <Flex
-                  sx={{
-                    flexDirection: "column",
-                    minHeight: "100vh",
-                  }}
-                >
-                  <Box sx={{ mt: [100, 130] }}>
-                    <ErrorBoundary>{element}</ErrorBoundary>
-                  </Box>
+                  <Flex
+                    sx={{
+                      flexDirection: "column",
+                      minHeight: "100vh",
+                    }}
+                  >
+                    <Box sx={{ mt: [100, 130] }}>
+                      <ErrorBoundary>{element}</ErrorBoundary>
+                    </Box>
 
-                  <Footer />
-                </Flex>
-              </ApolloProvider>
-            </IntlProvider>
-          </LanguageContext.Provider>
-        </ConferenceContext.Provider>
+                    <Footer />
+                  </Flex>
+                </ApolloProvider>
+              </IntlProvider>
+            </LanguageContext.Provider>
+          </ConferenceContext.Provider>
+        )}
       </Styled.root>
     </Fragment>
   );
