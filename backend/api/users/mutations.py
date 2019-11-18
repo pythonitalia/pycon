@@ -6,6 +6,7 @@ from .forms import (
     LoginForm,
     LogoutForm,
     RegisterForm,
+    RegisterToNewsletterForm,
     RequestPasswordResetForm,
     ResetPasswordForm,
     UpdateUserForm,
@@ -84,6 +85,11 @@ class ResetPasswordMutation(FormMutation):
         output_types = (OperationResult,)
 
 
+class RegisterToNewsletter(FormMutation):
+    class Meta:
+        form_class = RegisterToNewsletterForm
+
+
 class UsersMutations:
     login = Login.Mutation
     register = Register.Mutation
@@ -91,3 +97,4 @@ class UsersMutations:
     update = Update.Mutation
     request_password_reset = RequestPasswordResetMutation.Mutation
     reset_password = ResetPasswordMutation.Mutation
+    register_to_newsletter = RegisterToNewsletter.Mutation

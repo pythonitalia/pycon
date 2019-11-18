@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.tokens import default_token_generator
 from django.forms import BooleanField, CharField, EmailField, ValidationError
 from django.utils.translation import ugettext_lazy as _
+
 from notifications.emails import send_request_password_reset_mail
 from strawberry_forms.forms import FormWithContext
 from users.models import User
@@ -106,6 +107,20 @@ class RegisterForm(FormWithContext):
         user = authenticate(email=email, password=password)
         login(self.context["request"], user)
         return user
+
+
+class RegisterToNewsletterForm(FormWithContext):
+    email = EmailField()
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        # email = self.cleaned_data.get("email")
+
+        return cleaned_data
+
+    def save(self):
+        pass
 
 
 class UpdateUserForm(ContextAwareModelForm):
