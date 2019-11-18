@@ -294,26 +294,30 @@ export const EditProfileApp: React.SFC<RouteComponentProps<{
                 </FormattedMessage>
               }
             >
-              <Flex>
-                <Label
-                  sx={{
-                    width: "auto",
-                    marginRight: 3,
-                  }}
-                >
-                  <Radio {...radio("gender", "male")} name="gender" />
-                  <FormattedMessage id="profile.gender.male" />
-                </Label>
-                <Label
-                  sx={{
-                    width: "auto",
-                    marginRight: 3,
-                  }}
-                >
-                  <Radio {...radio("gender", "female")} name="gender" />
-                  <FormattedMessage id="profile.gender.female" />
-                </Label>
-              </Flex>
+              <Select {...select("gender")}>
+                <option value="">Select a gender</option>
+                <FormattedMessage id="profile.gender.male">
+                  {msg => (
+                    <option key="male" value="male">
+                      {msg}
+                    </option>
+                  )}
+                </FormattedMessage>
+                <FormattedMessage id="profile.gender.female">
+                  {msg => (
+                    <option key="female" value="female">
+                      {msg}
+                    </option>
+                  )}
+                </FormattedMessage>
+                <FormattedMessage id="profile.gender.other">
+                  {msg => (
+                    <option key="other" value="other">
+                      {msg}
+                    </option>
+                  )}
+                </FormattedMessage>
+              </Select>
             </InputWrapper>
 
             <InputWrapper
