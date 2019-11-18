@@ -2,6 +2,7 @@
 import { ApolloProvider } from "@apollo/react-hooks";
 import { css, Global } from "@emotion/core";
 import { Box, Flex } from "@theme-ui/components";
+import { graphql, useStaticQuery } from "gatsby";
 import { Fragment } from "react";
 import { Helmet } from "react-helmet";
 import { IntlProvider } from "react-intl";
@@ -64,6 +65,44 @@ const isSocial = (props: Props["props"]) => {
   );
 };
 
+const Meta = ({ titleTemplate }: { titleTemplate: string }) => {
+  const {
+    site: { siteMetadata },
+  } = useStaticQuery(graphql`
+    {
+      site {
+        siteMetadata {
+          siteUrl
+        }
+      }
+    }
+  `);
+
+  const socialCard = `${siteMetadata.siteUrl}/social/social.png`;
+
+  return (
+    <Helmet
+      titleTemplate={titleTemplate}
+      meta={[
+        {
+          name: "twitter:card",
+          content: "summary_large_image",
+        },
+        {
+          property: "og:image",
+          content: socialCard,
+        },
+        {
+          name: "twitter:image",
+          content: socialCard,
+        },
+      ]}
+    >
+      <link rel="stylesheet" href="https://use.typekit.net/mbr7dqb.css" />
+    </Helmet>
+  );
+};
+
 export const wrapPageElement = ({ element, props }: Props) => {
   const titleTemplate =
     messages[props.pageContext.language || "en"].titleTemplate;
@@ -72,9 +111,7 @@ export const wrapPageElement = ({ element, props }: Props) => {
     <Fragment>
       <Global styles={reset} />
 
-      <Helmet titleTemplate={titleTemplate}>
-        <link rel="stylesheet" href="https://use.typekit.net/mbr7dqb.css" />
-      </Helmet>
+      <Meta titleTemplate={titleTemplate} />
 
       <Styled.root>
         {isSocial(props) ? (

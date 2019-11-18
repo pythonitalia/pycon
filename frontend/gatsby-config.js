@@ -7,6 +7,10 @@ const API_URL = process.env.API_URL || "http://127.0.0.1:8000/graphql";
 const CONFERENCE_CODE = process.env.CONFERENCE_CODE || "pycon-demo";
 
 module.exports = {
+  siteMetadata: {
+    // TODO: update
+    siteUrl: `https://pycon-italia.netlify.com`,
+  },
   developMiddleware: app => {
     app.use(
       "/graphql",
