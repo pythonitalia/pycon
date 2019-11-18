@@ -42,7 +42,7 @@ export default ({ data }: { data: SocialCardQuery }) => (
       }}
     >
       <img
-        src={data.file.childImageSharp.fixed.src}
+        src={data.file!.childImageSharp!.fixed!.src!}
         sx={{ height: 630, width: 630 }}
       />
 
