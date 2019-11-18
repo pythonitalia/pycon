@@ -2,16 +2,16 @@
 
 import { Box, Button, Flex, Grid, Heading } from "@theme-ui/components";
 import { graphql, useStaticQuery } from "gatsby";
-import { jsx } from "theme-ui";
 import { FormattedMessage } from "react-intl";
+import { jsx } from "theme-ui";
 
+import { useLoginState } from "../../app/profile/hooks";
 import { HeaderQuery } from "../../generated/graphql";
 import { useToggle } from "../../helpers/use-toggle";
 import { Link } from "../link";
 import { Logo } from "../logo";
 import { SocialLinks } from "../social-links";
 import { SnakeBurger } from "./snake-burger";
-import { useLoginState } from "../../app/profile/hooks";
 
 export const Header = () => {
   const {
