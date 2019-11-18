@@ -317,6 +317,13 @@ export const EditProfileApp: React.SFC<RouteComponentProps<{
                     </option>
                   )}
                 </FormattedMessage>
+                <FormattedMessage id="profile.gender.notSay">
+                  {msg => (
+                    <option key="notSay" value="not_say">
+                      {msg}
+                    </option>
+                  )}
+                </FormattedMessage>
               </Select>
             </InputWrapper>
 
