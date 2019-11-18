@@ -27,6 +27,7 @@ import {
   SendSubmissionMutationVariables,
 } from "../../generated/graphql-backend";
 import { Alert } from "../alert";
+import { InputWrapper } from "../input-wrapper";
 import { Link } from "../link";
 import CFP_PAGE_QUERY from "./cfp-page.graphql";
 import SEND_SUBMISSION_QUERY from "./send-submission.graphql";
@@ -42,37 +43,6 @@ type CfpFormFields = {
   topic: string;
   languages: string[];
 };
-
-const InputWrapper: React.SFC<{
-  label: React.ReactElement;
-  description?: React.ReactElement;
-  errors?: string[];
-  className?: string;
-}> = ({ label, description, className, errors, children }) => (
-  <Box mb={4} className={className}>
-    <Text variant="cfpLabel" as="p">
-      {label}
-    </Text>
-    {description && (
-      <Text variant="cfpLabelDescription" as="p">
-        {description}
-      </Text>
-    )}
-    {children}
-    {errors && (
-      <ul
-        sx={{
-          mt: 2,
-          listStyle: "none",
-        }}
-      >
-        {errors.map(error => (
-          <li key={error}>{error}</li>
-        ))}
-      </ul>
-    )}
-  </Box>
-);
 
 export const CfpForm: React.SFC = () => {
   const conferenceCode = useContext(ConferenceContext);

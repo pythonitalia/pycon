@@ -128,22 +128,16 @@ export default {
       fontSize: 5,
       whiteSpace: "nowrap",
     },
-    cfpLabel: {
+    label: {
       textTransform: "uppercase",
       fontWeight: "bold",
       fontSize: 3,
       color: "orange",
       mb: 2,
     },
-    cfpLabelDescription: {
+    labelDescription: {
       mb: 3,
       maxWidth: 850,
-    },
-    profileEditLabel: {
-      textTransform: "uppercase",
-      fontWeight: "bold",
-      fontSize: 3,
-      color: "yellow",
     },
   },
   styles: {

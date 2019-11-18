@@ -9,7 +9,6 @@ import {
   Checkbox,
   Input,
   Label,
-  Radio,
   Select,
   Text,
 } from "@theme-ui/components";
@@ -17,10 +16,11 @@ import { graphql, useStaticQuery } from "gatsby";
 import React, { useCallback } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
-import { Flex, jsx } from "theme-ui";
+import { jsx } from "theme-ui";
 // @ts-ignore
 import * as yup from "yup";
 
+import { InputWrapper } from "../../components/input-wrapper";
 import { CountriesQuery } from "../../generated/graphql";
 import {
   MeUser,
@@ -55,24 +55,6 @@ const SectionWrapper: React.SFC<{
       {children}
     </Box>
   </Card>
-);
-
-const InputWrapper: React.SFC<{
-  label?: React.ReactElement;
-  description?: React.ReactElement;
-  error?: string;
-  isRequired?: boolean;
-}> = ({ label, error, isRequired, children }) => (
-  <Box mb={4}>
-    {label && (
-      <Text variant="profileEditLabel" as="p">
-        {label}
-        {isRequired ? "*" : ""}
-      </Text>
-    )}
-    {children}
-    {error && <Alert variant="alert">{error}</Alert>}
-  </Box>
 );
 
 const schema = yup.object().shape({
@@ -260,7 +242,7 @@ export const EditProfileApp: React.SFC<RouteComponentProps<{
 
           <SectionWrapper titleId="profile.edit.personalHeader">
             <InputWrapper
-              error={formState.errors?.name || getValidationError("name")}
+              errors={[formState.errors?.name || getValidationError("name")]}
               isRequired={true}
               label={
                 <FormattedMessage id="profile.name">
@@ -272,9 +254,9 @@ export const EditProfileApp: React.SFC<RouteComponentProps<{
             </InputWrapper>
 
             <InputWrapper
-              error={
-                formState.errors?.fullName || getValidationError("fullName")
-              }
+              errors={[
+                formState.errors?.fullName || getValidationError("fullName"),
+              ]}
               isRequired={true}
               label={
                 <FormattedMessage id="profile.fullName">
@@ -286,7 +268,9 @@ export const EditProfileApp: React.SFC<RouteComponentProps<{
             </InputWrapper>
 
             <InputWrapper
-              error={formState.errors?.gender || getValidationError("gender")}
+              errors={[
+                formState.errors?.gender || getValidationError("gender"),
+              ]}
               isRequired={true}
               label={
                 <FormattedMessage id="profile.gender">
@@ -328,9 +312,9 @@ export const EditProfileApp: React.SFC<RouteComponentProps<{
             </InputWrapper>
 
             <InputWrapper
-              error={
-                formState.errors?.dateBirth || getValidationError("dateBirth")
-              }
+              errors={[
+                formState.errors?.dateBirth || getValidationError("dateBirth"),
+              ]}
               isRequired={true}
               label={
                 <FormattedMessage id="profile.dateBirth">
@@ -358,7 +342,9 @@ export const EditProfileApp: React.SFC<RouteComponentProps<{
             </InputWrapper>
 
             <InputWrapper
-              error={formState.errors?.country || getValidationError("country")}
+              errors={[
+                formState.errors?.country || getValidationError("country"),
+              ]}
               isRequired={true}
               label={
                 <FormattedMessage id="profile.country">
@@ -382,10 +368,10 @@ export const EditProfileApp: React.SFC<RouteComponentProps<{
           <br />
           <SectionWrapper titleId="profile.edit.privacyHeader">
             <InputWrapper
-              error={
+              errors={[
                 formState.errors?.openToRecruiting ||
-                getValidationError("openToRecruiting")
-              }
+                  getValidationError("openToRecruiting"),
+              ]}
             >
               <Label>
                 <Checkbox
@@ -397,10 +383,10 @@ export const EditProfileApp: React.SFC<RouteComponentProps<{
             </InputWrapper>
 
             <InputWrapper
-              error={
+              errors={[
                 formState.errors?.openToNewsletter ||
-                getValidationError("openToNewsletter")
-              }
+                  getValidationError("openToNewsletter"),
+              ]}
             >
               <Label>
                 <Checkbox
