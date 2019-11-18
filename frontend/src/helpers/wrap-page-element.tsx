@@ -18,6 +18,7 @@ import messages from "../locale";
 type Props = {
   element: any;
   props: {
+    location: { pathname: string };
     pageContext: {
       language: "en" | "it";
       conferenceCode: string;
@@ -62,38 +63,40 @@ export const wrapPageElement = ({ element, props }: Props) => {
     <Fragment>
       <Global styles={reset} />
 
-      {console.log(props.pageContext.language)}
-
       <Helmet titleTemplate={titleTemplate}>
         <link rel="stylesheet" href="https://use.typekit.net/mbr7dqb.css" />
       </Helmet>
 
       <Styled.root>
-        <ConferenceContext.Provider value={props.pageContext.conferenceCode}>
-          <LanguageContext.Provider value={props.pageContext.language}>
-            <IntlProvider
-              locale={props.pageContext.language}
-              messages={messages[props.pageContext.language]}
-            >
-              <ApolloProvider client={client}>
-                <Header />
+        {props.location.pathname.endsWith("/social") ? (
+          element
+        ) : (
+          <ConferenceContext.Provider value={props.pageContext.conferenceCode}>
+            <LanguageContext.Provider value={props.pageContext.language}>
+              <IntlProvider
+                locale={props.pageContext.language}
+                messages={messages[props.pageContext.language]}
+              >
+                <ApolloProvider client={client}>
+                  <Header />
 
-                <Flex
-                  sx={{
-                    flexDirection: "column",
-                    minHeight: "100vh",
-                  }}
-                >
-                  <Box sx={{ mt: [100, 130] }}>
-                    <ErrorBoundary>{element}</ErrorBoundary>
-                  </Box>
+                  <Flex
+                    sx={{
+                      flexDirection: "column",
+                      minHeight: "100vh",
+                    }}
+                  >
+                    <Box sx={{ mt: [100, 130] }}>
+                      <ErrorBoundary>{element}</ErrorBoundary>
+                    </Box>
 
-                  <Footer />
-                </Flex>
-              </ApolloProvider>
-            </IntlProvider>
-          </LanguageContext.Provider>
-        </ConferenceContext.Provider>
+                    <Footer />
+                  </Flex>
+                </ApolloProvider>
+              </IntlProvider>
+            </LanguageContext.Provider>
+          </ConferenceContext.Provider>
+        )}
       </Styled.root>
     </Fragment>
   );

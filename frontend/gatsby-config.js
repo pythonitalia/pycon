@@ -62,6 +62,7 @@ module.exports = {
         ],
       },
     },
+    `gatsby-plugin-social-images`,
     `gatsby-plugin-typescript`,
     `gatsby-plugin-react-helmet`,
     `gatsby-transformer-sharp`,

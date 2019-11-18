@@ -172,6 +172,16 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
       },
     });
   });
+
+  // generic social card
+  const genericSocialCardTemplate = path.resolve(
+    `src/templates/social-card.tsx`,
+  );
+
+  createPage({
+    path: `/social`,
+    component: genericSocialCardTemplate,
+  });
 };
 
 exports.onCreateWebpackConfig = ({
