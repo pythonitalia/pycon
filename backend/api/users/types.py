@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 import strawberry
 
@@ -9,6 +9,13 @@ import strawberry
 class MeUser:
     id: strawberry.ID
     email: str
+    name: Optional[str]
+    full_name: Optional[str]
+    gender: Optional[str]
+    open_to_recruiting: Optional[bool]
+    open_to_newsletter: Optional[bool]
+    date_birth: Optional[str]
+    country: Optional[str]
 
     # TODO: update this with pretix query
     @strawberry.field
@@ -27,3 +34,16 @@ class User:
     name: str
     full_name: str
     username: str
+    name: str
+    full_name: str
+    gender: str
+    open_to_recruiting: bool
+    open_to_newsletter: bool
+    date_birth: str
+    country: str
+
+
+@strawberry.type
+class Country:
+    code: str
+    name: str

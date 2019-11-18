@@ -15,5 +15,5 @@ export const PrivateRoute = ({
     return <Redirect to={loginUrl} noThrow={true} />;
   }
 
-  return <PrivateComponent {...rest} />;
+  return <PrivateComponent lang={lang} {...rest} />;
 };

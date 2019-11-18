@@ -25,6 +25,7 @@ exclude_lines =
 
 
 omit =
+  ./.venv/**
   ./**/tests/*
   ./**/integration_tests/*
   ./pycon/settings*

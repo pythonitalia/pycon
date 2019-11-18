@@ -1,4 +1,7 @@
+import datetime
+
 import pytest
+
 from users.managers import UserManager
 from users.models import User
 
@@ -18,6 +21,25 @@ def test_create_user_with_email_and_password():
     assert user.email == "lennon@thebeatles.com"
     assert not user.is_superuser
     assert not user.is_staff
+
+
+@pytest.mark.django_db
+def test_create_user_with_extra_fields():
+    user = User.objects.create_user(
+        "lennon@thebeatles.com",
+        "johnpassword",
+        name="John",
+        full_name="John Lennon",
+        gender="male",
+        date_birth=datetime.datetime.strptime("09/10/1940", "%d/%m/%Y"),
+        country="GB",
+    )
+
+    assert user.name == "John"
+    assert user.full_name == "John Lennon"
+    assert user.gender == "male"
+    assert user.date_birth == datetime.datetime.strptime("09/10/1940", "%d/%m/%Y")
+    assert user.country == "GB"
 
 
 @pytest.mark.django_db
