@@ -1,10 +1,9 @@
 /** @jsx jsx */
-import { Box, Flex, Heading } from "@theme-ui/components";
+import { Flex, Heading } from "@theme-ui/components";
 import { graphql } from "gatsby";
 import { Fragment } from "react";
 import { jsx } from "theme-ui";
 
-import { MainIllustration } from "../components/illustrations/main";
 import { LogoOrange } from "../components/logo/orange";
 import { SocialCardQuery } from "../generated/graphql";
 
@@ -39,9 +38,13 @@ export default ({ data }: { data: SocialCardQuery }) => (
         width: 1200,
         height: 630,
         overflow: "hidden",
+        background: "black",
       }}
     >
-      <MainIllustration />
+      <img
+        src={data.file.childImageSharp.fixed.src}
+        sx={{ height: 630, width: 630 }}
+      />
 
       <Flex sx={{ flexDirection: "column", ml: -14 }}>
         <LogoOrange />
@@ -113,6 +116,14 @@ export const query = graphql`
         start
         end
         name
+      }
+    }
+
+    file(relativePath: { eq: "images/main-illustration.png" }) {
+      childImageSharp {
+        fixed(width: 1260, height: 1260) {
+          src
+        }
       }
     }
   }

@@ -20,11 +20,8 @@ exports.onPostBuild = async (args, pluginOptions) => {
       "social.png",
     );
 
-    console.log(pagePath);
-    console.log(screenshotPath);
-
     const page = await browser.newPage();
-    await page.setViewport({ width: 1200, height: 630 });
+    await page.setViewport({ width: 1200, height: 630, deviceScaleFactor: 2 });
     await page.goto(`file://${pagePath}`);
     await page.screenshot({ path: screenshotPath });
   });
@@ -35,8 +32,6 @@ exports.onPostBuild = async (args, pluginOptions) => {
 };
 
 exports.onCreatePage = ({ page, actions }) => {
-  console.log(page.path);
-
   if (page.path.endsWith("/social")) {
     pages.push(page.path);
   }

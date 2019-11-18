@@ -18,6 +18,7 @@ import messages from "../locale";
 type Props = {
   element: any;
   props: {
+    path: string;
     location: { pathname: string };
     pageContext: {
       language: "en" | "it";
@@ -55,6 +56,14 @@ const reset = css`
   }
 `;
 
+const isSocial = (props: Props["props"]) => {
+  const suffix = "/social";
+
+  return (
+    props.location.pathname.endsWith(suffix) || props.path.endsWith(suffix)
+  );
+};
+
 export const wrapPageElement = ({ element, props }: Props) => {
   const titleTemplate =
     messages[props.pageContext.language || "en"].titleTemplate;
@@ -68,7 +77,7 @@ export const wrapPageElement = ({ element, props }: Props) => {
       </Helmet>
 
       <Styled.root>
-        {props.location.pathname.endsWith("/social") ? (
+        {isSocial(props) ? (
           element
         ) : (
           <ConferenceContext.Provider value={props.pageContext.conferenceCode}>
