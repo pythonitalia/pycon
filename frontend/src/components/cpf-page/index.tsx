@@ -7,7 +7,7 @@ import { jsx } from "theme-ui";
 import { CfpForm } from "../../components/cfp-form";
 import { Introduction } from "./introduction";
 
-export default () => (
+export const CFPPage = () => (
   <Fragment>
     <FormattedMessage id="cfp.pageTitle">
       {text => (

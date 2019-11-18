@@ -98,7 +98,6 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   const pageTemplate = path.resolve(`src/templates/page.tsx`);
   const homeTemplate = path.resolve(`src/templates/home.tsx`);
   const appTemplate = path.resolve(`src/templates/app.tsx`);
-  const cfpTemplate = path.resolve("src/templates/cfp/index.tsx");
 
   createRedirect({
     fromPath: `/`,
@@ -111,7 +110,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     { template: appTemplate, path: "/login", matchPath: "/login/*" },
     { template: appTemplate, path: "/signup", matchPath: "/signup/*" },
     { template: appTemplate, path: "/profile", matchPath: "/profile/*" },
-    { template: cfpTemplate, path: "/cfp", matchPath: "/cfp/*" },
+    { template: appTemplate, path: "/cfp", matchPath: "/cfp/*" },
     {
       template: appTemplate,
       path: "/submission",
@@ -181,6 +180,16 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         slug: slugEn,
       },
     });
+  });
+
+  // generic social card
+  const genericSocialCardTemplate = path.resolve(
+    `src/templates/social-card.tsx`,
+  );
+
+  createPage({
+    path: `/social`,
+    component: genericSocialCardTemplate,
   });
 };
 

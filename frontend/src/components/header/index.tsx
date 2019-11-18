@@ -2,8 +2,10 @@
 
 import { Box, Button, Flex, Grid, Heading } from "@theme-ui/components";
 import { graphql, useStaticQuery } from "gatsby";
+import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
+import { useLoginState } from "../../app/profile/hooks";
 import { HeaderQuery } from "../../generated/graphql";
 import { useToggle } from "../../helpers/use-toggle";
 import { Link } from "../link";
@@ -36,6 +38,8 @@ export const Header = () => {
       }
     }
   `);
+
+  const [loggedIn] = useLoginState();
 
   const [open, toggleOpen] = useToggle(false);
 
@@ -75,8 +79,13 @@ export const Header = () => {
             alignItems: ["center", "flex-start"],
           }}
         >
-          <Link href="/:language/login" variant="button" sx={{ mr: 5 }}>
-            Login
+          <Link
+            href={loggedIn ? "/:language/profile" : "/:language/login"}
+            variant="button"
+            sx={{ mr: 5 }}
+          >
+            {loggedIn && <FormattedMessage id="header.profile" />}
+            {!loggedIn && <FormattedMessage id="header.login" />}
           </Link>
 
           <Button
@@ -129,10 +138,14 @@ export const Header = () => {
               ))}
             </Box>
             <Box>
-              <Heading variant="header">Contact</Heading>
+              <Heading variant="header">
+                <FormattedMessage id="header.contact" />
+              </Heading>
 
               <dl>
-                <dt>Become a sponsor</dt>
+                <dt>
+                  <FormattedMessage id="header.becomeASponsor" />
+                </dt>
                 <Box as="dd" sx={{ mb: 3 }}>
                   <Link
                     sx={{
@@ -143,7 +156,9 @@ export const Header = () => {
                     sponsor@pycon.it
                   </Link>
                 </Box>
-                <dt>Enquiries</dt>
+                <dt>
+                  <FormattedMessage id="header.enquiries" />
+                </dt>
                 <Box as="dd" sx={{ mb: 3 }}>
                   <Link
                     sx={{
@@ -157,7 +172,9 @@ export const Header = () => {
               </dl>
             </Box>
             <Box>
-              <Heading variant="header">Follow us</Heading>
+              <Heading variant="header">
+                <FormattedMessage id="header.followus" />
+              </Heading>
 
               <SocialLinks variant="header" />
             </Box>
