@@ -5,7 +5,7 @@ let pages = [];
 
 exports.onPostBuild = async (args, pluginOptions) => {
   const rootDir = `public`;
-  const browser = await puppeteer.launch({ headless: false });
+  const browser = await puppeteer.launch({ headless: true });
 
   const renderingJobs = pages.map(async p => {
     const parts = [process.cwd(), rootDir, p];
