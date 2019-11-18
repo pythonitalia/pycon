@@ -114,7 +114,7 @@ const KeynotesList = ({
         {showArrows && <ArrowIcon />}
       </Flex>
 
-      <Grid columns={columns} gap={0}>
+      <Grid columns={[1, 3]} gap={0}>
         {page.map((keynote, i) => (
           <Keynote
             color={colors[i % colors.length]}
