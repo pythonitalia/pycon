@@ -59,6 +59,11 @@ export const messages = {
     "login.waitWhileSendingResetPasswordRequest": "Sending password reset",
     "login.checkYourEmails":
       "Check your emails for the link to reset your password! 🥳",
+    "newsletter.header": "Keep up to date",
+    "newsletter.text":
+      "Stay in the loop, sign up for email updates about events, news and offer!",
+    "newsletter.button": "Signup 👉",
+    "newsletter.success": "🎉 Thanks for subscribing! 🎉",
     "signup.email": "Email",
     "signup.password": "Password",
     "signup.signupButton": "Signup 👉",
@@ -382,6 +387,11 @@ export const messages = {
       "Controlla le tue email per il link per cambiare password! 🥳",
     "login.typeEmailToRecoverPassword":
       "Password dimenticata? Inserisci la tua email e clicca qui",
+    "newsletter.header": "Tieniti aggiornato",
+    "newsletter.text":
+      "Rimani aggiornato, iscriviti per ricevere aggiornamenti via email su eventi, novità e offerte!",
+    "newsletter.button": "Iscriviti 👉",
+    "newsletter.success": "🎉 Grazie per essert iscritto! 🎉",
     "signup.email": "Email",
     "signup.password": "Password",
     "signup.signupButton": "Registrati 👉",
