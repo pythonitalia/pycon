@@ -209,17 +209,16 @@ export default ({ data }: { data: HomePageQuery }) => {
               justifyContent: "center",
             }}
           >
-            <Heading as="h1">Getting there</Heading>
+            <Heading as="h1">
+              <FormattedMessage id="home.gettingThere" />
+            </Heading>
             <Text
               sx={{
                 mt: 4,
               }}
               as="p"
             >
-              Donec rutrum congue leo eget malesuada. Lorem ipsum dolor sit
-              amet. Donec rutrum congue leo eget malesuada. Lorem ipsum dolor
-              sit amet, consectetur adipiscing elit. Vivamus magna justo,
-              lacinia eget consectetur sed, convallis at tellus.
+              {conference.gettingThereText}
             </Text>
           </Flex>
 
@@ -307,7 +306,7 @@ export const query = graphql`
         proposalsSubtitle: copy(key: "proposals-subtitle", language: $language)
         proposalsText: copy(key: "proposals-text", language: $language)
 
-        eventsIntro: copy(key: "events-intro", language: $language)
+        gettingThereText: copy(key: "getting-there-text", language: $language)
 
         map {
           image(width: 1280, height: 400, zoom: 15)
