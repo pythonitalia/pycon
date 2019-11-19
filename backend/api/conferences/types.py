@@ -76,6 +76,10 @@ class Conference:
         return self.deadlines.order_by("start").all()
 
     @strawberry.field
+    def deadline(self, info, type: str) -> Optional["Deadline"]:
+        return self.deadlines.filter(type=type).first()
+
+    @strawberry.field
     def audience_levels(self, info) -> List[AudienceLevel]:
         return self.audience_levels.all()
 

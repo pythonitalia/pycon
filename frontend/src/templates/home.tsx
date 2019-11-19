@@ -6,13 +6,36 @@ import { Helmet } from "react-helmet";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
-import { Deadlines } from "../components/dealines";
 import { EventCard } from "../components/home-events/event-card";
 import { HomepageHero } from "../components/homepage-hero";
 import { KeynotersSection } from "../components/keynoters-section";
 import { Marquee } from "../components/marquee";
 import { SponsorsSection } from "../components/sponsors-section";
 import { HomePageQuery } from "../generated/graphql";
+
+const formatDeadlineDate = (datetime: string) => {
+  const d = new Date(datetime);
+
+  const formatter = new Intl.DateTimeFormat("default", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
+  return formatter.format(d);
+};
+
+const formatDeadlineTime = (datetime: string) => {
+  const d = new Date(datetime);
+
+  const formatter = new Intl.DateTimeFormat("default", {
+    hour: "numeric",
+    minute: "numeric",
+    timeZoneName: "short",
+  });
+
+  return formatter.format(d);
+};
 
 export default ({ data }: { data: HomePageQuery }) => {
   const {
@@ -54,12 +77,6 @@ export default ({ data }: { data: HomePageQuery }) => {
           <Text as="p" sx={{ mb: 3 }}>
             {conference.introText}
           </Text>
-
-          <Heading as="h2" sx={{ color: "purple", fontSize: 3, mb: 3 }}>
-            {conference.deadlinesTitle}
-          </Heading>
-
-          <Deadlines deadlines={conference.deadlines} />
         </Box>
       </Grid>
 
@@ -85,6 +102,36 @@ export default ({ data }: { data: HomePageQuery }) => {
           <Heading as="h1" sx={{ mb: 3 }}>
             {conference.proposalsTitle}
           </Heading>
+
+          {conference.cfpDeadline && (
+            <Flex sx={{ border: "primary" }}>
+              <Box
+                sx={{
+                  flex: 1,
+                  p: 3,
+                  textAlign: "center",
+                  borderRight: "primary",
+                }}
+              >
+                <Heading variant="caps" color="violet">
+                  Begins
+                </Heading>
+                <Box>{formatDeadlineDate(conference.cfpDeadline.start)}</Box>
+                <Box sx={{ fontSize: 0 }}>
+                  {formatDeadlineTime(conference.cfpDeadline.start)}
+                </Box>
+              </Box>
+              <Box sx={{ flex: 1, p: 3, textAlign: "center" }}>
+                <Heading variant="caps" color="orange">
+                  Deadline
+                </Heading>
+                <Box>{formatDeadlineDate(conference.cfpDeadline.end)}</Box>
+                <Box sx={{ fontSize: 0 }}>
+                  {formatDeadlineTime(conference.cfpDeadline.end)}
+                </Box>
+              </Box>
+            </Flex>
+          )}
 
           <Heading as="h2" sx={{ color: "yellow", fontSize: 3, mb: 3 }}>
             {conference.proposalsSubtitle}
@@ -248,7 +295,6 @@ export const query = graphql`
         marquee: copy(key: "marquee", language: $language)
         introTitle: copy(key: "intro-title-1", language: $language)
         introText: copy(key: "intro-text-1", language: $language)
-        deadlinesTitle: copy(key: "deadlines-title", language: $language)
 
         proposalsTitle: copy(key: "proposals-title", language: $language)
         proposalsSubtitle: copy(key: "proposals-subtitle", language: $language)
@@ -261,9 +307,7 @@ export const query = graphql`
           link
         }
 
-        deadlines {
-          name(language: $language)
-          description(language: $language)
+        cfpDeadline: deadline(type: "cfp") {
           start
           end
         }
