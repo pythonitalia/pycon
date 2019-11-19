@@ -12,7 +12,12 @@ type LinkProps = {
 };
 
 const ArrowRightBackground = ({ ...props }) => (
-  <svg viewBox="0 0 146 66" preserveAspectRatio="none" {...props}>
+  <svg
+    viewBox="0 0 146 66"
+    preserveAspectRatio="none"
+    vectorEffect="non-scaling-stroke"
+    {...props}
+  >
     <path
       d="M2 2h115.065l26.312 31-26.312 31H2V2z"
       stroke="#000"

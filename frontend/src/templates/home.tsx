@@ -9,6 +9,7 @@ import { jsx } from "theme-ui";
 import { EventCard } from "../components/home-events/event-card";
 import { HomepageHero } from "../components/homepage-hero";
 import { KeynotersSection } from "../components/keynoters-section";
+import { Link } from "../components/link";
 import { Marquee } from "../components/marquee";
 import { SponsorsSection } from "../components/sponsors-section";
 import { HomePageQuery } from "../generated/graphql";
@@ -137,7 +138,13 @@ export default ({ data }: { data: HomePageQuery }) => {
             {conference.proposalsSubtitle}
           </Heading>
 
-          <Text as="p">{conference.proposalsText}</Text>
+          <Text as="p" sx={{ mb: 4 }}>
+            {conference.proposalsText}
+          </Text>
+
+          <Link href="/:language/cfp" variant="button">
+            Get involved
+          </Link>
         </Box>
       </Grid>
 
