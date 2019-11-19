@@ -1,6 +1,5 @@
 /** @jsx jsx */
-import css from "@styled-system/css";
-import { Box, Grid, Heading } from "@theme-ui/components";
+import { Box, Grid } from "@theme-ui/components";
 import Img from "gatsby-image";
 import { jsx } from "theme-ui";
 
@@ -8,15 +7,19 @@ import { HomePageQuery } from "../../generated/graphql";
 import { Link } from "../link";
 
 type Props = {
+  color?: string | null;
   sponsors: HomePageQuery["backend"]["conference"]["sponsorsByLevel"][0]["sponsors"];
 };
 
-const SponsorItem: React.SFC<{ sponsor: Props["sponsors"][0] }> = ({
-  sponsor,
-}) => (
+type ItemProps = {
+  color: string;
+  sponsor: Props["sponsors"][0];
+};
+
+const SponsorItem: React.SFC<ItemProps> = ({ sponsor, color }) => (
   <Box
     sx={{
-      backgroundColor: "yellow",
+      backgroundColor: color,
     }}
   >
     <Link
@@ -59,9 +62,11 @@ const SponsorItem: React.SFC<{ sponsor: Props["sponsors"][0] }> = ({
   </Box>
 );
 
-export const SponsorsGrid: React.SFC<Props> = ({ sponsors }) => {
+export const SponsorsGrid: React.SFC<Props> = ({ sponsors, color }) => {
   const columns = 3;
   const missing = columns - (sponsors.length % columns);
+
+  const backgroundColor = color || "yellow";
 
   return (
     <Grid
@@ -75,13 +80,17 @@ export const SponsorsGrid: React.SFC<Props> = ({ sponsors }) => {
       }}
     >
       {sponsors.map(sponsor => (
-        <SponsorItem key={sponsor.name} sponsor={sponsor} />
+        <SponsorItem
+          key={sponsor.name}
+          sponsor={sponsor}
+          color={backgroundColor}
+        />
       ))}
       {new Array(missing).fill(null).map((_, index) => (
         <Box
           key={index}
           sx={{
-            backgroundColor: "yellow",
+            backgroundColor,
           }}
         />
       ))}

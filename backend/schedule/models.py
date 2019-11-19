@@ -5,6 +5,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from model_utils import Choices
 from model_utils.models import TimeFramedModel, TimeStampedModel
+from pycon.constants import COLORS
 from submissions.models import Submission
 
 
@@ -30,15 +31,6 @@ class ScheduleItem(TimeFramedModel, TimeStampedModel):
         ("submission", _("Submission")),
         ("keynote", _("Keynote")),
         ("custom", _("Custom")),
-    )
-
-    COLORS = Choices(
-        ("blue", _("blue")),
-        ("yellow", _("yellow")),
-        ("orange", _("orange")),
-        ("cindarella", _("cindarella")),
-        ("violet", _("violet")),
-        ("green", _("green")),
     )
 
     conference = models.ForeignKey(

@@ -25,3 +25,4 @@ class Sponsor:
 class SponsorsByLevel:
     level: str
     sponsors: typing.List[Sponsor]
+    highlight_color: typing.Optional[str]

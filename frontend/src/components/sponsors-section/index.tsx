@@ -15,7 +15,7 @@ export const SponsorsSection: React.SFC<Props> = ({
   ...props
 }) => (
   <Box {...props}>
-    {sponsorsByLevel.map(({ level, sponsors }) => (
+    {sponsorsByLevel.map(({ level, sponsors, highlightColor }) => (
       <Box key={level}>
         <Heading
           sx={{
@@ -45,7 +45,7 @@ export const SponsorsSection: React.SFC<Props> = ({
           </Box>
         </Heading>
 
-        <SponsorsGrid sponsors={sponsors} />
+        <SponsorsGrid color={highlightColor} sponsors={sponsors} />
       </Box>
     ))}
   </Box>

@@ -4,9 +4,6 @@ from typing import TYPE_CHECKING, List, Optional
 
 import pytz
 import strawberry
-from django.conf import settings
-from django.utils import translation
-
 from api.cms.types import FAQ, Menu
 from api.events.types import Event
 from api.languages.types import Language
@@ -15,6 +12,8 @@ from api.schedule.types import Room, ScheduleItem
 from api.sponsors.types import SponsorsByLevel
 from api.submissions.types import Submission, SubmissionType
 from cms.models import GenericCopy
+from django.conf import settings
+from django.utils import translation
 from schedule.models import ScheduleItem as ScheduleItemModel
 
 from ..helpers.i18n import make_localized_resolver
@@ -121,9 +120,12 @@ class Conference:
             level__conference__code=self.code
         ).select_related("level")
 
-        by_level = groupby(sponsors, key=lambda sponsor: sponsor.level.name)
+        by_level = groupby(sponsors, key=lambda sponsor: sponsor.level)
 
-        return [SponsorsByLevel(level, list(sponsors)) for level, sponsors in by_level]
+        return [
+            SponsorsByLevel(level.name, list(sponsors), level.highlight_color)
+            for level, sponsors in by_level
+        ]
 
     @strawberry.field
     def copy(self, info, key: str, language: Optional[str] = None) -> Optional[str]:

@@ -289,6 +289,7 @@ export const query = graphql`
 
         sponsorsByLevel {
           level
+          highlightColor
           sponsors {
             name
             link
