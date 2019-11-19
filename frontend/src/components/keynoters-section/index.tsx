@@ -12,8 +12,6 @@ import { ArrowIcon } from "../icons/arrow";
 
 type KeynoteProps = KeynotesSectionQuery["backend"]["conference"]["keynotes"][0];
 
-const colors = ["#79CDE0", "#34B4A1", "#F17A5D"];
-
 const Keynote = ({
   title,
   additionalSpeakers,
@@ -47,7 +45,7 @@ const Keynote = ({
         left: 0,
         width: "100%",
         height: "100%",
-        background: color,
+        backgroundColor: color,
         mixBlendMode: "multiply",
       }}
     />
