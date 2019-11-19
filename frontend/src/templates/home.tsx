@@ -90,7 +90,7 @@ export default ({ data }: { data: HomePageQuery }) => {
           px: 2,
           maxWidth: "container",
           mx: "auto",
-          gridTemplateColumns: [null, "10fr 2fr 9fr"],
+          gridTemplateColumns: [null, null, "10fr 2fr 9fr"],
         }}
       >
         <Box>
@@ -99,7 +99,7 @@ export default ({ data }: { data: HomePageQuery }) => {
           </Box>
         </Box>
 
-        <Box sx={{ gridColumnStart: [null, 3] }}>
+        <Box sx={{ gridColumnStart: [null, null, 3] }}>
           <Heading as="h1" sx={{ mb: 3 }}>
             {conference.proposalsTitle}
           </Heading>
