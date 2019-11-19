@@ -92,9 +92,12 @@ export default {
     },
     button: {
       position: "relative",
-      padding: [2, 3],
-
-      fontSize: [0, 2],
+      px: 3,
+      fontSize: 2,
+      height: 50,
+      lineHeight: "43px",
+      display: "inline-block",
+      height: 50,
       fontFamily: "body",
       fontWeight: "heading",
 
