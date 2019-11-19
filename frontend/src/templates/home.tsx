@@ -160,7 +160,7 @@ export default ({ data }: { data: HomePageQuery }) => {
                   mx: "auto",
                 }}
               >
-                Conference Highlights
+                <FormattedMessage id="home.conferenceHighlights" />
               </Heading>
             </Box>
           </Box>
@@ -215,6 +215,7 @@ export default ({ data }: { data: HomePageQuery }) => {
             <Text
               sx={{
                 mt: 4,
+                mb: 3,
               }}
               as="p"
             >
