@@ -23,6 +23,7 @@ const SponsorItem: React.SFC<ItemProps> = ({ sponsor, color }) => (
     }}
   >
     <Link
+      target="_blank"
       href={sponsor.link!}
       sx={{
         filter: "saturate(0)",
