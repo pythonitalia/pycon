@@ -2,6 +2,9 @@ export default {
   en: {
     titleTemplate: "%s | PyCon Italy",
     "home.title": "Home",
+    "home.cfp.begins": "Begins",
+    "home.cfp.deadline": "Deadline",
+    "home.cfp.getInvolved": "Get involved",
     "buttons.save": "Save 💾",
     "profile.country": "Country",
     "profile.dateBirth": "Birth date",
@@ -70,6 +73,9 @@ export default {
   it: {
     titleTemplate: "%s | PyCon Italia",
     "home.title": "Home",
+    "home.cfp.begins": "Inizio",
+    "home.cfp.deadline": "Fine",
+    "home.cfp.getInvolved": "Partecipa",
     "buttons.save": "Salva 💾",
     "profile.country": "Nazionalità",
     "profile.dateBirth": "Data di nascita",

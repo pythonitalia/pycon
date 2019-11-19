@@ -115,7 +115,7 @@ export default ({ data }: { data: HomePageQuery }) => {
                 }}
               >
                 <Heading variant="caps" color="violet">
-                  Begins
+                  <FormattedMessage id="home.cfp.begins" />
                 </Heading>
                 <Box>{formatDeadlineDate(conference.cfpDeadline.start)}</Box>
                 <Box sx={{ fontSize: 0 }}>
@@ -124,7 +124,7 @@ export default ({ data }: { data: HomePageQuery }) => {
               </Box>
               <Box sx={{ flex: 1, p: 3, textAlign: "center" }}>
                 <Heading variant="caps" color="orange">
-                  Deadline
+                  <FormattedMessage id="home.cfp.deadline" />
                 </Heading>
                 <Box>{formatDeadlineDate(conference.cfpDeadline.end)}</Box>
                 <Box sx={{ fontSize: 0 }}>
@@ -143,7 +143,7 @@ export default ({ data }: { data: HomePageQuery }) => {
           </Text>
 
           <Link href="/:language/cfp" variant="button">
-            Get involved
+            <FormattedMessage id="home.cfp.getInvolved" />
           </Link>
         </Box>
       </Grid>
