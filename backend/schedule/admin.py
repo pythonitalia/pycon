@@ -17,6 +17,7 @@ class ScheduleItemAdmin(admin.ModelAdmin):
                     "type",
                     "title",
                     "image",
+                    "highlight_color",
                     "description",
                     "submission",
                     "additional_speakers",

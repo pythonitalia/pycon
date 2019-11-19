@@ -117,7 +117,7 @@ const KeynotesList = ({
       <Grid columns={[1, 3]} gap={0}>
         {page.map((keynote, i) => (
           <Keynote
-            color={colors[i % colors.length]}
+            color={keynote.highlightColor || "cindarella"}
             key={keynote.id}
             {...keynote}
           />
@@ -149,6 +149,7 @@ export const KeynotersSection = () => {
           keynotes {
             id
             title
+            highlightColor
             image
             imageFile {
               childImageSharp {
