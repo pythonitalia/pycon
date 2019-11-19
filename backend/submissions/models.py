@@ -7,6 +7,13 @@ from django.utils.translation import ugettext_lazy as _
 from model_utils.models import TimeStampedModel
 
 
+class SubmissionTag(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Submission(TimeStampedModel):
     conference = models.ForeignKey(
         "conferences.Conference",
@@ -51,6 +58,8 @@ class Submission(TimeStampedModel):
         verbose_name=_("audience level"),
         on_delete=models.PROTECT,
     )
+
+    tags = models.ManyToManyField(SubmissionTag, verbose_name=_("tags"))
 
     def clean(self):
         if (
