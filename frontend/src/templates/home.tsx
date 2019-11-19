@@ -105,7 +105,7 @@ export default ({ data }: { data: HomePageQuery }) => {
           </Heading>
 
           {conference.cfpDeadline && (
-            <Flex sx={{ border: "primary" }}>
+            <Flex sx={{ border: "primary", mb: 3 }}>
               <Box
                 sx={{
                   flex: 1,
@@ -267,7 +267,10 @@ export default ({ data }: { data: HomePageQuery }) => {
         sponsorsByLevel={conference.sponsorsByLevel}
       />
 
-      <Grid columns={[1, 2]} sx={{ px: 2, maxWidth: "container", mx: "auto" }}>
+      <Grid
+        columns={[1, 2]}
+        sx={{ px: 2, maxWidth: "container", mx: "auto", display: "none" }}
+      >
         <Box sx={{ py: 5, borderRight: [null, "primary"] }}>
           <Heading sx={{ fontSize: 5, mb: 4 }}>Keep up to date</Heading>
 
