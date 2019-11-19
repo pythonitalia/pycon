@@ -32,6 +32,15 @@ class ScheduleItem(TimeFramedModel, TimeStampedModel):
         ("custom", _("Custom")),
     )
 
+    COLORS = Choices(
+        ("blue", _("blue")),
+        ("yellow", _("yellow")),
+        ("orange", _("orange")),
+        ("cindarella", _("cindarella")),
+        ("violet", _("violet")),
+        ("green", _("green")),
+    )
+
     conference = models.ForeignKey(
         Conference,
         on_delete=models.CASCADE,
@@ -43,6 +52,9 @@ class ScheduleItem(TimeFramedModel, TimeStampedModel):
     description = models.TextField(_("description"), blank=True)
 
     type = models.CharField(choices=TYPES, max_length=10, verbose_name=_("type"))
+    highlight_color = models.CharField(
+        choices=COLORS, max_length=15, blank=True, verbose_name=_("highlight color")
+    )
 
     rooms = models.ManyToManyField(Room, related_name="talks", verbose_name=_("rooms"))
 

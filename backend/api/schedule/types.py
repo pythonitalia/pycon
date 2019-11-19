@@ -25,6 +25,7 @@ class ScheduleItem:
     title: str
     description: str
     type: str
+    highlight_color: Optional[str]
 
     @strawberry.field
     def additional_speakers(self, info) -> List[User]:
