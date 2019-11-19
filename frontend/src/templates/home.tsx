@@ -220,6 +220,16 @@ export default ({ data }: { data: HomePageQuery }) => {
             >
               {conference.gettingThereText}
             </Text>
+
+            <Box>
+              <Link
+                target="_blank"
+                variant="button"
+                href={conference.map!.link!}
+              >
+                <FormattedMessage id="home.findRoute" />
+              </Link>
+            </Box>
           </Flex>
 
           <a
