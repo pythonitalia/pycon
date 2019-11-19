@@ -107,6 +107,43 @@ def test_get_conference_deadlines_ordered_by_start_date(
 
 
 @mark.django_db
+def test_get_conference_single_deadline(
+    graphql_client, conference_factory, deadline_factory
+):
+    now = timezone.now()
+
+    conference = conference_factory(timezone=pytz.timezone("America/Los_Angeles"))
+
+    deadline_cfp = deadline_factory(
+        start=now - timezone.timedelta(days=1),
+        end=now,
+        conference=conference,
+        type="cfp",
+    )
+
+    resp = graphql_client.query(
+        """
+        query($code: String!) {
+            conference(code: $code) {
+                deadline(type: "cfp") {
+                    start
+                    end
+                    type
+                }
+            }
+        }
+        """,
+        variables={"code": conference.code},
+    )
+
+    assert {
+        "start": deadline_cfp.start.isoformat(),
+        "end": deadline_cfp.end.isoformat(),
+        "type": "cfp",
+    } == resp["data"]["conference"]["deadline"]
+
+
+@mark.django_db
 def test_get_not_existent_conference_info(conference, graphql_client):
     resp = graphql_client.query(
         """
