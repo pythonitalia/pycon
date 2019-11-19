@@ -86,54 +86,56 @@ const useSlider = <T extends any>(
 };
 
 const KeynotesList = ({
-  keynotes,
+  page,
+  showArrows,
+  increase,
+  decrease,
 }: {
-  keynotes: KeynotesSectionQuery["backend"]["conference"]["keynotes"];
-}) => {
-  const columns = useSSRResponsiveValue([1, 3]);
-  const showArrows = keynotes.length > columns;
-  const [page, increase, decrease] = useSlider(keynotes, columns);
-
-  return (
-    <Grid
+  page: KeynotesSectionQuery["backend"]["conference"]["keynotes"];
+  showArrows: boolean;
+  increase: () => void;
+  decrease: () => void;
+}) => (
+  <Grid
+    sx={{
+      justifyContent: "center",
+      gridTemplateColumns: ["1fr", "100px minmax(200px, 1200px) 100px"],
+    }}
+    gap={0}
+  >
+    <Flex
+      onClick={decrease}
       sx={{
+        display: ["none", "flex"],
+        alignItems: "center",
         justifyContent: "center",
-        gridTemplateColumns: "100px minmax(200px, 1200px) 100px",
       }}
-      gap={0}
     >
-      <Flex
-        onClick={decrease}
-        sx={{
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        {showArrows && <ArrowIcon />}
-      </Flex>
+      {showArrows && <ArrowIcon sx={{ width: 40 }} />}
+    </Flex>
 
-      <Grid columns={[1, 3]} gap={0}>
-        {page.map((keynote, i) => (
-          <Keynote
-            color={keynote.highlightColor || "cindarella"}
-            key={keynote.id}
-            {...keynote}
-          />
-        ))}
-      </Grid>
-
-      <Flex
-        onClick={increase}
-        sx={{
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        {showArrows && <ArrowIcon direction="right" />}
-      </Flex>
+    <Grid columns={[1, 3]} gap={0}>
+      {page.map((keynote, i) => (
+        <Keynote
+          color={keynote.highlightColor || "cindarella"}
+          key={keynote.id}
+          {...keynote}
+        />
+      ))}
     </Grid>
-  );
-};
+
+    <Flex
+      onClick={increase}
+      sx={{
+        display: ["none", "flex"],
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      {showArrows && <ArrowIcon sx={{ width: 40 }} direction="right" />}
+    </Flex>
+  </Grid>
+);
 
 export const KeynotersSection = () => {
   const {
@@ -165,6 +167,10 @@ export const KeynotersSection = () => {
     }
   `);
 
+  const columns = useSSRResponsiveValue([1, 3]);
+  const showArrows = keynotes.length > columns;
+  const [page, increase, decrease] = useSlider(keynotes, columns);
+
   return (
     <Box sx={{ borderBottom: "primary", borderTop: "primary" }}>
       <Box sx={{ borderBottom: "primary", py: 4 }}>
@@ -172,15 +178,38 @@ export const KeynotersSection = () => {
           as="h1"
           sx={{
             px: 2,
+            display: "flex",
             maxWidth: "container",
             mx: "auto",
           }}
         >
-          Keynote speakers
+          Keynoters
+          <Box
+            sx={{
+              marginLeft: "auto",
+              flex: "0 0 60px",
+              display: ["block", "none"],
+            }}
+          >
+            <ArrowIcon
+              onClick={decrease}
+              sx={{ width: 20, height: 20, mr: 2 }}
+            />
+            <ArrowIcon
+              onClick={increase}
+              sx={{ width: 20, height: 20 }}
+              direction="right"
+            />
+          </Box>
         </Heading>
       </Box>
 
-      <KeynotesList keynotes={keynotes} />
+      <KeynotesList
+        page={page}
+        showArrows={showArrows}
+        increase={increase}
+        decrease={decrease}
+      />
     </Box>
   );
 };

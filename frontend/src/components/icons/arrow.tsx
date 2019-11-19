@@ -16,7 +16,7 @@ type ArrowIconProps = React.SVGProps<SVGSVGElement> & {
 };
 
 export const ArrowIcon = ({ direction = "left", ...props }: ArrowIconProps) => (
-  <svg width={46} height={53} fill="none" {...props}>
+  <svg viewBox="0 0 46 53" fill="none" {...props}>
     <g
       style={{ transform: getTransform(direction), transformOrigin: "center" }}
     >
