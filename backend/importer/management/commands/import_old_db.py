@@ -146,12 +146,20 @@ class Command(BaseCommand):
             self.c.execute(
                 """
             select
-                user.id, user.username, user.first_name, user.last_name,
-                user.email, user.password, user.is_active,
-                user.is_staff, user.is_superuser, user.date_joined,
-                useridentity.gender, ca.birthday as birthday1,
-                useridentity.birthday as birthday2,
-                assopy_user.country_id, p3p3p.spam_recruiting
+                user.id,
+                user.username,
+                user.first_name as name,
+                user.first_name || " " || user.last_name as full_name,
+                user.email,
+                user.password,
+                user.is_active,
+                user.is_staff,
+                user.is_superuser,
+                user.date_joined,
+                IFNULL(useridentity.gender, "") as gender,
+                IFNULL(ca.birthday, useridentity.birthday) AS date_birth,
+                assopy_user.country_id as country,
+                IFNULL(p3p3p.spam_recruiting, 0) as open_to_recruiting
             from auth_user user
             left join assopy_user
                 on assopy_user.user_id = user.id
@@ -168,37 +176,53 @@ class Command(BaseCommand):
         """
             )
         )
-        old_usernames = {u["username"] for u in old_users}
-        new_usernames = {u.username for u in User.objects.all()}
-        existent_users = new_usernames.intersection(old_usernames)
-        result = User.objects.bulk_create(
-            [
-                User(
-                    username=user["username"],
-                    email=user["email"],
-                    password=user["password"],
-                    is_active=user["is_active"],
-                    date_joined=user["date_joined"],
-                    is_staff=user["is_staff"],
-                    is_superuser=user["is_superuser"],
-                    name=user["first_name"],
-                    full_name="{first_name} {last_name}".format(**user),
-                    gender=user["gender"] if user["gender"] else "",
-                    date_birth=user["birthday1"]
-                    if user["birthday1"]
-                    else user["birthday2"],
-                    open_to_recruiting=user["spam_recruiting"]
-                    if user["spam_recruiting"]
-                    else False,
-                )
-                for user in old_users
-                if user["username"] not in new_usernames
-            ]
+        usernames_old = {u["username"] for u in old_users}
+
+        users_existing = User.objects.all()
+        usernames_existing = {u.username for u in users_existing}
+
+        # from the old_users list founded in the old db to import extract only
+        # new users to create
+        def filter_users_to_create(user):
+            return user["username"] not in usernames_existing
+
+        users_to_create = filter(filter_users_to_create, old_users)
+
+        result_created = User.objects.bulk_create(
+            [User(**user) for user in users_to_create]
         )
+
+        # form the exiting users extract those you have found in the old db,
+        # so you have to update the fields only
+        def filter_users_to_update(user):
+            return user.username in usernames_old
+
+        users_to_update = list(filter(filter_users_to_update, users_existing))
+
+        update_fields = [
+            "email",
+            "password",
+            "is_active",
+            "is_staff",
+            "is_superuser",
+            "name",
+            "full_name",
+            "gender",
+            "date_birth",
+            "open_to_recruiting",
+        ]
+
+        for user in users_to_update:
+            old_user = next(filter(lambda u: u["username"] == user.username, old_users))
+            for field in update_fields:
+                user.__setattr__(field, old_user[field])
+
+        User.objects.bulk_update([user for user in users_to_update], update_fields)
 
         self.stdout.write(
             self.style.SUCCESS(
-                f"Users: {len(result)} created, {len(existent_users)} skipped."
+                f"Users: {len(result_created)} created, {len(users_to_update)} "
+                f"updated, of {len(old_users)} found in the old db."
             )
         )
 
