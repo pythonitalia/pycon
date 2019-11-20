@@ -2,11 +2,24 @@ import { Box } from "@theme-ui/components";
 import React from "react";
 
 type Props = {
-  variant: "alert" | "success";
+  variant: "alert" | "success" | "info";
 };
 
 export const Alert: React.SFC<Props> = ({ variant, children, ...props }) => {
-  const backgroundColor = variant === "success" ? "green" : "red";
+  let backgroundColor;
+
+  switch (variant) {
+    case "alert":
+      backgroundColor = "red";
+      break;
+    case "success":
+      backgroundColor = "green";
+      break;
+    case "info":
+      backgroundColor = "blue";
+      break;
+  }
+
   return (
     <Box
       sx={{

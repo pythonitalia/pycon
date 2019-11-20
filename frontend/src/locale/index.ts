@@ -29,6 +29,12 @@ export default {
     "login.email": "Email",
     "login.password": "Password",
     "login.loginButton": "Login 👉",
+    "login.recoverPassword": "Password forgotten? Click here to reset it!",
+    "login.typeEmailToRecoverPassword":
+      "Password forgotten? Type your email and click here!",
+    "login.waitWhileSendingResetPasswordRequest": "Sending password reset",
+    "login.checkYourEmails":
+      "Check your emails for the link to reset your password! 🥳",
     "signup.email": "Email",
     "signup.password": "Password",
     "signup.signupButton": "Signup 👉",
@@ -74,6 +80,14 @@ export default {
     "header.contact": "Contact",
     "header.becomeASponsor": "Become a sponsor",
     "header.enquiries": "Enquiries",
+    "resetPassword.newPassword": "New Password",
+    "resetPassword.confirmPassword": "Confirm password",
+    "resetPassword.changePassword": "Change password",
+    "resetPassword.youCanNowLogin":
+      "Password changed! You can now login using your new password",
+    "resetPassword.changeYourPassword": "Change your password",
+    "requestResetPassword.passwordForgotten": "Password forgotten?",
+    "requestResetPassword.email": "Email",
   },
   it: {
     titleTemplate: "%s | PyCon Italia",
@@ -105,6 +119,13 @@ export default {
     "login.email": "Email",
     "login.password": "Password",
     "login.loginButton": "Accedi 👉",
+    "login.recoverPassword": "Password dimenticata? Click qui per cambiarla!",
+    "login.waitWhileSendingResetPasswordRequest":
+      "Invio richiesta reset in corso",
+    "login.checkYourEmails":
+      "Controlla le tue email per il link per cambiare password! 🥳",
+    "login.typeEmailToRecoverPassword":
+      "Password dimenticata? Inserisci la tua email e clicca qui",
     "signup.email": "Email",
     "signup.password": "Password",
     "signup.signupButton": "Registrati 👉",
@@ -150,5 +171,12 @@ export default {
     "header.contact": "Contatti",
     "header.becomeASponsor": "Diventa sponsor",
     "header.enquiries": "Informazioni",
+    "resetPassword.newPassword": "Nuova Password",
+    "resetPassword.confirmPassword": "Conferma password",
+    "resetPassword.changePassword": "Cambia password",
+    "resetPassword.changeYourPassword": "Cambia la tua password",
+    "resetPassword.youCanNowLogin": "Password cambiata! Puoi ora loggarti",
+    "requestResetPassword.passwordForgotten": "Password dimenticata?",
+    "requestResetPassword.email": "Email",
   },
 };

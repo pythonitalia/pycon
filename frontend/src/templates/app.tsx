@@ -7,6 +7,8 @@ import { ProfileApp } from "../app/profile";
 import { EditProfileApp } from "../app/profile-edit";
 import { CFPPage } from "../components/cpf-page";
 import { LoginForm } from "../components/login-form";
+import { RequestPasswordReset } from "../components/request-reset-password";
+import { ResetPassword } from "../components/reset-password";
 import { SignupForm } from "../components/signup-form";
 import { SubmissionPage } from "../components/submission-page";
 
@@ -18,5 +20,7 @@ export default () => (
     <PrivateRoute path="/:lang/cfp" component={CFPPage} />
     <LoginForm path="/:lang/login" />
     <SignupForm path="/:lang/signup" />
+    <RequestPasswordReset path="/:lang/reset-password/" />
+    <ResetPassword path="/:lang/reset-password/:userId/:token/" />
   </Router>
 );

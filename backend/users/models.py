@@ -80,8 +80,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
-    objects = UserManager()
-
     def get_short_name(self):
         return self.email
 

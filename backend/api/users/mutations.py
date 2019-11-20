@@ -1,7 +1,14 @@
 from api.submissions.permissions import IsAuthenticated
 from strawberry_forms.mutations import FormMutation
 
-from .forms import LoginForm, RegisterForm, UpdateUserForm
+from ..types import OperationResult
+from .forms import (
+    LoginForm,
+    RegisterForm,
+    RequestPasswordResetForm,
+    ResetPasswordForm,
+    UpdateUserForm,
+)
 from .types import MeUser
 
 
@@ -45,7 +52,29 @@ class Update(BaseUserMutation):
         permission_classes = (IsAuthenticated,)
 
 
+class RequestPasswordResetMutation(FormMutation):
+    @classmethod
+    def transform(cls, result):
+        return OperationResult(ok=result)
+
+    class Meta:
+        form_class = RequestPasswordResetForm
+        output_types = (OperationResult,)
+
+
+class ResetPasswordMutation(FormMutation):
+    @classmethod
+    def transform(cls, result):
+        return OperationResult(ok=result)
+
+    class Meta:
+        form_class = ResetPasswordForm
+        output_types = (OperationResult,)
+
+
 class UsersMutations:
     login = Login.Mutation
     register = Register.Mutation
     update = Update.Mutation
+    request_password_reset = RequestPasswordResetMutation.Mutation
+    reset_password = ResetPasswordMutation.Mutation

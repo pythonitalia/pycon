@@ -8,5 +8,7 @@ SLACK_INCOMING_WEBHOOK_URL = ""
 USE_SCHEDULER = False
 STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
 
+EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
+
 if not STRIPE_SECRET_KEY.startswith("sk_test_"):
     raise ImproperlyConfigured("Stripe key does not seem a test key")
