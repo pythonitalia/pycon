@@ -45,6 +45,7 @@ version = ">=1.4.0,<1.5"
 [[package]]
 category = "dev"
 description = "Atomic file writes."
+marker = "sys_platform == \"win32\""
 name = "atomicwrites"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
@@ -640,7 +641,7 @@ description = "pytest: simple powerful testing with Python"
 name = "pytest"
 optional = false
 python-versions = ">=3.5"
-version = "5.2.4"
+version = "5.3.0"
 
 [package.dependencies]
 atomicwrites = ">=1.0"
@@ -1022,7 +1023,7 @@ version = "0.6.0"
 more-itertools = "*"
 
 [metadata]
-content-hash = "fe9bc8120f505b5d960deb0f79d8f755b8e4e2997e4c2aefce53409d33379196"
+content-hash = "33772ce6413fbd0d5a284e544d5584635161295950e1051c87013a58d3727e04"
 python-versions = "^3.7"
 
 [metadata.hashes]
@@ -1090,7 +1091,7 @@ pylint-django = ["9bdb0e022b19881218a25ffb8ad05e83b83bc5cdbc58e5ee8ffbe99965193f
 pylint-plugin-utils = ["2f30510e1c46edf268d3a195b2849bd98a1b9433229bb2ba63b8d776e1fc4d0a", "57625dcca20140f43731311cd8fd879318bf45a8b0fd17020717a8781714a25a"]
 pyparsing = ["20f995ecd72f2a1f4bf6b072b63b22e2eb457836601e76d6e5dfcd75436acc1f", "4ca62001be367f01bd3e92ecbb79070272a9d4964dce6a48a82ff0b8bc7e683a"]
 pyrepl = ["292570f34b5502e871bbb966d639474f2b57fbfcd3373c2d6a2f3d56e681a775"]
-pytest = ["8e256fe71eb74e14a4d20a5987bb5e1488f0511ee800680aaedc62b9358714e8", "ff0090819f669aaa0284d0f4aad1a6d9d67a6efdc6dd4eb4ac56b704f890a0d6"]
+pytest = ["1897d74f60a5d8be02e06d708b41bf2445da2ee777066bd68edf14474fc201eb", "f6a567e20c04259d41adce9a360bd8991e6aa29dd9695c5e6bd25a9779272673"]
 pytest-cov = ["cc6742d8bac45070217169f5f72ceee1e0e55b0221f54bcf24845972d3a47f2b", "cdbdef4f870408ebdbfeb44e63e07eb18bb4619fae852f6e760645fa36172626"]
 pytest-django = ["17592f06d51c2ef4b7a0fb24aa32c8b6998506a03c8439606cb96db160106659", "ef3d15b35ed7e46293475e6f282e71a53bcd8c6f87bdc5d5e7ad0f4d49352127"]
 pytest-factoryboy = ["ffef3fb7ddec1299d3df0d334846259023f3d1da5ab887ad880139a8253a5a1a"]
