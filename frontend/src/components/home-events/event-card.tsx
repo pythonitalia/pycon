@@ -1,7 +1,6 @@
 /** @jsx jsx */
 import { Box, Flex, Heading, Text } from "@theme-ui/components";
 import Img from "gatsby-image";
-import { Fragment } from "react";
 import { jsx } from "theme-ui";
 
 import { PyConEvent } from "./types";
@@ -19,15 +18,11 @@ const formatEventDate = (datetime: string) => {
   return formatter.format(d);
 };
 
-type EventCardProps = {
-  event: PyConEvent;
-};
-
-export const EventCard = ({ event }: EventCardProps) => (
+export const EventCard = (props: PyConEvent) => (
   <Box sx={{ position: "relative", overflow: "hidden" }}>
     <Box sx={{ paddingBottom: "100%", display: "inline-block" }} />
 
-    {event.imageFile && (
+    {props.imageFile && (
       <Img
         style={{
           position: "absolute",
@@ -36,7 +31,7 @@ export const EventCard = ({ event }: EventCardProps) => (
           width: "100%",
           height: "100%",
         }}
-        {...event.imageFile.childImageSharp}
+        {...props.imageFile.childImageSharp}
       />
     )}
 
@@ -66,11 +61,11 @@ export const EventCard = ({ event }: EventCardProps) => (
       }}
     >
       <Heading variant="caps" sx={{ mb: "auto" }}>
-        {event.title}
+        {props.title}
       </Heading>
 
-      <Text>{event.locationName}</Text>
-      <Text>{formatEventDate(event.start)}</Text>
+      <Text>{props.locationName}</Text>
+      <Text>{formatEventDate(props.start)}</Text>
     </Flex>
   </Box>
 );

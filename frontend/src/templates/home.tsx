@@ -6,6 +6,7 @@ import { Helmet } from "react-helmet";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
+import { GridSlider } from "../components/grid-slider";
 import { EventCard } from "../components/home-events/event-card";
 import { HomepageHero } from "../components/homepage-hero";
 import { KeynotersSection } from "../components/keynoters-section";
@@ -149,42 +150,11 @@ export default ({ data }: { data: HomePageQuery }) => {
       </Grid>
 
       {conference.events.length > 0 && (
-        <Fragment>
-          <Box sx={{ borderBottom: "primary", borderTop: "primary" }}>
-            <Box sx={{ py: 4 }}>
-              <Heading
-                as="h1"
-                sx={{
-                  px: 2,
-                  maxWidth: "container",
-                  mx: "auto",
-                }}
-              >
-                <FormattedMessage id="home.conferenceHighlights" />
-              </Heading>
-            </Box>
-          </Box>
-
-          <Grid
-            columns={4}
-            gap={"3px"}
-            sx={{ px: "3px", borderBottom: "primary", background: "black" }}
-          >
-            {conference.events.map((event, index) => (
-              <EventCard event={event} key={index} />
-            ))}
-
-            {conference.events.length < 4 && (
-              <Box
-                sx={{
-                  gridColumnStart: conference.events.length + 1,
-                  gridColumnEnd: 5,
-                  background: "white",
-                }}
-              />
-            )}
-          </Grid>
-        </Fragment>
+        <GridSlider
+          title={<FormattedMessage id="home.conferenceHighlights" />}
+          items={conference.events}
+          Component={EventCard}
+        />
       )}
 
       <Box
@@ -338,6 +308,7 @@ export const query = graphql`
         }
 
         events {
+          id
           title
           locationName
           image
