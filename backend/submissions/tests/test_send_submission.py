@@ -7,7 +7,7 @@ from .factories import SubmissionFactory
 
 def _submit_talk(client, conference, **kwargs):
 
-    talk = SubmissionFactory.build(
+    talk = SubmissionFactory.create(
         type=SubmissionType.objects.get_or_create(name="talk")[0]
     )
 
@@ -24,6 +24,7 @@ def _submit_talk(client, conference, **kwargs):
         "type": talk.type.id,
         "duration": conference.durations.first().id,
         "audience_level": conference.audience_levels.first().id,
+        "tags": [tag.name for tag in talk.tags.all()],
     }
 
     variables = {**defaults, **kwargs}
@@ -38,7 +39,8 @@ def _submit_talk(client, conference, **kwargs):
                 $languages: [ID!]!,
                 $type: ID!,
                 $duration: ID!,
-                $audience_level: ID!
+                $audience_level: ID!,
+                $tags: [ID!]
             ) {
                 sendSubmission(input: {
                     title: $title,
@@ -49,6 +51,7 @@ def _submit_talk(client, conference, **kwargs):
                     type: $type,
                     duration: $duration,,
                     audienceLevel: $audience_level
+                    tags: $tags
                 }) {
                     __typename
 
@@ -65,6 +68,9 @@ def _submit_talk(client, conference, **kwargs):
                             name
                         }
                         notes
+                        tags {
+                            name
+                        }
                     }
 
                     ... on SendSubmissionErrors {
@@ -76,6 +82,7 @@ def _submit_talk(client, conference, **kwargs):
                         validationType: type
                         validationDuration: duration
                         validationAudienceLevel: audienceLevel
+                        validationTags: tags
                         nonFieldErrors
                     }
                 }
@@ -87,7 +94,7 @@ def _submit_talk(client, conference, **kwargs):
 
 
 def _submit_tutorial(client, conference, **kwargs):
-    talk = SubmissionFactory.build(
+    talk = SubmissionFactory.create(
         type=SubmissionType.objects.get_or_create(name="tutorial")[0]
     )
 
@@ -104,6 +111,7 @@ def _submit_tutorial(client, conference, **kwargs):
         "type": talk.type.id,
         "duration": conference.durations.first().id,
         "audience_level": conference.audience_levels.first().id,
+        "tags": [tag.name for tag in talk.tags.all()],
     }
 
     variables = {**defaults, **kwargs}
@@ -118,7 +126,8 @@ def _submit_tutorial(client, conference, **kwargs):
                 $languages: [ID!]!,
                 $type: ID!,
                 $duration: ID!,
-                $audience_level: ID!
+                $audience_level: ID!,
+                $tags: [ID!]
             ) {
                 sendSubmission(input: {
                     title: $title,
@@ -128,7 +137,8 @@ def _submit_tutorial(client, conference, **kwargs):
                     topic: $topic,
                     type: $type,
                     duration: $duration,
-                    audienceLevel: $audience_level
+                    audienceLevel: $audience_level,
+                    tags: $tags
                 }) {
                     __typename
 
@@ -145,6 +155,9 @@ def _submit_tutorial(client, conference, **kwargs):
                             name
                         }
                         notes
+                        tags {
+                            name
+                        }
                     }
 
                     ... on SendSubmissionErrors {
@@ -156,6 +169,7 @@ def _submit_tutorial(client, conference, **kwargs):
                         validationType: type
                         validationDuration: duration
                         validationAudienceLevel: audienceLevel
+                        validationTags: tags
                         nonFieldErrors
                     }
                 }

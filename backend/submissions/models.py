@@ -59,7 +59,7 @@ class Submission(TimeStampedModel):
         on_delete=models.PROTECT,
     )
 
-    tags = models.ManyToManyField(SubmissionTag, verbose_name=_("tags"))
+    tags = models.ManyToManyField("submissions.SubmissionTag", verbose_name=_("tags"))
 
     def clean(self):
         if (
