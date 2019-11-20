@@ -2637,14 +2637,23 @@
     "@typescript-eslint/typescript-estree" "2.7.0"
     eslint-scope "^5.0.0"
 
-"@typescript-eslint/parser@^2.7.0":
-  version "2.7.0"
-  resolved "https://registry.yarnpkg.com/@typescript-eslint/parser/-/parser-2.7.0.tgz#b5e6a4944e2b68dba1e7fbfd5242e09ff552fd12"
-  integrity sha512-ctC0g0ZvYclxMh/xI+tyqP0EC2fAo6KicN9Wm2EIao+8OppLfxji7KAGJosQHSGBj3TcqUrA96AjgXuKa5ob2g==
+"@typescript-eslint/experimental-utils@2.8.0":
+  version "2.8.0"
+  resolved "https://registry.yarnpkg.com/@typescript-eslint/experimental-utils/-/experimental-utils-2.8.0.tgz#208b4164d175587e9b03ce6fea97d55f19c30ca9"
+  integrity sha512-jZ05E4SxCbbXseQGXOKf3ESKcsGxT8Ucpkp1jiVp55MGhOvZB2twmWKf894PAuVQTCgbPbJz9ZbRDqtUWzP8xA==
+  dependencies:
+    "@types/json-schema" "^7.0.3"
+    "@typescript-eslint/typescript-estree" "2.8.0"
+    eslint-scope "^5.0.0"
+
+"@typescript-eslint/parser@^2.7.0", "@typescript-eslint/parser@^2.8.0":
+  version "2.8.0"
+  resolved "https://registry.yarnpkg.com/@typescript-eslint/parser/-/parser-2.8.0.tgz#e10f7c40c8cf2fb19920c879311e6c46ad17bacb"
+  integrity sha512-NseXWzhkucq+JM2HgqAAoKEzGQMb5LuTRjFPLQzGIdLthXMNUfuiskbl7QSykvWW6mvzCtYbw1fYWGa2EIaekw==
   dependencies:
     "@types/eslint-visitor-keys" "^1.0.0"
-    "@typescript-eslint/experimental-utils" "2.7.0"
-    "@typescript-eslint/typescript-estree" "2.7.0"
+    "@typescript-eslint/experimental-utils" "2.8.0"
+    "@typescript-eslint/typescript-estree" "2.8.0"
     eslint-visitor-keys "^1.1.0"
 
 "@typescript-eslint/typescript-estree@2.7.0":
@@ -2654,6 +2663,19 @@
   dependencies:
     debug "^4.1.1"
     glob "^7.1.4"
+    is-glob "^4.0.1"
+    lodash.unescape "4.0.1"
+    semver "^6.3.0"
+    tsutils "^3.17.1"
+
+"@typescript-eslint/typescript-estree@2.8.0":
+  version "2.8.0"
+  resolved "https://registry.yarnpkg.com/@typescript-eslint/typescript-estree/-/typescript-estree-2.8.0.tgz#fcc3fe6532840085d29b75432c8a59895876aeca"
+  integrity sha512-ksvjBDTdbAQ04cR5JyFSDX113k66FxH1tAXmi+dj6hufsl/G0eMc/f1GgLjEVPkYClDbRKv+rnBFuE5EusomUw==
+  dependencies:
+    debug "^4.1.1"
+    eslint-visitor-keys "^1.1.0"
+    glob "^7.1.6"
     is-glob "^4.0.1"
     lodash.unescape "4.0.1"
     semver "^6.3.0"
@@ -6930,14 +6952,6 @@ fn-name@~2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/fn-name/-/fn-name-2.0.1.tgz#5214d7537a4d06a4a301c0cc262feb84188002e7"
   integrity sha1-UhTXU3pNBqSjAcDMJi/rhBiAAuc=
-
-focus-trap@3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/focus-trap/-/focus-trap-3.0.0.tgz#4d2ee044ae66bf7eb6ebc6c93bd7a1039481d7dc"
-  integrity sha512-jTFblf0tLWbleGjj2JZsAKbgtZTdL1uC48L8FcmSDl4c2vDoU4NycN1kgV5vJhuq1mxNFkw7uWZ1JAGlINWvyw==
-  dependencies:
-    tabbable "^3.1.0"
-    xtend "^4.0.1"
 
 follow-redirects@1.5.10:
   version "1.5.10"
@@ -14452,11 +14466,6 @@ synchronous-promise@^2.0.6:
   version "2.0.10"
   resolved "https://registry.yarnpkg.com/synchronous-promise/-/synchronous-promise-2.0.10.tgz#e64c6fd3afd25f423963353043f4a68ebd397fd8"
   integrity sha512-6PC+JRGmNjiG3kJ56ZMNWDPL8hjyghF5cMXIFOKg+NiwwEZZIvxTWd0pinWKyD227odg9ygF8xVhhz7gb8Uq7A==
-
-tabbable@^3.1.0:
-  version "3.1.2"
-  resolved "https://registry.yarnpkg.com/tabbable/-/tabbable-3.1.2.tgz#f2d16cccd01f400e38635c7181adfe0ad965a4a2"
-  integrity sha512-wjB6puVXTYO0BSFtCmWQubA/KIn7Xvajw0x0l6eJUudMG/EAiJvIUnyNX6xO4NpGrJ16lbD0eUseB9WxW0vlpQ==
 
 table@^5.2.3:
   version "5.4.1"
