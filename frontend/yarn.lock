@@ -2609,12 +2609,12 @@
   resolved "https://registry.yarnpkg.com/@types/zen-observable/-/zen-observable-0.8.0.tgz#8b63ab7f1aa5321248aad5ac890a485656dcea4d"
   integrity sha512-te5lMAWii1uEJ4FwLjzdlbw3+n0FZNOvFXHxQDKeT0dilh7HOzdMzV2TrJVUzq8ep7J4Na8OUYPRLSQkJHAlrg==
 
-"@typescript-eslint/eslint-plugin-tslint@^2.7.0":
-  version "2.7.0"
-  resolved "https://registry.yarnpkg.com/@typescript-eslint/eslint-plugin-tslint/-/eslint-plugin-tslint-2.7.0.tgz#e4d7b91444a5ca081d266e7e3d1e3a21a4613253"
-  integrity sha512-xXQzKu4LpfTcVe9pf13nCTa1yaCInVNSgyZZL3HDfu79YqcbTJ6z8QYQS9du6a4yG2ldNps/JLaWaoaJiNk9cw==
+"@typescript-eslint/eslint-plugin-tslint@^2.8.0":
+  version "2.8.0"
+  resolved "https://registry.yarnpkg.com/@typescript-eslint/eslint-plugin-tslint/-/eslint-plugin-tslint-2.8.0.tgz#f51d77ac9557ff14b7ab13a26da953a62ba4f249"
+  integrity sha512-Z8BQPQKy8XdlIPTvhV8i2F5e1eq4a7x+S0hOvw0K3TNlm0SsCr+yCj3OSmDRrFU40HC3RxgkmybRjw4iR9iPnw==
   dependencies:
-    "@typescript-eslint/experimental-utils" "2.7.0"
+    "@typescript-eslint/experimental-utils" "2.8.0"
     lodash.memoize "^4.1.2"
 
 "@typescript-eslint/eslint-plugin@^2.7.0":
