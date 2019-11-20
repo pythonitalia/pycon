@@ -1101,14 +1101,7 @@
     "@babel/helper-plugin-utils" "^7.0.0"
     "@babel/plugin-transform-typescript" "^7.7.2"
 
-"@babel/runtime@^7.0.0", "@babel/runtime@^7.1.2", "@babel/runtime@^7.3.4", "@babel/runtime@^7.4.2", "@babel/runtime@^7.4.5", "@babel/runtime@^7.5.5":
-  version "7.6.3"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.6.3.tgz#935122c74c73d2240cafd32ddb5fc2a6cd35cf1f"
-  integrity sha512-kq6anf9JGjW8Nt5rYfEuGRaEAaH1mkv3Bbu6rYvLOpPh/RusSJXuKPEAoZ7L7gybZkchE8+NV5g9vKF4AGAtsA==
-  dependencies:
-    regenerator-runtime "^0.13.2"
-
-"@babel/runtime@^7.7.2":
+"@babel/runtime@^7.0.0", "@babel/runtime@^7.1.2", "@babel/runtime@^7.3.4", "@babel/runtime@^7.4.2", "@babel/runtime@^7.4.5", "@babel/runtime@^7.5.5", "@babel/runtime@^7.7.2":
   version "7.7.2"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.7.2.tgz#111a78002a5c25fc8e3361bedc9529c696b85a6a"
   integrity sha512-JONRbXbTXc9WQE2mAZd1p0Z3DZ/6vaQIkgYMSTP3KjRCyd7rCZCcfhCyX+YjwcKxcZ82UrxbRD358bpExNgrjw==
@@ -6931,14 +6924,6 @@ fn-name@~2.0.1:
   resolved "https://registry.yarnpkg.com/fn-name/-/fn-name-2.0.1.tgz#5214d7537a4d06a4a301c0cc262feb84188002e7"
   integrity sha1-UhTXU3pNBqSjAcDMJi/rhBiAAuc=
 
-focus-trap@3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/focus-trap/-/focus-trap-3.0.0.tgz#4d2ee044ae66bf7eb6ebc6c93bd7a1039481d7dc"
-  integrity sha512-jTFblf0tLWbleGjj2JZsAKbgtZTdL1uC48L8FcmSDl4c2vDoU4NycN1kgV5vJhuq1mxNFkw7uWZ1JAGlINWvyw==
-  dependencies:
-    tabbable "^3.1.0"
-    xtend "^4.0.1"
-
 follow-redirects@1.5.10:
   version "1.5.10"
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.5.10.tgz#7b7a9f9aea2fdff36786a94ff643ed07f4ff5e2a"
@@ -7132,10 +7117,10 @@ gatsby-cli@^2.8.11:
     ink "^2.5.0"
     ink-spinner "^3.0.1"
 
-gatsby-core-utils@^1.0.19:
-  version "1.0.19"
-  resolved "https://registry.yarnpkg.com/gatsby-core-utils/-/gatsby-core-utils-1.0.19.tgz#670a0eefe8fc8517c5b87573be6cd817d4b1a96a"
-  integrity sha512-Fp5PBmAuqL+V5FTqjQ6d2Ow7a9OY6GlJVlS5wl/bbbGjRDtYJe7tqAxWThzeKDkLAsKUz2RP8AiJOSLWn1bDRg==
+gatsby-core-utils@^1.0.19, gatsby-core-utils@^1.0.20:
+  version "1.0.20"
+  resolved "https://registry.yarnpkg.com/gatsby-core-utils/-/gatsby-core-utils-1.0.20.tgz#f4788c2591fa7165c87f0ee5e8edf664c91978ea"
+  integrity sha512-vdOy/+8UjY3taUEf85s/P8a5qfw4OUTRfvrmwJ8OOBfWkpcJRLEgW2EYfkYfGp3u9l8KKQv4VsdG3XRVQb36KQ==
   dependencies:
     ci-info "2.0.0"
 
@@ -7321,20 +7306,20 @@ gatsby-remark-external-links@0.0.4:
     unist-util-find "^1.0.1"
     unist-util-visit "^1.1.3"
 
-gatsby-remark-images@^3.1.31:
-  version "3.1.31"
-  resolved "https://registry.yarnpkg.com/gatsby-remark-images/-/gatsby-remark-images-3.1.31.tgz#8c2fe37f8d0fd1a5612de085c7d96dfae22c6cb8"
-  integrity sha512-HWCRgGejHUnQM+fClkDO28NLDplS6ag1vA5jz4HKIWJD4cs33h+Oa9W12k2kul5gJ0y5/j9xEAYDT2zdbTSS3A==
+gatsby-remark-images@^3.1.32:
+  version "3.1.32"
+  resolved "https://registry.yarnpkg.com/gatsby-remark-images/-/gatsby-remark-images-3.1.32.tgz#62ef581b1a8778949b2248e8e5c7d49e938ddeb2"
+  integrity sha512-/15LOrN0ljaWfPSRTKdGJKlfv9q/n0dFh32AHFAOnA32S2xkP1cysUu7wIV9FCG50tXny4HguIYmBp6r/ddAuA==
   dependencies:
     "@babel/runtime" "^7.7.2"
     chalk "^2.4.2"
     cheerio "^1.0.0-rc.3"
+    gatsby-core-utils "^1.0.20"
     is-relative-url "^3.0.0"
     lodash "^4.17.15"
     mdast-util-definitions "^1.2.5"
     potrace "^2.1.2"
     query-string "^6.8.3"
-    slash "^3.0.0"
     unist-util-select "^1.5.0"
     unist-util-visit-parents "^2.1.2"
 
@@ -10238,14 +10223,7 @@ mdast-util-compact@^1.0.0:
   dependencies:
     unist-util-visit "^1.1.0"
 
-mdast-util-definitions@^1.2.0:
-  version "1.2.4"
-  resolved "https://registry.yarnpkg.com/mdast-util-definitions/-/mdast-util-definitions-1.2.4.tgz#2b54ad4eecaff9d9fcb6bf6f9f6b68b232d77ca7"
-  integrity sha512-HfUArPog1j4Z78Xlzy9Q4aHLnrF/7fb57cooTHypyGoe2XFNbcx/kWZDoOz+ra8CkUzvg3+VHV434yqEd1DRmA==
-  dependencies:
-    unist-util-visit "^1.0.0"
-
-mdast-util-definitions@^1.2.5:
+mdast-util-definitions@^1.2.0, mdast-util-definitions@^1.2.5:
   version "1.2.5"
   resolved "https://registry.yarnpkg.com/mdast-util-definitions/-/mdast-util-definitions-1.2.5.tgz#3fe622a4171c774ebd06f11e9f8af7ec53ea5c74"
   integrity sha512-CJXEdoLfiISCDc2JB6QLb79pYfI6+GcIH+W2ox9nMc7od0Pz+bovcHsiq29xAQY6ayqe/9CsK2VzkSJdg1pFYA==
@@ -14452,11 +14430,6 @@ synchronous-promise@^2.0.6:
   version "2.0.10"
   resolved "https://registry.yarnpkg.com/synchronous-promise/-/synchronous-promise-2.0.10.tgz#e64c6fd3afd25f423963353043f4a68ebd397fd8"
   integrity sha512-6PC+JRGmNjiG3kJ56ZMNWDPL8hjyghF5cMXIFOKg+NiwwEZZIvxTWd0pinWKyD227odg9ygF8xVhhz7gb8Uq7A==
-
-tabbable@^3.1.0:
-  version "3.1.2"
-  resolved "https://registry.yarnpkg.com/tabbable/-/tabbable-3.1.2.tgz#f2d16cccd01f400e38635c7181adfe0ad965a4a2"
-  integrity sha512-wjB6puVXTYO0BSFtCmWQubA/KIn7Xvajw0x0l6eJUudMG/EAiJvIUnyNX6xO4NpGrJ16lbD0eUseB9WxW0vlpQ==
 
 table@^5.2.3:
   version "5.4.1"
