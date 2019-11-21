@@ -13,6 +13,7 @@ import { KeynotersSection } from "../components/keynoters-section";
 import { Link } from "../components/link";
 import { Marquee } from "../components/marquee";
 import { SponsorsSection } from "../components/sponsors-section";
+import { YouTubeLite } from "../components/youtube-lite";
 import { HomePageQuery } from "../generated/graphql";
 
 const formatDeadlineDate = (datetime: string) => {
@@ -95,8 +96,18 @@ export default ({ data }: { data: HomePageQuery }) => {
         }}
       >
         <Box>
-          <Box sx={{ border: "primary" }}>
-            <Box sx={{ paddingBottom: "50%", display: "inline-block" }} />
+          <Box sx={{ border: "primary", position: "relative" }}>
+            <Box sx={{ paddingBottom: "55%", display: "inline-block" }} />
+            <YouTubeLite
+              videoId="FOBlor9yzP0"
+              sx={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+              }}
+            />
           </Box>
         </Box>
 
