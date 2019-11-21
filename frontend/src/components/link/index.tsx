@@ -50,7 +50,7 @@ const ArrowRightBackground = ({
         right: 0,
       }}
     >
-      <path d="M1 0V66L30 33L1 0Z" stroke="black" stroke-width="3" />
+      <path d="M1 0V66L30 33L1 0Z" stroke="black" strokeWidth="3" />
       <path d="M0 2.5L27.5 33L0 63.5V2.5Z" sx={{ fill: backgroundColor }} />
     </svg>
   </Box>
