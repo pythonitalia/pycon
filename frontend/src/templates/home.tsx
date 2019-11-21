@@ -209,7 +209,7 @@ export default ({ data }: { data: HomePageQuery }) => {
             href={conference.map!.link!}
             sx={{
               width: "100%",
-              height: 420,
+              height: 350,
 
               display: "block",
 
