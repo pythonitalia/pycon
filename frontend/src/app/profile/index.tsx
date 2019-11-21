@@ -1,20 +1,36 @@
 /** @jsx jsx */
 import { useQuery } from "@apollo/react-hooks";
-import { RouteComponentProps } from "@reach/router";
+import { navigate, RouteComponentProps } from "@reach/router";
 import { Box } from "@theme-ui/components";
+import { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
+import { useCurrentLanguage } from "../../context/language";
 import { MyProfileQuery } from "../../generated/graphql-backend";
+import { useLoginState } from "./hooks";
 import MY_PROFILE_QUERY from "./profile.graphql";
 
 export const ProfileApp: React.SFC<RouteComponentProps> = () => {
+  const [_, setLoginState] = useLoginState(false);
+  const lang = useCurrentLanguage();
+
   const { loading, error, data: profileData } = useQuery<MyProfileQuery>(
     MY_PROFILE_QUERY,
   );
 
+  useEffect(() => {
+    const loginUrl = `/${lang}/login`;
+
+    if (error) {
+      setLoginState(false);
+
+      navigate(loginUrl);
+    }
+  }, [error]);
+
   if (error) {
-    throw new Error(`Unable to fetch profile, ${error}`);
+    return null;
   }
 
   return (
