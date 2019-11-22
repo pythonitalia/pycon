@@ -21,6 +21,7 @@ export const SocialLinks: React.SFC<SocialLinksProps> = props => (
         marginLeft: 3,
       },
     }}
+    {...props}
   >
     <SocialCircle variant={props.variant} color="#34B4A1">
       <a

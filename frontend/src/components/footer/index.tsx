@@ -98,7 +98,7 @@ export const Footer = () => {
           ))}
         </MenuItems>
 
-        <SocialLinks />
+        <SocialLinks sx={{ justifyContent: "flex-end" }} />
       </Grid>
     </Box>
   );
