@@ -71,7 +71,6 @@
     "theme-ui": "^0.2.49",
     "timed-out": "5",
     "typescript": "^3.7.2",
-    "use-persisted-state": "^0.3.0",
     "yup": "^0.27.0"
   },
   "devDependencies": {

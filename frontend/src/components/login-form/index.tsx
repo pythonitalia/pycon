@@ -22,7 +22,7 @@ export const LoginForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
 }) => {
   const profileUrl = `/${lang}/profile`;
 
-  const [loggedIn, setLoggedIn] = useLoginState(false);
+  const [loggedIn, setLoggedIn] = useLoginState();
 
   const onLoginCompleted = (data: LoginMutation) => {
     if (data && data.login.__typename === "MeUser") {

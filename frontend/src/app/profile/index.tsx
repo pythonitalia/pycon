@@ -12,7 +12,7 @@ import { useLoginState } from "./hooks";
 import MY_PROFILE_QUERY from "./profile.graphql";
 
 export const ProfileApp: React.SFC<RouteComponentProps> = () => {
-  const [_, setLoginState] = useLoginState(false);
+  const [_, setLoginState] = useLoginState();
   const lang = useCurrentLanguage();
 
   const { loading, error, data: profileData } = useQuery<MyProfileQuery>(

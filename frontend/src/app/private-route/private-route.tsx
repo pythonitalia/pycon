@@ -8,7 +8,7 @@ export const PrivateRoute = ({
   lang,
   ...rest
 }: any) => {
-  const [loggedIn, _] = useLoginState(false);
+  const [loggedIn, _] = useLoginState();
   const loginUrl = `${lang}/login`;
 
   if (!loggedIn) {

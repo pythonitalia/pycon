@@ -20,7 +20,7 @@ type SignupFormProps = {
 export const SignupForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
   lang,
 }) => {
-  const [loggedIn, setLoggedIn] = useLoginState(false);
+  const [loggedIn, setLoggedIn] = useLoginState();
   const profileUrl = `/${lang}/profile`;
   const onSignupComplete = (signupData: SignupMutation) => {
     if (!signupData || signupData.register.__typename !== "MeUser") {
