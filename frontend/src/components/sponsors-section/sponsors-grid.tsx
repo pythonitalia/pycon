@@ -4,6 +4,7 @@ import Img from "gatsby-image";
 import { jsx } from "theme-ui";
 
 import { HomePageQuery } from "../../generated/graphql";
+import { useSSRResponsiveValue } from "../../helpers/use-ssr-responsive-value";
 import { Link } from "../link";
 
 type Props = {
@@ -64,14 +65,14 @@ const SponsorItem: React.SFC<ItemProps> = ({ sponsor, color }) => (
 );
 
 export const SponsorsGrid: React.SFC<Props> = ({ sponsors, color }) => {
-  const columns = 3;
+  const columns = useSSRResponsiveValue([1, 3]);
   const missing = columns - (sponsors.length % columns);
 
   const backgroundColor = color || "yellow";
 
   return (
     <Grid
-      columns={columns}
+      columns={[1, 3]}
       gap={1}
       sx={{
         maxWidth: "container",
