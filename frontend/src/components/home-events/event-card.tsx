@@ -19,7 +19,14 @@ const formatEventDate = (datetime: string) => {
 };
 
 export const EventCard = (props: PyConEvent) => (
-  <Box sx={{ position: "relative", overflow: "hidden" }}>
+  <Box
+    sx={{
+      position: "relative",
+      overflow: "hidden",
+      borderLeft: "primary",
+      borderRight: "primary",
+    }}
+  >
     <Box sx={{ paddingBottom: "100%", display: "inline-block" }} />
 
     {props.imageFile && (
