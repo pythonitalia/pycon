@@ -8,8 +8,7 @@ const CONFERENCE_CODE = process.env.CONFERENCE_CODE || "pycon-demo";
 
 module.exports = {
   siteMetadata: {
-    // TODO: update
-    siteUrl: `https://pycon-italia.netlify.com`,
+    siteUrl: `https://www.pycon.it`,
   },
   developMiddleware: app => {
     app.use(
