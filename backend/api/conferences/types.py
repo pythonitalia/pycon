@@ -4,16 +4,17 @@ from typing import TYPE_CHECKING, List, Optional
 
 import pytz
 import strawberry
+from django.conf import settings
+from django.utils import translation
+
 from api.cms.types import FAQ, Menu
 from api.events.types import Event
 from api.languages.types import Language
 from api.scalars import Date, DateTime
 from api.schedule.types import Room, ScheduleItem
 from api.sponsors.types import SponsorsByLevel
-from api.submissions.types import Submission, SubmissionType
+from api.submissions.types import Submission, SubmissionTag, SubmissionType
 from cms.models import GenericCopy
-from django.conf import settings
-from django.utils import translation
 from schedule.models import ScheduleItem as ScheduleItemModel
 
 from ..helpers.i18n import make_localized_resolver
@@ -98,6 +99,10 @@ class Conference:
     @strawberry.field
     def submission_types(self, info) -> List[SubmissionType]:
         return self.submission_types.all()
+
+    @strawberry.field
+    def submission_tags(self, info) -> List[SubmissionTag]:
+        return self.submission_tags.all()
 
     # TODO: only when current user has a ticket
     @strawberry.field
