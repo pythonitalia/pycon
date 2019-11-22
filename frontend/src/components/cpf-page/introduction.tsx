@@ -2,6 +2,7 @@ import { Box, Grid, Text } from "@theme-ui/components";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
+import { CFPIllustration } from "../illustrations/cfp";
 import { Link } from "../link";
 
 export const Introduction: React.SFC = () => (
@@ -54,11 +55,29 @@ export const Introduction: React.SFC = () => (
       </Box>
       <Box
         sx={{
-          border: "primary",
-          height: [420, 420, "auto"],
           gridColumnStart: [0, 0, 3],
         }}
-      />
+      >
+        <Box
+          sx={{
+            border: "primary",
+            gridColumnStart: [0, 0, 3],
+            backgroundColor: "#C4C4C4",
+            position: "relative",
+          }}
+        >
+          <Box sx={{ display: "inline-block", pt: "100%", width: "100%" }} />
+          <CFPIllustration
+            sx={{
+              position: "absolute",
+              top: 0,
+              left: "-4px",
+              width: "100%",
+              height: "100%",
+            }}
+          />
+        </Box>
+      </Box>
     </Grid>
   </Box>
 );
