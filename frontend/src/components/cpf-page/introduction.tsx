@@ -2,6 +2,8 @@ import { Box, Grid, Text } from "@theme-ui/components";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
+import { Link } from "../link";
+
 export const Introduction: React.SFC = () => (
   <Box
     sx={{
@@ -30,7 +32,7 @@ export const Introduction: React.SFC = () => (
             fontSize: 2,
           }}
         >
-          <FormattedMessage id="cfp.introductionCopyHead" />
+          <FormattedMessage id="cfp.introductionSubtitle" />
         </Text>
         <Text
           sx={{
@@ -41,6 +43,14 @@ export const Introduction: React.SFC = () => (
         >
           <FormattedMessage id="cfp.introductionCopy" />
         </Text>
+
+        <Link
+          href="/:language/call-for-proposals"
+          variant="button"
+          sx={{ mt: 4 }}
+        >
+          <FormattedMessage id="cfp.learnMore" />
+        </Link>
       </Box>
       <Box
         sx={{

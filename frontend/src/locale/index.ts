@@ -39,9 +39,10 @@ export default {
     "cfp.yourProposals": "Your proposals",
     "cfp.pageTitle": "Make a proposal",
     "cfp.introductionHeading": "Make a proposal",
-    "cfp.introductionCopyHead": "Lorem ipsum",
+    "cfp.introductionSubtitle": "PyCon Italy is looking for you!",
     "cfp.introductionCopy":
-      "Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem\nipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum ",
+      "PyCon Italy is seeking speakers of all experience levels and backgrounds to contribute to our conference program! If you use Python professionally, as a hobbyist or are just excited about Python or programming and open source communities, we’d love to hear from you. We want you and your ideas at PyCon!",
+    "cfp.learnMore": "Learn more",
     "cfp.youridea": "Your idea",
     "cfp.choosetype": "Choose a format",
     "cfp.talk": "Talk",
@@ -65,7 +66,8 @@ export default {
     "cfp.submit": "Submit",
     "cfp.minutes": "minutes",
     "cfp.languagesLabel": "Languages",
-    "cfp.languagesDescription": "Languages Description TODO",
+    "cfp.languagesDescription":
+      "You can submit your talk in both English and Italian",
     "header.profile": "Profile",
     "header.login": "Login",
     "header.followus": "Follow us",
@@ -116,6 +118,11 @@ export default {
     "cfp.talk": "Talk",
     "cfp.tutorial": "Tutorial",
     "cfp.title": "Titolo",
+    "cfp.introductionHeading": "Invia una proposta",
+    "cfp.introductionSubtitle": "PyCon Italy cerca te!",
+    "cfp.introductionCopy":
+      "PyCon Italia è alla ricerca di speakers con ogni background per contribuire al nostro progamma. Se usi Python professionalmente, come hobbista o se semplicemente sei un appassionato di Python o programmazione, proponi un talk! Vogliamo sentire ciò che hai da condividere!",
+    "cfp.learnMore": "Maggiori informazioni",
     "cfp.yourProposals": "Le tue proposte",
     "cfp.elevatorPitchLabel": "Elevator pitch",
     "cfp.elevatorPitchDescription":
@@ -133,7 +140,8 @@ export default {
     "cfp.topicLabel": "Argomento",
     "cfp.topicDescription": "TODO Descrizione",
     "cfp.languagesLabel": "Lingua",
-    "cfp.languagesDescription": "Languages Description TODO",
+    "cfp.languagesDescription":
+      "Puoi proporre il tuo talk sia in italiano che inglese",
     "cfp.minutes": "minuti",
     "cfp.submit": "Invia",
     "header.profile": "Profilo",

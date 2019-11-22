@@ -87,7 +87,6 @@ export default ({ data }: { data: HomePageQuery }) => {
 
       <Grid
         sx={{
-          mt: 4,
           py: 5,
           px: 2,
           maxWidth: "container",
@@ -255,7 +254,7 @@ export default ({ data }: { data: HomePageQuery }) => {
       </Box>
 
       <SponsorsSection
-        sx={{ pb: 5, borderBottom: "primary" }}
+        sx={{ mt: 5, pb: 5, borderBottom: "primary" }}
         sponsorsByLevel={conference.sponsorsByLevel}
       />
 
