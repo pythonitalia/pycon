@@ -193,6 +193,20 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   });
 };
 
+exports.onCreatePage = async ({ page, actions }) => {
+  const { createPage, deletePage } = actions;
+
+  if (page.path.match(/^\/[a-z]{2}\/404\/$/)) {
+    const oldPage = { ...page };
+
+    const language = page.path.split(`/`)[1];
+    page.matchPath = `/${language}/*`;
+
+    deletePage(oldPage);
+    createPage({ ...page, context: { language } });
+  }
+};
+
 exports.onCreateWebpackConfig = ({
   stage,
   rules,
