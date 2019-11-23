@@ -123,6 +123,21 @@ export default {
       textTransform: "uppercase",
     },
   },
+  badges: {
+    tag: {
+      color: "text",
+      bg: "green",
+      border: "primary",
+      fontSize: 2,
+      mt: 3,
+      mb: 3,
+    },
+    remove: {
+      my: 1,
+      ml: -3,
+      height: 20,
+    },
+  },
   text: {
     caps: {
       textTransform: "uppercase",

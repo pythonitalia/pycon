@@ -27,6 +27,7 @@ import {
   SendSubmissionMutationVariables,
 } from "../../generated/graphql-backend";
 import { Alert } from "../alert";
+import { TagLine } from "../input-tag";
 import { InputWrapper } from "../input-wrapper";
 import { Link } from "../link";
 import CFP_PAGE_QUERY from "./cfp-page.graphql";
@@ -42,6 +43,7 @@ type CfpFormFields = {
   notes: string;
   topic: string;
   languages: string[];
+  tags: string[];
 };
 
 export const CfpForm: React.SFC = () => {
@@ -77,6 +79,7 @@ export const CfpForm: React.SFC = () => {
 
   const onSubmit = useCallback(
     async e => {
+      console.log("onSubmit??");
       if (sendSubmissionLoading) {
         return;
       }
@@ -149,8 +152,8 @@ export const CfpForm: React.SFC = () => {
       sendSubmissionData.sendSubmission[key]) ||
     [];
 
-  console.log(conferenceData!.me.submissions);
-
+  // console.log(conferenceData!.me.submissions);
+  console.log(`formState.values: ` + JSON.stringify(formState.values));
   return (
     <Box
       sx={{
@@ -351,6 +354,20 @@ export const CfpForm: React.SFC = () => {
             }}
             {...textarea("notes")}
             rows="4"
+          />
+        </InputWrapper>
+
+        <InputWrapper
+          label={<FormattedMessage id="cfp.tagsLabel" />}
+          description={<FormattedMessage id="cfp.tagsDescription" />}
+          errors={getErrors("tags")}
+        >
+          <TagLine
+            tags={formState.values.tags}
+            onTagChange={tags => {
+              console.log("in cfp onTagChange: " + JSON.stringify(tags));
+              formState.setField("tags", tags);
+            }}
           />
         </InputWrapper>
 
