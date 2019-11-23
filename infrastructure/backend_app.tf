@@ -116,6 +116,12 @@ resource "aws_elastic_beanstalk_environment" "pycon_env" {
     value     = "django_ses.SESBackend"
   }
 
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "FRONTEND_URL"
+    value     = "https://pycon.it"
+  }
+
   # Are the load balancers multizone?
   setting {
     namespace = "aws:elb:loadbalancer"
