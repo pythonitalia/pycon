@@ -18,7 +18,7 @@ export const SocialLoginSuccess: React.SFC<RouteComponentProps<Props>> = ({
   const { loading, error, data } = useQuery<SocialLoginCheckQuery>(
     SOCIAL_LOGIN_CHECK,
   );
-  const [loggedIn, setLoggedIn] = useLoginState(false);
+  const [loggedIn, setLoggedIn] = useLoginState();
 
   if (loggedIn) {
     return <Redirect to={`/${lang}/profile/`} noThrow={true} />;
