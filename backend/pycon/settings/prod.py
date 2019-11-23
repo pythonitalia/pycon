@@ -31,6 +31,7 @@ EMAIL_BACKEND = env(
     "EMAIL_BACKEND", default="django.core.mail.backends.locmem.EmailBackend"
 )
 
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 MIDDLEWARE += ["pycon.middleware.force_pycon_host"]
 
 DEFAULT_FROM_EMAIL = "noreply@pycon.it"
