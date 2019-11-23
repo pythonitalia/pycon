@@ -30,3 +30,5 @@ AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY", default=None)
 EMAIL_BACKEND = env(
     "EMAIL_BACKEND", default="django.core.mail.backends.locmem.EmailBackend"
 )
+
+DEFAULT_FROM_EMAIL = "noreply@pycon.it"
