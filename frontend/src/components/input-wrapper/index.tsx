@@ -9,8 +9,16 @@ export const InputWrapper: React.SFC<{
   errors?: string[];
   className?: string;
   isRequired?: boolean;
-}> = ({ label, description, className, errors, isRequired, children }) => (
-  <Box mb={4} className={className}>
+}> = ({
+  label,
+  description,
+  className,
+  errors,
+  isRequired,
+  children,
+  ...props
+}) => (
+  <Box mb={4} {...props} className={className}>
     {label && (
       <Text variant="label" as="p">
         {label}

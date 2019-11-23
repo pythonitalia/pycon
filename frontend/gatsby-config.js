@@ -17,6 +17,24 @@ module.exports = {
         target: API_URL.replace("/graphql", ""),
       }),
     );
+    app.use(
+      "/login/google/",
+      proxy({
+        target: API_URL.replace("/graphql", ""),
+        pathRewrite: function(path, req) {
+          return "/login/google-oauth2/";
+        },
+      }),
+    );
+    app.use(
+      "/complete/google-oauth2/",
+      proxy({
+        target: API_URL.replace("/graphql", ""),
+        pathRewrite: function(path, req) {
+          return "/complete/google-oauth2/";
+        },
+      }),
+    );
   },
   plugins: [
     `gatsby-plugin-netlify`,

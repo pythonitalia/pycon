@@ -23,6 +23,8 @@ export const Alert: React.SFC<Props> = ({ variant, children, ...props }) => {
   return (
     <Box
       sx={{
+        display: "inline-block",
+
         position: "relative",
 
         width: "auto",

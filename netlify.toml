@@ -28,6 +28,18 @@
     force = true
 
 [[redirects]]
+    from = "/login/google"
+    to = "https://d1111jewijk23m.cloudfront.net/login/google-oauth2/"
+    status = 200
+    force = true
+
+[[redirects]]
+    from = "/complete/google-oauth2"
+    to = "https://d1111jewijk23m.cloudfront.net/complete/google-oauth2/"
+    status = 200
+    force = true
+
+[[redirects]]
     from = "/"
     to = "/it"
     status = 301

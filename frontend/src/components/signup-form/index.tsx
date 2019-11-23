@@ -1,15 +1,18 @@
 import { useMutation } from "@apollo/react-hooks";
 import { navigate, Redirect, RouteComponentProps } from "@reach/router";
-import { Box, Button, Input, Label } from "@theme-ui/components";
+import { Box, Button, Grid, Input, Label, Text } from "@theme-ui/components";
 import React, { useCallback } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 
 import { useLoginState } from "../../app/profile/hooks";
 import {
+  RegisterErrors,
   SignupMutation,
   SignupMutationVariables,
 } from "../../generated/graphql-backend";
+import { Alert } from "../alert";
+import { InputWrapper } from "../input-wrapper";
 import SIGNUP_MUTATION from "./signup.graphql";
 
 type SignupFormProps = {
@@ -19,6 +22,7 @@ type SignupFormProps = {
 
 export const SignupForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
   lang,
+  location,
 }) => {
   const [loggedIn, setLoggedIn] = useLoginState();
   const profileUrl = `/${lang}/profile`;
@@ -62,44 +66,77 @@ export const SignupForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
       ? data.register.nonFieldErrors.join(" ")
       : (error || "").toString();
 
-  const getFieldError = (field: "validationEmail" | "validationPassword") =>
+  const getFieldErrors = (field: "validationEmail" | "validationPassword") =>
     (data &&
       data.register.__typename === "RegisterErrors" &&
-      data.register[field].join(", ")) ||
-    "";
-  const emailError = getFieldError("validationEmail");
-  const passwordError = getFieldError("validationPassword");
+      data.register[field]) ||
+    [];
 
   return (
     <Box
       sx={{
-        maxWidth: "container",
-        mx: "auto",
+        px: 2,
       }}
-      as="form"
-      onSubmit={onFormSubmit}
-      method="post"
     >
-      {errorMessage && <div>{errorMessage}</div>}
-      <Label {...label("email")}>
-        <FormattedMessage id="signup.email" />
-      </Label>
-      <div>{emailError}</div>
-      <Input
-        {...email("email")}
-        placeholder="guido@python.org"
-        required={true}
-        type="email"
-      />
-      <Label {...label("password")}>
-        <FormattedMessage id="signup.password" />
-      </Label>
+      {location?.state?.message && (
+        <Alert variant="alert">{location.state.message}</Alert>
+      )}
 
-      <div>{passwordError}</div>
-      <Input {...password("password")} required={true} type="password" />
-      <Button type="submit">
-        <FormattedMessage id="signup.signupButton" />
-      </Button>
+      <Grid
+        sx={{
+          maxWidth: "container",
+          mx: "auto",
+          mt: 3,
+          gridTemplateColumns: [null, null, "1fr 1fr"],
+          gridColumnGap: 5,
+        }}
+      >
+        <Box as="form" onSubmit={onFormSubmit} method="post">
+          <Text mb={4} as="h2">
+            <FormattedMessage id="signup.signupWithEmail" />
+          </Text>
+
+          {errorMessage && <div>{errorMessage}</div>}
+
+          <InputWrapper
+            errors={getFieldErrors("validationEmail")}
+            label={<FormattedMessage id="signup.email" />}
+          >
+            <Input
+              {...email("email")}
+              placeholder="guido@python.org"
+              required={true}
+              type="email"
+              mb={4}
+            />
+          </InputWrapper>
+
+          <InputWrapper
+            errors={getFieldErrors("validationPassword")}
+            label={<FormattedMessage id="signup.password" />}
+          >
+            <Input
+              {...password("password")}
+              required={true}
+              type="password"
+              mb={4}
+            />
+          </InputWrapper>
+
+          <Button type="submit">
+            <FormattedMessage id="signup.signupButton" />
+          </Button>
+        </Box>
+        <Box>
+          <Text mb={4} as="h2">
+            <FormattedMessage id="signup.signupWithSocial" />
+          </Text>
+
+          <Button href="/login/google/" as="a">
+            <FormattedMessage id="signup.useGoogle" />
+          </Button>
+        </Box>
+      </Grid>
     </Box>
   );
 };
