@@ -122,6 +122,21 @@ resource "aws_elastic_beanstalk_environment" "pycon_env" {
     value     = "https://pycon.it"
   }
 
+
+  # google settings
+
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "SOCIAL_AUTH_GOOGLE_OAUTH2_KEY"
+    value     = "${var.social_auth_google_oauth2_key}"
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET"
+    value     = "${var.social_auth_google_oauth2_secret}"
+  }
+
   # Are the load balancers multizone?
   setting {
     namespace = "aws:elb:loadbalancer"

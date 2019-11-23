@@ -57,6 +57,8 @@ jobs:
         TF_VAR_mapbox_public_api_key: ${{ secrets.TF_VAR_mapbox_public_api_key }}
         TF_VAR_sentry_dsn: ${{ secrets.TF_VAR_sentry_dsn }}
         TF_VAR_slack_incoming_webhook_url: ${{ secrets.TF_VAR_slack_incoming_webhook_url }}
+        TF_VAR_social_auth_google_oauth2_key: ${{ secrets.TF_VAR_social_auth_google_oauth2_key }}
+        TF_VAR_social_auth_google_oauth2_secret: ${{ secrets.TF_VAR_social_auth_google_oauth2_secret }}
         TF_ACTION_WORKING_DIR: ./infrastructure
         TF_ACTION_WORKSPACE: production
 
