@@ -60,6 +60,7 @@ export const Introduction: React.SFC = () => (
       >
         <Box
           sx={{
+            display: ["none", null, "block"],
             border: "primary",
             gridColumnStart: [0, 0, 3],
             backgroundColor: "#C4C4C4",
