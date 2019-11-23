@@ -1,7 +1,10 @@
 const LOGIN_KEY = "login_state";
 
 const getLoginState = () => {
-  const value = window.localStorage.getItem(LOGIN_KEY);
+  const value =
+    typeof window === "undefined"
+      ? null
+      : window.localStorage.getItem(LOGIN_KEY);
 
   if (!value) {
     return false;
