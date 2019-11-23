@@ -4,12 +4,11 @@ from datetime import timedelta
 from decimal import Decimal
 
 import pytz
+from conferences.models import AudienceLevel, Conference, Duration, TicketFare, Topic
 from django.contrib.contenttypes.models import ContentType
 from django.core.management import CommandError
 from django.core.management.base import BaseCommand
 from django.db import IntegrityError, transaction
-
-from conferences.models import AudienceLevel, Conference, Duration, TicketFare, Topic
 from languages.models import Language
 from orders.enums import PaymentState
 from orders.models import Order, OrderItem
@@ -176,52 +175,36 @@ class Command(BaseCommand):
         """
             )
         )
-        usernames_old = {u["username"] for u in old_users}
 
-        users_existing = User.objects.all()
-        usernames_existing = {u.username for u in users_existing}
+        # TODO: this might break other imports if they are based on the PK
+        # we don't need bulk create or update as this script is only ran once
+        created = 0
+        updated = 0
 
-        # from the old_users list founded in the old db to import extract only
-        # new users to create
-        def filter_users_to_create(user):
-            return user["username"] not in usernames_existing
+        for user in old_users:
+            print(f"Importing {user['email']}")
+            _, created = User.objects.update_or_create(
+                email=user["email"],
+                defaults={
+                    "password": user["password"],
+                    "is_active": user["is_active"],
+                    "is_staff": user["is_staff"],
+                    "is_superuser": user["is_superuser"],
+                    "name": user["name"],
+                    "full_name": user["full_name"],
+                    "date_birth": user["date_birth"],
+                    "open_to_recruiting": user["open_to_recruiting"],
+                },
+            )
 
-        users_to_create = filter(filter_users_to_create, old_users)
-
-        result_created = User.objects.bulk_create(
-            [User(**user) for user in users_to_create]
-        )
-
-        # form the exiting users extract those you have found in the old db,
-        # so you have to update the fields only
-        def filter_users_to_update(user):
-            return user.username in usernames_old
-
-        users_to_update = list(filter(filter_users_to_update, users_existing))
-
-        update_fields = [
-            "email",
-            "password",
-            "is_active",
-            "is_staff",
-            "is_superuser",
-            "name",
-            "full_name",
-            "gender",
-            "date_birth",
-            "open_to_recruiting",
-        ]
-
-        for user in users_to_update:
-            old_user = next(filter(lambda u: u["username"] == user.username, old_users))
-            for field in update_fields:
-                user.__setattr__(field, old_user[field])
-
-        User.objects.bulk_update([user for user in users_to_update], update_fields)
+            if created:
+                created += 1
+            else:
+                updated += 1
 
         self.stdout.write(
             self.style.SUCCESS(
-                f"Users: {len(result_created)} created, {len(users_to_update)} "
+                f"Users: {created} created, {updated} "
                 f"updated, of {len(old_users)} found in the old db."
             )
         )
