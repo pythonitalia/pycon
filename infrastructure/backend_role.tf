@@ -49,6 +49,7 @@ resource "aws_iam_role_policy" "pycon" {
         "ecr:DescribeImages",
         "ecr:BatchGetImage",
         "s3:*"
+        "ses:*"
       ],
       "Effect": "Allow",
       "Resource": "*"
