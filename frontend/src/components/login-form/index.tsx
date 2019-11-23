@@ -109,7 +109,7 @@ export const LoginForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
           </InputWrapper>
 
           <InputWrapper
-            mb={0}
+            sx={{ mb: 0 }}
             errors={getFieldErrors("validationPassword")}
             label={<FormattedMessage id="login.password" />}
           >
