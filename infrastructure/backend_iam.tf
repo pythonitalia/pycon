@@ -39,6 +39,13 @@ resource "aws_iam_user_policy" "backend" {
         "sqs:*"
       ],
       "Resource": "arn:aws:sqs:*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ses:*"
+      ],
+      "Resource": "arn:aws:ses:*"
     }
   ]
 }
