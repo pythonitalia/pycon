@@ -45,7 +45,7 @@ resource "aws_iam_user_policy" "backend" {
       "Action": [
         "ses:*"
       ],
-      "Resource": "arn:aws:ses:*"
+      "Resource": "*"
     }
   ]
 }
