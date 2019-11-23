@@ -2,7 +2,7 @@ import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
 from .base import *  # noqa
-from .base import env
+from .base import MIDDLEWARE, env
 
 SECRET_KEY = env("SECRET_KEY")
 # CELERY_BROKER_URL = env("CELERY_BROKER_URL")
@@ -30,5 +30,7 @@ AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY", default=None)
 EMAIL_BACKEND = env(
     "EMAIL_BACKEND", default="django.core.mail.backends.locmem.EmailBackend"
 )
+
+MIDDLEWARE += ["pycon.middleware.force_pycon_host"]
 
 DEFAULT_FROM_EMAIL = "noreply@pycon.it"
