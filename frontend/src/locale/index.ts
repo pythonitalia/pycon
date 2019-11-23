@@ -85,6 +85,9 @@ export default {
     "cfp.languagesLabel": "Languages",
     "cfp.languagesDescription":
       "You can submit your talk in both English and Italian",
+    "cfp.tagsLabel": "Tags",
+    "cfp.tagsDescription":
+      'Tag your proposal to make it easier for event organizers to be able to find. Examples are "Django, GraphQL, open-source"',
     "header.profile": "Profile",
     "header.login": "Login",
     "header.followus": "Follow us",
@@ -194,6 +197,9 @@ export default {
     "cfp.languagesLabel": "Lingua",
     "cfp.languagesDescription":
       "Puoi proporre il tuo talk sia in italiano che inglese",
+    "cfp.tagsLabel": "Tags",
+    "cfp.tagsDescription":
+      'Tagga la tua proposta per facilitare la ricerca agli organizzatori dell\'evento. Ad esempio "Django, GraphQL, open-source"',
     "cfp.minutes": "minuti",
     "cfp.submit": "Invia",
     "header.profile": "Profilo",
