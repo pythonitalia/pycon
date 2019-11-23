@@ -236,6 +236,6 @@ export default {
     },
   },
   zIndices: {
-    header: "10",
+    header: "11",
   },
 };
