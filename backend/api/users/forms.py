@@ -1,10 +1,57 @@
-from django.contrib.auth import authenticate, login
-from django.forms import BooleanField, CharField, EmailField, ValidationError
-from django.utils.translation import ugettext_lazy as _
+from base64 import urlsafe_b64decode
 
 from api.forms import ContextAwareModelForm
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.tokens import default_token_generator
+from django.forms import BooleanField, CharField, EmailField, ValidationError
+from django.utils.translation import ugettext_lazy as _
+from notifications.emails import send_request_password_reset_mail
 from strawberry_forms.forms import FormWithContext
 from users.models import User
+
+
+class ResetPasswordForm(FormWithContext):
+    token = CharField()
+    encoded_user_id = CharField()
+    password = CharField()
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        token = cleaned_data["token"]
+        userid = urlsafe_b64decode(cleaned_data["encoded_user_id"])
+
+        user = User.objects.filter(id=userid).first()
+
+        if not user:
+            raise ValidationError({"encoded_user_id": _("Invalid user")})
+
+        if not default_token_generator.check_token(user, token):
+            raise ValidationError({"token": _("Invalid token")})
+
+        cleaned_data["user"] = user
+        return cleaned_data
+
+    def save(self):
+        new_password = self.cleaned_data["password"]
+        user = self.cleaned_data["user"]
+
+        user.set_password(new_password)
+        user.save()
+        return True
+
+
+class RequestPasswordResetForm(FormWithContext):
+    email = EmailField()
+
+    def save(self):
+        user = User.objects.filter(email=self.cleaned_data["email"]).first()
+
+        if not user:
+            return True
+
+        token = default_token_generator.make_token(user)
+        return send_request_password_reset_mail(user, token) == 1
 
 
 class LoginForm(FormWithContext):

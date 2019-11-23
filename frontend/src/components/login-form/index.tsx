@@ -10,6 +10,8 @@ import {
   LoginMutation,
   LoginMutationVariables,
 } from "../../generated/graphql-backend";
+import { Alert } from "../alert";
+import { Link } from "../link";
 import LOGIN_MUTATION from "./login.graphql";
 
 type LoginFormFields = {
@@ -19,6 +21,7 @@ type LoginFormFields = {
 
 export const LoginForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
   lang,
+  location,
 }) => {
   const profileUrl = `/${lang}/profile`;
 
@@ -58,6 +61,7 @@ export const LoginForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
       sx={{
         maxWidth: "container",
         mx: "auto",
+        px: 3,
       }}
       method="post"
       onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
@@ -67,6 +71,11 @@ export const LoginForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
       }}
     >
       {errorMessage && <div>{errorMessage}</div>}
+      {location?.state?.message && (
+        <Alert variant={location.state.messageVariant || "success"}>
+          {location.state.message}
+        </Alert>
+      )}
 
       <Label {...label("email")}>
         <FormattedMessage id="login.email" />
@@ -87,6 +96,16 @@ export const LoginForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
         required={true}
         type="password"
       />
+
+      <Link
+        sx={{
+          display: "block",
+          my: 2,
+        }}
+        href={`/${lang}/reset-password/`}
+      >
+        <FormattedMessage id="login.recoverPassword" />
+      </Link>
 
       <Button size="medium" palette="primary" isLoading={loading} type="submit">
         <FormattedMessage id="login.loginButton" />

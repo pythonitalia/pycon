@@ -110,6 +110,12 @@ resource "aws_elastic_beanstalk_environment" "pycon_env" {
     value     = "${aws_s3_bucket.backend_media.region}"
   }
 
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "EMAIL_BACKEND"
+    value     = "django_ses.SESBackend"
+  }
+
   # Are the load balancers multizone?
   setting {
     namespace = "aws:elb:loadbalancer"

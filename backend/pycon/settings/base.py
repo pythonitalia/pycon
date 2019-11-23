@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "i18n",
     "importer",
     "storages",
+    "notifications.apps.NotificationsConfig",
 ]
 
 MIDDLEWARE = [

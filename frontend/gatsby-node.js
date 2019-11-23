@@ -126,6 +126,11 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
       path: "/submission",
       matchPath: "/submission/*",
     },
+    {
+      template: appTemplate,
+      path: "/reset-password",
+      matchPath: "/reset-password/*",
+    },
   ];
   const languages = ["en", "it"];
 
