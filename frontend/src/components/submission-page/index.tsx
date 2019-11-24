@@ -11,6 +11,7 @@ import {
   SubmissionQuery,
   SubmissionQueryVariables,
 } from "../../generated/graphql-backend";
+import { compile } from "../../helpers/markdown";
 import SUBMISSION_QUERY from "./submission.graphql";
 
 export const SubmissionPage = ({ id }: RouteComponentProps<{ id: string }>) => {
@@ -122,19 +123,21 @@ export const SubmissionPage = ({ id }: RouteComponentProps<{ id: string }>) => {
               <FormattedMessage id="cfp.abstractLabel" />
             </Heading>
 
-            <Text sx={{ mb: 4 }}>{data.submission.abstract}</Text>
+            <Text sx={{ mb: 4 }}>{compile(data.submission.abstract).tree}</Text>
 
             <Heading sx={{ mb: 2 }}>
               <FormattedMessage id="cfp.elevatorPitchLabel" />
             </Heading>
 
-            <Text sx={{ mb: 4 }}>{data.submission.elevatorPitch}</Text>
+            <Text sx={{ mb: 4 }}>
+              {compile(data.submission.elevatorPitch).tree}
+            </Text>
 
             <Heading sx={{ mb: 2 }}>
               <FormattedMessage id="cfp.notesLabel" />
             </Heading>
 
-            <Text sx={{ mb: 4 }}>{data.submission.notes}</Text>
+            <Text sx={{ mb: 4 }}>{compile(data.submission.notes).tree}</Text>
           </Box>
         </Grid>
       </Box>
