@@ -326,7 +326,7 @@ export const query = graphql`
                   maxHeight: 500
                   background: "transparent"
                 ) {
-                  ...GatsbyImageSharpFluid
+                  ...GatsbyImageSharpFluid_withWebp_noBase64
                 }
               }
             }
