@@ -71,6 +71,7 @@
     "theme-ui": "^0.2.49",
     "timed-out": "5",
     "typescript": "^3.7.2",
+    "use-onclickoutside": "^0.3.1",
     "yup": "^0.27.0"
   },
   "devDependencies": {

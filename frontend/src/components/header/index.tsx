@@ -1,9 +1,12 @@
 /** @jsx jsx */
 
+import { Location } from "@reach/router";
 import { Box, Button, Flex, Grid, Heading } from "@theme-ui/components";
 import { graphql, useStaticQuery } from "gatsby";
+import { useEffect, useRef } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
+import useOnClickOutside from "use-onclickoutside";
 
 import { useLoginState } from "../../app/profile/hooks";
 import { HeaderQuery } from "../../generated/graphql";
@@ -13,7 +16,7 @@ import { Logo } from "../logo";
 import { SocialLinks } from "../social-links";
 import { SnakeBurger } from "./snake-burger";
 
-export const Header = () => {
+export const HeaderContent = ({ location }: { location: any }) => {
   const {
     backend: {
       conference: { conferenceMenu, programMenu },
@@ -40,11 +43,15 @@ export const Header = () => {
   `);
 
   const [loggedIn] = useLoginState();
+  const [open, toggleOpen, _, close] = useToggle(false);
+  const headerRef = useRef(null);
 
-  const [open, toggleOpen] = useToggle(false);
+  useEffect(close, [location]);
+  useOnClickOutside(headerRef, close);
 
   return (
     <Box
+      ref={headerRef}
       sx={{
         position: "absolute",
         top: 0,
@@ -184,3 +191,7 @@ export const Header = () => {
     </Box>
   );
 };
+
+export const Header = () => (
+  <Location>{({ location }) => <HeaderContent location={location} />}</Location>
+);

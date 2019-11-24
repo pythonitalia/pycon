@@ -63,7 +63,7 @@ jobs:
         yarn codegen-queries
       env:
         SECRET_KEY: demo
-        ALLOWED_HOSTS: "*"
+        FORCE_PYCON_HOST: False
         AWS_MEDIA_BUCKET: demo
         DEFAULT_FILE_STORAGE: 'django.core.files.storage.FileSystemStorage'
         CONFERENCE_CODE: "pycon-demo"
