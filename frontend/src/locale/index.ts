@@ -87,7 +87,7 @@ export default {
       "You can submit your talk in both English and Italian",
     "cfp.tagsLabel": "Tags",
     "cfp.tagsDescription":
-      'Tag your proposal to make it easier for event organizers to be able to find. Examples are "Django, GraphQL, open-source"',
+      "Tag your proposal to make it easier for event organizers to be able to find. Examples are 'Django, GraphQL, open-source'",
     "header.profile": "Profile",
     "header.login": "Login",
     "header.followus": "Follow us",
@@ -168,6 +168,7 @@ export default {
     "submission.loading": "Caricamento in corso",
     "submission.notFound": "Non trovato",
     "cfp.pageTitle": "Invia una proposta",
+    "cfp.introductionCopyHead": "Lorem ipsum",
     "cfp.youridea": "La tua idea",
     "cfp.choosetype": "Scegli una categoria",
     "cfp.talk": "Talk",
@@ -191,15 +192,15 @@ export default {
       "This decription will be seen by reviewers and the audience, if selected. You should make the description as compelling and exciting as possible - remember, you’re selling the idea to the organisers as well as appealling to attendees",
     "cfp.notesLabel": "Note",
     "cfp.notesDescription":
-      "Notes will only be seen by reviewers. This is where you should explian things such as technical requirements and why you’re the best person for this idea.",
+      "Le note saranno visualizzate solo dallo staff. È qui che dovresti indicare cose come i requisiti tecnici e/o perché sei la persona migliore per questa idea.",
     "cfp.topicLabel": "Argomento",
-    "cfp.topicDescription": "TODO Descrizione",
+    "cfp.topicDescription": "Di cosa tratta questa proposta?",
     "cfp.languagesLabel": "Lingua",
     "cfp.languagesDescription":
       "Puoi proporre il tuo talk sia in italiano che inglese",
     "cfp.tagsLabel": "Tags",
     "cfp.tagsDescription":
-      'Tagga la tua proposta per facilitare la ricerca agli organizzatori dell\'evento. Ad esempio "Django, GraphQL, open-source"',
+      "Tagga la tua proposta per facilitare la ricerca agli organizzatori dell'evento. Ad esempio 'Django, GraphQL, open-source'",
     "cfp.minutes": "minuti",
     "cfp.submit": "Invia",
     "header.profile": "Profilo",
