@@ -86,8 +86,12 @@ export default {
       color: "white",
       fontSize: 5,
       textDecoration: "none",
+      display: "block",
       "&:hover": {
-        borderBottom: "2px solid white",
+        textDecoration: "underline",
+        textDecorationSkip: "edges",
+        textDecorationThickness: "2px",
+        textUnderlineOffset: "0.2em",
       },
     },
     button: {
