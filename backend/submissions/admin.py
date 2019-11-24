@@ -13,14 +13,17 @@ class SubmissionAdmin(admin.ModelAdmin):
                 "fields": (
                     "title",
                     "slug",
+                    "speaker",
                     "type",
-                    "conference",
+                    "duration",
                     "topic",
+                    "conference",
                     "audience_level",
                     "languages",
                 )
             },
         ),
+        ("Details", {"fields": ("elevator_pitch", "abstract", "notes")}),
     )
     list_filter = ("conference", "type", "topic")
     search_fields = ("title", "abstract")
