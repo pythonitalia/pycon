@@ -82,6 +82,7 @@ export const SignupForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
       {location?.state?.message && (
         <Alert variant="alert">{location.state.message}</Alert>
       )}
+      {errorMessage && <Alert variant="alert">{errorMessage}</Alert>}
 
       <Grid
         sx={{
@@ -96,8 +97,6 @@ export const SignupForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
           <Text mb={4} as="h2">
             <FormattedMessage id="signup.signupWithEmail" />
           </Text>
-
-          {errorMessage && <div>{errorMessage}</div>}
 
           <InputWrapper
             sx={{ mb: 0 }}
