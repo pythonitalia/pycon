@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { Badge, Flex, Input } from "@theme-ui/components";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { jsx } from "theme-ui";
 
 type InputTagProps = {
@@ -18,39 +18,30 @@ type TagLineProps = {
 
 export const TagLine: React.SFC<TagLineProps> = ({ tags, onTagChange }) => {
   const [tagInput, setTagInput] = useState("");
-  console.log(
-    `in TagLine-main-> tags: ` +
-      JSON.stringify(tags) +
-      ` tagInput: ${tagInput}`,
-  );
 
-  const removeTag = (i: number) => {
+  const removeLastTag = () => {
+    const lastIndex = tags ? tags.length - 1 : 0;
     const newTags = [...(tags || [])];
-    newTags.splice(i, 1);
+    newTags.splice(lastIndex, 1);
     onTagChange(newTags);
   };
 
-  const inputKeyDown = e => {
-    const val = e.target.value;
-    if (e.key === "Enter" && val) {
-      if (tags && tags.find(tag => tag.toLowerCase() === val.toLowerCase())) {
-        return;
+  const onTagChanged = useCallback(
+    e => {
+      const val = e.target.value;
+      if (e.key === "Enter" && val) {
+        if (tags && tags.find(tag => tag.toLowerCase() === val.toLowerCase())) {
+          return;
+        }
+
+        onTagChange([...(tags || []), val]);
+        setTagInput("");
+      } else if (e.key === "Backspace" && !val) {
+        removeLastTag();
       }
-
-      console.log(`in inputKeyDown-> tags: ` + JSON.stringify(tags));
-      console.log(`in inputKeyDown-> tagInput: ` + tagInput);
-      onTagChange([...(tags || []), val]);
-      setTagInput("");
-    } else if (e.key === "Backspace" && !val) {
-      removeTag(tags ? tags.length - 1 : 0);
-    }
-    // props.onTagChange(tags);
-  };
-
-  useEffect(() => {
-    console.log(`in useEffect-> tags: ` + JSON.stringify(tags));
-    // onTagChange(tags);
-  }, [tags]);
+    },
+    [tags, tagInput],
+  );
 
   return (
     <Flex>
@@ -58,23 +49,17 @@ export const TagLine: React.SFC<TagLineProps> = ({ tags, onTagChange }) => {
         tags.map((tag, i) => (
           <Flex key={i}>
             <InputTag name={tag} />
-            <Badge
-              as="button"
-              variant="remove"
-              onClick={() => {
-                removeTag(i);
-              }}
-            >
+            <Badge as="button" variant="remove" onClick={onTagChanged}>
               x
             </Badge>
           </Flex>
         ))}
       <Flex>
         <Input
-          onChange={event => {
-            setTagInput(event.target.value);
+          onChange={e => {
+            setTagInput(e.target.value);
           }}
-          onKeyDown={inputKeyDown}
+          onKeyDown={onTagChanged}
           value={tagInput}
         />
       </Flex>

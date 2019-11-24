@@ -366,6 +366,7 @@ export const CfpForm: React.SFC = () => {
           <TagLine
             tags={formState.values.tags}
             onTagChange={(tags: string[]) => {
+              console.trace();
               console.log("in cfp onTagChange: " + JSON.stringify(tags));
               formState.setField("tags", tags);
             }}
