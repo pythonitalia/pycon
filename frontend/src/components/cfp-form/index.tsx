@@ -80,6 +80,7 @@ export const CfpForm: React.SFC = () => {
   const onSubmit = useCallback(
     async e => {
       console.log("onSubmit??");
+      console.trace();
       if (sendSubmissionLoading) {
         return;
       }
@@ -153,8 +154,6 @@ export const CfpForm: React.SFC = () => {
       (sendSubmissionData.sendSubmission as any)[key]) ||
     [];
 
-  // console.log(conferenceData!.me.submissions);
-  console.log(`formState.values: ` + JSON.stringify(formState.values));
   return (
     <Box
       sx={{
@@ -365,9 +364,8 @@ export const CfpForm: React.SFC = () => {
         >
           <TagLine
             tags={formState.values.tags}
+            allowRemove={true}
             onTagChange={(tags: string[]) => {
-              console.trace();
-              console.log("in cfp onTagChange: " + JSON.stringify(tags));
               formState.setField("tags", tags);
             }}
           />

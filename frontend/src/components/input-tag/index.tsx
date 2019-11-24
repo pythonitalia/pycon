@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { Badge, Flex, Input } from "@theme-ui/components";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { jsx } from "theme-ui";
 
 type InputTagProps = {
@@ -14,9 +14,14 @@ export const InputTag: React.SFC<InputTagProps> = props => (
 type TagLineProps = {
   tags: string[] | undefined;
   onTagChange: any;
+  allowRemove: boolean;
 };
 
-export const TagLine: React.SFC<TagLineProps> = ({ tags, onTagChange }) => {
+export const TagLine: React.SFC<TagLineProps> = ({
+  tags,
+  onTagChange,
+  allowRemove,
+}) => {
   const [tagInput, setTagInput] = useState("");
 
   const removeLastTag = () => {
@@ -49,9 +54,11 @@ export const TagLine: React.SFC<TagLineProps> = ({ tags, onTagChange }) => {
         tags.map((tag, i) => (
           <Flex key={i}>
             <InputTag name={tag} />
-            <Badge as="button" variant="remove" onClick={onTagChanged}>
-              x
-            </Badge>
+            {allowRemove && (
+              <Badge as="button" variant="remove" onClick={onTagChanged}>
+                x
+              </Badge>
+            )}
           </Flex>
         ))}
       <Flex>
