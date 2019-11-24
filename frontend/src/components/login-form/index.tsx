@@ -68,9 +68,20 @@ export const LoginForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
         px: 2,
       }}
     >
-      {location?.state?.message && (
-        <Alert variant="alert">{location.state.message}</Alert>
-      )}
+      <Box
+        sx={{
+          maxWidth: "container",
+          mx: "auto",
+          mb: 3,
+        }}
+      >
+        {location?.state?.message && (
+          <Alert variant={location.state.messageVariant || "alert"}>
+            {location.state.message}
+          </Alert>
+        )}
+        {errorMessage && <Alert variant="alert">{errorMessage}</Alert>}
+      </Box>
       <Grid
         sx={{
           maxWidth: "container",
@@ -92,8 +103,6 @@ export const LoginForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
           <Text mb={4} as="h2">
             <FormattedMessage id="login.loginWithEmail" />
           </Text>
-
-          {errorMessage && <div>{errorMessage}</div>}
 
           <InputWrapper
             errors={getFieldErrors("validationEmail")}

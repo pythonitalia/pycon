@@ -71,6 +71,7 @@ export const ResetPassword: React.SFC<RouteComponentProps<Props>> = ({
             to={`/${lang}/login`}
             state={{
               message: text,
+              messageVariant: "success",
             }}
             noThrow={true}
           />
