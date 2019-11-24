@@ -13,6 +13,7 @@ import {
 } from "../../generated/graphql-backend";
 import { Alert } from "../alert";
 import { InputWrapper } from "../input-wrapper";
+import { Link } from "../link";
 import SIGNUP_MUTATION from "./signup.graphql";
 
 type SignupFormProps = {
@@ -99,6 +100,7 @@ export const SignupForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
           {errorMessage && <div>{errorMessage}</div>}
 
           <InputWrapper
+            sx={{ mb: 0 }}
             errors={getFieldErrors("validationEmail")}
             label={<FormattedMessage id="signup.email" />}
           >
@@ -107,9 +109,18 @@ export const SignupForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
               placeholder="guido@python.org"
               required={true}
               type="email"
-              mb={4}
             />
           </InputWrapper>
+
+          <Link
+            sx={{
+              display: "block",
+              mb: 4,
+            }}
+            href={`/${lang}/login/`}
+          >
+            <FormattedMessage id="signup.alreadyHaveAccount" />
+          </Link>
 
           <InputWrapper
             errors={getFieldErrors("validationPassword")}
