@@ -1,17 +1,13 @@
 /** @jsx jsx */
 import { Box } from "@theme-ui/components";
 import { graphql } from "gatsby";
-import marksy from "marksy";
-import { createElement, Fragment } from "react";
+import { Fragment } from "react";
 import { Helmet } from "react-helmet";
 import { jsx } from "theme-ui";
 
 import { Article } from "../components/article";
 import { PostQuery } from "../generated/graphql";
-
-const compile = marksy({
-  createElement,
-});
+import { compile } from "../helpers/markdown";
 
 export default ({ data }: { data: PostQuery }) => {
   const post = data.backend.blogPost!;

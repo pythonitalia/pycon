@@ -11,6 +11,7 @@ import { EventCard } from "../components/home-events/event-card";
 import { HomepageHero } from "../components/homepage-hero";
 import { KeynotersSection } from "../components/keynoters-section";
 import { Link } from "../components/link";
+import { MapWithLink } from "../components/map-with-link";
 import { Marquee } from "../components/marquee";
 import { SponsorsSection } from "../components/sponsors-section";
 import { YouTubeLite } from "../components/youtube-lite";
@@ -213,28 +214,7 @@ export default ({ data }: { data: HomePageQuery }) => {
             </Box>
           </Flex>
 
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            href={conference.map!.link!}
-            sx={{
-              width: "100%",
-              height: 350,
-
-              display: "block",
-
-              mt: [3, 3, 0],
-
-              gridColumnStart: [null, null, 3],
-
-              border: "3px solid #000",
-
-              backgroundImage: `url("${conference.map!.image}")`,
-              backgroundSize: "cover",
-              backgroundRepeat: "no-repeat",
-              backgroundPosition: "center",
-            }}
-          />
+          <MapWithLink />
         </Grid>
       </Box>
 
@@ -303,7 +283,6 @@ export const query = graphql`
         gettingThereText: copy(key: "getting-there-text", language: $language)
 
         map {
-          image(width: 1280, height: 400, zoom: 15)
           link
         }
 
