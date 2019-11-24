@@ -16,10 +16,7 @@ type TagLineProps = {
   onTagChange: any;
 };
 
-export const TagLine: React.SFC<TagLineProps> = props => {
-  console.log(`in TagLine-main-> props: ` + JSON.stringify(props));
-
-  const [tags, setTags] = useState(props.tags ? props.tags : []);
+export const TagLine: React.SFC<TagLineProps> = ({ tags, onTagChange }) => {
   const [tagInput, setTagInput] = useState("");
   console.log(
     `in TagLine-main-> tags: ` +
@@ -28,29 +25,31 @@ export const TagLine: React.SFC<TagLineProps> = props => {
   );
 
   const removeTag = (i: number) => {
-    const newTags = [...tags];
+    const newTags = [...(tags || [])];
     newTags.splice(i, 1);
-    setTags(newTags);
+    onTagChange(newTags);
   };
+
   const inputKeyDown = e => {
     const val = e.target.value;
     if (e.key === "Enter" && val) {
       if (tags && tags.find(tag => tag.toLowerCase() === val.toLowerCase())) {
         return;
       }
-      setTags([...tags, val]);
-      console.log(tagInput);
+
+      console.log(`in inputKeyDown-> tags: ` + JSON.stringify(tags));
+      console.log(`in inputKeyDown-> tagInput: ` + tagInput);
+      onTagChange([...(tags || []), val]);
       setTagInput("");
     } else if (e.key === "Backspace" && !val) {
-      removeTag(tags.length - 1);
+      removeTag(tags ? tags.length - 1 : 0);
     }
-    console.log(`in inputKeyDown-> tags: ` + JSON.stringify(tags));
     // props.onTagChange(tags);
   };
 
   useEffect(() => {
     console.log(`in useEffect-> tags: ` + JSON.stringify(tags));
-    props.onTagChange(tags);
+    // onTagChange(tags);
   }, [tags]);
 
   return (

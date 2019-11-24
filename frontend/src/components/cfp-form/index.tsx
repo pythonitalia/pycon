@@ -145,11 +145,12 @@ export const CfpForm: React.SFC = () => {
       | "elevatorPitch"
       | "notes"
       | "audienceLevel"
+      | "tags"
       | "nonFieldErrors",
   ) =>
     (sendSubmissionData &&
       sendSubmissionData.sendSubmission.__typename === "SendSubmissionErrors" &&
-      sendSubmissionData.sendSubmission[key]) ||
+      (sendSubmissionData.sendSubmission as any)[key]) ||
     [];
 
   // console.log(conferenceData!.me.submissions);
@@ -364,7 +365,7 @@ export const CfpForm: React.SFC = () => {
         >
           <TagLine
             tags={formState.values.tags}
-            onTagChange={tags => {
+            onTagChange={(tags: string[]) => {
               console.log("in cfp onTagChange: " + JSON.stringify(tags));
               formState.setField("tags", tags);
             }}
