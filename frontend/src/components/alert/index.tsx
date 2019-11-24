@@ -23,32 +23,39 @@ export const Alert: React.SFC<Props> = ({ variant, children, ...props }) => {
   return (
     <Box
       sx={{
-        display: "inline-block",
-
-        position: "relative",
-
-        width: "auto",
-        py: 4,
-        px: 3,
-        border: "primary",
-
-        "::before": {
-          content: "''",
-          display: "block",
-
-          position: "absolute",
-          top: 0,
-          left: 0,
-
-          width: 10,
-          height: "100%",
-
-          backgroundColor,
-        },
+        display: "block",
+        my: 2,
       }}
-      {...props}
     >
-      {children}
+      <Box
+        sx={{
+          display: "inline-block",
+
+          position: "relative",
+
+          width: "auto",
+          py: 4,
+          px: 3,
+          border: "primary",
+
+          "::before": {
+            content: "''",
+            display: "block",
+
+            position: "absolute",
+            top: 0,
+            left: 0,
+
+            width: 10,
+            height: "100%",
+
+            backgroundColor,
+          },
+        }}
+        {...props}
+      >
+        {children}
+      </Box>
     </Box>
   );
 };

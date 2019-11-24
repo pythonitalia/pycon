@@ -92,9 +92,11 @@ export default {
     "login.loginWithEmail": "Use your email/password...",
     "login.loginWithSocial": "... or your social account",
     "login.useGoogle": "Use Google",
+    "login.dontHaveAccount": "Don't have an account?",
     "signup.signupWithEmail": "Create account using a password...",
     "signup.signupWithSocial": "... or your social account",
     "signup.useGoogle": "Use Google",
+    "signup.alreadyHaveAccount": "Already have an account?",
   },
   it: {
     titleTemplate: "%s | PyCon Italia",
@@ -188,9 +190,11 @@ export default {
     "login.loading": "Caricamento",
     "login.loginWithEmail": "Usa la tua email...",
     "login.loginWithSocial": "... o i tuoi account social",
+    "login.dontHaveAccount": "Non hai un account?",
     "login.useGoogle": "Use Google",
     "signup.signupWithEmail": "Crea un account via email...",
     "signup.signupWithSocial": "... o con i tuoi account social",
     "signup.useGoogle": "Usa Google",
+    "signup.alreadyHaveAccount": "Hai già un account?",
   },
 };
