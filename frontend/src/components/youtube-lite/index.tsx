@@ -12,7 +12,7 @@ export const YouTubeLite: React.SFC<{ videoId: string }> = ({
   videoId = encodeURIComponent(videoId);
   const posterUrl = `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`;
 
-  const [playing, setPlaying] = useState(false);
+  const [playing, setPlaying] = useState(true);
 
   if (playing) {
     return (
