@@ -2,8 +2,10 @@
 
 import { Box, Button, Flex, Grid, Heading } from "@theme-ui/components";
 import { graphql, useStaticQuery } from "gatsby";
+import { useRef } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
+import useOnClickOutside from "use-onclickoutside";
 
 import { useLoginState } from "../../app/profile/hooks";
 import { HeaderQuery } from "../../generated/graphql";
@@ -42,9 +44,17 @@ export const Header = () => {
   const [loggedIn] = useLoginState();
 
   const [open, toggleOpen] = useToggle(false);
+  const headerRef = useRef(null);
+
+  useOnClickOutside(headerRef, () => {
+    if (open) {
+      toggleOpen();
+    }
+  });
 
   return (
     <Box
+      ref={headerRef}
       sx={{
         position: "absolute",
         top: 0,
