@@ -80,10 +80,3 @@ class SubmissionFactory(DjangoModelFactory):
             for tag_name in extracted:
                 tag, _ = SubmissionTag.objects.get_or_create(name=tag_name)
                 self.tags.add(tag)
-        else:
-            for _ in range(random.randint(1, 7)):
-                self.tags.add(
-                    SubmissionTag.objects.get_or_create(
-                        name=factory.Faker("word").generate()
-                    )[0]
-                )

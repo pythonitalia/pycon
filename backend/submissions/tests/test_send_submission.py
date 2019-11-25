@@ -7,7 +7,7 @@ from .factories import SubmissionFactory
 
 def _submit_talk(client, conference, **kwargs):
 
-    talk = SubmissionFactory.create(
+    talk = SubmissionFactory.build(
         type=SubmissionType.objects.get_or_create(name="talk")[0]
     )
 
@@ -24,7 +24,6 @@ def _submit_talk(client, conference, **kwargs):
         "type": talk.type.id,
         "duration": conference.durations.first().id,
         "audience_level": conference.audience_levels.first().id,
-        "tags": [tag.name for tag in talk.tags.all()],
     }
 
     variables = {**defaults, **kwargs}
@@ -657,3 +656,20 @@ def test_same_user_can_submit_talks_to_different_conferences(
 
     assert user.submissions.filter(conference=conference1).count() == 1
     assert user.submissions.filter(conference=conference2).count() == 1
+
+
+def test_create_submission_tags(graphql_client, user, conference_factory):
+    graphql_client.force_login(user)
+
+    conference = conference_factory(
+        topics=("friends",),
+        languages=("it",),
+        active_cfp=True,
+        submission_types=("talk", "tutorial"),
+        durations=("50",),
+        audience_levels=("Beginner",),
+    )
+
+    resp = _submit_talk(graphql_client, conference, tags=["python", "graphQL"])
+
+    assert resp["data"]["sendSubmission"]["__typename"] == "Submission"

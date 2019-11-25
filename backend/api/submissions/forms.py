@@ -6,7 +6,7 @@ from api.forms import ContextAwareModelForm
 from conferences.models import AudienceLevel, Conference
 from integrations.tasks import notify_new_submission
 from languages.models import Language
-from submissions.models import Submission, SubmissionTag
+from submissions.models import Submission
 
 
 class SendSubmissionForm(ContextAwareModelForm):
@@ -18,9 +18,6 @@ class SendSubmissionForm(ContextAwareModelForm):
     )
     audience_level = forms.ModelChoiceField(
         queryset=AudienceLevel.objects.all(), to_field_name="id"
-    )
-    tags = forms.ModelMultipleChoiceField(
-        queryset=SubmissionTag.objects.all(), to_field_name="name", required=False
     )
 
     def clean(self):
