@@ -228,7 +228,16 @@ exports.onCreatePage = async ({ page, actions }) => {
     page.matchPath = `/${language}/*`;
 
     deletePage(oldPage);
-    createPage({ ...page, context: { language } });
+    createPage({
+      ...page,
+      context: {
+        language,
+        alternateLinks: {
+          en: `/en/404`,
+          it: `/it/404`,
+        },
+      },
+    });
   }
 };
 
