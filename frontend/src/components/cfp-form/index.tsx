@@ -86,7 +86,7 @@ export const CfpForm: React.SFC = () => {
       }
 
       e.preventDefault();
-
+      console.log(JSON.stringify(formState.values));
       sendSubmission({
         variables: {
           input: {
@@ -100,6 +100,7 @@ export const CfpForm: React.SFC = () => {
             elevatorPitch: formState.values.elevatorPitch,
             notes: formState.values.notes,
             audienceLevel: formState.values.audienceLevel,
+            tags: formState.values.tags,
           },
         },
       });
