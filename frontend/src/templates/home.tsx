@@ -95,7 +95,7 @@ export default ({ data }: { data: HomePageQuery }) => {
           gridTemplateColumns: [null, null, "10fr 2fr 9fr"],
         }}
       >
-        <Box>
+        <Box sx={{ mb: [4, 4, 0] }}>
           <Box sx={{ border: "primary", position: "relative" }}>
             <Box sx={{ paddingBottom: "55%", display: "inline-block" }} />
             <YouTubeLite
@@ -117,13 +117,22 @@ export default ({ data }: { data: HomePageQuery }) => {
           </Heading>
 
           {conference.cfpDeadline && (
-            <Flex sx={{ border: "primary", mb: 3 }}>
+            <Box
+              sx={{
+                border: "primary",
+                mb: 3,
+                display: ["block", "flex"],
+                mx: "auto",
+                width: ["80%", null, "100%"],
+              }}
+            >
               <Box
                 sx={{
                   flex: 1,
                   p: 3,
                   textAlign: "center",
-                  borderRight: "primary",
+                  borderRight: [null, "primary"],
+                  borderBottom: ["primary", "none"],
                 }}
               >
                 <Heading variant="caps" color="violet">
@@ -143,7 +152,7 @@ export default ({ data }: { data: HomePageQuery }) => {
                   {formatDeadlineTime(conference.cfpDeadline.end)}
                 </Box>
               </Box>
-            </Flex>
+            </Box>
           )}
 
           <Heading as="h2" sx={{ color: "yellow", fontSize: 3, mb: 3 }}>
