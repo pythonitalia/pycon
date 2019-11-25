@@ -32,6 +32,7 @@ export const YouTubeLite: React.SFC<{ videoId: string }> = ({
 
   return (
     <Flex
+      onClick={() => setPlaying(true)}
       sx={{
         background: `black url(${posterUrl})`,
         backgroundSize: "cover",
@@ -42,7 +43,7 @@ export const YouTubeLite: React.SFC<{ videoId: string }> = ({
       }}
       {...props}
     >
-      <Box onClick={() => setPlaying(true)}>
+      <Box>
         <ArrowIcon
           direction="right"
           sx={{ fill: "violet", width: 60, strokeWidth: "6px" }}
