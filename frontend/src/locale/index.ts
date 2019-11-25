@@ -64,17 +64,17 @@ export default {
     "cfp.title": "Title",
     "cfp.elevatorPitchLabel": "Elevator pitch",
     "cfp.elevatorPitchDescription":
-      "You have 300 characters to sell your idea. This is known as the ‘elevator pitch’. Make it as exiting and enticing as possible",
+      "You have 300 characters to sell your idea. This is known as the ‘elevator pitch’. Make it as exciting and enticing as possible",
     "cfp.lengthLabel": "Length",
     "cfp.lengthDescription": "The length of your talk or workshop",
     "cfp.audienceLevelLabel": "Audience Level",
     "cfp.audienceLevelDescription": "Who is the best target audience for this?",
     "cfp.abstractLabel": "Abstract",
     "cfp.abstractDescription":
-      "This decription will be seen by reviewers and the audience, if selected. You should make the description as compelling and exiting as possible - remember, you’re selling the idea to the organisers as well as appealling to attendees",
+      "This description will be seen by reviewers and the audience, if selected. You should make the description as compelling and exciting as possible - remember, you’re selling the idea to the organisers as well as appealing to attendees",
     "cfp.notesLabel": "Notes",
     "cfp.notesDescription":
-      "Notes will only be seen by reviewers. This is where you should explian things such as technical requirements and why you’re the best person for this idea.",
+      "Notes will only be seen by reviewers. This is where you should explain things such as technical requirements and why you’re the best person for this idea.",
     "cfp.topicLabel": "Topic",
     "cfp.topicDescription": "What this proposal is about?",
     "cfp.submit": "Submit",
@@ -178,7 +178,7 @@ export default {
     "cfp.audienceLevelDescription": "Che genere di audience ti aspetti?",
     "cfp.abstractLabel": "Descrizione",
     "cfp.abstractDescription":
-      "This decription will be seen by reviewers and the audience, if selected. You should make the description as compelling and exiting as possible - remember, you’re selling the idea to the organisers as well as appealling to attendees",
+      "This decription will be seen by reviewers and the audience, if selected. You should make the description as compelling and exciting as possible - remember, you’re selling the idea to the organisers as well as appealling to attendees",
     "cfp.notesLabel": "Note",
     "cfp.notesDescription":
       "Notes will only be seen by reviewers. This is where you should explian things such as technical requirements and why you’re the best person for this idea.",

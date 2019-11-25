@@ -142,6 +142,10 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         matchPath: page.matchPath ? `/${language}${page.matchPath}` : null,
         context: {
           language,
+          alternateLinks: {
+            en: `/en${page.path}`,
+            it: `/it${page.path}`,
+          },
           conferenceCode: process.env.CONFERENCE_CODE || "pycon-demo",
         },
       }),
@@ -155,6 +159,10 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
       component: blogPostTemplate,
       context: {
         slug,
+        alternateLinks: {
+          en: `/en/blog/${slug}`,
+          it: `/it/blog/${slug}`,
+        },
       },
     });
 
@@ -163,6 +171,10 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
       component: blogPostTemplate,
       context: {
         slug,
+        alternateLinks: {
+          en: `/en/blog/${slug}`,
+          it: `/it/blog/${slug}`,
+        },
       },
     });
   });
@@ -174,6 +186,10 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
       context: {
         language: "it",
         slug: slugIt,
+        alternateLinks: {
+          en: `/en/${slugEn}`,
+          it: `/it/${slugIt}`,
+        },
       },
     });
 
@@ -183,6 +199,10 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
       context: {
         language: "en",
         slug: slugEn,
+        alternateLinks: {
+          en: `/en/${slugEn}`,
+          it: `/it/${slugIt}`,
+        },
       },
     });
   });
@@ -208,7 +228,16 @@ exports.onCreatePage = async ({ page, actions }) => {
     page.matchPath = `/${language}/*`;
 
     deletePage(oldPage);
-    createPage({ ...page, context: { language } });
+    createPage({
+      ...page,
+      context: {
+        language,
+        alternateLinks: {
+          en: `/en/404`,
+          it: `/it/404`,
+        },
+      },
+    });
   }
 };
 

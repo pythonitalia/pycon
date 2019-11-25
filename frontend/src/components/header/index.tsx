@@ -3,18 +3,58 @@
 import { Location } from "@reach/router";
 import { Box, Button, Flex, Grid, Heading } from "@theme-ui/components";
 import { graphql, useStaticQuery } from "gatsby";
-import { useEffect, useRef } from "react";
+import { Fragment, useEffect, useRef } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 import useOnClickOutside from "use-onclickoutside";
 
 import { useLoginState } from "../../app/profile/hooks";
+import { useAlternateLinks, useCurrentLanguage } from "../../context/language";
 import { HeaderQuery } from "../../generated/graphql";
 import { useToggle } from "../../helpers/use-toggle";
+import { EnglishIcon } from "../icons/english";
+import { ItalianIcon } from "../icons/italian";
 import { Link } from "../link";
 import { Logo } from "../logo";
 import { SocialLinks } from "../social-links";
 import { SnakeBurger } from "./snake-burger";
+
+const LanguagePicker: React.SFC = props => {
+  const alternateLinks = useAlternateLinks();
+
+  return (
+    <Flex sx={{ alignItems: "center", height: 50, mt: "-3px" }} {...props}>
+      <Link href={alternateLinks.en} sx={{ height: 40 }}>
+        <EnglishIcon sx={{ width: 40, mr: 2 }} />
+      </Link>
+      <Link href={alternateLinks.it} sx={{ height: 40 }}>
+        <ItalianIcon sx={{ width: 40, mr: 4 }} />
+      </Link>
+    </Flex>
+  );
+};
+
+const Links: React.SFC<{
+  language: "en" | "it";
+  links: { hrefIt: string; hrefEn: string; titleEn: string; titleIt: string }[];
+}> = ({ language, links }) => {
+  const titleKey = { en: "titleEn", it: "titleIt" }[
+    language
+  ] as keyof typeof links[0];
+  const hrefKey = { en: "hrefEn", it: "hrefIt" }[
+    language
+  ] as keyof typeof links[0];
+
+  return (
+    <Fragment>
+      {links.map(link => (
+        <Link variant="header" href={link[hrefKey]} key={link[hrefKey]}>
+          {link[titleKey]}
+        </Link>
+      ))}
+    </Fragment>
+  );
+};
 
 export const HeaderContent = ({ location }: { location: any }) => {
   const {
@@ -27,14 +67,18 @@ export const HeaderContent = ({ location }: { location: any }) => {
         conference {
           conferenceMenu: menu(identifier: "conference-nav") {
             links {
-              title
-              href
+              titleEn: title(language: "en")
+              titleIt: title(language: "it")
+              hrefEn: href(language: "en")
+              hrefIt: href(language: "it")
             }
           }
           programMenu: menu(identifier: "program-nav") {
             links {
-              title
-              href
+              titleEn: title(language: "en")
+              titleIt: title(language: "it")
+              hrefEn: href(language: "en")
+              hrefIt: href(language: "it")
             }
           }
         }
@@ -45,6 +89,7 @@ export const HeaderContent = ({ location }: { location: any }) => {
   const [loggedIn] = useLoginState();
   const [open, toggleOpen, _, close] = useToggle(false);
   const headerRef = useRef(null);
+  const language = useCurrentLanguage();
 
   useEffect(close, [location]);
   useOnClickOutside(headerRef, close);
@@ -86,10 +131,16 @@ export const HeaderContent = ({ location }: { location: any }) => {
             alignItems: ["center", "flex-start"],
           }}
         >
+          <LanguagePicker
+            sx={{
+              display: ["none", "block"],
+            }}
+          />
+
           <Link
             href={loggedIn ? "/:language/profile" : "/:language/login"}
             variant="button"
-            sx={{ mr: 5 }}
+            sx={{ mr: 5, display: ["none", "block"] }}
           >
             {loggedIn && <FormattedMessage id="header.profile" />}
             {!loggedIn && <FormattedMessage id="header.login" />}
@@ -130,17 +181,32 @@ export const HeaderContent = ({ location }: { location: any }) => {
               px: 2,
             }}
           >
+            <LanguagePicker
+              sx={{
+                display: ["block", "none"],
+              }}
+            />
+
+            <Link
+              href={loggedIn ? "/:language/profile" : "/:language/login"}
+              variant="header"
+              sx={{ mr: 5, display: ["block", "none"] }}
+            >
+              {loggedIn && <FormattedMessage id="header.profile" />}
+              {!loggedIn && <FormattedMessage id="header.login" />}
+            </Link>
+
             <Box as="nav">
-              {conferenceMenu!.links.map(link => (
-                <Link variant="header" href={link.href} key={link.href}>
-                  {link.title}
-                </Link>
-              ))}
+              <Links links={conferenceMenu!.links} language={language} />
             </Box>
             <Box as="nav">
               {programMenu!.links.map(link => (
-                <Link variant="header" href={link.href} key={link.href}>
-                  {link.title}
+                <Link
+                  variant="header"
+                  href={language === "en" ? link.hrefEn : link.hrefIt}
+                  key={language === "en" ? link.hrefEn : link.hrefIt}
+                >
+                  {language === "en" ? link.titleEn : link.titleIt}
                 </Link>
               ))}
             </Box>
