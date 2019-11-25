@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Submission, SubmissionType
+from .models import Submission, SubmissionTag, SubmissionType
 
 
 @admin.register(Submission)
@@ -32,4 +32,9 @@ class SubmissionAdmin(admin.ModelAdmin):
 
 @admin.register(SubmissionType)
 class SubmissionTypeAdmin(admin.ModelAdmin):
+    list_display = ("name",)
+
+
+@admin.register(SubmissionTag)
+class SubmissionTagAdmin(admin.ModelAdmin):
     list_display = ("name",)
