@@ -51,7 +51,7 @@ const Slider = <T extends { id: string }>({
       {showArrows && <ArrowIcon sx={{ width: 40 }} />}
     </Flex>
 
-    <Grid columns={[1, 3]} gap={0}>
+    <Grid columns={[1, 2, 3]} gap={0}>
       {page.map(item => (
         <Component key={item.id} {...item} />
       ))}
@@ -79,7 +79,7 @@ export const GridSlider = <T extends { id: string }>({
   items: T[];
   Component: React.ElementType;
 }) => {
-  const columns = useSSRResponsiveValue([1, 3]);
+  const columns = useSSRResponsiveValue([1, 2, 3]);
   const showArrows = items.length > columns;
   const [page, increase, decrease] = useSlider(items, columns);
 
