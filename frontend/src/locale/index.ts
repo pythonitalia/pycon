@@ -1,6 +1,8 @@
 export default {
   en: {
     titleTemplate: "%s | PyCon Italy",
+    "global.yes": "Yes",
+    "global.no": "No",
     "home.title": "Home",
     "home.cfp.begins": "Begins",
     "home.cfp.deadline": "Deadline",
@@ -20,6 +22,11 @@ export default {
     "profile.gender.other": "Other",
     "profile.gender.notSay": "Prefer not to say",
     "profile.header": "My profile",
+    "profile.loading": "Loading...",
+    "profile.profileHeader": "My Profile",
+    "profile.mySubmissionsHeader": "My Submissions",
+    "profile.editProfile":
+      "Something doesn't look right? Click here to change it!",
     "profile.openToNewsletter":
       "I want to receive E-mail for main communications",
     "profile.openToRecruiting":
@@ -100,6 +107,8 @@ export default {
   },
   it: {
     titleTemplate: "%s | PyCon Italia",
+    "global.yes": "Si",
+    "global.no": "No",
     "home.title": "Home",
     "home.cfp.begins": "Inizio",
     "home.cfp.deadline": "Fine",
@@ -119,6 +128,10 @@ export default {
     "profile.gender.other": "Altro",
     "profile.gender.notSay": "Preferisco non dirlo",
     "profile.header": "Il mio profilo",
+    "profile.loading": "Caricamento...",
+    "profile.profileHeader": "Il tuo profilo",
+    "profile.editProfile": "Informazioni errate? Clicca qui per cambiarle!",
+    "profile.mySubmissionsHeader": "Le mie submissions",
     "profile.openToNewsletter":
       "Desidero ricevere E-mail per le comunicazioni più importanti",
     "profile.openToRecruiting":
