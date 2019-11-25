@@ -13,7 +13,7 @@ import { ErrorBoundary } from "../components/error-boundary";
 import { Footer } from "../components/footer";
 import { Header } from "../components/header";
 import { ConferenceContext } from "../context/conference";
-import { LanguageContext } from "../context/language";
+import { AlternateLinksContext, LanguageContext } from "../context/language";
 import messages from "../locale";
 
 type Props = {
@@ -118,29 +118,33 @@ export const wrapPageElement = ({ element, props }: Props) => {
           element
         ) : (
           <ConferenceContext.Provider value={props.pageContext.conferenceCode}>
-            <LanguageContext.Provider value={props.pageContext.language}>
-              <IntlProvider
-                locale={props.pageContext.language}
-                messages={messages[props.pageContext.language]}
-              >
-                <ApolloProvider client={client}>
-                  <Header />
+            <AlternateLinksContext.Provider
+              value={props.pageContext.alternateLinks}
+            >
+              <LanguageContext.Provider value={props.pageContext.language}>
+                <IntlProvider
+                  locale={props.pageContext.language}
+                  messages={messages[props.pageContext.language]}
+                >
+                  <ApolloProvider client={client}>
+                    <Header />
 
-                  <Flex
-                    sx={{
-                      flexDirection: "column",
-                      minHeight: "100vh",
-                    }}
-                  >
-                    <Box sx={{ mt: [100, 130] }}>
-                      <ErrorBoundary>{element}</ErrorBoundary>
-                    </Box>
+                    <Flex
+                      sx={{
+                        flexDirection: "column",
+                        minHeight: "100vh",
+                      }}
+                    >
+                      <Box sx={{ mt: [100, 130] }}>
+                        <ErrorBoundary>{element}</ErrorBoundary>
+                      </Box>
 
-                    <Footer />
-                  </Flex>
-                </ApolloProvider>
-              </IntlProvider>
-            </LanguageContext.Provider>
+                      <Footer />
+                    </Flex>
+                  </ApolloProvider>
+                </IntlProvider>
+              </LanguageContext.Provider>
+            </AlternateLinksContext.Provider>
           </ConferenceContext.Provider>
         )}
       </Styled.root>

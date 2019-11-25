@@ -9,12 +9,30 @@ import { jsx } from "theme-ui";
 import useOnClickOutside from "use-onclickoutside";
 
 import { useLoginState } from "../../app/profile/hooks";
+import { useAlternateLinks } from "../../context/language";
 import { HeaderQuery } from "../../generated/graphql";
 import { useToggle } from "../../helpers/use-toggle";
+import { EnglishIcon } from "../icons/english";
+import { ItalianIcon } from "../icons/italian";
 import { Link } from "../link";
 import { Logo } from "../logo";
 import { SocialLinks } from "../social-links";
 import { SnakeBurger } from "./snake-burger";
+
+const LanguagePicker: React.SFC = props => {
+  const alternateLinks = useAlternateLinks();
+
+  return (
+    <Flex sx={{ alignItems: "center", height: 50, mt: "-3px" }} {...props}>
+      <Link href={alternateLinks.en} sx={{ height: 40 }}>
+        <EnglishIcon sx={{ width: 40, mr: 2 }} />
+      </Link>
+      <Link href={alternateLinks.it} sx={{ height: 40 }}>
+        <ItalianIcon sx={{ width: 40, mr: 4 }} />
+      </Link>
+    </Flex>
+  );
+};
 
 export const HeaderContent = ({ location }: { location: any }) => {
   const {
@@ -86,10 +104,16 @@ export const HeaderContent = ({ location }: { location: any }) => {
             alignItems: ["center", "flex-start"],
           }}
         >
+          <LanguagePicker
+            sx={{
+              display: ["none", "block"],
+            }}
+          />
+
           <Link
             href={loggedIn ? "/:language/profile" : "/:language/login"}
             variant="button"
-            sx={{ mr: 5 }}
+            sx={{ mr: 5, display: ["none", "block"] }}
           >
             {loggedIn && <FormattedMessage id="header.profile" />}
             {!loggedIn && <FormattedMessage id="header.login" />}
@@ -130,6 +154,21 @@ export const HeaderContent = ({ location }: { location: any }) => {
               px: 2,
             }}
           >
+            <LanguagePicker
+              sx={{
+                display: ["block", "none"],
+              }}
+            />
+
+            <Link
+              href={loggedIn ? "/:language/profile" : "/:language/login"}
+              variant="header"
+              sx={{ mr: 5, display: ["block", "none"] }}
+            >
+              {loggedIn && <FormattedMessage id="header.profile" />}
+              {!loggedIn && <FormattedMessage id="header.login" />}
+            </Link>
+
             <Box as="nav">
               {conferenceMenu!.links.map(link => (
                 <Link variant="header" href={link.href} key={link.href}>
