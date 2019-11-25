@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 
-export const LanguageContext = React.createContext("en");
+export const LanguageContext = React.createContext<"en" | "it">("en");
 export const AlternateLinksContext = React.createContext({
   it: "/it",
   en: "/en",
