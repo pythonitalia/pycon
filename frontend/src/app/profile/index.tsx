@@ -1,23 +1,36 @@
 /** @jsx jsx */
 import { useQuery } from "@apollo/react-hooks";
 import { navigate, RouteComponentProps } from "@reach/router";
-import { Box } from "@theme-ui/components";
-import { useEffect } from "react";
+import { Box, Text } from "@theme-ui/components";
+import { Fragment, useContext, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
+import { Alert } from "../../components/alert";
+import { ConferenceContext } from "../../context/conference";
 import { useCurrentLanguage } from "../../context/language";
-import { MyProfileQuery } from "../../generated/graphql-backend";
+import {
+  MyProfileQuery,
+  MyProfileQueryVariables,
+} from "../../generated/graphql-backend";
 import { useLoginState } from "./hooks";
+import { MyProfile } from "./my-profile";
+import { MySubmissions } from "./my-submissions";
 import MY_PROFILE_QUERY from "./profile.graphql";
 
 export const ProfileApp: React.SFC<RouteComponentProps> = () => {
   const [_, setLoginState] = useLoginState();
   const lang = useCurrentLanguage();
+  const conferenceCode = useContext(ConferenceContext);
 
-  const { loading, error, data: profileData } = useQuery<MyProfileQuery>(
-    MY_PROFILE_QUERY,
-  );
+  const { loading, error, data: profileData } = useQuery<
+    MyProfileQuery,
+    MyProfileQueryVariables
+  >(MY_PROFILE_QUERY, {
+    variables: {
+      conference: conferenceCode,
+    },
+  });
 
   useEffect(() => {
     const loginUrl = `/${lang}/login`;
@@ -29,30 +42,34 @@ export const ProfileApp: React.SFC<RouteComponentProps> = () => {
     }
   }, [error]);
 
-  if (error) {
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          maxWidth: "container",
+          mx: "auto",
+          px: 3,
+        }}
+      >
+        {loading && (
+          <Alert variant="info">
+            <FormattedMessage id="profile.loading" />
+          </Alert>
+        )}
+      </Box>
+    );
+  }
+
+  if (error || !profileData) {
     return null;
   }
 
   return (
-    <Box
-      sx={{
-        maxWidth: "container",
-        mx: "auto",
-      }}
-    >
-      <h1>
-        <FormattedMessage id="profile.header" />
-      </h1>
-
-      {loading && "Loading..."}
-      {!loading && (
-        <dl>
-          <dt>
-            <FormattedMessage id="profile.email" />
-          </dt>
-          <dd>{profileData!.me.email}</dd>
-        </dl>
+    <Fragment>
+      <MyProfile profile={profileData} />
+      {profileData.me.submissions.length > 0 && (
+        <MySubmissions profile={profileData} />
       )}
-    </Box>
+    </Fragment>
   );
 };

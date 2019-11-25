@@ -1,5 +1,24 @@
-query MyProfile {
-    me {
-        email
+query MyProfile($conference: String!) {
+  me {
+    id
+
+    submissions(conference: $conference) {
+      id
+      title
+      slug
     }
+
+    tickets(conference: $conference) {
+      id
+    }
+
+    name
+    fullName
+    email
+    gender
+    dateBirth
+    country
+    openToRecruiting
+    openToNewsletter
+  }
 }
