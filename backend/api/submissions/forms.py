@@ -69,20 +69,3 @@ class SendSubmissionForm(ContextAwareModelForm):
             "audience_level",
             "tags",
         )
-
-
-class SendTagForm(ContextAwareModelForm):
-    def save(self, commit=True):
-        name = self.cleaned_data.get("name")
-
-        try:
-            self.instance = SubmissionTag.objects.get(name=name)
-        except SubmissionTag.DoesNotExist:
-            pass
-
-        self.instance.name = name
-        return super().save(commit=commit)
-
-    class Meta:
-        model = SubmissionTag
-        fields = ("name",)
