@@ -1,0 +1,37 @@
+[
+  {
+    "model": "submissions.submissiontype",
+    "pk": 1,
+    "fields": {
+      "name": "Talk"
+    }
+  },
+  {
+    "model": "submissions.submissiontype",
+    "pk": 2,
+    "fields": {
+      "name": "Lighting Talk"
+    }
+  },
+  {
+    "model": "submissions.submissionTag",
+    "pk": 1,
+    "fields": {
+      "name": "Pyhton"
+    }
+  },
+  {
+    "model": "submissions.submissionTag",
+    "pk": 2,
+    "fields": {
+      "name": "GraphQL"
+    }
+  },
+  {
+    "model": "submissions.submissionTag",
+    "pk": 3,
+    "fields": {
+      "name": "Django"
+    }
+  }
+]
