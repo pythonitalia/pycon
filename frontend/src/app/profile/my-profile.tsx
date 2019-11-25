@@ -11,15 +11,42 @@ export const MyProfile: React.SFC<{ profile: MyProfileQuery }> = ({
   profile: { me },
 }) => {
   const profileView = [
-    { label: "profile.email", value: me.email },
-    { label: "profile.fullName", value: me.fullName },
-    { label: "profile.name", value: me.name },
+    {
+      label: "profile.email",
+      value: me.email ? me.email : <FormattedMessage id="profile.notSet" />,
+    },
+    {
+      label: "profile.fullName",
+      value: me.fullName ? (
+        me.fullName
+      ) : (
+        <FormattedMessage id="profile.notSet" />
+      ),
+    },
+    {
+      label: "profile.name",
+      value: me.name ? me.name : <FormattedMessage id="profile.notSet" />,
+    },
     {
       label: "profile.gender",
-      value: <FormattedMessage id={`profile.gender.${me.gender}`} />,
+      value: (
+        <FormattedMessage
+          id={me.gender ? `profile.gender.${me.gender}` : `profile.notSet`}
+        />
+      ),
     },
-    { label: "profile.country", value: me.country },
-    { label: "profile.dateBirth", value: me.dateBirth },
+    {
+      label: "profile.country",
+      value: me.country ? me.country : <FormattedMessage id="profile.notSet" />,
+    },
+    {
+      label: "profile.dateBirth",
+      value: me.dateBirth ? (
+        me.dateBirth
+      ) : (
+        <FormattedMessage id="profile.notSet" />
+      ),
+    },
     {
       label: "profile.openToNewsletter",
       value: me.openToNewsletter ? (
