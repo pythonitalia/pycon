@@ -1,9 +1,11 @@
 import typing
 
 import strawberry
-from submissions.models import Submission as SubmissionModel
 
-from .types import Submission
+from submissions.models import Submission as SubmissionModel
+from submissions.models import SubmissionTag as SubmissionTagModel
+
+from .types import Submission, SubmissionTag
 
 
 @strawberry.type
@@ -16,3 +18,7 @@ class SubmissionsQuery:
             return None
 
         return SubmissionModel.objects.filter(speaker=user, id=id).first()
+
+    @strawberry.field
+    def submission_tags(self, info) -> typing.List[SubmissionTag]:
+        return SubmissionTagModel.objects.all()
