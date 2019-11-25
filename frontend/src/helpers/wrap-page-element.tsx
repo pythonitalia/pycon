@@ -23,6 +23,7 @@ type Props = {
     location: { pathname: string };
     pageContext: {
       language: "en" | "it";
+      alternateLinks: { en: string; it: string };
       conferenceCode: string;
     };
   };
