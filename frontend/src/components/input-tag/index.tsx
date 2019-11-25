@@ -1,14 +1,25 @@
 /** @jsx jsx */
-import { Badge, Flex, Input } from "@theme-ui/components";
-import { useCallback, useState } from "react";
+import { useQuery } from "@apollo/react-hooks";
+import { Badge, Box, Flex, Grid, Input } from "@theme-ui/components";
+import { useCallback, useContext, useState } from "react";
 import { jsx } from "theme-ui";
 
+import { ConferenceContext } from "../../context/conference";
+import {
+  SubmissionTag,
+  TagsQuery,
+  TagsQueryVariables,
+} from "../../generated/graphql-backend";
+import TAGS_QUERY from "./tags.graphql";
 type InputTagProps = {
-  name: string;
+  tag: SubmissionTag;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
 };
 
-export const InputTag: React.SFC<InputTagProps> = props => (
-  <Badge variant="tag">{props.name}</Badge>
+export const InputTag: React.SFC<InputTagProps> = ({ tag, onClick }) => (
+  <Badge variant="tag" className="inputTag" onClick={onClick}>
+    {tag.name}
+  </Badge>
 );
 
 type TagLineProps = {
@@ -22,54 +33,82 @@ export const TagLine: React.SFC<TagLineProps> = ({
   onTagChange,
   allowRemove,
 }) => {
-  const [tagInput, setTagInput] = useState("");
+  const conferenceCode = useContext(ConferenceContext);
+  const { loading, error, data } = useQuery<TagsQuery, TagsQueryVariables>(
+    TAGS_QUERY,
+    {
+      variables: {
+        conference: conferenceCode,
+      },
+    },
+  );
+  const submissionTags = data?.submissionTags;
 
-  const removeLastTag = () => {
-    const lastIndex = tags ? tags.length - 1 : 0;
-    const newTags = [...(tags || [])];
-    newTags.splice(lastIndex, 1);
+  const selectTagClick = (id: number) => {
+    console.log(id);
+    const newTag = submissionTags?.filter(tag => tag.id === id);
+
+    if (newTag?.length === 0) return;
+
+    console.log(newTag);
+    const newTags = [...(tags || []), ...newTag];
     onTagChange(newTags);
   };
 
-  const onTagChanged = useCallback(
-    e => {
-      const val = e.target.value;
-      if (e.key === "Enter" && val) {
-        if (tags && tags.find(tag => tag.toLowerCase() === val.toLowerCase())) {
-          return;
-        }
+  const removeTagClick = (id: number) => {
+    // TODO
+  };
 
-        onTagChange([...(tags || []), val]);
-        setTagInput("");
-      } else if (e.key === "Backspace" && !val) {
-        removeLastTag();
-      }
-    },
-    [tags, tagInput],
-  );
+  const getAvailableTags = () => {
+    const selectedTagIds = tags?.map(item => item.id);
+    if (!selectedTagIds) return submissionTags;
+    return submissionTags.filter(tag => selectedTagIds?.indexOf(tag.id) === -1);
+  };
 
   return (
     <Flex>
-      {tags &&
-        tags.map((tag, i) => (
-          <Flex key={i}>
-            <InputTag name={tag} />
-            {allowRemove && (
-              <Badge as="button" variant="remove" onClick={onTagChanged}>
-                x
-              </Badge>
-            )}
-          </Flex>
-        ))}
-      <Flex>
-        <Input
-          onChange={e => {
-            setTagInput(e.target.value);
-          }}
-          onKeyDown={onTagChanged}
-          value={tagInput}
-        />
-      </Flex>
+      <Box>
+        <Flex>
+          {getAvailableTags() &&
+            getAvailableTags().map(tag => (
+              <Box key={tag.id}>
+                <InputTag
+                  tag={tag}
+                  onClick={e => {
+                    selectTagClick(tag.id);
+                  }}
+                />
+              </Box>
+            ))}
+        </Flex>
+      </Box>
+      <br />
+      <Box>
+        <Flex>
+          <Box
+            sx={{
+              border: "primary",
+              mx: "auto",
+              px: 3,
+              maxWidth: "container",
+              height: 50,
+              width: "container",
+            }}
+          />
+
+          {tags &&
+            tags.map((tag, i) => (
+              <Flex key={i}>
+                <InputTag tag={tag} />
+                {allowRemove && (
+                  <Badge as="button" variant="remove" onClick={removeTagClick}>
+                    x
+                  </Badge>
+                )}
+              </Flex>
+            ))}
+        </Flex>
+      </Box>
     </Flex>
   );
 };
