@@ -1,6 +1,6 @@
 from pytest import mark
 
-from submissions.models import Submission, SubmissionType
+from submissions.models import Submission, SubmissionTag, SubmissionType
 
 from .factories import SubmissionFactory
 
@@ -27,7 +27,6 @@ def _submit_talk(client, conference, **kwargs):
     }
 
     variables = {**defaults, **kwargs}
-
     return (
         client.query(
             """mutation(
@@ -658,7 +657,9 @@ def test_same_user_can_submit_talks_to_different_conferences(
     assert user.submissions.filter(conference=conference2).count() == 1
 
 
-def test_create_submission_tags(graphql_client, user, conference_factory):
+def test_create_submission_tags(
+    graphql_client, user, conference_factory, submission_tag_factory
+):
     graphql_client.force_login(user)
 
     conference = conference_factory(
@@ -670,6 +671,14 @@ def test_create_submission_tags(graphql_client, user, conference_factory):
         audience_levels=("Beginner",),
     )
 
-    resp = _submit_talk(graphql_client, conference, tags=["python", "graphQL"])
+    SubmissionTag.objects.get_or_create(name="python")
+    SubmissionTag.objects.get_or_create(name="graphQL")
+    resp, variables = _submit_talk(
+        graphql_client, conference, tags=["python", "graphQL"]
+    )
 
     assert resp["data"]["sendSubmission"]["__typename"] == "Submission"
+    assert resp["data"]["sendSubmission"]["tags"] == [
+        {"name": "python"},
+        {"name": "graphQL"},
+    ]
