@@ -13,7 +13,7 @@ from api.languages.types import Language
 from api.scalars import Date, DateTime
 from api.schedule.types import Room, ScheduleItem
 from api.sponsors.types import SponsorsByLevel
-from api.submissions.types import Submission, SubmissionTag, SubmissionType
+from api.submissions.types import Submission, SubmissionType
 from cms.models import GenericCopy
 from schedule.models import ScheduleItem as ScheduleItemModel
 
@@ -99,10 +99,6 @@ class Conference:
     @strawberry.field
     def submission_types(self, info) -> List[SubmissionType]:
         return self.submission_types.all()
-
-    @strawberry.field
-    def submission_tags(self, info) -> List[SubmissionTag]:
-        return self.submission_tags.all()
 
     # TODO: only when current user has a ticket
     @strawberry.field

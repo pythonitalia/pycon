@@ -15,7 +15,7 @@ from conferences.models import (
 )
 from i18n.helpers.tests import LanguageFactory
 from languages.models import Language
-from submissions.models import SubmissionTag, SubmissionType
+from submissions.models import SubmissionType
 
 
 @register
@@ -138,18 +138,6 @@ class ConferenceFactory(DjangoModelFactory):
             for audience_level in extracted:
                 self.audience_levels.add(
                     AudienceLevel.objects.get_or_create(name=audience_level)[0]
-                )
-
-    @factory.post_generation
-    def submission_tags(self, create, extracted, **kwargs):
-
-        if not create:
-            return
-
-        if extracted:
-            for tag in extracted:
-                self.submission_tags.add(
-                    SubmissionTag.objects.get_or_create(name=tag)[0]
                 )
 
     class Meta:

@@ -466,29 +466,3 @@ def test_get_conference_submission_types(
         {"id": str(talk_type.id), "name": talk_type.name},
         {"id": str(tutorial_type.id), "name": tutorial_type.name},
     ]
-
-
-@mark.django_db
-def test_get_conferences_submission_tags(
-    graphql_client, conference_factory, submission_tag_factory
-):
-    python = submission_tag_factory(name="Python")
-    graphql = submission_tag_factory(name="GraphQL")
-
-    conference = conference_factory(submission_tags=[python, graphql])
-    query = """
-        query($code: String!) {
-            conference(code: $code) {
-                submissionTags {
-                    id
-                    name
-                }
-            }
-        }
-    """
-    resp = graphql_client.query(query, variables={"code": conference.code})
-
-    assert resp["data"]["conference"]["submissionTags"] == [
-        {"id": str(python.id), "name": python.name},
-        {"id": str(graphql.id), "name": graphql.name},
-    ]

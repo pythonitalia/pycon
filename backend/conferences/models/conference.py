@@ -27,9 +27,7 @@ class Conference(GeoLocalizedModel, TimeFramedModel, TimeStampedModel):
     submission_types = models.ManyToManyField(
         "submissions.SubmissionType", verbose_name=_("submission types"), blank=True
     )
-    submission_tags = models.ManyToManyField(
-        "submissions.SubmissionTag", verbose_name=_("submission tags"), blank=True
-    )
+
     introduction = I18nTextField(_("introduction"), blank=False)
 
     @property
