@@ -39,7 +39,7 @@ class Submission:
     duration: "Duration"
     audience_level: "AudienceLevel"
     languages: List["Language"]
-    tags: Optional[List[SubmissionTag]]
+    tags: List[SubmissionTag]
 
     @strawberry.field
     def my_vote(self, info) -> Optional[VoteType]:
@@ -58,5 +58,5 @@ class Submission:
         return self.languages.all()
 
     @strawberry.field
-    def tags(self, info) -> Optional[List[SubmissionTag]]:
+    def tags(self, info) -> List[SubmissionTag]:
         return self.tags.all()
