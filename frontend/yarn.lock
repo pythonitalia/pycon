@@ -2555,10 +2555,10 @@
   dependencies:
     csstype "^2.6.6"
 
-"@types/theme-ui@^0.2.4":
-  version "0.2.4"
-  resolved "https://registry.yarnpkg.com/@types/theme-ui/-/theme-ui-0.2.4.tgz#3c1a3fe18da77e6fabc1c5f9a9d8b6bed7c18531"
-  integrity sha512-sffoddKcYZkL34G+Ty86aBt9S0fqQJw0cbRolRPaK3fbAT6EBsRBlWcyUsrZg4edT6NDMoHJKDAaQNMWSItb8Q==
+"@types/theme-ui@^0.2.5":
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/@types/theme-ui/-/theme-ui-0.2.5.tgz#811b6df12c1b067f7cb20136e81e7c3974d3548a"
+  integrity sha512-EuOhttbeNs3uxvFC1tOsLzgbkN4Nv9hOOPTb77v/qp5jaNONxB7HARtbtYJiJgfBPW4b370J9Y3nZMeHifwR1A==
   dependencies:
     "@types/react" "*"
     "@types/styled-system" "*"
@@ -5269,12 +5269,7 @@ csso@^4.0.2:
   dependencies:
     css-tree "1.0.0-alpha.37"
 
-csstype@^2.2.0:
-  version "2.6.6"
-  resolved "https://registry.yarnpkg.com/csstype/-/csstype-2.6.6.tgz#c34f8226a94bbb10c32cc0d714afdf942291fc41"
-  integrity sha512-RpFbQGUE74iyPgvr46U9t1xoQBM8T4BL8SxrN66Le2xYAPSaDJJKeztV3awugusb3g3G9iL8StmkBBXhcbbXhg==
-
-csstype@^2.5.7, csstype@^2.6.4, csstype@^2.6.6:
+csstype@^2.2.0, csstype@^2.5.7, csstype@^2.6.4, csstype@^2.6.6:
   version "2.6.7"
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-2.6.7.tgz#20b0024c20b6718f4eda3853a1f5a1cce7f5e4a5"
   integrity sha512-9Mcn9sFbGBAdmimWb2gLVDtFJzeKtDGIr76TUqmjZrw9LFXBMSU70lcs+C0/7fyCd6iBDqmksUcCOUIkisPHsQ==

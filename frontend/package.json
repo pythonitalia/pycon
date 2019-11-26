@@ -27,7 +27,7 @@
     "@theme-ui/match-media": "^0.2.49",
     "@types/isomorphic-fetch": "^0.0.35",
     "@types/reach__router": "^1.2.6",
-    "@types/theme-ui": "^0.2.4",
+    "@types/theme-ui": "^0.2.5",
     "@types/use-persisted-state": "^0.3.0",
     "apollo-boost": "^0.4.4",
     "apollo-cache-inmemory": "^1.6.3",
