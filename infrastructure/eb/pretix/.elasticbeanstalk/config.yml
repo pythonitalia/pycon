@@ -1,0 +1,18 @@
+branch-defaults:
+  default:
+    environment: production-pretix
+environment-defaults:
+  production-pretix:
+    branch: null
+    repository: null
+global:
+  application_name: pretix
+  default_ec2_keyname: null
+  default_platform: docker
+  default_region: eu-central-1
+  include_git_submodules: true
+  instance_profile: null
+  platform_name: null
+  platform_version: null
+  sc: null
+  workspace_type: Application
