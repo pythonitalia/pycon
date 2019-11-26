@@ -93,7 +93,7 @@ export const GridSlider = <T extends { id: string }>({
         <Heading
           as="h1"
           sx={{
-            px: 2,
+            px: 3,
             display: "flex",
             maxWidth: "container",
             mx: "auto",

@@ -41,7 +41,7 @@ export const SignupForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
   >(SIGNUP_MUTATION, {
     onCompleted: onSignupComplete,
   });
-  const [formState, { label, email, password }] = useFormState<SignupFormProps>(
+  const [formState, { email, password }] = useFormState<SignupFormProps>(
     {},
     {
       withIds: true,
@@ -76,7 +76,7 @@ export const SignupForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
   return (
     <Box
       sx={{
-        px: 2,
+        px: 3,
       }}
     >
       {location?.state?.message && (

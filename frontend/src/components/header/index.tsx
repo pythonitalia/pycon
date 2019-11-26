@@ -153,8 +153,12 @@ export const HeaderContent = ({ location }: { location: any }) => {
               alignItems: "center",
               justifyContent: "center",
 
+              mt: "-5px",
+
               px: [1, 3],
               py: [1, 2],
+
+              cursor: "pointer",
             }}
             onClick={toggleOpen}
             variant="white"
@@ -178,7 +182,7 @@ export const HeaderContent = ({ location }: { location: any }) => {
               maxWidth: "container",
               mx: "auto",
               py: 4,
-              px: 2,
+              px: 3,
             }}
           >
             <LanguagePicker

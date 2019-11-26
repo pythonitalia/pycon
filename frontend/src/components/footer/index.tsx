@@ -5,6 +5,7 @@ import { graphql, useStaticQuery } from "gatsby";
 import { jsx } from "theme-ui";
 
 import { Backend_MenuLink, FooterQuery } from "../../generated/graphql";
+import { LogoBlack } from "../icons/logo-black";
 import { Link } from "../link";
 import { Logo } from "../logo";
 import { SocialLinks } from "../social-links";
@@ -62,7 +63,7 @@ export const Footer = () => {
       sx={{
         background: "black",
         py: [4, 5],
-        px: 2,
+        px: 3,
         mt: "auto",
       }}
     >
@@ -75,7 +76,14 @@ export const Footer = () => {
         }}
       >
         <Link href="/:language">
-          <Logo />
+          <LogoBlack
+            sx={{
+              width: "100%",
+              maxWidth: 300,
+              display: "block",
+              mx: ["auto", null, 0],
+            }}
+          />
         </Link>
 
         <MenuItems
@@ -98,7 +106,7 @@ export const Footer = () => {
           ))}
         </MenuItems>
 
-        <SocialLinks sx={{ justifyContent: "flex-end" }} />
+        <SocialLinks sx={{ justifyContent: ["center", null, "flex-end"] }} />
       </Grid>
     </Box>
   );

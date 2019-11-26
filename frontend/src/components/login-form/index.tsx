@@ -65,7 +65,7 @@ export const LoginForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
   return (
     <Box
       sx={{
-        px: 2,
+        px: 3,
       }}
     >
       <Box

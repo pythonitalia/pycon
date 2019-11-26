@@ -30,7 +30,8 @@ export const SponsorsSection: React.SFC<Props> = ({
               transform: "rotate(90deg)",
               transformOrigin: "0 0",
               top: 5,
-              p: 2,
+              py: 2,
+              px: 3,
               left: -20,
             }}
             css={css`

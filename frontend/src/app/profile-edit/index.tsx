@@ -223,7 +223,7 @@ export const EditProfileApp: React.SFC<RouteComponentProps<{
       sx={{
         maxWidth: "container",
         mx: "auto",
-        px: 2,
+        px: 3,
         my: 5,
       }}
     >

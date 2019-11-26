@@ -109,7 +109,7 @@ export const CfpForm: React.SFC = () => {
         sx={{
           maxWidth: "container",
           mx: "auto",
-          px: 2,
+          px: 3,
         }}
       >
         Loading
@@ -123,7 +123,7 @@ export const CfpForm: React.SFC = () => {
         sx={{
           maxWidth: "container",
           mx: "auto",
-          px: 2,
+          px: 3,
         }}
       >
         Error: {conferenceError.message}
@@ -156,7 +156,7 @@ export const CfpForm: React.SFC = () => {
       sx={{
         maxWidth: "container",
         mx: "auto",
-        px: 2,
+        px: 3,
         my: 5,
       }}
     >

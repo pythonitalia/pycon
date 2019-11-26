@@ -16,7 +16,7 @@ export const Introduction: React.SFC = () => (
       sx={{
         maxWidth: "container",
         mx: "auto",
-        px: 2,
+        px: 3,
         my: 5,
         gridTemplateColumns: [null, null, "9fr 3fr 8fr"],
       }}

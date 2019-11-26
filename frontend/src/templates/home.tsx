@@ -63,7 +63,7 @@ export default ({ data }: { data: HomePageQuery }) => {
       <Grid
         sx={{
           py: 5,
-          px: 2,
+          px: 3,
           maxWidth: "container",
           mx: "auto",
           gridTemplateColumns: [null, "8fr 12fr"],
@@ -89,7 +89,7 @@ export default ({ data }: { data: HomePageQuery }) => {
       <Grid
         sx={{
           py: 5,
-          px: 2,
+          px: 3,
           maxWidth: "container",
           mx: "auto",
           gridTemplateColumns: [null, null, "10fr 2fr 9fr"],
@@ -185,7 +185,7 @@ export default ({ data }: { data: HomePageQuery }) => {
         <Grid
           sx={{
             py: 5,
-            px: 2,
+            px: 3,
 
             gridTemplateColumns: [null, null, "8fr 2fr 10fr"],
 
@@ -232,7 +232,7 @@ export default ({ data }: { data: HomePageQuery }) => {
           <Heading
             as="h1"
             sx={{
-              px: 2,
+              px: 3,
               maxWidth: "container",
               mx: "auto",
             }}
@@ -249,7 +249,7 @@ export default ({ data }: { data: HomePageQuery }) => {
 
       <Grid
         columns={[1, 2]}
-        sx={{ px: 2, maxWidth: "container", mx: "auto", display: "none" }}
+        sx={{ px: 3, maxWidth: "container", mx: "auto", display: "none" }}
       >
         <Box sx={{ py: 5, borderRight: [null, "primary"] }}>
           <Heading sx={{ fontSize: 5, mb: 4 }}>Keep up to date</Heading>
