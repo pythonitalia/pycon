@@ -48,7 +48,7 @@
     "gatsby-plugin-react-helmet": "^3.1.15",
     "gatsby-plugin-sharp": "^2.3.0",
     "gatsby-plugin-theme-ui": "^0.2.43",
-    "gatsby-plugin-typescript": "^2.1.18",
+    "gatsby-plugin-typescript": "^2.1.19",
     "gatsby-remark-external-links": "0.0.4",
     "gatsby-remark-images": "^3.1.31",
     "gatsby-remark-responsive-iframe": "^2.2.27",
