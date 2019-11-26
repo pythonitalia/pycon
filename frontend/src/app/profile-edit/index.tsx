@@ -91,7 +91,6 @@ export const EditProfileApp: React.SFC<RouteComponentProps<{
     },
   );
 
-  // region SETUP_OPTIONS
   const createOptions = (items: any[]) => [
     { label: "", value: "" },
     ...items.map(item => ({ label: item.name, value: item.id || item.code })),
@@ -100,8 +99,9 @@ export const EditProfileApp: React.SFC<RouteComponentProps<{
   const {
     backend: { countries },
   } = useStaticQuery<CountriesQuery>(COUNTRIES_QUERY);
-  const COUNTRIES_OPTIONS = createOptions(countries);
-  // endregion
+  const COUNTRIES_OPTIONS = createOptions(
+    countries.sort((a, b) => (a.name > b.name ? 1 : -1)),
+  );
 
   const setUserFormFields = (me: MeUser) => {
     formState.setField("name", me.name ? me.name : "");
@@ -279,7 +279,9 @@ export const EditProfileApp: React.SFC<RouteComponentProps<{
               }
             >
               <Select {...select("gender")}>
-                <option value="">Select a gender</option>
+                <FormattedMessage id="profile.gender.selectGender">
+                  {msg => <option value="">{msg}</option>}
+                </FormattedMessage>
                 <FormattedMessage id="profile.gender.male">
                   {msg => (
                     <option key="male" value="male">
