@@ -43,9 +43,25 @@ jobs:
       with:
         python-version: '3.7.5'
     - run: pip install poetry
-    - name: Install dependencies
+
+    - name: Cache Poetry
+      uses: actions/cache@v1
+      id: cache
+      with:
+        path: ~/.virtualenvs
+        key: poetry-${{ hashFiles('**/poetry.lock') }}
+        restore-keys: |
+          poetry-${{ hashFiles('**/poetry.lock') }}
+
+    - name: Set Poetry config
+      run: |
+        poetry config settings.virtualenvs.in-project false
+        poetry config settings.virtualenvs.path ~/.virtualenvs
+
+    - name: Install python dependencies
       working-directory: backend
       run: poetry install --no-dev
+      if: steps.cache.outputs.cache-hit != 'true'
 
     - name: Get yarn cache
       id: yarn-cache
@@ -55,7 +71,7 @@ jobs:
       with:
         path: ${{ steps.yarn-cache.outputs.dir }}
         key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: ${{ runner.os }}-yarn-
+        restore-keys: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
     - run: yarn
       working-directory: frontend
     - run: |
