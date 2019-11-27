@@ -43,7 +43,7 @@ django-ses = "^0.8.12"
 [tool.poetry.dev-dependencies]
 pylint = "=2.4.4"
 pylint-django = "=2.0.13"
-pytest = "=5.3.0"
+pytest = "=5.3.1"
 pytest-cov = "=2.8.1"
 pytest-django = "=3.7.0"
 pytest-pylint = "=0.14.1"
