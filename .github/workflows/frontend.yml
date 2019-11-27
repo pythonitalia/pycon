@@ -49,9 +49,9 @@ jobs:
       id: cache
       with:
         path: ~/.virtualenvs
-        key: poetry-${{ hashFiles('**/poetry.lock') }}
+        key: poetry-${{ hashFiles('**/poetry.lock') }}-v2
         restore-keys: |
-          poetry-${{ hashFiles('**/poetry.lock') }}
+          poetry-${{ hashFiles('**/poetry.lock') }}-v2
 
     - name: Set Poetry config
       run: |
@@ -60,7 +60,7 @@ jobs:
 
     - name: Install python dependencies
       working-directory: backend
-      run: poetry install --no-dev
+      run: poetry install
       if: steps.cache.outputs.cache-hit != 'true'
 
     - name: Get yarn cache
