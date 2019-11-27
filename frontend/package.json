@@ -36,7 +36,7 @@
     "apollo-link-error": "^1.1.12",
     "apollo-link-http": "^1.5.16",
     "emotion": "^10.0.23",
-    "gatsby": "^2.17.15",
+    "gatsby": "^2.18.4",
     "gatsby-image": "^2.2.33",
     "gatsby-plugin-create-client-paths": "^2.1.17",
     "gatsby-plugin-extract-schema": "^0.0.5",
