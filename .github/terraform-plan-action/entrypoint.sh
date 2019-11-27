@@ -45,7 +45,7 @@ SUCCESS=$?
 # echo "$OUTPUT"
 set -e
 
-# OUTPUT="TODO: output will be shown when tfmask supports latest terraform"
+OUTPUT="TODO: output will be shown when tfmask supports latest terraform"
 
 if [ "$TF_ACTION_COMMENT" = "1" ] || [ "$TF_ACTION_COMMENT" = "false" ]; then
     exit $SUCCESS
