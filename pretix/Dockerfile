@@ -1,3 +1,5 @@
+# version 1.1
+
 FROM pretix/standalone:stable
 
 COPY ./entrypoint.sh /entrypoint.sh
