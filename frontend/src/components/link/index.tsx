@@ -4,6 +4,7 @@ import { Link as GatsbyLink } from "gatsby";
 import { jsx } from "theme-ui";
 
 import { useCurrentLanguage } from "../../context/language";
+import { GoogleIcon } from "../icons/google";
 
 type LinkProps = {
   href: string | null;
@@ -83,6 +84,8 @@ export const Link: React.SFC<LinkProps> = ({
       {additionalProps.variant === "button" && (
         <ArrowRightBackground backgroundColor={backgroundColor || "yellow"} />
       )}
+
+      {additionalProps.variant === "google" && <GoogleIcon />}
 
       <Box as="span" sx={{ position: "relative", zIndex: 10 }}>
         {children}

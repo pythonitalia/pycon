@@ -142,9 +142,9 @@ export const SignupForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
             <FormattedMessage id="signup.signupWithSocial" />
           </Text>
 
-          <Button href="/login/google/" as="a">
+          <Link href="/login/google/" variant="google">
             <FormattedMessage id="signup.useGoogle" />
-          </Button>
+          </Link>
         </Box>
       </Grid>
     </Box>

@@ -94,6 +94,17 @@ export default {
         textUnderlineOffset: "0.2em",
       },
     },
+    google: {
+      border: "primary",
+      display: "inline-flex",
+      alignItems: "center",
+      pr: 3,
+      textDecoration: "none",
+      color: "black",
+      "&:hover": {
+        backgroundColor: "muted",
+      },
+    },
     button: {
       position: "relative",
       px: 3,
