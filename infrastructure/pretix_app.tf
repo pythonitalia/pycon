@@ -70,7 +70,7 @@ resource "aws_elastic_beanstalk_environment" "pretix_env" {
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
     name      = "DATABASE_HOST"
-    value     = "${aws_db_instance.backend.address}:${aws_db_instance.backend.port}"
+    value     = "${aws_db_instance.backend.address}"
   }
 
   setting {
