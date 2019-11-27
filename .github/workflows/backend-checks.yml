@@ -16,9 +16,26 @@ jobs:
         with:
           python-version: '3.7.5'
       - run: pip install poetry
-      - name: Install dependencies
+
+      - name: Cache Poetry
+        uses: actions/cache@v1
+        id: cache
+        with:
+          path: ~/.virtualenvs
+          key: poetry-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: |
+            poetry-${{ hashFiles('**/poetry.lock') }}
+
+      - name: Set Poetry config
+        run: |
+          poetry config settings.virtualenvs.in-project false
+          poetry config settings.virtualenvs.path ~/.virtualenvs
+
+      - name: Install python dependencies
         working-directory: backend
-        run: poetry install
+        run: poetry install --no-dev
+        if: steps.cache.outputs.cache-hit != 'true'
+
       - name: Check missing not pushed migrations
         working-directory: backend
         run: poetry run python manage.py makemigrations --check
