@@ -1,7 +1,15 @@
 /** @jsx jsx */
 import { useQuery } from "@apollo/react-hooks";
-import { Badge, Box, Flex, Grid, Input } from "@theme-ui/components";
-import { useCallback, useContext, useState } from "react";
+import {
+  Badge,
+  Box,
+  Flex,
+  Grid,
+  Input,
+  Divider,
+  Text,
+} from "@theme-ui/components";
+import { Fragment, useCallback, useContext, useState } from "react";
 import { jsx } from "theme-ui";
 
 import { ConferenceContext } from "../../context/conference";
@@ -48,7 +56,9 @@ export const TagLine: React.SFC<TagLineProps> = ({
     console.log(id);
     const newTag = submissionTags?.filter(tag => tag.id === id);
 
-    if (newTag?.length === 0) return;
+    if (newTag?.length === 0) {
+      return;
+    }
 
     console.log(newTag);
     const newTags = [...(tags || []), ...newTag];
@@ -61,41 +71,41 @@ export const TagLine: React.SFC<TagLineProps> = ({
 
   const getAvailableTags = () => {
     const selectedTagIds = tags?.map(item => item.id);
-    if (!selectedTagIds) return submissionTags;
-    return submissionTags.filter(tag => selectedTagIds?.indexOf(tag.id) === -1);
+    if (!selectedTagIds) {
+      return submissionTags;
+    }
+    return submissionTags?.filter(
+      tag => selectedTagIds?.indexOf(tag.id) === -1,
+    );
   };
 
   return (
-    <Flex>
+    <Flex sx={{ display: "block" }}>
       <Box>
         <Flex>
-          {getAvailableTags() &&
-            getAvailableTags().map(tag => (
-              <Box key={tag.id}>
-                <InputTag
-                  tag={tag}
-                  onClick={e => {
-                    selectTagClick(tag.id);
-                  }}
-                />
-              </Box>
-            ))}
+          {getAvailableTags()?.map(tag => (
+            <Flex key={tag.id}>
+              <InputTag
+                tag={tag}
+                onClick={e => {
+                  selectTagClick(tag.id);
+                }}
+              />
+            </Flex>
+          ))}
         </Flex>
       </Box>
-      <br />
-      <Box>
+      <Box
+        sx={{
+          border: "primary",
+          mx: "auto",
+          px: 3,
+          maxWidth: "container",
+          height: 50,
+          width: "container",
+        }}
+      >
         <Flex>
-          <Box
-            sx={{
-              border: "primary",
-              mx: "auto",
-              px: 3,
-              maxWidth: "container",
-              height: 50,
-              width: "container",
-            }}
-          />
-
           {tags &&
             tags.map((tag, i) => (
               <Flex key={i}>
