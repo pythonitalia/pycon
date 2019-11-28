@@ -54,7 +54,7 @@
     "gatsby-remark-responsive-iframe": "^2.2.27",
     "gatsby-source-filesystem": "^2.1.39",
     "gatsby-source-graphql": "^2.1.25",
-    "gatsby-transformer-remark": "^2.6.35",
+    "gatsby-transformer-remark": "^2.6.38",
     "gatsby-transformer-sharp": "^2.3.5",
     "graphql": "^14.5.8",
     "isomorphic-fetch": "^2.2.1",

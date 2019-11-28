@@ -1202,24 +1202,10 @@
     "@babel/helper-plugin-utils" "^7.0.0"
     "@babel/plugin-transform-typescript" "^7.7.4"
 
-"@babel/runtime@^7.0.0", "@babel/runtime@^7.1.2", "@babel/runtime@^7.3.4", "@babel/runtime@^7.4.2", "@babel/runtime@^7.4.5", "@babel/runtime@^7.5.5":
-  version "7.6.3"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.6.3.tgz#935122c74c73d2240cafd32ddb5fc2a6cd35cf1f"
-  integrity sha512-kq6anf9JGjW8Nt5rYfEuGRaEAaH1mkv3Bbu6rYvLOpPh/RusSJXuKPEAoZ7L7gybZkchE8+NV5g9vKF4AGAtsA==
-  dependencies:
-    regenerator-runtime "^0.13.2"
-
-"@babel/runtime@^7.6.3", "@babel/runtime@^7.7.4":
+"@babel/runtime@^7.0.0", "@babel/runtime@^7.1.2", "@babel/runtime@^7.3.4", "@babel/runtime@^7.4.2", "@babel/runtime@^7.4.5", "@babel/runtime@^7.5.5", "@babel/runtime@^7.6.3", "@babel/runtime@^7.7.2", "@babel/runtime@^7.7.4":
   version "7.7.4"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.7.4.tgz#b23a856751e4bf099262f867767889c0e3fe175b"
   integrity sha512-r24eVUUr0QqNZa+qrImUk8fn5SPhHq+IfYvIoIMg0do3GdK9sMdiLKP3GYVVaxpPKORgm8KRKaNTEhAjgIpLMw==
-  dependencies:
-    regenerator-runtime "^0.13.2"
-
-"@babel/runtime@^7.7.2":
-  version "7.7.2"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.7.2.tgz#111a78002a5c25fc8e3361bedc9529c696b85a6a"
-  integrity sha512-JONRbXbTXc9WQE2mAZd1p0Z3DZ/6vaQIkgYMSTP3KjRCyd7rCZCcfhCyX+YjwcKxcZ82UrxbRD358bpExNgrjw==
   dependencies:
     regenerator-runtime "^0.13.2"
 
@@ -7269,14 +7255,7 @@ gatsby-cli@^2.8.14:
     ink "^2.5.0"
     ink-spinner "^3.0.1"
 
-gatsby-core-utils@^1.0.19:
-  version "1.0.19"
-  resolved "https://registry.yarnpkg.com/gatsby-core-utils/-/gatsby-core-utils-1.0.19.tgz#670a0eefe8fc8517c5b87573be6cd817d4b1a96a"
-  integrity sha512-Fp5PBmAuqL+V5FTqjQ6d2Ow7a9OY6GlJVlS5wl/bbbGjRDtYJe7tqAxWThzeKDkLAsKUz2RP8AiJOSLWn1bDRg==
-  dependencies:
-    ci-info "2.0.0"
-
-gatsby-core-utils@^1.0.21:
+gatsby-core-utils@^1.0.19, gatsby-core-utils@^1.0.21:
   version "1.0.21"
   resolved "https://registry.yarnpkg.com/gatsby-core-utils/-/gatsby-core-utils-1.0.21.tgz#e14f6c3285faaf20c72cbfa0bbe16a95374b367b"
   integrity sha512-rrJFMKHuEC6tlZdsihtLLB/qafEFyX/z7+gbBLLQDmAkISrQ7bes9K8kiyvr3IsdA3SH0ErxOcqpSZaBPQekwA==
@@ -7551,14 +7530,14 @@ gatsby-telemetry@^1.1.40:
     stack-utils "1.0.2"
     uuid "3.3.3"
 
-gatsby-transformer-remark@^2.6.35:
-  version "2.6.35"
-  resolved "https://registry.yarnpkg.com/gatsby-transformer-remark/-/gatsby-transformer-remark-2.6.35.tgz#f91ce377e6cc758515cf80d4b19169880e640c1b"
-  integrity sha512-OS3sVpU3Wc0+ZItMhPWapatkgqAQg7AZ5ZcchHW5q2WCqclzWMIHcBfTMkGg205zyade9eG0udsuqJgaGma51Q==
+gatsby-transformer-remark@^2.6.38:
+  version "2.6.38"
+  resolved "https://registry.yarnpkg.com/gatsby-transformer-remark/-/gatsby-transformer-remark-2.6.38.tgz#5fe340d1ad7f0ef1a615ccc455c70dfdb1858681"
+  integrity sha512-ZK/wTX7pbi0G2zqxSW4aP6Jyou87bNzGiKkbSj9XAlU36G4JtXIMgAP76cK5OA7NNssWyBwVTgg1T3cPW7wDNA==
   dependencies:
-    "@babel/runtime" "^7.7.2"
+    "@babel/runtime" "^7.7.4"
     bluebird "^3.7.1"
-    gatsby-core-utils "^1.0.19"
+    gatsby-core-utils "^1.0.21"
     gray-matter "^4.0.2"
     hast-util-raw "^4.0.0"
     hast-util-to-html "^4.0.1"
@@ -10442,12 +10421,7 @@ mdast-util-to-nlcst@^3.2.0:
     unist-util-position "^3.0.0"
     vfile-location "^2.0.0"
 
-mdast-util-to-string@^1.0.2:
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/mdast-util-to-string/-/mdast-util-to-string-1.0.6.tgz#7d85421021343b33de1552fc71cb8e5b4ae7536d"
-  integrity sha512-868pp48gUPmZIhfKrLbaDneuzGiw3OTDjHc5M1kAepR2CWBJ+HpEsm252K4aXdiP5coVZaJPOqGtVU6Po8xnXg==
-
-mdast-util-to-string@^1.0.7:
+mdast-util-to-string@^1.0.2, mdast-util-to-string@^1.0.7:
   version "1.0.7"
   resolved "https://registry.yarnpkg.com/mdast-util-to-string/-/mdast-util-to-string-1.0.7.tgz#62d8e9c6b2113070d8b497c7dc35bf12796f06ee"
   integrity sha512-P+gdtssCoHOX+eJUrrC30Sixqao86ZPlVjR5NEAoy0U79Pfxb1Y0Gntei0+GrnQD4T04X9xA8tcugp90cSmNow==
@@ -15315,14 +15289,7 @@ unist-util-position@^3.0.0:
   resolved "https://registry.yarnpkg.com/unist-util-position/-/unist-util-position-3.0.3.tgz#fff942b879538b242096c148153826664b1ca373"
   integrity sha512-28EpCBYFvnMeq9y/4w6pbnFmCUfzlsc41NJui5c51hOFjBA1fejcwc+5W4z2+0ECVbScG3dURS3JTVqwenzqZw==
 
-unist-util-remove-position@^1.0.0:
-  version "1.1.3"
-  resolved "https://registry.yarnpkg.com/unist-util-remove-position/-/unist-util-remove-position-1.1.3.tgz#d91aa8b89b30cb38bad2924da11072faa64fd972"
-  integrity sha512-CtszTlOjP2sBGYc2zcKA/CvNdTdEs3ozbiJ63IPBxh8iZg42SCCb8m04f8z2+V1aSk5a7BxbZKEdoDjadmBkWA==
-  dependencies:
-    unist-util-visit "^1.1.0"
-
-unist-util-remove-position@^1.1.4:
+unist-util-remove-position@^1.0.0, unist-util-remove-position@^1.1.4:
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/unist-util-remove-position/-/unist-util-remove-position-1.1.4.tgz#ec037348b6102c897703eee6d0294ca4755a2020"
   integrity sha512-tLqd653ArxJIPnKII6LMZwH+mb5q+n/GtXQZo6S6csPRs5zB0u79Yw8ouR3wTw8wxvdJFhpP6Y7jorWdCgLO0A==
