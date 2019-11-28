@@ -55,7 +55,7 @@
     "gatsby-source-filesystem": "^2.1.39",
     "gatsby-source-graphql": "^2.1.25",
     "gatsby-transformer-remark": "^2.6.35",
-    "gatsby-transformer-sharp": "^2.3.5",
+    "gatsby-transformer-sharp": "^2.3.6",
     "graphql": "^14.5.8",
     "isomorphic-fetch": "^2.2.1",
     "marksy": "^8.0.0",
