@@ -19,16 +19,19 @@ import { Logo } from "../logo";
 import { SocialLinks } from "../social-links";
 import { SnakeBurger } from "./snake-burger";
 
-const LanguagePicker: React.SFC = props => {
+const LanguagePicker: React.SFC<{ language: string }> = ({
+  language,
+  ...props
+}) => {
   const alternateLinks = useAlternateLinks();
 
   return (
     <Flex sx={{ alignItems: "center", height: 50, mt: "-3px" }} {...props}>
       <Link href={alternateLinks.en} sx={{ height: 40 }}>
-        <EnglishIcon sx={{ width: 40, mr: 2 }} />
+        <EnglishIcon active={language === "en"} sx={{ width: 40, mr: 2 }} />
       </Link>
       <Link href={alternateLinks.it} sx={{ height: 40 }}>
-        <ItalianIcon sx={{ width: 40, mr: 4 }} />
+        <ItalianIcon active={language === "it"} sx={{ width: 40, mr: 4 }} />
       </Link>
     </Flex>
   );
@@ -132,6 +135,7 @@ export const HeaderContent = ({ location }: { location: any }) => {
           }}
         >
           <LanguagePicker
+            language={language}
             sx={{
               display: ["none", "block"],
             }}
@@ -186,6 +190,7 @@ export const HeaderContent = ({ location }: { location: any }) => {
             }}
           >
             <LanguagePicker
+              language={language}
               sx={{
                 display: ["block", "none"],
               }}
