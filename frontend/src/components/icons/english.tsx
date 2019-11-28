@@ -1,6 +1,9 @@
 import React from "react";
 
-export const EnglishIcon: React.SFC = props => (
+export const EnglishIcon: React.SFC<{ active: boolean }> = ({
+  active,
+  ...props
+}) => (
   <svg viewBox="0 0 50 50" fill="none" {...props}>
     <path
       d="M50 25c0 13.806-11.194 25-25 25C11.193 50 0 38.807 0 25S11.193 0 25 0s25 11.193 25 25z"
@@ -19,6 +22,6 @@ export const EnglishIcon: React.SFC = props => (
       fill="#D80027"
     />
     <circle cx={25} cy={25} r={23} stroke="#000" strokeWidth={4} />
-    <circle cx={25} cy={25} r={19} stroke="#fff" strokeWidth={4} />
+    {active && <circle cx={25} cy={25} r={19} stroke="#fff" strokeWidth={4} />}
   </svg>
 );
