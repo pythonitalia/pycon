@@ -10,6 +10,7 @@ awk '{
 
     gsub("{{mail_user}}", "'$MAIL_USER'" , $0);
     gsub("{{mail_password}}", "'$MAIL_PASSWORD'" , $0);
+    gsub("{{sentry_dsn}}", "'$SENTRY_DSN'" , $0);
 
     gsub("{{url}}", "'$URL'" , $0);
     print $0 > "/pretix/pretix.cfg";

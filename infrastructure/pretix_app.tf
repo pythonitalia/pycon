@@ -85,6 +85,12 @@ resource "aws_elastic_beanstalk_environment" "pretix_env" {
     value     = "${var.mail_password}"
   }
 
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "SENTRY_DSN"
+    value     = "${var.sentry_dsn}"
+  }
+
   # Are the load balancers multizone?
   setting {
     namespace = "aws:elb:loadbalancer"
