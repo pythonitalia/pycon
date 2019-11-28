@@ -31,7 +31,7 @@ export const InputTag: React.SFC<InputTagProps> = ({ tag, onClick }) => (
 );
 
 type TagLineProps = {
-  tags: string[] | undefined;
+  tags: SubmissionTag[] | undefined;
   onTagChange: any;
   allowRemove: boolean;
 };
@@ -52,9 +52,9 @@ export const TagLine: React.SFC<TagLineProps> = ({
   );
   const submissionTags = data?.submissionTags;
 
-  const selectTagClick = (id: number) => {
+  const selectTagClick = (id: string) => {
     console.log(id);
-    const newTag = submissionTags?.filter(tag => tag.id === id);
+    const newTag = submissionTags?.filter(tag => tag?.id === id);
 
     if (newTag?.length === 0) {
       return;
@@ -65,8 +65,8 @@ export const TagLine: React.SFC<TagLineProps> = ({
     onTagChange(newTags);
   };
 
-  const removeTagClick = (id: number) => {
-    // TODO
+  const removeTagClick = (id: string) => {
+    onTagChange(tags?.filter(tag => tag.id !== id));
   };
 
   const getAvailableTags = () => {
@@ -87,8 +87,8 @@ export const TagLine: React.SFC<TagLineProps> = ({
             <Flex key={tag.id}>
               <InputTag
                 tag={tag}
-                onClick={e => {
-                  selectTagClick(tag.id);
+                onClick={() => {
+                  selectTagClick(tag?.id);
                 }}
               />
             </Flex>
@@ -111,7 +111,13 @@ export const TagLine: React.SFC<TagLineProps> = ({
               <Flex key={i}>
                 <InputTag tag={tag} />
                 {allowRemove && (
-                  <Badge as="button" variant="remove" onClick={removeTagClick}>
+                  <Badge
+                    as="button"
+                    variant="remove"
+                    onClick={() => {
+                      removeTagClick(tag?.id);
+                    }}
+                  >
                     x
                   </Badge>
                 )}
