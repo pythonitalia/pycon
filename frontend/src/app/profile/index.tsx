@@ -14,6 +14,7 @@ import {
   MyProfileQueryVariables,
 } from "../../generated/graphql-backend";
 import { useLoginState } from "./hooks";
+import { Logout } from "./logout";
 import { MyProfile } from "./my-profile";
 import { MySubmissions } from "./my-submissions";
 import MY_PROFILE_QUERY from "./profile.graphql";
@@ -70,6 +71,7 @@ export const ProfileApp: React.SFC<RouteComponentProps> = () => {
       {profileData.me.submissions.length > 0 && (
         <MySubmissions profile={profileData} />
       )}
+      <Logout lang={lang} />
     </Fragment>
   );
 };
