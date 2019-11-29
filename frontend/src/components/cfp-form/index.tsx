@@ -366,7 +366,7 @@ export const CfpForm: React.SFC = () => {
         >
           <TagLine
             tags={formState.values.tags}
-            allowRemove={true}
+            allowChange={true}
             onTagChange={(tags: SubmissionTag[]) => {
               formState.setField("tags", tags);
             }}

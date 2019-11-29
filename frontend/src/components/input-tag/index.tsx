@@ -24,14 +24,14 @@ export const InputTag: React.SFC<InputTagProps> = ({ tag, onClick }) => (
 
 type TagLineProps = {
   tags: SubmissionTag[] | undefined;
-  onTagChange: any;
-  allowRemove: boolean;
+  onTagChange?: any;
+  allowChange?: boolean;
 };
 
 export const TagLine: React.SFC<TagLineProps> = ({
   tags,
   onTagChange,
-  allowRemove,
+  allowChange,
 }) => {
   const conferenceCode = useContext(ConferenceContext);
   const { loading, error, data } = useQuery<TagsQuery, TagsQueryVariables>(
@@ -82,43 +82,47 @@ export const TagLine: React.SFC<TagLineProps> = ({
                   <InputTag
                     tag={tag}
                     onClick={() => {
-                      selectTagClick(tag?.id);
+                      if (allowChange) {
+                        selectTagClick(tag?.id);
+                      }
                     }}
                   />
                 </Flex>
               ))}
             </Flex>
           </Box>
-          <Box
-            sx={{
-              border: "primary",
-              mx: "auto",
-              px: 3,
-              maxWidth: "container",
-              height: 50,
-              width: "container",
-            }}
-          >
-            <Flex>
-              {tags &&
-                tags.map((tag, i) => (
-                  <Flex key={i}>
-                    <InputTag tag={tag} />
-                    {allowRemove && (
-                      <Badge
-                        as="button"
-                        variant="remove"
-                        onClick={() => {
-                          removeTagClick(tag?.id);
-                        }}
-                      >
-                        x
-                      </Badge>
-                    )}
-                  </Flex>
-                ))}
-            </Flex>
-          </Box>
+          {allowChange && (
+            <Box
+              sx={{
+                border: "primary",
+                mx: "auto",
+                px: 3,
+                maxWidth: "container",
+                height: 50,
+                width: "container",
+              }}
+            >
+              <Flex>
+                {tags &&
+                  tags.map((tag, i) => (
+                    <Flex key={i}>
+                      <InputTag tag={tag} />
+                      {allowChange && (
+                        <Badge
+                          as="button"
+                          variant="remove"
+                          onClick={() => {
+                            removeTagClick(tag?.id);
+                          }}
+                        >
+                          x
+                        </Badge>
+                      )}
+                    </Flex>
+                  ))}
+              </Flex>
+            </Box>
+          )}
         </Flex>
       )}
     </Flex>
