@@ -17,4 +17,4 @@ RUN cd /pretix/src && DATABASE_HOST=demo make compress
 ENV PRETIX_CONFIG_FILE=/pretix/pretix.cfg
 
 ENTRYPOINT [ "/entrypoint.sh" ]
-CMD [ "all" ]
+CMD [ "webworker" ]
