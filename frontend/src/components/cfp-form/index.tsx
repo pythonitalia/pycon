@@ -25,6 +25,7 @@ import {
   CfpPageQueryVariables,
   SendSubmissionMutation,
   SendSubmissionMutationVariables,
+  SubmissionTag,
 } from "../../generated/graphql-backend";
 import { Alert } from "../alert";
 import { TagLine } from "../input-tag";
@@ -43,7 +44,7 @@ type CfpFormFields = {
   notes: string;
   topic: string;
   languages: string[];
-  tags: string[];
+  tags: SubmissionTag[];
 };
 
 export const CfpForm: React.SFC = () => {
@@ -100,7 +101,7 @@ export const CfpForm: React.SFC = () => {
             elevatorPitch: formState.values.elevatorPitch,
             notes: formState.values.notes,
             audienceLevel: formState.values.audienceLevel,
-            tags: formState.values.tags,
+            tags: formState.values.tags.map(tag => tag.name),
           },
         },
       });
@@ -366,7 +367,7 @@ export const CfpForm: React.SFC = () => {
           <TagLine
             tags={formState.values.tags}
             allowRemove={true}
-            onTagChange={(tags: string[]) => {
+            onTagChange={(tags: SubmissionTag[]) => {
               formState.setField("tags", tags);
             }}
           />
