@@ -1,9 +1,9 @@
 import strawberry
 
+from api.permissions import IsAuthenticated
 from strawberry_forms.mutations import FormMutation
 
 from .forms import SendSubmissionForm
-from .permissions import IsAuthenticated
 from .types import Submission
 
 
