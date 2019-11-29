@@ -12,6 +12,7 @@ import {
   SubmissionQueryVariables,
 } from "../../generated/graphql-backend";
 import { compile } from "../../helpers/markdown";
+import { TagLine } from "../input-tag";
 import SUBMISSION_QUERY from "./submission.graphql";
 
 export const SubmissionPage = ({ id }: RouteComponentProps<{ id: string }>) => {
@@ -138,6 +139,8 @@ export const SubmissionPage = ({ id }: RouteComponentProps<{ id: string }>) => {
             </Heading>
 
             <Text sx={{ mb: 4 }}>{compile(data.submission.notes).tree}</Text>
+
+            <TagLine sx={{ mb: 4 }} tags={data.submission.tags} />
           </Box>
         </Grid>
       </Box>
