@@ -1,15 +1,7 @@
 /** @jsx jsx */
 import { useQuery } from "@apollo/react-hooks";
-import {
-  Badge,
-  Box,
-  Flex,
-  Grid,
-  Input,
-  Divider,
-  Text,
-} from "@theme-ui/components";
-import { Fragment, useCallback, useContext, useState } from "react";
+import { Badge, Box, Flex } from "@theme-ui/components";
+import { useContext } from "react";
 import { jsx } from "theme-ui";
 
 import { ConferenceContext } from "../../context/conference";
@@ -80,51 +72,55 @@ export const TagLine: React.SFC<TagLineProps> = ({
   };
 
   return (
-    <Flex sx={{ display: "block" }}>
-      <Box>
-        <Flex>
-          {getAvailableTags()?.map(tag => (
-            <Flex key={tag.id}>
-              <InputTag
-                tag={tag}
-                onClick={() => {
-                  selectTagClick(tag?.id);
-                }}
-              />
-            </Flex>
-          ))}
-        </Flex>
-      </Box>
-      <Box
-        sx={{
-          border: "primary",
-          mx: "auto",
-          px: 3,
-          maxWidth: "container",
-          height: 50,
-          width: "container",
-        }}
-      >
-        <Flex>
-          {tags &&
-            tags.map((tag, i) => (
-              <Flex key={i}>
-                <InputTag tag={tag} />
-                {allowRemove && (
-                  <Badge
-                    as="button"
-                    variant="remove"
+    <Flex>
+      {!loading && (
+        <Flex sx={{ display: "block" }}>
+          <Box>
+            <Flex>
+              {getAvailableTags()?.map(tag => (
+                <Flex key={tag.id}>
+                  <InputTag
+                    tag={tag}
                     onClick={() => {
-                      removeTagClick(tag?.id);
+                      selectTagClick(tag?.id);
                     }}
-                  >
-                    x
-                  </Badge>
-                )}
-              </Flex>
-            ))}
+                  />
+                </Flex>
+              ))}
+            </Flex>
+          </Box>
+          <Box
+            sx={{
+              border: "primary",
+              mx: "auto",
+              px: 3,
+              maxWidth: "container",
+              height: 50,
+              width: "container",
+            }}
+          >
+            <Flex>
+              {tags &&
+                tags.map((tag, i) => (
+                  <Flex key={i}>
+                    <InputTag tag={tag} />
+                    {allowRemove && (
+                      <Badge
+                        as="button"
+                        variant="remove"
+                        onClick={() => {
+                          removeTagClick(tag?.id);
+                        }}
+                      >
+                        x
+                      </Badge>
+                    )}
+                  </Flex>
+                ))}
+            </Flex>
+          </Box>
         </Flex>
-      </Box>
+      )}
     </Flex>
   );
 };
