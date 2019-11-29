@@ -1,5 +1,7 @@
 from pretix.settings import *  # noqa
 
+SECRET_KEY = "{{secret_key}}"
+
 LOGGING["handlers"]["mail_admins"]["include_html"] = True  # noqa
 STATICFILES_STORAGE = (
     "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"

@@ -10,6 +10,8 @@ awk '{
     gsub("{{mail_password}}", "'$MAIL_PASSWORD'" , $0);
     gsub("{{sentry_dsn}}", "'$SENTRY_DSN'" , $0);
 
+    gsub("{{secret_key}}", "'$SECRET_KEY'" , $0);
+
     gsub("{{url}}", "'$URL'" , $0);
     print $0 > "/pretix/src/production_settings.py";
 }' /pretix/src/production_settings.py

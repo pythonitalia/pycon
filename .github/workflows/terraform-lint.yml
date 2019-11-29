@@ -57,5 +57,6 @@ jobs:
         TF_VAR_social_auth_google_oauth2_secret: ${{ secrets.TF_VAR_social_auth_google_oauth2_secret }}
         TF_VAR_mail_user: ${{ secrets.TF_VAR_mail_user }}
         TF_VAR_mail_password: ${{ secrets.TF_VAR_mail_password }}
+        TF_VAR_pretix_secret_key: ${{ secrets.TF_VAR_pretix_secret_key }}
         TF_ACTION_WORKING_DIR: ./infrastructure
         TF_ACTION_WORKSPACE: production
