@@ -1,6 +1,9 @@
 import React from "react";
 
-export const ItalianIcon: React.SFC = props => (
+export const ItalianIcon: React.SFC<{ active: boolean }> = ({
+  active,
+  ...props
+}) => (
   <svg viewBox="0 0 50 50" fill="none" {...props}>
     <g clipPath="url(#prefix__clip0)">
       <path
@@ -16,6 +19,9 @@ export const ItalianIcon: React.SFC = props => (
         fill="#6DA544"
       />
       <circle cx={25} cy={25} r={23} stroke="#000" strokeWidth={4} />
+      {active && (
+        <circle cx={25} cy={25} r={19} stroke="#fff" strokeWidth={4} />
+      )}
     </g>
     <defs>
       <clipPath id="prefix__clip0">

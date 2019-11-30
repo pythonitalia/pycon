@@ -115,7 +115,6 @@ export default {
       height: 50,
       fontFamily: "body",
       fontWeight: "heading",
-
       color: "#000",
       textDecoration: "none",
       textTransform: "uppercase",

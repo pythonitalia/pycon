@@ -4,6 +4,7 @@ import { Link as GatsbyLink } from "gatsby";
 import { jsx } from "theme-ui";
 
 import { useCurrentLanguage } from "../../context/language";
+import { useHover } from "../../helpers/use-hover";
 import { GoogleIcon } from "../icons/google";
 
 type LinkProps = {
@@ -79,10 +80,12 @@ export const Link: React.SFC<LinkProps> = ({
     href = href.replace(":language", language);
   }
 
-  return (
+  const component = (hovered: boolean) => (
     <ThemeLink {...additionalProps} as={LinkComponent} href={href} to={href}>
       {additionalProps.variant === "button" && (
-        <ArrowRightBackground backgroundColor={backgroundColor || "yellow"} />
+        <ArrowRightBackground
+          backgroundColor={hovered ? "orange" : backgroundColor || "yellow"}
+        />
       )}
 
       {additionalProps.variant === "google" && <GoogleIcon />}
@@ -92,4 +95,8 @@ export const Link: React.SFC<LinkProps> = ({
       </Box>
     </ThemeLink>
   );
+
+  const [hoverable, _] = useHover(component);
+
+  return hoverable;
 };

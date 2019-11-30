@@ -1,7 +1,7 @@
 from base64 import urlsafe_b64decode
 
 from api.forms import ContextAwareModelForm
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.tokens import default_token_generator
 from django.forms import BooleanField, CharField, EmailField, ValidationError
 from django.utils.translation import ugettext_lazy as _
@@ -128,3 +128,9 @@ class UpdateUserForm(ContextAwareModelForm):
     class Meta:
         model = User
         fields = ("name", "full_name", "gender")
+
+
+class LogoutForm(FormWithContext):
+    def save(self):
+        logout(self.context["request"])
+        return True

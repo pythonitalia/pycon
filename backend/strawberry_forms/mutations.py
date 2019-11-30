@@ -33,7 +33,11 @@ class FormMutation:
         form_fields = form.fields
         graphql_fields = convert_form_fields_to_fields(form_fields)
 
-        input_type = create_input_type(name, graphql_fields)
+        input_type = None
+
+        if len(graphql_fields) > 0:
+            input_type = create_input_type(name, graphql_fields)
+
         error_type = create_error_type(name, graphql_fields)
 
         output_types = (
@@ -45,14 +49,19 @@ class FormMutation:
         ]  # We add `None` here because we need at least 2 types to create an Union
         output.__args__ = (error_type, *output_types)
 
-        def mutate(root, info, input: input_type) -> output:
+        def _mutate(root, info, input: input_type) -> output:
             # Once we implement the permission in strawberry we can remove this :)
             if hasattr(cls.Meta, "permission_classes") and cls.Meta.permission_classes:
                 for permission in cls.Meta.permission_classes:
                     if not permission().has_permission(info):
                         raise GraphQLError(permission.message)
 
-            form_kwargs = cls.get_form_kwargs(root, info, dataclasses.asdict(input))
+            input_as_dict = input
+
+            if dataclasses.is_dataclass(input):
+                input_as_dict = dataclasses.asdict(input)
+
+            form_kwargs = cls.get_form_kwargs(root, info, input_as_dict)
             form_kwargs["data"] = convert_enums_to_values(form_kwargs["data"])
 
             form = form_class(**form_kwargs)
@@ -67,6 +76,16 @@ class FormMutation:
                 result = cls.transform(result)
 
             return result
+
+        if input_type:
+
+            def mutate(root, info, input: input_type) -> output:
+                return _mutate(root, info, input)
+
+        else:
+
+            def mutate(root, info) -> output:
+                return _mutate(root, info, {})
 
         mutate.__name__ = f"{name}Output"
         mutate.name = name
