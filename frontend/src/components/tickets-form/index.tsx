@@ -47,6 +47,12 @@ export const TicketsForm: React.SFC<RouteComponentProps<Props>> = ({
     USER_PROFILE_QUERY,
   );
 
+  const isLoading = conferenceLoading || loading;
+
+  if (error || conferenceError) {
+    throw new Error(error?.message || conferenceError?.message);
+  }
+
   return (
     <Box>
       <FormattedMessage id="tickets.pageTitle">
@@ -74,8 +80,8 @@ export const TicketsForm: React.SFC<RouteComponentProps<Props>> = ({
           px: 3,
         }}
       >
-        {conferenceLoading && !conferenceError && <p>Please wait 🕐</p>}
-        {!conferenceLoading && profileData && (
+        {isLoading && <p>Please wait 🕐</p>}
+        {!isLoading && profileData && (
           <pretix-widget
             data-email={profileData.me.email}
             data-question-userid={profileData.me.id}
