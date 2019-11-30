@@ -1,4 +1,5 @@
 /** @jsx jsx */
+import { isRedirect } from "@reach/router";
 import { Box } from "@theme-ui/components";
 import { Component } from "react";
 import { jsx } from "theme-ui";
@@ -17,10 +18,14 @@ export class ErrorBoundary extends Component<
   }
 
   componentDidCatch(error: any, errorInfo: any) {
-    this.setState({
-      error,
-      errorInfo,
-    });
+    if (isRedirect(error)) {
+      throw error;
+    } else {
+      this.setState({
+        error,
+        errorInfo,
+      });
+    }
   }
 
   render() {

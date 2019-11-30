@@ -1,6 +1,11 @@
 import { useMutation } from "@apollo/react-hooks";
-import { navigate, Redirect, RouteComponentProps } from "@reach/router";
-import { Box, Button, Grid, Input, Label, Text } from "@theme-ui/components";
+import {
+  Location,
+  navigate,
+  Redirect,
+  RouteComponentProps,
+} from "@reach/router";
+import { Box, Button, Grid, Input, Text } from "@theme-ui/components";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
@@ -20,10 +25,9 @@ type LoginFormFields = {
   password: string;
 };
 
-export const LoginForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
-  lang,
-  location,
-}) => {
+type FormProps = RouteComponentProps<{ lang: string }>;
+
+export const LoginForm: React.SFC<FormProps> = ({ lang, location }) => {
   const profileUrl = `/${lang}/profile`;
 
   const [loggedIn, setLoggedIn] = useLoginState();
@@ -32,7 +36,7 @@ export const LoginForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
     if (data && data.login.__typename === "MeUser") {
       setLoggedIn(true);
 
-      navigate(profileUrl);
+      navigate(location?.state?.next || profileUrl);
     }
   };
 
@@ -40,7 +44,7 @@ export const LoginForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
     LoginMutation,
     LoginMutationVariables
   >(LOGIN_MUTATION, { onCompleted: onLoginCompleted });
-  const [formState, { label, email, password }] = useFormState<LoginFormFields>(
+  const [formState, { email, password }] = useFormState<LoginFormFields>(
     {},
     {
       withIds: true,
