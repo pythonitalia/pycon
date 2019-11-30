@@ -91,6 +91,12 @@ resource "aws_elastic_beanstalk_environment" "pretix_env" {
     value     = "${var.sentry_dsn}"
   }
 
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "SECRET_KEY"
+    value     = "${var.pretix_secret_key}"
+  }
+
   # Are the load balancers multizone?
   setting {
     namespace = "aws:elb:loadbalancer"
