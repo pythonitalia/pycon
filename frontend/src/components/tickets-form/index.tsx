@@ -80,7 +80,11 @@ export const TicketsForm: React.SFC<RouteComponentProps<Props>> = ({
           px: 3,
         }}
       >
-        {isLoading && <p>Please wait 🕐</p>}
+        {isLoading && (
+          <Text>
+            <FormattedMessage id="tickets.loading" />
+          </Text>
+        )}
         {!isLoading && profileData && (
           <pretix-widget
             data-email={profileData.me.email}
