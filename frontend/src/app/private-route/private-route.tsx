@@ -1,5 +1,5 @@
-import { Redirect } from "@reach/router";
-import React, { Component } from "react";
+import { Location, Redirect } from "@reach/router";
+import React from "react";
 
 import { useLoginState } from "../profile/hooks";
 
@@ -12,7 +12,17 @@ export const PrivateRoute = ({
   const loginUrl = `${lang}/login`;
 
   if (!loggedIn) {
-    return <Redirect to={loginUrl} noThrow={true} />;
+    return (
+      <Location>
+        {({ location }) => (
+          <Redirect
+            to={loginUrl}
+            noThrow={true}
+            state={{ next: location.pathname }}
+          />
+        )}
+      </Location>
+    );
   }
 
   return <PrivateComponent lang={lang} {...rest} />;
