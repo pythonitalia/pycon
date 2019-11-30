@@ -82,6 +82,9 @@ export default {
     },
   },
   links: {
+    heading: {
+      color: "text",
+    },
     header: {
       color: "white",
       fontSize: 5,

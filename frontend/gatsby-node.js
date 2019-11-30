@@ -95,6 +95,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     return;
   }
 
+  const blogTemplate = path.resolve(`src/templates/blog.tsx`);
   const blogPostTemplate = path.resolve(`src/templates/blog-post.tsx`);
   const pageTemplate = path.resolve(`src/templates/page.tsx`);
   const homeTemplate = path.resolve(`src/templates/home.tsx`);
@@ -108,6 +109,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
 
   const pages = [
     { template: homeTemplate, path: "" },
+    { template: blogTemplate, path: "/blog" },
     { template: appTemplate, path: "/login", matchPath: "/login/*" },
     { template: appTemplate, path: "/signup", matchPath: "/signup/*" },
     { template: appTemplate, path: "/profile", matchPath: "/profile/*" },
