@@ -108,6 +108,7 @@ export default {
     "signup.signupWithSocial": "... or your social account",
     "signup.useGoogle": "Sign up with Google",
     "signup.alreadyHaveAccount": "Already have an account?",
+    "blog.readMore": "Read more",
   },
   it: {
     titleTemplate: "%s | PyCon Italia",
@@ -217,5 +218,6 @@ export default {
     "signup.signupWithSocial": "... o con i tuoi account social",
     "signup.useGoogle": "Registrati con Google",
     "signup.alreadyHaveAccount": "Hai già un account?",
+    "blog.readMore": "Continua a leggere",
   },
 };

@@ -18,7 +18,7 @@ export default ({ data }: { data: PostQuery }) => {
         <title>{post.title}</title>
       </Helmet>
 
-      <Box sx={{ mx: "auto", px: 3, maxWidth: "container" }}>
+      <Box sx={{ mx: "auto", px: 3, pt: 4, maxWidth: "container" }}>
         <Article
           hero={post.imageFile && { ...post.imageFile.childImageSharp! }}
           title={post.title}
