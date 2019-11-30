@@ -49,19 +49,23 @@ export const TicketsForm: React.SFC<RouteComponentProps<Props>> = ({
 
   return (
     <Box>
-      <Helmet>
-        <title>Tickets</title>
+      <FormattedMessage id="tickets.pageTitle">
+        {text => (
+          <Helmet>
+            <title>{text}</title>
 
-        {conferenceData && (
-          <link rel="stylesheet" type="text/css" href={`/css/pretix.css`} />
+            {conferenceData && (
+              <link rel="stylesheet" type="text/css" href={`/css/pretix.css`} />
+            )}
+
+            <script
+              type="text/javascript"
+              src="https://d3ex7joy4im5c0.cloudfront.net/widget/v1.en.js"
+              async={true}
+            />
+          </Helmet>
         )}
-
-        <script
-          type="text/javascript"
-          src="https://d3ex7joy4im5c0.cloudfront.net/widget/v1.en.js"
-          async={true}
-        />
-      </Helmet>
+      </FormattedMessage>
 
       <Box
         sx={{

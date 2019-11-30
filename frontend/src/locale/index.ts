@@ -124,6 +124,7 @@ export default {
     "blog.readMore": "Read more",
     "blog.author": "Author",
     "inputTag.selectTags": "Select some tags...",
+    "tickets.pageTitle": "Buy your ticket for PyCon Italy",
   },
   it: {
     titleTemplate: "%s | PyCon Italia",
@@ -249,5 +250,6 @@ export default {
     "blog.readMore": "Continua a leggere",
     "blog.author": "Autore",
     "inputTag.selectTags": "Scegli dei tag",
+    "tickets.pageTitle": "Compra il tuo biglietto per PyCon Italia",
   },
 };
