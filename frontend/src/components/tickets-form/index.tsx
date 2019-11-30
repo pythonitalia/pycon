@@ -79,6 +79,7 @@ export const TicketsForm: React.SFC<RouteComponentProps<Props>> = ({
           <pretix-widget
             data-email={profileData.me.email}
             data-question-userid={profileData.me.id}
+            data-fix="true"
             event={conferenceData!.conference.pretixEventUrl}
             skip-ssl-check={true}
           />
