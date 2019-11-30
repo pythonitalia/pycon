@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "storages",
     "notifications.apps.NotificationsConfig",
     "hotels.apps.HotelsConfig",
+    "newsletters.apps.NewslettersConfig",
 ]
 
 MIDDLEWARE = [
