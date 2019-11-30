@@ -14,4 +14,4 @@ class BlogQuery:
 
     @strawberry.field
     def blog_post(self, info, slug: str) -> Optional[PostType]:
-        return Post.published_posts.filter(slug=slug).first()
+        return Post.published_posts.by_slug(slug).first()

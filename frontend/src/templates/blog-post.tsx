@@ -31,12 +31,12 @@ export default ({ data }: { data: PostQuery }) => {
 };
 
 export const query = graphql`
-  query Post($slug: String!) {
+  query Post($slug: String!, $language: String!) {
     backend {
       blogPost(slug: $slug) {
-        title
-        excerpt
-        content
+        title(language: $language)
+        content(language: $language)
+        excerpt(language: $language)
         image
 
         imageFile {

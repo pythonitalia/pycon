@@ -78,7 +78,8 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
       query {
         backend {
           blogPosts {
-            slug
+            slugEn: slug(language: "en")
+            slugIt: slug(language: "it")
           }
           pages {
             slugEn: slug(language: "en")
@@ -152,28 +153,29 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     );
   });
 
-  result.data.backend.blogPosts.forEach(({ slug }) => {
-    // TODO: translate blog
+  result.data.backend.blogPosts.forEach(({ slugEn, slugIt }) => {
     createPage({
-      path: `/en/blog/${slug}`,
+      path: `/en/blog/${slugEn}`,
       component: blogPostTemplate,
       context: {
-        slug,
+        slug: slugEn,
+        language: "en",
         alternateLinks: {
-          en: `/en/blog/${slug}`,
-          it: `/it/blog/${slug}`,
+          en: `/en/blog/${slugEn}`,
+          it: `/it/blog/${slugIt}`,
         },
       },
     });
 
     createPage({
-      path: `/it/blog/${slug}`,
+      path: `/it/blog/${slugIt}`,
       component: blogPostTemplate,
       context: {
-        slug,
+        slug: slugIt,
+        language: "it",
         alternateLinks: {
-          en: `/en/blog/${slug}`,
-          it: `/it/blog/${slug}`,
+          en: `/en/blog/${slugEn}`,
+          it: `/it/blog/${slugIt}`,
         },
       },
     });

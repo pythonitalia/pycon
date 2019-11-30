@@ -6,10 +6,22 @@
       "created": "2019-09-01T15:18:46.795Z",
       "modified": "2019-09-01T15:18:46.795Z",
       "author": 1,
-      "title": "Example post",
-      "slug": "example-post",
-      "excerpt": "Hello world this is demo",
-      "content": "This is the actual *content*",
+      "title": {
+        "en": "Example title",
+        "it": "Titolo d'esempio"
+      },
+      "slug": {
+        "en": "example",
+        "it": "esempio"
+      },
+      "excerpt": {
+        "en": "example",
+        "it": "esempio"
+      },
+      "content": {
+        "en": "example",
+        "it": "esempio"
+      },
       "published": "2019-09-01T15:18:18Z",
       "image": ""
     }
