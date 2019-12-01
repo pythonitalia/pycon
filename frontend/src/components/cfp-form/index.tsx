@@ -247,9 +247,13 @@ export const CfpForm: React.SFC = () => {
               errors={getErrors("topic")}
             >
               <Select {...select("topic")} required={true}>
-                <option value="" disabled={true}>
-                  Select a topic
-                </option>
+                <FormattedMessage id="cfp.selectTopic">
+                  {txt => (
+                    <option value="" disabled={true}>
+                      {txt}
+                    </option>
+                  )}
+                </FormattedMessage>
                 {conferenceData!.conference.topics.map(d => (
                   <option key={d.id} value={d.id}>
                     {d.name}
@@ -264,9 +268,13 @@ export const CfpForm: React.SFC = () => {
               errors={getErrors("duration")}
             >
               <Select {...select("length")} required={true}>
-                <option value="" disabled={true}>
-                  Select a duration
-                </option>
+                <FormattedMessage id="cfp.selectDuration">
+                  {txt => (
+                    <option value="" disabled={true}>
+                      {txt}
+                    </option>
+                  )}
+                </FormattedMessage>
                 {conferenceData!.conference.durations
                   .filter(
                     d =>
@@ -290,9 +298,13 @@ export const CfpForm: React.SFC = () => {
               errors={getErrors("audienceLevel")}
             >
               <Select {...select("audienceLevel")} required={true}>
-                <option value="" disabled={true}>
-                  Select an audience
-                </option>
+                <FormattedMessage id="cfp.selectAudience">
+                  {txt => (
+                    <option value="" disabled={true}>
+                      {txt}
+                    </option>
+                  )}
+                </FormattedMessage>
                 {conferenceData!.conference.audienceLevels.map(a => (
                   <option key={a.id} value={a.id}>
                     {a.name}
@@ -379,14 +391,17 @@ export const CfpForm: React.SFC = () => {
 
         {sendSubmissionError && (
           <Alert sx={{ mb: 4 }} variant="alert">
-            Try again: {sendSubmissionError.message}
+            <FormattedMessage
+              id="cfp.tryAgain"
+              values={{ error: sendSubmissionError.message }}
+            />
           </Alert>
         )}
 
         {sendSubmissionData &&
           sendSubmissionData.sendSubmission.__typename === "Submission" && (
             <Alert sx={{ mb: 4 }} variant="success">
-              Submission sent!
+              <FormattedMessage id="cfp.submissionSent" />
             </Alert>
           )}
 

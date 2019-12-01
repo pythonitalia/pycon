@@ -10,7 +10,7 @@
     "model": "submissions.submissiontype",
     "pk": 2,
     "fields": {
-      "name": "Lighting Talk"
+      "name": "Lightning Talk"
     }
   },
   {
