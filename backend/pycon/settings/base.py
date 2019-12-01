@@ -174,6 +174,7 @@ SERIALIZATION_MODULES = {"json": "i18n.serializers"}
 USE_X_FORWARDED_HOST = False
 
 PRETIX_API = env("PRETIX_API", default="")
+PRETIX_API_TOKEN = None
 
 if PRETIX_API:
     PRETIX_API_TOKEN = env("PRETIX_API_TOKEN")
