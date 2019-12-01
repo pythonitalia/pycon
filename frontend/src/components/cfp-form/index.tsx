@@ -151,7 +151,7 @@ export const CfpForm: React.SFC = () => {
   ) =>
     (sendSubmissionData &&
       sendSubmissionData.sendSubmission.__typename === "SendSubmissionErrors" &&
-      (sendSubmissionData.sendSubmission as any)[key]) ||
+      sendSubmissionData.sendSubmission[key]) ||
     [];
 
   return (
