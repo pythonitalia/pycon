@@ -12,6 +12,7 @@ import {
   TagsQueryVariables,
 } from "../../generated/graphql-backend";
 import TAGS_QUERY from "./tags.graphql";
+
 type InputTagProps = {
   tag: SubmissionTag;
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
@@ -79,9 +80,9 @@ export const TagLine: React.SFC<TagLineProps> = ({
   return (
     <Flex>
       {!loading && (
-        <Flex sx={{ display: "block" }}>
+        <Box>
           <Box>
-            <Flex>
+            <Flex sx={{ flexWrap: "wrap" }}>
               {availableTags.map(tag => (
                 <Flex key={tag.id}>
                   <InputTag
@@ -127,7 +128,7 @@ export const TagLine: React.SFC<TagLineProps> = ({
               </Flex>
             </Box>
           )}
-        </Flex>
+        </Box>
       )}
     </Flex>
   );
