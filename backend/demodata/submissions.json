@@ -17,7 +17,7 @@
     "model": "submissions.submissionTag",
     "pk": 1,
     "fields": {
-      "name": "Pyhton"
+      "name": "Python"
     }
   },
   {
