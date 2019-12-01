@@ -80,14 +80,12 @@ export const CfpForm: React.SFC = () => {
 
   const onSubmit = useCallback(
     async e => {
-      console.log("onSubmit??");
-      console.trace();
       if (sendSubmissionLoading) {
         return;
       }
 
       e.preventDefault();
-      console.log(JSON.stringify(formState.values));
+
       sendSubmission({
         variables: {
           input: {
@@ -365,7 +363,7 @@ export const CfpForm: React.SFC = () => {
           errors={getErrors("tags")}
         >
           <TagLine
-            tags={formState.values.tags}
+            tags={formState.values.tags || []}
             allowChange={true}
             onTagChange={(tags: SubmissionTag[]) => {
               formState.setField("tags", tags);

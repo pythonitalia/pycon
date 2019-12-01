@@ -1,7 +1,8 @@
 /** @jsx jsx */
 import { useQuery } from "@apollo/react-hooks";
-import { Badge, Box, Flex } from "@theme-ui/components";
+import { Badge, Box, Button, Flex } from "@theme-ui/components";
 import { useContext } from "react";
+import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
 import { ConferenceContext } from "../../context/conference";
@@ -14,16 +15,21 @@ import TAGS_QUERY from "./tags.graphql";
 type InputTagProps = {
   tag: SubmissionTag;
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  variant?: "tag" | "selectedTag";
 };
 
-export const InputTag: React.SFC<InputTagProps> = ({ tag, onClick }) => (
-  <Badge variant="tag" className="inputTag" onClick={onClick}>
+export const InputTag: React.SFC<InputTagProps> = ({
+  tag,
+  onClick,
+  variant = "tag",
+}) => (
+  <Badge variant={variant} onClick={onClick}>
     {tag.name}
   </Badge>
 );
 
 type TagLineProps = {
-  tags: SubmissionTag[] | undefined;
+  tags: SubmissionTag[];
   onTagChange?: any;
   allowChange?: boolean;
 };
@@ -42,18 +48,22 @@ export const TagLine: React.SFC<TagLineProps> = ({
       },
     },
   );
-  const submissionTags = data?.submissionTags;
+
+  if (loading) {
+    return null;
+  }
+
+  const submissionTags = data!.submissionTags!;
 
   const selectTagClick = (id: string) => {
-    console.log(id);
     const newTag = submissionTags?.filter(tag => tag?.id === id);
 
     if (newTag?.length === 0) {
       return;
     }
 
-    console.log(newTag);
     const newTags = [...(tags || []), ...newTag];
+
     onTagChange(newTags);
   };
 
@@ -61,15 +71,10 @@ export const TagLine: React.SFC<TagLineProps> = ({
     onTagChange(tags?.filter(tag => tag.id !== id));
   };
 
-  const getAvailableTags = () => {
-    const selectedTagIds = tags?.map(item => item.id);
-    if (!selectedTagIds) {
-      return submissionTags;
-    }
-    return submissionTags?.filter(
-      tag => selectedTagIds?.indexOf(tag.id) === -1,
-    );
-  };
+  const selectedTagIds = tags.map(item => item.id);
+  const availableTags = submissionTags.filter(
+    tag => selectedTagIds?.indexOf(tag.id) === -1,
+  );
 
   return (
     <Flex>
@@ -77,7 +82,7 @@ export const TagLine: React.SFC<TagLineProps> = ({
         <Flex sx={{ display: "block" }}>
           <Box>
             <Flex>
-              {getAvailableTags()?.map(tag => (
+              {availableTags.map(tag => (
                 <Flex key={tag.id}>
                   <InputTag
                     tag={tag}
@@ -98,28 +103,27 @@ export const TagLine: React.SFC<TagLineProps> = ({
                 mx: "auto",
                 px: 3,
                 maxWidth: "container",
-                height: 50,
                 width: "container",
               }}
             >
               <Flex>
-                {tags &&
-                  tags.map((tag, i) => (
-                    <Flex key={i}>
-                      <InputTag tag={tag} />
-                      {allowChange && (
-                        <Badge
-                          as="button"
-                          variant="remove"
-                          onClick={() => {
-                            removeTagClick(tag?.id);
-                          }}
-                        >
-                          x
-                        </Badge>
-                      )}
-                    </Flex>
-                  ))}
+                {tags.length === 0 && (
+                  <Badge variant="placeholderTag">
+                    <FormattedMessage id="inputTag.selectTags" />
+                  </Badge>
+                )}
+                {tags.map(tag => (
+                  <InputTag
+                    key={tag.id}
+                    tag={tag}
+                    variant="selectedTag"
+                    onClick={(e: React.FormEvent<HTMLButtonElement>) => {
+                      e.preventDefault();
+
+                      removeTagClick(tag.id);
+                    }}
+                  />
+                ))}
               </Flex>
             </Box>
           )}

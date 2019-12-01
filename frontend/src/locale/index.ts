@@ -112,6 +112,7 @@ export default {
     "signup.useGoogle": "Sign up with Google",
     "signup.alreadyHaveAccount": "Already have an account?",
     "blog.readMore": "Read more",
+    "inputTag.selectTags": "Select some tags...",
   },
   it: {
     titleTemplate: "%s | PyCon Italia",
@@ -226,5 +227,6 @@ export default {
     "signup.useGoogle": "Registrati con Google",
     "signup.alreadyHaveAccount": "Hai già un account?",
     "blog.readMore": "Continua a leggere",
+    "inputTag.selectTags": "Scegli dei tag",
   },
 };
