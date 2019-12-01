@@ -52,6 +52,13 @@
     }
   },
   {
+    "model": "conferences.audiencelevel",
+    "pk": 1,
+    "fields": {
+      "name": "Beginner"
+    }
+  },
+  {
     "model": "conferences.duration",
     "pk": 1,
     "fields": {
