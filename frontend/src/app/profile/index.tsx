@@ -15,6 +15,7 @@ import {
 } from "../../generated/graphql-backend";
 import { useLoginState } from "./hooks";
 import { Logout } from "./logout";
+import { MyOrders } from "./my-orders";
 import { MyProfile } from "./my-profile";
 import { MySubmissions } from "./my-submissions";
 import MY_PROFILE_QUERY from "./profile.graphql";
@@ -30,6 +31,7 @@ export const ProfileApp: React.SFC<RouteComponentProps> = () => {
   >(MY_PROFILE_QUERY, {
     variables: {
       conference: conferenceCode,
+      language: lang,
     },
   });
 
@@ -68,11 +70,15 @@ export const ProfileApp: React.SFC<RouteComponentProps> = () => {
   return (
     <Fragment>
       <MyProfile profile={profileData} />
+
+      {profileData.me.orders.length > 0 && <MyOrders profile={profileData} />}
+
       <MySubmissions
         sx={{
           borderTop: "primary",
         }}
       />
+
       <Logout lang={lang} />
     </Fragment>
   );
