@@ -19,6 +19,7 @@ query Submission($id: ID!) {
       name
     }
     tags {
+      id
       name
     }
   }
