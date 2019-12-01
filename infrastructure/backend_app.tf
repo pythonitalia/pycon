@@ -122,6 +122,17 @@ resource "aws_elastic_beanstalk_environment" "pycon_env" {
     value     = "https://pycon.it"
   }
 
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "PRETIX_API"
+    value     = "https://d3ex7joy4im5c0.cloudfront.net/api/v1/"
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "PRETIX_API_TOKEN"
+    value     = "${var.pretix_api_token}"
+  }
 
   # google settings
 
