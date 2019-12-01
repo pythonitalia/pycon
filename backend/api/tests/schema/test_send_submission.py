@@ -1,8 +1,6 @@
 from pytest import mark
-
 from submissions.models import Submission, SubmissionTag, SubmissionType
-
-from .factories import SubmissionFactory
+from submissions.tests.factories import SubmissionFactory
 
 
 def _submit_talk(client, conference, **kwargs):
