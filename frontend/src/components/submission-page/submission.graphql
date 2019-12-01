@@ -18,5 +18,9 @@ query Submission($id: ID!) {
     languages {
       name
     }
+    tags {
+      id
+      name
+    }
   }
 }

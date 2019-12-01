@@ -1,7 +1,8 @@
 import strawberry
+
+from api.permissions import IsAuthenticated
 from strawberry_forms.mutations import FormMutation
 
-from ..permissions import IsAuthenticated
 from .forms import SendSubmissionForm
 from .types import Submission
 
@@ -23,6 +24,7 @@ class SendSubmission(FormMutation):
             type=result.type,
             duration=result.duration,
             audience_level=result.audience_level,
+            tags=result.tags,
         )
 
     class Meta:

@@ -19,6 +19,12 @@ class SubmissionType:
 
 
 @strawberry.type
+class SubmissionTag:
+    id: strawberry.ID
+    name: str
+
+
+@strawberry.type
 class Submission:
     id: strawberry.ID
     conference: "Conference"
@@ -33,6 +39,7 @@ class Submission:
     duration: "Duration"
     audience_level: "AudienceLevel"
     languages: List["Language"]
+    tags: List[SubmissionTag]
 
     @strawberry.field
     def my_vote(self, info) -> Optional[VoteType]:
@@ -49,3 +56,7 @@ class Submission:
     @strawberry.field
     def languages(self, info) -> List[Language]:
         return self.languages.all()
+
+    @strawberry.field
+    def tags(self, info) -> List[SubmissionTag]:
+        return self.tags.all()

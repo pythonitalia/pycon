@@ -16,6 +16,7 @@ mutation SendSubmission($input: SendSubmissionInput!) {
       elevatorPitch
       notes
       audienceLevel
+      tags
       nonFieldErrors
     }
   }

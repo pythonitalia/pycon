@@ -12,7 +12,7 @@ from conferences.tests.factories import (
     TopicFactory,
 )
 from languages.models import Language
-from submissions.models import Submission, SubmissionType
+from submissions.models import Submission, SubmissionTag, SubmissionType
 from users.tests.factories import UserFactory
 
 
@@ -23,6 +23,15 @@ class SubmissionTypeFactory(DjangoModelFactory):
         django_get_or_create = ("name",)
 
     name = factory.fuzzy.FuzzyChoice(["talk", "tutorial"])
+
+
+@register
+class SubmissionTagFactory(DjangoModelFactory):
+    class Meta:
+        model = SubmissionTag
+        django_get_or_create = ("name",)
+
+    name = factory.Faker("word")
 
 
 @register
@@ -59,3 +68,15 @@ class SubmissionFactory(DjangoModelFactory):
             self.languages.add(
                 Language.objects.get(code=random.choice(settings.LANGUAGES)[0])
             )
+
+    @factory.post_generation
+    def tags(self, create, extracted, **kwargs):
+        """Accept a list of tags and add them to the submission"""
+
+        if not create:
+            return
+
+        if extracted:
+            for tag_name in extracted:
+                tag, _ = SubmissionTag.objects.get_or_create(name=tag_name)
+                self.tags.add(tag)

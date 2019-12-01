@@ -1,10 +1,11 @@
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
-from helpers.models import GeoLocalizedModel
-from i18n.fields import I18nCharField, I18nTextField
 from model_utils.models import TimeFramedModel, TimeStampedModel
 from timezone_field import TimeZoneField
+
+from helpers.models import GeoLocalizedModel
+from i18n.fields import I18nCharField, I18nTextField
 
 from .deadline import Deadline
 

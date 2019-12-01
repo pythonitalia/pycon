@@ -1,8 +1,6 @@
 from pytest import mark
-
-from submissions.models import Submission, SubmissionType
-
-from .factories import SubmissionFactory
+from submissions.models import Submission, SubmissionTag, SubmissionType
+from submissions.tests.factories import SubmissionFactory
 
 
 def _submit_talk(client, conference, **kwargs):
@@ -27,7 +25,6 @@ def _submit_talk(client, conference, **kwargs):
     }
 
     variables = {**defaults, **kwargs}
-
     return (
         client.query(
             """mutation(
@@ -38,7 +35,8 @@ def _submit_talk(client, conference, **kwargs):
                 $languages: [ID!]!,
                 $type: ID!,
                 $duration: ID!,
-                $audience_level: ID!
+                $audience_level: ID!,
+                $tags: [ID!]
             ) {
                 sendSubmission(input: {
                     title: $title,
@@ -49,6 +47,7 @@ def _submit_talk(client, conference, **kwargs):
                     type: $type,
                     duration: $duration,,
                     audienceLevel: $audience_level
+                    tags: $tags
                 }) {
                     __typename
 
@@ -65,6 +64,9 @@ def _submit_talk(client, conference, **kwargs):
                             name
                         }
                         notes
+                        tags {
+                            name
+                        }
                     }
 
                     ... on SendSubmissionErrors {
@@ -76,6 +78,7 @@ def _submit_talk(client, conference, **kwargs):
                         validationType: type
                         validationDuration: duration
                         validationAudienceLevel: audienceLevel
+                        validationTags: tags
                         nonFieldErrors
                     }
                 }
@@ -87,7 +90,7 @@ def _submit_talk(client, conference, **kwargs):
 
 
 def _submit_tutorial(client, conference, **kwargs):
-    talk = SubmissionFactory.build(
+    talk = SubmissionFactory.create(
         type=SubmissionType.objects.get_or_create(name="tutorial")[0]
     )
 
@@ -104,6 +107,7 @@ def _submit_tutorial(client, conference, **kwargs):
         "type": talk.type.id,
         "duration": conference.durations.first().id,
         "audience_level": conference.audience_levels.first().id,
+        "tags": [tag.name for tag in talk.tags.all()],
     }
 
     variables = {**defaults, **kwargs}
@@ -118,7 +122,8 @@ def _submit_tutorial(client, conference, **kwargs):
                 $languages: [ID!]!,
                 $type: ID!,
                 $duration: ID!,
-                $audience_level: ID!
+                $audience_level: ID!,
+                $tags: [ID!]
             ) {
                 sendSubmission(input: {
                     title: $title,
@@ -128,7 +133,8 @@ def _submit_tutorial(client, conference, **kwargs):
                     topic: $topic,
                     type: $type,
                     duration: $duration,
-                    audienceLevel: $audience_level
+                    audienceLevel: $audience_level,
+                    tags: $tags
                 }) {
                     __typename
 
@@ -145,6 +151,9 @@ def _submit_tutorial(client, conference, **kwargs):
                             name
                         }
                         notes
+                        tags {
+                            name
+                        }
                     }
 
                     ... on SendSubmissionErrors {
@@ -156,6 +165,7 @@ def _submit_tutorial(client, conference, **kwargs):
                         validationType: type
                         validationDuration: duration
                         validationAudienceLevel: audienceLevel
+                        validationTags: tags
                         nonFieldErrors
                     }
                 }
@@ -643,3 +653,30 @@ def test_same_user_can_submit_talks_to_different_conferences(
 
     assert user.submissions.filter(conference=conference1).count() == 1
     assert user.submissions.filter(conference=conference2).count() == 1
+
+
+def test_create_submission_tags(
+    graphql_client, user, conference_factory, submission_tag_factory
+):
+    graphql_client.force_login(user)
+
+    conference = conference_factory(
+        topics=("friends",),
+        languages=("it",),
+        active_cfp=True,
+        submission_types=("talk", "tutorial"),
+        durations=("50",),
+        audience_levels=("Beginner",),
+    )
+
+    SubmissionTag.objects.get_or_create(name="python")
+    SubmissionTag.objects.get_or_create(name="graphQL")
+    resp, variables = _submit_talk(
+        graphql_client, conference, tags=["python", "graphQL"]
+    )
+
+    assert resp["data"]["sendSubmission"]["__typename"] == "Submission"
+    assert resp["data"]["sendSubmission"]["tags"] == [
+        {"name": "python"},
+        {"name": "graphQL"},
+    ]

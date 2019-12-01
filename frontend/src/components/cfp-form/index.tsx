@@ -25,8 +25,10 @@ import {
   CfpPageQueryVariables,
   SendSubmissionMutation,
   SendSubmissionMutationVariables,
+  SubmissionTag,
 } from "../../generated/graphql-backend";
 import { Alert } from "../alert";
+import { TagLine } from "../input-tag";
 import { InputWrapper } from "../input-wrapper";
 import { Link } from "../link";
 import CFP_PAGE_QUERY from "./cfp-page.graphql";
@@ -42,6 +44,7 @@ type CfpFormFields = {
   notes: string;
   topic: string;
   languages: string[];
+  tags: SubmissionTag[];
 };
 
 export const CfpForm: React.SFC = () => {
@@ -96,6 +99,7 @@ export const CfpForm: React.SFC = () => {
             elevatorPitch: formState.values.elevatorPitch,
             notes: formState.values.notes,
             audienceLevel: formState.values.audienceLevel,
+            tags: formState.values.tags.map(tag => tag.name),
           },
         },
       });
@@ -142,14 +146,13 @@ export const CfpForm: React.SFC = () => {
       | "elevatorPitch"
       | "notes"
       | "audienceLevel"
+      | "tags"
       | "nonFieldErrors",
   ) =>
     (sendSubmissionData &&
       sendSubmissionData.sendSubmission.__typename === "SendSubmissionErrors" &&
       sendSubmissionData.sendSubmission[key]) ||
     [];
-
-  console.log(conferenceData!.me.submissions);
 
   return (
     <Box
@@ -244,9 +247,13 @@ export const CfpForm: React.SFC = () => {
               errors={getErrors("topic")}
             >
               <Select {...select("topic")} required={true}>
-                <option value="" disabled={true}>
-                  Select a topic
-                </option>
+                <FormattedMessage id="cfp.selectTopic">
+                  {txt => (
+                    <option value="" disabled={true}>
+                      {txt}
+                    </option>
+                  )}
+                </FormattedMessage>
                 {conferenceData!.conference.topics.map(d => (
                   <option key={d.id} value={d.id}>
                     {d.name}
@@ -261,9 +268,13 @@ export const CfpForm: React.SFC = () => {
               errors={getErrors("duration")}
             >
               <Select {...select("length")} required={true}>
-                <option value="" disabled={true}>
-                  Select a duration
-                </option>
+                <FormattedMessage id="cfp.selectDuration">
+                  {txt => (
+                    <option value="" disabled={true}>
+                      {txt}
+                    </option>
+                  )}
+                </FormattedMessage>
                 {conferenceData!.conference.durations
                   .filter(
                     d =>
@@ -287,9 +298,13 @@ export const CfpForm: React.SFC = () => {
               errors={getErrors("audienceLevel")}
             >
               <Select {...select("audienceLevel")} required={true}>
-                <option value="" disabled={true}>
-                  Select an audience
-                </option>
+                <FormattedMessage id="cfp.selectAudience">
+                  {txt => (
+                    <option value="" disabled={true}>
+                      {txt}
+                    </option>
+                  )}
+                </FormattedMessage>
                 {conferenceData!.conference.audienceLevels.map(a => (
                   <option key={a.id} value={a.id}>
                     {a.name}
@@ -354,6 +369,20 @@ export const CfpForm: React.SFC = () => {
           />
         </InputWrapper>
 
+        <InputWrapper
+          label={<FormattedMessage id="cfp.tagsLabel" />}
+          description={<FormattedMessage id="cfp.tagsDescription" />}
+          errors={getErrors("tags")}
+        >
+          <TagLine
+            tags={formState.values.tags || []}
+            allowChange={true}
+            onTagChange={(tags: SubmissionTag[]) => {
+              formState.setField("tags", tags);
+            }}
+          />
+        </InputWrapper>
+
         {getErrors("nonFieldErrors").map(error => (
           <Alert sx={{ mb: 4 }} variant="alert" key={error}>
             {error}
@@ -362,14 +391,17 @@ export const CfpForm: React.SFC = () => {
 
         {sendSubmissionError && (
           <Alert sx={{ mb: 4 }} variant="alert">
-            Try again: {sendSubmissionError.message}
+            <FormattedMessage
+              id="cfp.tryAgain"
+              values={{ error: sendSubmissionError.message }}
+            />
           </Alert>
         )}
 
         {sendSubmissionData &&
           sendSubmissionData.sendSubmission.__typename === "Submission" && (
             <Alert sx={{ mb: 4 }} variant="success">
-              Submission sent!
+              <FormattedMessage id="cfp.submissionSent" />
             </Alert>
           )}
 

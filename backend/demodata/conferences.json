@@ -1,12 +1,5 @@
 [
   {
-    "model": "conferences.audiencelevel",
-    "pk": 1,
-    "fields": {
-      "name": "Beginner"
-    }
-  },
-  {
     "model": "conferences.deadline",
     "pk": 1,
     "fields": {
@@ -46,9 +39,9 @@
         "it": "Questa \u00e8 una conferenze di prova."
       },
       "topics": [1],
-      "languages": [],
+      "languages": [1, 2],
       "audience_levels": [1],
-      "submission_types": [1]
+      "submission_types": [1,2]
     }
   },
   {
@@ -59,10 +52,32 @@
     }
   },
   {
-    "model": "submissions.submissiontype",
+    "model": "conferences.audiencelevel",
     "pk": 1,
     "fields": {
-      "name": "Talk"
+      "name": "Beginner"
+    }
+  },
+  {
+    "model": "conferences.duration",
+    "pk": 1,
+    "fields": {
+      "conference": 1,
+      "name": "45",
+      "duration": 45,
+      "notes": "45 minutes",
+      "allowed_submission_types": [1]
+    }
+  },
+  {
+    "model": "conferences.duration",
+    "pk": 2,
+    "fields": {
+      "conference": 1,
+      "name": "5",
+      "duration": 5,
+      "notes": "5 minutes",
+      "allowed_submission_types": [2]
     }
   }
 ]
