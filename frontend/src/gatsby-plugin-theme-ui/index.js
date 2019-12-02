@@ -300,5 +300,6 @@ export default {
   },
   zIndices: {
     header: "11",
+    footer: "0",
   },
 };

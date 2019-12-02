@@ -78,6 +78,7 @@ export const Select: React.SFC<Props> = props => (
         marginRight: "16px",
         fontWeight: "bold",
         background: "#F17A5D",
+        border: "3px solid #000",
       }),
     }}
     {...props}
