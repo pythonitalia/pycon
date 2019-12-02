@@ -16,7 +16,6 @@ resource "aws_cloudfront_distribution" "pretix_distribution" {
   enabled             = true
   is_ipv6_enabled     = true
   comment             = "Pretix"
-  aliases             = []
   wait_for_deployment = false
 
   viewer_certificate {
