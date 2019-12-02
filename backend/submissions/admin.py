@@ -23,11 +23,12 @@ class SubmissionAdmin(admin.ModelAdmin):
                 )
             },
         ),
-        ("Details", {"fields": ("elevator_pitch", "abstract", "notes")}),
+        ("Details", {"fields": ("elevator_pitch", "abstract", "notes", "tags")}),
     )
     list_filter = ("conference", "type", "topic")
     search_fields = ("title", "abstract")
     prepopulated_fields = {"slug": ("title",)}
+    filter_horizontal = ("tags",)
 
 
 @admin.register(SubmissionType)

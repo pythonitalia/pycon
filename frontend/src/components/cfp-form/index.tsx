@@ -16,6 +16,7 @@ import {
 } from "@theme-ui/components";
 import React, { useCallback, useContext } from "react";
 import { FormattedMessage } from "react-intl";
+import { OptionTypeBase, ValueType } from "react-select";
 import { useFormState } from "react-use-form-state";
 import { jsx } from "theme-ui";
 
@@ -44,7 +45,7 @@ type CfpFormFields = {
   notes: string;
   topic: string;
   languages: string[];
-  tags: SubmissionTag[];
+  tags: string[];
 };
 
 export const CfpForm: React.SFC = () => {
@@ -99,7 +100,7 @@ export const CfpForm: React.SFC = () => {
             elevatorPitch: formState.values.elevatorPitch,
             notes: formState.values.notes,
             audienceLevel: formState.values.audienceLevel,
-            tags: formState.values.tags.map(tag => tag.name),
+            tags: formState.values.tags,
           },
         },
       });
@@ -376,9 +377,11 @@ export const CfpForm: React.SFC = () => {
         >
           <TagLine
             tags={formState.values.tags || []}
-            allowChange={true}
-            onTagChange={(tags: SubmissionTag[]) => {
-              formState.setField("tags", tags);
+            onTagChange={(tags: { value: string }[]) => {
+              formState.setField(
+                "tags",
+                tags.map(t => t.value),
+              );
             }}
           />
         </InputWrapper>
