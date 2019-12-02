@@ -125,7 +125,7 @@ resource "aws_elastic_beanstalk_environment" "pycon_env" {
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
     name      = "PRETIX_API"
-    value     = "https://d3ex7joy4im5c0.cloudfront.net/api/v1/"
+    value     = "https://tickets.pycon.it/api/v1/"
   }
 
   setting {

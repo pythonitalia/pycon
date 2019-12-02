@@ -66,7 +66,7 @@ export const TicketsForm: React.SFC<RouteComponentProps<Props>> = ({
 
             <script
               type="text/javascript"
-              src="https://d3ex7joy4im5c0.cloudfront.net/widget/v1.en.js"
+              src="https://tickets.pycon.it/widget/v1.en.js"
               async={true}
             />
           </Helmet>
