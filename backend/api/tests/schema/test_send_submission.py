@@ -669,14 +669,15 @@ def test_create_submission_tags(
         audience_levels=("Beginner",),
     )
 
-    SubmissionTag.objects.get_or_create(name="python")
-    SubmissionTag.objects.get_or_create(name="graphQL")
+    python, _ = SubmissionTag.objects.get_or_create(name="python")
+    graphql, _ = SubmissionTag.objects.get_or_create(name="GraphQL")
+
     resp, variables = _submit_talk(
-        graphql_client, conference, tags=["python", "graphQL"]
+        graphql_client, conference, tags=[python.id, graphql.id]
     )
 
     assert resp["data"]["sendSubmission"]["__typename"] == "Submission"
     assert resp["data"]["sendSubmission"]["tags"] == [
         {"name": "python"},
-        {"name": "graphQL"},
+        {"name": "GraphQL"},
     ]

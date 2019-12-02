@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { useQuery } from "@apollo/react-hooks";
 import { RouteComponentProps } from "@reach/router";
-import { Box, Grid, Heading, Text } from "@theme-ui/components";
+import { Box, Flex, Grid, Heading, Text } from "@theme-ui/components";
 import { Fragment } from "react";
 import { Helmet } from "react-helmet";
 import { FormattedMessage } from "react-intl";
@@ -13,6 +13,7 @@ import {
 } from "../../generated/graphql-backend";
 import { compile } from "../../helpers/markdown";
 import { TagLine } from "../input-tag";
+import { Tag } from "../tag";
 import SUBMISSION_QUERY from "./submission.graphql";
 
 export const SubmissionPage = ({ id }: RouteComponentProps<{ id: string }>) => {
@@ -140,7 +141,16 @@ export const SubmissionPage = ({ id }: RouteComponentProps<{ id: string }>) => {
 
             <Text sx={{ mb: 4 }}>{compile(data.submission.notes).tree}</Text>
 
-            <TagLine sx={{ mb: 4 }} tags={data.submission.tags} />
+            <Flex
+              sx={{
+                flexWrap: "wrap",
+                mb: 4,
+              }}
+            >
+              {data.submission.tags.map(tag => (
+                <Tag key={tag.id} tag={tag} />
+              ))}
+            </Flex>
           </Box>
         </Grid>
       </Box>
