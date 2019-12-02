@@ -19,7 +19,7 @@ DATABASES = {
 }
 
 USE_X_FORWARDED_HOST = True
-SITE_URL = "https://d3ex7joy4im5c0.cloudfront.net"
+SITE_URL = "https://tickets.pycon.it"
 
 MAIL_FROM = SERVER_EMAIL = DEFAULT_FROM_EMAIL = "noreply@pycon.it"
 EMAIL_HOST = "email-smtp.us-east-1.amazonaws.com"
