@@ -1,4 +1,6 @@
 resource "aws_cloudfront_distribution" "pretix_distribution" {
+  aliases = ["tickets.pycon.it"]
+
   origin {
     domain_name = "${aws_elastic_beanstalk_environment.pretix_env.cname}"
     origin_id   = "pretix"
