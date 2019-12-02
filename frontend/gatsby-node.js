@@ -70,6 +70,30 @@ exports.createResolvers = ({
   createResolvers(resolvers);
 };
 
+const createPageWithSocialCards = (createPage, socialCardComponent, args) => {
+  const cardTypes = ["social", "social-square"];
+
+  cardTypes.forEach(type => {
+    createPage({
+      ...args,
+      path: `${args.path}/${type}`,
+      component: socialCardComponent,
+      context: {
+        ...args.context,
+        cardType: type,
+      },
+    });
+  });
+
+  createPage({
+    ...args,
+    context: {
+      ...args.context,
+      socialCard: `${args.path}/social/social.png`,
+    },
+  });
+};
+
 exports.createPages = async ({ graphql, actions, reporter }) => {
   const { createPage, createRedirect } = actions;
 
@@ -95,8 +119,11 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     return;
   }
 
-  const blogTemplate = path.resolve(`src/templates/blog.tsx`);
-  const blogPostTemplate = path.resolve(`src/templates/blog-post.tsx`);
+  const blogTemplate = path.resolve(`src/templates/blog/index.tsx`);
+  const blogPostTemplate = path.resolve(`src/templates/blog/post.tsx`);
+  const blogPostSocialTemplate = path.resolve(
+    `src/templates/blog/social-card.tsx`,
+  );
   const pageTemplate = path.resolve(`src/templates/page.tsx`);
   const homeTemplate = path.resolve(`src/templates/home.tsx`);
   const appTemplate = path.resolve(`src/templates/app.tsx`);
@@ -156,7 +183,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   });
 
   result.data.backend.blogPosts.forEach(({ slugEn, slugIt }) => {
-    createPage({
+    createPageWithSocialCards(createPage, blogPostSocialTemplate, {
       path: `/en/blog/${slugEn}`,
       component: blogPostTemplate,
       context: {
@@ -169,7 +196,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
       },
     });
 
-    createPage({
+    createPageWithSocialCards(createPage, blogPostSocialTemplate, {
       path: `/it/blog/${slugIt}`,
       component: blogPostTemplate,
       context: {

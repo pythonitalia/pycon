@@ -35,6 +35,7 @@ export default {
   },
   borders: {
     primary: "3px solid #000000",
+    socialCard: "14px solid #000000",
   },
   forms: {
     input: {

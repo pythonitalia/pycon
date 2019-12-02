@@ -60,9 +60,13 @@ const reset = css`
 
 const isSocial = (props: Props["props"]) => {
   const suffix = "/social";
+  const suffixSquare = "/social-square";
 
   return (
-    props.location.pathname.endsWith(suffix) || props.path.endsWith(suffix)
+    props.location.pathname.endsWith(suffix) ||
+    props.location.pathname.endsWith(suffixSquare) ||
+    props.path.endsWith(suffix) ||
+    props.path.endsWith(suffixSquare)
   );
 };
 
