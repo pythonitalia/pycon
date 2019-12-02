@@ -6,8 +6,8 @@ import { Helmet } from "react-helmet";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
-import { Link } from "../components/link";
-import { BlogIndexQuery } from "../generated/graphql";
+import { Link } from "../../components/link";
+import { BlogIndexQuery } from "../../generated/graphql";
 
 export default ({ data }: { data: BlogIndexQuery }) => {
   const posts = data.backend.blogPosts;

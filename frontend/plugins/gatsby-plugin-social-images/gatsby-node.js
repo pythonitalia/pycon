@@ -20,8 +20,14 @@ exports.onPostBuild = async (args, pluginOptions) => {
       "social.png",
     );
 
+    const size = { width: 1200, height: 630 };
+
+    if (pagePath.endsWith("square/index.html")) {
+      size.height = size.width;
+    }
+
     const page = await browser.newPage();
-    await page.setViewport({ width: 1200, height: 630, deviceScaleFactor: 2 });
+    await page.setViewport({ ...size, deviceScaleFactor: 2 });
     await page.goto(`file://${pagePath}`);
     await page.evaluate(
       (cwd, root) => {
@@ -49,6 +55,10 @@ exports.onPostBuild = async (args, pluginOptions) => {
 
 exports.onCreatePage = ({ page, actions }) => {
   if (page.path.endsWith("/social")) {
+    pages.push(page.path);
+  }
+
+  if (page.path.endsWith("/social-square")) {
     pages.push(page.path);
   }
 };

@@ -5,16 +5,41 @@ import { Fragment } from "react";
 import { Helmet } from "react-helmet";
 import { jsx } from "theme-ui";
 
-import { Article } from "../components/article";
-import { PostQuery } from "../generated/graphql";
-import { compile } from "../helpers/markdown";
+import { Article } from "../../components/article";
+import { PostQuery } from "../../generated/graphql";
+import { compile } from "../../helpers/markdown";
 
-export default ({ data }: { data: PostQuery }) => {
+type Props = {
+  data: PostQuery;
+  pageContext: {
+    socialCard: string;
+  };
+};
+
+export default ({ data, ...props }: Props) => {
   const post = data.backend.blogPost!;
+  const socialCard = `${data.site!.siteMetadata!.siteUrl}${
+    props.pageContext.socialCard
+  }`;
 
   return (
     <Fragment>
-      <Helmet>
+      <Helmet
+        meta={[
+          {
+            name: "twitter:card",
+            content: "summary_large_image",
+          },
+          {
+            property: "og:image",
+            content: socialCard,
+          },
+          {
+            name: "twitter:image",
+            content: socialCard,
+          },
+        ]}
+      >
         <title>{post.title}</title>
       </Helmet>
 
@@ -32,6 +57,12 @@ export default ({ data }: { data: PostQuery }) => {
 
 export const query = graphql`
   query Post($slug: String!, $language: String!) {
+    site {
+      siteMetadata {
+        siteUrl
+      }
+    }
+
     backend {
       blogPost(slug: $slug) {
         title(language: $language)
