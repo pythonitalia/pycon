@@ -113,7 +113,10 @@ export default ({ data, pageContext }: Props) => (
 
         <Heading
           variant="caps"
-          sx={{ fontSize: getTitleFontSize(pageContext.cardType) }}
+          sx={{
+            fontSize: getTitleFontSize(pageContext.cardType),
+            fontWeight: "bold",
+          }}
         >
           {data.backend.blogPost!.title}
         </Heading>
