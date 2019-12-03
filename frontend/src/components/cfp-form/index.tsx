@@ -81,11 +81,15 @@ export const CfpForm: React.SFC = () => {
 
   const onSubmit = useCallback(
     async e => {
-      if (sendSubmissionLoading) {
+      e.preventDefault();
+
+      if (
+        sendSubmissionLoading ||
+        (sendSubmissionData &&
+          sendSubmissionData.sendSubmission.__typename === "Submission")
+      ) {
         return;
       }
-
-      e.preventDefault();
 
       sendSubmission({
         variables: {
@@ -105,7 +109,7 @@ export const CfpForm: React.SFC = () => {
         },
       });
     },
-    [formState],
+    [formState, sendSubmissionData, sendSubmissionLoading],
   );
 
   if (conferenceLoading) {
