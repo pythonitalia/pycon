@@ -280,11 +280,11 @@ category = "main"
 description = "A Django app providing database and form fields for pytz timezone objects."
 name = "django-timezone-field"
 optional = false
-python-versions = "*"
-version = "3.1"
+python-versions = ">=3.5"
+version = "4.0"
 
 [package.dependencies]
-django = ">=1.11"
+django = ">=2.2"
 pytz = "*"
 
 [[package]]
@@ -1052,7 +1052,7 @@ version = "0.6.0"
 more-itertools = "*"
 
 [metadata]
-content-hash = "cb3618939bbc1cd1028ed1677eefd8f772017e51389f30e47a5df3bd7e1de58b"
+content-hash = "754541e9d45550ccc3ae618a8071f2b9dd4ff030cc2d11a7bd475bf8d81a7dcc"
 python-versions = "^3.7"
 
 [metadata.hashes]
@@ -1082,7 +1082,7 @@ django-model-utils = ["3f130a262e45d73e0950d2be76af4bf4ee86804dd60e5f90afc5cd948
 django-ordered-model = ["0931f498008f91a00a32c4e0ae08a662ef608a1092bf6e6ec9af9b1a83f08acf", "abf0d963f7e607a994baf6bc300e50af647b3d243c3e592c6cc8f8b924b6d427"]
 django-ses = ["d3721a2068ce0cf5f86ad31af1a1a8e256e8dbf0f5e0d1c71129f36f20191e18", "f723f5c93ac38278c9a3f390b8df485953486d2c2011670fe0860f99200b9103"]
 django-storages = ["0a9b7e620e969fb0797523695329ed223bf540bbfdf6cd163b061fc11dab2d1c", "9322ab74ba6371e2e0fccc350c741686ade829e43085597b26b07ae8955a0a00"]
-django-timezone-field = ["1a7bbcf984ae191c6dfe713994b4ff4062dc21e47a909356c93e76d027c87c8f", "a25af66b86d13709aa8c69a361c1ea68322cda64b5bbf9141fb67b8b44aa4e43"]
+django-timezone-field = ["758b7d41084e9ea2e89e59eb616e9b6326e6fbbf9d14b6ef062d624fe8cc6246", "7e3620fe2211c2d372fad54db8f86ff884098d018d56fda4dca5e64929e05ffc"]
 docutils = ["6c4f696463b79f1fb8ba0c594b63840ebd41f059e92b31957c46b74a4599b6d0", "9e4d7ecfc600058e07ba661411a2b7de2fd0fafa17d1a7f7361cd47b1175c827", "a2aeea129088da402665e92e0b25b04b073c04b2dce4ab65caaa38b7ce2e1a99"]
 entrypoints = ["589f874b313739ad35be6e0cd7efde2a4e9b6fea91edcc34e58ecbb8dbe56d19", "c70dd71abe5a8c85e55e12c19bd91ccfeec11a6e99044204511f9ed547d48451"]
 factory-boy = ["728df59b372c9588b83153facf26d3d28947fc750e8e3c95cefa9bed0e6394ee", "faf48d608a1735f0d0a3c9cbf536d64f9132b547dae7ba452c4d99a79e84a370"]
