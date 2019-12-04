@@ -65,7 +65,8 @@ export const Link: React.SFC<LinkProps> = ({
   ...additionalProps
 }) => {
   const language = useCurrentLanguage();
-  const isExternal = href && href.startsWith("http");
+  const isExternal =
+    (href && href.startsWith("http")) || additionalProps.variant === "google";
   const LinkComponent = isExternal
     ? ThemeLink
     : ({ ...props }: { to: string }) => (
