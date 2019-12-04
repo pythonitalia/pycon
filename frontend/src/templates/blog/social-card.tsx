@@ -102,7 +102,7 @@ export default ({ data, pageContext }: Props) => (
         <Text
           sx={{
             color: "white",
-            fontSize: 5,
+            fontSize: 6,
             position: "absolute",
             bottom: "100%",
             mb: 3,
