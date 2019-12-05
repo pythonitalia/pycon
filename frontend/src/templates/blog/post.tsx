@@ -65,36 +65,39 @@ export default ({ data, ...props }: Props) => {
           </Article>
         </Box>
 
-        <Flex
-          sx={{
-            position: "relative",
-            justifyContent: "flex-end",
-          }}
-        >
-          <BlogPostIllustration
+        <Box>
+          <Flex
             sx={{
-              width: "80%",
-            }}
-          />
-
-          <Box
-            sx={{
-              border: "primary",
-              p: 4,
-              backgroundColor: "cinderella",
-              width: "80%",
-              position: "absolute",
-              left: 0,
-              top: "70%",
+              position: "relative",
+              justifyContent: "flex-end",
+              alignItems: "flex-start",
             }}
           >
-            <Text sx={{ fontWeight: "bold" }}>
-              <FormattedMessage id="blog.author" />
-            </Text>
+            <BlogPostIllustration
+              sx={{
+                width: "80%",
+              }}
+            />
 
-            <Text>{post.author.fullName}</Text>
-          </Box>
-        </Flex>
+            <Box
+              sx={{
+                border: "primary",
+                p: 4,
+                backgroundColor: "cinderella",
+                width: "80%",
+                position: "absolute",
+                left: 0,
+                top: "70%",
+              }}
+            >
+              <Text sx={{ fontWeight: "bold" }}>
+                <FormattedMessage id="blog.author" />
+              </Text>
+
+              <Text>{post.author.fullName}</Text>
+            </Box>
+          </Flex>
+        </Box>
       </Grid>
     </Fragment>
   );
