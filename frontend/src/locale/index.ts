@@ -117,6 +117,7 @@ export default {
     "signup.useGoogle": "Sign up with Google",
     "signup.alreadyHaveAccount": "Already have an account?",
     "blog.readMore": "Read more",
+    "blog.author": "Author",
     "inputTag.selectTags": "Select some tags...",
   },
   it: {
@@ -237,6 +238,7 @@ export default {
     "signup.useGoogle": "Registrati con Google",
     "signup.alreadyHaveAccount": "Hai già un account?",
     "blog.readMore": "Continua a leggere",
+    "blog.author": "Autore",
     "inputTag.selectTags": "Scegli dei tag",
   },
 };
