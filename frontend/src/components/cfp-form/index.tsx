@@ -14,9 +14,8 @@ import {
   Text,
   Textarea,
 } from "@theme-ui/components";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
-import { OptionTypeBase, ValueType } from "react-select";
 import { useFormState } from "react-use-form-state";
 import { jsx } from "theme-ui";
 
@@ -84,12 +83,12 @@ export const CfpForm: React.SFC = () => {
       if (durations.length > 0) {
         // Check if we have a valid duration to preselect that is also allowed
         // in the format we automatically selected
-        const allowedDurations = durations.filter(
+        const validDurations = durations.filter(
           d => d.allowedSubmissionTypes.findIndex(t => t.id === format) !== -1,
         );
 
-        if (allowedDurations.length > 0) {
-          formState.setField("length", allowedDurations[0].id);
+        if (validDurations.length > 0) {
+          formState.setField("length", validDurations[0].id);
         }
       }
 
@@ -175,6 +174,23 @@ export const CfpForm: React.SFC = () => {
       },
     });
   };
+
+  const allowedDurations = conferenceData?.conference.durations.filter(
+    d =>
+      d.allowedSubmissionTypes.findIndex(
+        i => i.id === formState.values.format,
+      ) !== -1,
+  );
+
+  useEffect(() => {
+    if (!allowedDurations?.length) {
+      return;
+    }
+
+    // When changing format we need to reset to the first
+    // available duration of the new format
+    formState.setField("length", allowedDurations[0].id);
+  }, [formState.values.format]);
 
   if (conferenceLoading) {
     return (
@@ -344,18 +360,11 @@ export const CfpForm: React.SFC = () => {
                     </option>
                   )}
                 </FormattedMessage>
-                {conferenceData!.conference.durations
-                  .filter(
-                    d =>
-                      d.allowedSubmissionTypes.findIndex(
-                        i => i.id === formState.values.format,
-                      ) !== -1,
-                  )
-                  .map(d => (
-                    <option key={d.id} value={d.id}>
-                      {d.name}
-                    </option>
-                  ))}
+                {allowedDurations!.map(d => (
+                  <option key={d.id} value={d.id}>
+                    {d.name}
+                  </option>
+                ))}
               </Select>
             </InputWrapper>
 
