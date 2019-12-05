@@ -6,6 +6,7 @@ from django.forms import BooleanField, CharField, EmailField, ValidationError
 from django.utils.translation import ugettext_lazy as _
 
 from api.forms import ContextAwareModelForm
+from newsletters.models import Subscription
 from notifications.emails import send_request_password_reset_mail
 from strawberry_forms.forms import FormWithContext
 from users.models import User
@@ -123,6 +124,15 @@ class UpdateUserForm(ContextAwareModelForm):
 
         for key, value in self.cleaned_data.items():
             setattr(self.instance, key, value)
+
+        if self.cleaned_data.get("open_to_newsletter"):
+            Subscription.objects.get_or_create(email=user.email)
+        else:
+            try:
+                subscription = Subscription.objects.get(email=user.email)
+            except Subscription.DoesNotExist:
+                return True
+            subscription.delete()
 
         return super().save(commit=commit)
 
