@@ -1,0 +1,16 @@
+mutation subscribe($email: String!) {
+    subscribeToNewsletter(input: {
+        email: $email
+    }) {
+        __typename
+
+        ... on SubscribeToNewsletterErrors {
+            validationEmail: email
+        }
+
+        ... on Subscription {
+            id
+            email
+        }
+    }
+}

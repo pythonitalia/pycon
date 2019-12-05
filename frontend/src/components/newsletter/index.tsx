@@ -1,24 +1,49 @@
+import { useMutation } from "@apollo/react-hooks";
 /** @jsx jsx */ import {
   Box,
   Button,
   Heading,
   Input,
-  Label,
   Text,
 } from "@theme-ui/components";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
+import {
+  SubscribeMutation,
+  SubscribeMutationVariables,
+} from "../../generated/graphql-backend";
+import SUBSCRIBE_QUERY from "./subscribe.graphql";
+
 const NewsletterForm = () => {
   const [email, setEmail] = useState("");
-  const loading = false;
-  const error = "";
-  const data = undefined;
+  const [subscribe, { loading, error, data }] = useMutation<
+    SubscribeMutation,
+    SubscribeMutationVariables
+  >(SUBSCRIBE_QUERY);
 
   const canSubmit = email.trim() !== "" && !loading;
-
+  const onSubmit = useCallback(
+    async e => {
+      e.preventDefault();
+      if (
+        loading ||
+        (data &&
+          data.subscribeToNewsletter.__typename === "subscribeToNewsletter")
+      ) {
+        return;
+      }
+      subscribe({
+        variables: {
+          email,
+        },
+      });
+    },
+    [email],
+  );
   if (data) {
+    console.log(data);
     return (
       <FormattedMessage id="newsletter.success">
         {txt => <Text variant="prefooter">{txt}</Text>}
@@ -40,6 +65,8 @@ const NewsletterForm = () => {
 
   return (
     <Box
+      as="form"
+      onSubmit={onSubmit}
       sx={{
         maxWidth: "container",
         mx: "auto",
