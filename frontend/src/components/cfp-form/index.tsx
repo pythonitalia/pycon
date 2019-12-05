@@ -1,6 +1,7 @@
 /** @jsx jsx */
 
 import { useMutation, useQuery } from "@apollo/react-hooks";
+import { navigate } from "@reach/router";
 import {
   Box,
   Button,
@@ -14,13 +15,13 @@ import {
   Text,
   Textarea,
 } from "@theme-ui/components";
-import React, { useCallback, useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
-import { OptionTypeBase, ValueType } from "react-select";
 import { useFormState } from "react-use-form-state";
 import { jsx } from "theme-ui";
 
 import { ConferenceContext } from "../../context/conference";
+import { useCurrentLanguage } from "../../context/language";
 import {
   CfpPageQuery,
   CfpPageQueryVariables,
@@ -42,8 +43,8 @@ type CfpFormFields = {
   format: string;
   title: string;
   elevatorPitch: string;
-  length: number;
-  audienceLevel: number;
+  length: string;
+  audienceLevel: string;
   abstract: string;
   notes: string;
   topic: string;
@@ -53,6 +54,15 @@ type CfpFormFields = {
 
 export const CfpForm: React.SFC = () => {
   const conferenceCode = useContext(ConferenceContext);
+  const lang = useCurrentLanguage();
+  const [formState, { text, textarea, radio, select, checkbox }] = useFormState<
+    CfpFormFields
+  >(
+    {},
+    {
+      withIds: true,
+    },
+  );
   const {
     loading: conferenceLoading,
     error: conferenceError,
@@ -60,6 +70,41 @@ export const CfpForm: React.SFC = () => {
   } = useQuery<CfpPageQuery, CfpPageQueryVariables>(CFP_PAGE_QUERY, {
     variables: {
       conference: conferenceCode,
+    },
+    onCompleted(data) {
+      const submissionTypes = data.conference.submissionTypes;
+
+      if (submissionTypes.length === 0) {
+        return;
+      }
+
+      const format = submissionTypes[0].id;
+      formState.setField("format", format);
+
+      const durations = data.conference.durations;
+
+      if (durations.length > 0) {
+        // Check if we have a valid duration to preselect that is also allowed
+        // in the format we automatically selected
+        const validDurations = durations.filter(
+          d => d.allowedSubmissionTypes.findIndex(t => t.id === format) !== -1,
+        );
+
+        if (validDurations.length > 0) {
+          formState.setField("length", validDurations[0].id);
+        }
+      }
+
+      if (data.conference.topics.length > 0) {
+        formState.setField("topic", data.conference.topics[0].id);
+      }
+
+      if (data.conference.audienceLevels.length > 0) {
+        formState.setField(
+          "audienceLevel",
+          data.conference.audienceLevels[0].id,
+        );
+      }
     },
   });
   const [
@@ -103,15 +148,6 @@ export const CfpForm: React.SFC = () => {
     },
   );
 
-  const [formState, { text, textarea, radio, select, checkbox }] = useFormState<
-    CfpFormFields
-  >(
-    {},
-    {
-      withIds: true,
-    },
-  );
-
   const onSubmit = async (e: React.MouseEvent) => {
     e.preventDefault();
 
@@ -123,7 +159,7 @@ export const CfpForm: React.SFC = () => {
       return;
     }
 
-    sendSubmission({
+    const response = await sendSubmission({
       variables: {
         input: {
           conference: conferenceCode,
@@ -140,7 +176,29 @@ export const CfpForm: React.SFC = () => {
         },
       },
     });
+
+    if (response.data?.sendSubmission.__typename === "Submission") {
+      const id = response.data.sendSubmission.id;
+      navigate(`/${lang}/submission/${id}`);
+    }
   };
+
+  const allowedDurations = conferenceData?.conference.durations.filter(
+    d =>
+      d.allowedSubmissionTypes.findIndex(
+        i => i.id === formState.values.format,
+      ) !== -1,
+  );
+
+  useEffect(() => {
+    if (!allowedDurations?.length) {
+      return;
+    }
+
+    // When changing format we need to reset to the first
+    // available duration of the new format
+    formState.setField("length", allowedDurations[0].id);
+  }, [formState.values.format]);
 
   if (conferenceLoading) {
     return (
@@ -151,7 +209,9 @@ export const CfpForm: React.SFC = () => {
           px: 3,
         }}
       >
-        Loading
+        <Alert variant="info">
+          <FormattedMessage id="cfp.loading" />
+        </Alert>
       </Box>
     );
   }
@@ -165,7 +225,7 @@ export const CfpForm: React.SFC = () => {
           px: 3,
         }}
       >
-        Error: {conferenceError.message}
+        <Alert variant="alert">{conferenceError.message}</Alert>
       </Box>
     );
   }
@@ -310,18 +370,11 @@ export const CfpForm: React.SFC = () => {
                     </option>
                   )}
                 </FormattedMessage>
-                {conferenceData!.conference.durations
-                  .filter(
-                    d =>
-                      d.allowedSubmissionTypes.findIndex(
-                        i => i.id === formState.values.format,
-                      ) !== -1,
-                  )
-                  .map(d => (
-                    <option key={d.id} value={d.id}>
-                      {d.name}
-                    </option>
-                  ))}
+                {allowedDurations!.map(d => (
+                  <option key={d.id} value={d.id}>
+                    {d.name}
+                  </option>
+                ))}
               </Select>
             </InputWrapper>
 

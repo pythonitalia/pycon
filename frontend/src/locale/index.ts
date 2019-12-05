@@ -55,6 +55,7 @@ export default {
     "submission.notFound": "Not found",
     "cfp.yourProposals": "Your proposals",
     "cfp.pageTitle": "Make a proposal",
+    "cfp.loading": "Please wait",
     "cfp.introductionHeading": "Make a proposal",
     "cfp.introductionSubtitle": "PyCon Italy is looking for you!",
     "cfp.introductionCopy":
@@ -215,6 +216,7 @@ export default {
     "cfp.selectDuration": "Seleziona una durata",
     "cfp.selectTopic": "Seleziona un argomento",
     "cfp.selectAudience": "Seleziona livello",
+    "cfp.loading": "Caricamento",
     "header.profile": "Profilo",
     "header.login": "Login",
     "header.followus": "Seguici",
