@@ -14,7 +14,7 @@ import {
   Text,
   Textarea,
 } from "@theme-ui/components";
-import React, { useCallback, useContext } from "react";
+import React, { useContext } from "react";
 import { FormattedMessage } from "react-intl";
 import { OptionTypeBase, ValueType } from "react-select";
 import { useFormState } from "react-use-form-state";
@@ -53,6 +53,14 @@ type CfpFormFields = {
 
 export const CfpForm: React.SFC = () => {
   const conferenceCode = useContext(ConferenceContext);
+  const [formState, { text, textarea, radio, select, checkbox }] = useFormState<
+    CfpFormFields
+  >(
+    {},
+    {
+      withIds: true,
+    },
+  );
   const {
     loading: conferenceLoading,
     error: conferenceError,
@@ -60,6 +68,9 @@ export const CfpForm: React.SFC = () => {
   } = useQuery<CfpPageQuery, CfpPageQueryVariables>(CFP_PAGE_QUERY, {
     variables: {
       conference: conferenceCode,
+    },
+    onCompleted(data) {
+      formState.setField("format", data.conference.submissionTypes[0].id);
     },
   });
   const [
@@ -100,15 +111,6 @@ export const CfpForm: React.SFC = () => {
           },
         });
       },
-    },
-  );
-
-  const [formState, { text, textarea, radio, select, checkbox }] = useFormState<
-    CfpFormFields
-  >(
-    {},
-    {
-      withIds: true,
     },
   );
 
