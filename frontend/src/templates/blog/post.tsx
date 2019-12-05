@@ -1,11 +1,13 @@
 /** @jsx jsx */
-import { Box } from "@theme-ui/components";
+import { Box, Flex, Grid, Text } from "@theme-ui/components";
 import { graphql } from "gatsby";
 import { Fragment } from "react";
 import { Helmet } from "react-helmet";
+import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
 import { Article } from "../../components/article";
+import { BlogPostIllustration } from "../../components/illustrations/blog-post";
 import { PostQuery } from "../../generated/graphql";
 import { compile } from "../../helpers/markdown";
 
@@ -43,14 +45,57 @@ export default ({ data, ...props }: Props) => {
         <title>{post.title}</title>
       </Helmet>
 
-      <Box sx={{ mx: "auto", px: 3, pt: 4, maxWidth: "container" }}>
-        <Article
-          hero={post.imageFile && { ...post.imageFile.childImageSharp! }}
-          title={post.title}
+      <Grid
+        sx={{
+          mx: "auto",
+          px: 3,
+          py: 5,
+          maxWidth: "container",
+          gridColumnGap: 5,
+          gridTemplateColumns: [null, null, "2fr 1fr"],
+        }}
+      >
+        <Box>
+          <Article
+            hero={post.imageFile && { ...post.imageFile.childImageSharp! }}
+            published={post.published}
+            title={post.title}
+          >
+            {compile(post.content).tree}
+          </Article>
+        </Box>
+
+        <Flex
+          sx={{
+            position: "relative",
+            justifyContent: "flex-end",
+          }}
         >
-          {compile(post.content).tree}
-        </Article>
-      </Box>
+          <BlogPostIllustration
+            sx={{
+              width: "80%",
+            }}
+          />
+
+          <Box
+            sx={{
+              border: "primary",
+              p: 4,
+              backgroundColor: "cinderella",
+              width: "80%",
+              position: "absolute",
+              left: 0,
+              top: "70%",
+            }}
+          >
+            <Text sx={{ fontWeight: "bold" }}>
+              <FormattedMessage id="blog.author" />
+            </Text>
+
+            <Text>{post.author.fullName}</Text>
+          </Box>
+        </Flex>
+      </Grid>
     </Fragment>
   );
 };
@@ -68,6 +113,10 @@ export const query = graphql`
         title(language: $language)
         content(language: $language)
         excerpt(language: $language)
+        author {
+          fullName
+        }
+        published
         image
 
         imageFile {

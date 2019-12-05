@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { Box, Heading } from "@theme-ui/components";
+import { Box, Heading, Text } from "@theme-ui/components";
 import { GatsbyImageProps } from "gatsby-image";
 import { Fragment } from "react";
 import { jsx } from "theme-ui";
@@ -7,15 +7,31 @@ import { jsx } from "theme-ui";
 type ArticleProps = {
   hero: GatsbyImageProps | null;
   title: string;
+  published?: string;
   description?: string;
+};
+
+const formateDate = (datetime: string) => {
+  const d = new Date(datetime);
+
+  const formatter = new Intl.DateTimeFormat("default", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
+  return formatter.format(d);
 };
 
 export const Article: React.SFC<ArticleProps> = props => (
   <Fragment>
-    <Heading sx={{ fontSize: 6, mb: 5 }}>{props.title}</Heading>
+    <Heading sx={{ fontSize: 6 }}>{props.title}</Heading>
+    {props.published && (
+      <Text sx={{ fontSize: 2, mt: 3, fontWeight: "bold", color: "orange" }}>
+        {formateDate(props.published)}
+      </Text>
+    )}
 
-    <Box className="article" sx={{ mb: 5 }}>
-      {props.children}
-    </Box>
+    <Box sx={{ mt: 4, mb: 5 }}>{props.children}</Box>
   </Fragment>
 );
