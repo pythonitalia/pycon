@@ -201,7 +201,9 @@ export const CfpForm: React.SFC = () => {
           px: 3,
         }}
       >
-        Loading
+        <Alert variant="info">
+          <FormattedMessage id="cfp.loading" />
+        </Alert>
       </Box>
     );
   }
@@ -215,7 +217,7 @@ export const CfpForm: React.SFC = () => {
           px: 3,
         }}
       >
-        Error: {conferenceError.message}
+        <Alert variant="alert">{conferenceError.message}</Alert>
       </Box>
     );
   }
