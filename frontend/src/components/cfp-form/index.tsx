@@ -42,8 +42,8 @@ type CfpFormFields = {
   format: string;
   title: string;
   elevatorPitch: string;
-  length: number;
-  audienceLevel: number;
+  length: string;
+  audienceLevel: string;
   abstract: string;
   notes: string;
   topic: string;
@@ -70,7 +70,39 @@ export const CfpForm: React.SFC = () => {
       conference: conferenceCode,
     },
     onCompleted(data) {
-      formState.setField("format", data.conference.submissionTypes[0].id);
+      const submissionTypes = data.conference.submissionTypes;
+
+      if (submissionTypes.length === 0) {
+        return;
+      }
+
+      const format = submissionTypes[0].id;
+      formState.setField("format", format);
+
+      const durations = data.conference.durations;
+
+      if (durations.length > 0) {
+        // Check if we have a valid duration to preselect that is also allowed
+        // in the format we automatically selected
+        const allowedDurations = durations.filter(
+          d => d.allowedSubmissionTypes.findIndex(t => t.id === format) !== -1,
+        );
+
+        if (allowedDurations.length > 0) {
+          formState.setField("length", allowedDurations[0].id);
+        }
+      }
+
+      if (data.conference.topics.length > 0) {
+        formState.setField("topic", data.conference.topics[0].id);
+      }
+
+      if (data.conference.audienceLevels.length > 0) {
+        formState.setField(
+          "audienceLevel",
+          data.conference.audienceLevels[0].id,
+        );
+      }
     },
   });
   const [
