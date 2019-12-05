@@ -1,0 +1,10 @@
+query MeSubmissions($conference: String!) {
+  me {
+    id
+
+    submissions(conference: $conference) {
+      id
+      title
+    }
+  }
+}

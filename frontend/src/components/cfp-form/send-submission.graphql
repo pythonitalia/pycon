@@ -4,19 +4,20 @@ mutation SendSubmission($input: SendSubmissionInput!) {
 
     ... on Submission {
       id
+      title
     }
 
     ... on SendSubmissionErrors {
-      title
-      abstract
-      topic
-      languages
-      type
-      duration
-      elevatorPitch
-      notes
-      audienceLevel
-      tags
+      validationTitle: title
+      validationAbstract: abstract
+      validationTopic: topic
+      validationLanguages: languages
+      validationType: type
+      validationDuration: duration
+      validationElevatorPitch: elevatorPitch
+      validationNotes: notes
+      validationAudienceLevel: audienceLevel
+      validationTags: tags
       nonFieldErrors
     }
   }

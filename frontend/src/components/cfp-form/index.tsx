@@ -24,6 +24,8 @@ import { ConferenceContext } from "../../context/conference";
 import {
   CfpPageQuery,
   CfpPageQueryVariables,
+  MeSubmissionsQuery,
+  MeSubmissionsQueryVariables,
   SendSubmissionMutation,
   SendSubmissionMutationVariables,
   SubmissionTag,
@@ -33,6 +35,7 @@ import { TagLine } from "../input-tag";
 import { InputWrapper } from "../input-wrapper";
 import { Link } from "../link";
 import CFP_PAGE_QUERY from "./cfp-page.graphql";
+import ME_SUBMISSIONS from "./me-submissions.graphql";
 import SEND_SUBMISSION_QUERY from "./send-submission.graphql";
 
 type CfpFormFields = {
@@ -68,6 +71,36 @@ export const CfpForm: React.SFC = () => {
     },
   ] = useMutation<SendSubmissionMutation, SendSubmissionMutationVariables>(
     SEND_SUBMISSION_QUERY,
+    {
+      update(cache, { data }) {
+        const query = cache.readQuery<
+          MeSubmissionsQuery,
+          MeSubmissionsQueryVariables
+        >({
+          query: ME_SUBMISSIONS,
+          variables: {
+            conference: conferenceCode,
+          },
+        });
+
+        if (!query || data?.sendSubmission.__typename !== "Submission") {
+          return;
+        }
+
+        cache.writeQuery<MeSubmissionsQuery, MeSubmissionsQueryVariables>({
+          query: ME_SUBMISSIONS,
+          data: {
+            me: {
+              ...query.me,
+              submissions: [...query.me.submissions, data!.sendSubmission],
+            },
+          },
+          variables: {
+            conference: conferenceCode,
+          },
+        });
+      },
+    },
   );
 
   const [formState, { text, textarea, radio, select, checkbox }] = useFormState<
@@ -79,38 +112,35 @@ export const CfpForm: React.SFC = () => {
     },
   );
 
-  const onSubmit = useCallback(
-    async e => {
-      e.preventDefault();
+  const onSubmit = async (e: React.MouseEvent) => {
+    e.preventDefault();
 
-      if (
-        sendSubmissionLoading ||
-        (sendSubmissionData &&
-          sendSubmissionData.sendSubmission.__typename === "Submission")
-      ) {
-        return;
-      }
+    if (
+      sendSubmissionLoading ||
+      (sendSubmissionData &&
+        sendSubmissionData.sendSubmission.__typename === "Submission")
+    ) {
+      return;
+    }
 
-      sendSubmission({
-        variables: {
-          input: {
-            conference: conferenceCode,
-            title: formState.values.title,
-            abstract: formState.values.abstract,
-            topic: formState.values.topic,
-            languages: formState.values.languages,
-            type: formState.values.format,
-            duration: formState.values.length,
-            elevatorPitch: formState.values.elevatorPitch,
-            notes: formState.values.notes,
-            audienceLevel: formState.values.audienceLevel,
-            tags: formState.values.tags,
-          },
+    sendSubmission({
+      variables: {
+        input: {
+          conference: conferenceCode,
+          title: formState.values.title,
+          abstract: formState.values.abstract,
+          topic: formState.values.topic,
+          languages: formState.values.languages,
+          type: formState.values.format,
+          duration: formState.values.length,
+          elevatorPitch: formState.values.elevatorPitch,
+          notes: formState.values.notes,
+          audienceLevel: formState.values.audienceLevel,
+          tags: formState.values.tags,
         },
-      });
-    },
-    [formState, sendSubmissionData, sendSubmissionLoading],
-  );
+      },
+    });
+  };
 
   if (conferenceLoading) {
     return (
@@ -142,16 +172,16 @@ export const CfpForm: React.SFC = () => {
 
   const getErrors = (
     key:
-      | "title"
-      | "abstract"
-      | "topic"
-      | "languages"
-      | "type"
-      | "duration"
-      | "elevatorPitch"
-      | "notes"
-      | "audienceLevel"
-      | "tags"
+      | "validationTitle"
+      | "validationAbstract"
+      | "validationTopic"
+      | "validationLanguages"
+      | "validationType"
+      | "validationDuration"
+      | "validationElevatorPitch"
+      | "validationNotes"
+      | "validationAudienceLevel"
+      | "validationTags"
       | "nonFieldErrors",
   ) =>
     (sendSubmissionData &&
@@ -214,7 +244,7 @@ export const CfpForm: React.SFC = () => {
         <InputWrapper
           sx={{ mb: 5 }}
           label={<FormattedMessage id="cfp.title" />}
-          errors={getErrors("title")}
+          errors={getErrors("validationTitle")}
         >
           <Input {...text("title")} required={true} />
         </InputWrapper>
@@ -232,7 +262,7 @@ export const CfpForm: React.SFC = () => {
               description={
                 <FormattedMessage id="cfp.elevatorPitchDescription" />
               }
-              errors={getErrors("elevatorPitch")}
+              errors={getErrors("validationElevatorPitch")}
             >
               <Textarea
                 sx={{
@@ -249,7 +279,7 @@ export const CfpForm: React.SFC = () => {
             <InputWrapper
               label={<FormattedMessage id="cfp.topicLabel" />}
               description={<FormattedMessage id="cfp.topicDescription" />}
-              errors={getErrors("topic")}
+              errors={getErrors("validationTopic")}
             >
               <Select {...select("topic")} required={true}>
                 <FormattedMessage id="cfp.selectTopic">
@@ -270,7 +300,7 @@ export const CfpForm: React.SFC = () => {
             <InputWrapper
               label={<FormattedMessage id="cfp.lengthLabel" />}
               description={<FormattedMessage id="cfp.lengthDescription" />}
-              errors={getErrors("duration")}
+              errors={getErrors("validationDuration")}
             >
               <Select {...select("length")} required={true}>
                 <FormattedMessage id="cfp.selectDuration">
@@ -300,7 +330,7 @@ export const CfpForm: React.SFC = () => {
               description={
                 <FormattedMessage id="cfp.audienceLevelDescription" />
               }
-              errors={getErrors("audienceLevel")}
+              errors={getErrors("validationAudienceLevel")}
             >
               <Select {...select("audienceLevel")} required={true}>
                 <FormattedMessage id="cfp.selectAudience">
@@ -326,7 +356,7 @@ export const CfpForm: React.SFC = () => {
           }}
           label={<FormattedMessage id="cfp.languagesLabel" />}
           description={<FormattedMessage id="cfp.languagesDescription" />}
-          errors={getErrors("languages")}
+          errors={getErrors("validationLanguages")}
         >
           {conferenceData!.conference.languages.map(language => (
             <Label
@@ -347,7 +377,7 @@ export const CfpForm: React.SFC = () => {
           }}
           label={<FormattedMessage id="cfp.abstractLabel" />}
           description={<FormattedMessage id="cfp.abstractDescription" />}
-          errors={getErrors("abstract")}
+          errors={getErrors("validationAbstract")}
         >
           <Textarea
             sx={{
@@ -362,7 +392,7 @@ export const CfpForm: React.SFC = () => {
         <InputWrapper
           label={<FormattedMessage id="cfp.notesLabel" />}
           description={<FormattedMessage id="cfp.notesDescription" />}
-          errors={getErrors("notes")}
+          errors={getErrors("validationNotes")}
         >
           <Textarea
             sx={{
@@ -377,7 +407,7 @@ export const CfpForm: React.SFC = () => {
         <InputWrapper
           label={<FormattedMessage id="cfp.tagsLabel" />}
           description={<FormattedMessage id="cfp.tagsDescription" />}
-          errors={getErrors("tags")}
+          errors={getErrors("validationTags")}
         >
           <TagLine
             tags={formState.values.tags || []}
