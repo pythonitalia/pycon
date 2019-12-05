@@ -1,6 +1,7 @@
 /** @jsx jsx */
 
 import { useMutation, useQuery } from "@apollo/react-hooks";
+import { navigate } from "@reach/router";
 import {
   Box,
   Button,
@@ -20,6 +21,7 @@ import { useFormState } from "react-use-form-state";
 import { jsx } from "theme-ui";
 
 import { ConferenceContext } from "../../context/conference";
+import { useCurrentLanguage } from "../../context/language";
 import {
   CfpPageQuery,
   CfpPageQueryVariables,
@@ -52,6 +54,7 @@ type CfpFormFields = {
 
 export const CfpForm: React.SFC = () => {
   const conferenceCode = useContext(ConferenceContext);
+  const lang = useCurrentLanguage();
   const [formState, { text, textarea, radio, select, checkbox }] = useFormState<
     CfpFormFields
   >(
@@ -156,7 +159,7 @@ export const CfpForm: React.SFC = () => {
       return;
     }
 
-    sendSubmission({
+    const response = await sendSubmission({
       variables: {
         input: {
           conference: conferenceCode,
@@ -173,6 +176,11 @@ export const CfpForm: React.SFC = () => {
         },
       },
     });
+
+    if (response.data?.sendSubmission.__typename === "Submission") {
+      const id = response.data.sendSubmission.id;
+      navigate(`/${lang}/submission/${id}`);
+    }
   };
 
   const allowedDurations = conferenceData?.conference.durations.filter(
