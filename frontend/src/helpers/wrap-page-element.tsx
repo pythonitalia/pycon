@@ -3,6 +3,7 @@ import { ApolloProvider } from "@apollo/react-hooks";
 import { css, Global } from "@emotion/core";
 import { Box, Flex } from "@theme-ui/components";
 import { Fragment } from "react";
+import { Helmet } from "react-helmet";
 import { IntlProvider } from "react-intl";
 import { jsx, Styled } from "theme-ui";
 
@@ -72,6 +73,10 @@ const isSocial = (props: Props["props"]) => {
 export const wrapPageElement = ({ element, props }: Props) => (
   <Fragment>
     <Global styles={reset} />
+
+    <Helmet>
+      <link rel="stylesheet" href="https://use.typekit.net/mbr7dqb.css" />
+    </Helmet>
 
     <Styled.root>
       {isSocial(props) ? (
