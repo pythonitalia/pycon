@@ -32,6 +32,8 @@ export const Article: React.SFC<ArticleProps> = props => (
       </Text>
     )}
 
-    <Box sx={{ mt: 4, mb: 5 }}>{props.children}</Box>
+    <Box sx={{ mt: 4, mb: 5 }} className="article">
+      {props.children}
+    </Box>
   </Fragment>
 );
