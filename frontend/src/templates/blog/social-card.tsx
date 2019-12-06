@@ -5,6 +5,7 @@ import React, { Fragment } from "react";
 import { jsx } from "theme-ui";
 
 import { SocialCardBlogPostQuery } from "../../generated/graphql";
+import { CardType, getSize } from "../../helpers/social-card";
 
 const Snakes: React.SFC = props => (
   <svg fill="none" viewBox="0 0 170 200" {...props}>
@@ -57,22 +58,11 @@ const Snakes: React.SFC = props => (
   </svg>
 );
 
-type CardType = "social" | "social-square";
-
 type Props = {
   data: SocialCardBlogPostQuery;
   pageContext: {
     cardType: CardType;
   };
-};
-
-const getSize = (cardType: CardType) => {
-  switch (cardType) {
-    case "social":
-      return { width: 1200, height: 630 };
-    case "social-square":
-      return { width: 1200, height: 1200 };
-  }
 };
 
 const getTitleFontSize = (cardType: CardType) => {

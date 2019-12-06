@@ -1,7 +1,7 @@
 import React from "react";
 
 export const LogoOrange: React.SFC = props => (
-  <svg width={586} height={175} fill="none" {...props}>
+  <svg viewBox="0 0 586 175" fill="none" {...props}>
     <path fill="#fff" stroke="#000" strokeWidth={14} d="M7 7h572v161H7z" />
     <g
       style={{

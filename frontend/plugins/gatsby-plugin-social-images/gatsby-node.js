@@ -26,6 +26,10 @@ exports.onPostBuild = async (args, pluginOptions) => {
       size.height = size.width;
     }
 
+    if (pagePath.endsWith("twitter/index.html")) {
+      size.height = 600;
+    }
+
     const page = await browser.newPage();
     await page.setViewport({ ...size, deviceScaleFactor: 2 });
     await page.goto(`file://${pagePath}`);
@@ -59,6 +63,10 @@ exports.onCreatePage = ({ page, actions }) => {
   }
 
   if (page.path.endsWith("/social-square")) {
+    pages.push(page.path);
+  }
+
+  if (page.path.endsWith("/social-twitter")) {
     pages.push(page.path);
   }
 };

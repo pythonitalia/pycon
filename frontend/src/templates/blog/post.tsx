@@ -15,6 +15,7 @@ type Props = {
   data: PostQuery;
   pageContext: {
     socialCard: string;
+    socialCardTwitter: string;
   };
 };
 
@@ -23,6 +24,9 @@ export default ({ data, ...props }: Props) => {
   const socialCard = `${data.site!.siteMetadata!.siteUrl}${
     props.pageContext.socialCard
   }`;
+  const socialCardTwitter = `${data.site!.siteMetadata!.siteUrl}${
+    props.pageContext.socialCardTwitter
+  }`;
 
   return (
     <Fragment>
@@ -30,6 +34,7 @@ export default ({ data, ...props }: Props) => {
         title={post.title}
         description={post.excerpt || post.title}
         imageUrl={socialCard}
+        twitterImageUrl={socialCardTwitter}
       />
 
       <Grid

@@ -70,8 +70,13 @@ exports.createResolvers = ({
   createResolvers(resolvers);
 };
 
-const createPageWithSocialCards = (createPage, socialCardComponent, args) => {
-  const cardTypes = ["social", "social-square"];
+const createPageWithSocialCards = (
+  createPage,
+  socialCardComponent,
+  args,
+  createOnlySocialCard = false,
+) => {
+  const cardTypes = ["social", "social-square", "social-twitter"];
 
   cardTypes.forEach(type => {
     createPage({
@@ -85,13 +90,16 @@ const createPageWithSocialCards = (createPage, socialCardComponent, args) => {
     });
   });
 
-  createPage({
-    ...args,
-    context: {
-      ...args.context,
-      socialCard: `${args.path}/social/social.png`,
-    },
-  });
+  if (!createOnlySocialCard) {
+    createPage({
+      ...args,
+      context: {
+        ...args.context,
+        socialCard: `${args.path}/social/social.png`,
+        socialCardTwitter: `${args.path}/social-twitter/social.png`,
+      },
+    });
+  }
 };
 
 exports.createPages = async ({ graphql, actions, reporter }) => {
@@ -243,10 +251,14 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     `src/templates/social-card.tsx`,
   );
 
-  createPage({
-    path: `/social`,
-    component: genericSocialCardTemplate,
-  });
+  createPageWithSocialCards(
+    createPage,
+    genericSocialCardTemplate,
+    {
+      path: "",
+    },
+    true,
+  );
 };
 
 exports.onCreatePage = async ({ page, actions }) => {

@@ -9,12 +9,14 @@ type Props = {
   title?: React.ReactNode | string | null;
   description?: string;
   imageUrl?: string;
+  twitterImageUrl?: string;
 };
 
 export const MetaTags: React.SFC<Props> = ({
   title,
   description,
   imageUrl,
+  twitterImageUrl,
   children,
 }) => {
   const {
@@ -32,6 +34,8 @@ export const MetaTags: React.SFC<Props> = ({
   const language = useCurrentLanguage();
 
   const socialCard = imageUrl || `${siteMetadata.siteUrl}/social/social.png`;
+  const socialCardTwitter =
+    twitterImageUrl || `${siteMetadata.siteUrl}/social-twitter/social.png`;
   const titleTemplate = messages[language].titleTemplate;
   description = description || messages[language].description;
 
@@ -46,7 +50,7 @@ export const MetaTags: React.SFC<Props> = ({
     },
     {
       name: "twitter:image",
-      content: socialCard,
+      content: socialCardTwitter,
     },
     {
       name: "twitter:title",
