@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { Flex, Heading } from "@theme-ui/components";
+import { Box, Flex, Heading } from "@theme-ui/components";
 import { graphql } from "gatsby";
 import { Fragment } from "react";
 import { jsx } from "theme-ui";
@@ -41,92 +41,100 @@ type Props = {
 
 export default ({ data, pageContext }: Props) => {
   const size = getSize(pageContext.cardType);
+  const padding = pageContext.cardType === "social-twitter" ? 14 : 0;
 
   return (
     <Fragment>
-      <Flex
+      <Box
         sx={{
           ...size,
           overflow: "hidden",
           background: "black",
+          p: padding,
         }}
       >
-        <img
-          src={data.file!.childImageSharp!.fixed!.src!}
-          sx={{ height: size.height, width: size.height }}
-        />
-
-        <Flex
-          sx={{
-            flexDirection: "column",
-            ml: -14,
-            width: size.width - size.height,
-          }}
-        >
-          <LogoOrange
+        <Flex>
+          <img
+            src={data.file!.childImageSharp!.fixed!.src!}
             sx={{
-              width: size.width - size.height + 14,
+              height: size.height - padding * 2,
+              width: size.height - padding * 2,
             }}
           />
 
           <Flex
             sx={{
-              flex: 1,
               flexDirection: "column",
-              border: "14px solid black",
-              borderTop: "none",
-              borderRight: "none",
-              backgroundColor: "#34B4A1",
-              p: 5,
+              ml: -14,
+              width: size.width - size.height,
             }}
           >
-            <Heading
+            <LogoOrange
               sx={{
-                textTransform: "uppercase",
-                fontSize: 6,
-                mb: 2,
-                fontWeight: "bold",
+                width: size.width - size.height + 14,
               }}
-            >
-              Florence
-            </Heading>
+            />
 
-            <Heading
+            <Flex
               sx={{
-                textTransform: "uppercase",
-                fontSize: 6,
-                mb: 2,
-                fontWeight: "bold",
+                flexDirection: "column",
+                border: "14px solid black",
+                borderTop: "none",
+                borderRight: "none",
+                backgroundColor: "#34B4A1",
+                flex: 1,
+                width: size.width - size.height + 14 - padding,
+                p: 5,
               }}
             >
-              {getDays(data.backend.conference)}
-            </Heading>
+              <Heading
+                sx={{
+                  textTransform: "uppercase",
+                  fontSize: 6,
+                  mb: 2,
+                  fontWeight: "bold",
+                }}
+              >
+                Florence
+              </Heading>
 
-            <Heading
-              sx={{
-                textTransform: "uppercase",
-                fontSize: 6,
-                mb: 2,
-                fontWeight: "bold",
-              }}
-            >
-              {getMonth(data.backend.conference)}{" "}
-              {getYear(data.backend.conference)}
-            </Heading>
-            <Heading
-              sx={{
-                textTransform: "uppercase",
-                fontSize: 6,
-                fontWeight: "bold",
-                color: "white",
-                mt: "auto",
-              }}
-            >
-              {data.backend.conference.name}
-            </Heading>
+              <Heading
+                sx={{
+                  textTransform: "uppercase",
+                  fontSize: 6,
+                  mb: 2,
+                  fontWeight: "bold",
+                }}
+              >
+                {getDays(data.backend.conference)}
+              </Heading>
+
+              <Heading
+                sx={{
+                  textTransform: "uppercase",
+                  fontSize: 6,
+                  mb: 2,
+                  fontWeight: "bold",
+                }}
+              >
+                {getMonth(data.backend.conference)}{" "}
+                {getYear(data.backend.conference)}
+              </Heading>
+              <Heading
+                sx={{
+                  textTransform: "uppercase",
+                  fontSize: 6,
+                  fontWeight: "bold",
+                  color: "white",
+                  mt: "auto",
+                }}
+              >
+                {data.backend.conference.name}
+              </Heading>
+            </Flex>
           </Flex>
         </Flex>
-      </Flex>
+      </Box>
     </Fragment>
   );
 };
