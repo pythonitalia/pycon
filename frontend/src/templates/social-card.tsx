@@ -80,7 +80,8 @@ export default ({ data, pageContext }: Props) => {
                 flexDirection: "column",
                 border: "14px solid black",
                 borderTop: "none",
-                borderRight: "none",
+                borderRight:
+                  pageContext.cardType === "social-twitter" ? "none" : "",
                 backgroundColor: "#34B4A1",
                 flex: 1,
                 width: size.width - size.height + 14 - padding,

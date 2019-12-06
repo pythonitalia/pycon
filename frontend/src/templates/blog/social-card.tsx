@@ -68,6 +68,7 @@ type Props = {
 const getTitleFontSize = (cardType: CardType) => {
   switch (cardType) {
     case "social":
+    case "social-twitter":
       return 7;
     case "social-square":
       return 8;
