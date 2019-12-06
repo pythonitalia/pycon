@@ -2,7 +2,6 @@
 import { Box, Flex, Grid, Heading, Text } from "@theme-ui/components";
 import { graphql } from "gatsby";
 import { Fragment } from "react";
-import { Helmet } from "react-helmet";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
@@ -13,6 +12,7 @@ import { KeynotersSection } from "../components/keynoters-section";
 import { Link } from "../components/link";
 import { MapWithLink } from "../components/map-with-link";
 import { Marquee } from "../components/marquee";
+import { MetaTags } from "../components/meta-tags";
 import { SponsorsSection } from "../components/sponsors-section";
 import { YouTubeLite } from "../components/youtube-lite";
 import { HomePageQuery } from "../generated/graphql";
@@ -49,11 +49,7 @@ export default ({ data }: { data: HomePageQuery }) => {
   return (
     <Fragment>
       <FormattedMessage id="home.title">
-        {text => (
-          <Helmet>
-            <title>{text}</title>
-          </Helmet>
-        )}
+        {text => <MetaTags title={text} />}
       </FormattedMessage>
 
       <HomepageHero />

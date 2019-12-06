@@ -3,7 +3,6 @@ import { useQuery } from "@apollo/react-hooks";
 import { RouteComponentProps } from "@reach/router";
 import { Box, Flex, Grid, Heading, Text } from "@theme-ui/components";
 import { Fragment } from "react";
-import { Helmet } from "react-helmet";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
@@ -12,7 +11,7 @@ import {
   SubmissionQueryVariables,
 } from "../../generated/graphql-backend";
 import { compile } from "../../helpers/markdown";
-import { TagLine } from "../input-tag";
+import { MetaTags } from "../meta-tags";
 import { Tag } from "../tag";
 import SUBMISSION_QUERY from "./submission.graphql";
 
@@ -31,9 +30,7 @@ export const SubmissionPage = ({ id }: RouteComponentProps<{ id: string }>) => {
       <FormattedMessage id="submission.loading">
         {text => (
           <Fragment>
-            <Helmet>
-              <title>{text}</title>
-            </Helmet>
+            <MetaTags title={text} />
 
             <Heading>{text}...</Heading>
           </Fragment>
@@ -47,9 +44,7 @@ export const SubmissionPage = ({ id }: RouteComponentProps<{ id: string }>) => {
       <FormattedMessage id="submission.notFound">
         {text => (
           <Fragment>
-            <Helmet>
-              <title>{text}</title>
-            </Helmet>
+            <MetaTags title={text} />
 
             <Heading>{text}</Heading>
           </Fragment>
@@ -60,9 +55,7 @@ export const SubmissionPage = ({ id }: RouteComponentProps<{ id: string }>) => {
 
   return (
     <Fragment>
-      <Helmet>
-        <title>{data.submission.title}</title>
-      </Helmet>
+      <MetaTags title={data.submission.title} />
 
       <Box sx={{ borderTop: "primary" }}>
         <Grid

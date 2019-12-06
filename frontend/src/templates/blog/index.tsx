@@ -2,11 +2,11 @@
 import { Box, Heading, Text } from "@theme-ui/components";
 import { graphql } from "gatsby";
 import { Fragment } from "react";
-import { Helmet } from "react-helmet";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
 import { Link } from "../../components/link";
+import { MetaTags } from "../../components/meta-tags";
 import { BlogIndexQuery } from "../../generated/graphql";
 
 export default ({ data }: { data: BlogIndexQuery }) => {
@@ -14,9 +14,7 @@ export default ({ data }: { data: BlogIndexQuery }) => {
 
   return (
     <Fragment>
-      <Helmet>
-        <title>Blog</title>
-      </Helmet>
+      <MetaTags title="Blog" />
 
       <Box sx={{ mx: "auto", px: 3, pt: 4, maxWidth: "container" }}>
         {posts.map(post => (

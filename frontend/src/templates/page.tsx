@@ -2,10 +2,10 @@
 import { Box } from "@theme-ui/components";
 import { graphql } from "gatsby";
 import { Fragment } from "react";
-import { Helmet } from "react-helmet";
 import { jsx } from "theme-ui";
 
 import { Article } from "../components/article";
+import { MetaTags } from "../components/meta-tags";
 import { PageQuery } from "../generated/graphql";
 import { compile } from "../helpers/markdown";
 
@@ -14,9 +14,7 @@ export default ({ data }: { data: PageQuery }) => {
 
   return (
     <Fragment>
-      <Helmet>
-        <title>{page.title}</title>
-      </Helmet>
+      <MetaTags title={page.title} />
 
       <Box sx={{ mx: "auto", px: 3, maxWidth: "container" }}>
         <Article

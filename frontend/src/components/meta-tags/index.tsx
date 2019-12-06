@@ -6,7 +6,7 @@ import { useCurrentLanguage } from "../../context/language";
 import messages from "../../locale";
 
 type Props = {
-  title?: string;
+  title?: React.ReactNode | string | null;
   description?: string;
   imageUrl?: string;
 };
@@ -50,7 +50,7 @@ export const MetaTags: React.SFC<Props> = ({
     },
     {
       name: "twitter:title",
-      content: title,
+      content: title as string,
     },
     {
       name: "twitter:description",
