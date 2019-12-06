@@ -2,12 +2,12 @@
 import { Box, Flex, Grid, Text } from "@theme-ui/components";
 import { graphql } from "gatsby";
 import { Fragment } from "react";
-import { Helmet } from "react-helmet";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
 import { Article } from "../../components/article";
 import { BlogPostIllustration } from "../../components/illustrations/blog-post";
+import { MetaTags } from "../../components/meta-tags";
 import { PostQuery } from "../../generated/graphql";
 import { compile } from "../../helpers/markdown";
 
@@ -26,24 +26,11 @@ export default ({ data, ...props }: Props) => {
 
   return (
     <Fragment>
-      <Helmet
-        meta={[
-          {
-            name: "twitter:card",
-            content: "summary_large_image",
-          },
-          {
-            property: "og:image",
-            content: socialCard,
-          },
-          {
-            name: "twitter:image",
-            content: socialCard,
-          },
-        ]}
-      >
-        <title>{post.title}</title>
-      </Helmet>
+      <MetaTags
+        title={post.title}
+        description={post.excerpt || post.title}
+        imageUrl={socialCard}
+      />
 
       <Grid
         sx={{

@@ -1,6 +1,8 @@
 export default {
   en: {
     titleTemplate: "%s | PyCon Italy",
+    description:
+      "Join PyCon Italy from the 2nd to the 5th of April 2020 in Florence, Italy!",
     "global.yes": "Yes",
     "global.no": "No",
     "home.title": "Home",
@@ -123,6 +125,7 @@ export default {
   },
   it: {
     titleTemplate: "%s | PyCon Italia",
+    description: "Partecipa a PyCon Italia! Dal 2 al 5 Aprile 2020 a Firenze!",
     "global.yes": "Si",
     "global.no": "No",
     "home.title": "Home",

@@ -2,9 +2,7 @@
 import { ApolloProvider } from "@apollo/react-hooks";
 import { css, Global } from "@emotion/core";
 import { Box, Flex } from "@theme-ui/components";
-import { graphql, useStaticQuery } from "gatsby";
 import { Fragment } from "react";
-import { Helmet } from "react-helmet";
 import { IntlProvider } from "react-intl";
 import { jsx, Styled } from "theme-ui";
 
@@ -12,6 +10,7 @@ import { client } from "../apollo/client";
 import { ErrorBoundary } from "../components/error-boundary";
 import { Footer } from "../components/footer";
 import { Header } from "../components/header";
+import { MetaTags } from "../components/meta-tags";
 import { ConferenceContext } from "../context/conference";
 import { AlternateLinksContext, LanguageContext } from "../context/language";
 import messages from "../locale";
@@ -70,89 +69,46 @@ const isSocial = (props: Props["props"]) => {
   );
 };
 
-const Meta = ({ titleTemplate }: { titleTemplate: string }) => {
-  const {
-    site: { siteMetadata },
-  } = useStaticQuery(graphql`
-    {
-      site {
-        siteMetadata {
-          siteUrl
-        }
-      }
-    }
-  `);
+export const wrapPageElement = ({ element, props }: Props) => (
+  <Fragment>
+    <Global styles={reset} />
 
-  const socialCard = `${siteMetadata.siteUrl}/social/social.png`;
+    <Styled.root>
+      {isSocial(props) ? (
+        element
+      ) : (
+        <ConferenceContext.Provider value={props.pageContext.conferenceCode}>
+          <AlternateLinksContext.Provider
+            value={props.pageContext.alternateLinks}
+          >
+            <LanguageContext.Provider value={props.pageContext.language}>
+              <IntlProvider
+                locale={props.pageContext.language}
+                messages={messages[props.pageContext.language]}
+              >
+                <ApolloProvider client={client}>
+                  <MetaTags />
 
-  return (
-    <Helmet
-      titleTemplate={titleTemplate}
-      meta={[
-        {
-          name: "twitter:card",
-          content: "summary_large_image",
-        },
-        {
-          property: "og:image",
-          content: socialCard,
-        },
-        {
-          name: "twitter:image",
-          content: socialCard,
-        },
-      ]}
-    >
-      <link rel="stylesheet" href="https://use.typekit.net/mbr7dqb.css" />
-    </Helmet>
-  );
-};
+                  <Header />
 
-export const wrapPageElement = ({ element, props }: Props) => {
-  const titleTemplate =
-    messages[props.pageContext.language || "en"].titleTemplate;
+                  <Flex
+                    sx={{
+                      flexDirection: "column",
+                      minHeight: "100vh",
+                    }}
+                  >
+                    <Box sx={{ mt: [100, 130], pb: 5 }}>
+                      <ErrorBoundary>{element}</ErrorBoundary>
+                    </Box>
 
-  return (
-    <Fragment>
-      <Global styles={reset} />
-
-      <Meta titleTemplate={titleTemplate} />
-
-      <Styled.root>
-        {isSocial(props) ? (
-          element
-        ) : (
-          <ConferenceContext.Provider value={props.pageContext.conferenceCode}>
-            <AlternateLinksContext.Provider
-              value={props.pageContext.alternateLinks}
-            >
-              <LanguageContext.Provider value={props.pageContext.language}>
-                <IntlProvider
-                  locale={props.pageContext.language}
-                  messages={messages[props.pageContext.language]}
-                >
-                  <ApolloProvider client={client}>
-                    <Header />
-
-                    <Flex
-                      sx={{
-                        flexDirection: "column",
-                        minHeight: "100vh",
-                      }}
-                    >
-                      <Box sx={{ mt: [100, 130], pb: 5 }}>
-                        <ErrorBoundary>{element}</ErrorBoundary>
-                      </Box>
-
-                      <Footer />
-                    </Flex>
-                  </ApolloProvider>
-                </IntlProvider>
-              </LanguageContext.Provider>
-            </AlternateLinksContext.Provider>
-          </ConferenceContext.Provider>
-        )}
-      </Styled.root>
-    </Fragment>
-  );
-};
+                    <Footer />
+                  </Flex>
+                </ApolloProvider>
+              </IntlProvider>
+            </LanguageContext.Provider>
+          </AlternateLinksContext.Provider>
+        </ConferenceContext.Provider>
+      )}
+    </Styled.root>
+  </Fragment>
+);
