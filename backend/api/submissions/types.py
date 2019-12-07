@@ -1,10 +1,10 @@
 from typing import TYPE_CHECKING, List, Optional
 
 import strawberry
-from graphql import GraphQLError
-
 from api.languages.types import Language
+from api.permissions import IsAuthenticated
 from api.voting.types import VoteType
+from graphql import GraphQLError
 from voting.models import Vote
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -40,6 +40,10 @@ class Submission:
     audience_level: "AudienceLevel"
     languages: List["Language"]
     tags: List[SubmissionTag]
+
+    @strawberry.field(permission_classes=[IsAuthenticated])
+    def can_edit(self, info) -> bool:
+        return self.can_edit(info.context["request"])
 
     @strawberry.field
     def my_vote(self, info) -> Optional[VoteType]:
