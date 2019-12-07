@@ -1,0 +1,55 @@
+mutation UpdateSubmission($input: UpdateSubmissionInput!) {
+  mutationOp: updateSubmission(input: $input) {
+    __typename
+
+    ... on Submission {
+      id
+      title
+
+      type {
+        id
+        name
+      }
+
+      abstract
+      elevatorPitch
+      notes
+
+      topic {
+        id
+        name
+      }
+      duration {
+        id
+        name
+      }
+      audienceLevel {
+        id
+        name
+      }
+      languages {
+        id
+        code
+        name
+      }
+      tags {
+        id
+        name
+      }
+    }
+
+    ... on UpdateSubmissionErrors {
+      validationTitle: title
+      validationAbstract: abstract
+      validationTopic: topic
+      validationLanguages: languages
+      validationType: type
+      validationDuration: duration
+      validationElevatorPitch: elevatorPitch
+      validationNotes: notes
+      validationAudienceLevel: audienceLevel
+      validationTags: tags
+      nonFieldErrors
+    }
+  }
+}
