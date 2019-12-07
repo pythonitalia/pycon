@@ -76,10 +76,19 @@ export default {
       borderStyle: "solid",
       borderColor: "#000",
       backgroundColor: "yellow",
+
+      "&:hover": {
+        backgroundColor: "orange",
+        cursor: "pointer",
+      },
     },
     white: {
       variant: "buttons.primary",
       background: "#fff",
+
+      "&:hover": {
+        background: "#fff",
+      },
     },
   },
   links: {
