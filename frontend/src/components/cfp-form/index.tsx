@@ -200,6 +200,10 @@ export const CfpForm: React.SFC<Props> = ({
     return <Alert variant="alert">{conferenceError.message}</Alert>;
   }
 
+  const hasValidationErrors =
+    submissionData?.mutationOp.__typename === "SendSubmissionErrors" ||
+    submissionData?.mutationOp.__typename === "UpdateSubmissionErrors";
+
   /* todo refactor to avoid multiple __typename? */
   const getErrors = (
     key:
@@ -443,6 +447,12 @@ export const CfpForm: React.SFC<Props> = ({
         {submissionLoading && (
           <Alert variant="info">
             <FormattedMessage id="cfp.loading" />
+          </Alert>
+        )}
+
+        {hasValidationErrors && (
+          <Alert variant="alert">
+            <FormattedMessage id="cfp.validationErrors" />
           </Alert>
         )}
 
