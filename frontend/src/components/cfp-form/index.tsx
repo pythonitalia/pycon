@@ -72,6 +72,7 @@ export const CfpForm: React.SFC<Props> = ({
   onSubmit,
   conferenceCode,
   submission,
+  loading: submissionLoading,
   error: submissionError,
   data: submissionData,
 }) => {
@@ -438,6 +439,12 @@ export const CfpForm: React.SFC<Props> = ({
               <FormattedMessage id="cfp.submissionSent" />
             </Alert>
           )}
+
+        {submissionLoading && (
+          <Alert variant="info">
+            <FormattedMessage id="cfp.loading" />
+          </Alert>
+        )}
 
         <Button>
           <FormattedMessage id="cfp.submit" />
