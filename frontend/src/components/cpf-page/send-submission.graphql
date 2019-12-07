@@ -1,5 +1,5 @@
 mutation SendSubmission($input: SendSubmissionInput!) {
-  sendSubmission(input: $input) {
+  mutationOp: sendSubmission(input: $input) {
     __typename
 
     ... on Submission {

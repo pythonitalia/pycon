@@ -68,9 +68,11 @@ export const ProfileApp: React.SFC<RouteComponentProps> = () => {
   return (
     <Fragment>
       <MyProfile profile={profileData} />
-      {profileData.me.submissions.length > 0 && (
-        <MySubmissions profile={profileData} />
-      )}
+      <MySubmissions
+        sx={{
+          borderTop: "primary",
+        }}
+      />
       <Logout lang={lang} />
     </Fragment>
   );

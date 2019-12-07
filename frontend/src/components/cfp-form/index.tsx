@@ -1,7 +1,6 @@
 /** @jsx jsx */
 
-import { useMutation, useQuery } from "@apollo/react-hooks";
-import { navigate } from "@reach/router";
+import { useQuery } from "@apollo/react-hooks";
 import {
   Box,
   Button,
@@ -15,32 +14,27 @@ import {
   Text,
   Textarea,
 } from "@theme-ui/components";
-import React, { useContext, useEffect } from "react";
+import { ApolloError } from "apollo-client";
+import React, { Fragment, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import { jsx } from "theme-ui";
 
-import { ConferenceContext } from "../../context/conference";
-import { useCurrentLanguage } from "../../context/language";
 import {
-  CfpPageQuery,
-  CfpPageQueryVariables,
-  MeSubmissionsQuery,
-  MeSubmissionsQueryVariables,
+  CfpFormQuery,
+  CfpFormQueryVariables,
+  GetSubmissionQuery,
   SendSubmissionMutation,
-  SendSubmissionMutationVariables,
-  SubmissionTag,
+  Submission,
+  UpdateSubmissionMutation,
 } from "../../generated/graphql-backend";
 import { Alert } from "../alert";
 import { TagLine } from "../input-tag";
 import { InputWrapper } from "../input-wrapper";
-import { Link } from "../link";
-import CFP_PAGE_QUERY from "./cfp-page.graphql";
-import ME_SUBMISSIONS from "./me-submissions.graphql";
-import SEND_SUBMISSION_QUERY from "./send-submission.graphql";
+import CFP_FORM_QUERY from "./cfp-form.graphql";
 
-type CfpFormFields = {
-  format: string;
+export type CfpFormFields = {
+  type: string;
   title: string;
   elevatorPitch: string;
   length: string;
@@ -52,9 +46,35 @@ type CfpFormFields = {
   tags: string[];
 };
 
-export const CfpForm: React.SFC = () => {
-  const conferenceCode = useContext(ConferenceContext);
-  const lang = useCurrentLanguage();
+type SubmissionStructure = {
+  type: { id: string };
+  title: string;
+  elevatorPitch: string;
+  topic: { id: string };
+  duration: { id: string };
+  audienceLevel: { id: string };
+  languages: { code: string }[];
+  abstract: string;
+  notes: string;
+  tags: { id: string }[];
+};
+
+type Props = {
+  onSubmit: (input: CfpFormFields) => void;
+  submission?: SubmissionStructure | null;
+  conferenceCode: string;
+  loading: boolean;
+  error: ApolloError | undefined;
+  data: SendSubmissionMutation | UpdateSubmissionMutation | undefined;
+};
+
+export const CfpForm: React.SFC<Props> = ({
+  onSubmit,
+  conferenceCode,
+  submission,
+  error: submissionError,
+  data: submissionData,
+}) => {
   const [formState, { text, textarea, radio, select, checkbox }] = useFormState<
     CfpFormFields
   >(
@@ -63,130 +83,97 @@ export const CfpForm: React.SFC = () => {
       withIds: true,
     },
   );
+
+  const setupCleanForm = (data: CfpFormQuery) => {
+    const submissionTypes = data.conference.submissionTypes;
+
+    if (submissionTypes.length === 0) {
+      return;
+    }
+
+    const type = submissionTypes[0].id;
+    formState.setField("type", type);
+
+    const durations = data.conference.durations;
+
+    if (durations.length > 0) {
+      // Check if we have a valid duration to preselect that is also allowed
+      // in the type we automatically selected
+      const validDurations = durations.filter(
+        d => d.allowedSubmissionTypes.findIndex(t => t.id === type) !== -1,
+      );
+
+      if (validDurations.length > 0) {
+        formState.setField("length", validDurations[0].id);
+      }
+    }
+
+    if (data.conference.topics.length > 0) {
+      formState.setField("topic", data.conference.topics[0].id);
+    }
+
+    if (data.conference.audienceLevels.length > 0) {
+      formState.setField("audienceLevel", data.conference.audienceLevels[0].id);
+    }
+  };
+
+  const setupFormFromSubmission = (_: CfpFormQuery) => {
+    formState.setField("type", submission!.type.id);
+    formState.setField("title", submission!.title);
+    formState.setField("elevatorPitch", submission!.elevatorPitch);
+    formState.setField("topic", submission!.topic.id);
+    formState.setField("length", submission!.duration.id);
+    formState.setField("audienceLevel", submission!.audienceLevel.id);
+    formState.setField(
+      "languages",
+      submission!.languages.map(l => l.code),
+    );
+    formState.setField("abstract", submission!.abstract);
+    formState.setField("notes", submission!.notes);
+    formState.setField(
+      "tags",
+      submission!.tags.map(t => t.id),
+    );
+  };
+
   const {
     loading: conferenceLoading,
     error: conferenceError,
     data: conferenceData,
-  } = useQuery<CfpPageQuery, CfpPageQueryVariables>(CFP_PAGE_QUERY, {
+  } = useQuery<CfpFormQuery, CfpFormQueryVariables>(CFP_FORM_QUERY, {
     variables: {
       conference: conferenceCode,
     },
     onCompleted(data) {
-      const submissionTypes = data.conference.submissionTypes;
-
-      if (submissionTypes.length === 0) {
-        return;
-      }
-
-      const format = submissionTypes[0].id;
-      formState.setField("format", format);
-
-      const durations = data.conference.durations;
-
-      if (durations.length > 0) {
-        // Check if we have a valid duration to preselect that is also allowed
-        // in the format we automatically selected
-        const validDurations = durations.filter(
-          d => d.allowedSubmissionTypes.findIndex(t => t.id === format) !== -1,
-        );
-
-        if (validDurations.length > 0) {
-          formState.setField("length", validDurations[0].id);
-        }
-      }
-
-      if (data.conference.topics.length > 0) {
-        formState.setField("topic", data.conference.topics[0].id);
-      }
-
-      if (data.conference.audienceLevels.length > 0) {
-        formState.setField(
-          "audienceLevel",
-          data.conference.audienceLevels[0].id,
-        );
+      if (submission) {
+        setupFormFromSubmission(data);
+      } else {
+        setupCleanForm(data);
       }
     },
   });
-  const [
-    sendSubmission,
-    {
-      loading: sendSubmissionLoading,
-      error: sendSubmissionError,
-      data: sendSubmissionData,
-    },
-  ] = useMutation<SendSubmissionMutation, SendSubmissionMutationVariables>(
-    SEND_SUBMISSION_QUERY,
-    {
-      update(cache, { data }) {
-        const query = cache.readQuery<
-          MeSubmissionsQuery,
-          MeSubmissionsQueryVariables
-        >({
-          query: ME_SUBMISSIONS,
-          variables: {
-            conference: conferenceCode,
-          },
-        });
 
-        if (!query || data?.sendSubmission.__typename !== "Submission") {
-          return;
-        }
-
-        cache.writeQuery<MeSubmissionsQuery, MeSubmissionsQueryVariables>({
-          query: ME_SUBMISSIONS,
-          data: {
-            me: {
-              ...query.me,
-              submissions: [...query.me.submissions, data!.sendSubmission],
-            },
-          },
-          variables: {
-            conference: conferenceCode,
-          },
-        });
-      },
-    },
-  );
-
-  const onSubmit = async (e: React.MouseEvent) => {
+  const submitSubmission = async (e: React.MouseEvent) => {
     e.preventDefault();
 
-    if (
-      sendSubmissionLoading ||
-      (sendSubmissionData &&
-        sendSubmissionData.sendSubmission.__typename === "Submission")
-    ) {
-      return;
-    }
-
-    const response = await sendSubmission({
-      variables: {
-        input: {
-          conference: conferenceCode,
-          title: formState.values.title,
-          abstract: formState.values.abstract,
-          topic: formState.values.topic,
-          languages: formState.values.languages,
-          type: formState.values.format,
-          duration: formState.values.length,
-          elevatorPitch: formState.values.elevatorPitch,
-          notes: formState.values.notes,
-          audienceLevel: formState.values.audienceLevel,
-          tags: formState.values.tags,
-        },
-      },
+    onSubmit({
+      title: formState.values.title,
+      abstract: formState.values.abstract,
+      topic: formState.values.topic,
+      languages: formState.values.languages,
+      type: formState.values.type,
+      length: formState.values.length,
+      elevatorPitch: formState.values.elevatorPitch,
+      notes: formState.values.notes,
+      audienceLevel: formState.values.audienceLevel,
+      tags: formState.values.tags,
     });
-
-    if (response.data?.sendSubmission.__typename === "Submission") {
-      const id = response.data.sendSubmission.id;
-      navigate(`/${lang}/submission/${id}`);
-    }
   };
 
   const allowedDurations = conferenceData?.conference.durations.filter(
     d =>
       d.allowedSubmissionTypes.findIndex(
-        i => i.id === formState.values.format,
+        i => i.id === formState.values.type,
       ) !== -1,
   );
 
@@ -198,38 +185,21 @@ export const CfpForm: React.SFC = () => {
     // When changing format we need to reset to the first
     // available duration of the new format
     formState.setField("length", allowedDurations[0].id);
-  }, [formState.values.format]);
+  }, [formState.values.type]);
 
   if (conferenceLoading) {
     return (
-      <Box
-        sx={{
-          maxWidth: "container",
-          mx: "auto",
-          px: 3,
-        }}
-      >
-        <Alert variant="info">
-          <FormattedMessage id="cfp.loading" />
-        </Alert>
-      </Box>
+      <Alert variant="info">
+        <FormattedMessage id="cfp.loading" />
+      </Alert>
     );
   }
 
   if (conferenceError) {
-    return (
-      <Box
-        sx={{
-          maxWidth: "container",
-          mx: "auto",
-          px: 3,
-        }}
-      >
-        <Alert variant="alert">{conferenceError.message}</Alert>
-      </Box>
-    );
+    return <Alert variant="alert">{conferenceError.message}</Alert>;
   }
 
+  /* todo refactor to avoid multiple __typename? */
   const getErrors = (
     key:
       | "validationTitle"
@@ -243,43 +213,18 @@ export const CfpForm: React.SFC = () => {
       | "validationAudienceLevel"
       | "validationTags"
       | "nonFieldErrors",
-  ) =>
-    (sendSubmissionData &&
-      sendSubmissionData.sendSubmission.__typename === "SendSubmissionErrors" &&
-      sendSubmissionData.sendSubmission[key]) ||
+  ): string[] =>
+    ((submissionData?.mutationOp.__typename === "SendSubmissionErrors" ||
+      submissionData?.mutationOp.__typename === "UpdateSubmissionErrors") &&
+      submissionData!.mutationOp[key]) ||
     [];
 
   return (
-    <Box
-      sx={{
-        maxWidth: "container",
-        mx: "auto",
-        px: 3,
-        my: 5,
-      }}
-    >
-      {conferenceData!.me.submissions.length > 0 && (
-        <Box sx={{ mb: 5 }}>
-          <Text mb={4} as="h1">
-            <FormattedMessage id="cfp.yourProposals" />
-          </Text>
-
-          <Box as="ul" sx={{ px: 3 }}>
-            {conferenceData!.me.submissions.map(submission => (
-              <li key={submission.id}>
-                <Link href={`/:language/submission/${submission.id}`}>
-                  {submission.title}
-                </Link>
-              </li>
-            ))}
-          </Box>
-        </Box>
-      )}
-
+    <Fragment>
       <Text mb={4} as="h1">
         <FormattedMessage id="cfp.youridea" />
       </Text>
-      <Box as="form" onSubmit={onSubmit}>
+      <Box as="form" onSubmit={submitSubmission}>
         <Label mb={3} htmlFor="type">
           <FormattedMessage id="cfp.choosetype" />
         </Label>
@@ -295,8 +240,7 @@ export const CfpForm: React.SFC = () => {
                 fontWeight: "bold",
               }}
             >
-              <Radio {...radio("format", type.id)} required={true} />{" "}
-              {type.name}
+              <Radio {...radio("type", type.id)} required={true} /> {type.name}
             </Label>
           ))}
         </Flex>
@@ -479,17 +423,17 @@ export const CfpForm: React.SFC = () => {
           </Alert>
         ))}
 
-        {sendSubmissionError && (
+        {submissionError && (
           <Alert sx={{ mb: 4 }} variant="alert">
             <FormattedMessage
               id="cfp.tryAgain"
-              values={{ error: sendSubmissionError.message }}
+              values={{ error: submissionError.message }}
             />
           </Alert>
         )}
 
-        {sendSubmissionData &&
-          sendSubmissionData.sendSubmission.__typename === "Submission" && (
+        {submissionData &&
+          submissionData.mutationOp.__typename === "Submission" && (
             <Alert sx={{ mb: 4 }} variant="success">
               <FormattedMessage id="cfp.submissionSent" />
             </Alert>
@@ -499,6 +443,6 @@ export const CfpForm: React.SFC = () => {
           <FormattedMessage id="cfp.submit" />
         </Button>
       </Box>
-    </Box>
+    </Fragment>
   );
 };

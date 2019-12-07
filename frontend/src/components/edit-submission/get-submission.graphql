@@ -1,7 +1,11 @@
-query Submission($id: ID!) {
+query GetSubmission($id: ID!) {
   submission(id: $id) {
     id
     title
+    type {
+      id
+      name
+    }
     abstract
     elevatorPitch
     notes
@@ -13,7 +17,6 @@ query Submission($id: ID!) {
     duration {
       id
       name
-      duration
     }
     audienceLevel {
       id
@@ -21,6 +24,7 @@ query Submission($id: ID!) {
     }
     languages {
       id
+      code
       name
     }
     tags {

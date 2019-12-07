@@ -6,6 +6,7 @@ import { PrivateRoute } from "../app/private-route/private-route";
 import { ProfileApp } from "../app/profile";
 import { EditProfileApp } from "../app/profile-edit";
 import { CFPPage } from "../components/cpf-page";
+import { EditSubmission } from "../components/edit-submission";
 import { LoginForm } from "../components/login-form";
 import { RequestPasswordReset } from "../components/request-reset-password";
 import { ResetPassword } from "../components/reset-password";
@@ -18,6 +19,10 @@ export default () => (
     <PrivateRoute path="/:lang/profile" component={ProfileApp} />
     <PrivateRoute path="/:lang/profile/edit" component={EditProfileApp} />
     <PrivateRoute path="/:lang/submission/:id" component={SubmissionPage} />
+    <PrivateRoute
+      path="/:lang/submission/:id/edit"
+      component={EditSubmission}
+    />
     <PrivateRoute path="/:lang/cfp" component={CFPPage} />
     <LoginForm path="/:lang/login" />
     <SocialLoginSuccess path="/:lang/login/success/" />

@@ -2,12 +2,6 @@ query MyProfile($conference: String!) {
   me {
     id
 
-    submissions(conference: $conference) {
-      id
-      title
-      slug
-    }
-
     tickets(conference: $conference) {
       id
     }
