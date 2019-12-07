@@ -3,6 +3,7 @@ import enum
 from typing import Union
 
 import strawberry
+from django.forms import ModelForm
 from graphql import GraphQLError
 
 from .utils import convert_form_fields_to_fields, create_error_type, create_input_type
@@ -64,7 +65,15 @@ class FormMutation:
             form_kwargs = cls.get_form_kwargs(root, info, input_as_dict)
             form_kwargs["data"] = convert_enums_to_values(form_kwargs["data"])
 
-            form = form_class(**form_kwargs)
+            if "instance" in form_kwargs["data"] and issubclass(form_class, ModelForm):
+                instance = form_kwargs["data"].pop("instance")
+                instance = form_class.Meta.model.objects.get(id=instance)
+
+                form = form_class(instance=instance, **form_kwargs)
+                form.fields.pop("instance", None)
+            else:
+                form = form_class(**form_kwargs)
+
             error = cls.validate_form(form)
 
             if error:

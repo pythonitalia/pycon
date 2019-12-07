@@ -61,6 +61,12 @@ class Submission(TimeStampedModel):
 
     tags = models.ManyToManyField("submissions.SubmissionTag", verbose_name=_("tags"))
 
+    def can_edit(self, request):
+        if not self.conference.is_cfp_open:
+            return False
+
+        return self.speaker == request.user
+
     def clean(self):
         if (
             self.topic_id
