@@ -26,7 +26,17 @@ export const TicketsPage: React.SFC = () => {
   const [createOrder, { data: orderData }] = useMutation<
     CreateOrderMutation,
     CreateOrderMutationVariables
-  >(CREATE_ORDER_MUTATION);
+  >(CREATE_ORDER_MUTATION, {
+    onCompleted(result) {
+      if (result.createOrder.__typename !== "CreateOrderResult") {
+        return;
+      }
+
+      window.location.href = `${
+        result.createOrder.paymentUrl
+      }?return_url=${encodeURIComponent(window.location.origin)}`;
+    },
+  });
 
   const { loading, error, data } = useQuery<
     TicketsQuery,
@@ -84,17 +94,6 @@ export const TicketsPage: React.SFC = () => {
           <Text>
             <FormattedMessage id="tickets.loading" />
           </Text>
-        )}
-
-        {orderData?.createOrder.__typename === "CreateOrderResult" && (
-          <iframe
-            src={orderData.createOrder.paymentUrl}
-            sx={{
-              width: "100%",
-              height: "80vh",
-              border: "primary",
-            }}
-          />
         )}
 
         {!loading && (
