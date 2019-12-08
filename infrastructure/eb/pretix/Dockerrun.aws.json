@@ -8,5 +8,11 @@
     {
       "ContainerPort": "80"
     }
+  ],
+  "Volumes": [
+    {
+      "HostDirectory": "/var/pretix/data/media",
+      "ContainerDirectory": "/data/media"
+    }
   ]
 }
