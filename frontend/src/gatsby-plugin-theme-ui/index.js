@@ -42,6 +42,7 @@ export default {
     input: {
       fontFamily: "body",
       bg: "blue",
+      color: "text",
       border: "primary",
       borderWidth: 4,
     },

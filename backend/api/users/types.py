@@ -27,6 +27,7 @@ class MeUser:
     @strawberry.field
     def orders(self, info, conference: str) -> List[PretixOrder]:
         conference = Conference.objects.get(code=conference)
+
         return get_user_orders(conference, self.email)
 
     @strawberry.field

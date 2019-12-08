@@ -13,7 +13,7 @@ import { ResetPassword } from "../components/reset-password";
 import { SignupForm } from "../components/signup-form";
 import { SocialLoginSuccess } from "../components/social-login-success";
 import { SubmissionPage } from "../components/submission-page";
-import { TicketsForm } from "../components/tickets-form";
+import { TicketsPage } from "../components/tickets-page";
 
 export default () => (
   <Router>
@@ -30,6 +30,6 @@ export default () => (
     <SignupForm path="/:lang/signup" />
     <RequestPasswordReset path="/:lang/reset-password/" />
     <ResetPassword path="/:lang/reset-password/:userId/:token/" />
-    <TicketsForm path="/:lang/tickets" />
+    <TicketsPage path="/:lang/tickets" />
   </Router>
 );

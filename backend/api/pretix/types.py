@@ -48,3 +48,15 @@ class PretixOrder:
         self.positions = [
             PretixPosition(position, all_items) for position in order["positions"]
         ]
+
+
+@strawberry.type
+class TicketItem:
+    id: strawberry.ID
+    name: str
+    description: Optional[str]
+    active: bool
+    default_price: str
+    # TODO: correct types
+    available_from: Optional[str]
+    available_until: Optional[str]
