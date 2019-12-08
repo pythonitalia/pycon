@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import { Box, Grid, Input, Text } from "@theme-ui/components";
-import React from "react";
+import React, { useEffect } from "react";
+import { useFormState } from "react-use-form-state";
 import { jsx } from "theme-ui";
 
 import { InputWrapper } from "../input-wrapper";
@@ -9,15 +10,24 @@ type Ticket = {
   name: string;
   id: string;
   defaultPrice: string;
-  description: string | null;
+  description?: string | null;
 };
 
 type Props = {
   tickets: Ticket[];
+  onTicketsUpdate: (values: { [key: string]: number }) => void;
 };
 
-export const TicketsForm: React.SFC<Props> = ({ tickets }) => {
-  const x = 1;
+export const TicketsForm: React.SFC<Props> = ({ tickets, onTicketsUpdate }) => {
+  // eslint-disable-next-line @typescript-eslint/tslint/config
+  const [formState, { number }] = useFormState(
+    Object.fromEntries(tickets.map(ticket => [ticket.id, 0])),
+    {
+      withIds: true,
+    },
+  );
+
+  useEffect(() => onTicketsUpdate(formState.values), [formState.values]);
 
   return (
     <React.Fragment>
@@ -40,7 +50,7 @@ export const TicketsForm: React.SFC<Props> = ({ tickets }) => {
                 <Text>{ticket.description}</Text>
               </Box>
 
-              <Input type="number" defaultValue={0} min={0} />
+              <Input {...number(ticket.id)} defaultValue={0} min={0} />
             </Grid>
           </InputWrapper>
         </Box>

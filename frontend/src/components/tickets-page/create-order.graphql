@@ -1,0 +1,7 @@
+mutation CreateOrder($input: CreateOrderInput!) {
+  createOrder(input: $input) {
+    ... on CreateOrderResult {
+      paymentUrl
+    }
+  }
+}

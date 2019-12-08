@@ -1,26 +1,32 @@
-import { useQuery } from "@apollo/react-hooks";
-import { Box, Heading, Text } from "@theme-ui/components";
-import React, { useContext } from "react";
+/** @jsx jsx */
+import { useMutation, useQuery } from "@apollo/react-hooks";
+import { Box, Button, Heading, Text } from "@theme-ui/components";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
+import { jsx } from "theme-ui";
 
 import { ConferenceContext } from "../../context/conference";
 import { useCurrentLanguage } from "../../context/language";
 import {
+  CreateOrderMutation,
+  CreateOrderMutationVariables,
   TicketsQuery,
   TicketsQueryVariables,
 } from "../../generated/graphql-backend";
 import { MetaTags } from "../meta-tags";
+import CREATE_ORDER_MUTATION from "./create-order.graphql";
 import { HotelForm } from "./hotel-form";
 import { TicketsForm } from "./tickets-form";
 import TICKETS_QUERY from "./tickets.graphql";
 
-type Props = {
-  lang: string;
-};
-
-export const TicketsPage: React.SFC<Props> = () => {
+export const TicketsPage: React.SFC = () => {
   const conferenceCode = useContext(ConferenceContext);
   const language = useCurrentLanguage();
+
+  const [createOrder, { data: orderData }] = useMutation<
+    CreateOrderMutation,
+    CreateOrderMutationVariables
+  >(CREATE_ORDER_MUTATION);
 
   const { loading, error, data } = useQuery<
     TicketsQuery,
@@ -31,6 +37,29 @@ export const TicketsPage: React.SFC<Props> = () => {
       language,
     },
   });
+
+  const [selectedTickets, setSelectedTickets] = useState({});
+
+  const createOrderCallback = useCallback(
+    paymentProvider => {
+      const orderTickets = Object.entries(selectedTickets).map(
+        ([id, total]) => ({
+          ticketId: id,
+          total: Number(total),
+        }),
+      );
+
+      createOrder({
+        variables: {
+          input: {
+            paymentProvider,
+            tickets: orderTickets,
+          },
+        },
+      });
+    },
+    [selectedTickets],
+  );
 
   if (error) {
     throw new Error(error.message);
@@ -57,15 +86,36 @@ export const TicketsPage: React.SFC<Props> = () => {
           </Text>
         )}
 
+        {orderData?.createOrder.__typename === "CreateOrderResult" && (
+          <iframe
+            src={orderData.createOrder.paymentUrl}
+            sx={{
+              width: "100%",
+              height: "80vh",
+              border: "primary",
+            }}
+          />
+        )}
+
         {!loading && (
           <React.Fragment>
             <Heading sx={{ mb: 3 }}>Get some tickets</Heading>
-            {tickets && <TicketsForm tickets={tickets} />}
-            <Heading sx={{ mb: 3 }}>Book your hotel room!</Heading>
-            <HotelForm />
+            {tickets && (
+              <TicketsForm
+                tickets={tickets}
+                onTicketsUpdate={setSelectedTickets}
+              />
+            )}
+
+            <Button onClick={() => createOrderCallback("stripe")}>
+              Pay with stripe
+            </Button>
           </React.Fragment>
         )}
       </Box>
     </Box>
   );
 };
+
+// <Heading sx={{ mb: 3 }}>Book your hotel room!</Heading>
+// <HotelForm />
