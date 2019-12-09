@@ -178,7 +178,7 @@ export const EditProfileApp: React.SFC<RouteComponentProps<{
       onCompleted: onUpdateComplete,
     },
   );
-  console.log(formState);
+
   const onFormSubmit = useCallback(
     e => {
       e.preventDefault();
@@ -188,9 +188,6 @@ export const EditProfileApp: React.SFC<RouteComponentProps<{
         .then(() => {
           formState.errors = {};
 
-          console.log(
-            "VALID! formState.values: " + JSON.stringify(formState.values),
-          );
           update({
             variables: {
               name: formState.values.name,
@@ -216,7 +213,6 @@ export const EditProfileApp: React.SFC<RouteComponentProps<{
     updateProfileData && updateProfileData.update.__typename === "UpdateErrors"
       ? updateProfileData.update.nonFieldErrors.join(" ")
       : updateProfileError;
-  // endregion
 
   return (
     <Box
@@ -328,10 +324,15 @@ export const EditProfileApp: React.SFC<RouteComponentProps<{
                 {...raw({
                   name: "dateBirth",
                   onChange: event => {
-                    // @ts-ignore
-                    const date = event.target.value;
-                    formState.setField("dateBirth", new Date(date));
-                    return new Date(date);
+                    const timestamp = Date.parse(event.target.value);
+
+                    if (!isNaN(timestamp)) {
+                      const date = new Date(timestamp);
+                      formState.setField("dateBirth", date);
+                      return date;
+                    }
+
+                    return formState.values.dateBirth;
                   },
                 })}
                 value={
