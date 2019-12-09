@@ -323,7 +323,7 @@ export const EditProfileApp: React.SFC<RouteComponentProps<{
               <Input
                 {...raw({
                   name: "dateBirth",
-                  onChange: event => {
+                  onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
                     const timestamp = Date.parse(event.target.value);
 
                     if (!isNaN(timestamp)) {
