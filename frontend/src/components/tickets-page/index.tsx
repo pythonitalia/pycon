@@ -34,7 +34,9 @@ export const TicketsPage: React.SFC = () => {
 
       window.location.href = `${
         result.createOrder.paymentUrl
-      }?return_url=${encodeURIComponent(window.location.origin)}`;
+      }?return_url=${encodeURIComponent(
+        window.location.origin,
+      )}/${language}/profile`;
     },
   });
 
