@@ -124,7 +124,7 @@ def _update_user_newsletter(graphql_client, user, open_to_newsletter):
         "open_to_recruiting": user.open_to_recruiting,
         "date_birth": f"{user.date_birth:%Y-%m-%d}",
     }
-    return (graphql_client.query(query=query, variables=variables), variables)
+    return graphql_client.query(query=query, variables=variables), variables
 
 
 @mark.django_db
@@ -134,6 +134,7 @@ def test_subscribe_when_update_user(graphql_client, user_factory):
 
     resp, variables = _update_user_newsletter(graphql_client, user, True)
 
+    assert resp
     assert resp["data"]["update"]["__typename"] == "MeUser"
     assert resp["data"]["update"]["openToNewsletter"] is True
     assert Subscription.objects.get(email=user.email)
@@ -146,6 +147,7 @@ def test_unsubscribe_when_update_user(graphql_client, user_factory):
 
     resp, variables = _update_user_newsletter(graphql_client, user, False)
 
+    assert resp
     assert resp["data"]["update"]["__typename"] == "MeUser"
     assert resp["data"]["update"]["openToNewsletter"] is False
 
