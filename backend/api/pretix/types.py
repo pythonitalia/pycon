@@ -18,7 +18,7 @@ class PretixOrderStatus(Enum):
 class PretixPosition:
     id: int
     name: str = strawberry.field(resolver=make_dict_localized_resolver("name"))
-    attendee_name: str
+    attendee_name: Optional[str]
     attendee_email: Optional[str]
     price: str
 
