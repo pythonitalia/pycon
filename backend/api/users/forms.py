@@ -129,11 +129,9 @@ class UpdateUserForm(ContextAwareModelForm):
             Subscription.objects.get_or_create(email=user.email)
         else:
             try:
-                subscription = Subscription.objects.get(email=user.email)
+                Subscription.objects.get(email=user.email).delete()
             except Subscription.DoesNotExist:
-                return True
-            subscription.delete()
-
+                pass
         return super().save(commit=commit)
 
     class Meta:

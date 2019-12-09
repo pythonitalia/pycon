@@ -19,9 +19,7 @@ class UnsubscribeToNewsletterForm(FormWithContext):
     def save(self):
         email = self.cleaned_data.get("email")
         try:
-            subscription = Subscription.objects.get(email=email)
+            deleted, _ = Subscription.objects.get(email=email).delete()
+            return deleted == 1
         except Subscription.DoesNotExist:
             return True
-
-        deleted, _ = subscription.delete()
-        return deleted == 1
