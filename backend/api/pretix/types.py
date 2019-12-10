@@ -51,12 +51,22 @@ class PretixOrder:
 
 
 @strawberry.type
+class ProductVariation:
+    id: strawberry.ID
+    value: str
+    description: str
+    active: bool
+    default_price: str
+
+
+@strawberry.type
 class TicketItem:
     id: strawberry.ID
     name: str
     description: Optional[str]
     active: bool
     default_price: str
+    variations: List[ProductVariation]
     # TODO: correct types
     available_from: Optional[str]
     available_until: Optional[str]

@@ -4,7 +4,7 @@ from conferences.models.conference import Conference
 from pretix import get_items as _get_items
 from pretix import get_user_orders as _get_user_orders
 
-from .types import PretixOrder, TicketItem
+from .types import PretixOrder, ProductVariation, TicketItem
 
 
 def get_user_orders(conference, email):
@@ -20,6 +20,8 @@ def get_user_orders(conference, email):
 def get_conference_tickets(conference: Conference, language: str) -> List["str"]:
     items = _get_items(conference)
 
+    print(items)
+
     # TODO: we should probably use a category for this
     def _is_hotel(item: dict):
         return item.get("default_price") == "0.00"
@@ -33,6 +35,16 @@ def get_conference_tickets(conference: Conference, language: str) -> List["str"]
                 if item["description"]
                 else None
             ),
+            variations=[
+                ProductVariation(
+                    id=variation["id"],
+                    value=variation["value"].get(language),
+                    description=variation["description"].get(language, ""),
+                    active=variation["active"],
+                    default_price=variation["default_price"],
+                )
+                for variation in item.get("variations", [])
+            ],
             active=item["active"],
             default_price=item["default_price"],
             available_from=item["available_from"],

@@ -1,9 +1,14 @@
+import itertools
+import logging
+import typing
 from urllib.parse import urljoin
 
 import requests
 import strawberry
 from conferences.models.conference import Conference
 from django.conf import settings
+
+logger = logging.getLogger(__file__)
 
 
 def get_api_url(conference, endpoint, query):
@@ -47,10 +52,17 @@ def get_items(conference):
 
 
 @strawberry.input
-class CreateOrderData:
+class CreateOrderTicket:
+    ticket_id: str
+    total: int
+
+
+@strawberry.input
+class CreateOrderInput:
     email: str
     locale: str
     payment_provider: str
+    tickets: typing.List[CreateOrderTicket]
 
 
 @strawberry.type
@@ -58,20 +70,37 @@ class Order:
     payment_url: str
 
 
-def create_order(conference: Conference, order_data: CreateOrderData):
+def create_order(conference: Conference, order_data: CreateOrderInput):
+    positions = list(
+        itertools.chain(
+            *[
+                [{"item": ticket.ticket_id}] * ticket.total
+                for ticket in order_data.tickets
+            ]
+        )
+    )
+
     payload = {
         "email": order_data.email,
         "locale": order_data.locale,
         "payment_provider": order_data.payment_provider,
         "testmode": True,
-        "positions": [{"item": 1}, {"item": 3, "price": 100}],
+        "positions": positions,
     }
+
+    print(positions)
 
     # it needs the / at the end...
     response = pretix(conference, "orders/", method="post", json=payload)
-    # TODO: log 400?
+
+    # import pdb; pdb.set_trace()
+
+    if response.status_code == 400:
+        logger.warning("Unable to create order on pretix %s", response.content)
+
+    if response.ok:
+        data = response.json()
+
+        return Order(payment_url=data["payments"][0]["payment_url"])
+
     response.raise_for_status()
-
-    data = response.json()
-
-    return Order(payment_url=data["payments"][0]["payment_url"])

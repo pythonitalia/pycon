@@ -6,6 +6,11 @@ query Tickets($conference: String!, $language: String!) {
       name
       description
       defaultPrice
+      variations {
+        id
+        defaultPrice
+        value
+      }
     }
   }
 }

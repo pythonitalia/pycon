@@ -84,6 +84,21 @@ export default {
         cursor: "pointer",
       },
     },
+    small: {
+      position: "relative",
+      padding: 2,
+
+      fontSize: 0,
+      fontFamily: "body",
+      fontWeight: "heading",
+
+      color: "#000",
+      border: "primary",
+      backgroundColor: "yellow",
+      "&:hover": {
+        backgroundColor: "orange",
+      },
+    },
     white: {
       variant: "buttons.primary",
       background: "#fff",

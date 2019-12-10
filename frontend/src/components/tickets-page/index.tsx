@@ -66,6 +66,8 @@ export const TicketsPage: React.SFC = () => {
           input: {
             paymentProvider,
             tickets: orderTickets,
+            email: "patrick.arminio@gmail.com",
+            locale: language,
           },
         },
       });

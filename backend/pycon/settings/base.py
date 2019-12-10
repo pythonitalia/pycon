@@ -178,3 +178,10 @@ PRETIX_API_TOKEN = None
 
 if PRETIX_API:
     PRETIX_API_TOKEN = env("PRETIX_API_TOKEN")
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {"console": {"class": "logging.StreamHandler"}},
+    "loggers": {"app_api": {"handlers": ["console"], "level": "WARNING"}},
+}
