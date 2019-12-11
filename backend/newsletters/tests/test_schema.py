@@ -146,7 +146,7 @@ def test_unsubscribe_when_update_user(graphql_client, user_factory):
 
     resp, variables = _update_user_newsletter(graphql_client, user, False)
 
-    assert resp["data"]["update"] is not None
+    assert resp, {"data": {"update": {"__typename": "MeUser"}}}
     assert resp["data"]["update"]["__typename"] == "MeUser"
     assert resp["data"]["update"]["openToNewsletter"] is False
 
