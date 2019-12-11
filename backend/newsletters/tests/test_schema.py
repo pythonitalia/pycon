@@ -134,6 +134,8 @@ def test_subscribe_when_update_user(graphql_client, user_factory):
 
     resp, variables = _update_user_newsletter(graphql_client, user, True)
 
+    assert resp == {"data": {"update": {"__typename": "MeUser"}}}
+    print(resp)
     assert resp["data"]["update"]["__typename"] == "MeUser"
     assert resp["data"]["update"]["openToNewsletter"] is True
     assert Subscription.objects.get(email=user.email)
@@ -146,7 +148,8 @@ def test_unsubscribe_when_update_user(graphql_client, user_factory):
 
     resp, variables = _update_user_newsletter(graphql_client, user, False)
 
-    assert resp, {"data": {"update": {"__typename": "MeUser"}}}
+    assert resp == {"data": {"update": {"__typename": "MeUser"}}}
+    print(resp)
     assert resp["data"]["update"]["__typename"] == "MeUser"
     assert resp["data"]["update"]["openToNewsletter"] is False
 
