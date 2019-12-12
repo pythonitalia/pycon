@@ -58,6 +58,9 @@ const ArrowRightBackground = ({
   </Box>
 );
 
+const isExternalLink = (href: string) =>
+  href.startsWith("http") || href.startsWith("mailto");
+
 export const Link: React.SFC<LinkProps> = ({
   children,
   href,
@@ -66,7 +69,7 @@ export const Link: React.SFC<LinkProps> = ({
 }) => {
   const language = useCurrentLanguage();
   const isExternal =
-    (href && href.startsWith("http")) || additionalProps.variant === "google";
+    (href && isExternalLink(href)) || additionalProps.variant === "google";
   const LinkComponent = isExternal
     ? ThemeLink
     : ({ ...props }: { to: string }) => (
