@@ -49,6 +49,10 @@ class SubmissionFactory(DjangoModelFactory):
     speaker = factory.SubFactory(UserFactory)
     topic = factory.SubFactory(TopicFactory)
     audience_level = factory.SubFactory(AudienceLevelFactory)
+    speaker_level = factory.fuzzy.FuzzyChoice(
+        Submission.SPEAKER_LEVELS, getter=lambda c: c[0]
+    )
+    previous_talk_video = factory.Faker("url")
 
     @factory.post_generation
     def custom_submission_type(self, create, extracted, **kwargs):

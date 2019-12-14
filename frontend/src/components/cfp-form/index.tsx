@@ -23,9 +23,7 @@ import { jsx } from "theme-ui";
 import {
   CfpFormQuery,
   CfpFormQueryVariables,
-  GetSubmissionQuery,
   SendSubmissionMutation,
-  Submission,
   UpdateSubmissionMutation,
 } from "../../generated/graphql-backend";
 import { Alert } from "../alert";
@@ -44,6 +42,8 @@ export type CfpFormFields = {
   topic: string;
   languages: string[];
   tags: string[];
+  speakerLevel: string;
+  previousTalkVideo: string;
 };
 
 type SubmissionStructure = {
@@ -56,6 +56,8 @@ type SubmissionStructure = {
   languages: { code: string }[];
   abstract: string;
   notes: string;
+  previousTalkVideo: string;
+  speakerLevel: string;
   tags: { id: string }[];
 };
 
@@ -135,6 +137,8 @@ export const CfpForm: React.SFC<Props> = ({
       "tags",
       submission!.tags.map(t => t.id),
     );
+    formState.setField("speakerLevel", submission!.speakerLevel);
+    formState.setField("previousTalkVideo", submission!.previousTalkVideo);
   };
 
   const {
@@ -168,6 +172,8 @@ export const CfpForm: React.SFC<Props> = ({
       notes: formState.values.notes,
       audienceLevel: formState.values.audienceLevel,
       tags: formState.values.tags,
+      speakerLevel: formState.values.speakerLevel,
+      previousTalkVideo: formState.values.previousTalkVideo,
     });
   };
 
@@ -217,6 +223,8 @@ export const CfpForm: React.SFC<Props> = ({
       | "validationNotes"
       | "validationAudienceLevel"
       | "validationTags"
+      | "validationSpeakerLevel"
+      | "validationPreviousTalkVideo"
       | "nonFieldErrors",
   ): string[] =>
     ((submissionData?.mutationOp.__typename === "SendSubmissionErrors" ||
@@ -420,6 +428,44 @@ export const CfpForm: React.SFC<Props> = ({
               );
             }}
           />
+        </InputWrapper>
+
+        <Text mb={2} as="h2">
+          <FormattedMessage id="cfp.aboutYou" />
+        </Text>
+
+        <Text variant="labelDescription" as="p" mb={4}>
+          <FormattedMessage id="cfp.aboutYouDescription" />
+        </Text>
+
+        <InputWrapper
+          label={<FormattedMessage id="cfp.speakerLevel" />}
+          description={<FormattedMessage id="cfp.speakerLevelDescription" />}
+          errors={getErrors("validationSpeakerLevel")}
+        >
+          <Select {...select("speakerLevel")} required={true}>
+            <FormattedMessage id="cfp.speakerLevel.new">
+              {copy => <option value="new">{copy}</option>}
+            </FormattedMessage>
+
+            <FormattedMessage id="cfp.speakerLevel.intermediate">
+              {copy => <option value="intermediate">{copy}</option>}
+            </FormattedMessage>
+
+            <FormattedMessage id="cfp.speakerLevel.experienced">
+              {copy => <option value="experienced">{copy}</option>}
+            </FormattedMessage>
+          </Select>
+        </InputWrapper>
+
+        <InputWrapper
+          label={<FormattedMessage id="cfp.previousTalkVideo" />}
+          description={
+            <FormattedMessage id="cfp.previousTalkVideoDescription" />
+          }
+          errors={getErrors("validationPreviousTalkVideo")}
+        >
+          <Input {...text("previousTalkVideo")} required={false} />
         </InputWrapper>
 
         {getErrors("nonFieldErrors").map(error => (

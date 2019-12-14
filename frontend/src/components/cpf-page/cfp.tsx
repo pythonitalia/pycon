@@ -73,6 +73,8 @@ export const Cfp: React.SFC = ({ ...props }) => {
           notes: input.notes,
           audienceLevel: input.audienceLevel,
           tags: input.tags,
+          speakerLevel: input.speakerLevel,
+          previousTalkVideo: input.previousTalkVideo,
         },
       },
     });

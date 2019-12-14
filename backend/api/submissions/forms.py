@@ -73,6 +73,8 @@ class UpdateSubmissionForm(SubmissionForm):
             "notes",
             "audience_level",
             "tags",
+            "speaker_level",
+            "previous_talk_video",
         )
 
 
@@ -109,4 +111,6 @@ class SendSubmissionForm(SubmissionForm):
             "notes",
             "audience_level",
             "tags",
+            "speaker_level",
+            "previous_talk_video",
         )

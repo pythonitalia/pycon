@@ -98,6 +98,19 @@ export default {
     "cfp.selectAudience": "Select an audience",
     "cfp.cannotEdit": "You cannot edit this submission",
     "cfp.validationErrors": "Some fields are not correct",
+    "cfp.speakerLevel": "Experience",
+    "cfp.speakerLevel.new": "New speaker",
+    "cfp.speakerLevel.intermediate":
+      "Intermediate experience (more than 5 talks)",
+    "cfp.speakerLevel.experienced": "Experienced speaker (more than 15 talks)",
+    "cfp.speakerLevelDescription":
+      "Your estimate level of experience as speaker. This will not be publicly visible.",
+    "cfp.previousTalkVideo": "Previous talk",
+    "cfp.previousTalkVideoDescription":
+      "Link to a previous talk you delivered. This is of great help for the program committee and will not be publicly visible.",
+    "cfp.aboutYou": "About you",
+    "cfp.aboutYouDescription":
+      "This section will help us to know more about you and your experience as speaker. While the previous talk is optional, if you can, try to find one of your previous talk as this will help us during the talk selection",
     "header.profile": "Profile",
     "header.login": "Login",
     "header.followus": "Follow us",
@@ -224,6 +237,18 @@ export default {
     "cfp.loading": "Caricamento",
     "cfp.cannotEdit": "Non puoi modificare questa submission",
     "cfp.validationErrors": "Alcuni campi non sono corretti",
+    "cfp.speakerLevel": "Esperienza",
+    "cfp.speakerLevel.new": "Appena iniziato",
+    "cfp.speakerLevel.intermediate": "Ho fatto qualche talk (più di 5 talks)",
+    "cfp.speakerLevel.experienced": "Ho fatto molti talk (più di 15 talks)",
+    "cfp.speakerLevelDescription":
+      "Il tuo livello stimato di esperienza come speaker? Questa informazione non è pubblica.",
+    "cfp.previousTalkVideo": "Talk precedente",
+    "cfp.previousTalkVideoDescription":
+      "Link ad un talk che hai fatto in passato. Sarà di grande aiuto durante la review del programma e non visible pubblicamente",
+    "cfp.aboutYou": "Su di te",
+    "cfp.aboutYouDescription":
+      "Questa sezione ci aiuterà a conoscerti meglio come speaker, ti consigliano di compilare tutte le informazioni cosi da aiutarci durante la selezione",
     "header.profile": "Profilo",
     "header.login": "Login",
     "header.followus": "Seguici",
