@@ -7,7 +7,7 @@ WORKDIR /app
 RUN pip3 install poetry
 COPY poetry.lock /app/
 COPY pyproject.toml /app/
-RUN poetry config settings.virtualenvs.create false
+RUN poetry config virtualenvs.create false
 RUN poetry install --no-dev
 
 COPY . /app/
