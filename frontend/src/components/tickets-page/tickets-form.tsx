@@ -12,8 +12,6 @@ import React, { useEffect, useState } from "react";
 import { useFormState } from "react-use-form-state";
 import { jsx } from "theme-ui";
 
-import { InputWrapper } from "../input-wrapper";
-
 type Ticket = {
   name: string;
   id: string;
@@ -44,16 +42,22 @@ const ProductRow: React.SFC<{ ticket: Ticket }> = ({ ticket }) => {
   const removeVariation = (index: number) =>
     setSelected(selected.filter((_, i) => i !== index));
 
+  const [quantity, setQuantity] = useState(0);
+
   console.log(selected);
 
   return (
-    <InputWrapper label={ticket.name}>
+    <Box sx={{ mb: 4 }}>
       <Grid
         sx={{
-          gridTemplateColumns: "1fr 200px",
+          gridTemplateColumns: ["1fr", "1fr 180px"],
         }}
       >
-        <Box sx={{ pl: 3 }}>
+        <Box>
+          <Text as="label" variant="label">
+            {ticket.name}
+          </Text>
+
           <Text>
             Price:{" "}
             <Text as="span" sx={{ fontWeight: "bold" }}>
@@ -64,18 +68,16 @@ const ProductRow: React.SFC<{ ticket: Ticket }> = ({ ticket }) => {
           <Text>{ticket.description}</Text>
         </Box>
 
-        <Flex
-          sx={{ alignItems: "flex-start", justifyContent: "flex-end", pr: 3 }}
-        >
-          {hasVariation && (
+        {hasVariation && (
+          <Flex sx={{ justifyContent: ["", "space-between"] }}>
             <Select
-              sx={{ mr: 3, width: 100 }}
+              sx={{ width: 120, height: 50 }}
               onChange={(event: React.ChangeEvent<HTMLSelectElement>) =>
                 setCurrentVariation(event.target.value)
               }
             >
               <option disabled={true} selected={!currentVariation}>
-                select an option
+                Size
               </option>
               {ticket.variations!.map(variation => (
                 <option
@@ -87,35 +89,62 @@ const ProductRow: React.SFC<{ ticket: Ticket }> = ({ ticket }) => {
                 </option>
               ))}
             </Select>
-          )}
 
-          {!hasVariation && (
-            <Input defaultValue={0} min={0} sx={{ width: 50 }} />
-          )}
-          {hasVariation && <Button onClick={addVariation}>Add one</Button>}
-        </Flex>
+            <Button onClick={addVariation} variant="plus" sx={{ ml: 3 }}>
+              +
+            </Button>
+          </Flex>
+        )}
+
+        {!hasVariation && (
+          <Flex sx={{ justifyContent: "space-between" }}>
+            <Button
+              onClick={() => setQuantity(Math.max(0, quantity - 1))}
+              variant="minus"
+            >
+              -
+            </Button>
+            <Input
+              defaultValue={0}
+              value={quantity}
+              min={0}
+              sx={{
+                width: [100, 50],
+                height: 50,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                textAlign: "center",
+                p: 0,
+              }}
+            />
+            <Button onClick={() => setQuantity(quantity + 1)} variant="plus">
+              +
+            </Button>
+          </Flex>
+        )}
       </Grid>
 
-      <Box sx={{ px: 3 }}>
-        {hasVariation &&
-          selected.map((variantId, index) => (
-            <Grid sx={{ gridTemplateColumns: "1fr 140px", mt: 3 }} key={index}>
+      {hasVariation &&
+        selected.map((variantId, index) => (
+          <Grid sx={{ gridTemplateColumns: "1fr 50px", mt: 3 }} key={index}>
+            <Flex sx={{ display: "flex", alignItems: "center" }}>
               <Box>
                 {ticket.name} <strong>({variationsById[variantId]})</strong>
               </Box>
-              <Button variant="small" onClick={() => removeVariation(index)}>
-                Remove
-              </Button>
-            </Grid>
-          ))}
-      </Box>
-    </InputWrapper>
+            </Flex>
+            <Button variant="minus" onClick={() => removeVariation(index)}>
+              -
+            </Button>
+          </Grid>
+        ))}
+    </Box>
   );
 };
 
 export const TicketsForm: React.SFC<Props> = ({ tickets, onTicketsUpdate }) => {
   // eslint-disable-next-line @typescript-eslint/tslint/config
-  const [formState, { number }] = useFormState(
+  const [formState] = useFormState(
     Object.fromEntries(tickets.map(ticket => [ticket.id, 0])),
     {
       withIds: true,

@@ -44,7 +44,6 @@ export default {
       bg: "blue",
       color: "text",
       border: "primary",
-      borderWidth: 4,
     },
     textarea: {
       fontFamily: "body",
@@ -56,7 +55,6 @@ export default {
       fontFamily: "body",
       bg: "blue",
       border: "primary",
-      borderWidth: 4,
       option: {
         fontSize: 3,
         padding: 3,
@@ -68,7 +66,6 @@ export default {
     primary: {
       position: "relative",
       padding: [2, 3],
-
       fontSize: [0, 2],
       fontFamily: "body",
       fontWeight: "heading",
@@ -83,6 +80,19 @@ export default {
         backgroundColor: "orange",
         cursor: "pointer",
       },
+    },
+    plus: {
+      variant: "buttons.primary",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      textAlign: "center",
+      width: 50,
+      height: 50,
+      p: [0, 0],
+    },
+    minus: {
+      variant: "buttons.plus",
     },
     small: {
       position: "relative",
