@@ -133,6 +133,16 @@ export default {
       textDecoration: "none",
       textTransform: "uppercase",
     },
+    buttonFullWidth: {
+      variant: "links.button",
+      border: "primary",
+      backgroundColor: "yellow",
+      width: "100%",
+      textAlign: "center",
+      "&:hover": {
+        backgroundColor: "orange",
+      },
+    },
   },
   badges: {
     tag: {

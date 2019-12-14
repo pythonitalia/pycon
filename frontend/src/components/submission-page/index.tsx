@@ -108,6 +108,15 @@ export const SubmissionPage = ({ id }: RouteComponentProps<{ id: string }>) => {
                 <FormattedMessage id="cfp.minutes" />)
               </Text>
             </Box>
+
+            {data.submission.canEdit && (
+              <Link
+                variant="buttonFullWidth"
+                href={`/:language/submission/${data.submission.id}/edit`}
+              >
+                Edit
+              </Link>
+            )}
           </Box>
 
           <Box>
@@ -119,14 +128,6 @@ export const SubmissionPage = ({ id }: RouteComponentProps<{ id: string }>) => {
               }}
             >
               <Heading sx={{ fontSize: 6 }}>{data.submission.title}</Heading>
-              {data.submission.canEdit && (
-                <Link
-                  variant="button"
-                  href={`/:language/submission/${data.submission.id}/edit`}
-                >
-                  Edit
-                </Link>
-              )}
             </Flex>
 
             <Heading sx={{ mb: 2 }}>
