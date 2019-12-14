@@ -25,26 +25,115 @@ type Props = {
   onTicketsUpdate: (values: { [key: string]: number }) => void;
 };
 
-const ProductRow: React.SFC<{ ticket: Ticket }> = ({ ticket }) => {
-  const hasVariation = ticket.variations && ticket.variations.length > 0;
+type ProductRowProps = {
+  ticket: Ticket;
+  onUpdate: (values: { [key: string]: number }) => void;
+};
 
-  const [selected, setSelected] = useState<string[]>([]);
+const AddVariation: React.SFC<{
+  ticket: Ticket;
+  addVariation: (variationId: string) => void;
+}> = ({ ticket, addVariation }) => {
   const [currentVariation, setCurrentVariation] = useState("");
 
-  const variationsById = hasVariation
-    ? Object.fromEntries(
-        ticket.variations!.map(variation => [variation.id, variation.value]),
-      )
-    : {};
+  return (
+    <Flex sx={{ justifyContent: ["", "space-between"] }}>
+      <Select
+        sx={{ width: 120, height: 50 }}
+        onChange={(event: React.ChangeEvent<HTMLSelectElement>) =>
+          setCurrentVariation(event.target.value)
+        }
+      >
+        <option disabled={true} selected={!currentVariation}>
+          Variant
+        </option>
+        {ticket.variations!.map(variation => (
+          <option
+            key={variation.id}
+            value={variation.id}
+            selected={currentVariation === variation.id}
+          >
+            {variation.value}
+          </option>
+        ))}
+      </Select>
 
-  const addVariation = () =>
-    currentVariation && setSelected(selected.concat([currentVariation]));
+      <Button
+        onClick={() => addVariation(currentVariation)}
+        variant="plus"
+        sx={{ ml: 3 }}
+      >
+        +
+      </Button>
+    </Flex>
+  );
+};
+
+const AddRemoveProduct: React.SFC<{
+  quantity: number;
+  decrease: () => void;
+  increase: () => void;
+}> = ({ quantity, increase, decrease }) => (
+  <Flex sx={{ justifyContent: "space-between" }}>
+    <Button onClick={decrease} variant="minus">
+      -
+    </Button>
+    <Input
+      defaultValue={0}
+      value={quantity}
+      min={0}
+      sx={{
+        width: [100, 50],
+        height: 50,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        textAlign: "center",
+        p: 0,
+      }}
+    />
+    <Button onClick={increase} variant="plus">
+      +
+    </Button>
+  </Flex>
+);
+
+const SelectedVariationsList: React.SFC<{
+  ticket: Ticket;
+  selectedVariations: string[];
+  removeVariation: (index: number) => void;
+}> = ({ ticket, selectedVariations, removeVariation }) => {
+  const variationsById = Object.fromEntries(
+    ticket.variations!.map(variation => [variation.id, variation.value]),
+  );
+
+  return (
+    <React.Fragment>
+      {selectedVariations.map((variantId, index) => (
+        <Grid sx={{ gridTemplateColumns: "1fr 50px", mt: 3 }} key={index}>
+          <Flex sx={{ display: "flex", alignItems: "center" }}>
+            <Box>
+              {ticket.name} <strong>({variationsById[variantId]})</strong>
+            </Box>
+          </Flex>
+          <Button variant="minus" onClick={() => removeVariation(index)}>
+            -
+          </Button>
+        </Grid>
+      ))}
+    </React.Fragment>
+  );
+};
+
+const ProductRow: React.SFC<ProductRowProps> = ({ ticket }) => {
+  const hasVariation = ticket.variations && ticket.variations.length > 0;
+  const [selectedVariations, setSelectedVariations] = useState<string[]>([]);
+  const addVariation = (variation: string) =>
+    setSelectedVariations(selectedVariations.concat([variation]));
   const removeVariation = (index: number) =>
-    setSelected(selected.filter((_, i) => i !== index));
+    setSelectedVariations(selectedVariations.filter((_, i) => i !== index));
 
   const [quantity, setQuantity] = useState(0);
-
-  console.log(selected);
 
   return (
     <Box sx={{ mb: 4 }}>
@@ -69,75 +158,24 @@ const ProductRow: React.SFC<{ ticket: Ticket }> = ({ ticket }) => {
         </Box>
 
         {hasVariation && (
-          <Flex sx={{ justifyContent: ["", "space-between"] }}>
-            <Select
-              sx={{ width: 120, height: 50 }}
-              onChange={(event: React.ChangeEvent<HTMLSelectElement>) =>
-                setCurrentVariation(event.target.value)
-              }
-            >
-              <option disabled={true} selected={!currentVariation}>
-                Size
-              </option>
-              {ticket.variations!.map(variation => (
-                <option
-                  key={variation.id}
-                  value={variation.id}
-                  selected={currentVariation === variation.id}
-                >
-                  {variation.value}
-                </option>
-              ))}
-            </Select>
-
-            <Button onClick={addVariation} variant="plus" sx={{ ml: 3 }}>
-              +
-            </Button>
-          </Flex>
+          <AddVariation addVariation={addVariation} ticket={ticket} />
         )}
-
         {!hasVariation && (
-          <Flex sx={{ justifyContent: "space-between" }}>
-            <Button
-              onClick={() => setQuantity(Math.max(0, quantity - 1))}
-              variant="minus"
-            >
-              -
-            </Button>
-            <Input
-              defaultValue={0}
-              value={quantity}
-              min={0}
-              sx={{
-                width: [100, 50],
-                height: 50,
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                textAlign: "center",
-                p: 0,
-              }}
-            />
-            <Button onClick={() => setQuantity(quantity + 1)} variant="plus">
-              +
-            </Button>
-          </Flex>
+          <AddRemoveProduct
+            quantity={quantity}
+            increase={() => setQuantity(quantity + 1)}
+            decrease={() => setQuantity(Math.max(0, quantity - 1))}
+          />
         )}
       </Grid>
 
-      {hasVariation &&
-        selected.map((variantId, index) => (
-          <Grid sx={{ gridTemplateColumns: "1fr 50px", mt: 3 }} key={index}>
-            <Flex sx={{ display: "flex", alignItems: "center" }}>
-              <Box>
-                {ticket.name} <strong>({variationsById[variantId]})</strong>
-              </Box>
-            </Flex>
-            <Button variant="minus" onClick={() => removeVariation(index)}>
-              -
-            </Button>
-          </Grid>
-        ))}
+      {hasVariation && (
+        <SelectedVariationsList
+          ticket={ticket}
+          selectedVariations={selectedVariations}
+          removeVariation={removeVariation}
+        />
+      )}
     </Box>
   );
 };

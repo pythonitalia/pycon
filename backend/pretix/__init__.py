@@ -88,12 +88,8 @@ def create_order(conference: Conference, order_data: CreateOrderInput):
         "positions": positions,
     }
 
-    print(positions)
-
     # it needs the / at the end...
     response = pretix(conference, "orders/", method="post", json=payload)
-
-    # import pdb; pdb.set_trace()
 
     if response.status_code == 400:
         logger.warning("Unable to create order on pretix %s", response.content)
