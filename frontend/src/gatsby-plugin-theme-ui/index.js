@@ -29,6 +29,7 @@ export default {
     purple: "#FA00FF",
     yellow: "#F8B03D",
     orange: "#F17A5D",
+    red: "#DB0000",
     violet: "#9473B0",
     blue: "#79CDE0",
     cinderella: "#FCE8DE",
@@ -76,10 +77,19 @@ export default {
       borderStyle: "solid",
       borderColor: "#000",
       backgroundColor: "yellow",
+
+      "&:hover": {
+        backgroundColor: "orange",
+        cursor: "pointer",
+      },
     },
     white: {
       variant: "buttons.primary",
       background: "#fff",
+
+      "&:hover": {
+        background: "#fff",
+      },
     },
   },
   links: {
@@ -122,6 +132,16 @@ export default {
       color: "#000",
       textDecoration: "none",
       textTransform: "uppercase",
+    },
+    buttonFullWidth: {
+      variant: "links.button",
+      border: "primary",
+      backgroundColor: "yellow",
+      width: "100%",
+      textAlign: "center",
+      "&:hover": {
+        backgroundColor: "orange",
+      },
     },
   },
   badges: {

@@ -1,19 +1,11 @@
-query CFPPage($conference: String!) {
-  me {
-    id
-
-    submissions(conference: $conference) {
-      id
-      title
-    }
-  }
-
+query CFPForm($conference: String!) {
   conference(code: $conference) {
     id
 
     durations {
       name
       id
+
       allowedSubmissionTypes {
         id
         name

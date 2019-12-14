@@ -3,8 +3,9 @@ import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
-import { CfpForm } from "../../components/cfp-form";
+import { MySubmissions } from "../../app/profile/my-submissions";
 import { MetaTags } from "../meta-tags";
+import { Cfp } from "./cfp";
 import { Introduction } from "./introduction";
 
 export const CFPPage = () => (
@@ -15,6 +16,8 @@ export const CFPPage = () => (
 
     <Introduction />
 
-    <CfpForm />
+    <MySubmissions />
+
+    <Cfp sx={{ mt: 4 }} />
   </Fragment>
 );

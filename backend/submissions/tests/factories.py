@@ -1,17 +1,16 @@
 import random
 
 import factory.fuzzy
-from django.conf import settings
-from factory.django import DjangoModelFactory
-from pytest_factoryboy import register
-
 from conferences.tests.factories import (
     AudienceLevelFactory,
     ConferenceFactory,
     DurationFactory,
     TopicFactory,
 )
+from django.conf import settings
+from factory.django import DjangoModelFactory
 from languages.models import Language
+from pytest_factoryboy import register
 from submissions.models import Submission, SubmissionTag, SubmissionType
 from users.tests.factories import UserFactory
 
@@ -50,6 +49,38 @@ class SubmissionFactory(DjangoModelFactory):
     speaker = factory.SubFactory(UserFactory)
     topic = factory.SubFactory(TopicFactory)
     audience_level = factory.SubFactory(AudienceLevelFactory)
+
+    @factory.post_generation
+    def custom_submission_type(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            self.submission_type = self.conference.submission_types.get(name=extracted)
+
+    @factory.post_generation
+    def custom_audience_level(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            self.audience_level = self.conference.audience_levels.get(name=extracted)
+
+    @factory.post_generation
+    def custom_duration(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            self.duration = self.conference.durations.get(name=extracted)
+
+    @factory.post_generation
+    def custom_topic(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            self.topic = self.conference.topics.get(name=extracted)
 
     @factory.post_generation
     def languages(self, create, extracted, **kwargs):

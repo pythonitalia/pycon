@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { useQuery } from "@apollo/react-hooks";
 import { RouteComponentProps } from "@reach/router";
-import { Box, Flex, Grid, Heading, Text } from "@theme-ui/components";
+import { Box, Button, Flex, Grid, Heading, Text } from "@theme-ui/components";
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
@@ -11,6 +11,7 @@ import {
   SubmissionQueryVariables,
 } from "../../generated/graphql-backend";
 import { compile } from "../../helpers/markdown";
+import { Link } from "../link";
 import { MetaTags } from "../meta-tags";
 import { Tag } from "../tag";
 import SUBMISSION_QUERY from "./submission.graphql";
@@ -107,12 +108,27 @@ export const SubmissionPage = ({ id }: RouteComponentProps<{ id: string }>) => {
                 <FormattedMessage id="cfp.minutes" />)
               </Text>
             </Box>
+
+            {data.submission.canEdit && (
+              <Link
+                variant="buttonFullWidth"
+                href={`/:language/submission/${data.submission.id}/edit`}
+              >
+                Edit
+              </Link>
+            )}
           </Box>
 
           <Box>
-            <Heading sx={{ fontSize: 6, mb: 4 }}>
-              {data.submission.title}
-            </Heading>
+            <Flex
+              sx={{
+                alignItems: "center",
+                justifyContent: "space-between",
+                mb: 4,
+              }}
+            >
+              <Heading sx={{ fontSize: 6 }}>{data.submission.title}</Heading>
+            </Flex>
 
             <Heading sx={{ mb: 2 }}>
               <FormattedMessage id="cfp.abstractLabel" />

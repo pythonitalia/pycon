@@ -166,6 +166,11 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     },
     {
       template: appTemplate,
+      path: "/submission/edit",
+      matchPath: "/submission/*/edit",
+    },
+    {
+      template: appTemplate,
       path: "/reset-password",
       matchPath: "/reset-password/*",
     },

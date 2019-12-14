@@ -36,6 +36,7 @@ export const InputWrapper: React.SFC<{
         sx={{
           mt: 2,
           listStyle: "none",
+          color: "red",
         }}
       >
         {errors.map(error => (
