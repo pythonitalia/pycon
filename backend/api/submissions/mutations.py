@@ -24,6 +24,8 @@ class SubmissionMutation:
             duration=result.duration,
             audience_level=result.audience_level,
             tags=result.tags,
+            speaker_level=result.speaker_level,
+            previous_talk_video=result.previous_talk_video,
         )
 
     class Meta:

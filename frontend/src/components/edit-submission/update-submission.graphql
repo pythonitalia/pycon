@@ -14,6 +14,8 @@ mutation UpdateSubmission($input: UpdateSubmissionInput!) {
       abstract
       elevatorPitch
       notes
+      speakerLevel
+      previousTalkVideo
 
       topic {
         id
@@ -49,6 +51,8 @@ mutation UpdateSubmission($input: UpdateSubmissionInput!) {
       validationNotes: notes
       validationAudienceLevel: audienceLevel
       validationTags: tags
+      validationPreviousTalkVideo: previousTalkVideo
+      validationSpeakerLevel: speakerLevel
       nonFieldErrors
     }
   }

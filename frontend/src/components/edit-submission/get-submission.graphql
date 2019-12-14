@@ -10,6 +10,8 @@ query GetSubmission($id: ID!) {
     elevatorPitch
     notes
     canEdit
+    speakerLevel
+    previousTalkVideo
     topic {
       id
       name

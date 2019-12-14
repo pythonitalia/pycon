@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.translation import ugettext_lazy as _
 
 from .models import Submission, SubmissionTag, SubmissionType
 
@@ -8,7 +9,7 @@ class SubmissionAdmin(admin.ModelAdmin):
     list_display = ("title", "type", "conference", "topic", "audience_level")
     fieldsets = (
         (
-            "Submission",
+            _("Submission"),
             {
                 "fields": (
                     "title",
@@ -23,7 +24,8 @@ class SubmissionAdmin(admin.ModelAdmin):
                 )
             },
         ),
-        ("Details", {"fields": ("elevator_pitch", "abstract", "notes", "tags")}),
+        (_("Details"), {"fields": ("elevator_pitch", "abstract", "notes", "tags")}),
+        (_("Speaker"), {"fields": ("speaker_level", "previous_talk_video")}),
     )
     list_filter = ("conference", "type", "topic")
     search_fields = ("title", "abstract")
