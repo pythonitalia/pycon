@@ -73,6 +73,29 @@ const isSocial = (props: Props["props"]) => {
   );
 };
 
+const getAlternateLinks = (props: Props["props"]) => {
+  if (typeof window !== "undefined") {
+    /*
+      when we are not SSO,
+      use the location's pathname to generate
+      more specific URLs:
+
+      Example /en/submission/{ID} cannot be generated server side,
+      so we replace it with the current pathname.
+    */
+    const pathname = window.location.pathname
+      .replace("/en/", "")
+      .replace("/it/", "");
+
+    return {
+      en: `/en/${pathname}`,
+      it: `/it/${pathname}`,
+    };
+  }
+
+  return props.pageContext.alternateLinks;
+};
+
 export const wrapPageElement = ({ element, props }: Props) => (
   <Fragment>
     <Global styles={reset} />
@@ -86,9 +109,7 @@ export const wrapPageElement = ({ element, props }: Props) => (
         element
       ) : (
         <ConferenceContext.Provider value={props.pageContext.conferenceCode}>
-          <AlternateLinksContext.Provider
-            value={props.pageContext.alternateLinks}
-          >
+          <AlternateLinksContext.Provider value={getAlternateLinks(props)}>
             <LanguageContext.Provider value={props.pageContext.language}>
               <IntlProvider
                 locale={props.pageContext.language}
