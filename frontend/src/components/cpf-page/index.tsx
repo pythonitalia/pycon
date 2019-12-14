@@ -18,6 +18,6 @@ export const CFPPage = () => (
 
     <MySubmissions />
 
-    <Cfp />
+    <Cfp sx={{ mt: 4 }} />
   </Fragment>
 );

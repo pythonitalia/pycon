@@ -29,13 +29,21 @@ export const MySubmissions: React.SFC<Props> = ({ className }) => {
     },
   });
 
+  if (loading) {
+    return null;
+  }
+
+  if (!error && data!.me.submissions.length === 0) {
+    return null;
+  }
+
   return (
     <Box className={className}>
       <Box
         sx={{
           maxWidth: "container",
           mx: "auto",
-          my: 4,
+          mt: 4,
           px: 3,
         }}
       >
@@ -43,13 +51,7 @@ export const MySubmissions: React.SFC<Props> = ({ className }) => {
           <FormattedMessage id="profile.mySubmissionsHeader" />
         </Heading>
 
-        {loading && (
-          <Alert variant="info">
-            <FormattedMessage id="profile.loading" />
-          </Alert>
-        )}
-
-        {!loading && error && <Alert variant="alert">{error.message}</Alert>}
+        {error && <Alert variant="alert">{error.message}</Alert>}
 
         {data && (
           <Box as="ul" sx={{ px: 3 }}>
