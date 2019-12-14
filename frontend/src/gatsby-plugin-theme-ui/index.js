@@ -29,6 +29,7 @@ export default {
     purple: "#FA00FF",
     yellow: "#F8B03D",
     orange: "#F17A5D",
+    red: "#DB0000",
     violet: "#9473B0",
     blue: "#79CDE0",
     cinderella: "#FCE8DE",
