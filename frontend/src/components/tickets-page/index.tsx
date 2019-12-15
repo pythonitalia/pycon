@@ -1,7 +1,13 @@
 /** @jsx jsx */
 import { useMutation, useQuery } from "@apollo/react-hooks";
 import { Box, Button, Heading, Text } from "@theme-ui/components";
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useReducer,
+  useState,
+} from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
@@ -14,9 +20,10 @@ import {
   TicketsQueryVariables,
 } from "../../generated/graphql-backend";
 import { MetaTags } from "../meta-tags";
+import { TicketsForm } from "../tickets-form";
 import CREATE_ORDER_MUTATION from "./create-order.graphql";
 import { HotelForm } from "./hotel-form";
-import { TicketsForm } from "./tickets-form";
+import { reducer } from "./reducer";
 import TICKETS_QUERY from "./tickets.graphql";
 
 export const TicketsPage: React.SFC = () => {
@@ -50,29 +57,32 @@ export const TicketsPage: React.SFC = () => {
     },
   });
 
-  const [selectedTickets, setSelectedTickets] = useState({});
+  const [state, dispatcher] = useReducer(reducer, {});
 
   const createOrderCallback = useCallback(
     paymentProvider => {
-      const orderTickets = Object.entries(selectedTickets).map(
-        ([id, total]) => ({
-          ticketId: id,
-          total: Number(total),
-        }),
-      );
+      const orderTickets = Object.values(state)
+        .filter(product => product.quantity > 0)
+        .map(product => ({
+          ticketId: product.id,
+          total: product.quantity,
+        }));
 
       createOrder({
         variables: {
+          conference: conferenceCode,
+
           input: {
             paymentProvider,
             tickets: orderTickets,
+            // TODO:
             email: "patrick.arminio@gmail.com",
             locale: language,
           },
         },
       });
     },
-    [selectedTickets],
+    [state],
   );
 
   if (error) {
@@ -103,10 +113,25 @@ export const TicketsPage: React.SFC = () => {
         {!loading && (
           <React.Fragment>
             <Heading sx={{ mb: 3 }}>Get some tickets</Heading>
+
             {tickets && (
               <TicketsForm
                 tickets={tickets}
-                onTicketsUpdate={setSelectedTickets}
+                selectedProducts={state}
+                addProduct={(id: string, variation?: string) =>
+                  dispatcher({
+                    type: "increment",
+                    id,
+                    variation,
+                  })
+                }
+                removeProduct={(id: string, variation?: string) =>
+                  dispatcher({
+                    type: "decrement",
+                    id,
+                    variation,
+                  })
+                }
               />
             )}
 
@@ -119,6 +144,3 @@ export const TicketsPage: React.SFC = () => {
     </Box>
   );
 };
-
-// <Heading sx={{ mb: 3 }}>Book your hotel room!</Heading>
-// <HotelForm />
