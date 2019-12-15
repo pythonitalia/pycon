@@ -90,8 +90,6 @@ def _update_submission(
         },
     )
 
-    pass
-
 
 @mark.django_db
 def test_update_submission(

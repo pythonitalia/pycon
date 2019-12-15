@@ -70,7 +70,7 @@ class Order:
     payment_url: str
 
 
-def create_order(conference: Conference, order_data: CreateOrderInput):
+def create_order(conference: Conference, order_data: CreateOrderInput) -> Order:
     positions = list(
         itertools.chain(
             *[
@@ -94,9 +94,9 @@ def create_order(conference: Conference, order_data: CreateOrderInput):
     if response.status_code == 400:
         logger.warning("Unable to create order on pretix %s", response.content)
 
-    if response.ok:
-        data = response.json()
+    if not response.ok:
+        response.raise_for_status()
 
-        return Order(payment_url=data["payments"][0]["payment_url"])
+    data = response.json()
 
-    response.raise_for_status()
+    return Order(payment_url=data["payments"][0]["payment_url"])
