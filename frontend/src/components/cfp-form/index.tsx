@@ -70,6 +70,11 @@ type Props = {
   data: SendSubmissionMutation | UpdateSubmissionMutation | undefined;
 };
 
+// value of the first option in the speaker level value
+// this is stored here because it's also used in the edit submission as default value
+// when the submission doesn't have it and when we initialize the form
+const SPEAKER_LEVEL_NEW_VALUE = "new";
+
 export const CfpForm: React.SFC<Props> = ({
   onSubmit,
   conferenceCode,
@@ -118,6 +123,8 @@ export const CfpForm: React.SFC<Props> = ({
     if (data.conference.audienceLevels.length > 0) {
       formState.setField("audienceLevel", data.conference.audienceLevels[0].id);
     }
+
+    formState.setField("speakerLevel", SPEAKER_LEVEL_NEW_VALUE);
   };
 
   const setupFormFromSubmission = (_: CfpFormQuery) => {
@@ -137,7 +144,10 @@ export const CfpForm: React.SFC<Props> = ({
       "tags",
       submission!.tags.map(t => t.id),
     );
-    formState.setField("speakerLevel", submission!.speakerLevel);
+    formState.setField(
+      "speakerLevel",
+      submission!.speakerLevel || SPEAKER_LEVEL_NEW_VALUE,
+    );
     formState.setField("previousTalkVideo", submission!.previousTalkVideo);
   };
 
@@ -445,7 +455,7 @@ export const CfpForm: React.SFC<Props> = ({
         >
           <Select {...select("speakerLevel")} required={true}>
             <FormattedMessage id="cfp.speakerLevel.new">
-              {copy => <option value="new">{copy}</option>}
+              {copy => <option value={SPEAKER_LEVEL_NEW_VALUE}>{copy}</option>}
             </FormattedMessage>
 
             <FormattedMessage id="cfp.speakerLevel.intermediate">
