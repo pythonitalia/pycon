@@ -21,10 +21,6 @@ class MeUser:
     country: Optional[str]
 
     @strawberry.field
-    def tickets(self, info, conference: str) -> List["Ticket"]:
-        return self.tickets.filter(ticket_fare__conference__code=conference).all()
-
-    @strawberry.field
     def orders(self, info, conference: str) -> List[PretixOrder]:
         conference = Conference.objects.get(code=conference)
 

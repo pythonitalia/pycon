@@ -4,10 +4,8 @@ from .blog.schema import BlogQuery
 from .conferences.schema import ConferenceQuery
 from .orders.mutations import OrdersMutations
 from .pages.schema import PagesQuery
-from .payments.mutations import PaymentsMutations
 from .submissions.mutations import SubmissionsMutations
 from .submissions.schema import SubmissionsQuery
-from .tickets.mutations import TicketsMutations
 from .users.mutations import UsersMutations
 from .users.schema import CountryQuery, UsersQuery
 from .voting.mutations import VotesMutations
@@ -21,14 +19,7 @@ class Query(
 
 
 @strawberry.type
-class Mutation(
-    UsersMutations,
-    PaymentsMutations,
-    SubmissionsMutations,
-    VotesMutations,
-    TicketsMutations,
-    OrdersMutations,
-):
+class Mutation(UsersMutations, SubmissionsMutations, VotesMutations, OrdersMutations):
     pass
 
 

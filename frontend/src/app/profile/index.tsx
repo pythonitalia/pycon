@@ -76,6 +76,7 @@ export const ProfileApp: React.SFC<RouteComponentProps> = () => {
       <MySubmissions
         sx={{
           borderTop: "primary",
+          mb: 4,
         }}
       />
 

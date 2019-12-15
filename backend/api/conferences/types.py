@@ -1,6 +1,6 @@
 from datetime import datetime
 from itertools import groupby
-from typing import TYPE_CHECKING, List, Optional
+from typing import List, Optional
 
 import pytz
 import strawberry
@@ -20,9 +20,6 @@ from schedule.models import ScheduleItem as ScheduleItemModel
 
 from ..helpers.i18n import make_localized_resolver
 from ..helpers.maps import Map, resolve_map
-
-if TYPE_CHECKING:  # pragma: no cover
-    from api.tickets.types import TicketQuestion
 
 
 @strawberry.type
@@ -162,29 +159,6 @@ class Deadline:
     start: DateTime
     end: DateTime
     conference: Conference
-
-
-@strawberry.type
-class TicketFareQuestion:
-    ticket_fare: "TicketFare"
-    question: "TicketQuestion"
-    is_required: bool
-
-
-@strawberry.type
-class TicketFare:
-    id: strawberry.ID
-    code: str
-    name: str
-    price: str
-    start: DateTime
-    end: DateTime
-    description: str
-    conference: Conference
-
-    @strawberry.field
-    def questions(self, info) -> List["TicketFareQuestion"]:
-        return self.questions.all()
 
 
 @strawberry.type

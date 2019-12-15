@@ -1,14 +1,6 @@
 from django.contrib import admin
 
-from .models import (
-    AudienceLevel,
-    Conference,
-    Deadline,
-    Duration,
-    TicketFare,
-    TicketFareQuestion,
-    Topic,
-)
+from .models import AudienceLevel, Conference, Deadline, Duration, Topic
 
 
 class DeadlineInline(admin.TabularInline):
@@ -67,22 +59,6 @@ class TopicAdmin(admin.ModelAdmin):
 @admin.register(AudienceLevel)
 class AudienceLevelAdmin(admin.ModelAdmin):
     pass
-
-
-class TicketFareQuestionInline(admin.StackedInline):
-    model = TicketFareQuestion
-
-
-@admin.register(TicketFare)
-class TicketFareAdmin(admin.ModelAdmin):
-    list_display = ("conference", "name")
-    list_filter = ("conference", "questions")
-    inlines = [TicketFareQuestionInline]
-
-    fieldsets = (
-        ("Info", {"fields": ("conference", "name", "code", "price", "description")}),
-        ("Deadline", {"fields": ("start", "end")}),
-    )
 
 
 @admin.register(Deadline)

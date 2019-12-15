@@ -6,14 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('tickets', '0003_ticketquestion_ticketquestionchoice_useranswer'),
-        ('conferences', '0004_remove_conference_vote_range'),
+        ("conferences", "0004_remove_conference_vote_range"),
     ]
 
-    operations = [
-        migrations.AddField(
-            model_name='ticketfare',
-            name='questions',
-            field=models.ManyToManyField(to='tickets.TicketQuestion', verbose_name='ticket questions'),
-        ),
-    ]
+    operations = [migrations.RunPython(migrations.RunPython.noop)]
