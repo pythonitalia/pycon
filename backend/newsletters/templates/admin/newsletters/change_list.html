@@ -1,0 +1,66 @@
+{% extends "admin/change_list.html" %}
+
+
+{% block extrastyle %}
+  {{ block.super }}
+  <style type="text/css">
+    .container{
+      margin-bottom: 70px;
+    }
+    .email-form{
+      max-width: 85%;
+      padding: 20px 12px 10px 20px;
+      border: 1px solid #eee;
+      margin-bottom: 50px;
+      border-radius: 4px;
+    }
+    .email-form input, .email-form textarea{
+      width: 99%;
+    }
+    .email-form textarea{
+      height:200px;
+    }
+    .email-form input[type=submit]{
+      width: 150px;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+
+   {% if submitted %}
+     <ul>
+      <li class="messagelist">
+
+         Your message was submitted successfully. Thank you.
+      </li>
+     </ul>
+   {% else %}
+
+<form action="{% url 'admin:newsletters_subscription_changelist' %}" method="post">
+    {% csrf_token %}
+    <div align="center" class="container">
+      <div class="email-form" align="left">
+        <h1 class="">Invia una Newsletter / Email</h1>
+        <div>
+          <p>{{ form.non_field_errors }}</p>
+          <p>
+            <h3 for="subject">Subject</h3>
+            {{ form.subject }}
+            {{ form.subject.errors }}
+          </p>
+          <p>
+            <h3 for="body">Body</h3>
+            {{ form.body }}
+            {{ form.body.errors }}
+          </p>
+          <div align="right">
+            <label><span> </span><input type="submit" value="Invia" /></label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+  {% endif %}
+  {{ block.super }}
+{% endblock %}
