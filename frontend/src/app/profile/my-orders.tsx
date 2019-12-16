@@ -5,11 +5,9 @@ import { jsx } from "theme-ui";
 
 import { MyProfileQuery } from "../../generated/graphql-backend";
 
-export const MyOrders: React.SFC<{ profile: MyProfileQuery }> = ({
-  profile: {
-    me: { orders },
-  },
-}) => (
+export const MyOrders: React.SFC<{
+  orders: MyProfileQuery["me"]["orders"];
+}> = ({ orders }) => (
   <Box
     sx={{
       borderTop: "primary",
@@ -27,118 +25,33 @@ export const MyOrders: React.SFC<{ profile: MyProfileQuery }> = ({
         <FormattedMessage id="profile.myOrders" />
       </Heading>
 
-      {orders.map(order => (
-        <Box
-          sx={{
-            my: 3,
-            py: 3,
-            borderTop: "primary",
-            borderColor: "violet",
-          }}
-          key={order.code}
-        >
-          <Heading
-            as="h3"
-            sx={{
-              color: "orange",
-            }}
-          >
-            <FormattedMessage id="profile.orderId">
-              {text => `${text}${order.code}`}
-            </FormattedMessage>
-          </Heading>
+      <Box as="table" sx={{ width: "100%" }}>
+        <tr>
+          <Box as="th" sx={{ textAlign: "left" }}>
+            <FormattedMessage id="profile.orderId" />
+          </Box>
+          <Box as="th" sx={{ textAlign: "left" }}>
+            <FormattedMessage id="profile.status" />
+          </Box>
+          <Box as="th" sx={{ textAlign: "left" }}>
+            <FormattedMessage id="profile.price" />
+          </Box>
+        </tr>
 
-          <Flex
-            sx={{
-              display: "inline-flex",
-              border: "primary",
-              borderRight: "none",
-              my: 3,
-            }}
-          >
-            <Box
-              sx={{
-                borderRight: "primary",
-                p: 2,
-              }}
-            >
-              <FormattedMessage id="profile.status">
-                {statusLabel => (
-                  <FormattedMessage
-                    id={`profile.status.${order.status
-                      .toString()
-                      .toLowerCase()}`}
-                  >
-                    {status => `${statusLabel}${status}`}
-                  </FormattedMessage>
-                )}
-              </FormattedMessage>
-            </Box>
-            <Box
-              sx={{
-                borderRight: "primary",
-                p: 2,
-              }}
-            >
-              <FormattedMessage id="profile.price">
-                {text => `${text}${order.total}`}
-              </FormattedMessage>
-            </Box>
-            <Box
-              sx={{
-                borderRight: "primary",
-                p: 2,
-              }}
-            >
+        {orders.map(order => (
+          <Box key={order.code} as="tr">
+            <td>{order.code}</td>
+            <td>{order.status}</td>
+            <td>${order.total}</td>
+
+            <td>
               <a href={order.url} target="_blank" rel="noopener noreferrer">
                 <FormattedMessage id="profile.manageOrder" />
               </a>
-            </Box>
-          </Flex>
-
-          <Heading
-            as="h3"
-            sx={{
-              my: 2,
-            }}
-          >
-            <FormattedMessage id="profile.items" />
-          </Heading>
-
-          <Box as="ul">
-            {order.positions.map(position => (
-              <Box as="li" key={position.id}>
-                <Text
-                  sx={{
-                    fontWeight: "bold",
-                    fontFamily: "heading",
-                    fontSize: 2,
-                    mt: 20,
-                    mb: 1,
-                  }}
-                >
-                  {position.name}
-                </Text>
-                <Text as="p">
-                  <FormattedMessage id="profile.ticketFor">
-                    {text =>
-                      `${text} ${position.attendeeName}` +
-                      (position.attendeeEmail
-                        ? `(${position.attendeeEmail})`
-                        : "")
-                    }
-                  </FormattedMessage>
-                </Text>
-                <Text as="p">
-                  <FormattedMessage id="profile.price">
-                    {text => `${text}${position.price}`}
-                  </FormattedMessage>
-                </Text>
-              </Box>
-            ))}
+            </td>
           </Box>
-        </Box>
-      ))}
+        ))}
+      </Box>
     </Box>
   </Box>
 );
