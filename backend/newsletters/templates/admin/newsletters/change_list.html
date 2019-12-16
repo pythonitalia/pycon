@@ -29,12 +29,13 @@
 {% block content %}
 
    {% if submitted %}
-     <ul>
-      <li class="messagelist">
-
+     <ul class="messagelist">
+      <li class="success">
          Your message was submitted successfully. Thank you.
       </li>
      </ul>
+     <p class="success">
+     </p>
    {% else %}
 
 <form action="{% url 'admin:newsletters_subscription_changelist' %}" method="post">
