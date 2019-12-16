@@ -70,8 +70,7 @@ export const TicketsPage: React.SFC<RouteComponentProps> = () => {
           input: {
             paymentProvider,
             tickets: orderTickets,
-            // TODO:
-            email: "patrick.arminio@gmail.com",
+            email: data?.me.email!,
             locale: language,
           },
         },
