@@ -71,7 +71,9 @@ export const ProfileApp: React.SFC<RouteComponentProps> = () => {
     <Fragment>
       <MyProfile profile={profileData} />
 
-      {profileData.me.orders.length > 0 && <MyOrders profile={profileData} />}
+      {profileData.me.orders.length > 0 && (
+        <MyOrders orders={profileData.me.orders} />
+      )}
 
       <MySubmissions
         sx={{
