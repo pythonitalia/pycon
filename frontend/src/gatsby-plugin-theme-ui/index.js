@@ -65,8 +65,8 @@ export default {
   buttons: {
     primary: {
       position: "relative",
-      padding: [2, 3],
-      fontSize: [0, 2],
+      padding: 3,
+      fontSize: 2,
       fontFamily: "body",
       fontWeight: "heading",
 
