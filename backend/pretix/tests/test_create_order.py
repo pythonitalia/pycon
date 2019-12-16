@@ -16,7 +16,7 @@ def test_creates_order(conference, requests_mock):
         email="my@email.com",
         locale="en",
         payment_provider="stripe",
-        tickets=[CreateOrderTicket(ticket_id="123", total=1)],
+        tickets=[CreateOrderTicket(ticket_id="123", quantity=1, variation=None)],
     )
 
     result = create_order(conference, order_data)
@@ -33,7 +33,7 @@ def test_raises_when_response_is_400(conference, requests_mock):
         email="my@email.com",
         locale="en",
         payment_provider="stripe",
-        tickets=[CreateOrderTicket(ticket_id="123", total=1)],
+        tickets=[CreateOrderTicket(ticket_id="123", quantity=1, variation=None)],
     )
 
     with pytest.raises(requests.exceptions.HTTPError):
