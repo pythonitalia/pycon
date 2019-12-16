@@ -17,7 +17,7 @@ const getLoginState = () => {
   }
 };
 
-const setLoginState = (value: boolean) =>
+export const setLoginState = (value: boolean) =>
   window.localStorage.setItem(LOGIN_KEY, JSON.stringify(value));
 
 export const useLoginState = () => [getLoginState(), setLoginState];

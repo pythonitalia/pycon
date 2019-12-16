@@ -1,3 +1,4 @@
+import { navigate } from "@reach/router";
 import {
   InMemoryCache,
   IntrospectionFragmentMatcher,
@@ -8,6 +9,7 @@ import { onError } from "apollo-link-error";
 import { HttpLink } from "apollo-link-http";
 import fetch from "isomorphic-fetch";
 
+import { setLoginState } from "../app/profile/hooks";
 import introspectionQueryResultData from "../generated/fragment-types.json";
 const fragmentMatcher = new IntrospectionFragmentMatcher({
   introspectionQueryResultData,
@@ -25,12 +27,15 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (networkError) {
     console.warn(`[Network error]: ${networkError}`);
   }
+
   if (
     networkError &&
     "statusCode" in networkError &&
-    networkError.statusCode === 401
+    networkError.statusCode === 400 &&
+    graphQLErrors?.findIndex(e => e.message === "User not logged in") !== -1
   ) {
-    // TODO logout()
+    setLoginState(false);
+    navigate("/en/login");
   }
 });
 
