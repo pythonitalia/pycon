@@ -28,6 +28,14 @@ class Conference(GeoLocalizedModel, TimeFramedModel, TimeStampedModel):
         "submissions.SubmissionType", verbose_name=_("submission types"), blank=True
     )
 
+    pretix_organizer_id = models.CharField(
+        _("pretix organizer id"), max_length=200, blank=True, default=""
+    )
+    pretix_event_id = models.CharField(
+        _("pretix event id"), max_length=200, blank=True, default=""
+    )
+    pretix_event_url = models.URLField(_("pretix event url"), blank=True, default="")
+
     introduction = I18nTextField(_("introduction"), blank=False)
 
     @property

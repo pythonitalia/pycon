@@ -615,6 +615,7 @@ class Command(BaseCommand):
                         orig_ticket["ticket_user"] or None, order_user
                     )
 
+                    # TODO: import to pretix?
                     ticket_fare, _ = TicketFare.objects.update_or_create(
                         conference_id=conferences[orig_ticket["conference"]],
                         code=orig_ticket["fare_code"],

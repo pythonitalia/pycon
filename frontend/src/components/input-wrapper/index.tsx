@@ -1,10 +1,10 @@
 /** @jsx jsx */
-import { Box, Label, Text } from "@theme-ui/components";
+import { Box, Text } from "@theme-ui/components";
 import React from "react";
 import { jsx } from "theme-ui";
 
 export const InputWrapper: React.SFC<{
-  label?: React.ReactElement;
+  label?: React.ReactElement | string;
   description?: React.ReactElement;
   errors?: string[];
   className?: string;
@@ -19,18 +19,19 @@ export const InputWrapper: React.SFC<{
   ...props
 }) => (
   <Box mb={4} {...props} className={className}>
-    {label && (
-      <Text variant="label" as="p">
+    <Text as="label">
+      <Text sx={{ mb: 1 }} variant="label">
         {label}
-        {isRequired && "*"}
+        {label && isRequired && "*"}
+
+        {description && (
+          <Text variant="labelDescription" as="p">
+            {description}
+          </Text>
+        )}
       </Text>
-    )}
-    {description && (
-      <Text variant="labelDescription" as="p">
-        {description}
-      </Text>
-    )}
-    {children}
+      {children}
+    </Text>
     {errors && (
       <ul
         sx={{

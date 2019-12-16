@@ -1,27 +1,25 @@
 from datetime import datetime
 from itertools import groupby
-from typing import TYPE_CHECKING, List, Optional
+from typing import List, Optional
 
 import pytz
 import strawberry
-from django.conf import settings
-from django.utils import translation
-
 from api.cms.types import FAQ, Menu
 from api.events.types import Event
 from api.languages.types import Language
+from api.pretix.query import get_conference_tickets
+from api.pretix.types import TicketItem
 from api.scalars import Date, DateTime
 from api.schedule.types import Room, ScheduleItem
 from api.sponsors.types import SponsorsByLevel
 from api.submissions.types import Submission, SubmissionType
 from cms.models import GenericCopy
+from django.conf import settings
+from django.utils import translation
 from schedule.models import ScheduleItem as ScheduleItemModel
 
 from ..helpers.i18n import make_localized_resolver
 from ..helpers.maps import Map, resolve_map
-
-if TYPE_CHECKING:  # pragma: no cover
-    from api.tickets.types import TicketQuestion
 
 
 @strawberry.type
@@ -49,6 +47,8 @@ class Conference:
     end: DateTime
     map: Optional[Map] = strawberry.field(resolver=resolve_map)
 
+    pretix_event_url: str
+
     @strawberry.field
     def timezone(self, info) -> str:
         return str(self.timezone)
@@ -69,8 +69,8 @@ class Conference:
         return qs.order_by("start")
 
     @strawberry.field
-    def ticket_fares(self, info) -> List["TicketFare"]:
-        return self.ticket_fares.all()
+    def tickets(self, info, language: str) -> List[TicketItem]:
+        return get_conference_tickets(self, language=language)
 
     @strawberry.field
     def deadlines(self, info) -> List["Deadline"]:
@@ -159,29 +159,6 @@ class Deadline:
     start: DateTime
     end: DateTime
     conference: Conference
-
-
-@strawberry.type
-class TicketFareQuestion:
-    ticket_fare: "TicketFare"
-    question: "TicketQuestion"
-    is_required: bool
-
-
-@strawberry.type
-class TicketFare:
-    id: strawberry.ID
-    code: str
-    name: str
-    price: str
-    start: DateTime
-    end: DateTime
-    description: str
-    conference: Conference
-
-    @strawberry.field
-    def questions(self, info) -> List["TicketFareQuestion"]:
-        return self.questions.all()
 
 
 @strawberry.type

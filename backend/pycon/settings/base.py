@@ -36,9 +36,6 @@ INSTALLED_APPS = [
     "languages.apps.LanguagesConfig",
     "submissions.apps.SubmissionsConfig",
     "schedule.apps.ScheduleConfig",
-    "orders.apps.OrdersConfig",
-    "payments.apps.PaymentsConfig",
-    "tickets.apps.TicketsConfig",
     "voting.apps.VotingConfig",
     "blog.apps.BlogConfig",
     "pages.apps.PagesConfig",
@@ -172,3 +169,16 @@ MAPBOX_PUBLIC_API_KEY = env("MAPBOX_PUBLIC_API_KEY", default="")
 
 SERIALIZATION_MODULES = {"json": "i18n.serializers"}
 USE_X_FORWARDED_HOST = False
+
+PRETIX_API = env("PRETIX_API", default="")
+PRETIX_API_TOKEN = None
+
+if PRETIX_API:
+    PRETIX_API_TOKEN = env("PRETIX_API_TOKEN")
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {"console": {"class": "logging.StreamHandler"}},
+    "loggers": {"app_api": {"handlers": ["console"], "level": "WARNING"}},
+}

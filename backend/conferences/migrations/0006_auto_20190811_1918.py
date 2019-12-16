@@ -7,27 +7,9 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('tickets', '0005_auto_20190811_1918'),
         ('conferences', '0005_ticketfare_questions'),
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='ticketfare',
-            name='questions',
-        ),
-        migrations.CreateModel(
-            name='TicketFareQuestion',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('is_required', models.BooleanField(default=False, verbose_name='required')),
-                ('question', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='tickets.TicketQuestion', verbose_name='question')),
-                ('ticket_fare', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='questions', to='conferences.TicketFare', verbose_name='ticket fare')),
-            ],
-            options={
-                'verbose_name': 'Ticket fare question',
-                'verbose_name_plural': 'Ticket fare questions',
-                'unique_together': {('ticket_fare', 'question')},
-            },
-        ),
+        migrations.RunPython(migrations.RunPython.noop)
     ]

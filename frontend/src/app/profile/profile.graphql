@@ -1,9 +1,25 @@
-query MyProfile($conference: String!) {
+query MyProfile($conference: String!, $language: String!) {
   me {
     id
 
-    tickets(conference: $conference) {
+    submissions(conference: $conference) {
       id
+      title
+      slug
+    }
+
+    orders(conference: $conference) {
+      code
+      status
+      url
+      total
+      positions {
+        id
+        name(language: $language)
+        attendeeName
+        attendeeEmail
+        price
+      }
     }
 
     name

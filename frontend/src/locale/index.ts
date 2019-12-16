@@ -31,6 +31,17 @@ export default {
     "profile.mySubmissionsHeader": "My Submissions",
     "profile.editProfile":
       "Something doesn't look right? Click here to change it!",
+    "profile.myOrders": "My Orders",
+    "profile.orderId": "Order #",
+    "profile.status": "Status: ",
+    "profile.price": "Price €",
+    "profile.manageOrder": "Manage order",
+    "profile.items": "Tickets",
+    "profile.ticketFor": "Ticket for",
+    "profile.status.pending": "Pending",
+    "profile.status.paid": "Paid",
+    "profile.status.expired": "Expired",
+    "profile.status.canceled": "Canceled",
     "profile.openToNewsletter":
       "I want to receive E-mail for main communications",
     "profile.openToRecruiting":
@@ -124,6 +135,8 @@ export default {
     "blog.readMore": "Read more",
     "blog.author": "Author",
     "inputTag.selectTags": "Select some tags...",
+    "tickets.pageTitle": "Buy your ticket for PyCon Italy",
+    "tickets.loading": "Please wait 🕐",
   },
   it: {
     titleTemplate: "%s | PyCon Italia",
@@ -152,9 +165,20 @@ export default {
     "profile.gender.notSay": "Preferisco non dirlo",
     "profile.header": "Il mio profilo",
     "profile.loading": "Caricamento...",
-    "profile.profileHeader": "Il tuo profilo",
+    "profile.profileHeader": "Il mio profilo",
     "profile.editProfile": "Informazioni errate? Clicca qui per cambiarle!",
+    "profile.orderId": "Ordine #",
+    "profile.status": "Stato: ",
+    "profile.price": "Prezzo €",
+    "profile.items": "Biglietti",
+    "profile.manageOrder": "Gestisci ordine",
     "profile.mySubmissionsHeader": "Le mie submissions",
+    "profile.myOrders": "I miei ordini",
+    "profile.ticketFor": "Biglietto per",
+    "profile.status.pending": "In attesa",
+    "profile.status.paid": "Pagato",
+    "profile.status.expired": "Scaduto",
+    "profile.status.canceled": "Cancellato",
     "profile.openToNewsletter":
       "Desidero ricevere E-mail per le comunicazioni più importanti",
     "profile.openToRecruiting":
@@ -249,5 +273,7 @@ export default {
     "blog.readMore": "Continua a leggere",
     "blog.author": "Autore",
     "inputTag.selectTags": "Scegli dei tag",
+    "tickets.pageTitle": "Compra il tuo biglietto per PyCon Italia",
+    "tickets.loading": "Caricamento in corso 🕐",
   },
 };

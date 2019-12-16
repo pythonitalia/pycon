@@ -58,5 +58,6 @@ jobs:
         TF_VAR_mail_user: ${{ secrets.TF_VAR_mail_user }}
         TF_VAR_mail_password: ${{ secrets.TF_VAR_mail_password }}
         TF_VAR_pretix_secret_key: ${{ secrets.TF_VAR_pretix_secret_key }}
+        TF_VAR_pretix_api_token:  ${{ secrets.TF_VAR_pretix_api_token }}
         TF_ACTION_WORKING_DIR: ./infrastructure
         TF_ACTION_WORKSPACE: production

@@ -4,13 +4,11 @@ import factory
 import factory.fuzzy
 from factory.django import DjangoModelFactory
 from pytest_factoryboy import register
-
 from users.models import COUNTRIES, User
 
 
 @register
 class UserFactory(DjangoModelFactory):
-
     email = factory.Faker("email")
     name = factory.Faker("first_name")
     full_name = factory.Faker("name")

@@ -7,12 +7,10 @@ from django.test.client import Client
 from events.tests.factories import *  # noqa
 from languages.models import Language
 from languages.tests.factories import *  # noqa
-from orders.tests.factories import *  # noqa
 from pages.tests.factories import *  # noqa
 from schedule.tests.factories import *  # noqa
 from sponsors.tests.factories import *  # noqa
 from submissions.tests.factories import *  # noqa
-from tickets.tests.factories import *  # noqa
 from users.models import User
 from users.tests.factories import *  # noqa
 from voting.tests.factories.vote import *  # noqa

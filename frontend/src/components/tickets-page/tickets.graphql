@@ -1,0 +1,20 @@
+query Tickets($conference: String!, $language: String!) {
+  me {
+    id
+    email
+  }
+  conference(code: $conference) {
+    pretixEventUrl
+    tickets(language: $language) {
+      id
+      name
+      description
+      defaultPrice
+      variations {
+        id
+        defaultPrice
+        value
+      }
+    }
+  }
+}

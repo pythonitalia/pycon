@@ -1,20 +1,12 @@
 import factory
 import factory.fuzzy
 import pytz
+from conferences.models import AudienceLevel, Conference, Deadline, Duration, Topic
 from django.utils import timezone
 from factory.django import DjangoModelFactory
-from pytest_factoryboy import register
-
-from conferences.models import (
-    AudienceLevel,
-    Conference,
-    Deadline,
-    Duration,
-    TicketFare,
-    Topic,
-)
 from i18n.helpers.tests import LanguageFactory
 from languages.models import Language
+from pytest_factoryboy import register
 from submissions.models import SubmissionType
 
 
@@ -187,27 +179,3 @@ class DurationFactory(DjangoModelFactory):
 
     class Meta:
         model = Duration
-
-
-@register
-class TicketFareFactory(DjangoModelFactory):
-    conference = factory.SubFactory(ConferenceFactory)
-
-    name = factory.Faker("name")
-    description = factory.Faker("paragraphs")
-    price = factory.Faker("random_int", min=20, max=300)
-    code = factory.Faker("military_ship")
-
-    start = factory.Faker("past_datetime", tzinfo=pytz.UTC)
-    end = factory.Faker("future_datetime", tzinfo=pytz.UTC)
-
-    class Meta:
-        model = TicketFare
-
-
-register(
-    TicketFareFactory,
-    "expired_ticket_fare",
-    start=factory.Faker("past_datetime", tzinfo=pytz.UTC),
-    end=factory.Faker("past_datetime", tzinfo=pytz.UTC),
-)
