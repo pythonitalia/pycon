@@ -130,8 +130,15 @@ export const TicketsPage: React.SFC<RouteComponentProps> = () => {
               />
             )}
 
-            <Button onClick={() => createOrderCallback("stripe")}>
+            <Button
+              sx={{ mr: 2 }}
+              onClick={() => createOrderCallback("stripe")}
+            >
               Pay with stripe
+            </Button>
+
+            <Button onClick={() => createOrderCallback("banktransfer")}>
+              Pay with bank transfer
             </Button>
           </React.Fragment>
         )}
