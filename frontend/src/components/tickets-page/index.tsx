@@ -14,6 +14,7 @@ import {
   TicketsQuery,
   TicketsQueryVariables,
 } from "../../generated/graphql-backend";
+import { Alert } from "../alert";
 import { MetaTags } from "../meta-tags";
 import { TicketsForm } from "../tickets-form";
 import CREATE_ORDER_MUTATION from "./create-order.graphql";
@@ -24,7 +25,6 @@ export const TicketsPage: React.SFC<RouteComponentProps> = () => {
   const conferenceCode = useContext(ConferenceContext);
   const language = useCurrentLanguage();
 
-  // TODO: error handling
   const [
     createOrder,
     { data: orderData, loading: creatingOrder },
@@ -45,7 +45,12 @@ export const TicketsPage: React.SFC<RouteComponentProps> = () => {
     },
   );
 
+  console.log(orderData);
+
   const hasOrder = orderData?.createOrder.__typename === "CreateOrderResult";
+  const orderErrorMessage =
+    orderData?.createOrder.__typename === "Error" &&
+    orderData.createOrder.message;
 
   const { loading, error, data } = useQuery<
     TicketsQuery,
@@ -133,6 +138,10 @@ export const TicketsPage: React.SFC<RouteComponentProps> = () => {
                   })
                 }
               />
+            )}
+
+            {orderErrorMessage && (
+              <Alert variant="alert">{orderErrorMessage}</Alert>
             )}
 
             {creatingOrder || hasOrder ? (

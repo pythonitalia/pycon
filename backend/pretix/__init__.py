@@ -8,6 +8,8 @@ import strawberry
 from conferences.models.conference import Conference
 from django.conf import settings
 
+from .exceptions import PretixError
+
 logger = logging.getLogger(__file__)
 
 
@@ -96,8 +98,12 @@ def create_order(conference: Conference, order_data: CreateOrderInput) -> Order:
     if response.status_code == 400:
         logger.warning("Unable to create order on pretix %s", response.content)
 
-    if not response.ok:
-        response.raise_for_status()
+        errors = [" ".join(errors) for key, errors in response.json().items()]
+        message = " ".join(errors)
+
+        raise PretixError(message)
+
+    response.raise_for_status()
 
     data = response.json()
 

@@ -1,5 +1,9 @@
 mutation CreateOrder($conference: String!, $input: CreateOrderInput!) {
   createOrder(conference: $conference, input: $input) {
+    ... on Error {
+      message
+    }
+
     ... on CreateOrderResult {
       paymentUrl
     }
