@@ -13,7 +13,7 @@ def test_calls_create_order(graphql_client, user, conference, mocker):
         variables={
             "code": conference.code,
             "input": {
-                "tickets": [{"ticketId": "1", "total": 3}],
+                "tickets": [{"ticketId": "1", "quantity": 3, "variation": 1}],
                 "paymentProvider": "stripe",
                 "email": "patrick.arminio@gmail.com",
                 "locale": "en",

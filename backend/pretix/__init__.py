@@ -54,7 +54,8 @@ def get_items(conference):
 @strawberry.input
 class CreateOrderTicket:
     ticket_id: str
-    total: int
+    variation: typing.Optional[str]
+    quantity: int
 
 
 @strawberry.input
@@ -74,7 +75,8 @@ def create_order(conference: Conference, order_data: CreateOrderInput) -> Order:
     positions = list(
         itertools.chain(
             *[
-                [{"item": ticket.ticket_id}] * ticket.total
+                [{"item": ticket.ticket_id, "variation": ticket.variation}]
+                * ticket.quantity
                 for ticket in order_data.tickets
             ]
         )

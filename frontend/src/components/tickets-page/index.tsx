@@ -60,7 +60,8 @@ export const TicketsPage: React.SFC<RouteComponentProps> = () => {
         .filter(product => product.quantity > 0)
         .map(product => ({
           ticketId: product.id,
-          total: product.quantity,
+          quantity: product.quantity,
+          variation: product.variation,
         }));
 
       createOrder({
