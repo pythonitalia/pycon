@@ -25,22 +25,27 @@ export const TicketsPage: React.SFC<RouteComponentProps> = () => {
   const language = useCurrentLanguage();
 
   // TODO: error handling
-  const [createOrder, { data: orderData }] = useMutation<
-    CreateOrderMutation,
-    CreateOrderMutationVariables
-  >(CREATE_ORDER_MUTATION, {
-    onCompleted(result) {
-      if (result.createOrder.__typename !== "CreateOrderResult") {
-        return;
-      }
+  const [
+    createOrder,
+    { data: orderData, loading: creatingOrder },
+  ] = useMutation<CreateOrderMutation, CreateOrderMutationVariables>(
+    CREATE_ORDER_MUTATION,
+    {
+      onCompleted(result) {
+        if (result.createOrder.__typename !== "CreateOrderResult") {
+          return;
+        }
 
-      window.location.href = `${
-        result.createOrder.paymentUrl
-      }?return_url=${encodeURIComponent(
-        window.location.origin,
-      )}/${language}/profile`;
+        window.location.href = `${
+          result.createOrder.paymentUrl
+        }?return_url=${encodeURIComponent(
+          window.location.origin,
+        )}/${language}/profile`;
+      },
     },
-  });
+  );
+
+  const hasOrder = orderData?.createOrder.__typename === "CreateOrderResult";
 
   const { loading, error, data } = useQuery<
     TicketsQuery,
@@ -130,16 +135,22 @@ export const TicketsPage: React.SFC<RouteComponentProps> = () => {
               />
             )}
 
-            <Button
-              sx={{ mr: 2 }}
-              onClick={() => createOrderCallback("stripe")}
-            >
-              Pay with stripe
-            </Button>
+            {creatingOrder || hasOrder ? (
+              <Box>Creating order...</Box>
+            ) : (
+              <React.Fragment>
+                <Button
+                  sx={{ mr: 2 }}
+                  onClick={() => createOrderCallback("stripe")}
+                >
+                  Pay with stripe
+                </Button>
 
-            <Button onClick={() => createOrderCallback("banktransfer")}>
-              Pay with bank transfer
-            </Button>
+                <Button onClick={() => createOrderCallback("banktransfer")}>
+                  Pay with bank transfer
+                </Button>
+              </React.Fragment>
+            )}
           </React.Fragment>
         )}
       </Box>
