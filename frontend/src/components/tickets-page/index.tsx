@@ -1,13 +1,8 @@
 /** @jsx jsx */
 import { useMutation, useQuery } from "@apollo/react-hooks";
+import { RouteComponentProps } from "@reach/router";
 import { Box, Button, Heading, Text } from "@theme-ui/components";
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useReducer,
-  useState,
-} from "react";
+import React, { useCallback, useContext, useReducer } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
@@ -22,14 +17,14 @@ import {
 import { MetaTags } from "../meta-tags";
 import { TicketsForm } from "../tickets-form";
 import CREATE_ORDER_MUTATION from "./create-order.graphql";
-import { HotelForm } from "./hotel-form";
 import { reducer } from "./reducer";
 import TICKETS_QUERY from "./tickets.graphql";
 
-export const TicketsPage: React.SFC = () => {
+export const TicketsPage: React.SFC<RouteComponentProps> = () => {
   const conferenceCode = useContext(ConferenceContext);
   const language = useCurrentLanguage();
 
+  // TODO: error handling
   const [createOrder, { data: orderData }] = useMutation<
     CreateOrderMutation,
     CreateOrderMutationVariables
