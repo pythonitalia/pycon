@@ -1,4 +1,5 @@
 from django.utils import timezone
+from freezegun import freeze_time
 from helpers.tests import get_image_url_from_request
 from pytest import mark
 from schedule.models import ScheduleItem
@@ -135,6 +136,7 @@ def test_schedule_is_ordered_by_start_date(
     } == resp["data"]["conference"]["schedule"][2]
 
 
+@freeze_time("2012-01-14 10:00:00")
 @mark.django_db
 def test_get_specific_day_schedule(
     graphql_client, conference_factory, schedule_item_factory, submission_factory
