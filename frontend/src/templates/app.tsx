@@ -30,6 +30,6 @@ export default () => (
     <SignupForm path="/:lang/signup" />
     <RequestPasswordReset path="/:lang/reset-password/" />
     <ResetPassword path="/:lang/reset-password/:userId/:token/" />
-    <TicketsPage path="/:lang/tickets" />
+    <PrivateRoute path="/:lang/tickets" component={TicketsPage} />
   </Router>
 );
