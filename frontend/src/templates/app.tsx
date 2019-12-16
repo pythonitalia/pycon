@@ -14,6 +14,7 @@ import { SignupForm } from "../components/signup-form";
 import { SocialLoginSuccess } from "../components/social-login-success";
 import { SubmissionPage } from "../components/submission-page";
 import { TicketsPage } from "../components/tickets-page";
+import { OrderConfirmationScreen } from "../screens/order-confirmation";
 
 export default () => (
   <Router>
@@ -31,5 +32,9 @@ export default () => (
     <RequestPasswordReset path="/:lang/reset-password/" />
     <ResetPassword path="/:lang/reset-password/:userId/:token/" />
     <PrivateRoute path="/:lang/tickets" component={TicketsPage} />
+    <PrivateRoute
+      path="/:lang/orders/:code/confirmation"
+      component={OrderConfirmationScreen}
+    />
   </Router>
 );

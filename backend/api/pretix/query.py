@@ -1,9 +1,15 @@
-from typing import List
+from typing import List, Optional
 
 import pretix
 from conferences.models.conference import Conference
 
 from .types import PretixOrder, ProductVariation, TicketItem
+
+
+def get_order(conference: Conference, code: str) -> Optional[PretixOrder]:
+    data = pretix.get_order(conference, code)
+
+    return PretixOrder(data)
 
 
 def get_user_orders(conference, email):
@@ -12,8 +18,7 @@ def get_user_orders(conference, email):
     if orders["count"] == 0:
         return []
 
-    items = pretix.get_items(conference)
-    return [PretixOrder(order, all_items=items) for order in orders["results"]]
+    return [PretixOrder(order) for order in orders["results"]]
 
 
 def get_conference_tickets(conference: Conference, language: str) -> List[TicketItem]:

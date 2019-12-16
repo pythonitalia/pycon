@@ -39,6 +39,17 @@ def pretix(conference, endpoint, qs={}, method="get", **kwargs):
     )
 
 
+def get_order(conference, code):
+    response = pretix(conference, f"orders/{code}/")
+
+    if response.status_code == 404:
+        return None
+
+    response.raise_for_status()
+
+    return response.json()
+
+
 def get_user_orders(conference, email):
     response = pretix(conference, "orders", {"email": email})
     response.raise_for_status()
