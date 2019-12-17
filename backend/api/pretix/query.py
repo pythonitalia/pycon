@@ -35,7 +35,7 @@ def get_conference_tickets(conference: Conference, language: str) -> List[Ticket
             variations=[
                 ProductVariation(
                     id=variation["id"],
-                    value=variation["value"].get(language),
+                    value=variation["value"].get(language, variation["value"]["en"]),
                     description=variation["description"].get(language, ""),
                     active=variation["active"],
                     default_price=variation["default_price"],
