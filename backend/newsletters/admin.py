@@ -14,7 +14,7 @@ class SubscriptionAdmin(admin.ModelAdmin):
         if request.method == "POST":
             form = SendEmailForm(request.POST)
             if form.is_valid():
-                submitted = True
+                submitted = self.send_emails(form.cleaned_data)
         else:
             form = SendEmailForm()
 
@@ -22,3 +22,7 @@ class SubscriptionAdmin(admin.ModelAdmin):
         return super(SubscriptionAdmin, self).changelist_view(
             request, extra_context=extra_context
         )
+
+    def send_emails(self, params):
+        # TODO Send emails with AWS SES
+        return True

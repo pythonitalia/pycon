@@ -51,6 +51,11 @@
             {{ form.subject.errors }}
           </p>
           <p>
+            <h3 for="subject">Recipients</h3>
+            {{ form.recipients_types }}
+            {{ form.recipients_types.errors }}
+          </p>
+          <p>
             <h3 for="body">Body</h3>
             {{ form.body }}
             {{ form.body.errors }}
