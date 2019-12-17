@@ -1,4 +1,5 @@
 from pytest import mark
+from submissions.models import Submission
 
 
 def _update_submission(
@@ -10,6 +11,8 @@ def _update_submission(
     new_type,
     new_tag,
     new_duration,
+    new_previous_talk_video="",
+    new_speaker_level=Submission.SPEAKER_LEVELS.new,
     new_languages=["en"]
 ):
     return graphql_client.query(
@@ -58,6 +61,9 @@ def _update_submission(
                     id
                     name
                 }
+
+                speakerLevel
+                previousTalkVideo
             }
 
             ... on UpdateSubmissionErrors {
@@ -69,6 +75,8 @@ def _update_submission(
                 validationAudienceLevel: audienceLevel
                 validationType: type
                 validationLanguages: languages
+                validationPreviousTalkVideo: previousTalkVideo
+                validationPreviousSpeakerLevel: speakerLevel
             }
         }
     }
@@ -86,6 +94,8 @@ def _update_submission(
                 "notes": "notes here",
                 "tags": [new_tag.id],
                 "duration": new_duration.id,
+                "speakerLevel": new_speaker_level,
+                "previousTalkVideo": new_previous_talk_video,
             }
         },
     )
@@ -113,6 +123,8 @@ def test_update_submission(
         languages=["it"],
         tags=["python", "ml"],
         conference=conference,
+        speaker_level=Submission.SPEAKER_LEVELS.intermediate,
+        previous_talk_video="https://www.youtube.com/watch?v=SlPhMPnQ58k",
     )
 
     graphql_client.force_login(user)
@@ -131,6 +143,8 @@ def test_update_submission(
         new_tag=new_tag,
         new_duration=new_duration,
         new_type=new_type,
+        new_speaker_level=Submission.SPEAKER_LEVELS.experienced,
+        new_previous_talk_video="https://www.youtube.com/watch?v=dQw4w9WgXcQ",
     )
 
     submission.refresh_from_db()
@@ -154,6 +168,8 @@ def test_update_submission(
             "id": str(conference.id),
         },
         "duration": {"id": str(new_duration.id), "name": new_duration.name},
+        "speakerLevel": "experienced",
+        "previousTalkVideo": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
     } == response["data"]["updateSubmission"]
 
 

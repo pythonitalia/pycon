@@ -18,6 +18,8 @@ mutation SendSubmission($input: SendSubmissionInput!) {
       validationNotes: notes
       validationAudienceLevel: audienceLevel
       validationTags: tags
+      validationPreviousTalkVideo: previousTalkVideo
+      validationSpeakerLevel: speakerLevel
       nonFieldErrors
     }
   }

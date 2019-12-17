@@ -33,6 +33,8 @@ class Submission:
     elevator_pitch: str
     notes: str
     abstract: str
+    speaker_level: str
+    previous_talk_video: str
     speaker: "User"
     topic: "Topic"
     type: SubmissionType

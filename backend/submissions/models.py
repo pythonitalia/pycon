@@ -4,6 +4,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
+from model_utils import Choices
 from model_utils.models import TimeStampedModel
 
 
@@ -15,6 +16,12 @@ class SubmissionTag(models.Model):
 
 
 class Submission(TimeStampedModel):
+    SPEAKER_LEVELS = Choices(
+        ("new", _("New speaker")),
+        ("intermediate", _("Intermediate experience")),
+        ("experienced", _("Experienced")),
+    )
+
     conference = models.ForeignKey(
         "conferences.Conference",
         on_delete=models.CASCADE,
@@ -29,6 +36,11 @@ class Submission(TimeStampedModel):
     )
     slug = models.SlugField(_("slug"), max_length=200)
     notes = models.TextField(_("notes"), default="", blank=True)
+
+    speaker_level = models.CharField(
+        _("speaker level"), choices=SPEAKER_LEVELS, max_length=20
+    )
+    previous_talk_video = models.URLField(_("previous talk video"), blank=True)
 
     speaker = models.ForeignKey(
         settings.AUTH_USER_MODEL,

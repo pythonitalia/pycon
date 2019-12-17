@@ -4,7 +4,6 @@ from submissions.tests.factories import SubmissionFactory
 
 
 def _submit_talk(client, conference, **kwargs):
-
     talk = SubmissionFactory.build(
         type=SubmissionType.objects.get_or_create(name="talk")[0]
     )
@@ -22,6 +21,8 @@ def _submit_talk(client, conference, **kwargs):
         "type": talk.type.id,
         "duration": conference.durations.first().id,
         "audience_level": conference.audience_levels.first().id,
+        "speaker_level": talk.speaker_level,
+        "previous_talk_video": talk.previous_talk_video,
     }
 
     variables = {**defaults, **kwargs}
@@ -36,7 +37,9 @@ def _submit_talk(client, conference, **kwargs):
                 $type: ID!,
                 $duration: ID!,
                 $audience_level: ID!,
-                $tags: [ID!]
+                $tags: [ID!],
+                $speaker_level: String!
+                $previous_talk_video: String
             ) {
                 sendSubmission(input: {
                     title: $title,
@@ -48,6 +51,8 @@ def _submit_talk(client, conference, **kwargs):
                     duration: $duration,,
                     audienceLevel: $audience_level
                     tags: $tags
+                    speakerLevel: $speaker_level
+                    previousTalkVideo: $previous_talk_video
                 }) {
                     __typename
 
@@ -79,6 +84,8 @@ def _submit_talk(client, conference, **kwargs):
                         validationDuration: duration
                         validationAudienceLevel: audienceLevel
                         validationTags: tags
+                        validationPreviousTalkVideo: previousTalkVideo
+                        validationPreviousSpeakerLevel: speakerLevel
                         nonFieldErrors
                     }
                 }
@@ -108,6 +115,8 @@ def _submit_tutorial(client, conference, **kwargs):
         "duration": conference.durations.first().id,
         "audience_level": conference.audience_levels.first().id,
         "tags": [tag.name for tag in talk.tags.all()],
+        "speaker_level": talk.speaker_level,
+        "previous_talk_video": talk.previous_talk_video,
     }
 
     variables = {**defaults, **kwargs}
@@ -123,7 +132,9 @@ def _submit_tutorial(client, conference, **kwargs):
                 $type: ID!,
                 $duration: ID!,
                 $audience_level: ID!,
-                $tags: [ID!]
+                $tags: [ID!],
+                $speaker_level: String!,
+                $previous_talk_video: String
             ) {
                 sendSubmission(input: {
                     title: $title,
@@ -134,7 +145,9 @@ def _submit_tutorial(client, conference, **kwargs):
                     type: $type,
                     duration: $duration,
                     audienceLevel: $audience_level,
-                    tags: $tags
+                    tags: $tags,
+                    speakerLevel: $speaker_level,
+                    previousTalkVideo: $previous_talk_video
                 }) {
                     __typename
 
@@ -166,6 +179,8 @@ def _submit_tutorial(client, conference, **kwargs):
                         validationDuration: duration
                         validationAudienceLevel: audienceLevel
                         validationTags: tags
+                        validationPreviousTalkVideo: previousTalkVideo
+                        validationPreviousSpeakerLevel: speakerLevel
                         nonFieldErrors
                     }
                 }
@@ -680,4 +695,44 @@ def test_create_submission_tags(
     assert resp["data"]["sendSubmission"]["tags"] == [
         {"name": "python"},
         {"name": "GraphQL"},
+    ]
+
+
+def test_speaker_level_is_required(graphql_client, user, conference_factory):
+    graphql_client.force_login(user)
+
+    conference = conference_factory(
+        topics=("friends",),
+        languages=("it",),
+        active_cfp=True,
+        submission_types=("talk", "tutorial"),
+        durations=("50",),
+        audience_levels=("Beginner",),
+    )
+
+    resp, _ = _submit_tutorial(graphql_client, conference, speaker_level="")
+    assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
+    assert resp["data"]["sendSubmission"]["validationPreviousSpeakerLevel"] == [
+        "This field is required."
+    ]
+
+
+def test_speaker_level_only_allows_the_predefined_levels(
+    graphql_client, user, conference_factory
+):
+    graphql_client.force_login(user)
+
+    conference = conference_factory(
+        topics=("friends",),
+        languages=("it",),
+        active_cfp=True,
+        submission_types=("talk", "tutorial"),
+        durations=("50",),
+        audience_levels=("Beginner",),
+    )
+
+    resp, _ = _submit_tutorial(graphql_client, conference, speaker_level="just_started")
+    assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
+    assert resp["data"]["sendSubmission"]["validationPreviousSpeakerLevel"] == [
+        "Select a valid choice. just_started is not one of the available choices."
     ]
