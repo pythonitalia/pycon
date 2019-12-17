@@ -36,11 +36,7 @@ export const TicketsPage: React.SFC<RouteComponentProps> = () => {
           return;
         }
 
-        window.location.href = `${
-          result.createOrder.paymentUrl
-        }?return_url=${encodeURIComponent(
-          window.location.origin,
-        )}/${language}/profile`;
+        window.location.href = result.createOrder.paymentUrl;
       },
     },
   );

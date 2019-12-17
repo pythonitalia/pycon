@@ -81,6 +81,7 @@ class CreateOrderInput:
 
 @strawberry.type
 class Order:
+    code: str
     payment_url: str
 
 
@@ -118,4 +119,4 @@ def create_order(conference: Conference, order_data: CreateOrderInput) -> Order:
 
     data = response.json()
 
-    return Order(payment_url=data["payments"][0]["payment_url"])
+    return Order(code=data["code"], payment_url=data["payments"][0]["payment_url"])
