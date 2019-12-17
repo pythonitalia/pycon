@@ -13,13 +13,6 @@ query MyProfile($conference: String!, $language: String!) {
       status
       url
       total
-      positions {
-        id
-        name(language: $language)
-        attendeeName
-        attendeeEmail
-        price
-      }
     }
 
     name

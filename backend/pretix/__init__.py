@@ -8,6 +8,8 @@ import strawberry
 from conferences.models.conference import Conference
 from django.conf import settings
 
+from .exceptions import PretixError
+
 logger = logging.getLogger(__file__)
 
 
@@ -35,6 +37,17 @@ def pretix(conference, endpoint, qs={}, method="get", **kwargs):
         headers={"Authorization": f"Token {settings.PRETIX_API_TOKEN}"},
         **kwargs,
     )
+
+
+def get_order(conference, code):
+    response = pretix(conference, f"orders/{code}/")
+
+    if response.status_code == 404:
+        return None
+
+    response.raise_for_status()
+
+    return response.json()
 
 
 def get_user_orders(conference, email):
@@ -68,6 +81,7 @@ class CreateOrderInput:
 
 @strawberry.type
 class Order:
+    code: str
     payment_url: str
 
 
@@ -96,9 +110,13 @@ def create_order(conference: Conference, order_data: CreateOrderInput) -> Order:
     if response.status_code == 400:
         logger.warning("Unable to create order on pretix %s", response.content)
 
-    if not response.ok:
-        response.raise_for_status()
+        errors = [" ".join(errors) for key, errors in response.json().items()]
+        message = " ".join(errors)
+
+        raise PretixError(message)
+
+    response.raise_for_status()
 
     data = response.json()
 
-    return Order(payment_url=data["payments"][0]["payment_url"])
+    return Order(code=data["code"], payment_url=data["payments"][0]["payment_url"])

@@ -150,6 +150,7 @@ export default {
     "inputTag.selectTags": "Select some tags...",
     "tickets.pageTitle": "Buy your ticket for PyCon Italy",
     "tickets.loading": "Please wait 🕐",
+    "orderConfirmation.manage": "Click here to manage the order.",
   },
   it: {
     titleTemplate: "%s | PyCon Italia",
@@ -300,5 +301,6 @@ export default {
     "inputTag.selectTags": "Scegli dei tag",
     "tickets.pageTitle": "Compra il tuo biglietto per PyCon Italia",
     "tickets.loading": "Caricamento in corso 🕐",
+    "orderConfirmation.manage": "Fai click qui per gestire il tuo ordine.",
   },
 };

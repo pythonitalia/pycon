@@ -14,6 +14,7 @@ import {
   TicketsQuery,
   TicketsQueryVariables,
 } from "../../generated/graphql-backend";
+import { Alert } from "../alert";
 import { MetaTags } from "../meta-tags";
 import { TicketsForm } from "../tickets-form";
 import CREATE_ORDER_MUTATION from "./create-order.graphql";
@@ -24,23 +25,28 @@ export const TicketsPage: React.SFC<RouteComponentProps> = () => {
   const conferenceCode = useContext(ConferenceContext);
   const language = useCurrentLanguage();
 
-  // TODO: error handling
-  const [createOrder, { data: orderData }] = useMutation<
-    CreateOrderMutation,
-    CreateOrderMutationVariables
-  >(CREATE_ORDER_MUTATION, {
-    onCompleted(result) {
-      if (result.createOrder.__typename !== "CreateOrderResult") {
-        return;
-      }
+  const [
+    createOrder,
+    { data: orderData, loading: creatingOrder },
+  ] = useMutation<CreateOrderMutation, CreateOrderMutationVariables>(
+    CREATE_ORDER_MUTATION,
+    {
+      onCompleted(result) {
+        if (result.createOrder.__typename !== "CreateOrderResult") {
+          return;
+        }
 
-      window.location.href = `${
-        result.createOrder.paymentUrl
-      }?return_url=${encodeURIComponent(
-        window.location.origin,
-      )}/${language}/profile`;
+        window.location.href = result.createOrder.paymentUrl;
+      },
     },
-  });
+  );
+
+  console.log(orderData);
+
+  const hasOrder = orderData?.createOrder.__typename === "CreateOrderResult";
+  const orderErrorMessage =
+    orderData?.createOrder.__typename === "Error" &&
+    orderData.createOrder.message;
 
   const { loading, error, data } = useQuery<
     TicketsQuery,
@@ -130,9 +136,26 @@ export const TicketsPage: React.SFC<RouteComponentProps> = () => {
               />
             )}
 
-            <Button onClick={() => createOrderCallback("stripe")}>
-              Pay with stripe
-            </Button>
+            {orderErrorMessage && (
+              <Alert variant="alert">{orderErrorMessage}</Alert>
+            )}
+
+            {creatingOrder || hasOrder ? (
+              <Box>Creating order...</Box>
+            ) : (
+              <React.Fragment>
+                <Button
+                  sx={{ mr: 2 }}
+                  onClick={() => createOrderCallback("stripe")}
+                >
+                  Pay with stripe
+                </Button>
+
+                <Button onClick={() => createOrderCallback("banktransfer")}>
+                  Pay with bank transfer
+                </Button>
+              </React.Fragment>
+            )}
           </React.Fragment>
         )}
       </Box>

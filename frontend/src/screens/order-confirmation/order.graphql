@@ -1,0 +1,7 @@
+query Order($conferenceCode: String!, $code: String!) {
+  order(conferenceCode: $conferenceCode, code: $code) {
+    code
+    status
+    url
+  }
+}
