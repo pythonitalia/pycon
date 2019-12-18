@@ -26,11 +26,11 @@ def send_request_password_reset_mail(user, token):
     )
 
 
-def send_mail(subject, recipients, template, context={}):
+def send_mail(subject, recipients, template, context={}, path="notifications/"):
     context.update({"FRONTEND_URL": settings.FRONTEND_URL})
 
-    html_body = render_to_string(f"notifications/{template}.html", context)
-    text_body = render_to_string(f"notifications/{template}.txt", context)
+    html_body = render_to_string(f"{path}{template}.html", context)
+    text_body = render_to_string(f"{path}{template}.txt", context)
 
     message = EmailMultiAlternatives(
         subject, text_body, settings.DEFAULT_FROM_EMAIL, recipients
