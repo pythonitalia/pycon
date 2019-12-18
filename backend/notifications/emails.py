@@ -12,7 +12,7 @@ def send_request_password_reset_mail(user, token):
 
     return send_mail(
         _("Reset password"),
-        [user],
+        [user.email],
         "simple_email",
         {
             "heading": _("Reset your password"),
@@ -26,14 +26,14 @@ def send_request_password_reset_mail(user, token):
     )
 
 
-def send_mail(subject, users, template, context={}):
+def send_mail(subject, recipients, template, context={}):
     context.update({"FRONTEND_URL": settings.FRONTEND_URL})
 
     html_body = render_to_string(f"notifications/{template}.html", context)
     text_body = render_to_string(f"notifications/{template}.txt", context)
 
     message = EmailMultiAlternatives(
-        subject, text_body, settings.DEFAULT_FROM_EMAIL, [user.email for user in users]
+        subject, text_body, settings.DEFAULT_FROM_EMAIL, recipients
     )
 
     message.attach_alternative(html_body, "text/html")
