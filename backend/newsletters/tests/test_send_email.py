@@ -25,7 +25,8 @@ def test_get_email_form(admin_client, admin_user):
 
 
 @pytest.mark.django_db
-def test_submit_valid_email_form(post_changelist):
+def test_submit_valid_email_form(post_changelist, subscription_factory):
+    subscription_factory()
     data = {
         "subject": "My Subject",
         "heading": "OMG What Wonderfull News",
@@ -55,9 +56,9 @@ def test_send_newsletter(post_changelist, subscription_factory):
     sub2 = subscription_factory()
 
     data = {
-        "subject": "My Subject",
-        "heading": "Let's go!",
-        "body": "My Body",
+        "subject": "Let's go!",
+        "heading": "Let's go heading!",
+        "body": "Let's go body!",
         "recipients_types": "newsletter",
         "cta_label": "Nobody's perfect!",
         "cta_link": "https://www.youtube.com/watch?v=2Inp_sWsUqQ",

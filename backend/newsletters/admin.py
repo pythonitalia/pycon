@@ -1,6 +1,7 @@
 from django.contrib import admin
 
 from newsletters.forms import SendEmailForm
+from notifications.emails import send_mail
 
 from .models import Subscription
 
@@ -14,7 +15,7 @@ class SubscriptionAdmin(admin.ModelAdmin):
         if request.method == "POST":
             form = SendEmailForm(request.POST)
             if form.is_valid():
-                submitted = self.send_emails(form.cleaned_data)
+                submitted = self.send_emails(**form.cleaned_data)
         else:
             form = SendEmailForm()
 
@@ -23,6 +24,17 @@ class SubscriptionAdmin(admin.ModelAdmin):
             request, extra_context=extra_context
         )
 
-    def send_emails(self, params):
-        # TODO Send emails with AWS SES
-        return True
+    def send_emails(self, **kwargs):
+        subject = kwargs.pop("subject")
+        recipients = kwargs.pop("recipients")
+
+        return (
+            send_mail(
+                subject,
+                recipients,
+                "newsletter",
+                context=kwargs,
+                path="emails/newsletter/",
+            )
+            == 1
+        )
