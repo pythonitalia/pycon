@@ -1,4 +1,4 @@
-query MyProfile($conference: String!, $language: String!) {
+query MyProfile($conference: String!) {
   me {
     id
 
