@@ -12,7 +12,10 @@ RECIPIENTS_TYPES = Choices(
 
 class SendEmailForm(forms.Form):
     subject = forms.CharField(label="Subject", max_length=100)
+    heading = forms.CharField(label="Heading", max_length=300)
     body = forms.CharField(label="Body", widget=forms.Textarea)
+    cta_label = forms.CharField(label="Link Label", max_length=100, required=False)
+    cta_link = forms.CharField(label="Link", max_length=100, required=False)
     recipients_types = forms.ChoiceField(
         label="Recipients Type", choices=RECIPIENTS_TYPES
     )

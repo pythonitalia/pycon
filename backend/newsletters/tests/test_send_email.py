@@ -28,7 +28,10 @@ def test_get_email_form(admin_client, admin_user):
 def test_submit_valid_email_form(post_changelist):
     data = {
         "subject": "My Subject",
-        "body": "My Body",
+        "heading": "OMG What Wonderfull News",
+        "body": "My Funny Body",
+        "cta_label": "Look at that",
+        "cta_link": "https://www.youtube.com/watch?v=nn2FB1P_Mn8",
         "recipients_types": "newsletter",
     }
     resp = post_changelist(**data)
@@ -53,8 +56,11 @@ def test_send_newsletter(post_changelist, subscription_factory):
 
     data = {
         "subject": "My Subject",
+        "heading": "Let's go!",
         "body": "My Body",
         "recipients_types": "newsletter",
+        "cta_label": "Nobody's perfect!",
+        "cta_link": "https://www.youtube.com/watch?v=2Inp_sWsUqQ",
     }
     resp = post_changelist(**data)
     assert resp.status_code == 200

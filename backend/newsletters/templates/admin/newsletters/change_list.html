@@ -51,15 +51,35 @@
             {{ form.subject.errors }}
           </p>
           <p>
-            <h3 for="subject">Recipients</h3>
+            <h3 for="recipients_types">Recipients</h3>
             {{ form.recipients_types }}
             {{ form.recipients_types.errors }}
           </p>
           <p>
+            <h3 for="heading">Heading</h3>
+            <p>Titolo che verrà inserito nel body mail</p>
+            {{ form.heading }}
+            {{ form.heading.errors }}
+          </p>
+          <p>
             <h3 for="body">Body</h3>
+            <p>Il contenuto (html) che verrà inserito nel body mail, sotto all'heading</p>
             {{ form.body }}
             {{ form.body.errors }}
           </p>
+          <p>
+            <h3 for="cta_label">Link Label</h3>
+            <p>Testo del link conclusivo della mail</p>
+            {{ form.cta_label }}
+            {{ form.cta_label.errors }}
+          </p>
+          <p>
+            <h3 for="cta_link">Link</h3>
+            <p>Link conclusivo della mail</p>
+            {{ form.cta_link }}
+            {{ form.cta_link.errors }}
+          </p>
+
           <div align="right">
             <label><span> </span><input type="submit" value="Invia" /></label>
           </div>
