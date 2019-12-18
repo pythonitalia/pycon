@@ -31,7 +31,6 @@ export const ProfileApp: React.SFC<RouteComponentProps> = () => {
   >(MY_PROFILE_QUERY, {
     variables: {
       conference: conferenceCode,
-      language: lang,
     },
   });
 
