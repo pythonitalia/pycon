@@ -240,7 +240,7 @@ export default {
     "cfp.audienceLevelDescription": "Che genere di audience ti aspetti?",
     "cfp.abstractLabel": "Descrizione",
     "cfp.abstractDescription":
-      "This decription will be seen by reviewers and the audience, if selected. You should make the description as compelling and exciting as possible - remember, you’re selling the idea to the organisers as well as appealling to attendees",
+      "Questa descrizione verrà visualizzata sia gli organizzatori che e ai partecipanti, se selezionata. Dovesti rendere la descrizione il più completa ed interessante possibile - ricordati, stai vendendo la tua idea sia agli organizzatori che ai partecipanti",
     "cfp.notesLabel": "Note",
     "cfp.notesDescription":
       "Le note saranno visualizzate solo dallo staff. È qui che dovresti indicare cose come i requisiti tecnici e/o perché sei la persona migliore per questa idea.",
