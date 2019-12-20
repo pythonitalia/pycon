@@ -34,3 +34,4 @@ omit =
   ./**/migrations/*.py
   ./manage.py
   ./conftest.py
+  ./api/views.py
