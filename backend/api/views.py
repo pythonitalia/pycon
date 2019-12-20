@@ -55,7 +55,7 @@ class CustomGraphQLView(GraphQLView):
 
     def _capture_sentry_exceptions(self, errors):
         for error in errors:
-            try:
+            if hasattr(error, "original_error"):
                 logging.error(error.original_error)
-            except AttributeError:
+            else:
                 logging.error(error, exc_info=True)
