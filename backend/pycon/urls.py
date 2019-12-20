@@ -5,7 +5,6 @@ from django.contrib import admin
 from django.urls import include, path
 from django.views.decorators.csrf import csrf_exempt
 
-# from strawberry.contrib.django.views import GraphQLView
 from api.views import CustomGraphQLView
 
 urlpatterns = [
