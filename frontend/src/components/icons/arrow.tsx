@@ -11,11 +11,16 @@ const getTransform = (direction: DIRECTION) => {
   }
 };
 
-type ArrowIconProps = React.SVGProps<SVGSVGElement> & {
+type ArrowIconProps = {
   direction?: DIRECTION;
+  onClick?: () => void;
+  viewBox?: string;
 };
 
-export const ArrowIcon = ({ direction = "left", ...props }: ArrowIconProps) => (
+export const ArrowIcon: React.SFC<ArrowIconProps> = ({
+  direction = "left",
+  ...props
+}) => (
   <svg viewBox="0 0 46 53" fill="none" {...props}>
     <g
       style={{ transform: getTransform(direction), transformOrigin: "center" }}
