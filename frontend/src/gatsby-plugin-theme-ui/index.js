@@ -250,6 +250,10 @@ export default {
     labelDescription: {
       mb: 3,
       maxWidth: 850,
+      color: "text",
+      fontWeight: "normal",
+      fontSize: 2,
+      textTransform: "none",
     },
   },
   styles: {
