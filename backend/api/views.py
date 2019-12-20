@@ -52,7 +52,7 @@ class CustomGraphQLView(GraphQLView):
             ]
             self._capture_sentry_exceptions(result.errors)
 
-        return JsonResponse(response_data, status=400 if result.errors else 200)
+        return JsonResponse(response_data, status=200)
 
     def _capture_sentry_exceptions(self, errors):
         for error in errors:
