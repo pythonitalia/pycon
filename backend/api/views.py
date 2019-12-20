@@ -1,5 +1,4 @@
 import json
-import logging
 
 import sentry_sdk
 from django.http import HttpResponseNotAllowed, JsonResponse
@@ -56,7 +55,6 @@ class CustomGraphQLView(GraphQLView):
 
     def _capture_sentry_exceptions(self, errors):
         for error in errors:
-            logging.error(error, exc_info=True)
             try:
                 sentry_sdk.capture_exception(error.original_error)
             except AttributeError:
