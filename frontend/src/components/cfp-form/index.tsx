@@ -200,8 +200,16 @@ export const CfpForm: React.SFC<Props> = ({
     }
 
     // When changing format we need to reset to the first
-    // available duration of the new format
-    formState.setField("length", allowedDurations[0].id);
+    // available duration of the new format, but only if the
+    // duration is not allowed
+
+    if (
+      !allowedDurations.find(
+        duration => duration.id === formState.values.length,
+      )
+    ) {
+      formState.setField("length", allowedDurations[0].id);
+    }
   }, [formState.values.type]);
 
   if (conferenceLoading) {
