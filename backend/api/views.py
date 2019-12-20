@@ -6,7 +6,7 @@ from django.http.response import HttpResponseBadRequest
 from django.shortcuts import render
 from graphql import graphql_sync
 from graphql.error import format_error as format_graphql_error
-from strawberry.contrib.django.views import GraphQLView
+from strawberry.django.views import GraphQLView
 
 
 class CustomGraphQLView(GraphQLView):
