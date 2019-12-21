@@ -114,7 +114,7 @@ const createPageWithSocialCards = (
 
 exports.createPages = async ({ graphql, actions, reporter }) => {
   const { createPage, createRedirect } = actions;
-
+  console.log("STO PER FARE LA QUERY IN GATSBY-NDOE!! ");
   const result = await graphql(
     `
       query {
@@ -134,9 +134,10 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
       }
     `,
   );
-
+  console.log("RESULT: " + JSON.stringify(result));
   if (result.errors) {
     console.log(result.errors);
+
     reporter.panicOnBuild(`Error while running GraphQL query.`);
     return;
   }
