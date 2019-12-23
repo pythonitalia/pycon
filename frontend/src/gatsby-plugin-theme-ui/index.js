@@ -49,7 +49,6 @@ export default {
       fontFamily: "body",
       bg: "blue",
       border: "primary",
-      borderWidth: 4,
     },
     select: {
       fontFamily: "body",

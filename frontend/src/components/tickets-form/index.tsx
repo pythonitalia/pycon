@@ -3,14 +3,14 @@ import { Box } from "@theme-ui/components";
 import React from "react";
 import { jsx } from "theme-ui";
 
-import { ProductsState } from "../tickets-page/types";
+import { SelectedProducts } from "../tickets-page/types";
 import { ProductRow } from "./product-row";
 import { SelectedProductsWithVariationsList } from "./selected-products-with-variation-list";
 import { Ticket } from "./types";
 
 type Props = {
   tickets: Ticket[];
-  selectedProducts: ProductsState;
+  selectedProducts: SelectedProducts;
   addProduct: (id: string, variant?: string) => void;
   removeProduct: (id: string, variant?: string) => void;
 };
@@ -26,9 +26,7 @@ export const TicketsForm: React.SFC<Props> = ({
       <Box key={ticket.id}>
         <ProductRow
           quantity={
-            selectedProducts[ticket.id]
-              ? selectedProducts[ticket.id].quantity
-              : 0
+            selectedProducts[ticket.id] ? selectedProducts[ticket.id].length : 0
           }
           ticket={ticket}
           addProduct={addProduct}

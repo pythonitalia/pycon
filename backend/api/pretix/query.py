@@ -3,7 +3,7 @@ from typing import List, Optional
 import pretix
 from conferences.models.conference import Conference
 
-from .types import PretixOrder, ProductVariation, TicketItem
+from .types import Option, PretixOrder, ProductVariation, Question, TicketItem
 
 
 def get_order(conference: Conference, code: str) -> Optional[PretixOrder]:
@@ -21,8 +21,28 @@ def get_user_orders(conference, email):
     return [PretixOrder(order) for order in orders["results"]]
 
 
+def get_questions_for_ticket(item, questions, language):
+    return [
+        Question(
+            id=question["id"],
+            name=question["question"].get(language, question["question"]["en"]),
+            required=question["required"],
+            options=[
+                Option(
+                    id=option["id"],
+                    name=option["answer"].get(language, option["answer"]["en"]),
+                )
+                for option in question["options"]
+            ],
+        )
+        for question in questions
+        if item["id"] in question["items"]
+    ]
+
+
 def get_conference_tickets(conference: Conference, language: str) -> List[TicketItem]:
     items = pretix.get_items(conference)
+    questions = pretix.get_questions(conference).values()
 
     # TODO: we should probably use a category for this
     def _is_hotel(item: dict):
@@ -51,6 +71,7 @@ def get_conference_tickets(conference: Conference, language: str) -> List[Ticket
             default_price=item["default_price"],
             available_from=item["available_from"],
             available_until=item["available_until"],
+            questions=get_questions_for_ticket(item, questions, language),
         )
         for id, item in items.items()
         if item["active"] and not _is_hotel(item)

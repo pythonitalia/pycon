@@ -41,10 +41,12 @@ export const OrderConfirmationScreen: React.SFC<RouteComponentProps<{
   code: string;
 }>> = ({ code }) => (
   <Box sx={{ maxWidth: "container", px: 3, mx: "auto" }}>
-    <Heading sx={{ mb: 3 }}>Order confirmation!</Heading>
+    <Heading sx={{ mb: 3 }}>
+      <FormattedMessage id="orderConfirmation.heading" />
+    </Heading>
 
     <Text>
-      Thanks for the order! You should receive an email confirmation soon!
+      <FormattedMessage id="orderConfirmation.successMessage" />
     </Text>
 
     <OrderDetail code={code!} />

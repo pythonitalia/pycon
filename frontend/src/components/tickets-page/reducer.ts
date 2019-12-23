@@ -1,22 +1,91 @@
-import { ProductAction, ProductsState, ProductState } from "./types";
+import {
+  OrderAction,
+  OrderState,
+  ProductState,
+  UpdateProductAction,
+} from "./types";
 
-export const reducer = (
-  state: ProductsState,
-  action: ProductAction,
-): ProductsState => {
+const updateProductReducer = (
+  state: OrderState,
+  action: UpdateProductAction,
+): OrderState => {
   const id = `${action.id}${action.variation || ""}`;
-
-  const current: ProductState = state[id]
-    ? state[id]
-    : { id: action.id, variation: action.variation, quantity: 0 };
+  const selectedProducts = { ...state.selectedProducts };
+  const productItems = selectedProducts[id] ? [...selectedProducts[id]] : [];
 
   switch (action.type) {
-    case "increment":
-      current.quantity += 1;
+    case "incrementProduct":
+      productItems.push({
+        id: action.id,
+        variation: action.variation,
+        answers: {},
+        attendeeName: "",
+        attendeeEmail: "",
+      });
       break;
-    case "decrement":
-      current.quantity = Math.max(0, current.quantity - 1);
+    case "decrementProduct":
+      productItems.splice(0, 1);
+      break;
   }
 
-  return { ...state, [id]: current };
+  if (productItems.length === 0) {
+    delete selectedProducts[id];
+  } else {
+    selectedProducts[id] = productItems;
+  }
+
+  return {
+    ...state,
+    selectedProducts,
+  };
+};
+
+export const reducer = (state: OrderState, action: OrderAction): OrderState => {
+  switch (action.type) {
+    case "incrementProduct":
+    case "decrementProduct":
+      return updateProductReducer(state, action);
+    case "updateTicketAnswer": {
+      const products = state.selectedProducts[action.id];
+      const newProduct = {
+        ...products[action.index],
+        answers: {
+          ...products[action.index].answers,
+          [action.question]: action.answer,
+        },
+      };
+
+      products[action.index] = newProduct;
+
+      return {
+        ...state,
+        selectedProducts: {
+          ...state.selectedProducts,
+          [action.id]: products,
+        },
+      };
+    }
+    case "updateTicketInfo": {
+      const products = state.selectedProducts[action.id];
+      const newProduct = {
+        ...products[action.index],
+        [action.key]: action.value,
+      };
+
+      products[action.index] = newProduct;
+
+      return {
+        ...state,
+        selectedProducts: {
+          ...state.selectedProducts,
+          [action.id]: products,
+        },
+      };
+    }
+    case "updateInvoiceInformation":
+      return {
+        ...state,
+        invoiceInformation: action.data,
+      };
+  }
 };

@@ -31,7 +31,7 @@ export default () => (
     <SignupForm path="/:lang/signup" />
     <RequestPasswordReset path="/:lang/reset-password/" />
     <ResetPassword path="/:lang/reset-password/:userId/:token/" />
-    <PrivateRoute path="/:lang/tickets" component={TicketsPage} />
+    <PrivateRoute path="/:lang/tickets/*" component={TicketsPage} />
     <PrivateRoute
       path="/:lang/orders/:code/confirmation"
       component={OrderConfirmationScreen}

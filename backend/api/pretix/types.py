@@ -36,6 +36,20 @@ class ProductVariation:
 
 
 @strawberry.type
+class Option:
+    id: strawberry.ID
+    name: str
+
+
+@strawberry.type
+class Question:
+    id: strawberry.ID
+    name: str
+    required: bool
+    options: List[Option]
+
+
+@strawberry.type
 class TicketItem:
     id: strawberry.ID
     name: str
@@ -46,3 +60,4 @@ class TicketItem:
     # TODO: correct types
     available_from: Optional[str]
     available_until: Optional[str]
+    questions: List[Question]

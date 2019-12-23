@@ -14,6 +14,7 @@ export const AddProductWithVariation: React.SFC<{
   return (
     <Flex sx={{ justifyContent: ["", "space-between"] }}>
       <Select
+        value={currentVariation}
         sx={{ width: 120, height: 50 }}
         onChange={(event: React.ChangeEvent<HTMLSelectElement>) =>
           setCurrentVariation(event.target.value)
@@ -23,11 +24,7 @@ export const AddProductWithVariation: React.SFC<{
           Select...
         </option>
         {ticket.variations!.map(variation => (
-          <option
-            key={variation.id}
-            value={variation.id}
-            selected={currentVariation === variation.id}
-          >
+          <option key={variation.id} value={variation.id}>
             {variation.value}
           </option>
         ))}

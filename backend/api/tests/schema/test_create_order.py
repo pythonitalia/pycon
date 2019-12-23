@@ -17,9 +17,28 @@ def test_calls_create_order(graphql_client, user, conference, mocker):
         variables={
             "code": conference.code,
             "input": {
-                "tickets": [{"ticketId": "1", "quantity": 3, "variation": "1"}],
+                "tickets": [
+                    {
+                        "ticketId": "1",
+                        "attendeeName": "ABC",
+                        "attendeeEmail": "patrick.arminio@gmail.com",
+                        "variation": "1",
+                        "answers": [{"questionId": "1", "value": "Example"}],
+                    }
+                ],
                 "paymentProvider": "stripe",
                 "email": "patrick.arminio@gmail.com",
+                "invoiceInformation": {
+                    "isBusiness": False,
+                    "company": "",
+                    "name": "Patrick",
+                    "street": "",
+                    "zipcode": "92100",
+                    "city": "Avellino",
+                    "country": "IT",
+                    "vatId": "",
+                    "fiscalCode": "",
+                },
                 "locale": "en",
             },
         },
@@ -49,9 +68,27 @@ def test_handles_errors(graphql_client, user, conference, mocker):
         variables={
             "code": conference.code,
             "input": {
-                "tickets": [{"ticketId": "1", "quantity": 3, "variation": "1"}],
+                "tickets": [
+                    {
+                        "attendeeName": "ABC",
+                        "attendeeEmail": "patrick.arminio@gmail.com",
+                        "ticketId": "1",
+                        "variation": "1",
+                    }
+                ],
                 "paymentProvider": "stripe",
                 "email": "patrick.arminio@gmail.com",
+                "invoiceInformation": {
+                    "isBusiness": False,
+                    "company": "",
+                    "name": "Patrick",
+                    "street": "",
+                    "zipcode": "92100",
+                    "city": "Avellino",
+                    "country": "IT",
+                    "vatId": "",
+                    "fiscalCode": "",
+                },
                 "locale": "en",
             },
         },

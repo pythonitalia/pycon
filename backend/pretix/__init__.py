@@ -1,4 +1,3 @@
-import itertools
 import logging
 import typing
 from urllib.parse import urljoin
@@ -50,25 +49,54 @@ def get_order(conference, code):
     return response.json()
 
 
-def get_user_orders(conference, email):
+def get_user_orders(conference: Conference, email: str):
     response = pretix(conference, "orders", {"email": email})
     response.raise_for_status()
     return response.json()
 
 
-def get_items(conference):
+def get_items(conference: Conference):
     response = pretix(conference, "items")
     response.raise_for_status()
 
     data = response.json()
-    return {result["id"]: result for result in data["results"]}
+    return {str(result["id"]): result for result in data["results"]}
+
+
+def get_questions(conference: Conference):
+    response = pretix(conference, "questions")
+    response.raise_for_status()
+
+    data = response.json()
+    return {str(result["id"]): result for result in data["results"]}
+
+
+@strawberry.input
+class CreateOrderTicketAnswer:
+    question_id: str
+    value: str
 
 
 @strawberry.input
 class CreateOrderTicket:
     ticket_id: str
     variation: typing.Optional[str]
-    quantity: int
+    attendee_name: str
+    attendee_email: str
+    answers: typing.Optional[typing.List[CreateOrderTicketAnswer]]
+
+
+@strawberry.input
+class InvoiceInformation:
+    is_business: bool
+    company: typing.Optional[str]
+    name: str
+    street: str
+    zipcode: str
+    city: str
+    country: str
+    vat_id: str
+    fiscal_code: str
 
 
 @strawberry.input
@@ -76,6 +104,7 @@ class CreateOrderInput:
     email: str
     locale: str
     payment_provider: str
+    invoice_information: InvoiceInformation
     tickets: typing.List[CreateOrderTicket]
 
 
@@ -85,16 +114,66 @@ class Order:
     payment_url: str
 
 
+def normalize_answers(ticket: CreateOrderTicket, questions: dict):
+    answers = []
+
+    for answer in ticket.answers or []:
+        question = questions[answer.question_id]
+
+        answer_data = {
+            "question": answer.question_id,
+            "answer": answer.value,
+            "options": [],
+            "option_identifier": [],
+        }
+
+        print(question)
+
+        # TODO: support more question types
+        if question["type"] == "C":
+            option = next(
+                (
+                    option
+                    for option in question["options"]
+                    if str(option["id"]) == answer.value
+                ),
+                None,
+            )
+
+            if option:
+                answer_data["options"] = [option["id"]]
+                answer_data["option_identifiers"] = [option["identifier"]]
+            else:
+                raise ValueError("Unable to find option")
+
+        answers.append(answer_data)
+
+    return answers
+
+
+def normalize_position(ticket: CreateOrderTicket, items: dict, questions: dict):
+    item = items[ticket.ticket_id]
+
+    data = {
+        "item": ticket.ticket_id,
+        "variation": ticket.variation,
+        "answers": normalize_answers(ticket, questions),
+    }
+
+    if item["admission"]:
+        data["attendee_name"] = ticket.attendee_name
+        data["attendee_email"] = ticket.attendee_email
+
+    return data
+
+
 def create_order(conference: Conference, order_data: CreateOrderInput) -> Order:
-    positions = list(
-        itertools.chain(
-            *[
-                [{"item": ticket.ticket_id, "variation": ticket.variation}]
-                * ticket.quantity
-                for ticket in order_data.tickets
-            ]
-        )
-    )
+    questions = get_questions(conference)
+    items = get_items(conference)
+
+    positions = [
+        normalize_position(ticket, items, questions) for ticket in order_data.tickets
+    ]
 
     payload = {
         "email": order_data.email,
@@ -102,6 +181,17 @@ def create_order(conference: Conference, order_data: CreateOrderInput) -> Order:
         "payment_provider": order_data.payment_provider,
         "testmode": True,
         "positions": positions,
+        "invoice_address": {
+            "is_business": order_data.invoice_information.is_business,
+            "company": order_data.invoice_information.company,
+            "name_parts": {"full_name": order_data.invoice_information.name},
+            "street": order_data.invoice_information.street,
+            "zipcode": order_data.invoice_information.zipcode,
+            "city": order_data.invoice_information.city,
+            "country": order_data.invoice_information.country,
+            "vat_id": order_data.invoice_information.vat_id,
+            "internal_reference": order_data.invoice_information.fiscal_code,
+        },
     }
 
     # it needs the / at the end...
@@ -110,10 +200,7 @@ def create_order(conference: Conference, order_data: CreateOrderInput) -> Order:
     if response.status_code == 400:
         logger.warning("Unable to create order on pretix %s", response.content)
 
-        errors = [" ".join(errors) for key, errors in response.json().items()]
-        message = " ".join(errors)
-
-        raise PretixError(message)
+        raise PretixError(response.content.decode("utf-8"))
 
     response.raise_for_status()
 
