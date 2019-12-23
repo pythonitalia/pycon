@@ -1,4 +1,3 @@
-import itertools
 import logging
 import typing
 from urllib.parse import urljoin
@@ -69,14 +68,22 @@ def get_questions(conference: Conference):
     response.raise_for_status()
 
     data = response.json()
-    return {result["id"]: result for result in data["results"]}
+    return {str(result["id"]): result for result in data["results"]}
+
+
+@strawberry.input
+class CreateOrderTicketAnswer:
+    question_id: str
+    value: str
 
 
 @strawberry.input
 class CreateOrderTicket:
     ticket_id: str
     variation: typing.Optional[str]
-    quantity: int
+    attendee_name: str
+    attendee_email: str
+    answers: typing.Optional[typing.List[CreateOrderTicketAnswer]]
 
 
 @strawberry.input
@@ -93,16 +100,56 @@ class Order:
     payment_url: str
 
 
+def normalize_answers(ticket: CreateOrderTicket, questions: dict):
+    answers = []
+
+    for answer in ticket.answers or []:
+        question = questions[answer.question_id]
+
+        answer_data = {
+            "question": answer.question_id,
+            "answer": answer.value,
+            "options": [],
+            "option_identifier": [],
+        }
+
+        print(question)
+
+        # TODO: support more question types
+        if question["type"] == "C":
+            option = next(
+                (
+                    option
+                    for option in question["options"]
+                    if str(option["id"]) == answer.value
+                ),
+                None,
+            )
+
+            if option:
+                answer_data["options"] = [option["id"]]
+                answer_data["option_identifiers"] = [option["identifier"]]
+            else:
+                raise ValueError("Unable to find option")
+
+        answers.append(answer_data)
+
+    return answers
+
+
 def create_order(conference: Conference, order_data: CreateOrderInput) -> Order:
-    positions = list(
-        itertools.chain(
-            *[
-                [{"item": ticket.ticket_id, "variation": ticket.variation}]
-                * ticket.quantity
-                for ticket in order_data.tickets
-            ]
-        )
-    )
+    questions = get_questions(conference)
+
+    positions = [
+        {
+            "item": ticket.ticket_id,
+            "variation": ticket.variation,
+            "attendee_name": ticket.attendee_name,
+            "attendee_email": ticket.attendee_email,
+            "answers": normalize_answers(ticket, questions),
+        }
+        for ticket in order_data.tickets
+    ]
 
     payload = {
         "email": order_data.email,
@@ -118,10 +165,7 @@ def create_order(conference: Conference, order_data: CreateOrderInput) -> Order:
     if response.status_code == 400:
         logger.warning("Unable to create order on pretix %s", response.content)
 
-        errors = [" ".join(errors) for key, errors in response.json().items()]
-        message = " ".join(errors)
-
-        raise PretixError(message)
+        raise PretixError(response.content.decode("utf-8"))
 
     response.raise_for_status()
 
