@@ -9,7 +9,8 @@ from .types import Option, PretixOrder, ProductVariation, Question, TicketItem
 def get_order(conference: Conference, code: str) -> Optional[PretixOrder]:
     data = pretix.get_order(conference, code)
 
-    return PretixOrder(data)
+    if data:
+        return PretixOrder.from_data(data)
 
 
 def get_user_orders(conference, email):
@@ -18,7 +19,7 @@ def get_user_orders(conference, email):
     if orders["count"] == 0:
         return []
 
-    return [PretixOrder(order) for order in orders["results"]]
+    return [PretixOrder.from_data(order) for order in orders["results"]]
 
 
 def get_questions_for_ticket(item, questions, language):

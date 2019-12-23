@@ -13,10 +13,13 @@ class OrdersQuery:
     def order(self, info, conference_code: str, code: str) -> Optional[PretixOrder]:
         conference = Conference.objects.get(code=conference_code)
 
-        # user = info.context['request'].user
-
+        user = info.context["request"].user
         order = get_order(conference, code)
-        # TODO: use permissions on object
-        # TODO: check email is user email
+
+        if not order:
+            return None
+
+        if user.email != order.email:
+            return None
 
         return order
