@@ -36,7 +36,7 @@ def get_questions_for_ticket(item, questions, language):
             ],
         )
         for question in questions
-        if item["id"] in question["items"] and question.get("required")
+        if item["id"] in question["items"]
     ]
 
 
