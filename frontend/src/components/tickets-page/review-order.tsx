@@ -174,8 +174,9 @@ export const ReviewOrder: React.SFC<Props> = ({ state, tickets, email }) => {
               >
                 <Flex
                   sx={{
+                    flexDirection: ["column", "row"],
                     justifyContent: "space-between",
-                    alignItems: "center",
+                    alignItems: ["flex-start", "center"],
                   }}
                 >
                   <Heading as="h3">{product.name}</Heading>
@@ -202,7 +203,7 @@ export const ReviewOrder: React.SFC<Props> = ({ state, tickets, email }) => {
                   <Box
                     as="ul"
                     sx={{
-                      pl: 4,
+                      pl: [2, 4],
                       listStyle: "none",
                     }}
                   >
@@ -219,7 +220,6 @@ export const ReviewOrder: React.SFC<Props> = ({ state, tickets, email }) => {
                     />
 
                     {product.questions.map(question => {
-                      console.log("question.options", question.options);
                       const isSelect = question.options.length > 0;
                       const answer = selectedProductInfo.answers[question.id];
 

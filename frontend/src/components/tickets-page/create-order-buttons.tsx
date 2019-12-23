@@ -100,15 +100,25 @@ export const CreateOrderButtons: React.SFC<Props> = ({ state, email }) => {
       )}
 
       {!creatingOrder && !hasOrder && (
-        <Fragment>
-          <Button sx={{ mr: 2 }} onClick={() => createOrderCallback("stripe")}>
+        <Flex
+          sx={{
+            flexDirection: ["column", "row"],
+          }}
+        >
+          <Button
+            sx={{
+              mr: [0, 2],
+              mb: [2, 0],
+            }}
+            onClick={() => createOrderCallback("stripe")}
+          >
             <FormattedMessage id="order.payWithCard" />
           </Button>
 
           <Button onClick={() => createOrderCallback("banktransfer")}>
             <FormattedMessage id="order.payWithBankTransfer" />
           </Button>
-        </Fragment>
+        </Flex>
       )}
     </Fragment>
   );
