@@ -15,6 +15,7 @@ def test_returns_tickets(graphql_client, conference, mocker):
             variations=[],
             available_from=None,
             available_until=None,
+            questions=[],
         )
     ]
 

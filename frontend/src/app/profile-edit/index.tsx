@@ -12,7 +12,6 @@ import {
   Select,
   Text,
 } from "@theme-ui/components";
-import { graphql, useStaticQuery } from "gatsby";
 import React, { useCallback } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
@@ -21,13 +20,13 @@ import { jsx } from "theme-ui";
 import * as yup from "yup";
 
 import { InputWrapper } from "../../components/input-wrapper";
-import { CountriesQuery } from "../../generated/graphql";
 import {
   MeUser,
   MyEditProfileQuery,
   UpdateProfileMutation,
   UpdateProfileMutationVariables,
 } from "../../generated/graphql-backend";
+import { useCountries } from "../../helpers/use-countries";
 import MY_PROFILE_QUERY from "./profile-edit.graphql";
 import UPDATE_MUTATION from "./update.graphql";
 
@@ -82,7 +81,7 @@ const schema = yup.object().shape({
 export const EditProfileApp: React.SFC<RouteComponentProps<{
   lang: string;
 }>> = ({ lang }) => {
-  const [formState, { text, radio, select, checkbox, raw }] = useFormState<
+  const [formState, { text, select, checkbox, raw }] = useFormState<
     MeUserFields
   >(
     {},
@@ -96,12 +95,7 @@ export const EditProfileApp: React.SFC<RouteComponentProps<{
     ...items.map(item => ({ label: item.name, value: item.id || item.code })),
   ];
 
-  const {
-    backend: { countries },
-  } = useStaticQuery<CountriesQuery>(COUNTRIES_QUERY);
-  const COUNTRIES_OPTIONS = createOptions(
-    countries.sort((a, b) => (a.name > b.name ? 1 : -1)),
-  );
+  const countries = useCountries();
 
   const setUserFormFields = (me: MeUser) => {
     formState.setField("name", me.name ? me.name : "");
@@ -360,7 +354,7 @@ export const EditProfileApp: React.SFC<RouteComponentProps<{
                 required={true}
                 value={formState.values.country}
               >
-                {COUNTRIES_OPTIONS.map(c => (
+                {countries.map(c => (
                   <option key={c.value} value={c.value}>
                     {c.label}
                   </option>
@@ -415,14 +409,3 @@ export const EditProfileApp: React.SFC<RouteComponentProps<{
     </Box>
   );
 };
-
-export const COUNTRIES_QUERY = graphql`
-  query countries {
-    backend {
-      countries {
-        code
-        name
-      }
-    }
-  }
-`;

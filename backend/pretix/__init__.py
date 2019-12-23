@@ -50,14 +50,22 @@ def get_order(conference, code):
     return response.json()
 
 
-def get_user_orders(conference, email):
+def get_user_orders(conference: Conference, email: str):
     response = pretix(conference, "orders", {"email": email})
     response.raise_for_status()
     return response.json()
 
 
-def get_items(conference):
+def get_items(conference: Conference):
     response = pretix(conference, "items")
+    response.raise_for_status()
+
+    data = response.json()
+    return {result["id"]: result for result in data["results"]}
+
+
+def get_questions(conference: Conference):
+    response = pretix(conference, "questions")
     response.raise_for_status()
 
     data = response.json()
