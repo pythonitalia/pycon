@@ -1,16 +1,19 @@
 /** @jsx jsx */
-import { Box, Button, Heading, Text, Flex } from "@theme-ui/components";
-import React, { Fragment, useCallback, useContext } from "react";
-import { jsx } from "theme-ui";
-import { OrderState, SelectedProducts } from "./types";
 import { useMutation } from "@apollo/react-hooks";
-import CREATE_ORDER_MUTATION from "./create-order.graphql";
+import { Box, Button, Flex, Heading, Text } from "@theme-ui/components";
+import React, { Fragment, useCallback, useContext } from "react";
+import { FormattedMessage } from "react-intl";
+import { jsx } from "theme-ui";
+
+import { ConferenceContext } from "../../context/conference";
+import { useCurrentLanguage } from "../../context/language";
 import {
   CreateOrderMutation,
   CreateOrderMutationVariables,
 } from "../../generated/graphql-backend";
-import { ConferenceContext } from "../../context/conference";
-import { useCurrentLanguage } from "../../context/language";
+import { Alert } from "../alert";
+import CREATE_ORDER_MUTATION from "./create-order.graphql";
+import { OrderState, SelectedProducts } from "./types";
 
 type Props = {
   state: OrderState;
@@ -54,13 +57,6 @@ export const CreateOrderButtons: React.SFC<Props> = ({ state, email }) => {
           })),
         }));
 
-      console.log("email:", email, "fdffd", {
-        paymentProvider,
-        tickets: orderTickets,
-        email: email,
-        locale: language,
-      });
-
       createOrder({
         variables: {
           conference: conferenceCode,
@@ -68,7 +64,7 @@ export const CreateOrderButtons: React.SFC<Props> = ({ state, email }) => {
           input: {
             paymentProvider,
             tickets: orderTickets,
-            email: email,
+            email,
             locale: language,
             invoiceInformation: {
               isBusiness: state.invoiceInformation.isBusiness === "true",
@@ -95,13 +91,25 @@ export const CreateOrderButtons: React.SFC<Props> = ({ state, email }) => {
 
   return (
     <Fragment>
-      <Button sx={{ mr: 2 }} onClick={() => createOrderCallback("stripe")}>
-        Pay with stripe
-      </Button>
+      {orderErrorMessage && <Alert variant="alert">{orderErrorMessage}</Alert>}
 
-      <Button onClick={() => createOrderCallback("banktransfer")}>
-        Pay with bank transfer
-      </Button>
+      {(creatingOrder || hasOrder) && (
+        <Alert variant="info">
+          <FormattedMessage id="order.creatingOrder" />
+        </Alert>
+      )}
+
+      {!creatingOrder && !hasOrder && (
+        <Fragment>
+          <Button sx={{ mr: 2 }} onClick={() => createOrderCallback("stripe")}>
+            <FormattedMessage id="order.payWithCard" />
+          </Button>
+
+          <Button onClick={() => createOrderCallback("banktransfer")}>
+            <FormattedMessage id="order.payWithBankTransfer" />
+          </Button>
+        </Fragment>
+      )}
     </Fragment>
   );
 };

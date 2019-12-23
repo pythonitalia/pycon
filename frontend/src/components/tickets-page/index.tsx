@@ -17,8 +17,8 @@ import {
 import { MetaTags } from "../meta-tags";
 import { InformationSection } from "./information";
 import { QuestionsSection } from "./questions";
-import { ReviewOrder } from "./review-order";
 import { reducer } from "./reducer";
+import { ReviewOrder } from "./review-order";
 import { TicketsSection } from "./tickets";
 import TICKETS_QUERY from "./tickets.graphql";
 import { SelectedProducts } from "./types";
@@ -96,8 +96,6 @@ export const TicketsPage: React.SFC<RouteComponentProps> = props => {
     [],
   );
 
-  console.log(state);
-
   return (
     <Box>
       <FormattedMessage id="tickets.pageTitle">
@@ -159,24 +157,3 @@ export const TicketsPage: React.SFC<RouteComponentProps> = props => {
     </Box>
   );
 };
-
-// {orderErrorMessage && (
-//   <Alert variant="alert">{orderErrorMessage}</Alert>
-// )}
-
-// {creatingOrder || hasOrder ? (
-//   <Box>Creating order...</Box>
-// ) : (
-//   <React.Fragment>
-//     <Button
-//       sx={{ mr: 2 }}
-//       onClick={() => createOrderCallback("stripe")}
-//     >
-//       Pay with stripe
-//     </Button>
-
-//     <Button onClick={() => createOrderCallback("banktransfer")}>
-//       Pay with bank transfer
-//     </Button>
-//   </React.Fragment>
-// )}

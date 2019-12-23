@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import { Button, Heading } from "@theme-ui/components";
 import React from "react";
+import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
 import { TicketsForm } from "../tickets-form";
@@ -24,7 +25,9 @@ export const TicketsSection: React.SFC<Props> = ({
   onNextStep,
 }) => (
   <React.Fragment>
-    <Heading sx={{ mb: 3 }}>Get some tickets</Heading>
+    <Heading sx={{ mb: 3 }}>
+      <FormattedMessage id="tickets.heading" />
+    </Heading>
 
     {tickets && (
       <TicketsForm
@@ -35,6 +38,8 @@ export const TicketsSection: React.SFC<Props> = ({
       />
     )}
 
-    <Button onClick={onNextStep}>Next step</Button>
+    <Button onClick={onNextStep}>
+      <FormattedMessage id="order.nextStep" />
+    </Button>
   </React.Fragment>
 );

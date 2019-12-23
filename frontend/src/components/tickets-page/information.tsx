@@ -11,6 +11,7 @@ import {
   Textarea,
 } from "@theme-ui/components";
 import React, { useCallback, useEffect } from "react";
+import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import { jsx } from "theme-ui";
 
@@ -52,7 +53,7 @@ export const InformationSection: React.SFC<Props> = ({
   return (
     <React.Fragment>
       <Heading as="h1" sx={{ mb: 3 }}>
-        Invoice information
+        <FormattedMessage id="orderInformation.heading" />
       </Heading>
 
       <Box as="form" onSubmit={onSubmit}>
@@ -66,7 +67,8 @@ export const InformationSection: React.SFC<Props> = ({
               fontWeight: "bold",
             }}
           >
-            <Radio {...radio("isBusiness", "false")} /> Individual Customer
+            <Radio {...radio("isBusiness", "false")} />
+            <FormattedMessage id="orderInformation.individualConsumer" />
           </Label>
           <Label
             sx={{
@@ -76,32 +78,54 @@ export const InformationSection: React.SFC<Props> = ({
               fontWeight: "bold",
             }}
           >
-            <Radio {...radio("isBusiness", "true")} /> Business Customer
+            <Radio {...radio("isBusiness", "true")} />
+            <FormattedMessage id="orderInformation.businessConsumer" />
           </Label>
         </Flex>
         {isBusiness && (
-          <InputWrapper label="Company name">
+          <InputWrapper
+            isRequired={true}
+            label={<FormattedMessage id="orderInformation.companyName" />}
+          >
             <Input {...text("companyName")} required={isBusiness} />
           </InputWrapper>
         )}
-        <InputWrapper label="Name">
+        <InputWrapper
+          isRequired={true}
+          label={<FormattedMessage id="orderInformation.name" />}
+        >
           <Input {...text("name")} required={true} />
         </InputWrapper>
         {isBusiness && (
-          <InputWrapper label="VAT ID">
+          <InputWrapper
+            isRequired={true}
+            label={<FormattedMessage id="orderInformation.vatId" />}
+          >
             <Input {...text("vatId")} required={true} />
           </InputWrapper>
         )}
-        <InputWrapper label="Address">
+        <InputWrapper
+          isRequired={true}
+          label={<FormattedMessage id="orderInformation.address" />}
+        >
           <Textarea {...textarea("address")} required={true} />
         </InputWrapper>
-        <InputWrapper label="Zip Code">
+        <InputWrapper
+          isRequired={true}
+          label={<FormattedMessage id="orderInformation.zipCode" />}
+        >
           <Input {...text("zipCode")} required={true} />
         </InputWrapper>
-        <InputWrapper label="City">
+        <InputWrapper
+          isRequired={true}
+          label={<FormattedMessage id="orderInformation.city" />}
+        >
           <Input {...text("city")} required={true} />
         </InputWrapper>
-        <InputWrapper label="Country">
+        <InputWrapper
+          isRequired={true}
+          label={<FormattedMessage id="orderInformation.country" />}
+        >
           <Select {...select("country")} required={true}>
             {countries.map(c => (
               <option key={c.value} value={c.value}>
@@ -112,12 +136,17 @@ export const InformationSection: React.SFC<Props> = ({
         </InputWrapper>
 
         {!isBusiness && isItalian && (
-          <InputWrapper label="Fiscal code">
+          <InputWrapper
+            isRequired={true}
+            label={<FormattedMessage id="orderInformation.fiscalCode" />}
+          >
             <Input {...text("fiscalCode")} required={true} />
           </InputWrapper>
         )}
 
-        <Button>Next step</Button>
+        <Button>
+          <FormattedMessage id="order.nextStep" />
+        </Button>
       </Box>
     </React.Fragment>
   );

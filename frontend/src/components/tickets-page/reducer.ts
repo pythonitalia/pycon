@@ -10,9 +10,8 @@ const updateProductReducer = (
   action: UpdateProductAction,
 ): OrderState => {
   const id = `${action.id}${action.variation || ""}`;
-  const productItems = state.selectedProducts[id]
-    ? [...state.selectedProducts[id]]
-    : [];
+  const selectedProducts = { ...state.selectedProducts };
+  const productItems = selectedProducts[id] ? [...selectedProducts[id]] : [];
 
   switch (action.type) {
     case "incrementProduct":
@@ -25,18 +24,19 @@ const updateProductReducer = (
       });
       break;
     case "decrementProduct":
-      if (productItems.length > 0) {
-        productItems.splice(0, 1);
-      }
+      productItems.splice(0, 1);
       break;
+  }
+
+  if (productItems.length === 0) {
+    delete selectedProducts[id];
+  } else {
+    selectedProducts[id] = productItems;
   }
 
   return {
     ...state,
-    selectedProducts: {
-      ...state.selectedProducts,
-      [id]: productItems,
-    },
+    selectedProducts,
   };
 };
 

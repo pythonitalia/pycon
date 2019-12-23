@@ -15,6 +15,7 @@ export const AddRemoveProduct: React.SFC<{
       defaultValue={0}
       value={quantity}
       min={0}
+      disabled={true}
       sx={{
         width: [100, 50],
         height: 50,

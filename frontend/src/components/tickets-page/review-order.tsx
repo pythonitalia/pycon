@@ -5,6 +5,7 @@ import React, { useCallback } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
+import { useCountries } from "../../helpers/use-countries";
 import { Ticket } from "../tickets-form/types";
 import { CreateOrderButtons } from "./create-order-buttons";
 import { InvoiceInformationState, OrderState } from "./types";
@@ -20,8 +21,8 @@ const INVOICE_FIELDS: {
   label: string;
 }[] = [
   {
-    key: "isBusiness",
-    label: "orderReview.isBusiness",
+    key: "companyName",
+    label: "orderReview.companyName",
   },
   {
     key: "name",
@@ -32,12 +33,20 @@ const INVOICE_FIELDS: {
     label: "orderReview.vatId",
   },
   {
+    key: "fiscalCode",
+    label: "orderReview.fiscalCode",
+  },
+  {
     key: "address",
     label: "orderReview.address",
   },
   {
     key: "zipCode",
     label: "orderReview.zipCode",
+  },
+  {
+    key: "city",
+    label: "orderReview.city",
   },
   {
     key: "country",
@@ -50,7 +59,7 @@ const ReviewItem = ({
   value,
 }: {
   label: string | React.ReactElement;
-  value: string;
+  value: string | React.ReactElement;
 }) => (
   <li
     sx={{
@@ -74,9 +83,12 @@ export const ReviewOrder: React.SFC<Props> = ({ state, tickets, email }) => {
   const productsById = Object.fromEntries(
     tickets!.map(product => [product.id, product]),
   );
+  const countries = useCountries();
   const totalAmount = Object.values(selectedProducts)
     .flat()
     .reduce((p, c) => p + parseFloat(productsById[c.id].defaultPrice), 0);
+
+  const isBusiness = state!.invoiceInformation.isBusiness === "true";
 
   return (
     <Box>
@@ -84,7 +96,7 @@ export const ReviewOrder: React.SFC<Props> = ({ state, tickets, email }) => {
         <FormattedMessage id="orderReview.heading" />
       </Heading>
 
-      <Heading as="h2" mb={1}>
+      <Heading as="h2" my={3}>
         <FormattedMessage id="orderReview.invoiceInformation" />
       </Heading>
 
@@ -94,37 +106,51 @@ export const ReviewOrder: React.SFC<Props> = ({ state, tickets, email }) => {
           listStyle: "none",
         }}
       >
-        {INVOICE_FIELDS.map(field => (
-          <li
-            key={field.key}
-            sx={{
-              mb: 2,
-            }}
-          >
-            <Text
-              variant="label"
-              as="p"
+        <ReviewItem
+          sx={{
+            mb: 2,
+          }}
+          label={<FormattedMessage id="orderReview.isBusiness" />}
+          value={
+            <FormattedMessage
+              id={`orderReview.isBusiness.${invoiceInformation.isBusiness}`}
+            />
+          }
+        />
+
+        {INVOICE_FIELDS.map(field => {
+          const inputValue = invoiceInformation[field.key];
+          let outputValue = inputValue;
+
+          switch (field.key) {
+            case "country":
+              outputValue = countries.find(c => c.value === inputValue)?.label;
+              break;
+            case "companyName":
+              if (!isBusiness) {
+                return null;
+              }
+              break;
+          }
+
+          if (outputValue === "") {
+            return null;
+          }
+
+          return (
+            <ReviewItem
+              key={field.key}
               sx={{
-                fontSize: 2,
-                mb: 1,
+                mb: 2,
               }}
-            >
-              <FormattedMessage id={field.label} />
-            </Text>
-            <Text
-              variant="labelDescription"
-              as="p"
-              sx={{
-                display: "block",
-              }}
-            >
-              {invoiceInformation[field.key]}
-            </Text>
-          </li>
-        ))}
+              label={<FormattedMessage id={field.label} />}
+              value={outputValue}
+            />
+          );
+        })}
       </Box>
 
-      <Heading as="h2" mb={1}>
+      <Heading as="h2" my={3}>
         <FormattedMessage id="orderReview.tickets" />
       </Heading>
 
@@ -168,7 +194,7 @@ export const ReviewOrder: React.SFC<Props> = ({ state, tickets, email }) => {
                       }}
                       as="span"
                     >
-                      (incl. 22% VAT)
+                      <FormattedMessage id="orderReview.inclVat" />
                     </Text>
                   </Text>
                 </Flex>
@@ -192,13 +218,24 @@ export const ReviewOrder: React.SFC<Props> = ({ state, tickets, email }) => {
                       value={selectedProductInfo.attendeeEmail}
                     />
 
-                    {product.questions.map(question => (
-                      <ReviewItem
-                        key={question.id}
-                        label={question.name}
-                        value={selectedProductInfo.answers[question.id]}
-                      />
-                    ))}
+                    {product.questions.map(question => {
+                      console.log("question.options", question.options);
+                      const isSelect = question.options.length > 0;
+                      const answer = selectedProductInfo.answers[question.id];
+
+                      return (
+                        <ReviewItem
+                          key={question.id}
+                          label={question.name}
+                          value={
+                            isSelect
+                              ? question.options.find(o => o.id === answer)!
+                                  .name
+                              : answer
+                          }
+                        />
+                      );
+                    })}
                   </Box>
                 )}
               </li>
@@ -215,7 +252,9 @@ export const ReviewOrder: React.SFC<Props> = ({ state, tickets, email }) => {
           py: 2,
         }}
       >
-        <Text as="h2">Total</Text>
+        <Text as="h2">
+          <FormattedMessage id="orderReview.total" />
+        </Text>
         <Text
           sx={{
             fontWeight: "bold",
