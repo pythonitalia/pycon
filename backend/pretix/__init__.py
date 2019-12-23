@@ -60,7 +60,7 @@ def get_items(conference: Conference):
     response.raise_for_status()
 
     data = response.json()
-    return {result["id"]: result for result in data["results"]}
+    return {str(result["id"]): result for result in data["results"]}
 
 
 def get_questions(conference: Conference):
@@ -87,10 +87,24 @@ class CreateOrderTicket:
 
 
 @strawberry.input
+class InvoiceInformation:
+    is_business: bool
+    company: typing.Optional[str]
+    name: str
+    street: str
+    zipcode: str
+    city: str
+    country: str
+    vat_id: str
+    fiscal_code: str
+
+
+@strawberry.input
 class CreateOrderInput:
     email: str
     locale: str
     payment_provider: str
+    invoice_information: InvoiceInformation
     tickets: typing.List[CreateOrderTicket]
 
 
@@ -137,18 +151,28 @@ def normalize_answers(ticket: CreateOrderTicket, questions: dict):
     return answers
 
 
+def normalize_position(ticket: CreateOrderTicket, items: dict, questions: dict):
+    item = items[ticket.ticket_id]
+
+    data = {
+        "item": ticket.ticket_id,
+        "variation": ticket.variation,
+        "answers": normalize_answers(ticket, questions),
+    }
+
+    if item["admission"]:
+        data["attendee_name"] = ticket.attendee_name
+        data["attendee_email"] = ticket.attendee_email
+
+    return data
+
+
 def create_order(conference: Conference, order_data: CreateOrderInput) -> Order:
     questions = get_questions(conference)
+    items = get_items(conference)
 
     positions = [
-        {
-            "item": ticket.ticket_id,
-            "variation": ticket.variation,
-            "attendee_name": ticket.attendee_name,
-            "attendee_email": ticket.attendee_email,
-            "answers": normalize_answers(ticket, questions),
-        }
-        for ticket in order_data.tickets
+        normalize_position(ticket, items, questions) for ticket in order_data.tickets
     ]
 
     payload = {
@@ -157,6 +181,17 @@ def create_order(conference: Conference, order_data: CreateOrderInput) -> Order:
         "payment_provider": order_data.payment_provider,
         "testmode": True,
         "positions": positions,
+        "invoice_address": {
+            "is_business": order_data.invoice_information.is_business,
+            "company": order_data.invoice_information.company,
+            "name_parts": {"full_name": order_data.invoice_information.name},
+            "street": order_data.invoice_information.street,
+            "zipcode": order_data.invoice_information.zipcode,
+            "city": order_data.invoice_information.city,
+            "country": order_data.invoice_information.country,
+            "vat_id": order_data.invoice_information.vat_id,
+            "internal_reference": order_data.invoice_information.fiscal_code,
+        },
     }
 
     # it needs the / at the end...

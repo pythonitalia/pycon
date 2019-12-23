@@ -11,13 +11,12 @@ export const SelectedProductsWithVariationsList: React.SFC<{
     [id: string]: {
       id: string;
       variation?: string;
-      quantity: number;
-    };
+    }[];
   };
   removeProduct: (id: string, variation: string) => void;
 }> = ({ products, selectedProducts, removeProduct }) => {
   const productsToShow = Object.values(selectedProducts).filter(
-    product => product.quantity > 0 && product.variation,
+    p => p.length > 0 && p[0].variation,
   );
 
   const productsById = Object.fromEntries(
@@ -27,20 +26,21 @@ export const SelectedProductsWithVariationsList: React.SFC<{
   return (
     <React.Fragment>
       {productsToShow.map(selectedProduct => {
-        const product = productsById[selectedProduct.id];
+        const firstProduct = selectedProduct[0];
+        const product = productsById[firstProduct.id];
         return (
           <Grid
             sx={{ gridTemplateColumns: "1fr 50px", my: 3 }}
-            key={`${selectedProduct.id}${selectedProduct.variation}`}
+            key={`${firstProduct.id}${firstProduct.variation}`}
           >
             <Flex sx={{ display: "flex", alignItems: "center" }}>
               <Box>
-                <strong>{selectedProduct.quantity}x</strong> {product.name}{" "}
+                <strong>{selectedProduct.length}x</strong> {product.name}{" "}
                 <strong>
                   (
                   {
                     product.variations?.find(
-                      variation => variation.id === selectedProduct.variation,
+                      variation => variation.id === firstProduct.variation,
                     )?.value
                   }
                   )
@@ -50,7 +50,7 @@ export const SelectedProductsWithVariationsList: React.SFC<{
             <Button
               variant="minus"
               onClick={() =>
-                removeProduct(selectedProduct.id, selectedProduct.variation!)
+                removeProduct(firstProduct.id, firstProduct.variation!)
               }
             >
               -

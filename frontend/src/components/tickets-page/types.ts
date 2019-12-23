@@ -2,6 +2,7 @@ export type InvoiceInformationState = {
   isBusiness: string;
   companyName: string;
   name: string;
+  fiscalCode: string;
   vatId: string;
   address: string;
   zipCode: string;
@@ -10,18 +11,20 @@ export type InvoiceInformationState = {
 };
 
 export type ProductState = {
-  quantity: number;
   variation?: string;
   id: string;
+  answers: { [id: string]: string };
+  attendeeName: string;
+  attendeeEmail: string;
 };
 
 export type SelectedProducts = {
-  [id: string]: ProductState;
+  [id: string]: ProductState[];
 };
 
 export type OrderState = {
   selectedProducts: SelectedProducts;
-  invoiceInformation: InvoiceInformationState | null;
+  invoiceInformation: InvoiceInformationState;
 };
 
 export type UpdateProductAction =
@@ -30,4 +33,18 @@ export type UpdateProductAction =
 
 export type OrderAction =
   | UpdateProductAction
-  | { type: "updateInvoiceInformation"; data: InvoiceInformationState };
+  | { type: "updateInvoiceInformation"; data: InvoiceInformationState }
+  | {
+      type: "updateTicketAnswer";
+      id: string;
+      index: number;
+      question: string;
+      answer: string;
+    }
+  | {
+      type: "updateTicketInfo";
+      id: string;
+      index: number;
+      key: string;
+      value: string;
+    };

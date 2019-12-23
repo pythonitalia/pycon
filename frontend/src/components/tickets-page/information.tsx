@@ -10,7 +10,7 @@ import {
   Select,
   Textarea,
 } from "@theme-ui/components";
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useFormState } from "react-use-form-state";
 import { jsx } from "theme-ui";
 
@@ -22,27 +22,40 @@ type Props = {
   path: string;
   onNextStep: () => void;
   onUpdateInformation: (data: InvoiceInformationState) => void;
+  invoiceInformation: InvoiceInformationState | {};
 };
 
 export const InformationSection: React.SFC<Props> = ({
   onNextStep,
   onUpdateInformation,
+  invoiceInformation,
 }) => {
   const countries = useCountries();
 
   const [formState, { text, select, textarea, radio }] = useFormState<
     InvoiceInformationState
-  >({ isBusiness: "false" });
+  >({ isBusiness: "false", ...invoiceInformation });
 
-  const isBusiness = formState.values.isBusiness === "true";
+  const onSubmit = useCallback(
+    (e: React.MouseEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      onNextStep();
+    },
+    [formState.values],
+  );
 
   useEffect(() => onUpdateInformation(formState.values), [formState.values]);
 
+  const isBusiness = formState.values.isBusiness === "true";
+  const isItalian = formState.values.country === "IT";
+
   return (
     <React.Fragment>
-      <Heading sx={{ mb: 3 }}>Invoice information</Heading>
+      <Heading as="h1" sx={{ mb: 3 }}>
+        Invoice information
+      </Heading>
 
-      <Box>
+      <Box as="form" onSubmit={onSubmit}>
         <Flex mb={3} sx={{ display: ["block", "flex"] }}>
           <Label
             sx={{
@@ -74,9 +87,11 @@ export const InformationSection: React.SFC<Props> = ({
         <InputWrapper label="Name">
           <Input {...text("name")} required={true} />
         </InputWrapper>
-        <InputWrapper label="VAT ID">
-          <Input {...text("vatId")} required={true} />
-        </InputWrapper>
+        {isBusiness && (
+          <InputWrapper label="VAT ID">
+            <Input {...text("vatId")} required={true} />
+          </InputWrapper>
+        )}
         <InputWrapper label="Address">
           <Textarea {...textarea("address")} required={true} />
         </InputWrapper>
@@ -95,9 +110,15 @@ export const InformationSection: React.SFC<Props> = ({
             ))}
           </Select>
         </InputWrapper>
-      </Box>
 
-      <Button onClick={onNextStep}>Next step</Button>
+        {!isBusiness && isItalian && (
+          <InputWrapper label="Fiscal code">
+            <Input {...text("fiscalCode")} required={true} />
+          </InputWrapper>
+        )}
+
+        <Button>Next step</Button>
+      </Box>
     </React.Fragment>
   );
 };

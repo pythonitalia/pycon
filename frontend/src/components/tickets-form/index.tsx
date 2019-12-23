@@ -26,9 +26,7 @@ export const TicketsForm: React.SFC<Props> = ({
       <Box key={ticket.id}>
         <ProductRow
           quantity={
-            selectedProducts[ticket.id]
-              ? selectedProducts[ticket.id].quantity
-              : 0
+            selectedProducts[ticket.id] ? selectedProducts[ticket.id].length : 0
           }
           ticket={ticket}
           addProduct={addProduct}

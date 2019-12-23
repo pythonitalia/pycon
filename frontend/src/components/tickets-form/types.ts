@@ -7,6 +7,7 @@ export type Ticket = {
   questions: {
     id: string;
     name: string;
+    required: boolean;
     options: { id: string; name: string }[];
   }[];
 };

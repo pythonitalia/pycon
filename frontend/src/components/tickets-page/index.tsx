@@ -15,9 +15,9 @@ import {
   TicketsQueryVariables,
 } from "../../generated/graphql-backend";
 import { MetaTags } from "../meta-tags";
-import CREATE_ORDER_MUTATION from "./create-order.graphql";
 import { InformationSection } from "./information";
 import { QuestionsSection } from "./questions";
+import { ReviewOrder } from "./review-order";
 import { reducer } from "./reducer";
 import { TicketsSection } from "./tickets";
 import TICKETS_QUERY from "./tickets.graphql";
@@ -26,27 +26,6 @@ import { SelectedProducts } from "./types";
 export const TicketsPage: React.SFC<RouteComponentProps> = props => {
   const conferenceCode = useContext(ConferenceContext);
   const language = useCurrentLanguage();
-
-  const [
-    createOrder,
-    { data: orderData, loading: creatingOrder },
-  ] = useMutation<CreateOrderMutation, CreateOrderMutationVariables>(
-    CREATE_ORDER_MUTATION,
-    {
-      onCompleted(result) {
-        if (result.createOrder.__typename !== "CreateOrderResult") {
-          return;
-        }
-
-        window.location.href = result.createOrder.paymentUrl;
-      },
-    },
-  );
-
-  const hasOrder = orderData?.createOrder.__typename === "CreateOrderResult";
-  const orderErrorMessage =
-    orderData?.createOrder.__typename === "Error" &&
-    orderData.createOrder.message;
 
   const { loading, error, data } = useQuery<
     TicketsQuery,
@@ -60,36 +39,18 @@ export const TicketsPage: React.SFC<RouteComponentProps> = props => {
 
   const [state, dispatcher] = useReducer(reducer, {
     selectedProducts: {},
-    invoiceInformation: null,
-  });
-
-  const createOrderCallback = useCallback(
-    paymentProvider => {
-      const orderTickets = Object.values(
-        state.selectedProducts as SelectedProducts,
-      )
-        .filter(product => product.quantity > 0)
-        .map(product => ({
-          ticketId: product.id,
-          quantity: product.quantity,
-          variation: product.variation,
-        }));
-
-      createOrder({
-        variables: {
-          conference: conferenceCode,
-
-          input: {
-            paymentProvider,
-            tickets: orderTickets,
-            email: data?.me.email!,
-            locale: language,
-          },
-        },
-      });
+    invoiceInformation: {
+      isBusiness: "false",
+      companyName: "",
+      name: "",
+      vatId: "",
+      address: "",
+      zipCode: "",
+      city: "",
+      country: "",
+      fiscalCode: "",
     },
-    [state],
-  );
+  });
 
   if (error) {
     throw new Error(error.message);
@@ -110,6 +71,30 @@ export const TicketsPage: React.SFC<RouteComponentProps> = props => {
       id,
       variation,
     });
+
+  const updateQuestionAnswer = useCallback(
+    ({ id, index, question, answer }) =>
+      dispatcher({
+        type: "updateTicketAnswer",
+        id,
+        index,
+        question,
+        answer,
+      }),
+    [],
+  );
+
+  const updateTicketInfo = useCallback(
+    ({ id, index, key, value }) =>
+      dispatcher({
+        type: "updateTicketInfo",
+        id,
+        index,
+        key,
+        value,
+      }),
+    [],
+  );
 
   console.log(state);
 
@@ -150,13 +135,23 @@ export const TicketsPage: React.SFC<RouteComponentProps> = props => {
                   data: invoiceData,
                 })
               }
+              invoiceInformation={state.invoiceInformation}
               onNextStep={() => props.navigate!("questions")}
             />
             <QuestionsSection
               path="questions"
               tickets={tickets}
+              updateTicketInfo={updateTicketInfo}
+              updateQuestionAnswer={updateQuestionAnswer}
               selectedProducts={state.selectedProducts}
-              onNextStep={() => props.navigate!("questions")}
+              onNextStep={() => props.navigate!("review")}
+            />
+
+            <ReviewOrder
+              email={data?.me.email!}
+              tickets={tickets}
+              state={state}
+              path="review"
             />
           </Router>
         )}

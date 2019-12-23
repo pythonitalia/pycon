@@ -10,22 +10,33 @@ const updateProductReducer = (
   action: UpdateProductAction,
 ): OrderState => {
   const id = `${action.id}${action.variation || ""}`;
-
-  const current: ProductState = state.selectedProducts[id]
-    ? state.selectedProducts[id]
-    : { id: action.id, variation: action.variation, quantity: 0 };
+  const productItems = state.selectedProducts[id]
+    ? [...state.selectedProducts[id]]
+    : [];
 
   switch (action.type) {
     case "incrementProduct":
-      current.quantity += 1;
+      productItems.push({
+        id: action.id,
+        variation: action.variation,
+        answers: {},
+        attendeeName: "",
+        attendeeEmail: "",
+      });
       break;
     case "decrementProduct":
-      current.quantity = Math.max(0, current.quantity - 1);
+      if (productItems.length > 0) {
+        productItems.splice(0, 1);
+      }
+      break;
   }
 
   return {
     ...state,
-    selectedProducts: { ...state.selectedProducts, [id]: current },
+    selectedProducts: {
+      ...state.selectedProducts,
+      [id]: productItems,
+    },
   };
 };
 
@@ -34,6 +45,43 @@ export const reducer = (state: OrderState, action: OrderAction): OrderState => {
     case "incrementProduct":
     case "decrementProduct":
       return updateProductReducer(state, action);
+    case "updateTicketAnswer": {
+      const products = state.selectedProducts[action.id];
+      const newProduct = {
+        ...products[action.index],
+        answers: {
+          ...products[action.index].answers,
+          [action.question]: action.answer,
+        },
+      };
+
+      products[action.index] = newProduct;
+
+      return {
+        ...state,
+        selectedProducts: {
+          ...state.selectedProducts,
+          [action.id]: products,
+        },
+      };
+    }
+    case "updateTicketInfo": {
+      const products = state.selectedProducts[action.id];
+      const newProduct = {
+        ...products[action.index],
+        [action.key]: action.value,
+      };
+
+      products[action.index] = newProduct;
+
+      return {
+        ...state,
+        selectedProducts: {
+          ...state.selectedProducts,
+          [action.id]: products,
+        },
+      };
+    }
     case "updateInvoiceInformation":
       return {
         ...state,
