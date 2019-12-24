@@ -44,9 +44,8 @@ export const QuestionsSection: React.SFC<Props> = ({
   }, []);
 
   useEffect(() => {
-    Object.values(selectedProducts)
-      .flat()
-      .forEach((selectedProductInfo, index) => {
+    Object.values(selectedProducts).forEach(products => {
+      products.forEach((selectedProductInfo, index) => {
         const product = productsById[selectedProductInfo.id];
         product.questions
           .filter(question => question.options.length > 0)
@@ -59,6 +58,7 @@ export const QuestionsSection: React.SFC<Props> = ({
             });
           });
       });
+    });
   }, []);
 
   return (
