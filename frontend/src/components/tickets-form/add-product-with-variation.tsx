@@ -20,7 +20,7 @@ export const AddProductWithVariation: React.SFC<{
           setCurrentVariation(event.target.value)
         }
       >
-        <option disabled={true} selected={!currentVariation}>
+        <option disabled={true} value="">
           Select...
         </option>
         {ticket.variations!.map(variation => (
