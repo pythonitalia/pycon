@@ -18,12 +18,17 @@ class PretixOrder:
     status: PretixOrderStatus
     total: str
     url: str
+    email: str
 
-    def __init__(self, order):
-        self.code = order["code"]
-        self.status = PretixOrderStatus(order["status"])
-        self.url = order["url"]
-        self.total = order["total"]
+    @classmethod
+    def from_data(cls, data):
+        return cls(
+            code=data["code"],
+            status=PretixOrderStatus(data["status"]),
+            url=data["url"],
+            total=data["total"],
+            email=data["email"],
+        )
 
 
 @strawberry.type
