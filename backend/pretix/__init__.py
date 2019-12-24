@@ -127,8 +127,6 @@ def normalize_answers(ticket: CreateOrderTicket, questions: dict):
             "option_identifier": [],
         }
 
-        print(question)
-
         # TODO: support more question types
         if question["type"] == "C":
             option = next(
