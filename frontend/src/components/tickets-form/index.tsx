@@ -44,7 +44,7 @@ export const TicketsForm: React.SFC<Props> = ({
       {ticketsToShow.map(ticket => (
         <Box key={ticket.id}>
           <ProductRow
-            quantity={selectedProducts[ticket.id].length ?? 0}
+            quantity={selectedProducts[ticket.id]?.length ?? 0}
             ticket={ticket}
             addProduct={addProduct}
             removeProduct={removeProduct}
