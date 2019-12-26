@@ -1,9 +1,4 @@
-import {
-  OrderAction,
-  OrderState,
-  ProductState,
-  UpdateProductAction,
-} from "./types";
+import { OrderAction, OrderState, UpdateProductAction } from "./types";
 
 const updateProductReducer = (
   state: OrderState,
@@ -86,6 +81,15 @@ export const reducer = (state: OrderState, action: OrderAction): OrderState => {
       return {
         ...state,
         invoiceInformation: action.data,
+      };
+    case "updateIsBusiness":
+      return {
+        ...state,
+        selectedProducts: {},
+        invoiceInformation: {
+          ...state.invoiceInformation,
+          isBusiness: action.isBusiness,
+        },
       };
   }
 };

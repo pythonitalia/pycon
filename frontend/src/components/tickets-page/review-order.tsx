@@ -1,13 +1,14 @@
 /** @jsx jsx */
 import { RouteComponentProps } from "@reach/router";
-import { Box, Button, Flex, Heading, Text } from "@theme-ui/components";
-import React, { useCallback } from "react";
+import { Box, Flex, Heading, Text } from "@theme-ui/components";
+import React from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
 import { useCountries } from "../../helpers/use-countries";
 import { Ticket } from "../tickets-form/types";
 import { CreateOrderButtons } from "./create-order-buttons";
+import { ReviewItem } from "./review-item";
 import { InvoiceInformationState, OrderState } from "./types";
 
 type Props = {
@@ -54,30 +55,6 @@ const INVOICE_FIELDS: {
   },
 ];
 
-const ReviewItem = ({
-  label,
-  value,
-}: {
-  label: string | React.ReactElement;
-  value: string | React.ReactElement;
-}) => (
-  <li
-    sx={{
-      mt: 1,
-    }}
-  >
-    <Text
-      as="p"
-      sx={{
-        fontWeight: "bold",
-      }}
-    >
-      {label}
-    </Text>
-    <Text as="p">{value}</Text>
-  </li>
-);
-
 export const ReviewOrder: React.SFC<Props> = ({ state, tickets, email }) => {
   const { invoiceInformation, selectedProducts } = state!;
   const productsById = Object.fromEntries(
@@ -88,7 +65,7 @@ export const ReviewOrder: React.SFC<Props> = ({ state, tickets, email }) => {
     .flat()
     .reduce((p, c) => p + parseFloat(productsById[c.id].defaultPrice), 0);
 
-  const isBusiness = state!.invoiceInformation.isBusiness === "true";
+  const isBusiness = state!.invoiceInformation.isBusiness;
 
   return (
     <Box>
@@ -144,7 +121,7 @@ export const ReviewOrder: React.SFC<Props> = ({ state, tickets, email }) => {
                 mb: 2,
               }}
               label={<FormattedMessage id={field.label} />}
-              value={outputValue}
+              value={outputValue as string}
             />
           );
         })}

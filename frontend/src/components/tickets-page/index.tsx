@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { useMutation, useQuery } from "@apollo/react-hooks";
+import { useQuery } from "@apollo/react-hooks";
 import { RouteComponentProps, Router } from "@reach/router";
 import { Box, Text } from "@theme-ui/components";
 import React, { useCallback, useContext, useReducer } from "react";
@@ -9,8 +9,6 @@ import { jsx } from "theme-ui";
 import { ConferenceContext } from "../../context/conference";
 import { useCurrentLanguage } from "../../context/language";
 import {
-  CreateOrderMutation,
-  CreateOrderMutationVariables,
   TicketsQuery,
   TicketsQueryVariables,
 } from "../../generated/graphql-backend";
@@ -21,7 +19,6 @@ import { reducer } from "./reducer";
 import { ReviewOrder } from "./review-order";
 import { TicketsSection } from "./tickets";
 import TICKETS_QUERY from "./tickets.graphql";
-import { SelectedProducts } from "./types";
 
 export const TicketsPage: React.SFC<RouteComponentProps> = props => {
   const conferenceCode = useContext(ConferenceContext);
@@ -40,7 +37,7 @@ export const TicketsPage: React.SFC<RouteComponentProps> = props => {
   const [state, dispatcher] = useReducer(reducer, {
     selectedProducts: {},
     invoiceInformation: {
-      isBusiness: "false",
+      isBusiness: false,
       companyName: "",
       name: "",
       vatId: "",
@@ -96,6 +93,15 @@ export const TicketsPage: React.SFC<RouteComponentProps> = props => {
     [],
   );
 
+  const updateIsBusiness = useCallback(
+    (isBusiness: boolean) =>
+      dispatcher({
+        type: "updateIsBusiness",
+        isBusiness,
+      }),
+    [],
+  );
+
   return (
     <Box>
       <FormattedMessage id="tickets.pageTitle">
@@ -123,6 +129,8 @@ export const TicketsPage: React.SFC<RouteComponentProps> = props => {
               selectedProducts={state.selectedProducts}
               addProduct={addProduct}
               removeProduct={removeProduct}
+              invoiceInformation={state.invoiceInformation}
+              onUpdateIsBusiness={updateIsBusiness}
               onNextStep={() => props.navigate!("information")}
             />
             <InformationSection

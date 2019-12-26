@@ -1,5 +1,5 @@
 export type InvoiceInformationState = {
-  isBusiness: string;
+  isBusiness: boolean;
   companyName: string;
   name: string;
   fiscalCode: string;
@@ -34,6 +34,7 @@ export type UpdateProductAction =
 export type OrderAction =
   | UpdateProductAction
   | { type: "updateInvoiceInformation"; data: InvoiceInformationState }
+  | { type: "updateIsBusiness"; isBusiness: boolean }
   | {
       type: "updateTicketAnswer";
       id: string;

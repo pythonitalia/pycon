@@ -17,13 +17,14 @@ import { jsx } from "theme-ui";
 
 import { useCountries } from "../../helpers/use-countries";
 import { InputWrapper } from "../input-wrapper";
+import { ReviewItem } from "./review-item";
 import { InvoiceInformationState } from "./types";
 
 type Props = {
   path: string;
   onNextStep: () => void;
   onUpdateInformation: (data: InvoiceInformationState) => void;
-  invoiceInformation: InvoiceInformationState | {};
+  invoiceInformation: InvoiceInformationState;
 };
 
 export const InformationSection: React.SFC<Props> = ({
@@ -35,7 +36,7 @@ export const InformationSection: React.SFC<Props> = ({
 
   const [formState, { text, select, textarea, radio }] = useFormState<
     InvoiceInformationState
-  >({ isBusiness: "false", ...invoiceInformation });
+  >({ ...invoiceInformation });
 
   const onSubmit = useCallback(
     (e: React.MouseEvent<HTMLFormElement>) => {
@@ -47,7 +48,7 @@ export const InformationSection: React.SFC<Props> = ({
 
   useEffect(() => onUpdateInformation(formState.values), [formState.values]);
 
-  const isBusiness = formState.values.isBusiness === "true";
+  const isBusiness = invoiceInformation.isBusiness;
   const isItalian = formState.values.country === "IT";
 
   return (
@@ -57,31 +58,6 @@ export const InformationSection: React.SFC<Props> = ({
       </Heading>
 
       <Box as="form" onSubmit={onSubmit}>
-        <Flex mb={3} sx={{ display: ["block", "flex"] }}>
-          <Label
-            sx={{
-              width: "auto",
-              mr: 3,
-              mb: [3, 0],
-              color: "green",
-              fontWeight: "bold",
-            }}
-          >
-            <Radio {...radio("isBusiness", "false")} />
-            <FormattedMessage id="orderInformation.individualConsumer" />
-          </Label>
-          <Label
-            sx={{
-              width: "auto",
-              mr: 3,
-              color: "green",
-              fontWeight: "bold",
-            }}
-          >
-            <Radio {...radio("isBusiness", "true")} />
-            <FormattedMessage id="orderInformation.businessConsumer" />
-          </Label>
-        </Flex>
         {isBusiness && (
           <InputWrapper
             isRequired={true}
