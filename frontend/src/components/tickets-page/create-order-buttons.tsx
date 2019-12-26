@@ -67,7 +67,7 @@ export const CreateOrderButtons: React.SFC<Props> = ({ state, email }) => {
             email,
             locale: language,
             invoiceInformation: {
-              isBusiness: state.invoiceInformation.isBusiness === "true",
+              isBusiness: state.invoiceInformation.isBusiness,
               company: state.invoiceInformation.companyName,
               name: state.invoiceInformation.name,
               street: state.invoiceInformation.address,
