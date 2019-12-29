@@ -27,6 +27,8 @@ type Props = {
   invoiceInformation: InvoiceInformationState;
 };
 
+const FISCAL_CODE_VALIDATION = /^[A-Za-z]{6}[0-9]{2}[A-Za-z]{1}[0-9]{2}[A-Za-z]{1}[0-9]{3}[A-Za-z]{1}$/;
+
 export const InformationSection: React.SFC<Props> = ({
   onNextStep,
   onUpdateInformation,
@@ -38,18 +40,24 @@ export const InformationSection: React.SFC<Props> = ({
     InvoiceInformationState
   >({ ...invoiceInformation });
 
+  const isBusiness = invoiceInformation.isBusiness;
+  const isItalian = formState.values.country === "IT";
+  const askForFiscalCode = !isBusiness && isItalian;
+
   const onSubmit = useCallback(
     (e: React.MouseEvent<HTMLFormElement>) => {
       e.preventDefault();
+
+      if (askForFiscalCode && !formState.validity.fiscalCode) {
+        return;
+      }
+
       onNextStep();
     },
     [formState.values],
   );
 
   useEffect(() => onUpdateInformation(formState.values), [formState.values]);
-
-  const isBusiness = invoiceInformation.isBusiness;
-  const isItalian = formState.values.country === "IT";
 
   return (
     <React.Fragment>
@@ -111,12 +119,26 @@ export const InformationSection: React.SFC<Props> = ({
           </Select>
         </InputWrapper>
 
-        {!isBusiness && isItalian && (
+        {askForFiscalCode && (
           <InputWrapper
+            errors={[formState.errors.fiscalCode || ""]}
             isRequired={true}
             label={<FormattedMessage id="orderInformation.fiscalCode" />}
           >
-            <Input {...text("fiscalCode")} required={true} />
+            <Input
+              {...text({
+                name: "fiscalCode",
+                validate: (value, values, e) => {
+                  const isValid = FISCAL_CODE_VALIDATION.test(value);
+
+                  if (!isValid) {
+                    return "Fiscal code not valid";
+                  }
+                },
+                validateOnBlur: true,
+              })}
+              required={true}
+            />
           </InputWrapper>
         )}
 
