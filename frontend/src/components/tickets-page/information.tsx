@@ -16,8 +16,8 @@ import { useFormState } from "react-use-form-state";
 import { jsx } from "theme-ui";
 
 import { useCountries } from "../../helpers/use-countries";
+import { useTranslatedMessage } from "../../helpers/use-translated-message";
 import { InputWrapper } from "../input-wrapper";
-import { ReviewItem } from "./review-item";
 import { InvoiceInformationState } from "./types";
 
 type Props = {
@@ -27,29 +27,40 @@ type Props = {
   invoiceInformation: InvoiceInformationState;
 };
 
+const FISCAL_CODE_REGEX = /^[A-Za-z]{6}[0-9]{2}[A-Za-z]{1}[0-9]{2}[A-Za-z]{1}[0-9]{3}[A-Za-z]{1}$/;
+
 export const InformationSection: React.SFC<Props> = ({
   onNextStep,
   onUpdateInformation,
   invoiceInformation,
 }) => {
   const countries = useCountries();
+  const invalidFiscalCodeMessage = useTranslatedMessage(
+    "orderInformation.invalidFiscalCode",
+  );
 
   const [formState, { text, select, textarea, radio }] = useFormState<
     InvoiceInformationState
   >({ ...invoiceInformation });
 
+  const isBusiness = invoiceInformation.isBusiness;
+  const isItalian = formState.values.country === "IT";
+  const shouldAskForFiscalCode = !isBusiness && isItalian;
+
   const onSubmit = useCallback(
     (e: React.MouseEvent<HTMLFormElement>) => {
       e.preventDefault();
+
+      if (shouldAskForFiscalCode && formState.validity.fiscalCode === false) {
+        return;
+      }
+
       onNextStep();
     },
     [formState.values],
   );
 
   useEffect(() => onUpdateInformation(formState.values), [formState.values]);
-
-  const isBusiness = invoiceInformation.isBusiness;
-  const isItalian = formState.values.country === "IT";
 
   return (
     <React.Fragment>
@@ -111,12 +122,26 @@ export const InformationSection: React.SFC<Props> = ({
           </Select>
         </InputWrapper>
 
-        {!isBusiness && isItalian && (
+        {shouldAskForFiscalCode && (
           <InputWrapper
+            errors={[formState.errors.fiscalCode || ""]}
             isRequired={true}
             label={<FormattedMessage id="orderInformation.fiscalCode" />}
           >
-            <Input {...text("fiscalCode")} required={true} />
+            <Input
+              {...text({
+                name: "fiscalCode",
+                validate: (value, values, e) => {
+                  const isValid = FISCAL_CODE_REGEX.test(value);
+
+                  if (!isValid) {
+                    return invalidFiscalCodeMessage;
+                  }
+                },
+                validateOnBlur: true,
+              })}
+              required={true}
+            />
           </InputWrapper>
         )}
 
