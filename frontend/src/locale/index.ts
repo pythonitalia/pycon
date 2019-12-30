@@ -66,6 +66,7 @@ export default {
     "deadlines.end": "End",
     "submission.loading": "Loading",
     "submission.notFound": "Not found",
+    "cfp.needToBeLoggedIn": "You need to be logged in to send a proposal",
     "cfp.yourProposals": "Your proposals",
     "cfp.pageTitle": "Make a proposal",
     "cfp.loading": "Please wait",
@@ -264,6 +265,8 @@ export default {
     "deadlines.end": "Fine",
     "submission.loading": "Caricamento in corso",
     "submission.notFound": "Non trovato",
+    "cfp.needToBeLoggedIn":
+      "Devi effettuare l'accesso per inviare una proposta",
     "cfp.pageTitle": "Invia una proposta",
     "cfp.introductionCopyHead": "Lorem ipsum",
     "cfp.youridea": "La tua idea",

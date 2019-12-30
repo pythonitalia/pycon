@@ -34,7 +34,7 @@ export const CFPPage: React.SFC<RouteComponentProps> = () => {
           <Box sx={{ px: 3 }}>
             <Container sx={{ maxWidth: "container", p: 0 }}>
               <Alert variant="info" sx={{ mt: 4 }}>
-                You need to be logged in to send a proposal
+                <FormattedMessage id="cfp.needToBeLoggedIn" />
               </Alert>
             </Container>
           </Box>
