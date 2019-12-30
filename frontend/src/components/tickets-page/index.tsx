@@ -102,6 +102,26 @@ export const TicketsPage: React.SFC<RouteComponentProps> = props => {
     [],
   );
 
+  const goToQuestionsOrReview = () => {
+    const productIds = Object.values(
+      state.selectedProducts,
+    ).flatMap(instances => instances.map(product => product.id));
+
+    const selectedProductsInfo = tickets.filter(ticket =>
+      productIds.includes(ticket.id),
+    );
+
+    const numberOfQuestions = selectedProductsInfo
+      .map(info => info.questions.length)
+      .reduce((sum, length) => sum + length, 0);
+
+    if (numberOfQuestions > 0) {
+      props.navigate!("questions");
+    } else {
+      props.navigate!("review");
+    }
+  };
+
   return (
     <Box>
       <FormattedMessage id="tickets.pageTitle">
@@ -142,7 +162,7 @@ export const TicketsPage: React.SFC<RouteComponentProps> = props => {
                 })
               }
               invoiceInformation={state.invoiceInformation}
-              onNextStep={() => props.navigate!("questions")}
+              onNextStep={goToQuestionsOrReview}
             />
             <QuestionsSection
               path="questions"
