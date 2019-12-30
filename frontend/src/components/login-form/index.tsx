@@ -11,6 +11,7 @@ import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 
 import { useLoginState } from "../../app/profile/hooks";
+import { useCurrentLanguage } from "../../context/language";
 import {
   LoginMutation,
   LoginMutationVariables,
@@ -27,7 +28,8 @@ type LoginFormFields = {
 
 type FormProps = RouteComponentProps<{ lang: string }>;
 
-export const LoginForm: React.SFC<FormProps> = ({ lang, location }) => {
+export const LoginForm: React.SFC<FormProps> = ({ location, ...props }) => {
+  const lang = useCurrentLanguage();
   const profileUrl = `/${lang}/profile`;
 
   const [loggedIn, setLoggedIn] = useLoginState();
@@ -71,6 +73,7 @@ export const LoginForm: React.SFC<FormProps> = ({ lang, location }) => {
       sx={{
         px: 3,
       }}
+      {...props}
     >
       <Box
         sx={{

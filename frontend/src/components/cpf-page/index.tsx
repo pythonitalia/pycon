@@ -1,23 +1,47 @@
 /** @jsx jsx */
+import { RouteComponentProps } from "@reach/router";
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
-import { jsx } from "theme-ui";
+import { Box, Container, jsx } from "theme-ui";
 
+import { useLoginState } from "../../app/profile/hooks";
 import { MySubmissions } from "../../app/profile/my-submissions";
+import { Alert } from "../alert";
+import { LoginForm } from "../login-form";
 import { MetaTags } from "../meta-tags";
 import { Cfp } from "./cfp";
 import { Introduction } from "./introduction";
 
-export const CFPPage = () => (
-  <Fragment>
-    <FormattedMessage id="cfp.pageTitle">
-      {text => <MetaTags title={text} />}
-    </FormattedMessage>
+export const CFPPage: React.SFC<RouteComponentProps> = () => {
+  const [isLoggedIn, _] = useLoginState();
 
-    <Introduction />
+  return (
+    <Fragment>
+      <FormattedMessage id="cfp.pageTitle">
+        {text => <MetaTags title={text} />}
+      </FormattedMessage>
 
-    <MySubmissions />
+      <Introduction />
 
-    <Cfp sx={{ mt: 4 }} />
-  </Fragment>
-);
+      {isLoggedIn ? (
+        <Fragment>
+          <MySubmissions />
+
+          <Cfp sx={{ mt: 4 }} />
+        </Fragment>
+      ) : (
+        <Fragment>
+          <Box sx={{ px: 3 }}>
+            <Container sx={{ maxWidth: "container", p: 0 }}>
+              <Alert variant="info" sx={{ mt: 4 }}>
+                You need to be logged in to send a proposal
+              </Alert>
+            </Container>
+          </Box>
+
+          <LoginForm sx={{ mt: 4 }} />
+        </Fragment>
+      )}
+    </Fragment>
+  );
+};

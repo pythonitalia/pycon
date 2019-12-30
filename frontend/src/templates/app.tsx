@@ -25,7 +25,7 @@ export default () => (
       path="/:lang/submission/:id/edit"
       component={EditSubmission}
     />
-    <PrivateRoute path="/:lang/cfp" component={CFPPage} />
+    <CFPPage path="/:lang/cfp" />
     <LoginForm path="/:lang/login" />
     <SocialLoginSuccess path="/:lang/login/success/" />
     <SignupForm path="/:lang/signup" />
