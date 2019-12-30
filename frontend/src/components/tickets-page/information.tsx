@@ -16,8 +16,8 @@ import { useFormState } from "react-use-form-state";
 import { jsx } from "theme-ui";
 
 import { useCountries } from "../../helpers/use-countries";
+import { useTranslatedMessage } from "../../helpers/use-translated-message";
 import { InputWrapper } from "../input-wrapper";
-import { ReviewItem } from "./review-item";
 import { InvoiceInformationState } from "./types";
 
 type Props = {
@@ -35,6 +35,9 @@ export const InformationSection: React.SFC<Props> = ({
   invoiceInformation,
 }) => {
   const countries = useCountries();
+  const invalidFiscalCodeMessage = useTranslatedMessage(
+    "orderInformation.invalidFiscalCode",
+  );
 
   const [formState, { text, select, textarea, radio }] = useFormState<
     InvoiceInformationState
@@ -132,7 +135,7 @@ export const InformationSection: React.SFC<Props> = ({
                   const isValid = FISCAL_CODE_REGEX.test(value);
 
                   if (!isValid) {
-                    return "Fiscal code not valid";
+                    return invalidFiscalCodeMessage;
                   }
                 },
                 validateOnBlur: true,

@@ -1,4 +1,4 @@
-export default {
+export const messages = {
   en: {
     titleTemplate: "%s | PyCon Italy",
     description:
@@ -174,6 +174,7 @@ export default {
     "orderInformation.city": "City",
     "orderInformation.country": "Country",
     "orderInformation.fiscalCode": "Fiscal code",
+    "orderInformation.invalidFiscalCode": "Fiscal code not valid",
 
     "orderQuestions.heading": "Order questions",
     "orderQuestions.attendeeName": "Attendee name",
@@ -370,6 +371,7 @@ export default {
     "orderInformation.city": "Città",
     "orderInformation.country": "Nazione",
     "orderInformation.fiscalCode": "Codice fiscale",
+    "orderInformation.invalidFiscalCode": "Codice fiscale non valido",
 
     "orderQuestions.heading": "Domande aggiuntive",
     "orderQuestions.attendeeName": "Nome partecipante",
@@ -395,3 +397,5 @@ export default {
     "orderReview.total": "Totale",
   },
 };
+
+export default messages;
