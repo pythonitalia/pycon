@@ -70,9 +70,7 @@ export default {
       fontWeight: "heading",
 
       color: "#000",
-      borderWidth: ["3px", "4px"],
-      borderStyle: "solid",
-      borderColor: "#000",
+      border: "primary",
       backgroundColor: "yellow",
 
       "&:hover": {

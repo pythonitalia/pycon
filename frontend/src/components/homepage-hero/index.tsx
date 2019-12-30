@@ -1,9 +1,9 @@
 /** @jsx jsx */
 
 import { Box } from "@theme-ui/components";
-import { Link } from "gatsby";
 import { jsx } from "theme-ui";
 
+import { Link } from "../link";
 import { BuyTicketsCTA } from "./buy-tickets-cta";
 import { Landscape } from "./landscape";
 
@@ -34,29 +34,25 @@ export const HomepageHero: React.SFC = () => (
     <Box
       sx={{
         position: "absolute",
-        bottom: [20, 30],
-        left: [0],
-
+        bottom: -50,
+        left: 0,
+        zIndex: 1,
         width: "100%",
       }}
     >
       <Box
         sx={{
-          maxWidth: "largeContainer",
+          px: 3,
+          maxWidth: "container",
           width: "100%",
           mx: "auto",
         }}
       >
-        <Link
-          to="/tickets"
-          sx={{
-            px: 2,
-          }}
-        >
+        <Link href="/:language/tickets">
           <BuyTicketsCTA
             sx={{
-              width: ["20vw", "10vw"],
-              height: ["20vw", "10vw"],
+              width: 122,
+              height: 122,
             }}
           />
         </Link>

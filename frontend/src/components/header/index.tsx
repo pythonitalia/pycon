@@ -117,13 +117,13 @@ export const HeaderContent = ({ location }: { location: any }) => {
           mb: 4,
           px: 2,
           justifyContent: "space-between",
-          alignItems: ["center", "flex-start"],
+          alignItems: "flex-start",
         }}
       >
         <Link href="/:language">
           <Logo
             sx={{
-              width: ["37vw", "33vw", "25vw", "18vw"],
+              width: ["166px", null, "250px"],
               height: "auto",
             }}
           />
@@ -159,8 +159,8 @@ export const HeaderContent = ({ location }: { location: any }) => {
 
               mt: "-5px",
 
-              px: [1, 3],
-              py: [1, 2],
+              px: 3,
+              py: 2,
 
               cursor: "pointer",
             }}
