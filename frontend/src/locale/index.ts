@@ -158,6 +158,8 @@ export const messages = {
     "order.creatingOrder": "Creating order 🕐",
     "order.payWithCard": "Pay with card",
     "order.payWithBankTransfer": "Pay with bank transfer",
+    "order.needToSelectProducts":
+      "You need to select at least one ticket or t-shirt before continuing",
 
     "orderConfirmation.heading": "Order confirmation!",
     "orderConfirmation.successMessage":
@@ -357,6 +359,8 @@ export const messages = {
     "order.creatingOrder": "Creazione ordine in corso 🕐",
     "order.payWithCard": "Paga con carta",
     "order.payWithBankTransfer": "Paga con bonifico bancario",
+    "order.needToSelectProducts":
+      "Scegli un biglietto o maglietta prima di continuare",
 
     "orderConfirmation.manage": "Fai click qui per gestire il tuo ordine.",
     "orderConfirmation.heading": "Ordine confermato",
