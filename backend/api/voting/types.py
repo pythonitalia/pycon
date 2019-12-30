@@ -27,6 +27,6 @@ class VoteValues(Enum):
 @strawberry.type
 class VoteType:
     id: strawberry.ID
-    value: VoteValues
+    value: int
     user: User
     submission: "Submission"

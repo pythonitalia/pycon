@@ -5,6 +5,8 @@ from api.languages.types import Language
 from api.voting.types import VoteType
 from graphql import GraphQLError
 from voting.models import Vote
+from api.users.types import User
+from api.scalars import DateTime
 
 from .permissions import CanSeeSubmissionPrivateFields, CanSeeSubmissionTicketDetail
 
@@ -35,6 +37,14 @@ class SubmissionTag:
 
 
 @strawberry.type
+class SubmissionComment:
+    id: strawberry.ID
+    text: str
+    author: User
+    created: DateTime
+
+
+@strawberry.type
 class Submission:
     conference: "Conference"
     title: str
@@ -57,6 +67,10 @@ class Submission:
     @strawberry.field
     def can_edit(self, info) -> bool:
         return self.can_edit(info.context["request"])
+
+    @strawberry.field(permission_classes=[CanSeeSubmissionTicketDetail])
+    def comments(self, info) -> List[SubmissionComment]:
+        return self.comments.all().order_by("created")
 
     @strawberry.field
     def my_vote(self, info) -> Optional[VoteType]:

@@ -15,3 +15,18 @@ class ContextAwareModelForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):  # pylint: disable=return-in-init
         self.context = kwargs.pop("context", None)
         return super().__init__(*args, **kwargs)
+
+
+class HashidModelChoiceField(forms.ModelChoiceField):
+    def to_python(self, value):
+        if value in self.empty_values:
+            return None
+
+        try:
+            value = self.queryset.model.objects.get_by_hashid(value)
+        except (ValueError, TypeError, self.queryset.model.DoesNotExist):
+            raise forms.ValidationError(
+                self.error_messages["invalid_choice"], code="invalid_choice"
+            )
+
+        return value

@@ -1,7 +1,11 @@
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 
-from .models import Submission, SubmissionTag, SubmissionType
+from .models import Submission, SubmissionTag, SubmissionType, SubmissionComment
+
+
+class SubmissionCommentInline(admin.TabularInline):
+    model = SubmissionComment
 
 
 @admin.register(Submission)
@@ -31,6 +35,7 @@ class SubmissionAdmin(admin.ModelAdmin):
     search_fields = ("title", "abstract")
     prepopulated_fields = {"slug": ("title",)}
     filter_horizontal = ("tags",)
+    inlines = [SubmissionCommentInline]
 
 
 @admin.register(SubmissionType)

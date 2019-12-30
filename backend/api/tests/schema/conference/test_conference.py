@@ -428,14 +428,13 @@ def test_get_conference_hotel_rooms(graphql_client, conference_factory, hotel_ro
         variables={"code": hotel_room.conference.code},
     )
 
-    # hotel_room
     assert "errors" not in resp
     assert resp["data"]["conference"]["hotelRooms"] == [
         {
             "id": str(hotel_room.id),
             "name": hotel_room.name.localize("it"),
             "description": hotel_room.description.localize("it"),
-            "price": str(hotel_room.price),
+            "price": f"{hotel_room.price:.2f}",
         }
     ]
 

@@ -5,7 +5,20 @@ from django.core import exceptions
 from django.utils.translation import ugettext_lazy as _
 from integrations.tasks import notify_new_submission
 from languages.models import Language
-from submissions.models import Submission, SubmissionTag
+from submissions.models import Submission, SubmissionTag, SubmissionComment
+from api.forms import HashidModelChoiceField
+
+
+class SendSubmissionCommentForm(ContextAwareModelForm):
+    submission = HashidModelChoiceField(queryset=Submission.objects.all())
+
+    def save(self, commit=True):
+        self.instance.author = self.context["request"].user
+        return super().save(commit=commit)
+
+    class Meta:
+        model = SubmissionComment
+        fields = ("text", "submission")
 
 
 class SubmissionForm(ContextAwareModelForm):

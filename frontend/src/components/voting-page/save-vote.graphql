@@ -1,0 +1,16 @@
+mutation SendVote($input: SendVoteInput!) {
+  sendVote(input: $input) {
+    __typename
+
+    ... on VoteType {
+      id
+      value
+    }
+
+    ... on SendVoteErrors {
+      validationValue: value
+      validationSubmission: submission
+      nonFieldErrors
+    }
+  }
+}

@@ -54,11 +54,42 @@ def test_can_see_submission_ticket_only_fields_if_has_ticket(
 ):
     graphql_client.force_login(user)
 
-    mocker.patch(
-        "api.submissions.permissions.user_has_admission_ticket"
-    ).return_value = True
+    mocker.patch("users.models.user_has_admission_ticket").return_value = True
 
     submission = submission_factory()
+
+    resp = graphql_client.query(
+        """query SubmissionQuery($id: ID!) {
+            submission(id: $id) {
+                id
+                title
+                elevatorPitch
+                previousTalkVideo
+            }
+        }""",
+        variables={"id": submission.hashid},
+    )
+
+    assert resp["errors"][0] == {
+        "message": "You can't see the private fields for this submission",
+        "locations": [{"line": 6, "column": 17}],
+        "path": ["submission", "previousTalkVideo"],
+    }
+
+    assert resp["data"]["submission"]["title"] == submission.title
+    assert resp["data"]["submission"]["elevatorPitch"] == submission.elevator_pitch
+    assert resp["data"]["submission"]["previousTalkVideo"] is None
+
+
+def test_can_see_submission_ticket_only_fields_if_has_sent_at_least_one_talk(
+    graphql_client, user, submission_factory, mocker
+):
+    graphql_client.force_login(user)
+
+    mocker.patch("users.models.user_has_admission_ticket").return_value = False
+
+    other_conference = submission_factory(speaker=user)
+    submission = submission_factory(conference=other_conference.conference)
 
     resp = graphql_client.query(
         """query SubmissionQuery($id: ID!) {
@@ -187,3 +218,35 @@ def test_can_edit_submission_if_cfp_is_closed(graphql_client, user, submission_f
     )
 
     assert response["data"]["submission"]["canEdit"] is True
+
+
+@mark.django_db
+def test_get_submission_comments(graphql_client, user, submission_comment_factory):
+    graphql_client.force_login(user)
+
+    comment = submission_comment_factory()
+
+    response = graphql_client.query(
+        """
+        query Submission($id: ID!) {
+            submission(id: $id) {
+                id
+                comments {
+                    id
+                    text
+                    author {
+                        name
+                    }
+                }
+            }
+        }
+    """,
+        variables={"id": comment.submission.hashid},
+    )
+
+    assert len(response["data"]["submission"]["comments"]) == 1
+    assert {
+        "id": str(comment.id),
+        "text": comment.text,
+        "author": {"name": comment.author.name},
+    } in response["data"]["submission"]["comments"]
