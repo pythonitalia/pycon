@@ -12,7 +12,7 @@ import { MetaTags } from "../meta-tags";
 import { Cfp } from "./cfp";
 import { Introduction } from "./introduction";
 
-export const CFPPage: React.SFC<RouteComponentProps> = () => {
+export const CFPPage: React.SFC<RouteComponentProps> = ({ location }) => {
   const [isLoggedIn, _] = useLoginState();
 
   return (
@@ -39,7 +39,7 @@ export const CFPPage: React.SFC<RouteComponentProps> = () => {
             </Container>
           </Box>
 
-          <LoginForm sx={{ mt: 4 }} />
+          <LoginForm sx={{ mt: 4 }} next={location?.pathname} />
         </Fragment>
       )}
     </Fragment>

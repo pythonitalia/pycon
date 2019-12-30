@@ -26,9 +26,15 @@ type LoginFormFields = {
   password: string;
 };
 
-type FormProps = RouteComponentProps<{ lang: string }>;
+type FormProps = RouteComponentProps & {
+  next?: string;
+};
 
-export const LoginForm: React.SFC<FormProps> = ({ location, ...props }) => {
+export const LoginForm: React.SFC<FormProps> = ({
+  location,
+  next,
+  ...props
+}) => {
   const lang = useCurrentLanguage();
   const profileUrl = `/${lang}/profile`;
 
@@ -38,7 +44,7 @@ export const LoginForm: React.SFC<FormProps> = ({ location, ...props }) => {
     if (data && data.login.__typename === "MeUser") {
       setLoggedIn(true);
 
-      navigate(location?.state?.next || profileUrl);
+      navigate(next || location?.state?.next || profileUrl);
     }
   };
 
