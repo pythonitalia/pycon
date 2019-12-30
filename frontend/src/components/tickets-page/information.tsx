@@ -27,7 +27,7 @@ type Props = {
   invoiceInformation: InvoiceInformationState;
 };
 
-const FISCAL_CODE_VALIDATION = /^[A-Za-z]{6}[0-9]{2}[A-Za-z]{1}[0-9]{2}[A-Za-z]{1}[0-9]{3}[A-Za-z]{1}$/;
+const FISCAL_CODE_REGEX = /^[A-Za-z]{6}[0-9]{2}[A-Za-z]{1}[0-9]{2}[A-Za-z]{1}[0-9]{3}[A-Za-z]{1}$/;
 
 export const InformationSection: React.SFC<Props> = ({
   onNextStep,
@@ -42,13 +42,13 @@ export const InformationSection: React.SFC<Props> = ({
 
   const isBusiness = invoiceInformation.isBusiness;
   const isItalian = formState.values.country === "IT";
-  const askForFiscalCode = !isBusiness && isItalian;
+  const shouldAskForFiscalCode = !isBusiness && isItalian;
 
   const onSubmit = useCallback(
     (e: React.MouseEvent<HTMLFormElement>) => {
       e.preventDefault();
 
-      if (askForFiscalCode && !formState.validity.fiscalCode) {
+      if (shouldAskForFiscalCode && !formState.validity.fiscalCode) {
         return;
       }
 
@@ -119,7 +119,7 @@ export const InformationSection: React.SFC<Props> = ({
           </Select>
         </InputWrapper>
 
-        {askForFiscalCode && (
+        {shouldAskForFiscalCode && (
           <InputWrapper
             errors={[formState.errors.fiscalCode || ""]}
             isRequired={true}
@@ -129,7 +129,7 @@ export const InformationSection: React.SFC<Props> = ({
               {...text({
                 name: "fiscalCode",
                 validate: (value, values, e) => {
-                  const isValid = FISCAL_CODE_VALIDATION.test(value);
+                  const isValid = FISCAL_CODE_REGEX.test(value);
 
                   if (!isValid) {
                     return "Fiscal code not valid";
