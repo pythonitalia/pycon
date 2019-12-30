@@ -42,7 +42,7 @@ export const MyOrders: React.SFC<{
           <Box key={order.code} as="tr">
             <td>{order.code}</td>
             <td>{order.status}</td>
-            <td>${order.total}</td>
+            <td>€ {order.total}</td>
 
             <td>
               <a href={order.url} target="_blank" rel="noopener noreferrer">
