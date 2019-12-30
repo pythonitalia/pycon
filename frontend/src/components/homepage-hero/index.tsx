@@ -48,14 +48,16 @@ export const HomepageHero: React.SFC = () => (
           mx: "auto",
         }}
       >
-        <Link href="/:language/tickets">
-          <BuyTicketsCTA
-            sx={{
-              width: 122,
-              height: 122,
-            }}
-          />
-        </Link>
+        {false && (
+          <Link href="/:language/tickets">
+            <BuyTicketsCTA
+              sx={{
+                width: 122,
+                height: 122,
+              }}
+            />
+          </Link>
+        )}
       </Box>
     </Box>
   </Box>
