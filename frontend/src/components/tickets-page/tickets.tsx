@@ -8,6 +8,7 @@ import { Alert } from "../alert";
 import { TicketsForm } from "../tickets-form";
 import { Ticket } from "../tickets-form/types";
 import { InvoiceInformationState, SelectedProducts } from "./types";
+import { hasSelectedAtLeastOneProduct } from "./utils";
 
 type Props = {
   tickets: Ticket[];
@@ -19,9 +20,6 @@ type Props = {
   removeProduct: (id: string, variation?: string) => void;
   onUpdateIsBusiness: (isBusiness: boolean) => void;
 };
-
-const hasSelectedAtLeastOneProduct = (selectedProducts: SelectedProducts) =>
-  Object.values(selectedProducts).length > 0;
 
 export const TicketsSection: React.SFC<Props> = ({
   tickets,

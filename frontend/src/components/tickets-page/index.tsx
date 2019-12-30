@@ -2,7 +2,7 @@
 import { useQuery } from "@apollo/react-hooks";
 import { RouteComponentProps, Router } from "@reach/router";
 import { Box, Text } from "@theme-ui/components";
-import React, { useCallback, useContext, useReducer } from "react";
+import React, { useCallback, useContext, useEffect, useReducer } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
@@ -19,6 +19,7 @@ import { reducer } from "./reducer";
 import { ReviewOrder } from "./review-order";
 import { TicketsSection } from "./tickets";
 import TICKETS_QUERY from "./tickets.graphql";
+import { hasSelectedAtLeastOneProduct } from "./utils";
 
 export const TicketsPage: React.SFC<RouteComponentProps> = props => {
   const conferenceCode = useContext(ConferenceContext);
@@ -121,6 +122,14 @@ export const TicketsPage: React.SFC<RouteComponentProps> = props => {
       props.navigate!("review");
     }
   };
+
+  useEffect(() => {
+    const isHome = location.pathname.endsWith("tickets/");
+
+    if (!isHome && !hasSelectedAtLeastOneProduct(state.selectedProducts)) {
+      props.navigate!("");
+    }
+  }, [location.pathname]);
 
   return (
     <Box>
