@@ -18,6 +18,10 @@ DATABASES = {
     }
 }
 
+# Allow all the languages
+# see: pretix/settings.py#L425-L435
+LANGUAGES = [(k, v) for k, v in ALL_LANGUAGES]  # noqa
+
 USE_X_FORWARDED_HOST = True
 SITE_URL = "https://tickets.pycon.it"
 
