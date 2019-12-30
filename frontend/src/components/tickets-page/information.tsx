@@ -48,7 +48,7 @@ export const InformationSection: React.SFC<Props> = ({
     (e: React.MouseEvent<HTMLFormElement>) => {
       e.preventDefault();
 
-      if (shouldAskForFiscalCode && !formState.validity.fiscalCode) {
+      if (shouldAskForFiscalCode && formState.validity.fiscalCode === false) {
         return;
       }
 
