@@ -177,7 +177,7 @@ def create_order(conference: Conference, order_data: CreateOrderInput) -> Order:
         "email": order_data.email,
         "locale": order_data.locale,
         "payment_provider": order_data.payment_provider,
-        "testmode": True,
+        "testmode": False,
         "positions": positions,
         "invoice_address": {
             "is_business": order_data.invoice_information.is_business,
