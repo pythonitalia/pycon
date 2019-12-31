@@ -3,9 +3,9 @@ import strawberry
 from .blog.schema import BlogQuery
 from .conferences.schema import ConferenceQuery
 from .grants.mutations import GrantsMutations
+from .newsletters.schema import NewsletterMutations
 from .orders.mutations import OrdersMutations
 from .orders.query import OrdersQuery
-from .newsletters.schema import NewsletterMutations
 from .pages.schema import PagesQuery
 from .submissions.mutations import SubmissionsMutations
 from .submissions.schema import SubmissionsQuery

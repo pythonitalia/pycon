@@ -2,6 +2,6 @@ import strawberry
 
 
 @strawberry.type
-class Subscription:
+class NewsletterSubscription:
     id: strawberry.ID
     email: str
