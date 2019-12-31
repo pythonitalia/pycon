@@ -8,7 +8,7 @@ mutation subscribe($email: String!) {
             validationEmail: email
         }
 
-        ... on Subscription {
+        ... on NewsletterSubscription {
             id
             email
         }
