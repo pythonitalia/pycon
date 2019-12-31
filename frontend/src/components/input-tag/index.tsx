@@ -38,10 +38,22 @@ export const TagLine: React.SFC<TagLineProps> = ({ tags, onTagChange }) => {
     return <Alert variant="alert">{error.message}</Alert>;
   }
 
-  const submissionTags = data!.submissionTags!.map(t => ({
-    value: t.id,
-    label: t.name,
-  }));
+  const submissionTags = data!
+    .submissionTags!.sort((a, b) => {
+      if (a.name < b.name) {
+        return -1;
+      }
+
+      if (a.name > b.name) {
+        return 1;
+      }
+
+      return 0;
+    })
+    .map(t => ({
+      value: t.id,
+      label: t.name,
+    }));
 
   const value = tags.map(t => submissionTags.find(s => s.value === t)!);
 
