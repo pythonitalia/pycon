@@ -1,9 +1,8 @@
 from django.contrib import admin
-
 from newsletters.forms import SendEmailForm
 from notifications.emails import send_mail
 
-from .models import Subscription
+from .models import Email, Subscription
 
 
 @admin.register(Subscription)
@@ -38,3 +37,9 @@ class SubscriptionAdmin(admin.ModelAdmin):
             )
             == 1
         )
+
+
+@admin.register(Email)
+class EmailAdmin(admin.ModelAdmin):
+    list_display = ("subject", "recipients_types", "send_date")
+    readonly_fields = ("recipients",)
