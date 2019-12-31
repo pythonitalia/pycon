@@ -30,4 +30,4 @@ class Email(models.Model):
     )
     # Recipients is a read-only field only to send the final recipients
     recipients = models.TextField(_("recipients"), blank=True, default="")
-    send_date = models.DateTimeField(_("send date"), null=True)
+    scheduled_date = models.DateTimeField(_("scheduled date"), null=True)

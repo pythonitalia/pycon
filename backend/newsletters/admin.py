@@ -41,5 +41,5 @@ class SubscriptionAdmin(admin.ModelAdmin):
 
 @admin.register(Email)
 class EmailAdmin(admin.ModelAdmin):
-    list_display = ("subject", "recipients_types", "send_date")
+    list_display = ("subject", "recipients_types", "scheduled_date")
     readonly_fields = ("recipients",)
