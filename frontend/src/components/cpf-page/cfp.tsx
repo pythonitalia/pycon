@@ -86,21 +86,23 @@ export const Cfp: React.SFC = () => {
   };
 
   return (
-    <Box
-      sx={{
-        maxWidth: "container",
-        mx: "auto",
-        px: 3,
-        mt: 4,
-      }}
-    >
-      <CfpForm
-        loading={loading}
-        error={error}
-        data={data}
-        conferenceCode={conferenceCode}
-        onSubmit={onSubmit}
-      />
+    <Box>
+      <Box
+        sx={{
+          maxWidth: "container",
+          mx: "auto",
+          px: 3,
+          mt: 4,
+        }}
+      >
+        <CfpForm
+          loading={loading}
+          error={error}
+          data={data}
+          conferenceCode={conferenceCode}
+          onSubmit={onSubmit}
+        />
+      </Box>
     </Box>
   );
 };
