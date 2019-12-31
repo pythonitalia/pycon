@@ -1,8 +1,9 @@
 /** @jsx jsx */
 import { RouteComponentProps } from "@reach/router";
+import { Box, Container } from "@theme-ui/components";
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
-import { Box, Container, jsx } from "theme-ui";
+import { jsx } from "theme-ui";
 
 import { useLoginState } from "../../app/profile/hooks";
 import { MySubmissions } from "../../app/profile/my-submissions";
