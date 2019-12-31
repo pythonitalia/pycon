@@ -48,12 +48,14 @@ export const TicketsPage: React.SFC<RouteComponentProps> = props => {
       country: "",
       fiscalCode: "",
     },
+    selectedHotelRooms: {},
   });
 
   if (error) {
     throw new Error(error.message);
   }
 
+  const hotelRooms = data?.conference.hotelRooms || [];
   const tickets = data?.conference.tickets || [];
 
   const addProduct = (id: string, variation?: string) =>
@@ -103,6 +105,23 @@ export const TicketsPage: React.SFC<RouteComponentProps> = props => {
     [],
   );
 
+  const addHotelRoom = useCallback((id, checkin, checkout) => {
+    dispatcher({
+      type: "addHotelRoom",
+      id,
+      checkin,
+      checkout,
+    });
+  }, []);
+
+  const removeHotelRoom = useCallback((id, index) => {
+    dispatcher({
+      type: "removeHotelRoom",
+      id,
+      index,
+    });
+  }, []);
+
   const goToQuestionsOrReview = () => {
     const productIds = Object.values(
       state.selectedProducts,
@@ -126,7 +145,7 @@ export const TicketsPage: React.SFC<RouteComponentProps> = props => {
   useEffect(() => {
     const isHome = location.pathname.endsWith("tickets/");
 
-    if (!isHome && !hasSelectedAtLeastOneProduct(state.selectedProducts)) {
+    if (!isHome && !hasSelectedAtLeastOneProduct(state)) {
       props.navigate!("");
     }
   }, [location.pathname]);
@@ -154,10 +173,17 @@ export const TicketsPage: React.SFC<RouteComponentProps> = props => {
           <Router>
             <TicketsSection
               default={true}
+              state={state}
+              conferenceStart={data?.conference.start}
+              conferenceEnd={data?.conference.end}
+              hotelRooms={hotelRooms}
+              selectedHotelRooms={state.selectedHotelRooms}
               tickets={tickets}
               selectedProducts={state.selectedProducts}
               addProduct={addProduct}
               removeProduct={removeProduct}
+              addHotelRoom={addHotelRoom}
+              removeHotelRoom={removeHotelRoom}
               invoiceInformation={state.invoiceInformation}
               onUpdateIsBusiness={updateIsBusiness}
               onNextStep={() => props.navigate!("information")}
@@ -185,6 +211,7 @@ export const TicketsPage: React.SFC<RouteComponentProps> = props => {
             <ReviewOrder
               email={data?.me.email!}
               tickets={tickets}
+              hotelRooms={hotelRooms}
               state={state}
               path="review"
             />

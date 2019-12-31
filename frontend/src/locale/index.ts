@@ -159,7 +159,7 @@ export const messages = {
     "order.payWithCard": "Pay with card",
     "order.payWithBankTransfer": "Pay with bank transfer",
     "order.needToSelectProducts":
-      "You need to select at least one ticket or t-shirt before continuing",
+      "You need to select at least one ticket, a t-shirt or a hotel room before continuing",
 
     "orderConfirmation.heading": "Order confirmation!",
     "orderConfirmation.successMessage":
@@ -201,6 +201,11 @@ export const messages = {
     "orderReview.attendeeEmail": "Attendee email",
     "orderReview.inclVat": "(incl. 22% VAT)",
     "orderReview.total": "Total",
+    "orderReview.hotelRooms": "Hotel rooms",
+    "orderReview.night": "night",
+    "orderReview.nights": "nights",
+    "orderReview.checkin": "Check-in",
+    "orderReview.checkout": "Check-out",
   },
   it: {
     titleTemplate: "%s | PyCon Italia",
@@ -360,7 +365,7 @@ export const messages = {
     "order.payWithCard": "Paga con carta",
     "order.payWithBankTransfer": "Paga con bonifico bancario",
     "order.needToSelectProducts":
-      "Scegli un biglietto o maglietta prima di continuare",
+      "Scegli un biglietto, una maglietta o una stanza di hotel prima di continuare",
 
     "orderConfirmation.manage": "Fai click qui per gestire il tuo ordine.",
     "orderConfirmation.heading": "Ordine confermato",
@@ -402,6 +407,11 @@ export const messages = {
     "orderReview.attendeeEmail": "Email partecipante",
     "orderReview.inclVat": "(incl. 22% IVA)",
     "orderReview.total": "Totale",
+    "orderReview.hotelRooms": "Stanze",
+    "orderReview.night": "notte",
+    "orderReview.nights": "notti",
+    "orderReview.checkin": "Check-in",
+    "orderReview.checkout": "Check-out",
   },
 };
 

@@ -3,18 +3,24 @@ query Tickets($conference: String!, $language: String!) {
     id
     email
   }
+
   conference(code: $conference) {
+    start
+    end
     pretixEventUrl
+
     tickets(language: $language) {
       id
       name
       description
       defaultPrice
+
       variations {
         id
         defaultPrice
         value
       }
+
       questions {
         id
         name
@@ -24,6 +30,14 @@ query Tickets($conference: String!, $language: String!) {
           name
         }
       }
+    }
+
+    hotelRooms {
+      id
+      name(language: $language)
+      description(language: $language)
+      price
+      isSoldOut
     }
   }
 }

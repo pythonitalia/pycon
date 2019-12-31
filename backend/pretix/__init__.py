@@ -4,8 +4,10 @@ from urllib.parse import urljoin
 
 import requests
 import strawberry
+from api.scalars import Date
 from conferences.models.conference import Conference
 from django.conf import settings
+from hotels.models import HotelRoom
 
 from .exceptions import PretixError
 
@@ -87,6 +89,13 @@ class CreateOrderTicket:
 
 
 @strawberry.input
+class CreateOrderHotelRoom:
+    room_id: str
+    checkin: Date
+    checkout: Date
+
+
+@strawberry.input
 class InvoiceInformation:
     is_business: bool
     company: typing.Optional[str]
@@ -106,6 +115,7 @@ class CreateOrderInput:
     payment_provider: str
     invoice_information: InvoiceInformation
     tickets: typing.List[CreateOrderTicket]
+    hotel_rooms: typing.List[CreateOrderHotelRoom]
 
 
 @strawberry.type
@@ -165,6 +175,51 @@ def normalize_position(ticket: CreateOrderTicket, items: dict, questions: dict):
     return data
 
 
+def create_hotel_positions(
+    hotel_rooms: typing.List[CreateOrderHotelRoom], locale: str, conference: Conference
+):
+    rooms: typing.List[HotelRoom] = list(
+        HotelRoom.objects.filter(conference=conference).all()
+    )
+
+    positions = []
+
+    for order_room in hotel_rooms:
+        room = [room for room in rooms if str(room.pk) == order_room.room_id][0]
+
+        num_nights = (order_room.checkout - order_room.checkin).days
+        total_price = num_nights * room.price
+
+        positions.append(
+            {
+                "item": conference.pretix_hotel_ticket_id,
+                "price": str(total_price),
+                "answers": [
+                    {
+                        "question": conference.pretix_hotel_room_type_question_id,
+                        "answer": room.name.localize(locale),
+                        "options": [],
+                        "option_identifier": [],
+                    },
+                    {
+                        "question": conference.pretix_hotel_checkin_question_id,
+                        "answer": order_room.checkin.strftime("%Y-%m-%d"),
+                        "options": [],
+                        "option_identifier": [],
+                    },
+                    {
+                        "question": conference.pretix_hotel_checkout_question_id,
+                        "answer": order_room.checkout.strftime("%Y-%m-%d"),
+                        "options": [],
+                        "option_identifier": [],
+                    },
+                ],
+            }
+        )
+
+    return positions
+
+
 def create_order(conference: Conference, order_data: CreateOrderInput) -> Order:
     questions = get_questions(conference)
     items = get_items(conference)
@@ -172,6 +227,13 @@ def create_order(conference: Conference, order_data: CreateOrderInput) -> Order:
     positions = [
         normalize_position(ticket, items, questions) for ticket in order_data.tickets
     ]
+
+    if len(order_data.hotel_rooms) > 0:
+        positions.extend(
+            create_hotel_positions(
+                order_data.hotel_rooms, order_data.locale, conference
+            )
+        )
 
     payload = {
         "email": order_data.email,

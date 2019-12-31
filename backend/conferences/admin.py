@@ -36,6 +36,17 @@ class ConferenceAdmin(admin.ModelAdmin):
             {"fields": ("pretix_organizer_id", "pretix_event_id", "pretix_event_url")},
         ),
         (
+            "Hotel",
+            {
+                "fields": (
+                    "pretix_hotel_ticket_id",
+                    "pretix_hotel_room_type_question_id",
+                    "pretix_hotel_checkin_question_id",
+                    "pretix_hotel_checkout_question_id",
+                )
+            },
+        ),
+        (
             "Conference",
             {
                 "fields": (

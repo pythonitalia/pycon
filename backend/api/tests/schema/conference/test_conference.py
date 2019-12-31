@@ -408,3 +408,33 @@ def test_get_conference_submission_types(
         {"id": str(talk_type.id), "name": talk_type.name},
         {"id": str(tutorial_type.id), "name": tutorial_type.name},
     ]
+
+
+@mark.django_db
+def test_get_conference_hotel_rooms(graphql_client, conference_factory, hotel_room):
+    resp = graphql_client.query(
+        """
+        query($code: String!) {
+            conference(code: $code) {
+                hotelRooms {
+                    id
+                    name(language: "it")
+                    description(language: "it")
+                    price
+                }
+            }
+        }
+        """,
+        variables={"code": hotel_room.conference.code},
+    )
+
+    # hotel_room
+    assert "errors" not in resp
+    assert resp["data"]["conference"]["hotelRooms"] == [
+        {
+            "id": str(hotel_room.id),
+            "name": hotel_room.name.localize("it"),
+            "description": hotel_room.description.localize("it"),
+            "price": str(hotel_room.price),
+        }
+    ]

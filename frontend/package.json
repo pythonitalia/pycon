@@ -59,6 +59,7 @@
     "graphql": "^14.5.8",
     "isomorphic-fetch": "^2.2.1",
     "marksy": "^8.0.0",
+    "moment": "^2.24.0",
     "prism-react-renderer": "^1.0.2",
     "prop-types": "^15.7.2",
     "react": "^16.12.0",

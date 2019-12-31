@@ -1,20 +1,51 @@
 /** @jsx jsx */
 import { Box, Grid, Text } from "@theme-ui/components";
+import moment from "moment";
 import { jsx } from "theme-ui";
 
+import { AddHotelRoom } from "./add-hotel-room";
 import { AddProductWithVariation } from "./add-product-with-variation";
 import { AddRemoveProduct } from "./add-remove-product";
-import { Ticket } from "./types";
+
+type RowTicket = {
+  id: string;
+  name: string;
+  soldOut?: boolean;
+  description?: string | null;
+  defaultPrice: string;
+  variations?: { id: string; value: string; defaultPrice: string }[];
+  questions: {
+    id: string;
+    name: string;
+    required: boolean;
+    options: { id: string; name: string }[];
+  }[];
+};
 
 type ProductRowProps = {
-  ticket: Ticket;
-  quantity: number;
-  addProduct: (ticketId: string, variation?: string) => void;
-  removeProduct: (ticketId: string) => void;
+  className?: string;
+  ticket: RowTicket;
+  quantity?: number;
+  hotel?: boolean;
+  conferenceStart?: string;
+  conferenceEnd?: string;
+  addProduct?: (ticketId: string, variation?: string) => void;
+  removeProduct?: (ticketId: string) => void;
+  addHotelRoom?: (
+    id: string,
+    checkin: moment.Moment,
+    checkout: moment.Moment,
+  ) => void;
+  removeHotelRoom?: (index: number) => void;
 };
 
 export const ProductRow: React.SFC<ProductRowProps> = ({
+  className,
+  hotel,
   ticket,
+  conferenceStart,
+  conferenceEnd,
+  addHotelRoom,
   quantity,
   addProduct,
   removeProduct,
@@ -22,10 +53,10 @@ export const ProductRow: React.SFC<ProductRowProps> = ({
   const hasVariation = ticket.variations && ticket.variations.length > 0;
 
   return (
-    <Box sx={{ mb: 4 }}>
+    <Box sx={{ mb: 4 }} className={className}>
       <Grid
         sx={{
-          gridTemplateColumns: ["1fr", "1fr 180px"],
+          gridTemplateColumns: ["1fr", hotel ? "1fr 350px" : "1fr 180px"],
         }}
       >
         <Box>
@@ -43,18 +74,42 @@ export const ProductRow: React.SFC<ProductRowProps> = ({
           <Text>{ticket.description}</Text>
         </Box>
 
-        {!hasVariation && (
-          <AddRemoveProduct
-            quantity={quantity}
-            increase={() => addProduct(ticket.id)}
-            decrease={() => removeProduct(ticket.id)}
+        {ticket.soldOut && (
+          <Text
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "flex-end",
+              fontSize: 3,
+              fontWeight: "bold",
+            }}
+          >
+            Sold out
+          </Text>
+        )}
+
+        {!ticket.soldOut && hotel && (
+          <AddHotelRoom
+            conferenceStart={conferenceStart}
+            conferenceEnd={conferenceEnd}
+            addRoom={(checkin, checkout) =>
+              addHotelRoom && addHotelRoom(ticket.id, checkin, checkout)
+            }
           />
         )}
 
-        {hasVariation && (
+        {!ticket.soldOut && !hotel && !hasVariation && (
+          <AddRemoveProduct
+            quantity={quantity!}
+            increase={() => addProduct && addProduct(ticket.id)}
+            decrease={() => removeProduct && removeProduct(ticket.id)}
+          />
+        )}
+
+        {!ticket.soldOut && !hotel && hasVariation && (
           <AddProductWithVariation
             addVariation={(variation: string) =>
-              addProduct(ticket.id, variation)
+              addProduct && addProduct(ticket.id, variation)
             }
             ticket={ticket}
           />

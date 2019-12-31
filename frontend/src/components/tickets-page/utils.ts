@@ -1,5 +1,5 @@
-import { SelectedProducts } from "./types";
+import { OrderState } from "./types";
 
-export const hasSelectedAtLeastOneProduct = (
-  selectedProducts: SelectedProducts,
-) => Object.values(selectedProducts).length > 0;
+export const hasSelectedAtLeastOneProduct = (state: OrderState) =>
+  Object.values(state.selectedProducts).length > 0 ||
+  Object.values(state.selectedHotelRooms).length > 0;
