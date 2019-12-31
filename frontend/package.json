@@ -5,6 +5,7 @@
   "scripts": {
     "build:gatsby": "gatsby build",
     "build": "yarn build:gatsby",
+    "serve": "gatsby serve",
     "develop": "gatsby develop -p 4000",
     "start": "concurrently -k -n 'gatsby,codegen' -c 'bgBlue.bold,bgMagenta.bold' 'yarn develop' 'yarn codegen:watch'",
     "format": "prettier --write \"{,!(node_modules|public|coverage|.cache)/**/}*.{js,jsx,ts,tsx,json}\" && yarn lint --fix",

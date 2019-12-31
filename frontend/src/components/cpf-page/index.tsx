@@ -21,28 +21,27 @@ export const CFPPage: React.SFC<RouteComponentProps> = ({ location }) => {
       <FormattedMessage id="cfp.pageTitle">
         {text => <MetaTags title={text} />}
       </FormattedMessage>
-
       <Introduction />
 
-      {isLoggedIn ? (
-        <Fragment>
-          <MySubmissions />
+      <Box sx={{ px: 3 }}>
+        <Container sx={{ maxWidth: "container", p: 0 }}>
+          {isLoggedIn ? (
+            <Fragment>
+              <MySubmissions sx={{ mb: 4 }} />
 
-          <Cfp />
-        </Fragment>
-      ) : (
-        <Fragment>
-          <Box sx={{ px: 3 }}>
-            <Container sx={{ maxWidth: "container", p: 0 }}>
+              <Cfp />
+            </Fragment>
+          ) : (
+            <Fragment>
               <Alert variant="info" sx={{ mt: 4 }}>
                 <FormattedMessage id="cfp.needToBeLoggedIn" />
               </Alert>
-            </Container>
-          </Box>
 
-          <LoginForm sx={{ mt: 4 }} next={location?.pathname} />
-        </Fragment>
-      )}
+              <LoginForm sx={{ mt: 4 }} next={location?.pathname} />
+            </Fragment>
+          )}
+        </Container>
+      </Box>
     </Fragment>
   );
 };

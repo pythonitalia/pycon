@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { useMutation } from "@apollo/react-hooks";
 import { navigate } from "@reach/router";
-import { Box } from "@theme-ui/components";
+import { Container } from "@theme-ui/components";
 import { useContext } from "react";
 import { jsx } from "theme-ui";
 
@@ -86,23 +86,12 @@ export const Cfp: React.SFC = () => {
   };
 
   return (
-    <Box>
-      <Box
-        sx={{
-          maxWidth: "container",
-          mx: "auto",
-          px: 3,
-          mt: 4,
-        }}
-      >
-        <CfpForm
-          loading={loading}
-          error={error}
-          data={data}
-          conferenceCode={conferenceCode}
-          onSubmit={onSubmit}
-        />
-      </Box>
-    </Box>
+    <CfpForm
+      loading={loading}
+      error={error}
+      data={data}
+      conferenceCode={conferenceCode}
+      onSubmit={onSubmit}
+    />
   );
 };

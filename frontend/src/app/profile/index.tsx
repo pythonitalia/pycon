@@ -78,6 +78,10 @@ export const ProfileApp: React.SFC<RouteComponentProps> = () => {
         sx={{
           borderTop: "primary",
           mb: 4,
+
+          "> div": {
+            px: 3,
+          },
         }}
       />
 

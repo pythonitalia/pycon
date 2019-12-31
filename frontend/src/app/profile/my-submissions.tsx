@@ -44,7 +44,6 @@ export const MySubmissions: React.SFC<Props> = ({ className }) => {
           maxWidth: "container",
           mx: "auto",
           mt: 4,
-          px: 3,
         }}
       >
         <Heading mb={3} as="h2">
