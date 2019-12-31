@@ -117,7 +117,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   console.log("STO PER FARE LA QUERY IN GATSBY-NDOE!! ");
   const result = await graphql(
     `
-      query {
+      query Pages {
         backend {
           blogPosts {
             slugEn: slug(language: "en")

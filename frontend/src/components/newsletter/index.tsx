@@ -1,11 +1,6 @@
+/** @jsx jsx */
 import { useMutation } from "@apollo/react-hooks";
-/** @jsx jsx */ import {
-  Box,
-  Button,
-  Heading,
-  Input,
-  Text,
-} from "@theme-ui/components";
+import { Box, Button, Heading, Input, Text } from "@theme-ui/components";
 import { useCallback, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
