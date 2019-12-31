@@ -17,7 +17,7 @@ import { CfpForm, CfpFormFields } from "../cfp-form";
 import ME_SUBMISSIONS from "./me-submissions.graphql";
 import SEND_SUBMISSION from "./send-submission.graphql";
 
-export const Cfp: React.SFC = ({ ...props }) => {
+export const Cfp: React.SFC = () => {
   const lang = useCurrentLanguage();
   const conferenceCode = useContext(ConferenceContext);
   const [sendSubmission, { loading, error, data }] = useMutation<
@@ -91,8 +91,8 @@ export const Cfp: React.SFC = ({ ...props }) => {
         maxWidth: "container",
         mx: "auto",
         px: 3,
+        mt: 4,
       }}
-      {...props}
     >
       <CfpForm
         loading={loading}

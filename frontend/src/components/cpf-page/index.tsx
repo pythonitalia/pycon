@@ -27,7 +27,7 @@ export const CFPPage: React.SFC<RouteComponentProps> = ({ location }) => {
         <Fragment>
           <MySubmissions />
 
-          <Cfp sx={{ mt: 4 }} />
+          <Cfp />
         </Fragment>
       ) : (
         <Fragment>
