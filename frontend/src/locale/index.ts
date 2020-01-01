@@ -173,6 +173,7 @@ export const messages = {
     "order.price": "Price: {price} EUR.",
     "order.inclVat": "(incl. 22% VAT)",
     "order.selectSize": "Select...",
+    "order.hotelRooms": "Hotel rooms",
 
     "orderInformation.heading": "Invoice information",
     "orderInformation.individualConsumer": "Individual Customer",
@@ -386,6 +387,7 @@ export const messages = {
     "order.price": "Prezzo: {price} EUR",
     "order.inclVat": "(incl. 22% IVA)",
     "order.selectSize": "Taglia...",
+    "order.hotelRooms": "Stanze hotel",
 
     "orderInformation.heading": "Informazioni di fatturazione",
     "orderInformation.individualConsumer": "Persona individuale",
