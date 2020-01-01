@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import { Button, Flex, Select } from "@theme-ui/components";
 import React, { useState } from "react";
+import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
 import { Ticket } from "./types";
@@ -20,9 +21,13 @@ export const AddProductWithVariation: React.SFC<{
           setCurrentVariation(event.target.value)
         }
       >
-        <option disabled={true} value="">
-          Select...
-        </option>
+        <FormattedMessage id="order.selectSize">
+          {text => (
+            <option disabled={true} value="">
+              {text}
+            </option>
+          )}
+        </FormattedMessage>
         {ticket.variations!.map(variation => (
           <option key={variation.id} value={variation.id}>
             {variation.value}

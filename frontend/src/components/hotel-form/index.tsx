@@ -1,11 +1,11 @@
 /** @jsx jsx */
 import { Box, Button, Flex, Heading } from "@theme-ui/components";
 import moment from "moment";
-import { Fragment } from "react";
+import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
+import { useCurrentLanguage } from "../../context/language";
 import { HotelRoom } from "../../generated/graphql-backend";
-import { DATE_FORMAT } from "../tickets-form/add-hotel-room";
 import { ProductRow } from "../tickets-form/product-row";
 import { SelectedHotelRooms } from "../tickets-page/types";
 
@@ -29,64 +29,84 @@ export const HotelForm: React.SFC<Props> = ({
   addHotelRoom,
   removeHotelRoom,
   selectedHotelRooms,
-}) => (
-  <Box>
-    <Heading mb={3} as="h2">
-      Hotel rooms
-    </Heading>
-    {hotelRooms.map(room => (
-      <Box
-        sx={{
-          mb: 4,
-        }}
-        key={room.id}
-      >
-        <ProductRow
-          sx={{
-            marginBottom: 0,
-          }}
-          hotel={true}
-          conferenceStart={conferenceStart}
-          conferenceEnd={conferenceEnd}
-          addHotelRoom={addHotelRoom}
-          ticket={{
-            ...room,
-            soldOut:
-              room.isSoldOut ||
-              (selectedHotelRooms[room.id] ?? []).length >= room.capacityLeft,
-            defaultPrice: room.price,
-            questions: [],
-          }}
-        />
-        {(selectedHotelRooms[room.id] ?? []).map((selectedRoom, index) => (
-          <Flex
-            key={index}
-            sx={{
-              justifyContent: "space-between",
-              alignItems: "center",
+}) => {
+  const lang = useCurrentLanguage();
+  const dateFormatter = new Intl.DateTimeFormat(lang, {
+    month: "long",
+    day: "2-digit",
+  });
 
-              mt: 2,
+  return (
+    <Box>
+      <Heading mb={3} as="h2">
+        <FormattedMessage id="order.hotelRooms" />
+      </Heading>
+      {hotelRooms.map(room => (
+        <Box
+          sx={{
+            mb: 4,
+          }}
+          key={room.id}
+        >
+          <ProductRow
+            sx={{
+              marginBottom: 0,
             }}
-          >
-            <Box>
-              <strong>{room.name}</strong> with check-in the{" "}
-              <strong>{selectedRoom.checkin.format(DATE_FORMAT)}</strong> and
-              check-out the{" "}
-              <strong>{selectedRoom.checkout.format(DATE_FORMAT)}</strong>
-            </Box>
-            <Button
+            hotel={true}
+            conferenceStart={conferenceStart}
+            conferenceEnd={conferenceEnd}
+            addHotelRoom={addHotelRoom}
+            ticket={{
+              ...room,
+              soldOut:
+                room.isSoldOut ||
+                (selectedHotelRooms[room.id] ?? []).length >= room.capacityLeft,
+              defaultPrice: room.price,
+              questions: [],
+            }}
+          />
+          {(selectedHotelRooms[room.id] ?? []).map((selectedRoom, index) => (
+            <Flex
+              key={index}
               sx={{
-                marginLeft: 4,
-                flexShrink: 0,
+                justifyContent: "space-between",
+                alignItems: "center",
+
+                mt: 2,
               }}
-              variant="minus"
-              onClick={() => removeHotelRoom(room.id, index)}
             >
-              -
-            </Button>
-          </Flex>
-        ))}
-      </Box>
-    ))}
-  </Box>
-);
+              <Box>
+                <FormattedMessage
+                  id="order.hotelRoomCartInfo"
+                  values={{
+                    roomName: <strong>{room.name}</strong>,
+                    checkin: (
+                      <strong>
+                        {dateFormatter.format(selectedRoom.checkin.toDate())}
+                      </strong>
+                    ),
+                    checkout: (
+                      <strong>
+                        {dateFormatter.format(selectedRoom.checkout.toDate())}
+                      </strong>
+                    ),
+                  }}
+                />
+              </Box>
+              <Button
+                sx={{
+                  marginLeft: 4,
+                  flexShrink: 0,
+                }}
+                variant="minus"
+                onClick={() => removeHotelRoom(room.id, index)}
+              >
+                -
+              </Button>
+            </Flex>
+          ))}
+        </Box>
+      ))}
+    </Box>
+  );
+};

@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import { Box, Grid, Text } from "@theme-ui/components";
 import moment from "moment";
+import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
 import { AddHotelRoom } from "./add-hotel-room";
@@ -56,7 +57,7 @@ export const ProductRow: React.SFC<ProductRowProps> = ({
     <Box sx={{ mb: 4 }} className={className}>
       <Grid
         sx={{
-          gridTemplateColumns: ["1fr", hotel ? "1fr 350px" : "1fr 180px"],
+          gridTemplateColumns: ["1fr", hotel ? "1fr 370px" : "1fr 180px"],
         }}
       >
         <Box>
@@ -65,9 +66,24 @@ export const ProductRow: React.SFC<ProductRowProps> = ({
           </Text>
 
           <Text>
-            Price:{" "}
-            <Text as="span" sx={{ fontWeight: "bold" }}>
-              {ticket.defaultPrice} EUR
+            <FormattedMessage
+              id="order.price"
+              values={{
+                price: (
+                  <Text as="span" sx={{ fontWeight: "bold" }}>
+                    {ticket.defaultPrice}
+                  </Text>
+                ),
+              }}
+            />
+            <Text
+              as="span"
+              sx={{
+                fontSize: 1,
+                ml: 1,
+              }}
+            >
+              <FormattedMessage id="order.inclVat" />
             </Text>
           </Text>
 
@@ -84,7 +100,7 @@ export const ProductRow: React.SFC<ProductRowProps> = ({
               fontWeight: "bold",
             }}
           >
-            Sold out
+            <FormattedMessage id="order.soldout" />
           </Text>
         )}
 

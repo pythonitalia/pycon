@@ -154,17 +154,26 @@ export const messages = {
     "tickets.loading": "Please wait 🕐",
     "tickets.heading": "Get some tickets",
 
+    "addHotelRoom.checkin": "Check-in",
+    "addHotelRoom.checkout": "Check-out",
+
     "order.nextStep": "Next step",
     "order.creatingOrder": "Creating order 🕐",
     "order.payWithCard": "Pay with card",
     "order.payWithBankTransfer": "Pay with bank transfer",
     "order.needToSelectProducts":
       "You need to select at least one ticket, a t-shirt or a hotel room before continuing",
-
+    "order.hotelRoomCartInfo":
+      "{roomName} with check-in the {checkin} and check-out the {checkout}",
     "orderConfirmation.heading": "Order confirmation!",
     "orderConfirmation.successMessage":
       "Thanks for the order! You should receive an email confirmation soon!",
     "orderConfirmation.manage": "Click here to manage the order.",
+    "order.soldout": "Sold out",
+    "order.price": "Price: {price} EUR.",
+    "order.inclVat": "(incl. 22% VAT)",
+    "order.selectSize": "Select...",
+    "order.hotelRooms": "Hotel rooms",
 
     "orderInformation.heading": "Invoice information",
     "orderInformation.individualConsumer": "Individual Customer",
@@ -199,7 +208,6 @@ export const messages = {
     "orderReview.tickets": "Tickets",
     "orderReview.attendeeName": "Attendee name",
     "orderReview.attendeeEmail": "Attendee email",
-    "orderReview.inclVat": "(incl. 22% VAT)",
     "orderReview.total": "Total",
     "orderReview.hotelRooms": "Hotel rooms",
     "orderReview.night": "night",
@@ -360,17 +368,26 @@ export const messages = {
     "tickets.loading": "Caricamento in corso 🕐",
     "tickets.heading": "Acquista biglietti",
 
+    "addHotelRoom.checkin": "Check-in",
+    "addHotelRoom.checkout": "Check-out",
+
     "order.nextStep": "Continua",
     "order.creatingOrder": "Creazione ordine in corso 🕐",
     "order.payWithCard": "Paga con carta",
     "order.payWithBankTransfer": "Paga con bonifico bancario",
     "order.needToSelectProducts":
       "Scegli un biglietto, una maglietta o una stanza di hotel prima di continuare",
-
+    "order.hotelRoomCartInfo":
+      "{roomName} con check-in il {checkin} e check-out {checkout}",
     "orderConfirmation.manage": "Fai click qui per gestire il tuo ordine.",
     "orderConfirmation.heading": "Ordine confermato",
     "orderConfirmation.successMessage":
       "Grazie per l'ordine, riceverai una email di conferma a breve.",
+    "order.soldout": "Sold out",
+    "order.price": "Prezzo: {price} EUR",
+    "order.inclVat": "(incl. 22% IVA)",
+    "order.selectSize": "Taglia...",
+    "order.hotelRooms": "Stanze hotel",
 
     "orderInformation.heading": "Informazioni di fatturazione",
     "orderInformation.individualConsumer": "Persona individuale",
@@ -405,7 +422,6 @@ export const messages = {
     "orderReview.tickets": "Biglietti",
     "orderReview.attendeeName": "Nome partecipante",
     "orderReview.attendeeEmail": "Email partecipante",
-    "orderReview.inclVat": "(incl. 22% IVA)",
     "orderReview.total": "Totale",
     "orderReview.hotelRooms": "Stanze",
     "orderReview.night": "notte",
