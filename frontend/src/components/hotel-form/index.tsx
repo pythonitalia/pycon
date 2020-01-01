@@ -2,6 +2,7 @@
 import { Box, Button, Flex, Heading } from "@theme-ui/components";
 import moment from "moment";
 import { Fragment } from "react";
+import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
 import { HotelRoom } from "../../generated/graphql-backend";
@@ -69,9 +70,10 @@ export const HotelForm: React.SFC<Props> = ({
             }}
           >
             <Box>
-              <strong>{room.name}</strong> with check-in the{" "}
-              <strong>{selectedRoom.checkin.format(DATE_FORMAT)}</strong> and
-              check-out the{" "}
+              <strong>{room.name}</strong>{" "}
+              <FormattedMessage id="order.withChekinThe" />{" "}
+              <strong>{selectedRoom.checkin.format(DATE_FORMAT)}</strong>{" "}
+              <FormattedMessage id="order.withChekoutThe" />{" "}
               <strong>{selectedRoom.checkout.format(DATE_FORMAT)}</strong>
             </Box>
             <Button

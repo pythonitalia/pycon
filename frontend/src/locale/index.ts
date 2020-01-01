@@ -160,7 +160,8 @@ export const messages = {
     "order.payWithBankTransfer": "Pay with bank transfer",
     "order.needToSelectProducts":
       "You need to select at least one ticket, a t-shirt or a hotel room before continuing",
-
+    "order.withChekinThe": "with check-in the",
+    "order.withChekoutThe": "and check-out the",
     "orderConfirmation.heading": "Order confirmation!",
     "orderConfirmation.successMessage":
       "Thanks for the order! You should receive an email confirmation soon!",
@@ -366,7 +367,8 @@ export const messages = {
     "order.payWithBankTransfer": "Paga con bonifico bancario",
     "order.needToSelectProducts":
       "Scegli un biglietto, una maglietta o una stanza di hotel prima di continuare",
-
+    "order.withChekinThe": "con check-in il",
+    "order.withChekoutThe": "e check-out il",
     "orderConfirmation.manage": "Fai click qui per gestire il tuo ordine.",
     "orderConfirmation.heading": "Ordine confermato",
     "orderConfirmation.successMessage":
