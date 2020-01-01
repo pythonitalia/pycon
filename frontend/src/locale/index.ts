@@ -169,6 +169,8 @@ export const messages = {
     "orderConfirmation.successMessage":
       "Thanks for the order! You should receive an email confirmation soon!",
     "orderConfirmation.manage": "Click here to manage the order.",
+    "order.soldout": "Sold out",
+    "order.price": "Price: {price} EUR",
 
     "orderInformation.heading": "Invoice information",
     "orderInformation.individualConsumer": "Individual Customer",
@@ -379,6 +381,8 @@ export const messages = {
     "orderConfirmation.heading": "Ordine confermato",
     "orderConfirmation.successMessage":
       "Grazie per l'ordine, riceverai una email di conferma a breve.",
+    "order.soldout": "Sold out",
+    "order.price": "Prezzo: {price} EUR",
 
     "orderInformation.heading": "Informazioni di fatturazione",
     "orderInformation.individualConsumer": "Persona individuale",
