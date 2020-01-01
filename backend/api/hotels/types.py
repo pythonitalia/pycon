@@ -10,3 +10,4 @@ class HotelRoom:
     description: str = strawberry.field(resolver=make_localized_resolver("description"))
     price: str
     is_sold_out: bool
+    capacity_left: int

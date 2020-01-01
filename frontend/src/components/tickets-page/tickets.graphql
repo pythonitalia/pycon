@@ -38,6 +38,7 @@ query Tickets($conference: String!, $language: String!) {
       description(language: $language)
       price
       isSoldOut
+      capacityLeft
     }
   }
 }

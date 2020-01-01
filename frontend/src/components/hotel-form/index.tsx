@@ -51,7 +51,9 @@ export const HotelForm: React.SFC<Props> = ({
           addHotelRoom={addHotelRoom}
           ticket={{
             ...room,
-            soldOut: room.isSoldOut,
+            soldOut:
+              room.isSoldOut ||
+              (selectedHotelRooms[room.id] ?? []).length >= room.capacityLeft,
             defaultPrice: room.price,
             questions: [],
           }}
