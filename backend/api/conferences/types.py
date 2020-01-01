@@ -6,6 +6,7 @@ import pytz
 import strawberry
 from api.cms.types import FAQ, Menu
 from api.events.types import Event
+from api.hotels.types import HotelRoom
 from api.languages.types import Language
 from api.pretix.query import get_conference_tickets
 from api.pretix.types import TicketItem
@@ -71,6 +72,10 @@ class Conference:
     @strawberry.field
     def tickets(self, info, language: str) -> List[TicketItem]:
         return get_conference_tickets(self, language=language)
+
+    @strawberry.field
+    def hotel_rooms(self, info) -> List[HotelRoom]:
+        return self.hotel_rooms.all()
 
     @strawberry.field
     def deadlines(self, info) -> List["Deadline"]:

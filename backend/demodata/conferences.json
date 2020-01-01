@@ -39,10 +39,16 @@
         "it": "Questa \u00e8 una conferenze di prova."
       },
       "pretix_event_url": "https://pretix.eu/demo/democon/",
+      "pretix_organizer_id": "python-italia",
+      "pretix_event_id": "pycon-demo",
+      "pretix_hotel_ticket_id": 13,
+      "pretix_hotel_room_type_question_id": 9,
+      "pretix_hotel_checkin_question_id": 10,
+      "pretix_hotel_checkout_question_id": 11,
       "topics": [1],
       "languages": [1, 2],
       "audience_levels": [1],
-      "submission_types": [1,2]
+      "submission_types": [1, 2]
     }
   },
   {

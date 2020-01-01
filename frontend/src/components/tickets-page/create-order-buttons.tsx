@@ -57,6 +57,14 @@ export const CreateOrderButtons: React.SFC<Props> = ({ state, email }) => {
           })),
         }));
 
+      const hotelRooms = Object.values(state.selectedHotelRooms)
+        .flat()
+        .map(selectedRoom => ({
+          roomId: selectedRoom.id,
+          checkin: selectedRoom.checkin.format("YYYY-MM-DD"),
+          checkout: selectedRoom.checkout.format("YYYY-MM-DD"),
+        }));
+
       createOrder({
         variables: {
           conference: conferenceCode,
@@ -64,6 +72,7 @@ export const CreateOrderButtons: React.SFC<Props> = ({ state, email }) => {
           input: {
             paymentProvider,
             tickets: orderTickets,
+            hotelRooms,
             email,
             locale: language,
             invoiceInformation: {

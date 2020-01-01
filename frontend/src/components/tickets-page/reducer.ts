@@ -1,4 +1,9 @@
-import { OrderAction, OrderState, UpdateProductAction } from "./types";
+import {
+  OrderAction,
+  OrderState,
+  UpdateHotelRoomAction,
+  UpdateProductAction,
+} from "./types";
 
 const updateProductReducer = (
   state: OrderState,
@@ -35,11 +40,48 @@ const updateProductReducer = (
   };
 };
 
+const updateHotelRoomReducer = (
+  state: OrderState,
+  action: UpdateHotelRoomAction,
+): OrderState => {
+  const id = action.id;
+  const hotelRooms = { ...state.selectedHotelRooms };
+  const hotelRoomById = hotelRooms[action.id] ? [...hotelRooms[id]] : [];
+
+  switch (action.type) {
+    case "addHotelRoom":
+      hotelRoomById.push({
+        id,
+        checkin: action.checkin,
+        checkout: action.checkout,
+        numNights: action.checkout.diff(action.checkin, "days"),
+      });
+      break;
+    case "removeHotelRoom":
+      hotelRoomById.splice(action.index, 1);
+      break;
+  }
+
+  if (hotelRoomById.length === 0) {
+    delete hotelRooms[id];
+  } else {
+    hotelRooms[id] = hotelRoomById;
+  }
+
+  return {
+    ...state,
+    selectedHotelRooms: hotelRooms,
+  };
+};
+
 export const reducer = (state: OrderState, action: OrderAction): OrderState => {
   switch (action.type) {
     case "incrementProduct":
     case "decrementProduct":
       return updateProductReducer(state, action);
+    case "addHotelRoom":
+    case "removeHotelRoom":
+      return updateHotelRoomReducer(state, action);
     case "updateTicketAnswer": {
       const products = state.selectedProducts[action.id];
       const newProduct = {

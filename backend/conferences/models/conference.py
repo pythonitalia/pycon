@@ -1,11 +1,10 @@
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
-from model_utils.models import TimeFramedModel, TimeStampedModel
-from timezone_field import TimeZoneField
-
 from helpers.models import GeoLocalizedModel
 from i18n.fields import I18nCharField, I18nTextField
+from model_utils.models import TimeFramedModel, TimeStampedModel
+from timezone_field import TimeZoneField
 
 from .deadline import Deadline
 
@@ -35,6 +34,19 @@ class Conference(GeoLocalizedModel, TimeFramedModel, TimeStampedModel):
         _("pretix event id"), max_length=200, blank=True, default=""
     )
     pretix_event_url = models.URLField(_("pretix event url"), blank=True, default="")
+
+    pretix_hotel_ticket_id = models.IntegerField(
+        _("pretix hotel ticket id"), blank=True, null=True
+    )
+    pretix_hotel_room_type_question_id = models.IntegerField(
+        _("pretix hotel room type question id"), blank=True, null=True
+    )
+    pretix_hotel_checkin_question_id = models.IntegerField(
+        _("pretix hotel check-in question id"), blank=True, null=True
+    )
+    pretix_hotel_checkout_question_id = models.IntegerField(
+        _("pretix hotel checkout question id"), blank=True, null=True
+    )
 
     introduction = I18nTextField(_("introduction"), blank=False)
 

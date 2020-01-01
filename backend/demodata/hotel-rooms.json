@@ -1,0 +1,35 @@
+[
+  {
+    "model": "hotels.hotelroom",
+    "pk": 1,
+    "fields": {
+      "conference": 1,
+      "name": { "en": "Single room", "it": "Camera singola" },
+      "description": { "en": "", "it": "" },
+      "total_capacity": 30,
+      "price": "100.00"
+    }
+  },
+  {
+    "model": "hotels.hotelroom",
+    "pk": 2,
+    "fields": {
+      "conference": 1,
+      "name": { "en": "Double room", "it": "Camera doppia" },
+      "description": { "en": "", "it": "" },
+      "total_capacity": 35,
+      "price": "65.00"
+    }
+  },
+  {
+    "model": "hotels.hotelroom",
+    "pk": 3,
+    "fields": {
+      "conference": 1,
+      "name": { "en": "Triple room", "it": "Camera tripla" },
+      "description": { "en": "", "it": "" },
+      "total_capacity": 15,
+      "price": "50.00"
+    }
+  }
+]

@@ -5,6 +5,7 @@ from cms.tests.factories import *  # noqa
 from conferences.tests.factories import *  # noqa
 from django.test.client import Client
 from events.tests.factories import *  # noqa
+from hotels.tests.factories import *  # noqa
 from languages.models import Language
 from languages.tests.factories import *  # noqa
 from pages.tests.factories import *  # noqa

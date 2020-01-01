@@ -5,7 +5,9 @@ import React from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
+import { HotelRoom } from "../../generated/graphql-backend";
 import { useCountries } from "../../helpers/use-countries";
+import { DATE_FORMAT } from "../tickets-form/add-hotel-room";
 import { Ticket } from "../tickets-form/types";
 import { CreateOrderButtons } from "./create-order-buttons";
 import { ReviewItem } from "./review-item";
@@ -14,6 +16,7 @@ import { InvoiceInformationState, OrderState } from "./types";
 type Props = {
   state: OrderState;
   tickets: Ticket[];
+  hotelRooms: HotelRoom[];
   email: string;
 } & RouteComponentProps;
 
@@ -55,15 +58,44 @@ const INVOICE_FIELDS: {
   },
 ];
 
-export const ReviewOrder: React.SFC<Props> = ({ state, tickets, email }) => {
-  const { invoiceInformation, selectedProducts } = state!;
+const calculateTotalAmount = (
+  state: OrderState,
+  productsById: {
+    [x: string]: Ticket;
+    [x: number]: Ticket;
+  },
+  hotelRoomsById: {
+    [x: string]: HotelRoom;
+    [x: number]: HotelRoom;
+  },
+) => {
+  const ticketsPrice = Object.values(state.selectedProducts)
+    .flat()
+    .reduce((p, c) => p + parseFloat(productsById[c.id].defaultPrice), 0);
+  const hotelRoomsPrice = Object.values(state.selectedHotelRooms)
+    .flat()
+    .reduce(
+      (p, c) => p + parseFloat(hotelRoomsById[c.id].price) * c.numNights,
+      0,
+    );
+  return ticketsPrice + hotelRoomsPrice;
+};
+
+export const ReviewOrder: React.SFC<Props> = ({
+  state,
+  tickets,
+  hotelRooms,
+  email,
+}) => {
+  const { invoiceInformation, selectedProducts, selectedHotelRooms } = state!;
   const productsById = Object.fromEntries(
     tickets!.map(product => [product.id, product]),
   );
+  const hotelRoomsById = Object.fromEntries(
+    hotelRooms!.map(room => [room.id, room]),
+  );
   const countries = useCountries();
-  const totalAmount = Object.values(selectedProducts)
-    .flat()
-    .reduce((p, c) => p + parseFloat(productsById[c.id].defaultPrice), 0);
+  const totalAmount = calculateTotalAmount(state, productsById, hotelRoomsById);
 
   const isBusiness = state!.invoiceInformation.isBusiness;
 
@@ -216,6 +248,85 @@ export const ReviewOrder: React.SFC<Props> = ({ state, tickets, email }) => {
                   </Box>
                 )}
               </li>
+            );
+          })}
+      </Box>
+
+      <Heading as="h2" my={3}>
+        <FormattedMessage id="orderReview.hotelRooms" />
+      </Heading>
+
+      <Box
+        as="ul"
+        sx={{
+          listStyle: "none",
+        }}
+      >
+        {Object.values(selectedHotelRooms)
+          .flat()
+          .map((selectedRoomInfo, index) => {
+            const room = hotelRoomsById[selectedRoomInfo.id];
+            return (
+              <Box
+                sx={{
+                  my: 3,
+                }}
+                key={`${selectedRoomInfo.id}-${index}`}
+              >
+                <Flex
+                  sx={{
+                    flexDirection: ["column", "row"],
+                    justifyContent: "space-between",
+                    alignItems: ["flex-start", "center"],
+                  }}
+                >
+                  <Heading as="h3">{room.name}</Heading>
+                  <Text>
+                    <Text
+                      as="span"
+                      sx={{
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {room.price}€
+                    </Text>{" "}
+                    x{selectedRoomInfo.numNights}{" "}
+                    <FormattedMessage
+                      id={
+                        selectedRoomInfo.numNights === 1
+                          ? "orderReview.night"
+                          : "orderReview.nights"
+                      }
+                    />{" "}
+                    <Text
+                      sx={{
+                        fontSize: 1,
+                      }}
+                      as="span"
+                    >
+                      <FormattedMessage id="orderReview.inclVat" />
+                    </Text>
+                  </Text>
+                </Flex>
+
+                <Box
+                  as="ul"
+                  sx={{
+                    pl: [2, 4],
+                    listStyle: "none",
+                  }}
+                >
+                  <ReviewItem
+                    label={<FormattedMessage id="orderReview.checkin" />}
+                    value={selectedRoomInfo.checkin.format(DATE_FORMAT)}
+                  />
+
+                  <ReviewItem
+                    label={<FormattedMessage id="orderReview.checkout" />}
+                    value={selectedRoomInfo.checkout.format(DATE_FORMAT)}
+                  />
+                </Box>
+              </Box>
             );
           })}
       </Box>
