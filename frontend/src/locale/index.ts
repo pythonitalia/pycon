@@ -172,6 +172,7 @@ export const messages = {
     "order.soldout": "Sold out",
     "order.price": "Price: {price} EUR.",
     "order.inclVat": "(incl. 22% VAT)",
+    "order.selectSize": "Select...",
 
     "orderInformation.heading": "Invoice information",
     "orderInformation.individualConsumer": "Individual Customer",
@@ -384,6 +385,7 @@ export const messages = {
     "order.soldout": "Sold out",
     "order.price": "Prezzo: {price} EUR",
     "order.inclVat": "(incl. 22% IVA)",
+    "order.selectSize": "Taglia...",
 
     "orderInformation.heading": "Informazioni di fatturazione",
     "orderInformation.individualConsumer": "Persona individuale",
