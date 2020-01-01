@@ -45,7 +45,7 @@ export const AddHotelRoom: React.SFC<Props> = ({
   }
 
   const addRoomCallback = useCallback(() => {
-    if (!checkinDate || !formState.validity.checkout) {
+    if (!checkinDate || !formState.values.checkout) {
       return;
     }
 
