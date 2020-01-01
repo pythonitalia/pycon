@@ -5,9 +5,9 @@ import React from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
+import { useCurrentLanguage } from "../../context/language";
 import { HotelRoom } from "../../generated/graphql-backend";
 import { useCountries } from "../../helpers/use-countries";
-import { DATE_FORMAT } from "../tickets-form/add-hotel-room";
 import { Ticket } from "../tickets-form/types";
 import { CreateOrderButtons } from "./create-order-buttons";
 import { ReviewItem } from "./review-item";
@@ -98,6 +98,12 @@ export const ReviewOrder: React.SFC<Props> = ({
   const totalAmount = calculateTotalAmount(state, productsById, hotelRoomsById);
 
   const isBusiness = state!.invoiceInformation.isBusiness;
+
+  const lang = useCurrentLanguage();
+  const dateFormatter = new Intl.DateTimeFormat(lang, {
+    month: "long",
+    day: "2-digit",
+  });
 
   return (
     <Box>
@@ -318,12 +324,16 @@ export const ReviewOrder: React.SFC<Props> = ({
                 >
                   <ReviewItem
                     label={<FormattedMessage id="orderReview.checkin" />}
-                    value={selectedRoomInfo.checkin.format(DATE_FORMAT)}
+                    value={dateFormatter.format(
+                      selectedRoomInfo.checkin.toDate(),
+                    )}
                   />
 
                   <ReviewItem
                     label={<FormattedMessage id="orderReview.checkout" />}
-                    value={selectedRoomInfo.checkout.format(DATE_FORMAT)}
+                    value={dateFormatter.format(
+                      selectedRoomInfo.checkout.toDate(),
+                    )}
                   />
                 </Box>
               </Box>

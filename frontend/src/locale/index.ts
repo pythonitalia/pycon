@@ -154,14 +154,17 @@ export const messages = {
     "tickets.loading": "Please wait 🕐",
     "tickets.heading": "Get some tickets",
 
+    "addHotelRoom.checkin": "Check-in",
+    "addHotelRoom.checkout": "Check-out",
+
     "order.nextStep": "Next step",
     "order.creatingOrder": "Creating order 🕐",
     "order.payWithCard": "Pay with card",
     "order.payWithBankTransfer": "Pay with bank transfer",
     "order.needToSelectProducts":
       "You need to select at least one ticket, a t-shirt or a hotel room before continuing",
-    "order.withChekinThe": "with check-in the",
-    "order.withChekoutThe": "and check-out the",
+    "order.hotelRoomCartInfo":
+      "{roomName} with check-in the {checkin} and check-out the {checkout}",
     "orderConfirmation.heading": "Order confirmation!",
     "orderConfirmation.successMessage":
       "Thanks for the order! You should receive an email confirmation soon!",
@@ -361,14 +364,17 @@ export const messages = {
     "tickets.loading": "Caricamento in corso 🕐",
     "tickets.heading": "Acquista biglietti",
 
+    "addHotelRoom.checkin": "Check-in",
+    "addHotelRoom.checkout": "Check-out",
+
     "order.nextStep": "Continua",
     "order.creatingOrder": "Creazione ordine in corso 🕐",
     "order.payWithCard": "Paga con carta",
     "order.payWithBankTransfer": "Paga con bonifico bancario",
     "order.needToSelectProducts":
       "Scegli un biglietto, una maglietta o una stanza di hotel prima di continuare",
-    "order.withChekinThe": "con check-in il",
-    "order.withChekoutThe": "e check-out il",
+    "order.hotelRoomCartInfo":
+      "{roomName} con check-in il {checkin} e check-out {checkout}",
     "orderConfirmation.manage": "Fai click qui per gestire il tuo ordine.",
     "orderConfirmation.heading": "Ordine confermato",
     "orderConfirmation.successMessage":
