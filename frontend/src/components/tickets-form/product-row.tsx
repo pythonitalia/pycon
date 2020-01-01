@@ -56,7 +56,7 @@ export const ProductRow: React.SFC<ProductRowProps> = ({
     <Box sx={{ mb: 4 }} className={className}>
       <Grid
         sx={{
-          gridTemplateColumns: ["1fr", hotel ? "1fr 350px" : "1fr 180px"],
+          gridTemplateColumns: ["1fr", hotel ? "1fr 370px" : "1fr 180px"],
         }}
       >
         <Box>
