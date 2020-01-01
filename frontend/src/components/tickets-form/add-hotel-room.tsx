@@ -77,7 +77,7 @@ export const AddHotelRoom: React.SFC<Props> = ({
           <option disabled={true} value="">
             Check-in
           </option>
-          {new Array(daysBetween).fill(null).map((_, i) => (
+          {new Array(daysBetween - 1).fill(null).map((_, i) => (
             <option key={i} value={i}>
               {momentConferenceStart
                 .clone()
