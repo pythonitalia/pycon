@@ -210,7 +210,7 @@ export const ReviewOrder: React.SFC<Props> = ({
                       }}
                       as="span"
                     >
-                      <FormattedMessage id="orderReview.inclVat" />
+                      <FormattedMessage id="order.inclVat" />
                     </Text>
                   </Text>
                 </Flex>
@@ -310,7 +310,7 @@ export const ReviewOrder: React.SFC<Props> = ({
                       }}
                       as="span"
                     >
-                      <FormattedMessage id="orderReview.inclVat" />
+                      <FormattedMessage id="order.inclVat" />
                     </Text>
                   </Text>
                 </Flex>

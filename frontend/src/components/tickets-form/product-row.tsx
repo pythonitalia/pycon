@@ -76,6 +76,15 @@ export const ProductRow: React.SFC<ProductRowProps> = ({
                 ),
               }}
             />
+            <Text
+              as="span"
+              sx={{
+                fontSize: 1,
+                ml: 1,
+              }}
+            >
+              <FormattedMessage id="order.inclVat" />
+            </Text>
           </Text>
 
           <Text>{ticket.description}</Text>

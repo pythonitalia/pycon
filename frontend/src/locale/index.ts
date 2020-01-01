@@ -170,7 +170,8 @@ export const messages = {
       "Thanks for the order! You should receive an email confirmation soon!",
     "orderConfirmation.manage": "Click here to manage the order.",
     "order.soldout": "Sold out",
-    "order.price": "Price: {price} EUR",
+    "order.price": "Price: {price} EUR.",
+    "order.inclVat": "(incl. 22% VAT)",
 
     "orderInformation.heading": "Invoice information",
     "orderInformation.individualConsumer": "Individual Customer",
@@ -205,7 +206,6 @@ export const messages = {
     "orderReview.tickets": "Tickets",
     "orderReview.attendeeName": "Attendee name",
     "orderReview.attendeeEmail": "Attendee email",
-    "orderReview.inclVat": "(incl. 22% VAT)",
     "orderReview.total": "Total",
     "orderReview.hotelRooms": "Hotel rooms",
     "orderReview.night": "night",
@@ -383,6 +383,7 @@ export const messages = {
       "Grazie per l'ordine, riceverai una email di conferma a breve.",
     "order.soldout": "Sold out",
     "order.price": "Prezzo: {price} EUR",
+    "order.inclVat": "(incl. 22% IVA)",
 
     "orderInformation.heading": "Informazioni di fatturazione",
     "orderInformation.individualConsumer": "Persona individuale",
@@ -417,7 +418,6 @@ export const messages = {
     "orderReview.tickets": "Biglietti",
     "orderReview.attendeeName": "Nome partecipante",
     "orderReview.attendeeEmail": "Email partecipante",
-    "orderReview.inclVat": "(incl. 22% IVA)",
     "orderReview.total": "Totale",
     "orderReview.hotelRooms": "Stanze",
     "orderReview.night": "notte",
