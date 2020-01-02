@@ -1,6 +1,7 @@
 from pytest import mark
 
 
+@mark.django_db
 def test_returns_none_when_missing(graphql_client):
     resp = graphql_client.query(
         """{
@@ -14,25 +15,35 @@ def test_returns_none_when_missing(graphql_client):
     assert resp["data"]["submission"] is None
 
 
-def test_returns_none_if_speaker_is_not_current(
-    graphql_client, user, submission_factory
+@mark.parametrize("logged_in", (True, False))
+def test_can_only_see_title_if_not_submitter_or_not_logged_in(
+    logged_in, graphql_client, user, submission_factory
 ):
-    graphql_client.force_login(user)
     submission = submission_factory()
 
-    assert submission.speaker != user
+    if logged_in:
+        graphql_client.force_login(user)
+        assert submission.speaker != user
 
     resp = graphql_client.query(
         """query SubmissionQuery($id: ID!) {
             submission(id: $id) {
                 id
+                title
+                elevatorPitch
             }
         }""",
         variables={"id": submission.id},
     )
 
-    assert not resp.get("errors")
-    assert resp["data"]["submission"] is None
+    assert resp["errors"][0] == {
+        "message": "You can't see details for this submission",
+        "locations": [{"line": 5, "column": 17}],
+        "path": ["submission", "elevatorPitch"],
+    }
+
+    assert resp["data"]["submission"]["title"] == submission.title
+    assert resp["data"]["submission"]["elevatorPitch"] is None
 
 
 def test_returns_correct_submission(graphql_client, user, submission_factory):
@@ -82,18 +93,19 @@ def test_cannot_edit_submission_if_not_the_owner(
     submission = submission_factory(conference__active_cfp=True)
 
     response = graphql_client.query(
-        """
-        query Submission($id: ID!) {
+        """query Submission($id: ID!) {
             submission(id: $id) {
                 id
                 canEdit
             }
-        }
-    """,
+        }""",
         variables={"id": submission.id},
     )
 
-    assert response["data"]["submission"] is None
+    assert response["data"]["submission"] == {
+        "id": str(submission.id),
+        "canEdit": False,
+    }
 
 
 @mark.django_db
