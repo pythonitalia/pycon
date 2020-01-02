@@ -4,6 +4,7 @@ import moment from "moment";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
+import { useCurrentLanguage } from "../../context/language";
 import { AddHotelRoom } from "./add-hotel-room";
 import { AddProductWithVariation } from "./add-product-with-variation";
 import { AddRemoveProduct } from "./add-remove-product";
@@ -13,6 +14,7 @@ type RowTicket = {
   name: string;
   soldOut?: boolean;
   description?: string | null;
+  availableUntil?: string;
   defaultPrice: string;
   variations?: { id: string; value: string; defaultPrice: string }[];
   questions: {
@@ -51,6 +53,13 @@ export const ProductRow: React.SFC<ProductRowProps> = ({
   addProduct,
   removeProduct,
 }) => {
+  const lang = useCurrentLanguage();
+  const dateFormatter = new Intl.DateTimeFormat(lang, {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  });
+
   const hasVariation = ticket.variations && ticket.variations.length > 0;
 
   return (
@@ -88,6 +97,20 @@ export const ProductRow: React.SFC<ProductRowProps> = ({
           </Text>
 
           <Text>{ticket.description}</Text>
+          {ticket.availableUntil && (
+            <Text>
+              <FormattedMessage
+                id="order.availableUntil"
+                values={{
+                  date: (
+                    <strong>
+                      {dateFormatter.format(new Date(ticket.availableUntil))}
+                    </strong>
+                  ),
+                }}
+              />
+            </Text>
+          )}
         </Box>
 
         {ticket.soldOut && (
