@@ -54,7 +54,7 @@ class FormMutation:
             # Once we implement the permission in strawberry we can remove this :)
             if hasattr(cls.Meta, "permission_classes") and cls.Meta.permission_classes:
                 for permission in cls.Meta.permission_classes:
-                    if not permission().has_permission(info):
+                    if not permission().has_permission(root, info):
                         raise GraphQLError(permission.message)
 
             input_as_dict = input

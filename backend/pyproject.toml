@@ -27,7 +27,7 @@ chardet = "=3.0.4"
 idna = "=2.8"
 requests = "=2.22.0"
 urllib3 = "=1.25.7"
-strawberry-graphql = {version = "0.19.1", extras = ["django"]}
+strawberry-graphql = "0.20.0"
 aniso8601 = "=8.0.0"
 Pillow = "=6.2.1"
 whitenoise = "=5.0.1"

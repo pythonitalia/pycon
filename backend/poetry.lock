@@ -26,17 +26,6 @@ python-versions = "*"
 version = "1.4.3"
 
 [[package]]
-category = "main"
-description = "ASGI specs, helper code, and adapters"
-name = "asgiref"
-optional = false
-python-versions = "*"
-version = "3.2.3"
-
-[package.extras]
-tests = ["pytest (>=4.3.0,<4.4.0)", "pytest-asyncio (>=0.10.0,<0.11.0)"]
-
-[[package]]
 category = "dev"
 description = "An abstract syntax tree for Python with inference support."
 name = "astroid"
@@ -1110,7 +1099,7 @@ description = "A library for creating GraphQL APIs"
 name = "strawberry-graphql"
 optional = false
 python-versions = ">=3.7,<4.0"
-version = "0.19.1"
+version = "0.20.0"
 
 [package.dependencies]
 aniso8601 = ">=8.0.0,<9.0.0"
@@ -1120,14 +1109,6 @@ hupper = ">=1.5,<2.0"
 pygments = ">=2.3,<3.0"
 starlette = "0.13.0"
 uvicorn = "0.10.8"
-
-[package.dependencies.asgiref]
-optional = true
-version = ">=3.2,<4.0"
-
-[package.dependencies.django]
-optional = true
-version = ">=2.0,<3.0"
 
 [package.extras]
 django = ["django (>=2.0,<3.0)", "asgiref (>=3.2,<4.0)"]
@@ -1289,7 +1270,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["pathlib2", "contextlib2", "unittest2"]
 
 [metadata]
-content-hash = "21de884105aab1f8c7ca087353d691134c652e7650ae56d98a24fe499549a3fb"
+content-hash = "c7a9c52039e9b733c78a041aa4a63fc3d12adb6c8bd1b2a1fdf6688c9454c4cf"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -1304,10 +1285,6 @@ aniso8601 = [
 appdirs = [
     {file = "appdirs-1.4.3-py2.py3-none-any.whl", hash = "sha256:d8b24664561d0d34ddfaec54636d502d7cea6e29c3eaf68f3df6180863e2166e"},
     {file = "appdirs-1.4.3.tar.gz", hash = "sha256:9e5896d1372858f8dd3344faf4e5014d21849c756c8d5701f78f8a103b372d92"},
-]
-asgiref = [
-    {file = "asgiref-3.2.3-py2.py3-none-any.whl", hash = "sha256:ea448f92fc35a0ef4b1508f53a04c4670255a3f33d22a81c8fc9c872036adbe5"},
-    {file = "asgiref-3.2.3.tar.gz", hash = "sha256:7e06d934a7718bf3975acbf87780ba678957b87c7adc056f13b6215d610695a0"},
 ]
 astroid = [
     {file = "astroid-2.3.3-py3-none-any.whl", hash = "sha256:840947ebfa8b58f318d42301cf8c0a20fd794a33b61cc4638e28e9e61ba32f42"},
@@ -1785,8 +1762,8 @@ starlette = [
     {file = "starlette-0.13.0.tar.gz", hash = "sha256:6bd414152d40d000ccbf6aa40ed89718b40868366a0f69fb83034f416303acef"},
 ]
 strawberry-graphql = [
-    {file = "strawberry-graphql-0.19.1.tar.gz", hash = "sha256:1bcc1875a29d000125c689d71e93431c32787d3fd7bc5404308b683c33c16ad7"},
-    {file = "strawberry_graphql-0.19.1-py3-none-any.whl", hash = "sha256:29a9fd52605192d56091957ac9a96279e32913ea4729641cda05768a2114757d"},
+    {file = "strawberry-graphql-0.20.0.tar.gz", hash = "sha256:45857749b7ce6eccb42a7309ae65a1716780ab5f399af55a9952da2fc6967ad0"},
+    {file = "strawberry_graphql-0.20.0-py3-none-any.whl", hash = "sha256:669df1dd860b8eaf86f3388062525799e5a9fb86849a3c45563bd95fed38a2a3"},
 ]
 stripe = [
     {file = "stripe-2.41.0-py2.py3-none-any.whl", hash = "sha256:50900b01a6db4f4f8db0f02a5125db0b2d732252c7683f73187abd08b7d238f3"},
