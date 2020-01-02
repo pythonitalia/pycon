@@ -17,7 +17,7 @@ import { MetaTags } from "../meta-tags";
 import { Submission } from "./submission";
 import SUBMISSION_QUERY from "./submission.graphql";
 
-const NotLoggedIn: React.SFC<{ title: string }> = ({ title }) => (
+const NotLoggedIn: React.SFC<{ title?: string }> = ({ title }) => (
   <Container>
     {title ? (
       <MetaTags title={title} />
@@ -78,18 +78,15 @@ const Content = ({
 };
 
 export const SubmissionPage = ({ id }: RouteComponentProps<{ id: string }>) => {
-  const { loading, error, data } = useQuery<
-    SubmissionQuery,
-    SubmissionQueryVariables
-  >(SUBMISSION_QUERY, {
-    variables: {
-      id: id!,
+  const { loading, data } = useQuery<SubmissionQuery, SubmissionQueryVariables>(
+    SUBMISSION_QUERY,
+    {
+      errorPolicy: "all",
+      variables: {
+        id: id!,
+      },
     },
-  });
-
-  if (error) {
-    throw error;
-  }
+  );
 
   return (
     <Container sx={{ maxWidth: "container", px: 3 }}>
