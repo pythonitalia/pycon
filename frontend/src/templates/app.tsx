@@ -20,7 +20,7 @@ export default () => (
   <Router>
     <PrivateRoute path="/:lang/profile" component={ProfileApp} />
     <PrivateRoute path="/:lang/profile/edit" component={EditProfileApp} />
-    <PrivateRoute path="/:lang/submission/:id" component={SubmissionPage} />
+    <SubmissionPage path="/:lang/submission/:id" />
     <PrivateRoute
       path="/:lang/submission/:id/edit"
       component={EditSubmission}
