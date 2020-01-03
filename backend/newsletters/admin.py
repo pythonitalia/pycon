@@ -12,3 +12,11 @@ class SubscriptionAdmin(admin.ModelAdmin):
 class EmailAdmin(admin.ModelAdmin):
     list_display = ("subject", "recipients_types", "scheduled_date")
     readonly_fields = ("recipients",)
+    actions = ["send_emails"]
+
+    def send_emails(self, request, queryset):
+        pass
+
+        self.message_user(request, f"Successfully sent mails.")
+
+    send_emails.short_description = "Send selected Emails"
