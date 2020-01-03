@@ -8,6 +8,7 @@ import { Alert } from "../../components/alert";
 import { LogoutMutation } from "../../generated/graphql-backend";
 import { useLoginState } from "./hooks";
 import LOGOUT_MUTATION from "./logout.graphql";
+import { client } from "../../apollo/client";
 
 export const Logout: React.SFC<{ lang: string }> = ({ lang }) => {
   const [logout, { error, loading, data }] = useMutation<LogoutMutation>(
@@ -25,6 +26,7 @@ export const Logout: React.SFC<{ lang: string }> = ({ lang }) => {
 
   if (data && data.logout.__typename === "OperationResult" && data.logout.ok) {
     setLoggedIn(false);
+    client.resetStore();
     return <Redirect noThrow={true} to={`/${lang}/`} />;
   }
 
