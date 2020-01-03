@@ -4,11 +4,11 @@ import { Box, Button, Heading, Text } from "@theme-ui/components";
 import React, { useCallback } from "react";
 import { FormattedMessage } from "react-intl";
 
+import { client } from "../../apollo/client";
 import { Alert } from "../../components/alert";
 import { LogoutMutation } from "../../generated/graphql-backend";
 import { useLoginState } from "./hooks";
 import LOGOUT_MUTATION from "./logout.graphql";
-import { client } from "../../apollo/client";
 
 export const Logout: React.SFC<{ lang: string }> = ({ lang }) => {
   const [logout, { error, loading, data }] = useMutation<LogoutMutation>(
