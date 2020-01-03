@@ -10,7 +10,7 @@ class GraphQLClient:
         Args:
             query (string) - GraphQL query to run
             op_name (string) - If the query is a mutation or named query, you
-                               must supply the op_name. For annon queries
+                               must supply the op_name. For anon queries
                                ("{ ... }"), should be None (default).
             variables (dict) - If provided, the variables in GraphQL will be
                                set to this value
