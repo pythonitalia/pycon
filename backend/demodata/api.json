@@ -1,0 +1,1 @@
+[{ "model": "api.apitoken", "pk": 1, "fields": { "token": "example-token" } }]
