@@ -7,7 +7,7 @@ def test_returns_none_when_no_logged_in(graphql_client, submission_factory):
 
     resp = graphql_client.query(
         """query Submissions($code: String!) {
-            submissions(conference: $code) {
+            submissions(code: $code) {
                 id
             }
         }""",
@@ -30,7 +30,7 @@ def test_returns_none_when_token_is_invalid(graphql_client, submission_factory):
 
     resp = graphql_client.query(
         """query Submissions($code: String!) {
-            submissions(conference: $code) {
+            submissions(code: $code) {
                 id
             }
         }""",
@@ -57,7 +57,7 @@ def test_returns_submission_with_valid_token(
 
     resp = graphql_client.query(
         """query Submissions($code: String!) {
-            submissions(conference: $code) {
+            submissions(code: $code) {
                 id
             }
         }""",

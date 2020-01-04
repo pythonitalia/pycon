@@ -4,10 +4,10 @@ import React, { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
+import { Link } from "../../components/link";
+import { MetaTags } from "../../components/meta-tags";
+import { Tag } from "../../components/tag";
 import { compile } from "../../helpers/markdown";
-import { Link } from "../link";
-import { MetaTags } from "../meta-tags";
-import { Tag } from "../tag";
 
 type Props = {
   submission: {
@@ -35,11 +35,20 @@ type Props = {
     notes: string;
     id: string;
   };
+  pageContext?: {
+    id: string;
+    socialCard: string;
+    socialCardTwitter: string;
+  };
 };
 
-export const Submission: React.SFC<Props> = ({ submission }) => (
+export const Submission: React.SFC<Props> = ({ submission, pageContext }) => (
   <Fragment>
-    <MetaTags title={submission.title} />
+    <MetaTags
+      title={submission.title}
+      imageUrl={pageContext?.socialCard}
+      twitterImageUrl={pageContext?.socialCardTwitter}
+    />
 
     <Grid
       sx={{

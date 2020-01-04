@@ -7,15 +7,21 @@ import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
 import { useLoginState } from "../../app/profile/hooks";
+import { Alert } from "../../components/alert";
+import { LoginForm } from "../../components/login-form";
+import { MetaTags } from "../../components/meta-tags";
 import {
   SubmissionQuery,
   SubmissionQueryVariables,
 } from "../../generated/graphql-backend";
-import { Alert } from "../alert";
-import { LoginForm } from "../login-form";
-import { MetaTags } from "../meta-tags";
 import { Submission } from "./submission";
 import SUBMISSION_QUERY from "./submission.graphql";
+
+type PageContext = {
+  id: string;
+  socialCard: string;
+  socialCardTwitter: string;
+};
 
 const NotLoggedIn: React.SFC<{ title?: string }> = ({ title }) => (
   <Container>
@@ -61,8 +67,10 @@ const NotFound = () => (
 
 const Content = ({
   submission,
+  pageContext,
 }: {
   submission?: SubmissionQuery["submission"];
+  pageContext?: PageContext;
 }) => {
   const [loggedIn, _] = useLoginState();
 
@@ -74,16 +82,20 @@ const Content = ({
     return <NotFound />;
   }
 
-  return <Submission submission={submission} />;
+  return <Submission submission={submission} pageContext={pageContext} />;
 };
 
-export const SubmissionPage = ({ id }: RouteComponentProps<{ id: string }>) => {
+type Props = {
+  pageContext?: PageContext;
+} & RouteComponentProps<{ id: string }>;
+
+export const SubmissionPage: React.SFC<Props> = ({ id, pageContext }) => {
   const { loading, data } = useQuery<SubmissionQuery, SubmissionQueryVariables>(
     SUBMISSION_QUERY,
     {
       errorPolicy: "all",
       variables: {
-        id: id!,
+        id: pageContext?.id || id!,
       },
     },
   );
@@ -91,7 +103,11 @@ export const SubmissionPage = ({ id }: RouteComponentProps<{ id: string }>) => {
   return (
     <Container sx={{ maxWidth: "container", px: 3 }}>
       {loading && <Loading />}
-      {!loading && <Content submission={data?.submission} />}
+      {!loading && (
+        <Content submission={data?.submission} pageContext={pageContext} />
+      )}
     </Container>
   );
 };
+
+export default SubmissionPage;

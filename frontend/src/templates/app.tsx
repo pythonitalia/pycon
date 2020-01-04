@@ -12,9 +12,9 @@ import { RequestPasswordReset } from "../components/request-reset-password";
 import { ResetPassword } from "../components/reset-password";
 import { SignupForm } from "../components/signup-form";
 import { SocialLoginSuccess } from "../components/social-login-success";
-import { SubmissionPage } from "../components/submission-page";
 import { TicketsPage } from "../components/tickets-page";
 import { OrderConfirmationScreen } from "../screens/order-confirmation";
+import { SubmissionPage } from "./submission";
 
 export default () => (
   <Router>

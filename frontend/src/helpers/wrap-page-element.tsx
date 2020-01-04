@@ -105,16 +105,18 @@ export const wrapPageElement = ({ element, props }: Props) => (
     </Helmet>
 
     <Styled.root>
-      {isSocial(props) ? (
-        element
-      ) : (
-        <ConferenceContext.Provider value={props.pageContext.conferenceCode}>
-          <AlternateLinksContext.Provider value={getAlternateLinks(props)}>
-            <LanguageContext.Provider value={props.pageContext.language}>
-              <IntlProvider
-                locale={props.pageContext.language}
-                messages={messages[props.pageContext.language]}
-              >
+      <LanguageContext.Provider value={props.pageContext.language}>
+        <IntlProvider
+          locale={props.pageContext.language}
+          messages={messages[props.pageContext.language]}
+        >
+          {isSocial(props) ? (
+            element
+          ) : (
+            <ConferenceContext.Provider
+              value={props.pageContext.conferenceCode}
+            >
+              <AlternateLinksContext.Provider value={getAlternateLinks(props)}>
                 <ApolloProvider client={client}>
                   <MetaTags />
 
@@ -133,11 +135,11 @@ export const wrapPageElement = ({ element, props }: Props) => (
                     <Footer />
                   </Flex>
                 </ApolloProvider>
-              </IntlProvider>
-            </LanguageContext.Provider>
-          </AlternateLinksContext.Provider>
-        </ConferenceContext.Provider>
-      )}
+              </AlternateLinksContext.Provider>
+            </ConferenceContext.Provider>
+          )}
+        </IntlProvider>
+      </LanguageContext.Provider>
     </Styled.root>
   </Fragment>
 );

@@ -32,12 +32,19 @@ export const MetaTags: React.SFC<Props> = ({
   `);
 
   const language = useCurrentLanguage();
+  console.log(twitterImageUrl);
 
-  const socialCard = imageUrl || `${siteMetadata.siteUrl}/social/social.png`;
-  const socialCardTwitter =
-    twitterImageUrl || `${siteMetadata.siteUrl}/social-twitter/social.png`;
+  let socialCard = imageUrl || `/social/social.png`;
+  let socialCardTwitter = twitterImageUrl || `/social-twitter/social.png`;
   const titleTemplate = messages[language].titleTemplate;
   description = description || messages[language].description;
+
+  if (!socialCard.startsWith("http")) {
+    socialCard = `${siteMetadata.siteUrl}${socialCard}`;
+  }
+  if (!socialCardTwitter.startsWith("http")) {
+    socialCardTwitter = `${siteMetadata.siteUrl}${socialCard}`;
+  }
 
   const meta = [
     {

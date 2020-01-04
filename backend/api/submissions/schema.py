@@ -15,10 +15,8 @@ class SubmissionsQuery:
         return SubmissionModel.objects.filter(id=id).first()
 
     @strawberry.field(permission_classes=[HasTokenPermission])
-    def submissions(
-        self, info, conference: str
-    ) -> typing.Optional[typing.List[Submission]]:
-        return SubmissionModel.objects.filter(conference__code=conference).all()
+    def submissions(self, info, code: str) -> typing.Optional[typing.List[Submission]]:
+        return SubmissionModel.objects.filter(conference__code=code).all()
 
     @strawberry.field
     def submission_tags(self, info) -> typing.List[SubmissionTag]:
