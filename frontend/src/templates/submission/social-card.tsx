@@ -111,7 +111,7 @@ export default ({ data, pageContext }: Props) => (
             mb: 3,
           }}
         >
-          {data.backend.submission.title}
+          {data.backend.submission!.title}
         </Heading>
         <Text
           sx={{

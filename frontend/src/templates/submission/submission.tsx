@@ -14,25 +14,29 @@ type Props = {
     title: string;
     topic: {
       name: string;
-    };
+    } | null;
     audienceLevel: {
       name: string;
-    };
-    languages: {
-      name: string;
-    }[];
-    tags: {
-      id: string;
-      name: string;
-    }[];
+    } | null;
+    languages:
+      | {
+          name: string;
+        }[]
+      | null;
+    tags:
+      | {
+          id: string;
+          name: string;
+        }[]
+      | null;
     duration: {
       name: string;
       duration: number;
-    };
+    } | null;
     canEdit: boolean;
-    abstract: string;
-    elevatorPitch: string;
-    notes: string;
+    abstract?: string | null;
+    elevatorPitch?: string | null;
+    notes?: string | null;
     id: string;
   };
   pageContext?: {
@@ -71,20 +75,20 @@ export const Submission: React.SFC<Props> = ({ submission, pageContext }) => (
             <FormattedMessage id="cfp.topicLabel" />
           </Text>
 
-          <Text sx={{ mb: 3 }}>{submission.topic.name}</Text>
+          <Text sx={{ mb: 3 }}>{submission.topic!.name}</Text>
 
           <Text sx={{ fontWeight: "bold" }}>
             <FormattedMessage id="cfp.audienceLevelLabel" />
           </Text>
 
-          <Text sx={{ mb: 3 }}>{submission.audienceLevel.name}</Text>
+          <Text sx={{ mb: 3 }}>{submission.audienceLevel!.name}</Text>
 
           <Text sx={{ fontWeight: "bold" }}>
             <FormattedMessage id="cfp.languagesLabel" />
           </Text>
 
           <Text sx={{ mb: 3 }}>
-            {submission.languages.map(lang => lang.name).join(", ")}
+            {submission.languages!.map(lang => lang.name).join(", ")}
           </Text>
 
           <Text sx={{ fontWeight: "bold" }}>
@@ -92,7 +96,7 @@ export const Submission: React.SFC<Props> = ({ submission, pageContext }) => (
           </Text>
 
           <Text>
-            {submission.duration.name} ({submission.duration.duration}{" "}
+            {submission.duration!.name} ({submission.duration!.duration}{" "}
             <FormattedMessage id="cfp.minutes" />)
           </Text>
         </Box>
@@ -130,11 +134,15 @@ export const Submission: React.SFC<Props> = ({ submission, pageContext }) => (
 
         <Text sx={{ mb: 4 }}>{compile(submission.elevatorPitch).tree}</Text>
 
-        <Heading sx={{ mb: 2 }}>
-          <FormattedMessage id="cfp.notesLabel" />
-        </Heading>
+        {submission.notes && (
+          <Fragment>
+            <Heading sx={{ mb: 2 }}>
+              <FormattedMessage id="cfp.notesLabel" />
+            </Heading>
 
-        <Text sx={{ mb: 4 }}>{compile(submission.notes).tree}</Text>
+            <Text sx={{ mb: 4 }}>{compile(submission.notes).tree}</Text>
+          </Fragment>
+        )}
 
         <Flex
           sx={{
@@ -142,7 +150,7 @@ export const Submission: React.SFC<Props> = ({ submission, pageContext }) => (
             mb: 4,
           }}
         >
-          {submission.tags.map(tag => (
+          {submission.tags!.map(tag => (
             <Tag key={tag.id} tag={tag} />
           ))}
         </Flex>

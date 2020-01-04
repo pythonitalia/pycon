@@ -32,7 +32,6 @@ export const MetaTags: React.SFC<Props> = ({
   `);
 
   const language = useCurrentLanguage();
-  console.log(twitterImageUrl);
 
   let socialCard = imageUrl || `/social/social.png`;
   let socialCardTwitter = twitterImageUrl || `/social-twitter/social.png`;

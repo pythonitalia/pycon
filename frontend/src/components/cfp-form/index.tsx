@@ -46,7 +46,7 @@ export type CfpFormFields = {
   previousTalkVideo: string;
 };
 
-type SubmissionStructure = {
+export type SubmissionStructure = {
   type: { id: string };
   title: string;
   elevatorPitch: string;
