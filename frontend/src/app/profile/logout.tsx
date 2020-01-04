@@ -4,6 +4,7 @@ import { Box, Button, Heading, Text } from "@theme-ui/components";
 import React, { useCallback } from "react";
 import { FormattedMessage } from "react-intl";
 
+import { client } from "../../apollo/client";
 import { Alert } from "../../components/alert";
 import { LogoutMutation } from "../../generated/graphql-backend";
 import { useLoginState } from "./hooks";
@@ -25,6 +26,7 @@ export const Logout: React.SFC<{ lang: string }> = ({ lang }) => {
 
   if (data && data.logout.__typename === "OperationResult" && data.logout.ok) {
     setLoggedIn(false);
+    client.resetStore();
     return <Redirect noThrow={true} to={`/${lang}/`} />;
   }
 
