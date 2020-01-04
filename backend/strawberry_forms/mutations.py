@@ -67,7 +67,11 @@ class FormMutation:
 
             if "instance" in form_kwargs["data"] and issubclass(form_class, ModelForm):
                 instance = form_kwargs["data"].pop("instance")
-                instance = form_class.Meta.model.objects.get(id=instance)
+                instance = (
+                    form_class.get_instance(instance)
+                    if hasattr(form_class, "get_instance")
+                    else form_class.Meta.model.objects.get(id=instance)
+                )
 
                 form = form_class(instance=instance, **form_kwargs)
                 form.fields.pop("instance", None)

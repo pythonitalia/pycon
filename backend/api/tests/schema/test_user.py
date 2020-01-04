@@ -52,4 +52,4 @@ def test_query_submissions(graphql_client, user, submission_factory):
 
     assert "errors" not in response
     assert len(response["data"]["me"]["submissions"]) == 1
-    assert response["data"]["me"]["submissions"][0]["id"] == str(submission.id)
+    assert response["data"]["me"]["submissions"][0]["id"] == submission.hashid

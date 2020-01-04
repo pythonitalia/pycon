@@ -71,7 +71,7 @@ def test_query_conference_schedule(
         "id": str(item2.id),
         "type": item2.type,
         "title": item2.title,
-        "submission": {"id": str(item2.submission.id)},
+        "submission": {"id": item2.submission.hashid},
     } in resp["data"]["conference"]["schedule"]
 
 
@@ -125,14 +125,14 @@ def test_schedule_is_ordered_by_start_date(
         "id": str(item3.id),
         "type": item3.type,
         "title": item3.title,
-        "submission": {"id": str(item3.submission.id)},
+        "submission": {"id": item3.submission.hashid},
     } == resp["data"]["conference"]["schedule"][1]
 
     assert {
         "id": str(item2.id),
         "type": item2.type,
         "title": item2.title,
-        "submission": {"id": str(item2.submission.id)},
+        "submission": {"id": item2.submission.hashid},
     } == resp["data"]["conference"]["schedule"][2]
 
 
@@ -178,7 +178,7 @@ def test_get_specific_day_schedule(
         "id": str(another_day_item.id),
         "type": another_day_item.type,
         "title": another_day_item.title,
-        "submission": {"id": str(another_day_item.submission.id)},
+        "submission": {"id": another_day_item.submission.hashid},
     } not in resp["data"]["conference"]["schedule"]
 
 

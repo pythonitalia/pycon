@@ -211,7 +211,7 @@ def test_submit_talk(graphql_client, user, conference_factory):
     assert resp["data"]["sendSubmission"]["title"] == variables["title"]
     assert resp["data"]["sendSubmission"]["abstract"] == variables["abstract"]
 
-    talk = Submission.objects.get(id=resp["data"]["sendSubmission"]["id"])
+    talk = Submission.objects.get_by_hashid(resp["data"]["sendSubmission"]["id"])
 
     assert talk.title == variables["title"]
     assert talk.abstract == variables["abstract"]

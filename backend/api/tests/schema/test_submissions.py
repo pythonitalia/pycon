@@ -66,4 +66,4 @@ def test_returns_submission_with_valid_token(
     )
 
     assert not resp.get("errors")
-    assert resp["data"]["submissions"] == [{"id": str(submission.id)}]
+    assert resp["data"]["submissions"] == [{"id": submission.hashid}]

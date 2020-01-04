@@ -12,7 +12,10 @@ from .types import Submission, SubmissionTag
 class SubmissionsQuery:
     @strawberry.field
     def submission(self, info, id: strawberry.ID) -> typing.Optional[Submission]:
-        return SubmissionModel.objects.filter(id=id).first()
+        try:
+            return SubmissionModel.objects.get_by_hashid(id)
+        except SubmissionModel.DoesNotExist:
+            return None
 
     @strawberry.field(permission_classes=[HasTokenPermission])
     def submissions(self, info, code: str) -> typing.Optional[typing.List[Submission]]:

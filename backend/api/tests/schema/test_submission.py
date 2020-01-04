@@ -1,14 +1,16 @@
+from api.helpers.ids import encode_hashid
 from pytest import mark
 
 
 @mark.django_db
 def test_returns_none_when_missing(graphql_client):
     resp = graphql_client.query(
-        """{
-            submission(id: 1) {
+        """query SubmissionQuery($id: ID!) {
+            submission(id: $id) {
                 id
             }
-        }"""
+        }""",
+        variables={"id": encode_hashid(11)},
     )
 
     assert not resp.get("errors")
@@ -33,7 +35,7 @@ def test_can_only_see_title_if_not_submitter_or_not_logged_in(
                 elevatorPitch
             }
         }""",
-        variables={"id": submission.id},
+        variables={"id": submission.hashid},
     )
 
     assert resp["errors"][0] == {
@@ -56,11 +58,11 @@ def test_returns_correct_submission(graphql_client, user, submission_factory):
                 id
             }
         }""",
-        variables={"id": submission.id},
+        variables={"id": submission.hashid},
     )
 
     assert not resp.get("errors")
-    assert resp["data"]["submission"]["id"] == str(submission.id)
+    assert resp["data"]["submission"]["id"] == submission.hashid
 
 
 @mark.django_db
@@ -79,7 +81,7 @@ def test_user_can_edit_submission_if_within_cfp_time_and_is_the_owner(
             }
         }
     """,
-        variables={"id": submission.id},
+        variables={"id": submission.hashid},
     )
 
     assert response["data"]["submission"]["canEdit"] is True
@@ -99,13 +101,10 @@ def test_cannot_edit_submission_if_not_the_owner(
                 canEdit
             }
         }""",
-        variables={"id": submission.id},
+        variables={"id": submission.hashid},
     )
 
-    assert response["data"]["submission"] == {
-        "id": str(submission.id),
-        "canEdit": False,
-    }
+    assert response["data"]["submission"] == {"id": submission.hashid, "canEdit": False}
 
 
 @mark.django_db
@@ -124,7 +123,7 @@ def test_cannot_edit_submission_if_cfp_is_closed(
             }
         }
     """,
-        variables={"id": submission.id},
+        variables={"id": submission.hashid},
     )
 
     assert response["data"]["submission"]["canEdit"] is False

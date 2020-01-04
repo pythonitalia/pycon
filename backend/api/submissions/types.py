@@ -43,7 +43,6 @@ class SubmissionTag:
 
 @strawberry.type
 class Submission:
-    id: strawberry.ID
     conference: "Conference"
     title: str
     slug: str
@@ -57,6 +56,10 @@ class Submission:
     type: Optional[SubmissionType] = optional_field()
     duration: Optional["Duration"] = optional_field()
     audience_level: Optional["AudienceLevel"] = optional_field()
+
+    @strawberry.field
+    def id(self, info) -> strawberry.ID:
+        return self.hashid
 
     @strawberry.field
     def can_edit(self, info) -> bool:
