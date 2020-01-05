@@ -14,7 +14,14 @@ class SubscriptionAdmin(admin.ModelAdmin):
 
 @admin.register(Email)
 class EmailAdmin(admin.ModelAdmin):
-    list_display = ("subject", "recipients_type", "scheduled_date", "email_actions")
+    ordering = ["status", "scheduled_date", "-pk"]
+    list_display = (
+        "subject",
+        "recipients_type",
+        "scheduled_date",
+        "status",
+        "email_actions",
+    )
     readonly_fields = ("recipients", "email_actions")
     actions = ["send_emails"]
 
@@ -30,10 +37,12 @@ class EmailAdmin(admin.ModelAdmin):
         return custom_urls + urls
 
     def email_actions(self, obj):
-        return format_html(
-            '<a class="button" href="{}">Send Now!!</a>&nbsp;',
-            reverse("admin:send_email", args=[obj.pk]),
-        )
+        if obj.status != Email.STATUS.sent:
+            return format_html(
+                '<a class="button" href="{}">Send Now!!</a>&nbsp;',
+                reverse("admin:send_email", args=[obj.pk]),
+            )
+        return ""
 
     email_actions.short_description = "Email Actions"
     email_actions.allow_tags = True

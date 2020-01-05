@@ -20,6 +20,10 @@ class Email(models.Model):
         # ("other", _("Other")),
     )
 
+    STATUS = Choices(
+        ("draft", _("Draft")), ("scheduled", _("Scheduled")), ("sent", _("Sent"))
+    )
+
     subject = models.CharField(_("subject"), max_length=100)
     heading = models.CharField(_("heading"), max_length=300)
     body = models.TextField(_("body"))
@@ -32,7 +36,11 @@ class Email(models.Model):
     )
     # Recipients is a read-only field only to send the final recipients
     recipients = ArrayField(models.EmailField(_("recipients")), blank=True, null=True)
-    scheduled_date = models.DateTimeField(_("scheduled date"), null=True)
+    scheduled_date = models.DateTimeField(_("scheduled date"), null=True, blank=True)
+
+    status = models.CharField(
+        choices=STATUS, max_length=15, default="draft", verbose_name=_("status")
+    )
 
     def __str__(self):
         return f"{self.subject}"
@@ -57,6 +65,8 @@ class Email(models.Model):
             == 1
         )
 
+        if resp:
+            self.status = Email.STATUS.sent
         self.save()
 
         return resp
