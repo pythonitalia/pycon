@@ -1,3 +1,4 @@
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from model_utils import Choices
@@ -30,8 +31,11 @@ class Email(models.Model):
         _("Recipients Type"), choices=RECIPIENTS_TYPES, max_length=50
     )
     # Recipients is a read-only field only to send the final recipients
-    recipients = models.TextField(_("recipients"), blank=True, default="")
+    recipients = ArrayField(models.EmailField(_("recipients")), blank=True, null=True)
     scheduled_date = models.DateTimeField(_("scheduled date"), null=True)
+
+    def __str__(self):
+        return f"{self.subject}"
 
     def set_recipients(self):
         # if email.recipients_type == "newsletter":
@@ -48,12 +52,11 @@ class Email(models.Model):
                 self.recipients,
                 "newsletter",
                 context=self.__dict__,
-                path="emails/newsletter/",
+                path="emails/newsletters/",
             )
             == 1
         )
 
-        if resp:
-            self.save()
+        self.save()
 
         return resp
