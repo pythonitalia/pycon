@@ -29,8 +29,8 @@ jobs:
 
       - name: Set Poetry config
         run: |
-          poetry config settings.virtualenvs.in-project false
-          poetry config settings.virtualenvs.path ~/.virtualenvs
+          poetry config virtualenvs.create false
+          poetry config virtualenvs.path ~/.virtualenvs
 
       - name: Install python dependencies
         working-directory: backend
