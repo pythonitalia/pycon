@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from model_utils import Choices
+from notifications.emails import send_mail
 
 
 class Subscription(models.Model):
@@ -25,9 +26,34 @@ class Email(models.Model):
         _("link label"), max_length=100, blank=True, default=""
     )
     cta_link = models.CharField(_("link"), max_length=100, blank=True, default="")
-    recipients_types = models.CharField(
+    recipients_type = models.CharField(
         _("Recipients Type"), choices=RECIPIENTS_TYPES, max_length=50
     )
     # Recipients is a read-only field only to send the final recipients
     recipients = models.TextField(_("recipients"), blank=True, default="")
     scheduled_date = models.DateTimeField(_("scheduled date"), null=True)
+
+    def set_recipients(self):
+        # if email.recipients_type == "newsletter":
+        self.recipients = [
+            subscription.email for subscription in Subscription.objects.all()
+        ]
+
+    def send_email(self):
+        self.set_recipients()
+
+        resp = (
+            send_mail(
+                self.subject,
+                self.recipients,
+                "newsletter",
+                context=self.__dict__,
+                path="emails/newsletter/",
+            )
+            == 1
+        )
+
+        if resp:
+            self.save()
+
+        return resp
