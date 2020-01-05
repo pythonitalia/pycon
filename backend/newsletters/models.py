@@ -13,13 +13,13 @@ class Subscription(models.Model):
         return f"{self.email} subscribed on {self.date_subscribed}"
 
 
-RECIPIENTS_TYPES = Choices(
-    ("newsletter", _("Newsletter")),
-    # ("other", _("Other")),
-)
-
-
 class Email(models.Model):
+
+    RECIPIENTS_TYPES = Choices(
+        ("newsletter", _("Newsletter")),
+        # ("other", _("Other")),
+    )
+
     subject = models.CharField(_("subject"), max_length=100)
     heading = models.CharField(_("heading"), max_length=300)
     body = models.TextField(_("body"))
