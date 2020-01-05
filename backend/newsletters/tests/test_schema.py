@@ -1,7 +1,6 @@
 import pytest
-from pytest import mark
-
 from newsletters.models import Subscription
+from pytest import mark
 
 
 @mark.django_db
@@ -20,7 +19,7 @@ def test_subscribe_to_newsletter(graphql_client):
                 validationEmail: email
             }
 
-            ... on Subscription {
+            ... on NewsletterSubscription {
                 id
                 email
             }
@@ -28,7 +27,9 @@ def test_subscribe_to_newsletter(graphql_client):
     }
     """
     resp = graphql_client.query(query, variables=variables)
-    assert resp["data"]["subscribeToNewsletter"]["__typename"] == "Subscription"
+    assert (
+        resp["data"]["subscribeToNewsletter"]["__typename"] == "NewsletterSubscription"
+    )
     assert resp["data"]["subscribeToNewsletter"]["email"] == email
 
 
