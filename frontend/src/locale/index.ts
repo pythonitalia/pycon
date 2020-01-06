@@ -201,6 +201,59 @@ export const messages = {
     "grants.introductionCopy":
       "Thanks to the help of the Python Software Foundation we are glad to give financial support to everyone who may need it in order to join PyCon Italia.",
 
+    "grants.form.title": "Request a grant",
+    "grants.form.aboutYou": "About you",
+    "grants.form.optionalInformation": "Optional information",
+    "grants.form.optionalInformation.description":
+      "Providing this information will help us making sure that the event is as inclusive as possible.",
+    "grants.form.fields.fullName": "Full name",
+    "grants.form.fields.fullName.description":
+      "This is the name you use on your passport. Will be useful in case we give you a grant.",
+    "grants.form.fields.name": "Name",
+    "grants.form.fields.name.description": "How should we call you?",
+    "grants.form.fields.email": "Email",
+    "grants.form.fields.email.description":
+      "Here you will receive a notification about your application.",
+    "grants.form.fields.age": "Age",
+    "grants.form.fields.gender": "Gender",
+    "grants.form.fields.occupation": "Occupation",
+    "grants.form.fields.occupation.values.selectOption": "Select Option",
+    "grants.form.fields.occupation.values.developer": "Developer",
+    "grants.form.fields.occupation.values.student": "Student",
+    "grants.form.fields.occupation.values.researcher": "Researcher",
+    "grants.form.fields.occupation.values.unemployed": "Unemployed",
+    "grants.form.fields.occupation.values.other": "Other",
+    "grants.form.fields.grantType":
+      "Are you asking for a diversity grant or for an unemployed grant?",
+    "grants.form.fields.grantType.values.selectOption": "Select Option",
+    "grants.form.fields.grantType.values.diversity": "Diversity",
+    "grants.form.fields.grantType.values.unemployed": "Unemployed",
+    "grants.form.fields.grantType.values.speaker": "Speaker",
+    "grants.form.fields.interestedInVolunteering":
+      "Would you like to help PyCon Italia for this and/or the upcoming event?",
+    "grants.form.fields.interestedInVolunteering.description":
+      "We are always looking for some help during the event. It is also a fun way to make new friends!",
+    "grants.form.fields.interestedInVolunteering.values.selectOption":
+      "Select Option",
+    "grants.form.fields.interestedInVolunteering.values.no": "No",
+    "grants.form.fields.interestedInVolunteering.values.yes": "Yes",
+    "grants.form.fields.interestedInVolunteering.values.absolutely":
+      "My soul is yours to take!",
+    "grants.form.fields.pythonUsage": "What's your use of python?",
+    "grants.form.fields.pythonUsage.description":
+      "How do you use Python? Are you studying it or using it for work or for a hobby?",
+    "grants.form.fields.beenToOtherEvents":
+      "Have you ever been to PyCon Italia or other python related events? If yes, what event?",
+    "grants.form.fields.why": "Why are you asking a grant for PyCon Italia?",
+    "grants.form.fields.notes": "Would you like to say something more?",
+    "grants.form.fields.travellingFrom": "Where are you travelling from?",
+    "grants.form.fields.needsFundsForTravel":
+      "Do you need financial aid for travelling to PyCon Italia?",
+    "grants.form.fields.needsFundsForTravel.label":
+      "Tick here if you need financial aid for travelling to PyCon Italia",
+
+    "grants.form.submit": "Submit",
+
     "orderReview.heading": "Review your order",
     "orderReview.invoiceInformation": "Invoice information",
     "orderReview.isBusiness": "Is a business?",
@@ -423,6 +476,59 @@ export const messages = {
       "Vorresti essere presente a PyCon Italia ma hai difficoltà economiche? Chiedici aiuto!",
     "grants.introductionCopy":
       "Grazie all'aiuto della Python Software Foundation siamo lieti di mettere a disposizione di chi ne avesse bisogno un programma di supporto per chi vorrebbe essere presente a PyCon Italia ma per motivi economici non potrebbe riuscirci.",
+
+    "grants.form.title": "Chiedi un grant",
+    "grants.form.aboutYou": "Su di te",
+    "grants.form.optionalInformation": "Informazioni opzionali",
+    "grants.form.optionalInformation.description":
+      "Questo informazioni ci aiutano a rendere la conferenza più inclusiva e diversa.",
+
+    "grants.form.fields.fullName": "Nome completo",
+    "grants.form.fields.fullName.description":
+      "Il tuo nome completo. Sarà utile nel casi un cui ti daremo un grant.",
+    "grants.form.fields.name": "Nome",
+    "grants.form.fields.name.description": "Come ti chiami?",
+    "grants.form.fields.email": "Email",
+    "grants.form.fields.email.description":
+      "Qui riceverai una notifica sulla tua richiesta",
+    "grants.form.fields.age": "Età",
+    "grants.form.fields.gender": "Sesso",
+    "grants.form.fields.occupation": "Occupazione",
+    "grants.form.fields.occupation.values.selectOption": "Seleziona un'opzione",
+    "grants.form.fields.occupation.values.developer": "Sviluppatore",
+    "grants.form.fields.occupation.values.student": "Studente",
+    "grants.form.fields.occupation.values.researcher": "Ricercatore",
+    "grants.form.fields.occupation.values.unemployed": "Disoccupato",
+    "grants.form.fields.occupation.values.other": "Altro",
+    "grants.form.fields.grantType": "Che tipo di grant stai richiedendo?",
+    "grants.form.fields.grantType.values.selectOption": "Seleziona un'opzione",
+    "grants.form.fields.grantType.values.diversity": "Diversity",
+    "grants.form.fields.grantType.values.unemployed": "Disoccupato",
+    "grants.form.fields.grantType.values.speaker": "Speaker",
+    "grants.form.fields.interestedInVolunteering":
+      "Vuoi aiutare PyCon Italia in questo e futuri eventi?",
+    "grants.form.fields.interestedInVolunteering.description":
+      "Siamo sempre alla ricerca di una mano durante l'evento. È anche un'ottima opportunità per fare nuovi amici!",
+    "grants.form.fields.interestedInVolunteering.values.selectOption":
+      "Seleziona un'opzione",
+    "grants.form.fields.interestedInVolunteering.values.no": "No",
+    "grants.form.fields.interestedInVolunteering.values.yes": "Sì",
+    "grants.form.fields.interestedInVolunteering.values.absolutely":
+      "La mia anima è vostra!",
+    "grants.form.fields.pythonUsage": "Per cosa usi Python?",
+    "grants.form.fields.pythonUsage.description":
+      "Come usi Python? Lo stai studiano, lo usi per lavoro o come hobby?",
+    "grants.form.fields.beenToOtherEvents":
+      "Hai participato ad altre edizioni di PyCon Italia o eventi simili? Se sì, quali?",
+    "grants.form.fields.why":
+      "Perché stai richiedendo un grant per PyCon Italia?",
+    "grants.form.fields.notes": "Qualcos'altro da aggiungere?",
+    "grants.form.fields.travellingFrom": "Da dove partirai?",
+    "grants.form.fields.needsFundsForTravel":
+      "Hai bisogno di supporto finanziario per venire a PyCon Italia?",
+    "grants.form.fields.needsFundsForTravel.label":
+      "Fai click qui se hai bisogno di supporto finanziario per venire alla conferenza",
+    "grants.form.submit": "Invia",
 
     "orderReview.heading": "Recap ordine",
     "orderReview.invoiceInformation": "Informazioni fatturazione",
