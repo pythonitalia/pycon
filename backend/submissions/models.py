@@ -30,7 +30,7 @@ class Submission(TimeStampedModel):
     )
 
     title = models.CharField(_("title"), max_length=100)
-    abstract = models.TextField(_("abstract"), max_length=1000)
+    abstract = models.TextField(_("abstract"), max_length=5000)
     elevator_pitch = models.TextField(
         _("elevator pitch"), max_length=300, default="", blank=True
     )
