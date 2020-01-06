@@ -1,7 +1,7 @@
 import React from "react";
 
-export const GoogleIcon = () => (
-  <svg width={46} height={46} viewBox="0 0 46 46">
+export const GoogleIcon: React.SFC = props => (
+  <svg width={46} height={46} viewBox="0 0 46 46" {...props}>
     <g fill="none" fillRule="evenodd">
       <path
         d="M31.64 23.205c0-.639-.057-1.252-.164-1.841H23v3.481h4.844a4.14 4.14 0 01-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"

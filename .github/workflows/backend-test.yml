@@ -5,6 +5,7 @@ on:
     paths:
     - 'backend/**/*'
     - 'backend/*'
+    - '.github/workflows/backend-test.yml'
 
 jobs:
   unit-tests:
@@ -28,9 +29,26 @@ jobs:
         with:
           python-version: '3.7.5'
       - run: pip install poetry
-      - name: Install dependencies
+
+      - name: Cache Poetry
+        uses: actions/cache@v1
+        id: cache
+        with:
+          path: ~/.virtualenvs
+          key: poetry-${{ hashFiles('**/poetry.lock') }}-v2
+          restore-keys: |
+            poetry-${{ hashFiles('**/poetry.lock') }}-v2
+
+      - name: Set Poetry config
+        run: |
+          poetry config virtualenvs.create false
+          poetry config virtualenvs.path ~/.virtualenvs
+
+      - name: Install python dependencies
         working-directory: backend
         run: poetry install
+        if: steps.cache.outputs.cache-hit != 'true'
+
       - name: Install codecov
         working-directory: backend
         run: pip install codecov
