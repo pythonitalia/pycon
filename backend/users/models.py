@@ -3,7 +3,7 @@ from django.contrib.auth.models import PermissionsMixin
 from django.core import exceptions
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from model_utils import Choices
+from helpers.constants import GENDERS
 from pycountry import countries
 
 from .managers import UserManager
@@ -56,12 +56,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     full_name = models.CharField(_("full name"), max_length=300, blank=True)
     name = models.CharField(_("name"), max_length=300, blank=True)
 
-    GENDERS = Choices(
-        ("male", _("Male")),
-        ("female", _("Female")),
-        ("other", _("Other")),
-        ("not_say", _("Prefer not to say")),
-    )
     gender = models.CharField(_("gender"), choices=GENDERS, max_length=10, blank=True)
     date_birth = models.DateField(_("date of birth"), null=True)
     open_to_recruiting = models.BooleanField(_("open to recruiting"), default=False)
