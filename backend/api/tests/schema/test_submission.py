@@ -17,15 +17,8 @@ def test_returns_none_when_missing(graphql_client):
     assert resp["data"]["submission"] is None
 
 
-@mark.parametrize("logged_in", (True, False))
-def test_can_only_see_title_if_not_submitter_or_not_logged_in(
-    logged_in, graphql_client, user, submission_factory
-):
+def test_can_only_see_title_if_not_logged(graphql_client, user, submission_factory):
     submission = submission_factory()
-
-    if logged_in:
-        graphql_client.force_login(user)
-        assert submission.speaker != user
 
     resp = graphql_client.query(
         """query SubmissionQuery($id: ID!) {
@@ -33,19 +26,88 @@ def test_can_only_see_title_if_not_submitter_or_not_logged_in(
                 id
                 title
                 elevatorPitch
+                previousTalkVideo
+            }
+        }""",
+        variables={"id": submission.hashid},
+    )
+
+    assert {
+        "message": "You can't see details for this submission",
+        "locations": [{"line": 5, "column": 17}],
+        "path": ["submission", "elevatorPitch"],
+    } in resp["errors"]
+
+    assert {
+        "message": "You can't see the private fields for this submission",
+        "locations": [{"line": 6, "column": 17}],
+        "path": ["submission", "previousTalkVideo"],
+    } in resp["errors"]
+
+    assert resp["data"]["submission"]["title"] == submission.title
+    assert resp["data"]["submission"]["elevatorPitch"] is None
+    assert resp["data"]["submission"]["previousTalkVideo"] is None
+
+
+def test_can_see_submission_ticket_only_fields_if_has_ticket(
+    graphql_client, user, submission_factory, mocker
+):
+    graphql_client.force_login(user)
+
+    mocker.patch(
+        "api.submissions.permissions.user_has_admission_ticket"
+    ).return_value = True
+
+    submission = submission_factory()
+
+    resp = graphql_client.query(
+        """query SubmissionQuery($id: ID!) {
+            submission(id: $id) {
+                id
+                title
+                elevatorPitch
+                previousTalkVideo
             }
         }""",
         variables={"id": submission.hashid},
     )
 
     assert resp["errors"][0] == {
-        "message": "You can't see details for this submission",
-        "locations": [{"line": 5, "column": 17}],
-        "path": ["submission", "elevatorPitch"],
+        "message": "You can't see the private fields for this submission",
+        "locations": [{"line": 6, "column": 17}],
+        "path": ["submission", "previousTalkVideo"],
     }
 
     assert resp["data"]["submission"]["title"] == submission.title
-    assert resp["data"]["submission"]["elevatorPitch"] is None
+    assert resp["data"]["submission"]["elevatorPitch"] == submission.elevator_pitch
+    assert resp["data"]["submission"]["previousTalkVideo"] is None
+
+
+def test_can_see_all_submission_fields_if_speaker(
+    graphql_client, user, submission_factory, mocker
+):
+    graphql_client.force_login(user)
+
+    submission = submission_factory(speaker=user)
+
+    resp = graphql_client.query(
+        """query SubmissionQuery($id: ID!) {
+            submission(id: $id) {
+                id
+                title
+                elevatorPitch
+                previousTalkVideo
+            }
+        }""",
+        variables={"id": submission.hashid},
+    )
+
+    assert resp["data"]["submission"]["title"] == submission.title
+    assert resp["data"]["submission"]["elevatorPitch"] == submission.elevator_pitch
+    assert (
+        resp["data"]["submission"]["previousTalkVideo"]
+        == submission.previous_talk_video
+    )
 
 
 def test_returns_correct_submission(graphql_client, user, submission_factory):
