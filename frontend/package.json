@@ -23,6 +23,8 @@
     "@emotion/core": "^10.0.22",
     "@mdx-js/react": "^1.5.2",
     "@reach/router": "^1.2.1",
+    "@sentry/browser": "^5.10.2",
+    "@sentry/node": "5.10.2",
     "@styled-system/css": "^5.1.4",
     "@theme-ui/components": "^0.2.50",
     "@theme-ui/match-media": "^0.2.52",
