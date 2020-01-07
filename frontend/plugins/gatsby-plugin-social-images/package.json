@@ -4,6 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "batch-promises": "^0.0.3",
     "puppeteer": "^2.0.0"
   }
 }

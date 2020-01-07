@@ -1,5 +1,6 @@
 const puppeteer = require("puppeteer");
 const path = require("path");
+const batchPromises = require("batch-promises");
 
 let pages = [];
 
@@ -7,7 +8,7 @@ exports.onPostBuild = async (args, pluginOptions) => {
   const rootDir = `public`;
   const browser = await puppeteer.launch({ headless: true });
 
-  const renderingJobs = pages.map(async p => {
+  const renderPage = async p => {
     const parts = [process.cwd(), rootDir, p];
 
     if (!p.endsWith(".html")) {
@@ -36,7 +37,7 @@ exports.onPostBuild = async (args, pluginOptions) => {
     try {
       await page.goto(`file://${pagePath}`);
     } catch (e) {
-      console.log(`Unable to go to {pagePath}, error: ${e}`);
+      console.log(`Unable to go to ${pagePath}, error: ${e}`);
       return;
     }
     await page.evaluate(
@@ -56,9 +57,9 @@ exports.onPostBuild = async (args, pluginOptions) => {
       rootDir,
     );
     await page.screenshot({ path: screenshotPath });
-  });
+  };
 
-  await Promise.all(renderingJobs);
+  await batchPromises(20, pages, renderPage);
 
   return await browser.close();
 };
