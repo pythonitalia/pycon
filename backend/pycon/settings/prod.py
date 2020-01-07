@@ -41,5 +41,5 @@ DEFAULT_FROM_EMAIL = "noreply@pycon.it"
 
 SIMULATE_PRETIX_DB = env("SIMULATE_PRETIX_DB", bool, default=False)
 
-if not SIMULATE_PRETIX_DB:
+if SIMULATE_PRETIX_DB:
     DATABASES["pretix"] = {**DATABASES["default"], "NAME": "pretix"}
