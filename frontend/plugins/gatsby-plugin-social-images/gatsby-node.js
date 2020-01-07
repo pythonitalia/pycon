@@ -4,6 +4,8 @@ const batchPromises = require("batch-promises");
 
 let pages = [];
 
+const PAGES_PER_BATCH = 30;
+
 exports.onPostBuild = async (args, pluginOptions) => {
   const rootDir = `public`;
   const browser = await puppeteer.launch({ headless: true });
@@ -59,7 +61,7 @@ exports.onPostBuild = async (args, pluginOptions) => {
     await page.screenshot({ path: screenshotPath });
   };
 
-  await batchPromises(20, pages, renderPage);
+  await batchPromises(PAGES_PER_BATCH, pages, renderPage);
 
   return await browser.close();
 };
