@@ -37,6 +37,7 @@ exports.onPostBuild = async (args, pluginOptions) => {
       await page.goto(`file://${pagePath}`);
     } catch (e) {
       console.log(`Unable to go to {pagePath}, error: ${e}`);
+      return;
     }
     await page.evaluate(
       (cwd, root) => {
