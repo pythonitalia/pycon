@@ -105,7 +105,7 @@ const Content = ({
 
 type Props = {
   pageContext?: PageContext;
-  data: FallbackSubmissionQuery;
+  data?: FallbackSubmissionQuery;
 } & RouteComponentProps<{ id: string }>;
 
 export const SubmissionPage: React.SFC<Props> = ({
