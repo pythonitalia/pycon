@@ -2,6 +2,7 @@
 import { useQuery } from "@apollo/react-hooks";
 import { RouteComponentProps } from "@reach/router";
 import { Container } from "@theme-ui/components";
+import { graphql } from "gatsby";
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
@@ -10,6 +11,7 @@ import { useLoginState } from "../../app/profile/hooks";
 import { Alert } from "../../components/alert";
 import { LoginForm } from "../../components/login-form";
 import { MetaTags } from "../../components/meta-tags";
+import { SubmissionQuery as FallbackSubmissionQuery } from "../../generated/graphql";
 import {
   SubmissionQuery,
   SubmissionQueryVariables,
@@ -66,16 +68,18 @@ const NotFound = () => (
 );
 
 const Content = ({
+  title,
   submission,
   pageContext,
 }: {
   submission?: SubmissionQuery["submission"];
   pageContext?: PageContext;
+  title: string;
 }) => {
   const [loggedIn, _] = useLoginState();
 
   if (!loggedIn) {
-    return <NotLoggedIn title={submission?.title} />;
+    return <NotLoggedIn title={submission?.title || title} />;
   }
 
   if (!submission) {
@@ -87,9 +91,14 @@ const Content = ({
 
 type Props = {
   pageContext?: PageContext;
+  data: FallbackSubmissionQuery;
 } & RouteComponentProps<{ id: string }>;
 
-export const SubmissionPage: React.SFC<Props> = ({ id, pageContext }) => {
+export const SubmissionPage: React.SFC<Props> = ({
+  id,
+  pageContext,
+  data: fallbackData,
+}) => {
   const { loading, data } = useQuery<SubmissionQuery, SubmissionQueryVariables>(
     SUBMISSION_QUERY,
     {
@@ -97,6 +106,7 @@ export const SubmissionPage: React.SFC<Props> = ({ id, pageContext }) => {
       variables: {
         id: pageContext?.id || id!,
       },
+      skip: typeof window === "undefined",
     },
   );
 
@@ -104,10 +114,24 @@ export const SubmissionPage: React.SFC<Props> = ({ id, pageContext }) => {
     <Container sx={{ maxWidth: "container", px: 3 }}>
       {loading && <Loading />}
       {!loading && (
-        <Content submission={data?.submission} pageContext={pageContext} />
+        <Content
+          title={fallbackData?.backend.submission?.title!}
+          submission={data?.submission}
+          pageContext={pageContext}
+        />
       )}
     </Container>
   );
 };
 
 export default SubmissionPage;
+
+export const query = graphql`
+  query Submission($id: ID!) {
+    backend {
+      submission(id: $id) {
+        title
+      }
+    }
+  }
+`;
