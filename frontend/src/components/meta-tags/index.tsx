@@ -42,7 +42,7 @@ export const MetaTags: React.SFC<Props> = ({
     socialCard = `${siteMetadata.siteUrl}${socialCard}`;
   }
   if (!socialCardTwitter.startsWith("http")) {
-    socialCardTwitter = `${siteMetadata.siteUrl}${socialCard}`;
+    socialCardTwitter = `${siteMetadata.siteUrl}${socialCardTwitter}`;
   }
 
   const meta = [

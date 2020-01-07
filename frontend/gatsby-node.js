@@ -75,9 +75,8 @@ const createPageWithSocialCards = (
   socialCardComponent,
   args,
   createOnlySocialCard = false,
+  cardTypes = ["social", "social-square", "social-twitter"],
 ) => {
-  const cardTypes = ["social", "social-square", "social-twitter"];
-
   cardTypes.forEach(type => {
     createPage({
       ...args,
@@ -91,12 +90,23 @@ const createPageWithSocialCards = (
   });
 
   if (!createOnlySocialCard) {
+    const cards = {};
+
+    if (cardTypes.includes("social")) {
+      cards.socialCard = `${args.path}/social/social.png`;
+    } else if (cardTypes.includes("social-twitter")) {
+      cards.socialCard = `${args.path}/social/social-twitter.png`;
+    }
+
+    if (cardTypes.includes("social-twitter")) {
+      cards.socialCardTwitter = `${args.path}/social/social-twitter.png`;
+    }
+
     createPage({
       ...args,
       context: {
         ...args.context,
-        socialCard: `${args.path}/social/social.png`,
-        socialCardTwitter: `${args.path}/social-twitter/social.png`,
+        ...cards,
       },
     });
   }
@@ -262,31 +272,42 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   });
 
   result.data.backend.submissions.forEach(({ id }) => {
-    createPageWithSocialCards(createPage, submissionSocialTemplate, {
-      component: submissionTemplate,
-      path: `/en/submission/${id}`,
-      context: {
-        id,
-        language: "en",
-        alternateLinks: {
-          en: `/en/submission/${id}`,
-          it: `/it/submission/${id}`,
+    createPageWithSocialCards(
+      createPage,
+      submissionSocialTemplate,
+      {
+        component: submissionTemplate,
+        path: `/en/submission/${id}`,
+        context: {
+          id,
+          language: "en",
+          alternateLinks: {
+            en: `/en/submission/${id}`,
+            it: `/it/submission/${id}`,
+          },
         },
       },
-    });
+      false,
+      ["social-twitter"],
+    );
 
-    createPageWithSocialCards(createPage, submissionSocialTemplate, {
-      component: submissionTemplate,
-      path: `/it/submission/${id}`,
-      context: {
-        id,
-        language: "it",
-        alternateLinks: {
-          en: `/en/submission/${id}`,
-          it: `/it/submission/${id}`,
+    createPageWithSocialCards(
+      createPage,
+      submissionSocialTemplate,
+      {
+        component: submissionTemplate,
+        path: `/it/submission/${id}`,
+        context: {
+          id,
+          language: "it",
+          alternateLinks: {
+            en: `/en/submission/${id}`,
+            it: `/it/submission/${id}`,
+          },
         },
       },
-    });
+      ["social-twitter"],
+    );
   });
 
   // generic social card
