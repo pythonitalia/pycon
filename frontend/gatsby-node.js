@@ -165,6 +165,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     { template: blogTemplate, path: "/blog" },
     { template: appTemplate, path: "/login", matchPath: "/login/*" },
     { template: appTemplate, path: "/signup", matchPath: "/signup/*" },
+    { template: appTemplate, path: "/grants", matchPath: "/grants/*" },
     { template: appTemplate, path: "/profile", matchPath: "/profile/*" },
     { template: appTemplate, path: "/cfp", matchPath: "/cfp/*" },
     { template: appTemplate, path: "/orders", matchPath: "/orders/*" },

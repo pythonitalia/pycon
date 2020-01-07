@@ -1,0 +1,29 @@
+mutation SendGrantRequest($input: SendGrantRequestInput!) {
+  sendGrantRequest(input: $input) {
+    __typename
+
+    ... on GrantRequest {
+      id
+    }
+
+    ... on SendGrantRequestErrors {
+      validationConference: conference
+      validationEmail: email
+      validationName: name
+      validationFullName: fullName
+      validationGender: gender
+      validationGrantType: grantType
+      validationOccupation: occupation
+      validationOccupation: occupation
+      validationAge: age
+      validationPythonUsage: pythonUsage
+      validationBeenToOtherEvents: beenToOtherEvents
+      validationInterestedInVolunteering: interestedInVolunteering
+      validationNeedsFundsForTravel: needsFundsForTravel
+      validationWhy: why
+      validationNotes: notes
+      validationTravellingFrom: travellingFrom
+      nonFieldErrors
+    }
+  }
+}

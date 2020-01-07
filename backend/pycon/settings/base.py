@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "sponsors.apps.SponsorsConfig",
     "cms.apps.CMSConfig",
     "events.apps.EventsConfig",
+    "grants.apps.GrantsConfig",
     "i18n",
     "importer",
     "storages",

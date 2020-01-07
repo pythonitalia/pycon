@@ -13,6 +13,7 @@ import { ResetPassword } from "../components/reset-password";
 import { SignupForm } from "../components/signup-form";
 import { SocialLoginSuccess } from "../components/social-login-success";
 import { TicketsPage } from "../components/tickets-page";
+import { GrantScreen } from "../screens/grants";
 import { OrderConfirmationScreen } from "../screens/order-confirmation";
 import { SubmissionPage } from "./submission";
 
@@ -27,6 +28,7 @@ export default () => (
     />
     <CFPPage path="/:lang/cfp" />
     <LoginForm path="/:lang/login" />
+    <GrantScreen path="/:lang/grants" />
     <SocialLoginSuccess path="/:lang/login/success/" />
     <SignupForm path="/:lang/signup" />
     <RequestPasswordReset path="/:lang/reset-password/" />
