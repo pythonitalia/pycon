@@ -222,6 +222,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
             it: `/it${page.path}`,
           },
           conferenceCode: process.env.CONFERENCE_CODE || "pycon-demo",
+          sentryDsn: process.env.SENTRY_DSN,
         },
       }),
     );

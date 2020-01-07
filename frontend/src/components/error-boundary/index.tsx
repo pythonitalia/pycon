@@ -5,11 +5,6 @@ import { Box } from "@theme-ui/components";
 import { Component } from "react";
 import { jsx } from "theme-ui";
 
-const SENTRY_DSN = process.env.SENTRY_DSN || "";
-console.log({ SENTRY_DSN });
-console.log({ process });
-Sentry.init({ dsn: SENTRY_DSN });
-
 export class ErrorBoundary extends Component<
   {},
   {
@@ -21,13 +16,13 @@ export class ErrorBoundary extends Component<
   constructor(props: Readonly<{}>) {
     super(props);
     this.state = { error: null, errorInfo: null, eventId: null };
+
+    const SENTRY_DSN = (this.props?.children as any)?.props.pageContext
+      .sentryDsn;
+    Sentry.init({ dsn: SENTRY_DSN });
   }
 
   componentDidCatch(error: any, errorInfo: any) {
-    console.warn("ErrorBoundary: componentDidCatch!!");
-    console.log(isRedirect(error));
-    Sentry.captureMessage("Something went wrong (from @Etty with <3)");
-
     Sentry.withScope(scope => {
       scope.setExtras(errorInfo);
       const eventId = Sentry.captureException(error);
