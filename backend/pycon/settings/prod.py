@@ -2,7 +2,7 @@ import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
 from .base import *  # noqa
-from .base import MIDDLEWARE, env
+from .base import DATABASES, MIDDLEWARE, env
 
 SECRET_KEY = env("SECRET_KEY")
 # CELERY_BROKER_URL = env("CELERY_BROKER_URL")
@@ -38,3 +38,8 @@ if FORCE_PYCON_HOST:  # pragma: no cover
     MIDDLEWARE += ["pycon.middleware.force_pycon_host"]
 
 DEFAULT_FROM_EMAIL = "noreply@pycon.it"
+
+SIMULATE_PRETIX_DB = env("SIMULATE_PRETIX_DB", bool, default=False)
+
+if not SIMULATE_PRETIX_DB:
+    DATABASES["pretix"] = {**DATABASES["default"], "NAME": "pretix"}
