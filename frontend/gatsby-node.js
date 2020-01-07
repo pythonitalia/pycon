@@ -267,6 +267,10 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
       context: {
         id,
         language: "en",
+        alternateLinks: {
+          en: `/en/submission/${id}`,
+          it: `/it/submission/${id}`,
+        },
       },
     });
 
@@ -276,6 +280,10 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
       context: {
         id,
         language: "it",
+        alternateLinks: {
+          en: `/en/submission/${id}`,
+          it: `/it/submission/${id}`,
+        },
       },
     });
   });
