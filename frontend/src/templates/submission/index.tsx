@@ -25,10 +25,18 @@ type PageContext = {
   socialCardTwitter: string;
 };
 
-const NotLoggedIn: React.SFC<{ title?: string }> = ({ title }) => (
+const NotLoggedIn: React.SFC<{
+  title?: string;
+  socialCard?: string;
+  socialCardTwitter?: string;
+}> = ({ title, socialCard, socialCardTwitter }) => (
   <Container>
     {title ? (
-      <MetaTags title={title} />
+      <MetaTags
+        title={title}
+        imageUrl={socialCard}
+        twitterImageUrl={socialCardTwitter}
+      />
     ) : (
       <FormattedMessage id="submission.notFound">
         {text => <MetaTags title={text} />}
@@ -79,7 +87,13 @@ const Content = ({
   const [loggedIn, _] = useLoginState();
 
   if (!loggedIn) {
-    return <NotLoggedIn title={submission?.title || title} />;
+    return (
+      <NotLoggedIn
+        title={submission?.title || title}
+        socialCard={pageContext?.socialCard}
+        socialCardTwitter={pageContext?.socialCardTwitter}
+      />
+    );
   }
 
   if (!submission) {
