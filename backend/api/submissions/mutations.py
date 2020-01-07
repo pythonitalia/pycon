@@ -9,24 +9,9 @@ from .types import Submission
 class SubmissionMutation:
     @classmethod
     def transform(cls, result):
-        return Submission(
-            id=result.id,
-            conference=result.conference,
-            title=result.title,
-            elevator_pitch=result.elevator_pitch,
-            notes=result.notes,
-            abstract=result.abstract,
-            speaker=result.speaker,
-            slug=result.slug,
-            topic=result.topic,
-            languages=result.languages,
-            type=result.type,
-            duration=result.duration,
-            audience_level=result.audience_level,
-            tags=result.tags,
-            speaker_level=result.speaker_level,
-            previous_talk_video=result.previous_talk_video,
-        )
+        # lie to strawberry to make it think that the return value is a proper type
+        result.field = Submission.field
+        return result
 
     class Meta:
         output_types = (Submission,)

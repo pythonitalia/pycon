@@ -12,15 +12,15 @@ import { RequestPasswordReset } from "../components/request-reset-password";
 import { ResetPassword } from "../components/reset-password";
 import { SignupForm } from "../components/signup-form";
 import { SocialLoginSuccess } from "../components/social-login-success";
-import { SubmissionPage } from "../components/submission-page";
 import { TicketsPage } from "../components/tickets-page";
 import { OrderConfirmationScreen } from "../screens/order-confirmation";
+import { SubmissionPage } from "./submission";
 
 export default () => (
   <Router>
     <PrivateRoute path="/:lang/profile" component={ProfileApp} />
     <PrivateRoute path="/:lang/profile/edit" component={EditProfileApp} />
-    <PrivateRoute path="/:lang/submission/:id" component={SubmissionPage} />
+    <SubmissionPage path="/:lang/submission/:id" />
     <PrivateRoute
       path="/:lang/submission/:id/edit"
       component={EditSubmission}

@@ -66,6 +66,8 @@ export const messages = {
     "deadlines.end": "End",
     "submission.loading": "Loading",
     "submission.notFound": "Not found",
+    "submission.socialCard.prefix": "I submitted:",
+    "submission.socialCard.suffix": "to PyCon 11 🙌",
     "cfp.needToBeLoggedIn": "You need to be logged in to send a proposal",
     "cfp.yourProposals": "Your proposals",
     "cfp.pageTitle": "Make a proposal",
@@ -282,6 +284,8 @@ export const messages = {
     "deadlines.end": "Fine",
     "submission.loading": "Caricamento in corso",
     "submission.notFound": "Non trovato",
+    "submission.socialCard.prefix": "Ho proposto:",
+    "submission.socialCard.suffix": "a PyCon 11 🙌",
     "cfp.needToBeLoggedIn":
       "Devi effettuare l'accesso per inviare una proposta",
     "cfp.pageTitle": "Invia una proposta",

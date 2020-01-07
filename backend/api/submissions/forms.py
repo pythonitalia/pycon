@@ -50,6 +50,10 @@ class UpdateSubmissionForm(SubmissionForm):
         queryset=Submission.objects.all(), to_field_name="id"
     )
 
+    @classmethod
+    def get_instance(cls, hashid):
+        return Submission.objects.get_by_hashid(hashid)
+
     def clean(self):
         super().clean()
 

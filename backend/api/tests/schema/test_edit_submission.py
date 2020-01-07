@@ -83,7 +83,7 @@ def _update_submission(
     """,
         variables={
             "input": {
-                "instance": submission.id,
+                "instance": submission.hashid,
                 "title": "new title to use",
                 "elevatorPitch": "This is an elevator pitch",
                 "abstract": "abstract here",
@@ -153,7 +153,7 @@ def test_update_submission(
 
     assert {
         "__typename": "Submission",
-        "id": str(submission.id),
+        "id": submission.hashid,
         "title": "new title to use",
         "notes": "notes here",
         "abstract": "abstract here",

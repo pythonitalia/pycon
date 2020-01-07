@@ -117,6 +117,9 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
             slugEn: slug(language: "en")
             slugIt: slug(language: "it")
           }
+          submissions {
+            id
+          }
         }
       }
     `,
@@ -131,6 +134,10 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   const blogPostTemplate = path.resolve(`src/templates/blog/post.tsx`);
   const blogPostSocialTemplate = path.resolve(
     `src/templates/blog/social-card.tsx`,
+  );
+  const submissionTemplate = path.resolve(`src/templates/submission/index.tsx`);
+  const submissionSocialTemplate = path.resolve(
+    `src/templates/submission/social-card.tsx`,
   );
   const pageTemplate = path.resolve(`src/templates/page.tsx`);
   const homeTemplate = path.resolve(`src/templates/home.tsx`);
@@ -249,6 +256,26 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
           en: `/en/${slugEn}`,
           it: `/it/${slugIt}`,
         },
+      },
+    });
+  });
+
+  result.data.backend.submissions.forEach(({ id }) => {
+    createPageWithSocialCards(createPage, submissionSocialTemplate, {
+      component: submissionTemplate,
+      path: `/en/submission/${id}`,
+      context: {
+        id,
+        language: "en",
+      },
+    });
+
+    createPageWithSocialCards(createPage, submissionSocialTemplate, {
+      component: submissionTemplate,
+      path: `/it/submission/${id}`,
+      context: {
+        id,
+        language: "it",
       },
     });
   });

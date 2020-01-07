@@ -15,7 +15,7 @@ import {
   UpdateSubmissionMutationVariables,
 } from "../../generated/graphql-backend";
 import { Alert } from "../alert";
-import { CfpForm, CfpFormFields } from "../cfp-form";
+import { CfpForm, CfpFormFields, SubmissionStructure } from "../cfp-form";
 import GET_SUBMISSION from "./get-submission.graphql";
 import UPDATE_SUBMISSION from "./update-submission.graphql";
 
@@ -131,7 +131,7 @@ export const EditSubmission: React.SFC<RouteComponentProps<Props>> = ({
       )}
       {submissionData && submissionData.submission?.canEdit && (
         <CfpForm
-          submission={submissionData.submission}
+          submission={submissionData.submission as SubmissionStructure}
           loading={updateSubmissionLoading}
           error={updateSubmissionError}
           data={updateSubmissionData}

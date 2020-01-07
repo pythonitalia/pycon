@@ -4,6 +4,7 @@ require("dotenv").config({
 });
 
 const API_URL = process.env.API_URL || "http://127.0.0.1:8000/graphql";
+const API_TOKEN = process.env.API_TOKEN || "example-token";
 const CONFERENCE_CODE = process.env.CONFERENCE_CODE || "pycon-demo";
 
 module.exports = {
@@ -47,6 +48,9 @@ module.exports = {
         typeName: "BACKEND",
         fieldName: "backend",
         refetchInterval: 60,
+        headers: {
+          Authorization: `Token ${API_TOKEN}`,
+        },
       },
     },
     {

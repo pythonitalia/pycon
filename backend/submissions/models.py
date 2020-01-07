@@ -1,3 +1,4 @@
+from api.helpers.ids import encode_hashid
 from django.conf import settings
 from django.core import exceptions
 from django.db import models
@@ -6,6 +7,8 @@ from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
 from model_utils import Choices
 from model_utils.models import TimeStampedModel
+
+from .managers import SubmissionManager
 
 
 class SubmissionTag(models.Model):
@@ -72,6 +75,12 @@ class Submission(TimeStampedModel):
     )
 
     tags = models.ManyToManyField("submissions.SubmissionTag", verbose_name=_("tags"))
+
+    objects = SubmissionManager()
+
+    @property
+    def hashid(self):
+        return encode_hashid(self.pk)
 
     def can_edit(self, request):
         if not self.conference.is_cfp_open:

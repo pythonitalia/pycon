@@ -1,4 +1,5 @@
 import pytest
+from api.tests.factories import *  # noqa
 from api.tests.fixtures import *  # noqa
 from blog.tests.factories import *  # noqa
 from cms.tests.factories import *  # noqa

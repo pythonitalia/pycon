@@ -177,6 +177,11 @@ PRETIX_API_TOKEN = None
 if PRETIX_API:
     PRETIX_API_TOKEN = env("PRETIX_API_TOKEN")
 
+SIMULATE_PRETIX_DB = env("SIMULATE_PRETIX_DB", default=True)
+
+if not SIMULATE_PRETIX_DB:
+    DATABASES["pretix"] = {**DATABASES["default"], "NAME": "pretix"}
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
