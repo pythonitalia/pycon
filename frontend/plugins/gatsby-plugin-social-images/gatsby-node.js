@@ -32,7 +32,12 @@ exports.onPostBuild = async (args, pluginOptions) => {
 
     const page = await browser.newPage();
     await page.setViewport({ ...size, deviceScaleFactor: 2 });
-    await page.goto(`file://${pagePath}`);
+
+    try {
+      await page.goto(`file://${pagePath}`);
+    } catch (e) {
+      console.log(`Unable to go to {pagePath}, error: ${e}`);
+    }
     await page.evaluate(
       (cwd, root) => {
         const images = Array.from(
