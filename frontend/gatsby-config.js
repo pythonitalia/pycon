@@ -1,5 +1,3 @@
-const Sentry = require("@sentry/node");
-
 const proxy = require("http-proxy-middleware");
 require("dotenv").config({
   path: `.env`,
@@ -8,12 +6,6 @@ require("dotenv").config({
 const API_URL = process.env.API_URL || "http://127.0.0.1:8000/graphql";
 const API_TOKEN = process.env.API_TOKEN || "example-token";
 const CONFERENCE_CODE = process.env.CONFERENCE_CODE || "pycon-demo";
-
-Sentry.init({
-  dsn: process.env.SENTRY_DSN || "",
-  maxBreadcrumbs: 50,
-  debug: true,
-});
 
 module.exports = {
   siteMetadata: {

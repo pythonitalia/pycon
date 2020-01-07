@@ -65,6 +65,7 @@ export const CFPPage: React.SFC<RouteComponentProps> = ({ location }) => {
 
   console.log(loading, data?.conference.isCFPOpen);
 
+  throw new Error("errore dal FE!!!! (from Etty with <3)");
   return (
     <Fragment>
       <FormattedMessage id="cfp.pageTitle">

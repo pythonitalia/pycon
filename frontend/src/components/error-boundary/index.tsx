@@ -1,9 +1,14 @@
 /** @jsx jsx */
 import { isRedirect } from "@reach/router";
+import * as Sentry from "@sentry/browser";
 import { Box } from "@theme-ui/components";
 import { Component } from "react";
 import { jsx } from "theme-ui";
-import * as Sentry from "@sentry/browser";
+
+const SENTRY_DSN = process.env.SENTRY_DSN || "";
+console.log({ SENTRY_DSN });
+console.log({ process });
+Sentry.init({ dsn: SENTRY_DSN });
 
 export class ErrorBoundary extends Component<
   {},
@@ -19,20 +24,24 @@ export class ErrorBoundary extends Component<
   }
 
   componentDidCatch(error: any, errorInfo: any) {
+    console.warn("ErrorBoundary: componentDidCatch!!");
+    console.log(isRedirect(error));
+    Sentry.captureMessage("Something went wrong (from @Etty with <3)");
+
     Sentry.withScope(scope => {
       scope.setExtras(errorInfo);
       const eventId = Sentry.captureException(error);
       this.setState({ eventId });
-    });
 
-    if (isRedirect(error)) {
-      throw error;
-    } else {
-      this.setState({
-        error,
-        errorInfo,
-      });
-    }
+      if (isRedirect(error)) {
+        throw error;
+      } else {
+        this.setState({
+          error,
+          errorInfo,
+        });
+      }
+    });
   }
 
   render() {
