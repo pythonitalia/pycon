@@ -34,7 +34,7 @@ class Grant(TimeStampedModel):
     )
     email = models.EmailField(_("email address"))
     age = models.PositiveSmallIntegerField(_("age"))
-    gender = models.CharField(_("gender"), choices=GENDERS, max_length=10)
+    gender = models.CharField(_("gender"), choices=GENDERS, max_length=10, blank=True)
     occupation = models.CharField(_("occupation"), choices=OCCUPATIONS, max_length=10)
     grant_type = models.CharField(_("grant type"), choices=GRANT_TYPES, max_length=10)
     python_usage = models.TextField(_("How do they use python"))
@@ -46,7 +46,7 @@ class Grant(TimeStampedModel):
     )
     needs_funds_for_travel = models.BooleanField(_("Needs funds for travel"))
     why = models.TextField(_("Why are you asking for a grant?"))
-    notes = models.TextField(_("Notes"))
+    notes = models.TextField(_("Notes"), blank=True)
     travelling_from = models.CharField(_("Travelling from"), max_length=200)
 
     class Meta:

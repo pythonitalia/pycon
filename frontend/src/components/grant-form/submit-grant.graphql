@@ -11,6 +11,7 @@ mutation SendGrantRequest($input: SendGrantRequestInput!) {
       validationEmail: email
       validationName: name
       validationFullName: fullName
+      validationGender: gender
       validationGrantType: grantType
       validationOccupation: occupation
       validationOccupation: occupation

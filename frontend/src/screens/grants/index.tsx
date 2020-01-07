@@ -5,21 +5,26 @@ import React from "react";
 import { jsx } from "theme-ui";
 
 import { GrantForm } from "../../components/grant-form";
+import { useConference } from "../../context/conference";
 import { Introduction } from "./introduction";
 
-export const GrantScreen: React.SFC<RouteComponentProps> = () => (
-  <React.Fragment>
-    <Introduction />
+export const GrantScreen: React.SFC<RouteComponentProps> = () => {
+  const { code } = useConference();
 
-    <Box
-      sx={{
-        maxWidth: "container",
-        mx: "auto",
-        px: 3,
-        my: 5,
-      }}
-    >
-      <GrantForm />
-    </Box>
-  </React.Fragment>
-);
+  return (
+    <React.Fragment>
+      <Introduction />
+
+      <Box
+        sx={{
+          maxWidth: "container",
+          mx: "auto",
+          px: 3,
+          my: 5,
+        }}
+      >
+        <GrantForm conference={code} />
+      </Box>
+    </React.Fragment>
+  );
+};

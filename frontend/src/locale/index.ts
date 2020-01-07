@@ -202,6 +202,9 @@ export const messages = {
       "Thanks to the help of the Python Software Foundation we are glad to give financial support to everyone who may need it in order to join PyCon Italia.",
 
     "grants.form.title": "Request a grant",
+    "grants.form.sendingRequest": "Sending grant request",
+    "grants.form.sent":
+      "Grant request sent! We will send you an email as soon as we have updates!",
     "grants.form.aboutYou": "About you",
     "grants.form.optionalInformation": "Optional information",
     "grants.form.optionalInformation.description":
@@ -478,6 +481,9 @@ export const messages = {
       "Grazie all'aiuto della Python Software Foundation siamo lieti di mettere a disposizione di chi ne avesse bisogno un programma di supporto per chi vorrebbe essere presente a PyCon Italia ma per motivi economici non potrebbe riuscirci.",
 
     "grants.form.title": "Chiedi un grant",
+    "grants.form.sendingRequest": "Invio richiesta in corso",
+    "grants.form.sent":
+      "Richiesta inviata! Ti contatteremo via email appena ci saranno novità!",
     "grants.form.aboutYou": "Su di te",
     "grants.form.optionalInformation": "Informazioni opzionali",
     "grants.form.optionalInformation.description":

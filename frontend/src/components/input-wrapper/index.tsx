@@ -3,6 +3,8 @@ import { Box, Text } from "@theme-ui/components";
 import React from "react";
 import { jsx } from "theme-ui";
 
+import { ErrorsList } from "../errors-list";
+
 export const InputWrapper: React.SFC<{
   label?: React.ReactElement | string;
   description?: React.ReactElement;
@@ -32,18 +34,7 @@ export const InputWrapper: React.SFC<{
       </Text>
       {children}
     </Text>
-    {errors && (
-      <ul
-        sx={{
-          mt: 2,
-          listStyle: "none",
-          color: "red",
-        }}
-      >
-        {errors.map(error => (
-          <li key={error}>{error}</li>
-        ))}
-      </ul>
-    )}
+
+    <ErrorsList sx={{ mt: 2 }} errors={errors} />
   </Box>
 );

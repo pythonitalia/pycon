@@ -21,6 +21,8 @@ import {
   SendGrantRequestMutation,
   SendGrantRequestMutationVariables,
 } from "../../generated/graphql-backend";
+import { Alert } from "../alert";
+import { ErrorsList } from "../errors-list";
 import { InputWrapper } from "../input-wrapper";
 import {
   GENDER_OPTIONS,
@@ -47,9 +49,9 @@ export type GrantFormFields = {
   travellingFrom: string;
 };
 
-type Props = {};
+type Props = { conference: string };
 
-export const GrantForm: React.SFC<Props> = ({}) => {
+export const GrantForm: React.SFC<Props> = ({ conference }) => {
   const [
     formState,
     { text, number: numberInput, email, textarea, select, checkbox },
@@ -71,7 +73,7 @@ export const GrantForm: React.SFC<Props> = ({}) => {
       submitGrant({
         variables: {
           input: {
-            conference: "pycon-10",
+            conference,
             age: +formState.values.age,
             fullName: formState.values.fullName,
             name: formState.values.name,
@@ -93,16 +95,30 @@ export const GrantForm: React.SFC<Props> = ({}) => {
     [formState.values],
   );
 
-  const getErrors = (key: keyof GrantFormFields): string[] => {
+  const getErrors = (
+    key: keyof GrantFormFields | "nonFieldErrors",
+  ): string[] => {
     if (data?.sendGrantRequest.__typename === "SendGrantRequestErrors") {
-      const capitalized = key.charAt(0).toUpperCase() + key.slice(1);
-      const errorKey = `validation${capitalized}`;
+      let errorKey: string = key;
+
+      if (key !== "nonFieldErrors") {
+        const capitalized = key.charAt(0).toUpperCase() + key.slice(1);
+        errorKey = `validation${capitalized}`;
+      }
 
       return (data.sendGrantRequest as any)[errorKey];
     }
 
     return [];
   };
+
+  if (!loading && data?.sendGrantRequest.__typename === "GrantRequest") {
+    return (
+      <Text>
+        <FormattedMessage id="grants.form.sent" />
+      </Text>
+    );
+  }
 
   return (
     <Fragment>
@@ -278,9 +294,20 @@ export const GrantForm: React.SFC<Props> = ({}) => {
           </InputWrapper>
         </Box>
 
-        {loading && "loading"}
+        <ErrorsList sx={{ mb: 3 }} errors={getErrors("nonFieldErrors")} />
 
-        <Button disable={loading}>
+        {loading && (
+          <Alert
+            sx={{
+              mb: 3,
+            }}
+            variant="info"
+          >
+            <FormattedMessage id="grants.form.sendingRequest" />
+          </Alert>
+        )}
+
+        <Button isLoading={loading}>
           <FormattedMessage id="grants.form.submit" />
         </Button>
       </Box>
