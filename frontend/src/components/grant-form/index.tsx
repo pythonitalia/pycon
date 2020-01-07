@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import { useQuery } from "@apollo/react-hooks";
+import { useMutation } from "@apollo/react-hooks";
 import {
   Box,
   Button,
@@ -11,12 +11,16 @@ import {
   Text,
   Textarea,
 } from "@theme-ui/components";
-import { ApolloError } from "apollo-client";
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment, useCallback, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import { Flex, jsx } from "theme-ui";
 
+import {
+  SendGrantRequestErrors,
+  SendGrantRequestMutation,
+  SendGrantRequestMutationVariables,
+} from "../../generated/graphql-backend";
 import { InputWrapper } from "../input-wrapper";
 import {
   GENDER_OPTIONS,
@@ -24,6 +28,7 @@ import {
   INTERESTED_IN_VOLUNTEERING_OPTIONS,
   OCCUPATION_OPTIONS,
 } from "./options";
+import SUBMIT_GRANT_MUTATION from "./submit-grant.graphql";
 
 export type GrantFormFields = {
   name: string;
@@ -55,18 +60,56 @@ export const GrantForm: React.SFC<Props> = ({}) => {
     },
   );
 
-  const submitGrant = () => {
-    console.log(formState.values);
-  };
+  const [submitGrant, { loading, error, data }] = useMutation<
+    SendGrantRequestMutation,
+    SendGrantRequestMutationVariables
+  >(SUBMIT_GRANT_MUTATION);
 
-  const getErrors = (key: keyof GrantFormFields) => [""];
+  const onSubmit = useCallback(
+    e => {
+      e.preventDefault();
+      submitGrant({
+        variables: {
+          input: {
+            conference: "pycon-10",
+            age: +formState.values.age,
+            fullName: formState.values.fullName,
+            name: formState.values.name,
+            gender: formState.values.gender,
+            beenToOtherEvents: formState.values.beenToOtherEvents,
+            interestedInVolunteering: formState.values.interestedInVolunteering,
+            notes: formState.values.notes,
+            grantType: formState.values.grantType,
+            needsFundsForTravel: formState.values.needsFundsForTravel,
+            why: formState.values.why,
+            travellingFrom: formState.values.travellingFrom,
+            email: formState.values.email,
+            occupation: formState.values.occupation,
+            pythonUsage: formState.values.pythonUsage,
+          },
+        },
+      });
+    },
+    [formState.values],
+  );
+
+  const getErrors = (key: keyof GrantFormFields): string[] => {
+    if (data?.sendGrantRequest.__typename === "SendGrantRequestErrors") {
+      const capitalized = key.charAt(0).toUpperCase() + key.slice(1);
+      const errorKey = `validation${capitalized}`;
+
+      return (data.sendGrantRequest as any)[errorKey];
+    }
+
+    return [];
+  };
 
   return (
     <Fragment>
       <Text mb={4} as="h1">
         <FormattedMessage id="grants.form.title" />
       </Text>
-      <Box as="form" onSubmit={submitGrant}>
+      <Box as="form" onSubmit={onSubmit}>
         <Heading sx={{ mb: 3 }}>
           <FormattedMessage id="grants.form.aboutYou" />
         </Heading>
@@ -235,7 +278,9 @@ export const GrantForm: React.SFC<Props> = ({}) => {
           </InputWrapper>
         </Box>
 
-        <Button>
+        {loading && "loading"}
+
+        <Button disable={loading}>
           <FormattedMessage id="grants.form.submit" />
         </Button>
       </Box>

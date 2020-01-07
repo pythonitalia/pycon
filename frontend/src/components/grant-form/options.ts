@@ -74,15 +74,15 @@ export const INTERESTED_IN_VOLUNTEERING_OPTIONS = [
       "grants.form.fields.interestedInVolunteering.values.selectOption",
   },
   {
-    value: "diversity",
+    value: "no",
     messageId: "grants.form.fields.interestedInVolunteering.values.no",
   },
   {
-    value: "unemployed",
+    value: "yes",
     messageId: "grants.form.fields.interestedInVolunteering.values.yes",
   },
   {
-    value: "speaker",
+    value: "absolutely",
     messageId: "grants.form.fields.interestedInVolunteering.values.absolutely",
   },
 ];
