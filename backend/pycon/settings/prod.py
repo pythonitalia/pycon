@@ -39,7 +39,5 @@ if FORCE_PYCON_HOST:  # pragma: no cover
 
 DEFAULT_FROM_EMAIL = "noreply@pycon.it"
 
-SIMULATE_PRETIX_DB = env("SIMULATE_PRETIX_DB", bool, default=False)
-
-if SIMULATE_PRETIX_DB:
-    DATABASES["pretix"] = {**DATABASES["default"], "NAME": "pretix"}
+SIMULATE_PRETIX_DB = False
+DATABASES["pretix"] = {**DATABASES["default"], "NAME": "pretix"}
