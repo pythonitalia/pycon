@@ -36,7 +36,7 @@ class EmailAdmin(admin.ModelAdmin):
         ]
         return custom_urls + urls
 
-    def email_actions(self, obj):
+    def email_actions(self, obj):  # pragma: no cover
         if obj.status != Email.STATUS.sent:
             return format_html(
                 '<a class="button" href="{}">Send Now!!</a>&nbsp;',
