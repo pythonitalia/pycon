@@ -7,6 +7,7 @@ import { ApolloClient } from "apollo-client";
 import { ApolloLink } from "apollo-link";
 import { onError } from "apollo-link-error";
 import { HttpLink } from "apollo-link-http";
+import { GraphQLError } from "graphql";
 import fetch from "isomorphic-fetch";
 
 import { setLoginState } from "../app/profile/hooks";
@@ -15,6 +16,9 @@ const fragmentMatcher = new IntrospectionFragmentMatcher({
   introspectionQueryResultData,
 });
 
+const isUserLoggedOut = (graphErrors: readonly GraphQLError[]) =>
+  !!graphErrors.find(e => e.message === "User not logged in");
+
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {
     graphQLErrors.map(({ message, locations, path }) =>
@@ -22,20 +26,15 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
         `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
       ),
     );
+
+    if (isUserLoggedOut(graphQLErrors)) {
+      setLoginState(false);
+      navigate("/en/login");
+    }
   }
 
   if (networkError) {
     console.warn(`[Network error]: ${networkError}`);
-  }
-
-  if (
-    networkError &&
-    "statusCode" in networkError &&
-    networkError.statusCode === 400 &&
-    graphQLErrors?.findIndex(e => e.message === "User not logged in") !== -1
-  ) {
-    setLoginState(false);
-    navigate("/en/login");
   }
 });
 

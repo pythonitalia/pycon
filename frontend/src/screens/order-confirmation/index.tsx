@@ -6,6 +6,7 @@ import React, { useContext } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
+import { Alert } from "../../components/alert";
 import { ConferenceContext } from "../../context/conference";
 import { OrderQuery } from "../../generated/graphql-backend";
 import ORDER_QUERY from "./order.graphql";
@@ -21,7 +22,17 @@ const OrderDetail: React.SFC<{ code: string }> = ({ code }) => {
   });
 
   if (error) {
-    throw new Error(error.message);
+    return (
+      <Box
+        sx={{
+          maxWidth: "container",
+          mx: "auto",
+          px: 3,
+        }}
+      >
+        <Alert variant="alert">{error.message}</Alert>
+      </Box>
+    );
   }
 
   if (loading || !data) {
