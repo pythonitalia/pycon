@@ -245,19 +245,34 @@ export default ({ data }: { data: HomePageQuery }) => {
       />
       <Grid
         columns={[1, 2]}
-        sx={{ px: 3, maxWidth: "container", mx: "auto", display: "auto" }}
+        sx={{
+          px: 3,
+          maxWidth: "container",
+          mx: "auto",
+          display: "auto",
+          gridGap: 0,
+        }}
       >
-        <Box sx={{ py: 5 }}>
+        <Box sx={{ py: 5, pr: [0, 4], borderRight: [null, "primary"] }}>
           <NewsletterSection />
         </Box>
-        <Box sx={{ py: 5, pl: [0, 4], display: "none" }}>
-          <Heading sx={{ fontSize: 5, mb: 4 }}>FAQs</Heading>
+        <Box sx={{ py: 5, pl: [0, 4] }}>
+          <Heading sx={{ fontSize: 5, mb: 4 }}>
+            <FormattedMessage id="home.latestNews" />
+          </Heading>
 
-          <Text as="p">
-            Nulla non orci eu magna sagittis finibus. Donec sed nunc magna. Sed
-            nec tincidunt elit, nec ultrices arcu. In massa eros, dignissim eget
-            leo nec, sodales fringilla ante.
-          </Text>
+          <Box as="ul" sx={{ pl: 3 }}>
+            {data.backend.blogPosts.map(post => (
+              <Box as="li" key={post.slug}>
+                <Link
+                  sx={{ display: "block" }}
+                  href={`/:language/blog/${post.slug}`}
+                >
+                  <Text>{post.title}</Text>
+                </Link>
+              </Box>
+            ))}
+          </Box>
         </Box>
       </Grid>
     </Fragment>
@@ -267,6 +282,11 @@ export default ({ data }: { data: HomePageQuery }) => {
 export const query = graphql`
   query HomePage($language: String!) {
     backend {
+      blogPosts {
+        slug
+        title(language: $language)
+      }
+
       conference {
         name(language: $language)
         introduction(language: $language)

@@ -128,7 +128,7 @@ export const wrapPageElement = ({ element, props }: Props) => (
                       minHeight: "100vh",
                     }}
                   >
-                    <Box sx={{ mt: [100, 130], pb: 5 }}>
+                    <Box sx={{ mt: [100, 130] }}>
                       <ErrorBoundary>{element}</ErrorBoundary>
                     </Box>
 

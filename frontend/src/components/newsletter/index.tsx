@@ -25,7 +25,8 @@ const NewsletterForm = () => {
       if (
         loading ||
         (data &&
-          data.subscribeToNewsletter.__typename === "subscribeToNewsletter")
+          data.subscribeToNewsletter.__typename ===
+            "SubscribeToNewsletterErrors")
       ) {
         return;
       }
@@ -59,15 +60,7 @@ const NewsletterForm = () => {
   }
 
   return (
-    <Box
-      as="form"
-      onSubmit={onSubmit}
-      sx={{
-        maxWidth: "container",
-        mx: "auto",
-        px: 2,
-      }}
-    >
+    <Box as="form" onSubmit={onSubmit}>
       <Box>
         <FormattedMessage id="newsletter.text">
           {txt => (
