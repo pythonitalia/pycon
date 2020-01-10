@@ -13,6 +13,7 @@ import { ResetPassword } from "../components/reset-password";
 import { SignupForm } from "../components/signup-form";
 import { SocialLoginSuccess } from "../components/social-login-success";
 import { TicketsPage } from "../components/tickets-page";
+import { UnsubscribePage } from "../components/unsubscribe";
 import { VotingPage } from "../components/voting-page";
 import { GrantScreen } from "../screens/grants";
 import { OrderConfirmationScreen } from "../screens/order-confirmation";
@@ -34,6 +35,7 @@ export default () => (
     <SignupForm path="/:lang/signup" />
     <RequestPasswordReset path="/:lang/reset-password/" />
     <ResetPassword path="/:lang/reset-password/:userId/:token/" />
+    <UnsubscribePage path="/:lang/unsubscribe" />
     <PrivateRoute path="/:lang/tickets/*" component={TicketsPage} />
     <PrivateRoute
       path="/:lang/orders/:code/confirmation"

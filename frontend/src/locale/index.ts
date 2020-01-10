@@ -327,6 +327,11 @@ export const messages = {
     "voting.abstract": "Abstract",
     "voting.elevatorPitch": "Elevator pitch",
     "voting.notes": "Notes",
+    "unsubscribe.title": "Unsubscribe from the newsletter",
+    "unsubscribe.button": "Unsubscribe",
+    "unsubscribe.succeed.title": "Thank you",
+    "unsubscribe.succeed.message":
+      "You have been successfully unsubscribed from this newsletter.",
   },
   it: {
     titleTemplate: "%s | PyCon Italia",
@@ -653,6 +658,11 @@ export const messages = {
     "voting.abstract": "Descrizione",
     "voting.elevatorPitch": "Pitch",
     "voting.notes": "Note",
+    "unsubscribe.title": "Annulla l'iscrizione alla Newsletter",
+    "unsubscribe.button": "Annulla l'iscrizione",
+    "unsubscribe.succeed.title": "Grazie",
+    "unsubscribe.succeed.message":
+      "Sei stato correttamente disinscritto da questa newsletter.",
   },
 };
 
