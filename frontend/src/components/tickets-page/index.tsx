@@ -12,6 +12,7 @@ import {
   TicketsQuery,
   TicketsQueryVariables,
 } from "../../generated/graphql-backend";
+import { Alert } from "../alert";
 import { MetaTags } from "../meta-tags";
 import { InformationSection } from "./information";
 import { QuestionsSection } from "./questions";
@@ -50,10 +51,6 @@ export const TicketsPage: React.SFC<RouteComponentProps> = props => {
     },
     selectedHotelRooms: {},
   });
-
-  if (error) {
-    throw new Error(error.message);
-  }
 
   const hotelRooms = data?.conference.hotelRooms || [];
   const tickets = data?.conference.tickets || [];
@@ -149,6 +146,20 @@ export const TicketsPage: React.SFC<RouteComponentProps> = props => {
       props.navigate!("");
     }
   }, [location.pathname]);
+
+  if (error) {
+    return (
+      <Box
+        sx={{
+          maxWidth: "container",
+          mx: "auto",
+          px: 3,
+        }}
+      >
+        <Alert variant="alert">{error.message}</Alert>
+      </Box>
+    );
+  }
 
   return (
     <Box>
