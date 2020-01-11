@@ -1,46 +1,56 @@
 /** @jsx jsx */
+import { useMutation } from "@apollo/react-hooks";
 import { RouteComponentProps } from "@reach/router";
-import { Box, Button, Grid, Text } from "@theme-ui/components";
-import React, { Fragment } from "react";
+import { Box, Text } from "@theme-ui/components";
+import React, { Fragment, useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
+import {
+  UnsubscribeMutation,
+  UnsubscribeMutationVariables,
+} from "../../generated/graphql-backend";
+import { Alert } from "../alert";
 import { MetaTags } from "../meta-tags";
+import UNSUBSCRIBE_TO_NEWSLETTER from "./unsubscribe.graphql";
 
-const SucceedUnsubscribe = () => (
-  <Fragment>
-    <Box
-      sx={{
-        maxWidth: "container",
-        mx: "auto",
-        my: 4,
-        px: 3,
-      }}
-    >
-      <Text as="h1">
-        <FormattedMessage id="unsubscribe.succeed.title" />
-      </Text>
+type Props = {
+  lang: string;
+  email?: string;
+};
 
-      <Text
-        sx={{
-          mt: 4,
-          fontSize: 2,
-        }}
-        as="p"
-      >
-        <FormattedMessage id="unsubscribe.succeed.message" />
-      </Text>
-    </Box>
-  </Fragment>
-);
-
-export const UnsubscribePage: React.SFC<RouteComponentProps> = ({
+export const UnsubscribePage: React.SFC<RouteComponentProps<Props>> = ({
   location,
+  email,
 }) => {
-  const unsubscribed = false;
-  if (unsubscribed) {
-    return <SucceedUnsubscribe />;
-  }
+  const [unsubscribed, setUnsubscribed] = useState(false);
+  console.log(email);
+  const onUnsubscribeComplete = (unsubscribeData: UnsubscribeMutation) => {
+    if (
+      unsubscribeData?.unsubscribeToNewsletter.__typename ===
+        "OperationResult" &&
+      unsubscribeData.unsubscribeToNewsletter.ok
+    ) {
+      console.log("setUnsubscribed");
+      setUnsubscribed(true);
+    }
+  };
+
+  const [unsubscribe, { loading, error, data }] = useMutation<
+    UnsubscribeMutation,
+    UnsubscribeMutationVariables
+  >(UNSUBSCRIBE_TO_NEWSLETTER, { onCompleted: onUnsubscribeComplete });
+
+  useEffect(() => {
+    // Update the document title using the browser API
+    if (!unsubscribed && email) {
+      unsubscribe({
+        variables: {
+          email,
+        },
+      });
+    }
+  });
 
   return (
     <Fragment>
@@ -54,19 +64,30 @@ export const UnsubscribePage: React.SFC<RouteComponentProps> = ({
           my: 4,
           px: 3,
         }}
-        as="form"
-        method="post"
-        onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
-          e.preventDefault();
-          console.log("unsubscribe me :(");
-        }}
       >
-        <Text as="h1">
-          <FormattedMessage id="unsubscribe.title" />
-        </Text>
-        <Button size="medium" palette="primary" type="submit">
-          <FormattedMessage id="unsubscribe.button" />
-        </Button>
+        {loading && (
+          <Alert variant="info">
+            <FormattedMessage id="profile.loading" />
+          </Alert>
+        )}
+
+        {unsubscribed && (
+          <Fragment>
+            <Text as="h1">
+              <FormattedMessage id="unsubscribe.succeed.title" />
+            </Text>
+
+            <Text
+              sx={{
+                mt: 4,
+                fontSize: 2,
+              }}
+              as="p"
+            >
+              <FormattedMessage id="unsubscribe.succeed.message" />
+            </Text>
+          </Fragment>
+        )}
       </Box>
     </Fragment>
   );

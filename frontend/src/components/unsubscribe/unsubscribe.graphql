@@ -1,0 +1,15 @@
+mutation Unsubscribe($email: String!) {
+  unsubscribeToNewsletter(input: {
+    email: $email
+  }) {
+    __typename
+
+    ... on UnsubscribeToNewsletterErrors {
+      email
+    }
+
+    ... on OperationResult {
+      ok
+    }
+  }
+}
