@@ -252,7 +252,7 @@ export const CfpForm: React.SFC<Props> = ({
 
   return (
     <Fragment>
-      <Text mb={4} as="h1">
+      <Text mt={4} mb={4} as="h1">
         <FormattedMessage id="cfp.youridea" />
       </Text>
       <Box as="form" onSubmit={submitSubmission}>
