@@ -69,6 +69,12 @@ export const messages = {
     "submission.socialCard.prefix": "I submitted:",
     "submission.socialCard.suffix": "to PyCon 11 🙌",
     "cfp.needToBeLoggedIn": "You need to be logged in to send a proposal",
+    "cfp.closed.title": "Call for proposal is now closed!",
+    "cfp.closed.description":
+      "Thanks for all the people that have submitted a proposal! We will be sending updates soon!",
+    "cfp.closed.voting":
+      "Don't forget that the voting session will open soon! If you have proposed a talk or if you have bought a ticket you can see all the submitted talks and vote for them!",
+    "cfp.closed.buyTicket": "Buy your ticket now!",
     "cfp.yourProposals": "Your proposals",
     "cfp.pageTitle": "Make a proposal",
     "cfp.loading": "Please wait",
@@ -350,6 +356,12 @@ export const messages = {
     "submission.socialCard.suffix": "a PyCon 11 🙌",
     "cfp.needToBeLoggedIn":
       "Devi effettuare l'accesso per inviare una proposta",
+    "cfp.closed.title": "La call for proposal è chiusa!",
+    "cfp.closed.description":
+      "Grazie a tutte le persone che hanno fatto una proposta! Manderemo aggiornamenti a breve!",
+    "cfp.closed.voting":
+      "Non dimenticare che la votazione comunitaria aprirà presto. Se hai proposto un talk o hai un biglietto per la conferenza puoi vedere la lista di tutti i talk e votare i tuoi preferiti!",
+    "cfp.closed.buyTicket": "Compra il tuo biglietto ora!",
     "cfp.pageTitle": "Invia una proposta",
     "cfp.introductionCopyHead": "Lorem ipsum",
     "cfp.youridea": "La tua idea",
