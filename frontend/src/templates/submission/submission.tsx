@@ -123,16 +123,20 @@ export const Submission: React.SFC<Props> = ({ submission, pageContext }) => (
         </Flex>
 
         <Heading sx={{ mb: 2 }}>
-          <FormattedMessage id="cfp.abstractLabel" />
-        </Heading>
-
-        <Text sx={{ mb: 4 }}>{compile(submission.abstract).tree}</Text>
-
-        <Heading sx={{ mb: 2 }}>
           <FormattedMessage id="cfp.elevatorPitchLabel" />
         </Heading>
 
-        <Text sx={{ mb: 4 }}>{compile(submission.elevatorPitch).tree}</Text>
+        <Box className="article" sx={{ mb: 4 }}>
+          {compile(submission.elevatorPitch).tree}
+        </Box>
+
+        <Heading sx={{ mb: 2 }}>
+          <FormattedMessage id="cfp.abstractLabel" />
+        </Heading>
+
+        <Box className="article" sx={{ mb: 4 }}>
+          {compile(submission.abstract).tree}
+        </Box>
 
         {submission.notes && (
           <Fragment>
@@ -140,7 +144,7 @@ export const Submission: React.SFC<Props> = ({ submission, pageContext }) => (
               <FormattedMessage id="cfp.notesLabel" />
             </Heading>
 
-            <Text sx={{ mb: 4 }}>{compile(submission.notes).tree}</Text>
+            <Box className="article">{compile(submission.notes).tree}</Box>
           </Fragment>
         )}
 
