@@ -438,3 +438,47 @@ def test_get_conference_hotel_rooms(graphql_client, conference_factory, hotel_ro
             "price": str(hotel_room.price),
         }
     ]
+
+
+@mark.django_db
+@mark.parametrize("cfp_open", (True, False))
+def test_is_cfp_open(graphql_client, conference_factory, deadline_factory, cfp_open):
+    now = timezone.now()
+
+    conference = conference_factory(timezone=pytz.timezone("America/Los_Angeles"))
+
+    deadline_factory(
+        start=now - timezone.timedelta(days=1),
+        end=now + timezone.timedelta(days=1) if cfp_open else now,
+        conference=conference,
+        type="cfp",
+    )
+
+    resp = graphql_client.query(
+        """
+        query($code: String!) {
+            conference(code: $code) {
+                isCFPOpen
+            }
+        }
+        """,
+        variables={"code": conference.code},
+    )
+
+    assert resp["data"]["conference"]["isCFPOpen"] is cfp_open
+
+
+@mark.django_db
+def test_is_cfp_open_false_when_no_deadline(graphql_client, conference):
+    resp = graphql_client.query(
+        """
+        query($code: String!) {
+            conference(code: $code) {
+                isCFPOpen
+            }
+        }
+        """,
+        variables={"code": conference.code},
+    )
+
+    assert resp["data"]["conference"]["isCFPOpen"] is False
