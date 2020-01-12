@@ -273,42 +273,31 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   });
 
   result.data.backend.submissions.forEach(({ id }) => {
-    createPageWithSocialCards(
-      createPage,
-      submissionSocialTemplate,
-      {
-        component: submissionTemplate,
-        path: `/en/submission/${id}`,
-        context: {
-          id,
-          language: "en",
-          alternateLinks: {
-            en: `/en/submission/${id}`,
-            it: `/it/submission/${id}`,
-          },
+    createPage({
+      component: submissionTemplate,
+      path: `/en/submission/${id}`,
+      context: {
+        id,
+        language: "en",
+        alternateLinks: {
+          en: `/en/submission/${id}`,
+          it: `/it/submission/${id}`,
         },
       },
-      false,
-      ["social-twitter"],
-    );
+    });
 
-    createPageWithSocialCards(
-      createPage,
-      submissionSocialTemplate,
-      {
-        component: submissionTemplate,
-        path: `/it/submission/${id}`,
-        context: {
-          id,
-          language: "it",
-          alternateLinks: {
-            en: `/en/submission/${id}`,
-            it: `/it/submission/${id}`,
-          },
+    createPageWithSocialCards({
+      component: submissionTemplate,
+      path: `/it/submission/${id}`,
+      context: {
+        id,
+        language: "it",
+        alternateLinks: {
+          en: `/en/submission/${id}`,
+          it: `/it/submission/${id}`,
         },
       },
-      ["social-twitter"],
-    );
+    });
   });
 
   // generic social card
