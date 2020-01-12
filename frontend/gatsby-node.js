@@ -286,7 +286,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
       },
     });
 
-    createPageWithSocialCards({
+    createPage({
       component: submissionTemplate,
       path: `/it/submission/${id}`,
       context: {
