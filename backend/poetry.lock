@@ -272,6 +272,17 @@ bcrypt = ["bcrypt"]
 
 [[package]]
 category = "main"
+description = "django-admin-views is a simple way to add custom admin views and direct URLs to the Django admin"
+name = "django-admin-views"
+optional = false
+python-versions = "*"
+version = "0.8.0"
+
+[package.dependencies]
+django = ">=1.6"
+
+[[package]]
+category = "main"
 description = "Django-environ allows you to utilize 12factor inspired environment variables to configure your Django application."
 name = "django-environ"
 optional = false
@@ -1312,7 +1323,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["pathlib2", "contextlib2", "unittest2"]
 
 [metadata]
-content-hash = "7f7e34e625dcfa5b23b4ae28151a08f044969206ac5a875a9e1c7e566ffb7e38"
+content-hash = "873e978364b3d611e58893839289a25fef065498ff9895a1c22730e1e945e4fb"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -1427,6 +1438,9 @@ defusedxml = [
 django = [
     {file = "Django-2.2.8-py3-none-any.whl", hash = "sha256:fa98ec9cc9bf5d72a08ebf3654a9452e761fbb8566e3f80de199cbc15477e891"},
     {file = "Django-2.2.8.tar.gz", hash = "sha256:a4ad4f6f9c6a4b7af7e2deec8d0cbff28501852e5010d6c2dc695d3d1fae7ca0"},
+]
+django-admin-views = [
+    {file = "django-admin-views-0.8.0.tar.gz", hash = "sha256:cf3f54c030cb20f1e11f42e80d68022ba020326438c44fcb15edb11487934fb8"},
 ]
 django-environ = [
     {file = "django-environ-0.4.4.tar.gz", hash = "sha256:ee2f8405d83137e3328b26b3de01bd715b5395fca22feb919dcc905fb6099cfa"},

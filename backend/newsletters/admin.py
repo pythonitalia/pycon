@@ -1,6 +1,8 @@
+from admin_views.admin import AdminViews
 from django.conf.urls import url
 from django.contrib import admin, messages
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
+from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.html import format_html
 
@@ -13,7 +15,10 @@ class SubscriptionAdmin(admin.ModelAdmin):
 
 
 @admin.register(Email)
-class EmailAdmin(admin.ModelAdmin):
+class EmailAdmin(AdminViews):
+
+    admin_views = (("Get Subscribers", "get_subscribers"),)
+
     ordering = ["status", "scheduled_date", "-pk"]
     list_display = (
         "subject",
@@ -24,6 +29,10 @@ class EmailAdmin(admin.ModelAdmin):
     )
     readonly_fields = ("recipients", "email_actions")
     actions = ["send_emails"]
+
+    def get_subscribers(self, *args, **kwargs):
+        data = {"subscribers": [s.email for s in Subscription.objects.all()]}
+        return JsonResponse(data, status=200)
 
     def get_urls(self):
         urls = super().get_urls()
@@ -69,3 +78,16 @@ class EmailAdmin(admin.ModelAdmin):
             )
 
     send_emails.short_description = "Send selected Emails"
+
+
+class ViewAdmin(AdminViews):
+    admin_views = (
+        ("Redirect to CNN", "redirect_to_cnn"),
+        ("Go to revsys.com", "http://www.revsys.com"),
+    )
+
+    def redirect_to_cnn(self, *args, **kwargs):
+        return redirect("http://www.cnn.com")
+
+
+# admin.site.register(Email, EmailAdmin)

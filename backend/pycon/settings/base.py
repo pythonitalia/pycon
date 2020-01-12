@@ -21,6 +21,7 @@ FRONTEND_URL = env("FRONTEND_URL")
 
 INSTALLED_APPS = [
     "whitenoise.runserver_nostatic",
+    "admin_views",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
