@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { useMutation } from "@apollo/react-hooks";
 import { Box, Button, Heading, Input, Text } from "@theme-ui/components";
-import { useCallback, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
@@ -81,7 +81,9 @@ const NewsletterForm = () => {
             mb: 3,
           }}
           placeholder="my@email.org"
-          onChange={e => setEmail(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setEmail(e.target.value)
+          }
           value={email}
           isRequired={true}
           type="email"
