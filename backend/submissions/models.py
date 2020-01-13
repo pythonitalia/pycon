@@ -83,9 +83,6 @@ class Submission(TimeStampedModel):
         return encode_hashid(self.pk)
 
     def can_edit(self, request):
-        if not self.conference.is_cfp_open:
-            return False
-
         return self.speaker == request.user
 
     def clean(self):

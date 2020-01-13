@@ -15,9 +15,8 @@ from api.schedule.types import Room, ScheduleItem
 from api.sponsors.types import SponsorsByLevel
 from api.submissions.types import Submission, SubmissionType
 from cms.models import GenericCopy
-from conferences.models import Deadline as DeadlineModel
 from django.conf import settings
-from django.utils import timezone, translation
+from django.utils import translation
 from schedule.models import ScheduleItem as ScheduleItemModel
 
 from ..helpers.i18n import make_localized_resolver
@@ -84,12 +83,7 @@ class Conference:
 
     @strawberry.field(name="isCFPOpen")
     def is_cfp_open(self, info) -> bool:
-        cpf_deadline = self.deadlines.filter(type=DeadlineModel.TYPES.cfp).first()
-
-        if not cpf_deadline:
-            return False
-
-        return cpf_deadline.end >= timezone.now()
+        return self.is_cfp_open
 
     @strawberry.field
     def deadline(self, info, type: str) -> Optional["Deadline"]:

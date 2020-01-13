@@ -170,9 +170,7 @@ def test_cannot_edit_submission_if_not_the_owner(
 
 
 @mark.django_db
-def test_cannot_edit_submission_if_cfp_is_closed(
-    graphql_client, user, submission_factory
-):
+def test_can_edit_submission_if_cfp_is_closed(graphql_client, user, submission_factory):
     graphql_client.force_login(user)
     submission = submission_factory(speaker=user, conference__active_cfp=False)
 
@@ -188,4 +186,4 @@ def test_cannot_edit_submission_if_cfp_is_closed(
         variables={"id": submission.hashid},
     )
 
-    assert response["data"]["submission"]["canEdit"] is False
+    assert response["data"]["submission"]["canEdit"] is True
