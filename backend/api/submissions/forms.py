@@ -29,9 +29,6 @@ class SubmissionForm(ContextAwareModelForm):
         if not conference and self.instance:
             conference = self.instance.conference
 
-        if not conference.is_cfp_open:
-            raise forms.ValidationError(_("The call for papers is not open!"))
-
         languages = cleaned_data.get("languages", None)
 
         if languages:
@@ -44,6 +41,8 @@ class SubmissionForm(ContextAwareModelForm):
                         }
                     )
 
+        return cleaned_data
+
 
 class UpdateSubmissionForm(SubmissionForm):
     instance = forms.ModelChoiceField(
@@ -55,10 +54,12 @@ class UpdateSubmissionForm(SubmissionForm):
         return Submission.objects.get_by_hashid(hashid)
 
     def clean(self):
-        super().clean()
+        cleaned_data = super().clean()
 
         if not self.instance.can_edit(self.context["request"]):
             raise exceptions.ValidationError(_("You cannot edit this submission"))
+
+        return cleaned_data
 
     def save(self, commit=True):
         return super().save(commit=commit)
@@ -86,6 +87,17 @@ class SendSubmissionForm(SubmissionForm):
     conference = forms.ModelChoiceField(
         queryset=Conference.objects.all(), to_field_name="code", required=True
     )
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        conference = cleaned_data.get("conference", None)
+
+        if not conference and self.instance:
+            conference = self.instance.conference
+
+        if not conference.is_cfp_open:
+            raise forms.ValidationError(_("The call for paper is not open!"))
 
     def save(self, commit=True):
         request = self.context["request"]

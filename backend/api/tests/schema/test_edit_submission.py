@@ -226,12 +226,12 @@ def test_cannot_update_submission_with_lang_outside_allowed_values(
 
 
 @mark.django_db
-def test_cannot_edit_submission_outside_cfp(
+def test_can_edit_submission_outside_cfp(
     graphql_client, user, conference_factory, submission_factory, submission_tag_factory
 ):
     conference = conference_factory(
         topics=("life", "diy"),
-        languages=("en",),
+        languages=("en", "it"),
         durations=("10", "20"),
         active_cfp=False,
         audience_levels=("adult", "senior"),
@@ -268,13 +268,7 @@ def test_cannot_edit_submission_outside_cfp(
         new_languages=["it"],
     )
 
-    assert (
-        response["data"]["updateSubmission"]["__typename"] == "UpdateSubmissionErrors"
-    )
-
-    assert response["data"]["updateSubmission"]["nonFieldErrors"] == [
-        "The call for papers is not open!"
-    ]
+    assert response["data"]["updateSubmission"]["__typename"] == "Submission"
 
 
 @mark.django_db

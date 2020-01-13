@@ -504,7 +504,7 @@ def test_cannot_propose_a_talk_if_the_cfp_is_not_open(
 
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
     assert resp["data"]["sendSubmission"]["nonFieldErrors"] == [
-        "The call for papers is not open!"
+        "The call for paper is not open!"
     ]
 
 
@@ -526,7 +526,7 @@ def test_cannot_propose_a_talk_if_a_cfp_is_not_specified(
 
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
     assert resp["data"]["sendSubmission"]["nonFieldErrors"] == [
-        "The call for papers is not open!"
+        "The call for paper is not open!"
     ]
 
 
