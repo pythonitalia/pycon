@@ -21,7 +21,10 @@ class Duration(models.Model):
     )
 
     def __str__(self):
-        return f"{self.name} - {self.duration} mins ({self.conference_id})"
+        return (
+            f"{self.name} - {self.duration} mins (at Conference "
+            f"{self.conference.name} <{self.conference.code}>)"
+        )
 
     class Meta:
         verbose_name = _("Duration")
