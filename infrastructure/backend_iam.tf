@@ -43,6 +43,14 @@ resource "aws_iam_user_policy" "backend" {
     {
       "Effect": "Allow",
       "Action": [
+        "mobiletargeting:UpdateEndpoint",
+        "mobiletargeting:GetEndpoint"
+      ],
+      "Resource": "arn:aws:mobiletargeting:*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
         "ses:*"
       ],
       "Resource": "*"
