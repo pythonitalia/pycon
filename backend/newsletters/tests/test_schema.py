@@ -91,8 +91,14 @@ def test_unsubscribe_not_registered_mail_to_newsletter(graphql_client):
         """
 
     resp = graphql_client.query(query, variables=variables)
-    assert resp["data"]["unsubscribeToNewsletter"]["__typename"] == "OperationResult"
-    assert resp["data"]["unsubscribeToNewsletter"]["ok"] is True
+
+    assert resp["errors"] == [
+        {
+            "locations": [{"column": 17, "line": 3}],
+            "message": "Subscription matching query does not exist.",
+            "path": ["unsubscribeToNewsletter"],
+        }
+    ]
 
 
 def _update_user_newsletter(graphql_client, user, open_to_newsletter):

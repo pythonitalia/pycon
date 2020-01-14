@@ -53,22 +53,3 @@ def test_query_submissions(graphql_client, user, submission_factory):
     assert "errors" not in response
     assert len(response["data"]["me"]["submissions"]) == 1
     assert response["data"]["me"]["submissions"][0]["id"] == submission.hashid
-
-
-def test_register_to_newsletter(graphql_client):
-    email = "john@doe.com"
-
-    query = """
-        mutation($email: String!) {
-            registerToNewsletter(input: {email: $email}) {
-                __typename
-                ... on RegisterToNewsletterErrors {
-                    email
-                    nonFieldErrors
-                }
-            }
-        }
-    """
-    resp = graphql_client.query(query, variables={"email": email})
-    print(resp)
-    assert resp

@@ -1,5 +1,4 @@
 from django import forms
-
 from newsletters.models import Subscription
 from strawberry_forms.forms import FormWithContext
 
@@ -9,7 +8,8 @@ class SubscribeToNewsletterForm(FormWithContext):
 
     def save(self):
         email = self.cleaned_data.get("email")
-        subscription = Subscription.objects.get_or_create(email=email)[0]
+        subscription, _ = Subscription.objects.get_or_create(email=email)
+
         return subscription
 
 
@@ -18,8 +18,7 @@ class UnsubscribeToNewsletterForm(FormWithContext):
 
     def save(self):
         email = self.cleaned_data.get("email")
-        try:
-            deleted, _ = Subscription.objects.get(email=email).delete()
-            return deleted == 1
-        except Subscription.DoesNotExist:
-            return True
+
+        Subscription.objects.get(email=email).delete()
+
+        return True

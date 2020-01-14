@@ -97,7 +97,7 @@ def test_calls_create_order(graphql_client, user, conference, mocker):
 
     assert not response.get("errors")
     assert response["data"]["createOrder"]["paymentUrl"] == (
-        "https://example.com?return_url=http://test.it/en/orders" "/123/confirmation"
+        "https://example.com?return_url=http://test.it/en/orders/123/confirmation"
     )
 
     create_order_mock.assert_called_once()
@@ -210,7 +210,7 @@ def test_order_hotel_room(
 
     assert not response.get("errors")
     assert response["data"]["createOrder"]["paymentUrl"] == (
-        "https://example.com?return_url=http://test.it/en/orders" "/123/confirmation"
+        "https://example.com?return_url=http://test.it/en/orders/123/confirmation"
     )
 
     reservation = HotelRoomReservation.objects.filter(room=room).first()
