@@ -93,9 +93,6 @@ class SendSubmissionForm(SubmissionForm):
 
         conference = cleaned_data.get("conference", None)
 
-        if not conference and self.instance:
-            conference = self.instance.conference
-
         if not conference.is_cfp_open:
             raise forms.ValidationError(_("The call for paper is not open!"))
 
