@@ -49,29 +49,6 @@ export const VotingPage: React.SFC<Props> = ({ location }) => {
       e => e.message === "You need to have a ticket to see submissions",
     ) !== -1;
 
-  const filterSubmission = useCallback(
-    (submission: VotingSubmissionsQuery["conference"]["submissions"][0]) => {
-      if (
-        filters.values.topic &&
-        submission.topic?.id !== filters.values.topic
-      ) {
-        return false;
-      }
-
-      if (
-        filters.values.language &&
-        submission.languages?.findIndex(
-          language => language.code === filters.values.language,
-        ) === -1
-      ) {
-        return false;
-      }
-
-      return true;
-    },
-    [filters],
-  );
-
   return (
     <Box>
       <FormattedMessage id="voting.seoTitle">
@@ -194,8 +171,26 @@ export const VotingPage: React.SFC<Props> = ({ location }) => {
             listStyle: "none",
           }}
         >
-          {data.conference.submissions
-            .filter(filterSubmission)
+          {data.conference
+            .submissions!.filter(submission => {
+              if (
+                filters.values.topic &&
+                submission.topic?.id !== filters.values.topic
+              ) {
+                return false;
+              }
+
+              if (
+                filters.values.language &&
+                submission.languages?.findIndex(
+                  language => language.code === filters.values.language,
+                ) === -1
+              ) {
+                return false;
+              }
+
+              return true;
+            })
             .map(submission => (
               <SubmissionAccordion
                 vote={submission.myVote}
