@@ -1,19 +1,15 @@
-import math
 import random
 
 import pytest
 from django.core.management import CommandError, call_command
 from submissions.models import Submission
 from voting.management.commands.submisson_ranking import Command
-from voting.models import Vote
-
-
-def random_vote():
-    return math.floor(random.uniform(Vote.VALUES.not_interested, Vote.VALUES.must_see))
 
 
 @pytest.fixture
-def _setup(conference_factory, submission_factory, user_factory, vote_factory):
+def _setup(
+    conference_factory, submission_factory, user_factory, vote_factory, random_vote
+):
     conference = conference_factory()
 
     SUBMISSION_NUMBER = random.randint(1, 10)

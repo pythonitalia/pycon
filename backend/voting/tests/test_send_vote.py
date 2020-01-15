@@ -1,15 +1,10 @@
-import math
-import random
-
 from pytest import mark, raises
 from voting.models import Vote
+from voting.tests.fixtures.vote import get_random_vote
 
 
 def _submit_vote(client, submission, **kwargs):
-    value_index = kwargs.get(
-        "value_index",
-        math.floor(random.uniform(Vote.VALUES.not_interested, Vote.VALUES.must_see)),
-    )
+    value_index = kwargs.get("value_index", get_random_vote())
 
     defaults = {"value": value_index, "submission": submission.hashid}
 
