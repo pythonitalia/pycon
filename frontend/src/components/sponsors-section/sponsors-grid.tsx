@@ -46,20 +46,22 @@ const SponsorItem: React.SFC<ItemProps> = ({ sponsor, color }) => (
         }}
       />
 
-      <Img
-        style={{
-          position: "absolute",
-          top: 0,
-          bottom: 0,
-          left: 0,
-          right: 0,
-        }}
-        imgStyle={{
-          objectFit: "contain",
-        }}
-        alt={sponsor.name}
-        {...sponsor.imageFile!.childImageSharp}
-      />
+      {sponsor.imageFile && sponsor.imageFile.childImageSharp && (
+        <Img
+          style={{
+            position: "absolute",
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+          }}
+          imgStyle={{
+            objectFit: "contain",
+          }}
+          alt={sponsor.name}
+          {...sponsor.imageFile!.childImageSharp}
+        />
+      )}
     </Link>
   </Box>
 );
