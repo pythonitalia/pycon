@@ -81,9 +81,6 @@ class Submission:
             .values("id", "text", "created", "author__id", "author__name")
         )
 
-        print(self.speaker.id)
-        print(comments)
-
         return [
             SubmissionComment(
                 id=comment["id"],
