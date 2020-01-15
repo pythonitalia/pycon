@@ -235,30 +235,12 @@ export const SubmissionAccordion: React.SFC<Props> = ({
           }}
         >
           <Box>
-            {abstract && (
-              <Fragment>
-                <Heading mb={2} as="h2">
-                  <FormattedMessage id="voting.abstract" />
-                </Heading>
-                {compile(abstract).tree}
-              </Fragment>
-            )}
-
             {elevatorPitch && (
               <Fragment>
-                <Heading mt={4} mb={2} as="h2">
+                <Heading mb={2} as="h2">
                   <FormattedMessage id="voting.elevatorPitch" />
                 </Heading>
                 {compile(elevatorPitch).tree}
-              </Fragment>
-            )}
-
-            {notes && (
-              <Fragment>
-                <Heading mt={4} mb={2} as="h2">
-                  <FormattedMessage id="voting.notes" />
-                </Heading>
-                {compile(notes).tree}
               </Fragment>
             )}
           </Box>
