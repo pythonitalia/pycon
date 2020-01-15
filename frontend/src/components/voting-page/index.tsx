@@ -1,9 +1,10 @@
 /** @jsx jsx */
 import { useQuery } from "@apollo/react-hooks";
 import { RouteComponentProps } from "@reach/router";
-import { Box, Heading, Text } from "@theme-ui/components";
-import { Fragment } from "react";
+import { Box, Flex, Grid, Heading, Select, Text } from "@theme-ui/components";
+import { Fragment, useCallback } from "react";
 import { FormattedMessage } from "react-intl";
+import { useFormState } from "react-use-form-state";
 import { jsx } from "theme-ui";
 
 import { useLoginState } from "../../app/profile/hooks";
@@ -23,8 +24,14 @@ type Props = RouteComponentProps & {
   lang: string;
 };
 
+type Filters = {
+  topic: string;
+  language: string;
+};
+
 export const VotingPage: React.SFC<Props> = ({ location }) => {
   const [loggedIn] = useLoginState();
+  const [filters, { select }] = useFormState<Filters>();
 
   const { code: conferenceCode } = useConference();
   const { loading, error, data } = useQuery<
@@ -41,6 +48,29 @@ export const VotingPage: React.SFC<Props> = ({ location }) => {
     error?.graphQLErrors.findIndex(
       e => e.message === "You need to have a ticket to see submissions",
     ) !== -1;
+
+  const filterSubmission = useCallback(
+    (submission: VotingSubmissionsQuery["conference"]["submissions"][0]) => {
+      if (
+        filters.values.topic &&
+        submission.topic?.id !== filters.values.topic
+      ) {
+        return false;
+      }
+
+      if (
+        filters.values.language &&
+        submission.languages?.findIndex(
+          language => language.code === filters.values.language,
+        ) === -1
+      ) {
+        return false;
+      }
+
+      return true;
+    },
+    [filters],
+  );
 
   return (
     <Box>
@@ -60,35 +90,83 @@ export const VotingPage: React.SFC<Props> = ({ location }) => {
             px: 3,
           }}
         >
-          <Box
+          <Grid
             sx={{
-              maxWidth: 500,
+              gridTemplateColumns: [null, "1fr 1fr"],
+              gridColumnGap: 4,
             }}
           >
-            <Heading>
-              <FormattedMessage id="voting.heading" />
-            </Heading>
-            <Text my={4}>
-              <FormattedMessage id="voting.introduction" />
-            </Text>
-          </Box>
+            <Box>
+              <Heading>
+                <FormattedMessage id="voting.heading" />
+              </Heading>
 
-          {!cannotVoteErrors && error && (
-            <Alert variant="alert">{error.message}</Alert>
-          )}
+              <Text my={4}>
+                <FormattedMessage id="voting.introduction" />
+              </Text>
 
-          {cannotVoteErrors && error && (
-            <Alert variant="alert">
-              <Link href="/:language/tickets">
-                <FormattedMessage id="voting.buyTicketToVote" />
-              </Link>
-            </Alert>
-          )}
-          {loading && (
-            <Alert variant="info">
-              <FormattedMessage id="voting.loading" />
-            </Alert>
-          )}
+              {!cannotVoteErrors && error && (
+                <Alert variant="alert">{error.message}</Alert>
+              )}
+
+              {cannotVoteErrors && error && (
+                <Alert variant="alert">
+                  <Link href="/:language/tickets">
+                    <FormattedMessage id="voting.buyTicketToVote" />
+                  </Link>
+                </Alert>
+              )}
+              {loading && (
+                <Alert variant="info">
+                  <FormattedMessage id="voting.loading" />
+                </Alert>
+              )}
+            </Box>
+            <Flex
+              sx={{
+                flexDirection: ["column", "row"],
+                alignItems: [null, "flex-end"],
+                justifyContent: [null, "flex-end"],
+                mb: 4,
+              }}
+            >
+              <Select
+                {...select("topic")}
+                sx={{
+                  background: "orange",
+                  borderRadius: 0,
+                  borderRight: [null, "none"],
+                }}
+              >
+                <FormattedMessage id="voting.allTopics">
+                  {text => <option value="">{text}</option>}
+                </FormattedMessage>
+                {data?.conference.topics.map(topic => (
+                  <option key={topic.id} value={topic.id}>
+                    {topic.name}
+                  </option>
+                ))}
+              </Select>
+
+              <Select
+                {...select("language")}
+                sx={{
+                  background: "violet",
+                  mt: [3, 0],
+                  borderRadius: 0,
+                }}
+              >
+                <FormattedMessage id="voting.allLanguages">
+                  {text => <option value="">{text}</option>}
+                </FormattedMessage>
+                {data?.conference.languages.map(language => (
+                  <option key={language.id} value={language.code}>
+                    {language.name}
+                  </option>
+                ))}
+              </Select>
+            </Flex>
+          </Grid>
         </Box>
       </Box>
 
@@ -116,13 +194,15 @@ export const VotingPage: React.SFC<Props> = ({ location }) => {
             listStyle: "none",
           }}
         >
-          {data.conference.submissions.map(submission => (
-            <SubmissionAccordion
-              vote={submission.myVote}
-              key={submission.id}
-              submission={submission}
-            />
-          ))}
+          {data.conference.submissions
+            .filter(filterSubmission)
+            .map(submission => (
+              <SubmissionAccordion
+                vote={submission.myVote}
+                key={submission.id}
+                submission={submission}
+              />
+            ))}
         </Box>
       )}
     </Box>

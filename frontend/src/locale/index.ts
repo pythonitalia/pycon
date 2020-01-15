@@ -316,6 +316,8 @@ export const messages = {
     "voting.buyTicketToVote": "You need a ticket to vote",
     "voting.loading": "Loading",
     "voting.fullDetails": "Full details",
+    "voting.allTopics": "All topics",
+    "voting.allLanguages": "All languages",
 
     "voting.abstract": "Abstract",
     "voting.elevatorPitch": "Elevator pitch",
@@ -635,6 +637,8 @@ export const messages = {
     "voting.needToBeLoggedIn": "Esegui l'accesso o crea un account per votare",
     "voting.buyTicketToVote": "Devi comprare un biglietto per poter votare",
     "voting.fullDetails": "Continua a leggere",
+    "voting.allTopics": "Tutti gli argomenti",
+    "voting.allLanguages": "Tutte le lingue",
 
     "voting.abstract": "Descrizione",
     "voting.elevatorPitch": "Pitch",

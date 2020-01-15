@@ -1,5 +1,16 @@
 query VotingSubmissions($conference: String!) {
   conference(code: $conference) {
+    topics {
+      id
+      name
+    }
+
+    languages {
+      id
+      name
+      code
+    }
+
     submissions {
       id
       title
@@ -32,6 +43,7 @@ query VotingSubmissions($conference: String!) {
       languages {
         id
         name
+        code
       }
 
       myVote {
