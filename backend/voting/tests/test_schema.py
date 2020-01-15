@@ -42,8 +42,11 @@ def test_cannot_get_my_vote_as_unlogged(graphql_client, user, vote_factory):
         variables={"conference": vote.submission.conference.code},
     )
 
-    assert response["errors"][0]["message"] == "User not logged in"
-    assert response["errors"][0]["path"] == ["conference", "submissions", 0, "myVote"]
+    assert (
+        response["errors"][0]["message"]
+        == "You need to have a ticket to see submissions"
+    )
+    assert response["errors"][0]["path"] == ["conference", "submissions"]
 
 
 @mark.django_db

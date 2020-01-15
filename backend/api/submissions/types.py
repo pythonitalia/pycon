@@ -4,7 +4,6 @@ import strawberry
 from api.languages.types import Language
 from api.scalars import DateTime
 from api.voting.types import VoteType
-from graphql import GraphQLError
 from voting.models import Vote
 
 from .permissions import CanSeeSubmissionPrivateFields, CanSeeSubmissionTicketDetail
@@ -98,9 +97,6 @@ class Submission:
     @strawberry.field
     def my_vote(self, info) -> Optional[VoteType]:
         request = info.context["request"]
-
-        if not request.user.is_authenticated:
-            raise GraphQLError("User not logged in")
 
         try:
             return self.votes.get(user_id=request.user.id)
