@@ -169,3 +169,28 @@ class SubmissionType(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class SubmissionComment(TimeStampedModel):
+    submission = models.ForeignKey(
+        "submissions.Submission",
+        on_delete=models.CASCADE,
+        verbose_name=_("submission"),
+        related_name="comments",
+    )
+
+    author = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        verbose_name=_("author"),
+        on_delete=models.CASCADE,
+        related_name="comments",
+    )
+
+    text = models.CharField(_("text"), max_length=500)
+
+    def __str__(self):
+        return f"{self.author.full_name} {self.submission.title}"
+
+    class Meta:
+        verbose_name = _("comment")
+        verbose_name_plural = _("comments")

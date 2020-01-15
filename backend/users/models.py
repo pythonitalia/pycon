@@ -5,6 +5,8 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from helpers.constants import GENDERS
 from pycountry import countries
+from pretix.db import user_has_admission_ticket
+from submissions.models import Submission
 
 from .managers import UserManager
 
@@ -79,6 +81,12 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def get_short_name(self):
         return self.email
+
+    def has_sent_submission(self, conference):
+        return Submission.objects.filter(speaker=self, conference=conference).exists()
+
+    def has_conference_ticket(self, conference):
+        return user_has_admission_ticket(self.email, conference.pretix_event_id)
 
     def clean(self):
         # TODO check required field here i.e. company-required-fileds?

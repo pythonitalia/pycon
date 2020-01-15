@@ -27,5 +27,13 @@ query Submission($id: ID!) {
       id
       name
     }
+    comments {
+      id
+      text
+      created
+      author {
+        name
+      }
+    }
   }
 }

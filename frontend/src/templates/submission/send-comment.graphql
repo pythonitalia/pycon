@@ -1,0 +1,20 @@
+mutation SendComment($input: SendSubmissionCommentInput!) {
+  sendSubmissionComment(input: $input) {
+    __typename
+
+    ... on SubmissionComment {
+      text
+      id
+      created
+      author {
+        name
+      }
+    }
+
+    ... on SendSubmissionCommentErrors {
+      validationText: text
+      validationSubmission: submission
+      nonFieldErrors
+    }
+  }
+}

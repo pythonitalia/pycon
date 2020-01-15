@@ -2,8 +2,8 @@ from typing import TYPE_CHECKING, List, Optional
 
 import strawberry
 from api.languages.types import Language
+from api.scalars import DateTime
 from api.voting.types import VoteType
-from graphql import GraphQLError
 from voting.models import Vote
 
 from .permissions import CanSeeSubmissionPrivateFields, CanSeeSubmissionTicketDetail
@@ -35,6 +35,19 @@ class SubmissionTag:
 
 
 @strawberry.type
+class SubmissionCommentAuthor:
+    name: str
+
+
+@strawberry.type
+class SubmissionComment:
+    id: strawberry.ID
+    text: str
+    created: DateTime
+    author: SubmissionCommentAuthor
+
+
+@strawberry.type
 class Submission:
     conference: "Conference"
     title: str
@@ -58,12 +71,32 @@ class Submission:
     def can_edit(self, info) -> bool:
         return self.can_edit(info.context["request"])
 
+    @strawberry.field(permission_classes=[CanSeeSubmissionTicketDetail])
+    def comments(self, info) -> List[SubmissionComment]:
+        comments = (
+            self.comments.all()
+            .order_by("created")
+            .select_related("author")
+            .values("id", "text", "created", "author__id", "author__name")
+        )
+
+        return [
+            SubmissionComment(
+                id=comment["id"],
+                text=comment["text"],
+                created=comment["created"],
+                author=SubmissionCommentAuthor(
+                    name="Speaker"
+                    if comment["author__id"] == self.speaker.id
+                    else comment["author__name"]
+                ),
+            )
+            for comment in comments
+        ]
+
     @strawberry.field
     def my_vote(self, info) -> Optional[VoteType]:
         request = info.context["request"]
-
-        if not request.user.is_authenticated:
-            raise GraphQLError("User not logged in")
 
         try:
             return self.votes.get(user_id=request.user.id)

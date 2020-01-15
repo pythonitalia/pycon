@@ -21,3 +21,21 @@ class HasTokenPermission(BasePermission):
             return APIToken.objects.filter(token=token).exists()
 
         return False
+
+
+class CanSeeSubmissions(BasePermission):
+    message = "You need to have a ticket to see submissions"
+
+    def has_permission(self, conference, info):
+        user = info.context["request"].user
+
+        if not user.is_authenticated:
+            return False
+
+        if user.is_staff:
+            return True
+
+        if user.has_sent_submission(conference):
+            return True
+
+        return user.has_conference_ticket(conference)

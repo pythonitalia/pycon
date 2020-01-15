@@ -21,6 +21,7 @@ from schedule.models import ScheduleItem as ScheduleItemModel
 
 from ..helpers.i18n import make_localized_resolver
 from ..helpers.maps import Map, resolve_map
+from ..permissions import CanSeeSubmissions
 
 
 @strawberry.type
@@ -109,9 +110,8 @@ class Conference:
     def submission_types(self, info) -> List[SubmissionType]:
         return self.submission_types.all()
 
-    # TODO: only when current user has a ticket
-    @strawberry.field
-    def submissions(self, info) -> List[Submission]:
+    @strawberry.field(permission_classes=[CanSeeSubmissions])
+    def submissions(self, info) -> Optional[List[Submission]]:
         return self.submissions.all()
 
     @strawberry.field

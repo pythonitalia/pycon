@@ -13,6 +13,7 @@ import { ResetPassword } from "../components/reset-password";
 import { SignupForm } from "../components/signup-form";
 import { SocialLoginSuccess } from "../components/social-login-success";
 import { TicketsPage } from "../components/tickets-page";
+import { VotingPage } from "../components/voting-page";
 import { GrantScreen } from "../screens/grants";
 import { OrderConfirmationScreen } from "../screens/order-confirmation";
 import { SubmissionPage } from "./submission";
@@ -38,5 +39,6 @@ export default () => (
       path="/:lang/orders/:code/confirmation"
       component={OrderConfirmationScreen}
     />
+    <VotingPage path="/:lang/voting/" />
   </Router>
 );

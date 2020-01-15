@@ -428,14 +428,13 @@ def test_get_conference_hotel_rooms(graphql_client, conference_factory, hotel_ro
         variables={"code": hotel_room.conference.code},
     )
 
-    # hotel_room
     assert "errors" not in resp
     assert resp["data"]["conference"]["hotelRooms"] == [
         {
             "id": str(hotel_room.id),
             "name": hotel_room.name.localize("it"),
             "description": hotel_room.description.localize("it"),
-            "price": str(hotel_room.price),
+            "price": f"{hotel_room.price:.2f}",
         }
     ]
 
@@ -482,3 +481,48 @@ def test_is_cfp_open_false_when_no_deadline(graphql_client, conference):
     )
 
     assert resp["data"]["conference"]["isCFPOpen"] is False
+
+
+@mark.django_db
+def test_can_see_submissions_as_staff(graphql_client, submission_factory, user_factory):
+    user = user_factory(is_staff=True)
+    submission = submission_factory()
+
+    graphql_client.force_login(user)
+
+    response = graphql_client.query(
+        """query($code: String!) {
+            conference(code: $code) {
+                submissions {
+                    id
+                }
+            }
+        }""",
+        variables={"code": submission.conference.code},
+    )
+
+    assert len(response["data"]["conference"]["submissions"]) == 1
+
+
+@mark.django_db
+def test_can_see_submissions_if_they_have_sent_one(
+    graphql_client, conference, submission_factory, user_factory
+):
+    user = user_factory()
+    submission_factory(conference=conference)
+    submission_factory(conference=conference, speaker=user)
+
+    graphql_client.force_login(user)
+
+    response = graphql_client.query(
+        """query($code: String!) {
+            conference(code: $code) {
+                submissions {
+                    id
+                }
+            }
+        }""",
+        variables={"code": conference.code},
+    )
+
+    assert len(response["data"]["conference"]["submissions"]) == 2

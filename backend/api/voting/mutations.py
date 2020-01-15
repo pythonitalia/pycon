@@ -1,4 +1,5 @@
 import strawberry
+from api.permissions import IsAuthenticated
 from strawberry_forms.mutations import FormMutation
 
 from .forms import SendVoteForm
@@ -17,6 +18,7 @@ class SendVote(FormMutation):
 
     class Meta:
         form_class = SendVoteForm
+        permission_classes = (IsAuthenticated,)
         output_types = (VoteType,)
 
 

@@ -51,6 +51,10 @@ class FormMutation:
         output.__args__ = (error_type, *output_types)
 
         def _mutate(root, info, input: input_type) -> output:
+            # Add the mutation input in the context so we can access it inside the permissions
+            if info:
+                info.context["input"] = input
+
             # Once we implement the permission in strawberry we can remove this :)
             if hasattr(cls.Meta, "permission_classes") and cls.Meta.permission_classes:
                 for permission in cls.Meta.permission_classes:

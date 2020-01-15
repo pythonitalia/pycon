@@ -11,7 +11,12 @@ from django.conf import settings
 from factory.django import DjangoModelFactory
 from languages.models import Language
 from pytest_factoryboy import register
-from submissions.models import Submission, SubmissionTag, SubmissionType
+from submissions.models import (
+    Submission,
+    SubmissionTag,
+    SubmissionType,
+    SubmissionComment,
+)
 from users.tests.factories import UserFactory
 
 
@@ -115,3 +120,13 @@ class SubmissionFactory(DjangoModelFactory):
             for tag_name in extracted:
                 tag, _ = SubmissionTag.objects.get_or_create(name=tag_name)
                 self.tags.add(tag)
+
+
+@register
+class SubmissionCommentFactory(DjangoModelFactory):
+    class Meta:
+        model = SubmissionComment
+
+    submission = factory.SubFactory(SubmissionFactory)
+    text = factory.Faker("text")
+    author = factory.SubFactory(UserFactory)

@@ -1,0 +1,55 @@
+query VotingSubmissions($conference: String!) {
+  conference(code: $conference) {
+    topics {
+      id
+      name
+    }
+
+    languages {
+      id
+      name
+      code
+    }
+
+    submissions {
+      id
+      title
+
+      abstract
+      elevatorPitch
+      notes
+
+      topic {
+        id
+        name
+      }
+
+      tags {
+        name
+        id
+      }
+
+      audienceLevel {
+        id
+        name
+      }
+
+      duration {
+        id
+        name
+        duration
+      }
+
+      languages {
+        id
+        name
+        code
+      }
+
+      myVote {
+        id
+        value
+      }
+    }
+  }
+}
