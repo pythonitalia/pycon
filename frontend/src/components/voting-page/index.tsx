@@ -39,7 +39,7 @@ export const VotingPage: React.SFC<Props> = ({ location }) => {
 
   const cannotVoteErrors =
     error?.graphQLErrors.findIndex(
-      e => e.message === "You can't see details for this submission",
+      e => e.message === "You need to have a ticket to see submissions",
     ) !== -1;
 
   return (
