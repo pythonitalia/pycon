@@ -32,9 +32,7 @@ query Submission($id: ID!) {
       text
       created
       author {
-        id
         name
-        fullName
       }
     }
   }

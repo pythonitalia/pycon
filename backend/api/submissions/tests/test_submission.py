@@ -250,3 +250,39 @@ def test_get_submission_comments(graphql_client, user, submission_comment_factor
         "text": comment.text,
         "author": {"name": comment.author.name},
     } in response["data"]["submission"]["comments"]
+
+
+@mark.django_db
+def test_get_submission_comments_returns_speaker_as_name(
+    graphql_client, user, submission, submission_comment_factory
+):
+    graphql_client.force_login(user)
+
+    comment = submission_comment_factory(
+        submission=submission, author=submission.speaker
+    )
+
+    response = graphql_client.query(
+        """
+        query Submission($id: ID!) {
+            submission(id: $id) {
+                id
+                comments {
+                    id
+                    text
+                    author {
+                        name
+                    }
+                }
+            }
+        }
+    """,
+        variables={"id": comment.submission.hashid},
+    )
+
+    assert len(response["data"]["submission"]["comments"]) == 1
+    assert {
+        "id": str(comment.id),
+        "text": comment.text,
+        "author": {"name": "Speaker"},
+    } == response["data"]["submission"]["comments"][0]

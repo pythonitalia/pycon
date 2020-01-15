@@ -63,7 +63,7 @@ const Comment: React.SFC<CommentProps> = ({ author, text, created }) => {
       <FormattedMessage
         id="submission.commentHead"
         values={{
-          author: <strong>{author.fullName ?? author.name}</strong>,
+          author: <strong>{author.name}</strong>,
           when: formatter.format(date),
         }}
       />

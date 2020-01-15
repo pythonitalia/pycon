@@ -2,9 +2,9 @@ import strawberry
 from api.permissions import IsAuthenticated
 from strawberry_forms.mutations import FormMutation
 
+from .forms import SendSubmissionCommentForm, SendSubmissionForm, UpdateSubmissionForm
 from .permissions import CanSendComment
-from .forms import SendSubmissionForm, UpdateSubmissionForm, SendSubmissionCommentForm
-from .types import Submission, SubmissionComment
+from .types import Submission, SubmissionComment, SubmissionCommentAuthor
 
 
 class SubmissionMutation:
@@ -33,7 +33,14 @@ class SendSubmissionComment(FormMutation):
     @classmethod
     def transform(cls, result):
         return SubmissionComment(
-            id=result.id, text=result.text, author=result.author, created=result.created
+            id=result.id,
+            text=result.text,
+            author=SubmissionCommentAuthor(
+                name="Speaker"
+                if result.author == result.submission.speaker
+                else result.author.name
+            ),
+            created=result.created,
         )
 
     class Meta(SubmissionMutation.Meta):

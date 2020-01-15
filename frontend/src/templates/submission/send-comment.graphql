@@ -7,9 +7,7 @@ mutation SendComment($input: SendSubmissionCommentInput!) {
       id
       created
       author {
-        id
         name
-        fullName
       }
     }
 

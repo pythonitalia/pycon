@@ -2,11 +2,10 @@ from typing import TYPE_CHECKING, List, Optional
 
 import strawberry
 from api.languages.types import Language
+from api.scalars import DateTime
 from api.voting.types import VoteType
 from graphql import GraphQLError
 from voting.models import Vote
-from api.users.types import User
-from api.scalars import DateTime
 
 from .permissions import CanSeeSubmissionPrivateFields, CanSeeSubmissionTicketDetail
 
@@ -37,11 +36,16 @@ class SubmissionTag:
 
 
 @strawberry.type
+class SubmissionCommentAuthor:
+    name: str
+
+
+@strawberry.type
 class SubmissionComment:
     id: strawberry.ID
     text: str
-    author: User
     created: DateTime
+    author: SubmissionCommentAuthor
 
 
 @strawberry.type
@@ -70,7 +74,29 @@ class Submission:
 
     @strawberry.field(permission_classes=[CanSeeSubmissionTicketDetail])
     def comments(self, info) -> List[SubmissionComment]:
-        return self.comments.all().order_by("created")
+        comments = (
+            self.comments.all()
+            .order_by("created")
+            .select_related("author")
+            .values("id", "text", "created", "author__id", "author__name")
+        )
+
+        print(self.speaker.id)
+        print(comments)
+
+        return [
+            SubmissionComment(
+                id=comment["id"],
+                text=comment["text"],
+                created=comment["created"],
+                author=SubmissionCommentAuthor(
+                    name="Speaker"
+                    if comment["author__id"] == self.speaker.id
+                    else comment["author__name"]
+                ),
+            )
+            for comment in comments
+        ]
 
     @strawberry.field
     def my_vote(self, info) -> Optional[VoteType]:
