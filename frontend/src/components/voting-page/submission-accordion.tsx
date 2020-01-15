@@ -174,10 +174,11 @@ export const SubmissionAccordion: React.SFC<Props> = ({
             justifyContent: "space-between",
             p: 3,
           }}
+          onClick={toggleAccordion}
         >
           <Text>{title}</Text>
 
-          <Text onClick={toggleAccordion}>
+          <Text>
             <FormattedMessage id={open ? "voting.close" : "voting.readMore"} />
           </Text>
         </Flex>
@@ -221,7 +222,11 @@ export const SubmissionAccordion: React.SFC<Props> = ({
               )}
 
               <Box as="footer" sx={{ mt: 4 }}>
-                <Link variant="button" href={`/:language/submission/${id}`}>
+                <Link
+                  variant="button"
+                  href={`/:language/submission/${id}`}
+                  target="_blank"
+                >
                   <FormattedMessage id="voting.fullDetails" />
                 </Link>
               </Box>

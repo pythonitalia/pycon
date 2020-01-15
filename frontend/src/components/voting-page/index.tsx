@@ -51,11 +51,7 @@ export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
         {title => <MetaTags title={title} />}
       </FormattedMessage>
 
-      <Box
-        sx={{
-          borderBottom: loggedIn ? "" : "primary",
-        }}
-      >
+      <Box>
         <Box
           sx={{
             maxWidth: "container",
@@ -144,7 +140,7 @@ export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
       </Box>
 
       {!loggedIn && (
-        <Fragment>
+        <Box sx={{ borderTop: "primary" }}>
           <Box
             sx={{
               maxWidth: "container",
@@ -157,7 +153,7 @@ export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
             </Alert>
           </Box>
           <LoginForm next={location?.href} />
-        </Fragment>
+        </Box>
       )}
 
       {loggedIn && data && (
