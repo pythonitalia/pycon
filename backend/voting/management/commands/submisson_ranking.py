@@ -25,6 +25,9 @@ class Command(BaseCommand):
         """Decide here how to rank submission (e,g. vote-engine)
         for "now" simply Sums votes.
 
+        P. S. maybe we should make some *Strategy* in order to have all
+        available and run different strategies...
+
         :param submissions: Submission queryset
         :return: submissions sorted by ranking in descending order
         :rtype: list of dictionary
