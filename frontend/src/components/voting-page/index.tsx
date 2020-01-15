@@ -20,16 +20,12 @@ import { MetaTags } from "../meta-tags";
 import { SubmissionAccordion } from "./submission-accordion";
 import VOTING_SUBMISSIONS from "./voting-submissions.graphql";
 
-type Props = RouteComponentProps & {
-  lang: string;
-};
-
 type Filters = {
   topic: string;
   language: string;
 };
 
-export const VotingPage: React.SFC<Props> = ({ location }) => {
+export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
   const [loggedIn] = useLoginState();
   const [filters, { select }] = useFormState<Filters>();
 

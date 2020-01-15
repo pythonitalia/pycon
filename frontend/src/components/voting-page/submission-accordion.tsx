@@ -95,7 +95,7 @@ export const SubmissionAccordion: React.SFC<Props> = ({
         },
       });
 
-      const submissions = cachedQuery!.conference.submissions;
+      const submissions = cachedQuery!.conference.submissions!;
 
       const updatedSubmissionIndex = submissions.findIndex(i => i.id === id)!;
       const updatedSubmission = {
@@ -108,6 +108,7 @@ export const SubmissionAccordion: React.SFC<Props> = ({
         {
           query: VOTING_SUBMISSIONS,
           data: {
+            // @ts-ignore
             conference: {
               ...cachedQuery?.conference,
               submissions,

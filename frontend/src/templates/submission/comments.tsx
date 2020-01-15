@@ -12,7 +12,6 @@ type CommentProps = {
   created: string;
   author: {
     name: string;
-    fullName: string;
   };
 };
 

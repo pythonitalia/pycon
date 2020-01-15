@@ -41,7 +41,6 @@ type Props = {
           created: string;
           author: {
             name: string;
-            fullName: string;
           };
         }[]
       | null;
