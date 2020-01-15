@@ -297,7 +297,10 @@ export const messages = {
     "orderReview.checkin": "Check-in",
     "orderReview.checkout": "Check-out",
 
-    "voting.heading": "Proposals",
+    "voting.heading": "Community voting",
+    "voting.introduction": `This is your opportunity to have a say on what you want to see at
+      PyCon Italy! Voting will help us creating a program that better
+      reflects what everyone wants to see!`,
     "voting.seoTitle": "Voting",
     "voting.close": "Close",
     "voting.readMore": "Read more",
@@ -614,7 +617,9 @@ export const messages = {
     "voteSelector.wantToSee": "Voglio vederlo",
     "voteSelector.mustSee": "Devo vederlo",
 
-    "voting.heading": "Proposte",
+    "voting.heading": "Votazione comunitaria",
+    "voting.introduction": `Questa è la tua opportunità per aiutarci a dare forma al programma di PyCon Italia.
+      Il tuo voto ci aiuterà a creare un programma che più rispecchia ciò che la community vuole vedere.`,
     "voting.seoTitle": "Votazione",
     "voting.close": "Chiudi",
     "voting.readMore": "Apri",

@@ -69,9 +69,7 @@ export const VotingPage: React.SFC<Props> = ({ location }) => {
               <FormattedMessage id="voting.heading" />
             </Heading>
             <Text my={4}>
-              Donec rutrum congue leo eget malesuada. Lorem ipsum dolor sit
-              amet, consectetur adipiscing elit. Vivamus magna justo, lacinia
-              eget consectetur sed, convallis at tellus.
+              <FormattedMessage id="voting.introduction" />
             </Text>
           </Box>
 
