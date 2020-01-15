@@ -1,5 +1,4 @@
 from pytest import mark
-
 from submissions.models import SubmissionComment
 
 
@@ -15,7 +14,7 @@ def _send_comment(client, submission, text):
                 text
                 created
                 author {
-                    id
+                    name
                 }
             }
 
@@ -39,7 +38,7 @@ def test_send_comment(graphql_client, user, submission):
 
     assert resp["data"]["sendSubmissionComment"]["__typename"] == "SubmissionComment"
     assert resp["data"]["sendSubmissionComment"]["text"] == "Hello world!"
-    assert resp["data"]["sendSubmissionComment"]["author"]["id"] == str(user.id)
+    assert resp["data"]["sendSubmissionComment"]["author"]["name"] == "Speaker"
 
     comment = SubmissionComment.objects.get(submission=submission, author=user)
 
