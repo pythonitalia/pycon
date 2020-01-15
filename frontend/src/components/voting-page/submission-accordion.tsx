@@ -163,142 +163,113 @@ export const SubmissionAccordion: React.SFC<Props> = ({
       <Box
         sx={{
           borderTop: "primary",
+          borderBottom: open && "primary",
         }}
       >
-        <Grid
+        <Flex
           sx={{
             maxWidth: "container",
             mx: "auto",
-            px: [0, 3],
-            gap: 0,
-            gridTemplateColumns: [
-              null,
-              "4fr 6fr 2fr",
-              "4fr 6fr 2fr",
-              "8fr 6fr 2fr",
-            ],
-            alignItems: "center",
+            justifyContent: "space-between",
+            p: 3,
           }}
         >
-          <Flex
-            sx={{
-              justifyContent: "space-between",
-              px: [3, 0],
-              py: [3, 0],
-            }}
-          >
-            <Text>{title}</Text>
+          <Text>{title}</Text>
 
-            <Text onClick={toggleAccordion}>
-              <FormattedMessage
-                id={open ? "voting.close" : "voting.readMore"}
-              />
-            </Text>
-          </Flex>
-
-          {open && (
-            <Fragment>
-              <VoteSelector
-                sx={{
-                  borderLeft: ["none", "primary"],
-                  borderRight: ["none", "primary"],
-                  borderTop: "primary",
-                  px: [3, 3, 4],
-                  py: [3, 0],
-                }}
-                value={vote?.value ?? 0}
-                onVote={onVote}
-                label={
-                  loading ? (
-                    <FormattedMessage id="voting.saving" />
-                  ) : (
-                    <FormattedMessage id="voting.vote" />
-                  )
-                }
-              />
-            </Fragment>
-          )}
-        </Grid>
+          <Text onClick={toggleAccordion}>
+            <FormattedMessage id={open ? "voting.close" : "voting.readMore"} />
+          </Text>
+        </Flex>
       </Box>
 
       {open && (
-        <Grid
-          sx={{
-            borderTop: "primary",
-            maxWidth: "container",
-            mx: "auto",
-            px: 3,
-            py: [3, 5],
-            gridTemplateColumns: [null, "3fr 1fr"],
-            columnGap: 4,
-          }}
-        >
-          <Box>
-            {elevatorPitch && (
-              <Fragment>
-                <Heading
-                  mb={2}
-                  as="h2"
-                  sx={{
-                    fontSize: 2,
-                    textTransform: "uppercase",
-                    color: "white",
-                  }}
-                >
-                  <FormattedMessage id="voting.elevatorPitch" />
-                </Heading>
-                {compile(elevatorPitch).tree}
-              </Fragment>
-            )}
-
-            <Box as="footer" sx={{ mt: 4 }}>
-              <Link variant="button" href={`/:language/submission/${id}`}>
-                <FormattedMessage id="voting.fullDetails" />
-              </Link>
-            </Box>
+        <Fragment>
+          <Box sx={{ borderBottom: "primary" }}>
+            <VoteSelector
+              value={vote?.value ?? 0}
+              onVote={onVote}
+              sx={{ p: 3, maxWidth: "container", mx: "auto" }}
+            />
           </Box>
-          <Box
-            as="ul"
+          <Grid
             sx={{
-              listStyle: "none",
+              maxWidth: "container",
+              mx: "auto",
+              px: 3,
+              py: [3, 5],
+              gridTemplateColumns: [null, "3fr 1fr"],
+              columnGap: 4,
             }}
           >
-            {topic && (
-              <SubmissionInfo
-                label={<FormattedMessage id="voting.topic" />}
-                value={topic.name}
-              />
-            )}
-            {audienceLevel && (
-              <SubmissionInfo
-                label={<FormattedMessage id="voting.audienceLevel" />}
-                value={audienceLevel.name}
-              />
-            )}
-            {duration && (
-              <SubmissionInfo
-                label={<FormattedMessage id="voting.length" />}
-                value={
-                  <FormattedMessage id="voting.minutes">
-                    {text => `${duration.name} (${duration.duration} ${text})`}
-                  </FormattedMessage>
-                }
-              />
-            )}
-            {tags && (
-              <SubmissionInfo
-                label={<FormattedMessage id="voting.tags" />}
-                value={tags.map(t => t.name).join(", ")}
-              />
-            )}
-            {languages && (
-              <SubmissionInfo
-                label={<FormattedMessage id="voting.languages" />}
-                value={languages.map(t => t.name).join(", ")}
-              />
-            )}
-          </Box>
-        </Grid>
+            <Box>
+              {elevatorPitch && (
+                <Fragment>
+                  <Heading
+                    mb={2}
+                    as="h2"
+                    sx={{
+                      fontSize: 2,
+                      textTransform: "uppercase",
+                      color: "white",
+                    }}
+                  >
+                    <FormattedMessage id="voting.elevatorPitch" />
+                  </Heading>
+                  {compile(elevatorPitch).tree}
+                </Fragment>
+              )}
+
+              <Box as="footer" sx={{ mt: 4 }}>
+                <Link variant="button" href={`/:language/submission/${id}`}>
+                  <FormattedMessage id="voting.fullDetails" />
+                </Link>
+              </Box>
+            </Box>
+            <Box
+              as="ul"
+              sx={{
+                listStyle: "none",
+              }}
+            >
+              {topic && (
+                <SubmissionInfo
+                  label={<FormattedMessage id="voting.topic" />}
+                  value={topic.name}
+                />
+              )}
+              {audienceLevel && (
+                <SubmissionInfo
+                  label={<FormattedMessage id="voting.audienceLevel" />}
+                  value={audienceLevel.name}
+                />
+              )}
+              {duration && (
+                <SubmissionInfo
+                  label={<FormattedMessage id="voting.length" />}
+                  value={
+                    <FormattedMessage id="voting.minutes">
+                      {text =>
+                        `${duration.name} (${duration.duration} ${text})`
+                      }
+                    </FormattedMessage>
+                  }
+                />
+              )}
+              {tags && (
+                <SubmissionInfo
+                  label={<FormattedMessage id="voting.tags" />}
+                  value={tags.map(t => t.name).join(", ")}
+                />
+              )}
+              {languages && (
+                <SubmissionInfo
+                  label={<FormattedMessage id="voting.languages" />}
+                  value={languages.map(t => t.name).join(", ")}
+                />
+              )}
+            </Box>
+          </Grid>
+        </Fragment>
       )}
     </Box>
   );

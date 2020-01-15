@@ -1,6 +1,5 @@
 /** @jsx jsx */
-import { Box, Flex, Heading, Label, Radio, Text } from "@theme-ui/components";
-import { useCallback, useState } from "react";
+import { Box, Heading, Label, Radio } from "@theme-ui/components";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
@@ -51,6 +50,7 @@ export const VoteSelector: React.SFC<Props> = ({
       sx={{
         width: "100%",
         listStyle: "none",
+        display: [null, "flex"],
       }}
     >
       {VOTE_VALUES.map(option => (
@@ -61,7 +61,7 @@ export const VoteSelector: React.SFC<Props> = ({
           key={option.value}
           onClick={_ => onVote(option.value)}
         >
-          <InputWrapper sx={{ mb: 2, textTransform: "none" }}>
+          <InputWrapper sx={{ mb: 2, mr: 4, textTransform: "none" }}>
             <Label>
               <Radio checked={value === option.value} />
               <FormattedMessage id={option.textId} />
