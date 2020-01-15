@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { useMutation } from "@apollo/react-hooks";
-import { Box, Button, Grid, Heading, Text } from "@theme-ui/components";
+import { Box, Flex, Grid, Heading, Text } from "@theme-ui/components";
 import { Fragment, useCallback, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
@@ -62,9 +62,7 @@ export const SubmissionAccordion: React.SFC<Props> = ({
   submission: {
     id,
     title,
-    abstract,
     elevatorPitch,
-    notes,
     topic,
     tags,
     audienceLevel,
@@ -165,15 +163,14 @@ export const SubmissionAccordion: React.SFC<Props> = ({
       <Box
         sx={{
           borderTop: "primary",
-          borderBottom: open ? "primary" : "",
         }}
       >
         <Grid
           sx={{
             maxWidth: "container",
             mx: "auto",
-            py: [3, 0],
             px: [0, 3],
+            gap: 0,
             gridTemplateColumns: [
               null,
               "4fr 6fr 2fr",
@@ -183,49 +180,51 @@ export const SubmissionAccordion: React.SFC<Props> = ({
             alignItems: "center",
           }}
         >
-          <Text
+          <Flex
             sx={{
-              px: [2, 0],
+              justifyContent: "space-between",
+              px: [3, 0],
+              py: [3, 0],
             }}
           >
-            {title}
-          </Text>
+            <Text>{title}</Text>
 
-          <VoteSelector
-            sx={{
-              borderLeft: ["none", "primary"],
-              borderRight: ["none", "primary"],
-              px: [2, 2, 4],
-              py: [0, 4],
-            }}
-            value={vote?.value ?? 0}
-            onVote={onVote}
-            label={
-              loading ? (
-                <FormattedMessage id="voting.saving" />
-              ) : (
-                <FormattedMessage id="voting.vote" />
-              )
-            }
-          />
+            <Text onClick={toggleAccordion}>
+              <FormattedMessage
+                id={open ? "voting.close" : "voting.readMore"}
+              />
+            </Text>
+          </Flex>
 
-          <Text
-            sx={{
-              textTransform: "uppercase",
-              userSelect: "none",
-              cursor: "pointer",
-              px: [2, 0],
-            }}
-            role="button"
-            onClick={toggleAccordion}
-          >
-            <FormattedMessage id={open ? "voting.close" : "voting.readMore"} />
-          </Text>
+          {open && (
+            <Fragment>
+              <VoteSelector
+                sx={{
+                  borderLeft: ["none", "primary"],
+                  borderRight: ["none", "primary"],
+                  borderTop: "primary",
+                  px: [3, 3, 4],
+                  py: [3, 0],
+                }}
+                value={vote?.value ?? 0}
+                onVote={onVote}
+                label={
+                  loading ? (
+                    <FormattedMessage id="voting.saving" />
+                  ) : (
+                    <FormattedMessage id="voting.vote" />
+                  )
+                }
+              />
+            </Fragment>
+          )}
         </Grid>
       </Box>
+
       {open && (
         <Grid
           sx={{
+            borderTop: "primary",
             maxWidth: "container",
             mx: "auto",
             px: 3,
@@ -237,12 +236,26 @@ export const SubmissionAccordion: React.SFC<Props> = ({
           <Box>
             {elevatorPitch && (
               <Fragment>
-                <Heading mb={2} as="h2">
+                <Heading
+                  mb={2}
+                  as="h2"
+                  sx={{
+                    fontSize: 2,
+                    textTransform: "uppercase",
+                    color: "white",
+                  }}
+                >
                   <FormattedMessage id="voting.elevatorPitch" />
                 </Heading>
                 {compile(elevatorPitch).tree}
               </Fragment>
             )}
+
+            <Box as="footer" sx={{ mt: 4 }}>
+              <Link variant="button" href={`/:language/submission/${id}`}>
+                <FormattedMessage id="voting.fullDetails" />
+              </Link>
+            </Box>
           </Box>
           <Box
             as="ul"
@@ -250,31 +263,20 @@ export const SubmissionAccordion: React.SFC<Props> = ({
               listStyle: "none",
             }}
           >
-            <Link
-              sx={{
-                display: "block",
-                mb: 3,
-                fontWeight: "bold",
-                color: "white",
-              }}
-              href={`/:language/submission/${id}`}
-            >
-              <FormattedMessage id="voting.openSubmission" />
-            </Link>
             {topic && (
-              <SubmisionInfo
+              <SubmissionInfo
                 label={<FormattedMessage id="voting.topic" />}
                 value={topic.name}
               />
             )}
             {audienceLevel && (
-              <SubmisionInfo
+              <SubmissionInfo
                 label={<FormattedMessage id="voting.audienceLevel" />}
                 value={audienceLevel.name}
               />
             )}
             {duration && (
-              <SubmisionInfo
+              <SubmissionInfo
                 label={<FormattedMessage id="voting.length" />}
                 value={
                   <FormattedMessage id="voting.minutes">
@@ -284,13 +286,13 @@ export const SubmissionAccordion: React.SFC<Props> = ({
               />
             )}
             {tags && (
-              <SubmisionInfo
+              <SubmissionInfo
                 label={<FormattedMessage id="voting.tags" />}
                 value={tags.map(t => t.name).join(", ")}
               />
             )}
             {languages && (
-              <SubmisionInfo
+              <SubmissionInfo
                 label={<FormattedMessage id="voting.languages" />}
                 value={languages.map(t => t.name).join(", ")}
               />
@@ -302,12 +304,12 @@ export const SubmissionAccordion: React.SFC<Props> = ({
   );
 };
 
-type SubmisionInfoProps = {
+type SubmissionInfoProps = {
   label: string | React.ReactElement;
   value: string | React.ReactElement;
 };
 
-const SubmisionInfo: React.SFC<SubmisionInfoProps> = ({ label, value }) => (
+const SubmissionInfo: React.SFC<SubmissionInfoProps> = ({ label, value }) => (
   <li
     sx={{
       "& + &": {
@@ -318,7 +320,7 @@ const SubmisionInfo: React.SFC<SubmisionInfoProps> = ({ label, value }) => (
     <Text
       sx={{
         color: "white",
-        fontSize: 3,
+        fontSize: 2,
         variant: "heading",
         fontWeight: "bold",
         textTransform: "uppercase",

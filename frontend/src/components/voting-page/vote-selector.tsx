@@ -1,9 +1,10 @@
 /** @jsx jsx */
-import { Box, Flex, Grid, Text } from "@theme-ui/components";
+import { Box, Flex, Heading, Label, Radio, Text } from "@theme-ui/components";
 import { useCallback, useState } from "react";
+import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
-import { Star } from "../icons/star";
+import { InputWrapper } from "../input-wrapper";
 
 type Props = {
   className?: string;
@@ -12,50 +13,66 @@ type Props = {
   value: number;
 };
 
-const STARS = [1, 2, 3, 4, 5];
+const VOTE_VALUES = [
+  {
+    value: 1,
+    textId: "voteSelector.notInterested",
+  },
+  {
+    value: 2,
+    textId: "voteSelector.maybe",
+  },
+  {
+    value: 3,
+    textId: "voteSelector.wantToSee",
+  },
+  {
+    value: 4,
+    textId: "voteSelector.mustSee",
+  },
+  {
+    value: 5,
+    textId: "voteSelector.loveIt",
+  },
+];
 
 export const VoteSelector: React.SFC<Props> = ({
   className,
   onVote,
   value,
-  label = "Vote",
-}) => {
-  const [hoverStar, setHoverStar] = useState(-1);
-  const resetHover = useCallback(() => setHoverStar(-1), []);
-
-  return (
-    <Flex
+}) => (
+  <Box
+    sx={{
+      userSelect: "none",
+    }}
+    className={className}
+  >
+    <Heading as="h2" sx={{ mb: 3 }}>
+      <FormattedMessage id="voteSelector.whatDoYouThink" />
+    </Heading>
+    <Box
+      as="ul"
       sx={{
-        alignItems: "center",
-        textTransform: "uppercase",
-        userSelect: "none",
+        width: "100%",
+        listStyle: "none",
       }}
-      className={className}
     >
-      {label}
-      <Flex
-        as="ul"
-        sx={{
-          width: "100%",
-          justifyContent: "space-between",
-          listStyle: "none",
-          ml: 4,
-        }}
-      >
-        {STARS.map(starValue => (
-          <li
-            onMouseEnter={() => setHoverStar(starValue)}
-            onMouseLeave={resetHover}
-            sx={{
-              cursor: "pointer",
-            }}
-            key={starValue}
-            onClick={_ => onVote(starValue)}
-          >
-            <Star active={value >= starValue || starValue <= hoverStar} />
-          </li>
-        ))}
-      </Flex>
-    </Flex>
-  );
-};
+      {VOTE_VALUES.map(option => (
+        <li
+          sx={{
+            cursor: "pointer",
+          }}
+          key={option.value}
+          onClick={_ => onVote(option.value)}
+        >
+          <InputWrapper sx={{ mb: 2, textTransform: "none" }}>
+            <Label>
+              <Radio checked={value === option.value} />
+              <FormattedMessage id={option.textId} />
+            </Label>
+          </InputWrapper>
+        </li>
+      ))}
+    </Box>
+  </Box>
+);

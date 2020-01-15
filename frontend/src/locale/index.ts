@@ -73,6 +73,12 @@ export const messages = {
     "submission.commentHead": "{author}, {when}:",
     "submission.addComment": "Add comment",
     "submission.pleaseWait": "Please wait",
+    "voteSelector.whatDoYouThink": "What do you think of this proposal?",
+    "voteSelector.notInterested": "Not interested",
+    "voteSelector.maybe": "Maybe",
+    "voteSelector.wantToSee": "Want to see",
+    "voteSelector.mustSee": "Must see",
+    "voteSelector.loveIt": "Love it",
     "cfp.needToBeLoggedIn": "You need to be logged in to send a proposal",
     "cfp.closed.title": "Call for proposal is now closed!",
     "cfp.closed.description":
@@ -306,7 +312,7 @@ export const messages = {
     "voting.needToBeLoggedIn": "Login or create an account to vote",
     "voting.buyTicketToVote": "You need a ticket to vote",
     "voting.loading": "Loading",
-    "voting.openSubmission": "Open submission",
+    "voting.fullDetails": "Full details",
 
     "voting.abstract": "Abstract",
     "voting.elevatorPitch": "Elevator pitch",
@@ -602,6 +608,13 @@ export const messages = {
     "orderReview.checkin": "Check-in",
     "orderReview.checkout": "Check-out",
 
+    "voteSelector.whatDoYouThink": "Cosa pensi di questa proposta?",
+    "voteSelector.notInterested": "Non mi interessa",
+    "voteSelector.maybe": "Forse",
+    "voteSelector.wantToSee": "Voglio vederlo",
+    "voteSelector.mustSee": "Devo vederlo",
+    "voteSelector.loveIt": "Lo adoro",
+
     "voting.heading": "Proposte",
     "voting.seoTitle": "Votazione",
     "voting.close": "Chiudi",
@@ -617,7 +630,7 @@ export const messages = {
     "voting.loading": "Attendi",
     "voting.needToBeLoggedIn": "Esegui l'accesso o crea un account per votare",
     "voting.buyTicketToVote": "Devi comprare un biglietto per poter votare",
-    "voting.openSubmission": "Apri submission",
+    "voting.fullDetails": "Continua a leggere",
 
     "voting.abstract": "Descrizione",
     "voting.elevatorPitch": "Pitch",
