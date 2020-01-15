@@ -78,7 +78,7 @@ export const messages = {
     "voteSelector.maybe": "Maybe",
     "voteSelector.wantToSee": "Want to see",
     "voteSelector.mustSee": "Must see",
-    "voteSelector.loveIt": "Love it",
+
     "cfp.needToBeLoggedIn": "You need to be logged in to send a proposal",
     "cfp.closed.title": "Call for proposal is now closed!",
     "cfp.closed.description":
@@ -613,7 +613,6 @@ export const messages = {
     "voteSelector.maybe": "Forse",
     "voteSelector.wantToSee": "Voglio vederlo",
     "voteSelector.mustSee": "Devo vederlo",
-    "voteSelector.loveIt": "Lo adoro",
 
     "voting.heading": "Proposte",
     "voting.seoTitle": "Votazione",

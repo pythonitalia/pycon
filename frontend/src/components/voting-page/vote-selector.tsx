@@ -30,10 +30,6 @@ const VOTE_VALUES = [
     value: 4,
     textId: "voteSelector.mustSee",
   },
-  {
-    value: 5,
-    textId: "voteSelector.loveIt",
-  },
 ];
 
 export const VoteSelector: React.SFC<Props> = ({
