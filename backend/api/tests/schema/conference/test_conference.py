@@ -434,7 +434,7 @@ def test_get_conference_hotel_rooms(graphql_client, conference_factory, hotel_ro
             "id": str(hotel_room.id),
             "name": hotel_room.name.localize("it"),
             "description": hotel_room.description.localize("it"),
-            "price": f"{hotel_room.price:.2f}",
+            "price": f"{hotel_room.price:0.2f}",
         }
     ]
 

@@ -18,7 +18,7 @@ class UserFactory(DjangoModelFactory):
     open_to_recruiting = False
 
     date_birth = factory.fuzzy.FuzzyDate(
-        start_date=datetime.date(1, 1, 1),
+        start_date=datetime.date(1900, 1, 1),
         end_date=datetime.date.today() - datetime.timedelta(days=20 * 365),
     )
 

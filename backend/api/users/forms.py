@@ -1,10 +1,12 @@
 from base64 import urlsafe_b64decode
 
-from api.forms import ContextAwareModelForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.tokens import default_token_generator
 from django.forms import BooleanField, CharField, EmailField, ValidationError
 from django.utils.translation import ugettext_lazy as _
+
+from api.forms import ContextAwareModelForm
+from newsletters.models import Subscription
 from notifications.emails import send_request_password_reset_mail
 from strawberry_forms.forms import FormWithContext
 from users.models import User
@@ -123,6 +125,13 @@ class UpdateUserForm(ContextAwareModelForm):
         for key, value in self.cleaned_data.items():
             setattr(self.instance, key, value)
 
+        if self.cleaned_data.get("open_to_newsletter"):
+            Subscription.objects.get_or_create(email=user.email)
+        else:
+            try:
+                Subscription.objects.get(email=user.email).delete()
+            except Subscription.DoesNotExist:
+                pass
         return super().save(commit=commit)
 
     class Meta:

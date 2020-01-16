@@ -3,6 +3,7 @@ import strawberry
 from .blog.schema import BlogQuery
 from .conferences.schema import ConferenceQuery
 from .grants.mutations import GrantsMutations
+from .newsletters.schema import NewsletterMutations
 from .orders.mutations import OrdersMutations
 from .orders.query import OrdersQuery
 from .pages.schema import PagesQuery
@@ -33,6 +34,7 @@ class Mutation(
     VotesMutations,
     OrdersMutations,
     GrantsMutations,
+    NewsletterMutations,
 ):
     pass
 

@@ -1,14 +1,16 @@
 import pytest
+from django.test.client import Client
+
 from api.tests.factories import *  # noqa
 from api.tests.fixtures import *  # noqa
 from blog.tests.factories import *  # noqa
 from cms.tests.factories import *  # noqa
 from conferences.tests.factories import *  # noqa
-from django.test.client import Client
 from events.tests.factories import *  # noqa
 from hotels.tests.factories import *  # noqa
 from languages.models import Language
 from languages.tests.factories import *  # noqa
+from newsletters.tests.factories import *  # noqa
 from pages.tests.factories import *  # noqa
 from schedule.tests.factories import *  # noqa
 from sponsors.tests.factories import *  # noqa

@@ -1,0 +1,5 @@
+{{heading}}
+
+{{body}}
+
+{{cta_label}}: {{cta_link}}

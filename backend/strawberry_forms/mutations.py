@@ -45,10 +45,7 @@ class FormMutation:
             cls.Meta.output_types if hasattr(cls.Meta, "output_types") else ()
         )
 
-        output = Union[
-            error_type, None
-        ]  # We add `None` here because we need at least 2 types to create an Union
-        output.__args__ = (error_type, *output_types)
+        output = Union[(error_type, *output_types)]
 
         def _mutate(root, info, input: input_type) -> output:
             # Add the mutation input in the context so we can access it inside the permissions

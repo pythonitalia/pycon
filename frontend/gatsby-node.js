@@ -117,7 +117,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
 
   const result = await graphql(
     `
-      query {
+      query Pages {
         backend {
           blogPosts {
             slugEn: slug(language: "en")
@@ -137,6 +137,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
 
   if (result.errors) {
     console.log(result.errors);
+
     reporter.panicOnBuild(`Error while running GraphQL query.`);
     return;
   }
@@ -166,6 +167,11 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     { template: appTemplate, path: "/login", matchPath: "/login/*" },
     { template: appTemplate, path: "/signup", matchPath: "/signup/*" },
     { template: appTemplate, path: "/grants", matchPath: "/grants/*" },
+    {
+      template: appTemplate,
+      path: "/unsubscribe",
+      matchPath: "/unsubscribe/*",
+    },
     { template: appTemplate, path: "/profile", matchPath: "/profile/*" },
     { template: appTemplate, path: "/cfp", matchPath: "/cfp/*" },
     { template: appTemplate, path: "/orders", matchPath: "/orders/*" },

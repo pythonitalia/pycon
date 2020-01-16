@@ -1,3 +1,4 @@
+from django.test import override_settings
 from django.utils import timezone
 from hotels.models import HotelRoomReservation
 from pretix.exceptions import PretixError
@@ -47,6 +48,7 @@ def test_cannot_create_order_unlogged(graphql_client, user, conference, mocker):
     assert response["errors"][0]["message"] == "User not logged in"
 
 
+@override_settings(FRONTEND_URL="http://test.it")
 def test_calls_create_order(graphql_client, user, conference, mocker):
     graphql_client.force_login(user)
 
@@ -95,8 +97,7 @@ def test_calls_create_order(graphql_client, user, conference, mocker):
 
     assert not response.get("errors")
     assert response["data"]["createOrder"]["paymentUrl"] == (
-        "https://example.com?return_url=http://localhost:4000/en/orders"
-        "/123/confirmation"
+        "https://example.com?return_url=http://test.it/en/orders/123/confirmation"
     )
 
     create_order_mock.assert_called_once()
@@ -152,6 +153,7 @@ def test_handles_errors(graphql_client, user, conference, mocker):
     create_order_mock.assert_called_once()
 
 
+@override_settings(FRONTEND_URL="http://test.it")
 @mark.django_db
 def test_order_hotel_room(
     graphql_client, hotel_room_factory, user, conference_factory, mocker
@@ -208,8 +210,7 @@ def test_order_hotel_room(
 
     assert not response.get("errors")
     assert response["data"]["createOrder"]["paymentUrl"] == (
-        "https://example.com?return_url=http://localhost:4000/en/orders"
-        "/123/confirmation"
+        "https://example.com?return_url=http://test.it/en/orders/123/confirmation"
     )
 
     reservation = HotelRoomReservation.objects.filter(room=room).first()
