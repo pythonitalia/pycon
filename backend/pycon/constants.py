@@ -5,7 +5,7 @@ COLORS = Choices(
     ("blue", _("blue")),
     ("yellow", _("yellow")),
     ("orange", _("orange")),
-    ("cindarella", _("cindarella")),
+    ("cinderella", _("cinderella")),
     ("violet", _("violet")),
     ("green", _("green")),
 )

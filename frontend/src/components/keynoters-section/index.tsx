@@ -43,7 +43,7 @@ const Keynote = ({
         left: 0,
         width: "100%",
         height: "100%",
-        backgroundColor: highlightColor || "cindarella",
+        backgroundColor: highlightColor || "cinderella",
         mixBlendMode: "multiply",
       }}
     />
