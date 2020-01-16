@@ -138,7 +138,7 @@ def test_cannot_vote_without_a_ticket(
     graphql_client.force_login(user)
     submission = submission_factory(conference__active_voting=True)
     admission_ticket_mock = mocker.patch(
-        "api.voting.forms.user_has_admission_ticket", return_value=False
+        "users.models.user_has_admission_ticket", return_value=False
     )
 
     resp, _ = _submit_vote(graphql_client, submission, value_index=3)

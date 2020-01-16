@@ -1,10 +1,9 @@
-from api.forms import ContextAwareModelForm
+from api.forms import ContextAwareModelForm, HashidModelChoiceField
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from pretix.db import user_has_admission_ticket
 from submissions.models import Submission
 from voting.models import Vote
-from api.forms import HashidModelChoiceField
+
 from .fields import VoteValueField
 
 
@@ -21,9 +20,7 @@ class SendVoteForm(ContextAwareModelForm):
 
         logged_user = self.context["request"].user
 
-        if not user_has_admission_ticket(
-            logged_user.email, submission.conference.pretix_event_id
-        ):
+        if not logged_user.can_vote(submission.conference):
             raise forms.ValidationError(_("You cannot vote without a ticket"))
 
     def save(self, commit=True):

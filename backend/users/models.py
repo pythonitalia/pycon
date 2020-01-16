@@ -4,8 +4,8 @@ from django.core import exceptions
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from helpers.constants import GENDERS
-from pycountry import countries
 from pretix.db import user_has_admission_ticket
+from pycountry import countries
 from submissions.models import Submission
 
 from .managers import UserManager
@@ -88,9 +88,14 @@ class User(AbstractBaseUser, PermissionsMixin):
     def has_conference_ticket(self, conference):
         return user_has_admission_ticket(self.email, conference.pretix_event_id)
 
-    def clean(self):
-        # TODO check required field here i.e. company-required-fileds?
-        pass
+    def can_vote(self, conference):
+        if self.is_staff:
+            return True
+
+        if self.has_sent_submission(conference):
+            return True
+
+        return self.has_conference_ticket(conference)
 
     def is_eu(self):
         if self.country in EU_COUNTRIES:

@@ -32,10 +32,4 @@ class CanSeeSubmissions(BasePermission):
         if not user.is_authenticated:
             return False
 
-        if user.is_staff:
-            return True
-
-        if user.has_sent_submission(conference):
-            return True
-
-        return user.has_conference_ticket(conference)
+        return user.can_vote(conference)
