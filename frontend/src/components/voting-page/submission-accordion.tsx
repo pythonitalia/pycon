@@ -194,7 +194,15 @@ export const SubmissionAccordion: React.SFC<Props> = ({
               sx={{ p: 3, maxWidth: "container", mx: "auto" }}
             />
 
-            <Text sx={{ px: 3, mb: 3, fontWeight: "bold" }}>
+            <Text
+              sx={{
+                px: 3,
+                mb: 3,
+                fontWeight: "bold",
+                maxWidth: "container",
+                mx: "auto",
+              }}
+            >
               {loading && <FormattedMessage id="voting.sendingVote" />}
               {error && error}
               {data && <FormattedMessage id="voting.voteSent" />}
