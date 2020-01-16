@@ -2,7 +2,7 @@
 import { useQuery } from "@apollo/react-hooks";
 import { RouteComponentProps } from "@reach/router";
 import { Box, Flex, Grid, Heading, Select, Text } from "@theme-ui/components";
-import { Fragment, useCallback } from "react";
+import { Fragment, useCallback, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import { jsx } from "theme-ui";
@@ -23,11 +23,13 @@ import VOTING_SUBMISSIONS from "./voting-submissions.graphql";
 type Filters = {
   topic: string;
   language: string;
+  vote: "all" | "votedOnly" | "notVoted";
 };
 
 export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
   const [loggedIn] = useLoginState();
-  const [filters, { select }] = useFormState<Filters>();
+  const [filters, { select }] = useFormState<Filters>({ vote: "all" });
+  const [votedSubmissions, setVotedSubmissions] = useState(new Set());
 
   const { code: conferenceCode } = useConference();
   const { loading, error, data } = useQuery<
@@ -39,6 +41,12 @@ export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
     },
     skip: !loggedIn,
   });
+
+  const onVote = useCallback(
+    submission =>
+      setVotedSubmissions(submissions => submissions.add(submission.id)),
+    [],
+  );
 
   const cannotVoteErrors =
     error?.graphQLErrors.findIndex(
@@ -97,6 +105,12 @@ export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
                 alignItems: [null, "flex-end"],
                 justifyContent: [null, "flex-end"],
                 mb: 4,
+
+                "div + div": {
+                  select: {
+                    borderLeft: [null, "none"],
+                  },
+                },
               }}
             >
               <Select
@@ -104,7 +118,6 @@ export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
                 sx={{
                   background: "orange",
                   borderRadius: 0,
-                  borderRight: [null, "none"],
                 }}
               >
                 <FormattedMessage id="voting.allTopics">
@@ -133,6 +146,25 @@ export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
                     {language.name}
                   </option>
                 ))}
+              </Select>
+
+              <Select
+                {...select("vote")}
+                sx={{
+                  background: "keppel",
+                  mt: [3, 0],
+                  borderRadius: 0,
+                }}
+              >
+                <FormattedMessage id="voting.allSubmissions">
+                  {text => <option value="all">{text}</option>}
+                </FormattedMessage>
+                <FormattedMessage id="voting.notVoted">
+                  {text => <option value="notVoted">{text}</option>}
+                </FormattedMessage>
+                <FormattedMessage id="voting.votedOnly">
+                  {text => <option value="votedOnly">{text}</option>}
+                </FormattedMessage>
               </Select>
             </Flex>
           </Grid>
@@ -181,6 +213,23 @@ export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
                 return false;
               }
 
+              const voteStatusFilter = filters.values.vote;
+
+              if (
+                voteStatusFilter === "notVoted" &&
+                submission.myVote !== null &&
+                !votedSubmissions.has(submission.id)
+              ) {
+                return false;
+              }
+
+              if (
+                voteStatusFilter === "votedOnly" &&
+                submission.myVote === null
+              ) {
+                return false;
+              }
+
               return true;
             })
             .map(submission => (
@@ -188,6 +237,7 @@ export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
                 vote={submission.myVote}
                 key={submission.id}
                 submission={submission}
+                onVote={onVote}
               />
             ))}
         </Box>

@@ -33,6 +33,7 @@ export default {
     violet: "#9473B0",
     blue: "#79CDE0",
     cinderella: "#FCE8DE",
+    keppel: "#34B4A1",
   },
   borders: {
     primary: "3px solid #000000",

@@ -18,47 +18,52 @@ import SAVE_VOTE from "./save-vote.graphql";
 import { VoteSelector } from "./vote-selector";
 import VOTING_SUBMISSIONS from "./voting-submissions.graphql";
 
+type VoteSubmission = {
+  id: string;
+  title: string;
+  abstract?: string | null;
+  elevatorPitch?: string | null;
+  notes?: string | null;
+  topic: {
+    id: string;
+    name: string;
+  } | null;
+  tags:
+    | {
+        id: string;
+        name: string;
+      }[]
+    | null;
+  audienceLevel: {
+    id: string;
+    name: string;
+  } | null;
+  duration: {
+    id: string;
+    name: string;
+    duration: number;
+  } | null;
+  languages:
+    | {
+        id: string;
+        name: string;
+      }[]
+    | null;
+};
+
 type Props = {
   vote: {
     id: string;
     value: number;
   } | null;
-  submission: {
-    id: string;
-    title: string;
-    abstract?: string | null;
-    elevatorPitch?: string | null;
-    notes?: string | null;
-    topic: {
-      id: string;
-      name: string;
-    } | null;
-    tags:
-      | {
-          id: string;
-          name: string;
-        }[]
-      | null;
-    audienceLevel: {
-      id: string;
-      name: string;
-    } | null;
-    duration: {
-      id: string;
-      name: string;
-      duration: number;
-    } | null;
-    languages:
-      | {
-          id: string;
-          name: string;
-        }[]
-      | null;
-  };
+  onVote: (submission: VoteSubmission) => void;
+  submission: VoteSubmission;
 };
 
 export const SubmissionAccordion: React.SFC<Props> = ({
   vote,
+  onVote,
+  submission,
   submission: {
     id,
     title,
@@ -119,13 +124,15 @@ export const SubmissionAccordion: React.SFC<Props> = ({
     },
   });
 
-  const onVote = useCallback(
+  const onSubmitVote = useCallback(
     value => {
       if (loading) {
         return;
       }
 
       const prevVote = vote ?? { id: `${Math.random()}` };
+
+      onVote(submission);
 
       sendVote({
         variables: {
@@ -190,7 +197,7 @@ export const SubmissionAccordion: React.SFC<Props> = ({
           <Box sx={{ borderBottom: "primary" }}>
             <VoteSelector
               value={vote?.value ?? 0}
-              onVote={onVote}
+              onVote={onSubmitVote}
               sx={{ p: 3, maxWidth: "container", mx: "auto" }}
             />
 
