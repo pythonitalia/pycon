@@ -243,13 +243,14 @@ export default ({ data }: { data: HomePageQuery }) => {
         sx={{ mt: 5, pb: 5, borderBottom: "primary" }}
         sponsorsByLevel={conference.sponsorsByLevel}
       />
+
       <Grid
         columns={[1, 2]}
         sx={{
           px: 3,
           maxWidth: "container",
           mx: "auto",
-          display: "auto",
+          display: "none",
           gridGap: 0,
         }}
       >
