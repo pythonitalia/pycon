@@ -1,6 +1,6 @@
 from dal_admin_filters import AutocompleteFilter
 from django.contrib import admin
-from voting.models import Vote
+from voting.models import RankRequest, Vote
 
 
 class UserFilter(AutocompleteFilter):
@@ -28,3 +28,8 @@ class VoteAdmin(admin.ModelAdmin):
 
     class Media:
         js = ["admin/js/jquery.init.js"]
+
+
+@admin.register(RankRequest)
+class RankRequestAdmin(admin.ModelAdmin):
+    list_display = ("conference", "created")
