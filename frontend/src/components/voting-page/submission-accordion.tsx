@@ -214,7 +214,18 @@ export const SubmissionAccordion: React.SFC<Props> = ({
             >
               {loading && <FormattedMessage id="voting.sendingVote" />}
               {error && error}
-              {submissionData && <FormattedMessage id="voting.voteSent" />}
+              {submissionData &&
+                submissionData.sendVote.__typename === "SendVoteErrors" && (
+                  <Fragment>
+                    {submissionData.sendVote.nonFieldErrors}{" "}
+                    {submissionData.sendVote.validationSubmission}{" "}
+                    {submissionData.sendVote.validationValue}
+                  </Fragment>
+                )}
+              {submissionData &&
+                submissionData.sendVote.__typename === "VoteType" && (
+                  <FormattedMessage id="voting.voteSent" />
+                )}
             </Text>
           </Box>
           <Grid
