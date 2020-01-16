@@ -76,7 +76,7 @@ export const SubmissionAccordion: React.SFC<Props> = ({
   }, []);
   const { code: conferenceCode } = useConference();
 
-  const [sendVote, { loading, error }] = useMutation<
+  const [sendVote, { loading, error, data }] = useMutation<
     SendVoteMutation,
     SendVoteMutationVariables
   >(SAVE_VOTE, {
@@ -193,6 +193,12 @@ export const SubmissionAccordion: React.SFC<Props> = ({
               onVote={onVote}
               sx={{ p: 3, maxWidth: "container", mx: "auto" }}
             />
+
+            <Text sx={{ px: 3, mb: 3, fontWeight: "bold" }}>
+              {loading && <FormattedMessage id="voting.sendingVote" />}
+              {error && error}
+              {data && <FormattedMessage id="voting.voteSent" />}
+            </Text>
           </Box>
           <Grid
             sx={{
