@@ -161,7 +161,10 @@ class Submission(TimeStampedModel):
         return super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.title} at Conference {self.conference_id}"
+        return (
+            f"{self.title} at Conference {self.conference.name} "
+            f"<{self.conference.code}>"
+        )
 
 
 class SubmissionType(models.Model):
