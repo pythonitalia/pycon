@@ -38,7 +38,7 @@ def _submit_vote(client, submission, **kwargs):
 
 
 @mark.django_db
-@mark.parametrize("score_index", [1, 2, 3, 4, 5])
+@mark.parametrize("score_index", [1, 2, 3, 4])
 def test_submit_vote(
     graphql_client, user, conference_factory, submission_factory, score_index
 ):
