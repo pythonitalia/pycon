@@ -167,21 +167,22 @@ export const SubmissionAccordion: React.SFC<Props> = ({
           borderBottom: open && "primary",
         }}
       >
-        <Flex
+        <Grid
           sx={{
             maxWidth: "container",
             mx: "auto",
             justifyContent: "space-between",
+            gridTemplateColumns: "1fr 100px",
             p: 3,
           }}
           onClick={toggleAccordion}
         >
-          <Text>{title}</Text>
+          <Text sx={{ mr: 3 }}>{title}</Text>
 
-          <Text>
+          <Text sx={{ textAlign: "right" }}>
             <FormattedMessage id={open ? "voting.close" : "voting.readMore"} />
           </Text>
-        </Flex>
+        </Grid>
       </Box>
 
       {open && (
