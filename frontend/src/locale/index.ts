@@ -318,6 +318,9 @@ export const messages = {
     "voting.fullDetails": "Full details",
     "voting.allTopics": "All topics",
     "voting.allLanguages": "All languages",
+    "voting.allSubmissions": "Voted & Not voted",
+    "voting.notVoted": "Not voted",
+    "voting.votedOnly": "Voted only",
 
     "voting.abstract": "Abstract",
     "voting.elevatorPitch": "Elevator pitch",
@@ -639,7 +642,10 @@ export const messages = {
     "voting.fullDetails": "Continua a leggere",
     "voting.allTopics": "Tutti gli argomenti",
     "voting.allLanguages": "Tutte le lingue",
-
+    "voting.allSubmissions": "Votate & Non votate",
+    "voting.notVoted": "Non votate",
+    "voting.votedOnly": "Votate",
+    "voting.loading": "Caricamento in corso",
     "voting.abstract": "Descrizione",
     "voting.elevatorPitch": "Pitch",
     "voting.notes": "Note",

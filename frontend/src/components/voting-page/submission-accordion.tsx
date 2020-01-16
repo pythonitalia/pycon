@@ -18,47 +18,54 @@ import SAVE_VOTE from "./save-vote.graphql";
 import { VoteSelector } from "./vote-selector";
 import VOTING_SUBMISSIONS from "./voting-submissions.graphql";
 
+type VoteSubmission = {
+  id: string;
+  title: string;
+  abstract?: string | null;
+  elevatorPitch?: string | null;
+  notes?: string | null;
+  topic: {
+    id: string;
+    name: string;
+  } | null;
+  tags:
+    | {
+        id: string;
+        name: string;
+      }[]
+    | null;
+  audienceLevel: {
+    id: string;
+    name: string;
+  } | null;
+  duration: {
+    id: string;
+    name: string;
+    duration: number;
+  } | null;
+  languages:
+    | {
+        id: string;
+        name: string;
+      }[]
+    | null;
+};
+
 type Props = {
+  color: string;
   vote: {
     id: string;
     value: number;
   } | null;
-  submission: {
-    id: string;
-    title: string;
-    abstract?: string | null;
-    elevatorPitch?: string | null;
-    notes?: string | null;
-    topic: {
-      id: string;
-      name: string;
-    } | null;
-    tags:
-      | {
-          id: string;
-          name: string;
-        }[]
-      | null;
-    audienceLevel: {
-      id: string;
-      name: string;
-    } | null;
-    duration: {
-      id: string;
-      name: string;
-      duration: number;
-    } | null;
-    languages:
-      | {
-          id: string;
-          name: string;
-        }[]
-      | null;
-  };
+  onVote: (submission: VoteSubmission) => void;
+  submission: VoteSubmission;
 };
 
 export const SubmissionAccordion: React.SFC<Props> = ({
+  color,
   vote,
+  onVote,
+  submission,
   submission: {
     id,
     title,
@@ -76,7 +83,7 @@ export const SubmissionAccordion: React.SFC<Props> = ({
   }, []);
   const { code: conferenceCode } = useConference();
 
-  const [sendVote, { loading, error, data }] = useMutation<
+  const [sendVote, { loading, error, data: submissionData }] = useMutation<
     SendVoteMutation,
     SendVoteMutationVariables
   >(SAVE_VOTE, {
@@ -119,13 +126,15 @@ export const SubmissionAccordion: React.SFC<Props> = ({
     },
   });
 
-  const onVote = useCallback(
+  const onSubmitVote = useCallback(
     value => {
       if (loading) {
         return;
       }
 
       const prevVote = vote ?? { id: `${Math.random()}` };
+
+      onVote(submission);
 
       sendVote({
         variables: {
@@ -151,7 +160,7 @@ export const SubmissionAccordion: React.SFC<Props> = ({
     <Box
       as="li"
       sx={{
-        background: "#79CDE0",
+        backgroundColor: color,
         overflow: "hidden",
 
         "&:last-child": {
@@ -190,7 +199,7 @@ export const SubmissionAccordion: React.SFC<Props> = ({
           <Box sx={{ borderBottom: "primary" }}>
             <VoteSelector
               value={vote?.value ?? 0}
-              onVote={onVote}
+              onVote={onSubmitVote}
               sx={{ p: 3, maxWidth: "container", mx: "auto" }}
             />
 
@@ -205,7 +214,7 @@ export const SubmissionAccordion: React.SFC<Props> = ({
             >
               {loading && <FormattedMessage id="voting.sendingVote" />}
               {error && error}
-              {data && <FormattedMessage id="voting.voteSent" />}
+              {submissionData && <FormattedMessage id="voting.voteSent" />}
             </Text>
           </Box>
           <Grid
