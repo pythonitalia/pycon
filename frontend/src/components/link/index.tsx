@@ -58,8 +58,8 @@ const ArrowRightBackground = ({
   </Box>
 );
 
-const isExternalLink = (href: string) =>
-  href.startsWith("http") || href.startsWith("mailto");
+const isExternalLink = ({ href, target }: { href: string; target?: string }) =>
+  href.startsWith("http") || href.startsWith("mailto") || target === "_blank";
 
 export const Link: React.SFC<LinkProps> = ({
   children,
@@ -68,8 +68,15 @@ export const Link: React.SFC<LinkProps> = ({
   ...additionalProps
 }) => {
   const language = useCurrentLanguage();
+
+  if (href) {
+    href = href.replace(":language", language);
+  }
+
   const isExternal =
-    (href && isExternalLink(href)) || additionalProps.variant === "google";
+    (href && isExternalLink({ href, ...additionalProps })) ||
+    additionalProps.variant === "google";
+
   const LinkComponent = isExternal
     ? ThemeLink
     : ({ ...props }: { to: string }) => (
@@ -78,10 +85,6 @@ export const Link: React.SFC<LinkProps> = ({
 
   if (additionalProps.target === "_blank") {
     (additionalProps as any).rel = "noopener noreferrer";
-  }
-
-  if (!isExternal && href) {
-    href = href.replace(":language", language);
   }
 
   const component = (hovered: boolean) => (
