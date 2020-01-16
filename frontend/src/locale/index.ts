@@ -645,7 +645,7 @@ export const messages = {
     "voting.allSubmissions": "Votate & Non votate",
     "voting.notVoted": "Non votate",
     "voting.votedOnly": "Votate",
-
+    "voting.loading": "Caricamento in corso",
     "voting.abstract": "Descrizione",
     "voting.elevatorPitch": "Pitch",
     "voting.notes": "Note",

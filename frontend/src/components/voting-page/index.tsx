@@ -26,6 +26,8 @@ type Filters = {
   vote: "all" | "votedOnly" | "notVoted";
 };
 
+const COLORS = ["blue", "keppel", "orange", "yellow"];
+
 export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
   const [loggedIn] = useLoginState();
   const [filters, { select }] = useFormState<Filters>({ vote: "all" });
@@ -232,8 +234,9 @@ export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
 
               return true;
             })
-            .map(submission => (
+            .map((submission, index) => (
               <SubmissionAccordion
+                color={COLORS[index % COLORS.length]}
                 vote={submission.myVote}
                 key={submission.id}
                 submission={submission}

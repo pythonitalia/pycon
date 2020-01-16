@@ -52,6 +52,7 @@ type VoteSubmission = {
 };
 
 type Props = {
+  color: string;
   vote: {
     id: string;
     value: number;
@@ -61,6 +62,7 @@ type Props = {
 };
 
 export const SubmissionAccordion: React.SFC<Props> = ({
+  color,
   vote,
   onVote,
   submission,
@@ -158,7 +160,7 @@ export const SubmissionAccordion: React.SFC<Props> = ({
     <Box
       as="li"
       sx={{
-        background: "#79CDE0",
+        backgroundColor: color,
         overflow: "hidden",
 
         "&:last-child": {
