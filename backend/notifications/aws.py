@@ -1,5 +1,6 @@
 import typing
 from dataclasses import dataclass
+from urllib.parse import urljoin
 
 import boto3
 from django.conf import settings
@@ -67,3 +68,45 @@ def send_endpoints_to_pinpoint(endpoints: typing.Iterable[Endpoint]):
         client.update_endpoints_batch(
             ApplicationId=settings.PINPOINT_APPLICATION_ID, EndpointBatchRequest=data
         )
+
+
+def send_notification(
+    template_name: str,
+    users: typing.List[User],
+    substitutions: typing.Dict[str, typing.List[str]],
+):
+    client = _get_client()
+    client.send_users_messages(
+        ApplicationId="d13bc4639af2485eb182ac93ee4ba2f1",
+        SendUsersMessageRequest={
+            "MessageConfiguration": {
+                "EmailMessage": {
+                    "FromAddress": "noreply@pycon.it",
+                    "Substitutions": substitutions,
+                }
+            },
+            "TemplateConfiguration": {"EmailTemplate": {"Name": template_name}},
+            "Users": {str(user.id): {} for user in users},
+        },
+    )
+
+    # TODO: validate that it has been sent correctly
+
+
+def send_comment_notification(comment):
+    submission = comment.submission
+
+    users = [submission.speaker] + list(
+        set([comment.author for comment in submission.comments.all()])
+    )
+
+    submission_url = urljoin(
+        settings.FRONTEND_URL, f"/en/submission/{submission.hashid}"
+    )
+
+    substitutions = {
+        "submission_url": [submission_url],
+        "submission": [submission.title],
+    }
+
+    send_notification("pycon-11-new-comment-on-submission", users, substitutions)

@@ -31,7 +31,9 @@ def _send_comment(client, submission, text):
 
 
 @mark.django_db
-def test_send_comment(graphql_client, user, submission):
+def test_send_comment(graphql_client, user, submission, mocker):
+    mocker.patch("notifications.aws.send_comment_notification")
+
     graphql_client.force_login(user)
 
     resp = _send_comment(graphql_client, submission, "Hello world!")
