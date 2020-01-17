@@ -16,7 +16,7 @@ class Endpoint:
     extra_info: typing.Optional[typing.Dict[str, typing.List[str]]] = None
 
     def as_item(self):
-        user_id = f"test_{self.id}"
+        user_id = str(self.id)
 
         return {
             "ChannelType": "EMAIL",
