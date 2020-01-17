@@ -59,7 +59,7 @@ def create_cfp_segment(segment_name: str, conference: str):
 
 def send_users_to_pinpoint(users: typing.Iterable[typing.Any]):
     # batch only supports 100 at the time
-    user_chunks = chunks(users, 100)
+    user_chunks = chunks(list(users), 100)
 
     for user_chunk in user_chunks:
         data = {
