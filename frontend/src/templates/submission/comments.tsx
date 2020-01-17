@@ -30,11 +30,14 @@ export const Comments: React.SFC<Props> = ({ submissionId, comments }) => (
       <FormattedMessage id="submission.comments" />
     </Heading>
 
+    {!comments ||
+      (!comments.length && <FormattedMessage id="submission.noComments" />)}
+
     {comments!.map(comment => (
       <Comment key={comment.id} {...comment} />
     ))}
 
-    <Heading as="h2" mb={2} mt={4}>
+    <Heading as="h2" mb={3} mt={4}>
       <FormattedMessage id="submission.addComment" />
     </Heading>
 

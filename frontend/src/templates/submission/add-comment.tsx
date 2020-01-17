@@ -98,7 +98,7 @@ export const AddComment: React.SFC<Props> = ({ submissionId }) => {
   const genericErrors = getErrors("nonFieldErrors");
 
   return (
-    <Box as="form" onSubmit={onSubmit}>
+    <Box as="form" onSubmit={onSubmit} sx={{ mb: 4 }}>
       <InputWrapper sx={{ mb: 2 }} errors={getErrors("validationText")}>
         <Textarea
           sx={{
