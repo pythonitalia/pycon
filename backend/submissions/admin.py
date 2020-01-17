@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 
-from .models import Submission, SubmissionTag, SubmissionType, SubmissionComment
+from .models import Submission, SubmissionComment, SubmissionTag, SubmissionType
 
 
 class SubmissionCommentInline(admin.TabularInline):
@@ -46,3 +46,8 @@ class SubmissionTypeAdmin(admin.ModelAdmin):
 @admin.register(SubmissionTag)
 class SubmissionTagAdmin(admin.ModelAdmin):
     list_display = ("name",)
+
+
+@admin.register(SubmissionComment)
+class SubmissionCommentAdmin(admin.ModelAdmin):
+    list_display = ("submission", "author", "text")
