@@ -77,7 +77,7 @@ def send_notification(
 ):
     client = _get_client()
     client.send_users_messages(
-        ApplicationId="d13bc4639af2485eb182ac93ee4ba2f1",
+        ApplicationId=settings.PINPOINT_APPLICATION_ID,
         SendUsersMessageRequest={
             "MessageConfiguration": {
                 "EmailMessage": {
@@ -96,9 +96,14 @@ def send_notification(
 def send_comment_notification(comment):
     submission = comment.submission
 
-    users = [submission.speaker] + list(
-        set([comment.author for comment in submission.comments.all()])
-    )
+    users: typing.Set[User] = set([submission.speaker])
+    # also send notification to all other commenters
+    users = users.union(set([comment.author for comment in submission.comments.all()]))
+    # don't notify current user
+    users.discard(comment.author)
+
+    if not users:
+        return
 
     submission_url = urljoin(
         settings.FRONTEND_URL, f"/en/submission/{submission.hashid}"
