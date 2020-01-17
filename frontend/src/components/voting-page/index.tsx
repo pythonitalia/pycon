@@ -26,7 +26,7 @@ type Filters = {
   vote: "all" | "votedOnly" | "notVoted";
 };
 
-const COLORS = ["blue", "keppel", "orange", "yellow"];
+const COLORS = ["blue", "lightBlue"];
 
 export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
   const [loggedIn] = useLoginState();

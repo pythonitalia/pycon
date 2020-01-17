@@ -32,6 +32,7 @@ export default {
     red: "#DB0000",
     violet: "#9473B0",
     blue: "#79CDE0",
+    lightBlue: "#DEF3F7",
     cinderella: "#FCE8DE",
     keppel: "#34B4A1",
   },
