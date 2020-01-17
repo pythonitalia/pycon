@@ -1,9 +1,8 @@
 import random
 
 import pytest
-from django.core.management import CommandError, call_command
 from submissions.models import Submission
-from voting.management.commands.submisson_ranking import Command
+from voting.models import RankRequest
 
 
 @pytest.fixture
@@ -39,35 +38,16 @@ def test_votes_counts(_setup):
     conference, votes_counts = _setup
 
     submissions = Submission.objects.filter(conference_id=conference.id)
-    cmd = Command()
-    ranked_submissions = cmd.rank_submissions(submissions)
-    assert ranked_submissions
+    ranked_submissions = RankRequest.get_ranking(submissions)
     for rank in ranked_submissions:
         assert votes_counts[rank["submission_id"]] == rank["votes"]
 
 
 @pytest.mark.django_db
-def test_submission_ranking(_setup):
-    conference, _ = _setup
+def test_create_ranking(_setup):
+    conference, votes_counts = _setup
 
-    call_command("submisson_ranking", conference.code)
+    rank_request = RankRequest.objects.create(conference=conference)
 
-    assert True
-
-
-def test_conference_not_provided():
-
-    with pytest.raises(CommandError) as e:
-        call_command("submisson_ranking")
-
-    assert e.value.args[0] == "Error: the following arguments are required: conference"
-
-
-@pytest.mark.django_db
-def test_conference_does_not_exists(conference_factory):
-    conference = conference_factory.build()
-
-    with pytest.raises(CommandError) as e:
-        call_command("submisson_ranking", conference.code)
-
-    assert e.value.args[0] == f'Conference "{conference.code}" does not exist'
+    for rank in rank_request.rank_submissions.filter(rank_request=rank_request):
+        assert votes_counts[rank.submission.id] == rank.absolute_score

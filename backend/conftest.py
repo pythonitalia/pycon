@@ -17,8 +17,8 @@ from sponsors.tests.factories import *  # noqa
 from submissions.tests.factories import *  # noqa
 from users.models import User
 from users.tests.factories import *  # noqa
-from voting.tests.factories.vote import *  # noqa
-from voting.tests.fixtures.vote import *  # noqa
+from voting.tests.factories import *  # noqa
+from voting.tests.fixtures import *  # noqa
 
 
 @pytest.fixture()
