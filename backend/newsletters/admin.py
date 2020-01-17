@@ -4,7 +4,7 @@ from django.shortcuts import redirect
 from notifications.aws import convert_users_to_endpoints, send_endpoints_to_pinpoint
 from users.models import User
 
-from .models import Email, Subscription
+from .models import Subscription
 
 
 @admin.register(Subscription)
@@ -23,16 +23,3 @@ class SubscriptionAdmin(AdminViews):
         )
 
         return redirect("admin:index")
-
-
-@admin.register(Email)
-class EmailAdmin(admin.ModelAdmin):
-    ordering = ["status", "scheduled_date", "-pk"]
-    list_display = (
-        "subject",
-        "recipients_type",
-        "scheduled_date",
-        "status",
-        "email_actions",
-    )
-    readonly_fields = ("recipients", "email_actions")
