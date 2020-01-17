@@ -76,6 +76,8 @@ def test_cannot_send_comments_unauthenticated(
 def test_staff_can_comment_submissions(
     graphql_client, user, submission_factory, mocker
 ):
+    mocker.patch("notifications.aws.send_comment_notification")
+
     user.is_staff = True
     user.save()
     submission = submission_factory()
@@ -91,6 +93,8 @@ def test_staff_can_comment_submissions(
 def test_speakers_can_comment_other_submissions(
     graphql_client, user, submission_factory, mocker
 ):
+    mocker.patch("notifications.aws.send_comment_notification")
+
     user_submission = submission_factory(speaker=user)
     submission = submission_factory(conference=user_submission.conference)
 
@@ -105,6 +109,7 @@ def test_speakers_can_comment_other_submissions(
 def test_user_can_send_comment_to_own_submission(
     graphql_client, user, submission_factory, mocker
 ):
+    mocker.patch("notifications.aws.send_comment_notification")
     submission = submission_factory(speaker=user)
 
     graphql_client.force_login(user)
