@@ -1,20 +1,79 @@
+import typing
+from dataclasses import dataclass
+
 from admin_views.admin import AdminViews
 from django.conf.urls import url
 from django.contrib import admin, messages
+from django.db.models import F
 from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from django.utils.html import format_html
+from users.models import User
 
+from .aws import create_cfp_segment, get_segment_names, send_users_to_pinpoint
 from .models import Email, Subscription
 
 
 @admin.register(Subscription)
 class SubscriptionAdmin(AdminViews):
     list_display = ("email", "date_subscribed")
-    admin_views = (("Get Subscribers", "get_subscribers"),)
+    admin_views = (
+        (
+            "Export people that have sent proposal to Pinpoint",
+            "export_people_that_have_sent_proposal",
+        ),
+    )
 
-    def get_subscribers(self, *args, **kwargs):  # pragma: no cover
-        data = {"subscribers": [s.email for s in Subscription.objects.all()]}
+    def export_people_that_have_sent_proposal(
+        self, *args, **kwargs
+    ):  # pragma: no cover
+        users = (
+            User.objects.filter(submissions__isnull=False)
+            .values(
+                "id", "email", "name", conference=F("submissions__conference__code")
+            )
+            .distinct()
+        )
+
+        users_by_id = {}
+
+        @dataclass
+        class CFPUser:
+            id: str
+            name: str
+            email: str
+            submission_sent_to: typing.List[str]
+
+        conferences = set()
+
+        for user in users:
+            user_id = str(user["id"])
+            conference = user["conference"]
+
+            conferences.add(conference)
+
+            if user_id in users_by_id:
+                users_by_id[user_id].submission_sent_to.append(conference)
+            else:
+                users_by_id[user_id] = CFPUser(
+                    id=user_id,
+                    name=user["name"],
+                    email=user["email"],
+                    submission_sent_to=[conference],
+                )
+
+        available_segments = get_segment_names()
+
+        for conference in conferences:
+            segment_name = f"{conference}-users-that-have-sent-a-proposal"
+
+            if segment_name not in available_segments:
+                create_cfp_segment(segment_name, conference)
+
+        send_users_to_pinpoint(users_by_id.values())
+
+        data = {"subscribers": None}
+
         return JsonResponse(data, status=200)
 
 

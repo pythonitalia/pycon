@@ -188,3 +188,5 @@ LOGGING = {
     "handlers": {"console": {"class": "logging.StreamHandler"}},
     "loggers": {"app_api": {"handlers": ["console"], "level": "WARNING"}},
 }
+
+PINPOINT_APPLICATION_ID = env("PINPOINT_APPLICATION_ID", default="")

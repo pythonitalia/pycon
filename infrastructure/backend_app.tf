@@ -134,6 +134,12 @@ resource "aws_elastic_beanstalk_environment" "pycon_env" {
     value     = "${var.pretix_api_token}"
   }
 
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "PINPOINT_APPLICATION_ID"
+    value     = "${var.pinpoint_application_id}"
+  }
+
   # google settings
 
   setting {

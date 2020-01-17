@@ -6,3 +6,4 @@ variable "slack_incoming_webhook_url" {}
 variable "social_auth_google_oauth2_key" {}
 variable "social_auth_google_oauth2_secret" {}
 variable "pretix_api_token" {}
+variable "pinpoint_application_id" {}
