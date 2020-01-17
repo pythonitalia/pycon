@@ -19,6 +19,11 @@ def get_segment_names() -> typing.Iterable[str]:
         yield segment["Name"]
 
 
+def chunks(l, n):
+    for i in range(0, len(l), n):
+        yield l[i : i + n]  # noqa
+
+
 def create_cfp_segment(segment_name: str, conference: str):
     client = _get_client()
 
@@ -53,30 +58,29 @@ def create_cfp_segment(segment_name: str, conference: str):
 
 
 def send_users_to_pinpoint(users: typing.Iterable[typing.Any]):
-    data = {
-        "Item": [
-            {
-                "ChannelType": "EMAIL",
-                "Address": user.email,
-                "Id": user.id,
-                "User": {
-                    "UserId": user.id,
-                    "UserAttributes": {
-                        "Name": [user.name],
-                        "has_sent_submission_to": user.submission_sent_to,
+    # batch only supports 100 at the time
+    user_chunks = chunks(users, 100)
+
+    for user_chunk in user_chunks:
+        data = {
+            "Item": [
+                {
+                    "ChannelType": "EMAIL",
+                    "Address": user.email,
+                    "Id": user.id,
+                    "User": {
+                        "UserId": user.id,
+                        "UserAttributes": {
+                            "Name": [user.name],
+                            "has_sent_submission_to": user.submission_sent_to,
+                        },
                     },
-                },
-            }
-            for user in users
-        ]
-    }
+                }
+                for user in user_chunk
+            ]
+        }
 
-    client = _get_client()
-
-    response = client.update_endpoints_batch(
-        ApplicationId=settings.PINPOINT_APPLICATION_ID, EndpointBatchRequest=data
-    )
-
-    import pprint
-
-    pprint.pprint(response, indent=4)
+        client = _get_client()
+        client.update_endpoints_batch(
+            ApplicationId=settings.PINPOINT_APPLICATION_ID, EndpointBatchRequest=data
+        )
