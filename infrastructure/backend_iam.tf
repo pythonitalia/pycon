@@ -43,7 +43,7 @@ resource "aws_iam_user_policy" "backend" {
     {
       "Effect": "Allow",
       "Action": [
-        "mobiletargeting:*",
+        "mobiletargeting:*"
       ],
       "Resource": "arn:aws:mobiletargeting:*"
     },
