@@ -68,7 +68,6 @@ class RankRequest(models.Model):
         for k, g in itertools.groupby(talk_rank_sub, order_by):
             for index, rank in enumerate(list(g)):
                 rank_obj[rank["submission_id"]].topic_rank = index + 1
-                rank_obj[rank["submission_id"]].topic_score = rank["votes"]
                 rank_obj[rank["submission_id"]].save()
 
 
@@ -86,12 +85,8 @@ class RankSubmission(models.Model):
     )
 
     absolute_rank = models.PositiveIntegerField(_("absolute rank"))
-
     absolute_score = models.PositiveIntegerField(_("absolute score"))
-
     topic_rank = models.PositiveIntegerField(_("topic rank"))
-
-    topic_score = models.PositiveIntegerField(_("topic score"))
 
     def __str__(self):
         return (
