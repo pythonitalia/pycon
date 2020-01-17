@@ -110,10 +110,10 @@ export default ({ data }: { data: HomePageQuery }) => {
 
         <Box sx={{ gridColumnStart: [null, null, 3] }}>
           <Heading as="h1" sx={{ mb: 3 }}>
-            {conference.proposalsTitle}
+            {conference.votingTitle}
           </Heading>
 
-          {conference.cfpDeadline && (
+          {conference.votingDeadline && (
             <Box
               sx={{
                 border: "primary",
@@ -133,35 +133,35 @@ export default ({ data }: { data: HomePageQuery }) => {
                 }}
               >
                 <Heading variant="caps" color="violet">
-                  <FormattedMessage id="home.cfp.begins" />
+                  <FormattedMessage id="home.deadline.begins" />
                 </Heading>
-                <Box>{formatDeadlineDate(conference.cfpDeadline.start)}</Box>
+                <Box>{formatDeadlineDate(conference.votingDeadline.start)}</Box>
                 <Box sx={{ fontSize: 0 }}>
-                  {formatDeadlineTime(conference.cfpDeadline.start)}
+                  {formatDeadlineTime(conference.votingDeadline.start)}
                 </Box>
               </Box>
               <Box sx={{ flex: 1, p: 3, textAlign: "center" }}>
                 <Heading variant="caps" color="orange">
-                  <FormattedMessage id="home.cfp.deadline" />
+                  <FormattedMessage id="home.deadline.deadline" />
                 </Heading>
-                <Box>{formatDeadlineDate(conference.cfpDeadline.end)}</Box>
+                <Box>{formatDeadlineDate(conference.votingDeadline.end)}</Box>
                 <Box sx={{ fontSize: 0 }}>
-                  {formatDeadlineTime(conference.cfpDeadline.end)}
+                  {formatDeadlineTime(conference.votingDeadline.end)}
                 </Box>
               </Box>
             </Box>
           )}
 
           <Heading as="h2" sx={{ color: "yellow", fontSize: 3, mb: 3 }}>
-            {conference.proposalsSubtitle}
+            {conference.votingSubtitle}
           </Heading>
 
           <Text as="p" sx={{ mb: 4 }}>
-            {conference.proposalsText}
+            {conference.votingText}
           </Text>
 
-          <Link href="/:language/cfp" variant="button">
-            <FormattedMessage id="home.cfp.getInvolved" />
+          <Link href="/:language/voting" variant="button">
+            <FormattedMessage id="home.voting.vote" />
           </Link>
         </Box>
       </Grid>
@@ -296,9 +296,9 @@ export const query = graphql`
         introTitle: copy(key: "intro-title-1", language: $language)
         introText: copy(key: "intro-text-1", language: $language)
 
-        proposalsTitle: copy(key: "proposals-title", language: $language)
-        proposalsSubtitle: copy(key: "proposals-subtitle", language: $language)
-        proposalsText: copy(key: "proposals-text", language: $language)
+        votingTitle: copy(key: "voting-title", language: $language)
+        votingSubtitle: copy(key: "voting-subtitle", language: $language)
+        votingText: copy(key: "voting-text", language: $language)
 
         gettingThereText: copy(key: "getting-there-text", language: $language)
 
@@ -306,7 +306,7 @@ export const query = graphql`
           link
         }
 
-        cfpDeadline: deadline(type: "cfp") {
+        votingDeadline: deadline(type: "voting") {
           start
           end
         }
