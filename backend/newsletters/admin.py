@@ -30,7 +30,12 @@ class SubscriptionAdmin(AdminViews):
         users = (
             User.objects.filter(submissions__isnull=False)
             .values(
-                "id", "email", "name", conference=F("submissions__conference__code")
+                "id",
+                "is_staff",
+                "email",
+                "name",
+                "full_name",
+                conference=F("submissions__conference__code"),
             )
             .distinct()
         )
@@ -41,7 +46,9 @@ class SubscriptionAdmin(AdminViews):
         class CFPUser:
             id: str
             name: str
+            full_name: str
             email: str
+            is_staff: bool
             submission_sent_to: typing.List[str]
 
         conferences = set()
@@ -58,7 +65,9 @@ class SubscriptionAdmin(AdminViews):
                 users_by_id[user_id] = CFPUser(
                     id=user_id,
                     name=user["name"],
+                    full_name=user["full_name"],
                     email=user["email"],
+                    is_staff=user["is_staff"],
                     submission_sent_to=[conference],
                 )
 

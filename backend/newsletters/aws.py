@@ -73,6 +73,7 @@ def send_users_to_pinpoint(users: typing.Iterable[typing.Any]):
                         "UserAttributes": {
                             "Name": [user.name],
                             "has_sent_submission_to": user.submission_sent_to,
+                            "is_staff": [str(user.is_staff)],
                         },
                     },
                 }
