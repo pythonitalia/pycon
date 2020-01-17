@@ -328,6 +328,8 @@ export const messages = {
     "voting.allSubmissions": "Voted & Not voted",
     "voting.notVoted": "Not voted",
     "voting.votedOnly": "Voted only",
+    "voting.tagsFilter":
+      "{numFilters, plural, =0 {All tags} one {1 Tag} other {{numFilters} Tags}}",
 
     "voting.abstract": "Abstract",
     "voting.elevatorPitch": "Elevator pitch",
@@ -668,6 +670,9 @@ export const messages = {
     "voting.abstract": "Descrizione",
     "voting.elevatorPitch": "Pitch",
     "voting.notes": "Note",
+    "voting.tagsFilter":
+      "{numFilters, plural, =0 {Tutti i tags} one {1 Tag} other {{numFilters} Tags}}",
+
     "unsubscribe.title": "Annulla l'iscrizione alla Newsletter",
     "unsubscribe.button": "Annulla l'iscrizione",
     "unsubscribe.succeed.title": "Grazie",

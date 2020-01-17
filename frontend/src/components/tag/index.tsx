@@ -7,10 +7,16 @@ type Props = {
   tag: SubmissionTag;
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
   variant?: "tag" | "selectedTag";
+  className?: string;
 };
 
-export const Tag: React.SFC<Props> = ({ tag, onClick, variant = "tag" }) => (
-  <Badge variant={variant} onClick={onClick}>
+export const Tag: React.SFC<Props> = ({
+  tag,
+  onClick,
+  className,
+  variant = "tag",
+}) => (
+  <Badge className={className} variant={variant} onClick={onClick}>
     {tag.name}
   </Badge>
 );
