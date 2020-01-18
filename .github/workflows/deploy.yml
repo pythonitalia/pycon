@@ -114,6 +114,7 @@ jobs:
         CONFERENCE_CODE: pycon11
         API_URL: https://d1111jewijk23m.cloudfront.net/graphql
         API_TOKEN: ${{ secrets.API_TOKEN }}
+        SENTRY_DSN: ${{ secrets.TF_VAR_sentry_dsn }}
     - uses: netlify/actions/cli@master
       with:
         args: deploy --dir=frontend/public --prod

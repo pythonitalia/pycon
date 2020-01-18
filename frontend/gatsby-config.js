@@ -41,6 +41,12 @@ module.exports = {
     `gatsby-plugin-netlify`,
     "gatsby-plugin-theme-ui",
     {
+      resolve: `gatsby-plugin-env-variables`,
+      options: {
+        whitelist: ["CONFERENCE_CODE", "SENTRY_DSN"],
+      },
+    },
+    {
       resolve: "gatsby-source-pycon",
       options: {
         url: API_URL,

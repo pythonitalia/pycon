@@ -17,9 +17,7 @@ export class ErrorBoundary extends Component<
     super(props);
     this.state = { error: null, errorInfo: null, eventId: null };
 
-    const SENTRY_DSN = (this.props?.children as any)?.props.pageContext
-      .sentryDsn;
-    Sentry.init({ dsn: SENTRY_DSN });
+    Sentry.init({ dsn: process.env.SENTRY_DSN });
   }
 
   componentDidCatch(error: any, errorInfo: any) {

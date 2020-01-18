@@ -7535,6 +7535,11 @@ gatsby-plugin-create-client-paths@^2.1.20:
   dependencies:
     "@babel/runtime" "^7.7.6"
 
+gatsby-plugin-env-variables@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/gatsby-plugin-env-variables/-/gatsby-plugin-env-variables-1.0.1.tgz#89cdf43b03d46105521bb7d0f09d0d5b92ad83c8"
+  integrity sha512-TnXU+IjvM3iHcaNOa+alqP3Wk19+pmxvXwMyoPaUZIDKNwvpXRz8klsag2AwNlsqD17949/m8I80z8plZRyE1w==
+
 gatsby-plugin-extract-schema@^0.0.5:
   version "0.0.5"
   resolved "https://registry.yarnpkg.com/gatsby-plugin-extract-schema/-/gatsby-plugin-extract-schema-0.0.5.tgz#da798c0bdc9f8bf2cc19317467566c8505dd7b53"
