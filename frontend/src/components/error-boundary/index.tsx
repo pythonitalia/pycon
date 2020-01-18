@@ -1,5 +1,6 @@
 /** @jsx jsx */
 import { isRedirect } from "@reach/router";
+import * as Sentry from "@sentry/browser";
 import { Box } from "@theme-ui/components";
 import { Component } from "react";
 import { jsx } from "theme-ui";
@@ -9,23 +10,31 @@ export class ErrorBoundary extends Component<
   {
     errorInfo: any | null;
     error: string | null;
+    eventId: any | null;
   }
 > {
   constructor(props: Readonly<{}>) {
     super(props);
+    this.state = { error: null, errorInfo: null, eventId: null };
 
-    this.state = { error: null, errorInfo: null };
+    Sentry.init({ dsn: process.env.SENTRY_DSN });
   }
 
   componentDidCatch(error: any, errorInfo: any) {
-    if (isRedirect(error)) {
-      throw error;
-    } else {
-      this.setState({
-        error,
-        errorInfo,
-      });
-    }
+    Sentry.withScope(scope => {
+      scope.setExtras(errorInfo);
+      const eventId = Sentry.captureException(error);
+      this.setState({ eventId });
+
+      if (isRedirect(error)) {
+        throw error;
+      } else {
+        this.setState({
+          error,
+          errorInfo,
+        });
+      }
+    });
   }
 
   render() {
