@@ -196,17 +196,16 @@ export const SubmissionAccordion: React.SFC<Props> = ({
 
       {open && (
         <Fragment>
-          <Box sx={{ borderBottom: "primary" }}>
+          <Box sx={{ borderBottom: "primary", py: 3, px: 3 }}>
             <VoteSelector
               value={vote?.value ?? 0}
               onVote={onSubmitVote}
-              sx={{ p: 3, maxWidth: "container", mx: "auto" }}
+              sx={{ maxWidth: "container", mx: "auto" }}
             />
 
             <Text
               sx={{
-                px: 3,
-                mb: 3,
+                mt: [3, 2],
                 fontWeight: "bold",
                 maxWidth: "container",
                 mx: "auto",
