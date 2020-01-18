@@ -28,7 +28,16 @@ type Filters = {
   tags: string[];
 };
 
-const COLORS = ["blue", "lightBlue"];
+const COLORS = [
+  {
+    background: "blue",
+    heading: "white",
+  },
+  {
+    background: "lightBlue",
+    heading: "black",
+  },
+];
 
 export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
   const [loggedIn] = useLoginState();
@@ -251,7 +260,8 @@ export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
             })
             .map((submission, index) => (
               <SubmissionAccordion
-                color={COLORS[index % COLORS.length]}
+                backgroundColor={COLORS[index % COLORS.length].background}
+                headingColor={COLORS[index % COLORS.length].heading}
                 vote={submission.myVote}
                 key={submission.id}
                 submission={submission}

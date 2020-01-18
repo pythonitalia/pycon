@@ -55,7 +55,8 @@ type VoteSubmission = {
 };
 
 type Props = {
-  color: string;
+  backgroundColor: string;
+  headingColor: string;
   vote: {
     id: string;
     value: number;
@@ -65,7 +66,8 @@ type Props = {
 };
 
 export const SubmissionAccordion: React.SFC<Props> = ({
-  color,
+  backgroundColor,
+  headingColor,
   vote,
   onVote,
   submission,
@@ -163,7 +165,7 @@ export const SubmissionAccordion: React.SFC<Props> = ({
     <Box
       as="li"
       sx={{
-        backgroundColor: color,
+        backgroundColor,
         overflow: "hidden",
 
         "&:last-child": {
@@ -289,7 +291,7 @@ export const SubmissionAccordion: React.SFC<Props> = ({
                     sx={{
                       fontSize: 2,
                       textTransform: "uppercase",
-                      color: "white",
+                      color: headingColor,
                     }}
                   >
                     <FormattedMessage id="voting.elevatorPitch" />
@@ -316,18 +318,21 @@ export const SubmissionAccordion: React.SFC<Props> = ({
             >
               {topic && (
                 <SubmissionInfo
+                  headingColor={headingColor}
                   label={<FormattedMessage id="voting.topic" />}
                   value={topic.name}
                 />
               )}
               {audienceLevel && (
                 <SubmissionInfo
+                  headingColor={headingColor}
                   label={<FormattedMessage id="voting.audienceLevel" />}
                   value={audienceLevel.name}
                 />
               )}
               {duration && (
                 <SubmissionInfo
+                  headingColor={headingColor}
                   label={<FormattedMessage id="voting.length" />}
                   value={
                     <FormattedMessage id="voting.minutes">
@@ -340,12 +345,14 @@ export const SubmissionAccordion: React.SFC<Props> = ({
               )}
               {tags && (
                 <SubmissionInfo
+                  headingColor={headingColor}
                   label={<FormattedMessage id="voting.tags" />}
                   value={tags.map(t => t.name).join(", ")}
                 />
               )}
               {languages && (
                 <SubmissionInfo
+                  headingColor={headingColor}
                   label={<FormattedMessage id="voting.languages" />}
                   value={languages.map(t => t.name).join(", ")}
                 />
@@ -361,9 +368,14 @@ export const SubmissionAccordion: React.SFC<Props> = ({
 type SubmissionInfoProps = {
   label: string | React.ReactElement;
   value: string | React.ReactElement;
+  headingColor: string;
 };
 
-const SubmissionInfo: React.SFC<SubmissionInfoProps> = ({ label, value }) => (
+const SubmissionInfo: React.SFC<SubmissionInfoProps> = ({
+  label,
+  value,
+  headingColor,
+}) => (
   <li
     sx={{
       "& + &": {
@@ -373,7 +385,7 @@ const SubmissionInfo: React.SFC<SubmissionInfoProps> = ({ label, value }) => (
   >
     <Text
       sx={{
-        color: "white",
+        color: headingColor,
         fontSize: 2,
         variant: "heading",
         fontWeight: "bold",
