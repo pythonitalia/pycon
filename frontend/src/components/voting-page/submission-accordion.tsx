@@ -13,6 +13,8 @@ import {
   VotingSubmissionsQueryVariables,
 } from "../../generated/graphql-backend";
 import { compile } from "../../helpers/markdown";
+import { EnglishIcon } from "../icons/english";
+import { ItalianIcon } from "../icons/italian";
 import { Link } from "../link";
 import SAVE_VOTE from "./save-vote.graphql";
 import { VoteSelector } from "./vote-selector";
@@ -47,6 +49,7 @@ type VoteSubmission = {
     | {
         id: string;
         name: string;
+        code: string;
       }[]
     | null;
 };
@@ -180,15 +183,53 @@ export const SubmissionAccordion: React.SFC<Props> = ({
           sx={{
             maxWidth: "container",
             mx: "auto",
+            px: 3,
             justifyContent: "space-between",
-            gridTemplateColumns: "1fr 100px",
-            p: 3,
+            gridTemplateColumns: ["1fr 100px", "1fr 150px"],
+            cursor: "pointer",
           }}
           onClick={toggleAccordion}
         >
-          <Text sx={{ mr: 3 }}>{title}</Text>
+          <Flex
+            sx={{
+              py: 3,
+              alignItems: "center",
+              justifyContent: "space-between",
 
-          <Text sx={{ textAlign: "right" }}>
+              "svg + svg": {
+                marginLeft: 1,
+              },
+            }}
+          >
+            <Text sx={{ mr: 3, flexGrow: 1 }}>{title}</Text>
+            {submission.languages?.find(l => l.code === "it") && (
+              <ItalianIcon
+                sx={{
+                  flexShrink: 0,
+                  width: [30, 50],
+                }}
+              />
+            )}
+            {submission.languages?.find(l => l.code === "en") && (
+              <EnglishIcon
+                sx={{
+                  flexShrink: 0,
+                  width: [30, 50],
+                }}
+              />
+            )}
+          </Flex>
+
+          <Text
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "flex-end",
+              textAlign: "center",
+              p: 3,
+              borderLeft: "primary",
+            }}
+          >
             <FormattedMessage id={open ? "voting.close" : "voting.readMore"} />
           </Text>
         </Grid>
@@ -196,16 +237,18 @@ export const SubmissionAccordion: React.SFC<Props> = ({
 
       {open && (
         <Fragment>
-          <Box sx={{ borderBottom: "primary", py: 3, px: 3 }}>
+          <Box sx={{ borderBottom: "primary", py: 3 }}>
             <VoteSelector
               value={vote?.value ?? 0}
               onVote={onSubmitVote}
-              sx={{ maxWidth: "container", mx: "auto" }}
+              sx={{ maxWidth: "container", mx: "auto", px: 3 }}
             />
 
             <Text
               sx={{
                 mt: [3, 2],
+                px: 3,
+
                 fontWeight: "bold",
                 maxWidth: "container",
                 mx: "auto",
