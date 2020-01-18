@@ -1,9 +1,11 @@
 /** @jsx jsx */
 import { isRedirect } from "@reach/router";
 import * as Sentry from "@sentry/browser";
-import { Box } from "@theme-ui/components";
+import { Box, Heading, Text } from "@theme-ui/components";
 import { Component } from "react";
 import { jsx } from "theme-ui";
+
+import { Link } from "../link";
 
 export class ErrorBoundary extends Component<
   {},
@@ -40,8 +42,30 @@ export class ErrorBoundary extends Component<
   render() {
     if (this.state.errorInfo) {
       return (
-        <Box sx={{ mx: "auto", maxWidth: "container", pb: 6 }}>
-          <h2>Something went wrong.</h2>
+        <Box sx={{ mt: 4, mx: "auto", maxWidth: "container", px: 3, pb: 6 }}>
+          <Heading as="h2" sx={{ mb: 2 }}>
+            Something went wrong.
+          </Heading>
+
+          <Text sx={{ mb: 3 }}>
+            If a refresh doesn't work, please report this to{" "}
+            <Link href="https://github.com/pythonitalia/pycon">
+              our repo on github.
+            </Link>
+          </Text>
+
+          {
+            // TODO: Make this responsive
+          }
+          <Box
+            as="iframe"
+            sx={{ mb: 3, width: "100%", maxWidth: "480" }}
+            src="https://giphy.com/embed/k61nOBRRBMxva"
+            width="480"
+            height="326"
+            frameBorder="0"
+          />
+
           <details style={{ whiteSpace: "pre-wrap" }}>
             {this.state.error && this.state.error.toString()}
             <br />
