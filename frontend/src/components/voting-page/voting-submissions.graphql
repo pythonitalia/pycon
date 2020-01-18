@@ -52,4 +52,9 @@ query VotingSubmissions($conference: String!) {
       }
     }
   }
+
+  submissionTags {
+    id
+    name
+  }
 }

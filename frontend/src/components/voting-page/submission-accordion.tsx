@@ -13,6 +13,8 @@ import {
   VotingSubmissionsQueryVariables,
 } from "../../generated/graphql-backend";
 import { compile } from "../../helpers/markdown";
+import { EnglishIcon } from "../icons/english";
+import { ItalianIcon } from "../icons/italian";
 import { Link } from "../link";
 import SAVE_VOTE from "./save-vote.graphql";
 import { VoteSelector } from "./vote-selector";
@@ -47,12 +49,14 @@ type VoteSubmission = {
     | {
         id: string;
         name: string;
+        code: string;
       }[]
     | null;
 };
 
 type Props = {
-  color: string;
+  backgroundColor: string;
+  headingColor: string;
   vote: {
     id: string;
     value: number;
@@ -62,7 +66,8 @@ type Props = {
 };
 
 export const SubmissionAccordion: React.SFC<Props> = ({
-  color,
+  backgroundColor,
+  headingColor,
   vote,
   onVote,
   submission,
@@ -160,7 +165,7 @@ export const SubmissionAccordion: React.SFC<Props> = ({
     <Box
       as="li"
       sx={{
-        backgroundColor: color,
+        backgroundColor,
         overflow: "hidden",
 
         "&:last-child": {
@@ -180,15 +185,53 @@ export const SubmissionAccordion: React.SFC<Props> = ({
           sx={{
             maxWidth: "container",
             mx: "auto",
+            px: 3,
             justifyContent: "space-between",
-            gridTemplateColumns: "1fr 100px",
-            p: 3,
+            gridTemplateColumns: ["1fr 100px", "1fr 150px"],
+            cursor: "pointer",
           }}
           onClick={toggleAccordion}
         >
-          <Text sx={{ mr: 3 }}>{title}</Text>
+          <Flex
+            sx={{
+              py: 3,
+              alignItems: "center",
+              justifyContent: "space-between",
 
-          <Text sx={{ textAlign: "right" }}>
+              "svg + svg": {
+                marginLeft: 1,
+              },
+            }}
+          >
+            <Text sx={{ mr: 3, flexGrow: 1 }}>{title}</Text>
+            {submission.languages?.find(l => l.code === "it") && (
+              <ItalianIcon
+                sx={{
+                  flexShrink: 0,
+                  width: [30, 50],
+                }}
+              />
+            )}
+            {submission.languages?.find(l => l.code === "en") && (
+              <EnglishIcon
+                sx={{
+                  flexShrink: 0,
+                  width: [30, 50],
+                }}
+              />
+            )}
+          </Flex>
+
+          <Text
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "flex-end",
+              textAlign: "center",
+              p: 3,
+              borderLeft: "primary",
+            }}
+          >
             <FormattedMessage id={open ? "voting.close" : "voting.readMore"} />
           </Text>
         </Grid>
@@ -196,17 +239,18 @@ export const SubmissionAccordion: React.SFC<Props> = ({
 
       {open && (
         <Fragment>
-          <Box sx={{ borderBottom: "primary" }}>
+          <Box sx={{ borderBottom: "primary", py: 3 }}>
             <VoteSelector
               value={vote?.value ?? 0}
               onVote={onSubmitVote}
-              sx={{ p: 3, maxWidth: "container", mx: "auto" }}
+              sx={{ maxWidth: "container", mx: "auto", px: 3 }}
             />
 
             <Text
               sx={{
+                mt: [3, 2],
                 px: 3,
-                mb: 3,
+
                 fontWeight: "bold",
                 maxWidth: "container",
                 mx: "auto",
@@ -247,7 +291,7 @@ export const SubmissionAccordion: React.SFC<Props> = ({
                     sx={{
                       fontSize: 2,
                       textTransform: "uppercase",
-                      color: "white",
+                      color: headingColor,
                     }}
                   >
                     <FormattedMessage id="voting.elevatorPitch" />
@@ -274,18 +318,21 @@ export const SubmissionAccordion: React.SFC<Props> = ({
             >
               {topic && (
                 <SubmissionInfo
+                  headingColor={headingColor}
                   label={<FormattedMessage id="voting.topic" />}
                   value={topic.name}
                 />
               )}
               {audienceLevel && (
                 <SubmissionInfo
+                  headingColor={headingColor}
                   label={<FormattedMessage id="voting.audienceLevel" />}
                   value={audienceLevel.name}
                 />
               )}
               {duration && (
                 <SubmissionInfo
+                  headingColor={headingColor}
                   label={<FormattedMessage id="voting.length" />}
                   value={
                     <FormattedMessage id="voting.minutes">
@@ -298,12 +345,14 @@ export const SubmissionAccordion: React.SFC<Props> = ({
               )}
               {tags && (
                 <SubmissionInfo
+                  headingColor={headingColor}
                   label={<FormattedMessage id="voting.tags" />}
                   value={tags.map(t => t.name).join(", ")}
                 />
               )}
               {languages && (
                 <SubmissionInfo
+                  headingColor={headingColor}
                   label={<FormattedMessage id="voting.languages" />}
                   value={languages.map(t => t.name).join(", ")}
                 />
@@ -319,9 +368,14 @@ export const SubmissionAccordion: React.SFC<Props> = ({
 type SubmissionInfoProps = {
   label: string | React.ReactElement;
   value: string | React.ReactElement;
+  headingColor: string;
 };
 
-const SubmissionInfo: React.SFC<SubmissionInfoProps> = ({ label, value }) => (
+const SubmissionInfo: React.SFC<SubmissionInfoProps> = ({
+  label,
+  value,
+  headingColor,
+}) => (
   <li
     sx={{
       "& + &": {
@@ -331,7 +385,7 @@ const SubmissionInfo: React.SFC<SubmissionInfoProps> = ({ label, value }) => (
   >
     <Text
       sx={{
-        color: "white",
+        color: headingColor,
         fontSize: 2,
         variant: "heading",
         fontWeight: "bold",

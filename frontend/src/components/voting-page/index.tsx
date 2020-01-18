@@ -18,19 +18,33 @@ import { Link } from "../link";
 import { LoginForm } from "../login-form";
 import { MetaTags } from "../meta-tags";
 import { SubmissionAccordion } from "./submission-accordion";
+import { TagsFilter } from "./tags-filter";
 import VOTING_SUBMISSIONS from "./voting-submissions.graphql";
 
 type Filters = {
   topic: string;
   language: string;
   vote: "all" | "votedOnly" | "notVoted";
+  tags: string[];
 };
 
-const COLORS = ["blue", "lightBlue"];
+const COLORS = [
+  {
+    background: "blue",
+    heading: "white",
+  },
+  {
+    background: "lightBlue",
+    heading: "black",
+  },
+];
 
 export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
   const [loggedIn] = useLoginState();
-  const [filters, { select }] = useFormState<Filters>({ vote: "all" });
+  const [filters, { select }] = useFormState<Filters>({
+    vote: "all",
+    tags: [],
+  });
   const [votedSubmissions, setVotedSubmissions] = useState(new Set());
 
   const { code: conferenceCode } = useConference();
@@ -101,18 +115,11 @@ export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
                 </Alert>
               )}
             </Box>
-            <Flex
+            <Grid
               sx={{
-                flexDirection: ["column", "row"],
-                alignItems: [null, "flex-end"],
-                justifyContent: [null, "flex-end"],
+                gridTemplateColumns: [null, "1fr 1fr"],
+                alignItems: "flex-end",
                 mb: 4,
-
-                "div + div": {
-                  select: {
-                    borderLeft: [null, "none"],
-                  },
-                },
               }}
             >
               <Select
@@ -153,7 +160,6 @@ export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
               <Select
                 {...select("vote")}
                 sx={{
-                  background: "keppel",
                   mt: [3, 0],
                   borderRadius: 0,
                 }}
@@ -168,7 +174,16 @@ export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
                   {text => <option value="votedOnly">{text}</option>}
                 </FormattedMessage>
               </Select>
-            </Flex>
+
+              <TagsFilter
+                sx={{
+                  mt: [3, 0],
+                }}
+                value={filters.values.tags}
+                onChange={values => filters.setField("tags", values)}
+                tags={data?.submissionTags ?? []}
+              />
+            </Grid>
           </Grid>
         </Box>
       </Box>
@@ -215,6 +230,15 @@ export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
                 return false;
               }
 
+              if (
+                filters.values.tags.length > 0 &&
+                submission.tags?.every(
+                  st => filters.values.tags.indexOf(st.id) === -1,
+                )
+              ) {
+                return false;
+              }
+
               const voteStatusFilter = filters.values.vote;
 
               if (
@@ -236,7 +260,8 @@ export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
             })
             .map((submission, index) => (
               <SubmissionAccordion
-                color={COLORS[index % COLORS.length]}
+                backgroundColor={COLORS[index % COLORS.length].background}
+                headingColor={COLORS[index % COLORS.length].heading}
                 vote={submission.myVote}
                 key={submission.id}
                 submission={submission}

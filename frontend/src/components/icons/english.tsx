@@ -1,7 +1,7 @@
 import React from "react";
 
-export const EnglishIcon: React.SFC<{ active: boolean }> = ({
-  active,
+export const EnglishIcon: React.SFC<{ active?: boolean }> = ({
+  active = false,
   ...props
 }) => (
   <svg viewBox="0 0 50 50" fill="none" {...props}>
