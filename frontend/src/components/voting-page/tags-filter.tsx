@@ -68,6 +68,7 @@ export const TagsFilter: React.SFC<Props> = ({
             py: [4, 5],
             listStyle: "none",
             transform: "translateY(-2px)",
+            zIndex: 1,
           }}
         >
           <Box
