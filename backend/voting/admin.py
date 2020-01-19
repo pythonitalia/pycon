@@ -87,7 +87,8 @@ class RankRequestAdmin(admin.ModelAdmin):
 
     def view_rank(self, obj):  # pragma: no cover
         return format_html(
-            '<a class="button" href="{}">Open</a>&nbsp;',
+            f'<a class="button" '
+            f'href="{{}}?rank_request_id__id__exact={obj.id}">Open</a>&nbsp;',
             reverse("admin:voting_ranksubmission_changelist"),
         )
 
