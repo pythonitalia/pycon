@@ -37,6 +37,7 @@ class RankSubmission(admin.ModelAdmin):
     list_display = (
         "absolute_rank",
         "absolute_score",
+        "submission_id",
         "title",
         "topic",
         "topic_rank",
@@ -46,6 +47,7 @@ class RankSubmission(admin.ModelAdmin):
         "gender",
     )
     ordering = ("absolute_rank",)
+    list_filter = ("rank_request_id",)
 
     def title(self, obj):  # pragma: no cover
         return obj.submission.title

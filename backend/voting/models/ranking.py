@@ -1,3 +1,5 @@
+import itertools
+
 from django.db import models
 from django.db.models import Sum
 from django.utils.translation import ugettext_lazy as _
@@ -22,53 +24,116 @@ class RankRequest(models.Model):
     def save(self, *args, **kwargs):
         super(RankRequest, self).save(*args, **kwargs)
 
-        submissions = Submission.objects.filter(conference_id=self.conference.id)
-        ranked_submissions = RankRequest.get_ranking(submissions)
+        ranked_submissions = self.build_ranking(self.conference)
 
-        self.save_rank_submissions(ranked_submissions, submissions)
+        self.save_rank_submissions(ranked_submissions)
 
-    @staticmethod
-    def get_ranking(submissions):
-        """Decide here how to rank submission (e,g. vote-engine)
-        for "now" simply Sums votes.
+    def build_ranking(self, conference):
+        """Builds the ranking
 
         P. S. maybe we should make some *Strategy* in order to have all
         available and run different strategies...
+
+        :return: list of dictionary ordered by score descending
+        [{
+            "submission_id": submission.id,
+            "submission__topic_id": submission.topic_id,
+            "score": score
+        },
+        ...
+        ]
+        """
+
+        return RankRequest.users_most_voted_based(conference)
+        # return RankRequest.simple_sum(conference)
+
+    @staticmethod
+    def users_most_voted_based(conference):
+        """Builds the ranking based on the votes each user has gived
+        This algorithm rewards users who have given more votes. If a user
+        votes many submissions, it means that he cares about his choices so
+        he must be rewarded by weighing his votes more.
+
+        P. S. maybe we should make some *Strategy* in order to have all
+        available and run different strategies...
+
         """
 
         from voting.models import Vote
+        from users.models import User
 
-        queryset = (
+        submissions = Submission.objects.filter(conference=conference)
+        votes = Vote.objects.filter(submission__conference=conference)
+        n_users_voted = len(votes.distinct("user"))
+
+        users = User.objects.all()
+        n_voted_by_user = {
+            user.id: len(user.votes.filter(submission__conference=conference))
+            for user in users
+        }
+
+        ranking = []
+        for submission in submissions:
+            submission_votes = votes.filter(submission=submission)
+            score = (
+                sum(
+                    [
+                        vote.value * n_voted_by_user[vote.user.id]
+                        for vote in submission_votes
+                    ]
+                )
+                / n_users_voted
+            )
+            rank = {
+                "submission_id": submission.id,
+                "submission__topic_id": submission.topic_id,
+                "score": score,
+            }
+            ranking.append(rank)
+        return sorted(ranking, key=lambda k: k["score"], reverse=True)
+
+    @staticmethod
+    def simple_sum(conference):
+        """Simply sums the votes for each submission
+
+        :param conference:
+        """
+        from voting.models import Vote
+
+        submissions = Submission.objects.filter(conference=conference)
+        ranking = (
             Vote.objects.filter(submission__in=submissions)
             .values("submission_id", "submission__topic_id")
-            .annotate(votes=Sum("value"))
-            .order_by("-votes")
+            .annotate(score=Sum("value"))
+            .order_by("-score")
         )
+        return ranking
 
-        return queryset
+    def save_rank_submissions(self, scored_submissions):
+        """Save the list of ranked submissions calculating the rank position
+        from the score
+        """
 
-    def save_rank_submissions(self, ranked_submissions, submissions):
-
-        rank_obj = {}
-        for index, rank in enumerate(ranked_submissions):
+        ranked_obj = {}
+        for index, rank in enumerate(scored_submissions):
             rank_submission = RankSubmission(
                 rank_request=self,
-                submission=submissions.get(pk=rank["submission_id"]),
+                submission=Submission.objects.get(pk=rank["submission_id"]),
                 absolute_rank=index + 1,
-                absolute_score=rank["votes"],
+                absolute_score=rank["score"],
             )
-            rank_obj[rank["submission_id"]] = rank_submission
+            ranked_obj[rank["submission_id"]] = rank_submission
 
-        import itertools
-
-        def order_by(item):
+        # group by topic to generate the relative ranking
+        def group_by(item):
             return item["submission__topic_id"]
 
-        talk_rank_sub = sorted(ranked_submissions, key=order_by)
-        for k, g in itertools.groupby(talk_rank_sub, order_by):
+        scored_submissions = sorted(scored_submissions, key=group_by)
+
+        for k, g in itertools.groupby(scored_submissions, group_by):
             for index, rank in enumerate(list(g)):
-                rank_obj[rank["submission_id"]].topic_rank = index + 1
-                rank_obj[rank["submission_id"]].save()
+                ranked_obj[rank["submission_id"]].topic_rank = index + 1
+                ranked_obj[rank["submission_id"]].save()
 
 
 class RankSubmission(models.Model):
