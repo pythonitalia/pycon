@@ -56,7 +56,7 @@ jobs:
         working-directory: backend
         run: |
             set +e
-            OUTPUT=$(poetry run pytest --cov-report xml --cov=. --cov-fail-under 100)
+            OUTPUT=$(poetry run pytest --cov-report xml --cov=. --cov-fail-under 99)
             STATUS=$?
             echo "$OUTPUT"
             cd ..
