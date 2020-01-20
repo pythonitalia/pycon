@@ -290,6 +290,17 @@ wcwidth = ">=0.1.4"
 
 [[package]]
 category = "main"
+description = "Django autocomplete light filters for django admin"
+name = "dal-admin-filters"
+optional = false
+python-versions = "*"
+version = "0.3.3"
+
+[package.dependencies]
+django-autocomplete-light = "*"
+
+[[package]]
+category = "main"
 description = "XML bomb protection for Python stdlib modules"
 marker = "python_version >= \"3.0\""
 name = "defusedxml"
@@ -323,6 +334,23 @@ version = "0.8.0"
 
 [package.dependencies]
 django = ">=1.6"
+
+[[package]]
+category = "main"
+description = "Fresh autocompletes for Django"
+name = "django-autocomplete-light"
+optional = false
+python-versions = "*"
+version = "3.5.0"
+
+[package.dependencies]
+six = "*"
+
+[package.extras]
+genericm2m = ["django-generic-m2m"]
+gfk = ["django-querysetsequence (>=0.11)"]
+nested = ["django-nested-admin (>=3.0.21)"]
+tags = ["django-taggit"]
 
 [[package]]
 category = "main"
@@ -1374,7 +1402,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["pathlib2", "contextlib2", "unittest2"]
 
 [metadata]
-content-hash = "fe9a9852e29623bbc8f476f1824e4ef998ef9307f93f576000d3d32adbf5fcb5"
+content-hash = "e1c10c5629f95df4b6ac43472ca2f74c9b5f511e392cf6d64317db2d0bb307a9"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -1495,6 +1523,9 @@ curtsies = [
     {file = "curtsies-0.3.1-py2.py3-none-any.whl", hash = "sha256:9169d734323a1356e7563b1ca0bff3c5358c1b1dcce52506a9d4d8ab8a8f5604"},
     {file = "curtsies-0.3.1.tar.gz", hash = "sha256:b2c913a8113c4382e1a221679f2338139b112839deb16c00ee873e57a4b33bd4"},
 ]
+dal-admin-filters = [
+    {file = "dal_admin_filters-0.3.3-py3-none-any.whl", hash = "sha256:b80b80e6088f3d047f92fa596e9c6c1d1ec76a6383dff24eb1dfac2dbccecfac"},
+]
 defusedxml = [
     {file = "defusedxml-0.6.0-py2.py3-none-any.whl", hash = "sha256:6687150770438374ab581bb7a1b327a847dd9c5749e396102de3fad4e8a3ef93"},
     {file = "defusedxml-0.6.0.tar.gz", hash = "sha256:f684034d135af4c6cbb949b8a4d2ed61634515257a67299e5f940fbaa34377f5"},
@@ -1505,6 +1536,9 @@ django = [
 ]
 django-admin-views = [
     {file = "django-admin-views-0.8.0.tar.gz", hash = "sha256:cf3f54c030cb20f1e11f42e80d68022ba020326438c44fcb15edb11487934fb8"},
+]
+django-autocomplete-light = [
+    {file = "django-autocomplete-light-3.5.0.tar.gz", hash = "sha256:4a32bce7bc3004f49eb36b377ad18bd6a291077904810f22a2b13a6c53215666"},
 ]
 django-environ = [
     {file = "django-environ-0.4.4.tar.gz", hash = "sha256:ee2f8405d83137e3328b26b3de01bd715b5395fca22feb919dcc905fb6099cfa"},

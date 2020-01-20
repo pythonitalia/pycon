@@ -20,6 +20,9 @@ FRONTEND_URL = env("FRONTEND_URL")
 # Application definition
 
 INSTALLED_APPS = [
+    "dal",
+    "dal_select2",
+    "dal_admin_filters",
     "whitenoise.runserver_nostatic",
     "admin_views",
     "django.contrib.admin",

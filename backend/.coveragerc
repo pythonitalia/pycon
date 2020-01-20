@@ -35,5 +35,7 @@ omit =
   ./manage.py
   ./conftest.py
   ./api/views.py
+  ./users/views.py
+  ./submissions/views.py
   ./notifications/aws.py
   ./newsletters/aws.py
