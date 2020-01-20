@@ -53,10 +53,10 @@ class Submission:
     title: str
     slug: str
     elevator_pitch: Optional[str] = ticket_only_field()
-    notes: Optional[str] = ticket_only_field()
     abstract: Optional[str] = ticket_only_field()
     speaker_level: Optional[str] = private_field()
     previous_talk_video: Optional[str] = private_field()
+    notes: Optional[str] = private_field()
     speaker: Optional["User"] = private_field()
     topic: Optional["Topic"] = ticket_only_field()
     type: Optional[SubmissionType] = ticket_only_field()
