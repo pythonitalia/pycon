@@ -17,7 +17,6 @@ query VotingSubmissions($conference: String!) {
 
       abstract
       elevatorPitch
-      notes
 
       topic {
         id
