@@ -55,6 +55,7 @@ export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
     variables: {
       conference: conferenceCode,
     },
+    errorPolicy: "all",
     skip: !loggedIn,
   });
 
