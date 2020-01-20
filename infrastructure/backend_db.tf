@@ -20,17 +20,18 @@ resource "aws_db_subnet_group" "backend_rds" {
 
 
 resource "aws_db_instance" "backend" {
-  allocated_storage   = 10
-  storage_type        = "gp2"
-  engine              = "postgres"
-  engine_version      = "9.6.15"
-  instance_class      = "db.t2.micro"
-  name                = "${terraform.workspace}backend"
-  username            = "root"
-  password            = "${var.database_password}"
-  multi_az            = "false"
-  availability_zone   = "eu-central-1a"
-  skip_final_snapshot = true
+  allocated_storage           = 10
+  storage_type                = "gp2"
+  engine                      = "postgres"
+  allow_major_version_upgrade = true
+  engine_version              = "11.5"
+  instance_class              = "db.t2.micro"
+  name                        = "${terraform.workspace}backend"
+  username                    = "root"
+  password                    = "${var.database_password}"
+  multi_az                    = "false"
+  availability_zone           = "eu-central-1a"
+  skip_final_snapshot         = true
 
   db_subnet_group_name   = "${aws_db_subnet_group.backend_rds.name}"
   vpc_security_group_ids = ["${aws_security_group.backend_rds.id}"]
