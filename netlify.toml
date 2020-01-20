@@ -10,6 +10,12 @@
     force = true
 
 [[redirects]]
+    from = "/_/*"
+    to = "https://d1111jewijk23m.cloudfront.net/admin/:splat"
+    status = 200
+    force = true
+
+[[redirects]]
     from = "/django-static/*"
     to = "https://d1111jewijk23m.cloudfront.net/django-static/:splat"
     status = 200
