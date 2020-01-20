@@ -41,11 +41,18 @@ const COLORS = [
 
 export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
   const [loggedIn] = useLoginState();
-  const [filters, { select }] = useFormState<Filters>({
-    vote: "all",
-    tags: [],
-  });
   const [votedSubmissions, setVotedSubmissions] = useState(new Set());
+  const [filters, { select, raw }] = useFormState<Filters>(
+    {
+      vote: "all",
+      tags: [],
+    },
+    {
+      onChange() {
+        setVotedSubmissions(new Set());
+      },
+    },
+  );
 
   const { code: conferenceCode } = useConference();
   const { loading, error, data } = useQuery<
@@ -173,8 +180,7 @@ export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
                 sx={{
                   mt: [3, 0],
                 }}
-                value={filters.values.tags}
-                onChange={values => filters.setField("tags", values)}
+                {...raw("tags")}
                 tags={data?.submissionTags ?? []}
               />
             </Grid>
