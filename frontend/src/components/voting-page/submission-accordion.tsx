@@ -17,7 +17,7 @@ import { EnglishIcon } from "../icons/english";
 import { ItalianIcon } from "../icons/italian";
 import { Link } from "../link";
 import SAVE_VOTE from "./save-vote.graphql";
-import { VoteSelector } from "./vote-selector";
+import { VOTE_VALUES, VoteSelector } from "./vote-selector";
 import VOTING_SUBMISSIONS from "./voting-submissions.graphql";
 
 type VoteSubmission = {
@@ -26,6 +26,9 @@ type VoteSubmission = {
   abstract?: string | null;
   elevatorPitch?: string | null;
   notes?: string | null;
+  myVote?: {
+    value: number;
+  } | null;
   topic: {
     id: string;
     name: string;
@@ -161,6 +164,13 @@ export const SubmissionAccordion: React.SFC<Props> = ({
     [loading],
   );
 
+  const isInItalian = submission.languages?.find(l => l.code === "it");
+  const isInEnglish = submission.languages?.find(l => l.code === "en");
+  const hasVote = !!submission.myVote;
+
+  const voteSpace = hasVote ? "150px" : 0;
+  const headerGrid = [`1fr 0px 30px 130px`, `1fr ${voteSpace} 110px 150px`];
+
   return (
     <Box
       as="li"
@@ -187,24 +197,66 @@ export const SubmissionAccordion: React.SFC<Props> = ({
             mx: "auto",
             px: 3,
             justifyContent: "space-between",
-            gridTemplateColumns: ["1fr 100px", "1fr 150px"],
+            gridTemplateColumns: headerGrid,
+            alignItems: "center",
             cursor: "pointer",
+
+            "svg + svg": {
+              marginLeft: [0, 1],
+              marginTop: [1, 0],
+            },
           }}
           onClick={toggleAccordion}
         >
-          <Flex
+          <Text
             sx={{
               py: 3,
-              alignItems: "center",
-              justifyContent: "space-between",
-
-              "svg + svg": {
-                marginLeft: 1,
-              },
             }}
           >
-            <Text sx={{ mr: 3, flexGrow: 1 }}>{title}</Text>
-            {submission.languages?.find(l => l.code === "it") && (
+            {title}
+            {hasVote && (
+              <Text
+                sx={{
+                  fontWeight: "bold",
+                  display: [null, "none"],
+                  mt: 2,
+                }}
+              >
+                <FormattedMessage
+                  id={
+                    VOTE_VALUES.find(i => i.value === submission.myVote!.value)!
+                      .textId
+                  }
+                />
+              </Text>
+            )}
+          </Text>
+          {hasVote ? (
+            <Text
+              sx={{
+                fontWeight: "bold",
+                py: 3,
+                visibility: ["hidden", "visible"],
+              }}
+            >
+              <FormattedMessage
+                id={
+                  VOTE_VALUES.find(i => i.value === submission.myVote!.value)!
+                    .textId
+                }
+              />
+            </Text>
+          ) : (
+            <Box />
+          )}
+
+          <Box
+            sx={{
+              textAlign: "right",
+              py: 3,
+            }}
+          >
+            {isInItalian && (
               <ItalianIcon
                 sx={{
                   flexShrink: 0,
@@ -212,7 +264,7 @@ export const SubmissionAccordion: React.SFC<Props> = ({
                 }}
               />
             )}
-            {submission.languages?.find(l => l.code === "en") && (
+            {isInEnglish && (
               <EnglishIcon
                 sx={{
                   flexShrink: 0,
@@ -220,7 +272,7 @@ export const SubmissionAccordion: React.SFC<Props> = ({
                 }}
               />
             )}
-          </Flex>
+          </Box>
 
           <Text
             sx={{
@@ -229,7 +281,9 @@ export const SubmissionAccordion: React.SFC<Props> = ({
               justifyContent: "flex-end",
               textAlign: "center",
               p: 3,
+              height: "100%",
               borderLeft: "primary",
+              userSelect: "none",
             }}
           >
             <FormattedMessage id={open ? "voting.close" : "voting.readMore"} />
