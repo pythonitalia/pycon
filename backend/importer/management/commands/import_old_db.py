@@ -1,21 +1,17 @@
 import datetime
+import json
 import sqlite3
 from datetime import timedelta
-from decimal import Decimal
 
 import pytz
-from conferences.models import AudienceLevel, Conference, Duration, TicketFare, Topic
-from django.contrib.contenttypes.models import ContentType
+from conferences.models import AudienceLevel, Conference, Duration, Topic
 from django.core.management import CommandError
 from django.core.management.base import BaseCommand
 from django.db import IntegrityError, transaction
 from languages.models import Language
-from orders.enums import PaymentState
-from orders.models import Order, OrderItem
 from pycon.settings.base import root
 from schedule.models import Room, ScheduleItem
 from submissions.models import Submission, SubmissionType
-from tickets.models import Ticket
 from users.models import User
 
 DEFAULT_DB_PATH = root("p3.db")
@@ -58,6 +54,13 @@ TOPIC_MAPPING = {
     ("*", "pydata"): "PyData",
     ("*", "*"): "Python & Friends",
 }
+
+
+def i18n_json(value, languages=None):
+    if not languages:
+        languages = Language.objects.all()
+    field = {l.code: value for l in languages}
+    return json.dumps(field)
 
 
 def get_topic_name(track_title, sub_community):
@@ -259,12 +262,18 @@ class Command(BaseCommand):
             try:
                 with transaction.atomic():
                     key_fields = dict(code=old_conf["code"])
+
                     fields = dict(
-                        name=old_conf["name"],
+                        name=i18n_json(
+                            old_conf["name"].replace(" ", ""), languages=languages
+                        ),
                         timezone=OLD_DEAFAULT_TZ,
                         start=string_to_tzdatetime(old_conf["conference_start"]),
                         end=string_to_tzdatetime(
                             old_conf["conference_end"], day_end=True
+                        ),
+                        introduction=i18n_json(
+                            old_conf["name"].replace(" ", ""), languages=languages
                         ),
                     )
                     if overwrite:
@@ -273,7 +282,9 @@ class Command(BaseCommand):
                         )
                         action = "create" if created else "update"
                     else:
-                        conf = Conference.objects.create(**key_fields, **fields)
+                        conf = Conference.objects.get_or_create(**key_fields, **fields)[
+                            0
+                        ]
                         action = "create"
 
                     conf.languages.set(languages)
@@ -310,7 +321,7 @@ class Command(BaseCommand):
                     for deadline in ["cfp", "voting", "refund"]:
                         Deadline.objects.create(
                             conference=conf,
-                            name=deadline,
+                            name=i18n_json(deadline, languages=languages),
                             type=deadline,
                             start=string_to_tzdatetime(old_conf[f"{deadline}_start"]),
                             end=string_to_tzdatetime(
@@ -567,136 +578,6 @@ class Command(BaseCommand):
             )
         )
 
-    def import_tickets(self, overwrite):
-        if overwrite:
-            self.stdout.write(f"Overwrite is the default for tickets")
-
-        self.stdout.write(f"Importing tickets...")
-
-        conferences = {conf.code: conf.id for conf in Conference.objects.all()}
-        users_by_email = {user.email: user.id for user in User.objects.all()}
-
-        ticket_list = list(
-            self.c.execute(
-                """
-            SELECT
-                ticket2.assigned_to as ticket_user, user.email as order_user,
-                fare.conference, fare.code as fare_code,
-                fare.description as fare_description, fare.name as fare_name,
-                fare.price, fare.start_validity, fare.end_validity,
-                ord.method as payment_method, ord.payment_url,
-                ord._complete as payment_complete,
-                ord.created as order_created,
-                orderitem.description as orderitem_description,
-                orderitem.price as orderitem_price
-            from conference_ticket ticket
-            join p3_ticketconference ticket2
-                on ticket2.ticket_id = ticket.id
-            left outer join auth_user user
-                on user.id = ticket.user_id
-            left outer join conference_fare fare
-                on fare.id = ticket.fare_id
-            left outer join assopy_orderitem orderitem
-                on orderitem.ticket_id = ticket.id
-            left outer join assopy_order ord
-                on orderitem.order_id = ord.id
-            """
-            )
-        )
-
-        actions = {"create": 0, "update": 0, "skip": 0, "error": 0}
-        for orig_ticket in ticket_list:
-            action = "create"
-            try:
-                with transaction.atomic():
-
-                    order_user = users_by_email[orig_ticket["order_user"]]
-                    ticket_user = users_by_email.get(
-                        orig_ticket["ticket_user"] or None, order_user
-                    )
-
-                    # TODO: import to pretix?
-                    ticket_fare, _ = TicketFare.objects.update_or_create(
-                        conference_id=conferences[orig_ticket["conference"]],
-                        code=orig_ticket["fare_code"],
-                        defaults=dict(
-                            name=orig_ticket["fare_name"],
-                            description=orig_ticket["fare_description"],
-                            price=Decimal(orig_ticket["price"]),
-                            start=string_to_tzdatetime(orig_ticket["start_validity"]),
-                            end=string_to_tzdatetime(orig_ticket["end_validity"]),
-                        ),
-                    )
-
-                    order, _ = Order.objects.update_or_create(
-                        created=string_to_tzdatetime(orig_ticket["order_created"]),
-                        user_id=order_user,
-                        defaults=dict(
-                            provider=orig_ticket["payment_method"],
-                            transaction_id=orig_ticket["payment_url"],
-                            state=PaymentState.COMPLETE
-                            if orig_ticket["payment_complete"] == 1
-                            else PaymentState.FAILED,
-                            amount=1,
-                        ),
-                    )
-
-                    orderitem, _ = OrderItem.objects.update_or_create(
-                        order=order,
-                        item_type=ContentType.objects.get_for_model(OrderItem),
-                        item_object_id=ticket_fare.id,
-                        description=orig_ticket["orderitem_description"],
-                        unit_price=Decimal(orig_ticket["orderitem_price"]),
-                        defaults=dict(created=order.created, quantity=1),
-                    )
-
-                    ticket, created = Ticket.objects.update_or_create(
-                        user_id=ticket_user,
-                        ticket_fare=ticket_fare,
-                        order=order,
-                        defaults=dict(created=order.created),
-                    )
-                    if not created:
-                        action = "update"
-
-            except IntegrityError:
-                action = "skip"
-                continue
-            except Exception as exc:
-                msg = (
-                    f"Something bad happened when importing ticket "
-                    f'{orig_ticket["id"]}: {exc}'
-                )
-                self.stdout.write(self.style.NOTICE(msg))
-                action = "error"
-                continue
-            finally:
-                actions[action] += 1
-
-        # recalculate amounts and quantities for orders and orderitems
-        for orderitem in OrderItem.objects.select_for_update().all():
-            orderitem.quantity = Ticket.objects.filter(
-                order=orderitem.order, ticket_fare_id=orderitem.item_object_id
-            ).count()
-            orderitem.save()
-        for order in Order.objects.all():
-            order.amount = sum(
-                order.items.all()
-                .extra(select={"item_amount": "quantity * unit_price"})
-                .values_list("item_amount", flat=True)
-            )
-            order.save()
-
-        self.stdout.write(
-            self.style.SUCCESS(
-                f"Tickets: "
-                f'{actions["create"]} created, '
-                f'{actions["update"]} updated, '
-                f'{actions["skip"]} skipped, '
-                f'{actions["error"]} errors.'
-            )
-        )
-
     def import_rooms(self, overwrite=False):
         if overwrite:
             self.stdout.write(f"Overwrite has no effect on rooms")
@@ -797,7 +678,5 @@ class Command(BaseCommand):
             "schedule_item" in entities or entities == "all"
         ):  # needs submission and room
             self.import_schedule_items(overwrite=overwrite)
-        if "ticket" in entities or entities == "all":
-            self.import_tickets(overwrite=overwrite)
 
         self.stdout.write(self.style.SUCCESS("Done!"))
