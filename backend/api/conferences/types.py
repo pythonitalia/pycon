@@ -112,7 +112,9 @@ class Conference:
 
     @strawberry.field(permission_classes=[CanSeeSubmissions])
     def submissions(self, info) -> Optional[List[Submission]]:
-        return self.submissions.all()
+        return self.submissions.all().select_related(
+            "audience_level", "duration", "type", "topic"
+        )
 
     @strawberry.field
     def events(self, info) -> List[Event]:
