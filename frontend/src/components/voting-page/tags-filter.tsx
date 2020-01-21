@@ -24,8 +24,12 @@ export const TagsFilter: React.SFC<Props> = ({
   const containerRef = useRef(null);
   const [open, setOpen] = useState(false);
   const toggleExtendedView = useCallback(() => {
+    if (tags.length === 0) {
+      return false;
+    }
+
     setOpen(o => !o);
-  }, []);
+  }, [tags]);
   const close = useCallback(() => setOpen(false), []);
 
   useOnClickOutside(containerRef, close);
