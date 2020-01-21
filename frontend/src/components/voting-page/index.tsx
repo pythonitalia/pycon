@@ -103,13 +103,6 @@ export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
                 <Alert variant="alert">{error.message}</Alert>
               )}
 
-              {cannotVoteErrors && error && (
-                <Alert variant="alert">
-                  <Link href="/:language/tickets">
-                    <FormattedMessage id="voting.buyTicketToVote" />
-                  </Link>
-                </Alert>
-              )}
               {loading && (
                 <Alert variant="info">
                   <FormattedMessage id="voting.loading" />
@@ -206,7 +199,24 @@ export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
         </Box>
       )}
 
-      {loggedIn && data && (
+      {cannotVoteErrors && error && (
+        <Box
+          sx={{
+            maxWidth: "container",
+            mx: "auto",
+            mt: 3,
+            px: 3,
+          }}
+        >
+          <Alert variant="alert">
+            <Link href="/:language/tickets">
+              <FormattedMessage id="voting.buyTicketToVote" />
+            </Link>
+          </Alert>
+        </Box>
+      )}
+
+      {!cannotVoteErrors && loggedIn && data && (
         <Box
           as="ul"
           sx={{
