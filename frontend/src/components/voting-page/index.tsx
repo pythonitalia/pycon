@@ -1,8 +1,8 @@
 /** @jsx jsx */
 import { useQuery } from "@apollo/react-hooks";
-import { RouteComponentProps } from "@reach/router";
+import { navigate, RouteComponentProps } from "@reach/router";
 import { Box, Flex, Grid, Heading, Select, Text } from "@theme-ui/components";
-import { Fragment, useCallback, useState } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import { jsx } from "theme-ui";
@@ -21,10 +21,12 @@ import { SubmissionAccordion } from "./submission-accordion";
 import { TagsFilter } from "./tags-filter";
 import VOTING_SUBMISSIONS from "./voting-submissions.graphql";
 
+type VoteTypes = "all" | "votedOnly" | "notVoted";
+
 type Filters = {
   topic: string;
   language: string;
-  vote: "all" | "votedOnly" | "notVoted";
+  vote: VoteTypes;
   tags: string[];
 };
 
@@ -42,14 +44,40 @@ const COLORS = [
 export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
   const [loggedIn] = useLoginState();
   const [votedSubmissions, setVotedSubmissions] = useState(new Set());
+
+  const currentQs = new URLSearchParams(location?.search);
+
   const [filters, { select, raw }] = useFormState<Filters>(
     {
-      vote: "all",
-      tags: [],
+      vote: (currentQs.get("vote") as VoteTypes) ?? "all",
+      language: currentQs.get("language") ?? "",
+      topic: currentQs.get("topic") ?? "",
+      tags: currentQs.getAll("tags"),
     },
     {
-      onChange() {
+      onChange(e, stateValues, nextStateValues) {
         setVotedSubmissions(new Set());
+
+        if (!location) {
+          return;
+        }
+
+        const qs = new URLSearchParams();
+        const keys = Object.keys(nextStateValues) as (keyof Filters)[];
+
+        keys.forEach(key => {
+          const value = nextStateValues[key];
+
+          if (Array.isArray(value)) {
+            value.forEach(item => qs.append(key, item));
+          } else if (value) {
+            qs.append(key, value);
+          }
+        });
+
+        navigate(`${location.pathname}?${qs.toString()}`, {
+          replace: true,
+        });
       },
     },
   );
