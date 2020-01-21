@@ -1,8 +1,8 @@
 /** @jsx jsx */
 import { useQuery } from "@apollo/react-hooks";
-import { RouteComponentProps } from "@reach/router";
+import { navigate, RouteComponentProps } from "@reach/router";
 import { Box, Flex, Grid, Heading, Select, Text } from "@theme-ui/components";
-import { Fragment, useCallback, useState } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import { jsx } from "theme-ui";
@@ -21,10 +21,12 @@ import { SubmissionAccordion } from "./submission-accordion";
 import { TagsFilter } from "./tags-filter";
 import VOTING_SUBMISSIONS from "./voting-submissions.graphql";
 
+type VoteTypes = "all" | "votedOnly" | "notVoted";
+
 type Filters = {
   topic: string;
   language: string;
-  vote: "all" | "votedOnly" | "notVoted";
+  vote: VoteTypes;
   tags: string[];
 };
 
@@ -41,11 +43,44 @@ const COLORS = [
 
 export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
   const [loggedIn] = useLoginState();
-  const [filters, { select }] = useFormState<Filters>({
-    vote: "all",
-    tags: [],
-  });
   const [votedSubmissions, setVotedSubmissions] = useState(new Set());
+
+  const currentQs = new URLSearchParams(location?.search);
+
+  const [filters, { select, raw }] = useFormState<Filters>(
+    {
+      vote: (currentQs.get("vote") as VoteTypes) ?? "all",
+      language: currentQs.get("language") ?? "",
+      topic: currentQs.get("topic") ?? "",
+      tags: currentQs.getAll("tags"),
+    },
+    {
+      onChange(e, stateValues, nextStateValues) {
+        setVotedSubmissions(new Set());
+
+        if (!location) {
+          return;
+        }
+
+        const qs = new URLSearchParams();
+        const keys = Object.keys(nextStateValues) as (keyof Filters)[];
+
+        keys.forEach(key => {
+          const value = nextStateValues[key];
+
+          if (Array.isArray(value)) {
+            value.forEach(item => qs.append(key, item));
+          } else if (value) {
+            qs.append(key, value);
+          }
+        });
+
+        navigate(`${location.pathname}?${qs.toString()}`, {
+          replace: true,
+        });
+      },
+    },
+  );
 
   const { code: conferenceCode } = useConference();
   const { loading, error, data } = useQuery<
@@ -98,16 +133,6 @@ export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
               <Text my={4}>
                 <FormattedMessage id="voting.introduction" />
               </Text>
-
-              {!cannotVoteErrors && error && (
-                <Alert variant="alert">{error.message}</Alert>
-              )}
-
-              {loading && (
-                <Alert variant="info">
-                  <FormattedMessage id="voting.loading" />
-                </Alert>
-              )}
             </Box>
             <Grid
               sx={{
@@ -173,14 +198,40 @@ export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
                 sx={{
                   mt: [3, 0],
                 }}
-                value={filters.values.tags}
-                onChange={values => filters.setField("tags", values)}
+                {...raw("tags")}
                 tags={data?.submissionTags ?? []}
               />
             </Grid>
           </Grid>
         </Box>
       </Box>
+
+      {loggedIn && (loading || cannotVoteErrors || error) && (
+        <Box
+          sx={{
+            maxWidth: "container",
+            mx: "auto",
+            px: 3,
+          }}
+        >
+          {!cannotVoteErrors && error && (
+            <Alert variant="alert">{error.message}</Alert>
+          )}
+
+          {cannotVoteErrors && error && (
+            <Alert variant="alert">
+              <Link href="/:language/tickets">
+                <FormattedMessage id="voting.buyTicketToVote" />
+              </Link>
+            </Alert>
+          )}
+          {loading && (
+            <Alert variant="info">
+              <FormattedMessage id="voting.loading" />
+            </Alert>
+          )}
+        </Box>
+      )}
 
       {!loggedIn && (
         <Box sx={{ borderTop: "primary" }}>

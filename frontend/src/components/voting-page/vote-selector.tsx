@@ -12,7 +12,7 @@ type Props = {
   value: number;
 };
 
-const VOTE_VALUES = [
+export const VOTE_VALUES = [
   {
     value: 1,
     textId: "voteSelector.notInterested",
