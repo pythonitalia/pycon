@@ -15,7 +15,6 @@ query VotingSubmissions($conference: String!) {
       id
       title
 
-      abstract
       elevatorPitch
 
       topic {
