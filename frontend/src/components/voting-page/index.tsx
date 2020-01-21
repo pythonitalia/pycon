@@ -216,15 +216,15 @@ export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
         </Box>
       )}
 
-      {!cannotVoteErrors && loggedIn && data && (
+      {loggedIn && data?.conference.submissions && (
         <Box
           as="ul"
           sx={{
             listStyle: "none",
           }}
         >
-          {data.conference
-            .submissions!.filter(submission => {
+          {data.conference.submissions
+            .filter(submission => {
               if (
                 filters.values.topic &&
                 submission.topic?.id !== filters.values.topic
