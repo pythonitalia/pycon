@@ -101,7 +101,8 @@ export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
   );
 
   const cannotVoteErrors =
-    error?.graphQLErrors.findIndex(
+    error &&
+    error.graphQLErrors.findIndex(
       e => e.message === "You need to have a ticket to see submissions",
     ) !== -1;
 
@@ -134,10 +135,11 @@ export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
                 <FormattedMessage id="voting.introduction" />
               </Text>
             </Box>
+
             <Grid
               sx={{
-                gridTemplateColumns: [null, "1fr 1fr"],
-                alignItems: "flex-end",
+                gridTemplateColumns: [null, null, "1fr 1fr"],
+                gridTemplateRows: ["repeat(46px, 4)", null, "repeat(46px, 2)"],
                 mb: 4,
               }}
             >
@@ -162,7 +164,6 @@ export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
                 {...select("language")}
                 sx={{
                   background: "violet",
-                  mt: [3, 0],
                   borderRadius: 0,
                 }}
               >
@@ -179,7 +180,6 @@ export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
               <Select
                 {...select("vote")}
                 sx={{
-                  mt: [3, 0],
                   borderRadius: 0,
                 }}
               >
@@ -194,13 +194,7 @@ export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
                 </FormattedMessage>
               </Select>
 
-              <TagsFilter
-                sx={{
-                  mt: [3, 0],
-                }}
-                {...raw("tags")}
-                tags={data?.submissionTags ?? []}
-              />
+              <TagsFilter {...raw("tags")} tags={data?.submissionTags ?? []} />
             </Grid>
           </Grid>
         </Box>
@@ -250,7 +244,7 @@ export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
         </Box>
       )}
 
-      {cannotVoteErrors && error && (
+      {cannotVoteErrors && (
         <Box
           sx={{
             maxWidth: "container",
