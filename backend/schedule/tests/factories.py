@@ -27,6 +27,7 @@ class ScheduleItemFactory(DjangoModelFactory):
     end = factory.Faker("future_datetime", tzinfo=pytz.UTC)
 
     title = factory.Faker("text", max_nb_chars=100)
+    slug = factory.Faker("slug")
     description = factory.Faker("text")
     type = factory.fuzzy.FuzzyChoice(["submission", "custom"])
     image = factory.django.ImageField()
