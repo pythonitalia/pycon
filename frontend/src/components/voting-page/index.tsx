@@ -244,23 +244,6 @@ export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
         </Box>
       )}
 
-      {cannotVoteErrors && (
-        <Box
-          sx={{
-            maxWidth: "container",
-            mx: "auto",
-            mt: 3,
-            px: 3,
-          }}
-        >
-          <Alert variant="alert">
-            <Link href="/:language/tickets">
-              <FormattedMessage id="voting.buyTicketToVote" />
-            </Link>
-          </Alert>
-        </Box>
-      )}
-
       {loggedIn && data?.conference.submissions && (
         <Box
           as="ul"
