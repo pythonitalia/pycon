@@ -6,6 +6,7 @@ import React, { useCallback, useContext, useEffect, useReducer } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
+import { useLoginState } from "../../app/profile/hooks";
 import { ConferenceContext } from "../../context/conference";
 import { useCurrentLanguage } from "../../context/language";
 import {
@@ -20,13 +21,12 @@ import { reducer } from "./reducer";
 import { ReviewOrder } from "./review-order";
 import { TicketsSection } from "./tickets";
 import TICKETS_QUERY from "./tickets.graphql";
-import {
-  hasSelectedAtLeastOneProduct,
-  hasOrderInformation,
-  hasAnsweredTicketsQuestions,
-} from "./utils";
-import { useLoginState } from "../../app/profile/hooks";
 import { OrderState } from "./types";
+import {
+  hasAnsweredTicketsQuestions,
+  hasOrderInformation,
+  hasSelectedAtLeastOneProduct,
+} from "./utils";
 
 export const TicketsPage: React.SFC<RouteComponentProps> = props => {
   const conferenceCode = useContext(ConferenceContext);

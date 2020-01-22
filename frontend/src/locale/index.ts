@@ -341,6 +341,13 @@ export const messages = {
     "unsubscribe.succeed.title": "Thank you",
     "unsubscribe.succeed.message":
       "You have been successfully unsubscribed from this newsletter.",
+
+    "ticketsTable.name": "Name",
+    "ticketsTable.price": "Price",
+    "ticketsTable.from": "From",
+    "ticketsTable.until": "Until",
+    "ticketsTable.untilAndFromMobile": "Available from {from} to {until}",
+    "tickets.seeAllTickets": "See all the tickets",
   },
   it: {
     titleTemplate: "%s | PyCon Italia",
@@ -681,6 +688,13 @@ export const messages = {
     "unsubscribe.succeed.title": "Grazie",
     "unsubscribe.succeed.message":
       "Sei stato correttamente disinscritto da questa newsletter.",
+
+    "ticketsTable.name": "Nome",
+    "ticketsTable.price": "Prezzo",
+    "ticketsTable.from": "Dal",
+    "ticketsTable.until": "Fino al",
+    "ticketsTable.untilAndFromMobile": "Disponibile dal {from} al {until}",
+    "tickets.seeAllTickets": "Tutti i biglietti",
   },
 };
 

@@ -17,6 +17,7 @@ import {
   SelectedProducts,
 } from "./types";
 import { hasSelectedAtLeastOneProduct } from "./utils";
+import { Introduction } from "./introduction";
 
 type Props = {
   state: OrderState;
@@ -68,6 +69,8 @@ export const TicketsSection: React.SFC<Props> = ({
 
   return (
     <React.Fragment>
+      <Introduction />
+
       <Heading sx={{ mb: 3 }}>
         <FormattedMessage id="tickets.heading" />
       </Heading>
