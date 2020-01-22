@@ -5,19 +5,16 @@ from graphql import GraphQLError
 
 from users.models import get_countries
 
+from api.permissions import IsAuthenticated
+
 from .types import Country, MeUser
 
 
 @strawberry.type
 class UsersQuery:
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     def me(self, info) -> MeUser:
-        user = info.context["request"].user
-
-        if not user.is_authenticated:
-            raise GraphQLError("User not logged in")
-
-        return user
+        return info.context["request"].user
 
 
 @strawberry.type

@@ -237,17 +237,15 @@ export const ReviewOrder: React.SFC<Props> = ({
                     {product.questions.map(question => {
                       const isSelect = question.options.length > 0;
                       const answer = selectedProductInfo.answers[question.id];
+                      const convertedSelectAnswerOrAnswer = isSelect
+                        ? question.options.find(o => o.id === answer)?.name
+                        : answer;
 
                       return (
                         <ReviewItem
                           key={question.id}
                           label={question.name}
-                          value={
-                            isSelect
-                              ? question.options.find(o => o.id === answer)!
-                                  .name
-                              : answer
-                          }
+                          value={convertedSelectAnswerOrAnswer}
                         />
                       );
                     })}

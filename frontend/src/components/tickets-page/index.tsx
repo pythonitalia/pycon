@@ -20,11 +20,18 @@ import { reducer } from "./reducer";
 import { ReviewOrder } from "./review-order";
 import { TicketsSection } from "./tickets";
 import TICKETS_QUERY from "./tickets.graphql";
-import { hasSelectedAtLeastOneProduct } from "./utils";
+import {
+  hasSelectedAtLeastOneProduct,
+  hasOrderInformation,
+  hasAnsweredTicketsQuestions,
+} from "./utils";
+import { useLoginState } from "../../app/profile/hooks";
+import { OrderState } from "./types";
 
 export const TicketsPage: React.SFC<RouteComponentProps> = props => {
   const conferenceCode = useContext(ConferenceContext);
   const language = useCurrentLanguage();
+  const [isLoggedIn] = useLoginState();
 
   const { loading, error, data } = useQuery<
     TicketsQuery,
@@ -33,10 +40,11 @@ export const TicketsPage: React.SFC<RouteComponentProps> = props => {
     variables: {
       conference: conferenceCode,
       language,
+      isLogged: isLoggedIn,
     },
   });
 
-  const [state, dispatcher] = useReducer(reducer, {
+  const emptyInitialCartReducer = {
     selectedProducts: {},
     invoiceInformation: {
       isBusiness: false,
@@ -50,7 +58,24 @@ export const TicketsPage: React.SFC<RouteComponentProps> = props => {
       fiscalCode: "",
     },
     selectedHotelRooms: {},
-  });
+  };
+
+  let storedCart = null;
+
+  if (typeof window !== "undefined") {
+    storedCart = JSON.parse(
+      window.localStorage.getItem("tickets-cart")!,
+    ) as OrderState | null;
+  }
+
+  const [state, dispatcher] = useReducer(
+    reducer,
+    storedCart || emptyInitialCartReducer,
+  );
+
+  useEffect(() => {
+    window.localStorage.setItem("tickets-cart", JSON.stringify(state));
+  }, [state]);
 
   const hotelRooms = data?.conference.hotelRooms || [];
   const tickets = data?.conference.tickets || [];
@@ -142,10 +167,25 @@ export const TicketsPage: React.SFC<RouteComponentProps> = props => {
   useEffect(() => {
     const isHome = location.pathname.endsWith("tickets/");
 
-    if (!isHome && !hasSelectedAtLeastOneProduct(state)) {
-      props.navigate!("");
+    if (isHome) {
+      return;
     }
-  }, [location.pathname]);
+
+    if (!hasSelectedAtLeastOneProduct(state)) {
+      props.navigate!("", { replace: true });
+      return;
+    }
+
+    if (!hasOrderInformation(state)) {
+      props.navigate!("information", { replace: true });
+      return;
+    }
+
+    if (tickets.length > 0 && !hasAnsweredTicketsQuestions(state, tickets)) {
+      props.navigate!("questions", { replace: true });
+      return;
+    }
+  }, [location.pathname, tickets]);
 
   if (error) {
     return (
@@ -197,7 +237,17 @@ export const TicketsPage: React.SFC<RouteComponentProps> = props => {
               removeHotelRoom={removeHotelRoom}
               invoiceInformation={state.invoiceInformation}
               onUpdateIsBusiness={updateIsBusiness}
-              onNextStep={() => props.navigate!("information")}
+              onNextStep={() => {
+                if (isLoggedIn) {
+                  props.navigate!("information");
+                } else {
+                  props.navigate!(`/${language}/login`, {
+                    state: {
+                      next: `/${language}/tickets/information/`,
+                    },
+                  });
+                }
+              }}
             />
             <InformationSection
               path="information"
@@ -220,7 +270,7 @@ export const TicketsPage: React.SFC<RouteComponentProps> = props => {
             />
 
             <ReviewOrder
-              email={data?.me.email!}
+              email={data?.me?.email!}
               tickets={tickets}
               hotelRooms={hotelRooms}
               state={state}
