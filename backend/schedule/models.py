@@ -41,6 +41,7 @@ class ScheduleItem(TimeFramedModel, TimeStampedModel):
     )
 
     title = models.CharField(_("title"), max_length=100, blank=True)
+    slug = models.CharField(_("slug"), max_length=100, blank=True)
     description = models.TextField(_("description"), blank=True)
 
     type = models.CharField(choices=TYPES, max_length=10, verbose_name=_("type"))
