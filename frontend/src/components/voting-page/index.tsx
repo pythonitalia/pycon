@@ -139,7 +139,7 @@ export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
             <Grid
               sx={{
                 gridTemplateColumns: [null, null, "1fr 1fr"],
-                gridTemplateRows: ["repeat(46px, 4)", null, "repeat(46px, 2)"],
+                gridTemplateRows: ["repeat(4, 46px)", null, "repeat(2, 46px)"],
                 mb: 4,
               }}
             >
