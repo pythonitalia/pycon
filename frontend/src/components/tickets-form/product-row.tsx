@@ -76,7 +76,7 @@ export const ProductRow: React.SFC<ProductRowProps> = ({
 
           <Text>
             <FormattedMessage
-              id="order.price"
+              id={hotel ? "order.hotelPrice" : "order.price"}
               values={{
                 price: (
                   <Text as="span" sx={{ fontWeight: "bold" }}>

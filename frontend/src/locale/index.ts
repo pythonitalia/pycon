@@ -197,6 +197,8 @@ export const messages = {
     "orderConfirmation.manage": "Click here to manage the order.",
     "order.soldout": "Sold out",
     "order.price": "Price: {price} EUR.",
+    "order.hotelPrice": "Price: {price}/night EUR.",
+
     "order.inclVat": "(incl. 22% VAT)",
     "order.selectSize": "Select...",
     "order.hotelRooms": "Hotel rooms",
@@ -530,6 +532,7 @@ export const messages = {
       "Grazie per l'ordine, riceverai una email di conferma a breve.",
     "order.soldout": "Sold out",
     "order.price": "Prezzo: {price} EUR",
+    "order.hotelPrice": "Price: {price}/notte EUR.",
     "order.inclVat": "(incl. 22% IVA)",
     "order.selectSize": "Taglia...",
     "order.hotelRooms": "Stanze hotel",
