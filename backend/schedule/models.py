@@ -93,3 +93,4 @@ class ScheduleItem(TimeFramedModel, TimeStampedModel):
     class Meta:
         verbose_name = _("Schedule item")
         verbose_name_plural = _("Schedule items")
+        unique_together = ("slug", "conference")
