@@ -1,8 +1,8 @@
 import itertools
-from math import sqrt
 
 from django.db import models
-from django.db.models import Sum
+from django.db.models import Count, Sum
+from django.db.models.functions import Sqrt
 from django.utils.translation import ugettext_lazy as _
 from model_utils.fields import AutoCreatedField
 from submissions.models import Submission
@@ -65,21 +65,24 @@ class RankRequest(models.Model):
         submissions = Submission.objects.filter(conference=conference)
         votes = Vote.objects.filter(submission__conference=conference)
 
-        users_weight = RankRequest.get_users_weights(conference)
+        users_weight = RankRequest.get_users_weights(votes)
 
         ranking = []
         for submission in submissions:
             submission_votes = votes.filter(submission=submission)
 
-            vote_info = {}
-            for vote in submission_votes:
-                vote_info[vote.id] = {
-                    "normalised_vote": vote.value * users_weight[vote.user.id],
-                    "scale_factor": users_weight[vote.user.id],
-                }
-            score = sum([v["normalised_vote"] for v in vote_info.values()]) / sum(
-                [v["scale_factor"] for v in vote_info.values()]
-            )
+            if submission_votes:
+                vote_info = {}
+                for vote in submission_votes:
+                    vote_info[vote.id] = {
+                        "normalised_vote": vote.value * users_weight[vote.user.id],
+                        "scale_factor": users_weight[vote.user.id],
+                    }
+                score = sum([v["normalised_vote"] for v in vote_info.values()]) / sum(
+                    [v["scale_factor"] for v in vote_info.values()]
+                )
+            else:
+                score = 0
             rank = {
                 "submission_id": submission.id,
                 "submission__topic_id": submission.topic_id,
@@ -89,16 +92,9 @@ class RankRequest(models.Model):
         return sorted(ranking, key=lambda k: k["score"], reverse=True)
 
     @staticmethod
-    def get_users_weights(conference):
-        from users.models import User
-
-        users = User.objects.all()
-
-        weights = {}
-        for user in users:
-            submission_count = len(user.votes.filter(submission__conference=conference))
-            weights[user.id] = sqrt(submission_count)
-        return weights
+    def get_users_weights(votes):
+        queryset = votes.values("user_id").annotate(weight=Sqrt(Count("submission_id")))
+        return {weight["user_id"]: weight["weight"] for weight in queryset}
 
     @staticmethod
     def simple_sum(conference):
