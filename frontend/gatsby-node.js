@@ -127,6 +127,11 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
             slugEn: slug(language: "en")
             slugIt: slug(language: "it")
           }
+          conference {
+            keynotes {
+              slug
+            }
+          }
           submissions {
             id
           }
@@ -154,6 +159,8 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   const pageTemplate = path.resolve(`src/templates/page.tsx`);
   const homeTemplate = path.resolve(`src/templates/home.tsx`);
   const appTemplate = path.resolve(`src/templates/app.tsx`);
+  const talkTemplate = path.resolve(`src/templates/talk/talk.tsx`);
+  const talkSocialTemplate = path.resolve(`src/templates/talk/social-card.tsx`);
 
   createRedirect({
     fromPath: `/`,
@@ -250,6 +257,36 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         alternateLinks: {
           en: `/en/blog/${slugEn}`,
           it: `/it/blog/${slugIt}`,
+        },
+      },
+    });
+  });
+
+  result.data.backend.conference.keynotes.forEach(({ slug }) => {
+    createPageWithSocialCards(createPage, talkSocialTemplate, {
+      path: `/en/keynote/${slug}`,
+      component: talkTemplate,
+      context: {
+        slug,
+        language: "en",
+        type: "keynote",
+        alternateLinks: {
+          en: `/en/keynote/${slug}`,
+          it: `/it/keynote/${slug}`,
+        },
+      },
+    });
+
+    createPageWithSocialCards(createPage, talkSocialTemplate, {
+      path: `/it/keynote/${slug}`,
+      component: talkTemplate,
+      context: {
+        slug,
+        language: "it",
+        type: "keynote",
+        alternateLinks: {
+          en: `/en/keynote/${slug}`,
+          it: `/it/keynote/${slug}`,
         },
       },
     });
