@@ -410,6 +410,7 @@ class Command(BaseCommand):
         submission_types = {st.name: st.id for st in SubmissionType.objects.all()}
         types = {code: submission_types[name] for code, name in TALK_TYPES.items()}
         users_by_email = {user.email: user.id for user in User.objects.all()}
+        submission_tags = self._get_submission_tags()
         audience_levels = {
             audience_level.name.lower(): audience_level
             for audience_level in AudienceLevel.objects.all()
@@ -479,6 +480,7 @@ class Command(BaseCommand):
                         ),
                     )
                     submission.languages.add(languages.get(talk["language"]))
+                    submission.tags.add(*submission_tags[talk["id"]])
                     submission.save()
 
                     if not created:
@@ -507,6 +509,26 @@ class Command(BaseCommand):
                 f'{actions["error"]} errors.'
             )
         )
+
+    def _get_submission_tags(self):
+
+        query = """
+            SELECT ct.id submission_id, group_concat(distinct tag.id) as tags
+            FROM conference_conferencetag tag
+            INNER JOIN conference_conferencetaggeditem cc on tag.id = cc.tag_id
+            INNER JOIN conference_talk ct on cc.object_id = ct.id
+            GROUP BY ct.id
+        """
+        submissions = list(self.c.execute(query))
+        tags = SubmissionTag.objects.all()
+
+        submission_tags = {}
+        for submission in submissions:
+            _tags = [int(t.strip()) for t in submission["tags"].split(",")]
+            tags_obj = [tag for tag in tags if tag.id in _tags]
+            submission_tags[submission["submission_id"]] = tags_obj
+
+        return submission_tags
 
     def import_votes(self, overwrite=False):
         if overwrite:
