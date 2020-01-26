@@ -359,10 +359,14 @@ class Command(BaseCommand):
         self.stdout.write(f"Importing submissions...")
 
         conferences = {conf.code: conf.id for conf in Conference.objects.all()}
-        languages = {lang.code: lang.id for lang in Language.objects.all()}
+        languages = {lang.code: lang for lang in Language.objects.all()}
         submission_types = {st.name: st.id for st in SubmissionType.objects.all()}
         types = {code: submission_types[name] for code, name in TALK_TYPES.items()}
         users_by_email = {user.email: user.id for user in User.objects.all()}
+        audience_levels = {
+            audience_level.name.lower(): audience_level
+            for audience_level in AudienceLevel.objects.all()
+        }
 
         talk_list = list(
             self.c.execute(
@@ -370,7 +374,7 @@ class Command(BaseCommand):
             select
                 talk.id, talk.conference, talk.duration, talk.type,
                 talk.created, talk.title, talk.language, talk.type,
-                content.body,
+                content.body, talk.level as audience_level,
                 track.title as track_title, talk2.sub_community,
                 (select user.email from conference_talkspeaker speaker
                 left outer join auth_user user on user.id = speaker.speaker_id
@@ -417,7 +421,7 @@ class Command(BaseCommand):
                         created=string_to_tzdatetime(talk["created"]),
                         conference_id=conferences[talk["conference"]],
                         title=talk["title"],
-                        language_id=languages.get(talk["language"]),
+                        audience_level=audience_levels[talk["audience_level"]],
                         defaults=dict(
                             speaker_id=users_by_email.get(talk["speaker_email"]),
                             abstract=talk["body"],
@@ -426,6 +430,9 @@ class Command(BaseCommand):
                             duration=duration,
                         ),
                     )
+                    submission.languages.add(languages.get(talk["language"]))
+                    submission.save()
+
                     if not created:
                         action = "update"
 
