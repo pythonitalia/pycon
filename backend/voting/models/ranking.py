@@ -92,6 +92,10 @@ class RankRequest(models.Model):
         return sorted(ranking, key=lambda k: k["score"], reverse=True)
 
     @staticmethod
+    def vote_propagation_on_tags(conference):
+        pass
+
+    @staticmethod
     def get_users_weights(votes):
         queryset = votes.values("user_id").annotate(weight=Sqrt(Count("submission_id")))
         return {weight["user_id"]: weight["weight"] for weight in queryset}
