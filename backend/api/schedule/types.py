@@ -23,6 +23,7 @@ class ScheduleItem:
     end: DateTime
     submission: Optional[Submission]
     title: str
+    slug: str
     description: str
     type: str
     highlight_color: Optional[str]

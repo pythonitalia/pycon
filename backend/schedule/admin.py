@@ -16,6 +16,7 @@ class ScheduleItemAdmin(admin.ModelAdmin):
                     "conference",
                     "type",
                     "title",
+                    "slug",
                     "image",
                     "highlight_color",
                     "description",
@@ -27,6 +28,7 @@ class ScheduleItemAdmin(admin.ModelAdmin):
         (_("Schedule"), {"fields": ("start", "end", "rooms")}),
     )
     autocomplete_fields = ("submission",)
+    prepopulated_fields = {"slug": ("title",)}
     filter_horizontal = ("rooms", "additional_speakers")
 
 

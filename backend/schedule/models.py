@@ -41,6 +41,7 @@ class ScheduleItem(TimeFramedModel, TimeStampedModel):
     )
 
     title = models.CharField(_("title"), max_length=100, blank=True)
+    slug = models.CharField(_("slug"), max_length=100, blank=True)
     description = models.TextField(_("description"), blank=True)
 
     type = models.CharField(choices=TYPES, max_length=10, verbose_name=_("type"))
@@ -62,7 +63,7 @@ class ScheduleItem(TimeFramedModel, TimeStampedModel):
     )
 
     additional_speakers = models.ManyToManyField(
-        settings.AUTH_USER_MODEL, verbose_name=_("additional speakers")
+        settings.AUTH_USER_MODEL, verbose_name=_("speakers"), blank=True
     )
 
     def clean(self):
@@ -92,3 +93,4 @@ class ScheduleItem(TimeFramedModel, TimeStampedModel):
     class Meta:
         verbose_name = _("Schedule item")
         verbose_name_plural = _("Schedule items")
+        unique_together = ("slug", "conference")
