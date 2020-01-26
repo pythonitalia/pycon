@@ -171,6 +171,11 @@ export const TicketsPage: React.SFC<RouteComponentProps> = props => {
       return;
     }
 
+    if (!isLoggedIn) {
+      props.navigate!(`/${language}/login`, { replace: true });
+      return;
+    }
+
     if (!hasSelectedAtLeastOneProduct(state)) {
       props.navigate!("", { replace: true });
       return;
@@ -185,7 +190,7 @@ export const TicketsPage: React.SFC<RouteComponentProps> = props => {
       props.navigate!("questions", { replace: true });
       return;
     }
-  }, [location.pathname, tickets]);
+  }, [typeof location === "undefined" ? null : location.pathname, tickets]);
 
   if (error) {
     return (

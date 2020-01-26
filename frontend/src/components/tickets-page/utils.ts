@@ -1,4 +1,4 @@
-import { OrderState, InvoiceInformationState } from "./types";
+import { InvoiceInformationState, OrderState } from "./types";
 
 export const hasSelectedAtLeastOneProduct = (state: OrderState) =>
   Object.values(state.selectedProducts).length > 0 ||

@@ -3,7 +3,7 @@
 import { Box, Button, Grid, Heading, Text } from "@theme-ui/components";
 import { Fragment, useCallback, useState } from "react";
 import { FormattedMessage } from "react-intl";
-import { jsx, Styled } from "theme-ui";
+import { jsx } from "theme-ui";
 
 const COLORS = ["violet", "keppel", "orange", "yellow"];
 

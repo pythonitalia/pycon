@@ -10,6 +10,7 @@ import { Alert } from "../alert";
 import { HotelForm } from "../hotel-form";
 import { TicketsForm } from "../tickets-form";
 import { Ticket } from "../tickets-form/types";
+import { Introduction } from "./introduction";
 import {
   InvoiceInformationState,
   OrderState,
@@ -17,7 +18,6 @@ import {
   SelectedProducts,
 } from "./types";
 import { hasSelectedAtLeastOneProduct } from "./utils";
-import { Introduction } from "./introduction";
 
 type Props = {
   state: OrderState;
