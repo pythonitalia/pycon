@@ -63,7 +63,7 @@ class ScheduleItem(TimeFramedModel, TimeStampedModel):
     )
 
     additional_speakers = models.ManyToManyField(
-        settings.AUTH_USER_MODEL, verbose_name=_("additional speakers")
+        settings.AUTH_USER_MODEL, verbose_name=_("speakers"), blank=True
     )
 
     def clean(self):

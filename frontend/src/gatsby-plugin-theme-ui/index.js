@@ -9,6 +9,7 @@ export default {
   fontWeights: {
     body: 400,
     heading: 500,
+    medium: 500,
     bold: 700,
   },
   lineHeights: {

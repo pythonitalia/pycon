@@ -20,6 +20,29 @@ type Props = {
   };
 };
 
+const SpeakerInfoRow: React.SFC<{
+  title: string | React.ReactElement;
+  value: string;
+}> = ({ title, value }) => (
+  <Fragment>
+    <dt
+      sx={{ color: "violet", textTransform: "uppercase", fontWeight: "bold" }}
+    >
+      {title}:
+    </dt>
+    <dd>{value}</dd>
+
+    <Box
+      sx={{
+        borderBottom: "primary",
+        borderColor: "violet",
+        gridColumnStart: 1,
+        gridColumnEnd: -1,
+      }}
+    />
+  </Fragment>
+);
+
 export default ({ data, ...props }: Props) => {
   const talk = data.backend.conference.talk!;
   const socialCard = `${data.site!.siteMetadata!.siteUrl}${
@@ -64,23 +87,11 @@ export default ({ data, ...props }: Props) => {
               alignItems: "flex-start",
             }}
           >
-            {talk.imageFile ? (
-              <Box sx={{ border: "primary", width: "80%" }}>
-                <Img
-                  style={{
-                    width: "100%",
-                    height: "auto",
-                  }}
-                  {...talk.imageFile.childImageSharp}
-                />
-              </Box>
-            ) : (
-              <BlogPostIllustration
-                sx={{
-                  width: "80%",
-                }}
-              />
-            )}
+            <BlogPostIllustration
+              sx={{
+                width: "80%",
+              }}
+            />
 
             <Box
               sx={{
@@ -106,6 +117,83 @@ export default ({ data, ...props }: Props) => {
           </Flex>
         </Box>
       </Grid>
+
+      <Box sx={{ borderTop: "primary" }} />
+
+      <Grid
+        sx={{
+          mx: "auto",
+          px: 3,
+          py: 5,
+          maxWidth: "container",
+          gridColumnGap: 5,
+          gridTemplateColumns: [null, "1fr 2fr"],
+        }}
+      >
+        {talk.additionalSpeakers.map(speaker => (
+          <Fragment key={speaker.fullName}>
+            <Box
+              sx={{
+                border: "primary",
+                width: "100%",
+                position: "relative",
+                mb: 3,
+              }}
+            >
+              {talk.imageFile && (
+                <Img
+                  style={{
+                    width: "100%",
+                    height: "auto",
+                  }}
+                  {...talk.imageFile.childImageSharp}
+                />
+              )}
+
+              <Box
+                sx={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  backgroundColor: talk.highlightColor || "cinderella",
+                  mixBlendMode: "multiply",
+                }}
+              />
+
+              <Text
+                variant="caps"
+                as="h3"
+                sx={{
+                  position: "absolute",
+                  bottom: 0,
+                  left: 0,
+                  p: 3,
+                  fontWeight: "medium",
+                  color: "white",
+                }}
+              >
+                {speaker.fullName}
+              </Text>
+            </Box>
+
+            <Box>
+              <Grid
+                as="dl"
+                sx={{
+                  gridTemplateColumns: "1fr 2fr",
+                }}
+              >
+                <SpeakerInfoRow
+                  title={"Speaker name"}
+                  value={speaker.fullName}
+                />
+              </Grid>
+            </Box>
+          </Fragment>
+        ))}
+      </Grid>
     </Fragment>
   );
 };
@@ -123,7 +211,7 @@ export const query = graphql`
         talk(slug: $slug) {
           title
           image
-
+          highlightColor
           description
 
           additionalSpeakers {
@@ -132,7 +220,7 @@ export const query = graphql`
 
           imageFile {
             childImageSharp {
-              fluid(maxWidth: 1600) {
+              fluid(maxWidth: 1600, grayscale: true) {
                 ...GatsbyImageSharpFluid
               }
             }
