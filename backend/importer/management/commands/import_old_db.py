@@ -11,7 +11,7 @@ from django.db import IntegrityError, transaction
 from languages.models import Language
 from pycon.settings.base import root
 from schedule.models import Room, ScheduleItem
-from submissions.models import Submission, SubmissionType
+from submissions.models import Submission, SubmissionTag, SubmissionType
 from users.models import User
 from voting.models import Vote
 
@@ -346,6 +346,52 @@ class Command(BaseCommand):
         self.stdout.write(
             self.style.SUCCESS(
                 f"Conferences: "
+                f'{actions["create"]} created, '
+                f'{actions["update"]} updated, '
+                f'{actions["skip"]} skipped, '
+                f'{actions["error"]} errors.'
+            )
+        )
+
+    def import_tags(self, overwrite=False):
+        if overwrite:
+            self.stdout.write(f"Overwrite is the default for tags")
+
+        self.stdout.write(f"Importing tags...")
+
+        query = """
+            SELECT
+                id,
+                name
+            FROM conference_conferencetag
+        """
+        tags = list(self.c.execute(query))
+
+        actions = {"create": 0, "update": 0, "skip": 0, "error": 0}
+        for tag in tags:
+            action = "create"
+            try:
+                _, created = SubmissionTag.objects.update_or_create(**tag)
+                if not created:
+                    action = "update"
+
+            except IntegrityError:
+                action = "skip"
+                continue
+            except Exception as exc:
+                msg = (
+                    f"Something bad happened when importing tag"
+                    f' {tag["name"]}: {exc}'
+                )
+                self.stdout.write(self.style.NOTICE(msg))
+                action = "error"
+                continue
+            finally:
+                actions[action] += 1
+
+        self.stdout.write(
+            self.style.SUCCESS(
+                f"Tags: "
                 f'{actions["create"]} created, '
                 f'{actions["update"]} updated, '
                 f'{actions["skip"]} skipped, '
@@ -729,6 +775,8 @@ class Command(BaseCommand):
             self.import_conferences(overwrite=overwrite)
         if "room" in entities or entities == "all":
             self.import_rooms(overwrite=overwrite)
+        if "tag" in entities or entities == "tags":
+            self.import_tags(overwrite=overwrite)
         if "submission" in entities or entities == "all":
             self.import_submissions(overwrite=overwrite)
         if "vote" in entities or entities == "all":
