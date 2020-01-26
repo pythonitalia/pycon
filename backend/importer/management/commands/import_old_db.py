@@ -13,6 +13,7 @@ from pycon.settings.base import root
 from schedule.models import Room, ScheduleItem
 from submissions.models import Submission, SubmissionType
 from users.models import User
+from voting.models import Vote
 
 DEFAULT_DB_PATH = root("p3.db")
 OLD_DEAFAULT_TZ = pytz.timezone("Europe/Rome")
@@ -418,6 +419,7 @@ class Command(BaseCommand):
                     topic, _ = Topic.objects.get_or_create(name=topic_name)
 
                     submission, created = Submission.objects.update_or_create(
+                        id=talk["id"],
                         created=string_to_tzdatetime(talk["created"]),
                         conference_id=conferences[talk["conference"]],
                         title=talk["title"],
@@ -453,6 +455,54 @@ class Command(BaseCommand):
         self.stdout.write(
             self.style.SUCCESS(
                 f"Submission: "
+                f'{actions["create"]} created, '
+                f'{actions["update"]} updated, '
+                f'{actions["skip"]} skipped, '
+                f'{actions["error"]} errors.'
+            )
+        )
+
+    def import_votes(self, overwrite=False):
+        if overwrite:
+            self.stdout.write(f"Overwrite is the default for votes")
+
+        self.stdout.write(f"Importing votes...")
+
+        query = """
+        SELECT
+            vote as value,
+            user_id,
+            id,
+            talk_id as submission_id
+        FROM conference_vototalk
+        """
+        votes = list(self.c.execute(query))
+
+        actions = {"create": 0, "update": 0, "skip": 0, "error": 0}
+        for vote in votes:
+            action = "create"
+            try:
+                vote, created = Vote.objects.update_or_create(**vote)
+                if not created:
+                    action = "update"
+            except IntegrityError:
+                action = "skip"
+                continue
+            except Exception as exc:
+                msg = (
+                    f"Something bad happened when importing vote for "
+                    f'talk_id={vote["submission_id"]} of the user '
+                    f'{vote["user_id"]}: {exc}'
+                )
+                self.stdout.write(self.style.NOTICE(msg))
+                action = "error"
+                continue
+            finally:
+                actions[action] += 1
+
+        self.stdout.write(
+            self.style.SUCCESS(
+                f"Votes: "
                 f'{actions["create"]} created, '
                 f'{actions["update"]} updated, '
                 f'{actions["skip"]} skipped, '
@@ -681,6 +731,8 @@ class Command(BaseCommand):
             self.import_rooms(overwrite=overwrite)
         if "submission" in entities or entities == "all":
             self.import_submissions(overwrite=overwrite)
+        if "vote" in entities or entities == "all":
+            self.import_votes(overwrite=overwrite)
         if (
             "schedule_item" in entities or entities == "all"
         ):  # needs submission and room
