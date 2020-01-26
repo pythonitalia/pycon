@@ -29,6 +29,8 @@ class Vote(TimeStampedModel):
         related_name="votes",
     )
 
+    propagated = models.BooleanField(_("propagated"), default=False)
+
     def __str__(self):
         return f"{self.user} voted {self.value} for Submission {self.submission}"
 
