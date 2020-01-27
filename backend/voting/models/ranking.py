@@ -74,8 +74,9 @@ class RankRequest(models.Model):
             if submission_votes:
                 vote_info = {}
                 for vote in submission_votes:
+                    casted_vote = RankRequest.rescale_votes(vote.value)
                     vote_info[vote.id] = {
-                        "normalised_vote": vote.value * users_weight[vote.user.id],
+                        "normalised_vote": casted_vote * users_weight[vote.user.id],
                         "scale_factor": users_weight[vote.user.id],
                     }
                 score = sum([v["normalised_vote"] for v in vote_info.values()]) / sum(
@@ -99,6 +100,17 @@ class RankRequest(models.Model):
     def get_users_weights(votes):
         queryset = votes.values("user_id").annotate(weight=Sqrt(Count("submission_id")))
         return {weight["user_id"]: weight["weight"] for weight in queryset}
+
+    @staticmethod
+    def rescale_votes(vote: float):
+        if 0 < vote <= 2.5:
+            return 1
+        if 3 <= vote <= 5:
+            return 2
+        if 5.5 <= vote <= 7.5:
+            return 3
+        # 8 <= vote <= 10
+        return 4
 
     @staticmethod
     def simple_sum(conference):

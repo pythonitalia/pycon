@@ -17,6 +17,12 @@ class SubmissionFilter(AutocompleteFilter):
     autocomplete_url = "submission-autocomplete"
 
 
+class ConferenceFilter(AutocompleteFilter):
+    title = "Conference"
+    field_name = "submission__conference"
+    autocomplete_url = "submission-conference-autocomplete"
+
+
 @admin.register(Vote)
 class VoteAdmin(admin.ModelAdmin):
     list_display = ("submission", "user", "value")
