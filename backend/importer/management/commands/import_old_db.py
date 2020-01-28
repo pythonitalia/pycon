@@ -547,12 +547,17 @@ class Command(BaseCommand):
         votes = list(self.c.execute(query))
 
         actions = {"create": 0, "update": 0, "skip": 0, "error": 0}
-        for vote in votes:
+        for index, vote in enumerate(votes):
             action = "create"
+            if index % 100 == 0:
+                self.stdout.write(f"{index} of {len(votes)}")
             try:
-                vote, created = Vote.objects.update_or_create(**vote)
+                vote["value"] = self._rescale_votes(vote["value"])
+                # vote["propagated"] = False
+                _, created = Vote.objects.update_or_create(**vote)
                 if not created:
                     action = "update"
+
             except IntegrityError:
                 action = "skip"
                 continue
@@ -577,6 +582,16 @@ class Command(BaseCommand):
                 f'{actions["error"]} errors.'
             )
         )
+
+    def _rescale_votes(self, vote: float):
+        if 0 < vote <= 2.5:
+            return 1
+        if 3 <= vote <= 5:
+            return 2
+        if 5.5 <= vote <= 7.5:
+            return 3
+        # 8 <= vote <= 10
+        return 4
 
     def import_schedule_items(self, overwrite=False):
         if overwrite:
