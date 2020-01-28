@@ -4,7 +4,7 @@ import { graphql } from "gatsby";
 import React, { Fragment } from "react";
 import { jsx } from "theme-ui";
 
-import { SocialCardBlogPostQuery } from "../../generated/graphql";
+import { SocialCardtalkQuery } from "../../generated/graphql";
 import { CardType, getSize } from "../../helpers/social-card";
 
 const Snakes: React.SFC = props => (
@@ -59,7 +59,7 @@ const Snakes: React.SFC = props => (
 );
 
 type Props = {
-  data: SocialCardBlogPostQuery;
+  data: SocialCardtalkQuery;
   pageContext: {
     cardType: CardType;
   };
@@ -99,7 +99,9 @@ export default ({ data, pageContext }: Props) => (
             mb: 3,
           }}
         >
-          {data.backend.blogPost!.author.fullName}
+          {data.backend.conference
+            .talk!.additionalSpeakers.map(speaker => speaker.fullName)
+            .join("&")}
         </Text>
 
         <Heading
@@ -109,7 +111,7 @@ export default ({ data, pageContext }: Props) => (
             fontWeight: "bold",
           }}
         >
-          {data.backend.blogPost!.title}
+          {data.backend.conference.talk!.title}
         </Heading>
       </Box>
 
@@ -126,6 +128,10 @@ export const query = graphql`
       conference {
         talk(slug: $slug) {
           title
+
+          additionalSpeakers {
+            fullName
+          }
         }
       }
     }
