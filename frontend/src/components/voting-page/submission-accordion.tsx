@@ -68,6 +68,30 @@ type Props = {
   submission: VoteSubmission;
 };
 
+const usePersistedOpenState = (
+  submissionId: string,
+): [boolean, (value: boolean) => void] => {
+  const key = `@submission-accordion@${submissionId}`;
+  const [open, setOpen] = useState(() => {
+    const value =
+      typeof window === "undefined" ? null : window.sessionStorage.getItem(key);
+
+    return value !== null;
+  });
+
+  const setValue = (value: boolean) => {
+    setOpen(value);
+
+    if (value) {
+      window.sessionStorage.setItem(key, "true");
+    } else {
+      window.sessionStorage.removeItem(key);
+    }
+  };
+
+  return [open, setValue];
+};
+
 export const SubmissionAccordion: React.SFC<Props> = ({
   backgroundColor,
   headingColor,
@@ -85,10 +109,10 @@ export const SubmissionAccordion: React.SFC<Props> = ({
     languages,
   },
 }) => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = usePersistedOpenState(id);
   const toggleAccordion = useCallback(() => {
-    setOpen(o => !o);
-  }, []);
+    setOpen(!open);
+  }, [open]);
   const { code: conferenceCode } = useConference();
 
   const [sendVote, { loading, error, data: submissionData }] = useMutation<
@@ -355,11 +379,7 @@ export const SubmissionAccordion: React.SFC<Props> = ({
               )}
 
               <Box as="footer" sx={{ mt: 4 }}>
-                <Link
-                  variant="button"
-                  href={`/:language/submission/${id}`}
-                  target="_blank"
-                >
+                <Link variant="button" href={`/:language/submission/${id}`}>
                   <FormattedMessage id="voting.fullDetails" />
                 </Link>
               </Box>
