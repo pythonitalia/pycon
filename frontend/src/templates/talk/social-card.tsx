@@ -4,7 +4,7 @@ import { graphql } from "gatsby";
 import React, { Fragment } from "react";
 import { jsx } from "theme-ui";
 
-import { SocialCardtalkQuery } from "../../generated/graphql";
+import { SocialCardTalkQuery } from "../../generated/graphql";
 import { CardType, getSize } from "../../helpers/social-card";
 
 const Snakes: React.SFC = props => (
@@ -59,7 +59,7 @@ const Snakes: React.SFC = props => (
 );
 
 type Props = {
-  data: SocialCardtalkQuery;
+  data: SocialCardTalkQuery;
   pageContext: {
     cardType: CardType;
   };
