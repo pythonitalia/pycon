@@ -213,6 +213,11 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
       path: "/voting",
       matchPath: "/voting/*",
     },
+    {
+      template: appTemplate,
+      path: "/ranking",
+      matchPath: "/ranking/*",
+    },
   ];
   const languages = ["en", "it"];
 
