@@ -171,6 +171,12 @@ export const TicketsPage: React.SFC<RouteComponentProps> = props => {
       return;
     }
 
+    const isReview = location.pathname.endsWith("review/");
+
+    if (!isReview) {
+      return;
+    }
+
     if (!isLoggedIn) {
       props.navigate!(`/${language}/login`, { replace: true });
       return;
