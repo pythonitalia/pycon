@@ -207,7 +207,7 @@ export const TicketsPage: React.SFC<RouteComponentProps> = props => {
   }
 
   return (
-    <Box>
+    <Box mb={5}>
       <FormattedMessage id="tickets.pageTitle">
         {text => <MetaTags title={text} />}
       </FormattedMessage>

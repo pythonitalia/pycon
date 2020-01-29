@@ -10,7 +10,6 @@ import { Alert } from "../alert";
 import { HotelForm } from "../hotel-form";
 import { TicketsForm } from "../tickets-form";
 import { Ticket } from "../tickets-form/types";
-import { Introduction } from "./introduction";
 import {
   InvoiceInformationState,
   OrderState,
@@ -69,8 +68,6 @@ export const TicketsSection: React.SFC<Props> = ({
 
   return (
     <React.Fragment>
-      <Introduction />
-
       <Heading sx={{ mb: 3 }}>
         <FormattedMessage id="tickets.heading" />
       </Heading>
