@@ -76,6 +76,8 @@ export default {
       border: "primary",
       backgroundColor: "yellow",
 
+      borderRadius: 0,
+
       "&:hover": {
         backgroundColor: "orange",
         cursor: "pointer",
