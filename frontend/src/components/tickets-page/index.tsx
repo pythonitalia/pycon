@@ -2,6 +2,7 @@
 import { useQuery } from "@apollo/react-hooks";
 import { RouteComponentProps, Router } from "@reach/router";
 import { Box, Text } from "@theme-ui/components";
+import moment from "moment";
 import React, { useCallback, useContext, useEffect, useReducer } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
@@ -66,6 +67,16 @@ export const TicketsPage: React.SFC<RouteComponentProps> = props => {
     storedCart = JSON.parse(
       window.localStorage.getItem("tickets-cart")!,
     ) as OrderState | null;
+
+    if (storedCart) {
+      /* restore the checkin and checkout as moment dates and not strings */
+      Object.values(storedCart.selectedHotelRooms).forEach(reservations => {
+        reservations.forEach(reservation => {
+          reservation.checkin = moment(reservation.checkin);
+          reservation.checkout = moment(reservation.checkout);
+        });
+      });
+    }
   }
 
   const [state, dispatcher] = useReducer(
