@@ -90,6 +90,7 @@ export const RankingPage: React.SFC<RouteComponentProps> = ({ location }) => {
                 background: "lightBlue",
                 overflow: "hidden",
               }}
+              key={submission.submission.id}
             >
               <Box
                 sx={{
@@ -157,7 +158,7 @@ export const RankingPage: React.SFC<RouteComponentProps> = ({ location }) => {
                         textTransform: "uppercase",
                       }}
                     >
-                      {submission.submission.speaker.fullName}
+                      {submission.submission.speaker?.fullName}
                     </Text>
                   </Box>
                 </Grid>
