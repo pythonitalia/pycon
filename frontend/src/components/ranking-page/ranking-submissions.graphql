@@ -1,0 +1,43 @@
+query RankingSubmission($conference: String!){
+  conference(code: $conference){
+    ranking {
+        absoluteRank
+        topicRank
+        absoluteScore
+        submission {
+          id
+          title
+
+          elevatorPitch
+
+          topic {
+            id
+            name
+          }
+
+          tags {
+            name
+            id
+          }
+
+          audienceLevel {
+            id
+            name
+          }
+
+          duration {
+            id
+            name
+            duration
+          }
+
+          languages {
+            id
+            name
+            code
+          }
+        }
+    }
+  }
+
+}

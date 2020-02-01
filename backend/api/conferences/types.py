@@ -14,10 +14,12 @@ from api.scalars import Date, DateTime
 from api.schedule.types import Room, ScheduleItem
 from api.sponsors.types import SponsorsByLevel
 from api.submissions.types import Submission, SubmissionType
+from api.voting.types import RankSubmission
 from cms.models import GenericCopy
 from django.conf import settings
 from django.utils import translation
 from schedule.models import ScheduleItem as ScheduleItemModel
+from voting.models import RankRequest as RankRequestModel
 
 from ..helpers.i18n import make_localized_resolver
 from ..helpers.maps import Map, resolve_map
@@ -168,6 +170,15 @@ class Conference:
     @strawberry.field
     def talk(self, info, slug: str) -> Optional[ScheduleItem]:
         return self.schedule_items.filter(slug=slug).first()
+
+    @strawberry.field
+    def ranking(self, info) -> List[RankSubmission]:
+        return (
+            RankRequestModel.objects.filter(conference=self)
+            .last()
+            .rank_submissions.all()
+            .order_by("absolute_rank")
+        )
 
 
 @strawberry.type
