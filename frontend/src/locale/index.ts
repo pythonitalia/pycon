@@ -1,6 +1,5 @@
 export const messages = {
   en: {
-    // region roba
     titleTemplate: "%s | PyCon Italy",
     description:
       "Join PyCon Italy from the 2nd to the 5th of April 2020 in Florence, Italy!",
@@ -306,14 +305,12 @@ export const messages = {
     "orderReview.nights": "nights",
     "orderReview.checkin": "Check-in",
     "orderReview.checkout": "Check-out",
-    // endregion
 
     "ranking.heading": "Community voting results",
     "ranking.introduction":
       "Here there are the results of the community voting!",
     "ranking.seoTitle": "Ranking",
 
-    // region voting
     "voting.heading": "Community voting",
     "voting.introduction": `This is your opportunity to have a say on what you want to see at
       PyCon Italy! Voting will help us creating a program that better
@@ -361,7 +358,6 @@ export const messages = {
     "tickets.seeAllTickets": "See all the tickets",
   },
   it: {
-    // region roba_ita
     titleTemplate: "%s | PyCon Italia",
     description: "Partecipa a PyCon Italia! Dal 2 al 5 Aprile 2020 a Firenze!",
     "global.yes": "Si",
@@ -658,13 +654,11 @@ export const messages = {
     "orderReview.nights": "notti",
     "orderReview.checkin": "Check-in",
     "orderReview.checkout": "Check-out",
-    // endregion
 
     "ranking.heading": "Risultati della votazione comunitaria",
     "ranking.introduction": "Ecco qui i risultati della votazione comunitaria!",
     "ranking.seoTitle": "Ranking",
 
-    // region voting_ita
     "voteSelector.whatDoYouThink": "Cosa pensi di questa proposta?",
     "voteSelector.notInterested": "Non mi interessa",
     "voteSelector.maybe": "Forse",
