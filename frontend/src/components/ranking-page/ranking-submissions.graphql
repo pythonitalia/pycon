@@ -15,6 +15,10 @@ query RankingSubmission($conference: String!){
             name
           }
 
+          speaker {
+            fullName
+          }
+
           tags {
             name
             id
