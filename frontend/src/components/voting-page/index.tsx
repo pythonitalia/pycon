@@ -106,6 +106,8 @@ export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
       e => e.message === "You need to have a ticket to see submissions",
     ) !== -1;
 
+  const isVotingClosed = data && !data.conference.isVotingOpen;
+
   return (
     <Box>
       <FormattedMessage id="voting.seoTitle">
@@ -136,66 +138,75 @@ export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
               </Text>
             </Box>
 
-            <Grid
-              sx={{
-                gridTemplateColumns: [null, null, "1fr 1fr"],
-                gridTemplateRows: ["repeat(4, 46px)", null, "repeat(2, 46px)"],
-                mb: 4,
-              }}
-            >
-              <Select
-                {...select("topic")}
+            {!isVotingClosed && (
+              <Grid
                 sx={{
-                  background: "orange",
-                  borderRadius: 0,
+                  gridTemplateColumns: [null, null, "1fr 1fr"],
+                  gridTemplateRows: [
+                    "repeat(4, 46px)",
+                    null,
+                    "repeat(2, 46px)",
+                  ],
+                  mb: 4,
                 }}
               >
-                <FormattedMessage id="voting.allTopics">
-                  {text => <option value="">{text}</option>}
-                </FormattedMessage>
-                {data?.conference.topics.map(topic => (
-                  <option key={topic.id} value={topic.id}>
-                    {topic.name}
-                  </option>
-                ))}
-              </Select>
+                <Select
+                  {...select("topic")}
+                  sx={{
+                    background: "orange",
+                    borderRadius: 0,
+                  }}
+                >
+                  <FormattedMessage id="voting.allTopics">
+                    {text => <option value="">{text}</option>}
+                  </FormattedMessage>
+                  {data?.conference.topics.map(topic => (
+                    <option key={topic.id} value={topic.id}>
+                      {topic.name}
+                    </option>
+                  ))}
+                </Select>
 
-              <Select
-                {...select("language")}
-                sx={{
-                  background: "violet",
-                  borderRadius: 0,
-                }}
-              >
-                <FormattedMessage id="voting.allLanguages">
-                  {text => <option value="">{text}</option>}
-                </FormattedMessage>
-                {data?.conference.languages.map(language => (
-                  <option key={language.id} value={language.code}>
-                    {language.name}
-                  </option>
-                ))}
-              </Select>
+                <Select
+                  {...select("language")}
+                  sx={{
+                    background: "violet",
+                    borderRadius: 0,
+                  }}
+                >
+                  <FormattedMessage id="voting.allLanguages">
+                    {text => <option value="">{text}</option>}
+                  </FormattedMessage>
+                  {data?.conference.languages.map(language => (
+                    <option key={language.id} value={language.code}>
+                      {language.name}
+                    </option>
+                  ))}
+                </Select>
 
-              <Select
-                {...select("vote")}
-                sx={{
-                  borderRadius: 0,
-                }}
-              >
-                <FormattedMessage id="voting.allSubmissions">
-                  {text => <option value="all">{text}</option>}
-                </FormattedMessage>
-                <FormattedMessage id="voting.notVoted">
-                  {text => <option value="notVoted">{text}</option>}
-                </FormattedMessage>
-                <FormattedMessage id="voting.votedOnly">
-                  {text => <option value="votedOnly">{text}</option>}
-                </FormattedMessage>
-              </Select>
+                <Select
+                  {...select("vote")}
+                  sx={{
+                    borderRadius: 0,
+                  }}
+                >
+                  <FormattedMessage id="voting.allSubmissions">
+                    {text => <option value="all">{text}</option>}
+                  </FormattedMessage>
+                  <FormattedMessage id="voting.notVoted">
+                    {text => <option value="notVoted">{text}</option>}
+                  </FormattedMessage>
+                  <FormattedMessage id="voting.votedOnly">
+                    {text => <option value="votedOnly">{text}</option>}
+                  </FormattedMessage>
+                </Select>
 
-              <TagsFilter {...raw("tags")} tags={data?.submissionTags ?? []} />
-            </Grid>
+                <TagsFilter
+                  {...raw("tags")}
+                  tags={data?.submissionTags ?? []}
+                />
+              </Grid>
+            )}
           </Grid>
         </Box>
       </Box>
@@ -227,13 +238,45 @@ export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
         </Box>
       )}
 
-      {!loggedIn && (
+      {isVotingClosed && (
         <Box sx={{ borderTop: "primary" }}>
+          <Grid
+            sx={{
+              maxWidth: "container",
+              mx: "auto",
+              mt: 3,
+              px: 3,
+              mb: [5, 5, 0],
+              gridTemplateColumns: ["1fr", "0.5fr"],
+            }}
+          >
+            <Heading sx={{ mb: 3 }}>
+              <FormattedMessage id="voting.closed.heading" />
+            </Heading>
+            <Text>
+              <FormattedMessage
+                id="voting.closed.body"
+                values={{
+                  twitter: (
+                    <a target="_blank" href="https://twitter.com/pyconit">
+                      Twitter
+                    </a>
+                  ),
+                }}
+              />
+            </Text>
+          </Grid>
+        </Box>
+      )}
+
+      {!loggedIn && (
+        <Box sx={{ borderTop: "primary", mb: 5 }}>
           <Box
             sx={{
               maxWidth: "container",
               mx: "auto",
               mt: 3,
+              px: [3, 3, 3, 0],
             }}
           >
             <Alert variant="info">
@@ -244,7 +287,7 @@ export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
         </Box>
       )}
 
-      {loggedIn && data?.conference.submissions && (
+      {loggedIn && !isVotingClosed && data?.conference.submissions && (
         <Box
           as="ul"
           sx={{

@@ -332,6 +332,9 @@ export const messages = {
     "voting.votedOnly": "Voted only",
     "voting.tagsFilter":
       "{numFilters, plural, =0 {All tags} one {1 Tag} other {{numFilters} Tags}}",
+    "voting.closed.heading": "Voting is now closed!",
+    "voting.closed.body":
+      "Thanks for all the people that have bought a ticket and voted! Follow us on {twitter} for updates",
 
     "voting.abstract": "Abstract",
     "voting.elevatorPitch": "Elevator pitch",
@@ -682,7 +685,9 @@ export const messages = {
     "voting.notes": "Note",
     "voting.tagsFilter":
       "{numFilters, plural, =0 {Tutti i tags} one {1 Tag} other {{numFilters} Tags}}",
-
+    "voting.closed.heading": "Le votazioni sono terminate!",
+    "voting.closed.body":
+      "Grazie a tutte le persone che hanno votato e comprato un biglietto, seguiteci su {twitter} per aggiornamenti",
     "unsubscribe.title": "Annulla l'iscrizione alla Newsletter",
     "unsubscribe.button": "Annulla l'iscrizione",
     "unsubscribe.succeed.title": "Grazie",

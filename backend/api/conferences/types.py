@@ -87,6 +87,10 @@ class Conference:
         return self.is_cfp_open
 
     @strawberry.field
+    def is_voting_open(self, info) -> bool:
+        return self.is_voting_open
+
+    @strawberry.field
     def deadline(self, info, type: str) -> Optional["Deadline"]:
         return self.deadlines.filter(type=type).first()
 
