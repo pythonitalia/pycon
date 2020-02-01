@@ -484,6 +484,52 @@ def test_is_cfp_open_false_when_no_deadline(graphql_client, conference):
 
 
 @mark.django_db
+@mark.parametrize("voting_open", (True, False))
+def test_is_voting_open(
+    graphql_client, conference_factory, deadline_factory, voting_open
+):
+    now = timezone.now()
+
+    conference = conference_factory(timezone=pytz.timezone("America/Los_Angeles"))
+
+    deadline_factory(
+        start=now - timezone.timedelta(days=1),
+        end=now + timezone.timedelta(days=1) if voting_open else now,
+        conference=conference,
+        type="voting",
+    )
+
+    resp = graphql_client.query(
+        """
+        query($code: String!) {
+            conference(code: $code) {
+                isVotingOpen
+            }
+        }
+        """,
+        variables={"code": conference.code},
+    )
+
+    assert resp["data"]["conference"]["isVotingOpen"] is voting_open
+
+
+@mark.django_db
+def test_is_voting_open_false_when_no_deadlines(graphql_client, conference):
+    resp = graphql_client.query(
+        """
+        query($code: String!) {
+            conference(code: $code) {
+                isVotingOpen
+            }
+        }
+        """,
+        variables={"code": conference.code},
+    )
+
+    assert resp["data"]["conference"]["isVotingOpen"] is False
+
+
+@mark.django_db
 def test_can_see_submissions_as_staff(graphql_client, submission_factory, user_factory):
     user = user_factory(is_staff=True)
     submission = submission_factory()
