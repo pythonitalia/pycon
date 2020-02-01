@@ -4,14 +4,14 @@ import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, Container, Heading, jsx, Text } from "theme-ui";
 
-import { useLoginState } from "~/app/profile/hooks";
-import { MySubmissions } from "~/app/profile/my-submissions";
 import { Alert } from "~/components/alert";
 import { Introduction } from "~/components/cfp-introduction";
 import { CfpSendSubmission } from "~/components/cfp-send-submission";
 import { Link } from "~/components/link";
 import { LoginForm } from "~/components/login-form";
 import { MetaTags } from "~/components/meta-tags";
+import { useLoginState } from "~/components/profile/hooks";
+import { MySubmissions } from "~/components/profile/my-submissions";
 import { useIsCfpOpenQuery } from "~/types";
 
 const CfpSectionOrClosedMessage: React.SFC<{ open: boolean }> = ({ open }) => {

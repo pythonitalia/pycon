@@ -5,9 +5,9 @@ import React from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, Heading, jsx, Text } from "theme-ui";
 
-import { useLoginState } from "~/app/profile/hooks";
 import { Alert } from "~/components/alert";
 import { PageLoading } from "~/components/page-loading";
+import { useLoginState } from "~/components/profile/hooks";
 import { useOrderQuery } from "~/types";
 
 const OrderCanceled = () => (

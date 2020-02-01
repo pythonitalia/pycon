@@ -6,11 +6,11 @@ import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import { Box, Grid, Heading, jsx, Select, Text } from "theme-ui";
 
-import { useLoginState } from "~/app/profile/hooks";
 import { Alert } from "~/components/alert";
 import { Link } from "~/components/link";
 import { LoginForm } from "~/components/login-form";
 import { MetaTags } from "~/components/meta-tags";
+import { useLoginState } from "~/components/profile/hooks";
 import { SubmissionAccordion } from "~/components/submission-accordion";
 import { TagsFilter } from "~/components/tags-filter";
 import { useVotingSubmissionsQuery } from "~/types";

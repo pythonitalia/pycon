@@ -5,9 +5,9 @@ import React, { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, jsx, Text } from "theme-ui";
 
-import { useLoginState } from "~/app/profile/hooks";
 import { Alert } from "~/components/alert";
 import { MetaTags } from "~/components/meta-tags";
+import { useLoginState } from "~/components/profile/hooks";
 import { useCurrentLanguage } from "~/locale/context";
 import { TicketsQueryResult, useTicketsQuery } from "~/types";
 

@@ -9,11 +9,11 @@ import { Box, Card, Checkbox, Input, jsx, Label, Select, Text } from "theme-ui";
 // @ts-ignore
 import * as yup from "yup";
 
-import { useLoginState } from "~/app/profile/hooks";
 import { Alert } from "~/components/alert";
 import { Button } from "~/components/button/button";
 import { InputWrapper } from "~/components/input-wrapper";
 import { MetaTags } from "~/components/meta-tags";
+import { useLoginState } from "~/components/profile/hooks";
 import { useCountries } from "~/helpers/use-countries";
 import { useCurrentLanguage } from "~/locale/context";
 import { useMyEditProfileQuery, useUpdateProfileMutation } from "~/types";

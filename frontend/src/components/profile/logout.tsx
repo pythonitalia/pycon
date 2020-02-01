@@ -50,9 +50,10 @@ export const Logout = () => {
           px: 3,
         }}
       >
-        <Heading mb={2} as="h2">
+        <Heading mb={2} as="h1">
           <FormattedMessage id="profile.logout" />
         </Heading>
+
         <Text mb={4}>
           <FormattedMessage id="profile.seeYourSoon" />
         </Text>

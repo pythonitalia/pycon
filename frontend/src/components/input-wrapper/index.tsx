@@ -11,6 +11,7 @@ export const InputWrapper: React.SFC<{
   errors?: string[];
   className?: string;
   isRequired?: boolean;
+  as?: string;
 }> = ({
   label,
   description,
