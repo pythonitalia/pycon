@@ -1,7 +1,7 @@
 import itertools
 
 from django.db import models
-from django.db.models import Count, Sum
+from django.db.models import Count
 from django.db.models.functions import Sqrt
 from django.utils.translation import ugettext_lazy as _
 from model_utils.fields import AutoCreatedField
@@ -10,7 +10,7 @@ from submissions.models import Submission
 
 class RankRequest(models.Model):
 
-    conference = models.ForeignKey(
+    conference = models.OneToOneField(
         "conferences.Conference", on_delete=models.CASCADE, verbose_name=_("conference")
     )
 
@@ -92,30 +92,9 @@ class RankRequest(models.Model):
         return sorted(ranking, key=lambda k: k["score"], reverse=True)
 
     @staticmethod
-    def vote_propagation_on_tags(conference):
-        pass
-
-    @staticmethod
     def get_users_weights(votes):
         queryset = votes.values("user_id").annotate(weight=Sqrt(Count("submission_id")))
         return {weight["user_id"]: weight["weight"] for weight in queryset}
-
-    @staticmethod
-    def simple_sum(conference):
-        """Simply sums the votes for each submission
-
-        :param conference:
-        """
-        from voting.models import Vote
-
-        submissions = Submission.objects.filter(conference=conference)
-        ranking = (
-            Vote.objects.filter(submission__in=submissions)
-            .values("submission_id", "submission__topic_id")
-            .annotate(score=Sum("value"))
-            .order_by("-score")
-        )
-        return ranking
 
     def save_rank_submissions(self, scored_submissions):
         """Save the list of ranked submissions calculating the rank position

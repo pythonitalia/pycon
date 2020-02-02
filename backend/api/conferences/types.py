@@ -173,12 +173,14 @@ class Conference:
 
     @strawberry.field
     def ranking(self, info) -> List[RankSubmission]:
-        return (
-            RankRequestModel.objects.filter(conference=self)
-            .last()
-            .rank_submissions.all()
-            .order_by("absolute_rank")
-        )
+        try:
+            return (
+                RankRequestModel.objects.get(conference=self)
+                .rank_submissions.all()
+                .order_by("absolute_rank")
+            )
+        except RankRequestModel.DoesNotExist:
+            return []
 
 
 @strawberry.type

@@ -146,48 +146,6 @@ def test_most_voted_based_algorithm(_setup_equal):
 
 
 @pytest.mark.django_db
-def test_simple_sum_algorithm(_setup_random):
-    conference, votes_counts = _setup_random
-
-    ranked_submissions = RankRequest.simple_sum(conference)
-    for rank in ranked_submissions:
-        assert votes_counts[rank["submission_id"]] == rank["score"]
-
-
-# @pytest.mark.django_db
-# def test_create_ranking(_setup):
-#     conference, votes_counts = _setup
-#
-#     rank_request = RankRequest.objects.create(conference=conference)
-#
-#     for rank in rank_request.rank_submissions.filter(rank_request=rank_request):
-#         assert votes_counts[rank.submission.id] == rank.absolute_score
-
-
-# @pytest.mark.django_db
-# def test_ranking_weights(
-#     user_factory, conference_factory, submission_factory, vote_factory
-# ):
-#     user1 = user_factory()
-#     user2 = user_factory()
-#
-#     conference = conference_factory()
-#     N_SUBMISSION = random.randint(10, 20)
-#     submissions = submission_factory.create_batch(N_SUBMISSION, conference=conference)
-#
-#     for submission in submissions:
-#         vote_factory(user=user1, submission=submission, value=4)
-#
-#     vote_factory(user=user2, submission=submissions[0], value=4)
-#
-#     votes = Vote.objects.filter(submission__conference=conference)
-#     weights = RankRequest.get_users_weights(votes)
-#
-#     assert weights[user1.id] == sqrt(N_SUBMISSION)
-#     assert weights[user2.id] == 1
-
-
-@pytest.mark.django_db
 def test_weights(_setup_equal):
     _, votes, weights, _ = _setup_equal
     assert weights == RankRequest.get_users_weights(votes)
