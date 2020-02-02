@@ -61,7 +61,6 @@ export const RankSubmissionRow: React.SFC<Props> = ({
       >
         <Box>
           <Text
-            variant="label"
             sx={{
               fontWeight: "bold",
               py: 3,
@@ -74,6 +73,7 @@ export const RankSubmissionRow: React.SFC<Props> = ({
         <Box>
           <Text
             sx={{
+              fontWeight: "bold",
               py: 3,
               fontWeight: "bold",
             }}
@@ -96,7 +96,6 @@ export const RankSubmissionRow: React.SFC<Props> = ({
             sx={{
               py: 3,
               fontWeight: "bold",
-              color: "violet",
               textTransform: "uppercase",
             }}
           >
