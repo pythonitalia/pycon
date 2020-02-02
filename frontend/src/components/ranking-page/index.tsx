@@ -34,7 +34,6 @@ export const RankingPage: React.SFC<RouteComponentProps> = ({ location }) => {
 
   const [filters, { select }] = useFormState();
 
-  // @ts-ignore
   return (
     <Box>
       <FormattedMessage id="ranking.seoTitle">
@@ -112,7 +111,7 @@ export const RankingPage: React.SFC<RouteComponentProps> = ({ location }) => {
                 key={rankSubmission.submission.id}
                 rankSubmission={rankSubmission}
                 backgroundColor={COLORS[index % COLORS.length]}
-                topicRank={!!filters.values.topic}
+                filterByTopic={!!filters.values.topic}
               />
             ))}
         </Box>

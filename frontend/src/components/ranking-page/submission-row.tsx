@@ -1,10 +1,10 @@
 /** @jsx jsx */
 import { Box, Grid, Text } from "@theme-ui/components";
+import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
 import { Scalars } from "../../generated/graphql-backend";
 import { Link } from "../link";
-import { FormattedMessage } from "react-intl";
 
 type RankSubmission = {
   absoluteRank: Scalars["Int"];
@@ -25,12 +25,13 @@ type RankSubmission = {
 type Props = {
   rankSubmission: RankSubmission;
   backgroundColor: string;
-  topicRank: boolean;
+  filterByTopic: boolean;
 };
 
 export const RankSubmissionRow: React.SFC<Props> = ({
   rankSubmission: { absoluteRank, topicRank, submission },
   backgroundColor,
+  filterByTopic,
 }) => (
   <Box
     as="li"
@@ -67,7 +68,7 @@ export const RankSubmissionRow: React.SFC<Props> = ({
               visibility: ["hidden", "visible"],
             }}
           >
-            {topicRank ? topicRank : absoluteRank}
+            {filterByTopic ? topicRank : absoluteRank}
           </Text>
         </Box>
         <Box>
