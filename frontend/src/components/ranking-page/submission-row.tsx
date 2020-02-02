@@ -4,6 +4,7 @@ import { jsx } from "theme-ui";
 
 import { Scalars } from "../../generated/graphql-backend";
 import { Link } from "../link";
+import { FormattedMessage } from "react-intl";
 
 type RankSubmission = {
   absoluteRank: Scalars["Int"];
@@ -50,8 +51,7 @@ export const RankSubmissionRow: React.SFC<Props> = ({
           px: 3,
           justifyContent: "space-between",
           alignItems: "center",
-          cursor: "pointer",
-          gridTemplateColumns: [`40px 1fr 150px 200px`],
+          gridTemplateColumns: [`40px 1fr 150px 200px 60px`],
           "svg + svg": {
             marginLeft: [0, 1],
             marginTop: [1, 0],
@@ -77,12 +77,7 @@ export const RankSubmissionRow: React.SFC<Props> = ({
               fontWeight: "bold",
             }}
           >
-            <Link
-              variant="heading"
-              href={`/:language/submission/${submission.id}`}
-            >
-              {submission.title}
-            </Link>
+            {submission.title}
           </Text>
         </Box>
         <Box>
@@ -106,6 +101,14 @@ export const RankSubmissionRow: React.SFC<Props> = ({
           >
             {submission.speaker?.fullName}
           </Text>
+        </Box>
+        <Box as="footer">
+          <Link
+            variant="button"
+            href={`/:language/submission/${submission.id}`}
+          >
+            <FormattedMessage id="ranking.details" />
+          </Link>
         </Box>
       </Grid>
     </Box>
