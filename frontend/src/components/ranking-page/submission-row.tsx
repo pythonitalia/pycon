@@ -65,6 +65,7 @@ export const RankSubmissionRow: React.SFC<Props> = ({
               fontWeight: "bold",
               py: 3,
               visibility: ["hidden", "visible"],
+              textAlign: "right",
             }}
           >
             {filterByTopic ? topicRank : absoluteRank}
