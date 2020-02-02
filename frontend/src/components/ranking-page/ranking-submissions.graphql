@@ -9,12 +9,10 @@ query RankingSubmission($conference: String!){
     ranking {
         absoluteRank
         topicRank
-        absoluteScore
+
         submission {
           id
           title
-
-          elevatorPitch
 
           topic {
             id
@@ -23,28 +21,6 @@ query RankingSubmission($conference: String!){
 
           speaker {
             fullName
-          }
-
-          tags {
-            name
-            id
-          }
-
-          audienceLevel {
-            id
-            name
-          }
-
-          duration {
-            id
-            name
-            duration
-          }
-
-          languages {
-            id
-            name
-            code
           }
         }
     }

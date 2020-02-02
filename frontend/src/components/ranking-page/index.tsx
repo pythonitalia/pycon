@@ -12,10 +12,11 @@ import {
   RankingSubmissionQueryVariables,
 } from "../../generated/graphql-backend";
 import { Alert } from "../alert";
-import { Link } from "../link";
 import { MetaTags } from "../meta-tags";
-import { SubmissionAccordion } from "../voting-page/submission-accordion";
 import RANKING_SUBMISSION from "./ranking-submissions.graphql";
+import { RankSubmissionRow } from "./submission-row";
+
+const COLORS = ["blue", "lightBlue"];
 
 export const RankingPage: React.SFC<RouteComponentProps> = ({ location }) => {
   const { code: conferenceCode } = useConference();
@@ -33,6 +34,7 @@ export const RankingPage: React.SFC<RouteComponentProps> = ({ location }) => {
 
   const [filters, { select }] = useFormState();
 
+  // @ts-ignore
   return (
     <Box>
       <FormattedMessage id="ranking.seoTitle">
@@ -105,89 +107,13 @@ export const RankingPage: React.SFC<RouteComponentProps> = ({ location }) => {
               }
               return true;
             })
-            .map((submission, index) => (
-              <Box
-                as="li"
-                sx={{
-                  background: "lightBlue",
-                  overflow: "hidden",
-                }}
-                key={submission.submission.id}
-              >
-                <Box
-                  sx={{
-                    borderTop: "primary",
-                  }}
-                >
-                  <Grid
-                    sx={{
-                      maxWidth: "container",
-                      mx: "auto",
-                      px: 3,
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      cursor: "pointer",
-                      gridTemplateColumns: [`40px 1fr 150px 200px`],
-                      "svg + svg": {
-                        marginLeft: [0, 1],
-                        marginTop: [1, 0],
-                      },
-                    }}
-                  >
-                    <Box>
-                      <Text
-                        variant="label"
-                        sx={{
-                          fontWeight: "bold",
-                          py: 3,
-                          visibility: ["hidden", "visible"],
-                        }}
-                      >
-                        {filters.values.topic
-                          ? submission.topicRank
-                          : submission.absoluteRank}
-                      </Text>
-                    </Box>
-                    <Box>
-                      <Text
-                        sx={{
-                          py: 3,
-                          fontWeight: "bold",
-                        }}
-                      >
-                        <Link
-                          variant="heading"
-                          href={`/:language/submission/${submission.submission.id}`}
-                        >
-                          {submission.submission.title}
-                        </Link>
-                      </Text>
-                    </Box>
-                    <Box>
-                      <Text
-                        sx={{
-                          py: 3,
-                          fontWeight: "bold",
-                        }}
-                      >
-                        {submission.submission.topic?.name}
-                      </Text>
-                    </Box>
-                    <Box>
-                      <Text
-                        sx={{
-                          py: 3,
-                          fontWeight: "bold",
-                          color: "violet",
-                          textTransform: "uppercase",
-                        }}
-                      >
-                        {submission.submission.speaker?.fullName}
-                      </Text>
-                    </Box>
-                  </Grid>
-                </Box>
-              </Box>
+            .map((rankSubmission, index) => (
+              <RankSubmissionRow
+                key={rankSubmission.submission.id}
+                rankSubmission={rankSubmission}
+                backgroundColor={COLORS[index % COLORS.length]}
+                topicRank={!!filters.values.topic}
+              />
             ))}
         </Box>
       )}
