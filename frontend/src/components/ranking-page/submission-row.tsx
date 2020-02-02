@@ -76,7 +76,6 @@ export const RankSubmissionRow: React.SFC<Props> = ({
             sx={{
               fontWeight: "bold",
               py: 3,
-              fontWeight: "bold",
             }}
           >
             {submission.title}
