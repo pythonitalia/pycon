@@ -81,3 +81,38 @@ class Voucher:
     max_usages: int
     price_mode: str
     variation_id: Optional[strawberry.ID]
+
+
+@strawberry.type
+class UserTicketAnswer:
+    question_id: strawberry.ID
+    # question: str
+    # required: bool
+    answer: Optional[str]
+
+    @classmethod
+    def from_data(cls, data, language):
+        return cls(
+            question_id=data["question_id"],
+            # question=data["question"].get(language, data["question"]["en"]),
+            # required=data["required"],
+            answer=data["answer"],
+        )
+
+
+@strawberry.type
+class UserTicket:
+    position_id: strawberry.ID
+    name: str
+    answers: List[UserTicketAnswer]
+
+    @classmethod
+    def from_data(cls, data, language):
+        return cls(
+            position_id=data["position_id"],
+            name=data["item_name"].get(language, data["item_name"]["en"]),
+            answers=[
+                UserTicketAnswer.from_data(answer, language)
+                for answer in data["answers"]
+            ],
+        )

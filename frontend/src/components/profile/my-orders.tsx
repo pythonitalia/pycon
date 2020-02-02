@@ -26,7 +26,7 @@ export const MyOrders: React.SFC<Props> = ({ orders }) => (
         px: 3,
       }}
     >
-      <Heading mb={4} as="h1">
+      <Heading mb={4} as="h2" sx={{ fontSize: 5 }}>
         <FormattedMessage id="profile.myOrders" />
       </Heading>
 

@@ -14,8 +14,12 @@ export const MyProfile: React.FC<{ profile: MyProfileQuery }> = ({
   const countries = useCountries();
   const profileView = [
     {
-      label: "profile.email",
-      value: me.email ? me.email : <FormattedMessage id="profile.notSet" />,
+      label: "profile.fullName",
+      value: me.fullName ? (
+        me.fullName
+      ) : (
+        <FormattedMessage id="profile.notSet" />
+      ),
     },
     {
       label: "profile.country",
@@ -26,12 +30,8 @@ export const MyProfile: React.FC<{ profile: MyProfileQuery }> = ({
       ),
     },
     {
-      label: "profile.fullName",
-      value: me.fullName ? (
-        me.fullName
-      ) : (
-        <FormattedMessage id="profile.notSet" />
-      ),
+      label: "profile.name",
+      value: me.name ? me.name : <FormattedMessage id="profile.notSet" />,
     },
     {
       label: "profile.gender",
@@ -42,8 +42,8 @@ export const MyProfile: React.FC<{ profile: MyProfileQuery }> = ({
       ),
     },
     {
-      label: "profile.name",
-      value: me.name ? me.name : <FormattedMessage id="profile.notSet" />,
+      label: "profile.email",
+      value: me.email ? me.email : <FormattedMessage id="profile.notSet" />,
     },
     {
       label: "profile.dateBirth",

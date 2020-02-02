@@ -23,7 +23,7 @@ export const messages = {
     "profile.dateBirth": "Birth date",
     "profile.email": "Email",
     "profile.name": "Name",
-    "profile.fullName": "Complete Name",
+    "profile.fullName": "Fullname",
     "profile.gender": "Gender",
     "profile.gender.selectGender": "Select a gender",
     "profile.gender.female": "Female",

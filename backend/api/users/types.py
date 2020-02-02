@@ -1,9 +1,9 @@
 from typing import List, Optional
 
 import strawberry
-from api.pretix.query import get_user_orders
-from api.pretix.types import PretixOrder
 from api.submissions.types import Submission
+from api.pretix.query import get_user_orders, get_user_tickets
+from api.pretix.types import PretixOrder, UserTicket
 from conferences.models import Conference
 
 # TODO: merge Me User and User
@@ -20,6 +20,11 @@ class MeUser:
     open_to_newsletter: Optional[bool]
     date_birth: Optional[str]
     country: Optional[str]
+
+    @strawberry.field
+    def tickets(self, info, conference: str, language: str) -> List[UserTicket]:
+        conference = Conference.objects.get(code=conference)
+        return get_user_tickets(conference, self.email, language)
 
     @strawberry.field
     def orders(self, info, conference: str) -> List[PretixOrder]:
