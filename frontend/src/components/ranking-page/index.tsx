@@ -1,8 +1,9 @@
 /** @jsx jsx */
 import { useQuery } from "@apollo/react-hooks";
 import { RouteComponentProps } from "@reach/router";
-import { Box, Grid, Heading, Text } from "@theme-ui/components";
+import { Box, Grid, Heading, Select, Text } from "@theme-ui/components";
 import { FormattedMessage } from "react-intl";
+import { useFormState } from "react-use-form-state";
 import { jsx } from "theme-ui";
 
 import { useConference } from "../../context/conference";
@@ -16,17 +17,6 @@ import { MetaTags } from "../meta-tags";
 import { SubmissionAccordion } from "../voting-page/submission-accordion";
 import RANKING_SUBMISSION from "./ranking-submissions.graphql";
 
-const COLORS = [
-  {
-    background: "blue",
-    heading: "white",
-  },
-  {
-    background: "lightBlue",
-    heading: "black",
-  },
-];
-
 export const RankingPage: React.SFC<RouteComponentProps> = ({ location }) => {
   const { code: conferenceCode } = useConference();
   const { loading, error, data } = useQuery<
@@ -37,8 +27,12 @@ export const RankingPage: React.SFC<RouteComponentProps> = ({ location }) => {
       conference: conferenceCode,
     },
   });
+
   console.log(data);
   console.log(error);
+
+  const [filters, { select }] = useFormState();
+
   return (
     <Box>
       <FormattedMessage id="ranking.seoTitle">
@@ -68,6 +62,24 @@ export const RankingPage: React.SFC<RouteComponentProps> = ({ location }) => {
                 <FormattedMessage id="ranking.introduction" />
               </Text>
             </Box>
+            <Box>
+              <Select
+                {...select("topic")}
+                sx={{
+                  background: "orange",
+                  borderRadius: 0,
+                }}
+              >
+                <FormattedMessage id="voting.allTopics">
+                  {text => <option value="">{text}</option>}
+                </FormattedMessage>
+                {data?.conference.topics.map(topic => (
+                  <option key={topic.id} value={topic.id}>
+                    {topic.name}
+                  </option>
+                ))}
+              </Select>
+            </Box>
           </Grid>
         </Box>
       </Box>
@@ -83,88 +95,100 @@ export const RankingPage: React.SFC<RouteComponentProps> = ({ location }) => {
             listStyle: "none",
           }}
         >
-          {data?.conference.ranking.map((submission, index) => (
-            <Box
-              as="li"
-              sx={{
-                background: "lightBlue",
-                overflow: "hidden",
-              }}
-              key={submission.submission.id}
-            >
+          {data?.conference.ranking
+            .filter(submission => {
+              if (
+                filters.values.topic &&
+                submission.submission.topic?.id !== filters.values.topic
+              ) {
+                return false;
+              }
+              return true;
+            })
+            .map((submission, index) => (
               <Box
+                as="li"
                 sx={{
-                  borderTop: "primary",
+                  background: "lightBlue",
+                  overflow: "hidden",
                 }}
+                key={submission.submission.id}
               >
-                <Grid
+                <Box
                   sx={{
-                    maxWidth: "container",
-                    mx: "auto",
-                    px: 3,
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    cursor: "pointer",
-                    gridTemplateColumns: [`40px 1fr 150px 200px`],
-                    "svg + svg": {
-                      marginLeft: [0, 1],
-                      marginTop: [1, 0],
-                    },
+                    borderTop: "primary",
                   }}
                 >
-                  <Box>
-                    <Text
-                      variant="label"
-                      sx={{
-                        fontWeight: "bold",
-                        py: 3,
-                        visibility: ["hidden", "visible"],
-                      }}
-                    >
-                      {submission.absoluteRank}
-                    </Text>
-                  </Box>
-                  <Box>
-                    <Text
-                      sx={{
-                        py: 3,
-                        fontWeight: "bold",
-                      }}
-                    >
-                      <Link
-                        variant="heading"
-                        href={`/:language/submission/${submission.submission.id}`}
+                  <Grid
+                    sx={{
+                      maxWidth: "container",
+                      mx: "auto",
+                      px: 3,
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      cursor: "pointer",
+                      gridTemplateColumns: [`40px 1fr 150px 200px`],
+                      "svg + svg": {
+                        marginLeft: [0, 1],
+                        marginTop: [1, 0],
+                      },
+                    }}
+                  >
+                    <Box>
+                      <Text
+                        variant="label"
+                        sx={{
+                          fontWeight: "bold",
+                          py: 3,
+                          visibility: ["hidden", "visible"],
+                        }}
                       >
-                        {submission.submission.title}
-                      </Link>
-                    </Text>
-                  </Box>
-                  <Box>
-                    <Text
-                      sx={{
-                        py: 3,
-                        fontWeight: "bold",
-                      }}
-                    >
-                      {submission.submission.topic?.name}
-                    </Text>
-                  </Box>
-                  <Box>
-                    <Text
-                      sx={{
-                        py: 3,
-                        fontWeight: "bold",
-                        color: "violet",
-                        textTransform: "uppercase",
-                      }}
-                    >
-                      {submission.submission.speaker?.fullName}
-                    </Text>
-                  </Box>
-                </Grid>
+                        {filters.values.topic
+                          ? submission.topicRank
+                          : submission.absoluteRank}
+                      </Text>
+                    </Box>
+                    <Box>
+                      <Text
+                        sx={{
+                          py: 3,
+                          fontWeight: "bold",
+                        }}
+                      >
+                        <Link
+                          variant="heading"
+                          href={`/:language/submission/${submission.submission.id}`}
+                        >
+                          {submission.submission.title}
+                        </Link>
+                      </Text>
+                    </Box>
+                    <Box>
+                      <Text
+                        sx={{
+                          py: 3,
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {submission.submission.topic?.name}
+                      </Text>
+                    </Box>
+                    <Box>
+                      <Text
+                        sx={{
+                          py: 3,
+                          fontWeight: "bold",
+                          color: "violet",
+                          textTransform: "uppercase",
+                        }}
+                      >
+                        {submission.submission.speaker?.fullName}
+                      </Text>
+                    </Box>
+                  </Grid>
+                </Box>
               </Box>
-            </Box>
-          ))}
+            ))}
         </Box>
       )}
     </Box>
