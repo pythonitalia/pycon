@@ -8,6 +8,7 @@ import { EditProfileApp } from "../app/profile-edit";
 import { CFPPage } from "../components/cpf-page";
 import { EditSubmission } from "../components/edit-submission";
 import { LoginForm } from "../components/login-form";
+import { RankingPage } from "../components/ranking-page";
 import { RequestPasswordReset } from "../components/request-reset-password";
 import { ResetPassword } from "../components/reset-password";
 import { SignupForm } from "../components/signup-form";
@@ -42,5 +43,6 @@ export default () => (
       component={OrderConfirmationScreen}
     />
     <VotingPage path="/:lang/voting/" />
+    <RankingPage path="/:lang/ranking/" />
   </Router>
 );

@@ -1,11 +1,13 @@
+from decimal import Decimal
 from enum import Enum
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 
 import strawberry
 from api.users.types import User
 
 if TYPE_CHECKING:  # pragma: no cover
     from api.submissions.types import Submission
+    from api.conferences.types import Conference
 
 
 @strawberry.enum
@@ -30,3 +32,21 @@ class VoteType:
     value: int
     user: User
     submission: "Submission"
+
+
+@strawberry.type
+class RankSubmission:
+    submission: "Submission"
+    absolute_rank: int
+    absolute_score: Decimal
+    topic_rank: int
+
+
+@strawberry.type
+class RankRequest:
+    id: strawberry.ID
+    conference: "Conference"
+
+    @strawberry.field
+    def rank_submissions(self, info) -> List[RankSubmission]:
+        return self.rank_submissions.all()

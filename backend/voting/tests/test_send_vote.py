@@ -1,15 +1,10 @@
-import math
-import random
-
 from pytest import mark, raises
 from voting.models import Vote
+from voting.tests.fixtures.vote import get_random_vote
 
 
 def _submit_vote(client, submission, **kwargs):
-    value_index = kwargs.get(
-        "value_index",
-        math.floor(random.uniform(Vote.VALUES.not_interested, Vote.VALUES.must_see)),
-    )
+    value_index = kwargs.get("value_index", get_random_vote())
 
     defaults = {"value": value_index, "submission": submission.hashid}
 
@@ -43,7 +38,7 @@ def _submit_vote(client, submission, **kwargs):
 
 
 @mark.django_db
-@mark.parametrize("score_index", [1, 2, 3, 4, 5])
+@mark.parametrize("score_index", [1, 2, 3, 4])
 def test_submit_vote(
     graphql_client, user, conference_factory, submission_factory, score_index
 ):

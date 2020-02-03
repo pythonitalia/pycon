@@ -1,0 +1,29 @@
+query RankingSubmission($conference: String!){
+  conference(code: $conference){
+
+    topics {
+      id
+      name
+    }
+
+    ranking {
+        absoluteRank
+        topicRank
+
+        submission {
+          id
+          title
+
+          topic {
+            id
+            name
+          }
+
+          speaker {
+            fullName
+          }
+        }
+    }
+  }
+
+}

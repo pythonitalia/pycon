@@ -11,13 +11,15 @@ class Vote(TimeStampedModel):
         (2, "maybe", _("Maybe")),
         (3, "want_to_see", _("Want to See")),
         (4, "must_see", _("Must See")),
-        (5, "love_it", _("Love it")),
     )
 
     value = models.IntegerField(_("vote"), choices=VALUES)
 
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, verbose_name=_("user"), on_delete=models.PROTECT
+        settings.AUTH_USER_MODEL,
+        verbose_name=_("user"),
+        on_delete=models.PROTECT,
+        related_name="votes",
     )
 
     submission = models.ForeignKey(
