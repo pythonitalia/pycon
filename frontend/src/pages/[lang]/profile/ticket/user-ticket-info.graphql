@@ -1,0 +1,39 @@
+query UserTicketInfo($id: ID!, $conference: String!, $language: String!) {
+  me {
+    id
+
+    ticket(id: $id, conference: $conference, language: $language) {
+      id
+      itemId
+      ticketName
+      attendeeName
+      attendeeEmail
+
+      answers {
+        id
+        questionId
+        answer
+      }
+    }
+  }
+
+  conference(code: $conference) {
+    id
+
+    tickets(language: $language) {
+      id
+      name
+
+      questions {
+        name
+        id
+        required
+
+        options {
+          name
+          id
+        }
+      }
+    }
+  }
+}

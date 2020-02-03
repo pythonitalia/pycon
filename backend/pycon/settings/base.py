@@ -183,7 +183,9 @@ PRETIX_API_TOKEN = None
 if PRETIX_API:
     PRETIX_API_TOKEN = env("PRETIX_API_TOKEN")
 
-SIMULATE_PRETIX_DB = True
+# SIMULATE_PRETIX_DB = True
+SIMULATE_PRETIX_DB = False
+DATABASES["pretix"] = {**DATABASES["default"], "NAME": "pretix"}
 
 LOGGING = {
     "version": 1,

@@ -2,6 +2,8 @@ from datetime import datetime
 from enum import Enum
 from typing import List, Optional
 
+from api.helpers.ids import encode_hashid
+
 import strawberry
 
 
@@ -85,32 +87,36 @@ class Voucher:
 
 @strawberry.type
 class UserTicketAnswer:
+    id: strawberry.ID
     question_id: strawberry.ID
-    # question: str
-    # required: bool
     answer: Optional[str]
 
     @classmethod
     def from_data(cls, data, language):
         return cls(
+            id=encode_hashid(data["id"]),
             question_id=data["question_id"],
-            # question=data["question"].get(language, data["question"]["en"]),
-            # required=data["required"],
             answer=data["answer"],
         )
 
 
 @strawberry.type
 class UserTicket:
-    position_id: strawberry.ID
-    name: str
+    id: strawberry.ID
+    item_id: strawberry.ID
+    ticket_name: str
+    attendee_name: str
+    attendee_email: str
     answers: List[UserTicketAnswer]
 
     @classmethod
     def from_data(cls, data, language):
         return cls(
-            position_id=data["position_id"],
-            name=data["item_name"].get(language, data["item_name"]["en"]),
+            id=encode_hashid(data["position_id"]),
+            item_id=data["item_id"],
+            ticket_name=data["item_name"].get(language, data["item_name"]["en"]),
+            attendee_name=data["attendee_name"],
+            attendee_email=data["attendee_email"],
             answers=[
                 UserTicketAnswer.from_data(answer, language)
                 for answer in data["answers"]

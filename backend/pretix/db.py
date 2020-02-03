@@ -142,7 +142,7 @@ def get_user_tickets(email: str, event_slug: str):
                 tPosition.id,
                 tItem.id,
                 tItem.name,
-                tPosition.attendee_name_parts,
+                tPosition.attendee_name_cached,
                 tPosition.attendee_email
             FROM pretixbase_orderposition AS tPosition
             LEFT JOIN pretixbase_order AS tOrder
@@ -162,7 +162,6 @@ def get_user_tickets(email: str, event_slug: str):
         tickets = cursor.fetchall()
 
         positions_ids = []
-        items_ids = []
 
         positions = {}
 
@@ -171,21 +170,20 @@ def get_user_tickets(email: str, event_slug: str):
             item_id = ticket[1]
 
             positions_ids.append(position_id)
-            items_ids.append(item_id)
 
             positions[position_id] = {
                 "position_id": position_id,
                 "item_id": item_id,
                 "item_name": json.loads(ticket[2]),
+                "attendee_name": ticket[3],
+                "attendee_email": ticket[4],
                 "answers": [],
             }
 
-        # This approach will only fetch the answers from the database
-        # leaving who calls the api to get (via other means) the questions data
-        # (so text, options and so on)
         cursor.execute(
             """
             SELECT
+                id,
                 question_id,
                 answer,
                 orderposition_id
@@ -196,64 +194,76 @@ def get_user_tickets(email: str, event_slug: str):
         )
 
         answers = cursor.fetchall()
-        # breakpoint()
 
         for answer in answers:
-            position_id = answer[2]
+            answer_id = answer[0]
+            position_id = answer[3]
 
             positions[position_id]["answers"].append(
-                {"question_id": answer[0], "answer": answer[1]}
+                {"id": answer_id, "question_id": answer[1], "answer": answer[2]}
             )
 
-        # This approach tries to fetch everything, answers AND questions list
-        # this does not support fetching a question's options/choices
-        # (those are in another table)
-        # this way allows the user to get everything without asking external services
-        # or other things
-
-        # # Get all the questions and the answers as well
-        # cursor.execute(
-        #     """
-        #     SELECT
-        #         pretixbase_question.question,
-        #         pretixbase_question.required,
-        #         pretixbase_question.position,
-        #         pretixbase_questionanswer.answer,
-        #         pretixbase_questionanswer.orderposition_id,
-        #         pretixbase_question_items.item_id,
-        #         pretixbase_question.id
-        #     FROM pretixbase_question
-        #     INNER JOIN pretixbase_question_items
-        #     ON pretixbase_question_items.item_id = ANY(%s)
-        #     AND pretixbase_question_items.question_id = pretixbase_question.id
-        #     LEFT JOIN pretixbase_questionanswer
-        #     ON pretixbase_questionanswer.orderposition_id = ANY(%s)
-        #     AND pretixbase_questionanswer.question_id = pretixbase_question.id;
-        # """,
-        #     [items_ids, positions_ids],
-        # )
-
-        # questions_and_answers = cursor.fetchall()
-
-        # for position in positions:
-        #     for question in questions_and_answers:
-        #         if question[5] != position["item_id"]:
-        #             continue
-
-        #         question_id = question[6]
-        #         current_position = question[4] == position["position_id"]
-        #         already_has_question = question_id in position["questions"]
-
-        #         if already_has_question and not current_position:
-        #             continue
-
-        #         position["questions"][question_id] = {
-        #             "question_id": question_id,
-        #             "answer": question[3] if current_position else None,
-        #             "question": json.loads(question[0]),
-        #             "required": question[1],
-        #         }
-
-        #     position["questions"] = position["questions"].values()
-
         return positions.values()
+
+
+def get_user_ticket(position_id: str, email: str, event_slug: str):
+    if settings.SIMULATE_PRETIX_DB:
+        return None
+
+    with connections["pretix"].cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT
+                tItem.id,
+                tItem.name,
+                tPosition.attendee_name_cached,
+                tPosition.attendee_email
+            FROM pretixbase_orderposition AS tPosition
+            LEFT JOIN pretixbase_order AS tOrder
+            ON tOrder.id = tPosition.order_id
+            LEFT JOIN pretixbase_item AS tItem
+            ON tItem.id = tPosition.item_id
+            LEFT JOIN pretixbase_event AS tEvent
+            ON tEvent.id = tOrder.event_id
+            WHERE tPosition.attendee_email = %s
+            AND tOrder.status = 'p'
+            AND tItem.admission IS TRUE
+            AND tEvent.slug = %s
+            AND tPosition.id = %s
+        """,
+            [email, event_slug, position_id],
+        )
+
+        if cursor.rowcount < 1:
+            return None
+
+        ticket = cursor.fetchone()
+
+        cursor.execute(
+            """
+            SELECT
+                id,
+                question_id,
+                answer,
+                orderposition_id
+            FROM pretixbase_questionanswer
+            WHERE orderposition_id = %s
+        """,
+            [position_id],
+        )
+
+        answers = cursor.fetchall()
+
+        return {
+            "position_id": position_id,
+            "item_id": ticket[0],
+            "item_name": json.loads(ticket[1]),
+            "attendee_name": ticket[2],
+            "attendee_email": ticket[3],
+            "answers": [
+                {"id": answer[0], "question_id": answer[1], "answer": answer[2]}
+                for answer in answers
+            ],
+        }
+
+    return None

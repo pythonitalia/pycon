@@ -1,6 +1,14 @@
-query MyProfile($conference: String!) {
+query MyProfile($conference: String!, $language: String!) {
   me {
     id
+    name
+    fullName
+    email
+    gender
+    dateBirth
+    country
+    openToRecruiting
+    openToNewsletter
 
     submissions(conference: $conference) {
       id
@@ -15,13 +23,17 @@ query MyProfile($conference: String!) {
       total
     }
 
-    name
-    fullName
-    email
-    gender
-    dateBirth
-    country
-    openToRecruiting
-    openToNewsletter
+    tickets(conference: $conference, language: $language) {
+      itemId
+      id
+      ticketName
+      attendeeName
+      attendeeEmail
+      answers {
+        id
+        questionId
+        answer
+      }
+    }
   }
 }

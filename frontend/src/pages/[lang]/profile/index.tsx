@@ -12,6 +12,7 @@ import { Logout } from "~/components/profile/logout";
 import { MyOrders } from "~/components/profile/my-orders";
 import { MyProfile } from "~/components/profile/my-profile";
 import { MySubmissions } from "~/components/profile/my-submissions";
+import { MyTickets } from "~/components/profile/my-tickets";
 import { useCurrentLanguage } from "~/locale/context";
 import { useMyProfileQuery } from "~/types";
 
@@ -23,6 +24,7 @@ export const MyProfilePage = () => {
     skip: !loggedIn,
     variables: {
       conference: process.env.conferenceCode,
+      language: "en",
     },
   });
 
@@ -55,6 +57,20 @@ export const MyProfilePage = () => {
       </FormattedMessage>
 
       <MyProfile profile={profileData} />
+
+      {profileData.me.tickets.length > 0 && (
+        <MyTickets
+          tickets={profileData.me.tickets}
+          sx={{
+            borderTop: "primary",
+            py: 4,
+
+            "> div": {
+              px: 3,
+            },
+          }}
+        />
+      )}
 
       {profileData.me.orders.length > 0 && (
         <MyOrders orders={profileData.me.orders} />
