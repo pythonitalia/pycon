@@ -1,9 +1,9 @@
 /** @jsx jsx */
 import { useQuery } from "@apollo/react-hooks";
 import { RouteComponentProps } from "@reach/router";
-import { Box, Button, Flex, Grid } from "@theme-ui/components";
+import { Box, Button, Flex, Grid, Heading } from "@theme-ui/components";
 import moment from "moment";
-import React, { Children, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import Backend from "react-dnd-html5-backend";
 import { jsx } from "theme-ui";
@@ -154,6 +154,19 @@ type Room = {
   name: string;
 };
 
+const formatDay = (day: string) => {
+  const d = new Date(day);
+
+  const formatter = new Intl.DateTimeFormat("default", {
+    weekday: "long",
+    day: "numeric",
+    // TODO: use conference timezone
+    timeZone: "Europe/Rome",
+  });
+
+  return formatter.format(d);
+};
+
 const Schedule: React.SFC<{ slots: Slot[]; rooms: Room[] }> = ({
   slots,
   rooms,
@@ -281,10 +294,44 @@ const Schedule: React.SFC<{ slots: Slot[]; rooms: Room[] }> = ({
   );
 };
 
+const DaySelector: React.SFC<{
+  setCurrentDay: (day: string) => void;
+  currentDay: string | null;
+  days: { day: string }[];
+}> = ({ currentDay, days, setCurrentDay }) => (
+  <Box as="ul" sx={{ ml: "auto" }}>
+    {days.map(day => (
+      <Box
+        key={day.day}
+        as="li"
+        sx={{
+          listStyle: "none",
+          display: "inline-block",
+        }}
+      >
+        <Button
+          onClick={() => setCurrentDay(day.day)}
+          sx={{
+            backgroundColor: currentDay === day.day ? "violet" : "white",
+            mr: "-3px",
+            "&:hover": {
+              backgroundColor: "lightViolet",
+            },
+          }}
+        >
+          {formatDay(day.day)}
+        </Button>
+      </Box>
+    ))}
+  </Box>
+);
+
 export const ScheduleScreen: React.SFC<RouteComponentProps> = () => {
   const { code } = useConference();
 
   const [slots, addSlot] = useSlots();
+  // TODO: redirect to today or first day when we add per day routes
+  const [currentDay, setCurrentDay] = useState<string | null>(null);
 
   const { loading, data, error } = useQuery<
     ScheduleQuery,
@@ -295,6 +342,12 @@ export const ScheduleScreen: React.SFC<RouteComponentProps> = () => {
     },
   });
 
+  useLayoutEffect(() => {
+    if (!currentDay && data?.conference) {
+      setCurrentDay(data.conference.days[0].day);
+    }
+  }, [data]);
+
   if (loading) {
     return <Box>Loading</Box>;
   }
@@ -303,7 +356,7 @@ export const ScheduleScreen: React.SFC<RouteComponentProps> = () => {
     throw error;
   }
 
-  const { rooms } = data?.conference;
+  const { rooms, days } = data?.conference!;
 
   return (
     <DndProvider backend={Backend}>
@@ -333,6 +386,18 @@ export const ScheduleScreen: React.SFC<RouteComponentProps> = () => {
       </Box>
 
       <Box sx={{ flex: 1 }}>
+        <Box sx={{ backgroundColor: "orange", borderTop: "primary" }}>
+          <Flex sx={{ py: 4, px: 3, maxWidth: "largeContainer", mx: "auto" }}>
+            <Heading sx={{ fontSize: 6 }}>Schedule</Heading>
+
+            <DaySelector
+              days={days}
+              currentDay={currentDay}
+              setCurrentDay={setCurrentDay}
+            />
+          </Flex>
+        </Box>
+
         <Schedule slots={slots} rooms={rooms} />
 
         <Box mt={4}>
