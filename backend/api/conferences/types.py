@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from itertools import groupby
 from typing import List, Optional
 
@@ -10,7 +10,6 @@ from api.hotels.types import HotelRoom
 from api.languages.types import Language
 from api.pretix.query import get_conference_tickets
 from api.pretix.types import TicketItem
-from api.scalars import Date, DateTime
 from api.schedule.types import Room, ScheduleItem
 from api.sponsors.types import SponsorsByLevel
 from api.submissions.types import Submission, SubmissionType
@@ -20,10 +19,12 @@ from django.conf import settings
 from django.utils import translation
 from schedule.models import ScheduleItem as ScheduleItemModel
 from voting.models import RankRequest as RankRequestModel
+from strawberry.types.datetime import Date, DateTime
 
 from ..helpers.i18n import make_localized_resolver
 from ..helpers.maps import Map, resolve_map
 from ..permissions import CanSeeSubmissions
+from .helpers.days import daterange
 
 
 @strawberry.type
@@ -36,6 +37,19 @@ class AudienceLevel:
 class Topic:
     id: strawberry.ID
     name: str
+
+
+@strawberry.type
+class ScheduleSlot:
+    hour: str
+    duration: int
+    offset: int
+
+
+@strawberry.type
+class Day:
+    day: Date
+    schedule_configuration: List[ScheduleSlot]
 
 
 @strawberry.type
@@ -178,6 +192,7 @@ class Conference:
         return self.schedule_items.filter(slug=slug).first()
 
     @strawberry.field
+<<<<<<< HEAD
     def ranking(self, info) -> List[RankSubmission]:
         try:
             return (
@@ -189,8 +204,15 @@ class Conference:
             return []
 
     @strawberry.field
-    def tracks(self, info, slug: str) -> Optional[Room]:
+    def tracks(self, info) -> Optional[Room]:
         return self.rooms.all()
+
+    @strawberry.field
+    def days(self, info) -> List[Day]:
+        # TODO: fetch days from be
+        days = daterange(self.start.date(), self.end.date() + timedelta(days=1))
+
+        return [Day(day, []) for day in days]
 
 
 @strawberry.type
