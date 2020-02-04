@@ -2,9 +2,9 @@ from functools import singledispatch
 from typing import List, Optional
 
 import strawberry
-from api.scalars import DateTime
 from django import forms
 from django.core.exceptions import ImproperlyConfigured
+from strawberry.types.datetime import DateTime
 
 
 @singledispatch

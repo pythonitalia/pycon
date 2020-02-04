@@ -1,8 +1,8 @@
 from typing import Optional
 
 import strawberry
-from api.scalars import DateTime
 from api.users.types import User
+from strawberry.types.datetime import DateTime
 
 from ..helpers.i18n import make_localized_resolver
 

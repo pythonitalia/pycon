@@ -2,8 +2,8 @@ from typing import TYPE_CHECKING, List, Optional
 
 import strawberry
 from api.languages.types import Language
-from api.scalars import DateTime
 from api.voting.types import VoteType
+from strawberry.types.datetime import DateTime
 from voting.models import Vote
 
 from .permissions import CanSeeSubmissionDetail, CanSeeSubmissionPrivateFields

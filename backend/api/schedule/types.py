@@ -1,9 +1,9 @@
 from typing import TYPE_CHECKING, List, Optional
 
 import strawberry
-from api.scalars import DateTime
 from api.submissions.types import Submission
 from api.users.types import User
+from strawberry.types.datetime import DateTime
 
 if TYPE_CHECKING:  # pragma: no cover
     from api.conferences.types import Conference
