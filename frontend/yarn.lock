@@ -2832,13 +2832,13 @@
   resolved "https://registry.yarnpkg.com/@types/zen-observable/-/zen-observable-0.8.0.tgz#8b63ab7f1aa5321248aad5ac890a485656dcea4d"
   integrity sha512-te5lMAWii1uEJ4FwLjzdlbw3+n0FZNOvFXHxQDKeT0dilh7HOzdMzV2TrJVUzq8ep7J4Na8OUYPRLSQkJHAlrg==
 
-"@typescript-eslint/eslint-plugin-tslint@^2.12.0":
-  version "2.12.0"
-  resolved "https://registry.yarnpkg.com/@typescript-eslint/eslint-plugin-tslint/-/eslint-plugin-tslint-2.12.0.tgz#033f655a0ffe64bd42001837359da79bdc353e38"
-  integrity sha512-KBdoDJdXDJbJbz6gAqFPVOke7rguDfX54gMqXrNOHqEJB1VJRfdRmFCWafOeaBSiCZw52vmm0Jh+Ga2EEeYrIw==
+"@typescript-eslint/eslint-plugin-tslint@^2.19.0":
+  version "2.19.0"
+  resolved "https://registry.yarnpkg.com/@typescript-eslint/eslint-plugin-tslint/-/eslint-plugin-tslint-2.19.0.tgz#94e1f105bea47660d6d439b9ed9e5b07e97a8a3e"
+  integrity sha512-a/0i6Q+GHojT2I+UccTrlBMnH7Y+evy7+Wg95Jiue4t+G+nITXV5hY5nI9tmY/L7P+SCdri9KDXj2lyn5O2F1g==
   dependencies:
-    "@typescript-eslint/experimental-utils" "2.12.0"
-    lodash.memoize "^4.1.2"
+    "@typescript-eslint/experimental-utils" "2.19.0"
+    lodash "^4.17.15"
 
 "@typescript-eslint/eslint-plugin@^2.11.0", "@typescript-eslint/eslint-plugin@^2.12.0":
   version "2.12.0"
@@ -2858,6 +2858,15 @@
   dependencies:
     "@types/json-schema" "^7.0.3"
     "@typescript-eslint/typescript-estree" "2.12.0"
+    eslint-scope "^5.0.0"
+
+"@typescript-eslint/experimental-utils@2.19.0":
+  version "2.19.0"
+  resolved "https://registry.yarnpkg.com/@typescript-eslint/experimental-utils/-/experimental-utils-2.19.0.tgz#d5ca732f22c009e515ba09fcceb5f2127d841568"
+  integrity sha512-zwpg6zEOPbhB3+GaQfufzlMUOO6GXCNZq6skk+b2ZkZAIoBhVoanWK255BS1g5x9bMwHpLhX0Rpn5Fc3NdCZdg==
+  dependencies:
+    "@types/json-schema" "^7.0.3"
+    "@typescript-eslint/typescript-estree" "2.19.0"
     eslint-scope "^5.0.0"
 
 "@typescript-eslint/parser@^2.11.0", "@typescript-eslint/parser@^2.12.0":
@@ -2880,6 +2889,19 @@
     glob "^7.1.6"
     is-glob "^4.0.1"
     lodash.unescape "4.0.1"
+    semver "^6.3.0"
+    tsutils "^3.17.1"
+
+"@typescript-eslint/typescript-estree@2.19.0":
+  version "2.19.0"
+  resolved "https://registry.yarnpkg.com/@typescript-eslint/typescript-estree/-/typescript-estree-2.19.0.tgz#6bd7310b9827e04756fe712909f26956aac4b196"
+  integrity sha512-n6/Xa37k0jQdwpUszffi19AlNbVCR0sdvCs3DmSKMD7wBttKY31lhD2fug5kMD91B2qW4mQldaTEc1PEzvGu8w==
+  dependencies:
+    debug "^4.1.1"
+    eslint-visitor-keys "^1.1.0"
+    glob "^7.1.6"
+    is-glob "^4.0.1"
+    lodash "^4.17.15"
     semver "^6.3.0"
     tsutils "^3.17.1"
 
