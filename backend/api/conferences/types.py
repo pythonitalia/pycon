@@ -188,6 +188,10 @@ class Conference:
         except RankRequestModel.DoesNotExist:
             return []
 
+    @strawberry.field
+    def tracks(self, info, slug: str) -> Optional[Room]:
+        return self.rooms.all()
+
 
 @strawberry.type
 class Deadline:

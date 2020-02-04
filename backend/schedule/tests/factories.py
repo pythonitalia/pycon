@@ -11,7 +11,7 @@ from users.tests.factories import UserFactory
 
 @register
 class RoomFactory(DjangoModelFactory):
-    name = factory.Faker("text", max_nb_chars=100)
+    name = factory.Faker("word")
     conference = factory.SubFactory(ConferenceFactory)
 
     class Meta:
