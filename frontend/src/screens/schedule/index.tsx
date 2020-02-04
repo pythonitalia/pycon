@@ -1,13 +1,19 @@
 /** @jsx jsx */
+import { useQuery } from "@apollo/react-hooks";
 import { RouteComponentProps } from "@reach/router";
 import { Box, Button, Flex, Grid } from "@theme-ui/components";
 import moment from "moment";
-import React, { useState } from "react";
+import React, { Children, useState } from "react";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import Backend from "react-dnd-html5-backend";
 import { jsx } from "theme-ui";
 
 import { useConference } from "../../context/conference";
+import {
+  ScheduleQuery,
+  ScheduleQueryVariables,
+} from "../../generated/graphql-backend";
+import SCHEDULE_QUERY from "./schedule.graphql";
 
 const ItemTypes = {
   TALK_30: "talk_30",
@@ -15,15 +21,15 @@ const ItemTypes = {
   TALK_60: "talk_60",
 };
 
-const Talk = ({ duration }: { duration: 30 | 45 | 60 }) => {
-  const type = `TALK_${duration}` as keyof typeof ItemTypes;
-
-  const [{ isDragging }, drag] = useDrag({
+const BaseEvent: React.SFC<{ type: string; metadata: any }> = ({
+  type,
+  children,
+  metadata,
+}) => {
+  const [_, drag] = useDrag({
     item: {
-      type: ItemTypes[type],
-      talk: {
-        title: "Talk title",
-      },
+      type,
+      event: metadata,
     },
     collect: monitor => ({
       isDragging: !!monitor.isDragging(),
@@ -42,10 +48,29 @@ const Talk = ({ duration }: { duration: 30 | 45 | 60 }) => {
         cursor: "move",
       }}
     >
-      Talk {duration}
+      {children}
     </Box>
   );
 };
+
+const Talk = ({ duration }: { duration: 30 | 45 | 60 }) => {
+  const type = `TALK_${duration}` as keyof typeof ItemTypes;
+
+  return (
+    <BaseEvent type={ItemTypes[type]} metadata={{ title: "example" }}>
+      Talk {duration}
+    </BaseEvent>
+  );
+};
+
+const AllTracksEvent = () => (
+  <BaseEvent
+    type="ALL_TRACKS_EVENT"
+    metadata={{ title: "Lunch", allTracks: true }}
+  >
+    Lunch
+  </BaseEvent>
+);
 
 const Placeholder: React.SFC<{
   columnStart: number;
@@ -57,7 +82,7 @@ const Placeholder: React.SFC<{
   const type = `TALK_${duration}` as keyof typeof ItemTypes;
 
   const [{ isOver, canDrop }, drop] = useDrop({
-    accept: ItemTypes[type],
+    accept: [ItemTypes[type], "ALL_TRACKS_EVENT"],
     drop: onDrop,
     collect: mon => ({
       isOver: !!mon.isOver(),
@@ -119,29 +144,40 @@ const useSlots = (): [Slot[], (duration: number) => void] => {
   return [slots, addSlot];
 };
 
-const Schedule: React.SFC<{ slots: Slot[] }> = ({ slots }) => {
+type ScheduleItem = {
+  title: string;
+  trackSpan?: number;
+  allTracks?: boolean;
+};
+
+type Room = {
+  name: string;
+};
+
+const Schedule: React.SFC<{ slots: Slot[]; rooms: Room[] }> = ({
+  slots,
+  rooms,
+}) => {
   const rowOffset = 6;
   const totalRows =
     slots.reduce((total, slot) => slot.size + total, 0) / 5 + rowOffset;
-  const totalColumns = 7;
+  const totalColumns = rooms.length;
 
-  const [talks, setTalks] = useState<{
-    [hour: number]: { [track: number]: number };
+  const [scheduleItems, setScheduleItems] = useState<{
+    [hour: number]: { [track: number]: ScheduleItem };
   }>({});
 
   const handleDrop = (item: any, slot: Slot, index: number) => {
     const slotHour = slot.hour.valueOf();
 
-    setTalks({
-      ...talks,
+    setScheduleItems({
+      ...scheduleItems,
       [slotHour]: {
-        ...(talks[slotHour] || {}),
-        [index]: item.talk,
+        ...(scheduleItems[slotHour] || {}),
+        [index]: item.event,
       },
     });
   };
-
-  console.log(talks);
 
   return (
     <Grid
@@ -160,7 +196,7 @@ const Schedule: React.SFC<{ slots: Slot[] }> = ({ slots }) => {
           backgroundColor: "white",
         }}
       />
-      {new Array(totalColumns).fill(null).map((_, index) => (
+      {rooms.map((room, index) => (
         <Box
           key={index}
           sx={{
@@ -173,12 +209,12 @@ const Schedule: React.SFC<{ slots: Slot[] }> = ({ slots }) => {
             fontWeight: "bold",
           }}
         >
-          Track {index} text text text text
+          {room.name}
         </Box>
       ))}
 
       {slots.map(slot => {
-        const slotTalks = talks[slot.hour.valueOf()] || {};
+        const slotScheduleItems = scheduleItems[slot.hour.valueOf()] || {};
 
         return (
           <React.Fragment key={slot.hour.toString()}>
@@ -201,32 +237,43 @@ const Schedule: React.SFC<{ slots: Slot[] }> = ({ slots }) => {
               <Box>{slot.hour.format("hh:mm")}</Box>
             </Box>
 
-            {new Array(totalColumns).fill(null).map((_, index) => (
-              <React.Fragment key={index}>
-                <Placeholder
-                  columnStart={index + 2}
-                  rowStart={slot.offset / 5 + rowOffset}
-                  rowEnd={(slot.offset + slot.size) / 5 + rowOffset}
-                  duration={slot.duration}
-                  onDrop={(item: any) => handleDrop(item, slot, index)}
-                />
+            {rooms.map((_, index) => {
+              const scheduleItem = slotScheduleItems[index];
 
-                {slotTalks[index] && (
-                  <Box
-                    sx={{
-                      gridColumnStart: index + 2,
-                      gridColumnEnd: index + 2 + 1,
-                      gridRowStart: slot.offset / 5 + rowOffset,
-                      gridRowEnd: (slot.offset + slot.size) / 5 + rowOffset,
-                      backgroundColor: "violet",
-                      p: 3,
-                    }}
-                  >
-                    {slotTalks[index].title}
-                  </Box>
-                )}
-              </React.Fragment>
-            ))}
+              return (
+                <React.Fragment key={index}>
+                  <Placeholder
+                    columnStart={index + 2}
+                    rowStart={slot.offset / 5 + rowOffset}
+                    rowEnd={(slot.offset + slot.size) / 5 + rowOffset}
+                    duration={slot.duration}
+                    onDrop={(item: any) => handleDrop(item, slot, index)}
+                  />
+
+                  {scheduleItem && (
+                    <Box
+                      sx={{
+                        gridColumnStart: index + 2,
+                        gridColumnEnd:
+                          index +
+                          2 +
+                          (scheduleItem.allTracks
+                            ? rooms.length
+                            : scheduleItem.trackSpan || 1),
+                        gridRowStart: slot.offset / 5 + rowOffset,
+                        gridRowEnd: (slot.offset + slot.size) / 5 + rowOffset,
+                        backgroundColor: "violet",
+                        position: "relative",
+                        zIndex: 10,
+                        p: 3,
+                      }}
+                    >
+                      {scheduleItem.title}
+                    </Box>
+                  )}
+                </React.Fragment>
+              );
+            })}
           </React.Fragment>
         );
       })}
@@ -238,6 +285,25 @@ export const ScheduleScreen: React.SFC<RouteComponentProps> = () => {
   const { code } = useConference();
 
   const [slots, addSlot] = useSlots();
+
+  const { loading, data, error } = useQuery<
+    ScheduleQuery,
+    ScheduleQueryVariables
+  >(SCHEDULE_QUERY, {
+    variables: {
+      code,
+    },
+  });
+
+  if (loading) {
+    return <Box>Loading</Box>;
+  }
+
+  if (error) {
+    throw error;
+  }
+
+  const { rooms } = data?.conference;
 
   return (
     <DndProvider backend={Backend}>
@@ -259,13 +325,15 @@ export const ScheduleScreen: React.SFC<RouteComponentProps> = () => {
               <Talk duration={45} />
               <Talk duration={30} />
               <Talk duration={60} />
+
+              <AllTracksEvent />
             </React.Fragment>
           ))}
         </Box>
       </Box>
 
       <Box sx={{ flex: 1 }}>
-        <Schedule slots={slots} />
+        <Schedule slots={slots} rooms={rooms} />
 
         <Box mt={4}>
           <Button sx={{ mr: 3 }} onClick={() => addSlot(30)}>

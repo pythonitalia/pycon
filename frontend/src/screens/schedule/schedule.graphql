@@ -1,0 +1,7 @@
+query Schedule($code: String!) {
+  conference(code: $code) {
+    rooms {
+      name
+    }
+  }
+}
