@@ -75,7 +75,7 @@ export const MyProfile: React.FC<{ profile: MyProfileQuery }> = ({
             <FormattedMessage id="profile.profileHeader" />
           </Heading>
 
-          <Link path="/[lang]/profile/edit" variant="button">
+          <Link path="/[lang]/profile/edit" variant="arrow-button">
             <FormattedMessage id="profile.editProfile" />
           </Link>
 

@@ -17,6 +17,7 @@ type Props = {
 
 type Form = {
   attendeeName: string;
+  attendeeEmail: string;
   answers: {
     [id: string]: {
       questionId: string;
@@ -43,6 +44,7 @@ export const ManageTicket: React.FC<Props> = () => {
       const loadedTicket = loadedData?.me.ticket;
 
       formState.setField("attendeeName", loadedTicket?.attendeeName ?? "");
+      formState.setField("attendeeEmail", loadedTicket?.attendeeEmail ?? "");
 
       formState.setField(
         "answers",
@@ -111,6 +113,10 @@ export const ManageTicket: React.FC<Props> = () => {
               <Input {...text("attendeeName")} required={true} />
             </InputWrapper>
 
+            <InputWrapper label="Attendee email">
+              <Input {...text("attendeeEmail")} required={true} />
+            </InputWrapper>
+
             {ticketData.questions.map((question) => (
               <InputWrapper key={question.id} label={question.name}>
                 {question.options.length === 0 && (
@@ -131,7 +137,11 @@ export const ManageTicket: React.FC<Props> = () => {
                     value={formState.values.answers[question.id]?.answer ?? ""}
                   >
                     <FormattedMessage id="manageTicket.notAnswered">
-                      {(copy) => <option value="">{copy}</option>}
+                      {(copy) => (
+                        <option disabled={true} value="">
+                          {copy}
+                        </option>
+                      )}
                     </FormattedMessage>
 
                     {question.options.map((option) => (
