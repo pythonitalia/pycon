@@ -65,7 +65,7 @@ const Placeholder: React.SFC<{
     }),
   });
 
-  const backgroundColor = isOver ? "green" : canDrop ? "orange" : "";
+  const backgroundColor = isOver ? "green" : canDrop ? "orange" : "white";
 
   return (
     <Box
@@ -75,9 +75,8 @@ const Placeholder: React.SFC<{
         gridColumnEnd: columnStart + 1,
         gridRowStart: rowStart,
         gridRowEnd: rowEnd,
-        borderBottom: "primary",
-        borderRight: "primary",
         backgroundColor,
+        p: 3,
       }}
     >
       Placeholder {duration}
@@ -121,12 +120,10 @@ const useSlots = (): [Slot[], (duration: number) => void] => {
 };
 
 const Schedule: React.SFC<{ slots: Slot[] }> = ({ slots }) => {
-  const rowOffset = 5;
+  const rowOffset = 6;
   const totalRows =
     slots.reduce((total, slot) => slot.size + total, 0) / 5 + rowOffset;
   const totalColumns = 7;
-
-  // "slotHour": { "track" : {}}
 
   const [talks, setTalks] = useState<{
     [hour: number]: { [track: number]: number };
@@ -150,12 +147,18 @@ const Schedule: React.SFC<{ slots: Slot[] }> = ({ slots }) => {
     <Grid
       sx={{
         gridTemplateColumns: `100px repeat(${totalColumns}, 1fr)`,
-        gridTemplateRows: `repeat(${totalRows}, 10px)`,
-        gridGap: 0,
+        gridTemplateRows: `repeat(${totalRows - 1}, 10px)`,
+        gridGap: "4px",
+        py: "4px",
+        backgroundColor: "black",
       }}
     >
       <Box
-        sx={{ borderBottom: "primary", gridRowStart: 1, gridRowEnd: rowOffset }}
+        sx={{
+          gridRowStart: 1,
+          gridRowEnd: rowOffset,
+          backgroundColor: "white",
+        }}
       />
       {new Array(totalColumns).fill(null).map((_, index) => (
         <Box
@@ -164,10 +167,13 @@ const Schedule: React.SFC<{ slots: Slot[] }> = ({ slots }) => {
             gridColumnStart: index + 2,
             gridRowStart: 1,
             gridRowEnd: rowOffset,
-            borderBottom: "primary",
+            backgroundColor: "white",
+            py: 2,
+            px: 3,
+            fontWeight: "bold",
           }}
         >
-          Track {index}
+          Track {index} text text text text
         </Box>
       ))}
 
@@ -182,8 +188,10 @@ const Schedule: React.SFC<{ slots: Slot[] }> = ({ slots }) => {
                 gridColumnEnd: 1,
                 gridRowStart: "var(--start)",
                 gridRowEnd: "var(--end)",
-                borderBottom: "primary",
-                borderRight: "primary",
+                backgroundColor: "white",
+                p: 3,
+                textAlign: "center",
+                fontWeight: "bold",
               }}
               style={{
                 "--start": slot.offset / 5 + rowOffset,
@@ -211,6 +219,7 @@ const Schedule: React.SFC<{ slots: Slot[] }> = ({ slots }) => {
                       gridRowStart: slot.offset / 5 + rowOffset,
                       gridRowEnd: (slot.offset + slot.size) / 5 + rowOffset,
                       backgroundColor: "violet",
+                      p: 3,
                     }}
                   >
                     {slotTalks[index].title}
