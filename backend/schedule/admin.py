@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 
-from .models import Room, ScheduleItem
+from .models import Day, Room, ScheduleItem
 
 
 @admin.register(ScheduleItem)
@@ -35,4 +35,10 @@ class ScheduleItemAdmin(admin.ModelAdmin):
 @admin.register(Room)
 class RoomAdmin(admin.ModelAdmin):
     list_display = ("name", "conference")
+    list_filter = ("conference",)
+
+
+@admin.register(Day)
+class DayAdmin(admin.ModelAdmin):
+    list_display = ("day", "conference")
     list_filter = ("conference",)

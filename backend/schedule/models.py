@@ -1,5 +1,6 @@
 from conferences.models import Conference
 from django.conf import settings
+from django.contrib.postgres.fields.jsonb import JSONField
 from django.core import exceptions
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -7,6 +8,20 @@ from model_utils import Choices
 from model_utils.models import TimeFramedModel, TimeStampedModel
 from pycon.constants import COLORS
 from submissions.models import Submission
+
+
+class Day(models.Model):
+    day = models.DateField()
+    conference = models.ForeignKey(
+        Conference,
+        on_delete=models.CASCADE,
+        verbose_name=_("conference"),
+        related_name="days",
+    )
+    schedule_configuration = JSONField(default=list)
+
+    def __str__(self):
+        return f"{self.day.isoformat()} at {self.conference}"
 
 
 class Room(models.Model):

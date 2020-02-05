@@ -86,7 +86,7 @@ export const Schedule: React.SFC<{
                 "--end": (slot.offset + slot.size) / 5 + rowOffset,
               }}
             >
-              <Box>{slot.hour.format("hh:mm")}</Box>
+              <Box>{slot.hour}</Box>
             </Box>
 
             {rooms.map((_, index) => {

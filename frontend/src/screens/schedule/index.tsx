@@ -16,12 +16,10 @@ import { DaySelector } from "./day-selector";
 import { AllTracksEvent, Talk } from "./events";
 import { Schedule } from "./schedule";
 import SCHEDULE_QUERY from "./schedule.graphql";
-import { useSlots } from "./use-slots";
 
 export const ScheduleScreen: React.SFC<RouteComponentProps> = () => {
   const { code } = useConference();
 
-  const [slots, addSlot] = useSlots();
   // TODO: redirect to today or first day when we add per day routes
   const [currentDay, setCurrentDay] = useState<string | null>(null);
 
@@ -49,6 +47,8 @@ export const ScheduleScreen: React.SFC<RouteComponentProps> = () => {
   }
 
   const { rooms, days } = data?.conference!;
+
+  const addSlot = (duration: number) => {};
 
   const day = days.find(d => d.day === currentDay);
 

@@ -6,6 +6,7 @@ query Schedule($code: String!) {
         hour
         duration
         offset
+        size
       }
     }
     rooms {

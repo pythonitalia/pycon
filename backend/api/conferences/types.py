@@ -44,6 +44,7 @@ class ScheduleSlot:
     hour: str
     duration: int
     offset: int
+    size: int
 
 
 @strawberry.type
@@ -209,10 +210,21 @@ class Conference:
 
     @strawberry.field
     def days(self, info) -> List[Day]:
-        # TODO: fetch days from be
-        days = daterange(self.start.date(), self.end.date() + timedelta(days=1))
+        all_days = daterange(self.start.date(), self.end.date() + timedelta(days=1))
+        days = self.days.all()
 
-        return [Day(day, []) for day in days]
+        def get_schedule_configuration(day):
+            conference_day = next((x for x in days if x.day == day), None)
+
+            if conference_day:
+                return [
+                    ScheduleSlot(**slot)
+                    for slot in conference_day.schedule_configuration
+                ]
+
+            return []
+
+        return [Day(day, get_schedule_configuration(day)) for day in all_days]
 
 
 @strawberry.type
