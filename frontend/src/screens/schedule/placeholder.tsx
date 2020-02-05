@@ -15,8 +15,14 @@ export const Placeholder: React.SFC<{
 }> = ({ columnStart, rowStart, rowEnd, duration, onDrop }) => {
   const type = `TALK_${duration}` as keyof typeof ItemTypes;
 
+  const accept = [ItemTypes[type]];
+
+  if (columnStart === 2) {
+    accept.push(ItemTypes.ALL_TRACKS_EVENT);
+  }
+
   const [{ isOver, canDrop }, drop] = useDrop({
-    accept: [ItemTypes[type], ItemTypes.ALL_TRACKS_EVENT],
+    accept,
     drop: onDrop,
     collect: mon => ({
       isOver: !!mon.isOver(),
