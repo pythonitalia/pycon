@@ -9,7 +9,7 @@ export const ItemTypes = {
 
 export type Slot = {
   duration: number;
-  hour: moment.Moment;
+  hour: string;
   size: number;
   offset: number;
 };

@@ -1,17 +1,20 @@
 /** @jsx jsx */
-import { useQuery } from "@apollo/react-hooks";
+import { useMutation, useQuery } from "@apollo/react-hooks";
 import { RouteComponentProps } from "@reach/router";
 import { Box, Button, Flex, Heading } from "@theme-ui/components";
-import React, { useLayoutEffect, useState } from "react";
+import React, { useCallback, useLayoutEffect, useState } from "react";
 import { DndProvider } from "react-dnd";
 import Backend from "react-dnd-html5-backend";
 import { jsx } from "theme-ui";
 
 import { useConference } from "../../context/conference";
 import {
+  AddScheduleSlotMutation,
+  AddScheduleSlotMutationVariables,
   ScheduleQuery,
   ScheduleQueryVariables,
 } from "../../generated/graphql-backend";
+import ADD_SCHEDULE_SLOT_QUERY from "./add-schedule-slot.graphql";
 import { DaySelector } from "./day-selector";
 import { AllTracksEvent, Talk } from "./events";
 import { Schedule } from "./schedule";
@@ -32,6 +35,25 @@ export const ScheduleScreen: React.SFC<RouteComponentProps> = () => {
     },
   });
 
+  const [addSlot] = useMutation<
+    AddScheduleSlotMutation,
+    AddScheduleSlotMutationVariables
+  >(ADD_SCHEDULE_SLOT_QUERY, {
+    variables: { code, day: currentDay, duration: 60 },
+  });
+
+  const addScheduleSlot = useCallback(
+    (duration: number) =>
+      addSlot({
+        variables: {
+          code,
+          day: currentDay,
+          duration,
+        },
+      }),
+    [code, currentDay],
+  );
+
   useLayoutEffect(() => {
     if (!currentDay && data?.conference) {
       setCurrentDay(data.conference.days[0].day);
@@ -48,8 +70,6 @@ export const ScheduleScreen: React.SFC<RouteComponentProps> = () => {
 
   const { rooms, days } = data?.conference!;
 
-  const addSlot = (duration: number) => {};
-
   const day = days.find(d => d.day === currentDay);
 
   return (
@@ -61,12 +81,12 @@ export const ScheduleScreen: React.SFC<RouteComponentProps> = () => {
           left: 0,
           right: 0,
           zIndex: 100,
-          padding: 4,
+          borderTop: "primary",
           background: "white",
         }}
       >
-        List of talks
-        <Box sx={{ overflowY: "scroll", whiteSpace: "nowrap", py: 3 }}>
+        <Heading sx={{ pt: 4, px: 4 }}>List of talks</Heading>
+        <Box sx={{ overflowY: "scroll", whiteSpace: "nowrap", p: 4 }}>
           {new Array(100).fill(null).map((_, index) => (
             <React.Fragment key={index}>
               <Talk duration={45} />
@@ -96,14 +116,14 @@ export const ScheduleScreen: React.SFC<RouteComponentProps> = () => {
           <Schedule configuration={day.scheduleConfiguration} rooms={rooms} />
         )}
 
-        <Box mt={4}>
-          <Button sx={{ mr: 3 }} onClick={() => addSlot(30)}>
+        <Box sx={{ my: 4, ml: 100 }}>
+          <Button sx={{ mr: 3 }} onClick={() => addScheduleSlot(30)}>
             Add 30 minutes slot
           </Button>
-          <Button sx={{ mr: 3 }} onClick={() => addSlot(45)}>
+          <Button sx={{ mr: 3 }} onClick={() => addScheduleSlot(45)}>
             Add 45 minutes slot
           </Button>
-          <Button sx={{ mr: 3 }} onClick={() => addSlot(60)}>
+          <Button sx={{ mr: 3 }} onClick={() => addScheduleSlot(60)}>
             Add 60 minutes slot
           </Button>
         </Box>
