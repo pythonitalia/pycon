@@ -7,6 +7,7 @@ from .newsletters.schema import NewsletterMutations
 from .orders.mutations import OrdersMutations
 from .orders.query import OrdersQuery
 from .pages.schema import PagesQuery
+from .schedule.mutations import ScheduleMutations
 from .submissions.mutations import SubmissionsMutations
 from .submissions.schema import SubmissionsQuery
 from .users.mutations import UsersMutations
@@ -35,6 +36,7 @@ class Mutation(
     OrdersMutations,
     GrantsMutations,
     NewsletterMutations,
+    ScheduleMutations,
 ):
     pass
 
