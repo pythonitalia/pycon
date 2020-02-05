@@ -138,9 +138,11 @@ class Conference:
     def sponsors_by_level(self, info) -> List[SponsorsByLevel]:
         from sponsors.models import Sponsor
 
-        sponsors = Sponsor.objects.filter(
-            level__conference__code=self.code
-        ).select_related("level")
+        sponsors = (
+            Sponsor.objects.filter(level__conference__code=self.code)
+            .order_by("level", "order")
+            .select_related("level")
+        )
 
         by_level = groupby(sponsors, key=lambda sponsor: sponsor.level)
 

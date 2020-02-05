@@ -4,6 +4,8 @@ from model_utils.models import TimeStampedModel
 from ordered_model.models import OrderedModel
 from pycon.constants import COLORS
 
+from .managers import SponsorLevelManager, SponsorManager
+
 
 class SponsorLevel(OrderedModel):
     name = models.CharField(_("name"), max_length=20)
@@ -16,6 +18,8 @@ class SponsorLevel(OrderedModel):
     highlight_color = models.CharField(
         choices=COLORS, max_length=15, blank=True, verbose_name=_("highlight color")
     )
+
+    objects = SponsorLevelManager()
 
     def __str__(self):
         return self.name
@@ -35,8 +39,10 @@ class Sponsor(TimeStampedModel, OrderedModel):
         related_name="sponsors",
     )
 
-    class Meta(OrderedModel.Meta):
-        pass
+    objects = SponsorManager()
 
     def __str__(self):
         return self.name
+
+    class Meta(OrderedModel.Meta):
+        pass

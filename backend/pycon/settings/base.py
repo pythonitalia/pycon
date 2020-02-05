@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     "notifications.apps.NotificationsConfig",
     "hotels.apps.HotelsConfig",
     "newsletters.apps.NewslettersConfig",
+    "ordered_model",
 ]
 
 MIDDLEWARE = [
