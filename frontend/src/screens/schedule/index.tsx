@@ -50,6 +50,8 @@ export const ScheduleScreen: React.SFC<RouteComponentProps> = () => {
 
   const { rooms, days } = data?.conference!;
 
+  const day = days.find(d => d.day === currentDay);
+
   return (
     <DndProvider backend={Backend}>
       <Box
@@ -90,7 +92,9 @@ export const ScheduleScreen: React.SFC<RouteComponentProps> = () => {
           </Flex>
         </Box>
 
-        <Schedule slots={slots} rooms={rooms} />
+        {day && (
+          <Schedule configuration={day.scheduleConfiguration} rooms={rooms} />
+        )}
 
         <Box mt={4}>
           <Button sx={{ mr: 3 }} onClick={() => addSlot(30)}>

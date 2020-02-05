@@ -6,13 +6,13 @@ import { jsx } from "theme-ui";
 import { Placeholder } from "./placeholder";
 import { Room, ScheduleItem, Slot } from "./types";
 
-export const Schedule: React.SFC<{ slots: Slot[]; rooms: Room[] }> = ({
-  slots,
-  rooms,
-}) => {
+export const Schedule: React.SFC<{
+  configuration: Slot[];
+  rooms: Room[];
+}> = ({ configuration, rooms }) => {
   const rowOffset = 6;
   const totalRows =
-    slots.reduce((total, slot) => slot.size + total, 0) / 5 + rowOffset;
+    configuration.reduce((total, slot) => slot.size + total, 0) / 5 + rowOffset;
   const totalColumns = rooms.length;
 
   const [scheduleItems, setScheduleItems] = useState<{
@@ -65,7 +65,7 @@ export const Schedule: React.SFC<{ slots: Slot[]; rooms: Room[] }> = ({
         </Box>
       ))}
 
-      {slots.map(slot => {
+      {configuration.map(slot => {
         const slotScheduleItems = scheduleItems[slot.hour.valueOf()] || {};
 
         return (
