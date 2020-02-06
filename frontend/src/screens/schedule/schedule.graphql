@@ -2,7 +2,7 @@ query Schedule($code: String!) {
   conference(code: $code) {
     days {
       day
-      scheduleConfiguration {
+      slots {
         hour
         duration
         offset

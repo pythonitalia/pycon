@@ -112,9 +112,7 @@ export const ScheduleScreen: React.SFC<RouteComponentProps> = () => {
           </Flex>
         </Box>
 
-        {day && (
-          <Schedule configuration={day.scheduleConfiguration} rooms={rooms} />
-        )}
+        {day && <Schedule slots={day.slots} rooms={rooms} />}
 
         <Box sx={{ my: 4, ml: 100 }}>
           <Button sx={{ mr: 3 }} onClick={() => addScheduleSlot(30)}>

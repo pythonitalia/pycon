@@ -7,12 +7,12 @@ import { Placeholder } from "./placeholder";
 import { Room, ScheduleItem, Slot } from "./types";
 
 export const Schedule: React.SFC<{
-  configuration: Slot[];
+  slots: Slot[];
   rooms: Room[];
-}> = ({ configuration, rooms }) => {
+}> = ({ slots, rooms }) => {
   const rowOffset = 6;
   const totalRows =
-    configuration.reduce((total, slot) => slot.size + total, 0) / 5 + rowOffset;
+    slots.reduce((total, slot) => slot.size + total, 0) / 5 + rowOffset;
   const totalColumns = rooms.length;
 
   const [scheduleItems, setScheduleItems] = useState<{
@@ -65,7 +65,7 @@ export const Schedule: React.SFC<{
         </Box>
       ))}
 
-      {configuration.map(slot => {
+      {slots.map(slot => {
         const slotScheduleItems = scheduleItems[slot.hour.valueOf()] || {};
 
         return (

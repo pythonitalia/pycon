@@ -2,7 +2,7 @@ mutation AddScheduleSlot($code: ID!, $day: Date!, $duration: Int!) {
   addScheduleSlot(conference: $code, day: $day, duration: $duration) {
     ... on Day {
       day
-      scheduleConfiguration {
+      slots {
         hour
         duration
         offset
