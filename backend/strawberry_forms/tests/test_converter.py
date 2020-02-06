@@ -3,14 +3,11 @@ from typing import List, Optional, Union
 
 import pytest
 import strawberry
-from api.scalars import DateTime
 from django.core.exceptions import ImproperlyConfigured
 from django.forms import (
     BooleanField,
     CharField,
     ChoiceField,
-    DateField,
-    DateTimeField,
     DecimalField,
     EmailField,
     Field,
@@ -19,7 +16,6 @@ from django.forms import (
     ModelMultipleChoiceField,
     NullBooleanField,
     SlugField,
-    TimeField,
     URLField,
     UUIDField,
 )
@@ -41,9 +37,9 @@ CONVERT_MAP = {
     # NumberInput: Int,
     DecimalField: float,
     FloatField: float,
-    DateField: str,  # Date
-    DateTimeField: DateTime,  # DateTime
-    TimeField: str,  # Time
+    # DateField: Date,
+    # DateTimeField: DateTime,
+    # TimeField: Time,
 }
 
 

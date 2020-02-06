@@ -37,9 +37,9 @@ def _setup_random(
     return conference, counts_votes
 
 
+# TODO: rename this fixture
 @pytest.fixture
 def _setup_equal(conference_factory, user_factory, submission_factory, vote_factory):
-
     conference = conference_factory()
     users = user_factory.create_batch(15)
     submissions = submission_factory.create_batch(5, conference=conference)
@@ -87,18 +87,18 @@ def _setup_equal(conference_factory, user_factory, submission_factory, vote_fact
     vote_factory(user=users[13], submission=submissions[0], value=1)
 
     users_weights = {
-        users[0].pk: sqrt(4),
-        users[1].pk: sqrt(3),
-        users[2].pk: sqrt(2),
-        users[3].pk: sqrt(1),
-        users[5].pk: sqrt(4),
-        users[6].pk: sqrt(3),
-        users[7].pk: sqrt(2),
-        users[8].pk: sqrt(1),
-        users[10].pk: sqrt(4),
-        users[11].pk: sqrt(3),
-        users[12].pk: sqrt(2),
-        users[13].pk: sqrt(1),
+        users[0].pk: pytest.approx(sqrt(4)),
+        users[1].pk: pytest.approx(sqrt(3)),
+        users[2].pk: pytest.approx(sqrt(2)),
+        users[3].pk: pytest.approx(sqrt(1)),
+        users[5].pk: pytest.approx(sqrt(4)),
+        users[6].pk: pytest.approx(sqrt(3)),
+        users[7].pk: pytest.approx(sqrt(2)),
+        users[8].pk: pytest.approx(sqrt(1)),
+        users[10].pk: pytest.approx(sqrt(4)),
+        users[11].pk: pytest.approx(sqrt(3)),
+        users[12].pk: pytest.approx(sqrt(2)),
+        users[13].pk: pytest.approx(sqrt(1)),
     }
     votes = Vote.objects.all()
     ranked_submissions = [
