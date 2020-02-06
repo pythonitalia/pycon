@@ -4,7 +4,7 @@ import pytz
 from conferences.tests.factories import ConferenceFactory
 from factory.django import DjangoModelFactory
 from pytest_factoryboy import register
-from schedule.models import Day, Room, ScheduleItem
+from schedule.models import Day, Room, ScheduleItem, Slot
 from submissions.tests.factories import SubmissionFactory
 from users.tests.factories import UserFactory
 
@@ -24,6 +24,12 @@ class DayFactory(DjangoModelFactory):
 
     class Meta:
         model = Day
+
+
+@register
+class SlotFactory(DjangoModelFactory):
+    class Meta:
+        model = Slot
 
 
 @register

@@ -18,7 +18,7 @@ from cms.models import GenericCopy
 from django.conf import settings
 from django.utils import translation
 from schedule.models import ScheduleItem as ScheduleItemModel
-from strawberry.types.datetime import Date, DateTime
+from strawberry.types.datetime import Date, DateTime, Time
 from voting.models import RankRequest as RankRequestModel
 
 from ..helpers.i18n import make_localized_resolver
@@ -41,7 +41,7 @@ class Topic:
 
 @strawberry.type
 class ScheduleSlot:
-    hour: str
+    hour: Time
     duration: int
     offset: int
     size: int
@@ -50,7 +50,7 @@ class ScheduleSlot:
 @strawberry.type
 class Day:
     day: Date
-    schedule_configuration: List[ScheduleSlot]
+    slots: List[ScheduleSlot]
 
 
 @strawberry.type
@@ -212,18 +212,15 @@ class Conference:
         all_days = daterange(self.start.date(), self.end.date() + timedelta(days=1))
         days = self.days.all()
 
-        def get_schedule_configuration(day):
+        def get_slots(day):
             conference_day = next((x for x in days if x.day == day), None)
 
             if conference_day:
-                return [
-                    ScheduleSlot(**slot)
-                    for slot in conference_day.schedule_configuration
-                ]
+                return conference_day.slots.all()
 
             return []
 
-        return [Day(day, get_schedule_configuration(day)) for day in all_days]
+        return [Day(day, get_slots(day)) for day in all_days]
 
 
 @strawberry.type

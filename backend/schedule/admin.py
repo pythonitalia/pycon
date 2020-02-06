@@ -1,7 +1,11 @@
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 
-from .models import Day, Room, ScheduleItem
+from .models import Day, Room, ScheduleItem, Slot
+
+
+class SlotInline(admin.TabularInline):
+    model = Slot
 
 
 @admin.register(ScheduleItem)
@@ -42,3 +46,4 @@ class RoomAdmin(admin.ModelAdmin):
 class DayAdmin(admin.ModelAdmin):
     list_display = ("day", "conference")
     list_filter = ("conference",)
+    inlines = (SlotInline,)
