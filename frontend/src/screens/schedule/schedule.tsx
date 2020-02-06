@@ -4,7 +4,42 @@ import React, { useState } from "react";
 import { jsx } from "theme-ui";
 
 import { Placeholder } from "./placeholder";
-import { Room, ScheduleItem, Slot } from "./types";
+import { Item as ItemType, Room, ScheduleItem, Slot } from "./types";
+
+const Item: React.SFC<{
+  item: ItemType;
+  slot: Slot;
+  rowOffset: number;
+  rooms: Room[];
+}> = ({ item, slot, rowOffset, rooms }) => {
+  // find all the indexes for the rooms of this item, then
+  // sort them and use the first one for the index of the item
+  // this allows us to have items on multiple rooms without having
+  // to use complex logic to understand where to position them, as
+  // we now assume that the rooms are always consecutive
+  const roomIndexes = item.rooms
+    .map(room => rooms.findIndex(r => r.id === room.id))
+    .sort();
+
+  const index = roomIndexes[0];
+
+  return (
+    <Box
+      sx={{
+        gridColumnStart: index + 2,
+        gridColumnEnd: index + 2 + item.rooms.length,
+        gridRowStart: slot.offset / 5 + rowOffset,
+        gridRowEnd: (slot.offset + slot.size) / 5 + rowOffset,
+        backgroundColor: "violet",
+        position: "relative",
+        zIndex: 10,
+        p: 3,
+      }}
+    >
+      {item.title}
+    </Box>
+  );
+};
 
 export const Schedule: React.SFC<{
   slots: Slot[];
@@ -15,20 +50,12 @@ export const Schedule: React.SFC<{
     slots.reduce((total, slot) => slot.size + total, 0) / 5 + rowOffset;
   const totalColumns = rooms.length;
 
-  const [scheduleItems, setScheduleItems] = useState<{
-    [hour: number]: { [track: number]: ScheduleItem };
-  }>({});
-
   const handleDrop = (item: any, slot: Slot, index: number) => {
     const slotHour = slot.hour.valueOf();
 
-    setScheduleItems({
-      ...scheduleItems,
-      [slotHour]: {
-        ...(scheduleItems[slotHour] || {}),
-        [index]: item.event,
-      },
-    });
+    // TODO: call mutation :)
+
+    console.log("dropped", item, "on", index);
   };
 
   return (
@@ -65,72 +92,49 @@ export const Schedule: React.SFC<{
         </Box>
       ))}
 
-      {slots.map(slot => {
-        const slotScheduleItems = scheduleItems[slot.hour.valueOf()] || {};
+      {slots.map(slot => (
+        <React.Fragment key={slot.hour.toString()}>
+          <Box
+            sx={{
+              gridColumnStart: 1,
+              gridColumnEnd: 1,
+              gridRowStart: "var(--start)",
+              gridRowEnd: "var(--end)",
+              backgroundColor: "white",
+              p: 3,
+              textAlign: "center",
+              fontWeight: "bold",
+            }}
+            style={{
+              "--start": slot.offset / 5 + rowOffset,
+              "--end": (slot.offset + slot.size) / 5 + rowOffset,
+            }}
+          >
+            <Box>{slot.hour}</Box>
+          </Box>
 
-        return (
-          <React.Fragment key={slot.hour.toString()}>
-            <Box
-              sx={{
-                gridColumnStart: 1,
-                gridColumnEnd: 1,
-                gridRowStart: "var(--start)",
-                gridRowEnd: "var(--end)",
-                backgroundColor: "white",
-                p: 3,
-                textAlign: "center",
-                fontWeight: "bold",
-              }}
-              style={{
-                "--start": slot.offset / 5 + rowOffset,
-                "--end": (slot.offset + slot.size) / 5 + rowOffset,
-              }}
-            >
-              <Box>{slot.hour}</Box>
-            </Box>
+          {rooms.map((_, index) => (
+            <React.Fragment key={`${index}-${slot.duration}-${slot.offset}`}>
+              <Placeholder
+                columnStart={index + 2}
+                rowStart={slot.offset / 5 + rowOffset}
+                rowEnd={(slot.offset + slot.size) / 5 + rowOffset}
+                duration={slot.duration}
+                onDrop={(item: any) => handleDrop(item, slot, index)}
+              />
 
-            {rooms.map((_, index) => {
-              const scheduleItem = slotScheduleItems[index];
-
-              return (
-                <React.Fragment
-                  key={`${index}-${slot.duration}-${slot.offset}`}
-                >
-                  <Placeholder
-                    columnStart={index + 2}
-                    rowStart={slot.offset / 5 + rowOffset}
-                    rowEnd={(slot.offset + slot.size) / 5 + rowOffset}
-                    duration={slot.duration}
-                    onDrop={(item: any) => handleDrop(item, slot, index)}
-                  />
-
-                  {scheduleItem && (
-                    <Box
-                      sx={{
-                        gridColumnStart: index + 2,
-                        gridColumnEnd:
-                          index +
-                          2 +
-                          (scheduleItem.allTracks
-                            ? rooms.length
-                            : scheduleItem.trackSpan || 1),
-                        gridRowStart: slot.offset / 5 + rowOffset,
-                        gridRowEnd: (slot.offset + slot.size) / 5 + rowOffset,
-                        backgroundColor: "violet",
-                        position: "relative",
-                        zIndex: 10,
-                        p: 3,
-                      }}
-                    >
-                      {scheduleItem.title}
-                    </Box>
-                  )}
-                </React.Fragment>
-              );
-            })}
-          </React.Fragment>
-        );
-      })}
+              {slot.items[index] && (
+                <Item
+                  item={slot.items[index]}
+                  slot={slot}
+                  rowOffset={rowOffset}
+                  rooms={rooms}
+                />
+              )}
+            </React.Fragment>
+          ))}
+        </React.Fragment>
+      ))}
     </Grid>
   );
 };

@@ -7,11 +7,17 @@ export const ItemTypes = {
   ALL_TRACKS_EVENT: "all_tracks_event",
 };
 
+export type Item = {
+  title: string;
+  rooms: Room[];
+};
+
 export type Slot = {
   duration: number;
   hour: string;
   size: number;
   offset: number;
+  items: Item[];
 };
 
 export type ScheduleItem = {
@@ -21,5 +27,6 @@ export type ScheduleItem = {
 };
 
 export type Room = {
+  id: string;
   name: string;
 };

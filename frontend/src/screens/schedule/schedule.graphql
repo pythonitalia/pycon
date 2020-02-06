@@ -7,9 +7,17 @@ query Schedule($code: String!) {
         duration
         offset
         size
+        items {
+          title
+          rooms {
+            id
+            name
+          }
+        }
       }
     }
     rooms {
+      id
       name
     }
   }

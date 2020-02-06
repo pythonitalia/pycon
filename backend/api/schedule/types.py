@@ -11,6 +11,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 @strawberry.type
 class Room:
+    id: strawberry.ID
     name: str
     conference: "Conference"
 
