@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import { Box, Text } from "@theme-ui/components";
-import React from "react";
+import React, { Fragment } from "react";
+import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
 export const ReviewItem = ({
@@ -10,20 +11,22 @@ export const ReviewItem = ({
   label: string | React.ReactElement;
   value?: string | React.ReactElement;
 }) => (
-  <Box
-    as="li"
-    sx={{
-      mt: 1,
-    }}
-  >
+  <Fragment>
     <Text
-      as="p"
+      as="span"
       sx={{
         fontWeight: "bold",
       }}
     >
       {label}
     </Text>
-    <Text as="p">{value}</Text>
-  </Box>
+    <Text
+      sx={{
+        wordWrap: "break-word",
+      }}
+      as="span"
+    >
+      {value || "-"}
+    </Text>
+  </Fragment>
 );

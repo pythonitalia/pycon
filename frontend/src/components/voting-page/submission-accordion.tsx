@@ -386,7 +386,10 @@ export const SubmissionAccordion: React.SFC<Props> = ({
               )}
 
               <Box as="footer" sx={{ mt: 4 }}>
-                <Link variant="button" href={`/:language/submission/${id}`}>
+                <Link
+                  variant="arrow-button"
+                  href={`/:language/submission/${id}`}
+                >
                   <FormattedMessage id="voting.fullDetails" />
                 </Link>
               </Box>

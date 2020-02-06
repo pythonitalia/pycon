@@ -231,15 +231,22 @@ export const TicketsPage: React.SFC<RouteComponentProps> = props => {
 
       <Box
         sx={{
-          maxWidth: "container",
-          mx: "auto",
-          px: 3,
+          borderTop: "primary",
+          pt: 5,
         }}
       >
         {loading && (
-          <Text>
-            <FormattedMessage id="tickets.loading" />
-          </Text>
+          <Box
+            sx={{
+              maxWidth: "container",
+              mx: "auto",
+              px: 3,
+            }}
+          >
+            <Text>
+              <FormattedMessage id="tickets.loading" />
+            </Text>
+          </Box>
         )}
 
         {!loading && (

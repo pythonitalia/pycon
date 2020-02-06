@@ -52,7 +52,7 @@ const ArrowRightBackground = ({
         right: 0,
       }}
     >
-      <path d="M1 0V66L30 33L1 0Z" stroke="black" strokeWidth="3" />
+      <path d="M1 0V66L30 33L1 0Z" stroke="black" strokeWidth="5" />
       <path d="M0 2.5L27.5 33L0 63.5V2.5Z" sx={{ fill: backgroundColor }} />
     </svg>
   </Box>
@@ -97,7 +97,7 @@ export const Link: React.SFC<LinkProps> = ({
 
   const component = (hovered: boolean) => (
     <ThemeLink {...additionalProps} as={LinkComponent} {...hrefProps}>
-      {additionalProps.variant === "button" && (
+      {additionalProps.variant === "arrow-button" && (
         <ArrowRightBackground
           backgroundColor={hovered ? "orange" : backgroundColor || "yellow"}
         />
@@ -105,7 +105,13 @@ export const Link: React.SFC<LinkProps> = ({
 
       {additionalProps.variant === "google" && <GoogleIcon />}
 
-      <Box as="span" sx={{ position: "relative", zIndex: 10 }}>
+      <Box
+        as="span"
+        sx={{
+          position: "relative",
+          zIndex: 10,
+        }}
+      >
         {children}
       </Box>
     </ThemeLink>

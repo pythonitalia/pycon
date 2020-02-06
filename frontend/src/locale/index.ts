@@ -307,6 +307,11 @@ export const messages = {
     "orderReview.nights": "nights",
     "orderReview.checkin": "Check-in",
     "orderReview.checkout": "Check-out",
+    "orderReview.ticketPrice": "{price}€ (incl. 22% VAT)",
+    "orderReview.hotelPrice":
+      "{roomPrice}€ x{numNights, plural, one {1 night} other {{numNights} nights}} (incl. 22% VAT)",
+    "orderReview.edit": "Edit",
+    "orderReview.totalAmount": "{total}€",
 
     "ranking.heading": "Community voting results",
     "ranking.introduction":
