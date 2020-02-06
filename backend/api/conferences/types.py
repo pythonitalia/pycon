@@ -45,6 +45,14 @@ class ScheduleSlot:
     duration: int
     offset: int
     size: int
+    id: Optional[strawberry.ID]
+
+    @strawberry.field
+    def items(self, info) -> List[ScheduleItem]:
+        if not self.id:
+            return []
+
+        return ScheduleItemModel.objects.filter(slot__id=self.id)
 
 
 @strawberry.type

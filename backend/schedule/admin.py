@@ -10,8 +10,8 @@ class SlotInline(admin.TabularInline):
 
 @admin.register(ScheduleItem)
 class ScheduleItemAdmin(admin.ModelAdmin):
-    list_display = ("title", "conference", "start", "end", "type", "submission")
-    ordering = ("conference", "start")
+    list_display = ("title", "conference", "slot", "type", "submission")
+    ordering = ("conference", "slot")
     fieldsets = (
         (
             _("Event"),
@@ -29,7 +29,7 @@ class ScheduleItemAdmin(admin.ModelAdmin):
                 )
             },
         ),
-        (_("Schedule"), {"fields": ("start", "end", "rooms")}),
+        (_("Schedule"), {"fields": ("slot", "duration", "rooms")}),
     )
     autocomplete_fields = ("submission",)
     prepopulated_fields = {"slug": ("title",)}

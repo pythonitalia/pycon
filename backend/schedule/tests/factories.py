@@ -1,6 +1,5 @@
 import factory
 import factory.fuzzy
-import pytz
 from conferences.tests.factories import ConferenceFactory
 from factory.django import DjangoModelFactory
 from pytest_factoryboy import register
@@ -36,9 +35,6 @@ class SlotFactory(DjangoModelFactory):
 class ScheduleItemFactory(DjangoModelFactory):
     conference = factory.SubFactory(ConferenceFactory)
     submission = factory.SubFactory(SubmissionFactory)
-
-    start = factory.Faker("past_datetime", tzinfo=pytz.UTC)
-    end = factory.Faker("future_datetime", tzinfo=pytz.UTC)
 
     title = factory.Faker("text", max_nb_chars=100)
     slug = factory.Faker("slug")

@@ -4,7 +4,7 @@ from django.core import exceptions
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from model_utils import Choices
-from model_utils.models import TimeFramedModel, TimeStampedModel
+from model_utils.models import TimeStampedModel
 from pycon.constants import COLORS
 from submissions.models import Submission
 
@@ -50,7 +50,7 @@ class Room(models.Model):
         verbose_name_plural = _("Rooms")
 
 
-class ScheduleItem(TimeFramedModel, TimeStampedModel):
+class ScheduleItem(TimeStampedModel):
     TYPES = Choices(
         ("submission", _("Submission")),
         ("keynote", _("Keynote")),
@@ -86,6 +86,12 @@ class ScheduleItem(TimeFramedModel, TimeStampedModel):
         _("image"), null=True, blank=True, upload_to="schedule_items"
     )
 
+    slot = models.ForeignKey(
+        Slot, blank=True, null=True, related_name="items", on_delete=models.PROTECT
+    )
+    duration = models.PositiveIntegerField(null=True, blank=True)
+
+    # TODO: Rename to speakers
     additional_speakers = models.ManyToManyField(
         settings.AUTH_USER_MODEL, verbose_name=_("speakers"), blank=True
     )
@@ -112,7 +118,10 @@ class ScheduleItem(TimeFramedModel, TimeStampedModel):
             if self.type == ScheduleItem.TYPES.submission
             else self.title
         )
-        return f"{self.conference.name}. Start: {self.start} End: {self.end}. {title}"
+        return (
+            f"[{self.conference.name}] {title} on "
+            f"{self.slot.day.day} at {self.slot.hour}"
+        )
 
     class Meta:
         verbose_name = _("Schedule item")

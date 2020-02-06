@@ -27,9 +27,7 @@ def test_get_talk_not_found(conference_factory, graphql_client):
 
 
 @mark.django_db
-def test_get_conference_keynotes_returns_only_keynotes(
-    conference_factory, schedule_item_factory, graphql_client
-):
+def test_get_talk_by_slug(conference_factory, schedule_item_factory, graphql_client):
     conference = conference_factory()
 
     schedule_item_factory(conference=conference, type=ScheduleItem.TYPES.submission)
