@@ -93,7 +93,9 @@ export const Schedule: React.SFC<{
               const scheduleItem = slotScheduleItems[index];
 
               return (
-                <React.Fragment key={index}>
+                <React.Fragment
+                  key={`${index}-${slot.duration}-${slot.offset}`}
+                >
                   <Placeholder
                     columnStart={index + 2}
                     rowStart={slot.offset / 5 + rowOffset}

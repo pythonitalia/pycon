@@ -18,8 +18,8 @@ from cms.models import GenericCopy
 from django.conf import settings
 from django.utils import translation
 from schedule.models import ScheduleItem as ScheduleItemModel
-from voting.models import RankRequest as RankRequestModel
 from strawberry.types.datetime import Date, DateTime
+from voting.models import RankRequest as RankRequestModel
 
 from ..helpers.i18n import make_localized_resolver
 from ..helpers.maps import Map, resolve_map
@@ -193,7 +193,6 @@ class Conference:
         return self.schedule_items.filter(slug=slug).first()
 
     @strawberry.field
-<<<<<<< HEAD
     def ranking(self, info) -> List[RankSubmission]:
         try:
             return (
