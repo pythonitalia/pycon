@@ -23,11 +23,14 @@ class ScheduleItem:
     start: DateTime
     end: DateTime
     submission: Optional[Submission]
-    title: str
     slug: str
     description: str
     type: str
     highlight_color: Optional[str]
+
+    @strawberry.field
+    def title(self, info) -> str:
+        return self.submission.title if self.submission else self.title
 
     @strawberry.field
     def additional_speakers(self, info) -> List[User]:

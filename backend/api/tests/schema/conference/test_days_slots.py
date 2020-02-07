@@ -11,7 +11,7 @@ def test_get_days_with_configuration(
 
     day = day_factory(conference=conference, day=date(2020, 4, 2))
     slot = slot_factory(day=day, hour=time(8, 45), duration=60, offset=0)
-    item = schedule_item_factory(slot=slot)
+    item = schedule_item_factory(slot=slot, submission=None)
 
     resp = graphql_client.query(
         """
@@ -55,6 +55,9 @@ def test_add_custom_item(
                     items {
                         type
                         title
+                        rooms {
+                            id
+                        }
                     }
                 }
             }
@@ -67,5 +70,84 @@ def test_add_custom_item(
 
     assert "errors" not in resp
     assert resp["data"]["updateOrCreateSlotItem"]["items"] == [
-        {"title": "Custom slot", "type": "custom"}
+        {"title": "Custom slot", "type": "custom", "rooms": [{"id": str(room.id)}]}
+    ]
+
+
+@mark.django_db
+def test_add_custom_item_from_submission(
+    conference_factory, day_factory, slot_factory, room, submission, graphql_client
+):
+    conference = conference_factory(start=date(2020, 4, 2), end=date(2020, 4, 2))
+
+    day = day_factory(conference=conference, day=date(2020, 4, 2))
+    slot = slot_factory(day=day, hour=time(8, 45), duration=60, offset=0)
+
+    resp = graphql_client.query(
+        """
+        mutation($input: UpdateOrCreateSlotItemInput!) {
+            updateOrCreateSlotItem(input: $input) {
+                ... on ScheduleSlot {
+                    items {
+                        type
+                        title
+                    }
+                }
+            }
+        }
+        """,
+        variables={
+            "input": {
+                "slotId": slot.id,
+                "submissionId": submission.id,
+                "rooms": [room.id],
+            }
+        },
+    )
+
+    assert "errors" not in resp
+    assert resp["data"]["updateOrCreateSlotItem"]["items"] == [
+        {"title": submission.title, "type": "submission"}
+    ]
+
+
+@mark.django_db
+def test_edit_item(
+    conference_factory,
+    day_factory,
+    slot_factory,
+    room,
+    graphql_client,
+    schedule_item_factory,
+):
+    conference = conference_factory(start=date(2020, 4, 2), end=date(2020, 4, 2))
+
+    day = day_factory(conference=conference, day=date(2020, 4, 2))
+    slot = slot_factory(day=day, hour=time(8, 45), duration=60, offset=0)
+    slot_2 = slot_factory(day=day, hour=time(8, 45), duration=60, offset=0)
+    item = schedule_item_factory(slot=slot, submission=None)
+
+    resp = graphql_client.query(
+        """
+        mutation($input: UpdateOrCreateSlotItemInput!) {
+            updateOrCreateSlotItem(input: $input) {
+                ... on ScheduleSlot {
+                    id
+                    items {
+                        type
+                        title
+                    }
+                }
+            }
+        }
+        """,
+        variables={
+            "input": {"slotId": slot_2.id, "itemId": item.id, "rooms": [room.id]}
+        },
+    )
+
+    assert "errors" not in resp
+    assert resp["data"]["updateOrCreateSlotItem"]["id"] == str(slot_2.id)
+    assert resp["data"]["updateOrCreateSlotItem"]["items"] == [
+        {"title": item.title, "type": item.type}
     ]

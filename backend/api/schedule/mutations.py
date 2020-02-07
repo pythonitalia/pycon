@@ -26,6 +26,8 @@ class UpdateOrCreateSlotItemError:
 @strawberry.input
 class UpdateOrCreateSlotItemInput:
     slot_id: strawberry.ID
+    item_id: typing.Optional[strawberry.ID]
+    submission_id: typing.Optional[strawberry.ID]
     title: typing.Optional[str]
     rooms: typing.List[strawberry.ID]
 
@@ -62,11 +64,22 @@ class ScheduleMutations:
         # TODO: validate this is not none
         slot = Slot.objects.select_related("day").filter(id=input.slot_id).first()
 
-        schedule_item = ScheduleItem.objects.create(
-            type=ScheduleItem.TYPES.custom,
-            conference=slot.day.conference,
-            slot=slot,
-            title=input.title,
+        data = {
+            "type": (
+                ScheduleItem.TYPES.submission
+                if input.submission_id
+                else ScheduleItem.TYPES.custom
+            ),
+            "slot": slot,
+            "submission_id": input.submission_id,
+            "conference": slot.day.conference,
+        }
+
+        if input.title:
+            data["title"] = input.title
+
+        schedule_item, _ = ScheduleItem.objects.update_or_create(
+            id=input.item_id, defaults=data
         )
         schedule_item.rooms.set(input.rooms)
 
