@@ -16,9 +16,6 @@ type RankSubmission = {
       id: string;
       name: string;
     } | null;
-    speaker: {
-      fullName: string;
-    } | null;
   };
 };
 
@@ -52,7 +49,7 @@ export const RankSubmissionRow: React.SFC<Props> = ({
           px: 3,
           justifyContent: "space-between",
           alignItems: "center",
-          gridTemplateColumns: [`40px 1fr 150px 200px 60px`],
+          gridTemplateColumns: [`30px 1fr 230px 60px`],
           "svg + svg": {
             marginLeft: [0, 1],
             marginTop: [1, 0],
@@ -89,17 +86,6 @@ export const RankSubmissionRow: React.SFC<Props> = ({
             }}
           >
             {submission.topic?.name}
-          </Text>
-        </Box>
-        <Box>
-          <Text
-            sx={{
-              py: 3,
-              fontWeight: "bold",
-              textTransform: "uppercase",
-            }}
-          >
-            {submission.speaker?.fullName}
           </Text>
         </Box>
         <Box as="footer">
