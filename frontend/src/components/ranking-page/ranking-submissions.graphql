@@ -18,10 +18,6 @@ query RankingSubmission($conference: String!){
             id
             name
           }
-
-          speaker {
-            fullName
-          }
         }
     }
   }
