@@ -39,7 +39,6 @@ const NewsletterForm = () => {
     [email],
   );
   if (data) {
-    console.log(data);
     return (
       <FormattedMessage id="newsletter.success">
         {txt => <Text variant="prefooter">{txt}</Text>}
@@ -47,7 +46,6 @@ const NewsletterForm = () => {
     );
   }
   if (error) {
-    console.log(error);
     return (
       <Box>
         <Text

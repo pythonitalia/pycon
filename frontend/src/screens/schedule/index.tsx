@@ -13,12 +13,15 @@ import {
   AddScheduleSlotMutationVariables,
   ScheduleQuery,
   ScheduleQueryVariables,
+  UpdateOrCreateSlotItemMutation,
+  UpdateOrCreateSlotItemMutationVariables,
 } from "../../generated/graphql-backend";
 import ADD_SCHEDULE_SLOT_QUERY from "./add-schedule-slot.graphql";
 import { DaySelector } from "./day-selector";
 import { AllTracksEvent, Talk } from "./events";
 import { Schedule } from "./schedule";
 import SCHEDULE_QUERY from "./schedule.graphql";
+import UPDATE_OR_CREATE_ITEM from "./update-or-create-item.graphql";
 
 export const ScheduleScreen: React.SFC<RouteComponentProps> = () => {
   const { code } = useConference();
@@ -41,6 +44,25 @@ export const ScheduleScreen: React.SFC<RouteComponentProps> = () => {
   >(ADD_SCHEDULE_SLOT_QUERY, {
     variables: { code, day: currentDay, duration: 60 },
   });
+
+  const [addOrCreateScheduleItem] = useMutation<
+    UpdateOrCreateSlotItemMutation,
+    UpdateOrCreateSlotItemMutationVariables
+  >(UPDATE_OR_CREATE_ITEM);
+
+  const addCustomScheduleItem = useCallback(
+    (slotId: string, itemRooms: string[]) =>
+      addOrCreateScheduleItem({
+        variables: {
+          input: {
+            slotId,
+            rooms: itemRooms,
+            title: "Custom",
+          },
+        },
+      }),
+    [],
+  );
 
   const addScheduleSlot = useCallback(
     (duration: number) =>
@@ -112,7 +134,13 @@ export const ScheduleScreen: React.SFC<RouteComponentProps> = () => {
           </Flex>
         </Box>
 
-        {day && <Schedule slots={day.slots} rooms={rooms} />}
+        {day && (
+          <Schedule
+            slots={day.slots}
+            rooms={rooms}
+            addCustomScheduleItem={addCustomScheduleItem}
+          />
+        )}
 
         <Box sx={{ my: 4, ml: 100 }}>
           <Button sx={{ mr: 3 }} onClick={() => addScheduleSlot(30)}>

@@ -1,12 +1,11 @@
+#import "./fragments/schedule-slot.graphql"
+
 mutation AddScheduleSlot($code: ID!, $day: Date!, $duration: Int!) {
   addScheduleSlot(conference: $code, day: $day, duration: $duration) {
     ... on Day {
       day
       slots {
-        hour
-        duration
-        offset
-        size
+        ...scheduleSlot
       }
     }
   }

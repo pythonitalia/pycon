@@ -1,19 +1,11 @@
+#import "./fragments/schedule-slot.graphql"
+
 query Schedule($code: String!) {
   conference(code: $code) {
     days {
       day
       slots {
-        hour
-        duration
-        offset
-        size
-        items {
-          title
-          rooms {
-            id
-            name
-          }
-        }
+        ...scheduleSlot
       }
     }
     rooms {

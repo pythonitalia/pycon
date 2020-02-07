@@ -65,7 +65,7 @@ class ScheduleItem(TimeStampedModel):
     )
 
     title = models.CharField(_("title"), max_length=100, blank=True)
-    slug = models.CharField(_("slug"), max_length=100, blank=True)
+    slug = models.CharField(_("slug"), max_length=100, blank=True, null=True)
     description = models.TextField(_("description"), blank=True)
 
     type = models.CharField(choices=TYPES, max_length=10, verbose_name=_("type"))
@@ -122,6 +122,15 @@ class ScheduleItem(TimeStampedModel):
             f"[{self.conference.name}] {title} on "
             f"{self.slot.day.day} at {self.slot.hour}"
         )
+
+    def save(self, **kwargs):
+        # see: https://stackoverflow.com/q/454436/169274
+        self.slug = self.slug or None
+
+        if "update_fields" in kwargs:
+            kwargs["update_fields"].append("slug")
+
+        super().save(**kwargs)
 
     class Meta:
         verbose_name = _("Schedule item")

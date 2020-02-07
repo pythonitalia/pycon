@@ -44,18 +44,17 @@ const Item: React.SFC<{
 export const Schedule: React.SFC<{
   slots: Slot[];
   rooms: Room[];
-}> = ({ slots, rooms }) => {
+  addCustomScheduleItem: (slotId: string, rooms: string[]) => void;
+}> = ({ slots, rooms, addCustomScheduleItem }) => {
   const rowOffset = 6;
   const totalRows =
     slots.reduce((total, slot) => slot.size + total, 0) / 5 + rowOffset;
   const totalColumns = rooms.length;
 
   const handleDrop = (item: any, slot: Slot, index: number) => {
-    const slotHour = slot.hour.valueOf();
+    // TODO: check if exists
 
-    // TODO: call mutation :)
-
-    console.log("dropped", item, "on", index);
+    addCustomScheduleItem(slot.id, [rooms[index].id]);
   };
 
   return (

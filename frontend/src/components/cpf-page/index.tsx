@@ -63,8 +63,6 @@ export const CFPPage: React.SFC<RouteComponentProps> = ({ location }) => {
     },
   );
 
-  console.log(loading, data?.conference.isCFPOpen);
-
   return (
     <Fragment>
       <FormattedMessage id="cfp.pageTitle">

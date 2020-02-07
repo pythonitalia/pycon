@@ -13,6 +13,7 @@ export type Item = {
 };
 
 export type Slot = {
+  id: string;
   duration: number;
   hour: string;
   size: number;
