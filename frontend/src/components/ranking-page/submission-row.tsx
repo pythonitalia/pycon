@@ -16,9 +16,6 @@ type RankSubmission = {
       id: string;
       name: string;
     } | null;
-    speaker: {
-      fullName: string;
-    } | null;
   };
 };
 
