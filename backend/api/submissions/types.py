@@ -6,15 +6,16 @@ from api.scalars import DateTime
 from api.voting.types import VoteType
 from voting.models import Vote
 
-from .permissions import CanSeeSubmissionPrivateFields, CanSeeSubmissionTicketDetail
+from .permissions import CanSeeSubmissionDetail, CanSeeSubmissionPrivateFields
 
 if TYPE_CHECKING:  # pragma: no cover
     from api.conferences.types import Conference
 
 
-def ticket_only_field():
-    """Field that can only be seen by admin, the submitter or who has the ticket"""
-    return strawberry.field(permission_classes=[CanSeeSubmissionTicketDetail])
+def restricted_field():
+    """Field that can only be seen by admin, the submitter or who has the ticket
+    until voting is not closed, after it will be public"""
+    return strawberry.field(permission_classes=[CanSeeSubmissionDetail])
 
 
 def private_field():
@@ -52,16 +53,16 @@ class Submission:
     conference: "Conference"
     title: str
     slug: str
-    elevator_pitch: Optional[str] = ticket_only_field()
-    abstract: Optional[str] = ticket_only_field()
+    elevator_pitch: Optional[str] = restricted_field()
+    abstract: Optional[str] = restricted_field()
     speaker_level: Optional[str] = private_field()
     previous_talk_video: Optional[str] = private_field()
     notes: Optional[str] = private_field()
     speaker: Optional["User"] = private_field()
-    topic: Optional["Topic"] = ticket_only_field()
-    type: Optional[SubmissionType] = ticket_only_field()
-    duration: Optional["Duration"] = ticket_only_field()
-    audience_level: Optional["AudienceLevel"] = ticket_only_field()
+    topic: Optional["Topic"] = restricted_field()
+    type: Optional[SubmissionType] = restricted_field()
+    duration: Optional["Duration"] = restricted_field()
+    audience_level: Optional["AudienceLevel"] = restricted_field()
 
     @strawberry.field
     def id(self, info) -> strawberry.ID:
@@ -71,7 +72,7 @@ class Submission:
     def can_edit(self, info) -> bool:
         return self.can_edit(info.context["request"])
 
-    @strawberry.field(permission_classes=[CanSeeSubmissionTicketDetail])
+    @strawberry.field(permission_classes=[CanSeeSubmissionDetail])
     def comments(self, info) -> List[SubmissionComment]:
         comments = (
             self.comments.all()
@@ -103,10 +104,10 @@ class Submission:
         except Vote.DoesNotExist:
             return None
 
-    @strawberry.field(permission_classes=[CanSeeSubmissionTicketDetail])
+    @strawberry.field(permission_classes=[CanSeeSubmissionDetail])
     def languages(self, info) -> Optional[List[Language]]:
         return self.languages.all()
 
-    @strawberry.field(permission_classes=[CanSeeSubmissionTicketDetail])
+    @strawberry.field(permission_classes=[CanSeeSubmissionDetail])
     def tags(self, info) -> Optional[List[SubmissionTag]]:
         return self.tags.all()

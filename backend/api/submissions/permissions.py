@@ -2,7 +2,7 @@ from strawberry.permission import BasePermission
 from submissions.models import Submission
 
 
-class CanSeeSubmissionTicketDetail(BasePermission):
+class CanSeeSubmissionDetail(BasePermission):
     message = "You can't see details for this submission"
 
     def has_permission(self, source, info):
