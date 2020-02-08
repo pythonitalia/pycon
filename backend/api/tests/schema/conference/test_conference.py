@@ -536,7 +536,7 @@ def test_is_voting_closed(
 ):
     now = timezone.now()
 
-    conference = conference_factory(timezone=pytz.timezone("America/Los_AngeleZs"))
+    conference = conference_factory(timezone=pytz.timezone("America/Los_Angeles"))
 
     deadline_factory(
         start=now - timezone.timedelta(days=2),
