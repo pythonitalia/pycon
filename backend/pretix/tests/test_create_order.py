@@ -212,3 +212,72 @@ def test_create_hotel_positions(requests_mock, hotel_room_factory, invoice_infor
             ],
         }
     ]
+
+
+@override_settings(PRETIX_API="https://pretix/api/")
+@pytest.mark.django_db
+def test_not_required_and_empty_answer_is_skipped(
+    conference, requests_mock, invoice_information
+):
+    orders_mock = requests_mock.post(
+        f"https://pretix/api/organizers/events/orders/",
+        json={"payments": [{"payment_url": "http://example.com"}], "code": 123},
+    )
+
+    requests_mock.get(
+        f"https://pretix/api/organizers/events/questions",
+        json={
+            "results": [
+                {"id": "1", "type": "S", "required": False},
+                {
+                    "id": "2",
+                    "type": "C",
+                    "required": True,
+                    "options": [{"id": 1, "identifier": "abc"}],
+                },
+            ]
+        },
+    )
+
+    requests_mock.get(
+        f"https://pretix/api/organizers/events/items",
+        json={"results": [{"id": "123", "admission": True}]},
+    )
+
+    order_data = CreateOrderInput(
+        email="my@email.com",
+        locale="en",
+        payment_provider="stripe",
+        invoice_information=invoice_information,
+        hotel_rooms=[],
+        tickets=[
+            CreateOrderTicket(
+                ticket_id="123",
+                attendee_name="Example",
+                attendee_email="Example",
+                variation=None,
+                answers=[
+                    CreateOrderTicketAnswer(question_id="1", value=""),
+                    CreateOrderTicketAnswer(question_id="2", value="1"),
+                ],
+            )
+        ],
+    )
+
+    result = create_order(conference, order_data)
+
+    assert result.payment_url == "http://example.com"
+
+    body = orders_mock.request_history[0].json()
+    answers = body["positions"][0]["answers"]
+
+    assert len(answers) == 1
+    assert answers == [
+        {
+            "question": "2",
+            "answer": "1",
+            "options": [1],
+            "option_identifier": [],
+            "option_identifiers": ["abc"],
+        }
+    ]
