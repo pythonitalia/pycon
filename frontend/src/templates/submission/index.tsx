@@ -3,19 +3,26 @@ import { useQuery } from "@apollo/react-hooks";
 import { RouteComponentProps } from "@reach/router";
 import { Container } from "@theme-ui/components";
 import { graphql } from "gatsby";
-import { Fragment } from "react";
+import { Fragment, useContext } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
 import { useLoginState } from "../../app/profile/hooks";
 import { Alert } from "../../components/alert";
+import IS_CFP_OPEN_QUERY from "../../components/cpf-page/is-cfp-open.graphql";
 import { LoginForm } from "../../components/login-form";
 import { MetaTags } from "../../components/meta-tags";
+import { ConferenceContext, useConference } from "../../context/conference";
 import { SubmissionQuery as FallbackSubmissionQuery } from "../../generated/graphql";
 import {
+  IsCfpOpenQuery,
+  IsCfpOpenQueryVariables,
+  IsVotingClosedQuery,
+  IsVotingClosedQueryVariables,
   SubmissionQuery,
   SubmissionQueryVariables,
 } from "../../generated/graphql-backend";
+import IS_VOTING_CLOSED_QUERY from "./is-voting-closed.graphql";
 import { Submission } from "./submission";
 import SUBMISSION_QUERY from "./submission.graphql";
 
@@ -85,8 +92,18 @@ const Content = ({
   title: string;
 }) => {
   const [loggedIn, _] = useLoginState();
+  const conferenceCode = useContext(ConferenceContext);
 
-  if (!loggedIn) {
+  const { data } = useQuery<IsVotingClosedQuery, IsVotingClosedQueryVariables>(
+    IS_VOTING_CLOSED_QUERY,
+    {
+      variables: { conference: conferenceCode },
+    },
+  );
+
+  console.log(data?.conference.isVotingClosed);
+
+  if (!data?.conference.isVotingClosed && !loggedIn) {
     return (
       <NotLoggedIn
         title={submission?.title || title}

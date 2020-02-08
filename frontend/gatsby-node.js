@@ -336,6 +336,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
           en: `/en/submission/${id}`,
           it: `/it/submission/${id}`,
         },
+        conferenceCode: process.env.CONFERENCE_CODE || "pycon-demo",
       },
     });
 
