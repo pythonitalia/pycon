@@ -174,15 +174,25 @@ export const ScheduleScreen: React.SFC<RouteComponentProps> = () => {
         )}
 
         <Box sx={{ my: 4, ml: 100 }}>
-          <Button sx={{ mr: 3 }} onClick={() => addScheduleSlot(30)}>
-            Add 30 minutes slot
-          </Button>
-          <Button sx={{ mr: 3 }} onClick={() => addScheduleSlot(45)}>
-            Add 45 minutes slot
-          </Button>
-          <Button sx={{ mr: 3 }} onClick={() => addScheduleSlot(60)}>
-            Add 60 minutes slot
-          </Button>
+          {data?.conference.durations.map(duration => {
+            if (
+              duration.allowedSubmissionTypes.find(
+                type => type.name.toLowerCase() !== "talk",
+              )
+            ) {
+              return null;
+            }
+
+            return (
+              <Button
+                sx={{ mr: 3 }}
+                key={duration.duration}
+                onClick={() => addScheduleSlot(duration.duration)}
+              >
+                Add {duration.duration} minutes slot
+              </Button>
+            );
+          })}
         </Box>
       </Box>
     </DndProvider>
