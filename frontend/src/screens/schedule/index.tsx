@@ -21,6 +21,7 @@ import { DaySelector } from "./day-selector";
 import { AllTracksEvent, Submission } from "./events";
 import { Schedule } from "./schedule";
 import SCHEDULE_QUERY from "./schedule.graphql";
+import { ItemsPanel } from "./staff/items-panel";
 import UPDATE_OR_CREATE_ITEM from "./update-or-create-item.graphql";
 
 export const ScheduleScreen: React.SFC<RouteComponentProps> = () => {
@@ -124,33 +125,9 @@ export const ScheduleScreen: React.SFC<RouteComponentProps> = () => {
 
   return (
     <DndProvider backend={Backend}>
-      <Box
-        sx={{
-          position: "fixed",
-          bottom: 0,
-          left: 0,
-          right: 0,
-          zIndex: 100,
-          borderTop: "primary",
-          background: "white",
-        }}
-      >
-        <Heading sx={{ pt: 4, px: 4 }}>List of talks</Heading>
-        <Box sx={{ overflowY: "scroll", whiteSpace: "nowrap", p: 4 }}>
-          {submissions?.map(({ id, title, duration }) => (
-            <Submission
-              key={id}
-              id={id}
-              title={title}
-              duration={duration!.duration}
-            />
-          ))}
+      <ItemsPanel submissions={submissions!} />
 
-          <AllTracksEvent />
-        </Box>
-      </Box>
-
-      <Box sx={{ flex: 1 }}>
+      <Box sx={{ flex: 1, width: "calc(100% - 300px)" }}>
         <Box sx={{ backgroundColor: "orange", borderTop: "primary" }}>
           <Flex sx={{ py: 4, px: 3, maxWidth: "largeContainer", mx: "auto" }}>
             <Heading sx={{ fontSize: 6 }}>Schedule</Heading>

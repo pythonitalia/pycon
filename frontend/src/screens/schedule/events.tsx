@@ -39,6 +39,7 @@ export const BaseEvent: React.SFC<{ type: string; metadata: any }> = ({
   type,
   children,
   metadata,
+  ...props
 }) => (
   <BaseDraggable
     type={type}
@@ -50,6 +51,7 @@ export const BaseEvent: React.SFC<{ type: string; metadata: any }> = ({
       mb: "-3px",
       mr: 3,
     }}
+    {...props}
   >
     {children}
   </BaseDraggable>
@@ -59,6 +61,7 @@ export const Submission = ({
   duration,
   title,
   id,
+  ...props
 }: {
   id: string;
   title: string;
@@ -67,7 +70,7 @@ export const Submission = ({
   const type = `TALK_${duration}`;
 
   return (
-    <BaseEvent type={type} metadata={{ event: { id } }}>
+    <BaseEvent type={type} metadata={{ event: { id } }} {...props}>
       {title} {duration}
     </BaseEvent>
   );
