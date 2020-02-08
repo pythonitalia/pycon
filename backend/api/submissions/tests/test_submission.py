@@ -1,4 +1,5 @@
 from api.helpers.ids import encode_hashid
+from django.utils import timezone
 from pytest import mark
 
 
@@ -139,6 +140,100 @@ def test_can_see_all_submission_fields_if_speaker(
         resp["data"]["submission"]["previousTalkVideo"]
         == submission.previous_talk_video
     )
+
+
+def test_can_see_all_submission_fields_if_vote_closed(
+    graphql_client, user, submission_factory, conference_factory
+):
+    conference = conference_factory(active_voting=False)
+    submission = submission_factory(conference=conference)
+
+    resp = graphql_client.query(
+        """query SubmissionQuery($id: ID!) {
+            submission(id: $id) {
+                id
+                title
+                elevatorPitch
+                abstract
+                topic {
+                    name
+                }
+                type {
+                    name
+                }
+                duration {
+                    name
+                }
+                audienceLevel {
+                    name
+                }
+                previousTalkVideo
+            }
+        }""",
+        variables={"id": submission.hashid},
+    )
+
+    assert resp["data"]["submission"]["title"] == submission.title
+    assert resp["data"]["submission"]["elevatorPitch"] == submission.elevator_pitch
+    assert resp["data"]["submission"]["abstract"] == submission.abstract
+    assert resp["data"]["submission"]["topic"]["name"] == submission.topic.name
+    assert resp["data"]["submission"]["type"]["name"] == submission.type.name
+    assert resp["data"]["submission"]["duration"]["name"] == submission.duration.name
+    assert (
+        resp["data"]["submission"]["audienceLevel"]["name"]
+        == submission.audience_level.name
+    )
+    assert resp["data"]["submission"]["previousTalkVideo"] is None
+
+
+def test_can_see_all_submission_fields_if_vote_not_open(
+    graphql_client, user, submission_factory, conference_factory, deadline_factory
+):
+    now = timezone.now()
+
+    conference = conference_factory()
+    deadline_factory(
+        start=now + timezone.timedelta(days=1),
+        end=now + timezone.timedelta(days=2),
+        conference=conference,
+        type="voting",
+    )
+
+    submission = submission_factory(conference=conference)
+
+    resp = graphql_client.query(
+        """query SubmissionQuery($id: ID!) {
+            submission(id: $id) {
+                id
+                title
+                elevatorPitch
+                abstract
+                topic {
+                    name
+                }
+                type {
+                    name
+                }
+                duration {
+                    name
+                }
+                audienceLevel {
+                    name
+                }
+                previousTalkVideo
+            }
+        }""",
+        variables={"id": submission.hashid},
+    )
+
+    assert resp["data"]["submission"]["title"] == submission.title
+    assert resp["data"]["submission"]["elevatorPitch"] is None
+    assert resp["data"]["submission"]["abstract"] is None
+    assert resp["data"]["submission"]["topic"] is None
+    assert resp["data"]["submission"]["type"] is None
+    assert resp["data"]["submission"]["duration"] is None
+    assert resp["data"]["submission"]["audienceLevel"] is None
+    assert resp["data"]["submission"]["previousTalkVideo"] is None
 
 
 def test_returns_correct_submission(graphql_client, user, submission_factory):

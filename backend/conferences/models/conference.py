@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from helpers.models import GeoLocalizedModel
 from i18n.fields import I18nCharField, I18nTextField
@@ -67,6 +68,16 @@ class Conference(GeoLocalizedModel, TimeFramedModel, TimeStampedModel):
 
             now = timezone.now()
             return voting_deadline.start <= now <= voting_deadline.end
+        except Deadline.DoesNotExist:
+            return False
+
+    @cached_property
+    def is_voting_closed(self):
+        try:
+            voting_deadline = self.deadlines.get(type=Deadline.TYPES.voting)
+
+            now = timezone.now()
+            return voting_deadline.end <= now
         except Deadline.DoesNotExist:
             return False
 
