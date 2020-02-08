@@ -18,7 +18,7 @@ import {
 } from "../../generated/graphql-backend";
 import ADD_SCHEDULE_SLOT_QUERY from "./add-schedule-slot.graphql";
 import { DaySelector } from "./day-selector";
-import { AllTracksEvent, Talk } from "./events";
+import { AllTracksEvent, Submission } from "./events";
 import { Schedule } from "./schedule";
 import SCHEDULE_QUERY from "./schedule.graphql";
 import UPDATE_OR_CREATE_ITEM from "./update-or-create-item.graphql";
@@ -78,6 +78,20 @@ export const ScheduleScreen: React.SFC<RouteComponentProps> = () => {
     [],
   );
 
+  const moveItem = useCallback(
+    (slotId: string, itemRooms: string[], itemId: string) =>
+      addOrCreateScheduleItem({
+        variables: {
+          input: {
+            slotId,
+            itemId,
+            rooms: itemRooms,
+          },
+        },
+      }),
+    [],
+  );
+
   const addScheduleSlot = useCallback(
     (duration: number) =>
       addSlot({
@@ -124,7 +138,7 @@ export const ScheduleScreen: React.SFC<RouteComponentProps> = () => {
         <Heading sx={{ pt: 4, px: 4 }}>List of talks</Heading>
         <Box sx={{ overflowY: "scroll", whiteSpace: "nowrap", p: 4 }}>
           {submissions?.map(({ id, title, duration }) => (
-            <Talk
+            <Submission
               key={id}
               id={id}
               title={title}
@@ -155,6 +169,7 @@ export const ScheduleScreen: React.SFC<RouteComponentProps> = () => {
             rooms={rooms}
             addCustomScheduleItem={addCustomScheduleItem}
             addSubmissionToSchedule={addSubmissionToSchedule}
+            moveItem={moveItem}
           />
         )}
 

@@ -1,65 +1,39 @@
 /** @jsx jsx */
 import { Box, Grid } from "@theme-ui/components";
-import React, { useState } from "react";
+import React from "react";
 import { jsx } from "theme-ui";
 
+import { ScheduleEntry } from "./events";
 import { Placeholder } from "./placeholder";
-import { Item as ItemType, Room, ScheduleItem, Slot } from "./types";
-
-const Item: React.SFC<{
-  item: ItemType;
-  slot: Slot;
-  rowOffset: number;
-  rooms: Room[];
-}> = ({ item, slot, rowOffset, rooms }) => {
-  // find all the indexes for the rooms of this item, then
-  // sort them and use the first one for the index of the item
-  // this allows us to have items on multiple rooms without having
-  // to use complex logic to understand where to position them, as
-  // we now assume that the rooms are always consecutive
-  const roomIndexes = item.rooms
-    .map(room => rooms.findIndex(r => r.id === room.id))
-    .sort();
-
-  const index = roomIndexes[0];
-
-  return (
-    <Box
-      sx={{
-        gridColumnStart: index + 2,
-        gridColumnEnd: index + 2 + item.rooms.length,
-        gridRowStart: slot.offset / 5 + rowOffset,
-        gridRowEnd: (slot.offset + slot.size) / 5 + rowOffset,
-        backgroundColor: "violet",
-        position: "relative",
-        zIndex: 10,
-        p: 3,
-      }}
-    >
-      {item.title}
-    </Box>
-  );
-};
+import { Room, Slot } from "./types";
 
 export const Schedule: React.SFC<{
   slots: Slot[];
   rooms: Room[];
   addCustomScheduleItem: (slotId: string, rooms: string[]) => void;
+  moveItem: (slotId: string, rooms: string[], itemId: string) => void;
   addSubmissionToSchedule: (
     slotId: string,
     rooms: string[],
     submissionId: string,
   ) => void;
-}> = ({ slots, rooms, addCustomScheduleItem, addSubmissionToSchedule }) => {
+}> = ({
+  slots,
+  rooms,
+  addCustomScheduleItem,
+  addSubmissionToSchedule,
+  moveItem,
+}) => {
   const rowOffset = 6;
   const totalRows =
     slots.reduce((total, slot) => slot.size + total, 0) / 5 + rowOffset;
   const totalColumns = rooms.length;
 
   const handleDrop = (item: any, slot: Slot, index: number) => {
-    // TODO: move and full conf events
-
-    if (item.event.id) {
+    // TODO: full conf events
+    if (item.itemId) {
+      moveItem(slot.id, [rooms[index].id], item.itemId);
+    } else if (item.event.id) {
       addSubmissionToSchedule(slot.id, [rooms[index].id], item.event.id);
     } else {
       addCustomScheduleItem(slot.id, [rooms[index].id]);
@@ -132,7 +106,7 @@ export const Schedule: React.SFC<{
               />
 
               {slot.items[index] && (
-                <Item
+                <ScheduleEntry
                   item={slot.items[index]}
                   slot={slot}
                   rowOffset={rowOffset}

@@ -6,6 +6,7 @@ fragment scheduleSlot on ScheduleSlot {
   size
 
   items {
+    id
     title
     rooms {
       id

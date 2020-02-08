@@ -13,9 +13,7 @@ export const Placeholder: React.SFC<{
   duration: number;
   onDrop: (item: any) => void;
 }> = ({ columnStart, rowStart, rowEnd, duration, onDrop }) => {
-  const type = `TALK_${duration}` as keyof typeof ItemTypes;
-
-  const accept = [ItemTypes[type]];
+  const accept = [`TALK_${duration}`];
 
   if (columnStart === 2) {
     accept.push(ItemTypes.ALL_TRACKS_EVENT);

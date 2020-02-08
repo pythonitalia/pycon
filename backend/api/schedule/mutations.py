@@ -33,6 +33,11 @@ class UpdateOrCreateSlotItemInput:
     rooms: typing.List[strawberry.ID]
 
 
+@strawberry.type
+class UpdateOrCreateSlotItemResult:
+    updated_slots: typing.List[ScheduleSlot]
+
+
 # TODO: permission
 @strawberry.type
 class ScheduleMutations:
@@ -61,7 +66,7 @@ class ScheduleMutations:
     @strawberry.mutation
     def update_or_create_slot_item(
         self, info, input: UpdateOrCreateSlotItemInput
-    ) -> typing.Union[UpdateOrCreateSlotItemError, ScheduleSlot]:
+    ) -> typing.Union[UpdateOrCreateSlotItemError, UpdateOrCreateSlotItemResult]:
         # TODO: validate this is not none
         slot = Slot.objects.select_related("day").filter(id=input.slot_id).first()
 
@@ -83,15 +88,35 @@ class ScheduleMutations:
         if input.title:
             data["title"] = input.title
 
-        schedule_item, _ = ScheduleItem.objects.update_or_create(
-            id=input.item_id, defaults=data
-        )
+        updated_slots: typing.List[ScheduleSlot] = []
+
+        if input.item_id:
+            schedule_item = ScheduleItem.objects.select_related("slot").get(
+                id=input.item_id
+            )
+            updated_slots.append(
+                ScheduleSlot(
+                    hour=schedule_item.slot.hour,
+                    duration=schedule_item.slot.duration,
+                    offset=schedule_item.slot.offset,
+                    size=schedule_item.slot.size,
+                    id=schedule_item.slot.id,
+                )
+            )
+            ScheduleItem.objects.filter(id=input.item_id).update(**data)
+        else:
+            schedule_item = ScheduleItem.objects.create(**data)
+
         schedule_item.rooms.set(input.rooms)
 
-        return ScheduleSlot(
-            hour=slot.hour,
-            duration=slot.duration,
-            offset=slot.offset,
-            size=slot.size,
-            id=slot.id,
+        updated_slots.append(
+            ScheduleSlot(
+                hour=slot.hour,
+                duration=slot.duration,
+                offset=slot.offset,
+                size=slot.size,
+                id=slot.id,
+            )
         )
+
+        return UpdateOrCreateSlotItemResult(updated_slots=updated_slots)

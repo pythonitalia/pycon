@@ -52,12 +52,14 @@ def test_add_custom_item(
         """
         mutation($input: UpdateOrCreateSlotItemInput!) {
             updateOrCreateSlotItem(input: $input) {
-                ... on ScheduleSlot {
-                    items {
-                        type
-                        title
-                        rooms {
-                            id
+                ... on UpdateOrCreateSlotItemResult {
+                    updatedSlots {
+                        items {
+                            type
+                            title
+                            rooms {
+                                id
+                            }
                         }
                     }
                 }
@@ -70,7 +72,7 @@ def test_add_custom_item(
     )
 
     assert "errors" not in resp
-    assert resp["data"]["updateOrCreateSlotItem"]["items"] == [
+    assert resp["data"]["updateOrCreateSlotItem"]["updatedSlots"][0]["items"] == [
         {"title": "Custom slot", "type": "custom", "rooms": [{"id": str(room.id)}]}
     ]
 
@@ -88,14 +90,16 @@ def test_add_custom_item_from_submission(
         """
         mutation($input: UpdateOrCreateSlotItemInput!) {
             updateOrCreateSlotItem(input: $input) {
-                ... on ScheduleSlot {
-                    items {
-                        type
-                        title
-                    }
+                ... on UpdateOrCreateSlotItemResult {
+                    updatedSlots {
+                        items {
+                            type
+                            title
+                        }
                 }
             }
         }
+                    }
         """,
         variables={
             "input": {
@@ -107,7 +111,7 @@ def test_add_custom_item_from_submission(
     )
 
     assert "errors" not in resp
-    assert resp["data"]["updateOrCreateSlotItem"]["items"] == [
+    assert resp["data"]["updateOrCreateSlotItem"]["updatedSlots"][0]["items"] == [
         {"title": submission.title, "type": "submission"}
     ]
 
@@ -126,18 +130,20 @@ def test_edit_item(
     day = day_factory(conference=conference, day=date(2020, 4, 2))
     slot = slot_factory(day=day, hour=time(8, 45), duration=60, offset=0)
     slot_2 = slot_factory(day=day, hour=time(8, 45), duration=60, offset=0)
-    item = schedule_item_factory(slot=slot, submission=None)
+    item = schedule_item_factory(slot=slot, submission=None, type="submission")
 
     resp = graphql_client.query(
         """
         mutation($input: UpdateOrCreateSlotItemInput!) {
             updateOrCreateSlotItem(input: $input) {
-                ... on ScheduleSlot {
-                    id
-                    items {
+                ... on UpdateOrCreateSlotItemResult {
+                    updatedSlots {
                         id
-                        type
-                        title
+                        items {
+                            id
+                            type
+                            title
+                        }
                     }
                 }
             }
@@ -149,7 +155,11 @@ def test_edit_item(
     )
 
     assert "errors" not in resp
-    assert resp["data"]["updateOrCreateSlotItem"]["id"] == str(slot_2.id)
-    assert resp["data"]["updateOrCreateSlotItem"]["items"] == [
+
+    updated_slots = resp["data"]["updateOrCreateSlotItem"]["updatedSlots"]
+
+    assert updated_slots[0]["id"] == str(slot.id)
+    assert updated_slots[1]["id"] == str(slot_2.id)
+    assert updated_slots[1]["items"] == [
         {"id": str(item.id), "title": item.title, "type": item.type}
     ]

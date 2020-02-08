@@ -2,8 +2,10 @@
 
 mutation UpdateOrCreateSlotItem($input: UpdateOrCreateSlotItemInput!) {
   updateOrCreateSlotItem(input: $input) {
-    ... on ScheduleSlot {
-      ...scheduleSlot
+    ... on UpdateOrCreateSlotItemResult {
+      updatedSlots {
+        ...scheduleSlot
+      }
     }
   }
 }

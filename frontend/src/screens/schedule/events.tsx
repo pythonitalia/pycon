@@ -4,17 +4,18 @@ import React from "react";
 import { useDrag } from "react-dnd";
 import { jsx } from "theme-ui";
 
-import { ItemTypes } from "./types";
+import { Item, ItemTypes, Room, Slot } from "./types";
 
-export const BaseEvent: React.SFC<{ type: string; metadata: any }> = ({
+const BaseDraggable: React.SFC<{ type: string; metadata?: any }> = ({
   type,
   children,
   metadata,
+  ...props
 }) => {
   const [_, drag] = useDrag({
     item: {
       type,
-      event: metadata,
+      ...metadata,
     },
     collect: monitor => ({
       isDragging: !!monitor.isDragging(),
@@ -25,20 +26,36 @@ export const BaseEvent: React.SFC<{ type: string; metadata: any }> = ({
     <Box
       ref={drag}
       sx={{
-        display: "inline-block",
-        border: "primary",
-        p: 3,
-        mb: "-3px",
-        mr: 3,
         cursor: "move",
       }}
+      {...props}
     >
       {children}
     </Box>
   );
 };
 
-export const Talk = ({
+export const BaseEvent: React.SFC<{ type: string; metadata: any }> = ({
+  type,
+  children,
+  metadata,
+}) => (
+  <BaseDraggable
+    type={type}
+    metadata={metadata}
+    sx={{
+      display: "inline-block",
+      border: "primary",
+      p: 3,
+      mb: "-3px",
+      mr: 3,
+    }}
+  >
+    {children}
+  </BaseDraggable>
+);
+
+export const Submission = ({
   duration,
   title,
   id,
@@ -47,15 +64,10 @@ export const Talk = ({
   title: string;
   duration: number;
 }) => {
-  const type = `TALK_${duration}` as keyof typeof ItemTypes;
-
-  if (!ItemTypes[type]) {
-    console.warn(type, "not supported");
-    return null;
-  }
+  const type = `TALK_${duration}`;
 
   return (
-    <BaseEvent type={ItemTypes[type]} metadata={{ id }}>
+    <BaseEvent type={type} metadata={{ event: { id } }}>
       {title} {duration}
     </BaseEvent>
   );
@@ -64,8 +76,47 @@ export const Talk = ({
 export const AllTracksEvent = () => (
   <BaseEvent
     type={ItemTypes.ALL_TRACKS_EVENT}
-    metadata={{ title: "Lunch", allTracks: true }}
+    metadata={{ event: { title: "Lunch", allTracks: true } }}
   >
     Lunch
   </BaseEvent>
 );
+
+export const ScheduleEntry: React.SFC<{
+  item: Item;
+  slot: Slot;
+  rowOffset: number;
+  rooms: Room[];
+}> = ({ item, slot, rowOffset, rooms }) => {
+  // find all the indexes for the rooms of this item, then
+  // sort them and use the first one for the index of the item
+  // this allows us to have items on multiple rooms without having
+  // to use complex logic to understand where to position them, as
+  // we now assume that the rooms are always consecutive
+  const roomIndexes = item.rooms
+    .map(room => rooms.findIndex(r => r.id === room.id))
+    .sort();
+
+  const index = roomIndexes[0];
+
+  const type = `TALK_${slot.duration}`;
+
+  return (
+    <BaseDraggable
+      type={type}
+      sx={{
+        gridColumnStart: index + 2,
+        gridColumnEnd: index + 2 + item.rooms.length,
+        gridRowStart: slot.offset / 5 + rowOffset,
+        gridRowEnd: (slot.offset + slot.size) / 5 + rowOffset,
+        backgroundColor: "violet",
+        position: "relative",
+        zIndex: 10,
+        p: 3,
+      }}
+      metadata={{ itemId: item.id }}
+    >
+      {item.title}
+    </BaseDraggable>
+  );
+};
