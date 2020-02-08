@@ -36,7 +36,11 @@ export const Schedule: React.SFC<{
     } else if (item.event.id) {
       addSubmissionToSchedule(slot.id, [rooms[index].id], item.event.id);
     } else {
-      addCustomScheduleItem(slot.id, [rooms[index].id]);
+      const roomIds = item.event.allTracks
+        ? rooms.map(room => room.id)
+        : [rooms[index].id];
+
+      addCustomScheduleItem(slot.id, roomIds);
     }
   };
 

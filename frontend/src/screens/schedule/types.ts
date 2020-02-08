@@ -1,7 +1,6 @@
-import moment from "moment";
-
 export const ItemTypes = {
   ALL_TRACKS_EVENT: "all_tracks_event",
+  CUSTOM: "custom",
 };
 
 export type Item = {

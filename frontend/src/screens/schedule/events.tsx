@@ -76,12 +76,23 @@ export const Submission = ({
   );
 };
 
-export const AllTracksEvent = () => (
+export const AllTracksEvent = ({ ...props }) => (
   <BaseEvent
     type={ItemTypes.ALL_TRACKS_EVENT}
-    metadata={{ event: { title: "Lunch", allTracks: true } }}
+    metadata={{ event: { allTracks: true } }}
+    {...props}
   >
-    Lunch
+    All track event
+  </BaseEvent>
+);
+
+export const CustomEvent = ({ ...props }) => (
+  <BaseEvent
+    type={ItemTypes.CUSTOM}
+    metadata={{ event: { title: "Custom" } }}
+    {...props}
+  >
+    Custom event
   </BaseEvent>
 );
 

@@ -1,11 +1,9 @@
 /** @jsx jsx */
-import { useMutation, useQuery } from "@apollo/react-hooks";
-import { RouteComponentProps } from "@reach/router";
-import { Box, Flex, Heading, Input } from "@theme-ui/components";
-import React, { useCallback, useLayoutEffect, useState } from "react";
+import { Box, Heading, Input } from "@theme-ui/components";
+import React, { useState } from "react";
 import { jsx } from "theme-ui";
 
-import { AllTracksEvent, Submission } from "../events";
+import { AllTracksEvent, CustomEvent, Submission } from "../events";
 
 type ItemsPanelProp = {
   submissions: {
@@ -32,14 +30,20 @@ export const ItemsPanel: React.SFC<ItemsPanelProp> = ({ submissions }) => {
         right: 0,
         zIndex: 100,
         width: 300,
+        p: 4,
         borderLeft: "primary",
         background: "white",
         overflowX: "scroll",
       }}
     >
-      <Heading sx={{ pt: 4, px: 4 }}>Submissions</Heading>
+      <Heading sx={{ mb: 4 }}>Special items</Heading>
 
-      <Box sx={{ p: 4 }}>
+      <AllTracksEvent sx={{ mb: 4, width: "100%" }} />
+      <CustomEvent sx={{ mb: 4, width: "100%" }} />
+
+      <Heading sx={{ mb: 4 }}>Submissions</Heading>
+
+      <Box>
         <Input
           type="search"
           placeholder="Filter submissions"
@@ -55,11 +59,9 @@ export const ItemsPanel: React.SFC<ItemsPanelProp> = ({ submissions }) => {
             id={id}
             title={title}
             duration={duration!.duration}
-            sx={{ mb: 3 }}
+            sx={{ mb: 3, width: "100%" }}
           />
         ))}
-
-        <AllTracksEvent />
       </Box>
     </Box>
   );
