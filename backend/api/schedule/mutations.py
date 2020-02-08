@@ -103,6 +103,7 @@ class ScheduleMutations:
                     id=schedule_item.slot.id,
                 )
             )
+            data["type"] = schedule_item.type
             ScheduleItem.objects.filter(id=input.item_id).update(**data)
         else:
             schedule_item = ScheduleItem.objects.create(**data)

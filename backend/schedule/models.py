@@ -112,23 +112,16 @@ class ScheduleItem(TimeStampedModel):
                 {"title": _("You have to specify a title when using the type `custom`")}
             )
 
-    def __str__(self):
-        title = (
-            self.submission.title
-            if self.type == ScheduleItem.TYPES.submission
-            else self.title
-        )
-        return (
-            f"[{self.conference.name}] {title} on "
-            f"{self.slot.day.day} at {self.slot.hour}"
-        )
-
     def save(self, **kwargs):
+        if self.submission and not self.title:
+            self.title = self.submission.title
+
         # see: https://stackoverflow.com/q/454436/169274
         self.slug = self.slug or None
 
         if "update_fields" in kwargs:
             kwargs["update_fields"].append("slug")
+            kwargs["update_fields"].append("title")
 
         super().save(**kwargs)
 

@@ -24,6 +24,28 @@ import SCHEDULE_QUERY from "./schedule.graphql";
 import { ItemsPanel } from "./staff/items-panel";
 import UPDATE_OR_CREATE_ITEM from "./update-or-create-item.graphql";
 
+const LoadingOverlay = () => (
+  <Flex
+    sx={{
+      position: "fixed",
+      left: 0,
+      right: 0,
+      bottom: 0,
+      top: 0,
+      background: "rgba(0, 0, 0, 0.3)",
+      zIndex: 100,
+      alignItems: "center",
+      justifyContent: "center",
+    }}
+  >
+    <Box
+      sx={{ backgroundColor: "white", border: "primary", p: 4, fontSize: 3 }}
+    >
+      Updating schedule, please wait...
+    </Box>
+  </Flex>
+);
+
 export const ScheduleScreen: React.SFC<RouteComponentProps> = () => {
   const { code } = useConference();
 
@@ -39,14 +61,14 @@ export const ScheduleScreen: React.SFC<RouteComponentProps> = () => {
     },
   });
 
-  const [addSlot] = useMutation<
+  const [addSlot, { loading: addingSlot }] = useMutation<
     AddScheduleSlotMutation,
     AddScheduleSlotMutationVariables
   >(ADD_SCHEDULE_SLOT_QUERY, {
     variables: { code, day: currentDay, duration: 60 },
   });
 
-  const [addOrCreateScheduleItem] = useMutation<
+  const [addOrCreateScheduleItem, { loading: updatingSchedule }] = useMutation<
     UpdateOrCreateSlotItemMutation,
     UpdateOrCreateSlotItemMutationVariables
   >(UPDATE_OR_CREATE_ITEM);
@@ -126,7 +148,7 @@ export const ScheduleScreen: React.SFC<RouteComponentProps> = () => {
   return (
     <DndProvider backend={Backend}>
       <ItemsPanel submissions={submissions!} />
-
+      {(addingSlot || updatingSchedule) && <LoadingOverlay />}
       <Box sx={{ flex: 1, width: "calc(100% - 300px)" }}>
         <Box sx={{ backgroundColor: "orange", borderTop: "primary" }}>
           <Flex sx={{ py: 4, px: 3, maxWidth: "largeContainer", mx: "auto" }}>
