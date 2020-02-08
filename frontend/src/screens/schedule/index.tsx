@@ -64,6 +64,20 @@ export const ScheduleScreen: React.SFC<RouteComponentProps> = () => {
     [],
   );
 
+  const addSubmissionToSchedule = useCallback(
+    (slotId: string, itemRooms: string[], submissionId: string) =>
+      addOrCreateScheduleItem({
+        variables: {
+          input: {
+            slotId,
+            submissionId,
+            rooms: itemRooms,
+          },
+        },
+      }),
+    [],
+  );
+
   const addScheduleSlot = useCallback(
     (duration: number) =>
       addSlot({
@@ -90,7 +104,7 @@ export const ScheduleScreen: React.SFC<RouteComponentProps> = () => {
     throw error;
   }
 
-  const { rooms, days } = data?.conference!;
+  const { rooms, days, submissions } = data?.conference!;
 
   const day = days.find(d => d.day === currentDay);
 
@@ -109,15 +123,16 @@ export const ScheduleScreen: React.SFC<RouteComponentProps> = () => {
       >
         <Heading sx={{ pt: 4, px: 4 }}>List of talks</Heading>
         <Box sx={{ overflowY: "scroll", whiteSpace: "nowrap", p: 4 }}>
-          {new Array(100).fill(null).map((_, index) => (
-            <React.Fragment key={index}>
-              <Talk duration={45} />
-              <Talk duration={30} />
-              <Talk duration={60} />
-
-              <AllTracksEvent />
-            </React.Fragment>
+          {submissions?.map(({ id, title, duration }) => (
+            <Talk
+              key={id}
+              id={id}
+              title={title}
+              duration={duration!.duration}
+            />
           ))}
+
+          <AllTracksEvent />
         </Box>
       </Box>
 
@@ -139,6 +154,7 @@ export const ScheduleScreen: React.SFC<RouteComponentProps> = () => {
             slots={day.slots}
             rooms={rooms}
             addCustomScheduleItem={addCustomScheduleItem}
+            addSubmissionToSchedule={addSubmissionToSchedule}
           />
         )}
 

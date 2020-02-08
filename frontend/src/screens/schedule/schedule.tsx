@@ -45,16 +45,25 @@ export const Schedule: React.SFC<{
   slots: Slot[];
   rooms: Room[];
   addCustomScheduleItem: (slotId: string, rooms: string[]) => void;
-}> = ({ slots, rooms, addCustomScheduleItem }) => {
+  addSubmissionToSchedule: (
+    slotId: string,
+    rooms: string[],
+    submissionId: string,
+  ) => void;
+}> = ({ slots, rooms, addCustomScheduleItem, addSubmissionToSchedule }) => {
   const rowOffset = 6;
   const totalRows =
     slots.reduce((total, slot) => slot.size + total, 0) / 5 + rowOffset;
   const totalColumns = rooms.length;
 
   const handleDrop = (item: any, slot: Slot, index: number) => {
-    // TODO: check if exists
+    // TODO: move and full conf events
 
-    addCustomScheduleItem(slot.id, [rooms[index].id]);
+    if (item.event.id) {
+      addSubmissionToSchedule(slot.id, [rooms[index].id], item.event.id);
+    } else {
+      addCustomScheduleItem(slot.id, [rooms[index].id]);
+    }
   };
 
   return (

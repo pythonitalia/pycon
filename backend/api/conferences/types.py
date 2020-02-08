@@ -45,7 +45,7 @@ class ScheduleSlot:
     duration: int
     offset: int
     size: int
-    id: Optional[strawberry.ID]
+    id: strawberry.ID
 
     @strawberry.field
     def items(self, info) -> List[ScheduleItem]:

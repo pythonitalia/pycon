@@ -8,6 +8,17 @@ query Schedule($code: String!) {
         ...scheduleSlot
       }
     }
+
+    # TODO: only if admin
+    submissions {
+      id
+      title
+
+      duration {
+        duration
+      }
+    }
+
     rooms {
       id
       name

@@ -38,12 +38,25 @@ export const BaseEvent: React.SFC<{ type: string; metadata: any }> = ({
   );
 };
 
-export const Talk = ({ duration }: { duration: 30 | 45 | 60 }) => {
+export const Talk = ({
+  duration,
+  title,
+  id,
+}: {
+  id: string;
+  title: string;
+  duration: number;
+}) => {
   const type = `TALK_${duration}` as keyof typeof ItemTypes;
 
+  if (!ItemTypes[type]) {
+    console.warn(type, "not supported");
+    return null;
+  }
+
   return (
-    <BaseEvent type={ItemTypes[type]} metadata={{ title: "example" }}>
-      Talk {duration}
+    <BaseEvent type={ItemTypes[type]} metadata={{ id }}>
+      {title} {duration}
     </BaseEvent>
   );
 };

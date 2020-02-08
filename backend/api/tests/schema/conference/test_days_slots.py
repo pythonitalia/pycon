@@ -1,5 +1,6 @@
 from datetime import date, time
 
+from api.helpers.ids import encode_hashid
 from pytest import mark
 
 
@@ -99,7 +100,7 @@ def test_add_custom_item_from_submission(
         variables={
             "input": {
                 "slotId": slot.id,
-                "submissionId": submission.id,
+                "submissionId": encode_hashid(submission.id),
                 "rooms": [room.id],
             }
         },
@@ -134,6 +135,7 @@ def test_edit_item(
                 ... on ScheduleSlot {
                     id
                     items {
+                        id
                         type
                         title
                     }
@@ -149,5 +151,5 @@ def test_edit_item(
     assert "errors" not in resp
     assert resp["data"]["updateOrCreateSlotItem"]["id"] == str(slot_2.id)
     assert resp["data"]["updateOrCreateSlotItem"]["items"] == [
-        {"title": item.title, "type": item.type}
+        {"id": str(item.id), "title": item.title, "type": item.type}
     ]

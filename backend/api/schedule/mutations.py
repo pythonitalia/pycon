@@ -3,6 +3,7 @@ from datetime import date, datetime, time, timedelta
 
 import strawberry
 from api.conferences.types import Day, ScheduleSlot
+from api.helpers.ids import decode_hashid
 from conferences.models import Conference
 from schedule.models import Day as DayModel
 from schedule.models import ScheduleItem, Slot
@@ -64,14 +65,18 @@ class ScheduleMutations:
         # TODO: validate this is not none
         slot = Slot.objects.select_related("day").filter(id=input.slot_id).first()
 
+        submission_id = (
+            decode_hashid(input.submission_id) if input.submission_id else None
+        )
+
         data = {
             "type": (
                 ScheduleItem.TYPES.submission
-                if input.submission_id
+                if submission_id
                 else ScheduleItem.TYPES.custom
             ),
             "slot": slot,
-            "submission_id": input.submission_id,
+            "submission_id": submission_id,
             "conference": slot.day.conference,
         }
 
