@@ -60,17 +60,22 @@ export const BaseEvent: React.SFC<{ type: string; metadata: any }> = ({
 export const Submission = ({
   duration,
   title,
+  type,
   id,
   ...props
 }: {
   id: string;
   title: string;
+  type: string;
   duration: number;
 }) => {
-  const type = `TALK_${duration}`;
+  const itemType =
+    type.toLocaleLowerCase() === "tutorial"
+      ? ItemTypes.TRAINING
+      : `TALK_${duration}`;
 
   return (
-    <BaseEvent type={type} metadata={{ event: { id } }} {...props}>
+    <BaseEvent type={itemType} metadata={{ event: { id } }} {...props}>
       {title} {duration}
     </BaseEvent>
   );

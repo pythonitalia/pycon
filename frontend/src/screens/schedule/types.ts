@@ -1,5 +1,6 @@
 export const ItemTypes = {
   ALL_TRACKS_EVENT: "all_tracks_event",
+  TRAINING: "training",
   CUSTOM: "custom",
 };
 
@@ -27,4 +28,5 @@ export type ScheduleItem = {
 export type Room = {
   id: string;
   name: string;
+  type: string;
 };

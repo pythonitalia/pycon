@@ -14,6 +14,7 @@ class Room:
     id: strawberry.ID
     name: str
     conference: "Conference"
+    type: str
 
 
 @strawberry.type

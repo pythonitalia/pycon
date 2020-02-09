@@ -47,7 +47,6 @@ export const Schedule: React.SFC<{
   const totalColumns = rooms.length;
 
   const handleDrop = (item: any, slot: Slot, index: number) => {
-    // TODO: full conf events
     if (item.itemId) {
       moveItem(slot.id, [rooms[index].id], item.itemId);
     } else if (item.event.id) {
@@ -106,8 +105,6 @@ export const Schedule: React.SFC<{
           offset: rowOffset,
         });
 
-        console.log(slotIndex, rowStart, rowEnd);
-
         return (
           <React.Fragment key={slot.id}>
             <Box
@@ -136,6 +133,7 @@ export const Schedule: React.SFC<{
                   rowStart={rowStart}
                   rowEnd={rowEnd}
                   duration={slot.duration}
+                  roomType={room.type}
                   onDrop={(item: any) => handleDrop(item, slot, index)}
                 />
 

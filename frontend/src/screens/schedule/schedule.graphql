@@ -17,6 +17,10 @@ query Schedule($code: String!) {
       duration {
         duration
       }
+
+      type {
+        name
+      }
     }
 
     durations {
@@ -29,6 +33,7 @@ query Schedule($code: String!) {
     rooms {
       id
       name
+      type
     }
   }
 }
