@@ -104,36 +104,21 @@ export const CustomEvent = ({ ...props }) => (
 export const ScheduleEntry: React.SFC<{
   item: Item;
   slot: Slot;
-  rowStart: number;
-  rowEnd: number;
   rooms: Room[];
-}> = ({ item, slot, rowStart, rowEnd, rooms }) => {
-  // find all the indexes for the rooms of this item, then
-  // sort them and use the first one for the index of the item
-  // this allows us to have items on multiple rooms without having
-  // to use complex logic to understand where to position them, as
-  // we now assume that the rooms are always consecutive
-  const roomIndexes = item.rooms
-    .map(room => rooms.findIndex(r => r.id === room.id))
-    .sort();
-
-  const index = roomIndexes[0];
-
+}> = ({ item, slot, rooms, ...props }) => {
+  // TODO: training type
   const type = `TALK_${slot.duration}`;
 
   return (
     <BaseDraggable
       type={type}
       sx={{
-        gridColumnStart: index + 2,
-        gridColumnEnd: index + 2 + item.rooms.length,
-        gridRowStart: rowStart,
-        gridRowEnd: rowEnd,
         backgroundColor: "violet",
         position: "relative",
         zIndex: 10,
         p: 3,
       }}
+      {...props}
       metadata={{ itemId: item.id }}
     >
       {item.title}

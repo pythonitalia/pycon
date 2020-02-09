@@ -6,9 +6,18 @@ fragment scheduleSlot on ScheduleSlot {
   items {
     id
     title
+    submission {
+      duration {
+        duration
+      }
+      type {
+        name
+      }
+    }
     rooms {
       id
       name
+      type
     }
   }
 }

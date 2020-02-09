@@ -8,14 +8,16 @@ export type Item = {
   id: string;
   title: string;
   rooms: Room[];
+  submission?: {
+    type: { name: string } | null;
+    duration: { duration: number } | null;
+  } | null;
 };
 
 export type Slot = {
   id: string;
   duration: number;
   hour: string;
-  size: number;
-  offset: number;
   items: Item[];
 };
 

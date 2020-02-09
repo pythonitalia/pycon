@@ -10,7 +10,7 @@ type ItemsPanelProp = {
     title: string;
     id: string;
     duration: { duration: number } | null;
-    type: { name: string };
+    type: { name: string } | null;
   }[];
 };
 
@@ -56,7 +56,7 @@ export const ItemsPanel: React.SFC<ItemsPanelProp> = ({ submissions }) => {
         />
         {filteredSubmissions.map(({ id, title, type, duration }) => (
           <Submission
-            type={type.name}
+            type={type!.name}
             key={id}
             id={id}
             title={title}

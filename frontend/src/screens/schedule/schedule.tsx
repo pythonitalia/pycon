@@ -5,7 +5,7 @@ import { jsx } from "theme-ui";
 
 import { ScheduleEntry } from "./events";
 import { Placeholder } from "./placeholder";
-import { Room, Slot } from "./types";
+import { Item, Room, Slot } from "./types";
 
 const SLOT_SIZE = 12;
 
@@ -24,6 +24,103 @@ const getRowEndForSlot = ({
   offset: number;
   index: number;
 }) => SLOT_SIZE * (index + 1) + offset;
+
+const convertHoursToMinutes = (value: string) => {
+  const [hour, minutes] = value.split(":").map(x => parseInt(x, 10));
+
+  return hour * 60 + minutes;
+};
+
+const getRowEndForTraining = ({
+  item,
+  rowOffset,
+  slot,
+  slots,
+}: {
+  item: Item;
+  rowOffset: number;
+  slot: Slot;
+  slots: Slot[];
+}) => {
+  const start = convertHoursToMinutes(slot.hour);
+  const end = start + item.submission!.duration!.duration;
+
+  let endingSlotIndex = slots.findIndex(
+    s => convertHoursToMinutes(s.hour) + s.duration >= end,
+  );
+
+  let delta = 0;
+
+  if (endingSlotIndex === -1) {
+    endingSlotIndex = slots.length - 1;
+  }
+
+  const endingSlot = slots[endingSlotIndex];
+  const endingSlotEnd =
+    convertHoursToMinutes(endingSlot.hour) + endingSlot.duration;
+  delta = endingSlotEnd - end;
+
+  const minutesToGridRow = endingSlot.duration / SLOT_SIZE;
+
+  if (delta <= 0) {
+    return SLOT_SIZE * (endingSlotIndex + 1) + rowOffset;
+  }
+
+  const offset = delta > 0 ? delta / minutesToGridRow : 0;
+
+  return SLOT_SIZE * endingSlotIndex + rowOffset + offset;
+};
+
+const getEntryPosition = ({
+  item,
+  rooms,
+  slot,
+  slots,
+  rowOffset,
+}: {
+  rowOffset: number;
+  item: Item;
+  slot: Slot;
+  slots: Slot[];
+  rooms: Room[];
+}) => {
+  // find all the indexes for the rooms of this item, then
+  // sort them and use the first one for the index of the item
+  // this allows us to have items on multiple rooms without having
+  // to use complex logic to understand where to position them, as
+  // we now assume that the rooms are always consecutive
+  const roomIndexes = item.rooms
+    .map(room => rooms.findIndex(r => r.id === room.id))
+    .sort();
+
+  const index = roomIndexes[0];
+  const slotIndex = slots.findIndex(s => s.id === slot.id);
+
+  const rowStart = getRowStartForSlot({
+    index: slotIndex,
+    offset: rowOffset,
+  });
+
+  let rowEnd = getRowEndForSlot({
+    index: slotIndex,
+    offset: rowOffset,
+  });
+
+  // TODO: let's be consistent with naming (training vs tutorial)
+  if (
+    item.submission &&
+    item.submission.type!.name.toLowerCase() === "tutorial"
+  ) {
+    rowEnd = getRowEndForTraining({ item, rowOffset, slot, slots });
+  }
+
+  return {
+    gridColumnStart: index + 2,
+    gridColumnEnd: index + 2 + item.rooms.length,
+    gridRowStart: rowStart,
+    gridRowEnd: rowEnd,
+  };
+};
 
 export const Schedule: React.SFC<{
   slots: Slot[];
@@ -127,26 +224,43 @@ export const Schedule: React.SFC<{
             </Box>
 
             {rooms.map((room, index) => (
-              <React.Fragment key={`${room.id}-${slot.id}`}>
-                <Placeholder
-                  columnStart={index + 2}
-                  rowStart={rowStart}
-                  rowEnd={rowEnd}
-                  duration={slot.duration}
-                  roomType={room.type}
-                  onDrop={(item: any) => handleDrop(item, slot, index)}
-                />
+              <Placeholder
+                key={`${room.id}-${slot.id}`}
+                columnStart={index + 2}
+                rowStart={rowStart}
+                rowEnd={rowEnd}
+                duration={slot.duration}
+                roomType={room.type}
+                onDrop={(item: any) => handleDrop(item, slot, index)}
+              />
+            ))}
 
-                {slot.items[index] && (
-                  <ScheduleEntry
-                    item={slot.items[index]}
-                    slot={slot}
-                    rowStart={rowStart}
-                    rowEnd={rowEnd}
-                    rooms={rooms}
-                  />
-                )}
-              </React.Fragment>
+            {slot.items.map(item => (
+              <ScheduleEntry
+                key={item.id}
+                item={item}
+                slot={slot}
+                rooms={rooms}
+                sx={{
+                  position: "relative",
+                  "&::after": {
+                    content: "''",
+                    display: "block",
+                    borderBottom: "primary",
+                    width: "100%",
+                    position: "absolute",
+                    bottom: "-3px",
+                    left: 0,
+                  },
+                  ...getEntryPosition({
+                    item,
+                    rooms,
+                    slot,
+                    slots,
+                    rowOffset,
+                  }),
+                }}
+              />
             ))}
           </React.Fragment>
         );
