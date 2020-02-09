@@ -120,7 +120,10 @@ export const RankingPage: React.SFC<RouteComponentProps> = ({ location }) => {
                 renderTitle={title => (
                   <React.Fragment>
                     <Text sx={{ fontWeight: "bold" }} as="span">
-                      {rankSubmission.absoluteRank}.
+                      {filters.values.topic
+                        ? rankSubmission.topicRank
+                        : rankSubmission.absoluteRank}
+                      .
                     </Text>{" "}
                     {title}
                   </React.Fragment>
