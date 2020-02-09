@@ -162,8 +162,8 @@ export const Schedule: React.SFC<{
       sx={{
         gridTemplateColumns: `100px repeat(${totalColumns}, 1fr)`,
         gridTemplateRows: `repeat(${totalRows - 1}, 10px)`,
-        gridGap: "4px",
-        py: "4px",
+        gridGap: "3px",
+        py: "3px",
         backgroundColor: "black",
       }}
     >
