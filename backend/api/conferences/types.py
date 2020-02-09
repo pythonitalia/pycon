@@ -6,8 +6,8 @@ from api.cms.types import FAQ, Menu
 from api.events.types import Event
 from api.hotels.types import HotelRoom
 from api.languages.types import Language
-from api.pretix.query import get_conference_tickets
-from api.pretix.types import TicketItem
+from api.pretix.query import get_conference_tickets, get_voucher
+from api.pretix.types import TicketItem, Voucher
 from api.schedule.types import Room, ScheduleItem
 from api.sponsors.types import SponsorsByLevel
 from api.submissions.types import Submission, SubmissionType
@@ -89,6 +89,10 @@ class Conference:
     map: Optional[Map] = strawberry.field(resolver=resolve_map)
 
     pretix_event_url: str
+
+    @strawberry.field
+    def voucher(self, info, code: str) -> Optional[Voucher]:
+        return get_voucher(self, code)
 
     @strawberry.field
     def timezone(self, info) -> str:

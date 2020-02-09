@@ -155,6 +155,14 @@ export const TicketsPage: React.SFC<RouteComponentProps> = props => {
     });
   }, []);
 
+  const applyVoucher = useCallback(
+    voucher =>
+      dispatcher({
+        type: "applyVoucher",
+      }),
+    [],
+  );
+
   const goToQuestionsOrReview = () => {
     const productIds = Object.values(
       state.selectedProducts,

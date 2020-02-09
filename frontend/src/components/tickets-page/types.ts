@@ -1,5 +1,7 @@
 import moment from "moment";
 
+import { Voucher } from "../../generated/graphql-backend";
+
 export type InvoiceInformationState = {
   isBusiness: boolean;
   companyName: string;
@@ -72,4 +74,8 @@ export type OrderAction =
       index: number;
       key: string;
       value: string;
+    }
+  | {
+      type: "applyVoucher";
+      voucher: Voucher;
     };

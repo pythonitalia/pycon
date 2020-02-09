@@ -1,9 +1,14 @@
 from typing import List, Optional
 
 import pretix
+import pretix.db
 from conferences.models.conference import Conference
 
-from .types import Option, PretixOrder, ProductVariation, Question, TicketItem
+from .types import Option, PretixOrder, ProductVariation, Question, TicketItem, Voucher
+
+
+def get_voucher(conference: Conference, code: str) -> Optional[Voucher]:
+    return pretix.db.get_voucher(conference.pretix_event_id, code)
 
 
 def get_order(conference: Conference, code: str) -> Optional[PretixOrder]:

@@ -2,6 +2,7 @@ from enum import Enum
 from typing import List, Optional
 
 import strawberry
+from api.scalars import DateTime
 
 
 @strawberry.enum
@@ -66,3 +67,15 @@ class TicketItem:
     available_from: Optional[str]
     available_until: Optional[str]
     questions: List[Question]
+
+
+@strawberry.type
+class Voucher:
+    id: strawberry.ID
+    code: str
+    valid_until: Optional[DateTime]
+    value: str
+    item_id: Optional[strawberry.ID]
+    redeemed: int
+    max_usages: int
+    price_mode: str
