@@ -1,8 +1,7 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 from itertools import groupby
 from typing import List, Optional
 
-import pytz
 import strawberry
 from api.cms.types import FAQ, Menu
 from api.events.types import Event
@@ -47,9 +46,6 @@ class ScheduleSlot:
 
     @strawberry.field
     def items(self, info) -> List[ScheduleItem]:
-        if not self.id:
-            return []
-
         return ScheduleItemModel.objects.filter(slot__id=self.id)
 
 
@@ -77,21 +73,6 @@ class Conference:
     @strawberry.field
     def timezone(self, info) -> str:
         return str(self.timezone)
-
-    @strawberry.field
-    def schedule(self, info, date: Date = None) -> List[ScheduleItem]:
-        qs = self.schedule_items
-
-        if date:
-            start_date = datetime.combine(date, datetime.min.time())
-            end_date = datetime.combine(date, datetime.max.time())
-
-            utc_start_date = pytz.utc.normalize(start_date.astimezone(pytz.utc))
-            utc_end_date = pytz.utc.normalize(end_date.astimezone(pytz.utc))
-
-            qs = qs.filter(start__gte=utc_start_date, end__lte=utc_end_date)
-
-        return qs.order_by("start")
 
     @strawberry.field
     def tickets(self, info, language: str) -> List[TicketItem]:
