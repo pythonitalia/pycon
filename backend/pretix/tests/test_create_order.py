@@ -70,6 +70,7 @@ def test_creates_order(conference, hotel_room, requests_mock, invoice_informatio
                 attendee_name="Example",
                 attendee_email="Example",
                 variation=None,
+                voucher=None,
                 answers=[
                     CreateOrderTicketAnswer(question_id="1", value="ABC"),
                     CreateOrderTicketAnswer(question_id="2", value="1"),
@@ -110,6 +111,7 @@ def test_raises_when_response_is_400(conference, requests_mock, invoice_informat
                 attendee_email="Example",
                 variation=None,
                 answers=None,
+                voucher=None,
             )
         ],
     )
@@ -153,6 +155,7 @@ def test_raises_value_error_if_answer_value_is_wrong(
                 attendee_name="Example",
                 attendee_email="Example",
                 variation=None,
+                voucher=None,
                 answers=[
                     CreateOrderTicketAnswer(question_id="1", value="ABC"),
                     # 100 doesn't exist as id in the questions
@@ -256,6 +259,7 @@ def test_not_required_and_empty_answer_is_skipped(
                 attendee_name="Example",
                 attendee_email="Example",
                 variation=None,
+                voucher=None,
                 answers=[
                     CreateOrderTicketAnswer(question_id="1", value=""),
                     CreateOrderTicketAnswer(question_id="2", value="1"),
@@ -281,3 +285,67 @@ def test_not_required_and_empty_answer_is_skipped(
             "option_identifiers": ["abc"],
         }
     ]
+
+
+@override_settings(PRETIX_API="https://pretix/api/")
+@pytest.mark.django_db
+def test_create_order_with_positions_with_voucher_and_one_without(
+    conference, requests_mock, invoice_information
+):
+    orders_mock = requests_mock.post(
+        f"https://pretix/api/organizers/events/orders/",
+        json={"payments": [{"payment_url": "http://example.com"}], "code": 123},
+    )
+    requests_mock.get(
+        f"https://pretix/api/organizers/events/questions",
+        json={
+            "results": [
+                {"id": "1", "type": "S"},
+                {"id": "2", "type": "C", "options": [{"id": 1, "identifier": "abc"}]},
+            ]
+        },
+    )
+    requests_mock.get(
+        f"https://pretix/api/organizers/events/items",
+        json={"results": [{"id": "123", "admission": True}]},
+    )
+
+    order_data = CreateOrderInput(
+        email="my@email.com",
+        locale="en",
+        payment_provider="stripe",
+        invoice_information=invoice_information,
+        hotel_rooms=[],
+        tickets=[
+            CreateOrderTicket(
+                ticket_id="123",
+                attendee_name="Example",
+                attendee_email="Example",
+                variation=None,
+                voucher=None,
+                answers=[
+                    CreateOrderTicketAnswer(question_id="1", value="ABC"),
+                    CreateOrderTicketAnswer(question_id="2", value="1"),
+                ],
+            ),
+            CreateOrderTicket(
+                ticket_id="123",
+                attendee_name="Example",
+                attendee_email="Example",
+                variation=None,
+                voucher="friendly-human-being",
+                answers=[
+                    CreateOrderTicketAnswer(question_id="1", value="ABC"),
+                    CreateOrderTicketAnswer(question_id="2", value="1"),
+                ],
+            ),
+        ],
+    )
+
+    result = create_order(conference, order_data)
+
+    assert result.payment_url == "http://example.com"
+
+    body = orders_mock.request_history[0].json()
+    assert "voucher" not in body["positions"][0]
+    assert body["positions"][1]["voucher"] == "friendly-human-being"

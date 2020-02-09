@@ -20,6 +20,7 @@ export type ProductState = {
   answers: { [id: string]: string };
   attendeeName: string;
   attendeeEmail: string;
+  voucher?: Voucher | null;
 };
 
 export type SelectedProducts = {
@@ -41,6 +42,7 @@ export type OrderState = {
   selectedProducts: SelectedProducts;
   invoiceInformation: InvoiceInformationState;
   selectedHotelRooms: SelectedHotelRooms;
+  voucherCode: string;
 };
 
 export type UpdateProductAction =
@@ -78,4 +80,7 @@ export type OrderAction =
   | {
       type: "applyVoucher";
       voucher: Voucher;
+    }
+  | {
+      type: "removeVoucher";
     };

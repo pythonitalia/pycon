@@ -75,7 +75,9 @@ class Voucher:
     code: str
     valid_until: Optional[DateTime]
     value: str
-    item_id: Optional[strawberry.ID]
+    items: List[strawberry.ID]
+    all_items: bool
     redeemed: int
     max_usages: int
     price_mode: str
+    variation_id: Optional[strawberry.ID]

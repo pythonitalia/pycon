@@ -9,6 +9,7 @@ import { Link } from "../../link";
 import { Ticket } from "../../tickets-form/types";
 import { SelectedProducts } from "../types";
 import { ReviewItem } from "./review-item";
+import { calculateProductPrice } from "./prices";
 
 type Props = {
   selectedProducts: SelectedProducts;
@@ -23,6 +24,10 @@ export const TicketsRecap: React.SFC<Props> = ({
   productsById,
 }) => {
   const lang = useCurrentLanguage();
+  const moneyFormatter = new Intl.NumberFormat(lang, {
+    style: "currency",
+    currency: "EUR",
+  });
 
   return (
     <Box sx={{ py: 5, borderTop: "primary" }}>
@@ -55,6 +60,14 @@ export const TicketsRecap: React.SFC<Props> = ({
             .flat()
             .map((selectedProductInfo, index) => {
               const product = productsById[selectedProductInfo.id];
+              const finalPrice = calculateProductPrice(
+                product,
+                selectedProductInfo.voucher,
+              );
+              const hasVoucher = !!selectedProductInfo.voucher;
+              const variation = product.variations?.find(
+                v => v.id === selectedProductInfo.variation,
+              );
 
               return (
                 <Box
@@ -73,6 +86,7 @@ export const TicketsRecap: React.SFC<Props> = ({
                     }}
                   >
                     {product.name}
+                    {variation && ` - ${variation.value}`}
                   </Heading>
 
                   {product.questions.length > 0 && (
@@ -114,33 +128,95 @@ export const TicketsRecap: React.SFC<Props> = ({
                             />
                           );
                         })}
-                      </Grid>
-                      <Box
-                        sx={{
-                          maxWidth: "660px",
-                          mt: 4,
-                          py: 3,
-                          gridColumn: "1 / 3",
-                          borderTop: "primary",
-                          borderBottom: "primary",
-                        }}
-                      >
-                        <Text
-                          sx={{
-                            fontSize: 4,
-                            fontWeight: "bold",
-                          }}
-                        >
-                          <FormattedMessage
-                            id="orderReview.ticketPrice"
-                            values={{
-                              price: product.defaultPrice,
-                            }}
+
+                        {hasVoucher && (
+                          <ReviewItem
+                            label={
+                              <FormattedMessage id="orderReview.usingVoucher" />
+                            }
+                            value={selectedProductInfo.voucher!.code}
                           />
-                        </Text>
-                      </Box>
+                        )}
+                      </Grid>
                     </Fragment>
                   )}
+
+                  <Box
+                    sx={{
+                      maxWidth: "660px",
+                      mt: 4,
+                      py: 3,
+                      gridColumn: "1 / 3",
+                      borderTop: "primary",
+                      borderBottom: "primary",
+                    }}
+                  >
+                    <Text
+                      sx={{
+                        fontSize: 4,
+                        fontWeight: "bold",
+                      }}
+                    >
+                      <FormattedMessage
+                        id={
+                          hasVoucher
+                            ? "orderReview.ticketPriceWithVoucher"
+                            : "orderReview.ticketPrice"
+                        }
+                        values={{
+                          basePrice: (
+                            <Text
+                              as="span"
+                              sx={{
+                                position: "relative",
+                                "&:after": {
+                                  content: "''",
+
+                                  position: "absolute",
+                                  top: "50%",
+                                  left: "50%",
+
+                                  width: "100%",
+                                  height: "4px",
+                                  background: "black",
+
+                                  transform: "translate(-50%, -50%)",
+                                },
+                              }}
+                            >
+                              {moneyFormatter.format(
+                                parseFloat(product.defaultPrice),
+                              )}
+                            </Text>
+                          ),
+                          finalPrice: (
+                            <Text
+                              as="span"
+                              sx={{
+                                position: "relative",
+                                "&:after": {
+                                  content: "''",
+
+                                  display: hasVoucher ? "" : "none",
+
+                                  position: "absolute",
+                                  bottom: "-4px",
+                                  left: 0,
+
+                                  width: "100%",
+                                  height: "4px",
+                                  background: "green",
+                                },
+                              }}
+                            >
+                              {moneyFormatter.format(finalPrice)}{" "}
+                              <FormattedMessage id="order.inclVat" />
+                            </Text>
+                          ),
+                        }}
+                      />
+                    </Text>
+                  </Box>
                 </Box>
               );
             })}

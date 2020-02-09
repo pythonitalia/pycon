@@ -52,6 +52,7 @@ export const CreateOrderButtons: React.SFC<Props> = ({ state, email }) => {
           variation: product.variation,
           attendeeName: product.attendeeName,
           attendeeEmail: product.attendeeEmail,
+          voucher: product.voucher?.code ?? undefined,
           answers: Object.entries(product.answers).map(([key, value]) => ({
             questionId: key,
             value,

@@ -4,12 +4,14 @@ import {
   UpdateHotelRoomAction,
   UpdateProductAction,
 } from "./types";
+import { Voucher } from "../../generated/graphql-backend";
 
 const updateProductReducer = (
   state: OrderState,
   action: UpdateProductAction,
 ): OrderState => {
-  const id = `${action.id}${action.variation || ""}`;
+  // const id = `${action.id}${action.variation || ""}`;
+  const id = action.id;
   const selectedProducts = { ...state.selectedProducts };
   const productItems = selectedProducts[id] ? [...selectedProducts[id]] : [];
 
@@ -24,7 +26,17 @@ const updateProductReducer = (
       });
       break;
     case "decrementProduct":
-      productItems.splice(0, 1);
+      let indexToRemove = 0;
+
+      if (action.variation) {
+        indexToRemove = productItems.findIndex(
+          product => product.variation === action.variation
+        )
+      }
+
+      if (indexToRemove !== -1) {
+        productItems.splice(indexToRemove, 1);
+      }
       break;
   }
 
@@ -71,6 +83,75 @@ const updateHotelRoomReducer = (
   return {
     ...state,
     selectedHotelRooms: hotelRooms,
+  };
+};
+
+const applyVoucher = (state: OrderState, voucher: Voucher): OrderState => {
+  // This code assumes we only support 1 voucher per order.
+
+  const items = voucher.items;
+  const includeAllItems = voucher.allItems;
+  const selectedProducts = { ...state.selectedProducts };
+
+  let usagesLeft = voucher.maxUsages - voucher.redeemed;
+
+  // We go over all the selected products either to:
+  // 1. Apply the voucher code if possible
+  // 2. Remove any previous stored vouchers.
+  Object.entries(selectedProducts).forEach(([itemId, products]) => {
+    selectedProducts[itemId] = products.map(product => {
+      if (
+        (!includeAllItems && items.indexOf(itemId) === -1) ||
+        (voucher.variationId && product.variation !== voucher.variationId) ||
+        usagesLeft === 0
+      ) {
+        /*
+          If the item is not in the voucher code
+          or there are no usages left,
+          reset the stored voucher
+        */
+        return {
+          ...product,
+          voucher: null,
+        };
+      }
+
+      usagesLeft--;
+
+      // We cannot calculate the new price here.
+      // we only say "here you voucher, use it when you can calculate the price"
+      return {
+        ...product,
+        voucher,
+      };
+    });
+  });
+
+  console.log("new selected products", selectedProducts);
+
+  return {
+    ...state,
+    voucherCode: voucher.code,
+    selectedProducts,
+  };
+};
+
+const removeVoucher = (state: OrderState) => {
+  const selectedProducts = { ...state.selectedProducts };
+
+  Object.entries(selectedProducts).forEach(([itemId, products]) => {
+    selectedProducts[itemId] = products.map(product => {
+      return {
+        ...product,
+        voucher: null,
+      };
+    });
+  });
+
+  return {
+    ...state,
+    voucherCode: "",
+    selectedProducts,
   };
 };
 
@@ -133,5 +214,9 @@ export const reducer = (state: OrderState, action: OrderAction): OrderState => {
           isBusiness: action.isBusiness,
         },
       };
+    case "applyVoucher":
+      return applyVoucher(state, action.voucher);
+    case "removeVoucher":
+      return removeVoucher(state);
   }
 };

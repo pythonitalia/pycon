@@ -5,7 +5,10 @@ import React from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
-import { HotelRoom } from "../../../generated/graphql-backend";
+import {
+  HotelRoom,
+  Voucher as VoucherType,
+} from "../../../generated/graphql-backend";
 import { Ticket } from "../../tickets-form/types";
 import { OrderState } from "../types";
 import { CompleteOrder } from "./complete-order";
@@ -19,6 +22,8 @@ type Props = {
   tickets: Ticket[];
   hotelRooms: HotelRoom[];
   email: string;
+  applyVoucher: (voucher: VoucherType) => void;
+  removeVoucher: () => void;
 } & RouteComponentProps;
 
 export const ReviewOrder: React.SFC<Props> = ({
@@ -26,6 +31,8 @@ export const ReviewOrder: React.SFC<Props> = ({
   tickets,
   hotelRooms,
   email,
+  applyVoucher,
+  removeVoucher,
 }) => {
   const { invoiceInformation, selectedProducts, selectedHotelRooms } = state!;
 
@@ -64,7 +71,11 @@ export const ReviewOrder: React.SFC<Props> = ({
         hotelRoomsById={hotelRoomsById}
       />
 
-      <Voucher />
+      <Voucher
+        applyVoucher={applyVoucher}
+        removeVoucher={removeVoucher}
+        state={state}
+      />
 
       <CompleteOrder
         productsById={productsById}

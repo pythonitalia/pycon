@@ -1,7 +1,13 @@
 /** @jsx jsx */
-import { useLazyQuery } from "@apollo/react-hooks";
+import { useLazyQuery, useApolloClient, useQuery } from "@apollo/react-hooks";
 import { Box, Button, Flex, Heading, Input, Text } from "@theme-ui/components";
-import React, { Fragment, useCallback, useContext } from "react";
+import React, {
+  Fragment,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import { jsx } from "theme-ui";
@@ -11,7 +17,7 @@ import { useCurrentLanguage } from "../../../context/language";
 import {
   GetVoucherQuery,
   GetVoucherQueryVariables,
-  HotelRoom,
+  Voucher as VoucherType,
 } from "../../../generated/graphql-backend";
 import { Link } from "../../link";
 import { Ticket } from "../../tickets-form/types";
@@ -19,39 +25,96 @@ import { OrderState, SelectedHotelRooms } from "../types";
 import { CreateOrderButtons } from "./create-order-buttons";
 import GET_VOUCHER from "./get-voucher.graphql";
 import { ReviewItem } from "./review-item";
+import { GraphQLError } from "graphql";
+import { Alert } from "../../alert";
 
-type Props = {};
+type Props = {
+  applyVoucher: (voucher: VoucherType) => void;
+  removeVoucher: () => void;
+  state: OrderState;
+};
 
 type VoucherForm = {
   code: string;
 };
 
-export const Voucher: React.SFC<Props> = ({}) => {
+export const Voucher: React.SFC<Props> = ({
+  applyVoucher,
+  removeVoucher,
+  state,
+}) => {
   const { code: conferenceCode } = useConference();
+  const apolloClient = useApolloClient();
 
-  const [formState, { text }] = useFormState<VoucherForm>();
-  const [getVoucher, { loading, error }] = useLazyQuery<
-    GetVoucherQuery,
-    GetVoucherQueryVariables
-  >(GET_VOUCHER);
+  const [formState, { text }] = useFormState<VoucherForm>({
+    code: state.voucherCode,
+  });
+
+  const [queryState, setQueryState] = useState<{
+    loading: boolean;
+    errors?: readonly GraphQLError[];
+    data?: GetVoucherQuery;
+  }>({
+    loading: false,
+    errors: undefined,
+    data: undefined,
+  });
 
   const onUseVoucher = useCallback(
-    async (e: React.MouseEvent) => {
-      e.preventDefault();
+    async (e?: React.MouseEvent) => {
+      if (e) {
+        e.preventDefault();
+      }
 
-      if (!formState.validity.code) {
+      if (!formState.values.code) {
+        /* what should we do here? remove the current voucher or do nothing? */
         return;
       }
 
-      const voucher = await getVoucher({
+      setQueryState({
+        loading: true,
+        errors: undefined,
+        data: undefined,
+      });
+
+      const queryData = await apolloClient.query<
+        GetVoucherQuery,
+        GetVoucherQueryVariables
+      >({
+        query: GET_VOUCHER,
+        fetchPolicy: "network-only",
         variables: {
           conference: conferenceCode,
           code: formState.values.code,
         },
       });
+
+      setQueryState({
+        loading: false,
+        errors: queryData.errors,
+        data: queryData.errors ? undefined : queryData.data,
+      });
+
+      const voucher = queryData.data.conference.voucher;
+
+      if (!voucher) {
+        /* TODO reset all vouchers? */
+        return;
+      }
+
+      applyVoucher(voucher);
     },
     [formState.values],
   );
+
+  useEffect(() => {
+    // TODO: maybe we want to move this in tickets-page/index.tsx?
+    // It feels a bit dirty to mix UI and side effects (= reloading the voucher)
+
+    if (formState.values.code) {
+      onUseVoucher();
+    }
+  }, []);
 
   return (
     <Box sx={{ py: 5, borderTop: "primary" }}>
@@ -71,25 +134,68 @@ export const Voucher: React.SFC<Props> = ({}) => {
             fontWeight: "bold",
           }}
         >
-          Voucher
+          <FormattedMessage id="voucher.voucherHeading" />
         </Heading>
         <Flex
           as="form"
           sx={{
+            flexDirection: ["column", "column", "row"],
             mb: 4,
           }}
           onSubmit={onUseVoucher}
         >
           <Input
             sx={{
-              maxWidth: "300px",
+              maxWidth: ["none", "none", "300px"],
               mr: 2,
             }}
             {...text("code")}
             required={true}
           />
-          <Button>Redeem</Button>
+          <Button
+            sx={{
+              textTransform: "uppercase",
+              mt: [2, 2, 0],
+            }}
+          >
+            <FormattedMessage id="voucher.redeemVoucher" />
+          </Button>
+          {state.voucherCode && (
+            <Button
+              sx={{
+                textTransform: "uppercase",
+                ml: [0, 0, 2],
+                mt: [2, 2, 0],
+              }}
+              onClick={removeVoucher}
+            >
+              <FormattedMessage
+                id="voucher.removeVoucher"
+                values={{
+                  code: state.voucherCode,
+                }}
+              />
+            </Button>
+          )}
         </Flex>
+
+        {queryState.loading && (
+          <Alert variant="info">
+            <FormattedMessage id="voucher.loading" />
+          </Alert>
+        )}
+
+        {queryState.errors && (
+          <Alert variant="alert">
+            {queryState.errors.map(e => e.message).join(",")}
+          </Alert>
+        )}
+
+        {queryState.data && !queryState.data.conference.voucher && (
+          <Alert variant="info">
+            <FormattedMessage id="voucher.codeNotValid" />
+          </Alert>
+        )}
       </Box>
     </Box>
   );

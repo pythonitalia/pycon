@@ -5,13 +5,15 @@ import { jsx } from "theme-ui";
 
 import { Ticket } from "./types";
 
+type SelectedProduct = {
+  id: string;
+  variation?: string;
+};
+
 export const SelectedProductsWithVariationsList: React.SFC<{
   products: Ticket[];
   selectedProducts: {
-    [id: string]: {
-      id: string;
-      variation?: string;
-    }[];
+    [id: string]: SelectedProduct[];
   };
   removeProduct: (id: string, variation: string) => void;
 }> = ({ products, selectedProducts, removeProduct }) => {
@@ -26,37 +28,53 @@ export const SelectedProductsWithVariationsList: React.SFC<{
   return (
     <React.Fragment>
       {productsToShow.map(selectedProduct => {
-        const firstProduct = selectedProduct[0];
-        const product = productsById[firstProduct.id];
-        return (
-          <Grid
-            sx={{ gridTemplateColumns: "1fr 50px", my: 3 }}
-            key={`${firstProduct.id}${firstProduct.variation}`}
-          >
-            <Flex sx={{ display: "flex", alignItems: "center" }}>
-              <Box>
-                <strong>{selectedProduct.length}x</strong> {product.name}{" "}
-                <strong>
-                  (
-                  {
-                    product.variations?.find(
-                      variation => variation.id === firstProduct.variation,
-                    )?.value
-                  }
-                  )
-                </strong>
-              </Box>
-            </Flex>
-            <Button
-              variant="minus"
-              onClick={() =>
-                removeProduct(firstProduct.id, firstProduct.variation!)
-              }
+        const groups = selectedProduct.reduce<{
+          [variation: string]: SelectedProduct[];
+        }>((current, product: SelectedProduct) => {
+          const variation = product.variation!;
+
+          if (!current[variation]) {
+            current[variation] = [];
+          }
+
+          current[variation].push(product);
+          return current;
+        }, {});
+
+        return Object.values(groups).map(group => {
+          const firstProduct = group[0];
+          const product = productsById[firstProduct.id];
+
+          return (
+            <Grid
+              sx={{ gridTemplateColumns: "1fr 50px", my: 3 }}
+              key={`${firstProduct.id}${firstProduct.variation}`}
             >
-              -
-            </Button>
-          </Grid>
-        );
+              <Flex sx={{ display: "flex", alignItems: "center" }}>
+                <Box>
+                  <strong>{group.length}x</strong> {product.name}{" "}
+                  <strong>
+                    (
+                    {
+                      product.variations?.find(
+                        variation => variation.id === firstProduct.variation,
+                      )?.value
+                    }
+                    )
+                  </strong>
+                </Box>
+              </Flex>
+              <Button
+                variant="minus"
+                onClick={() =>
+                  removeProduct(firstProduct.id, firstProduct.variation!)
+                }
+              >
+                -
+              </Button>
+            </Grid>
+          );
+        });
       })}
     </React.Fragment>
   );

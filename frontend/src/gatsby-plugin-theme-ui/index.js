@@ -48,16 +48,19 @@ export default {
       bg: "blue",
       color: "text",
       border: "primary",
+      borderRadius: 0,
     },
     textarea: {
       fontFamily: "body",
       bg: "blue",
       border: "primary",
+      borderRadius: 0,
     },
     select: {
       fontFamily: "body",
       bg: "blue",
       border: "primary",
+      borderRadius: 0,
       option: {
         fontSize: 3,
         padding: 3,

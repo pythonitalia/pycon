@@ -9,8 +9,9 @@ query GetVoucher($conference: String!, $code: String!) {
       redeemed
       maxUsages
       priceMode
-      validUntil
-      itemId
+      items
+      allItems
+      variationId
     }
   }
 }

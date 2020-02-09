@@ -2,16 +2,14 @@
 import { Box, Button, Flex, Heading, Input, Text } from "@theme-ui/components";
 import React, { Fragment, useCallback, useContext } from "react";
 import { FormattedMessage } from "react-intl";
-import { useFormState } from "react-use-form-state";
 import { jsx } from "theme-ui";
 
 import { useCurrentLanguage } from "../../../context/language";
 import { HotelRoom } from "../../../generated/graphql-backend";
-import { Link } from "../../link";
 import { Ticket } from "../../tickets-form/types";
 import { OrderState, SelectedHotelRooms } from "../types";
 import { CreateOrderButtons } from "./create-order-buttons";
-import { ReviewItem } from "./review-item";
+import { calculateTotalAmount } from "./prices";
 
 type Props = {
   email: string;
@@ -26,41 +24,18 @@ type Props = {
   };
 };
 
-type VoucherForm = {
-  code: string;
-};
-
-const calculateTotalAmount = (
-  state: OrderState,
-  productsById: {
-    [x: string]: Ticket;
-    [x: number]: Ticket;
-  },
-  hotelRoomsById: {
-    [x: string]: HotelRoom;
-    [x: number]: HotelRoom;
-  },
-) => {
-  const ticketsPrice = Object.values(state.selectedProducts)
-    .flat()
-    .reduce((p, c) => p + parseFloat(productsById[c.id].defaultPrice), 0);
-  const hotelRoomsPrice = Object.values(state.selectedHotelRooms)
-    .flat()
-    .reduce(
-      (p, c) => p + parseFloat(hotelRoomsById[c.id].price) * c.numNights,
-      0,
-    );
-  return ticketsPrice + hotelRoomsPrice;
-};
-
 export const CompleteOrder: React.SFC<Props> = ({
   email,
   state,
   productsById,
   hotelRoomsById,
 }) => {
+  const lang = useCurrentLanguage();
   const totalAmount = calculateTotalAmount(state, productsById, hotelRoomsById);
-  const [formState, { text }] = useFormState<VoucherForm>();
+  const moneyFormatter = new Intl.NumberFormat(lang, {
+    style: "currency",
+    currency: "EUR",
+  });
 
   return (
     <Box sx={{ py: 5, borderTop: "primary" }}>
@@ -101,7 +76,7 @@ export const CompleteOrder: React.SFC<Props> = ({
             <FormattedMessage
               id="orderReview.totalAmount"
               values={{
-                total: totalAmount,
+                total: moneyFormatter.format(totalAmount),
               }}
             />
           </Text>
