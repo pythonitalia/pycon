@@ -43,7 +43,7 @@ class RankSubmission(admin.ModelAdmin):
     list_display = (
         "absolute_rank",
         "absolute_score",
-        "submission_id",
+        "duration",
         "title",
         "type",
         "topic",
@@ -58,6 +58,7 @@ class RankSubmission(admin.ModelAdmin):
         "rank_request_id",
         "submission__type",
         "submission__topic",
+        "submission__duration",
         "submission__speaker__gender",
     )
 
@@ -72,6 +73,9 @@ class RankSubmission(admin.ModelAdmin):
 
     def level(self, obj):  # pragma: no cover
         return obj.submission.audience_level.name
+
+    def duration(self, obj):  # pragma: no cover
+        return obj.submission.duration.duration
 
     def language(self, obj):  # pragma: no cover
         emoji = {"it": "🇮🇹", "en": "🇬🇧"}

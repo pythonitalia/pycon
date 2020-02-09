@@ -17,7 +17,14 @@ class SubmissionCommentInline(admin.TabularInline):
 
 @admin.register(Submission)
 class SubmissionAdmin(admin.ModelAdmin):
-    list_display = ("title", "type", "conference", "topic", "audience_level")
+    list_display = (
+        "title",
+        "type",
+        "conference",
+        "topic",
+        "duration",
+        "audience_level",
+    )
     fieldsets = (
         (
             _("Submission"),
