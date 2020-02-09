@@ -1,3 +1,5 @@
+#import "../../fragments/submission-accordion.graphql"
+
 query VotingSubmissions($conference: String!) {
   conference(code: $conference) {
     isVotingOpen
@@ -14,42 +16,7 @@ query VotingSubmissions($conference: String!) {
     }
 
     submissions {
-      id
-      title
-
-      elevatorPitch
-
-      topic {
-        id
-        name
-      }
-
-      tags {
-        name
-        id
-      }
-
-      audienceLevel {
-        id
-        name
-      }
-
-      duration {
-        id
-        name
-        duration
-      }
-
-      languages {
-        id
-        name
-        code
-      }
-
-      myVote {
-        id
-        value
-      }
+      ...submissionAccordion
     }
   }
 
