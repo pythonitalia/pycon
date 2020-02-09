@@ -6,7 +6,7 @@ import React, { useContext } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
-import { ConferenceContext } from "../../context/conference";
+import { useConference } from "../../context/conference";
 import { useCurrentLanguage } from "../../context/language";
 import {
   GetSubmissionQuery,
@@ -27,7 +27,8 @@ export const EditSubmission: React.SFC<RouteComponentProps<Props>> = ({
   id,
 }) => {
   const lang = useCurrentLanguage();
-  const conferenceCode = useContext(ConferenceContext);
+  const { code } = useConference();
+
   const [
     updateSubmission,
     {
@@ -136,7 +137,7 @@ export const EditSubmission: React.SFC<RouteComponentProps<Props>> = ({
           error={updateSubmissionError}
           data={updateSubmissionData}
           onSubmit={onSubmit}
-          conferenceCode={conferenceCode}
+          conferenceCode={code}
         />
       )}
     </Box>

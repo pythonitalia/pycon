@@ -2,12 +2,12 @@
 import { useQuery } from "@apollo/react-hooks";
 import { navigate, RouteComponentProps } from "@reach/router";
 import { Box, Text } from "@theme-ui/components";
-import { Fragment, useContext, useEffect } from "react";
+import { Fragment, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
 import { Alert } from "../../components/alert";
-import { ConferenceContext } from "../../context/conference";
+import { useConference } from "../../context/conference";
 import { useCurrentLanguage } from "../../context/language";
 import {
   MyProfileQuery,
@@ -23,14 +23,14 @@ import MY_PROFILE_QUERY from "./profile.graphql";
 export const ProfileApp: React.SFC<RouteComponentProps> = () => {
   const [_, setLoginState] = useLoginState();
   const lang = useCurrentLanguage();
-  const conferenceCode = useContext(ConferenceContext);
+  const { code } = useConference();
 
   const { loading, error, data: profileData } = useQuery<
     MyProfileQuery,
     MyProfileQueryVariables
   >(MY_PROFILE_QUERY, {
     variables: {
-      conference: conferenceCode,
+      conference: code,
     },
   });
 

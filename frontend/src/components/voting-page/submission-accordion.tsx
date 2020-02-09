@@ -164,7 +164,7 @@ export const SubmissionAccordion: React.SFC<Props> = ({
 
   const onSubmitVote = useCallback(
     value => {
-      if (loading) {
+      if (loading || !onVote) {
         return;
       }
 

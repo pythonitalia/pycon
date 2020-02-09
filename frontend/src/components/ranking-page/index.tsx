@@ -16,7 +16,6 @@ import { Alert } from "../alert";
 import { MetaTags } from "../meta-tags";
 import { SubmissionAccordion } from "../voting-page/submission-accordion";
 import RANKING_SUBMISSION from "./ranking-submissions.graphql";
-import { RankSubmissionRow } from "./submission-row";
 
 const COLORS = [
   {

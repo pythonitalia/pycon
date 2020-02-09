@@ -9,14 +9,11 @@ import { jsx } from "theme-ui";
 
 import { useLoginState } from "../../app/profile/hooks";
 import { Alert } from "../../components/alert";
-import IS_CFP_OPEN_QUERY from "../../components/cpf-page/is-cfp-open.graphql";
 import { LoginForm } from "../../components/login-form";
 import { MetaTags } from "../../components/meta-tags";
-import { ConferenceContext, useConference } from "../../context/conference";
+import { useConference } from "../../context/conference";
 import { SubmissionQuery as FallbackSubmissionQuery } from "../../generated/graphql";
 import {
-  IsCfpOpenQuery,
-  IsCfpOpenQueryVariables,
   IsVotingClosedQuery,
   IsVotingClosedQueryVariables,
   SubmissionQuery,
@@ -92,16 +89,14 @@ const Content = ({
   title: string;
 }) => {
   const [loggedIn, _] = useLoginState();
-  const conferenceCode = useContext(ConferenceContext);
+  const { code } = useConference();
 
   const { data } = useQuery<IsVotingClosedQuery, IsVotingClosedQueryVariables>(
     IS_VOTING_CLOSED_QUERY,
     {
-      variables: { conference: conferenceCode },
+      variables: { conference: code },
     },
   );
-
-  console.log(data?.conference.isVotingClosed);
 
   if (!data?.conference.isVotingClosed && !loggedIn) {
     return (

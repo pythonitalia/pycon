@@ -1,13 +1,12 @@
 /** @jsx jsx */
 import { useQuery } from "@apollo/react-hooks";
 import { Box, Heading } from "@theme-ui/components";
-import { useContext } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
 import { Alert } from "../../components/alert";
 import { Link } from "../../components/link";
-import { ConferenceContext } from "../../context/conference";
+import { useConference } from "../../context/conference";
 import {
   MySubmissionsQuery,
   MySubmissionsQueryVariables,
@@ -19,13 +18,13 @@ type Props = {
 };
 
 export const MySubmissions: React.SFC<Props> = ({ className }) => {
-  const conferenceCode = useContext(ConferenceContext);
+  const { code } = useConference();
   const { loading, error, data } = useQuery<
     MySubmissionsQuery,
     MySubmissionsQueryVariables
   >(MY_SUBMISSIONS, {
     variables: {
-      conference: conferenceCode,
+      conference: code,
     },
   });
 

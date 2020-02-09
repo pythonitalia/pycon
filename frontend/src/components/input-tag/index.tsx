@@ -1,9 +1,9 @@
 /** @jsx jsx */
 import { useQuery } from "@apollo/react-hooks";
-import { useCallback, useContext } from "react";
+import { useCallback } from "react";
 import { jsx } from "theme-ui";
 
-import { ConferenceContext } from "../../context/conference";
+import { useConference } from "../../context/conference";
 import { TagsQuery, TagsQueryVariables } from "../../generated/graphql-backend";
 import { Alert } from "../alert";
 import { Select } from "../select";
@@ -20,12 +20,13 @@ export const TagLine: React.SFC<TagLineProps> = ({ tags, onTagChange }) => {
       onTagChange(newTags || []);
     }
   }, []);
-  const conferenceCode = useContext(ConferenceContext);
+  const { code } = useConference();
+
   const { loading, error, data } = useQuery<TagsQuery, TagsQueryVariables>(
     TAGS_QUERY,
     {
       variables: {
-        conference: conferenceCode,
+        conference: code,
       },
     },
   );
