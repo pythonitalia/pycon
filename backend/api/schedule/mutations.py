@@ -9,6 +9,8 @@ from schedule.models import Day as DayModel
 from schedule.models import ScheduleItem, Slot
 from strawberry.types.datetime import Date
 
+from ..permissions import IsStaffPermission
+
 
 @strawberry.type
 class AddScheduleSlotError:
@@ -38,10 +40,9 @@ class UpdateOrCreateSlotItemResult:
     updated_slots: typing.List[ScheduleSlot]
 
 
-# TODO: permission
 @strawberry.type
 class ScheduleMutations:
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsStaffPermission])
     def add_schedule_slot(
         self, info, conference: strawberry.ID, duration: int, day: Date
     ) -> typing.Union[AddScheduleSlotError, Day]:
@@ -61,7 +62,7 @@ class ScheduleMutations:
 
         return Day(day=day.day, slots=day.slots.all())
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsStaffPermission])
     def update_or_create_slot_item(
         self, info, input: UpdateOrCreateSlotItemInput
     ) -> typing.Union[UpdateOrCreateSlotItemError, UpdateOrCreateSlotItemResult]:

@@ -4,10 +4,12 @@ from pytest import mark
 
 
 @mark.django_db
-def test_get_days_always_returns_conference_day(conference_factory, graphql_client):
+def test_get_days_always_returns_conference_day(
+    conference_factory, admin_graphql_client
+):
     conference = conference_factory(start=date(2020, 4, 2), end=date(2020, 4, 5))
 
-    resp = graphql_client.query(
+    resp = admin_graphql_client.query(
         """
         query($code: String!) {
             conference(code: $code) {
@@ -35,7 +37,7 @@ def test_get_days_always_returns_conference_day(conference_factory, graphql_clie
 
 @mark.django_db
 def test_get_days_with_configuration(
-    conference_factory, day_factory, slot_factory, graphql_client
+    conference_factory, day_factory, slot_factory, admin_graphql_client
 ):
     conference = conference_factory(start=date(2020, 4, 2), end=date(2020, 4, 2))
 
@@ -43,7 +45,7 @@ def test_get_days_with_configuration(
 
     slot_factory(day=day, hour=time(8, 45), duration=60)
 
-    resp = graphql_client.query(
+    resp = admin_graphql_client.query(
         """
         query($code: String!) {
             conference(code: $code) {
@@ -67,10 +69,10 @@ def test_get_days_with_configuration(
 
 
 @mark.django_db
-def test_add_slot_creates_day(conference_factory, day_factory, graphql_client):
+def test_add_slot_creates_day(conference_factory, day_factory, admin_graphql_client):
     conference = conference_factory(start=date(2020, 4, 2), end=date(2020, 4, 2))
 
-    resp = graphql_client.query(
+    resp = admin_graphql_client.query(
         """
         mutation AddScheduleSlot($code: ID!, $day: Date!, $duration: Int!) {
             addScheduleSlot(conference: $code, day: $day, duration: $duration) {
@@ -99,7 +101,7 @@ def test_add_slot_creates_day(conference_factory, day_factory, graphql_client):
 
 @mark.django_db
 def test_add_slot_add_slot(
-    conference_factory, day_factory, slot_factory, graphql_client
+    conference_factory, day_factory, slot_factory, admin_graphql_client
 ):
     conference = conference_factory(start=date(2020, 4, 2), end=date(2020, 4, 2))
 
@@ -107,7 +109,7 @@ def test_add_slot_add_slot(
 
     slot_factory(day=day, hour=time(8, 45), duration=60)
 
-    resp = graphql_client.query(
+    resp = admin_graphql_client.query(
         """
         mutation AddScheduleSlot($code: ID!, $day: Date!, $duration: Int!) {
             addScheduleSlot(conference: $code, day: $day, duration: $duration) {

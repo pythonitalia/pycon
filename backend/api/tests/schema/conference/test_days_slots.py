@@ -6,7 +6,11 @@ from pytest import mark
 
 @mark.django_db
 def test_get_days_with_configuration(
-    conference_factory, day_factory, slot_factory, schedule_item_factory, graphql_client
+    conference_factory,
+    day_factory,
+    slot_factory,
+    schedule_item_factory,
+    admin_graphql_client,
 ):
     conference = conference_factory(start=date(2020, 4, 2), end=date(2020, 4, 2))
 
@@ -14,7 +18,7 @@ def test_get_days_with_configuration(
     slot = slot_factory(day=day, hour=time(8, 45), duration=60)
     item = schedule_item_factory(slot=slot, submission=None)
 
-    resp = graphql_client.query(
+    resp = admin_graphql_client.query(
         """
         query($code: String!) {
             conference(code: $code) {
@@ -41,14 +45,14 @@ def test_get_days_with_configuration(
 
 @mark.django_db
 def test_add_custom_item(
-    conference_factory, day_factory, slot_factory, room, graphql_client
+    conference_factory, day_factory, slot_factory, room, admin_graphql_client
 ):
     conference = conference_factory(start=date(2020, 4, 2), end=date(2020, 4, 2))
 
     day = day_factory(conference=conference, day=date(2020, 4, 2))
     slot = slot_factory(day=day, hour=time(8, 45), duration=60)
 
-    resp = graphql_client.query(
+    resp = admin_graphql_client.query(
         """
         mutation($input: UpdateOrCreateSlotItemInput!) {
             updateOrCreateSlotItem(input: $input) {
@@ -79,14 +83,19 @@ def test_add_custom_item(
 
 @mark.django_db
 def test_add_custom_item_from_submission(
-    conference_factory, day_factory, slot_factory, room, submission, graphql_client
+    conference_factory,
+    day_factory,
+    slot_factory,
+    room,
+    submission,
+    admin_graphql_client,
 ):
     conference = conference_factory(start=date(2020, 4, 2), end=date(2020, 4, 2))
 
     day = day_factory(conference=conference, day=date(2020, 4, 2))
     slot = slot_factory(day=day, hour=time(8, 45), duration=60)
 
-    resp = graphql_client.query(
+    resp = admin_graphql_client.query(
         """
         mutation($input: UpdateOrCreateSlotItemInput!) {
             updateOrCreateSlotItem(input: $input) {
@@ -122,7 +131,7 @@ def test_edit_item(
     day_factory,
     slot_factory,
     room,
-    graphql_client,
+    admin_graphql_client,
     schedule_item_factory,
 ):
     conference = conference_factory(start=date(2020, 4, 2), end=date(2020, 4, 2))
@@ -132,7 +141,7 @@ def test_edit_item(
     slot_2 = slot_factory(day=day, hour=time(8, 45), duration=60)
     item = schedule_item_factory(slot=slot, submission=None, type="submission")
 
-    resp = graphql_client.query(
+    resp = admin_graphql_client.query(
         """
         mutation($input: UpdateOrCreateSlotItemInput!) {
             updateOrCreateSlotItem(input: $input) {
