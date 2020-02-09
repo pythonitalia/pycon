@@ -1,0 +1,38 @@
+fragment submissionAccordion on Submission {
+  id
+  title
+
+  elevatorPitch
+
+  topic {
+    id
+    name
+  }
+
+  tags {
+    name
+    id
+  }
+
+  audienceLevel {
+    id
+    name
+  }
+
+  duration {
+    id
+    name
+    duration
+  }
+
+  languages {
+    id
+    name
+    code
+  }
+
+  myVote {
+    id
+    value
+  }
+}

@@ -530,6 +530,38 @@ def test_is_voting_open_false_when_no_deadlines(graphql_client, conference):
 
 
 @mark.django_db
+@mark.parametrize("voting_closed", (True, False))
+def test_is_voting_closed(
+    graphql_client, conference_factory, deadline_factory, voting_closed
+):
+    now = timezone.now()
+
+    conference = conference_factory(timezone=pytz.timezone("America/Los_Angeles"))
+
+    deadline_factory(
+        start=now - timezone.timedelta(days=2),
+        end=now - timezone.timedelta(days=1)
+        if voting_closed
+        else now + timezone.timedelta(days=1),
+        conference=conference,
+        type="voting",
+    )
+
+    resp = graphql_client.query(
+        """
+        query($code: String!) {
+            conference(code: $code) {
+                isVotingClosed
+            }
+        }
+        """,
+        variables={"code": conference.code},
+    )
+
+    assert resp["data"]["conference"]["isVotingClosed"] is voting_closed
+
+
+@mark.django_db
 def test_can_see_submissions_as_staff(graphql_client, submission_factory, user_factory):
     user = user_factory(is_staff=True)
     submission = submission_factory()

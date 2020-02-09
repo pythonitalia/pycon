@@ -1,11 +1,11 @@
 /** @jsx jsx */
 import { useMutation } from "@apollo/react-hooks";
-import { Box, Button, Flex, Heading, Text } from "@theme-ui/components";
-import React, { Fragment, useCallback, useContext } from "react";
+import { Button, Flex } from "@theme-ui/components";
+import React, { Fragment, useCallback } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
-import { ConferenceContext } from "../../context/conference";
+import { useConference } from "../../context/conference";
 import { useCurrentLanguage } from "../../context/language";
 import {
   CreateOrderMutation,
@@ -21,7 +21,7 @@ type Props = {
 };
 
 export const CreateOrderButtons: React.SFC<Props> = ({ state, email }) => {
-  const conferenceCode = useContext(ConferenceContext);
+  const { code } = useConference();
   const language = useCurrentLanguage();
 
   const [
@@ -68,7 +68,7 @@ export const CreateOrderButtons: React.SFC<Props> = ({ state, email }) => {
 
       createOrder({
         variables: {
-          conference: conferenceCode,
+          conference: code,
 
           input: {
             paymentProvider,

@@ -3,12 +3,12 @@ import { useQuery } from "@apollo/react-hooks";
 import { RouteComponentProps, Router } from "@reach/router";
 import { Box, Text } from "@theme-ui/components";
 import moment from "moment";
-import React, { useCallback, useContext, useEffect, useReducer } from "react";
+import React, { useCallback, useEffect, useReducer } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
 import { useLoginState } from "../../app/profile/hooks";
-import { ConferenceContext } from "../../context/conference";
+import { useConference } from "../../context/conference";
 import { useCurrentLanguage } from "../../context/language";
 import {
   TicketsQuery,
@@ -30,7 +30,7 @@ import {
 } from "./utils";
 
 export const TicketsPage: React.SFC<RouteComponentProps> = props => {
-  const conferenceCode = useContext(ConferenceContext);
+  const { code } = useConference();
   const language = useCurrentLanguage();
   const [isLoggedIn] = useLoginState();
 
@@ -39,7 +39,7 @@ export const TicketsPage: React.SFC<RouteComponentProps> = props => {
     TicketsQueryVariables
   >(TICKETS_QUERY, {
     variables: {
-      conference: conferenceCode,
+      conference: code,
       language,
       isLogged: isLoggedIn,
     },

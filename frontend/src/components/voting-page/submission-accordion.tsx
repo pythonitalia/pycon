@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { useMutation } from "@apollo/react-hooks";
-import { Box, Flex, Grid, Heading, Text } from "@theme-ui/components";
-import { Fragment, useCallback, useState } from "react";
+import { Box, Grid, Heading, Text } from "@theme-ui/components";
+import React, { Fragment, useCallback, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
@@ -60,11 +60,13 @@ type VoteSubmission = {
 type Props = {
   backgroundColor: string;
   headingColor: string;
-  vote: {
+  showVoting?: boolean;
+  renderTitle?: (title: string) => string | React.ReactElement;
+  vote?: {
     id: string;
     value: number;
   } | null;
-  onVote: (submission: VoteSubmission) => void;
+  onVote?: (submission: VoteSubmission) => void;
   submission: VoteSubmission;
 };
 
@@ -98,6 +100,8 @@ export const SubmissionAccordion: React.SFC<Props> = ({
   vote,
   onVote,
   submission,
+  renderTitle,
+  showVoting = true,
   submission: {
     id,
     title,
@@ -160,7 +164,7 @@ export const SubmissionAccordion: React.SFC<Props> = ({
 
   const onSubmitVote = useCallback(
     value => {
-      if (loading) {
+      if (loading || !onVote) {
         return;
       }
 
@@ -237,7 +241,7 @@ export const SubmissionAccordion: React.SFC<Props> = ({
               py: 3,
             }}
           >
-            {title}
+            {renderTitle ? renderTitle(title) : title}
             {hasVote && (
               <Text
                 sx={{
@@ -317,39 +321,42 @@ export const SubmissionAccordion: React.SFC<Props> = ({
 
       {open && (
         <Fragment>
-          <Box sx={{ borderBottom: "primary", py: 3 }}>
-            <VoteSelector
-              value={vote?.value ?? 0}
-              onVote={onSubmitVote}
-              sx={{ maxWidth: "container", mx: "auto", px: 3 }}
-            />
+          {showVoting && (
+            <Box sx={{ borderBottom: "primary", py: 3 }}>
+              <VoteSelector
+                value={vote?.value ?? 0}
+                onVote={onSubmitVote}
+                sx={{ maxWidth: "container", mx: "auto", px: 3 }}
+              />
 
-            <Text
-              sx={{
-                mt: [3, 2],
-                px: 3,
+              <Text
+                sx={{
+                  mt: [3, 2],
+                  px: 3,
 
-                fontWeight: "bold",
-                maxWidth: "container",
-                mx: "auto",
-              }}
-            >
-              {loading && <FormattedMessage id="voting.sendingVote" />}
-              {error && error}
-              {submissionData &&
-                submissionData.sendVote.__typename === "SendVoteErrors" && (
-                  <Fragment>
-                    {submissionData.sendVote.nonFieldErrors}{" "}
-                    {submissionData.sendVote.validationSubmission}{" "}
-                    {submissionData.sendVote.validationValue}
-                  </Fragment>
-                )}
-              {submissionData &&
-                submissionData.sendVote.__typename === "VoteType" && (
-                  <FormattedMessage id="voting.voteSent" />
-                )}
-            </Text>
-          </Box>
+                  fontWeight: "bold",
+                  maxWidth: "container",
+                  mx: "auto",
+                }}
+              >
+                {loading && <FormattedMessage id="voting.sendingVote" />}
+                {error && error}
+                {submissionData &&
+                  submissionData.sendVote.__typename === "SendVoteErrors" && (
+                    <Fragment>
+                      {submissionData.sendVote.nonFieldErrors}{" "}
+                      {submissionData.sendVote.validationSubmission}{" "}
+                      {submissionData.sendVote.validationValue}
+                    </Fragment>
+                  )}
+                {submissionData &&
+                  submissionData.sendVote.__typename === "VoteType" && (
+                    <FormattedMessage id="voting.voteSent" />
+                  )}
+              </Text>
+            </Box>
+          )}
+
           <Grid
             sx={{
               maxWidth: "container",

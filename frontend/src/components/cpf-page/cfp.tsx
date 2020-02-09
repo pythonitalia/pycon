@@ -5,7 +5,7 @@ import { Container } from "@theme-ui/components";
 import { useContext } from "react";
 import { jsx } from "theme-ui";
 
-import { ConferenceContext } from "../../context/conference";
+import { useConference } from "../../context/conference";
 import { useCurrentLanguage } from "../../context/language";
 import {
   MeSubmissionsQuery,
@@ -19,7 +19,8 @@ import SEND_SUBMISSION from "./send-submission.graphql";
 
 export const Cfp: React.SFC = () => {
   const lang = useCurrentLanguage();
-  const conferenceCode = useContext(ConferenceContext);
+  const { code } = useConference();
+
   const [sendSubmission, { loading, error, data }] = useMutation<
     SendSubmissionMutation,
     SendSubmissionMutationVariables
@@ -31,7 +32,7 @@ export const Cfp: React.SFC = () => {
       >({
         query: ME_SUBMISSIONS,
         variables: {
-          conference: conferenceCode,
+          conference: code,
         },
       });
 
@@ -48,7 +49,7 @@ export const Cfp: React.SFC = () => {
           },
         },
         variables: {
-          conference: conferenceCode,
+          conference: code,
         },
       });
     },
@@ -62,7 +63,7 @@ export const Cfp: React.SFC = () => {
     const response = await sendSubmission({
       variables: {
         input: {
-          conference: conferenceCode,
+          conference: code,
           title: input.title,
           abstract: input.abstract,
           topic: input.topic,
@@ -90,7 +91,7 @@ export const Cfp: React.SFC = () => {
       loading={loading}
       error={error}
       data={data}
-      conferenceCode={conferenceCode}
+      conferenceCode={code}
       onSubmit={onSubmit}
     />
   );

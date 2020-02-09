@@ -7,17 +7,17 @@ import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
 import { Alert } from "../../components/alert";
-import { ConferenceContext } from "../../context/conference";
+import { useConference } from "../../context/conference";
 import { OrderQuery } from "../../generated/graphql-backend";
 import ORDER_QUERY from "./order.graphql";
 
 const OrderDetail: React.SFC<{ code: string }> = ({ code }) => {
-  const conferenceCode = useContext(ConferenceContext);
+  const conference = useConference();
 
   const { data, loading, error } = useQuery<OrderQuery>(ORDER_QUERY, {
     variables: {
       code,
-      conferenceCode,
+      conferenceCode: conference.code,
     },
   });
 

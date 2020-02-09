@@ -2,6 +2,7 @@
 import { useQuery } from "@apollo/react-hooks";
 import { RouteComponentProps } from "@reach/router";
 import { Box, Grid, Heading, Select, Text } from "@theme-ui/components";
+import React from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import { jsx } from "theme-ui";
@@ -13,10 +14,19 @@ import {
 } from "../../generated/graphql-backend";
 import { Alert } from "../alert";
 import { MetaTags } from "../meta-tags";
+import { SubmissionAccordion } from "../voting-page/submission-accordion";
 import RANKING_SUBMISSION from "./ranking-submissions.graphql";
-import { RankSubmissionRow } from "./submission-row";
 
-const COLORS = ["blue", "lightBlue"];
+const COLORS = [
+  {
+    background: "blue",
+    heading: "white",
+  },
+  {
+    background: "lightBlue",
+    heading: "black",
+  },
+];
 
 export const RankingPage: React.SFC<RouteComponentProps> = ({ location }) => {
   const { code: conferenceCode } = useConference();
@@ -28,9 +38,6 @@ export const RankingPage: React.SFC<RouteComponentProps> = ({ location }) => {
       conference: conferenceCode,
     },
   });
-
-  console.log(data);
-  console.log(error);
 
   const [filters, { select }] = useFormState();
 
@@ -107,11 +114,20 @@ export const RankingPage: React.SFC<RouteComponentProps> = ({ location }) => {
               return true;
             })
             .map((rankSubmission, index) => (
-              <RankSubmissionRow
+              <SubmissionAccordion
+                showVoting={false}
+                renderTitle={title => (
+                  <React.Fragment>
+                    <Text sx={{ fontWeight: "bold" }} as="span">
+                      {rankSubmission.absoluteRank}.
+                    </Text>{" "}
+                    {title}
+                  </React.Fragment>
+                )}
+                backgroundColor={COLORS[index % COLORS.length].background}
+                headingColor={COLORS[index % COLORS.length].heading}
                 key={rankSubmission.submission.id}
-                rankSubmission={rankSubmission}
-                backgroundColor={COLORS[index % COLORS.length]}
-                filterByTopic={!!filters.values.topic}
+                submission={rankSubmission.submission}
               />
             ))}
         </Box>

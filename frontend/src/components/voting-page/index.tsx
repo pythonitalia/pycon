@@ -106,7 +106,7 @@ export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
       e => e.message === "You need to have a ticket to see submissions",
     ) !== -1;
 
-  const isVotingClosed = data && !data.conference.isVotingOpen;
+  const isVotingClosed = false; // data && !data.conference.isVotingOpen;
 
   return (
     <Box>
