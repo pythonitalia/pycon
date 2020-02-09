@@ -2,8 +2,6 @@ fragment scheduleSlot on ScheduleSlot {
   id
   hour
   duration
-  offset
-  size
 
   items {
     id

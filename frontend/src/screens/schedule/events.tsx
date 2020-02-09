@@ -99,9 +99,10 @@ export const CustomEvent = ({ ...props }) => (
 export const ScheduleEntry: React.SFC<{
   item: Item;
   slot: Slot;
-  rowOffset: number;
+  rowStart: number;
+  rowEnd: number;
   rooms: Room[];
-}> = ({ item, slot, rowOffset, rooms }) => {
+}> = ({ item, slot, rowStart, rowEnd, rooms }) => {
   // find all the indexes for the rooms of this item, then
   // sort them and use the first one for the index of the item
   // this allows us to have items on multiple rooms without having
@@ -121,8 +122,8 @@ export const ScheduleEntry: React.SFC<{
       sx={{
         gridColumnStart: index + 2,
         gridColumnEnd: index + 2 + item.rooms.length,
-        gridRowStart: slot.offset / 5 + rowOffset,
-        gridRowEnd: (slot.offset + slot.size) / 5 + rowOffset,
+        gridRowStart: rowStart,
+        gridRowEnd: rowEnd,
         backgroundColor: "violet",
         position: "relative",
         zIndex: 10,

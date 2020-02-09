@@ -16,7 +16,6 @@ def test_get_days_always_returns_conference_day(conference_factory, graphql_clie
                     slots {
                         hour
                         duration
-                        offset
                     }
                 }
             }
@@ -42,7 +41,7 @@ def test_get_days_with_configuration(
 
     day = day_factory(conference=conference, day=date(2020, 4, 2))
 
-    slot_factory(day=day, hour=time(8, 45), duration=60, offset=0)
+    slot_factory(day=day, hour=time(8, 45), duration=60)
 
     resp = graphql_client.query(
         """
@@ -53,8 +52,6 @@ def test_get_days_with_configuration(
                     slots {
                         hour
                         duration
-                        offset
-                        size
                     }
                 }
             }
@@ -65,10 +62,7 @@ def test_get_days_with_configuration(
 
     assert "errors" not in resp
     assert resp["data"]["conference"]["days"] == [
-        {
-            "day": "2020-04-02",
-            "slots": [{"hour": "08:45:00", "duration": 60, "offset": 0, "size": 45}],
-        }
+        {"day": "2020-04-02", "slots": [{"hour": "08:45:00", "duration": 60}]}
     ]
 
 
@@ -85,8 +79,6 @@ def test_add_slot_creates_day(conference_factory, day_factory, graphql_client):
                     slots {
                         hour
                         duration
-                        offset
-                        size
                     }
                 }
             }
@@ -99,7 +91,7 @@ def test_add_slot_creates_day(conference_factory, day_factory, graphql_client):
 
     assert resp["data"]["addScheduleSlot"] == {
         "day": "2020-04-02",
-        "slots": [{"hour": "08:45:00", "duration": 60, "offset": 0, "size": 45}],
+        "slots": [{"hour": "08:45:00", "duration": 60}],
     }
 
     assert conference.days.count() == 1
@@ -113,7 +105,7 @@ def test_add_slot_add_slot(
 
     day = day_factory(conference=conference, day=date(2020, 4, 2))
 
-    slot_factory(day=day, hour=time(8, 45), duration=60, offset=0)
+    slot_factory(day=day, hour=time(8, 45), duration=60)
 
     resp = graphql_client.query(
         """
@@ -124,8 +116,6 @@ def test_add_slot_add_slot(
                     slots {
                         hour
                         duration
-                        offset
-                        size
                     }
                 }
             }
@@ -139,8 +129,8 @@ def test_add_slot_add_slot(
     assert resp["data"]["addScheduleSlot"] == {
         "day": "2020-04-02",
         "slots": [
-            {"hour": "08:45:00", "duration": 60, "offset": 0, "size": 45},
-            {"hour": "09:45:00", "duration": 45, "offset": 45, "size": 45},
+            {"hour": "08:45:00", "duration": 60},
+            {"hour": "09:45:00", "duration": 45},
         ],
     }
 

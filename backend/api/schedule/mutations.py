@@ -48,18 +48,16 @@ class ScheduleMutations:
         conference = Conference.objects.get(code=conference)
         day, _ = DayModel.objects.get_or_create(day=day, conference=conference)
 
-        # TODO: ordering
+        # TODO: ordering by hour
         last_slot = day.slots.last()
 
         # TODO: is it ok to hardcode this?
         hour = time(8, 45)
-        offset = 0
 
         if last_slot:
             hour = add_minutes_to_time(last_slot.hour, last_slot.duration)
-            offset = last_slot.offset + last_slot.size
 
-        Slot.objects.create(day=day, hour=hour, duration=duration, offset=offset)
+        Slot.objects.create(day=day, hour=hour, duration=duration)
 
         return Day(day=day.day, slots=day.slots.all())
 
@@ -98,8 +96,6 @@ class ScheduleMutations:
                 ScheduleSlot(
                     hour=schedule_item.slot.hour,
                     duration=schedule_item.slot.duration,
-                    offset=schedule_item.slot.offset,
-                    size=schedule_item.slot.size,
                     id=schedule_item.slot.id,
                 )
             )
@@ -111,13 +107,7 @@ class ScheduleMutations:
         schedule_item.rooms.set(input.rooms)
 
         updated_slots.append(
-            ScheduleSlot(
-                hour=slot.hour,
-                duration=slot.duration,
-                offset=slot.offset,
-                size=slot.size,
-                id=slot.id,
-            )
+            ScheduleSlot(hour=slot.hour, duration=slot.duration, id=slot.id)
         )
 
         return UpdateOrCreateSlotItemResult(updated_slots=updated_slots)

@@ -7,6 +7,24 @@ import { ScheduleEntry } from "./events";
 import { Placeholder } from "./placeholder";
 import { Room, Slot } from "./types";
 
+const SLOT_SIZE = 12;
+
+const getRowStartForSlot = ({
+  offset,
+  index,
+}: {
+  offset: number;
+  index: number;
+}) => SLOT_SIZE * index + offset;
+
+const getRowEndForSlot = ({
+  offset,
+  index,
+}: {
+  offset: number;
+  index: number;
+}) => SLOT_SIZE * (index + 1) + offset;
+
 export const Schedule: React.SFC<{
   slots: Slot[];
   rooms: Room[];
@@ -25,8 +43,7 @@ export const Schedule: React.SFC<{
   moveItem,
 }) => {
   const rowOffset = 6;
-  const totalRows =
-    slots.reduce((total, slot) => slot.size + total, 0) / 5 + rowOffset;
+  const totalRows = SLOT_SIZE * slots.length + rowOffset;
   const totalColumns = rooms.length;
 
   const handleDrop = (item: any, slot: Slot, index: number) => {
@@ -78,49 +95,64 @@ export const Schedule: React.SFC<{
         </Box>
       ))}
 
-      {slots.map(slot => (
-        <React.Fragment key={slot.hour.toString()}>
-          <Box
-            sx={{
-              gridColumnStart: 1,
-              gridColumnEnd: 1,
-              gridRowStart: "var(--start)",
-              gridRowEnd: "var(--end)",
-              backgroundColor: "white",
-              p: 3,
-              textAlign: "center",
-              fontWeight: "bold",
-            }}
-            style={{
-              "--start": slot.offset / 5 + rowOffset,
-              "--end": (slot.offset + slot.size) / 5 + rowOffset,
-            }}
-          >
-            <Box>{slot.hour}</Box>
-          </Box>
+      {slots.map((slot, slotIndex) => {
+        const rowStart = getRowStartForSlot({
+          index: slotIndex,
+          offset: rowOffset,
+        });
 
-          {rooms.map((_, index) => (
-            <React.Fragment key={`${index}-${slot.duration}-${slot.offset}`}>
-              <Placeholder
-                columnStart={index + 2}
-                rowStart={slot.offset / 5 + rowOffset}
-                rowEnd={(slot.offset + slot.size) / 5 + rowOffset}
-                duration={slot.duration}
-                onDrop={(item: any) => handleDrop(item, slot, index)}
-              />
+        const rowEnd = getRowEndForSlot({
+          index: slotIndex,
+          offset: rowOffset,
+        });
 
-              {slot.items[index] && (
-                <ScheduleEntry
-                  item={slot.items[index]}
-                  slot={slot}
-                  rowOffset={rowOffset}
-                  rooms={rooms}
+        console.log(slotIndex, rowStart, rowEnd);
+
+        return (
+          <React.Fragment key={slot.id}>
+            <Box
+              sx={{
+                gridColumnStart: 1,
+                gridColumnEnd: 1,
+                gridRowStart: "var(--start)",
+                gridRowEnd: "var(--end)",
+                backgroundColor: "white",
+                p: 3,
+                textAlign: "center",
+                fontWeight: "bold",
+              }}
+              style={{
+                "--start": rowStart,
+                "--end": rowEnd,
+              }}
+            >
+              <Box>{slot.hour}</Box>
+            </Box>
+
+            {rooms.map((room, index) => (
+              <React.Fragment key={`${room.id}-${slot.id}`}>
+                <Placeholder
+                  columnStart={index + 2}
+                  rowStart={rowStart}
+                  rowEnd={rowEnd}
+                  duration={slot.duration}
+                  onDrop={(item: any) => handleDrop(item, slot, index)}
                 />
-              )}
-            </React.Fragment>
-          ))}
-        </React.Fragment>
-      ))}
+
+                {slot.items[index] && (
+                  <ScheduleEntry
+                    item={slot.items[index]}
+                    slot={slot}
+                    rowStart={rowStart}
+                    rowEnd={rowEnd}
+                    rooms={rooms}
+                  />
+                )}
+              </React.Fragment>
+            ))}
+          </React.Fragment>
+        );
+      })}
     </Grid>
   );
 };

@@ -26,8 +26,6 @@ class Slot(models.Model):
     day = models.ForeignKey(Day, on_delete=models.CASCADE, related_name="slots")
     hour = models.TimeField()
     duration = models.PositiveSmallIntegerField()
-    offset = models.PositiveSmallIntegerField()
-    size = models.PositiveSmallIntegerField(default=45)
 
     def __str__(self):
         return f"{self.day} - {self.hour}"

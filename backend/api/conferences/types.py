@@ -43,8 +43,6 @@ class Topic:
 class ScheduleSlot:
     hour: Time
     duration: int
-    offset: int
-    size: int
     id: strawberry.ID
 
     @strawberry.field
