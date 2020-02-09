@@ -89,13 +89,14 @@ export const RankingPage: React.SFC<RouteComponentProps> = ({ location }) => {
               </Select>
             </Box>
           </Grid>
+
+          {loading && (
+            <Alert variant="info">
+              <FormattedMessage id="voting.loading" />
+            </Alert>
+          )}
         </Box>
       </Box>
-      {loading && (
-        <Alert variant="info">
-          <FormattedMessage id="voting.loading" />
-        </Alert>
-      )}
       {data?.conference.ranking && (
         <Box
           as="ul"
