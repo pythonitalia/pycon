@@ -102,6 +102,7 @@ export const RankingPage: React.SFC<RouteComponentProps> = ({ location }) => {
           as="ul"
           sx={{
             listStyle: "none",
+            mt: [3, 0],
           }}
         >
           {data?.conference.ranking
