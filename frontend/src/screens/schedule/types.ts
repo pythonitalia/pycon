@@ -4,14 +4,19 @@ export const ItemTypes = {
   CUSTOM: "custom",
 };
 
+export type Submission = {
+  title: string;
+  type: { name: string } | null;
+  duration: { duration: number } | null;
+  audienceLevel: { name: string };
+};
+
 export type Item = {
   id: string;
   title: string;
+  type: string;
   rooms: Room[];
-  submission?: {
-    type: { name: string } | null;
-    duration: { duration: number } | null;
-  } | null;
+  submission?: Submission | null;
 };
 
 export type Slot = {

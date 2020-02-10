@@ -145,6 +145,8 @@ export const ScheduleScreen: React.SFC<RouteComponentProps> = () => {
 
   const day = days.find(d => d.day === currentDay);
 
+  console.log(day);
+
   return (
     <DndProvider backend={Backend}>
       <ItemsPanel submissions={submissions!} />

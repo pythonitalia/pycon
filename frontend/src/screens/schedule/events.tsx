@@ -4,7 +4,18 @@ import React from "react";
 import { useDrag } from "react-dnd";
 import { jsx } from "theme-ui";
 
-import { Item, ItemTypes, Room, Slot } from "./types";
+import { getColorForSubmission } from "./get-color-for-submission";
+import {
+  Item,
+  ItemTypes,
+  Room,
+  Slot,
+  Submission as SubmissionType,
+} from "./types";
+
+const COLOR_MAP = {
+  custom: "cinderella",
+};
 
 const BaseDraggable: React.SFC<{ type: string; metadata?: any }> = ({
   type,
@@ -58,25 +69,24 @@ export const BaseEvent: React.SFC<{ type: string; metadata: any }> = ({
 );
 
 export const Submission = ({
-  duration,
-  title,
-  type,
-  id,
+  submission,
   ...props
 }: {
-  id: string;
-  title: string;
-  type: string;
-  duration: number;
+  submission: SubmissionType;
 }) => {
   const itemType =
-    type.toLocaleLowerCase() === "tutorial"
+    submission.type?.name.toLocaleLowerCase() === "tutorial"
       ? ItemTypes.TRAINING
-      : `TALK_${duration}`;
+      : `TALK_${submission.duration!.duration}`;
 
   return (
-    <BaseEvent type={itemType} metadata={{ event: { id } }} {...props}>
-      {title} {duration}
+    <BaseEvent
+      type={itemType}
+      metadata={{ event: { id: submission.id } }}
+      sx={{ backgroundColor: getColorForSubmission(submission) }}
+      {...props}
+    >
+      {submission.title} {submission.duration!.duration}
     </BaseEvent>
   );
 };
@@ -109,11 +119,16 @@ export const ScheduleEntry: React.SFC<{
   // TODO: training type
   const type = `TALK_${slot.duration}`;
 
+  const backgroundColor =
+    item.type === "submission" && item.submission
+      ? getColorForSubmission(item.submission)
+      : COLOR_MAP.custom;
+
   return (
     <BaseDraggable
       type={type}
       sx={{
-        backgroundColor: "violet",
+        backgroundColor,
         position: "relative",
         zIndex: 10,
         p: 3,

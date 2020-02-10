@@ -1,3 +1,4 @@
+#import "./fragments/submission.graphql"
 #import "./fragments/schedule-slot.graphql"
 
 query Schedule($code: String!) {
@@ -11,16 +12,7 @@ query Schedule($code: String!) {
 
     # TODO: only if admin
     submissions {
-      id
-      title
-
-      duration {
-        duration
-      }
-
-      type {
-        name
-      }
+      ...SubmissionFragment
     }
 
     durations {

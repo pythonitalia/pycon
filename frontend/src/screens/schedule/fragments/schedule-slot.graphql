@@ -1,3 +1,6 @@
+#import "./submission.graphql"
+
+
 fragment scheduleSlot on ScheduleSlot {
   id
   hour
@@ -6,14 +9,12 @@ fragment scheduleSlot on ScheduleSlot {
   items {
     id
     title
+    type
+
     submission {
-      duration {
-        duration
-      }
-      type {
-        name
-      }
+      ...SubmissionFragment
     }
+
     rooms {
       id
       name

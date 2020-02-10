@@ -54,13 +54,10 @@ export const ItemsPanel: React.SFC<ItemsPanelProp> = ({ submissions }) => {
           }
           sx={{ mb: 4 }}
         />
-        {filteredSubmissions.map(({ id, title, type, duration }) => (
+        {filteredSubmissions.map(submission => (
           <Submission
-            type={type!.name}
-            key={id}
-            id={id}
-            title={title}
-            duration={duration!.duration}
+            submission={submission}
+            key={submission.id}
             sx={{ mb: 3, width: "100%" }}
           />
         ))}

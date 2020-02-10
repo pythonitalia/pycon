@@ -1,0 +1,16 @@
+fragment SubmissionFragment on Submission {
+  id
+  title
+
+  duration {
+    duration
+  }
+
+  audienceLevel {
+    name
+  }
+
+  type {
+    name
+  }
+}
