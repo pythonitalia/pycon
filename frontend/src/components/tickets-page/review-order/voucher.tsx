@@ -192,8 +192,14 @@ export const Voucher: React.SFC<Props> = ({
         )}
 
         {queryState.data && !queryState.data.conference.voucher && (
-          <Alert variant="info">
+          <Alert variant="alert">
             <FormattedMessage id="voucher.codeNotValid" />
+          </Alert>
+        )}
+
+        {state.voucherCode && !state.voucherUsed && (
+          <Alert variant="info">
+            <FormattedMessage id="voucher.noProductsAffected" />
           </Alert>
         )}
       </Box>

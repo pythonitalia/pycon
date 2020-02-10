@@ -43,6 +43,7 @@ export type OrderState = {
   invoiceInformation: InvoiceInformationState;
   selectedHotelRooms: SelectedHotelRooms;
   voucherCode: string;
+  voucherUsed: boolean;
 };
 
 export type UpdateProductAction =

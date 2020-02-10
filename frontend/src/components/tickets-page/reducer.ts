@@ -94,6 +94,7 @@ const applyVoucher = (state: OrderState, voucher: Voucher): OrderState => {
   const selectedProducts = { ...state.selectedProducts };
 
   let usagesLeft = voucher.maxUsages - voucher.redeemed;
+  let hasBeenUsed = false;
 
   // We go over all the selected products either to:
   // 1. Apply the voucher code if possible
@@ -117,6 +118,7 @@ const applyVoucher = (state: OrderState, voucher: Voucher): OrderState => {
       }
 
       usagesLeft--;
+      hasBeenUsed = true;
 
       // We cannot calculate the new price here.
       // we only say "here you voucher, use it when you can calculate the price"
@@ -130,6 +132,7 @@ const applyVoucher = (state: OrderState, voucher: Voucher): OrderState => {
   return {
     ...state,
     voucherCode: voucher.code,
+    voucherUsed: hasBeenUsed,
     selectedProducts,
   };
 };

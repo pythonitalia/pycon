@@ -320,6 +320,7 @@ export const messages = {
     "voucher.voucherHeading": "Voucher",
     "voucher.redeemVoucher": "Redeem",
     "voucher.removeVoucher": "Remove: {code}",
+    "voucher.noProductsAffected": "Voucher code correct, but no product in the cart can be discounted",
 
     "ranking.heading": "Community voting results",
     "ranking.introduction":
@@ -580,6 +581,8 @@ export const messages = {
 
     "voucher.voucherHeading": "Codice sconto",
     "voucher.redeemVoucher": "Usa",
+    "voucher.loading": "Caricamento",
+    "voucher.noProductsAffected": "Codice sconto attivato ma nessun prodotto nel carrello può essere scontato",
 
     "orderInformation.heading": "Informazioni di fatturazione",
     "orderInformation.individualConsumer": "Persona individuale",

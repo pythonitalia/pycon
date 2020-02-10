@@ -31,9 +31,9 @@ import {
 } from "./utils";
 
 const cartReplacer = (key: string, value: any) => {
-  if (key === "voucher") {
+  if (key === "voucher" || key === "voucherUsed") {
     /*
-      Remove the stored voucher from the products.
+      Remove the stored voucher state from the products.
       we want to make sure it's always up to date
       so we remove it and fetch it again when the user refreshes the page
     */
@@ -74,6 +74,7 @@ export const TicketsPage: React.SFC<RouteComponentProps> = props => {
     },
     selectedHotelRooms: {},
     voucherCode: "",
+    voucherUsed: false,
   };
 
   let storedCart = null;
@@ -183,11 +184,12 @@ export const TicketsPage: React.SFC<RouteComponentProps> = props => {
   );
 
   const removeVoucher = useCallback(
-    () => dispatcher({
-      type: 'removeVoucher'
-    }),
-    []
-  )
+    () =>
+      dispatcher({
+        type: "removeVoucher",
+      }),
+    [],
+  );
 
   const goToQuestionsOrReview = () => {
     const productIds = Object.values(
