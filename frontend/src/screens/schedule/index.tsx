@@ -16,6 +16,7 @@ import {
   UpdateOrCreateSlotItemMutation,
   UpdateOrCreateSlotItemMutationVariables,
 } from "../../generated/graphql-backend";
+import { useCurrentUser } from "../../helpers/use-current-user";
 import ADD_SCHEDULE_SLOT_QUERY from "./add-schedule-slot.graphql";
 import { DaySelector } from "./day-selector";
 import { AllTracksEvent, Submission } from "./events";
@@ -52,12 +53,16 @@ export const ScheduleScreen: React.SFC<RouteComponentProps> = () => {
   // TODO: redirect to today or first day when we add per day routes
   const [currentDay, setCurrentDay] = useState<string | null>(null);
 
+  const { user } = useCurrentUser();
+  const shouldShowAdmin = !!user;
+
   const { loading, data, error } = useQuery<
     ScheduleQuery,
     ScheduleQueryVariables
   >(SCHEDULE_QUERY, {
     variables: {
       code,
+      fetchSubmissions: shouldShowAdmin,
     },
   });
 
@@ -145,13 +150,13 @@ export const ScheduleScreen: React.SFC<RouteComponentProps> = () => {
 
   const day = days.find(d => d.day === currentDay);
 
-  console.log(day);
-
   return (
     <DndProvider backend={Backend}>
-      <ItemsPanel submissions={submissions!} />
+      {shouldShowAdmin && <ItemsPanel submissions={submissions!} />}
       {(addingSlot || updatingSchedule) && <LoadingOverlay />}
-      <Box sx={{ flex: 1, width: "calc(100% - 300px)" }}>
+      <Box
+        sx={{ flex: 1, width: shouldShowAdmin ? "calc(100% - 300px)" : "100%" }}
+      >
         <Box sx={{ backgroundColor: "orange", borderTop: "primary" }}>
           <Flex sx={{ py: 4, px: 3, maxWidth: "largeContainer", mx: "auto" }}>
             <Heading sx={{ fontSize: 6 }}>Schedule</Heading>
@@ -168,33 +173,36 @@ export const ScheduleScreen: React.SFC<RouteComponentProps> = () => {
           <Schedule
             slots={day.slots}
             rooms={rooms}
+            adminMode={shouldShowAdmin}
             addCustomScheduleItem={addCustomScheduleItem}
             addSubmissionToSchedule={addSubmissionToSchedule}
             moveItem={moveItem}
           />
         )}
 
-        <Box sx={{ my: 4, ml: 100 }}>
-          {data?.conference.durations.map(duration => {
-            if (
-              duration.allowedSubmissionTypes.find(
-                type => type.name.toLowerCase() !== "talk",
-              )
-            ) {
-              return null;
-            }
+        {shouldShowAdmin && (
+          <Box sx={{ my: 4, ml: 100 }}>
+            {data?.conference.durations.map(duration => {
+              if (
+                duration.allowedSubmissionTypes.find(
+                  type => type.name.toLowerCase() !== "talk",
+                )
+              ) {
+                return null;
+              }
 
-            return (
-              <Button
-                sx={{ mr: 3 }}
-                key={duration.duration}
-                onClick={() => addScheduleSlot(duration.duration)}
-              >
-                Add {duration.duration} minutes slot
-              </Button>
-            );
-          })}
-        </Box>
+              return (
+                <Button
+                  sx={{ mr: 3 }}
+                  key={duration.duration}
+                  onClick={() => addScheduleSlot(duration.duration)}
+                >
+                  Add {duration.duration} minutes slot
+                </Button>
+              );
+            })}
+          </Box>
+        )}
       </Box>
     </DndProvider>
   );

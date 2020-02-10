@@ -135,6 +135,7 @@ const getEntryPosition = ({
 export const Schedule: React.SFC<{
   slots: Slot[];
   rooms: Room[];
+  adminMode: boolean;
   addCustomScheduleItem: (slotId: string, rooms: string[]) => void;
   moveItem: (slotId: string, rooms: string[], itemId: string) => void;
   addSubmissionToSchedule: (
@@ -143,6 +144,7 @@ export const Schedule: React.SFC<{
     submissionId: string,
   ) => void;
 }> = ({
+  adminMode,
   slots,
   rooms,
   addCustomScheduleItem,
@@ -248,6 +250,7 @@ export const Schedule: React.SFC<{
                 rowEnd={rowEnd}
                 duration={slot.duration}
                 roomType={room.type}
+                adminMode={adminMode}
                 onDrop={(item: any) => handleDrop(item, slot, index)}
               />
             ))}
@@ -258,6 +261,7 @@ export const Schedule: React.SFC<{
                 item={item}
                 slot={slot}
                 rooms={rooms}
+                adminMode={adminMode}
                 sx={{
                   position: "relative",
                   "&::after": fakeBottomBorder,

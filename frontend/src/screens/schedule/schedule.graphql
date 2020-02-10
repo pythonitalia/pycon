@@ -1,7 +1,7 @@
 #import "./fragments/submission.graphql"
 #import "./fragments/schedule-slot.graphql"
 
-query Schedule($code: String!) {
+query Schedule($code: String!, $fetchSubmissions: Boolean!) {
   conference(code: $code) {
     days {
       day
@@ -10,8 +10,7 @@ query Schedule($code: String!) {
       }
     }
 
-    # TODO: only if admin
-    submissions {
+    submissions @include(if: $fetchSubmissions) {
       ...SubmissionFragment
     }
 

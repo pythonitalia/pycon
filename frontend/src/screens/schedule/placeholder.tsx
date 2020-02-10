@@ -7,13 +7,22 @@ import { jsx } from "theme-ui";
 import { ItemTypes } from "./types";
 
 export const Placeholder: React.SFC<{
+  adminMode: boolean;
   columnStart: number;
   rowStart: number;
   rowEnd: number;
   duration: number;
   roomType: string;
   onDrop: (item: any) => void;
-}> = ({ columnStart, rowStart, rowEnd, duration, roomType, onDrop }) => {
+}> = ({
+  adminMode,
+  columnStart,
+  rowStart,
+  rowEnd,
+  duration,
+  roomType,
+  onDrop,
+}) => {
   const accept = [`TALK_${duration}`, ItemTypes.CUSTOM];
 
   if (columnStart === 2) {
@@ -37,7 +46,7 @@ export const Placeholder: React.SFC<{
 
   return (
     <Box
-      ref={drop}
+      ref={adminMode ? drop : null}
       sx={{
         gridColumnStart: columnStart,
         gridColumnEnd: columnStart + 1,
@@ -47,7 +56,7 @@ export const Placeholder: React.SFC<{
         p: 3,
       }}
     >
-      Placeholder {duration}
+      {adminMode && `Placeholder ${duration}`}
     </Box>
   );
 };

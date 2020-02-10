@@ -17,12 +17,11 @@ const COLOR_MAP = {
   custom: "cinderella",
 };
 
-const BaseDraggable: React.SFC<{ type: string; metadata?: any }> = ({
-  type,
-  children,
-  metadata,
-  ...props
-}) => {
+const BaseDraggable: React.SFC<{
+  type: string;
+  metadata?: any;
+  adminMode?: boolean;
+}> = ({ adminMode, type, children, metadata, ...props }) => {
   const [_, drag] = useDrag({
     item: {
       type,
@@ -35,9 +34,9 @@ const BaseDraggable: React.SFC<{ type: string; metadata?: any }> = ({
 
   return (
     <Box
-      ref={drag}
+      ref={adminMode ? drag : null}
       sx={{
-        cursor: "move",
+        cursor: adminMode ? "move" : "",
       }}
       {...props}
     >
@@ -54,6 +53,7 @@ export const BaseEvent: React.SFC<{ type: string; metadata: any }> = ({
 }) => (
   <BaseDraggable
     type={type}
+    adminMode={true}
     metadata={metadata}
     sx={{
       display: "inline-block",
@@ -91,7 +91,7 @@ export const Submission = ({
         ({submission.duration!.duration} minutes)
       </Text>
       <Text sx={{ fontWeight: "bold", color: "white", mt: 2 }}>
-        {submission.speaker.fullName || "No name"}
+        {submission.speaker?.fullName || "No name"}
       </Text>
     </BaseEvent>
   );
@@ -118,10 +118,11 @@ export const CustomEvent = ({ ...props }) => (
 );
 
 export const ScheduleEntry: React.SFC<{
+  adminMode: boolean;
   item: Item;
   slot: Slot;
   rooms: Room[];
-}> = ({ item, slot, rooms, ...props }) => {
+}> = ({ item, adminMode, slot, rooms, ...props }) => {
   // TODO: training type
   const type = `TALK_${slot.duration}`;
 
@@ -132,6 +133,7 @@ export const ScheduleEntry: React.SFC<{
 
   return (
     <BaseDraggable
+      adminMode={adminMode}
       type={type}
       sx={{
         backgroundColor,
@@ -150,7 +152,7 @@ export const ScheduleEntry: React.SFC<{
         <Text sx={{ fontWeight: "bold" }}>
           {item.speakers.map(s => s.fullName).join(" & ")}
         </Text>
-        <Text>{item.submission?.audienceLevel.name}</Text>
+        <Text>{item.submission?.audienceLevel!.name}</Text>
       </Box>
     </BaseDraggable>
   );

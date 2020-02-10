@@ -5,11 +5,12 @@ export const ItemTypes = {
 };
 
 export type Submission = {
+  id: string;
   title: string;
   type: { name: string } | null;
   duration: { duration: number } | null;
-  audienceLevel: { name: string };
-  speaker: { fullName: string };
+  audienceLevel: { name: string } | null;
+  speaker: { fullName: string } | null;
 };
 
 export type Item = {

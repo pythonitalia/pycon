@@ -83,6 +83,7 @@ class ScheduleItem(TimeStampedModel):
         null=True,
         blank=True,
         verbose_name=_("submission"),
+        related_name="schedule_items",
     )
     image = models.ImageField(
         _("image"), null=True, blank=True, upload_to="schedule_items"
