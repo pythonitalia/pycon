@@ -4,7 +4,7 @@ from typing import List, Optional
 import strawberry
 from django import forms
 from django.core.exceptions import ImproperlyConfigured
-from strawberry.types.datetime import DateTime
+from strawberry.types.datetime import Date, DateTime, Time
 
 
 @singledispatch
@@ -87,7 +87,7 @@ def convert_form_field_to_list(field):
 @convert_form_field.register(forms.DateField)
 def convert_form_field_to_date(field):
     return (
-        type_or_optional_wrapped(str, field.required),
+        type_or_optional_wrapped(Date, field.required),
         strawberry.field(description=field.help_text, is_input=True),
     )
 
@@ -103,7 +103,7 @@ def convert_form_field_to_datetime(field):
 @convert_form_field.register(forms.TimeField)
 def convert_form_field_to_time(field):
     return (
-        type_or_optional_wrapped(str, field.required),
+        type_or_optional_wrapped(Time, field.required),
         strawberry.field(description=field.help_text, is_input=True),
     )
 

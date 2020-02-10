@@ -8,6 +8,8 @@ from django.forms import (
     BooleanField,
     CharField,
     ChoiceField,
+    DateField,
+    DateTimeField,
     DecimalField,
     EmailField,
     Field,
@@ -16,10 +18,12 @@ from django.forms import (
     ModelMultipleChoiceField,
     NullBooleanField,
     SlugField,
+    TimeField,
     URLField,
     UUIDField,
 )
 from django.forms.fields import BaseTemporalField
+from strawberry.types.datetime import Date, DateTime, Time
 from strawberry_forms.converter import convert_form_field
 from strawberry_forms.mutations import convert_enums_to_values
 
@@ -37,9 +41,9 @@ CONVERT_MAP = {
     # NumberInput: Int,
     DecimalField: float,
     FloatField: float,
-    # DateField: Date,
-    # DateTimeField: DateTime,
-    # TimeField: Time,
+    DateField: Date,
+    DateTimeField: DateTime,
+    TimeField: Time,
 }
 
 

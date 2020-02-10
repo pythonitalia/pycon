@@ -191,10 +191,6 @@ class Conference:
             return []
 
     @strawberry.field
-    def tracks(self, info) -> Optional[Room]:
-        return self.rooms.all()
-
-    @strawberry.field
     def days(self, info) -> List[Day]:
         all_days = daterange(self.start.date(), self.end.date() + timedelta(days=1))
         days = self.days.all()
