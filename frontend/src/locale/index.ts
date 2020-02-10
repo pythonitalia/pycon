@@ -583,6 +583,7 @@ export const messages = {
     "voucher.redeemVoucher": "Usa",
     "voucher.loading": "Caricamento",
     "voucher.noProductsAffected": "Codice sconto attivato ma nessun prodotto nel carrello può essere scontato",
+    "voucher.removeVoucher": "Rimuovi: {code}",
 
     "orderInformation.heading": "Informazioni di fatturazione",
     "orderInformation.individualConsumer": "Persona individuale",
