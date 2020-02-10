@@ -320,7 +320,8 @@ export const messages = {
     "voucher.voucherHeading": "Voucher",
     "voucher.redeemVoucher": "Redeem",
     "voucher.removeVoucher": "Remove: {code}",
-    "voucher.noProductsAffected": "Voucher code correct, but no product in the cart can be discounted",
+    "voucher.noProductsAffected":
+      "Voucher code correct, but no product in the cart can be discounted",
 
     "ranking.heading": "Community voting results",
     "ranking.introduction":
@@ -578,12 +579,16 @@ export const messages = {
     "orderReview.ticketPrice": "{finalPrice}",
     "orderReview.ticketPriceWithVoucher": "{basePrice} {finalPrice}",
     "orderReview.totalAmount": "{total}",
+    "orderReview.hotelPrice":
+      "{roomPrice}€ x{numNights, plural, one {1 notte} other {{numNights} notti}} (incl. 22% IVA)",
 
     "voucher.voucherHeading": "Codice sconto",
     "voucher.redeemVoucher": "Usa",
     "voucher.loading": "Caricamento",
-    "voucher.noProductsAffected": "Codice sconto attivato ma nessun prodotto nel carrello può essere scontato",
+    "voucher.noProductsAffected":
+      "Codice sconto attivato ma nessun prodotto nel carrello può essere scontato",
     "voucher.removeVoucher": "Rimuovi: {code}",
+    "voucher.codeNotValid": "Codice non valido",
 
     "orderInformation.heading": "Informazioni di fatturazione",
     "orderInformation.individualConsumer": "Persona individuale",

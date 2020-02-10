@@ -8,8 +8,8 @@ import { useCurrentLanguage } from "../../../context/language";
 import { Link } from "../../link";
 import { Ticket } from "../../tickets-form/types";
 import { SelectedProducts } from "../types";
-import { ReviewItem } from "./review-item";
 import { calculateProductPrice } from "./prices";
+import { ReviewItem } from "./review-item";
 
 type Props = {
   selectedProducts: SelectedProducts;

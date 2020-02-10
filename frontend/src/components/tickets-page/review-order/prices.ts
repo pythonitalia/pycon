@@ -1,8 +1,6 @@
-import { OrderState } from "../types";
-
-import { Ticket } from "../../tickets-form/types";
-
 import { HotelRoom, Voucher } from "../../../generated/graphql-backend";
+import { Ticket } from "../../tickets-form/types";
+import { OrderState } from "../types";
 
 export const calculateProductPrice = (
   product: Ticket,

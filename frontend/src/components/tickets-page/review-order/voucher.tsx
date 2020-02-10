@@ -1,6 +1,7 @@
 /** @jsx jsx */
-import { useLazyQuery, useApolloClient, useQuery } from "@apollo/react-hooks";
+import { useApolloClient, useLazyQuery, useQuery } from "@apollo/react-hooks";
 import { Box, Button, Flex, Heading, Input, Text } from "@theme-ui/components";
+import { GraphQLError } from "graphql";
 import React, {
   Fragment,
   useCallback,
@@ -19,14 +20,13 @@ import {
   GetVoucherQueryVariables,
   Voucher as VoucherType,
 } from "../../../generated/graphql-backend";
+import { Alert } from "../../alert";
 import { Link } from "../../link";
 import { Ticket } from "../../tickets-form/types";
 import { OrderState, SelectedHotelRooms } from "../types";
 import { CreateOrderButtons } from "./create-order-buttons";
 import GET_VOUCHER from "./get-voucher.graphql";
 import { ReviewItem } from "./review-item";
-import { GraphQLError } from "graphql";
-import { Alert } from "../../alert";
 
 type Props = {
   applyVoucher: (voucher: VoucherType) => void;
