@@ -9,6 +9,16 @@ import { Item, Room, Slot } from "./types";
 
 const SLOT_SIZE = 12;
 
+const fakeBottomBorder = {
+  content: "''",
+  display: "block",
+  borderBottom: "primary",
+  width: "100%",
+  position: "absolute",
+  bottom: "-3px",
+  left: 0,
+};
+
 const getRowStartForSlot = ({
   offset,
   index,
@@ -178,13 +188,20 @@ export const Schedule: React.SFC<{
         <Box
           key={index}
           sx={{
-            gridColumnStart: index + 2,
+            gridColumnStart: "var(--column-start)",
             gridRowStart: 1,
             gridRowEnd: rowOffset,
             backgroundColor: "white",
             py: 2,
             px: 3,
             fontWeight: "bold",
+            position: "sticky",
+            top: 0,
+            zIndex: 200,
+            "&::after": fakeBottomBorder,
+          }}
+          style={{
+            "--column-start": index + 2,
           }}
         >
           {room.name}
@@ -243,15 +260,7 @@ export const Schedule: React.SFC<{
                 rooms={rooms}
                 sx={{
                   position: "relative",
-                  "&::after": {
-                    content: "''",
-                    display: "block",
-                    borderBottom: "primary",
-                    width: "100%",
-                    position: "absolute",
-                    bottom: "-3px",
-                    left: 0,
-                  },
+                  "&::after": fakeBottomBorder,
                   ...getEntryPosition({
                     item,
                     rooms,
