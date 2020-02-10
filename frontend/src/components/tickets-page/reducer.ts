@@ -127,8 +127,6 @@ const applyVoucher = (state: OrderState, voucher: Voucher): OrderState => {
     });
   });
 
-  console.log("new selected products", selectedProducts);
-
   return {
     ...state,
     voucherCode: voucher.code,

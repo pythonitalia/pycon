@@ -27,6 +27,12 @@ export const HotelRoomsRecap: React.SFC<Props> = ({
     month: "long",
     day: "2-digit",
   });
+  const hotelRooms = Object.values(selectedHotelRooms).flat();
+
+  if (hotelRooms.length === 0) {
+    return null;
+  }
+
   return (
     <Box sx={{ py: 5, borderTop: "primary" }}>
       <Box
@@ -48,79 +54,77 @@ export const HotelRoomsRecap: React.SFC<Props> = ({
           <FormattedMessage id="orderReview.hotelRooms" />
         </Heading>
 
-        {Object.values(selectedHotelRooms)
-          .flat()
-          .map((selectedRoomInfo, index) => {
-            const room = hotelRoomsById[selectedRoomInfo.id];
+        {hotelRooms.map((selectedRoomInfo, index) => {
+          const room = hotelRoomsById[selectedRoomInfo.id];
 
-            return (
-              <Box
-                key={`${selectedRoomInfo.id}-${index}`}
+          return (
+            <Box
+              key={`${selectedRoomInfo.id}-${index}`}
+              sx={{
+                my: 4,
+              }}
+            >
+              <Heading
+                as="h3"
                 sx={{
-                  my: 4,
+                  textTransform: "uppercase",
+                  fontSize: 3,
+                  mb: 4,
+                  fontWeight: "bold",
                 }}
               >
-                <Heading
-                  as="h3"
+                {room.name}
+              </Heading>
+
+              <Grid
+                sx={{
+                  gridTemplateColumns: "1fr 1fr",
+                  maxWidth: 400,
+                  gridRowGap: 3,
+                }}
+              >
+                <ReviewItem
+                  label={<FormattedMessage id="orderReview.checkin" />}
+                  value={dateFormatter.format(
+                    selectedRoomInfo.checkin.toDate(),
+                  )}
+                />
+                <ReviewItem
+                  label={<FormattedMessage id="orderReview.checkout" />}
+                  value={dateFormatter.format(
+                    selectedRoomInfo.checkout.toDate(),
+                  )}
+                />
+              </Grid>
+
+              <Box
+                sx={{
+                  maxWidth: "660px",
+                  mt: 4,
+                  py: 3,
+                  gridColumn: "1 / 3",
+                  borderTop: "primary",
+                  borderBottom: "primary",
+                }}
+              >
+                <Text
                   sx={{
-                    textTransform: "uppercase",
-                    fontSize: 3,
-                    mb: 4,
+                    fontSize: 4,
                     fontWeight: "bold",
                   }}
                 >
-                  {room.name}
-                </Heading>
-
-                <Grid
-                  sx={{
-                    gridTemplateColumns: "1fr 1fr",
-                    maxWidth: 400,
-                    gridRowGap: 3,
-                  }}
-                >
-                  <ReviewItem
-                    label={<FormattedMessage id="orderReview.checkin" />}
-                    value={dateFormatter.format(
-                      selectedRoomInfo.checkin.toDate(),
-                    )}
-                  />
-                  <ReviewItem
-                    label={<FormattedMessage id="orderReview.checkout" />}
-                    value={dateFormatter.format(
-                      selectedRoomInfo.checkout.toDate(),
-                    )}
-                  />
-                </Grid>
-
-                <Box
-                  sx={{
-                    maxWidth: "660px",
-                    mt: 4,
-                    py: 3,
-                    gridColumn: "1 / 3",
-                    borderTop: "primary",
-                    borderBottom: "primary",
-                  }}
-                >
-                  <Text
-                    sx={{
-                      fontSize: 4,
-                      fontWeight: "bold",
+                  <FormattedMessage
+                    id="orderReview.hotelPrice"
+                    values={{
+                      roomPrice: room.price,
+                      numNights: selectedRoomInfo.numNights,
                     }}
-                  >
-                    <FormattedMessage
-                      id="orderReview.hotelPrice"
-                      values={{
-                        roomPrice: room.price,
-                        numNights: selectedRoomInfo.numNights,
-                      }}
-                    />
-                  </Text>
-                </Box>
+                  />
+                </Text>
               </Box>
-            );
-          })}
+            </Box>
+          );
+        })}
 
         <Link
           variant="button"
