@@ -4,14 +4,10 @@ import React, { useState } from "react";
 import { jsx } from "theme-ui";
 
 import { AllTracksEvent, CustomEvent, Submission } from "../events";
+import { Submission as SubmissionType } from "../types";
 
 type ItemsPanelProp = {
-  submissions: {
-    title: string;
-    id: string;
-    duration: { duration: number } | null;
-    type: { name: string } | null;
-  }[];
+  submissions: SubmissionType[];
 };
 
 export const ItemsPanel: React.SFC<ItemsPanelProp> = ({ submissions }) => {

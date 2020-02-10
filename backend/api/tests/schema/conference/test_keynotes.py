@@ -12,7 +12,7 @@ def test_get_conference_keynotes_empty(conference_factory, graphql_client):
             conference(code: $code) {
                 keynotes {
                     title
-                    additionalSpeakers {
+                    speakers {
                         name
                     }
                 }
@@ -38,7 +38,8 @@ def test_get_conference_keynotes_returns_only_keynotes(
         type=ScheduleItem.TYPES.keynote,
         additional_speakers__size=1,
     )
-    speaker = keynote.additional_speakers.first()
+    speaker = keynote.submission.speaker
+    additional_speaker = keynote.additional_speakers.first()
 
     resp = graphql_client.query(
         """
@@ -46,7 +47,7 @@ def test_get_conference_keynotes_returns_only_keynotes(
             conference(code: $code) {
                 keynotes {
                     title
-                    additionalSpeakers {
+                    speakers {
                         name
                         fullName
                     }
@@ -63,9 +64,9 @@ def test_get_conference_keynotes_returns_only_keynotes(
     keynote_data = resp["data"]["conference"]["keynotes"][0]
 
     assert keynote_data["title"] == keynote.submission.title
-    assert len(keynote_data["additionalSpeakers"]) == 1
+    assert len(keynote_data["speakers"]) == 2
 
-    speaker_data = keynote_data["additionalSpeakers"][0]
-
-    assert speaker_data["name"] == speaker.name
-    assert speaker_data["fullName"] == speaker.full_name
+    assert keynote_data["speakers"] == [
+        {"name": speaker.name, "fullName": speaker.full_name},
+        {"name": additional_speaker.name, "fullName": additional_speaker.full_name},
+    ]

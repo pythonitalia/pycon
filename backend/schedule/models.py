@@ -2,6 +2,7 @@ from conferences.models import Conference
 from django.conf import settings
 from django.core import exceptions
 from django.db import models
+from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from model_utils import Choices
 from model_utils.models import TimeStampedModel
@@ -92,10 +93,18 @@ class ScheduleItem(TimeStampedModel):
     )
     duration = models.PositiveIntegerField(null=True, blank=True)
 
-    # TODO: Rename to speakers
     additional_speakers = models.ManyToManyField(
         settings.AUTH_USER_MODEL, verbose_name=_("speakers"), blank=True
     )
+
+    @cached_property
+    def speakers(self):
+        speakers = set(self.additional_speakers.all())
+
+        if self.submission:
+            speakers.add(self.submission.speaker)
+
+        return speakers
 
     def clean(self):
         if self.type == ScheduleItem.TYPES.submission and not self.submission:

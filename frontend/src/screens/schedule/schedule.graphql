@@ -6,7 +6,7 @@ query Schedule($code: String!) {
     days {
       day
       slots {
-        ...scheduleSlot
+        ...ScheduleSlotFragment
       }
     }
 

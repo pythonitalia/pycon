@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { Box } from "@theme-ui/components";
+import { Box, Text } from "@theme-ui/components";
 import React from "react";
 import { useDrag } from "react-dnd";
 import { jsx } from "theme-ui";
@@ -86,7 +86,13 @@ export const Submission = ({
       sx={{ backgroundColor: getColorForSubmission(submission) }}
       {...props}
     >
-      {submission.title} {submission.duration!.duration}
+      {submission.title}{" "}
+      <Text as="span" sx={{ fontWeight: "bold" }}>
+        ({submission.duration!.duration} minutes)
+      </Text>
+      <Text sx={{ fontWeight: "bold", color: "white", mt: 2 }}>
+        {submission.speaker.fullName || "No name"}
+      </Text>
     </BaseEvent>
   );
 };
@@ -132,11 +138,20 @@ export const ScheduleEntry: React.SFC<{
         position: "relative",
         zIndex: 10,
         p: 3,
+        display: "flex",
+        flexDirection: "column",
       }}
       {...props}
       metadata={{ itemId: item.id }}
     >
       {item.title}
+
+      <Box sx={{ color: "white", mt: "auto" }}>
+        <Text sx={{ fontWeight: "bold" }}>
+          {item.speakers.map(s => s.fullName).join(" & ")}
+        </Text>
+        <Text>{item.submission?.audienceLevel.name}</Text>
+      </Box>
     </BaseDraggable>
   );
 };

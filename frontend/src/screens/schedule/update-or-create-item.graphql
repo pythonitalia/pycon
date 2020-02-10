@@ -4,7 +4,7 @@ mutation UpdateOrCreateSlotItem($input: UpdateOrCreateSlotItemInput!) {
   updateOrCreateSlotItem(input: $input) {
     ... on UpdateOrCreateSlotItemResult {
       updatedSlots {
-        ...scheduleSlot
+        ...ScheduleSlotFragment
       }
     }
   }

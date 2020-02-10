@@ -28,14 +28,11 @@ class ScheduleItem:
     description: str
     type: str
     highlight_color: Optional[str]
+    speakers: List[User]
 
     @strawberry.field
     def title(self, info) -> str:
         return self.submission.title if self.submission else self.title
-
-    @strawberry.field
-    def additional_speakers(self, info) -> List[User]:
-        return self.additional_speakers.all()
 
     @strawberry.field
     def rooms(self, info) -> List[Room]:

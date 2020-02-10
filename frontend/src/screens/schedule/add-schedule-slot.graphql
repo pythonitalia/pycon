@@ -5,7 +5,7 @@ mutation AddScheduleSlot($code: ID!, $day: Date!, $duration: Int!) {
     ... on Day {
       day
       slots {
-        ...scheduleSlot
+        ...ScheduleSlotFragment
       }
     }
   }

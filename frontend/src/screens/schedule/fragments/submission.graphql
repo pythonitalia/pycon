@@ -10,6 +10,10 @@ fragment SubmissionFragment on Submission {
     name
   }
 
+  speaker {
+    fullName
+  }
+
   type {
     name
   }

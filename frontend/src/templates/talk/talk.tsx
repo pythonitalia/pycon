@@ -109,9 +109,7 @@ export default ({ data, ...props }: Props) => {
               </Text>
 
               <Text>
-                {talk.additionalSpeakers
-                  .map(({ fullName }) => fullName)
-                  .join(" & ")}
+                {talk.speakers.map(({ fullName }) => fullName).join(" & ")}
               </Text>
             </Box>
           </Flex>
@@ -130,7 +128,7 @@ export default ({ data, ...props }: Props) => {
           gridTemplateColumns: [null, "1fr 2fr"],
         }}
       >
-        {talk.additionalSpeakers.map(speaker => (
+        {talk.speakers.map(speaker => (
           <Fragment key={speaker.fullName}>
             <Box
               sx={{
@@ -214,7 +212,7 @@ export const query = graphql`
           highlightColor
           description
 
-          additionalSpeakers {
+          speakers {
             fullName
           }
 

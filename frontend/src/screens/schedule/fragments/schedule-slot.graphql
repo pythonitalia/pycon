@@ -1,7 +1,7 @@
 #import "./submission.graphql"
 
 
-fragment scheduleSlot on ScheduleSlot {
+fragment ScheduleSlotFragment on ScheduleSlot {
   id
   hour
   duration
@@ -13,6 +13,10 @@ fragment scheduleSlot on ScheduleSlot {
 
     submission {
       ...SubmissionFragment
+    }
+
+    speakers {
+      fullName
     }
 
     rooms {

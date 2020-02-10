@@ -9,6 +9,7 @@ export type Submission = {
   type: { name: string } | null;
   duration: { duration: number } | null;
   audienceLevel: { name: string };
+  speaker: { fullName: string };
 };
 
 export type Item = {
@@ -17,6 +18,7 @@ export type Item = {
   type: string;
   rooms: Room[];
   submission?: Submission | null;
+  speakers: { fullName: string }[];
 };
 
 export type Slot = {
