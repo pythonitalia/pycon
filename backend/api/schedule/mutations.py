@@ -49,14 +49,13 @@ class ScheduleMutations:
         conference = Conference.objects.get(code=conference)
         day, _ = DayModel.objects.get_or_create(day=day, conference=conference)
 
-        # TODO: ordering by hour
         last_slot = day.slots.last()
 
-        # TODO: is it ok to hardcode this?
-        hour = time(8, 45)
-
-        if last_slot:
-            hour = add_minutes_to_time(last_slot.hour, last_slot.duration)
+        hour = (
+            add_minutes_to_time(last_slot.hour, last_slot.duration)
+            if last_slot
+            else time(8, 30)
+        )
 
         Slot.objects.create(day=day, hour=hour, duration=duration)
 

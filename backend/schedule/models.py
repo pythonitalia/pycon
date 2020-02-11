@@ -32,6 +32,9 @@ class Slot(models.Model):
     def __str__(self):
         return f"{self.day} - {self.hour}"
 
+    class Meta:
+        ordering = ["hour"]
+
 
 class Room(OrderedModel):
     TYPES = Choices(("talk", _("Talk room")), ("training", _("Training room")))
