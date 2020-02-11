@@ -101,6 +101,12 @@ class ScheduleItem(TimeStampedModel):
     additional_speakers = models.ManyToManyField(
         settings.AUTH_USER_MODEL, verbose_name=_("speakers"), blank=True
     )
+    language = models.ForeignKey(
+        "languages.Language",
+        verbose_name=_("language"),
+        related_name="+",
+        on_delete=models.PROTECT,
+    )
 
     @cached_property
     def speakers(self):

@@ -186,7 +186,7 @@ export const Schedule: React.SFC<{
     <Box sx={{ width: "100%", overflowX: "scroll" }}>
       <Grid
         sx={{
-          minWidth: "1400px",
+          minWidth: "1500px",
           gridTemplateColumns: `80px repeat(${totalColumns}, 1fr)`,
           gridTemplateRows: `repeat(${totalRows - 1}, 10px)`,
           gridGap: "3px",

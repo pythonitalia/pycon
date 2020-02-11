@@ -1,9 +1,11 @@
 /** @jsx jsx */
-import { Box, Text } from "@theme-ui/components";
+import { Box, Flex, Text } from "@theme-ui/components";
 import React from "react";
 import { useDrag } from "react-dnd";
 import { jsx } from "theme-ui";
 
+import { EnglishIcon } from "../../components/icons/english";
+import { ItalianIcon } from "../../components/icons/italian";
 import { getColorForSubmission } from "./get-color-for-submission";
 import {
   Item,
@@ -139,6 +141,8 @@ export const ScheduleEntry: React.SFC<{
   const marker =
     adminMode && itemDuration !== slot.duration ? `*${itemDuration}` : null;
 
+  const LanguageIcon = item.language.code === "en" ? EnglishIcon : ItalianIcon;
+
   return (
     <BaseDraggable
       adminMode={adminMode}
@@ -166,12 +170,24 @@ export const ScheduleEntry: React.SFC<{
         )}
       </Text>
 
-      <Box sx={{ color: "white", mt: "auto" }}>
-        <Text sx={{ fontWeight: "bold" }}>
-          {item.speakers.map(s => s.fullName).join(" & ")}
-        </Text>
-        {item.submission && <Text>{item.submission.audienceLevel!.name}</Text>}
-      </Box>
+      <Flex sx={{ color: "white", mt: "auto" }}>
+        <Box sx={{ mr: "auto" }}>
+          <Text sx={{ fontWeight: "bold" }}>
+            {item.speakers.map(s => s.fullName).join(" & ")}
+          </Text>
+          {item.submission && (
+            <Text>{item.submission.audienceLevel!.name}</Text>
+          )}
+        </Box>
+
+        {item.submission && (
+          <LanguageIcon
+            sx={{
+              width: 30,
+            }}
+          />
+        )}
+      </Flex>
     </BaseDraggable>
   );
 };

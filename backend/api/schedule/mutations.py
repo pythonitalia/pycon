@@ -5,9 +5,11 @@ import strawberry
 from api.conferences.types import Day, ScheduleSlot
 from api.helpers.ids import decode_hashid
 from conferences.models import Conference
+from languages.models import Language
 from schedule.models import Day as DayModel
 from schedule.models import ScheduleItem, Slot
 from strawberry.types.datetime import Date
+from submissions.models import Submission
 
 from ..permissions import IsStaffPermission
 
@@ -106,6 +108,18 @@ class ScheduleMutations:
 
             ScheduleItem.objects.filter(id=input.item_id).update(**data)
         else:
+            language_code = "en"
+
+            if submission_id:
+                language_code = (
+                    Submission.objects.filter(id=submission_id)
+                    .values_list("languages__code", flat=True)
+                    .order_by("languages__code")
+                    .first()
+                )
+
+            data["language"] = Language.objects.get(code=language_code)
+
             schedule_item = ScheduleItem.objects.create(**data)
 
         schedule_item.rooms.set(input.rooms)

@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING, List, Optional
 
 import strawberry
+from api.languages.types import Language
 from api.submissions.types import Submission
 from api.users.types import User
 from strawberry.types.datetime import DateTime
@@ -29,6 +30,7 @@ class ScheduleItem:
     type: str
     highlight_color: Optional[str]
     speakers: List[User]
+    language: Language
 
     @strawberry.field
     def title(self, info) -> str:

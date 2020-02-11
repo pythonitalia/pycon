@@ -11,7 +11,7 @@ class SlotInline(admin.TabularInline):
 
 @admin.register(ScheduleItem)
 class ScheduleItemAdmin(admin.ModelAdmin):
-    list_display = ("title", "conference", "slot", "type", "submission")
+    list_display = ("title", "conference", "language", "slot", "type", "submission")
     ordering = ("conference", "slot")
     fieldsets = (
         (
@@ -20,6 +20,7 @@ class ScheduleItemAdmin(admin.ModelAdmin):
                 "fields": (
                     "conference",
                     "type",
+                    "language",
                     "title",
                     "slug",
                     "image",

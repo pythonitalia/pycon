@@ -2,6 +2,7 @@ import factory
 import factory.fuzzy
 from conferences.tests.factories import ConferenceFactory
 from factory.django import DjangoModelFactory
+from languages.tests.factories import LanguageFactory
 from pytest_factoryboy import register
 from schedule.models import Day, Room, ScheduleItem, Slot
 from submissions.tests.factories import SubmissionFactory
@@ -35,6 +36,7 @@ class SlotFactory(DjangoModelFactory):
 class ScheduleItemFactory(DjangoModelFactory):
     conference = factory.SubFactory(ConferenceFactory)
     submission = factory.SubFactory(SubmissionFactory)
+    language = factory.SubFactory(LanguageFactory)
 
     title = factory.Faker("text", max_nb_chars=100)
     slug = factory.Faker("slug")
