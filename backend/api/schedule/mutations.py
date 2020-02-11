@@ -99,7 +99,11 @@ class ScheduleMutations:
                     id=schedule_item.slot.id,
                 )
             )
+
+            # make sure we keep the same type and submission
+            data["submission_id"] = schedule_item.submission_id
             data["type"] = schedule_item.type
+
             ScheduleItem.objects.filter(id=input.item_id).update(**data)
         else:
             schedule_item = ScheduleItem.objects.create(**data)
