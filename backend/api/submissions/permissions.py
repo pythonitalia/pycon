@@ -32,7 +32,7 @@ class CanSeeSubmissionPrivateFields(BasePermission):
         user = info.context["request"].user
 
         # TODO: this should be cached
-        if source.schedule_items.exists():
+        if source.schedule_items.exists():  # pragma: no cover
             return True
 
         if not user.is_authenticated:

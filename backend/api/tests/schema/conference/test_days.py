@@ -125,7 +125,7 @@ def test_add_slot_creates_day(conference_factory, day_factory, admin_graphql_cli
 
     assert resp["data"]["addScheduleSlot"] == {
         "day": "2020-04-02",
-        "slots": [{"hour": "08:45:00", "duration": 60}],
+        "slots": [{"hour": "08:30:00", "duration": 60}],
     }
 
     assert conference.days.count() == 1
