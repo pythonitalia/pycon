@@ -6,6 +6,7 @@ from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from model_utils import Choices
 from model_utils.models import TimeStampedModel
+from ordered_model.models import OrderedModel
 from pycon.constants import COLORS
 from submissions.models import Submission
 
@@ -32,7 +33,7 @@ class Slot(models.Model):
         return f"{self.day} - {self.hour}"
 
 
-class Room(models.Model):
+class Room(OrderedModel):
     TYPES = Choices(("talk", _("Talk room")), ("training", _("Training room")))
 
     name = models.CharField(_("name"), max_length=100)
