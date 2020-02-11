@@ -30,6 +30,10 @@ class MeUser:
     def submissions(self, info, conference: str) -> List["Submission"]:
         return self.submissions.filter(conference__code=conference)
 
+    @strawberry.field
+    def can_edit_schedule(self, info) -> bool:
+        return self.is_staff or self.is_superuser
+
 
 @strawberry.type
 class User:

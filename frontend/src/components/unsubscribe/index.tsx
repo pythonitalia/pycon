@@ -24,14 +24,13 @@ export const UnsubscribePage: React.SFC<RouteComponentProps<Props>> = ({
   email,
 }) => {
   const [unsubscribed, setUnsubscribed] = useState(false);
-  console.log(email);
+
   const onUnsubscribeComplete = (unsubscribeData: UnsubscribeMutation) => {
     if (
       unsubscribeData?.unsubscribeToNewsletter.__typename ===
         "OperationResult" &&
       unsubscribeData.unsubscribeToNewsletter.ok
     ) {
-      console.log("setUnsubscribed");
       setUnsubscribed(true);
     }
   };

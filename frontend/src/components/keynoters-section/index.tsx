@@ -12,7 +12,7 @@ type KeynoteProps = KeynotesSectionQuery["backend"]["conference"]["keynotes"][0]
 
 const Keynote = ({
   title,
-  additionalSpeakers,
+  speakers,
   imageFile,
   highlightColor,
 }: KeynoteProps) => (
@@ -62,7 +62,7 @@ const Keynote = ({
       }}
     >
       <Heading variant="caps" as="h3">
-        {additionalSpeakers.map(speaker => speaker.fullName).join(" & ")}
+        {speakers.map(speaker => speaker.fullName).join(" & ")}
       </Heading>
       <Text>{title}</Text>
     </Flex>
@@ -90,7 +90,7 @@ export const KeynotersSection = () => {
                 }
               }
             }
-            additionalSpeakers {
+            speakers {
               fullName
             }
           }

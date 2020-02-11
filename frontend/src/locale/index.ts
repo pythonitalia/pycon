@@ -357,6 +357,8 @@ export const messages = {
     "ticketsTable.until": "Until",
     "ticketsTable.untilAndFromMobile": "Available from {from} to {until}",
     "tickets.seeAllTickets": "See all the tickets",
+
+    "schedule.pageTitle": "Schedule {day}",
   },
   it: {
     titleTemplate: "%s | PyCon Italia",
@@ -711,6 +713,8 @@ export const messages = {
     "ticketsTable.until": "Fino al",
     "ticketsTable.untilAndFromMobile": "Disponibile dal {from} al {until}",
     "tickets.seeAllTickets": "Tutti i biglietti",
+
+    "schedule.pageTitle": "Schedule {day}",
   },
 };
 

@@ -1,8 +1,7 @@
-from datetime import datetime
+from datetime import timedelta
 from itertools import groupby
 from typing import List, Optional
 
-import pytz
 import strawberry
 from api.cms.types import FAQ, Menu
 from api.events.types import Event
@@ -10,7 +9,6 @@ from api.hotels.types import HotelRoom
 from api.languages.types import Language
 from api.pretix.query import get_conference_tickets
 from api.pretix.types import TicketItem
-from api.scalars import Date, DateTime
 from api.schedule.types import Room, ScheduleItem
 from api.sponsors.types import SponsorsByLevel
 from api.submissions.types import Submission, SubmissionType
@@ -19,11 +17,13 @@ from cms.models import GenericCopy
 from django.conf import settings
 from django.utils import translation
 from schedule.models import ScheduleItem as ScheduleItemModel
+from strawberry.types.datetime import Date, DateTime, Time
 from voting.models import RankRequest as RankRequestModel
 
 from ..helpers.i18n import make_localized_resolver
 from ..helpers.maps import Map, resolve_map
 from ..permissions import CanSeeSubmissions
+from .helpers.days import daterange
 
 
 @strawberry.type
@@ -36,6 +36,23 @@ class AudienceLevel:
 class Topic:
     id: strawberry.ID
     name: str
+
+
+@strawberry.type
+class ScheduleSlot:
+    hour: Time
+    duration: int
+    id: strawberry.ID
+
+    @strawberry.field
+    def items(self, info) -> List[ScheduleItem]:
+        return ScheduleItemModel.objects.filter(slot__id=self.id)
+
+
+@strawberry.type
+class Day:
+    day: Date
+    slots: List[ScheduleSlot]
 
 
 @strawberry.type
@@ -56,21 +73,6 @@ class Conference:
     @strawberry.field
     def timezone(self, info) -> str:
         return str(self.timezone)
-
-    @strawberry.field
-    def schedule(self, info, date: Date = None) -> List[ScheduleItem]:
-        qs = self.schedule_items
-
-        if date:
-            start_date = datetime.combine(date, datetime.min.time())
-            end_date = datetime.combine(date, datetime.max.time())
-
-            utc_start_date = pytz.utc.normalize(start_date.astimezone(pytz.utc))
-            utc_end_date = pytz.utc.normalize(end_date.astimezone(pytz.utc))
-
-            qs = qs.filter(start__gte=utc_start_date, end__lte=utc_end_date)
-
-        return qs.order_by("start")
 
     @strawberry.field
     def tickets(self, info, language: str) -> List[TicketItem]:
@@ -187,6 +189,21 @@ class Conference:
             )
         except RankRequestModel.DoesNotExist:
             return []
+
+    @strawberry.field
+    def days(self, info) -> List[Day]:
+        all_days = daterange(self.start.date(), self.end.date() + timedelta(days=1))
+        days = self.days.all()
+
+        def get_slots(day):
+            conference_day = next((x for x in days if x.day == day), None)
+
+            if conference_day:
+                return conference_day.slots.all()
+
+            return []
+
+        return [Day(day, get_slots(day)) for day in all_days]
 
 
 @strawberry.type

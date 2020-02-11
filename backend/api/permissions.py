@@ -23,6 +23,18 @@ class HasTokenPermission(BasePermission):
         return False
 
 
+class IsStaffPermission(BasePermission):
+    message = "You need to be a staff user"
+
+    def has_permission(self, source, info, **kwargs):
+        user = info.context["request"].user
+
+        if not user.is_authenticated:
+            return False
+
+        return user.is_staff or user.is_superuser
+
+
 class CanSeeSubmissions(BasePermission):
     message = "You need to have a ticket to see submissions"
 

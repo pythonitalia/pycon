@@ -1,0 +1,14 @@
+query CurrentUser {
+  me {
+    id
+    name
+    fullName
+    email
+    gender
+    dateBirth
+    country
+    openToRecruiting
+    openToNewsletter
+    canEditSchedule
+  }
+}

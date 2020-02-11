@@ -3,7 +3,6 @@ from typing import List, Optional, Union
 
 import pytest
 import strawberry
-from api.scalars import DateTime
 from django.core.exceptions import ImproperlyConfigured
 from django.forms import (
     BooleanField,
@@ -24,6 +23,7 @@ from django.forms import (
     UUIDField,
 )
 from django.forms.fields import BaseTemporalField
+from strawberry.types.datetime import Date, DateTime, Time
 from strawberry_forms.converter import convert_form_field
 from strawberry_forms.mutations import convert_enums_to_values
 
@@ -41,9 +41,9 @@ CONVERT_MAP = {
     # NumberInput: Int,
     DecimalField: float,
     FloatField: float,
-    DateField: str,  # Date
-    DateTimeField: DateTime,  # DateTime
-    TimeField: str,  # Time
+    DateField: Date,
+    DateTimeField: DateTime,
+    TimeField: Time,
 }
 
 

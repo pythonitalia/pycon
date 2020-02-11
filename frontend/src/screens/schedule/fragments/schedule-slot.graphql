@@ -1,0 +1,28 @@
+#import "./submission.graphql"
+
+
+fragment ScheduleSlotFragment on ScheduleSlot {
+  id
+  hour
+  duration
+
+  items {
+    id
+    title
+    type
+
+    submission {
+      ...SubmissionFragment
+    }
+
+    speakers {
+      fullName
+    }
+
+    rooms {
+      id
+      name
+      type
+    }
+  }
+}

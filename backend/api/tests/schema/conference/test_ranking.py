@@ -25,7 +25,7 @@ def test_get_conference_ranking_empty(conference_factory, graphql_client):
 
 
 @mark.django_db
-def test_get_conference_keynotes_returns_only_keynotes(
+def test_get_ranking(
     conference, rank_request_factory, rank_submission_factory, graphql_client
 ):
     rank_request = rank_request_factory(conference=conference)

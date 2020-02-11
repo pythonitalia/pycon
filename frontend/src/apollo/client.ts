@@ -1,5 +1,6 @@
 import { navigate } from "@reach/router";
 import {
+  defaultDataIdFromObject,
   InMemoryCache,
   IntrospectionFragmentMatcher,
 } from "apollo-cache-inmemory";
@@ -45,7 +46,18 @@ const httpLink = new HttpLink({
 
 const link = ApolloLink.from([errorLink, httpLink]);
 
-const cache = new InMemoryCache({ fragmentMatcher });
+const cache = new InMemoryCache({
+  fragmentMatcher,
+  dataIdFromObject: object => {
+    switch (object.__typename) {
+      case "Day":
+        // day objects might not have an id, so we create a new cache id based on the day's date
+        return `Day:${(object as any).day}`;
+      default:
+        return defaultDataIdFromObject(object); // fall back to default handling
+    }
+  },
+});
 
 export const client = new ApolloClient({
   link,

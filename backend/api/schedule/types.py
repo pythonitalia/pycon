@@ -1,9 +1,9 @@
 from typing import TYPE_CHECKING, List, Optional
 
 import strawberry
-from api.scalars import DateTime
 from api.submissions.types import Submission
 from api.users.types import User
+from strawberry.types.datetime import DateTime
 
 if TYPE_CHECKING:  # pragma: no cover
     from api.conferences.types import Conference
@@ -11,8 +11,10 @@ if TYPE_CHECKING:  # pragma: no cover
 
 @strawberry.type
 class Room:
+    id: strawberry.ID
     name: str
     conference: "Conference"
+    type: str
 
 
 @strawberry.type
@@ -22,15 +24,15 @@ class ScheduleItem:
     start: DateTime
     end: DateTime
     submission: Optional[Submission]
-    title: str
     slug: str
     description: str
     type: str
     highlight_color: Optional[str]
+    speakers: List[User]
 
     @strawberry.field
-    def additional_speakers(self, info) -> List[User]:
-        return self.additional_speakers.all()
+    def title(self, info) -> str:
+        return self.submission.title if self.submission else self.title
 
     @strawberry.field
     def rooms(self, info) -> List[Room]:

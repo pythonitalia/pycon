@@ -1,11 +1,11 @@
 from typing import TYPE_CHECKING, Optional
 
 import strawberry
+from strawberry.types.datetime import DateTime
 
 from ..helpers.i18n import make_localized_resolver
 from ..helpers.images import resolve_image
 from ..helpers.maps import Map, resolve_map
-from ..scalars import DateTime
 
 if TYPE_CHECKING:  # pragma: no cover
     from api.conferences.types import Conference

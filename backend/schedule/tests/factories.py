@@ -1,17 +1,16 @@
 import factory
 import factory.fuzzy
-import pytz
 from conferences.tests.factories import ConferenceFactory
 from factory.django import DjangoModelFactory
 from pytest_factoryboy import register
-from schedule.models import Room, ScheduleItem
+from schedule.models import Day, Room, ScheduleItem, Slot
 from submissions.tests.factories import SubmissionFactory
 from users.tests.factories import UserFactory
 
 
 @register
 class RoomFactory(DjangoModelFactory):
-    name = factory.Faker("text", max_nb_chars=100)
+    name = factory.Faker("word")
     conference = factory.SubFactory(ConferenceFactory)
 
     class Meta:
@@ -19,12 +18,23 @@ class RoomFactory(DjangoModelFactory):
 
 
 @register
+class DayFactory(DjangoModelFactory):
+    day = factory.Faker("future_date")
+
+    class Meta:
+        model = Day
+
+
+@register
+class SlotFactory(DjangoModelFactory):
+    class Meta:
+        model = Slot
+
+
+@register
 class ScheduleItemFactory(DjangoModelFactory):
     conference = factory.SubFactory(ConferenceFactory)
     submission = factory.SubFactory(SubmissionFactory)
-
-    start = factory.Faker("past_datetime", tzinfo=pytz.UTC)
-    end = factory.Faker("future_datetime", tzinfo=pytz.UTC)
 
     title = factory.Faker("text", max_nb_chars=100)
     slug = factory.Faker("slug")

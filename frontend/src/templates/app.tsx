@@ -18,6 +18,7 @@ import { UnsubscribePage } from "../components/unsubscribe";
 import { VotingPage } from "../components/voting-page";
 import { GrantScreen } from "../screens/grants";
 import { OrderConfirmationScreen } from "../screens/order-confirmation";
+import { ScheduleScreen } from "../screens/schedule";
 import { SubmissionPage } from "./submission";
 
 export default () => (
@@ -30,6 +31,7 @@ export default () => (
       component={EditSubmission}
     />
     <CFPPage path="/:lang/cfp" />
+    <ScheduleScreen path="/:lang/schedule" />
     <LoginForm path="/:lang/login" />
     <GrantScreen path="/:lang/grants" />
     <SocialLoginSuccess path="/:lang/login/success/" />

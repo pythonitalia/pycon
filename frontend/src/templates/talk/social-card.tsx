@@ -100,7 +100,7 @@ export default ({ data, pageContext }: Props) => (
           }}
         >
           {data.backend.conference
-            .talk!.additionalSpeakers.map(speaker => speaker.fullName)
+            .talk!.speakers.map(speaker => speaker.fullName)
             .join("&")}
         </Text>
 
@@ -129,7 +129,7 @@ export const query = graphql`
         talk(slug: $slug) {
           title
 
-          additionalSpeakers {
+          speakers {
             fullName
           }
         }

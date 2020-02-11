@@ -12,7 +12,7 @@ def test_get_talk_not_found(conference_factory, graphql_client):
             conference(code: $code) {
                 talk(slug: "example") {
                     title
-                    additionalSpeakers {
+                    speakers {
                         name
                     }
                 }
@@ -27,18 +27,13 @@ def test_get_talk_not_found(conference_factory, graphql_client):
 
 
 @mark.django_db
-def test_get_conference_keynotes_returns_only_keynotes(
-    conference_factory, schedule_item_factory, graphql_client
-):
+def test_get_talk_by_slug(conference_factory, schedule_item_factory, graphql_client):
     conference = conference_factory()
 
     schedule_item_factory(conference=conference, type=ScheduleItem.TYPES.submission)
     keynote = schedule_item_factory(
-        conference=conference,
-        type=ScheduleItem.TYPES.keynote,
-        additional_speakers__size=1,
+        conference=conference, type=ScheduleItem.TYPES.keynote
     )
-    speaker = keynote.additional_speakers.first()
 
     resp = graphql_client.query(
         """
@@ -47,9 +42,8 @@ def test_get_conference_keynotes_returns_only_keynotes(
                 talk(slug: $slug) {
                     title
                     slug
-                    additionalSpeakers {
+                    speakers {
                         name
-                        fullName
                     }
                 }
             }
@@ -62,11 +56,10 @@ def test_get_conference_keynotes_returns_only_keynotes(
 
     talk_data = resp["data"]["conference"]["talk"]
 
-    assert talk_data["title"] == keynote.title
+    assert talk_data["title"] == keynote.submission.title
     assert talk_data["slug"] == keynote.slug
-    assert len(talk_data["additionalSpeakers"]) == 1
+    assert len(talk_data["speakers"]) == 1
 
-    speaker_data = talk_data["additionalSpeakers"][0]
+    speaker_data = talk_data["speakers"][0]
 
-    assert speaker_data["name"] == speaker.name
-    assert speaker_data["fullName"] == speaker.full_name
+    assert speaker_data["name"] == keynote.submission.speaker.name
