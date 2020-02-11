@@ -5,9 +5,11 @@ import { Box, Button, Flex, Heading } from "@theme-ui/components";
 import React, { useCallback, useLayoutEffect, useState } from "react";
 import { DndProvider } from "react-dnd";
 import Backend from "react-dnd-html5-backend";
+import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
 import { useLoginState } from "../../app/profile/hooks";
+import { MetaTags } from "../../components/meta-tags";
 import { useConference } from "../../context/conference";
 import {
   AddScheduleSlotMutation,
@@ -20,7 +22,7 @@ import {
 import { useCurrentUser } from "../../helpers/use-current-user";
 import ADD_SCHEDULE_SLOT_QUERY from "./add-schedule-slot.graphql";
 import { DaySelector } from "./day-selector";
-import { AllTracksEvent, Submission } from "./events";
+import { formatDay } from "./format-day";
 import { Schedule } from "./schedule";
 import SCHEDULE_QUERY from "./schedule.graphql";
 import { ItemsPanel } from "./staff/items-panel";
@@ -154,6 +156,13 @@ export const ScheduleScreen: React.SFC<RouteComponentProps> = () => {
 
   return (
     <DndProvider backend={Backend}>
+      <FormattedMessage
+        id="schedule.pageTitle"
+        values={{ day: day ? formatDay(day.day) : "" }}
+      >
+        {text => <MetaTags title={text} />}
+      </FormattedMessage>
+
       {shouldShowAdmin && <ItemsPanel submissions={submissions!} />}
       {(addingSlot || updatingSchedule) && <LoadingOverlay />}
       <Box

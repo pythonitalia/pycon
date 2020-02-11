@@ -3,18 +3,7 @@ import { Box, Button } from "@theme-ui/components";
 import React from "react";
 import { jsx } from "theme-ui";
 
-const formatDay = (day: string) => {
-  const d = new Date(day);
-
-  const formatter = new Intl.DateTimeFormat("default", {
-    weekday: "long",
-    day: "numeric",
-    // TODO: use conference timezone
-    timeZone: "Europe/Rome",
-  });
-
-  return formatter.format(d);
-};
+import { formatDay } from "./format-day";
 
 export const DaySelector: React.SFC<{
   setCurrentDay: (day: string) => void;
