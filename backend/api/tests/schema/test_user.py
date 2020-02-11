@@ -53,3 +53,20 @@ def test_query_submissions(graphql_client, user, submission_factory):
     assert "errors" not in response
     assert len(response["data"]["me"]["submissions"]) == 1
     assert response["data"]["me"]["submissions"][0]["id"] == submission.hashid
+
+
+def test_can_edit_schedule(user, graphql_client):
+    graphql_client.force_login(user)
+
+    resp = graphql_client.query(
+        """
+        {
+            me {
+                canEditSchedule
+            }
+        }
+        """
+    )
+
+    assert "errors" not in resp
+    assert resp["data"]["me"]["canEditSchedule"] is False

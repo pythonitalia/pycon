@@ -7,6 +7,7 @@ import { DndProvider } from "react-dnd";
 import Backend from "react-dnd-html5-backend";
 import { jsx } from "theme-ui";
 
+import { useLoginState } from "../../app/profile/hooks";
 import { useConference } from "../../context/conference";
 import {
   AddScheduleSlotMutation,
@@ -52,9 +53,10 @@ export const ScheduleScreen: React.SFC<RouteComponentProps> = () => {
 
   // TODO: redirect to today or first day when we add per day routes
   const [currentDay, setCurrentDay] = useState<string | null>(null);
+  const [loggedIn, _] = useLoginState();
 
-  const { user } = useCurrentUser();
-  const shouldShowAdmin = !!user;
+  const { user } = useCurrentUser({ skip: !loggedIn });
+  const shouldShowAdmin = user ? user.canEditSchedule : false;
 
   const { loading, data, error } = useQuery<
     ScheduleQuery,

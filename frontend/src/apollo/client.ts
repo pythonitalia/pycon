@@ -28,10 +28,10 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
       ),
     );
 
-    // if (isUserLoggedOut(graphQLErrors)) {
-    //   setLoginState(false);
-    //   navigate("/en/login");
-    // }
+    if (isUserLoggedOut(graphQLErrors)) {
+      setLoginState(false);
+      navigate("/en/login");
+    }
   }
 
   if (networkError) {

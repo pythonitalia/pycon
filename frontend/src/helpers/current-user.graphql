@@ -9,5 +9,6 @@ query CurrentUser {
     country
     openToRecruiting
     openToNewsletter
+    canEditSchedule
   }
 }

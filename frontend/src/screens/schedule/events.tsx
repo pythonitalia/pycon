@@ -152,7 +152,7 @@ export const ScheduleEntry: React.SFC<{
         <Text sx={{ fontWeight: "bold" }}>
           {item.speakers.map(s => s.fullName).join(" & ")}
         </Text>
-        <Text>{item.submission?.audienceLevel!.name}</Text>
+        {item.submission && <Text>{item.submission.audienceLevel!.name}</Text>}
       </Box>
     </BaseDraggable>
   );
