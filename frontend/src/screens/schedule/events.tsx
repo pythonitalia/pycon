@@ -17,6 +17,11 @@ const COLOR_MAP = {
   custom: "cinderella",
 };
 
+const getType = (submission?: SubmissionType | null) =>
+  submission?.type?.name.toLowerCase() === "tutorial"
+    ? ItemTypes.TRAINING
+    : ItemTypes.TALK;
+
 const BaseDraggable: React.SFC<{
   type: string;
   metadata?: any;
@@ -74,10 +79,7 @@ export const Submission = ({
 }: {
   submission: SubmissionType;
 }) => {
-  const itemType =
-    submission.type?.name.toLocaleLowerCase() === "tutorial"
-      ? ItemTypes.TRAINING
-      : `TALK_${submission.duration!.duration}`;
+  const itemType = getType(submission);
 
   return (
     <BaseEvent
@@ -123,13 +125,19 @@ export const ScheduleEntry: React.SFC<{
   slot: Slot;
   rooms: Room[];
 }> = ({ item, adminMode, slot, rooms, ...props }) => {
-  // TODO: training type
-  const type = `TALK_${slot.duration}`;
+  const type = getType(item.submission);
 
   const backgroundColor =
     item.type === "submission" && item.submission
       ? getColorForSubmission(item.submission)
       : COLOR_MAP.custom;
+
+  const itemDuration = item.submission
+    ? item.submission.duration!.duration
+    : slot.duration;
+
+  const marker =
+    adminMode && itemDuration !== slot.duration ? `*${itemDuration}` : null;
 
   return (
     <BaseDraggable
@@ -146,7 +154,16 @@ export const ScheduleEntry: React.SFC<{
       {...props}
       metadata={{ itemId: item.id }}
     >
-      {item.title}
+      <Text>
+        {item.title}
+
+        {marker && (
+          <Text as="span" sx={{ fontWeight: "bold" }}>
+            {" "}
+            {marker}
+          </Text>
+        )}
+      </Text>
 
       <Box sx={{ color: "white", mt: "auto" }}>
         <Text sx={{ fontWeight: "bold" }}>

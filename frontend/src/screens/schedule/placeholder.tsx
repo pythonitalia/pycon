@@ -23,7 +23,7 @@ export const Placeholder: React.SFC<{
   roomType,
   onDrop,
 }) => {
-  const accept = [`TALK_${duration}`, ItemTypes.CUSTOM];
+  const accept = [`TALK_${duration}`, ItemTypes.TALK, ItemTypes.CUSTOM];
 
   if (columnStart === 2) {
     accept.push(ItemTypes.ALL_TRACKS_EVENT);
