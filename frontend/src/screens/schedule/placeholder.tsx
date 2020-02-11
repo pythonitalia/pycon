@@ -53,7 +53,8 @@ export const Placeholder: React.SFC<{
         gridRowStart: rowStart,
         gridRowEnd: rowEnd,
         backgroundColor,
-        p: 3,
+        p: 2,
+        fontSize: 1,
       }}
     >
       {adminMode && `Placeholder ${duration}`}

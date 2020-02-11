@@ -169,15 +169,25 @@ export const ScheduleScreen: React.SFC<RouteComponentProps> = () => {
         sx={{ flex: 1, width: shouldShowAdmin ? "calc(100% - 300px)" : "100%" }}
       >
         <Box sx={{ backgroundColor: "orange", borderTop: "primary" }}>
-          <Flex sx={{ py: 4, px: 3, maxWidth: "largeContainer", mx: "auto" }}>
+          <Box
+            sx={{
+              display: ["block", null, "flex"],
+              py: 4,
+              px: 3,
+              maxWidth: "largeContainer",
+              mx: "auto",
+            }}
+          >
             <Heading sx={{ fontSize: 6 }}>Schedule</Heading>
 
-            <DaySelector
-              days={days}
-              currentDay={currentDay}
-              setCurrentDay={setCurrentDay}
-            />
-          </Flex>
+            <Box sx={{ ml: "auto" }}>
+              <DaySelector
+                days={days}
+                currentDay={currentDay}
+                setCurrentDay={setCurrentDay}
+              />
+            </Box>
+          </Box>
         </Box>
 
         {day && (

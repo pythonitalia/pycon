@@ -147,8 +147,9 @@ export const ScheduleEntry: React.SFC<{
         backgroundColor,
         position: "relative",
         zIndex: 10,
-        p: 3,
         display: "flex",
+        p: 2,
+        fontSize: 1,
         flexDirection: "column",
       }}
       {...props}

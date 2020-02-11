@@ -19,6 +19,19 @@ const fakeBottomBorder = {
   left: 0,
 };
 
+const fakeTopBorder = {
+  ...fakeBottomBorder,
+  borderBottom: "none",
+  borderTop: "primary",
+  bottom: "auto",
+  top: "-3px",
+};
+
+const formatHour = (value: string) => {
+  const [hour, minutes] = value.split(":");
+
+  return [hour, minutes].join(".");
+};
 const getRowStartForSlot = ({
   offset,
   index,
@@ -170,114 +183,118 @@ export const Schedule: React.SFC<{
   };
 
   return (
-    <Grid
-      sx={{
-        gridTemplateColumns: `100px repeat(${totalColumns}, 1fr)`,
-        gridTemplateRows: `repeat(${totalRows - 1}, 10px)`,
-        gridGap: "3px",
-        py: "3px",
-        backgroundColor: "black",
-      }}
-    >
-      <Box
+    <Box sx={{ width: "100%", overflowX: "scroll" }}>
+      <Grid
         sx={{
-          gridRowStart: 1,
-          gridRowEnd: rowOffset,
-          backgroundColor: "white",
+          minWidth: "1400px",
+          gridTemplateColumns: `80px repeat(${totalColumns}, 1fr)`,
+          gridTemplateRows: `repeat(${totalRows - 1}, 10px)`,
+          gridGap: "3px",
+          py: "3px",
+          backgroundColor: "black",
         }}
-      />
-      {rooms.map((room, index) => (
+      >
         <Box
-          key={index}
           sx={{
-            gridColumnStart: "var(--column-start)",
             gridRowStart: 1,
             gridRowEnd: rowOffset,
             backgroundColor: "white",
-            py: 2,
-            px: 3,
-            fontWeight: "bold",
-            position: "sticky",
-            top: 0,
-            zIndex: 200,
-            "&::after": fakeBottomBorder,
           }}
-          style={{
-            "--column-start": index + 2,
-          }}
-        >
-          {room.name}
-        </Box>
-      ))}
+        />
+        {rooms.map((room, index) => (
+          <Box
+            key={index}
+            sx={{
+              gridColumnStart: "var(--column-start)",
+              gridRowStart: 1,
+              gridRowEnd: rowOffset,
+              backgroundColor: "white",
+              p: 2,
+              fontSize: 1,
+              fontWeight: "bold",
+              position: "sticky",
+              top: 0,
+              zIndex: 200,
+              "&::after": fakeBottomBorder,
+            }}
+            style={{
+              "--column-start": index + 2,
+            }}
+          >
+            {room.name}
+          </Box>
+        ))}
 
-      {slots.map((slot, slotIndex) => {
-        const rowStart = getRowStartForSlot({
-          index: slotIndex,
-          offset: rowOffset,
-        });
+        {slots.map((slot, slotIndex) => {
+          const rowStart = getRowStartForSlot({
+            index: slotIndex,
+            offset: rowOffset,
+          });
 
-        const rowEnd = getRowEndForSlot({
-          index: slotIndex,
-          offset: rowOffset,
-        });
+          const rowEnd = getRowEndForSlot({
+            index: slotIndex,
+            offset: rowOffset,
+          });
 
-        return (
-          <React.Fragment key={slot.id}>
-            <Box
-              sx={{
-                gridColumnStart: 1,
-                gridColumnEnd: 1,
-                gridRowStart: "var(--start)",
-                gridRowEnd: "var(--end)",
-                backgroundColor: "white",
-                p: 3,
-                textAlign: "center",
-                fontWeight: "bold",
-              }}
-              style={{
-                "--start": rowStart,
-                "--end": rowEnd,
-              }}
-            >
-              <Box>{slot.hour}</Box>
-            </Box>
-
-            {rooms.map((room, index) => (
-              <Placeholder
-                key={`${room.id}-${slot.id}`}
-                columnStart={index + 2}
-                rowStart={rowStart}
-                rowEnd={rowEnd}
-                duration={slot.duration}
-                roomType={room.type}
-                adminMode={adminMode}
-                onDrop={(item: any) => handleDrop(item, slot, index)}
-              />
-            ))}
-
-            {slot.items.map(item => (
-              <ScheduleEntry
-                key={item.id}
-                item={item}
-                slot={slot}
-                rooms={rooms}
-                adminMode={adminMode}
+          return (
+            <React.Fragment key={slot.id}>
+              <Box
                 sx={{
-                  position: "relative",
-                  "&::after": fakeBottomBorder,
-                  ...getEntryPosition({
-                    item,
-                    rooms,
-                    slot,
-                    slots,
-                    rowOffset,
-                  }),
+                  gridColumnStart: 1,
+                  gridColumnEnd: 1,
+                  gridRowStart: "var(--start)",
+                  gridRowEnd: "var(--end)",
+                  backgroundColor: "white",
+                  p: 2,
+                  textAlign: "center",
+                  fontWeight: "bold",
                 }}
-              />
-            ))}
-          </React.Fragment>
-        );
-      })}
-    </Grid>
+                style={{
+                  "--start": rowStart,
+                  "--end": rowEnd,
+                }}
+              >
+                <Box>{formatHour(slot.hour)}</Box>
+              </Box>
+
+              {rooms.map((room, index) => (
+                <Placeholder
+                  key={`${room.id}-${slot.id}`}
+                  columnStart={index + 2}
+                  rowStart={rowStart}
+                  rowEnd={rowEnd}
+                  duration={slot.duration}
+                  roomType={room.type}
+                  adminMode={adminMode}
+                  onDrop={(item: any) => handleDrop(item, slot, index)}
+                />
+              ))}
+
+              {slot.items.map(item => (
+                <ScheduleEntry
+                  key={item.id}
+                  item={item}
+                  slot={slot}
+                  rooms={rooms}
+                  adminMode={adminMode}
+                  sx={{
+                    position: "relative",
+                    "&::before": fakeTopBorder,
+                    "&::after": fakeBottomBorder,
+                    ...getEntryPosition({
+                      item,
+                      rooms,
+                      slot,
+                      slots,
+                      rowOffset,
+                    }),
+                  }}
+                />
+              ))}
+            </React.Fragment>
+          );
+        })}
+      </Grid>
+    </Box>
   );
 };

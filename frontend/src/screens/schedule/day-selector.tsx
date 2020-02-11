@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { Box, Button } from "@theme-ui/components";
+import { Box, Button, Select } from "@theme-ui/components";
 import React from "react";
 import { jsx } from "theme-ui";
 
@@ -12,29 +12,56 @@ export const DaySelector: React.SFC<{
     day: string;
   }[];
 }> = ({ currentDay, days, setCurrentDay }) => (
-  <Box as="ul" sx={{ ml: "auto" }}>
-    {days.map(day => (
-      <Box
-        key={day.day}
-        as="li"
-        sx={{
-          listStyle: "none",
-          display: "inline-block",
-        }}
+  <React.Fragment>
+    <Box sx={{ display: ["block", "none"] }}>
+      <Select
+        sx={{ mt: 3, width: "100%" }}
+        onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+          setCurrentDay(e.target.value)
+        }
       >
-        <Button
-          onClick={() => setCurrentDay(day.day)}
+        {days.map(day => (
+          <option
+            key={day.day}
+            value={day.day}
+            selected={currentDay === day.day}
+          >
+            {formatDay(day.day)}
+          </option>
+        ))}
+      </Select>
+    </Box>
+
+    <Box
+      as="ul"
+      sx={{
+        mt: [3, null, 0],
+        display: ["none", "block"],
+      }}
+    >
+      {days.map(day => (
+        <Box
+          key={day.day}
+          as="li"
           sx={{
-            backgroundColor: currentDay === day.day ? "violet" : "white",
-            mr: "-3px",
-            "&:hover": {
-              backgroundColor: "lightViolet",
-            },
+            listStyle: "none",
+            display: "inline-block",
           }}
         >
-          {formatDay(day.day)}
-        </Button>
-      </Box>
-    ))}
-  </Box>
+          <Button
+            onClick={() => setCurrentDay(day.day)}
+            sx={{
+              backgroundColor: currentDay === day.day ? "violet" : "white",
+              mr: "-3px",
+              "&:hover": {
+                backgroundColor: "lightViolet",
+              },
+            }}
+          >
+            {formatDay(day.day)}
+          </Button>
+        </Box>
+      ))}
+    </Box>
+  </React.Fragment>
 );
