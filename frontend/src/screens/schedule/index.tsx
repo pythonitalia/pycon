@@ -1,7 +1,8 @@
 /** @jsx jsx */
 import { useMutation, useQuery } from "@apollo/react-hooks";
-import { RouteComponentProps } from "@reach/router";
+import { redirectTo, RouteComponentProps } from "@reach/router";
 import { Box, Button, Flex, Heading } from "@theme-ui/components";
+import { navigate } from "gatsby";
 import React, { useCallback, useLayoutEffect, useState } from "react";
 import { DndProvider } from "react-dnd";
 import Backend from "react-dnd-html5-backend";
@@ -11,6 +12,7 @@ import { jsx } from "theme-ui";
 import { useLoginState } from "../../app/profile/hooks";
 import { MetaTags } from "../../components/meta-tags";
 import { useConference } from "../../context/conference";
+import { useCurrentLanguage } from "../../context/language";
 import {
   AddScheduleSlotMutation,
   AddScheduleSlotMutationVariables,
@@ -50,12 +52,30 @@ const LoadingOverlay = () => (
   </Flex>
 );
 
-export const ScheduleScreen: React.SFC<RouteComponentProps> = () => {
+const Meta: React.SFC<{ day: string }> = ({ day }) => (
+  <FormattedMessage id="schedule.pageTitle" values={{ day: formatDay(day) }}>
+    {text => <MetaTags title={text} />}
+  </FormattedMessage>
+);
+
+type Props = {
+  day: string;
+};
+
+export const ScheduleScreen: React.SFC<RouteComponentProps<Props>> = ({
+  day: dayParam,
+}) => {
   const { code } = useConference();
 
-  // TODO: redirect to today or first day when we add per day routes
-  const [currentDay, setCurrentDay] = useState<string | null>(null);
+  const currentDay = dayParam!;
+
   const [loggedIn, _] = useLoginState();
+  const language = useCurrentLanguage();
+
+  const setCurrentDay = useCallback(
+    (d: string) => navigate(`/${language}/schedule/${d}`),
+    [],
+  );
 
   const { user } = useCurrentUser({ skip: !loggedIn });
   const shouldShowAdmin = user ? user.canEditSchedule : false;
@@ -143,7 +163,11 @@ export const ScheduleScreen: React.SFC<RouteComponentProps> = () => {
   }, [data]);
 
   if (loading) {
-    return <Box>Loading</Box>;
+    return (
+      <Box>
+        <Meta day={currentDay} />
+      </Box>
+    );
   }
 
   if (error) {
@@ -156,12 +180,7 @@ export const ScheduleScreen: React.SFC<RouteComponentProps> = () => {
 
   return (
     <DndProvider backend={Backend}>
-      <FormattedMessage
-        id="schedule.pageTitle"
-        values={{ day: day ? formatDay(day.day) : "" }}
-      >
-        {text => <MetaTags title={text} />}
-      </FormattedMessage>
+      <Meta day={currentDay} />
 
       {shouldShowAdmin && <ItemsPanel submissions={submissions!} />}
       {(addingSlot || updatingSchedule) && <LoadingOverlay />}

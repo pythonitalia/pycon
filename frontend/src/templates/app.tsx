@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { Router } from "@reach/router";
+import { Redirect, Router } from "@reach/router";
 import { jsx } from "theme-ui";
 
 import { PrivateRoute } from "../app/private-route/private-route";
@@ -31,7 +31,12 @@ export default () => (
       component={EditSubmission}
     />
     <CFPPage path="/:lang/cfp" />
-    <ScheduleScreen path="/:lang/schedule" />
+    <Redirect
+      from="/:lang/schedule"
+      to="/:lang/schedule/2020-04-03"
+      noThrow={true}
+    />
+    <ScheduleScreen path="/:lang/schedule/:day" />
     <LoginForm path="/:lang/login" />
     <GrantScreen path="/:lang/grants" />
     <SocialLoginSuccess path="/:lang/login/success/" />
