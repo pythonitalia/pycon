@@ -12990,6 +12990,11 @@ react-use-form-state@^0.12.1:
   resolved "https://registry.yarnpkg.com/react-use-form-state/-/react-use-form-state-0.12.1.tgz#92b3f416b465820858f44f0cb14f8a840108d111"
   integrity sha512-umRm8m3DzscibP7nfC/d95UJ7NhDfF7UbvBvCzds5z52NmZUzgnZsETTYs95h6dqlvl5+BcIcCjXh9LIxDhJ7g==
 
+react-use-sync-scroll@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/react-use-sync-scroll/-/react-use-sync-scroll-0.1.0.tgz#ce436dad9d354053cd54d553fd762c7fa0d018ad"
+  integrity sha512-/cQs8NNRYdnkc6B1GVu1qnHtl6UHi9ABw8m4v4YGQTF0lQCzdsM6/M6lObFOSkKc7DUPoDawjtFn/ZqhfKC1qQ==
+
 react@15:
   version "15.6.2"
   resolved "https://registry.yarnpkg.com/react/-/react-15.6.2.tgz#dba0434ab439cfe82f108f0f511663908179aa72"

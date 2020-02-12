@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import { Box, Grid } from "@theme-ui/components";
-import React from "react";
+import React, { useRef } from "react";
+import useSyncScroll from "react-use-sync-scroll";
 import { jsx } from "theme-ui";
 
 import { ScheduleEntry } from "./events";
@@ -33,21 +34,9 @@ const formatHour = (value: string) => {
 
   return [hour, minutes].join(".");
 };
-const getRowStartForSlot = ({
-  offset,
-  index,
-}: {
-  offset: number;
-  index: number;
-}) => SLOT_SIZE * index + offset;
 
-const getRowEndForSlot = ({
-  offset,
-  index,
-}: {
-  offset: number;
-  index: number;
-}) => SLOT_SIZE * (index + 1) + offset;
+const getRowStartForSlot = (index: number) => SLOT_SIZE * index + 1;
+const getRowEndForSlot = (index: number) => SLOT_SIZE * (index + 1) + 1;
 
 const convertHoursToMinutes = (value: string) => {
   const [hour, minutes] = value.split(":").map(x => parseInt(x, 10));
@@ -123,15 +112,8 @@ const getEntryPosition = ({
   const index = roomIndexes[0];
   const slotIndex = slots.findIndex(s => s.id === slot.id);
 
-  const rowStart = getRowStartForSlot({
-    index: slotIndex,
-    offset: rowOffset,
-  });
-
-  let rowEnd = getRowEndForSlot({
-    index: slotIndex,
-    offset: rowOffset,
-  });
+  const rowStart = getRowStartForSlot(slotIndex);
+  let rowEnd = getRowEndForSlot(slotIndex);
 
   if (isTraining(item)) {
     rowEnd = getRowEndForTraining({ item, rowOffset, slot, slots });
@@ -144,6 +126,30 @@ const getEntryPosition = ({
     gridRowEnd: rowEnd,
   };
 };
+
+const GridContainer = React.forwardRef<
+  null,
+  { totalColumns: number; totalRows: number }
+>(({ totalColumns, totalRows, children, ...props }, ref) => (
+  <Box
+    sx={{ width: "100%", overflow: "hidden", overflowX: "scroll" }}
+    ref={ref}
+    {...props}
+  >
+    <Grid
+      sx={{
+        minWidth: "1500px",
+        gridTemplateColumns: `80px repeat(${totalColumns}, 1fr)`,
+        gridTemplateRows: `repeat(${totalRows - 1}, 10px)`,
+        gridGap: "3px",
+        py: "3px",
+        backgroundColor: "black",
+      }}
+    >
+      {children}
+    </Grid>
+  </Box>
+));
 
 export const Schedule: React.SFC<{
   slots: Slot[];
@@ -165,7 +171,7 @@ export const Schedule: React.SFC<{
   moveItem,
 }) => {
   const rowOffset = 6;
-  const totalRows = SLOT_SIZE * slots.length + rowOffset;
+  const totalRows = SLOT_SIZE * slots.length;
   const totalColumns = rooms.length;
 
   const handleDrop = (item: any, slot: Slot, index: number) => {
@@ -182,16 +188,25 @@ export const Schedule: React.SFC<{
     }
   };
 
+  const headerRef = useRef(null);
+  const scheduleRef = useRef(null);
+
+  const refsRef = useRef([headerRef, scheduleRef]);
+
+  useSyncScroll(refsRef, { vertical: false, horizontal: true });
+
   return (
-    <Box sx={{ width: "100%", overflowX: "scroll" }}>
-      <Grid
+    <React.Fragment>
+      <GridContainer
+        totalRows={rowOffset}
+        totalColumns={totalColumns}
+        ref={headerRef}
         sx={{
-          minWidth: "1500px",
-          gridTemplateColumns: `80px repeat(${totalColumns}, 1fr)`,
-          gridTemplateRows: `repeat(${totalRows - 1}, 10px)`,
-          gridGap: "3px",
-          py: "3px",
-          backgroundColor: "black",
+          position: "sticky",
+          top: 0,
+          zIndex: "scheduleHeader",
+          overflowX: "hidden",
+          mb: "-3px",
         }}
       >
         <Box
@@ -212,10 +227,6 @@ export const Schedule: React.SFC<{
               p: 2,
               fontSize: 1,
               fontWeight: "bold",
-              position: "sticky",
-              top: 0,
-              zIndex: "scheduleHeader",
-              "&::after": fakeBottomBorder,
             }}
             style={{
               "--column-start": index + 2,
@@ -224,17 +235,16 @@ export const Schedule: React.SFC<{
             {room.name}
           </Box>
         ))}
+      </GridContainer>
 
+      <GridContainer
+        ref={scheduleRef}
+        totalRows={totalRows}
+        totalColumns={totalColumns}
+      >
         {slots.map((slot, slotIndex) => {
-          const rowStart = getRowStartForSlot({
-            index: slotIndex,
-            offset: rowOffset,
-          });
-
-          const rowEnd = getRowEndForSlot({
-            index: slotIndex,
-            offset: rowOffset,
-          });
+          const rowStart = getRowStartForSlot(slotIndex);
+          const rowEnd = getRowEndForSlot(slotIndex);
 
           return (
             <React.Fragment key={slot.id}>
@@ -294,7 +304,7 @@ export const Schedule: React.SFC<{
             </React.Fragment>
           );
         })}
-      </Grid>
-    </Box>
+      </GridContainer>
+    </React.Fragment>
   );
 };
