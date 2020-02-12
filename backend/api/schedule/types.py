@@ -28,6 +28,7 @@ class ScheduleItem:
     slug: str
     description: str
     type: str
+    duration: Optional[int]
     highlight_color: Optional[str]
     speakers: List[User]
     language: Language

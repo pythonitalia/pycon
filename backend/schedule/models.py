@@ -59,6 +59,7 @@ class Room(OrderedModel):
 class ScheduleItem(TimeStampedModel):
     TYPES = Choices(
         ("submission", _("Submission")),
+        ("training", _("Training")),
         ("keynote", _("Keynote")),
         ("custom", _("Custom")),
     )

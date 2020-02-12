@@ -4,6 +4,7 @@ import React from "react";
 import { jsx } from "theme-ui";
 
 import { ScheduleEntry } from "./events";
+import { isTraining } from "./is-training";
 import { Placeholder } from "./placeholder";
 import { Item, Room, Slot } from "./types";
 
@@ -66,7 +67,10 @@ const getRowEndForTraining = ({
   slots: Slot[];
 }) => {
   const start = convertHoursToMinutes(slot.hour);
-  const end = start + item.submission!.duration!.duration;
+  const duration = item.submission
+    ? item.submission.duration!.duration
+    : item.duration || 0;
+  const end = start + duration;
 
   let endingSlotIndex = slots.findIndex(
     s => convertHoursToMinutes(s.hour) + s.duration >= end,
@@ -129,11 +133,7 @@ const getEntryPosition = ({
     offset: rowOffset,
   });
 
-  // TODO: let's be consistent with naming (training vs tutorial)
-  if (
-    item.submission &&
-    item.submission.type!.name.toLowerCase() === "tutorial"
-  ) {
+  if (isTraining(item)) {
     rowEnd = getRowEndForTraining({ item, rowOffset, slot, slots });
   }
 
