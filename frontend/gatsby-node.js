@@ -131,6 +131,9 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
             keynotes {
               slug
             }
+            days {
+              day
+            }
           }
           submissions {
             id
@@ -237,6 +240,25 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
           alternateLinks: {
             en: `/en${page.path}`,
             it: `/it${page.path}`,
+          },
+          conferenceCode: process.env.CONFERENCE_CODE || "pycon-demo",
+        },
+      }),
+    );
+  });
+
+  result.data.backend.conference.days.forEach(({ day }) => {
+    const path = `/schedule/${day}`;
+
+    languages.forEach(language =>
+      createPage({
+        path: `/${language}${path}`,
+        component: appTemplate,
+        context: {
+          language,
+          alternateLinks: {
+            en: `/en${path}`,
+            it: `/it${path}`,
           },
           conferenceCode: process.env.CONFERENCE_CODE || "pycon-demo",
         },
