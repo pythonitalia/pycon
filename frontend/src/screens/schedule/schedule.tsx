@@ -129,7 +129,7 @@ const getEntryPosition = ({
 
 const GridContainer = React.forwardRef<
   null,
-  { totalColumns: number; totalRows: number }
+  { totalColumns: number; totalRows: number; children: React.ReactNode }
 >(({ totalColumns, totalRows, children, ...props }, ref) => (
   <Box
     sx={{ width: "100%", overflow: "hidden", overflowX: "scroll" }}
@@ -201,13 +201,15 @@ export const Schedule: React.SFC<{
         totalRows={rowOffset}
         totalColumns={totalColumns}
         ref={headerRef}
-        sx={{
-          position: "sticky",
-          top: 0,
-          zIndex: "scheduleHeader",
-          overflowX: "hidden",
-          mb: "-3px",
-        }}
+        sx={
+          {
+            position: "sticky",
+            top: 0,
+            zIndex: "scheduleHeader",
+            overflowX: "hidden",
+            mb: "-3px",
+          } as any
+        }
       >
         <Box
           sx={{

@@ -5,6 +5,7 @@ import {
   Box,
   Button,
   Checkbox,
+  Flex,
   Heading,
   Input,
   Select,
@@ -14,10 +15,9 @@ import {
 import React, { Fragment, useCallback, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
-import { Flex, jsx } from "theme-ui";
+import { jsx } from "theme-ui";
 
 import {
-  SendGrantRequestErrors,
   SendGrantRequestMutation,
   SendGrantRequestMutationVariables,
 } from "../../generated/graphql-backend";
