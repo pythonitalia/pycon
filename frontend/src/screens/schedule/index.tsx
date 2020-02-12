@@ -162,19 +162,13 @@ export const ScheduleScreen: React.SFC<RouteComponentProps<Props>> = ({
     }
   }, [data]);
 
-  if (loading) {
-    return (
-      <Box>
-        <Meta day={currentDay} />
-      </Box>
-    );
-  }
-
   if (error) {
     throw error;
   }
 
-  const { rooms, days, submissions } = data?.conference!;
+  const { rooms, days, submissions } = loading
+    ? { rooms: [], days: [], submissions: [] }
+    : data?.conference!;
 
   const day = days.find(d => d.day === currentDay);
 
@@ -208,6 +202,16 @@ export const ScheduleScreen: React.SFC<RouteComponentProps<Props>> = ({
             </Box>
           </Box>
         </Box>
+
+        {loading && (
+          <Box sx={{ borderTop: "primary" }}>
+            <Box
+              sx={{ maxWidth: "largeContainer", p: 3, mx: "auto", fontSize: 3 }}
+            >
+              <FormattedMessage id="schedule.loading" />
+            </Box>
+          </Box>
+        )}
 
         {day && (
           <Schedule

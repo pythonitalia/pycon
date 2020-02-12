@@ -359,6 +359,7 @@ export const messages = {
     "tickets.seeAllTickets": "See all the tickets",
 
     "schedule.pageTitle": "Schedule {day}",
+    "schedule.loading": "Loading...",
   },
   it: {
     titleTemplate: "%s | PyCon Italia",
@@ -715,6 +716,7 @@ export const messages = {
     "tickets.seeAllTickets": "Tutti i biglietti",
 
     "schedule.pageTitle": "Schedule {day}",
+    "schedule.loading": "Caricamento in corso...",
   },
 };
 
