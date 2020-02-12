@@ -1,3 +1,4 @@
+import dataclasses
 import typing
 from dataclasses import dataclass
 from urllib.parse import urljoin
@@ -7,14 +8,16 @@ from django.conf import settings
 from users.models import User
 
 
-@dataclass
+@dataclass(frozen=True)
 class Endpoint:
     id: typing.Union[str, int]
-    name: str
-    email: str
-    full_name: str
-    is_staff: bool
-    extra_info: typing.Optional[typing.Dict[str, typing.List[str]]] = None
+    name: str = dataclasses.field(hash=False)
+    email: str = dataclasses.field(hash=False)
+    full_name: str = dataclasses.field(hash=False)
+    is_staff: bool = dataclasses.field(hash=False)
+    extra_info: typing.Optional[typing.Dict[str, typing.List[str]]] = dataclasses.field(
+        default=None, hash=False
+    )
 
     def as_item(self):
         user_id = str(self.id)
