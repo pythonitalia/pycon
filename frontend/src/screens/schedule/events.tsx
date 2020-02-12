@@ -6,7 +6,7 @@ import { jsx } from "theme-ui";
 
 import { EnglishIcon } from "../../components/icons/english";
 import { ItalianIcon } from "../../components/icons/italian";
-import { getColorForSubmission } from "./get-color-for-submission";
+import { getColorForItem, getColorForSubmission } from "./get-color";
 import {
   Item,
   ItemTypes,
@@ -14,10 +14,6 @@ import {
   Slot,
   Submission as SubmissionType,
 } from "./types";
-
-const COLOR_MAP = {
-  custom: "cinderella",
-};
 
 const getType = (submission?: SubmissionType | null) =>
   submission?.type?.name.toLowerCase() === "tutorial"
@@ -129,10 +125,7 @@ export const ScheduleEntry: React.SFC<{
 }> = ({ item, adminMode, slot, rooms, ...props }) => {
   const type = getType(item.submission);
 
-  const backgroundColor =
-    item.type === "submission" && item.submission
-      ? getColorForSubmission(item.submission)
-      : COLOR_MAP.custom;
+  const backgroundColor = getColorForItem(item);
 
   const itemDuration = item.submission
     ? item.submission.duration!.duration
@@ -142,6 +135,12 @@ export const ScheduleEntry: React.SFC<{
     adminMode && itemDuration !== slot.duration ? `*${itemDuration}` : null;
 
   const LanguageIcon = item.language.code === "en" ? EnglishIcon : ItalianIcon;
+
+  const audienceLevel = item.submission
+    ? item.submission.audienceLevel!.name
+    : item.audienceLevel
+    ? item.audienceLevel.name
+    : null;
 
   return (
     <BaseDraggable
@@ -175,9 +174,7 @@ export const ScheduleEntry: React.SFC<{
           <Text sx={{ fontWeight: "bold" }}>
             {item.speakers.map(s => s.fullName).join(" & ")}
           </Text>
-          {item.submission && (
-            <Text>{item.submission.audienceLevel!.name}</Text>
-          )}
+          {audienceLevel && <Text>{audienceLevel}</Text>}
         </Box>
 
         {item.submission && (

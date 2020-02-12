@@ -12,6 +12,10 @@ fragment ScheduleSlotFragment on ScheduleSlot {
 
     duration
 
+    audienceLevel {
+      name
+    }
+
     language {
       id
       name

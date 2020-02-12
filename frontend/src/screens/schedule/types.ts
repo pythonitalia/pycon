@@ -22,6 +22,7 @@ export type Item = {
   rooms: Room[];
   duration?: number | null;
   submission?: Submission | null;
+  audienceLevel?: { name: string } | null;
   speakers: { fullName: string }[];
 };
 

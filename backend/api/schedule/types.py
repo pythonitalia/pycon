@@ -7,7 +7,7 @@ from api.users.types import User
 from strawberry.types.datetime import DateTime
 
 if TYPE_CHECKING:  # pragma: no cover
-    from api.conferences.types import Conference
+    from api.conferences.types import Conference, AudienceLevel  # noqa
 
 
 @strawberry.type
@@ -32,6 +32,7 @@ class ScheduleItem:
     highlight_color: Optional[str]
     speakers: List[User]
     language: Language
+    audience_level: Optional["AudienceLevel"]
 
     @strawberry.field
     def title(self, info) -> str:

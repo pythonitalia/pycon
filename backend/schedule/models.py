@@ -109,6 +109,14 @@ class ScheduleItem(TimeStampedModel):
         on_delete=models.PROTECT,
     )
 
+    audience_level = models.ForeignKey(
+        "conferences.AudienceLevel",
+        verbose_name=_("audience level"),
+        blank=True,
+        null=True,
+        on_delete=models.PROTECT,
+    )
+
     @cached_property
     def speakers(self):
         speakers = set(self.additional_speakers.all())
