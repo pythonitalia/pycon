@@ -65,7 +65,7 @@ export const DaySelector: React.SFC<{
             {index === 0 && (
               <Box
                 sx={{
-                  color: "red",
+                  color: currentDay === day.day ? "white" : "red",
                   position: "absolute",
                   fontSize: 10,
                   fontWeight: "bold",
