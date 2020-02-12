@@ -353,6 +353,10 @@ export default {
   },
   zIndices: {
     header: "11",
+    scheduleItemPanel: "19",
+    scheduleLoading: "20",
+    scheduleHeader: "10",
+    scheduleDraggable: "9",
     footer: "0",
   },
 };

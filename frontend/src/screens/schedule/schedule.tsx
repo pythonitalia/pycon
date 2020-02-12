@@ -214,7 +214,7 @@ export const Schedule: React.SFC<{
               fontWeight: "bold",
               position: "sticky",
               top: 0,
-              zIndex: 200,
+              zIndex: "scheduleHeader",
               "&::after": fakeBottomBorder,
             }}
             style={{

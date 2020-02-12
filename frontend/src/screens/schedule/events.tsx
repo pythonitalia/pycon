@@ -149,7 +149,7 @@ export const ScheduleEntry: React.SFC<{
       sx={{
         backgroundColor,
         position: "relative",
-        zIndex: 10,
+        zIndex: "scheduleDraggable",
         display: "flex",
         p: 2,
         fontSize: 1,

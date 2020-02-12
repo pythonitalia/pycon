@@ -25,7 +25,7 @@ export const ItemsPanel: React.SFC<ItemsPanelProp> = ({ submissions }) => {
         bottom: 0,
         top: 0,
         right: 0,
-        zIndex: 100,
+        zIndex: "scheduleItemPanel",
         width: 300,
         p: 4,
         borderLeft: "primary",

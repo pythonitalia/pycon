@@ -39,7 +39,7 @@ const LoadingOverlay = () => (
       bottom: 0,
       top: 0,
       background: "rgba(0, 0, 0, 0.3)",
-      zIndex: 100,
+      zIndex: "scheduleLoading",
       alignItems: "center",
       justifyContent: "center",
     }}
