@@ -64,9 +64,9 @@ type Props = {
 
 export const ScheduleScreen: React.SFC<RouteComponentProps<Props>> = ({
   day: dayParam,
+  location,
 }) => {
   const { code } = useConference();
-
   const currentDay = dayParam!;
 
   const [loggedIn, _] = useLoginState();
@@ -77,7 +77,8 @@ export const ScheduleScreen: React.SFC<RouteComponentProps<Props>> = ({
     [],
   );
 
-  const { user } = useCurrentUser({ skip: !loggedIn });
+  const shouldFetchCurrentUser = loggedIn && location?.search.includes("admin");
+  const { user } = useCurrentUser({ skip: !shouldFetchCurrentUser });
   const shouldShowAdmin = user ? user.canEditSchedule : false;
 
   const { loading, data, error } = useQuery<
