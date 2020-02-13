@@ -19,7 +19,7 @@ class SubmissionCommentInline(admin.TabularInline):
 class SubmissionAdmin(admin.ModelAdmin):
     list_display = (
         "title",
-        "speaker__name",
+        "speaker_name",
         "type",
         "conference",
         "topic",
@@ -52,7 +52,7 @@ class SubmissionAdmin(admin.ModelAdmin):
     filter_horizontal = ("tags",)
     inlines = [SubmissionCommentInline]
 
-    def speaker__name(self, obj):  # pragma: no cover
+    def speaker_name(self, obj):  # pragma: no cover
         return obj.speaker.full_name or obj.speaker.name or obj.speaker.email
 
     class Media:
