@@ -101,12 +101,14 @@ export const HeaderContent = ({ location }: { location: any }) => {
     <Box
       ref={headerRef}
       sx={{
-        position: "absolute",
         top: 0,
         left: 0,
         pt: 3,
         width: "100%",
+        height: open ? "100%" : "",
         zIndex: "header",
+        position: open ? "fixed" : "absolute",
+        borderBottom: open ? "primary" : "",
         backgroundColor: open ? "orange" : "",
       }}
     >
@@ -177,7 +179,6 @@ export const HeaderContent = ({ location }: { location: any }) => {
         <Box
           sx={{
             borderTop: "primary",
-            borderBottom: "primary",
           }}
         >
           <Grid

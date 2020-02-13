@@ -127,7 +127,7 @@ export default {
     },
     header: {
       color: "white",
-      fontSize: 5,
+      fontSize: 4,
       textDecoration: "none",
       display: "block",
       "&:hover": {
