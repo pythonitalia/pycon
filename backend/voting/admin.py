@@ -52,6 +52,7 @@ class RankSubmission(admin.ModelAdmin):
         "language",
         "speaker",
         "gender",
+        "view_submission",
     )
     ordering = ("absolute_rank",)
     list_filter = (
@@ -98,6 +99,15 @@ class RankSubmission(admin.ModelAdmin):
             "not_say": "⛔️",
         }
         return emoji[obj.submission.speaker.gender]
+
+    def view_submission(self, obj):  # pragma: no cover
+        return format_html(
+            f'<a class="button" ' f'href="{{}}" target="_blank" >Open</a>&nbsp;',
+            reverse("admin:submissions_submission_change", args=(obj.submission.id,)),
+        )
+
+    view_submission.short_description = "View"
+    view_submission.allow_tags = True
 
 
 @admin.register(RankRequest)
