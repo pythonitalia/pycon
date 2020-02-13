@@ -201,15 +201,13 @@ export const Schedule: React.SFC<{
         totalRows={rowOffset}
         totalColumns={totalColumns}
         ref={headerRef}
-        sx={
-          {
-            position: "sticky",
-            top: 0,
-            zIndex: "scheduleHeader",
-            overflowX: "hidden",
-            mb: "-3px",
-          } as any
-        }
+        sx={{
+          position: "sticky",
+          top: 0,
+          zIndex: ["scheduleHeader"],
+          overflowX: "hidden",
+          mb: "-3px",
+        }}
       >
         <Box
           sx={{

@@ -146,17 +146,17 @@ export const ScheduleEntry: React.SFC<{
     <BaseDraggable
       adminMode={adminMode}
       type={type}
+      metadata={{ itemId: item.id }}
       sx={{
+        zIndex: ["scheduleDraggable"],
         backgroundColor,
         position: "relative",
-        zIndex: "scheduleDraggable",
         display: "flex",
         p: 2,
         fontSize: 1,
         flexDirection: "column",
       }}
       {...props}
-      metadata={{ itemId: item.id }}
     >
       <Text>
         {item.title}
