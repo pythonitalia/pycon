@@ -352,35 +352,6 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     });
   });
 
-  result.data.backend.submissions.forEach(({ id }) => {
-    createPage({
-      component: submissionTemplate,
-      path: `/en/submission/${id}`,
-      context: {
-        id,
-        language: "en",
-        alternateLinks: {
-          en: `/en/submission/${id}`,
-          it: `/it/submission/${id}`,
-        },
-        conferenceCode: process.env.CONFERENCE_CODE || "pycon-demo",
-      },
-    });
-
-    createPage({
-      component: submissionTemplate,
-      path: `/it/submission/${id}`,
-      context: {
-        id,
-        language: "it",
-        alternateLinks: {
-          en: `/en/submission/${id}`,
-          it: `/it/submission/${id}`,
-        },
-      },
-    });
-  });
-
   // generic social card
   const genericSocialCardTemplate = path.resolve(
     `src/templates/social-card.tsx`,
