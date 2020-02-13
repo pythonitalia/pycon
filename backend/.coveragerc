@@ -39,3 +39,4 @@ omit =
   ./submissions/views.py
   ./notifications/aws.py
   ./newsletters/aws.py
+  ./**/admin.py

@@ -52,7 +52,7 @@ class SubmissionAdmin(admin.ModelAdmin):
     filter_horizontal = ("tags",)
     inlines = [SubmissionCommentInline]
 
-    def speaker_name(self, obj):  # pragma: no cover
+    def speaker_name(self, obj):
         return obj.speaker.full_name or obj.speaker.name or obj.speaker.email
 
     class Media:

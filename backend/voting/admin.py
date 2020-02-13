@@ -62,34 +62,34 @@ class RankSubmission(admin.ModelAdmin):
         "submission__speaker__gender",
     )
 
-    def title(self, obj):  # pragma: no cover
+    def title(self, obj):
         return obj.submission.title
 
-    def type(self, obj):  # pragma: no cover
+    def type(self, obj):
         return obj.submission.type
 
-    def topic(self, obj):  # pragma: no cover
+    def topic(self, obj):
         return obj.submission.topic.name
 
-    def level(self, obj):  # pragma: no cover
+    def level(self, obj):
         return obj.submission.audience_level.name
 
-    def duration(self, obj):  # pragma: no cover
+    def duration(self, obj):
         return obj.submission.duration.duration
 
-    def language(self, obj):  # pragma: no cover
+    def language(self, obj):
         emoji = {"it": "🇮🇹", "en": "🇬🇧"}
         langs = [emoji[lang.code] for lang in obj.submission.languages.all()]
         return " ".join(langs)
 
-    def speaker(self, obj):  # pragma: no cover
+    def speaker(self, obj):
         return (
             obj.submission.speaker.full_name
             or obj.submission.speaker.name
             or obj.submission.speaker.email
         )
 
-    def gender(self, obj):  # pragma: no cover
+    def gender(self, obj):
         emoji = {
             "": "",
             "male": "👨🏻‍💻",
@@ -104,7 +104,7 @@ class RankSubmission(admin.ModelAdmin):
 class RankRequestAdmin(admin.ModelAdmin):
     list_display = ("conference", "created", "view_rank")
 
-    def view_rank(self, obj):  # pragma: no cover
+    def view_rank(self, obj):
         return format_html(
             f'<a class="button" '
             f'href="{{}}?rank_request_id__id__exact={obj.id}">Open</a>&nbsp;',
