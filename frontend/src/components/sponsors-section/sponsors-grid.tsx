@@ -68,7 +68,8 @@ const SponsorItem: React.SFC<ItemProps> = ({ sponsor, color }) => (
 
 export const SponsorsGrid: React.SFC<Props> = ({ sponsors, color }) => {
   const columns = useSSRResponsiveValue([1, 3]);
-  const missing = columns - (sponsors.length % columns);
+  const missing =
+    sponsors.length % columns === 0 ? 0 : columns - (sponsors.length % columns);
 
   const backgroundColor = color || "yellow";
 
