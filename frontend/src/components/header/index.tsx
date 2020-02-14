@@ -110,6 +110,7 @@ export const HeaderContent = ({ location }: { location: any }) => {
         position: open ? "fixed" : "absolute",
         borderBottom: open ? "primary" : "",
         backgroundColor: open ? "orange" : "",
+        overflowX: open ? "scroll" : "",
       }}
     >
       <Flex
