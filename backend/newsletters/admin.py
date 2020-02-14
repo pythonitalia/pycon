@@ -22,7 +22,7 @@ class SubscriptionAdmin(AdminViews):
         ("Export users with accepted talks", "export_users_with_accepted_talks"),
     )
 
-    def export_all_users_to_pinpoint(self, request, **kwargs):  # pragma: no cover
+    def export_all_users_to_pinpoint(self, request, **kwargs):
         users = User.objects.all()
 
         endpoints = convert_users_to_endpoints(users)
@@ -34,7 +34,7 @@ class SubscriptionAdmin(AdminViews):
 
         return redirect("admin:index")
 
-    def export_users_with_accepted_talks(self, request, **kwargs):  # pragma: no cover
+    def export_users_with_accepted_talks(self, request, **kwargs):
         items = ScheduleItem.objects.filter(
             type__in=[
                 ScheduleItem.TYPES.keynote,

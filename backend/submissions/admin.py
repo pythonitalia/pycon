@@ -19,6 +19,7 @@ class SubmissionCommentInline(admin.TabularInline):
 class SubmissionAdmin(admin.ModelAdmin):
     list_display = (
         "title",
+        "speaker_name",
         "type",
         "conference",
         "topic",
@@ -50,6 +51,9 @@ class SubmissionAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}
     filter_horizontal = ("tags",)
     inlines = [SubmissionCommentInline]
+
+    def speaker_name(self, obj):
+        return obj.speaker.full_name or obj.speaker.name or obj.speaker.email
 
     class Media:
         js = ["admin/js/jquery.init.js"]
