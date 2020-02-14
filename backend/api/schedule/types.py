@@ -22,6 +22,7 @@ class Room:
 class ScheduleItem:
     id: strawberry.ID
     conference: "Conference"
+    title: str
     start: DateTime
     end: DateTime
     submission: Optional[Submission]
@@ -33,10 +34,6 @@ class ScheduleItem:
     speakers: List[User]
     language: Language
     audience_level: Optional["AudienceLevel"]
-
-    @strawberry.field
-    def title(self, info) -> str:
-        return self.submission.title if self.submission else self.title
 
     @strawberry.field
     def rooms(self, info) -> List[Room]:

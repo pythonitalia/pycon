@@ -63,7 +63,7 @@ def test_get_conference_keynotes_returns_only_keynotes(
 
     keynote_data = resp["data"]["conference"]["keynotes"][0]
 
-    assert keynote_data["title"] == keynote.submission.title
+    assert keynote_data["title"] == keynote.title
     assert len(keynote_data["speakers"]) == 2
 
     assert {"name": speaker.name, "fullName": speaker.full_name} in keynote_data[
