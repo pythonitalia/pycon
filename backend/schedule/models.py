@@ -131,6 +131,13 @@ class ScheduleItem(TimeStampedModel):
         on_delete=models.PROTECT,
     )
 
+    subscribed_users = models.ManyToManyField(
+        "users.User",
+        verbose_name=_("subscribed users"),
+        blank=True,
+        related_name="intrested_in_items",
+    )
+
     @cached_property
     def speakers(self):
         speakers = set(self.additional_speakers.all())
