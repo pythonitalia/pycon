@@ -39,4 +39,5 @@ omit =
   ./submissions/views.py
   ./notifications/aws.py
   ./newsletters/aws.py
+  ./helpers/unique_slugify.py
   ./**/admin.py
