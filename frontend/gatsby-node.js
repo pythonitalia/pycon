@@ -128,6 +128,9 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
             slugIt: slug(language: "it")
           }
           conference {
+            talks {
+              slug
+            }
             keynotes {
               slug
             }
@@ -289,6 +292,36 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         alternateLinks: {
           en: `/en/blog/${slugEn}`,
           it: `/it/blog/${slugIt}`,
+        },
+      },
+    });
+  });
+
+  result.data.backend.conference.talks.forEach(({ slug }) => {
+    createPageWithSocialCards(createPage, talkSocialTemplate, {
+      path: `/en/talk/${slug}`,
+      component: talkTemplate,
+      context: {
+        slug,
+        language: "en",
+        type: "talk",
+        alternateLinks: {
+          en: `/en/talk/${slug}`,
+          it: `/it/talk/${slug}`,
+        },
+      },
+    });
+
+    createPageWithSocialCards(createPage, talkSocialTemplate, {
+      path: `/it/talk/${slug}`,
+      component: talkTemplate,
+      context: {
+        slug,
+        language: "it",
+        type: "talk",
+        alternateLinks: {
+          en: `/en/talk/${slug}`,
+          it: `/it/talk/${slug}`,
         },
       },
     });

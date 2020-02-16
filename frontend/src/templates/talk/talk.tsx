@@ -11,6 +11,7 @@ import { BlogPostIllustration } from "../../components/illustrations/blog-post";
 import { MetaTags } from "../../components/meta-tags";
 import { TalkQuery } from "../../generated/graphql";
 import { compile } from "../../helpers/markdown";
+import { SpeakerDetail } from "./speaker-detail";
 
 type Props = {
   data: TalkQuery;
@@ -19,29 +20,6 @@ type Props = {
     socialCardTwitter: string;
   };
 };
-
-const SpeakerInfoRow: React.SFC<{
-  title: string | React.ReactElement;
-  value: string;
-}> = ({ title, value }) => (
-  <Fragment>
-    <dt
-      sx={{ color: "violet", textTransform: "uppercase", fontWeight: "bold" }}
-    >
-      {title}:
-    </dt>
-    <dd>{value}</dd>
-
-    <Box
-      sx={{
-        borderBottom: "primary",
-        borderColor: "violet",
-        gridColumnStart: 1,
-        gridColumnEnd: -1,
-      }}
-    />
-  </Fragment>
-);
 
 export default ({ data, ...props }: Props) => {
   const talk = data.backend.conference.talk!;
@@ -129,67 +107,7 @@ export default ({ data, ...props }: Props) => {
         }}
       >
         {talk.speakers.map(speaker => (
-          <Fragment key={speaker.fullName}>
-            <Box
-              sx={{
-                border: "primary",
-                width: "100%",
-                position: "relative",
-                mb: 3,
-              }}
-            >
-              {talk.imageFile && (
-                <Img
-                  style={{
-                    width: "100%",
-                    height: "auto",
-                  }}
-                  {...talk.imageFile.childImageSharp}
-                />
-              )}
-
-              <Box
-                sx={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  width: "100%",
-                  height: "100%",
-                  backgroundColor: talk.highlightColor || "cinderella",
-                  mixBlendMode: "multiply",
-                }}
-              />
-
-              <Text
-                variant="caps"
-                as="h3"
-                sx={{
-                  position: "absolute",
-                  bottom: 0,
-                  left: 0,
-                  p: 3,
-                  fontWeight: "medium",
-                  color: "white",
-                }}
-              >
-                {speaker.fullName}
-              </Text>
-            </Box>
-
-            <Box>
-              <Grid
-                as="dl"
-                sx={{
-                  gridTemplateColumns: "1fr 2fr",
-                }}
-              >
-                <SpeakerInfoRow
-                  title={"Speaker name"}
-                  value={speaker.fullName}
-                />
-              </Grid>
-            </Box>
-          </Fragment>
+          <SpeakerDetail speaker={speaker} key={speaker.fullName} />
         ))}
       </Grid>
     </Fragment>
