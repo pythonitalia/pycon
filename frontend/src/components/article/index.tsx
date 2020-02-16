@@ -5,7 +5,7 @@ import { Fragment } from "react";
 import { jsx } from "theme-ui";
 
 type ArticleProps = {
-  hero: GatsbyImageProps | null;
+  hero?: GatsbyImageProps | null;
   title: string;
   published?: string;
   description?: string;

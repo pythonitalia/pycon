@@ -1,7 +1,6 @@
 /** @jsx jsx */
-import { Box, Flex, Grid, Text } from "@theme-ui/components";
+import { Box, Flex, Grid, Heading, Text } from "@theme-ui/components";
 import { graphql } from "gatsby";
-import Img from "gatsby-image";
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
@@ -30,6 +29,11 @@ export default ({ data, ...props }: Props) => {
     props.pageContext.socialCardTwitter
   }`;
 
+  const description = talk.submission
+    ? talk.submission.abstract
+    : talk.description;
+  const elevatorPitch = talk.submission ? talk.submission.elevatorPitch : null;
+
   return (
     <Fragment>
       <MetaTags
@@ -49,11 +53,12 @@ export default ({ data, ...props }: Props) => {
         }}
       >
         <Box>
-          <Article
-            hero={talk.imageFile && { ...talk.imageFile.childImageSharp! }}
-            title={talk.title}
-          >
-            {compile(talk.description).tree}
+          <Article title={talk.title}>
+            {elevatorPitch && <Box>{compile(elevatorPitch).tree}</Box>}
+
+            <Heading as="h2">Abstract</Heading>
+
+            {compile(description).tree}
           </Article>
         </Box>
 
@@ -129,6 +134,11 @@ export const query = graphql`
           image
           highlightColor
           description
+
+          submission {
+            abstract
+            elevatorPitch
+          }
 
           speakers {
             fullName
