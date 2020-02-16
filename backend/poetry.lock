@@ -393,6 +393,17 @@ version = "3.3.0"
 
 [[package]]
 category = "main"
+description = "Django Query Inspector"
+name = "django-queryinspect"
+optional = false
+python-versions = "*"
+version = "1.1.0"
+
+[package.dependencies]
+Django = ">=1.11"
+
+[[package]]
+category = "main"
 description = "A Django email backend for Amazon's Simple Email Service"
 name = "django-ses"
 optional = false
@@ -1402,7 +1413,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["pathlib2", "contextlib2", "unittest2"]
 
 [metadata]
-content-hash = "e1c10c5629f95df4b6ac43472ca2f74c9b5f511e392cf6d64317db2d0bb307a9"
+content-hash = "98ce71c89c1aac68755ec70809b5a2693a81f9a79038eb28dacc962be66900aa"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -1556,6 +1567,10 @@ django-ordered-model = [
     {file = "django-ordered-model-3.3.0.tar.gz", hash = "sha256:abf0d963f7e607a994baf6bc300e50af647b3d243c3e592c6cc8f8b924b6d427"},
     {file = "django_ordered_model-3.3.0-py3-none-any.whl", hash = "sha256:0931f498008f91a00a32c4e0ae08a662ef608a1092bf6e6ec9af9b1a83f08acf"},
 ]
+django-queryinspect = [
+    {file = "django-queryinspect-1.1.0.tar.gz", hash = "sha256:3dc7e60bf1b382e6333d4fe09d79ec0eee85204bedc26f59d9164117ae0ba3aa"},
+    {file = "django_queryinspect-1.1.0-py2-none-any.whl", hash = "sha256:3a09644be2c6e068309db79063601ae328da89a5f00f039ea7fc683d1e4bf3e2"},
+]
 django-ses = [
     {file = "django-ses-0.8.13.tar.gz", hash = "sha256:f9769f684e7211132f17117e60b4418f121e474f0955e05075e491caaa21d834"},
     {file = "django_ses-0.8.13-py2.py3-none-any.whl", hash = "sha256:8c9ded374a7f2b36300a8e3daa472cfebba339736efc5f57c98cb25c1e2ee23d"},
@@ -1626,6 +1641,9 @@ greenlet = [
     {file = "greenlet-0.4.15-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:8041e2de00e745c0e05a502d6e6db310db7faa7c979b3a5877123548a4c0b214"},
     {file = "greenlet-0.4.15-cp37-cp37m-win32.whl", hash = "sha256:81fcd96a275209ef117e9ec91f75c731fa18dcfd9ffaa1c0adbdaa3616a86043"},
     {file = "greenlet-0.4.15-cp37-cp37m-win_amd64.whl", hash = "sha256:37c9ba82bd82eb6a23c2e5acc03055c0e45697253b2393c9a50cef76a3985304"},
+    {file = "greenlet-0.4.15-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:e538b8dae561080b542b0f5af64d47ef859f22517f7eca617bb314e0e03fd7ef"},
+    {file = "greenlet-0.4.15-cp38-cp38-win32.whl", hash = "sha256:51155342eb4d6058a0ffcd98a798fe6ba21195517da97e15fca3db12ab201e6e"},
+    {file = "greenlet-0.4.15-cp38-cp38-win_amd64.whl", hash = "sha256:7457d685158522df483196b16ec648b28f8e847861adb01a55d41134e7734122"},
     {file = "greenlet-0.4.15.tar.gz", hash = "sha256:9416443e219356e3c31f1f918a91badf2e37acf297e2fa13d24d1cc2380f8fbc"},
 ]
 h11 = [

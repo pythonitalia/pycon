@@ -66,6 +66,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "qinspect.middleware.QueryInspectMiddleware",
 ]
 
 ROOT_URLCONF = "pycon.urls"
@@ -190,7 +191,15 @@ LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "handlers": {"console": {"class": "logging.StreamHandler"}},
-    "loggers": {"app_api": {"handlers": ["console"], "level": "WARNING"}},
+    "loggers": {
+        "app_api": {"handlers": ["console"], "level": "WARNING"},
+        "qinspect": {"handlers": ["console"], "level": "DEBUG", "propagate": True},
+    },
 }
+
+QUERY_INSPECT_ENABLED = DEBUG
+QUERY_INSPECT_LOG_QUERIES = True
+QUERY_INSPECT_LOG_TRACEBACKS = True
+QUERY_INSPECT_TRACEBACK_ROOTS = [root(".")]
 
 PINPOINT_APPLICATION_ID = env("PINPOINT_APPLICATION_ID", default="")
