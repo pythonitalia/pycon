@@ -176,6 +176,10 @@ class Conference:
         return self.schedule_items.filter(type=ScheduleItemModel.TYPES.keynote).all()
 
     @strawberry.field
+    def talks(self, info) -> List[ScheduleItem]:
+        return self.schedule_items.filter(type=ScheduleItemModel.TYPES.submission).all()
+
+    @strawberry.field
     def talk(self, info, slug: str) -> Optional[ScheduleItem]:
         return self.schedule_items.filter(slug=slug).first()
 

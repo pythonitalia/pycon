@@ -4,6 +4,7 @@ from django.core import exceptions
 from django.db import models
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
+from helpers.unique_slugify import unique_slugify
 from model_utils import Choices
 from model_utils.models import TimeStampedModel
 from ordered_model.models import OrderedModel
@@ -146,8 +147,8 @@ class ScheduleItem(TimeStampedModel):
         if self.submission and not self.title:
             self.title = self.submission.title
 
-        # see: https://stackoverflow.com/q/454436/169274
-        self.slug = self.slug or None
+        if not self.slug:
+            unique_slugify(self, self.title)
 
         if "update_fields" in kwargs:
             kwargs["update_fields"].append("slug")

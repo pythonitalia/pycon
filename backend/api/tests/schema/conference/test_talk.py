@@ -56,7 +56,7 @@ def test_get_talk_by_slug(conference_factory, schedule_item_factory, graphql_cli
 
     talk_data = resp["data"]["conference"]["talk"]
 
-    assert talk_data["title"] == keynote.submission.title
+    assert talk_data["title"] == keynote.title
     assert talk_data["slug"] == keynote.slug
     assert len(talk_data["speakers"]) == 1
 
