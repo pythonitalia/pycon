@@ -57,6 +57,18 @@ def get_user_orders(conference: Conference, email: str):
     return response.json()
 
 
+def get_orders(conference: Conference):
+    response = pretix(conference, "orders")
+    response.raise_for_status()
+    return response.json()
+
+
+def get_invoices(conference: Conference):
+    response = pretix(conference, "invoices")
+    response.raise_for_status()
+    return response.json()
+
+
 def get_items(conference: Conference):
     response = pretix(conference, "items")
     response.raise_for_status()
