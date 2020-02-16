@@ -17,6 +17,7 @@ export type Submission = {
 export type Item = {
   id: string;
   title: string;
+  slug: string;
   language: { code: string };
   type: string;
   rooms: Room[];

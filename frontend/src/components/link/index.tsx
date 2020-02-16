@@ -61,6 +61,10 @@ const ArrowRightBackground = ({
 const isExternalLink = ({ href, target }: { href: string; target?: string }) =>
   href.startsWith("http") || href.startsWith("mailto") || target === "_blank";
 
+const PlainLink: React.SFC = ({ children, ...props }) => (
+  <a {...props}>{children}</a>
+);
+
 export const Link: React.SFC<LinkProps> = ({
   children,
   href,
@@ -77,7 +81,9 @@ export const Link: React.SFC<LinkProps> = ({
     (href && isExternalLink({ href, ...additionalProps })) ||
     additionalProps.variant === "google";
 
-  const LinkComponent = isExternal
+  const LinkComponent = !href
+    ? PlainLink
+    : isExternal
     ? ThemeLink
     : ({ ...props }: { to: string }) => (
         <GatsbyLink activeClassName="active" {...props} />
@@ -87,8 +93,10 @@ export const Link: React.SFC<LinkProps> = ({
     (additionalProps as any).rel = "noopener noreferrer";
   }
 
+  const hrefProps = href ? { href, to: href } : {};
+
   const component = (hovered: boolean) => (
-    <ThemeLink {...additionalProps} as={LinkComponent} href={href} to={href}>
+    <ThemeLink {...additionalProps} as={LinkComponent} {...hrefProps}>
       {additionalProps.variant === "button" && (
         <ArrowRightBackground
           backgroundColor={hovered ? "orange" : backgroundColor || "yellow"}

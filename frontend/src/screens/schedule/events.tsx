@@ -6,6 +6,7 @@ import { jsx } from "theme-ui";
 
 import { EnglishIcon } from "../../components/icons/english";
 import { ItalianIcon } from "../../components/icons/italian";
+import { Link } from "../../components/link";
 import { getColorForItem, getColorForSubmission } from "./get-color";
 import {
   Item,
@@ -97,6 +98,19 @@ export const Submission = ({
   );
 };
 
+const getItemUrl = (item: Item) => {
+  if (item.type === "submission") {
+    return `/:language/talk/${item.slug}`;
+  }
+
+  // TODO: check tbd
+  if (item.type === "keynote") {
+    return `/:language/keynote/${item.slug}`;
+  }
+
+  return null;
+};
+
 export const AllTracksEvent = ({ ...props }) => (
   <BaseEvent
     type={ItemTypes.ALL_TRACKS_EVENT}
@@ -151,40 +165,54 @@ export const ScheduleEntry: React.SFC<{
         zIndex: ["scheduleDraggable"],
         backgroundColor,
         position: "relative",
-        display: "flex",
         p: 2,
         fontSize: 1,
-        flexDirection: "column",
       }}
       {...props}
     >
-      <Text>
-        {item.title}
+      <Link
+        href={getItemUrl(item)}
+        sx={{
+          color: "inherit",
+          textDecoration: "none",
+          height: "100%",
+          maxHeight: 135,
+          display: "block",
+          "> span": {
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+          },
+        }}
+      >
+        <Text>
+          {item.title}
 
-        {marker && (
-          <Text as="span" sx={{ fontWeight: "bold" }}>
-            {" "}
-            {marker}
-          </Text>
-        )}
-      </Text>
+          {marker && (
+            <Text as="span" sx={{ fontWeight: "bold" }}>
+              {" "}
+              {marker}
+            </Text>
+          )}
+        </Text>
 
-      <Flex sx={{ color: "white", mt: "auto" }}>
-        <Box sx={{ mr: "auto" }}>
-          <Text sx={{ fontWeight: "bold" }}>
-            {item.speakers.map(s => s.fullName).join(" & ")}
-          </Text>
-          {audienceLevel && <Text>{audienceLevel}</Text>}
-        </Box>
+        <Flex sx={{ color: "white", mt: "auto" }}>
+          <Box sx={{ mr: "auto" }}>
+            <Text sx={{ fontWeight: "bold" }}>
+              {item.speakers.map(s => s.fullName).join(" & ")}
+            </Text>
+            {audienceLevel && <Text>{audienceLevel}</Text>}
+          </Box>
 
-        {item.submission && (
-          <LanguageIcon
-            sx={{
-              width: 30,
-            }}
-          />
-        )}
-      </Flex>
+          {item.submission && (
+            <LanguageIcon
+              sx={{
+                width: 30,
+              }}
+            />
+          )}
+        </Flex>
+      </Link>
     </BaseDraggable>
   );
 };
