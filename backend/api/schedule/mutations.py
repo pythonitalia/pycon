@@ -61,7 +61,7 @@ class ScheduleMutations:
 
         Slot.objects.create(day=day, hour=hour, duration=duration)
 
-        return Day(day=day.day, slots=day.slots.all())
+        return Day.from_db(day)
 
     @strawberry.mutation(permission_classes=[IsStaffPermission])
     def update_or_create_slot_item(

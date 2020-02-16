@@ -8,4 +8,4 @@ from . import types
 class ConferenceQuery:
     @strawberry.field
     def conference(self, info, code: str) -> types.Conference:
-        return Conference.objects.get(code=code)
+        return Conference.objects.prefetch_related("durations", "rooms").get(code=code)

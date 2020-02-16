@@ -1,4 +1,3 @@
-from datetime import timedelta
 from itertools import groupby
 from typing import List, Optional
 
@@ -23,7 +22,6 @@ from voting.models import RankRequest as RankRequestModel
 from ..helpers.i18n import make_localized_resolver
 from ..helpers.maps import Map, resolve_map
 from ..permissions import CanSeeSubmissions
-from .helpers.days import daterange
 
 
 @strawberry.type
@@ -46,13 +44,35 @@ class ScheduleSlot:
 
     @strawberry.field
     def items(self, info) -> List[ScheduleItem]:
-        return ScheduleItemModel.objects.filter(slot__id=self.id)
+        return (
+            ScheduleItemModel.objects.filter(slot__id=self.id)
+            .select_related(
+                "language",
+                "audience_level",
+                "submission",
+                "submission__speaker",
+                "submission__type",
+                "submission__duration",
+                "submission__audience_level",
+                "submission__type",
+            )
+            .prefetch_related("additional_speakers", "rooms")
+        )
 
 
 @strawberry.type
 class Day:
     day: Date
-    slots: List[ScheduleSlot]
+
+    @strawberry.field
+    def slots(self, info) -> List[ScheduleSlot]:
+        return list(self.slots.all())
+
+    @classmethod
+    def from_db(cls, instance):
+        obj = cls(instance.day)
+        obj.slots = instance.slots
+        return obj
 
 
 @strawberry.type
@@ -196,18 +216,7 @@ class Conference:
 
     @strawberry.field
     def days(self, info) -> List[Day]:
-        all_days = daterange(self.start.date(), self.end.date() + timedelta(days=1))
-        days = self.days.all()
-
-        def get_slots(day):
-            conference_day = next((x for x in days if x.day == day), None)
-
-            if conference_day:
-                return conference_day.slots.all()
-
-            return []
-
-        return [Day(day, get_slots(day)) for day in all_days]
+        return self.days.prefetch_related("slots", "slots__items").all()
 
 
 @strawberry.type
