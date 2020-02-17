@@ -80,7 +80,11 @@ def _generate_header(invoice: Invoice) -> XMLDict:
                 },
                 "Sede": {
                     "Indirizzo": client_address.address,
-                    "CAP": client_address.postcode,
+                    "CAP": (
+                        "00000"
+                        if client_address.country_code.lower() != "it"
+                        else client_address.postcode
+                    ),
                     "Comune": client_address.city,
                     "Provincia": client_address.province,
                     "Nazione": client_address.country_code,
