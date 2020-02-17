@@ -7,7 +7,7 @@ from lxml import etree
 from .types import ProductSummary, XMLDict
 from .utils import dict_to_xml, format_price
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from invoices.models import Invoice, Sender, Address
 
 
