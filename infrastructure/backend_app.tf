@@ -167,6 +167,26 @@ resource "aws_elastic_beanstalk_environment" "pycon_env" {
     name      = "ConnectionDrainingEnabled"
     value     = "true"
   }
+
+  # health
+
+  setting {
+    namespace = "aws:elasticbeanstalk:healthreporting:system"
+    name      = "SystemType"
+    value     = "enhanced"
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:cloudwatch:logs"
+    name      = "StreamLogs"
+    value     = "true"
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:cloudwatch:logs:health"
+    name      = "HealthStreamingEnabled"
+    value     = "true"
+  }
 }
 
 output "pycon_backend_domain" {
