@@ -6,6 +6,7 @@ from conferences.models import Conference
 from django.contrib import admin, messages
 from django.db import transaction
 from django.http import HttpResponse
+from django.shortcuts import redirect
 from django.utils.translation import ugettext_lazy as _
 from pretix import get_invoices, get_orders
 
@@ -17,8 +18,6 @@ from .constants import (
 )
 from .models import Address, Invoice, Item, Sender
 from .utils import xml_to_string, zip_files
-
-# from django.shortcuts import redirect
 
 
 def invoice_export_to_xml(modeladmin, request, queryset):
@@ -43,15 +42,19 @@ def invoice_export_to_xml(modeladmin, request, queryset):
 invoice_export_to_xml.short_description = _("Export as xml")  # type: ignore
 
 
+class MissingFiscalCodeError(Exception):
+    pass
+
+
+class MissingTaxCodeError(Exception):
+    pass
+
+
 @transaction.atomic
 def create_invoice_from_pretix(invoice, sender, order):
     invoice_date = date.fromisoformat(invoice["date"])
 
-    confirmed_payment_providers = [
-        payment["provider"]
-        for payment in order["payments"]
-        if payment["state"] == "confirmed"
-    ]
+    confirmed_payment_providers = [payment["provider"] for payment in order["payments"]]
 
     if not confirmed_payment_providers:
         print(f'Skipping {invoice["number"]}')
@@ -59,6 +62,10 @@ def create_invoice_from_pretix(invoice, sender, order):
         return
 
     payment_provider = confirmed_payment_providers[-1]
+
+    invoice_type = (
+        INVOICE_TYPES.TD04 if invoice["is_cancellation"] else INVOICE_TYPES.TD01
+    )
 
     tax_rate = invoice["lines"][0]["tax_rate"]
     payment_method = (
@@ -83,11 +90,38 @@ def create_invoice_from_pretix(invoice, sender, order):
         country_code=invoice_address["country"],
     )
 
+    recipient_fiscal_code = ""
+    tax_code = ""
+
+    if invoice_address["country"].lower() == "it":
+        # if we are sending invoices to an italian recipient
+        # we need to check if they have a vat number
+        if invoice_address["is_business"]:
+            # in that case the recipient_code should be set on the order
+            # and our tax_code becomes the VAT number
+            recipient_code = ""  # TODO (internal reference field?)
+            tax_code = invoice_address["vat_id"]
+
+            if not tax_code:
+                raise MissingTaxCodeError(order)
+
+        else:
+            # otherwise the recipient_code is 0000000
+            # and our recipient_fiscal_code becomes the italian fiscal code
+            recipient_code = "0000000"
+            recipient_fiscal_code = invoice_address["internal_reference"]
+
+            if not recipient_fiscal_code:
+                raise MissingFiscalCodeError(order)
+    else:
+        recipient_code = "XXXXXXX"
+        tax_code = "99999999999"
+
     Invoice.objects.update_or_create(
         sender=sender,
         invoice_number=invoice["number"],
         defaults={
-            "invoice_type": INVOICE_TYPES.TD01,
+            "invoice_type": invoice_type,
             "invoice_currency": "EUR",
             "invoice_date": invoice_date,
             "invoice_deadline": invoice_date + timedelta(days=30),
@@ -100,9 +134,9 @@ def create_invoice_from_pretix(invoice, sender, order):
             "recipient_denomination": invoice_address.get("company") or "",
             "recipient_first_name": first_name,
             "recipient_last_name": last_name,
-            "recipient_tax_code": "123123",
-            "recipient_code": "000000",
             "recipient_address": address,
+            "recipient_tax_code": tax_code,
+            "recipient_code": recipient_code,
         },
     )
 
@@ -117,33 +151,45 @@ class InvoiceAdmin(AdminViews):
     actions = [invoice_export_to_xml]
     exclude = ("items",)
     inlines = [InvoiceItemInline]
+    list_display = (
+        "invoice_number",
+        "invoice_type",
+        "recipient_first_name",
+        "recipient_last_name",
+        "recipient_tax_code",
+        "recipient_code",
+    )
     admin_views = (("Sync invoices from pretix", "sync_invoices_from_pretix"),)
 
     def sync_invoices_from_pretix(self, request, **kwargs):
-        # TODO: pagination
         orders = get_orders(Conference.objects.get(code="pycon11"))
         invoices = get_invoices(Conference.objects.get(code="pycon11"))
 
         sender = Sender.objects.first()  # TODO: conference based
 
-        orders = {order["code"]: order for order in orders["results"]}
+        orders = {order["code"]: order for order in orders}
 
-        for invoice in invoices["results"]:
+        for invoice in invoices:
             order = orders.get(invoice["order"])
 
-            if not order:
-                print(
-                    f'Skipping invoice {invoice["number"]} for '
-                    f'missing order {invoice["order"]}'
+            try:
+                create_invoice_from_pretix(invoice, sender, order=order)
+            except MissingFiscalCodeError:
+                self.message_user(
+                    request,
+                    f'Missing fiscal code for {order["code"]}',
+                    level=messages.WARNING,
                 )
-
-                continue
-
-            create_invoice_from_pretix(invoice, sender, order=order)
+            except MissingTaxCodeError:
+                self.message_user(
+                    request,
+                    f'Missing tax code for {order["code"]}',
+                    level=messages.WARNING,
+                )
 
         self.message_user(request, "Updated all the invoices", level=messages.SUCCESS)
 
-        # return redirect("admin:index")
+        return redirect("admin:index")
 
 
 admin.site.register(Sender)
