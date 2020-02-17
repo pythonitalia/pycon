@@ -117,7 +117,7 @@ def create_invoice_from_pretix(invoice, sender, order):
         recipient_code = "XXXXXXX"
         tax_code = "99999999999"
 
-    Invoice.objects.update_or_create(
+    invoice_object, created = Invoice.objects.update_or_create(
         sender=sender,
         invoice_number=invoice["number"],
         defaults={
@@ -139,6 +139,19 @@ def create_invoice_from_pretix(invoice, sender, order):
             "recipient_code": recipient_code,
         },
     )
+
+    if not created:
+        invoice_object.items.all().delete()
+
+    for line in invoice["lines"]:
+        Item.objects.create(
+            row=line["position"],
+            description=line["description"],
+            quantity=1,
+            unit_price=line["gross_value"],
+            vat_rate=line["tax_rate"],
+            invoice=invoice_object,
+        )
 
 
 class InvoiceItemInline(admin.StackedInline):
