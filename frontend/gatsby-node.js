@@ -95,11 +95,11 @@ const createPageWithSocialCards = (
     if (cardTypes.includes("social")) {
       cards.socialCard = `${args.path}/social/social.png`;
     } else if (cardTypes.includes("social-twitter")) {
-      cards.socialCard = `${args.path}/social/social-twitter.png`;
+      cards.socialCard = `${args.path}/social-twitter/social.png`;
     }
 
     if (cardTypes.includes("social-twitter")) {
-      cards.socialCardTwitter = `${args.path}/social/social-twitter.png`;
+      cards.socialCardTwitter = `${args.path}/social-twitter/social.png`;
     }
 
     createPage({
