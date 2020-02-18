@@ -36,6 +36,21 @@ def _generate_header(invoice: Invoice) -> XMLDict:
     address: Address = sender.address
     client_address: Address = invoice.recipient_address
 
+    recipient_data = {
+        "IdFiscaleIVA": {
+            "IdPaese": invoice.recipient_address.country_code,
+            "IdCodice": invoice.recipient_tax_code,
+        }
+    }
+
+    if invoice.recipient_denomination:
+        recipient_data["Anagrafica"] = {"Denominazione": invoice.recipient_denomination}
+    else:
+        recipient_data["Anagrafica"] = {
+            "Nome": invoice.recipient_first_name,
+            "Cognome": invoice.recipient_last_name,
+        }
+
     header: XMLDict = {
         "FatturaElettronicaHeader": {
             "DatiTrasmissione": {
@@ -66,18 +81,7 @@ def _generate_header(invoice: Invoice) -> XMLDict:
                 },
             },
             "CessionarioCommittente": {
-                "DatiAnagrafici": {
-                    # TODO: add fiscal code if no recipient_tax_code
-                    "IdFiscaleIVA": {
-                        "IdPaese": invoice.recipient_address.country_code,
-                        "IdCodice": invoice.recipient_tax_code,
-                    },
-                    "Anagrafica": {
-                        "Denominazione": invoice.recipient_denomination,
-                        "Nome": invoice.recipient_first_name,
-                        "Cognome": invoice.recipient_last_name,
-                    },
-                },
+                "DatiAnagrafici": {**recipient_data},
                 "Sede": {
                     "Indirizzo": client_address.address,
                     "CAP": (

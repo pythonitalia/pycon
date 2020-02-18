@@ -67,7 +67,6 @@ def create_invoice_from_pretix(invoice, sender, order):
         INVOICE_TYPES.TD04 if invoice["is_cancellation"] else INVOICE_TYPES.TD01
     )
 
-    tax_rate = invoice["lines"][0]["tax_rate"]
     payment_method = (
         PAYMENT_METHODS.MP05
         if payment_provider == "banktransfer"
@@ -125,7 +124,8 @@ def create_invoice_from_pretix(invoice, sender, order):
             "invoice_currency": "EUR",
             "invoice_date": invoice_date,
             "invoice_deadline": invoice_date + timedelta(days=30),
-            "invoice_tax_rate": tax_rate,
+            # TODO: should be invoice["lines"][0]["tax_rate"] but hotels are broken
+            "invoice_tax_rate": "22.00",
             "invoice_amount": amount,
             "invoice_tax_amount": tax_amount,
             "transmission_format": TRANSMISSION_FORMATS.FPR12,
@@ -135,7 +135,7 @@ def create_invoice_from_pretix(invoice, sender, order):
             "recipient_first_name": first_name,
             "recipient_last_name": last_name,
             "recipient_address": address,
-            "recipient_tax_code": tax_code,
+            "recipient_tax_code": tax_code or recipient_fiscal_code,
             "recipient_code": recipient_code,
         },
     )
@@ -149,7 +149,8 @@ def create_invoice_from_pretix(invoice, sender, order):
             description=line["description"],
             quantity=1,
             unit_price=line["gross_value"],
-            vat_rate=line["tax_rate"],
+            # TODO: should be line["tax_rate"] but hotels are broken
+            vat_rate="22.00",
             invoice=invoice_object,
         )
 
