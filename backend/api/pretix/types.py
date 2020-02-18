@@ -2,7 +2,7 @@ from enum import Enum
 from typing import List, Optional
 
 import strawberry
-from api.scalars import DateTime
+from strawberry.types.datetime import DateTime
 
 
 @strawberry.enum
