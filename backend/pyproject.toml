@@ -47,6 +47,7 @@ django-queryinspect = "^1.1.0"
 lxml = "^4.5.0"
 unidecode = "^1.1.1"
 jsonschema = "^3.2.0"
+mypy_extensions = "^0.4.3"
 
 [tool.poetry.dev-dependencies]
 pylint = "=2.4.4"
