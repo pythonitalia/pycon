@@ -5,6 +5,7 @@ import { useDrop } from "react-dnd";
 import { jsx } from "theme-ui";
 
 import { ItemTypes } from "./types";
+import { useDropOrDummy } from "./useDropOrDummy";
 
 export const Placeholder: React.SFC<{
   adminMode: boolean;
@@ -33,7 +34,8 @@ export const Placeholder: React.SFC<{
     accept.push(ItemTypes.TRAINING);
   }
 
-  const [{ isOver, canDrop }, drop] = useDrop({
+  const [{ isOver, canDrop }, drop] = useDropOrDummy({
+    adminMode,
     accept,
     drop: onDrop,
     collect: mon => ({
