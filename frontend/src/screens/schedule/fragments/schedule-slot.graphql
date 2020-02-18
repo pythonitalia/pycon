@@ -36,5 +36,7 @@ fragment ScheduleSlotFragment on ScheduleSlot {
       name
       type
     }
+
+    myInterest
   }
 }

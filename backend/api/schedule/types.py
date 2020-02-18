@@ -5,6 +5,7 @@ from api.languages.types import Language
 from api.submissions.types import Submission
 from api.users.types import User
 from strawberry.types.datetime import DateTime
+from users.models import User as UserModel
 
 if TYPE_CHECKING:  # pragma: no cover
     from api.conferences.types import Conference, AudienceLevel  # noqa
@@ -45,3 +46,12 @@ class ScheduleItem:
             return None
 
         return info.context["request"].build_absolute_uri(self.image.url)
+
+    @strawberry.field
+    def my_interest(self, info) -> bool:
+        request = info.context["request"]
+        try:
+            self.subscribed_users.get(id=request.user.id)
+        except UserModel.DoesNotExist:
+            return False
+        return True

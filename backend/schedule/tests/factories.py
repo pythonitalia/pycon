@@ -76,13 +76,13 @@ class ScheduleItemFactory(DjangoModelFactory):
         )
 
     @factory.post_generation
-    def subscribed_users(self, create, extracted, size=0, **kwargs):
+    def subscribed_users(self, create, extracted):
         if not create:
             return
 
-        self.subscribed_users.set(
-            UserFactory.simple_generate_batch(create, size, **kwargs)
-        )
+        if extracted:
+            for user in extracted:
+                self.subscribed_users.add(user)
 
     class Meta:
         model = ScheduleItem

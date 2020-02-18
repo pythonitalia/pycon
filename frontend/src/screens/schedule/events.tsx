@@ -187,16 +187,26 @@ export const ScheduleEntry: React.SFC<{
           },
         }}
       >
-        <Text>
-          {item.title}
+        <Flex>
+          <Box sx={{ mr: "auto" }}>
+            <Text>
+              {item.title}
 
-          {marker && (
-            <Text as="span" sx={{ fontWeight: "bold" }}>
-              {" "}
-              {marker}
+              {marker && (
+                <Text as="span" sx={{ fontWeight: "bold" }}>
+                  {" "}
+                  {marker}
+                </Text>
+              )}
             </Text>
+          </Box>
+
+          {item.myInterest ? (
+            <Text sx={{ fontWeight: "bold" }}>❤️</Text>
+          ) : (
+            <Text>🖤</Text>
           )}
-        </Text>
+        </Flex>
 
         <Flex sx={{ color: "white", mt: "auto" }}>
           <Box sx={{ mr: "auto" }}>
