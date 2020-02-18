@@ -69,7 +69,7 @@ def _generate_header(invoice: Invoice) -> XMLDict:
                 "DatiAnagrafici": {
                     # TODO: add fiscal code if no recipient_tax_code
                     "IdFiscaleIVA": {
-                        "IdPaese": sender.country_code,
+                        "IdPaese": invoice.recipient_address.country_code,
                         "IdCodice": invoice.recipient_tax_code,
                     },
                     "Anagrafica": {

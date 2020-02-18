@@ -128,7 +128,7 @@ def create_invoice_from_pretix(invoice, sender, order):
             "invoice_tax_rate": tax_rate,
             "invoice_amount": amount,
             "invoice_tax_amount": tax_amount,
-            "transmission_format": TRANSMISSION_FORMATS.FPA12,
+            "transmission_format": TRANSMISSION_FORMATS.FPR12,
             "payment_condition": PAYMENT_CONDITIONS.TP02,
             "payment_method": payment_method,
             "recipient_denomination": invoice_address.get("company") or "",
