@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     "hotels.apps.HotelsConfig",
     "newsletters.apps.NewslettersConfig",
     "ordered_model",
+    "invoices",
 ]
 
 MIDDLEWARE = [

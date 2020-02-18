@@ -57,6 +57,30 @@ def get_user_orders(conference: Conference, email: str):
     return response.json()
 
 
+def _get_paginated(conference, endpoint):
+    url = get_api_url(conference, endpoint, {})
+
+    while url is not None:
+        response = requests.get(
+            url, headers={"Authorization": f"Token {settings.PRETIX_API_TOKEN}"}
+        )
+
+        response.raise_for_status()
+
+        data = response.json()
+        url = data.get("next")
+
+        yield from (order for order in data["results"])
+
+
+def get_orders(conference: Conference):
+    return _get_paginated(conference, "orders")
+
+
+def get_invoices(conference: Conference):
+    return _get_paginated(conference, "invoices")
+
+
 def get_items(conference: Conference):
     response = pretix(conference, "items")
     response.raise_for_status()
