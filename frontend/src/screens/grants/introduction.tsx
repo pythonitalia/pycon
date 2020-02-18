@@ -3,6 +3,7 @@ import React from "react";
 import { FormattedMessage } from "react-intl";
 
 import { CFPIllustration } from "../../components/illustrations/cfp";
+import { Link } from "../../components/link";
 
 export const Introduction: React.SFC = () => (
   <Box
@@ -43,6 +44,10 @@ export const Introduction: React.SFC = () => (
         >
           <FormattedMessage id="grants.introductionCopy" />
         </Text>
+
+        <Link href="/:language/grants-info" variant="button" sx={{ mt: 4 }}>
+          <FormattedMessage id="grants.learnMore" />
+        </Link>
       </Box>
       <Box
         sx={{

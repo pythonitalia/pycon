@@ -221,11 +221,13 @@ export const messages = {
     "orderQuestions.attendeeName": "Attendee name",
     "orderQuestions.attendeeEmail": "Attendee email",
 
+    "grants.pageTitle": "Grants",
     "grants.introductionHeading": "Grants",
     "grants.introductionSubtitle":
       "Would you really love to join PyCon Italia but can't afford it? We can help you!",
     "grants.introductionCopy":
       "Thanks to the help of the Python Software Foundation we are glad to give financial support to everyone who may need it in order to join PyCon Italia.",
+    "grants.learnMore": "Learn more",
 
     "grants.form.title": "Request a grant",
     "grants.form.sendingRequest": "Sending grant request",
@@ -574,11 +576,13 @@ export const messages = {
     "orderQuestions.attendeeName": "Nome partecipante",
     "orderQuestions.attendeeEmail": "Email partecipante",
 
+    "grants.pageTitle": "Grants",
     "grants.introductionHeading": "Grants",
     "grants.introductionSubtitle":
       "Vorresti essere presente a PyCon Italia ma hai difficoltà economiche? Chiedici aiuto!",
     "grants.introductionCopy":
       "Grazie all'aiuto della Python Software Foundation siamo lieti di mettere a disposizione di chi ne avesse bisogno un programma di supporto per chi vorrebbe essere presente a PyCon Italia ma per motivi economici non potrebbe riuscirci.",
+    "grants.learnMore": "Maggiori informazioni",
 
     "grants.form.title": "Chiedi un grant",
     "grants.form.sendingRequest": "Invio richiesta in corso",
