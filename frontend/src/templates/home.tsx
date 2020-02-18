@@ -90,6 +90,7 @@ export default ({ data }: { data: HomePageQuery }) => {
           maxWidth: "container",
           mx: "auto",
           gridTemplateColumns: [null, null, "10fr 2fr 9fr"],
+          display: "none",
         }}
       >
         <Box sx={{ mb: [4, 4, 0] }}>
