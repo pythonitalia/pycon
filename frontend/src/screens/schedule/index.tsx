@@ -1,9 +1,9 @@
 /** @jsx jsx */
 import { useMutation, useQuery } from "@apollo/react-hooks";
-import { redirectTo, RouteComponentProps } from "@reach/router";
+import { RouteComponentProps } from "@reach/router";
 import { Box, Button, Flex, Heading } from "@theme-ui/components";
 import { navigate } from "gatsby";
-import React, { useCallback, useLayoutEffect, useState } from "react";
+import React, { Fragment, useCallback, useLayoutEffect, useState } from "react";
 import { DndProvider } from "react-dnd";
 import Backend from "react-dnd-html5-backend";
 import { FormattedMessage } from "react-intl";
@@ -58,28 +58,39 @@ const Meta: React.SFC<{ day: string }> = ({ day }) => (
   </FormattedMessage>
 );
 
-type Props = {
+export const ScheduleScreen: React.SFC<RouteComponentProps<{
   day: string;
+}>> = ({ day: dayParam, location }) => {
+  const [loggedIn, _] = useLoginState();
+
+  const shouldFetchCurrentUser = loggedIn && location?.search.includes("admin");
+  const { user } = useCurrentUser({ skip: !shouldFetchCurrentUser });
+  const shouldShowAdmin = user ? user.canEditSchedule : false;
+
+  if (shouldShowAdmin) {
+    return (
+      <DndProvider backend={Backend}>
+        <ScheduleView day={dayParam} shouldShowAdmin={shouldShowAdmin} />
+      </DndProvider>
+    );
+  }
+
+  return <ScheduleView day={dayParam} shouldShowAdmin={shouldShowAdmin} />;
 };
 
-export const ScheduleScreen: React.SFC<RouteComponentProps<Props>> = ({
-  day: dayParam,
-  location,
-}) => {
+export const ScheduleView: React.SFC<{
+  shouldShowAdmin: boolean;
+  day?: string;
+}> = ({ day: dayParam, shouldShowAdmin }) => {
   const { code } = useConference();
   const currentDay = dayParam!;
 
-  const [loggedIn, _] = useLoginState();
   const language = useCurrentLanguage();
 
   const setCurrentDay = useCallback(
     (d: string) => navigate(`/${language}/schedule/${d}`),
     [],
   );
-
-  const shouldFetchCurrentUser = loggedIn && location?.search.includes("admin");
-  const { user } = useCurrentUser({ skip: !shouldFetchCurrentUser });
-  const shouldShowAdmin = user ? user.canEditSchedule : false;
 
   const { loading, data, error } = useQuery<
     ScheduleQuery,
@@ -174,7 +185,7 @@ export const ScheduleScreen: React.SFC<RouteComponentProps<Props>> = ({
   const day = days.find(d => d.day === currentDay);
 
   return (
-    <DndProvider backend={Backend}>
+    <Fragment>
       <Meta day={currentDay} />
 
       {shouldShowAdmin && <ItemsPanel submissions={submissions!} />}
@@ -249,6 +260,6 @@ export const ScheduleScreen: React.SFC<RouteComponentProps<Props>> = ({
           </Box>
         )}
       </Box>
-    </DndProvider>
+    </Fragment>
   );
 };

@@ -15,6 +15,7 @@ import {
   Slot,
   Submission as SubmissionType,
 } from "./types";
+import { useDragOrDummy } from "./useDragOrDummy";
 
 const getType = (submission?: SubmissionType | null) =>
   submission?.type?.name.toLowerCase() === "tutorial"
@@ -26,7 +27,8 @@ const BaseDraggable: React.SFC<{
   metadata?: any;
   adminMode?: boolean;
 }> = ({ adminMode, type, children, metadata, ...props }) => {
-  const [_, drag] = useDrag({
+  const [_, drag] = useDragOrDummy({
+    adminMode,
     item: {
       type,
       ...metadata,
