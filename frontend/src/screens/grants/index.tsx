@@ -18,7 +18,6 @@ export const GrantScreen: React.SFC<RouteComponentProps> = () => {
       <FormattedMessage id="grants.pageTitle">
         {text => <MetaTags title={text} />}
       </FormattedMessage>
-      <Introduction />
 
       <Introduction />
 
