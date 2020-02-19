@@ -307,6 +307,21 @@ export const messages = {
     "orderReview.nights": "nights",
     "orderReview.checkin": "Check-in",
     "orderReview.checkout": "Check-out",
+    "orderReview.usingVoucher": "Voucher code used",
+    "orderReview.ticketPrice": "{finalPrice}",
+    "orderReview.ticketPriceWithVoucher": "{basePrice} {finalPrice}",
+    "orderReview.hotelPrice":
+      "{roomPrice}€ x{numNights, plural, one {1 night} other {{numNights} nights}} (incl. 22% VAT)",
+    "orderReview.edit": "Edit",
+    "orderReview.totalAmount": "{total}",
+
+    "voucher.loading": "Please wait",
+    "voucher.codeNotValid": "Code not valid",
+    "voucher.voucherHeading": "Voucher",
+    "voucher.redeemVoucher": "Redeem",
+    "voucher.removeVoucher": "Remove: {code}",
+    "voucher.noProductsAffected":
+      "Voucher code correct, but no product in the cart can be discounted",
 
     "ranking.heading": "Community voting results",
     "ranking.introduction":
@@ -558,6 +573,22 @@ export const messages = {
     "order.selectSize": "Taglia...",
     "order.hotelRooms": "Stanze hotel",
     "order.availableUntil": "Disponibile fino al {date}",
+
+    "orderReview.edit": "Modifica",
+    "orderReview.usingVoucher": "Codice sconto usato",
+    "orderReview.ticketPrice": "{finalPrice}",
+    "orderReview.ticketPriceWithVoucher": "{basePrice} {finalPrice}",
+    "orderReview.totalAmount": "{total}",
+    "orderReview.hotelPrice":
+      "{roomPrice}€ x{numNights, plural, one {1 notte} other {{numNights} notti}} (incl. 22% IVA)",
+
+    "voucher.voucherHeading": "Codice sconto",
+    "voucher.redeemVoucher": "Usa",
+    "voucher.loading": "Caricamento",
+    "voucher.noProductsAffected":
+      "Codice sconto attivato ma nessun prodotto nel carrello può essere scontato",
+    "voucher.removeVoucher": "Rimuovi: {code}",
+    "voucher.codeNotValid": "Codice non valido",
 
     "orderInformation.heading": "Informazioni di fatturazione",
     "orderInformation.individualConsumer": "Persona individuale",

@@ -5,6 +5,7 @@ query Tickets($conference: String!, $language: String!, $isLogged: Boolean!) {
   }
 
   conference(code: $conference) {
+    id
     start
     end
     pretixEventUrl

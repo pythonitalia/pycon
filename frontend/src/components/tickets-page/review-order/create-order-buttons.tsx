@@ -1,19 +1,19 @@
 /** @jsx jsx */
 import { useMutation } from "@apollo/react-hooks";
-import { Button, Flex } from "@theme-ui/components";
+import { Box, Button, Flex } from "@theme-ui/components";
 import React, { Fragment, useCallback } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
-import { useConference } from "../../context/conference";
-import { useCurrentLanguage } from "../../context/language";
+import { useConference } from "../../../context/conference";
+import { useCurrentLanguage } from "../../../context/language";
 import {
   CreateOrderMutation,
   CreateOrderMutationVariables,
-} from "../../generated/graphql-backend";
-import { Alert } from "../alert";
+} from "../../../generated/graphql-backend";
+import { Alert } from "../../alert";
+import { OrderState, SelectedProducts } from "../types";
 import CREATE_ORDER_MUTATION from "./create-order.graphql";
-import { OrderState, SelectedProducts } from "./types";
 
 type Props = {
   state: OrderState;
@@ -52,6 +52,7 @@ export const CreateOrderButtons: React.SFC<Props> = ({ state, email }) => {
           variation: product.variation,
           attendeeName: product.attendeeName,
           attendeeEmail: product.attendeeEmail,
+          voucher: product.voucher?.code ?? undefined,
           answers: Object.entries(product.answers).map(([key, value]) => ({
             questionId: key,
             value,
@@ -100,7 +101,11 @@ export const CreateOrderButtons: React.SFC<Props> = ({ state, email }) => {
     orderData.createOrder.message;
 
   return (
-    <Fragment>
+    <Box
+      sx={{
+        mt: 4,
+      }}
+    >
       {orderErrorMessage && <Alert variant="alert">{orderErrorMessage}</Alert>}
 
       {(creatingOrder || hasOrder) && (
@@ -119,17 +124,23 @@ export const CreateOrderButtons: React.SFC<Props> = ({ state, email }) => {
             sx={{
               mr: [0, 2],
               mb: [2, 0],
+              textTransform: "uppercase",
             }}
             onClick={() => createOrderCallback("stripe")}
           >
             <FormattedMessage id="order.payWithCard" />
           </Button>
 
-          <Button onClick={() => createOrderCallback("banktransfer")}>
+          <Button
+            sx={{
+              textTransform: "uppercase",
+            }}
+            onClick={() => createOrderCallback("banktransfer")}
+          >
             <FormattedMessage id="order.payWithBankTransfer" />
           </Button>
         </Flex>
       )}
-    </Fragment>
+    </Box>
   );
 };

@@ -13,6 +13,7 @@ import { useCurrentLanguage } from "../../context/language";
 import {
   TicketsQuery,
   TicketsQueryVariables,
+  Voucher as VoucherType,
 } from "../../generated/graphql-backend";
 import { Alert } from "../alert";
 import { MetaTags } from "../meta-tags";
@@ -28,6 +29,19 @@ import {
   hasOrderInformation,
   hasSelectedAtLeastOneProduct,
 } from "./utils";
+
+const cartReplacer = (key: string, value: any) => {
+  if (key === "voucher" || key === "voucherUsed") {
+    /*
+      Remove the stored voucher state from the products.
+      we want to make sure it's always up to date
+      so we remove it and fetch it again when the user refreshes the page
+    */
+    return undefined;
+  }
+
+  return value;
+};
 
 export const TicketsPage: React.SFC<RouteComponentProps> = props => {
   const { code } = useConference();
@@ -59,6 +73,8 @@ export const TicketsPage: React.SFC<RouteComponentProps> = props => {
       fiscalCode: "",
     },
     selectedHotelRooms: {},
+    voucherCode: "",
+    voucherUsed: false,
   };
 
   let storedCart = null;
@@ -85,7 +101,10 @@ export const TicketsPage: React.SFC<RouteComponentProps> = props => {
   );
 
   useEffect(() => {
-    window.localStorage.setItem("tickets-cart", JSON.stringify(state));
+    window.localStorage.setItem(
+      "tickets-cart",
+      JSON.stringify(state, cartReplacer),
+    );
   }, [state]);
 
   const hotelRooms = data?.conference.hotelRooms || [];
@@ -154,6 +173,23 @@ export const TicketsPage: React.SFC<RouteComponentProps> = props => {
       index,
     });
   }, []);
+
+  const applyVoucher = useCallback(
+    (voucher: VoucherType) =>
+      dispatcher({
+        type: "applyVoucher",
+        voucher,
+      }),
+    [],
+  );
+
+  const removeVoucher = useCallback(
+    () =>
+      dispatcher({
+        type: "removeVoucher",
+      }),
+    [],
+  );
 
   const goToQuestionsOrReview = () => {
     const productIds = Object.values(
@@ -231,15 +267,22 @@ export const TicketsPage: React.SFC<RouteComponentProps> = props => {
 
       <Box
         sx={{
-          maxWidth: "container",
-          mx: "auto",
-          px: 3,
+          borderTop: "primary",
+          pt: 5,
         }}
       >
         {loading && (
-          <Text>
-            <FormattedMessage id="tickets.loading" />
-          </Text>
+          <Box
+            sx={{
+              maxWidth: "container",
+              mx: "auto",
+              px: 3,
+            }}
+          >
+            <Text>
+              <FormattedMessage id="tickets.loading" />
+            </Text>
+          </Box>
         )}
 
         {!loading && (
@@ -296,6 +339,8 @@ export const TicketsPage: React.SFC<RouteComponentProps> = props => {
               tickets={tickets}
               hotelRooms={hotelRooms}
               state={state}
+              applyVoucher={applyVoucher}
+              removeVoucher={removeVoucher}
               path="review"
             />
           </Router>

@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { Button, Flex, Heading, Label, Radio } from "@theme-ui/components";
+import { Box, Button, Flex, Heading, Label, Radio } from "@theme-ui/components";
 import moment from "moment";
 import React, { useState } from "react";
 import { FormattedMessage } from "react-intl";
@@ -68,74 +68,97 @@ export const TicketsSection: React.SFC<Props> = ({
 
   return (
     <React.Fragment>
-      <Heading sx={{ mb: 3 }}>
-        <FormattedMessage id="tickets.heading" />
-      </Heading>
-
-      <Flex mb={3} sx={{ display: ["block", "flex"] }}>
-        <Label
+      <Box sx={{ borderBottom: "primary", pb: 5 }}>
+        <Flex
           sx={{
-            width: "auto",
-            mr: 3,
-            mb: [3, 0],
-            color: "green",
-            fontWeight: "bold",
+            maxWidth: "container",
+            mx: "auto",
+            px: 3,
+
+            flexDirection: ["column", "row"],
+            justifyContent: ["flex-start", "space-between"],
+            alignItems: ["flex-start", "center"],
           }}
         >
-          <Radio
-            name="isBusiness"
-            onChange={() => onUpdateIsBusiness(false)}
-            checked={!invoiceInformation.isBusiness}
+          <Heading as="h1">
+            <FormattedMessage id="tickets.heading" />
+          </Heading>
+
+          <Flex mt={[3, 0]} sx={{ display: ["block", "flex"] }}>
+            <Label
+              sx={{
+                width: "auto",
+                mr: [0, 3],
+                color: "green",
+                fontWeight: "bold",
+              }}
+            >
+              <Radio
+                name="isBusiness"
+                onChange={() => onUpdateIsBusiness(false)}
+                checked={!invoiceInformation.isBusiness}
+              />
+              <FormattedMessage id="orderInformation.individualConsumer" />
+            </Label>
+            <Label
+              sx={{
+                width: "auto",
+                mr: [0, 3],
+                mt: [3, 0],
+                color: "green",
+                fontWeight: "bold",
+              }}
+            >
+              <Radio
+                name="isBusiness"
+                onChange={() => onUpdateIsBusiness(true)}
+                checked={invoiceInformation.isBusiness}
+              />
+              <FormattedMessage id="orderInformation.businessConsumer" />
+            </Label>
+          </Flex>
+        </Flex>
+      </Box>
+
+      <Box
+        sx={{
+          maxWidth: "container",
+          mx: "auto",
+          px: 3,
+          mt: 5,
+        }}
+      >
+        {tickets && (
+          <TicketsForm
+            isBusiness={invoiceInformation.isBusiness}
+            tickets={tickets}
+            selectedProducts={selectedProducts}
+            addProduct={addProduct}
+            removeProduct={removeProduct}
           />
-          <FormattedMessage id="orderInformation.individualConsumer" />
-        </Label>
-        <Label
-          sx={{
-            width: "auto",
-            mr: 3,
-            color: "green",
-            fontWeight: "bold",
-          }}
-        >
-          <Radio
-            name="isBusiness"
-            onChange={() => onUpdateIsBusiness(true)}
-            checked={invoiceInformation.isBusiness}
+        )}
+
+        {hotelRooms && (
+          <HotelForm
+            selectedHotelRooms={selectedHotelRooms}
+            conferenceStart={conferenceStart}
+            conferenceEnd={conferenceEnd}
+            hotelRooms={hotelRooms}
+            addHotelRoom={addHotelRoom}
+            removeHotelRoom={removeHotelRoom}
           />
-          <FormattedMessage id="orderInformation.businessConsumer" />
-        </Label>
-      </Flex>
+        )}
 
-      {tickets && (
-        <TicketsForm
-          isBusiness={invoiceInformation.isBusiness}
-          tickets={tickets}
-          selectedProducts={selectedProducts}
-          addProduct={addProduct}
-          removeProduct={removeProduct}
-        />
-      )}
+        {shouldShowNoTickets && (
+          <Alert variant="alert">
+            <FormattedMessage id="order.needToSelectProducts" />
+          </Alert>
+        )}
 
-      {hotelRooms && (
-        <HotelForm
-          selectedHotelRooms={selectedHotelRooms}
-          conferenceStart={conferenceStart}
-          conferenceEnd={conferenceEnd}
-          hotelRooms={hotelRooms}
-          addHotelRoom={addHotelRoom}
-          removeHotelRoom={removeHotelRoom}
-        />
-      )}
-
-      {shouldShowNoTickets && (
-        <Alert variant="alert">
-          <FormattedMessage id="order.needToSelectProducts" />
-        </Alert>
-      )}
-
-      <Button onClick={onContinue}>
-        <FormattedMessage id="order.nextStep" />
-      </Button>
+        <Button onClick={onContinue}>
+          <FormattedMessage id="order.nextStep" />
+        </Button>
+      </Box>
     </React.Fragment>
   );
 };

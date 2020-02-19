@@ -110,6 +110,7 @@ class CreateOrderTicket:
     attendee_name: str
     attendee_email: str
     answers: typing.Optional[typing.List[CreateOrderTicketAnswer]]
+    voucher: typing.Optional[str]
 
 
 @strawberry.input
@@ -194,6 +195,9 @@ def normalize_position(ticket: CreateOrderTicket, items: dict, questions: dict):
         "variation": ticket.variation,
         "answers": normalize_answers(ticket, questions),
     }
+
+    if ticket.voucher:
+      data['voucher'] = ticket.voucher
 
     if item["admission"]:
         data["attendee_name"] = ticket.attendee_name

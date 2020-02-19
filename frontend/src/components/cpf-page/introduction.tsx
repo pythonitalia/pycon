@@ -47,7 +47,7 @@ export const Introduction: React.SFC = () => (
 
         <Link
           href="/:language/call-for-proposals"
-          variant="button"
+          variant="arrow-button"
           sx={{ mt: 4 }}
         >
           <FormattedMessage id="cfp.learnMore" />

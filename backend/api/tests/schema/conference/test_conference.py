@@ -604,3 +604,23 @@ def test_can_see_submissions_if_they_have_sent_one(
     )
 
     assert len(response["data"]["conference"]["submissions"]) == 2
+
+
+@mark.django_db
+def test_get_conference_voucher_with_invalid_code(graphql_client, conference, mocker):
+    get_voucher_mock = mocker.patch(
+        "api.pretix.query.pretix.db.get_voucher", return_value=None
+    )
+
+    response = graphql_client.query(
+        """query($code: String!, $voucherCode: String!) {
+            conference(code: $code) {
+                voucher(code: $voucherCode) {
+                    id
+                }
+            }
+        }""",
+        variables={"code": conference.code, "voucherCode": "test"},
+    )
+
+    assert response["data"]["conference"]["voucher"] is None

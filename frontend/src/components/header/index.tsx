@@ -146,7 +146,7 @@ export const HeaderContent = ({ location }: { location: any }) => {
 
           <Link
             href={loggedIn ? "/:language/profile" : "/:language/login"}
-            variant="button"
+            variant="arrow-button"
             sx={{ mr: 5, display: ["none", "block"] }}
           >
             {loggedIn && <FormattedMessage id="header.profile" />}

@@ -39,7 +39,7 @@ export default {
     keppel: "#34B4A1",
   },
   borders: {
-    primary: "3px solid #000000",
+    primary: "4px solid #000000",
     socialCard: "14px solid #000000",
   },
   forms: {
@@ -48,16 +48,19 @@ export default {
       bg: "blue",
       color: "text",
       border: "primary",
+      borderRadius: 0,
     },
     textarea: {
       fontFamily: "body",
       bg: "blue",
       border: "primary",
+      borderRadius: 0,
     },
     select: {
       fontFamily: "body",
       bg: "blue",
       border: "primary",
+      borderRadius: 0,
       option: {
         fontSize: 3,
         padding: 3,
@@ -152,18 +155,28 @@ export default {
       position: "relative",
       px: 3,
       fontSize: 2,
-      height: 50,
       lineHeight: "43px",
       display: "inline-block",
-      height: 50,
       fontFamily: "body",
       fontWeight: "heading",
       color: "#000",
       textDecoration: "none",
       textTransform: "uppercase",
+      border: "primary",
+      "&:hover": {
+        backgroundColor: "orange",
+      },
+    },
+    "arrow-button": {
+      variant: "links.button",
+      height: 50,
+      border: "none",
+      "&:hover": {
+        backgroundColor: "none",
+      },
     },
     buttonFullWidth: {
-      variant: "links.button",
+      variant: "links.arrow-button",
       border: "primary",
       backgroundColor: "yellow",
       width: "100%",

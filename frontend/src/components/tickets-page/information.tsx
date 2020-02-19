@@ -64,90 +64,105 @@ export const InformationSection: React.SFC<Props> = ({
 
   return (
     <React.Fragment>
-      <Heading as="h1" sx={{ mb: 3 }}>
-        <FormattedMessage id="orderInformation.heading" />
+      <Heading as="h1" sx={{ pb: 5, mb: 5, borderBottom: "primary" }}>
+        <Box
+          sx={{
+            maxWidth: "container",
+            mx: "auto",
+            px: 3,
+          }}
+        >
+          <FormattedMessage id="orderInformation.heading" />
+        </Box>
       </Heading>
-
-      <Box as="form" onSubmit={onSubmit}>
-        {isBusiness && (
+      <Box
+        sx={{
+          maxWidth: "container",
+          mx: "auto",
+          px: 3,
+        }}
+      >
+        <Box as="form" onSubmit={onSubmit}>
+          {isBusiness && (
+            <InputWrapper
+              isRequired={true}
+              label={<FormattedMessage id="orderInformation.companyName" />}
+            >
+              <Input {...text("companyName")} required={isBusiness} />
+            </InputWrapper>
+          )}
           <InputWrapper
             isRequired={true}
-            label={<FormattedMessage id="orderInformation.companyName" />}
+            label={<FormattedMessage id="orderInformation.name" />}
           >
-            <Input {...text("companyName")} required={isBusiness} />
+            <Input {...text("name")} required={true} />
           </InputWrapper>
-        )}
-        <InputWrapper
-          isRequired={true}
-          label={<FormattedMessage id="orderInformation.name" />}
-        >
-          <Input {...text("name")} required={true} />
-        </InputWrapper>
-        {isBusiness && (
+          {isBusiness && (
+            <InputWrapper
+              isRequired={true}
+              label={<FormattedMessage id="orderInformation.vatId" />}
+            >
+              <Input {...text("vatId")} required={true} />
+            </InputWrapper>
+          )}
           <InputWrapper
             isRequired={true}
-            label={<FormattedMessage id="orderInformation.vatId" />}
+            label={<FormattedMessage id="orderInformation.address" />}
           >
-            <Input {...text("vatId")} required={true} />
+            <Textarea {...textarea("address")} required={true} />
           </InputWrapper>
-        )}
-        <InputWrapper
-          isRequired={true}
-          label={<FormattedMessage id="orderInformation.address" />}
-        >
-          <Textarea {...textarea("address")} required={true} />
-        </InputWrapper>
-        <InputWrapper
-          isRequired={true}
-          label={<FormattedMessage id="orderInformation.zipCode" />}
-        >
-          <Input {...text("zipCode")} required={true} />
-        </InputWrapper>
-        <InputWrapper
-          isRequired={true}
-          label={<FormattedMessage id="orderInformation.city" />}
-        >
-          <Input {...text("city")} required={true} />
-        </InputWrapper>
-        <InputWrapper
-          isRequired={true}
-          label={<FormattedMessage id="orderInformation.country" />}
-        >
-          <Select {...select("country")} required={true}>
-            {countries.map(c => (
-              <option key={c.value} value={c.value}>
-                {c.label}
-              </option>
-            ))}
-          </Select>
-        </InputWrapper>
-
-        {shouldAskForFiscalCode && (
           <InputWrapper
-            errors={[formState.errors.fiscalCode || ""]}
             isRequired={true}
-            label={<FormattedMessage id="orderInformation.fiscalCode" />}
+            label={<FormattedMessage id="orderInformation.zipCode" />}
           >
-            <Input
-              {...text({
-                name: "fiscalCode",
-                validate: (value, values, e) => {
-                  const isValid = FISCAL_CODE_REGEX.test(value);
-
-                  if (!isValid) {
-                    return invalidFiscalCodeMessage;
-                  }
-                },
-                validateOnBlur: true,
-              })}
-              required={true}
-            />
+            <Input {...text("zipCode")} required={true} />
           </InputWrapper>
-        )}
+          <InputWrapper
+            isRequired={true}
+            label={<FormattedMessage id="orderInformation.city" />}
+          >
+            <Input {...text("city")} required={true} />
+          </InputWrapper>
+          <InputWrapper
+            isRequired={true}
+            label={<FormattedMessage id="orderInformation.country" />}
+          >
+            <Select {...select("country")} required={true}>
+              {countries.map(c => (
+                <option key={c.value} value={c.value}>
+                  {c.label}
+                </option>
+              ))}
+            </Select>
+          </InputWrapper>
 
-        <Button>
-          <FormattedMessage id="order.nextStep" />
-        </Button>
+          {shouldAskForFiscalCode && (
+            <InputWrapper
+              errors={[formState.errors.fiscalCode || ""]}
+              isRequired={true}
+              label={<FormattedMessage id="orderInformation.fiscalCode" />}
+            >
+              <Input
+                {...text({
+                  name: "fiscalCode",
+                  validate: (value, values, e) => {
+                    const isValid = FISCAL_CODE_REGEX.test(value);
+
+                    if (!isValid) {
+                      return invalidFiscalCodeMessage;
+                    }
+                  },
+                  validateOnBlur: true,
+                })}
+                required={true}
+              />
+            </InputWrapper>
+          )}
+
+          <Button>
+            <FormattedMessage id="order.nextStep" />
+          </Button>
+        </Box>
       </Box>
     </React.Fragment>
   );

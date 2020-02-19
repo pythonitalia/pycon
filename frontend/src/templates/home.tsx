@@ -161,7 +161,7 @@ export default ({ data }: { data: HomePageQuery }) => {
             {conference.votingText}
           </Text>
 
-          <Link href="/:language/voting" variant="button">
+          <Link href="/:language/voting" variant="arrow-button">
             <FormattedMessage id="home.voting.vote" />
           </Link>
         </Box>
@@ -213,7 +213,7 @@ export default ({ data }: { data: HomePageQuery }) => {
             <Box>
               <Link
                 target="_blank"
-                variant="button"
+                variant="arrow-button"
                 href={conference.map!.link!}
               >
                 <FormattedMessage id="home.findRoute" />

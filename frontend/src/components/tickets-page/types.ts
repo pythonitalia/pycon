@@ -1,5 +1,7 @@
 import moment from "moment";
 
+import { Voucher } from "../../generated/graphql-backend";
+
 export type InvoiceInformationState = {
   isBusiness: boolean;
   companyName: string;
@@ -18,6 +20,7 @@ export type ProductState = {
   answers: { [id: string]: string };
   attendeeName: string;
   attendeeEmail: string;
+  voucher?: Voucher | null;
 };
 
 export type SelectedProducts = {
@@ -39,6 +42,8 @@ export type OrderState = {
   selectedProducts: SelectedProducts;
   invoiceInformation: InvoiceInformationState;
   selectedHotelRooms: SelectedHotelRooms;
+  voucherCode: string;
+  voucherUsed: boolean;
 };
 
 export type UpdateProductAction =
@@ -72,4 +77,11 @@ export type OrderAction =
       index: number;
       key: string;
       value: string;
+    }
+  | {
+      type: "applyVoucher";
+      voucher: Voucher;
+    }
+  | {
+      type: "removeVoucher";
     };
