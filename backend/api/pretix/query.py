@@ -54,31 +54,36 @@ def get_conference_tickets(conference: Conference, language: str) -> List[Ticket
     def _is_hotel(item: dict):
         return item.get("default_price") == "0.00"
 
-    return [
-        TicketItem(
-            id=id,
-            name=item["name"].get("language", item["name"]["en"]),
-            description=(
-                item["description"].get(language, item["description"]["en"])
-                if item["description"]
-                else None
-            ),
-            variations=[
-                ProductVariation(
-                    id=variation["id"],
-                    value=variation["value"].get(language, variation["value"]["en"]),
-                    description=variation["description"].get(language, ""),
-                    active=variation["active"],
-                    default_price=variation["default_price"],
-                )
-                for variation in item.get("variations", [])
-            ],
-            active=item["active"],
-            default_price=item["default_price"],
-            available_from=item["available_from"],
-            available_until=item["available_until"],
-            questions=get_questions_for_ticket(item, questions, language),
-        )
-        for id, item in items.items()
-        if item["active"] and not _is_hotel(item)
-    ]
+    return sorted(
+        [
+            TicketItem(
+                id=id,
+                name=item["name"].get("language", item["name"]["en"]),
+                description=(
+                    item["description"].get(language, item["description"]["en"])
+                    if item["description"]
+                    else None
+                ),
+                variations=[
+                    ProductVariation(
+                        id=variation["id"],
+                        value=variation["value"].get(
+                            language, variation["value"]["en"]
+                        ),
+                        description=variation["description"].get(language, ""),
+                        active=variation["active"],
+                        default_price=variation["default_price"],
+                    )
+                    for variation in item.get("variations", [])
+                ],
+                active=item["active"],
+                default_price=item["default_price"],
+                available_from=item["available_from"],
+                available_until=item["available_until"],
+                questions=get_questions_for_ticket(item, questions, language),
+            )
+            for id, item in items.items()
+            if item["active"] and not _is_hotel(item)
+        ],
+        key=lambda ticket: len(ticket.variations) > 0,
+    )
