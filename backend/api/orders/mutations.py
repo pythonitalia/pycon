@@ -51,6 +51,9 @@ class OrdersMutations:
             f"/{input.locale}/orders/{pretix_order.code}/confirmation",
         )
 
+        if pretix_order.payment_url is None:
+            return CreateOrderResult(payment_url=return_url)
+
         payment_url = pretix_order.payment_url
         payment_url += f"?return_url={return_url}"
 
