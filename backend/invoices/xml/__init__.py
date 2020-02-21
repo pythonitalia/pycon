@@ -48,7 +48,7 @@ def _generate_header(invoice: Invoice) -> XMLDict:
     else:
         recipient_data["Anagrafica"] = {
             "Nome": invoice.recipient_first_name,
-            "Cognome": invoice.recipient_last_name,
+            "Cognome": invoice.recipient_last_name or "Mancante",
         }
 
     header: XMLDict = {
@@ -83,7 +83,7 @@ def _generate_header(invoice: Invoice) -> XMLDict:
             "CessionarioCommittente": {
                 "DatiAnagrafici": {**recipient_data},
                 "Sede": {
-                    "Indirizzo": client_address.address,
+                    "Indirizzo": client_address.address[:60],
                     "CAP": (
                         "00000"
                         if client_address.country_code.lower() != "it"
