@@ -24,8 +24,8 @@ class Endpoint:
 
 
 def convert_user_to_endpoint(user: User) -> Endpoint:
-    has_sent_submission_to = Submission.objects.filter(speaker=user).values_list(
-        "conference__code", flat=True
+    submissions = Submission.objects.filter(speaker=user).values(
+        "conference__code", "status"
     )
     schedule_items = ScheduleItem.objects.filter(
         Q(submission__speaker=user) | Q(additional_speakers=user)
@@ -42,8 +42,18 @@ def convert_user_to_endpoint(user: User) -> Endpoint:
         full_name=user.full_name,
         email=user.email,
         is_staff=user.is_staff,
-        has_sent_submission_to=list(has_sent_submission_to),
+        has_sent_submission_to=list(
+            set([submission["conference__code"] for submission in submissions])
+        ),
         has_item_in_schedule=list(talks_by_conference),
-        has_cancelled_talks=[],
+        has_cancelled_talks=list(
+            set(
+                [
+                    submission["conference__code"]
+                    for submission in submissions
+                    if submission["status"] == Submission.STATUS.cancelled
+                ]
+            )
+        ),
         talks_by_conference=talks_by_conference,
     )

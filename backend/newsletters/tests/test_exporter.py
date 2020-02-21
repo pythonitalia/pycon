@@ -101,3 +101,20 @@ def test_has_list_of_talks_per_conference(
     assert endpoint.has_item_in_schedule == [conference.code]
     assert endpoint.has_cancelled_talks == []
     assert endpoint.talks_by_conference == {conference.code: [item.title]}
+
+
+@pytest.mark.django_db
+def test_adds_cancelled_talks(user_factory, conference, submission_factory):
+    user = user_factory()
+
+    submission_factory(speaker=user, conference=conference, status="cancelled")
+
+    endpoint = convert_user_to_endpoint(user)
+
+    assert endpoint.id == str(user.id)
+    assert endpoint.name == user.name
+    assert endpoint.full_name == user.full_name
+    assert endpoint.is_staff == user.is_staff
+    assert endpoint.has_sent_submission_to == [conference.code]
+    assert endpoint.has_item_in_schedule == []
+    assert endpoint.has_cancelled_talks == [conference.code]

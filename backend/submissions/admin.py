@@ -21,6 +21,7 @@ class SubmissionAdmin(admin.ModelAdmin):
         "title",
         "speaker_name",
         "type",
+        "status",
         "conference",
         "topic",
         "duration",
@@ -34,6 +35,7 @@ class SubmissionAdmin(admin.ModelAdmin):
                     "title",
                     "slug",
                     "speaker",
+                    "status",
                     "type",
                     "duration",
                     "topic",
@@ -46,7 +48,7 @@ class SubmissionAdmin(admin.ModelAdmin):
         (_("Details"), {"fields": ("elevator_pitch", "abstract", "notes", "tags")}),
         (_("Speaker"), {"fields": ("speaker_level", "previous_talk_video")}),
     )
-    list_filter = ("conference", "type", "topic", SpeakerFilter)
+    list_filter = ("conference", "type", "topic", "status", SpeakerFilter)
     search_fields = ("title", "abstract")
     prepopulated_fields = {"slug": ("title",)}
     filter_horizontal = ("tags",)
