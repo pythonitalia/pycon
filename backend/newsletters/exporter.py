@@ -22,6 +22,29 @@ class Endpoint:
         hash=False
     )
 
+    def to_item(self):
+        conferences_talks = {
+            f"{code}_items_in_schedule": items
+            for code, items in self.talks_by_conference.items()
+        }
+
+        return {
+            "ChannelType": "EMAIL",
+            "Address": self.email,
+            "Id": self.id,
+            "User": {
+                "UserId": self.id,
+                "UserAttributes": {
+                    "Name": [self.name],
+                    "FullName": [self.full_name],
+                    "is_staff": [str(self.is_staff)],
+                    "has_item_in_schedule": self.has_item_in_schedule,
+                    "has_cancelled_talks": self.has_cancelled_talks,
+                    **conferences_talks,
+                },
+            },
+        }
+
 
 def convert_user_to_endpoint(user: User) -> Endpoint:
     submissions = Submission.objects.filter(speaker=user).values(
