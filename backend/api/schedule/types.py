@@ -48,7 +48,7 @@ class ScheduleItem:
         return info.context["request"].build_absolute_uri(self.image.url)
 
     @strawberry.field
-    def my_interest(self, info) -> bool:
+    def my_favorite(self, info) -> bool:
         request = info.context["request"]
         try:
             self.subscribed_users.get(id=request.user.id)

@@ -201,7 +201,7 @@ export const ScheduleEntry: React.SFC<{
               )}
             </Text>
           </Box>
-          <FavoriteToggle myInterested={item.myInterest} itemId={item.id} />
+          <FavoriteToggle myInterested={item.myFavorite} itemId={item.id} />
         </Flex>
 
         <Flex sx={{ color: "white", mt: "auto" }}>

@@ -37,6 +37,6 @@ fragment ScheduleSlotFragment on ScheduleSlot {
       type
     }
 
-    myInterest
+    myFavorite
   }
 }
