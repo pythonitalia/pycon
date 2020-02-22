@@ -149,8 +149,8 @@ def test_xml_body_generation(sample_invoice):
     assert second_item.xpath("AliquotaIVA")[0].text == "0.00"
 
     assert summary.xpath("DatiRiepilogo/AliquotaIVA")[0].text == "22.00"
-    assert summary.xpath("DatiRiepilogo/ImponibileImporto")[0].text == "2.00"
-    assert summary.xpath("DatiRiepilogo/Imposta")[0].text == "0.44"
+    assert summary.xpath("DatiRiepilogo/ImponibileImporto")[0].text == "5.00"
+    assert summary.xpath("DatiRiepilogo/Imposta")[0].text == "1.10"
 
     # Payment data
 

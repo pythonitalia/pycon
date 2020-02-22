@@ -25,6 +25,8 @@ class Submission(TimeStampedModel):
         ("experienced", _("Experienced")),
     )
 
+    STATUS = Choices(("proposed", _("Proposed")), ("cancelled", _("Cancelled")))
+
     conference = models.ForeignKey(
         "conferences.Conference",
         on_delete=models.CASCADE,
@@ -75,6 +77,9 @@ class Submission(TimeStampedModel):
     )
 
     tags = models.ManyToManyField("submissions.SubmissionTag", verbose_name=_("tags"))
+    status = models.CharField(
+        _("status"), choices=STATUS, max_length=20, default=STATUS.proposed
+    )
 
     objects = SubmissionManager()
 
