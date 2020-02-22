@@ -148,7 +148,7 @@ def create_invoice_from_pretix(invoice, sender, order):
             row=line["position"],
             description=line["description"],
             quantity=1,
-            unit_price=line["gross_value"],
+            unit_price=float(line["gross_value"]) - float(line["tax_value"]),
             # TODO: should be line["tax_rate"] but hotels are broken
             vat_rate="22.00",
             invoice=invoice_object,

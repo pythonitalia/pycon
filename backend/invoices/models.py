@@ -1,4 +1,5 @@
 import uuid
+from decimal import Decimal
 
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -136,9 +137,9 @@ class Invoice(TimeStampedModel):
                     "row": item.row,
                     "description": item.description,
                     "quantity": item.quantity,
-                    "unit_price": float(item.unit_price),
-                    "total_price": float(item.total_price),
-                    "vat_rate": float(item.vat_rate),
+                    "unit_price": Decimal(item.unit_price),
+                    "total_price": Decimal(item.total_price),
+                    "vat_rate": Decimal(item.vat_rate),
                 }
             )
         return result

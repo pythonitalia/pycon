@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from decimal import Decimal
 from typing import TYPE_CHECKING, List
 
 from lxml import etree
@@ -102,6 +103,8 @@ def _generate_header(invoice: Invoice) -> XMLDict:
 
 def _generate_body(invoice: Invoice) -> XMLDict:
     summary: List[ProductSummary] = invoice.invoice_summary
+    invoice_amount_without_tax = Decimal(sum(x["total_price"] for x in summary))
+    tax = invoice.invoice_tax_rate * invoice_amount_without_tax / 100
 
     body: XMLDict = {
         "FatturaElettronicaBody": {
@@ -128,10 +131,8 @@ def _generate_body(invoice: Invoice) -> XMLDict:
                 ],
                 "DatiRiepilogo": {
                     "AliquotaIVA": format_price(invoice.invoice_tax_rate),
-                    "ImponibileImporto": format_price(invoice.invoice_amount),
-                    "Imposta": format_price(
-                        invoice.invoice_tax_rate * invoice.invoice_amount / 100
-                    ),
+                    "ImponibileImporto": format_price(invoice_amount_without_tax),
+                    "Imposta": format_price(tax),
                 },
             },
             "DatiPagamento": {
