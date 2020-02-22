@@ -21,7 +21,7 @@ def send_endpoints_to_pinpoint(endpoints: typing.Iterable[Endpoint]):
     endpoint_chunks = chunks(list(endpoints), 100)
 
     for endpoints_chunk in endpoint_chunks:
-        data = {"Item": [endpoint.as_item() for endpoint in endpoints_chunk]}
+        data = {"Item": [endpoint.to_item() for endpoint in endpoints_chunk]}
 
         client = _get_client()
         client.update_endpoints_batch(
