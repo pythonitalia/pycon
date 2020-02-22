@@ -44,7 +44,7 @@ def _generate_header(invoice: Invoice) -> XMLDict:
         }
     }
 
-    if invoice.recipient_denomination:
+    if invoice.recipient_denomination:  # pragma: no cover
         recipient_data["Anagrafica"] = {"Denominazione": invoice.recipient_denomination}
     else:
         recipient_data["Anagrafica"] = {
@@ -103,8 +103,8 @@ def _generate_header(invoice: Invoice) -> XMLDict:
 
 def _generate_body(invoice: Invoice) -> XMLDict:
     summary: List[ProductSummary] = invoice.invoice_summary
-    invoice_amount_without_tax = Decimal(sum(x["total_price"] for x in summary))
-    tax = invoice.invoice_tax_rate * invoice_amount_without_tax / 100
+    invoice_amount_without_tax = sum(x["total_price"] for x in summary)
+    tax = Decimal(invoice.invoice_tax_rate) * invoice_amount_without_tax / 100
 
     body: XMLDict = {
         "FatturaElettronicaBody": {

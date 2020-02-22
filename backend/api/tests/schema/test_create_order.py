@@ -103,6 +103,62 @@ def test_calls_create_order(graphql_client, user, conference, mocker):
     create_order_mock.assert_called_once()
 
 
+@override_settings(FRONTEND_URL="http://test.it")
+def test_handles_payment_url_set_to_none(graphql_client, user, conference, mocker):
+    graphql_client.force_login(user)
+
+    create_order_mock = mocker.patch("api.orders.mutations.create_order")
+    # this happens when the order is free
+    create_order_mock.return_value.payment_url = None
+    create_order_mock.return_value.code = "123"
+
+    response = graphql_client.query(
+        """mutation CreateOrder($code: String!, $input: CreateOrderInput!) {
+            createOrder(conference: $code, input: $input) {
+                ... on CreateOrderResult {
+                    paymentUrl
+                }
+            }
+        }""",
+        variables={
+            "code": conference.code,
+            "input": {
+                "tickets": [
+                    {
+                        "ticketId": "1",
+                        "attendeeName": "ABC",
+                        "attendeeEmail": "patrick.arminio@gmail.com",
+                        "variation": "1",
+                        "answers": [{"questionId": "1", "value": "Example"}],
+                    }
+                ],
+                "hotelRooms": [],
+                "paymentProvider": "stripe",
+                "email": "patrick.arminio@gmail.com",
+                "invoiceInformation": {
+                    "isBusiness": False,
+                    "company": "",
+                    "name": "Patrick",
+                    "street": "",
+                    "zipcode": "92100",
+                    "city": "Avellino",
+                    "country": "IT",
+                    "vatId": "",
+                    "fiscalCode": "",
+                },
+                "locale": "en",
+            },
+        },
+    )
+
+    assert not response.get("errors")
+    assert response["data"]["createOrder"]["paymentUrl"] == (
+        "http://test.it/en/orders/123/confirmation"
+    )
+
+    create_order_mock.assert_called_once()
+
+
 def test_handles_errors(graphql_client, user, conference, mocker):
     graphql_client.force_login(user)
 
