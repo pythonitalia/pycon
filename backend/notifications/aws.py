@@ -1,54 +1,10 @@
-import dataclasses
 import typing
-from dataclasses import dataclass
 from urllib.parse import urljoin
 
 import boto3
 from django.conf import settings
+from newsletters.exporter import Endpoint
 from users.models import User
-
-
-@dataclass(frozen=True)
-class Endpoint:
-    id: typing.Union[str, int]
-    name: str = dataclasses.field(hash=False)
-    email: str = dataclasses.field(hash=False)
-    full_name: str = dataclasses.field(hash=False)
-    is_staff: bool = dataclasses.field(hash=False)
-    extra_info: typing.Optional[typing.Dict[str, typing.List[str]]] = dataclasses.field(
-        default=None, hash=False
-    )
-
-    def as_item(self):
-        user_id = str(self.id)
-
-        return {
-            "ChannelType": "EMAIL",
-            "Address": self.email,
-            "Id": user_id,
-            "User": {
-                "UserId": user_id,
-                "UserAttributes": {
-                    "Name": [self.name],
-                    "FullName": [self.full_name],
-                    "is_staff": [str(self.is_staff)],
-                    **(self.extra_info or {}),
-                },
-            },
-        }
-
-
-def convert_users_to_endpoints(users: typing.Iterable[User]):
-    return [
-        Endpoint(
-            id=user.id,
-            name=user.name,
-            email=user.email,
-            full_name=user.full_name,
-            is_staff=user.is_staff,
-        )
-        for user in users
-    ]
 
 
 def _get_client():
