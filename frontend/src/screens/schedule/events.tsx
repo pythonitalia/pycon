@@ -8,6 +8,7 @@ import { EnglishIcon } from "../../components/icons/english";
 import { ItalianIcon } from "../../components/icons/italian";
 import { Link } from "../../components/link";
 import { getColorForItem, getColorForSubmission } from "./get-color";
+import { FavoriteToggle } from "./favorite-toggle";
 import {
   Item,
   ItemTypes,
@@ -200,12 +201,7 @@ export const ScheduleEntry: React.SFC<{
               )}
             </Text>
           </Box>
-
-          {item.myInterest ? (
-            <Text sx={{ fontWeight: "bold" }}>❤️</Text>
-          ) : (
-            <Text>🖤</Text>
-          )}
+          <FavoriteToggle myInterested={item.myInterest} itemId={item.id} />
         </Flex>
 
         <Flex sx={{ color: "white", mt: "auto" }}>
