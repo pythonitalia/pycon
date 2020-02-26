@@ -121,6 +121,7 @@ def create_invoice_from_pretix(invoice, sender, order):
         invoice_number=invoice["number"],
         defaults={
             "invoice_type": invoice_type,
+            "is_business": invoice_address["is_business"],
             "invoice_currency": "EUR",
             "invoice_date": invoice_date,
             "invoice_deadline": invoice_date + timedelta(days=30),

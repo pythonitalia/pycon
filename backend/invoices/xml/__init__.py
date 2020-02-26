@@ -37,16 +37,23 @@ def _generate_header(invoice: Invoice) -> XMLDict:
     address: Address = sender.address
     client_address: Address = invoice.recipient_address
 
-    recipient_data = {
-        "IdFiscaleIVA": {
-            "IdPaese": invoice.recipient_address.country_code,
-            "IdCodice": invoice.recipient_tax_code,
-        }
+    is_italian = client_address.country_code.lower() == "it"
+    is_business = invoice.is_business
+
+    recipient_data = {}
+    recipient_data["IdFiscaleIVA"] = {
+        "IdPaese": invoice.recipient_address.country_code,
+        "IdCodice": invoice.recipient_tax_code.lower().replace("it", ""),
     }
 
-    if invoice.recipient_denomination:  # pragma: no cover
+    if is_business:  # pragma: no cover
         recipient_data["Anagrafica"] = {"Denominazione": invoice.recipient_denomination}
+
     else:
+        if is_italian:
+            recipient_data["CodiceFiscale"] = invoice.recipient_tax_code
+            del recipient_data["IdFiscaleIVA"]
+
         recipient_data["Anagrafica"] = {
             "Nome": invoice.recipient_first_name,
             "Cognome": invoice.recipient_last_name or "Mancante",
@@ -82,14 +89,10 @@ def _generate_header(invoice: Invoice) -> XMLDict:
                 },
             },
             "CessionarioCommittente": {
-                "DatiAnagrafici": {**recipient_data},
+                "DatiAnagrafici": recipient_data,
                 "Sede": {
                     "Indirizzo": client_address.address[:60],
-                    "CAP": (
-                        "00000"
-                        if client_address.country_code.lower() != "it"
-                        else client_address.postcode
-                    ),
+                    "CAP": ("00000" if not is_italian else client_address.postcode),
                     "Comune": client_address.city,
                     "Provincia": client_address.province,
                     "Nazione": client_address.country_code,
