@@ -72,6 +72,7 @@ def sample_items() -> List[ProductSummary]:
 @pytest.fixture
 def sample_invoice(sender, sample_items, client_address) -> Invoice:
     invoice = Invoice(
+        is_business=True,
         sender=sender,
         invoice_number="00001A",
         invoice_type="TD01",

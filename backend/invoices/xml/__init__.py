@@ -46,12 +46,12 @@ def _generate_header(invoice: Invoice) -> XMLDict:
         "IdCodice": invoice.recipient_tax_code.lower().replace("it", ""),
     }
 
-    if is_business:  # pragma: no cover
+    if is_business:
         recipient_data["Anagrafica"] = {"Denominazione": invoice.recipient_denomination}
 
-    else:
+    else:  # pragma: no cover
         if is_italian:
-            recipient_data["CodiceFiscale"] = invoice.recipient_tax_code
+            recipient_data["CodiceFiscale"] = invoice.recipient_tax_code.upper()
             del recipient_data["IdFiscaleIVA"]
 
         recipient_data["Anagrafica"] = {

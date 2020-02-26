@@ -50,6 +50,10 @@ class MissingTaxCodeError(Exception):
     pass
 
 
+def get_tax(line):
+    return float(line["gross_value"]) / 100 * 22
+
+
 @transaction.atomic
 def create_invoice_from_pretix(invoice, sender, order):
     invoice_date = date.fromisoformat(invoice["date"])
@@ -74,7 +78,7 @@ def create_invoice_from_pretix(invoice, sender, order):
     )
 
     amount = sum([Decimal(line["gross_value"]) for line in invoice["lines"]])
-    tax_amount = sum([Decimal(line["tax_value"]) for line in invoice["lines"]])
+    tax_amount = sum([get_tax(line) for line in invoice["lines"]])
 
     invoice_address = order["invoice_address"]
 
@@ -149,7 +153,8 @@ def create_invoice_from_pretix(invoice, sender, order):
             row=line["position"],
             description=line["description"],
             quantity=1,
-            unit_price=float(line["gross_value"]) - float(line["tax_value"]),
+            # prices need to be vat_excluded
+            unit_price=float(line["gross_value"]) - get_tax(line),
             # TODO: should be line["tax_rate"] but hotels are broken
             vat_rate="22.00",
             invoice=invoice_object,
