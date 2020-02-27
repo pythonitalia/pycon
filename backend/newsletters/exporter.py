@@ -81,7 +81,9 @@ def convert_user_to_endpoint(user: User) -> Endpoint:
         ),
         has_item_in_schedule=list(talks_by_conference),
         has_ticket=[
-            slug for slug in conference_slugs if user_has_admission_ticket(user, slug)
+            slug
+            for slug in conference_slugs
+            if user_has_admission_ticket(user.email, slug)
         ],
         has_cancelled_talks=list(
             set(
