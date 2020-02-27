@@ -51,7 +51,8 @@ class MissingTaxCodeError(Exception):
 
 
 def get_tax(line):
-    return float(line["gross_value"]) / 1.22
+    value = float(line["gross_value"])
+    return value - value / 1.22
 
 
 @transaction.atomic
