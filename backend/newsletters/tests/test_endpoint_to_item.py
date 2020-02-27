@@ -3,7 +3,7 @@ from newsletters.exporter import convert_user_to_endpoint
 
 
 @pytest.mark.django_db
-def test_has_list_of_talks_per_conference(
+def test_convert_to_item(
     user_factory, conference, submission_factory, schedule_item_factory
 ):
     user = user_factory()
@@ -27,6 +27,7 @@ def test_has_list_of_talks_per_conference(
                 "is_staff": [str(endpoint.is_staff)],
                 "has_item_in_schedule": [item.conference.code],
                 "has_cancelled_talks": [],
+                "has_ticket": [],
                 f"{item.conference.code}_items_in_schedule": [item.title],
             },
         },

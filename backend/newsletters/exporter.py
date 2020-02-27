@@ -2,7 +2,9 @@ import dataclasses
 import typing
 from collections import defaultdict
 
+from conferences.models import Conference
 from django.db.models import Q
+from pretix.db import user_has_admission_ticket
 from schedule.models import ScheduleItem
 from submissions.models import Submission
 from users.models import User
@@ -18,6 +20,7 @@ class Endpoint:
     has_sent_submission_to: typing.List[str] = dataclasses.field(hash=False)
     has_item_in_schedule: typing.List[str] = dataclasses.field(hash=False)
     has_cancelled_talks: typing.List[str] = dataclasses.field(hash=False)
+    has_ticket: typing.List[str] = dataclasses.field(hash=False)
     talks_by_conference: typing.Dict[str, typing.List[str]] = dataclasses.field(
         hash=False
     )
@@ -40,6 +43,7 @@ class Endpoint:
                     "is_staff": [str(self.is_staff)],
                     "has_item_in_schedule": self.has_item_in_schedule,
                     "has_cancelled_talks": self.has_cancelled_talks,
+                    "has_ticket": self.has_ticket,
                     **conferences_talks,
                 },
             },
@@ -47,6 +51,13 @@ class Endpoint:
 
 
 def convert_user_to_endpoint(user: User) -> Endpoint:
+    conference_slugs = [
+        event_id
+        for event_id in Conference.objects.all().values_list(
+            "pretix_event_id", flat=True
+        )
+        if event_id != ""
+    ]
     submissions = Submission.objects.filter(speaker=user).values(
         "conference__code", "status"
     )
@@ -69,6 +80,9 @@ def convert_user_to_endpoint(user: User) -> Endpoint:
             set([submission["conference__code"] for submission in submissions])
         ),
         has_item_in_schedule=list(talks_by_conference),
+        has_ticket=[
+            slug for slug in conference_slugs if user_has_admission_ticket(user, slug)
+        ],
         has_cancelled_talks=list(
             set(
                 [
