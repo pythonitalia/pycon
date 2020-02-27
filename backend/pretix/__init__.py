@@ -57,8 +57,8 @@ def get_user_orders(conference: Conference, email: str):
     return response.json()
 
 
-def _get_paginated(conference, endpoint):
-    url = get_api_url(conference, endpoint, {})
+def _get_paginated(conference, endpoint, qs=None):
+    url = get_api_url(conference, endpoint, qs)
 
     while url is not None:
         response = requests.get(
@@ -77,12 +77,18 @@ def get_orders(conference: Conference):
     return _get_paginated(conference, "orders")
 
 
+def get_all_order_positions(
+    conference: Conference, params: typing.Dict[str, typing.Any] = None
+):
+    return _get_paginated(conference, "orderpositions", params)
+
+
 def get_invoices(conference: Conference):
     return _get_paginated(conference, "invoices")
 
 
-def get_items(conference: Conference):
-    response = pretix(conference, "items")
+def get_items(conference: Conference, params: typing.Dict[str, typing.Any] = None):
+    response = pretix(conference, "items", params)
     response.raise_for_status()
 
     data = response.json()
@@ -197,7 +203,7 @@ def normalize_position(ticket: CreateOrderTicket, items: dict, questions: dict):
     }
 
     if ticket.voucher:
-      data['voucher'] = ticket.voucher
+        data["voucher"] = ticket.voucher
 
     if item["admission"]:
         data["attendee_name"] = ticket.attendee_name
