@@ -18,7 +18,7 @@ def get_api_url(conference, endpoint, query):
     return urljoin(
         settings.PRETIX_API,
         f"organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/{endpoint}",  # noqa
-    ) + append_qs(query)
+    ) + append_qs(query or {})
 
 
 def append_qs(querystring):
