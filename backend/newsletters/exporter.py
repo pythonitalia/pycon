@@ -51,13 +51,7 @@ class Endpoint:
 
 
 def convert_user_to_endpoint(user: User) -> Endpoint:
-    conference_slugs = [
-        event_id
-        for event_id in Conference.objects.all().values_list(
-            "pretix_event_id", flat=True
-        )
-        if event_id != ""
-    ]
+    pretix_conferences = Conference.objects.exclude(pretix_event_id__exact="")
     submissions = Submission.objects.filter(speaker=user).values(
         "conference__code", "status"
     )
@@ -81,9 +75,9 @@ def convert_user_to_endpoint(user: User) -> Endpoint:
         ),
         has_item_in_schedule=list(talks_by_conference),
         has_ticket=[
-            slug
-            for slug in conference_slugs
-            if user_has_admission_ticket(user.email, slug)
+            conference.code
+            for conference in pretix_conferences
+            if user_has_admission_ticket(user.email, conference.pretix_event_id)
         ],
         has_cancelled_talks=list(
             set(
