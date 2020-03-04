@@ -59,7 +59,7 @@ const Links: React.SFC<{
   );
 };
 
-const WARNING_MESSAGE_HEIGHT = 60;
+const WARNING_MESSAGE_HEIGHT = [80, 80, 60];
 
 export const HeaderContent = ({ location }: { location: any }) => {
   const {
