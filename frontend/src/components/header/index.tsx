@@ -59,6 +59,8 @@ const Links: React.SFC<{
   );
 };
 
+const WARNING_MESSAGE_HEIGHT = 60;
+
 export const HeaderContent = ({ location }: { location: any }) => {
   const {
     backend: {
@@ -98,174 +100,205 @@ export const HeaderContent = ({ location }: { location: any }) => {
   useOnClickOutside(headerRef, close);
 
   return (
-    <Box
-      ref={headerRef}
-      sx={{
-        top: 0,
-        left: 0,
-        pt: 3,
-        width: "100%",
-        height: open ? "100%" : "",
-        zIndex: "header",
-        position: open ? "fixed" : "absolute",
-        borderBottom: open ? "primary" : "",
-        backgroundColor: open ? "orange" : "",
-        overflowY: open ? "scroll" : "",
-      }}
-    >
-      <Flex
+    <Fragment>
+      <Box
         sx={{
-          maxWidth: "largeContainer",
-          mx: "auto",
-          mb: 4,
-          px: 2,
-          justifyContent: "space-between",
-          alignItems: "flex-start",
+          height: WARNING_MESSAGE_HEIGHT,
+          backgroundColor: "black",
+          color: "white",
+          position: "relative",
+          zIndex: "header",
         }}
       >
-        <Link href="/:language">
-          <Logo
-            sx={{
-              width: ["166px", null, "250px"],
-              height: "auto",
-            }}
-          />
-        </Link>
-
-        <Flex
-          sx={{
-            alignItems: ["center", "flex-start"],
-          }}
-        >
-          <LanguagePicker
-            language={language}
-            sx={{
-              display: ["none", "block"],
-            }}
-          />
-
-          <Link
-            href={loggedIn ? "/:language/profile" : "/:language/login"}
-            variant="arrow-button"
-            sx={{ mr: 5, display: ["none", "block"] }}
-          >
-            {loggedIn && <FormattedMessage id="header.profile" />}
-            {!loggedIn && <FormattedMessage id="header.login" />}
-          </Link>
-
-          <Button
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-
-              mt: "-5px",
-
-              px: 3,
-              py: 2,
-
-              cursor: "pointer",
-            }}
-            onClick={toggleOpen}
-            variant="white"
-          >
-            <SnakeBurger />
-            {open ? "Close" : "Menu"}
-          </Button>
-        </Flex>
-      </Flex>
-
-      {open && (
         <Box
           sx={{
-            borderTop: "primary",
+            width: "100%",
+            maxWidth: "largeContainer",
+            mx: "auto",
+            px: 2,
+            display: "flex",
+            alignItems: "center",
+            height: "100%",
           }}
         >
-          <Grid
-            columns={[1, 2, 4]}
+          <Link
+            href=":language/blog/pycon-11-postponed-to-november"
+            sx={{ color: "white", textUnderlineOffset: 4 }}
+          >
+            <FormattedMessage id="header.coronaVirus" />
+          </Link>
+        </Box>
+      </Box>
+
+      <Box
+        ref={headerRef}
+        sx={{
+          top: WARNING_MESSAGE_HEIGHT,
+          left: 0,
+          pt: 3,
+          width: "100%",
+          height: open ? "100%" : "",
+          zIndex: "header",
+          position: open ? "fixed" : "absolute",
+          borderBottom: open ? "primary" : "",
+          backgroundColor: open ? "orange" : "",
+          overflowY: open ? "scroll" : "",
+        }}
+      >
+        <Flex
+          sx={{
+            maxWidth: "largeContainer",
+            mx: "auto",
+            mb: 4,
+            px: 2,
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+          }}
+        >
+          <Link href="/:language">
+            <Logo
+              sx={{
+                width: ["166px", null, "250px"],
+                height: "auto",
+              }}
+            />
+          </Link>
+
+          <Flex
             sx={{
-              maxWidth: "container",
-              mx: "auto",
-              py: 4,
-              px: 3,
+              alignItems: ["center", "flex-start"],
             }}
           >
             <LanguagePicker
               language={language}
               sx={{
-                display: ["block", "none"],
+                display: ["none", "block"],
               }}
             />
 
             <Link
               href={loggedIn ? "/:language/profile" : "/:language/login"}
-              variant="header"
-              sx={{ mr: 5, display: ["block", "none"] }}
+              variant="arrow-button"
+              sx={{ mr: 5, display: ["none", "block"] }}
             >
               {loggedIn && <FormattedMessage id="header.profile" />}
               {!loggedIn && <FormattedMessage id="header.login" />}
             </Link>
 
-            <Box as="nav">
-              <Links links={conferenceMenu!.links} language={language} />
-            </Box>
-            <Box as="nav">
-              {programMenu!.links.map(link => (
-                <Link
-                  variant="header"
-                  href={language === "en" ? link.hrefEn : link.hrefIt}
-                  key={language === "en" ? link.hrefEn : link.hrefIt}
-                >
-                  {language === "en" ? link.titleEn : link.titleIt}
-                </Link>
-              ))}
-            </Box>
-            <Box>
-              <Heading variant="header">
-                <FormattedMessage id="header.contact" />
-              </Heading>
+            <Button
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
 
-              <dl>
-                <dt>
-                  <FormattedMessage id="header.becomeASponsor" />
-                </dt>
-                <Box as="dd" sx={{ mb: 3 }}>
-                  <Link
-                    sx={{
-                      color: "white",
-                    }}
-                    href="mailto:sponsor@pycon.it"
-                  >
-                    sponsor@pycon.it
-                  </Link>
-                </Box>
-                <dt>
-                  <FormattedMessage id="header.enquiries" />
-                </dt>
-                <Box as="dd" sx={{ mb: 3 }}>
-                  <Link
-                    sx={{
-                      color: "white",
-                    }}
-                    href="mailto:info@pycon.it"
-                  >
-                    info@pycon.it
-                  </Link>
-                </Box>
-              </dl>
-            </Box>
-            <Box>
-              <Heading variant="header">
-                <FormattedMessage id="header.followus" />
-              </Heading>
+                mt: "-5px",
 
-              <SocialLinks variant="header" />
-            </Box>
-          </Grid>
-        </Box>
-      )}
-    </Box>
+                px: 3,
+                py: 2,
+
+                cursor: "pointer",
+              }}
+              onClick={toggleOpen}
+              variant="white"
+            >
+              <SnakeBurger />
+              {open ? "Close" : "Menu"}
+            </Button>
+          </Flex>
+        </Flex>
+
+        {open && (
+          <Box
+            sx={{
+              borderTop: "primary",
+            }}
+          >
+            <Grid
+              columns={[1, 2, 4]}
+              sx={{
+                maxWidth: "container",
+                mx: "auto",
+                py: 4,
+                px: 3,
+              }}
+            >
+              <LanguagePicker
+                language={language}
+                sx={{
+                  display: ["block", "none"],
+                }}
+              />
+
+              <Link
+                href={loggedIn ? "/:language/profile" : "/:language/login"}
+                variant="header"
+                sx={{ mr: 5, display: ["block", "none"] }}
+              >
+                {loggedIn && <FormattedMessage id="header.profile" />}
+                {!loggedIn && <FormattedMessage id="header.login" />}
+              </Link>
+
+              <Box as="nav">
+                <Links links={conferenceMenu!.links} language={language} />
+              </Box>
+              <Box as="nav">
+                {programMenu!.links.map(link => (
+                  <Link
+                    variant="header"
+                    href={language === "en" ? link.hrefEn : link.hrefIt}
+                    key={language === "en" ? link.hrefEn : link.hrefIt}
+                  >
+                    {language === "en" ? link.titleEn : link.titleIt}
+                  </Link>
+                ))}
+              </Box>
+              <Box>
+                <Heading variant="header">
+                  <FormattedMessage id="header.contact" />
+                </Heading>
+
+                <dl>
+                  <dt>
+                    <FormattedMessage id="header.becomeASponsor" />
+                  </dt>
+                  <Box as="dd" sx={{ mb: 3 }}>
+                    <Link
+                      sx={{
+                        color: "white",
+                      }}
+                      href="mailto:sponsor@pycon.it"
+                    >
+                      sponsor@pycon.it
+                    </Link>
+                  </Box>
+                  <dt>
+                    <FormattedMessage id="header.enquiries" />
+                  </dt>
+                  <Box as="dd" sx={{ mb: 3 }}>
+                    <Link
+                      sx={{
+                        color: "white",
+                      }}
+                      href="mailto:info@pycon.it"
+                    >
+                      info@pycon.it
+                    </Link>
+                  </Box>
+                </dl>
+              </Box>
+              <Box>
+                <Heading variant="header">
+                  <FormattedMessage id="header.followus" />
+                </Heading>
+
+                <SocialLinks variant="header" />
+              </Box>
+            </Grid>
+          </Box>
+        )}
+      </Box>
+    </Fragment>
   );
 };
 
