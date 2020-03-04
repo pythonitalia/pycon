@@ -65,6 +65,13 @@ class ScheduleItem(TimeStampedModel):
         ("custom", _("Custom")),
     )
 
+    STATUS = Choices(
+        ("confirmed", _("Confirmed")),
+        ("maybe", _("Maybe")),
+        ("waiting_confirmation", _("Waiting confirmation")),
+        ("cancelled", _("Cancelled")),
+    )
+
     conference = models.ForeignKey(
         Conference,
         on_delete=models.CASCADE,
@@ -77,6 +84,12 @@ class ScheduleItem(TimeStampedModel):
     description = models.TextField(_("description"), blank=True)
 
     type = models.CharField(choices=TYPES, max_length=10, verbose_name=_("type"))
+    status = models.CharField(
+        choices=STATUS,
+        max_length=25,
+        verbose_name=_("status"),
+        default=STATUS.waiting_confirmation,
+    )
     highlight_color = models.CharField(
         choices=COLORS, max_length=15, blank=True, verbose_name=_("highlight color")
     )
