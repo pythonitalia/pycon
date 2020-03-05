@@ -33,7 +33,7 @@ export default () => (
     <CFPPage path="/:lang/cfp" />
     <Redirect
       from="/:lang/schedule"
-      to="/:lang/schedule/2020-04-03"
+      to="/:lang/schedule/2020-11-06"
       noThrow={true}
     />
     <ScheduleScreen path="/:lang/schedule/:day" />
