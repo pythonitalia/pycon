@@ -17,7 +17,7 @@ const fakeBottomBorder = {
   borderBottom: "primary",
   width: "100%",
   position: "absolute",
-  bottom: "-3px",
+  bottom: "-4px",
   left: 0,
 };
 
@@ -26,7 +26,7 @@ const fakeTopBorder = {
   borderBottom: "none",
   borderTop: "primary",
   bottom: "auto",
-  top: "-3px",
+  top: "-4px",
 };
 
 const formatHour = (value: string) => {
@@ -141,8 +141,8 @@ const GridContainer = React.forwardRef<
         minWidth: "1500px",
         gridTemplateColumns: `80px repeat(${totalColumns}, 1fr)`,
         gridTemplateRows: `repeat(${totalRows - 1}, 10px)`,
-        gridGap: "3px",
-        py: "3px",
+        gridGap: "4px",
+        py: "4px",
         backgroundColor: "black",
       }}
     >
@@ -206,7 +206,7 @@ export const Schedule: React.SFC<{
           top: 0,
           zIndex: ["scheduleHeader"],
           overflowX: "hidden",
-          mb: "-3px",
+          mb: "-4px",
         }}
       >
         <Box

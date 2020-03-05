@@ -31,7 +31,7 @@ const ArrowRightBackground = ({
     <Box
       sx={{
         position: "absolute",
-        top: "-3px",
+        top: "-4px",
         left: 0,
         right: 24,
         borderTop: "primary",
@@ -47,7 +47,7 @@ const ArrowRightBackground = ({
       vectorEffect="non-scaling-stroke"
       sx={{
         position: "absolute",
-        top: "-3px",
+        top: "-4px",
         height: 50,
         right: 0,
       }}

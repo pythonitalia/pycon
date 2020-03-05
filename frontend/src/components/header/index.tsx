@@ -26,7 +26,7 @@ const LanguagePicker: React.SFC<{ language: string }> = ({
   const alternateLinks = useAlternateLinks();
 
   return (
-    <Flex sx={{ alignItems: "center", height: 50, mt: "-3px" }} {...props}>
+    <Flex sx={{ alignItems: "center", height: 50, mt: "-4px" }} {...props}>
       <Link href={alternateLinks.en} sx={{ height: 40 }}>
         <EnglishIcon active={language === "en"} sx={{ width: 40, mr: 2 }} />
       </Link>

@@ -54,7 +54,7 @@ export const DaySelector: React.SFC<{
             onClick={() => setCurrentDay(day.day)}
             sx={{
               backgroundColor: currentDay === day.day ? "violet" : "white",
-              mr: "-3px",
+              mr: "-4px",
               position: "relative",
               "&:hover": {
                 backgroundColor: "lightViolet",

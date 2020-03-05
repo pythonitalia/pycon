@@ -65,7 +65,7 @@ export const BaseEvent: React.SFC<{ type: string; metadata: any }> = ({
       display: "inline-block",
       border: "primary",
       p: 3,
-      mb: "-3px",
+      mb: "-4px",
       mr: 3,
     }}
     {...props}
