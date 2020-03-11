@@ -25,7 +25,7 @@ export type Item = {
   submission?: Submission | null;
   audienceLevel?: { name: string } | null;
   speakers: { fullName: string }[];
-  myInterest: boolean;
+  myFavorite: boolean;
 };
 
 export type Slot = {

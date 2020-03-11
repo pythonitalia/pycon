@@ -7,8 +7,8 @@ import { jsx } from "theme-ui";
 import { EnglishIcon } from "../../components/icons/english";
 import { ItalianIcon } from "../../components/icons/italian";
 import { Link } from "../../components/link";
-import { getColorForItem, getColorForSubmission } from "./get-color";
 import { FavoriteToggle } from "./favorite-toggle";
+import { getColorForItem, getColorForSubmission } from "./get-color";
 import {
   Item,
   ItemTypes,

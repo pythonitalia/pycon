@@ -1,0 +1,41 @@
+#import "./fragments/submission.graphql"
+mutation UpdateMyFavorite($itemId: ID!, $myFavorite: Boolean!) {
+  updateMyFavorite(itemId: $itemId, myFavorite:$myFavorite){
+    ... on UpdateMyFavoriteItemResult {
+      slot {
+        id
+        title
+        slug
+        type
+
+        duration
+
+        audienceLevel {
+          name
+        }
+
+        language {
+          id
+          name
+          code
+        }
+
+        submission {
+          ...SubmissionFragment
+        }
+
+        speakers {
+          fullName
+        }
+
+        rooms {
+          id
+          name
+          type
+        }
+
+        myFavorite
+      }
+    }
+  }
+}

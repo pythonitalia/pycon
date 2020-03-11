@@ -4,10 +4,12 @@ from datetime import date, datetime, time, timedelta
 import strawberry
 from api.conferences.types import Day, ScheduleSlot
 from api.helpers.ids import decode_hashid
+from api.schedule.types import ScheduleItem
 from conferences.models import Conference
 from languages.models import Language
 from schedule.models import Day as DayModel
-from schedule.models import ScheduleItem, Slot
+from schedule.models import ScheduleItem as ScheduleItemModel
+from schedule.models import Slot
 from strawberry.types.datetime import Date
 from submissions.models import Submission
 
@@ -40,6 +42,11 @@ class UpdateOrCreateSlotItemInput:
 @strawberry.type
 class UpdateOrCreateSlotItemResult:
     updated_slots: typing.List[ScheduleSlot]
+
+
+@strawberry.type
+class UpdateMyFavoriteItemResult:
+    slot: ScheduleItem
 
 
 @strawberry.type
@@ -76,9 +83,9 @@ class ScheduleMutations:
 
         data = {
             "type": (
-                ScheduleItem.TYPES.submission
+                ScheduleItemModel.TYPES.submission
                 if submission_id
-                else ScheduleItem.TYPES.custom
+                else ScheduleItemModel.TYPES.custom
             ),
             "slot": slot,
             "submission_id": submission_id,
@@ -91,7 +98,7 @@ class ScheduleMutations:
         updated_slots: typing.List[ScheduleSlot] = []
 
         if input.item_id:
-            schedule_item = ScheduleItem.objects.select_related("slot").get(
+            schedule_item = ScheduleItemModel.objects.select_related("slot").get(
                 id=input.item_id
             )
             updated_slots.append(
@@ -106,7 +113,7 @@ class ScheduleMutations:
             data["submission_id"] = schedule_item.submission_id
             data["type"] = schedule_item.type
 
-            ScheduleItem.objects.filter(id=input.item_id).update(**data)
+            ScheduleItemModel.objects.filter(id=input.item_id).update(**data)
         else:
             language_code = "en"
 
@@ -120,7 +127,7 @@ class ScheduleMutations:
 
             data["language"] = Language.objects.get(code=language_code)
 
-            schedule_item = ScheduleItem.objects.create(**data)
+            schedule_item = ScheduleItemModel.objects.create(**data)
 
         schedule_item.rooms.set(input.rooms)
 
@@ -129,3 +136,16 @@ class ScheduleMutations:
         )
 
         return UpdateOrCreateSlotItemResult(updated_slots=updated_slots)
+
+    @strawberry.mutation
+    def update_my_favorite(
+        self, info, item_id: strawberry.ID, my_favorite: bool
+    ) -> UpdateMyFavoriteItemResult:
+        user = info.context["request"].user
+        schedule_item = ScheduleItemModel.objects.get(id=item_id)
+        if my_favorite:
+            schedule_item.subscribed_users.add(user)
+        else:
+            schedule_item.subscribed_users.remove(user)
+
+        return UpdateMyFavoriteItemResult(slot=schedule_item)
