@@ -86,7 +86,7 @@
     "@graphql-codegen/add": "^1.9.1",
     "@graphql-codegen/cli": "^1.9.1",
     "@graphql-codegen/fragment-matcher": "^1.9.1",
-    "@graphql-codegen/introspection": "1.9.1",
+    "@graphql-codegen/introspection": "1.13.0",
     "@graphql-codegen/typescript": "1.9.1",
     "@graphql-codegen/typescript-operations": "^1.9.1",
     "@graphql-codegen/typescript-react-apollo": "1.9.1",
