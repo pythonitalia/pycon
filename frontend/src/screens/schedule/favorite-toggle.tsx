@@ -1,9 +1,10 @@
 /** @jsx jsx */
 import { useMutation } from "@apollo/react-hooks";
-import { Box, Button, Text } from "@theme-ui/components";
+import { Box, Text } from "@theme-ui/components";
 import React, { useCallback, useState } from "react";
 import { jsx } from "theme-ui";
 
+import { Star } from "../../components/icons/star";
 import {
   UpdateMyFavoriteMutation,
   UpdateMyFavoriteMutationVariables,
@@ -43,15 +44,13 @@ export const FavoriteToggle: React.SFC<Props> = ({
   }, []);
 
   if (updatingMyFavorite) {
-    return <Text onClick={toggleMyInterest}>🔄️</Text>;
+    return <Text />;
   }
   return (
     <Box>
-      {myFavorite ? (
-        <Text onClick={toggleMyInterest}>❤️</Text>
-      ) : (
-        <Text onClick={toggleMyInterest}>🖤</Text>
-      )}
+      <Text onClick={toggleMyInterest}>
+        <Star active={myFavorite} />️
+      </Text>
     </Box>
   );
 };
