@@ -53,13 +53,13 @@ export const VoteSelector: React.SFC<Props> = ({
         display: [null, "flex"],
       }}
     >
-      {VOTE_VALUES.map(option => (
+      {VOTE_VALUES.map((option) => (
         <li
           sx={{
             cursor: "pointer",
           }}
           key={option.value}
-          onClick={_ => onVote(option.value)}
+          onClick={(_) => onVote(option.value)}
         >
           <InputWrapper sx={{ mb: 2, mr: 4, textTransform: "none" }}>
             <Label>

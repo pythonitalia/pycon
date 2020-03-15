@@ -113,9 +113,9 @@ module.exports = {
           "jsx-self-close": true,
           "no-duplicate-imports": true,
           "no-duplicate-variable": [true, "check-parameters"],
-          "no-implicit-dependencies": true,
+          "no-implicit-dependencies": [true, ["~"]],
           "no-reference-import": true,
-          "no-shadowed-variable": true,
+          "no-shadowed-variable": false,
           "no-unused-expression": true,
           "only-arrow-functions": [
             true,

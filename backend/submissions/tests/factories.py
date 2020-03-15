@@ -13,9 +13,9 @@ from languages.models import Language
 from pytest_factoryboy import register
 from submissions.models import (
     Submission,
+    SubmissionComment,
     SubmissionTag,
     SubmissionType,
-    SubmissionComment,
 )
 from users.tests.factories import UserFactory
 

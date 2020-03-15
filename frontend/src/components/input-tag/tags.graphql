@@ -1,6 +1,6 @@
 query Tags {
-    submissionTags {
-        name
-        id
-    }
+  submissionTags {
+    name
+    id
+  }
 }

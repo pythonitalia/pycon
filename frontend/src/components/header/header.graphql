@@ -1,0 +1,23 @@
+fragment Link on MenuLink {
+  title(language: $language)
+  href(language: $language)
+
+  page {
+    slug(language: $language)
+  }
+}
+
+query Header($code: String!, $language: String!) {
+  conference(code: $code) {
+    conferenceMenu: menu(identifier: "conference-nav") {
+      links {
+        ...Link
+      }
+    }
+    programMenu: menu(identifier: "program-nav") {
+      links {
+        ...Link
+      }
+    }
+  }
+}

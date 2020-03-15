@@ -1,24 +1,16 @@
 /** @jsx jsx */
-import { useMutation } from "@apollo/react-hooks";
 import { Box, Grid, Heading, Text } from "@theme-ui/components";
 import React, { Fragment, useCallback, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
-import { useConference } from "../../context/conference";
-import {
-  SendVoteMutation,
-  SendVoteMutationVariables,
-  VotingSubmissionsQuery,
-  VotingSubmissionsQueryVariables,
-} from "../../generated/graphql-backend";
-import { compile } from "../../helpers/markdown";
+import { compile } from "~/helpers/markdown";
+import { useSendVoteMutation } from "~/types";
+
 import { EnglishIcon } from "../icons/english";
 import { ItalianIcon } from "../icons/italian";
 import { Link } from "../link";
-import SAVE_VOTE from "./save-vote.graphql";
 import { VOTE_VALUES, VoteSelector } from "./vote-selector";
-import VOTING_SUBMISSIONS from "./voting-submissions.graphql";
 
 type VoteSubmission = {
   id: string;
@@ -29,26 +21,26 @@ type VoteSubmission = {
   myVote?: {
     value: number;
   } | null;
-  topic: {
+  topic?: {
     id: string;
     name: string;
   } | null;
-  tags:
+  tags?:
     | {
         id: string;
         name: string;
       }[]
     | null;
-  audienceLevel: {
+  audienceLevel?: {
     id: string;
     name: string;
   } | null;
-  duration: {
+  duration?: {
     id: string;
     name: string;
     duration: number;
   } | null;
-  languages:
+  languages?:
     | {
         id: string;
         name: string;
@@ -117,53 +109,49 @@ export const SubmissionAccordion: React.SFC<Props> = ({
   const toggleAccordion = useCallback(() => {
     setOpen(!open);
   }, [open]);
-  const { code: conferenceCode } = useConference();
 
-  const [sendVote, { loading, error, data: submissionData }] = useMutation<
-    SendVoteMutation,
-    SendVoteMutationVariables
-  >(SAVE_VOTE, {
+  const [
+    sendVote,
+    { loading, error, data: submissionData },
+  ] = useSendVoteMutation({
     update(cache, { data }) {
-      if (error || data?.sendVote.__typename === "SendVoteErrors") {
-        return;
-      }
-
-      const cachedQuery = cache.readQuery<
-        VotingSubmissionsQuery,
-        VotingSubmissionsQueryVariables
-      >({
-        query: VOTING_SUBMISSIONS,
-        variables: {
-          conference: conferenceCode,
-        },
-      });
-
-      const submissions = cachedQuery!.conference.submissions!;
-
-      const updatedSubmissionIndex = submissions.findIndex(i => i.id === id)!;
-      const updatedSubmission = {
-        ...submissions[updatedSubmissionIndex]!,
-      };
-      updatedSubmission.myVote = data!.sendVote;
-      submissions[updatedSubmissionIndex] = updatedSubmission;
-
-      cache.writeQuery<VotingSubmissionsQuery, VotingSubmissionsQueryVariables>(
-        {
-          query: VOTING_SUBMISSIONS,
-          data: {
-            // @ts-ignore
-            conference: {
-              ...cachedQuery?.conference,
-              submissions,
-            },
-          },
-        },
-      );
+      // TODO
+      // if (error || data?.sendVote.__typename === "SendVoteErrors") {
+      //   return;
+      // }
+      // const cachedQuery = cache.readQuery<
+      //   VotingSubmissionsQuery,
+      //   VotingSubmissionsQueryVariables
+      // >({
+      //   query: VOTING_SUBMISSIONS,
+      //   variables: {
+      //     conference: conferenceCode,
+      //   },
+      // });
+      // const submissions = cachedQuery!.conference.submissions!;
+      // const updatedSubmissionIndex = submissions.findIndex((i) => i.id === id)!;
+      // const updatedSubmission = {
+      //   ...submissions[updatedSubmissionIndex]!,
+      // };
+      // updatedSubmission.myVote = data!.sendVote;
+      // submissions[updatedSubmissionIndex] = updatedSubmission;
+      // cache.writeQuery<VotingSubmissionsQuery, VotingSubmissionsQueryVariables>(
+      //   {
+      //     query: VOTING_SUBMISSIONS,
+      //     data: {
+      //       // @ts-ignore
+      //       conference: {
+      //         ...cachedQuery?.conference,
+      //         submissions,
+      //       },
+      //     },
+      //   },
+      // );
     },
   });
 
   const onSubmitVote = useCallback(
-    value => {
+    (value) => {
       if (loading || !onVote) {
         return;
       }
@@ -192,8 +180,8 @@ export const SubmissionAccordion: React.SFC<Props> = ({
     [loading],
   );
 
-  const isInItalian = submission.languages?.find(l => l.code === "it");
-  const isInEnglish = submission.languages?.find(l => l.code === "en");
+  const isInItalian = submission.languages?.find((l) => l.code === "it");
+  const isInEnglish = submission.languages?.find((l) => l.code === "en");
   const hasVote = !!submission.myVote;
 
   const voteSpace = hasVote ? "150px" : 0;
@@ -252,8 +240,9 @@ export const SubmissionAccordion: React.SFC<Props> = ({
               >
                 <FormattedMessage
                   id={
-                    VOTE_VALUES.find(i => i.value === submission.myVote!.value)!
-                      .textId
+                    VOTE_VALUES.find(
+                      (i) => i.value === submission.myVote!.value,
+                    )!.textId
                   }
                 />
               </Text>
@@ -269,7 +258,7 @@ export const SubmissionAccordion: React.SFC<Props> = ({
             >
               <FormattedMessage
                 id={
-                  VOTE_VALUES.find(i => i.value === submission.myVote!.value)!
+                  VOTE_VALUES.find((i) => i.value === submission.myVote!.value)!
                     .textId
                 }
               />
@@ -386,10 +375,7 @@ export const SubmissionAccordion: React.SFC<Props> = ({
               )}
 
               <Box as="footer" sx={{ mt: 4 }}>
-                <Link
-                  variant="arrow-button"
-                  href={`/:language/submission/${id}`}
-                >
+                <Link variant="arrow-button" path={`/[lang]/submission/${id}`}>
                   <FormattedMessage id="voting.fullDetails" />
                 </Link>
               </Box>
@@ -420,7 +406,7 @@ export const SubmissionAccordion: React.SFC<Props> = ({
                   label={<FormattedMessage id="voting.length" />}
                   value={
                     <FormattedMessage id="voting.minutes">
-                      {text =>
+                      {(text) =>
                         `${duration.name} (${duration.duration} ${text})`
                       }
                     </FormattedMessage>
@@ -431,14 +417,14 @@ export const SubmissionAccordion: React.SFC<Props> = ({
                 <SubmissionInfo
                   headingColor={headingColor}
                   label={<FormattedMessage id="voting.tags" />}
-                  value={tags.map(t => t.name).join(", ")}
+                  value={tags.map((t) => t.name).join(", ")}
                 />
               )}
               {languages && (
                 <SubmissionInfo
                   headingColor={headingColor}
                   label={<FormattedMessage id="voting.languages" />}
-                  value={languages.map(t => t.name).join(", ")}
+                  value={languages.map((t) => t.name).join(", ")}
                 />
               )}
             </Box>

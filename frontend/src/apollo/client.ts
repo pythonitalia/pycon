@@ -1,4 +1,3 @@
-import { navigate } from "@reach/router";
 import {
   defaultDataIdFromObject,
   InMemoryCache,
@@ -18,7 +17,7 @@ const fragmentMatcher = new IntrospectionFragmentMatcher({
 });
 
 const isUserLoggedOut = (graphErrors: readonly GraphQLError[]) =>
-  !!graphErrors.find(e => e.message === "User not logged in");
+  !!graphErrors.find((e) => e.message === "User not logged in");
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {
@@ -29,8 +28,9 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
     );
 
     if (isUserLoggedOut(graphQLErrors)) {
-      setLoginState(false);
-      navigate("/en/login");
+      // setLoginState(false);
+      // TODO
+      // navigate("/en/login");
     }
   }
 
@@ -40,26 +40,14 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 });
 
 const httpLink = new HttpLink({
-  uri: "/graphql",
+  uri: process.browser ? "/graphql" : process.env.API_URL,
   fetch,
 });
 
 const link = ApolloLink.from([errorLink, httpLink]);
 
-const cache = new InMemoryCache({
-  fragmentMatcher,
-  dataIdFromObject: object => {
-    switch (object.__typename) {
-      case "Day":
-        // day objects might not have an id, so we create a new cache id based on the day's date
-        return `Day:${(object as any).day}`;
-      default:
-        return defaultDataIdFromObject(object); // fall back to default handling
-    }
-  },
-});
-
-export const client = new ApolloClient({
-  link,
-  cache,
-});
+export const getApolloClient = ({ initialState }: any) =>
+  new ApolloClient({
+    link,
+    cache: new InMemoryCache({ fragmentMatcher }).restore(initialState || {}),
+  });

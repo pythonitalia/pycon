@@ -1,16 +1,14 @@
 mutation subscribe($email: String!) {
-    subscribeToNewsletter(input: {
-        email: $email
-    }) {
-        __typename
+  subscribeToNewsletter(input: { email: $email }) {
+    __typename
 
-        ... on SubscribeToNewsletterErrors {
-            validationEmail: email
-        }
-
-        ... on NewsletterSubscription {
-            id
-            email
-        }
+    ... on SubscribeToNewsletterErrors {
+      validationEmail: email
     }
+
+    ... on NewsletterSubscription {
+      id
+      email
+    }
+  }
 }

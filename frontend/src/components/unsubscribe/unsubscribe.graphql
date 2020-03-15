@@ -1,7 +1,5 @@
 mutation Unsubscribe($email: String!) {
-  unsubscribeToNewsletter(input: {
-    email: $email
-  }) {
+  unsubscribeToNewsletter(input: { email: $email }) {
     __typename
 
     ... on UnsubscribeToNewsletterErrors {

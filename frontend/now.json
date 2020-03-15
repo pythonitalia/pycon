@@ -1,0 +1,8 @@
+{
+  "routes": [
+    {
+      "src": "/graphql",
+      "dest": "https://pycon.it/graphql"
+    }
+  ]
+}

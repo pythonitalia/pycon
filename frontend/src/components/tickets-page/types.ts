@@ -1,6 +1,13 @@
 import moment from "moment";
 
-import { Voucher } from "../../generated/graphql-backend";
+export type HotelRoom = {
+  id: string;
+  name: string;
+  description: string;
+  price: string;
+  isSoldOut: boolean;
+  capacityLeft: number;
+};
 
 export type InvoiceInformationState = {
   isBusiness: boolean;
@@ -12,6 +19,19 @@ export type InvoiceInformationState = {
   zipCode: string;
   city: string;
   country: string;
+};
+
+export type Voucher = {
+  id: string;
+  code: string;
+  validUntil: string;
+  value: string;
+  items: string[];
+  allItems: boolean;
+  redeemed: number;
+  maxUsages: number;
+  priceMode: string;
+  variationId: string;
 };
 
 export type ProductState = {

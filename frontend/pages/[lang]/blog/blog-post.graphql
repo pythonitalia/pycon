@@ -1,0 +1,12 @@
+query Post($slug: String!, $language: String!) {
+  blogPost(slug: $slug) {
+    title(language: $language)
+    content(language: $language)
+    excerpt(language: $language)
+    author {
+      fullName
+    }
+    published
+    image
+  }
+}

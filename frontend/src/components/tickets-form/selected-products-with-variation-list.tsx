@@ -18,16 +18,16 @@ export const SelectedProductsWithVariationsList: React.SFC<{
   removeProduct: (id: string, variation: string) => void;
 }> = ({ products, selectedProducts, removeProduct }) => {
   const productsToShow = Object.values(selectedProducts).filter(
-    p => p.length > 0 && p[0].variation,
+    (p) => p.length > 0 && p[0].variation,
   );
 
   const productsById = Object.fromEntries(
-    products.map(product => [product.id, product]),
+    products.map((product) => [product.id, product]),
   );
 
   return (
     <React.Fragment>
-      {productsToShow.map(selectedProduct => {
+      {productsToShow.map((selectedProduct) => {
         const groups = selectedProduct.reduce<{
           [variation: string]: SelectedProduct[];
         }>((current, product: SelectedProduct) => {
@@ -41,7 +41,7 @@ export const SelectedProductsWithVariationsList: React.SFC<{
           return current;
         }, {});
 
-        return Object.values(groups).map(group => {
+        return Object.values(groups).map((group) => {
           const firstProduct = group[0];
           const product = productsById[firstProduct.id];
 
@@ -57,7 +57,7 @@ export const SelectedProductsWithVariationsList: React.SFC<{
                     (
                     {
                       product.variations?.find(
-                        variation => variation.id === firstProduct.variation,
+                        (variation) => variation.id === firstProduct.variation,
                       )?.value
                     }
                     )

@@ -1,20 +1,29 @@
-import { useMutation } from "@apollo/react-hooks";
-import { navigate, Redirect } from "@reach/router";
+/** @jsx jsx */
 import { Box, Button, Heading, Text } from "@theme-ui/components";
+import Router from "next/router";
 import React, { useCallback } from "react";
 import { FormattedMessage } from "react-intl";
+import { jsx } from "theme-ui";
 
-import { client } from "../../apollo/client";
-import { Alert } from "../../components/alert";
-import { LogoutMutation } from "../../generated/graphql-backend";
+import { Alert } from "~/components/alert";
+import { useLogoutMutation } from "~/types";
+
 import { useLoginState } from "./hooks";
-import LOGOUT_MUTATION from "./logout.graphql";
 
-export const Logout: React.SFC<{ lang: string }> = ({ lang }) => {
-  const [logout, { error, loading, data }] = useMutation<LogoutMutation>(
-    LOGOUT_MUTATION,
-  );
-  const [loggedIn, setLoggedIn] = useLoginState();
+export const Logout = () => {
+  const [logout, { error, loading, data }] = useLogoutMutation({
+    onCompleted: (d) => {
+      if (d?.logout?.__typename === "OperationResult" && d?.logout?.ok) {
+        setLoggedIn(false);
+
+        // TODO:
+        // client.resetStore();
+        Router.push("/");
+        return null;
+      }
+    },
+  });
+  const [_, setLoggedIn] = useLoginState();
 
   const onLogout = useCallback(() => {
     if (loading) {
@@ -23,12 +32,6 @@ export const Logout: React.SFC<{ lang: string }> = ({ lang }) => {
 
     logout();
   }, [logout, loading]);
-
-  if (data && data.logout.__typename === "OperationResult" && data.logout.ok) {
-    setLoggedIn(false);
-    client.resetStore();
-    return <Redirect noThrow={true} to={`/${lang}/`} />;
-  }
 
   return (
     <Box

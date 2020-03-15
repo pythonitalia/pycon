@@ -1,6 +1,6 @@
 import React from "react";
 
-export const SnakeBurger: React.SFC = props => (
+export const SnakeBurger: React.SFC = (props) => (
   <svg width={53} height={34} fill="none" {...props}>
     <path
       d="M41.862 11.313l-.58-.557L37.036 6.5l-4.807 4.814H30.64l-.579-.557L25.809 6.5l-4.803 4.814h-1.592l-.579-.557L14.588 6.5 9.78 11.313H8.193l-.58-.557-6.027-6.04 2.727-2.732L8.975 6.66l5.613-5.625L20.2 6.66l5.608-5.625 5.613 5.625 5.613-5.625 5.609 5.625 2.55-2.556 5.417.032-7.157 7.177h-1.592z"

@@ -23,7 +23,7 @@ export const TicketsForm: React.SFC<Props> = ({
   addProduct,
   removeProduct,
 }) => {
-  const ticketsToShow = tickets.filter(ticket => {
+  const ticketsToShow = tickets.filter((ticket) => {
     if (ticket.variations!.length > 0) {
       return true;
     }
@@ -41,7 +41,7 @@ export const TicketsForm: React.SFC<Props> = ({
 
   return (
     <React.Fragment>
-      {ticketsToShow.map(ticket => (
+      {ticketsToShow.map((ticket) => (
         <Box key={ticket.id}>
           <ProductRow
             quantity={selectedProducts[ticket.id]?.length ?? 0}

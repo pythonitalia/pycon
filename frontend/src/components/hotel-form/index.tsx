@@ -4,8 +4,9 @@ import moment from "moment";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
-import { useCurrentLanguage } from "../../context/language";
-import { HotelRoom } from "../../generated/graphql-backend";
+import { useCurrentLanguage } from "~/locale/context";
+import { HotelRoom } from "~/types";
+
 import { ProductRow } from "../tickets-form/product-row";
 import { SelectedHotelRooms } from "../tickets-page/types";
 
@@ -41,7 +42,7 @@ export const HotelForm: React.SFC<Props> = ({
       <Heading mb={3} as="h2">
         <FormattedMessage id="order.hotelRooms" />
       </Heading>
-      {hotelRooms.map(room => (
+      {hotelRooms.map((room) => (
         <Box
           sx={{
             mb: 4,

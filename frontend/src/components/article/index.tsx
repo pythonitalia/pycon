@@ -1,11 +1,9 @@
 /** @jsx jsx */
 import { Box, Heading, Text } from "@theme-ui/components";
-import { GatsbyImageProps } from "gatsby-image";
 import { Fragment } from "react";
 import { jsx } from "theme-ui";
 
 type ArticleProps = {
-  hero?: GatsbyImageProps | null;
   title: string;
   published?: string;
   description?: string;
@@ -23,7 +21,7 @@ const formateDate = (datetime: string) => {
   return formatter.format(d);
 };
 
-export const Article: React.SFC<ArticleProps> = props => (
+export const Article: React.SFC<ArticleProps> = (props) => (
   <Fragment>
     <Heading sx={{ fontSize: 6 }}>{props.title}</Heading>
     {props.published && (

@@ -1,25 +1,19 @@
 /** @jsx jsx */
-import { useQuery } from "@apollo/react-hooks";
-import { RouteComponentProps } from "@reach/router";
 import { Box, Container, Heading, Text } from "@theme-ui/components";
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
-import { useLoginState } from "../../app/profile/hooks";
-import { MySubmissions } from "../../app/profile/my-submissions";
-import { useConference } from "../../context/conference";
-import {
-  IsCfpOpenQuery,
-  IsCfpOpenQueryVariables,
-} from "../../generated/graphql-backend";
+import { useLoginState } from "~/app/profile/hooks";
+import { MySubmissions } from "~/app/profile/my-submissions";
+import { useIsCfpOpenQuery } from "~/types";
+
 import { Alert } from "../alert";
 import { Link } from "../link";
 import { LoginForm } from "../login-form";
 import { MetaTags } from "../meta-tags";
 import { Cfp } from "./cfp";
 import { Introduction } from "./introduction";
-import IS_CFP_OPEN_QUERY from "./is-cfp-open.graphql";
 
 const CfpSectionOrClosedMessage: React.SFC<{ open: boolean }> = ({ open }) => {
   if (open) {
@@ -44,7 +38,7 @@ const CfpSectionOrClosedMessage: React.SFC<{ open: boolean }> = ({ open }) => {
 
       <Text>
         <FormattedMessage id="cfp.closed.voting" />{" "}
-        <Link href=":language/tickets">
+        <Link path="/[lang]/tickets">
           <FormattedMessage id="cfp.closed.buyTicket" />
         </Link>
       </Text>
@@ -52,21 +46,18 @@ const CfpSectionOrClosedMessage: React.SFC<{ open: boolean }> = ({ open }) => {
   );
 };
 
-export const CFPPage: React.SFC<RouteComponentProps> = ({ location }) => {
+export const CFPPage: React.SFC = () => {
   const [isLoggedIn, _] = useLoginState();
-  const { code } = useConference();
+  const code = process.env.conferenceCode;
 
-  const { loading, data } = useQuery<IsCfpOpenQuery, IsCfpOpenQueryVariables>(
-    IS_CFP_OPEN_QUERY,
-    {
-      variables: { conference: code },
-    },
-  );
+  const { loading, data } = useIsCfpOpenQuery({
+    variables: { conference: code },
+  });
 
   return (
     <Fragment>
       <FormattedMessage id="cfp.pageTitle">
-        {text => <MetaTags title={text} />}
+        {(text) => <MetaTags title={text} />}
       </FormattedMessage>
       <Introduction />
 

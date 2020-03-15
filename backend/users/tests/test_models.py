@@ -1,6 +1,5 @@
 import pytest
 from django.contrib.auth import authenticate, get_user_model
-
 from users.managers import UserManager
 from users.models import User, get_countries
 

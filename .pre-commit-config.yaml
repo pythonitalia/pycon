@@ -24,10 +24,10 @@ repos:
           - <<: *python_settings
             id: flake8
     - repo: https://github.com/prettier/prettier
-      rev: 1.19.1
+      rev: 2.0.2
       hooks:
           - id: prettier
-            files: 'frontend/.*\.(js|jsx|ts|tsx)$'
+            files: 'frontend/.*\.(js|jsx|ts|tsx|graphql)$'
     - repo: https://github.com/pre-commit/pre-commit-hooks
       rev: v2.2.3
       hooks:

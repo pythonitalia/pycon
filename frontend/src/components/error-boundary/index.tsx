@@ -1,11 +1,12 @@
 /** @jsx jsx */
-import { isRedirect } from "@reach/router";
 import * as Sentry from "@sentry/browser";
 import { Box, Heading, Text } from "@theme-ui/components";
 import { Component } from "react";
 import { jsx } from "theme-ui";
 
 import { Link } from "../link";
+
+const isRedirect = (e: any) => false;
 
 export class ErrorBoundary extends Component<
   {},
@@ -23,7 +24,7 @@ export class ErrorBoundary extends Component<
   }
 
   componentDidCatch(error: any, errorInfo: any) {
-    Sentry.withScope(scope => {
+    Sentry.withScope((scope) => {
       scope.setExtras(errorInfo);
       const eventId = Sentry.captureException(error);
       this.setState({ eventId });
@@ -49,21 +50,30 @@ export class ErrorBoundary extends Component<
 
           <Text sx={{ mb: 3 }}>
             If a refresh doesn't work, please report this to{" "}
-            <Link href="https://github.com/pythonitalia/pycon">
+            <Link path="https://github.com/pythonitalia/pycon">
               our repo on github.
             </Link>
           </Text>
 
-          {
-            // TODO: Make this responsive
-          }
           <Box
-            as="iframe"
-            sx={{ mb: 3, width: "100%", maxWidth: "480" }}
-            src="https://giphy.com/embed/k61nOBRRBMxva"
-            width="480"
-            height="326"
-            frameBorder="0"
+            as="video"
+            sx={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              height: "100vh",
+              width: "100vw",
+              zIndex: -1,
+              pointerEvents: "none",
+              objectFit: "cover",
+              opacity: 0.5,
+            }}
+            {...{
+              muted: true,
+              lopp: true,
+              autoPlay: true,
+              src: "/videos/sad.mp4",
+            }}
           />
 
           <details style={{ whiteSpace: "pre-wrap" }}>

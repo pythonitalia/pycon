@@ -1,47 +1,33 @@
 /** @jsx jsx */
-import { useMutation } from "@apollo/react-hooks";
-import { RouteComponentProps } from "@reach/router";
 import { Box, Text } from "@theme-ui/components";
 import React, { Fragment, useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
-import {
-  UnsubscribeMutation,
-  UnsubscribeMutationVariables,
-} from "../../generated/graphql-backend";
+import { useUnsubscribeMutation } from "~/types";
+
 import { Alert } from "../alert";
 import { MetaTags } from "../meta-tags";
-import UNSUBSCRIBE_TO_NEWSLETTER from "./unsubscribe.graphql";
 
-type Props = {
-  lang: string;
-  email?: string;
-};
-
-export const UnsubscribePage: React.SFC<RouteComponentProps<Props>> = ({
-  location,
-  email,
-}) => {
+export const UnsubscribePage: React.SFC = () => {
   const [unsubscribed, setUnsubscribed] = useState(false);
 
-  const onUnsubscribeComplete = (unsubscribeData: UnsubscribeMutation) => {
-    if (
-      unsubscribeData?.unsubscribeToNewsletter.__typename ===
-        "OperationResult" &&
-      unsubscribeData.unsubscribeToNewsletter.ok
-    ) {
-      setUnsubscribed(true);
-    }
-  };
+  //  TODO
+  const email = "TODO";
 
-  const [unsubscribe, { loading, error, data }] = useMutation<
-    UnsubscribeMutation,
-    UnsubscribeMutationVariables
-  >(UNSUBSCRIBE_TO_NEWSLETTER, { onCompleted: onUnsubscribeComplete });
+  const [unsubscribe, { loading, error, data }] = useUnsubscribeMutation({
+    onCompleted(unsubscribeData) {
+      if (
+        unsubscribeData?.unsubscribeToNewsletter.__typename ===
+          "OperationResult" &&
+        unsubscribeData.unsubscribeToNewsletter.ok
+      ) {
+        setUnsubscribed(true);
+      }
+    },
+  });
 
   useEffect(() => {
-    // Update the document title using the browser API
     if (!unsubscribed && email) {
       unsubscribe({
         variables: {
@@ -54,7 +40,7 @@ export const UnsubscribePage: React.SFC<RouteComponentProps<Props>> = ({
   return (
     <Fragment>
       <FormattedMessage id="unsubscribe.title">
-        {text => <MetaTags title={text} />}
+        {(text) => <MetaTags title={text} />}
       </FormattedMessage>
       <Box
         sx={{

@@ -25,7 +25,7 @@ export const hasOrderInformation = (state: OrderState) => {
     requiredKeys.push("fiscalCode");
   }
 
-  if (requiredKeys.some(k => state.invoiceInformation[k] === "")) {
+  if (requiredKeys.some((k) => state.invoiceInformation[k] === "")) {
     return false;
   }
 
@@ -39,8 +39,8 @@ export const hasAnsweredTicketsQuestions = (
   const selectedProducts = Object.values(state.selectedProducts).flat();
 
   if (
-    selectedProducts.some(product => {
-      const ticket = tickets.find(t => t.id === product.id);
+    selectedProducts.some((product) => {
+      const ticket = tickets.find((t) => t.id === product.id);
 
       if (!ticket) {
         return true;

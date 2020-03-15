@@ -1,6 +1,6 @@
 from django.test import override_settings
-from pytest import mark
 from pretix.db import get_voucher
+from pytest import mark
 
 
 @override_settings(SIMULATE_PRETIX_DB=True)

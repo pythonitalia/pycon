@@ -1,6 +1,5 @@
 /** @jsx jsx */
 import { Box, Flex, Heading, Text } from "@theme-ui/components";
-import Img from "gatsby-image";
 import { jsx } from "theme-ui";
 
 import { PyConEvent } from "./types";
@@ -29,18 +28,7 @@ export const EventCard = (props: PyConEvent) => (
   >
     <Box sx={{ paddingBottom: "100%", display: "inline-block" }} />
 
-    {props.imageFile && (
-      <Img
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-        }}
-        {...props.imageFile.childImageSharp}
-      />
-    )}
+    {props.image && <img src={props.image} />}
 
     <Box
       sx={{

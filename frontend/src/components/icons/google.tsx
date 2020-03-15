@@ -1,6 +1,6 @@
 import React from "react";
 
-export const GoogleIcon: React.SFC = props => (
+export const GoogleIcon: React.SFC = (props) => (
   <svg width={46} height={46} viewBox="0 0 46 46" {...props}>
     <g fill="none" fillRule="evenodd">
       <path

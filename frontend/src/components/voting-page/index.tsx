@@ -1,25 +1,20 @@
 /** @jsx jsx */
-import { useQuery } from "@apollo/react-hooks";
-import { navigate, RouteComponentProps } from "@reach/router";
-import { Box, Flex, Grid, Heading, Select, Text } from "@theme-ui/components";
-import { Fragment, useCallback, useEffect, useState } from "react";
+import { Box, Grid, Heading, Select, Text } from "@theme-ui/components";
+import { useRouter } from "next/router";
+import { useCallback, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import { jsx } from "theme-ui";
 
-import { useLoginState } from "../../app/profile/hooks";
-import { useConference } from "../../context/conference";
-import {
-  VotingSubmissionsQuery,
-  VotingSubmissionsQueryVariables,
-} from "../../generated/graphql-backend";
+import { useLoginState } from "~/app/profile/hooks";
+import { useVotingSubmissionsQuery } from "~/types";
+
 import { Alert } from "../alert";
 import { Link } from "../link";
 import { LoginForm } from "../login-form";
 import { MetaTags } from "../meta-tags";
 import { SubmissionAccordion } from "./submission-accordion";
 import { TagsFilter } from "./tags-filter";
-import VOTING_SUBMISSIONS from "./voting-submissions.graphql";
 
 type VoteTypes = "all" | "votedOnly" | "notVoted";
 
@@ -41,9 +36,10 @@ const COLORS = [
   },
 ];
 
-export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
+export const VotingPage: React.SFC = () => {
   const [loggedIn] = useLoginState();
   const [votedSubmissions, setVotedSubmissions] = useState(new Set());
+  const router = useRouter();
 
   const currentQs = new URLSearchParams(location?.search);
 
@@ -65,45 +61,39 @@ export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
         const qs = new URLSearchParams();
         const keys = Object.keys(nextStateValues) as (keyof Filters)[];
 
-        keys.forEach(key => {
+        keys.forEach((key) => {
           const value = nextStateValues[key];
 
           if (Array.isArray(value)) {
-            value.forEach(item => qs.append(key, item));
+            value.forEach((item) => qs.append(key, item));
           } else if (value) {
             qs.append(key, value);
           }
         });
 
-        navigate(`${location.pathname}?${qs.toString()}`, {
-          replace: true,
-        });
+        router.replace(`${location.pathname}?${qs.toString()}`);
       },
     },
   );
 
-  const { code: conferenceCode } = useConference();
-  const { loading, error, data } = useQuery<
-    VotingSubmissionsQuery,
-    VotingSubmissionsQueryVariables
-  >(VOTING_SUBMISSIONS, {
+  const { loading, error, data } = useVotingSubmissionsQuery({
     variables: {
-      conference: conferenceCode,
+      conference: process.env.conferenceCode,
     },
     errorPolicy: "all",
     skip: !loggedIn,
   });
 
   const onVote = useCallback(
-    submission =>
-      setVotedSubmissions(submissions => submissions.add(submission.id)),
+    (submission) =>
+      setVotedSubmissions((submissions) => submissions.add(submission.id)),
     [],
   );
 
   const cannotVoteErrors =
     error &&
     error.graphQLErrors.findIndex(
-      e => e.message === "You need to have a ticket to see submissions",
+      (e) => e.message === "You need to have a ticket to see submissions",
     ) !== -1;
 
   const isVotingClosed = data && !data.conference.isVotingOpen;
@@ -111,7 +101,7 @@ export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
   return (
     <Box>
       <FormattedMessage id="voting.seoTitle">
-        {title => <MetaTags title={title} />}
+        {(title) => <MetaTags title={title} />}
       </FormattedMessage>
 
       <Box>
@@ -123,9 +113,9 @@ export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
           }}
         >
           <Grid
+            gap={4}
             sx={{
               gridTemplateColumns: [null, "1fr 1fr"],
-              gridColumnGap: 4,
             }}
           >
             <Box>
@@ -158,9 +148,9 @@ export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
                   }}
                 >
                   <FormattedMessage id="voting.allTopics">
-                    {text => <option value="">{text}</option>}
+                    {(text) => <option value="">{text}</option>}
                   </FormattedMessage>
-                  {data?.conference.topics.map(topic => (
+                  {data?.conference.topics.map((topic) => (
                     <option key={topic.id} value={topic.id}>
                       {topic.name}
                     </option>
@@ -175,9 +165,9 @@ export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
                   }}
                 >
                   <FormattedMessage id="voting.allLanguages">
-                    {text => <option value="">{text}</option>}
+                    {(text) => <option value="">{text}</option>}
                   </FormattedMessage>
-                  {data?.conference.languages.map(language => (
+                  {data?.conference.languages.map((language) => (
                     <option key={language.id} value={language.code}>
                       {language.name}
                     </option>
@@ -191,13 +181,13 @@ export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
                   }}
                 >
                   <FormattedMessage id="voting.allSubmissions">
-                    {text => <option value="all">{text}</option>}
+                    {(text) => <option value="all">{text}</option>}
                   </FormattedMessage>
                   <FormattedMessage id="voting.notVoted">
-                    {text => <option value="notVoted">{text}</option>}
+                    {(text) => <option value="notVoted">{text}</option>}
                   </FormattedMessage>
                   <FormattedMessage id="voting.votedOnly">
-                    {text => <option value="votedOnly">{text}</option>}
+                    {(text) => <option value="votedOnly">{text}</option>}
                   </FormattedMessage>
                 </Select>
 
@@ -225,7 +215,7 @@ export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
 
           {cannotVoteErrors && error && (
             <Alert variant="alert">
-              <Link href="/:language/tickets">
+              <Link path="/[lang]/tickets">
                 <FormattedMessage id="voting.buyTicketToVote" />
               </Link>
             </Alert>
@@ -295,7 +285,7 @@ export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
           }}
         >
           {data.conference.submissions
-            .filter(submission => {
+            .filter((submission) => {
               if (
                 filters.values.topic &&
                 submission.topic?.id !== filters.values.topic
@@ -306,7 +296,7 @@ export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
               if (
                 filters.values.language &&
                 submission.languages?.findIndex(
-                  language => language.code === filters.values.language,
+                  (language) => language.code === filters.values.language,
                 ) === -1
               ) {
                 return false;
@@ -315,7 +305,7 @@ export const VotingPage: React.SFC<RouteComponentProps> = ({ location }) => {
               if (
                 filters.values.tags.length > 0 &&
                 submission.tags?.every(
-                  st => filters.values.tags.indexOf(st.id) === -1,
+                  (st) => filters.values.tags.indexOf(st.id) === -1,
                 )
               ) {
                 return false;

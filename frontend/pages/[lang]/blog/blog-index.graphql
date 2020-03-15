@@ -1,0 +1,8 @@
+query BlogIndex($language: String!) {
+  blogPosts {
+    id
+    slug
+    title(language: $language)
+    excerpt(language: $language)
+  }
+}

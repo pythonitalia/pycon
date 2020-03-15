@@ -3,13 +3,25 @@ import { Box, Heading, Text } from "@theme-ui/components";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
-import { InputWrapper } from "../../components/input-wrapper";
-import { Link } from "../../components/link";
-import { MyProfileQuery } from "../../generated/graphql-backend";
+import { InputWrapper } from "~/components/input-wrapper";
+import { Link } from "~/components/link";
 
-export const MyProfile: React.SFC<{ profile: MyProfileQuery }> = ({
-  profile: { me },
-}) => {
+type Props = {
+  profile: {
+    me: {
+      email?: string | null;
+      fullName?: string | null;
+      name?: string | null;
+      gender?: string | null;
+      country?: string | null;
+      dateBirth?: string | null;
+      openToNewsletter?: boolean | null;
+      openToRecruiting?: boolean | null;
+    };
+  };
+};
+
+export const MyProfile: React.SFC<Props> = ({ profile: { me } }) => {
   const profileView = [
     {
       label: "profile.email",
@@ -83,7 +95,7 @@ export const MyProfile: React.SFC<{ profile: MyProfileQuery }> = ({
           <FormattedMessage id="profile.profileHeader" />
         </Heading>
 
-        <Link href={`/:language/profile/edit/`}>
+        <Link path={`/[lang]/profile/edit/`}>
           <FormattedMessage id="profile.editProfile" />
         </Link>
 

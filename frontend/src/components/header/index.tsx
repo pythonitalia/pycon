@@ -1,23 +1,28 @@
 /** @jsx jsx */
-
-import { Location } from "@reach/router";
 import { Box, Button, Flex, Grid, Heading } from "@theme-ui/components";
-import { graphql, useStaticQuery } from "gatsby";
+import dynamic from "next/dynamic";
+import { useRouter } from "next/router";
 import { Fragment, useEffect, useRef } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 import useOnClickOutside from "use-onclickoutside";
 
-import { useLoginState } from "../../app/profile/hooks";
-import { useAlternateLinks, useCurrentLanguage } from "../../context/language";
-import { HeaderQuery } from "../../generated/graphql";
-import { useToggle } from "../../helpers/use-toggle";
+import { useLoginState } from "~/app/profile/hooks";
+import { useToggle } from "~/helpers/use-toggle";
+import { useAlternateLinks, useCurrentLanguage } from "~/locale/context";
+import { useHeaderQuery } from "~/types";
+
 import { EnglishIcon } from "../icons/english";
 import { ItalianIcon } from "../icons/italian";
 import { Link } from "../link";
 import { Logo } from "../logo";
 import { SocialLinks } from "../social-links";
 import { SnakeBurger } from "./snake-burger";
+
+const ProfileLink = dynamic(
+  () => import("./profile-link").then((mod) => mod.ProfileLink),
+  { ssr: false },
+);
 
 const LanguagePicker: React.SFC<{ language: string }> = ({
   language,
@@ -27,10 +32,10 @@ const LanguagePicker: React.SFC<{ language: string }> = ({
 
   return (
     <Flex sx={{ alignItems: "center", height: 50, mt: "-4px" }} {...props}>
-      <Link href={alternateLinks.en} sx={{ height: 40 }}>
+      <Link path={alternateLinks.en} sx={{ height: 40 }}>
         <EnglishIcon active={language === "en"} sx={{ width: 40, mr: 2 }} />
       </Link>
-      <Link href={alternateLinks.it} sx={{ height: 40 }}>
+      <Link path={alternateLinks.it} sx={{ height: 40 }}>
         <ItalianIcon active={language === "it"} sx={{ width: 40, mr: 4 }} />
       </Link>
     </Flex>
@@ -38,66 +43,50 @@ const LanguagePicker: React.SFC<{ language: string }> = ({
 };
 
 const Links: React.SFC<{
-  language: "en" | "it";
-  links: { hrefIt: string; hrefEn: string; titleEn: string; titleIt: string }[];
-}> = ({ language, links }) => {
-  const titleKey = { en: "titleEn", it: "titleIt" }[
-    language
-  ] as keyof typeof links[0];
-  const hrefKey = { en: "hrefEn", it: "hrefIt" }[
-    language
-  ] as keyof typeof links[0];
+  links: { href: string; title: string; page?: { slug: string } | null }[];
+}> = ({ links }) => (
+  <Fragment>
+    {links.map((link) => {
+      let path = link.page ? "/[lang]/[slug]" : link.href;
 
-  return (
-    <Fragment>
-      {links.map(link => (
-        <Link variant="header" href={link[hrefKey]} key={link[hrefKey]}>
-          {link[titleKey]}
+      // nasty hack to make client side routing work with next.js
+      path = path.replace("/en", "/[lang]").replace("/it", "/[lang]");
+
+      return (
+        <Link variant="header" path={path} key={link.href} params={link.page}>
+          {link.title}
         </Link>
-      ))}
-    </Fragment>
-  );
-};
+      );
+    })}
+  </Fragment>
+);
 
 const WARNING_MESSAGE_HEIGHT = [80, 80, 60];
 
-export const HeaderContent = ({ location }: { location: any }) => {
-  const {
-    backend: {
-      conference: { conferenceMenu, programMenu },
+export const Header = () => {
+  const language = useCurrentLanguage();
+  const router = useRouter();
+  const { loading, data } = useHeaderQuery({
+    variables: {
+      code: process.env.conferenceCode!,
+      language,
     },
-  } = useStaticQuery<HeaderQuery>(graphql`
-    query Header {
-      backend {
-        conference {
-          conferenceMenu: menu(identifier: "conference-nav") {
-            links {
-              titleEn: title(language: "en")
-              titleIt: title(language: "it")
-              hrefEn: href(language: "en")
-              hrefIt: href(language: "it")
-            }
-          }
-          programMenu: menu(identifier: "program-nav") {
-            links {
-              titleEn: title(language: "en")
-              titleIt: title(language: "it")
-              hrefEn: href(language: "en")
-              hrefIt: href(language: "it")
-            }
-          }
-        }
-      }
-    }
-  `);
+  });
 
   const [loggedIn] = useLoginState();
   const [open, toggleOpen, _, close] = useToggle(false);
   const headerRef = useRef(null);
-  const language = useCurrentLanguage();
 
-  useEffect(close, [location]);
   useOnClickOutside(headerRef, close);
+  useEffect(close, [router.asPath]);
+
+  if (loading || !data) {
+    return null;
+  }
+
+  const {
+    conference: { conferenceMenu, programMenu },
+  } = data;
 
   return (
     <Fragment>
@@ -122,8 +111,9 @@ export const HeaderContent = ({ location }: { location: any }) => {
           }}
         >
           <Link
-            href=":language/blog/pycon-11-postponed-to-november"
             sx={{ color: "white", textUnderlineOffset: 4 }}
+            path="/[lang]/blog/[slug]"
+            params={{ slug: "pycon-11-postponed-to-november" }}
           >
             <FormattedMessage id="header.coronaVirus" />
           </Link>
@@ -142,7 +132,7 @@ export const HeaderContent = ({ location }: { location: any }) => {
           position: open ? "fixed" : "absolute",
           borderBottom: open ? "primary" : "",
           backgroundColor: open ? "orange" : "",
-          overflowY: open ? "scroll" : "",
+          overflowY: open ? "scroll" : "initial",
         }}
       >
         <Flex
@@ -155,7 +145,7 @@ export const HeaderContent = ({ location }: { location: any }) => {
             alignItems: "flex-start",
           }}
         >
-          <Link href="/:language">
+          <Link path="/[lang]">
             <Logo
               sx={{
                 width: ["166px", null, "250px"],
@@ -166,7 +156,7 @@ export const HeaderContent = ({ location }: { location: any }) => {
 
           <Flex
             sx={{
-              alignItems: ["center", "flex-start"],
+              alignItems: "center",
             }}
           >
             <LanguagePicker
@@ -176,14 +166,7 @@ export const HeaderContent = ({ location }: { location: any }) => {
               }}
             />
 
-            <Link
-              href={loggedIn ? "/:language/profile" : "/:language/login"}
-              variant="arrow-button"
-              sx={{ mr: 5, display: ["none", "block"] }}
-            >
-              {loggedIn && <FormattedMessage id="header.profile" />}
-              {!loggedIn && <FormattedMessage id="header.login" />}
-            </Link>
+            <ProfileLink />
 
             <Button
               sx={{
@@ -231,7 +214,7 @@ export const HeaderContent = ({ location }: { location: any }) => {
               />
 
               <Link
-                href={loggedIn ? "/:language/profile" : "/:language/login"}
+                path={loggedIn ? "/[lang]/profile" : "/[lang]/login"}
                 variant="header"
                 sx={{ mr: 5, display: ["block", "none"] }}
               >
@@ -240,18 +223,10 @@ export const HeaderContent = ({ location }: { location: any }) => {
               </Link>
 
               <Box as="nav">
-                <Links links={conferenceMenu!.links} language={language} />
+                <Links links={conferenceMenu!.links} />
               </Box>
               <Box as="nav">
-                {programMenu!.links.map(link => (
-                  <Link
-                    variant="header"
-                    href={language === "en" ? link.hrefEn : link.hrefIt}
-                    key={language === "en" ? link.hrefEn : link.hrefIt}
-                  >
-                    {language === "en" ? link.titleEn : link.titleIt}
-                  </Link>
-                ))}
+                <Links links={programMenu!.links} />
               </Box>
               <Box>
                 <Heading variant="header">
@@ -267,7 +242,7 @@ export const HeaderContent = ({ location }: { location: any }) => {
                       sx={{
                         color: "white",
                       }}
-                      href="mailto:sponsor@pycon.it"
+                      path="mailto:sponsor@pycon.it"
                     >
                       sponsor@pycon.it
                     </Link>
@@ -280,7 +255,7 @@ export const HeaderContent = ({ location }: { location: any }) => {
                       sx={{
                         color: "white",
                       }}
-                      href="mailto:info@pycon.it"
+                      path="mailto:info@pycon.it"
                     >
                       info@pycon.it
                     </Link>
@@ -301,7 +276,3 @@ export const HeaderContent = ({ location }: { location: any }) => {
     </Fragment>
   );
 };
-
-export const Header = () => (
-  <Location>{({ location }) => <HeaderContent location={location} />}</Location>
-);

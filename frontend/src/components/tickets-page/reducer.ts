@@ -1,9 +1,9 @@
-import { Voucher } from "../../generated/graphql-backend";
 import {
   OrderAction,
   OrderState,
   UpdateHotelRoomAction,
   UpdateProductAction,
+  Voucher,
 } from "./types";
 
 const updateProductReducer = (
@@ -29,7 +29,7 @@ const updateProductReducer = (
 
       if (action.variation) {
         indexToRemove = productItems.findIndex(
-          product => product.variation === action.variation,
+          (product) => product.variation === action.variation,
         );
       }
 
@@ -99,7 +99,7 @@ const applyVoucher = (state: OrderState, voucher: Voucher): OrderState => {
   // 1. Apply the voucher code if possible
   // 2. Remove any previous stored vouchers.
   Object.entries(selectedProducts).forEach(([itemId, products]) => {
-    selectedProducts[itemId] = products.map(product => {
+    selectedProducts[itemId] = products.map((product) => {
       if (
         (!includeAllItems && items.indexOf(itemId) === -1) ||
         (voucher.variationId && product.variation !== voucher.variationId) ||
@@ -140,7 +140,7 @@ const removeVoucher = (state: OrderState) => {
   const selectedProducts = { ...state.selectedProducts };
 
   Object.entries(selectedProducts).forEach(([itemId, products]) => {
-    selectedProducts[itemId] = products.map(product => ({
+    selectedProducts[itemId] = products.map((product) => ({
       ...product,
       voucher: null,
     }));

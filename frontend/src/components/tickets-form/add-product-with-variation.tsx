@@ -22,13 +22,13 @@ export const AddProductWithVariation: React.SFC<{
         }
       >
         <FormattedMessage id="order.selectSize">
-          {text => (
+          {(text) => (
             <option disabled={true} value="">
               {text}
             </option>
           )}
         </FormattedMessage>
-        {ticket.variations!.map(variation => (
+        {ticket.variations!.map((variation) => (
           <option key={variation.id} value={variation.id}>
             {variation.value}
           </option>

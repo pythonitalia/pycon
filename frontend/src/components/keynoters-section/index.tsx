@@ -1,21 +1,29 @@
 /** @jsx jsx */
 
 import { Box, Flex, Heading, Text } from "@theme-ui/components";
-import { graphql, useStaticQuery } from "gatsby";
-import Img from "gatsby-image";
 import { jsx } from "theme-ui";
 
-import { KeynotesSectionQuery } from "../../generated/graphql";
+import { useKeynotesSectionQuery } from "~/types";
+
 import { GridSlider } from "../grid-slider";
 
-type KeynoteProps = KeynotesSectionQuery["backend"]["conference"]["keynotes"][0];
+type KeynoteProps = {
+  title: string;
+  speakers: { fullName: string }[];
+  image?: string | null;
+  highlightColor?: string | null;
+};
 
-const Keynote = ({
-  title,
-  speakers,
-  imageFile,
-  highlightColor,
-}: KeynoteProps) => (
+const getImageUrl = (url: string) => {
+  const newUrl = url.replace(
+    "https://production-pycon-backend-media.s3.amazonaws.com",
+    "https://pycon.imgix.net",
+  );
+  const parts = newUrl.split("?");
+  return parts[0] + "?ar=1:1&fit=crop&monochrome=9F9F9F";
+};
+
+const Keynote = ({ title, speakers, image, highlightColor }: KeynoteProps) => (
   <Box
     sx={{
       position: "relative",
@@ -24,16 +32,16 @@ const Keynote = ({
     }}
   >
     <Box sx={{ display: "inline-block", pt: "100%" }} />
-    {imageFile && (
-      <Img
-        style={{
+    {image && (
+      <img
+        sx={{
           position: "absolute",
           top: 0,
           left: 0,
           width: "100%",
           height: "100%",
         }}
-        {...imageFile.childImageSharp}
+        src={getImageUrl(image)}
       />
     )}
     <Box
@@ -62,7 +70,7 @@ const Keynote = ({
       }}
     >
       <Heading variant="caps" as="h3">
-        {speakers.map(speaker => speaker.fullName).join(" & ")}
+        {speakers.map((speaker) => speaker.fullName).join(" & ")}
       </Heading>
       <Text>{title}</Text>
     </Flex>
@@ -70,34 +78,19 @@ const Keynote = ({
 );
 
 export const KeynotersSection = () => {
-  const {
-    backend: {
-      conference: { keynotes },
+  const { data } = useKeynotesSectionQuery({
+    variables: {
+      code: process.env.conferenceCode,
     },
-  } = useStaticQuery<KeynotesSectionQuery>(graphql`
-    query KeynotesSection {
-      backend {
-        conference {
-          keynotes {
-            id
-            title
-            highlightColor
-            image
-            imageFile {
-              childImageSharp {
-                fixed(grayscale: true, width: 600, height: 600) {
-                  ...GatsbyImageSharpFixed
-                }
-              }
-            }
-            speakers {
-              fullName
-            }
-          }
-        }
-      }
-    }
-  `);
+  });
+
+  if (!data) {
+    return null;
+  }
+
+  const {
+    conference: { keynotes },
+  } = data;
 
   return <GridSlider title="Keynoters" items={keynotes} Component={Keynote} />;
 };

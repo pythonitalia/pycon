@@ -1,46 +1,41 @@
-import { useMutation } from "@apollo/react-hooks";
-import { navigate, Redirect, RouteComponentProps } from "@reach/router";
 import { Box, Button, Grid, Input, Label, Text } from "@theme-ui/components";
+import { useRouter } from "next/router";
 import React, { useCallback } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 
-import { useLoginState } from "../../app/profile/hooks";
-import {
-  RegisterErrors,
-  SignupMutation,
-  SignupMutationVariables,
-} from "../../generated/graphql-backend";
+import { useLoginState } from "~/app/profile/hooks";
+import { useCurrentLanguage } from "~/locale/context";
+import { useSignupMutation } from "~/types";
+
 import { Alert } from "../alert";
 import { InputWrapper } from "../input-wrapper";
 import { Link } from "../link";
-import SIGNUP_MUTATION from "./signup.graphql";
 
 type SignupFormProps = {
   email: string;
   password: string;
 };
 
-export const SignupForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
-  lang,
-  location,
-}) => {
+export const SignupForm: React.SFC = () => {
   const [loggedIn, setLoggedIn] = useLoginState();
-  const profileUrl = `/${lang}/profile`;
-  const onSignupComplete = (signupData: SignupMutation) => {
-    if (!signupData || signupData.register.__typename !== "MeUser") {
-      return;
-    }
+  const language = useCurrentLanguage();
+  const router = useRouter();
 
-    setLoggedIn(true);
-    navigate(profileUrl);
-  };
-  const [signup, { loading, error, data }] = useMutation<
-    SignupMutation,
-    SignupMutationVariables
-  >(SIGNUP_MUTATION, {
-    onCompleted: onSignupComplete,
+  // TODO: redirect if already logged in
+
+  const [signup, { loading, error, data }] = useSignupMutation({
+    onCompleted(signupData) {
+      if (!signupData || signupData.register.__typename !== "MeUser") {
+        return;
+      }
+
+      setLoggedIn(true);
+
+      router.push("/[lang]/profile", `/${language}/profile`);
+    },
   });
+
   const [formState, { email, password }] = useFormState<SignupFormProps>(
     {},
     {
@@ -49,7 +44,7 @@ export const SignupForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
   );
 
   const onFormSubmit = useCallback(
-    e => {
+    (e) => {
       e.preventDefault();
       signup({
         variables: formState.values,
@@ -57,10 +52,6 @@ export const SignupForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
     },
     [signup, formState],
   );
-
-  if (loggedIn) {
-    return <Redirect to={profileUrl} noThrow={true} />;
-  }
 
   const errorMessage =
     data && data.register.__typename === "RegisterErrors"
@@ -73,27 +64,29 @@ export const SignupForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
       data.register[field]) ||
     [];
 
+  // TODO
+  // {location?.state?.message && (
+  //   <Alert variant="alert">{location.state.message}</Alert>
+  // )}
+
   return (
     <Box
       sx={{
         px: 3,
       }}
     >
-      {location?.state?.message && (
-        <Alert variant="alert">{location.state.message}</Alert>
-      )}
       {errorMessage && <Alert variant="alert">{errorMessage}</Alert>}
 
       <Grid
+        gap={5}
         sx={{
           maxWidth: "container",
           mx: "auto",
           mt: 3,
           gridTemplateColumns: [null, null, "1fr 1fr"],
-          gridColumnGap: 5,
         }}
       >
-        <Box as="form" onSubmit={onFormSubmit} method="post">
+        <form onSubmit={onFormSubmit} method="post">
           <Text mb={4} as="h2">
             <FormattedMessage id="signup.signupWithEmail" />
           </Text>
@@ -116,7 +109,7 @@ export const SignupForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
               display: "block",
               mb: 4,
             }}
-            href={`/${lang}/login/`}
+            path={`/[lang]/login/`}
           >
             <FormattedMessage id="signup.alreadyHaveAccount" />
           </Link>
@@ -136,13 +129,13 @@ export const SignupForm: React.SFC<RouteComponentProps<{ lang: string }>> = ({
           <Button type="submit">
             <FormattedMessage id="signup.signupButton" />
           </Button>
-        </Box>
+        </form>
         <Box>
           <Text mb={4} as="h2">
             <FormattedMessage id="signup.signupWithSocial" />
           </Text>
 
-          <Link href="/login/google/" variant="google">
+          <Link path="/login/google/" variant="google">
             <FormattedMessage id="signup.useGoogle" />
           </Link>
         </Box>

@@ -46,7 +46,7 @@ export const Introduction: React.SFC = () => (
         </Text>
 
         <Link
-          href="/:language/call-for-proposals"
+          path="/[lang]/call-for-proposals"
           variant="arrow-button"
           sx={{ mt: 4 }}
         >

@@ -5,11 +5,10 @@ import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 import useOnClickOutside from "use-onclickoutside";
 
-import { SubmissionTag } from "../../generated/graphql-backend";
 import { Tag } from "../tag";
 
 type Props = {
-  tags: SubmissionTag[];
+  tags: { id: string; name: string }[];
   onChange: (value: string[]) => void;
   value: string[];
   className?: string;
@@ -28,7 +27,7 @@ export const TagsFilter: React.SFC<Props> = ({
       return false;
     }
 
-    setOpen(o => !o);
+    setOpen((o) => !o);
   }, [tags]);
   const close = useCallback(() => setOpen(false), []);
 
@@ -51,7 +50,7 @@ export const TagsFilter: React.SFC<Props> = ({
               numFilters: value.length,
             }}
           >
-            {text => (
+            {(text) => (
               <option value="none" disabled={true}>
                 {text}
               </option>
@@ -82,14 +81,14 @@ export const TagsFilter: React.SFC<Props> = ({
               px: 3,
             }}
           >
-            {tags.map(tag => (
+            {tags.map((tag) => (
               <Tag
                 key={tag.id}
                 sx={{
                   cursor: "pointer",
                   my: 2,
                   backgroundColor:
-                    value.findIndex(t => tag.id === t) === -1
+                    value.findIndex((t) => tag.id === t) === -1
                       ? "transparent"
                       : "white",
                   "&:hover": {
@@ -99,7 +98,7 @@ export const TagsFilter: React.SFC<Props> = ({
                 tag={tag}
                 onClick={() => {
                   const newValue = [...value];
-                  const foundIndex = newValue.findIndex(t => tag.id === t);
+                  const foundIndex = newValue.findIndex((t) => tag.id === t);
 
                   if (foundIndex !== -1) {
                     newValue.splice(foundIndex, 1);

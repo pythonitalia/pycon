@@ -48,7 +48,7 @@ export const HomepageHero: React.SFC = () => (
           mx: "auto",
         }}
       >
-        <Link href="/:language/tickets">
+        <Link path="/[lang]/tickets">
           <BuyTicketsCTA
             sx={{
               width: 122,

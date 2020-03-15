@@ -1,13 +1,17 @@
 /** @jsx jsx */
-import css from "@styled-system/css";
 import { Box, Heading } from "@theme-ui/components";
+import { css } from "emotion";
 import { jsx } from "theme-ui";
 
-import { HomePageQuery } from "../../generated/graphql";
 import { SponsorsGrid } from "./sponsors-grid";
+import { Sponsor } from "./types";
 
 type Props = {
-  sponsorsByLevel: HomePageQuery["backend"]["conference"]["sponsorsByLevel"];
+  sponsorsByLevel: {
+    level: string;
+    sponsors: Sponsor[];
+    highlightColor?: string | null;
+  }[];
 };
 
 export const SponsorsSection: React.SFC<Props> = ({

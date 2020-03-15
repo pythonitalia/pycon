@@ -1,6 +1,5 @@
 /** @jsx jsx */
-import { keyframes } from "@emotion/core";
-import { css } from "@styled-system/css";
+import { css, keyframes } from "@emotion/core";
 import { Flex, Text } from "@theme-ui/components";
 import { jsx } from "theme-ui";
 

@@ -1,0 +1,10 @@
+query Footer($code: String!) {
+  conference(code: $code) {
+    menu(identifier: "footer-nav") {
+      links {
+        title
+        href
+      }
+    }
+  }
+}

@@ -1,36 +1,29 @@
 /** @jsx jsx */
-import { useMutation } from "@apollo/react-hooks";
-import { navigate } from "@reach/router";
-import { Container } from "@theme-ui/components";
-import { useContext } from "react";
+import { useRouter } from "next/router";
 import { jsx } from "theme-ui";
 
-import { useConference } from "../../context/conference";
-import { useCurrentLanguage } from "../../context/language";
+import { useCurrentLanguage } from "~/locale/context";
 import {
+  MeSubmissionsDocument,
   MeSubmissionsQuery,
   MeSubmissionsQueryVariables,
-  SendSubmissionMutation,
-  SendSubmissionMutationVariables,
-} from "../../generated/graphql-backend";
+  useSendSubmissionMutation,
+} from "~/types";
+
 import { CfpForm, CfpFormFields } from "../cfp-form";
-import ME_SUBMISSIONS from "./me-submissions.graphql";
-import SEND_SUBMISSION from "./send-submission.graphql";
 
 export const Cfp: React.SFC = () => {
   const lang = useCurrentLanguage();
-  const { code } = useConference();
+  const code = process.env.conferenceCode;
+  const router = useRouter();
 
-  const [sendSubmission, { loading, error, data }] = useMutation<
-    SendSubmissionMutation,
-    SendSubmissionMutationVariables
-  >(SEND_SUBMISSION, {
+  const [sendSubmission, { loading, error, data }] = useSendSubmissionMutation({
     update(cache, { data: updateData }) {
       const query = cache.readQuery<
         MeSubmissionsQuery,
         MeSubmissionsQueryVariables
       >({
-        query: ME_SUBMISSIONS,
+        query: MeSubmissionsDocument,
         variables: {
           conference: code,
         },
@@ -41,7 +34,7 @@ export const Cfp: React.SFC = () => {
       }
 
       cache.writeQuery<MeSubmissionsQuery, MeSubmissionsQueryVariables>({
-        query: ME_SUBMISSIONS,
+        query: MeSubmissionsDocument,
         data: {
           me: {
             ...query.me,
@@ -82,7 +75,7 @@ export const Cfp: React.SFC = () => {
 
     if (response.data?.mutationOp.__typename === "Submission") {
       const id = response.data.mutationOp.id;
-      navigate(`/${lang}/submission/${id}`);
+      router.push(`/[lang]/submission/[id]`, `/${lang}/submission/${id}`);
     }
   };
 

@@ -1,9 +1,9 @@
+from api.forms import ContextAwareModelForm
 from api.helpers.ids import encode_hashid
 from api.voting.forms import HashidModelChoiceField
 from django.forms import ValidationError
 from pytest import mark, raises
 from submissions.models import Submission
-from api.forms import ContextAwareModelForm
 from users.models import User
 
 

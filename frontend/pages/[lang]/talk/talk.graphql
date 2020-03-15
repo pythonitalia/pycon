@@ -1,0 +1,19 @@
+query Talk($slug: String!, $code: String!) {
+  conference(code: $code) {
+    talk(slug: $slug) {
+      title
+      image
+      highlightColor
+      description
+
+      submission {
+        abstract
+        elevatorPitch
+      }
+
+      speakers {
+        fullName
+      }
+    }
+  }
+}
