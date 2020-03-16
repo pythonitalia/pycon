@@ -2,11 +2,16 @@ from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 from ordered_model.admin import OrderedModelAdmin
 
-from .models import Day, Room, ScheduleItem, Slot
+from .models import Day, Room, ScheduleItem, Slot, ScheduleItemBooking
 
 
 class SlotInline(admin.TabularInline):
     model = Slot
+
+
+class ScheduleItemBookingInline(admin.TabularInline):
+    model = ScheduleItemBooking
+    readonly_fields = ("created",)
 
 
 @admin.register(ScheduleItem)
@@ -39,6 +44,7 @@ class ScheduleItemAdmin(admin.ModelAdmin):
                     "description",
                     "submission",
                     "additional_speakers",
+                    "maximum_capacity",
                 )
             },
         ),
@@ -47,6 +53,9 @@ class ScheduleItemAdmin(admin.ModelAdmin):
     autocomplete_fields = ("submission",)
     prepopulated_fields = {"slug": ("title",)}
     filter_horizontal = ("rooms", "additional_speakers")
+    inlines = [
+        ScheduleItemBookingInline,
+    ]
 
 
 @admin.register(Room)

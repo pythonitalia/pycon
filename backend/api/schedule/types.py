@@ -6,6 +6,8 @@ from api.submissions.types import Submission
 from api.users.types import User
 from strawberry.types.datetime import DateTime
 
+from schedule.models import ScheduleItemBooking
+
 if TYPE_CHECKING:  # pragma: no cover
     from api.conferences.types import Conference, AudienceLevel  # noqa
 
@@ -34,6 +36,25 @@ class ScheduleItem:
     speakers: List[User]
     language: Language
     audience_level: Optional["AudienceLevel"]
+
+    @strawberry.field
+    def has_free_spot(self, info) -> bool:
+        return self.capacity_left > 0
+
+    @strawberry.field
+    def is_booked(self, info) -> bool:
+        user = info.context["request"].user
+
+        if not user.is_authenticated:
+            return False
+
+        return ScheduleItemBooking.objects.filter(
+            user=user, schedule_item=self
+        ).exists()
+
+    @strawberry.field
+    def can_book(self, info) -> bool:
+        return self.allows_booking and self.capacity_left > 0
 
     @strawberry.field
     def rooms(self, info) -> List[Room]:

@@ -4,7 +4,7 @@ from conferences.tests.factories import ConferenceFactory
 from factory.django import DjangoModelFactory
 from languages.tests.factories import LanguageFactory
 from pytest_factoryboy import register
-from schedule.models import Day, Room, ScheduleItem, Slot
+from schedule.models import Day, Room, ScheduleItem, Slot, ScheduleItemBooking
 from submissions.tests.factories import SubmissionFactory
 from users.tests.factories import UserFactory
 
@@ -44,6 +44,8 @@ class ScheduleItemFactory(DjangoModelFactory):
     type = factory.fuzzy.FuzzyChoice(["submission", "custom"])
     image = factory.django.ImageField()
 
+    maximum_capacity = 20
+
     @classmethod
     def _create(cls, model_class, *args, **kwargs):
         _type = kwargs.get("type", None)
@@ -64,7 +66,7 @@ class ScheduleItemFactory(DjangoModelFactory):
 
         if extracted:
             for room in extracted:
-                self.rooms.add(room)
+                self.rooms.add(RoomFactory(name=room, conference=self.conference))
 
     @factory.post_generation
     def additional_speakers(self, create, extracted, size=0, **kwargs):
@@ -77,3 +79,12 @@ class ScheduleItemFactory(DjangoModelFactory):
 
     class Meta:
         model = ScheduleItem
+
+
+@register
+class ScheduleItemBookingFactory(DjangoModelFactory):
+    user = factory.SubFactory(UserFactory)
+    schedule_item = factory.SubFactory(ScheduleItemFactory)
+
+    class Meta:
+        model = ScheduleItemBooking

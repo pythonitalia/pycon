@@ -1,6 +1,6 @@
 import React from "react";
 
-export const Logo = props => (
+export const Logo: React.SFC = props => (
   <svg fill="none" {...props} viewBox="0 0 1500 450">
     <path d="M1056.79 8.5H8.5v433h1048.29V8.5z" fill="#fff" />
     <path

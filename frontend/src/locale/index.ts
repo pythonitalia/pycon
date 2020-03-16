@@ -379,6 +379,12 @@ export const messages = {
 
     "schedule.pageTitle": "Schedule {day}",
     "schedule.loading": "Loading...",
+
+    "talk.unableToCheckWorkshop": "Unable to check event",
+    "talk.pleaseWait": "Please wait",
+    "talk.cancelBooking": "Cancel booking",
+    "talk.bookWorkshop": "Book workshop",
+    "talk.youHaveASeat": "You are booked to attend",
   },
   it: {
     titleTemplate: "%s | PyCon Italia",
@@ -756,6 +762,12 @@ export const messages = {
 
     "schedule.pageTitle": "Schedule {day}",
     "schedule.loading": "Caricamento in corso...",
+
+    "talk.unableToCheckWorkshop": "Impossibile caricare l'evento",
+    "talk.pleaseWait": "Caricamento",
+    "talk.cancelBooking": "Cancella prenotazione",
+    "talk.bookWorkshop": "Prenota workshop",
+    "talk.youHaveASeat": "Sei prenotato per partecipare",
   },
 };
 

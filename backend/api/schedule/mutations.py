@@ -1,17 +1,20 @@
 import typing
 from datetime import date, datetime, time, timedelta
+from django.utils.translation import ugettext_lazy as _
 
 import strawberry
 from api.conferences.types import Day, ScheduleSlot
+from api.types import OperationResult
 from api.helpers.ids import decode_hashid
+from api.schedule.types import ScheduleItem as ScheduleItemType
 from conferences.models import Conference
 from languages.models import Language
 from schedule.models import Day as DayModel
-from schedule.models import ScheduleItem, Slot
+from schedule.models import ScheduleItem, Slot, ScheduleItemBooking
 from strawberry.types.datetime import Date
 from submissions.models import Submission
 
-from ..permissions import IsStaffPermission
+from ..permissions import IsStaffPermission, IsAuthenticated
 
 
 @strawberry.type
@@ -43,7 +46,69 @@ class UpdateOrCreateSlotItemResult:
 
 
 @strawberry.type
+class BookScheduleItemError:
+    message: str
+
+
+@strawberry.type
+class ReleaseScheduleItemBookingError:
+    message: str
+
+
+@strawberry.type
+class ScheduleItemBookingStatus:
+    schedule_item: ScheduleItemType
+
+
+@strawberry.type
 class ScheduleMutations:
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    def release_schedule_item_booking(
+        self, info, id: strawberry.ID, conference: str
+    ) -> typing.Union[ScheduleItemBookingStatus, ReleaseScheduleItemBookingError]:
+        user = info.context["request"].user
+
+        schedule_item_booking = ScheduleItemBooking.objects.filter(
+            user=user, schedule_item_id=id, schedule_item__conference__code=conference
+        ).first()
+
+        if not schedule_item_booking:
+            return ReleaseScheduleItemBookingError(message=_("No booking found"))
+
+        schedule_item = schedule_item_booking.schedule_item
+        schedule_item_booking.delete()
+
+        return ScheduleItemBookingStatus(schedule_item=schedule_item)
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    def book_schedule_item(
+        self, info, id: strawberry.ID, conference: str
+    ) -> typing.Union[BookScheduleItemError, ScheduleItemBookingStatus]:
+        user = info.context["request"].user
+        conference = Conference.objects.get(code=conference)
+
+        if not user.has_conference_ticket(conference):
+            return BookScheduleItemError(message=_("You need a ticket to book a seat"))
+
+        try:
+            schedule_item = conference.schedule_items.get(id=id)
+        except ScheduleItem.DoesNotExist:
+            return BookScheduleItemError(message=_("No event found"))
+
+        if not schedule_item.allows_booking:
+            return BookScheduleItemError(
+                message=_("You cannot book this type of event")
+            )
+
+        if schedule_item.capacity_left <= 0:
+            return BookScheduleItemError(message=_("No seats left"))
+
+        ScheduleItemBooking.objects.update_or_create(
+            user=user, schedule_item=schedule_item
+        )
+
+        return ScheduleItemBookingStatus(schedule_item=schedule_item)
+
     @strawberry.mutation(permission_classes=[IsStaffPermission])
     def add_schedule_slot(
         self, info, conference: strawberry.ID, duration: int, day: Date

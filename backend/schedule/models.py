@@ -49,6 +49,8 @@ class Room(OrderedModel):
     )
     type = models.CharField(_("type"), choices=TYPES, max_length=10, default=TYPES.talk)
 
+    maximum_capacity = models.PositiveIntegerField(_("maximum capacity"), default=30)
+
     def __str__(self):
         return f"{self.name} at {self.conference}"
 
@@ -131,6 +133,21 @@ class ScheduleItem(TimeStampedModel):
         on_delete=models.PROTECT,
     )
 
+    maximum_capacity = models.PositiveIntegerField(
+        _("maximum capacity"), blank=True, null=True
+    )
+
+    @property
+    def allows_booking(self):
+        return self.type == ScheduleItem.TYPES.training
+
+    @property
+    def capacity_left(self):
+        if not self.maximum_capacity:
+            return 0
+
+        return self.maximum_capacity - self.bookings.count()
+
     @cached_property
     def speakers(self):
         speakers = set(self.additional_speakers.all())
@@ -169,7 +186,35 @@ class ScheduleItem(TimeStampedModel):
 
         super().save(**kwargs)
 
+        if self.maximum_capacity is None:
+            room = self.rooms.first()
+
+            if room:
+                self.maximum_capacity = room.maximum_capacity
+                super().save(update_fields=["maximum_capacity"])
+
     class Meta:
         verbose_name = _("Schedule item")
         verbose_name_plural = _("Schedule items")
         unique_together = ("slug", "conference")
+
+
+class ScheduleItemBooking(TimeStampedModel):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        verbose_name=_("user"),
+        related_name="bookings",
+    )
+
+    schedule_item = models.ForeignKey(
+        ScheduleItem,
+        on_delete=models.CASCADE,
+        verbose_name=_("schedule item"),
+        related_name="bookings",
+    )
+
+    class Meta:
+        verbose_name = _("Schedule item booking")
+        verbose_name_plural = _("Schedule item bookings")
+        unique_together = ("user", "schedule_item")

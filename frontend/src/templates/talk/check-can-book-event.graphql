@@ -1,0 +1,8 @@
+query CheckCanBookEvent($conference: String!, $talk: String!) {
+  conference(code: $conference) {
+    talk(slug: $talk) {
+      isBooked
+      canBook
+    }
+  }
+}

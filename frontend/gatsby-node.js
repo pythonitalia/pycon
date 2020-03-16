@@ -305,6 +305,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         slug,
         language: "en",
         type: "talk",
+        conferenceCode: process.env.CONFERENCE_CODE || "pycon-demo",
         alternateLinks: {
           en: `/en/talk/${slug}`,
           it: `/it/talk/${slug}`,

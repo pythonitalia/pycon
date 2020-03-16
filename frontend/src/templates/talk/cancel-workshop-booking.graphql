@@ -1,0 +1,16 @@
+mutation CancelWorkshopBooking($id: ID!, $conference: String!) {
+  releaseScheduleItemBooking(id: $id, conference: $conference) {
+    __typename
+
+    ... on ScheduleItemBookingStatus {
+      scheduleItem {
+        isBooked
+        canBook
+      }
+    }
+
+    ... on ReleaseScheduleItemBookingError {
+      message
+    }
+  }
+}

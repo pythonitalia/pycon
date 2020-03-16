@@ -10,6 +10,7 @@ import { BlogPostIllustration } from "../../components/illustrations/blog-post";
 import { MetaTags } from "../../components/meta-tags";
 import { TalkQuery } from "../../generated/graphql";
 import { compile } from "../../helpers/markdown";
+import { BookWorkshop } from "./book-workshop";
 import { SpeakerDetail } from "./speaker-detail";
 
 type Props = {
@@ -17,6 +18,7 @@ type Props = {
   pageContext: {
     socialCard: string;
     socialCardTwitter: string;
+    slug: string;
   };
 };
 
@@ -96,6 +98,7 @@ export default ({ data, ...props }: Props) => {
               </Text>
             </Box>
           </Flex>
+          <BookWorkshop id={talk.id} slug={props.pageContext.slug} />
         </Box>
       </Grid>
 
@@ -130,6 +133,7 @@ export const query = graphql`
     backend {
       conference {
         talk(slug: $slug) {
+          id
           title
           image
           highlightColor
