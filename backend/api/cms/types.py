@@ -1,6 +1,7 @@
 import typing
 
 import strawberry
+from api.pages.types import Page
 
 from ..helpers.i18n import make_localized_resolver
 
@@ -17,6 +18,7 @@ class MenuLink:
     title: str = strawberry.field(resolver=make_localized_resolver("title"))
     target: typing.Optional[str]
     is_primary: bool
+    page: typing.Optional[Page]
 
 
 @strawberry.type
