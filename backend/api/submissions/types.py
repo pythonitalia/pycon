@@ -46,6 +46,7 @@ class SubmissionComment:
     text: str
     created: DateTime
     author: SubmissionCommentAuthor
+    submission: "Submission"
 
 
 @strawberry.type
@@ -86,6 +87,7 @@ class Submission:
                 id=comment["id"],
                 text=comment["text"],
                 created=comment["created"],
+                submission=self,
                 author=SubmissionCommentAuthor(
                     name="Speaker"
                     if comment["author__id"] == self.speaker.id

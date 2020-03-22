@@ -16,6 +16,10 @@ def _send_comment(client, submission, text):
                 author {
                     name
                 }
+
+                submission {
+                    id
+                }
             }
 
             ... on SendSubmissionCommentErrors {
@@ -86,7 +90,10 @@ def test_staff_can_comment_submissions(
 
     resp = _send_comment(graphql_client, submission, "What are you doing here!")
 
+    assert not resp.get("errors")
+
     assert resp["data"]["sendSubmissionComment"]["__typename"] == "SubmissionComment"
+    assert resp["data"]["sendSubmissionComment"]["submission"]
 
 
 @mark.django_db
