@@ -65,7 +65,9 @@ class Day:
     day: Date
 
     @strawberry.field
-    def slots(self, info) -> List[ScheduleSlot]:
+    def slots(self, info, room: Optional[strawberry.ID] = None) -> List[ScheduleSlot]:
+        if room:
+            return list(self.slots.filter(items__rooms__id=room))
         return list(self.slots.all())
 
     @classmethod
