@@ -262,3 +262,42 @@ def test_filter_days_by_room_not_found(
 
     assert "errors" not in resp
     assert len(resp["data"]["conference"]["days"][0]["slots"]) == 0
+
+
+@mark.django_db
+def test_get_day(
+    conference_factory, day_factory, slot_factory, graphql_client, schedule_item_factory
+):
+
+    conference = conference_factory(start=date(2020, 4, 2), end=date(2020, 4, 3))
+
+    day = day_factory(conference=conference, day=date(2020, 4, 2))
+    day_2 = day_factory(conference=conference, day=date(2020, 4, 3))
+
+    slot = slot_factory(day=day, hour=time(8, 45), duration=60)
+    slot_2 = slot_factory(day=day_2, hour=time(8, 45), duration=60)
+
+    schedule_item_factory(slot=slot)
+    schedule_item_factory(slot=slot_2, image=None)
+
+    resp = graphql_client.query(
+        """
+        query($code: String!, $day: Date!) {
+            conference(code: $code) {
+                day (day: $day) {
+                    slots {
+                        items {
+                            id
+                        }
+                    }
+                }
+            }
+        }
+        """,
+        variables={"code": conference.code, "day": f"{date(2020, 4, 2):%Y-%m-%d}"},
+    )
+
+    assert "errors" not in resp
+    slots = resp["data"]["conference"]["day"]["slots"]
+
+    assert slots[0]["items"][0]["id"] == str(slot.id)

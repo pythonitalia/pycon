@@ -224,6 +224,10 @@ class Conference:
     def days(self, info) -> List[Day]:
         return self.days.prefetch_related("slots", "slots__items").all()
 
+    @strawberry.field
+    def day(self, info, day: Date) -> Day:
+        return self.days.get(day=day)
+
 
 @strawberry.type
 class Deadline:
