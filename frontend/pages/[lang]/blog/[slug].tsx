@@ -8,6 +8,7 @@ import { jsx } from "theme-ui";
 import { Article } from "~/components/article";
 import { BlogPostIllustration } from "~/components/illustrations/blog-post";
 import { MetaTags } from "~/components/meta-tags";
+import { PageLoading } from "~/components/page-loading";
 import { compile } from "~/helpers/markdown";
 import { useCurrentLanguage } from "~/locale/context";
 import { usePostQuery } from "~/types";
@@ -17,15 +18,15 @@ export default () => {
   const router = useRouter();
   const slug = router.query.slug as string;
 
-  const { data } = usePostQuery({
+  const { data, loading } = usePostQuery({
     variables: {
       language,
       slug,
     },
   });
 
-  if (!data) {
-    return null;
+  if (loading) {
+    return <PageLoading />;
   }
 
   const post = data.blogPost;

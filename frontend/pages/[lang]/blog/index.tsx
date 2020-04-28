@@ -6,6 +6,7 @@ import { jsx } from "theme-ui";
 
 import { Link } from "~/components/link";
 import { MetaTags } from "~/components/meta-tags";
+import { PageLoading } from "~/components/page-loading";
 import { useCurrentLanguage } from "~/locale/context";
 import { useBlogIndexQuery } from "~/types";
 
@@ -18,8 +19,8 @@ export default () => {
     },
   });
 
-  if (!data) {
-    return null;
+  if (loading) {
+    return <PageLoading />;
   }
 
   const posts = data.blogPosts;
@@ -28,7 +29,7 @@ export default () => {
     <Fragment>
       <MetaTags title="Blog" />
 
-      <Box sx={{ mx: "auto", px: 3, pt: 4, maxWidth: "container" }}>
+      <Box sx={{ mx: "auto", px: 3, py: 5, maxWidth: "container" }}>
         {posts.map((post) => (
           <Box as="article" key={post.slug} sx={{ mb: 4, maxWidth: "600px" }}>
             <Heading sx={{ mb: 2 }}>

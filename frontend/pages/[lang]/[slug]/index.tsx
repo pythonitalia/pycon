@@ -6,6 +6,7 @@ import { jsx } from "theme-ui";
 
 import { Article } from "~/components/article";
 import { MetaTags } from "~/components/meta-tags";
+import { PageLoading } from "~/components/page-loading";
 import { compile } from "~/helpers/markdown";
 import { useCurrentLanguage } from "~/locale/context";
 import { usePageQuery } from "~/types";
@@ -24,7 +25,7 @@ export default () => {
   });
 
   if (loading) {
-    return <Text>Loading</Text>;
+    return <PageLoading />;
   }
 
   if (!data) {
@@ -37,7 +38,7 @@ export default () => {
     <Fragment>
       <MetaTags title={page.title} />
 
-      <Box sx={{ mx: "auto", px: 3, maxWidth: "container" }}>
+      <Box sx={{ mx: "auto", px: 3, py: 5, maxWidth: "container" }}>
         <Article title={page.title}>{compile(page.content).tree}</Article>
       </Box>
     </Fragment>
