@@ -80,7 +80,7 @@
     "timed-out": "5",
     "typescript": "^3.7.5",
     "use-onclickoutside": "^0.3.1",
-    "yup": "^0.28.0"
+    "yup": "^0.28.5"
   },
   "devDependencies": {
     "@graphql-codegen/add": "^1.9.1",
