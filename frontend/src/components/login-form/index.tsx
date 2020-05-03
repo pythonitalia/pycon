@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { Box, Button, Grid, Input, Text } from "@theme-ui/components";
+import { Box, Grid, Input, Text } from "@theme-ui/components";
 import Router, { useRouter } from "next/router";
 import { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
@@ -11,6 +11,7 @@ import { useCurrentLanguage } from "~/locale/context";
 import { LoginMutation, useLoginMutation } from "~/types";
 
 import { Alert } from "../alert";
+import { Button } from "../button/button";
 import { InputWrapper } from "../input-wrapper";
 import { Link } from "../link";
 
@@ -148,7 +149,7 @@ export const LoginForm: React.SFC<FormProps> = ({ next, ...props }) => {
             <FormattedMessage id="login.recoverPassword" />
           </Link>
 
-          <Button type="submit">
+          <Button type="submit" loading={loading}>
             <FormattedMessage id="login.loginButton" />
           </Button>
         </form>

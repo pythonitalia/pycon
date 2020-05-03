@@ -20,14 +20,16 @@ export default () => {
   });
 
   if (loading) {
-    return <PageLoading />;
+    return <PageLoading titleId="blog.title" />;
   }
 
   const posts = data.blogPosts;
 
   return (
     <Fragment>
-      <MetaTags title="Blog" />
+      <FormattedMessage id="blog.title">
+        {(text) => <MetaTags title={text} />}
+      </FormattedMessage>
 
       <Box sx={{ mx: "auto", px: 3, py: 5, maxWidth: "container" }}>
         {posts.map((post) => (

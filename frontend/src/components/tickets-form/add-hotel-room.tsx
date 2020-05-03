@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { Box, Button, Flex, Select } from "@theme-ui/components";
+import { Flex, Select } from "@theme-ui/components";
 import moment from "moment";
 import { useCallback, useMemo } from "react";
 import { FormattedMessage } from "react-intl";
@@ -7,6 +7,8 @@ import { useFormState } from "react-use-form-state";
 import { jsx } from "theme-ui";
 
 import { useCurrentLanguage } from "~/locale/context";
+
+import { Button } from "../button/button";
 
 type Props = {
   conferenceStart?: string;

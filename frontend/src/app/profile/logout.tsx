@@ -1,11 +1,12 @@
 /** @jsx jsx */
-import { Box, Button, Heading, Text } from "@theme-ui/components";
+import { Box, Heading, Text } from "@theme-ui/components";
 import Router from "next/router";
-import React, { useCallback } from "react";
+import { useCallback } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
 import { Alert } from "~/components/alert";
+import { Button } from "~/components/button/button";
 import { useLogoutMutation } from "~/types";
 
 import { useLoginState } from "./hooks";
@@ -53,7 +54,9 @@ export const Logout = () => {
         <Text mb={4}>
           <FormattedMessage id="profile.seeYourSoon" />
         </Text>
-        <Button onClick={onLogout}>Logout</Button>
+        <Button loading={loading} onClick={onLogout}>
+          Logout
+        </Button>
 
         {error && <Alert variant="alert">{error.message}</Alert>}
         {data && data.logout.__typename === "LogoutErrors" && (

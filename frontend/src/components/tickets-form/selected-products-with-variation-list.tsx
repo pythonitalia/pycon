@@ -1,8 +1,9 @@
 /** @jsx jsx */
-import { Box, Button, Flex, Grid } from "@theme-ui/components";
+import { Box, Flex, Grid } from "@theme-ui/components";
 import React from "react";
 import { jsx } from "theme-ui";
 
+import { Button } from "../button/button";
 import { Ticket } from "./types";
 
 type SelectedProduct = {

@@ -1,9 +1,10 @@
 /** @jsx jsx */
-import { Button, Flex, Select } from "@theme-ui/components";
+import { Flex, Select } from "@theme-ui/components";
 import React, { useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
+import { Button } from "../button/button";
 import { Ticket } from "./types";
 
 export const AddProductWithVariation: React.SFC<{

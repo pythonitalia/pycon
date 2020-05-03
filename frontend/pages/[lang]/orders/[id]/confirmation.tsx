@@ -5,15 +5,42 @@ import React from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
+import { useLoginState } from "~/app/profile/hooks";
 import { Alert } from "~/components/alert";
+import { PageLoading } from "~/components/page-loading";
 import { useOrderQuery } from "~/types";
 
-const OrderDetail = () => {
+const OrderCanceled = () => (
+  <React.Fragment>
+    <Heading sx={{ mb: 3 }}>
+      <FormattedMessage id="orderConfirmation.heading.canceled" />
+    </Heading>
+  </React.Fragment>
+);
+
+const OrderSucceeded = ({ url }: { url: string }) => (
+  <React.Fragment>
+    <Heading sx={{ mb: 3 }}>
+      <FormattedMessage id="orderConfirmation.heading" />
+    </Heading>
+    <Text>
+      <FormattedMessage id="orderConfirmation.successMessage" />
+    </Text>
+    <a href={url} target="_blank" rel="noopener noreferrer">
+      <FormattedMessage id="orderConfirmation.manage" />
+    </a>
+  </React.Fragment>
+);
+
+export default () => {
+  const [loggedIn, _] = useLoginState();
+
   const router = useRouter();
   const code = router.query.id as string;
 
   const { data, loading, error } = useOrderQuery({
     variables: { code, conferenceCode: process.env.conferenceCode },
+    skip: !loggedIn,
   });
 
   if (error) {
@@ -31,28 +58,16 @@ const OrderDetail = () => {
   }
 
   if (loading || !data) {
-    return null;
+    return <PageLoading titleId="global.loading" />;
   }
 
   return (
-    <React.Fragment>
-      <a href={data.order?.url} target="_blank" rel="noopener noreferrer">
-        <FormattedMessage id="orderConfirmation.manage" />
-      </a>
-    </React.Fragment>
+    <Box sx={{ maxWidth: "container", px: 3, mx: "auto" }}>
+      {data.order.status === "CANCELED" ? (
+        <OrderCanceled />
+      ) : (
+        <OrderSucceeded url={data.order.url} />
+      )}
+    </Box>
   );
 };
-
-export default () => (
-  <Box sx={{ maxWidth: "container", px: 3, mx: "auto" }}>
-    <Heading sx={{ mb: 3 }}>
-      <FormattedMessage id="orderConfirmation.heading" />
-    </Heading>
-
-    <Text>
-      <FormattedMessage id="orderConfirmation.successMessage" />
-    </Text>
-
-    <OrderDetail />
-  </Box>
-);

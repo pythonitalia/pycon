@@ -8,6 +8,7 @@ import { jsx } from "theme-ui";
 import { Article } from "~/components/article";
 import { BlogPostIllustration } from "~/components/illustrations/blog-post";
 import { MetaTags } from "~/components/meta-tags";
+import { PageLoading } from "~/components/page-loading";
 import { SpeakerDetail } from "~/components/speaker-detail";
 import { compile } from "~/helpers/markdown";
 import { useTalkQuery } from "~/types";
@@ -16,15 +17,15 @@ export default () => {
   const router = useRouter();
   const slug = router.query.slug as string;
 
-  const { data } = useTalkQuery({
+  const { data, loading } = useTalkQuery({
     variables: {
       code: process.env.conferenceCode,
       slug,
     },
   });
 
-  if (!data) {
-    return null;
+  if (loading) {
+    return <PageLoading titleId="global.loading" />;
   }
 
   const { talk } = data.conference;

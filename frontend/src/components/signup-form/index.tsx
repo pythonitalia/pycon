@@ -1,4 +1,4 @@
-import { Box, Button, Grid, Input, Label, Text } from "@theme-ui/components";
+import { Box, Grid, Input, Text } from "@theme-ui/components";
 import { useRouter } from "next/router";
 import React, { useCallback } from "react";
 import { FormattedMessage } from "react-intl";
@@ -9,6 +9,7 @@ import { useCurrentLanguage } from "~/locale/context";
 import { useSignupMutation } from "~/types";
 
 import { Alert } from "../alert";
+import { Button } from "../button/button";
 import { InputWrapper } from "../input-wrapper";
 import { Link } from "../link";
 
@@ -101,6 +102,7 @@ export const SignupForm: React.SFC = () => {
               placeholder="guido@python.org"
               required={true}
               type="email"
+              tabIndex={1}
             />
           </InputWrapper>
 
@@ -122,11 +124,12 @@ export const SignupForm: React.SFC = () => {
               {...password("password")}
               required={true}
               type="password"
+              tabIndex={2}
               mb={4}
             />
           </InputWrapper>
 
-          <Button type="submit">
+          <Button type="submit" loading={loading}>
             <FormattedMessage id="signup.signupButton" />
           </Button>
         </form>

@@ -1,10 +1,11 @@
 /** @jsx jsx */
-import { Box, Button, Flex } from "@theme-ui/components";
+import { Box, Flex } from "@theme-ui/components";
 import React, { useCallback } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
 import { Alert } from "~/components/alert";
+import { Button } from "~/components/button/button";
 import { useCurrentLanguage } from "~/locale/context";
 import { useCreateOrderMutation } from "~/types";
 

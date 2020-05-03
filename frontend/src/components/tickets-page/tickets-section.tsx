@@ -2,13 +2,14 @@
 import moment from "moment";
 import React, { useState } from "react";
 import { FormattedMessage } from "react-intl";
-import { Box, Button, Flex, Heading, jsx, Label, Radio } from "theme-ui";
+import { Box, Flex, Heading, jsx, Label, Radio } from "theme-ui";
 
 import { Alert } from "~/components/alert";
 import { HotelForm } from "~/components/hotel-form";
 import { TicketsForm } from "~/components/tickets-form";
 import { Ticket } from "~/components/tickets-form/types";
 
+import { Button } from "../button/button";
 import {
   HotelRoom,
   InvoiceInformationState,

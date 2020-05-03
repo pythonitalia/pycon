@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { Box, Button, Textarea } from "@theme-ui/components";
+import { Box, Textarea } from "@theme-ui/components";
 import { useCallback } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
@@ -8,6 +8,8 @@ import { jsx } from "theme-ui";
 import { Alert } from "~/components/alert";
 import { InputWrapper } from "~/components/input-wrapper";
 import { useSendCommentMutation } from "~/types";
+
+import { Button } from "../button/button";
 
 type Form = {
   comment: string;
@@ -84,7 +86,7 @@ export const AddComment: React.SFC<Props> = ({ submissionId }) => {
         </Alert>
       )}
 
-      <Button>
+      <Button loading={loading}>
         <FormattedMessage id="submission.sendComment" />
       </Button>
     </Box>

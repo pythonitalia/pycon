@@ -4,7 +4,7 @@ import { getDataFromTree } from "@apollo/react-ssr";
 import { CacheProvider } from "@emotion/core";
 import * as Sentry from "@sentry/browser";
 import { ColorModeProvider } from "@theme-ui/color-modes";
-import ApolloClient, { InMemoryCache } from "apollo-boost";
+import ApolloClient from "apollo-boost";
 import { cache } from "emotion";
 import withApollo from "next-with-apollo";
 import App from "next/app";

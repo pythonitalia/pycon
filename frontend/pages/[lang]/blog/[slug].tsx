@@ -26,7 +26,7 @@ export default () => {
   });
 
   if (loading) {
-    return <PageLoading />;
+    return <PageLoading titleId="global.loading" />;
   }
 
   const post = data.blogPost;

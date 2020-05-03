@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { Box, Button, Heading, Input } from "@theme-ui/components";
+import { Box, Heading, Input } from "@theme-ui/components";
 import { GraphQLError } from "graphql";
 import React, { FormEvent, useCallback, useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
@@ -7,6 +7,7 @@ import { useFormState } from "react-use-form-state";
 import { jsx } from "theme-ui";
 
 import { Alert } from "~/components/alert";
+import { Button } from "~/components/button/button";
 
 import { OrderState, Voucher as VoucherType } from "../types";
 

@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { Box, Button, Flex, Heading } from "@theme-ui/components";
+import { Box, Flex, Heading } from "@theme-ui/components";
 import React, { Fragment, useCallback } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
@@ -11,6 +11,7 @@ import {
   useUpdateOrCreateSlotItemMutation,
 } from "~/types";
 
+import { Button } from "../button/button";
 import { Schedule } from "./schedule";
 import { ItemsPanel } from "./staff/items-panel";
 

@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { Box, Button, Flex, Grid, Heading } from "@theme-ui/components";
+import { Box, Flex, Grid, Heading } from "@theme-ui/components";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { Fragment, useEffect, useRef } from "react";
@@ -12,6 +12,7 @@ import { useToggle } from "~/helpers/use-toggle";
 import { useAlternateLinks, useCurrentLanguage } from "~/locale/context";
 import { useHeaderQuery } from "~/types";
 
+import { Button } from "../button/button";
 import { EnglishIcon } from "../icons/english";
 import { ItalianIcon } from "../icons/italian";
 import { Link } from "../link";
@@ -95,7 +96,8 @@ export const Header = () => {
           height: WARNING_MESSAGE_HEIGHT,
           backgroundColor: "black",
           color: "white",
-          position: "relative",
+          position: open ? "fixed" : "relative",
+          width: "100%",
           zIndex: "header",
         }}
       >

@@ -25,7 +25,7 @@ export default () => {
   });
 
   if (loading) {
-    return <PageLoading />;
+    return <PageLoading titleId="global.loading" />;
   }
 
   if (!data) {

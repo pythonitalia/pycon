@@ -1,11 +1,12 @@
+require("dotenv").config();
 const path = require("path");
 const webpack = require("webpack");
 const withSourceMaps = require("@zeit/next-source-maps");
 
 module.exports = withSourceMaps({
   env: {
-    API_URL: "https://pycon.it/graphql",
-    conferenceCode: "pycon11",
+    API_URL: process.env.API_URL,
+    conferenceCode: process.env.CONFERENCE_CODE,
   },
 
   webpack: (config) => {

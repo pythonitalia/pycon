@@ -1,12 +1,5 @@
 /** @jsx jsx */
-import {
-  Box,
-  Button,
-  Heading,
-  Input,
-  Select,
-  Textarea,
-} from "@theme-ui/components";
+import { Box, Heading, Input, Select, Textarea } from "@theme-ui/components";
 import React, { useCallback, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
@@ -16,6 +9,7 @@ import { InputWrapper } from "~/components/input-wrapper";
 import { useCountries } from "~/helpers/use-countries";
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
 
+import { Button } from "../button/button";
 import { InvoiceInformationState } from "./types";
 
 type Props = {

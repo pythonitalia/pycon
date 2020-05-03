@@ -1,7 +1,6 @@
 /** @jsx jsx */
 import {
   Box,
-  Button,
   Checkbox,
   Flex,
   Heading,
@@ -18,6 +17,7 @@ import { jsx } from "theme-ui";
 import { useSendGrantRequestMutation } from "~/types";
 
 import { Alert } from "../alert";
+import { Button } from "../button/button";
 import { ErrorsList } from "../errors-list";
 import { InputWrapper } from "../input-wrapper";
 import {
@@ -57,7 +57,7 @@ export const GrantForm: React.SFC<Props> = ({ conference }) => {
     },
   );
 
-  const [submitGrant, { loading, error, data }] = useSendGrantRequestMutation();
+  const [submitGrant, { loading, data }] = useSendGrantRequestMutation();
 
   const onSubmit = useCallback(
     (e) => {
@@ -299,7 +299,7 @@ export const GrantForm: React.SFC<Props> = ({ conference }) => {
           </Alert>
         )}
 
-        <Button>
+        <Button loading={loading}>
           <FormattedMessage id="grants.form.submit" />
         </Button>
       </Box>

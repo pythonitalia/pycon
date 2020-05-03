@@ -11,6 +11,8 @@ import { MyOrders } from "~/app/profile/my-orders";
 import { MyProfile } from "~/app/profile/my-profile";
 import { MySubmissions } from "~/app/profile/my-submissions";
 import { Alert } from "~/components/alert";
+import { MetaTags } from "~/components/meta-tags";
+import { PageLoading } from "~/components/page-loading";
 import { useCurrentLanguage } from "~/locale/context";
 import { useMyProfileQuery } from "~/types";
 
@@ -36,29 +38,23 @@ export default () => {
   }, [error]);
 
   if (loading) {
-    return (
-      <Box
-        sx={{
-          maxWidth: "container",
-          mx: "auto",
-          px: 3,
-        }}
-      >
-        {loading && (
-          <Alert variant="info">
-            <FormattedMessage id="profile.loading" />
-          </Alert>
-        )}
-      </Box>
-    );
+    return <PageLoading titleId="profile.title" />;
   }
 
-  if (error || !profileData) {
+  if (error) {
+    throw error;
+  }
+
+  if (!profileData) {
     return null;
   }
 
   return (
     <Fragment>
+      <FormattedMessage id="profile.title">
+        {(text) => <MetaTags title={text} />}
+      </FormattedMessage>
+
       <MyProfile profile={profileData} />
 
       {profileData.me.orders.length > 0 && (

@@ -1,7 +1,6 @@
 /** @jsx jsx */
 import {
   Box,
-  Button,
   Checkbox,
   Flex,
   Grid,
@@ -21,6 +20,7 @@ import { jsx } from "theme-ui";
 import { CfpFormQuery, useCfpFormQuery } from "~/types";
 
 import { Alert } from "../alert";
+import { Button } from "../button/button";
 import { TagLine } from "../input-tag";
 import { InputWrapper } from "../input-wrapper";
 
@@ -512,7 +512,7 @@ export const CfpForm: React.SFC<Props> = ({
           </Alert>
         )}
 
-        <Button>
+        <Button loading={loading}>
           <FormattedMessage id="cfp.submit" />
         </Button>
       </form>

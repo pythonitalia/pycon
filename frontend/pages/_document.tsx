@@ -18,7 +18,6 @@ export default class MyDocument extends Document<{
     const page = await renderPage();
     const styles = extractCritical(page.html);
 
-    // TODO: protocol
     const url = (req as any).protocol + "://" + req.headers.host + req.url;
 
     return { ...page, ...styles, url };

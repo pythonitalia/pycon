@@ -1,11 +1,12 @@
 /** @jsx jsx */
-import { Box, Button, Heading, Input } from "@theme-ui/components";
+import { Box, Heading, Input } from "@theme-ui/components";
 import { useCallback } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import { jsx } from "theme-ui";
 
 import { Alert } from "~/components/alert";
+import { Button } from "~/components/button/button";
 import { InputWrapper } from "~/components/input-wrapper";
 import { useRequestPasswordResetMutation } from "~/types";
 
@@ -94,7 +95,7 @@ export default () => {
         >
           <Input required={true} {...email("email")} />
         </InputWrapper>
-        <Button>Send email</Button>
+        <Button loading={loading}>Send email</Button>
       </Box>
     </Box>
   );

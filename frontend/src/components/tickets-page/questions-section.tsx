@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { Box, Button, Heading, Input, Select } from "@theme-ui/components";
+import { Box, Heading, Input, Select } from "@theme-ui/components";
 import React, { FormEvent, useCallback, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
@@ -7,6 +7,7 @@ import { jsx } from "theme-ui";
 import { InputWrapper } from "~/components/input-wrapper";
 import { Ticket } from "~/components/tickets-form/types";
 
+import { Button } from "../button/button";
 import { SelectedProducts } from "./types";
 
 type Props = {
@@ -86,6 +87,10 @@ export const QuestionsSection: React.SFC<Props> = ({
             <Box key={id}>
               {products.map((selectedProductInfo, index) => {
                 const product = productsById[selectedProductInfo.id];
+
+                console.log(selectedProductInfo.id);
+
+                console.log(productsById);
 
                 if (product.questions.length === 0) {
                   return null;

@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { Box, Button, Flex, Heading } from "@theme-ui/components";
+import { Box, Flex, Heading } from "@theme-ui/components";
 import moment from "moment";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
@@ -7,6 +7,7 @@ import { jsx } from "theme-ui";
 import { useCurrentLanguage } from "~/locale/context";
 import { HotelRoom } from "~/types";
 
+import { Button } from "../button/button";
 import { ProductRow } from "../tickets-form/product-row";
 import { SelectedHotelRooms } from "../tickets-page/types";
 

@@ -1,7 +1,6 @@
 /** @jsx jsx */
 import {
   Box,
-  Button,
   Card,
   Checkbox,
   Input,
@@ -19,7 +18,9 @@ import * as yup from "yup";
 
 import { useLoginState } from "~/app/profile/hooks";
 import { Alert } from "~/components/alert";
+import { Button } from "~/components/button/button";
 import { InputWrapper } from "~/components/input-wrapper";
+import { MetaTags } from "~/components/meta-tags";
 import { useCountries } from "~/helpers/use-countries";
 import { useCurrentLanguage } from "~/locale/context";
 import { useMyEditProfileQuery, useUpdateProfileMutation } from "~/types";
@@ -184,6 +185,10 @@ export default () => {
         my: 5,
       }}
     >
+      <FormattedMessage id="profile.edit.title">
+        {(text) => <MetaTags title={text} />}
+      </FormattedMessage>
+
       <Text mb={4} as="h1">
         <FormattedMessage id="profile.header" />
       </Text>
@@ -362,7 +367,7 @@ export default () => {
             </InputWrapper>
           </SectionWrapper>
           <Box>
-            <Button type="submit">
+            <Button type="submit" loading={updateProfileLoading}>
               <FormattedMessage id="buttons.save" />
             </Button>
           </Box>

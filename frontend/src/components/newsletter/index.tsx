@@ -1,10 +1,12 @@
 /** @jsx jsx */
-import { Box, Button, Heading, Input, Text } from "@theme-ui/components";
+import { Box, Heading, Input, Text } from "@theme-ui/components";
 import React, { useCallback, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
 import { useSubscribeMutation } from "~/types";
+
+import { Button } from "../button/button";
 
 const NewsletterForm = () => {
   const [email, setEmail] = useState("");
@@ -77,7 +79,7 @@ const NewsletterForm = () => {
           required={true}
           type="email"
         />
-        <Button type="submit" disabled={!canSubmit}>
+        <Button type="submit" disabled={!canSubmit} loading={loading}>
           <FormattedMessage id="newsletter.button" />
         </Button>
       </Box>

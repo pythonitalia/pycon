@@ -28,9 +28,12 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
     );
 
     if (isUserLoggedOut(graphQLErrors)) {
-      // setLoginState(false);
-      // TODO
-      // navigate("/en/login");
+      setLoginState(false);
+
+      // TODO: get current locale
+      window.location.href = "/en/login";
+
+      return;
     }
   }
 
