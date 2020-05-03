@@ -512,7 +512,7 @@ export const CfpForm: React.SFC<Props> = ({
           </Alert>
         )}
 
-        <Button loading={loading}>
+        <Button loading={submissionLoading}>
           <FormattedMessage id="cfp.submit" />
         </Button>
       </form>
