@@ -10,7 +10,7 @@ javascript on the client side.
 To install the frontend dependencies make you sure you have yarn installed, then run the
 following commands in the frontend directory:
 
-    yarn install
+    invoke setup-frontend
 
 This will install all the dependencies (including dev ones).
 
@@ -19,7 +19,7 @@ this in future, but for now make sure you follow the [backend README](../backend
 
 To run the development command use:
 
-    yarn start
+    invoke run-frontend
 
 This will start the Gatsby server and fetch the data from the backend,
 when the data fetching is done you should be able to go to
@@ -35,6 +35,6 @@ generate types from the GraphQL queries we are running. The generated types
 are not stored on git, they are always generated when needed. To run the
 code generation run the following command:
 
-    yarn codegen
+    invoke codegen
 
 This will create the types based on the queries done on the frontend.

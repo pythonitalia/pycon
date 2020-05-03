@@ -15,7 +15,8 @@ alternative to make files). Top install it we recommend to use
 
     pipx install invoke
 
-this will install globally invoke. To run the setup, run the following command:
+this will install globally invoke (in a separate environment, but you can use pip if you don't want to use pipx). 
+To run the setup, run the following command:
 
     invoke setup
 

@@ -3,6 +3,9 @@ from invoke.exceptions import Failure
 from invoke.tasks import call
 
 
+# ==================
+# Utilities
+# =================
 def run_or_fail(c, cmd, fail_message="Error", fail_callback=None):
     try:
         cmd(c)
@@ -14,6 +17,25 @@ def run_or_fail(c, cmd, fail_message="Error", fail_callback=None):
             exit()
 
 
+@task()
+def tools_check(c, tools=[]):
+    """
+    :param tools: the tools required by your application
+    """
+    missing_tools = []
+    for tool in tools:
+        if c.run(f"which {tool}", hide=True, warn=True).exited != 0:
+            missing_tools.append(f"{tool}")
+
+    if len(missing_tools) > 0:
+        print("These tools are required : {}".format(", ".join(missing_tools)))
+        print("Please install them")
+        exit()
+
+
+# ==================
+# Backend
+# =================
 @task()
 def init_env(c):
     with c.cd("backend"):
@@ -27,7 +49,7 @@ def init_env(c):
 @task()
 def check_env_preconditions(c, env_vars=[]):
     """
-    env_vars is an array of env variables you want to check
+    :param env_vars:  .env variables you want to check
     """
     with c.cd("backend"):
         run_or_fail(c, lambda x: x.run("[ -f \".env\" ]", hide=False),
@@ -43,39 +65,6 @@ def check_env_preconditions(c, env_vars=[]):
                 exit()
 
 
-@task()
-def tools_check(c, tools=[]):
-    missing_tools = []
-    for tool in tools:
-        if c.run(f"which {tool}", hide=True, warn=True).exited != 0:
-            missing_tools.append(f"{tool}")
-
-    if len(missing_tools) > 0:
-        print("These tools are required : {}".format(", ".join(missing_tools)))
-        print("Please install them")
-        exit()
-
-
-@task(pre=[call(tools_check, ["yarn"])])
-def setup_frontend(c):
-    print("Running frontend setup...")
-
-    with c.cd("frontend"):
-        c.run("yarn")
-
-
-@task(pre=[call(tools_check, ["docker", "docker-compose"]),
-           call(check_env_preconditions, [])])
-def setup_db(c):
-    print("Running DB setup...")
-    with c.cd("backend"):
-        with c.prefix(". .env"):
-            run_or_fail(c, lambda x: x.run("docker-compose -f docker-compose_dev.yml up", hide=False),
-                        fail_message="ERROR! Some problem with docker-compose")
-
-    print("... DB setup completed!")
-
-
 @task(pre=[call(tools_check, ["poetry"])])
 def setup_backend(c):
     print("Running backend setup...")
@@ -86,9 +75,28 @@ def setup_backend(c):
     print("... backend setup completed!")
 
 
-@task(setup_frontend, setup_backend)
-def setup(c):
-    print("Setup completed!")
+@task(pre=[call(tools_check, ["docker", "docker-compose"]),
+           call(check_env_preconditions, ["POSTGRES_USER"])])
+def setup_db(c):
+    print("Running DB setup...")
+    with c.cd("backend"):
+        with c.prefix(". .env"):
+            run_or_fail(c, lambda x: x.run("docker-compose -f docker-compose.yml up -d", hide=False),
+                        fail_message="ERROR creating and starting containers")
+    print("... DB setup completed!")
+
+
+@task(pre=[call(tools_check, ["docker", "docker-compose"]),
+           call(check_env_preconditions, ["POSTGRES_USER"])])
+def delete_db(c):
+    print("Deleting DB...")
+    with c.cd("backend"):
+        with c.prefix(". .env"):
+            run_or_fail(c, lambda x: x.run("docker-compose -f docker-compose.yml down", hide=False),
+                        fail_message="ERROR Stopping containers")
+            run_or_fail(c, lambda x: x.run("docker volume rm backend_db-data", hide=False),
+                        fail_message="ERROR deleting DB volume")
+    print("... DB deleted successfully!")
 
 
 @task(setup_db)
@@ -112,16 +120,22 @@ def createsuperuser(c):
         c.run("poetry run python manage.py createsuperuser", pty=True)
 
 
-@task(migrate)
+@task(pre=[migrate,
+           call(check_env_preconditions, ["DATABASE_URL"])])
 def run_backend(c):
     with c.cd("backend"):
         c.run("poetry run python manage.py runserver", pty=True)
 
 
-@task(setup_frontend)
-def run_frontend(c):
+# ==================
+# Frontend
+# =================
+@task(pre=[call(tools_check, ["yarn"])])
+def setup_frontend(c):
+    print("Running frontend setup...")
+
     with c.cd("frontend"):
-        c.run("yarn start")
+        c.run("yarn install")
 
 
 @task(setup_frontend)
@@ -134,3 +148,23 @@ def build(c):
 def build_styleguide(c):
     with c.cd("frontend"):
         c.run("yarn build:docz")
+
+
+@task(setup_frontend)
+def codegen(c):
+    with c.cd("frontend"):
+        c.run("yarn codegen")
+
+
+@task(setup_frontend)
+def run_frontend(c):
+    with c.cd("frontend"):
+        c.run("yarn start")
+
+
+# ==================
+# Common
+# =================
+@task(setup_frontend, setup_backend)
+def setup(c):
+    print("Setup completed!")

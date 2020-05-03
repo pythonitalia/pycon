@@ -43,7 +43,7 @@ jobs:
     - uses: actions/setup-python@v1
       with:
         python-version: '3.7.6'
-    - run: pip install poetry invoke
+    - run: pip install poetry
 
     - name: Cache Poetry
       uses: actions/cache@v1
@@ -61,7 +61,7 @@ jobs:
 
     - name: Install python dependencies
       working-directory: backend
-      run: invoke setup-backend
+      run: poetry install
       if: steps.cache.outputs.cache-hit != 'true'
 
     - name: Get yarn cache
@@ -76,10 +76,14 @@ jobs:
     - run: yarn
       working-directory: frontend
     - run: |
-        invoke demo-data
-        invoke run-backend &
+        cd backend/
+        poetry run python manage.py migrate
+        poetry run python manage.py loaddata \
+            demodata/*.json
+        cp -r demodata/media media
+        poetry run python manage.py runserver &
 
-        cd frontend/
+        cd ../frontend/
 
         bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8000/admin/login/)" != "200" ]]; do sleep 5; done'
         yarn codegen-fragments
