@@ -6,7 +6,7 @@ const withSourceMaps = require("@zeit/next-source-maps");
 module.exports = withSourceMaps({
   env: {
     API_URL: process.env.API_URL,
-    conferenceCode: process.env.CONFERENCE_CODE,
+    conferenceCode: process.env.CONFERENCE_CODE || "example",
   },
 
   webpack: (config) => {
