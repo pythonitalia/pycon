@@ -8,6 +8,8 @@ import { jsx } from "theme-ui";
 
 import { Alert } from "~/components/alert";
 import { InputWrapper } from "~/components/input-wrapper";
+import { useMessages } from "~/helpers/use-messages";
+import { useTranslatedMessage } from "~/helpers/use-translated-message";
 import { useCurrentLanguage } from "~/locale/context";
 import { useResetPasswordMutation } from "~/types";
 
@@ -18,13 +20,19 @@ type FormFields = {
 export default () => {
   const router = useRouter();
   const language = useCurrentLanguage();
+  const [_, addMessage] = useMessages();
+  const successMessage = useTranslatedMessage("resetPassword.youCanNowLogin");
+
   const [changePassword, { loading, error, data }] = useResetPasswordMutation({
     onCompleted(data) {
       if (
         data?.resetPassword.__typename === "OperationResult" &&
         data.resetPassword.ok
       ) {
-        // TODO: add message!!1
+        addMessage({
+          message: successMessage,
+          type: "success",
+        });
 
         router.push("/[lang]/login", `/${language}/login`);
       }

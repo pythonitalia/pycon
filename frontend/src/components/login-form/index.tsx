@@ -7,6 +7,7 @@ import { useFormState } from "react-use-form-state";
 import { jsx } from "theme-ui";
 
 import { useLoginState } from "~/app/profile/hooks";
+import { useMessages } from "~/helpers/use-messages";
 import { useCurrentLanguage } from "~/locale/context";
 import { LoginMutation, useLoginMutation } from "~/types";
 
@@ -28,6 +29,9 @@ export const LoginForm: React.SFC<FormProps> = ({ next, ...props }) => {
   const lang = useCurrentLanguage();
   const router = useRouter();
   const [loggedIn, setLoggedIn] = useLoginState();
+
+  // TODO: move this to parent layout?
+  const [messages, _, clearMessages] = useMessages();
 
   const nextUrl = (router.query.next as string) || next || `/${lang}/profile`;
 
@@ -53,6 +57,8 @@ export const LoginForm: React.SFC<FormProps> = ({ next, ...props }) => {
     if (loggedIn) {
       Router.push(nextUrl.replace(/^\/(en|it)/, "/[lang]"), nextUrl);
     }
+
+    clearMessages();
   });
 
   const errorMessage =
@@ -80,6 +86,12 @@ export const LoginForm: React.SFC<FormProps> = ({ next, ...props }) => {
           mb: 3,
         }}
       >
+        {messages.map((message) => (
+          <Alert variant={message.type} key={message.message}>
+            {message.message}
+          </Alert>
+        ))}
+
         {errorMessage && <Alert variant="alert">{errorMessage}</Alert>}
       </Box>
       <Grid
