@@ -1,6 +1,6 @@
 import { Box, Grid, Input, Text } from "@theme-ui/components";
 import { useRouter } from "next/router";
-import React, { useCallback } from "react";
+import React, { useCallback, useLayoutEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 
@@ -23,7 +23,11 @@ export const SignupForm: React.SFC = () => {
   const language = useCurrentLanguage();
   const router = useRouter();
 
-  // TODO: redirect if already logged in
+  useLayoutEffect(() => {
+    if (loggedIn) {
+      router.push("/[lang]/profile", `/${language}/profile`);
+    }
+  });
 
   const [signup, { loading, error, data }] = useSignupMutation({
     onCompleted(signupData) {
@@ -65,7 +69,7 @@ export const SignupForm: React.SFC = () => {
       data.register[field]) ||
     [];
 
-  // TODO
+  // TODO reuse from login page (or make it visible in all pages)
   // {location?.state?.message && (
   //   <Alert variant="alert">{location.state.message}</Alert>
   // )}

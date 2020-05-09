@@ -1,4 +1,5 @@
 /** @jsx jsx */
+import { useApolloClient } from "@apollo/react-hooks";
 import { Box, Heading, Text } from "@theme-ui/components";
 import Router from "next/router";
 import { useCallback } from "react";
@@ -12,13 +13,14 @@ import { useLogoutMutation } from "~/types";
 import { useLoginState } from "./hooks";
 
 export const Logout = () => {
+  const client = useApolloClient();
+
   const [logout, { error, loading, data }] = useLogoutMutation({
     onCompleted: (d) => {
       if (d?.logout?.__typename === "OperationResult" && d?.logout?.ok) {
         setLoggedIn(false);
 
-        // TODO:
-        // client.resetStore();
+        client.resetStore();
         Router.push("/");
         return null;
       }

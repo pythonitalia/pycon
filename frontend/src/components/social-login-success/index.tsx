@@ -4,6 +4,8 @@ import React, { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 
 import { useLoginState } from "~/app/profile/hooks";
+import { useMessages } from "~/helpers/use-messages";
+import { useTranslatedMessage } from "~/helpers/use-translated-message";
 import { useCurrentLanguage } from "~/locale/context";
 import { useSocialLoginCheckQuery } from "~/types";
 
@@ -11,7 +13,9 @@ export const SocialLoginSuccess: React.SFC = () => {
   const [loggedIn, setLoggedIn] = useLoginState();
   const language = useCurrentLanguage();
   const router = useRouter();
+  const [_, addMessage] = useMessages();
 
+  const errorMessage = useTranslatedMessage("global.somethingWentWrong");
   const { loading, error, data } = useSocialLoginCheckQuery({
     onCompleted(data) {
       if (data.me) {
@@ -24,20 +28,16 @@ export const SocialLoginSuccess: React.SFC = () => {
     if (loggedIn) {
       router.push("/[lang]/profile", `/${language}/profile/`);
     }
-  }, [loggedIn]);
 
-  if (!loading && error) {
-    // TODO
-    // return (
-    //   <Redirect
-    //     to={`/${lang}/login/`}
-    //     state={{
-    //       message: "Something went wrong, please try again",
-    //     }}
-    //     noThrow={true}
-    //   />
-    // );
-  }
+    if (!loading && error) {
+      addMessage({
+        message: errorMessage,
+        type: "alert",
+      });
+
+      router.push("/[lang]/login", `/${language}/login/`);
+    }
+  }, [loggedIn, loading, error]);
 
   return (
     <Box

@@ -1,5 +1,6 @@
 /** @jsx jsx */
 import { Box, Text } from "@theme-ui/components";
+import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
@@ -43,6 +44,7 @@ export const TicketsPageWrapper: React.SFC<Props> = ({ children }) => {
   const tickets = data?.conference.tickets || [];
   const conference = data?.conference;
   const me = data?.me;
+  const router = useRouter();
 
   const { state } = useCart();
 
@@ -60,26 +62,22 @@ export const TicketsPageWrapper: React.SFC<Props> = ({ children }) => {
     }
 
     if (!isLoggedIn) {
-      // TODO:!!1
-      // props.navigate!(`/${language}/login`, { replace: true });
+      router.replace("/[lang]/login", `/${language}/login/`);
       return;
     }
 
     if (!hasSelectedAtLeastOneProduct(state)) {
-      // TODO:!!1
-      // props.navigate!("", { replace: true });
+      router.replace("/[lang]/tickets", `/${language}/tickets/`);
       return;
     }
 
     if (!hasOrderInformation(state)) {
-      // TODO:!!1
-      // props.navigate!("information", { replace: true });
+      router.replace("/[lang]/information", `/${language}/information/`);
       return;
     }
 
     if (tickets.length > 0 && !hasAnsweredTicketsQuestions(state, tickets)) {
-      // TODO:!!1
-      // props.navigate!("questions", { replace: true });
+      router.replace("/[lang]/questions", `/${language}/questions/`);
       return;
     }
   }, [typeof location === "undefined" ? null : location.pathname, tickets]);
