@@ -1,0 +1,7 @@
+query SocialCard($code: String!) {
+  conference(code: $code) {
+    start
+    end
+    name
+  }
+}

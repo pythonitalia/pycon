@@ -1,27 +1,28 @@
 import Head from "next/head";
 import React from "react";
 
+import { useCurrentUrl } from "~/helpers/use-url";
 import messages from "~/locale";
 import { useCurrentLanguage } from "~/locale/context";
 
 type Props = {
   title?: React.ReactNode | string | null;
   description?: string;
-  imageUrl?: string;
-  twitterImageUrl?: string;
+  useDefaultSocialCard?: boolean;
 };
 
 export const MetaTags: React.SFC<Props> = ({
   title,
   description,
-  imageUrl,
-  twitterImageUrl,
+  useDefaultSocialCard = true,
   children,
 }) => {
   const language = useCurrentLanguage();
+  const { host, path } = useCurrentUrl();
+  const socialCard = useDefaultSocialCard
+    ? `${host}/api/en`
+    : `${host}/api/social${path}`;
 
-  // TODO: get from page
-  const socialCard = "http://pycon.it/social-twitter/social.png";
   const titleTemplate = messages[language].titleTemplate;
 
   description = description || messages[language].description;

@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 const express = require("express");
 const next = require("next");
+
 require("dotenv").config();
 
 const devProxy = {
@@ -21,11 +22,10 @@ const app = next({
 
 const handle = app.getRequestHandler();
 
-let server;
 app
   .prepare()
   .then(() => {
-    server = express();
+    const server = express();
 
     // Set up the proxy.
     if (dev && devProxy) {
@@ -35,6 +35,9 @@ app
         server.use(createProxyMiddleware(context, devProxy[context]));
       });
     }
+
+    // social cards handler
+    // server.all(/social\.png$/, socialCardHandler);
 
     // Default catch-all handler to allow Next.js to handle all other routes
     server.all("*", (req, res) => handle(req, res));

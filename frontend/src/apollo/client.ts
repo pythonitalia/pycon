@@ -1,5 +1,4 @@
 import {
-  defaultDataIdFromObject,
   InMemoryCache,
   IntrospectionFragmentMatcher,
 } from "apollo-cache-inmemory";
