@@ -1,16 +1,27 @@
 import { NowRequest, NowResponse } from "@now/node";
-import puppeteer from "puppeteer";
+import chromium from "chrome-aws-lambda";
+import puppeteer from "puppeteer-core";
 
 export default async (req: NowRequest, res: NowResponse) => {
   const type = "png";
   const path = (req.query.path as string[]).join("/");
-  const protocol = (req as any).protocol;
-  const url = `${protocol}://${req.headers.host}/${path}/social`;
+  const url = `https://${req.headers.host}/${path}/social`;
+
+  console.log("Taking screenshot of", url);
 
   try {
     const size = { height: 630, width: 1200 };
 
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({
+      // Required
+      executablePath: await chromium.executablePath,
+
+      // Optional
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      headless: true,
+    });
+
     const page = await browser.newPage();
     await page.setViewport({ ...size, deviceScaleFactor: 2 });
     await page.goto(url);
