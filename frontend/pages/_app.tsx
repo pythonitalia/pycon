@@ -48,8 +48,11 @@ class MyApp extends App<{
   static async getInitialProps(appContext: AppContext) {
     const appProps = await App.getInitialProps(appContext);
     const { req } = appContext.ctx;
-    const host = (req as any).protocol + "://" + req.headers.host;
-    const path = req.url;
+
+    const host = req
+      ? ((req as any).protocol || "https") + "://" + req.headers.host
+      : null;
+    const path = req ? req.url : null;
 
     return { ...appProps, host, path };
   }
