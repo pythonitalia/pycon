@@ -46,7 +46,7 @@ export default () => {
   );
 
   const token = router.query.token as string;
-  const userId = router.query["user-id"] as string;
+  const userId = router.query.userId as string;
 
   const onSubmit = useCallback(
     (e) => {
