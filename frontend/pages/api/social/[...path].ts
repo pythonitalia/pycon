@@ -25,6 +25,7 @@ export default async (req: NowRequest, res: NowResponse) => {
     const page = await browser.newPage();
     await page.setViewport({ ...size, deviceScaleFactor: 2 });
     await page.goto(url);
+    await page.waitForSelector("#social-card");
 
     const file = await page.screenshot();
 

@@ -54,6 +54,7 @@ export default () => {
           background: "black",
           p: padding,
         }}
+        id="social-card"
       >
         <Flex>
           <img
