@@ -1,11 +1,9 @@
 /** @jsx jsx */
 import { ApolloProvider } from "@apollo/react-hooks";
 import { getDataFromTree } from "@apollo/react-ssr";
-import { CacheProvider } from "@emotion/core";
 import * as Sentry from "@sentry/browser";
 import { ColorModeProvider } from "@theme-ui/color-modes";
 import { ApolloClient } from "apollo-client";
-import { cache } from "emotion";
 import withApollo from "next-with-apollo";
 import App, { AppContext } from "next/app";
 import { createIntl, createIntlCache, RawIntlProvider } from "react-intl";
@@ -70,44 +68,39 @@ class MyApp extends App<{
     );
 
     return (
-      <URLContext.Provider value={{ host, path }}>
-        <ApolloProvider client={apollo}>
-          <CacheProvider value={cache}>
-            <ThemeProvider theme={theme}>
-              <RawIntlProvider value={intl}>
-                <ColorModeProvider>
-                  <LocaleProvider lang={locale}>
-                    <Styled.root>
-                      {globalStyles}
+      <ThemeProvider theme={theme}>
+        <URLContext.Provider value={{ host, path }}>
+          <ApolloProvider client={apollo}>
+            <RawIntlProvider value={intl}>
+              <LocaleProvider lang={locale}>
+                <Styled.root>
+                  {globalStyles}
+                  {isSocial(router.pathname) ? (
+                    <Component {...pageProps} />
+                  ) : (
+                    <Flex
+                      sx={{
+                        flexDirection: "column",
+                        minHeight: "100vh",
+                      }}
+                    >
+                      <Header />
 
-                      {isSocial(router.pathname) ? (
-                        <Component {...pageProps} />
-                      ) : (
-                        <Flex
-                          sx={{
-                            flexDirection: "column",
-                            minHeight: "100vh",
-                          }}
-                        >
-                          <Header />
+                      <Box sx={{ mt: [100, 130] }}>
+                        <ErrorBoundary>
+                          <Component {...pageProps} />
+                        </ErrorBoundary>
+                      </Box>
 
-                          <Box sx={{ mt: [100, 130] }}>
-                            <ErrorBoundary>
-                              <Component {...pageProps} />
-                            </ErrorBoundary>
-                          </Box>
-
-                          <Footer />
-                        </Flex>
-                      )}
-                    </Styled.root>
-                  </LocaleProvider>
-                </ColorModeProvider>
-              </RawIntlProvider>
-            </ThemeProvider>
-          </CacheProvider>
-        </ApolloProvider>
-      </URLContext.Provider>
+                      <Footer />
+                    </Flex>
+                  )}
+                </Styled.root>
+              </LocaleProvider>
+            </RawIntlProvider>
+          </ApolloProvider>
+        </URLContext.Provider>
+      </ThemeProvider>
     );
   }
 }

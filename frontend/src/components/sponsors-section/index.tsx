@@ -1,6 +1,5 @@
 /** @jsx jsx */
 import { Box, Heading } from "@theme-ui/components";
-import { css } from "emotion";
 import { jsx } from "theme-ui";
 
 import { SponsorsGrid } from "./sponsors-grid";
@@ -38,7 +37,7 @@ export const SponsorsSection: React.SFC<Props> = ({
               px: 3,
               left: -20,
             }}
-            css={css`
+            css={`
               @media (min-width: 1310px) {
                 position: relative;
                 display: inline-block;

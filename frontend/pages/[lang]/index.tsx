@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { Box, Flex, Grid, Heading, Text } from "@theme-ui/components";
-import React from "react";
+import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
@@ -34,7 +34,7 @@ export default () => {
   const { conference, blogPosts } = data;
 
   return (
-    <React.Fragment>
+    <Fragment>
       <FormattedMessage id="home.title">
         {(text) => <MetaTags title={text} />}
       </FormattedMessage>
@@ -263,6 +263,6 @@ export default () => {
           </Box>
         </Box>
       </Grid>
-    </React.Fragment>
+    </Fragment>
   );
 };

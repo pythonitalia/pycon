@@ -46,11 +46,6 @@ const httpLink = new HttpLink({
   fetch,
 });
 
-console.log(
-  "GraphQL url is",
-  process.browser ? "/graphql" : process.env.API_URL,
-);
-
 const link = ApolloLink.from([errorLink, httpLink]);
 
 export const getApolloClient = ({ initialState }: any) =>

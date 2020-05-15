@@ -1,4 +1,3 @@
-import { extractCritical } from "emotion-server";
 import Document, {
   DocumentContext,
   Head,
@@ -14,13 +13,16 @@ export default class MyDocument extends Document<{
   css: string;
   url: string;
 }> {
-  static async getInitialProps({ renderPage, req }: DocumentContext) {
-    const page = await renderPage();
-    const styles = extractCritical(page.html);
+  static async getInitialProps(ctx: DocumentContext) {
+    const initialProps = await Document.getInitialProps(ctx);
 
-    const url = (req as any).protocol + "://" + req.headers.host + req.url;
+    const host = ctx.req
+      ? ((ctx.req as any).protocol || "https") + "://" + ctx.req.headers.host
+      : null;
 
-    return { ...page, ...styles, url };
+    const url = host + ctx.req.url;
+
+    return { ...initialProps, url };
   }
 
   render() {
@@ -29,11 +31,6 @@ export default class MyDocument extends Document<{
         <Head>
           <link rel="stylesheet" href="https://use.typekit.net/mbr7dqb.css" />
           <link rel="shortcut icon" href="/favicon.png" />
-
-          <style
-            data-emotion-css={this.props.ids.join(" ")}
-            dangerouslySetInnerHTML={{ __html: this.props.css }}
-          />
 
           <meta property="og:url" content={this.props.url} />
           <meta property="twitter:url" content={this.props.url} />
