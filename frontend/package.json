@@ -35,7 +35,7 @@
     "apollo-cache-inmemory": "^1.6.5",
     "apollo-client": "^2.6.8",
     "apollo-link": "^1.2.13",
-    "apollo-link-error": "^1.1.12",
+    "apollo-link-error": "^1.1.13",
     "apollo-link-http": "^1.5.16",
     "emotion": "^10.0.23",
     "gatsby": "^2.19.16",
