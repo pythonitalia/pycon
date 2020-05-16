@@ -1,7 +1,5 @@
 /** @jsx jsx */
-
-import { Box, Flex, Heading, Text } from "@theme-ui/components";
-import { jsx } from "theme-ui";
+import { Box, Flex, Heading, jsx, Text } from "theme-ui";
 
 import { useKeynotesSectionQuery } from "~/types";
 

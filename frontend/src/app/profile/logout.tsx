@@ -1,10 +1,9 @@
 /** @jsx jsx */
 import { useApolloClient } from "@apollo/react-hooks";
-import { Box, Heading, Text } from "@theme-ui/components";
 import Router from "next/router";
 import { useCallback } from "react";
 import { FormattedMessage } from "react-intl";
-import { jsx } from "theme-ui";
+import { Box, Heading, jsx, Text } from "theme-ui";
 
 import { Alert } from "~/components/alert";
 import { Button } from "~/components/button/button";

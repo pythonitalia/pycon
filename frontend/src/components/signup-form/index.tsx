@@ -1,8 +1,9 @@
-import { Box, Grid, Input, Text } from "@theme-ui/components";
+/** @jsx jsx */
 import { useRouter } from "next/router";
 import React, { useCallback, useLayoutEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
+import { Box, Grid, Input, jsx, Text } from "theme-ui";
 
 import { useLoginState } from "~/app/profile/hooks";
 import { useCurrentLanguage } from "~/locale/context";

@@ -1,8 +1,7 @@
 /** @jsx jsx */
 
-import { Box } from "@theme-ui/components";
 import { ColorPalette, TypeScale, TypeStyle } from "@theme-ui/style-guide";
-import { jsx, Styled } from "theme-ui";
+import { Box, jsx, Styled } from "theme-ui";
 
 export default () => (
   <Box

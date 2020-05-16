@@ -1,8 +1,7 @@
 /** @jsx jsx */
-import { Box, Grid, Heading, Text } from "@theme-ui/components";
 import React, { Fragment, useCallback, useState } from "react";
 import { FormattedMessage } from "react-intl";
-import { jsx } from "theme-ui";
+import { Box, Grid, Heading, jsx, Text } from "theme-ui";
 
 import { compile } from "~/helpers/markdown";
 import { useSendVoteMutation } from "~/types";

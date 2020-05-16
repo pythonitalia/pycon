@@ -1,10 +1,9 @@
 /** @jsx jsx */
-import { Box, Grid, Heading, Select, Text } from "@theme-ui/components";
 import { useRouter } from "next/router";
 import { useCallback, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
-import { jsx } from "theme-ui";
+import { Box, Grid, Heading, jsx, Select, Text } from "theme-ui";
 
 import { useLoginState } from "~/app/profile/hooks";
 import { useVotingSubmissionsQuery } from "~/types";

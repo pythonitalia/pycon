@@ -1,8 +1,7 @@
 /** @jsx jsx */
-import { Box, Select } from "@theme-ui/components";
 import { useCallback, useRef, useState } from "react";
 import { FormattedMessage } from "react-intl";
-import { jsx } from "theme-ui";
+import { Box, jsx, Select } from "theme-ui";
 import useOnClickOutside from "use-onclickoutside";
 
 import { Tag } from "../tag";

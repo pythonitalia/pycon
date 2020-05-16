@@ -1,8 +1,7 @@
 /** @jsx jsx */
-import { Box, Flex, Heading } from "@theme-ui/components";
 import React, { Fragment, useCallback } from "react";
 import { FormattedMessage } from "react-intl";
-import { jsx } from "theme-ui";
+import { Box, Flex, Heading, jsx } from "theme-ui";
 
 import { DaySelector } from "~/components/day-selector";
 import {
@@ -17,17 +16,19 @@ import { ItemsPanel } from "./staff/items-panel";
 
 const LoadingOverlay = () => (
   <Flex
-    sx={{
-      position: "fixed",
-      left: 0,
-      right: 0,
-      bottom: 0,
-      top: 0,
-      background: "rgba(0, 0, 0, 0.3)",
-      zIndex: "scheduleLoading",
-      alignItems: "center",
-      justifyContent: "center",
-    }}
+    sx={
+      {
+        position: "fixed",
+        left: 0,
+        right: 0,
+        bottom: 0,
+        top: 0,
+        background: "rgba(0, 0, 0, 0.3)",
+        zIndex: "scheduleLoading",
+        alignItems: "center",
+        justifyContent: "center",
+      } as any
+    }
   >
     <Box
       sx={{ backgroundColor: "white", border: "primary", p: 4, fontSize: 3 }}

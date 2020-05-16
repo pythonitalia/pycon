@@ -1,7 +1,6 @@
 /** @jsx jsx */
-import { Box, Grid } from "@theme-ui/components";
 import { Fragment } from "react";
-import { jsx } from "theme-ui";
+import { Box, Grid, jsx } from "theme-ui";
 
 import { AvatarPlaceholder } from "~/components/icons/avatar-placeholder";
 

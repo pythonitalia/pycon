@@ -1,4 +1,6 @@
 export default {
+  initialColorModeName: "light",
+  useColorSchemeMediaQuery: true,
   space: [0, 4, 8, 16, 32, 64, 128, 256, 512],
   fonts: {
     body: "aktiv-grotesk-extended, sans-serif",

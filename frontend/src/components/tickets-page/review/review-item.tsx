@@ -1,7 +1,6 @@
 /** @jsx jsx */
-import { Text } from "@theme-ui/components";
 import React, { Fragment } from "react";
-import { jsx } from "theme-ui";
+import { jsx, Text } from "theme-ui";
 
 export const ReviewItem = ({
   label,

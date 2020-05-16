@@ -1,7 +1,6 @@
 /** @jsx jsx */
-import { Box, Heading, Input } from "@theme-ui/components";
 import React, { useState } from "react";
-import { jsx } from "theme-ui";
+import { Box, Heading, Input, jsx } from "theme-ui";
 
 import { AllTracksEvent, CustomEvent, Submission } from "../events";
 import { Submission as SubmissionType } from "../types";
@@ -20,18 +19,20 @@ export const ItemsPanel: React.SFC<ItemsPanelProp> = ({ submissions }) => {
 
   return (
     <Box
-      sx={{
-        position: "fixed",
-        bottom: 0,
-        top: 0,
-        right: 0,
-        zIndex: "scheduleItemPanel",
-        width: 300,
-        p: 4,
-        borderLeft: "primary",
-        background: "white",
-        overflowX: "scroll",
-      }}
+      sx={
+        {
+          position: "fixed",
+          bottom: 0,
+          top: 0,
+          right: 0,
+          zIndex: "scheduleItemPanel",
+          width: 300,
+          p: 4,
+          borderLeft: "primary",
+          background: "white",
+          overflowX: "scroll",
+        } as any
+      }
     >
       <Heading sx={{ mb: 4 }}>Special items</Heading>
 

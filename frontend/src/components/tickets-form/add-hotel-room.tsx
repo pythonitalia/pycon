@@ -1,10 +1,9 @@
 /** @jsx jsx */
-import { Flex, Select } from "@theme-ui/components";
 import moment from "moment";
 import { useCallback, useMemo } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
-import { jsx } from "theme-ui";
+import { Flex, jsx, Select } from "theme-ui";
 
 import { useCurrentLanguage } from "~/locale/context";
 

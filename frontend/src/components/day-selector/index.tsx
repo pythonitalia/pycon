@@ -1,8 +1,7 @@
 /** @jsx jsx */
-import { Box, Select } from "@theme-ui/components";
 import { useRouter } from "next/router";
 import React from "react";
-import { jsx } from "theme-ui";
+import { Box, jsx, Select } from "theme-ui";
 
 import { Link } from "~/components/link";
 import { useCurrentLanguage } from "~/locale/context";

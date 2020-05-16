@@ -1,8 +1,7 @@
 /** @jsx jsx */
-import { Box, Heading, Input, Select } from "@theme-ui/components";
 import React, { FormEvent, useCallback, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
-import { jsx } from "theme-ui";
+import { Box, Heading, Input, jsx, Select } from "theme-ui";
 
 import { InputWrapper } from "~/components/input-wrapper";
 import { Ticket } from "~/components/tickets-form/types";

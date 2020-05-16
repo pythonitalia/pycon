@@ -1,7 +1,6 @@
 /** @jsx jsx */
-import { Box, Grid } from "@theme-ui/components";
 import LazyLoad from "react-lazyload";
-import { jsx } from "theme-ui";
+import { Box, Grid, jsx } from "theme-ui";
 
 import { useSSRResponsiveValue } from "~/helpers/use-ssr-responsive-value";
 

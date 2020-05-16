@@ -1,8 +1,7 @@
 /** @jsx jsx */
-import { Box, Grid, Heading } from "@theme-ui/components";
 import React from "react";
 import { FormattedMessage } from "react-intl";
-import { jsx } from "theme-ui";
+import { Box, Grid, Heading, jsx } from "theme-ui";
 
 import { Link } from "~/components/link";
 import { useCountries } from "~/helpers/use-countries";

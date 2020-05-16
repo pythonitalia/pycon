@@ -1,7 +1,6 @@
 /** @jsx jsx */
 import { keyframes } from "@emotion/core";
-import { Flex, Text } from "@theme-ui/components";
-import { jsx } from "theme-ui";
+import { Flex, jsx, Text } from "theme-ui";
 
 type MarqueeProps = {
   message: string;

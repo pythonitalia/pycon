@@ -1,8 +1,7 @@
 /** @jsx jsx */
-import { Flex, Select } from "@theme-ui/components";
 import React, { useState } from "react";
 import { FormattedMessage } from "react-intl";
-import { jsx } from "theme-ui";
+import { Flex, jsx, Select } from "theme-ui";
 
 import { Button } from "../button/button";
 import { Ticket } from "./types";

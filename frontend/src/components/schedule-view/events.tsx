@@ -1,7 +1,6 @@
 /** @jsx jsx */
-import { Box, Flex, Text } from "@theme-ui/components";
 import React from "react";
-import { jsx } from "theme-ui";
+import { Box, Flex, jsx, Text } from "theme-ui";
 
 import { EnglishIcon } from "~/components/icons/english";
 import { ItalianIcon } from "~/components/icons/italian";

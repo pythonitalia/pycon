@@ -1,7 +1,5 @@
 /** @jsx jsx */
-
-import { Box } from "@theme-ui/components";
-import { jsx } from "theme-ui";
+import { Box, jsx } from "theme-ui";
 
 import { Link } from "../link";
 import { BuyTicketsCTA } from "./buy-tickets-cta";

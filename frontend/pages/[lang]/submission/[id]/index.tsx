@@ -1,9 +1,8 @@
 /** @jsx jsx */
-import { Container } from "@theme-ui/components";
 import { useRouter } from "next/router";
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
-import { jsx } from "theme-ui";
+import { Container, jsx } from "theme-ui";
 
 import { useLoginState } from "~/app/profile/hooks";
 import { Alert } from "~/components/alert";

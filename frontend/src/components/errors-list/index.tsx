@@ -1,7 +1,6 @@
 /** @jsx jsx */
-import { Box } from "@theme-ui/components";
 import React from "react";
-import { jsx } from "theme-ui";
+import { Box, jsx } from "theme-ui";
 
 export const ErrorsList: React.SFC<{ errors?: string[] }> = ({
   errors,

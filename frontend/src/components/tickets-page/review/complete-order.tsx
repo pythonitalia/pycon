@@ -1,8 +1,7 @@
 /** @jsx jsx */
-import { Box, Heading, Text } from "@theme-ui/components";
 import React from "react";
 import { FormattedMessage } from "react-intl";
-import { jsx } from "theme-ui";
+import { Box, Heading, jsx, Text } from "theme-ui";
 
 import { Ticket } from "~/components/tickets-form/types";
 import { useCurrentLanguage } from "~/locale/context";

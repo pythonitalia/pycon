@@ -1,8 +1,7 @@
 /** @jsx jsx */
-import { Box, Heading, Text } from "@theme-ui/components";
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
-import { jsx } from "theme-ui";
+import { Box, Heading, jsx, Text } from "theme-ui";
 
 import { Link } from "~/components/link";
 import { MetaTags } from "~/components/meta-tags";

@@ -1,7 +1,6 @@
 /** @jsx jsx */
-import { Box, Flex, Heading, Text } from "@theme-ui/components";
 import { FormattedMessage } from "react-intl";
-import { jsx } from "theme-ui";
+import { Box, Flex, Heading, jsx, Text } from "theme-ui";
 
 type Props = {
   orders: {

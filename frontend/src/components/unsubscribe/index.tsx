@@ -1,8 +1,7 @@
 /** @jsx jsx */
-import { Box, Text } from "@theme-ui/components";
 import React, { Fragment, useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
-import { jsx } from "theme-ui";
+import { Box, jsx, Text } from "theme-ui";
 
 import { useUnsubscribeMutation } from "~/types";
 

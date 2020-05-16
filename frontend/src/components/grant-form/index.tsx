@@ -1,18 +1,18 @@
 /** @jsx jsx */
+import React, { Fragment, useCallback } from "react";
+import { FormattedMessage } from "react-intl";
+import { useFormState } from "react-use-form-state";
 import {
   Box,
   Checkbox,
   Flex,
   Heading,
   Input,
+  jsx,
   Select,
   Text,
   Textarea,
-} from "@theme-ui/components";
-import React, { Fragment, useCallback } from "react";
-import { FormattedMessage } from "react-intl";
-import { useFormState } from "react-use-form-state";
-import { jsx } from "theme-ui";
+} from "theme-ui";
 
 import { useSendGrantRequestMutation } from "~/types";
 

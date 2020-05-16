@@ -1,9 +1,8 @@
 /** @jsx jsx */
-import { Box, Heading, Input } from "@theme-ui/components";
 import { useCallback } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
-import { jsx } from "theme-ui";
+import { Box, Heading, Input, jsx } from "theme-ui";
 
 import { Alert } from "~/components/alert";
 import { Button } from "~/components/button/button";

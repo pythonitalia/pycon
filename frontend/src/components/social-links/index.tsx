@@ -1,6 +1,5 @@
 /** @jsx jsx */
-import { Flex } from "@theme-ui/components";
-import { jsx } from "theme-ui";
+import { Flex, jsx } from "theme-ui";
 
 import Facebook from "../icons/social/facebook";
 import Instagram from "../icons/social/instagram";

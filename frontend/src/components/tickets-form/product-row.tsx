@@ -1,8 +1,7 @@
 /** @jsx jsx */
-import { Box, Grid, Text } from "@theme-ui/components";
 import moment from "moment";
 import { FormattedMessage } from "react-intl";
-import { jsx } from "theme-ui";
+import { Box, Grid, jsx, Text } from "theme-ui";
 
 import { useCurrentLanguage } from "~/locale/context";
 

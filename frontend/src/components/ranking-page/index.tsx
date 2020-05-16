@@ -1,9 +1,8 @@
 /** @jsx jsx */
-import { Box, Grid, Heading, Select, Text } from "@theme-ui/components";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
-import { jsx } from "theme-ui";
+import { Box, Grid, Heading, jsx, Select, Text } from "theme-ui";
 
 import { useRankingSubmissionQuery } from "~/types";
 

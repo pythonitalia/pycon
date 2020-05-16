@@ -1,7 +1,8 @@
-import { Box } from "@theme-ui/components";
+/** @jsx jsx */
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
+import { Box, jsx } from "theme-ui";
 
 import { useLoginState } from "~/app/profile/hooks";
 import { useMessages } from "~/helpers/use-messages";

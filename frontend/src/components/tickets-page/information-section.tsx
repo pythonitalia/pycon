@@ -1,9 +1,8 @@
 /** @jsx jsx */
-import { Box, Heading, Input, Select, Textarea } from "@theme-ui/components";
 import React, { useCallback, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
-import { jsx } from "theme-ui";
+import { Box, Heading, Input, jsx, Select, Textarea } from "theme-ui";
 
 import { InputWrapper } from "~/components/input-wrapper";
 import { useCountries } from "~/helpers/use-countries";

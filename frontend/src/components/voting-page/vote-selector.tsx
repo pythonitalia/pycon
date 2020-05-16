@@ -1,7 +1,6 @@
 /** @jsx jsx */
-import { Box, Heading, Label, Radio } from "@theme-ui/components";
 import { FormattedMessage } from "react-intl";
-import { jsx } from "theme-ui";
+import { Box, Heading, jsx, Label, Radio } from "theme-ui";
 
 import { InputWrapper } from "../input-wrapper";
 

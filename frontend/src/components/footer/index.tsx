@@ -1,7 +1,5 @@
 /** @jsx jsx */
-
-import { Box, Grid } from "@theme-ui/components";
-import { jsx } from "theme-ui";
+import { Box, Grid, jsx } from "theme-ui";
 
 import { useFooterQuery } from "~/types";
 
@@ -55,13 +53,15 @@ export const Footer = () => {
 
   return (
     <Box
-      sx={{
-        background: "black",
-        py: [4, 5],
-        px: 3,
-        mt: "auto",
-        zIndex: "footer",
-      }}
+      sx={
+        {
+          background: "black",
+          py: [4, 5],
+          px: 3,
+          mt: "auto",
+          zIndex: "footer",
+        } as any
+      }
     >
       <Grid
         sx={{

@@ -2,7 +2,6 @@
 import { ApolloProvider } from "@apollo/react-hooks";
 import { getDataFromTree } from "@apollo/react-ssr";
 import * as Sentry from "@sentry/browser";
-import { ColorModeProvider } from "@theme-ui/color-modes";
 import { ApolloClient } from "apollo-client";
 import withApollo from "next-with-apollo";
 import App, { AppContext } from "next/app";
@@ -73,29 +72,26 @@ class MyApp extends App<{
           <ApolloProvider client={apollo}>
             <RawIntlProvider value={intl}>
               <LocaleProvider lang={locale}>
-                <Styled.root>
-                  {globalStyles}
-                  {isSocial(router.pathname) ? (
-                    <Component {...pageProps} />
-                  ) : (
-                    <Flex
-                      sx={{
-                        flexDirection: "column",
-                        minHeight: "100vh",
-                      }}
-                    >
-                      <Header />
+                {isSocial(router.pathname) ? (
+                  <Component {...pageProps} />
+                ) : (
+                  <Flex
+                    sx={{
+                      flexDirection: "column",
+                      minHeight: "100vh",
+                    }}
+                  >
+                    <Header />
 
-                      <Box sx={{ mt: [100, 130] }}>
-                        <ErrorBoundary>
-                          <Component {...pageProps} />
-                        </ErrorBoundary>
-                      </Box>
+                    <Box sx={{ mt: [100, 130] }}>
+                      <ErrorBoundary>
+                        <Component {...pageProps} />
+                      </ErrorBoundary>
+                    </Box>
 
-                      <Footer />
-                    </Flex>
-                  )}
-                </Styled.root>
+                    <Footer />
+                  </Flex>
+                )}
               </LocaleProvider>
             </RawIntlProvider>
           </ApolloProvider>

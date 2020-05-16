@@ -1,5 +1,6 @@
-import { Badge } from "@theme-ui/components";
+/** @jsx jsx */
 import React from "react";
+import { Badge, jsx } from "theme-ui";
 
 type Props = {
   tag: { name: string };

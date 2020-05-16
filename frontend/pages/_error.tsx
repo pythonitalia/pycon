@@ -1,6 +1,5 @@
 /** @jsx jsx */
-import { Box, Heading } from "@theme-ui/components";
-import { jsx } from "theme-ui";
+import { Box, Heading, jsx } from "theme-ui";
 
 const Error = ({ statusCode }) => (
   <Box sx={{ mt: 4, mx: "auto", maxWidth: "container", px: 3, pb: 6 }}>

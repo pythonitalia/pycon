@@ -1,7 +1,6 @@
 /** @jsx jsx */
-import { Box, Flex, Heading } from "@theme-ui/components";
 import { Fragment } from "react";
-import { jsx } from "theme-ui";
+import { Box, Flex, Heading, jsx } from "theme-ui";
 
 import { LogoOrange } from "~/components/logo/orange";
 import { getSize } from "~/helpers/social-card";

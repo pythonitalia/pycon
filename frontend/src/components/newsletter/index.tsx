@@ -1,8 +1,7 @@
 /** @jsx jsx */
-import { Box, Heading, Input, Text } from "@theme-ui/components";
 import React, { useCallback, useState } from "react";
 import { FormattedMessage } from "react-intl";
-import { jsx } from "theme-ui";
+import { Box, Heading, Input, jsx, Text } from "theme-ui";
 
 import { useSubscribeMutation } from "~/types";
 

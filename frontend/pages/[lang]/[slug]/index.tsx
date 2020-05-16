@@ -1,8 +1,7 @@
 /** @jsx jsx */
-import { Box, Text } from "@theme-ui/components";
 import { useRouter } from "next/router";
 import { Fragment } from "react";
-import { jsx } from "theme-ui";
+import { Box, jsx, Text } from "theme-ui";
 
 import { Article } from "~/components/article";
 import { MetaTags } from "~/components/meta-tags";

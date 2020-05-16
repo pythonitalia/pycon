@@ -1,8 +1,7 @@
 /** @jsx jsx */
-import { Button as ThemeButton } from "@theme-ui/components";
 import { useEffect, useRef, useState } from "react";
 import { FormattedMessage } from "react-intl";
-import { jsx } from "theme-ui";
+import { Button as ThemeButton, jsx } from "theme-ui";
 
 type ButtonProps = {
   disabled?: boolean;

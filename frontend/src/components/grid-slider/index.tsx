@@ -1,7 +1,6 @@
 /** @jsx jsx */
-import { Box, Flex, Grid, Heading } from "@theme-ui/components";
 import { useState } from "react";
-import { jsx } from "theme-ui";
+import { Box, Flex, Grid, Heading, jsx } from "theme-ui";
 
 import { useSSRResponsiveValue } from "~/helpers/use-ssr-responsive-value";
 

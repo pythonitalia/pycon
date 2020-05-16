@@ -1,8 +1,7 @@
 /** @jsx jsx */
-import { Box } from "@theme-ui/components";
 import { useRouter } from "next/router";
 import { FormattedMessage } from "react-intl";
-import { jsx } from "theme-ui";
+import { Box, jsx } from "theme-ui";
 
 import { Alert } from "~/components/alert";
 import {

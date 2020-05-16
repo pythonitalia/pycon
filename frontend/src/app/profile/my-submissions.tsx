@@ -1,7 +1,6 @@
 /** @jsx jsx */
-import { Box, Heading } from "@theme-ui/components";
 import { FormattedMessage } from "react-intl";
-import { jsx } from "theme-ui";
+import { Box, Heading, jsx } from "theme-ui";
 
 import { Alert } from "~/components/alert";
 import { Link } from "~/components/link";

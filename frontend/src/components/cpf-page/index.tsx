@@ -1,8 +1,7 @@
 /** @jsx jsx */
-import { Box, Container, Heading, Text } from "@theme-ui/components";
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
-import { jsx } from "theme-ui";
+import { Box, Container, Heading, jsx, Text } from "theme-ui";
 
 import { useLoginState } from "~/app/profile/hooks";
 import { MySubmissions } from "~/app/profile/my-submissions";

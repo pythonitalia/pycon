@@ -1,11 +1,10 @@
 /** @jsx jsx */
-import { Box, Flex } from "@theme-ui/components";
 import { useRouter } from "next/router";
 import React, { Fragment } from "react";
 import { DndProvider } from "react-dnd";
 import Backend from "react-dnd-html5-backend";
 import { FormattedMessage } from "react-intl";
-import { jsx } from "theme-ui";
+import { Box, Flex, jsx } from "theme-ui";
 
 import { useLoginState } from "~/app/profile/hooks";
 import { formatDay } from "~/components/day-selector/format-day";

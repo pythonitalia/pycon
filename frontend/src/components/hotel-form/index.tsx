@@ -1,8 +1,7 @@
 /** @jsx jsx */
-import { Box, Flex, Heading } from "@theme-ui/components";
 import moment from "moment";
 import { FormattedMessage } from "react-intl";
-import { jsx } from "theme-ui";
+import { Box, Flex, Heading, jsx } from "theme-ui";
 
 import { useCurrentLanguage } from "~/locale/context";
 import { HotelRoom } from "~/types";

@@ -1,6 +1,5 @@
 /** @jsx jsx */
-import { Box, Heading } from "@theme-ui/components";
-import { jsx } from "theme-ui";
+import { Box, Heading, jsx } from "theme-ui";
 
 import { SponsorsGrid } from "./sponsors-grid";
 import { Sponsor } from "./types";
@@ -39,9 +38,10 @@ export const SponsorsSection: React.SFC<Props> = ({
             }}
             css={`
               @media (min-width: 1310px) {
-                position: relative;
+                position: static;
                 display: inline-block;
                 padding: 0;
+                transform: none;
               }
             `}
           >

@@ -1,21 +1,21 @@
 /** @jsx jsx */
+import { ApolloError } from "apollo-client";
+import React, { Fragment, useEffect } from "react";
+import { FormattedMessage } from "react-intl";
+import { useFormState } from "react-use-form-state";
 import {
   Box,
   Checkbox,
   Flex,
   Grid,
   Input,
+  jsx,
   Label,
   Radio,
   Select,
   Text,
   Textarea,
-} from "@theme-ui/components";
-import { ApolloError } from "apollo-client";
-import React, { Fragment, useEffect } from "react";
-import { FormattedMessage } from "react-intl";
-import { useFormState } from "react-use-form-state";
-import { jsx } from "theme-ui";
+} from "theme-ui";
 
 import { CfpFormQuery, useCfpFormQuery } from "~/types";
 

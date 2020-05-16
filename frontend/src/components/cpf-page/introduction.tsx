@@ -1,6 +1,7 @@
-import { Box, Grid, Text } from "@theme-ui/components";
+/** @jsx jsx */
 import React from "react";
 import { FormattedMessage } from "react-intl";
+import { Box, Grid, jsx, Text } from "theme-ui";
 
 import { CFPIllustration } from "../illustrations/cfp";
 import { Link } from "../link";

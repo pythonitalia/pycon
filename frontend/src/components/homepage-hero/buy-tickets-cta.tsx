@@ -5,6 +5,11 @@ import { jsx, useThemeUI } from "theme-ui";
 export const BuyTicketsCTA: React.SFC = (props) => {
   const { theme } = useThemeUI();
 
+  if (!theme) {
+    console.log("lol");
+    return null;
+  }
+
   return (
     <svg
       viewBox="0 0 151 151"

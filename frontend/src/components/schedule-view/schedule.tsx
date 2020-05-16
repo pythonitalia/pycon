@@ -1,8 +1,7 @@
 /** @jsx jsx */
-import { Box, Grid } from "@theme-ui/components";
 import React, { useRef } from "react";
 import useSyncScroll from "react-use-sync-scroll";
-import { jsx } from "theme-ui";
+import { Box, Grid, jsx } from "theme-ui";
 
 import { ScheduleEntry } from "./events";
 import { isTraining } from "./is-training";

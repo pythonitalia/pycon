@@ -1,8 +1,7 @@
 /** @jsx jsx */
-import { Box, Link as ThemeLink } from "@theme-ui/components";
 import NextLink from "next/link";
 import React from "react";
-import { jsx } from "theme-ui";
+import { Box, jsx, Link as ThemeLink } from "theme-ui";
 
 import { useHover } from "~/helpers/use-hover";
 import { useCurrentLanguage } from "~/locale/context";

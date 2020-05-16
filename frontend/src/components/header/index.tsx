@@ -1,10 +1,9 @@
 /** @jsx jsx */
-import { Box, Flex, Grid, Heading } from "@theme-ui/components";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { Fragment, useEffect, useRef } from "react";
 import { FormattedMessage } from "react-intl";
-import { jsx } from "theme-ui";
+import { Box, Flex, Grid, Heading, jsx } from "theme-ui";
 import useOnClickOutside from "use-onclickoutside";
 
 import { useLoginState } from "~/app/profile/hooks";
@@ -92,14 +91,16 @@ export const Header = () => {
   return (
     <Fragment>
       <Box
-        sx={{
-          height: WARNING_MESSAGE_HEIGHT,
-          backgroundColor: "black",
-          color: "white",
-          position: open ? "fixed" : "relative",
-          width: "100%",
-          zIndex: "header",
-        }}
+        sx={
+          {
+            height: WARNING_MESSAGE_HEIGHT,
+            backgroundColor: "black",
+            color: "white",
+            position: open ? "fixed" : "relative",
+            width: "100%",
+            zIndex: "header",
+          } as any
+        }
       >
         <Box
           sx={{
@@ -124,18 +125,20 @@ export const Header = () => {
 
       <Box
         ref={headerRef}
-        sx={{
-          top: WARNING_MESSAGE_HEIGHT,
-          left: 0,
-          pt: 3,
-          width: "100%",
-          height: open ? "100%" : "",
-          zIndex: "header",
-          position: open ? "fixed" : "absolute",
-          borderBottom: open ? "primary" : "",
-          backgroundColor: open ? "orange" : "",
-          overflowY: open ? "scroll" : "initial",
-        }}
+        sx={
+          {
+            top: WARNING_MESSAGE_HEIGHT,
+            left: 0,
+            pt: 3,
+            width: "100%",
+            height: open ? "100%" : "",
+            zIndex: "header",
+            position: open ? "fixed" : "absolute",
+            borderBottom: open ? "primary" : "",
+            backgroundColor: open ? "orange" : "",
+            overflowY: open ? "scroll" : "initial",
+          } as any
+        }
       >
         <Flex
           sx={{

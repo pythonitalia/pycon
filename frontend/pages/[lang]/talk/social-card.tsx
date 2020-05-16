@@ -1,7 +1,6 @@
 /** @jsx jsx */
-import { Box, Flex, Heading, Text } from "@theme-ui/components";
 import React, { Fragment } from "react";
-import { jsx } from "theme-ui";
+import { Box, Flex, Heading, jsx, Text } from "theme-ui";
 
 import { CardType, getSize } from "~/helpers/social-card";
 

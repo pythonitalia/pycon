@@ -1,8 +1,7 @@
 /** @jsx jsx */
-import { Box } from "@theme-ui/components";
 import React from "react";
 import { FormattedMessage } from "react-intl";
-import { jsx } from "theme-ui";
+import { Box, jsx } from "theme-ui";
 
 import { GrantForm } from "~/components/grant-form";
 import { Introduction } from "~/components/grants-introduction";

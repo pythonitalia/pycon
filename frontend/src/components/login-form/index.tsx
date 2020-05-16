@@ -1,10 +1,9 @@
 /** @jsx jsx */
-import { Box, Grid, Input, Text } from "@theme-ui/components";
 import Router, { useRouter } from "next/router";
 import { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
-import { jsx } from "theme-ui";
+import { Box, Grid, Input, jsx, Text } from "theme-ui";
 
 import { useLoginState } from "~/app/profile/hooks";
 import { useMessages } from "~/helpers/use-messages";

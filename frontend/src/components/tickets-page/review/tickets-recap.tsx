@@ -1,8 +1,7 @@
 /** @jsx jsx */
-import { Box, Grid, Heading, Text } from "@theme-ui/components";
 import React, { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
-import { jsx } from "theme-ui";
+import { Box, Grid, Heading, jsx, Text } from "theme-ui";
 
 import { Link } from "~/components/link";
 import { Ticket } from "~/components/tickets-form/types";

@@ -1,9 +1,8 @@
 /** @jsx jsx */
-import { Box, Flex, Grid, Heading, Text } from "@theme-ui/components";
 import { useRouter } from "next/router";
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
-import { jsx } from "theme-ui";
+import { Box, Flex, Grid, Heading, jsx, Text } from "theme-ui";
 
 import { Article } from "~/components/article";
 import { BlogPostIllustration } from "~/components/illustrations/blog-post";

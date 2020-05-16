@@ -1,18 +1,10 @@
 /** @jsx jsx */
-import {
-  Box,
-  Card,
-  Checkbox,
-  Input,
-  Label,
-  Select,
-  Text,
-} from "@theme-ui/components";
+
 import { useRouter } from "next/router";
 import React, { useCallback } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
-import { jsx } from "theme-ui";
+import { Box, Card, Checkbox, Input, jsx, Label, Select, Text } from "theme-ui";
 // @ts-ignore
 import * as yup from "yup";
 

@@ -1,8 +1,7 @@
 /** @jsx jsx */
-import { Box, Flex, Grid, Heading, Text } from "@theme-ui/components";
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
-import { jsx } from "theme-ui";
+import { Box, Flex, Grid, Heading, jsx, Text } from "theme-ui";
 
 import { GridSlider } from "~/components/grid-slider";
 import { EventCard } from "~/components/home-events/event-card";
