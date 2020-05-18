@@ -99,8 +99,7 @@ export const TicketsRecap: React.SFC<Props> = ({
                       sx={{
                         gridTemplateColumns: "1fr 1fr",
                         maxWidth: 400,
-                        // TODO
-                        // gridRowGap: 3,
+                        rowGap: 3,
                       }}
                     >
                       <ReviewItem

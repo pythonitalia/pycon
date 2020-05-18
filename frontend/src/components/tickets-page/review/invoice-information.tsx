@@ -62,8 +62,7 @@ export const InvoiceInformation: React.SFC<Props> = ({ data }) => {
         <Grid
           sx={{
             gridTemplateColumns: "1fr 1fr",
-            // TODO
-            // gridRowGap: 3,
+            rowGap: 3,
             maxWidth: "400px",
             listStyle: "none",
           }}
