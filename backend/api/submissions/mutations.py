@@ -11,7 +11,7 @@ class SubmissionMutation:
     @classmethod
     def transform(cls, result):
         # lie to strawberry to make it think that the return value is a proper type
-        result.field = Submission.field
+        result.graphql_type = Submission.graphql_type
         return result
 
     class Meta:
