@@ -54,8 +54,6 @@ export default ({ data }: { data: HomePageQuery }) => {
         {text => <MetaTags title={text} />}
       </FormattedMessage>
 
-      <X />
-
       <HomepageHero />
 
       <Marquee message={conference.marquee!} />
