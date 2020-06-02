@@ -2,38 +2,10 @@
 import { Box } from "@theme-ui/components";
 import { Fragment, useState } from "react";
 import { jsx } from "theme-ui";
+import useLocalStorageState from "use-local-storage-state";
 
 import { useCurrentLanguage } from "../../context/language";
 import { Link } from "../link";
-
-function useLocalStorage(key: string, initialValue: any) {
-  const [storedValue, setStoredValue] = useState(() => {
-    try {
-      const item = window.localStorage.getItem(key);
-
-      return item ? JSON.parse(item) : initialValue;
-    } catch (error) {
-      console.log(error);
-
-      return initialValue;
-    }
-  });
-
-  const setValue = (value: any) => {
-    try {
-      const valueToStore =
-        value instanceof Function ? value(storedValue) : value;
-
-      setStoredValue(valueToStore);
-
-      window.localStorage.setItem(key, JSON.stringify(valueToStore));
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  return [storedValue, setValue];
-}
 
 const English = () => (
   <Fragment>
@@ -73,7 +45,11 @@ const English = () => (
     <Box as="p" sx={{ mb: 3, fontSize: 1 }}>
       <Link
         href="https://twitter.com/ThePSF/status/1267591714925133825"
-        sx={{ color: "rgb(255, 255, 255)", fontWeight: "bold" }}
+        sx={{
+          color: "rgb(255, 255, 255)",
+          fontWeight: "bold",
+          wordBreak: "break-word",
+        }}
       >
         https://twitter.com/ThePSF/status/1267591714925133825
       </Link>
@@ -146,7 +122,7 @@ const Italian = () => (
 );
 
 export const X = () => {
-  const [open, openOpen] = useLocalStorage("x/2020", true);
+  const [open, openOpen] = useLocalStorageState("x/2020", true);
   const language = useCurrentLanguage();
 
   if (!open) {

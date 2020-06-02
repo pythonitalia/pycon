@@ -79,6 +79,7 @@
     "theme-ui": "^0.3.1",
     "timed-out": "5",
     "typescript": "^3.7.5",
+    "use-local-storage-state": "^3.0.1",
     "use-onclickoutside": "^0.3.1",
     "yup": "^0.28.0"
   },
