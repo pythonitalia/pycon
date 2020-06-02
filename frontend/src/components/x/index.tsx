@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { Box } from "@theme-ui/components";
-import { Fragment, useState } from "react";
+import { Fragment } from "react";
 import { jsx } from "theme-ui";
 import useLocalStorageState from "use-local-storage-state";
 

@@ -54,7 +54,9 @@ export default ({ data }: { data: HomePageQuery }) => {
         {text => <MetaTags title={text} />}
       </FormattedMessage>
 
-      <X />
+      <Box>
+        <X />
+      </Box>
 
       <HomepageHero />
 
