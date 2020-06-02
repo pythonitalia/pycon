@@ -15,6 +15,7 @@ import { Marquee } from "../components/marquee";
 import { MetaTags } from "../components/meta-tags";
 import { NewsletterSection } from "../components/newsletter";
 import { SponsorsSection } from "../components/sponsors-section";
+import { X } from "../components/x";
 import { YouTubeLite } from "../components/youtube-lite";
 import { HomePageQuery } from "../generated/graphql";
 
@@ -52,6 +53,8 @@ export default ({ data }: { data: HomePageQuery }) => {
       <FormattedMessage id="home.title">
         {text => <MetaTags title={text} />}
       </FormattedMessage>
+
+      <X />
 
       <HomepageHero />
 
