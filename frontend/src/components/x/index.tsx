@@ -146,16 +146,16 @@ const Italian = () => (
 );
 
 export const X = () => {
-  const [closed, updateClosed] = useLocalStorage("x/2020", false);
+  const [open, openOpen] = useLocalStorage("x/2020", true);
   const language = useCurrentLanguage();
 
-  if (closed) {
+  if (!open) {
     return null;
   }
 
   return (
     <Box
-      onClick={() => updateClosed(true)}
+      onClick={() => openOpen(false)}
       sx={{
         position: "fixed",
         top: 0,
