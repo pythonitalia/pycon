@@ -36,6 +36,8 @@ export default ({ data, ...props }: Props) => {
     : talk.description;
   const elevatorPitch = talk.submission ? talk.submission.elevatorPitch : null;
 
+  console.log("talk", talk);
+
   return (
     <Fragment>
       <MetaTags
@@ -60,7 +62,7 @@ export default ({ data, ...props }: Props) => {
 
             <Heading as="h2">Abstract</Heading>
 
-            {compile(description).tree}
+            {compile("ciao").tree}
           </Article>
         </Box>
 

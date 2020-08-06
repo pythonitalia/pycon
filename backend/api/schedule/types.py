@@ -54,7 +54,7 @@ class ScheduleItem:
 
     @strawberry.field
     def can_book(self, info) -> bool:
-        return self.allows_booking and self.capacity_left > 0
+        return self.can_book
 
     @strawberry.field
     def rooms(self, info) -> List[Room]:

@@ -139,9 +139,23 @@ class ScheduleItem(TimeStampedModel):
 
     @property
     def allows_booking(self):
-        return self.type == ScheduleItem.TYPES.training
+        if self.type == ScheduleItem.TYPES.training:
+            return True
 
-    @property
+        if self.type == ScheduleItem.TYPES.submission:
+            return self.submission.type.allow_booking
+
+        return False
+
+    @cached_property
+    def can_book(self) -> bool:
+        return self.allows_booking and self.has_free_spot
+
+    @cached_property
+    def has_free_spot(self):
+        return self.capacity_left > 0
+
+    @cached_property
     def capacity_left(self):
         if not self.maximum_capacity:
             return 0
