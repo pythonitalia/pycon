@@ -12,7 +12,7 @@ import { SpeakerDetail } from "~/components/speaker-detail";
 import { compile } from "~/helpers/markdown";
 import { useTalkQuery } from "~/types";
 
-export default TalkPage = () => {
+export const TalkPage = () => {
   const router = useRouter();
   const slug = router.query.slug as string;
 
