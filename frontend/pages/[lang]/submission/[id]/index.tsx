@@ -82,7 +82,7 @@ const Content = ({
   return <Submission submission={submission} />;
 };
 
-export default () => {
+export const SubmissionPage = () => {
   const router = useRouter();
 
   const id = router.query.id as string;
@@ -102,3 +102,5 @@ export default () => {
     </Container>
   );
 };
+
+export default SubmissionPage;

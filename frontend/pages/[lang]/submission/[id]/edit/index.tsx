@@ -12,7 +12,7 @@ import {
 import { useCurrentLanguage } from "~/locale/context";
 import { useGetSubmissionQuery, useUpdateSubmissionMutation } from "~/types";
 
-export default () => {
+export const EditSubmissionPage = () => {
   const code = process.env.conferenceCode;
   const router = useRouter();
   const id = router.query.id as string;
@@ -96,3 +96,5 @@ export default () => {
     </Box>
   );
 };
+
+export default EditSubmissionPage;

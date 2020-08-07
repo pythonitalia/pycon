@@ -12,7 +12,7 @@ import { compile } from "~/helpers/markdown";
 import { useCurrentLanguage } from "~/locale/context";
 import { usePostQuery } from "~/types";
 
-export default () => {
+export const BlogArticlePage = () => {
   const language = useCurrentLanguage();
   const router = useRouter();
   const slug = router.query.slug as string;
@@ -87,3 +87,4 @@ export default () => {
     </Fragment>
   );
 };
+export default BlogArticlePage;

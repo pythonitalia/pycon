@@ -2,20 +2,19 @@
 import Router from "next/router";
 import { Fragment, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
-import { Box, jsx } from "theme-ui";
+import { jsx } from "theme-ui";
 
 import { useLoginState } from "~/app/profile/hooks";
 import { Logout } from "~/app/profile/logout";
 import { MyOrders } from "~/app/profile/my-orders";
 import { MyProfile } from "~/app/profile/my-profile";
 import { MySubmissions } from "~/app/profile/my-submissions";
-import { Alert } from "~/components/alert";
 import { MetaTags } from "~/components/meta-tags";
 import { PageLoading } from "~/components/page-loading";
 import { useCurrentLanguage } from "~/locale/context";
 import { useMyProfileQuery } from "~/types";
 
-export default () => {
+export const MyProfilePage = () => {
   const [loggedIn, setLoginState] = useLoginState();
   const lang = useCurrentLanguage();
 
@@ -74,3 +73,5 @@ export default () => {
     </Fragment>
   );
 };
+
+export default MyProfilePage;

@@ -17,7 +17,7 @@ import { formatDeadlineDate, formatDeadlineTime } from "~/helpers/deadlines";
 import { useCurrentLanguage } from "~/locale/context";
 import { useIndexPageQuery } from "~/types";
 
-export default () => {
+export const HomePage = () => {
   const language = useCurrentLanguage();
   const { loading, data } = useIndexPageQuery({
     variables: {
@@ -265,3 +265,5 @@ export default () => {
     </Fragment>
   );
 };
+
+export default HomePage;

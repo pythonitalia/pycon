@@ -53,7 +53,7 @@ const schema = yup.object().shape({
   openToNewsletter: yup.boolean(),
 });
 
-export default () => {
+export const EditProfilePage = () => {
   const router = useRouter();
   const language = useCurrentLanguage();
   const [loggedIn] = useLoginState();
@@ -368,3 +368,5 @@ export default () => {
     </Box>
   );
 };
+
+export default EditProfilePage;

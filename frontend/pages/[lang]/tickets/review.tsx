@@ -83,7 +83,7 @@ export const ReviewOrder: React.SFC<Props> = ({
   );
 };
 
-export default () => {
+export const TicketsReviewOrderPage = () => {
   const { state, applyVoucher, removeVoucher } = useCart();
 
   return (
@@ -101,3 +101,5 @@ export default () => {
     </TicketsPageWrapper>
   );
 };
+
+export const TicketsReviewOrderPage;

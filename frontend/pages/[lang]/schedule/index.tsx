@@ -4,7 +4,7 @@ import React from "react";
 
 import { useCurrentLanguage } from "~/locale/context";
 
-export default () => {
+export const SchedulePage = () => {
   const router = useRouter();
   const language = useCurrentLanguage();
 
@@ -20,3 +20,5 @@ export default () => {
     </Head>
   );
 };
+
+export default SchedulePage;

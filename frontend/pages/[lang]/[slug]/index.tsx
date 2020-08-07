@@ -10,7 +10,7 @@ import { compile } from "~/helpers/markdown";
 import { useCurrentLanguage } from "~/locale/context";
 import { usePageQuery } from "~/types";
 
-export default () => {
+export const Page = () => {
   const router = useRouter();
   const slug = router.query.slug as string;
   const language = useCurrentLanguage();
@@ -43,3 +43,5 @@ export default () => {
     </Fragment>
   );
 };
+
+export default Page;

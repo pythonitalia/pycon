@@ -16,7 +16,7 @@ type FormFields = {
   password: string;
 };
 
-export default () => {
+export const ResetPasswordPage = () => {
   const router = useRouter();
   const language = useCurrentLanguage();
   const [_, addMessage] = useMessages();
@@ -107,3 +107,5 @@ export default () => {
     </Box>
   );
 };
+
+export default ResetPasswordPage;

@@ -31,7 +31,7 @@ const OrderSucceeded = ({ url }: { url: string }) => (
   </React.Fragment>
 );
 
-export default () => {
+export const OrderConfirmationPage = () => {
   const [loggedIn, _] = useLoginState();
 
   const router = useRouter();
@@ -70,3 +70,5 @@ export default () => {
     </Box>
   );
 };
+
+export default OrderConfirmationPage;

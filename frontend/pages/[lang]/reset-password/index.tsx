@@ -13,7 +13,7 @@ type FormFields = {
   email: string;
 };
 
-export default () => {
+export const RequestResetPasswordPage = () => {
   const [formState, { email }] = useFormState<FormFields>(
     {},
     {
@@ -99,3 +99,5 @@ export default () => {
     </Box>
   );
 };
+
+export default RequestResetPasswordPage;

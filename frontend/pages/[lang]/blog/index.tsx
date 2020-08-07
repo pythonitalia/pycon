@@ -9,7 +9,7 @@ import { PageLoading } from "~/components/page-loading";
 import { useCurrentLanguage } from "~/locale/context";
 import { useBlogIndexQuery } from "~/types";
 
-export default () => {
+export const BlogPage = () => {
   const language = useCurrentLanguage();
 
   const { data, loading, error } = useBlogIndexQuery({
@@ -54,3 +54,5 @@ export default () => {
     </Fragment>
   );
 };
+
+export default BlogPage;

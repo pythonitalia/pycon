@@ -7,7 +7,7 @@ import { GrantForm } from "~/components/grant-form";
 import { Introduction } from "~/components/grants-introduction";
 import { MetaTags } from "~/components/meta-tags";
 
-export default () => {
+export const GrantsPage = () => {
   const code = process.env.conferenceCode;
 
   return (
@@ -31,3 +31,5 @@ export default () => {
     </React.Fragment>
   );
 };
+
+export default GrantsPage;

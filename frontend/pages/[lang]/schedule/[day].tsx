@@ -18,7 +18,7 @@ const Meta: React.SFC<{ day: string }> = ({ day }) => (
   </FormattedMessage>
 );
 
-export default () => {
+export const ScheduleDayPage = () => {
   const [loggedIn, _] = useLoginState();
 
   const router = useRouter();
@@ -46,3 +46,5 @@ export default () => {
     </Fragment>
   );
 };
+
+export default ScheduleDayPage;

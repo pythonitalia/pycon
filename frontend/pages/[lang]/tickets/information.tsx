@@ -7,7 +7,7 @@ import { useCart } from "~/components/tickets-page/use-cart";
 import { TicketsPageWrapper } from "~/components/tickets-page/wrapper";
 import { useCurrentLanguage } from "~/locale/context";
 
-export default () => {
+export const TicketsInformationPage = () => {
   const language = useCurrentLanguage();
   const router = useRouter();
 
@@ -49,3 +49,5 @@ export default () => {
     </TicketsPageWrapper>
   );
 };
+
+export default TicketsInformationPage;

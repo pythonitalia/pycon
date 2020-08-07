@@ -30,7 +30,7 @@ const getYear = ({ end }: { end: string }) => {
   return endDate.getFullYear();
 };
 
-export default () => {
+export const SocialPage = () => {
   const { data } = useSocialCardQuery({
     variables: {
       code: process.env.conferenceCode,
@@ -138,3 +138,5 @@ export default () => {
     </Fragment>
   );
 };
+
+export default SocialPage;
