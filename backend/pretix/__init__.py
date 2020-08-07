@@ -7,7 +7,7 @@ import strawberry
 from conferences.models.conference import Conference
 from django.conf import settings
 from hotels.models import HotelRoom
-from strawberry.types.datetime import Date
+from datetime import date
 
 from .exceptions import PretixError
 
@@ -115,15 +115,15 @@ class CreateOrderTicket:
     variation: typing.Optional[str]
     attendee_name: str
     attendee_email: str
-    answers: typing.Optional[typing.List[CreateOrderTicketAnswer]]
-    voucher: typing.Optional[str]
+    answers: typing.Optional[typing.List[CreateOrderTicketAnswer]] = None
+    voucher: typing.Optional[str] = None
 
 
 @strawberry.input
 class CreateOrderHotelRoom:
     room_id: str
-    checkin: Date
-    checkout: Date
+    checkin: date
+    checkout: date
 
 
 @strawberry.input

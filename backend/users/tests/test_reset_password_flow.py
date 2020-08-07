@@ -138,7 +138,7 @@ def test_cannot_reset_password_of_an_unkown_user(user_factory, graphql_client):
     user = user_factory(password="old")
     token = default_token_generator.make_token(user)
 
-    response = _reset_password(graphql_client, token, 5, "another")
+    response = _reset_password(graphql_client, token, 0, "another")
 
     assert (
         response["data"]["resetPassword"]["__typename"] == "ResetPasswordMutationErrors"

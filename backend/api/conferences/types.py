@@ -1,6 +1,6 @@
 from itertools import groupby
 from typing import List, Optional
-
+from datetime import time, date, datetime
 import strawberry
 from api.cms.types import FAQ, Menu
 from api.events.types import Event
@@ -16,7 +16,6 @@ from cms.models import GenericCopy
 from django.conf import settings
 from django.utils import translation
 from schedule.models import ScheduleItem as ScheduleItemModel
-from strawberry.types.datetime import Date, DateTime, Time
 from voting.models import RankRequest as RankRequestModel
 
 from ..helpers.i18n import make_localized_resolver
@@ -38,7 +37,7 @@ class Topic:
 
 @strawberry.type
 class ScheduleSlot:
-    hour: Time
+    hour: time
     duration: int
     id: strawberry.ID
 
@@ -62,7 +61,7 @@ class ScheduleSlot:
 
 @strawberry.type
 class Day:
-    day: Date
+    day: date
 
     @strawberry.field
     def slots(self, info, room: Optional[strawberry.ID] = None) -> List[ScheduleSlot]:
@@ -86,8 +85,8 @@ class Conference:
         resolver=make_localized_resolver("introduction")
     )
     code: str
-    start: DateTime
-    end: DateTime
+    start: datetime
+    end: datetime
     map: Optional[Map] = strawberry.field(resolver=resolve_map)
 
     pretix_event_url: str
@@ -230,8 +229,8 @@ class Deadline:
     type: str
     name: str = strawberry.field(resolver=make_localized_resolver("name"))
     description: str = strawberry.field(resolver=make_localized_resolver("description"))
-    start: DateTime
-    end: DateTime
+    start: datetime
+    end: datetime
     conference: Conference
 
 

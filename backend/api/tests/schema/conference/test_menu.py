@@ -13,7 +13,6 @@ def test_get_menu_not_found(graphql_client, conference_factory):
                     links {
                         title
                         href
-                        target
                     }
                 }
             }
@@ -42,7 +41,6 @@ def test_get_menu(graphql_client, conference_factory, menu_factory, menu_link_fa
                     links {
                         title
                         href
-                        target
                     }
                 }
             }

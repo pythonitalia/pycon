@@ -1,12 +1,10 @@
+from strawberry import LazyType
+
 from decimal import Decimal
 from enum import Enum
 from typing import TYPE_CHECKING
 
 import strawberry
-from api.users.types import User
-
-if TYPE_CHECKING:  # pragma: no cover
-    from api.submissions.types import Submission
 
 
 @strawberry.enum
@@ -29,13 +27,13 @@ class VoteValues(Enum):
 class VoteType:
     id: strawberry.ID
     value: int
-    user: User
-    submission: "Submission"
+    user: LazyType["User", "api.users.types"]
+    submission: LazyType["Submission", "api.submissions.types"]
 
 
 @strawberry.type
 class RankSubmission:
-    submission: "Submission"
+    submission: LazyType["Submission", "api.submissions.types"]
     absolute_rank: int
     absolute_score: Decimal
     topic_rank: int

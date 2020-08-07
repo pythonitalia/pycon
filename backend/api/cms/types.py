@@ -16,7 +16,6 @@ class FAQ:
 class MenuLink:
     href: str = strawberry.field(resolver=make_localized_resolver("href"))
     title: str = strawberry.field(resolver=make_localized_resolver("title"))
-    target: typing.Optional[str]
     is_primary: bool
     page: typing.Optional[Page]
 

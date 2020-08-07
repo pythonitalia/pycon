@@ -2,7 +2,7 @@ from enum import Enum
 from typing import List, Optional
 
 import strawberry
-from strawberry.types.datetime import DateTime
+from datetime import datetime
 
 
 @strawberry.enum
@@ -73,7 +73,7 @@ class TicketItem:
 class Voucher:
     id: strawberry.ID
     code: str
-    valid_until: Optional[DateTime]
+    valid_until: Optional[datetime]
     value: str
     items: List[strawberry.ID]
     all_items: bool
