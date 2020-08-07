@@ -7,6 +7,7 @@ import { Box, Heading, Input, jsx } from "theme-ui";
 
 import { Alert } from "~/components/alert";
 import { Button } from "~/components/button/button";
+import { useGetVoucherLazyQuery } from "~/types";
 
 import { OrderState, Voucher as VoucherType } from "../types";
 
@@ -31,19 +32,12 @@ export const Voucher: React.SFC<Props> = ({
     code: state.voucherCode,
   });
 
-  const [queryState, setQueryState] = useState<{
-    loading: boolean;
-    errors?: readonly GraphQLError[];
-    // TODO
-    data?: any;
-  }>({
-    loading: false,
-    errors: undefined,
-    data: undefined,
+  const [getVoucher, { loading, error, data }] = useGetVoucherLazyQuery({
+    fetchPolicy: "network-only",
   });
 
   const onUseVoucher = useCallback(
-    async (e?: FormEvent<HTMLFormElement>) => {
+    (e?: FormEvent<HTMLFormElement>) => {
       if (e) {
         e.preventDefault();
       }
@@ -53,42 +47,26 @@ export const Voucher: React.SFC<Props> = ({
         return;
       }
 
-      setQueryState({
-        loading: true,
-        errors: undefined,
-        data: undefined,
+      getVoucher({
+        variables: {
+          conference: conferenceCode,
+          code: formState.values.code,
+        },
       });
-
-      // TODO:
-      // const queryData = await apolloClient.query<
-      //   GetVoucherQuery,
-      //   GetVoucherQueryVariables
-      // >({
-      //   query: GET_VOUCHER,
-      //   fetchPolicy: "network-only",
-      //   variables: {
-      //     conference: conferenceCode,
-      //     code: formState.values.code,
-      //   },
-      // });
-
-      // setQueryState({
-      //   loading: false,
-      //   errors: queryData.errors,
-      //   data: queryData.errors ? undefined : queryData.data,
-      // });
-
-      // const voucher = queryData.data.conference.voucher;
-
-      // if (!voucher) {
-      //   /* TODO reset all vouchers? */
-      //   return;
-      // }
-
-      // applyVoucher(voucher);
     },
     [formState.values],
   );
+
+  useEffect(() => {
+    if (loading || !data) {
+      return;
+    }
+
+    const voucher = data.conference.voucher;
+    if (voucher) {
+      applyVoucher(voucher);
+    }
+  }, [loading]);
 
   useEffect(() => {
     // TODO: maybe we want to move this in tickets-page/index.tsx?
@@ -162,19 +140,15 @@ export const Voucher: React.SFC<Props> = ({
           )}
         </form>
 
-        {queryState.loading && (
+        {loading && (
           <Alert variant="info">
             <FormattedMessage id="voucher.loading" />
           </Alert>
         )}
 
-        {queryState.errors && (
-          <Alert variant="alert">
-            {queryState.errors.map((e) => e.message).join(",")}
-          </Alert>
-        )}
+        {error && <Alert variant="alert">{error}</Alert>}
 
-        {queryState.data && !queryState.data.conference.voucher && (
+        {data && !data.conference.voucher && (
           <Alert variant="alert">
             <FormattedMessage id="voucher.codeNotValid" />
           </Alert>
