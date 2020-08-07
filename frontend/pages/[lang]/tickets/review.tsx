@@ -102,4 +102,4 @@ export const TicketsReviewOrderPage = () => {
   );
 };
 
-export const TicketsReviewOrderPage;
+export default TicketsReviewOrderPage;
