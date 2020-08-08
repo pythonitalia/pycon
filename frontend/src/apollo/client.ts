@@ -6,7 +6,7 @@ import { GraphQLError } from "graphql";
 import fetch from "isomorphic-fetch";
 
 import { setLoginState } from "../app/profile/hooks";
-// import introspectionQueryResultData from "../generated/fragment-types.json";
+import introspectionQueryResultData from "../generated/fragment-types.json";
 
 const isUserLoggedOut = (graphErrors: readonly GraphQLError[]) =>
   !!graphErrors.find((e) => e.message === "User not logged in");
@@ -44,5 +44,7 @@ const link = ApolloLink.from([errorLink, httpLink]);
 export const getApolloClient = ({ initialState }: any) =>
   new ApolloClient({
     link,
-    cache: new InMemoryCache().restore(initialState || {}),
+    cache: new InMemoryCache({
+      possibleTypes: introspectionQueryResultData.possibleTypes,
+    }).restore(initialState || {}),
   });

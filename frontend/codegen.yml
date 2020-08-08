@@ -14,5 +14,7 @@ generates:
   src/generated/fragment-types.json:
     schema: ${API_URL:https://pycon.it/graphql}
     documents: ./**/*.graphql
+    config:
+      apolloClientVersion: 3
     plugins:
       - fragment-matcher
