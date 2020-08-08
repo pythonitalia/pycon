@@ -1,19 +1,12 @@
-import {
-  InMemoryCache,
-  IntrospectionFragmentMatcher,
-} from "apollo-cache-inmemory";
-import { ApolloClient } from "apollo-client";
-import { ApolloLink } from "apollo-link";
-import { onError } from "apollo-link-error";
-import { HttpLink } from "apollo-link-http";
+import { ApolloLink, HttpLink } from "@apollo/client";
+import { InMemoryCache } from "@apollo/client/cache";
+import { ApolloClient } from "@apollo/client/core";
+import { onError } from "@apollo/client/link/error";
 import { GraphQLError } from "graphql";
 import fetch from "isomorphic-fetch";
 
 import { setLoginState } from "../app/profile/hooks";
-import introspectionQueryResultData from "../generated/fragment-types.json";
-const fragmentMatcher = new IntrospectionFragmentMatcher({
-  introspectionQueryResultData,
-});
+// import introspectionQueryResultData from "../generated/fragment-types.json";
 
 const isUserLoggedOut = (graphErrors: readonly GraphQLError[]) =>
   !!graphErrors.find((e) => e.message === "User not logged in");
@@ -51,5 +44,5 @@ const link = ApolloLink.from([errorLink, httpLink]);
 export const getApolloClient = ({ initialState }: any) =>
   new ApolloClient({
     link,
-    cache: new InMemoryCache({ fragmentMatcher }).restore(initialState || {}),
+    cache: new InMemoryCache().restore(initialState || {}),
   });

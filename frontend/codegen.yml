@@ -1,19 +1,18 @@
 generates:
-    src/types.tsx:
-        schema: ${API_URL:https://pycon.it/graphql}
-        documents: ./**/*.graphql
-        plugins:
-            - 'typescript'
-            - 'typescript-operations'
-            - 'typescript-react-apollo'
-        config:
-            withHooks: true
-            withHOC: false
-            withComponent: false
-            hooksImportFrom: '@apollo/react-hooks'
+  src/types.tsx:
+    schema: ${API_URL:https://pycon.it/graphql}
+    documents: ./**/*.graphql
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-react-apollo"
+    config:
+      withHooks: true
+      withHOC: false
+      withComponent: false
 
-    src/generated/fragment-types.json:
-        schema: ${API_URL:https://pycon.it/graphql}
-        documents: ./**/*.graphql
-        plugins:
-            - fragment-matcher
+  src/generated/fragment-types.json:
+    schema: ${API_URL:https://pycon.it/graphql}
+    documents: ./**/*.graphql
+    plugins:
+      - fragment-matcher

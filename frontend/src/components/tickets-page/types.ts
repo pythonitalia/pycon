@@ -24,14 +24,14 @@ export type InvoiceInformationState = {
 export type Voucher = {
   id: string;
   code: string;
-  validUntil: string;
+  validUntil?: string;
   value: string;
   items: string[];
   allItems: boolean;
   redeemed: number;
   maxUsages: number;
   priceMode: string;
-  variationId: string;
+  variationId?: string;
 };
 
 export type ProductState = {

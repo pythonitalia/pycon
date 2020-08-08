@@ -12,6 +12,7 @@ query GetVoucher($conference: String!, $code: String!) {
       items
       allItems
       variationId
+      validUntil
     }
   }
 }

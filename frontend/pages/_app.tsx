@@ -1,12 +1,12 @@
 /** @jsx jsx */
-import { ApolloProvider } from "@apollo/react-hooks";
-import { getDataFromTree } from "@apollo/react-ssr";
+import { ApolloProvider } from "@apollo/client";
+import { ApolloClient } from "@apollo/client/core";
+import { getDataFromTree } from "@apollo/client/react/ssr";
 import * as Sentry from "@sentry/browser";
-import { ApolloClient } from "apollo-client";
 import withApollo from "next-with-apollo";
 import App, { AppContext } from "next/app";
 import { createIntl, createIntlCache, RawIntlProvider } from "react-intl";
-import { Box, Flex, jsx, Styled, ThemeProvider } from "theme-ui";
+import { Box, Flex, jsx, ThemeProvider } from "theme-ui";
 
 import { getApolloClient } from "~/apollo/client";
 import { ErrorBoundary } from "~/components/error-boundary";

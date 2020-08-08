@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { useApolloClient } from "@apollo/react-hooks";
+import { useApolloClient } from "@apollo/client";
 import Router from "next/router";
 import { useCallback } from "react";
 import { FormattedMessage } from "react-intl";

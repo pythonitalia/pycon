@@ -17,7 +17,9 @@ export const useCountries = () => {
     return [];
   }
 
+  const clonedCountries = [...data.countries];
+
   return createOptions(
-    data.countries.sort((a, b) => (a.name > b.name ? 1 : -1)),
+    clonedCountries.sort((a, b) => (a.name > b.name ? 1 : -1)),
   );
 };
