@@ -62,7 +62,7 @@ export const VoteSelector: React.SFC<Props> = ({
         >
           <InputWrapper sx={{ mb: 2, mr: 4, textTransform: "none" }}>
             <Label>
-              <Radio checked={value === option.value} />
+              <Radio readOnly={true} checked={value === option.value} />
               <FormattedMessage id={option.textId} />
             </Label>
           </InputWrapper>

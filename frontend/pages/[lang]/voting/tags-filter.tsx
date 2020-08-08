@@ -36,7 +36,7 @@ export const TagsFilter: React.SFC<Props> = ({
     <Box ref={containerRef} className={className}>
       <Box onClick={toggleExtendedView}>
         <Select
-          value="none"
+          defaultValue="none"
           sx={{
             pointerEvents: "none",
             borderRadius: 0,
