@@ -1,12 +1,13 @@
 /** @jsx jsx */
-import React, { FormEvent, useCallback, useEffect } from "react";
+import { ApolloError, useApolloClient } from "@apollo/client";
+import React, { FormEvent, useCallback, useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import { Box, Heading, Input, jsx } from "theme-ui";
 
 import { Alert } from "~/components/alert";
 import { Button } from "~/components/button/button";
-import { useGetVoucherMutation } from "~/types";
+import { GetVoucherDocument, GetVoucherQuery } from "~/types";
 
 import { OrderState, Voucher as VoucherType } from "../types";
 
@@ -20,28 +21,32 @@ type VoucherForm = {
   code: string;
 };
 
+type QueryStatus = {
+  loading: boolean;
+  error: ApolloError;
+  data: GetVoucherQuery;
+};
+
 export const Voucher: React.SFC<Props> = ({
   applyVoucher,
   removeVoucher,
   state,
 }) => {
   const conferenceCode = process.env.conferenceCode;
+  const apolloClient = useApolloClient();
 
   const [formState, { text }] = useFormState<VoucherForm>({
     code: state.voucherCode,
   });
 
-  const [getVoucher, { loading, error, data }] = useGetVoucherMutation({
-    onCompleted: (data) => {
-      const voucher = data.getConferenceVoucher;
-      if (voucher) {
-        applyVoucher(voucher);
-      }
-    },
+  const [{ loading, error, data }, setQueryStatus] = useState<QueryStatus>({
+    loading: false,
+    error: null,
+    data: null,
   });
 
   const onUseVoucher = useCallback(
-    (e?: FormEvent<HTMLFormElement>) => {
+    async (e?: FormEvent<HTMLFormElement>) => {
       if (e) {
         e.preventDefault();
       }
@@ -51,12 +56,31 @@ export const Voucher: React.SFC<Props> = ({
         return;
       }
 
-      getVoucher({
+      setQueryStatus({
+        loading: true,
+        data: null,
+        error: null,
+      });
+
+      const result = await apolloClient.query({
+        fetchPolicy: "no-cache",
+        query: GetVoucherDocument,
         variables: {
           conference: conferenceCode,
           code: formState.values.code,
         },
       });
+
+      setQueryStatus({
+        loading: false,
+        data: result.data,
+        error: result.error,
+      });
+
+      const voucher = result.data.voucher;
+      if (voucher) {
+        applyVoucher(voucher);
+      }
     },
     [formState.values],
   );
@@ -141,7 +165,7 @@ export const Voucher: React.SFC<Props> = ({
 
         {error && <Alert variant="alert">{error}</Alert>}
 
-        {data && !data.getConferenceVoucher && (
+        {data && !data.voucher && (
           <Alert variant="alert">
             <FormattedMessage id="voucher.codeNotValid" />
           </Alert>

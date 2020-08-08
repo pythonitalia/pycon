@@ -1,5 +1,5 @@
-mutation GetVoucher($conference: String!, $code: String!) {
-  getConferenceVoucher(code: $code, conference: $conference) {
+query GetVoucher($conference: String!, $code: String!) {
+  voucher(code: $code, conference: $conference) {
     id
     code
     value
