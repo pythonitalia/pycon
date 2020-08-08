@@ -1,18 +1,14 @@
-query GetVoucher($conference: String!, $code: String!) {
-  conference(code: $conference) {
+mutation GetVoucher($conference: String!, $code: String!) {
+  getConferenceVoucher(code: $code, conference: $conference) {
     id
-
-    voucher(code: $code) {
-      id
-      code
-      value
-      redeemed
-      maxUsages
-      priceMode
-      items
-      allItems
-      variationId
-      validUntil
-    }
+    code
+    value
+    redeemed
+    maxUsages
+    priceMode
+    items
+    allItems
+    variationId
+    validUntil
   }
 }

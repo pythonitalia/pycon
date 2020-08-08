@@ -2,6 +2,7 @@ import strawberry
 
 from .blog.schema import BlogQuery
 from .conferences.schema import ConferenceQuery
+from .conferences.mutations import ConferencesMutations
 from .grants.mutations import GrantsMutations
 from .newsletters.schema import NewsletterMutations
 from .orders.mutations import OrdersMutations
@@ -37,6 +38,7 @@ class Mutation(
     GrantsMutations,
     NewsletterMutations,
     ScheduleMutations,
+    ConferencesMutations,
 ):
     pass
 

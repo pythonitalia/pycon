@@ -1,13 +1,12 @@
 /** @jsx jsx */
-import { GraphQLError } from "graphql";
-import React, { FormEvent, useCallback, useEffect, useState } from "react";
+import React, { FormEvent, useCallback, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import { Box, Heading, Input, jsx } from "theme-ui";
 
 import { Alert } from "~/components/alert";
 import { Button } from "~/components/button/button";
-import { useGetVoucherLazyQuery } from "~/types";
+import { useGetVoucherMutation } from "~/types";
 
 import { OrderState, Voucher as VoucherType } from "../types";
 
@@ -32,8 +31,13 @@ export const Voucher: React.SFC<Props> = ({
     code: state.voucherCode,
   });
 
-  const [getVoucher, { loading, error, data }] = useGetVoucherLazyQuery({
-    fetchPolicy: "network-only",
+  const [getVoucher, { loading, error, data }] = useGetVoucherMutation({
+    onCompleted: (data) => {
+      const voucher = data.getConferenceVoucher;
+      if (voucher) {
+        applyVoucher(voucher);
+      }
+    },
   });
 
   const onUseVoucher = useCallback(
@@ -56,17 +60,6 @@ export const Voucher: React.SFC<Props> = ({
     },
     [formState.values],
   );
-
-  useEffect(() => {
-    if (loading || !data) {
-      return;
-    }
-
-    const voucher = data.conference.voucher;
-    if (voucher) {
-      applyVoucher(voucher);
-    }
-  }, [loading]);
 
   useEffect(() => {
     // TODO: maybe we want to move this in tickets-page/index.tsx?
@@ -148,7 +141,7 @@ export const Voucher: React.SFC<Props> = ({
 
         {error && <Alert variant="alert">{error}</Alert>}
 
-        {data && !data.conference.voucher && (
+        {data && !data.getConferenceVoucher && (
           <Alert variant="alert">
             <FormattedMessage id="voucher.codeNotValid" />
           </Alert>
