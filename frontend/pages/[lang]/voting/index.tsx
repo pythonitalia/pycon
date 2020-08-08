@@ -64,7 +64,6 @@ export const VotingPage: React.SFC = () => {
 
         keys.forEach((key) => {
           const value = nextStateValues[key];
-          console.log("key", key, "value", value);
 
           if (Array.isArray(value)) {
             value.forEach((item) => qs.append(key, item));
