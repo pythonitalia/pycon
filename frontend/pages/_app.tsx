@@ -12,7 +12,7 @@ import { getApolloClient } from "~/apollo/client";
 import { ErrorBoundary } from "~/components/error-boundary";
 import { Footer } from "~/components/footer";
 import { Header } from "~/components/header";
-import { globalStyles } from "~/components/styles";
+import { GlobalStyles } from "~/components/styles";
 import { URLContext } from "~/helpers/use-url";
 import messages from "~/locale";
 import { LocaleProvider } from "~/locale/context";
@@ -72,6 +72,7 @@ class MyApp extends App<{
           <ApolloProvider client={apollo}>
             <RawIntlProvider value={intl}>
               <LocaleProvider lang={locale}>
+                <GlobalStyles />
                 {isSocial(router.pathname) ? (
                   <Component {...pageProps} />
                 ) : (

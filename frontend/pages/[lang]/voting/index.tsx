@@ -6,12 +6,12 @@ import { useFormState } from "react-use-form-state";
 import { Box, Grid, Heading, jsx, Select, Text } from "theme-ui";
 
 import { useLoginState } from "~/app/profile/hooks";
+import { Alert } from "~/components/alert";
+import { Link } from "~/components/link";
+import { LoginForm } from "~/components/login-form";
+import { MetaTags } from "~/components/meta-tags";
 import { useVotingSubmissionsQuery } from "~/types";
 
-import { Alert } from "../alert";
-import { Link } from "../link";
-import { LoginForm } from "../login-form";
-import { MetaTags } from "../meta-tags";
 import { SubmissionAccordion } from "./submission-accordion";
 import { TagsFilter } from "./tags-filter";
 
@@ -35,33 +35,36 @@ const COLORS = [
   },
 ];
 
+const getAsArray = (value: string | string[]): string[] => {
+  if (!value) {
+    return [];
+  }
+
+  return Array.isArray(value) ? value : [value];
+};
+
 export const VotingPage: React.SFC = () => {
   const [loggedIn] = useLoginState();
   const [votedSubmissions, setVotedSubmissions] = useState(new Set());
   const router = useRouter();
 
-  const currentQs = new URLSearchParams(location?.search);
-
   const [filters, { select, raw }] = useFormState<Filters>(
     {
-      vote: (currentQs.get("vote") as VoteTypes) ?? "all",
-      language: currentQs.get("language") ?? "",
-      topic: currentQs.get("topic") ?? "",
-      tags: currentQs.getAll("tags"),
+      vote: (router.query.vote as VoteTypes) ?? "all",
+      language: (router.query.language as string) ?? "",
+      topic: (router.query.topic as string) ?? "",
+      tags: getAsArray(router.query.tags),
     },
     {
       onChange(e, stateValues, nextStateValues) {
         setVotedSubmissions(new Set());
-
-        if (!location) {
-          return;
-        }
 
         const qs = new URLSearchParams();
         const keys = Object.keys(nextStateValues) as (keyof Filters)[];
 
         keys.forEach((key) => {
           const value = nextStateValues[key];
+          console.log("key", key, "value", value);
 
           if (Array.isArray(value)) {
             value.forEach((item) => qs.append(key, item));
@@ -70,7 +73,12 @@ export const VotingPage: React.SFC = () => {
           }
         });
 
-        router.replace(`${location.pathname}?${qs.toString()}`);
+        const currentPath = router.pathname.replace(
+          "[lang]",
+          router.query.lang as string,
+        );
+
+        router.replace("/[lang]/voting", `${currentPath}?${qs.toString()}`);
       },
     },
   );
@@ -272,7 +280,7 @@ export const VotingPage: React.SFC = () => {
               <FormattedMessage id="voting.needToBeLoggedIn" />
             </Alert>
           </Box>
-          <LoginForm next={location?.href} />
+          <LoginForm next={router.pathname} />
         </Box>
       )}
 
@@ -344,3 +352,5 @@ export const VotingPage: React.SFC = () => {
     </Box>
   );
 };
+
+export default VotingPage;

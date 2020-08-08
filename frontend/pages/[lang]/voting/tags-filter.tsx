@@ -4,7 +4,7 @@ import { FormattedMessage } from "react-intl";
 import { Box, jsx, Select } from "theme-ui";
 import useOnClickOutside from "use-onclickoutside";
 
-import { Tag } from "../tag";
+import { Tag } from "~/components/tag";
 
 type Props = {
   tags: { id: string; name: string }[];

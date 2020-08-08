@@ -3,12 +3,12 @@ import React, { Fragment, useCallback, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, Grid, Heading, jsx, Text } from "theme-ui";
 
+import { EnglishIcon } from "~/components/icons/english";
+import { ItalianIcon } from "~/components/icons/italian";
+import { Link } from "~/components/link";
 import { compile } from "~/helpers/markdown";
 import { useSendVoteMutation } from "~/types";
 
-import { EnglishIcon } from "../icons/english";
-import { ItalianIcon } from "../icons/italian";
-import { Link } from "../link";
 import { VOTE_VALUES, VoteSelector } from "./vote-selector";
 
 type VoteSubmission = {

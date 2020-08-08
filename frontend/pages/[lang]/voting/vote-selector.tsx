@@ -2,7 +2,7 @@
 import { FormattedMessage } from "react-intl";
 import { Box, Heading, jsx, Label, Radio } from "theme-ui";
 
-import { InputWrapper } from "../input-wrapper";
+import { InputWrapper } from "~/components/input-wrapper";
 
 type Props = {
   className?: string;

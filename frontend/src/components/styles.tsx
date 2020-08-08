@@ -1,5 +1,5 @@
 /** @jsx jsx */
-// import { css, Global } from "@emotion/core";
+import { Global } from "@emotion/core";
 import { jsx } from "theme-ui";
 
 // const reset = css`
@@ -31,4 +31,16 @@ import { jsx } from "theme-ui";
 //   }
 // `;
 
-export const globalStyles = () => null; // <Global styles={reset} />;
+export const GlobalStyles = () => (
+  <Global
+    styles={(theme) => ({
+      "*": {
+        margin: 0,
+        padding: 0,
+      },
+      ".article": {
+        lineHeight: 1.6,
+      },
+    })}
+  />
+);
