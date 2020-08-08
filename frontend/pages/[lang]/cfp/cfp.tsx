@@ -44,19 +44,6 @@ export const Cfp: React.SFC = () => {
           },
         },
       });
-
-      cache.writeQuery<MeSubmissionsQuery, MeSubmissionsQueryVariables>({
-        query: MeSubmissionsDocument,
-        variables: {
-          conference: code,
-        },
-        data: {
-          me: {
-            ...query.me,
-            submissions: [...query.me.submissions, updateData!.mutationOp],
-          },
-        },
-      });
     },
   });
 
