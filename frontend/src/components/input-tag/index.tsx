@@ -2,10 +2,9 @@
 import { useCallback } from "react";
 import { jsx } from "theme-ui";
 
+import { Alert } from "~/components/alert";
+import { Select } from "~/components/select";
 import { useTagsQuery } from "~/types";
-
-import { Alert } from "../alert";
-import { Select } from "../select";
 
 type TagLineProps = {
   tags: string[];
@@ -18,13 +17,8 @@ export const TagLine: React.SFC<TagLineProps> = ({ tags, onTagChange }) => {
       onTagChange(newTags || []);
     }
   }, []);
-  const code = process.env.conferenceCode;
 
-  const { loading, error, data } = useTagsQuery({
-    variables: {
-      conference: code,
-    },
-  });
+  const { loading, error, data } = useTagsQuery();
 
   if (loading) {
     return null;
@@ -34,8 +28,8 @@ export const TagLine: React.SFC<TagLineProps> = ({ tags, onTagChange }) => {
     return <Alert variant="alert">{error.message}</Alert>;
   }
 
-  const submissionTags = data!
-    .submissionTags!.sort((a, b) => {
+  const submissionTags = [...data!.submissionTags]!
+    .sort((a, b) => {
       if (a.name < b.name) {
         return -1;
       }

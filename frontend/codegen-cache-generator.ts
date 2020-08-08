@@ -46,7 +46,7 @@ const writeCode = (definition) => {
     return options.cache.readQuery<${queryType}, ${variablesTypes}>({
       query: ${documentName},
       variables: options.variables,
-    })
+    });
   }
 
   export function write${funcPostfix}<TMutation>(options: ${writeOptionsTypeName}<TMutation>) {
@@ -54,7 +54,7 @@ const writeCode = (definition) => {
       query: ${documentName},
       variables: options.variables,
       data: options.data,
-    })
+    });
   }
 `;
 };

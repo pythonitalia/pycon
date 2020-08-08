@@ -3,8 +3,8 @@ import React from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, Grid, jsx, Text } from "theme-ui";
 
-import { CFPIllustration } from "../illustrations/cfp";
-import { Link } from "../link";
+import { CFPIllustration } from "~/components/illustrations/cfp";
+import { Link } from "~/components/link";
 
 export const Introduction: React.SFC = () => (
   <Box

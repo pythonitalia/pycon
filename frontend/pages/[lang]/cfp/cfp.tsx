@@ -2,15 +2,17 @@
 import { useRouter } from "next/router";
 import { jsx } from "theme-ui";
 
+import { CfpForm, CfpFormFields } from "~/components/cfp-form";
+import { SendSubmissionMutation } from "~/generated/graphql-backend";
 import { useCurrentLanguage } from "~/locale/context";
 import {
   MeSubmissionsDocument,
   MeSubmissionsQuery,
   MeSubmissionsQueryVariables,
+  readMeSubmissionsQueryCache,
   useSendSubmissionMutation,
+  writeMeSubmissionsQueryCache,
 } from "~/types";
-
-import { CfpForm, CfpFormFields } from "../cfp-form";
 
 export const Cfp: React.SFC = () => {
   const lang = useCurrentLanguage();
@@ -19,11 +21,8 @@ export const Cfp: React.SFC = () => {
 
   const [sendSubmission, { loading, error, data }] = useSendSubmissionMutation({
     update(cache, { data: updateData }) {
-      const query = cache.readQuery<
-        MeSubmissionsQuery,
-        MeSubmissionsQueryVariables
-      >({
-        query: MeSubmissionsDocument,
+      const query = readMeSubmissionsQueryCache<SendSubmissionMutation>({
+        cache,
         variables: {
           conference: code,
         },
@@ -33,16 +32,29 @@ export const Cfp: React.SFC = () => {
         return;
       }
 
-      cache.writeQuery<MeSubmissionsQuery, MeSubmissionsQueryVariables>({
-        query: MeSubmissionsDocument,
+      writeMeSubmissionsQueryCache<SendSubmissionMutation>({
+        cache,
+        variables: {
+          conference: code,
+        },
         data: {
           me: {
             ...query.me,
             submissions: [...query.me.submissions, updateData!.mutationOp],
           },
         },
+      });
+
+      cache.writeQuery<MeSubmissionsQuery, MeSubmissionsQueryVariables>({
+        query: MeSubmissionsDocument,
         variables: {
           conference: code,
+        },
+        data: {
+          me: {
+            ...query.me,
+            submissions: [...query.me.submissions, updateData!.mutationOp],
+          },
         },
       });
     },

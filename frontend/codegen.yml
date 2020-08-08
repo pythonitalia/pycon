@@ -9,6 +9,7 @@ generates:
       - codegen-cache-generator.ts:
           definitions:
             - VotingSubmissions
+            - MeSubmissions
     config:
       withHooks: true
       withHOC: false

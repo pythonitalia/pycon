@@ -5,12 +5,12 @@ import { Box, Container, Heading, jsx, Text } from "theme-ui";
 
 import { useLoginState } from "~/app/profile/hooks";
 import { MySubmissions } from "~/app/profile/my-submissions";
+import { Alert } from "~/components/alert";
+import { Link } from "~/components/link";
+import { LoginForm } from "~/components/login-form";
+import { MetaTags } from "~/components/meta-tags";
 import { useIsCfpOpenQuery } from "~/types";
 
-import { Alert } from "../alert";
-import { Link } from "../link";
-import { LoginForm } from "../login-form";
-import { MetaTags } from "../meta-tags";
 import { Cfp } from "./cfp";
 import { Introduction } from "./introduction";
 
@@ -74,7 +74,10 @@ export const CFPPage: React.SFC = () => {
                 <FormattedMessage id="cfp.needToBeLoggedIn" />
               </Alert>
 
-              <LoginForm sx={{ mt: 4 }} next={location?.pathname} />
+              <LoginForm
+                sx={{ mt: 4 }}
+                next={process.browser ? window.location?.pathname : null}
+              />
             </Fragment>
           )}
         </Container>
@@ -82,3 +85,5 @@ export const CFPPage: React.SFC = () => {
     </Fragment>
   );
 };
+
+export default CFPPage;
