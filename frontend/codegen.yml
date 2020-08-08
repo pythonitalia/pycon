@@ -6,6 +6,9 @@ generates:
       - "typescript"
       - "typescript-operations"
       - "typescript-react-apollo"
+      - codegen-cache-generator.ts:
+          definitions:
+            - VotingSubmissions
     config:
       withHooks: true
       withHOC: false

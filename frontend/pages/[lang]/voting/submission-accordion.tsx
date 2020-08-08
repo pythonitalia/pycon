@@ -7,7 +7,12 @@ import { EnglishIcon } from "~/components/icons/english";
 import { ItalianIcon } from "~/components/icons/italian";
 import { Link } from "~/components/link";
 import { compile } from "~/helpers/markdown";
-import { useSendVoteMutation } from "~/types";
+import {
+  readVotingSubmissionsQueryCache,
+  SendVoteMutation,
+  useSendVoteMutation,
+  writeVotingSubmissionsQueryCache,
+} from "~/types";
 
 import { VOTE_VALUES, VoteSelector } from "./vote-selector";
 
@@ -108,44 +113,45 @@ export const SubmissionAccordion: React.SFC<Props> = ({
   const toggleAccordion = useCallback(() => {
     setOpen(!open);
   }, [open]);
+  const conferenceCode = process.env.conferenceCode;
 
   const [
     sendVote,
     { loading, error, data: submissionData },
   ] = useSendVoteMutation({
     update(cache, { data }) {
-      // TODO
-      // if (error || data?.sendVote.__typename === "SendVoteErrors") {
-      //   return;
-      // }
-      // const cachedQuery = cache.readQuery<
-      //   VotingSubmissionsQuery,
-      //   VotingSubmissionsQueryVariables
-      // >({
-      //   query: VOTING_SUBMISSIONS,
-      //   variables: {
-      //     conference: conferenceCode,
-      //   },
-      // });
-      // const submissions = cachedQuery!.conference.submissions!;
-      // const updatedSubmissionIndex = submissions.findIndex((i) => i.id === id)!;
-      // const updatedSubmission = {
-      //   ...submissions[updatedSubmissionIndex]!,
-      // };
-      // updatedSubmission.myVote = data!.sendVote;
-      // submissions[updatedSubmissionIndex] = updatedSubmission;
-      // cache.writeQuery<VotingSubmissionsQuery, VotingSubmissionsQueryVariables>(
-      //   {
-      //     query: VOTING_SUBMISSIONS,
-      //     data: {
-      //       // @ts-ignore
-      //       conference: {
-      //         ...cachedQuery?.conference,
-      //         submissions,
-      //       },
-      //     },
-      //   },
-      // );
+      if (error || data?.sendVote.__typename === "SendVoteErrors") {
+        return;
+      }
+
+      const cachedQuery = readVotingSubmissionsQueryCache<SendVoteMutation>({
+        cache,
+        variables: {
+          conference: conferenceCode,
+        },
+      });
+
+      const submissions = [...cachedQuery!.conference.submissions!];
+      const updatedSubmissionIndex = submissions.findIndex((i) => i.id === id)!;
+      const updatedSubmission = {
+        ...submissions[updatedSubmissionIndex]!,
+      };
+      updatedSubmission.myVote = data!.sendVote;
+      submissions[updatedSubmissionIndex] = updatedSubmission;
+
+      writeVotingSubmissionsQueryCache<SendVoteMutation>({
+        cache,
+        variables: {
+          conference: conferenceCode,
+        },
+        data: {
+          ...cachedQuery,
+          conference: {
+            ...cachedQuery.conference,
+            submissions,
+          },
+        },
+      });
     },
   });
 
