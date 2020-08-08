@@ -19,6 +19,13 @@ class UnsubscribeToNewsletterForm(FormWithContext):
     def save(self):
         email = self.cleaned_data.get("email")
 
-        Subscription.objects.get(email=email).delete()
+        try:
+            Subscription.objects.get(email=email).delete()
+        except Subscription.DoesNotExist:
+            # We already do not know anything about the user
+            # e.g maybe they are refreshing the page after
+            # the unsubscribe
+            # so let's just say yes for now
+            pass
 
         return True
