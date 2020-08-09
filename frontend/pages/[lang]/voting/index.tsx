@@ -279,7 +279,9 @@ export const VotingPage: React.SFC = () => {
               <FormattedMessage id="voting.needToBeLoggedIn" />
             </Alert>
           </Box>
-          <LoginForm next={"TODO"} />
+          <LoginForm
+            next={process.browser ? window.location?.pathname : null}
+          />
         </Box>
       )}
 
