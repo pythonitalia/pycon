@@ -4,11 +4,11 @@ import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import { Box, Grid, Heading, jsx, Select, Text } from "theme-ui";
 
+import { SubmissionAccordion } from "~/components/submission-accordion";
 import { useRankingSubmissionQuery } from "~/types";
 
 import { Alert } from "../alert";
 import { MetaTags } from "../meta-tags";
-import { SubmissionAccordion } from "../voting-page/submission-accordion";
 
 const COLORS = [
   {

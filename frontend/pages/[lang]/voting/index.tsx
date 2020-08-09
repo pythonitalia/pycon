@@ -10,9 +10,9 @@ import { Alert } from "~/components/alert";
 import { Link } from "~/components/link";
 import { LoginForm } from "~/components/login-form";
 import { MetaTags } from "~/components/meta-tags";
+import { SubmissionAccordion } from "~/components/submission-accordion";
 import { useVotingSubmissionsQuery } from "~/types";
 
-import { SubmissionAccordion } from "./submission-accordion";
 import { TagsFilter } from "./tags-filter";
 
 type VoteTypes = "all" | "votedOnly" | "notVoted";
