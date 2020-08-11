@@ -11,9 +11,8 @@ import { Link } from "~/components/link";
 import { LoginForm } from "~/components/login-form";
 import { MetaTags } from "~/components/meta-tags";
 import { SubmissionAccordion } from "~/components/submission-accordion";
+import { TagsFilter } from "~/components/tags-filter";
 import { useVotingSubmissionsQuery } from "~/types";
-
-import { TagsFilter } from "./tags-filter";
 
 type VoteTypes = "all" | "votedOnly" | "notVoted";
 

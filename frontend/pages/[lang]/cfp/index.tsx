@@ -6,13 +6,12 @@ import { Box, Container, Heading, jsx, Text } from "theme-ui";
 import { useLoginState } from "~/app/profile/hooks";
 import { MySubmissions } from "~/app/profile/my-submissions";
 import { Alert } from "~/components/alert";
+import { Introduction } from "~/components/cfp-introduction";
+import { CfpSendSubmission } from "~/components/cfp-send-submission";
 import { Link } from "~/components/link";
 import { LoginForm } from "~/components/login-form";
 import { MetaTags } from "~/components/meta-tags";
 import { useIsCfpOpenQuery } from "~/types";
-
-import { Cfp } from "./cfp";
-import { Introduction } from "./introduction";
 
 const CfpSectionOrClosedMessage: React.SFC<{ open: boolean }> = ({ open }) => {
   if (open) {
@@ -20,7 +19,7 @@ const CfpSectionOrClosedMessage: React.SFC<{ open: boolean }> = ({ open }) => {
       <Fragment>
         <MySubmissions sx={{ mb: 4 }} />
 
-        <Cfp />
+        <CfpSendSubmission />
       </Fragment>
     );
   }
