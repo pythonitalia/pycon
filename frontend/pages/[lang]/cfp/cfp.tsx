@@ -3,13 +3,10 @@ import { useRouter } from "next/router";
 import { jsx } from "theme-ui";
 
 import { CfpForm, CfpFormFields } from "~/components/cfp-form";
-import { SendSubmissionMutation } from "~/generated/graphql-backend";
 import { useCurrentLanguage } from "~/locale/context";
 import {
-  MeSubmissionsDocument,
-  MeSubmissionsQuery,
-  MeSubmissionsQueryVariables,
   readMeSubmissionsQueryCache,
+  SendSubmissionMutation,
   useSendSubmissionMutation,
   writeMeSubmissionsQueryCache,
 } from "~/types";
