@@ -7,6 +7,7 @@ module.exports = withSourceMaps({
   env: {
     API_URL: process.env.API_URL,
     conferenceCode: process.env.CONFERENCE_CODE || "pycon-demo",
+    SENTRY_DSN: process.env.SENTRY_DSN || null,
   },
 
   webpack: (config) => {

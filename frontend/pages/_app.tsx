@@ -20,7 +20,7 @@ import theme from "~/theme";
 const intlCache = createIntlCache();
 
 Sentry.init({
-  dsn: "https://20b5f103cbf04fb3879ed3b5c6e98439@sentry.io/1889254",
+  dsn: process.env.SENTRY_DSN,
 });
 
 const isSocial = (path: string) => path.endsWith("/social");
