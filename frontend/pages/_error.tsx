@@ -1,11 +1,23 @@
 /** @jsx jsx */
-import { Box, Heading, jsx } from "theme-ui";
+import { FormattedMessage } from "react-intl";
+import { Box, Heading, jsx, Text } from "theme-ui";
+
+import { Link } from "~/components/link";
 
 const Error = ({ statusCode }) => (
   <Box sx={{ mt: 4, mx: "auto", maxWidth: "container", px: 3, pb: 6 }}>
     <Heading as="h2" sx={{ mb: 2 }}>
-      Error {statusCode}
+      Ops {statusCode}
     </Heading>
+
+    {statusCode === 404 && (
+      <Text>
+        <FormattedMessage id="error404.message" />
+        <Link path="/[lang]/" sx={{ display: "block", mt: 2 }}>
+          <FormattedMessage id="error404.goToHomepage" />
+        </Link>
+      </Text>
+    )}
 
     <video
       sx={{

@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { Fragment } from "react";
 import { Box, jsx, Text } from "theme-ui";
 
+import ErrorPage from "~/../pages/_error";
 import { Article } from "~/components/article";
 import { MetaTags } from "~/components/meta-tags";
 import { PageLoading } from "~/components/page-loading";
@@ -28,10 +29,14 @@ export const Page = () => {
   }
 
   if (!data) {
-    return null;
+    return <ErrorPage statusCode={404} />;
   }
 
   const { page } = data;
+
+  if (!page) {
+    return <ErrorPage statusCode={404} />;
+  }
 
   return (
     <Fragment>
