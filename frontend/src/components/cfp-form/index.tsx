@@ -17,7 +17,12 @@ import {
   Textarea,
 } from "theme-ui";
 
-import { CfpFormQuery, useCfpFormQuery } from "~/types";
+import {
+  CfpFormQuery,
+  SendSubmissionMutation,
+  UpdateSubmissionMutation,
+  useCfpFormQuery,
+} from "~/types";
 
 import { Alert } from "../alert";
 import { Button } from "../button/button";
@@ -60,8 +65,7 @@ type Props = {
   conferenceCode: string;
   loading: boolean;
   error: ApolloError | undefined;
-  // TODO
-  data: any;
+  data: SendSubmissionMutation | UpdateSubmissionMutation;
 };
 
 // value of the first option in the speaker level value
