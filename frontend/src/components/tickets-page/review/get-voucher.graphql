@@ -1,14 +1,16 @@
 query GetVoucher($conference: String!, $code: String!) {
-  voucher(code: $code, conference: $conference) {
-    id
-    code
-    value
-    redeemed
-    maxUsages
-    priceMode
-    items
-    allItems
-    variationId
-    validUntil
+  conference(code: $conference) {
+    voucher(code: $code) {
+      id
+      code
+      value
+      redeemed
+      maxUsages
+      priceMode
+      items
+      allItems
+      variationId
+      validUntil
+    }
   }
 }

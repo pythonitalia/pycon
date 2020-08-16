@@ -62,7 +62,7 @@ export const Voucher: React.SFC<Props> = ({
         error: null,
       });
 
-      const result = await apolloClient.query({
+      const result = await apolloClient.query<GetVoucherQuery>({
         fetchPolicy: "no-cache",
         query: GetVoucherDocument,
         variables: {
@@ -77,7 +77,7 @@ export const Voucher: React.SFC<Props> = ({
         error: result.error,
       });
 
-      const voucher = result.data.voucher;
+      const voucher = result.data.conference.voucher;
       if (voucher) {
         applyVoucher(voucher);
       }
@@ -165,7 +165,7 @@ export const Voucher: React.SFC<Props> = ({
 
         {error && <Alert variant="alert">{error}</Alert>}
 
-        {data && !data.voucher && (
+        {data && !data.conference.voucher && (
           <Alert variant="alert">
             <FormattedMessage id="voucher.codeNotValid" />
           </Alert>
