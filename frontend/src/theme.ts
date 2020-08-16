@@ -1,4 +1,6 @@
-export default {
+import { Theme } from "theme-ui";
+
+export const theme: Theme = {
   initialColorModeName: "light",
   useColorSchemeMediaQuery: true,
   space: [0, 4, 8, 16, 32, 64, 128, 256, 512],
@@ -367,11 +369,11 @@ export default {
     },
   },
   zIndices: {
-    header: "11",
-    scheduleItemPanel: "19",
-    scheduleLoading: "20",
-    scheduleHeader: "10",
-    scheduleDraggable: "9",
-    footer: "0",
+    header: 11,
+    scheduleItemPanel: 19,
+    scheduleLoading: 20,
+    scheduleHeader: 10,
+    scheduleDraggable: 9,
+    footer: 0,
   },
 };

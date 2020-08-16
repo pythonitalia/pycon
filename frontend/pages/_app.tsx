@@ -16,7 +16,7 @@ import { GlobalStyles } from "~/components/styles";
 import { URLContext } from "~/helpers/use-url";
 import messages from "~/locale";
 import { LocaleProvider } from "~/locale/context";
-import theme from "~/theme";
+import { theme } from "~/theme";
 const intlCache = createIntlCache();
 
 Sentry.init({

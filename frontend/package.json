@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "pyconit",
-  "version": "2020.08",
+  "version": "1.0.0",
   "main": "index.js",
   "author": "Python Italia",
   "license": "MIT",
@@ -63,7 +63,7 @@
     "@types/node": "^13.13.5",
     "@types/react": "^16.9.34",
     "@types/react-dom": "^16.9.7",
-    "@types/theme-ui": "^0.3.1",
+    "@types/theme-ui": "0.3.6",
     "@typescript-eslint/eslint-plugin": "^2.31.0",
     "@typescript-eslint/eslint-plugin-tslint": "^2.31.0",
     "@typescript-eslint/parser": "^2.31.0",
