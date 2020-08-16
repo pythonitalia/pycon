@@ -1,9 +1,9 @@
 {
   "private": true,
-  "name": "next-theme-ui-example",
-  "version": "0.3.1",
+  "name": "pyconit",
+  "version": "2020.08",
   "main": "index.js",
-  "author": "Brent Jackson <jxnblk@gmail.com>",
+  "author": "Python Italia",
   "license": "MIT",
   "scripts": {
     "dev": "NODE_ENV=development PORT=3000 node server.js",
