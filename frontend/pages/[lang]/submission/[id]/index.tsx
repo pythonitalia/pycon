@@ -72,7 +72,7 @@ const Content = ({
   });
 
   if (!data?.conference.isVotingClosed && !loggedIn) {
-    return <NotLoggedIn title={submission?.title || "TODO"} />;
+    return <NotLoggedIn title={submission?.title} />;
   }
 
   if (!submission) {
