@@ -4,7 +4,7 @@ import React from "react";
 
 import { getInitialLocale } from "~/locale/get-initial-locale";
 
-export default () => {
+export const HomeNoLang = () => {
   const router = useRouter();
 
   React.useEffect(() => {
@@ -17,3 +17,5 @@ export default () => {
     </Head>
   );
 };
+
+export default HomeNoLang;
