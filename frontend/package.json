@@ -28,10 +28,9 @@
     "@next/mdx": "^9.3.6",
     "@now/node": "^1.6.1",
     "@sentry/browser": "^5.15.5",
-    "@theme-ui/core": "0.4.0-rc.1",
-    "@theme-ui/match-media": "0.4.0-rc.1",
-    "@theme-ui/style-guide": "0.4.0-rc.1",
+    "@theme-ui/match-media": "^0.4.0-rc.1",
     "@types/react-lazyload": "^2.6.0",
+    "@types/styled-system": "^5.1.10",
     "@zeit/next-source-maps": "^0.0.3",
     "chrome-aws-lambda": "^5.2.1",
     "concurrently": "^5.2.0",
@@ -50,12 +49,13 @@
     "react-dnd": "^10.0.2",
     "react-dnd-html5-backend": "^10.0.2",
     "react-dom": "^16.13.1",
-    "react-intl": "^4.5.3",
+    "react-intl": "^5.6.7",
     "react-lazyload": "^2.6.7",
     "react-select": "^3.1.0",
     "react-use-form-state": "^0.12.1",
     "react-use-sync-scroll": "^0.1.0",
-    "theme-ui": "^0.4.0-alpha.1",
+    "styled-system": "^5.1.5",
+    "theme-ui": "0.4.0-rc.1",
     "use-onclickoutside": "^0.3.1",
     "yup": "^0.28.5"
   },
@@ -63,7 +63,6 @@
     "@types/node": "^13.13.5",
     "@types/react": "^16.9.34",
     "@types/react-dom": "^16.9.7",
-    "@types/theme-ui": "0.3.6",
     "@typescript-eslint/eslint-plugin": "^2.31.0",
     "@typescript-eslint/eslint-plugin-tslint": "^2.31.0",
     "@typescript-eslint/parser": "^2.31.0",
@@ -74,5 +73,14 @@
     "tslint": "^6.1.2",
     "tslint-react": "^5.0.0",
     "typescript": "^3.8.3"
+  },
+  "resolutions": {
+    "@theme-ui/core": "0.4.0-rc.1",
+    "@theme-ui/css": "0.4.0-rc.1",
+    "@theme-ui/mdx": "0.4.0-rc.1",
+    "@theme-ui/theme-provider": "0.4.0-rc.1",
+    "@theme-ui/components": "0.4.0-rc.1",
+    "@theme-ui/color-modes": "0.4.0-rc.1",
+    "theme-ui": "0.4.0-rc.1"
   }
 }

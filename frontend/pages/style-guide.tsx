@@ -1,6 +1,5 @@
 /** @jsx jsx */
 
-import { ColorPalette, TypeScale, TypeStyle } from "@theme-ui/style-guide";
 import { Box, jsx, Styled } from "theme-ui";
 
 export default () => (
@@ -12,12 +11,5 @@ export default () => (
     }}
   >
     <Styled.h1>Style Guide</Styled.h1>
-
-    <ColorPalette />
-
-    <TypeScale />
-
-    <TypeStyle fontFamily="heading" fontWeight="heading" lineHeight="heading" />
-    <TypeStyle fontFamily="body" fontWeight="body" lineHeight="body" />
   </Box>
 );
