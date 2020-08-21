@@ -20,7 +20,7 @@ export const MetaTags: React.SFC<Props> = ({
   const language = useCurrentLanguage();
   const { host, path } = useCurrentUrl();
   const socialCard = useDefaultSocialCard
-    ? `${host}/api/en`
+    ? `${host}/api/social/en`
     : `${host}/api/social${path}`;
 
   const titleTemplate = messages[language].titleTemplate;
