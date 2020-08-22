@@ -100,6 +100,7 @@ export const SocialCard: React.FC<Props> = () => {
           justifyContent: "center",
           px: 5,
         }}
+        id="social-card"
       >
         <Box sx={{ position: "relative" }}>
           <Text
