@@ -1,8 +1,8 @@
 {
-  "routes": [
+  "rewrites": [
     {
-      "src": "/graphql",
-      "dest": "https://pycon.it/graphql"
+      "source": "/graphql",
+      "destination": "https://pycon.it/graphql"
     }
   ]
 }
