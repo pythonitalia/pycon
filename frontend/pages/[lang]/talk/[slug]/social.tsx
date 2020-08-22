@@ -1,8 +1,10 @@
 /** @jsx jsx */
+import { useRouter } from "next/router";
 import React, { Fragment } from "react";
 import { Box, Flex, Heading, jsx, Text } from "theme-ui";
 
 import { CardType, getSize } from "~/helpers/social-card";
+import { useTalkSocialCardQuery } from "~/types";
 
 const Snakes: React.SFC = (props) => (
   <svg fill="none" viewBox="0 0 170 200" {...props}>
@@ -55,12 +57,7 @@ const Snakes: React.SFC = (props) => (
   </svg>
 );
 
-type Props = {
-  data: any;
-  pageContext: {
-    cardType: CardType;
-  };
-};
+type Props = {};
 
 const getTitleFontSize = (cardType: CardType) => {
   switch (cardType) {
@@ -72,65 +69,68 @@ const getTitleFontSize = (cardType: CardType) => {
   }
 };
 
-export default ({ data, pageContext }: Props) => (
-  <Fragment>
-    <Flex
-      sx={{
-        ...getSize(pageContext.cardType),
-        position: "relative",
-        overflow: "hidden",
-        border: "socialCard",
-        background: "orange",
-        flexDirection: "column",
-        justifyContent: "center",
-        px: 5,
-      }}
-    >
-      <Box sx={{ position: "relative" }}>
-        <Text
-          sx={{
-            color: "white",
-            fontSize: 6,
-            position: "absolute",
-            bottom: "100%",
-            mb: 3,
-          }}
-        >
-          {data.backend.conference
-            .talk!.speakers.map((speaker) => speaker.fullName)
-            .join("&")}
-        </Text>
+export const SocialCard: React.FC<Props> = () => {
+  const router = useRouter();
+  const slug = router.query.slug as string;
+  const code = process.env.conferenceCode;
 
-        <Heading
-          variant="caps"
-          sx={{
-            fontSize: getTitleFontSize(pageContext.cardType),
-            fontWeight: "bold",
-          }}
-        >
-          {data.backend.conference.talk!.title}
-        </Heading>
-      </Box>
+  const { loading, data } = useTalkSocialCardQuery({
+    variables: {
+      slug,
+      code,
+    },
+  });
 
-      <Snakes
-        sx={{ position: "absolute", bottom: -14, right: 100, width: 170 }}
-      />
-    </Flex>
-  </Fragment>
-);
+  if (loading) {
+    return null;
+  }
 
-// export const query = graphql`
-//   query SocialCardTalk($slug: String!) {
-//     backend {
-//       conference {
-//         talk(slug: $slug) {
-//           title
+  const talk = data.conference.talk;
 
-//           speakers {
-//             fullName
-//           }
-//         }
-//       }
-//     }
-//   }
-// `;
+  return (
+    <Fragment>
+      <Flex
+        sx={{
+          ...getSize("social-twitter"),
+          position: "relative",
+          overflow: "hidden",
+          border: "socialCard",
+          background: "orange",
+          flexDirection: "column",
+          justifyContent: "center",
+          px: 5,
+        }}
+      >
+        <Box sx={{ position: "relative" }}>
+          <Text
+            sx={{
+              color: "white",
+              fontSize: 6,
+              position: "absolute",
+              bottom: "100%",
+              mb: 3,
+            }}
+          >
+            {talk.speakers.map((speaker) => speaker.fullName).join("&")}
+          </Text>
+
+          <Heading
+            variant="caps"
+            sx={{
+              fontSize: getTitleFontSize("social-twitter"),
+              fontWeight: "bold",
+            }}
+          >
+            {talk.title}
+          </Heading>
+        </Box>
+
+        <Snakes
+          sx={{ position: "absolute", bottom: -14, right: 100, width: 170 }}
+        />
+      </Flex>
+    </Fragment>
+  );
+};
+
+export default SocialCard;

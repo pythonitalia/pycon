@@ -1,0 +1,10 @@
+query TalkSocialCard($slug: String!, $code: String!) {
+  conference(code: $code) {
+    talk(slug: $slug) {
+      title
+      speakers {
+        fullName
+      }
+    }
+  }
+}

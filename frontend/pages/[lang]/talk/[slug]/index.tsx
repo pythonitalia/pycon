@@ -36,7 +36,7 @@ export const TalkPage = () => {
 
   return (
     <Fragment>
-      <MetaTags title={talk.title} />
+      <MetaTags title={talk.title} useDefaultSocialCard={false} />
 
       <Grid
         gap={5}
