@@ -1,0 +1,9 @@
+query BlogSocialCard($slug: String!, $language: String!) {
+  blogPost(slug: $slug) {
+    id
+    title(language: $language)
+    author {
+      fullName
+    }
+  }
+}

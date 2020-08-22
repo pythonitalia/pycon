@@ -32,7 +32,11 @@ export const BlogArticlePage = () => {
 
   return (
     <Fragment>
-      <MetaTags title={post.title} description={post.excerpt || post.title} />
+      <MetaTags
+        title={post.title}
+        description={post.excerpt || post.title}
+        useDefaultSocialCard={false}
+      />
 
       <Grid
         gap={5}

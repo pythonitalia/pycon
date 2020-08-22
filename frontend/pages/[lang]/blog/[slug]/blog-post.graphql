@@ -1,5 +1,6 @@
 query Post($slug: String!, $language: String!) {
   blogPost(slug: $slug) {
+    id
     title(language: $language)
     content(language: $language)
     excerpt(language: $language)
