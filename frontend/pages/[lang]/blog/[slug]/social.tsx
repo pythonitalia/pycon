@@ -69,7 +69,7 @@ const getTitleFontSize = (cardType: CardType) => {
 
 export const SocialCard: React.FC = () => {
   const router = useRouter();
-  const cardType = router.query["card-type"] as CardType;
+  const cardType = (router.query["card-type"] as CardType) || "social";
   const slug = router.query.slug as string;
   const language = useCurrentLanguage();
 

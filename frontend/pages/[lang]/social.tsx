@@ -1,9 +1,10 @@
 /** @jsx jsx */
+import { useRouter } from "next/router";
 import { Fragment } from "react";
 import { Box, Flex, Heading, jsx } from "theme-ui";
 
 import { LogoOrange } from "~/components/logo/orange";
-import { getSize } from "~/helpers/social-card";
+import { CardType, getSize } from "~/helpers/social-card";
 import { useSocialCardQuery } from "~/types";
 
 const getDays = ({ start, end }: { start: string; end: string }) => {
@@ -31,13 +32,15 @@ const getYear = ({ end }: { end: string }) => {
 };
 
 export const SocialPage = () => {
+  const router = useRouter();
   const { data } = useSocialCardQuery({
     variables: {
       code: process.env.conferenceCode,
     },
   });
+  const cardType = (router.query["card-type"] as CardType) || "social";
 
-  const size = getSize("social-twitter");
+  const size = getSize(cardType);
   const padding = 14;
 
   if (!data) {
