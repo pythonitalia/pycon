@@ -71,6 +71,7 @@ const getTitleFontSize = (cardType: CardType) => {
 
 export const SocialCard: React.FC<Props> = () => {
   const router = useRouter();
+  const cardType = router.query["card-type"] as CardType;
   const slug = router.query.slug as string;
   const code = process.env.conferenceCode;
 
@@ -91,7 +92,7 @@ export const SocialCard: React.FC<Props> = () => {
     <Fragment>
       <Flex
         sx={{
-          ...getSize("social-twitter"),
+          ...getSize(cardType),
           position: "relative",
           overflow: "hidden",
           border: "socialCard",
@@ -118,7 +119,7 @@ export const SocialCard: React.FC<Props> = () => {
           <Heading
             variant="caps"
             sx={{
-              fontSize: getTitleFontSize("social-twitter"),
+              fontSize: getTitleFontSize(cardType),
               fontWeight: "bold",
             }}
           >
