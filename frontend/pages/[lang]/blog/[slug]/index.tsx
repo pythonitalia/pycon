@@ -91,4 +91,5 @@ export const BlogArticlePage = () => {
     </Fragment>
   );
 };
+
 export default BlogArticlePage;

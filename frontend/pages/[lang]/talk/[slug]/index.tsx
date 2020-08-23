@@ -16,10 +16,19 @@ export const TalkPage = () => {
   const router = useRouter();
   const slug = router.query.slug as string;
 
+  const ssrHeaders = process.browser
+    ? {}
+    : {
+        Authorization: `Bearer ${process.env.API_TOKEN}`,
+      };
+
   const { data, loading } = useTalkQuery({
     variables: {
       code: process.env.conferenceCode,
       slug,
+    },
+    context: {
+      headers: ssrHeaders,
     },
   });
 

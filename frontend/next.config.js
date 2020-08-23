@@ -4,6 +4,9 @@ const webpack = require("webpack");
 const withSourceMaps = require("@zeit/next-source-maps");
 
 module.exports = withSourceMaps({
+  serverRuntimeConfig: {
+    API_TOKEN: process.env.API_TOKEN,
+  },
   env: {
     API_URL: process.env.API_URL,
     conferenceCode: process.env.CONFERENCE_CODE || "pycon-demo",
