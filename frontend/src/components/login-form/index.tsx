@@ -29,8 +29,7 @@ export const LoginForm: React.SFC<FormProps> = ({ next, ...props }) => {
   const router = useRouter();
   const [loggedIn, setLoggedIn] = useLoginState();
 
-  // TODO: move this to parent layout?
-  const [messages, _, clearMessages] = useMessages();
+  const { messages, clearMessages } = useMessages();
 
   const nextUrl = (router.query.next as string) || next || `/${lang}/profile`;
 

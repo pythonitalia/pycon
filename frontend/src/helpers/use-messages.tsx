@@ -22,11 +22,11 @@ const getMessages: () => Message[] = () => {
   }
 };
 
-export const useMessages: () => [
-  Message[],
-  (message: Message) => void,
-  () => void,
-] = () => {
+export const useMessages: () => {
+  messages: Message[];
+  addMessage: (message: Message) => void;
+  clearMessages: () => void;
+} = () => {
   const messages = getMessages();
 
   const addMessage = ({ message, type }: Message) => {
@@ -46,5 +46,5 @@ export const useMessages: () => [
 
   const clearMessages = () => window.sessionStorage.removeItem(MESSAGES_KEY);
 
-  return [messages, addMessage, clearMessages];
+  return { messages, addMessage, clearMessages };
 };

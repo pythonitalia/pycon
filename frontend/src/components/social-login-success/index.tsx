@@ -14,7 +14,7 @@ export const SocialLoginSuccess: React.SFC = () => {
   const [loggedIn, setLoggedIn] = useLoginState();
   const language = useCurrentLanguage();
   const router = useRouter();
-  const [_, addMessage] = useMessages();
+  const { addMessage } = useMessages();
 
   const errorMessage = useTranslatedMessage("global.somethingWentWrong");
   const { loading, error, data } = useSocialLoginCheckQuery({

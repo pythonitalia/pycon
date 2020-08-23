@@ -19,7 +19,7 @@ type FormFields = {
 export const ResetPasswordPage = () => {
   const router = useRouter();
   const language = useCurrentLanguage();
-  const [_, addMessage] = useMessages();
+  const { addMessage } = useMessages();
   const successMessage = useTranslatedMessage("resetPassword.youCanNowLogin");
 
   const [changePassword, { loading, error, data }] = useResetPasswordMutation({
