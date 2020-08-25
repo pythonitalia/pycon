@@ -1,5 +1,6 @@
 query SocialCard($code: String!) {
   conference(code: $code) {
+    id
     start
     end
     name

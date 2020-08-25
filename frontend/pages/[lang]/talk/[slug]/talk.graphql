@@ -1,6 +1,8 @@
 query Talk($slug: String!, $code: String!) {
   conference(code: $code) {
+    id
     talk(slug: $slug) {
+      id
       title
       image
       highlightColor

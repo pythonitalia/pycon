@@ -9,6 +9,7 @@ fragment Link on MenuLink {
 
 query Header($code: String!, $language: String!) {
   conference(code: $code) {
+    id
     conferenceMenu: menu(identifier: "conference-nav") {
       links {
         ...Link

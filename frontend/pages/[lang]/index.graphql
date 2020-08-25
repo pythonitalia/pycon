@@ -1,10 +1,12 @@
 query IndexPage($code: String!, $language: String!) {
   blogPosts {
+    id
     slug
     title(language: $language)
   }
 
   conference(code: $code) {
+    id
     name(language: $language)
     introduction(language: $language)
 

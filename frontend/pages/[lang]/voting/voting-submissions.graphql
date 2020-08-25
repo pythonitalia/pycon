@@ -2,6 +2,7 @@
 
 query VotingSubmissions($conference: String!) {
   conference(code: $conference) {
+    id
     isVotingOpen
 
     topics {
