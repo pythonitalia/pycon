@@ -11,7 +11,8 @@
     "start": "next start",
     "codegen": "graphql-codegen -r dotenv/config -c codegen.yml",
     "codegen:watch": "yarn codegen --watch",
-    "precommit-lint": "node scripts/lint"
+    "precommit-lint": "node scripts/lint",
+    "test": "jest src/"
   },
   "dependencies": {
     "@apollo/client": "^3.1.3",
@@ -60,6 +61,7 @@
     "yup": "^0.28.5"
   },
   "devDependencies": {
+    "@types/jest": "^26.0.10",
     "@types/node": "^13.13.5",
     "@types/react": "^16.9.34",
     "@types/react-dom": "^16.9.7",
@@ -69,7 +71,9 @@
     "eslint": "^7.0.0",
     "eslint-plugin-prettier": "^3.1.3",
     "eslint-plugin-simple-import-sort": "^5.0.3",
+    "jest": "^26.4.2",
     "prettier": "^2.0.5",
+    "ts-jest": "^26.2.0",
     "tslint": "^6.1.2",
     "tslint-react": "^5.0.0",
     "typescript": "^3.8.3"
