@@ -69,3 +69,9 @@
     to = "/en"
     status = 301
     force = false
+
+[[redirects]]
+    from = "en/blog/ pycon-11-cancelled/"
+    to = "en/blog/pycon-11-cancelled/"
+    status = 301
+    force = true
