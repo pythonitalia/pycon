@@ -71,7 +71,25 @@
     force = false
 
 [[redirects]]
-    from = "en/blog/ pycon-11-cancelled/"
-    to = "en/blog/pycon-11-cancelled/"
+    from = "/en/blog/ pycon-11-cancelled/"
+    to = "/en/blog/pycon-11-cancelled/"
+    status = 301
+    force = true
+
+[[redirects]]
+    from = "/en/blog/%20pycon-11-cancelled/"
+    to = "/en/blog/pycon-11-cancelled/"
+    status = 301
+    force = true
+
+[[redirects]]
+    from = "/en/blog/ pycon-11-cancelled"
+    to = "/en/blog/pycon-11-cancelled/"
+    status = 301
+    force = true
+
+[[redirects]]
+    from = "/en/blog/%20pycon-11-cancelled"
+    to = "/en/blog/pycon-11-cancelled/"
     status = 301
     force = true
