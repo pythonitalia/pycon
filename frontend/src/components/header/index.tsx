@@ -122,7 +122,7 @@ export const HeaderContent = ({ location }: { location: any }) => {
           }}
         >
           <Link
-            href=":language/blog/pycon-11-postponed-to-november"
+            href=":language/blog/pycon-11-cancelled/"
             sx={{ color: "white", textUnderlineOffset: 4 }}
           >
             <FormattedMessage id="header.coronaVirus" />
