@@ -38,7 +38,8 @@ export const DaySelector: React.FC<{
               value={day.day}
               selected={currentDay === day.day}
             >
-              {formatDay(day.day, language)} {index === 0 && "(Beginners day)"}
+              {formatDay(day.day, language, timezone)}{" "}
+              {index === 0 && "(Beginners day)"}
             </option>
           ))}
         </Select>

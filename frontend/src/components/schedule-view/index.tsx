@@ -5,6 +5,7 @@ import { Box, Flex, Heading, jsx } from "theme-ui";
 
 import { DaySelector } from "~/components/day-selector";
 import {
+  ScheduleQuery,
   useAddScheduleSlotMutation,
   useScheduleQuery,
   useUpdateOrCreateSlotItemMutation,
@@ -41,15 +42,9 @@ const LoadingOverlay = () => (
 export const ScheduleView: React.SFC<{
   shouldShowAdmin: boolean;
   day?: string;
-}> = ({ day: currentDay, shouldShowAdmin }) => {
+  schedule: ScheduleQuery;
+}> = ({ day: currentDay, shouldShowAdmin, schedule }) => {
   const code = process.env.conferenceCode;
-
-  const { loading, data, error } = useScheduleQuery({
-    variables: {
-      code,
-      fetchSubmissions: shouldShowAdmin,
-    },
-  });
 
   const [addSlot, { loading: addingSlot }] = useAddScheduleSlotMutation({
     variables: { code, day: currentDay, duration: 60 },
@@ -114,14 +109,7 @@ export const ScheduleView: React.SFC<{
     [code, currentDay],
   );
 
-  if (error) {
-    throw error;
-  }
-
-  const { rooms, days, submissions } = loading
-    ? { rooms: [], days: [], submissions: [] }
-    : data?.conference!;
-
+  const { rooms, days, submissions } = schedule.conference!;
   const day = days.find((d) => d.day === currentDay);
 
   return (
@@ -147,21 +135,11 @@ export const ScheduleView: React.SFC<{
               <DaySelector
                 days={days}
                 currentDay={currentDay}
-                timezone={data?.conference.timezone}
+                timezone={schedule.conference.timezone}
               />
             </Box>
           </Box>
         </Box>
-
-        {loading && (
-          <Box sx={{ borderTop: "primary" }}>
-            <Box
-              sx={{ maxWidth: "largeContainer", p: 3, mx: "auto", fontSize: 3 }}
-            >
-              <FormattedMessage id="schedule.loading" />
-            </Box>
-          </Box>
-        )}
 
         {day && (
           <Schedule
@@ -176,7 +154,7 @@ export const ScheduleView: React.SFC<{
 
         {shouldShowAdmin && (
           <Box sx={{ my: 4, ml: 100 }}>
-            {data?.conference.durations.map((duration) => {
+            {schedule.conference.durations.map((duration) => {
               if (
                 duration.allowedSubmissionTypes.find(
                   (type) => type.name.toLowerCase() !== "talk",

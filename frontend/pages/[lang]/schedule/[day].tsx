@@ -4,7 +4,7 @@ import React, { Fragment } from "react";
 import { DndProvider } from "react-dnd";
 import Backend from "react-dnd-html5-backend";
 import { FormattedMessage } from "react-intl";
-import { jsx } from "theme-ui";
+import { Box, jsx } from "theme-ui";
 
 import { useLoginState } from "~/app/profile/hooks";
 import { formatDay } from "~/components/day-selector/format-day";
@@ -13,22 +13,24 @@ import { ScheduleView } from "~/components/schedule-view";
 import { useCurrentUser } from "~/helpers/use-current-user";
 import { useCurrentLanguage } from "~/locale/context";
 import { Language } from "~/locale/get-initial-locale";
+import { ScheduleQuery, useScheduleQuery } from "~/types";
 
-const Meta: React.SFC<{ day: string; language: Language }> = ({
-  day,
-  language,
-}) => (
+const Meta: React.FC<{
+  day: string;
+  language: Language;
+  timezone?: string;
+}> = ({ day, language, timezone }) => (
   <FormattedMessage
     id="schedule.pageTitle"
-    values={{ day: formatDay(day, language) }}
+    values={{ day: formatDay(day, language, timezone) }}
   >
     {(text) => <MetaTags title={text} />}
   </FormattedMessage>
 );
 
-export const ScheduleDayPage = () => {
+export const ScheduleDayPage: React.FC = () => {
   const [loggedIn, _] = useLoginState();
-  const language = useCurrentLanguage();
+  const code = process.env.conferenceCode;
 
   const router = useRouter();
   const day = router.query.day as string;
@@ -37,22 +39,76 @@ export const ScheduleDayPage = () => {
   const { user } = useCurrentUser({ skip: !shouldFetchCurrentUser });
   const shouldShowAdmin = user ? user.canEditSchedule : false;
 
+  const { loading, data } = useScheduleQuery({
+    variables: {
+      code,
+      fetchSubmissions: shouldShowAdmin,
+    },
+  });
+
   if (shouldShowAdmin) {
     return (
       <DndProvider backend={Backend}>
-        <Meta day={day} language={language} />
-
-        <ScheduleView day={day} shouldShowAdmin={shouldShowAdmin} />
+        <PageContent
+          loading={loading}
+          shouldShowAdmin={shouldShowAdmin}
+          data={data}
+          day={day}
+        />
       </DndProvider>
     );
   }
 
   return (
-    <Fragment>
-      <Meta day={day} language={language} />
+    <PageContent
+      loading={loading}
+      shouldShowAdmin={shouldShowAdmin}
+      data={data}
+      day={day}
+    />
+  );
+};
 
-      <ScheduleView day={day} shouldShowAdmin={shouldShowAdmin} />
-    </Fragment>
+type PageContentProps = {
+  loading: boolean;
+  shouldShowAdmin: boolean;
+  data: ScheduleQuery;
+  day: string;
+};
+
+const PageContent: React.FC<PageContentProps> = ({
+  loading,
+  shouldShowAdmin,
+  data,
+  day,
+}) => {
+  const language = useCurrentLanguage();
+
+  return (
+    <>
+      <Meta
+        day={day}
+        language={language}
+        timezone={data?.conference.timezone}
+      />
+
+      {loading && (
+        <Box sx={{ borderTop: "primary" }}>
+          <Box
+            sx={{ maxWidth: "largeContainer", p: 3, mx: "auto", fontSize: 3 }}
+          >
+            <FormattedMessage id="schedule.loading" />
+          </Box>
+        </Box>
+      )}
+      {!loading && (
+        <ScheduleView
+          schedule={data}
+          day={day}
+          shouldShowAdmin={shouldShowAdmin}
+        />
+      )}
+    </>
   );
 };
 
