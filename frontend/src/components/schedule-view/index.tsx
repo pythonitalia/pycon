@@ -144,7 +144,11 @@ export const ScheduleView: React.SFC<{
             <Heading sx={{ fontSize: 6 }}>Schedule</Heading>
 
             <Box sx={{ ml: "auto" }}>
-              <DaySelector days={days} currentDay={currentDay} />
+              <DaySelector
+                days={days}
+                currentDay={currentDay}
+                timezone={data?.conference.timezone}
+              />
             </Box>
           </Box>
         </Box>

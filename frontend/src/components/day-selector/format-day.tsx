@@ -1,12 +1,15 @@
 import { Language } from "~/locale/get-initial-locale";
 
-export const formatDay = (day: string, language: Language) => {
+export const formatDay = (
+  day: string,
+  language: Language,
+  timezone: string,
+) => {
   const d = new Date(day);
   const formatter = new Intl.DateTimeFormat(language, {
     weekday: "long",
     day: "numeric",
-    // TODO: use conference timezone
-    timeZone: "Europe/Rome",
+    timeZone: timezone,
   });
   return formatter.format(d);
 };

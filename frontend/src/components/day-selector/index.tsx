@@ -13,12 +13,13 @@ import { formatDay } from "./format-day";
 const getDayUrl = (language: string, day: string) =>
   `/${language}/schedule/${day}`;
 
-export const DaySelector: React.SFC<{
+export const DaySelector: React.FC<{
   currentDay: string | null;
+  timezone: string;
   days: {
     day: string;
   }[];
-}> = ({ currentDay, days }) => {
+}> = ({ currentDay, days, timezone }) => {
   const router = useRouter();
   const language = useCurrentLanguage();
 
@@ -90,7 +91,7 @@ export const DaySelector: React.SFC<{
                 )
               }
             >
-              {formatDay(day.day, language)}
+              {formatDay(day.day, language, timezone)}
             </Link>
           </Box>
         ))}

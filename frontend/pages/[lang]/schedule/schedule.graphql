@@ -4,6 +4,7 @@
 query Schedule($code: String!, $fetchSubmissions: Boolean!) {
   conference(code: $code) {
     id
+    timezone
     days {
       day
       slots {
