@@ -28,6 +28,11 @@ HomeNoLang.getInitialProps = async ({ req, res }) => {
   // so we can read it here
 
   const acceptLanguage = req.headers["accept-language"];
+
+  if (!acceptLanguage) {
+    return {};
+  }
+
   const language = getBestLanguageForUser(acceptLanguage);
   res.writeHead(302, {
     Location: `/${language}`,
