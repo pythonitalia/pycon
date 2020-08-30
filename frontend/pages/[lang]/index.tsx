@@ -120,18 +120,28 @@ export const HomePage = () => {
                 <Heading variant="caps" color="violet">
                   <FormattedMessage id="home.deadline.begins" />
                 </Heading>
-                <Box>{formatDeadlineDate(conference.votingDeadline.start)}</Box>
+                <Box>
+                  {formatDeadlineDate(
+                    conference.votingDeadline.start,
+                    language,
+                  )}
+                </Box>
                 <Box sx={{ fontSize: 0 }}>
-                  {formatDeadlineTime(conference.votingDeadline.start)}
+                  {formatDeadlineTime(
+                    conference.votingDeadline.start,
+                    language,
+                  )}
                 </Box>
               </Box>
               <Box sx={{ flex: 1, p: 3, textAlign: "center" }}>
                 <Heading variant="caps" color="orange">
                   <FormattedMessage id="home.deadline.deadline" />
                 </Heading>
-                <Box>{formatDeadlineDate(conference.votingDeadline.end)}</Box>
+                <Box>
+                  {formatDeadlineDate(conference.votingDeadline.end, language)}
+                </Box>
                 <Box sx={{ fontSize: 0 }}>
-                  {formatDeadlineTime(conference.votingDeadline.end)}
+                  {formatDeadlineTime(conference.votingDeadline.end, language)}
                 </Box>
               </Box>
             </Box>

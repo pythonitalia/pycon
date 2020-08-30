@@ -1,6 +1,8 @@
 export const DEFAULT_LOCALE = "en" as const;
 export const VALID_LOCALES = [DEFAULT_LOCALE, "it"] as const;
 
+export type Language = typeof VALID_LOCALES[number];
+
 // VALID_LOCALES is a ReadonlyArray, so includes wants only "en" or "it"
 // but we want to check if any locale (string) is included in the list of not
 // @ts-ignore

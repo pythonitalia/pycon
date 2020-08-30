@@ -1,8 +1,10 @@
-import { DEFAULT_LOCALE, VALID_LOCALES } from "~/locale/get-initial-locale";
+import {
+  DEFAULT_LOCALE,
+  Language,
+  VALID_LOCALES,
+} from "~/locale/get-initial-locale";
 
-export const getBestLanguageForUser = (
-  acceptLanguage: string,
-): typeof VALID_LOCALES[number] => {
+export const getBestLanguageForUser = (acceptLanguage: string): Language => {
   const sections = acceptLanguage
     .split(",")
     .map((l) => {

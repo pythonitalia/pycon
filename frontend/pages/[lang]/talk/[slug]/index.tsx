@@ -10,11 +10,13 @@ import { MetaTags } from "~/components/meta-tags";
 import { PageLoading } from "~/components/page-loading";
 import { SpeakerDetail } from "~/components/speaker-detail";
 import { compile } from "~/helpers/markdown";
+import { useCurrentLanguage } from "~/locale/context";
 import { useTalkQuery } from "~/types";
 
 export const TalkPage = () => {
   const router = useRouter();
   const slug = router.query.slug as string;
+  const language = useCurrentLanguage();
 
   const ssrHeaders = process.browser
     ? {}

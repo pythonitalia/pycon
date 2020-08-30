@@ -37,7 +37,7 @@ export const DaySelector: React.SFC<{
               value={day.day}
               selected={currentDay === day.day}
             >
-              {formatDay(day.day)} {index === 0 && "(Beginners day)"}
+              {formatDay(day.day, language)} {index === 0 && "(Beginners day)"}
             </option>
           ))}
         </Select>
@@ -90,7 +90,7 @@ export const DaySelector: React.SFC<{
                 )
               }
             >
-              {formatDay(day.day)}
+              {formatDay(day.day, language)}
             </Link>
           </Box>
         ))}

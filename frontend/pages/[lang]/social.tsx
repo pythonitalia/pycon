@@ -5,6 +5,8 @@ import { Box, Flex, Heading, jsx } from "theme-ui";
 
 import { LogoOrange } from "~/components/logo/orange";
 import { CardType, getSize } from "~/helpers/social-card";
+import { useCurrentLanguage } from "~/locale/context";
+import { Language } from "~/locale/get-initial-locale";
 import { useSocialCardQuery } from "~/types";
 
 const getDays = ({ start, end }: { start: string; end: string }) => {
@@ -15,10 +17,10 @@ const getDays = ({ start, end }: { start: string; end: string }) => {
   return `${startDate.getDate()} - ${endDate.getDate()}`;
 };
 
-const getMonth = ({ end }: { end: string }) => {
+const getMonth = ({ end }: { end: string }, language: Language) => {
   const endDate = new Date(end);
 
-  const formatter = new Intl.DateTimeFormat("default", {
+  const formatter = new Intl.DateTimeFormat(language, {
     month: "long",
   });
 
@@ -33,6 +35,7 @@ const getYear = ({ end }: { end: string }) => {
 
 export const SocialPage = () => {
   const router = useRouter();
+  const language = useCurrentLanguage();
   const { data } = useSocialCardQuery({
     variables: {
       code: process.env.conferenceCode,
@@ -121,7 +124,7 @@ export const SocialPage = () => {
                   fontWeight: "bold",
                 }}
               >
-                {getMonth(data.conference)} {getYear(data.conference)}
+                {getMonth(data.conference, language)} {getYear(data.conference)}
               </Heading>
               <Heading
                 sx={{

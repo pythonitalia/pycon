@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 
-import { isLocale } from "./get-initial-locale";
+import { Language } from "./get-initial-locale";
 
 interface ContextProps {
   readonly locale: string;
@@ -41,5 +41,5 @@ export const LocaleProvider: React.FC<{ lang: string }> = ({
 export const useCurrentLanguage = () => {
   const { locale } = useContext(LocaleContext);
 
-  return locale as "en" | "it";
+  return locale as Language;
 };
