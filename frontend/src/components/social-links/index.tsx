@@ -15,6 +15,7 @@ export const SocialLinks: React.FC<SocialLinksProps> = (props) => (
     as="ul"
     sx={{
       listStyle: "none",
+      pl: 0,
 
       "li + li": {
         marginLeft: 3,
