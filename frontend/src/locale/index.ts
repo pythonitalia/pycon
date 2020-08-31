@@ -157,7 +157,7 @@ export const messages = {
     "cfp.aboutYouDescription":
       "This section will help us to know more about you and your experience as speaker. While the previous talk is optional, if you can, try to find one of your previous talk as this will help us during the talk selection",
     "header.coronaVirus":
-      "🚨 Update regarding COVID-19 - Conference postponed to 5-8 November",
+      "🚨 Update regarding COVID-19 - Conference cancelled 😢",
     "header.profile": "Profile",
     "header.login": "Login",
     "header.followus": "Follow us",
@@ -543,8 +543,7 @@ export const messages = {
     "cfp.aboutYou": "Su di te",
     "cfp.aboutYouDescription":
       "Questa sezione ci aiuterà a conoscerti meglio come speaker, ti consigliano di compilare tutte le informazioni cosi da aiutarci durante la selezione",
-    "header.coronaVirus":
-      "🚨 Aggiornamento COVID-19 - Conferenza posticipata al 5-8 Novembre",
+    "header.coronaVirus": "🚨 Aggiornamento COVID-19 - Conferenza annullata 😢",
     "header.profile": "Profilo",
     "header.login": "Login",
     "header.followus": "Seguici",

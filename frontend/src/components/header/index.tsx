@@ -116,7 +116,7 @@ export const Header = () => {
           <Link
             sx={{ color: "white", textUnderlineOffset: 4 }}
             path="/[lang]/blog/[slug]"
-            params={{ slug: "pycon-11-postponed-to-november" }}
+            params={{ slug: "pycon-11-cancelled" }}
           >
             <FormattedMessage id="header.coronaVirus" />
           </Link>
