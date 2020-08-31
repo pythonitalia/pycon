@@ -10,7 +10,7 @@ type SocialLinksProps = {
   variant?: string;
 };
 
-export const SocialLinks: React.SFC<SocialLinksProps> = (props) => (
+export const SocialLinks: React.FC<SocialLinksProps> = (props) => (
   <Flex
     as="ul"
     sx={{

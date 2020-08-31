@@ -42,7 +42,7 @@ export const Page = () => {
     <Fragment>
       <MetaTags title={page.title} />
 
-      <Box sx={{ mx: "auto", px: 3, py: 5, maxWidth: "container" }}>
+      <Box sx={{ mx: "auto", px: 3, maxWidth: "container" }}>
         <Article title={page.title}>{compile(page.content).tree}</Article>
       </Box>
     </Fragment>
