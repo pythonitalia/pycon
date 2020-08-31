@@ -243,7 +243,6 @@ export const theme: Theme = {
       variant: "text.caps",
       fontSize: 2,
       fontWeight: "bold",
-      mt: 20,
       mb: 3,
     },
     prefooter: {
