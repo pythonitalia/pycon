@@ -8,7 +8,7 @@ yarn-error.log*
 src/**/*.jsx
 src/**/*.js
 src/**/*.generated.tsx
-pages/**/*.generated.tsx
+src/pages/**/*.generated.tsx
 !src/gatsby-plugin-theme-ui/*
 .next/
 next-env.d.ts

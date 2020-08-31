@@ -1,14 +1,14 @@
 /** @jsx jsx */
 import { useRouter } from "next/router";
 import { Fragment } from "react";
-import { Box, jsx, Text } from "theme-ui";
+import { Box, jsx } from "theme-ui";
 
-import ErrorPage from "~/../pages/_error";
 import { Article } from "~/components/article";
 import { MetaTags } from "~/components/meta-tags";
 import { PageLoading } from "~/components/page-loading";
 import { compile } from "~/helpers/markdown";
 import { useCurrentLanguage } from "~/locale/context";
+import ErrorPage from "~/pages/_error";
 import { usePageQuery } from "~/types";
 
 export const Page = () => {
