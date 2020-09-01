@@ -12,10 +12,18 @@ export const GlobalStyles = () => (
       ".article": {
         lineHeight: 1.6,
       },
-      "h1, h2, h3, h4, h5, h6, p, ol, ul": {
+      ".article h1, \
+        .article h2, \
+        .article h3, \
+        .article h4, \
+        .article h5, \
+        .article h6, \
+        .article p, \
+        .article ol, \
+        .article ul": {
         marginBottom: "1em",
       },
-      "ol, ul, li": {
+      ".article ol, .article ul, .article li": {
         paddingLeft: "1em",
       },
     })}

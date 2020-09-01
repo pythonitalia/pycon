@@ -69,7 +69,7 @@ type LinkProps = {
   params?: Params;
 };
 
-export const Link: React.SFC<LinkProps> = ({
+export const Link: React.FC<LinkProps> = ({
   children,
   path,
   backgroundColor,
