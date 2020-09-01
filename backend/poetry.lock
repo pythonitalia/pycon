@@ -114,14 +114,6 @@ six = "*"
 
 [[package]]
 category = "main"
-description = "Amazon Web Services Library"
-name = "boto"
-optional = false
-python-versions = "*"
-version = "2.49.0"
-
-[[package]]
-category = "main"
 description = "The AWS SDK for Python"
 name = "boto3"
 optional = false
@@ -407,11 +399,12 @@ category = "main"
 description = "A Django email backend for Amazon's Simple Email Service"
 name = "django-ses"
 optional = false
-python-versions = "*"
-version = "0.8.13"
+python-versions = ">=2.7"
+version = "1.0.2"
 
 [package.dependencies]
-boto = ">=2.31.0"
+boto3 = ">=1.0.0"
+django = ">1.10"
 future = ">=0.16.0"
 pytz = ">=2016.10"
 
@@ -1468,7 +1461,8 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["pathlib2", "contextlib2", "unittest2"]
 
 [metadata]
-content-hash = "b24ba4911e984d3eadfc54424d2abcf88ba62296c5c7d84f616c180309630a71"
+content-hash = "8dda6db7277e72607a8509bd75e460e548bcc48b3e3ada2a935dfbba0a71fef1"
+lock-version = "1.0"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -1512,10 +1506,6 @@ blessings = [
     {file = "blessings-1.7-py2-none-any.whl", hash = "sha256:caad5211e7ba5afe04367cdd4cfc68fa886e2e08f6f35e76b7387d2109ccea6e"},
     {file = "blessings-1.7-py3-none-any.whl", hash = "sha256:b1fdd7e7a675295630f9ae71527a8ebc10bfefa236b3d6aa4932ee4462c17ba3"},
     {file = "blessings-1.7.tar.gz", hash = "sha256:98e5854d805f50a5b58ac2333411b0482516a8210f23f43308baeb58d77c157d"},
-]
-boto = [
-    {file = "boto-2.49.0-py2.py3-none-any.whl", hash = "sha256:147758d41ae7240dc989f0039f27da8ca0d53734be0eb869ef16e3adcfa462e8"},
-    {file = "boto-2.49.0.tar.gz", hash = "sha256:ea0d3b40a2d852767be77ca343b58a9e3a4b00d9db440efb8da74b4e58025e5a"},
 ]
 boto3 = [
     {file = "boto3-1.10.43-py2.py3-none-any.whl", hash = "sha256:06f5fd086dc4f7a09b1d36dd15f047878198ee87db5d1f85d7621596d163e254"},
@@ -1627,8 +1617,8 @@ django-queryinspect = [
     {file = "django_queryinspect-1.1.0-py2-none-any.whl", hash = "sha256:3a09644be2c6e068309db79063601ae328da89a5f00f039ea7fc683d1e4bf3e2"},
 ]
 django-ses = [
-    {file = "django-ses-0.8.13.tar.gz", hash = "sha256:f9769f684e7211132f17117e60b4418f121e474f0955e05075e491caaa21d834"},
-    {file = "django_ses-0.8.13-py2.py3-none-any.whl", hash = "sha256:8c9ded374a7f2b36300a8e3daa472cfebba339736efc5f57c98cb25c1e2ee23d"},
+    {file = "django-ses-1.0.2.tar.gz", hash = "sha256:fa9ee4d8e81aed720aab1884441cbbd99e41f15f0c7319d4a22599f276cba8ee"},
+    {file = "django_ses-1.0.2-py2.py3-none-any.whl", hash = "sha256:b31f70d1dbb4fd2f92cbabb68cc74c2872da5a0284bed0653c8eaf564c41a1e1"},
 ]
 django-storages = [
     {file = "django-storages-1.8.tar.gz", hash = "sha256:9322ab74ba6371e2e0fccc350c741686ade829e43085597b26b07ae8955a0a00"},
