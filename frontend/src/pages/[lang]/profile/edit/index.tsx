@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { useRouter } from "next/router";
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import { Box, Card, Checkbox, Input, jsx, Label, Select, Text } from "theme-ui";
@@ -27,7 +27,7 @@ type MeUserFields = {
   openToNewsletter: boolean;
 };
 
-const SectionWrapper: React.SFC<{
+const SectionWrapper: React.FC<{
   titleId?: string;
   children: React.ReactNode;
 }> = ({ titleId, children }) => (
@@ -53,7 +53,31 @@ const schema = yup.object().shape({
   openToNewsletter: yup.boolean(),
 });
 
-export const EditProfilePage = () => {
+const onMyProfileFetched = (data, formState) => {
+  const { me } = data;
+
+  formState.setField("name", me.name ? me.name : "");
+  formState.setField("fullName", me.fullName ? me.fullName : "");
+  formState.setField("gender", me.gender ? me.gender : "");
+  formState.setField(
+    "dateBirth",
+    me.dateBirth ? new Date(me.dateBirth) : new Date(),
+  );
+  formState.setField("country", me.country ? me.country : "");
+  formState.setField(
+    "openToRecruiting",
+    me.openToRecruiting ? me.openToRecruiting : false,
+  );
+  formState.setField(
+    "openToNewsletter",
+    me.openToNewsletter ? me.openToNewsletter : false,
+  );
+};
+
+const toTileCase = (word: string) =>
+  word.charAt(0).toUpperCase() + word.slice(1);
+
+export const EditProfilePage: React.FC = () => {
   const router = useRouter();
   const language = useCurrentLanguage();
   const [loggedIn] = useLoginState();
@@ -66,28 +90,9 @@ export const EditProfilePage = () => {
     },
   );
 
-  const { loading, error } = useMyEditProfileQuery({
+  const { data: profileData, loading, error } = useMyEditProfileQuery({
     skip: !loggedIn,
-    onCompleted: (data) => {
-      const { me } = data;
-
-      formState.setField("name", me.name ? me.name : "");
-      formState.setField("fullName", me.fullName ? me.fullName : "");
-      formState.setField("gender", me.gender ? me.gender : "");
-      formState.setField(
-        "dateBirth",
-        me.dateBirth ? new Date(me.dateBirth) : new Date(),
-      );
-      formState.setField("country", me.country ? me.country : "");
-      formState.setField(
-        "openToRecruiting",
-        me.openToRecruiting ? me.openToRecruiting : false,
-      );
-      formState.setField(
-        "openToNewsletter",
-        me.openToNewsletter ? me.openToNewsletter : false,
-      );
-    },
+    onCompleted: (data) => onMyProfileFetched(data, formState),
   });
 
   const countries = useCountries();
@@ -95,9 +100,6 @@ export const EditProfilePage = () => {
   if (error) {
     throw new Error(`Unable to fetch profile, ${error}`);
   }
-
-  const toTileCase = (word: string) =>
-    word.charAt(0).toUpperCase() + word.slice(1);
 
   const getValidationError = (
     key:
@@ -128,37 +130,42 @@ export const EditProfilePage = () => {
   ] = useUpdateProfileMutation({
     onCompleted: (data) => {
       if (data?.update?.__typename === "MeUser") {
-        router.push(`/${language}/profile`);
+        router.push("/[lang]/profile", `/${language}/profile`);
       }
     },
   });
 
+  useEffect(() => {
+    if (profileData && !loading) {
+      onMyProfileFetched(profileData, formState);
+    }
+  }, []);
+
   const onFormSubmit = useCallback(
-    (e) => {
+    async (e) => {
       e.preventDefault();
 
-      schema
-        .validate(formState.values, { abortEarly: false })
-        .then(() => {
-          formState.errors = {};
+      try {
+        await schema.validate(formState.values, { abortEarly: false });
 
-          update({
-            variables: {
-              name: formState.values.name,
-              fullName: formState.values.fullName,
-              gender: formState.values.gender,
-              dateBirth: formState.values.dateBirth.toISOString().split("T")[0],
-              country: formState.values.country,
-              openToRecruiting: formState.values.openToRecruiting,
-              openToNewsletter: formState.values.openToNewsletter,
-            },
-          });
-        })
-        .catch((err: { inner: any[] }) => {
-          err.inner.forEach((item) => {
-            formState.setFieldError(item.path, item.message);
-          });
+        formState.errors = {};
+
+        update({
+          variables: {
+            name: formState.values.name,
+            fullName: formState.values.fullName,
+            gender: formState.values.gender,
+            dateBirth: formState.values.dateBirth.toISOString().split("T")[0],
+            country: formState.values.country,
+            openToRecruiting: formState.values.openToRecruiting,
+            openToNewsletter: formState.values.openToNewsletter,
+          },
         });
+      } catch (err) {
+        err.inner.forEach((item) => {
+          formState.setFieldError(item.path, item.message);
+        });
+      }
     },
     [update, formState],
   );

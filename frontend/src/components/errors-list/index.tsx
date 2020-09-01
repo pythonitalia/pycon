@@ -16,11 +16,12 @@ export const ErrorsList: React.SFC<{ errors?: string[] }> = ({
       sx={{
         listStyle: "none",
         color: "red",
+        pl: 0,
       }}
       {...props}
     >
       {errors.map((error) => (
-        <Box as="li" key={error}>
+        <Box as="li" key={error} sx={{ pl: 0 }}>
           {error}
         </Box>
       ))}

@@ -1,41 +1,43 @@
-mutation UpdateProfile (
-    $name: String,
-    $fullName: String,
-    $gender: String,
-    $openToRecruiting: Boolean!,
-    $openToNewsletter: Boolean!,
-    $dateBirth: String,
-    $country: String
-){
-    update(input: {
-        name: $name,
-        fullName: $fullName,
-        gender: $gender,
-        openToRecruiting: $openToRecruiting,
-        openToNewsletter: $openToNewsletter,
-        dateBirth: $dateBirth,
-        country: $country
-    }){
-        __typename
-        ... on MeUser {
-            id
-            name
-            fullName
-            gender
-            openToRecruiting
-            openToNewsletter
-            dateBirth
-            country
-        }
-        ... on UpdateErrors {
-            validationName: name
-            validationFullName: fullName
-            validationGender: gender
-            validationOpenToRecruiting: openToRecruiting
-            validationOpenToNewsletter: openToNewsletter
-            validationDateBirth: dateBirth
-            validationCountry: country
-            nonFieldErrors
-        }
+mutation UpdateProfile(
+  $name: String
+  $fullName: String
+  $gender: String
+  $openToRecruiting: Boolean!
+  $openToNewsletter: Boolean!
+  $dateBirth: String
+  $country: String
+) {
+  update(
+    input: {
+      name: $name
+      fullName: $fullName
+      gender: $gender
+      openToRecruiting: $openToRecruiting
+      openToNewsletter: $openToNewsletter
+      dateBirth: $dateBirth
+      country: $country
     }
+  ) {
+    __typename
+    ... on MeUser {
+      id
+      name
+      fullName
+      gender
+      openToRecruiting
+      openToNewsletter
+      dateBirth
+      country
+    }
+    ... on UpdateErrors {
+      validationName: name
+      validationFullName: fullName
+      validationGender: gender
+      validationOpenToRecruiting: openToRecruiting
+      validationOpenToNewsletter: openToNewsletter
+      validationDateBirth: dateBirth
+      validationCountry: country
+      nonFieldErrors
+    }
+  }
 }

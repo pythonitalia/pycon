@@ -1,12 +1,12 @@
 query MyEditProfile {
-    me {
-        email
-        name
-        fullName
-        gender
-        openToRecruiting
-        openToNewsletter
-        dateBirth
-        country
-    }
+  me {
+    email
+    name
+    fullName
+    gender
+    openToRecruiting
+    openToNewsletter
+    dateBirth
+    country
+  }
 }

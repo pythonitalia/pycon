@@ -31,7 +31,7 @@ export const MyProfilePage = () => {
     if (error) {
       setLoginState(false);
 
-      Router.push(loginUrl);
+      Router.push("/[lang]/login", loginUrl);
     }
   }, [error]);
 
