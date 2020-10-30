@@ -1,9 +1,9 @@
-from api.pretix.types import Voucher
 from typing import Optional
-from conferences.models import conference
+
 import strawberry
-from conferences.models import Conference
 from api.pretix.query import get_voucher
+from api.pretix.types import Voucher
+from conferences.models import Conference, conference
 
 from . import types
 
