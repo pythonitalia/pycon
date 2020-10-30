@@ -1,27 +1,23 @@
 /** @jsx jsx */
-
-import { useMutation } from "@apollo/react-hooks";
+import React, { Fragment, useCallback } from "react";
+import { FormattedMessage } from "react-intl";
+import { useFormState } from "react-use-form-state";
 import {
   Box,
-  Button,
   Checkbox,
   Flex,
   Heading,
   Input,
+  jsx,
   Select,
   Text,
   Textarea,
-} from "@theme-ui/components";
-import React, { Fragment, useCallback, useEffect } from "react";
-import { FormattedMessage } from "react-intl";
-import { useFormState } from "react-use-form-state";
-import { jsx } from "theme-ui";
+} from "theme-ui";
 
-import {
-  SendGrantRequestMutation,
-  SendGrantRequestMutationVariables,
-} from "../../generated/graphql-backend";
+import { useSendGrantRequestMutation } from "~/types";
+
 import { Alert } from "../alert";
+import { Button } from "../button/button";
 import { ErrorsList } from "../errors-list";
 import { InputWrapper } from "../input-wrapper";
 import {
@@ -30,7 +26,6 @@ import {
   INTERESTED_IN_VOLUNTEERING_OPTIONS,
   OCCUPATION_OPTIONS,
 } from "./options";
-import SUBMIT_GRANT_MUTATION from "./submit-grant.graphql";
 
 export type GrantFormFields = {
   name: string;
@@ -62,13 +57,10 @@ export const GrantForm: React.SFC<Props> = ({ conference }) => {
     },
   );
 
-  const [submitGrant, { loading, error, data }] = useMutation<
-    SendGrantRequestMutation,
-    SendGrantRequestMutationVariables
-  >(SUBMIT_GRANT_MUTATION);
+  const [submitGrant, { loading, data }] = useSendGrantRequestMutation();
 
   const onSubmit = useCallback(
-    e => {
+    (e) => {
       e.preventDefault();
       submitGrant({
         variables: {
@@ -171,7 +163,7 @@ export const GrantForm: React.SFC<Props> = ({ conference }) => {
           <Select {...select("grantType")} required={true}>
             {GRANT_TYPE_OPTIONS.map(({ value, messageId }) => (
               <FormattedMessage id={messageId} key={messageId}>
-                {msg => <option value={value}>{msg}</option>}
+                {(msg) => <option value={value}>{msg}</option>}
               </FormattedMessage>
             ))}
           </Select>
@@ -205,7 +197,7 @@ export const GrantForm: React.SFC<Props> = ({ conference }) => {
           <Select {...select("occupation")} required={true}>
             {OCCUPATION_OPTIONS.map(({ value, messageId }) => (
               <FormattedMessage id={messageId} key={messageId}>
-                {msg => <option value={value}>{msg}</option>}
+                {(msg) => <option value={value}>{msg}</option>}
               </FormattedMessage>
             ))}
           </Select>
@@ -224,7 +216,7 @@ export const GrantForm: React.SFC<Props> = ({ conference }) => {
           <Select {...select("interestedInVolunteering")} required={true}>
             {INTERESTED_IN_VOLUNTEERING_OPTIONS.map(({ value, messageId }) => (
               <FormattedMessage id={messageId} key={messageId}>
-                {msg => <option value={value}>{msg}</option>}
+                {(msg) => <option value={value}>{msg}</option>}
               </FormattedMessage>
             ))}
           </Select>
@@ -280,7 +272,7 @@ export const GrantForm: React.SFC<Props> = ({ conference }) => {
             <Select {...select("gender")}>
               {GENDER_OPTIONS.map(({ value, messageId }) => (
                 <FormattedMessage id={messageId} key={messageId}>
-                  {msg => <option value={value}>{msg}</option>}
+                  {(msg) => <option value={value}>{msg}</option>}
                 </FormattedMessage>
               ))}
             </Select>
@@ -307,7 +299,7 @@ export const GrantForm: React.SFC<Props> = ({ conference }) => {
           </Alert>
         )}
 
-        <Button isLoading={loading}>
+        <Button loading={loading}>
           <FormattedMessage id="grants.form.submit" />
         </Button>
       </Box>

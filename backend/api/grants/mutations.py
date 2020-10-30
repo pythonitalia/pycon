@@ -8,7 +8,7 @@ from .types import GrantRequest
 class SendGrantRequest(FormMutation):
     @classmethod
     def transform(cls, result):
-        result.field = GrantRequest.field
+        result.graphql_type = GrantRequest.graphql_type
         return result
 
     class Meta:

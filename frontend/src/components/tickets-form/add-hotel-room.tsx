@@ -1,12 +1,13 @@
 /** @jsx jsx */
-import { Box, Button, Flex, Select } from "@theme-ui/components";
 import moment from "moment";
 import { useCallback, useMemo } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
-import { jsx } from "theme-ui";
+import { Flex, jsx, Select } from "theme-ui";
 
-import { useCurrentLanguage } from "../../context/language";
+import { useCurrentLanguage } from "~/locale/context";
+
+import { Button } from "../button/button";
 
 type Props = {
   conferenceStart?: string;
@@ -97,7 +98,7 @@ export const AddHotelRoom: React.SFC<Props> = ({
           })}
         >
           <FormattedMessage id="addHotelRoom.checkin">
-            {text => (
+            {(text) => (
               <option disabled={true} value="">
                 {text}
               </option>
@@ -119,7 +120,7 @@ export const AddHotelRoom: React.SFC<Props> = ({
           disabled={checkinDate === null}
         >
           <FormattedMessage id="addHotelRoom.checkout">
-            {text => (
+            {(text) => (
               <option disabled={true} value="">
                 {text}
               </option>

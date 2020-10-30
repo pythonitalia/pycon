@@ -1,7 +1,6 @@
 /** @jsx jsx */
-import { Box } from "@theme-ui/components";
 import React from "react";
-import { jsx } from "theme-ui";
+import { Box, jsx } from "theme-ui";
 
 export const ErrorsList: React.SFC<{ errors?: string[] }> = ({
   errors,
@@ -17,11 +16,12 @@ export const ErrorsList: React.SFC<{ errors?: string[] }> = ({
       sx={{
         listStyle: "none",
         color: "red",
+        pl: 0,
       }}
       {...props}
     >
-      {errors.map(error => (
-        <Box as="li" key={error}>
+      {errors.map((error) => (
+        <Box as="li" key={error} sx={{ pl: 0 }}>
           {error}
         </Box>
       ))}

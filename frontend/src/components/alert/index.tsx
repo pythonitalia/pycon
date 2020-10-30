@@ -1,5 +1,5 @@
-import { Box } from "@theme-ui/components";
 import React from "react";
+import { Box } from "theme-ui";
 
 type Props = {
   variant: "alert" | "success" | "info";

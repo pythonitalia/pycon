@@ -1,0 +1,20 @@
+{
+  "rewrites": [
+    {
+      "source": "/graphql",
+      "destination": "https://pycon.it/graphql"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/login/google",
+      "destination": "https://d1111jewijk23m.cloudfront.net/login/google-oauth2/",
+      "permanent": false
+    },
+    {
+      "source": "/complete/google-oauth2",
+      "destination": "https://d1111jewijk23m.cloudfront.net/complete/google-oauth2/",
+      "permanent": false
+    }
+  ]
+}

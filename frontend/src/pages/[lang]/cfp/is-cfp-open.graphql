@@ -1,0 +1,6 @@
+query IsCFPOpen($conference: String!) {
+  conference(code: $conference) {
+    id
+    isCFPOpen
+  }
+}

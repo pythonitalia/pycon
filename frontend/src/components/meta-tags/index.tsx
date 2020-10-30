@@ -1,78 +1,55 @@
-import { graphql, useStaticQuery } from "gatsby";
+import Head from "next/head";
 import React from "react";
-import { Helmet } from "react-helmet";
 
-import { useCurrentLanguage } from "../../context/language";
-import messages from "../../locale";
+import { useCurrentUrl } from "~/helpers/use-url";
+import messages from "~/locale";
+import { useCurrentLanguage } from "~/locale/context";
 
 type Props = {
   title?: React.ReactNode | string | null;
   description?: string;
-  imageUrl?: string;
-  twitterImageUrl?: string;
+  useDefaultSocialCard?: boolean;
 };
 
 export const MetaTags: React.SFC<Props> = ({
   title,
   description,
-  imageUrl,
-  twitterImageUrl,
+  useDefaultSocialCard = true,
   children,
 }) => {
-  const {
-    site: { siteMetadata },
-  } = useStaticQuery(graphql`
-    {
-      site {
-        siteMetadata {
-          siteUrl
-        }
-      }
-    }
-  `);
-
   const language = useCurrentLanguage();
+  const { host, path } = useCurrentUrl();
+  const socialCard = useDefaultSocialCard
+    ? `${host}/api/social/en`
+    : `${host}/api/social${path}`;
 
-  let socialCard = imageUrl || `/social-twitter/social.png`;
-  let socialCardTwitter = twitterImageUrl || `/social-twitter/social.png`;
   const titleTemplate = messages[language].titleTemplate;
+
   description = description || messages[language].description;
 
-  if (!socialCard.startsWith("http")) {
-    socialCard = `${siteMetadata.siteUrl}${socialCard}`;
-  }
-  if (!socialCardTwitter.startsWith("http")) {
-    socialCardTwitter = `${siteMetadata.siteUrl}${socialCardTwitter}`;
-  }
-
-  const meta = [
-    {
-      name: "twitter:card",
-      content: "summary_large_image",
-    },
-    {
-      property: "og:image",
-      content: socialCard,
-    },
-    {
-      name: "twitter:image",
-      content: socialCardTwitter,
-    },
-    {
-      name: "twitter:title",
-      content: title as string,
-    },
-    {
-      name: "twitter:description",
-      content: description,
-    },
-  ];
+  const titleContent = titleTemplate.replace(
+    "%s",
+    title ? title.toString() : "",
+  );
 
   return (
-    <Helmet titleTemplate={titleTemplate} meta={meta}>
-      {title && <title>{title}</title>}
+    <Head>
+      <title>{titleTemplate.replace("%s", title.toString())}</title>
+
+      <meta name="title" content={titleContent} />
+      <meta name="description" content={description} />
+
+      <meta property="og:type" content="website" />
+      <meta property="og:title" content={titleContent} />
+      <meta property="og:description" content={description} />
+      <meta property="og:image" content={socialCard} />
+
+      <meta property="twitter:card" content="summary_large_image" />
+      <meta property="twitter:title" content={titleContent} />
+      <meta property="twitter:description" content={description} />
+      <meta property="twitter:image" content={socialCard} />
 
       {children}
-    </Helmet>
+    </Head>
   );
 };

@@ -1,6 +1,6 @@
 import React from "react";
 
-export const AvatarPlaceholder: React.SFC<{ style: any }> = props => (
+export const AvatarPlaceholder: React.SFC<{ style: any }> = (props) => (
   <svg viewBox="0 0 365 365" fill="none" {...props}>
     <path fill="#9473B0" d="M0 0h365v365H0z" />
     <path stroke="#000" d="M0 0h365v365H0z" />

@@ -1,7 +1,5 @@
 from decimal import Decimal
 
-from graphql.error import INVALID
-from graphql.language.ast import StringValueNode
 from graphql.type.scalars import GraphQLScalarType
 from strawberry.type_converter import REGISTRY
 
@@ -15,13 +13,7 @@ def parse_value_decimal(value):  # pragma: no cover
 
 
 def parse_literal_decimal(ast, _variables=None):  # pragma: no cover
-    if not isinstance(ast, StringValueNode):
-        return INVALID
-
-    try:
-        return Decimal(ast.value)
-    except ValueError:
-        return INVALID
+    return Decimal(ast.value)
 
 
 REGISTRY[Decimal] = GraphQLScalarType(

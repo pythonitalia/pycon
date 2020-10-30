@@ -1,11 +1,10 @@
-import { Badge } from "@theme-ui/components";
+/** @jsx jsx */
 import React from "react";
-
-import { SubmissionTag } from "../../generated/graphql-backend";
+import { Badge, jsx } from "theme-ui";
 
 type Props = {
-  tag: SubmissionTag;
-  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  tag: { name: string };
+  onClick?: React.MouseEventHandler<HTMLDivElement>;
   variant?: "tag" | "selectedTag";
   className?: string;
 };

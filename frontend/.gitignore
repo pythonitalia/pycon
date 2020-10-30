@@ -7,7 +7,12 @@ yarn-error.log*
 
 src/**/*.jsx
 src/**/*.js
+src/**/*.generated.tsx
+src/pages/**/*.generated.tsx
 !src/gatsby-plugin-theme-ui/*
+.next/
+next-env.d.ts
+src/types.tsx
 
 # Runtime data
 pids
@@ -60,7 +65,6 @@ jspm_packages/
 
 # gatsby files
 .cache/
-public
 
 # Mac files
 .DS_Store

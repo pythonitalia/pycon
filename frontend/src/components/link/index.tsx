@@ -1,18 +1,12 @@
 /** @jsx jsx */
-import { Box, Link as ThemeLink } from "@theme-ui/components";
-import { Link as GatsbyLink } from "gatsby";
-import { jsx } from "theme-ui";
+import NextLink from "next/link";
+import React from "react";
+import { Box, jsx, Link as ThemeLink } from "theme-ui";
 
-import { useCurrentLanguage } from "../../context/language";
-import { useHover } from "../../helpers/use-hover";
+import { useHover } from "~/helpers/use-hover";
+import { useCurrentLanguage } from "~/locale/context";
+
 import { GoogleIcon } from "../icons/google";
-
-type LinkProps = {
-  href: string | null;
-  variant?: string;
-  target?: string;
-  backgroundColor?: string;
-};
 
 const ArrowRightBackground = ({
   backgroundColor,
@@ -58,66 +52,90 @@ const ArrowRightBackground = ({
   </Box>
 );
 
-const isExternalLink = ({ href, target }: { href: string; target?: string }) =>
-  href.startsWith("http") || href.startsWith("mailto") || target === "_blank";
+const isExternalLink = ({ path, target }: { path: string; target?: string }) =>
+  path.startsWith("http") || path.startsWith("mailto") || target === "_blank";
 
-const PlainLink: React.SFC = ({ children, ...props }) => (
-  <a {...props}>{children}</a>
-);
+type Params = {
+  [param: string]: string;
+};
 
-export const Link: React.SFC<LinkProps> = ({
+type LinkProps = {
+  url?: string;
+  path: string;
+  variant?: string;
+  target?: string;
+  backgroundColor?: string;
+  after?: React.ReactElement | null;
+  params?: Params;
+};
+
+export const Link: React.FC<LinkProps> = ({
   children,
-  href,
+  path,
   backgroundColor,
+  after,
+  target,
+  variant,
+  url,
+  params = null,
   ...additionalProps
 }) => {
   const language = useCurrentLanguage();
 
-  if (href) {
-    href = href.replace(":language", language);
+  if (!url) {
+    url = path.replace("[lang]", language);
+
+    Object.entries(params || {}).forEach(([param, value]) => {
+      url = url.replace(`[${param}]`, value);
+    });
   }
 
-  const isExternal =
-    (href && isExternalLink({ href, ...additionalProps })) ||
-    additionalProps.variant === "google";
-
-  const LinkComponent = !href
-    ? PlainLink
-    : isExternal
-    ? ThemeLink
-    : ({ ...props }: { to: string }) => (
-        <GatsbyLink activeClassName="active" {...props} />
-      );
-
-  if (additionalProps.target === "_blank") {
-    (additionalProps as any).rel = "noopener noreferrer";
-  }
-
-  const hrefProps = href ? { href, to: href } : {};
-
-  const component = (hovered: boolean) => (
-    <ThemeLink {...additionalProps} as={LinkComponent} {...hrefProps}>
-      {additionalProps.variant === "arrow-button" && (
-        <ArrowRightBackground
-          backgroundColor={hovered ? "orange" : backgroundColor || "yellow"}
-        />
-      )}
-
-      {additionalProps.variant === "google" && <GoogleIcon />}
-
-      <Box
-        as="span"
-        sx={{
-          position: "relative",
-          zIndex: 10,
-        }}
+  const ForwardedLink = React.forwardRef<any, { hovered: boolean }>(
+    (props, ref) => (
+      <ThemeLink
+        as="a"
+        target={target}
+        variant={variant}
+        href={path}
+        {...props}
+        {...additionalProps}
+        ref={ref}
       >
-        {children}
-      </Box>
-    </ThemeLink>
+        {variant === "arrow-button" && (
+          <ArrowRightBackground
+            backgroundColor={
+              props.hovered ? "orange" : backgroundColor || "yellow"
+            }
+          />
+        )}
+
+        {variant === "google" && <GoogleIcon />}
+
+        <Box
+          as="span"
+          sx={{
+            position: "relative",
+            zIndex: 10,
+          }}
+        >
+          {children}
+          {props.hovered}
+        </Box>
+      </ThemeLink>
+    ),
   );
+
+  const component = (hovered: boolean) => <ForwardedLink hovered={hovered} />;
 
   const [hoverable, _] = useHover(component);
 
-  return hoverable;
+  if (isExternalLink({ path, target })) {
+    return hoverable;
+  }
+
+  return (
+    <NextLink as={url} href={path} passHref={true}>
+      {hoverable}
+    </NextLink>
+  );
 };

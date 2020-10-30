@@ -1,6 +1,6 @@
 import React from "react";
 
-export const BlogPostIllustration: React.SFC = props => (
+export const BlogPostIllustration: React.SFC = (props) => (
   <svg viewBox="0 0 359 385" fill="none" {...props}>
     <path
       d="M356.693 311.133v70.592H62.641c-11.417-18.707-18.055-41.079-18.055-65.094 0-65.757 49.77-119.128 111.195-119.128h15.37c-29.06 0-52.308 26.164-52.308 57.289s23.573 56.341 52.604 56.341h185.246z"

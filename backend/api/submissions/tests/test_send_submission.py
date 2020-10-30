@@ -134,6 +134,8 @@ def _submit_tutorial(client, conference, **kwargs):
                 $audience_level: ID!,
                 $tags: [ID!],
                 $speaker_level: String!,
+                $elevator_pitch: String,
+                $notes: String,
                 $previous_talk_video: String
             ) {
                 sendSubmission(input: {
@@ -146,6 +148,8 @@ def _submit_tutorial(client, conference, **kwargs):
                     duration: $duration,
                     audienceLevel: $audience_level,
                     tags: $tags,
+                    notes: $notes,
+                    elevatorPitch: $elevator_pitch,
                     speakerLevel: $speaker_level,
                     previousTalkVideo: $previous_talk_video
                 }) {
@@ -736,3 +740,86 @@ def test_speaker_level_only_allows_the_predefined_levels(
     assert resp["data"]["sendSubmission"]["validationPreviousSpeakerLevel"] == [
         "Select a valid choice. just_started is not one of the available choices."
     ]
+
+
+def test_not_sending_everything(
+    graphql_client, user, conference_factory, submission_factory
+):
+    graphql_client.force_login(user)
+
+    conference = conference_factory(
+        topics=("friends",),
+        languages=("it",),
+        active_cfp=True,
+        submission_types=("talk", "tutorial"),
+        durations=("50",),
+        audience_levels=("Beginner",),
+    )
+
+    talk = submission_factory.create(
+        type=SubmissionType.objects.get_or_create(name="tutorial")[0]
+    )
+
+    languages = [language.code for language in conference.languages.all()]
+
+    variables = {
+        "title": talk.title,
+        "abstract": talk.abstract,
+        "notes": talk.notes,
+        "languages": languages,
+        "conference": conference.code,
+        "topic": conference.topics.first().id,
+        "type": talk.type.id,
+        "duration": conference.durations.first().id,
+        "audience_level": conference.audience_levels.first().id,
+        "tags": [tag.name for tag in talk.tags.all()],
+        "speaker_level": talk.speaker_level,
+        "previous_talk_video": talk.previous_talk_video,
+    }
+
+    response = graphql_client.query(
+        """mutation(
+            $conference: ID!,
+            $topic: ID!,
+            $title: String!,
+            $abstract: String!,
+            $languages: [ID!]!,
+            $type: ID!,
+            $duration: ID!,
+            $audience_level: ID!,
+            $tags: [ID!],
+            $speaker_level: String!,
+            $elevator_pitch: String,
+            $notes: String,
+            $previous_talk_video: String
+        ) {
+            sendSubmission(input: {
+                title: $title,
+                abstract: $abstract,
+                languages: $languages,
+                conference: $conference,
+                topic: $topic,
+                type: $type,
+                duration: $duration,
+                audienceLevel: $audience_level,
+                tags: $tags,
+                notes: $notes,
+                elevatorPitch: $elevator_pitch,
+                speakerLevel: $speaker_level,
+                previousTalkVideo: $previous_talk_video
+            }) {
+                __typename
+
+                ... on Submission {
+                    elevatorPitch
+                }
+            }
+        }""",
+        variables=variables,
+    )
+
+    assert not response.get("errors")
+
+    assert response["data"] == {
+        "sendSubmission": {"__typename": "Submission", "elevatorPitch": ""}
+    }

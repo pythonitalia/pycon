@@ -2,7 +2,7 @@
 import React from "react";
 import { jsx } from "theme-ui";
 
-export const CFPIllustration: React.SFC = props => (
+export const CFPIllustration: React.SFC = (props) => (
   <svg viewBox="0 0 482 480" fill="none" {...props}>
     <mask
       id="prefix__a"

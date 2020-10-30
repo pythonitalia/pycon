@@ -1,0 +1,6 @@
+query IsVotingClosed($conference: String!) {
+  conference(code: $conference) {
+    id
+    isVotingClosed
+  }
+}

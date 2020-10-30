@@ -1,0 +1,14 @@
+query KeynotesSection($code: String!) {
+  conference(code: $code) {
+    id
+    keynotes {
+      id
+      title
+      highlightColor
+      image
+      speakers {
+        fullName
+      }
+    }
+  }
+}

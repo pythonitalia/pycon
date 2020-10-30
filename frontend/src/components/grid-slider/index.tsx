@@ -1,9 +1,9 @@
 /** @jsx jsx */
-import { Box, Flex, Grid, Heading } from "@theme-ui/components";
 import { useState } from "react";
-import { jsx } from "theme-ui";
+import { Box, Flex, Grid, Heading, jsx } from "theme-ui";
 
-import { useSSRResponsiveValue } from "../../helpers/use-ssr-responsive-value";
+import { useSSRResponsiveValue } from "~/helpers/use-ssr-responsive-value";
+
 import { ArrowIcon } from "../icons/arrow";
 
 const useSlider = <T extends any>(
@@ -52,7 +52,7 @@ const Slider = <T extends { id: string }>({
     </Flex>
 
     <Grid columns={[1, 2, 3]} gap={0}>
-      {page.map(item => (
+      {page.map((item) => (
         <Component key={item.id} {...item} />
       ))}
     </Grid>

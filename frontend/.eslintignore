@@ -7,3 +7,7 @@ gatsby-config.js
 gatsby-browser.js
 scripts/lint.js
 src/generated
+src/**/*.generated.tsx
+src/pages/**/*.generated.tsx
+next.config.js
+server.js

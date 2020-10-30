@@ -1,6 +1,5 @@
 /** @jsx jsx */
-import { Flex } from "@theme-ui/components";
-import { jsx } from "theme-ui";
+import { Flex, jsx } from "theme-ui";
 
 import Facebook from "../icons/social/facebook";
 import Instagram from "../icons/social/instagram";
@@ -11,11 +10,12 @@ type SocialLinksProps = {
   variant?: string;
 };
 
-export const SocialLinks: React.SFC<SocialLinksProps> = props => (
+export const SocialLinks: React.FC<SocialLinksProps> = (props) => (
   <Flex
     as="ul"
     sx={{
       listStyle: "none",
+      pl: 0,
 
       "li + li": {
         marginLeft: 3,

@@ -15,6 +15,7 @@ export const SocialCircle: React.SFC<{ color: string; variant?: string }> = ({
       backgroundColor: color,
       flexShrink: 0,
       cursor: "pointer",
+      paddingLeft: 0,
       a: {
         display: "flex",
         alignItems: "center",

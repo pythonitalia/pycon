@@ -1,7 +1,6 @@
 /** @jsx jsx */
-import { Box, Text } from "@theme-ui/components";
 import React from "react";
-import { jsx } from "theme-ui";
+import { Box, jsx, Text } from "theme-ui";
 
 import { ErrorsList } from "../errors-list";
 

@@ -1,7 +1,5 @@
 /** @jsx jsx */
-
-import { Box } from "@theme-ui/components";
-import { jsx } from "theme-ui";
+import { Box, jsx } from "theme-ui";
 
 import { Link } from "../link";
 import { BuyTicketsCTA } from "./buy-tickets-cta";
@@ -48,7 +46,7 @@ export const HomepageHero: React.SFC = () => (
           mx: "auto",
         }}
       >
-        <Link href="/:language/tickets">
+        <Link path="/[lang]/tickets">
           <BuyTicketsCTA
             sx={{
               width: 122,

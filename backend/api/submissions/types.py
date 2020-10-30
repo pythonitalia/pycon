@@ -9,7 +9,8 @@ from voting.models import Vote
 from .permissions import CanSeeSubmissionDetail, CanSeeSubmissionPrivateFields
 
 if TYPE_CHECKING:  # pragma: no cover
-    from api.conferences.types import Conference
+    from api.users.types import User
+    from api.conferences.types import Conference, Topic, Duration, AudienceLevel
 
 
 def restricted_field():

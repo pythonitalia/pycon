@@ -1,26 +1,19 @@
 /** @jsx jsx */
-import { useMutation } from "@apollo/react-hooks";
-import { Box, Button, Heading, Input, Text } from "@theme-ui/components";
 import React, { useCallback, useState } from "react";
 import { FormattedMessage } from "react-intl";
-import { jsx } from "theme-ui";
+import { Box, Heading, Input, jsx, Text } from "theme-ui";
 
-import {
-  SubscribeMutation,
-  SubscribeMutationVariables,
-} from "../../generated/graphql-backend";
-import SUBSCRIBE_QUERY from "./subscribe.graphql";
+import { useSubscribeMutation } from "~/types";
+
+import { Button } from "../button/button";
 
 const NewsletterForm = () => {
   const [email, setEmail] = useState("");
-  const [subscribe, { loading, error, data }] = useMutation<
-    SubscribeMutation,
-    SubscribeMutationVariables
-  >(SUBSCRIBE_QUERY);
+  const [subscribe, { loading, error, data }] = useSubscribeMutation();
 
   const canSubmit = email.trim() !== "" && !loading;
   const onSubmit = useCallback(
-    async e => {
+    async (e) => {
       e.preventDefault();
       if (
         loading ||
@@ -41,7 +34,7 @@ const NewsletterForm = () => {
   if (data) {
     return (
       <FormattedMessage id="newsletter.success">
-        {txt => <Text variant="prefooter">{txt}</Text>}
+        {(txt) => <Text variant="prefooter">{txt}</Text>}
       </FormattedMessage>
     );
   }
@@ -50,8 +43,7 @@ const NewsletterForm = () => {
       <Box>
         <Text
           color="danger"
-          use="strong"
-          dangerouslySetInnerHTML={{ __html: error }}
+          dangerouslySetInnerHTML={{ __html: error.toString() }}
         />
       </Box>
     );
@@ -61,7 +53,7 @@ const NewsletterForm = () => {
     <Box as="form" onSubmit={onSubmit}>
       <Box>
         <FormattedMessage id="newsletter.text">
-          {txt => (
+          {(txt) => (
             <Text variant="prefooter" mb={3}>
               {txt}
             </Text>
@@ -83,10 +75,10 @@ const NewsletterForm = () => {
             setEmail(e.target.value)
           }
           value={email}
-          isRequired={true}
+          required={true}
           type="email"
         />
-        <Button type="submit" disabled={!canSubmit} isLoading={loading}>
+        <Button type="submit" disabled={!canSubmit} loading={loading}>
           <FormattedMessage id="newsletter.button" />
         </Button>
       </Box>
@@ -97,7 +89,7 @@ const NewsletterForm = () => {
 export const NewsletterSection: React.SFC = () => (
   <Box>
     <FormattedMessage id="newsletter.header">
-      {txt => <Heading sx={{ fontSize: 5, mb: 4 }}>{txt}</Heading>}
+      {(txt) => <Heading sx={{ fontSize: 5, mb: 4 }}>{txt}</Heading>}
     </FormattedMessage>
     <NewsletterForm />
   </Box>

@@ -1,8 +1,6 @@
 /** @jsx jsx */
 import { keyframes } from "@emotion/core";
-import { css } from "@styled-system/css";
-import { Flex, Text } from "@theme-ui/components";
-import { jsx } from "theme-ui";
+import { Flex, jsx, Text } from "theme-ui";
 
 type MarqueeProps = {
   message: string;
@@ -29,7 +27,7 @@ export const Marquee: React.SFC<MarqueeProps> = ({ message }) => (
         willChange: "transform",
         animation: `${animation} 20s linear infinite`,
       }}
-      css={css`
+      css={`
         @media (prefers-reduced-motion: reduce) {
           animation: none !important;
         }

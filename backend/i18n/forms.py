@@ -86,7 +86,7 @@ class I18nWidget(forms.MultiWidget):
                 if dataline:
                     any_enabled_filled = True
             data.append(dataline)
-        # import pdb; pdb.set_trace()
+
         if (
             value
             and not isinstance(value.data, dict)
@@ -174,7 +174,6 @@ class I18nFormField(forms.MultiValueField):
         return LazyI18nString(data)
 
     def clean(self, value) -> LazyI18nString:
-        # import pdb; pdb.set_trace()
         # if isinstance(value, LazyI18nString):
         #     # This happens e.g. if the field is disabled
         #     return value

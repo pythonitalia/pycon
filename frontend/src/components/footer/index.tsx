@@ -1,17 +1,15 @@
 /** @jsx jsx */
+import { Box, Grid, jsx } from "theme-ui";
 
-import { Box, Grid } from "@theme-ui/components";
-import { graphql, useStaticQuery } from "gatsby";
-import { jsx } from "theme-ui";
+import { useFooterQuery } from "~/types";
 
-import { Backend_MenuLink, FooterQuery } from "../../generated/graphql";
 import { LogoBlack } from "../icons/logo-black";
 import { Link } from "../link";
-import { Logo } from "../logo";
 import { SocialLinks } from "../social-links";
 
 const MenuItems: React.SFC = ({ children, ...props }) => (
-  <ul
+  <Box
+    as="ul"
     sx={{
       color: "white",
       listStyle: "none",
@@ -24,33 +22,28 @@ const MenuItems: React.SFC = ({ children, ...props }) => (
     {...props}
   >
     {children}
-  </ul>
+  </Box>
 );
 
 export const Footer = () => {
-  const {
-    backend: {
-      conference: { menu },
+  const { data } = useFooterQuery({
+    variables: {
+      code: process.env.conferenceCode,
     },
-  } = useStaticQuery<FooterQuery>(graphql`
-    query Footer {
-      backend {
-        conference {
-          menu(identifier: "footer-nav") {
-            links {
-              title
-              href
-            }
-          }
-        }
-      }
-    }
-  `);
+  });
+
+  if (!data) {
+    return null;
+  }
+
+  const {
+    conference: { menu },
+  } = data;
 
   const links = menu ? menu.links : [];
 
   let firstGroup = links;
-  let secondGroup: Pick<Backend_MenuLink, "title" | "href">[] = [];
+  let secondGroup: { title: string; href: string }[] = [];
 
   if (links.length > 4) {
     const halfLinks = Math.round(links.length / 2);
@@ -60,23 +53,24 @@ export const Footer = () => {
 
   return (
     <Box
-      sx={{
-        background: "black",
-        py: [4, 5],
-        px: 3,
-        mt: "auto",
-        zIndex: "footer",
-      }}
+      sx={
+        {
+          background: "black",
+          py: [4, 5],
+          px: 3,
+          mt: "auto",
+          zIndex: "footer",
+        } as any
+      }
     >
       <Grid
         sx={{
           maxWidth: "container",
           mx: "auto",
-
           gridTemplateColumns: [null, null, "5fr 1fr 2fr 2fr 3fr"],
         }}
       >
-        <Link href="/:language">
+        <Link path="/[lang]">
           <LogoBlack
             sx={{
               width: "100%",
@@ -94,7 +88,7 @@ export const Footer = () => {
         >
           {firstGroup.map((link, i) => (
             <li key={i}>
-              <Link href={link.href}>{link.title}</Link>
+              <Link path={link.href}>{link.title}</Link>
             </li>
           ))}
         </MenuItems>
@@ -102,7 +96,7 @@ export const Footer = () => {
         <MenuItems>
           {secondGroup.map((link, i) => (
             <li key={i}>
-              <Link href={link.href}>{link.title}</Link>
+              <Link path={link.href}>{link.title}</Link>
             </li>
           ))}
         </MenuItems>

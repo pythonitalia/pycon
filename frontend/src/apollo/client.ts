@@ -1,24 +1,15 @@
-import { navigate } from "@reach/router";
-import {
-  defaultDataIdFromObject,
-  InMemoryCache,
-  IntrospectionFragmentMatcher,
-} from "apollo-cache-inmemory";
-import { ApolloClient } from "apollo-client";
-import { ApolloLink } from "apollo-link";
-import { onError } from "apollo-link-error";
-import { HttpLink } from "apollo-link-http";
+import { ApolloLink, HttpLink } from "@apollo/client";
+import { InMemoryCache } from "@apollo/client/cache";
+import { ApolloClient } from "@apollo/client/core";
+import { onError } from "@apollo/client/link/error";
 import { GraphQLError } from "graphql";
 import fetch from "isomorphic-fetch";
 
 import { setLoginState } from "../app/profile/hooks";
 import introspectionQueryResultData from "../generated/fragment-types.json";
-const fragmentMatcher = new IntrospectionFragmentMatcher({
-  introspectionQueryResultData,
-});
 
 const isUserLoggedOut = (graphErrors: readonly GraphQLError[]) =>
-  !!graphErrors.find(e => e.message === "User not logged in");
+  !!graphErrors.find((e) => e.message === "User not logged in");
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {
@@ -30,7 +21,11 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 
     if (isUserLoggedOut(graphQLErrors)) {
       setLoginState(false);
-      navigate("/en/login");
+
+      // TODO: get current locale
+      window.location.href = "/en/login";
+
+      return;
     }
   }
 
@@ -40,26 +35,16 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 });
 
 const httpLink = new HttpLink({
-  uri: "/graphql",
+  uri: process.browser ? "/graphql" : process.env.API_URL,
   fetch,
 });
 
 const link = ApolloLink.from([errorLink, httpLink]);
 
-const cache = new InMemoryCache({
-  fragmentMatcher,
-  dataIdFromObject: object => {
-    switch (object.__typename) {
-      case "Day":
-        // day objects might not have an id, so we create a new cache id based on the day's date
-        return `Day:${(object as any).day}`;
-      default:
-        return defaultDataIdFromObject(object); // fall back to default handling
-    }
-  },
-});
-
-export const client = new ApolloClient({
-  link,
-  cache,
-});
+export const getApolloClient = ({ initialState }: any) =>
+  new ApolloClient({
+    link,
+    cache: new InMemoryCache({
+      possibleTypes: introspectionQueryResultData.possibleTypes,
+    }).restore(initialState || {}),
+  });

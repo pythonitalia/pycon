@@ -1,7 +1,6 @@
 /** @jsx jsx */
-import { Box, Flex } from "@theme-ui/components";
 import React, { useState } from "react";
-import { jsx } from "theme-ui";
+import { Box, Flex, jsx } from "theme-ui";
 
 import { ArrowIcon } from "../icons/arrow";
 

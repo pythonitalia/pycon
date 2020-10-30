@@ -1,0 +1,55 @@
+query IndexPage($code: String!, $language: String!) {
+  blogPosts {
+    id
+    slug
+    title(language: $language)
+  }
+
+  conference(code: $code) {
+    id
+    name(language: $language)
+    introduction(language: $language)
+
+    marquee: copy(key: "marquee", language: $language)
+    introTitle: copy(key: "intro-title-1", language: $language)
+    introText: copy(key: "intro-text-1", language: $language)
+
+    votingTitle: copy(key: "voting-title", language: $language)
+    votingSubtitle: copy(key: "voting-subtitle", language: $language)
+    votingText: copy(key: "voting-text", language: $language)
+
+    gettingThereText: copy(key: "getting-there-text", language: $language)
+
+    map {
+      link
+    }
+
+    votingDeadline: deadline(type: "voting") {
+      start
+      end
+    }
+
+    faqs {
+      question(language: $language)
+      answer(language: $language)
+    }
+
+    events {
+      id
+      title
+      locationName
+      image
+      start
+    }
+
+    sponsorsByLevel {
+      level
+      highlightColor
+      sponsors {
+        name
+        link
+        image
+      }
+    }
+  }
+}

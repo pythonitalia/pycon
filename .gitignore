@@ -102,3 +102,6 @@ ENV/
 backend/media/
 
 node_modules/
+
+pretix-conf/
+pretix-data/

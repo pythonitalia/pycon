@@ -1,7 +1,6 @@
 /** @jsx jsx */
-import { Box } from "@theme-ui/components";
 import React from "react";
-import { jsx } from "theme-ui";
+import { Box, jsx } from "theme-ui";
 
 import { SelectedProducts } from "../tickets-page/types";
 import { ProductRow } from "./product-row";
@@ -23,7 +22,7 @@ export const TicketsForm: React.SFC<Props> = ({
   addProduct,
   removeProduct,
 }) => {
-  const ticketsToShow = tickets.filter(ticket => {
+  const ticketsToShow = tickets.filter((ticket) => {
     if (ticket.variations!.length > 0) {
       return true;
     }
@@ -41,7 +40,7 @@ export const TicketsForm: React.SFC<Props> = ({
 
   return (
     <React.Fragment>
-      {ticketsToShow.map(ticket => (
+      {ticketsToShow.map((ticket) => (
         <Box key={ticket.id}>
           <ProductRow
             quantity={selectedProducts[ticket.id]?.length ?? 0}

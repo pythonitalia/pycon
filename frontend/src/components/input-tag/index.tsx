@@ -1,13 +1,10 @@
 /** @jsx jsx */
-import { useQuery } from "@apollo/react-hooks";
 import { useCallback } from "react";
 import { jsx } from "theme-ui";
 
-import { useConference } from "../../context/conference";
-import { TagsQuery, TagsQueryVariables } from "../../generated/graphql-backend";
-import { Alert } from "../alert";
-import { Select } from "../select";
-import TAGS_QUERY from "./tags.graphql";
+import { Alert } from "~/components/alert";
+import { Select } from "~/components/select";
+import { useTagsQuery } from "~/types";
 
 type TagLineProps = {
   tags: string[];
@@ -15,21 +12,13 @@ type TagLineProps = {
 };
 
 export const TagLine: React.SFC<TagLineProps> = ({ tags, onTagChange }) => {
-  const onChange = useCallback(newTags => {
+  const onChange = useCallback((newTags) => {
     if (onTagChange) {
       onTagChange(newTags || []);
     }
   }, []);
-  const { code } = useConference();
 
-  const { loading, error, data } = useQuery<TagsQuery, TagsQueryVariables>(
-    TAGS_QUERY,
-    {
-      variables: {
-        conference: code,
-      },
-    },
-  );
+  const { loading, error, data } = useTagsQuery();
 
   if (loading) {
     return null;
@@ -39,8 +28,8 @@ export const TagLine: React.SFC<TagLineProps> = ({ tags, onTagChange }) => {
     return <Alert variant="alert">{error.message}</Alert>;
   }
 
-  const submissionTags = data!
-    .submissionTags!.sort((a, b) => {
+  const submissionTags = [...data!.submissionTags]!
+    .sort((a, b) => {
       if (a.name < b.name) {
         return -1;
       }
@@ -51,12 +40,12 @@ export const TagLine: React.SFC<TagLineProps> = ({ tags, onTagChange }) => {
 
       return 0;
     })
-    .map(t => ({
+    .map((t) => ({
       value: t.id,
       label: t.name,
     }));
 
-  const value = tags.map(t => submissionTags.find(s => s.value === t)!);
+  const value = tags.map((t) => submissionTags.find((s) => s.value === t)!);
 
   return (
     <Select

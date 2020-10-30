@@ -1,10 +1,10 @@
 /** @jsx jsx */
-import { Box, Grid, Text } from "@theme-ui/components";
 import moment from "moment";
 import { FormattedMessage } from "react-intl";
-import { jsx } from "theme-ui";
+import { Box, Grid, jsx, Text } from "theme-ui";
 
-import { useCurrentLanguage } from "../../context/language";
+import { useCurrentLanguage } from "~/locale/context";
+
 import { AddHotelRoom } from "./add-hotel-room";
 import { AddProductWithVariation } from "./add-product-with-variation";
 import { AddRemoveProduct } from "./add-remove-product";

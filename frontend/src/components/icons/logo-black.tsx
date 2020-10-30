@@ -1,6 +1,6 @@
 import React from "react";
 
-export const LogoBlack: React.SFC = props => (
+export const LogoBlack: React.SFC = (props) => (
   <svg viewBox="0 0 1932 450" fill="none" {...props}>
     <path fill="#fff" d="M0 0h1932v450H0z" />
     <path d="M1500.53.95H.25v448.74h1500.28V.95z" fill="#000" />

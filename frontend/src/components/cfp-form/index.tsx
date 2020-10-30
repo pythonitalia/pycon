@@ -1,35 +1,33 @@
 /** @jsx jsx */
-
-import { useQuery } from "@apollo/react-hooks";
+import { ApolloError } from "@apollo/client";
+import React, { Fragment, useEffect } from "react";
+import { FormattedMessage } from "react-intl";
+import { useFormState } from "react-use-form-state";
 import {
   Box,
-  Button,
   Checkbox,
   Flex,
   Grid,
   Input,
+  jsx,
   Label,
   Radio,
   Select,
   Text,
   Textarea,
-} from "@theme-ui/components";
-import { ApolloError } from "apollo-client";
-import React, { Fragment, useEffect } from "react";
-import { FormattedMessage } from "react-intl";
-import { useFormState } from "react-use-form-state";
-import { jsx } from "theme-ui";
+} from "theme-ui";
 
 import {
   CfpFormQuery,
-  CfpFormQueryVariables,
   SendSubmissionMutation,
   UpdateSubmissionMutation,
-} from "../../generated/graphql-backend";
+  useCfpFormQuery,
+} from "~/types";
+
 import { Alert } from "../alert";
+import { Button } from "../button/button";
 import { TagLine } from "../input-tag";
 import { InputWrapper } from "../input-wrapper";
-import CFP_FORM_QUERY from "./cfp-form.graphql";
 
 export type CfpFormFields = {
   type: string;
@@ -67,7 +65,7 @@ type Props = {
   conferenceCode: string;
   loading: boolean;
   error: ApolloError | undefined;
-  data: SendSubmissionMutation | UpdateSubmissionMutation | undefined;
+  data: SendSubmissionMutation | UpdateSubmissionMutation;
 };
 
 // value of the first option in the speaker level value
@@ -108,7 +106,7 @@ export const CfpForm: React.SFC<Props> = ({
       // Check if we have a valid duration to preselect that is also allowed
       // in the type we automatically selected
       const validDurations = durations.filter(
-        d => d.allowedSubmissionTypes.findIndex(t => t.id === type) !== -1,
+        (d) => d.allowedSubmissionTypes.findIndex((t) => t.id === type) !== -1,
       );
 
       if (validDurations.length > 0) {
@@ -127,48 +125,44 @@ export const CfpForm: React.SFC<Props> = ({
     formState.setField("speakerLevel", SPEAKER_LEVEL_NEW_VALUE);
   };
 
-  const setupFormFromSubmission = (_: CfpFormQuery) => {
-    formState.setField("type", submission!.type.id);
-    formState.setField("title", submission!.title);
-    formState.setField("elevatorPitch", submission!.elevatorPitch);
-    formState.setField("topic", submission!.topic.id);
-    formState.setField("length", submission!.duration.id);
-    formState.setField("audienceLevel", submission!.audienceLevel.id);
-    formState.setField(
-      "languages",
-      submission!.languages.map(l => l.code),
-    );
-    formState.setField("abstract", submission!.abstract);
-    formState.setField("notes", submission!.notes);
-    formState.setField(
-      "tags",
-      submission!.tags.map(t => t.id),
-    );
-    formState.setField(
-      "speakerLevel",
-      submission!.speakerLevel || SPEAKER_LEVEL_NEW_VALUE,
-    );
-    formState.setField("previousTalkVideo", submission!.previousTalkVideo);
-  };
-
   const {
     loading: conferenceLoading,
     error: conferenceError,
     data: conferenceData,
-  } = useQuery<CfpFormQuery, CfpFormQueryVariables>(CFP_FORM_QUERY, {
+  } = useCfpFormQuery({
     variables: {
       conference: conferenceCode,
     },
     onCompleted(data) {
       if (submission) {
-        setupFormFromSubmission(data);
+        formState.setField("type", submission!.type.id);
+        formState.setField("title", submission!.title);
+        formState.setField("elevatorPitch", submission!.elevatorPitch);
+        formState.setField("topic", submission!.topic.id);
+        formState.setField("length", submission!.duration.id);
+        formState.setField("audienceLevel", submission!.audienceLevel.id);
+        formState.setField(
+          "languages",
+          submission!.languages.map((l) => l.code),
+        );
+        formState.setField("abstract", submission!.abstract);
+        formState.setField("notes", submission!.notes);
+        formState.setField(
+          "tags",
+          submission!.tags.map((t) => t.id),
+        );
+        formState.setField(
+          "speakerLevel",
+          submission!.speakerLevel || SPEAKER_LEVEL_NEW_VALUE,
+        );
+        formState.setField("previousTalkVideo", submission!.previousTalkVideo);
       } else {
         setupCleanForm(data);
       }
     },
   });
 
-  const submitSubmission = async (e: React.MouseEvent) => {
+  const submitSubmission = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     onSubmit({
@@ -188,9 +182,9 @@ export const CfpForm: React.SFC<Props> = ({
   };
 
   const allowedDurations = conferenceData?.conference.durations.filter(
-    d =>
+    (d) =>
       d.allowedSubmissionTypes.findIndex(
-        i => i.id === formState.values.type,
+        (i) => i.id === formState.values.type,
       ) !== -1,
   );
 
@@ -205,7 +199,7 @@ export const CfpForm: React.SFC<Props> = ({
 
     if (
       !allowedDurations.find(
-        duration => duration.id === formState.values.length,
+        (duration) => duration.id === formState.values.length,
       )
     ) {
       formState.setField("length", allowedDurations[0].id);
@@ -255,13 +249,13 @@ export const CfpForm: React.SFC<Props> = ({
       <Text mt={4} mb={4} as="h1">
         <FormattedMessage id="cfp.youridea" />
       </Text>
-      <Box as="form" onSubmit={submitSubmission}>
+      <form onSubmit={submitSubmission} sx={{ mb: 4 }}>
         <Label mb={3} htmlFor="type">
           <FormattedMessage id="cfp.choosetype" />
         </Label>
 
         <Flex mb={5}>
-          {conferenceData!.conference.submissionTypes.map(type => (
+          {conferenceData!.conference.submissionTypes.map((type) => (
             <Label
               key={type.id}
               sx={{
@@ -285,9 +279,9 @@ export const CfpForm: React.SFC<Props> = ({
         </InputWrapper>
 
         <Grid
+          gap={5}
           sx={{
             mb: 5,
-            gridColumnGap: 5,
             gridTemplateColumns: [null, "1fr 1fr"],
           }}
         >
@@ -305,8 +299,8 @@ export const CfpForm: React.SFC<Props> = ({
                   minHeight: 340,
                 }}
                 {...textarea("elevatorPitch")}
-                maxLength="300"
-                rows="6"
+                maxLength={300}
+                rows={6}
               />
             </InputWrapper>
           </Box>
@@ -318,13 +312,13 @@ export const CfpForm: React.SFC<Props> = ({
             >
               <Select {...select("topic")} required={true}>
                 <FormattedMessage id="cfp.selectTopic">
-                  {txt => (
+                  {(txt) => (
                     <option value="" disabled={true}>
                       {txt}
                     </option>
                   )}
                 </FormattedMessage>
-                {conferenceData!.conference.topics.map(d => (
+                {conferenceData!.conference.topics.map((d) => (
                   <option key={d.id} value={d.id}>
                     {d.name}
                   </option>
@@ -339,13 +333,13 @@ export const CfpForm: React.SFC<Props> = ({
             >
               <Select {...select("length")} required={true}>
                 <FormattedMessage id="cfp.selectDuration">
-                  {txt => (
+                  {(txt) => (
                     <option value="" disabled={true}>
                       {txt}
                     </option>
                   )}
                 </FormattedMessage>
-                {allowedDurations!.map(d => (
+                {allowedDurations!.map((d) => (
                   <option key={d.id} value={d.id}>
                     {d.name}
                   </option>
@@ -362,13 +356,13 @@ export const CfpForm: React.SFC<Props> = ({
             >
               <Select {...select("audienceLevel")} required={true}>
                 <FormattedMessage id="cfp.selectAudience">
-                  {txt => (
+                  {(txt) => (
                     <option value="" disabled={true}>
                       {txt}
                     </option>
                   )}
                 </FormattedMessage>
-                {conferenceData!.conference.audienceLevels.map(a => (
+                {conferenceData!.conference.audienceLevels.map((a) => (
                   <option key={a.id} value={a.id}>
                     {a.name}
                   </option>
@@ -386,7 +380,7 @@ export const CfpForm: React.SFC<Props> = ({
           description={<FormattedMessage id="cfp.languagesDescription" />}
           errors={getErrors("validationLanguages")}
         >
-          {conferenceData!.conference.languages.map(language => (
+          {conferenceData!.conference.languages.map((language) => (
             <Label
               key={language.code}
               sx={{
@@ -413,7 +407,7 @@ export const CfpForm: React.SFC<Props> = ({
               minHeight: 200,
             }}
             {...textarea("abstract")}
-            rows="6"
+            rows={6}
           />
         </InputWrapper>
 
@@ -428,7 +422,7 @@ export const CfpForm: React.SFC<Props> = ({
               minHeight: 150,
             }}
             {...textarea("notes")}
-            rows="4"
+            rows={4}
           />
         </InputWrapper>
 
@@ -442,7 +436,7 @@ export const CfpForm: React.SFC<Props> = ({
             onTagChange={(tags: { value: string }[]) => {
               formState.setField(
                 "tags",
-                tags.map(t => t.value),
+                tags.map((t) => t.value),
               );
             }}
           />
@@ -463,15 +457,17 @@ export const CfpForm: React.SFC<Props> = ({
         >
           <Select {...select("speakerLevel")} required={true}>
             <FormattedMessage id="cfp.speakerLevel.new">
-              {copy => <option value={SPEAKER_LEVEL_NEW_VALUE}>{copy}</option>}
+              {(copy) => (
+                <option value={SPEAKER_LEVEL_NEW_VALUE}>{copy}</option>
+              )}
             </FormattedMessage>
 
             <FormattedMessage id="cfp.speakerLevel.intermediate">
-              {copy => <option value="intermediate">{copy}</option>}
+              {(copy) => <option value="intermediate">{copy}</option>}
             </FormattedMessage>
 
             <FormattedMessage id="cfp.speakerLevel.experienced">
-              {copy => <option value="experienced">{copy}</option>}
+              {(copy) => <option value="experienced">{copy}</option>}
             </FormattedMessage>
           </Select>
         </InputWrapper>
@@ -486,7 +482,7 @@ export const CfpForm: React.SFC<Props> = ({
           <Input {...text("previousTalkVideo")} required={false} />
         </InputWrapper>
 
-        {getErrors("nonFieldErrors").map(error => (
+        {getErrors("nonFieldErrors").map((error) => (
           <Alert sx={{ mb: 4 }} variant="alert" key={error}>
             {error}
           </Alert>
@@ -520,10 +516,10 @@ export const CfpForm: React.SFC<Props> = ({
           </Alert>
         )}
 
-        <Button>
+        <Button loading={submissionLoading}>
           <FormattedMessage id="cfp.submit" />
         </Button>
-      </Box>
+      </form>
     </Fragment>
   );
 };

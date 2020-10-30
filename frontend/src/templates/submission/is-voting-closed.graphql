@@ -1,5 +1,0 @@
-query IsVotingClosed($conference: String!) {
-  conference(code: $conference) {
-    isVotingClosed
-  }
-}

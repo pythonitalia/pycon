@@ -1,3 +1,4 @@
+from api.permissions import HasTokenPermission
 from strawberry.permission import BasePermission
 from submissions.models import Submission
 
@@ -6,6 +7,9 @@ class CanSeeSubmissionDetail(BasePermission):
     message = "You can't see details for this submission"
 
     def has_permission(self, source, info):
+        if HasTokenPermission().has_permission(source, info):
+            return True
+
         user = info.context["request"].user
 
         conference = source.conference

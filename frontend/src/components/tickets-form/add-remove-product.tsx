@@ -1,6 +1,7 @@
 /** @jsx jsx */
-import { Button, Flex, Input } from "@theme-ui/components";
-import { jsx } from "theme-ui";
+import { Flex, Input, jsx } from "theme-ui";
+
+import { Button } from "../button/button";
 
 export const AddRemoveProduct: React.SFC<{
   quantity: number;

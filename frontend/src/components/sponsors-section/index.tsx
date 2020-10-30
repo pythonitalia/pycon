@@ -1,13 +1,15 @@
 /** @jsx jsx */
-import css from "@styled-system/css";
-import { Box, Heading } from "@theme-ui/components";
-import { jsx } from "theme-ui";
+import { Box, Heading, jsx } from "theme-ui";
 
-import { HomePageQuery } from "../../generated/graphql";
 import { SponsorsGrid } from "./sponsors-grid";
+import { Sponsor } from "./types";
 
 type Props = {
-  sponsorsByLevel: HomePageQuery["backend"]["conference"]["sponsorsByLevel"];
+  sponsorsByLevel: {
+    level: string;
+    sponsors: Sponsor[];
+    highlightColor?: string | null;
+  }[];
 };
 
 export const SponsorsSection: React.SFC<Props> = ({
@@ -34,11 +36,12 @@ export const SponsorsSection: React.SFC<Props> = ({
               px: 3,
               left: -20,
             }}
-            css={css`
+            css={`
               @media (min-width: 1310px) {
-                position: relative;
+                position: static;
                 display: inline-block;
                 padding: 0;
+                transform: none;
               }
             `}
           >

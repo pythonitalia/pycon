@@ -1,57 +1,49 @@
-import { useMutation } from "@apollo/react-hooks";
-import {
-  Location,
-  navigate,
-  Redirect,
-  RouteComponentProps,
-} from "@reach/router";
-import { Box, Button, Grid, Input, Text } from "@theme-ui/components";
-import React from "react";
+/** @jsx jsx */
+import Router, { useRouter } from "next/router";
+import { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
+import { Box, Grid, Input, jsx, Text } from "theme-ui";
 
-import { useLoginState } from "../../app/profile/hooks";
-import { useCurrentLanguage } from "../../context/language";
-import {
-  LoginMutation,
-  LoginMutationVariables,
-} from "../../generated/graphql-backend";
+import { useLoginState } from "~/app/profile/hooks";
+import { useMessages } from "~/helpers/use-messages";
+import { useCurrentLanguage } from "~/locale/context";
+import { LoginMutation, useLoginMutation } from "~/types";
+
 import { Alert } from "../alert";
+import { Button } from "../button/button";
 import { InputWrapper } from "../input-wrapper";
 import { Link } from "../link";
-import LOGIN_MUTATION from "./login.graphql";
 
 type LoginFormFields = {
   email: string;
   password: string;
 };
 
-type FormProps = RouteComponentProps & {
+type FormProps = {
   next?: string;
 };
 
-export const LoginForm: React.SFC<FormProps> = ({
-  location,
-  next,
-  ...props
-}) => {
+export const LoginForm: React.SFC<FormProps> = ({ next, ...props }) => {
   const lang = useCurrentLanguage();
-  const profileUrl = `/${lang}/profile`;
-
+  const router = useRouter();
   const [loggedIn, setLoggedIn] = useLoginState();
+
+  const { messages, clearMessages } = useMessages();
+
+  const nextUrl = (router.query.next as string) || next || `/${lang}/profile`;
 
   const onLoginCompleted = (data: LoginMutation) => {
     if (data && data.login.__typename === "MeUser") {
       setLoggedIn(true);
 
-      navigate(next || location?.state?.next || profileUrl);
+      Router.push(nextUrl.replace(/^\/(en|it)/, "/[lang]"), nextUrl);
     }
   };
 
-  const [login, { loading, error, data: loginData }] = useMutation<
-    LoginMutation,
-    LoginMutationVariables
-  >(LOGIN_MUTATION, { onCompleted: onLoginCompleted });
+  const [login, { loading, error, data: loginData }] = useLoginMutation({
+    onCompleted: onLoginCompleted,
+  });
   const [formState, { email, password }] = useFormState<LoginFormFields>(
     {},
     {
@@ -59,9 +51,13 @@ export const LoginForm: React.SFC<FormProps> = ({
     },
   );
 
-  if (loggedIn) {
-    return <Redirect to={profileUrl} noThrow={true} />;
-  }
+  useEffect(() => {
+    if (loggedIn) {
+      Router.push(nextUrl.replace(/^\/(en|it)/, "/[lang]"), nextUrl);
+    }
+
+    clearMessages();
+  });
 
   const errorMessage =
     loginData && loginData.login.__typename === "LoginErrors"
@@ -88,24 +84,24 @@ export const LoginForm: React.SFC<FormProps> = ({
           mb: 3,
         }}
       >
-        {location?.state?.message && (
-          <Alert variant={location.state.messageVariant || "alert"}>
-            {location.state.message}
+        {messages.map((message) => (
+          <Alert variant={message.type} key={message.message}>
+            {message.message}
           </Alert>
-        )}
+        ))}
+
         {errorMessage && <Alert variant="alert">{errorMessage}</Alert>}
       </Box>
       <Grid
+        gap={5}
         sx={{
           maxWidth: "container",
           mx: "auto",
           mt: 3,
           gridTemplateColumns: [null, null, "1fr 1fr"],
-          gridColumnGap: 5,
         }}
       >
-        <Box
-          as="form"
+        <form
           method="post"
           onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault();
@@ -135,7 +131,7 @@ export const LoginForm: React.SFC<FormProps> = ({
               display: "block",
               mb: 4,
             }}
-            href={`/${lang}/signup/`}
+            path={`/${lang}/signup/`}
           >
             <FormattedMessage id="login.dontHaveAccount" />
           </Link>
@@ -158,26 +154,21 @@ export const LoginForm: React.SFC<FormProps> = ({
               display: "block",
               mb: 4,
             }}
-            href={`/${lang}/reset-password/`}
+            path={`/${lang}/reset-password/`}
           >
             <FormattedMessage id="login.recoverPassword" />
           </Link>
 
-          <Button
-            size="medium"
-            palette="primary"
-            isLoading={loading}
-            type="submit"
-          >
+          <Button type="submit" loading={loading}>
             <FormattedMessage id="login.loginButton" />
           </Button>
-        </Box>
+        </form>
         <Box>
           <Text mb={4} as="h2">
             <FormattedMessage id="login.loginWithSocial" />
           </Text>
 
-          <Link href="/login/google/" variant="google">
+          <Link path="/login/google/" variant="google">
             <FormattedMessage id="login.useGoogle" />
           </Link>
         </Box>

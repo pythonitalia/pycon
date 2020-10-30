@@ -1,20 +1,29 @@
 /** @jsx jsx */
-import { Box, Grid } from "@theme-ui/components";
-import Img from "gatsby-image";
-import { jsx } from "theme-ui";
+import LazyLoad from "react-lazyload";
+import { Box, Grid, jsx } from "theme-ui";
 
-import { HomePageQuery } from "../../generated/graphql";
-import { useSSRResponsiveValue } from "../../helpers/use-ssr-responsive-value";
+import { useSSRResponsiveValue } from "~/helpers/use-ssr-responsive-value";
+
 import { Link } from "../link";
+import { Sponsor } from "./types";
 
 type Props = {
   color?: string | null;
-  sponsors: HomePageQuery["backend"]["conference"]["sponsorsByLevel"][0]["sponsors"];
+  sponsors: Sponsor[];
 };
 
 type ItemProps = {
   color: string;
-  sponsor: Props["sponsors"][0];
+  sponsor: Sponsor;
+};
+
+const getImageUrl = (url: string) => {
+  const newUrl = url.replace(
+    "https://production-pycon-backend-media.s3.amazonaws.com",
+    "https://pycon.imgix.net",
+  );
+  const parts = newUrl.split("?");
+  return parts[0] + "?w=400&monochrome=9F9F9F";
 };
 
 const SponsorItem: React.SFC<ItemProps> = ({ sponsor, color }) => (
@@ -25,7 +34,7 @@ const SponsorItem: React.SFC<ItemProps> = ({ sponsor, color }) => (
   >
     <Link
       target="_blank"
-      href={sponsor.link!}
+      path={sponsor.link!}
       sx={{
         filter: "saturate(0)",
         transition: "0.3s filter ease-in-out",
@@ -46,21 +55,28 @@ const SponsorItem: React.SFC<ItemProps> = ({ sponsor, color }) => (
         }}
       />
 
-      {sponsor.imageFile && sponsor.imageFile.childImageSharp && (
-        <Img
-          style={{
+      {sponsor.image && (
+        <Box
+          sx={{
             position: "absolute",
-            top: 0,
-            bottom: 0,
-            left: 0,
-            right: 0,
+            top: "35px",
+            bottom: "35px",
+            left: "40px",
+            right: "40px",
           }}
-          imgStyle={{
-            objectFit: "contain",
-          }}
-          alt={sponsor.name}
-          {...sponsor.imageFile!.childImageSharp}
-        />
+        >
+          <LazyLoad offset={100}>
+            <img
+              sx={{
+                width: "100%",
+                height: "100%",
+                objectFit: "contain",
+              }}
+              src={getImageUrl(sponsor.image)}
+              alt={sponsor.name}
+            />
+          </LazyLoad>
+        </Box>
       )}
     </Link>
   </Box>
@@ -84,7 +100,7 @@ export const SponsorsGrid: React.SFC<Props> = ({ sponsors, color }) => {
         background: "black",
       }}
     >
-      {sponsors.map(sponsor => (
+      {sponsors.map((sponsor) => (
         <SponsorItem
           key={sponsor.name}
           sponsor={sponsor}

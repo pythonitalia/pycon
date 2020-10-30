@@ -5,6 +5,9 @@ export const messages = {
       "Join PyCon Italy from the 2nd to the 5th of April 2020 in Florence, Italy!",
     "global.yes": "Yes",
     "global.no": "No",
+    "global.loading": "Loading",
+    "global.button.loading": "Loading {emoji}",
+    "global.somethingWentWrong": "Something went wrong, please try again",
     "home.title": "Home",
     "home.deadline.begins": "Begins",
     "home.deadline.deadline": "Deadline",
@@ -14,6 +17,7 @@ export const messages = {
     "home.conferenceHighlights": "Conference highlight",
     "home.latestNews": "Latest news",
     "buttons.save": "Save 💾",
+    "profile.title": "Your Profile",
     "profile.country": "Country",
     "profile.notSet": "Not set",
     "profile.dateBirth": "Birth date",
@@ -47,10 +51,12 @@ export const messages = {
       "I want to receive E-mail for main communications",
     "profile.openToRecruiting":
       "I want to receive a few selected job offers through PyCon",
+    "profile.edit.title": "Edit profile",
     "profile.edit.personalHeader": "Personal data",
     "profile.edit.privacyHeader": "Privacy settings",
     "profile.logout": "Logout",
     "profile.seeYourSoon": "See you soon 👋",
+    "login.title": "Login",
     "login.email": "Email",
     "login.password": "Password",
     "login.loginButton": "Login 👉",
@@ -65,6 +71,7 @@ export const messages = {
       "Stay in the loop, sign up for email updates about events, news and offer!",
     "newsletter.button": "Signup 👉",
     "newsletter.success": "🎉 Thanks for subscribing! 🎉",
+    "signup.title": "Signup",
     "signup.email": "Email",
     "signup.password": "Password",
     "signup.signupButton": "Signup 👉",
@@ -174,6 +181,7 @@ export const messages = {
     "signup.signupWithSocial": "... or your social account",
     "signup.useGoogle": "Sign up with Google",
     "signup.alreadyHaveAccount": "Already have an account?",
+    "blog.title": "Blog",
     "blog.readMore": "Read more",
     "blog.author": "Author",
     "inputTag.selectTags": "Select some tags...",
@@ -194,6 +202,7 @@ export const messages = {
     "order.hotelRoomCartInfo":
       "{roomName} with check-in the {checkin} and check-out the {checkout}",
     "orderConfirmation.heading": "Order confirmation!",
+    "orderConfirmation.heading.canceled": "Order canceled!",
     "orderConfirmation.successMessage":
       "Thanks for the order! You should receive an email confirmation soon!",
     "orderConfirmation.manage": "Click here to manage the order.",
@@ -379,12 +388,18 @@ export const messages = {
 
     "schedule.pageTitle": "Schedule {day}",
     "schedule.loading": "Loading...",
+
+    "error404.goToHomepage": "Go to the homepage",
+    "error404.message": "We couldn't find the page you are looking for :(",
   },
   it: {
     titleTemplate: "%s | PyCon Italia",
     description: "Partecipa a PyCon Italia! Dal 2 al 5 Aprile 2020 a Firenze!",
     "global.yes": "Si",
     "global.no": "No",
+    "global.loading": "Caricamento in corso...",
+    "global.button.loading": "Invio {emoji}",
+    "global.somethingWentWrong": "Qualcosa è andato male, prova di nuovo",
     "home.title": "Home",
     "home.deadline.begins": "Inizio",
     "home.deadline.deadline": "Fine",
@@ -394,6 +409,7 @@ export const messages = {
     "home.conferenceHighlights": "Eventi sociali",
     "home.latestNews": "Ultime notizie",
     "buttons.save": "Salva 💾",
+    "profile.title": "Il tuo profilo",
     "profile.notSet": "Non impostato",
     "profile.country": "Nazionalità",
     "profile.dateBirth": "Data di nascita",
@@ -426,10 +442,12 @@ export const messages = {
       "Desidero ricevere E-mail per le comunicazioni più importanti",
     "profile.openToRecruiting":
       "Desidero ricevere alcune proposte di lavoro selezionate attraverso PyCon",
+    "profile.edit.title": "Modifica profilo",
     "profile.edit.personalHeader": "Dati personali",
     "profile.edit.privacyHeader": "Impostazioni privacy",
     "profile.logout": "Logout",
     "profile.seeYourSoon": "A presto 👋",
+    "login.title": "Login",
     "login.email": "Email",
     "login.password": "Password",
     "login.loginButton": "Accedi 👉",
@@ -445,6 +463,7 @@ export const messages = {
       "Rimani aggiornato, iscriviti per ricevere aggiornamenti via email su eventi, novità e offerte!",
     "newsletter.button": "Iscriviti 👉",
     "newsletter.success": "🎉 Grazie per essert iscritto! 🎉",
+    "signup.title": "Registrati",
     "signup.email": "Email",
     "signup.password": "Password",
     "signup.signupButton": "Registrati 👉",
@@ -524,8 +543,7 @@ export const messages = {
     "cfp.aboutYou": "Su di te",
     "cfp.aboutYouDescription":
       "Questa sezione ci aiuterà a conoscerti meglio come speaker, ti consigliano di compilare tutte le informazioni cosi da aiutarci durante la selezione",
-    "header.coronaVirus":
-      "🚨 Aggiornamento COVID-19 - Conferenza annullata 😢",
+    "header.coronaVirus": "🚨 Aggiornamento COVID-19 - Conferenza annullata 😢",
     "header.profile": "Profilo",
     "header.login": "Login",
     "header.followus": "Seguici",
@@ -548,6 +566,7 @@ export const messages = {
     "signup.signupWithSocial": "... o con i tuoi account social",
     "signup.useGoogle": "Registrati con Google",
     "signup.alreadyHaveAccount": "Hai già un account?",
+    "blog.title": "Blog",
     "blog.readMore": "Continua a leggere",
     "blog.author": "Autore",
     "inputTag.selectTags": "Scegli dei tag",
@@ -568,6 +587,7 @@ export const messages = {
       "{roomName} con check-in il {checkin} e check-out {checkout}",
     "orderConfirmation.manage": "Fai click qui per gestire il tuo ordine.",
     "orderConfirmation.heading": "Ordine confermato",
+    "orderConfirmation.heading.canceled": "Ordine cancellato!",
     "orderConfirmation.successMessage":
       "Grazie per l'ordine, riceverai una email di conferma a breve.",
     "order.soldout": "Sold out",
@@ -756,6 +776,10 @@ export const messages = {
 
     "schedule.pageTitle": "Schedule {day}",
     "schedule.loading": "Caricamento in corso...",
+
+    "error404.message":
+      "Non siamo riusciti a trovare la pagina che stai cercando :(",
+    "error404.goToHomepage": "Vai alla homepage",
   },
 };
 

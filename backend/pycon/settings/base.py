@@ -6,7 +6,7 @@ root = environ.Path(__file__) - 3  # three folder back (/a/b/c/ - 3 = /)
 env = environ.Env(
     DEBUG=(bool, False),
     ALLOWED_HOSTS=(list, []),
-    FRONTEND_URL=(str, "http://localhost:4000"),
+    FRONTEND_URL=(str, "http://localhost:3000"),
 )
 
 environ.Env.read_env(root(".env"))

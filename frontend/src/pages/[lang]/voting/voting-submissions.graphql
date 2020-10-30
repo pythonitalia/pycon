@@ -1,0 +1,28 @@
+#import "../../fragments/submission-accordion.graphql"
+
+query VotingSubmissions($conference: String!) {
+  conference(code: $conference) {
+    id
+    isVotingOpen
+
+    topics {
+      id
+      name
+    }
+
+    languages {
+      id
+      name
+      code
+    }
+
+    submissions {
+      ...submissionAccordion
+    }
+  }
+
+  submissionTags {
+    id
+    name
+  }
+}

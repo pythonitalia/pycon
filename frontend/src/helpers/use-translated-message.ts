@@ -1,5 +1,5 @@
-import { useCurrentLanguage } from "../context/language";
 import { messages } from "../locale";
+import { useCurrentLanguage } from "../locale/context";
 
 export const useTranslatedMessage = (id: keyof typeof messages["en"]) => {
   const language = useCurrentLanguage();

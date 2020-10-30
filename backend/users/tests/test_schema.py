@@ -1,5 +1,3 @@
-
-
 def test_get_country(graphql_client):
     country = "IT"
     resp = graphql_client.query(

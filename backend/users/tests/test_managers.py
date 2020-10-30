@@ -1,7 +1,6 @@
 import datetime
 
 import pytest
-
 from users.managers import UserManager
 from users.models import User
 
