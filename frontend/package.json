@@ -51,7 +51,7 @@
     "react-dnd-html5-backend": "^10.0.2",
     "react-dom": "^16.13.1",
     "react-intl": "^5.6.7",
-    "react-lazyload": "^2.6.7",
+    "react-lazyload": "^3.1.0",
     "react-select": "^3.1.0",
     "react-use-form-state": "^0.12.1",
     "react-use-sync-scroll": "^0.1.0",
