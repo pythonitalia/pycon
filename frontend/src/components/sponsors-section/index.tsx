@@ -1,4 +1,6 @@
+
 /** @jsx jsx */
+
 import { Box, Heading, jsx } from "theme-ui";
 
 import { SponsorsGrid } from "./sponsors-grid";

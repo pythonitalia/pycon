@@ -1,4 +1,6 @@
+
 /** @jsx jsx */
+
 import * as Sentry from "@sentry/browser";
 import { Component } from "react";
 import { Box, Heading, jsx, Text } from "theme-ui";

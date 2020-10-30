@@ -1,4 +1,5 @@
 /** @jsx jsx */
+
 import { ApolloProvider } from "@apollo/client";
 import { ApolloClient } from "@apollo/client/core";
 import { getDataFromTree } from "@apollo/client/react/ssr";

@@ -1,4 +1,6 @@
+
 /** @jsx jsx */
+
 import React from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, Grid, Heading, jsx } from "theme-ui";
