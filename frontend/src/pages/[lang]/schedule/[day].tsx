@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { useRouter } from "next/router";
-import React, { Fragment } from "react";
+import React  from "react";
 import { DndProvider } from "react-dnd";
 import Backend from "react-dnd-html5-backend";
 import { FormattedMessage } from "react-intl";
@@ -48,6 +48,7 @@ export const ScheduleDayPage: React.FC = () => {
 
   if (shouldShowAdmin) {
     return (
+      // @ts-ignore
       <DndProvider backend={Backend}>
         <PageContent
           loading={loading}
