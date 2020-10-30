@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import { ApolloError } from "@apollo/client";
 import React, { Fragment, useEffect } from "react";

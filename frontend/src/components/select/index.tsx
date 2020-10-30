@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import React, { CSSProperties } from "react";
 import { default as ReactSelect, Props } from "react-select";

@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import React, { useRef } from "react";
 import useSyncScroll from "react-use-sync-scroll";

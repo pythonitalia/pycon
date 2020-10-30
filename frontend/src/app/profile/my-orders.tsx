@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import { FormattedMessage } from "react-intl";
 import { Box, Flex, Heading, jsx, Text } from "theme-ui";

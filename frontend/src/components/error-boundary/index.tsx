@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import * as Sentry from "@sentry/browser";
 import { Component } from "react";

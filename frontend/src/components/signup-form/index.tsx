@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import { useRouter } from "next/router";
 import React, { useCallback, useLayoutEffect } from "react";

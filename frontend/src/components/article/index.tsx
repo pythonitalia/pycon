@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import { Fragment } from "react";
 import { Box, Heading, jsx, Text } from "theme-ui";
