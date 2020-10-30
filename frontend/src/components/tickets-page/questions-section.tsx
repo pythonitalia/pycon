@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import React, { FormEvent, useCallback, useEffect } from "react";
 import { FormattedMessage } from "react-intl";

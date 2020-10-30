@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import React, { useCallback, useState } from "react";
 import { FormattedMessage } from "react-intl";

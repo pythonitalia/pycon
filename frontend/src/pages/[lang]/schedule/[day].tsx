@@ -1,8 +1,9 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import { useRouter } from "next/router";
 import React, { Fragment } from "react";
 import { DndProvider } from "react-dnd";
-import Backend from "react-dnd-html5-backend";
+import { HTML5Backend } from "react-dnd-html5-backend";
 import { FormattedMessage } from "react-intl";
 import { Box, jsx } from "theme-ui";
 
@@ -48,7 +49,7 @@ export const ScheduleDayPage: React.FC = () => {
 
   if (shouldShowAdmin) {
     return (
-      <DndProvider backend={Backend}>
+      <DndProvider backend={HTML5Backend}>
         <PageContent
           loading={loading}
           shouldShowAdmin={shouldShowAdmin}
@@ -85,7 +86,7 @@ const PageContent: React.FC<PageContentProps> = ({
   const language = useCurrentLanguage();
 
   return (
-    <>
+    <React.Fragment>
       <Meta
         day={day}
         language={language}
@@ -108,7 +109,7 @@ const PageContent: React.FC<PageContentProps> = ({
           shouldShowAdmin={shouldShowAdmin}
         />
       )}
-    </>
+    </React.Fragment>
   );
 };
 

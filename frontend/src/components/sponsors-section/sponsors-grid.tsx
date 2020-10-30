@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import LazyLoad from "react-lazyload";
 import { Box, Grid, jsx } from "theme-ui";

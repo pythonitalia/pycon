@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import { useEffect, useRef, useState } from "react";
 import { FormattedMessage } from "react-intl";

@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import { ApolloProvider } from "@apollo/client";
 import { ApolloClient } from "@apollo/client/core";

@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
