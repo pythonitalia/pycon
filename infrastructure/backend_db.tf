@@ -24,7 +24,7 @@ resource "aws_db_instance" "backend" {
   storage_type                = "gp2"
   engine                      = "postgres"
   allow_major_version_upgrade = true
-  engine_version              = "11.5"
+  engine_version              = "11.8"
   instance_class              = "db.t2.micro"
   name                        = "${terraform.workspace}backend"
   username                    = "root"
