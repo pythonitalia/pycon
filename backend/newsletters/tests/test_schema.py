@@ -92,7 +92,6 @@ def test_unsubscribe_not_registered_mail_to_newsletter(graphql_client):
 
     resp = graphql_client.query(query, variables=variables)
 
-    assert not resp['errors']
     assert resp["data"]["unsubscribeToNewsletter"]["ok"] is True
 
 
