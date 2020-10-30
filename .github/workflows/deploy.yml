@@ -12,112 +12,71 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: Docker login
-        run:
-          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
       - name: Build the Docker image
         working-directory: backend
-        run:
-          docker build . --file Dockerfile --tag pythonitalia/pycon-backend:latest
+        run: docker build . --file Dockerfile --tag pythonitalia/pycon-backend:latest
       - name: Publish the image
         working-directory: backend
-        run:
-          docker push pythonitalia/pycon-backend:latest
+        run: docker push pythonitalia/pycon-backend:latest
 
   terraform:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@master
+      - uses: actions/checkout@master
 
-    - name: terraform-init
-      uses: hashicorp/terraform-github-actions/init@v0.3.5
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        TF_ACTION_WORKING_DIR: ./infrastructure
+      - name: terraform-init
+        uses: hashicorp/terraform-github-actions/init@v0.3.5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          TF_ACTION_WORKING_DIR: ./infrastructure
 
-    - name: terraform-validate
-      uses: hashicorp/terraform-github-actions/validate@v0.3.5
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        TF_ACTION_WORKING_DIR: ./infrastructure
+      - name: terraform-validate
+        uses: hashicorp/terraform-github-actions/validate@v0.3.5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          TF_ACTION_WORKING_DIR: ./infrastructure
 
-    - name: terraform-apply
-      uses: hashicorp/terraform-github-actions/apply@v0.3.5
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        TF_VAR_database_password: ${{ secrets.TF_VAR_database_password }}
-        TF_VAR_secret_key: ${{ secrets.TF_VAR_secret_key }}
-        TF_VAR_ssl_certificate: ${{ secrets.TF_VAR_ssl_certificate }}
-        TF_VAR_mapbox_public_api_key: ${{ secrets.TF_VAR_mapbox_public_api_key }}
-        TF_VAR_sentry_dsn: ${{ secrets.TF_VAR_sentry_dsn }}
-        TF_VAR_slack_incoming_webhook_url: ${{ secrets.TF_VAR_slack_incoming_webhook_url }}
-        TF_VAR_social_auth_google_oauth2_key: ${{ secrets.TF_VAR_social_auth_google_oauth2_key }}
-        TF_VAR_social_auth_google_oauth2_secret: ${{ secrets.TF_VAR_social_auth_google_oauth2_secret }}
-        TF_VAR_mail_user: ${{ secrets.TF_VAR_mail_user }}
-        TF_VAR_mail_password: ${{ secrets.TF_VAR_mail_password }}
-        TF_VAR_pretix_secret_key: ${{ secrets.TF_VAR_pretix_secret_key }}
-        TF_VAR_pretix_api_token:  ${{ secrets.TF_VAR_pretix_api_token }}
-        TF_VAR_pinpoint_application_id:  ${{ secrets.TF_VAR_pinpoint_application_id }}
-        TF_ACTION_WORKING_DIR: ./infrastructure
-        TF_ACTION_WORKSPACE: production
+      - name: terraform-apply
+        uses: hashicorp/terraform-github-actions/apply@v0.3.5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          TF_VAR_database_password: ${{ secrets.TF_VAR_database_password }}
+          TF_VAR_secret_key: ${{ secrets.TF_VAR_secret_key }}
+          TF_VAR_ssl_certificate: ${{ secrets.TF_VAR_ssl_certificate }}
+          TF_VAR_mapbox_public_api_key: ${{ secrets.TF_VAR_mapbox_public_api_key }}
+          TF_VAR_sentry_dsn: ${{ secrets.TF_VAR_sentry_dsn }}
+          TF_VAR_slack_incoming_webhook_url: ${{ secrets.TF_VAR_slack_incoming_webhook_url }}
+          TF_VAR_social_auth_google_oauth2_key: ${{ secrets.TF_VAR_social_auth_google_oauth2_key }}
+          TF_VAR_social_auth_google_oauth2_secret: ${{ secrets.TF_VAR_social_auth_google_oauth2_secret }}
+          TF_VAR_mail_user: ${{ secrets.TF_VAR_mail_user }}
+          TF_VAR_mail_password: ${{ secrets.TF_VAR_mail_password }}
+          TF_VAR_pretix_secret_key: ${{ secrets.TF_VAR_pretix_secret_key }}
+          TF_VAR_pretix_api_token: ${{ secrets.TF_VAR_pretix_api_token }}
+          TF_VAR_pinpoint_application_id: ${{ secrets.TF_VAR_pinpoint_application_id }}
+          TF_ACTION_WORKING_DIR: ./infrastructure
+          TF_ACTION_WORKSPACE: production
 
   deploy-to-eb:
     runs-on: ubuntu-latest
     needs: [terraform, build-and-push-backend]
 
     steps:
-    - uses: actions/checkout@master
+      - uses: actions/checkout@master
 
-    - name: eb deploy
-      uses: ./.github/eb-action
-      with:
-        env: backend
-        args: deploy production-env --region eu-central-1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-  deploy-site:
-    needs: [deploy-to-eb]
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@master
-    - name: Get yarn cache
-      id: yarn-cache
-      run: echo "::set-output name=dir::$(yarn cache dir)"
-
-    - uses: actions/cache@v1
-      with:
-        path: ${{ steps.yarn-cache.outputs.dir }}
-        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-
-    - run: yarn
-      working-directory: frontend
-
-    - run: yarn codegen-fragments
-      working-directory: frontend
-      env:
-        API_URL: https://d1111jewijk23m.cloudfront.net/graphql
-
-    - run: yarn build
-      working-directory: frontend
-      env:
-        CONFERENCE_CODE: pycon11
-        API_URL: https://d1111jewijk23m.cloudfront.net/graphql
-        API_TOKEN: ${{ secrets.API_TOKEN }}
-        SENTRY_DSN: ${{ secrets.TF_VAR_sentry_dsn }}
-    - uses: netlify/actions/cli@master
-      with:
-        args: deploy --dir=frontend/public --prod
-      env:
-        NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-        NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+      - name: eb deploy
+        uses: ./.github/eb-action
+        with:
+          env: backend
+          args: deploy production-env --region eu-central-1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

@@ -3,26 +3,25 @@ name: Frontend
 on:
   pull_request:
     paths:
-    - 'backend/**/*'
-    - 'backend/*'
-    - 'frontend/**/*'
-    - 'frontend/*'
-    - '.github/workflows/frontend.yml'
-    - 'netlify.toml'
+      - "backend/**/*"
+      - "backend/*"
+      - "frontend/**/*"
+      - "frontend/*"
+      - ".github/workflows/frontend.yml"
 
 jobs:
   eslint:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@master
+      - uses: actions/checkout@master
 
-    - name: ESLint checks
-      uses: ./.github/eslint-action
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: ESLint checks
+        uses: ./.github/eslint-action
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  check-and-preview:
+  check:
     runs-on: ubuntu-latest
 
     services:
@@ -33,75 +32,69 @@ jobs:
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: postgres
         ports:
-        - 5432/tcp
+          - 5432/tcp
         # needed because the postgres container does not provide a healthcheck
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
-    - uses: actions/checkout@master
-    - uses: actions/setup-python@v2
-      with:
-        python-version: '3.7.9'
-    - run: pip install poetry
+      - uses: actions/checkout@master
+      - uses: actions/setup-python@v2
+        with:
+          python-version: "3.7.9"
+      - run: pip install poetry
 
-    - name: Cache Poetry
-      uses: actions/cache@v1
-      id: cache
-      with:
-        path: ~/.virtualenvs
-        key: poetry-${{ hashFiles('**/poetry.lock') }}-v2
-        restore-keys: |
-          poetry-${{ hashFiles('**/poetry.lock') }}-v2
+      - name: Cache Poetry
+        uses: actions/cache@v1
+        id: cache
+        with:
+          path: ~/.virtualenvs
+          key: poetry-${{ hashFiles('**/poetry.lock') }}-v2
+          restore-keys: |
+            poetry-${{ hashFiles('**/poetry.lock') }}-v2
 
-    - name: Set Poetry config
-      run: |
-        poetry config virtualenvs.create false
-        poetry config virtualenvs.path ~/.virtualenvs
+      - name: Set Poetry config
+        run: |
+          poetry config virtualenvs.create false
+          poetry config virtualenvs.path ~/.virtualenvs
 
-    - name: Install python dependencies
-      working-directory: backend
-      run: poetry install
-      if: steps.cache.outputs.cache-hit != 'true'
+      - name: Install python dependencies
+        working-directory: backend
+        run: poetry install
+        if: steps.cache.outputs.cache-hit != 'true'
 
-    - name: Get yarn cache
-      id: yarn-cache
-      run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: Get yarn cache
+        id: yarn-cache
+        run: echo "::set-output name=dir::$(yarn cache dir)"
 
-    - uses: actions/cache@v1
-      with:
-        path: ${{ steps.yarn-cache.outputs.dir }}
-        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-    - run: yarn
-      working-directory: frontend
-    - run: |
-        cd backend/
-        poetry run python manage.py migrate
-        poetry run python manage.py loaddata \
-            demodata/*.json
-        cp -r demodata/media media
-        poetry run python manage.py runserver &
+      - uses: actions/cache@v1
+        with:
+          path: ${{ steps.yarn-cache.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+      - run: yarn
+        working-directory: frontend
+      - run: |
+          cd backend/
+          poetry run python manage.py migrate
+          poetry run python manage.py loaddata \
+              demodata/*.json
+          cp -r demodata/media media
+          poetry run python manage.py runserver &
 
-        cd ../frontend/
+          cd ../frontend/
 
-        bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8000/admin/login/)" != "200" ]]; do sleep 5; done'
-        yarn codegen-fragments
-        yarn build
-        yarn codegen-queries
-      env:
-        SECRET_KEY: demo
-        FORCE_PYCON_HOST: False
-        AWS_MEDIA_BUCKET: demo
-        DEFAULT_FILE_STORAGE: 'django.core.files.storage.FileSystemStorage'
-        CONFERENCE_CODE: "pycon-demo"
-        DEBUG: True
-        SLACK_INCOMING_WEBHOOK_URL: ${{ secrets.TF_VAR_slack_incoming_webhook_url }}
-        DATABASE_URL: postgresql://postgres:postgres@localhost:${{ job.services.postgres.ports['5432'] }}/postgres
-    - run: yarn tsc
-      working-directory: frontend
-    - uses: netlify/actions/cli@master
-      with:
-        args: deploy --dir=frontend/public
-      env:
-        NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-        NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8000/admin/login/)" != "200" ]]; do sleep 5; done'
+          yarn codegen-fragments
+          yarn build
+          yarn codegen-queries
+        env:
+          SECRET_KEY: demo
+          FORCE_PYCON_HOST: False
+          AWS_MEDIA_BUCKET: demo
+          DEFAULT_FILE_STORAGE: "django.core.files.storage.FileSystemStorage"
+          CONFERENCE_CODE: "pycon-demo"
+          DEBUG: True
+          SLACK_INCOMING_WEBHOOK_URL: ${{ secrets.TF_VAR_slack_incoming_webhook_url }}
+          DATABASE_URL: postgresql://postgres:postgres@localhost:${{ job.services.postgres.ports['5432'] }}/postgres
+      - run: yarn tsc
+        working-directory: frontend
