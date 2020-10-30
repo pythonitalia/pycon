@@ -9,7 +9,7 @@ const cli = new CLIEngine({
 
 const filesToLint = process.argv
   .slice(2)
-  .map(path => path.replace(/^frontend\//, ""));
+  .map((path) => path.replace(/^frontend\//, ""));
 
 const report = cli.executeOnFiles(filesToLint);
 

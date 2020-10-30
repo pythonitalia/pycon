@@ -1,4 +1,3 @@
-
 /** @jsx jsx */
 
 import LazyLoad from "react-lazyload";

@@ -1,4 +1,3 @@
-
 /** @jsx jsx */
 
 import React, { CSSProperties } from "react";

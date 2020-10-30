@@ -1,14 +1,14 @@
-import strawberry
-import os
 import json
 import logging
+import os
 
-from django.template.loader import render_to_string
-from django.template.response import TemplateResponse
-from django.template.exceptions import TemplateDoesNotExist
-from django.template import RequestContext, Template
+import strawberry
 from django.http import HttpResponseNotAllowed, JsonResponse
 from django.http.response import HttpResponseBadRequest
+from django.template import RequestContext, Template
+from django.template.exceptions import TemplateDoesNotExist
+from django.template.loader import render_to_string
+from django.template.response import TemplateResponse
 from graphql import graphql_sync
 from graphql.error import format_error as format_graphql_error
 from strawberry.django.views import GraphQLView

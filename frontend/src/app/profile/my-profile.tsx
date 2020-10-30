@@ -1,4 +1,3 @@
-
 /** @jsx jsx */
 
 import { FormattedMessage } from "react-intl";

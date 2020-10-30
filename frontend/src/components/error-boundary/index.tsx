@@ -1,4 +1,3 @@
-
 /** @jsx jsx */
 
 import * as Sentry from "@sentry/browser";
