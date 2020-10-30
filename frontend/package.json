@@ -41,7 +41,7 @@
     "http-proxy-middleware": "^1.0.3",
     "isomorphic-fetch": "^2.2.1",
     "marksy": "^8.0.0",
-    "moment": "^2.25.3",
+    "moment": "^2.29.1",
     "next": "^9.5.1",
     "next-with-apollo": "^5.1.0",
     "puppeteer": "^5.2.1",
