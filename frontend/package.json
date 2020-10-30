@@ -28,7 +28,7 @@
     "@mdx-js/loader": "^1.6.1",
     "@next/mdx": "^9.3.6",
     "@now/node": "^1.6.1",
-    "@sentry/browser": "^5.15.5",
+    "@sentry/browser": "^5.27.2",
     "@theme-ui/match-media": "^0.4.0-rc.1",
     "@types/react-lazyload": "^2.6.0",
     "@types/styled-system": "^5.1.10",
