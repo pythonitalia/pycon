@@ -86,7 +86,7 @@ const PageContent: React.FC<PageContentProps> = ({
   const language = useCurrentLanguage();
 
   return (
-    <>
+    <React.Fragment>
       <Meta
         day={day}
         language={language}
@@ -109,7 +109,7 @@ const PageContent: React.FC<PageContentProps> = ({
           shouldShowAdmin={shouldShowAdmin}
         />
       )}
-    </>
+    </React.Fragment>
   );
 };
 
