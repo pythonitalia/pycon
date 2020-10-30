@@ -84,9 +84,8 @@ jobs:
           cd ../frontend/
 
           bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8000/admin/login/)" != "200" ]]; do sleep 5; done'
-          yarn codegen-fragments
+          yarn codegen
           yarn build
-          yarn codegen-queries
         env:
           SECRET_KEY: demo
           FORCE_PYCON_HOST: False
