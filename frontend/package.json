@@ -57,6 +57,10 @@
     "react-use-sync-scroll": "^0.1.0",
     "styled-system": "^5.1.5",
     "theme-ui": "0.4.0-rc.1",
+    "sharp": "^0.23.4",
+    "timed-out": "5",
+    "typescript": "^3.7.5",
+    "use-local-storage-state": "^3.0.1",
     "use-onclickoutside": "^0.3.1",
     "yup": "^0.28.5"
   },

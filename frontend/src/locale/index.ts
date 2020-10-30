@@ -543,7 +543,8 @@ export const messages = {
     "cfp.aboutYou": "Su di te",
     "cfp.aboutYouDescription":
       "Questa sezione ci aiuterà a conoscerti meglio come speaker, ti consigliano di compilare tutte le informazioni cosi da aiutarci durante la selezione",
-    "header.coronaVirus": "🚨 Aggiornamento COVID-19 - Conferenza annullata 😢",
+    "header.coronaVirus":
+      "🚨 Aggiornamento COVID-19 - Conferenza annullata 😢",
     "header.profile": "Profilo",
     "header.login": "Login",
     "header.followus": "Seguici",

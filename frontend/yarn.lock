@@ -10704,6 +10704,11 @@ use-latest@^1.0.0:
   dependencies:
     use-isomorphic-layout-effect "^1.0.0"
 
+use-local-storage-state@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/use-local-storage-state/-/use-local-storage-state-3.0.1.tgz#965f76e11c2be51fcd78b3b113e3eb1708a4b1c8"
+  integrity sha512-8o7sF8vDyVf4txn7l2JCxkKLaE1GX4DRmsFTFxP7Xhv0Hy0vAN2XKQ7icHo+fq+R4ZsQvVMrL9/6QB1yzE0V7g==
+
 use-onclickoutside@^0.3.1:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/use-onclickoutside/-/use-onclickoutside-0.3.1.tgz#fdd723a6a499046b6bc761e4a03af432eee5917b"
