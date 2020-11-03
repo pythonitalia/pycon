@@ -20,7 +20,7 @@
     "@babel/plugin-transform-react-pure-annotations": "^7.12.1",
     "@babel/preset-react": "^7.12.1",
     "@emotion/babel-plugin-jsx-pragmatic": "^0.1.5",
-    "@emotion/core": "^10.0.35",
+    "@emotion/core": "^10.1.1",
     "@graphql-codegen/add": "^2.0.0",
     "@graphql-codegen/cli": "^1.19.0",
     "@graphql-codegen/fragment-matcher": "^2.0.0",
