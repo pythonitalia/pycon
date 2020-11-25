@@ -30,7 +30,7 @@
     "@graphql-codegen/typescript-operations": "^1.17.7",
     "@graphql-codegen/typescript-react-apollo": "^2.0.7",
     "@mdx-js/loader": "^1.6.19",
-    "@next/mdx": "^10.0.0",
+    "@next/mdx": "^10.0.3",
     "@now/node": "^1.8.4",
     "@sentry/browser": "^5.27.2",
     "@theme-ui/match-media": "^0.3.1",
