@@ -3,6 +3,7 @@ import enum
 from typing import Union
 
 import strawberry
+from strawberry.utils.str_converters import to_camel_case
 from django.forms import ModelForm
 from graphql import GraphQLError
 
@@ -45,7 +46,9 @@ class FormMutation:
             cls.Meta.output_types if hasattr(cls.Meta, "output_types") else ()
         )
 
-        output = Union[(error_type, *output_types)]
+        output = strawberry.union(
+            f"{name}Output", (error_type, *output_types), description="Output"
+        )
 
         def _mutate(root, info, input: input_type) -> output:
             # Add the mutation input in the context so we can access it inside the permissions
@@ -101,9 +104,10 @@ class FormMutation:
             def mutate(root, info) -> output:
                 return _mutate(root, info, {})
 
-        mutate.__name__ = f"{name}Output"
-        mutate.name = name
-        mutate = strawberry.mutation(mutate, description=cls.__doc__)
+        # Hack because something changed and now the name contains `Mutation`
+        # as the classname, which makes sense but why it didn't happen before? lol
+        name = name.replace("Mutation", "")
+        mutate = strawberry.mutation(mutate, name=f"{name[0].lower()}{name[1:]}")
 
         cls.Mutation = mutate
         cls.Meta.error_type = error_type

@@ -1,3 +1,4 @@
+import strawberry
 from strawberry_forms.mutations import FormMutation
 
 from ..permissions import IsAuthenticated
@@ -84,6 +85,7 @@ class ResetPasswordMutation(FormMutation):
         output_types = (OperationResult,)
 
 
+@strawberry.type
 class UsersMutations:
     login = Login.Mutation
     register = Register.Mutation

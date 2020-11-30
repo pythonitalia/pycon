@@ -5,6 +5,8 @@ from api.pretix.query import get_user_orders
 from api.pretix.types import PretixOrder
 from conferences.models import Conference
 
+from api.submissions.types import Submission
+
 # TODO: merge Me User and User
 
 
@@ -27,7 +29,7 @@ class MeUser:
         return get_user_orders(conference, self.email)
 
     @strawberry.field
-    def submissions(self, info, conference: str) -> List["Submission"]:
+    def submissions(self, info, conference: str) -> List[Submission]:
         return self.submissions.filter(conference__code=conference)
 
     @strawberry.field

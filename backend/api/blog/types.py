@@ -2,7 +2,7 @@ from typing import Optional
 
 import strawberry
 from api.users.types import User
-from strawberry.types.datetime import DateTime
+from datetime import datetime
 
 from ..helpers.i18n import make_localized_resolver
 
@@ -15,7 +15,7 @@ class Post:
     slug: str = strawberry.field(resolver=make_localized_resolver("slug"))
     excerpt: str = strawberry.field(resolver=make_localized_resolver("excerpt"))
     content: str = strawberry.field(resolver=make_localized_resolver("content"))
-    published: DateTime
+    published: datetime
 
     @strawberry.field
     def image(self, info) -> Optional[str]:

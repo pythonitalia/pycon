@@ -1,5 +1,6 @@
+from datetime import date, datetime, time
 import enum
-from typing import List, Optional, Union
+from typing import List, Optional
 
 import pytest
 import strawberry
@@ -23,7 +24,6 @@ from django.forms import (
     UUIDField,
 )
 from django.forms.fields import BaseTemporalField
-from strawberry.types.datetime import Date, DateTime, Time
 from strawberry_forms.converter import convert_form_field
 from strawberry_forms.mutations import convert_enums_to_values
 
@@ -41,9 +41,9 @@ CONVERT_MAP = {
     # NumberInput: Int,
     DecimalField: float,
     FloatField: float,
-    DateField: Date,
-    DateTimeField: DateTime,
-    TimeField: Time,
+    DateField: date,
+    DateTimeField: datetime,
+    TimeField: time,
 }
 
 
@@ -52,48 +52,20 @@ def test_convert_char_field():
         base_conv = convert_form_field(origin())
 
         assert base_conv[0] == destination, origin
-        assert base_conv[1].field_description == ""
-
-        with_help_text = convert_form_field(origin(help_text="Help me!"))
-
-        assert with_help_text[0] == destination, origin
-        assert with_help_text[1].field_description == "Help me!"
 
         with_required = convert_form_field(origin(required=True))
 
         assert with_required[0] == destination, origin
-        assert with_required[1].field_description == ""
-
-        with_both = convert_form_field(origin(required=False, help_text="Help me!"))
-
-        assert with_both[0] == Optional[destination], origin
-        assert with_both[1].field_description == "Help me!"
 
 
 def test_convert_boolean():
     nonnull_boolean = convert_form_field(BooleanField())
 
     assert nonnull_boolean[0] == bool
-    assert nonnull_boolean[1].field_description == ""
-
-    nonnull_boolean_with_desc = convert_form_field(
-        BooleanField(help_text="eeeeeeeeeeeeeeewwwwwwww")
-    )
-
-    assert nonnull_boolean_with_desc[0] == bool
-    assert nonnull_boolean_with_desc[1].field_description == "eeeeeeeeeeeeeeewwwwwwww"
 
     null_boolean = convert_form_field(NullBooleanField())
 
     assert null_boolean[0] == Optional[bool]
-    assert null_boolean[1].field_description == ""
-
-    null_boolean_with_desc = convert_form_field(
-        NullBooleanField(help_text="aaaaaaaaaaaaaaaaaaawwwwwwwww")
-    )
-
-    assert null_boolean_with_desc[0] == Union[bool, None]
-    assert null_boolean_with_desc[1].field_description == "aaaaaaaaaaaaaaaaaaawwwwwwwww"
 
 
 def test_convert_custom_not_registered_type():

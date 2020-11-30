@@ -1,16 +1,15 @@
-from typing import TYPE_CHECKING, List, Optional
+from strawberry import LazyType
+from typing import List, Optional
 
 import strawberry
 from api.languages.types import Language
 from api.voting.types import VoteType
-from strawberry.types.datetime import DateTime
 from voting.models import Vote
 
-from .permissions import CanSeeSubmissionDetail, CanSeeSubmissionPrivateFields
+from datetime import datetime
 
-if TYPE_CHECKING:  # pragma: no cover
-    from api.users.types import User
-    from api.conferences.types import Conference, Topic, Duration, AudienceLevel
+
+from .permissions import CanSeeSubmissionDetail, CanSeeSubmissionPrivateFields
 
 
 def restricted_field():
@@ -45,14 +44,14 @@ class SubmissionCommentAuthor:
 class SubmissionComment:
     id: strawberry.ID
     text: str
-    created: DateTime
+    created: datetime
     author: SubmissionCommentAuthor
-    submission: "Submission"
+    submission: LazyType["Submission", "api.submissions.types"]
 
 
 @strawberry.type
 class Submission:
-    conference: "Conference"
+    conference: LazyType["Conference", "api.conferences.types"]
     title: str
     slug: str
     elevator_pitch: Optional[str] = restricted_field()
@@ -60,11 +59,15 @@ class Submission:
     speaker_level: Optional[str] = private_field()
     previous_talk_video: Optional[str] = private_field()
     notes: Optional[str] = private_field()
-    speaker: Optional["User"] = private_field()
-    topic: Optional["Topic"] = restricted_field()
+    speaker: Optional[LazyType["User", "api.users.types"]] = private_field()
+    topic: Optional[LazyType["Topic", "api.conferences.types"]] = restricted_field()
     type: Optional[SubmissionType] = restricted_field()
-    duration: Optional["Duration"] = restricted_field()
-    audience_level: Optional["AudienceLevel"] = restricted_field()
+    duration: Optional[
+        LazyType["Duration", "api.conferences.types"]
+    ] = restricted_field()
+    audience_level: Optional[
+        LazyType["AudienceLevel", "api.conferences.types"]
+    ] = restricted_field()
 
     @strawberry.field
     def id(self, info) -> strawberry.ID:
