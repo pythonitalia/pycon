@@ -43,7 +43,7 @@ class OrdersMutations:
 
         if len(input.hotel_rooms) > 0:
             create_hotel_reservations(
-                pretix_order, input.hotel_rooms, user=info.context["request"].user
+                pretix_order, input.hotel_rooms, user=info.context.request.user
             )
 
         return_url = urljoin(

@@ -11,7 +11,7 @@
 # class SubmissionsQuery:
 #     @strawberry.field
 #     def submission(self, info, id: strawberry.ID) -> typing.Optional[Submission]:
-#         user = info.context["request"].user
+#         user = info.context.request.user
 
 #         if not user.is_authenticated:
 #             return None
