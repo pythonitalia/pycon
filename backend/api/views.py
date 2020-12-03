@@ -1,5 +1,6 @@
 from api.context import Context
 from django.http.request import HttpRequest
+
 from strawberry.django.views import GraphQLView as BaseGraphQLVew
 
 

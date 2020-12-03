@@ -1,3 +1,4 @@
+from api.types import ErrorResult
 from typing import List, Optional
 
 import strawberry
@@ -8,6 +9,13 @@ from conferences.models import Conference
 from api.submissions.types import Submission
 
 # TODO: merge Me User and User
+from django.utils.translation import ugettext_lazy as _
+
+
+@strawberry.type
+class UserDoesNotExistError(ErrorResult):
+    def __init__(self) -> None:
+        super().__init__(error_message=_("User not found"))
 
 
 @strawberry.type
