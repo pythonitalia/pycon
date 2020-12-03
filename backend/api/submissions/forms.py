@@ -13,7 +13,7 @@ class SendSubmissionCommentForm(ContextAwareModelForm):
     submission = HashidModelChoiceField(queryset=Submission.objects.all())
 
     def save(self, commit=True):
-        self.instance.author = self.context["request"].user
+        self.instance.author = self.context.request.user
         comment = super().save(commit=commit)
 
         send_comment_notification(comment)
@@ -73,7 +73,7 @@ class UpdateSubmissionForm(SubmissionForm):
     def clean(self):
         cleaned_data = super().clean()
 
-        if not self.instance.can_edit(self.context["request"]):
+        if not self.instance.can_edit(self.context.request):
             raise exceptions.ValidationError(_("You cannot edit this submission"))
 
         return cleaned_data
@@ -114,7 +114,7 @@ class SendSubmissionForm(SubmissionForm):
             raise forms.ValidationError(_("The call for paper is not open!"))
 
     def save(self, commit=True):
-        request = self.context["request"]
+        request = self.context.request
         self.instance.speaker = request.user
         instance = super().save(commit=commit)
         notify_new_submission(

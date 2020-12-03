@@ -10,7 +10,7 @@ class CanSeeSubmissionDetail(BasePermission):
         if HasTokenPermission().has_permission(source, info):
             return True
 
-        user = info.context["request"].user
+        user = info.context.request.user
 
         conference = source.conference
 
@@ -33,7 +33,7 @@ class CanSeeSubmissionPrivateFields(BasePermission):
     message = "You can't see the private fields for this submission"
 
     def has_permission(self, source, info):
-        user = info.context["request"].user
+        user = info.context.request.user
 
         # TODO: this should be cached
         if source.schedule_items.exists():  # pragma: no cover
@@ -49,12 +49,12 @@ class CanSendComment(BasePermission):
     message = "You can't send a comment"
 
     def has_permission(self, source, info):
-        user = info.context["request"].user
+        user = info.context.request.user
 
         if user.is_staff:
             return True
 
-        input = info.context["input"]
+        input = info.context.input
         submission = Submission.objects.get_by_hashid(input.submission)
 
         if submission.speaker == user:

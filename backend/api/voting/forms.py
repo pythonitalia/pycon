@@ -18,13 +18,13 @@ class SendVoteForm(ContextAwareModelForm):
         if submission.conference and not submission.conference.is_voting_open:
             raise forms.ValidationError(_("The voting session is not open!"))
 
-        logged_user = self.context["request"].user
+        logged_user = self.context.request.user
 
         if not logged_user.can_vote(submission.conference):
             raise forms.ValidationError(_("You cannot vote without a ticket"))
 
     def save(self, commit=True):
-        request = self.context["request"]
+        request = self.context.request
 
         submission = self.cleaned_data.get("submission")
 

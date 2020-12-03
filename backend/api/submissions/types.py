@@ -75,7 +75,7 @@ class Submission:
 
     @strawberry.field
     def can_edit(self, info) -> bool:
-        return self.can_edit(info.context["request"])
+        return self.can_edit(info.context.request)
 
     @strawberry.field(permission_classes=[CanSeeSubmissionDetail])
     def comments(self, info) -> List[SubmissionComment]:
@@ -103,7 +103,7 @@ class Submission:
 
     @strawberry.field
     def my_vote(self, info) -> Optional[VoteType]:
-        request = info.context["request"]
+        request = info.context.request
 
         try:
             return self.votes.get(user_id=request.user.id)

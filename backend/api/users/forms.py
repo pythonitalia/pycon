@@ -75,7 +75,7 @@ class LoginForm(FormWithContext):
 
     def save(self):
         user = self.cleaned_data.get("user")
-        login(self.context["request"], user)
+        login(self.context.request, user)
         return user
 
 
@@ -105,7 +105,7 @@ class RegisterForm(FormWithContext):
 
         user = User.objects.create_user(email=email, password=password)
         user = authenticate(email=email, password=password)
-        login(self.context["request"], user)
+        login(self.context.request, user)
         return user
 
 
@@ -117,7 +117,7 @@ class UpdateUserForm(ContextAwareModelForm):
     image = CharField(required=False)
 
     def save(self, commit=True):
-        user = self.context["request"].user
+        user = self.context.request.user
 
         self.instance = User.objects.get(id=user.id)
 
@@ -140,5 +140,5 @@ class UpdateUserForm(ContextAwareModelForm):
 
 class LogoutForm(FormWithContext):
     def save(self):
-        logout(self.context["request"])
+        logout(self.context.request)
         return True
