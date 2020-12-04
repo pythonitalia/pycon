@@ -41,3 +41,5 @@ omit =
   ./newsletters/aws.py
   ./helpers/unique_slugify.py
   ./**/admin.py
+  ./serverless_wsgi.py
+  ./wsgi_handler.py

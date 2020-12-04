@@ -49,6 +49,7 @@ jsonschema = "^3.2.0"
 mypy_extensions = "^0.4.3"
 graphql-core = "^3.1.0"
 strawberry-graphql = "0.44.2"
+Werkzeug = "^1.0.1"
 
 [tool.poetry.dev-dependencies]
 pylint = "=2.4.4"
