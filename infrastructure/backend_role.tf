@@ -37,6 +37,7 @@ resource "aws_iam_role_policy" "pycon" {
         "ds:CreateComputer",
         "ds:DescribeDirectories",
         "ec2:DescribeInstanceStatus",
+        "ec2:CreateNetworkInterface",
         "logs:*",
         "ssm:*",
         "ec2messages:*",
