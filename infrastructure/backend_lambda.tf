@@ -8,6 +8,7 @@ resource "aws_lambda_function" "backend_lambda" {
   image_uri     = local.backend_image_uri
   package_type  = "Image"
   timeout       = 30
+  depends_on    = [aws_iam_role_policy.backend_lambda]
 
   vpc_config {
     subnet_ids         = [aws_subnet.primary.id, aws_subnet.secondary.id]
