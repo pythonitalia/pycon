@@ -1,9 +1,9 @@
 locals {
-  backend_lambda_function_name = aws_lambda_function.backend_lambda.function_name
+  backend_lambda_function_name = "${terraform.workspace}-pycon-backend"
 }
 
 resource "aws_lambda_function" "backend_lambda" {
-  function_name = "${terraform.workspace}-pycon-backend"
+  function_name = local.backend_lambda_function_name
   role          = aws_iam_role.backend_role.arn
   image_uri     = local.backend_image_uri
   package_type  = "Image"
