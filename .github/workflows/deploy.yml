@@ -45,7 +45,7 @@ jobs:
       - uses: actions/checkout@master
 
       - name: terraform-init
-        uses: hashicorp/terraform-github-actions/init@v0.3.5
+        uses: hashicorp/terraform-github-actions/init@v0.7.1
         with:
           tf_actions_version: 0.13.3
         env:
@@ -55,7 +55,7 @@ jobs:
           TF_ACTION_WORKING_DIR: ./infrastructure
 
       - name: terraform-validate
-        uses: hashicorp/terraform-github-actions/validate@v0.3.5
+        uses: hashicorp/terraform-github-actions/validate@v0.7.1
         with:
           tf_actions_version: 0.13.3
         env:
@@ -65,7 +65,7 @@ jobs:
           TF_ACTION_WORKING_DIR: ./infrastructure
 
       - name: terraform-apply
-        uses: hashicorp/terraform-github-actions/apply@v0.3.5
+        uses: hashicorp/terraform-github-actions/apply@v0.7.1
         with:
           tf_actions_version: 0.13.3
         env:
