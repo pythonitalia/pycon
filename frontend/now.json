@@ -2,18 +2,18 @@
   "rewrites": [
     {
       "source": "/graphql",
-      "destination": "https://pycon.it/graphql"
+      "destination": "https://d2gn2ji624wbmi.cloudfront.net/graphql"
     }
   ],
   "redirects": [
     {
       "source": "/login/google",
-      "destination": "https://d1111jewijk23m.cloudfront.net/login/google-oauth2/",
+      "destination": "https://d2gn2ji624wbmi.cloudfront.net/login/google-oauth2/",
       "permanent": false
     },
     {
       "source": "/complete/google-oauth2",
-      "destination": "https://d1111jewijk23m.cloudfront.net/complete/google-oauth2/",
+      "destination": "https://d2gn2ji624wbmi.cloudfront.net/complete/google-oauth2/",
       "permanent": false
     }
   ]
