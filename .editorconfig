@@ -20,3 +20,6 @@ indent_size = 2
 # Makefiles always use tabs for indentation
 [Makefile]
 indent_style = tab
+
+[*.tf]
+indent_size = 2
