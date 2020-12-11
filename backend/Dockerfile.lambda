@@ -55,6 +55,8 @@ COPY --from=build-stage /usr/lib/libpq.so.5 \
     /usr/lib/libgcc_s.so.1 \
     /usr/lib/
 
+RUN mkdir -p ${FUNCTION_DIR}/assets
+
 COPY . ${FUNCTION_DIR}
 
 ENV DJANGO_SETTINGS_MODULE=pycon.settings.prod
