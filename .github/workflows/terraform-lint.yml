@@ -6,6 +6,10 @@ on:
 
 name: Terraform Lint
 
+env:
+  TFMASK_VALUES_REGEX: "(?i)^.*[^a-zA-Z](akia|aroa|asia|access|webhook|aws|setting|profile|database|host|username|address|dsn|oauth|oauth2|application|secret|token|password|key|result|id).*$"
+  TFMASK_RESOURCES_REGEX: "(?i)^(random_id|random_string|aws_elastic_beanstalk_environment|aws_iam_access_key).*$"
+
 jobs:
   lint:
     runs-on: ubuntu-20.04
@@ -21,28 +25,35 @@ jobs:
 
   plan:
     runs-on: ubuntu-20.04
+    defaults:
+      run:
+        working-directory: ./infrastructure
 
     steps:
       - uses: actions/checkout@master
-
-      - name: terraform-init
-        uses: hashicorp/terraform-github-actions/init@v0.3.5
+      - uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 0.13.3
+      - name: Install tfmask
+        run: |
+          sudo curl -L https://github.com/cloudposse/tfmask/releases/download/0.2.0/tfmask_linux_amd64 -o /usr/bin/tfmask
+          sudo chmod +x /usr/bin/tfmask
+      - name: Terraform init
+        run: terraform init
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          TF_ACTION_WORKING_DIR: ./infrastructure
 
-      - name: terraform-validate
-        uses: hashicorp/terraform-github-actions/validate@v0.3.5
+      - name: Terraform validate
+        run: terraform validate -no-color | tfmask
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          TF_ACTION_WORKING_DIR: ./infrastructure
 
-      - name: terraform-plan
-        uses: ./.github/terraform-plan-action
+      - name: Terraform plan
+        run: terraform plan -no-color | tfmask
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -60,5 +71,4 @@ jobs:
           TF_VAR_pretix_secret_key: ${{ secrets.TF_VAR_pretix_secret_key }}
           TF_VAR_pretix_api_token: ${{ secrets.TF_VAR_pretix_api_token }}
           TF_VAR_pinpoint_application_id: ${{ secrets.TF_VAR_pinpoint_application_id }}
-          TF_ACTION_WORKING_DIR: ./infrastructure
-          TF_ACTION_WORKSPACE: production
+          TF_WORKSPACE: production
