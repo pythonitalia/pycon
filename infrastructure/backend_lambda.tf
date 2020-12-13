@@ -10,11 +10,6 @@ resource "aws_lambda_function" "backend_lambda" {
   timeout       = 30
   depends_on    = [aws_iam_role_policy.backend_lambda]
 
-  vpc_config {
-    subnet_ids         = [aws_subnet.primary.id, aws_subnet.secondary.id]
-    security_group_ids = [aws_security_group.backend_rds.id]
-  }
-
   environment {
     variables = {
       DATABASE_URL                     = "postgres://${aws_db_instance.backend.username}:${aws_db_instance.backend.password}@${aws_db_instance.backend.address}:${aws_db_instance.backend.port}/${aws_db_instance.backend.name}"
