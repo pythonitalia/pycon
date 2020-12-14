@@ -3,13 +3,13 @@ name: Backend tests
 on:
   pull_request:
     paths:
-    - 'backend/**/*'
-    - 'backend/*'
-    - '.github/workflows/backend-test.yml'
+      - "backend/**/*"
+      - "backend/*"
+      - ".github/workflows/backend-test.yml"
 
 jobs:
   unit-tests:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     services:
       postgres:
@@ -19,7 +19,7 @@ jobs:
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: postgres
         ports:
-        - 5432/tcp
+          - 5432/tcp
         # needed because the postgres container does not provide a healthcheck
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
@@ -27,7 +27,7 @@ jobs:
       - uses: actions/checkout@master
       - uses: actions/setup-python@v2
         with:
-          python-version: '3.7.9'
+          python-version: "3.7.9"
       - run: pip install poetry
 
       - name: Cache Poetry
@@ -55,26 +55,26 @@ jobs:
       - name: pytest
         working-directory: backend
         run: |
-            set +e
-            OUTPUT=$(poetry run pytest --cov-report xml --cov=. --cov-fail-under 99)
-            STATUS=$?
-            echo "$OUTPUT"
-            cd ..
-            codecov
-            exit $STATUS
+          set +e
+          OUTPUT=$(poetry run pytest --cov-report xml --cov=. --cov-fail-under 99)
+          STATUS=$?
+          echo "$OUTPUT"
+          cd ..
+          codecov
+          exit $STATUS
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:${{ job.services.postgres.ports['5432'] }}/postgres
           STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   integration-tests:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
       - uses: actions/checkout@master
       - uses: actions/setup-python@v2
         with:
-          python-version: '3.7.9'
+          python-version: "3.7.9"
       - run: pip install poetry
       - name: Install dependencies
         working-directory: backend

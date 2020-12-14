@@ -10,7 +10,7 @@ env:
 
 jobs:
   build-and-push-backend:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
       - uses: actions/checkout@master
@@ -24,7 +24,7 @@ jobs:
         run: docker push pythonitalia/pycon-backend:latest
 
   build-lambda-backend:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
       - uses: actions/checkout@master
@@ -41,7 +41,7 @@ jobs:
         run: docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/production-pycon-backend:latest
 
   terraform:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     needs: [build-lambda-backend]
     defaults:
       run:
@@ -82,7 +82,7 @@ jobs:
           TF_VAR_pinpoint_application_id: ${{ secrets.TF_VAR_pinpoint_application_id }}
 
   deploy-to-eb:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     needs: [terraform, build-and-push-backend]
 
     steps:
@@ -99,7 +99,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
   migrate-db:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     needs: [terraform]
     steps:
       - uses: actions/checkout@master

@@ -3,19 +3,18 @@ name: Backend checks
 on:
   pull_request:
     paths:
-    - 'backend/**/*'
-    - 'backend/*'
-    - '.github/workflows/backend-checks.yml'
-
+      - "backend/**/*"
+      - "backend/*"
+      - ".github/workflows/backend-checks.yml"
 
 jobs:
   check-migrations:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@master
       - uses: actions/setup-python@v2
         with:
-          python-version: '3.7.9'
+          python-version: "3.7.9"
       - run: pip install poetry
 
       - name: Cache Poetry
