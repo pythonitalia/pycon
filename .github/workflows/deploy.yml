@@ -104,7 +104,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: Migrate DB
-        run: 'aws lambda invoke --function-name production-pycon-backend --cli-binary-format raw-in-base64-out --payload ''{ "_serverless-wsgi": { "command": "manage", "data": "migrate" } }'''
+        run: 'aws lambda invoke --function-name production-pycon-backend --cli-binary-format raw-in-base64-out --payload ''{ "_serverless-wsgi": { "command": "manage", "data": "migrate" } }'' response.json'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
