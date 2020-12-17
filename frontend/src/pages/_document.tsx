@@ -34,6 +34,14 @@ export default class MyDocument extends Document<{
 
           <meta property="og:url" content={this.props.url} />
           <meta property="twitter:url" content={this.props.url} />
+
+          <script
+            async={true}
+            defer={true}
+            // @ts-ignore
+            dataDomain="pycon.it"
+            src="https://plausible.io/js/plausible.js"
+          />
         </Head>
         <body>
           <InitializeColorMode />
