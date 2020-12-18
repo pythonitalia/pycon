@@ -12,7 +12,9 @@ module.exports = withSourceMaps({
     conferenceCode: process.env.CONFERENCE_CODE || "pycon-demo",
     SENTRY_DSN: process.env.SENTRY_DSN || null,
   },
-
+  images: {
+    domains: ['production-pycon-backend-media.s3.amazonaws.com'],
+  },
   webpack: (config) => {
     config.resolve.alias["~"] = path.resolve(__dirname) + "/src";
     return config;
