@@ -7,7 +7,7 @@ resource "aws_route53_record" "pycon_it_a" {
   zone_id = aws_route53_zone.pyconit.id
   name    = "pycon.it"
   type    = "A"
-  records = ["104.198.14.52"]
+  records = ["76.76.21.21"]
   ttl     = "1"
 }
 
