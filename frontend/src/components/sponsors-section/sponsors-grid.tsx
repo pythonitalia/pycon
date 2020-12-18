@@ -1,11 +1,10 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import LazyLoad from "react-lazyload";
+import Image from "next/image";
 import { Box, Grid, jsx } from "theme-ui";
 
 import { useSSRResponsiveValue } from "~/helpers/use-ssr-responsive-value";
 
-import { Link } from "../link";
 import { Sponsor } from "./types";
 
 type Props = {
@@ -18,24 +17,15 @@ type ItemProps = {
   sponsor: Sponsor;
 };
 
-const getImageUrl = (url: string) => {
-  const newUrl = url.replace(
-    "https://production-pycon-backend-media.s3.amazonaws.com",
-    "https://pycon.imgix.net",
-  );
-  const parts = newUrl.split("?");
-  return parts[0] + "?w=400&monochrome=9F9F9F";
-};
-
-const SponsorItem: React.SFC<ItemProps> = ({ sponsor, color }) => (
+const SponsorItem: React.FC<ItemProps> = ({ sponsor, color }) => (
   <Box
     sx={{
       backgroundColor: color,
     }}
   >
-    <Link
+    <a
       target="_blank"
-      path={sponsor.link!}
+      href={sponsor.link!}
       sx={{
         filter: "saturate(0)",
         transition: "0.3s filter ease-in-out",
@@ -60,30 +50,27 @@ const SponsorItem: React.SFC<ItemProps> = ({ sponsor, color }) => (
         <Box
           sx={{
             position: "absolute",
-            top: "35px",
-            bottom: "35px",
+            top: "40px",
+            bottom: "40px",
             left: "40px",
             right: "40px",
           }}
         >
-          <LazyLoad offset={100}>
-            <img
-              sx={{
-                width: "100%",
-                height: "100%",
-                objectFit: "contain",
-              }}
-              src={getImageUrl(sponsor.image)}
-              alt={sponsor.name}
-            />
-          </LazyLoad>
+          <Image
+            sx={{
+              objectFit: "contain",
+            }}
+            layout="fill"
+            src={sponsor.image}
+            alt={sponsor.name}
+          />
         </Box>
       )}
-    </Link>
+    </a>
   </Box>
 );
 
-export const SponsorsGrid: React.SFC<Props> = ({ sponsors, color }) => {
+export const SponsorsGrid: React.FC<Props> = ({ sponsors, color }) => {
   const columns = useSSRResponsiveValue([1, 3]);
   const missing =
     sponsors.length % columns === 0 ? 0 : columns - (sponsors.length % columns);
