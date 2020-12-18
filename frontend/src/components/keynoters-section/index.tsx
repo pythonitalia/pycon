@@ -1,5 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
+import Image from "next/image";
 import { Box, Flex, Heading, jsx, Text } from "theme-ui";
 
 import { useKeynotesSectionQuery } from "~/types";
@@ -13,15 +14,6 @@ type KeynoteProps = {
   highlightColor?: string | null;
 };
 
-const getImageUrl = (url: string) => {
-  const newUrl = url.replace(
-    "https://production-pycon-backend-media.s3.amazonaws.com",
-    "https://pycon.imgix.net",
-  );
-  const parts = newUrl.split("?");
-  return parts[0] + "?ar=1:1&fit=crop&monochrome=9F9F9F";
-};
-
 const Keynote = ({ title, speakers, image, highlightColor }: KeynoteProps) => (
   <Box
     sx={{
@@ -32,15 +24,16 @@ const Keynote = ({ title, speakers, image, highlightColor }: KeynoteProps) => (
   >
     <Box sx={{ display: "inline-block", pt: "100%" }} />
     {image && (
-      <img
+      <Image
         sx={{
           position: "absolute",
           top: 0,
           left: 0,
-          width: "100%",
-          height: "100%",
+          filter: "grayscale(1)",
+          objectFit: "cover",
         }}
-        src={getImageUrl(image)}
+        layout="fill"
+        src={image}
       />
     )}
     <Box
