@@ -5,7 +5,6 @@ import { Box, Grid, jsx } from "theme-ui";
 
 import { useSSRResponsiveValue } from "~/helpers/use-ssr-responsive-value";
 
-import { Link } from "../link";
 import { Sponsor } from "./types";
 
 type Props = {
@@ -18,15 +17,15 @@ type ItemProps = {
   sponsor: Sponsor;
 };
 
-const SponsorItem: React.SFC<ItemProps> = ({ sponsor, color }) => (
+const SponsorItem: React.FC<ItemProps> = ({ sponsor, color }) => (
   <Box
     sx={{
       backgroundColor: color,
     }}
   >
-    <Link
+    <a
       target="_blank"
-      path={sponsor.link!}
+      href={sponsor.link!}
       sx={{
         filter: "saturate(0)",
         transition: "0.3s filter ease-in-out",
@@ -67,7 +66,7 @@ const SponsorItem: React.SFC<ItemProps> = ({ sponsor, color }) => (
           />
         </Box>
       )}
-    </Link>
+    </a>
   </Box>
 );
 
