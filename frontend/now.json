@@ -10,7 +10,7 @@
     },
     {
       "source": "/django-static",
-      "destination": "https://d2gn2ji624wbmi.cloudfront.net/django-static/"
+      "destination": "https://d2gn2ji624wbmi.cloudfront.net/django-static"
     }
   ],
   "redirects": [
