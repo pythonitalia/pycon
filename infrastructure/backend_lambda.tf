@@ -76,9 +76,20 @@ resource "aws_iam_role_policy" "backend_lambda" {
           "ec2:CreateNetworkInterface",
           "ec2:DeleteNetworkInterface",
           "ec2:DescribeInstances",
-          "ec2:AttachNetworkInterface"
+          "ec2:AttachNetworkInterface",
+          "ses:*"
         ],
         "Resource": "*",
+        "Effect": "Allow"
+      },
+      {
+        "Action": [
+          "s3:*"
+        ],
+        "Resource": [
+          "${aws_s3_bucket.backend_media.arn}",
+          "${aws_s3_bucket.backend_media.arn}/*"
+        ],
         "Effect": "Allow"
       }
     ]
