@@ -3,12 +3,12 @@ resource "aws_iam_user" "backend" {
 }
 
 resource "aws_iam_access_key" "backend" {
-  user = "${aws_iam_user.backend.name}"
+  user = aws_iam_user.backend.name
 }
 
 resource "aws_iam_user_policy" "backend" {
   name = "${terraform.workspace}-backend-media-s3"
-  user = "${aws_iam_user.backend.name}"
+  user = aws_iam_user.backend.name
 
   policy = <<EOF
 {

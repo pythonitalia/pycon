@@ -2,7 +2,7 @@ resource "aws_cloudfront_distribution" "pretix_distribution" {
   aliases = ["tickets.pycon.it"]
 
   origin {
-    domain_name = "${aws_elastic_beanstalk_environment.pretix_env.cname}"
+    domain_name = aws_elastic_beanstalk_environment.pretix_env.cname
     origin_id   = "pretix"
 
     custom_origin_config {
@@ -20,7 +20,7 @@ resource "aws_cloudfront_distribution" "pretix_distribution" {
 
   viewer_certificate {
     cloudfront_default_certificate = true
-    acm_certificate_arn            = "${var.ssl_certificate}"
+    acm_certificate_arn            = var.ssl_certificate
     minimum_protocol_version       = "TLSv1"
     ssl_support_method             = "sni-only"
   }
@@ -54,5 +54,5 @@ resource "aws_cloudfront_distribution" "pretix_distribution" {
 }
 
 output "pretix_distribution_id" {
-  value = "${aws_cloudfront_distribution.pretix_distribution.id}"
+  value = aws_cloudfront_distribution.pretix_distribution.id
 }

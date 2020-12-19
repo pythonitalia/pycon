@@ -1,6 +1,6 @@
 resource "aws_iam_instance_profile" "pycon" {
   name = "ng-beanstalk-ec2-user-${terraform.workspace}"
-  role = "${aws_iam_role.pycon.name}"
+  role = aws_iam_role.pycon.name
 }
 
 resource "aws_iam_role" "pycon" {
@@ -25,7 +25,7 @@ EOF
 
 resource "aws_iam_role_policy" "pycon" {
   name = "pycon_with_ECR"
-  role = "${aws_iam_role.pycon.id}"
+  role = aws_iam_role.pycon.id
 
   policy = <<EOF
 {
