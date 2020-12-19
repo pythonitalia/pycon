@@ -6,7 +6,7 @@
     },
     {
       "source": "/admin",
-      "destination": "https://d2gn2ji624wbmi.cloudfront.net/admin"
+      "destination": "https://d2gn2ji624wbmi.cloudfront.net/admin/"
     }
   ],
   "redirects": [
