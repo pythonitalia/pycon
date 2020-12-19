@@ -3,6 +3,10 @@
     {
       "source": "/graphql",
       "destination": "https://d2gn2ji624wbmi.cloudfront.net/graphql"
+    },
+    {
+      "source": "/admin",
+      "destination": "https://d2gn2ji624wbmi.cloudfront.net/admin"
     }
   ],
   "redirects": [
