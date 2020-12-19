@@ -9,8 +9,8 @@
       "destination": "https://d2gn2ji624wbmi.cloudfront.net/admin/"
     },
     {
-      "source": "/django-static",
-      "destination": "https://d2gn2ji624wbmi.cloudfront.net/django-static"
+      "source": "/django-static/:match*",
+      "destination": "https://d2gn2ji624wbmi.cloudfront.net/django-static/:match*"
     }
   ],
   "redirects": [
