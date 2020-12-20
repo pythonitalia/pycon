@@ -106,3 +106,5 @@ node_modules/
 pretix-conf/
 pretix-data/
 secrets.auto.tfvars
+
+.vercel
