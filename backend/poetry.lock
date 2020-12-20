@@ -362,7 +362,7 @@ django = ">=1.6"
 
 [[package]]
 name = "django-autocomplete-light"
-version = "3.8.1"
+version = "3.5.1"
 description = "Fresh autocompletes for Django"
 category = "main"
 optional = false
@@ -1456,7 +1456,7 @@ testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "ccd32d5de0dc665c19cdd851b01fbd27fe80074ae55717ab97fc6f55c528d237"
+content-hash = "610aa011ed7319ea87fb6ad04bd161601a2a09acc944244c20eb61329ec65a8a"
 
 [metadata.files]
 amqp = [
@@ -1660,7 +1660,7 @@ django-admin-views = [
     {file = "django-admin-views-0.8.0.tar.gz", hash = "sha256:cf3f54c030cb20f1e11f42e80d68022ba020326438c44fcb15edb11487934fb8"},
 ]
 django-autocomplete-light = [
-    {file = "django-autocomplete-light-3.8.1.tar.gz", hash = "sha256:4e84a6d95d272b0d7221614332e2bd54ffff15ec06e78947279398f6507ce225"},
+    {file = "django-autocomplete-light-3.5.1.tar.gz", hash = "sha256:52e8d468060a5911c44300a374d74058c90e65bfdf87ace151abac67279c4ae5"},
 ]
 django-environ = [
     {file = "django-environ-0.4.4.tar.gz", hash = "sha256:ee2f8405d83137e3328b26b3de01bd715b5395fca22feb919dcc905fb6099cfa"},
