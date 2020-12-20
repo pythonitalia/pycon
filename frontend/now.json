@@ -1,5 +1,34 @@
 {
   "trailingSlash": false,
+  "headers": [
+    {
+      "source": "/:path*",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "max-age=0, s-maxage=300, stale-while-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/:lang*/profile",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache"
+        }
+      ]
+    },
+    {
+      "source": "/:lang*/profile/:path*",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache"
+        }
+      ]
+    }
+  ],
   "rewrites": [
     {
       "source": "/graphql",
