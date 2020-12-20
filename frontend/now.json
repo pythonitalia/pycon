@@ -5,8 +5,8 @@
       "destination": "https://d2gn2ji624wbmi.cloudfront.net/graphql"
     },
     {
-      "source": "/admin",
-      "destination": "https://d2gn2ji624wbmi.cloudfront.net/admin/"
+      "source": "/admin/:match*",
+      "destination": "https://d2gn2ji624wbmi.cloudfront.net/admin/:match*"
     },
     {
       "source": "/django-static/:match*",
