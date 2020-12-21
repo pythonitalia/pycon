@@ -1,6 +1,6 @@
 from api.forms import ContextAwareModelForm, HashidModelChoiceField
 from django import forms
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from submissions.models import Submission
 from voting.models import Vote
 
