@@ -5,7 +5,7 @@ import strawberry
 from api.permissions import IsAuthenticated
 from conferences.models.conference import Conference
 from django.conf import settings
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from hotels.models import HotelRoom, HotelRoomReservation
 from pretix import CreateOrderHotelRoom, CreateOrderInput, Order, create_order
 from pretix.exceptions import PretixError
