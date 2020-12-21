@@ -37,6 +37,7 @@ export const LoginForm: React.SFC<FormProps> = ({ next, ...props }) => {
   const onLoginCompleted = (data: LoginMutation) => {
     if (data && data.login.__typename === "MeUser") {
       setLoggedIn(true);
+      clearMessages();
 
       Router.push(nextUrl.replace(/^\/(en|it)/, "/[lang]"), nextUrl);
     }
@@ -55,10 +56,13 @@ export const LoginForm: React.SFC<FormProps> = ({ next, ...props }) => {
   useEffect(() => {
     if (loggedIn) {
       Router.push(nextUrl.replace(/^\/(en|it)/, "/[lang]"), nextUrl);
+      clearMessages();
     }
 
-    clearMessages();
-  });
+    return () => {
+      clearMessages();
+    };
+  }, []);
 
   const errorMessage =
     loginData && loginData.login.__typename === "LoginErrors"
@@ -106,6 +110,7 @@ export const LoginForm: React.SFC<FormProps> = ({ next, ...props }) => {
           method="post"
           onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault();
+            clearMessages();
 
             login({ variables: formState.values });
           }}
