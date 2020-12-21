@@ -22,13 +22,14 @@ export const LoginSuccessPage = () => {
     onCompleted(data) {
       if (data.me) {
         setLoggedIn(true);
+        router.replace("/[lang]/profile", `/${language}/profile/`);
       }
     },
   });
 
   useEffect(() => {
     if (loggedIn) {
-      router.push("/[lang]/profile", `/${language}/profile/`);
+      router.replace("/[lang]/profile", `/${language}/profile/`);
     }
 
     if (!loading && error) {
