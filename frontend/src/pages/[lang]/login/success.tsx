@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { useRouter } from "next/router";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, jsx } from "theme-ui";
 
@@ -11,7 +11,7 @@ import { useTranslatedMessage } from "~/helpers/use-translated-message";
 import { useCurrentLanguage } from "~/locale/context";
 import { useSocialLoginCheckQuery } from "~/types";
 
-export const SocialLoginSuccess: React.SFC = () => {
+export const LoginSuccessPage = () => {
   const [loggedIn, setLoggedIn] = useLoginState();
   const language = useCurrentLanguage();
   const router = useRouter();
@@ -53,3 +53,5 @@ export const SocialLoginSuccess: React.SFC = () => {
     </Box>
   );
 };
+
+export default LoginSuccessPage;

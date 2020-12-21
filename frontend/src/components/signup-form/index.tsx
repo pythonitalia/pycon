@@ -144,7 +144,7 @@ export const SignupForm: React.SFC = () => {
             <FormattedMessage id="signup.signupWithSocial" />
           </Text>
 
-          <Link path="/login/google/" variant="google">
+          <Link external={true} path="/login/google/" variant="google">
             <FormattedMessage id="signup.useGoogle" />
           </Link>
         </Box>

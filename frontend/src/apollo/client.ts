@@ -19,7 +19,8 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
       ),
     );
 
-    if (isUserLoggedOut(graphQLErrors)) {
+    if (isUserLoggedOut(graphQLErrors) && typeof window !== "undefined") {
+      // If we are not in SSR, reset the login state of the user
       setLoginState(false);
 
       // TODO: get current locale
