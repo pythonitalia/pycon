@@ -169,7 +169,7 @@ export const LoginForm: React.SFC<FormProps> = ({ next, ...props }) => {
             <FormattedMessage id="login.loginWithSocial" />
           </Text>
 
-          <Link path="/login/google/" variant="google">
+          <Link external={true} path="/login/google/" variant="google">
             <FormattedMessage id="login.useGoogle" />
           </Link>
         </Box>

@@ -68,6 +68,7 @@ type LinkProps = {
   backgroundColor?: string;
   after?: React.ReactElement | null;
   params?: Params;
+  external?: boolean;
 };
 
 export const Link: React.FC<LinkProps> = ({
@@ -78,6 +79,7 @@ export const Link: React.FC<LinkProps> = ({
   target,
   variant,
   url,
+  external = false,
   params = null,
   ...additionalProps
 }) => {
@@ -130,7 +132,7 @@ export const Link: React.FC<LinkProps> = ({
 
   const [hoverable, _] = useHover(component);
 
-  if (isExternalLink({ path, target })) {
+  if (external || isExternalLink({ path, target })) {
     return hoverable;
   }
 

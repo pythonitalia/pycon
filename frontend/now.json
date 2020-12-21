@@ -45,6 +45,15 @@
           "value": "no-cache"
         }
       ]
+    },
+    {
+      "source": "/:lang*/login/success",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache"
+        }
+      ]
     }
   ],
   "rewrites": [
