@@ -1,5 +1,6 @@
-from datetime import date, time
+from datetime import date, datetime, time
 
+import pytz
 from pytest import mark
 
 
@@ -7,9 +8,11 @@ from pytest import mark
 def test_get_days_with_configuration(
     conference_factory, day_factory, slot_factory, graphql_client
 ):
-    conference = conference_factory(start=date(2020, 4, 2), end=date(2020, 4, 2))
-
-    day = day_factory(conference=conference, day=date(2020, 4, 2))
+    conference = conference_factory(
+        start=datetime(2020, 4, 2, tzinfo=pytz.UTC),
+        end=datetime(2020, 4, 2, tzinfo=pytz.UTC),
+    )
+    day = day_factory(conference=conference, day=conference.start)
 
     slot_factory(day=day, hour=time(8, 45), duration=60)
 
@@ -37,10 +40,11 @@ def test_get_days_with_configuration(
 
 
 @mark.django_db
-def test_add_slot_fails_when_not_logged(
-    conference_factory, day_factory, graphql_client
-):
-    conference = conference_factory(start=date(2020, 4, 2), end=date(2020, 4, 2))
+def test_add_slot_fails_when_not_logged(conference_factory, graphql_client):
+    conference = conference_factory(
+        start=datetime(2020, 4, 2, tzinfo=pytz.UTC),
+        end=datetime(2020, 4, 2, tzinfo=pytz.UTC),
+    )
 
     resp = graphql_client.query(
         """
@@ -71,9 +75,7 @@ def test_add_slot_fails_when_not_logged(
 
 
 @mark.django_db
-def test_add_slot_creates_day(conference_factory, day_factory, admin_graphql_client):
-    conference = conference_factory(start=date(2020, 4, 2), end=date(2020, 4, 2))
-
+def test_add_slot_creates_day(conference, admin_graphql_client):
     resp = admin_graphql_client.query(
         """
         mutation AddScheduleSlot($code: ID!, $day: Date!, $duration: Int!) {
@@ -105,7 +107,10 @@ def test_add_slot_creates_day(conference_factory, day_factory, admin_graphql_cli
 def test_add_slot_add_slot(
     conference_factory, day_factory, slot_factory, admin_graphql_client
 ):
-    conference = conference_factory(start=date(2020, 4, 2), end=date(2020, 4, 2))
+    conference = conference_factory(
+        start=datetime(2020, 4, 2, tzinfo=pytz.UTC),
+        end=datetime(2020, 4, 2, tzinfo=pytz.UTC),
+    )
 
     day = day_factory(conference=conference, day=date(2020, 4, 2))
 
@@ -145,8 +150,10 @@ def test_add_slot_add_slot(
 def test_get_days_items(
     conference_factory, day_factory, slot_factory, graphql_client, schedule_item_factory
 ):
-    conference = conference_factory(start=date(2020, 4, 2), end=date(2020, 4, 2))
-
+    conference = conference_factory(
+        start=datetime(2020, 4, 2, tzinfo=pytz.UTC),
+        end=datetime(2020, 4, 2, tzinfo=pytz.UTC),
+    )
     day = day_factory(conference=conference, day=date(2020, 4, 2))
 
     slot = slot_factory(day=day, hour=time(8, 45), duration=60)
@@ -188,8 +195,10 @@ def test_filter_days_by_room(
     schedule_item_factory,
     room_factory,
 ):
-
-    conference = conference_factory(start=date(2020, 4, 2), end=date(2020, 4, 2))
+    conference = conference_factory(
+        start=datetime(2020, 4, 2, tzinfo=pytz.UTC),
+        end=datetime(2020, 4, 2, tzinfo=pytz.UTC),
+    )
 
     day = day_factory(conference=conference, day=date(2020, 4, 2))
 
@@ -228,15 +237,12 @@ def test_filter_days_by_room(
 
 @mark.django_db
 def test_filter_days_by_room_not_found(
-    conference_factory,
-    day_factory,
-    slot_factory,
-    graphql_client,
-    schedule_item_factory,
-    room_factory,
+    conference_factory, day_factory, slot_factory, graphql_client
 ):
-
-    conference = conference_factory(start=date(2020, 4, 2), end=date(2020, 4, 2))
+    conference = conference_factory(
+        start=datetime(2020, 4, 2, tzinfo=pytz.UTC),
+        end=datetime(2020, 4, 2, tzinfo=pytz.UTC),
+    )
 
     day = day_factory(conference=conference, day=date(2020, 4, 2))
 
