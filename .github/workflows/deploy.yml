@@ -9,20 +9,6 @@ env:
   TF_WORKSPACE: "production"
 
 jobs:
-  build-and-push-backend:
-    runs-on: ubuntu-20.04
-
-    steps:
-      - uses: actions/checkout@master
-      - name: Docker login
-        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-      - name: Build the Docker image
-        working-directory: backend
-        run: docker build . --file Dockerfile --tag pythonitalia/pycon-backend:latest
-      - name: Publish the image
-        working-directory: backend
-        run: docker push pythonitalia/pycon-backend:latest
-
   build-and-push-lambda-backend:
     runs-on: ubuntu-20.04
 
@@ -93,23 +79,6 @@ jobs:
           TF_VAR_pretix_secret_key: ${{ secrets.TF_VAR_pretix_secret_key }}
           TF_VAR_pretix_api_token: ${{ secrets.TF_VAR_pretix_api_token }}
           TF_VAR_pinpoint_application_id: ${{ secrets.TF_VAR_pinpoint_application_id }}
-
-  deploy-to-eb:
-    runs-on: ubuntu-20.04
-    needs: [terraform, build-and-push-backend]
-
-    steps:
-      - uses: actions/checkout@master
-
-      - name: eb deploy
-        uses: ./.github/eb-action
-        with:
-          env: backend
-          args: deploy production-env --region eu-central-1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
   migrate-db:
     runs-on: ubuntu-20.04
