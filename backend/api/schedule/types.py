@@ -1,13 +1,11 @@
-from strawberry import LazyType
-
+from datetime import datetime
 from typing import TYPE_CHECKING, List, Optional
 
 import strawberry
 from api.languages.types import Language
 from api.submissions.types import Submission
 from api.users.types import User
-from datetime import datetime
-
+from strawberry import LazyType
 
 if TYPE_CHECKING:  # pragma: no cover
     from api.conferences.types import Conference, AudienceLevel  # noqa

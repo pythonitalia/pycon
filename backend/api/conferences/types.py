@@ -1,6 +1,7 @@
+from datetime import date, datetime, time
 from itertools import groupby
 from typing import List, Optional
-from datetime import time, date, datetime
+
 import strawberry
 from api.cms.types import FAQ, Menu
 from api.events.types import Event

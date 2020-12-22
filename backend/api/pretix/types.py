@@ -1,8 +1,8 @@
+from datetime import datetime
 from enum import Enum
 from typing import List, Optional
 
 import strawberry
-from datetime import datetime
 
 
 @strawberry.enum

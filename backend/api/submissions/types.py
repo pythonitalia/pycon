@@ -1,13 +1,11 @@
-from strawberry import LazyType
+from datetime import datetime
 from typing import List, Optional
 
 import strawberry
 from api.languages.types import Language
 from api.voting.types import VoteType
+from strawberry import LazyType
 from voting.models import Vote
-
-from datetime import datetime
-
 
 from .permissions import CanSeeSubmissionDetail, CanSeeSubmissionPrivateFields
 

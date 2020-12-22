@@ -1,5 +1,6 @@
 import logging
 import typing
+from datetime import date
 from urllib.parse import urljoin
 
 import requests
@@ -7,7 +8,6 @@ import strawberry
 from conferences.models.conference import Conference
 from django.conf import settings
 from hotels.models import HotelRoom
-from datetime import date
 
 from .exceptions import PretixError
 

@@ -1,10 +1,8 @@
-from strawberry import LazyType
-
 from decimal import Decimal
 from enum import Enum
-from typing import TYPE_CHECKING
 
 import strawberry
+from strawberry import LazyType
 
 
 @strawberry.enum

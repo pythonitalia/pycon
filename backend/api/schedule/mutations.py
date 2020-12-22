@@ -8,7 +8,6 @@ from conferences.models import Conference
 from languages.models import Language
 from schedule.models import Day as DayModel
 from schedule.models import ScheduleItem, Slot
-
 from submissions.models import Submission
 
 from ..permissions import IsStaffPermission

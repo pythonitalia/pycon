@@ -1,9 +1,7 @@
 import dataclasses
 import enum
-from typing import Union
 
 import strawberry
-from strawberry.utils.str_converters import to_camel_case
 from django.forms import ModelForm
 from graphql import GraphQLError
 

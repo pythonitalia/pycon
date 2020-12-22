@@ -3,9 +3,8 @@ from typing import List, Optional
 import strawberry
 from api.pretix.query import get_user_orders
 from api.pretix.types import PretixOrder
-from conferences.models import Conference
-
 from api.submissions.types import Submission
+from conferences.models import Conference
 
 # TODO: merge Me User and User
 
