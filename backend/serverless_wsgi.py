@@ -10,11 +10,12 @@ Author: Logan Raarup <logan@logan.dk>
 import base64
 import os
 import sys
-from werkzeug.datastructures import Headers, iter_multi_items, MultiDict
-from werkzeug.wrappers import Response
-from werkzeug.urls import url_encode, url_unquote, url_unquote_plus
-from werkzeug.http import HTTP_STATUS_CODES
+
 from werkzeug._compat import BytesIO, string_types, to_bytes, wsgi_encoding_dance
+from werkzeug.datastructures import Headers, MultiDict, iter_multi_items
+from werkzeug.http import HTTP_STATUS_CODES
+from werkzeug.urls import url_encode, url_unquote, url_unquote_plus
+from werkzeug.wrappers import Response
 
 # List of MIME types that should not be base64 encoded. MIME types within `text/*`
 # are included by default.

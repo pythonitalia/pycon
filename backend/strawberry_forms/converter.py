@@ -62,10 +62,7 @@ def convert_form_field_to_boolean(field):
 
 @convert_form_field.register(forms.NullBooleanField)
 def convert_form_field_to_nullboolean(field):
-    return (
-        Optional[bool],
-        dataclasses.field(default=field.initial),
-    )
+    return (Optional[bool], dataclasses.field(default=field.initial))
 
 
 @convert_form_field.register(forms.DecimalField)
