@@ -4,7 +4,7 @@ import json
 
 import django
 from django.conf import settings
-from django.contrib.postgres.fields.jsonb import JSONField
+from django.db.models import JSONField
 
 from .forms import I18nFormField, I18nTextarea, I18nTextInput
 from .strings import LazyI18nString
