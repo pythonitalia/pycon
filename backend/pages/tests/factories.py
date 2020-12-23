@@ -2,7 +2,7 @@ import factory
 import factory.fuzzy
 from conferences.tests.factories import ConferenceFactory
 from factory.django import DjangoModelFactory
-from i18n.helpers.tests import LanguageFactory
+from i18n.tests.factories import LanguageFactory
 from pages.models import Page
 from pytest_factoryboy import register
 

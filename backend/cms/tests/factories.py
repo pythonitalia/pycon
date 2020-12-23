@@ -3,7 +3,7 @@ import factory.fuzzy
 from cms.models import FAQ, GenericCopy, Menu, MenuLink
 from conferences.tests.factories import ConferenceFactory
 from factory.django import DjangoModelFactory
-from i18n.helpers.tests import LanguageFactory
+from i18n.tests.factories import LanguageFactory
 from pytest_factoryboy import register
 
 
