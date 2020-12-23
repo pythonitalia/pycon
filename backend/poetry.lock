@@ -1338,7 +1338,7 @@ pydantic = ["pydantic (>=1.6.1,<2.0.0)"]
 
 [[package]]
 name = "stripe"
-version = "2.41.0"
+version = "2.55.1"
 description = "Python bindings for the Stripe API"
 category = "main"
 optional = false
@@ -1478,7 +1478,7 @@ testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "23680e01505e8169cf1fe04fc8e6d63bd4946c7f58d3133ab41e705efa581b74"
+content-hash = "d9d0be37dcb5b330555ea5784adc6e39e6e7fa4f34c1c4116e67937c3c79858b"
 
 [metadata.files]
 amqp = [
@@ -2171,8 +2171,8 @@ strawberry-graphql = [
     {file = "strawberry_graphql-0.44.2-py3-none-any.whl", hash = "sha256:ac29eecd8e0b684a7addc259305320e4f37e18ffaf8688de83c466915ebd7c2b"},
 ]
 stripe = [
-    {file = "stripe-2.41.0-py2.py3-none-any.whl", hash = "sha256:50900b01a6db4f4f8db0f02a5125db0b2d732252c7683f73187abd08b7d238f3"},
-    {file = "stripe-2.41.0.tar.gz", hash = "sha256:2f0ec677136985ece9cca232f106c2a87193261cac1fe58d4e959215310a0da8"},
+    {file = "stripe-2.55.1-py2.py3-none-any.whl", hash = "sha256:fd98ae43b105e75cb4f1d23ba3d0c16b45e3957d432002398a2f75d083d606ce"},
+    {file = "stripe-2.55.1.tar.gz", hash = "sha256:6b70e2cf87cfbe0cb891b725b690495bc3d34ab0d82545a5989ecd3b5fa83e2a"},
 ]
 text-unidecode = [
     {file = "text-unidecode-1.3.tar.gz", hash = "sha256:bad6603bb14d279193107714b288be206cac565dfa49aa5b105294dd5c4aab93"},
