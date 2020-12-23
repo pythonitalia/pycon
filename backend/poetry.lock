@@ -367,10 +367,17 @@ version = "0.8.0"
 description = "django-admin-views is a simple way to add custom admin views and direct URLs to the Django admin"
 category = "main"
 optional = false
-python-versions = "*"
+python-versions = "^3.7"
+develop = false
 
 [package.dependencies]
-django = ">=1.6"
+Django = "^3.1.4"
+
+[package.source]
+type = "git"
+url = "https://github.com/estyxx/django-admin-views.git"
+reference = "master"
+resolved_reference = "f370a69a658301647033f778c472e044283d82e7"
 
 [[package]]
 name = "django-autocomplete-light"
@@ -1471,7 +1478,7 @@ testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "48bbc8747e8200873f8930b645b1dad3d6527d5c2226cf3703ae7bda207c7f90"
+content-hash = "1909c77a1c912130f81a45d3bbf17e0126ed6cfc73029c02d0313c35a3e484a0"
 
 [metadata.files]
 amqp = [
@@ -1675,9 +1682,7 @@ django = [
     {file = "Django-3.1.4-py3-none-any.whl", hash = "sha256:5c866205f15e7a7123f1eec6ab939d22d5bde1416635cab259684af66d8e48a2"},
     {file = "Django-3.1.4.tar.gz", hash = "sha256:edb10b5c45e7e9c0fb1dc00b76ec7449aca258a39ffd613dbd078c51d19c9f03"},
 ]
-django-admin-views = [
-    {file = "django-admin-views-0.8.0.tar.gz", hash = "sha256:cf3f54c030cb20f1e11f42e80d68022ba020326438c44fcb15edb11487934fb8"},
-]
+django-admin-views = []
 django-autocomplete-light = [
     {file = "django-autocomplete-light-3.5.1.tar.gz", hash = "sha256:52e8d468060a5911c44300a374d74058c90e65bfdf87ace151abac67279c4ae5"},
 ]
