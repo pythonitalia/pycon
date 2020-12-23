@@ -25,7 +25,7 @@ COPY pyproject.toml ${FUNCTION_DIR}
 
 RUN pip3 install poetry
 
-RUN apk add automake
+RUN apk add automake git
 
 RUN pip3 install awslambdaric
 
