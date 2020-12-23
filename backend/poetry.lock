@@ -410,7 +410,7 @@ python-versions = "*"
 
 [[package]]
 name = "django-model-utils"
-version = "4.0.0"
+version = "4.1.1"
 description = "Django model mixins and utilities"
 category = "main"
 optional = false
@@ -1461,7 +1461,7 @@ testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "adbe8e5a54bf44ffc1da1416472bf9bc57c228d8e7145b011a213ddef3e0a097"
+content-hash = "03d219abe7e9a220dee8bbe2de9f73a4cdfa02ef64976dd7aa36c75033159ed9"
 
 [metadata.files]
 amqp = [
@@ -1681,8 +1681,8 @@ django-fsm = [
     {file = "django_fsm-2.6.1-py2.py3-none-any.whl", hash = "sha256:cacd5485c726b411c6728c9ae3120303c9badf8aa0edff2db3aecdbe3a906945"},
 ]
 django-model-utils = [
-    {file = "django-model-utils-4.0.0.tar.gz", hash = "sha256:adf09e5be15122a7f4e372cb5a6dd512bbf8d78a23a90770ad0983ee9d909061"},
-    {file = "django_model_utils-4.0.0-py2.py3-none-any.whl", hash = "sha256:9cf882e5b604421b62dbe57ad2b18464dc9c8f963fc3f9831badccae66c1139c"},
+    {file = "django-model-utils-4.1.1.tar.gz", hash = "sha256:eb5dd05ef7d7ce6bc79cae54ea7c4a221f6f81e2aad7722933aee66489e7264b"},
+    {file = "django_model_utils-4.1.1-py3-none-any.whl", hash = "sha256:ef7c440024e797796a3811432abdd2be8b5225ae64ef346f8bfc6de7d8e5d73c"},
 ]
 django-ordered-model = [
     {file = "django-ordered-model-3.3.0.tar.gz", hash = "sha256:abf0d963f7e607a994baf6bc300e50af647b3d243c3e592c6cc8f8b924b6d427"},
