@@ -39,7 +39,7 @@ resource "aws_route53_record" "pycon_it_txt" {
   zone_id = aws_route53_zone.pyconit.id
   name    = "pycon.it"
   type    = "TXT"
-  records = ["google-site-verification=2xGze4V03dEnQJ7YEdXIBrjc98Cck2Kof8GQB1hlQTg", "amazonses:E6JYOERw8QIKgPrqAuDiRMoHuSioyPdcvuFP74YiZMM=", "v=spf1 ip4:2.228.72.10 ip6:2001:b02:400:1::10 ip4:2.228.72.51 ip4:2.228.72.55 ip6:2001:b02:400:1::55 include:_spf.google.com a ~all"]
+  records = ["google-site-verification=2xGze4V03dEnQJ7YEdXIBrjc98Cck2Kof8GQB1hlQTg", "amazonses:LN511xLUx1n9j6YUh37hEg1t1TtF9TDvjlZzrGnZD5o=", "v=spf1 ip4:2.228.72.10 ip6:2001:b02:400:1::10 ip4:2.228.72.51 ip4:2.228.72.55 ip6:2001:b02:400:1::55 include:_spf.google.com a ~all"]
   ttl     = "172800"
 }
 
@@ -47,7 +47,7 @@ resource "aws_route53_record" "amazonses_pycon_it_txt" {
   zone_id = aws_route53_zone.pyconit.id
   name    = "_amazonses.pycon.it"
   type    = "TXT"
-  records = ["E6JYOERw8QIKgPrqAuDiRMoHuSioyPdcvuFP74YiZMM="]
+  records = ["LN511xLUx1n9j6YUh37hEg1t1TtF9TDvjlZzrGnZD5o="]
   ttl     = "1"
 }
 
