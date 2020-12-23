@@ -34,6 +34,17 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "asgiref"
+version = "3.2.10"
+description = "ASGI specs, helper code, and adapters"
+category = "main"
+optional = false
+python-versions = ">=3.5"
+
+[package.extras]
+tests = ["pytest", "pytest-asyncio"]
+
+[[package]]
 name = "astroid"
 version = "2.3.3"
 description = "An abstract syntax tree for Python with inference support."
@@ -335,15 +346,16 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
 [[package]]
 name = "django"
-version = "2.2.8"
+version = "3.1.4"
 description = "A high-level Python Web framework that encourages rapid development and clean, pragmatic design."
 category = "main"
 optional = false
-python-versions = ">=3.5"
+python-versions = ">=3.6"
 
 [package.dependencies]
+asgiref = ">=3.2.10,<4"
 pytz = "*"
-sqlparse = "*"
+sqlparse = ">=0.2.2"
 
 [package.extras]
 argon2 = ["argon2-cffi (>=16.1.0)"]
@@ -355,10 +367,17 @@ version = "0.8.0"
 description = "django-admin-views is a simple way to add custom admin views and direct URLs to the Django admin"
 category = "main"
 optional = false
-python-versions = "*"
+python-versions = "^3.7"
+develop = false
 
 [package.dependencies]
-django = ">=1.6"
+Django = "^3.1.4"
+
+[package.source]
+type = "git"
+url = "https://github.com/estyxx/django-admin-views.git"
+reference = "master"
+resolved_reference = "f370a69a658301647033f778c472e044283d82e7"
 
 [[package]]
 name = "django-autocomplete-light"
@@ -1459,7 +1478,7 @@ testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "c7dd05b0c856d4c5c4fe4dc7ada951a397309b6858f155a4000a2c4b470364fb"
+content-hash = "1909c77a1c912130f81a45d3bbf17e0126ed6cfc73029c02d0313c35a3e484a0"
 
 [metadata.files]
 amqp = [
@@ -1477,6 +1496,10 @@ apipkg = [
 appdirs = [
     {file = "appdirs-1.4.4-py2.py3-none-any.whl", hash = "sha256:a841dacd6b99318a741b166adb07e19ee71a274450e68237b4650ca1055ab128"},
     {file = "appdirs-1.4.4.tar.gz", hash = "sha256:7d5d0167b2b1ba821647616af46a749d1c653740dd0d2415100fe26e27afdf41"},
+]
+asgiref = [
+    {file = "asgiref-3.2.10-py3-none-any.whl", hash = "sha256:9fc6fb5d39b8af147ba40765234fa822b39818b12cc80b35ad9b0cef3a476aed"},
+    {file = "asgiref-3.2.10.tar.gz", hash = "sha256:7e51911ee147dd685c3c8b805c0ad0cb58d360987b56953878f8c06d2d1c6f1a"},
 ]
 astroid = [
     {file = "astroid-2.3.3-py3-none-any.whl", hash = "sha256:840947ebfa8b58f318d42301cf8c0a20fd794a33b61cc4638e28e9e61ba32f42"},
@@ -1656,12 +1679,10 @@ defusedxml = [
     {file = "defusedxml-0.7.0rc1.tar.gz", hash = "sha256:aa621655d72cdd30f57073893b96cd0c3831a85b08b8e4954531bdac47e3e8c8"},
 ]
 django = [
-    {file = "Django-2.2.8-py3-none-any.whl", hash = "sha256:fa98ec9cc9bf5d72a08ebf3654a9452e761fbb8566e3f80de199cbc15477e891"},
-    {file = "Django-2.2.8.tar.gz", hash = "sha256:a4ad4f6f9c6a4b7af7e2deec8d0cbff28501852e5010d6c2dc695d3d1fae7ca0"},
+    {file = "Django-3.1.4-py3-none-any.whl", hash = "sha256:5c866205f15e7a7123f1eec6ab939d22d5bde1416635cab259684af66d8e48a2"},
+    {file = "Django-3.1.4.tar.gz", hash = "sha256:edb10b5c45e7e9c0fb1dc00b76ec7449aca258a39ffd613dbd078c51d19c9f03"},
 ]
-django-admin-views = [
-    {file = "django-admin-views-0.8.0.tar.gz", hash = "sha256:cf3f54c030cb20f1e11f42e80d68022ba020326438c44fcb15edb11487934fb8"},
-]
+django-admin-views = []
 django-autocomplete-light = [
     {file = "django-autocomplete-light-3.5.1.tar.gz", hash = "sha256:52e8d468060a5911c44300a374d74058c90e65bfdf87ace151abac67279c4ae5"},
 ]
@@ -1842,7 +1863,6 @@ lxml = [
     {file = "lxml-4.6.1-cp38-cp38-manylinux2014_aarch64.whl", hash = "sha256:e65c221b2115a91035b55a593b6eb94aa1206fa3ab374f47c6dc10d364583ff9"},
     {file = "lxml-4.6.1-cp38-cp38-win32.whl", hash = "sha256:d6f8c23f65a4bfe4300b85f1f40f6c32569822d08901db3b6454ab785d9117cc"},
     {file = "lxml-4.6.1-cp38-cp38-win_amd64.whl", hash = "sha256:573b2f5496c7e9f4985de70b9bbb4719ffd293d5565513e04ac20e42e6e5583f"},
-    {file = "lxml-4.6.1-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:098fb713b31050463751dcc694878e1d39f316b86366fb9fe3fbbe5396ac9fab"},
     {file = "lxml-4.6.1-cp39-cp39-manylinux1_i686.whl", hash = "sha256:1d87936cb5801c557f3e981c9c193861264c01209cb3ad0964a16310ca1b3301"},
     {file = "lxml-4.6.1-cp39-cp39-manylinux1_x86_64.whl", hash = "sha256:2d5896ddf5389560257bbe89317ca7bcb4e54a02b53a3e572e1ce4226512b51b"},
     {file = "lxml-4.6.1-cp39-cp39-manylinux2014_aarch64.whl", hash = "sha256:9b06690224258db5cd39a84e993882a6874676f5de582da57f3df3a82ead9174"},

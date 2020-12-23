@@ -7,7 +7,7 @@ from django.contrib import admin, messages
 from django.db import transaction
 from django.http import HttpResponse
 from django.shortcuts import redirect
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from pretix import get_invoices, get_orders
 
 from .constants import (

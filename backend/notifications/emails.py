@@ -3,7 +3,7 @@ from base64 import urlsafe_b64encode
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 
 def send_request_password_reset_mail(user, token):

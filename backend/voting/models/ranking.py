@@ -3,7 +3,7 @@ import itertools
 from django.db import models
 from django.db.models import Count
 from django.db.models.functions import Sqrt
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from model_utils.fields import AutoCreatedField
 from submissions.models import Submission
 

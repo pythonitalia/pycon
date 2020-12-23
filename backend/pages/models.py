@@ -5,7 +5,7 @@ from django.conf import settings
 from django.db import models
 from django.db.models import Q
 from django.utils.text import slugify
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from i18n.fields import I18nCharField, I18nTextField
 from model_utils.models import TimeStampedModel
 

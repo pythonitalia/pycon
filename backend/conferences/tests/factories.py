@@ -4,7 +4,7 @@ import pytz
 from conferences.models import AudienceLevel, Conference, Deadline, Duration, Topic
 from django.utils import timezone
 from factory.django import DjangoModelFactory
-from i18n.helpers.tests import LanguageFactory
+from i18n.tests.factories import LanguageFactory
 from languages.models import Language
 from pytest_factoryboy import register
 from submissions.models import SubmissionType

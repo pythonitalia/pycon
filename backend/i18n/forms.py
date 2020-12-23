@@ -225,6 +225,9 @@ class I18nFormField(forms.MultiValueField):
         kwargs["widget"] = kwargs["widget"](
             locales=self.locales, field=self, **kwargs.pop("widget_kwargs", {})
         )
+        # encoder and decoder are defaults for JSONField, not for CharField!
+        kwargs.pop("encoder", "")
+        kwargs.pop("decoder", "")
         defaults.update(**kwargs)
         for lngcode, _ in self.locales:
             defaults["label"] = "%s (%s)" % (defaults.get("label"), lngcode)
