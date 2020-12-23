@@ -36,7 +36,7 @@ sentry-sdk = "0.19.5"
 boto3 = "^1.10"
 pycountry = "^19.8"
 countries = "^0.2.0"
-django-ses = "^0.8.13"
+django-ses = "^1.0.3"
 hashids = "^1.2.0"
 django-admin-views = {git = "https://github.com/estyxx/django-admin-views.git"}
 django-autocomplete-light = "3.5.1"
