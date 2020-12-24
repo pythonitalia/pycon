@@ -1021,18 +1021,18 @@ pytest = ">=2.2"
 
 [[package]]
 name = "pytest-cov"
-version = "2.8.1"
+version = "2.10.1"
 description = "Pytest plugin for measuring coverage."
 category = "dev"
 optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
 [package.dependencies]
 coverage = ">=4.4"
-pytest = ">=3.6"
+pytest = ">=4.6"
 
 [package.extras]
-testing = ["fields", "hunter", "process-tests (==2.0.2)", "six", "virtualenv"]
+testing = ["fields", "hunter", "process-tests (==2.0.2)", "six", "pytest-xdist", "virtualenv"]
 
 [[package]]
 name = "pytest-django"
@@ -1451,7 +1451,7 @@ testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "f1e3ff5282d82f104b1932eac33c7075d21ca93096e1412449964a33773aa6c4"
+content-hash = "3035345d9f2c896def1bb0ee4860439718bb4263ce380103f4e9c49c5a8da4a9"
 
 [metadata.files]
 amqp = [
@@ -2018,8 +2018,8 @@ pytest-cache = [
     {file = "pytest-cache-1.0.tar.gz", hash = "sha256:be7468edd4d3d83f1e844959fd6e3fd28e77a481440a7118d430130ea31b07a9"},
 ]
 pytest-cov = [
-    {file = "pytest-cov-2.8.1.tar.gz", hash = "sha256:cc6742d8bac45070217169f5f72ceee1e0e55b0221f54bcf24845972d3a47f2b"},
-    {file = "pytest_cov-2.8.1-py2.py3-none-any.whl", hash = "sha256:cdbdef4f870408ebdbfeb44e63e07eb18bb4619fae852f6e760645fa36172626"},
+    {file = "pytest-cov-2.10.1.tar.gz", hash = "sha256:47bd0ce14056fdd79f93e1713f88fad7bdcc583dcd7783da86ef2f085a0bb88e"},
+    {file = "pytest_cov-2.10.1-py2.py3-none-any.whl", hash = "sha256:45ec2d5182f89a81fc3eb29e3d1ed3113b9e9a873bcddb2a71faaab066110191"},
 ]
 pytest-django = [
     {file = "pytest-django-3.7.0.tar.gz", hash = "sha256:17592f06d51c2ef4b7a0fb24aa32c8b6998506a03c8439606cb96db160106659"},
