@@ -121,20 +121,20 @@ six = "*"
 
 [[package]]
 name = "boto3"
-version = "1.16.42"
+version = "1.16.43"
 description = "The AWS SDK for Python"
 category = "main"
 optional = false
 python-versions = "*"
 
 [package.dependencies]
-botocore = ">=1.19.42,<1.20.0"
+botocore = ">=1.19.43,<1.20.0"
 jmespath = ">=0.7.1,<1.0.0"
 s3transfer = ">=0.3.0,<0.4.0"
 
 [[package]]
 name = "botocore"
-version = "1.19.42"
+version = "1.19.43"
 description = "Low-level, data-driven core of boto 3."
 category = "main"
 optional = false
@@ -1451,7 +1451,7 @@ testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "50cce76af9c280cffbfaccad0549e82423187db70af71050af075af6da1ba77d"
+content-hash = "f1e3ff5282d82f104b1932eac33c7075d21ca93096e1412449964a33773aa6c4"
 
 [metadata.files]
 amqp = [
@@ -1500,12 +1500,12 @@ blessings = [
     {file = "blessings-1.7.tar.gz", hash = "sha256:98e5854d805f50a5b58ac2333411b0482516a8210f23f43308baeb58d77c157d"},
 ]
 boto3 = [
-    {file = "boto3-1.16.42-py2.py3-none-any.whl", hash = "sha256:d6da24ad4427b1bd6ecf0229bd06f882f53d6138f6a820a4bc4200408b642d05"},
-    {file = "boto3-1.16.42.tar.gz", hash = "sha256:928e73f51f71469a1b0cead1fbb37f304457ec54400833c02c0c328e64581fea"},
+    {file = "boto3-1.16.43-py2.py3-none-any.whl", hash = "sha256:0bb2c3159b9f5e0df50430bf06a155bd7f27f480825b6374dde807d42360a668"},
+    {file = "boto3-1.16.43.tar.gz", hash = "sha256:a49b3ab4bfa2f6394ba60165cfc468410797dd410f32eed47e22f61451ee986e"},
 ]
 botocore = [
-    {file = "botocore-1.19.42-py2.py3-none-any.whl", hash = "sha256:5261404957e4db40fa6aa04aaf440ec4029a8690e0892e7bd6c451ec4719c156"},
-    {file = "botocore-1.19.42.tar.gz", hash = "sha256:f0b071fd08f4d72d7ba2c547da529abebe052705c1595be6d12a2151a75a6029"},
+    {file = "botocore-1.19.43-py2.py3-none-any.whl", hash = "sha256:795a67338cadb0c3a45014a6c81659da6af623a4e973812f87a6f9d9fb7712e9"},
+    {file = "botocore-1.19.43.tar.gz", hash = "sha256:7398c900dbd4e3d61647269215396ea3e8082f494f3e7b65d9b6aca049c1d463"},
 ]
 bpython = [
     {file = "bpython-0.18-py2.py3-none-any.whl", hash = "sha256:c7c6de7309311fd607d6cb47ef7e2d6e065d0a299199d51220d57732850a3efa"},
