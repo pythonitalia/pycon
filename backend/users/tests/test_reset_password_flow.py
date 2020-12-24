@@ -57,7 +57,12 @@ def _reset_password(graphql_client, token, userid, password):
 
 @override_settings(FRONTEND_URL="http://test.it")
 @mark.django_db
-def test_request_reset_password_email_for_a_existing_user(user_factory, graphql_client):
+def test_request_reset_password_email_for_a_existing_user(
+    user_factory, graphql_client, mocker
+):
+    m_token = mocker.patch("api.users.forms.default_token_generator")
+    m_token.make_token.return_value = "token"
+
     user = user_factory()
     response = _request_password_reset(graphql_client, user.email)
 
@@ -69,12 +74,11 @@ def test_request_reset_password_email_for_a_existing_user(user_factory, graphql_
     email = mail.outbox[0]
     html_body = email.alternatives[0][0]
 
-    token = default_token_generator.make_token(user)
     userid = urlsafe_b64encode(bytes(str(user.id), "utf-8")).decode("utf-8")
 
     assert email.to == [user.email]
-    assert f"http://test.it/en/reset-password/{userid}/{token}" in email.body
-    assert f"http://test.it/en/reset-password/{userid}/{token}" in html_body
+    assert f"http://test.it/en/reset-password/{userid}/token" in email.body
+    assert f"http://test.it/en/reset-password/{userid}/token" in html_body
 
 
 @mark.django_db
