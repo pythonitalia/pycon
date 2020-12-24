@@ -66,21 +66,3 @@ jobs:
           DATABASE_URL: postgresql://postgres:postgres@localhost:${{ job.services.postgres.ports['5432'] }}/postgres
           STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-
-  integration-tests:
-    runs-on: ubuntu-20.04
-
-    steps:
-      - uses: actions/checkout@master
-      - uses: actions/setup-python@v2
-        with:
-          python-version: "3.7.9"
-      - run: pip install poetry
-      - name: Install dependencies
-        working-directory: backend
-        run: poetry install
-      - name: pytest
-        working-directory: backend
-        run: poetry run pytest --integration
-        env:
-          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
