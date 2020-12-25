@@ -10,7 +10,7 @@ from voting.models import RankRequest, RankSubmission
 
 
 @register
-class RankRequestFactory(factory.DjangoModelFactory):
+class RankRequestFactory(factory.django.DjangoModelFactory):
 
     conference = factory.SubFactory(ConferenceFactory)
     created = factory.Faker("past_datetime", tzinfo=pytz.UTC)
@@ -30,7 +30,7 @@ class RankRequestFactory(factory.DjangoModelFactory):
 
 
 @register
-class RankSubmissionFactory(factory.DjangoModelFactory):
+class RankSubmissionFactory(factory.django.DjangoModelFactory):
 
     rank_request = factory.SubFactory(RankRequestFactory)
     submission = factory.SubFactory(SubmissionFactory)
