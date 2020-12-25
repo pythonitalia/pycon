@@ -1,8 +1,10 @@
 import { ApolloLink, HttpLink } from "@apollo/client";
 import { InMemoryCache } from "@apollo/client/cache";
-import { ApolloClient } from "@apollo/client/core";
+import { ApolloClient, Operation } from "@apollo/client/core";
 import { onError } from "@apollo/client/link/error";
-import { GraphQLError } from "graphql";
+import * as Sentry from "@sentry/node";
+import { DefinitionNode, GraphQLError } from "graphql";
+import { print } from "graphql/language/printer";
 import fetch from "isomorphic-fetch";
 
 import { setLoginState } from "../app/profile/hooks";
@@ -40,7 +42,34 @@ const httpLink = new HttpLink({
   fetch,
 });
 
-const link = ApolloLink.from([errorLink, httpLink]);
+type ApolloQueryDefinition = DefinitionNode & {
+  operation?: string;
+};
+
+export const getQueryType = (operation: Operation): string | undefined => {
+  const definitions = operation.query.definitions as ApolloQueryDefinition[];
+  const queryType = definitions.find((definition) =>
+    Boolean(definition.operation),
+  )?.operation;
+  return queryType;
+};
+
+const sentryLink = new ApolloLink((operation, forward) => {
+  Sentry.addBreadcrumb({
+    category: "graphql",
+    data: {
+      type: getQueryType(operation),
+      name: operation.operationName,
+      query: print(operation.query),
+      variables: operation.variables,
+    },
+    level: Sentry.Severity.Debug,
+  });
+
+  return forward(operation);
+});
+
+const link = ApolloLink.from([sentryLink, errorLink, httpLink]);
 
 export const getApolloClient = ({ initialState }: any) =>
   new ApolloClient({
