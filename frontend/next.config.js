@@ -24,6 +24,10 @@ module.exports = withSourceMaps({
     conferenceCode: CONFERENCE_CODE || "pycon-demo",
     SENTRY_DSN: SENTRY_DSN || null,
   },
+  i18n: {
+    locales: ["en", "it"],
+    defaultLocale: "en",
+  },
   images: {
     domains: ["production-pycon-backend-media.s3.amazonaws.com"],
   },
