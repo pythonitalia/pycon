@@ -6,8 +6,8 @@ from i18n.strings import LazyI18nString
 class LanguageFactory(factory.Faker):
     def generate(self, extra_kwargs=None):
         kwargs = {}
-        kwargs.update(self.provider_kwargs)
         kwargs.update(extra_kwargs or {})
+        kwargs.pop("locale")
 
         locale_to_faker = {"en": "en_US", "it": "it_IT"}
 
