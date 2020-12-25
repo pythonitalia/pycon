@@ -9,6 +9,7 @@ resource "aws_lambda_function" "backend_lambda" {
   package_type  = "Image"
   timeout       = 30
   depends_on    = [aws_iam_role_policy.backend_lambda]
+  memory_size   = 512
 
   environment {
     variables = {
