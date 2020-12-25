@@ -3,7 +3,8 @@
 import { ApolloProvider } from "@apollo/client";
 import { ApolloClient } from "@apollo/client/core";
 import { getDataFromTree } from "@apollo/client/react/ssr";
-import * as Sentry from "@sentry/browser";
+import * as Sentry from "@sentry/node";
+import { Integrations as TracingIntegrations } from "@sentry/tracing";
 import withApollo from "next-with-apollo";
 import App, { AppContext } from "next/app";
 import { createIntl, createIntlCache, RawIntlProvider } from "react-intl";
@@ -22,6 +23,8 @@ const intlCache = createIntlCache();
 
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
+  integrations: [new TracingIntegrations.BrowserTracing()],
+  tracesSampleRate: 0.2,
 });
 
 const isSocial = (path: string) => path.endsWith("/social");
@@ -30,6 +33,7 @@ class MyApp extends App<{
   apollo: ApolloClient<any>;
   host: string;
   path: string;
+  err: any;
 }> {
   componentDidCatch(error: any, errorInfo: any) {
     Sentry.withScope((scope) => {
@@ -56,7 +60,15 @@ class MyApp extends App<{
   }
 
   render() {
-    const { Component, pageProps, apollo, router, host, path } = this.props;
+    const {
+      Component,
+      pageProps,
+      apollo,
+      router,
+      host,
+      path,
+      err,
+    } = this.props;
     const locale = (router.query.lang as "en" | "it") ?? "en";
 
     const intl = createIntl(
@@ -87,7 +99,7 @@ class MyApp extends App<{
 
                     <Box sx={{ mt: [100, 130] }}>
                       <ErrorBoundary>
-                        <Component {...pageProps} />
+                        <Component {...pageProps} err={err} />
                       </ErrorBoundary>
                     </Box>
 
