@@ -1,6 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import * as Sentry from "@sentry/browser";
+import * as Sentry from "@sentry/node";
 import { Component } from "react";
 import { Box, Heading, jsx, Text } from "theme-ui";
 
@@ -19,8 +19,6 @@ export class ErrorBoundary extends Component<
   constructor(props: Readonly<{}>) {
     super(props);
     this.state = { error: null, errorInfo: null, eventId: null };
-
-    Sentry.init({ dsn: process.env.SENTRY_DSN });
   }
 
   componentDidCatch(error: any, errorInfo: any) {
