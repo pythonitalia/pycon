@@ -19,7 +19,7 @@ resource "aws_cloudfront_distribution" "pretix_distribution" {
   wait_for_deployment = false
 
   viewer_certificate {
-    cloudfront_default_certificate = true
+    cloudfront_default_certificate = false
     acm_certificate_arn            = var.ssl_certificate
     minimum_protocol_version       = "TLSv1"
     ssl_support_method             = "sni-only"
