@@ -64,7 +64,7 @@ pdbpp = "^0.10.2"
 flake8 = "^3.7"
 black = {version = "^19.10b0",allow-prereleases = true}
 requests-mock = "^1.7"
-pytest-mock = "^1.13"
+pytest-mock = "^3.4"
 freezegun = "^0.3.12"
 pytest-cache = "^1.0"
 bpython = "^0.18"
