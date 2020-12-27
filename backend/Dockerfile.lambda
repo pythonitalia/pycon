@@ -1,6 +1,6 @@
 ARG FUNCTION_DIR="/home/app/"
 
-FROM python:3.7-alpine as build-stage
+FROM python:3.9-alpine as build-stage
 
 ARG FUNCTION_DIR
 
