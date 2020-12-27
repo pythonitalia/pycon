@@ -1,11 +1,11 @@
-name: Backend tests
+name: PyCon Backend tests
 
 on:
   pull_request:
     paths:
-      - "backend/**/*"
-      - "backend/*"
-      - ".github/workflows/backend-test.yml"
+      - "pycon-backend/**/*"
+      - "pycon-backend/*"
+      - ".github/workflows/pycon-backend-test.yml"
 
 jobs:
   unit-tests:
@@ -45,15 +45,15 @@ jobs:
           poetry config virtualenvs.path ~/.virtualenvs
 
       - name: Install python dependencies
-        working-directory: backend
+        working-directory: pycon-backend
         run: poetry install
         if: steps.cache.outputs.cache-hit != 'true'
 
       - name: Install codecov
-        working-directory: backend
+        working-directory: pycon-backend
         run: pip install codecov
       - name: pytest
-        working-directory: backend
+        working-directory: pycon-backend
         run: |
           set +e
           OUTPUT=$(poetry run pytest --cov-report xml --cov=. --cov-fail-under 99)

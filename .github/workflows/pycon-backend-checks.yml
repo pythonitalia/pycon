@@ -1,11 +1,11 @@
-name: Backend checks
+name: PyCon Backend checks
 
 on:
   pull_request:
     paths:
-      - "backend/**/*"
-      - "backend/*"
-      - ".github/workflows/backend-checks.yml"
+      - "pycon-backend/**/*"
+      - "pycon-backend/*"
+      - ".github/workflows/pycon-backend-checks.yml"
 
 jobs:
   check-migrations:
@@ -32,12 +32,12 @@ jobs:
           poetry config virtualenvs.path ~/.virtualenvs
 
       - name: Install python dependencies
-        working-directory: backend
+        working-directory: pycon-backend
         run: poetry install
         if: steps.cache.outputs.cache-hit != 'true'
 
       - name: Check missing not pushed migrations
-        working-directory: backend
+        working-directory: pycon-backend
         run: poetry run python manage.py makemigrations --check
         env:
           DJANGO_SETTINGS_MODULE: pycon.settings.dev

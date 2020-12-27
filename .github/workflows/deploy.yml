@@ -31,8 +31,8 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
-          context: ./backend
-          file: ./backend/Dockerfile.lambda
+          context: ./pycon-backend
+          file: ./pycon-backend/Dockerfile.lambda
           builder: ${{ steps.buildx.outputs.name }}
           push: true
           tags: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/production-pycon-backend:latest

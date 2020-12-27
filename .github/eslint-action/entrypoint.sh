@@ -1,6 +1,6 @@
 #!/bin/sh -l
 
-cd frontend
+cd pycon-frontend
 
 yarn install
 

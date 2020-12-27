@@ -27,7 +27,7 @@ repos:
       rev: v2.1.2
       hooks:
           - id: prettier
-            files: 'frontend/.*\.(js|jsx|ts|tsx|graphql)$'
+            files: 'pycon-frontend/.*\.(js|jsx|ts|tsx|graphql)$'
     - repo: https://github.com/pre-commit/pre-commit-hooks
       rev: v2.2.3
       hooks:
@@ -41,6 +41,6 @@ repos:
           - id: eslint
             name: eslint
             types: [file]
-            files: 'frontend/.*\.(js|jsx|ts|tsx)$'
-            entry: bash -c 'cd frontend && yarn precommit-lint "$@"'
+            files: 'pycon-frontend/.*\.(js|jsx|ts|tsx)$'
+            entry: bash -c 'cd pycon-frontend && yarn precommit-lint "$@"'
             language: system

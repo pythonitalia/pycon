@@ -99,7 +99,7 @@ ENV/
 # Ignore pycharm configuration
 .idea/
 
-backend/media/
+pycon-backend/media/
 
 node_modules/
 

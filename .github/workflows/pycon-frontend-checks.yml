@@ -1,13 +1,13 @@
-name: Frontend
+name: PyCon Frontend checks
 
 on:
   pull_request:
     paths:
-      - "backend/**/*"
-      - "backend/*"
-      - "frontend/**/*"
-      - "frontend/*"
-      - ".github/workflows/frontend.yml"
+      - "pycon-backend/**/*"
+      - "pycon-backend/*"
+      - "pycon-frontend/**/*"
+      - "pycon-frontend/*"
+      - ".github/workflows/pycon-frontend-checks.yml"
 
 jobs:
   eslint:
@@ -58,7 +58,7 @@ jobs:
           poetry config virtualenvs.path ~/.virtualenvs
 
       - name: Install python dependencies
-        working-directory: backend
+        working-directory: pycon-backend
         run: poetry install
         if: steps.cache.outputs.cache-hit != 'true'
 
@@ -72,16 +72,16 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
       - run: yarn
-        working-directory: frontend
+        working-directory: pycon-frontend
       - run: |
-          cd backend/
+          cd pycon-backend/
           poetry run python manage.py migrate
           poetry run python manage.py loaddata \
               demodata/*.json
           cp -r demodata/media media
           poetry run python manage.py runserver &
 
-          cd ../frontend/
+          cd ../pycon-frontend/
 
           bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8000/admin/login/)" != "200" ]]; do sleep 5; done'
           yarn codegen
@@ -96,4 +96,4 @@ jobs:
           SLACK_INCOMING_WEBHOOK_URL: ${{ secrets.TF_VAR_slack_incoming_webhook_url }}
           DATABASE_URL: postgresql://postgres:postgres@localhost:${{ job.services.postgres.ports['5432'] }}/postgres
       - run: yarn tsc
-        working-directory: frontend
+        working-directory: pycon-frontend
