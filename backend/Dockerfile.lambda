@@ -1,6 +1,6 @@
 ARG FUNCTION_DIR="/home/app/"
 
-FROM python:3.7-alpine as build-stage
+FROM python:3.9-alpine as build-stage
 
 ARG FUNCTION_DIR
 
@@ -32,13 +32,13 @@ RUN pip3 install awslambdaric
 RUN poetry config virtualenvs.create false
 RUN poetry install --no-dev
 
-FROM python:3.7-alpine
+FROM python:3.9-alpine
 
 ARG FUNCTION_DIR
 
 WORKDIR ${FUNCTION_DIR}
 
-COPY --from=build-stage /usr/local/lib/python3.7/site-packages /usr/local/lib/python3.7/site-packages
+COPY --from=build-stage /usr/local/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages
 
 COPY --from=build-stage /usr/local/lib/*.so* /usr/local/lib/
 COPY --from=build-stage /usr/lib/libpq.so.5 \
