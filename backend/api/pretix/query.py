@@ -2,42 +2,13 @@ from typing import List, Optional
 
 import pretix
 import pretix.db
-from pretix.db import get_user_tickets as pretix_get_user_tickets
-
-from pretix.db import (
-    get_user_tickets as pretix_get_user_tickets,
-    get_user_ticket as pretix_get_user_ticket,
-)
-
 from conferences.models.conference import Conference
 
-from .types import (
-    Option,
-    PretixOrder,
-    ProductVariation,
-    Question,
-    TicketItem,
-    UserTicket,
-    Voucher,
-)
+from .types import Option, PretixOrder, ProductVariation, Question, TicketItem, Voucher
 
 
 def get_voucher(conference: Conference, code: str) -> Optional[Voucher]:
     return pretix.db.get_voucher(conference.pretix_event_id, code)
-
-
-def get_user_ticket(
-    position_id: str, conference: Conference, user_email: str, language: str
-):
-    ticket = pretix_get_user_ticket(position_id, user_email, conference.pretix_event_id)
-    return UserTicket.from_data(ticket, language) if ticket else None
-
-
-def get_user_tickets(
-    conference: Conference, user_email: str, language: str
-) -> List[UserTicket]:
-    tickets = pretix_get_user_tickets(user_email, conference.pretix_event_id)
-    return [UserTicket.from_data(ticket, language) for ticket in tickets]
 
 
 def get_order(conference: Conference, code: str) -> Optional[PretixOrder]:

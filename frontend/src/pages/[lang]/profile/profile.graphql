@@ -1,4 +1,4 @@
-query MyProfile($conference: String!, $language: String!) {
+query MyProfile($conference: String!) {
   me {
     id
     name
@@ -21,19 +21,6 @@ query MyProfile($conference: String!, $language: String!) {
       status
       url
       total
-    }
-
-    tickets(conference: $conference, language: $language) {
-      itemId
-      id
-      ticketName
-      attendeeName
-      attendeeEmail
-      answers {
-        id
-        questionId
-        answer
-      }
     }
   }
 }

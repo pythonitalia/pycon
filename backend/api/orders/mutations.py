@@ -2,24 +2,14 @@ import typing
 from urllib.parse import urljoin
 
 import strawberry
-from api.helpers.ids import decode_hashid
 from api.permissions import IsAuthenticated
 from conferences.models.conference import Conference
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from hotels.models import HotelRoom, HotelRoomReservation
-from pretix import (
-    CreateOrderHotelRoom,
-    CreateOrderInput,
-    Order,
-    create_order,
-    UpdateTicketInput,
-)
-from api.pretix.types import UserTicket
-from pretix.db import user_owns_order_position, update_ticket
+from pretix import CreateOrderHotelRoom, CreateOrderInput, Order, create_order
 from pretix.exceptions import PretixError
 from users.models import User
-from django.core.validators import validate_email, ValidationError
 
 
 @strawberry.type
@@ -34,33 +24,6 @@ class Error:
 
 @strawberry.type
 class OrdersMutations:
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
-    def update_ticket(
-        self, info, conference: str, id: strawberry.ID, input: UpdateTicketInput
-    ) -> typing.Union[Error, UserTicket]:
-        conference_obj = Conference.objects.get(code=conference)
-        position_id = decode_hashid(id)
-        user = info.context["request"].user
-
-        if not user_owns_order_position(position_id, user.email):
-            return Error(message=_("Invalid position ID"))
-
-        if not input.attendee_name:
-            return Error(message=_("Name cannot be blank"))
-
-        try:
-            validate_email(input.attendee_email)
-        except ValidationError as e:
-            return Error(message=e.message)
-
-        # try:
-        update_ticket(conference_obj, position_id, input)
-        # except:
-        #     # todo: waaaaaaaaaaaa
-        #     pass
-
-        return False
-
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     def create_order(
         self, info, conference: str, input: CreateOrderInput
