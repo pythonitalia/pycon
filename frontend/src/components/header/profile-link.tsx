@@ -3,7 +3,7 @@
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
-import { useLoginState } from "~/app/profile/hooks";
+import { useLoginState } from "~/components/profile/hooks";
 
 import { Link } from "../link";
 

@@ -7,7 +7,7 @@ import { DefinitionNode, GraphQLError } from "graphql";
 import { print } from "graphql/language/printer";
 import fetch from "isomorphic-fetch";
 
-import { setLoginState } from "../app/profile/hooks";
+import { setLoginState } from "../components/profile/hooks";
 import introspectionQueryResultData from "../generated/fragment-types.json";
 
 const isUserLoggedOut = (graphErrors: readonly GraphQLError[]) =>

@@ -7,7 +7,7 @@ import { FormattedMessage } from "react-intl";
 import { Box, Flex, Grid, Heading, jsx } from "theme-ui";
 import useOnClickOutside from "use-onclickoutside";
 
-import { useLoginState } from "~/app/profile/hooks";
+import { useLoginState } from "~/components/profile/hooks";
 import { useToggle } from "~/helpers/use-toggle";
 import { useAlternateLinks, useCurrentLanguage } from "~/locale/context";
 import { useHeaderQuery } from "~/types";

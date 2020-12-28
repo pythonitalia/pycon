@@ -5,10 +5,10 @@ import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 import { Container, jsx } from "theme-ui";
 
-import { useLoginState } from "~/app/profile/hooks";
 import { Alert } from "~/components/alert";
 import { LoginForm } from "~/components/login-form";
 import { MetaTags } from "~/components/meta-tags";
+import { useLoginState } from "~/components/profile/hooks";
 import { Submission } from "~/components/submission";
 import {
   SubmissionQuery,

@@ -6,7 +6,7 @@ import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import { Box, Grid, Input, jsx, Text } from "theme-ui";
 
-import { useLoginState } from "~/app/profile/hooks";
+import { useLoginState } from "~/components/profile/hooks";
 import { useMessages } from "~/helpers/use-messages";
 import { useCurrentLanguage } from "~/locale/context";
 import { LoginMutation, useLoginMutation } from "~/types";

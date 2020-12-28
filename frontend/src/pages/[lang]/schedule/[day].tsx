@@ -7,9 +7,9 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import { FormattedMessage } from "react-intl";
 import { Box, jsx } from "theme-ui";
 
-import { useLoginState } from "~/app/profile/hooks";
 import { formatDay } from "~/components/day-selector/format-day";
 import { MetaTags } from "~/components/meta-tags";
+import { useLoginState } from "~/components/profile/hooks";
 import { ScheduleView } from "~/components/schedule-view";
 import { useCurrentUser } from "~/helpers/use-current-user";
 import { useCurrentLanguage } from "~/locale/context";

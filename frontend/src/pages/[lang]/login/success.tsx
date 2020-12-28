@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, jsx } from "theme-ui";
 
-import { useLoginState } from "~/app/profile/hooks";
+import { useLoginState } from "~/components/profile/hooks";
 import { useMessages } from "~/helpers/use-messages";
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
 import { useCurrentLanguage } from "~/locale/context";

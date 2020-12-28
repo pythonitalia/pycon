@@ -27,6 +27,38 @@ def get_user_orders(conference, email):
     return [PretixOrder.from_data(order) for order in orders["results"]]
 
 
+# TODO: we should probably use a category for this
+def _is_hotel(item: dict):
+    return item.get("default_price") == "0.00"
+
+
+def _create_ticket_type_from_api(item, id, questions, language):
+    return TicketItem(
+        id=id,
+        name=item["name"].get("language", item["name"]["en"]),
+        description=(
+            item["description"].get(language, item["description"]["en"])
+            if item["description"]
+            else None
+        ),
+        variations=[
+            ProductVariation(
+                id=variation["id"],
+                value=variation["value"].get(language, variation["value"]["en"]),
+                description=variation["description"].get(language, ""),
+                active=variation["active"],
+                default_price=variation["default_price"],
+            )
+            for variation in item.get("variations", [])
+        ],
+        active=item["active"],
+        default_price=item["default_price"],
+        available_from=item["available_from"],
+        available_until=item["available_until"],
+        questions=get_questions_for_ticket(item, questions, language),
+    )
+
+
 def get_questions_for_ticket(item, questions, language):
     return [
         Question(
@@ -50,38 +82,9 @@ def get_conference_tickets(conference: Conference, language: str) -> List[Ticket
     items = pretix.get_items(conference)
     questions = pretix.get_questions(conference).values()
 
-    # TODO: we should probably use a category for this
-    def _is_hotel(item: dict):
-        return item.get("default_price") == "0.00"
-
     return sorted(
         [
-            TicketItem(
-                id=id,
-                name=item["name"].get("language", item["name"]["en"]),
-                description=(
-                    item["description"].get(language, item["description"]["en"])
-                    if item["description"]
-                    else None
-                ),
-                variations=[
-                    ProductVariation(
-                        id=variation["id"],
-                        value=variation["value"].get(
-                            language, variation["value"]["en"]
-                        ),
-                        description=variation["description"].get(language, ""),
-                        active=variation["active"],
-                        default_price=variation["default_price"],
-                    )
-                    for variation in item.get("variations", [])
-                ],
-                active=item["active"],
-                default_price=item["default_price"],
-                available_from=item["available_from"],
-                available_until=item["available_until"],
-                questions=get_questions_for_ticket(item, questions, language),
-            )
+            _create_ticket_type_from_api(item, id, questions, language)
             for id, item in items.items()
             if item["active"] and not _is_hotel(item)
         ],

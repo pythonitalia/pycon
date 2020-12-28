@@ -3,7 +3,7 @@
 import { useRouter } from "next/router";
 import { jsx } from "theme-ui";
 
-import { useLoginState } from "~/app/profile/hooks";
+import { useLoginState } from "~/components/profile/hooks";
 import { TicketsSection } from "~/components/tickets-page/tickets-section";
 import { useCart } from "~/components/tickets-page/use-cart";
 import { TicketsPageWrapper } from "~/components/tickets-page/wrapper";
