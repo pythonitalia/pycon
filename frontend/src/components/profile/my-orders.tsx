@@ -30,6 +30,7 @@ export const MyOrders: React.SFC<Props> = ({ orders }) => (
         <FormattedMessage id="profile.myOrders" />
       </Heading>
 
+      {/* @ts-ignore */}
       <Box cellSpacing={0} as="table" sx={{ width: "100%", fontSize: 2 }}>
         <tr>
           <Box
