@@ -23,6 +23,7 @@ export const Table = <T,>({
     sx={{
       width: "100%",
       fontSize: 2,
+      rowGap: [1, 0],
       gridTemplateColumns: [
         "repeat(1, minmax(0, 1fr))",
         `repeat(${headers.length}, minmax(0, 1fr))`,
@@ -56,7 +57,7 @@ export const Table = <T,>({
                 key={keyGetter(content)}
                 sx={{
                   borderTop: [null, "primary"],
-                  py: [0, 3],
+                  py: [0, 2],
                   pr: [0, 3],
                   wordBreak: "break-word",
                   [`&:nth-of-type(${headers.length}n)`]: {
