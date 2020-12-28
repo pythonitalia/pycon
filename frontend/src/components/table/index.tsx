@@ -20,10 +20,13 @@ export const Table = <T,>({
 }: Props<T>) => (
   <Grid
     gap={0}
-    columns={[1, headers.length]}
     sx={{
       width: "100%",
       fontSize: 2,
+      gridTemplateColumns: [
+        "repeat(1, minmax(0, 1fr))",
+        `repeat(${headers.length}, minmax(0, 1fr))`,
+      ],
     }}
   >
     {headers.map((header, index) => (
@@ -54,7 +57,7 @@ export const Table = <T,>({
                 sx={{
                   borderTop: [null, "primary"],
                   py: [0, 3],
-                  pr: [0, 2],
+                  pr: [0, 3],
                   wordBreak: "break-word",
                   [`&:nth-of-type(${headers.length}n)`]: {
                     pb: [3, 0],
