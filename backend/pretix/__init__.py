@@ -104,19 +104,6 @@ def get_questions(conference: Conference):
 
 
 @strawberry.input
-class UpdateTicketAnswerInput:
-    question_id: str
-    answer: str
-
-
-@strawberry.input
-class UpdateTicketInput:
-    attendee_name: str
-    attendee_email: str
-    answers: typing.List[UpdateTicketAnswerInput]
-
-
-@strawberry.input
 class CreateOrderTicketAnswer:
     question_id: str
     value: str
