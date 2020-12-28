@@ -46,11 +46,11 @@ export const Logout = () => {
         sx={{
           maxWidth: "container",
           mx: "auto",
-          my: 4,
+          my: 5,
           px: 3,
         }}
       >
-        <Heading mb={2} as="h2">
+        <Heading mb={2} as="h2" sx={{ fontSize: 5 }}>
           <FormattedMessage id="profile.logout" />
         </Heading>
         <Text mb={4}>

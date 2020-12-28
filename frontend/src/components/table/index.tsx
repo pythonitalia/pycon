@@ -57,7 +57,7 @@ export const Table = <T,>({
                 key={keyGetter(content)}
                 sx={{
                   borderTop: [null, "primary"],
-                  py: [0, 2],
+                  py: [0, 3],
                   pr: [0, 3],
                   wordBreak: "break-word",
                   [`&:nth-of-type(${headers.length}n)`]: {

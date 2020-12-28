@@ -30,11 +30,11 @@ export const MyOrders: React.FC<Props> = ({ orders }) => {
         sx={{
           maxWidth: "container",
           mx: "auto",
-          my: 4,
+          my: 5,
           px: 3,
         }}
       >
-        <Heading mb={4} as="h2" sx={{ fontSize: 5 }}>
+        <Heading mb={5} as="h2" sx={{ fontSize: 5 }}>
           <FormattedMessage id="profile.myOrders" />
         </Heading>
 

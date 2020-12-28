@@ -65,13 +65,13 @@ export const MyProfile: React.FC<{ profile: MyProfileQuery }> = ({
         sx={{
           maxWidth: "container",
           mx: "auto",
-          my: 4,
+          my: 5,
           px: 3,
           gridTemplateColumns: ["1fr", null, "2fr 1fr"],
         }}
       >
         <Box>
-          <Heading mb={4} as="h1">
+          <Heading mb={5} as="h1" sx={{ fontSize: 5 }}>
             <FormattedMessage id="profile.profileHeader" />
           </Heading>
 
@@ -85,8 +85,8 @@ export const MyProfile: React.FC<{ profile: MyProfileQuery }> = ({
               listStyle: "none",
               gridTemplateColumns: ["1fr", "1fr 1fr"],
               gridColumnGap: [5, 6],
-              gridRowGap: [3, 4],
-              my: [3, 4],
+              gridRowGap: [4, 4],
+              my: 4,
             }}
           >
             {profileView
@@ -112,7 +112,7 @@ export const MyProfile: React.FC<{ profile: MyProfileQuery }> = ({
 
           <InputWrapper
             sx={{
-              mb: [3, 4],
+              mb: 4,
             }}
             label={<FormattedMessage id="profile.openToNewsletter" />}
           >
