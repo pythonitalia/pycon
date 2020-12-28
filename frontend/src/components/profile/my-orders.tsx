@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { FormattedMessage } from "react-intl";
-import { Box, Flex, Heading, jsx, Text } from "theme-ui";
+import { Box, Heading, jsx } from "theme-ui";
 
 import { Table } from "~/components/table";
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
@@ -19,7 +19,6 @@ export const MyOrders: React.FC<Props> = ({ orders }) => {
   const orderIdHeader = useTranslatedMessage("profile.orderId");
   const statusHeader = useTranslatedMessage("profile.status");
   const priceHeader = useTranslatedMessage("profile.price");
-  const manageHeader = useTranslatedMessage("profile.manage");
 
   return (
     <Box
@@ -41,12 +40,7 @@ export const MyOrders: React.FC<Props> = ({ orders }) => {
 
         <Table
           headers={[orderIdHeader, statusHeader, priceHeader, ""]}
-          mobileHeaders={[
-            orderIdHeader,
-            statusHeader,
-            priceHeader,
-            manageHeader,
-          ]}
+          mobileHeaders={[orderIdHeader, statusHeader, priceHeader, ""]}
           data={orders}
           keyGetter={(item) => item.code}
           rowGetter={(item) => [

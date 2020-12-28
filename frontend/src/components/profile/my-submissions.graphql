@@ -4,6 +4,18 @@ query MySubmissions($conference: String!) {
     submissions(conference: $conference) {
       id
       title
+      topic {
+        id
+        name
+      }
+      audienceLevel {
+        id
+        name
+      }
+      type {
+        id
+        name
+      }
     }
   }
 }

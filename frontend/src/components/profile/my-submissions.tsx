@@ -6,18 +6,25 @@ import { Box, Heading, jsx } from "theme-ui";
 import { Alert } from "~/components/alert";
 import { Link } from "~/components/link";
 import { Table } from "~/components/table";
+import { useTranslatedMessage } from "~/helpers/use-translated-message";
 import { useMySubmissionsQuery } from "~/types";
 
 type Props = {
   className?: string;
 };
 
-export const MySubmissions: React.SFC<Props> = ({ className }) => {
+export const MySubmissions: React.FC<Props> = ({ className }) => {
   const { loading, error, data } = useMySubmissionsQuery({
     variables: {
       conference: process.env.conferenceCode,
     },
   });
+
+  const audienceLevelHeader = useTranslatedMessage("cfp.audienceLevelLabel");
+  const topicHeader = useTranslatedMessage("cfp.topicLabel");
+  const titleHeader = useTranslatedMessage("cfp.title");
+  const formatHeader = useTranslatedMessage("cfp.format");
+  const viewSubmissionHeader = useTranslatedMessage("cfp.viewSubmission");
 
   if (loading) {
     return null;
@@ -43,15 +50,33 @@ export const MySubmissions: React.SFC<Props> = ({ className }) => {
         {error && <Alert variant="alert">{error.message}</Alert>}
 
         {data && (
-          <Box as="ul" sx={{ px: 3 }}>
-            {data!.me.submissions.map((submission) => (
-              <li key={submission.id}>
-                <Link path={`/[lang]/submission/${submission.id}`}>
-                  {submission.title}
-                </Link>
-              </li>
-            ))}
-          </Box>
+          <Table
+            headers={[
+              titleHeader,
+              topicHeader,
+              audienceLevelHeader,
+              formatHeader,
+              "",
+            ]}
+            mobileHeaders={[
+              titleHeader,
+              topicHeader,
+              audienceLevelHeader,
+              formatHeader,
+              "",
+            ]}
+            data={data!.me.submissions}
+            keyGetter={(item) => item.id}
+            rowGetter={(item) => [
+              item.title,
+              item.topic.name,
+              item.audienceLevel.name,
+              item.type.name,
+              <Link key="openSubmission" path={`/[lang]/submission/${item.id}`}>
+                {viewSubmissionHeader}
+              </Link>,
+            ]}
+          />
         )}
       </Box>
     </Box>

@@ -46,7 +46,6 @@ export const messages = {
     "profile.status.paid": "Paid",
     "profile.status.expired": "Expired",
     "profile.status.canceled": "Canceled",
-    "profile.manage": "Manage",
     "profile.openToNewsletter":
       "I want to receive E-mail for main communications",
     "profile.openToRecruiting":
@@ -115,6 +114,7 @@ export const messages = {
     "cfp.learnMore": "Learn more",
     "cfp.youridea": "Your idea",
     "cfp.choosetype": "Choose a format",
+    "cfp.format": "Format",
     "cfp.talk": "Talk",
     "cfp.tutorial": "Tutorial",
     "cfp.title": "Title",
@@ -138,6 +138,7 @@ export const messages = {
     "cfp.languagesLabel": "Languages",
     "cfp.languagesDescription":
       "You can submit your talk in both English and Italian",
+    "cfp.viewSubmission": "Open submission",
     "cfp.tagsLabel": "Tags",
     "cfp.tagsDescription":
       "Tag your proposal to make it easier for event organizers to be able to find. Examples are 'Django, GraphQL, open-source'",
@@ -443,7 +444,6 @@ export const messages = {
     "profile.status.paid": "Pagato",
     "profile.status.expired": "Scaduto",
     "profile.status.canceled": "Cancellato",
-    "profile.manage": "Gestisci",
     "profile.openToNewsletter":
       "Desidero ricevere E-mail per le comunicazioni più importanti",
     "profile.openToRecruiting":
@@ -503,6 +503,8 @@ export const messages = {
     "cfp.introductionCopyHead": "Lorem ipsum",
     "cfp.youridea": "La tua idea",
     "cfp.choosetype": "Scegli una categoria",
+    "cfp.format": "Categoria",
+    "cfp.viewSubmission": "Apri proposta",
     "cfp.talk": "Talk",
     "cfp.tutorial": "Tutorial",
     "cfp.title": "Titolo",
