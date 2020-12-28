@@ -20,7 +20,6 @@ export const MySubmissions: React.FC<Props> = ({ className }) => {
     },
   });
 
-  const audienceLevelHeader = useTranslatedMessage("cfp.audienceLevelLabel");
   const topicHeader = useTranslatedMessage("cfp.topicLabel");
   const titleHeader = useTranslatedMessage("cfp.title");
   const formatHeader = useTranslatedMessage("cfp.format");
@@ -51,26 +50,13 @@ export const MySubmissions: React.FC<Props> = ({ className }) => {
 
         {data && (
           <Table
-            headers={[
-              titleHeader,
-              topicHeader,
-              audienceLevelHeader,
-              formatHeader,
-              "",
-            ]}
-            mobileHeaders={[
-              titleHeader,
-              topicHeader,
-              audienceLevelHeader,
-              formatHeader,
-              "",
-            ]}
+            headers={[titleHeader, topicHeader, formatHeader, ""]}
+            mobileHeaders={[titleHeader, topicHeader, formatHeader, ""]}
             data={data!.me.submissions}
             keyGetter={(item) => item.id}
             rowGetter={(item) => [
               item.title,
               item.topic.name,
-              item.audienceLevel.name,
               item.type.name,
               <Link key="openSubmission" path={`/[lang]/submission/${item.id}`}>
                 {viewSubmissionHeader}
