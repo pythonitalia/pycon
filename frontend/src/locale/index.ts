@@ -46,6 +46,7 @@ export const messages = {
     "profile.status.paid": "Paid",
     "profile.status.expired": "Expired",
     "profile.status.canceled": "Canceled",
+    "profile.manage": "Manage",
     "profile.openToNewsletter":
       "I want to receive E-mail for main communications",
     "profile.openToRecruiting":
@@ -442,6 +443,7 @@ export const messages = {
     "profile.status.paid": "Pagato",
     "profile.status.expired": "Scaduto",
     "profile.status.canceled": "Cancellato",
+    "profile.manage": "Gestisci",
     "profile.openToNewsletter":
       "Desidero ricevere E-mail per le comunicazioni più importanti",
     "profile.openToRecruiting":
