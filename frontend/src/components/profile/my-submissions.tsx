@@ -5,6 +5,7 @@ import { Box, Heading, jsx } from "theme-ui";
 
 import { Alert } from "~/components/alert";
 import { Link } from "~/components/link";
+import { Table } from "~/components/table";
 import { useMySubmissionsQuery } from "~/types";
 
 type Props = {

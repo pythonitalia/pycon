@@ -48,6 +48,7 @@ export const MyOrders: React.FC<Props> = ({ orders }) => {
             manageHeader,
           ]}
           data={orders}
+          keyGetter={(item) => item.code}
           rowGetter={(item) => [
             item.code,
             item.status,

@@ -3,19 +3,21 @@
 import React from "react";
 import { Box, jsx } from "theme-ui";
 
-type Props = {
+type Props<T> = {
   headers: string[];
   mobileHeaders: string[];
-  data: any[];
-  rowGetter: (item: any) => any[];
+  data: T[];
+  rowGetter: (item: T) => any[];
+  keyGetter: (item: T) => string;
 };
 
-export const Table: React.FC<Props> = ({
+export const Table = <T,>({
   headers,
   data,
   rowGetter,
+  keyGetter,
   mobileHeaders,
-}) => (
+}: Props<T>) => (
   /* @ts-ignore */
   <Box cellSpacing={0} as="table" sx={{ width: "100%", fontSize: 2 }}>
     <tr sx={{ display: ["none", "table-row"] }}>
@@ -52,7 +54,7 @@ export const Table: React.FC<Props> = ({
         >
           {row.map((content, index) => (
             <td
-              key={content}
+              key={keyGetter(content)}
               sx={{
                 borderTop: [null, "primary"],
                 py: [0, 3],
