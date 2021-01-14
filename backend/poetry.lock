@@ -1099,6 +1099,17 @@ python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,>=2.7"
 six = ">=1.5"
 
 [[package]]
+name = "python-multipart"
+version = "0.0.5"
+description = "A streaming multipart parser for Python"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+six = ">=1.4.0"
+
+[[package]]
 name = "python3-openid"
 version = "3.2.0"
 description = "OpenID support for modern servers and consumers."
@@ -1295,7 +1306,7 @@ full = ["aiofiles", "graphene", "itsdangerous", "jinja2", "python-multipart", "p
 
 [[package]]
 name = "strawberry-graphql"
-version = "0.44.2"
+version = "0.44.7"
 description = "A library for creating GraphQL APIs"
 category = "main"
 optional = false
@@ -1308,11 +1319,12 @@ graphql-core = ">=3.0.0,<4.0.0"
 hupper = ">=1.5,<2.0"
 pygments = ">=2.3,<3.0"
 python-dateutil = ">=2.7.0,<3.0.0"
+python-multipart = ">=0.0.5,<0.0.6"
 starlette = ">=0.13.6,<0.15.0"
 typing_extensions = ">=3.7.4,<4.0.0"
 
 [package.extras]
-debug-server = ["uvicorn (>=0.11.6,<0.13.0)"]
+debug-server = ["uvicorn (>=0.11.6,<0.14.0)"]
 django = ["django (>=2,<4)", "asgiref (>=3.2,<4.0)"]
 flask = ["flask (>=1.1,<2.0)"]
 opentelemetry = ["opentelemetry-api (>=0.13b0,<0.14)", "opentelemetry-sdk (>=0.13b0,<0.14)"]
@@ -1449,7 +1461,7 @@ testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "6a719a8944415bf7c82dc2f50f912048030528ec5e770c63846f9eca6f445b06"
+content-hash = "d5bcf052061c862c36fc89aec028f23a41d0b3745bcc5ff4b4fb21e03696d0df"
 
 [metadata.files]
 amqp = [
@@ -2040,6 +2052,9 @@ python-dateutil = [
     {file = "python-dateutil-2.8.1.tar.gz", hash = "sha256:73ebfe9dbf22e832286dafa60473e4cd239f8592f699aa5adaf10050e6e1823c"},
     {file = "python_dateutil-2.8.1-py2.py3-none-any.whl", hash = "sha256:75bb3f31ea686f1197762692a9ee6a7550b59fc6ca3a1f4b5d7e32fb98e2da2a"},
 ]
+python-multipart = [
+    {file = "python-multipart-0.0.5.tar.gz", hash = "sha256:f7bb5f611fc600d15fa47b3974c8aa16e93724513b49b5f95c81e6624c83fa43"},
+]
 python3-openid = [
     {file = "python3-openid-3.2.0.tar.gz", hash = "sha256:33fbf6928f401e0b790151ed2b5290b02545e8775f982485205a066f874aaeaf"},
     {file = "python3_openid-3.2.0-py3-none-any.whl", hash = "sha256:6626f771e0417486701e0b4daff762e7212e820ca5b29fcc0d05f6f8736dfa6b"},
@@ -2139,8 +2154,8 @@ starlette = [
     {file = "starlette-0.14.1.tar.gz", hash = "sha256:5268ef5d4904ec69582d5fd207b869a5aa0cd59529848ba4cf429b06e3ced99a"},
 ]
 strawberry-graphql = [
-    {file = "strawberry-graphql-0.44.2.tar.gz", hash = "sha256:5ec5d4cb3acc08e4cdf9fb98090b6f659abb084cd8ed99d90660be127960b3ed"},
-    {file = "strawberry_graphql-0.44.2-py3-none-any.whl", hash = "sha256:ac29eecd8e0b684a7addc259305320e4f37e18ffaf8688de83c466915ebd7c2b"},
+    {file = "strawberry-graphql-0.44.7.tar.gz", hash = "sha256:245de4f88c734c2178b146077d5b0e442f4d205b57dd1ea0b1f667ea312a2e02"},
+    {file = "strawberry_graphql-0.44.7-py3-none-any.whl", hash = "sha256:710e0e80de6c830994fe31969cb52f5b0d682dd67c90f68241b028599e230bcf"},
 ]
 text-unidecode = [
     {file = "text-unidecode-1.3.tar.gz", hash = "sha256:bad6603bb14d279193107714b288be206cac565dfa49aa5b105294dd5c4aab93"},
