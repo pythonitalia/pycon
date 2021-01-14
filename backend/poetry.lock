@@ -148,18 +148,19 @@ urllib3 = {version = ">=1.25.4,<1.27", markers = "python_version != \"3.4\""}
 
 [[package]]
 name = "bpython"
-version = "0.18"
+version = "0.20.1"
 description = "Fancy Interface to the Python Interpreter"
 category = "dev"
 optional = false
 python-versions = "*"
 
 [package.dependencies]
-curtsies = ">=0.1.18"
+curtsies = ">=0.3.0"
 greenlet = "*"
 pygments = "*"
 requests = "*"
 six = ">=1.5"
+wcwidth = "*"
 
 [package.extras]
 jedi = ["jedi"]
@@ -1461,7 +1462,7 @@ testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "d5bcf052061c862c36fc89aec028f23a41d0b3745bcc5ff4b4fb21e03696d0df"
+content-hash = "e8ba0c30bf59aee4467f310364eff6b6be273041ecb347866b62f40d7fecb774"
 
 [metadata.files]
 amqp = [
@@ -1517,8 +1518,8 @@ botocore = [
     {file = "botocore-1.19.43.tar.gz", hash = "sha256:7398c900dbd4e3d61647269215396ea3e8082f494f3e7b65d9b6aca049c1d463"},
 ]
 bpython = [
-    {file = "bpython-0.18-py2.py3-none-any.whl", hash = "sha256:c7c6de7309311fd607d6cb47ef7e2d6e065d0a299199d51220d57732850a3efa"},
-    {file = "bpython-0.18.tar.gz", hash = "sha256:56cc20dbe568c98c81de4990fddf5862c0d8d3ab0ad1cf7057988abc5f7686c2"},
+    {file = "bpython-0.20.1-py2.py3-none-any.whl", hash = "sha256:4eb55cb0b3e140f4ed548600d39c33acfee57b9117797a583b40ba56a8676772"},
+    {file = "bpython-0.20.1.tar.gz", hash = "sha256:6e7738806013b469be57b0117082b9c4557ed7c92c70ceb79f96d674d89c7503"},
 ]
 cached-property = [
     {file = "cached-property-1.5.2.tar.gz", hash = "sha256:9fa5755838eecbb2d234c3aa390bd80fbd3ac6b6869109bfc1b499f7bd89a130"},
