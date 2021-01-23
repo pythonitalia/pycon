@@ -42,6 +42,7 @@ resource "aws_db_instance" "backend" {
   availability_zone           = "eu-central-1a"
   skip_final_snapshot         = true
   publicly_accessible         = true
+  backup_retention_period     = 7
 
   db_subnet_group_name   = aws_db_subnet_group.backend_rds.name
   vpc_security_group_ids = [aws_security_group.backend_rds.id]
