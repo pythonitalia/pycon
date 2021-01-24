@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "users"
+version = "0.1.0"
+description = ""
+authors = ["Marco Acierno <marcoaciernoemail@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+starlette = "^0.14.1"
+uvicorn = "^0.13.3"
+strawberry-graphql = "^0.44.12"
+SQLAlchemy = "1.4.0b1"
+alembic = "^1.5.2"
+databases = {extras = ["postgresql"], version = "^0.4.1"}
+psycopg2 = "^2.8.6"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

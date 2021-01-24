@@ -4,6 +4,7 @@ aliases:
       exclude: >
           (?x)^(
             .+/migrations/.+|
+            .+/alembic/.+|
           )$
 
 repos:
