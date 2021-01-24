@@ -1,5 +1,7 @@
 import os
 import sys
+sys.path.insert(0, os.getcwd())
+
 from logging.config import fileConfig
 
 from alembic import context
@@ -11,8 +13,6 @@ from alembic import context
 from domain import entities
 from sqlalchemy import engine_from_config, pool
 
-sys.path.insert(0, os.getcwd())
-
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
@@ -22,7 +22,7 @@ config = context.config
 fileConfig(config.config_file_name)
 
 
-target_metadata = entities.User.__table__.metadata
+target_metadata = entities.mapper_registry.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
