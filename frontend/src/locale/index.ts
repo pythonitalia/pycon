@@ -474,7 +474,7 @@ export const messages = {
     "newsletter.text":
       "Rimani aggiornato, iscriviti per ricevere aggiornamenti via email su eventi, novità e offerte!",
     "newsletter.button": "Iscriviti 👉",
-    "newsletter.success": "🎉 Grazie per essert iscritto! 🎉",
+    "newsletter.success": "🎉 Grazie per esserti iscritto! 🎉",
     "signup.title": "Registrati",
     "signup.email": "Email",
     "signup.password": "Password",
@@ -487,7 +487,7 @@ export const messages = {
     "submission.socialCard.suffix": "a PyCon 11 🙌",
     "submission.comments": "Commenti",
     "submission.commentHead": "{author}, {when}:",
-    "submission.noComments": "Nessun comment",
+    "submission.noComments": "Nessun commento",
     "submission.addComment": "Aggiungi commento",
     "submission.sendComment": "Invia",
     "submission.pleaseWait": "Attendi",
