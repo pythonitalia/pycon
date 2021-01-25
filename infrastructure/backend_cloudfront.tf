@@ -14,7 +14,7 @@ resource "aws_cloudfront_distribution" "backend_distribution" {
   enabled             = true
   is_ipv6_enabled     = true
   comment             = "PyCon Backend ${terraform.workspace}"
-  aliases             = []
+  aliases             = ["admin.pycon.it"]
   wait_for_deployment = false
 
   viewer_certificate {
