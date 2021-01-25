@@ -202,3 +202,15 @@ resource "aws_route53_record" "www_pycon_it_cname" {
   records = ["pycon.it."]
   ttl     = "1"
 }
+
+resource "aws_route53_record" "admin" {
+  zone_id = aws_route53_zone.pyconit.id
+  name    = "admin"
+  type    = "CNAME"
+
+  alias {
+    name                   = aws_cloudfront_distribution.backend_distribution.domain_name
+    zone_id                = aws_cloudfront_distribution.backend_distribution.hosted_zone_id
+    evaluate_target_health = false
+  }
+}

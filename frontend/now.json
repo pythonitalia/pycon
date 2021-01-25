@@ -62,24 +62,18 @@
       "destination": "https://d2gn2ji624wbmi.cloudfront.net/graphql"
     },
     {
-      "source": "/admin",
-      "destination": "https://d2gn2ji624wbmi.cloudfront.net/admin/"
-    },
-    {
-      "source": "/admin/:match*",
-      "destination": "https://d2gn2ji624wbmi.cloudfront.net/admin/:match*/"
-    },
-    {
-      "source": "/django-static/:match*",
-      "destination": "https://d2gn2ji624wbmi.cloudfront.net/django-static/:match*"
-    },
-    {
       "source": "/login/google",
       "destination": "https://d2gn2ji624wbmi.cloudfront.net/login/google-oauth2/"
     },
     {
       "source": "/complete/google-oauth2",
       "destination": "https://d2gn2ji624wbmi.cloudfront.net/complete/google-oauth2/"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/admin/:match*",
+      "destination": "https://admin.pycon.it/admin/:match"
     }
   ]
 }
