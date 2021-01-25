@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import date, datetime
+from typing import Optional
 
 from sqlalchemy import Boolean, Column, Date, DateTime, Integer, String, Table, Text
 from sqlalchemy.orm import registry
@@ -11,8 +12,7 @@ mapper_registry = registry()
 
 @dataclass
 class User:
-    id: int
-    password: str = field(init=False)
+    password: str
     username: str
     email: str
     fullname: str
@@ -25,6 +25,8 @@ class User:
     date_joined: datetime
     is_active: bool
     is_staff: bool
+
+    id: Optional[int] = None
 
 
 user_table = Table(

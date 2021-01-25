@@ -10,7 +10,7 @@ from alembic import context
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-from domain import entities
+from domain.entities import *
 from sqlalchemy import engine_from_config, pool
 
 # this is the Alembic Config object, which provides
@@ -22,7 +22,7 @@ config = context.config
 fileConfig(config.config_file_name)
 
 
-target_metadata = entities.mapper_registry.metadata
+target_metadata = mapper_registry.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
