@@ -206,7 +206,7 @@ resource "aws_route53_record" "www_pycon_it_cname" {
 resource "aws_route53_record" "admin" {
   zone_id = aws_route53_zone.pyconit.id
   name    = "admin"
-  type    = "CNAME"
+  type    = "A"
 
   alias {
     name                   = aws_cloudfront_distribution.backend_distribution.domain_name
