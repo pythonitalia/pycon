@@ -1,13 +1,17 @@
 from api.views import GraphQL
+from auth.backend import JWTAuthBackend
+from settings import DATABASE_URL, DEBUG
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from starlette.applications import Starlette
-from starlette.config import Config
+from starlette.middleware import Middleware
+from starlette.middleware.authentication import AuthenticationMiddleware
 from starlette.routing import Route
 
-config = Config(".env")
-DATABASE_URL = config("DATABASE_URL")
-
-app = Starlette(debug=True, routes=[Route("/graphql", GraphQL())])
+app = Starlette(
+    debug=DEBUG,
+    routes=[Route("/graphql", GraphQL())],
+    middleware=[Middleware(AuthenticationMiddleware, backend=JWTAuthBackend())],
+)
 
 
 @app.middleware("http")

@@ -1,8 +1,5 @@
-makemigrations:
-	poetry run alembic revision --autogenerate
+run:
+	poetry run invoke $(filter-out $@,$(MAKECMDGOALS))
 
-migrate:
-	poetry run alembic upgrade head
-
-server:
-	poetry run uvicorn main:app --reload
+%: # thanks to chakrit
+	@: # thanks to William Pursell
