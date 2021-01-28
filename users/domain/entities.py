@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import date, datetime
 from typing import Optional
 
@@ -20,7 +20,7 @@ class User(BaseUser):
     fullname: str
     name: str
     gender: str
-    date_birth: date
+    date_birth: Optional[date]
     open_to_recruiting: bool
     open_to_newsletter: bool
     country: str
@@ -28,17 +28,23 @@ class User(BaseUser):
     is_active: bool
     is_staff: bool
     is_superuser: bool
-    last_login: Optional[datetime]
 
+    last_login: Optional[datetime] = None
     id: Optional[int] = None
-    hashed_password: Optional[str] = None
-    raw_password: Optional[str] = None
+    hashed_password: Optional[str] = field(default=None, repr=False)
+    new_password: Optional[str] = field(default=None, repr=False)
 
     def generate_token(self) -> str:
         return generate_token(self)
 
     def check_password(self, password: str) -> bool:
         return check_password(password, self.hashed_password)
+
+    def set_password(self, raw_password: str):
+        """
+        The password will be changed when the user is saved
+        """
+        self.new_password = raw_password
 
     @property
     def is_authenticated(self) -> bool:

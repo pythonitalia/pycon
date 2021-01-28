@@ -17,6 +17,7 @@ PyJWT = "^2.0.1"
 pydantic = "^1.7.3"
 email-validator = "^1.1.2"
 invoke = "^1.5.0"
+argon2-cffi = "^20.1.0"
 
 [tool.poetry.dev-dependencies]
 pdbpp = "^0.10.2"

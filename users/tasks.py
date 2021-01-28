@@ -14,3 +14,8 @@ def migrate(c):
 @task
 def server(c):
     c.run("uvicorn main:app --reload", pty=True)
+
+
+@task
+def tests(c):
+    c.run("RUNNING_TESTS=1 ward", pty=True)
