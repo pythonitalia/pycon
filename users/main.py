@@ -1,11 +1,11 @@
-from api.views import GraphQL
-from auth.backend import JWTAuthBackend
-from settings import DATABASE_URL, DEBUG
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from starlette.applications import Starlette
 from starlette.middleware import Middleware
 from starlette.middleware.authentication import AuthenticationMiddleware
 from starlette.routing import Route
+from users.api.views import GraphQL
+from users.auth.backend import JWTAuthBackend
+from users.settings import DATABASE_URL, DEBUG
 
 app = Starlette(
     debug=DEBUG,
