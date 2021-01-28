@@ -1,5 +1,6 @@
 import os
 import sys
+
 sys.path.insert(0, os.getcwd())
 
 from logging.config import fileConfig
@@ -10,7 +11,7 @@ from alembic import context
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-from domain.entities import *
+from users.domain.entities import *
 from sqlalchemy import engine_from_config, pool
 
 # this is the Alembic Config object, which provides
@@ -21,9 +22,9 @@ config = context.config
 # This line sets up loggers basically.
 fileConfig(config.config_file_name)
 
-from settings import DATABASE_URL
+from users.settings import DATABASE_URL
 
-config.set_main_option('sqlalchemy.url', DATABASE_URL.replace('asyncpg', 'psycopg2'))
+config.set_main_option("sqlalchemy.url", DATABASE_URL.replace("asyncpg", "psycopg2"))
 
 
 target_metadata = mapper_registry.metadata
