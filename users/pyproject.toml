@@ -22,6 +22,7 @@ argon2-cffi = "^20.1.0"
 [tool.poetry.dev-dependencies]
 pdbpp = "^0.10.2"
 ward = "^0.48.0-beta.0"
+requests = "^2.25.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
