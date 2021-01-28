@@ -8,6 +8,8 @@ import importlib
 import math
 import warnings
 
+from settings import PASSWORD_HASHERS
+
 from .crypto import (
     RANDOM_STRING_CHARS,
     constant_time_compare,
@@ -18,15 +20,8 @@ from .imports import import_string
 
 UNUSABLE_PASSWORD_PREFIX = "!"  # This will never be a valid encoded hash
 UNUSABLE_PASSWORD_SUFFIX_LENGTH = (
-    40
-)  # number of random chars to add after UNUSABLE_PASSWORD_PREFIX
-
-PASSWORD_HASHERS = [
-    "starlette_password.hashers.PBKDF2PasswordHasher",
-    "starlette_password.hashers.PBKDF2SHA1PasswordHasher",
-    "starlette_password.hashers.Argon2PasswordHasher",
-    "starlette_password.hashers.BCryptSHA256PasswordHasher",
-]
+    40  # number of random chars to add after UNUSABLE_PASSWORD_PREFIX
+)
 
 
 def is_password_usable(encoded):
