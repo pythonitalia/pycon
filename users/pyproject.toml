@@ -16,13 +16,19 @@ asyncpg = "^0.21.0"
 PyJWT = "^2.0.1"
 pydantic = "^1.7.3"
 email-validator = "^1.1.2"
-invoke = "^1.5.0"
 argon2-cffi = "^20.1.0"
 
 [tool.poetry.dev-dependencies]
 pdbpp = "^0.10.2"
 ward = "^0.48.0-beta.0"
 requests = "^2.25.1"
+taskipy = "^1.6.0"
+
+[tool.taskipy.tasks]
+server = "uvicorn main:app --reload"
+test = "RUNNING_TESTS=1 ward"
+migrate = "alembic upgrade head"
+makemigrations = "alembic revision --autogenerate -m"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
