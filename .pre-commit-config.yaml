@@ -8,11 +8,12 @@ aliases:
           )$
 
 repos:
-    - repo: https://github.com/pre-commit/mirrors-isort
-      rev: v4.3.21
+    - repo: https://github.com/pycqa/isort
+      rev: 5.6.3
       hooks:
-          - <<: *python_settings
-            id: isort
+        - <<: *python_settings
+          id: isort
+          name: isort (python)
     - repo: https://github.com/python/black
       rev: 19.3b0
       hooks:

@@ -1,11 +1,12 @@
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.applications import Starlette
 from starlette.middleware import Middleware
 from starlette.middleware.authentication import AuthenticationMiddleware
 from starlette.routing import Route
 from users.api.views import GraphQL
 from users.auth.backend import JWTAuthBackend
-from users.settings import DATABASE_URL, DEBUG
+from users.db import get_engine
+from users.settings import DEBUG
 
 app = Starlette(
     debug=DEBUG,
@@ -14,9 +15,13 @@ app = Starlette(
 )
 
 
+def get_session(request):
+    return AsyncSession(request.app.state.engine)
+
+
 @app.middleware("http")
 async def async_session_middleware(request, call_next):
-    async with AsyncSession(request.app.state.engine) as session:
+    async with get_session(request) as session:
         request.state.session = session
 
         try:
@@ -28,4 +33,4 @@ async def async_session_middleware(request, call_next):
 
 @app.on_event("startup")
 async def startup():
-    app.state.engine = create_async_engine(DATABASE_URL, echo=True)
+    app.state.engine = get_engine()
