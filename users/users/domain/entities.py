@@ -1,14 +1,15 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import InitVar, dataclass, field
 from datetime import date, datetime
 from typing import Optional
 
 from sqlalchemy import Boolean, Column, Date, DateTime, Integer, String, Table
 from sqlalchemy.orm import registry
 from starlette.authentication import BaseUser
+
 from users.auth.tokens import generate_token
-from users.starlette_password.hashers import check_password
+from users.starlette_password.hashers import check_password, make_password
 
 mapper_registry = registry()
 
@@ -33,6 +34,12 @@ class User(BaseUser):
     id: Optional[int] = None
     hashed_password: Optional[str] = field(default=None, repr=False)
     new_password: Optional[str] = field(default=None, repr=False)
+
+    password: InitVar[Optional[str]] = None
+
+    def __post_init__(self, password):
+        if password:
+            self.hashed_password = make_password(password)
 
     def generate_token(self) -> str:
         return generate_token(self)
