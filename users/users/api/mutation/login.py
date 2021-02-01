@@ -3,8 +3,9 @@ from __future__ import annotations
 import pydantic
 import strawberry
 
+from users.api.builder import create_validation_error_type
 from users.api.context import Info
-from users.api.types import PydanticError, User, ValidationError
+from users.api.types import PydanticError, User
 from users.domain import entities, services
 from users.domain.services import LoginInputModel
 from users.domain.services.exceptions import UsernameOrPasswordInvalidError
@@ -30,19 +31,18 @@ class UsernameAndPasswordCombinationWrong:
     message: str = "Invalid username/password combination"
 
 
-@strawberry.type(name="LoginErrors")
-class LoginValidationError:
+@strawberry.type
+class LoginErrors:
     email: PydanticError = None
     password: PydanticError = None
 
 
+LoginValidationError = create_validation_error_type("Login", LoginErrors)
+
+
 LoginResult = strawberry.union(
     "LoginResult",
-    (
-        LoginSuccess,
-        UsernameAndPasswordCombinationWrong,
-        ValidationError[LoginValidationError],
-    ),
+    (LoginSuccess, UsernameAndPasswordCombinationWrong, LoginValidationError),
 )
 
 
@@ -51,7 +51,7 @@ async def login(info: Info, input: LoginInput) -> LoginResult:
     try:
         input_model = input.to_pydantic()
     except pydantic.ValidationError as exc:
-        return ValidationError.from_validation_error(exc, LoginValidationError)
+        return LoginValidationError.from_validation_error(exc)
 
     try:
         user = await services.login(

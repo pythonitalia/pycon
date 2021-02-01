@@ -8,7 +8,7 @@ authors = ["Marco Acierno <marcoaciernoemail@gmail.com>"]
 python = "^3.9"
 starlette = "^0.14.1"
 uvicorn = "^0.13.3"
-strawberry-graphql = "^0.44.12"
+strawberry-graphql = "0.45.1"
 SQLAlchemy = "1.4.0b1"
 alembic = "^1.5.2"
 psycopg2 = "^2.8.6"
@@ -28,7 +28,7 @@ factory-boy = "^3.2.0"
 asgi-lifespan = "^1.0.1"
 
 [tool.taskipy.tasks]
-server = "uvicorn main:app --reload"
+server = "uvicorn main:app --port 8050 --reload"
 test = "RUNNING_TESTS=1 python tests/prepare_db.py && RUNNING_TESTS=1 ward"
 "test:debug" = "poetry run task test --no-capture-output"
 migrate = "alembic upgrade head"

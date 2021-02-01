@@ -16,19 +16,20 @@ mapper_registry = registry()
 
 @dataclass
 class User(BaseUser):
-    username: str
     email: str
-    fullname: str
-    name: str
-    gender: str
-    date_birth: Optional[date]
-    open_to_recruiting: bool
-    open_to_newsletter: bool
-    country: str
     date_joined: datetime
-    is_active: bool
-    is_staff: bool
-    is_superuser: bool
+
+    username: str = ""
+    fullname: str = ""
+    name: str = ""
+    gender: str = ""
+    date_birth: Optional[date] = None
+    open_to_recruiting: bool = False
+    open_to_newsletter: bool = False
+    country: str = ""
+    is_active: bool = True
+    is_staff: bool = False
+    is_superuser: bool = False
 
     last_login: Optional[datetime] = None
     id: Optional[int] = None
@@ -69,7 +70,7 @@ user_table = Table(
     Column("full_name", String(300), nullable=False),
     Column("password", String(128), nullable=False),
     Column("username", String(100), nullable=True),
-    Column("email", String(254), nullable=False),
+    Column("email", String(254), unique=True, nullable=False),
     Column("name", String(300), nullable=False),
     Column("gender", String(10), nullable=False),
     Column("date_birth", Date(), nullable=True),

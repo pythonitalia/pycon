@@ -1,6 +1,7 @@
 from typing import Optional
 
 from sqlalchemy.sql.expression import select
+
 from users.base.domain.repository import BaseSQLAlchemyRepository
 from users.domain.entities import User
 
@@ -10,6 +11,9 @@ class AbstractUsersRepository:
         raise NotImplementedError()
 
     async def get_by_id(self, id: int) -> Optional[User]:
+        raise NotImplementedError()
+
+    async def create_user(self, user: User) -> User:
         raise NotImplementedError()
 
 
@@ -22,4 +26,9 @@ class UsersRepository(AbstractUsersRepository, BaseSQLAlchemyRepository):
     async def get_by_id(self, id: int) -> Optional[User]:
         query = select(User).where(User.id == id)
         user = (await self.session.execute(query)).scalar_one_or_none()
+        return user
+
+    async def create_user(self, user: User) -> User:
+        self.session.add(user)
+        await self.session.flush()
         return user

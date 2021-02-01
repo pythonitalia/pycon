@@ -28,7 +28,7 @@ async def _(graphql_client=graphql_client, db=db):
     mutation($input: LoginInput!) {
         login(input: $input) {
             __typename
-            ... on LoginValidationErrorValidationError {
+            ... on LoginValidationError {
                 errors {
                     password {
                         message
@@ -49,7 +49,7 @@ async def _(graphql_client=graphql_client, db=db):
 
     assert not response.errors, response.errors
     assert response.data["login"] == {
-        "__typename": "LoginValidationErrorValidationError",
+        "__typename": "LoginValidationError",
         "errors": {
             "password": [
                 {
@@ -68,7 +68,7 @@ async def _(graphql_client=graphql_client, db=db):
     mutation($input: LoginInput!) {
         login(input: $input) {
             __typename
-            ... on LoginValidationErrorValidationError {
+            ... on LoginValidationError {
                 errors {
                     password {
                         message
@@ -90,7 +90,7 @@ async def _(graphql_client=graphql_client, db=db):
     assert not response.errors, response.errors
     assert not response.errors, response.errors
     assert response.data["login"] == {
-        "__typename": "LoginValidationErrorValidationError",
+        "__typename": "LoginValidationError",
         "errors": {
             "email": [
                 {
