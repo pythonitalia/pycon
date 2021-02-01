@@ -1,9 +1,10 @@
 class UsernameOrPasswordInvalidError(Exception):
-    pass
+    """Raised when we can't find a user with the username/password
+    combination"""
 
 
 class UserIsNotActiveError(Exception):
-    pass
+    """Raised when the user is marked as not active"""
 
 
 class EmailAlreadyUsedError(Exception):

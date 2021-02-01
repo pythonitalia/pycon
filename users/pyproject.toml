@@ -26,14 +26,34 @@ requests = "^2.25.1"
 taskipy = "^1.6.0"
 factory-boy = "^3.2.0"
 asgi-lifespan = "^1.0.1"
+coverage = "^5.4"
 
 [tool.taskipy.tasks]
 server = "uvicorn main:app --port 8050 --reload"
-test = "RUNNING_TESTS=1 python tests/prepare_db.py && RUNNING_TESTS=1 ward"
-"test:debug" = "poetry run task test --no-capture-output"
+test = "RUNNING_TESTS=1 python tests/prepare_db.py && RUNNING_TESTS=1 coverage run -m ward"
+"test:coverage" = "task test || coverage xml -i && coverage xml -i"
+"test:debug" = "task test --no-capture-output"
 migrate = "alembic upgrade head"
 makemigrations = "alembic revision --autogenerate -m"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "if typing.TYPE_CHECKING:",
+]
+
+[tool.coverage.run]
+branch = true
+include = [
+    "users/*",
+]

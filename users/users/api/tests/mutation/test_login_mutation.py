@@ -22,6 +22,25 @@ async def _(graphql_client=graphql_client, db=db):
     assert response.data["login"]["__typename"] == "UsernameAndPasswordCombinationWrong"
 
 
+@test("cannot login with wrong password")
+async def _(graphql_client=graphql_client, db=db, user_factory=user_factory):
+    await user_factory(email="hah@pycon.it", password="test")
+
+    query = """
+    mutation($input: LoginInput!) {
+        login(input: $input) {
+            __typename
+        }
+    }
+    """
+    response = await graphql_client.query(
+        query, variables={"input": {"email": "hah@pycon.it", "password": "ciao"}}
+    )
+
+    assert not response.errors
+    assert response.data["login"]["__typename"] == "UsernameAndPasswordCombinationWrong"
+
+
 @test("cannot login with empty password")
 async def _(graphql_client=graphql_client, db=db):
     query = """
