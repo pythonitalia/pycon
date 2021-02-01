@@ -2,11 +2,16 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class BaseSQLAlchemyRepository:
-    _session: AsyncSession
+    session: AsyncSession
 
     def __init__(self, session: AsyncSession) -> None:
-        self._session = session
+        self.session = session
 
-    @property
-    def session(self) -> AsyncSession:
-        return self._session
+    def transaction(self):
+        return self.session.begin()
+
+    async def commit(self):
+        await self.session.commit()
+
+    async def rollback(self):
+        await self.session.rollback()
