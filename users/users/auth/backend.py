@@ -4,14 +4,23 @@ from starlette.authentication import (
     AuthenticationBackend,
     AuthenticationError,
 )
+
 from users.auth.tokens import decode_token
-from users.domain.repository import UsersRepository
+from users.domain.repository import AbstractUsersRepository
 
 
 class JWTAuthBackend(AuthenticationBackend):
+    users_repository: AbstractUsersRepository
+
+    def __init__(self, users_repository: AbstractUsersRepository) -> None:
+        super().__init__()
+        self.users_repository = users_repository
+
     async def authenticate(self, request):
         if "Authorization" not in request.headers:
             return
+
+        self.users_repository.with_session(request.state.session)
 
         auth = request.headers["Authorization"]
         try:
@@ -29,8 +38,7 @@ class JWTAuthBackend(AuthenticationBackend):
         ):
             raise AuthenticationError("Invalid auth credentials")
 
-        repository = UsersRepository(request.state.session)
-        user = await repository.get_by_id(jwt_token.id)
+        user = await self.users_repository.get_by_id(jwt_token.id)
 
         if not user or not user.is_active:
             raise AuthenticationError("Invalid auth credentials")

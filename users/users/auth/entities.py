@@ -11,6 +11,15 @@ if TYPE_CHECKING:
     from users.domain.entities import User
 
 
+def get_jwt_metadata() -> dict:
+    utcnow = datetime.utcnow()
+
+    return {
+        "exp": utcnow + timedelta(minutes=JWT_EXPIRES_AFTER_IN_MINUTES),
+        "iat": utcnow,
+    }
+
+
 class Credential(str, Enum):
     AUTHENTICATED = "authenticated"
     STAFF = "staff"
@@ -31,7 +40,6 @@ class JWTToken:
 
     @classmethod
     def from_user(cls, user: "User") -> JWTToken:
-        utcnow = datetime.utcnow()
         credentials = [Credential.AUTHENTICATED]
 
         if user.is_staff:
@@ -42,8 +50,7 @@ class JWTToken:
             email=user.email,
             name=user.name,
             credentials=credentials,
-            exp=utcnow + timedelta(minutes=JWT_EXPIRES_AFTER_IN_MINUTES),
-            iat=utcnow,
+            **get_jwt_metadata()
         )
 
     @classmethod
