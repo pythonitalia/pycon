@@ -6,12 +6,15 @@ from starlette.routing import Route
 from users.api.views import GraphQL
 from users.auth.backend import JWTAuthBackend
 from users.db import get_engine, get_session
+from users.domain.repository import UsersRepository
 from users.settings import DEBUG
 
 app = Starlette(
     debug=DEBUG,
     routes=[Route("/graphql", GraphQL())],
-    middleware=[Middleware(AuthenticationMiddleware, backend=JWTAuthBackend())],
+    middleware=[
+        Middleware(AuthenticationMiddleware, backend=JWTAuthBackend(UsersRepository()))
+    ],
 )
 
 
