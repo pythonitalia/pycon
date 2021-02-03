@@ -524,7 +524,7 @@ pymysql = ["pymysql"]
 
 [[package]]
 name = "starlette"
-version = "0.14.1"
+version = "0.14.2"
 description = "The little ASGI library that shines."
 category = "main"
 optional = false
@@ -1128,8 +1128,8 @@ sqlalchemy = [
     {file = "SQLAlchemy-1.4.0b1.tar.gz", hash = "sha256:97f7382cf1bd3cdf663bec44e1fe44a32521e9d939c5bb603517cf5a6c7ab426"},
 ]
 starlette = [
-    {file = "starlette-0.14.1-py3-none-any.whl", hash = "sha256:d2f55fb835378442b812637ed3e3fcef3d3e22d292fcb8400fa48d2473202411"},
-    {file = "starlette-0.14.1.tar.gz", hash = "sha256:5268ef5d4904ec69582d5fd207b869a5aa0cd59529848ba4cf429b06e3ced99a"},
+    {file = "starlette-0.14.2-py3-none-any.whl", hash = "sha256:3c8e48e52736b3161e34c9f0e8153b4f32ec5d8995a3ee1d59410d92f75162ed"},
+    {file = "starlette-0.14.2.tar.gz", hash = "sha256:7d49f4a27f8742262ef1470608c59ddbc66baf37c148e938c7038e6bc7a998aa"},
 ]
 strawberry-graphql = [
     {file = "strawberry-graphql-0.45.1.tar.gz", hash = "sha256:b0f052376eaa898f106aa5cac754d39eb90f7b5484ad9870c1f0f3c2f4cd4aeb"},
