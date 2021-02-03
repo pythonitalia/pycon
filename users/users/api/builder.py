@@ -24,21 +24,6 @@ def create_mutation_type(name: str, mutations: List[StrawberryField]):
     return strawberry.type(cls, name=name)
 
 
-def create_query_type(name: str, queries: List[StrawberryField]):
-    cls = make_dataclass(
-        name,
-        fields=[
-            (
-                query._field_definition.origin_name,
-                query._field_definition.type,
-                field(default=query),
-            )
-            for query in queries
-        ],
-    )
-    return strawberry.type(cls, name=name)
-
-
 def create_validation_error_type(prefix: str, type_: StrawberryField):
     @classmethod
     def from_validation_error(cls, validation_error: pydantic.ValidationError):
