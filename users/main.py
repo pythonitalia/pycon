@@ -28,3 +28,8 @@ async def async_session_middleware(request, call_next):
 @app.on_event("startup")
 async def startup():
     app.state.engine = get_engine()
+
+
+@app.on_event("shutdown")
+async def shutdown():
+    await app.state.engine.dispose()
