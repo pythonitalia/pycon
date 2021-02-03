@@ -6,7 +6,7 @@ from ward import raises, test
 from users.domain.entities import User
 from users.domain.services.exceptions import (
     UserIsNotActiveError,
-    UsernameOrPasswordInvalidError,
+    WrongUsernameOrPasswordError,
 )
 from users.domain.services.login import LoginInputModel, login
 from users.domain.tests.fake_repository import FakeUsersRepository
@@ -16,7 +16,7 @@ from users.domain.tests.fake_repository import FakeUsersRepository
 async def _():
     repository = FakeUsersRepository(users=[])
 
-    with raises(UsernameOrPasswordInvalidError):
+    with raises(WrongUsernameOrPasswordError):
         await login(
             LoginInputModel(email="marco@marco.it", password="hello"),
             users_repository=repository,
@@ -44,7 +44,7 @@ async def _():
     )
     repository = FakeUsersRepository(users=[user])
 
-    with raises(UsernameOrPasswordInvalidError):
+    with raises(WrongUsernameOrPasswordError):
         await login(
             LoginInputModel(email="marco@acierno.it", password="tes"),
             users_repository=repository,

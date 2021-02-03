@@ -8,7 +8,7 @@ from users.api.context import Info
 from users.api.types import PydanticError, User
 from users.domain import entities, services
 from users.domain.services import LoginInputModel
-from users.domain.services.exceptions import UsernameOrPasswordInvalidError
+from users.domain.services.exceptions import WrongUsernameOrPasswordError
 
 
 @strawberry.experimental.pydantic.input(LoginInputModel, fields=["email", "password"])
@@ -27,7 +27,7 @@ class LoginSuccess:
 
 
 @strawberry.type
-class UsernameAndPasswordCombinationWrong:
+class WrongUsernameOrPassword:
     message: str = "Invalid username/password combination"
 
 
@@ -41,8 +41,7 @@ LoginValidationError = create_validation_error_type("Login", LoginErrors)
 
 
 LoginResult = strawberry.union(
-    "LoginResult",
-    (LoginSuccess, UsernameAndPasswordCombinationWrong, LoginValidationError),
+    "LoginResult", (LoginSuccess, WrongUsernameOrPassword, LoginValidationError)
 )
 
 
@@ -57,7 +56,7 @@ async def login(info: Info, input: LoginInput) -> LoginResult:
         user = await services.login(
             input_model, users_repository=info.context.users_repository
         )
-    except UsernameOrPasswordInvalidError:
-        return UsernameAndPasswordCombinationWrong()
+    except WrongUsernameOrPasswordError:
+        return WrongUsernameOrPassword()
 
     return LoginSuccess.from_domain(user)
