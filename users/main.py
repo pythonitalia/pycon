@@ -22,12 +22,7 @@ app = Starlette(
 async def async_session_middleware(request, call_next):
     async with get_session(request.app.state.engine) as session:
         request.state.session = session
-
-        try:
-            return await call_next(request)
-        finally:
-            # TODO is needed?
-            request.state.session = None
+        return await call_next(request)
 
 
 @app.on_event("startup")
