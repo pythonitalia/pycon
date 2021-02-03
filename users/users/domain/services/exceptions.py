@@ -1,4 +1,4 @@
-class UsernameOrPasswordInvalidError(Exception):
+class WrongUsernameOrPasswordError(Exception):
     """Raised when we can't find a user with the username/password
     combination"""
 
