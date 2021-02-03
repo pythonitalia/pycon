@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Optional, TypeVar
+from typing import Optional
 
 import strawberry
 
@@ -19,9 +19,6 @@ class User:
         return cls(
             id=entity.id, email=entity.email, fullname=entity.fullname, name=entity.name
         )
-
-
-ErrorClass = TypeVar("ErrorClass")
 
 
 @strawberry.type
