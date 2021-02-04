@@ -4,7 +4,7 @@ from starlette.middleware.authentication import AuthenticationMiddleware
 from starlette.routing import Route
 
 from users.api.views import GraphQL
-from users.auth.backend import JWTAuthBackend
+from users.auth.backend import JWTAuthBackend, on_auth_error
 from users.db import get_engine, get_session
 from users.domain.repository import UsersRepository
 from users.settings import DEBUG
@@ -13,7 +13,11 @@ app = Starlette(
     debug=DEBUG,
     routes=[Route("/graphql", GraphQL())],
     middleware=[
-        Middleware(AuthenticationMiddleware, backend=JWTAuthBackend(UsersRepository()))
+        Middleware(
+            AuthenticationMiddleware,
+            backend=JWTAuthBackend(UsersRepository()),
+            on_error=on_auth_error,
+        )
     ],
 )
 

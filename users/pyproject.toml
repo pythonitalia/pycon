@@ -27,6 +27,7 @@ taskipy = "^1.6.0"
 factory-boy = "^3.2.0"
 asgi-lifespan = "^1.0.1"
 coverage = "^5.4"
+time-machine = "^2.0.1"
 
 [tool.taskipy.tasks]
 server = "uvicorn main:app --port 8050 --reload"

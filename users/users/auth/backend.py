@@ -4,9 +4,15 @@ from starlette.authentication import (
     AuthenticationBackend,
     AuthenticationError,
 )
+from starlette.responses import JSONResponse
+from starlette.routing import request_response
 
 from users.auth.tokens import decode_token
 from users.domain.repository import AbstractUsersRepository
+
+
+def on_auth_error(request: request_response, exc: Exception):
+    return JSONResponse({"errors": [{"message": str(exc)}]}, status_code=401)
 
 
 class JWTAuthBackend(AuthenticationBackend):
