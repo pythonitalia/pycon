@@ -1,0 +1,27 @@
+{
+  "name": "pycon-italy-association",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^1.4.1",
+    "@types/jest": "^26.0.20",
+    "@types/react-dom": "^17.0.0",
+    "autoprefixer": "^10.2.3",
+    "next": "^10.0.6",
+    "postcss": "^8.2.4",
+    "prettier": "^2.2.1",
+    "react": "17.0.1",
+    "react-dom": "17.0.1",
+    "tailwindcss": "^2.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.22",
+    "@types/react": "^17.0.0",
+    "typescript": "^4.1.3"
+  }
+}

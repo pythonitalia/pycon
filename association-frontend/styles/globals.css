@@ -1,0 +1,24 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.container{
+  background-color: #E5E5F7;
+opacity: 0.4;
+background-image:  linear-gradient(30deg, #444CF7 12%, transparent 12.5%, transparent 87%, #444CF7 87.5%, #444CF7), linear-gradient(150deg, #444CF7 12%, transparent 12.5%, transparent 87%, #444CF7 87.5%, #444CF7), linear-gradient(30deg, #444CF7 12%, transparent 12.5%, transparent 87%, #444CF7 87.5%, #444CF7), linear-gradient(150deg, #444CF7 12%, transparent 12.5%, transparent 87%, #444CF7 87.5%, #444CF7), linear-gradient(60deg, #444CF777 25%, transparent 25.5%, transparent 75%, #444CF777 75%, #444CF777), linear-gradient(60deg, #444CF777 25%, transparent 25.5%, transparent 75%, #444CF777 75%, #444CF777);
+background-size: 40px 70px;
+background-position: 0 0, 0 0, 20px 35px, 20px 35px, 0 0, 20px 35px;
+}
