@@ -9,9 +9,15 @@ from sqlalchemy.orm import registry
 from starlette.authentication import BaseUser
 
 from users.auth.tokens import generate_token
-from users.starlette_password.hashers import check_password, make_password
+from users.starlette_password.hashers import (
+    check_password,
+    is_password_usable,
+    make_password,
+)
 
 mapper_registry = registry()
+
+UNUSABLE_PASSWORD = object()
 
 
 @dataclass
@@ -39,7 +45,9 @@ class User(BaseUser):
     password: InitVar[Optional[str]] = None
 
     def __post_init__(self, password):
-        if password:
+        if password == UNUSABLE_PASSWORD:
+            self.hashed_password = make_password(None)
+        elif password:
             self.hashed_password = make_password(password)
 
     def generate_token(self) -> str:
@@ -53,6 +61,9 @@ class User(BaseUser):
         The password will be changed when the user is saved
         """
         self.new_password = raw_password
+
+    def has_usable_password(self) -> bool:
+        return is_password_usable(self.hashed_password)
 
     @property
     def is_authenticated(self) -> bool:

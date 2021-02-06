@@ -10,6 +10,17 @@ JWT_AUTH_SECRET = config("JWT_AUTH_SECRET", cast=Secret)
 JWT_EXPIRES_AFTER_IN_MINUTES = config(
     "JWT_EXPIRES_AFTER_IN_MINUTES", cast=int, default=10
 )
+SESSION_SECRET_KEY = config("SESSION_SECRET_KEY", cast=Secret)
+
+# Google social auth
+GOOGLE_AUTH_CLIENT_ID = config("GOOGLE_AUTH_CLIENT_ID", cast=Secret, default=None)
+GOOGLE_AUTH_CLIENT_SECRET = config(
+    "GOOGLE_AUTH_CLIENT_SECRET", cast=Secret, default=None
+)
+
+SOCIAL_LOGIN_JWT_COOKIE_NAME = config(
+    "SOCIAL_LOGIN_JWT_COOKIE_NAME", cast=str, default="social-jwt-token"
+)
 
 PASSWORD_HASHERS = [
     "users.starlette_password.hashers.Argon2PasswordHasher",
@@ -17,6 +28,8 @@ PASSWORD_HASHERS = [
     "users.starlette_password.hashers.PBKDF2SHA1PasswordHasher",
     "users.starlette_password.hashers.BCryptSHA256PasswordHasher",
 ]
+
+# Unit test configuration
 
 RUNNING_TESTS = config("RUNNING_TESTS", cast=bool, default=False)
 
