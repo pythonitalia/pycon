@@ -26,14 +26,15 @@ class SocialLoginInput(BaseModel):
 async def social_login(
     input: SocialLoginInput, *, users_repository: AbstractUsersRepository
 ) -> User:
-    logger.info("Request social login to user email %s", input.email)
+    logger.info(
+        "Request social login with social_id=%s and google provider",
+        input.social_account.social_id,
+    )
 
     user = await users_repository.get_by_email(input.email)
 
     if not user:
-        logger.info(
-            "Social login with email %s not found, creating a new user", input.email
-        )
+        logger.info("Social login not found, creating a new user")
 
         user = await users_repository.create_user(
             User(
@@ -49,8 +50,6 @@ async def social_login(
 
         logger.info("Created user %s for social login", user.id)
     else:
-        logger.info(
-            "Found user %s for social login with email %s", user.id, input.email
-        )
+        logger.info("Found user %s for social login", user.id)
 
     return user

@@ -101,3 +101,7 @@ async def _(testclient=testclient, db=db, cleanup_db=cleanup_db):
         response = await testclient.get("/login/google/auth")
 
     assert response.status_code == 400
+    query = select(User).where(User.email == "i@exist.it")
+    db_user: User = (await db.execute(query)).scalar()
+
+    assert not db_user
