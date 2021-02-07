@@ -17,7 +17,7 @@ const gateway = new ApolloGateway({
         if (authorization) {
           request!.http!.headers.set(
             "authorization",
-            context.headers?.authorization
+            context.headers?.authorization,
           );
         }
       },
