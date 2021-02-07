@@ -29,7 +29,7 @@ repos:
       rev: v2.1.2
       hooks:
           - id: prettier
-            files: 'frontend/.*\.(js|jsx|ts|tsx|graphql)$'
+            files: '.*/.*\.(js|jsx|ts|tsx|graphql)$'
     - repo: https://github.com/pre-commit/pre-commit-hooks
       rev: v2.2.3
       hooks:
