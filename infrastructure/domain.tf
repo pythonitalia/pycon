@@ -8,7 +8,7 @@ resource "aws_route53_record" "pycon_it_a" {
   name    = "pycon.it"
   type    = "A"
   records = ["76.76.21.21"]
-  ttl     = "1"
+  ttl     = "3600"
 }
 
 resource "aws_route53_record" "pycon_it_mx" {
@@ -48,7 +48,7 @@ resource "aws_route53_record" "amazonses_pycon_it_txt" {
   name    = "_amazonses.pycon.it"
   type    = "TXT"
   records = ["LN511xLUx1n9j6YUh37hEg1t1TtF9TDvjlZzrGnZD5o="]
-  ttl     = "1"
+  ttl     = "3600"
 }
 
 resource "aws_route53_record" "assopy_pycon_it_cname" {
@@ -56,7 +56,7 @@ resource "aws_route53_record" "assopy_pycon_it_cname" {
   name    = "assopy.pycon.it"
   type    = "CNAME"
   records = ["pycon.it."]
-  ttl     = "1"
+  ttl     = "3600"
 }
 
 resource "aws_route53_record" "beta_pycon_it_cname" {
@@ -64,7 +64,7 @@ resource "aws_route53_record" "beta_pycon_it_cname" {
   name    = "beta.pycon.it"
   type    = "CNAME"
   records = ["pycon.it."]
-  ttl     = "1"
+  ttl     = "3600"
 }
 
 resource "aws_route53_record" "contest_pycon_it_a" {
@@ -72,7 +72,7 @@ resource "aws_route53_record" "contest_pycon_it_a" {
   name    = "contest.pycon.it"
   type    = "A"
   records = ["10.128.33.64"]
-  ttl     = "1"
+  ttl     = "3600"
 }
 
 resource "aws_route53_record" "ep2011_pycon_it_cname" {
@@ -80,7 +80,7 @@ resource "aws_route53_record" "ep2011_pycon_it_cname" {
   name    = "ep2011.pycon.it"
   type    = "CNAME"
   records = ["python.it."]
-  ttl     = "1"
+  ttl     = "3600"
 }
 
 resource "aws_route53_record" "ep2012_pycon_it_cname" {
@@ -88,7 +88,7 @@ resource "aws_route53_record" "ep2012_pycon_it_cname" {
   name    = "ep2012.pycon.it"
   type    = "CNAME"
   records = ["python.it."]
-  ttl     = "1"
+  ttl     = "3600"
 }
 
 resource "aws_route53_record" "ep2013_pycon_it_cname" {
@@ -96,7 +96,7 @@ resource "aws_route53_record" "ep2013_pycon_it_cname" {
   name    = "ep2013.pycon.it"
   type    = "CNAME"
   records = ["python.it."]
-  ttl     = "1"
+  ttl     = "3600"
 }
 
 resource "aws_route53_record" "hg_pycon_it_cname" {
@@ -104,7 +104,7 @@ resource "aws_route53_record" "hg_pycon_it_cname" {
   name    = "hg.pycon.it"
   type    = "CNAME"
   records = ["pycon.it."]
-  ttl     = "1"
+  ttl     = "3600"
 }
 
 resource "aws_route53_record" "legacy_pycon_it_a" {
@@ -112,7 +112,7 @@ resource "aws_route53_record" "legacy_pycon_it_a" {
   name    = "legacy.pycon.it"
   type    = "A"
   records = ["2.228.72.51"]
-  ttl     = "1"
+  ttl     = "3600"
 }
 
 resource "aws_route53_record" "netlify_pycon_it_cname" {
@@ -120,7 +120,7 @@ resource "aws_route53_record" "netlify_pycon_it_cname" {
   name    = "netlify.pycon.it"
   type    = "CNAME"
   records = ["pycon-italia.netlify.com."]
-  ttl     = "1"
+  ttl     = "3600"
 }
 
 resource "aws_route53_record" "pydata_pycon_it_cname" {
@@ -128,7 +128,7 @@ resource "aws_route53_record" "pydata_pycon_it_cname" {
   name    = "pydata.pycon.it"
   type    = "CNAME"
   records = ["host.launchrock.com."]
-  ttl     = "1"
+  ttl     = "3600"
 }
 
 resource "aws_route53_record" "pyriddle13_pycon_it_cname" {
@@ -136,7 +136,7 @@ resource "aws_route53_record" "pyriddle13_pycon_it_cname" {
   name    = "pyriddle13.pycon.it"
   type    = "CNAME"
   records = ["pyriddle13.herokuapp.com."]
-  ttl     = "1"
+  ttl     = "3600"
 }
 
 resource "aws_route53_record" "riddle_pycon_it_a" {
@@ -144,7 +144,7 @@ resource "aws_route53_record" "riddle_pycon_it_a" {
   name    = "riddle.pycon.it"
   type    = "A"
   records = ["10.128.33.64"]
-  ttl     = "1"
+  ttl     = "3600"
 }
 
 resource "aws_route53_record" "slack_pycon_it_cname" {
@@ -152,7 +152,7 @@ resource "aws_route53_record" "slack_pycon_it_cname" {
   name    = "slack.pycon.it"
   type    = "CNAME"
   records = ["pycon-nove-slack.herokuapp.com."]
-  ttl     = "1"
+  ttl     = "3600"
 }
 
 resource "aws_route53_record" "tickets_pycon_it_cname" {
@@ -160,7 +160,7 @@ resource "aws_route53_record" "tickets_pycon_it_cname" {
   name    = "tickets.pycon.it"
   type    = "CNAME"
   records = ["d3ex7joy4im5c0.cloudfront.net."]
-  ttl     = "1"
+  ttl     = "3600"
 }
 
 resource "aws_route53_record" "wasp_pycon_it_a" {
@@ -168,7 +168,7 @@ resource "aws_route53_record" "wasp_pycon_it_a" {
   name    = "wasp.pycon.it"
   type    = "A"
   records = ["10.128.33.64"]
-  ttl     = "1"
+  ttl     = "3600"
 }
 
 resource "aws_route53_record" "wasp10_pycon_it_a" {
@@ -176,7 +176,7 @@ resource "aws_route53_record" "wasp10_pycon_it_a" {
   name    = "wasp10.pycon.it"
   type    = "A"
   records = ["10.128.33.64"]
-  ttl     = "1"
+  ttl     = "3600"
 }
 
 resource "aws_route53_record" "wasp10x_pycon_it_a" {
@@ -184,7 +184,7 @@ resource "aws_route53_record" "wasp10x_pycon_it_a" {
   name    = "wasp10x.pycon.it"
   type    = "A"
   records = ["10.128.33.64"]
-  ttl     = "1"
+  ttl     = "3600"
 }
 
 resource "aws_route53_record" "wiki_pycon_it_cname" {
@@ -192,7 +192,7 @@ resource "aws_route53_record" "wiki_pycon_it_cname" {
   name    = "wiki.pycon.it"
   type    = "CNAME"
   records = ["pycon.it."]
-  ttl     = "1"
+  ttl     = "3600"
 }
 
 resource "aws_route53_record" "www_pycon_it_cname" {
@@ -200,7 +200,7 @@ resource "aws_route53_record" "www_pycon_it_cname" {
   name    = "www.pycon.it"
   type    = "CNAME"
   records = ["pycon.it."]
-  ttl     = "1"
+  ttl     = "3600"
 }
 
 resource "aws_route53_record" "admin" {
