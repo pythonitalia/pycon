@@ -7,19 +7,30 @@
     "@tailwindcss/forms": "^0.2.1",
     "autoprefixer": "^10.2.4",
     "classnames": "^2.2.6",
+    "graphql": "^15.5.0",
     "next": "^10.0.6",
+    "next-urql": "^2.2.0",
     "postcss": "^8.2.5",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "recoil": "^0.1.2",
-    "tailwindcss": "^2.0.2"
+    "tailwindcss": "^2.0.2",
+    "urql": "^1.11.6"
   },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "codegen": "graphql-codegen"
   },
   "devDependencies": {
+    "@graphql-codegen/add": "^2.0.2",
+    "@graphql-codegen/cli": "^1.20.1",
+    "@graphql-codegen/introspection": "^1.18.1",
+    "@graphql-codegen/near-operation-file-preset": "^1.17.13",
+    "@graphql-codegen/typescript": "^1.20.2",
+    "@graphql-codegen/typescript-operations": "^1.17.14",
+    "@graphql-codegen/typescript-urql": "^2.0.3",
     "@trivago/prettier-plugin-sort-imports": "^1.4.1",
     "@types/node": "^14.14.25",
     "@types/react": "^17.0.1",

@@ -1,13 +1,6 @@
 import strawberry
 
 from users.admin_api.mutation import Mutation
-
-
-@strawberry.type
-class Query:
-    @strawberry.field
-    def hello(self) -> str:
-        return "hello"
-
+from users.admin_api.query import Query
 
 schema = strawberry.federation.Schema(query=Query, mutation=Mutation)

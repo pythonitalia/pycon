@@ -39,6 +39,11 @@ class UsersRepository(AbstractUsersRepository):
     def __init__(self, session: Optional[AsyncSession] = None) -> None:
         self.session = session
 
+    async def get_users(self) -> list[User]:
+        query = select(User)
+        users = (await self.session.execute(query)).scalars()
+        return users
+
     async def get_by_email(self, email: str) -> Optional[User]:
         query = select(User).where(User.email == email)
         user = (await self.session.execute(query)).scalar_one_or_none()

@@ -1,4 +1,7 @@
+import { dedupExchange, cacheExchange, fetchExchange } from "@urql/core";
 import { RecoilRoot } from "recoil";
+
+import { withUrqlClient } from "next-urql";
 
 import { Drawer } from "~/components/drawer";
 
@@ -13,4 +16,10 @@ const App = ({ Component, pageProps }) => (
   </RecoilRoot>
 );
 
-export default App;
+export default withUrqlClient(
+  (ssrExchange) => ({
+    url: "http://localhost:4001/graphql",
+    exchanges: [dedupExchange, cacheExchange, ssrExchange, fetchExchange],
+  }),
+  { ssr: true },
+)(App);
