@@ -5,8 +5,7 @@ from starlette.authentication import AuthenticationError
 from ward import raises, test
 
 from users.auth.backend import JWTAuthBackend
-from users.auth.entities import Credential
-from users.domain.entities import User
+from users.domain.entities import Credential, User
 from users.domain.tests.fake_repository import FakeUsersRepository
 
 

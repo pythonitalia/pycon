@@ -1,9 +1,5 @@
 import jwt
-from starlette.authentication import (
-    AuthCredentials,
-    AuthenticationBackend,
-    AuthenticationError,
-)
+from starlette.authentication import AuthenticationBackend, AuthenticationError
 from starlette.responses import JSONResponse
 from starlette.routing import request_response
 
@@ -49,4 +45,4 @@ class JWTAuthBackend(AuthenticationBackend):
         if not user or not user.is_active:
             raise AuthenticationError("Invalid auth credentials")
 
-        return AuthCredentials(jwt_token.credentials), user
+        return user.credentials, user

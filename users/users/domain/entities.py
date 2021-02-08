@@ -2,11 +2,12 @@ from __future__ import annotations
 
 from dataclasses import InitVar, dataclass, field
 from datetime import date, datetime
+from enum import Enum
 from typing import Optional
 
 from sqlalchemy import Boolean, Column, Date, DateTime, Integer, String, Table
 from sqlalchemy.orm import registry
-from starlette.authentication import BaseUser
+from starlette.authentication import AuthCredentials, BaseUser
 
 from users.auth.tokens import generate_token
 from users.starlette_password.hashers import (
@@ -18,6 +19,14 @@ from users.starlette_password.hashers import (
 mapper_registry = registry()
 
 UNUSABLE_PASSWORD = object()
+
+
+class Credential(str, Enum):
+    AUTHENTICATED = "authenticated"
+    STAFF = "staff"
+
+    def __str__(self) -> str:
+        return str.__str__(self)
 
 
 @dataclass
@@ -72,6 +81,15 @@ class User(BaseUser):
     @property
     def display_name(self) -> str:
         return self.fullname or self.name
+
+    @property
+    def credentials(self) -> AuthCredentials:
+        credentials = [Credential.AUTHENTICATED]
+
+        if self.is_staff:
+            credentials.append(Credential.STAFF)
+
+        return AuthCredentials(credentials)
 
 
 user_table = Table(

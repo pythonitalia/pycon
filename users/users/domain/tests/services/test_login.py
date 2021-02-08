@@ -6,6 +6,7 @@ from ward import raises, test
 from users.domain.entities import User
 from users.domain.services.exceptions import (
     UserIsNotActiveError,
+    UserIsNotAdminError,
     WrongUsernameOrPasswordError,
 )
 from users.domain.services.login import LoginInputModel, login
@@ -135,3 +136,32 @@ async def _():
         "type": "value_error.any_str.min_length",
         "ctx": {"limit_value": 1},
     } in errors
+
+
+@test("reject non admins")
+async def _():
+    user = User(
+        id=1,
+        username="marco",
+        password="test",
+        email="marco@acierno.it",
+        fullname="Marco Acierno",
+        name="Marco",
+        gender="",
+        date_birth=None,
+        open_to_newsletter=False,
+        open_to_recruiting=False,
+        country="",
+        date_joined=datetime(2020, 1, 1),
+        is_staff=False,
+        is_superuser=False,
+        is_active=True,
+    )
+    repository = FakeUsersRepository(users=[user])
+
+    with raises(UserIsNotAdminError):
+        await login(
+            LoginInputModel(email="marco@acierno.it", password="test"),
+            reject_non_admins=True,
+            users_repository=repository,
+        )

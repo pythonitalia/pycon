@@ -1,13 +1,10 @@
 import { ApolloServer } from "apollo-server";
 import { ApolloGateway, RemoteGraphQLDataSource } from "@apollo/gateway";
+import { getPort, getServices } from "./services";
 
 const gateway = new ApolloGateway({
-  serviceList: [
-    {
-      name: "users",
-      url: "http://localhost:8050/graphql",
-    },
-  ],
+  serviceList: getServices(),
+  experimental_pollInterval: 5000,
   buildService({ url }) {
     return new RemoteGraphQLDataSource({
       url,
@@ -31,6 +28,6 @@ const server = new ApolloServer({
   context: ({ req }) => ({ headers: req.headers }),
 });
 
-server.listen().then(({ url }) => {
+server.listen({ port: getPort() }).then(({ url }) => {
   console.log(`🚀 Server ready at ${url}`);
 });

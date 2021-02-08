@@ -108,3 +108,5 @@ pretix-data/
 secrets.auto.tfvars
 
 .vercel
+.next/
+

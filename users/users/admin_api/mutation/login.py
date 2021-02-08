@@ -3,11 +3,14 @@ from __future__ import annotations
 import pydantic
 import strawberry
 
-from users.api.context import Info
-from users.api.types import User
+from users.admin_api.context import Info
+from users.admin_api.types import User
 from users.domain import entities, services
 from users.domain.services import LoginInputModel
-from users.domain.services.exceptions import WrongUsernameOrPasswordError
+from users.domain.services.exceptions import (
+    UserIsNotAdminError,
+    WrongUsernameOrPasswordError,
+)
 from users.utils.api.builder import create_validation_error_type
 from users.utils.api.types import PydanticError
 
@@ -55,9 +58,11 @@ async def login(info: Info, input: LoginInput) -> LoginResult:
 
     try:
         user = await services.login(
-            input_model, users_repository=info.context.users_repository
+            input_model,
+            reject_non_admins=True,
+            users_repository=info.context.users_repository,
         )
-    except WrongUsernameOrPasswordError:
+    except (WrongUsernameOrPasswordError, UserIsNotAdminError):
         return WrongUsernameOrPassword()
 
     return LoginSuccess.from_domain(user)

@@ -9,3 +9,7 @@ class UserIsNotActiveError(Exception):
 
 class EmailAlreadyUsedError(Exception):
     """Raised when the email is already used by some other user"""
+
+
+class UserIsNotAdminError(Exception):
+    """Raised when the login is configurated to reject non-admin users"""

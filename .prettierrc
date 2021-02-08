@@ -3,5 +3,7 @@
   "singleQuote": false,
   "trailingComma": "all",
   "tabWidth": 2,
-  "useTabs": false
+  "useTabs": false,
+  "importOrder": ["^next", "^~", "^[./]", ".css$"],
+  "importOrderSeparation": true
 }

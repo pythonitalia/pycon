@@ -1,9 +1,13 @@
 from pydantic import BaseModel, EmailStr, constr
 
-from users.domain.entities import User
+from users.domain.entities import Credential, User
 from users.domain.repository import AbstractUsersRepository
 
-from .exceptions import UserIsNotActiveError, WrongUsernameOrPasswordError
+from .exceptions import (
+    UserIsNotActiveError,
+    UserIsNotAdminError,
+    WrongUsernameOrPasswordError,
+)
 
 
 class LoginInputModel(BaseModel):
@@ -12,7 +16,10 @@ class LoginInputModel(BaseModel):
 
 
 async def login(
-    input: LoginInputModel, *, users_repository: AbstractUsersRepository
+    input: LoginInputModel,
+    *,
+    reject_non_admins: bool = False,
+    users_repository: AbstractUsersRepository
 ) -> User:
     user = await users_repository.get_by_email(input.email)
 
@@ -21,5 +28,8 @@ async def login(
 
     if not user.is_active:
         raise UserIsNotActiveError()
+
+    if reject_non_admins and Credential.STAFF not in user.credentials.scopes:
+        raise UserIsNotAdminError()
 
     return user

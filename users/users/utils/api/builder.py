@@ -5,7 +5,7 @@ import pydantic
 import strawberry
 from strawberry.field import StrawberryField
 
-from users.api.types import FieldError
+from users.utils.api.types import FieldError
 
 
 def create_mutation_type(name: str, mutations: List[StrawberryField]):

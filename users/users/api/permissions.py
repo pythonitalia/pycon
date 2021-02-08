@@ -1,6 +1,7 @@
 from strawberry.permission import BasePermission
+
 from users.api.context import Info
-from users.auth.entities import Credential
+from users.domain.entities import Credential
 
 
 class IsAuthenticated(BasePermission):

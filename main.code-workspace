@@ -17,6 +17,10 @@
       "path": "users"
     },
     {
+      "name": "👻 Association Admin",
+      "path": "association-admin"
+    },
+    {
       "name": "🔧 Infrastructure",
       "path": "infrastructure"
     }
