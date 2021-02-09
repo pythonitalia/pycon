@@ -88,11 +88,7 @@ const UserDetail = () => {
               </ul>
             </Card>
             <Card
-              heading={
-                <Heading subtitle="All subscriptions" size="medium">
-                  Association history
-                </Heading>
-              }
+              heading={<Heading size="medium">Association history</Heading>}
             >
               <Table
                 border
