@@ -49,7 +49,7 @@ const UserDetail = () => {
         <div className="border-b border-gray-200 px-6 py-4">
           <div className="flex items-center flex-row min-w-0">
             <Heading>{user.fullname || user.name || user.email}</Heading>
-            {user.isActive && <Pill>Active</Pill>}
+            {!user.isActive && <Pill variant="warning">Not active</Pill>}
             {user.isStaff && <Pill>Staff</Pill>}
           </div>
         </div>
