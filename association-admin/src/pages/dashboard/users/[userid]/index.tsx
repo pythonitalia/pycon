@@ -1,16 +1,100 @@
-import { Heading } from "~/components/heading";
+import Head from "next/head";
+import { useRouter } from "next/router";
 
-const UserDetail = () => (
-  <main
-    className="flex-1 relative z-0 overflow-y-auto focus:outline-none"
-    tabIndex={0}
-  >
-    <div className="border-b border-gray-200 px-6 py-4">
-      <div className="flex-1 min-w-0">
-        <Heading>User</Heading>
-      </div>
-    </div>
-  </main>
+import { Card } from "~/components/card";
+import { Heading } from "~/components/heading";
+import { Table } from "~/components/table";
+
+import { useUserDetailQuery } from "./user.generated";
+
+type UserInfoProps = {
+  label: string;
+  text: string;
+};
+
+const UserInfo: React.FC<UserInfoProps> = ({ label, text }) => (
+  <li className="flex flex-col">
+    <span className="text-gray-500 text-sm">{label}</span>
+    <span className="text-sm">{text}</span>
+  </li>
 );
+
+const valueOrPlaceholder = (value: string, placeholder: string = "Unset") =>
+  value || placeholder;
+
+const UserDetail = () => {
+  const { query } = useRouter();
+  const [{ fetching, data, error }] = useUserDetailQuery({
+    variables: {
+      id: query.userid as string,
+    },
+  });
+
+  if (fetching) {
+    return <div>Wait</div>;
+  }
+
+  const user = data.user;
+
+  return (
+    <>
+      <Head>
+        <title>User</title>
+      </Head>
+      <main
+        className="flex-1 relative z-0 overflow-y-auto focus:outline-none"
+        tabIndex={0}
+      >
+        <div className="border-b border-gray-200 px-6 py-4">
+          <div className="flex-1 min-w-0">
+            <Heading>{user.fullname || user.name || user.email}</Heading>
+          </div>
+        </div>
+        <div className="px-6">
+          <div className="grid grid-cols-1 gap-3">
+            <Card
+              heading={
+                <Heading
+                  subtitle="Personal details about the user"
+                  size="medium"
+                >
+                  User information
+                </Heading>
+              }
+            >
+              <ul className="grid grid-cols-2 gap-3">
+                <UserInfo label="ID" text={`${user.id}`} />
+                <UserInfo
+                  label="Fullname"
+                  text={valueOrPlaceholder(user.fullname)}
+                />
+                <UserInfo label="Name" text={valueOrPlaceholder(user.name)} />
+                <UserInfo label="Email" text={valueOrPlaceholder(user.email)} />
+              </ul>
+            </Card>
+            <Card
+              heading={
+                <Heading subtitle="All subscriptions" size="medium">
+                  Association history
+                </Heading>
+              }
+            >
+              <Table
+                keyGetter={(item) => `${item.id}`}
+                rowGetter={(item) => [
+                  "20 Gennaio 2020",
+                  "20 Gennaio 2021",
+                  "Stripe",
+                ]}
+                data={[{}, {}, {}, {}]}
+                headers={["Start", "End", "Where"]}
+              />
+            </Card>
+          </div>
+        </div>
+      </main>
+    </>
+  );
+};
 
 export default UserDetail;

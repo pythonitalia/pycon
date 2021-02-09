@@ -12,9 +12,6 @@ type Props<ItemType> = {
   clickableItem?: (item: ItemType) => string | UrlObject;
 };
 
-// const getBgColor = (value: string) =>
-//   value === "true" ? "bg-green-600" : "bg-red-600";
-
 export const Table = <ItemType,>({
   headers,
   data,
@@ -54,10 +51,7 @@ export const Table = <ItemType,>({
                 <td
                   key={content}
                   className={classnames(
-                    "px-6 py-3 max-w-0 text-sm select-none text-gray-500 break-all",
-                    {
-                      "font-medium": index === 0,
-                    },
+                    "px-6 py-3 max-w-0 text-sm text-gray-500 break-all",
                   )}
                 >
                   {content}

@@ -48,7 +48,7 @@ const Login = () => {
         <div className="mx-auto w-full max-w-md">
           <Heading align="center">Sign in to your account</Heading>
         </div>
-        <Card>
+        <Card center>
           <form className="space-y-6" onSubmit={submitLogin}>
             <Input
               errorMessage={getMergedErrors(

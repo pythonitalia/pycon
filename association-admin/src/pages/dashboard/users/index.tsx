@@ -1,3 +1,4 @@
+import Head from "next/head";
 import { Heading } from "~/components/heading";
 import { Table } from "~/components/table";
 import { User } from "~/helpers/types";
@@ -9,6 +10,10 @@ const Users = () => {
 
   return (
     <>
+      <Head>
+        <title>Users</title>
+      </Head>
+
       <div className="flex flex-col w-0 flex-1 overflow-hidden">
         <main
           className="flex-1 relative z-0 overflow-y-auto focus:outline-none"
