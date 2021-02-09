@@ -4,5 +4,6 @@ query Users {
     email
     fullname
     name
+    isActive
   }
 }

@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 
 import { Card } from "~/components/card";
 import { Heading } from "~/components/heading";
+import { Pill } from "~/components/pill";
 import { Table } from "~/components/table";
 
 import { useUserDetailQuery } from "./user.generated";
@@ -46,8 +47,10 @@ const UserDetail = () => {
         tabIndex={0}
       >
         <div className="border-b border-gray-200 px-6 py-4">
-          <div className="flex-1 min-w-0">
+          <div className="flex items-center flex-row min-w-0">
             <Heading>{user.fullname || user.name || user.email}</Heading>
+            {user.isActive && <Pill>Active</Pill>}
+            {user.isStaff && <Pill>Staff</Pill>}
           </div>
         </div>
         <div className="px-6">
@@ -64,12 +67,24 @@ const UserDetail = () => {
             >
               <ul className="grid grid-cols-2 gap-3">
                 <UserInfo label="ID" text={`${user.id}`} />
+                <UserInfo label="Email" text={valueOrPlaceholder(user.email)} />
                 <UserInfo
                   label="Fullname"
                   text={valueOrPlaceholder(user.fullname)}
                 />
                 <UserInfo label="Name" text={valueOrPlaceholder(user.name)} />
-                <UserInfo label="Email" text={valueOrPlaceholder(user.email)} />
+                <UserInfo
+                  label="Gender"
+                  text={valueOrPlaceholder(user.gender)}
+                />
+                <UserInfo
+                  label="Date of birth"
+                  text={valueOrPlaceholder(user.dateBirth)}
+                />
+                <UserInfo
+                  label="Country"
+                  text={valueOrPlaceholder(user.country)}
+                />
               </ul>
             </Card>
             <Card
@@ -87,7 +102,7 @@ const UserDetail = () => {
                   "20 Gennaio 2021",
                   "Stripe",
                 ]}
-                data={[{}, {}, {}, {}]}
+                data={[{}, {}, {}]}
                 headers={["Start", "End", "Where"]}
               />
             </Card>

@@ -1,5 +1,7 @@
 import Head from "next/head";
+
 import { Heading } from "~/components/heading";
+import { Pill } from "~/components/pill";
 import { Table } from "~/components/table";
 import { User } from "~/helpers/types";
 
@@ -37,9 +39,12 @@ const Users = () => {
                   item.email,
                   item.fullname || item.name || "No name",
                   "false",
+                  item.isActive ? null : (
+                    <Pill variant="warning">Not active</Pill>
+                  ),
                 ]}
                 data={data.users}
-                headers={["Email", "Name", "Is Associated?"]}
+                headers={["Email", "Name", "Is Associated?", ""]}
               />
             )}
           </div>

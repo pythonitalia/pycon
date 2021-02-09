@@ -4,5 +4,13 @@ query UserDetail($id: ID!) {
     email
     fullname
     name
+    gender
+    dateBirth
+    openToRecruiting
+    openToNewsletter
+    country
+    isActive
+    isStaff
+    isSuperuser
   }
 }
