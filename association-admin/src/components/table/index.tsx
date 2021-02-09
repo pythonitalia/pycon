@@ -27,7 +27,11 @@ export const Table = <ItemType,>({
     })}
   >
     <thead>
-      <tr className="border-t border-gray-200">
+      <tr
+        className={classnames("border-gray-200", {
+          "border-t": !border,
+        })}
+      >
         {headers.map((header) => (
           <th
             key={header}
