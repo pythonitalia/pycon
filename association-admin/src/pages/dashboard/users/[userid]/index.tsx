@@ -80,6 +80,7 @@ const UserDetail = () => {
               }
             >
               <Table
+                border
                 keyGetter={(item) => `${item.id}`}
                 rowGetter={(item) => [
                   "20 Gennaio 2020",

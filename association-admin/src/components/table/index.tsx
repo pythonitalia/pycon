@@ -10,6 +10,7 @@ type Props<ItemType> = {
   rowGetter: (item: ItemType) => any[];
   keyGetter: (item: ItemType) => string;
   clickableItem?: (item: ItemType) => string | UrlObject;
+  border?: boolean;
 };
 
 export const Table = <ItemType,>({
@@ -18,8 +19,13 @@ export const Table = <ItemType,>({
   rowGetter,
   keyGetter,
   clickableItem,
+  border = false,
 }: Props<ItemType>) => (
-  <table className="w-full min-w-full table-fixed">
+  <table
+    className={classnames("w-full min-w-full table-fixed", {
+      "rounded-lg border-b border-gray-200 shadow overflow-hidden": border,
+    })}
+  >
     <thead>
       <tr className="border-t border-gray-200">
         {headers.map((header) => (
