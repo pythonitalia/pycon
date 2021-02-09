@@ -12,11 +12,13 @@
     "@types/jest": "^26.0.20",
     "@types/react-dom": "^17.0.0",
     "autoprefixer": "^10.2.3",
+    "clsx": "^1.1.1",
     "next": "^10.0.6",
     "postcss": "^8.2.4",
     "prettier": "^2.2.1",
     "react": "17.0.1",
     "react-dom": "17.0.1",
+    "react-use-form-state": "^0.13.2",
     "tailwindcss": "^2.0.2"
   },
   "devDependencies": {
