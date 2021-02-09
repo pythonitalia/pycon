@@ -3,8 +3,8 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   theme: {
     fontFamily: {
-      sans: ["Helvetica"],
-      serif: ["Helvetica"],
+      sans: ["Lato"],
+      serif: ["Lato"],
       mono: ["Menlo, monospace"],
     },
     extend: {},
