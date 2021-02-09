@@ -19,7 +19,7 @@ async def _(graphql_client=graphql_client, db=db):
     )
 
     assert not response.errors
-    assert response.data["login"]["__typename"] == "WrongUsernameOrPassword"
+    assert response.data["login"]["__typename"] == "WrongEmailOrPassword"
 
 
 @test("cannot login with wrong password")
@@ -38,7 +38,7 @@ async def _(graphql_client=graphql_client, db=db, user_factory=user_factory):
     )
 
     assert not response.errors
-    assert response.data["login"]["__typename"] == "WrongUsernameOrPassword"
+    assert response.data["login"]["__typename"] == "WrongEmailOrPassword"
 
 
 @test("cannot login with empty password")
@@ -138,7 +138,7 @@ async def _(graphql_client=graphql_client, user_factory=user_factory, db=db):
     )
 
     assert not response.errors
-    assert response.data["login"]["__typename"] == "WrongUsernameOrPassword"
+    assert response.data["login"]["__typename"] == "WrongEmailOrPassword"
 
 
 @test("can login")

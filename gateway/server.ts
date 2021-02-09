@@ -12,10 +12,7 @@ const gateway = new ApolloGateway({
         const authorization = context.headers?.authorization;
 
         if (authorization) {
-          request!.http!.headers.set(
-            "authorization",
-            context.headers?.authorization,
-          );
+          request!.http!.headers.set("authorization", authorization);
         }
       },
     });

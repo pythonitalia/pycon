@@ -2,9 +2,9 @@ overwrite: true
 schema: http://localhost:4001/graphql
 documents: "**/*.graphql"
 generates:
-  helpers/types.ts:
+  src/helpers/types.ts:
     - typescript
-  pages/:
+  src/pages/:
     preset: near-operation-file
     presetConfig:
       baseTypesPath: "../helpers/types.ts"

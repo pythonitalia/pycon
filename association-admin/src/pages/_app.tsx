@@ -17,9 +17,26 @@ const App = ({ Component, pageProps }) => (
 );
 
 export default withUrqlClient(
-  (ssrExchange) => ({
-    url: "http://localhost:4001/graphql",
-    exchanges: [dedupExchange, cacheExchange, ssrExchange, fetchExchange],
-  }),
-  { ssr: true },
+  (ssrExchange, ctx) => {
+    const hasToken =
+      typeof localStorage !== "undefined" && !!localStorage.getItem("token");
+    const headers = {};
+
+    if (hasToken) {
+      const token = localStorage.getItem("token");
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
+    console.log("headers", headers);
+
+    return {
+      url: "/graphql",
+      exchanges: [dedupExchange, cacheExchange, ssrExchange, fetchExchange],
+      fetchOptions: {
+        credentials: "include",
+        headers,
+      },
+    };
+  },
+  { ssr: false },
 )(App);

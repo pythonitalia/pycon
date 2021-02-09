@@ -1,7 +1,6 @@
-import { User } from "helpers/types";
-
 import { Heading } from "~/components/heading";
 import { Table } from "~/components/table";
+import { User } from "~/helpers/types";
 
 import { useUsersQuery } from "./users.generated";
 

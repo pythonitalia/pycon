@@ -6,7 +6,7 @@ from users.domain.repository import AbstractUsersRepository
 from .exceptions import (
     UserIsNotActiveError,
     UserIsNotAdminError,
-    WrongUsernameOrPasswordError,
+    WrongEmailOrPasswordError,
 )
 
 
@@ -24,7 +24,7 @@ async def login(
     user = await users_repository.get_by_email(input.email)
 
     if not user or not user.check_password(input.password):
-        raise WrongUsernameOrPasswordError()
+        raise WrongEmailOrPasswordError()
 
     if not user.is_active:
         raise UserIsNotActiveError()

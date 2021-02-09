@@ -1,4 +1,4 @@
-class WrongUsernameOrPasswordError(Exception):
+class WrongEmailOrPasswordError(Exception):
     """Raised when we can't find a user with the username/password
     combination"""
 
