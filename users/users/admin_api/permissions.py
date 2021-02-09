@@ -4,7 +4,7 @@ from users.domain.entities import Credential
 
 
 class IsStaff(BasePermission):
-    message = "No"
+    message = "Unauthorized"
 
     def has_permission(self, source, info, **kwargs):
         return (
