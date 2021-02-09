@@ -31,7 +31,7 @@ export const Drawer = () => {
               <div className="cursor-pointer bg-gray-200 text-gray-900 group flex items-center px-2 py-2 text-sm font-medium rounded-md">
                 <UserGroupOutline
                   size={24}
-                  className="mr-3 text-gray-500 stroke-current"
+                  className="mr-3 text-gray-400 stroke-current"
                 />
                 Users
               </div>
