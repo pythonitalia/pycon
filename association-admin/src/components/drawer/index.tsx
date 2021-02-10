@@ -35,7 +35,7 @@ export const Drawer = () => {
             {MENU_ITEMS.map((menuItem) => {
               const Icon = menuItem.icon;
               const path = menuItem.path;
-              const activePath = menuItem.path === pathname;
+              const activePath = pathname.startsWith(menuItem.path);
 
               return (
                 <Link href={path} key={path}>
