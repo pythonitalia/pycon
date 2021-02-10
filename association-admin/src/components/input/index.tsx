@@ -28,7 +28,7 @@ export const Input: React.FC<Props> = ({
 
     {Icon && (
       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-        <Icon className="mr-3 h-4 w-4 text-gray-400 stroke-current" />
+        <Icon className="mr-3 mt-1 h-4 w-4 text-gray-400 stroke-current" />
       </div>
     )}
 
