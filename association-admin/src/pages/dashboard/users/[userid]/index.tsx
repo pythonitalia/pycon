@@ -16,8 +16,8 @@ type UserInfoProps = {
 
 const UserInfo: React.FC<UserInfoProps> = ({ label, text }) => (
   <li className="flex flex-col">
-    <span className="text-gray-500 text-sm">{label}</span>
-    <span className="text-sm">{text}</span>
+    <span className="text-sm font-medium text-gray-500">{label}</span>
+    <span className="mt-1 text-sm text-gray-900">{text}</span>
   </li>
 );
 
@@ -71,7 +71,7 @@ const UserDetail = () => {
                 </Heading>
               }
             >
-              <ul className="grid grid-cols-2 gap-3">
+              <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <UserInfo label="ID" text={`${user.id}`} />
                 <UserInfo label="Email" text={valueOrPlaceholder(user.email)} />
                 <UserInfo
