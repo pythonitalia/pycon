@@ -52,11 +52,11 @@ const UserDetail = () => {
             <BackIcon to="/dashboard/users/" />
             <Heading>{user.fullname || user.name || user.email}</Heading>
             {!user.isActive && (
-              <Pill className="mt-1" variant="warning">
+              <Pill className="mt-2" variant="warning">
                 Not active
               </Pill>
             )}
-            {user.isStaff && <Pill className="mt-1">Staff</Pill>}
+            {user.isStaff && <Pill className="mt-2">Staff</Pill>}
           </div>
         </div>
         <div className="px-6">
