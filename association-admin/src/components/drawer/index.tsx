@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 import { Input } from "../input";
+import { Logo } from "../logo";
 import { useDrawer } from "./context";
 
 const MENU_ITEMS = [
@@ -20,8 +21,10 @@ export const Drawer = () => {
   }
 
   return (
-    <div className="lg:flex-shrink-0 flex flex-col px-3 w-48 border-r border-gray-200 pt-4 pb-4 bg-gray-100">
+    <div className="lg:flex-shrink-0 flex flex-col px-3 w-50 border-r border-gray-200 pt-4 pb-4 bg-gray-100">
       <div className="h-0 flex-1 flex flex-col overflow-y-auto">
+        <Logo />
+
         <Input
           icon={SearchOutline}
           type="text"
