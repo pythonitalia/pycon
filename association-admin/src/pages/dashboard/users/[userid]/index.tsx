@@ -51,8 +51,12 @@ const UserDetail = () => {
           <div className="flex items-center flex-row min-w-0">
             <BackIcon to="/dashboard/users/" />
             <Heading>{user.fullname || user.name || user.email}</Heading>
-            {!user.isActive && <Pill variant="warning">Not active</Pill>}
-            {user.isStaff && <Pill>Staff</Pill>}
+            {!user.isActive && (
+              <Pill className="mt-1" variant="warning">
+                Not active
+              </Pill>
+            )}
+            {user.isStaff && <Pill className="mt-1">Staff</Pill>}
           </div>
         </div>
         <div className="px-6">
