@@ -1,3 +1,4 @@
+import classnames from "classnames";
 import { SearchOutline, UserGroupOutline } from "heroicons-react";
 
 import Link from "next/link";
@@ -5,6 +6,10 @@ import { useRouter } from "next/router";
 
 import { Input } from "../input";
 import { useDrawer } from "./context";
+
+const MENU_ITEMS = [
+  { icon: UserGroupOutline, label: "Users", path: "/dashboard/users" },
+];
 
 export const Drawer = () => {
   const { pathname } = useRouter();
@@ -27,15 +32,28 @@ export const Drawer = () => {
 
         <nav className="mt-6">
           <div className="space-y-2">
-            <Link href="/dashboard/users">
-              <div className="cursor-pointer bg-gray-200 text-gray-900 group flex items-center px-2 py-2 text-sm font-medium rounded-md">
-                <UserGroupOutline
-                  size={24}
-                  className="mr-3 text-gray-400 stroke-current"
-                />
-                Users
-              </div>
-            </Link>
+            {MENU_ITEMS.map((menuItem) => {
+              const Icon = menuItem.icon;
+              const path = menuItem.path;
+              const activePath = menuItem.path === pathname;
+
+              return (
+                <Link href={path} key={path}>
+                  <div
+                    className={classnames(
+                      "cursor-pointer text-sm group flex items-center px-2 rounded-md",
+                      {
+                        "text-gray-900": !activePath,
+                        "font-bold text-blue-900": activePath,
+                      },
+                    )}
+                  >
+                    <Icon size={16} className="mr-3 stroke-current" />
+                    Users
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         </nav>
       </div>
