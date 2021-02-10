@@ -27,8 +27,6 @@ export default withUrqlClient(
       headers["Authorization"] = `Bearer ${token}`;
     }
 
-    console.log("headers", headers);
-
     return {
       url: "/graphql",
       exchanges: [dedupExchange, cacheExchange, ssrExchange, fetchExchange],
