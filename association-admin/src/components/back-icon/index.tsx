@@ -14,7 +14,10 @@ export const BackIcon: React.FC<Props> = ({ to, className }) => {
     <ArrowLeftOutline
       size={21}
       onClick={() => push(to)}
-      className={classnames("mr-3 cursor-pointer mt-1", className)}
+      className={classnames(
+        "mr-3 text-gray-700 fill-current cursor-pointer mt-1",
+        className,
+      )}
     />
   );
 };
