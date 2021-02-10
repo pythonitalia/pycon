@@ -26,7 +26,7 @@ export const Drawer = () => {
         />
 
         <nav className="mt-6">
-          <div className="space-y-1">
+          <div className="space-y-2">
             <Link href="/dashboard/users">
               <div className="cursor-pointer bg-gray-200 text-gray-900 group flex items-center px-2 py-2 text-sm font-medium rounded-md">
                 <UserGroupOutline

@@ -1,6 +1,7 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
 
+import { BackIcon } from "~/components/back-icon";
 import { Card } from "~/components/card";
 import { Heading } from "~/components/heading";
 import { Pill } from "~/components/pill";
@@ -48,6 +49,7 @@ const UserDetail = () => {
       >
         <div className="border-b border-gray-200 px-6 py-4">
           <div className="flex items-center flex-row min-w-0">
+            <BackIcon to="/dashboard/users/" />
             <Heading>{user.fullname || user.name || user.email}</Heading>
             {!user.isActive && <Pill variant="warning">Not active</Pill>}
             {user.isStaff && <Pill>Staff</Pill>}
