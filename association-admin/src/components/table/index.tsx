@@ -57,7 +57,10 @@ export const Table = <ItemType,>({
             })}
           >
             {row.map((content, index) => (
-              <LinkComponent href={hrefInfo}>
+              <LinkComponent
+                key={`${keyGetter(item)}-${index}`}
+                href={hrefInfo}
+              >
                 <td
                   key={content}
                   className={classnames(

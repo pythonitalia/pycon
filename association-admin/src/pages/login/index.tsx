@@ -9,6 +9,7 @@ import { Card } from "~/components/card";
 import { Heading } from "~/components/heading";
 import { Input } from "~/components/input";
 import { getMergedErrors } from "~/helpers/errors";
+import { useUser } from "~/hooks/use-user";
 
 import { useLoginMutation } from "./login.generated";
 
@@ -18,9 +19,13 @@ type LoginForm = {
 };
 
 const Login = () => {
-  const [formState, { email, password }] = useFormState<LoginForm>();
+  const [formState, { email, password }] = useFormState<LoginForm>({
+    email: "marco@pollen.co",
+    password: "testpassword",
+  });
   const [{ fetching, data }, login] = useLoginMutation();
   const { replace } = useRouter();
+  const { setToken } = useUser();
 
   const submitLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,7 +38,7 @@ const Login = () => {
     });
 
     if (result.data.login.__typename === "LoginSuccess") {
-      localStorage.setItem("token", result.data.login.token);
+      setToken(result.data.login.token);
       replace("/dashboard/users");
     }
   };

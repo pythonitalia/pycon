@@ -1,5 +1,9 @@
 import classnames from "classnames";
-import { SearchOutline, UserGroupOutline } from "heroicons-react";
+import {
+  LogoutOutline,
+  SearchOutline,
+  UserGroupOutline,
+} from "heroicons-react";
 
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -10,6 +14,7 @@ import { useDrawer } from "./context";
 
 const MENU_ITEMS = [
   { icon: UserGroupOutline, label: "Users", path: "/dashboard/users" },
+  { icon: LogoutOutline, label: "Logout", path: "/logout" },
 ];
 
 export const Drawer = () => {
@@ -52,7 +57,7 @@ export const Drawer = () => {
                     )}
                   >
                     <Icon size={16} className="mr-3 stroke-current" />
-                    Users
+                    {menuItem.label}
                   </div>
                 </Link>
               );
