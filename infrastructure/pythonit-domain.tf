@@ -8,7 +8,7 @@ resource "aws_route53_record" "python_it_a" {
   name    = "python.it"
   type    = "A"
   records = ["2.228.72.55"]
-  ttl     = "1"
+  ttl     = "3600"
 }
 
 resource "aws_route53_record" "python_it_mx" {
@@ -40,7 +40,7 @@ resource "aws_route53_record" "python_it_spf" {
   name    = "python.it"
   type    = "SPF"
   records = ["v=spf1 include:pycon.it ~all"]
-  ttl     = "1"
+  ttl     = "3600"
 }
 
 resource "aws_route53_record" "python_it_txt" {
@@ -64,7 +64,7 @@ resource "aws_route53_record" "associazione_python_it_cname" {
   name    = "associazione.python.it"
   type    = "CNAME"
   records = ["python-it.netlify.com."]
-  ttl     = "1"
+  ttl     = "3600"
 }
 
 resource "aws_route53_record" "beta_python_it_cname" {
@@ -72,7 +72,7 @@ resource "aws_route53_record" "beta_python_it_cname" {
   name    = "beta.python.it"
   type    = "CNAME"
   records = ["python.it."]
-  ttl     = "1"
+  ttl     = "3600"
 }
 
 resource "aws_route53_record" "docs_python_it_cname" {
@@ -80,7 +80,7 @@ resource "aws_route53_record" "docs_python_it_cname" {
   name    = "docs.python.it"
   type    = "CNAME"
   records = ["python.it."]
-  ttl     = "1"
+  ttl     = "3600"
 }
 
 resource "aws_route53_record" "hg_python_it_cname" {
@@ -88,7 +88,7 @@ resource "aws_route53_record" "hg_python_it_cname" {
   name    = "hg.python.it"
   type    = "CNAME"
   records = ["python.it."]
-  ttl     = "1"
+  ttl     = "3600"
 }
 
 resource "aws_route53_record" "lists_python_it_a" {
@@ -96,7 +96,7 @@ resource "aws_route53_record" "lists_python_it_a" {
   name    = "lists.python.it"
   type    = "A"
   records = ["2.228.72.55"]
-  ttl     = "1"
+  ttl     = "3600"
 }
 
 resource "aws_route53_record" "lists_python_it_mx" {
@@ -112,7 +112,7 @@ resource "aws_route53_record" "lists_python_it_spf" {
   name    = "lists.python.it"
   type    = "SPF"
   records = ["v=spf1 include:pycon.it ~all"]
-  ttl     = "1"
+  ttl     = "3600"
 }
 
 resource "aws_route53_record" "lists_python_it_txt" {
@@ -120,7 +120,7 @@ resource "aws_route53_record" "lists_python_it_txt" {
   name    = "lists.python.it"
   type    = "TXT"
   records = ["v=spf1 include:pycon.it ~all"]
-  ttl     = "1"
+  ttl     = "3600"
 }
 
 resource "aws_route53_record" "mail_python_it_a" {
@@ -128,7 +128,7 @@ resource "aws_route53_record" "mail_python_it_a" {
   name    = "mail.python.it"
   type    = "A"
   records = ["2.228.72.55"]
-  ttl     = "1"
+  ttl     = "3600"
 }
 
 resource "aws_route53_record" "mail_python_it_spf" {
@@ -152,7 +152,7 @@ resource "aws_route53_record" "milano_python_it_a" {
   name    = "milano.python.it"
   type    = "A"
   records = ["192.30.252.154", "192.30.252.153"]
-  ttl     = "1"
+  ttl     = "3600"
 }
 
 resource "aws_route53_record" "roma_python_it_cname" {
@@ -160,7 +160,7 @@ resource "aws_route53_record" "roma_python_it_cname" {
   name    = "roma.python.it"
   type    = "CNAME"
   records = ["pyroma.netlify.com."]
-  ttl     = "1"
+  ttl     = "3600"
 }
 
 resource "aws_route53_record" "smtp_python_it_cname" {
@@ -168,7 +168,7 @@ resource "aws_route53_record" "smtp_python_it_cname" {
   name    = "smtp.python.it"
   type    = "CNAME"
   records = ["python.it."]
-  ttl     = "1"
+  ttl     = "3600"
 }
 
 resource "aws_route53_record" "svn_python_it_cname" {
@@ -176,7 +176,7 @@ resource "aws_route53_record" "svn_python_it_cname" {
   name    = "svn.python.it"
   type    = "CNAME"
   records = ["python.it."]
-  ttl     = "1"
+  ttl     = "3600"
 }
 
 resource "aws_route53_record" "synapse_python_it_a" {
@@ -184,7 +184,7 @@ resource "aws_route53_record" "synapse_python_it_a" {
   name    = "synapse.python.it"
   type    = "A"
   records = ["88.198.151.119"]
-  ttl     = "1"
+  ttl     = "3600"
 }
 
 resource "aws_route53_record" "teens_python_it_a" {
@@ -192,7 +192,7 @@ resource "aws_route53_record" "teens_python_it_a" {
   name    = "teens.python.it"
   type    = "A"
   records = ["51.15.222.47"]
-  ttl     = "1"
+  ttl     = "3600"
 }
 
 resource "aws_route53_record" "trac_python_it_cname" {
@@ -200,7 +200,7 @@ resource "aws_route53_record" "trac_python_it_cname" {
   name    = "trac.python.it"
   type    = "CNAME"
   records = ["python.it."]
-  ttl     = "1"
+  ttl     = "3600"
 }
 
 resource "aws_route53_record" "trento_python_it_cname" {
@@ -208,7 +208,7 @@ resource "aws_route53_record" "trento_python_it_cname" {
   name    = "trento.python.it"
   type    = "CNAME"
   records = ["python.it."]
-  ttl     = "1"
+  ttl     = "3600"
 }
 
 resource "aws_route53_record" "wiki_python_it_cname" {
@@ -216,7 +216,7 @@ resource "aws_route53_record" "wiki_python_it_cname" {
   name    = "wiki.python.it"
   type    = "CNAME"
   records = ["python.it."]
-  ttl     = "1"
+  ttl     = "3600"
 }
 
 resource "aws_route53_record" "www_python_it_cname" {
@@ -224,7 +224,7 @@ resource "aws_route53_record" "www_python_it_cname" {
   name    = "www.python.it"
   type    = "CNAME"
   records = ["python.it."]
-  ttl     = "1"
+  ttl     = "3600"
 }
 
 resource "aws_route53_record" "www2_python_it_cname" {
@@ -232,5 +232,5 @@ resource "aws_route53_record" "www2_python_it_cname" {
   name    = "www2.python.it"
   type    = "CNAME"
   records = ["python.it."]
-  ttl     = "1"
+  ttl     = "3600"
 }
