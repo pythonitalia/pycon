@@ -1,24 +1,28 @@
 {
-    "folders": [
-        {
-            "name": "📶 Gateway",
-            "path": "gateway"
-        },
-        {
-            "name": "🐍 PyCon Backend",
-            "path": "backend"
-        },
-        {
-            "name": "🌴 PyCon Frontend",
-            "path": "frontend"
-        },
-        {
-            "name": "👤 Users Service",
-            "path": "users"
-        }
-    ],
-    "settings": {},
-    "extensions": {
-        "recommendations": ["bradlc.vscode-tailwindcss"]
+  "folders": [
+    {
+      "name": "📶 Gateway",
+      "path": "gateway"
+    },
+    {
+      "name": "🐍 PyCon Backend",
+      "path": "backend"
+    },
+    {
+      "name": "🌴 PyCon Frontend",
+      "path": "frontend"
+    },
+    {
+      "name": "👤 Users Service",
+      "path": "users"
+    },
+    {
+      "name": "🔧 Infrastructure",
+      "path": "infrastructure"
     }
+  ],
+  "settings": {},
+  "extensions": {
+    "recommendations": ["bradlc.vscode-tailwindcss"]
+  }
 }
