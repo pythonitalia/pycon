@@ -19,10 +19,7 @@ type LoginForm = {
 };
 
 const Login = () => {
-  const [formState, { email, password }] = useFormState<LoginForm>({
-    email: "marco@pollen.co",
-    password: "testpassword",
-  });
+  const [formState, { email, password }] = useFormState<LoginForm>();
   const [{ fetching, data }, login] = useLoginMutation();
   const { replace } = useRouter();
   const { setToken } = useUser();
