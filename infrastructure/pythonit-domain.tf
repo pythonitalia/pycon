@@ -56,7 +56,7 @@ resource "aws_route53_record" "_matrix__tcp_python_it_srv" {
   name    = "_matrix._tcp.python.it"
   type    = "SRV"
   records = ["10 0 8448 synapse.python.it."]
-  ttl     = "1"
+  ttl     = "3600"
 }
 
 resource "aws_route53_record" "associazione_python_it_cname" {
