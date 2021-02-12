@@ -1,6 +1,4 @@
-import { createContext, useEffect } from "react";
-
-import { useRouter } from "next/router";
+import { createContext } from "react";
 
 import { MeQuery, useMeQuery } from "./me.generated";
 

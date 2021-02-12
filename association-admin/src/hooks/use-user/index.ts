@@ -1,6 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from "react";
-
-import { useRouter } from "next/router";
+import { useContext } from "react";
 
 import { UserContext } from "~/components/user-provider";
 
