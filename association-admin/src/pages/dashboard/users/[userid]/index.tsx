@@ -4,9 +4,8 @@ import { useRouter } from "next/router";
 import { BackIcon } from "~/components/back-icon";
 import { Card } from "~/components/card";
 import { Heading } from "~/components/heading";
-import { Pill } from "~/components/pill";
 import { Table } from "~/components/table";
-import { getUserRolesAsPills } from "~/helpers/user-roles";
+import { UserPills } from "~/components/user-pills";
 
 import { useUserDetailQuery } from "./user.generated";
 
@@ -53,7 +52,9 @@ const UserDetail = () => {
             <BackIcon to="/dashboard/users/" />
             <Heading>{user.fullname || user.name || user.email}</Heading>
           </div>
-          <div className="mt-2 -ml-2">{getUserRolesAsPills(user)}</div>
+          <div className="mt-2 -ml-2">
+            <UserPills user={user} />
+          </div>
         </div>
         <div className="px-6">
           <div className="grid grid-cols-1 gap-3">

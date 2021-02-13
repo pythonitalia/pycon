@@ -1,8 +1,11 @@
 import { Pill } from "~/components/pill";
+import { Credential, User } from "~/helpers/types";
 
-import { Credential, User } from "./types";
+type Props = {
+  user: User;
+};
 
-export const getUserRolesAsPills = (user: User) => {
+export const UserPills: React.FC<Props> = ({ user }) => {
   const pills = [];
 
   if (!user.isActive) {
@@ -29,5 +32,5 @@ export const getUserRolesAsPills = (user: User) => {
     );
   }
 
-  return pills;
+  return <>{pills}</>;
 };

@@ -2,8 +2,8 @@ import Head from "next/head";
 
 import { Heading } from "~/components/heading";
 import { Table } from "~/components/table";
+import { UserPills } from "~/components/user-pills";
 import { User } from "~/helpers/types";
-import { getUserRolesAsPills } from "~/helpers/user-roles";
 
 import { useUsersQuery } from "./users.generated";
 
@@ -37,7 +37,9 @@ const Users = () => {
               rowGetter={(item) => [
                 item.email,
                 item.fullname || item.name || "No name",
-                <div className="-ml-2">{getUserRolesAsPills(item)}</div>,
+                <div className="-ml-2">
+                  <UserPills user={item} />
+                </div>,
               ]}
               data={data.users}
               headers={["Email", "Name", "Roles"]}
