@@ -20,6 +20,12 @@ export const SearchBar = () => {
   const submitSearch = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
+      const query = formState.values.query;
+
+      if (!query) {
+        return;
+      }
+
       push({
         pathname: "/dashboard/search",
         query: {
