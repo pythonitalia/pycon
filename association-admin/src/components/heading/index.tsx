@@ -21,6 +21,8 @@ export const Heading: React.FC<Props> = ({
     >
       {children}
     </h1>
-    {subtitle && <span className="text-gray-500 text-sm">{subtitle}</span>}
+    {subtitle && (
+      <span className="text-gray-500 text-sm -mt-1 block">{subtitle}</span>
+    )}
   </>
 );
