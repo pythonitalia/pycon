@@ -29,17 +29,23 @@ const valueOrPlaceholder = (value: string, placeholder: string = "Unset") =>
 
 const UserDetail = () => {
   const { query } = useRouter();
+  const userId = query.userid as string;
   const [{ fetching, data, error }] = useUserDetailQuery({
     variables: {
-      id: query.userid as string,
+      id: userId,
     },
+    pause: typeof userId === "undefined",
   });
+
+  if (!userId) {
+    return null;
+  }
 
   if (fetching) {
     return <Loading />;
   }
 
-  const user = data.user;
+  const user = data?.user;
 
   return (
     <>
@@ -49,7 +55,7 @@ const UserDetail = () => {
       <DashboardPageWrapper>
         <PageHeader
           backTo="/dashboard/users/"
-          headingContent={user.fullname || user.name || user.email}
+          headingContent={user?.fullname || user?.name || user?.email}
         >
           <div className="mt-2 -ml-2">
             <UserPills user={user} />
