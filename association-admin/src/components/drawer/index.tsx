@@ -1,14 +1,11 @@
 import classnames from "classnames";
-import {
-  LogoutOutline,
-  SearchOutline,
-  UserGroupOutline,
-} from "heroicons-react";
+import { LogoutOutline, UserGroupOutline } from "heroicons-react";
 
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-import { Input } from "../input";
+import { useIsOnLogin } from "~/hooks/use-is-on-login";
+
 import { Logo } from "../logo";
 import { useDrawer } from "./context";
 
@@ -20,23 +17,16 @@ const MENU_ITEMS = [
 export const Drawer = () => {
   const { pathname } = useRouter();
   const { open } = useDrawer();
+  const isOnLogin = useIsOnLogin();
 
-  if (!open || pathname === "/login") {
+  if (!open || isOnLogin) {
     return null;
   }
 
   return (
-    <div className="lg:flex-shrink-0 flex flex-col px-3 w-50 border-r border-gray-200 pt-4 pb-4 bg-gray-100">
-      <div className="h-0 flex-1 flex flex-col overflow-y-auto">
+    <div className="flex-shrink-0 flex flex-col px-3 w-52 border-r border-gray-200 pt-4 pb-4 bg-gray-100">
+      <div className="h-0 flex-1 flex flex-col flex-shrink-0 overflow-y-auto">
         <Logo />
-
-        <Input
-          icon={SearchOutline}
-          type="text"
-          name="search"
-          id="search"
-          placeholder="Search"
-        />
 
         <nav className="mt-6">
           <div className="space-y-2">

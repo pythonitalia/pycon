@@ -7,6 +7,7 @@ import { withUrqlClient } from "next-urql";
 import Router from "next/router";
 
 import { Drawer } from "~/components/drawer";
+import { SearchBar } from "~/components/search-bar";
 import { UserProvider } from "~/components/user-provider";
 import { getToken } from "~/hooks/use-user";
 
@@ -17,7 +18,10 @@ const App = ({ Component, pageProps }) => (
     <UserProvider>
       <div className="h-screen w-screen flex overflow-hidden bg-white">
         <Drawer />
-        <Component {...pageProps} />
+        <div className="flex flex-col w-0 flex-1 overflow-hidden">
+          <SearchBar />
+          <Component {...pageProps} />
+        </div>
       </div>
     </UserProvider>
   </RecoilRoot>
