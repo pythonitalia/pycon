@@ -43,7 +43,7 @@ export const Input: React.FC<Props> = ({
     )}
 
     {Icon && (
-      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+      <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
         <Icon className="mr-3 h-4 w-4 text-gray-400 stroke-current" />
       </div>
     )}
@@ -58,7 +58,7 @@ export const Input: React.FC<Props> = ({
           "appearance-none block w-full px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 placeholder-gray-400 focus:outline-none  sm:text-sm",
           {
             "border-red-500": !!errorMessage,
-            "pl-9": !!Icon,
+            "pl-11": !!Icon,
 
             "border-none border-t-0 h-full": variant === Variant.Search,
             "border rounded-md border-gray-300": variant === Variant.Input,
