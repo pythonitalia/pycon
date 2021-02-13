@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { BackIcon } from "~/components/back-icon";
 import { Card } from "~/components/card";
 import { Heading } from "~/components/heading";
+import { PageHeader } from "~/components/page-header";
 import { Table } from "~/components/table";
 import { UserPills } from "~/components/user-pills";
 
@@ -47,15 +48,15 @@ const UserDetail = () => {
         className="flex-1 relative z-0 overflow-y-auto focus:outline-none"
         tabIndex={0}
       >
-        <div className="border-b border-gray-200 px-6 py-4">
-          <div className="flex items-center flex-row min-w-0">
-            <BackIcon to="/dashboard/users/" />
-            <Heading>{user.fullname || user.name || user.email}</Heading>
-          </div>
+        <PageHeader
+          backTo="/dashboard/users/"
+          headingContent={user.fullname || user.name || user.email}
+        >
           <div className="mt-2 -ml-2">
             <UserPills user={user} />
           </div>
-        </div>
+        </PageHeader>
+
         <div className="px-6">
           <div className="grid grid-cols-1 gap-3">
             <Card
