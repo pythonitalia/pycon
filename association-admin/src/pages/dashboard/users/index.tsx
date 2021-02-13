@@ -1,9 +1,9 @@
 import Head from "next/head";
 
 import { Heading } from "~/components/heading";
-import { Pill } from "~/components/pill";
 import { Table } from "~/components/table";
 import { User } from "~/helpers/types";
+import { getUserRolesAsPills } from "~/helpers/user-roles";
 
 import { useUsersQuery } from "./users.generated";
 
@@ -38,13 +38,10 @@ const Users = () => {
                 rowGetter={(item) => [
                   item.email,
                   item.fullname || item.name || "No name",
-                  "false",
-                  item.isActive ? null : (
-                    <Pill variant="warning">Not active</Pill>
-                  ),
+                  getUserRolesAsPills(item),
                 ]}
                 data={data.users}
-                headers={["Email", "Name", "Is Associated?", ""]}
+                headers={["Email", "Name", "Roles"]}
               />
             )}
           </div>

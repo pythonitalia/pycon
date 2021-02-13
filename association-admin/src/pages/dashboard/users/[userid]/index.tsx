@@ -6,6 +6,7 @@ import { Card } from "~/components/card";
 import { Heading } from "~/components/heading";
 import { Pill } from "~/components/pill";
 import { Table } from "~/components/table";
+import { getUserRolesAsPills } from "~/helpers/user-roles";
 
 import { useUserDetailQuery } from "./user.generated";
 
@@ -51,13 +52,8 @@ const UserDetail = () => {
           <div className="flex items-center flex-row min-w-0">
             <BackIcon to="/dashboard/users/" />
             <Heading>{user.fullname || user.name || user.email}</Heading>
-            {!user.isActive && (
-              <Pill className="mt-2" variant="warning">
-                Not active
-              </Pill>
-            )}
-            {user.isStaff && <Pill className="mt-2">Staff</Pill>}
           </div>
+          <div className="mt-2 -ml-2">{getUserRolesAsPills(user)}</div>
         </div>
         <div className="px-6">
           <div className="grid grid-cols-1 gap-3">

@@ -53,6 +53,8 @@ class User(BaseUser):
 
     password: InitVar[Optional[str]] = None
 
+    _authenticated_user: bool = field(init=False, default=False)
+
     def __post_init__(self, password):
         if password == UNUSABLE_PASSWORD:
             self.hashed_password = make_password(None)
@@ -84,10 +86,13 @@ class User(BaseUser):
 
     @property
     def credentials(self) -> AuthCredentials:
-        credentials = [Credential.AUTHENTICATED]
+        credentials = []
 
         if self.is_staff:
             credentials.append(Credential.STAFF)
+
+        if self._authenticated_user:
+            credentials.append(Credential.AUTHENTICATED)
 
         return AuthCredentials(credentials)
 

@@ -45,4 +45,5 @@ class JWTAuthBackend(AuthenticationBackend):
         if not user or not user.is_active:
             raise AuthenticationError("Invalid auth credentials")
 
+        user._authenticated_user = True
         return user.credentials, user
