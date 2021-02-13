@@ -209,3 +209,16 @@ async def _(db=db, user_factory=user_factory):
     assert user_1.id in ids
     assert user_2.id in ids
     assert user_3.id in ids
+
+
+@test("cannot search users by empty query")
+async def _(db=db, user_factory=user_factory):
+    await user_factory(email="marco@email.it", fullname="Hello Ciao", name="")
+    await user_factory(email="nina@email.it", fullname="Nina Nana", name="Nope Hello!")
+    await user_factory(email="ohhello@email.it", fullname="Not In my name", name="")
+    await user_factory(email="notincluded@email.it", fullname="Ciao mondo!", name="")
+
+    repository = UsersRepository(db)
+    found_users = await repository.search("")
+
+    assert len(found_users) == 0

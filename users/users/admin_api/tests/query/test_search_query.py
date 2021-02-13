@@ -112,6 +112,39 @@ async def _(
     assert len(response.data["search"]["users"]) == 0
 
 
+@test("search users with empty query returns nothing")
+async def _(
+    admin_graphql_client=admin_graphql_client, db=db, user_factory=user_factory
+):
+    logged_user = await user_factory(
+        email="user@email.it",
+        fullname="Giorgina Giogio",
+        name="Giorgina",
+        is_staff=True,
+    )
+    admin_graphql_client.force_login(logged_user)
+
+    await user_factory(
+        email="another-email@email.it",
+        fullname="Giorgina Buonofiglio",
+        name="Cattiva",
+        is_staff=False,
+    )
+
+    query = """query($query: String!) {
+        search(query: $query) {
+            users {
+                id
+                email
+            }
+        }
+    }"""
+
+    response = await admin_graphql_client.query(query, variables={"query": ""})
+    assert not response.errors
+    assert len(response.data["search"]["users"]) == 0
+
+
 @test("cannot search users unlogged")
 async def _(
     admin_graphql_client=admin_graphql_client, db=db, user_factory=user_factory

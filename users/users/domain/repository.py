@@ -60,6 +60,9 @@ class UsersRepository(AbstractUsersRepository):
         return user
 
     async def search(self, search: str) -> list[User]:
+        if not search:
+            return []
+
         query = select(User).where(
             User.fullname.ilike(f"%{search}%")
             | User.name.ilike(f"%{search}%")
