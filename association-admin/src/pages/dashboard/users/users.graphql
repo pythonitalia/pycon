@@ -1,10 +1,7 @@
+#import "../../components/users-table/user-table.graphql"
+
 query Users {
   users {
-    id
-    email
-    fullname
-    name
-    isActive
-    credentials
+    ...UserDataForTable
   }
 }

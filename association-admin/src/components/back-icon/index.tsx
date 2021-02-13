@@ -9,11 +9,18 @@ type Props = {
 };
 
 export const BackIcon: React.FC<Props> = ({ to, className }) => {
-  const { push } = useRouter();
+  const { push, back } = useRouter();
+
   return (
     <ArrowLeftOutline
       size={21}
-      onClick={() => push(to)}
+      onClick={() => {
+        if (to === "back") {
+          back();
+        } else {
+          push(to);
+        }
+      }}
       className={classnames(
         "mr-3 text-gray-700 fill-current cursor-pointer mt-1",
         className,

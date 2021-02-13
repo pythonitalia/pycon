@@ -4,6 +4,7 @@ import { Heading } from "~/components/heading";
 import { PageHeader } from "~/components/page-header";
 import { Table } from "~/components/table";
 import { UserPills } from "~/components/user-pills";
+import { UsersTable } from "~/components/users-table";
 import { User } from "~/helpers/types";
 
 import { useUsersQuery } from "./users.generated";
@@ -24,24 +25,7 @@ const Users = () => {
         <PageHeader headingContent="Users" />
 
         <div className="mt-8 block">
-          {data && (
-            <Table<User>
-              clickableItem={(item) => ({
-                pathname: "/dashboard/users/[userid]",
-                query: { userid: item.id },
-              })}
-              keyGetter={(item) => `${item.id}`}
-              rowGetter={(item) => [
-                item.email,
-                item.fullname || item.name || "No name",
-                <div className="-ml-2">
-                  <UserPills user={item} />
-                </div>,
-              ]}
-              data={data.users}
-              headers={["Email", "Name", "Roles"]}
-            />
-          )}
+          {data && <UsersTable users={data.users} />}
         </div>
       </main>
     </>

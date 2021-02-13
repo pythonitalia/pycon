@@ -1,8 +1,10 @@
 import { Pill } from "~/components/pill";
 import { Credential, User } from "~/helpers/types";
 
+import { UserDataForTableFragment } from "../users-table/user-table.generated";
+
 type Props = {
-  user: User;
+  user: UserDataForTableFragment;
 };
 
 export const UserPills: React.FC<Props> = ({ user }) => {

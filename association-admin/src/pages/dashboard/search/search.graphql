@@ -1,0 +1,9 @@
+#import "../../components/users-table/user-table.graphql"
+
+query Search($query: String!) {
+  search(query: $query) {
+    users {
+      ...UserDataForTable
+    }
+  }
+}

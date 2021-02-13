@@ -4,6 +4,7 @@ type Props = {
   align?: "center" | "left";
   size?: "large" | "medium";
   subtitle?: string;
+  className?: string;
 };
 
 export const Heading: React.FC<Props> = ({
@@ -11,13 +12,18 @@ export const Heading: React.FC<Props> = ({
   align = "left",
   children,
   subtitle,
+  className,
 }) => (
   <>
     <h1
-      className={classnames(`text-${align} font-bold text-gray-700`, {
-        "text-2xl": size === "large",
-        "text-lg": size === "medium",
-      })}
+      className={classnames(
+        `text-${align} font-bold text-gray-700`,
+        {
+          "text-2xl": size === "large",
+          "text-lg": size === "medium",
+        },
+        className,
+      )}
     >
       {children}
     </h1>
