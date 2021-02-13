@@ -59,6 +59,15 @@ class UsersRepository(AbstractUsersRepository):
         await self.session.flush()
         return user
 
+    async def search(self, search: str) -> list[User]:
+        query = select(User).where(
+            User.fullname.ilike(f"%{search}%")
+            | User.name.ilike(f"%{search}%")
+            | User.email.ilike(f"%{search}%")
+        )
+        users = (await self.session.execute(query)).scalars().all()
+        return users
+
     def transaction(self):
         return self.session.begin()
 

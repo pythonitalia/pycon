@@ -39,3 +39,12 @@ class User:
             is_active=entity.is_active,
             credentials=entity.credentials.scopes,
         )
+
+
+@strawberry.type
+class SearchResults:
+    users: list[User]
+
+    @classmethod
+    def from_domain(cls, users_results: list[entities.User]):
+        return cls(users=[User.from_domain(user) for user in users_results])
