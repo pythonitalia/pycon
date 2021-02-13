@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 
 import { BackIcon } from "~/components/back-icon";
 import { Card } from "~/components/card";
+import { DashboardPageWrapper } from "~/components/dashboard-page-wrapper";
 import { Heading } from "~/components/heading";
 import { PageHeader } from "~/components/page-header";
 import { Table } from "~/components/table";
@@ -44,10 +45,7 @@ const UserDetail = () => {
       <Head>
         <title>User</title>
       </Head>
-      <main
-        className="flex-1 relative z-0 overflow-y-auto focus:outline-none"
-        tabIndex={0}
-      >
+      <DashboardPageWrapper>
         <PageHeader
           backTo="/dashboard/users/"
           headingContent={user.fullname || user.name || user.email}
@@ -108,7 +106,7 @@ const UserDetail = () => {
             </Card>
           </div>
         </div>
-      </main>
+      </DashboardPageWrapper>
     </>
   );
 };

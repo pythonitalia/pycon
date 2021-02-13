@@ -1,6 +1,7 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
 
+import { DashboardPageWrapper } from "~/components/dashboard-page-wrapper";
 import { Heading } from "~/components/heading";
 import { PageHeader } from "~/components/page-header";
 import { UsersTable } from "~/components/users-table";
@@ -18,10 +19,7 @@ const SearchPage = () => {
   });
 
   return (
-    <main
-      className="flex-1 relative z-0 overflow-y-auto focus:outline-none"
-      tabIndex={0}
-    >
+    <DashboardPageWrapper>
       <Head>
         <title>Search results</title>
       </Head>
@@ -43,7 +41,7 @@ const SearchPage = () => {
           )}
         </div>
       )}
-    </main>
+    </DashboardPageWrapper>
   );
 };
 

@@ -1,5 +1,6 @@
 import Head from "next/head";
 
+import { DashboardPageWrapper } from "~/components/dashboard-page-wrapper";
 import { Heading } from "~/components/heading";
 import { PageHeader } from "~/components/page-header";
 import { Table } from "~/components/table";
@@ -18,16 +19,13 @@ const Users = () => {
         <title>Users</title>
       </Head>
 
-      <main
-        className="flex-1 relative z-0 overflow-y-auto focus:outline-none"
-        tabIndex={0}
-      >
+      <DashboardPageWrapper>
         <PageHeader headingContent="Users" />
 
         <div className="mt-8 block">
           {data && <UsersTable users={data.users} />}
         </div>
-      </main>
+      </DashboardPageWrapper>
     </>
   );
 };
