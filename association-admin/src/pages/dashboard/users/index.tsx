@@ -38,7 +38,7 @@ const Users = () => {
                 rowGetter={(item) => [
                   item.email,
                   item.fullname || item.name || "No name",
-                  getUserRolesAsPills(item),
+                  <div className="-ml-2">{getUserRolesAsPills(item)}</div>,
                 ]}
                 data={data.users}
                 headers={["Email", "Name", "Roles"]}
