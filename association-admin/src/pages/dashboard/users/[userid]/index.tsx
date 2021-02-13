@@ -5,6 +5,7 @@ import { BackIcon } from "~/components/back-icon";
 import { Card } from "~/components/card";
 import { DashboardPageWrapper } from "~/components/dashboard-page-wrapper";
 import { Heading } from "~/components/heading";
+import { Loading } from "~/components/loading";
 import { PageHeader } from "~/components/page-header";
 import { Table } from "~/components/table";
 import { UserPills } from "~/components/user-pills";
@@ -35,7 +36,7 @@ const UserDetail = () => {
   });
 
   if (fetching) {
-    return <div>Wait</div>;
+    return <Loading />;
   }
 
   const user = data.user;

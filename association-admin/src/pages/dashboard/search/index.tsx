@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 
 import { DashboardPageWrapper } from "~/components/dashboard-page-wrapper";
 import { Heading } from "~/components/heading";
+import { Loading } from "~/components/loading";
 import { PageHeader } from "~/components/page-header";
 import { UsersTable } from "~/components/users-table";
 
@@ -29,7 +30,7 @@ const SearchPage = () => {
         headingContent={`Search results for ${searchQuery}`}
       />
 
-      {fetching && <div>Show loading</div>}
+      {fetching && <Loading />}
 
       {!fetching && data.search.users && (
         <div className="my-4">
