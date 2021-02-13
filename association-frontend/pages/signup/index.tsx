@@ -7,13 +7,13 @@ import Input from "~/components/input/input";
 import Link from "~/components/link/link";
 import Logo from "~/components/logo/logo";
 
-type LoginFormFields = {
+type SignUpFormFields = {
   email: string;
   password: string;
 };
 
-const LoginPage = () => {
-  const [formState, { email, password }] = useFormState<LoginFormFields>({});
+const SignUpPage = () => {
+  const [formState, { email, password }] = useFormState<SignUpFormFields>({});
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -49,7 +49,7 @@ const LoginPage = () => {
                 {...email("email")}
                 required
               />
-              <Link text={"Don't have an account?"} to="/signup" />
+              <Link text={"Already have an account?"} to="/login" />
 
               <Input
                 id={"password"}
@@ -62,15 +62,15 @@ const LoginPage = () => {
             </div>
 
             <div>
-              <Button>Log in</Button>
+              <Button>Sign up</Button>
             </div>
           </form>
 
-          <Divider text={"Or continue with..."} />
+          <Divider text={"Or use your social account..."} />
         </div>
       </div>
     </>
   );
 };
 
-export default LoginPage;
+export default SignUpPage;
