@@ -54,7 +54,7 @@ const UserDetail = () => {
       </Head>
       <DashboardPageWrapper>
         <PageHeader
-          backTo="/dashboard/users/"
+          backTo="back"
           headingContent={user?.fullname || user?.name || user?.email}
         >
           <div className="mt-2 -ml-2">
