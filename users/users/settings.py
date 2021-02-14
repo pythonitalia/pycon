@@ -22,6 +22,8 @@ SOCIAL_LOGIN_JWT_COOKIE_NAME = config(
     "SOCIAL_LOGIN_JWT_COOKIE_NAME", cast=str, default="social-jwt-token"
 )
 
+DEFAULT_PAGINATION_TO = 20
+
 PASSWORD_HASHERS = [
     "users.starlette_password.hashers.Argon2PasswordHasher",
     "users.starlette_password.hashers.PBKDF2PasswordHasher",

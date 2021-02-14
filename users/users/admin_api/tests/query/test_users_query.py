@@ -13,8 +13,10 @@ async def _(
 
     query = """{
         users {
-            id
-            email
+            items {
+                id
+                email
+            }
         }
     }"""
 
@@ -31,8 +33,10 @@ async def _(
 
     query = """{
         users {
-            id
-            email
+            items {
+                id
+                email
+            }
         }
     }"""
 
@@ -53,14 +57,47 @@ async def _(
 
     query = """{
         users {
-            id
-            email
+            items {
+                id
+                email
+            }
         }
     }"""
 
     response = await admin_graphql_client.query(query)
 
     assert not response.errors
-    assert {"id": user1.id, "email": user1.email} in response.data["users"]
-    assert {"id": user2.id, "email": user2.email} in response.data["users"]
-    assert {"id": user3.id, "email": user3.email} in response.data["users"]
+    assert {"id": user1.id, "email": user1.email} in response.data["users"]["items"]
+    assert {"id": user2.id, "email": user2.email} in response.data["users"]["items"]
+    assert {"id": user3.id, "email": user3.email} in response.data["users"]["items"]
+
+
+@test("fetch all users paginated")
+async def _(
+    admin_graphql_client=admin_graphql_client, db=db, user_factory=user_factory
+):
+    admin = await user_factory(email="staff@email.it", password="test", is_staff=True)
+    admin_graphql_client.force_login(admin)
+
+    await user_factory(email="user1@email.it", password="test")
+    await user_factory(email="user2@email.it", password="test")
+    await user_factory(email="user3@email.it", password="test")
+
+    query = """{
+        users(after: 0, to: 1) {
+            pageInfo {
+                count
+                hasMore
+            }
+            items {
+                id
+                email
+            }
+        }
+    }"""
+
+    response = await admin_graphql_client.query(query)
+
+    assert not response.errors
+    assert {"id": admin.id, "email": admin.email} in response.data["users"]["items"]
+    assert response.data["users"]["pageInfo"] == {"count": 4, "hasMore": True}

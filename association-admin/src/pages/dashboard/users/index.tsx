@@ -4,11 +4,18 @@ import { DashboardPageWrapper } from "~/components/dashboard-page-wrapper";
 import { Loading } from "~/components/loading";
 import { PageHeader } from "~/components/page-header";
 import { UsersTable } from "~/components/users-table";
+import { usePagination } from "~/hooks/use-pagination";
 
 import { useUsersQuery } from "./users.generated";
 
 const Users = () => {
-  const [{ fetching, error, data }] = useUsersQuery();
+  const { to, after, goNext, goBack } = usePagination();
+  const [{ fetching, error, data }] = useUsersQuery({
+    variables: {
+      to,
+      after,
+    },
+  });
 
   return (
     <>
@@ -20,8 +27,19 @@ const Users = () => {
         <PageHeader headingContent="Users" />
 
         <div className="mt-8 block">
-          {fetching && <Loading />}
-          {data && <UsersTable users={data.users} />}
+          {data && (
+            <UsersTable
+              pagination={{
+                count: data.users.pageInfo.count,
+                after,
+                to,
+                hasMore: data.users.pageInfo.hasMore,
+                goNext,
+                goBack,
+              }}
+              users={data.users.items}
+            />
+          )}
         </div>
       </DashboardPageWrapper>
     </>

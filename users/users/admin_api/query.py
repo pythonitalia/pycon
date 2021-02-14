@@ -4,6 +4,7 @@ import strawberry
 from strawberry import ID
 
 from users.admin_api.context import Info
+from users.admin_api.pagination import Paginated
 from users.admin_api.permissions import IsStaff
 from users.admin_api.types import SearchResults, User
 
@@ -16,9 +17,13 @@ class Query:
         return User.from_domain(me) if me else None
 
     @strawberry.field(permission_classes=[IsStaff])
-    async def users(self, info: Info) -> list[User]:
-        all_users = await info.context.users_repository.get_users()
-        return [User.from_domain(user) for user in all_users]
+    async def users(
+        self, info: Info, after: Optional[int] = 0, to: Optional[int] = 10
+    ) -> Paginated[User]:
+        paginable = await info.context.users_repository.get_users()
+        return await Paginated.paginate(
+            paginable=paginable, after=after, to=to, type_class=User
+        )
 
     @strawberry.field(permission_classes=[IsStaff])
     async def user(self, info: Info, id: ID) -> Optional[User]:

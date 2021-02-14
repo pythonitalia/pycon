@@ -1,7 +1,14 @@
 #import "../../components/users-table/user-table.graphql"
 
-query Users {
-  users {
-    ...UserDataForTable
+query Users($after: Int!, $to: Int!) {
+  users(after: $after, to: $to) {
+    pageInfo {
+      count
+      hasMore
+    }
+
+    items {
+      ...UserDataForTable
+    }
   }
 }

@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.expression import select
 
 from users.domain.entities import User
+from users.domain.paginable import Paginable
 
 
 class AbstractTransaction:
@@ -39,10 +40,8 @@ class UsersRepository(AbstractUsersRepository):
     def __init__(self, session: Optional[AsyncSession] = None) -> None:
         self.session = session
 
-    async def get_users(self) -> list[User]:
-        query = select(User)
-        users = (await self.session.execute(query)).scalars()
-        return users
+    async def get_users(self) -> Paginable[User]:
+        return Paginable(self.session, User)
 
     async def get_by_email(self, email: str) -> Optional[User]:
         query = select(User).where(User.email == email)

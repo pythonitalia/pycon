@@ -1,13 +1,14 @@
-import { Table } from "~/components/table";
+import { Table, Pagination } from "~/components/table";
 import { UserPills } from "~/components/user-pills";
 
 import { UserDataForTableFragment } from "./user-table.generated";
 
 type Props = {
   users: UserDataForTableFragment[];
+  pagination?: Pagination;
 };
 
-export const UsersTable: React.FC<Props> = ({ users }) => (
+export const UsersTable: React.FC<Props> = ({ users, pagination }) => (
   <Table<UserDataForTableFragment>
     clickableItem={(item) => ({
       pathname: "/dashboard/users/[userid]",
@@ -23,5 +24,6 @@ export const UsersTable: React.FC<Props> = ({ users }) => (
     ]}
     data={users}
     headers={["Email", "Name", "Roles"]}
+    pagination={pagination}
   />
 );
