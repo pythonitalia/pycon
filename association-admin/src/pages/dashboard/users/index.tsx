@@ -1,7 +1,6 @@
 import Head from "next/head";
 
 import { DashboardPageWrapper } from "~/components/dashboard-page-wrapper";
-import { Loading } from "~/components/loading";
 import { PageHeader } from "~/components/page-header";
 import { UsersTable } from "~/components/users-table";
 import { usePagination } from "~/hooks/use-pagination";
