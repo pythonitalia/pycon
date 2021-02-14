@@ -3,7 +3,7 @@
 query Users($after: Int!, $to: Int!) {
   users(after: $after, to: $to) {
     pageInfo {
-      count
+      totalCount
       hasMore
     }
 

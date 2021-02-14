@@ -56,6 +56,28 @@ async def _(db=db, second_session=second_session, cleanup_db=cleanup_db):
     assert db_user.is_superuser is False
 
 
+@test("get all users")
+async def _(db=db, second_session=second_session, user_factory=user_factory):
+    db = cast(AsyncSession, db)
+    second_session = cast(AsyncSession, second_session)
+
+    user = await user_factory(email="user1@user.it", id=1)
+    user_2 = await user_factory(email="user2@user.it", id=2)
+    user_3 = await user_factory(email="user3@user.it", id=3)
+
+    repository = UsersRepository(db)
+    paginable = await repository.get_users()
+
+    page = await paginable.page(0, 1)
+
+    assert page.total_count == 3
+    assert page.items == [user]
+
+    page = await paginable.page(1, 3)
+    assert page.total_count == 3
+    assert page.items == [user_2, user_3]
+
+
 @test("get user by email")
 async def _(
     db=db,

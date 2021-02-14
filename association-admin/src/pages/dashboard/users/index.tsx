@@ -30,7 +30,7 @@ const Users = () => {
           {data && (
             <UsersTable
               pagination={{
-                count: data.users.pageInfo.count,
+                count: data.users.pageInfo.totalCount,
                 after,
                 to,
                 hasMore: data.users.pageInfo.hasMore,

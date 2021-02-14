@@ -9,7 +9,7 @@ import { clamp } from "~/helpers/clamp";
 export type Pagination = {
   after: number;
   to: number;
-  count: number;
+  totalCount: number;
   hasMore: boolean;
   goNext: () => void;
   goBack: () => void;
@@ -111,14 +111,14 @@ export const Table = <ItemType,>({
                 className="font-bold"
                 style={{ marginLeft: "0.2rem", marginRight: "0.2rem" }}
               >
-                {clamp(pagination.to, 0, pagination.count)}
+                {clamp(pagination.to, 0, pagination.totalCount)}
               </span>
               of
               <span
                 className="font-bold"
                 style={{ marginLeft: "0.2rem", marginRight: "0.2rem" }}
               >
-                {pagination.count}
+                {pagination.totalCount}
               </span>
               results
             </p>

@@ -86,7 +86,7 @@ async def _(
     query = """{
         users(after: 0, to: 1) {
             pageInfo {
-                count
+                totalCount
                 hasMore
             }
             items {
@@ -100,4 +100,4 @@ async def _(
 
     assert not response.errors
     assert {"id": admin.id, "email": admin.email} in response.data["users"]["items"]
-    assert response.data["users"]["pageInfo"] == {"count": 4, "hasMore": True}
+    assert response.data["users"]["pageInfo"] == {"totalCount": 4, "hasMore": True}

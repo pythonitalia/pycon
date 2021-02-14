@@ -10,7 +10,7 @@ T = TypeVar("T")
 
 @strawberry.type
 class PageInfo:
-    count: int
+    total_count: int
     has_more: bool
 
 
@@ -35,6 +35,7 @@ class Paginated(Generic[T]):
         return cls(
             items=paginated_items,
             page_info=PageInfo(
-                count=page.count, has_more=after + len(paginated_items) < page.count
+                total_count=page.total_count,
+                has_more=after + len(paginated_items) < page.total_count,
             ),
         )
