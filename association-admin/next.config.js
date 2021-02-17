@@ -14,6 +14,11 @@ module.exports = {
         destination: "/dashboard/users",
         permanent: false,
       },
+      {
+        source: "/",
+        destination: "/dashboard/users",
+        permanent: false,
+      },
     ];
   },
 };
