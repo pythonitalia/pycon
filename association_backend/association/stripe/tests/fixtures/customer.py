@@ -1,0 +1,55 @@
+import json
+
+customer_fixture = json.dumps(
+    {
+        "id": "cus_IuwfUVsdQFNvqb",
+        "object": "customer",
+        "account_balance": 0,
+        "address": None,
+        "balance": 0,
+        "created": 1612917724,
+        "currency": None,
+        "default_source": None,
+        "delinquent": False,
+        "description": None,
+        "discount": None,
+        "email": "customer_email@mailinator.com",
+        "invoice_prefix": "4C203CFE",
+        "invoice_settings": {
+            "custom_fields": None,
+            "default_payment_method": None,
+            "footer": None,
+        },
+        "livemode": False,
+        "metadata": {},
+        "name": None,
+        "next_invoice_sequence": 1,
+        "phone": None,
+        "preferred_locales": [],
+        "shipping": None,
+        "sources": {
+            "object": "list",
+            "data": [],
+            "has_more": False,
+            "total_count": 0,
+            "url": "/v1/customers/cus_IuwfUVsdQFNvqb/sources",
+        },
+        "subscriptions": {
+            "object": "list",
+            "data": [],
+            "has_more": False,
+            "total_count": 0,
+            "url": "/v1/customers/cus_IuwfUVsdQFNvqb/subscriptions",
+        },
+        "tax_exempt": "none",
+        "tax_ids": {
+            "object": "list",
+            "data": [],
+            "has_more": False,
+            "total_count": 0,
+            "url": "/v1/customers/cus_IuwfUVsdQFNvqb/tax_ids",
+        },
+        "tax_info": None,
+        "tax_info_verification": None,
+    }
+)
