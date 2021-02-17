@@ -13,6 +13,10 @@ import { getToken } from "~/hooks/use-user";
 
 import "tailwindcss/tailwind.css";
 
+type AuthState = {
+  token?: string;
+};
+
 const App = ({ Component, pageProps }) => (
   <RecoilRoot>
     <UserProvider>
@@ -38,7 +42,7 @@ export default withUrqlClient(
         didAuthError({ error }) {
           return error.graphQLErrors.some((e) => e.message === "Unauthorized");
         },
-        async getAuth({ authState }) {
+        async getAuth({ authState }: { authState?: AuthState }) {
           if (!authState) {
             const token = typeof window !== "undefined" && getToken();
 
@@ -47,11 +51,19 @@ export default withUrqlClient(
             }
           }
 
-          Router.replace("/logout");
+          if (typeof window !== "undefined") {
+            Router.replace("/logout");
+          }
 
           return null;
         },
-        addAuthToOperation({ authState, operation }) {
+        addAuthToOperation({
+          authState,
+          operation,
+        }: {
+          authState?: AuthState;
+          operation: any;
+        }) {
           if (!authState || !authState.token) {
             return operation;
           }
@@ -61,7 +73,6 @@ export default withUrqlClient(
               ? operation.context.fetchOptions()
               : operation.context.fetchOptions || {};
 
-          console.log("aaa", operation);
           return makeOperation(operation.kind, operation, {
             ...operation.context,
             fetchOptions: {

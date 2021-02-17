@@ -42,7 +42,7 @@ export const Table = <ItemType,>({
     >
       <table
         className={classnames("w-full min-w-full table-fixed", {
-          " overflow-hidden": border,
+          "overflow-hidden": border,
         })}
       >
         <thead>
