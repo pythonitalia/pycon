@@ -1,7 +1,8 @@
+from functools import reduce
 from typing import Any, Optional
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.sql.expression import select
+from sqlalchemy.sql.expression import or_, select
 
 from users.domain.entities import User
 from users.domain.paginable import Paginable
@@ -62,11 +63,14 @@ class UsersRepository(AbstractUsersRepository):
         if not search:
             return []
 
-        query = select(User).where(
-            User.fullname.ilike(f"%{search}%")
-            | User.name.ilike(f"%{search}%")
-            | User.email.ilike(f"%{search}%")
-        )
+        words = search.split(" ")
+        fields = [User.fullname, User.name, User.email]
+        where = or_()
+
+        for field in fields:
+            where = reduce(or_, (field.ilike(f"%{word}%") for word in words), where)
+
+        query = select(User).where(where).limit(10)
         users = (await self.session.execute(query)).scalars().all()
         return users
 
