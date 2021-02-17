@@ -45,7 +45,7 @@ subscription_table = Table(
     Column("user_id", String(32), nullable=False, primary_key=True),
     Column("creation_date", DateTime(timezone=True), nullable=False),
     Column("payment_date", DateTime(timezone=True), nullable=True),
-    Column("stripe_id", String(128), nullable=False, unique=True),
+    Column("stripe_id", String(128), nullable=True),
     Column("stripe_customer_id", String(128), nullable=False),
     Column("stripe_session_id", String(128), nullable=False, primary_key=True),
     Column("state", String(16), nullable=False),

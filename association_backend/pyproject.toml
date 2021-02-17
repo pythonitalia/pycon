@@ -13,7 +13,6 @@ invoke = "1.5.0"
 strawberry-graphql = "^0.45.1"
 SQLAlchemy = "1.4.0b1"
 alembic = "^1.5.2"
-psycopg2-binary = "^2.8.6"
 asyncpg = "^0.21.0"
 PyJWT = "^2.0.1"
 pydantic = "^1.7.3"
@@ -21,6 +20,7 @@ httpx = "^0.16.1"
 stripe = "^2.55.2"
 email-validator = "^1.1.2"
 websockets = "^8.1"
+psycopg2 = "^2.8.6"
 
 
 [tool.poetry.dev-dependencies]

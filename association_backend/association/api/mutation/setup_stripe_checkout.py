@@ -78,7 +78,7 @@ async def setup_stripe_checkout(info: Info) -> CreateStripeCheckoutResult:
     #     # TODO Maybe it is better to have a less declarative output to avoid risks
     #     return JWTValidationError(msg=str(exc))
 
-    user_data = UserData(email="gaetanodonghia@gmail.com", user_id="12345")
+    user_data = UserData(email="gaetanodonghia2@gmail.com", user_id="12346")
 
     try:
         customer = await services.get_customer_from_stripe(

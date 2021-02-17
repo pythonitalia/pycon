@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
+from typing import Optional
 
 import strawberry
 from association.domain import entities
@@ -10,11 +11,11 @@ from association.domain import entities
 class Subscription:
     user_id: str
     creation_date: datetime
-    payment_date: datetime
-    stripe_id: str
-    stripe_customer_id: str
     state: str
     stripe_session_id: str
+    payment_date: Optional[datetime]
+    stripe_id: Optional[str]
+    stripe_customer_id: Optional[str]
 
     @classmethod
     def from_domain(cls, entity: entities.Subscription) -> Subscription:
