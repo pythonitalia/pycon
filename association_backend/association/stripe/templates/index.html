@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Checkout</title>
+  <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+  <button id="checkout">Subscribe</button>
+  <div id="error-message" class="error-message"></div>
+  <script>
+  var handleFetchResult = function(result) {
+      if (!result.ok) {
+        return result.json().then(function(json) {
+          if (json.error && json.error.message) {
+            throw new Error(result.url + ' ' + result.status + ' ' + json.error.message);
+          }
+        }).catch(function(err) {
+          showErrorMessage(err);
+          throw err;
+        });
+      }
+      return result.json();
+  };
+
+  var handleResult = function(result) {
+      if (result.error) {
+        showErrorMessage(result.error.message);
+      }
+  };
+
+  var showErrorMessage = function(message) {
+      var errorEl = document.getElementById("error-message")
+      errorEl.textContent = message;
+      errorEl.style.display = "block";
+  };
+
+  var createCheckoutSession = function(priceId) {
+    // return fetch("/graphql", {
+    return fetch("/stripe/create-checkout-session", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        input: {priceId: priceId}
+      })
+    }).then(function(result) {
+      return result.json();
+    });
+  };
+
+
+
+  fetch("/stripe/setup")
+  .then(handleFetchResult)
+  .then(function(json) {
+    var publishableKey = json.publishableKey;
+    var priceId = json.priceId;
+
+    var stripe = Stripe(publishableKey);
+    // Setup event handler to create a Checkout Session when button is clicked
+    document
+      .getElementById("checkout")
+      .addEventListener("click", function(evt) {
+        createCheckoutSession(priceId).then(function(data) {
+          // Call Stripe.js method to redirect to the new Checkout page
+          stripe
+            .redirectToCheckout({
+              sessionId: data.sessionId
+            })
+            .then(handleResult);
+        });
+      });
+
+
+  });
+
+  </script>
+</body>
+</html>
