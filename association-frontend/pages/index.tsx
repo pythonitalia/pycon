@@ -1,25 +1,542 @@
 import Head from "next/head";
+import React from "react";
+import Footer from "~/components/footer/footer";
+import Header from "~/components/header/header";
+import Hero from "~/components/hero/hero";
 
 export default function Home() {
   return (
     <div>
       <Head>
-        <title>Create Next App</title>
+        <title>Associazione Python Italia</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main>
-        <div className="bg-gray-800">
-          <h1>Python Italy Association</h1>
-          <svg viewBox="0 0 914.70 82.55" data-reactid="4">
-            <path
-              d="M100.43 11.62v-.09c0-6.07-4.58-9.77-11.53-9.77h-9.81a1.76 1.76 0 0 0-1.72 1.76V31a1.74 1.74 0 1 0 3.48 0v-9.3h7.48c6.56 0 12.1-3.43 12.1-10.08zM80.85 5h7.79c5 0 8.27 2.29 8.27 6.69v.09c0 4-3.34 6.78-8.45 6.78h-7.61zm31.75 27.35l-.18.35c-1.23 2.77-2.46 4-4.58 4a7 7 0 0 1-2.46-.4 2.58 2.58 0 0 0-.84-.18 1.46 1.46 0 0 0-1.45 1.45 1.55 1.55 0 0 0 1.06 1.45 10.7 10.7 0 0 0 3.74.66c3.43 0 5.63-1.72 7.61-6.42l8.89-21.21a2.81 2.81 0 0 0 .18-.84 1.67 1.67 0 0 0-1.67-1.61 1.7 1.7 0 0 0-1.63 1.28l-7 17.91-7.92-17.87a1.8 1.8 0 0 0-1.72-1.32 1.68 1.68 0 0 0-1.72 1.67 2.37 2.37 0 0 0 .22.92zm28-1.32a1.47 1.47 0 0 0-1.45-1.45 9.59 9.59 0 0 1-2.07.31c-2.29 0-3.83-1-3.83-3.78v-13.3h5.9a1.52 1.52 0 0 0 1.54-1.5 1.55 1.55 0 0 0-1.54-1.5h-5.9V4.45a1.75 1.75 0 0 0-1.72-1.72 1.68 1.68 0 0 0-1.67 1.72v5.37H128a1.51 1.51 0 0 0-1.5 1.5 1.54 1.54 0 0 0 1.5 1.5h1.85v13.72c0 4.62 2.77 6.43 6.42 6.43a8.57 8.57 0 0 0 3.34-.62 1.41 1.41 0 0 0 1-1.35zm14.18-21.7a8.62 8.62 0 0 0-7.78 4.45V1.94a1.69 1.69 0 1 0-3.39 0v29.14a1.69 1.69 0 0 0 1.72 1.72 1.65 1.65 0 0 0 1.67-1.72V19.55c0-4.27 2.9-7.13 6.82-7.13s6.29 2.64 6.29 6.87v11.79a1.69 1.69 0 1 0 3.39 0V18.45c0-5.45-3.21-9.11-8.71-9.11zm24.17 0a11.78 11.78 0 0 0-11.88 11.88v.09a11.66 11.66 0 0 0 11.8 11.8 11.81 11.81 0 0 0 11.93-11.88v-.09A11.69 11.69 0 0 0 179 9.34zm8.36 12c0 4.8-3.43 8.76-8.36 8.76a8.53 8.53 0 0 1-8.41-8.84v-.09c0-4.8 3.39-8.8 8.32-8.8a8.61 8.61 0 0 1 8.45 8.89zm18.48-12a8.62 8.62 0 0 0-7.79 4.45v-2.46a1.69 1.69 0 0 0-1.72-1.72 1.71 1.71 0 0 0-1.67 1.72v19.76a1.69 1.69 0 0 0 1.72 1.72 1.65 1.65 0 0 0 1.67-1.72V19.55c0-4.27 2.9-7.13 6.82-7.13s6.29 2.64 6.29 6.87v11.79a1.69 1.69 0 1 0 3.39 0V18.45c.01-5.45-3.2-9.11-8.7-9.11zM79 48.58a1.17 1.17 0 0 0-1.14 1.14V78.6a1.14 1.14 0 0 0 2.29 0V49.73A1.17 1.17 0 0 0 79 48.58zM96.79 59.1a1 1 0 0 0 1-1 1.05 1.05 0 0 0-1-1h-7v-6.23a1.09 1.09 0 0 0-1.1-1.1 1.05 1.05 0 0 0-1.06 1.1v6.25h-2.46a1 1 0 0 0-1 1 1.05 1.05 0 0 0 1 1h2.42V73.8c0 4.27 2.82 6.16 6.29 6.16a9.28 9.28 0 0 0 3.17-.57 1 1 0 0 0 .7-.92 1 1 0 0 0-1-1 9.41 9.41 0 0 1-2.55.44c-2.6 0-4.49-1.14-4.49-4.36V59.1zm12.57-2.33a17.39 17.39 0 0 0-7.36 1.67 1.1 1.1 0 0 0-.62 1 1.05 1.05 0 0 0 1 1 1.15 1.15 0 0 0 .48-.13 14.5 14.5 0 0 1 6.38-1.5c4.62 0 7.39 2.33 7.39 6.86v1a27 27 0 0 0-7.44-1c-5.81 0-9.81 2.64-9.81 7.31v.09c0 4.66 4.49 7 8.67 7a10.21 10.21 0 0 0 8.58-4.27v2.82a1.06 1.06 0 1 0 2.11 0V65.57a8.52 8.52 0 0 0-2.29-6.34c-1.63-1.63-4.05-2.46-7.09-2.46zm7.31 14.39c0 4.09-3.92 6.91-8.49 6.91-3.43 0-6.51-1.89-6.51-5.15v-.09c0-3.12 2.64-5.24 7.39-5.24a29.79 29.79 0 0 1 7.61 1zm8.72-23.9a1.05 1.05 0 0 0-1.06 1.1v30.28a1.06 1.06 0 0 0 1.1 1.1 1 1 0 0 0 1.06-1.1V48.36a1.09 1.09 0 0 0-1.1-1.1zm8.11.84a1.3 1.3 0 0 0-1.32 1.32v.75a1.3 1.3 0 0 0 1.32 1.32 1.33 1.33 0 0 0 1.36-1.32v-.75a1.33 1.33 0 0 0-1.37-1.32zm0 8.85a1.05 1.05 0 0 0-1.06 1.1v20.6a1.06 1.06 0 0 0 1.1 1.1 1 1 0 0 0 1.06-1.1V58a1.06 1.06 0 0 0-1.11-1.06zm15-.18a17.39 17.39 0 0 0-7.39 1.67 1.1 1.1 0 0 0-.62 1 1.05 1.05 0 0 0 1 1 1.15 1.15 0 0 0 .48-.13 14.5 14.5 0 0 1 6.38-1.5c4.62 0 7.39 2.33 7.39 6.86v1a27 27 0 0 0-7.44-1c-5.81 0-9.81 2.64-9.81 7.31v.09c0 4.66 4.49 7 8.67 7a10.21 10.21 0 0 0 8.58-4.27v2.82a1.06 1.06 0 1 0 2.11 0V65.57a8.52 8.52 0 0 0-2.29-6.34c-1.56-1.63-3.98-2.46-7.02-2.46zm7.31 14.39c0 4.09-3.92 6.91-8.49 6.91-3.43 0-6.51-1.89-6.51-5.15v-.09c0-3.12 2.64-5.24 7.39-5.24a29.79 29.79 0 0 1 7.61 1zM37.29 0A21.72 21.72 0 0 0 15.6 21.69v12.12a2.9 2.9 0 0 0 5.79 0V21.69a15.92 15.92 0 0 1 15.9-15.9 18.28 18.28 0 0 1 0 36.56H18.5A18.52 18.52 0 0 0 0 60.85v8.93a10.7 10.7 0 1 0 21.39 0V56.55a2.9 2.9 0 1 0-5.79 0v13.23a4.9 4.9 0 1 1-9.81 0v-8.93a12.72 12.72 0 0 1 12.7-12.7h18.8a24.07 24.07 0 0 0 0-48.15z"
-              fill="#15A4E0"
-              data-reactid="5"
-            ></path>
-          </svg>
-        </div>
-      </main>
+      <div className="bg-white">
+        <Header />
+        <main>
+          {/* Hero section */}
+          <Hero />
+
+          {/* Alternating Feature Sections */}
+          <div className="relative pt-16 pb-32 overflow-hidden">
+            <div
+              aria-hidden="true"
+              className="absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-gray-100"
+            />
+            <div className="relative">
+              <div className="lg:mx-auto lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-2 lg:grid-flow-col-dense lg:gap-24">
+                <div className="px-4 max-w-xl mx-auto sm:px-6 lg:py-16 lg:max-w-none lg:mx-0 lg:px-0">
+                  <div>
+                    <div>
+                      <span className="h-12 w-12 rounded-md flex items-center justify-center bg-gradient-to-r from-purple-600 to-indigo-600">
+                        {/* Heroicon name: outline/inbox */}
+                        <svg
+                          className="h-6 w-6 text-white"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          aria-hidden="true"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
+                          />
+                        </svg>
+                      </span>
+                    </div>
+                    <div className="mt-6">
+                      <h2 className="text-3xl font-extrabold tracking-tight text-gray-900">
+                        Stay on top of customer support
+                      </h2>
+                      <p className="mt-4 text-lg text-gray-500">
+                        Semper curabitur ullamcorper posuere nunc sed. Ornare
+                        iaculis bibendum malesuada faucibus lacinia porttitor.
+                        Pulvinar laoreet sagittis viverra duis. In venenatis sem
+                        arcu pretium pharetra at. Lectus viverra dui tellus
+                        ornare pharetra.
+                      </p>
+                      <div className="mt-6">
+                        <a
+                          href="#"
+                          className="inline-flex px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
+                        >
+                          Get started
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-8 border-t border-gray-200 pt-6">
+                    <blockquote>
+                      <div>
+                        <p className="text-base text-gray-500">
+                          “Cras velit quis eros eget rhoncus lacus ultrices sed
+                          diam. Sit orci risus aenean curabitur donec aliquet.
+                          Mi venenatis in euismod ut.”
+                        </p>
+                      </div>
+                      <footer className="mt-3">
+                        <div className="flex items-center space-x-3">
+                          <div className="flex-shrink-0">
+                            <img
+                              className="h-6 w-6 rounded-full"
+                              src="https://images.unsplash.com/photo-1509783236416-c9ad59bae472?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=1024&h=1024&q=80"
+                              alt=""
+                            />
+                          </div>
+                          <div className="text-base font-medium text-gray-700">
+                            Marcia Hill, Digital Marketing Manager
+                          </div>
+                        </div>
+                      </footer>
+                    </blockquote>
+                  </div>
+                </div>
+                <div className="mt-12 sm:mt-16 lg:mt-0">
+                  <div className="pl-4 -mr-48 sm:pl-6 md:-mr-16 lg:px-0 lg:m-0 lg:relative lg:h-full">
+                    <img
+                      className="w-full rounded-xl shadow-xl ring-1 ring-black ring-opacity-5 lg:absolute lg:left-0 lg:h-full lg:w-auto lg:max-w-none"
+                      src="https://tailwindui.com/img/component-images/inbox-app-screenshot-1.jpg"
+                      alt="Inbox user interface"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="mt-24">
+              <div className="lg:mx-auto lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-2 lg:grid-flow-col-dense lg:gap-24">
+                <div className="px-4 max-w-xl mx-auto sm:px-6 lg:py-32 lg:max-w-none lg:mx-0 lg:px-0 lg:col-start-2">
+                  <div>
+                    <div>
+                      <span className="h-12 w-12 rounded-md flex items-center justify-center bg-gradient-to-r from-purple-600 to-indigo-600">
+                        {/* Heroicon name: outline/sparkles */}
+                        <svg
+                          className="h-6 w-6 text-white"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          aria-hidden="true"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
+                          />
+                        </svg>
+                      </span>
+                    </div>
+                    <div className="mt-6">
+                      <h2 className="text-3xl font-extrabold tracking-tight text-gray-900">
+                        Better understand your customers
+                      </h2>
+                      <p className="mt-4 text-lg text-gray-500">
+                        Semper curabitur ullamcorper posuere nunc sed. Ornare
+                        iaculis bibendum malesuada faucibus lacinia porttitor.
+                        Pulvinar laoreet sagittis viverra duis. In venenatis sem
+                        arcu pretium pharetra at. Lectus viverra dui tellus
+                        ornare pharetra.
+                      </p>
+                      <div className="mt-6">
+                        <a
+                          href="#"
+                          className="inline-flex px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
+                        >
+                          Get started
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-12 sm:mt-16 lg:mt-0 lg:col-start-1">
+                  <div className="pr-4 -ml-48 sm:pr-6 md:-ml-16 lg:px-0 lg:m-0 lg:relative lg:h-full">
+                    <img
+                      className="w-full rounded-xl shadow-xl ring-1 ring-black ring-opacity-5 lg:absolute lg:right-0 lg:h-full lg:w-auto lg:max-w-none"
+                      src="https://tailwindui.com/img/component-images/inbox-app-screenshot-2.jpg"
+                      alt="Customer profile user interface"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* Gradient Feature Section */}
+          <div className="bg-gradient-to-r from-purple-800 to-indigo-700">
+            <div className="max-w-4xl mx-auto px-4 py-16 sm:px-6 sm:pt-20 sm:pb-24 lg:max-w-7xl lg:pt-24 lg:px-8">
+              <h2 className="text-3xl font-extrabold text-white tracking-tight">
+                Inbox support built for efficiency
+              </h2>
+              <p className="mt-4 max-w-3xl text-lg text-purple-200">
+                Ac tincidunt sapien vehicula erat auctor pellentesque rhoncus.
+                Et magna sit morbi lobortis. Blandit aliquam sit nisl euismod
+                mattis in.
+              </p>
+              <div className="mt-12 grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:mt-16 lg:grid-cols-4 lg:gap-x-8 lg:gap-y-16">
+                <div>
+                  <div>
+                    <span className="flex items-center justify-center h-12 w-12 rounded-md bg-white bg-opacity-10">
+                      {/* Heroicon name: outline/inbox */}
+                      <svg
+                        className="h-6 w-6 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
+                        />
+                      </svg>
+                    </span>
+                  </div>
+                  <div className="mt-6">
+                    <h3 className="text-lg font-medium text-white">
+                      Unlimited Inboxes
+                    </h3>
+                    <p className="mt-2 text-base text-purple-200">
+                      Ac tincidunt sapien vehicula erat auctor pellentesque
+                      rhoncus. Et magna sit morbi lobortis.
+                    </p>
+                  </div>
+                </div>
+                <div>
+                  <div>
+                    <span className="flex items-center justify-center h-12 w-12 rounded-md bg-white bg-opacity-10">
+                      {/* Heroicon name: outline/users */}
+                      <svg
+                        className="h-6 w-6 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+                        />
+                      </svg>
+                    </span>
+                  </div>
+                  <div className="mt-6">
+                    <h3 className="text-lg font-medium text-white">
+                      Manage Team Members
+                    </h3>
+                    <p className="mt-2 text-base text-purple-200">
+                      Ac tincidunt sapien vehicula erat auctor pellentesque
+                      rhoncus. Et magna sit morbi lobortis.
+                    </p>
+                  </div>
+                </div>
+                <div>
+                  <div>
+                    <span className="flex items-center justify-center h-12 w-12 rounded-md bg-white bg-opacity-10">
+                      {/* Heroicon name: outline/trash */}
+                      <svg
+                        className="h-6 w-6 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                        />
+                      </svg>
+                    </span>
+                  </div>
+                  <div className="mt-6">
+                    <h3 className="text-lg font-medium text-white">
+                      Spam Report
+                    </h3>
+                    <p className="mt-2 text-base text-purple-200">
+                      Ac tincidunt sapien vehicula erat auctor pellentesque
+                      rhoncus. Et magna sit morbi lobortis.
+                    </p>
+                  </div>
+                </div>
+                <div>
+                  <div>
+                    <span className="flex items-center justify-center h-12 w-12 rounded-md bg-white bg-opacity-10">
+                      {/* Heroicon name: outline/pencil-alt */}
+                      <svg
+                        className="h-6 w-6 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                        />
+                      </svg>
+                    </span>
+                  </div>
+                  <div className="mt-6">
+                    <h3 className="text-lg font-medium text-white">
+                      Compose in Markdown
+                    </h3>
+                    <p className="mt-2 text-base text-purple-200">
+                      Ac tincidunt sapien vehicula erat auctor pellentesque
+                      rhoncus. Et magna sit morbi lobortis.
+                    </p>
+                  </div>
+                </div>
+                <div>
+                  <div>
+                    <span className="flex items-center justify-center h-12 w-12 rounded-md bg-white bg-opacity-10">
+                      {/* Heroicon name: outline/document-report */}
+                      <svg
+                        className="h-6 w-6 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                        />
+                      </svg>
+                    </span>
+                  </div>
+                  <div className="mt-6">
+                    <h3 className="text-lg font-medium text-white">
+                      Team Reporting
+                    </h3>
+                    <p className="mt-2 text-base text-purple-200">
+                      Ac tincidunt sapien vehicula erat auctor pellentesque
+                      rhoncus. Et magna sit morbi lobortis.
+                    </p>
+                  </div>
+                </div>
+                <div>
+                  <div>
+                    <span className="flex items-center justify-center h-12 w-12 rounded-md bg-white bg-opacity-10">
+                      {/* Heroicon name: outline/reply */}
+                      <svg
+                        className="h-6 w-6 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"
+                        />
+                      </svg>
+                    </span>
+                  </div>
+                  <div className="mt-6">
+                    <h3 className="text-lg font-medium text-white">
+                      Saved Replies
+                    </h3>
+                    <p className="mt-2 text-base text-purple-200">
+                      Ac tincidunt sapien vehicula erat auctor pellentesque
+                      rhoncus. Et magna sit morbi lobortis.
+                    </p>
+                  </div>
+                </div>
+                <div>
+                  <div>
+                    <span className="flex items-center justify-center h-12 w-12 rounded-md bg-white bg-opacity-10">
+                      {/* Heroicon name: outline/chat-alt */}
+                      <svg
+                        className="h-6 w-6 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
+                        />
+                      </svg>
+                    </span>
+                  </div>
+                  <div className="mt-6">
+                    <h3 className="text-lg font-medium text-white">
+                      Email Commenting
+                    </h3>
+                    <p className="mt-2 text-base text-purple-200">
+                      Ac tincidunt sapien vehicula erat auctor pellentesque
+                      rhoncus. Et magna sit morbi lobortis.
+                    </p>
+                  </div>
+                </div>
+                <div>
+                  <div>
+                    <span className="flex items-center justify-center h-12 w-12 rounded-md bg-white bg-opacity-10">
+                      {/* Heroicon name: outline/heart */}
+                      <svg
+                        className="h-6 w-6 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                        />
+                      </svg>
+                    </span>
+                  </div>
+                  <div className="mt-6">
+                    <h3 className="text-lg font-medium text-white">
+                      Connect with Customers
+                    </h3>
+                    <p className="mt-2 text-base text-purple-200">
+                      Ac tincidunt sapien vehicula erat auctor pellentesque
+                      rhoncus. Et magna sit morbi lobortis.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* Stats section */}
+          <div className="relative bg-gray-900">
+            <div className="h-80 absolute bottom-0 xl:inset-0 xl:h-full xl:w-full">
+              <div className="h-full w-full xl:grid xl:grid-cols-2">
+                <div className="h-full xl:relative xl:col-start-2">
+                  <img
+                    className="h-full w-full object-cover opacity-25 xl:absolute xl:inset-0"
+                    src="https://images.unsplash.com/photo-1521737852567-6949f3f9f2b5?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=2830&q=80&sat=-100"
+                    alt="People working on laptops"
+                  />
+                  <div
+                    aria-hidden="true"
+                    className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-gray-900 xl:inset-y-0 xl:left-0 xl:h-full xl:w-32 xl:bg-gradient-to-r"
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:max-w-7xl lg:px-8 xl:grid xl:grid-cols-2 xl:grid-flow-col-dense xl:gap-x-8">
+              <div className="relative pt-12 pb-64 sm:pt-24 sm:pb-64 xl:col-start-1 xl:pb-24">
+                <h2 className="text-sm font-semibold tracking-wide uppercase">
+                  <span className="bg-gradient-to-r from-purple-300 to-indigo-300 bg-clip-text text-transparent">
+                    Valuable Metrics
+                  </span>
+                </h2>
+                <p className="mt-3 text-3xl font-extrabold text-white">
+                  Get actionable data that will help grow your business
+                </p>
+                <p className="mt-5 text-lg text-gray-300">
+                  Rhoncus sagittis risus arcu erat lectus bibendum. Ut in
+                  adipiscing quis in viverra tristique sem. Ornare feugiat
+                  viverra eleifend fusce orci in quis amet. Sit in et vitae
+                  tortor, massa. Dapibus laoreet amet lacus nibh integer quis.
+                  Eu vulputate diam sit tellus quis at.
+                </p>
+                <div className="mt-12 grid grid-cols-1 gap-y-12 gap-x-6 sm:grid-cols-2">
+                  <p>
+                    <span className="block text-2xl font-bold text-white">
+                      8K+
+                    </span>
+                    <span className="mt-1 block text-base text-gray-300">
+                      <span className="font-medium text-white">Companies</span>{" "}
+                      use laoreet amet lacus nibh integer quis.
+                    </span>
+                  </p>
+                  <p>
+                    <span className="block text-2xl font-bold text-white">
+                      25K+
+                    </span>
+                    <span className="mt-1 block text-base text-gray-300">
+                      <span className="font-medium text-white">
+                        Countries around the globe
+                      </span>{" "}
+                      lacus nibh integer quis.
+                    </span>
+                  </p>
+                  <p>
+                    <span className="block text-2xl font-bold text-white">
+                      98%
+                    </span>
+                    <span className="mt-1 block text-base text-gray-300">
+                      <span className="font-medium text-white">
+                        Customer satisfaction
+                      </span>{" "}
+                      laoreet amet lacus nibh integer quis.
+                    </span>
+                  </p>
+                  <p>
+                    <span className="block text-2xl font-bold text-white">
+                      12M+
+                    </span>
+                    <span className="mt-1 block text-base text-gray-300">
+                      <span className="font-medium text-white">
+                        Issues resolved
+                      </span>{" "}
+                      lacus nibh integer quis.
+                    </span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* CTA Section */}
+          <div className="bg-white">
+            <div className="max-w-4xl mx-auto py-16 px-4 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8 lg:flex lg:items-center lg:justify-between">
+              <h2 className="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+                <span className="block">Ready to get started?</span>
+                <span className="block bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
+                  Get in touch or create an account.
+                </span>
+              </h2>
+              <div className="mt-6 space-y-4 sm:space-y-0 sm:flex sm:space-x-5">
+                <a
+                  href="#"
+                  className="flex items-center justify-center px-4 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
+                >
+                  Learn more
+                </a>
+                <a
+                  href="#"
+                  className="flex items-center justify-center px-4 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-indigo-800 bg-indigo-50 hover:bg-indigo-100"
+                >
+                  Get started
+                </a>
+              </div>
+            </div>
+          </div>
+        </main>
+
+        <Footer />
+      </div>
     </div>
   );
 }

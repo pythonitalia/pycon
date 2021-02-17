@@ -3,6 +3,7 @@ import React from "react";
 import { useFormState } from "react-use-form-state";
 import Button from "~/components/button/button";
 import { Divider } from "~/components/divider/divider";
+import LoginIcon from "~/components/icons/login";
 import Input from "~/components/input/input";
 import Link from "~/components/link/link";
 import Logo from "~/components/logo/logo";
@@ -62,7 +63,12 @@ const LoginPage = () => {
             </div>
 
             <div>
-              <Button>Log in</Button>
+              <Button>
+                <span className="absolute left-0 inset-y-0 flex flex-row-reverse items-center pl-3">
+                  <LoginIcon className="h-5 w-5 text-blue-100 group-hover:text-blue-400" />
+                </span>
+                Log in
+              </Button>
             </div>
           </form>
 
