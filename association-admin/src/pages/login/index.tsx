@@ -46,7 +46,7 @@ const Login = () => {
         <title>Login</title>
       </Head>
 
-      <div className="flex flex-col w-full h-full justify-center bg-gray-100">
+      <div className="flex flex-col px-5 w-full h-full justify-center bg-gray-100">
         <div className="mx-auto w-full max-w-md">
           <Heading align="center">Sign in to your account</Heading>
         </div>
