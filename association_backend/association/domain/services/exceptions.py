@@ -10,9 +10,9 @@ class SubscriptionNotCreated(Exception):
     pass
 
 
-class SubscriptionRequestNotFound(Exception):
+class SubscriptionNotFound(Exception):
     pass
 
 
-class SubscriptionRequestNotUpdated(Exception):
+class SubscriptionNotUpdated(Exception):
     pass

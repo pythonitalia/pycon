@@ -5,9 +5,9 @@ import strawberry
 from association.api.builder import create_validation_error_type
 from association.api.context import Info
 from association.api.mutation.types import PydanticError
-from association.api.types import SubscriptionRequest
+from association.api.types import Subscription
 from association.domain import entities, services
-from association.domain.services import SubscriptionRequestInput
+from association.domain.services import SubscriptionDraftInput
 from association.domain.services.create_stripe_checkout_session import (
     StripeCreateCheckoutInput,
 )
@@ -43,17 +43,13 @@ JWTValidationError = create_validation_error_type("JWT", JWTErrors)
 
 @strawberry.type
 class StripeCheckoutCreated:
-    subscription_request: SubscriptionRequest
+    subscription: Subscription
 
     @classmethod
     def from_domain(
-        cls, subscription_request_entity: entities.SubscriptionRequest
+        cls, subscription_entity: entities.Subscription
     ) -> StripeCheckoutCreated:
-        return cls(
-            subscription_request=SubscriptionRequest.from_domain(
-                subscription_request_entity
-            )
-        )
+        return cls(subscription=Subscription.from_domain(subscription_entity))
 
 
 # ===========
@@ -103,15 +99,15 @@ async def setup_stripe_checkout(info: Info) -> CreateStripeCheckoutResult:
         return CreateStripeCheckoutValidationError.from_validation_error(exc)
 
     try:
-        input_model = SubscriptionRequestInput(
+        input_model = SubscriptionDraftInput(
             session_id=checkout_session.id,
             customer_id=checkout_session.customer_id,
             user_id=user_data.user_id,
         )
-        subscription_request = await services.create_subscription_request(
+        draft_subscription = await services.create_draft_subscription(
             input_model, association_repository=info.context.association_repository
         )
     except pydantic.ValidationError as exc:
         return CreateStripeCheckoutValidationError.from_validation_error(exc)
 
-    return StripeCheckoutCreated.from_domain(subscription_request)
+    return StripeCheckoutCreated.from_domain(draft_subscription)

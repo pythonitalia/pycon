@@ -1,14 +1,14 @@
 """subscription model
 
-Revision ID: baf3a41d2a8f
-Create Date: 2021-02-17 18:35:52.486998
+Revision ID: b8d41420bc9c
+Create Date: 2021-02-17 21:42:02.579404
 
 """
 import sqlalchemy as sa
 from alembic import op
 
 # revision identifiers, used by Alembic.
-revision = "baf3a41d2a8f"
+revision = "b8d41420bc9c"
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -19,10 +19,13 @@ def upgrade():
     op.create_table(
         "Subscription",
         sa.Column("user_id", sa.String(length=32), nullable=False),
-        sa.Column("payment_date", sa.DateTime(timezone=True), nullable=False),
+        sa.Column("creation_date", sa.DateTime(timezone=True), nullable=False),
+        sa.Column("payment_date", sa.DateTime(timezone=True), nullable=True),
         sa.Column("stripe_id", sa.String(length=128), nullable=False),
         sa.Column("stripe_customer_id", sa.String(length=128), nullable=False),
-        sa.PrimaryKeyConstraint("user_id", "payment_date"),
+        sa.Column("stripe_session_id", sa.String(length=128), nullable=False),
+        sa.Column("state", sa.String(length=16), nullable=False),
+        sa.PrimaryKeyConstraint("user_id", "stripe_session_id"),
         sa.UniqueConstraint("stripe_id"),
     )
     # ### end Alembic commands ###

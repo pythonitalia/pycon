@@ -9,7 +9,7 @@ from association.domain.repositories import AssociationRepository
 from association.domain.services import (
     StripeCreateCheckoutInput,
     StripeCustomerInput,
-    SubscriptionRequestInput,
+    SubscriptionDraftInput,
 )
 from association.domain.services.exceptions import StripeCheckoutSessionNotCreated
 from association.settings import (
@@ -98,12 +98,12 @@ class CreateCheckoutSessionView(HTTPEndpoint):
             return JSONResponse({"error": {"message": str(e)}}, status_code=400)
 
         try:
-            input_model = SubscriptionRequestInput(
+            input_model = SubscriptionDraftInput(
                 session_id=checkout_session.id,
                 customer_id=checkout_session.customer_id,
                 user_id=user_data.user_id,
             )
-            await services.create_subscription_request(
+            await services.create_draft_subscription(
                 input_model,
                 association_repository=self._get_association_repository(request),
             )

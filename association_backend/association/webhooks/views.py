@@ -5,13 +5,10 @@ import stripe
 from association.db import get_engine, get_session
 from association.domain import services
 from association.domain.repositories import AssociationRepository
-from association.domain.services import (
-    SubscriptionInputModel,
-    SubscriptionRequestUpdateInput,
-)
+from association.domain.services import SubscriptionInputModel, SubscriptionUpdateInput
 from association.domain.services.exceptions import (
     SubscriptionNotCreated,
-    SubscriptionRequestNotUpdated,
+    SubscriptionNotUpdated,
 )
 from association.settings import STRIPE_WEBHOOK_SIGNATURE_SECRET
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -34,7 +31,7 @@ class StripeWebhook(HTTPEndpoint):
     async def handle_customer_subscription_created(self, request, payload):
         stripe_obj = payload["object"]
         try:
-            await services.register_subscription(
+            await services.set_subscription_payed(
                 SubscriptionInputModel(subscription_id=stripe_obj["id"]),
                 association_repository=self._get_association_repository(request),
             )
@@ -47,8 +44,8 @@ class StripeWebhook(HTTPEndpoint):
     async def handle_checkout_session_completed(self, request, payload):
         stripe_obj = payload["object"]
         try:
-            await services.update_subscription_request(
-                SubscriptionRequestUpdateInput(
+            await services.update_draft_subscription(
+                SubscriptionUpdateInput(
                     session_id=stripe_obj["id"],
                     customer_id=stripe_obj["customer"],
                     subscription_id=stripe_obj["subscription"],
@@ -56,7 +53,7 @@ class StripeWebhook(HTTPEndpoint):
                 association_repository=self._get_association_repository(request),
             )
             return JSONResponse({"event": payload.get("type", ""), "msg": "OK"})
-        except SubscriptionRequestNotUpdated as ex:
+        except SubscriptionNotUpdated as ex:
             return JSONResponse(
                 {"event": payload.get("type", ""), "msg": "KO", "error": str(ex)}
             )

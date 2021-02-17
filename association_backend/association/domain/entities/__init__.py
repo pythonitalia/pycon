@@ -1,3 +1,3 @@
-from .subscription_entities import Subscription, SubscriptionRequest
+from .subscription_entities import Subscription
 
-__all__ = ["Subscription", "SubscriptionRequest"]
+__all__ = ["Subscription"]

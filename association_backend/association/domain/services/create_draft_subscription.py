@@ -3,28 +3,32 @@ from __future__ import annotations
 import logging
 from datetime import datetime
 
-from association.domain.entities.subscription_entities import SubscriptionRequest
+from association.domain.entities.subscription_entities import (
+    Subscription,
+    SubscriptionState,
+)
 from association.domain.repositories.association_repository import AssociationRepository
 from pydantic import BaseModel
 
 logger = logging.getLogger(__name__)
 
 
-class SubscriptionRequestInput(BaseModel):
+class SubscriptionDraftInput(BaseModel):
     user_id: str
     session_id: str
     customer_id: str
 
 
-async def create_subscription_request(
-    data: SubscriptionRequestInput, association_repository: AssociationRepository
+async def create_draft_subscription(
+    data: SubscriptionDraftInput, association_repository: AssociationRepository
 ):
-    subscription_request = SubscriptionRequest(
+    subscription = Subscription(
         user_id=data.user_id,
         stripe_session_id=data.session_id,
         stripe_customer_id=data.customer_id,
-        request_date=datetime.now(),
+        creation_date=datetime.now(),
+        state=SubscriptionState.PENDING,
     )
-    await association_repository.register_subscription_request(subscription_request)
+    await association_repository.save_subscription(subscription)
     await association_repository.commit()
-    return subscription_request
+    return subscription

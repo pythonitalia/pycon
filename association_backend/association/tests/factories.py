@@ -5,7 +5,7 @@ from factory.alchemy import SQLAlchemyModelFactory
 from faker.providers import BaseProvider
 from ward import fixture
 
-from ..domain.entities import Subscription, SubscriptionRequest
+from ..domain.entities import Subscription
 from .session import test_session
 
 
@@ -43,6 +43,7 @@ class SubscriptionFactory(SQLAlchemyModelFactory):
         model = Subscription
         sqlalchemy_session = test_session
 
+    creation_date = factory.Faker("date_between", start_date="-30y", end_date="today")
     payment_date = factory.Faker("date_between", start_date="-30y", end_date="today")
 
     @factory.lazy_attribute
@@ -61,23 +62,6 @@ class SubscriptionFactory(SQLAlchemyModelFactory):
         fake.add_provider(StripeProvider)
         return fake.customer_id()
 
-
-class SubscriptionRequestFactory(SQLAlchemyModelFactory):
-    class Meta:
-        model = SubscriptionRequest
-        sqlalchemy_session = test_session
-
-    request_date = factory.Faker("date_between", start_date="-30y", end_date="today")
-    user_id = factory.Faker("pystr", min_chars=6, max_chars=6)
-
-    @factory.lazy_attribute
-    def stripe_customer_id(self):
-        from faker import Factory
-
-        fake = Factory.create()
-        fake.add_provider(StripeProvider)
-        return fake.customer_id()
-
     @factory.lazy_attribute
     def stripe_session_id(self):
         from faker import Factory
@@ -86,30 +70,12 @@ class SubscriptionRequestFactory(SQLAlchemyModelFactory):
         fake.add_provider(StripeProvider)
         return fake.checkout_session_id()
 
-    @factory.lazy_attribute
-    def stripe_subscription_id(self):
-        from faker import Factory
-
-        fake = Factory.create()
-        fake.add_provider(StripeProvider)
-        return fake.subscription_id()
-
 
 @fixture
 async def subscription_factory():
     async def func(**kwargs):
         obj = SubscriptionFactory.create(**kwargs)
         await SubscriptionFactory._meta.sqlalchemy_session.flush()
-        return obj
-
-    return func
-
-
-@fixture
-async def subscription_request_factory():
-    async def func(**kwargs):
-        obj = SubscriptionRequestFactory.create(**kwargs)
-        await SubscriptionRequestFactory._meta.sqlalchemy_session.flush()
         return obj
 
     return func
