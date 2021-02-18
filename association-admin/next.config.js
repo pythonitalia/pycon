@@ -3,7 +3,7 @@ module.exports = {
     return [
       {
         source: "/graphql",
-        destination: `http://localhost:8050/admin-api`,
+        destination: `http://localhost:4001/graphql`,
       },
     ];
   },
