@@ -5,6 +5,7 @@ type Props = {
   block?: boolean;
   href?: string;
   type?: ButtonHTMLAttributes<HTMLButtonElement>["type"];
+  className?: string;
 };
 
 export const Button: React.FC<Props> = ({
@@ -12,6 +13,7 @@ export const Button: React.FC<Props> = ({
   block = true,
   href,
   type = "submit",
+  className,
 }) => {
   const Wrapper = href ? "a" : Fragment;
   let wrapperProps;
@@ -33,6 +35,7 @@ export const Button: React.FC<Props> = ({
           {
             "w-full": block,
           },
+          className,
         )}
       >
         {children}

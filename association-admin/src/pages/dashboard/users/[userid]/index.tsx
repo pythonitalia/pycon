@@ -91,6 +91,7 @@ const UserDetail = () => {
                         type="button"
                         href={`mailto:${encodeURIComponent(user.email)}`}
                         block={false}
+                        className="mt-1"
                       >
                         Contact user
                       </Button>
