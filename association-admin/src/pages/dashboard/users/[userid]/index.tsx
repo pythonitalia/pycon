@@ -127,7 +127,7 @@ const UserDetail = () => {
                   "20 Gennaio 2021",
                   "Stripe",
                 ]}
-                data={[{}, {}, {}]}
+                data={[{ id: 1 }, { id: 2 }, { id: 3 }]}
                 headers={["Start", "End", "Where"]}
               />
             </Card>

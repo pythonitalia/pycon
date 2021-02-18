@@ -67,6 +67,7 @@ export const Table = <ItemType,>({
             const row = rowGetter(item);
             const hrefInfo = clickableItem?.(item);
             const LinkComponent = hrefInfo ? Link : Fragment;
+            const linkProps = hrefInfo ? { href: hrefInfo } : null;
 
             return (
               <tr
@@ -78,7 +79,7 @@ export const Table = <ItemType,>({
                 {row.map((content, index) => (
                   <LinkComponent
                     key={`${keyGetter(item)}-${index}`}
-                    href={hrefInfo}
+                    {...linkProps}
                   >
                     <td
                       key={content}
