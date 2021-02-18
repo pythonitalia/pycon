@@ -2,6 +2,8 @@ import { useCallback } from "react";
 
 import { useRouter } from "next/router";
 
+import { clamp } from "~/helpers/clamp";
+
 const ITEMS_COUNT = 10;
 
 export const usePagination = (urlPrefix) => {
@@ -19,32 +21,26 @@ export const usePagination = (urlPrefix) => {
     to = parseInt(searchParams.get(queryTo), 10) || ITEMS_COUNT;
   }
 
-  const goNext = useCallback(() => {
+  const replaceUrl = (newAfter: number, newTo: number) => {
     replace(
       {
         pathname,
         query: {
-          [queryAfter]: to,
-          [queryTo]: to + ITEMS_COUNT,
+          [queryAfter]: Math.max(0, newAfter),
+          [queryTo]: Math.max(1, newTo),
         },
       },
       null,
       { shallow: true },
     );
+  };
+
+  const goNext = useCallback(() => {
+    replaceUrl(to, to + ITEMS_COUNT);
   }, [to]);
 
   const goBack = useCallback(() => {
-    replace(
-      {
-        pathname,
-        query: {
-          [queryAfter]: after - ITEMS_COUNT,
-          [queryTo]: after,
-        },
-      },
-      null,
-      { shallow: true },
-    );
+    replaceUrl(after - ITEMS_COUNT, after);
   }, [after]);
 
   return {
