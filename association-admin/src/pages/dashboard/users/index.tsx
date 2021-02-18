@@ -8,12 +8,13 @@ import { usePagination } from "~/hooks/use-pagination";
 import { useUsersQuery } from "./users.generated";
 
 const Users = () => {
-  const { to, after, goNext, goBack } = usePagination();
+  const { to, after, goNext, goBack } = usePagination("users");
   const [{ fetching, error, data }] = useUsersQuery({
     variables: {
       to,
       after,
     },
+    pause: to === null || after === null,
   });
 
   return (
