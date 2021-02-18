@@ -2,6 +2,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 
 import { BackIcon } from "~/components/back-icon";
+import { Button } from "~/components/button";
 import { Card } from "~/components/card";
 import { DashboardPageWrapper } from "~/components/dashboard-page-wrapper";
 import { Heading } from "~/components/heading";
@@ -14,7 +15,7 @@ import { useUserDetailQuery } from "./user.generated";
 
 type UserInfoProps = {
   label: string;
-  text: string;
+  text: string | React.ReactElement;
 };
 
 const UserInfo: React.FC<UserInfoProps> = ({ label, text }) => (
@@ -43,6 +44,11 @@ const UserDetail = () => {
 
   if (fetching) {
     return <Loading />;
+  }
+
+  if (error) {
+    // TODO Handle error
+    return null;
   }
 
   const user = data?.user;
@@ -76,7 +82,21 @@ const UserDetail = () => {
             >
               <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <UserInfo label="ID" text={`${user.id}`} />
-                <UserInfo label="Email" text={valueOrPlaceholder(user.email)} />
+                <UserInfo
+                  label="Email"
+                  text={
+                    <>
+                      {valueOrPlaceholder(user.email)}
+                      <Button
+                        type="button"
+                        href={`mailto:${encodeURIComponent(user.email)}`}
+                        block={false}
+                      >
+                        Contact user
+                      </Button>
+                    </>
+                  }
+                />
                 <UserInfo
                   label="Fullname"
                   text={valueOrPlaceholder(user.fullname)}
