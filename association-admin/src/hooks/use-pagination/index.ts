@@ -15,8 +15,8 @@ export const usePagination = (urlPrefix) => {
 
   if (typeof window !== "undefined") {
     const searchParams = new window.URLSearchParams(window.location.search);
-    after = parseInt(searchParams.get(queryAfter), 10);
-    to = parseInt(searchParams.get(queryTo), 10);
+    after = parseInt(searchParams.get(queryAfter), 10) || 0;
+    to = parseInt(searchParams.get(queryTo), 10) || ITEMS_COUNT;
   }
 
   const goNext = useCallback(() => {
