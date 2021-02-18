@@ -7,7 +7,6 @@ import { useRouter } from "next/router";
 import { useIsOnLogin } from "~/hooks/use-is-on-login";
 
 import { Logo } from "../logo";
-import { useDrawer } from "./context";
 
 const MENU_ITEMS = [
   { icon: UserGroupOutline, label: "Users", path: "/dashboard/users" },
@@ -16,10 +15,9 @@ const MENU_ITEMS = [
 
 export const Drawer = () => {
   const { pathname } = useRouter();
-  const { open } = useDrawer();
   const isOnLogin = useIsOnLogin();
 
-  if (!open || isOnLogin) {
+  if (isOnLogin) {
     return null;
   }
 
