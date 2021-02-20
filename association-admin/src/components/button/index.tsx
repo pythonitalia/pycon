@@ -27,7 +27,6 @@ export const Button: React.FC<Props> = ({
 
   return (
     <Wrapper {...wrapperProps}>
-      {" "}
       <button
         type={type}
         className={classnames(
