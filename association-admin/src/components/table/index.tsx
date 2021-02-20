@@ -6,6 +6,8 @@ import Link from "next/link";
 
 import { clamp } from "~/helpers/clamp";
 
+import { Button, ButtonVariant } from "../button";
+
 export type Pagination = {
   after: number;
   to: number;
@@ -124,24 +126,26 @@ export const Table = <ItemType,>({
               results
             </p>
             <nav
-              className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
+              className="relative z-0 inline-flex rounded-md shadow-sm space-x-2"
               aria-label="Pagination"
             >
               {pagination.after !== 0 && (
-                <button
+                <Button
+                  variant={ButtonVariant.PAGINATION}
+                  type="button"
                   onClick={pagination.goBack}
-                  className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
                 >
-                  <span>Previous</span>
-                </button>
+                  Previous
+                </Button>
               )}
               {pagination.hasMore && (
-                <button
+                <Button
+                  variant={ButtonVariant.PAGINATION}
+                  type="button"
                   onClick={pagination.goNext}
-                  className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
                 >
-                  <span>Next</span>
-                </button>
+                  Next
+                </Button>
               )}
             </nav>
           </div>

@@ -11,7 +11,6 @@ export const useUser = () => {
   const { user, resetUrqlClient } = useContext(UserContext);
   const logout = useCallback(() => {
     window.localStorage.removeItem(TOKEN_NAME);
-    console.log("resetUrqlClient", resetUrqlClient);
     resetUrqlClient?.();
   }, [resetUrqlClient]);
 
