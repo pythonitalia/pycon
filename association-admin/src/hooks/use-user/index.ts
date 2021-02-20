@@ -1,18 +1,22 @@
-import { useContext } from "react";
+import { useCallback, useContext } from "react";
 
 import { UserContext } from "~/components/user-provider";
 
 export const TOKEN_NAME = "auth-token";
 
-const logout = () => window.localStorage.removeItem(TOKEN_NAME);
 const setToken = (token: string) =>
   window.localStorage.setItem(TOKEN_NAME, token);
 
 export const useUser = () => {
-  const value = useContext(UserContext);
+  const { user, resetUrqlClient } = useContext(UserContext);
+  const logout = useCallback(() => {
+    window.localStorage.removeItem(TOKEN_NAME);
+    console.log("resetUrqlClient", resetUrqlClient);
+    resetUrqlClient?.();
+  }, [resetUrqlClient]);
 
   return {
-    user: value.user,
+    user,
     logout,
     setToken,
   };

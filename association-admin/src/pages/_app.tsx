@@ -17,9 +17,9 @@ type AuthState = {
   token?: string;
 };
 
-const App = ({ Component, pageProps }) => (
+const App = ({ Component, pageProps, resetUrqlClient }) => (
   <RecoilRoot>
-    <UserProvider>
+    <UserProvider resetUrqlClient={resetUrqlClient}>
       <div className="h-screen w-screen flex overflow-hidden bg-white">
         <Drawer />
         <div className="flex flex-col w-0 flex-1 overflow-hidden">
@@ -49,6 +49,8 @@ export default withUrqlClient(
             if (token) {
               return { token };
             }
+
+            return null;
           }
 
           if (typeof window !== "undefined") {
