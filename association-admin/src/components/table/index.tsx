@@ -101,29 +101,16 @@ export const Table = <ItemType,>({
       {pagination && (
         <div className="bg-gray-50 border-t py-1 flex items-center justify-between border-gray-200 px-6">
           <div className="flex-1 flex items-center justify-between">
-            <p className="text-sm text-gray-700">
-              Showing
-              <span
-                className="font-bold"
-                style={{ marginLeft: "0.2rem", marginRight: "0.2rem" }}
-              >
-                {pagination.after + 1}
-              </span>
-              to
-              <span
-                className="font-bold"
-                style={{ marginLeft: "0.2rem", marginRight: "0.2rem" }}
-              >
+            <p className="text-sm text-gray-700 space-x-1">
+              <span>Showing</span>
+              <span className="font-bold">{pagination.after + 1}</span>
+              <span>to</span>
+              <span className="font-bold">
                 {clamp(pagination.to, 0, pagination.totalCount)}
               </span>
-              of
-              <span
-                className="font-bold"
-                style={{ marginLeft: "0.2rem", marginRight: "0.2rem" }}
-              >
-                {pagination.totalCount}
-              </span>
-              results
+              <span>of</span>
+              <span className="font-bold">{pagination.totalCount}</span>
+              <span>results</span>
             </p>
             <nav
               className="relative z-0 inline-flex rounded-md shadow-sm space-x-2"
