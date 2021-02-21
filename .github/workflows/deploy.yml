@@ -44,7 +44,7 @@ jobs:
     needs: [build-and-push-lambda-backend]
     defaults:
       run:
-        working-directory: ./infrastructure
+        working-directory: ./infrastructure/applications
     steps:
       - uses: actions/checkout@master
       - uses: hashicorp/setup-terraform@v1
