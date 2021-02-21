@@ -75,7 +75,7 @@ const Footer = () => {
             </a>
           </div>
           <p className="mt-8 text-base text-gray-400 md:mt-0 md:order-1">
-            Python Italia
+            Python Italia with some rights reserved
           </p>
         </div>
       </div>
