@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 
 import { useIsOnLogin } from "~/hooks/use-is-on-login";
 
-import { Input, Variant } from "../input";
+import { Input, InputVariant } from "../input";
 
 type Form = {
   query: string;
@@ -48,7 +48,7 @@ export const SearchBar = () => {
         name="search"
         id="search"
         placeholder="Search..."
-        variant={Variant.Search}
+        variant={InputVariant.Search}
         {...search("query")}
       />
     </form>

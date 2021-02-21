@@ -1,6 +1,6 @@
 import classnames from "classnames";
 
-export enum Variant {
+export enum InputVariant {
   Search,
   Input,
 }
@@ -16,7 +16,7 @@ type Props = {
   errorMessage?: string;
   icon?: React.ExoticComponent<{ className: string }>;
   className?: string;
-  variant?: Variant;
+  variant?: InputVariant;
 };
 
 export const Input: React.FC<Props> = ({
@@ -25,12 +25,12 @@ export const Input: React.FC<Props> = ({
   errorMessage,
   icon: Icon,
   className,
-  variant = Variant.Input,
+  variant = InputVariant.Input,
   ...props
 }) => (
   <div
     className={classnames("relative rounded-md shadow-sm", {
-      "h-full": variant === Variant.Search,
+      "h-full": variant === InputVariant.Search,
     })}
   >
     {label && (
@@ -50,7 +50,7 @@ export const Input: React.FC<Props> = ({
 
     <div
       className={classnames({
-        "h-full": variant === Variant.Search,
+        "h-full": variant === InputVariant.Search,
       })}
     >
       <input
@@ -60,8 +60,8 @@ export const Input: React.FC<Props> = ({
             "border-red-500": !!errorMessage,
             "pl-11": !!Icon,
 
-            "border-none border-t-0 h-full": variant === Variant.Search,
-            "border rounded-md border-gray-300": variant === Variant.Input,
+            "border-none border-t-0 h-full": variant === InputVariant.Search,
+            "border rounded-md border-gray-300": variant === InputVariant.Input,
           },
           className,
         )}
