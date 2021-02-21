@@ -54,7 +54,6 @@ export const Table = <ItemType,>({
         </thead>
         <tbody className="bg-white divide-y divide-gray-100">
           {data.map((item) => {
-            // @ts-ignore
             const row = rowGetter(item);
             const hrefInfo = clickableItem?.(item);
             const LinkComponent = hrefInfo ? Link : Fragment;
