@@ -56,6 +56,28 @@ async def _(db=db, second_session=second_session, cleanup_db=cleanup_db):
     assert db_user.is_superuser is False
 
 
+@test("get all users")
+async def _(db=db, second_session=second_session, user_factory=user_factory):
+    db = cast(AsyncSession, db)
+    second_session = cast(AsyncSession, second_session)
+
+    user = await user_factory(email="user1@user.it", id=1)
+    user_2 = await user_factory(email="user2@user.it", id=2)
+    user_3 = await user_factory(email="user3@user.it", id=3)
+
+    repository = UsersRepository(db)
+    paginable = await repository.get_users()
+
+    page = await paginable.page(0, 1)
+
+    assert page.total_count == 3
+    assert page.items == [user]
+
+    page = await paginable.page(1, 3)
+    assert page.total_count == 3
+    assert page.items == [user_2, user_3]
+
+
 @test("get user by email")
 async def _(
     db=db,
@@ -129,3 +151,96 @@ async def _(
     assert found_user.is_active is raw_query_user.is_active
     assert found_user.is_staff is raw_query_user.is_staff
     assert found_user.is_superuser is raw_query_user.is_superuser
+
+
+@test("search users")
+async def _(db=db, user_factory=user_factory):
+    user_1 = await user_factory(email="marco@email.it", fullname="Marco Ciao", name="")
+    await user_factory(email="nina@email.it", fullname="Nina Nana", name="")
+    await user_factory(email="patrick@email.it", fullname="Patrick Ciao", name="")
+
+    repository = UsersRepository(db)
+    found_users = await repository.search("Marco")
+
+    assert len(found_users) == 1
+    assert found_users[0].id == user_1.id
+
+
+@test("search users is case-insensitive")
+async def _(db=db, user_factory=user_factory):
+    user_1 = await user_factory(email="marco@email.it", fullname="Marco Ciao", name="")
+    await user_factory(email="nina@email.it", fullname="Nina Nana", name="")
+    user_3 = await user_factory(
+        email="patrick@email.it", fullname="Patrick Ciao", name=""
+    )
+
+    repository = UsersRepository(db)
+    found_users = await repository.search("ciao")
+
+    assert len(found_users) == 2
+    ids = [u.id for u in found_users]
+
+    assert user_1.id in ids
+    assert user_3.id in ids
+
+
+@test("search users returns empty if there are no results")
+async def _(db=db, user_factory=user_factory):
+    await user_factory(email="marco@email.it", fullname="Marco Ciao", name="")
+    await user_factory(email="nina@email.it", fullname="Nina Nana", name="")
+    await user_factory(email="patrick@email.it", fullname="Patrick Ciao", name="")
+
+    repository = UsersRepository(db)
+    found_users = await repository.search("nono")
+
+    assert len(found_users) == 0
+
+
+@test("search users by email")
+async def _(db=db, user_factory=user_factory):
+    await user_factory(email="marco@email.it", fullname="Marco Ciao", name="")
+    await user_factory(email="nina@email.it", fullname="Nina Nana", name="")
+    user = await user_factory(
+        email="ohhello@email.it", fullname="Not In my name", name=""
+    )
+
+    repository = UsersRepository(db)
+    found_users = await repository.search("ohhello")
+
+    assert len(found_users) == 1
+    assert found_users[0].id == user.id
+
+
+@test("search users by email, fullname and name")
+async def _(db=db, user_factory=user_factory):
+    user_1 = await user_factory(email="marco@email.it", fullname="Hello Ciao", name="")
+    user_2 = await user_factory(
+        email="nina@email.it", fullname="Nina Nana", name="Nope Hello!"
+    )
+    user_3 = await user_factory(
+        email="ohhello@email.it", fullname="Not In my name", name=""
+    )
+    await user_factory(email="notincluded@email.it", fullname="Ciao mondo!", name="")
+
+    repository = UsersRepository(db)
+    found_users = await repository.search("hello")
+
+    assert len(found_users) == 3
+    ids = [u.id for u in found_users]
+
+    assert user_1.id in ids
+    assert user_2.id in ids
+    assert user_3.id in ids
+
+
+@test("cannot search users by empty query")
+async def _(db=db, user_factory=user_factory):
+    await user_factory(email="marco@email.it", fullname="Hello Ciao", name="")
+    await user_factory(email="nina@email.it", fullname="Nina Nana", name="Nope Hello!")
+    await user_factory(email="ohhello@email.it", fullname="Not In my name", name="")
+    await user_factory(email="notincluded@email.it", fullname="Ciao mondo!", name="")
+
+    repository = UsersRepository(db)
+    found_users = await repository.search("")
+
+    assert len(found_users) == 0

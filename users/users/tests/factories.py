@@ -2,9 +2,10 @@ import datetime
 
 import factory
 from factory.alchemy import SQLAlchemyModelFactory
+from ward import fixture
+
 from users.domain.entities import User
 from users.starlette_password.hashers import make_password
-from ward import fixture
 
 from .session import test_session
 
@@ -42,6 +43,16 @@ class UserFactory(SQLAlchemyModelFactory):
 async def user_factory():
     async def func(**kwargs):
         obj = UserFactory.create(**kwargs)
+        await UserFactory._meta.sqlalchemy_session.flush()
+        return obj
+
+    return func
+
+
+@fixture
+async def user_factory_batch():
+    async def func(size, **kwargs):
+        obj = UserFactory.create_batch(size, **kwargs)
         await UserFactory._meta.sqlalchemy_session.flush()
         return obj
 

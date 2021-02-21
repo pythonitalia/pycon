@@ -3,12 +3,13 @@ from __future__ import annotations
 import pydantic
 import strawberry
 
-from users.api.builder import create_validation_error_type
 from users.api.context import Info
-from users.api.types import PydanticError, User
+from users.api.types import User
 from users.domain import entities, services
 from users.domain.services import RegisterInputModel
 from users.domain.services.exceptions import EmailAlreadyUsedError
+from users.utils.api.builder import create_validation_error_type
+from users.utils.api.types import PydanticError
 
 
 @strawberry.experimental.pydantic.input(

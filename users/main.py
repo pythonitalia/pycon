@@ -6,6 +6,7 @@ from starlette.middleware.authentication import AuthenticationMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 from starlette.routing import Route
 
+from users.admin_api.views import GraphQL as AdminGraphQL
 from users.api.views import GraphQL
 from users.auth.backend import JWTAuthBackend, on_auth_error
 from users.db import get_engine, get_session
@@ -19,6 +20,7 @@ app = Starlette(
     debug=DEBUG,
     routes=[
         Route("/graphql", GraphQL()),
+        Route("/admin-api", AdminGraphQL()),
         Route("/login/google", google_login),
         Route("/login/google/auth", google_login_auth, name="auth"),
     ],
