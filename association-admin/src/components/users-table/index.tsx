@@ -1,4 +1,5 @@
-import { Table, Pagination } from "~/components/table";
+import { Table } from "~/components/table";
+import { Pagination } from "~/components/table/pagination-bar";
 import { UserPills } from "~/components/user-pills";
 
 import { UserDataForTableFragment } from "./user-table.generated";
