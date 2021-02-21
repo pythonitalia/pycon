@@ -1,8 +1,3 @@
-resource "aws_route53_zone" "pythonit" {
-  name    = "python.it"
-  comment = ""
-}
-
 resource "aws_route53_record" "python_it_a" {
   zone_id = aws_route53_zone.pythonit.id
   name    = "python.it"
