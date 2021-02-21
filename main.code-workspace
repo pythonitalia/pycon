@@ -23,6 +23,10 @@
     {
       "name": "🔧 Infrastructure",
       "path": "infrastructure"
+    },
+    {
+      "name": "🐙 GitHub",
+      "path": ".github"
     }
   ],
   "settings": {},
