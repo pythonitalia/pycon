@@ -1,3 +1,8 @@
+# Generic
+module "ecr_repos" {
+  source = "./ecr_repos"
+}
+
 # Domains
 
 module "python_it" {
