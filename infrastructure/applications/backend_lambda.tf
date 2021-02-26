@@ -2,6 +2,10 @@ locals {
   backend_lambda_function_name = "${terraform.workspace}-pycon-backend"
 }
 
+data "aws_db_instance" "database" {
+  db_instance_identifier = "terraform-20190815202105324300000001"
+}
+
 resource "aws_lambda_function" "backend_lambda" {
   function_name = local.backend_lambda_function_name
   role          = aws_iam_role.backend_role.arn
@@ -13,7 +17,7 @@ resource "aws_lambda_function" "backend_lambda" {
 
   environment {
     variables = {
-      DATABASE_URL                     = "postgres://${aws_db_instance.backend.username}:${aws_db_instance.backend.password}@${aws_db_instance.backend.address}:${aws_db_instance.backend.port}/${aws_db_instance.backend.name}"
+      DATABASE_URL                     = "postgres://${data.aws_db_instance.database.master_username}:${var.database_password}@${data.aws_db_instance.database.address}:${data.aws_db_instance.database.port}/${data.aws_db_instance.database.db_name}"
       DEBUG                            = "False"
       SECRET_KEY                       = var.secret_key
       MAPBOX_PUBLIC_API_KEY            = var.mapbox_public_api_key

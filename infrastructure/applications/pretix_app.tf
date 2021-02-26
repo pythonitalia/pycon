@@ -32,7 +32,7 @@ resource "aws_elastic_beanstalk_environment" "pretix_env" {
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "SecurityGroups"
-    value     = aws_security_group.backend_rds.id
+    value     = "sg-03023e3f90c685344"
   }
 
   # You can set the environment type, single or LoadBalanced
@@ -58,19 +58,19 @@ resource "aws_elastic_beanstalk_environment" "pretix_env" {
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
     name      = "DATABASE_USERNAME"
-    value     = aws_db_instance.backend.username
+    value     = data.aws_db_instance.database.master_username
   }
 
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
     name      = "DATABASE_PASSWORD"
-    value     = aws_db_instance.backend.password
+    value     = var.database_password
   }
 
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
     name      = "DATABASE_HOST"
-    value     = aws_db_instance.backend.address
+    value     = data.aws_db_instance.database.address
   }
 
   setting {
