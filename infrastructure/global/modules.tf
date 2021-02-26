@@ -12,3 +12,9 @@ module "python_it" {
 module "pycon_it" {
   source = "./domains/pycon_it"
 }
+
+# VPC
+
+module "vpc" {
+  source = "./vpc"
+}
