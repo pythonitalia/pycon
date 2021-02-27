@@ -35,6 +35,15 @@ resource "aws_db_subnet_group" "rds" {
   subnet_ids = data.aws_subnet_ids.subnets.ids
 }
 
+# New
+data "aws_db_subnet_group" "rds" {
+  name = "pythonit-rds-subnet"
+}
+
+data "aws_security_group" "rds" {
+  name = "pythonit-rds-security-group"
+}
+
 resource "aws_db_instance" "database" {
   allocated_storage           = 10
   storage_type                = "gp2"
@@ -48,9 +57,10 @@ resource "aws_db_instance" "database" {
   multi_az                    = "false"
   availability_zone           = "eu-central-1a"
   skip_final_snapshot         = true
-  publicly_accessible         = true
+  publicly_accessible         = false
+  apply_immediately           = true
   backup_retention_period     = 7
 
-  db_subnet_group_name   = aws_db_subnet_group.rds.name
-  vpc_security_group_ids = [aws_security_group.rds.id]
+  db_subnet_group_name   = data.aws_db_subnet_group.rds.name
+  vpc_security_group_ids = [data.aws_security_group.rds.id]
 }

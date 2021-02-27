@@ -6,6 +6,30 @@ data "aws_db_instance" "database" {
   db_instance_identifier = "terraform-20190815202105324300000001"
 }
 
+data "aws_vpc" "default" {
+  filter {
+    name   = "tag:Name"
+    values = ["pythonit-vpc"]
+  }
+}
+
+
+data "aws_security_group" "rds" {
+  name = "pythonit-rds-security-group"
+}
+
+data "aws_security_group" "lambda" {
+  name = "pythonit-lambda-security-group"
+}
+
+data "aws_subnet_ids" "private" {
+  vpc_id = data.aws_vpc.default.id
+
+  tags = {
+    Type = "private"
+  }
+}
+
 resource "aws_lambda_function" "backend_lambda" {
   function_name = local.backend_lambda_function_name
   role          = aws_iam_role.backend_role.arn
@@ -14,6 +38,11 @@ resource "aws_lambda_function" "backend_lambda" {
   timeout       = 30
   depends_on    = [aws_iam_role_policy.backend_lambda]
   memory_size   = 512
+
+  vpc_config {
+    subnet_ids         = [for subnet in data.aws_subnet_ids.private.ids : subnet]
+    security_group_ids = [data.aws_security_group.rds.id, data.aws_security_group.lambda.id]
+  }
 
   environment {
     variables = {
