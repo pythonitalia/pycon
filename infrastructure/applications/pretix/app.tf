@@ -3,6 +3,31 @@ resource "aws_elastic_beanstalk_application" "app" {
   description = "pretix"
 }
 
+data "aws_vpc" "default" {
+  filter {
+    name   = "tag:Name"
+    values = ["pythonit-vpc"]
+  }
+}
+
+data "aws_security_group" "rds" {
+  name = "pythonit-rds-security-group"
+}
+
+data "aws_subnet" "public" {
+  vpc_id = data.aws_vpc.default.id
+
+  filter {
+    name   = "tag:Type"
+    values = ["public"]
+  }
+
+  filter {
+    name   = "tag:AZ"
+    values = ["eu-central-1a"]
+  }
+}
+
 data "aws_db_instance" "database" {
   db_instance_identifier = "terraform-20190815202105324300000001"
 }
@@ -16,27 +41,27 @@ resource "aws_elastic_beanstalk_environment" "env" {
   setting {
     namespace = "aws:ec2:vpc"
     name      = "VPCId"
-    value     = "vpc-0abcff21ccd9b860d"
+    value     = data.aws_vpc.default.id
   }
 
   # This is the subnet of the ELB
   setting {
     namespace = "aws:ec2:vpc"
     name      = "ELBSubnets"
-    value     = "subnet-0ac523ae11fd2a78e"
+    value     = data.aws_subnet.public.id
   }
 
   # This is the subnets for the instances.
   setting {
     namespace = "aws:ec2:vpc"
     name      = "Subnets"
-    value     = "subnet-0ac523ae11fd2a78e"
+    value     = data.aws_subnet.public.id
   }
 
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "SecurityGroups"
-    value     = "sg-03023e3f90c685344"
+    value     = data.aws_security_group.rds.id
   }
 
   # You can set the environment type, single or LoadBalanced
@@ -113,11 +138,6 @@ resource "aws_elastic_beanstalk_environment" "env" {
     namespace = "aws:elb:policies"
     name      = "ConnectionDrainingEnabled"
     value     = "true"
-  }
-
-  lifecycle {
-    # Temporary because EB thinks settings are always different
-    ignore_changes = [setting]
   }
 }
 

@@ -13,7 +13,6 @@ data "aws_vpc" "default" {
   }
 }
 
-
 data "aws_security_group" "rds" {
   name = "pythonit-rds-security-group"
 }

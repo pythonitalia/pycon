@@ -7,6 +7,7 @@ resource "aws_subnet" "private" {
   tags = {
     Name = "private subnet ${each.key}"
     Type = "private"
+    AZ   = each.key
   }
 }
 
