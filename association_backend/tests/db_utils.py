@@ -35,7 +35,6 @@ def database_exists(url) -> bool:
     with sqlalchemy.create_engine(
         "postgresql:///postgres", isolation_level="AUTOCOMMIT"
     ).connect() as connection:
-        print(f"parsed_url.database : {parsed_url.database}")
         query = "SELECT 1 FROM pg_database WHERE datname='{0}'".format(
             parsed_url.database
         )

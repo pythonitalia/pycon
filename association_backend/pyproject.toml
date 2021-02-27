@@ -21,6 +21,8 @@ stripe = "^2.55.2"
 email-validator = "^1.1.2"
 websockets = "^8.1"
 psycopg2 = "^2.8.6"
+time-machine = "^2.1.0"
+python-dateutil = "^2.8.1"
 
 
 [tool.poetry.dev-dependencies]
@@ -41,7 +43,7 @@ build-backend = "poetry.core.masonry.api"
 
 
 [tool.taskipy.tasks]
-server = "uvicorn main:app --port 8050 --reload"
+server = "uvicorn main:app --port 8060 --reload"
 test = "RUNNING_TESTS=1 python tests/prepare_db.py && RUNNING_TESTS=1 coverage run -m ward"
 "test:coverage" = "task test || coverage xml -i && coverage xml -i"
 "test:debug" = "task test --no-capture-output"

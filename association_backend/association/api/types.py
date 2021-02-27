@@ -16,6 +16,7 @@ class Subscription:
     payment_date: Optional[datetime]
     stripe_id: Optional[str]
     stripe_customer_id: Optional[str]
+    expiration_date: Optional[datetime]
 
     @classmethod
     def from_domain(cls, entity: entities.Subscription) -> Subscription:
@@ -27,4 +28,5 @@ class Subscription:
             stripe_customer_id=entity.stripe_customer_id,
             state=entity.state,
             stripe_session_id=entity.stripe_session_id,
+            expiration_date=entity.expiration_date,
         )

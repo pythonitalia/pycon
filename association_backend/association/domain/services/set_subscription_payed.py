@@ -4,8 +4,8 @@ import logging
 from datetime import datetime
 
 from association.domain.entities.subscription_entities import SubscriptionState
+from association.domain.exceptions import SubscriptionNotCreated
 from association.domain.repositories.association_repository import AssociationRepository
-from association.domain.services.exceptions import SubscriptionNotCreated
 from pydantic import BaseModel
 
 logger = logging.getLogger(__name__)

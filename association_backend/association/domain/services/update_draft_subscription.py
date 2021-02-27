@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import logging
 
+from association.domain.exceptions import SubscriptionNotUpdated
 from association.domain.repositories.association_repository import AssociationRepository
-from association.domain.services.exceptions import SubscriptionNotUpdated
 from pydantic import BaseModel
 
 logger = logging.getLogger(__name__)

@@ -4,12 +4,9 @@ from typing import cast
 import stripe
 from association.db import get_engine, get_session
 from association.domain import services
+from association.domain.exceptions import SubscriptionNotCreated, SubscriptionNotUpdated
 from association.domain.repositories import AssociationRepository
 from association.domain.services import SubscriptionInputModel, SubscriptionUpdateInput
-from association.domain.services.exceptions import (
-    SubscriptionNotCreated,
-    SubscriptionNotUpdated,
-)
 from association.settings import STRIPE_WEBHOOK_SIGNATURE_SECRET
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.endpoints import HTTPEndpoint
@@ -29,6 +26,7 @@ class StripeWebhook(HTTPEndpoint):
         )  # session=AsyncSession
 
     async def handle_customer_subscription_created(self, request, payload):
+        print(f"subscription_created : {payload}")
         stripe_obj = payload["object"]
         try:
             await services.set_subscription_payed(
@@ -59,7 +57,7 @@ class StripeWebhook(HTTPEndpoint):
             )
 
     async def handle_customer_subscription_updated(self, request, payload):
-        logger.debug(payload)
+        print(f"subscription_updated : {payload}")
         return JSONResponse({"event": payload.get("type", ""), "msg": "OK"})
 
     async def handle_payout_paid(self, request, payload):

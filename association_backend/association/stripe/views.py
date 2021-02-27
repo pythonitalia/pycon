@@ -1,17 +1,11 @@
 from typing import cast
 
-import pydantic
 import stripe
-from association.api.mutation.setup_stripe_checkout import UserData
+from association.api.mutation.retrieve_checkout_session import UserData
 from association.db import get_engine, get_session
 from association.domain import services
+from association.domain.exceptions import AlreadySubscribed
 from association.domain.repositories import AssociationRepository
-from association.domain.services import (
-    StripeCreateCheckoutInput,
-    StripeCustomerInput,
-    SubscriptionDraftInput,
-)
-from association.domain.services.exceptions import StripeCheckoutSessionNotCreated
 from association.settings import (
     DOMAIN_URL,
     STRIPE_SUBSCRIPTION_API_KEY,
@@ -68,46 +62,25 @@ class CreateCheckoutSessionView(HTTPEndpoint):
     def _get_association_repository(self, request):
         return AssociationRepository(
             session=cast(AsyncSession, get_session(get_engine(echo=False)))
-        )  # session=AsyncSession
+        )
 
     async def post(self, request):
 
-        user_data = UserData(email="gaetanodonghia@gmail.com", user_id="12345")
+        user_data = UserData(email="fake.user@pycon.it", user_id="12345")
 
         try:
-            customer = await services.get_customer_from_stripe(
-                StripeCustomerInput(email=user_data.email)
-            )
-        except pydantic.ValidationError as e:
-            return JSONResponse({"error": {"message": str(e)}}, status_code=400)
-
-        await request.json()
-        try:
-            checkout_session = await services.create_checkout_session(
-                StripeCreateCheckoutInput(
-                    customer_email=user_data.email,
-                    customer_id=customer.id if customer else "",
-                    # price_id=request_data.price_id
-                )
-            )
-            print(f"checkout_session : {checkout_session}")
-
-        except pydantic.ValidationError as e:
-            return JSONResponse({"error": {"message": str(e)}}, status_code=400)
-        except StripeCheckoutSessionNotCreated as e:
-            return JSONResponse({"error": {"message": str(e)}}, status_code=400)
-
-        try:
-            input_model = SubscriptionDraftInput(
-                session_id=checkout_session.id,
-                customer_id=checkout_session.customer_id,
-                user_id=user_data.user_id,
-            )
-            await services.create_draft_subscription(
-                input_model,
+            subscription = await services.do_checkout(
+                user_data,
                 association_repository=self._get_association_repository(request),
             )
-        except pydantic.ValidationError as e:
-            return JSONResponse({"error": {"message": str(e)}}, status_code=400)
+        except AlreadySubscribed as exc:
+            return JSONResponse(
+                {
+                    "error": {
+                        "message": f"You are already subscribed until {exc.expiration_date.isoformat()}"
+                    }
+                },
+                status_code=400,
+            )
         else:
-            return JSONResponse({"sessionId": checkout_session.id})
+            return JSONResponse({"sessionId": subscription.stripe_session_id})
