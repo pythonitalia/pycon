@@ -61,6 +61,7 @@ jobs:
           TF_VAR_pretix_secret_key: ${{ secrets.TF_VAR_pretix_secret_key }}
           TF_VAR_pretix_api_token: ${{ secrets.TF_VAR_pretix_api_token }}
           TF_VAR_pinpoint_application_id: ${{ secrets.TF_VAR_pinpoint_application_id }}
+          TF_VAR_pretix_sentry_dsn: ${{ secrets.TF_VAR_pretix_sentry_dsn }}
           TF_IN_AUTOMATION: 1
       - name: Find Plan comment
         uses: peter-evans/find-comment@v1

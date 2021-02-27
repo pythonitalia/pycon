@@ -79,6 +79,7 @@ jobs:
           TF_VAR_pretix_secret_key: ${{ secrets.TF_VAR_pretix_secret_key }}
           TF_VAR_pretix_api_token: ${{ secrets.TF_VAR_pretix_api_token }}
           TF_VAR_pinpoint_application_id: ${{ secrets.TF_VAR_pinpoint_application_id }}
+          TF_VAR_pretix_sentry_dsn: ${{ secrets.TF_VAR_pretix_sentry_dsn }}
 
   migrate-db:
     runs-on: ubuntu-20.04
