@@ -1,4 +1,11 @@
 terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "3.29.0"
+    }
+  }
+
   backend "s3" {
     bucket = "pycon-terraform"
     key    = "terraform.tfstate"
@@ -7,6 +14,5 @@ terraform {
 }
 
 provider "aws" {
-  region  = "eu-central-1"
-  version = "3.21"
+  region = "eu-central-1"
 }
