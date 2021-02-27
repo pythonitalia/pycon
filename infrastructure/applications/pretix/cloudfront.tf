@@ -1,8 +1,8 @@
-resource "aws_cloudfront_distribution" "pretix_distribution" {
+resource "aws_cloudfront_distribution" "distribution" {
   aliases = ["tickets.pycon.it"]
 
   origin {
-    domain_name = aws_elastic_beanstalk_environment.pretix_env.cname
+    domain_name = aws_elastic_beanstalk_environment.env.cname
     origin_id   = "pretix"
 
     custom_origin_config {
@@ -54,5 +54,5 @@ resource "aws_cloudfront_distribution" "pretix_distribution" {
 }
 
 output "pretix_distribution_id" {
-  value = aws_cloudfront_distribution.pretix_distribution.id
+  value = aws_cloudfront_distribution.distribution.id
 }

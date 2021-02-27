@@ -1,32 +1,36 @@
-resource "aws_elastic_beanstalk_application" "pretix" {
+resource "aws_elastic_beanstalk_application" "app" {
   name        = "pretix"
   description = "pretix"
 }
 
-resource "aws_elastic_beanstalk_environment" "pretix_env" {
+data "aws_db_instance" "database" {
+  db_instance_identifier = "terraform-20190815202105324300000001"
+}
+
+resource "aws_elastic_beanstalk_environment" "env" {
   name                = "${terraform.workspace}-pretix"
-  application         = aws_elastic_beanstalk_application.pretix.name
+  application         = aws_elastic_beanstalk_application.app.name
   solution_stack_name = "64bit Amazon Linux 2018.03 v2.12.16 running Docker 18.06.1-ce"
   tier                = "WebServer"
 
   setting {
     namespace = "aws:ec2:vpc"
     name      = "VPCId"
-    value     = aws_vpc.default.id
+    value     = "vpc-0abcff21ccd9b860d"
   }
 
   # This is the subnet of the ELB
   setting {
     namespace = "aws:ec2:vpc"
     name      = "ELBSubnets"
-    value     = aws_subnet.primary.id
+    value     = "subnet-0ac523ae11fd2a78e"
   }
 
   # This is the subnets for the instances.
   setting {
     namespace = "aws:ec2:vpc"
     name      = "Subnets"
-    value     = aws_subnet.primary.id
+    value     = "subnet-0ac523ae11fd2a78e"
   }
 
   setting {
@@ -45,7 +49,7 @@ resource "aws_elastic_beanstalk_environment" "pretix_env" {
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "IamInstanceProfile"
-    value     = aws_iam_instance_profile.pycon.name
+    value     = "ng-beanstalk-ec2-user-production"
   }
 
   setting {
@@ -94,7 +98,7 @@ resource "aws_elastic_beanstalk_environment" "pretix_env" {
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
     name      = "SECRET_KEY"
-    value     = var.pretix_secret_key
+    value     = var.secret_key
   }
 
   # Are the load balancers multizone?
@@ -110,8 +114,13 @@ resource "aws_elastic_beanstalk_environment" "pretix_env" {
     name      = "ConnectionDrainingEnabled"
     value     = "true"
   }
+
+  lifecycle {
+    # Temporary because EB thinks settings are always different
+    ignore_changes = [setting]
+  }
 }
 
 output "pretix_domain" {
-  value = aws_elastic_beanstalk_environment.pretix_env.cname
+  value = aws_elastic_beanstalk_environment.env.cname
 }
