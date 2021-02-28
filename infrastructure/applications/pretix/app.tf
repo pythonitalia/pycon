@@ -114,6 +114,10 @@ resource "aws_elastic_beanstalk_environment" "env" {
     name      = "ConnectionDrainingEnabled"
     value     = "true"
   }
+
+  lifecycle {
+    ignore_changes = [setting]
+  }
 }
 
 output "pretix_domain" {
