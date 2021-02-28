@@ -1,8 +1,20 @@
-import "tailwindcss/tailwind.css";
 import "styles/globals.css";
+import "tailwindcss/tailwind.css";
+import Footer from "~/components/footer/footer";
+import Header from "~/components/header/header";
 
-function MyApp({ Component, pageProps }) {
-  return <Component {...pageProps} />;
-}
+const MyApp = ({ Component, pageProps }) => {
+  return (
+    <div>
+      <div className="bg-white">
+        <Header />
+        <main>
+          <Component {...pageProps} />
+        </main>
+        <Footer />
+      </div>
+    </div>
+  );
+};
 
 export default MyApp;
