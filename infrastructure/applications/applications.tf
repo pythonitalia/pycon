@@ -1,7 +1,12 @@
+locals {
+  deploy_pretix = terraform.workspace == "production"
+}
+
 # Applications
 
 module "pretix" {
   source = "./pretix"
+  count  = local.deploy_pretix ? 1 : 0
 
   database_password = var.database_password
   mail_user         = var.mail_user
@@ -24,6 +29,27 @@ module "pycon_backend" {
   pretix_api_token                 = var.pretix_api_token
   pinpoint_application_id          = var.pinpoint_application_id
   ssl_certificate                  = var.ssl_certificate
+}
+
+module "gateway" {
+  source = "./gateway"
+
+  providers = {
+    aws    = aws
+    aws.us = aws.us
+  }
+}
+
+module "users_backend" {
+  source = "./users_backend"
+
+  jwt_auth_secret           = var.jwt_auth_secret
+  session_secret_key        = var.users_backend_session_secret_key
+  google_auth_client_id     = var.social_auth_google_oauth2_key
+  google_auth_client_secret = var.social_auth_google_oauth2_secret
+  database_password         = var.database_password
+
+  depends_on = [module.database]
 }
 
 # Other resources

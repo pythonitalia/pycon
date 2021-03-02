@@ -1,4 +1,7 @@
-# New
+locals {
+  normalized_workspace = replace(terraform.workspace, "-", "")
+}
+
 data "aws_db_subnet_group" "rds" {
   name = "pythonit-rds-subnet"
 }
@@ -11,10 +14,11 @@ resource "aws_db_instance" "database" {
   allocated_storage           = 10
   storage_type                = "gp2"
   engine                      = "postgres"
+  identifier                  = "pythonit-${terraform.workspace}"
   allow_major_version_upgrade = true
   engine_version              = "11.8"
   instance_class              = "db.t2.micro"
-  name                        = "${terraform.workspace}backend"
+  name                        = "${local.normalized_workspace}backend"
   username                    = "root"
   password                    = var.database_password
   multi_az                    = "false"

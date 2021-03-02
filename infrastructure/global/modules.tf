@@ -18,3 +18,20 @@ module "pycon_it" {
 module "vpc" {
   source = "./vpc"
 }
+
+# Roles
+
+module "iam_roles" {
+  source = "./iam_roles"
+}
+
+# Certs
+
+module "certs_beta" {
+  source = "./certs/beta"
+
+  providers = {
+    aws    = aws
+    aws.us = aws.us
+  }
+}

@@ -1,16 +1,16 @@
-const VARIANT = process.env.VARIANT || "default";
+import { USERS_SERVICE, VARIANT } from "./config";
 
 const DEFAULT_SERVICES = [
   {
     name: "users",
-    url: "http://localhost:8050/graphql",
+    url: `${USERS_SERVICE}/graphql`,
   },
 ];
 
 const ADMIN_SERVICES = [
   {
     name: "users:admin",
-    url: "http://localhost:8050/admin-api",
+    url: `${USERS_SERVICE}/admin-api`,
   },
 ];
 
@@ -20,8 +20,4 @@ export const getServices = () => {
   }
 
   return DEFAULT_SERVICES;
-};
-
-export const getPort = () => {
-  return VARIANT === "admin" ? 4001 : 4000;
 };

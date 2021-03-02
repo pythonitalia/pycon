@@ -1,0 +1,9 @@
+.vscode/
+tests/
+.coverage
+.env
+.flake8
+.isort.cfg
+coverage.xml
+Dockerfile
+

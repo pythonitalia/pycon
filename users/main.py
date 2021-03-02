@@ -1,5 +1,9 @@
 import logging
+import subprocess
+import sys
+from io import StringIO
 
+from mangum import Mangum
 from starlette.applications import Starlette
 from starlette.middleware import Middleware
 from starlette.middleware.authentication import AuthenticationMiddleware
@@ -56,3 +60,37 @@ async def startup():
 @app.on_event("shutdown")
 async def shutdown():
     await app.state.engine.dispose()
+
+
+def handler(event, context):
+    if (command := event.get("_cli_command")) :
+        native_stdout = sys.stdout
+        native_stderr = sys.stderr
+        output_buffer = StringIO()
+
+        try:
+            sys.stdout = output_buffer
+            sys.stderr = output_buffer
+
+            if command.get("action") == "migrate":
+                result = subprocess.check_output(
+                    "python -m alembic upgrade head",
+                    shell=True,
+                    stderr=subprocess.STDOUT,
+                )
+                output_buffer.write(_to_native(result))
+        finally:
+            sys.stdout = native_stdout
+            sys.stderr = native_stderr
+
+        return {"output": output_buffer.getvalue()}
+
+    asgi_handler = Mangum(app)
+    response = asgi_handler(event, context)
+    return response
+
+
+def _to_native(x, charset=sys.getdefaultencoding(), errors="strict"):  # noqa
+    if x is None or isinstance(x, str):
+        return x
+    return x.decode(charset, errors)
