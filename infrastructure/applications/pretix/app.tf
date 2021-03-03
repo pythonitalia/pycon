@@ -1,5 +1,5 @@
 data "aws_db_instance" "database" {
-  db_instance_identifier = "terraform-20190815202105324300000001"
+  db_instance_identifier = "pythonit-${terraform.workspace}"
 }
 
 resource "aws_elastic_beanstalk_application" "app" {
