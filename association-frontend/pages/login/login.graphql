@@ -6,6 +6,9 @@ mutation Login($input: LoginInput!) {
       token
     }
 
+    ... on WrongEmailOrPassword {
+      message
+    }
     ... on LoginValidationError {
       errors {
         email {

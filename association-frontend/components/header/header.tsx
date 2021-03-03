@@ -1,7 +1,8 @@
+import React from "react";
+
 import Button from "../button/button";
 import MenuItem from "./menu-item";
 import MobileMenu from "./menu-mobile";
-import React from "react";
 
 const Header = () => {
   return (

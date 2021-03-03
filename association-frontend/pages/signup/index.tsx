@@ -1,6 +1,8 @@
-import Head from "next/head";
 import React from "react";
 import { useFormState } from "react-use-form-state";
+
+import Head from "next/head";
+
 import Button from "~/components/button/button";
 import { Divider } from "~/components/divider/divider";
 import Input from "~/components/input/input";

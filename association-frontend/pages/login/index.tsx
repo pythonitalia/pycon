@@ -1,8 +1,9 @@
-import FacebookIcon from "../../components/icons/facebook";
-import { useLoginMutation } from "./login.generated";
-import Head from "next/head";
 import React from "react";
 import { useFormState } from "react-use-form-state";
+
+import Head from "next/head";
+import { useRouter } from "next/router";
+
 import Button from "~/components/button/button";
 import { Divider } from "~/components/divider/divider";
 import GoogleIcon from "~/components/icons/google";
@@ -10,6 +11,8 @@ import LoginIcon from "~/components/icons/login";
 import Input from "~/components/input/input";
 import Link from "~/components/link/link";
 import Logo from "~/components/logo/logo";
+
+import { useLoginMutation } from "./login.generated";
 
 type LoginFormFields = {
   email: string;
@@ -19,11 +22,12 @@ type LoginFormFields = {
 const LoginPage = () => {
   const [formState, { email, password }] = useFormState<LoginFormFields>({});
 
+  const router = useRouter();
   const [{ fetching, data }, login] = useLoginMutation();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(formState.values);
+    // console.log(formState.values);
 
     const result = await login({
       input: {
@@ -31,7 +35,25 @@ const LoginPage = () => {
         password: formState.values.password,
       },
     });
+    console.log(JSON.stringify(result));
+
+    if (result?.data?.login?.__typename === "LoginSuccess") {
+      router.push("/profile");
+    }
   };
+  const getFieldErrors = (field: "email" | "password") =>
+    data?.login.__typename == "LoginValidationError"
+      ? (data?.login.errors[field] || []).map((error) => error.message)
+      : [];
+
+  const errorMessage =
+    data?.login?.__typename === "WrongEmailOrPassword"
+      ? data.login.message
+      : "";
+
+  console.log(JSON.stringify(data));
+
+  console.log({ errorMessage });
 
   return (
     <>
@@ -48,6 +70,9 @@ const LoginPage = () => {
               Sign in to your account
             </h2>
           </div>
+
+          {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+
           <form
             className="mt-8 space-y-6"
             action="#"
@@ -62,6 +87,7 @@ const LoginPage = () => {
                 {...email("email")}
                 required
               />
+              <p className="text-red-500">{getFieldErrors("email")}</p>
               <Link text={"Don't have an account?"} to="/signup" />
 
               <Input
@@ -71,36 +97,22 @@ const LoginPage = () => {
                 required
                 minLength={8}
               />
+              <p className="text-red-500">{getFieldErrors("password")}</p>
               <Link text={"Forgot your password?"} to="/forgot-password" />
             </div>
 
             <div>
-              <Button fullWidth={true}>
-                <span className="absolute left-0 inset-y-0 flex flex-row-reverse items-center pl-3">
-                  <LoginIcon className="h-5 w-5 text-blue-100 group-hover:text-blue-400" />
-                </span>
+              <Button fullWidth={true} disabled={fetching}>
                 Log in
               </Button>
             </div>
           </form>
 
           <Divider text={"Or continue with..."} />
-          <div className="grid grid-cols-3 gap-4">
-            <div>
-              {" "}
-              <Button fullWidth={true}>
-                <FacebookIcon />
-              </Button>
-            </div>
+          <div className="grid grid-cols-1 gap-4">
             <div>
               <Button fullWidth={true}>
                 <GoogleIcon />
-              </Button>
-            </div>
-            <div>
-              <Button fullWidth={true}>
-                <LoginIcon className="h-5 w-5 text-blue-100 group-hover:text-blue-400" />
-                Facebook
               </Button>
             </div>
           </div>
