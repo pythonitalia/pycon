@@ -34,7 +34,7 @@ module "lambda" {
   source = "../../components/application_lambda"
 
   application        = local.application
-  docker_tag         = "production"
+  docker_tag         = terraform.workspace
   role_arn           = data.aws_iam_role.lambda.arn
   subnet_ids         = [for subnet in data.aws_subnet_ids.private.ids : subnet]
   security_group_ids = [data.aws_security_group.rds.id]

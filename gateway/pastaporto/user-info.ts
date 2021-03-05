@@ -3,7 +3,7 @@ import { GraphQLClient, gql } from "graphql-request";
 
 const USERS_SERVICE_INTERNAL_API_ENDPOINT = `${USERS_SERVICE}/internal-api`;
 
-type User = {
+export type User = {
   id: number;
   email: string;
   isStaff: boolean;

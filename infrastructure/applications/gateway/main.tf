@@ -14,7 +14,7 @@ module "lambda" {
   source = "../../components/application_lambda"
 
   application = local.application
-  docker_tag  = "production"
+  docker_tag  = terraform.workspace
   role_arn    = data.aws_iam_role.lambda.arn
   env_vars = {
     NODE_ENV      = "production"

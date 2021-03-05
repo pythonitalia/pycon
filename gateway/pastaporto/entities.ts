@@ -1,7 +1,7 @@
 import { IDENTITY_SECRET, PASTAPORTO_SECRET } from "../config";
 import jwt from "jsonwebtoken";
 import { promisify } from "util";
-import { fetchUserInfo } from "./user-info";
+import { fetchUserInfo, User } from "./user-info";
 
 const jwtVerify = promisify(jwt.verify);
 const jwtSign = promisify(jwt.sign);
@@ -66,7 +66,15 @@ export class Pastaporto {
 
     return new Pastaporto(
       new UserInfo(userInfo.id, userInfo.email, userInfo.isStaff),
-      [Credential.AUTHENTICATED],
+      getCredentialsFromUser(userInfo),
     );
   }
 }
+
+const getCredentialsFromUser = (user: User): Credential[] => {
+  const credentials = [Credential.AUTHENTICATED];
+  if (user.isStaff) {
+    credentials.push(Credential.STAFF);
+  }
+  return credentials;
+};
