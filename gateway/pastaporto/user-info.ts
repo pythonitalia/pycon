@@ -26,6 +26,6 @@ export const fetchUserInfo = async (id: number): Promise<User> => {
     }
   `;
 
-  const data = await client.request(query, { id: id });
+  const data = await client.request(query, { id });
   return data.user as User;
 };
