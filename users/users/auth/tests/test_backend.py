@@ -1,98 +1,17 @@
 from datetime import datetime
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
+import time_machine
 from starlette.authentication import AuthenticationError
 from ward import raises, test
 
-from users.auth.backend import JWTAuthBackend
-from users.domain.entities import Credential, User
-from users.domain.tests.fake_repository import FakeUsersRepository
+from users.auth.backend import PASTAPORTO_X_HEADER, PastaportoAuthBackend
+from users.auth.entities import Credential
+from users.domain.entities import User
+from users.tests.pastaporto import fake_pastaporto_token_for_user
 
 
-@test("accept valid jwt token")
-async def _():
-    user = User(
-        id=1,
-        email="test@user.it",
-        name="Name",
-        is_staff=False,
-        date_joined=datetime.utcnow(),
-    )
-
-    repository = FakeUsersRepository(users=[user])
-
-    jwt_token = user.generate_token()
-
-    request = MagicMock()
-    request.headers = {"Authorization": f"Bearer {jwt_token}"}
-
-    credentials, logged_user = await JWTAuthBackend(repository).authenticate(request)
-
-    assert credentials.scopes == [Credential.AUTHENTICATED]
-    assert logged_user.id == user.id
-
-
-@test("random token string fails validation")
-async def _():
-    user = User(
-        id=1,
-        email="test@user.it",
-        name="Name",
-        is_staff=False,
-        date_joined=datetime.utcnow(),
-    )
-
-    repository = FakeUsersRepository(users=[user])
-
-    request = MagicMock()
-    request.headers = {"Authorization": f"Bearer abc"}
-
-    with raises(AuthenticationError):
-        await JWTAuthBackend(repository).authenticate(request)
-
-
-@test("invalid token prefix is rejected")
-async def _():
-    user = User(
-        id=1,
-        email="test@user.it",
-        name="Name",
-        is_staff=False,
-        date_joined=datetime.utcnow(),
-    )
-
-    repository = FakeUsersRepository(users=[user])
-
-    request = MagicMock()
-    request.headers = {"Authorization": f"token abc"}
-
-    result = await JWTAuthBackend(repository).authenticate(request)
-    assert not result
-
-
-@test("not active users are rejected")
-async def _():
-    user = User(
-        id=1,
-        email="test@user.it",
-        name="Name",
-        is_staff=False,
-        is_active=False,
-        date_joined=datetime.utcnow(),
-    )
-
-    repository = FakeUsersRepository(users=[user])
-
-    jwt_token = user.generate_token()
-
-    request = MagicMock()
-    request.headers = {"Authorization": f"Bearer {jwt_token}"}
-
-    with raises(AuthenticationError):
-        await JWTAuthBackend(repository).authenticate(request)
-
-
-@test("staff users have the correct credentials")
+@test("accept valid pastaporto")
 async def _():
     user = User(
         id=1,
@@ -103,51 +22,47 @@ async def _():
         date_joined=datetime.utcnow(),
     )
 
-    repository = FakeUsersRepository(users=[user])
-
-    jwt_token = user.generate_token()
+    fake_pastaporto = fake_pastaporto_token_for_user(user)
 
     request = MagicMock()
-    request.headers = {"Authorization": f"Bearer {jwt_token}"}
+    request.headers = {PASTAPORTO_X_HEADER: fake_pastaporto}
 
-    credentials, logged_user = await JWTAuthBackend(repository).authenticate(request)
+    credentials, logged_user = await PastaportoAuthBackend().authenticate(request)
 
-    assert Credential.AUTHENTICATED in credentials.scopes
-    assert Credential.STAFF in credentials.scopes
+    assert Credential.AUTHENTICATED in credentials.pastaporto.credentials
+    assert Credential.STAFF in credentials.pastaporto.credentials
+    assert credentials.pastaporto.user_info.id == user.id
     assert logged_user.id == user.id
 
 
-@test("not logged request")
-async def _():
-    repository = FakeUsersRepository(users=[])
-    request = MagicMock()
-    request.headers = {}
-
-    result = await JWTAuthBackend(repository).authenticate(request)
-    assert not result
-
-
-@test("expired token is rejected")
+@test("rejects expired pastaporto")
 async def _():
     user = User(
         id=1,
         email="test@user.it",
         name="Name",
-        is_staff=False,
+        is_staff=True,
         is_active=True,
         date_joined=datetime.utcnow(),
     )
 
-    repository = FakeUsersRepository(users=[user])
-
-    with patch(
-        "users.auth.entities.get_jwt_metadata",
-        return_value={"exp": datetime(1980, 1, 1), "iat": datetime(1980, 1, 1)},
-    ):
-        jwt_token = user.generate_token()
+    with time_machine.travel("2010-10-10 10:10:10", tick=False):
+        fake_pastaporto = fake_pastaporto_token_for_user(user)
 
     request = MagicMock()
-    request.headers = {"Authorization": f"Bearer {jwt_token}"}
+    request.headers = {PASTAPORTO_X_HEADER: fake_pastaporto}
 
-    with raises(AuthenticationError):
-        await JWTAuthBackend(repository).authenticate(request)
+    with time_machine.travel("2020-10-10 10:10:10", tick=False), raises(
+        AuthenticationError
+    ) as exc:
+        await PastaportoAuthBackend().authenticate(request)
+
+    assert str(exc.raised) == "Invalid pastaporto"
+
+
+@test("non-authenticated request does nothing")
+async def _():
+    request = MagicMock()
+    request.headers = {}
+
+    assert await PastaportoAuthBackend().authenticate(request) is None

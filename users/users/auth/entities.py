@@ -1,51 +1,65 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
-from datetime import datetime, timedelta
-from typing import TYPE_CHECKING
+from dataclasses import dataclass, field
+from enum import Enum
+from typing import Any, List, Optional
 
-from users.settings import JWT_EXPIRES_AFTER_IN_MINUTES
+import jwt
+from starlette.authentication import AuthCredentials
 
-if TYPE_CHECKING:
-    from users.domain.entities import Credential, User  # noqa
+from users.auth.exceptions import InvalidPastaportoError
+from users.auth.tokens import decode_pastaporto
 
 
-def get_jwt_metadata() -> dict:
-    utcnow = datetime.utcnow()
+class Credential(str, Enum):
+    AUTHENTICATED = "authenticated"
+    STAFF = "staff"
 
-    return {
-        "exp": utcnow + timedelta(minutes=JWT_EXPIRES_AFTER_IN_MINUTES),
-        "iat": utcnow,
-    }
+    def __str__(self) -> str:
+        return str.__str__(self)
+
+
+class RequestAuth(AuthCredentials):
+    scopes: list[Credential]
+    pastaporto: Pastaporto
+
+    def __init__(self, pastaporto: Pastaporto):
+        super().__init__(scopes=pastaporto.credentials)
+        self.pastaporto = pastaporto
 
 
 @dataclass
-class JWTToken:
-    id: str
+class PastaportoUserInfo:
+    id: int
     email: str
-    name: str
-    credentials: list["Credential"]
-    exp: datetime
-    iat: datetime
-    aud: str = "auth"
 
     @classmethod
-    def from_user(cls, user: "User") -> JWTToken:
-        return cls(
-            id=user.id,
-            email=user.email,
-            name=user.name,
-            credentials=user.credentials.scopes,
-            **get_jwt_metadata()
-        )
+    def from_data(cls, data: dict[str, Any]):
+        return cls(id=data["id"], email=data["email"])
+
+
+@dataclass
+class Pastaporto:
+    user_info: Optional[PastaportoUserInfo] = None
+    credentials: List[Credential] = field(default_factory=list)
 
     @classmethod
-    def from_payload(cls, payload: dict) -> JWTToken:
+    def from_token(cls, token: str):
+        try:
+            decoded_token = decode_pastaporto(token)
+        except (
+            ValueError,
+            UnicodeDecodeError,
+            jwt.ExpiredSignatureError,
+            jwt.DecodeError,
+            jwt.InvalidAudienceError,
+        ):
+            raise InvalidPastaportoError()
+
+        user_info = decoded_token.get("userInfo")
         return cls(
-            id=payload["id"],
-            email=payload["email"],
-            name=payload["name"],
-            credentials=payload["credentials"],
-            exp=payload["exp"],
-            iat=payload["iat"],
+            user_info=PastaportoUserInfo.from_data(user_info) if user_info else None,
+            credentials=[
+                Credential(credential) for credential in decoded_token["credentials"]
+            ],
         )

@@ -1,6 +1,6 @@
 from strawberry import BasePermission
 
-from users.domain.entities import Credential
+from users.auth.entities import Credential
 
 
 class IsStaff(BasePermission):

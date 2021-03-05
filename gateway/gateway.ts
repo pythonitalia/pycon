@@ -1,6 +1,7 @@
 import { ApolloGateway, RemoteGraphQLDataSource } from "@apollo/gateway";
 import { getServices } from "./services";
 import { IS_DEV } from "./config";
+import { Pastaporto } from "./pastaporto/entities";
 
 export const gateway = new ApolloGateway({
   serviceList: getServices(),
@@ -8,10 +9,10 @@ export const gateway = new ApolloGateway({
   buildService({ url }) {
     return new RemoteGraphQLDataSource({
       url,
-      willSendRequest({ request, context }) {
-        const authorization = context.headers?.authorization;
-        if (authorization) {
-          request!.http!.headers.set("authorization", authorization);
+      async willSendRequest({ request, context }) {
+        const pastaporto: Pastaporto = context.pastaporto;
+        if (pastaporto) {
+          request!.http!.headers.set("x-pastaporto", await pastaporto.sign());
         }
       },
     });

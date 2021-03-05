@@ -6,10 +6,6 @@ config = Config(".env")
 
 DEBUG = config("DEBUG", cast=bool, default=False)
 DATABASE_URL = config("DATABASE_URL")
-JWT_AUTH_SECRET = config("JWT_AUTH_SECRET", cast=Secret)
-JWT_EXPIRES_AFTER_IN_MINUTES = config(
-    "JWT_EXPIRES_AFTER_IN_MINUTES", cast=int, default=10
-)
 SESSION_SECRET_KEY = config("SESSION_SECRET_KEY", cast=Secret)
 
 # Google social auth
@@ -22,7 +18,19 @@ SOCIAL_LOGIN_JWT_COOKIE_NAME = config(
     "SOCIAL_LOGIN_JWT_COOKIE_NAME", cast=str, default="social-jwt-token"
 )
 
+# Identity / Pastaporto secrets
+IDENTITY_SECRET = config("IDENTITY_SECRET", cast=Secret)
+PASTAPORTO_SECRET = config("PASTAPORTO_SECRET", cast=Secret)
+
+IDENTITY_EXPIRES_AFTER_MINUTES = config(
+    "IDENTITY_EXPIRES_AFTER_MINUTES", cast=int, default=60
+)
+
+# Pagination
+
 DEFAULT_PAGINATION_TO = 20
+
+# Passwords
 
 PASSWORD_HASHERS = [
     "users.starlette_password.hashers.Argon2PasswordHasher",

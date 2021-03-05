@@ -1,8 +1,8 @@
 import time_machine
 from ward import test
 
-from users.api.tests.graphql_client import graphql_client
 from users.tests.factories import user_factory
+from users.tests.graphql_client import graphql_client
 from users.tests.session import db
 
 
@@ -39,7 +39,7 @@ async def _(graphql_client=graphql_client, db=db, user_factory=user_factory):
     with time_machine.travel("2021-01-10 10:10:10", tick=False):
         response = await graphql_client.query(query)
 
-    assert response.errors[0]["message"] == "Invalid auth credentials"
+    assert response.errors[0]["message"] == "Invalid pastaporto"
 
 
 @test("fetch my data when logged")

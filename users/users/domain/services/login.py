@@ -1,6 +1,7 @@
 from pydantic import BaseModel, EmailStr, constr
 
-from users.domain.entities import Credential, User
+from users.auth.entities import Credential
+from users.domain.entities import User
 from users.domain.repository import AbstractUsersRepository
 
 from .exceptions import (

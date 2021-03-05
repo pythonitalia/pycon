@@ -8,7 +8,9 @@ from httpx import AsyncClient
 from ward import fixture
 
 from main import app
+from users.auth.backend import PASTAPORTO_X_HEADER
 from users.domain import entities
+from users.tests.pastaporto import fake_pastaporto_token_for_user
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +24,7 @@ class Response:
 class GraphQLClient:
     def __init__(self, client, admin_endpoint: bool = False):
         self._client = client
-        self.auth_token = None
+        self.pastaporto_token = None
         self.endpoint = "/graphql" if not admin_endpoint else "/admin-api"
 
     async def query(
@@ -37,16 +39,15 @@ class GraphQLClient:
         if variables:
             body["variables"] = variables
 
-        if self.auth_token:
-            headers["Authorization"] = f"Bearer {self.auth_token}"
+        if self.pastaporto_token:
+            headers[PASTAPORTO_X_HEADER] = self.pastaporto_token
 
         resp = await self._client.post(self.endpoint, json=body, headers=headers)
-
         data = json.loads(resp.content.decode())
         return Response(errors=data.get("errors"), data=data.get("data"))
 
     def force_login(self, user: entities.User):
-        self.auth_token = user.generate_token()
+        self.pastaporto_token = fake_pastaporto_token_for_user(user)
 
 
 @fixture()

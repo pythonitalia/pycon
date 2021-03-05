@@ -1,49 +1,27 @@
-import jwt
 from starlette.authentication import AuthenticationBackend, AuthenticationError
 from starlette.responses import JSONResponse
 from starlette.routing import request_response
 
-from users.auth.tokens import decode_token
-from users.domain.repository import AbstractUsersRepository
+from users.auth.entities import Pastaporto, RequestAuth
+from users.auth.exceptions import InvalidPastaportoError
+
+PASTAPORTO_X_HEADER = "x-pastaporto"
 
 
 def on_auth_error(request: request_response, exc: Exception):
     return JSONResponse({"errors": [{"message": str(exc)}]}, status_code=401)
 
 
-class JWTAuthBackend(AuthenticationBackend):
-    users_repository: AbstractUsersRepository
-
-    def __init__(self, users_repository: AbstractUsersRepository) -> None:
-        super().__init__()
-        self.users_repository = users_repository
-
+class PastaportoAuthBackend(AuthenticationBackend):
     async def authenticate(self, request):
-        if "Authorization" not in request.headers:
+        if PASTAPORTO_X_HEADER not in request.headers:
+            # TODO: Always fail request without pastaporto?
             return
 
-        self.users_repository.with_session(request.state.session)
+        pastaporto_token = request.headers[PASTAPORTO_X_HEADER]
 
-        auth = request.headers["Authorization"]
         try:
-            scheme, token = auth.split()
-            if scheme.lower() != "bearer":
-                return
-
-            jwt_token = decode_token(token)
-        except (
-            ValueError,
-            UnicodeDecodeError,
-            jwt.ExpiredSignatureError,
-            jwt.DecodeError,
-            jwt.InvalidAudienceError,
-        ):
-            raise AuthenticationError("Invalid auth credentials")
-
-        user = await self.users_repository.get_by_id(jwt_token.id)
-
-        if not user or not user.is_active:
-            raise AuthenticationError("Invalid auth credentials")
-
-        user._authenticated_user = True
-        return user.credentials, user
+            pastaporto = Pastaporto.from_token(pastaporto_token)
+            return RequestAuth(pastaporto), pastaporto.user_info
+        except InvalidPastaportoError as e:
+            raise AuthenticationError("Invalid pastaporto") from e

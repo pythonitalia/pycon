@@ -12,7 +12,7 @@ from starlette.routing import Route
 
 from users.admin_api.views import GraphQL as AdminGraphQL
 from users.api.views import GraphQL
-from users.auth.backend import JWTAuthBackend, on_auth_error
+from users.auth.backend import PastaportoAuthBackend, on_auth_error
 from users.db import get_engine, get_session
 from users.domain.repository import UsersRepository
 from users.settings import DEBUG, SESSION_SECRET_KEY
@@ -32,7 +32,7 @@ app = Starlette(
         Middleware(SessionMiddleware, secret_key=SESSION_SECRET_KEY),
         Middleware(
             AuthenticationMiddleware,
-            backend=JWTAuthBackend(UsersRepository()),
+            backend=PastaportoAuthBackend(),
             on_error=on_auth_error,
         ),
     ],
