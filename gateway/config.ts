@@ -6,6 +6,7 @@ export const {
   // Secrets
   PASTAPORTO_SECRET,
   IDENTITY_SECRET,
+  SERVICE_TO_SERVICE_SECRET,
 
   // Services
   USERS_SERVICE,

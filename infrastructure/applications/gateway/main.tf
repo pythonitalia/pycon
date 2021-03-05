@@ -20,6 +20,11 @@ module "lambda" {
     NODE_ENV      = "production"
     VARIANT       = "default"
     USERS_SERVICE = local.users_service_url
+
+    # Secrets
+    PASTAPORTO_SECRET         = var.pastaporto_secret
+    IDENTITY_SECRET           = var.identity_secret
+    SERVICE_TO_SERVICE_SECRET = var.service_to_service_secret
   }
 }
 

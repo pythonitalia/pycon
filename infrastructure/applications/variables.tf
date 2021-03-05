@@ -14,3 +14,8 @@ variable "pinpoint_application_id" {}
 variable "pretix_sentry_dsn" {}
 variable "jwt_auth_secret" {}
 variable "users_backend_session_secret_key" {}
+
+# Secrets
+variable "pastaporto_secret" {}
+variable "identity_secret" {}
+variable "service_to_service_secret" {}

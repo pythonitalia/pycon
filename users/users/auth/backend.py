@@ -4,8 +4,7 @@ from starlette.routing import request_response
 
 from users.auth.entities import Pastaporto, RequestAuth
 from users.auth.exceptions import InvalidPastaportoError
-
-PASTAPORTO_X_HEADER = "x-pastaporto"
+from users.settings import PASTAPORTO_X_HEADER
 
 
 def on_auth_error(request: request_response, exc: Exception):

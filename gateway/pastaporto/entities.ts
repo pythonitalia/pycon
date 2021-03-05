@@ -1,6 +1,7 @@
 import { IDENTITY_SECRET, PASTAPORTO_SECRET } from "../config";
 import jwt from "jsonwebtoken";
 import { promisify } from "util";
+import { fetchUserInfo } from "./user-info";
 
 const jwtVerify = promisify(jwt.verify);
 const jwtSign = promisify(jwt.sign);
@@ -11,12 +12,17 @@ enum Credential {
 }
 
 class UserInfo {
-  constructor(readonly id: number, readonly email: string) {}
+  constructor(
+    readonly id: number,
+    readonly email: string,
+    readonly isStaff: boolean,
+  ) {}
 
   data() {
     return {
       id: this.id,
       email: this.email,
+      isStaff: this.isStaff,
     };
   }
 }
@@ -54,17 +60,13 @@ export class Pastaporto {
       // @ts-ignore
       IDENTITY_SECRET,
     )) as DecodedIdentity;
-    console.log("decoded token is:", decoded);
 
     // call internal API to get user info
-    const userInfo = {
-      id: decoded.sub,
-      email: "test@email.it",
-      isStaff: true,
-    };
+    const userInfo = await fetchUserInfo(decoded.sub);
 
-    return new Pastaporto(new UserInfo(userInfo.id, userInfo.email), [
-      Credential.AUTHENTICATED,
-    ]);
+    return new Pastaporto(
+      new UserInfo(userInfo.id, userInfo.email, userInfo.isStaff),
+      [Credential.AUTHENTICATED],
+    );
   }
 }

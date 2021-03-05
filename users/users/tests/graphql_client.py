@@ -8,8 +8,12 @@ from httpx import AsyncClient
 from ward import fixture
 
 from main import app
-from users.auth.backend import PASTAPORTO_X_HEADER
 from users.domain import entities
+from users.settings import (
+    PASTAPORTO_X_HEADER,
+    SERVICE_KEY_X_HEADER,
+    SERVICE_TO_SERVICE_SECRET,
+)
 from users.tests.pastaporto import fake_pastaporto_token_for_user
 
 logger = logging.getLogger(__name__)
@@ -22,10 +26,19 @@ class Response:
 
 
 class GraphQLClient:
-    def __init__(self, client, admin_endpoint: bool = False):
+    def __init__(
+        self, client, admin_endpoint: bool = False, internal_api_endpoint: bool = False
+    ):
         self._client = client
         self.pastaporto_token = None
-        self.endpoint = "/graphql" if not admin_endpoint else "/admin-api"
+        self.SERVICE_TO_SERVICE_SECRET = None
+
+        if internal_api_endpoint:
+            self.endpoint = "/internal-api"
+        elif admin_endpoint:
+            self.endpoint = "/admin-api"
+        else:
+            self.endpoint = "/graphql"
 
     async def query(
         self,
@@ -42,12 +55,18 @@ class GraphQLClient:
         if self.pastaporto_token:
             headers[PASTAPORTO_X_HEADER] = self.pastaporto_token
 
+        if self.SERVICE_TO_SERVICE_SECRET:
+            headers[SERVICE_KEY_X_HEADER] = self.SERVICE_TO_SERVICE_SECRET
+
         resp = await self._client.post(self.endpoint, json=body, headers=headers)
         data = json.loads(resp.content.decode())
         return Response(errors=data.get("errors"), data=data.get("data"))
 
     def force_login(self, user: entities.User):
         self.pastaporto_token = fake_pastaporto_token_for_user(user)
+
+    def force_service_login(self, key: str = SERVICE_TO_SERVICE_SECRET):
+        self.SERVICE_TO_SERVICE_SECRET = key
 
 
 @fixture()
@@ -62,3 +81,10 @@ async def admin_graphql_client():
     async with LifespanManager(app):
         async with AsyncClient(app=app, base_url="http://testserver") as client:
             yield GraphQLClient(client, admin_endpoint=True)
+
+
+@fixture()
+async def internalapi_graphql_client():
+    async with LifespanManager(app):
+        async with AsyncClient(app=app, base_url="http://testserver") as client:
+            yield GraphQLClient(client, internal_api_endpoint=True)

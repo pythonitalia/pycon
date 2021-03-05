@@ -21,6 +21,9 @@ SOCIAL_LOGIN_JWT_COOKIE_NAME = config(
 # Identity / Pastaporto secrets
 IDENTITY_SECRET = config("IDENTITY_SECRET", cast=Secret)
 PASTAPORTO_SECRET = config("PASTAPORTO_SECRET", cast=Secret)
+SERVICE_TO_SERVICE_SECRET = config(
+    "SERVICE_TO_SERVICE_SECRET", cast=Secret, default=None
+)
 
 IDENTITY_EXPIRES_AFTER_MINUTES = config(
     "IDENTITY_EXPIRES_AFTER_MINUTES", cast=int, default=60
@@ -29,6 +32,11 @@ IDENTITY_EXPIRES_AFTER_MINUTES = config(
 # Pagination
 
 DEFAULT_PAGINATION_TO = 20
+
+# Headers config
+
+SERVICE_KEY_X_HEADER = "x-service-key"
+PASTAPORTO_X_HEADER = "x-pastaporto"
 
 # Passwords
 
@@ -57,3 +65,4 @@ if RUNNING_TESTS:
 
     DATABASE_URL = test_db_url
     PASSWORD_HASHERS = ["users.starlette_password.plain_hasher.PlainPasswordHasher"]
+    SERVICE_TO_SERVICE_SECRET = "test-service-to-service"

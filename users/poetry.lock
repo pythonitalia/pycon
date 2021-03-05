@@ -587,7 +587,7 @@ full = ["aiofiles", "graphene", "itsdangerous", "jinja2", "python-multipart", "p
 
 [[package]]
 name = "strawberry-graphql"
-version = "0.45.1"
+version = "0.48.1"
 description = "A library for creating GraphQL APIs"
 category = "main"
 optional = false
@@ -608,8 +608,9 @@ typing_extensions = ">=3.7.4,<4.0.0"
 debug-server = ["uvicorn (>=0.11.6,<0.14.0)"]
 django = ["django (>=2,<4)", "asgiref (>=3.2,<4.0)"]
 flask = ["flask (>=1.1,<2.0)"]
-opentelemetry = ["opentelemetry-api (>=0.13b0,<0.14)", "opentelemetry-sdk (>=0.13b0,<0.14)"]
+opentelemetry = ["opentelemetry-api (>=0.17b0,<0.18)", "opentelemetry-sdk (>=0.17b0,<0.18)"]
 pydantic = ["pydantic (>=1.6.1,<2.0.0)"]
+sanic = ["sanic (>=20.12.2,<21.0.0)"]
 
 [[package]]
 name = "taskipy"
@@ -724,7 +725,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "0af95318c8c96e82edfad61a2da13cd80c3cb1c2aca5e5000750c65261cff137"
+content-hash = "4dc8869e7ddbd67f44a2d39cdb84ce213a154aad6ed42a2190b5685c0fddcbc9"
 
 [metadata.files]
 alembic = [
@@ -1223,8 +1224,8 @@ starlette = [
     {file = "starlette-0.14.2.tar.gz", hash = "sha256:7d49f4a27f8742262ef1470608c59ddbc66baf37c148e938c7038e6bc7a998aa"},
 ]
 strawberry-graphql = [
-    {file = "strawberry-graphql-0.45.1.tar.gz", hash = "sha256:b0f052376eaa898f106aa5cac754d39eb90f7b5484ad9870c1f0f3c2f4cd4aeb"},
-    {file = "strawberry_graphql-0.45.1-py3-none-any.whl", hash = "sha256:c2dec8fa40d17b528c952f30174d195fb458e8fb297944ca745a0cf55129d3c9"},
+    {file = "strawberry-graphql-0.48.1.tar.gz", hash = "sha256:1729b6375d0a3932b67d4b1d3346a7fcf7bca65f4d6adff79aaa18dd75a90112"},
+    {file = "strawberry_graphql-0.48.1-py3-none-any.whl", hash = "sha256:eb9a4800b1e6203db928142a351c5cdc5b0e6af34bc40a4abb093ad615d4ac4c"},
 ]
 taskipy = [
     {file = "taskipy-1.6.0-py3-none-any.whl", hash = "sha256:33ee1d52b378cb4af3678fc459b75c3028f594c5e8e42ac0696cbe3e95d47394"},
