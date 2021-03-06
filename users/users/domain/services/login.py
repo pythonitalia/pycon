@@ -1,6 +1,6 @@
 from pydantic import BaseModel, EmailStr, constr
+from pythonit_toolkit.pastaporto.entities import Credential
 
-from users.auth.entities import Credential
 from users.domain.entities import User
 from users.domain.repository import AbstractUsersRepository
 

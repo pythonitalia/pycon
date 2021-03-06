@@ -4,19 +4,18 @@ import sys
 from io import StringIO
 
 from mangum import Mangum
+from pythonit_toolkit.starlette_backend.middleware import pastaporto_auth_middleware
 from starlette.applications import Starlette
 from starlette.middleware import Middleware
-from starlette.middleware.authentication import AuthenticationMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 from starlette.routing import Route
 
 from users.admin_api.views import GraphQL as AdminGraphQL
 from users.api.views import GraphQL
-from users.auth.backend import PastaportoAuthBackend, on_auth_error
 from users.db import get_engine, get_session
 from users.domain.repository import UsersRepository
 from users.internal_api.views import GraphQL as InternalGraphQL
-from users.settings import DEBUG, SESSION_SECRET_KEY
+from users.settings import DEBUG, PASTAPORTO_SECRET, SESSION_SECRET_KEY
 from users.social_auth.views import google_login, google_login_auth
 
 logging.basicConfig(level=logging.INFO)
@@ -34,11 +33,7 @@ app = Starlette(
     routes=routes,
     middleware=[
         Middleware(SessionMiddleware, secret_key=SESSION_SECRET_KEY),
-        Middleware(
-            AuthenticationMiddleware,
-            backend=PastaportoAuthBackend(),
-            on_error=on_auth_error,
-        ),
+        pastaporto_auth_middleware(PASTAPORTO_SECRET),
     ],
 )
 

@@ -3,14 +3,11 @@ import logging
 from dataclasses import dataclass
 from typing import Any, Dict, Optional
 
+from pythonit_toolkit.starlette_backend.pastaporto_backend import PASTAPORTO_X_HEADER
 from ward import fixture
 
 from users.domain import entities
-from users.settings import (
-    PASTAPORTO_X_HEADER,
-    SERVICE_KEY_X_HEADER,
-    SERVICE_TO_SERVICE_SECRET,
-)
+from users.settings import SERVICE_KEY_X_HEADER, SERVICE_TO_SERVICE_SECRET
 from users.tests.client import testclient
 from users.tests.pastaporto import fake_pastaporto_token_for_user
 

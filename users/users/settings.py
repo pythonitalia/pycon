@@ -36,7 +36,6 @@ DEFAULT_PAGINATION_TO = 20
 # Headers config
 
 SERVICE_KEY_X_HEADER = "x-service-key"
-PASTAPORTO_X_HEADER = "x-pastaporto"
 
 # Passwords
 

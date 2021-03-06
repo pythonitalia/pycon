@@ -1,6 +1,5 @@
+from pythonit_toolkit.pastaporto.entities import Credential
 from strawberry import BasePermission
-
-from users.auth.entities import Credential
 
 
 class IsStaff(BasePermission):

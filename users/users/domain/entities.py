@@ -4,11 +4,12 @@ from dataclasses import InitVar, dataclass, field
 from datetime import date, datetime
 from typing import Optional
 
+from pythonit_toolkit.pastaporto.tokens import create_identity_token
 from sqlalchemy import Boolean, Column, Date, DateTime, Integer, String, Table
 from sqlalchemy.orm import registry
 from starlette.authentication import AuthCredentials, BaseUser
 
-from users.auth.tokens import generate_identity_token
+from users.settings import IDENTITY_EXPIRES_AFTER_MINUTES, IDENTITY_SECRET
 from users.starlette_password.hashers import (
     check_password,
     is_password_usable,
@@ -53,7 +54,9 @@ class User(BaseUser):
             self.hashed_password = make_password(password)
 
     def generate_token(self) -> str:
-        return generate_identity_token(self)
+        return create_identity_token(
+            self.id, IDENTITY_SECRET, IDENTITY_EXPIRES_AFTER_MINUTES
+        )
 
     def check_password(self, password: str) -> bool:
         return check_password(password, self.hashed_password)
@@ -77,7 +80,7 @@ class User(BaseUser):
 
     @property
     def credentials(self) -> AuthCredentials:
-        from users.auth.entities import Credential
+        from pythonit_toolkit.pastaporto.entities import Credential
 
         credentials = []
 

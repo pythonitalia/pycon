@@ -11,6 +11,10 @@ enum Credential {
   AUTHENTICATED = "authenticated",
 }
 
+type DecodedIdentity = {
+  sub: number;
+};
+
 class UserInfo {
   constructor(
     readonly id: number,
@@ -26,10 +30,6 @@ class UserInfo {
     };
   }
 }
-
-type DecodedIdentity = {
-  sub: number;
-};
 
 export class Pastaporto {
   constructor(

@@ -2,13 +2,12 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, List, Optional
+from typing import Any, Optional
 
 import jwt
-from starlette.authentication import AuthCredentials
 
-from users.auth.exceptions import InvalidPastaportoError
-from users.auth.tokens import decode_pastaporto
+from .exceptions import InvalidPastaportoError
+from .tokens import decode_pastaporto
 
 
 class Credential(str, Enum):
@@ -19,12 +18,12 @@ class Credential(str, Enum):
         return str.__str__(self)
 
 
-class RequestAuth(AuthCredentials):
+class RequestAuth:
     scopes: list[Credential]
     pastaporto: Pastaporto
 
     def __init__(self, pastaporto: Pastaporto):
-        super().__init__(scopes=pastaporto.credentials)
+        self.scopes = pastaporto.credentials
         self.pastaporto = pastaporto
 
 
@@ -41,12 +40,12 @@ class PastaportoUserInfo:
 @dataclass
 class Pastaporto:
     user_info: Optional[PastaportoUserInfo] = None
-    credentials: List[Credential] = field(default_factory=list)
+    credentials: list[Credential] = field(default_factory=list)
 
     @classmethod
-    def from_token(cls, token: str):
+    def from_token(cls, token: str, secret: str):
         try:
-            decoded_token = decode_pastaporto(token)
+            decoded_token = decode_pastaporto(token, secret)
         except (
             ValueError,
             UnicodeDecodeError,

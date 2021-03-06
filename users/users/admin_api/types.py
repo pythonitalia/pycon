@@ -4,11 +4,11 @@ from datetime import date
 from typing import Optional
 
 import strawberry
+from pythonit_toolkit.pastaporto import entities as toolkit_entities
 
-from users.auth import entities as auth_entities
 from users.domain import entities
 
-Credential = strawberry.enum(auth_entities.Credential)
+Credential = strawberry.enum(toolkit_entities.Credential)
 
 
 @strawberry.type
