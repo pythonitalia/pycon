@@ -34,7 +34,7 @@ time-machine = "^2.0.1"
 
 [tool.taskipy.tasks]
 server = "uvicorn main:app --port 8050 --reload"
-test = "RUNNING_TESTS=1 python tests/prepare_db.py && RUNNING_TESTS=1 coverage run -m ward"
+test = "RUNNING_TESTS=1 python scripts/prepare_db.py && RUNNING_TESTS=1 coverage run -m ward"
 "test:coverage" = "task test || coverage xml -i && coverage xml -i"
 "test:debug" = "task test --no-capture-output"
 migrate = "alembic upgrade head"
