@@ -16,7 +16,7 @@ from users.auth.backend import PastaportoAuthBackend, on_auth_error
 from users.db import get_engine, get_session
 from users.domain.repository import UsersRepository
 from users.internal_api.views import GraphQL as InternalGraphQL
-from users.settings import DEBUG, SERVICE_TO_SERVICE_SECRET, SESSION_SECRET_KEY
+from users.settings import DEBUG, SESSION_SECRET_KEY
 from users.social_auth.views import google_login, google_login_auth
 
 logging.basicConfig(level=logging.INFO)
@@ -24,16 +24,10 @@ logging.basicConfig(level=logging.INFO)
 routes = [
     Route("/graphql", GraphQL()),
     Route("/admin-api", AdminGraphQL()),
+    Route("/internal-api", InternalGraphQL()),
     Route("/login/google", google_login),
     Route("/login/google/auth", google_login_auth, name="auth"),
 ]
-
-if SERVICE_TO_SERVICE_SECRET:
-    # Add internal-api route only if the deployment
-    # has the service to service key, this should allow
-    # us to deploy this code in two separate lambdas, one for
-    # internal api requests and another for other usages
-    routes.append(Route("/internal-api", InternalGraphQL()))
 
 app = Starlette(
     debug=DEBUG,

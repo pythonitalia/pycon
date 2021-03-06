@@ -1,6 +1,7 @@
 import typing
 
 from starlette.requests import Request
+from starlette.responses import JSONResponse
 from starlette.types import Receive, Scope, Send
 from starlette.websockets import WebSocket
 from strawberry.asgi import GraphQL as BaseGraphQL
@@ -25,16 +26,16 @@ class GraphQL(BaseGraphQL):
         context = await self.get_context(request)
 
         if not is_service(request):
-            raise ValueError("Unauthorized")
-
-        response = await get_http_response(
-            request=request,
-            execute=self.execute,
-            process_result=self.process_result,
-            graphiql=self.graphiql,
-            root_value=root_value,
-            context=context,
-        )
+            response = JSONResponse({"error": "Forbidden"}, 400)
+        else:
+            response = await get_http_response(
+                request=request,
+                execute=self.execute,
+                process_result=self.process_result,
+                graphiql=self.graphiql,
+                root_value=root_value,
+                context=context,
+            )
 
         await response(scope, receive, send)
 
