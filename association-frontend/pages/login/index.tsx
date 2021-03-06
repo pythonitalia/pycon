@@ -12,6 +12,7 @@ import Input from "~/components/input/input";
 import Link from "~/components/link/link";
 import Logo from "~/components/logo/logo";
 
+import { useLoginState } from "../../hooks/use-login";
 import { useLoginMutation } from "./login.generated";
 
 type LoginFormFields = {
@@ -21,6 +22,8 @@ type LoginFormFields = {
 
 const LoginPage = () => {
   const [formState, { email, password }] = useFormState<LoginFormFields>({});
+
+  const [loggedIn, setLoggedIn] = useLoginState();
 
   const router = useRouter();
   const [{ fetching, data }, login] = useLoginMutation();
@@ -38,6 +41,7 @@ const LoginPage = () => {
     console.log(JSON.stringify(result));
 
     if (result?.data?.login?.__typename === "LoginSuccess") {
+      setLoggedIn(result.data.login.token);
       router.push("/profile");
     }
   };
@@ -51,9 +55,9 @@ const LoginPage = () => {
       ? data.login.message
       : "";
 
-  console.log(JSON.stringify(data));
+  // console.log(JSON.stringify(data));
 
-  console.log({ errorMessage });
+  // console.log({ errorMessage });
 
   return (
     <>

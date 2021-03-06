@@ -14,8 +14,6 @@ const Input: React.FC<InputProps> = ({
   placeholder = "",
   ...props
 }) => {
-  console.log({ label, props });
-
   return (
     <div className="">
       {label && (
