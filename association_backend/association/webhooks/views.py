@@ -29,7 +29,7 @@ class StripeWebhook(HTTPEndpoint):
         print(f"subscription_created : {payload}")
         stripe_obj = payload["object"]
         try:
-            await services.set_subscription_payed(
+            await services.set_subscription_paid(
                 SubscriptionInputModel(subscription_id=stripe_obj["id"]),
                 association_repository=self._get_association_repository(request),
             )

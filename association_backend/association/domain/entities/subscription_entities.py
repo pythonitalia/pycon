@@ -30,8 +30,8 @@ class SubscriptionState(str, Enum):
 class Subscription:
     user_id: int
     creation_date: datetime
-    stripe_session_id: str
     state: SubscriptionState
+    stripe_session_id: Optional[str] = ""
     payment_date: Optional[datetime] = None
     stripe_id: Optional[str] = ""
     stripe_customer_id: Optional[str] = ""
@@ -73,7 +73,7 @@ subscription_table = Table(
     Column("payment_date", DateTime(timezone=True), nullable=True),
     Column("stripe_id", String(128), nullable=True),
     Column("stripe_customer_id", String(128), nullable=False),
-    Column("stripe_session_id", String(128), nullable=False, primary_key=True),
+    Column("stripe_session_id", String(128), nullable=False),
     Column("state", String(16), nullable=False),
     Column("expiration_date", DateTime(timezone=True), nullable=True),
 )

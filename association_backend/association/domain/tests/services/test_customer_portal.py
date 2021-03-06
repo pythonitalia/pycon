@@ -30,7 +30,7 @@ async def _():
     )
     assert (
         portal_url
-        == f"https://stripe.com/stripe_test_customer_portal_{test_stripe_customer_id}"
+        == f"https://stripe.com/stripe_test_customer_portal/{test_stripe_customer_id}"
     )
 
 

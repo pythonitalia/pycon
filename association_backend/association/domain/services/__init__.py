@@ -1,15 +1,15 @@
 from .customer_portal import customer_portal
 from .do_checkout import Subscription, do_checkout
-from .set_subscription_payed import SubscriptionInputModel, set_subscription_payed
-from .update_draft_subscription import (
+from .set_subscription_paid import SubscriptionInputModel, set_subscription_paid
+from .update_pending_subscription import (
     SubscriptionUpdateInput,
-    update_draft_subscription,
+    update_pending_subscription,
 )
 
 __all__ = [
-    "set_subscription_payed",
+    "set_subscription_paid",
     "SubscriptionUpdateInput",
-    "update_draft_subscription",
+    "update_pending_subscription",
     "SubscriptionInputModel",
     "do_checkout",
     "Subscription",

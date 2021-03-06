@@ -13,7 +13,7 @@ class SubscriptionInputModel(BaseModel):
     subscription_id: str
 
 
-async def set_subscription_payed(
+async def set_subscription_paid(
     data: SubscriptionInputModel, association_repository: AssociationRepository
 ):
     subscription = await association_repository.get_subscription_by_stripe_id(

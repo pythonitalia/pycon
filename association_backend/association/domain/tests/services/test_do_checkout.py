@@ -43,7 +43,7 @@ async def _():
         assert subscription.creation_date == datetime.datetime(2020, 1, 1, 0, 0)
 
 
-@test("OLD subscription returned if not payed")
+@test("OLD subscription returned if not paid")
 async def _():
     repository = FakeAssociationRepository(
         subscriptions=[SubscriptionFactory(user_id=1357)], customers=[]
@@ -60,7 +60,7 @@ async def _():
         state_mock.assert_called()
 
 
-@test("raises AlreadySubscribed if payed but not expired")
+@test("raises AlreadySubscribed if paid but not expired")
 async def _():
     repository = FakeAssociationRepository(
         subscriptions=[SubscriptionFactory(user_id=1357)], customers=[]

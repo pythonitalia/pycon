@@ -13,7 +13,7 @@ class SubscriptionUpdateInput(BaseModel):
     subscription_id: str
 
 
-async def update_draft_subscription(
+async def update_pending_subscription(
     data: SubscriptionUpdateInput, association_repository: AssociationRepository
 ):
     subscription = await association_repository.get_subscription_by_session_id(

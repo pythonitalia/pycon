@@ -2,13 +2,12 @@ import pydantic
 import strawberry
 from association.api.context import Info
 from association.domain import services
+from association.domain.exceptions import CustomerNotAvailable
+
 
 # ===========
 # Input
 # ==========
-from association.domain.exceptions import CustomerNotAvailable
-
-
 class UserData(pydantic.BaseModel):
     email: str
     user_id: int
@@ -28,7 +27,7 @@ class CustomerPortalResponse:
 
 
 # ==========
-# Outputtest_repository.py
+# Output
 # =========
 CustomerPortalResult = strawberry.union(
     "CustomerPortalResult", (CustomerPortalResponse, CustomerNotAvailableError)
