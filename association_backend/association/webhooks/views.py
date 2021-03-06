@@ -42,7 +42,7 @@ class StripeWebhook(HTTPEndpoint):
     async def handle_checkout_session_completed(self, request, payload):
         stripe_obj = payload["object"]
         try:
-            await services.update_draft_subscription(
+            await services.update_pending_subscription(
                 SubscriptionUpdateInput(
                     session_id=stripe_obj["id"],
                     customer_id=stripe_obj["customer"],
@@ -92,33 +92,28 @@ class StripeWebhook(HTTPEndpoint):
         if event_type == "checkout.session.completed":
             # Payment is successful and the subscription is created.
             # You should provision the subscription.
-            return await self.handle_checkout_session_completed(request, data)
+            await self.handle_checkout_session_completed(request, data)
         elif event_type == "invoice.paid":
             # Continue to provision the subscription as payments continue to be made.
             # Store the status in your database and check when a user accesses your service.
             # This approach helps you avoid hitting rate limits.
-            message = await self.echo(data)
-            resp = {"data": {}, "event": event_type, "message": message}
+            await self.handle_invoice_paid(request, data)
         elif event_type == "invoice.payment_failed":
             # The payment failed or the customer does not have a valid payment method.
             # The subscription becomes past_due. Notify your customer and send them to the
             # customer portal to update their payment information.
-            message = await self.echo(data)
-            resp = {"data": {}, "event": event_type, "message": message}
+            await self.handle_invoice_payment_failed(data)
         elif event_type == "customer.subscription.created":
-            return await self.handle_customer_subscription_created(request, data)
+            await self.handle_customer_subscription_created(request, data)
         elif event_type == "customer.subscription.updated":
-            message = await self.echo(data)
-            resp = {"data": {}, "event": event_type, "message": message}
+            await self.echo(data)
         else:
             logger.warning(
                 f"The event `{event_type}` is not handled by webhook",
                 extra={"tags": event, "payload": data},
             )
-            message = await self.echo(data)
-            resp = {"data": {}, "event": event_type, "message": message}
-
-        return JSONResponse(resp)
+            await self.echo(data)
+        return JSONResponse({"status": "success"})
 
     async def echo(self, payload):
         return f"got object `{payload['object']}`"
