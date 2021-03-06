@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import logging
 from datetime import datetime
 
@@ -40,14 +38,7 @@ async def do_checkout(
         elif subscription_state == SubscriptionState.ACTIVE:
             raise AlreadySubscribed(expiration_date=subscription.expiration_date)
         elif subscription_state == SubscriptionState.EXPIRED:
-            checkout_session = await association_repository.create_checkout_session(
-                StripeCheckoutSessionInput(
-                    subscription_id=subscription.stripe_id,
-                    customer_email=user_data.email,
-                    customer_id=subscription.stripe_customer_id,
-                )
-            )
-            print(f"checkout_session : {checkout_session}")
+            raise AlreadySubscribed(expiration_date=subscription.expiration_date)
         else:
             raise NotImplementedError(
                 "This should not happen because subscription is in a not handled state"

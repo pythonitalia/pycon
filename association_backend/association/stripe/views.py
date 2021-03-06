@@ -1,7 +1,7 @@
 from typing import cast
 
 import stripe
-from association.api.mutation.retrieve_checkout_session import UserData
+from association.api.mutation.do_checkout import UserData
 from association.db import get_engine, get_session
 from association.domain import services
 from association.domain.exceptions import AlreadySubscribed
@@ -9,6 +9,7 @@ from association.domain.repositories import AssociationRepository
 from association.settings import (
     DOMAIN_URL,
     STRIPE_SUBSCRIPTION_API_KEY,
+    STRIPE_SUBSCRIPTION_API_SECRET,
     STRIPE_SUBSCRIPTION_PRICE_ID,
 )
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -17,6 +18,8 @@ from starlette.responses import JSONResponse
 from starlette.templating import Jinja2Templates
 
 templates = Jinja2Templates(directory="association/stripe/templates")
+
+stripe.api_key = STRIPE_SUBSCRIPTION_API_SECRET  # 'sk_test_4eC39HqLyjWDarjtT1zdp7dc'
 
 
 class PaymentView(HTTPEndpoint):
@@ -45,17 +48,25 @@ class StripeSetupView(HTTPEndpoint):
 
 
 class CustomerPortalView(HTTPEndpoint):
+    def _get_association_repository(self, request):
+        return AssociationRepository(
+            session=cast(AsyncSession, get_session(get_engine(echo=False)))
+        )
+
     async def post(self, request):
         data = await request.json()
-        # For demonstration purposes, we're using the Checkout session to retrieve the customer ID.
-        # Typically this is stored alongside the authenticated user in your database.
         checkout_session_id = data["sessionId"]
-        checkout_session = await stripe.checkout.Session.retrieve(checkout_session_id)
-
-        session = await stripe.billing_portal.Session.create(
-            customer=checkout_session.customer, return_url=DOMAIN_URL
+        association_repository = self._get_association_repository(request)
+        checkout_session = await association_repository.get_subscription_by_session_id(
+            checkout_session_id
         )
-        return JSONResponse({"url": session.url})
+        billing_portal_url = await association_repository.retrieve_customer_portal_session_url(
+            checkout_session.stripe_customer_id
+        )
+        # billing_portal_url = await services.customer_portal(
+        #     user_data, association_repository=info.context.association_repository
+        # )
+        return JSONResponse({"url": billing_portal_url})
 
 
 class CreateCheckoutSessionView(HTTPEndpoint):
@@ -66,7 +77,7 @@ class CreateCheckoutSessionView(HTTPEndpoint):
 
     async def post(self, request):
 
-        user_data = UserData(email="fake.user@pycon.it", user_id="12345")
+        user_data = UserData(email="fake.user@pycon.it", user_id=12345)
 
         try:
             subscription = await services.do_checkout(
@@ -84,3 +95,23 @@ class CreateCheckoutSessionView(HTTPEndpoint):
             )
         else:
             return JSONResponse({"sessionId": subscription.stripe_session_id})
+
+
+class CheckoutSessionDetailView(HTTPEndpoint):
+    def _get_association_repository(self, request):
+        return AssociationRepository(
+            session=cast(AsyncSession, get_session(get_engine(echo=False)))
+        )
+
+    async def get(self, request):
+        # association_repository = self._get_association_repository(request)
+        # checkout_session = await association_repository.get_subscription_by_session_id(
+        #     request.query_params.get("sessionId")
+        # )
+        # return JSONResponse({
+        #     "customer_id": checkout_session.stripe_customer_id
+        # })
+        checkout_session = stripe.checkout.Session.retrieve(
+            request.query_params.get("sessionId")
+        )
+        return JSONResponse(checkout_session)

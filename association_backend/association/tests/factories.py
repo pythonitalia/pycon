@@ -70,7 +70,7 @@ class SubscriptionFactory(SQLAlchemyModelFactory):
         model = Subscription
         sqlalchemy_session = test_session
 
-    user_id = factory.Faker("pystr", min_chars=5, max_chars=8)
+    user_id = factory.Faker("pyint", min_value=1)
     creation_date = factory.Faker("date_between", start_date="-30y", end_date="today")
     payment_date = factory.Faker("date_between", start_date="-30y", end_date="today")
     expiration_date = factory.Faker("date_between", start_date="-5y", end_date="today")

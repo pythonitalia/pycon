@@ -16,6 +16,7 @@ app = Starlette(
         Route(
             "/stripe/create-checkout-session", stripe_views.CreateCheckoutSessionView
         ),
+        Route("/stripe/checkout-session", stripe_views.CheckoutSessionDetailView),
         Route("/stripe/do-payment", stripe_views.PaymentView),
         Route("/stripe/do-payment/success", stripe_views.PaymentSuccessView),
         Route("/stripe/do-payment/fail", stripe_views.PaymentFailView),

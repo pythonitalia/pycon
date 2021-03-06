@@ -5,7 +5,7 @@ from typing import Optional
 from zoneinfo import ZoneInfo
 
 from dateutil.relativedelta import relativedelta
-from sqlalchemy import Column, DateTime, String, Table
+from sqlalchemy import Column, DateTime, Integer, String, Table
 from sqlalchemy.orm import registry
 
 rome_tz = ZoneInfo("Europe/Rome")
@@ -14,7 +14,7 @@ rome_tz = ZoneInfo("Europe/Rome")
 @dataclass
 class UserData:
     email: str
-    user_id: str
+    user_id: int
 
 
 class SubscriptionState(str, Enum):
@@ -28,7 +28,7 @@ class SubscriptionState(str, Enum):
 
 @dataclass
 class Subscription:
-    user_id: str
+    user_id: int
     creation_date: datetime
     stripe_session_id: str
     state: SubscriptionState
@@ -37,7 +37,7 @@ class Subscription:
     stripe_customer_id: Optional[str] = ""
     expiration_date: Optional[datetime] = None
 
-    def is_payed(self):
+    def is_paid(self):
         return self.payment_date is not None
 
     def is_expired(self):
@@ -48,6 +48,11 @@ class Subscription:
         )
 
     def get_calculated_state(self) -> SubscriptionState:
+        """
+        This method will be called by a cron (https://github.com/encode/starlette/issues/915#issuecomment-622945864)
+        to set the field "state"
+        :return:
+        """
         if not self.payment_date:
             return SubscriptionState.PENDING
         elif self.payment_date < datetime.now(rome_tz) - relativedelta(years=1):
@@ -63,7 +68,7 @@ mapper_registry = registry()
 subscription_table = Table(
     "Subscription",
     mapper_registry.metadata,
-    Column("user_id", String(32), nullable=False, primary_key=True),
+    Column("user_id", Integer(), nullable=False, primary_key=True),
     Column("creation_date", DateTime(timezone=True), nullable=False),
     Column("payment_date", DateTime(timezone=True), nullable=True),
     Column("stripe_id", String(128), nullable=True),

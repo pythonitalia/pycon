@@ -9,7 +9,7 @@ from association.domain import entities
 
 @strawberry.type
 class Subscription:
-    user_id: str
+    user_id: int
     creation_date: datetime
     state: str
     stripe_session_id: str

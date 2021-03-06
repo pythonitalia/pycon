@@ -1,4 +1,5 @@
 from ..builder import create_mutation_type
-from .retrieve_checkout_session import retrieve_checkout_session
+from .customer_portal import customer_portal
+from .do_checkout import do_checkout
 
-Mutation = create_mutation_type("Mutation", [retrieve_checkout_session])
+Mutation = create_mutation_type("Mutation", [do_checkout, customer_portal])

@@ -8,26 +8,26 @@ from ward import test
 rome_tz = ZoneInfo("Europe/Rome")
 
 
-@test("not is_payed if no payment_date")
+@test("not is_paid if no payment_date")
 def _():
     s = SubscriptionFactory(payment_date=None)
-    assert s.is_payed() is False
+    assert s.is_paid() is False
 
 
-@test("is_payed if payment_date is in this year")
+@test("is_paid if payment_date is in this year")
 def _():
     s = SubscriptionFactory(
         payment_date=datetime.datetime.now(rome_tz) - datetime.timedelta(days=1)
     )
-    assert s.is_payed() is True
+    assert s.is_paid() is True
 
 
-@test("is_payed if payment_date more than one year ago year")
+@test("is_paid if payment_date more than one year ago year")
 def _():
     s = SubscriptionFactory(
         payment_date=datetime.datetime.now(rome_tz) - datetime.timedelta(days=1 + 365)
     )
-    assert s.is_payed() is True
+    assert s.is_paid() is True
 
 
 @test("not is_expired if no payment_date")

@@ -15,7 +15,7 @@ rome_tz = ZoneInfo("Europe/Rome")
 async def _(graphql_client=graphql_client, db=db):
     query = """
     mutation {
-        retrieveCheckoutSession {
+        doCheckout {
             __typename
             ... on SubscriptionResponse {
                 __typename
@@ -39,12 +39,9 @@ async def _(graphql_client=graphql_client, db=db):
     ) as do_checkout_mock:
         response = await graphql_client.query(query, variables={})
         do_checkout_mock.assert_called_once()
+        assert response.data["doCheckout"]["__typename"] == "SubscriptionResponse"
         assert (
-            response.data["retrieveCheckoutSession"]["__typename"]
-            == "SubscriptionResponse"
-        )
-        assert (
-            response.data["retrieveCheckoutSession"]["subscription"]["stripeSessionId"]
+            response.data["doCheckout"]["subscription"]["stripeSessionId"]
             == "cs_test_12345"
         )
 
@@ -53,7 +50,7 @@ async def _(graphql_client=graphql_client, db=db):
 async def _(graphql_client=graphql_client, db=db):
     query = """
     mutation {
-        retrieveCheckoutSession {
+        doCheckout {
             __typename
             ... on AlreadySubscribedError {
                 __typename
@@ -73,17 +70,11 @@ async def _(graphql_client=graphql_client, db=db):
         print(response.data)
         print(response.errors)
         assert not response.errors
-        assert (
-            response.data["retrieveCheckoutSession"]["__typename"]
-            == "AlreadySubscribedError"
-        )
-        assert response.data["retrieveCheckoutSession"]["expirationDate"] == (
+        assert response.data["doCheckout"]["__typename"] == "AlreadySubscribedError"
+        assert response.data["doCheckout"]["expirationDate"] == (
             mocked_datetime.isoformat()
         )
-        assert (
-            response.data["retrieveCheckoutSession"]["message"]
-            == "You are already subscribed"
-        )
+        assert response.data["doCheckout"]["message"] == "You are already subscribed"
 
 
 @skip("JWT check not implemented")
@@ -91,7 +82,7 @@ async def _(graphql_client=graphql_client, db=db):
 async def _(graphql_client=graphql_client, db=db):
     query = """
     mutation {
-        retrieveCheckoutSession {
+        doCheckout {
             __typename
             ... on AlreadySubscribedError {
                 __typename

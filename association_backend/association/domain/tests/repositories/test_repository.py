@@ -1,5 +1,5 @@
 import datetime
-from typing import List, cast
+from typing import cast
 
 from association.domain.entities.subscription_entities import (
     Subscription,
@@ -22,7 +22,7 @@ async def _(db=db, second_session=second_session, cleanup_db=cleanup_db):
 
     await repository.save_subscription(
         Subscription(
-            user_id="1234",
+            user_id=1234,
             creation_date=datetime.datetime(
                 2020, 1, 1, 1, 0, tzinfo=datetime.timezone.utc
             ),
@@ -67,13 +67,13 @@ async def _(
     db = cast(AsyncSession, db)
     second_session = cast(AsyncSession, second_session)
 
-    await subscription_factory(user_id="12345")
+    await subscription_factory(user_id=12345)
     await db.commit()
 
     repository = AssociationRepository(db)
-    found_subscription = await repository.get_subscription_by_user_id("12345")
+    found_subscription = await repository.get_subscription_by_user_id(12345)
 
-    query = select(Subscription).where(Subscription.user_id == "12345")
+    query = select(Subscription).where(Subscription.user_id == 12345)
     raw_query_subscription: Subscription = (
         await second_session.execute(query)
     ).scalar()
@@ -213,36 +213,3 @@ async def _(
         found_subscription.stripe_customer_id
         == raw_query_subscription.stripe_customer_id
     )
-
-
-@test("list subscription by user_id")
-async def _(
-    db=db,
-    second_session=second_session,
-    subscription_factory=subscription_factory,
-    cleanup_db=cleanup_db,
-):
-    db = cast(AsyncSession, db)
-    second_session = cast(AsyncSession, second_session)
-
-    await subscription_factory(user_id="12345")
-    await db.commit()
-
-    await subscription_factory(user_id="12345")
-    await db.commit()
-
-    repository = AssociationRepository(db)
-    found_subscriptions: List[
-        Subscription
-    ] = await repository.list_subscriptions_by_user_id("12345")
-
-    query = select(Subscription).where(Subscription.user_id == "12345")
-    raw_query_subscriptions: List[Subscription] = (
-        await second_session.execute(query)
-    ).scalars().all()
-
-    # Check what we get executing the "raw query"
-    # and what the repository returned. Is this the same thing?
-    assert len(raw_query_subscriptions) == 2
-    assert len(found_subscriptions) == 2
-    assert found_subscriptions == raw_query_subscriptions

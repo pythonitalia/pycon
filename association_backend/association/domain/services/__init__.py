@@ -1,3 +1,4 @@
+from .customer_portal import customer_portal
 from .do_checkout import Subscription, do_checkout
 from .set_subscription_payed import SubscriptionInputModel, set_subscription_payed
 from .update_draft_subscription import (
@@ -12,4 +13,5 @@ __all__ = [
     "SubscriptionInputModel",
     "do_checkout",
     "Subscription",
+    "customer_portal",
 ]

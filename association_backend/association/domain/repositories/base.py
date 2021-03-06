@@ -6,9 +6,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 class AbstractTransaction:
     session: Any
 
-    def with_session(self, session):
-        self.session = session
-
     def transaction(self):
         raise NotImplementedError()
 

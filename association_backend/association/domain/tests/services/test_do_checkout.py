@@ -32,38 +32,38 @@ async def _():
 
     with time_machine.travel(datetime.datetime(2020, 1, 1, tzinfo=rome_tz), tick=False):
         subscription = await services.do_checkout(
-            user_data=UserData(email="g.donghia@mailinator.com", user_id="1357"),
+            user_data=UserData(email="g.donghia@mailinator.com", user_id=1357),
             association_repository=repository,
         )
 
         assert subscription.stripe_session_id != ""
         assert subscription.stripe_customer_id == ""
         assert subscription.state == SubscriptionState.PENDING
-        assert subscription.user_id == "1357"
+        assert subscription.user_id == 1357
         assert subscription.creation_date == datetime.datetime(2020, 1, 1, 0, 0)
 
 
 @test("OLD subscription returned if not payed")
 async def _():
     repository = FakeAssociationRepository(
-        subscriptions=[SubscriptionFactory(user_id="1357")], customers=[]
+        subscriptions=[SubscriptionFactory(user_id=1357)], customers=[]
     )
 
     with patch.object(
         Subscription, "get_calculated_state", return_value=SubscriptionState.PENDING
     ) as state_mock:
         subscription = await services.do_checkout(
-            user_data=UserData(email="g.donghia@mailinator.com", user_id="1357"),
+            user_data=UserData(email="g.donghia@mailinator.com", user_id=1357),
             association_repository=repository,
         )
-        assert subscription.user_id == "1357"
+        assert subscription.user_id == 1357
         state_mock.assert_called()
 
 
 @test("raises AlreadySubscribed if payed but not expired")
 async def _():
     repository = FakeAssociationRepository(
-        subscriptions=[SubscriptionFactory(user_id="1357")], customers=[]
+        subscriptions=[SubscriptionFactory(user_id=1357)], customers=[]
     )
 
     with patch.object(
@@ -71,30 +71,30 @@ async def _():
     ) as state_mock:
         with raises(AlreadySubscribed):
             subscription = await services.do_checkout(
-                user_data=UserData(email="g.donghia@mailinator.com", user_id="1357"),
+                user_data=UserData(email="g.donghia@mailinator.com", user_id=1357),
                 association_repository=repository,
             )
-            assert subscription.user_id == "1357"
+            assert subscription.user_id == 1357
             state_mock.assert_called()
 
 
-@test("return new checkout session with old subscription if subscription expired")
+@test("return old checkout session with old subscription if subscription expired")
 async def _():
     repository = FakeAssociationRepository(
-        subscriptions=[SubscriptionFactory(user_id="1357", stripe_id="sub_test_7890")],
+        subscriptions=[SubscriptionFactory(user_id=1357, stripe_id="sub_test_7890")],
         customers=[],
     )
 
     with patch.object(
         Subscription, "get_calculated_state", return_value=SubscriptionState.EXPIRED
     ) as state_mock:
-        subscription = await services.do_checkout(
-            user_data=UserData(email="g.donghia@mailinator.com", user_id="1357"),
-            association_repository=repository,
-        )
-        assert subscription.user_id == "1357"
-        state_mock.assert_called()
-        assert subscription.stripe_id == "sub_test_7890"
+        with raises(AlreadySubscribed):
+            subscription = await services.do_checkout(
+                user_data=UserData(email="g.donghia@mailinator.com", user_id=1357),
+                association_repository=repository,
+            )
+            assert subscription.user_id == 1357
+            state_mock.assert_called()
 
 
 @test("create new checkout session with old customer")
@@ -112,7 +112,7 @@ async def _():
         return_value=StripeCheckoutSessionFactory.build(),
     ) as create_checkout_session_mock:
         await services.do_checkout(
-            user_data=UserData(email="old_stripe_customer@pycon.it", user_id="1357"),
+            user_data=UserData(email="old_stripe_customer@pycon.it", user_id=1357),
             association_repository=repository,
         )
         create_checkout_session_mock.assert_called_once_with(
@@ -133,7 +133,7 @@ async def _():
     )
 
     subscription = await services.do_checkout(
-        user_data=UserData(email="old_stripe_customer@pycon.it", user_id="1357"),
+        user_data=UserData(email="old_stripe_customer@pycon.it", user_id=1357),
         association_repository=repository,
     )
     assert subscription.stripe_customer_id == "cus_test_12345"
@@ -149,7 +149,7 @@ async def _():
         return_value=StripeCheckoutSessionFactory.build(),
     ) as create_checkout_session_mock:
         await services.do_checkout(
-            user_data=UserData(email="old_stripe_customer@pycon.it", user_id="1357"),
+            user_data=UserData(email="old_stripe_customer@pycon.it", user_id=1357),
             association_repository=repository,
         )
         create_checkout_session_mock.assert_called_once_with(
@@ -164,7 +164,7 @@ async def _():
     repository = FakeAssociationRepository(subscriptions=[], customers=[])
 
     subscription = await services.do_checkout(
-        user_data=UserData(email="old_stripe_customer@pycon.it", user_id="1357"),
+        user_data=UserData(email="old_stripe_customer@pycon.it", user_id=1357),
         association_repository=repository,
     )
     assert subscription.stripe_customer_id == ""

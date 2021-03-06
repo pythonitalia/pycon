@@ -7,7 +7,7 @@ from association.domain.entities.stripe_entities import (
     StripeCustomer,
 )
 from association.domain.repositories import AssociationRepository
-from association.tests.factories import StripeProvider
+from association.tests.factories import StripeProvider, SubscriptionFactory
 
 
 class DummyTransaction:
@@ -23,7 +23,10 @@ class FakeAssociationRepository(AssociationRepository):
     rolledback: bool = False
 
     def __init__(
-        self, subscriptions: list[Subscription], customers: List[StripeCustomer]
+        self,
+        subscriptions: List[Subscription],
+        customers: List[StripeCustomer],
+        checkout_sessions: Optional[List[StripeCheckoutSession]] = [],
     ) -> None:
         super().__init__()
         # subscriptions
@@ -40,6 +43,11 @@ class FakeAssociationRepository(AssociationRepository):
         }
         self.SUBSCRIPTIONS_BY_USER_ID = {
             subscription.user_id: subscription for subscription in subscriptions
+        }
+        # checkout-sessions
+        self.CHECKOUT_SESSIONS_BY_ID = {
+            checkout_session.id: checkout_session
+            for checkout_session in checkout_sessions
         }
         # customers
         self.CUSTOMERS_BY_EMAIL = {customer.email: customer for customer in customers}
@@ -70,15 +78,7 @@ class FakeAssociationRepository(AssociationRepository):
     ) -> Optional[Subscription]:
         return self.SUBSCRIPTIONS_BY_CUSTOMER_ID.get(customer_id, None)
 
-    async def list_subscriptions_by_user_id(
-        self, user_id: str
-    ) -> List[Optional[Subscription]]:
-        subscriptions = self.SUBSCRIPTIONS_BY_USER_ID.get(user_id, [])
-        if subscriptions and not isinstance(subscriptions, list):
-            return [subscriptions]
-        return subscriptions
-
-    async def get_subscription_by_user_id(self, user_id: str) -> Optional[Subscription]:
+    async def get_subscription_by_user_id(self, user_id: int) -> Optional[Subscription]:
         return self.SUBSCRIPTIONS_BY_USER_ID.get(user_id, None)
 
     # WRITE
@@ -102,26 +102,25 @@ class FakeAssociationRepository(AssociationRepository):
         self, data: StripeCheckoutSessionInput
     ) -> Optional[StripeCheckoutSession]:
         # s = await subscription_factory()
-        from faker import Factory
-
-        fake = Factory.create()
-        fake.add_provider(StripeProvider)
-        fake_session_id = fake.checkout_session_id()
-
-        # if not data.customer_id:
-        #     customer_payload.update(dict(customer=data.customer_id))
-        # elif data.customer_email:
-        #     customer_payload.update(dict(customer_email=data.customer_email))
-        # if data.subscription_id:
-        #     # TODO TEST ME
-        #     customer_payload.update(dict(subscription=data.subscription_id))
+        # from faker import Factory
+        #
+        # fake = Factory.create()
+        # fake.add_provider(StripeProvider)
+        # fake_session_id = fake.checkout_session_id()
+        fake_session_id = SubscriptionFactory.build().stripe_session_id
 
         return StripeCheckoutSession(
-            id=fake_session_id,
-            customer_id=data.customer_id or "",
-            subscription_id=data.subscription_id or "",
+            id=fake_session_id, customer_id=data.customer_id or ""
         )
+
+    async def retrieve_customer_portal_session_url(self, stripe_customer_id):
+        return f"https://stripe.com/stripe_test_customer_portal_{stripe_customer_id}"
 
     # READ FROM STRIPE
     async def retrieve_customer_by_email(self, email: str) -> Optional[StripeCustomer]:
         return self.CUSTOMERS_BY_EMAIL.get(email, None)
+
+    async def retrieve_checkout_session_by_id(
+        self, stripe_id: str
+    ) -> Optional[StripeCheckoutSession]:
+        return self.CHECKOUT_SESSIONS_BY_ID.get(stripe_id, None)

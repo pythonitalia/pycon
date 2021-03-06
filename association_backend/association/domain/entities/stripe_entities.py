@@ -21,7 +21,6 @@ class StripeCheckoutSession:
 class StripeCheckoutSessionInput(BaseModel):
     customer_id: Optional[str] = None
     customer_email: Optional[str] = None
-    subscription_id: Optional[str] = None
 
     @validator("customer_email")
     def check_customer_id_or_customer_email(cls, customer_email, values):

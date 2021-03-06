@@ -27,6 +27,10 @@ class AlreadySubscribed(Exception):
         super().__init__(*args, **kwargs)
 
 
+class CustomerNotAvailable(Exception):
+    pass
+
+
 class InvalidCustomer(pydantic.ValidationError):
     pass
 
