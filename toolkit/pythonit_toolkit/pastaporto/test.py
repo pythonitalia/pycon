@@ -10,6 +10,7 @@ def fake_pastaporto_token_for_user(
     credentials = [Credential.AUTHENTICATED]
     if staff:
         credentials.append(Credential.STAFF)
+
     return jwt.encode(
         {
             "userInfo": {"id": user["id"], "email": user["email"]},
