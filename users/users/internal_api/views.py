@@ -39,6 +39,10 @@ class GraphQL(BaseGraphQL):
 
         await response(scope, receive, send)
 
+    async def handle_websocket(self, scope: Scope, receive: Receive, send: Send):
+        websocket = WebSocket(scope=scope, receive=receive, send=send)
+        await websocket.close()
+
     async def execute(
         self, query, variables=None, context=None, operation_name=None, root_value=None
     ):

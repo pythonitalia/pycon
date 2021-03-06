@@ -3,17 +3,15 @@ import logging
 from dataclasses import dataclass
 from typing import Any, Dict, Optional
 
-from asgi_lifespan import LifespanManager
-from httpx import AsyncClient
 from ward import fixture
 
-from main import app
 from users.domain import entities
 from users.settings import (
     PASTAPORTO_X_HEADER,
     SERVICE_KEY_X_HEADER,
     SERVICE_TO_SERVICE_SECRET,
 )
+from users.tests.client import testclient
 from users.tests.pastaporto import fake_pastaporto_token_for_user
 
 logger = logging.getLogger(__name__)
@@ -70,21 +68,18 @@ class GraphQLClient:
 
 
 @fixture()
-async def graphql_client():
-    async with LifespanManager(app):
-        async with AsyncClient(app=app, base_url="http://testserver") as client:
-            yield GraphQLClient(client)
+async def graphql_client(testclient=testclient):
+    async with testclient:
+        yield GraphQLClient(testclient)
 
 
 @fixture()
-async def admin_graphql_client():
-    async with LifespanManager(app):
-        async with AsyncClient(app=app, base_url="http://testserver") as client:
-            yield GraphQLClient(client, admin_endpoint=True)
+async def admin_graphql_client(testclient=testclient):
+    async with testclient:
+        yield GraphQLClient(testclient, admin_endpoint=True)
 
 
 @fixture()
-async def internalapi_graphql_client():
-    async with LifespanManager(app):
-        async with AsyncClient(app=app, base_url="http://testserver") as client:
-            yield GraphQLClient(client, internal_api_endpoint=True)
+async def internalapi_graphql_client(testclient=testclient):
+    async with testclient:
+        yield GraphQLClient(testclient, internal_api_endpoint=True)
