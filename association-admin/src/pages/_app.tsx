@@ -40,7 +40,9 @@ export default withUrqlClient(
       ssrExchange,
       authExchange({
         didAuthError({ error }) {
-          return error.graphQLErrors.some((e) => e.message === "Unauthorized");
+          return error.graphQLErrors.some(
+            (e) => e.extensions.code === "UNAUTHENTICATED",
+          );
         },
         async getAuth({ authState }: { authState?: AuthState }) {
           if (!authState) {
