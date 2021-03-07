@@ -1,17 +1,12 @@
-import pydantic
 import strawberry
 from association.api.context import Info
 from association.domain import services
+from association.domain.entities.subscription_entities import UserData
 from association.domain.exceptions import CustomerNotAvailable
-
 
 # ===========
 # Input
 # ==========
-class UserData(pydantic.BaseModel):
-    email: str
-    user_id: int
-
 
 # ===========
 # Validation Errors

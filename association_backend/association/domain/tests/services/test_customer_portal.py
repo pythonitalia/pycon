@@ -12,7 +12,7 @@ from ward import raises, test
 rome_tz = ZoneInfo("Europe/Rome")
 
 
-@test("session returned if customer available")
+@test("customer portal url returned")
 async def _():
     test_stripe_customer_id = "cus_test_1234"
     repository = FakeAssociationRepository(

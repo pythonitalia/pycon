@@ -1,13 +1,12 @@
 from typing import cast
 
 import stripe
-from association.api.mutation.do_checkout import UserData
 from association.db import get_engine, get_session
 from association.domain import services
+from association.domain.entities.subscription_entities import UserData
 from association.domain.exceptions import AlreadySubscribed
 from association.domain.repositories import AssociationRepository
 from association.settings import (
-    DOMAIN_URL,
     STRIPE_SUBSCRIPTION_API_KEY,
     STRIPE_SUBSCRIPTION_API_SECRET,
     STRIPE_SUBSCRIPTION_PRICE_ID,
@@ -77,7 +76,7 @@ class CreateCheckoutSessionView(HTTPEndpoint):
 
     async def post(self, request):
 
-        user_data = UserData(email="fake.user@pycon.it", user_id=12345)
+        user_data = UserData(email="fake.user3@pycon.it", user_id=12346)
 
         try:
             subscription = await services.do_checkout(

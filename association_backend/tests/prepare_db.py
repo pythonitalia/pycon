@@ -14,7 +14,6 @@ sys.path.append(os.path.join(os.path.dirname(__file__), ".."))  # noqa
 async def run():
     engine = get_engine(echo=False)
     metadata = mapper_registry.metadata
-
     if not database_exists(DATABASE_URL):
         create_database(DATABASE_URL)
 

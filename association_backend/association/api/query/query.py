@@ -1,14 +1,14 @@
-from typing import List, Optional
+from typing import Optional
 
 import strawberry
 from association.api.context import Info
-from association.api.types import Subscription
+from association.api.types import SubscriptionResponse
 
 
 @strawberry.type
 class Query:
     @strawberry.field()  # permission_classes=[IsJWTAvailable])
-    async def my_subscription(self, info: Info) -> Optional[Subscription]:
+    async def my_subscription(self, info: Info) -> Optional[SubscriptionResponse]:
         # user_id = decode_token(info.context.request.cookies.get(
         #     JWT_USERS_COOKIE_NAME)
         # ).id
@@ -17,4 +17,4 @@ class Query:
             user_id
         )
         print(f"subscription : {subscription}")
-        return Subscription.from_domain(subscription)
+        return SubscriptionResponse.from_domain(subscription)

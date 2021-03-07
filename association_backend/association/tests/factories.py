@@ -72,7 +72,7 @@ class SubscriptionFactory(SQLAlchemyModelFactory):
 
     user_id = factory.Faker("pyint", min_value=1)
     creation_date = factory.Faker("date_between", start_date="-30y", end_date="today")
-    payment_date = factory.Faker("date_between", start_date="-30y", end_date="today")
+    due_date = factory.Faker("date_between", start_date="today", end_date="+1y")
     expiration_date = factory.Faker("date_between", start_date="-5y", end_date="today")
     state = factory.fuzzy.FuzzyChoice(SubscriptionState)
 

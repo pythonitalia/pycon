@@ -1,20 +1,13 @@
+from __future__ import annotations
+
 import datetime
 
-import pydantic
 import strawberry
 from association.api.context import Info
-from association.api.types import Subscription
-from association.domain import entities, services
+from association.api.types import SubscriptionResponse
+from association.domain import services
+from association.domain.entities.subscription_entities import UserData
 from association.domain.exceptions import AlreadySubscribed
-
-# ===========
-# Input
-# ==========
-
-
-class UserData(pydantic.BaseModel):
-    email: str
-    user_id: str
 
 
 # ===========
@@ -24,18 +17,6 @@ class UserData(pydantic.BaseModel):
 class AlreadySubscribedError:
     expiration_date: datetime.datetime
     message: str = "You are already subscribed"
-
-
-@strawberry.type
-class SubscriptionResponse:
-    # TODO return subscription
-    subscription: Subscription
-
-    @classmethod
-    def from_domain(
-        cls, subscription_entity: entities.Subscription
-    ) -> "SubscriptionResponse":
-        return cls(subscription=Subscription.from_domain(subscription_entity))
 
 
 # ===========

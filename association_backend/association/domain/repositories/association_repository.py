@@ -7,7 +7,10 @@ from association.domain.entities.stripe_entities import (
     StripeCheckoutSessionInput,
     StripeCustomer,
 )
-from association.domain.entities.subscription_entities import Subscription
+from association.domain.entities.subscription_entities import (
+    Subscription,
+    SubscriptionPayment,
+)
 from association.domain.repositories.base import AbstractRepository
 from association.settings import (
     DOMAIN_URL,
@@ -56,6 +59,13 @@ class AssociationRepository(AbstractRepository):
         self.session.add(subscription)
         await self.session.flush()
         return subscription
+
+    async def save_payment(
+        self, subscription_payment: SubscriptionPayment
+    ) -> SubscriptionPayment:
+        self.session.add(subscription_payment)
+        await self.session.flush()
+        return subscription_payment
 
     # ============== #
     #    Stripe

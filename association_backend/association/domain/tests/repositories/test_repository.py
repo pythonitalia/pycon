@@ -28,20 +28,17 @@ async def _(db=db, second_session=second_session, cleanup_db=cleanup_db):
             ),
             stripe_session_id="cs_test_a1wtX1HXf3iOjdQK1cyEN3YavPmxSaTkdfo2fCAPLqlOPT3blEZrUOIlaQ",
             state=SubscriptionState.PENDING,
-            payment_date=datetime.datetime(
-                2020, 1, 1, 1, 30, tzinfo=datetime.timezone.utc
-            ),
             stripe_id="sub_test_IxcENZqOBlHAJo",
             stripe_customer_id="cus_test_IuwfUVsdQFNvqc",
         )
     )
     await repository.commit()
 
-    query = select(Subscription).where(Subscription.user_id == "1234")
+    query = select(Subscription).where(Subscription.user_id == 1234)
     db_subscription: Subscription = (await second_session.execute(query)).scalar()
 
     assert db_subscription
-    assert db_subscription.user_id == "1234"
+    assert db_subscription.user_id == 1234
     assert db_subscription.creation_date == datetime.datetime(
         2020, 1, 1, 1, 0, tzinfo=datetime.timezone.utc
     )
@@ -50,9 +47,6 @@ async def _(db=db, second_session=second_session, cleanup_db=cleanup_db):
         == "cs_test_a1wtX1HXf3iOjdQK1cyEN3YavPmxSaTkdfo2fCAPLqlOPT3blEZrUOIlaQ"
     )
     assert db_subscription.state == SubscriptionState.PENDING
-    assert db_subscription.payment_date == datetime.datetime(
-        2020, 1, 1, 1, 30, tzinfo=datetime.timezone.utc
-    )
     assert db_subscription.stripe_id == "sub_test_IxcENZqOBlHAJo"
     assert db_subscription.stripe_customer_id == "cus_test_IuwfUVsdQFNvqc"
 
@@ -86,7 +80,6 @@ async def _(
         found_subscription.stripe_session_id == raw_query_subscription.stripe_session_id
     )
     assert found_subscription.state == raw_query_subscription.state
-    assert found_subscription.payment_date == raw_query_subscription.payment_date
     assert found_subscription.stripe_id == raw_query_subscription.stripe_id
     assert (
         found_subscription.stripe_customer_id
@@ -127,7 +120,6 @@ async def _(
         found_subscription.stripe_session_id == raw_query_subscription.stripe_session_id
     )
     assert found_subscription.state == raw_query_subscription.state
-    assert found_subscription.payment_date == raw_query_subscription.payment_date
     assert found_subscription.stripe_id == raw_query_subscription.stripe_id
     assert (
         found_subscription.stripe_customer_id
@@ -168,7 +160,6 @@ async def _(
         found_subscription.stripe_session_id == raw_query_subscription.stripe_session_id
     )
     assert found_subscription.state == raw_query_subscription.state
-    assert found_subscription.payment_date == raw_query_subscription.payment_date
     assert found_subscription.stripe_id == raw_query_subscription.stripe_id
     assert (
         found_subscription.stripe_customer_id
@@ -207,7 +198,6 @@ async def _(
         found_subscription.stripe_session_id == raw_query_subscription.stripe_session_id
     )
     assert found_subscription.state == raw_query_subscription.state
-    assert found_subscription.payment_date == raw_query_subscription.payment_date
     assert found_subscription.stripe_id == raw_query_subscription.stripe_id
     assert (
         found_subscription.stripe_customer_id

@@ -8,68 +8,23 @@ from ward import test
 rome_tz = ZoneInfo("Europe/Rome")
 
 
-@test("not is_paid if no payment_date")
+@test("calculated_state == pending if no due_date")
 def _():
-    s = SubscriptionFactory(payment_date=None)
-    assert s.is_paid() is False
-
-
-@test("is_paid if payment_date is in this year")
-def _():
-    s = SubscriptionFactory(
-        payment_date=datetime.datetime.now(rome_tz) - datetime.timedelta(days=1)
-    )
-    assert s.is_paid() is True
-
-
-@test("is_paid if payment_date more than one year ago year")
-def _():
-    s = SubscriptionFactory(
-        payment_date=datetime.datetime.now(rome_tz) - datetime.timedelta(days=1 + 365)
-    )
-    assert s.is_paid() is True
-
-
-@test("not is_expired if no payment_date")
-def _():
-    s = SubscriptionFactory(payment_date=None)
-    print(s.payment_date)
-    assert s.is_expired() is False
-
-
-@test("not is_expired if payment_date is in this year")
-def _():
-    s = SubscriptionFactory(
-        payment_date=datetime.datetime.now(rome_tz) - datetime.timedelta(days=1)
-    )
-    assert s.is_expired() is False
-
-
-@test("is_expired if payment_date more than one year ago year")
-def _():
-    s = SubscriptionFactory(
-        payment_date=datetime.datetime.now(rome_tz) - datetime.timedelta(days=1 + 365)
-    )
-    assert s.is_expired() is True
-
-
-@test("calculated_state == pending if no payment_date")
-def _():
-    s = SubscriptionFactory(payment_date=None)
+    s = SubscriptionFactory(due_date=None)
     assert s.get_calculated_state() == SubscriptionState.PENDING
 
 
-@test("calculated_state == active if payment_date is in this year")
+@test("calculated_state == active if due_date is in this year")
 def _():
     s = SubscriptionFactory(
-        payment_date=datetime.datetime.now(rome_tz) - datetime.timedelta(days=1)
+        due_date=datetime.datetime.now(rome_tz) - datetime.timedelta(days=1)
     )
     assert s.get_calculated_state() == SubscriptionState.ACTIVE
 
 
-@test("calculated_state == expired if payment_date more than one year ago year")
+@test("calculated_state == expired if due_date more than one year ago year")
 def _():
     s = SubscriptionFactory(
-        payment_date=datetime.datetime.now(rome_tz) - datetime.timedelta(days=1 + 365)
+        due_date=datetime.datetime.now(rome_tz) - datetime.timedelta(days=1 + 365)
     )
     assert s.get_calculated_state() == SubscriptionState.EXPIRED
