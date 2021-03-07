@@ -39,22 +39,22 @@ class StripeWebhook(HTTPEndpoint):
         except SubscriptionNotUpdated:
             return JSONResponse({"status": "error"}, status_code=400)
 
-    async def handle_customer_subscription_updated(self, request, payload):
-        stripe_obj = payload["object"]
-        try:
-            await services.handle_customer_subscription_updated(
-                services.SubscriptionDetailInput(
-                    subscription_id=stripe_obj["id"],
-                    status=stripe_obj["status"],
-                    current_period_start=stripe_obj["current_period_start"],
-                    current_period_end=stripe_obj["current_period_end"],
-                    latest_invoice=stripe_obj["latest_invoice"],
-                ),
-                association_repository=self._get_association_repository(request),
-            )
-            return JSONResponse({"status": "success"})
-        except SubscriptionNotUpdated:
-            return JSONResponse({"status": "error"}, status_code=400)
+    # async def handle_customer_subscription_updated(self, request, payload):
+    #     stripe_obj = payload["object"]
+    #     try:
+    #         await services.handle_customer_subscription_updated(
+    #             services.SubscriptionDetailInput(
+    #                 subscription_id=stripe_obj["id"],
+    #                 status=stripe_obj["status"],
+    #                 current_period_start=stripe_obj["current_period_start"],
+    #                 current_period_end=stripe_obj["current_period_end"],
+    #                 latest_invoice=stripe_obj["latest_invoice"],
+    #             ),
+    #             association_repository=self._get_association_repository(request),
+    #         )
+    #         return JSONResponse({"status": "success"})
+    #     except SubscriptionNotUpdated:
+    #         return JSONResponse({"status": "error"}, status_code=400)
 
     async def handle_invoice_paid(self, request, payload):
         """ https://stripe.com/docs/api/invoices/object?lang=python """
