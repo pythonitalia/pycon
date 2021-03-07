@@ -1,4 +1,4 @@
-import { createContext } from "react";
+import { createContext, useEffect } from "react";
 
 import { MeQuery, useMeQuery } from "./me.generated";
 
@@ -16,7 +16,17 @@ export const UserProvider: React.FC<{ resetUrqlClient: () => void }> = ({
   children,
   resetUrqlClient,
 }) => {
-  const [{ data, fetching, error }] = useMeQuery();
+  const [{ data, fetching, error }, refetchMe] = useMeQuery({
+    requestPolicy: "network-only",
+  });
+
+  useEffect(() => {
+    const listener = () => refetchMe();
+    window.addEventListener("tokenChanged", listener);
+    return () => {
+      window.removeEventListener("tokenChanged", listener);
+    };
+  }, []);
 
   return (
     <UserContext.Provider

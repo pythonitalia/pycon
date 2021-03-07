@@ -4,8 +4,10 @@ import { UserContext } from "~/components/user-provider";
 
 export const TOKEN_NAME = "auth-token";
 
-const setToken = (token: string) =>
+const setToken = (token: string) => {
   window.localStorage.setItem(TOKEN_NAME, token);
+  window.dispatchEvent(new Event("tokenChanged"));
+};
 
 export const useUser = () => {
   const { user, resetUrqlClient } = useContext(UserContext);
