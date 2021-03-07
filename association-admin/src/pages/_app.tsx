@@ -1,7 +1,7 @@
 import { dedupExchange, cacheExchange, fetchExchange } from "@urql/core";
 import { authExchange } from "@urql/exchange-auth";
 import { RecoilRoot } from "recoil";
-import { makeOperation } from "urql";
+import { makeOperation, Mutation, Operation } from "urql";
 
 import { withUrqlClient } from "next-urql";
 import Router from "next/router";
@@ -41,7 +41,7 @@ export default withUrqlClient(
       authExchange({
         didAuthError({ error }) {
           return error.graphQLErrors.some(
-            (e) => e.extensions.code === "UNAUTHENTICATED",
+            (e) => e.extensions.exception.message === "Unauthorized",
           );
         },
         async getAuth({ authState }: { authState?: AuthState }) {
