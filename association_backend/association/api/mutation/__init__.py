@@ -1,5 +1,7 @@
 from ..builder import create_mutation_type
-from .customer_portal import customer_portal
-from .do_checkout import do_checkout
+from .manage_user_association_subscription import manage_user_association_subscription
+from .subscribe_user_to_association import subscribe_user_to_association
 
-Mutation = create_mutation_type("Mutation", [do_checkout, customer_portal])
+Mutation = create_mutation_type(
+    "Mutation", [subscribe_user_to_association, manage_user_association_subscription]
+)

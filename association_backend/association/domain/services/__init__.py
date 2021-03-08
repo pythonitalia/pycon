@@ -1,10 +1,10 @@
-from .customer_portal import customer_portal
-from .do_checkout import do_checkout
 from .handle_invoice_paid import InvoicePaidInput, handle_invoice_paid
 from .handle_invoice_payment_failed import (
     InvoicePaymentFailedInput,
     handle_invoice_payment_failed,
 )
+from .manage_user_association_subscription import manage_user_association_subscription
+from .subscribe_user_to_association import subscribe_user_to_association
 from .update_pending_subscription import (
     SubscriptionUpdateInput,
     update_pending_subscription,
@@ -12,8 +12,8 @@ from .update_pending_subscription import (
 
 __all__ = [
     # FROM Mutations
-    "do_checkout",
-    "customer_portal",
+    "subscribe_user_to_association",
+    "manage_user_association_subscription",
     # FROM Webhook
     "SubscriptionUpdateInput",
     "update_pending_subscription",

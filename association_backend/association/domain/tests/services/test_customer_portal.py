@@ -24,7 +24,7 @@ async def _():
         customers=[],
     )
 
-    portal_url = await services.customer_portal(
+    portal_url = await services.manage_user_association_subscription(
         user_data=UserData(user_id=1234, email="pycon_tester@python.it"),
         association_repository=repository,
     )
@@ -42,7 +42,7 @@ async def _():
     )
 
     with raises(CustomerNotAvailable):
-        await services.customer_portal(
+        await services.manage_user_association_subscription(
             user_data=UserData(user_id=1234, email="pycon_tester@python.it"),
             association_repository=repository,
         )

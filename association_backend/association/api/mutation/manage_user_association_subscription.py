@@ -33,12 +33,12 @@ CustomerPortalResult = strawberry.union(
 # Mutation
 # ==========
 @strawberry.mutation
-async def customer_portal(info: Info) -> CustomerPortalResponse:
+async def manage_user_association_subscription(info: Info) -> CustomerPortalResponse:
     # TODO ger UserData from authenticated User
     user_data = UserData(email="fake.user@pycon.it", user_id=12345)
 
     try:
-        billing_portal_url = await services.customer_portal(
+        billing_portal_url = await services.manage_user_association_subscription(
             user_data, association_repository=info.context.association_repository
         )
         return CustomerPortalResponse(billing_portal_url=billing_portal_url)

@@ -31,7 +31,7 @@ async def _():
     repository = FakeAssociationRepository(subscriptions=[], customers=[])
 
     with time_machine.travel(datetime.datetime(2020, 1, 1, tzinfo=rome_tz), tick=False):
-        subscription = await services.do_checkout(
+        subscription = await services.subscribe_user_to_association(
             user_data=UserData(email="g.donghia@mailinator.com", user_id=1357),
             association_repository=repository,
         )
@@ -52,7 +52,7 @@ async def _():
     with patch.object(
         Subscription, "get_calculated_state", return_value=SubscriptionState.PENDING
     ) as state_mock:
-        subscription = await services.do_checkout(
+        subscription = await services.subscribe_user_to_association(
             user_data=UserData(email="g.donghia@mailinator.com", user_id=1357),
             association_repository=repository,
         )
@@ -70,7 +70,7 @@ async def _():
         Subscription, "get_calculated_state", return_value=SubscriptionState.ACTIVE
     ) as state_mock:
         with raises(AlreadySubscribed):
-            subscription = await services.do_checkout(
+            subscription = await services.subscribe_user_to_association(
                 user_data=UserData(email="g.donghia@mailinator.com", user_id=1357),
                 association_repository=repository,
             )
@@ -89,7 +89,7 @@ async def _():
         Subscription, "get_calculated_state", return_value=SubscriptionState.EXPIRED
     ) as state_mock:
         with raises(AlreadySubscribed):
-            subscription = await services.do_checkout(
+            subscription = await services.subscribe_user_to_association(
                 user_data=UserData(email="g.donghia@mailinator.com", user_id=1357),
                 association_repository=repository,
             )
@@ -111,7 +111,7 @@ async def _():
         "create_checkout_session",
         return_value=StripeCheckoutSessionFactory.build(),
     ) as create_checkout_session_mock:
-        await services.do_checkout(
+        await services.subscribe_user_to_association(
             user_data=UserData(email="old_stripe_customer@pycon.it", user_id=1357),
             association_repository=repository,
         )
@@ -132,7 +132,7 @@ async def _():
         ],
     )
 
-    subscription = await services.do_checkout(
+    subscription = await services.subscribe_user_to_association(
         user_data=UserData(email="old_stripe_customer@pycon.it", user_id=1357),
         association_repository=repository,
     )
@@ -148,7 +148,7 @@ async def _():
         "create_checkout_session",
         return_value=StripeCheckoutSessionFactory.build(),
     ) as create_checkout_session_mock:
-        await services.do_checkout(
+        await services.subscribe_user_to_association(
             user_data=UserData(email="old_stripe_customer@pycon.it", user_id=1357),
             association_repository=repository,
         )
@@ -163,7 +163,7 @@ async def _():
 async def _():
     repository = FakeAssociationRepository(subscriptions=[], customers=[])
 
-    subscription = await services.do_checkout(
+    subscription = await services.subscribe_user_to_association(
         user_data=UserData(email="old_stripe_customer@pycon.it", user_id=1357),
         association_repository=repository,
     )

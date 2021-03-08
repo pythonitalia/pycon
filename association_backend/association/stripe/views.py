@@ -62,7 +62,7 @@ class CustomerPortalView(HTTPEndpoint):
         billing_portal_url = await association_repository.retrieve_customer_portal_session_url(
             checkout_session.stripe_customer_id
         )
-        # billing_portal_url = await services.customer_portal(
+        # billing_portal_url = await services.manage_user_association_subscription(
         #     user_data, association_repository=info.context.association_repository
         # )
         return JSONResponse({"url": billing_portal_url})
@@ -79,7 +79,7 @@ class CreateCheckoutSessionView(HTTPEndpoint):
         user_data = UserData(email="fake.user3@pycon.it", user_id=12346)
 
         try:
-            subscription = await services.do_checkout(
+            subscription = await services.subscribe_user_to_association(
                 user_data,
                 association_repository=self._get_association_repository(request),
             )

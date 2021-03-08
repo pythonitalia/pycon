@@ -7,7 +7,7 @@ from association.domain.repositories import AssociationRepository
 logger = logging.getLogger(__name__)
 
 
-async def customer_portal(
+async def manage_user_association_subscription(
     user_data: UserData, association_repository: AssociationRepository
 ) -> Subscription:
     """This service creates a CustomerPortalSession and returns his url

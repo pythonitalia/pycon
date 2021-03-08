@@ -31,7 +31,7 @@ CheckoutSessionResult = strawberry.union(
 # Mutation
 # ==========
 @strawberry.mutation
-async def do_checkout(info: Info) -> CheckoutSessionResult:
+async def subscribe_user_to_association(info: Info) -> CheckoutSessionResult:
     # TODO We have to define the name of the JWT TOKEN KEY
     # try:
     #     user_data = await decode_token(info.context.request.cookies.get(JWT_USERS_COOKIE_NAME))
@@ -42,7 +42,7 @@ async def do_checkout(info: Info) -> CheckoutSessionResult:
     user_data = UserData(email="fake.user@pycon.it", user_id=12345)
 
     try:
-        subscription = await services.do_checkout(
+        subscription = await services.subscribe_user_to_association(
             user_data, association_repository=info.context.association_repository
         )
         return SubscriptionResponse.from_domain(subscription)

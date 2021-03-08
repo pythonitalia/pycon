@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 stripe.api_key = STRIPE_SUBSCRIPTION_API_SECRET  # 'sk_test_4eC39HqLyjWDarjtT1zdp7dc'
 
 
-async def do_checkout(
+async def subscribe_user_to_association(
     user_data: UserData, association_repository: AssociationRepository
 ) -> Subscription:
     """This service retrieves or creates a CheckoutSession and returns aggregating customer and subscription data
