@@ -35,7 +35,7 @@ DEFAULT_PAGINATION_TO = 20
 
 # Headers config
 
-SERVICE_KEY_X_HEADER = "x-service-key"
+SERVICE_JWT_HEADER = "x-service"
 
 # Passwords
 
