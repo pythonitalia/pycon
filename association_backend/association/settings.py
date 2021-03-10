@@ -37,23 +37,15 @@ DOMAIN_URL = config.get("DOMAIN_URL")
 RUNNING_TESTS = config("RUNNING_TESTS", cast=bool, default=False)
 
 if RUNNING_TESTS:
-    if TEST_DATABASE_URL:
-        if not make_url(TEST_DATABASE_URL).database.startswith("TEST"):
-            print(
-                f"TEST DB should start with TEST, TEST_{make_url(DATABASE_URL).database} will be used as DB NAME"
-            )
-            TEST_DATABASE_URL = None
-        else:
-            DATABASE_URL = TEST_DATABASE_URL
-    if not TEST_DATABASE_URL:
-        original_url = make_url(DATABASE_URL)
-        test_db_url = URL.create(
-            drivername=original_url.drivername,
-            username=original_url.username,
-            password=original_url.password,
-            host=original_url.host,
-            port=original_url.port,
-            database=f"TEST_{original_url.database}",
-            query=original_url.query,
-        )
-        DATABASE_URL = test_db_url
+    original_url = make_url(DATABASE_URL)
+    test_db_url = URL.create(
+        drivername=original_url.drivername,
+        username=original_url.username,
+        password=original_url.password,
+        host=original_url.host,
+        port=original_url.port,
+        database=f"TEST_{original_url.database}",
+        query=original_url.query,
+    )
+    DATABASE_URL = test_db_url
+
