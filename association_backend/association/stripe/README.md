@@ -12,5 +12,3 @@ Checkout Session : https://stripe.com/docs/api/checkout/sessions/object
 Subscriptions : https://stripe.com/docs/api/subscriptions/object?lang=python
 Invoices : https://stripe.com/docs/api/invoices/object?lang=python
 
-
-

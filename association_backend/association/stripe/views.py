@@ -1,6 +1,11 @@
 from typing import cast
 
 import stripe
+from sqlalchemy.ext.asyncio import AsyncSession
+from starlette.endpoints import HTTPEndpoint
+from starlette.responses import JSONResponse
+from starlette.templating import Jinja2Templates
+
 from association.db import get_engine, get_session
 from association.domain import services
 from association.domain.entities.subscription_entities import UserData
@@ -11,10 +16,6 @@ from association.settings import (
     STRIPE_SUBSCRIPTION_API_SECRET,
     STRIPE_SUBSCRIPTION_PRICE_ID,
 )
-from sqlalchemy.ext.asyncio import AsyncSession
-from starlette.endpoints import HTTPEndpoint
-from starlette.responses import JSONResponse
-from starlette.templating import Jinja2Templates
 
 templates = Jinja2Templates(directory="association/stripe/templates")
 
@@ -59,8 +60,10 @@ class CustomerPortalView(HTTPEndpoint):
         checkout_session = await association_repository.get_subscription_by_session_id(
             checkout_session_id
         )
-        billing_portal_url = await association_repository.retrieve_customer_portal_session_url(
-            checkout_session.stripe_customer_id
+        billing_portal_url = (
+            await association_repository.retrieve_customer_portal_session_url(
+                checkout_session.stripe_customer_id
+            )
         )
         # billing_portal_url = await services.manage_user_association_subscription(
         #     user_data, association_repository=info.context.association_repository
@@ -103,13 +106,6 @@ class CheckoutSessionDetailView(HTTPEndpoint):
         )
 
     async def get(self, request):
-        # association_repository = self._get_association_repository(request)
-        # checkout_session = await association_repository.get_subscription_by_session_id(
-        #     request.query_params.get("sessionId")
-        # )
-        # return JSONResponse({
-        #     "customer_id": checkout_session.stripe_customer_id
-        # })
         checkout_session = stripe.checkout.Session.retrieve(
             request.query_params.get("sessionId")
         )

@@ -3,10 +3,11 @@ import inspect
 import string
 
 import factory.fuzzy
-from association.domain.entities import Subscription, SubscriptionState
 from factory.alchemy import SQLAlchemyModelFactory
 from faker.providers import BaseProvider
 from ward import fixture
+
+from association.domain.entities import Subscription, SubscriptionState
 
 from ..domain.entities.stripe_entities import StripeCheckoutSession, StripeCustomer
 from .session import test_session

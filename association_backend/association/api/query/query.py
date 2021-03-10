@@ -1,6 +1,7 @@
 from typing import Optional
 
 import strawberry
+
 from association.api.context import Info
 from association.api.types import SubscriptionResponse
 
@@ -13,8 +14,9 @@ class Query:
         #     JWT_USERS_COOKIE_NAME)
         # ).id
         user_id = 12345
-        subscription = await info.context.association_repository.get_subscription_by_user_id(
-            user_id
+        subscription = (
+            await info.context.association_repository.get_subscription_by_user_id(
+                user_id
+            )
         )
-        print(f"subscription : {subscription}")
         return SubscriptionResponse.from_domain(subscription)

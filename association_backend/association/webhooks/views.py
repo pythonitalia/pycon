@@ -2,14 +2,15 @@ import logging
 from typing import cast
 
 import stripe
+from sqlalchemy.ext.asyncio import AsyncSession
+from starlette.endpoints import HTTPEndpoint
+from starlette.responses import JSONResponse
+
 from association.db import get_engine, get_session
 from association.domain import services
 from association.domain.exceptions import SubscriptionNotFound, SubscriptionNotUpdated
 from association.domain.repositories import AssociationRepository
 from association.settings import STRIPE_WEBHOOK_SIGNATURE_SECRET
-from sqlalchemy.ext.asyncio import AsyncSession
-from starlette.endpoints import HTTPEndpoint
-from starlette.responses import JSONResponse
 
 logger = logging.getLogger(__name__)
 
@@ -146,7 +147,6 @@ class StripeWebhook(HTTPEndpoint):
                 f"The event `{event_type}` is not handled by webhook",
                 extra={"tags": event, "payload": data},
             )
-
         return JSONResponse({"status": "success"})
 
     async def echo(self, payload):

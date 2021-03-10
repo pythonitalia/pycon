@@ -4,6 +4,7 @@ from datetime import datetime
 from typing import Optional
 
 import strawberry
+
 from association.domain import entities
 
 

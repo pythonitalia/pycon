@@ -1,10 +1,13 @@
 on:
   pull_request:
     paths:
-      - "infrastructure/**/*"
-      - "infrastructure/*"
+      - "infrastructure/applications/**/*"
+      - "infrastructure/applications/*"
 
 name: Terraform Lint
+
+env:
+  TF_WORKSPACE: "production"
 
 jobs:
   lint:
@@ -12,46 +15,44 @@ jobs:
 
     steps:
       - uses: actions/checkout@master
-
-      - name: terraform-fmt
-        uses: hashicorp/terraform-github-actions/fmt@v0.3.5
+      - name: Terraform Format
+        id: fmt
+        run: terraform fmt -check
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TF_ACTION_WORKING_DIR: ./infrastructure
+          TF_IN_AUTOMATION: 1
 
   plan:
     runs-on: ubuntu-20.04
-
+    defaults:
+      run:
+        working-directory: ./infrastructure/applications
     steps:
       - uses: actions/checkout@master
-
-      - name: terraform-init
-        uses: hashicorp/terraform-github-actions/init@v0.3.5
+      - uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 0.14.4
+      - name: Terraform Init
+        run: terraform init
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          TF_ACTION_WORKING_DIR: ./infrastructure
-
-      - name: terraform-validate
-        uses: hashicorp/terraform-github-actions/validate@v0.3.5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          TF_ACTION_WORKING_DIR: ./infrastructure
-
-      - name: terraform-plan
-        uses: ./.github/terraform-plan-action
+          TF_IN_AUTOMATION: 1
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -no-color &> /dev/null
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           TF_VAR_database_password: ${{ secrets.TF_VAR_database_password }}
           TF_VAR_secret_key: ${{ secrets.TF_VAR_secret_key }}
+          TF_VAR_ssl_certificate: ${{ secrets.TF_VAR_ssl_certificate }}
           TF_VAR_mapbox_public_api_key: ${{ secrets.TF_VAR_mapbox_public_api_key }}
           TF_VAR_sentry_dsn: ${{ secrets.TF_VAR_sentry_dsn }}
-          TF_VAR_ssl_certificate: ${{ secrets.TF_VAR_ssl_certificate }}
           TF_VAR_slack_incoming_webhook_url: ${{ secrets.TF_VAR_slack_incoming_webhook_url }}
           TF_VAR_social_auth_google_oauth2_key: ${{ secrets.TF_VAR_social_auth_google_oauth2_key }}
           TF_VAR_social_auth_google_oauth2_secret: ${{ secrets.TF_VAR_social_auth_google_oauth2_secret }}
@@ -60,5 +61,42 @@ jobs:
           TF_VAR_pretix_secret_key: ${{ secrets.TF_VAR_pretix_secret_key }}
           TF_VAR_pretix_api_token: ${{ secrets.TF_VAR_pretix_api_token }}
           TF_VAR_pinpoint_application_id: ${{ secrets.TF_VAR_pinpoint_application_id }}
-          TF_ACTION_WORKING_DIR: ./infrastructure
-          TF_ACTION_WORKSPACE: production
+          TF_VAR_pretix_sentry_dsn: ${{ secrets.TF_VAR_pretix_sentry_dsn }}
+          TF_VAR_users_backend_session_secret_key: ${{ secrets.TF_VAR_users_backend_session_secret_key }}
+          TF_VAR_jwt_auth_secret: ${{ secrets.TF_VAR_jwt_auth_secret }}
+          TF_IN_AUTOMATION: 1
+      - name: Find Plan comment
+        uses: peter-evans/find-comment@v1
+        id: find_comment
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: Terraform
+      - name: Create comment
+        uses: peter-evans/create-or-update-comment@v1
+        if: steps.find_comment.outputs.comment-id == ''
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            # Terraform
+
+            ## Terraform Validation 🤖
+            ${{ steps.validate.outputs.stdout }}
+
+            ## Terraform Plan 📖
+            ${{ steps.plan.outcome }}
+      - name: Update comment
+        uses: peter-evans/create-or-update-comment@v1
+        if: steps.find_comment.outputs.comment-id != ''
+        with:
+          comment-id: ${{ steps.find_comment.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          edit-mode: replace
+          body: |
+            # Terraform
+
+            ## Terraform Validation 🤖
+            ${{ steps.validate.outputs.stdout }}
+
+            ## Terraform Plan 📖
+            ${{ steps.plan.outcome }}

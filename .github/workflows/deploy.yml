@@ -35,7 +35,7 @@ jobs:
           file: ./backend/Dockerfile.lambda
           builder: ${{ steps.buildx.outputs.name }}
           push: true
-          tags: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/production-pycon-backend:latest
+          tags: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/pycon-backend:production
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
 
@@ -44,12 +44,12 @@ jobs:
     needs: [build-and-push-lambda-backend]
     defaults:
       run:
-        working-directory: ./infrastructure
+        working-directory: ./infrastructure/applications
     steps:
       - uses: actions/checkout@master
       - uses: hashicorp/setup-terraform@v1
         with:
-          terraform_version: 0.13.3
+          terraform_version: 0.14.4
       - name: Terraform Init
         run: terraform init
         env:
@@ -79,6 +79,9 @@ jobs:
           TF_VAR_pretix_secret_key: ${{ secrets.TF_VAR_pretix_secret_key }}
           TF_VAR_pretix_api_token: ${{ secrets.TF_VAR_pretix_api_token }}
           TF_VAR_pinpoint_application_id: ${{ secrets.TF_VAR_pinpoint_application_id }}
+          TF_VAR_pretix_sentry_dsn: ${{ secrets.TF_VAR_pretix_sentry_dsn }}
+          TF_VAR_users_backend_session_secret_key: ${{ secrets.TF_VAR_users_backend_session_secret_key }}
+          TF_VAR_jwt_auth_secret: ${{ secrets.TF_VAR_jwt_auth_secret }}
 
   migrate-db:
     runs-on: ubuntu-20.04

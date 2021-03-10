@@ -1,0 +1,36 @@
+{
+  "folders": [
+    {
+      "name": "📶 Gateway",
+      "path": "gateway"
+    },
+    {
+      "name": "🐍 PyCon Backend",
+      "path": "backend"
+    },
+    {
+      "name": "🌴 PyCon Frontend",
+      "path": "frontend"
+    },
+    {
+      "name": "👤 Users Service",
+      "path": "users"
+    },
+    {
+      "name": "👻 Association Admin",
+      "path": "association-admin"
+    },
+    {
+      "name": "🔧 Infrastructure",
+      "path": "infrastructure"
+    },
+    {
+      "name": "🐙 GitHub",
+      "path": ".github"
+    }
+  ],
+  "settings": {},
+  "extensions": {
+    "recommendations": ["bradlc.vscode-tailwindcss"]
+  }
+}

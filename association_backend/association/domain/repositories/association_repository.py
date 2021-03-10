@@ -2,6 +2,8 @@ import logging
 from typing import Optional
 
 import stripe
+from sqlalchemy import select
+
 from association.domain.entities.stripe_entities import (
     StripeCheckoutSession,
     StripeCheckoutSessionInput,
@@ -18,7 +20,6 @@ from association.settings import (
     STRIPE_SUBSCRIPTION_PRICE_ID,
     STRIPE_SUBSCRIPTION_SUCCESS_URL,
 )
-from sqlalchemy import select
 
 logger = logging.getLogger(__name__)
 

@@ -6,15 +6,20 @@ indent_size = 4
 end_of_line = lf
 charset = utf-8
 trim_trailing_whitespace = true
-insert_final_newline = false
+insert_final_newline = true
 
+[*.py]
+max_line_length = 119
 
 # Use 2 spaces for the HTML files
 [*.html]
 indent_size = 2
 
+[.prettierrc]
+indent_size = 2
+
 # The JSON files contain newlines inconsistently
-[{*.json,*.ts,*.tsx,*.yml}]
+[{*.json,*.ts,*.tsx,*.yml,*.js,*.graphql}]
 indent_size = 2
 
 # Makefiles always use tabs for indentation

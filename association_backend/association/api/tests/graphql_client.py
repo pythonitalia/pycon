@@ -5,8 +5,9 @@ from typing import Any, Dict, Optional
 
 from asgi_lifespan import LifespanManager
 from httpx import AsyncClient
-from main import app
 from ward import fixture
+
+from main import app
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +40,6 @@ class GraphQLClient:
             headers["Authorization"] = f"Bearer {self.auth_token}"
 
         resp = await self._client.post(self.endpoint, json=body, headers=headers)
-
         data = json.loads(resp.content.decode())
         return Response(errors=data.get("errors"), data=data.get("data"))
 

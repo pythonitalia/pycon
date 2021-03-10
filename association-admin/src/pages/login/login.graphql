@@ -1,0 +1,22 @@
+#import "../../helpers/field-error.graphql"
+
+mutation Login($input: LoginInput!) {
+  login(input: $input) {
+    __typename
+
+    ... on LoginSuccess {
+      token
+    }
+
+    ... on LoginValidationError {
+      errors {
+        email {
+          ...FieldError
+        }
+        password {
+          ...FieldError
+        }
+      }
+    }
+  }
+}

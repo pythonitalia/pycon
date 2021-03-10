@@ -1,11 +1,12 @@
 import uvicorn
+from starlette.applications import Starlette
+from starlette.routing import Route
+
 from association.api.views import GraphQL
 from association.db import get_engine, get_session
 from association.settings import DEBUG
 from association.stripe import views as stripe_views
 from association.webhooks import views as stripe_webhooks
-from starlette.applications import Starlette
-from starlette.routing import Route
 
 app = Starlette(
     debug=DEBUG,
@@ -16,7 +17,6 @@ app = Starlette(
         Route(
             "/stripe/create-checkout-session", stripe_views.CreateCheckoutSessionView
         ),
-        Route("/stripe/checkout-session", stripe_views.CheckoutSessionDetailView),
         Route("/stripe/do-payment", stripe_views.PaymentView),
         Route("/stripe/do-payment/success", stripe_views.PaymentSuccessView),
         Route("/stripe/do-payment/fail", stripe_views.PaymentFailView),

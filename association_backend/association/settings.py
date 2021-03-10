@@ -6,7 +6,6 @@ config = Config(".env")
 
 DEBUG = config("DEBUG", cast=bool, default=False)
 DATABASE_URL = config("DATABASE_URL")
-TEST_DATABASE_URL = config("TEST_DATABASE_URL", default=None)
 JWT_USERS_PRIVATE_KEY = config("JWT_USERS_PRIVATE_KEY", cast=Secret)
 JWT_USERS_PUBLIC_KEY = config("JWT_USERS_PUBLIC_KEY", cast=Secret)
 JWT_USERS_VERIFY_SIGNATURE = config(
@@ -48,4 +47,3 @@ if RUNNING_TESTS:
         query=original_url.query,
     )
     DATABASE_URL = test_db_url
-

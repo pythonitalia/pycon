@@ -4,22 +4,24 @@ aliases:
       exclude: >
           (?x)^(
             .+/migrations/.+|
+            .+/alembic/.+|
           )$
 
 repos:
-    - repo: https://github.com/pre-commit/mirrors-isort
-      rev: v4.3.21
+    - repo: https://github.com/pycqa/isort
+      rev: 5.6.3
       hooks:
-          - <<: *python_settings
-            id: isort
+        - <<: *python_settings
+          id: isort
+          name: isort (python)
     - repo: https://github.com/python/black
-      rev: 19.3b0
+      rev: 20.8b1
       hooks:
           - <<: *python_settings
             id: black
             language_version: python3.9
     - repo: https://gitlab.com/pycqa/flake8
-      rev: 3.7.8
+      rev: 3.8.4
       hooks:
           - <<: *python_settings
             id: flake8
@@ -27,7 +29,9 @@ repos:
       rev: v2.1.2
       hooks:
           - id: prettier
-            files: 'frontend/.*\.(js|jsx|ts|tsx|graphql)$'
+            files: '.*/.*\.(js|jsx|ts|tsx|graphql)$'
+            additional_dependencies:
+              - "@trivago/prettier-plugin-sort-imports@1.4.1"
     - repo: https://github.com/pre-commit/pre-commit-hooks
       rev: v2.2.3
       hooks:
