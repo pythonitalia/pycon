@@ -25,6 +25,7 @@ module "lambda" {
     PASTAPORTO_SECRET         = var.pastaporto_secret
     IDENTITY_SECRET           = var.identity_secret
     SERVICE_TO_SERVICE_SECRET = var.service_to_service_secret
+    PASTAPORTO_ACTION_SECRET  = var.pastaporto_action_secret
   }
 }
 

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import pydantic
 import strawberry
+from pythonit_toolkit.pastaporto.actions import create_user_auth_pastaporto_action
 
 from users.api.context import Info
 from users.api.types import User
@@ -20,11 +21,10 @@ class LoginInput:
 @strawberry.type
 class LoginSuccess:
     user: User
-    token: str
 
     @classmethod
     def from_domain(cls, user: entities.User) -> LoginSuccess:
-        return cls(user=User.from_domain(user), token=user.generate_token())
+        return cls(user=User.from_domain(user))
 
 
 @strawberry.type
@@ -60,4 +60,5 @@ async def login(info: Info, input: LoginInput) -> LoginResult:
     except WrongEmailOrPasswordError:
         return WrongEmailOrPassword()
 
+    info.context.pastaporto_action = create_user_auth_pastaporto_action(user.id)
     return LoginSuccess.from_domain(user)

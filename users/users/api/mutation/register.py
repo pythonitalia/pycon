@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import pydantic
 import strawberry
+from pythonit_toolkit.pastaporto.actions import create_user_auth_pastaporto_action
 
 from users.api.context import Info
 from users.api.types import User
@@ -31,11 +32,10 @@ RegisterValidationError = create_validation_error_type("Register", RegisterError
 @strawberry.type
 class RegisterSuccess:
     user: User
-    token: str
 
     @classmethod
     def from_domain(cls, user: entities.User) -> RegisterSuccess:
-        return cls(user=User.from_domain(user), token=user.generate_token())
+        return cls(user=User.from_domain(user))
 
 
 @strawberry.type
@@ -62,4 +62,5 @@ async def register(info: Info, input: RegisterInput) -> RegisterResult:
     except EmailAlreadyUsedError:
         return EmailAlreadyUsed()
 
+    info.context.pastaporto_action = create_user_auth_pastaporto_action(user.id)
     return RegisterSuccess.from_domain(user)

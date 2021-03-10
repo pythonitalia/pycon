@@ -37,6 +37,7 @@ module "gateway" {
   pastaporto_secret         = var.pastaporto_secret
   identity_secret           = var.identity_secret
   service_to_service_secret = var.service_to_service_secret
+  pastaporto_action_secret  = var.pastaporto_action_secret
 
   providers = {
     aws    = aws
@@ -55,6 +56,7 @@ module "users_backend" {
   pastaporto_secret         = var.pastaporto_secret
   identity_secret           = var.identity_secret
   service_to_service_secret = var.service_to_service_secret
+  pastaporto_action_secret  = var.pastaporto_action_secret
 
   depends_on = [module.database]
 }

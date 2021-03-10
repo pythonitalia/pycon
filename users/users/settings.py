@@ -24,6 +24,7 @@ PASTAPORTO_SECRET = config("PASTAPORTO_SECRET", cast=Secret)
 SERVICE_TO_SERVICE_SECRET = config(
     "SERVICE_TO_SERVICE_SECRET", cast=Secret, default=None
 )
+PASTAPORTO_ACTION_SECRET = config("PASTAPORTO_ACTION_SECRET", cast=Secret, default=None)
 
 IDENTITY_EXPIRES_AFTER_MINUTES = config(
     "IDENTITY_EXPIRES_AFTER_MINUTES", cast=int, default=60
@@ -35,6 +36,7 @@ DEFAULT_PAGINATION_TO = 20
 
 # Headers config
 
+PASTAPORTO_ACTION_X_HEADER = "x-pastaporto-action"
 SERVICE_JWT_HEADER = "x-service"
 
 # Passwords

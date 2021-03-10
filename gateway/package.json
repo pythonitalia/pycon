@@ -7,6 +7,8 @@
     "@apollo/gateway": "^0.23.2",
     "apollo-server": "2.21.0",
     "apollo-server-lambda": "^2.21.0",
+    "apollo-server-plugin-http-headers": "^0.1.4",
+    "cookie": "^0.4.1",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "graphql": "^15.5.0",

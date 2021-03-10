@@ -2,18 +2,10 @@ import { AuthenticationError } from "apollo-server-errors";
 import { TokenExpiredError } from "jsonwebtoken";
 import { Pastaporto } from "./entities";
 
-export const createPastaporto = async (
-  header?: string,
-): Promise<Pastaporto> => {
-  if (!header) {
+export const createPastaporto = async (token?: string): Promise<Pastaporto> => {
+  if (!token) {
     // not authenticated
     return Pastaporto.unauthenticated();
-  }
-
-  const [prefix, token] = header.split(" ");
-
-  if (prefix != "Bearer") {
-    throw new AuthenticationError(`Invalid prefix`);
   }
 
   try {

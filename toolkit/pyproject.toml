@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pythonit-toolkit"
-version = "0.1.12"
+version = "0.1.15"
 description = ""
 authors = ["Python Italia"]
 
@@ -12,6 +12,7 @@ starlette = {version = "^0.14.2", optional = true}
 [tool.poetry.dev-dependencies]
 ward = "^0.50.0-beta.0"
 time-machine = "^2.1.0"
+starlette = "^0.14.2"
 
 
 [build-system]

@@ -608,6 +608,13 @@ apollo-server-plugin-base@^0.10.4:
   dependencies:
     apollo-server-types "^0.6.3"
 
+apollo-server-plugin-http-headers@^0.1.4:
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/apollo-server-plugin-http-headers/-/apollo-server-plugin-http-headers-0.1.4.tgz#f7b9b5330b3e0c81ace99be81a22ea179434cffd"
+  integrity sha512-FExpaK2w2UUPyjwpYoK59t6LerL4PjmFFNS4pdMYHI4pJp1KDYrQkGKqTbW0g4mg4xBkUSniJD8QDcSi9a+PPQ==
+  dependencies:
+    cookie "*"
+
 apollo-server-types@^0.6.3:
   version "0.6.3"
   resolved "https://registry.yarnpkg.com/apollo-server-types/-/apollo-server-types-0.6.3.tgz#f7aa25ff7157863264d01a77d7934aa6e13399e8"
@@ -920,6 +927,11 @@ cookie-signature@1.0.6:
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/cookie-signature/-/cookie-signature-1.0.6.tgz#e303a882b342cc3ee8ca513a79999734dab3ae2c"
   integrity sha1-4wOogrNCzD7oylE6eZmXNNqzriw=
+
+cookie@*, cookie@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/cookie/-/cookie-0.4.1.tgz#afd713fe26ebd21ba95ceb61f9a8116e50a537d1"
+  integrity sha512-ZwrFkGJxUR3EIoXtO+yVE69Eb7KlixbaeAWfBQB9vVsNn/o+Yw69gBWSSDK825hQNdN+wF8zELf3dFNl/kxkUA==
 
 cookie@0.4.0:
   version "0.4.0"

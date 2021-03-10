@@ -1,19 +1,15 @@
-import { IDENTITY_SECRET, PASTAPORTO_SECRET } from "../config";
+import { PASTAPORTO_SECRET } from "../config";
 import jwt from "jsonwebtoken";
 import { promisify } from "util";
 import { fetchUserInfo, User } from "./user-info";
+import { decodeIdentity } from "./identity";
 
-const jwtVerify = promisify(jwt.verify);
 const jwtSign = promisify(jwt.sign);
 
 enum Credential {
   STAFF = "staff",
   AUTHENTICATED = "authenticated",
 }
-
-type DecodedIdentity = {
-  sub: number;
-};
 
 class UserInfo {
   constructor(
@@ -54,14 +50,7 @@ export class Pastaporto {
   }
 
   static async fromIdentityToken(token: string) {
-    // @ts-ignore
-    const decoded = (await jwtVerify(
-      token,
-      // @ts-ignore
-      IDENTITY_SECRET,
-    )) as DecodedIdentity;
-
-    // call internal API to get user info
+    const decoded = await decodeIdentity(token);
     const userInfo = await fetchUserInfo(decoded.sub);
 
     return new Pastaporto(
