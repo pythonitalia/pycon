@@ -1,5 +1,7 @@
 from zoneinfo import ZoneInfo
 
+from ward import raises, test
+
 from association.domain import services
 from association.domain.entities.subscription_entities import UserData
 from association.domain.exceptions import CustomerNotAvailable
@@ -7,7 +9,6 @@ from association.domain.tests.repositories.fake_repository import (
     FakeAssociationRepository,
 )
 from association.tests.factories import SubscriptionFactory
-from ward import raises, test
 
 rome_tz = ZoneInfo("Europe/Rome")
 

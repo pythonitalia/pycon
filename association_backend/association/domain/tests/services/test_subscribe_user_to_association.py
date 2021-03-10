@@ -3,6 +3,8 @@ from unittest.mock import patch
 from zoneinfo import ZoneInfo
 
 import time_machine
+from ward import raises, test
+
 from association.domain import services
 from association.domain.entities.stripe_entities import (
     StripeCheckoutSessionInput,
@@ -21,7 +23,6 @@ from association.tests.factories import (
     StripeCheckoutSessionFactory,
     SubscriptionFactory,
 )
-from ward import raises, test
 
 rome_tz = ZoneInfo("Europe/Rome")
 
