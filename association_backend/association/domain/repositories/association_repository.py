@@ -16,6 +16,7 @@ from association.domain.entities.subscription_entities import (
 from association.domain.repositories.base import AbstractRepository
 from association.settings import (
     DOMAIN_URL,
+    STRIPE_SUBSCRIPTION_API_SECRET,
     STRIPE_SUBSCRIPTION_CANCEL_URL,
     STRIPE_SUBSCRIPTION_PRICE_ID,
     STRIPE_SUBSCRIPTION_SUCCESS_URL,
@@ -99,6 +100,7 @@ class AssociationRepository(AbstractRepository):
                 }
             ],
             **customer_payload,
+            api_key=STRIPE_SUBSCRIPTION_API_SECRET,
         )
         logger.info(f"checkout_session: {checkout_session}")
         return StripeCheckoutSession(
@@ -109,13 +111,17 @@ class AssociationRepository(AbstractRepository):
 
     async def retrieve_customer_portal_session_url(self, customer_id: str) -> str:
         session = stripe.billing_portal.Session.create(
-            customer=customer_id, return_url=DOMAIN_URL
+            customer=customer_id,
+            return_url=DOMAIN_URL,
+            api_key=STRIPE_SUBSCRIPTION_API_SECRET,
         )
         return session.url
 
     # READ FROM STRIPE
     async def retrieve_customer_by_email(self, email: str) -> Optional[StripeCustomer]:
-        customers = stripe.Customer.list(email=email)
+        customers = stripe.Customer.list(
+            email=email, api_key=STRIPE_SUBSCRIPTION_API_SECRET
+        )
         if len(customers):
             return StripeCustomer(id=customers.data[0].id, email=email)
         return None
@@ -123,7 +129,9 @@ class AssociationRepository(AbstractRepository):
     async def retrieve_checkout_session_by_id(
         self, stripe_id: str
     ) -> Optional[StripeCheckoutSession]:
-        checkout_session = stripe.checkout.Session.retrieve(stripe_id)
+        checkout_session = stripe.checkout.Session.retrieve(
+            stripe_id, api_key=STRIPE_SUBSCRIPTION_API_SECRET
+        )
         logger.info(f"checkout_session: {checkout_session}")
         return StripeCheckoutSession(
             id=checkout_session["id"],

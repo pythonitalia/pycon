@@ -1,7 +1,6 @@
 import logging
 from datetime import datetime
 
-import stripe
 from association.domain.entities.stripe_entities import StripeCheckoutSessionInput
 from association.domain.entities.subscription_entities import (
     Subscription,
@@ -10,11 +9,8 @@ from association.domain.entities.subscription_entities import (
 )
 from association.domain.exceptions import AlreadySubscribed
 from association.domain.repositories import AssociationRepository
-from association.settings import STRIPE_SUBSCRIPTION_API_SECRET
 
 logger = logging.getLogger(__name__)
-
-stripe.api_key = STRIPE_SUBSCRIPTION_API_SECRET  # 'sk_test_4eC39HqLyjWDarjtT1zdp7dc'
 
 
 async def subscribe_user_to_association(

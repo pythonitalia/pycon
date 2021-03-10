@@ -19,8 +19,6 @@ from association.settings import (
 
 templates = Jinja2Templates(directory="association/stripe/templates")
 
-stripe.api_key = STRIPE_SUBSCRIPTION_API_SECRET  # 'sk_test_4eC39HqLyjWDarjtT1zdp7dc'
-
 
 class PaymentView(HTTPEndpoint):
     async def get(self, request):
@@ -107,6 +105,7 @@ class CheckoutSessionDetailView(HTTPEndpoint):
 
     async def get(self, request):
         checkout_session = stripe.checkout.Session.retrieve(
-            request.query_params.get("sessionId")
+            request.query_params.get("sessionId"),
+            api_key=STRIPE_SUBSCRIPTION_API_SECRET,
         )
         return JSONResponse(checkout_session)
