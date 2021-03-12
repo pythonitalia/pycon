@@ -1,13 +1,14 @@
 import logging
 from datetime import datetime
 
+from pydantic import BaseModel
+
 from association.domain.entities.subscription_entities import (
     SubscriptionPayment,
     SubscriptionState,
 )
 from association.domain.exceptions import SubscriptionNotFound
 from association.domain.repositories.association_repository import AssociationRepository
-from pydantic import BaseModel
 
 logger = logging.getLogger(__name__)
 
@@ -36,6 +37,7 @@ async def handle_invoice_paid(
         subscription.state = SubscriptionState.ACTIVE
         await association_repository.save_subscription(subscription)
         await association_repository.commit()
+        return subscription
     else:
         msg = f"No Subscription found with subscription_id:{invoice_input.subscription_id}"
         logger.warning(msg)

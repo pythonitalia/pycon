@@ -18,9 +18,7 @@ class SubscriptionNotUpdated(Exception):
 
 
 class AlreadySubscribed(Exception):
-    def __init__(self, *args, **kwargs):
-        self.expiration_date = kwargs.pop("expiration_date")
-        super().__init__(*args, **kwargs)
+    pass
 
 
 class CustomerNotAvailable(Exception):

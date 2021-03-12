@@ -44,6 +44,12 @@ class StripeProvider(BaseProvider):
             + self.random_elements(string.ascii_lowercase + string.digits, length=16)[0]
         )
 
+    def customer_portal_session_id(self):
+        return (
+            "https://stripe.com/stripe_test_customer_portal/"
+            + self.random_elements(string.ascii_lowercase + string.digits, length=16)[0]
+        )
+
 
 class AsyncFactory(SQLAlchemyModelFactory):
     @classmethod
@@ -72,9 +78,9 @@ class SubscriptionFactory(SQLAlchemyModelFactory):
         sqlalchemy_session = test_session
 
     user_id = factory.Faker("pyint", min_value=1)
+    user_email = factory.Faker("ascii_safe_email")
     creation_date = factory.Faker("date_between", start_date="-30y", end_date="today")
     due_date = factory.Faker("date_between", start_date="today", end_date="+1y")
-    expiration_date = factory.Faker("date_between", start_date="-5y", end_date="today")
     state = factory.fuzzy.FuzzyChoice(SubscriptionState)
 
     # stripe_id = factory.Faker("pystr", min_chars=5, max_chars=8)

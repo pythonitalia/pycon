@@ -56,6 +56,15 @@ class AssociationRepository(AbstractRepository):
         subscription = (await self.session.execute(query)).scalar_one_or_none()
         return subscription
 
+    async def get_subscription_by_user_email(
+        self, user_email: str
+    ) -> Optional[Subscription]:
+        query = select(Subscription).where(Subscription.user_email == user_email)
+        subscription = (await self.session.execute(query)).scalar_one_or_none()
+        return subscription
+
+    # async def get_last_subscription_payment(self, subscription):
+
     # WRITE
     async def save_subscription(self, subscription: Subscription) -> Subscription:
         self.session.add(subscription)
@@ -75,7 +84,7 @@ class AssociationRepository(AbstractRepository):
     # WRITE TO STRIPE
     async def create_checkout_session(
         self, data: StripeCheckoutSessionInput
-    ) -> Optional[StripeCheckoutSession]:
+    ) -> StripeCheckoutSession:
         # See https://stripe.com/docs/api/checkout/sessions/create
         # for additional parameters to pass.
         # {CHECKOUT_SESSION_ID} is a string literal; do not change it!

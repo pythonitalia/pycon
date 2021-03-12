@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from association.domain.entities import Subscription
+from association.domain.entities import Subscription, SubscriptionPayment
 from association.domain.entities.stripe_entities import (
     StripeCheckoutSession,
     StripeCheckoutSessionInput,
@@ -27,6 +27,7 @@ class FakeAssociationRepository(AssociationRepository):
         subscriptions: List[Subscription],
         customers: List[StripeCustomer],
         checkout_sessions: Optional[List[StripeCheckoutSession]] = None,
+        subscription_payments: Optional[List[SubscriptionPayment]] = None,
     ) -> None:
         super().__init__()
         # subscriptions
@@ -44,11 +45,21 @@ class FakeAssociationRepository(AssociationRepository):
         self.SUBSCRIPTIONS_BY_USER_ID = {
             subscription.user_id: subscription for subscription in subscriptions
         }
+        self.SUBSCRIPTIONS_BY_USER_EMAIL = {
+            subscription.user_email: subscription for subscription in subscriptions
+        }
         # checkout-sessions
         if checkout_sessions:
             self.CHECKOUT_SESSIONS_BY_ID = {
                 checkout_session.id: checkout_session
                 for checkout_session in checkout_sessions
+            }
+        # payments
+        self.SUBSCRIPTION_PAYMENTS_BY_STRIPE_ID = {}
+        if subscription_payments:
+            self.SUBSCRIPTION_PAYMENTS_BY_STRIPE_ID = {
+                subscription_payment.subscription.stripe_id: subscription_payment
+                for subscription_payment in subscription_payments
             }
         # customers
         self.CUSTOMERS_BY_EMAIL = {customer.email: customer for customer in customers}
@@ -81,6 +92,11 @@ class FakeAssociationRepository(AssociationRepository):
     async def get_subscription_by_user_id(self, user_id: int) -> Optional[Subscription]:
         return self.SUBSCRIPTIONS_BY_USER_ID.get(user_id, None)
 
+    async def get_subscription_by_user_email(
+        self, user_email: str
+    ) -> Optional[Subscription]:
+        return self.SUBSCRIPTIONS_BY_USER_EMAIL.get(user_email, None)
+
     # WRITE
     async def save_subscription(self, subscription: Subscription) -> Subscription:
         new_subscription = subscription
@@ -93,6 +109,15 @@ class FakeAssociationRepository(AssociationRepository):
         ] = new_subscription
         self.SUBSCRIPTIONS_BY_USER_ID[new_subscription.user_id] = new_subscription
         return new_subscription
+
+    # WRITE
+    async def save_payment(
+        self, subscription_payment: SubscriptionPayment
+    ) -> SubscriptionPayment:
+        self.SUBSCRIPTION_PAYMENTS_BY_STRIPE_ID[
+            subscription_payment.subscription.stripe_id
+        ] = subscription_payment
+        return subscription_payment
 
     # ============== #
     #    Stripe

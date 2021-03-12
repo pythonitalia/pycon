@@ -16,66 +16,53 @@ logger = logging.getLogger(__name__)
 async def subscribe_user_to_association(
     user_data: UserData, association_repository: AssociationRepository
 ) -> Subscription:
-    """This service retrieves or creates a CheckoutSession and returns aggregating customer and subscription data
-
-    @raises AlreadySubscribed
-    """
-    checkout_session = None
 
     subscription = await association_repository.get_subscription_by_user_id(
         user_data.user_id
     )
-
     if subscription:
         print(f"subscription : {subscription}")
-        subscription_state = subscription.get_calculated_state()
+        subscription_state = subscription.state
         if subscription_state == SubscriptionState.PENDING:
-            return subscription
-        elif subscription_state == SubscriptionState.ACTIVE:
-            raise AlreadySubscribed(expiration_date=subscription.expiration_date)
-        elif subscription_state == SubscriptionState.EXPIRED:
-            raise AlreadySubscribed(expiration_date=subscription.expiration_date)
+            if subscription.stripe_session_id:
+                return subscription
+        elif subscription_state in [
+            SubscriptionState.ACTIVE,
+            SubscriptionState.EXPIRED,
+        ]:
+            raise AlreadySubscribed()
         else:
             raise NotImplementedError(
                 "This should not happen because subscription is in a not handled state"
             )
 
-    if not checkout_session:
+    if subscription and subscription.stripe_customer_id:
+        customer_id = subscription.stripe_customer_id
+    else:
         customer = await association_repository.retrieve_customer_by_email(
             user_data.email
         )
-        if customer:
-            print(f"customer : {customer}")
-            checkout_session = await association_repository.create_checkout_session(
-                StripeCheckoutSessionInput(
-                    customer_email=user_data.email, customer_id=customer.id
-                )
-            )
-            print(f"checkout_session : {checkout_session}")
-        else:
-            checkout_session = await association_repository.create_checkout_session(
-                StripeCheckoutSessionInput(
-                    customer_email=user_data.email, customer_id=""
-                )
-            )
-            print(f"checkout_session : {checkout_session}")
+        customer_id = customer and customer.id or ""
+    print(f"customer_id : {customer_id}")
 
-    if checkout_session:
-        subscription = await association_repository.save_subscription(
-            Subscription(
-                user_id=user_data.user_id,
-                stripe_session_id=checkout_session.id,
-                stripe_customer_id=checkout_session.customer_id,
-                creation_date=datetime.now(),
-                state=SubscriptionState.PENDING,
-                stripe_id=checkout_session.subscription_id or "",
-                expiration_date=datetime.now(),
-            )
+    checkout_session = await association_repository.create_checkout_session(
+        StripeCheckoutSessionInput(
+            customer_email=user_data.email, customer_id=customer_id
         )
-        print(f"subscription : {subscription}")
-        await association_repository.commit()
-        return subscription
-    else:
-        raise NotImplementedError(
-            "This should not happen this service should return always a subscription"
+    )
+    print(f"checkout_session : {checkout_session}")
+
+    subscription = await association_repository.save_subscription(
+        Subscription(
+            user_id=user_data.user_id,
+            stripe_session_id=checkout_session.id,
+            stripe_customer_id=checkout_session.customer_id,
+            creation_date=datetime.now(),
+            user_email=user_data.email,
+            state=SubscriptionState.PENDING,
+            stripe_id=checkout_session.subscription_id or "",
         )
+    )
+    print(f"subscription : {subscription}")
+    await association_repository.commit()
+    return subscription

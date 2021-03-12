@@ -15,6 +15,8 @@ from association.settings import (
     STRIPE_SUBSCRIPTION_API_KEY,
     STRIPE_SUBSCRIPTION_API_SECRET,
     STRIPE_SUBSCRIPTION_PRICE_ID,
+    TEST_USER_EMAIL,
+    TEST_USER_ID,
 )
 
 templates = Jinja2Templates(directory="association/stripe/templates")
@@ -77,20 +79,16 @@ class CreateCheckoutSessionView(HTTPEndpoint):
 
     async def post(self, request):
 
-        user_data = UserData(email="fake.user3@pycon.it", user_id=12346)
+        user_data = UserData(email=TEST_USER_EMAIL, user_id=TEST_USER_ID)
 
         try:
             subscription = await services.subscribe_user_to_association(
                 user_data,
                 association_repository=self._get_association_repository(request),
             )
-        except AlreadySubscribed as exc:
+        except AlreadySubscribed:
             return JSONResponse(
-                {
-                    "error": {
-                        "message": f"You are already subscribed until {exc.expiration_date.isoformat()}"
-                    }
-                },
+                {"error": {"message": "You are already subscribed"}},
                 status_code=400,
             )
         else:

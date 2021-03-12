@@ -32,6 +32,10 @@ STRIPE_SUBSCRIPTION_CANCEL_URL = config(
     default="https://association.python.it/payments/cancel",
 )
 
+TEST_USER_ID = config("TEST_USER_ID", cast=str, default=101010)
+TEST_USER_EMAIL = config("TEST_USER_EMAIL", cast=str, default="user101010@pycon.it")
+
+
 DOMAIN_URL = config.get("DOMAIN_URL")
 RUNNING_TESTS = config("RUNNING_TESTS", cast=bool, default=False)
 

@@ -40,22 +40,19 @@ class StripeWebhook(HTTPEndpoint):
         except SubscriptionNotUpdated:
             return JSONResponse({"status": "error"}, status_code=400)
 
-    # async def handle_customer_subscription_updated(self, request, payload):
-    #     stripe_obj = payload["object"]
-    #     try:
-    #         await services.handle_customer_subscription_updated(
-    #             services.SubscriptionDetailInput(
-    #                 subscription_id=stripe_obj["id"],
-    #                 status=stripe_obj["status"],
-    #                 current_period_start=stripe_obj["current_period_start"],
-    #                 current_period_end=stripe_obj["current_period_end"],
-    #                 latest_invoice=stripe_obj["latest_invoice"],
-    #             ),
-    #             association_repository=self._get_association_repository(request),
-    #         )
-    #         return JSONResponse({"status": "success"})
-    #     except SubscriptionNotUpdated:
-    #         return JSONResponse({"status": "error"}, status_code=400)
+    async def handle_customer_subscription_updated(self, request, payload):
+        stripe_obj = payload["object"]
+        try:
+            await services.handle_customer_subscription_updated(
+                services.SubscriptionDetailInput(
+                    subscription_id=stripe_obj["id"],
+                    status=stripe_obj["status"],
+                ),
+                association_repository=self._get_association_repository(request),
+            )
+            return JSONResponse({"status": "success"})
+        except SubscriptionNotUpdated:
+            return JSONResponse({"status": "error"}, status_code=400)
 
     async def handle_invoice_paid(self, request, payload):
         """ https://stripe.com/docs/api/invoices/object?lang=python """
@@ -65,24 +62,6 @@ class StripeWebhook(HTTPEndpoint):
                 services.InvoicePaidInput(
                     invoice_id=stripe_obj["id"],
                     subscription_id=stripe_obj["subscription"],
-                    paid_at=stripe_obj["status_transitions"]["paid_at"],
-                    invoice_pdf=stripe_obj["invoice_pdf"],
-                ),
-                association_repository=self._get_association_repository(request),
-            )
-            return JSONResponse({"status": "success"})
-        except SubscriptionNotFound:
-            return JSONResponse({"status": "error"}, status_code=400)
-
-    async def handle_invoice_payment_failed(self, request, payload):
-        """ https://stripe.com/docs/api/invoices/object?lang=python """
-        stripe_obj = payload["object"]
-        # object : https://stripe.com/docs/api/invoices/object?lang=python
-        try:
-            await services.handle_invoice_payment_failed(
-                services.InvoicePaymentFailedInput(
-                    invoice_id=stripe_obj["id"],
-                    subscription_id=stripe_obj["subcription"],
                     paid_at=stripe_obj["status_transitions"]["paid_at"],
                     invoice_pdf=stripe_obj["invoice_pdf"],
                 ),
@@ -133,15 +112,14 @@ class StripeWebhook(HTTPEndpoint):
         #     # Store the status in your database and check when a user accesses your service.
         #     # This approach helps you avoid hitting rate limits.
         #     return await self.handle_invoice_paid(request, data)
-        elif event_type == "invoice.payment_failed":
-            # The payment failed or the customer does not have a valid payment method.
-            # The subscription becomes past_due. Notify your customer and send them to the
-            # customer portal to update their payment information.
-            return await self.handle_invoice_payment_failed(data)
+        # elif event_type == "invoice.payment_failed":
+        #     # The payment failed or the customer does not have a valid payment method.
+        #     # The subscription becomes past_due. Notify your customer and send them to the
+        #     # customer portal to update their payment information.
+        #     return await self.handle_invoice_payment_failed(data)
         elif event_type == "customer.subscription.updated":
             # TODO ENABLE ME
-            # return await self.handle_customer_subscription_updated(request, data)
-            pass
+            return await self.handle_customer_subscription_updated(request, data)
         else:
             logger.warning(
                 f"The event `{event_type}` is not handled by webhook",

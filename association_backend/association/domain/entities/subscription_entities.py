@@ -21,7 +21,6 @@ class SubscriptionState(str, Enum):
     PENDING = "pending"
     ACTIVE = "active"
     EXPIRED = "expired"
-    PAYMENT_FAILED = "payment-failed"
 
     def __str__(self) -> str:
         return str.__str__(self)
@@ -32,11 +31,12 @@ class Subscription:
     user_id: int
     creation_date: datetime
     state: SubscriptionState
+    # is_for_life: bool
+    user_email: str = ""
     stripe_session_id: Optional[str] = ""
     due_date: Optional[datetime] = None
     stripe_id: Optional[str] = ""
     stripe_customer_id: Optional[str] = ""
-    expiration_date: Optional[datetime] = None
 
     def get_calculated_state(self) -> SubscriptionState:
         """
@@ -44,6 +44,15 @@ class Subscription:
         to set the field "state"
         :return:
         """
+        # if self.is_for_life:
+        #     return SubscriptionState.ACTIVE
+        # elif self.stripe_status == StripeStatus.ACTIVE:
+        #     return SubscriptionState.ACTIVE
+        # elif self.stripe_status == StripeStatus.INCOMPLETE:
+        #     return SubscriptionState.PENDING
+        # elif self.stripe_status == StripeStatus.INCOMPLETE_EXPIRED:
+        #     return SubscriptionState.EXPIRED
+
         if not self.due_date:
             return SubscriptionState.PENDING
         elif self.due_date < datetime.now(rome_tz) - relativedelta(years=1):
@@ -67,13 +76,13 @@ subscription_table = Table(
     "subscription",
     mapper_registry.metadata,
     Column("user_id", Integer(), nullable=False, primary_key=True),
+    Column("user_email", String(128), nullable=True),
     Column("creation_date", DateTime(timezone=True), nullable=False),
     Column("next_payment_due_date", DateTime(timezone=True), nullable=True),
     Column("stripe_id", String(128), nullable=True),
     Column("stripe_customer_id", String(128), nullable=False),
     Column("stripe_session_id", String(128), nullable=False),
     Column("state", String(16), nullable=False),
-    Column("expiration_date", DateTime(timezone=True), nullable=True),
 )
 
 subscription_payment_table = Table(
