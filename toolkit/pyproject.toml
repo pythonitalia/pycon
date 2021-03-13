@@ -14,7 +14,13 @@ ward = "^0.50.0-beta.0"
 time-machine = "^2.1.0"
 starlette = "^0.14.2"
 pdbpp = "^0.10.2"
+taskipy = "^1.6.0"
+coverage = "^5.5"
 
+[tool.taskipy.tasks]
+test = "coverage run -m ward"
+"test:coverage" = "task test || coverage xml -i && coverage xml -i"
+"test:debug" = "task test --no-capture-output"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
