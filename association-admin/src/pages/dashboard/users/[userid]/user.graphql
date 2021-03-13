@@ -10,6 +10,6 @@ query UserDetail($id: ID!) {
     openToNewsletter
     country
     isActive
-    credentials
+    isStaff
   }
 }

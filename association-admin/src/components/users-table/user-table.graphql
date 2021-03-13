@@ -3,6 +3,6 @@ fragment UserDataForTable on User {
   email
   fullname
   name
-  credentials
+  isStaff
   isActive
 }

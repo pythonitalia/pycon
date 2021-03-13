@@ -6,7 +6,7 @@ from typing import Optional
 
 from sqlalchemy import Boolean, Column, Date, DateTime, Integer, String, Table
 from sqlalchemy.orm import registry
-from starlette.authentication import AuthCredentials, BaseUser
+from starlette.authentication import BaseUser
 
 from users.starlette_password.hashers import (
     check_password,
@@ -70,20 +70,6 @@ class User(BaseUser):
     @property
     def display_name(self) -> str:
         return self.fullname or self.name
-
-    @property
-    def credentials(self) -> AuthCredentials:
-        from pythonit_toolkit.pastaporto.entities import Credential
-
-        credentials = []
-
-        if self.is_staff:
-            credentials.append(Credential.STAFF)
-
-        if self._authenticated_user:
-            credentials.append(Credential.AUTHENTICATED)
-
-        return AuthCredentials(credentials)
 
 
 user_table = Table(
