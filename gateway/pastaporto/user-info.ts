@@ -23,7 +23,7 @@ export const fetchUserInfo = async (id: number): Promise<User> => {
 
   const client = new GraphQLClient(USERS_SERVICE_INTERNAL_API_ENDPOINT, {
     headers: {
-      "x-service": token,
+      "x-service-token": token,
     },
   });
 
