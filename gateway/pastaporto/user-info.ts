@@ -14,7 +14,6 @@ export type User = {
 };
 
 export const fetchUserInfo = async (id: number): Promise<User> => {
-  // @ts-ignore
   const token: string = await jwtSign({}, SERVICE_TO_SERVICE_SECRET, {
     issuer: "gateway",
     audience: "users-service",

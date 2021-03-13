@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { createIdentityToken } from "../pastaporto/identity";
-import { PASTAPORTO_ACTION_SECRET } from "../config";
+import { IS_DEV, PASTAPORTO_ACTION_SECRET } from "../config";
 
 enum Action {
   AUTH = "auth",
@@ -46,12 +46,11 @@ class AuthAction extends PastaportoAction {
       name: "identity",
       value: identityToken,
       options: {
-        // domain: "localhost",
         httpOnly: true,
         maxAge: 60 * 15,
         path: "/",
         sameSite: true,
-        secure: false,
+        secure: !IS_DEV,
       },
     });
   }
