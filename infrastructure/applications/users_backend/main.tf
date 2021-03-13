@@ -40,7 +40,6 @@ module "lambda" {
   security_group_ids = [data.aws_security_group.rds.id]
   env_vars = {
     DEBUG                     = "false"
-    JWT_AUTH_SECRET           = var.jwt_auth_secret
     SESSION_SECRET_KEY        = var.session_secret_key
     GOOGLE_AUTH_CLIENT_ID     = var.google_auth_client_id
     GOOGLE_AUTH_CLIENT_SECRET = var.google_auth_client_secret
