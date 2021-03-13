@@ -1,8 +1,9 @@
 import logging
 
+from pydantic import BaseModel
+
 from association.domain.exceptions import SubscriptionNotUpdated
 from association.domain.repositories.association_repository import AssociationRepository
-from pydantic import BaseModel
 
 logger = logging.getLogger(__name__)
 
@@ -13,7 +14,7 @@ class SubscriptionUpdateInput(BaseModel):
     subscription_id: str
 
 
-async def update_pending_subscription(
+async def handle_checkout_session_completed(
     data: SubscriptionUpdateInput, association_repository: AssociationRepository
 ):
     subscription = await association_repository.get_subscription_by_session_id(
@@ -22,7 +23,7 @@ async def update_pending_subscription(
     if subscription:
         subscription.stripe_customer_id = data.customer_id
         subscription.stripe_id = data.subscription_id
-        await association_repository.save_subscription(subscription)
+        subscription = await association_repository.save_subscription(subscription)
         await association_repository.commit()
         return subscription
     else:

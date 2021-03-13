@@ -4,7 +4,10 @@ from pydantic import BaseModel
 
 from association.domain.entities.stripe_entities import StripeStatus
 from association.domain.entities.subscription_entities import SubscriptionState
-from association.domain.exceptions import SubscriptionNotFound
+from association.domain.exceptions import (
+    InconsistentStateTransitionError,
+    SubscriptionNotFound,
+)
 from association.domain.repositories.association_repository import AssociationRepository
 
 logger = logging.getLogger(__name__)
@@ -29,7 +32,13 @@ async def handle_customer_subscription_updated(
         elif data.status == StripeStatus.INCOMPLETE:
             subscription.state = SubscriptionState.PENDING
         elif data.status == StripeStatus.INCOMPLETE_EXPIRED:
-            subscription.state = SubscriptionState.PENDING
+            if subscription.stripe_id:
+                error_message = (
+                    "This should not happen...INCOMPLETE_EXPIRED should happen only "
+                    "when a subscription has never been created"
+                )
+                raise InconsistentStateTransitionError(error_message)
+            subscription.state = SubscriptionState.NOT_CREATED
             # The session is expired, so the User cannot access that Session
             subscription.stripe_session_id = ""
         else:

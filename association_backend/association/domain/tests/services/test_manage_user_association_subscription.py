@@ -1,5 +1,3 @@
-from zoneinfo import ZoneInfo
-
 from ward import raises, test
 
 from association.domain import services
@@ -9,8 +7,6 @@ from association.domain.tests.repositories.fake_repository import (
     FakeAssociationRepository,
 )
 from association.tests.factories import SubscriptionFactory
-
-rome_tz = ZoneInfo("Europe/Rome")
 
 
 @test("customer portal url returned")

@@ -2,14 +2,10 @@ from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
 from typing import Optional
-from zoneinfo import ZoneInfo
 
 import pydantic
-from dateutil.relativedelta import relativedelta
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Table
 from sqlalchemy.orm import registry, relationship
-
-rome_tz = ZoneInfo("Europe/Rome")
 
 
 class UserData(pydantic.BaseModel):
@@ -21,6 +17,7 @@ class SubscriptionState(str, Enum):
     PENDING = "pending"
     ACTIVE = "active"
     EXPIRED = "expired"
+    NOT_CREATED = "not-created"
 
     def __str__(self) -> str:
         return str.__str__(self)
@@ -37,28 +34,6 @@ class Subscription:
     due_date: Optional[datetime] = None
     stripe_id: Optional[str] = ""
     stripe_customer_id: Optional[str] = ""
-
-    def get_calculated_state(self) -> SubscriptionState:
-        """
-        This method will be called by a cron (https://github.com/encode/starlette/issues/915#issuecomment-622945864)
-        to set the field "state"
-        :return:
-        """
-        # if self.is_for_life:
-        #     return SubscriptionState.ACTIVE
-        # elif self.stripe_status == StripeStatus.ACTIVE:
-        #     return SubscriptionState.ACTIVE
-        # elif self.stripe_status == StripeStatus.INCOMPLETE:
-        #     return SubscriptionState.PENDING
-        # elif self.stripe_status == StripeStatus.INCOMPLETE_EXPIRED:
-        #     return SubscriptionState.EXPIRED
-
-        if not self.due_date:
-            return SubscriptionState.PENDING
-        elif self.due_date < datetime.now(rome_tz) - relativedelta(years=1):
-            return SubscriptionState.EXPIRED
-        else:
-            return SubscriptionState.ACTIVE
 
 
 @dataclass

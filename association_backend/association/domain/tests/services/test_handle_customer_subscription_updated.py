@@ -1,11 +1,12 @@
-from zoneinfo import ZoneInfo
-
 from ward import raises, test
 
 from association.domain import services
 from association.domain.entities.stripe_entities import StripeStatus
 from association.domain.entities.subscription_entities import SubscriptionState
-from association.domain.exceptions import SubscriptionNotFound
+from association.domain.exceptions import (
+    InconsistentStateTransitionError,
+    SubscriptionNotFound,
+)
 from association.domain.services.handle_customer_subscription_updated import (
     SubscriptionDetailInput,
 )
@@ -13,8 +14,6 @@ from association.domain.tests.repositories.fake_repository import (
     FakeAssociationRepository,
 )
 from association.tests.factories import SubscriptionFactory
-
-rome_tz = ZoneInfo("Europe/Rome")
 
 
 @test("Subscription updated ACTIVE")
@@ -111,9 +110,9 @@ async def _():
     assert subscription.state == SubscriptionState.PENDING
 
 
-@test("Subscription update INCOMPLETE_EXPIRED -> PENDING + Deleted session")
+@test("Subscription update INCOMPLETE_EXPIRED -> NOT_CREATED + Deleted session")
 async def _():
-    sut_subscription = SubscriptionFactory()
+    sut_subscription = SubscriptionFactory(stripe_id="")
     repository = FakeAssociationRepository(
         subscriptions=[sut_subscription], customers=[]
     )
@@ -128,8 +127,29 @@ async def _():
         association_repository=repository,
     )
 
-    assert subscription.state == SubscriptionState.PENDING
+    assert subscription.state == SubscriptionState.NOT_CREATED
     assert subscription.stripe_session_id == ""
+
+
+@test(
+    "Subscription update INCOMPLETE_EXPIRED -> raise InconsistentStateTransitionError if subscription associated"
+)
+async def _():
+    sut_subscription = SubscriptionFactory(stripe_id="sub_test_12345")
+    repository = FakeAssociationRepository(
+        subscriptions=[sut_subscription], customers=[]
+    )
+
+    assert sut_subscription.stripe_session_id != ""
+
+    with raises(InconsistentStateTransitionError):
+        await services.handle_customer_subscription_updated(
+            data=SubscriptionDetailInput(
+                subscription_id=sut_subscription.stripe_id,
+                status=StripeStatus.INCOMPLETE_EXPIRED,
+            ),
+            association_repository=repository,
+        )
 
 
 @test("Subscription update PAST_DUE -> EXPIRED")

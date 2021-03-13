@@ -14,6 +14,8 @@ logger = logging.getLogger(__name__)
 
 
 class InvoicePaidInput(BaseModel):
+    """ https://stripe.com/docs/api/invoices/object?lang=python """
+
     invoice_id: str
     subscription_id: str
     paid_at: datetime
@@ -35,7 +37,7 @@ async def handle_invoice_paid(
         )
         await association_repository.save_payment(payment)
         subscription.state = SubscriptionState.ACTIVE
-        await association_repository.save_subscription(subscription)
+        subscription = await association_repository.save_subscription(subscription)
         await association_repository.commit()
         return subscription
     else:

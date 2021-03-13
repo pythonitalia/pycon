@@ -16,21 +16,22 @@ logger = logging.getLogger(__name__)
 async def subscribe_user_to_association(
     user_data: UserData, association_repository: AssociationRepository
 ) -> Subscription:
-
     subscription = await association_repository.get_subscription_by_user_id(
         user_data.user_id
     )
     if subscription:
-        print(f"subscription : {subscription}")
+        logger.debug(f"subscription : {subscription}")
         subscription_state = subscription.state
         if subscription_state == SubscriptionState.PENDING:
-            if subscription.stripe_session_id:
-                return subscription
+            return subscription
         elif subscription_state in [
             SubscriptionState.ACTIVE,
             SubscriptionState.EXPIRED,
         ]:
             raise AlreadySubscribed()
+        elif subscription_state == SubscriptionState.NOT_CREATED:
+            # subscription not created has to be recreated passing from a new Checkout Session
+            pass
         else:
             raise NotImplementedError(
                 "This should not happen because subscription is in a not handled state"
@@ -43,16 +44,17 @@ async def subscribe_user_to_association(
             user_data.email
         )
         customer_id = customer and customer.id or ""
-    print(f"customer_id : {customer_id}")
+    logger.debug(f"customer_id : {customer_id}")
 
     checkout_session = await association_repository.create_checkout_session(
         StripeCheckoutSessionInput(
             customer_email=user_data.email, customer_id=customer_id
         )
     )
-    print(f"checkout_session : {checkout_session}")
+    logger.debug(f"checkout_session : {checkout_session}")
 
     subscription = await association_repository.save_subscription(
+        # TODO Test this is a update_or_create
         Subscription(
             user_id=user_data.user_id,
             stripe_session_id=checkout_session.id,
@@ -63,6 +65,7 @@ async def subscribe_user_to_association(
             stripe_id=checkout_session.subscription_id or "",
         )
     )
-    print(f"subscription : {subscription}")
+    logger.debug(f"subscription : {subscription}")
+
     await association_repository.commit()
     return subscription

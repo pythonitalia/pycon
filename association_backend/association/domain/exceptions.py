@@ -21,6 +21,10 @@ class AlreadySubscribed(Exception):
     pass
 
 
+class InconsistentStateTransitionError(Exception):
+    pass
+
+
 class CustomerNotAvailable(Exception):
     pass
 

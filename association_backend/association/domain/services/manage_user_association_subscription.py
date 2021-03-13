@@ -14,7 +14,7 @@ async def manage_user_association_subscription(
     subscription = await association_repository.get_subscription_by_user_id(
         user_data.user_id
     )
-    if subscription.stripe_customer_id:
+    if subscription and subscription.stripe_customer_id:
         billing_portal_url = (
             await association_repository.retrieve_customer_portal_session_url(
                 subscription.stripe_customer_id

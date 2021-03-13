@@ -8,7 +8,11 @@ from starlette.responses import JSONResponse
 
 from association.db import get_engine, get_session
 from association.domain import services
-from association.domain.exceptions import SubscriptionNotFound, SubscriptionNotUpdated
+from association.domain.exceptions import (
+    InconsistentStateTransitionError,
+    SubscriptionNotFound,
+    SubscriptionNotUpdated,
+)
 from association.domain.repositories import AssociationRepository
 from association.settings import STRIPE_WEBHOOK_SIGNATURE_SECRET
 
@@ -25,10 +29,9 @@ class StripeWebhook(HTTPEndpoint):
             session=cast(AsyncSession, get_session(get_engine(echo=False)))
         )  # session=AsyncSession
 
-    async def handle_checkout_session_completed(self, request, payload):
-        stripe_obj = payload["object"]
+    async def handle_checkout_session_completed(self, request, stripe_obj):
         try:
-            await services.update_pending_subscription(
+            await services.handle_checkout_session_completed(
                 services.SubscriptionUpdateInput(
                     session_id=stripe_obj["id"],
                     customer_id=stripe_obj["customer"],
@@ -40,8 +43,7 @@ class StripeWebhook(HTTPEndpoint):
         except SubscriptionNotUpdated:
             return JSONResponse({"status": "error"}, status_code=400)
 
-    async def handle_customer_subscription_updated(self, request, payload):
-        stripe_obj = payload["object"]
+    async def handle_customer_subscription_updated(self, request, stripe_obj):
         try:
             await services.handle_customer_subscription_updated(
                 services.SubscriptionDetailInput(
@@ -53,10 +55,11 @@ class StripeWebhook(HTTPEndpoint):
             return JSONResponse({"status": "success"})
         except SubscriptionNotUpdated:
             return JSONResponse({"status": "error"}, status_code=400)
+        except InconsistentStateTransitionError as ex:
+            logger.exception(str(ex))
+            return JSONResponse({"status": "error"}, status_code=400)
 
-    async def handle_invoice_paid(self, request, payload):
-        """ https://stripe.com/docs/api/invoices/object?lang=python """
-        stripe_obj = payload["object"]
+    async def handle_invoice_paid(self, request, stripe_obj):
         try:
             await services.handle_invoice_paid(
                 services.InvoicePaidInput(
@@ -93,39 +96,28 @@ class StripeWebhook(HTTPEndpoint):
         else:
             data = request_data["data"]
             event_type = request_data["type"]
-        print(f"Handling event {event_type}")
-        # await self.echo(data)
-        # print(await request.json())
-        # data_object = data['object']
-
+        logger.debug(f"Handling event {event_type}")
+        stripe_obj = data["object"]
         if event_type == "checkout.session.completed":
             # Payment is successful and the subscription is created.
             # You should provision the subscription.
-            return await self.handle_checkout_session_completed(request, data)
+            return await self.handle_checkout_session_completed(request, stripe_obj)
         elif event_type == "invoice.paid":
             # Continue to provision the subscription as payments continue to be made.
             # Store the status in your database and check when a user accesses your service.
             # This approach helps you avoid hitting rate limits.
-            return await self.handle_invoice_paid(request, data)
-        # elif event_type == "invoice.payment_succeeded":
-        #     # Continue to provision the subscription as payments continue to be made.
-        #     # Store the status in your database and check when a user accesses your service.
-        #     # This approach helps you avoid hitting rate limits.
-        #     return await self.handle_invoice_paid(request, data)
-        # elif event_type == "invoice.payment_failed":
-        #     # The payment failed or the customer does not have a valid payment method.
-        #     # The subscription becomes past_due. Notify your customer and send them to the
-        #     # customer portal to update their payment information.
-        #     return await self.handle_invoice_payment_failed(data)
+            return await self.handle_invoice_paid(request, stripe_obj)
         elif event_type == "customer.subscription.updated":
-            # TODO ENABLE ME
-            return await self.handle_customer_subscription_updated(request, data)
+            # Every time there is a subscription status update we will be notified
+            return await self.handle_customer_subscription_updated(request, stripe_obj)
         else:
             logger.warning(
-                f"The event `{event_type}` is not handled by webhook",
-                extra={"tags": event, "payload": data},
+                f"The event `{event_type}` is not handled by webhook."
+                f"We should disable it from Stripe panel if unused",
+                extra={"tags": event, "payload": stripe_obj},
             )
-        return JSONResponse({"status": "success"})
+            await self.echo(data)
+            return JSONResponse({"status": "success"})
 
     async def echo(self, payload):
         print(f"got object `{payload['object']}`")

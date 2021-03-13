@@ -1,6 +1,5 @@
 import datetime
 from unittest.mock import patch
-from zoneinfo import ZoneInfo
 
 import time_machine
 from ward import raises, test
@@ -23,14 +22,12 @@ from association.tests.factories import (
     SubscriptionFactory,
 )
 
-rome_tz = ZoneInfo("Europe/Rome")
-
 
 @test("NEW subscription")
 async def _():
     repository = FakeAssociationRepository(subscriptions=[], customers=[])
 
-    with time_machine.travel(datetime.datetime(2020, 1, 1, tzinfo=rome_tz), tick=False):
+    with time_machine.travel("2021-03-13 13:00:00", tick=False):
         subscription = await services.subscribe_user_to_association(
             user_data=UserData(email="test_user@pycon.it", user_id=1357),
             association_repository=repository,
@@ -41,7 +38,7 @@ async def _():
         assert subscription.state == SubscriptionState.PENDING
         assert subscription.user_id == 1357
         assert subscription.user_email == "test_user@pycon.it"
-        assert subscription.creation_date == datetime.datetime(2020, 1, 1, 0, 0)
+        assert subscription.creation_date == datetime.datetime(2021, 3, 13, 13, 0)
 
 
 @test("OLD subscription returned if not paid and with session_id")
@@ -63,10 +60,12 @@ async def _():
     assert subscription.stripe_session_id == orig_subscription.stripe_session_id
 
 
-@test("Updated subscription returned if not paid and without session_id")
+@test(
+    "Old subscription returned with a new stripe_session_id if not paid and without session_id"
+)
 async def _():
     orig_subscription = SubscriptionFactory(
-        user_id=1357, stripe_session_id="", state=SubscriptionState.PENDING
+        user_id=1357, state=SubscriptionState.NOT_CREATED
     )
 
     repository = FakeAssociationRepository(
@@ -78,8 +77,7 @@ async def _():
         association_repository=repository,
     )
     assert subscription.user_id == 1357
-    assert orig_subscription.stripe_session_id == ""
-    assert subscription.stripe_session_id != ""
+    assert subscription.stripe_session_id != orig_subscription.stripe_session_id
 
 
 @test("raises AlreadySubscribed if paid but not expired")

@@ -1,34 +1,34 @@
-from typing import Optional
-
 import strawberry
 
 from association.api.context import Info
-from association.api.types import SubscriptionResponse
+from association.domain.entities import SubscriptionState
+from association.settings import TEST_USER_ID
+
+
+@strawberry.type
+class HasAssociationSubscriptionResponse:
+    has_association_subscription: bool
 
 
 @strawberry.type
 class Query:
     @strawberry.field()  # permission_classes=[IsJWTAvailable])
-    async def my_subscription(self, info: Info) -> Optional[SubscriptionResponse]:
-        # user_id = decode_token(info.context.request.cookies.get(
-        #     JWT_USERS_COOKIE_NAME)
-        # ).id
-        user_id = 10001
+    async def has_association_subscription(
+        self, info: Info
+    ) -> HasAssociationSubscriptionResponse:
+        user_id = TEST_USER_ID
         subscription = (
             await info.context.association_repository.get_subscription_by_user_id(
                 user_id
             )
         )
-        print(f"subscription : {subscription}")
-        print(
-            f"subscription.subscription_payments : {subscription.subscription_payments}"
+        if subscription and subscription.state in [
+            SubscriptionState.ACTIVE,
+            SubscriptionState.EXPIRED,
+        ]:
+            has_association_subscription = True
+        else:
+            has_association_subscription = False
+        return HasAssociationSubscriptionResponse(
+            has_association_subscription=has_association_subscription
         )
-        print(
-            f"subscription.subscription_payments.__dir__() : {subscription.subscription_payments.__dir__()}"
-        )
-        print(
-            f"sorted(subscription.subscription_payments, key=lambda x:x.payment_date) :"
-            f" {sorted(subscription.subscription_payments, key=lambda x:x.payment_date, reverse=True)[0].payment_date}"
-        )
-
-        return SubscriptionResponse.from_domain(subscription)

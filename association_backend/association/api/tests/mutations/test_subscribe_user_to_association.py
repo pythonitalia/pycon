@@ -1,5 +1,4 @@
 from unittest.mock import patch
-from zoneinfo import ZoneInfo
 
 from ward import test
 
@@ -7,8 +6,6 @@ from association.api.tests.graphql_client import graphql_client
 from association.domain.exceptions import AlreadySubscribed
 from association.tests.factories import SubscriptionFactory
 from association.tests.session import db
-
-rome_tz = ZoneInfo("Europe/Rome")
 
 
 @test("Subscription created")
