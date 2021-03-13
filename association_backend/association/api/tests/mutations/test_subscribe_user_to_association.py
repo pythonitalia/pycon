@@ -14,7 +14,7 @@ async def _(graphql_client=graphql_client, db=db):
     mutation {
         subscribeUserToAssociation {
             __typename
-            ... on SubscriptionResponse {
+            ... on Subscription {
                 __typename
                 creationDate
                 stripeCustomerId
@@ -32,8 +32,7 @@ async def _(graphql_client=graphql_client, db=db):
     ) as service_mock:
         response = await graphql_client.query(query, variables={})
         assert (
-            response.data["subscribeUserToAssociation"]["__typename"]
-            == "SubscriptionResponse"
+            response.data["subscribeUserToAssociation"]["__typename"] == "Subscription"
         )
         assert (
             response.data["subscribeUserToAssociation"]["stripeSessionId"]

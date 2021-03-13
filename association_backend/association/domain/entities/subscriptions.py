@@ -30,7 +30,6 @@ class Subscription:
     state: SubscriptionState
     # is_for_life: bool
     stripe_session_id: Optional[str] = ""
-    due_date: Optional[datetime] = None
     stripe_id: Optional[str] = ""
     stripe_customer_id: Optional[str] = ""
 
