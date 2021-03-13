@@ -2,7 +2,7 @@ import { ApolloGateway, RemoteGraphQLDataSource } from "@apollo/gateway";
 import { getServices } from "./services";
 import { IS_DEV } from "./config";
 import { Pastaporto } from "./pastaporto/entities";
-import { PastaportoAction } from "./actions/entities";
+import { getPastaportoActionFromToken } from "./actions";
 
 const PASTAPORTO_ACTION_X_HEADER = "x-pastaporto-action";
 
@@ -21,7 +21,7 @@ class ServiceRemoteGraphQLDataSource extends RemoteGraphQLDataSource {
     const pastaportoAction = headers.get(PASTAPORTO_ACTION_X_HEADER);
 
     if (pastaportoAction) {
-      context.pastaportoAction = PastaportoAction.fromToken(pastaportoAction);
+      context.pastaportoAction = getPastaportoActionFromToken(pastaportoAction);
     }
 
     return response;
