@@ -10,7 +10,7 @@ env:
 
 jobs:
   build-and-push-lambda-backend:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@master
@@ -40,7 +40,7 @@ jobs:
           cache-to: type=local,dest=/tmp/.buildx-cache
 
   terraform:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     needs: [build-and-push-lambda-backend]
     defaults:
       run:
@@ -87,7 +87,7 @@ jobs:
           TF_VAR_pastaporto_action_secret: ${{ secrets.TF_VAR_pastaporto_action_secret }}
 
   migrate-db:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     needs: [terraform]
     steps:
       - uses: actions/checkout@master
