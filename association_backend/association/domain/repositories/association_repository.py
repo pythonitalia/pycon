@@ -104,7 +104,6 @@ class AssociationRepository(AbstractRepository):
             line_items=[
                 {
                     "price": STRIPE_SUBSCRIPTION_PRICE_ID,
-                    # For metered billing, do not pass quantity
                     "quantity": 1,
                 }
             ],
