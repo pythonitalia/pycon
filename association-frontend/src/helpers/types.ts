@@ -46,7 +46,7 @@ export type MutationRegisterArgs = {
 
 export type LoginResult =
   | LoginSuccess
-  | WrongUsernameOrPassword
+  | WrongEmailOrPassword
   | LoginValidationError;
 
 export type LoginSuccess = {
@@ -55,8 +55,8 @@ export type LoginSuccess = {
   token: Scalars["String"];
 };
 
-export type WrongUsernameOrPassword = {
-  __typename?: "WrongUsernameOrPassword";
+export type WrongEmailOrPassword = {
+  __typename?: "WrongEmailOrPassword";
   message: Scalars["String"];
 };
 

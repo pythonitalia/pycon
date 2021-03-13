@@ -1,3 +1,4 @@
+import { useUser } from "hooks/use-login";
 import React from "react";
 import { useFormState } from "react-use-form-state";
 
@@ -12,7 +13,6 @@ import Input from "~/components/input/input";
 import Link from "~/components/link/link";
 import Logo from "~/components/logo/logo";
 
-import { useLoginState } from "../../hooks/use-login";
 import { useLoginMutation } from "./login.generated";
 
 type LoginFormFields = {
@@ -23,9 +23,9 @@ type LoginFormFields = {
 const LoginPage = () => {
   const [formState, { email, password }] = useFormState<LoginFormFields>({});
 
-  const [loggedIn, setLoggedIn] = useLoginState();
+  const { replace } = useRouter();
+  const { setToken } = useUser();
 
-  const router = useRouter();
   const [{ fetching, data }, login] = useLoginMutation();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -38,11 +38,10 @@ const LoginPage = () => {
         password: formState.values.password,
       },
     });
-    console.log(JSON.stringify(result));
 
     if (result?.data?.login?.__typename === "LoginSuccess") {
-      setLoggedIn(result.data.login.token);
-      router.push("/profile");
+      setToken(result.data.login.token);
+      replace("/profile");
     }
   };
   const getFieldErrors = (field: "email" | "password") =>

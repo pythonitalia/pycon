@@ -1,3 +1,4 @@
+import { useUser } from "hooks/use-login";
 import React from "react";
 
 import Button from "../button/button";
@@ -5,6 +6,8 @@ import MenuItem from "./menu-item";
 import MobileMenu from "./menu-mobile";
 
 const Header = () => {
+  const { user, logout } = useUser();
+  console.log(user);
   return (
     <header>
       <div className="relative bg-white">
@@ -78,13 +81,18 @@ const Header = () => {
             </a> */}
           </nav>
           <div className="hidden md:flex items-center justify-end md:flex-1 lg:w-0">
-            <Button>
-              <a href="/login">Sign in</a>
-            </Button>
+            {user && <Button onClick={() => logout()}>Log out</Button>}
+            {!user && (
+              <>
+                <Button>
+                  <a href="/login">Sign in</a>
+                </Button>
 
-            <Button>
-              <a href="/signup">Sign up</a>
-            </Button>
+                <Button>
+                  <a href="/signup">Sign up</a>
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </div>
