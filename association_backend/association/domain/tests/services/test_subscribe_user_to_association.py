@@ -37,7 +37,6 @@ async def _():
         assert subscription.stripe_customer_id == ""
         assert subscription.state == SubscriptionState.PENDING
         assert subscription.user_id == 1357
-        assert subscription.user_email == "test_user@pycon.it"
         assert subscription.creation_date == datetime.datetime(2021, 3, 13, 13, 0)
 
 

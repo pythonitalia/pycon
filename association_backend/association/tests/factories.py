@@ -78,7 +78,6 @@ class SubscriptionFactory(SQLAlchemyModelFactory):
         sqlalchemy_session = test_session
 
     user_id = factory.Faker("pyint", min_value=1)
-    user_email = factory.Faker("ascii_safe_email")
     creation_date = factory.Faker("date_between", start_date="-30y", end_date="today")
     due_date = factory.Faker("date_between", start_date="today", end_date="+1y")
     state = factory.fuzzy.FuzzyChoice(SubscriptionState)

@@ -60,7 +60,6 @@ async def subscribe_user_to_association(
             stripe_session_id=checkout_session.id,
             stripe_customer_id=checkout_session.customer_id,
             creation_date=datetime.now(),
-            user_email=user_data.email,
             state=SubscriptionState.PENDING,
             stripe_id=checkout_session.subscription_id or "",
         )

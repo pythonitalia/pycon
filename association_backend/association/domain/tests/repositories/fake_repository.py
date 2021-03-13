@@ -45,9 +45,6 @@ class FakeAssociationRepository(AssociationRepository):
         self.SUBSCRIPTIONS_BY_USER_ID = {
             subscription.user_id: subscription for subscription in subscriptions
         }
-        self.SUBSCRIPTIONS_BY_USER_EMAIL = {
-            subscription.user_email: subscription for subscription in subscriptions
-        }
         # checkout-sessions
         if checkout_sessions:
             self.CHECKOUT_SESSIONS_BY_ID = {
@@ -91,11 +88,6 @@ class FakeAssociationRepository(AssociationRepository):
 
     async def get_subscription_by_user_id(self, user_id: int) -> Optional[Subscription]:
         return self.SUBSCRIPTIONS_BY_USER_ID.get(user_id, None)
-
-    async def get_subscription_by_user_email(
-        self, user_email: str
-    ) -> Optional[Subscription]:
-        return self.SUBSCRIPTIONS_BY_USER_EMAIL.get(user_email, None)
 
     # WRITE
     async def save_subscription(self, subscription: Subscription) -> Subscription:

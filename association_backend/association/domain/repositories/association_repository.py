@@ -56,15 +56,6 @@ class AssociationRepository(AbstractRepository):
         subscription = (await self.session.execute(query)).scalar_one_or_none()
         return subscription
 
-    async def get_subscription_by_user_email(
-        self, user_email: str
-    ) -> Optional[Subscription]:
-        query = select(Subscription).where(Subscription.user_email == user_email)
-        subscription = (await self.session.execute(query)).scalar_one_or_none()
-        return subscription
-
-    # async def get_last_subscription_payment(self, subscription):
-
     # WRITE
     async def save_subscription(self, subscription: Subscription) -> Subscription:
         self.session.add(subscription)

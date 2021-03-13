@@ -29,7 +29,6 @@ class Subscription:
     creation_date: datetime
     state: SubscriptionState
     # is_for_life: bool
-    user_email: str = ""
     stripe_session_id: Optional[str] = ""
     due_date: Optional[datetime] = None
     stripe_id: Optional[str] = ""
@@ -51,9 +50,7 @@ subscription_table = Table(
     "subscription",
     mapper_registry.metadata,
     Column("user_id", Integer(), nullable=False, primary_key=True),
-    Column("user_email", String(128), nullable=True),
     Column("creation_date", DateTime(timezone=True), nullable=False),
-    Column("next_payment_due_date", DateTime(timezone=True), nullable=True),
     Column("stripe_id", String(128), nullable=True),
     Column("stripe_customer_id", String(128), nullable=False),
     Column("stripe_session_id", String(128), nullable=False),
