@@ -63,7 +63,10 @@ jobs:
           TF_VAR_pinpoint_application_id: ${{ secrets.TF_VAR_pinpoint_application_id }}
           TF_VAR_pretix_sentry_dsn: ${{ secrets.TF_VAR_pretix_sentry_dsn }}
           TF_VAR_users_backend_session_secret_key: ${{ secrets.TF_VAR_users_backend_session_secret_key }}
-          TF_VAR_jwt_auth_secret: ${{ secrets.TF_VAR_jwt_auth_secret }}
+          TF_VAR_pastaporto_secret: ${{ secrets.TF_VAR_pastaporto_secret }}
+          TF_VAR_identity_secret: ${{ secrets.TF_VAR_identity_secret }}
+          TF_VAR_service_to_service_secret: ${{ secrets.TF_VAR_service_to_service_secret }}
+          TF_VAR_pastaporto_action_secret: ${{ secrets.TF_VAR_pastaporto_action_secret }}
           TF_IN_AUTOMATION: 1
       - name: Find Plan comment
         uses: peter-evans/find-comment@v1

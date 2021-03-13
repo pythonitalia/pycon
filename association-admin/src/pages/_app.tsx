@@ -1,7 +1,7 @@
 import { dedupExchange, cacheExchange, fetchExchange } from "@urql/core";
 import { authExchange } from "@urql/exchange-auth";
 import { RecoilRoot } from "recoil";
-import { makeOperation } from "urql";
+import { makeOperation, Mutation, Operation } from "urql";
 
 import { withUrqlClient } from "next-urql";
 import Router from "next/router";
@@ -32,7 +32,7 @@ const App = ({ Component, pageProps, resetUrqlClient }) => (
 );
 
 export default withUrqlClient(
-  (ssrExchange, ctx) => ({
+  (ssrExchange) => ({
     url: "/graphql",
     exchanges: [
       dedupExchange,
@@ -40,16 +40,12 @@ export default withUrqlClient(
       ssrExchange,
       authExchange({
         didAuthError({ error }) {
-          return error.graphQLErrors.some((e) => e.message === "Unauthorized");
+          return error.graphQLErrors.some(
+            (e) => e.extensions.exception.message === "Unauthorized",
+          );
         },
         async getAuth({ authState }: { authState?: AuthState }) {
           if (!authState) {
-            const token = typeof window !== "undefined" && getToken();
-
-            if (token) {
-              return { token };
-            }
-
             return null;
           }
 
@@ -60,36 +56,19 @@ export default withUrqlClient(
           return null;
         },
         addAuthToOperation({
-          authState,
           operation,
         }: {
           authState?: AuthState;
           operation: any;
         }) {
-          if (!authState || !authState.token) {
-            return operation;
-          }
-
-          const fetchOptions =
-            typeof operation.context.fetchOptions === "function"
-              ? operation.context.fetchOptions()
-              : operation.context.fetchOptions || {};
-
-          return makeOperation(operation.kind, operation, {
-            ...operation.context,
-            fetchOptions: {
-              ...fetchOptions,
-              credentials: "include",
-              headers: {
-                ...fetchOptions.headers,
-                Authorization: `Bearer ${authState.token}`,
-              },
-            },
-          });
+          return operation;
         },
       }),
       fetchExchange,
     ],
+    fetchOptions: {
+      credentials: "include",
+    },
   }),
   { ssr: false },
 )(App);

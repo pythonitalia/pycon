@@ -5,7 +5,9 @@ mutation Login($input: LoginInput!) {
     __typename
 
     ... on LoginSuccess {
-      token
+      user {
+        id
+      }
     }
 
     ... on LoginValidationError {

@@ -6,10 +6,6 @@ config = Config(".env")
 
 DEBUG = config("DEBUG", cast=bool, default=False)
 DATABASE_URL = config("DATABASE_URL")
-JWT_AUTH_SECRET = config("JWT_AUTH_SECRET", cast=Secret)
-JWT_EXPIRES_AFTER_IN_MINUTES = config(
-    "JWT_EXPIRES_AFTER_IN_MINUTES", cast=int, default=10
-)
 SESSION_SECRET_KEY = config("SESSION_SECRET_KEY", cast=Secret)
 
 # Google social auth
@@ -22,7 +18,28 @@ SOCIAL_LOGIN_JWT_COOKIE_NAME = config(
     "SOCIAL_LOGIN_JWT_COOKIE_NAME", cast=str, default="social-jwt-token"
 )
 
+# Identity / Pastaporto secrets
+IDENTITY_SECRET = config("IDENTITY_SECRET", cast=Secret)
+PASTAPORTO_SECRET = config("PASTAPORTO_SECRET", cast=Secret)
+SERVICE_TO_SERVICE_SECRET = config(
+    "SERVICE_TO_SERVICE_SECRET", cast=Secret, default=None
+)
+PASTAPORTO_ACTION_SECRET = config("PASTAPORTO_ACTION_SECRET", cast=Secret, default=None)
+
+IDENTITY_EXPIRES_AFTER_MINUTES = config(
+    "IDENTITY_EXPIRES_AFTER_MINUTES", cast=int, default=60
+)
+
+# Pagination
+
 DEFAULT_PAGINATION_TO = 20
+
+# Headers config
+
+PASTAPORTO_ACTION_X_HEADER = "x-pastaporto-action"
+SERVICE_JWT_HEADER = "x-service-token"
+
+# Passwords
 
 PASSWORD_HASHERS = [
     "users.starlette_password.hashers.Argon2PasswordHasher",
@@ -49,3 +66,4 @@ if RUNNING_TESTS:
 
     DATABASE_URL = test_db_url
     PASSWORD_HASHERS = ["users.starlette_password.plain_hasher.PlainPasswordHasher"]
+    SERVICE_TO_SERVICE_SECRET = "test-service-to-service"

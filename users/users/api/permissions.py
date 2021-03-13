@@ -1,7 +1,7 @@
+from pythonit_toolkit.pastaporto.entities import Credential
 from strawberry.permission import BasePermission
 
 from users.api.context import Info
-from users.domain.entities import Credential
 
 
 class IsAuthenticated(BasePermission):

@@ -1,6 +1,6 @@
 from pydantic import BaseModel, EmailStr, constr
 
-from users.domain.entities import Credential, User
+from users.domain.entities import User
 from users.domain.repository import AbstractUsersRepository
 
 from .exceptions import (
@@ -29,7 +29,7 @@ async def login(
     if not user.is_active:
         raise UserIsNotActiveError()
 
-    if reject_non_admins and Credential.STAFF not in user.credentials.scopes:
+    if reject_non_admins and not user.is_staff:
         raise UserIsNotAdminError()
 
     return user

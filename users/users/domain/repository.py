@@ -11,9 +11,6 @@ from users.domain.paginable import Paginable
 class AbstractTransaction:
     session: Any
 
-    def with_session(self, session):
-        self.session = session
-
     def transaction(self):
         raise NotImplementedError()
 

@@ -34,17 +34,22 @@ module "lambda" {
   source = "../../components/application_lambda"
 
   application        = local.application
-  docker_tag         = "production"
+  docker_tag         = terraform.workspace
   role_arn           = data.aws_iam_role.lambda.arn
   subnet_ids         = [for subnet in data.aws_subnet_ids.private.ids : subnet]
   security_group_ids = [data.aws_security_group.rds.id]
   env_vars = {
     DEBUG                     = "false"
-    JWT_AUTH_SECRET           = var.jwt_auth_secret
     SESSION_SECRET_KEY        = var.session_secret_key
     GOOGLE_AUTH_CLIENT_ID     = var.google_auth_client_id
     GOOGLE_AUTH_CLIENT_SECRET = var.google_auth_client_secret
     DATABASE_URL              = "postgresql+asyncpg://${data.aws_db_instance.database.master_username}:${var.database_password}@${data.aws_db_instance.database.address}:${data.aws_db_instance.database.port}/users"
+
+    # Secrets
+    PASTAPORTO_SECRET         = var.pastaporto_secret
+    IDENTITY_SECRET           = var.identity_secret
+    SERVICE_TO_SERVICE_SECRET = var.service_to_service_secret
+    PASTAPORTO_ACTION_SECRET  = var.pastaporto_action_secret
   }
 }
 

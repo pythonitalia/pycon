@@ -7,16 +7,21 @@
     "@apollo/gateway": "^0.23.2",
     "apollo-server": "2.21.0",
     "apollo-server-lambda": "^2.21.0",
+    "apollo-server-plugin-http-headers": "^0.1.4",
+    "cookie": "^0.4.1",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "graphql": "^15.5.0",
+    "graphql-request": "^3.4.0",
+    "jsonwebtoken": "^8.5.1",
     "typescript": "^4.2.2"
   },
   "scripts": {
-    "dev": "NODE_ENV=development VARIANT=default nodemon",
-    "dev:admin": "NODE_ENV=development VARIANT=admin nodemon"
+    "dev": "NODE_ENV=development IS_DEV=true VARIANT=default nodemon",
+    "dev:admin": "NODE_ENV=development IS_DEV=true VARIANT=admin nodemon"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^8.5.0",
     "nodemon": "^2.0.7",
     "ts-node": "^9.1.1"
   }

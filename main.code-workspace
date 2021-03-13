@@ -21,6 +21,10 @@
       "path": "association-admin"
     },
     {
+      "name": "🏗 Toolkit",
+      "path": "toolkit"
+    },
+    {
       "name": "🔧 Infrastructure",
       "path": "infrastructure"
     },

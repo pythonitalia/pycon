@@ -1,2 +1,4 @@
 .terraform/
 terraform.tfstate.d/
+*.auto.tfvars
+*._auto._tfvars

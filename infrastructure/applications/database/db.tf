@@ -1,5 +1,6 @@
 locals {
   normalized_workspace = replace(terraform.workspace, "-", "")
+  is_prod              = terraform.workspace == "production"
 }
 
 data "aws_db_subnet_group" "rds" {
@@ -26,7 +27,7 @@ resource "aws_db_instance" "database" {
   skip_final_snapshot         = true
   publicly_accessible         = false
   apply_immediately           = true
-  backup_retention_period     = 7
+  backup_retention_period     = local.is_prod ? 7 : 0
 
   db_subnet_group_name   = data.aws_db_subnet_group.rds.name
   vpc_security_group_ids = [data.aws_security_group.rds.id]

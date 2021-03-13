@@ -1,7 +1,7 @@
 from ward import test
 
-from users.api.tests.graphql_client import admin_graphql_client
 from users.tests.factories import user_factory
+from users.tests.graphql_client import admin_graphql_client
 from users.tests.session import db
 
 
@@ -62,7 +62,6 @@ async def _(
             __typename
 
             ... on LoginSuccess {
-                token
                 user {
                     id
                 }
@@ -77,7 +76,6 @@ async def _(
     assert not response.errors
     assert response.data["login"]["__typename"] == "LoginSuccess"
     assert response.data["login"]["user"]["id"] == user.id
-    assert response.data["login"]["token"] is not None
 
 
 @test("cannot login with empty password")

@@ -1,15 +1,9 @@
-import json
-
 from authlib.integrations.starlette_client import OAuth
 from starlette.responses import JSONResponse
 
 from users.domain import services
 from users.domain.services.social_login import SocialAccount, SocialLoginInput
-from users.settings import (
-    GOOGLE_AUTH_CLIENT_ID,
-    GOOGLE_AUTH_CLIENT_SECRET,
-    SOCIAL_LOGIN_JWT_COOKIE_NAME,
-)
+from users.settings import GOOGLE_AUTH_CLIENT_ID, GOOGLE_AUTH_CLIENT_SECRET
 
 oauth = OAuth()
 
@@ -53,7 +47,7 @@ async def google_login_auth(request):
     # response = RedirectResponse(url="/")
     # Temporary
     response = JSONResponse({"ok": True})
-    response.set_cookie(
-        SOCIAL_LOGIN_JWT_COOKIE_NAME, json.dumps({"jwt": user.generate_token()})
-    )
+    # response.set_cookie(
+    #     SOCIAL_LOGIN_JWT_COOKIE_NAME, json.dumps({"jwt": user.generate_token()})
+    # )
     return response

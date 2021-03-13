@@ -8,8 +8,8 @@ authors = ["Marco Acierno <marcoaciernoemail@gmail.com>"]
 python = "^3.9"
 starlette = "^0.14.1"
 uvicorn = "^0.13.3"
-strawberry-graphql = "0.45.1"
-SQLAlchemy = "1.4.0b1"
+strawberry-graphql = "0.49.0"
+SQLAlchemy = "1.4.0b3"
 alembic = "^1.5.2"
 psycopg2 = "^2.8.6"
 asyncpg = "^0.21.0"
@@ -21,6 +21,7 @@ httpx = "^0.16.1"
 Authlib = "^0.15.3"
 itsdangerous = "^1.1.0"
 mangum = "^0.10.0"
+pythonit-toolkit = "0.1.17"
 
 [tool.poetry.dev-dependencies]
 pdbpp = "^0.10.2"
@@ -34,7 +35,7 @@ time-machine = "^2.0.1"
 
 [tool.taskipy.tasks]
 server = "uvicorn main:app --port 8050 --reload"
-test = "RUNNING_TESTS=1 python tests/prepare_db.py && RUNNING_TESTS=1 coverage run -m ward"
+test = "RUNNING_TESTS=1 python scripts/prepare_db.py && RUNNING_TESTS=1 coverage run -m ward"
 "test:coverage" = "task test || coverage xml -i && coverage xml -i"
 "test:debug" = "task test --no-capture-output"
 migrate = "alembic upgrade head"

@@ -7,8 +7,6 @@ import strawberry
 
 from users.domain import entities
 
-Credential = strawberry.enum(entities.Credential)
-
 
 @strawberry.type
 class User:
@@ -22,7 +20,7 @@ class User:
     open_to_newsletter: bool
     country: str
     is_active: bool
-    credentials: list[Credential]
+    is_staff: bool
 
     @classmethod
     def from_domain(cls, entity: entities.User) -> User:
@@ -37,7 +35,7 @@ class User:
             open_to_newsletter=entity.open_to_newsletter,
             country=entity.country,
             is_active=entity.is_active,
-            credentials=entity.credentials.scopes,
+            is_staff=entity.is_staff,
         )
 
 

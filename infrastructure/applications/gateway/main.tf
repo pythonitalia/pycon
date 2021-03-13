@@ -14,12 +14,18 @@ module "lambda" {
   source = "../../components/application_lambda"
 
   application = local.application
-  docker_tag  = "production"
+  docker_tag  = terraform.workspace
   role_arn    = data.aws_iam_role.lambda.arn
   env_vars = {
     NODE_ENV      = "production"
     VARIANT       = "default"
     USERS_SERVICE = local.users_service_url
+
+    # Secrets
+    PASTAPORTO_SECRET         = var.pastaporto_secret
+    IDENTITY_SECRET           = var.identity_secret
+    SERVICE_TO_SERVICE_SECRET = var.service_to_service_secret
+    PASTAPORTO_ACTION_SECRET  = var.pastaporto_action_secret
   }
 }
 

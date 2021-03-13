@@ -18,7 +18,7 @@ export const UserPills: React.FC<Props> = ({ user }) => {
     );
   }
 
-  if (user.credentials.includes(Credential.Staff)) {
+  if (user.isStaff) {
     pills.push(
       <Pill key="is-staff" variant="success">
         Staff
