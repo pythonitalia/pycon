@@ -110,7 +110,9 @@ async def _():
     assert subscription.state == SubscriptionState.PENDING
 
 
-@test("Subscription update INCOMPLETE_EXPIRED -> NOT_CREATED + Deleted session")
+@test(
+    "Subscription update INCOMPLETE_EXPIRED -> FIRST_PAYMENT_EXPIRED + Deleted session"
+)
 async def _():
     sut_subscription = SubscriptionFactory(state=SubscriptionState.PENDING)
     repository = FakeAssociationRepository(
@@ -128,7 +130,7 @@ async def _():
         association_repository=repository,
     )
 
-    assert subscription.state == SubscriptionState.NOT_CREATED
+    assert subscription.state == SubscriptionState.FIRST_PAYMENT_EXPIRED
     assert subscription.stripe_session_id == ""
     assert subscription.stripe_id == ""
 

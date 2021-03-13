@@ -29,7 +29,7 @@ async def subscribe_user_to_association(
             SubscriptionState.EXPIRED,
         ]:
             raise AlreadySubscribed()
-        elif subscription_state == SubscriptionState.NOT_CREATED:
+        elif subscription_state == SubscriptionState.FIRST_PAYMENT_EXPIRED:
             # subscription not created has to be recreated passing from a new Checkout Session
             pass
         else:

@@ -47,7 +47,7 @@ async def handle_customer_subscription_updated(
                     "a subscription without associated Payments"
                 )
                 raise InconsistentStateTransitionError(error_message)
-            subscription.state = SubscriptionState.NOT_CREATED
+            subscription.state = SubscriptionState.FIRST_PAYMENT_EXPIRED
             # The session is expired, so the User cannot access the expired Session
             subscription.stripe_session_id = ""
             subscription.stripe_id = ""

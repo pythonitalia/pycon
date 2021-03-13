@@ -61,7 +61,7 @@ async def _():
 )
 async def _():
     orig_subscription = SubscriptionFactory(
-        user_id=1357, state=SubscriptionState.NOT_CREATED
+        user_id=1357, state=SubscriptionState.FIRST_PAYMENT_EXPIRED
     )
 
     repository = FakeAssociationRepository(

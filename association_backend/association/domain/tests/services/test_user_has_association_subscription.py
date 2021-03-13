@@ -42,11 +42,13 @@ async def _():
     )
 
 
-@test("return has_association_subscription False if subscription NOT_CREATED")
+@test("return has_association_subscription False if subscription FIRST_PAYMENT_EXPIRED")
 async def _():
     repository = FakeAssociationRepository(
         subscriptions=[
-            SubscriptionFactory(user_id=1234, state=SubscriptionState.NOT_CREATED)
+            SubscriptionFactory(
+                user_id=1234, state=SubscriptionState.FIRST_PAYMENT_EXPIRED
+            )
         ],
         customers=[],
     )
