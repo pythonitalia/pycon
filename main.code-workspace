@@ -14,7 +14,7 @@
     },
     {
       "name": "👤 Users Service",
-      "path": "users"
+      "path": "users-backend"
     },
     {
       "name": "👻 Association Admin",
