@@ -17,8 +17,6 @@ async def _(graphql_client=graphql_client, db=db):
                     email
                     fullname
                 }
-
-                token
             }
         }
     }
@@ -34,7 +32,6 @@ async def _(graphql_client=graphql_client, db=db):
     assert response.data["register"]["user"]["id"] is not None
     assert response.data["register"]["user"]["email"] == "marco@provider.it"
     assert response.data["register"]["user"]["fullname"] == ""
-    assert response.data["register"]["token"] is not None
 
 
 @test("cannot register if the email is already used by other users")

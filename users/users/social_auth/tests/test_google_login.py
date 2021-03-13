@@ -34,6 +34,7 @@ async def _(testclient=testclient, db=db, cleanup_db=cleanup_db):
 
         response = await testclient.get("/login/google/auth")
 
+    assert response.status_code == 200
     query = select(User).where(User.email == "google@user.it")
     db_user: User = (await db.execute(query)).scalar()
 
@@ -41,9 +42,6 @@ async def _(testclient=testclient, db=db, cleanup_db=cleanup_db):
     assert db_user.fullname == "Nina Nana"
     assert db_user.name == "Nina"
     assert not db_user.has_usable_password()
-
-    # make sure we set the cookie
-    assert response.cookies.get("social-jwt-token")
 
 
 @test("social login to account with same email")
@@ -71,15 +69,14 @@ async def _(
 
         response = await testclient.get("/login/google/auth")
 
+    assert response.status_code == 200
+
     query = select(User).where(User.email == existent_user.email)
     db_user: User = (await db.execute(query)).scalar()
 
     assert db_user
     assert db_user.fullname == "I Already"
     assert db_user.name == "Exist"
-
-    # make sure we set the cookie
-    assert response.cookies.get("social-jwt-token")
 
 
 @test("reject google account if the email is not verified")

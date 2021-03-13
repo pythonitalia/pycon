@@ -155,7 +155,6 @@ async def _(graphql_client=graphql_client, user_factory=user_factory, db=db):
                     id
                     email
                 }
-                token
             }
         }
     }
@@ -167,4 +166,3 @@ async def _(graphql_client=graphql_client, user_factory=user_factory, db=db):
     assert not response.errors, response.errors
     assert response.data["login"]["__typename"] == "LoginSuccess"
     assert response.data["login"]["user"] == {"id": user.id, "email": user.email}
-    assert response.data["login"]["token"] is not None

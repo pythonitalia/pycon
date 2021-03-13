@@ -62,7 +62,6 @@ async def _(
             __typename
 
             ... on LoginSuccess {
-                token
                 user {
                     id
                 }
@@ -77,7 +76,6 @@ async def _(
     assert not response.errors
     assert response.data["login"]["__typename"] == "LoginSuccess"
     assert response.data["login"]["user"]["id"] == user.id
-    assert response.data["login"]["token"] is not None
 
 
 @test("cannot login with empty password")
