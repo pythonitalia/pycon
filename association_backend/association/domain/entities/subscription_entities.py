@@ -76,7 +76,6 @@ mapper_registry.map_imperatively(
         "subscription": relationship(
             Subscription,
             backref="subscription_payments",
-            # order_by=address.c.id
         )
     },
 )
