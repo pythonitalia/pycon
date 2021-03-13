@@ -43,8 +43,6 @@ class GraphQLClient:
         data = json.loads(resp.content.decode())
         return Response(errors=data.get("errors"), data=data.get("data"))
 
-    # def force_login(self, user: entities.User):
-    #     self.auth_token = user.generate_token()
 
 
 @fixture()
