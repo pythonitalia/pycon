@@ -17,8 +17,8 @@
     "typescript": "^4.2.2"
   },
   "scripts": {
-    "dev": "NODE_ENV=development VARIANT=default nodemon",
-    "dev:admin": "NODE_ENV=development VARIANT=admin nodemon"
+    "dev": "NODE_ENV=development IS_DEV=true VARIANT=default nodemon",
+    "dev:admin": "NODE_ENV=development IS_DEV=true VARIANT=admin nodemon"
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^8.5.0",
