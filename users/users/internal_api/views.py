@@ -1,6 +1,7 @@
-import typing
+from typing import Optional, Union
 
 from starlette.requests import Request
+from starlette.responses import Response
 from starlette.types import Receive, Scope, Send
 from starlette.websockets import WebSocket
 from strawberry.asgi import GraphQL as BaseGraphQL
@@ -14,7 +15,9 @@ class GraphQL(BaseGraphQL):
     def __init__(self) -> None:
         super().__init__(schema)
 
-    async def get_context(self, request: typing.Union[Request, WebSocket]) -> Context:
+    async def get_context(
+        self, request: Union[Request, WebSocket], response: Optional[Response]
+    ) -> Context:
         return Context(request=request, session=request.state.session)
 
     async def handle_websocket(self, scope: Scope, receive: Receive, send: Send):

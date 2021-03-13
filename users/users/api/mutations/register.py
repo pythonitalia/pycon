@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import pydantic
 import strawberry
+from pythonit_toolkit.api.builder import create_validation_error_type
+from pythonit_toolkit.api.types import PydanticError
 from pythonit_toolkit.pastaporto.actions import create_user_auth_pastaporto_action
 
 from users.api.context import Info
@@ -9,8 +11,6 @@ from users.api.types import User
 from users.domain import entities, services
 from users.domain.services import RegisterInputModel
 from users.domain.services.exceptions import EmailAlreadyUsedError
-from users.utils.api.builder import create_validation_error_type
-from users.utils.api.types import PydanticError
 
 
 @strawberry.experimental.pydantic.input(

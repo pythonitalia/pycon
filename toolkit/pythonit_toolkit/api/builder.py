@@ -1,27 +1,27 @@
-from dataclasses import field, make_dataclass
-from typing import List
+from dataclasses import field as dataclasses_field
+from dataclasses import make_dataclass
 
 import pydantic
 import strawberry
 from strawberry.field import StrawberryField
 
-from users.utils.api.types import FieldError
+from .types import FieldError
 
 
-def create_mutation_type(name: str, mutations: List[StrawberryField]):
+def create_root_type(fields):
     cls = make_dataclass(
-        name,
+        "RootType",
         fields=[
             (
-                mutation._field_definition.origin_name,
-                mutation._field_definition.type,
-                field(default=strawberry.mutation(mutation._field_definition.origin)),
+                field._field_definition.origin_name,
+                field._field_definition.type,
+                dataclasses_field(default=field),
             )
-            for mutation in mutations
+            for field in fields
         ],
     )
 
-    return strawberry.type(cls, name=name)
+    return strawberry.type(cls)
 
 
 def create_validation_error_type(prefix: str, type_: StrawberryField):
@@ -42,5 +42,4 @@ def create_validation_error_type(prefix: str, type_: StrawberryField):
 
     cls = make_dataclass(f"{prefix}ValidationError", [("errors", type_)])
     cls.from_validation_error = from_validation_error
-
     return strawberry.type(cls)
