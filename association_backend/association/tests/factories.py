@@ -7,7 +7,11 @@ from factory.alchemy import SQLAlchemyModelFactory
 from faker.providers import BaseProvider
 from ward import fixture
 
-from association.domain.entities import Subscription, SubscriptionState
+from association.domain.entities import (
+    Subscription,
+    SubscriptionPayment,
+    SubscriptionState,
+)
 
 from ..domain.entities.stripe import StripeCheckoutSession, StripeCustomer
 from .session import test_session
@@ -42,6 +46,17 @@ class StripeProvider(BaseProvider):
         return (
             "sub_test_"
             + self.random_elements(string.ascii_lowercase + string.digits, length=16)[0]
+        )
+
+    def invoice_id(self):
+        return (
+            "inv_test_"
+            + self.random_elements(string.ascii_lowercase + string.digits, length=16)[0]
+        )
+
+    def invoice_pdf(self):
+        return "https://python-italia.stripe.com/invoices/{invoice_code}.pdf" "".format(
+            invoice_code=self.invoice_id()
         )
 
     def customer_portal_session_id(self):
@@ -80,10 +95,6 @@ class SubscriptionFactory(SQLAlchemyModelFactory):
     user_id = factory.Faker("pyint", min_value=1)
     creation_date = factory.Faker("date_between", start_date="-30y", end_date="today")
     state = factory.fuzzy.FuzzyChoice(SubscriptionState)
-
-    # stripe_id = factory.Faker("pystr", min_chars=5, max_chars=8)
-    # stripe_customer_id = factory.Faker("pystr", min_chars=5, max_chars=8)
-    # stripe_session_id = factory.Faker("pystr", min_chars=5, max_chars=8)
 
     @factory.lazy_attribute
     def stripe_id(self):
@@ -128,6 +139,39 @@ async def subscription_factory_batch():
         return obj
 
     return func
+
+
+class SubscriptionPaymentFactory(SQLAlchemyModelFactory):
+    class Meta:
+        model = SubscriptionPayment
+        sqlalchemy_session = test_session
+
+    payment_date = factory.Faker("date_between", start_date="-7d", end_date="today")
+    subscription = factory.SubFactory(SubscriptionFactory)
+
+    # @factory.lazy_attribute
+    # def subscription(self):
+    #     from faker import Factory
+    #
+    #     fake = Factory.create()
+    #     fake.add_provider(StripeProvider)
+    #     return fake.subscription_id()
+
+    @factory.lazy_attribute
+    def invoice_id(self):
+        from faker import Factory
+
+        fake = Factory.create()
+        fake.add_provider(StripeProvider)
+        return fake.invoice_id()
+
+    @factory.lazy_attribute
+    def invoice_pdf(self):
+        from faker import Factory
+
+        fake = Factory.create()
+        fake.add_provider(StripeProvider)
+        return fake.invoice_pdf()
 
 
 class CustomerFactory(SQLAlchemyModelFactory):

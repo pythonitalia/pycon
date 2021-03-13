@@ -32,15 +32,25 @@ async def handle_customer_subscription_updated(
         elif data.status == StripeStatus.INCOMPLETE:
             subscription.state = SubscriptionState.PENDING
         elif data.status == StripeStatus.INCOMPLETE_EXPIRED:
-            if subscription.stripe_id:
+            if subscription.state in [
+                SubscriptionState.ACTIVE,
+                SubscriptionState.EXPIRED,
+            ]:
                 error_message = (
-                    "This should not happen...INCOMPLETE_EXPIRED should happen only "
-                    "when a subscription has never been created"
+                    "This should not happen...the state INCOMPLETE_EXPIRED should be associated to"
+                    "a subscription with status PENDING"
+                )
+                raise InconsistentStateTransitionError(error_message)
+            if len(subscription.subscription_payments):
+                error_message = (
+                    "This should not happen...the state INCOMPLETE_EXPIRED should be associated to"
+                    "a subscription without associated Payments"
                 )
                 raise InconsistentStateTransitionError(error_message)
             subscription.state = SubscriptionState.NOT_CREATED
-            # The session is expired, so the User cannot access that Session
+            # The session is expired, so the User cannot access the expired Session
             subscription.stripe_session_id = ""
+            subscription.stripe_id = ""
         else:
             subscription.state = SubscriptionState.EXPIRED
         subscription = await association_repository.save_subscription(subscription)
