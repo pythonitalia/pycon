@@ -1,10 +1,10 @@
 import { authExchange } from "@urql/exchange-auth";
-import { getToken } from "hooks/use-login";
 import {
   cacheExchange,
   dedupExchange,
   fetchExchange,
   makeOperation,
+  ssrExchange,
 } from "urql";
 
 import { withUrqlClient } from "next-urql";
@@ -35,25 +35,21 @@ const MyApp = ({ Component, pageProps, resetUrqlClient }) => {
   );
 };
 
-export default withUrqlClient((_ssrExchange, ctx) => ({
+export default withUrqlClient((_ssrExchange) => ({
   url: "/graphql",
   exchanges: [
     dedupExchange,
     cacheExchange,
-
+    ssrExchange,
     authExchange({
       didAuthError({ error }) {
-        return error.graphQLErrors.some((e) => e.message === "Unauthorized");
+        return error.graphQLErrors.some(
+          (e) => e.extensions.exception.message === "Unauthorized",
+        );
       },
       async getAuth({ authState }: { authState?: AuthState }) {
         console.log(`getAuth!! ${authState}`);
         if (!authState) {
-          const token = typeof window !== "undefined" && getToken();
-          console.log({ token });
-          if (token) {
-            return { token };
-          }
-
           return null;
         }
 
@@ -70,30 +66,12 @@ export default withUrqlClient((_ssrExchange, ctx) => ({
         authState?: AuthState;
         operation: any;
       }) {
-        console.log({ authState });
-        if (!authState || !authState.token) {
-          return operation;
-        }
-
-        const fetchOptions =
-          typeof operation.context.fetchOptions === "function"
-            ? operation.context.fetchOptions()
-            : operation.context.fetchOptions || {};
-
-        console.log(`include the token: ${authState.token}`);
-        return makeOperation(operation.kind, operation, {
-          ...operation.context,
-          fetchOptions: {
-            ...fetchOptions,
-            credentials: "include",
-            headers: {
-              ...fetchOptions.headers,
-              Authorization: `Bearer ${authState.token}`,
-            },
-          },
-        });
+        return operation;
       },
     }),
     fetchExchange,
   ],
+  fetchOptions: {
+    credentials: "include",
+  },
 }))(MyApp);
