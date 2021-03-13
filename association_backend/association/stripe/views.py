@@ -8,7 +8,7 @@ from starlette.templating import Jinja2Templates
 
 from association.db import get_engine, get_session
 from association.domain import services
-from association.domain.entities.subscription_entities import UserData
+from association.domain.entities.subscriptions import UserData
 from association.domain.exceptions import AlreadySubscribed
 from association.domain.repositories import AssociationRepository
 from association.settings import (

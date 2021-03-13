@@ -3,7 +3,7 @@ from datetime import datetime
 
 from pydantic import BaseModel
 
-from association.domain.entities.subscription_entities import (
+from association.domain.entities.subscriptions import (
     SubscriptionPayment,
     SubscriptionState,
 )

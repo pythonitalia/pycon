@@ -1,6 +1,6 @@
 import logging
 
-from association.domain.entities.subscription_entities import Subscription, UserData
+from association.domain.entities.subscriptions import Subscription, UserData
 from association.domain.exceptions import CustomerNotAvailable
 from association.domain.repositories import AssociationRepository
 

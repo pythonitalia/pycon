@@ -5,14 +5,11 @@ import time_machine
 from ward import raises, test
 
 from association.domain import services
-from association.domain.entities.stripe_entities import (
+from association.domain.entities.stripe import (
     StripeCheckoutSessionInput,
     StripeCustomer,
 )
-from association.domain.entities.subscription_entities import (
-    SubscriptionState,
-    UserData,
-)
+from association.domain.entities.subscriptions import SubscriptionState, UserData
 from association.domain.exceptions import AlreadySubscribed
 from association.domain.tests.repositories.fake_repository import (
     FakeAssociationRepository,

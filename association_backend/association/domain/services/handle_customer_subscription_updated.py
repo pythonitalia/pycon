@@ -2,8 +2,8 @@ import logging
 
 from pydantic import BaseModel
 
-from association.domain.entities.stripe_entities import StripeStatus
-from association.domain.entities.subscription_entities import SubscriptionState
+from association.domain.entities.stripe import StripeStatus
+from association.domain.entities.subscriptions import SubscriptionState
 from association.domain.exceptions import (
     InconsistentStateTransitionError,
     SubscriptionNotFound,

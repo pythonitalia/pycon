@@ -5,7 +5,7 @@ import strawberry
 from association.api.context import Info
 from association.api.types import SubscriptionResponse
 from association.domain import services
-from association.domain.entities.subscription_entities import UserData
+from association.domain.entities.subscriptions import UserData
 from association.domain.exceptions import AlreadySubscribed
 from association.settings import TEST_USER_EMAIL, TEST_USER_ID
 

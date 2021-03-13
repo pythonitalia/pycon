@@ -1,9 +1,10 @@
 import logging
 from unittest.mock import patch
 
-from association.db import get_engine, get_session
-from association.domain.entities.subscription_entities import mapper_registry
 from ward import fixture
+
+from association.db import get_engine, get_session
+from association.domain.entities.subscriptions import mapper_registry
 
 logger = logging.getLogger(__name__)
 engine = get_engine(echo=False)

@@ -1,7 +1,7 @@
 from typing import List, Optional
 
 from association.domain.entities import Subscription, SubscriptionPayment
-from association.domain.entities.stripe_entities import (
+from association.domain.entities.stripe import (
     StripeCheckoutSession,
     StripeCheckoutSessionInput,
     StripeCustomer,

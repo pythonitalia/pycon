@@ -4,7 +4,7 @@ import os
 import sys  # noqa
 
 from association.db import get_engine
-from association.domain.entities.subscription_entities import mapper_registry
+from association.domain.entities.subscriptions import mapper_registry
 from association.settings import DATABASE_URL
 from db_utils import create_database, database_exists
 

@@ -1,7 +1,7 @@
 from ward import raises, test
 
 from association.domain import services
-from association.domain.entities.subscription_entities import UserData
+from association.domain.entities.subscriptions import UserData
 from association.domain.exceptions import CustomerNotAvailable
 from association.domain.tests.repositories.fake_repository import (
     FakeAssociationRepository,

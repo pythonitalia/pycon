@@ -1,6 +1,6 @@
 import logging
 
-from association.domain.entities.subscription_entities import SubscriptionState
+from association.domain.entities.subscriptions import SubscriptionState
 from association.domain.repositories import AssociationRepository
 
 logger = logging.getLogger(__name__)

@@ -4,15 +4,12 @@ from typing import Optional
 import stripe
 from sqlalchemy import select
 
-from association.domain.entities.stripe_entities import (
+from association.domain.entities.stripe import (
     StripeCheckoutSession,
     StripeCheckoutSessionInput,
     StripeCustomer,
 )
-from association.domain.entities.subscription_entities import (
-    Subscription,
-    SubscriptionPayment,
-)
+from association.domain.entities.subscriptions import Subscription, SubscriptionPayment
 from association.domain.repositories.base import AbstractRepository
 from association.settings import (
     DOMAIN_URL,

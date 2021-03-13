@@ -3,7 +3,7 @@ import sys
 from logging.config import fileConfig
 
 from alembic import context
-from association.domain.entities.subscription_entities import mapper_registry
+from association.domain.entities.subscriptions import mapper_registry
 from association.settings import DATABASE_URL
 from sqlalchemy import engine_from_config, pool
 

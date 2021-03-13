@@ -1,8 +1,8 @@
 import logging
 from datetime import datetime
 
-from association.domain.entities.stripe_entities import StripeCheckoutSessionInput
-from association.domain.entities.subscription_entities import (
+from association.domain.entities.stripe import StripeCheckoutSessionInput
+from association.domain.entities.subscriptions import (
     Subscription,
     SubscriptionState,
     UserData,

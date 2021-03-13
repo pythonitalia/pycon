@@ -5,10 +5,7 @@ from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy.sql.expression import select
 from ward import test
 
-from association.domain.entities.subscription_entities import (
-    Subscription,
-    SubscriptionState,
-)
+from association.domain.entities.subscriptions import Subscription, SubscriptionState
 from association.domain.repositories import AssociationRepository
 from association.tests.factories import subscription_factory
 from association.tests.session import cleanup_db, db, second_session
