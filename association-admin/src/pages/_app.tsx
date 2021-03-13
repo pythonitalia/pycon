@@ -56,7 +56,6 @@ export default withUrqlClient(
           return null;
         },
         addAuthToOperation({
-          authState,
           operation,
         }: {
           authState?: AuthState;
