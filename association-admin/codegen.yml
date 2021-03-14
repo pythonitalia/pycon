@@ -1,5 +1,5 @@
 overwrite: true
-schema: http://localhost:4001/graphql
+schema: ${API_URL:https://admin-beri.beta.python.it/graphql}
 documents: "**/*.graphql"
 generates:
   src/helpers/types.ts:
