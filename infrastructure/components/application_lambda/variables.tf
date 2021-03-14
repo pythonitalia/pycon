@@ -1,4 +1,7 @@
 variable "application" {}
+variable "docker_repository_name" {
+  default = ""
+}
 variable "docker_tag" {}
 variable "role_arn" {}
 variable "env_vars" {

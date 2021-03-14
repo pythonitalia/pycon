@@ -45,6 +45,21 @@ module "gateway" {
   }
 }
 
+module "admin_gateway" {
+  source = "./gateway"
+
+  pastaporto_secret         = var.pastaporto_secret
+  identity_secret           = var.identity_secret
+  service_to_service_secret = var.service_to_service_secret
+  pastaporto_action_secret  = var.pastaporto_action_secret
+  admin_variant             = true
+
+  providers = {
+    aws    = aws
+    aws.us = aws.us
+  }
+}
+
 module "users_backend" {
   source = "./users_backend"
 
