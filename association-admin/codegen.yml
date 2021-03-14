@@ -4,7 +4,7 @@ documents: "**/*.graphql"
 generates:
   src/helpers/types.ts:
     - typescript
-  src/pages/:
+  src/components/:
     preset: near-operation-file
     presetConfig:
       baseTypesPath: "../helpers/types.ts"

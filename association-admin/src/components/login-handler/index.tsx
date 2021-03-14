@@ -9,7 +9,6 @@ import { Card } from "~/components/card";
 import { Heading } from "~/components/heading";
 import { Input } from "~/components/input";
 import { getMergedErrors } from "~/helpers/errors";
-import { useUser } from "~/hooks/use-user";
 
 import { useLoginMutation } from "./login.generated";
 
@@ -18,11 +17,10 @@ type LoginForm = {
   password: string;
 };
 
-const Login = () => {
+export const LoginHandler = () => {
   const [formState, { email, password }] = useFormState<LoginForm>();
   const [{ fetching, data }, login] = useLoginMutation();
   const { replace } = useRouter();
-  const { setToken } = useUser();
 
   const submitLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,7 +33,7 @@ const Login = () => {
     });
 
     if (result.data.login.__typename === "LoginSuccess") {
-      setToken(result.data.login.token);
+      window.dispatchEvent(new Event("userLoggedIn"));
       replace("/dashboard/users");
     }
   };
@@ -86,5 +84,3 @@ const Login = () => {
     </>
   );
 };
-
-export default Login;

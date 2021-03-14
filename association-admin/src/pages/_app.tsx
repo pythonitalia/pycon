@@ -1,7 +1,6 @@
 import { dedupExchange, cacheExchange, fetchExchange } from "@urql/core";
 import { authExchange } from "@urql/exchange-auth";
 import { RecoilRoot } from "recoil";
-import { makeOperation, Mutation, Operation } from "urql";
 
 import { withUrqlClient } from "next-urql";
 import Router from "next/router";
@@ -9,7 +8,6 @@ import Router from "next/router";
 import { Drawer } from "~/components/drawer";
 import { SearchBar } from "~/components/search-bar";
 import { UserProvider } from "~/components/user-provider";
-import { getToken } from "~/hooks/use-user";
 
 import "tailwindcss/tailwind.css";
 

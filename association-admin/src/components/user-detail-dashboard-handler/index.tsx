@@ -1,7 +1,6 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
 
-import { BackIcon } from "~/components/back-icon";
 import { Button } from "~/components/button";
 import { Card } from "~/components/card";
 import { DashboardPageWrapper } from "~/components/dashboard-page-wrapper";
@@ -28,7 +27,7 @@ const UserInfo: React.FC<UserInfoProps> = ({ label, text }) => (
 const valueOrPlaceholder = (value: string, placeholder: string = "Unset") =>
   value || placeholder;
 
-const UserDetail = () => {
+export const UserDetailDashboardHandler = () => {
   const { query } = useRouter();
   const userId = query.userid as string;
   const [{ fetching, data, error }] = useUserDetailQuery({
@@ -120,7 +119,7 @@ const UserDetail = () => {
             <Card
               heading={<Heading size="medium">Association history</Heading>}
             >
-              <Table
+              <Table<{ id: number }>
                 border
                 keyGetter={(item) => `${item.id}`}
                 rowGetter={(item) => [
@@ -138,5 +137,3 @@ const UserDetail = () => {
     </>
   );
 };
-
-export default UserDetail;

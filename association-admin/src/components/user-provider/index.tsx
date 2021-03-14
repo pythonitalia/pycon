@@ -22,9 +22,9 @@ export const UserProvider: React.FC<{ resetUrqlClient: () => void }> = ({
 
   useEffect(() => {
     const listener = () => refetchMe();
-    window.addEventListener("tokenChanged", listener);
+    window.addEventListener("userLoggedIn", listener);
     return () => {
-      window.removeEventListener("tokenChanged", listener);
+      window.removeEventListener("userLoggedIn", listener);
     };
   }, []);
 
