@@ -1,9 +1,13 @@
-import { USERS_SERVICE, VARIANT } from "./config";
+import { PYCON_BACKEND, USERS_SERVICE, VARIANT } from "./config";
 
 const DEFAULT_SERVICES = [
   {
     name: "users",
     url: `${USERS_SERVICE}/graphql`,
+  },
+  {
+    name: "pycon-backend",
+    url: `${PYCON_BACKEND}/graphql`,
   },
 ];
 

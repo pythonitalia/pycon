@@ -11,6 +11,7 @@ export const {
 
   // Services
   USERS_SERVICE,
+  PYCON_BACKEND,
 
   // Other configuration
   IS_DEV = false,
