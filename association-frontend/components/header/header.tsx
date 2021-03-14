@@ -1,4 +1,4 @@
-import { useUser } from "hooks/use-login";
+import { useUser } from "hooks/use-user";
 import React from "react";
 
 import Button from "../button/button";

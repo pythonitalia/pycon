@@ -21,7 +21,7 @@ type AuthState = {
   token?: string;
 };
 
-const MyApp = ({ Component, pageProps, resetUrqlClient }) => {
+const App = ({ Component, pageProps, resetUrqlClient }) => {
   return (
     <div>
       <UserProvider resetUrqlClient={resetUrqlClient}>
@@ -35,7 +35,7 @@ const MyApp = ({ Component, pageProps, resetUrqlClient }) => {
   );
 };
 
-export default withUrqlClient((_ssrExchange) => ({
+export default withUrqlClient((ssrExchange) => ({
   url: "/graphql",
   exchanges: [
     dedupExchange,
@@ -44,11 +44,10 @@ export default withUrqlClient((_ssrExchange) => ({
     authExchange({
       didAuthError({ error }) {
         return error.graphQLErrors.some(
-          (e) => e.extensions.exception.message === "Unauthorized",
+          (e) => e.message === "Not authenticated",
         );
       },
       async getAuth({ authState }: { authState?: AuthState }) {
-        console.log(`getAuth!! ${authState}`);
         if (!authState) {
           return null;
         }
@@ -60,7 +59,6 @@ export default withUrqlClient((_ssrExchange) => ({
         return null;
       },
       addAuthToOperation({
-        authState,
         operation,
       }: {
         authState?: AuthState;
@@ -74,4 +72,4 @@ export default withUrqlClient((_ssrExchange) => ({
   fetchOptions: {
     credentials: "include",
   },
-}))(MyApp);
+}))(App);

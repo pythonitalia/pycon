@@ -1,4 +1,4 @@
-import { useUser } from "hooks/use-login";
+import { useUser } from "hooks/use-user";
 import React from "react";
 import { useFormState } from "react-use-form-state";
 
@@ -39,8 +39,8 @@ const LoginPage = () => {
       },
     });
 
-    if (result?.data?.login?.__typename === "LoginSuccess") {
-      setToken(result.data.login.token);
+    if (result.data.login.__typename === "LoginSuccess") {
+      window.dispatchEvent(new Event("userLoggedIn"));
       replace("/profile");
     }
   };

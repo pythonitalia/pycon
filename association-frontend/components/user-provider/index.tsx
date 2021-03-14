@@ -1,4 +1,3 @@
-import { getToken } from "hooks/use-login";
 import { createContext, useEffect } from "react";
 
 import { MeQuery, useMeQuery } from "./me.generated";
@@ -17,24 +16,20 @@ export const UserProvider: React.FC<{ resetUrqlClient: () => void }> = ({
   children,
   resetUrqlClient,
 }) => {
-  const token = getToken();
-  const [{ data, fetching, error }, executeQuery] = useMeQuery({
+  const [{ data, fetching, error }, refetchMe] = useMeQuery({
     requestPolicy: "network-only",
   });
-  console.log({ data });
 
   useEffect(() => {
-    console.log(`token is changed!!${token}`);
     const listener = () => {
-      console.log("fetching user again");
-      executeQuery();
+      console.log("REFETCHING!");
+      refetchMe();
     };
-
-    window.addEventListener("tokenChanged", listener);
+    window.addEventListener("userLoggedIn", listener);
     return () => {
-      window.removeEventListener("tokenChanged", listener);
+      window.removeEventListener("userLoggedIn", listener);
     };
-  }, [token]);
+  }, []);
 
   return (
     <UserContext.Provider
