@@ -1,9 +1,13 @@
 module.exports = {
   async rewrites() {
+    const GATEWAY_URL = process.env.GATEWAY_URL
+      ? process.env.GATEWAY_URL
+      : "http://localhost:4001/graphql";
+
     return [
       {
         source: "/graphql",
-        destination: `http://localhost:4001/graphql`,
+        destination: GATEWAY_URL,
       },
     ];
   },
