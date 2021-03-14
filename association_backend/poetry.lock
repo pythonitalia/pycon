@@ -441,6 +441,20 @@ python-versions = "*"
 six = ">=1.4.0"
 
 [[package]]
+name = "pythonit-toolkit"
+version = "0.1.17"
+description = ""
+category = "main"
+optional = false
+python-versions = ">=3.9,<4.0"
+
+[package.dependencies]
+pydantic = ">=1.8.1,<2.0.0"
+PyJWT = ">=2.0.1,<3.0.0"
+starlette = ">=0.14.2,<0.15.0"
+strawberry-graphql = ">=0.49.0,<0.50.0"
+
+[[package]]
 name = "requests"
 version = "2.25.1"
 description = "Python HTTP for Humans."
@@ -528,7 +542,7 @@ full = ["aiofiles", "graphene", "itsdangerous", "jinja2", "python-multipart", "p
 
 [[package]]
 name = "strawberry-graphql"
-version = "0.45.4"
+version = "0.49.0"
 description = "A library for creating GraphQL APIs"
 category = "main"
 optional = false
@@ -551,6 +565,7 @@ django = ["django (>=2,<4)", "asgiref (>=3.2,<4.0)"]
 flask = ["flask (>=1.1,<2.0)"]
 opentelemetry = ["opentelemetry-api (>=0.17b0,<0.18)", "opentelemetry-sdk (>=0.17b0,<0.18)"]
 pydantic = ["pydantic (>=1.6.1,<2.0.0)"]
+sanic = ["sanic (>=20.12.2,<21.0.0)"]
 
 [[package]]
 name = "stripe"
@@ -676,7 +691,7 @@ python-versions = ">=3.6.1"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "93a4e5110818cfad01a6cbfc3e6c501664187d21d11629bbbea5f96b6eaca957"
+content-hash = "c786ed1166ed4314237673fcb6f6a89180e3f34b9dbe86f8934f5fca96de9cfb"
 
 [metadata.files]
 alembic = [
@@ -1066,6 +1081,10 @@ python-editor = [
 python-multipart = [
     {file = "python-multipart-0.0.5.tar.gz", hash = "sha256:f7bb5f611fc600d15fa47b3974c8aa16e93724513b49b5f95c81e6624c83fa43"},
 ]
+pythonit-toolkit = [
+    {file = "pythonit-toolkit-0.1.17.tar.gz", hash = "sha256:513023b7ac161d952e88780eeca6bf0a19802eb2360e7b9d1ed0f31828f86471"},
+    {file = "pythonit_toolkit-0.1.17-py3-none-any.whl", hash = "sha256:def89af8af25c0dd537d560cb159268162f7f6051f6f6be4b57f2b0a66222d65"},
+]
 requests = [
     {file = "requests-2.25.1-py2.py3-none-any.whl", hash = "sha256:c210084e36a42ae6b9219e00e48287def368a26d03a048ddad7bfee44f75871e"},
     {file = "requests-2.25.1.tar.gz", hash = "sha256:27973dd4a904a4f13b263a19c866c13b92a39ed1c964655f025f3f8d3d75b804"},
@@ -1121,8 +1140,8 @@ starlette = [
     {file = "starlette-0.14.2.tar.gz", hash = "sha256:7d49f4a27f8742262ef1470608c59ddbc66baf37c148e938c7038e6bc7a998aa"},
 ]
 strawberry-graphql = [
-    {file = "strawberry-graphql-0.45.4.tar.gz", hash = "sha256:3d6cc412088b67854e6538eecc20476cdb0c357f8f2cf0ca38794f2914d4c788"},
-    {file = "strawberry_graphql-0.45.4-py3-none-any.whl", hash = "sha256:36d658094585642fcd49be9f8d539850f95107bb3fbf515fe54e3d9ecaaa4546"},
+    {file = "strawberry-graphql-0.49.0.tar.gz", hash = "sha256:2de37954c76e183b7745073753a28f04e42416b06c0314706a72000571e1a1fc"},
+    {file = "strawberry_graphql-0.49.0-py3-none-any.whl", hash = "sha256:7ff584a302d32833f39b4c06e1f2b4e4705068a22710474c166c1bc63c0c5b04"},
 ]
 stripe = [
     {file = "stripe-2.56.0-py2.py3-none-any.whl", hash = "sha256:6c685eeadf9e3608315b6d84b4f5f2da2909179b65633ce20f296be22ed21a98"},

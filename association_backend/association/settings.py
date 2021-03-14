@@ -35,6 +35,9 @@ STRIPE_SUBSCRIPTION_CANCEL_URL = config(
 TEST_USER_ID = config("TEST_USER_ID", cast=str, default=101010)
 TEST_USER_EMAIL = config("TEST_USER_EMAIL", cast=str, default="user101010@pycon.it")
 
+PASTAPORTO_SECRET = config("PASTAPORTO_SECRET", cast=str)
+PASTAPORTO_ACTION_X_HEADER = config("PASTAPORTO_ACTION_X_HEADER", cast=str)
+PASTAPORTO_ACTION_SECRET = config("PASTAPORTO_ACTION_SECRET", cast=str)
 
 DOMAIN_URL = config.get("DOMAIN_URL")
 RUNNING_TESTS = config("RUNNING_TESTS", cast=bool, default=False)

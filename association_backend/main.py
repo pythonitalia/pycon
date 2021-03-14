@@ -1,9 +1,10 @@
+from pythonit_toolkit.starlette_backend.middleware import pastaporto_auth_middleware
 from starlette.applications import Starlette
 from starlette.routing import Route
 
 from association.api.views import GraphQL
 from association.db import get_engine, get_session
-from association.settings import DEBUG
+from association.settings import DEBUG, PASTAPORTO_SECRET
 from association.stripe import views as stripe_views
 from association.webhooks import views as stripe_webhooks
 
@@ -21,6 +22,9 @@ app = Starlette(
         Route("/stripe/do-payment/fail", stripe_views.PaymentFailView),
         Route("/stripe/setup", stripe_views.StripeSetupView),
         Route("/stripe/customer-portal", stripe_views.CustomerPortalView),
+    ],
+    middleware=[
+        pastaporto_auth_middleware(PASTAPORTO_SECRET),
     ],
 )
 
