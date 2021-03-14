@@ -7,6 +7,7 @@ import cookie from "cookie";
 const server = new ApolloServer({
   gateway,
   subscriptions: false,
+  introspection: true,
   plugins: [httpHeadersPlugin],
   context: async ({ event }) => {
     const cookieHeader = event.headers["cookie"];
