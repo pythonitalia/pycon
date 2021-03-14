@@ -22,7 +22,7 @@
   },
   "scripts": {
     "dev": "next dev -p 3010",
-    "build": "next build",
+    "build": "yarn codegen && next build",
     "start": "next start",
     "codegen": "graphql-codegen"
   },
