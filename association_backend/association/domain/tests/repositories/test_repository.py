@@ -26,7 +26,7 @@ async def _(db=db, second_session=second_session, cleanup_db=cleanup_db):
             ),
             stripe_session_id="cs_test_a1wtX1HXf3iOjdQK1cyEN3YavPmxSaTkdfo2fCAPLqlOPT3blEZrUOIlaQ",
             state=SubscriptionState.PENDING,
-            stripe_id="sub_test_IxcENZqOBlHAJo",
+            stripe_subscription_id="sub_test_IxcENZqOBlHAJo",
             stripe_customer_id="cus_test_IuwfUVsdQFNvqc",
         )
     )
@@ -45,7 +45,7 @@ async def _(db=db, second_session=second_session, cleanup_db=cleanup_db):
         == "cs_test_a1wtX1HXf3iOjdQK1cyEN3YavPmxSaTkdfo2fCAPLqlOPT3blEZrUOIlaQ"
     )
     assert db_subscription.state == SubscriptionState.PENDING
-    assert db_subscription.stripe_id == "sub_test_IxcENZqOBlHAJo"
+    assert db_subscription.stripe_subscription_id == "sub_test_IxcENZqOBlHAJo"
     assert db_subscription.stripe_customer_id == "cus_test_IuwfUVsdQFNvqc"
 
 
@@ -78,7 +78,10 @@ async def _(
         found_subscription.stripe_session_id == raw_query_subscription.stripe_session_id
     )
     assert found_subscription.state == raw_query_subscription.state
-    assert found_subscription.stripe_id == raw_query_subscription.stripe_id
+    assert (
+        found_subscription.stripe_subscription_id
+        == raw_query_subscription.stripe_subscription_id
+    )
     assert (
         found_subscription.stripe_customer_id
         == raw_query_subscription.stripe_customer_id
@@ -118,7 +121,10 @@ async def _(
         found_subscription.stripe_session_id == raw_query_subscription.stripe_session_id
     )
     assert found_subscription.state == raw_query_subscription.state
-    assert found_subscription.stripe_id == raw_query_subscription.stripe_id
+    assert (
+        found_subscription.stripe_subscription_id
+        == raw_query_subscription.stripe_subscription_id
+    )
     assert (
         found_subscription.stripe_customer_id
         == raw_query_subscription.stripe_customer_id
@@ -158,14 +164,17 @@ async def _(
         found_subscription.stripe_session_id == raw_query_subscription.stripe_session_id
     )
     assert found_subscription.state == raw_query_subscription.state
-    assert found_subscription.stripe_id == raw_query_subscription.stripe_id
+    assert (
+        found_subscription.stripe_subscription_id
+        == raw_query_subscription.stripe_subscription_id
+    )
     assert (
         found_subscription.stripe_customer_id
         == raw_query_subscription.stripe_customer_id
     )
 
 
-@test("get subscription by stripe_id")
+@test("get subscription by stripe_subscription_id")
 async def _(
     db=db,
     second_session=second_session,
@@ -175,15 +184,17 @@ async def _(
     db = cast(AsyncSession, db)
     second_session = cast(AsyncSession, second_session)
 
-    await subscription_factory(stripe_id="sub_test_12345")
+    await subscription_factory(stripe_subscription_id="sub_test_12345")
     await db.commit()
 
     repository = AssociationRepository(db)
-    found_subscription = await repository.get_subscription_by_stripe_id(
+    found_subscription = await repository.get_subscription_by_stripe_subscription_id(
         "sub_test_12345"
     )
 
-    query = select(Subscription).where(Subscription.stripe_id == "sub_test_12345")
+    query = select(Subscription).where(
+        Subscription.stripe_subscription_id == "sub_test_12345"
+    )
     raw_query_subscription: Subscription = (
         await second_session.execute(query)
     ).scalar()
@@ -196,7 +207,10 @@ async def _(
         found_subscription.stripe_session_id == raw_query_subscription.stripe_session_id
     )
     assert found_subscription.state == raw_query_subscription.state
-    assert found_subscription.stripe_id == raw_query_subscription.stripe_id
+    assert (
+        found_subscription.stripe_subscription_id
+        == raw_query_subscription.stripe_subscription_id
+    )
     assert (
         found_subscription.stripe_customer_id
         == raw_query_subscription.stripe_customer_id

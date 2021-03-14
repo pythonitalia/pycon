@@ -21,7 +21,7 @@ async def _(graphql_client=graphql_client, db=db):
                 userId
                 state
                 stripeSessionId
-                stripeId
+                stripeSubscriptionId
             }
         }
     }

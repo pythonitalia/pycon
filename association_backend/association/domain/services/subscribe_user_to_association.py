@@ -61,7 +61,7 @@ async def subscribe_user_to_association(
             stripe_customer_id=checkout_session.customer_id,
             creation_date=datetime.now(),
             state=SubscriptionState.PENDING,
-            stripe_id=checkout_session.subscription_id or "",
+            stripe_subscription_id=checkout_session.subscription_id or "",
         )
     )
     logger.debug(f"subscription : {subscription}")

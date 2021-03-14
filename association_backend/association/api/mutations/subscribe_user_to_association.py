@@ -23,7 +23,7 @@ class Subscription:
     creation_date: datetime
     state: str
     stripe_session_id: str
-    stripe_id: Optional[str]
+    stripe_subscription_id: Optional[str]
     stripe_customer_id: Optional[str]
 
     @classmethod
@@ -31,7 +31,7 @@ class Subscription:
         return cls(
             user_id=entity.user_id,
             creation_date=entity.creation_date,
-            stripe_id=entity.stripe_id,
+            stripe_subscription_id=entity.stripe_subscription_id,
             stripe_customer_id=entity.stripe_customer_id,
             state=entity.state,
             stripe_session_id=entity.stripe_session_id,

@@ -31,8 +31,9 @@ class FakeAssociationRepository(AssociationRepository):
     ) -> None:
         super().__init__()
         # subscriptions
-        self.SUBSCRIPTIONS_BY_STRIPE_ID = {
-            subscription.stripe_id: subscription for subscription in subscriptions
+        self.SUBSCRIPTIONS_BY_STRIPE_SUBSCRIPTION_ID = {
+            subscription.stripe_subscription_id: subscription
+            for subscription in subscriptions
         }
         self.SUBSCRIPTIONS_BY_SESSION_ID = {
             subscription.stripe_session_id: subscription
@@ -55,7 +56,7 @@ class FakeAssociationRepository(AssociationRepository):
         self.SUBSCRIPTION_PAYMENTS_BY_STRIPE_ID = {}
         if subscription_payments:
             self.SUBSCRIPTION_PAYMENTS_BY_STRIPE_ID = {
-                subscription_payment.subscription.stripe_id: subscription_payment
+                subscription_payment.subscription.stripe_subscription_id: subscription_payment
                 for subscription_payment in subscription_payments
             }
         # customers
@@ -71,10 +72,12 @@ class FakeAssociationRepository(AssociationRepository):
         self.rolledback = True
 
     # READ
-    async def get_subscription_by_stripe_id(
-        self, stripe_id: str
+    async def get_subscription_by_stripe_subscription_id(
+        self, stripe_subscription_id: str
     ) -> Optional[Subscription]:
-        return self.SUBSCRIPTIONS_BY_STRIPE_ID.get(stripe_id, None)
+        return self.SUBSCRIPTIONS_BY_STRIPE_SUBSCRIPTION_ID.get(
+            stripe_subscription_id, None
+        )
 
     async def get_subscription_by_session_id(
         self, session_id: str
@@ -92,7 +95,9 @@ class FakeAssociationRepository(AssociationRepository):
     # WRITE
     async def save_subscription(self, subscription: Subscription) -> Subscription:
         new_subscription = subscription
-        self.SUBSCRIPTIONS_BY_STRIPE_ID[new_subscription.stripe_id] = new_subscription
+        self.SUBSCRIPTIONS_BY_STRIPE_SUBSCRIPTION_ID[
+            new_subscription.stripe_subscription_id
+        ] = new_subscription
         self.SUBSCRIPTIONS_BY_SESSION_ID[
             new_subscription.stripe_session_id
         ] = new_subscription
@@ -107,7 +112,7 @@ class FakeAssociationRepository(AssociationRepository):
         self, subscription_payment: SubscriptionPayment
     ) -> SubscriptionPayment:
         self.SUBSCRIPTION_PAYMENTS_BY_STRIPE_ID[
-            subscription_payment.subscription.stripe_id
+            subscription_payment.subscription.stripe_subscription_id
         ] = subscription_payment
         return subscription_payment
 
@@ -131,6 +136,6 @@ class FakeAssociationRepository(AssociationRepository):
         return self.CUSTOMERS_BY_EMAIL.get(email, None)
 
     async def retrieve_checkout_session_by_id(
-        self, stripe_id: str
+        self, stripe_session_id: str
     ) -> Optional[StripeCheckoutSession]:
-        return self.CHECKOUT_SESSIONS_BY_ID.get(stripe_id, None)
+        return self.CHECKOUT_SESSIONS_BY_ID.get(stripe_session_id, None)

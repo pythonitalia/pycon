@@ -14,9 +14,9 @@ from association.tests.factories import SubscriptionFactory
 @test("Subscription payed")
 async def _():
     sut_subscription = SubscriptionFactory(
-        stripe_id="sub_test_1234",
+        stripe_subscription_id="sub_test_1234",
     )
-    assert sut_subscription.stripe_id == "sub_test_1234"
+    assert sut_subscription.stripe_subscription_id == "sub_test_1234"
 
     repository = FakeAssociationRepository(
         subscriptions=[sut_subscription], customers=[]
@@ -24,7 +24,7 @@ async def _():
 
     subscription = await services.handle_invoice_paid(
         invoice_input=InvoicePaidInput(
-            subscription_id=sut_subscription.stripe_id,
+            subscription_id=sut_subscription.stripe_subscription_id,
             paid_at=datetime.datetime(2020, 4, 1, 0, 0).astimezone().timestamp(),
             invoice_id="in_test_12345",
             invoice_pdf="https://stripe.com/pdf/invoice_test_1234",
@@ -34,7 +34,7 @@ async def _():
     payment = subscription.subscription_payments[0]
     assert payment.subscription == subscription
     assert payment.payment_date == datetime.datetime(2020, 4, 1, 0, 0).astimezone()
-    assert payment.invoice_id == "in_test_12345"
+    assert payment.stripe_invoice_id == "in_test_12345"
     assert payment.invoice_pdf == "https://stripe.com/pdf/invoice_test_1234"
 
 
@@ -45,7 +45,7 @@ async def _():
     with raises(SubscriptionNotFound):
         await services.handle_invoice_paid(
             invoice_input=InvoicePaidInput(
-                subscription_id=SubscriptionFactory().stripe_id,
+                subscription_id=SubscriptionFactory().stripe_subscription_id,
                 paid_at=datetime.datetime(2020, 4, 1, 0, 0).timestamp(),
                 invoice_id="in_test_12345",
                 invoice_pdf="https://stripe.com/pdf/invoice_test_1234",

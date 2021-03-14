@@ -25,10 +25,12 @@ logger = logging.getLogger(__name__)
 class AssociationRepository(AbstractRepository):
 
     # READ
-    async def get_subscription_by_stripe_id(
-        self, stripe_id: str
+    async def get_subscription_by_stripe_subscription_id(
+        self, stripe_subscription_id: str
     ) -> Optional[Subscription]:
-        query = select(Subscription).where(Subscription.stripe_id == stripe_id)
+        query = select(Subscription).where(
+            Subscription.stripe_subscription_id == stripe_subscription_id
+        )
         subscription = (await self.session.execute(query)).scalar_one_or_none()
         return subscription
 
@@ -123,10 +125,10 @@ class AssociationRepository(AbstractRepository):
         return None
 
     async def retrieve_checkout_session_by_id(
-        self, stripe_id: str
+        self, stripe_session_id: str
     ) -> Optional[StripeCheckoutSession]:
         checkout_session = stripe.checkout.Session.retrieve(
-            stripe_id, api_key=STRIPE_SUBSCRIPTION_API_SECRET
+            stripe_session_id, api_key=STRIPE_SUBSCRIPTION_API_SECRET
         )
         logger.info(f"checkout_session: {checkout_session}")
         return StripeCheckoutSession(

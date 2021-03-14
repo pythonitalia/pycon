@@ -48,7 +48,7 @@ class StripeProvider(BaseProvider):
             + self.random_elements(string.ascii_lowercase + string.digits, length=16)[0]
         )
 
-    def invoice_id(self):
+    def stripe_invoice_id(self):
         return (
             "inv_test_"
             + self.random_elements(string.ascii_lowercase + string.digits, length=16)[0]
@@ -56,7 +56,7 @@ class StripeProvider(BaseProvider):
 
     def invoice_pdf(self):
         return "https://python-italia.stripe.com/invoices/{invoice_code}.pdf" "".format(
-            invoice_code=self.invoice_id()
+            invoice_code=self.stripe_invoice_id()
         )
 
     def customer_portal_session_id(self):
@@ -97,7 +97,7 @@ class SubscriptionFactory(SQLAlchemyModelFactory):
     state = factory.fuzzy.FuzzyChoice(SubscriptionState)
 
     @factory.lazy_attribute
-    def stripe_id(self):
+    def stripe_subscription_id(self):
         from faker import Factory
 
         fake = Factory.create()
@@ -158,12 +158,12 @@ class SubscriptionPaymentFactory(SQLAlchemyModelFactory):
     #     return fake.subscription_id()
 
     @factory.lazy_attribute
-    def invoice_id(self):
+    def stripe_invoice_id(self):
         from faker import Factory
 
         fake = Factory.create()
         fake.add_provider(StripeProvider)
-        return fake.invoice_id()
+        return fake.stripe_invoice_id()
 
     @factory.lazy_attribute
     def invoice_pdf(self):

@@ -30,7 +30,7 @@ class Subscription:
     state: SubscriptionState
     # is_for_life: bool
     stripe_session_id: Optional[str] = ""
-    stripe_id: Optional[str] = ""
+    stripe_subscription_id: Optional[str] = ""
     stripe_customer_id: Optional[str] = ""
 
 
@@ -38,7 +38,7 @@ class Subscription:
 class SubscriptionPayment:
     subscription: Subscription
     payment_date: datetime
-    invoice_id: str
+    stripe_invoice_id: str
     invoice_pdf: str
 
 
@@ -50,7 +50,7 @@ subscription_table = Table(
     mapper_registry.metadata,
     Column("user_id", Integer(), nullable=False, primary_key=True),
     Column("creation_date", DateTime(timezone=True), nullable=False),
-    Column("stripe_id", String(128), nullable=True),
+    Column("stripe_subscription_id", String(128), nullable=True),
     Column("stripe_customer_id", String(128), nullable=False),
     Column("stripe_session_id", String(128), nullable=False),
     Column("state", String(16), nullable=False),
@@ -59,7 +59,7 @@ subscription_table = Table(
 subscription_payment_table = Table(
     "subscription_payment",
     mapper_registry.metadata,
-    Column("invoice_id", String(128), nullable=False, primary_key=True),
+    Column("stripe_invoice_id", String(128), nullable=False, primary_key=True),
     Column(
         "subscription_id", Integer, ForeignKey("subscription.user_id"), nullable=False
     ),

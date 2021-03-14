@@ -25,14 +25,16 @@ class InvoicePaidInput(BaseModel):
 async def handle_invoice_paid(
     invoice_input: InvoicePaidInput, association_repository: AssociationRepository
 ):
-    subscription = await association_repository.get_subscription_by_stripe_id(
-        invoice_input.subscription_id
+    subscription = (
+        await association_repository.get_subscription_by_stripe_subscription_id(
+            invoice_input.subscription_id
+        )
     )
     if subscription:
         payment = SubscriptionPayment(
             payment_date=invoice_input.paid_at,
             subscription=subscription,
-            invoice_id=invoice_input.invoice_id,
+            stripe_invoice_id=invoice_input.invoice_id,
             invoice_pdf=invoice_input.invoice_pdf,
         )
         await association_repository.save_payment(payment)

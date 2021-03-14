@@ -63,7 +63,7 @@ class StripeWebhook(HTTPEndpoint):
         try:
             await services.handle_invoice_paid(
                 services.InvoicePaidInput(
-                    invoice_id=stripe_obj["id"],
+                    stripe_invoice_id=stripe_obj["id"],
                     subscription_id=stripe_obj["subscription"],
                     paid_at=stripe_obj["status_transitions"]["paid_at"],
                     invoice_pdf=stripe_obj["invoice_pdf"],

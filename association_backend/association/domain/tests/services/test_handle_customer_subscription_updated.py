@@ -19,9 +19,9 @@ from association.tests.factories import SubscriptionFactory, SubscriptionPayment
 @test("Subscription updated ACTIVE")
 async def _():
     sut_subscription = SubscriptionFactory(
-        stripe_id="sub_test_1234", state=SubscriptionState.EXPIRED
+        stripe_subscription_id="sub_test_1234", state=SubscriptionState.EXPIRED
     )
-    assert sut_subscription.stripe_id == "sub_test_1234"
+    assert sut_subscription.stripe_subscription_id == "sub_test_1234"
     assert sut_subscription.state == SubscriptionState.EXPIRED
 
     repository = FakeAssociationRepository(
@@ -30,12 +30,15 @@ async def _():
 
     subscription = await services.handle_customer_subscription_updated(
         data=SubscriptionDetailInput(
-            subscription_id=sut_subscription.stripe_id, status=StripeStatus.ACTIVE
+            subscription_id=sut_subscription.stripe_subscription_id,
+            status=StripeStatus.ACTIVE,
         ),
         association_repository=repository,
     )
 
-    assert subscription.stripe_id == sut_subscription.stripe_id
+    assert (
+        subscription.stripe_subscription_id == sut_subscription.stripe_subscription_id
+    )
     assert subscription.state == SubscriptionState.ACTIVE
 
 
@@ -46,7 +49,7 @@ async def _():
     with raises(SubscriptionNotFound):
         await services.handle_customer_subscription_updated(
             data=SubscriptionDetailInput(
-                subscription_id=SubscriptionFactory.build().stripe_id,
+                subscription_id=SubscriptionFactory.build().stripe_subscription_id,
                 status=StripeStatus.ACTIVE,
             ),
             association_repository=repository,
@@ -56,9 +59,9 @@ async def _():
 @test("Subscription update does not raise if status changes")
 async def _():
     sut_subscription = SubscriptionFactory(
-        stripe_id="sub_test_1234", state=SubscriptionState.ACTIVE
+        stripe_subscription_id="sub_test_1234", state=SubscriptionState.ACTIVE
     )
-    assert sut_subscription.stripe_id == "sub_test_1234"
+    assert sut_subscription.stripe_subscription_id == "sub_test_1234"
     assert sut_subscription.state == SubscriptionState.ACTIVE
 
     repository = FakeAssociationRepository(
@@ -67,12 +70,15 @@ async def _():
 
     subscription = await services.handle_customer_subscription_updated(
         data=SubscriptionDetailInput(
-            subscription_id=sut_subscription.stripe_id, status=StripeStatus.ACTIVE
+            subscription_id=sut_subscription.stripe_subscription_id,
+            status=StripeStatus.ACTIVE,
         ),
         association_repository=repository,
     )
 
-    assert subscription.stripe_id == sut_subscription.stripe_id
+    assert (
+        subscription.stripe_subscription_id == sut_subscription.stripe_subscription_id
+    )
     assert subscription.state == SubscriptionState.ACTIVE
 
 
@@ -85,7 +91,8 @@ async def _():
 
     subscription = await services.handle_customer_subscription_updated(
         data=SubscriptionDetailInput(
-            subscription_id=sut_subscription.stripe_id, status=StripeStatus.ACTIVE
+            subscription_id=sut_subscription.stripe_subscription_id,
+            status=StripeStatus.ACTIVE,
         ),
         association_repository=repository,
     )
@@ -102,7 +109,8 @@ async def _():
 
     subscription = await services.handle_customer_subscription_updated(
         data=SubscriptionDetailInput(
-            subscription_id=sut_subscription.stripe_id, status=StripeStatus.INCOMPLETE
+            subscription_id=sut_subscription.stripe_subscription_id,
+            status=StripeStatus.INCOMPLETE,
         ),
         association_repository=repository,
     )
@@ -120,11 +128,11 @@ async def _():
     )
 
     assert sut_subscription.stripe_session_id != ""
-    assert sut_subscription.stripe_id != ""
+    assert sut_subscription.stripe_subscription_id != ""
 
     subscription = await services.handle_customer_subscription_updated(
         data=SubscriptionDetailInput(
-            subscription_id=sut_subscription.stripe_id,
+            subscription_id=sut_subscription.stripe_subscription_id,
             status=StripeStatus.INCOMPLETE_EXPIRED,
         ),
         association_repository=repository,
@@ -132,7 +140,7 @@ async def _():
 
     assert subscription.state == SubscriptionState.FIRST_PAYMENT_EXPIRED
     assert subscription.stripe_session_id == ""
-    assert subscription.stripe_id == ""
+    assert subscription.stripe_subscription_id == ""
 
 
 @test(
@@ -149,7 +157,7 @@ async def _():
     with raises(InconsistentStateTransitionError):
         await services.handle_customer_subscription_updated(
             data=SubscriptionDetailInput(
-                subscription_id=sut_subscription.stripe_id,
+                subscription_id=sut_subscription.stripe_subscription_id,
                 status=StripeStatus.INCOMPLETE_EXPIRED,
             ),
             association_repository=repository,
@@ -170,7 +178,7 @@ async def _():
     with raises(InconsistentStateTransitionError):
         await services.handle_customer_subscription_updated(
             data=SubscriptionDetailInput(
-                subscription_id=sut_subscription.stripe_id,
+                subscription_id=sut_subscription.stripe_subscription_id,
                 status=StripeStatus.INCOMPLETE_EXPIRED,
             ),
             association_repository=repository,
@@ -194,7 +202,7 @@ async def _():
     with raises(InconsistentStateTransitionError):
         await services.handle_customer_subscription_updated(
             data=SubscriptionDetailInput(
-                subscription_id=sut_subscription.stripe_id,
+                subscription_id=sut_subscription.stripe_subscription_id,
                 status=StripeStatus.INCOMPLETE_EXPIRED,
             ),
             association_repository=repository,
@@ -210,7 +218,8 @@ async def _():
 
     subscription = await services.handle_customer_subscription_updated(
         data=SubscriptionDetailInput(
-            subscription_id=sut_subscription.stripe_id, status=StripeStatus.PAST_DUE
+            subscription_id=sut_subscription.stripe_subscription_id,
+            status=StripeStatus.PAST_DUE,
         ),
         association_repository=repository,
     )
@@ -227,7 +236,8 @@ async def _():
 
     subscription = await services.handle_customer_subscription_updated(
         data=SubscriptionDetailInput(
-            subscription_id=sut_subscription.stripe_id, status=StripeStatus.CANCELED
+            subscription_id=sut_subscription.stripe_subscription_id,
+            status=StripeStatus.CANCELED,
         ),
         association_repository=repository,
     )
@@ -244,7 +254,8 @@ async def _():
 
     subscription = await services.handle_customer_subscription_updated(
         data=SubscriptionDetailInput(
-            subscription_id=sut_subscription.stripe_id, status=StripeStatus.UNPAID
+            subscription_id=sut_subscription.stripe_subscription_id,
+            status=StripeStatus.UNPAID,
         ),
         association_repository=repository,
     )

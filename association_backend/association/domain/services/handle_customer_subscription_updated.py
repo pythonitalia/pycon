@@ -21,8 +21,10 @@ class SubscriptionDetailInput(BaseModel):
 async def handle_customer_subscription_updated(
     data: SubscriptionDetailInput, association_repository: AssociationRepository
 ):
-    subscription = await association_repository.get_subscription_by_stripe_id(
-        data.subscription_id
+    subscription = (
+        await association_repository.get_subscription_by_stripe_subscription_id(
+            data.subscription_id
+        )
     )
     if subscription:
         # if subscription.is_for_life:
@@ -50,7 +52,7 @@ async def handle_customer_subscription_updated(
             subscription.state = SubscriptionState.FIRST_PAYMENT_EXPIRED
             # The session is expired, so the User cannot access the expired Session
             subscription.stripe_session_id = ""
-            subscription.stripe_id = ""
+            subscription.stripe_subscription_id = ""
         else:
             subscription.state = SubscriptionState.EXPIRED
         subscription = await association_repository.save_subscription(subscription)

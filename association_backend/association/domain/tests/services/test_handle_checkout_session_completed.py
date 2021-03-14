@@ -12,7 +12,9 @@ from association.tests.factories import SubscriptionFactory
 @test("Subscription updated with customer and subscription")
 async def _():
     sut_subscription = SubscriptionFactory(
-        stripe_session_id="cs_test_12345", stripe_id="", stripe_customer_id=""
+        stripe_session_id="cs_test_12345",
+        stripe_subscription_id="",
+        stripe_customer_id="",
     )
     repository = FakeAssociationRepository(
         subscriptions=[sut_subscription], customers=[]
@@ -29,7 +31,7 @@ async def _():
 
     assert subscription.stripe_session_id == sut_subscription.stripe_session_id
     assert subscription.state == sut_subscription.state
-    assert subscription.stripe_id == "sub_test_12345"
+    assert subscription.stripe_subscription_id == "sub_test_12345"
     assert subscription.stripe_customer_id == "cus_test_12345"
 
 

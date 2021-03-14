@@ -22,7 +22,7 @@ async def handle_checkout_session_completed(
     )
     if subscription:
         subscription.stripe_customer_id = data.customer_id
-        subscription.stripe_id = data.subscription_id
+        subscription.stripe_subscription_id = data.subscription_id
         subscription = await association_repository.save_subscription(subscription)
         await association_repository.commit()
         return subscription

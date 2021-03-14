@@ -1,8 +1,8 @@
 """subscription
 
-Revision ID: a8d1eef8c733
+Revision ID: c0e56ba14c82
 Revises: 
-Create Date: 2021-03-13 17:33:35.937486
+Create Date: 2021-03-14 03:05:48.728993
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'a8d1eef8c733'
+revision = 'c0e56ba14c82'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -21,19 +21,19 @@ def upgrade():
     op.create_table('subscription',
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('creation_date', sa.DateTime(timezone=True), nullable=False),
-    sa.Column('stripe_id', sa.String(length=128), nullable=True),
+    sa.Column('stripe_subscription_id', sa.String(length=128), nullable=True),
     sa.Column('stripe_customer_id', sa.String(length=128), nullable=False),
     sa.Column('stripe_session_id', sa.String(length=128), nullable=False),
     sa.Column('state', sa.String(length=16), nullable=False),
     sa.PrimaryKeyConstraint('user_id')
     )
     op.create_table('subscription_payment',
-    sa.Column('invoice_id', sa.String(length=128), nullable=False),
+    sa.Column('stripe_invoice_id', sa.String(length=128), nullable=False),
     sa.Column('subscription_id', sa.Integer(), nullable=False),
     sa.Column('payment_date', sa.DateTime(timezone=True), nullable=False),
     sa.Column('invoice_pdf', sa.String(length=128), nullable=True),
     sa.ForeignKeyConstraint(['subscription_id'], ['subscription.user_id'], ),
-    sa.PrimaryKeyConstraint('invoice_id')
+    sa.PrimaryKeyConstraint('stripe_invoice_id')
     )
     # ### end Alembic commands ###
 
