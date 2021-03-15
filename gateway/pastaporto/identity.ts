@@ -6,19 +6,46 @@ const jwtVerify = promisify(jwt.verify);
 const jwtSign = promisify(jwt.sign);
 
 type DecodedIdentity = {
-  sub: number;
+  sub: string;
 };
 
 export const decodeIdentity = async (
   token: string,
+  ignoreExpiration: boolean = false,
 ): Promise<DecodedIdentity> => {
-  return jwtVerify(
-    token,
-    // @ts-ignore
-    IDENTITY_SECRET,
-  );
+  return jwtVerify(token, IDENTITY_SECRET, {
+    issuer: "gateway",
+    audience: "identity",
+    algorithms: ["HS256"],
+    ignoreExpiration,
+  });
 };
 
-export const createIdentityToken = async (sub: number): Promise<string> => {
-  return jwtSign({ sub }, IDENTITY_SECRET, { expiresIn: "15m" });
+export const createIdentityToken = async (sub: string): Promise<string> => {
+  return jwtSign({}, IDENTITY_SECRET, {
+    subject: sub,
+    issuer: "gateway",
+    expiresIn: "15m",
+    audience: "identity",
+    algorithm: "HS256",
+  });
+};
+
+export const decodeRefreshToken = (token: string, sub: string) => {
+  return jwtVerify(token, IDENTITY_SECRET, {
+    subject: sub,
+    issuer: "gateway",
+    audience: "refresh",
+    algorithms: ["HS256"],
+  });
+};
+
+export const createRefreshToken = async (sub: string): Promise<string> => {
+  return jwtSign({}, IDENTITY_SECRET, {
+    subject: sub,
+    issuer: "gateway",
+    expiresIn: "84 days",
+    audience: "refresh",
+    algorithm: "HS256",
+  });
 };

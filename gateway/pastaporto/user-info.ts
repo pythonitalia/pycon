@@ -13,7 +13,7 @@ export type User = {
   isStaff: boolean;
 };
 
-export const fetchUserInfo = async (id: number): Promise<User> => {
+export const fetchUserInfo = async (id: string): Promise<User> => {
   const token: string = await jwtSign({}, SERVICE_TO_SERVICE_SECRET, {
     issuer: "gateway",
     audience: "users-service",
