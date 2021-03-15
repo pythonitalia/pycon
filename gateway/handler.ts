@@ -34,21 +34,25 @@ const server = new ApolloServer({
   },
 });
 
-let serverHandler: any = null;
-
 const handleManyCookies = (headers: any = {}) => {
   if (headers["set-cookie"]) {
     try {
-      const value = JSON.parse(headers["set-cookie"]);
+      const setCookie = headers["set-cookie"];
+      headers["set-cookie"] = null;
+      const value = JSON.parse(setCookie);
       if (Array.isArray(value)) {
         return {
+          headers,
           multiValueHeaders: {
-            ...headers,
-            "set-cookie": value,
+            "Set-Cookie": value,
           },
         };
       }
     } catch (err) {
+      console.error(
+        'updating cookies to "multiValueHeaders" raised an error',
+        err,
+      );
       return { headers };
     }
   }
@@ -57,16 +61,28 @@ const handleManyCookies = (headers: any = {}) => {
 };
 
 exports.graphqlHandler = async (event: any, context: any) => {
-  if (serverHandler === null) {
-    serverHandler = server.createHandler();
+  const serverHandler = server.createHandler();
+
+  try {
+    const response: any = await new Promise((resolve, reject) => {
+      serverHandler(event, context, (err: any, response: any = {}) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+
+        resolve(response);
+      });
+    });
+
+    const { headers, ...responseData } = response;
+    const newHeaders = handleManyCookies(headers);
+
+    return {
+      ...responseData,
+      ...newHeaders,
+    };
+  } catch (e) {
+    console.error("server handler error:", e);
   }
-
-  const response = await serverHandler(event, context);
-  const { headers, ...responseData } = response;
-  const newHeaders = handleManyCookies(headers);
-
-  return {
-    ...responseData,
-    ...newHeaders,
-  };
 };
