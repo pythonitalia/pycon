@@ -32,3 +32,12 @@ class WebhookSecretMissing(Exception):
     but STRIPE_WEBHOOK_SIGNATURE_SECRET has not been set in your .env variables"""
 
     pass
+
+
+class MultipleCustomerReturned(Exception):
+    """Raised when the System tries to retrieve a Customer from Stripe passing his email
+    It's a case that should never happen, and if it happens that a user has two customer profiles and we should investigate.
+    Otherwise, we might end up choosing the wrong customer and subscribe the wrong person
+    It could be raised by subscribeUserToAssociation mutation"""
+
+    pass

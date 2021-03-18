@@ -10,6 +10,7 @@ from association.domain.entities.stripe import (
     StripeCustomer,
 )
 from association.domain.entities.subscriptions import Subscription, SubscriptionPayment
+from association.domain.exceptions import MultipleCustomerReturned
 from association.domain.repositories.base import AbstractRepository
 from association.settings import (
     DOMAIN_URL,
@@ -57,6 +58,7 @@ class AssociationRepository(AbstractRepository):
 
     # WRITE
     async def save_subscription(self, subscription: Subscription) -> Subscription:
+        """ TODO Test Create or Update """
         self.session.add(subscription)
         await self.session.flush()
         return subscription
@@ -64,6 +66,7 @@ class AssociationRepository(AbstractRepository):
     async def save_payment(
         self, subscription_payment: SubscriptionPayment
     ) -> SubscriptionPayment:
+        """ TODO Test ME """
         self.session.add(subscription_payment)
         await self.session.flush()
         return subscription_payment
@@ -75,6 +78,7 @@ class AssociationRepository(AbstractRepository):
     async def create_checkout_session(
         self, data: StripeCheckoutSessionInput
     ) -> StripeCheckoutSession:
+        """ TODO Test ME """
         # See https://stripe.com/docs/api/checkout/sessions/create
         # for additional parameters to pass.
         # {CHECKOUT_SESSION_ID} is a string literal; do not change it!
@@ -108,6 +112,7 @@ class AssociationRepository(AbstractRepository):
         )
 
     async def retrieve_customer_portal_session_url(self, customer_id: str) -> str:
+        """ TODO Test ME """
         session = stripe.billing_portal.Session.create(
             customer=customer_id,
             return_url=DOMAIN_URL,
@@ -117,16 +122,20 @@ class AssociationRepository(AbstractRepository):
 
     # READ FROM STRIPE
     async def retrieve_customer_by_email(self, email: str) -> Optional[StripeCustomer]:
+        """ TODO Test ME """
         customers = stripe.Customer.list(
             email=email, api_key=STRIPE_SUBSCRIPTION_API_SECRET
         )
-        if len(customers):
+        if len(customers) > 1:
+            raise MultipleCustomerReturned()
+        elif len(customers) > 0:
             return StripeCustomer(id=customers.data[0].id, email=email)
         return None
 
     async def retrieve_checkout_session_by_id(
         self, stripe_session_id: str
     ) -> Optional[StripeCheckoutSession]:
+        """ TODO Test ME """
         checkout_session = stripe.checkout.Session.retrieve(
             stripe_session_id, api_key=STRIPE_SUBSCRIPTION_API_SECRET
         )

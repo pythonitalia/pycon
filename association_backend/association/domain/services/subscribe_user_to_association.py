@@ -7,7 +7,7 @@ from association.domain.entities.subscriptions import (
     SubscriptionState,
     UserData,
 )
-from association.domain.exceptions import AlreadySubscribed
+from association.domain.exceptions import AlreadySubscribed, MultipleCustomerReturned
 from association.domain.repositories import AssociationRepository
 
 logger = logging.getLogger(__name__)
@@ -40,10 +40,13 @@ async def subscribe_user_to_association(
     if subscription and subscription.stripe_customer_id:
         customer_id = subscription.stripe_customer_id
     else:
-        customer = await association_repository.retrieve_customer_by_email(
-            user_data.email
-        )
-        customer_id = customer and customer.id or ""
+        try:
+            customer = await association_repository.retrieve_customer_by_email(
+                user_data.email
+            )
+            customer_id = customer and customer.id or ""
+        except MultipleCustomerReturned as ex:
+            raise ex
     logger.debug(f"customer_id : {customer_id}")
 
     checkout_session = await association_repository.create_checkout_session(

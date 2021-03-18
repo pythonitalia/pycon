@@ -8,13 +8,18 @@ import strawberry
 from association.api.context import Info
 from association.domain import entities, services
 from association.domain.entities.subscriptions import UserData
-from association.domain.exceptions import AlreadySubscribed
+from association.domain.exceptions import AlreadySubscribed, MultipleCustomerReturned
 from association.settings import TEST_USER_EMAIL, TEST_USER_ID
 
 
 @strawberry.type
 class AlreadySubscribedError:
     message: str = "You are already subscribed"
+
+
+@strawberry.type
+class MultipleCustomerReturnedError:
+    message: str = "It seems you have multiple profiles registered on Stripe with the same email. You will be contacted by the association in the coming days"
 
 
 @strawberry.type
@@ -39,7 +44,8 @@ class Subscription:
 
 
 SubscribeUserResult = strawberry.union(
-    "SubscribeUserResult", (Subscription, AlreadySubscribedError)
+    "SubscribeUserResult",
+    (Subscription, AlreadySubscribedError, MultipleCustomerReturnedError),
 )
 
 
@@ -53,3 +59,5 @@ async def subscribe_user_to_association(info: Info) -> SubscribeUserResult:
         return Subscription.from_domain(subscription)
     except AlreadySubscribed:
         return AlreadySubscribedError()
+    except MultipleCustomerReturned:
+        return MultipleCustomerReturnedError()

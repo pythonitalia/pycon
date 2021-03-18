@@ -1,3 +1,4 @@
+from collections import defaultdict
 from typing import List, Optional
 
 from association.domain.entities import Subscription, SubscriptionPayment
@@ -6,6 +7,7 @@ from association.domain.entities.stripe import (
     StripeCheckoutSessionInput,
     StripeCustomer,
 )
+from association.domain.exceptions import MultipleCustomerReturned
 from association.domain.repositories import AssociationRepository
 from association.tests.factories import SubscriptionFactory
 
@@ -60,7 +62,11 @@ class FakeAssociationRepository(AssociationRepository):
                 for subscription_payment in subscription_payments
             }
         # customers
-        self.CUSTOMERS_BY_EMAIL = {customer.email: customer for customer in customers}
+        self.CUSTOMERS_BY_EMAIL = defaultdict(list)
+        [
+            self.CUSTOMERS_BY_EMAIL[customer.email].append(customer)
+            for customer in customers
+        ]
 
     def transaction(self):
         return DummyTransaction()
@@ -133,7 +139,12 @@ class FakeAssociationRepository(AssociationRepository):
 
     # READ FROM STRIPE
     async def retrieve_customer_by_email(self, email: str) -> Optional[StripeCustomer]:
-        return self.CUSTOMERS_BY_EMAIL.get(email, None)
+        customers = self.CUSTOMERS_BY_EMAIL.get(email, [])
+        if len(customers) > 1:
+            raise MultipleCustomerReturned()
+        elif len(customers) > 0:
+            return customers[0]
+        return None
 
     async def retrieve_checkout_session_by_id(
         self, stripe_session_id: str

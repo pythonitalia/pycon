@@ -10,7 +10,7 @@ from association.domain.entities.stripe import (
     StripeCustomer,
 )
 from association.domain.entities.subscriptions import SubscriptionState, UserData
-from association.domain.exceptions import AlreadySubscribed
+from association.domain.exceptions import AlreadySubscribed, MultipleCustomerReturned
 from association.domain.tests.repositories.fake_repository import (
     FakeAssociationRepository,
 )
@@ -146,6 +146,22 @@ async def _():
         association_repository=repository,
     )
     assert subscription.stripe_customer_id == "cus_test_12345"
+
+
+@test("raises MultipleCustomerReturned if more customers with same emails")
+async def _():
+    repository = FakeAssociationRepository(
+        subscriptions=[],
+        customers=[
+            StripeCustomer(id="cus_test_12345", email="old_stripe_customer@pycon.it"),
+            StripeCustomer(id="cus_test_12346", email="old_stripe_customer@pycon.it"),
+        ],
+    )
+    with raises(MultipleCustomerReturned):
+        await services.subscribe_user_to_association(
+            user_data=UserData(email="old_stripe_customer@pycon.it", user_id=1357),
+            association_repository=repository,
+        )
 
 
 @test("create new checkout session without customer")
