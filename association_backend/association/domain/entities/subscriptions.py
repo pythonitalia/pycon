@@ -42,7 +42,6 @@ class SubscriptionPayment:
     invoice_pdf: str
 
 
-# =============
 mapper_registry = registry()
 
 subscription_table = Table(
