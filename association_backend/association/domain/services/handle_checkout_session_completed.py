@@ -2,7 +2,7 @@ import logging
 
 from pydantic import BaseModel
 
-from association.domain.exceptions import SubscriptionNotUpdated
+from association.domain.exceptions import SubscriptionNotFound
 from association.domain.repositories.association_repository import AssociationRepository
 
 logger = logging.getLogger(__name__)
@@ -29,4 +29,4 @@ async def handle_checkout_session_completed(
     else:
         msg = f"No Subscription Request found with session_id:{data.session_id}"
         logger.warning(msg)
-        raise SubscriptionNotUpdated(msg)
+        raise SubscriptionNotFound(msg)

@@ -1,8 +1,8 @@
 """subscription
 
-Revision ID: c0e56ba14c82
+Revision ID: 181756698b17
 Revises: 
-Create Date: 2021-03-14 03:05:48.728993
+Create Date: 2021-03-18 03:58:45.942162
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'c0e56ba14c82'
+revision = '181756698b17'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -24,7 +24,7 @@ def upgrade():
     sa.Column('stripe_subscription_id', sa.String(length=128), nullable=True),
     sa.Column('stripe_customer_id', sa.String(length=128), nullable=False),
     sa.Column('stripe_session_id', sa.String(length=128), nullable=False),
-    sa.Column('state', sa.String(length=16), nullable=False),
+    sa.Column('state', sa.String(length=24), nullable=False),
     sa.PrimaryKeyConstraint('user_id')
     )
     op.create_table('subscription_payment',

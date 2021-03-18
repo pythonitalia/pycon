@@ -1,14 +1,16 @@
 # isort: off
+# flake8: noqa
 import asyncio
 import os
 import sys  # noqa
 
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))  # noqa
+
+from db_utils import create_database, database_exists
+
 from association.db import get_engine
 from association.domain.entities.subscriptions import mapper_registry
 from association.settings import DATABASE_URL
-from db_utils import create_database, database_exists
-
-sys.path.append(os.path.join(os.path.dirname(__file__), ".."))  # noqa
 
 
 async def run():

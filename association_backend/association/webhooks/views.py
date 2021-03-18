@@ -11,7 +11,7 @@ from association.domain import services
 from association.domain.exceptions import (
     InconsistentStateTransitionError,
     SubscriptionNotFound,
-    SubscriptionNotUpdated,
+    WebhookSecretMissing,
 )
 from association.domain.repositories import AssociationRepository
 from association.settings import STRIPE_WEBHOOK_SIGNATURE_SECRET
@@ -20,14 +20,21 @@ logger = logging.getLogger(__name__)
 
 
 class StripeWebhook(HTTPEndpoint):
-    """
-    https://stripe.com/docs/billing/subscriptions/checkout#webhooks
+    """Webhook listening for notification events from stripe account (see https://stripe.com/docs/webhooks and https://stripe.com/docs/billing/subscriptions/checkout#webhooks for more details)
+    Required subscribed events (see https://stripe.com/docs/api/events/types for all event types):
+      - checkout.session.completed
+            Occurs when a Checkout Session has been successfully completed.
+            The System expects to receive info about related customer and subscription
+      - customer.subscription.updated
+            Occurs whenever a subscription changes (e.g., switching from one plan to another, or changing the status from trial to active)
+      - invoice.paid
+            Occurs whenever an invoice payment attempt succeeds or an invoice is marked as paid out-of-band.
     """
 
     def _get_association_repository(self, request):
         return AssociationRepository(
             session=cast(AsyncSession, get_session(get_engine(echo=False)))
-        )  # session=AsyncSession
+        )
 
     async def handle_checkout_session_completed(self, request, stripe_obj):
         try:
@@ -40,7 +47,7 @@ class StripeWebhook(HTTPEndpoint):
                 association_repository=self._get_association_repository(request),
             )
             return JSONResponse({"status": "success"})
-        except SubscriptionNotUpdated:
+        except SubscriptionNotFound:
             return JSONResponse({"status": "error"}, status_code=400)
 
     async def handle_customer_subscription_updated(self, request, stripe_obj):
@@ -94,8 +101,11 @@ class StripeWebhook(HTTPEndpoint):
             # Get the type of webhook event sent - used to check the status of PaymentIntents.
             event_type = event["type"]
         else:
-            data = request_data["data"]
-            event_type = request_data["type"]
+            # # Taken from Stripe example implementation, disabled but maybe useful for test purpose
+            # # (see https://github.com/stripe-samples/checkout-single-subscription/blob/master/server/python/server.py)
+            # data = request_data["data"]
+            # event_type = request_data["type"]
+            raise WebhookSecretMissing()
         logger.debug(f"Handling event {event_type}")
         stripe_obj = data["object"]
         if event_type == "checkout.session.completed":

@@ -1,7 +1,7 @@
 from ward import raises, test
 
 from association.domain import services
-from association.domain.exceptions import SubscriptionNotUpdated
+from association.domain.exceptions import SubscriptionNotFound
 from association.domain.services import SubscriptionUpdateInput
 from association.domain.tests.repositories.fake_repository import (
     FakeAssociationRepository,
@@ -35,11 +35,11 @@ async def _():
     assert subscription.stripe_customer_id == "cus_test_12345"
 
 
-@test("SubscriptionNotUpdated raised")
+@test("SubscriptionNotFound raised")
 async def _():
     repository = FakeAssociationRepository(subscriptions=[], customers=[])
 
-    with raises(SubscriptionNotUpdated):
+    with raises(SubscriptionNotFound):
         await services.handle_checkout_session_completed(
             data=SubscriptionUpdateInput(
                 session_id="cs_test_12345",

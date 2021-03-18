@@ -52,7 +52,7 @@ subscription_table = Table(
     Column("stripe_subscription_id", String(128), nullable=True),
     Column("stripe_customer_id", String(128), nullable=False),
     Column("stripe_session_id", String(128), nullable=False),
-    Column("state", String(16), nullable=False),
+    Column("state", String(24), nullable=False),
 )
 
 subscription_payment_table = Table(
