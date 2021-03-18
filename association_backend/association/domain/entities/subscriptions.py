@@ -17,7 +17,7 @@ class SubscriptionState(str, Enum):
     PENDING = "pending"
     ACTIVE = "active"
     EXPIRED = "expired"
-    FIRST_PAYMENT_EXPIRED = "not-created"
+    FIRST_PAYMENT_EXPIRED = "first-payment-expired"
 
     def __str__(self) -> str:
         return str.__str__(self)
