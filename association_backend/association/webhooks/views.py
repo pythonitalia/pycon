@@ -53,7 +53,7 @@ class StripeWebhook(HTTPEndpoint):
                 association_repository=self._get_association_repository(request),
             )
             return JSONResponse({"status": "success"})
-        except SubscriptionNotUpdated:
+        except SubscriptionNotFound:
             return JSONResponse({"status": "error"}, status_code=400)
         except InconsistentStateTransitionError as ex:
             logger.exception(str(ex))
@@ -63,7 +63,7 @@ class StripeWebhook(HTTPEndpoint):
         try:
             await services.handle_invoice_paid(
                 services.InvoicePaidInput(
-                    stripe_invoice_id=stripe_obj["id"],
+                    invoice_id=stripe_obj["id"],
                     subscription_id=stripe_obj["subscription"],
                     paid_at=stripe_obj["status_transitions"]["paid_at"],
                     invoice_pdf=stripe_obj["invoice_pdf"],
