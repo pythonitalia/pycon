@@ -15,6 +15,9 @@ export class AuthAction extends PastaportoAction<AuthOptions> {
     const identityToken = await createIdentityToken(sub);
     let refreshToken;
 
+    // clear previous set cookies (clear identity cookies)
+    context.setCookies.splice(0, context.setCookies.length);
+
     context.setCookies.push({
       name: "identity",
       value: identityToken,

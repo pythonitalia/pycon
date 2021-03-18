@@ -1,6 +1,7 @@
 import { IDENTITY_SECRET } from "../config";
 import jwt from "jsonwebtoken";
 import { promisify } from "util";
+import { ClearAuthAction } from "../actions/clear-auth-action";
 
 const jwtVerify = promisify(jwt.verify);
 const jwtSign = promisify(jwt.sign);
@@ -48,4 +49,12 @@ export const createRefreshToken = async (sub: string): Promise<string> => {
     audience: "refresh",
     algorithm: "HS256",
   });
+};
+
+export const removeIdentityTokens = async (temporaryContext: object) => {
+  console.log("Clearing identity tokens");
+
+  // Clear the cookies if the jwt are not valid anymore
+  const action = new ClearAuthAction({});
+  await action.apply(temporaryContext);
 };

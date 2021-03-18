@@ -5,9 +5,9 @@ import { Pastaporto } from "./entities";
 import { decodeIdentity, decodeRefreshToken } from "./identity";
 
 export const createPastaporto = async (
-  token?: string | null,
+  token: string | null,
+  temporaryContext: object,
   refreshToken: string | null = null,
-  temporaryContext: object | null = null,
 ): Promise<Pastaporto> => {
   if (!token) {
     // not authenticated
@@ -18,8 +18,10 @@ export const createPastaporto = async (
     return await Pastaporto.fromIdentityToken(token);
   } catch (e) {
     if (e instanceof TokenExpiredError) {
-      if (!refreshToken || !temporaryContext) {
-        console.log("Expired identity, refresh token is missing");
+      if (!refreshToken) {
+        console.log(
+          "Expired identity, refresh token is missing or refresh flow failed",
+        );
         throw new AuthenticationError(`Identity is not valid (expired token)`);
       }
 
@@ -27,9 +29,9 @@ export const createPastaporto = async (
 
       const subject = (await decodeIdentity(token, true)).sub;
 
-      if (canRefreshIdentity(refreshToken, subject)) {
+      if (await canRefreshIdentity(refreshToken, subject)) {
         const newIdentity = await createNewIdentity(subject, temporaryContext);
-        return createPastaporto(newIdentity);
+        return createPastaporto(newIdentity, temporaryContext);
       } else {
         throw new AuthenticationError(`Identity is not valid (expired token)`);
       }
@@ -40,9 +42,10 @@ export const createPastaporto = async (
   }
 };
 
-const canRefreshIdentity = (refreshToken: string, subject: string) => {
+const canRefreshIdentity = async (refreshToken: string, subject: string) => {
   try {
-    decodeRefreshToken(refreshToken, subject);
+    await decodeRefreshToken(refreshToken, subject);
+    console.error(`Refresh token for user ${subject} accepted`);
     return true;
   } catch (e) {
     console.error("Cannot refresh token:", e);
