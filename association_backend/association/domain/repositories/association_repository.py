@@ -122,7 +122,6 @@ class AssociationRepository(AbstractRepository):
 
     # READ FROM STRIPE
     async def retrieve_customer_by_email(self, email: str) -> Optional[StripeCustomer]:
-        """ TODO Test ME """
         customers = stripe.Customer.list(
             email=email, api_key=STRIPE_SUBSCRIPTION_API_SECRET
         )
