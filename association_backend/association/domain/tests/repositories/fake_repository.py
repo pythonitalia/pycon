@@ -114,6 +114,16 @@ class FakeAssociationRepository(AssociationRepository):
         return new_subscription
 
     # WRITE
+    async def delete_subscription(self, subscription: Subscription) -> None:
+        self.SUBSCRIPTIONS_BY_STRIPE_SUBSCRIPTION_ID.pop(
+            subscription.stripe_subscription_id
+        )
+        self.SUBSCRIPTIONS_BY_SESSION_ID.pop(subscription.stripe_session_id)
+        self.SUBSCRIPTIONS_BY_CUSTOMER_ID.pop(subscription.stripe_customer_id)
+        self.SUBSCRIPTIONS_BY_USER_ID.pop(subscription.user_id)
+        return None
+
+    # WRITE
     async def save_payment(
         self, subscription_payment: SubscriptionPayment
     ) -> SubscriptionPayment:

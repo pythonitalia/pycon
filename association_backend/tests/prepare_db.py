@@ -6,7 +6,7 @@ import sys  # noqa
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))  # noqa
 
-from db_utils import create_database, database_exists
+from db_utils import create_database, database_exists, drop_database  # noqa
 
 from association.db import get_engine
 from association.domain.entities.subscriptions import mapper_registry
@@ -16,6 +16,7 @@ from association.settings import DATABASE_URL
 async def run():
     engine = get_engine(echo=False)
     metadata = mapper_registry.metadata
+    # drop_database(DATABASE_URL)
     if not database_exists(DATABASE_URL):
         create_database(DATABASE_URL)
 

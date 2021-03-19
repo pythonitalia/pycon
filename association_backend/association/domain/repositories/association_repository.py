@@ -63,6 +63,11 @@ class AssociationRepository(AbstractRepository):
         await self.session.flush()
         return subscription
 
+    async def delete_subscription(self, subscription: Subscription) -> None:
+        self.session.delete(subscription)
+        await self.session.flush()
+        return None
+
     async def save_payment(
         self, subscription_payment: SubscriptionPayment
     ) -> SubscriptionPayment:

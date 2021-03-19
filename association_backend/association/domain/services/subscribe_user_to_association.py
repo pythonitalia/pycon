@@ -31,6 +31,7 @@ async def subscribe_user_to_association(
             raise AlreadySubscribed()
         elif subscription_state == SubscriptionState.FIRST_PAYMENT_EXPIRED:
             # subscription not created has to be recreated passing from a new Checkout Session
+            # This will be deleted before new Subscription creation
             pass
         else:
             raise NotImplementedError(
@@ -56,8 +57,12 @@ async def subscribe_user_to_association(
     )
     logger.debug(f"checkout_session : {checkout_session}")
 
+    if (
+        subscription
+    ):  # and subscription.state == SubscriptionState.FIRST_PAYMENT_EXPIRED:
+        await association_repository.delete_subscription(subscription)
+        await association_repository.commit()
     subscription = await association_repository.save_subscription(
-        # TODO Test this is a update_or_create
         Subscription(
             user_id=user_data.user_id,
             stripe_session_id=checkout_session.id,
@@ -68,6 +73,5 @@ async def subscribe_user_to_association(
         )
     )
     logger.debug(f"subscription : {subscription}")
-
     await association_repository.commit()
     return subscription

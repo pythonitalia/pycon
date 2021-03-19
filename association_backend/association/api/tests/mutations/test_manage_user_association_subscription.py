@@ -25,7 +25,6 @@ async def _(graphql_client=graphql_client, db=db):
         return_value="https://stripe.com/stripe_test_customer_portal/cus_test_12345",
     ) as service_mock:
         response = await graphql_client.query(query, variables={})
-        print(response.data)
         assert (
             response.data["manageUserAssociationSubscription"]["__typename"]
             == "CustomerPortalResponse"
@@ -56,7 +55,6 @@ async def _(graphql_client=graphql_client, db=db):
     ) as service_mock:
         service_mock.side_effect = CustomerNotAvailable()
         response = await graphql_client.query(query, variables={})
-        print(response.data)
         assert (
             response.data["manageUserAssociationSubscription"]["__typename"]
             == "CustomerNotAvailableError"

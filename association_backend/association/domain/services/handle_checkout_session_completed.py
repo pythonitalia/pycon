@@ -27,6 +27,6 @@ async def handle_checkout_session_completed(
         await association_repository.commit()
         return subscription
     else:
-        msg = f"No Subscription Request found with session_id:{data.session_id}"
+        msg = f"No Subscription found with session_id:{data.session_id}"
         logger.warning(msg)
         raise SubscriptionNotFound(msg)
