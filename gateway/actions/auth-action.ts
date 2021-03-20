@@ -23,7 +23,7 @@ export class AuthAction extends PastaportoAction<AuthOptions> {
       value: identityToken,
       options: {
         httpOnly: true,
-        maxAge: 60 * 15,
+        maxAge: 60 * 60 * 24 * 7 * 4 * 3,
         path: "/",
         sameSite: true,
         secure: !IS_DEV,
