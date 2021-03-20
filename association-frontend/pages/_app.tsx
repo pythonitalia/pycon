@@ -11,7 +11,7 @@ import { withUrqlClient } from "next-urql";
 import { Router } from "next/router";
 
 import Footer from "~/components/footer/footer";
-import Header from "~/components/header/header";
+import Hero from "~/components/hero/hero";
 import { UserProvider } from "~/components/user-provider";
 
 import "styles/globals.css";
@@ -25,7 +25,7 @@ const App = ({ Component, pageProps, resetUrqlClient }) => {
   return (
     <div>
       <UserProvider resetUrqlClient={resetUrqlClient}>
-        <Header />
+        <Hero />
         <main>
           <Component {...pageProps} />
         </main>

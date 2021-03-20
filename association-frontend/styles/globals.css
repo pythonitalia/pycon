@@ -15,10 +15,67 @@ a {
   box-sizing: border-box;
 }
 
-.container{
-  background-color: #E5E5F7;
-opacity: 0.4;
-background-image:  linear-gradient(30deg, #444CF7 12%, transparent 12.5%, transparent 87%, #444CF7 87.5%, #444CF7), linear-gradient(150deg, #444CF7 12%, transparent 12.5%, transparent 87%, #444CF7 87.5%, #444CF7), linear-gradient(30deg, #444CF7 12%, transparent 12.5%, transparent 87%, #444CF7 87.5%, #444CF7), linear-gradient(150deg, #444CF7 12%, transparent 12.5%, transparent 87%, #444CF7 87.5%, #444CF7), linear-gradient(60deg, #444CF777 25%, transparent 25.5%, transparent 75%, #444CF777 75%, #444CF777), linear-gradient(60deg, #444CF777 25%, transparent 25.5%, transparent 75%, #444CF777 75%, #444CF777);
-background-size: 40px 70px;
-background-position: 0 0, 0 0, 20px 35px, 20px 35px, 0 0, 20px 35px;
+.container {
+  background-color: #e5e5f7;
+  opacity: 0.4;
+  background-image: linear-gradient(
+      30deg,
+      #444cf7 12%,
+      transparent 12.5%,
+      transparent 87%,
+      #444cf7 87.5%,
+      #444cf7
+    ),
+    linear-gradient(
+      150deg,
+      #444cf7 12%,
+      transparent 12.5%,
+      transparent 87%,
+      #444cf7 87.5%,
+      #444cf7
+    ),
+    linear-gradient(
+      30deg,
+      #444cf7 12%,
+      transparent 12.5%,
+      transparent 87%,
+      #444cf7 87.5%,
+      #444cf7
+    ),
+    linear-gradient(
+      150deg,
+      #444cf7 12%,
+      transparent 12.5%,
+      transparent 87%,
+      #444cf7 87.5%,
+      #444cf7
+    ),
+    linear-gradient(
+      60deg,
+      #444cf777 25%,
+      transparent 25.5%,
+      transparent 75%,
+      #444cf777 75%,
+      #444cf777
+    ),
+    linear-gradient(
+      60deg,
+      #444cf777 25%,
+      transparent 25.5%,
+      transparent 75%,
+      #444cf777 75%,
+      #444cf777
+    );
+  background-size: 40px 70px;
+  background-position: 0 0, 0 0, 20px 35px, 20px 35px, 0 0, 20px 35px;
+}
+
+header {
+  background: url("/pycon_group7.jpg") center center;
+}
+
+header::after {
+  content: "";
+  display: block;
+  padding-top: calc(100% / (16 / 9));
 }
