@@ -1,29 +1,29 @@
 import { IDENTITY_SECRET } from "../config";
 import jwt from "jsonwebtoken";
-import { promisify } from "util";
 import { ClearAuthAction } from "../actions/clear-auth-action";
-
-const jwtVerify = promisify(jwt.verify);
-const jwtSign = promisify(jwt.sign);
 
 type DecodedIdentity = {
   sub: string;
 };
 
-export const decodeIdentity = async (
+export const decodeIdentity = (
   token: string,
   ignoreExpiration: boolean = false,
-): Promise<DecodedIdentity> => {
-  return jwtVerify(token, IDENTITY_SECRET, {
+): DecodedIdentity => {
+  return jwt.verify(token, IDENTITY_SECRET!, {
     issuer: "gateway",
     audience: "identity",
     algorithms: ["HS256"],
     ignoreExpiration,
-  });
+  }) as DecodedIdentity;
 };
 
-export const createIdentityToken = async (sub: string): Promise<string> => {
-  return jwtSign({}, IDENTITY_SECRET, {
+export const createIdentityToken = (sub: string): string => {
+  if (!sub) {
+    throw new Error("Empty subject not allowed");
+  }
+
+  return jwt.sign({}, IDENTITY_SECRET!, {
     subject: sub,
     issuer: "gateway",
     expiresIn: "15m",
@@ -33,7 +33,7 @@ export const createIdentityToken = async (sub: string): Promise<string> => {
 };
 
 export const decodeRefreshToken = (token: string, sub: string) => {
-  return jwtVerify(token, IDENTITY_SECRET, {
+  return jwt.verify(token, IDENTITY_SECRET!, {
     subject: sub,
     issuer: "gateway",
     audience: "refresh",
@@ -41,8 +41,12 @@ export const decodeRefreshToken = (token: string, sub: string) => {
   });
 };
 
-export const createRefreshToken = async (sub: string): Promise<string> => {
-  return jwtSign({}, IDENTITY_SECRET, {
+export const createRefreshToken = (sub: string): string => {
+  if (!sub) {
+    throw new Error("Empty subject not allowed");
+  }
+
+  return jwt.sign({}, IDENTITY_SECRET!, {
     subject: sub,
     issuer: "gateway",
     expiresIn: "84 days",

@@ -11,7 +11,7 @@ class ServiceRemoteGraphQLDataSource extends RemoteGraphQLDataSource {
   async willSendRequest({ request, context }) {
     const pastaporto: Pastaporto = context.pastaporto;
     if (pastaporto) {
-      request!.http!.headers.set("x-pastaporto", await pastaporto.sign());
+      request!.http!.headers.set("x-pastaporto", pastaporto.sign());
     }
   }
 

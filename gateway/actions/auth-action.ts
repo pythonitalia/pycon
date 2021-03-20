@@ -12,7 +12,7 @@ type AuthOptions = {
 export class AuthAction extends PastaportoAction<AuthOptions> {
   async apply(context: any) {
     const sub = `${this.payload["id"]}`;
-    const identityToken = await createIdentityToken(sub);
+    const identityToken = createIdentityToken(sub);
     let refreshToken;
 
     // clear previous set cookies (clear identity cookies)
@@ -31,7 +31,7 @@ export class AuthAction extends PastaportoAction<AuthOptions> {
     });
 
     if (!this.options?.identityOnly) {
-      refreshToken = await createRefreshToken(sub);
+      refreshToken = createRefreshToken(sub);
 
       context.setCookies.push({
         name: "refreshIdentity",

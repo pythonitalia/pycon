@@ -27,9 +27,9 @@ export const createPastaporto = async (
 
       console.log("Expired identity, trying to refresh token");
 
-      const subject = (await decodeIdentity(token, true)).sub;
+      const subject = decodeIdentity(token, true).sub;
 
-      if (await canRefreshIdentity(refreshToken, subject)) {
+      if (canRefreshIdentity(refreshToken, subject)) {
         const newIdentity = await createNewIdentity(subject, temporaryContext);
         return createPastaporto(newIdentity, temporaryContext);
       } else {
@@ -42,9 +42,9 @@ export const createPastaporto = async (
   }
 };
 
-const canRefreshIdentity = async (refreshToken: string, subject: string) => {
+const canRefreshIdentity = (refreshToken: string, subject: string) => {
   try {
-    await decodeRefreshToken(refreshToken, subject);
+    decodeRefreshToken(refreshToken, subject);
     console.error(`Refresh token for user ${subject} accepted`);
     return true;
   } catch (e) {
