@@ -24,7 +24,11 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   theme: {
     colors: colors,
-    extend: {},
+    extend: {
+      backgroundImage: (theme) => ({
+        "pycon-group": "url('/pycon_group7.jpg')",
+      }),
+    },
   },
   variants: {
     extend: {},
