@@ -21,7 +21,7 @@ httpx = "^0.16.1"
 Authlib = "^0.15.3"
 itsdangerous = "^1.1.0"
 mangum = "^0.10.0"
-pythonit-toolkit = "0.1.17"
+pythonit-toolkit = "0.1.18"
 
 [tool.poetry.dev-dependencies]
 pdbpp = "^0.10.2"
