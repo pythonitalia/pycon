@@ -12,9 +12,7 @@ export default function Home() {
         <title>Associazione Python Italia</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
       <Sections />
-      <SectionHelp />
     </div>
   );
 }
