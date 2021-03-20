@@ -42,13 +42,13 @@ export const createPastaporto = async (
   }
 };
 
-const canRefreshIdentity = (refreshToken: string, subject: string) => {
+export const canRefreshIdentity = (refreshToken: string, subject: string) => {
   try {
     decodeRefreshToken(refreshToken, subject);
-    console.error(`Refresh token for user ${subject} accepted`);
+    console.info(`Refresh token for user ${subject} accepted`);
     return true;
   } catch (e) {
-    console.error("Cannot refresh token:", e);
+    console.info("Cannot refresh token:", e);
     return false;
   }
 };
