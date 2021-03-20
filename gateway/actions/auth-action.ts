@@ -5,11 +5,16 @@ import {
 import { IS_DEV } from "../config";
 import { PastaportoAction } from "./entities";
 
-type AuthOptions = {
+type Options = {
   identityOnly?: boolean;
 };
 
-export class AuthAction extends PastaportoAction<AuthOptions> {
+type Return = {
+  identityToken: string;
+  refreshToken?: string;
+};
+
+export class AuthAction extends PastaportoAction<Options, Return> {
   async apply(context: any) {
     const sub = `${this.payload["id"]}`;
     const identityToken = createIdentityToken(sub);
