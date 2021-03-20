@@ -14,7 +14,6 @@ import Footer from "~/components/footer/footer";
 import Hero from "~/components/hero/hero";
 import { UserProvider } from "~/components/user-provider";
 
-import "styles/globals.css";
 import "tailwindcss/tailwind.css";
 
 type AuthState = {
