@@ -3,12 +3,12 @@ import jwt from "jsonwebtoken";
 import { fetchUserInfo, User } from "./user-info";
 import { decodeIdentity } from "./identity";
 
-enum Credential {
+export enum Credential {
   STAFF = "staff",
   AUTHENTICATED = "authenticated",
 }
 
-class UserInfo {
+export class UserInfo {
   constructor(
     readonly id: number,
     readonly email: string,
@@ -37,7 +37,7 @@ export class Pastaporto {
         credentials: this.credentials,
       },
       PASTAPORTO_SECRET!,
-      { expiresIn: "1m" },
+      { expiresIn: "1m", issuer: "gateway" },
     );
   }
 
