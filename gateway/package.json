@@ -17,7 +17,8 @@
   },
   "scripts": {
     "dev": "NODE_ENV=development IS_DEV=true VARIANT=default nodemon",
-    "dev:admin": "NODE_ENV=development IS_DEV=true VARIANT=admin nodemon"
+    "dev:admin": "NODE_ENV=development IS_DEV=true VARIANT=admin nodemon",
+    "test": "jest"
   },
   "devDependencies": {
     "@types/cookie": "^0.4.0",
