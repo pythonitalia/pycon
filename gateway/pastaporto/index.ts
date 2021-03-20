@@ -29,7 +29,7 @@ export const createPastaporto = async (
 
       const subject = decodeIdentity(token, true).sub;
 
-      if (canRefreshIdentity(refreshToken, subject)) {
+      if (subject && canRefreshIdentity(refreshToken, subject)) {
         const newIdentity = await createNewIdentity(subject, temporaryContext);
         return createPastaporto(newIdentity, temporaryContext);
       } else {
