@@ -3,7 +3,7 @@ import SectionItem from "../section-item/section-item";
 const SectionPythonIta = () => {
   return (
     <SectionItem title={"Python Italia 🐍"}>
-      <p className="mt-4 max-w-2xl text-xl text-gray-500 mx-auto">
+      <p className="max-w-2xl text-xl text-gray-500 mx-auto">
         Python è la nostra passione, diffonderlo la nostra missione.
       </p>
       <p className="mt-4 max-w-2xl text-xl text-gray-500 mx-auto">

@@ -5,7 +5,7 @@ import SectionSocialMedia from "../section-social-media/section-social-media";
 
 const Sections = () => {
   return (
-    <div className="m-8 overflow-hidden">
+    <div className="max-w-4xl m-auto px-8 overflow-hidden">
       <SectionPythonIta />
       <SectionJoin />
       <SectionEvents />

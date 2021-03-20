@@ -22,7 +22,7 @@ const SectionSocialMedia = () => {
   ];
   return (
     <SectionItem title={"Seguici Online 🎭"}>
-      <div className="py-4 m-0 flex flex-row 	 space-x-4 w-full  justify-center">
+      <div className="flex flex-row space-x-4 w-full  justify-center">
         {icons.map((icon) => {
           return (
             <div className="flex-shrink-0">
