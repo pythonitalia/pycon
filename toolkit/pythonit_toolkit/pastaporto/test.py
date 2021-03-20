@@ -16,6 +16,7 @@ def fake_pastaporto_token_for_user(
             "userInfo": {"id": user["id"], "email": user["email"]},
             "credentials": credentials,
             "exp": datetime.now() + timedelta(minutes=1),
+            "iss": "gateway",
         },
         secret,
         algorithm="HS256",
