@@ -1,3 +1,5 @@
+import jwt from "jsonwebtoken";
+
 import { Credential, Pastaporto, UserInfo } from "../entities";
 import { fetchUserInfo } from "../user-info";
 import { decodeIdentity } from "../identity";
@@ -32,9 +34,20 @@ describe("Unauthenticated pastaporto", () => {
       .setSystemTime(new Date("2021-03-20 14:35:31Z").getTime());
 
     const unauthenticated = Pastaporto.unauthenticated();
-    const emptyPastaportoToken =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mbyI6bnVsbCwiY3JlZGVudGlhbHMiOltdLCJpYXQiOjE2MTYyNTA5MzEsImV4cCI6MTYxNjI1MDk5MSwiaXNzIjoiZ2F0ZXdheSJ9.gUKpCcphlVZI22nVSnzCZqPyBfELg3zm1w2ASP2lRqE";
-    expect(unauthenticated.sign()).toBe(emptyPastaportoToken);
+    const expectedToken = jwt.sign(
+      {
+        userInfo: null,
+        credentials: [],
+      },
+      "abc",
+      {
+        issuer: "gateway",
+        expiresIn: "1m",
+        algorithm: "HS256",
+      },
+    );
+
+    expect(unauthenticated.sign()).toBe(expectedToken);
   });
 });
 
@@ -94,8 +107,23 @@ describe("Pastaporto", () => {
       Credential.AUTHENTICATED,
     ]);
 
-    const expectedToken =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mbyI6eyJpZCI6NSwiZW1haWwiOiJ0ZXN0QGVtYWlsLml0IiwiaXNTdGFmZiI6ZmFsc2V9LCJjcmVkZW50aWFscyI6WyJhdXRoZW50aWNhdGVkIl0sImlhdCI6MTYxNjI1MDkzMSwiZXhwIjoxNjE2MjUwOTkxLCJpc3MiOiJnYXRld2F5In0.eYiHsYsqfGkfH31Yicxml8kUqE1BKk-XFNFUw_kWIQo";
+    const expectedToken = jwt.sign(
+      {
+        userInfo: {
+          id: 5,
+          email: "test@email.it",
+          isStaff: false,
+        },
+        credentials: [Credential.AUTHENTICATED],
+      },
+      "abc",
+      {
+        issuer: "gateway",
+        expiresIn: "1m",
+        algorithm: "HS256",
+      },
+    );
+
     expect(pastaporto.sign()).toBe(expectedToken);
   });
 });

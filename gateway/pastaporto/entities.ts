@@ -37,7 +37,7 @@ export class Pastaporto {
         credentials: this.credentials,
       },
       PASTAPORTO_SECRET!,
-      { expiresIn: "1m", issuer: "gateway" },
+      { expiresIn: "1m", issuer: "gateway", algorithm: "HS256" },
     );
   }
 
