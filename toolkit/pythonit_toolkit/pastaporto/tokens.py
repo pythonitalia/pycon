@@ -9,7 +9,7 @@ def decode_pastaporto(token: str, secret: str) -> dict[str, Any]:
         str(secret),
         issuer="gateway",
         algorithms=["HS256"],
-        options={"require": ["exp", "iss"]},
+        options={"require": ["exp", "iss", "nbf", "iat"]},
     )
 
 
@@ -23,5 +23,5 @@ def decode_service_to_service_token(
         audience=audience,
         issuer=issuer,
         algorithms=["HS256"],
-        options={"require": ["exp", "iss", "aud"]},
+        options={"require": ["exp", "iss", "aud", "nbf", "iat"]},
     )
