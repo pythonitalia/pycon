@@ -8,7 +8,7 @@ ENV NODE_ENV=production
 
 COPY package.json yarn.lock ./
 
-RUN yarn install --prod
+RUN yarn install
 
 COPY . .
 
