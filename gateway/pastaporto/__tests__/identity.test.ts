@@ -1,4 +1,4 @@
-import { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
+import jwt, { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
 import {
   createIdentityToken,
   createRefreshToken,
@@ -7,30 +7,42 @@ import {
   removeIdentityTokens,
 } from "../identity";
 
+const TEST_PRIVATE_KEY = `-----BEGIN RSA PRIVATE KEY-----
+MIICWwIBAAKBgQC4d8AeK7bfuoc0yPtHeuHjo9MT25DP0JZoHbWscpZ9yjKlZvHv
+4pGmwb481KRX+YwA4YazVlZ6bjd7iuaVuNry+LYhURr7IUakf1MR++DFqNFu6AFi
+sZ3Nn4K0JoSJh+6NkyDV8D1G6P0phKjL5kIuUjrWIfwAlwJLzI2gUObm9wIDAQAB
+AoGAHyF2dqEB97fO4YWZgnKmdHhNQuinA6s79s4svrGH3CqnaWp6IfWmhvHjXPi1
+03L1waBNzy4e4gJ/soW6bEIKEPV3gFynVWVYA9AtDyjRCwbI1TzEFdqR961oySlp
+g/6nM2VKZw8Zsjwgu3iRqiRV1LZLZ+wu4IvudWk2Yvc6tGECQQDr9edl4WzfzPbj
+PP7kqbkiJ//HUkUA2x6GVt9Z3h1nNuMfed6fSMuKc9sFIZQ1YFPGunsZ3rZ+fgGz
+eRuuSrk9AkEAyCJTMPL1MhLJ2A/LSw72fpwxnRbAZR83xP/6hgmkUtM1gSDND/E1
+4zxghbSFmhtTRibdxcITT/+s5Q0zH0jcQwJADqDlIqTSGiHb4ISkjMqU5rAyJEpO
+atoqz0tNd4XUrtRxSj9E9P0PWVsLZgsJ5DE/oF9pSFZNXBQ1yMmmVKzfRQJAQzp8
+laHXygVTtne/w6v4E5nmdK2S3aU597xBbMtKXuRCQelB2Uwe3QGILwHwK09ojtU5
+hFfoYuQxMRRZCvZPvwJAB70RhOrVaX83Oboqqu8rsCM1HDrHGPNznUfpOnUUkUC7
+LZsBajFgIDr1OMCUeeo23oNOgdkpPPfGM5VKTLciCQ==
+-----END RSA PRIVATE KEY-----`;
+
 jest.mock("../../config", () => ({
   IDENTITY_SECRET: "abc",
   IS_DEV: true,
 }));
 
 describe("Decode Identity", () => {
-  //payload: {
-  //   "iat": 1616248751,
-  //   "exp": 1616249651,
-  //   "aud": "identity",
-  //   "iss": "gateway",
-  //   "sub": "10"
-  // }
-  // Issued at 20 March 2021 13:59:11 GMT+00:00
-  // Expires at 20 March 2021 14:14:11 GMT+00:00
-  const validToken =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MTYyNDg3NTEsImV4cCI6MTYxNjI0OTY1MSwiYXVkIjoiaWRlbnRpdHkiLCJpc3MiOiJnYXRld2F5Iiwic3ViIjoiMTAifQ.a04dtYu5wsLaYKtchwrJAZsvzq9sI6kPN4d0pgNa8gk";
-
   test("Decode valid not expired identity", () => {
     jest
       .useFakeTimers("modern")
       .setSystemTime(new Date("2021-03-20 14:00:00Z").getTime());
 
-    expect(decodeIdentity(validToken, false)).toContainEntry(["sub", "10"]);
+    const testToken = jwt.sign({}, "abc", {
+      issuer: "gateway",
+      audience: "identity",
+      subject: "10",
+      expiresIn: "15m",
+      algorithm: "HS256",
+    });
+
+    expect(decodeIdentity(testToken, false)).toContainEntry(["sub", "10"]);
   });
 
   test("Allow expired tokens if specified", () => {
@@ -38,7 +50,19 @@ describe("Decode Identity", () => {
       .useFakeTimers("modern")
       .setSystemTime(new Date("2021-03-20 14:30:00Z").getTime());
 
-    expect(decodeIdentity(validToken, true)).toContainEntry(["sub", "10"]);
+    const testToken = jwt.sign({}, "abc", {
+      issuer: "gateway",
+      audience: "identity",
+      subject: "10",
+      expiresIn: "15m",
+      algorithm: "HS256",
+    });
+
+    jest
+      .useFakeTimers("modern")
+      .setSystemTime(new Date("2021-03-20 15:00:00Z").getTime());
+
+    expect(decodeIdentity(testToken, true)).toContainEntry(["sub", "10"]);
   });
 
   test("Ignore expired tokens by default", () => {
@@ -46,22 +70,38 @@ describe("Decode Identity", () => {
       .useFakeTimers("modern")
       .setSystemTime(new Date("2021-03-20 14:30:00Z").getTime());
 
-    expect(() => decodeIdentity(validToken, false)).toThrow(TokenExpiredError);
+    const testToken = jwt.sign({}, "abc", {
+      issuer: "gateway",
+      audience: "identity",
+      subject: "10",
+      expiresIn: "15m",
+      algorithm: "HS256",
+    });
+
+    jest
+      .useFakeTimers("modern")
+      .setSystemTime(new Date("2021-03-20 15:30:00Z").getTime());
+
+    expect(() => decodeIdentity(testToken, false)).toThrow(TokenExpiredError);
   });
 
   test.each([true, false])(
     "Reject tokens not issued by gateway and expiration %p",
     (ignoreExpiration) => {
-      // Expires at 20 March 2021 14:29:11 GMT+00:00
-      const tokenWithWrongIssuer =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MTYyNDk2NjEsImV4cCI6MTYxNjI1MDU2MSwiYXVkIjoiaWRlbnRpdHkiLCJpc3MiOiJ1c2VycyIsInN1YiI6IjEwIn0.D9rRwtrOHnnQhCB0ziyp-ujz3b2bX1_k6sG2kVSsgvE";
-
       jest
         .useFakeTimers("modern")
         .setSystemTime(new Date("2021-03-20 14:25:00Z").getTime());
 
+      const testToken = jwt.sign({}, "abc", {
+        issuer: "other",
+        audience: "identity",
+        subject: "10",
+        expiresIn: "15m",
+        algorithm: "HS256",
+      });
+
       expect(() =>
-        decodeIdentity(tokenWithWrongIssuer, ignoreExpiration),
+        decodeIdentity(testToken, ignoreExpiration),
       ).toThrowWithMessage(
         JsonWebTokenError,
         "jwt issuer invalid. expected: gateway",
@@ -73,15 +113,20 @@ describe("Decode Identity", () => {
     "Reject tokens with different audience and expiration %p",
     (ignoreExpiration) => {
       // Expires at 20 March 2021 14:45:57 GMT+00:00
-      const tokenWithOtherAudience =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MTYyNTA2NTcsImV4cCI6MTYxNjI1MTU1NywiYXVkIjoib3RoZXIiLCJpc3MiOiJnYXRld2F5Iiwic3ViIjoiMTAifQ.U7opmdprkIO3nBzkoJsbRFy9cZ4-PGoUQGGUBYwzRlk";
-
       jest
         .useFakeTimers("modern")
         .setSystemTime(new Date("2021-03-20 14:35:00Z").getTime());
 
+      const testToken = jwt.sign({}, "abc", {
+        issuer: "gateway",
+        audience: "refresh",
+        subject: "10",
+        expiresIn: "15m",
+        algorithm: "HS256",
+      });
+
       expect(() =>
-        decodeIdentity(tokenWithOtherAudience, ignoreExpiration),
+        decodeIdentity(testToken, ignoreExpiration),
       ).toThrowWithMessage(
         JsonWebTokenError,
         "jwt audience invalid. expected: identity",
@@ -92,16 +137,20 @@ describe("Decode Identity", () => {
   test.each([true, false])(
     "Ignore tokens with None algo and with expiration %p",
     (ignoreExpiration) => {
-      // Expires at 20 March 2021 14:50:31 GMT+00:00
-      const tokenSignedWithNoneAlgo =
-        "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJpYXQiOjE2MTYyNTA5MzEsImV4cCI6MTYxNjI1MTgzMSwiYXVkIjoib3RoZXIiLCJpc3MiOiJnYXRld2F5Iiwic3ViIjoiMTAifQ.";
-
       jest
         .useFakeTimers("modern")
         .setSystemTime(new Date("2021-03-20 14:40:00Z").getTime());
 
+      const testToken = jwt.sign({}, "abc", {
+        issuer: "gateway",
+        audience: "identity",
+        subject: "10",
+        expiresIn: "15m",
+        algorithm: "none",
+      });
+
       expect(() =>
-        decodeIdentity(tokenSignedWithNoneAlgo, ignoreExpiration),
+        decodeIdentity(testToken, ignoreExpiration),
       ).toThrowWithMessage(JsonWebTokenError, "jwt signature is required");
     },
   );
@@ -109,16 +158,20 @@ describe("Decode Identity", () => {
   test.each([true, false])(
     "Ignore tokens not using HS256 algo and with expiration %p",
     async (ignoreExpiration) => {
-      // Expires at 20 March 2021 14:53:46 GMT+00:00
-      const tokenSignedWithRS256 =
-        "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnYXRld2F5Iiwic3ViIjoiMTAiLCJhdWQiOiJpZGVudGl0eSIsImlhdCI6MTYxNjI1MTQyNiwiZXhwIjoxNjE2MjUyMDI2fQ.DY8F5G9dtwstI4nBwKz-km12PHas_vJeAoGK6PFtw-i0U7XwBYPPCx1R8LawfFLSCpIwtdrqiFJQy02m3V85YBUmhvdGBaYTNnZYSehLSPcePkgrT0fB528hRmzYSDekrJkq5Sp3MJ694ZJ3LY1uDQbhG_-zv5DfOcDDFrTX8vYC36BFnilLhla-qpDHxi5NGS5JAqgLmK7YKxL8W_SlZqBSnhkccTzF9WNQnhX8CjdXJnAXZE6um8_ubvQiwwFI0l77M2_ZHRPHtugqwFv4mLRyWG40eYDxOcv2Th67F3IA3mA6juvHwbNUem3t8Oc65jkYWSECn0hFikQIgTSgRA";
-
       jest
         .useFakeTimers("modern")
         .setSystemTime(new Date("2021-03-20 14:45:00Z").getTime());
 
+      const testToken = jwt.sign({}, TEST_PRIVATE_KEY, {
+        issuer: "gateway",
+        audience: "identity",
+        subject: "10",
+        expiresIn: "15m",
+        algorithm: "RS256",
+      });
+
       await expect(() =>
-        decodeIdentity(tokenSignedWithRS256, ignoreExpiration),
+        decodeIdentity(testToken, ignoreExpiration),
       ).toThrowWithMessage(JsonWebTokenError, "invalid algorithm");
     },
   );
@@ -126,14 +179,17 @@ describe("Decode Identity", () => {
   test.each([true, false])(
     "Reject tokens with wrong secret and check expiration %p",
     async (ignoreExpiration) => {
-      // Expires at 20 March 2021 14:53:46 GMT+00:00
-      // signed with abc123
-      const testToken =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MTYyNTA5MzEsImV4cCI6MTYxNjI1MTgzMSwiYXVkIjoiaWRlbnRpdHkiLCJpc3MiOiJnYXRld2F5Iiwic3ViIjoiMTAifQ.e_bwjvNXJfVVJ9pztXzkNA0jsKWvpQcYrjTJM6t2_hM";
-
       jest
         .useFakeTimers("modern")
         .setSystemTime(new Date("2021-03-20 14:40:31Z").getTime());
+
+      const testToken = jwt.sign({}, "abc123", {
+        issuer: "gateway",
+        audience: "identity",
+        subject: "10",
+        expiresIn: "15m",
+        algorithm: "HS256",
+      });
 
       await expect(() =>
         decodeIdentity(testToken, ignoreExpiration),
@@ -144,15 +200,19 @@ describe("Decode Identity", () => {
 
 describe("Create identity", () => {
   test("Create identity", () => {
-    // signed with "abc", at 2021-03-20 14:35:31Z
-    const expectedIdentityToken =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MTYyNTA5MzEsImV4cCI6MTYxNjI1MTgzMSwiYXVkIjoiaWRlbnRpdHkiLCJpc3MiOiJnYXRld2F5Iiwic3ViIjoiMTAifQ.WfDXRSy_mlfS4wFkJzohGJY6mi2l38gza536Q4u50LQ";
-
     jest
       .useFakeTimers("modern")
       .setSystemTime(new Date("2021-03-20 14:35:31Z").getTime());
 
-    expect(createIdentityToken("10")).toBe(expectedIdentityToken);
+    const expectedToken = jwt.sign({}, "abc", {
+      issuer: "gateway",
+      audience: "identity",
+      subject: "10",
+      expiresIn: "15m",
+      algorithm: "HS256",
+    });
+
+    expect(createIdentityToken("10")).toBe(expectedToken);
   });
 
   test("Empty subject fails", () => {
@@ -166,8 +226,13 @@ describe("Decode refresh token", () => {
       .useFakeTimers("modern")
       .setSystemTime(new Date("2021-03-20 14:40:31Z").getTime());
 
-    const testToken =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MTYyNTA5MzEsImV4cCI6MTYyMzY4MTMzMSwiYXVkIjoicmVmcmVzaCIsImlzcyI6ImdhdGV3YXkiLCJzdWIiOiIxMCJ9.14tohtJ9NfLFQ0wq6tKVHEC4Opphh37Z5xABsy7XVP8";
+    const testToken = jwt.sign({}, "abc", {
+      issuer: "gateway",
+      audience: "refresh",
+      subject: "10",
+      expiresIn: "30 days",
+      algorithm: "HS256",
+    });
 
     expect(decodeRefreshToken(testToken, "10")).toContainEntry(["sub", "10"]);
   });
@@ -177,8 +242,13 @@ describe("Decode refresh token", () => {
       .useFakeTimers("modern")
       .setSystemTime(new Date("2021-03-20 14:40:31Z").getTime());
 
-    const testToken =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MTYyNTA5MzEsImV4cCI6MTYyMzY4MTMzMSwiYXVkIjoicmVmcmVzaCIsImlzcyI6ImdhdGV3YXkiLCJzdWIiOiIxMCJ9.14tohtJ9NfLFQ0wq6tKVHEC4Opphh37Z5xABsy7XVP8";
+    const testToken = jwt.sign({}, "abc", {
+      issuer: "gateway",
+      audience: "refresh",
+      subject: "10",
+      expiresIn: "30 days",
+      algorithm: "HS256",
+    });
 
     expect(() => decodeRefreshToken(testToken, "20")).toThrowWithMessage(
       JsonWebTokenError,
@@ -191,8 +261,17 @@ describe("Decode refresh token", () => {
       .useFakeTimers("modern")
       .setSystemTime(new Date("2050-03-20 14:40:31Z").getTime());
 
-    const testToken =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MTYyNTA5MzEsImV4cCI6MTYyMzY4MTMzMSwiYXVkIjoicmVmcmVzaCIsImlzcyI6ImdhdGV3YXkiLCJzdWIiOiIxMCJ9.14tohtJ9NfLFQ0wq6tKVHEC4Opphh37Z5xABsy7XVP8";
+    const testToken = jwt.sign({}, "abc", {
+      issuer: "gateway",
+      audience: "refresh",
+      subject: "10",
+      expiresIn: "5 days",
+      algorithm: "HS256",
+    });
+
+    jest
+      .useFakeTimers("modern")
+      .setSystemTime(new Date("2050-04-01 14:40:31Z").getTime());
 
     expect(() => decodeRefreshToken(testToken, "10")).toThrow(
       TokenExpiredError,
@@ -204,8 +283,13 @@ describe("Decode refresh token", () => {
       .useFakeTimers("modern")
       .setSystemTime(new Date("2021-03-20 14:40:31Z").getTime());
 
-    const testToken =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MTYyNTA5MzEsImV4cCI6MTYyMzY4MTMzMSwiYXVkIjoiaWRlbnRpdHkiLCJpc3MiOiJnYXRld2F5Iiwic3ViIjoiMTAifQ.UQfAUpUc2h-Sbjl59or2cCSUQJ9fG0Vsky4HwbOtAhA";
+    const testToken = jwt.sign({}, "abc", {
+      issuer: "gateway",
+      audience: "identity",
+      subject: "10",
+      expiresIn: "5 days",
+      algorithm: "HS256",
+    });
 
     expect(() => decodeRefreshToken(testToken, "10")).toThrowWithMessage(
       JsonWebTokenError,
@@ -218,8 +302,13 @@ describe("Decode refresh token", () => {
       .useFakeTimers("modern")
       .setSystemTime(new Date("2021-03-20 14:40:31Z").getTime());
 
-    const testToken =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MTYyNTA5MzEsImV4cCI6MTYyMzY4MTMzMSwiYXVkIjoicmVmcmVzaCIsImlzcyI6InVzZXJzIiwic3ViIjoiMTAifQ.Aw3FjtRtp50eeus_zrvLFoPpjJRM-wV5sRdrd3sYRPk";
+    const testToken = jwt.sign({}, "abc", {
+      issuer: "users",
+      audience: "refresh",
+      subject: "10",
+      expiresIn: "5 days",
+      algorithm: "HS256",
+    });
 
     expect(() => decodeRefreshToken(testToken, "10")).toThrowWithMessage(
       JsonWebTokenError,
@@ -232,9 +321,13 @@ describe("Decode refresh token", () => {
       .useFakeTimers("modern")
       .setSystemTime(new Date("2021-03-20 14:40:31Z").getTime());
 
-    // signed with abc123
-    const testToken =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MTYyNTA5MzEsImV4cCI6MTYyMzY4MTMzMSwiYXVkIjoicmVmcmVzaCIsImlzcyI6ImdhdGV3YXkiLCJzdWIiOiIxMCJ9.NZX6RETwxM4R0cBV5_Ubjo98gTeubPArTVKgs1BJpH8";
+    const testToken = jwt.sign({}, "abc123", {
+      issuer: "gateway",
+      audience: "refresh",
+      subject: "10",
+      expiresIn: "5 days",
+      algorithm: "HS256",
+    });
 
     expect(() => decodeRefreshToken(testToken, "10")).toThrowWithMessage(
       JsonWebTokenError,
@@ -249,8 +342,13 @@ describe("Create refresh token", () => {
       .useFakeTimers("modern")
       .setSystemTime(new Date("2021-03-20 14:35:31Z").getTime());
 
-    const expectedToken =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MTYyNTA5MzEsImV4cCI6MTYyMzUwODUzMSwiYXVkIjoicmVmcmVzaCIsImlzcyI6ImdhdGV3YXkiLCJzdWIiOiIxMCJ9.8nF91uPV7ngknINxD0X9U58t-Z7JPwogQw9ngx6cNI4";
+    const expectedToken = jwt.sign({}, "abc", {
+      issuer: "gateway",
+      audience: "refresh",
+      subject: "10",
+      expiresIn: "84 days",
+      algorithm: "HS256",
+    });
 
     expect(createRefreshToken("10")).toBe(expectedToken);
   });
