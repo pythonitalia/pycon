@@ -1,17 +1,14 @@
 import { PASTAPORTO_SECRET } from "../config";
 import jwt from "jsonwebtoken";
-import { promisify } from "util";
 import { fetchUserInfo, User } from "./user-info";
 import { decodeIdentity } from "./identity";
 
-const jwtSign = promisify(jwt.sign);
-
-enum Credential {
+export enum Credential {
   STAFF = "staff",
   AUTHENTICATED = "authenticated",
 }
 
-class UserInfo {
+export class UserInfo {
   constructor(
     readonly id: number,
     readonly email: string,
@@ -33,16 +30,15 @@ export class Pastaporto {
     readonly credentials: Credential[] = [],
   ) {}
 
-  async sign(): Promise<string> {
-    return (await jwtSign(
+  sign(): string {
+    return jwt.sign(
       {
         userInfo: this.userInfo?.data?.() ?? null,
         credentials: this.credentials,
       },
-      PASTAPORTO_SECRET,
-      // @ts-ignore
-      { expiresIn: "1m" },
-    )) as string;
+      PASTAPORTO_SECRET!,
+      { expiresIn: "1m", issuer: "gateway", algorithm: "HS256" },
+    );
   }
 
   static unauthenticated() {
@@ -50,7 +46,7 @@ export class Pastaporto {
   }
 
   static async fromIdentityToken(token: string) {
-    const decoded = await decodeIdentity(token);
+    const decoded = decodeIdentity(token);
     const userInfo = await fetchUserInfo(decoded.sub);
 
     return new Pastaporto(

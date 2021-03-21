@@ -3,27 +3,19 @@
 import { ApolloServer } from "apollo-server";
 import { getPort } from "./utils";
 import { gateway } from "../gateway";
-import { createPastaporto } from "../pastaporto";
-import httpHeadersPlugin from "apollo-server-plugin-http-headers";
-import cookie from "cookie";
+import { apolloHeadersPlugin } from "../plugins/apollo-headers";
+import { formatCookiesForExpressPlugin } from "../plugins/format-cookies-express";
+import { createContext } from "../context";
 
 const server = new ApolloServer({
   gateway,
   subscriptions: false,
-  plugins: [httpHeadersPlugin],
-  context: async ({ req }) => {
-    const cookieHeader = req.headers.cookie;
-    let identity = null;
-
-    if (cookieHeader) {
-      const cookies = cookie.parse(req.headers.cookie);
-      identity = cookies["identity"];
-    }
-
+  plugins: [apolloHeadersPlugin(false), formatCookiesForExpressPlugin],
+  context: async ({ req, res }) => {
+    const context = await createContext(req.headers.cookie);
     return {
-      setCookies: new Array(),
-      setHeaders: new Array(),
-      pastaporto: await createPastaporto(identity),
+      ...context,
+      res,
     };
   },
 });

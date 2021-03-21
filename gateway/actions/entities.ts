@@ -2,8 +2,11 @@ export enum Action {
   AUTH = "auth",
 }
 
-export abstract class PastaportoAction {
-  constructor(readonly payload: { [key: string]: string }) {}
+export abstract class PastaportoAction<Options, Return> {
+  constructor(
+    readonly payload: { [key: string]: string },
+    readonly options: Options | null = null,
+  ) {}
 
-  abstract apply(context: any): Promise<void>;
+  abstract apply(context: any): Promise<Return>;
 }

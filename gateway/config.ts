@@ -13,6 +13,6 @@ export const {
   USERS_SERVICE,
 
   // Other configuration
-  IS_DEV = false,
+  IS_DEV = process.env.NODE_ENV === "development",
   VARIANT = "default",
 } = process.env;

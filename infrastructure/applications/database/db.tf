@@ -17,7 +17,7 @@ resource "aws_db_instance" "database" {
   engine                      = "postgres"
   identifier                  = "pythonit-${terraform.workspace}"
   allow_major_version_upgrade = true
-  engine_version              = "11.8"
+  engine_version              = "11.10"
   instance_class              = "db.t2.micro"
   name                        = "${local.normalized_workspace}backend"
   username                    = "root"

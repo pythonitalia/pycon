@@ -4,6 +4,7 @@ import { IS_DEV } from "./config";
 import { Pastaporto } from "./pastaporto/entities";
 import { getPastaportoActionFromToken } from "./actions";
 
+const PASTAPORTO_X_HEADER = "x-pastaporto";
 const PASTAPORTO_ACTION_X_HEADER = "x-pastaporto-action";
 
 class ServiceRemoteGraphQLDataSource extends RemoteGraphQLDataSource {
@@ -11,7 +12,7 @@ class ServiceRemoteGraphQLDataSource extends RemoteGraphQLDataSource {
   async willSendRequest({ request, context }) {
     const pastaporto: Pastaporto = context.pastaporto;
     if (pastaporto) {
-      request!.http!.headers.set("x-pastaporto", await pastaporto.sign());
+      request!.http!.headers.set(PASTAPORTO_X_HEADER, pastaporto.sign());
     }
   }
 

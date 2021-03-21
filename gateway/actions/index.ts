@@ -10,7 +10,6 @@ type DecodedToken = {
 };
 
 export const getPastaportoActionFromToken = (token: string) => {
-  // didReceiveResponse where this is called is not async
   const decodedToken = jwt.verify(
     token,
     PASTAPORTO_ACTION_SECRET as string,
