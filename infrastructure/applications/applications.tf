@@ -63,7 +63,7 @@ module "admin_gateway" {
 module "users_backend" {
   source = "./users_backend"
 
-  session_secret_key        = var.users_backend_session_secret_key
+  secret_key                = var.users_backend_secret_key
   google_auth_client_id     = var.social_auth_google_oauth2_key
   google_auth_client_secret = var.social_auth_google_oauth2_secret
   database_password         = var.database_password

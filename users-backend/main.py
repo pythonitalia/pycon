@@ -17,7 +17,7 @@ from users.db import get_engine, get_session
 from users.domain.repository import UsersRepository
 from users.internal_api.permissions import is_service
 from users.internal_api.views import GraphQL as InternalGraphQL
-from users.settings import DEBUG, PASTAPORTO_SECRET, SESSION_SECRET_KEY
+from users.settings import DEBUG, PASTAPORTO_SECRET, SECRET_KEY
 from users.social_auth.views import google_login, google_login_auth
 
 logging.basicConfig(level=logging.INFO)
@@ -34,7 +34,7 @@ app = Starlette(
     debug=DEBUG,
     routes=routes,
     middleware=[
-        Middleware(SessionMiddleware, secret_key=SESSION_SECRET_KEY),
+        Middleware(SessionMiddleware, secret_key=SECRET_KEY),
         pastaporto_auth_middleware(PASTAPORTO_SECRET),
     ],
 )

@@ -40,7 +40,7 @@ module "lambda" {
   security_group_ids = [data.aws_security_group.rds.id]
   env_vars = {
     DEBUG                     = "false"
-    SESSION_SECRET_KEY        = var.session_secret_key
+    SECRET_KEY                = var.secret_key
     GOOGLE_AUTH_CLIENT_ID     = var.google_auth_client_id
     GOOGLE_AUTH_CLIENT_SECRET = var.google_auth_client_secret
     DATABASE_URL              = "postgresql+asyncpg://${data.aws_db_instance.database.master_username}:${var.database_password}@${data.aws_db_instance.database.address}:${data.aws_db_instance.database.port}/users"

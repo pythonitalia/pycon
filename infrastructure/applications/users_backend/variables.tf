@@ -1,4 +1,4 @@
-variable "session_secret_key" {}
+variable "secret_key" {}
 variable "google_auth_client_id" {}
 variable "google_auth_client_secret" {}
 variable "database_password" {}

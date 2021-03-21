@@ -6,7 +6,7 @@ config = Config(".env")
 
 DEBUG = config("DEBUG", cast=bool, default=False)
 DATABASE_URL = config("DATABASE_URL")
-SESSION_SECRET_KEY = config("SESSION_SECRET_KEY", cast=Secret)
+SECRET_KEY = config("SECRET_KEY", cast=Secret)
 
 # Google social auth
 GOOGLE_AUTH_CLIENT_ID = config("GOOGLE_AUTH_CLIENT_ID", cast=Secret, default=None)

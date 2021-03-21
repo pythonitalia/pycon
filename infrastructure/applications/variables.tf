@@ -12,7 +12,7 @@ variable "social_auth_google_oauth2_secret" {}
 variable "pretix_api_token" {}
 variable "pinpoint_application_id" {}
 variable "pretix_sentry_dsn" {}
-variable "users_backend_session_secret_key" {}
+variable "users_backend_secret_key" {}
 
 # Secrets
 variable "pastaporto_secret" {}
