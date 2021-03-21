@@ -1,5 +1,3 @@
-/// <reference path="../types.d.ts" />
-
 import { ApolloServer } from "apollo-server";
 import { getPort } from "./utils";
 import { gateway } from "../gateway";

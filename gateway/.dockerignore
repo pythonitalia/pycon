@@ -1,7 +1,10 @@
-node_modules
+**/node_modules/**
 nodemon.json
 .prettierrc
 .editorconfig
 Dockerfile
 dist
 .env
+**/__tests__/**
+dev/**
+dev-types.d.ts
