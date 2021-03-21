@@ -14,6 +14,12 @@ type Return = {
   refreshToken?: string;
 };
 
+const SECONDS_IN_1_HOUR = 60 * 60;
+const SECONDS_IN_1_DAY = SECONDS_IN_1_HOUR * 24;
+const SECONDS_IN_1_WEEK = SECONDS_IN_1_DAY * 7;
+
+const SECONDS_IN_84_DAYS = SECONDS_IN_1_WEEK * 4 * 3;
+
 export class AuthAction extends PastaportoAction<Options, Return> {
   async apply(context: any) {
     const sub = `${this.payload["id"]}`;
@@ -28,7 +34,7 @@ export class AuthAction extends PastaportoAction<Options, Return> {
       value: identityToken,
       options: {
         httpOnly: true,
-        maxAge: 60 * 60 * 24 * 7 * 4 * 3,
+        maxAge: SECONDS_IN_84_DAYS,
         path: "/",
         sameSite: true,
         secure: !IS_DEV,
@@ -43,7 +49,7 @@ export class AuthAction extends PastaportoAction<Options, Return> {
         value: refreshToken,
         options: {
           httpOnly: true,
-          maxAge: 60 * 60 * 24 * 7 * 4 * 3,
+          maxAge: SECONDS_IN_84_DAYS,
           path: "/",
           sameSite: true,
           secure: !IS_DEV,
