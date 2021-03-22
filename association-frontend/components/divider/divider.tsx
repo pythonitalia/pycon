@@ -1,4 +1,4 @@
-import clsx from "clsx";
+import classnames from "clclassnamessx";
 
 type DividerProps = {
   borderClassName?: string;
@@ -15,11 +15,16 @@ export const Divider: React.FC<DividerProps> = ({
     <div className="relative">
       <div className="absolute inset-0 flex items-center">
         <div
-          className={clsx("w-full border-t border-gray-300", borderClassName)}
+          className={classnames(
+            "w-full border-t border-gray-300",
+            borderClassName,
+          )}
         />
       </div>
       <div className="relative flex justify-center text-base">
-        <span className={clsx("px-2 bg-white text-gray-500", textClassName)}>
+        <span
+          className={classnames("px-2 bg-white text-gray-500", textClassName)}
+        >
           {text}
         </span>
       </div>
