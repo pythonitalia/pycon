@@ -134,7 +134,6 @@ async def _():
         stripe_session_id="cs_test_12345",
     )
     assert orig_subscription.stripe_session_id == "cs_test_12345"
-    print(f"{orig_subscription.stripe_session_id = }")
     repository = FakeAssociationRepository(
         subscriptions=[orig_subscription], customers=[]
     )
@@ -156,7 +155,6 @@ async def _():
         stripe_session_id="cs_test_12345",
     )
     assert orig_subscription.stripe_session_id == "cs_test_12345"
-    print(f"{orig_subscription.stripe_session_id = }")
     repository = FakeAssociationRepository(
         subscriptions=[orig_subscription], customers=[]
     )

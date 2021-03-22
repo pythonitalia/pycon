@@ -168,13 +168,11 @@ class FakeAssociationRepository(AssociationRepository):
     async def retrieve_stripe_checkout_session(
         self, stripe_session_id: str
     ) -> Optional[StripeCheckoutSession]:
-        print(f"{self.CHECKOUT_SESSIONS_BY_ID = }")
         return self.CHECKOUT_SESSIONS_BY_ID.get(stripe_session_id, None)
 
     async def retrieve_stripe_subscription(
         self, stripe_subscription_id: str
     ) -> Optional[StripeSubscription]:
-        print(f"{self.STRIPE_SUBSCRIPTIONS_BY_ID = }")
         return self.STRIPE_SUBSCRIPTIONS_BY_ID.get(stripe_subscription_id, None)
 
     async def retrieve_external_subscription_by_session_id(
