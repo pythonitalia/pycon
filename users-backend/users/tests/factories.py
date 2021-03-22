@@ -1,3 +1,4 @@
+import dataclasses
 import datetime
 
 import factory
@@ -44,6 +45,10 @@ async def user_factory():
     async def func(**kwargs):
         obj = UserFactory.create(**kwargs)
         await UserFactory._meta.sqlalchemy_session.flush()
+        # all of this is to avoid `return obj` triggering a query to the DB
+        # without await. The whole async DB is messy
+        obj = dataclasses.replace(obj, password=kwargs.get("password", None))
+        await UserFactory._meta.sqlalchemy_session.commit()
         return obj
 
     return func

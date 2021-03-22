@@ -6,6 +6,7 @@ from sqlalchemy.sql.expression import or_, select
 
 from users.domain.entities import User
 from users.domain.paginable import Paginable
+from users.starlette_password.hashers import make_password
 
 
 class AbstractTransaction:
@@ -31,6 +32,9 @@ class AbstractUsersRepository(AbstractTransaction):
     async def create_user(self, user: User) -> User:
         raise NotImplementedError()
 
+    async def save_user(self, user: User) -> User:
+        raise NotImplementedError()
+
 
 class UsersRepository(AbstractUsersRepository):
     session: Optional[AsyncSession]
@@ -53,6 +57,13 @@ class UsersRepository(AbstractUsersRepository):
 
     async def create_user(self, user: User) -> User:
         self.session.add(user)
+        await self.session.flush()
+        return user
+
+    async def save_user(self, user: User) -> User:
+        if user.new_password:
+            user.hashed_password = make_password(user.new_password)
+
         await self.session.flush()
         return user
 

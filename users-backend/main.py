@@ -34,7 +34,7 @@ app = Starlette(
     debug=DEBUG,
     routes=routes,
     middleware=[
-        Middleware(SessionMiddleware, secret_key=SECRET_KEY),
+        Middleware(SessionMiddleware, secret_key=str(SECRET_KEY)),
         pastaporto_auth_middleware(PASTAPORTO_SECRET),
     ],
 )

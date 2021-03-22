@@ -40,6 +40,9 @@ class FakeUsersRepository(AbstractUsersRepository):
         self.USERS_BY_ID[new_user.id] = new_user
         return new_user
 
+    async def save_user(self, user: User) -> User:
+        return user
+
     def transaction(self):
         return DummyTransaction()
 

@@ -1,13 +1,15 @@
 from __future__ import annotations
 
 from dataclasses import InitVar, dataclass, field
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from typing import Optional
 
+import jwt
 from sqlalchemy import Boolean, Column, Date, DateTime, Integer, String, Table
 from sqlalchemy.orm import registry
 from starlette.authentication import BaseUser
 
+from users.settings import SECRET_KEY
 from users.starlette_password.hashers import (
     check_password,
     is_password_usable,
@@ -37,6 +39,7 @@ class User(BaseUser):
     is_superuser: bool = False
 
     last_login: Optional[datetime] = None
+    request_reset_password_id: Optional[int] = 1
     id: Optional[int] = None
     hashed_password: Optional[str] = field(default=None, repr=False)
     new_password: Optional[str] = field(default=None, repr=False)
@@ -62,6 +65,24 @@ class User(BaseUser):
 
     def has_usable_password(self) -> bool:
         return is_password_usable(self.hashed_password)
+
+    def get_reset_password_jwt_id(self) -> str:
+        return f"reset-password:{self.id}:{self.request_reset_password_id}"
+
+    def create_reset_password_token(self) -> str:
+        now = datetime.utcnow()
+        return jwt.encode(
+            {
+                "jti": self.get_reset_password_jwt_id(),
+                "user_id": self.id,
+                "exp": now + timedelta(hours=1),
+                "iat": now,
+                "iss": "users",
+                "aud": "users/reset-password",
+            },
+            str(SECRET_KEY),
+            algorithm="HS256",
+        )
 
     @property
     def is_authenticated(self) -> bool:
@@ -91,6 +112,13 @@ user_table = Table(
     Column("is_active", Boolean(), default=True, nullable=False),
     Column("is_staff", Boolean(), default=False, nullable=False),
     Column("is_superuser", Boolean(), default=False, nullable=False),
+    Column(
+        "request_reset_password_id",
+        Integer(),
+        default=1,
+        server_default="1",
+        nullable=False,
+    ),
 )
 
 mapper_registry.map_imperatively(

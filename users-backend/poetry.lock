@@ -593,7 +593,7 @@ python-versions = ">=3.5"
 
 [[package]]
 name = "sqlalchemy"
-version = "1.4.0b3"
+version = "1.4.2"
 description = "Database Abstraction Library"
 category = "main"
 optional = false
@@ -609,6 +609,7 @@ mariadb_connector = ["mariadb (>=1.0.1)"]
 mssql = ["pyodbc"]
 mssql_pymssql = ["pymssql"]
 mssql_pyodbc = ["pyodbc"]
+mypy = ["sqlalchemy2-stubs", "mypy (>=0.800)"]
 mysql = ["mysqlclient (>=1.4.0,<2)", "mysqlclient (>=1.4.0)"]
 mysql_connector = ["mysqlconnector"]
 oracle = ["cx_oracle (>=7,<8)", "cx_oracle (>=7)"]
@@ -771,7 +772,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "76d97c935161a6e4699dfb1a9692edca250cc255a67132e2af015431f82b8757"
+content-hash = "61e3cfe363833cc81baa48bfdbffeaaf6966ea13a5aff935d5823c38c576fa20"
 
 [metadata.files]
 alembic = [
@@ -1266,34 +1267,40 @@ sniffio = [
     {file = "sniffio-1.2.0.tar.gz", hash = "sha256:c4666eecec1d3f50960c6bdf61ab7bc350648da6c126e3cf6898d8cd4ddcd3de"},
 ]
 sqlalchemy = [
-    {file = "SQLAlchemy-1.4.0b3-cp27-cp27m-macosx_10_14_x86_64.whl", hash = "sha256:48db9563a8a304e0177711df9abdad30aecbc13571671c9a79906d0f42c03a19"},
-    {file = "SQLAlchemy-1.4.0b3-cp27-cp27m-win32.whl", hash = "sha256:4db46538d8f0bb7d3d01dea1cd884204bdba3a833ec7e91379cb6ebdb9bd6fc0"},
-    {file = "SQLAlchemy-1.4.0b3-cp27-cp27m-win_amd64.whl", hash = "sha256:c17f02dde5ee05956bc3fe8320f3cf5c44a11aa9ab334623729cebecdf70afef"},
-    {file = "SQLAlchemy-1.4.0b3-cp36-cp36m-macosx_10_14_x86_64.whl", hash = "sha256:0cf76a1f78031a7e654c50e614b4244785bae04c72f181fbb609daa26f894390"},
-    {file = "SQLAlchemy-1.4.0b3-cp36-cp36m-manylinux1_x86_64.whl", hash = "sha256:1e9791475a2f3b50f56ed4bfca8b17c8c334f0e0f8cb5898480be994a76bd446"},
-    {file = "SQLAlchemy-1.4.0b3-cp36-cp36m-manylinux2010_x86_64.whl", hash = "sha256:fff48978d3b670b054c25ad6b7a834b3723ac055d5593552053812b74fee4377"},
-    {file = "SQLAlchemy-1.4.0b3-cp36-cp36m-manylinux2014_aarch64.whl", hash = "sha256:58cb52aab1325c3000a2d9eddaf71a6d91533f94eb5c855a93a35a20ce44d430"},
-    {file = "SQLAlchemy-1.4.0b3-cp36-cp36m-win32.whl", hash = "sha256:89b503fcc07da9fbd194746c28a9fc0fa7230f50f361ad080336ad751de6302a"},
-    {file = "SQLAlchemy-1.4.0b3-cp36-cp36m-win_amd64.whl", hash = "sha256:3f109d22bcfc06837507b04f73deb1401446cf830c213ef1d6eb00af89c5562a"},
-    {file = "SQLAlchemy-1.4.0b3-cp37-cp37m-macosx_10_14_x86_64.whl", hash = "sha256:f84b800b40e3ce612975a23385b36f9d8506fe7d511d3d4c2363e1a3304c8b07"},
-    {file = "SQLAlchemy-1.4.0b3-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:5898e0a7c838923b846ac71564ff6d6ed20baf6ad91c8d146c13ac374237574c"},
-    {file = "SQLAlchemy-1.4.0b3-cp37-cp37m-manylinux2010_x86_64.whl", hash = "sha256:7fdaa459c241cba353e3d95eda9403d45f633ce5a807cf4eb28c018de8b52cde"},
-    {file = "SQLAlchemy-1.4.0b3-cp37-cp37m-manylinux2014_aarch64.whl", hash = "sha256:52a908eeb27418f8b39d7b4e863b1aa455ed5c34b6fd6fefd80577e08e55c1ed"},
-    {file = "SQLAlchemy-1.4.0b3-cp37-cp37m-win32.whl", hash = "sha256:a1f4213790f5bd5c3b4dcedad248d982d540d7671a6bb454c6271cb46bb3d665"},
-    {file = "SQLAlchemy-1.4.0b3-cp37-cp37m-win_amd64.whl", hash = "sha256:aafc24c63503e3df845fc4d0bbc2757a4f11c725410637bb4f8b0aced319dba7"},
-    {file = "SQLAlchemy-1.4.0b3-cp38-cp38-macosx_10_14_x86_64.whl", hash = "sha256:e2223e8ce2e079a8022915c568cfff4eb31235139db49b4eb5cb1db6b4ecf656"},
-    {file = "SQLAlchemy-1.4.0b3-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:3d945e870ff405856331fd7f36b43562946271a1c744d8c062597552f864e2eb"},
-    {file = "SQLAlchemy-1.4.0b3-cp38-cp38-manylinux2010_x86_64.whl", hash = "sha256:f2de1336b228f227e36fb9549756dbb0791beadd36fa74b8bc2aa8db8c7e36b9"},
-    {file = "SQLAlchemy-1.4.0b3-cp38-cp38-manylinux2014_aarch64.whl", hash = "sha256:b2754f5e82e7a61b3600dc1b5dc7b7a7229acc2cda3f028f29ba569f9a9b601b"},
-    {file = "SQLAlchemy-1.4.0b3-cp38-cp38-win32.whl", hash = "sha256:008bd2e4691ea7a5eef674747c8a720531699f41fdd20fcf996bdaaa1f7d02e1"},
-    {file = "SQLAlchemy-1.4.0b3-cp38-cp38-win_amd64.whl", hash = "sha256:d34098841a62bf679da480bce711fdebe6ebcf04e951b4d83362100ad2f7e0bf"},
-    {file = "SQLAlchemy-1.4.0b3-cp39-cp39-macosx_10_14_x86_64.whl", hash = "sha256:9e12ce96e22818fda7157d2b926084178f478df7cc4d3abb8cebae031c7076ec"},
-    {file = "SQLAlchemy-1.4.0b3-cp39-cp39-manylinux1_x86_64.whl", hash = "sha256:fc00578bdf373b339e186fc0e9bc2692d8e03d25e785be8f24475b0833e9a055"},
-    {file = "SQLAlchemy-1.4.0b3-cp39-cp39-manylinux2010_x86_64.whl", hash = "sha256:2bcac2674c8214da6ee034cf310f9c63192536b6dd42adad7972c43ae56f483e"},
-    {file = "SQLAlchemy-1.4.0b3-cp39-cp39-manylinux2014_aarch64.whl", hash = "sha256:53988d51bafa98602394cc9a9b71400ac43ea000661387fe5446928ca50dfc2c"},
-    {file = "SQLAlchemy-1.4.0b3-cp39-cp39-win32.whl", hash = "sha256:61c3f81d4bdf3a8cb68ba0e3e0d407448cc709e38a2d15e8087ce4a69246a0e3"},
-    {file = "SQLAlchemy-1.4.0b3-cp39-cp39-win_amd64.whl", hash = "sha256:defbaf1b2cbac118a88a6379d435b1d953df8af3d4bc46c1c73bb6cd81e88728"},
-    {file = "SQLAlchemy-1.4.0b3.tar.gz", hash = "sha256:e6b43b28d5d5cbf271ea6468c387b4c0a786bfd1d5f580be387b5b3e4355a7ca"},
+    {file = "SQLAlchemy-1.4.2-cp27-cp27m-macosx_10_14_x86_64.whl", hash = "sha256:aed22be55a608787bb6875dbcf3561349a0e88fe33fd88c318c1e5b4eeb2306a"},
+    {file = "SQLAlchemy-1.4.2-cp27-cp27m-manylinux1_x86_64.whl", hash = "sha256:7e1b0ed6d720750f02333d2f52502dfc2a23185aacc2cc6ce6ec29d28c21397c"},
+    {file = "SQLAlchemy-1.4.2-cp27-cp27m-win32.whl", hash = "sha256:9406b96a979ab8d6de5d89f58b1f103c9aeef6fb5367448537a8228619f11258"},
+    {file = "SQLAlchemy-1.4.2-cp27-cp27m-win_amd64.whl", hash = "sha256:59ec279f1bd55e1d703e3d4b651600cc463cc3eafa8d8e5a70ab844f736348d4"},
+    {file = "SQLAlchemy-1.4.2-cp27-cp27mu-manylinux1_x86_64.whl", hash = "sha256:8cfcfcf2582b19c874fa20d0b75100abe17be80a4c637c0683b4eb919946dfee"},
+    {file = "SQLAlchemy-1.4.2-cp36-cp36m-macosx_10_14_x86_64.whl", hash = "sha256:a6b4b7688fe7d251bbae3f9da4a487568bd584d13201bc7591c8639ad01fecdc"},
+    {file = "SQLAlchemy-1.4.2-cp36-cp36m-manylinux1_x86_64.whl", hash = "sha256:0abab6d1044198993256f073340b14c459736777c550a7e914cd00444dcf9c30"},
+    {file = "SQLAlchemy-1.4.2-cp36-cp36m-manylinux2010_x86_64.whl", hash = "sha256:5fb8f6a391992dd6aafe4fdf1dffbf7934fba1f5938593f20b152aa7f9619f82"},
+    {file = "SQLAlchemy-1.4.2-cp36-cp36m-manylinux2014_aarch64.whl", hash = "sha256:97e333260a99d989f2a131aa8aa74140636dfbd030987150cb3748da607ea7db"},
+    {file = "SQLAlchemy-1.4.2-cp36-cp36m-manylinux2014_x86_64.whl", hash = "sha256:3fa75c854dba3f9b9c28bc5d88d246f6bc6f20b7480367c65339bcb2864d4707"},
+    {file = "SQLAlchemy-1.4.2-cp36-cp36m-win32.whl", hash = "sha256:1b9f3c7b281aa1c3d0c74ef12c4633e5f8358bb94f01be7b964887183fd53e5e"},
+    {file = "SQLAlchemy-1.4.2-cp36-cp36m-win_amd64.whl", hash = "sha256:da72e3499bde4548e8b7d7f2ab23ceed09a5bac307bf51057e066c406a0ba2e1"},
+    {file = "SQLAlchemy-1.4.2-cp37-cp37m-macosx_10_14_x86_64.whl", hash = "sha256:8383292298bb85d7ad79a13c6571aff213b96c49737f3c3af129de63bbfb42c9"},
+    {file = "SQLAlchemy-1.4.2-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:4d1447183356c9679853926e81c7ebce3fbca9b1c607ea439975298c72137a36"},
+    {file = "SQLAlchemy-1.4.2-cp37-cp37m-manylinux2010_x86_64.whl", hash = "sha256:ff76d7dbf33f62e30e5a1d1b095d46afcdc49e42cbe33ce12014110147466700"},
+    {file = "SQLAlchemy-1.4.2-cp37-cp37m-manylinux2014_aarch64.whl", hash = "sha256:1ba6922331b3f38e116c9266206b044baf64576e5cebd87917b5ad872d7a025f"},
+    {file = "SQLAlchemy-1.4.2-cp37-cp37m-manylinux2014_x86_64.whl", hash = "sha256:d3b2819f4d7ae56191efc6fc456eb1805ada2bd5ba93d918893bc24fa7a1e30c"},
+    {file = "SQLAlchemy-1.4.2-cp37-cp37m-win32.whl", hash = "sha256:3b290ff34de625143a05d2d172a88a064bb04a7938265b09d4e4bf45f21948f6"},
+    {file = "SQLAlchemy-1.4.2-cp37-cp37m-win_amd64.whl", hash = "sha256:5289cafee71037f15feeeaf736f01910b9e3572525b73b201bdd21816db010ed"},
+    {file = "SQLAlchemy-1.4.2-cp38-cp38-macosx_10_14_x86_64.whl", hash = "sha256:0bb04fd7414718fb1f4dfa17efcb0be787363451cf99a5e992728925d298d9ae"},
+    {file = "SQLAlchemy-1.4.2-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:4e88549a5e58ba8c80c5ea071ac3b4e590236672a882bb80f56da4afcee45d96"},
+    {file = "SQLAlchemy-1.4.2-cp38-cp38-manylinux2010_x86_64.whl", hash = "sha256:edec945ed57d11a1123657e4066f0bf747aaa93c8a65ec1c2c98172d1f2a9b7d"},
+    {file = "SQLAlchemy-1.4.2-cp38-cp38-manylinux2014_aarch64.whl", hash = "sha256:06125670280111e39014af87f14d74599fd4b39a512c74f1a10e21e5626eb158"},
+    {file = "SQLAlchemy-1.4.2-cp38-cp38-manylinux2014_x86_64.whl", hash = "sha256:e1692bdf1b95c97caab1201773a4576f59627997f598d30bdadc50dd9f897fec"},
+    {file = "SQLAlchemy-1.4.2-cp38-cp38-win32.whl", hash = "sha256:65c4df9517da9cce2c1255282d3e39f2afbc3a02deba60d99b0a3283ae80ec0b"},
+    {file = "SQLAlchemy-1.4.2-cp38-cp38-win_amd64.whl", hash = "sha256:c6197c88ad53c31f58de5a8180936b8ef027356e788cd5f6514b3439d3d897ac"},
+    {file = "SQLAlchemy-1.4.2-cp39-cp39-macosx_10_14_x86_64.whl", hash = "sha256:6d6115edf1297bfa58994986ffe0dff21af18f0cba51dfa6d1769aa8a277be32"},
+    {file = "SQLAlchemy-1.4.2-cp39-cp39-manylinux1_x86_64.whl", hash = "sha256:facacaea95e0822f7bbeaa6909b30b2836b14cff8790209d52a0c866e240b673"},
+    {file = "SQLAlchemy-1.4.2-cp39-cp39-manylinux2010_x86_64.whl", hash = "sha256:6e517126d3bc13d455826befdc35a89f82f01d163848f68db02caa80d25433fc"},
+    {file = "SQLAlchemy-1.4.2-cp39-cp39-manylinux2014_aarch64.whl", hash = "sha256:09b08eb1bea621e47c2b0fcb0334fcbb00e1da2a3c2d45a98e56cd072b840719"},
+    {file = "SQLAlchemy-1.4.2-cp39-cp39-manylinux2014_x86_64.whl", hash = "sha256:7eba42098a13a3bcd509080b5e44d73783d9129ba0383793979bf518d01e8bb3"},
+    {file = "SQLAlchemy-1.4.2-cp39-cp39-win32.whl", hash = "sha256:920db115eb06fc507fe2c774fb5c82a898b05dffbdadc7fafad51ce2cfd8c549"},
+    {file = "SQLAlchemy-1.4.2-cp39-cp39-win_amd64.whl", hash = "sha256:dcde5067a7dab1ff2eaea2f3622b2055c5225ce2aaf589c5a4c703d43519c4ba"},
+    {file = "SQLAlchemy-1.4.2.tar.gz", hash = "sha256:6a8e4c2e65028933a6dc8643c8f5a4f295a367131195b3c708634925cb3e8ec1"},
 ]
 starlette = [
     {file = "starlette-0.14.2-py3-none-any.whl", hash = "sha256:3c8e48e52736b3161e34c9f0e8153b4f32ec5d8995a3ee1d59410d92f75162ed"},

@@ -8,11 +8,11 @@ from ward import test
 from users.domain.entities import User
 from users.domain.repository import UsersRepository
 from users.tests.factories import user_factory
-from users.tests.session import cleanup_db, db, second_session
+from users.tests.session import db, second_session
 
 
 @test("create user")
-async def _(db=db, second_session=second_session, cleanup_db=cleanup_db):
+async def _(db=db, second_session=second_session):
     db = cast(AsyncSession, db)
     second_session = cast(AsyncSession, second_session)
 
@@ -83,7 +83,6 @@ async def _(
     db=db,
     second_session=second_session,
     user_factory=user_factory,
-    cleanup_db=cleanup_db,
 ):
     db = cast(AsyncSession, db)
     second_session = cast(AsyncSession, second_session)
@@ -118,7 +117,6 @@ async def _(
     db=db,
     second_session=second_session,
     user_factory=user_factory,
-    cleanup_db=cleanup_db,
 ):
     db = cast(AsyncSession, db)
     second_session = cast(AsyncSession, second_session)

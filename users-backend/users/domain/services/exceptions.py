@@ -12,4 +12,16 @@ class EmailAlreadyUsedError(Exception):
 
 
 class UserIsNotAdminError(Exception):
-    """Raised when the login is configurated to reject non-admin users"""
+    """Raised when the login is configured to reject non-admin users"""
+
+
+class ResetPasswordTokenInvalidError(Exception):
+    """Raised when the reset password token JWT-ID is not valid anymore"""
+
+
+class ResetPasswordTokenExpiredError(Exception):
+    """Raised when the reset password token is expired"""
+
+
+class UserDoesNotExistError(Exception):
+    """Raised when the user requested does not exist"""

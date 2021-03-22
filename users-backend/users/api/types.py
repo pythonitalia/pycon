@@ -17,3 +17,8 @@ class User:
         return cls(
             id=entity.id, email=entity.email, fullname=entity.fullname, name=entity.name
         )
+
+
+@strawberry.type
+class OperationSuccess:
+    ok: bool
