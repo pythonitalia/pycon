@@ -3,7 +3,8 @@
 -------------------
 
 • Bugfix Test of method AssociationRepository.save_payment
-
+• Refactoring of Mutation test to mock stripe repository methods instead of the service
+• Handle the difference between ACTIVE and EXPIRED state
 -------------------
 
 • Take request.user from Pastaporto middleware

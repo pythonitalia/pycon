@@ -6,8 +6,11 @@ from ward import raises, test
 
 from association.domain import services
 from association.domain.entities.stripe import (
+    StripeCheckoutSession,
     StripeCheckoutSessionInput,
     StripeCustomer,
+    StripeStatus,
+    StripeSubscription,
 )
 from association.domain.entities.subscriptions import SubscriptionState, UserData
 from association.domain.exceptions import AlreadySubscribed, MultipleCustomerReturned
@@ -37,11 +40,12 @@ async def _():
         assert subscription.creation_date == datetime.datetime(2021, 3, 13, 13, 0)
 
 
-@test("subscription PENDING -> returns self")
+@test("subscription PENDING with stripe_subscription -> returns self")
 async def _():
     orig_subscription = SubscriptionFactory(
-        user_id=1357, state=SubscriptionState.PENDING
+        user_id=1357, state=SubscriptionState.PENDING, stripe_session_id="cs_test_12347"
     )
+    assert orig_subscription.stripe_subscription_id != ""
 
     repository = FakeAssociationRepository(
         subscriptions=[orig_subscription], customers=[]
@@ -52,8 +56,42 @@ async def _():
         association_repository=repository,
     )
     assert subscription.user_id == 1357
-    assert orig_subscription.stripe_session_id != ""
-    assert subscription.stripe_session_id == orig_subscription.stripe_session_id
+    assert subscription.stripe_session_id == "cs_test_12347"
+
+
+@test(
+    "subscription PENDING without stripe_subscription -> returns changed subscription"
+)
+async def _():
+    orig_subscription = SubscriptionFactory(
+        user_id=1357, without_subscription=True, stripe_session_id="cs_test_12345"
+    )
+    assert orig_subscription.stripe_subscription_id == ""
+
+    repository = FakeAssociationRepository(
+        subscriptions=[orig_subscription],
+        customers=[],
+        checkout_sessions=[
+            StripeCheckoutSession(
+                id="cs_test_12345",
+                customer_id=SubscriptionFactory.build().stripe_customer_id,
+                subscription_id="sub_test_12345",
+            )
+        ],
+        stripe_subscriptions=[
+            StripeSubscription(
+                id="sub_test_12345",
+                status=StripeStatus.INCOMPLETE_EXPIRED,
+                customer_id="cus_test_12345",
+            )
+        ],
+    )
+    subscription = await services.subscribe_user_to_association(
+        user_data=UserData(email="test_user@pycon.it", user_id=1357),
+        association_repository=repository,
+    )
+    assert subscription.user_id == 1357
+    assert subscription.stripe_session_id != "cs_test_12345"
 
 
 @test("subscription ACTIVE -> raises AlreadySubscribed")
@@ -86,12 +124,17 @@ async def _():
         )
 
 
-@test("subscription FIRST_PAYMENT_EXPIRED -> returns NEW Subscription")
+@test(
+    "subscription FIRST_PAYMENT_EXPIRED -> returns OLD Subscription with new Session ID"
+)
 async def _():
     orig_subscription = SubscriptionFactory(
-        user_id=1357, state=SubscriptionState.FIRST_PAYMENT_EXPIRED
+        user_id=1357,
+        state=SubscriptionState.FIRST_PAYMENT_EXPIRED,
+        stripe_session_id="cs_test_12345",
     )
-    assert orig_subscription.stripe_session_id != ""
+    assert orig_subscription.stripe_session_id == "cs_test_12345"
+    print(f"{orig_subscription.stripe_session_id = }")
     repository = FakeAssociationRepository(
         subscriptions=[orig_subscription], customers=[]
     )
@@ -100,8 +143,31 @@ async def _():
         user_data=UserData(email="test_user@pycon.it", user_id=1357),
         association_repository=repository,
     )
+    assert subscription == orig_subscription
     assert subscription.user_id == 1357
-    assert subscription.stripe_session_id != orig_subscription.stripe_session_id
+    assert subscription.stripe_session_id != "cs_test_12345"
+
+
+@test("subscription CANCELED -> returns OLD Subscription with new Session ID")
+async def _():
+    orig_subscription = SubscriptionFactory(
+        user_id=1357,
+        state=SubscriptionState.CANCELED,
+        stripe_session_id="cs_test_12345",
+    )
+    assert orig_subscription.stripe_session_id == "cs_test_12345"
+    print(f"{orig_subscription.stripe_session_id = }")
+    repository = FakeAssociationRepository(
+        subscriptions=[orig_subscription], customers=[]
+    )
+
+    subscription = await services.subscribe_user_to_association(
+        user_data=UserData(email="test_user@pycon.it", user_id=1357),
+        association_repository=repository,
+    )
+    assert subscription == orig_subscription
+    assert subscription.user_id == 1357
+    assert subscription.stripe_session_id != "cs_test_12345"
 
 
 @test(
@@ -168,22 +234,6 @@ async def _():
                 customer_email="old_stripe_customer@pycon.it", customer_id=""
             )
         )
-
-
-@test("No Subscription -> doesn't call AssociationRepository.delete_subscription")
-async def _():
-    repository = FakeAssociationRepository(subscriptions=[], customers=[])
-
-    with patch.object(
-        repository,
-        "delete_subscription",
-        return_value=SubscriptionFactory.build(),
-    ) as delete_subscription_mock:
-        await services.subscribe_user_to_association(
-            user_data=UserData(email="old_stripe_customer@pycon.it", user_id=1357),
-            association_repository=repository,
-        )
-        delete_subscription_mock.assert_not_called()
 
 
 @test("No Subscription -> calls AssociationRepository.save_subscription")
@@ -256,7 +306,8 @@ async def _():
 async def _():
     orig_subscription = SubscriptionFactory(
         user_id=1357,
-        state=SubscriptionState.FIRST_PAYMENT_EXPIRED,
+        # state=SubscriptionState.FIRST_PAYMENT_EXPIRED,
+        without_manageable_subscription=True,
         stripe_customer_id="cus_test_12345",
     )
     assert orig_subscription.stripe_session_id != ""
@@ -281,7 +332,7 @@ async def _():
 
 
 @test(
-    "subscription FIRST_PAYMENT_EXPIRED -> calls AssociationRepository.delete_subscription"
+    "subscription FIRST_PAYMENT_EXPIRED -> calls AssociationRepository.save_subscription with old subscription"
 )
 async def _():
     orig_subscription = SubscriptionFactory(
@@ -294,14 +345,14 @@ async def _():
 
     with patch.object(
         repository,
-        "delete_subscription",
+        "save_subscription",
         return_value=None,
-    ) as delete_subscription_mock:
+    ) as save_subscription_mock:
         await services.subscribe_user_to_association(
             user_data=UserData(email="test_user@pycon.it", user_id=1357),
             association_repository=repository,
         )
-        delete_subscription_mock.assert_called_once_with(orig_subscription)
+        save_subscription_mock.assert_called_once_with(orig_subscription)
 
 
 @test(

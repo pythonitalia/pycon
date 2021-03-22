@@ -2,13 +2,13 @@ from .handle_checkout_session_completed import (
     SubscriptionUpdateInput,
     handle_checkout_session_completed,
 )
-from .handle_customer_subscription_updated import (
-    SubscriptionDetailInput,
-    handle_customer_subscription_updated,
-)
 from .handle_invoice_paid import InvoicePaidInput, handle_invoice_paid
 from .manage_user_association_subscription import manage_user_association_subscription
 from .subscribe_user_to_association import subscribe_user_to_association
+from .update_subscription_from_external_subscription import (
+    SubscriptionDetailInput,
+    update_subscription_from_external_subscription,
+)
 from .user_has_association_subscription import user_has_association_subscription
 
 __all__ = [
@@ -23,5 +23,5 @@ __all__ = [
     "InvoicePaidInput",
     "handle_invoice_paid",
     "SubscriptionDetailInput",
-    "handle_customer_subscription_updated",
+    "update_subscription_from_external_subscription",
 ]

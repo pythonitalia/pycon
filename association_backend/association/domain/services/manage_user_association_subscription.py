@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 async def manage_user_association_subscription(
     user_data: UserData, association_repository: AssociationRepository
 ) -> Subscription:
-    """This service creates a CustomerPortalSession and returns his url"""
+    """This service creates a CustomerPortalSession and returns its url"""
     subscription = await association_repository.get_subscription_by_user_id(
         user_data.user_id
     )

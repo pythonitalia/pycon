@@ -1,9 +1,11 @@
 import logging
+from datetime import datetime
+from typing import Optional
 
 from pydantic import BaseModel
 
 from association.domain.entities.stripe import StripeStatus
-from association.domain.entities.subscriptions import SubscriptionState
+from association.domain.entities.subscriptions import Subscription, SubscriptionState
 from association.domain.exceptions import (
     InconsistentStateTransitionError,
     SubscriptionNotFound,
@@ -16,17 +18,25 @@ logger = logging.getLogger(__name__)
 class SubscriptionDetailInput(BaseModel):
     subscription_id: str
     status: str
+    customer_id: Optional[str] = None
+    canceled_at: Optional[datetime] = None
 
 
-async def handle_customer_subscription_updated(
-    data: SubscriptionDetailInput, association_repository: AssociationRepository
+async def update_subscription_from_external_subscription(
+    data: SubscriptionDetailInput,
+    subscription: Optional[Subscription],
+    association_repository: AssociationRepository,
 ):
-    subscription = (
-        await association_repository.get_subscription_by_stripe_subscription_id(
-            data.subscription_id
+    if not subscription:
+        subscription = (
+            await association_repository.get_subscription_by_stripe_subscription_id(
+                data.subscription_id
+            )
         )
-    )
     if subscription:
+        if data.customer_id:
+            subscription.customer_id = data.customer_id
+        subscription.canceled_at = data.canceled_at
         # if subscription.is_for_life:
         #     subscription.state = SubscriptionState.ACTIVE
         if data.status == StripeStatus.ACTIVE:
@@ -50,10 +60,19 @@ async def handle_customer_subscription_updated(
                 )
                 raise InconsistentStateTransitionError(error_message)
             subscription.state = SubscriptionState.FIRST_PAYMENT_EXPIRED
-            # The session is expired, so the User cannot access the expired Session
+            # the User cannot access the old Session or Subscription
+            subscription.stripe_session_id = ""
+            subscription.stripe_subscription_id = ""
+        elif data.status in [
+            StripeStatus.CANCELED,
+            StripeStatus.UNPAID,
+        ]:
+            subscription.state = SubscriptionState.CANCELED
+            # the User cannot access the old Session or Subscription
             subscription.stripe_session_id = ""
             subscription.stripe_subscription_id = ""
         else:
+            # This is not a terminal state because User can change his payment settings going to customer portal
             subscription.state = SubscriptionState.EXPIRED
         subscription = await association_repository.save_subscription(subscription)
         await association_repository.commit()

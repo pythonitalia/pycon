@@ -31,27 +31,23 @@ class StripeProvider(BaseProvider):
     """
 
     def customer_id(self):
-        return (
-            "cus_test_"
-            + self.random_elements(string.ascii_lowercase + string.digits, length=16)[0]
+        return "cus_test_" + "".join(
+            self.random_elements(string.ascii_lowercase + string.digits, length=16)
         )
 
     def checkout_session_id(self):
-        return (
-            "cs_test_"
-            + self.random_elements(string.ascii_lowercase + string.digits, length=16)[0]
+        return "cs_test_" + "".join(
+            self.random_elements(string.ascii_lowercase + string.digits, length=16)
         )
 
     def subscription_id(self):
-        return (
-            "sub_test_"
-            + self.random_elements(string.ascii_lowercase + string.digits, length=16)[0]
+        return "sub_test_" + "".join(
+            self.random_elements(string.ascii_lowercase + string.digits, length=16)
         )
 
     def stripe_invoice_id(self):
-        return (
-            "inv_test_"
-            + self.random_elements(string.ascii_lowercase + string.digits, length=16)[0]
+        return "inv_test_" + "".join(
+            self.random_elements(string.ascii_lowercase + string.digits, length=16)
         )
 
     def invoice_pdf(self):
@@ -60,9 +56,8 @@ class StripeProvider(BaseProvider):
         )
 
     def customer_portal_session_id(self):
-        return (
-            "https://stripe.com/stripe_test_customer_portal/"
-            + self.random_elements(string.ascii_lowercase + string.digits, length=16)[0]
+        return "https://stripe.com/stripe_test_customer_portal/" + "".join(
+            self.random_elements(string.ascii_lowercase + string.digits, length=16)
         )
 
 
@@ -95,6 +90,25 @@ class SubscriptionFactory(SQLAlchemyModelFactory):
     user_id = factory.Faker("pyint", min_value=1)
     creation_date = factory.Faker("date_between", start_date="-30y", end_date="today")
     state = factory.fuzzy.FuzzyChoice(SubscriptionState)
+
+    class Params:
+        with_manageable_subscription = factory.Trait(
+            state=factory.fuzzy.FuzzyChoice(
+                [SubscriptionState.ACTIVE, SubscriptionState.EXPIRED]
+            ),
+        )
+        without_manageable_subscription = factory.Trait(
+            state=factory.fuzzy.FuzzyChoice(
+                [SubscriptionState.FIRST_PAYMENT_EXPIRED, SubscriptionState.CANCELED]
+            ),
+        )
+        without_subscription = factory.Trait(
+            state=SubscriptionState.PENDING, stripe_subscription_id=""
+        )
+        canceled = factory.Trait(
+            state=SubscriptionState.CANCELED,
+            # canceled_at=factory.Faker("date_between", start_date="-1y", end_date="today")
+        )
 
     @factory.lazy_attribute
     def stripe_subscription_id(self):

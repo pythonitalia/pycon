@@ -17,6 +17,7 @@ class SubscriptionState(str, Enum):
     PENDING = "pending"
     ACTIVE = "active"
     EXPIRED = "expired"
+    CANCELED = "canceled"
     FIRST_PAYMENT_EXPIRED = "first-payment-expired"
 
     def __str__(self) -> str:
@@ -32,6 +33,10 @@ class Subscription:
     stripe_session_id: Optional[str] = ""
     stripe_subscription_id: Optional[str] = ""
     stripe_customer_id: Optional[str] = ""
+    canceled_at: Optional[datetime] = None
+
+    def has_external_subscription(self):
+        return True if self.stripe_subscription_id else False
 
 
 @dataclass
@@ -53,6 +58,7 @@ subscription_table = Table(
     Column("stripe_customer_id", String(128), nullable=False),
     Column("stripe_session_id", String(128), nullable=False),
     Column("state", String(24), nullable=False),
+    Column("canceled_at", DateTime(timezone=True), nullable=True),
 )
 
 subscription_payment_table = Table(

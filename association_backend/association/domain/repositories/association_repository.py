@@ -8,6 +8,7 @@ from association.domain.entities.stripe import (
     StripeCheckoutSession,
     StripeCheckoutSessionInput,
     StripeCustomer,
+    StripeSubscription,
 )
 from association.domain.entities.subscriptions import Subscription, SubscriptionPayment
 from association.domain.exceptions import MultipleCustomerReturned
@@ -137,7 +138,7 @@ class AssociationRepository(AbstractRepository):
             return StripeCustomer(id=customers.data[0].id, email=email)
         return None
 
-    async def retrieve_checkout_session_by_id(
+    async def retrieve_stripe_checkout_session(
         self, stripe_session_id: str
     ) -> Optional[StripeCheckoutSession]:
         """ TODO Test ME """
@@ -150,3 +151,32 @@ class AssociationRepository(AbstractRepository):
             customer_id=checkout_session["customer"] or "",
             subscription_id=checkout_session["subscription"] or "",
         )
+
+    async def retrieve_stripe_subscription(
+        self, stripe_subscription_id: str
+    ) -> Optional[StripeSubscription]:
+        """ TODO Test ME """
+        stripe_subscription = stripe.Subscription.retrieve(
+            stripe_subscription_id, api_key=STRIPE_SUBSCRIPTION_API_SECRET
+        )
+        logger.info(f"stripe_subscription: {stripe_subscription}")
+        return StripeSubscription(
+            id=stripe_subscription["id"],
+            status=stripe_subscription["status"],
+            customer_id=stripe_subscription["customer"],
+            canceled_at=stripe_subscription["canceled_at"],
+        )
+
+    async def retrieve_external_subscription_by_session_id(
+        self, stripe_session_id: str
+    ) -> Optional[StripeSubscription]:
+        """ TODO Test ME """
+        checkout_session = await self.retrieve_stripe_checkout_session(
+            stripe_session_id
+        )
+        if checkout_session.subscription_id:
+            subscription = await self.retrieve_stripe_subscription(
+                checkout_session.subscription_id
+            )
+            return subscription
+        return None

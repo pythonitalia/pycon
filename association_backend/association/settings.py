@@ -1,20 +1,10 @@
 from sqlalchemy.engine.url import URL, make_url
 from starlette.config import Config
-from starlette.datastructures import Secret
 
 config = Config(".env")
 
 DEBUG = config("DEBUG", cast=bool, default=False)
 DATABASE_URL = config("DATABASE_URL")
-JWT_USERS_PRIVATE_KEY = config("JWT_USERS_PRIVATE_KEY", cast=Secret)
-JWT_USERS_PUBLIC_KEY = config("JWT_USERS_PUBLIC_KEY", cast=Secret)
-JWT_USERS_VERIFY_SIGNATURE = config(
-    "JWT_USERS_VERIFY_SIGNATURE", cast=bool, default=True
-)
-JWT_USERS_COOKIE_NAME = config("JWT_USERS_COOKIE_NAME", cast=str, default="pycon_jwt")
-JWT_USERS_JWT_EXPIRES_AFTER_IN_MINUTES = config(
-    "JWT_USERS_JWT_EXPIRES_AFTER_IN_MINUTES", cast=int, default=10
-)
 STRIPE_SUBSCRIPTION_API_SECRET = config("STRIPE_SUBSCRIPTION_API_SECRET", cast=str)
 STRIPE_SUBSCRIPTION_API_KEY = config("STRIPE_SUBSCRIPTION_API_KEY", cast=str)
 STRIPE_SUBSCRIPTION_PRODUCT_ID = config("STRIPE_SUBSCRIPTION_PRODUCT_ID", cast=str)

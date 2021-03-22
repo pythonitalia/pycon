@@ -52,11 +52,32 @@ class StripeWebhook(HTTPEndpoint):
 
     async def handle_customer_subscription_updated(self, request, stripe_obj):
         try:
-            await services.handle_customer_subscription_updated(
+            await services.update_subscription_from_external_subscription(
                 services.SubscriptionDetailInput(
                     subscription_id=stripe_obj["id"],
                     status=stripe_obj["status"],
+                    customer_id=stripe_obj["customer"],
+                    canceled_at=stripe_obj["canceled_at"],
                 ),
+                subscription=None,
+                association_repository=self._get_association_repository(request),
+            )
+            return JSONResponse({"status": "success"})
+        except SubscriptionNotFound:
+            return JSONResponse({"status": "error"}, status_code=400)
+        except InconsistentStateTransitionError as ex:
+            logger.exception(str(ex))
+            return JSONResponse({"status": "error"}, status_code=400)
+
+    async def handle_customer_subscription_deleted(self, request, stripe_obj):
+        try:
+            await services.update_subscription_from_external_subscription(
+                services.SubscriptionDetailInput(
+                    subscription_id=stripe_obj["id"],
+                    status=stripe_obj["status"],
+                    canceled_at=stripe_obj["canceled_at"],
+                ),
+                subscription=None,
                 association_repository=self._get_association_repository(request),
             )
             return JSONResponse({"status": "success"})
@@ -120,6 +141,10 @@ class StripeWebhook(HTTPEndpoint):
         elif event_type == "customer.subscription.updated":
             # Every time there is a subscription status update we will be notified
             return await self.handle_customer_subscription_updated(request, stripe_obj)
+        elif event_type == "customer.subscription.deleted":
+            # Every time there is a subscription status update we will be notified
+            return await self.handle_customer_subscription_deleted(request, stripe_obj)
+
         else:
             logger.warning(
                 f"The event `{event_type}` is not handled by webhook."

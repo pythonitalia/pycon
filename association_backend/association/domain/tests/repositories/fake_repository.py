@@ -6,6 +6,7 @@ from association.domain.entities.stripe import (
     StripeCheckoutSession,
     StripeCheckoutSessionInput,
     StripeCustomer,
+    StripeSubscription,
 )
 from association.domain.exceptions import MultipleCustomerReturned
 from association.domain.repositories import AssociationRepository
@@ -28,8 +29,9 @@ class FakeAssociationRepository(AssociationRepository):
         self,
         subscriptions: List[Subscription],
         customers: List[StripeCustomer],
-        checkout_sessions: Optional[List[StripeCheckoutSession]] = None,
         subscription_payments: Optional[List[SubscriptionPayment]] = None,
+        checkout_sessions: Optional[List[StripeCheckoutSession]] = None,
+        stripe_subscriptions: Optional[List[StripeSubscription]] = None,
     ) -> None:
         super().__init__()
         # subscriptions
@@ -67,6 +69,13 @@ class FakeAssociationRepository(AssociationRepository):
             self.CUSTOMERS_BY_EMAIL[customer.email].append(customer)
             for customer in customers
         ]
+        # stripe subscriptions
+        self.STRIPE_SUBSCRIPTIONS_BY_ID = {}
+        if stripe_subscriptions:
+            self.STRIPE_SUBSCRIPTIONS_BY_ID = {
+                stripe_subscription.id: stripe_subscription
+                for stripe_subscription in stripe_subscriptions
+            }
 
     def transaction(self):
         return DummyTransaction()
@@ -156,7 +165,27 @@ class FakeAssociationRepository(AssociationRepository):
             return customers[0]
         return None
 
-    async def retrieve_checkout_session_by_id(
+    async def retrieve_stripe_checkout_session(
         self, stripe_session_id: str
     ) -> Optional[StripeCheckoutSession]:
+        print(f"{self.CHECKOUT_SESSIONS_BY_ID = }")
         return self.CHECKOUT_SESSIONS_BY_ID.get(stripe_session_id, None)
+
+    async def retrieve_stripe_subscription(
+        self, stripe_subscription_id: str
+    ) -> Optional[StripeSubscription]:
+        print(f"{self.STRIPE_SUBSCRIPTIONS_BY_ID = }")
+        return self.STRIPE_SUBSCRIPTIONS_BY_ID.get(stripe_subscription_id, None)
+
+    async def retrieve_external_subscription_by_session_id(
+        self, stripe_session_id: str
+    ) -> Optional[StripeSubscription]:
+        checkout_session = await self.retrieve_stripe_checkout_session(
+            stripe_session_id
+        )
+        if checkout_session.subscription_id:
+            subscription = await self.retrieve_stripe_subscription(
+                checkout_session.subscription_id
+            )
+            return subscription
+        return None
