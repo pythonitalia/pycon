@@ -29,7 +29,6 @@ async def login(
         raise WrongEmailOrPasswordError()
 
     if not user.is_active:
-        print("oppps")
         raise UserIsNotActiveError()
 
     if reject_non_admins and not user.is_staff:
