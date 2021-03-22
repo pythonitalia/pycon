@@ -10,7 +10,9 @@ from association.domain.entities.subscriptions import (
 )
 from association.domain.exceptions import AlreadySubscribed, MultipleCustomerReturned
 from association.domain.repositories import AssociationRepository
-from association.domain.services import SubscriptionDetailInput
+from association.domain.services.update_subscription_from_external_subscription import (
+    SubscriptionDetailInput,
+)
 
 logger = logging.getLogger(__name__)
 
