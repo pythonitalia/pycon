@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pythonit-toolkit"
-version = "0.1.19"
+version = "0.1.20"
 description = ""
 authors = ["Python Italia"]
 
@@ -8,7 +8,7 @@ authors = ["Python Italia"]
 python = "^3.9"
 PyJWT = "^2.0.1"
 starlette = {version = "^0.14.2", optional = true}
-strawberry-graphql = "0.51.1"
+strawberry-graphql = "^0.51.1"
 pydantic = {version = "^1.8.1", optional = true}
 
 [tool.poetry.dev-dependencies]

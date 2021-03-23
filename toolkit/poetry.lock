@@ -403,7 +403,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "cbef1d263d42737cbb375abc00a88232403372ad775fb36e6553a698c84e2b35"
+content-hash = "6cb82f9045e8595ddee0859798404f410b79b418214238b6edb3ffab05987443"
 
 [metadata.files]
 cached-property = [
