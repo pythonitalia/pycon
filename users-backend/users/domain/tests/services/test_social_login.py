@@ -2,12 +2,11 @@ from datetime import datetime
 
 import time_machine
 from pydantic import ValidationError
-from ward import raises, test
-from ward.testing import each
-
 from users.domain.entities import User
 from users.domain.services import SocialAccount, SocialLoginInput, social_login
 from users.domain.tests.fake_repository import FakeUsersRepository
+from ward import raises, test
+from ward.testing import each
 
 
 @test("can login with non existent account")
@@ -44,7 +43,7 @@ async def _():
             User(
                 id=10,
                 email="test@me.it",
-                date_joined=datetime.now(),
+                date_joined=datetime.utcnow(),
                 password="my_password",
                 fullname="Hello World",
                 name="Hello",

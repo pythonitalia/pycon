@@ -3,10 +3,9 @@ import datetime
 
 import factory
 from factory.alchemy import SQLAlchemyModelFactory
-from ward import fixture
-
 from users.domain.entities import User
 from users.starlette_password.hashers import make_password
+from ward import fixture
 
 from .session import test_session
 
@@ -28,7 +27,7 @@ class UserFactory(SQLAlchemyModelFactory):
     open_to_recruiting = False
     open_to_newsletter = False
     country = "US"
-    date_joined = datetime.datetime.now()
+    date_joined = datetime.datetime.utcnow()
 
     @factory.post_generation
     def password(obj, create, extracted, **kwargs):
