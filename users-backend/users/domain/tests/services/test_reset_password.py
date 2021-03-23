@@ -39,11 +39,11 @@ async def _():
         date_joined=datetime.utcnow(),
         password="old_password",
         is_active=True,
-        request_reset_password_id=1,
+        jwt_auth_id=1,
     )
 
     token = user.create_reset_password_token()
-    user.request_reset_password_id = 2
+    user.jwt_auth_id = 2
 
     with raises(ResetPasswordTokenInvalidError):
         await reset_password(
@@ -60,7 +60,7 @@ async def _():
         date_joined=datetime.utcnow(),
         password="old_password",
         is_active=True,
-        request_reset_password_id=1,
+        jwt_auth_id=1,
     )
 
     with time_machine.travel("2021-10-10 15:00:00Z", tick=False):
@@ -91,7 +91,7 @@ async def _():
         date_joined=datetime.utcnow(),
         password="old_password",
         is_active=True,
-        request_reset_password_id=1,
+        jwt_auth_id=1,
     )
 
     with time_machine.travel("2021-10-10 15:00:00Z", tick=False):
@@ -121,7 +121,7 @@ async def _():
         date_joined=datetime.utcnow(),
         password="old_password",
         is_active=True,
-        request_reset_password_id=1,
+        jwt_auth_id=1,
     )
 
     with time_machine.travel("2021-10-10 15:00:00Z", tick=False):
@@ -152,7 +152,7 @@ async def _():
         date_joined=datetime.utcnow(),
         password="old_password",
         is_active=True,
-        request_reset_password_id=1,
+        jwt_auth_id=1,
     )
 
     with time_machine.travel("2020-10-10 10:10:10Z", tick=False):
@@ -175,7 +175,7 @@ async def _():
         date_joined=datetime.utcnow(),
         password="old_password",
         is_active=True,
-        request_reset_password_id=1,
+        jwt_auth_id=1,
     )
 
     await reset_password(
@@ -186,4 +186,4 @@ async def _():
     )
 
     assert user.new_password == "testnewpassword"
-    assert user.request_reset_password_id == 2
+    assert user.jwt_auth_id == 2

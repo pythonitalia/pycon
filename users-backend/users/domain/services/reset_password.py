@@ -56,6 +56,6 @@ async def reset_password(input: ResetPasswordInput, *, repository: UsersReposito
 
     logger.info("Resetting password of user_id=%s", user_id)
     user.set_password(input.new_password)
-    user.request_reset_password_id = user.request_reset_password_id + 1
+    user.jwt_auth_id = user.jwt_auth_id + 1
     await repository.save_user(user)
     await repository.commit()

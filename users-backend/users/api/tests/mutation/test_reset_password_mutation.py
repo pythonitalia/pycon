@@ -11,9 +11,7 @@ from users.tests.session import db
 
 @test("reset password")
 async def _(graphql_client=graphql_client, db=db, user_factory=user_factory):
-    user = await user_factory(
-        email="test@email.it", password="hello", request_reset_password_id=1
-    )
+    user = await user_factory(email="test@email.it", password="hello", jwt_auth_id=1)
 
     query = """
     mutation($input: ResetPasswordInput!) {
@@ -38,14 +36,12 @@ async def _(graphql_client=graphql_client, db=db, user_factory=user_factory):
     query = select(User).where(User.email == "test@email.it")
     raw_query_user: User = (await db.execute(query)).scalar()
     assert raw_query_user.check_password("newpassword")
-    assert raw_query_user.request_reset_password_id == 2
+    assert raw_query_user.jwt_auth_id == 2
 
 
 @test("cannot reset password with short password")
 async def _(graphql_client=graphql_client, db=db, user_factory=user_factory):
-    user = await user_factory(
-        email="test@email.it", password="hello", request_reset_password_id=1
-    )
+    user = await user_factory(email="test@email.it", password="hello", jwt_auth_id=1)
 
     query = """
     mutation($input: ResetPasswordInput!) {
@@ -84,7 +80,7 @@ async def _(graphql_client=graphql_client, db=db, user_factory=user_factory):
     query = select(User).where(User.email == "test@email.it")
     raw_query_user: User = (await db.execute(query)).scalar()
     assert raw_query_user.check_password("hello")
-    assert raw_query_user.request_reset_password_id == 1
+    assert raw_query_user.jwt_auth_id == 1
 
 
 @test("cannot reset password with expired token")
@@ -154,14 +150,14 @@ async def _(graphql_client=graphql_client, db=db, user_factory=user_factory):
         email="test@email.it",
         password="hello",
         is_active=True,
-        request_reset_password_id=1,
+        jwt_auth_id=1,
     )
 
     token = user.create_reset_password_token()
 
     db_query = select(User).where(User.id == user.id)
     raw_query_user: User = (await db.execute(db_query)).scalar()
-    raw_query_user.request_reset_password_id = 2
+    raw_query_user.jwt_auth_id = 2
     repository = UsersRepository(db)
     await repository.save_user(raw_query_user)
     await repository.commit()

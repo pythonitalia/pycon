@@ -14,7 +14,7 @@ async def _():
         id=50,
         email="test@email.it",
         date_joined=datetime.utcnow(),
-        request_reset_password_id=1,
+        jwt_auth_id=1,
     )
 
     with time_machine.travel("2020-10-10 10:10:10Z", tick=False):

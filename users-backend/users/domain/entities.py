@@ -39,7 +39,7 @@ class User(BaseUser):
     is_superuser: bool = False
 
     last_login: Optional[datetime] = None
-    request_reset_password_id: Optional[int] = 1
+    jwt_auth_id: Optional[int] = 1
     id: Optional[int] = None
     hashed_password: Optional[str] = field(default=None, repr=False)
     new_password: Optional[str] = field(default=None, repr=False)
@@ -67,7 +67,7 @@ class User(BaseUser):
         return is_password_usable(self.hashed_password)
 
     def get_reset_password_jwt_id(self) -> str:
-        return f"reset-password:{self.id}:{self.request_reset_password_id}"
+        return f"reset-password:{self.id}:{self.jwt_auth_id}"
 
     def create_reset_password_token(self) -> str:
         now = datetime.utcnow()
@@ -113,7 +113,7 @@ user_table = Table(
     Column("is_staff", Boolean(), default=False, nullable=False),
     Column("is_superuser", Boolean(), default=False, nullable=False),
     Column(
-        "request_reset_password_id",
+        "jwt_auth_id",
         Integer(),
         default=1,
         server_default="1",
