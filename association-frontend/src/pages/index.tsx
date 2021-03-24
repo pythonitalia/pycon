@@ -8,7 +8,6 @@ export default function Home() {
   return (
     <div>
       <Head>
-        <p>Test</p>
         <title>Associazione Python Italia</title>
         <link rel="icon" href="/favicon.png" />
       </Head>

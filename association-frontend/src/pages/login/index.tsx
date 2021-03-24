@@ -54,7 +54,6 @@ const LoginPage = () => {
       ? data.login.message
       : "";
 
-
   return (
     <>
       <Head>
