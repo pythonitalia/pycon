@@ -10,16 +10,17 @@ import TwitterIcon from "../icons/twitter";
 import SectionItem from "../section-item/section-item";
 import SocialCard from "../social-card/social-card";
 
+const icons = [
+  <DiscordIcon />,
+  <FacebookIcon />,
+  <GitHubIcon />,
+  <InstagramIcon />,
+  <LinkedInIcon />,
+  <TwitterIcon />,
+  <MailIcon />,
+];
+
 const SectionSocialMedia = () => {
-  const icons = [
-    <DiscordIcon />,
-    <FacebookIcon />,
-    <GitHubIcon />,
-    <InstagramIcon />,
-    <LinkedInIcon />,
-    <TwitterIcon />,
-    <MailIcon />,
-  ];
   return (
     <SectionItem title={"Seguici Online 🎭"}>
       <div className="flex flex-row space-x-4 w-full  justify-center">
