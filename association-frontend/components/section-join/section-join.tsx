@@ -9,7 +9,7 @@ const SectionJoin = () => {
             href="#"
             className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
           >
-            Crea/Entra nel tuo account{" "}
+            Crea/Entra nel tuo account
           </a>
         </div>
         <div className="ml-3 inline-flex rounded-md shadow">
