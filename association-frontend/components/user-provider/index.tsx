@@ -22,7 +22,6 @@ export const UserProvider: React.FC<{ resetUrqlClient: () => void }> = ({
 
   useEffect(() => {
     const listener = () => {
-      console.log("REFETCHING!");
       refetchMe();
     };
     window.addEventListener("userLoggedIn", listener);
