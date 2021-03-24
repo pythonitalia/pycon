@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "NODE_ENV=development PORT=3020 node server.js",
+    "dev": "next dev -p 3010",
     "build": "next build",
     "start": "next start",
     "codegen": "graphql-codegen -r dotenv/config -c codegen.yml",
