@@ -45,7 +45,9 @@ const Button: React.FC<ButtonProps> = ({
         "text-white",
         "to-indigo-600",
         "whitespace-nowrap",
-        fullWidth ? "w-full" : "",
+        {
+          "w-full": fullWidth,
+        },
       )}
       onClick={props.onClick}
     >
