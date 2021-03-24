@@ -54,9 +54,6 @@ const LoginPage = () => {
       ? data.login.message
       : "";
 
-  // console.log(JSON.stringify(data));
-
-  // console.log({ errorMessage });
 
   return (
     <>
