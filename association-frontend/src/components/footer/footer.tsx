@@ -1,10 +1,3 @@
-import FacebookIcon from "../icons/facebook";
-import GitHubIcon from "../icons/github";
-import InstagramIcon from "../icons/instagram";
-import LinkedInIcon from "../icons/linkedin";
-import MailIcon from "../icons/mail";
-import TwitterIcon from "../icons/twitter";
-
 const Footer = () => {
   return (
     <footer className="bg-gray-50" aria-labelledby="footerHeading">

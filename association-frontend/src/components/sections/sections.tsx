@@ -1,7 +1,7 @@
-import SectionEvents from "../section-events/section-events";
-import SectionJoin from "../section-join/section-join";
-import SectionPythonIta from "../section-python-ita/section-python-ita";
-import SectionSocialMedia from "../section-social-media/section-social-media";
+import SectionEvents from "~/components/section-events/section-events";
+import SectionJoin from "~/components/section-join/section-join";
+import SectionPythonIta from "~/components/section-python-ita/section-python-ita";
+import SectionSocialMedia from "~/components/section-social-media/section-social-media";
 
 const Sections = () => {
   return (

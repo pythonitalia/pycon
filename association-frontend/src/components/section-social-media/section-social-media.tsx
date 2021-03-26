@@ -1,14 +1,14 @@
 import React from "react";
 
-import DiscordIcon from "../icons/discord";
-import FacebookIcon from "../icons/facebook";
-import GitHubIcon from "../icons/github";
-import InstagramIcon from "../icons/instagram";
-import LinkedInIcon from "../icons/linkedin";
-import MailIcon from "../icons/mail";
-import TwitterIcon from "../icons/twitter";
-import SectionItem from "../section-item/section-item";
-import SocialCard from "../social-card/social-card";
+import DiscordIcon from "~/components/icons/discord";
+import FacebookIcon from "~/components/icons/facebook";
+import GitHubIcon from "~/components/icons/github";
+import InstagramIcon from "~/components/icons/instagram";
+import LinkedInIcon from "~/components/icons/linkedin";
+import MailIcon from "~/components/icons/mail";
+import TwitterIcon from "~/components/icons/twitter";
+import SectionItem from "~/components/section-item/section-item";
+import SocialCard from "~/components/social-card/social-card";
 
 const icons = [
   <DiscordIcon />,

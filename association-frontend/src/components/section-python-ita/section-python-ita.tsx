@@ -1,4 +1,4 @@
-import SectionItem from "../section-item/section-item";
+import SectionItem from "~/components/section-item/section-item";
 
 const SectionPythonIta = () => {
   return (

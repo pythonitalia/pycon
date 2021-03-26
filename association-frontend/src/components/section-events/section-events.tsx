@@ -1,5 +1,5 @@
-import EventCard from "../event-card/event-card";
-import SectionItem from "../section-item/section-item";
+import EventCard from "~/components/event-card/event-card";
+import SectionItem from "~/components/section-item/section-item";
 
 const SectionEvents = () => {
   return (

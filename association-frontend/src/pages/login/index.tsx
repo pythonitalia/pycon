@@ -1,4 +1,3 @@
-import { useUser } from "hooks/use-user";
 import React from "react";
 import { useFormState } from "react-use-form-state";
 
@@ -12,6 +11,7 @@ import LoginIcon from "~/components/icons/login";
 import Input from "~/components/input/input";
 import Link from "~/components/link/link";
 import Logo from "~/components/logo/logo";
+import { useUser } from "~/hooks/use-user";
 
 import { useLoginMutation } from "./login.generated";
 

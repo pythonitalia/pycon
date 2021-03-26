@@ -1,4 +1,4 @@
-import classnames from "clclassnamessx";
+import classnames from "classnames";
 
 type DividerProps = {
   borderClassName?: string;
