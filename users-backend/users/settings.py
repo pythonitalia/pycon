@@ -6,7 +6,13 @@ config = Config(".env")
 
 DEBUG = config("DEBUG", cast=bool, default=False)
 DATABASE_URL = config("DATABASE_URL")
-SECRET_KEY = config("SECRET_KEY", cast=Secret)
+ENVIRONMENT = config("ENV", default="local")
+
+# Emails
+EMAIL_BACKEND = config(
+    "EMAIL_BACKEND", default="pythonit_toolkit.emails.backends.local.LocalEmailBackend"
+)
+DEFAULT_EMAIL_FROM = config("DEFAULT_EMAIL_FROM", default="noreply@pycon.it")
 
 # Google social auth
 GOOGLE_AUTH_CLIENT_ID = config("GOOGLE_AUTH_CLIENT_ID", cast=Secret, default=None)
@@ -25,6 +31,7 @@ SERVICE_TO_SERVICE_SECRET = config(
     "SERVICE_TO_SERVICE_SECRET", cast=Secret, default=None
 )
 PASTAPORTO_ACTION_SECRET = config("PASTAPORTO_ACTION_SECRET", cast=Secret, default=None)
+SECRET_KEY = config("SECRET_KEY", cast=Secret)
 
 IDENTITY_EXPIRES_AFTER_MINUTES = config(
     "IDENTITY_EXPIRES_AFTER_MINUTES", cast=int, default=60
@@ -47,6 +54,12 @@ PASSWORD_HASHERS = [
     "users.starlette_password.hashers.PBKDF2SHA1PasswordHasher",
     "users.starlette_password.hashers.BCryptSHA256PasswordHasher",
 ]
+
+# Services URLs
+
+ASSOCIATION_FRONTEND_URL = config(
+    "ASSOCIATION_FRONTEND_URL",
+)
 
 # Unit test configuration
 

@@ -75,6 +75,10 @@ module "users_backend" {
   depends_on = [module.database]
 }
 
+module "email_templates" {
+  source = "./email_templates"
+}
+
 # Other resources
 
 module "database" {

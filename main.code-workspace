@@ -31,6 +31,10 @@
     {
       "name": "🐙 GitHub",
       "path": ".github"
+    },
+    {
+      "name": "✉️ Email Templates",
+      "path": "email-templates"
     }
   ],
   "settings": {},
