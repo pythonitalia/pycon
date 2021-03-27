@@ -26,7 +26,6 @@ class PastaportoAction:
                 "payload": self.payload,
                 "exp": now + timedelta(seconds=40),
                 "iat": now,
-                "nbf": now,
             },
             str(secret),
             algorithm="HS256",

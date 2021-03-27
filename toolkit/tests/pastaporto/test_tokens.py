@@ -9,6 +9,7 @@ from ward import raises, test
 async def _():
     test_token = jwt.encode(
         {
+            "iat": datetime.utcnow(),
             "exp": datetime.utcnow() + timedelta(seconds=10),
             "iss": "test",
             "aud": "users-service",
@@ -25,7 +26,9 @@ async def _():
 @test("reject tokens without expiration")
 async def _():
     test_token = jwt.encode(
-        {"iss": "test", "aud": "users-service"}, "secret", algorithm="HS256"
+        {"iat": datetime.utcnow(), "iss": "test", "aud": "users-service"},
+        "secret",
+        algorithm="HS256",
     )
 
     with raises(jwt.MissingRequiredClaimError):
@@ -38,6 +41,7 @@ async def _():
 async def _():
     test_token = jwt.encode(
         {
+            "iat": datetime.utcnow(),
             "exp": datetime.utcnow() + timedelta(seconds=10),
             "iss": "test",
         },
@@ -55,6 +59,7 @@ async def _():
 async def _():
     test_token = jwt.encode(
         {
+            "iat": datetime.utcnow(),
             "exp": datetime.utcnow() + timedelta(seconds=10),
             "iss": "test",
             "aud": "users-service",
