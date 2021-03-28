@@ -86,13 +86,12 @@ class CreateCheckoutSessionView(HTTPEndpoint):
                 user_data,
                 association_repository=self._get_association_repository(request),
             )
+            return JSONResponse({"sessionId": subscription.stripe_session_id})
         except AlreadySubscribed:
             return JSONResponse(
                 {"error": {"message": "You are already subscribed"}},
                 status_code=400,
             )
-        else:
-            return JSONResponse({"sessionId": subscription.stripe_session_id})
 
 
 class CheckoutSessionDetailView(HTTPEndpoint):

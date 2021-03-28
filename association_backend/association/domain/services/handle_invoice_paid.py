@@ -33,6 +33,7 @@ async def handle_invoice_paid(
             invoice_pdf=invoice_input.invoice_pdf,
         )
         await association_repository.save_payment(payment)
+        await association_repository.commit()
         return subscription
     else:
         msg = f"No Subscription found with subscription_id:{invoice_input.subscription_id}"

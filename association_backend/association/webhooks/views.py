@@ -14,6 +14,9 @@ from association.domain.exceptions import (
     WebhookSecretMissing,
 )
 from association.domain.repositories import AssociationRepository
+from association.domain.services.update_subscription_from_external_subscription import (
+    SubscriptionDetailInput,
+)
 from association.settings import STRIPE_WEBHOOK_SIGNATURE_SECRET
 
 logger = logging.getLogger(__name__)
@@ -53,7 +56,7 @@ class StripeWebhook(HTTPEndpoint):
     async def handle_customer_subscription_updated(self, request, stripe_obj):
         try:
             await services.update_subscription_from_external_subscription(
-                services.SubscriptionDetailInput(
+                SubscriptionDetailInput(
                     subscription_id=stripe_obj["id"],
                     status=stripe_obj["status"],
                     customer_id=stripe_obj["customer"],
@@ -72,7 +75,7 @@ class StripeWebhook(HTTPEndpoint):
     async def handle_customer_subscription_deleted(self, request, stripe_obj):
         try:
             await services.update_subscription_from_external_subscription(
-                services.SubscriptionDetailInput(
+                SubscriptionDetailInput(
                     subscription_id=stripe_obj["id"],
                     status=stripe_obj["status"],
                     canceled_at=stripe_obj["canceled_at"],
