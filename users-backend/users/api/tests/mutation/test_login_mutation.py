@@ -5,7 +5,7 @@ from users.tests.graphql_client import graphql_client
 from users.tests.session import db
 
 
-@test("cannot login with non existent user")
+@test("cannot login to non existent user")
 async def _(graphql_client=graphql_client, db=db):
     query = """
     mutation($input: LoginInput!) {
@@ -16,6 +16,25 @@ async def _(graphql_client=graphql_client, db=db):
     """
     response = await graphql_client.query(
         query, variables={"input": {"email": "hah@pycon.it", "password": "ciao"}}
+    )
+
+    assert not response.errors
+    assert response.data["login"]["__typename"] == "WrongEmailOrPassword"
+
+
+@test("cannot login to not active user")
+async def _(graphql_client=graphql_client, db=db, user_factory=user_factory):
+    await user_factory(email="hah@pycon.it", password="test", is_active=False)
+
+    query = """
+    mutation($input: LoginInput!) {
+        login(input: $input) {
+            __typename
+        }
+    }
+    """
+    response = await graphql_client.query(
+        query, variables={"input": {"email": "hah@pycon.it", "password": "test"}}
     )
 
     assert not response.errors

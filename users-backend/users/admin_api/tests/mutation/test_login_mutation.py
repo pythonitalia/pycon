@@ -49,6 +49,28 @@ async def _(
     assert response.data["login"]["__typename"] == "WrongEmailOrPassword"
 
 
+@test("login rejects not active users")
+async def _(
+    admin_graphql_client=admin_graphql_client, user_factory=user_factory, db=db
+):
+    user = await user_factory(
+        email="notadmin@email.it", password="hello", is_staff=True, is_active=False
+    )
+
+    query = """mutation($input: LoginInput!) {
+        login(input: $input) {
+            __typename
+        }
+    }
+    """
+    response = await admin_graphql_client.query(
+        query, variables={"input": {"email": user.email, "password": "wrong"}}
+    )
+
+    assert not response.errors
+    assert response.data["login"]["__typename"] == "WrongEmailOrPassword"
+
+
 @test("login as admin user")
 async def _(
     admin_graphql_client=admin_graphql_client, user_factory=user_factory, db=db
