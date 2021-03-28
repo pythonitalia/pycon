@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pythonit-toolkit"
-version = "0.1.31"
+version = "0.1.33"
 description = ""
 authors = ["Python Italia"]
 
