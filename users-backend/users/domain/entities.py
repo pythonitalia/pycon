@@ -1,14 +1,13 @@
 from __future__ import annotations
 
 from dataclasses import InitVar, dataclass, field
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 from typing import Optional
 
 import jwt
 from sqlalchemy import Boolean, Column, Date, DateTime, Integer, String, Table
 from sqlalchemy.orm import registry
 from starlette.authentication import BaseUser
-
 from users.settings import SECRET_KEY
 from users.starlette_password.hashers import (
     check_password,
@@ -70,7 +69,7 @@ class User(BaseUser):
         return f"reset-password:{self.id}:{self.jwt_auth_id}"
 
     def create_reset_password_token(self) -> str:
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         return jwt.encode(
             {
                 "jti": self.get_reset_password_jwt_id(),

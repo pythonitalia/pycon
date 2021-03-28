@@ -1,9 +1,7 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import jwt
 import time_machine
-from ward import raises, test
-
 from users.domain.entities import User
 from users.domain.services.exceptions import (
     ResetPasswordTokenExpiredError,
@@ -14,12 +12,16 @@ from users.domain.services.exceptions import (
 from users.domain.services.reset_password import ResetPasswordInput, reset_password
 from users.domain.tests.fake_repository import FakeUsersRepository
 from users.settings import SECRET_KEY
+from ward import raises, test
 
 
 @test("cannot reset password of not active user")
 async def _():
     user = User(
-        id=10, email="test@email.it", date_joined=datetime.utcnow(), is_active=False
+        id=10,
+        email="test@email.it",
+        date_joined=datetime.now(timezone.utc),
+        is_active=False,
     )
 
     with raises(UserIsNotActiveError):
@@ -36,7 +38,7 @@ async def _():
     user = User(
         id=10,
         email="test@email.it",
-        date_joined=datetime.utcnow(),
+        date_joined=datetime.now(timezone.utc),
         password="old_password",
         is_active=True,
         jwt_auth_id=1,
@@ -57,7 +59,7 @@ async def _():
     user = User(
         id=10,
         email="test@email.it",
-        date_joined=datetime.utcnow(),
+        date_joined=datetime.now(timezone.utc),
         password="old_password",
         is_active=True,
         jwt_auth_id=1,
@@ -68,8 +70,8 @@ async def _():
             {
                 "jti": user.get_reset_password_jwt_id(),
                 "user_id": 10,
-                "exp": datetime.utcnow() + timedelta(minutes=30),
-                "iat": datetime.utcnow(),
+                "exp": datetime.now(timezone.utc) + timedelta(minutes=30),
+                "iat": datetime.now(timezone.utc),
                 "iss": "users",
                 "aud": "users/not-reset-password",
             },
@@ -88,7 +90,7 @@ async def _():
     user = User(
         id=10,
         email="test@email.it",
-        date_joined=datetime.utcnow(),
+        date_joined=datetime.now(timezone.utc),
         password="old_password",
         is_active=True,
         jwt_auth_id=1,
@@ -98,8 +100,8 @@ async def _():
         token = jwt.encode(
             {
                 "user_id": 10,
-                "exp": datetime.utcnow() + timedelta(minutes=30),
-                "iat": datetime.utcnow(),
+                "exp": datetime.now(timezone.utc) + timedelta(minutes=30),
+                "iat": datetime.now(timezone.utc),
                 "iss": "users",
                 "aud": "users/not-reset-password",
             },
@@ -118,7 +120,7 @@ async def _():
     user = User(
         id=10,
         email="test@email.it",
-        date_joined=datetime.utcnow(),
+        date_joined=datetime.now(timezone.utc),
         password="old_password",
         is_active=True,
         jwt_auth_id=1,
@@ -129,8 +131,8 @@ async def _():
             {
                 "jti": "reset-password:20:1",
                 "user_id": 20,
-                "exp": datetime.utcnow() + timedelta(minutes=30),
-                "iat": datetime.utcnow(),
+                "exp": datetime.now(timezone.utc) + timedelta(minutes=30),
+                "iat": datetime.now(timezone.utc),
                 "iss": "users",
                 "aud": "users/reset-password",
             },
@@ -149,7 +151,7 @@ async def _():
     user = User(
         id=10,
         email="test@email.it",
-        date_joined=datetime.utcnow(),
+        date_joined=datetime.now(timezone.utc),
         password="old_password",
         is_active=True,
         jwt_auth_id=1,
@@ -172,7 +174,7 @@ async def _():
     user = User(
         id=10,
         email="test@email.it",
-        date_joined=datetime.utcnow(),
+        date_joined=datetime.now(timezone.utc),
         password="old_password",
         is_active=True,
         jwt_auth_id=1,

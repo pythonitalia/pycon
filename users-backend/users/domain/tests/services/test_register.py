@@ -1,12 +1,11 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 import pydantic
-from ward import raises, test
-
 from users.domain.entities import User
 from users.domain.services import RegisterInputModel, register
 from users.domain.services.exceptions import EmailAlreadyUsedError
 from users.domain.tests.fake_repository import FakeUsersRepository
+from ward import raises, test
 
 
 @test("can register")
@@ -27,7 +26,7 @@ async def _():
 @test("cannot register with an already used email")
 async def _():
     repository = FakeUsersRepository(
-        users=[User(email="marco@marco.it", date_joined=datetime.utcnow())]
+        users=[User(email="marco@marco.it", date_joined=datetime.now(timezone.utc))]
     )
 
     with raises(EmailAlreadyUsedError):

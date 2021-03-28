@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 import time_machine
 from pydantic import ValidationError
@@ -29,7 +29,7 @@ async def _():
 
     assert user
     assert user.id is not None
-    assert user.date_joined == datetime(2020, 10, 10, 10, 10, 0)
+    assert user.date_joined == datetime(2020, 10, 10, 10, 10, 0, tzinfo=timezone.utc)
     assert not user.has_usable_password()
     assert user.fullname == "Test Account"
     assert user.name == "Test"
@@ -43,7 +43,7 @@ async def _():
             User(
                 id=10,
                 email="test@me.it",
-                date_joined=datetime.utcnow(),
+                date_joined=datetime.now(timezone.utc),
                 password="my_password",
                 fullname="Hello World",
                 name="Hello",

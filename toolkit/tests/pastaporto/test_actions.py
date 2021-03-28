@@ -1,5 +1,5 @@
 from calendar import timegm
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import jwt
 import time_machine
@@ -29,6 +29,6 @@ async def _():
         assert decoded_token["action"] == "auth"
         assert decoded_token["payload"] == {"test": "payload"}
         assert decoded_token["exp"] == timegm(
-            (datetime.utcnow() + timedelta(seconds=40)).utctimetuple()
+            (datetime.now(timezone.utc) + timedelta(seconds=40)).utctimetuple()
         )
-        assert decoded_token["iat"] == timegm(datetime.utcnow().utctimetuple())
+        assert decoded_token["iat"] == timegm(datetime.now(timezone.utc).utctimetuple())

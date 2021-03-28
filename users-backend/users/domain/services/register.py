@@ -1,8 +1,7 @@
 import dataclasses
-from datetime import datetime
+from datetime import datetime, timezone
 
 from pydantic import BaseModel, EmailStr, constr
-
 from users.domain.entities import User
 from users.domain.repository import AbstractUsersRepository
 from users.domain.services.exceptions import EmailAlreadyUsedError
@@ -22,7 +21,9 @@ async def register(
         raise EmailAlreadyUsedError()
 
     user = User(
-        email=input.email, password=input.password, date_joined=datetime.utcnow()
+        email=input.email,
+        password=input.password,
+        date_joined=datetime.now(timezone.utc),
     )
     created_user = await users_repository.create_user(user)
     # Create a copy of the object, one that sqlalchemy

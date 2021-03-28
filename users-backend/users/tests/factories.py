@@ -1,5 +1,6 @@
 import dataclasses
 import datetime
+from datetime import timezone
 
 import factory
 from factory.alchemy import SQLAlchemyModelFactory
@@ -27,7 +28,7 @@ class UserFactory(SQLAlchemyModelFactory):
     open_to_recruiting = False
     open_to_newsletter = False
     country = "US"
-    date_joined = datetime.datetime.utcnow()
+    date_joined = datetime.datetime.now(timezone.utc)
 
     @factory.post_generation
     def password(obj, create, extracted, **kwargs):

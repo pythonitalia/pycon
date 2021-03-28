@@ -1,11 +1,10 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 import jwt
 import time_machine
-from ward import test
-
 from users.domain.entities import User
 from users.settings import SECRET_KEY
+from ward import test
 
 
 @test("generate reset password token")
@@ -13,7 +12,7 @@ async def _():
     user = User(
         id=50,
         email="test@email.it",
-        date_joined=datetime.utcnow(),
+        date_joined=datetime.now(timezone.utc),
         jwt_auth_id=1,
     )
 
