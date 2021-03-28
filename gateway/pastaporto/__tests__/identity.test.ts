@@ -210,7 +210,6 @@ describe("Create identity", () => {
       subject: "10",
       expiresIn: "15m",
       algorithm: "HS256",
-      notBefore: 0,
     });
 
     expect(createIdentityToken("10")).toBe(expectedToken);

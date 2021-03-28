@@ -15,7 +15,6 @@ export const fetchUserInfo = async (id: string): Promise<User> => {
     issuer: "gateway",
     audience: "users-service",
     expiresIn: "1m",
-    notBefore: 0,
   });
 
   const client = new GraphQLClient(USERS_SERVICE_INTERNAL_API_ENDPOINT, {

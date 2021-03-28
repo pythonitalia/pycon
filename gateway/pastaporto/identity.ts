@@ -29,7 +29,6 @@ export const createIdentityToken = (sub: string): string => {
     expiresIn: "15m",
     audience: "identity",
     algorithm: "HS256",
-    notBefore: 0,
   });
 };
 
@@ -53,7 +52,6 @@ export const createRefreshToken = (sub: string): string => {
     expiresIn: "84 days",
     audience: "refresh",
     algorithm: "HS256",
-    notBefore: 0,
   });
 };
 
