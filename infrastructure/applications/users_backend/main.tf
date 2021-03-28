@@ -44,6 +44,7 @@ module "lambda" {
     GOOGLE_AUTH_CLIENT_ID     = var.google_auth_client_id
     GOOGLE_AUTH_CLIENT_SECRET = var.google_auth_client_secret
     DATABASE_URL              = "postgresql+asyncpg://${data.aws_db_instance.database.master_username}:${var.database_password}@${data.aws_db_instance.database.address}:${data.aws_db_instance.database.port}/users"
+    EMAIL_BACKEND             = "pythonit_toolkit.emails.backends.ses.SESEmailBackend"
 
     # Secrets
     PASTAPORTO_SECRET         = var.pastaporto_secret
