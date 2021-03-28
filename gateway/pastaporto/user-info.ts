@@ -8,9 +8,10 @@ export type User = {
   id: number;
   email: string;
   isStaff: boolean;
+  isActive: boolean;
 };
 
-export const fetchUserInfo = async (id: string): Promise<User> => {
+export const fetchUserInfo = async (id: string): Promise<User | null> => {
   const token: string = jwt.sign({}, SERVICE_TO_SERVICE_SECRET!, {
     issuer: "gateway",
     audience: "users-service",
@@ -29,6 +30,7 @@ export const fetchUserInfo = async (id: string): Promise<User> => {
         id
         email
         isStaff
+        isActive
       }
     }
   `;

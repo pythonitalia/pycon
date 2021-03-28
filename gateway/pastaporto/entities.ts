@@ -49,6 +49,16 @@ export class Pastaporto {
     const decoded = decodeIdentity(token);
     const userInfo = await fetchUserInfo(decoded.sub);
 
+    if (!userInfo) {
+      console.info(`User ID ${decoded.sub} not found`);
+      throw new Error("No user found");
+    }
+
+    if (!userInfo.isActive) {
+      console.info(`User ID: ${userInfo.id} is not active`);
+      throw new Error("No user found");
+    }
+
     return new Pastaporto(
       new UserInfo(userInfo.id, userInfo.email, userInfo.isStaff),
       getCredentialsFromUser(userInfo),
