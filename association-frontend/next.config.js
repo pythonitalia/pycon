@@ -7,7 +7,7 @@ module.exports = {
     return [
       {
         source: "/graphql",
-        destination: GATEWAY_URL,
+        destination: API_URL,
       },
     ];
   },

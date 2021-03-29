@@ -28,7 +28,7 @@ const App = ({ Component, pageProps, resetUrqlClient }) => {
         <main>
           <Component {...pageProps} />
         </main>
-        <Footer />
+        {/* <Footer /> */}
       </UserProvider>
     </div>
   );

@@ -1,4 +1,7 @@
-const { colors: defaultColors } = require("tailwindcss/defaultTheme");
+const {
+  colors: defaultColors,
+  boxShadow: defaultBoxShadow,
+} = require("tailwindcss/defaultTheme");
 
 const colors = {
   ...defaultColors,
@@ -16,6 +19,8 @@ const colors = {
       900: "#0c6286",
       DEFAULT: "#14A9E7",
     },
+    bluecyan: "#0b59d6",
+    yellow: "#ffc80a",
   },
 };
 
@@ -24,9 +29,19 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   theme: {
     colors: colors,
+    fontFamily: {
+      sans: ["Montserrat", "sans-serif"],
+    },
+    boxShadow: {
+      ...defaultBoxShadow,
+      solidblue: "-0.5em 0.5em 0 0 #0b59d6",
+      solidyellow: "-0.5em 0.5em 0 0 #ffc80a",
+    },
     extend: {
       backgroundImage: (theme) => ({
         "pycon-group": "url('/pycon_group7.jpg')",
+        "pycon-group-blue": "url('/pycon-group-blue.jpg')",
+        "white-background": "url('/white-background.jpg')",
       }),
     },
   },
