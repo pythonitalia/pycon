@@ -1,9 +1,12 @@
+import React from "react";
 import SectionItem from "~/components/section-item/section-item";
+import Button from "../button/button";
 
 const SectionPyConIta = () => {
   return (
     <SectionItem
       title="PyCon Italia"
+      textTheme={"white"}
       withBackground={true}
       overlay={false}
       backgroundImageClass={"bg-pycon-group-blue"}
@@ -17,6 +20,9 @@ const SectionPyConIta = () => {
         collaborando all’organizzazione di EuroPython.
       </p>
       <p className="mt-12 max-w-2xl text-xl text-white text-center select-none mx-auto">
+        <Button link={"https://pycon.it/en"} text={"Visita il sito"} />
+      </p>
+      {/* <p className="mt-12 max-w-2xl text-xl text-white text-center select-none mx-auto">
         <a
           href="https://pycon.it/en"
           target="_blank"
@@ -24,7 +30,7 @@ const SectionPyConIta = () => {
         >
           Visita il sito
         </a>
-      </p>
+      </p> */}
     </SectionItem>
   );
 };

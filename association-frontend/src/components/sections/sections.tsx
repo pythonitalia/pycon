@@ -8,15 +8,9 @@ import SectionPyConIta from "../section-pycon-ita/section-pycon-ita";
 const Sections = () => {
   return (
     <>
-      {/* <div className="max-w-7xl m-auto px-8 overflow-hidden"> */}
-      {/* <SectionPythonIta /> */}
-      {/* <SectionJoin /> */}
-      {/* <SectionEvents /> */}
-      {/* <SectionSocialMedia /> */}
-      {/* </div> */}
-
       <SectionPythonIta />
       <SectionPyConIta />
+      <SectionJoin />
     </>
   );
 };

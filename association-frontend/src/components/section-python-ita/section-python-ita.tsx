@@ -5,7 +5,8 @@ const SectionPythonIta = () => {
     <SectionItem
       title={"Python Italia 🐍"}
       withBackground={true}
-      overlayTheme={"white"}
+      overlay={false}
+      textTheme={"black"}
       backgroundImageClass={"bg-white-background"}
     >
       <p className="mb-4 max-w-2xl text-xl text-gray-500 mx-auto">

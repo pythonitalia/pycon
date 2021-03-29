@@ -9,13 +9,14 @@ type BackgroundWrapperProps = {
 type InnerContentProps = {
   title?: string;
   subTitle?: string;
-  overlayTheme?: "black" | "white";
+  textTheme?: "black" | "white";
 };
 
 type SectionItemProps = {
   title?: string;
   subTitle?: string;
   withBackground?: boolean;
+  textTheme?: "black" | "white";
 
   // background classes
   backgroundImageClass?: string;
@@ -40,6 +41,7 @@ const BackgroundWrapper: React.FC<BackgroundWrapperProps> = ({
         <div
           className={classnames("absolute top-0 left-0 bottom-0 right-0", {
             "bg-black bg-opacity-60": overlayTheme === "black",
+            "bg-white bg-opacity-60": overlayTheme === "white",
           })}
         ></div>
       )}
@@ -56,7 +58,7 @@ const BackgroundWrapper: React.FC<BackgroundWrapperProps> = ({
 const InnerContent: React.FC<InnerContentProps> = ({
   title,
   subTitle,
-  overlayTheme,
+  textTheme,
   children,
 }) => {
   return (
@@ -68,8 +70,8 @@ const InnerContent: React.FC<InnerContentProps> = ({
               className={classnames(
                 "my-4 text-3xl leading-8 font-extrabold tracking-tight  sm:text-4xl",
                 {
-                  "text-gray-900": overlayTheme === "white",
-                  "text-white": overlayTheme === "black",
+                  "text-gray-900": textTheme === "black",
+                  "text-white": textTheme === "white",
                 },
               )}
             >
@@ -103,7 +105,7 @@ const SectionItem: React.FC<SectionItemProps> = ({
         overlay={overlay}
         overlayTheme={overlayTheme}
       >
-        <InnerContent overlayTheme={overlayTheme} {...props} />
+        <InnerContent {...props} />
       </BackgroundWrapper>
     );
   }

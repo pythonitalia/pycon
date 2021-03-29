@@ -1,24 +1,24 @@
+import React from "react";
 import SectionItem from "~/components/section-item/section-item";
+import Button from "../button/button";
 
 const SectionJoin = () => {
   return (
-    <SectionItem title={"Vuoi unirti? ➡️"}>
+    <SectionItem
+      title={"Vuoi unirti?"}
+      textTheme={"white"}
+      withBackground={true}
+      backgroundImageClass={"bg-reception-desk-pycon-10"}
+    >
       <div className="lg:flex-shrink-0">
         <div className="inline-flex rounded-md shadow">
-          <a
+          <Button link={"/login"} text={"Unisciti ora"} />
+          {/* <a
             href="#"
             className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
           >
             Crea/Entra nel tuo account
-          </a>
-        </div>
-        <div className="ml-3 inline-flex rounded-md shadow">
-          <a
-            href="#"
-            className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-indigo-600 bg-white hover:bg-indigo-50"
-          >
-            Contattaci via mail{" "}
-          </a>
+          </a> */}
         </div>
       </div>
     </SectionItem>
