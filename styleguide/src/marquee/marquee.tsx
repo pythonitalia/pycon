@@ -1,17 +1,11 @@
 import React from "react";
-import clsx from "clsx";
 
 type Props = {
   children: React.ReactNode;
-  bottomBorder?: boolean;
 };
 
-export const Marquee = ({ children, bottomBorder = true }: Props) => (
-  <div
-    className={clsx("border-t-4 border-black", {
-      "border-b-4": bottomBorder,
-    })}
-  >
+export const Marquee = ({ children }: Props) => (
+  <div>
     <div className="motion-safe:animate-marquee p-8 text-3xl whitespace-nowrap">
       <div className="inline-block">{children}</div>
 
