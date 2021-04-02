@@ -3,6 +3,7 @@ import { Header } from "../header/header";
 import { SplitSection } from "../split-section/split-section";
 import { Marquee } from "../marquee/marquee";
 import { Page } from "./page";
+import { Carousel } from "../carousel/carousel";
 
 export default {
   title: "Page examples",
@@ -24,6 +25,17 @@ export const Standard = () => (
           voluptatem?
         </p>
       </SplitSection>
+
+      <Carousel title="The speakers">
+        <div className="bg-red-400"></div>
+        <div className="bg-blue-400"></div>
+        <div className="bg-purple-400"></div>
+        <div className="bg-yellow-400"></div>
+        <div className="bg-red-400"></div>
+        <div className="bg-blue-400"></div>
+        <div className="bg-purple-400"></div>
+        <div className="bg-yellow-400"></div>
+      </Carousel>
     </Page>
   </div>
 );
