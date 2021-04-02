@@ -9,7 +9,7 @@ type Props = {
 export const SplitSection = ({ title, children }: Props) => (
   <div>
     <div className="max-w-7xl mx-auto md:grid md:grid-cols-2">
-      <div className="p-8 md:p-16 border-black border-b-4 md:border-b-0 md:border-r-4">
+      <div className="p-8 md:py-16 border-black border-b-4 md:border-b-0 md:border-r-4">
         <Title>{title}</Title>
 
         {children}
