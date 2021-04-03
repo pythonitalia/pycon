@@ -3,13 +3,10 @@ import jwt from "jsonwebtoken";
 import { Credential, Pastaporto, UserInfo } from "../entities";
 import { fetchUserInfo } from "../user-info";
 import { decodeIdentity } from "../identity";
+jest.mock("../../config");
 
 const mockedFetchUserInfo = fetchUserInfo as jest.Mock;
 const mockedDecodeIdentity = decodeIdentity as jest.Mock;
-
-jest.mock("../../config", () => ({
-  PASTAPORTO_SECRET: "abc",
-}));
 
 jest.mock("../identity", () => ({
   decodeIdentity: jest.fn(() => ({

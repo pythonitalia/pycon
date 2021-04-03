@@ -1,4 +1,5 @@
 import { AuthAction } from "../auth-action";
+jest.mock("../../config");
 
 test("Auth auction sets both identity and refresh cookies", async () => {
   const context = {

@@ -1,0 +1,38 @@
+name: Javascript Lint
+
+on: pull_request
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [gateway]
+    defaults:
+      run:
+        working-directory: ./${{ matrix.service }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - uses: dorny/paths-filter@v2
+        id: changed
+        with:
+          token: ${{ github.token }}
+          filters: .github/file-filters.yml
+      - name: Cache dependencies
+        if: steps.changed.outputs.changed.${{ matrix.service }} == 'true'
+        uses: actions/cache@v1
+        id: cache
+        with:
+          path: ./node_modules
+          key: node_modules-${{ hashFiles('${{ matrix.service }}/yarn.lock') }}-v2
+          restore-keys: |
+            node_modules-${{ hashFiles('${{ matrix.service }}/yarn.lock') }}-v2
+      - name: Install dependencies
+        if: steps.changed.outputs.changed.${{ matrix.service }} == 'true'
+        run: yarn install
+      - name: Unit tests
+        if: steps.changed.outputs.changed.${{ matrix.service }} == 'true'
+        run: yarn run test
