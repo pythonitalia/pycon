@@ -4,6 +4,7 @@ from typing import Any
 import jwt
 from pydantic import BaseModel, constr
 
+from users.domain.entities import user_table
 from users.domain.repository import UsersRepository
 from users.domain.services.exceptions import (
     ResetPasswordTokenExpiredError,
@@ -57,6 +58,6 @@ async def reset_password(input: ResetPasswordInput, *, repository: UsersReposito
 
     logger.info("Resetting password of user_id=%s", user_id)
     user.set_password(input.new_password)
-    user.jwt_auth_id = user.jwt_auth_id + 1
+    user.jwt_auth_id = user_table.c.jwt_auth_id + 1
     await repository.save_user(user)
     await repository.commit()

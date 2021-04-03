@@ -2,6 +2,8 @@ from datetime import datetime, timedelta, timezone
 
 import jwt
 import time_machine
+from ward import raises, test
+
 from users.domain.entities import User
 from users.domain.services.exceptions import (
     ResetPasswordTokenExpiredError,
@@ -12,7 +14,6 @@ from users.domain.services.exceptions import (
 from users.domain.services.reset_password import ResetPasswordInput, reset_password
 from users.domain.tests.fake_repository import FakeUsersRepository
 from users.settings import SECRET_KEY
-from ward import raises, test
 
 
 @test("cannot reset password of not active user")
@@ -188,4 +189,7 @@ async def _():
     )
 
     assert user.new_password == "testnewpassword"
-    assert user.jwt_auth_id == 2
+
+    # we did column + 1 so the value updated in the DB and not python
+    assert user.jwt_auth_id.left.name == "jwt_auth_id"
+    assert user.jwt_auth_id.right.value == 1
