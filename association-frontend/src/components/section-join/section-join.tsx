@@ -6,10 +6,13 @@ import Button from "../button/button";
 import ModalSigning from "../modal-signing/modal-signing";
 
 const SectionJoin = () => {
-  const [modalHidden, setModalHidden] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const toggleModal = () => {
+    setShowModal(!showModal);
+  };
   return (
     <>
-      <ModalSigning isHidden={modalHidden} />
+      <ModalSigning showModal={showModal} closeModalHandler={toggleModal} />
       <SectionItem
         title={"Vuoi unirti?"}
         textTheme={"white"}
@@ -18,10 +21,7 @@ const SectionJoin = () => {
       >
         <div className="lg:flex-shrink-0">
           <div className="inline-flex rounded-md shadow">
-            <Button
-              text={"Unisciti ora"}
-              onClick={(e: React.MouseEvent) => setModalHidden(!modalHidden)}
-            />
+            <Button text={"Unisciti ora"} onClick={toggleModal} />
             {/* <a
             href="#"
             className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"

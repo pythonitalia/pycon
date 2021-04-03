@@ -1,0 +1,24 @@
+mutation Login($input: LoginInput!) {
+  login(input: $input) {
+    __typename
+
+    ... on LoginSuccess {
+      user {
+        id
+      }
+    }
+
+    ... on LoginValidationError {
+      errors {
+        email {
+          message
+          type
+        }
+        password {
+          message
+          type
+        }
+      }
+    }
+  }
+}

@@ -1,17 +1,86 @@
-import React from "react";
+import React, { useState } from "react";
+import { useFormState } from "react-use-form-state";
 
 import Button from "../button/button";
 import GoogleIcon from "../icons/google";
 import Input from "../input/input";
 import Modal from "../modal/modal";
 
+import { useLoginMutation } from "./login.generated";
+import { useRegisterMutation } from "./register.generated";
+
 type ModalSigningProps = {
-  isHidden: boolean;
+  showModal: boolean;
+  closeModalHandler?: () => void;
 };
 
-const ModalSigning: React.FC<ModalSigningProps> = ({ isHidden }) => {
+type SigningForm = {
+  email: string;
+  password: string;
+};
+
+const ModalSigning: React.FC<ModalSigningProps> = ({
+  showModal,
+  closeModalHandler,
+}) => {
+  const [formState, { email, password }] = useFormState<SigningForm>();
+  // login or signup
+  const [isLoggingIn, setIsLoggingIn] = useState(true);
+  const [{ fetching, data }, login] = useLoginMutation();
+  const [registerData, register] = useRegisterMutation();
+  console.log({ fetching, data, registerData });
+
+  const submitLogin = async () => {
+    const result = await login({
+      input: {
+        email: formState.values.email,
+        password: formState.values.password,
+      },
+    });
+    console.log({
+      email: formState.values.email,
+      password: formState.values.password,
+    });
+    console.log(result);
+
+    if (result.data.login.__typename === "LoginSuccess") {
+      window.dispatchEvent(new Event("userLoggedIn"));
+      closeModalHandler();
+    }
+  };
+  console.log({ fetching, data, registerData });
+
+  const submitRegister = async () => {
+    const result = await register({
+      input: {
+        email: formState.values.email,
+        password: formState.values.password,
+      },
+    });
+
+    console.log({
+      email: formState.values.email,
+      password: formState.values.password,
+    });
+    console.log(result);
+
+    if (result.data.register.__typename === "RegisterSuccess") {
+      console.log("register success!");
+      closeModalHandler();
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isLoggingIn) {
+      submitLogin();
+    } else {
+      submitRegister();
+    }
+  };
+
   return (
-    <Modal isHidden={isHidden}>
+    <Modal showModal={showModal} closeModalHandler={closeModalHandler}>
       <div className="items-center">
         <h3
           className="mb-6 text-3xl text-center font-extrabold leading-6 text-gray-900"
@@ -23,21 +92,26 @@ const ModalSigning: React.FC<ModalSigningProps> = ({ isHidden }) => {
         <div className=" flex flex-col max-w-sm mx-auto ">
           <div className="mb-4 flex flex-col">
             <div className="">
-              <Input placeholder={"Email"} />
+              <Input placeholder={"Email"} {...email("email")} />
             </div>
             <div className="place-self-start">
               <a
                 href="#"
                 className="underline text-bluecyan hover:text-yellow "
+                onClick={() => setIsLoggingIn(!isLoggingIn)}
               >
-                Hai gia' un account?
+                {isLoggingIn ? "Non hai un account?" : "Hai gia' un account?"}
               </a>
             </div>
           </div>
 
           <div className="mb-4 flex flex-col">
             <div className="">
-              <Input placeholder={"Password"} type={"password"} />
+              <Input
+                placeholder={"Password"}
+                type={"password"}
+                {...password("password")}
+              />
             </div>
             <div className="place-self-start">
               <a
@@ -50,7 +124,10 @@ const ModalSigning: React.FC<ModalSigningProps> = ({ isHidden }) => {
           </div>
 
           <div className="">
-            <Button link={"/login"} text={"Accedi"} />
+            <Button
+              text={isLoggingIn ? "Accedi" : "Registrati"}
+              onClick={handleSubmit}
+            />
           </div>
           {/* <div className="mb-4 relative">
             <div className="absolute inset-0 flex items-center">

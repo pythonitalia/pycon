@@ -2,22 +2,23 @@ import { useRef, useState } from "react";
 import classnames from "classnames";
 
 type ModalProps = {
-  isHidden: boolean;
+  showModal: boolean;
+  closeModalHandler?: (e: React.MouseEvent | React.FormEvent) => void;
 };
 
-const Modal: React.FC<ModalProps> = ({ isHidden = true, children }) => {
-  console.log({ isHidden });
-  const [hide, setHide] = useState(isHidden);
-
+const Modal: React.FC<ModalProps> = ({
+  showModal = true,
+  closeModalHandler,
+  children,
+}) => {
   return (
     <div
       className={classnames("fixed z-10 inset-0 overflow-y-auto ", {
-        hidden: isHidden,
+        hidden: !showModal,
       })}
       aria-labelledby="modal-title"
       role="dialog"
       aria-modal="true"
-      onClick={(e) => setHide(!hide)}
     >
       <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
         {/* {/* */}
@@ -33,6 +34,7 @@ const Modal: React.FC<ModalProps> = ({ isHidden = true, children }) => {
         <div
           className="fixed inset-0 bg-gray-900 bg-opacity-75 transition-opacity"
           aria-hidden="true"
+          onClick={(e) => closeModalHandler && closeModalHandler(e)}
         />
         {/* This element is to trick the browser into centering the modal contents. */}
         <span
@@ -51,7 +53,7 @@ Leaving: "ease-in duration-200"
   From: "opacity-100 translate-y-0 sm:scale-100"
   To: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
     */}
-        <div className="px-6 py-7 absolute top-2/4 left-2/4 transform -translate-x-1/2 -translate-y-1/2  w-4/5 max-w-2xl  mx-auto bg-white overflow-hidden shadow-xl ">
+        <div className="px-6 py-7 absolute top-2/4 left-2/4 transform -translate-x-1/2 -translate-y-1/2  w-3/5 max-w-md  mx-auto bg-white overflow-hidden shadow-xl ">
           <div className="bg-white">
             {children}
             {/* <div className="sm:flex sm:items-start">

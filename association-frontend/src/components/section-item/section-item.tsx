@@ -97,7 +97,6 @@ const SectionItem: React.FC<SectionItemProps> = ({
   overlayTheme = "black",
   ...props
 }) => {
-  console.log({ withBackground, backgroundImageClass });
   if (withBackground) {
     return (
       <BackgroundWrapper
