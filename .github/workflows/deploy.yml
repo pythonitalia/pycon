@@ -101,7 +101,7 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: built-email-templates
-          path: email-templates/
+          path: email-templates/build_production
       - uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: 0.14.4
