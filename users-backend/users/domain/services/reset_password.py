@@ -1,4 +1,5 @@
 import logging
+from typing import Any
 
 import jwt
 from pydantic import BaseModel, constr
@@ -19,7 +20,7 @@ class ResetPasswordInput(BaseModel):
     token: str
     new_password: constr(min_length=8)
 
-    def decode_token(self) -> dict:
+    def decode_token(self) -> dict[str, Any]:
         return jwt.decode(
             self.token,
             str(SECRET_KEY),
