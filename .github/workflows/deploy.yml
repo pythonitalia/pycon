@@ -85,6 +85,10 @@ jobs:
         run: yarn install
       - name: Build templates
         run: yarn production
+      - uses: actions/upload-artifact@v2
+        with:
+          name: built-email-templates
+          path: ./build_production
 
   terraform:
     runs-on: ubuntu-latest
@@ -94,6 +98,10 @@ jobs:
         working-directory: ./infrastructure/applications
     steps:
       - uses: actions/checkout@master
+      - uses: actions/download-artifact@v2
+        with:
+          name: built-email-templates
+          path: ../../email-templates/
       - uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: 0.14.4
