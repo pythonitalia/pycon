@@ -8,11 +8,11 @@ from ward import test
 from users.domain.entities import User
 from users.tests.client import testclient
 from users.tests.factories import user_factory
-from users.tests.session import cleanup_db, db
+from users.tests.session import db
 
 
 @test("social login creates a new account if it does not exist")
-async def _(testclient=testclient, db=db, cleanup_db=cleanup_db):
+async def _(testclient=testclient, db=db):
     db = cast(AsyncSession, db)
 
     query = select(User).where(User.email == "google@user.it")
@@ -46,7 +46,9 @@ async def _(testclient=testclient, db=db, cleanup_db=cleanup_db):
 
 @test("social login to account with same email")
 async def _(
-    testclient=testclient, user_factory=user_factory, db=db, cleanup_db=cleanup_db
+    testclient=testclient,
+    user_factory=user_factory,
+    db=db,
 ):
     db = cast(AsyncSession, db)
 
@@ -80,7 +82,7 @@ async def _(
 
 
 @test("reject google account if the email is not verified")
-async def _(testclient=testclient, db=db, cleanup_db=cleanup_db):
+async def _(testclient=testclient, db=db):
     db = cast(AsyncSession, db)
 
     with patch("users.social_auth.views.oauth.google.authorize_access_token"), patch(

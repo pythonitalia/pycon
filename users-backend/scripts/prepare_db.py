@@ -20,11 +20,11 @@ async def run():
         create_database(DATABASE_URL)
 
         async with engine.begin() as connection:
-            await connection.run_sync(mapper_registry.metadata.create_all)
+            await connection.run_sync(metadata.create_all)
     else:
         async with engine.begin() as connection:
-            for table in metadata.sorted_tables:
-                await connection.execute(table.delete())
+            await connection.run_sync(metadata.drop_all)
+            await connection.run_sync(metadata.create_all)
 
 
 if __name__ == "__main__":

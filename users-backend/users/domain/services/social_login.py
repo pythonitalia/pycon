@@ -1,9 +1,8 @@
 import dataclasses
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 
 from pydantic import BaseModel, EmailStr, constr
-
 from users.domain.entities import UNUSABLE_PASSWORD, User
 from users.domain.repository import AbstractUsersRepository
 
@@ -40,7 +39,7 @@ async def social_login(
             User(
                 email=input.email,
                 password=UNUSABLE_PASSWORD,
-                date_joined=datetime.utcnow(),
+                date_joined=datetime.now(timezone.utc),
                 fullname=input.social_account.fullname,
                 name=input.social_account.first_name,
             )

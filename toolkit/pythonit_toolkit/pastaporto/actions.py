@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from enum import Enum
 
 import jwt
@@ -18,7 +18,7 @@ class PastaportoAction:
     payload: dict[str, str]
 
     def sign(self, secret: str) -> str:
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         return jwt.encode(
             {

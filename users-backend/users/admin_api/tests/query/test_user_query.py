@@ -29,7 +29,7 @@ async def _(
     logged_user = await user_factory(email="user@email.it", is_staff=False)
     admin_graphql_client.force_login(logged_user)
 
-    user = await user_factory(email="user@email.it", is_staff=False)
+    user = await user_factory(email="user2@email.it", is_staff=False)
 
     query = """query($id: ID!) {
         user(id: $id) {

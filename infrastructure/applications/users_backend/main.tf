@@ -1,6 +1,9 @@
 locals {
   is_prod = terraform.workspace == "production"
   domain  = local.is_prod ? "${local.domain_name}.beta.python.it" : "${terraform.workspace}-${local.domain_name}.beta.python.it"
+
+  # TODO: Need to coordinate between env and vercel
+  association_frontend_url = "https://associazione.python.it"
 }
 
 data "aws_db_instance" "database" {
@@ -40,10 +43,14 @@ module "lambda" {
   security_group_ids = [data.aws_security_group.rds.id]
   env_vars = {
     DEBUG                     = "false"
-    SESSION_SECRET_KEY        = var.session_secret_key
+    SECRET_KEY                = var.secret_key
     GOOGLE_AUTH_CLIENT_ID     = var.google_auth_client_id
     GOOGLE_AUTH_CLIENT_SECRET = var.google_auth_client_secret
     DATABASE_URL              = "postgresql+asyncpg://${data.aws_db_instance.database.master_username}:${var.database_password}@${data.aws_db_instance.database.address}:${data.aws_db_instance.database.port}/users"
+    EMAIL_BACKEND             = "pythonit_toolkit.emails.backends.ses.SESEmailBackend"
+
+    # Services
+    ASSOCIATION_FRONTEND_URL = local.association_frontend_url
 
     # Secrets
     PASTAPORTO_SECRET         = var.pastaporto_secret

@@ -62,6 +62,7 @@ describe("Pastaporto", () => {
       id: 10,
       email: "test@email.it",
       isStaff: false,
+      isActive: true,
     });
 
     const pastaporto = await Pastaporto.fromIdentityToken("fake");
@@ -83,6 +84,7 @@ describe("Pastaporto", () => {
       id: 10,
       email: "test@email.it",
       isStaff: true,
+      isActive: true,
     });
 
     const pastaporto = await Pastaporto.fromIdentityToken("fake");
@@ -96,6 +98,29 @@ describe("Pastaporto", () => {
       Credential.AUTHENTICATED,
       Credential.STAFF,
     ]);
+  });
+
+  test("Raises an error if the user is not active", async () => {
+    mockedFetchUserInfo.mockReturnValue({
+      id: 10,
+      email: "test@email.it",
+      isStaff: true,
+      isActive: false,
+    });
+
+    expect(Pastaporto.fromIdentityToken("fake")).rejects.toThrow(
+      "No user found",
+    );
+    expect(mockedFetchUserInfo).toBeCalledWith("10");
+  });
+
+  test("Raises an error if the user is not found", async () => {
+    mockedFetchUserInfo.mockReturnValue(null);
+
+    expect(Pastaporto.fromIdentityToken("fake")).rejects.toThrow(
+      "No user found",
+    );
+    expect(mockedFetchUserInfo).toBeCalledWith("10");
   });
 
   test("Sign authenticated pastaporto", () => {

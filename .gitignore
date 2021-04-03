@@ -113,3 +113,5 @@ secrets.auto.tfvars
 *.generated.ts
 **/helpers/types.ts
 
+**/coverage/**
+

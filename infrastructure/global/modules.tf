@@ -35,3 +35,9 @@ module "certs_beta" {
     aws.us = aws.us
   }
 }
+
+# Buckets
+
+module "buckets" {
+  source = "./buckets"
+}

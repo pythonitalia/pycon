@@ -19,8 +19,8 @@ async def _(
 
     await user_factory(
         email="another-email@email.it",
-        fullname="Giorgina Giogio",
-        name="Giorgina",
+        fullname="Giorgina Full",
+        name="Giorgina 2",
         is_staff=True,
     )
 
@@ -265,13 +265,13 @@ async def _(
     )
     admin_graphql_client.force_login(logged_user)
 
-    await user_factory_batch(
-        50,
-        email="another-email@email.it",
-        fullname="Giorgina Giogio",
-        name="Giorgina",
-        is_staff=True,
-    )
+    for i in range(0, 20):
+        await user_factory(
+            email=f"another-email-{i}@email.it",
+            fullname=f"Giorgina uu {i}",
+            name=f"Giorgina ee {i}",
+            is_staff=True,
+        )
 
     query = """query($query: String!) {
         search(query: $query) {

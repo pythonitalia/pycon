@@ -18,7 +18,8 @@
   "scripts": {
     "dev": "NODE_ENV=development VARIANT=default nodemon",
     "dev:admin": "NODE_ENV=development VARIANT=admin nodemon",
-    "test": "jest"
+    "test": "jest",
+    "test:coverage": "jest --collect-coverage"
   },
   "devDependencies": {
     "@types/cookie": "^0.4.0",

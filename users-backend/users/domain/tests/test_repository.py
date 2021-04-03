@@ -3,16 +3,15 @@ from typing import cast
 
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy.sql.expression import select
-from ward import test
-
 from users.domain.entities import User
 from users.domain.repository import UsersRepository
 from users.tests.factories import user_factory
-from users.tests.session import cleanup_db, db, second_session
+from users.tests.session import db, second_session
+from ward import test
 
 
 @test("create user")
-async def _(db=db, second_session=second_session, cleanup_db=cleanup_db):
+async def _(db=db, second_session=second_session):
     db = cast(AsyncSession, db)
     second_session = cast(AsyncSession, second_session)
 
@@ -71,11 +70,11 @@ async def _(db=db, second_session=second_session, user_factory=user_factory):
     page = await paginable.page(0, 1)
 
     assert page.total_count == 3
-    assert page.items == [user]
+    assert page.items[0].id == user.id
 
     page = await paginable.page(1, 3)
     assert page.total_count == 3
-    assert page.items == [user_2, user_3]
+    assert [i.id for i in page.items] == [user_2.id, user_3.id]
 
 
 @test("get user by email")
@@ -83,7 +82,6 @@ async def _(
     db=db,
     second_session=second_session,
     user_factory=user_factory,
-    cleanup_db=cleanup_db,
 ):
     db = cast(AsyncSession, db)
     second_session = cast(AsyncSession, second_session)
@@ -118,7 +116,6 @@ async def _(
     db=db,
     second_session=second_session,
     user_factory=user_factory,
-    cleanup_db=cleanup_db,
 ):
     db = cast(AsyncSession, db)
     second_session = cast(AsyncSession, second_session)

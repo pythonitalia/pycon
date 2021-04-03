@@ -10,7 +10,10 @@ from users.api.context import Info
 from users.api.types import User
 from users.domain import entities, services
 from users.domain.services import LoginInputModel
-from users.domain.services.exceptions import WrongEmailOrPasswordError
+from users.domain.services.exceptions import (
+    UserIsNotActiveError,
+    WrongEmailOrPasswordError,
+)
 
 
 @strawberry.experimental.pydantic.input(LoginInputModel, fields=["email", "password"])
@@ -57,7 +60,7 @@ async def login(info: Info, input: LoginInput) -> LoginResult:
         user = await services.login(
             input_model, users_repository=info.context.users_repository
         )
-    except WrongEmailOrPasswordError:
+    except (WrongEmailOrPasswordError, UserIsNotActiveError):
         return WrongEmailOrPassword()
 
     info.context.pastaporto_action = create_user_auth_pastaporto_action(user.id)

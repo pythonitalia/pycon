@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import jwt
 from pythonit_toolkit.pastaporto.tokens import decode_service_to_service_token
@@ -9,7 +9,8 @@ from ward import raises, test
 async def _():
     test_token = jwt.encode(
         {
-            "exp": datetime.utcnow() + timedelta(seconds=10),
+            "iat": datetime.now(timezone.utc),
+            "exp": datetime.now(timezone.utc) + timedelta(seconds=10),
             "iss": "test",
             "aud": "users-service",
         },
@@ -25,7 +26,9 @@ async def _():
 @test("reject tokens without expiration")
 async def _():
     test_token = jwt.encode(
-        {"iss": "test", "aud": "users-service"}, "secret", algorithm="HS256"
+        {"iat": datetime.now(timezone.utc), "iss": "test", "aud": "users-service"},
+        "secret",
+        algorithm="HS256",
     )
 
     with raises(jwt.MissingRequiredClaimError):
@@ -38,7 +41,8 @@ async def _():
 async def _():
     test_token = jwt.encode(
         {
-            "exp": datetime.utcnow() + timedelta(seconds=10),
+            "iat": datetime.now(timezone.utc),
+            "exp": datetime.now(timezone.utc) + timedelta(seconds=10),
             "iss": "test",
         },
         "secret",
@@ -55,7 +59,8 @@ async def _():
 async def _():
     test_token = jwt.encode(
         {
-            "exp": datetime.utcnow() + timedelta(seconds=10),
+            "iat": datetime.now(timezone.utc),
+            "exp": datetime.now(timezone.utc) + timedelta(seconds=10),
             "iss": "test",
             "aud": "users-service",
         },

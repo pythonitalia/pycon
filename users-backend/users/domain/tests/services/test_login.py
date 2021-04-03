@@ -1,8 +1,7 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 import pydantic
-from ward import raises, test
-
+import time_machine
 from users.domain.entities import User
 from users.domain.services.exceptions import (
     UserIsNotActiveError,
@@ -11,6 +10,7 @@ from users.domain.services.exceptions import (
 )
 from users.domain.services.login import LoginInputModel, login
 from users.domain.tests.fake_repository import FakeUsersRepository
+from ward import raises, test
 
 
 @test("cannot login to not existent email")
@@ -101,12 +101,16 @@ async def _():
     )
     repository = FakeUsersRepository(users=[user])
 
-    logged_user = await login(
-        LoginInputModel(email="marco@acierno.it", password="test"),
-        users_repository=repository,
-    )
+    with time_machine.travel("2020-10-10 10:10:00Z", tick=False):
+        logged_user = await login(
+            LoginInputModel(email="marco@acierno.it", password="test"),
+            users_repository=repository,
+        )
 
     assert logged_user.id == user.id
+    assert logged_user.last_login == datetime(
+        2020, 10, 10, 10, 10, 00, tzinfo=timezone.utc
+    )
 
 
 @test("cannot login with empty email")
