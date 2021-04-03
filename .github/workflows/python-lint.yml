@@ -29,7 +29,7 @@ jobs:
       - uses: dorny/paths-filter@v2
         id: changed
         with:
-          token: ${{ github.token }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           filters: .github/file-filters.yml
       - run: pip install poetry
         if: steps.changed.outputs.changed.${{ matrix.service }} == 'true'
@@ -42,9 +42,7 @@ jobs:
         id: cache
         with:
           path: ~/.virtualenvs
-          key: poetry-${{ hashFiles('${{ matrix.service }}/poetry.lock') }}-v2
-          restore-keys: |
-            poetry-${{ hashFiles('${{ matrix.service }}/poetry.lock') }}-v2
+          key: poetry-${{ matrix.service }}-${{ hashFiles('**/poetry.lock') }}-v2
       - name: Install deps
         if: steps.changed.outputs.changed.${{ matrix.service }} == 'true'
         run: poetry install

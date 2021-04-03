@@ -27,9 +27,7 @@ jobs:
         id: cache
         with:
           path: ./node_modules
-          key: node_modules-${{ hashFiles('${{ matrix.service }}/yarn.lock') }}-v2
-          restore-keys: |
-            node_modules-${{ hashFiles('${{ matrix.service }}/yarn.lock') }}-v2
+          key: node_modules-${{ matrix.service }}-${{ hashFiles('yarn.lock') }}-v2
       - name: Install dependencies
         if: steps.changed.outputs.changed.${{ matrix.service }} == 'true'
         run: yarn install

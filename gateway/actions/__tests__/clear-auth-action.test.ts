@@ -1,4 +1,5 @@
 import { ClearAuthAction } from "../clear-auth-action";
+
 jest.mock("../../config");
 test("Clear auth action clears cookies", async () => {
   const context = {

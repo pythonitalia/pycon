@@ -1,6 +1,7 @@
-import { AuthAction } from "../actions/auth-action";
 import { AuthenticationError } from "apollo-server-errors";
 import { TokenExpiredError } from "jsonwebtoken";
+
+import { AuthAction } from "../actions/auth-action";
 import { Pastaporto } from "./entities";
 import { decodeIdentity, decodeRefreshToken } from "./identity";
 

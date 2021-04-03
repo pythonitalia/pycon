@@ -1,4 +1,5 @@
 import jwt, { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
+
 import {
   createIdentityToken,
   createRefreshToken,
@@ -6,6 +7,7 @@ import {
   decodeRefreshToken,
   removeIdentityTokens,
 } from "../identity";
+
 jest.mock("../../config");
 
 const TEST_PRIVATE_KEY = `-----BEGIN RSA PRIVATE KEY-----

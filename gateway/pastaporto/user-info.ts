@@ -1,6 +1,7 @@
-import { SERVICE_TO_SERVICE_SECRET, USERS_SERVICE } from "../config";
 import { GraphQLClient, gql } from "graphql-request";
 import jwt from "jsonwebtoken";
+
+import { SERVICE_TO_SERVICE_SECRET, USERS_SERVICE } from "../config";
 
 const USERS_SERVICE_INTERNAL_API_ENDPOINT = `${USERS_SERVICE}/internal-api`;
 
