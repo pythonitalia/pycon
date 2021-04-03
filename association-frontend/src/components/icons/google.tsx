@@ -4,7 +4,7 @@ const GoogleIcon: React.FC = () => (
   <svg //width="36" height="34" fill="none" viewBox="0 0 36 34"
     className="h-6 w-6"
     fill="none"
-    viewBox="0 0 36 34"
+    viewBox="13 14 21 17"
     aria-hidden="true"
   >
     {/* <g fill="none" fillRule="evenodd"> */}

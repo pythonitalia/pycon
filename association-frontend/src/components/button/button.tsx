@@ -7,7 +7,7 @@ type ButtonProps = {
   link?: string;
   type?: "button" | "reset" | "submit";
   fullWidth?: boolean;
-  onClick?: () => void;
+  onClick?: (...args: any[]) => void;
 };
 
 const Button: React.FC<ButtonProps> = ({
