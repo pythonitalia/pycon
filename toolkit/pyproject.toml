@@ -13,7 +13,7 @@ pydantic = {version = "^1.8.1", optional = true}
 boto3 = "^1.17.39"
 
 [tool.poetry.dev-dependencies]
-ward = "^0.50.0-beta.0"
+ward = "^0.54.0b0"
 time-machine = "^2.1.0"
 starlette = "^0.14.2"
 pdbpp = "^0.10.2"

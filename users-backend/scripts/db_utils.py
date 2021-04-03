@@ -1,16 +1,12 @@
 import sqlalchemy
 from sqlalchemy.engine.interfaces import Dialect
-from sqlalchemy.engine.url import make_url
 from sqlalchemy.orm.exc import UnmappedInstanceError
 from sqlalchemy.orm.session import object_session
 
 
-def create_database(url) -> None:
-    parsed_url = make_url(url)
-    db_name = parsed_url.database
-
+def create_database(url, db_name: str) -> None:
     with sqlalchemy.create_engine(
-        "postgresql:///postgres", isolation_level="AUTOCOMMIT"
+        url, isolation_level="AUTOCOMMIT"
     ).connect() as connection:
         query = "CREATE DATABASE {0} TEMPLATE {1}".format(
             quote(connection, db_name), "template1"
@@ -18,26 +14,19 @@ def create_database(url) -> None:
         connection.execute(query)
 
 
-def drop_database(url) -> None:
-    parsed_url = make_url(url)
-    db_name = parsed_url.database
-
+def drop_database(url, db_name: str) -> None:
     with sqlalchemy.create_engine(
-        "postgresql:///postgres", isolation_level="AUTOCOMMIT"
+        url, isolation_level="AUTOCOMMIT"
     ).connect() as connection:
         query = "DROP DATABASE {0}".format(quote(connection, db_name))
         connection.execute(query)
 
 
-def database_exists(url) -> bool:
-    parsed_url = make_url(url)
-
+def database_exists(url, db_name: str) -> bool:
     with sqlalchemy.create_engine(
-        "postgresql:///postgres", isolation_level="AUTOCOMMIT"
+        url, isolation_level="AUTOCOMMIT"
     ).connect() as connection:
-        query = "SELECT 1 FROM pg_database WHERE datname='{0}'".format(
-            parsed_url.database
-        )
+        query = "SELECT 1 FROM pg_database WHERE datname='{0}'".format(db_name)
         result = connection.execute(query)
         return bool(result.scalar())
 

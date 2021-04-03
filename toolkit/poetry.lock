@@ -435,7 +435,7 @@ brotli = ["brotlipy (>=0.6.0)"]
 
 [[package]]
 name = "ward"
-version = "0.50.0b0"
+version = "0.54.0b0"
 description = "A modern Python testing framework"
 category = "dev"
 optional = false
@@ -464,7 +464,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "1daeb054c97575a58fcf8508f704bcb8963ad7c231146a3eba2e9997a62f9c92"
+content-hash = "3d66e52a73f9a90ac2808b92e85aebe2cb883d67476c01d81acdb4a585d29fdf"
 
 [metadata.files]
 boto3 = [
@@ -796,8 +796,8 @@ urllib3 = [
     {file = "urllib3-1.26.4.tar.gz", hash = "sha256:e7b021f7241115872f92f43c6508082facffbd1c048e3c6e2bb9c2a157e28937"},
 ]
 ward = [
-    {file = "ward-0.50.0b0-py3-none-any.whl", hash = "sha256:3bc3d7106d737d131f5bd0452175732a2259eb108279e4454c5b8439ba95a7a8"},
-    {file = "ward-0.50.0b0.tar.gz", hash = "sha256:35046072015ed28523db8d9cbf44e150ed826c3eb92f7abb34d78871230db665"},
+    {file = "ward-0.54.0b0-py3-none-any.whl", hash = "sha256:d3ac17d56924459b07ce3d79f9cd3ba5f20019cf8058f7c75ee9036b539d301f"},
+    {file = "ward-0.54.0b0.tar.gz", hash = "sha256:edc5c9ba5a4bef0ccd04b61643e917add544f1a00d1670fd46532023b9a7469a"},
 ]
 wmctrl = [
     {file = "wmctrl-0.3.tar.gz", hash = "sha256:d806f65ac1554366b6e31d29d7be2e8893996c0acbb2824bbf2b1f49cf628a13"},

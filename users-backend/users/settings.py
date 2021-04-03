@@ -77,6 +77,6 @@ if RUNNING_TESTS:
         query=original_url.query,
     )
 
-    DATABASE_URL = test_db_url
+    DATABASE_URL = str(test_db_url)
     PASSWORD_HASHERS = ["users.starlette_password.plain_hasher.PlainPasswordHasher"]
     SERVICE_TO_SERVICE_SECRET = "test-service-to-service"
