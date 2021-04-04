@@ -5,7 +5,6 @@ import Button from "../button/button";
 import GoogleIcon from "../icons/google";
 import Input from "../input/input";
 import Modal from "../modal/modal";
-
 import { useLoginMutation } from "./login.generated";
 import { useRegisterMutation } from "./register.generated";
 
@@ -83,47 +82,47 @@ const ModalSigning: React.FC<ModalSigningProps> = ({
     <Modal showModal={showModal} closeModalHandler={closeModalHandler}>
       <div className="items-center">
         <h3
-          className="mb-6 text-3xl text-center font-extrabold leading-6 text-gray-900"
+          className="mb-6 text-3xl text-center font-extrabold text-gray-900"
           id="modal-title"
         >
-          Entra nella community di Python Italia!
+          {isLoggingIn && "Accedi al tuo account Python Italia"}
+          {!isLoggingIn && "Entra nella community di Python Italia!"}
         </h3>
 
-        <div className=" flex flex-col max-w-sm mx-auto ">
-          <div className="mb-4 flex flex-col">
-            <div className="">
-              <Input placeholder={"Email"} {...email("email")} />
-            </div>
+        <div className="flex flex-col max-w-sm mx-auto">
+          <div className="mb-5 flex flex-col">
+            <Input placeholder="Email" {...email("email")} />
             <div className="place-self-start">
               <a
                 href="#"
-                className="underline text-bluecyan hover:text-yellow "
-                onClick={() => setIsLoggingIn(!isLoggingIn)}
+                className="underline mt-1 block text-bluecyan hover:text-yellow "
+                onClick={(e) => {
+                  e.preventDefault();
+                  setIsLoggingIn(!isLoggingIn);
+                }}
               >
-                {isLoggingIn ? "Non hai un account?" : "Hai gia' un account?"}
+                {isLoggingIn ? "Non hai un account?" : "Hai già un account?"}
               </a>
             </div>
           </div>
 
-          <div className="mb-4 flex flex-col">
-            <div className="">
-              <Input
-                placeholder={"Password"}
-                type={"password"}
-                {...password("password")}
-              />
-            </div>
+          <div className="mb-7 flex flex-col">
+            <Input
+              placeholder={"Password"}
+              type={"password"}
+              {...password("password")}
+            />
             <div className="place-self-start">
               <a
                 href="#"
-                className=" underline text-bluecyan hover:text-yellow"
+                className="underline mt-1 block text-bluecyan hover:text-yellow"
               >
                 Hai dimenticato la password?
               </a>
             </div>
           </div>
 
-          <div className="">
+          <div>
             <Button
               text={isLoggingIn ? "Accedi" : "Registrati"}
               onClick={handleSubmit}
