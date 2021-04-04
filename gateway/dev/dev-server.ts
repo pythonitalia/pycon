@@ -1,9 +1,10 @@
 import { ApolloServer } from "apollo-server";
-import { getPort } from "./utils";
+
+import { createContext } from "../context";
 import { gateway } from "../gateway";
 import { apolloHeadersPlugin } from "../plugins/apollo-headers";
 import { formatCookiesForExpressPlugin } from "../plugins/format-cookies-express";
-import { createContext } from "../context";
+import { getPort } from "./utils";
 
 const server = new ApolloServer({
   gateway,

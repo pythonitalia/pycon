@@ -1,7 +1,8 @@
-import { PASTAPORTO_SECRET } from "../config";
 import jwt from "jsonwebtoken";
-import { fetchUserInfo, User } from "./user-info";
+
+import { PASTAPORTO_SECRET } from "../config";
 import { decodeIdentity } from "./identity";
+import { fetchUserInfo, User } from "./user-info";
 
 export enum Credential {
   STAFF = "staff",

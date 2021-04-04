@@ -1,5 +1,7 @@
-import { canRefreshIdentity } from "../index";
 import { createRefreshToken } from "../identity";
+import { canRefreshIdentity } from "../index";
+
+jest.mock("../../config");
 
 describe("Can refresh token", () => {
   test("rejects expired token", () => {

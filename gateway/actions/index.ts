@@ -1,7 +1,7 @@
-import { AuthAction } from "./auth-action";
-
 import jwt from "jsonwebtoken";
+
 import { PASTAPORTO_ACTION_SECRET } from "../config";
+import { AuthAction } from "./auth-action";
 import { Action } from "./entities";
 
 type DecodedToken = {

@@ -1,0 +1,59 @@
+name: Python Lint
+
+on: pull_request
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [toolkit, users-backend]
+    defaults:
+      run:
+        working-directory: ./${{ matrix.service }}
+    services:
+      postgres:
+        image: postgres:11.10
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432/tcp
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: "3.9.1"
+      - uses: dorny/paths-filter@v2
+        id: changed
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          filters: .github/file-filters.yml
+      - run: pip install poetry
+        if: steps.changed.outputs.changed.${{ matrix.service }} == 'true'
+      - name: Set Poetry config
+        if: steps.changed.outputs.changed.${{ matrix.service }} == 'true'
+        run: poetry config virtualenvs.path ~/.virtualenvs
+      - name: Cache Poetry
+        if: steps.changed.outputs.changed.${{ matrix.service }} == 'true'
+        uses: actions/cache@v1
+        id: cache
+        with:
+          path: ~/.virtualenvs
+          key: poetry-${{ matrix.service }}-${{ hashFiles('**/poetry.lock') }}-v2
+      - name: Install deps
+        if: steps.changed.outputs.changed.${{ matrix.service }} == 'true'
+        run: poetry install
+      - name: Unit tests
+        if: steps.changed.outputs.changed.${{ matrix.service }} == 'true'
+        run: poetry run task test
+        env:
+          DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:${{ job.services.postgres.ports[5432] }}/postgres
+          IDENTITY_SECRET: 'secret'
+          PASTAPORTO_SECRET: 'secret'
+          SERVICE_TO_SERVICE_SECRET: 'secret'
+          PASTAPORTO_ACTION_SECRET: 'secret'
+          SECRET_KEY: 'secret'
+          ASSOCIATION_FRONTEND_URL: "https://associazione.python.it"

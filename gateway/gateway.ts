@@ -1,8 +1,9 @@
 import { ApolloGateway, RemoteGraphQLDataSource } from "@apollo/gateway";
-import { getServices } from "./services";
+
+import { getPastaportoActionFromToken } from "./actions";
 import { IS_DEV } from "./config";
 import { Pastaporto } from "./pastaporto/entities";
-import { getPastaportoActionFromToken } from "./actions";
+import { getServices } from "./services";
 
 const PASTAPORTO_X_HEADER = "x-pastaporto";
 const PASTAPORTO_ACTION_X_HEADER = "x-pastaporto-action";

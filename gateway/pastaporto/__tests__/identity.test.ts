@@ -1,4 +1,5 @@
 import jwt, { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
+
 import {
   createIdentityToken,
   createRefreshToken,
@@ -6,6 +7,8 @@ import {
   decodeRefreshToken,
   removeIdentityTokens,
 } from "../identity";
+
+jest.mock("../../config");
 
 const TEST_PRIVATE_KEY = `-----BEGIN RSA PRIVATE KEY-----
 MIICWwIBAAKBgQC4d8AeK7bfuoc0yPtHeuHjo9MT25DP0JZoHbWscpZ9yjKlZvHv
@@ -22,11 +25,6 @@ laHXygVTtne/w6v4E5nmdK2S3aU597xBbMtKXuRCQelB2Uwe3QGILwHwK09ojtU5
 hFfoYuQxMRRZCvZPvwJAB70RhOrVaX83Oboqqu8rsCM1HDrHGPNznUfpOnUUkUC7
 LZsBajFgIDr1OMCUeeo23oNOgdkpPPfGM5VKTLciCQ==
 -----END RSA PRIVATE KEY-----`;
-
-jest.mock("../../config", () => ({
-  IDENTITY_SECRET: "abc",
-  IS_DEV: true,
-}));
 
 describe("Decode Identity", () => {
   test("Decode valid not expired identity", () => {

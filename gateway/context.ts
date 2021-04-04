@@ -1,6 +1,7 @@
 import cookie from "cookie";
-import { removeIdentityTokens } from "./pastaporto/identity";
+
 import { createPastaporto } from "./pastaporto";
+import { removeIdentityTokens } from "./pastaporto/identity";
 
 export const createContext = async (cookiesHeader?: string) => {
   let cookies = null;

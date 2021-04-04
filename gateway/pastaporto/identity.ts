@@ -1,6 +1,7 @@
-import { IDENTITY_SECRET } from "../config";
 import jwt from "jsonwebtoken";
+
 import { ClearAuthAction } from "../actions/clear-auth-action";
+import { IDENTITY_SECRET } from "../config";
 
 type DecodedIdentity = {
   sub: string;

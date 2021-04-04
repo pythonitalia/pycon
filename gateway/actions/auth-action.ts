@@ -1,8 +1,8 @@
+import { IS_DEV } from "../config";
 import {
   createIdentityToken,
   createRefreshToken,
 } from "../pastaporto/identity";
-import { IS_DEV } from "../config";
 import { PastaportoAction } from "./entities";
 
 type Options = {

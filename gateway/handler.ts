@@ -1,7 +1,8 @@
 import { ApolloServer } from "apollo-server-lambda";
+
+import { createContext } from "./context";
 import { gateway } from "./gateway";
 import { apolloHeadersPlugin } from "./plugins/apollo-headers";
-import { createContext } from "./context";
 
 const server = new ApolloServer({
   gateway,

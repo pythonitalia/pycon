@@ -1,7 +1,9 @@
 # isort: off
 import asyncio
 import os
-import sys  # noqa
+import sys
+
+from sqlalchemy.engine.url import make_url  # noqa
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))  # noqa
 
@@ -15,9 +17,11 @@ from users.settings import DATABASE_URL
 async def run():
     engine = get_engine(echo=False)
     metadata = mapper_registry.metadata
+    db_name = make_url(DATABASE_URL).database
+    sync_database_url = DATABASE_URL.replace("asyncpg", "psycopg2").replace("TEST_", "")
 
-    if not database_exists(DATABASE_URL):
-        create_database(DATABASE_URL)
+    if not database_exists(sync_database_url, db_name):
+        create_database(sync_database_url, db_name)
 
         async with engine.begin() as connection:
             await connection.run_sync(metadata.create_all)
