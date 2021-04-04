@@ -23,7 +23,6 @@ coverage = "^5.5"
 [tool.taskipy.tasks]
 test = "coverage run -m ward"
 "test:coverage" = "task test || coverage xml -i && coverage xml -i"
-"test:debug" = "task test --no-capture-output"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
