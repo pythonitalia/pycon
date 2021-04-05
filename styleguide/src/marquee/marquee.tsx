@@ -5,7 +5,7 @@ type Props = {
 };
 
 export const Marquee = ({ children }: Props) => (
-  <div>
+  <div className="overflow-hidden w-full">
     <div className="motion-safe:animate-marquee p-8 text-3xl whitespace-nowrap">
       <div className="inline-block">{children}</div>
 
