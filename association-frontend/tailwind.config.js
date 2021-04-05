@@ -25,7 +25,7 @@ const colors = {
 };
 
 module.exports = {
-  purge: ["./src/pages/**/*.ts", "./components/**/*.ts"],
+  purge: ["./src/**/*.tsx"],
   darkMode: false, // or 'media' or 'class'
   theme: {
     colors: colors,
