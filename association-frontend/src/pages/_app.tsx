@@ -1,16 +1,10 @@
 import { authExchange } from "@urql/exchange-auth";
-import {
-  cacheExchange,
-  dedupExchange,
-  fetchExchange,
-  makeOperation,
-  ssrExchange,
-} from "urql";
+import { cacheExchange, dedupExchange, fetchExchange } from "urql";
 
 import { withUrqlClient } from "next-urql";
+import Head from "next/head";
 import { Router } from "next/router";
 
-import Footer from "~/components/footer/footer";
 import Hero from "~/components/hero/hero";
 import { UserProvider } from "~/components/user-provider";
 
@@ -22,15 +16,21 @@ type AuthState = {
 
 const App = ({ Component, pageProps, resetUrqlClient }) => {
   return (
-    <div>
-      <UserProvider resetUrqlClient={resetUrqlClient}>
-        <Hero />
-        <main>
-          <Component {...pageProps} />
-        </main>
-        {/* <Footer /> */}
-      </UserProvider>
-    </div>
+    <UserProvider resetUrqlClient={resetUrqlClient}>
+      <Head>
+        <title>Associazione Python Italia</title>
+        <link rel="icon" href="/favicon.png" />
+        <link
+          href="https://fonts.googleapis.com/css?family=Montserrat:300,700"
+          rel="stylesheet"
+        />
+      </Head>
+
+      <Hero />
+      <main>
+        <Component {...pageProps} />
+      </main>
+    </UserProvider>
   );
 };
 
