@@ -1,6 +1,10 @@
+import classnames from "classnames";
 import React, { useState } from "react";
 import { useFormState } from "react-use-form-state";
 
+import { getMessageForError, isErrorTypename } from "~/helpers/errors-to-text";
+
+import { Alert, Variant } from "../alert/alert";
 import Button from "../button/button";
 import Input from "../input/input";
 import Modal from "../modal/modal";
@@ -24,9 +28,8 @@ const ModalSigning: React.FC<ModalSigningProps> = ({
   const [formState, { email, password }] = useFormState<SigningForm>();
   // login or signup
   const [isLoggingIn, setIsLoggingIn] = useState(true);
-  const [{ fetching, data }, login] = useLoginMutation();
+  const [loginData, login] = useLoginMutation();
   const [registerData, register] = useRegisterMutation();
-  console.log({ fetching, data, registerData });
 
   const submitLogin = async () => {
     const result = await login({
@@ -35,18 +38,12 @@ const ModalSigning: React.FC<ModalSigningProps> = ({
         password: formState.values.password,
       },
     });
-    console.log({
-      email: formState.values.email,
-      password: formState.values.password,
-    });
-    console.log(result);
 
     if (result.data.login.__typename === "LoginSuccess") {
       window.dispatchEvent(new Event("userLoggedIn"));
       closeModalHandler();
     }
   };
-  console.log({ fetching, data, registerData });
 
   const submitRegister = async () => {
     const result = await register({
@@ -55,12 +52,6 @@ const ModalSigning: React.FC<ModalSigningProps> = ({
         password: formState.values.password,
       },
     });
-
-    console.log({
-      email: formState.values.email,
-      password: formState.values.password,
-    });
-    console.log(result);
 
     if (result.data.register.__typename === "RegisterSuccess") {
       console.log("register success!");
@@ -77,6 +68,12 @@ const ModalSigning: React.FC<ModalSigningProps> = ({
     }
   };
 
+  const isRunningMutation = loginData.fetching || registerData.fetching;
+  const mutationResultTypename = isLoggingIn
+    ? loginData.data?.login?.__typename
+    : registerData.data?.register?.__typename;
+  const operationFailed = isErrorTypename(mutationResultTypename);
+
   return (
     <Modal
       className="items-center"
@@ -88,12 +85,12 @@ const ModalSigning: React.FC<ModalSigningProps> = ({
         id="modal-title"
       >
         {isLoggingIn && "Accedi al tuo account Python Italia"}
-        {!isLoggingIn && "Entra nella community di Python Italia!"}
+        {!isLoggingIn && "Entra nella community di Python Italia"}
       </h3>
 
-      <div className="flex flex-col max-w-sm mx-auto">
+      <form className="flex flex-col max-w-sm mx-auto" onSubmit={handleSubmit}>
         <div className="mb-5 flex flex-col">
-          <Input placeholder="Email" {...email("email")} />
+          <Input required placeholder="Email" {...email("email")} />
           <div className="place-self-start">
             <a
               href="#"
@@ -112,9 +109,14 @@ const ModalSigning: React.FC<ModalSigningProps> = ({
           <Input
             placeholder={"Password"}
             type={"password"}
+            required
             {...password("password")}
           />
-          <div className="place-self-start">
+          <div
+            className={classnames("place-self-start", {
+              "opacity-0": !formState.values.email,
+            })}
+          >
             <a
               href="#"
               className="underline text-left mt-1 block text-bluecyan hover:text-yellow"
@@ -124,16 +126,19 @@ const ModalSigning: React.FC<ModalSigningProps> = ({
           </div>
         </div>
 
+        {isRunningMutation && <Alert variant={Variant.INFO}>Please wait</Alert>}
+        {operationFailed && mutationResultTypename && (
+          <Alert variant={Variant.ERROR}>
+            {getMessageForError(mutationResultTypename)}
+          </Alert>
+        )}
+
         <div>
-          <Button
-            text={isLoggingIn ? "Accedi" : "Registrati"}
-            onClick={handleSubmit}
-          />
+          <Button text={isLoggingIn ? "Accedi" : "Registrati"} />
         </div>
-      </div>
+      </form>
     </Modal>
   );
-  return null;
 };
 
 export default ModalSigning;
