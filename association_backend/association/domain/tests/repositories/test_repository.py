@@ -11,7 +11,11 @@ from association.domain.entities.subscriptions import (
     SubscriptionState,
 )
 from association.domain.repositories import AssociationRepository
-from association.tests.factories import subscription_factory
+from association.tests.factories import (
+    SubscriptionFactory,
+    SubscriptionPaymentFactory,
+    subscription_factory,
+)
 from association.tests.session import cleanup_db, db, second_session
 
 
@@ -39,10 +43,7 @@ async def _(
     # Check what we get executing the "raw query"
     # and what the repository returned. Is this the same thing?
     assert found_subscription.user_id == raw_query_subscription.user_id
-    assert found_subscription.creation_date == raw_query_subscription.creation_date
-    assert (
-        found_subscription.stripe_session_id == raw_query_subscription.stripe_session_id
-    )
+    assert found_subscription.created_at == raw_query_subscription.created_at
     assert found_subscription.state == raw_query_subscription.state
     assert (
         found_subscription.stripe_subscription_id
@@ -54,50 +55,7 @@ async def _(
     )
 
 
-@test("get subscription by session_id")
-async def _(
-    db=db,
-    second_session=second_session,
-    subscription_factory=subscription_factory,
-    cleanup_db=cleanup_db,
-):
-    db = cast(AsyncSession, db)
-    second_session = cast(AsyncSession, second_session)
-
-    await subscription_factory(stripe_session_id="cs_test_12345")
-    await db.commit()
-
-    repository = AssociationRepository(db)
-    found_subscription = await repository.get_subscription_by_session_id(
-        "cs_test_12345"
-    )
-
-    query = select(Subscription).where(
-        Subscription.stripe_session_id == "cs_test_12345"
-    )
-    raw_query_subscription: Subscription = (
-        await second_session.execute(query)
-    ).scalar()
-
-    # Check what we get executing the "raw query"
-    # and what the repository returned. Is this the same thing?
-    assert found_subscription.user_id == raw_query_subscription.user_id
-    assert found_subscription.creation_date == raw_query_subscription.creation_date
-    assert (
-        found_subscription.stripe_session_id == raw_query_subscription.stripe_session_id
-    )
-    assert found_subscription.state == raw_query_subscription.state
-    assert (
-        found_subscription.stripe_subscription_id
-        == raw_query_subscription.stripe_subscription_id
-    )
-    assert (
-        found_subscription.stripe_customer_id
-        == raw_query_subscription.stripe_customer_id
-    )
-
-
-@test("get subscription by customer_id")
+@test("get subscription by stripe_customer_id")
 async def _(
     db=db,
     second_session=second_session,
@@ -111,7 +69,7 @@ async def _(
     await db.commit()
 
     repository = AssociationRepository(db)
-    found_subscription = await repository.get_subscription_by_customer_id(
+    found_subscription = await repository.get_subscription_by_stripe_customer_id(
         "cus_test_12345"
     )
 
@@ -125,10 +83,7 @@ async def _(
     # Check what we get executing the "raw query"
     # and what the repository returned. Is this the same thing?
     assert found_subscription.user_id == raw_query_subscription.user_id
-    assert found_subscription.creation_date == raw_query_subscription.creation_date
-    assert (
-        found_subscription.stripe_session_id == raw_query_subscription.stripe_session_id
-    )
+    assert found_subscription.created_at == raw_query_subscription.created_at
     assert found_subscription.state == raw_query_subscription.state
     assert (
         found_subscription.stripe_subscription_id
@@ -168,10 +123,7 @@ async def _(
     # Check what we get executing the "raw query"
     # and what the repository returned. Is this the same thing?
     assert found_subscription.user_id == raw_query_subscription.user_id
-    assert found_subscription.creation_date == raw_query_subscription.creation_date
-    assert (
-        found_subscription.stripe_session_id == raw_query_subscription.stripe_session_id
-    )
+    assert found_subscription.created_at == raw_query_subscription.created_at
     assert found_subscription.state == raw_query_subscription.state
     assert (
         found_subscription.stripe_subscription_id
@@ -193,10 +145,12 @@ async def _(db=db, second_session=second_session, cleanup_db=cleanup_db):
     await repository.save_subscription(
         Subscription(
             user_id=1234,
-            creation_date=datetime.datetime(
+            created_at=datetime.datetime(
                 2020, 1, 1, 1, 0, tzinfo=datetime.timezone.utc
             ),
-            stripe_session_id="cs_test_a1wtX1HXf3iOjdQK1cyEN3YavPmxSaTkdfo2fCAPLqlOPT3blEZrUOIlaQ",
+            modified_at=datetime.datetime(
+                2020, 1, 1, 2, 0, tzinfo=datetime.timezone.utc
+            ),
             state=SubscriptionState.PENDING,
             stripe_subscription_id="sub_test_IxcENZqOBlHAJo",
             stripe_customer_id="cus_test_IuwfUVsdQFNvqc",
@@ -209,12 +163,11 @@ async def _(db=db, second_session=second_session, cleanup_db=cleanup_db):
 
     assert db_subscription
     assert db_subscription.user_id == 1234
-    assert db_subscription.creation_date == datetime.datetime(
+    assert db_subscription.created_at == datetime.datetime(
         2020, 1, 1, 1, 0, tzinfo=datetime.timezone.utc
     )
-    assert (
-        db_subscription.stripe_session_id
-        == "cs_test_a1wtX1HXf3iOjdQK1cyEN3YavPmxSaTkdfo2fCAPLqlOPT3blEZrUOIlaQ"
+    assert db_subscription.modified_at == datetime.datetime(
+        2020, 1, 1, 2, 0, tzinfo=datetime.timezone.utc
     )
     assert db_subscription.state == SubscriptionState.PENDING
     assert db_subscription.stripe_subscription_id == "sub_test_IxcENZqOBlHAJo"
@@ -229,8 +182,8 @@ async def _(db=db, second_session=second_session, cleanup_db=cleanup_db):
     repository = AssociationRepository(db)
     subscription = Subscription(
         user_id=1234,
-        creation_date=datetime.datetime(2020, 1, 1, 1, 0, tzinfo=datetime.timezone.utc),
-        stripe_session_id="cs_test_a1wtX1HXf3iOjdQK1cyEN3YavPmxSaTkdfo2fCAPLqlOPT3blEZrUOIlaQ",
+        created_at=datetime.datetime(2020, 1, 1, 1, 0, tzinfo=datetime.timezone.utc),
+        modified_at=datetime.datetime(2020, 1, 1, 2, 0, tzinfo=datetime.timezone.utc),
         state=SubscriptionState.PENDING,
         stripe_subscription_id="sub_test_IxcENZqOBlHAJo",
         stripe_customer_id="cus_test_IuwfUVsdQFNvqc",
@@ -258,8 +211,8 @@ async def _(db=db, second_session=second_session, cleanup_db=cleanup_db):
 
     subscription = Subscription(
         user_id=1234,
-        creation_date=datetime.datetime(2020, 1, 1, 1, 0, tzinfo=datetime.timezone.utc),
-        stripe_session_id="",
+        created_at=datetime.datetime(2020, 1, 1, 1, 0, tzinfo=datetime.timezone.utc),
+        modified_at=datetime.datetime(2020, 1, 1, 1, 0, tzinfo=datetime.timezone.utc),
         state=SubscriptionState.PENDING,
         stripe_subscription_id="",
         stripe_customer_id="",
@@ -286,9 +239,9 @@ async def _(db=db, second_session=second_session, cleanup_db=cleanup_db):
 
 
 @skip(
-    'This test doesn t fail but the call to repository.commit() interrupts the test pipeline!  ->  sqlalchemy.exc.IntegrityError: (psycopg2.errors.ForeignKeyViolation) update or delete on table "subscription" violates foreign key constraint "subscription_payment_subscription_id_fkey" on table "subscription_payment" DETAIL:  Key (user_id)=(1234) is still referenced from table "subscription_payment".'
+    'This test doesn t fail but the call to repository.commit() interrupts the test pipeline! -> sqlalchemy.exc.IntegrityError: (psycopg2.errors.ForeignKeyViolation) update or delete on table "subscription" violates foreign key constraint "subscription_payment_subscription_id_fkey" on table "subscription_payment" DETAIL:  Key (user_id)=(1234) is still referenced from table "subscription_payment".'
 )
-@test("save_payment")
+@test("save_payment", tags=["failing"])
 async def _(db=db, second_session=second_session, cleanup_db=cleanup_db):
     db = cast(AsyncSession, db)
     second_session = cast(AsyncSession, second_session)
@@ -297,8 +250,8 @@ async def _(db=db, second_session=second_session, cleanup_db=cleanup_db):
 
     subscription = Subscription(
         user_id=1234,
-        creation_date=datetime.datetime(2020, 1, 1, 1, 0, tzinfo=datetime.timezone.utc),
-        stripe_session_id="cs_test_a1wtX1HXf3iOjdQK1cyEN3YavPmxSaTkdfo2fCAPLqlOPT3blEZrUOIlaQ",
+        created_at=datetime.datetime(2020, 1, 1, 1, 0, tzinfo=datetime.timezone.utc),
+        modified_at=datetime.datetime(2020, 1, 1, 2, 0, tzinfo=datetime.timezone.utc),
         state=SubscriptionState.PENDING,
         stripe_subscription_id="sub_test_IxcENZqOBlHAJo",
         stripe_customer_id="cus_test_IuwfUVsdQFNvqc",
@@ -334,3 +287,41 @@ async def _(db=db, second_session=second_session, cleanup_db=cleanup_db):
         == "inv_test_a1wtX1HXf3iOjdQK1cyEN3YavPmxSaTkdfo2fCAPLqlOPT3blEZrUOIlaQ"
     )
     assert db_entry.invoice_pdf == "https://stripe.com/pdf/invoice_test_1234"
+
+
+@skip(
+    'This test doesn t fail but the call to repository.commit() interrupts the test pipeline! -> sqlalchemy.exc.IntegrityError: (psycopg2.errors.ForeignKeyViolation) update or delete on table "subscription" violates foreign key constraint "subscription_payment_subscription_id_fkey" on table "subscription_payment" DETAIL:  Key (user_id)=(1234) is still referenced from table "subscription_payment".'
+)
+@test("get subscription payment by stripe_invoice_id", tags=["current"])
+async def _(
+    db=db,
+    second_session=second_session,
+    cleanup_db=cleanup_db,
+):
+    db = cast(AsyncSession, db)
+    second_session = cast(AsyncSession, second_session)
+
+    subscription = SubscriptionFactory(user_id=12345)
+    SubscriptionPaymentFactory(
+        subscription=subscription, stripe_invoice_id="inv_test_12345"
+    )
+    await db.commit()
+
+    repository = AssociationRepository(db)
+    found_subscription_payment = await repository.get_payment_by_stripe_invoice_id(
+        "inv_test_12345"
+    )
+
+    query = select(SubscriptionPayment).where(
+        SubscriptionPayment.stripe_invoice_id == "inv_test_12345"
+    )
+    raw_query_subscription_payment: SubscriptionPayment = (
+        await second_session.execute(query)
+    ).scalar()
+
+    # Check what we get executing the "raw query"
+    # and what the repository returned. Is this the same thing?
+    assert (
+        found_subscription_payment.stripe_invoice_id
+        == raw_query_subscription_payment.stripe_invoice_id
+    )

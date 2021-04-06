@@ -18,7 +18,6 @@ async def _():
                 user_id=1234, stripe_customer_id=test_stripe_customer_id
             )
         ],
-        customers=[],
     )
 
     portal_url = await services.manage_user_association_subscription(
@@ -35,7 +34,6 @@ async def _():
 async def _():
     repository = FakeAssociationRepository(
         subscriptions=[SubscriptionFactory(user_id=1234, stripe_customer_id="")],
-        customers=[],
     )
 
     with raises(CustomerNotAvailable):

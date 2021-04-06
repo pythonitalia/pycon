@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+import logging
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
@@ -6,6 +9,14 @@ from typing import Optional
 import pydantic
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Table
 from sqlalchemy.orm import registry, relationship
+
+from association.domain.entities.stripe import (
+    StripeSubscription,
+    StripeSubscriptionStatus,
+)
+from association.domain.exceptions import InconsistentStateTransitionError
+
+logger = logging.getLogger(__name__)
 
 
 class UserData(pydantic.BaseModel):
@@ -18,7 +29,6 @@ class SubscriptionState(str, Enum):
     ACTIVE = "active"
     EXPIRED = "expired"
     CANCELED = "canceled"
-    FIRST_PAYMENT_EXPIRED = "first-payment-expired"
 
     def __str__(self) -> str:
         return str.__str__(self)
@@ -27,16 +37,72 @@ class SubscriptionState(str, Enum):
 @dataclass
 class Subscription:
     user_id: int
-    creation_date: datetime
     state: SubscriptionState
-    # is_for_life: bool
-    stripe_session_id: Optional[str] = ""
+    created_at: datetime
+    # TODO Is available a auto_update_now?
+    modified_at: Optional[datetime] = None
+    # TODO ADD me
+    # last_payed_at : Optional[datetime] = None
+    # TODO ADD me
+    # active_until : Optional[datetime] = None
+    # is_for_life: bool = False
     stripe_subscription_id: Optional[str] = ""
     stripe_customer_id: Optional[str] = ""
     canceled_at: Optional[datetime] = None
 
-    def has_external_subscription(self):
-        return True if self.stripe_subscription_id else False
+    def sync_with_stripe_subscription(
+        self, stripe_subscription: StripeSubscription
+    ) -> Subscription:
+        """ TODO Test ME """
+        # Update Customer
+        if stripe_subscription.customer_id:
+            self.customer_id = stripe_subscription.customer_id
+
+        # Update Subscription
+        if stripe_subscription.id:
+            self.stripe_subscription_id = stripe_subscription.id
+
+        # Update status
+        if stripe_subscription.status == StripeSubscriptionStatus.ACTIVE:
+            self.state = SubscriptionState.ACTIVE
+        elif stripe_subscription.status == StripeSubscriptionStatus.INCOMPLETE:
+            self.state = SubscriptionState.PENDING
+        elif stripe_subscription.status == StripeSubscriptionStatus.INCOMPLETE_EXPIRED:
+            if self.state in [
+                SubscriptionState.ACTIVE,
+                SubscriptionState.EXPIRED,
+            ]:
+                error_message = (
+                    "This should not happen...the state INCOMPLETE_EXPIRED should be associated to"
+                    "a subscription with status PENDING"
+                )
+                raise InconsistentStateTransitionError(error_message)
+            if len(self.subscription_payments):
+                error_message = (
+                    "This should not happen...the state INCOMPLETE_EXPIRED should be associated to"
+                    "a subscription without associated Payments"
+                )
+                raise InconsistentStateTransitionError(error_message)
+            self.state = SubscriptionState.PENDING
+            # the User cannot access the old Subscription
+            self.stripe_subscription_id = ""
+        elif stripe_subscription.status in [
+            StripeSubscriptionStatus.CANCELED,
+            StripeSubscriptionStatus.UNPAID,
+        ]:
+            self.state = SubscriptionState.CANCELED
+            # the User cannot access the old Subscription
+            self.stripe_subscription_id = ""
+        else:
+            # This is not a terminal state because User can change his payment settings going to customer portal
+            self.state = SubscriptionState.EXPIRED
+
+        # Update Dates
+        self.canceled_at = stripe_subscription.canceled_at
+        self.modified_at = datetime.now()
+
+        logger.debug(f"updated subscription {self}")
+        return self
 
 
 @dataclass
@@ -53,10 +119,10 @@ subscription_table = Table(
     "subscription",
     mapper_registry.metadata,
     Column("user_id", Integer(), nullable=False, primary_key=True),
-    Column("creation_date", DateTime(timezone=True), nullable=False),
+    Column("created_at", DateTime(timezone=True), nullable=False),
+    Column("modified_at", DateTime(timezone=True), nullable=False),
     Column("stripe_subscription_id", String(128), nullable=True),
     Column("stripe_customer_id", String(128), nullable=False),
-    Column("stripe_session_id", String(128), nullable=False),
     Column("state", String(24), nullable=False),
     Column("canceled_at", DateTime(timezone=True), nullable=True),
 )

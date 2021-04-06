@@ -20,8 +20,15 @@ class SubscriptionNotFound(Exception):
     pass
 
 
+class StripeSubscriptionNotFound(Exception):
+    """Raised when the System cannot find the requested subscription on Stripe
+    It could be raised by subscribeUserToAssociation mutation"""
+
+    pass
+
+
 class InconsistentStateTransitionError(Exception):
-    """Raised when the system tries to change the status of an already paid (at least once) subscription to `FIRST_PAYMENT_EXPIRED`
+    """Raised when the system tries to change the status of an active or already paid (at least once) subscription to `INCOMPLETE_EXPIRED`
     It could be raised by webhook event `customer.subscription.update`"""
 
     pass
@@ -36,8 +43,17 @@ class WebhookSecretMissing(Exception):
 
 class MultipleCustomerReturned(Exception):
     """Raised when the System tries to retrieve a Customer from Stripe passing his email
-    It's a case that should never happen, and if it happens that a user has two customer profiles and we should investigate.
+    It's a case that should never happen, and if a user has two customers we should investigate on it.
     Otherwise, we might end up choosing the wrong customer and subscribe the wrong person
+    It could be raised by subscribeUserToAssociation mutation"""
+
+    pass
+
+
+class MultipleCustomerSubscriptionsReturned(Exception):
+    """Raised when the System tries to retrieve a Subsciption from Stripe passing his customer (customer_id)
+    It's a case that should never happen, and if a customer has two subscriptions we should investigate on it.
+    Otherwise, we might end up choosing the wrong subscription and update the wrong one
     It could be raised by subscribeUserToAssociation mutation"""
 
     pass

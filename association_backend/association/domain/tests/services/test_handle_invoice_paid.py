@@ -18,9 +18,7 @@ async def _():
     )
     assert sut_subscription.stripe_subscription_id == "sub_test_1234"
 
-    repository = FakeAssociationRepository(
-        subscriptions=[sut_subscription], customers=[]
-    )
+    repository = FakeAssociationRepository(subscriptions=[sut_subscription])
 
     subscription = await services.handle_invoice_paid(
         invoice_input=InvoicePaidInput(
@@ -40,7 +38,7 @@ async def _():
 
 @test("SubscriptionNotFound raised")
 async def _():
-    repository = FakeAssociationRepository(subscriptions=[], customers=[])
+    repository = FakeAssociationRepository(subscriptions=[])
 
     with raises(SubscriptionNotFound):
         await services.handle_invoice_paid(

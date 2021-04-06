@@ -6,12 +6,16 @@ from sqlalchemy import select
 
 from association.domain.entities.stripe import (
     StripeCheckoutSession,
-    StripeCheckoutSessionInput,
     StripeCustomer,
     StripeSubscription,
+    StripeSubscriptionStatus,
 )
 from association.domain.entities.subscriptions import Subscription, SubscriptionPayment
-from association.domain.exceptions import MultipleCustomerReturned
+from association.domain.exceptions import (
+    MultipleCustomerReturned,
+    MultipleCustomerSubscriptionsReturned,
+    StripeSubscriptionNotFound,
+)
 from association.domain.repositories.base import AbstractRepository
 from association.settings import (
     DOMAIN_URL,
@@ -36,18 +40,11 @@ class AssociationRepository(AbstractRepository):
         subscription = (await self.session.execute(query)).scalar_one_or_none()
         return subscription
 
-    async def get_subscription_by_session_id(
-        self, session_id: str
-    ) -> Optional[Subscription]:
-        query = select(Subscription).where(Subscription.stripe_session_id == session_id)
-        subscription = (await self.session.execute(query)).scalar_one_or_none()
-        return subscription
-
-    async def get_subscription_by_customer_id(
-        self, customer_id: str
+    async def get_subscription_by_stripe_customer_id(
+        self, stripe_customer_id: str
     ) -> Optional[Subscription]:
         query = select(Subscription).where(
-            Subscription.stripe_customer_id == customer_id
+            Subscription.stripe_customer_id == stripe_customer_id
         )
         subscription = (await self.session.execute(query)).scalar_one_or_none()
         return subscription
@@ -77,37 +74,39 @@ class AssociationRepository(AbstractRepository):
         await self.session.flush()
         return subscription_payment
 
+    async def get_payment_by_stripe_invoice_id(
+        self, stripe_invoice_id: str
+    ) -> SubscriptionPayment:
+        """ TODO Test ME """
+        query = select(SubscriptionPayment).where(
+            SubscriptionPayment.stripe_invoice_id == stripe_invoice_id
+        )
+        payment = (await self.session.execute(query)).scalar_one_or_none()
+        return payment
+
     # ============== #
     #    Stripe
     # ============== #
-    # WRITE TO STRIPE
-    async def create_checkout_session(
-        self, data: StripeCheckoutSessionInput
-    ) -> StripeCheckoutSession:
+    async def create_checkout_session(self, customer_id: str) -> StripeCheckoutSession:
         """ TODO Test ME """
         # See https://stripe.com/docs/api/checkout/sessions/create
         # for additional parameters to pass.
         # {CHECKOUT_SESSION_ID} is a string literal; do not change it!
         # the actual Session ID is returned in the query parameter when your customer
         # is redirected to the success page.
-        customer_payload = {}
-        if data.customer_id:
-            customer_payload.update(dict(customer=data.customer_id))
-        elif data.customer_email:
-            customer_payload.update(dict(customer_email=data.customer_email))
         checkout_session_stripe_key = "{CHECKOUT_SESSION_ID}"
         checkout_session = stripe.checkout.Session.create(
             success_url=f"{STRIPE_SUBSCRIPTION_SUCCESS_URL}?session_id={checkout_session_stripe_key}",
             cancel_url=STRIPE_SUBSCRIPTION_CANCEL_URL,
             payment_method_types=["card"],
             mode="subscription",
+            customer=customer_id,
             line_items=[
                 {
                     "price": STRIPE_SUBSCRIPTION_PRICE_ID,
                     "quantity": 1,
                 }
             ],
-            **customer_payload,
             api_key=STRIPE_SUBSCRIPTION_API_SECRET,
         )
         logger.info(f"checkout_session: {checkout_session}")
@@ -126,8 +125,7 @@ class AssociationRepository(AbstractRepository):
         )
         return session.url
 
-    # READ FROM STRIPE
-    async def retrieve_customer_by_email(self, email: str) -> Optional[StripeCustomer]:
+    async def _retrieve_customer_by_email(self, email: str) -> Optional[StripeCustomer]:
         """ TODO Test ME """
         customers = stripe.Customer.list(
             email=email, api_key=STRIPE_SUBSCRIPTION_API_SECRET
@@ -138,21 +136,29 @@ class AssociationRepository(AbstractRepository):
             return StripeCustomer(id=customers.data[0].id, email=email)
         return None
 
-    async def retrieve_stripe_checkout_session(
-        self, stripe_session_id: str
-    ) -> Optional[StripeCheckoutSession]:
+    async def _create_customer_by_email(self, email: str) -> Optional[StripeCustomer]:
         """ TODO Test ME """
-        checkout_session = stripe.checkout.Session.retrieve(
-            stripe_session_id, api_key=STRIPE_SUBSCRIPTION_API_SECRET
+        customer = stripe.Customer.create(
+            email=email, api_key=STRIPE_SUBSCRIPTION_API_SECRET
         )
-        logger.info(f"checkout_session: {checkout_session}")
-        return StripeCheckoutSession(
-            id=checkout_session["id"],
-            customer_id=checkout_session["customer"] or "",
-            subscription_id=checkout_session["subscription"] or "",
-        )
+        if customer:
+            return StripeCustomer(id=customer.id, email=email)
+        return None
 
-    async def retrieve_stripe_subscription(
+    async def get_or_create_customer_by_email(
+        self, email: str
+    ) -> Optional[StripeCustomer]:
+        """ TODO Test ME """
+        try:
+            customer: StripeCustomer = await self._retrieve_customer_by_email(email)
+            if customer:
+                return customer, False
+        except MultipleCustomerReturned as ex:
+            raise ex
+        customer: StripeCustomer = await self._create_customer_by_email(email)
+        return customer, True
+
+    async def _retrieve_stripe_subscription_by_stripe_subscription_id(
         self, stripe_subscription_id: str
     ) -> Optional[StripeSubscription]:
         """ TODO Test ME """
@@ -167,16 +173,64 @@ class AssociationRepository(AbstractRepository):
             canceled_at=stripe_subscription["canceled_at"],
         )
 
-    async def retrieve_external_subscription_by_session_id(
-        self, stripe_session_id: str
+    async def _retrieve_stripe_subscription_by_stripe_customer_id(
+        self, stripe_customer_id: str, **kwargs
     ) -> Optional[StripeSubscription]:
         """ TODO Test ME """
-        checkout_session = await self.retrieve_stripe_checkout_session(
-            stripe_session_id
+        stripe_subscriptions = stripe.Subscription.list(
+            customer=stripe_customer_id,
+            api_key=STRIPE_SUBSCRIPTION_API_SECRET,
+            status=StripeSubscriptionStatus.ACTIVE,
+            **kwargs,
         )
-        if checkout_session.subscription_id:
-            subscription = await self.retrieve_stripe_subscription(
-                checkout_session.subscription_id
+        if len(stripe_subscriptions.data) == 1:
+            stripe_subscription = stripe_subscriptions.data[0]
+            return StripeSubscription(
+                id=stripe_subscription["id"],
+                status=stripe_subscription["status"],
+                customer_id=stripe_subscription["customer"],
+                canceled_at=stripe_subscription["canceled_at"],
             )
-            return subscription
+        elif len(stripe_subscriptions.data) > 1:
+            subs = list(
+                filter(
+                    lambda x: x.status
+                    not in [
+                        StripeSubscriptionStatus.CANCELED,
+                        StripeSubscriptionStatus.UNPAID,
+                        StripeSubscriptionStatus.INCOMPLETE_EXPIRED,
+                    ],
+                    stripe_subscriptions.data,
+                )
+            )
+            if len(subs) > 1:
+                # TODO : quando una subscription viene cancellata, bisogna far si che ne possa creare una nuova su Stripe in un qualsiasi momento
+                # Attualmente questa eccezione dovrebbe bloccare l'utente
+                # Le API permettono di fare la seguente query: ?status=active&status=past_due -> restituisce status__in=[active,past_due], ora bisogna capire se il metodo list lo supporti
+                raise MultipleCustomerSubscriptionsReturned()
+            else:
+                return subs and subs[0] or None
         return None
+
+    async def sync_with_external_service(
+        self, subscription: Subscription, **kwargs
+    ) -> Optional[Subscription]:
+        """ TODO Test ME """
+        if subscription.stripe_subscription_id:
+            stripe_subscription: StripeSubscription = (
+                await self._retrieve_stripe_subscription_by_stripe_subscription_id(
+                    subscription.stripe_subscription_id, **kwargs
+                )
+            )
+        else:
+            try:
+                stripe_subscription: StripeSubscription = (
+                    await self._retrieve_stripe_subscription_by_stripe_customer_id(
+                        subscription.stripe_customer_id, **kwargs
+                    )
+                )
+            except MultipleCustomerSubscriptionsReturned as ex:
+                raise ex
+        if not stripe_subscription:
+            raise StripeSubscriptionNotFound()
+        return subscription.sync_with_stripe_subscription(stripe_subscription)

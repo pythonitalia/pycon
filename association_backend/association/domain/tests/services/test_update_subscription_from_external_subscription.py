@@ -1,21 +1,20 @@
-from unittest.mock import patch
-
 from ward import raises, test
 
 from association.domain import services
-from association.domain.entities.stripe import StripeStatus
+from association.domain.entities.stripe import StripeSubscriptionStatus
 from association.domain.entities.subscriptions import SubscriptionState
 from association.domain.exceptions import (
     InconsistentStateTransitionError,
     SubscriptionNotFound,
 )
-from association.domain.services.update_subscription_from_external_subscription import (
-    SubscriptionDetailInput,
-)
 from association.domain.tests.repositories.fake_repository import (
     FakeAssociationRepository,
 )
-from association.tests.factories import SubscriptionFactory, SubscriptionPaymentFactory
+from association.tests.factories import (
+    StripeSubscriptionFactory,
+    SubscriptionFactory,
+    SubscriptionPaymentFactory,
+)
 
 
 @test("Subscription updated ACTIVE")
@@ -26,16 +25,13 @@ async def _():
     assert sut_subscription.stripe_subscription_id == "sub_test_1234"
     assert sut_subscription.state == SubscriptionState.EXPIRED
 
-    repository = FakeAssociationRepository(
-        subscriptions=[sut_subscription], customers=[]
-    )
+    repository = FakeAssociationRepository(subscriptions=[sut_subscription])
 
     subscription = await services.update_subscription_from_external_subscription(
-        data=SubscriptionDetailInput(
-            subscription_id=sut_subscription.stripe_subscription_id,
-            status=StripeStatus.ACTIVE,
+        stripe_subscription=StripeSubscriptionFactory.build(
+            id=sut_subscription.stripe_subscription_id,
+            status=StripeSubscriptionStatus.ACTIVE,
         ),
-        subscription=None,
         association_repository=repository,
     )
 
@@ -45,35 +41,16 @@ async def _():
     assert subscription.state == SubscriptionState.ACTIVE
 
 
-@test("Subscription if passed doesn't hit db")
-async def _():
-    repository = FakeAssociationRepository(subscriptions=[], customers=[])
-    with patch(
-        "association.domain.repositories.association_repository.AssociationRepository.get_subscription_by_stripe_subscription_id",
-        return_value=SubscriptionFactory(),
-    ) as method_mock:
-        await services.update_subscription_from_external_subscription(
-            data=SubscriptionDetailInput(
-                subscription_id=SubscriptionFactory.build().stripe_subscription_id,
-                status=StripeStatus.ACTIVE,
-            ),
-            subscription=SubscriptionFactory(),
-            association_repository=repository,
-        )
-        method_mock.assert_not_called()
-
-
 @test("SubscriptionNotFound raised")
 async def _():
-    repository = FakeAssociationRepository(subscriptions=[], customers=[])
+    repository = FakeAssociationRepository(subscriptions=[])
 
     with raises(SubscriptionNotFound):
         await services.update_subscription_from_external_subscription(
-            data=SubscriptionDetailInput(
-                subscription_id=SubscriptionFactory.build().stripe_subscription_id,
-                status=StripeStatus.ACTIVE,
+            stripe_subscription=StripeSubscriptionFactory.build(
+                id=SubscriptionFactory.build().stripe_subscription_id,
+                status=StripeSubscriptionStatus.ACTIVE,
             ),
-            subscription=None,
             association_repository=repository,
         )
 
@@ -86,16 +63,13 @@ async def _():
     assert sut_subscription.stripe_subscription_id == "sub_test_1234"
     assert sut_subscription.state == SubscriptionState.ACTIVE
 
-    repository = FakeAssociationRepository(
-        subscriptions=[sut_subscription], customers=[]
-    )
+    repository = FakeAssociationRepository(subscriptions=[sut_subscription])
 
     subscription = await services.update_subscription_from_external_subscription(
-        data=SubscriptionDetailInput(
-            subscription_id=sut_subscription.stripe_subscription_id,
-            status=StripeStatus.ACTIVE,
+        stripe_subscription=StripeSubscriptionFactory.build(
+            id=sut_subscription.stripe_subscription_id,
+            status=StripeSubscriptionStatus.ACTIVE,
         ),
-        subscription=None,
         association_repository=repository,
     )
 
@@ -108,16 +82,13 @@ async def _():
 @test("Subscription update ACTIVE")
 async def _():
     sut_subscription = SubscriptionFactory()
-    repository = FakeAssociationRepository(
-        subscriptions=[sut_subscription], customers=[]
-    )
+    repository = FakeAssociationRepository(subscriptions=[sut_subscription])
 
     subscription = await services.update_subscription_from_external_subscription(
-        data=SubscriptionDetailInput(
-            subscription_id=sut_subscription.stripe_subscription_id,
-            status=StripeStatus.ACTIVE,
+        stripe_subscription=StripeSubscriptionFactory.build(
+            id=sut_subscription.stripe_subscription_id,
+            status=StripeSubscriptionStatus.ACTIVE,
         ),
-        subscription=None,
         association_repository=repository,
     )
 
@@ -127,45 +98,35 @@ async def _():
 @test("Subscription update INCOMPLETE -> PENDING")
 async def _():
     sut_subscription = SubscriptionFactory()
-    repository = FakeAssociationRepository(
-        subscriptions=[sut_subscription], customers=[]
-    )
+    repository = FakeAssociationRepository(subscriptions=[sut_subscription])
 
     subscription = await services.update_subscription_from_external_subscription(
-        data=SubscriptionDetailInput(
-            subscription_id=sut_subscription.stripe_subscription_id,
-            status=StripeStatus.INCOMPLETE,
+        stripe_subscription=StripeSubscriptionFactory.build(
+            id=sut_subscription.stripe_subscription_id,
+            status=StripeSubscriptionStatus.INCOMPLETE,
         ),
-        subscription=None,
         association_repository=repository,
     )
 
     assert subscription.state == SubscriptionState.PENDING
 
 
-@test(
-    "Subscription update INCOMPLETE_EXPIRED -> FIRST_PAYMENT_EXPIRED + Deleted session_id & subscription_id"
-)
+@test("Subscription update INCOMPLETE_EXPIRED -> PENDING + Deleted subscription_id")
 async def _():
     sut_subscription = SubscriptionFactory(state=SubscriptionState.PENDING)
-    repository = FakeAssociationRepository(
-        subscriptions=[sut_subscription], customers=[]
-    )
+    repository = FakeAssociationRepository(subscriptions=[sut_subscription])
 
-    assert sut_subscription.stripe_session_id != ""
     assert sut_subscription.stripe_subscription_id != ""
 
     subscription = await services.update_subscription_from_external_subscription(
-        data=SubscriptionDetailInput(
-            subscription_id=sut_subscription.stripe_subscription_id,
-            status=StripeStatus.INCOMPLETE_EXPIRED,
+        stripe_subscription=StripeSubscriptionFactory.build(
+            id=sut_subscription.stripe_subscription_id,
+            status=StripeSubscriptionStatus.INCOMPLETE_EXPIRED,
         ),
-        subscription=None,
         association_repository=repository,
     )
 
-    assert subscription.state == SubscriptionState.FIRST_PAYMENT_EXPIRED
-    assert subscription.stripe_session_id == ""
+    assert subscription.state == SubscriptionState.PENDING
     assert subscription.stripe_subscription_id == ""
 
 
@@ -174,19 +135,14 @@ async def _():
 )
 async def _():
     sut_subscription = SubscriptionFactory(state=SubscriptionState.ACTIVE)
-    repository = FakeAssociationRepository(
-        subscriptions=[sut_subscription], customers=[]
-    )
-
-    assert sut_subscription.stripe_session_id != ""
+    repository = FakeAssociationRepository(subscriptions=[sut_subscription])
 
     with raises(InconsistentStateTransitionError):
         await services.update_subscription_from_external_subscription(
-            data=SubscriptionDetailInput(
-                subscription_id=sut_subscription.stripe_subscription_id,
-                status=StripeStatus.INCOMPLETE_EXPIRED,
+            stripe_subscription=StripeSubscriptionFactory.build(
+                id=sut_subscription.stripe_subscription_id,
+                status=StripeSubscriptionStatus.INCOMPLETE_EXPIRED,
             ),
-            subscription=None,
             association_repository=repository,
         )
 
@@ -196,19 +152,14 @@ async def _():
 )
 async def _():
     sut_subscription = SubscriptionFactory(state=SubscriptionState.EXPIRED)
-    repository = FakeAssociationRepository(
-        subscriptions=[sut_subscription], customers=[]
-    )
-
-    assert sut_subscription.stripe_session_id != ""
+    repository = FakeAssociationRepository(subscriptions=[sut_subscription])
 
     with raises(InconsistentStateTransitionError):
         await services.update_subscription_from_external_subscription(
-            data=SubscriptionDetailInput(
-                subscription_id=sut_subscription.stripe_subscription_id,
-                status=StripeStatus.INCOMPLETE_EXPIRED,
+            stripe_subscription=StripeSubscriptionFactory.build(
+                id=sut_subscription.stripe_subscription_id,
+                status=StripeSubscriptionStatus.INCOMPLETE_EXPIRED,
             ),
-            subscription=None,
             association_repository=repository,
         )
 
@@ -221,19 +172,15 @@ async def _():
     subscription_payment = SubscriptionPaymentFactory(subscription=sut_subscription)
     repository = FakeAssociationRepository(
         subscriptions=[sut_subscription],
-        customers=[],
         subscription_payments=[subscription_payment],
     )
 
-    assert sut_subscription.stripe_session_id != ""
-
     with raises(InconsistentStateTransitionError):
         await services.update_subscription_from_external_subscription(
-            data=SubscriptionDetailInput(
-                subscription_id=sut_subscription.stripe_subscription_id,
-                status=StripeStatus.INCOMPLETE_EXPIRED,
+            stripe_subscription=StripeSubscriptionFactory.build(
+                id=sut_subscription.stripe_subscription_id,
+                status=StripeSubscriptionStatus.INCOMPLETE_EXPIRED,
             ),
-            subscription=None,
             association_repository=repository,
         )
 
@@ -241,64 +188,51 @@ async def _():
 @test("Subscription update CANCELED -> CANCELED + Deleted session_id & subscription_id")
 async def _():
     sut_subscription = SubscriptionFactory(state=SubscriptionState.ACTIVE)
-    repository = FakeAssociationRepository(
-        subscriptions=[sut_subscription], customers=[]
-    )
+    repository = FakeAssociationRepository(subscriptions=[sut_subscription])
 
-    assert sut_subscription.stripe_session_id != ""
     assert sut_subscription.stripe_subscription_id != ""
 
     subscription = await services.update_subscription_from_external_subscription(
-        data=SubscriptionDetailInput(
-            subscription_id=sut_subscription.stripe_subscription_id,
-            status=StripeStatus.CANCELED,
+        stripe_subscription=StripeSubscriptionFactory.build(
+            id=sut_subscription.stripe_subscription_id,
+            status=StripeSubscriptionStatus.CANCELED,
         ),
-        subscription=None,
         association_repository=repository,
     )
 
     assert subscription.state == SubscriptionState.CANCELED
-    assert subscription.stripe_session_id == ""
     assert subscription.stripe_subscription_id == ""
 
 
 @test("Subscription update UNPAID -> CANCELED + Deleted session_id & subscription_id")
 async def _():
     sut_subscription = SubscriptionFactory(state=SubscriptionState.ACTIVE)
-    repository = FakeAssociationRepository(
-        subscriptions=[sut_subscription], customers=[]
-    )
+    repository = FakeAssociationRepository(subscriptions=[sut_subscription])
 
-    assert sut_subscription.stripe_session_id != ""
     assert sut_subscription.stripe_subscription_id != ""
 
     subscription = await services.update_subscription_from_external_subscription(
-        data=SubscriptionDetailInput(
-            subscription_id=sut_subscription.stripe_subscription_id,
-            status=StripeStatus.UNPAID,
+        stripe_subscription=StripeSubscriptionFactory.build(
+            id=sut_subscription.stripe_subscription_id,
+            status=StripeSubscriptionStatus.UNPAID,
         ),
-        subscription=None,
         association_repository=repository,
     )
 
     assert subscription.state == SubscriptionState.CANCELED
-    assert subscription.stripe_session_id == ""
     assert subscription.stripe_subscription_id == ""
 
 
 @test("Subscription update PAST_DUE -> EXPIRED")
 async def _():
     sut_subscription = SubscriptionFactory()
-    repository = FakeAssociationRepository(
-        subscriptions=[sut_subscription], customers=[]
-    )
+    repository = FakeAssociationRepository(subscriptions=[sut_subscription])
 
     subscription = await services.update_subscription_from_external_subscription(
-        data=SubscriptionDetailInput(
-            subscription_id=sut_subscription.stripe_subscription_id,
-            status=StripeStatus.PAST_DUE,
+        stripe_subscription=StripeSubscriptionFactory.build(
+            id=sut_subscription.stripe_subscription_id,
+            status=StripeSubscriptionStatus.PAST_DUE,
         ),
-        subscription=None,
         association_repository=repository,
     )
 

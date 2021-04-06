@@ -12,8 +12,13 @@ from association.domain.entities import (
     SubscriptionPayment,
     SubscriptionState,
 )
+from association.domain.entities.stripe import (
+    StripeCheckoutSession,
+    StripeCustomer,
+    StripeSubscription,
+    StripeSubscriptionStatus,
+)
 
-from ..domain.entities.stripe import StripeCheckoutSession, StripeCustomer
 from .session import test_session
 
 
@@ -88,7 +93,8 @@ class SubscriptionFactory(SQLAlchemyModelFactory):
         sqlalchemy_session = test_session
 
     user_id = factory.Faker("pyint", min_value=1)
-    creation_date = factory.Faker("date_between", start_date="-30y", end_date="today")
+    created_at = factory.Faker("date_between", start_date="-30y", end_date="today")
+    modified_at = factory.Faker("date_between", start_date="-30y", end_date="today")
     state = factory.fuzzy.FuzzyChoice(SubscriptionState)
 
     class Params:
@@ -98,9 +104,7 @@ class SubscriptionFactory(SQLAlchemyModelFactory):
             ),
         )
         without_manageable_subscription = factory.Trait(
-            state=factory.fuzzy.FuzzyChoice(
-                [SubscriptionState.FIRST_PAYMENT_EXPIRED, SubscriptionState.CANCELED]
-            ),
+            state=SubscriptionState.CANCELED,
         )
         without_subscription = factory.Trait(
             state=SubscriptionState.PENDING, stripe_subscription_id=""
@@ -125,14 +129,6 @@ class SubscriptionFactory(SQLAlchemyModelFactory):
         fake = Factory.create()
         fake.add_provider(StripeProvider)
         return fake.customer_id()
-
-    @factory.lazy_attribute
-    def stripe_session_id(self):
-        from faker import Factory
-
-        fake = Factory.create()
-        fake.add_provider(StripeProvider)
-        return fake.checkout_session_id()
 
 
 @fixture
@@ -214,3 +210,59 @@ class StripeCheckoutSessionFactory(SQLAlchemyModelFactory):
         fake = Factory.create()
         fake.add_provider(StripeProvider)
         return fake.checkout_session_id()
+
+    @factory.lazy_attribute
+    def subscription_id(self):
+        from faker import Factory
+
+        fake = Factory.create()
+        fake.add_provider(StripeProvider)
+        return fake.subscription_id()
+
+    @factory.lazy_attribute
+    def customer_id(self):
+        from faker import Factory
+
+        fake = Factory.create()
+        fake.add_provider(StripeProvider)
+        return fake.customer_id()
+
+
+class StripeSubscriptionFactory(SQLAlchemyModelFactory):
+    status = factory.fuzzy.FuzzyChoice(StripeSubscriptionStatus)
+
+    class Meta:
+        model = StripeSubscription
+        sqlalchemy_session = test_session
+
+    @factory.lazy_attribute
+    def id(self):
+        from faker import Factory
+
+        fake = Factory.create()
+        fake.add_provider(StripeProvider)
+        return fake.subscription_id()
+
+    @factory.lazy_attribute
+    def customer_id(self):
+        from faker import Factory
+
+        fake = Factory.create()
+        fake.add_provider(StripeProvider)
+        return fake.customer_id()
+
+
+class StripeCustomerFactory(SQLAlchemyModelFactory):
+    email = factory.Faker("ascii_safe_email")
+
+    class Meta:
+        model = StripeCustomer
+        sqlalchemy_session = test_session
+
+    @factory.lazy_attribute
+    def id(self):
+        from faker import Factory
+
+        fake = Factory.create()
+        fake.add_provider(StripeProvider)
+        return fake.customer_id()

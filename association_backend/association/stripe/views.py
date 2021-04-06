@@ -54,20 +54,15 @@ class CustomerPortalView(HTTPEndpoint):
         )
 
     async def post(self, request):
-        data = await request.json()
-        checkout_session_id = data["sessionId"]
+        # await request.json()
+        user_id = TEST_USER_ID
         association_repository = self._get_association_repository(request)
-        checkout_session = await association_repository.get_subscription_by_session_id(
-            checkout_session_id
-        )
+        subscription = await association_repository.get_subscription_by_user_id(user_id)
         billing_portal_url = (
             await association_repository.retrieve_customer_portal_session_url(
-                checkout_session.stripe_customer_id
+                subscription.stripe_customer_id
             )
         )
-        # billing_portal_url = await services.manage_user_association_subscription(
-        #     user_data, association_repository=info.context.association_repository
-        # )
         return JSONResponse({"url": billing_portal_url})
 
 
@@ -82,11 +77,11 @@ class CreateCheckoutSessionView(HTTPEndpoint):
         user_data = UserData(email=TEST_USER_EMAIL, user_id=TEST_USER_ID)
 
         try:
-            subscription = await services.subscribe_user_to_association(
+            checkout_session = await services.subscribe_user_to_association(
                 user_data,
                 association_repository=self._get_association_repository(request),
             )
-            return JSONResponse({"sessionId": subscription.stripe_session_id})
+            return JSONResponse({"sessionId": checkout_session.id})
         except AlreadySubscribed:
             return JSONResponse(
                 {"error": {"message": "You are already subscribed"}},

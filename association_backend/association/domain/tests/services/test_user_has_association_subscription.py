@@ -12,7 +12,6 @@ from association.tests.factories import SubscriptionFactory
 async def _():
     repository = FakeAssociationRepository(
         subscriptions=[],
-        customers=[],
     )
 
     assert (
@@ -30,27 +29,6 @@ async def _():
         subscriptions=[
             SubscriptionFactory(user_id=1234, state=SubscriptionState.PENDING)
         ],
-        customers=[],
-    )
-
-    assert (
-        await services.user_has_association_subscription(
-            user_id=1234,
-            association_repository=repository,
-        )
-        is False
-    )
-
-
-@test("return has_association_subscription False if subscription FIRST_PAYMENT_EXPIRED")
-async def _():
-    repository = FakeAssociationRepository(
-        subscriptions=[
-            SubscriptionFactory(
-                user_id=1234, state=SubscriptionState.FIRST_PAYMENT_EXPIRED
-            )
-        ],
-        customers=[],
     )
 
     assert (
@@ -68,7 +46,6 @@ async def _():
         subscriptions=[
             SubscriptionFactory(user_id=1234, state=SubscriptionState.ACTIVE)
         ],
-        customers=[],
     )
 
     assert (
@@ -86,7 +63,6 @@ async def _():
         subscriptions=[
             SubscriptionFactory(user_id=1234, state=SubscriptionState.EXPIRED)
         ],
-        customers=[],
     )
 
     assert (
@@ -104,7 +80,6 @@ async def _():
         subscriptions=[
             SubscriptionFactory(user_id=1234, state=SubscriptionState.CANCELED)
         ],
-        customers=[],
     )
 
     assert (

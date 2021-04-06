@@ -8,15 +8,13 @@ from starlette.responses import JSONResponse
 
 from association.db import get_engine, get_session
 from association.domain import services
+from association.domain.entities.stripe import StripeSubscription
 from association.domain.exceptions import (
     InconsistentStateTransitionError,
     SubscriptionNotFound,
     WebhookSecretMissing,
 )
 from association.domain.repositories import AssociationRepository
-from association.domain.services.update_subscription_from_external_subscription import (
-    SubscriptionDetailInput,
-)
 from association.settings import STRIPE_WEBHOOK_SIGNATURE_SECRET
 
 logger = logging.getLogger(__name__)
@@ -39,48 +37,29 @@ class StripeWebhook(HTTPEndpoint):
             session=cast(AsyncSession, get_session(get_engine(echo=False)))
         )
 
-    async def handle_checkout_session_completed(self, request, stripe_obj):
-        try:
-            await services.handle_checkout_session_completed(
-                services.SubscriptionUpdateInput(
-                    session_id=stripe_obj["id"],
-                    customer_id=stripe_obj["customer"],
-                    subscription_id=stripe_obj["subscription"],
-                ),
-                association_repository=self._get_association_repository(request),
-            )
-            return JSONResponse({"status": "success"})
-        except SubscriptionNotFound:
-            return JSONResponse({"status": "error"}, status_code=400)
+    # TODO DELETE ME IF UNUSED
+    # async def handle_checkout_session_completed(self, request, stripe_obj):
+    #     try:
+    #         await services.handle_checkout_session_completed(
+    #             services.SubscriptionUpdateInput(
+    #                 customer_id=stripe_obj["customer"],
+    #                 subscription_id=stripe_obj["subscription"],
+    #             ),
+    #             association_repository=self._get_association_repository(request),
+    #         )
+    #         return JSONResponse({"status": "success"})
+    #     except SubscriptionNotFound:
+    #         return JSONResponse({"status": "error"}, status_code=400)
 
-    async def handle_customer_subscription_updated(self, request, stripe_obj):
+    async def handle_customer_subscription(self, request, stripe_obj):
         try:
             await services.update_subscription_from_external_subscription(
-                SubscriptionDetailInput(
-                    subscription_id=stripe_obj["id"],
+                StripeSubscription(
+                    id=stripe_obj["id"],
                     status=stripe_obj["status"],
                     customer_id=stripe_obj["customer"],
                     canceled_at=stripe_obj["canceled_at"],
                 ),
-                subscription=None,
-                association_repository=self._get_association_repository(request),
-            )
-            return JSONResponse({"status": "success"})
-        except SubscriptionNotFound:
-            return JSONResponse({"status": "error"}, status_code=400)
-        except InconsistentStateTransitionError as ex:
-            logger.exception(str(ex))
-            return JSONResponse({"status": "error"}, status_code=400)
-
-    async def handle_customer_subscription_deleted(self, request, stripe_obj):
-        try:
-            await services.update_subscription_from_external_subscription(
-                SubscriptionDetailInput(
-                    subscription_id=stripe_obj["id"],
-                    status=stripe_obj["status"],
-                    canceled_at=stripe_obj["canceled_at"],
-                ),
-                subscription=None,
                 association_repository=self._get_association_repository(request),
             )
             return JSONResponse({"status": "success"})
@@ -132,21 +111,18 @@ class StripeWebhook(HTTPEndpoint):
             raise WebhookSecretMissing()
         logger.debug(f"Handling event {event_type}")
         stripe_obj = data["object"]
-        if event_type == "checkout.session.completed":
-            # Payment is successful and the subscription is created.
-            # You should provision the subscription.
-            return await self.handle_checkout_session_completed(request, stripe_obj)
-        elif event_type == "invoice.paid":
+        if event_type == "invoice.paid":
             # Continue to provision the subscription as payments continue to be made.
             # Store the status in your database and check when a user accesses your service.
             # This approach helps you avoid hitting rate limits.
             return await self.handle_invoice_paid(request, stripe_obj)
-        elif event_type == "customer.subscription.updated":
+        elif event_type in [
+            "customer.subscription.created",
+            "customer.subscription.updated",
+            "customer.subscription.deleted",
+        ]:
             # Every time there is a subscription status update we will be notified
-            return await self.handle_customer_subscription_updated(request, stripe_obj)
-        elif event_type == "customer.subscription.deleted":
-            # Every time there is a subscription status update we will be notified
-            return await self.handle_customer_subscription_deleted(request, stripe_obj)
+            return await self.handle_customer_subscription(request, stripe_obj)
 
         else:
             logger.warning(

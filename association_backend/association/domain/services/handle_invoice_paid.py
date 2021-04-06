@@ -26,15 +26,21 @@ async def handle_invoice_paid(
         )
     )
     if subscription:
-        payment = SubscriptionPayment(
-            payment_date=invoice_input.paid_at,
-            subscription=subscription,
-            stripe_invoice_id=invoice_input.invoice_id,
-            invoice_pdf=invoice_input.invoice_pdf,
+        payment = await association_repository.get_payment_by_stripe_invoice_id(
+            invoice_input.invoice_id
         )
-        await association_repository.save_payment(payment)
-        await association_repository.commit()
-        return subscription
+        if not payment:
+            payment = SubscriptionPayment(
+                payment_date=invoice_input.paid_at,
+                subscription=subscription,
+                stripe_invoice_id=invoice_input.invoice_id,
+                invoice_pdf=invoice_input.invoice_pdf,
+            )
+            await association_repository.save_payment(payment)
+            await association_repository.commit()
+            return subscription
+        else:
+            logger.debug("Payment already registered")
     else:
         msg = f"No Subscription found with subscription_id:{invoice_input.subscription_id}"
         logger.warning(msg)
