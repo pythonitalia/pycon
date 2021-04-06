@@ -24,9 +24,7 @@ async def subscribe_user_to_association(
     subscription = await association_repository.get_subscription_by_user_id(
         user_data.user_id
     )
-    print(f"{user_data.user_id = }")
     if subscription:
-        print(f"from db: {subscription = }")
         if subscription.state == SubscriptionState.PENDING:
             try:
                 subscription = await association_repository.sync_with_external_service(
@@ -60,7 +58,6 @@ async def subscribe_user_to_association(
             customer_id = customer.id
         except MultipleCustomerReturned as ex:
             raise ex
-    print(f"{customer_id = }")
 
     # CREATE OR UPDATE SUBSCRIPTION
     if not subscription:
@@ -71,7 +68,6 @@ async def subscribe_user_to_association(
             created_at=datetime.now(),
             modified_at=datetime.now(),
         )
-        print(f"Creating {subscription = }")
         await association_repository.save_subscription(subscription)
         await association_repository.commit()
     else:
@@ -79,7 +75,6 @@ async def subscribe_user_to_association(
         subscription.stripe_customer_id = customer_id
         subscription.state = SubscriptionState.PENDING
         subscription.modified_at = datetime.now()
-        print(f"Updating {subscription = }")
         await association_repository.save_subscription(subscription)
         await association_repository.commit()
 
@@ -87,5 +82,4 @@ async def subscribe_user_to_association(
     checkout_session: StripeCheckoutSession = (
         await association_repository.create_checkout_session(customer_id=customer_id)
     )
-    print(f"{checkout_session = }")
     return checkout_session

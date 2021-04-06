@@ -212,9 +212,6 @@ class FakeAssociationRepository(AssociationRepository):
         subscriptions = self.STRIPE_SUBSCRIPTIONS_BY_STRIPE_CUSTOMER_ID.get(
             stripe_customer_id, []
         )
-        print(
-            f"_retrieve_stripe_subscription_by_stripe_customer_id -> {subscriptions} (len = {len(subscriptions)})"
-        )
         subscriptions = list(
             filter(
                 lambda x: x.status
@@ -225,9 +222,6 @@ class FakeAssociationRepository(AssociationRepository):
                 ],
                 subscriptions,
             )
-        )
-        print(
-            f"_retrieve_stripe_subscription_by_stripe_customer_id after filter -> {subscriptions} (len = {len(subscriptions)})"
         )
         if len(subscriptions) == 1:
             return subscriptions[0]
@@ -244,9 +238,6 @@ class FakeAssociationRepository(AssociationRepository):
                 await self._retrieve_stripe_subscription_by_stripe_subscription_id(
                     subscription.stripe_subscription_id
                 )
-            )
-            print(
-                f"sync_with_external_service with stripe_subscription_id {subscription.stripe_subscription_id} -> {stripe_subscription})"
             )
         if not stripe_subscription:
             try:

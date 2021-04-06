@@ -32,7 +32,6 @@ async def _(graphql_client=graphql_client, db=db):
         return_value=StripeCheckoutSessionFactory.build(id="cs_test_12345"),
     ) as service_mock:
         response = await graphql_client.query(query, variables={})
-        print(f"response: {response}")
         assert (
             response.data["subscribeUserToAssociation"]["__typename"]
             == "CheckoutSession"
