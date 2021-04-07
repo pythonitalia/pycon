@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "association-backend"
+version = "0.1.0"
+description = ""
+authors = ["Python Italia"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+starlette = "^0.14.2"
+uvicorn = "^0.13.4"
+strawberry-graphql = "0.52.0"
+ormar = {extras = ["postgresql"], version = "^0.10.2"}
+asyncpg = "^0.22.0"
+alembic = "^1.5.8"
+stripe = "^2.56.0"
+
+[tool.poetry.dev-dependencies]
+taskipy = "^1.7.0"
+black = "^20.8b1"
+pdbpp = "^0.10.2"
+
+[tool.taskipy.tasks]
+server = "uvicorn main:app --port 8100 --reload"
+migrate = "alembic upgrade head"
+makemigrations = "alembic revision --autogenerate -m"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

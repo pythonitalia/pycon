@@ -21,6 +21,10 @@
       "path": "association-admin"
     },
     {
+      "name": "🦞 Association Backend",
+      "path": "association-backend"
+    },
+    {
       "name": "🏗 Toolkit",
       "path": "toolkit"
     },
