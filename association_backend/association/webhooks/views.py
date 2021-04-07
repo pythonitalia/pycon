@@ -2,6 +2,7 @@ import logging
 from typing import cast
 
 import stripe
+from pydantic.datetime_parse import parse_datetime
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.endpoints import HTTPEndpoint
 from starlette.responses import JSONResponse
@@ -58,7 +59,9 @@ class StripeWebhook(HTTPEndpoint):
                     id=stripe_obj["id"],
                     status=stripe_obj["status"],
                     customer_id=stripe_obj["customer"],
-                    canceled_at=stripe_obj["canceled_at"],
+                    canceled_at=stripe_obj["canceled_at"]
+                    and parse_datetime(stripe_obj["canceled_at"])
+                    or None,
                 ),
                 association_repository=self._get_association_repository(request),
             )
