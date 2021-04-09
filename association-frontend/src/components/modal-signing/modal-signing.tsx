@@ -81,7 +81,7 @@ const ModalSigning: React.FC<ModalSigningProps> = ({
       closeModalHandler={closeModalHandler}
     >
       <h3
-        className="mb-6 text-3xl text-center font-extrabold text-gray-900"
+        className="my-6 text-3xl text-center font-extrabold text-gray-900"
         id="modal-title"
       >
         {isLoggingIn && "Accedi al tuo account Python Italia"}
@@ -105,7 +105,7 @@ const ModalSigning: React.FC<ModalSigningProps> = ({
           </div>
         </div>
 
-        <div className="mb-7 flex flex-col">
+        <div className="flex flex-col">
           <Input
             placeholder={"Password"}
             type={"password"}
@@ -133,7 +133,7 @@ const ModalSigning: React.FC<ModalSigningProps> = ({
           </Alert>
         )}
 
-        <div>
+        <div className="my-7 flex justify-center flex-grow space-x-3">
           <Button text={isLoggingIn ? "Accedi" : "Registrati"} />
         </div>
       </form>

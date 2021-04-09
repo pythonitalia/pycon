@@ -29,8 +29,14 @@ const Modal: React.FC<ModalProps> = ({
           aria-hidden="true"
           onClick={(e) => closeModalHandler?.(e)}
         />
-        <div className="px-6 py-7 relative max-w-md w-full mx-auto bg-white overflow-hidden shadow-xl">
-          {children}
+        <div className="relative max-w-sm w-full mx-auto bg-white overflow-hidden shadow-xl">
+          <div
+            className="py-3 bg-gray-100 cursor-pointer	"
+            onClick={(e) => closeModalHandler?.(e)}
+          >
+            Chiudi
+          </div>
+          <div className="px-6">{children}</div>
         </div>
       </div>
     </div>

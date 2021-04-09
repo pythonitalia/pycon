@@ -26,7 +26,7 @@ const Input: React.FC<InputProps> = ({
       <input
         id={props.id}
         className={
-          "appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-bluecyan focus:z-10 sm:text-l"
+          "appearance-none relative block w-full px-3 py-2 border border-gray-300 bg-gray-50 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-bluecyan focus:z-10 sm:text-l"
         }
         placeholder={placeholder}
         {...props}
