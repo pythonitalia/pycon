@@ -1,23 +1,22 @@
 from typing import cast
 
 import stripe
-from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.endpoints import HTTPEndpoint
 from starlette.responses import JSONResponse
 from starlette.templating import Jinja2Templates
 
 from association.db import get_engine, get_session
 from association.domain import services
-from association.domain.entities.subscriptions import UserData
 from association.domain.exceptions import AlreadySubscribed
-from association.domain.repositories import AssociationRepository
 from association.settings import (
+    STRIPE_SECRET_API_KEY,
     STRIPE_SUBSCRIPTION_API_KEY,
-    STRIPE_SUBSCRIPTION_API_SECRET,
     STRIPE_SUBSCRIPTION_PRICE_ID,
     TEST_USER_EMAIL,
     TEST_USER_ID,
 )
+from association_membership.domain.entities import UserData
+from association_membership.domain.repository import AssociationMembershipRepository
 
 templates = Jinja2Templates(directory="association/stripe/templates")
 
@@ -49,8 +48,8 @@ class StripeSetupView(HTTPEndpoint):
 
 class CustomerPortalView(HTTPEndpoint):
     def _get_association_repository(self, request):
-        return AssociationRepository(
-            session=cast(AsyncSession, get_session(get_engine(echo=False)))
+        return AssociationMembershipRepository(
+            # session=cast(AsyncSession, get_session(get_engine(echo=False)))
         )
 
     async def post(self, request):
@@ -68,8 +67,8 @@ class CustomerPortalView(HTTPEndpoint):
 
 class CreateCheckoutSessionView(HTTPEndpoint):
     def _get_association_repository(self, request):
-        return AssociationRepository(
-            session=cast(AsyncSession, get_session(get_engine(echo=False)))
+        return AssociationMembershipRepository(
+            # session=cast(AsyncSession, get_session(get_engine(echo=False)))
         )
 
     async def post(self, request):
@@ -91,13 +90,13 @@ class CreateCheckoutSessionView(HTTPEndpoint):
 
 class CheckoutSessionDetailView(HTTPEndpoint):
     def _get_association_repository(self, request):
-        return AssociationRepository(
-            session=cast(AsyncSession, get_session(get_engine(echo=False)))
+        return AssociationMembershipRepository(
+            # session=cast(AsyncSession, get_session(get_engine(echo=False)))
         )
 
     async def get(self, request):
         checkout_session = stripe.checkout.Session.retrieve(
             request.query_params.get("sessionId"),
-            api_key=STRIPE_SUBSCRIPTION_API_SECRET,
+            api_key=STRIPE_SECRET_API_KEY,
         )
         return JSONResponse(checkout_session)

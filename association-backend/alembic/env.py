@@ -3,7 +3,13 @@ import sys
 from logging.config import fileConfig
 
 from alembic import context
-from association.domain.entities.subscriptions import mapper_registry
+
+# Import models here
+# Maybe improve this?
+from association_membership.domain.entities import *
+from customers.domain.entities import *
+
+from database.db import metadata
 from association.settings import DATABASE_URL
 from sqlalchemy import engine_from_config, pool
 
@@ -22,7 +28,7 @@ fileConfig(config.config_file_name)
 config.set_main_option("sqlalchemy.url", DATABASE_URL.replace("asyncpg", "psycopg2"))
 
 
-target_metadata = mapper_registry.metadata
+target_metadata = metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

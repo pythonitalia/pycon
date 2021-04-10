@@ -1,12 +1,12 @@
 from ward import raises, test
 
 from association.domain import services
-from association.domain.entities.subscriptions import UserData
 from association.domain.exceptions import CustomerNotAvailable
 from association.domain.tests.repositories.fake_repository import (
     FakeAssociationRepository,
 )
 from association.tests.factories import SubscriptionFactory
+from association_membership.domain.entities import UserData
 
 
 @test("customer portal url returned")

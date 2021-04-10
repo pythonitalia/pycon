@@ -1,6 +1,6 @@
 from typing import Any, Optional
 
-from sqlalchemy.ext.asyncio import AsyncSession
+# from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class AbstractTransaction:
@@ -17,9 +17,9 @@ class AbstractTransaction:
 
 
 class AbstractRepository(AbstractTransaction):
-    session: Optional[AsyncSession]
+    # session: Optional[AsyncSession]
 
-    def __init__(self, session: Optional[AsyncSession] = None) -> None:
+    def __init__(self, session) -> None:
         self.session = session
 
     def transaction(self):

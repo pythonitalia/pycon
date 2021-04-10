@@ -6,13 +6,14 @@ from association.api.views import GraphQL
 from association.db import get_engine, get_session
 from association.settings import DEBUG, PASTAPORTO_SECRET
 from association.stripe import views as stripe_views
-from association.webhooks import views as stripe_webhooks
+from association.webhooks.views import stripe_webhook
+from database.db import database
 
 app = Starlette(
     debug=DEBUG,
     routes=[
         Route("/graphql", GraphQL()),
-        Route("/payments/stripe/webhook", stripe_webhooks.StripeWebhook),
+        Route("/stripe-webhook", stripe_webhook, methods=["POST"]),
         # TODO DELETE THESE URLS
         Route(
             "/stripe/create-checkout-session", stripe_views.CreateCheckoutSessionView
@@ -31,16 +32,16 @@ app = Starlette(
 
 @app.middleware("http")
 async def async_session_middleware(request, call_next):
-    async with get_session(request.app.state.engine) as session:
-        request.state.session = session
-        return await call_next(request)
+    # async with get_session(request.app.state.engine) as session:
+    #     request.state.session = session
+    return await call_next(request)
 
 
 @app.on_event("startup")
 async def startup():
-    app.state.engine = get_engine()
+    await database.connect()
 
 
 @app.on_event("shutdown")
 async def shutdown():
-    await app.state.engine.dispose()
+    await database.disconnect()

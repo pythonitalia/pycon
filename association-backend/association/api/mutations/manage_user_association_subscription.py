@@ -2,9 +2,9 @@ import strawberry
 
 from association.api.context import Info
 from association.domain import services
-from association.domain.entities.subscriptions import UserData
 from association.domain.exceptions import CustomerNotAvailable
 from association.settings import TEST_USER_EMAIL, TEST_USER_ID
+from association_membership.domain.entities import UserData
 
 
 @strawberry.type

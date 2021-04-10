@@ -10,8 +10,7 @@ starlette = "^0.14.1"
 uvicorn = "^0.13.3"
 click = "7.1.2"
 invoke = "1.5.0"
-strawberry-graphql = "^0.49"
-SQLAlchemy = "1.4.0b1"
+strawberry-graphql = "0.52.0"
 alembic = "^1.5.2"
 asyncpg = "^0.21.0"
 PyJWT = "^2.0.1"
@@ -24,7 +23,8 @@ psycopg2 = "^2.8.6"
 time-machine = "^2.1.0"
 python-dateutil = "^2.8.1"
 Jinja2 = "^2.11.3"
-pythonit-toolkit = "^0.1.17"
+pythonit-toolkit = "0.1.35"
+ormar = {extras = ["postgresql"], version = "^0.10.2"}
 
 
 [tool.poetry.dev-dependencies]
@@ -37,6 +37,7 @@ taskipy = "^1.6.0"
 asgi-lifespan = "^1.0.1"
 coverage = "^5.4"
 time-machine = "^2.0.1"
+pdbpp = "^0.10.2"
 
 
 [build-system]
