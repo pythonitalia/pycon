@@ -6,8 +6,8 @@ from starlette.responses import Response
 from starlette.websockets import WebSocket
 from strawberry.asgi import GraphQL as BaseGraphQL
 
-from association.api.context import Context
-from association.api.schema import schema
+from api.context import Context
+from api.schema import schema
 
 logger = logging.getLogger(__name__)
 

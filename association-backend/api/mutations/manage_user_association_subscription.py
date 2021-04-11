@@ -1,6 +1,9 @@
-import strawberry
+from typing import Any
 
-from association.api.context import Info
+import strawberry
+from strawberry.types import Info
+
+from api.context import Context
 from association.domain import services
 from association.domain.exceptions import CustomerNotAvailable
 from association.settings import TEST_USER_EMAIL, TEST_USER_ID
@@ -23,7 +26,9 @@ CustomerPortalResult = strawberry.union(
 
 
 @strawberry.mutation
-async def manage_user_association_subscription(info: Info) -> CustomerPortalResult:
+async def manage_user_association_subscription(
+    info: Info[Context, Any]
+) -> CustomerPortalResult:
     # TODO ger UserData from authenticated User
     user_data = UserData(email=TEST_USER_EMAIL, user_id=TEST_USER_ID)
 

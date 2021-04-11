@@ -12,7 +12,9 @@ logger = logging.getLogger(__name__)
 class CustomersRepository:
     async def get_for_user_id(self, user_id: UserID) -> Optional[Customer]:
         try:
-            return await Customer.objects.get(user_id=user_id)
+            return await Customer.objects.select_related("subscriptions").get(
+                user_id=user_id
+            )
         except ormar.NoMatch:
             return None
 

@@ -1,7 +1,6 @@
 import typing
 from dataclasses import dataclass
 
-# from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.requests import Request
 from starlette.websockets import WebSocket
 
@@ -21,7 +20,3 @@ class Context:
     @property
     def customers_repository(self) -> CustomersRepository:
         return CustomersRepository()
-
-
-class Info:
-    context: Context

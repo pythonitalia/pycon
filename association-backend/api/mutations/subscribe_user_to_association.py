@@ -5,7 +5,7 @@ from typing import Any
 import strawberry
 from strawberry.types import Info
 
-from association.api.context import Context
+from api.context import Context
 from association.domain.entities import stripe as stripe_entities
 from association.domain.exceptions import AlreadySubscribed
 from association.domain.services.subscribe_user_to_association import (
