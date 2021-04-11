@@ -1,6 +1,7 @@
 import logging
 from typing import Optional
 
+import ormar
 import stripe
 from sqlalchemy import select
 
@@ -18,16 +19,64 @@ from association.domain.exceptions import (
 from association.settings import (
     DOMAIN_URL,
     STRIPE_SECRET_API_KEY,
-    STRIPE_SUBSCRIPTION_CANCEL_URL,
     STRIPE_SUBSCRIPTION_PRICE_ID,
-    STRIPE_SUBSCRIPTION_SUCCESS_URL,
 )
-from association_membership.domain.entities import Subscription, SubscriptionPayment
+from association_membership.domain.entities import (
+    Subscription,
+    SubscriptionInvoice,
+    SubscriptionStatus,
+)
+from customers.domain.entities import Customer
 
 logger = logging.getLogger(__name__)
 
 
 class AssociationMembershipRepository:
+    async def get_by_stripe_id(
+        self, stripe_subscription_id: str
+    ) -> Optional[Subscription]:
+        return await Subscription.objects.get_or_none(
+            stripe_subscription_id=stripe_subscription_id
+        )
+
+    async def get_or_create_subscription(
+        self,
+        *,
+        customer: Customer,
+        stripe_subscription_id: str,
+    ) -> Subscription:
+        try:
+            subscription = await Subscription.objects.get(
+                stripe_subscription_id=stripe_subscription_id
+            )
+
+            if subscription.customer.id != customer.id:
+                raise ValueError(
+                    "Subscription X found but assigned to another customer"
+                )
+        except ormar.NoMatch:
+            subscription = await Subscription.objects.create(
+                stripe_subscription_id=stripe_subscription_id,
+                customer=customer,
+                status=SubscriptionStatus.PENDING,
+            )
+
+        return subscription
+
+    async def save_subscription(self, subscription: Subscription) -> Subscription:
+        """ TODO Test Create or Update """
+        await subscription.update()
+
+        for invoice in subscription._add_invoice:
+            # invoices to add
+            invoice.subscription = subscription
+            await invoice.save()
+
+            await subscription.subscriptioninvoices.add(invoice)
+
+        return subscription
+
+    # =====================================
 
     # READ
     async def get_subscription_by_stripe_subscription_id(
@@ -54,11 +103,6 @@ class AssociationMembershipRepository:
         return subscription
 
     # WRITE
-    async def save_subscription(self, subscription: Subscription) -> Subscription:
-        """ TODO Test Create or Update """
-        self.session.add(subscription)
-        await self.session.flush()
-        return subscription
 
     async def delete_subscription(self, subscription: Subscription) -> None:
         self.session.delete(subscription)
@@ -66,8 +110,8 @@ class AssociationMembershipRepository:
         return None
 
     async def save_payment(
-        self, subscription_payment: SubscriptionPayment
-    ) -> SubscriptionPayment:
+        self, subscription_payment: SubscriptionInvoice
+    ) -> SubscriptionInvoice:
         """ TODO Test ME """
         self.session.add(subscription_payment)
         await self.session.flush()
@@ -75,10 +119,10 @@ class AssociationMembershipRepository:
 
     async def get_payment_by_stripe_invoice_id(
         self, stripe_invoice_id: str
-    ) -> SubscriptionPayment:
+    ) -> SubscriptionInvoice:
         """ TODO Test ME """
-        query = select(SubscriptionPayment).where(
-            SubscriptionPayment.stripe_invoice_id == stripe_invoice_id
+        query = select(SubscriptionInvoice).where(
+            SubscriptionInvoice.stripe_invoice_id == stripe_invoice_id
         )
         payment = (await self.session.execute(query)).scalar_one_or_none()
         return payment
@@ -93,10 +137,10 @@ class AssociationMembershipRepository:
         # {CHECKOUT_SESSION_ID} is a string literal; do not change it!
         # the actual Session ID is returned in the query parameter when your customer
         # is redirected to the success page.
-        checkout_session_stripe_key = "{CHECKOUT_SESSION_ID}"
+        # checkout_session_stripe_key = "{CHECKOUT_SESSION_ID}"
         checkout_session = stripe.checkout.Session.create(
-            success_url=f"{STRIPE_SUBSCRIPTION_SUCCESS_URL}?session_id={checkout_session_stripe_key}",
-            cancel_url=STRIPE_SUBSCRIPTION_CANCEL_URL,
+            success_url="https://example.org",
+            cancel_url="https://example.org",
             payment_method_types=["card"],
             mode="subscription",
             customer=customer_id,

@@ -1,25 +1,89 @@
-def handle_checkout_session_completed(event):
-    print("received session completed, create subscription")
-    # breakpoint()
-    # TODO: Create Subscription object
-    pass
+import logging
+from datetime import datetime
+
+from association_membership.domain.entities import PaymentStatus, SubscriptionInvoice
+from association_membership.domain.repository import AssociationMembershipRepository
+from customers.domain.repository import CustomersRepository
+
+logger = logging.getLogger(__name__)
 
 
-def handle_invoice_paid(event):
-    # Called when the user pays for the subscription
-    print("received invoice paid")
-    breakpoint()
-    pass
+async def handle_invoice_paid(event):
+    invoice = event.data.object
+    stripe_customer_id = invoice.customer
+    stripe_subscription_id = invoice.subscription
+
+    customers_repository = CustomersRepository()
+    customer = await customers_repository.get_customer_from_stripe_customer_id(
+        stripe_customer_id
+    )
+
+    if not customer:
+        logger.error(
+            "Unable to process stripe event invoice paid because Stripe Customer %s"
+            " has not associated Customer locally",
+            stripe_customer_id,
+        )
+        return
+
+    membership_repository = AssociationMembershipRepository()
+    subscription = await membership_repository.get_or_create_subscription(
+        customer=customer, stripe_subscription_id=stripe_subscription_id
+    )
+
+    # Take the first item they purchased
+    # users can only buy the subscription
+    # so the lines will always be 1
+    assert len(invoice.lines.data) == 1
+
+    invoice_period = invoice.lines.data[0].period
+    subscription.add_invoice(
+        SubscriptionInvoice(
+            status=PaymentStatus(invoice.status),
+            payment_date=datetime.fromtimestamp(invoice.status_transitions.paid_at),
+            period_start=datetime.fromtimestamp(invoice_period.start),
+            period_end=datetime.fromtimestamp(invoice_period.end),
+            stripe_invoice_id=invoice.id,
+            invoice_pdf=invoice.invoice_pdf,
+        )
+    )
+    subscription.mark_as_active()
+    await membership_repository.save_subscription(subscription)
 
 
-def handle_invoice_payment_failed(event):
+async def handle_invoice_payment_failed(event):
     print("received payment failed")
     # Called when the user subscription fails to renew
     pass
 
 
+async def handle_customer_subscription_deleted(event):
+    stripe_subscription = event.data.object
+    membership_repository = AssociationMembershipRepository()
+    subscription = await membership_repository.get_by_stripe_id(stripe_subscription.id)
+
+    if not subscription:
+        logger.error(
+            "Received subscription canceled for subscription %s"
+            " but no subscription with this stripe id exists in our"
+            " database!",
+            stripe_subscription.id,
+        )
+        return
+
+    subscription.mark_as_canceled()
+    await membership_repository.save_subscription(subscription)
+    logger.info(
+        "Successfully marked local subscription_id=%s"
+        " as canceled from stripe event for stripe_subscription_id=%s",
+        subscription.id,
+        stripe_subscription.id,
+    )
+
+
 HANDLERS = {
-    "checkout.session.completed": handle_checkout_session_completed,
+    # "checkout.session.completed": handle_checkout_session_completed,
+    "customer.subscription.deleted": handle_customer_subscription_deleted,
     "invoice.paid": handle_invoice_paid,
     "invoice.payment_failed": handle_invoice_payment_failed,
 }

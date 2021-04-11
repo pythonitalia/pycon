@@ -29,5 +29,5 @@ async def stripe_webhook(request):
         return PlainTextResponse("nope")
 
     print("run handler:", handler, "for event", event["type"])
-    handler(event)
+    await handler(event)
     return PlainTextResponse("hello")

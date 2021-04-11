@@ -1,3 +1,3 @@
-# from .subscriptions import Subscription, SubscriptionPayment, SubscriptionState
+# from .subscriptions import Subscription, SubscriptionInvoice, SubscriptionState
 
-# __all__ = ["Subscription", "SubscriptionState", "SubscriptionPayment"]
+# __all__ = ["Subscription", "SubscriptionState", "SubscriptionInvoice"]

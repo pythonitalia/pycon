@@ -3,7 +3,7 @@
 
 # from pydantic import BaseModel
 
-# from association_membership.domain.entities import SubscriptionPayment
+# from association_membership.domain.entities import SubscriptionInvoice
 # from association_membership.domain.repository import AssociationmembershipRepository
 # from association.domain.exceptions import SubscriptionNotFound
 
@@ -30,7 +30,7 @@
 #             invoice_input.invoice_id
 #         )
 #         if not payment:
-#             payment = SubscriptionPayment(
+#             payment = SubscriptionInvoice(
 #                 payment_date=invoice_input.paid_at,
 #                 subscription=subscription,
 #                 stripe_invoice_id=invoice_input.invoice_id,

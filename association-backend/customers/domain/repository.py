@@ -1,4 +1,5 @@
 import logging
+from typing import Optional
 
 import ormar
 import stripe
@@ -9,9 +10,19 @@ logger = logging.getLogger(__name__)
 
 
 class CustomersRepository:
-    async def get_for_user_id(self, user_id: UserID) -> Customer:
+    async def get_for_user_id(self, user_id: UserID) -> Optional[Customer]:
         try:
             return await Customer.objects.get(user_id=user_id)
+        except ormar.NoMatch:
+            return None
+
+    async def get_customer_from_stripe_customer_id(
+        self, stripe_customer_id: str
+    ) -> Optional[Customer]:
+        try:
+            return await Customer.objects.select_related("subscriptions").get(
+                stripe_customer_id=stripe_customer_id
+            )
         except ormar.NoMatch:
             return None
 
@@ -20,8 +31,9 @@ class CustomersRepository:
 
         if len(customers.data) > 1:
             logger.error(
-                f"While trying to create a Stripe customer for user_id {user_id}"
-                " we found multiple Stripe customers with the same email, investigate this"
+                "While trying to create a Stripe customer for user_id %s"
+                " we found multiple Stripe customers with the same email, investigate this",
+                user_id,
             )
             raise ValueError("Multiple customers found")
             # raise MultipleCustomerReturned()

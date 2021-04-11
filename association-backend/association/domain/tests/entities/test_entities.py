@@ -6,7 +6,7 @@
 # from association.tests.factories import (
 #     StripeSubscriptionFactory,
 #     SubscriptionFactory,
-#     SubscriptionPaymentFactory,
+#     SubscriptionInvoiceFactory,
 # )
 
 
@@ -96,7 +96,7 @@
 # )
 # async def _():
 #     subscription = SubscriptionFactory(state=SubscriptionState.PENDING)
-#     SubscriptionPaymentFactory(subscription=subscription)
+#     SubscriptionInvoiceFactory(subscription=subscription)
 #     stripe_subscription = StripeSubscriptionFactory.build(
 #         id=subscription.stripe_subscription_id,
 #         status=StripeSubscriptionStatus.INCOMPLETE_EXPIRED,

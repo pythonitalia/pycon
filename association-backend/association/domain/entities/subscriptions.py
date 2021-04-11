@@ -105,7 +105,7 @@
 #         return self
 
 
-# class SubscriptionPayment(ormar.Model):
+# class SubscriptionInvoice(ormar.Model):
 #     class Meta(BaseMeta):
 #         tablename = "subscription_payments"
 

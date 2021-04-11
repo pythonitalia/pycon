@@ -7,13 +7,13 @@
 
 # from association.domain.entities.subscriptions import (
 #     Subscription,
-#     SubscriptionPayment,
+#     SubscriptionInvoice,
 #     SubscriptionState,
 # )
 # from association.domain.repositories import AssociationRepository
 # from association.tests.factories import (
 #     SubscriptionFactory,
-#     SubscriptionPaymentFactory,
+#     SubscriptionInvoiceFactory,
 #     subscription_factory,
 # )
 # from association.tests.session import cleanup_db, db, second_session
@@ -261,7 +261,7 @@
 #     await repository.commit()
 
 #     await repository.save_payment(
-#         SubscriptionPayment(
+#         SubscriptionInvoice(
 #             subscription=subscription,
 #             payment_date=datetime.datetime(
 #                 2020, 1, 1, 1, 0, tzinfo=datetime.timezone.utc
@@ -272,10 +272,10 @@
 #     )
 #     await repository.commit()
 
-#     query = select(SubscriptionPayment).where(
-#         SubscriptionPayment.subscription_id == subscription.user_id
+#     query = select(SubscriptionInvoice).where(
+#         SubscriptionInvoice.subscription_id == subscription.user_id
 #     )
-#     db_entry: SubscriptionPayment = (await second_session.execute(query)).scalar()
+#     db_entry: SubscriptionInvoice = (await second_session.execute(query)).scalar()
 
 #     assert db_entry
 #     assert db_entry.subscription == subscription
@@ -302,7 +302,7 @@
 #     second_session = cast(AsyncSession, second_session)
 
 #     subscription = SubscriptionFactory(user_id=12345)
-#     SubscriptionPaymentFactory(
+#     SubscriptionInvoiceFactory(
 #         subscription=subscription, stripe_invoice_id="inv_test_12345"
 #     )
 #     await db.commit()
@@ -312,10 +312,10 @@
 #         "inv_test_12345"
 #     )
 
-#     query = select(SubscriptionPayment).where(
-#         SubscriptionPayment.stripe_invoice_id == "inv_test_12345"
+#     query = select(SubscriptionInvoice).where(
+#         SubscriptionInvoice.stripe_invoice_id == "inv_test_12345"
 #     )
-#     raw_query_subscription_payment: SubscriptionPayment = (
+#     raw_query_subscription_payment: SubscriptionInvoice = (
 #         await second_session.execute(query)
 #     ).scalar()
 

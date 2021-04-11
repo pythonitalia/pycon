@@ -1,7 +1,7 @@
 # from collections import defaultdict
 # from typing import List, Optional
 
-# from association.domain.entities import Subscription, SubscriptionPayment
+# from association.domain.entities import Subscription, SubscriptionInvoice
 # from association.domain.entities.stripe import (
 #     StripeCheckoutSession,
 #     StripeCustomer,
@@ -34,7 +34,7 @@
 #     def __init__(
 #         self,
 #         subscriptions: Optional[List[Subscription]] = None,
-#         subscription_payments: Optional[List[SubscriptionPayment]] = None,
+#         subscription_payments: Optional[List[SubscriptionInvoice]] = None,
 #         stripe_checkout_sessions: Optional[List[StripeCheckoutSession]] = None,
 #         stripe_customers: Optional[List[StripeCustomer]] = None,
 #         stripe_subscriptions: Optional[List[StripeSubscription]] = None,
@@ -150,8 +150,8 @@
 
 #     # WRITE
 #     async def save_payment(
-#         self, subscription_payment: SubscriptionPayment
-#     ) -> SubscriptionPayment:
+#         self, subscription_payment: SubscriptionInvoice
+#     ) -> SubscriptionInvoice:
 #         self.SUBSCRIPTION_PAYMENTS_BY_STRIPE_ID[
 #             subscription_payment.subscription.stripe_subscription_id
 #         ] = subscription_payment
@@ -159,7 +159,7 @@
 
 #     async def get_payment_by_stripe_invoice_id(
 #         self, stripe_invoice_id: str
-#     ) -> SubscriptionPayment:
+#     ) -> SubscriptionInvoice:
 #         return self.SUBSCRIPTION_PAYMENTS_BY_INVOICE_ID.get(stripe_invoice_id, None)
 
 #     # ============== #

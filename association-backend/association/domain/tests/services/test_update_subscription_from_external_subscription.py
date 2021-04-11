@@ -13,7 +13,7 @@
 # from association.tests.factories import (
 #     StripeSubscriptionFactory,
 #     SubscriptionFactory,
-#     SubscriptionPaymentFactory,
+#     SubscriptionInvoiceFactory,
 # )
 
 
@@ -169,7 +169,7 @@
 # )
 # async def _():
 #     sut_subscription = SubscriptionFactory(state=SubscriptionState.PENDING)
-#     subscription_payment = SubscriptionPaymentFactory(subscription=sut_subscription)
+#     subscription_payment = SubscriptionInvoiceFactory(subscription=sut_subscription)
 #     repository = FakeAssociationRepository(
 #         subscriptions=[sut_subscription],
 #         subscription_payments=[subscription_payment],

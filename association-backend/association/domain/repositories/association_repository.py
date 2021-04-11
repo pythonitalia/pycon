@@ -10,7 +10,7 @@
 #     StripeSubscription,
 #     StripeSubscriptionStatus,
 # )
-# from association.domain.entities.subscriptions import Subscription, SubscriptionPayment
+# from association.domain.entities.subscriptions import Subscription, SubscriptionInvoice
 # from association.domain.exceptions import (
 #     MultipleCustomerReturned,
 #     MultipleCustomerSubscriptionsReturned,
@@ -67,8 +67,8 @@
 #         return None
 
 #     async def save_payment(
-#         self, subscription_payment: SubscriptionPayment
-#     ) -> SubscriptionPayment:
+#         self, subscription_payment: SubscriptionInvoice
+#     ) -> SubscriptionInvoice:
 #         """ TODO Test ME """
 #         self.session.add(subscription_payment)
 #         await self.session.flush()
@@ -76,10 +76,10 @@
 
 #     async def get_payment_by_stripe_invoice_id(
 #         self, stripe_invoice_id: str
-#     ) -> SubscriptionPayment:
+#     ) -> SubscriptionInvoice:
 #         """ TODO Test ME """
-#         query = select(SubscriptionPayment).where(
-#             SubscriptionPayment.stripe_invoice_id == stripe_invoice_id
+#         query = select(SubscriptionInvoice).where(
+#             SubscriptionInvoice.stripe_invoice_id == stripe_invoice_id
 #         )
 #         payment = (await self.session.execute(query)).scalar_one_or_none()
 #         return payment

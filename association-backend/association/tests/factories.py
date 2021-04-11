@@ -9,7 +9,7 @@ from ward import fixture
 
 from association.domain.entities import (
     Subscription,
-    SubscriptionPayment,
+    SubscriptionInvoice,
     SubscriptionState,
 )
 from association.domain.entities.stripe import (
@@ -151,9 +151,9 @@ async def subscription_factory_batch():
     return func
 
 
-class SubscriptionPaymentFactory(SQLAlchemyModelFactory):
+class SubscriptionInvoiceFactory(SQLAlchemyModelFactory):
     class Meta:
-        model = SubscriptionPayment
+        model = SubscriptionInvoice
         sqlalchemy_session = test_session
 
     payment_date = factory.Faker("date_between", start_date="-7d", end_date="today")
