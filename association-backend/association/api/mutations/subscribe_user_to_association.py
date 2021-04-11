@@ -1,22 +1,16 @@
 from __future__ import annotations
 
-from typing import Any, Optional
+from typing import Any
 
 import strawberry
 from strawberry.types import Info
 
 from association.api.context import Context
 from association.domain.entities import stripe as stripe_entities
-from association.domain.exceptions import (
-    AlreadySubscribed,
-    MultipleCustomerReturned,
-    MultipleCustomerSubscriptionsReturned,
-)
+from association.domain.exceptions import AlreadySubscribed
 from association.domain.services.subscribe_user_to_association import (
     subscribe_user_to_association as service_subscribe_user_to_association,
 )
-from association.settings import TEST_USER_EMAIL, TEST_USER_ID
-from association_membership.domain.entities import UserData
 
 
 @strawberry.type
@@ -27,8 +21,6 @@ class AlreadySubscribedError:
 @strawberry.type
 class CheckoutSession:
     stripe_session_id: str
-    # stripe_subscription_id: Optional[str]
-    # stripe_customer_id: Optional[str]
 
     @classmethod
     def from_domain(
@@ -36,8 +28,6 @@ class CheckoutSession:
     ) -> CheckoutSession:
         return cls(
             stripe_session_id=entity.id,
-            # stripe_subscription_id=entity.subscription_id,
-            # stripe_customer_id=entity.customer_id,
         )
 
 
@@ -54,10 +44,9 @@ SubscribeUserResult = strawberry.union(
 async def subscribe_user_to_association(
     info: Info[Context, Any]
 ) -> SubscribeUserResult:
-    user_data = UserData(email=TEST_USER_EMAIL, user_id=TEST_USER_ID)
     try:
         checkout_session = await service_subscribe_user_to_association(
-            user_data,
+            info.context.request.user,
             customers_repository=info.context.customers_repository,
             association_repository=info.context.association_repository,
         )
