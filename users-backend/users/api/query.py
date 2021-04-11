@@ -1,7 +1,6 @@
 import strawberry
-
+from pythonit_toolkit.api.permissions import IsAuthenticated
 from users.api.context import Info
-from users.api.permissions import IsAuthenticated
 from users.api.types import User
 
 
