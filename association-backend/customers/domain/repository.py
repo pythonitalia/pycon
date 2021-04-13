@@ -52,3 +52,9 @@ class CustomersRepository:
         )
 
         return customer
+
+    async def create_stripe_portal_session_url(self, customer: Customer) -> str:
+        session = stripe.billing_portal.Session.create(
+            customer=customer.stripe_customer_id
+        )
+        return session.url

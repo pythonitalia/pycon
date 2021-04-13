@@ -8,6 +8,7 @@
 
 <body>
   <button id="checkout">Subscribe</button>
+  <button id="manage">Manage</button>
   <div id="error-message" class="error-message"></div>
   <script>
     var stripe = Stripe("pk_test_1Tti9s1UY4Ot4NJXxWc6kdYg");
@@ -17,7 +18,7 @@
       .addEventListener("click", function (evt) {
         stripe
           .redirectToCheckout({
-            sessionId: "cs_test_a1n7jWrsNfuDUKxuztLLhdVYYh5ZbeNciBOakwynO1FAhbZ5f1ddACNeVk"
+            sessionId: "cs_test_a1mymoOOgmZ8aAjnqVcS88rIXSd2rK04qMxr2qRyxgqf438psxWudyOwpt"
           })
           .then(handleResult);
       });

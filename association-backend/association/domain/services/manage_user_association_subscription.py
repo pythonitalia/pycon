@@ -1,25 +1,30 @@
-# import logging
+import logging
 
-# from association.domain.exceptions import CustomerNotAvailable
-# from association_membership.domain.entities import Subscription, UserData
-# from association_membership.domain.repository import AssociationmembershipRepository
+from pythonit_toolkit.pastaporto.entities import PastaportoUserInfo
 
-# logger = logging.getLogger(__name__)
+from association.domain.exceptions import CustomerNotAvailable
+from association_membership.domain.entities import Subscription
+from customers.domain.repository import CustomersRepository
+
+logger = logging.getLogger(__name__)
 
 
-# async def manage_user_association_subscription(
-#     user_data: UserData, association_repository: AssociationmembershipRepository
-# ) -> Subscription:
-#     """This service creates a CustomerPortalSession and returns its url"""
-#     subscription = await association_repository.get_subscription_by_user_id(
-#         user_data.user_id
-#     )
-#     if subscription and subscription.stripe_customer_id:
-#         billing_portal_url = (
-#             await association_repository.retrieve_customer_portal_session_url(
-#                 subscription.stripe_customer_id
-#             )
-#         )
-#         return billing_portal_url
-#     else:
-#         raise CustomerNotAvailable()
+async def manage_user_association_subscription(
+    user: PastaportoUserInfo,
+    *,
+    customers_repository: CustomersRepository,
+) -> Subscription:
+    """This service creates a CustomerPortalSession and returns its url"""
+    customer = await customers_repository.get_for_user_id(user.id)
+
+    if not customer.has_active_subscription():
+        # TODO: subscription
+        raise ValueError("No subscription")
+
+    if not customer:
+        raise CustomerNotAvailable()
+
+    billing_portal_url = await customers_repository.create_stripe_portal_session_url(
+        customer
+    )
+    return billing_portal_url

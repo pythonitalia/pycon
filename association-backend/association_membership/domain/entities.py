@@ -50,16 +50,6 @@ class Subscription(ormar.Model):
     )
 
     _add_invoice: List[SubscriptionInvoice] = PrivateAttr(default_factory=list)
-    # state: str = ormar.String(max_length=200)
-    # created_at: datetime = ormar.DateTime()
-    # TODO Is available a auto_update_now?
-    # modified_at: Optional[datetime] = ormar.DateTime(
-    #     required=False, nullable=True, default=None, server_default=None
-    # )
-    # # stripe_customer_id: Optional[str] = ""
-    # canceled_at: Optional[datetime] = ormar.DateTime(
-    #     required=False, nullable=True, default=None, server_default=None
-    # )
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
@@ -73,6 +63,10 @@ class Subscription(ormar.Model):
 
     def mark_as_active(self):
         self._change_state(SubscriptionStatus.ACTIVE)
+
+    @property
+    def is_active(self) -> bool:
+        return self.status == SubscriptionStatus.ACTIVE
 
     def _change_state(self, to: SubscriptionStatus):
         logger.info("Switching subscription from status %s to %s", self.status, to)

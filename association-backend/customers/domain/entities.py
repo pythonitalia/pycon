@@ -16,11 +16,4 @@ class Customer(ormar.Model):
     stripe_customer_id: str = ormar.String(max_length=256, unique=True)
 
     def has_active_subscription(self) -> bool:
-        from association_membership.domain.entities import SubscriptionStatus
-
-        return any(
-            [
-                subscription.status == SubscriptionStatus.ACTIVE
-                for subscription in self.subscriptions
-            ]
-        )
+        return any([subscription.is_active for subscription in self.subscriptions])
