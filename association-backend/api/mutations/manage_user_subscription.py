@@ -4,8 +4,8 @@ import strawberry
 from strawberry.types import Info
 
 from api.context import Context
-from association.domain.exceptions import CustomerNotAvailable
-from association.domain.services.manage_user_association_subscription import (
+from association_membership.domain.exceptions import CustomerNotAvailable
+from association_membership.domain.services.manage_user_association_subscription import (
     manage_user_association_subscription as service_manage_user_association_subscription,
 )
 

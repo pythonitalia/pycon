@@ -2,8 +2,7 @@ import logging
 
 from pythonit_toolkit.pastaporto.entities import PastaportoUserInfo
 
-from association.domain.entities.stripe import StripeCheckoutSession
-from association.domain.exceptions import AlreadySubscribed
+from association_membership.domain.exceptions import AlreadySubscribed
 from association_membership.domain.repository import AssociationMembershipRepository
 from customers.domain.entities import UserID
 from customers.domain.repository import CustomersRepository
@@ -16,7 +15,7 @@ async def subscribe_user_to_association(
     *,
     customers_repository: CustomersRepository,
     association_repository: AssociationMembershipRepository
-) -> StripeCheckoutSession:
+) -> str:
     user_id = UserID(user.id)
     customer = await customers_repository.get_for_user_id(user_id)
 
@@ -26,9 +25,7 @@ async def subscribe_user_to_association(
     if customer.has_active_subscription():
         raise AlreadySubscribed()
 
-    checkout_session: StripeCheckoutSession = (
-        await association_repository.create_checkout_session(
-            customer_id=customer.stripe_customer_id
-        )
+    checkout_session_id = await association_repository.create_checkout_session(
+        customer_id=customer.stripe_customer_id
     )
-    return checkout_session
+    return checkout_session_id

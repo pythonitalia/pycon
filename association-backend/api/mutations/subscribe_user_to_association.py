@@ -6,9 +6,8 @@ import strawberry
 from strawberry.types import Info
 
 from api.context import Context
-from association.domain.entities import stripe as stripe_entities
-from association.domain.exceptions import AlreadySubscribed
-from association.domain.services.subscribe_user_to_association import (
+from association_membership.domain.exceptions import AlreadySubscribed
+from association_membership.domain.services.subscribe_user_to_association import (
     subscribe_user_to_association as service_subscribe_user_to_association,
 )
 
@@ -23,11 +22,9 @@ class CheckoutSession:
     stripe_session_id: str
 
     @classmethod
-    def from_domain(
-        cls, entity: stripe_entities.StripeCheckoutSession
-    ) -> CheckoutSession:
+    def from_domain(cls, stripe_session_id: str) -> CheckoutSession:
         return cls(
-            stripe_session_id=entity.id,
+            stripe_session_id=stripe_session_id,
         )
 
 
@@ -45,11 +42,11 @@ async def subscribe_user_to_association(
     info: Info[Context, Any]
 ) -> SubscribeUserResult:
     try:
-        checkout_session = await service_subscribe_user_to_association(
+        checkout_session_id = await service_subscribe_user_to_association(
             info.context.request.user,
             customers_repository=info.context.customers_repository,
             association_repository=info.context.association_repository,
         )
-        return CheckoutSession.from_domain(checkout_session)
+        return CheckoutSession.from_domain(checkout_session_id)
     except AlreadySubscribed:
         return AlreadySubscribedError()

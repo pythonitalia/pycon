@@ -4,7 +4,6 @@ from typing import Optional
 import ormar
 import stripe
 
-from association.domain.entities.stripe import StripeCheckoutSession
 from association.settings import STRIPE_SUBSCRIPTION_PRICE_ID
 from association_membership.domain.entities import Subscription, SubscriptionStatus
 from customers.domain.entities import Customer
@@ -57,7 +56,7 @@ class AssociationMembershipRepository:
 
         return subscription
 
-    async def create_checkout_session(self, customer_id: str) -> StripeCheckoutSession:
+    async def create_checkout_session(self, customer_id: str) -> str:
         checkout_session = stripe.checkout.Session.create(
             success_url="https://example.org",
             cancel_url="https://example.org",
@@ -71,6 +70,4 @@ class AssociationMembershipRepository:
                 }
             ],
         )
-        return StripeCheckoutSession(
-            id=checkout_session["id"],
-        )
+        return checkout_session["id"]

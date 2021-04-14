@@ -3,8 +3,8 @@ from unittest.mock import patch
 from ward import test
 
 from association.api.tests.graphql_client import graphql_client
-from association.domain.exceptions import CustomerNotAvailable
 from association.tests.session import db
+from association_membership.domain.exceptions import CustomerNotAvailable
 
 
 @test("Customer portal url returned")

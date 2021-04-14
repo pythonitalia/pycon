@@ -19,26 +19,12 @@ app = Starlette(
         Route("/graphql", GraphQL()),
         Route("/stripe-webhook", stripe_webhook, methods=["POST"]),
         # TODO DELETE THESE URLS
-        Route(
-            "/stripe/create-checkout-session", stripe_views.CreateCheckoutSessionView
-        ),
         Route("/stripe/do-payment", stripe_views.PaymentView),
-        Route("/stripe/do-payment/success", stripe_views.PaymentSuccessView),
-        Route("/stripe/do-payment/fail", stripe_views.PaymentFailView),
-        Route("/stripe/setup", stripe_views.StripeSetupView),
-        Route("/stripe/customer-portal", stripe_views.CustomerPortalView),
     ],
     middleware=[
         pastaporto_auth_middleware(PASTAPORTO_SECRET),
     ],
 )
-
-
-@app.middleware("http")
-async def async_session_middleware(request, call_next):
-    # async with get_session(request.app.state.engine) as session:
-    #     request.state.session = session
-    return await call_next(request)
 
 
 @app.on_event("startup")

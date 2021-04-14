@@ -1,7 +1,7 @@
 import logging
 from datetime import datetime
 
-from association_membership.domain.entities import PaymentStatus, SubscriptionInvoice
+from association_membership.domain.entities import InvoiceStatus, SubscriptionInvoice
 from association_membership.domain.repository import AssociationMembershipRepository
 from customers.domain.repository import CustomersRepository
 
@@ -39,7 +39,7 @@ async def handle_invoice_paid(event):
     invoice_period = invoice.lines.data[0].period
     subscription.add_invoice(
         SubscriptionInvoice(
-            status=PaymentStatus(invoice.status),
+            status=InvoiceStatus(invoice.status),
             payment_date=datetime.fromtimestamp(invoice.status_transitions.paid_at),
             period_start=datetime.fromtimestamp(invoice_period.start),
             period_end=datetime.fromtimestamp(invoice_period.end),

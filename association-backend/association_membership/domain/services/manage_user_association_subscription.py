@@ -2,8 +2,8 @@ import logging
 
 from pythonit_toolkit.pastaporto.entities import PastaportoUserInfo
 
-from association.domain.exceptions import CustomerNotAvailable
 from association_membership.domain.entities import Subscription
+from association_membership.domain.exceptions import CustomerNotAvailable
 from customers.domain.repository import CustomersRepository
 
 logger = logging.getLogger(__name__)
