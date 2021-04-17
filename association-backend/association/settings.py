@@ -1,47 +1,35 @@
 import stripe
 from sqlalchemy.engine.url import URL, make_url
 from starlette.config import Config
+from starlette.datastructures import Secret
 
 config = Config(".env")
 
 DEBUG = config("DEBUG", cast=bool, default=False)
 DATABASE_URL = config("DATABASE_URL")
 
-# TODO cast=Secret
-STRIPE_SECRET_API_KEY = config("STRIPE_SECRET_API_KEY", cast=str)
+# Services URLs
+ASSOCIATION_FRONTEND_URL = config(
+    "ASSOCIATION_FRONTEND_URL",
+)
 
-# TODO Remove this
-STRIPE_SUBSCRIPTION_API_KEY = config("STRIPE_SUBSCRIPTION_API_KEY", cast=str)
-
+# Stripe
+STRIPE_SECRET_API_KEY = config("STRIPE_SECRET_API_KEY", cast=Secret)
 STRIPE_SUBSCRIPTION_PRICE_ID = config("STRIPE_SUBSCRIPTION_PRICE_ID", cast=str)
-STRIPE_WEBHOOK_SECRET = config("STRIPE_WEBHOOK_SIGNATURE_SECRET", cast=str)
+STRIPE_WEBHOOK_SECRET = config("STRIPE_WEBHOOK_SIGNATURE_SECRET", cast=Secret)
 
-# TODO Remove this
-STRIPE_SUBSCRIPTION_SUCCESS_URL = config(
-    "STRIPE_SUBSCRIPTION_SUCCESS_URL",
-    cast=str,
-    default="https://association.python.it/payments/success",
-)
-# TODO Remove this
-STRIPE_SUBSCRIPTION_CANCEL_URL = config(
-    "STRIPE_SUBSCRIPTION_CANCEL_URL",
-    cast=str,
-    default="https://association.python.it/payments/cancel",
-)
+# Set default stripe key
+stripe.api_key = str(STRIPE_SECRET_API_KEY)
 
-# TODO remove this
-TEST_USER_ID = config("TEST_USER_ID", cast=str, default=101010)
-TEST_USER_EMAIL = config("TEST_USER_EMAIL", cast=str, default="user101010@pycon.it")
-
+# Secrets
 PASTAPORTO_SECRET = config("PASTAPORTO_SECRET", cast=str)
 
-# TODO remove this
-DOMAIN_URL = config.get("DOMAIN_URL")
+# Unit-tests
 RUNNING_TESTS = config("RUNNING_TESTS", cast=bool, default=False)
 
 if RUNNING_TESTS:
     original_url = make_url(DATABASE_URL)
-    test_db_url = URL.create(
+    test_db_url = URL(
         drivername=original_url.drivername,
         username=original_url.username,
         password=original_url.password,
@@ -50,7 +38,4 @@ if RUNNING_TESTS:
         database=f"TEST_{original_url.database}",
         query=original_url.query,
     )
-    DATABASE_URL = test_db_url
-
-
-stripe.api_key = STRIPE_SECRET_API_KEY
+    DATABASE_URL = str(test_db_url)

@@ -25,7 +25,7 @@ config = context.config
 fileConfig(config.config_file_name)
 
 
-config.set_main_option("sqlalchemy.url", DATABASE_URL.replace("asyncpg", "psycopg2"))
+config.set_main_option("sqlalchemy.url", DATABASE_URL)
 
 
 target_metadata = metadata

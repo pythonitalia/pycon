@@ -3,7 +3,10 @@ import logging
 from pythonit_toolkit.pastaporto.entities import PastaportoUserInfo
 
 from association_membership.domain.entities import Subscription
-from association_membership.domain.exceptions import CustomerNotAvailable
+from association_membership.domain.exceptions import (
+    CustomerNotAvailable,
+    NoSubscriptionAvailable,
+)
 from customers.domain.repository import CustomersRepository
 
 logger = logging.getLogger(__name__)
@@ -17,12 +20,11 @@ async def manage_user_association_subscription(
     """This service creates a CustomerPortalSession and returns its url"""
     customer = await customers_repository.get_for_user_id(user.id)
 
-    if not customer.has_active_subscription():
-        # TODO: subscription
-        raise ValueError("No subscription")
-
     if not customer:
         raise CustomerNotAvailable()
+
+    if not customer.has_active_subscription():
+        raise NoSubscriptionAvailable()
 
     billing_portal_url = await customers_repository.create_stripe_portal_session_url(
         customer

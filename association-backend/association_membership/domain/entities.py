@@ -6,6 +6,7 @@ from enum import Enum
 from typing import Any, List
 
 import ormar
+import sqlalchemy
 from pydantic import PrivateAttr
 
 from customers.domain.entities import Customer
@@ -29,10 +30,13 @@ class Subscription(ormar.Model):
         tablename = "subscriptions"
 
     id: int = ormar.Integer(primary_key=True)
-    customer: Customer = ormar.ForeignKey(Customer)
+    customer: Customer = ormar.ForeignKey(Customer, nullable=False)
     stripe_subscription_id: str = ormar.String(nullable=False, max_length=256)
     status: SubscriptionStatus = ormar.String(
-        max_length=20, choices=list(SubscriptionStatus)
+        max_length=20,
+        choices=list(SubscriptionStatus),
+        default=SubscriptionStatus.PENDING,
+        nullable=False,
     )
 
     _add_invoice: List[SubscriptionInvoice] = PrivateAttr(default_factory=list)
@@ -70,6 +74,12 @@ class InvoiceStatus(str, Enum):
         return str.__str__(self)
 
 
+class DateTimeWithTimeZone(ormar.DateTime):
+    @classmethod
+    def get_column_type(cls, **kwargs: Any) -> Any:
+        return sqlalchemy.DateTime(timezone=True)
+
+
 class SubscriptionInvoice(ormar.Model):
     class Meta(BaseMeta):
         tablename = "subscription_invoices"
@@ -81,9 +91,11 @@ class SubscriptionInvoice(ormar.Model):
         server_default=InvoiceStatus.DRAFT,
         choices=list(InvoiceStatus),
     )
-    subscription: Subscription = ormar.ForeignKey(Subscription)
-    payment_date: datetime = ormar.DateTime()
-    period_start: datetime = ormar.DateTime()
-    period_end: datetime = ormar.DateTime()
+    subscription: Subscription = ormar.ForeignKey(
+        Subscription, nullable=False, related_name="invoices"
+    )
+    payment_date: datetime = DateTimeWithTimeZone()
+    period_start: datetime = DateTimeWithTimeZone()
+    period_end: datetime = DateTimeWithTimeZone()
     stripe_invoice_id: str = ormar.String(max_length=256)
     invoice_pdf: str = ormar.Text()

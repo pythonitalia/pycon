@@ -1,6 +1,7 @@
 from typing import Any
 
 import strawberry
+from pythonit_toolkit.api.permissions import IsAuthenticated
 from strawberry.types import Info
 
 from api.context import Context
@@ -25,7 +26,7 @@ CustomerPortalResult = strawberry.union(
 )
 
 
-@strawberry.mutation
+@strawberry.mutation(permission_classes=[IsAuthenticated])
 async def manage_user_subscription(info: Info[Context, Any]) -> CustomerPortalResult:
     try:
         billing_portal_url = await service_manage_user_association_subscription(

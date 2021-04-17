@@ -4,7 +4,7 @@ from typing import Optional
 import ormar
 import stripe
 
-from association.settings import STRIPE_SUBSCRIPTION_PRICE_ID
+from association.settings import ASSOCIATION_FRONTEND_URL, STRIPE_SUBSCRIPTION_PRICE_ID
 from association_membership.domain.entities import Subscription, SubscriptionStatus
 from customers.domain.entities import Customer
 
@@ -31,9 +31,16 @@ class AssociationMembershipRepository:
             )
 
             if subscription.customer.id != customer.id:
-                raise ValueError(
-                    "Subscription X found but assigned to another customer"
+                logger.error(
+                    "Trying to get stripe_subscription_id=%s for customer_id=%s"
+                    " but the customer associated to the"
+                    " found subscription (associated_customer_id=%s)"
+                    " is not the same as passed customer",
+                    stripe_subscription_id,
+                    customer.id,
+                    subscription.customer.id,
                 )
+                raise ValueError("Subscription found but assigned to another customer")
         except ormar.NoMatch:
             subscription = await Subscription.objects.create(
                 stripe_subscription_id=stripe_subscription_id,
@@ -44,25 +51,24 @@ class AssociationMembershipRepository:
         return subscription
 
     async def save_subscription(self, subscription: Subscription) -> Subscription:
-        """ TODO Test Create or Update """
         await subscription.update()
 
         for invoice in subscription._add_invoice:
-            # invoices to add
             invoice.subscription = subscription
             await invoice.save()
-
-            await subscription.subscriptioninvoices.add(invoice)
+            await subscription.invoices.add(invoice)
 
         return subscription
 
-    async def create_checkout_session(self, customer_id: str) -> str:
+    async def create_checkout_session(self, customer: Customer) -> str:
         checkout_session = stripe.checkout.Session.create(
-            success_url="https://example.org",
-            cancel_url="https://example.org",
+            success_url=f"{ASSOCIATION_FRONTEND_URL}/membership?status=success",
+            cancel_url=f"{ASSOCIATION_FRONTEND_URL}/membership?status=canceled",
             payment_method_types=["card"],
             mode="subscription",
-            customer=customer_id,
+            customer=customer.stripe_customer_id,
+            # Note: if adding more line items, make sure webhook handlers
+            # can handle it when fetching the period start/end dates
             line_items=[
                 {
                     "price": STRIPE_SUBSCRIPTION_PRICE_ID,
@@ -70,4 +76,4 @@ class AssociationMembershipRepository:
                 }
             ],
         )
-        return checkout_session["id"]
+        return checkout_session.id

@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Any
 
 import strawberry
+from pythonit_toolkit.api.permissions import IsAuthenticated
 from strawberry.types import Info
 
 from api.context import Context
@@ -37,7 +38,7 @@ SubscribeUserResult = strawberry.union(
 )
 
 
-@strawberry.mutation
+@strawberry.mutation(permission_classes=[IsAuthenticated])
 async def subscribe_user_to_association(
     info: Info[Context, Any]
 ) -> SubscribeUserResult:

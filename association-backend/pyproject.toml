@@ -24,20 +24,21 @@ time-machine = "^2.1.0"
 python-dateutil = "^2.8.1"
 Jinja2 = "^2.11.3"
 pythonit-toolkit = "0.1.37"
-ormar = {extras = ["postgresql"], version = "^0.10.2"}
+ormar = "^0.10.3"
 
 
 [tool.poetry.dev-dependencies]
 factory-boy = "^3.2.0"
 isort = "^5.7.0"
 flake8 = "^3.8.4"
-ward = "^0.48.0-beta.0"
+ward = "^0.54.0b0"
 requests = "^2.25.1"
 taskipy = "^1.6.0"
 asgi-lifespan = "^1.0.1"
 coverage = "^5.4"
 time-machine = "^2.0.1"
 pdbpp = "^0.10.2"
+Faker = "^8.1.0"
 
 
 [build-system]
@@ -47,7 +48,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.taskipy.tasks]
 server = "uvicorn main:app --port 8060 --reload"
-test = "RUNNING_TESTS=1 python tests/prepare_db.py && RUNNING_TESTS=1 coverage run -m ward"
+test = "RUNNING_TESTS=1 python scripts/prepare_db.py && RUNNING_TESTS=1 coverage run -m ward"
 "test:coverage" = "task test || coverage xml -i && coverage xml -i"
 "test:debug" = "task test --no-capture-output"
 migrate = "alembic upgrade head"

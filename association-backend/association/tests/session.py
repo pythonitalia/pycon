@@ -1,46 +1,21 @@
-# import logging
-# from unittest.mock import patch
+from sqlalchemy.engine import create_engine
+from ward import fixture
 
-# from ward import fixture
+from association.settings import DATABASE_URL
+from database.db import database, metadata
 
-# from association.db import get_engine, get_session
-# from association.domain.entities.subscriptions import mapper_registry
+engine = create_engine(DATABASE_URL)
 
-# logger = logging.getLogger(__name__)
-# engine = get_engine(echo=False)
-# test_session = get_session(engine)
+_DB_CONNECTED = False
 
 
-# @fixture
-# async def db():
-#     with patch("main.get_session", return_value=test_session):
-#         yield test_session
+@fixture
+async def db():
+    global _DB_CONNECTED
 
-#     await test_session.rollback()
-#     logger.debug("rolling back after unit-test done")
+    if not _DB_CONNECTED:
+        await database.connect()
+        _DB_CONNECTED = True
 
-
-# @fixture
-# async def second_session():
-#     return get_session(engine)
-
-
-# @fixture
-# async def cleanup_db():
-#     """
-#     TODO Investigate if this should maybe be the default,
-#         instead of using `rollback` :)
-
-#     Needed only in tests where you plan on calling
-#     `.commit()` to make sure the entire DB integration
-#     works. As we cannot rollback committed changes
-#     this fixture will truncate all database after executing
-#     the test it's used in
-#     """
-#     yield None
-
-#     metadata = mapper_registry.metadata
-
-#     async with engine.begin() as connection:
-#         for table in metadata.sorted_tables:
-#             await connection.execute(table.delete())
+    metadata.drop_all(engine)
+    metadata.create_all(engine)

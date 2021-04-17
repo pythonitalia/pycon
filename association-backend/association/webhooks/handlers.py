@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 
 from association_membership.domain.entities import InvoiceStatus, SubscriptionInvoice
 from association_membership.domain.repository import AssociationMembershipRepository
@@ -14,14 +14,12 @@ async def handle_invoice_paid(event):
     stripe_subscription_id = invoice.subscription
 
     customers_repository = CustomersRepository()
-    customer = await customers_repository.get_customer_from_stripe_customer_id(
-        stripe_customer_id
-    )
+    customer = await customers_repository.get_for_stripe_customer_id(stripe_customer_id)
 
     if not customer:
         logger.error(
-            "Unable to process stripe event invoice paid because Stripe Customer %s"
-            " has not associated Customer locally",
+            "Unable to process stripe event invoice paid because stripe_customer_id=%s"
+            " doesn't have an associated Customer locally",
             stripe_customer_id,
         )
         return
@@ -40,21 +38,18 @@ async def handle_invoice_paid(event):
     subscription.add_invoice(
         SubscriptionInvoice(
             status=InvoiceStatus(invoice.status),
-            payment_date=datetime.fromtimestamp(invoice.status_transitions.paid_at),
-            period_start=datetime.fromtimestamp(invoice_period.start),
-            period_end=datetime.fromtimestamp(invoice_period.end),
+            subscription=subscription,
+            payment_date=datetime.fromtimestamp(
+                invoice.status_transitions.paid_at, tz=timezone.utc
+            ),
+            period_start=datetime.fromtimestamp(invoice_period.start, tz=timezone.utc),
+            period_end=datetime.fromtimestamp(invoice_period.end, tz=timezone.utc),
             stripe_invoice_id=invoice.id,
             invoice_pdf=invoice.invoice_pdf,
         )
     )
     subscription.mark_as_active()
     await membership_repository.save_subscription(subscription)
-
-
-async def handle_invoice_payment_failed(event):
-    print("received payment failed")
-    # Called when the user subscription fails to renew
-    pass
 
 
 async def handle_customer_subscription_deleted(event):
@@ -82,8 +77,6 @@ async def handle_customer_subscription_deleted(event):
 
 
 HANDLERS = {
-    # "checkout.session.completed": handle_checkout_session_completed,
     "customer.subscription.deleted": handle_customer_subscription_deleted,
     "invoice.paid": handle_invoice_paid,
-    "invoice.payment_failed": handle_invoice_payment_failed,
 }

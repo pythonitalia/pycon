@@ -11,7 +11,6 @@ from customers.domain.repository import CustomersRepository
 @dataclass
 class Context:
     request: typing.Union[Request, WebSocket]
-    session: typing.Any
 
     @property
     def association_repository(self) -> AssociationMembershipRepository:
