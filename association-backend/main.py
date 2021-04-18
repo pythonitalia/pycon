@@ -29,9 +29,11 @@ app = Starlette(
 
 @app.on_event("startup")
 async def startup():
-    await database.connect()
+    if not database.is_connected:
+        await database.connect()
 
 
 @app.on_event("shutdown")
 async def shutdown():
-    await database.disconnect()
+    if database.is_connected:
+        await database.disconnect()
