@@ -19,5 +19,4 @@ class GraphQL(BaseGraphQL):
     async def get_context(
         self, request: Union[Request, WebSocket], response: Optional[Response] = None
     ) -> Context:
-        # return Context(request=request, session=request.state.session)
-        return Context(request=request, session=None)
+        return Context(request=request)

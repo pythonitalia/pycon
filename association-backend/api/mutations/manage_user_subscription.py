@@ -5,14 +5,14 @@ from pythonit_toolkit.api.permissions import IsAuthenticated
 from strawberry.types import Info
 
 from api.context import Context
-from association_membership.domain.exceptions import CustomerNotAvailable
+from association_membership.domain import exceptions
 from association_membership.domain.services.manage_user_association_subscription import (
     manage_user_association_subscription as service_manage_user_association_subscription,
 )
 
 
 @strawberry.type
-class CustomerNotAvailableError:
+class CustomerNotAvailable:
     message: str = "Customer not available"
 
 
@@ -22,7 +22,7 @@ class CustomerPortalResponse:
 
 
 CustomerPortalResult = strawberry.union(
-    "CustomerPortalResult", (CustomerPortalResponse, CustomerNotAvailableError)
+    "CustomerPortalResult", (CustomerPortalResponse, CustomerNotAvailable)
 )
 
 
@@ -34,5 +34,5 @@ async def manage_user_subscription(info: Info[Context, Any]) -> CustomerPortalRe
             customers_repository=info.context.customers_repository,
         )
         return CustomerPortalResponse(billing_portal_url=billing_portal_url)
-    except CustomerNotAvailable:
-        return CustomerNotAvailableError()
+    except (exceptions.CustomerNotAvailable, exceptions.NoSubscriptionAvailable):
+        return CustomerNotAvailable()

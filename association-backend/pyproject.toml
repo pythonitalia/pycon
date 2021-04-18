@@ -23,7 +23,7 @@ psycopg2 = "^2.8.6"
 time-machine = "^2.1.0"
 python-dateutil = "^2.8.1"
 Jinja2 = "^2.11.3"
-pythonit-toolkit = "^0.1.39"
+pythonit-toolkit = "^0.1.41"
 ormar = "^0.10.3"
 
 

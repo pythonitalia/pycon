@@ -14,7 +14,12 @@ async def db():
     global _DB_CONNECTED
 
     if not _DB_CONNECTED:
-        await database.connect()
+        try:
+            await database.connect()
+        except AssertionError:
+            # If already connected, go ahead
+            pass
+
         _DB_CONNECTED = True
 
     metadata.drop_all(engine)

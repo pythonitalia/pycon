@@ -7,14 +7,14 @@ from pythonit_toolkit.api.permissions import IsAuthenticated
 from strawberry.types import Info
 
 from api.context import Context
-from association_membership.domain.exceptions import AlreadySubscribed
+from association_membership.domain import exceptions
 from association_membership.domain.services.subscribe_user_to_association import (
     subscribe_user_to_association as service_subscribe_user_to_association,
 )
 
 
 @strawberry.type
-class AlreadySubscribedError:
+class AlreadySubscribed:
     message: str = "You are already subscribed"
 
 
@@ -33,7 +33,7 @@ SubscribeUserResult = strawberry.union(
     "SubscribeUserResult",
     (
         CheckoutSession,
-        AlreadySubscribedError,
+        AlreadySubscribed,
     ),
 )
 
@@ -49,5 +49,5 @@ async def subscribe_user_to_association(
             association_repository=info.context.association_repository,
         )
         return CheckoutSession.from_domain(checkout_session_id)
-    except AlreadySubscribed:
-        return AlreadySubscribedError()
+    except exceptions.AlreadySubscribed:
+        return AlreadySubscribed()

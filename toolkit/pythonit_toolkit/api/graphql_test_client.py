@@ -1,5 +1,6 @@
 import json
 import logging
+from collections import namedtuple
 from dataclasses import dataclass
 from typing import Any, Dict, Optional
 
@@ -10,6 +11,9 @@ from pythonit_toolkit.pastaporto.test import (
 )
 
 logger = logging.getLogger(__name__)
+
+
+SimulatedUser = namedtuple("User", ["id", "email", "is_staff"])
 
 
 @dataclass
@@ -63,7 +67,7 @@ class GraphQLClient:
         data = json.loads(resp.content.decode())
         return Response(errors=data.get("errors"), data=data.get("data"))
 
-    def force_login(self, user):
+    def force_login(self, user: SimulatedUser):
         self.pastaporto_token = fake_pastaporto_token_for_user(
             {"id": user.id, "email": user.email},
             str(self._pastaporto_secret),
