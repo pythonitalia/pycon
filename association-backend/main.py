@@ -4,10 +4,10 @@ from pythonit_toolkit.starlette_backend.middleware import pastaporto_auth_middle
 from starlette.applications import Starlette
 from starlette.routing import Route
 
-from api.views import GraphQL
-from association.settings import DEBUG, PASTAPORTO_SECRET
-from database.db import database
-from webhooks.views import stripe_webhook
+from src.api.views import GraphQL
+from src.association.settings import DEBUG, PASTAPORTO_SECRET
+from src.database.db import database
+from src.webhooks.views import stripe_webhook
 
 logging.basicConfig(level=logging.INFO)
 

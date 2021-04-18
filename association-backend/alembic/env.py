@@ -6,11 +6,11 @@ from alembic import context
 
 # Import models here
 # Maybe improve this?
-from association_membership.domain.entities import *
-from customers.domain.entities import *
+from src.association_membership.domain.entities import *
+from src.customers.domain.entities import *
 
-from database.db import metadata
-from association.settings import DATABASE_URL
+from src.database.db import metadata
+from src.association.settings import DATABASE_URL
 from sqlalchemy import engine_from_config, pool
 
 sys.path.insert(0, os.getcwd())

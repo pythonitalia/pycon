@@ -1,4 +1,5 @@
 # isort: off
+# flake8: noqa
 import asyncio
 import os
 import sys
