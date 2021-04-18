@@ -33,7 +33,7 @@ const BackgroundWrapper: React.FC<BackgroundWrapperProps> = ({
   return (
     <div
       className={classnames(
-        "relative bg-cover bg-center bg-local bg-no-repeat h-screen",
+        "relative bg-cover bg-center bg-local bg-no-repeat h-screen flex items-center justify-center",
         backgroundImageClass,
       )}
     >
@@ -46,10 +46,8 @@ const BackgroundWrapper: React.FC<BackgroundWrapperProps> = ({
         ></div>
       )}
 
-      <div className="absolute top-2/4 left-2/4 transform -translate-x-1/2 -translate-y-1/2">
-        <div className="max-w-4xl m-auto flex content-center text-center  ">
-          <div className="content-start z-10 top-3 ">{children}</div>
-        </div>
+      <div className="flex content-center max-w-4xl px-5 m-auto text-center">
+        <div className="z-10 content-start top-3">{children}</div>
       </div>
     </div>
   );
@@ -62,13 +60,13 @@ const InnerContent: React.FC<InnerContentProps> = ({
   children,
 }) => {
   return (
-    <div className={classnames("bg-transparet")}>
-      <div className="max-w-7xl mx-auto">
+    <div className={classnames("bg-transparent")}>
+      <div className="max-w-full mx-auto md:max-w-xl">
         <div className="text-center">
           {title && (
             <p
               className={classnames(
-                "my-4 text-3xl leading-8 font-extrabold tracking-tight  sm:text-4xl",
+                "my-4 text-3xl leading-8 font-extrabold tracking-tight sm:text-4xl",
                 {
                   "text-gray-900": textTheme === "black",
                   "text-white": textTheme === "white",
@@ -79,7 +77,7 @@ const InnerContent: React.FC<InnerContentProps> = ({
             </p>
           )}
           {subTitle && (
-            <p className="mb-4 max-w-2xl text-xl text-gray-500 mx-auto">
+            <p className="max-w-2xl mx-auto mb-4 text-xl text-gray-500">
               {subTitle}
             </p>
           )}

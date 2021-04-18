@@ -15,7 +15,7 @@ const Modal: React.FC<ModalProps> = ({
   return (
     <div
       className={classnames(
-        "fixed z-10 inset-0 overflow-y-auto",
+        "fixed z-20 inset-0 overflow-y-auto",
         { hidden: !showModal },
         className,
       )}
@@ -25,13 +25,13 @@ const Modal: React.FC<ModalProps> = ({
     >
       <div className="flex items-center justify-center min-h-screen px-4 text-center">
         <div
-          className="fixed inset-0 bg-gray-900 bg-opacity-75 transition-opacity"
+          className="fixed inset-0 transition-opacity bg-gray-900 bg-opacity-75"
           aria-hidden="true"
           onClick={(e) => closeModalHandler?.(e)}
         />
-        <div className="relative max-w-sm w-full mx-auto bg-white overflow-hidden shadow-xl">
+        <div className="relative w-full max-w-sm mx-auto overflow-hidden bg-white shadow-xl">
           <div
-            className="py-3 bg-gray-100 cursor-pointer	"
+            className="py-3 bg-gray-100 cursor-pointer "
             onClick={(e) => closeModalHandler?.(e)}
           >
             Chiudi
