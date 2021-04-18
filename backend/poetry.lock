@@ -425,7 +425,7 @@ Django = ">=2.0.1"
 
 [[package]]
 name = "django-ordered-model"
-version = "3.3.0"
+version = "3.4.1"
 description = "Allows Django models to be ordered and provides a simple admin interface for reordering them."
 category = "main"
 optional = false
@@ -1464,7 +1464,7 @@ testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "20539497860c6dbd89456503cf2ece1b3379c292fdf5ecb5291fd40394578cb6"
+content-hash = "7669881b47e28df6cf7b9ae17bb022976a54ef880dc91eb12c483a5793e9f565"
 
 [metadata.files]
 amqp = [
@@ -1688,8 +1688,8 @@ django-model-utils = [
     {file = "django_model_utils-4.1.1-py3-none-any.whl", hash = "sha256:ef7c440024e797796a3811432abdd2be8b5225ae64ef346f8bfc6de7d8e5d73c"},
 ]
 django-ordered-model = [
-    {file = "django-ordered-model-3.3.0.tar.gz", hash = "sha256:abf0d963f7e607a994baf6bc300e50af647b3d243c3e592c6cc8f8b924b6d427"},
-    {file = "django_ordered_model-3.3.0-py3-none-any.whl", hash = "sha256:0931f498008f91a00a32c4e0ae08a662ef608a1092bf6e6ec9af9b1a83f08acf"},
+    {file = "django-ordered-model-3.4.1.tar.gz", hash = "sha256:d867166ed4dd12501139e119cbbc5b4d19798a3e72740aef0af4879ba97102cf"},
+    {file = "django_ordered_model-3.4.1-py3-none-any.whl", hash = "sha256:29af6624cf3505daaf0df00e2df1d0726dd777b95e08f304d5ad0264092aa934"},
 ]
 django-queryinspect = [
     {file = "django-queryinspect-1.1.0.tar.gz", hash = "sha256:3dc7e60bf1b382e6333d4fe09d79ec0eee85204bedc26f59d9164117ae0ba3aa"},
