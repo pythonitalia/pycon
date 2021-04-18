@@ -574,7 +574,7 @@ six = ">=1.4.0"
 
 [[package]]
 name = "pythonit-toolkit"
-version = "0.1.41"
+version = "0.1.44"
 description = ""
 category = "main"
 optional = false
@@ -704,7 +704,7 @@ full = ["aiofiles", "graphene", "itsdangerous", "jinja2", "python-multipart", "p
 
 [[package]]
 name = "strawberry-graphql"
-version = "0.52.0"
+version = "0.57.1"
 description = "A library for creating GraphQL APIs"
 category = "main"
 optional = false
@@ -863,7 +863,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "57ff4d1397bda32c64051b69668e7dd87686909d0b598b640199af9f080521f5"
+content-hash = "a14aeaa89a798e92a76ff00fa13d9e8f58eb8d55429b79a52da8bc1fe3d57213"
 
 [metadata.files]
 alembic = [
@@ -1252,8 +1252,8 @@ python-multipart = [
     {file = "python-multipart-0.0.5.tar.gz", hash = "sha256:f7bb5f611fc600d15fa47b3974c8aa16e93724513b49b5f95c81e6624c83fa43"},
 ]
 pythonit-toolkit = [
-    {file = "pythonit-toolkit-0.1.41.tar.gz", hash = "sha256:f38e200663862ff9e683b1d9a2c323fed78d8251354c8aad43e90176774172b7"},
-    {file = "pythonit_toolkit-0.1.41-py3-none-any.whl", hash = "sha256:68432ba2ae6102a03efded29c93cedb967a41a4160aa34ccc09ccf7b007a5475"},
+    {file = "pythonit-toolkit-0.1.44.tar.gz", hash = "sha256:d11e56872da3f862f92cc403f881efedacd1fcd1f1154e5e19e3452f14b53653"},
+    {file = "pythonit_toolkit-0.1.44-py3-none-any.whl", hash = "sha256:66efe84820ecd2c424470abbe9febf872d9c4f6805877adb8d48069c7143ab45"},
 ]
 requests = [
     {file = "requests-2.25.1-py2.py3-none-any.whl", hash = "sha256:c210084e36a42ae6b9219e00e48287def368a26d03a048ddad7bfee44f75871e"},
@@ -1328,8 +1328,8 @@ starlette = [
     {file = "starlette-0.14.2.tar.gz", hash = "sha256:7d49f4a27f8742262ef1470608c59ddbc66baf37c148e938c7038e6bc7a998aa"},
 ]
 strawberry-graphql = [
-    {file = "strawberry-graphql-0.52.0.tar.gz", hash = "sha256:29cab4967f0ca4a3ea73578ae0f1b2d6587c834ac827e3f7d7fdc1e3b27d7868"},
-    {file = "strawberry_graphql-0.52.0-py3-none-any.whl", hash = "sha256:41698acc82cba248b17e154c3e58d8035b08f47523695e54ef1f11a5f33a86f2"},
+    {file = "strawberry-graphql-0.57.1.tar.gz", hash = "sha256:65a670df6b16fbe036047fce55d41bd38d4bef2d72bb2da709ecd9ded8621454"},
+    {file = "strawberry_graphql-0.57.1-py3-none-any.whl", hash = "sha256:480b4014bdb6727216decdf56cc4366abfbadfaad605768747162935aa959b82"},
 ]
 stripe = [
     {file = "stripe-2.56.0-py2.py3-none-any.whl", hash = "sha256:6c685eeadf9e3608315b6d84b4f5f2da2909179b65633ce20f296be22ed21a98"},

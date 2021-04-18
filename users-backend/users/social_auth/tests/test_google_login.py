@@ -1,10 +1,10 @@
 from typing import cast
 from unittest.mock import patch
 
-from pythonit_toolkit.api.test_client import testclient
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy.sql.expression import select
 from users.domain.entities import User
+from users.tests.api import testclient
 from users.tests.factories import user_factory
 from users.tests.session import db
 from ward import test

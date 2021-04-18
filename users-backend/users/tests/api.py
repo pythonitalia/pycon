@@ -1,7 +1,16 @@
+from asgi_lifespan import LifespanManager
+from httpx import AsyncClient
+from main import app
 from pythonit_toolkit.api.graphql_test_client import GraphQLClient
-from pythonit_toolkit.api.test_client import testclient
 from users.settings import PASTAPORTO_SECRET, SERVICE_TO_SERVICE_SECRET
 from ward import fixture
+
+
+@fixture
+async def testclient():
+    async with LifespanManager(app):
+        async with AsyncClient(app=app, base_url="http://testserver") as client:
+            yield client
 
 
 @fixture()

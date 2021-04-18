@@ -1,5 +1,6 @@
 from dataclasses import field as dataclasses_field
 from dataclasses import make_dataclass
+from typing import Type
 
 import pydantic
 import strawberry
@@ -8,15 +9,15 @@ from strawberry.field import StrawberryField
 from .types import FieldError
 
 
-def create_root_type(fields):
+def create_root_type(fields: list[StrawberryField]) -> Type:
     cls = make_dataclass(
         "RootType",
         fields=[
             (
-                field._field_definition.origin_name,
-                field._field_definition.type,
+                field.graphql_name,
+                field.type,
                 dataclasses_field(default=field),
-            )
+            )  # type: ignore
             for field in fields
         ],
     )

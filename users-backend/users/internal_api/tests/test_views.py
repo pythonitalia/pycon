@@ -1,7 +1,7 @@
-from pythonit_toolkit.api.test_client import testclient
 from pythonit_toolkit.headers import SERVICE_JWT_HEADER
 from pythonit_toolkit.pastaporto.test import fake_service_to_service_token
 from users.settings import SERVICE_TO_SERVICE_SECRET
+from users.tests.api import testclient
 from ward import test
 from ward.testing import each
 
