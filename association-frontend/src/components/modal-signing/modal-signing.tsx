@@ -81,7 +81,7 @@ const ModalSigning: React.FC<ModalSigningProps> = ({
       closeModalHandler={closeModalHandler}
     >
       <h3
-        className="my-6 text-3xl text-center font-extrabold text-gray-900"
+        className="my-6 text-3xl font-extrabold text-center text-gray-900"
         id="modal-title"
       >
         {isLoggingIn && "Accedi al tuo account Python Italia"}
@@ -89,12 +89,12 @@ const ModalSigning: React.FC<ModalSigningProps> = ({
       </h3>
 
       <form className="flex flex-col max-w-sm mx-auto" onSubmit={handleSubmit}>
-        <div className="mb-5 flex flex-col">
+        <div className="flex flex-col mb-5">
           <Input required placeholder="Email" {...email("email")} />
           <div className="place-self-start">
             <a
               href="#"
-              className="underline mt-1 block text-bluecyan hover:text-yellow "
+              className="block mt-1 underline text-bluecyan hover:text-yellow "
               onClick={(e) => {
                 e.preventDefault();
                 setIsLoggingIn(!isLoggingIn);
@@ -112,18 +112,18 @@ const ModalSigning: React.FC<ModalSigningProps> = ({
             required
             {...password("password")}
           />
-          <div
+          {/*<div
             className={classnames("place-self-start", {
               "opacity-0": !formState.values.email,
             })}
           >
             <a
               href="#"
-              className="underline text-left mt-1 block text-bluecyan hover:text-yellow"
+              className="block mt-1 text-left underline text-bluecyan hover:text-yellow"
             >
               Hai dimenticato la password?
             </a>
-          </div>
+          </div>*/}
         </div>
 
         {isRunningMutation && <Alert variant={Variant.INFO}>Please wait</Alert>}
@@ -133,7 +133,7 @@ const ModalSigning: React.FC<ModalSigningProps> = ({
           </Alert>
         )}
 
-        <div className="my-7 flex justify-center flex-grow space-x-3">
+        <div className="flex justify-center flex-grow space-x-3 my-7">
           <Button text={isLoggingIn ? "Accedi" : "Registrati"} />
         </div>
       </form>
