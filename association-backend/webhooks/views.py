@@ -4,13 +4,15 @@ import stripe
 from starlette.responses import Response
 
 from association.settings import STRIPE_WEBHOOK_SECRET
-from association.webhooks.handlers import HANDLERS
+from webhooks.exceptions import WebhookError
+from webhooks.handlers import HANDLERS
 
 logger = logging.getLogger(__file__)
 
 
 async def stripe_webhook(request):
     payload = await request.body()
+
     try:
         signature = request.headers.get("stripe-signature")
         event = stripe.Webhook.construct_event(
@@ -33,5 +35,11 @@ async def stripe_webhook(request):
         return Response(None, 204)
 
     logger.info("Running handler for stripe_event=%s", event_type)
-    await handler(event)
+    try:
+        await handler(event)
+    except WebhookError as e:
+        logger.exception(
+            "Known error while handling stripe_event=%s", event_type, exc_info=e
+        )
+
     return Response(None, 200)

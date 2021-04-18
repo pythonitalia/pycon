@@ -6,9 +6,8 @@ from starlette.routing import Route
 
 from api.views import GraphQL
 from association.settings import DEBUG, PASTAPORTO_SECRET
-from association.stripe import views as stripe_views
-from association.webhooks.views import stripe_webhook
 from database.db import database
+from webhooks.views import stripe_webhook
 
 logging.basicConfig(level=logging.INFO)
 
@@ -18,8 +17,6 @@ app = Starlette(
     routes=[
         Route("/graphql", GraphQL()),
         Route("/stripe-webhook", stripe_webhook, methods=["POST"]),
-        # TODO DELETE THESE URLS
-        Route("/stripe/do-payment", stripe_views.PaymentView),
     ],
     middleware=[
         pastaporto_auth_middleware(PASTAPORTO_SECRET),

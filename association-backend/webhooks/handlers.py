@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 from association_membership.domain.entities import InvoiceStatus, SubscriptionInvoice
 from association_membership.domain.repository import AssociationMembershipRepository
 from customers.domain.repository import CustomersRepository
+from webhooks.exceptions import NoCustomerFoundForEvent, NoSubscriptionFoundForEvent
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +23,7 @@ async def handle_invoice_paid(event):
             " doesn't have an associated Customer locally",
             stripe_customer_id,
         )
-        return
+        raise NoCustomerFoundForEvent()
 
     membership_repository = AssociationMembershipRepository()
     subscription = await membership_repository.get_or_create_subscription(
@@ -64,7 +65,7 @@ async def handle_customer_subscription_deleted(event):
             " database!",
             stripe_subscription.id,
         )
-        return
+        raise NoSubscriptionFoundForEvent()
 
     subscription.mark_as_canceled()
     await membership_repository.save_subscription(subscription)
