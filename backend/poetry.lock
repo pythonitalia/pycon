@@ -323,7 +323,7 @@ wcwidth = ">=0.1.4"
 
 [[package]]
 name = "dal-admin-filters"
-version = "0.3.3"
+version = "1.0.2"
 description = "Django autocomplete light filters for django admin"
 category = "main"
 optional = false
@@ -1464,7 +1464,7 @@ testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "20539497860c6dbd89456503cf2ece1b3379c292fdf5ecb5291fd40394578cb6"
+content-hash = "00eaef8113183a04e6f97b5aff5c40837e31ac6b9147cc16e8d946d6153b7bf0"
 
 [metadata.files]
 amqp = [
@@ -1661,7 +1661,9 @@ curtsies = [
     {file = "curtsies-0.3.4.tar.gz", hash = "sha256:4ca543998d8bbba7185db099f8b7bb30baeb47426f7ac1a271e4d9ca8bbb2b05"},
 ]
 dal-admin-filters = [
-    {file = "dal_admin_filters-0.3.3-py3-none-any.whl", hash = "sha256:b80b80e6088f3d047f92fa596e9c6c1d1ec76a6383dff24eb1dfac2dbccecfac"},
+    {file = "dal_admin_filters-1.0.2-py2-none-any.whl", hash = "sha256:891183351f86cc50d4ee67e945bd9e9bb04e250e876ceefe7d2ea358f8fb32d3"},
+    {file = "dal_admin_filters-1.0.2-py3-none-any.whl", hash = "sha256:a1010118c328ac971fc1faffbcc52e9d7a00de56b0ff31c2b7c2486743e06121"},
+    {file = "dal_admin_filters-1.0.2.tar.gz", hash = "sha256:14bb55eb90c28be4de9082df05edb081a7a2ddcd622757144375ff8b57942cf6"},
 ]
 defusedxml = [
     {file = "defusedxml-0.7.0rc1-py2.py3-none-any.whl", hash = "sha256:8ede8ba04cf5bf7999e1492fa77df545db83717f52c5eab625f97228ebd539bf"},

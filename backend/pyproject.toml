@@ -40,7 +40,7 @@ django-ses = "^1.0.3"
 hashids = "^1.2.0"
 django-admin-views = {git = "https://github.com/estyxx/django-admin-views.git"}
 django-autocomplete-light = "3.5.1"
-dal_admin_filters = "^0.3.3"
+dal_admin_filters = "^1.0.2"
 django-queryinspect = "^1.1.0"
 lxml = "^4.5.0"
 unidecode = "^1.1.1"
