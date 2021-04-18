@@ -42,7 +42,7 @@ django-admin-views = {git = "https://github.com/estyxx/django-admin-views.git"}
 django-autocomplete-light = "3.5.1"
 dal_admin_filters = "^0.3.3"
 django-queryinspect = "^1.1.0"
-lxml = "^4.5.0"
+lxml = "^4.6.3"
 unidecode = "^1.1.1"
 jsonschema = "^3.2.0"
 mypy_extensions = "^0.4.3"
