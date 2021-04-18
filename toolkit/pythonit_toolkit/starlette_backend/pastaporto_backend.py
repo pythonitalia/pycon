@@ -1,10 +1,9 @@
+from pythonit_toolkit.headers import PASTAPORTO_X_HEADER
 from pythonit_toolkit.pastaporto.entities import Pastaporto, RequestAuth
 from pythonit_toolkit.pastaporto.exceptions import InvalidPastaportoError
 from starlette.authentication import AuthenticationBackend, AuthenticationError
 from starlette.responses import JSONResponse
 from starlette.routing import request_response
-
-PASTAPORTO_X_HEADER = "x-pastaporto"
 
 
 def on_auth_error(request: request_response, exc: Exception):

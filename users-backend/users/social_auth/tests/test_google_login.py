@@ -1,14 +1,13 @@
 from typing import cast
 from unittest.mock import patch
 
+from pythonit_toolkit.api.test_client import testclient
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy.sql.expression import select
-from ward import test
-
 from users.domain.entities import User
-from users.tests.client import testclient
 from users.tests.factories import user_factory
 from users.tests.session import db
+from ward import test
 
 
 @test("social login creates a new account if it does not exist")

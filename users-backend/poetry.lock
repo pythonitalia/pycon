@@ -579,7 +579,7 @@ six = ">=1.4.0"
 
 [[package]]
 name = "pythonit-toolkit"
-version = "0.1.36"
+version = "0.1.39"
 description = ""
 category = "main"
 optional = false
@@ -587,10 +587,10 @@ python-versions = ">=3.9,<4.0"
 
 [package.dependencies]
 boto3 = ">=1.17.39,<2.0.0"
-pydantic = ">=1.8.1,<2.0.0"
+pydantic = "*"
 PyJWT = ">=2.0.1,<3.0.0"
 starlette = ">=0.14.2,<0.15.0"
-strawberry-graphql = ">=0.52.0,<0.53.0"
+strawberry-graphql = "*"
 
 [[package]]
 name = "requests"
@@ -858,7 +858,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "8b3213030ee25193bb68033701fa0885771b0c7d3a8d029ddc320b461136c1fb"
+content-hash = "1e36e8cf65e55e00dcf75c6ec6b825eaf12cd28e143341aeed9dbe9beb82867e"
 
 [metadata.files]
 alembic = [
@@ -1348,8 +1348,8 @@ python-multipart = [
     {file = "python-multipart-0.0.5.tar.gz", hash = "sha256:f7bb5f611fc600d15fa47b3974c8aa16e93724513b49b5f95c81e6624c83fa43"},
 ]
 pythonit-toolkit = [
-    {file = "pythonit-toolkit-0.1.36.tar.gz", hash = "sha256:2d318e9daa4529d6fa3d912bc4cafe6daa3bf168206b2aea3723f6f5ec69b314"},
-    {file = "pythonit_toolkit-0.1.36-py3-none-any.whl", hash = "sha256:20d187326de7a8aad9d0044743814cd18cd2d56bb8fad21a5652fcd0f1b4511c"},
+    {file = "pythonit-toolkit-0.1.39.tar.gz", hash = "sha256:ce87c38f97be29493f8ecc17269deb9d0ae5ae646947240a8026799b16ad0d9e"},
+    {file = "pythonit_toolkit-0.1.39-py3-none-any.whl", hash = "sha256:f153e3da80151e7fd09353fb3af65a25692cd183e415056d8c4959c1e6b215b9"},
 ]
 requests = [
     {file = "requests-2.25.1-py2.py3-none-any.whl", hash = "sha256:c210084e36a42ae6b9219e00e48287def368a26d03a048ddad7bfee44f75871e"},

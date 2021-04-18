@@ -1,8 +1,7 @@
 from asgi_lifespan import LifespanManager
 from httpx import AsyncClient
-from ward import fixture
-
 from main import app
+from ward import fixture
 
 
 @fixture

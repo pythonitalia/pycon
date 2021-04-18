@@ -3,20 +3,11 @@ import logging
 from dataclasses import dataclass
 from typing import Any, Dict, Optional
 
+from pythonit_toolkit.headers import PASTAPORTO_X_HEADER, SERVICE_JWT_HEADER
 from pythonit_toolkit.pastaporto.test import (
     fake_pastaporto_token_for_user,
     fake_service_to_service_token,
 )
-from pythonit_toolkit.starlette_backend.pastaporto_backend import PASTAPORTO_X_HEADER
-from ward import fixture
-
-from users.domain import entities
-from users.settings import (
-    PASTAPORTO_SECRET,
-    SERVICE_JWT_HEADER,
-    SERVICE_TO_SERVICE_SECRET,
-)
-from users.tests.client import testclient
 
 logger = logging.getLogger(__name__)
 
@@ -29,9 +20,17 @@ class Response:
 
 class GraphQLClient:
     def __init__(
-        self, client, admin_endpoint: bool = False, internal_api_endpoint: bool = False
+        self,
+        client,
+        *,
+        pastaporto_secret: Optional[str] = None,
+        service_to_service_secret: Optional[str] = None,
+        admin_endpoint: bool = False,
+        internal_api_endpoint: bool = False
     ):
         self._client = client
+        self._pastaporto_secret = pastaporto_secret
+        self._service_to_service_secret = service_to_service_secret
         self.pastaporto_token = None
         self.service_to_service_token = None
 
@@ -64,32 +63,16 @@ class GraphQLClient:
         data = json.loads(resp.content.decode())
         return Response(errors=data.get("errors"), data=data.get("data"))
 
-    def force_login(self, user: entities.User):
+    def force_login(self, user):
         self.pastaporto_token = fake_pastaporto_token_for_user(
             {"id": user.id, "email": user.email},
-            str(PASTAPORTO_SECRET),
+            str(self._pastaporto_secret),
             staff=user.is_staff,
         )
 
-    def force_service_login(self, key: str = SERVICE_TO_SERVICE_SECRET):
+    def force_service_login(self, key: Optional[str] = None):
         self.service_to_service_token = fake_service_to_service_token(
-            str(key), issuer="gateway", audience="users-service"
+            str(key or self._service_to_service_secret),
+            issuer="gateway",
+            audience="users-service",
         )
-
-
-@fixture()
-async def graphql_client(testclient=testclient):
-    async with testclient:
-        yield GraphQLClient(testclient)
-
-
-@fixture()
-async def admin_graphql_client(testclient=testclient):
-    async with testclient:
-        yield GraphQLClient(testclient, admin_endpoint=True)
-
-
-@fixture()
-async def internalapi_graphql_client(testclient=testclient):
-    async with testclient:
-        yield GraphQLClient(testclient, internal_api_endpoint=True)

@@ -1,8 +1,7 @@
-from ward import test
-
+from users.tests.api import admin_graphql_client
 from users.tests.factories import user_factory, user_factory_batch
-from users.tests.graphql_client import admin_graphql_client
 from users.tests.session import db
+from ward import test
 
 
 @test("search users by email")

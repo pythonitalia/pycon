@@ -1,8 +1,8 @@
 import jwt
+from pythonit_toolkit.headers import SERVICE_JWT_HEADER
 from pythonit_toolkit.pastaporto.tokens import decode_service_to_service_token
 from starlette.requests import Request
-
-from users.settings import SERVICE_JWT_HEADER, SERVICE_TO_SERVICE_SECRET
+from users.settings import SERVICE_TO_SERVICE_SECRET
 
 
 def is_service(request: Request) -> bool:
