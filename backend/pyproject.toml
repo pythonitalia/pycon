@@ -2,7 +2,7 @@
 name = "backend"
 version = "0.1.0"
 description = "PyCon Italia backend"
-authors = ["Your Name <you@example.com>"]
+authors = ["Python Italia"]
 license = "MIT"
 
 [tool.poetry.dependencies]

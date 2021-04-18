@@ -2,7 +2,7 @@
 name = "users"
 version = "0.1.0"
 description = ""
-authors = ["Marco Acierno <marcoaciernoemail@gmail.com>"]
+authors = ["Python Italia"]
 
 [tool.poetry.dependencies]
 python = "^3.9"

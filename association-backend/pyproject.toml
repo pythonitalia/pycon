@@ -2,7 +2,7 @@
 name = "association"
 version = "0.1.0"
 description = "Association Backend Service"
-authors = ["Gaetano D'Onghia <gaetanodonghia@gmail.com>"]
+authors = ["Python Italia"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
@@ -22,7 +22,6 @@ websockets = "^8.1"
 psycopg2 = "^2.8.6"
 time-machine = "^2.1.0"
 python-dateutil = "^2.8.1"
-Jinja2 = "^2.11.3"
 pythonit-toolkit = "^0.1.44"
 ormar = "^0.10.3"
 
