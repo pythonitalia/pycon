@@ -20,7 +20,7 @@
     "react": "17.0.1",
     "react-dom": "17.0.1",
     "react-use-form-state": "^0.13.2",
-    "tailwindcss": "^2.0.4",
+    "tailwindcss": "^2.1.0",
     "urql": "^2.0.1"
   },
   "devDependencies": {
@@ -31,7 +31,6 @@
     "@graphql-codegen/typescript-operations": "^1.17.14",
     "@graphql-codegen/typescript-react-apollo": "^2.2.1",
     "@graphql-codegen/typescript-urql": "^2.0.3",
-    "@tailwindcss/jit": "^0.1.18",
     "@trivago/prettier-plugin-sort-imports": "^1.4.1",
     "@types/jest": "^26.0.20",
     "@types/node": "^14.14.22",
