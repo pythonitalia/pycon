@@ -78,9 +78,7 @@ async def _(graphql_client=graphql_client, db=db):
 
     response = await graphql_client.query(query, variables={})
 
-    assert (
-        response.data["manageUserSubscription"]["__typename"] == "CustomerNotAvailable"
-    )
+    assert response.data["manageUserSubscription"]["__typename"] == "NoSubscription"
 
 
 @test("Cannot manage subscription if all subscriptions are canceled")
@@ -99,6 +97,4 @@ async def _(graphql_client=graphql_client, db=db):
 
     response = await graphql_client.query(query, variables={})
 
-    assert (
-        response.data["manageUserSubscription"]["__typename"] == "CustomerNotAvailable"
-    )
+    assert response.data["manageUserSubscription"]["__typename"] == "NoSubscription"

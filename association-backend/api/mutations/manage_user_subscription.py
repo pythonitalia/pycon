@@ -12,8 +12,8 @@ from association_membership.domain.services.manage_user_association_subscription
 
 
 @strawberry.type
-class CustomerNotAvailable:
-    message: str = "Customer not available"
+class NoSubscription:
+    message: str = "No subscription to manage"
 
 
 @strawberry.type
@@ -22,7 +22,7 @@ class CustomerPortalResponse:
 
 
 CustomerPortalResult = strawberry.union(
-    "CustomerPortalResult", (CustomerPortalResponse, CustomerNotAvailable)
+    "CustomerPortalResult", (CustomerPortalResponse, NoSubscription)
 )
 
 
@@ -35,4 +35,4 @@ async def manage_user_subscription(info: Info[Context, Any]) -> CustomerPortalRe
         )
         return CustomerPortalResponse(billing_portal_url=billing_portal_url)
     except (exceptions.CustomerNotAvailable, exceptions.NoSubscriptionAvailable):
-        return CustomerNotAvailable()
+        return NoSubscription()
