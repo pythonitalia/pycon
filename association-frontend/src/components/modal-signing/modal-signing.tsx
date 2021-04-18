@@ -126,7 +126,7 @@ const ModalSigning: React.FC<ModalSigningProps> = ({
           </div>*/}
         </div>
 
-        {isRunningMutation && <Alert variant={Variant.INFO}>Please wait</Alert>}
+        {isRunningMutation && <Alert variant={Variant.INFO}>Caricamento</Alert>}
         {operationFailed && mutationResultTypename && (
           <Alert variant={Variant.ERROR}>
             {getMessageForError(mutationResultTypename)}

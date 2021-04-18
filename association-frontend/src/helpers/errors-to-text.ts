@@ -3,9 +3,9 @@ const ERROR_TYPES = ["WrongEmailOrPassword"];
 export const getMessageForError = (error: string) => {
   switch (error) {
     case "WrongEmailOrPassword":
-      return "Your email or password are incorrect";
+      return "La tua email o password non sono corretti";
     default:
-      return "Something went wrong! Please try again";
+      return "Qualcosa è andato storto, prova di nuovo";
   }
 };
 
