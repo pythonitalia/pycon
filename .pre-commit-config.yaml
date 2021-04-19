@@ -45,6 +45,6 @@ repos:
           - id: eslint
             name: eslint
             types: [file]
-            files: 'frontend/.*\.(js|jsx|ts|tsx)$'
-            entry: bash -c 'cd frontend && yarn precommit-lint "$@"'
+            files: '^frontend/.*\.(js|jsx|ts|tsx)$'
+            entry: bash -c 'cd frontend && yarn run eslint "$@"'
             language: system

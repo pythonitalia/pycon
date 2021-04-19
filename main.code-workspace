@@ -17,6 +17,10 @@
       "path": "users-backend"
     },
     {
+      "name": "🧩 Association Frontend",
+      "path": "association-frontend"
+    },
+    {
       "name": "👻 Association Admin",
       "path": "association-admin"
     },
