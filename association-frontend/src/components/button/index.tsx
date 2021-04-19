@@ -10,7 +10,7 @@ type ButtonProps = {
   onClick?: (...args: any[]) => void;
 };
 
-const Button: React.FC<ButtonProps> = ({
+export const Button: React.FC<ButtonProps> = ({
   type,
   link,
   text,
@@ -38,4 +38,3 @@ const Button: React.FC<ButtonProps> = ({
     </button>
   );
 };
-export default Button;

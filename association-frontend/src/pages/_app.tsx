@@ -5,7 +5,7 @@ import { withUrqlClient } from "next-urql";
 import Head from "next/head";
 import { Router } from "next/router";
 
-import Hero from "~/components/hero/hero";
+import { Hero } from "~/components/hero";
 import { UserProvider } from "~/components/user-provider";
 
 import "tailwindcss/tailwind.css";

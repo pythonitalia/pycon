@@ -1,6 +1,6 @@
-import SectionItem from "~/components/section-item/section-item";
+import { SectionItem } from "~/components/section-item";
 
-const SectionPythonIta = () => {
+export const SectionPythonIta = () => {
   return (
     <SectionItem
       title={"Python Italia 🐍"}
@@ -26,4 +26,3 @@ const SectionPythonIta = () => {
     </SectionItem>
   );
 };
-export default SectionPythonIta;

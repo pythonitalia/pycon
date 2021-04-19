@@ -1,7 +1,15 @@
 import React from "react";
 
-import Sections from "~/components/sections/sections";
+import { SectionJoin } from "~/components/section-join";
+import { SectionPyConIta } from "~/components/section-pycon-ita";
+import { SectionPythonIta } from "~/components/section-python-ita";
 
-export default function Home() {
-  return <Sections />;
-}
+const Home = () => (
+  <>
+    <SectionPythonIta />
+    <SectionPyConIta />
+    <SectionJoin />
+  </>
+);
+
+export default Home;

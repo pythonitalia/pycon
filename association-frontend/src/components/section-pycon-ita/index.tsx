@@ -1,10 +1,10 @@
 import React from "react";
 
-import SectionItem from "~/components/section-item/section-item";
+import { SectionItem } from "~/components/section-item";
 
-import Button from "../button/button";
+import { Button } from "../button";
 
-const SectionPyConIta = () => (
+export const SectionPyConIta = () => (
   <SectionItem
     title="PyCon Italia"
     textTheme={"white"}
@@ -25,5 +25,3 @@ const SectionPyConIta = () => (
     </p>
   </SectionItem>
 );
-
-export default SectionPyConIta;

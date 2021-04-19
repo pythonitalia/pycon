@@ -1,13 +1,12 @@
-import classnames from "classnames";
 import React, { useState } from "react";
 import { useFormState } from "react-use-form-state";
 
 import { getMessageForError, isErrorTypename } from "~/helpers/errors-to-text";
 
-import { Alert, Variant } from "../alert/alert";
-import Button from "../button/button";
-import Input from "../input/input";
-import Modal from "../modal/modal";
+import { Alert, Variant } from "../alert";
+import { Button } from "../button";
+import { Input } from "../input";
+import { Modal } from "../modal";
 import { useLoginMutation } from "./login.generated";
 import { useRegisterMutation } from "./register.generated";
 
@@ -21,7 +20,7 @@ type SigningForm = {
   password: string;
 };
 
-const ModalSigning: React.FC<ModalSigningProps> = ({
+export const ModalSigning: React.FC<ModalSigningProps> = ({
   showModal,
   closeModalHandler,
 }) => {
@@ -112,18 +111,6 @@ const ModalSigning: React.FC<ModalSigningProps> = ({
             required
             {...password("password")}
           />
-          {/*<div
-            className={classnames("place-self-start", {
-              "opacity-0": !formState.values.email,
-            })}
-          >
-            <a
-              href="#"
-              className="block mt-1 text-left underline text-bluecyan hover:text-yellow"
-            >
-              Hai dimenticato la password?
-            </a>
-          </div>*/}
         </div>
 
         {isRunningMutation && <Alert variant={Variant.INFO}>Caricamento</Alert>}
@@ -140,5 +127,3 @@ const ModalSigning: React.FC<ModalSigningProps> = ({
     </Modal>
   );
 };
-
-export default ModalSigning;

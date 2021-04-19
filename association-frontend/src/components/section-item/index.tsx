@@ -88,7 +88,7 @@ const InnerContent: React.FC<InnerContentProps> = ({
   );
 };
 
-const SectionItem: React.FC<SectionItemProps> = ({
+export const SectionItem: React.FC<SectionItemProps> = ({
   withBackground = false,
   backgroundImageClass = "bg-pycon-group",
   overlay = true,
@@ -108,4 +108,3 @@ const SectionItem: React.FC<SectionItemProps> = ({
   }
   return <InnerContent {...props} />;
 };
-export default SectionItem;

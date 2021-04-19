@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 
-import SectionItem from "~/components/section-item/section-item";
+import { SectionItem } from "~/components/section-item";
 
-import Button from "../button/button";
-import ModalSigning from "../modal-signing/modal-signing";
+import { Button } from "../button";
+import { ModalSigning } from "../modal-signing";
 
-const SectionJoin = () => {
+export const SectionJoin = () => {
   const [showModal, setShowModal] = useState(false);
   const toggleModal = () => {
     setShowModal(!showModal);
@@ -24,7 +24,7 @@ const SectionJoin = () => {
             <Button text={"Unisciti ora"} onClick={toggleModal} />
             {/* <a
             href="#"
-            className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
+            className="inline-flex items-center justify-center px-5 py-3 text-base font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700"
           >
             Crea/Entra nel tuo account
           </a> */}
@@ -34,4 +34,3 @@ const SectionJoin = () => {
     </>
   );
 };
-export default SectionJoin;
