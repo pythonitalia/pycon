@@ -1,0 +1,8 @@
+mutation manageSubscription {
+  manageUserSubscription {
+    __typename
+    ... on CustomerPortalResponse {
+      billingPortalUrl
+    }
+  }
+}

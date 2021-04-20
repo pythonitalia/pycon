@@ -54,6 +54,7 @@ export const ModalSigning: React.FC<ModalSigningProps> = ({
 
     if (result.data.register.__typename === "RegisterSuccess") {
       console.log("register success!");
+      window.dispatchEvent(new Event("userLoggedIn"));
       closeModalHandler();
     }
   };

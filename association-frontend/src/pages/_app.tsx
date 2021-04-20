@@ -9,6 +9,7 @@ import { Hero } from "~/components/hero";
 import { UserProvider } from "~/components/user-provider";
 
 import "tailwindcss/tailwind.css";
+import { StripeProvider } from "../hooks/use-stripe/index";
 
 type AuthState = {
   token?: string;
@@ -17,19 +18,21 @@ type AuthState = {
 const App = ({ Component, pageProps, resetUrqlClient }) => {
   return (
     <UserProvider resetUrqlClient={resetUrqlClient}>
-      <Head>
-        <title>Associazione Python Italia</title>
-        <link rel="icon" href="/favicon.png" />
-        <link
-          href="https://fonts.googleapis.com/css?family=Montserrat:300,700"
-          rel="stylesheet"
-        />
-      </Head>
+      <StripeProvider>
+        <Head>
+          <title>Associazione Python Italia</title>
+          <link rel="icon" href="/favicon.png" />
+          <link
+            href="https://fonts.googleapis.com/css?family=Montserrat:300,700"
+            rel="stylesheet"
+          />
+        </Head>
 
-      <Hero />
-      <main>
-        <Component {...pageProps} />
-      </main>
+        <Hero />
+        <main>
+          <Component {...pageProps} />
+        </main>
+      </StripeProvider>
     </UserProvider>
   );
 };
