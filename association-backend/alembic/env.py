@@ -2,6 +2,8 @@ import os
 import sys
 from logging.config import fileConfig
 
+sys.path.insert(0, os.getcwd())
+
 from alembic import context
 
 # Import models here
@@ -12,8 +14,6 @@ from src.customers.domain.entities import *
 from src.database.db import metadata
 from src.association.settings import DATABASE_URL
 from sqlalchemy import engine_from_config, pool
-
-sys.path.insert(0, os.getcwd())
 
 
 # this is the Alembic Config object, which provides
