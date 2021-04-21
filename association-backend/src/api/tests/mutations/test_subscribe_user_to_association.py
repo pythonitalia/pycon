@@ -27,11 +27,8 @@ async def _(graphql_client=graphql_client, db=db):
     with patch(
         "src.customers.domain.repository.stripe.checkout.Session.create",
     ) as mock_create_session, patch(
-        "src.customers.domain.repository.stripe.Customer.list"
-    ) as mock_customers_list, patch(
         "src.customers.domain.repository.stripe.Customer.create"
     ) as mock_customers_create:
-        mock_customers_list.return_value.data = []
         mock_customers_create.return_value.id = "cus_created"
         mock_create_session.return_value.id = "cs_xxx"
         response = await graphql_client.query(query, variables={})
