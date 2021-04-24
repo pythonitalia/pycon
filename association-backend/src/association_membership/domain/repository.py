@@ -65,8 +65,8 @@ class AssociationMembershipRepository:
 
     async def create_checkout_session(self, customer: Customer) -> str:
         checkout_session = stripe.checkout.Session.create(
-            success_url=f"{ASSOCIATION_FRONTEND_URL}/membership?status=success",
-            cancel_url=f"{ASSOCIATION_FRONTEND_URL}/membership?status=canceled",
+            success_url=f"{ASSOCIATION_FRONTEND_URL}#membership?status=success",
+            cancel_url=f"{ASSOCIATION_FRONTEND_URL}#membership?status=canceled",
             payment_method_types=["card"],
             mode="subscription",
             customer=customer.stripe_customer_id,
