@@ -2,13 +2,13 @@
 name = "users"
 version = "0.1.0"
 description = ""
-authors = ["Marco Acierno <marcoaciernoemail@gmail.com>"]
+authors = ["Python Italia"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
 starlette = "^0.14.1"
 uvicorn = "^0.13.3"
-strawberry-graphql = "^0.52.0"
+strawberry-graphql = "^0.57.1"
 SQLAlchemy = "1.4.2"
 alembic = "^1.5.2"
 psycopg2 = "^2.8.6"
@@ -21,7 +21,7 @@ httpx = "^0.16.1"
 Authlib = "^0.15.3"
 itsdangerous = "^1.1.0"
 mangum = "^0.10.0"
-pythonit-toolkit = "0.1.36"
+pythonit-toolkit = "^0.1.44"
 
 [tool.poetry.dev-dependencies]
 pdbpp = "^0.10.2"

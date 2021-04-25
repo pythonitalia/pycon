@@ -1,12 +1,11 @@
 import time_machine
 from sqlalchemy.sql.expression import select
-from ward import test
-
 from users.domain.entities import User
 from users.domain.repository import UsersRepository
+from users.tests.api import graphql_client
 from users.tests.factories import user_factory
-from users.tests.graphql_client import graphql_client
 from users.tests.session import db
+from ward import test
 
 
 @test("reset password")

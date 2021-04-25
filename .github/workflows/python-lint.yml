@@ -7,10 +7,16 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service: [toolkit, users-backend]
+        service:
+          - name: toolkit
+            driver: postgresql+asyncpg
+          - name: users-backend
+            driver: postgresql+asyncpg
+          - name: association-backend
+            driver: postgresql
     defaults:
       run:
-        working-directory: ./${{ matrix.service }}
+        working-directory: ./${{ matrix.service.name }}
     services:
       postgres:
         image: postgres:11.10
@@ -32,28 +38,31 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           filters: .github/file-filters.yml
       - run: pip install poetry
-        if: steps.changed.outputs.changed.${{ matrix.service }} == 'true'
+        if: steps.changed.outputs.changed.${{ matrix.service.name }} == 'true'
       - name: Set Poetry config
-        if: steps.changed.outputs.changed.${{ matrix.service }} == 'true'
+        if: steps.changed.outputs.changed.${{ matrix.service.name }} == 'true'
         run: poetry config virtualenvs.path ~/.virtualenvs
       - name: Cache Poetry
-        if: steps.changed.outputs.changed.${{ matrix.service }} == 'true'
+        if: steps.changed.outputs.changed.${{ matrix.service.name }} == 'true'
         uses: actions/cache@v1
         id: cache
         with:
           path: ~/.virtualenvs
-          key: poetry-${{ matrix.service }}-${{ hashFiles('**/poetry.lock') }}-v2
+          key: poetry-${{ matrix.service.name }}-${{ hashFiles('**/poetry.lock') }}-v2
       - name: Install deps
-        if: steps.changed.outputs.changed.${{ matrix.service }} == 'true'
+        if: steps.changed.outputs.changed.${{ matrix.service.name }} == 'true'
         run: poetry install
       - name: Unit tests
-        if: steps.changed.outputs.changed.${{ matrix.service }} == 'true'
+        if: steps.changed.outputs.changed.${{ matrix.service.name }} == 'true'
         run: poetry run task test
         env:
-          DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:${{ job.services.postgres.ports[5432] }}/postgres
+          DATABASE_URL: ${{ matrix.service.driver }}://postgres:postgres@localhost:${{ job.services.postgres.ports[5432] }}/postgres
           IDENTITY_SECRET: 'secret'
           PASTAPORTO_SECRET: 'secret'
           SERVICE_TO_SERVICE_SECRET: 'secret'
           PASTAPORTO_ACTION_SECRET: 'secret'
           SECRET_KEY: 'secret'
+          STRIPE_SECRET_API_KEY: 'secret_stripe_key'
+          STRIPE_SUBSCRIPTION_PRICE_ID: 'secret_price_id'
+          STRIPE_WEBHOOK_SIGNATURE_SECRET: 'secret_webhook'
           ASSOCIATION_FRONTEND_URL: "https://associazione.python.it"

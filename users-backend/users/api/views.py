@@ -1,14 +1,14 @@
 from typing import Optional, Union
 
+from pythonit_toolkit.headers import PASTAPORTO_ACTION_X_HEADER
 from starlette.requests import Request
 from starlette.responses import Response
 from starlette.types import Receive, Scope, Send
 from starlette.websockets import WebSocket
 from strawberry.asgi import GraphQL as BaseGraphQL
-
 from users.api.context import Context
 from users.api.schema import schema
-from users.settings import PASTAPORTO_ACTION_SECRET, PASTAPORTO_ACTION_X_HEADER
+from users.settings import PASTAPORTO_ACTION_SECRET
 
 
 class GraphQL(BaseGraphQL):

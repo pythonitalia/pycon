@@ -1,8 +1,7 @@
-from ward import test
-
+from users.tests.api import graphql_client
 from users.tests.factories import user_factory
-from users.tests.graphql_client import graphql_client
 from users.tests.session import db
+from ward import test
 
 
 @test("cannot login to non existent user")

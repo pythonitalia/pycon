@@ -1,8 +1,7 @@
-from ward import test
-
+from users.tests.api import internalapi_graphql_client
 from users.tests.factories import user_factory
-from users.tests.graphql_client import internalapi_graphql_client
 from users.tests.session import db
+from ward import test
 
 
 @test("get user by id")

@@ -41,11 +41,6 @@ IDENTITY_EXPIRES_AFTER_MINUTES = config(
 
 DEFAULT_PAGINATION_TO = 20
 
-# Headers config
-
-PASTAPORTO_ACTION_X_HEADER = "x-pastaporto-action"
-SERVICE_JWT_HEADER = "x-service-token"
-
 # Passwords
 
 PASSWORD_HASHERS = [
