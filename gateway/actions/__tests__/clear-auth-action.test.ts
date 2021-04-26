@@ -16,7 +16,7 @@ test("Clear auth action clears cookies", async () => {
       httpOnly: true,
       maxAge: -1,
       path: "/",
-      sameSite: true,
+      sameSite: "none",
       secure: false,
     },
   });
@@ -27,7 +27,7 @@ test("Clear auth action clears cookies", async () => {
       httpOnly: true,
       maxAge: -1,
       path: "/",
-      sameSite: true,
+      sameSite: "none",
       secure: false,
     },
   });

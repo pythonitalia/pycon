@@ -29,6 +29,10 @@ data "aws_subnet_ids" "private" {
   }
 }
 
+data "aws_security_group" "lambda" {
+  name = "pythonit-lambda-security-group"
+}
+
 data "aws_security_group" "rds" {
   name = "pythonit-rds-security-group"
 }
@@ -40,7 +44,7 @@ module "lambda" {
   docker_tag         = terraform.workspace
   role_arn           = data.aws_iam_role.lambda.arn
   subnet_ids         = [for subnet in data.aws_subnet_ids.private.ids : subnet]
-  security_group_ids = [data.aws_security_group.rds.id]
+  security_group_ids = [data.aws_security_group.rds.id, data.aws_security_group.lambda.id]
   env_vars = {
     DEBUG        = "false"
     DATABASE_URL = "postgresql://${data.aws_db_instance.database.master_username}:${var.database_password}@${data.aws_db_instance.database.address}:${data.aws_db_instance.database.port}/association"

@@ -36,7 +36,7 @@ export class AuthAction extends PastaportoAction<Options, Return> {
         httpOnly: true,
         maxAge: SECONDS_IN_84_DAYS,
         path: "/",
-        sameSite: true,
+        sameSite: "none",
         secure: !IS_DEV,
       },
     });
@@ -51,7 +51,7 @@ export class AuthAction extends PastaportoAction<Options, Return> {
           httpOnly: true,
           maxAge: SECONDS_IN_84_DAYS,
           path: "/",
-          sameSite: true,
+          sameSite: "none",
           secure: !IS_DEV,
         },
       });

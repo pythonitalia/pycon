@@ -1,4 +1,4 @@
-import { ApolloServer } from "apollo-server-lambda";
+import { ApolloServer } from "@pythonit/apollo-server-lambda-with-cors-regex";
 
 import { createContext } from "./context";
 import { gateway } from "./gateway";
@@ -47,7 +47,14 @@ const handleManyCookies = (headers: any = {}) => {
 };
 
 exports.graphqlHandler = async (event: any, context: any) => {
-  const serverHandler = server.createHandler();
+  const serverHandler = server.createHandler({
+    cors: {
+      credentials: true,
+      methods: ["GET", "POST", "OPTIONS", "HEAD"],
+      // @ts-ignore
+      origin: [/python-italia\.vercel\.app$/],
+    },
+  });
 
   try {
     const response: any = await new Promise((resolve, reject) => {
