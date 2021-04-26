@@ -33,11 +33,11 @@ resource "aws_apigatewayv2_deployment" "backend" {
   description = "Deployment"
 
   triggers = {
-    redeployment = sha1(join(",", list(
+    redeployment = sha1(join(",", [
       jsonencode(aws_apigatewayv2_integration.backend_lambda),
       jsonencode(aws_apigatewayv2_route.backend_default),
       jsonencode(aws_lambda_permission.backend_apigw),
-    )))
+    ]))
   }
 
   lifecycle {
