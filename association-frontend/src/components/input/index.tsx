@@ -8,12 +8,12 @@ type InputProps = {
   minLength?: number;
 };
 
-export const Input: React.FC<InputProps> = ({
+export const Input = ({
   label,
   css,
   placeholder = "",
   ...props
-}) => (
+}: InputProps) => (
   <div>
     {label && (
       <div className="mt-5 mb-2">

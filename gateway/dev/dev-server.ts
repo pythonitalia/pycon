@@ -10,6 +10,14 @@ const server = new ApolloServer({
   gateway,
   subscriptions: false,
   plugins: [apolloHeadersPlugin(false), formatCookiesForExpressPlugin],
+  cors: {
+    origin: [
+      "http://localhost:3020",
+      "http://localhost:3010",
+      "http://localhost:3000",
+    ],
+    credentials: true,
+  },
   context: async ({ req, res }) => {
     const context = await createContext(req.headers.cookie);
     return {

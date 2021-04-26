@@ -30,11 +30,11 @@ export const Button: React.FC<ButtonProps> = ({
       )}
     >
       {link && (
-        <a href="https://pycon.it/en" target="_blank">
+        <a href={link} target="_blank">
           {text}
         </a>
       )}
-      {!link && text && <span>{text}</span>}
+      {!link && <span>{text}</span>}
     </button>
   );
 };

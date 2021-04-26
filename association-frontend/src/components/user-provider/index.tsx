@@ -16,7 +16,7 @@ export const UserProvider: React.FC<{ resetUrqlClient: () => void }> = ({
   children,
   resetUrqlClient,
 }) => {
-  const [{ data, fetching, error }, refetchMe] = useMeQuery({
+  const [{ data }, refetchMe] = useMeQuery({
     requestPolicy: "network-only",
   });
 

@@ -4,6 +4,7 @@ type ModalProps = {
   showModal: boolean;
   closeModalHandler?: (e: React.MouseEvent | React.FormEvent) => void;
   className?: string;
+  title: string;
 };
 
 export const Modal: React.FC<ModalProps> = ({
@@ -11,6 +12,7 @@ export const Modal: React.FC<ModalProps> = ({
   closeModalHandler,
   children,
   className,
+  title,
 }) => (
   <div
     className={classnames(
@@ -35,7 +37,16 @@ export const Modal: React.FC<ModalProps> = ({
         >
           Chiudi
         </div>
-        <div className="px-6">{children}</div>
+        <div className="p-6">
+          <h3
+            className="mb-6 text-3xl font-extrabold text-center text-gray-900"
+            id="modal-title"
+          >
+            {title}
+          </h3>
+
+          {children}
+        </div>
       </div>
     </div>
   </div>

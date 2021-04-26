@@ -1,28 +1,52 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
+import { useRouter } from "next/router";
+
+import { Button } from "~/components/button";
+import { ModalSigning } from "~/components/modal-signing";
 import { SectionItem } from "~/components/section-item";
 import { useStripe } from "~/hooks/use-stripe";
 import { useUser } from "~/hooks/use-user";
 
-import { Button } from "../button";
-import { ModalSigning } from "../modal-signing";
+import { SimpleModal } from "../simple-modal";
 import { useManageSubscriptionMutation } from "./manage-subscription.generated";
 import { useSubscribeMutation } from "./subscribe.generated";
 
-const SignUpOrSignIn = ({ toggleModal }) => {
+const SignUpOrSignIn = () => {
+  const [showModal, setShowModal] = useState(false);
+  const toggleModal = () => {
+    setShowModal(!showModal);
+  };
+
   return (
-    <SectionItem
-      title={"Unisciti ora"}
-      textTheme={"white"}
-      withBackground={true}
-      backgroundImageClass={"bg-reception-desk-pycon-10"}
-    >
-      <div className="lg:flex-shrink-0">
-        <div className="inline-flex rounded-md shadow">
-          <Button text={"Unisciti ora"} onClick={toggleModal} />
+    <>
+      <ModalSigning showModal={showModal} closeModalHandler={toggleModal} />
+
+      <SectionItem
+        id="membership"
+        title={"Diventa membro"}
+        textTheme={"white"}
+        withBackground={true}
+        backgroundImageClass={"bg-reception-desk-pycon-10"}
+      >
+        <BecomeMemberMainCopy />
+        <p className="mx-auto mb-4 text-xl text-white">
+          Per poter diventare membro, hai bisogno di un account!
+          <br />
+          Clicca il pulsante in basso per creare un account o loggarti.
+          <br />
+          <br />
+          Se hai già un account pycon.it, puoi loggarti direttamente con la
+          stessa email/password!
+        </p>
+
+        <div className="lg:flex-shrink-0">
+          <div className="inline-flex rounded-md shadow">
+            <Button text="Crea un account" onClick={toggleModal} />
+          </div>
         </div>
-      </div>
-    </SectionItem>
+      </SectionItem>
+    </>
   );
 };
 
@@ -43,11 +67,13 @@ const BecameMember = () => {
 
   return (
     <SectionItem
-      title={"Iscriviti all'assaciozione"}
+      id="membership"
+      title={"Diventa membro Python Italia"}
       textTheme={"white"}
       withBackground={true}
       backgroundImageClass={"bg-reception-desk-pycon-10"}
     >
+      <BecomeMemberMainCopy />
       <div className="lg:flex-shrink-0">
         <div className="inline-flex rounded-md shadow">
           <Button text={"Iscriviti ora"} onClick={subscribe} />
@@ -57,10 +83,19 @@ const BecameMember = () => {
   );
 };
 
+const BecomeMemberMainCopy = () => (
+  <p className="mx-auto mb-4 text-xl text-white">
+    Python Italia esiste principalmente grazie al supporto di volontari!
+    <br />
+    Diventa membro dell'associazione per contribuire alla crescita di Python
+    Italia e le community Python locali.
+  </p>
+);
+
 const ManageSubscription = () => {
-  const [{}, manageSubsriptionMutation] = useManageSubscriptionMutation();
+  const [{}, manageSubscriptionMutation] = useManageSubscriptionMutation();
   const onClick = async () => {
-    const result = await manageSubsriptionMutation();
+    const result = await manageSubscriptionMutation();
     if (
       result?.data.manageUserSubscription.__typename == "CustomerPortalResponse"
     ) {
@@ -71,32 +106,61 @@ const ManageSubscription = () => {
 
   return (
     <SectionItem
+      id="membership"
       title={"Gestisci la tua iscrizione"}
       textTheme={"white"}
       withBackground={true}
       backgroundImageClass={"bg-reception-desk-pycon-10"}
     >
+      <p className="mx-auto mb-4 text-xl text-white">
+        Grazie per il tuo supporto! 🙌 <br />
+        Puoi gestire la tua iscrizione all'associazione usando questo pulsante:
+      </p>
+
       <div className="lg:flex-shrink-0">
         <div className="inline-flex rounded-md shadow">
-          <Button text={"Gestisci la tua iscrizione"} onClick={onClick} />
+          <Button text={"Gestisci iscrizione"} onClick={onClick} />
         </div>
       </div>
     </SectionItem>
   );
 };
 
+const MembershipStatusModal = () => {
+  const { query } = useRouter();
+  const [modalAlreadyClosed, setModalAlreadyClosed] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+
+  useEffect(() => {
+    if (modalAlreadyClosed) {
+      return;
+    }
+
+    const membershipStatus = query["membership-status"];
+    setShowModal(Boolean(membershipStatus && membershipStatus === "success"));
+  }, [query]);
+
+  return (
+    <SimpleModal
+      showModal={showModal}
+      closeModal={() => {
+        setShowModal(false);
+        setModalAlreadyClosed(true);
+      }}
+      title="🙌"
+    >
+      Grazie per esserti iscritto a Python Italia! 🎉
+    </SimpleModal>
+  );
+};
+
 export const SectionJoin = () => {
   const { user } = useUser();
 
-  const [showModal, setShowModal] = useState(false);
-  const toggleModal = () => {
-    setShowModal(!showModal);
-  };
-
   return (
     <>
-      <ModalSigning showModal={showModal} closeModalHandler={toggleModal} />
-      {!user && <SignUpOrSignIn toggleModal={toggleModal} />}
+      <MembershipStatusModal />
+      {!user && <SignUpOrSignIn />}
       {user && !user.isPythonItaliaMember && <BecameMember />}
       {user && user.isPythonItaliaMember && <ManageSubscription />}
     </>

@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { useFormState } from "react-use-form-state";
 
+import { Alert, Variant } from "~/components/alert";
+import { Button } from "~/components/button";
+import { Input } from "~/components/input";
+import { Modal } from "~/components/modal";
 import { getMessageForError, isErrorTypename } from "~/helpers/errors-to-text";
 
-import { Alert, Variant } from "../alert";
-import { Button } from "../button";
-import { Input } from "../input";
-import { Modal } from "../modal";
 import { useLoginMutation } from "./login.generated";
 import { useRegisterMutation } from "./register.generated";
 
@@ -26,7 +26,7 @@ export const ModalSigning: React.FC<ModalSigningProps> = ({
 }) => {
   const [formState, { email, password }] = useFormState<SigningForm>();
   // login or signup
-  const [isLoggingIn, setIsLoggingIn] = useState(true);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [loginData, login] = useLoginMutation();
   const [registerData, register] = useRegisterMutation();
 
@@ -69,9 +69,10 @@ export const ModalSigning: React.FC<ModalSigningProps> = ({
   };
 
   const isRunningMutation = loginData.fetching || registerData.fetching;
-  const mutationResultTypename = isLoggingIn
-    ? loginData.data?.login?.__typename
-    : registerData.data?.register?.__typename;
+  const mutationData = isLoggingIn
+    ? loginData.data?.login
+    : registerData.data?.register;
+  const mutationResultTypename = mutationData?.__typename;
   const operationFailed = isErrorTypename(mutationResultTypename);
 
   return (
@@ -79,15 +80,12 @@ export const ModalSigning: React.FC<ModalSigningProps> = ({
       className="items-center"
       showModal={showModal}
       closeModalHandler={closeModalHandler}
+      title={
+        isLoggingIn
+          ? "Accedi al tuo account Python Italia"
+          : "Entra nella community di Python Italia"
+      }
     >
-      <h3
-        className="my-6 text-3xl font-extrabold text-center text-gray-900"
-        id="modal-title"
-      >
-        {isLoggingIn && "Accedi al tuo account Python Italia"}
-        {!isLoggingIn && "Entra nella community di Python Italia"}
-      </h3>
-
       <form className="flex flex-col max-w-sm mx-auto" onSubmit={handleSubmit}>
         <div className="flex flex-col mb-5">
           <Input required placeholder="Email" {...email("email")} />

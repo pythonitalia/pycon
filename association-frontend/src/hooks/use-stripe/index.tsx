@@ -1,6 +1,8 @@
 import { loadStripe } from "@stripe/stripe-js";
-import { useCallback, useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { createContext, useEffect } from "react";
+
+import { STRIPE_KEY } from "~/helpers/config";
 
 type StripeContextType = {
   stripe: any;
@@ -12,11 +14,10 @@ const StripeContext = createContext<StripeContextType>({
 
 export const StripeProvider = ({ children }) => {
   const [stripe, setStripe] = useState(null);
-  console.log(stripe);
 
   useEffect(() => {
     const load = async () => {
-      const loadedStripe = await loadStripe("pk_test_1Tti9s1UY4Ot4NJXxWc6kdYg");
+      const loadedStripe = await loadStripe(STRIPE_KEY);
       setStripe(loadedStripe);
     };
     load();
