@@ -2,7 +2,8 @@ locals {
   services = [
     "pycon-backend",
     "users-backend",
-    "gateway"
+    "gateway",
+    "association-backend"
   ]
 }
 

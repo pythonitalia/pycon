@@ -75,6 +75,18 @@ module "users_backend" {
   depends_on = [module.database]
 }
 
+module "association_backend" {
+  source = "./association_backend"
+
+  database_password            = var.database_password
+  pastaporto_secret            = var.pastaporto_secret
+  stripe_secret_api_key        = var.stripe_secret_api_key
+  stripe_subscription_price_id = var.association_backend_stripe_membership_price_id
+  stripe_webhook_secret        = var.association_backend_stripe_webhook_secret
+
+  depends_on = [module.database]
+}
+
 module "email_templates" {
   source = "./email_templates"
 }

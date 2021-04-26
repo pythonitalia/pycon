@@ -11,6 +11,7 @@ export const createPastaporto = async (
   refreshToken: string | null = null,
 ): Promise<Pastaporto> => {
   if (!token) {
+    console.info("creating pastaporto: no token passed, not authenticated");
     // not authenticated
     return Pastaporto.unauthenticated();
   }
@@ -20,13 +21,13 @@ export const createPastaporto = async (
   } catch (e) {
     if (e instanceof TokenExpiredError) {
       if (!refreshToken) {
-        console.log(
+        console.info(
           "Expired identity, refresh token is missing or refresh flow failed",
         );
         throw new AuthenticationError(`Identity is not valid (expired token)`);
       }
 
-      console.log("Expired identity, trying to refresh token");
+      console.info("Expired identity, trying to refresh token");
 
       const subject = decodeIdentity(token, true).sub;
 
@@ -60,7 +61,7 @@ const createNewIdentity = async (sub: string, temporaryContext: object) => {
   // so we can re-use the existing cookies flow
   const action = new AuthAction({ id: sub }, { identityOnly: true });
   const { identityToken } = await action.apply(temporaryContext);
-  console.log(
+  console.info(
     `created new identity for user-id ${sub} using refresh token flow`,
   );
   return identityToken as string;

@@ -24,6 +24,7 @@ time-machine = "^2.1.0"
 python-dateutil = "^2.8.1"
 pythonit-toolkit = "^0.1.44"
 ormar = "^0.10.3"
+mangum = "^0.11.0"
 
 
 [tool.poetry.dev-dependencies]

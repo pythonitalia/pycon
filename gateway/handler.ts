@@ -10,7 +10,7 @@ const server = new ApolloServer({
   introspection: true,
   plugins: [apolloHeadersPlugin(true)],
   context: async ({ event }) => {
-    return createContext(event.headers["cookie"]);
+    return createContext(event.headers["Cookie"]);
   },
 });
 

@@ -12,7 +12,14 @@ variable "social_auth_google_oauth2_secret" {}
 variable "pretix_api_token" {}
 variable "pinpoint_application_id" {}
 variable "pretix_sentry_dsn" {}
+variable "stripe_secret_api_key" {}
+
+# Users backend secrets
 variable "users_backend_secret_key" {}
+
+# Association backend secrets
+variable "association_backend_stripe_membership_price_id" {}
+variable "association_backend_stripe_webhook_secret" {}
 
 # Secrets
 variable "pastaporto_secret" {}
