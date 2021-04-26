@@ -1,0 +1,8 @@
+mutation subscribe {
+  subscribeUserToAssociation {
+    __typename
+    ... on CheckoutSession {
+      stripeSessionId
+    }
+  }
+}

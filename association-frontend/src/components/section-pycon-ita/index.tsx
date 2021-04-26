@@ -7,10 +7,11 @@ import { Button } from "../button";
 export const SectionPyConIta = () => (
   <SectionItem
     title="PyCon Italia"
-    textTheme={"white"}
+    textTheme="white"
     withBackground={true}
-    overlay={false}
-    backgroundImageClass={"bg-pycon-group-blue"}
+    overlay={true}
+    overlayTheme="black-light"
+    backgroundImageClass="bg-pycon-group-blue"
   >
     <p className="mx-auto mb-4 text-xl text-center text-white">
       Dalla nostra passione per Python è nata PyCon Italia.

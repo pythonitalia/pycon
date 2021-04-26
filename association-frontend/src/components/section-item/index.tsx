@@ -1,18 +1,23 @@
 import classnames from "classnames";
 
+type OverlayTheme = "black" | "white" | "black-light";
+
 type BackgroundWrapperProps = {
+  id?: string;
   backgroundImageClass: string;
-  overlayTheme: "black" | "white";
+  overlayTheme: OverlayTheme;
   overlay?: boolean;
 };
 
 type InnerContentProps = {
+  id?: string;
   title?: string;
   subTitle?: string;
   textTheme?: "black" | "white";
 };
 
 type SectionItemProps = {
+  id?: string;
   title?: string;
   subTitle?: string;
   withBackground?: boolean;
@@ -21,7 +26,7 @@ type SectionItemProps = {
   // background classes
   backgroundImageClass?: string;
   overlay?: boolean;
-  overlayTheme?: "black" | "white";
+  overlayTheme?: OverlayTheme;
 };
 
 const BackgroundWrapper: React.FC<BackgroundWrapperProps> = ({
@@ -29,6 +34,7 @@ const BackgroundWrapper: React.FC<BackgroundWrapperProps> = ({
   overlay,
   overlayTheme,
   children,
+  id,
 }) => {
   return (
     <div
@@ -36,12 +42,14 @@ const BackgroundWrapper: React.FC<BackgroundWrapperProps> = ({
         "relative bg-cover bg-center bg-local bg-no-repeat h-screen flex items-center justify-center",
         backgroundImageClass,
       )}
+      id={id}
     >
       {overlay && (
         <div
           className={classnames("absolute top-0 left-0 bottom-0 right-0", {
-            "bg-black bg-opacity-60": overlayTheme === "black",
-            "bg-white bg-opacity-60": overlayTheme === "white",
+            "bg-black bg-opacity-30": overlayTheme === "black-light",
+            "bg-black bg-opacity-70": overlayTheme === "black",
+            "bg-white bg-opacity-70": overlayTheme === "white",
           })}
         ></div>
       )}
@@ -58,9 +66,10 @@ const InnerContent: React.FC<InnerContentProps> = ({
   subTitle,
   textTheme,
   children,
+  id,
 }) => {
   return (
-    <div className={classnames("bg-transparent")}>
+    <div id={id} className={classnames("bg-transparent")}>
       <div className="max-w-full mx-auto md:max-w-xl">
         <div className="text-center">
           {title && (
@@ -93,11 +102,13 @@ export const SectionItem: React.FC<SectionItemProps> = ({
   backgroundImageClass = "bg-pycon-group",
   overlay = true,
   overlayTheme = "black",
+  id,
   ...props
 }) => {
   if (withBackground) {
     return (
       <BackgroundWrapper
+        id={id}
         backgroundImageClass={backgroundImageClass}
         overlay={overlay}
         overlayTheme={overlayTheme}
@@ -106,5 +117,5 @@ export const SectionItem: React.FC<SectionItemProps> = ({
       </BackgroundWrapper>
     );
   }
-  return <InnerContent {...props} />;
+  return <InnerContent id={id} {...props} />;
 };
