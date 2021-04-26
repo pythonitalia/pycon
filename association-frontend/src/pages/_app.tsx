@@ -7,8 +7,7 @@ import Head from "next/head";
 import { Hero } from "~/components/hero";
 import { UserProvider } from "~/components/user-provider";
 import { API_URL } from "~/helpers/config";
-
-import { StripeProvider } from "../hooks/use-stripe/index";
+import { StripeProvider } from "~/hooks/use-stripe";
 
 import "tailwindcss/tailwind.css";
 
