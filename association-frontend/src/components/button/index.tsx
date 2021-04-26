@@ -30,7 +30,7 @@ export const Button: React.FC<ButtonProps> = ({
       )}
     >
       {link && (
-        <a href={link} target="_blank">
+        <a href={link} target="_blank" rel="noopener noreferrer">
           {text}
         </a>
       )}
