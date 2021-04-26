@@ -10,7 +10,6 @@ from starlette.middleware import Middleware
 from starlette.middleware.sessions import SessionMiddleware
 from starlette.responses import JSONResponse
 from starlette.routing import Route
-
 from users.admin_api.views import GraphQL as AdminGraphQL
 from users.api.views import GraphQL
 from users.db import get_engine, get_session
@@ -21,6 +20,7 @@ from users.settings import DEBUG, PASTAPORTO_SECRET, SECRET_KEY
 from users.social_auth.views import google_login, google_login_auth
 
 logging.basicConfig(level=logging.INFO)
+logging.getLogger("sqlalchemy.engine.Engine").disabled = True
 
 routes = [
     Route("/graphql", GraphQL()),
@@ -75,7 +75,7 @@ async def shutdown():
 
 
 def handler(event, context):
-    if (command := event.get("_cli_command")) :
+    if (command := event.get("_cli_command")) :  # noqa
         native_stdout = sys.stdout
         native_stderr = sys.stderr
         output_buffer = StringIO()

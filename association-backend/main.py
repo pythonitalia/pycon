@@ -14,6 +14,7 @@ from src.database.db import database
 from src.webhooks.views import stripe_webhook
 
 logging.basicConfig(level=logging.INFO)
+logging.getLogger("sqlalchemy.engine.Engine").disabled = True
 
 
 app = Starlette(
