@@ -140,6 +140,9 @@ jobs:
           TF_VAR_identity_secret: ${{ secrets.TF_VAR_identity_secret }}
           TF_VAR_service_to_service_secret: ${{ secrets.TF_VAR_service_to_service_secret }}
           TF_VAR_pastaporto_action_secret: ${{ secrets.TF_VAR_pastaporto_action_secret }}
+          TF_VAR_stripe_secret_api_key: ${{ secrets.TF_VAR_stripe_secret_api_key }}
+          TF_VAR_association_backend_stripe_membership_price_id: ${{ secrets.TF_VAR_association_backend_stripe_membership_price_id }}
+          TF_VAR_association_backend_stripe_webhook_secret: ${{ secrets.TF_VAR_association_backend_stripe_webhook_secret }}
 
   migrate-pycon-backend-db:
     runs-on: ubuntu-latest
