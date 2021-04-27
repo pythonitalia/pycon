@@ -140,6 +140,9 @@ jobs:
           TF_VAR_identity_secret: ${{ secrets.TF_VAR_identity_secret }}
           TF_VAR_service_to_service_secret: ${{ secrets.TF_VAR_service_to_service_secret }}
           TF_VAR_pastaporto_action_secret: ${{ secrets.TF_VAR_pastaporto_action_secret }}
+          TF_VAR_stripe_secret_api_key: ${{ secrets.TF_VAR_stripe_secret_api_key }}
+          TF_VAR_association_backend_stripe_membership_price_id: ${{ secrets.TF_VAR_association_backend_stripe_membership_price_id }}
+          TF_VAR_association_backend_stripe_webhook_secret: ${{ secrets.TF_VAR_association_backend_stripe_webhook_secret }}
 
   migrate-pycon-backend-db:
     runs-on: ubuntu-latest
@@ -147,12 +150,41 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: Migrate PyCon Backend DB
-        run: 'aws lambda invoke --function-name production-pycon-backend --cli-binary-format raw-in-base64-out --payload ''{ "_serverless-wsgi": { "command": "manage", "data": "migrate" } }'' response.json'
+        run: |
+          aws lambda invoke --function-name production-pycon-backend --cli-binary-format raw-in-base64-out --payload ''{ "_serverless-wsgi": { "command": "manage", "data": "migrate" } }'' response.json
+          cat response.json
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-      - name: Migration output
-        if: ${{ always() }}
-        run: cat response.json
+
+  migrate-users-backend-db:
+    runs-on: ubuntu-latest
+    needs: [terraform]
+    steps:
+      - uses: actions/checkout@master
+      - name: Migrate Users Backend DB
+        run: |
+          aws lambda invoke --function-name production-users-backend --cli-binary-format raw-in-base64-out --payload '{ "_cli_command": { "action": "migrate" } }' response.json
+          cat response.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+
+  migrate-association-backend-db:
+    runs-on: ubuntu-latest
+    needs: [terraform]
+    steps:
+      - uses: actions/checkout@master
+      - name: Migrate Association Backend DB
+        run: |
+          aws lambda invoke --function-name production-association-backend --cli-binary-format raw-in-base64-out --payload '{ "_cli_command": { "action": "migrate" } }' response.json
+          cat response.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}

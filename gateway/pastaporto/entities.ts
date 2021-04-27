@@ -60,6 +60,7 @@ export class Pastaporto {
       throw new Error("No user found");
     }
 
+    console.info("created pastaporto from token");
     return new Pastaporto(
       new UserInfo(userInfo.id, userInfo.email, userInfo.isStaff),
       getCredentialsFromUser(userInfo),

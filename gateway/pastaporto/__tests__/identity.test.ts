@@ -369,7 +369,7 @@ test("Clear identity tokens", async () => {
       httpOnly: true,
       maxAge: -1,
       path: "/",
-      sameSite: true,
+      sameSite: "none",
       secure: false,
     },
   });
@@ -380,7 +380,7 @@ test("Clear identity tokens", async () => {
       httpOnly: true,
       maxAge: -1,
       path: "/",
-      sameSite: true,
+      sameSite: "none",
       secure: false,
     },
   });

@@ -12,7 +12,7 @@ export class ClearAuthAction extends PastaportoAction<Options, void> {
         httpOnly: true,
         maxAge: -1,
         path: "/",
-        sameSite: true,
+        sameSite: "none",
         secure: !IS_DEV,
       },
     });
@@ -24,7 +24,7 @@ export class ClearAuthAction extends PastaportoAction<Options, void> {
         httpOnly: true,
         maxAge: -1,
         path: "/",
-        sameSite: true,
+        sameSite: "none",
         secure: !IS_DEV,
       },
     });

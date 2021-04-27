@@ -13,6 +13,8 @@ export type User = {
 };
 
 export const fetchUserInfo = async (id: string): Promise<User | null> => {
+  console.info("fetching user info for:", id);
+
   const token: string = jwt.sign({}, SERVICE_TO_SERVICE_SECRET!, {
     issuer: "gateway",
     audience: "users-service",

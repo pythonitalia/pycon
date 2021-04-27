@@ -5,6 +5,7 @@
   "license": "MIT",
   "dependencies": {
     "@apollo/gateway": "^0.23.2",
+    "@pythonit/apollo-server-lambda-with-cors-regex": "^2.23.7",
     "apollo-server": "2.21.0",
     "apollo-server-lambda": "2.21.1",
     "cookie": "^0.4.1",
