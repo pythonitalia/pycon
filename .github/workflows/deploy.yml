@@ -151,7 +151,7 @@ jobs:
       - uses: actions/checkout@master
       - name: Migrate PyCon Backend DB
         run: |
-          aws lambda invoke --function-name production-pycon-backend --cli-binary-format raw-in-base64-out --payload ''{ "_serverless-wsgi": { "command": "manage", "data": "migrate" } }'' response.json
+          aws lambda invoke --function-name production-pycon-backend --cli-binary-format raw-in-base64-out --payload '{ "_serverless-wsgi": { "command": "manage", "data": "migrate" } }' response.json
           cat response.json
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
