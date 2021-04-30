@@ -53,7 +53,7 @@ Werkzeug = "^1.0.1"
 [tool.poetry.dev-dependencies]
 pylint = "=2.6.0"
 pylint-django = "=2.0.13"
-pytest = "6.2.1"
+pytest = "6.2.3"
 pytest-cov = "=2.10.1"
 pytest-django = "=4.1.0"
 pytest-pylint = "=0.18.0"
