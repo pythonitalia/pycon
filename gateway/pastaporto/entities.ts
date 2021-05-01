@@ -60,6 +60,13 @@ export class Pastaporto {
       throw new Error("No user found");
     }
 
+    if (userInfo.jwtAuthId != decoded.jwtAuthId) {
+      console.info(
+        `User ID ${userInfo.id} jwt auth id (${userInfo.jwtAuthId} != ${decoded.jwtAuthId}) different from token`,
+      );
+      throw new Error("Not authenticated");
+    }
+
     console.info("created pastaporto from token");
     return new Pastaporto(
       new UserInfo(userInfo.id, userInfo.email, userInfo.isStaff),

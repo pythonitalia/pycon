@@ -13,9 +13,9 @@ from ward import test
 
 @test("create user auth action")
 async def _():
-    action = create_user_auth_pastaporto_action(10)
+    action = create_user_auth_pastaporto_action(10, 5)
     assert action.action == Action.AUTH
-    assert action.payload == {"id": 10}
+    assert action.payload == {"id": 10, "jwtAuthId": 5}
 
 
 @test("sign action")

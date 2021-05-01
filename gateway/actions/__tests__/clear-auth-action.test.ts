@@ -6,7 +6,7 @@ test("Clear auth action clears cookies", async () => {
     setCookies: [],
   };
 
-  const action = new ClearAuthAction({});
+  const action = new ClearAuthAction();
   await action.apply(context);
 
   expect(context.setCookies).toContainEqual({

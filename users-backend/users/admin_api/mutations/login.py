@@ -5,7 +5,6 @@ import strawberry
 from pythonit_toolkit.api.builder import create_validation_error_type
 from pythonit_toolkit.api.types import PydanticError
 from pythonit_toolkit.pastaporto.actions import create_user_auth_pastaporto_action
-
 from users.admin_api.context import Info
 from users.admin_api.types import User
 from users.domain import entities, services
@@ -65,5 +64,7 @@ async def login(info: Info, input: LoginInput) -> LoginResult:
     except (WrongEmailOrPasswordError, UserIsNotAdminError):
         return WrongEmailOrPassword()
 
-    info.context.pastaporto_action = create_user_auth_pastaporto_action(user.id)
+    info.context.pastaporto_action = create_user_auth_pastaporto_action(
+        user.id, user.jwt_auth_id
+    )
     return LoginSuccess.from_domain(user)

@@ -1,5 +1,4 @@
 import strawberry
-
 from users.domain import entities
 
 
@@ -9,6 +8,7 @@ class User:
     email: str
     is_active: bool
     is_staff: bool
+    jwt_auth_id: int
 
     @classmethod
     def from_domain(cls, user: entities.User):
@@ -17,4 +17,5 @@ class User:
             email=user.email,
             is_active=user.is_active,
             is_staff=user.is_staff,
+            jwt_auth_id=user.jwt_auth_id,
         )

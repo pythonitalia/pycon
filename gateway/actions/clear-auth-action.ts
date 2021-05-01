@@ -3,8 +3,10 @@ import { PastaportoAction } from "./entities";
 
 type Options = {};
 
-export class ClearAuthAction extends PastaportoAction<Options, void> {
+export class ClearAuthAction extends PastaportoAction<Options, void, void> {
   async apply(context: any) {
+    context.setCookies.splice(0, context.setCookies.length);
+
     context.setCookies.push({
       name: "identity",
       value: "",
