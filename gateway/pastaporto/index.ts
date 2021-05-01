@@ -1,9 +1,14 @@
 import { AuthenticationError } from "apollo-server-errors";
 import { TokenExpiredError } from "jsonwebtoken";
 
-import { AuthAction } from "../actions/auth-action";
+import { AuthAction, AuthActionPayload } from "../actions/auth-action";
 import { Pastaporto } from "./entities";
-import { decodeIdentity, decodeRefreshToken } from "./identity";
+import {
+  DecodedIdentity,
+  decodeIdentity,
+  decodeRefreshToken,
+  removeIdentityTokens,
+} from "./identity";
 
 export const createPastaporto = async (
   token: string | null,
@@ -29,25 +34,35 @@ export const createPastaporto = async (
 
       console.info("Expired identity, trying to refresh token");
 
-      const subject = decodeIdentity(token, true).sub;
+      const decodedIdentity = decodeIdentity(token, true);
 
-      if (subject && canRefreshIdentity(refreshToken, subject)) {
-        const newIdentity = await createNewIdentity(subject, temporaryContext);
+      if (
+        decodedIdentity &&
+        canRefreshIdentity(refreshToken, decodedIdentity)
+      ) {
+        const newIdentity = await createNewIdentity(
+          decodedIdentity,
+          temporaryContext,
+        );
         return createPastaporto(newIdentity, temporaryContext);
       } else {
         throw new AuthenticationError(`Identity is not valid (expired token)`);
       }
     } else {
       console.error("Unable to get pastaporto from identity", e);
+      removeIdentityTokens(temporaryContext);
       throw e;
     }
   }
 };
 
-export const canRefreshIdentity = (refreshToken: string, subject: string) => {
+export const canRefreshIdentity = (
+  refreshToken: string,
+  decodedIdentity: DecodedIdentity,
+) => {
   try {
-    decodeRefreshToken(refreshToken, subject);
-    console.info(`Refresh token for user ${subject} accepted`);
+    decodeRefreshToken(refreshToken, decodedIdentity);
+    console.info(`Refresh token for user ${decodedIdentity.sub} accepted`);
     return true;
   } catch (e) {
     console.info("Cannot refresh token:", e);
@@ -55,14 +70,22 @@ export const canRefreshIdentity = (refreshToken: string, subject: string) => {
   }
 };
 
-const createNewIdentity = async (sub: string, temporaryContext: object) => {
+const createNewIdentity = async (
+  decodedIdentity: DecodedIdentity,
+  temporaryContext: object,
+) => {
   // Create a new refreshed identity for the user
   // We use the AuthAction sending the temporary context object
   // so we can re-use the existing cookies flow
-  const action = new AuthAction({ id: sub }, { identityOnly: true });
+  const action = new AuthAction(
+    new AuthActionPayload(decodedIdentity.sub, decodedIdentity.jwtAuthId),
+    {
+      identityOnly: true,
+    },
+  );
   const { identityToken } = await action.apply(temporaryContext);
   console.info(
-    `created new identity for user-id ${sub} using refresh token flow`,
+    `created new identity for user-id ${decodedIdentity.sub} using refresh token flow`,
   );
   return identityToken as string;
 };

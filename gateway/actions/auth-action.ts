@@ -20,10 +20,18 @@ const SECONDS_IN_1_WEEK = SECONDS_IN_1_DAY * 7;
 
 const SECONDS_IN_84_DAYS = SECONDS_IN_1_WEEK * 4 * 3;
 
-export class AuthAction extends PastaportoAction<Options, Return> {
+export class AuthActionPayload {
+  constructor(readonly id: string, readonly jwtAuthId: number) {}
+}
+
+export class AuthAction extends PastaportoAction<
+  Options,
+  Return,
+  AuthActionPayload
+> {
   async apply(context: any) {
-    const sub = `${this.payload["id"]}`;
-    const identityToken = createIdentityToken(sub);
+    const sub = `${this.payload.id}`;
+    const identityToken = createIdentityToken(sub, this.payload.jwtAuthId);
     let refreshToken;
 
     // clear previous set cookies (clear identity cookies)
@@ -42,7 +50,7 @@ export class AuthAction extends PastaportoAction<Options, Return> {
     });
 
     if (!this.options?.identityOnly) {
-      refreshToken = createRefreshToken(sub);
+      refreshToken = createRefreshToken(sub, this.payload.jwtAuthId);
 
       context.setCookies.push({
         name: "refreshIdentity",

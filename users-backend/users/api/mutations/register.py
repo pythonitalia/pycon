@@ -5,7 +5,6 @@ import strawberry
 from pythonit_toolkit.api.builder import create_validation_error_type
 from pythonit_toolkit.api.types import PydanticError
 from pythonit_toolkit.pastaporto.actions import create_user_auth_pastaporto_action
-
 from users.api.context import Info
 from users.api.types import User
 from users.domain import entities, services
@@ -62,5 +61,7 @@ async def register(info: Info, input: RegisterInput) -> RegisterResult:
     except EmailAlreadyUsedError:
         return EmailAlreadyUsed()
 
-    info.context.pastaporto_action = create_user_auth_pastaporto_action(user.id)
+    info.context.pastaporto_action = create_user_auth_pastaporto_action(
+        user.id, user.jwt_auth_id
+    )
     return RegisterSuccess.from_domain(user)

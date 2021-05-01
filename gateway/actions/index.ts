@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 
 import { PASTAPORTO_ACTION_SECRET } from "../config";
-import { AuthAction } from "./auth-action";
+import { AuthAction, AuthActionPayload } from "./auth-action";
 import { Action } from "./entities";
 
 type DecodedToken = {
@@ -20,7 +20,9 @@ export const getPastaportoActionFromToken = (token: string) => {
 
   switch (action) {
     case Action.AUTH:
-      return new AuthAction(decodedToken.payload);
+      return new AuthAction(
+        (decodedToken.payload as unknown) as AuthActionPayload,
+      );
     default:
       throw new Error(`Unsupported pastaporto action: ${decodedToken.action}`);
   }

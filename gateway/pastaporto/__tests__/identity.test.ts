@@ -202,19 +202,33 @@ describe("Create identity", () => {
       .useFakeTimers("modern")
       .setSystemTime(new Date("2021-03-20 14:35:31Z").getTime());
 
-    const expectedToken = jwt.sign({}, "abc", {
-      issuer: "gateway",
-      audience: "identity",
-      subject: "10",
-      expiresIn: "15m",
-      algorithm: "HS256",
-    });
+    const expectedToken = jwt.sign(
+      {
+        jwtAuthId: 5,
+      },
+      "abc",
+      {
+        issuer: "gateway",
+        audience: "identity",
+        subject: "10",
+        expiresIn: "15m",
+        algorithm: "HS256",
+      },
+    );
 
-    expect(createIdentityToken("10")).toBe(expectedToken);
+    expect(createIdentityToken("10", 5)).toBe(expectedToken);
   });
 
   test("Empty subject fails", () => {
-    expect(() => createIdentityToken("")).toThrow("Empty subject not allowed");
+    expect(() => createIdentityToken("", 0)).toThrow(
+      "Empty subject not allowed",
+    );
+  });
+
+  test("Empty or invalid jwt auth fails", () => {
+    expect(() => createIdentityToken("5", 0)).toThrow(
+      "Empty jwtAuthId not allowed",
+    );
   });
 });
 
@@ -232,7 +246,9 @@ describe("Decode refresh token", () => {
       algorithm: "HS256",
     });
 
-    expect(decodeRefreshToken(testToken, "10")).toContainEntry(["sub", "10"]);
+    expect(
+      decodeRefreshToken(testToken, { sub: "10", jwtAuthId: 1 }),
+    ).toContainEntry(["sub", "10"]);
   });
 
   test("Reject refresh token for another subject", () => {
@@ -248,7 +264,9 @@ describe("Decode refresh token", () => {
       algorithm: "HS256",
     });
 
-    expect(() => decodeRefreshToken(testToken, "20")).toThrowWithMessage(
+    expect(() =>
+      decodeRefreshToken(testToken, { sub: "20", jwtAuthId: 1 }),
+    ).toThrowWithMessage(
       JsonWebTokenError,
       "jwt subject invalid. expected: 20",
     );
@@ -271,9 +289,9 @@ describe("Decode refresh token", () => {
       .useFakeTimers("modern")
       .setSystemTime(new Date("2050-04-01 14:40:31Z").getTime());
 
-    expect(() => decodeRefreshToken(testToken, "10")).toThrow(
-      TokenExpiredError,
-    );
+    expect(() =>
+      decodeRefreshToken(testToken, { sub: "10", jwtAuthId: 1 }),
+    ).toThrow(TokenExpiredError);
   });
 
   test("Reject refresh token with wrong audience", () => {
@@ -289,7 +307,9 @@ describe("Decode refresh token", () => {
       algorithm: "HS256",
     });
 
-    expect(() => decodeRefreshToken(testToken, "10")).toThrowWithMessage(
+    expect(() =>
+      decodeRefreshToken(testToken, { sub: "10", jwtAuthId: 1 }),
+    ).toThrowWithMessage(
       JsonWebTokenError,
       "jwt audience invalid. expected: refresh",
     );
@@ -308,7 +328,9 @@ describe("Decode refresh token", () => {
       algorithm: "HS256",
     });
 
-    expect(() => decodeRefreshToken(testToken, "10")).toThrowWithMessage(
+    expect(() =>
+      decodeRefreshToken(testToken, { sub: "10", jwtAuthId: 1 }),
+    ).toThrowWithMessage(
       JsonWebTokenError,
       "jwt issuer invalid. expected: gateway",
     );
@@ -327,10 +349,9 @@ describe("Decode refresh token", () => {
       algorithm: "HS256",
     });
 
-    expect(() => decodeRefreshToken(testToken, "10")).toThrowWithMessage(
-      JsonWebTokenError,
-      "invalid signature",
-    );
+    expect(() =>
+      decodeRefreshToken(testToken, { sub: "10", jwtAuthId: 1 }),
+    ).toThrowWithMessage(JsonWebTokenError, "invalid signature");
   });
 });
 
@@ -340,19 +361,27 @@ describe("Create refresh token", () => {
       .useFakeTimers("modern")
       .setSystemTime(new Date("2021-03-20 14:35:31Z").getTime());
 
-    const expectedToken = jwt.sign({}, "abc", {
-      issuer: "gateway",
-      audience: "refresh",
-      subject: "10",
-      expiresIn: "84 days",
-      algorithm: "HS256",
-    });
+    const expectedToken = jwt.sign(
+      {
+        jwtAuthId: 5,
+      },
+      "abc",
+      {
+        issuer: "gateway",
+        audience: "refresh",
+        subject: "10",
+        expiresIn: "84 days",
+        algorithm: "HS256",
+      },
+    );
 
-    expect(createRefreshToken("10")).toBe(expectedToken);
+    expect(createRefreshToken("10", 5)).toBe(expectedToken);
   });
 
   test("Cannot create refresh token with empty subject", () => {
-    expect(() => createRefreshToken("")).toThrow("Empty subject not allowed");
+    expect(() => createRefreshToken("", 5)).toThrow(
+      "Empty subject not allowed",
+    );
   });
 });
 

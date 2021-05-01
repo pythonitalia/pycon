@@ -10,6 +10,7 @@ export type User = {
   email: string;
   isStaff: boolean;
   isActive: boolean;
+  jwtAuthId: number;
 };
 
 export const fetchUserInfo = async (id: string): Promise<User | null> => {
@@ -34,6 +35,7 @@ export const fetchUserInfo = async (id: string): Promise<User | null> => {
         email
         isStaff
         isActive
+        jwtAuthId
       }
     }
   `;
