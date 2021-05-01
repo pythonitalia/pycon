@@ -34,10 +34,10 @@ const SocialLink = ({
 
 export const Footer = () => (
   <div className="bg-black">
-    <footer className="py-16 px-8 flex justify-between max-w-7xl mx-auto">
-      <Logo />
+    <footer className="py-16 px-8 md:flex justify-between max-w-7xl mx-auto space-y-8">
+      <Logo className="mx-auto w-full max-w-[13rem] md:w-40 md:m-0" />
 
-      <nav className="flex space-x-4">
+      <nav className="flex space-x-4 justify-center list-none">
         <li>
           <SocialLink
             href="https://twitter.com/pyconit"

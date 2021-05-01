@@ -1,7 +1,8 @@
+import clsx from "clsx";
 import React from "react";
 
-export const Logo = () => (
-  <svg viewBox="0 0 1500 450" fill="none" className="w-40">
+export const Logo = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 1500 450" fill="none" className={className}>
     <path d="M1056.79 8.5H8.5v433h1048.29V8.5z" fill="#fff" />
     <path
       d="M1048.29 17v416H17V17h1031.29zm17-17H0v450h1065.29V0z"
