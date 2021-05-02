@@ -17,13 +17,13 @@ export const Logout = () => {
 
   const [logout, { error, loading, data }] = useLogoutMutation({
     onCompleted: (d) => {
-      if (d?.logout?.__typename === "OperationResult" && d?.logout?.ok) {
-        setLoggedIn(false);
+      // if (d?.logout?.__typename === "OperationResult" && d?.logout?.ok) {
+      setLoggedIn(false);
 
-        client.resetStore();
-        Router.push("/");
-        return null;
-      }
+      client.resetStore();
+      Router.push("/");
+      // return null;
+      // }
     },
   });
   const [_, setLoggedIn] = useLoginState();

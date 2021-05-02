@@ -35,7 +35,7 @@ export const LoginForm: React.SFC<FormProps> = ({ next, ...props }) => {
   const nextUrl = (router.query.next as string) || next || `/${lang}/profile`;
 
   const onLoginCompleted = (data: LoginMutation) => {
-    if (data && data.login.__typename === "MeUser") {
+    if (data && data.login.__typename === "LoginSuccess") {
       setLoggedIn(true);
       clearMessages();
 
@@ -61,15 +61,10 @@ export const LoginForm: React.SFC<FormProps> = ({ next, ...props }) => {
     clearMessages();
   }, []);
 
-  const errorMessage =
-    loginData && loginData.login.__typename === "LoginErrors"
-      ? loginData.login.nonFieldErrors.join(" ")
-      : (error || "").toString();
-
-  const getFieldErrors = (field: "validationEmail" | "validationPassword") =>
+  const getFieldErrors = (field: "email" | "password") =>
     (loginData &&
-      loginData.login.__typename === "LoginErrors" &&
-      loginData.login[field]) ||
+      loginData.login.__typename === "LoginValidationError" &&
+      (loginData.login.errors[field] ?? []).map((e) => e.message)) ||
     [];
 
   return (
@@ -92,7 +87,9 @@ export const LoginForm: React.SFC<FormProps> = ({ next, ...props }) => {
           </Alert>
         ))}
 
-        {errorMessage && <Alert variant="alert">{errorMessage}</Alert>}
+        {loginData?.login?.__typename === "WrongEmailOrPassword" && (
+          <Alert variant="alert">Wrong username or password</Alert>
+        )}
       </Box>
       <Grid
         gap={5}
@@ -109,7 +106,7 @@ export const LoginForm: React.SFC<FormProps> = ({ next, ...props }) => {
             e.preventDefault();
             clearMessages();
 
-            login({ variables: formState.values });
+            login({ variables: { input: formState.values } });
           }}
         >
           <Text mb={4} as="h2">
@@ -118,7 +115,7 @@ export const LoginForm: React.SFC<FormProps> = ({ next, ...props }) => {
 
           <InputWrapper
             sx={{ mb: 0 }}
-            errors={getFieldErrors("validationEmail")}
+            errors={getFieldErrors("email")}
             label={<FormattedMessage id="login.email" />}
           >
             <Input
@@ -141,7 +138,7 @@ export const LoginForm: React.SFC<FormProps> = ({ next, ...props }) => {
 
           <InputWrapper
             sx={{ mb: 0 }}
-            errors={getFieldErrors("validationPassword")}
+            errors={getFieldErrors("password")}
             label={<FormattedMessage id="login.password" />}
           >
             <Input

@@ -1,4 +1,5 @@
 import strawberry
+from api.users.types import User
 
 from .blog.schema import BlogQuery
 from .conferences.schema import ConferenceQuery
@@ -42,4 +43,4 @@ class Mutation(
     pass
 
 
-schema = strawberry.federation.Schema(query=Query, mutation=Mutation)
+schema = strawberry.federation.Schema(query=Query, mutation=Mutation, types=[User])

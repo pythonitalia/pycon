@@ -2,10 +2,9 @@ from datetime import datetime
 from typing import List, Optional
 
 import strawberry
-from strawberry import LazyType
-
 from api.languages.types import Language
 from api.voting.types import VoteType
+from strawberry import LazyType
 from voting.models import Vote
 
 from .permissions import CanSeeSubmissionDetail, CanSeeSubmissionPrivateFields
@@ -34,9 +33,10 @@ class SubmissionTag:
     name: str
 
 
-@strawberry.type
+@strawberry.federation.type(keys=["id isSpeaker"])
 class SubmissionCommentAuthor:
     id: strawberry.ID
+    is_speaker: bool
 
 
 @strawberry.type
@@ -86,7 +86,7 @@ class Submission:
         comments = (
             self.comments.all()
             .order_by("created")
-            .values("id", "text", "created", "author_id")
+            .values("id", "text", "created", "author_id", "submission__speaker_id")
         )
 
         return [
@@ -96,11 +96,9 @@ class Submission:
                 created=comment["created"],
                 submission=self,
                 author=SubmissionCommentAuthor(
-                    # TODO get speaker name?
-                    id=comment["author_id"]
-                    # name="Speaker"
-                    # if comment["author_id"] == self.speaker.id
-                    # else comment["author__name"]
+                    id=comment["author_id"],
+                    is_speaker=comment["author_id"]
+                    == comment["submission__speaker_id"],
                 ),
             )
             for comment in comments

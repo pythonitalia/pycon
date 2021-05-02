@@ -109,7 +109,7 @@ def _update_user_newsletter(graphql_client, user, open_to_newsletter):
             dateBirth: $date_birth
         }){
             __typename
-            ... on MeUser {
+            ... on User {
                 id
                 openToNewsletter
             }

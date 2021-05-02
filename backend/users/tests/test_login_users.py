@@ -9,7 +9,7 @@ def _login_user(graphql_client, email, password):
         login(input: {email: $email, password: $password}) {
             __typename
 
-            ... on MeUser {
+            ... on User {
                 id
             }
 

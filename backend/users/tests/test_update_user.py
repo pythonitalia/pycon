@@ -36,7 +36,7 @@ def _update_user(graphql_client, user, **kwargs):
             country: $country
         }){
             __typename
-            ... on MeUser {
+            ... on User {
                 id
                 name
                 fullName

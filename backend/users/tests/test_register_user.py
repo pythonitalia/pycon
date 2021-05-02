@@ -1,5 +1,6 @@
 from django.contrib.sessions.models import Session
 from pytest import mark
+
 from users.models import User
 
 
@@ -16,7 +17,7 @@ def _register_user(graphql_client, email, password):
                 nonFieldErrors
             }
 
-            ... on MeUser {
+            ... on User {
                 id
             }
         }

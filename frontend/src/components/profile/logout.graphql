@@ -1,13 +1,3 @@
 mutation Logout {
-  logout {
-    __typename
-
-    ... on OperationResult {
-      ok
-    }
-
-    ... on LogoutErrors {
-      nonFieldErrors
-    }
-  }
+  logout
 }

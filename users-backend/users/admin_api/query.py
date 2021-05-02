@@ -13,7 +13,9 @@ from users.admin_api.types import SearchResults, User
 class Query:
     @strawberry.field(permission_classes=[IsStaff])
     async def me(self, info: Info) -> Optional[User]:
-        me = await info.context.users_repository.get_by_id(info.context.request.user.id)
+        me = await info.context.users_repository.get_by_id(
+            int(info.context.request.user.id)
+        )
         return User.from_domain(me) if me else None
 
     @strawberry.field(permission_classes=[IsStaff])

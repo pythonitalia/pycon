@@ -2,10 +2,9 @@ from typing import List
 
 import strawberry
 
-from api.permissions import IsAuthenticated
 from users.models import get_countries
 
-from .types import Country, MeUser
+from .types import Country
 
 
 @strawberry.type
