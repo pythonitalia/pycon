@@ -1,27 +1,19 @@
 {
-  "name": "react-component-library",
+  "name": "@python-italia/pycon-styleguide",
   "version": "1.0.0",
-  "main": "build/index.js",
-  "module": "build/index.esm.js",
-  "files": [
-    "build"
-  ],
-  "types": "build/index.d.ts",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
     "storybook": "start-storybook -p 6006",
     "storybook:export": "build-storybook",
-    "generate": "node ./util/create-component"
+    "generate": "node ./util/create-component",
+    "build": "rollup -c",
+    "build-watch": "rollup -c -w",
+    "prepublishOnly": "npm run build"
   },
-  "keywords": [
-    "React",
-    "Component",
-    "Library",
-    "Typescript",
-    "Tailwind",
-    "Storybook"
-  ],
   "peerDependencies": {
     "react": ">=16.8.0",
     "react-dom": ">=16.8.0"
@@ -53,6 +45,11 @@
   },
   "dependencies": {
     "@tailwindcss/aspect-ratio": "^0.2.0",
-    "clsx": "^1.1.1"
+    "clsx": "^1.1.1",
+    "rollup": "^2.46.0",
+    "rollup-plugin-copy": "^3.4.0",
+    "rollup-plugin-postcss": "^4.0.0",
+    "rollup-plugin-terser": "^7.0.2",
+    "rollup-plugin-typescript2": "^0.30.0"
   }
 }

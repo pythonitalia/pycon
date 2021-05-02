@@ -1,5 +1,6 @@
 module.exports = {
   purge: ["./src/**/*.{js,jsx,ts,tsx,vue}"],
+  mode: "jit",
   darkMode: false,
   theme: {
     fontFamily: {

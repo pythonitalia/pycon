@@ -1,4 +1,3 @@
-import clsx from "clsx";
 import React from "react";
 
 export const Logo = ({ className }: { className?: string }) => (

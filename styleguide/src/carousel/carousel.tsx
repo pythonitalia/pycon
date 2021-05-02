@@ -41,7 +41,7 @@ export const Carousel = ({ title, children }: Props) => {
   return (
     <div>
       <div className="border-black border-b-4">
-        <div className="max-w-7xl mx-auto px-4 py-8 flex">
+        <div className="max-w-7xl mx-auto px-8 py-8 flex">
           <Title marginBottom={false}>{title}</Title>
 
           <div className="ml-auto flex xl:hidden">
