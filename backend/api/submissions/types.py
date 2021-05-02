@@ -48,6 +48,11 @@ class SubmissionComment:
     submission: LazyType["Submission", "api.submissions.types"]
 
 
+@strawberry.federation.type(keys=["id"])
+class SubmissionSpeaker:
+    id: strawberry.ID
+
+
 @strawberry.type
 class Submission:
     conference: LazyType["Conference", "api.conferences.types"]
@@ -58,8 +63,7 @@ class Submission:
     speaker_level: Optional[str] = private_field()
     previous_talk_video: Optional[str] = private_field()
     notes: Optional[str] = private_field()
-    # TODO?
-    # speaker: Optional[LazyType["User", "api.users.types"]] = private_field()
+    speaker: SubmissionSpeaker = private_field()
     topic: Optional[LazyType["Topic", "api.conferences.types"]] = restricted_field()
     type: Optional[SubmissionType] = restricted_field()
     duration: Optional[

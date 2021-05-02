@@ -10,9 +10,10 @@ from .pages.schema import PagesQuery
 from .schedule.mutations import ScheduleMutations
 from .submissions.mutations import SubmissionsMutations
 from .submissions.schema import SubmissionsQuery
-from .users.mutations import UsersMutations
 from .users.schema import CountryQuery, UsersQuery
 from .voting.mutations import VotesMutations
+
+# from .users.mutations import UsersMutations
 
 
 @strawberry.type
@@ -30,7 +31,7 @@ class Query(
 
 @strawberry.type
 class Mutation(
-    UsersMutations,
+    # UsersMutations,
     SubmissionsMutations,
     VotesMutations,
     OrdersMutations,
@@ -41,4 +42,4 @@ class Mutation(
     pass
 
 
-schema = strawberry.Schema(query=Query, mutation=Mutation)
+schema = strawberry.federation.Schema(query=Query, mutation=Mutation)

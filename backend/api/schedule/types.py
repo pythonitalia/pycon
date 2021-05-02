@@ -19,7 +19,7 @@ class Room:
     type: str
 
 
-@strawberry.type
+@strawberry.federation.type(keys=["id"])
 class ScheduleItemUser:
     id: strawberry.ID
 
