@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import React, { useState } from "react";
 import { Title } from "../title";
 
@@ -29,6 +30,26 @@ const RightArrow = ({ className }: { className?: string }) => (
   </svg>
 );
 
+const ArrowButton = ({
+  onClick,
+  className,
+  direction = "left",
+}: {
+  onClick: () => void;
+  className: string;
+  direction?: "left" | "right";
+}) => (
+  <button
+    className={clsx(
+      "hidden 2xl:flex justify-center items-center absolute h-full top-0 focus:outline-none",
+      className
+    )}
+    onClick={onClick}
+  >
+    {direction === "left" ? <LeftArrow /> : <RightArrow />}
+  </button>
+);
+
 export const Carousel = ({ title, children }: Props) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -44,7 +65,7 @@ export const Carousel = ({ title, children }: Props) => {
         <div className="max-w-7xl mx-auto px-8 py-8 flex">
           <Title marginBottom={false}>{title}</Title>
 
-          <div className="ml-auto flex xl:hidden">
+          <div className="ml-auto flex 2xl:hidden">
             <button className="flex h-full py-4" onClick={previous}>
               <LeftArrow className="h-5" />
             </button>
@@ -55,12 +76,7 @@ export const Carousel = ({ title, children }: Props) => {
         </div>
       </div>
       <div className="max-w-7xl mx-auto flex-1 w-full relative">
-        <button
-          className="hidden md:flex justify-center items-center absolute h-full px-16 -left-44 top-0 focus:outline-none"
-          onClick={previous}
-        >
-          <LeftArrow />
-        </button>
+        <ArrowButton onClick={previous} className="pr-16 -left-28" />
 
         <div className="w-full overflow-hidden border-black border-l-4">
           <div
@@ -85,12 +101,11 @@ export const Carousel = ({ title, children }: Props) => {
             })}
           </div>
         </div>
-        <button
-          className="hidden md:flex justify-center items-center absolute h-full px-16 -right-44 top-0 focus:outline-none"
+        <ArrowButton
           onClick={next}
-        >
-          <RightArrow />
-        </button>
+          className="pl-16 -right-28"
+          direction="right"
+        />
       </div>
     </div>
   );
