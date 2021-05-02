@@ -52,9 +52,6 @@ class HotelRoomReservation(models.Model):
         verbose_name=_("room"),
     )
 
-    # user = models.ForeignKey(
-    #     settings.AUTH_USER_MODEL, on_delete=models.PROTECT, verbose_name=_("user")
-    # )
     user_id = models.IntegerField(verbose_name=_("user"))
 
     checkin = models.DateField(_("checkin"))

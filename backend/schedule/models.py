@@ -1,5 +1,3 @@
-from typing import NamedTuple
-
 from django.core import exceptions
 from django.db import models
 from django.utils.functional import cached_property
@@ -115,9 +113,6 @@ class ScheduleItem(TimeStampedModel):
     )
     duration = models.PositiveIntegerField(null=True, blank=True)
 
-    # additional_speakers = models.ManyToManyField(
-    #     settings.AUTH_USER_MODEL, verbose_name=_("speakers"), blank=True
-    # )
     language = models.ForeignKey(
         "languages.Language",
         verbose_name=_("language"),

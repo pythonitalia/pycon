@@ -182,12 +182,6 @@ class SubmissionComment(TimeStampedModel):
         related_name="comments",
     )
 
-    # author = models.ForeignKey(
-    #     settings.AUTH_USER_MODEL,
-    #     verbose_name=_("author"),
-    #     on_delete=models.CASCADE,
-    #     related_name="comments",
-    # )
     author_id = models.IntegerField(verbose_name=_("author"))
 
     text = models.CharField(_("text"), max_length=500)
