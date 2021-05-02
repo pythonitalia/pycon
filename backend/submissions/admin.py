@@ -1,14 +1,12 @@
-from dal_admin_filters import AutocompleteFilter
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 
 from .models import Submission, SubmissionComment, SubmissionTag, SubmissionType
 
-
-class SpeakerFilter(AutocompleteFilter):
-    title = "Speaker"
-    field_name = "speaker"
-    autocomplete_url = "user-autocomplete"
+# class SpeakerFilter(AutocompleteFilter):
+#     title = "Speaker"
+#     field_name = "speaker_id"
+#     autocomplete_url = "user-autocomplete"
 
 
 class SubmissionCommentInline(admin.TabularInline):
@@ -19,7 +17,7 @@ class SubmissionCommentInline(admin.TabularInline):
 class SubmissionAdmin(admin.ModelAdmin):
     list_display = (
         "title",
-        "speaker_name",
+        "speaker_id",
         "type",
         "status",
         "conference",
@@ -34,7 +32,7 @@ class SubmissionAdmin(admin.ModelAdmin):
                 "fields": (
                     "title",
                     "slug",
-                    "speaker",
+                    "speaker_id",
                     "status",
                     "type",
                     "duration",
@@ -48,14 +46,14 @@ class SubmissionAdmin(admin.ModelAdmin):
         (_("Details"), {"fields": ("elevator_pitch", "abstract", "notes", "tags")}),
         (_("Speaker"), {"fields": ("speaker_level", "previous_talk_video")}),
     )
-    list_filter = ("conference", "type", "topic", "status", SpeakerFilter)
+    list_filter = ("conference", "type", "topic", "status")
     search_fields = ("title", "abstract")
     prepopulated_fields = {"slug": ("title",)}
     filter_horizontal = ("tags",)
     inlines = [SubmissionCommentInline]
 
-    def speaker_name(self, obj):
-        return obj.speaker.full_name or obj.speaker.name or obj.speaker.email
+    # def speaker_name(self, obj):
+    #     return obj.speaker.full_name or obj.speaker.name or obj.speaker.email
 
     class Media:
         js = ["admin/js/jquery.init.js"]
@@ -73,4 +71,4 @@ class SubmissionTagAdmin(admin.ModelAdmin):
 
 @admin.register(SubmissionComment)
 class SubmissionCommentAdmin(admin.ModelAdmin):
-    list_display = ("submission", "author", "text")
+    list_display = ("submission", "author_id", "text")

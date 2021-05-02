@@ -1,7 +1,7 @@
-from django.conf import settings
 from django.db import models
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
+
 from i18n.fields import I18nCharField, I18nTextField
 
 
@@ -52,9 +52,10 @@ class HotelRoomReservation(models.Model):
         verbose_name=_("room"),
     )
 
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.PROTECT, verbose_name=_("user")
-    )
+    # user = models.ForeignKey(
+    #     settings.AUTH_USER_MODEL, on_delete=models.PROTECT, verbose_name=_("user")
+    # )
+    user_id = models.IntegerField(verbose_name=_("user"))
 
     checkin = models.DateField(_("checkin"))
     checkout = models.DateField(_("checkout"))

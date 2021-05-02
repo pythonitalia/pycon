@@ -1,16 +1,16 @@
 import factory
 import factory.fuzzy
-from blog.models import Post
 from django.utils import timezone
 from factory.django import DjangoModelFactory
-from i18n.tests.factories import LanguageFactory
 from pytest_factoryboy import register
-from users.tests.factories import UserFactory
+
+from blog.models import Post
+from i18n.tests.factories import LanguageFactory
 
 
 @register
 class PostFactory(DjangoModelFactory):
-    author = factory.SubFactory(UserFactory)
+    author_id = factory.Faker("pyint", min_value=1)
     title = LanguageFactory("sentence")
     slug = LanguageFactory("slug")
     excerpt = LanguageFactory("sentence")

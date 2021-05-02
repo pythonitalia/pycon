@@ -2,13 +2,14 @@ from dal_admin_filters import AutocompleteFilter
 from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import format_html
+
 from voting.models import RankRequest, RankSubmission, Vote
 
-
-class UserFilter(AutocompleteFilter):
-    title = "Author"
-    field_name = "user"
-    autocomplete_url = "user-autocomplete"
+# TODO add back?
+# class UserFilter(AutocompleteFilter):
+#     title = "Author"
+#     field_name = "user"
+#     autocomplete_url = "user-autocomplete"
 
 
 class SubmissionFilter(AutocompleteFilter):
@@ -25,13 +26,11 @@ class ConferenceFilter(AutocompleteFilter):
 
 @admin.register(Vote)
 class VoteAdmin(admin.ModelAdmin):
-    list_display = ("submission", "user", "value")
-    list_filter = (SubmissionFilter, UserFilter, "value")
+    list_display = ("submission", "user_id", "value")
+    list_filter = (SubmissionFilter, "value")
     search_fields = (
         "submission__title",
-        "user__name",
-        "user__full_name",
-        "user__email",
+        "user_id",
     )
 
     class Media:
@@ -39,7 +38,7 @@ class VoteAdmin(admin.ModelAdmin):
 
 
 @admin.register(RankSubmission)
-class RankSubmission(admin.ModelAdmin):
+class RankSubmissionAdmin(admin.ModelAdmin):
     list_display = (
         "absolute_rank",
         "absolute_score",
@@ -60,7 +59,7 @@ class RankSubmission(admin.ModelAdmin):
         "submission__type",
         "submission__topic",
         "submission__duration",
-        "submission__speaker__gender",
+        # "submission__speaker__gender",
     )
 
     def title(self, obj):
@@ -84,11 +83,7 @@ class RankSubmission(admin.ModelAdmin):
         return " ".join(langs)
 
     def speaker(self, obj):
-        return (
-            obj.submission.speaker.full_name
-            or obj.submission.speaker.name
-            or obj.submission.speaker.email
-        )
+        return obj.submission.speaker_id
 
     def gender(self, obj):
         emoji = {
@@ -102,7 +97,7 @@ class RankSubmission(admin.ModelAdmin):
 
     def view_submission(self, obj):  # pragma: no cover
         return format_html(
-            f'<a class="button" ' f'href="{{}}" target="_blank" >Open</a>&nbsp;',
+            '<a class="button" ' 'href="{{}}" target="_blank" >Open</a>&nbsp;',
             reverse("admin:submissions_submission_change", args=(obj.submission.id,)),
         )
 

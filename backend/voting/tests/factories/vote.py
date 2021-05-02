@@ -1,8 +1,8 @@
 import factory.fuzzy
 from factory.django import DjangoModelFactory
 from pytest_factoryboy import register
+
 from submissions.tests.factories import SubmissionFactory
-from users.tests.factories import UserFactory
 from voting.models import Vote
 
 
@@ -16,4 +16,4 @@ class VoteFactory(DjangoModelFactory):
         Vote.VALUES.not_interested, Vote.VALUES.must_see, 1
     )
     submission = factory.SubFactory(SubmissionFactory)
-    user = factory.SubFactory(UserFactory)
+    user_id = factory.Faker("pyint", min_value=1)

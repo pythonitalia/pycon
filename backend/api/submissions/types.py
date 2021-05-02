@@ -2,9 +2,10 @@ from datetime import datetime
 from typing import List, Optional
 
 import strawberry
+from strawberry import LazyType
+
 from api.languages.types import Language
 from api.voting.types import VoteType
-from strawberry import LazyType
 from voting.models import Vote
 
 from .permissions import CanSeeSubmissionDetail, CanSeeSubmissionPrivateFields
@@ -80,8 +81,7 @@ class Submission:
         comments = (
             self.comments.all()
             .order_by("created")
-            .select_related("author")
-            .values("id", "text", "created", "author__id", "author__name")
+            .values("id", "text", "created", "author_id")
         )
 
         return [
@@ -91,9 +91,11 @@ class Submission:
                 created=comment["created"],
                 submission=self,
                 author=SubmissionCommentAuthor(
-                    name="Speaker"
-                    if comment["author__id"] == self.speaker.id
-                    else comment["author__name"]
+                    # TODO get speaker name?
+                    name="TODO"
+                    # name="Speaker"
+                    # if comment["author_id"] == self.speaker.id
+                    # else comment["author__name"]
                 ),
             )
             for comment in comments

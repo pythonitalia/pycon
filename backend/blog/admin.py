@@ -5,4 +5,4 @@ from .models import Post
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    list_display = ("title", "published", "author")
+    list_display = ("title", "published", "author_id")

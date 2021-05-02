@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from model_utils import Choices
@@ -15,12 +14,13 @@ class Vote(TimeStampedModel):
 
     value = models.IntegerField(_("vote"), choices=VALUES)
 
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        verbose_name=_("user"),
-        on_delete=models.PROTECT,
-        related_name="votes",
-    )
+    # user = models.ForeignKey(
+    #     settings.AUTH_USER_MODEL,
+    #     verbose_name=_("user"),
+    #     on_delete=models.PROTECT,
+    #     related_name="votes",
+    # )
+    user_id = models.IntegerField(verbose_name=_("user"))
 
     submission = models.ForeignKey(
         "submissions.Submission",
@@ -30,10 +30,10 @@ class Vote(TimeStampedModel):
     )
 
     def __str__(self):
-        return f"{self.user} voted {self.value} for Submission {self.submission}"
+        return f"{self.user_id} voted {self.value} for Submission {self.submission}"
 
     class Meta:
         verbose_name = _("Vote")
         verbose_name_plural = _("Votes")
 
-        unique_together = ("user", "submission")
+        unique_together = ("user_id", "submission")
