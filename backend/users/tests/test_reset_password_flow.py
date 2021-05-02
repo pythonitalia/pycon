@@ -5,6 +5,8 @@ from django.core import mail
 from django.test import override_settings
 from pytest import mark
 
+pytestmark = mark.skip
+
 
 def _request_password_reset(graphql_client, email):
     return graphql_client.query(

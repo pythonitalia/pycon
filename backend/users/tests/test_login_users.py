@@ -1,6 +1,8 @@
 from django.contrib.sessions.models import Session
 from pytest import mark
 
+pytestmark = mark.skip
+
 
 def _login_user(graphql_client, email, password):
     return graphql_client.query(
