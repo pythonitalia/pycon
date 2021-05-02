@@ -18,12 +18,20 @@ const DEFAULT_SERVICES = [
     name: "pycon-backend",
     url: `${PYCON_BACKEND_SERVICE}/graphql`,
   },
+  {
+    name: "logout",
+    url: `http://logout.service`,
+  },
 ];
 
 const ADMIN_SERVICES = [
   {
     name: "users:admin",
     url: `${USERS_SERVICE}/admin-api`,
+  },
+  {
+    name: "logout",
+    url: `http://logout.service`,
   },
 ];
 

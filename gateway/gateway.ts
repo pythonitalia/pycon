@@ -1,7 +1,12 @@
-import { ApolloGateway, RemoteGraphQLDataSource } from "@apollo/gateway";
+import {
+  ApolloGateway,
+  LocalGraphQLDataSource,
+  RemoteGraphQLDataSource,
+} from "@apollo/gateway";
 
 import { getPastaportoActionFromToken } from "./actions";
 import { IS_DEV } from "./config";
+import { schema as logoutSchema } from "./internal-services/logout";
 import { Pastaporto } from "./pastaporto/entities";
 import { getServices } from "./services";
 
@@ -47,7 +52,11 @@ class ServiceRemoteGraphQLDataSource extends RemoteGraphQLDataSource {
 export const gateway = new ApolloGateway({
   serviceList: getServices(),
   experimental_pollInterval: IS_DEV ? 5000 : 0,
-  buildService({ url }) {
+  buildService({ name, url }) {
+    if (name === "logout") {
+      return new LocalGraphQLDataSource(logoutSchema);
+    }
+
     return new ServiceRemoteGraphQLDataSource({
       url,
     });
