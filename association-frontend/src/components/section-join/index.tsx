@@ -52,12 +52,12 @@ const SignUpOrSignIn = () => {
 
 const BecameMember = () => {
   const { redirectToCheckout } = useStripe();
-  const [{}, subscribeMutation] = useSubscribeMutation();
+  const [{ fetching }, subscribeMutation] = useSubscribeMutation();
 
   const subscribe = async () => {
     const result = await subscribeMutation();
     if (
-      result?.data.subscribeUserToAssociation.__typename === "CheckoutSession"
+      result?.data?.subscribeUserToAssociation.__typename === "CheckoutSession"
     ) {
       const stripeSessionId =
         result.data.subscribeUserToAssociation.stripeSessionId;
@@ -76,7 +76,11 @@ const BecameMember = () => {
       <BecomeMemberMainCopy />
       <div className="lg:flex-shrink-0">
         <div className="inline-flex rounded-md shadow">
-          <Button text={"Iscriviti ora"} onClick={subscribe} />
+          <Button
+            text={"Iscriviti ora"}
+            onClick={subscribe}
+            loading={fetching}
+          />
         </div>
       </div>
     </SectionItem>
