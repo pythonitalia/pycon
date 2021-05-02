@@ -1,24 +1,7 @@
-mutation UpdateProfile(
-  $name: String
-  $fullName: String
-  $gender: String
-  $openToRecruiting: Boolean!
-  $openToNewsletter: Boolean!
-  $dateBirth: String
-  $country: String
-) {
-  update(
-    input: {
-      name: $name
-      fullName: $fullName
-      gender: $gender
-      openToRecruiting: $openToRecruiting
-      openToNewsletter: $openToNewsletter
-      dateBirth: $dateBirth
-      country: $country
-    }
-  ) {
+mutation UpdateProfile($input: UpdateProfileInput!) {
+  updateProfile(input: $input) {
     __typename
+
     ... on User {
       id
       name
@@ -26,18 +9,37 @@ mutation UpdateProfile(
       gender
       openToRecruiting
       openToNewsletter
-      dateBirth
       country
+      dateBirth
     }
-    ... on UpdateErrors {
-      validationName: name
-      validationFullName: fullName
-      validationGender: gender
-      validationOpenToRecruiting: openToRecruiting
-      validationOpenToNewsletter: openToNewsletter
-      validationDateBirth: dateBirth
-      validationCountry: country
-      nonFieldErrors
+
+    ... on UpdateProfileValidationError {
+      errors {
+        name {
+          message
+        }
+        dateBirth {
+          message
+        }
+        fullName {
+          message
+        }
+        gender {
+          message
+        }
+        name {
+          message
+        }
+        openToRecruiting {
+          message
+        }
+        openToNewsletter {
+          message
+        }
+        country {
+          message
+        }
+      }
     }
   }
 }

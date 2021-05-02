@@ -16,7 +16,7 @@ export const Logout = () => {
   const client = useApolloClient();
 
   const [logout, { error, loading, data }] = useLogoutMutation({
-    onCompleted: (d) => {
+    onCompleted: () => {
       setLoggedIn(false);
       client.resetStore();
       Router.push("/");
