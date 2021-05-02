@@ -2,6 +2,7 @@ import random
 from math import sqrt
 
 import pytest
+
 from voting.models import RankRequest, Vote
 
 
@@ -31,7 +32,7 @@ def _setup_random(
                 continue
 
             value = random_vote()
-            vote_factory(user=user, value=value, submission=submission)
+            vote_factory(user_id=user.id, value=value, submission=submission)
             counts_votes[submission.pk] += value
 
     return conference, counts_votes
@@ -44,47 +45,47 @@ def _setup_equal(conference_factory, user_factory, submission_factory, vote_fact
     users = user_factory.create_batch(15)
     submissions = submission_factory.create_batch(5, conference=conference)
 
-    vote_factory(user=users[0], submission=submissions[0], value=1)
-    vote_factory(user=users[0], submission=submissions[1], value=2)
-    vote_factory(user=users[0], submission=submissions[2], value=3)
-    vote_factory(user=users[0], submission=submissions[3], value=4)
+    vote_factory(user_id=users[0].id, submission=submissions[0], value=1)
+    vote_factory(user_id=users[0].id, submission=submissions[1], value=2)
+    vote_factory(user_id=users[0].id, submission=submissions[2], value=3)
+    vote_factory(user_id=users[0].id, submission=submissions[3], value=4)
 
-    vote_factory(user=users[1], submission=submissions[0], value=1)
-    vote_factory(user=users[1], submission=submissions[1], value=2)
-    vote_factory(user=users[1], submission=submissions[2], value=3)
+    vote_factory(user_id=users[1].id, submission=submissions[0], value=1)
+    vote_factory(user_id=users[1].id, submission=submissions[1], value=2)
+    vote_factory(user_id=users[1].id, submission=submissions[2], value=3)
 
-    vote_factory(user=users[2], submission=submissions[0], value=1)
-    vote_factory(user=users[2], submission=submissions[1], value=2)
+    vote_factory(user_id=users[2].id, submission=submissions[0], value=1)
+    vote_factory(user_id=users[2].id, submission=submissions[1], value=2)
 
-    vote_factory(user=users[3], submission=submissions[0], value=1)
+    vote_factory(user_id=users[3].id, submission=submissions[0], value=1)
 
-    vote_factory(user=users[5], submission=submissions[0], value=1)
-    vote_factory(user=users[5], submission=submissions[1], value=2)
-    vote_factory(user=users[5], submission=submissions[2], value=3)
-    vote_factory(user=users[5], submission=submissions[3], value=4)
+    vote_factory(user_id=users[5].id, submission=submissions[0], value=1)
+    vote_factory(user_id=users[5].id, submission=submissions[1], value=2)
+    vote_factory(user_id=users[5].id, submission=submissions[2], value=3)
+    vote_factory(user_id=users[5].id, submission=submissions[3], value=4)
 
-    vote_factory(user=users[6], submission=submissions[0], value=1)
-    vote_factory(user=users[6], submission=submissions[1], value=2)
-    vote_factory(user=users[6], submission=submissions[2], value=3)
+    vote_factory(user_id=users[6].id, submission=submissions[0], value=1)
+    vote_factory(user_id=users[6].id, submission=submissions[1], value=2)
+    vote_factory(user_id=users[6].id, submission=submissions[2], value=3)
 
-    vote_factory(user=users[7], submission=submissions[0], value=1)
-    vote_factory(user=users[7], submission=submissions[1], value=2)
+    vote_factory(user_id=users[7].id, submission=submissions[0], value=1)
+    vote_factory(user_id=users[7].id, submission=submissions[1], value=2)
 
-    vote_factory(user=users[8], submission=submissions[0], value=1)
+    vote_factory(user_id=users[8].id, submission=submissions[0], value=1)
 
-    vote_factory(user=users[10], submission=submissions[0], value=1)
-    vote_factory(user=users[10], submission=submissions[1], value=2)
-    vote_factory(user=users[10], submission=submissions[2], value=3)
-    vote_factory(user=users[10], submission=submissions[3], value=4)
+    vote_factory(user_id=users[10].id, submission=submissions[0], value=1)
+    vote_factory(user_id=users[10].id, submission=submissions[1], value=2)
+    vote_factory(user_id=users[10].id, submission=submissions[2], value=3)
+    vote_factory(user_id=users[10].id, submission=submissions[3], value=4)
 
-    vote_factory(user=users[11], submission=submissions[0], value=1)
-    vote_factory(user=users[11], submission=submissions[1], value=2)
-    vote_factory(user=users[11], submission=submissions[2], value=3)
+    vote_factory(user_id=users[11].id, submission=submissions[0], value=1)
+    vote_factory(user_id=users[11].id, submission=submissions[1], value=2)
+    vote_factory(user_id=users[11].id, submission=submissions[2], value=3)
 
-    vote_factory(user=users[12], submission=submissions[0], value=1)
-    vote_factory(user=users[12], submission=submissions[1], value=2)
+    vote_factory(user_id=users[12].id, submission=submissions[0], value=1)
+    vote_factory(user_id=users[12].id, submission=submissions[1], value=2)
 
-    vote_factory(user=users[13], submission=submissions[0], value=1)
+    vote_factory(user_id=users[13].id, submission=submissions[0], value=1)
 
     users_weights = {
         users[0].pk: pytest.approx(sqrt(4)),

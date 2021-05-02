@@ -36,7 +36,7 @@ class SubmissionTag:
 
 @strawberry.type
 class SubmissionCommentAuthor:
-    name: str
+    id: strawberry.ID
 
 
 @strawberry.type
@@ -58,7 +58,8 @@ class Submission:
     speaker_level: Optional[str] = private_field()
     previous_talk_video: Optional[str] = private_field()
     notes: Optional[str] = private_field()
-    speaker: Optional[LazyType["User", "api.users.types"]] = private_field()
+    # TODO?
+    # speaker: Optional[LazyType["User", "api.users.types"]] = private_field()
     topic: Optional[LazyType["Topic", "api.conferences.types"]] = restricted_field()
     type: Optional[SubmissionType] = restricted_field()
     duration: Optional[
@@ -92,7 +93,7 @@ class Submission:
                 submission=self,
                 author=SubmissionCommentAuthor(
                     # TODO get speaker name?
-                    name="TODO"
+                    id=comment["author_id"]
                     # name="Speaker"
                     # if comment["author_id"] == self.speaker.id
                     # else comment["author__name"]

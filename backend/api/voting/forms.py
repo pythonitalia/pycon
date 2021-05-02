@@ -1,6 +1,7 @@
-from api.forms import ContextAwareModelForm, HashidModelChoiceField
 from django import forms
 from django.utils.translation import gettext_lazy as _
+
+from api.forms import ContextAwareModelForm, HashidModelChoiceField
 from submissions.models import Submission
 from voting.models import Vote
 
@@ -29,11 +30,13 @@ class SendVoteForm(ContextAwareModelForm):
         submission = self.cleaned_data.get("submission")
 
         try:
-            self.instance = Vote.objects.get(user=request.user, submission=submission)
+            self.instance = Vote.objects.get(
+                user_id=request.user.id, submission=submission
+            )
         except Vote.DoesNotExist:
             pass
 
-        self.instance.user = request.user
+        self.instance.user_id = request.user.id
         self.instance.value = self.cleaned_data["value"]
         return super().save(commit=commit)
 

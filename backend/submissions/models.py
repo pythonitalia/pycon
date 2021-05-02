@@ -83,7 +83,7 @@ class Submission(TimeStampedModel):
         return encode_hashid(self.pk)
 
     def can_edit(self, request):
-        return self.speaker == request.user
+        return self.speaker_id == request.user.id
 
     def clean(self):
         if (

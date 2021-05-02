@@ -1,4 +1,5 @@
 from pytest import mark
+
 from submissions.models import Submission
 
 
@@ -115,7 +116,7 @@ def test_update_submission(
     )
 
     submission = submission_factory(
-        speaker=user,
+        speaker_id=user.id,
         custom_topic="life",
         custom_duration="10m",
         custom_audience_level="adult",
@@ -187,7 +188,7 @@ def test_cannot_update_submission_with_lang_outside_allowed_values(
     )
 
     submission = submission_factory(
-        speaker=user,
+        speaker_id=user.id,
         custom_topic="life",
         custom_duration="10m",
         custom_audience_level="adult",
@@ -239,7 +240,7 @@ def test_can_edit_submission_outside_cfp(
     )
 
     submission = submission_factory(
-        speaker=user,
+        speaker_id=user.id,
         custom_topic="life",
         custom_duration="10m",
         custom_audience_level="adult",

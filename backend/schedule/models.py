@@ -1,3 +1,5 @@
+from typing import NamedTuple
+
 from django.core import exceptions
 from django.db import models
 from django.utils.functional import cached_property
@@ -133,10 +135,16 @@ class ScheduleItem(TimeStampedModel):
 
     @cached_property
     def speakers(self):
-        speakers = set(self.additional_speakers.all())
+        # TODO  fix this
+        from collections import namedtuple
+
+        TempStruct = namedtuple("TEMPSTRUCT", ("id",))
+        speakers = set(
+            [TempStruct(speaker.user_id) for speaker in self.additional_speakers.all()]
+        )
 
         if self.submission:
-            speakers.add(self.submission.speaker)
+            speakers.add(TempStruct(self.submission.speaker_id))
 
         return speakers
 
@@ -176,7 +184,7 @@ class ScheduleItem(TimeStampedModel):
 
 
 class ScheduleItemAdditionalSpeaker(models.Model):
-    schedule_item = models.ForeignKey(
+    scheduleitem = models.ForeignKey(
         ScheduleItem,
         on_delete=models.CASCADE,
         null=False,
@@ -189,5 +197,5 @@ class ScheduleItemAdditionalSpeaker(models.Model):
     class Meta:
         verbose_name = _("Schedule item additional speaker")
         verbose_name_plural = _("Schedule item additional speakers")
-        unique_together = ("user_id", "schedule_item")
+        unique_together = ("user_id", "scheduleitem")
         db_table = "schedule_scheduleitem_additional_speakers"

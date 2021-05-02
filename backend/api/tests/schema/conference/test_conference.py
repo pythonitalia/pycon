@@ -588,7 +588,7 @@ def test_can_see_submissions_if_they_have_sent_one(
 ):
     user = user_factory()
     submission_factory(conference=conference)
-    submission_factory(conference=conference, speaker=user)
+    submission_factory(conference=conference, speaker_id=user.id)
 
     graphql_client.force_login(user)
 

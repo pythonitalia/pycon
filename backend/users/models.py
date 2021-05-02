@@ -3,9 +3,10 @@ from django.contrib.auth.models import PermissionsMixin
 from django.core import exceptions
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from pycountry import countries
+
 from helpers.constants import GENDERS
 from pretix.db import user_has_admission_ticket
-from pycountry import countries
 from submissions.models import Submission
 
 from .managers import UserManager
@@ -83,7 +84,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.email
 
     def has_sent_submission(self, conference):
-        return Submission.objects.filter(speaker=self, conference=conference).exists()
+        return Submission.objects.filter(
+            speaker_id=self.id, conference=conference
+        ).exists()
 
     def has_conference_ticket(self, conference):
         return user_has_admission_ticket(self.email, conference.pretix_event_id)
@@ -106,3 +109,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         if self.country == "IT":
             return True
         return False
+
+    @property
+    def submissions(self):
+        # TODO: Temp method to make the migration easier
+        return Submission.objects.filter(speaker_id=self.id)

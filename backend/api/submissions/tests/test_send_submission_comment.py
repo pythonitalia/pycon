@@ -1,4 +1,5 @@
 from pytest import mark
+
 from submissions.models import SubmissionComment
 
 
@@ -14,7 +15,7 @@ def _send_comment(client, submission, text):
                 text
                 created
                 author {
-                    name
+                    id
                 }
 
                 submission {
@@ -44,9 +45,9 @@ def test_send_comment(graphql_client, user, submission, mocker):
 
     assert resp["data"]["sendSubmissionComment"]["__typename"] == "SubmissionComment"
     assert resp["data"]["sendSubmissionComment"]["text"] == "Hello world!"
-    assert resp["data"]["sendSubmissionComment"]["author"]["name"] == "Speaker"
+    assert resp["data"]["sendSubmissionComment"]["author"]["id"] == str(user.id)
 
-    comment = SubmissionComment.objects.get(submission=submission, author=user)
+    comment = SubmissionComment.objects.get(submission=submission, author_id=user.id)
 
     assert comment.text == "Hello world!"
 
@@ -102,7 +103,7 @@ def test_speakers_can_comment_other_submissions(
 ):
     mocker.patch("notifications.aws.send_notification")
 
-    user_submission = submission_factory(speaker=user)
+    user_submission = submission_factory(speaker_id=user.id)
     submission = submission_factory(conference=user_submission.conference)
 
     graphql_client.force_login(user)
@@ -117,7 +118,7 @@ def test_user_can_send_comment_to_own_submission(
     graphql_client, user, submission_factory, mocker
 ):
     mocker.patch("notifications.aws.send_notification")
-    submission = submission_factory(speaker=user)
+    submission = submission_factory(speaker_id=user.id)
 
     graphql_client.force_login(user)
 

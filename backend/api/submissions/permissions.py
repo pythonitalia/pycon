@@ -1,5 +1,6 @@
-from api.permissions import HasTokenPermission
 from strawberry.permission import BasePermission
+
+from api.permissions import HasTokenPermission
 from submissions.models import Submission
 
 
@@ -20,7 +21,7 @@ class CanSeeSubmissionDetail(BasePermission):
         if not user.is_authenticated:
             return False
 
-        if user.is_staff or source.speaker == user:
+        if user.is_staff or source.speaker_id == user.id:
             return True
 
         if user.has_sent_submission(conference):
@@ -42,7 +43,7 @@ class CanSeeSubmissionPrivateFields(BasePermission):
         if not user.is_authenticated:
             return False
 
-        return user.is_staff or source.speaker == user
+        return user.is_staff or source.speaker_id == user.id
 
 
 class CanSendComment(BasePermission):
@@ -57,7 +58,7 @@ class CanSendComment(BasePermission):
         input = info.context.input
         submission = Submission.objects.get_by_hashid(input.submission)
 
-        if submission.speaker == user:
+        if submission.speaker_id == user.id:
             return True
 
         if user.has_sent_submission(submission.conference):

@@ -1,6 +1,7 @@
-from api.helpers.ids import encode_hashid
 from django.utils import timezone
 from pytest import mark
+
+from api.helpers.ids import encode_hashid
 
 
 @mark.django_db
@@ -89,7 +90,7 @@ def test_can_see_submission_ticket_only_fields_if_has_sent_at_least_one_talk(
 
     mocker.patch("users.models.user_has_admission_ticket").return_value = False
 
-    other_conference = submission_factory(speaker=user)
+    other_conference = submission_factory(speaker_id=user.id)
     submission = submission_factory(conference=other_conference.conference)
 
     resp = graphql_client.query(
@@ -120,7 +121,7 @@ def test_can_see_all_submission_fields_if_speaker(
 ):
     graphql_client.force_login(user)
 
-    submission = submission_factory(speaker=user)
+    submission = submission_factory(speaker_id=user.id)
 
     resp = graphql_client.query(
         """query SubmissionQuery($id: ID!) {
@@ -238,7 +239,7 @@ def test_can_see_all_submission_fields_if_vote_not_open(
 
 def test_returns_correct_submission(graphql_client, user, submission_factory):
     graphql_client.force_login(user)
-    submission = submission_factory(speaker=user)
+    submission = submission_factory(speaker_id=user.id)
 
     resp = graphql_client.query(
         """query SubmissionQuery($id: ID!) {
@@ -258,7 +259,7 @@ def test_user_can_edit_submission_if_within_cfp_time_and_is_the_owner(
     graphql_client, user, submission_factory
 ):
     graphql_client.force_login(user)
-    submission = submission_factory(speaker=user, conference__active_cfp=True)
+    submission = submission_factory(speaker_id=user.id, conference__active_cfp=True)
 
     response = graphql_client.query(
         """
@@ -298,7 +299,7 @@ def test_cannot_edit_submission_if_not_the_owner(
 @mark.django_db
 def test_can_edit_submission_if_cfp_is_closed(graphql_client, user, submission_factory):
     graphql_client.force_login(user)
-    submission = submission_factory(speaker=user, conference__active_cfp=False)
+    submission = submission_factory(speaker_id=user.id, conference__active_cfp=False)
 
     response = graphql_client.query(
         """
@@ -330,7 +331,7 @@ def test_get_submission_comments(graphql_client, user, submission_comment_factor
                     id
                     text
                     author {
-                        name
+                        id
                     }
                 }
             }
@@ -343,7 +344,7 @@ def test_get_submission_comments(graphql_client, user, submission_comment_factor
     assert {
         "id": str(comment.id),
         "text": comment.text,
-        "author": {"name": comment.author.name},
+        "author": {"id": str(comment.author_id)},
     } in response["data"]["submission"]["comments"]
 
 
@@ -354,7 +355,7 @@ def test_get_submission_comments_returns_speaker_as_name(
     graphql_client.force_login(user)
 
     comment = submission_comment_factory(
-        submission=submission, author=submission.speaker
+        submission=submission, author_id=submission.speaker_id
     )
 
     response = graphql_client.query(
@@ -366,7 +367,7 @@ def test_get_submission_comments_returns_speaker_as_name(
                     id
                     text
                     author {
-                        name
+                        id
                     }
                 }
             }
@@ -379,5 +380,5 @@ def test_get_submission_comments_returns_speaker_as_name(
     assert {
         "id": str(comment.id),
         "text": comment.text,
-        "author": {"name": "Speaker"},
+        "author": {"id": str(submission.speaker_id)},
     } == response["data"]["submission"]["comments"][0]

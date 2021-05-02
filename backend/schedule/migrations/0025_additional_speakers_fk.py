@@ -30,13 +30,13 @@ class Migration(migrations.Migration):
                     fields=[
                         ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                         ('user_id', models.IntegerField(verbose_name='user')),
-                        ('schedule_item', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='additional_speakers', to='schedule.scheduleitem', verbose_name='schedule item')),
+                        ('scheduleitem', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='additional_speakers', to='schedule.scheduleitem', verbose_name='schedule item')),
                     ],
                     options={
                         'verbose_name': 'Schedule item additional speaker',
                         'verbose_name_plural': 'Schedule item additional speakers',
                         'db_table': 'schedule_scheduleitem_additional_speakers',
-                        'unique_together': {('user_id', 'schedule_item')},
+                        'unique_together': {('user_id', 'scheduleitem')},
                     },
                 ),
             ],

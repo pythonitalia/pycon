@@ -1,8 +1,9 @@
 from django.test import override_settings
 from django.utils import timezone
+from pytest import mark
+
 from hotels.models import HotelRoomReservation
 from pretix.exceptions import PretixError
-from pytest import mark
 
 
 def test_cannot_create_order_unlogged(graphql_client, user, conference, mocker):
@@ -271,7 +272,7 @@ def test_order_hotel_room(
 
     reservation = HotelRoomReservation.objects.filter(room=room).first()
 
-    assert reservation.user == user
+    assert reservation.user_id == user.id
     assert reservation.checkin == timezone.datetime(2020, 1, 1).date()
     assert reservation.checkout == timezone.datetime(2020, 1, 10).date()
 

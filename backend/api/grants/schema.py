@@ -16,7 +16,7 @@
 #         if not user.is_authenticated:
 #             return None
 
-#         return SubmissionModel.objects.filter(speaker=user, id=id).first()
+#         return SubmissionModel.objects.filter(speaker_id=user.id, id=id).first()
 
 #     @strawberry.field
 #     def submission_tags(self, info) -> typing.List[SubmissionTag]:

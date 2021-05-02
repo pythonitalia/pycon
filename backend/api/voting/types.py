@@ -25,7 +25,8 @@ class VoteValues(Enum):
 class VoteType:
     id: strawberry.ID
     value: int
-    user: LazyType["User", "api.users.types"]
+    # TODO do we need this?
+    # user: LazyType["User", "api.users.types"]
     submission: LazyType["Submission", "api.submissions.types"]
 
 

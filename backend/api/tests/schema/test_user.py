@@ -37,7 +37,7 @@ def test_works_when_user_is_logged_in(user, graphql_client):
 def test_query_submissions(graphql_client, user, submission_factory):
     graphql_client.force_login(user)
 
-    submission = submission_factory(speaker=user)
+    submission = submission_factory(speaker_id=user.id)
 
     response = graphql_client.query(
         """query Submissions($conference: String!) {

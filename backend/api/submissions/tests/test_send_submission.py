@@ -1,4 +1,5 @@
 from pytest import mark
+
 from submissions.models import Submission, SubmissionTag, SubmissionType
 from submissions.tests.factories import SubmissionFactory
 
@@ -225,7 +226,7 @@ def test_submit_talk(graphql_client, user, conference_factory):
     assert len(talk.languages.filter(code="en")) == 1
     assert talk.topic.name == "my-topic"
     assert talk.conference == conference
-    assert talk.speaker == user
+    assert talk.speaker_id == user.id
     assert talk.audience_level.name == "Beginner"
 
 

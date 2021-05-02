@@ -1,4 +1,5 @@
 import strawberry
+
 from api.permissions import IsAuthenticated
 from strawberry_forms.mutations import FormMutation
 
@@ -12,7 +13,7 @@ class SendVote(FormMutation):
         return VoteType(
             id=result.id,
             value=result.value,
-            user=result.user,
+            # user=result.user,
             submission=result.submission,
         )
 

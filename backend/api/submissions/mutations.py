@@ -1,4 +1,5 @@
 import strawberry
+
 from api.permissions import IsAuthenticated
 from strawberry_forms.mutations import FormMutation
 
@@ -37,9 +38,10 @@ class SendSubmissionComment(FormMutation):
             text=result.text,
             submission=result.submission,
             author=SubmissionCommentAuthor(
-                name="Speaker"
-                if result.author == result.submission.speaker
-                else result.author.name
+                # name="Speaker"
+                # if result.author_id == result.submission.speaker_id
+                # else result.author_id
+                id=result.author_id
             ),
             created=result.created,
         )
