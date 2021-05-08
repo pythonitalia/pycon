@@ -2,9 +2,10 @@ from datetime import datetime
 from typing import List, Optional
 
 import strawberry
+from strawberry import LazyType
+
 from api.languages.types import Language
 from api.voting.types import VoteType
-from strawberry import LazyType
 from voting.models import Vote
 
 from .permissions import CanSeeSubmissionDetail, CanSeeSubmissionPrivateFields
@@ -63,7 +64,6 @@ class Submission:
     speaker_level: Optional[str] = private_field()
     previous_talk_video: Optional[str] = private_field()
     notes: Optional[str] = private_field()
-    speaker: SubmissionSpeaker = private_field()
     topic: Optional[LazyType["Topic", "api.conferences.types"]] = restricted_field()
     type: Optional[SubmissionType] = restricted_field()
     duration: Optional[
@@ -72,6 +72,10 @@ class Submission:
     audience_level: Optional[
         LazyType["AudienceLevel", "api.conferences.types"]
     ] = restricted_field()
+
+    @strawberry.field(permission_classes=[CanSeeSubmissionPrivateFields])
+    def speaker(self) -> SubmissionSpeaker:
+        return SubmissionSpeaker(id=self.speaker_id)
 
     @strawberry.field
     def id(self, info) -> strawberry.ID:

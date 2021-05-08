@@ -5,8 +5,8 @@ from typing import Optional
 
 import strawberry
 
+from users.api.context import Info
 from users.domain import entities
-from users.domain.repository import UsersRepository
 
 
 @strawberry.federation.type(keys=["id", "id email"])
@@ -52,8 +52,8 @@ class ScheduleItemUser:
     full_name: str
 
     @classmethod
-    async def resolve_reference(cls, id: str):
-        user = await UsersRepository().get_by_id(int(id))
+    async def resolve_reference(cls, info: Info, id: str):
+        user = await info.context.users_repository.get_by_id(int(id))
 
         # TODO improve error
         if not user:
@@ -71,8 +71,8 @@ class SubmissionSpeaker:
     full_name: str
 
     @classmethod
-    async def resolve_reference(cls, id: str):
-        user = await UsersRepository().get_by_id(int(id))
+    async def resolve_reference(cls, info: Info, id: str):
+        user = await info.context.users_repository.get_by_id(int(id))
 
         # TODO improve error
         if not user:
@@ -90,8 +90,8 @@ class BlogPostAuthor:
     full_name: str
 
     @classmethod
-    async def resolve_reference(cls, id: str):
-        user = await UsersRepository().get_by_id(int(id))
+    async def resolve_reference(cls, info: Info, id: str):
+        user = await info.context.users_repository.get_by_id(int(id))
 
         # TODO improve error
         if not user:
@@ -110,12 +110,12 @@ class SubmissionCommentAuthor:
     name: str
 
     @classmethod
-    async def resolve_reference(cls, id: str, isSpeaker: bool):
+    async def resolve_reference(cls, info: Info, id: str, isSpeaker: bool):
         name = "Speaker"
         is_speaker = isSpeaker
 
         if not is_speaker:
-            user = await UsersRepository().get_by_id(int(id))
+            user = await info.context.users_repository.get_by_id(int(id))
 
             # TODO improve error
             if not user:

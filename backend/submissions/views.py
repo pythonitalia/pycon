@@ -5,7 +5,7 @@ from .models import Submission
 
 class SubmissionAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
-        if not self.request.user.is_authenticated:
+        if not self.request.pastaporto.is_authenticated:
             return Submission.objects.none()
 
         qs = Submission.objects.all()

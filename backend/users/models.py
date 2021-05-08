@@ -6,7 +6,6 @@ from django.utils.translation import gettext_lazy as _
 from pycountry import countries
 
 from helpers.constants import GENDERS
-from pretix.db import user_has_admission_ticket
 from submissions.models import Submission
 
 from .managers import UserManager
@@ -82,23 +81,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def get_short_name(self):
         return self.email
-
-    def has_sent_submission(self, conference):
-        return Submission.objects.filter(
-            speaker_id=self.id, conference=conference
-        ).exists()
-
-    def has_conference_ticket(self, conference):
-        return user_has_admission_ticket(self.email, conference.pretix_event_id)
-
-    def can_vote(self, conference):
-        if self.is_staff:
-            return True
-
-        if self.has_sent_submission(conference):
-            return True
-
-        return self.has_conference_ticket(conference)
 
     def is_eu(self):
         if self.country in EU_COUNTRIES:

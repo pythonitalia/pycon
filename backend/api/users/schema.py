@@ -15,7 +15,7 @@ class UsersQuery:
 
     # @strawberry.field(permission_classes=[IsAuthenticated])
     # def me(self, info) -> MeUser:
-    #     return info.context.request.user
+    #     return info.context.request.pastaporto
 
 
 @strawberry.type

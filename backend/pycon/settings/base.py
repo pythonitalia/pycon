@@ -17,6 +17,8 @@ ALLOWED_HOSTS = env("ALLOWED_HOSTS")
 
 FRONTEND_URL = env("FRONTEND_URL")
 
+PASTAPORTO_SECRET = env("PASTAPORTO_SECRET")
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -68,6 +70,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "qinspect.middleware.QueryInspectMiddleware",
+    "pycon.middleware.pastaporto_auth",
 ]
 
 ROOT_URLCONF = "pycon.urls"
