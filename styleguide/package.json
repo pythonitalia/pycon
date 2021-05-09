@@ -10,7 +10,7 @@
     "storybook": "start-storybook -p 6006",
     "storybook:export": "build-storybook",
     "build": "rollup -c",
-    "build-watch": "rollup -c -w",
+    "build:watch": "rollup -c -w",
     "prepublishOnly": "npm run build"
   },
   "peerDependencies": {
