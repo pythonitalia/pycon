@@ -16,6 +16,7 @@ def force_pycon_host(get_response):
 
 
 class AnonymousPastaporto:
+    @property
     def is_authenticated(self) -> bool:
         return False
 

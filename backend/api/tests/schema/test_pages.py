@@ -1,5 +1,6 @@
-from i18n.strings import LazyI18nString
 from pytest import mark
+
+from i18n.strings import LazyI18nString
 
 
 def _query_pages(client, conference_code):
@@ -114,6 +115,7 @@ def test_passing_language(graphql_client, page_factory):
 
 
 @mark.django_db
+@mark.skip(reason="disabled for now")
 def test_defaults_on_browser_language(graphql_client, page_factory):
     page_factory(
         title=LazyI18nString({"en": "this is a test", "it": "questa è una prova"}),

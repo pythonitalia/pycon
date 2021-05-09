@@ -2,6 +2,8 @@ import pytest
 
 from newsletters.exporter import convert_user_to_endpoint
 
+pytestmark = pytest.mark.skip(reason="disabled export for now")
+
 
 @pytest.mark.django_db
 def test_convert_to_item(

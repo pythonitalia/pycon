@@ -128,13 +128,11 @@ def test_updating_vote_when_user_votes_the_same_submission(
     assert vote1.value == variables["value_index"]
 
 
-def test_cannot_vote_without_a_ticket(
-    graphql_client, user, conference_factory, mocker, submission_factory
-):
+def test_cannot_vote_without_a_ticket(graphql_client, user, mocker, submission_factory):
     graphql_client.force_login(user)
     submission = submission_factory(conference__active_voting=True)
     admission_ticket_mock = mocker.patch(
-        "users.models.user_has_admission_ticket", return_value=False
+        "voting.helpers.user_has_admission_ticket", return_value=False
     )
 
     resp, _ = _submit_vote(graphql_client, submission, value_index=3)

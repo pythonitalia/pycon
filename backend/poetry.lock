@@ -1144,7 +1144,7 @@ postgresql = ["psycopg2"]
 
 [[package]]
 name = "pythonit-toolkit"
-version = "0.1.51"
+version = "0.1.52"
 description = ""
 category = "main"
 optional = false
@@ -1499,7 +1499,7 @@ testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "089a26c685b8c85e3227d949d6f52f5abce9b2a9d72ac48a74b94198fc6327b7"
+content-hash = "040cbaabc576b7b724cb5447227334dc28e6c23b3a0a1a33a2fadaf7378d3899"
 
 [metadata.files]
 amqp = [
@@ -2131,8 +2131,8 @@ python3-openid = [
     {file = "python3_openid-3.2.0-py3-none-any.whl", hash = "sha256:6626f771e0417486701e0b4daff762e7212e820ca5b29fcc0d05f6f8736dfa6b"},
 ]
 pythonit-toolkit = [
-    {file = "pythonit-toolkit-0.1.51.tar.gz", hash = "sha256:e40fa8d85d5fa62a24cd5bf15fd218cf572d6c04e00a9fb87a07c99a035cbc89"},
-    {file = "pythonit_toolkit-0.1.51-py3-none-any.whl", hash = "sha256:357417495823e1bb0501f42b189c2e12f2da4b003ef40859c338d2b13a205116"},
+    {file = "pythonit-toolkit-0.1.52.tar.gz", hash = "sha256:55964fad924ce845f9d1bd8036224be02f9ff2526aa00289d1de40ebf5757b81"},
+    {file = "pythonit_toolkit-0.1.52-py3-none-any.whl", hash = "sha256:e79d23e12935901d9fa4548661ec51aecefe7658cf6f771380070eb0924c9957"},
 ]
 pytz = [
     {file = "pytz-2019.3-py2.py3-none-any.whl", hash = "sha256:1c557d7d0e871de1f5ccd5833f60fb2550652da6be2693c1e02300743d21500d"},

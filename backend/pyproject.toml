@@ -49,7 +49,7 @@ mypy_extensions = "^0.4.3"
 graphql-core = "^3.1.0"
 strawberry-graphql = "^0.61.1"
 Werkzeug = "^1.0.1"
-pythonit-toolkit = "^0.1.51"
+pythonit-toolkit = "^0.1.52"
 
 [tool.poetry.dev-dependencies]
 pylint = "=2.6.0"

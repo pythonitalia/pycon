@@ -57,7 +57,9 @@ def test_user_needs_a_ticket_to_comment(
     graphql_client, user, submission_factory, mocker
 ):
     submission = submission_factory()
-    mocker.patch("users.models.user_has_admission_ticket").return_value = False
+    mocker.patch(
+        "api.submissions.permissions.user_has_admission_ticket"
+    ).return_value = False
 
     graphql_client.force_login(user)
 
@@ -79,15 +81,13 @@ def test_cannot_send_comments_unauthenticated(
 
 @mark.django_db
 def test_staff_can_comment_submissions(
-    graphql_client, user, submission_factory, mocker
+    graphql_client, admin_user, submission_factory, mocker
 ):
     mocker.patch("notifications.aws.send_notification")
 
-    user.is_staff = True
-    user.save()
     submission = submission_factory()
 
-    graphql_client.force_login(user)
+    graphql_client.force_login(admin_user)
 
     resp = _send_comment(graphql_client, submission, "What are you doing here!")
 

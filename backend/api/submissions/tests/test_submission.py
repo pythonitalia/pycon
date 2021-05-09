@@ -56,7 +56,7 @@ def test_can_see_submission_ticket_only_fields_if_has_ticket(
 ):
     graphql_client.force_login(user)
 
-    mocker.patch("users.models.user_has_admission_ticket").return_value = True
+    mocker.patch("voting.helpers.user_has_admission_ticket").return_value = True
 
     submission = submission_factory()
 
@@ -88,7 +88,7 @@ def test_can_see_submission_ticket_only_fields_if_has_sent_at_least_one_talk(
 ):
     graphql_client.force_login(user)
 
-    mocker.patch("users.models.user_has_admission_ticket").return_value = False
+    mocker.patch("voting.helpers.user_has_admission_ticket").return_value = False
 
     other_conference = submission_factory(speaker_id=user.id)
     submission = submission_factory(conference=other_conference.conference)

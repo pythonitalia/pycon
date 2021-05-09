@@ -554,13 +554,19 @@ def test_same_user_can_propose_multiple_talks_to_the_same_conference(
 
     assert resp["data"]["sendSubmission"]["title"] == "My first talk"
 
-    assert user.submissions.filter(conference=conference).count() == 1
+    assert (
+        Submission.objects.filter(speaker_id=user.id, conference=conference).count()
+        == 1
+    )
 
     resp, _ = _submit_talk(graphql_client, conference, title="Another talk")
 
     assert resp["data"]["sendSubmission"]["title"] == "Another talk"
 
-    assert user.submissions.filter(conference=conference).count() == 2
+    assert (
+        Submission.objects.filter(speaker_id=user.id, conference=conference).count()
+        == 2
+    )
 
 
 @mark.django_db
@@ -581,7 +587,10 @@ def test_submit_tutorial(graphql_client, user, conference_factory):
     assert resp["data"]["sendSubmission"]["__typename"] == "Submission"
     assert resp["data"]["sendSubmission"]["title"] == "My first tutorial"
 
-    assert user.submissions.filter(conference=conference).count() == 1
+    assert (
+        Submission.objects.filter(speaker_id=user.id, conference=conference).count()
+        == 1
+    )
 
 
 @mark.django_db
@@ -603,13 +612,19 @@ def test_submit_tutorial_and_talk_to_the_same_conference(
 
     assert resp["data"]["sendSubmission"]["title"] == "My first tutorial"
 
-    assert user.submissions.filter(conference=conference).count() == 1
+    assert (
+        Submission.objects.filter(speaker_id=user.id, conference=conference).count()
+        == 1
+    )
 
     resp, _ = _submit_talk(graphql_client, conference, title="My first talk")
 
     assert resp["data"]["sendSubmission"]["title"] == "My first talk"
 
-    assert user.submissions.filter(conference=conference).count() == 2
+    assert (
+        Submission.objects.filter(speaker_id=user.id, conference=conference).count()
+        == 2
+    )
 
 
 @mark.django_db
@@ -633,7 +648,10 @@ def test_elevation_pitch_and_notes_are_not_required(
     assert resp["data"]["sendSubmission"]["elevatorPitch"] == ""
     assert resp["data"]["sendSubmission"]["notes"] == ""
 
-    assert user.submissions.filter(conference=conference).count() == 1
+    assert (
+        Submission.objects.filter(speaker_id=user.id, conference=conference).count()
+        == 1
+    )
 
 
 @mark.django_db
@@ -664,15 +682,27 @@ def test_same_user_can_submit_talks_to_different_conferences(
 
     assert resp["data"]["sendSubmission"]["title"] == "My first talk"
 
-    assert user.submissions.filter(conference=conference1).count() == 1
-    assert user.submissions.filter(conference=conference2).count() == 0
+    assert (
+        Submission.objects.filter(speaker_id=user.id, conference=conference1).count()
+        == 1
+    )
+    assert (
+        Submission.objects.filter(speaker_id=user.id, conference=conference2).count()
+        == 0
+    )
 
     resp, _ = _submit_talk(graphql_client, conference2, title="Another talk")
 
     assert resp["data"]["sendSubmission"]["title"] == "Another talk"
 
-    assert user.submissions.filter(conference=conference1).count() == 1
-    assert user.submissions.filter(conference=conference2).count() == 1
+    assert (
+        Submission.objects.filter(speaker_id=user.id, conference=conference1).count()
+        == 1
+    )
+    assert (
+        Submission.objects.filter(speaker_id=user.id, conference=conference2).count()
+        == 1
+    )
 
 
 def test_create_submission_tags(
