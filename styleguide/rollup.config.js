@@ -2,9 +2,13 @@ import typescript from "rollup-plugin-typescript2";
 import { terser } from "rollup-plugin-terser";
 import commonjs from "@rollup/plugin-commonjs";
 import pkg from "./package.json";
-import copy from "rollup-plugin-copy";
-import postcss from "rollup-plugin-postcss";
 import ts from "typescript";
+import styles from "rollup-plugin-styles";
+
+const assetFileNames = (assetInfo) =>
+  assetInfo.name === "index.css"
+    ? "index.css"
+    : "assets/[name]-[hash][extname]";
 
 export default {
   input: "./src/index.ts",
@@ -17,11 +21,13 @@ export default {
       file: `${pkg.module}`,
       format: "es",
       sourcemap: true,
+      assetFileNames,
     },
     {
       file: `${pkg.main}`,
       format: "cjs",
       sourcemap: true,
+      assetFileNames,
     },
   ],
   plugins: [
@@ -48,23 +54,11 @@ export default {
         },
       },
     }),
-    postcss({
-      config: {
-        path: "./postcss.config.js",
-      },
-      extract: true,
-      extensions: [".css"],
-    }),
+    styles({ mode: "extract", config: { path: "./postcss.config.js" } }),
     terser({
       output: {
         comments: false,
       },
-    }),
-    copy({
-      targets: [
-        { src: "tailwind.config.js", dest: "dist" },
-        { src: "postcss.config.js", dest: "dist" },
-      ],
     }),
   ],
 };

@@ -98,7 +98,7 @@ export const SplitSection = ({ title, children }: Props) => (
 
         {children}
       </div>
-      <div className="p-8 md:p-16 relative">
+      <div className="p-8 md:p-16 relative overflow-hidden">
         <div className="max-w-xs">
           <div className="relative aspect-w-1 aspect-h-1">
             <div className="absolute w-full h-full bg-keppel top-10 left-20"></div>

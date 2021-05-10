@@ -1,5 +1,5 @@
 import { format } from "date-fns";
-import differenceInMinutes from "date-fns/esm/fp/differenceInMinutes/index.js";
+import differenceInMinutes from "date-fns/fp/differenceInMinutes";
 import parseISO from "date-fns/parseISO";
 import React, { Fragment } from "react";
 import { Title } from "../title";
