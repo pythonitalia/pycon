@@ -12,35 +12,35 @@ export const Standard = () => (
       name="Patrick"
       subtitle="Python Italia"
       portraitUrl="https://source.unsplash.com/900x900/?face&1"
-      className="bg-red-400"
+      className="bg-orange"
     />
 
     <SpeakerSquare
       name="Patrick"
       subtitle="Python Italia"
       portraitUrl="https://source.unsplash.com/900x900/?face&2"
-      className="bg-blue-400"
+      className="bg-keppel"
     />
 
     <SpeakerSquare
       name="Patrick"
       subtitle="Python Italia"
       portraitUrl="https://source.unsplash.com/900x900/?face&3"
-      className="bg-purple-400"
+      className="bg-casablanca"
     />
 
     <SpeakerSquare
       name="Patrick"
       subtitle="Python Italia"
       portraitUrl="https://source.unsplash.com/900x900/?face&4"
-      className="bg-yellow-400"
+      className="bg-aquamarine"
     />
 
     <SpeakerSquare
       name="Patrick"
       subtitle="Python Italia"
       portraitUrl="https://source.unsplash.com/900x900/?face&5"
-      className="bg-red-400"
+      className="bg-orange"
     />
   </Carousel>
 );

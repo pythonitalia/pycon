@@ -9,6 +9,17 @@ module.exports = {
       display: ["aktiv-grotesk-extended"],
       body: ["aktiv-grotesk-extended"],
     },
+    colors: {
+      transparent: "transparent",
+      current: "currentColor",
+      white: "white",
+      black: "black",
+      orange: "#F17A5D",
+      keppel: "#34B4A1",
+      casablanca: "#F8B03D",
+      aquamarine: "#79CDE0",
+      purple: "#9473B0",
+    },
     extend: {
       animation: {
         marquee: "marquee 20s linear infinite",

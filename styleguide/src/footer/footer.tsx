@@ -41,7 +41,7 @@ export const Footer = () => (
         <li>
           <SocialLink
             href="https://twitter.com/pyconit"
-            className="bg-blue-400"
+            className="bg-keppel"
             icon={TwitterIcon}
           >
             Twitter
@@ -50,7 +50,7 @@ export const Footer = () => (
         <li>
           <SocialLink
             href="https://www.facebook.com/pythonitalia/"
-            className="bg-blue-700"
+            className="bg-purple"
             icon={FacebookIcon}
           >
             Facebook
@@ -59,7 +59,7 @@ export const Footer = () => (
         <li>
           <SocialLink
             href="https://www.instagram.com/python.it/"
-            className="bg-purple-800"
+            className="bg-orange"
             icon={InstagramIcon}
           >
             Instagram
