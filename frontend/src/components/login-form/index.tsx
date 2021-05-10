@@ -163,7 +163,7 @@ export const LoginForm: React.SFC<FormProps> = ({ next, ...props }) => {
             <FormattedMessage id="login.loginButton" />
           </Button>
         </form>
-        <Box>
+        {/* <Box>
           <Text mb={4} as="h2">
             <FormattedMessage id="login.loginWithSocial" />
           </Text>
@@ -171,7 +171,7 @@ export const LoginForm: React.SFC<FormProps> = ({ next, ...props }) => {
           <Link external={true} path="/login/google/" variant="google">
             <FormattedMessage id="login.useGoogle" />
           </Link>
-        </Box>
+        </Box> */}
       </Grid>
     </Box>
   );

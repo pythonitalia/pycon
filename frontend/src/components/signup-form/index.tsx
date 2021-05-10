@@ -150,7 +150,7 @@ export const SignupForm: React.SFC = () => {
             <FormattedMessage id="signup.signupButton" />
           </Button>
         </form>
-        <Box>
+        {/* <Box>
           <Text mb={4} as="h2">
             <FormattedMessage id="signup.signupWithSocial" />
           </Text>
@@ -158,7 +158,7 @@ export const SignupForm: React.SFC = () => {
           <Link external={true} path="/login/google/" variant="google">
             <FormattedMessage id="signup.useGoogle" />
           </Link>
-        </Box>
+        </Box> */}
       </Grid>
     </Box>
   );
