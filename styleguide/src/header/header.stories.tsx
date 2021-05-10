@@ -5,4 +5,17 @@ export default {
   title: "Header",
 };
 
-export const Standard = () => <Header />;
+export const Standard = () => (
+  <Header
+    links={[
+      {
+        href: "/",
+        title: "Home",
+      },
+      {
+        href: "/",
+        title: "Schedule",
+      },
+    ]}
+  />
+);
