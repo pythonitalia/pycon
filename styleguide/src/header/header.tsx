@@ -4,7 +4,9 @@ import { MenuButton } from "../menu-button/menu-button";
 
 export const Header = () => (
   <header className="p-8 flex justify-between max-w-7xl mx-auto">
-    <Logo className="w-40" />
+    <a href="/">
+      <Logo className="w-40" />
+    </a>
     <MenuButton />
   </header>
 );

@@ -13,7 +13,10 @@ export const SpeakerSquare = ({
   className?: string;
 }) => (
   <div className="aspect-w-1 aspect-h-1">
-    <img src={portraitUrl} className="absolute top-0 left-0 w-full h-full" />
+    <img
+      src={portraitUrl}
+      className="absolute top-0 left-0 w-full h-full filter grayscale brightness-75 object-cover"
+    />
     <div
       className={clsx(
         "absolute top-0 left-0 w-full h-full opacity-50 blend-lighten",

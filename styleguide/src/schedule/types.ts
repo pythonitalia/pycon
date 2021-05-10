@@ -16,7 +16,6 @@ export type BaseEvent = {
     | "LIGHTNING_TALK"
     | "QUIZ"
     | "CLOSING"
-    | "ARTISTIC_PERFORMANCE"
     | "DIVERSITY_SUCCESS_STORY"
     | "AMA";
 };

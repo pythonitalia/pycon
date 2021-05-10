@@ -1,45 +1,13 @@
-import clsx from "clsx";
 import { format } from "date-fns";
 import differenceInMinutes from "date-fns/esm/fp/differenceInMinutes/index.js";
 import parseISO from "date-fns/parseISO";
 import React, { Fragment } from "react";
 import { Title } from "../title";
-import {
-  EventWithPerformer,
-  Event,
-  ScheduleProgram,
-  ScheduleDay,
-} from "./types";
+import { ScheduleItem } from "./schedule-item";
+import { Event, ScheduleProgram, ScheduleDay } from "./types";
 
 type Props = {
   program: ScheduleProgram;
-};
-
-const hasSinglePerformer = (event: Event): event is EventWithPerformer => {
-  return (event as EventWithPerformer).performer !== undefined;
-};
-
-const ScheduleItem = ({
-  event,
-  className,
-  ...props
-}: {
-  event: Event;
-  className: string;
-  style: React.CSSProperties;
-}) => {
-  return (
-    <div
-      key={event.start}
-      className={clsx("flex flex-col", className)}
-      {...props}
-    >
-      {event.title}
-      <footer className="mt-auto">
-        {hasSinglePerformer(event) ? event.performer.fullName : null}
-      </footer>
-    </div>
-  );
 };
 
 const Day = ({ day, slots }: { day: ScheduleDay; slots: Slot[] }) => {
@@ -52,7 +20,6 @@ const Day = ({ day, slots }: { day: ScheduleDay; slots: Slot[] }) => {
           <ScheduleItem
             key={event.start}
             event={event}
-            className="bg-white p-4"
             style={{
               gridRowStart: slot.rowStart,
               gridRowEnd: slot.rowEnd,

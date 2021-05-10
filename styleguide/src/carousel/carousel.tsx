@@ -30,6 +30,8 @@ const RightArrow = ({ className }: { className?: string }) => (
   </svg>
 );
 
+const COLORS = ["orange", "keppel", "casablanca", "aquamarine", "purple"];
+
 const ArrowButton = ({
   onClick,
   className,
@@ -90,11 +92,13 @@ export const Carousel = ({ title, children }: Props) => {
               } as any
             }
           >
-            {React.Children.map(children, (child) => {
+            {React.Children.map(children, (child, index) => {
               return (
                 <div className="w-full md:w-1/4 flex-shrink-0">
                   <div className="aspect-w-1 aspect-h-1 border-r-4 border-black">
-                    {child}
+                    {React.cloneElement(child as React.ReactElement, {
+                      className: `bg-${COLORS[index % COLORS.length]}`,
+                    })}
                   </div>
                 </div>
               );

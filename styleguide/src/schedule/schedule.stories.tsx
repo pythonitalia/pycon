@@ -126,7 +126,7 @@ const program: ScheduleProgram = {
         {
           start: "2021-06-16T22:10",
           end: "2021-06-16T22:30",
-          type: "ARTISTIC_PERFORMANCE",
+          type: "PERFORMANCE",
           title: "Artistic Performance - TBD",
           performer: {
             fullName: "TBC",
