@@ -44,11 +44,12 @@ const Icon = () => (
   </svg>
 );
 
-export const MenuButton = () => (
+export const MenuButton = ({ onClick }: { onClick: () => void }) => (
   <button
     className={
       "bg-white border-black border-2 p-3 w-12 h-12 flex flex-col justify-between items-center"
     }
+    onClick={onClick}
   >
     <Icon />
 
