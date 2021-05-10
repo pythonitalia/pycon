@@ -55,11 +55,11 @@ const ArrowButton = ({
 export const Carousel = ({ title, children }: Props) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  const totalCount = React.Children.count(children);
+
   const previous = () => setCurrentIndex(Math.max(0, currentIndex - 1));
   const next = () =>
-    setCurrentIndex(
-      Math.min(React.Children.count(children) - 1, currentIndex + 1)
-    );
+    setCurrentIndex(Math.min(totalCount - 1, currentIndex + 1));
 
   return (
     <div>
@@ -82,13 +82,11 @@ export const Carousel = ({ title, children }: Props) => {
 
         <div className="w-full overflow-hidden border-black border-l-4">
           <div
-            className="flex transform transition-transform"
+            className="flex transform transition-transform carousel-container"
             style={
               {
                 "--current-index": currentIndex,
-                // TODO: how can we change this based on the current breakpoint?
-                "--per-page": 1,
-                "--tw-translate-x": `calc(var(--current-index) * -100% / var(--per-page))`,
+                "--total-count": totalCount,
               } as any
             }
           >

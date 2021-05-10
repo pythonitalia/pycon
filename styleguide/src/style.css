@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.carousel-container {
+  --per-page: 1;
+  --tw-translate-x: calc(var(--current-index) * -100% / var(--per-page));
+}
+
+@screen md {
+  .carousel-container {
+    --per-page: 4;
+    --index: max(
+      0,
+      min(var(--current-index), calc(var(--total-count) - var(--per-page)))
+    );
+    --tw-translate-x: calc(var(--index) * -100% / var(--per-page));
+  }
+}

@@ -8,39 +8,14 @@ export default {
 
 export const Standard = () => (
   <Carousel title="The speakers">
-    <SpeakerSquare
-      name="Patrick"
-      subtitle="Python Italia"
-      portraitUrl="https://source.unsplash.com/900x900/?face&1"
-      className="bg-orange"
-    />
-
-    <SpeakerSquare
-      name="Patrick"
-      subtitle="Python Italia"
-      portraitUrl="https://source.unsplash.com/900x900/?face&2"
-      className="bg-keppel"
-    />
-
-    <SpeakerSquare
-      name="Patrick"
-      subtitle="Python Italia"
-      portraitUrl="https://source.unsplash.com/900x900/?face&3"
-      className="bg-casablanca"
-    />
-
-    <SpeakerSquare
-      name="Patrick"
-      subtitle="Python Italia"
-      portraitUrl="https://source.unsplash.com/900x900/?face&4"
-      className="bg-aquamarine"
-    />
-
-    <SpeakerSquare
-      name="Patrick"
-      subtitle="Python Italia"
-      portraitUrl="https://source.unsplash.com/900x900/?face&5"
-      className="bg-orange"
-    />
+    {new Array(10).fill(null).map((_, index) => (
+      <SpeakerSquare
+        key={index}
+        name={`Speaker ${index + 1}`}
+        subtitle="Python Italia"
+        portraitUrl={`https://source.unsplash.com/800x800/?face&${index}`}
+        className="bg-orange"
+      />
+    ))}
   </Carousel>
 );
