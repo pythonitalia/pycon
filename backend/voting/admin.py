@@ -5,12 +5,6 @@ from django.utils.html import format_html
 
 from voting.models import RankRequest, RankSubmission, Vote
 
-# TODO add back?
-# class UserFilter(AutocompleteFilter):
-#     title = "Author"
-#     field_name = "user"
-#     autocomplete_url = "user-autocomplete"
-
 
 class SubmissionFilter(AutocompleteFilter):
     title = "Submission"
@@ -59,7 +53,6 @@ class RankSubmissionAdmin(admin.ModelAdmin):
         "submission__type",
         "submission__topic",
         "submission__duration",
-        # "submission__speaker__gender",
     )
 
     def title(self, obj):

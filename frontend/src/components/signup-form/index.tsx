@@ -69,11 +69,6 @@ export const SignupForm: React.SFC = () => {
     [signup, formState],
   );
 
-  // const errorMessage =
-  //   data && data.register.__typename === "RegisterErrors"
-  //     ? data.register.nonFieldErrors.join(" ")
-  //     : (error || "").toString();
-
   const errorMessage = getErrorMessageIfAny(data?.register?.__typename);
 
   const getFieldErrors = (field: "email" | "password") =>

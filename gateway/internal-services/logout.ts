@@ -9,11 +9,14 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    logout: String
+    logout: String!
   }
 `;
 
 const resolvers = {
+  Query: {
+    logout: () => "👋",
+  },
   Mutation: {
     async logout(_: any, __: any, context: any) {
       const action = new ClearAuthAction();
