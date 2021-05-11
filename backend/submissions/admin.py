@@ -3,11 +3,6 @@ from django.utils.translation import gettext_lazy as _
 
 from .models import Submission, SubmissionComment, SubmissionTag, SubmissionType
 
-# class SpeakerFilter(AutocompleteFilter):
-#     title = "Speaker"
-#     field_name = "speaker_id"
-#     autocomplete_url = "user-autocomplete"
-
 
 class SubmissionCommentInline(admin.TabularInline):
     model = SubmissionComment
@@ -51,9 +46,6 @@ class SubmissionAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}
     filter_horizontal = ("tags",)
     inlines = [SubmissionCommentInline]
-
-    # def speaker_name(self, obj):
-    #     return obj.speaker.full_name or obj.speaker.name or obj.speaker.email
 
     class Media:
         js = ["admin/js/jquery.init.js"]

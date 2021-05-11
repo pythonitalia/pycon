@@ -13,7 +13,6 @@ class SendVote(FormMutation):
         return VoteType(
             id=result.id,
             value=result.value,
-            # user=result.user,
             submission=result.submission,
         )
 

@@ -8,17 +8,6 @@ from .types import Country
 
 
 @strawberry.type
-class UsersQuery:
-    @strawberry.field
-    def pycon(self) -> str:
-        return "pycon"
-
-    # @strawberry.field(permission_classes=[IsAuthenticated])
-    # def me(self, info) -> MeUser:
-    #     return info.context.request.pastaporto
-
-
-@strawberry.type
 class CountryQuery:
     @strawberry.field
     def countries(self, info) -> List[Country]:

@@ -1,4 +1,5 @@
 import strawberry
+
 from api.users.types import User
 
 from .blog.schema import BlogQuery
@@ -11,15 +12,12 @@ from .pages.schema import PagesQuery
 from .schedule.mutations import ScheduleMutations
 from .submissions.mutations import SubmissionsMutations
 from .submissions.schema import SubmissionsQuery
-from .users.schema import CountryQuery, UsersQuery
+from .users.schema import CountryQuery
 from .voting.mutations import VotesMutations
-
-# from .users.mutations import UsersMutations
 
 
 @strawberry.type
 class Query(
-    UsersQuery,
     ConferenceQuery,
     BlogQuery,
     SubmissionsQuery,
@@ -32,7 +30,6 @@ class Query(
 
 @strawberry.type
 class Mutation(
-    # UsersMutations,
     SubmissionsMutations,
     VotesMutations,
     OrdersMutations,
