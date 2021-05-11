@@ -1,3 +1,5 @@
+from collections import namedtuple
+
 from django.core import exceptions
 from django.db import models
 from django.utils.functional import cached_property
@@ -10,6 +12,8 @@ from conferences.models import Conference
 from helpers.unique_slugify import unique_slugify
 from pycon.constants import COLORS
 from submissions.models import Submission
+
+SpeakerEntity = namedtuple("SpeakerEntity", ("id",))
 
 
 class Day(models.Model):
@@ -130,16 +134,15 @@ class ScheduleItem(TimeStampedModel):
 
     @cached_property
     def speakers(self):
-        # TODO  fix this
-        from collections import namedtuple
-
-        TempStruct = namedtuple("TEMPSTRUCT", ("id",))
         speakers = set(
-            [TempStruct(speaker.user_id) for speaker in self.additional_speakers.all()]
+            [
+                SpeakerEntity(speaker.user_id)
+                for speaker in self.additional_speakers.all()
+            ]
         )
 
         if self.submission:
-            speakers.add(TempStruct(self.submission.speaker_id))
+            speakers.add(SpeakerEntity(self.submission.speaker_id))
 
         return speakers
 
