@@ -12,16 +12,17 @@ class CanSeeSubmissionDetail(BasePermission):
         if HasTokenPermission().has_permission(source, info):
             return True
 
-        pastaporto = info.context.request.pastaporto
-        user_info = info.context.request.user
-
         conference = source.conference
 
         if conference.is_voting_closed:
             return True
 
+        pastaporto = info.context.request.pastaporto
+
         if not pastaporto.is_authenticated:
             return False
+
+        user_info = info.context.request.user
 
         if user_info.is_staff or source.speaker_id == user_info.id:
             return True
