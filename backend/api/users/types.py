@@ -1,6 +1,7 @@
-from typing import List, Optional
+from typing import List
 
 import strawberry
+
 from api.pretix.query import get_user_orders
 from api.pretix.types import PretixOrder
 from api.submissions.types import Submission
@@ -19,10 +20,7 @@ class User:
 
     @strawberry.field
     def orders(self, info, conference: str) -> List[PretixOrder]:
-        # TODO remove this
-        return []
         conference = Conference.objects.get(code=conference)
-
         return get_user_orders(conference, self.email)
 
     @strawberry.field
@@ -30,12 +28,6 @@ class User:
         return SubmissionModel.objects.filter(
             speaker_id=self.id, conference__code=conference
         )
-
-    @strawberry.field
-    def can_edit_schedule(self, info) -> bool:
-        # return self.is_staff or self.is_superuser
-        # todo implement
-        return False
 
 
 @strawberry.type

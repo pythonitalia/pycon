@@ -23,6 +23,7 @@ class User:
     open_to_newsletter: bool
     date_birth: Optional[date]
     country: str
+    is_staff: bool
 
     @classmethod
     def from_domain(cls, entity: entities.User) -> User:
@@ -38,7 +39,12 @@ class User:
             open_to_newsletter=entity.open_to_newsletter,
             date_birth=entity.date_birth,
             country=entity.country,
+            is_staff=entity.is_staff,
         )
+
+    @strawberry.field
+    def can_edit_schedule(self) -> bool:
+        return self.is_staff
 
 
 @strawberry.type
