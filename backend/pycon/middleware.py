@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.auth.middleware import AuthenticationMiddleware
 from django.contrib.auth.models import AnonymousUser
 from pythonit_toolkit.headers import PASTAPORTO_X_HEADER
 from pythonit_toolkit.pastaporto.entities import Pastaporto
@@ -36,8 +37,20 @@ def pastaporto_auth(get_response):
             request.pastaporto = pastaporto
             request.user = pastaporto.user_info or AnonymousUser()
         except InvalidPastaportoError as e:
+            request.pastaporto = None
+            request.user = None
             raise ValueError("Invalid pastaporto") from e
 
         return get_response(request)
 
     return middleware
+
+
+class CustomAuthenticationMiddleware(AuthenticationMiddleware):
+    def process_request(self, request):
+        if request.path == "/graphql":
+            # if we are on /graphql as path
+            # we do not want to use this auth system
+            return
+
+        super().process_request(request)
