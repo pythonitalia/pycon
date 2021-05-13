@@ -34,7 +34,7 @@ class SubmissionTag:
     name: str
 
 
-@strawberry.federation.type(keys=["id isSpeaker"])
+@strawberry.federation.type(keys=["id"])
 class SubmissionCommentAuthor:
     id: strawberry.ID
     is_speaker: bool

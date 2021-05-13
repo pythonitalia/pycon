@@ -9,16 +9,19 @@ from conferences.models import Conference
 from submissions.models import Submission as SubmissionModel
 
 
-@strawberry.federation.type(keys=["id email"], extend=True)
+@strawberry.federation.type(keys=["id"], extend=True)
 class User:
     id: strawberry.ID = strawberry.federation.field(external=True)
     email: str = strawberry.federation.field(external=True)
+    isStaff: bool = strawberry.federation.field(external=True)
 
     @classmethod
-    def resolve_reference(cls, id: strawberry.ID, email: str):
-        return cls(id=id, email=email)
+    def resolve_reference(
+        cls, id: strawberry.ID, email: str = "", isStaff: bool = False
+    ):
+        return cls(id=id, email=email, isStaff=isStaff)
 
-    @strawberry.field
+    @strawberry.federation.field(requires=["email"])
     def orders(self, info, conference: str) -> List[PretixOrder]:
         conference = Conference.objects.get(code=conference)
         return get_user_orders(conference, self.email)
@@ -28,6 +31,10 @@ class User:
         return SubmissionModel.objects.filter(
             speaker_id=self.id, conference__code=conference
         )
+
+    @strawberry.federation.field(requires=["isStaff"])
+    def can_edit_schedule(self) -> bool:
+        return self.isStaff
 
 
 @strawberry.type

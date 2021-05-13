@@ -9,7 +9,7 @@ from users.api.context import Info
 from users.domain import entities
 
 
-@strawberry.federation.type(keys=["id", "id email"])
+@strawberry.federation.type(keys=["id"])
 class User:
     id: strawberry.ID
     email: str
@@ -41,10 +41,6 @@ class User:
             country=entity.country,
             is_staff=entity.is_staff,
         )
-
-    @strawberry.field
-    def can_edit_schedule(self) -> bool:
-        return self.is_staff
 
 
 @strawberry.type
@@ -109,19 +105,22 @@ class BlogPostAuthor:
         )
 
 
-@strawberry.federation.type(keys=["id isSpeaker"], extend=True)
+@strawberry.federation.type(keys=["id"], extend=True)
 class SubmissionCommentAuthor:
     id: strawberry.ID = strawberry.federation.field(external=True)
     is_speaker: bool = strawberry.federation.field(external=True)
     name: str
 
     @classmethod
-    async def resolve_reference(cls, info: Info, id: str, isSpeaker: bool):
-        name = "Speaker"
-        is_speaker = isSpeaker
+    async def resolve_reference(cls, id: str, isSpeaker: bool = True):
+        return cls(id=id, is_speaker=isSpeaker)
 
-        if not is_speaker:
-            user = await info.context.users_repository.get_by_id(int(id))
+    @strawberry.federation.field(requires=["isSpeaker"])
+    async def name(self, info: Info):
+        name = "Speaker"
+
+        if not self.is_speaker:
+            user = await info.context.users_repository.get_by_id(int(self.id))
 
             # TODO improve error
             if not user:
@@ -129,4 +128,4 @@ class SubmissionCommentAuthor:
 
             name = user.name
 
-        return cls(id=id, is_speaker=is_speaker, name=name)
+        return name
