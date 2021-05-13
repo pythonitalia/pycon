@@ -55,7 +55,7 @@ class ScheduleItemUser:
 
     @classmethod
     async def resolve_reference(cls, info: Info, id: str):
-        user = await info.context.users_repository.get_by_id(int(id))
+        user = await info.context.users_dataloader.load(int(id))
 
         # TODO improve error
         if not user:
@@ -74,7 +74,7 @@ class SubmissionSpeaker:
 
     @classmethod
     async def resolve_reference(cls, info: Info, id: str):
-        user = await info.context.users_repository.get_by_id(int(id))
+        user = await info.context.users_dataloader.load(int(id))
 
         # TODO improve error
         if not user:
@@ -93,7 +93,7 @@ class BlogPostAuthor:
 
     @classmethod
     async def resolve_reference(cls, info: Info, id: str):
-        user = await info.context.users_repository.get_by_id(int(id))
+        user = await info.context.users_dataloader.load(int(id))
 
         # TODO improve error
         if not user:
@@ -120,7 +120,7 @@ class SubmissionCommentAuthor:
         name = "Speaker"
 
         if not self.is_speaker:
-            user = await info.context.users_repository.get_by_id(int(self.id))
+            user = await info.context.users_dataloader.load(int(self.id))
 
             # TODO improve error
             if not user:

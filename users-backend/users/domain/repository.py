@@ -45,6 +45,11 @@ class UsersRepository(AbstractUsersRepository):
     async def get_users(self) -> Paginable[User]:
         return Paginable(self.session, User)
 
+    async def get_batch_by_ids(self, ids: list[int]) -> list[User]:
+        query = select(User).where(User.id.in_(ids))
+        users = (await self.session.execute(query)).scalars()
+        return users
+
     async def get_by_email(self, email: str) -> Optional[User]:
         query = select(User).where(User.email == email)
         user = (await self.session.execute(query)).scalar_one_or_none()
