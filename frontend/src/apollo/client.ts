@@ -11,7 +11,10 @@ import { setLoginState } from "../components/profile/hooks";
 import introspectionQueryResultData from "../generated/fragment-types.json";
 
 const isUserLoggedOut = (graphErrors: readonly GraphQLError[]) =>
-  !!graphErrors.find((e) => e.message === "User not logged in");
+  !!graphErrors.find(
+    (e) =>
+      e.message === "User not logged in" || e.message === "Not authenticated",
+  );
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {
@@ -38,8 +41,9 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 });
 
 const httpLink = new HttpLink({
-  uri: process.browser ? "/graphql" : process.env.API_URL,
+  uri: process.env.API_URL,
   fetch,
+  credentials: "include",
 });
 
 type ApolloQueryDefinition = DefinitionNode & {

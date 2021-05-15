@@ -6,8 +6,6 @@ import { Box, Heading, jsx, Text } from "theme-ui";
 
 import { Link } from "../link";
 
-const isRedirect = (e: any) => false;
-
 export class ErrorBoundary extends Component<
   {},
   {
@@ -27,14 +25,10 @@ export class ErrorBoundary extends Component<
       const eventId = Sentry.captureException(error);
       this.setState({ eventId });
 
-      if (isRedirect(error)) {
-        throw error;
-      } else {
-        this.setState({
-          error,
-          errorInfo,
-        });
-      }
+      this.setState({
+        error,
+        errorInfo,
+      });
     });
   }
 

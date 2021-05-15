@@ -4,6 +4,7 @@ import Router from "next/router";
 import { Fragment, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
+import { Alert } from "~/components/alert";
 
 import { MetaTags } from "~/components/meta-tags";
 import { PageLoading } from "~/components/page-loading";
@@ -36,12 +37,22 @@ export const MyProfilePage = () => {
     }
   }, [error]);
 
+  useEffect(() => {
+    if (!loggedIn) {
+      const loginUrl = `/${lang}/login`;
+      setLoginState(false);
+      Router.push("/[lang]/login", loginUrl);
+    }
+  }, []);
+
   if (loading) {
     return <PageLoading titleId="profile.title" />;
   }
 
   if (error) {
-    throw error;
+    return (
+      <Alert variant="alert">Ops, something went wrong: {error.message}</Alert>
+    );
   }
 
   if (!profileData) {
