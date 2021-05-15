@@ -54,7 +54,7 @@ exports.graphqlHandler = async (event: any, context: any) => {
       origin: [
         // @ts-ignore
         /python-italia\.vercel\.app$/,
-        "pycon.it",
+        "https://pycon.it",
       ],
     },
   });
