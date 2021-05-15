@@ -1,11 +1,11 @@
 locals {
   is_prod = terraform.workspace == "production"
-  domain  = local.is_prod ? "${local.domain_name}.beta.python.it" : "${terraform.workspace}-${local.domain_name}.beta.python.it"
+  domain  = local.is_prod ? "${local.domain_name}.python.it" : "${terraform.workspace}-${local.domain_name}.python.it"
 
   # Services URLs
   pycon_backend_service_url       = local.is_prod ? "https://admin.pycon.it" : "https://admin.pycon.it"
-  association_backend_service_url = local.is_prod ? "https://association-api.beta.python.it" : "https://${terraform.workspace}-association-api.beta.python.it"
-  users_service_url               = local.is_prod ? "https://users-api.beta.python.it" : "https://${terraform.workspace}-users-api.beta.python.it"
+  association_backend_service_url = local.is_prod ? "https://association-api.python.it" : "https://${terraform.workspace}-association-api.python.it"
+  users_service_url               = local.is_prod ? "https://users-api.python.it" : "https://${terraform.workspace}-users-api.python.it"
 }
 
 data "aws_iam_role" "lambda" {
@@ -44,8 +44,8 @@ module "api" {
   lambda_function_name = module.lambda.function_name
 }
 
-data "aws_acm_certificate" "beta" {
-  domain   = "*.beta.python.it"
+data "aws_acm_certificate" "cert" {
+  domain   = "*.python.it"
   statuses = ["ISSUED"]
   provider = aws.us
 }
@@ -56,6 +56,6 @@ module "distribution" {
   application     = local.application
   zone_name       = "python.it"
   domain          = local.domain
-  certificate_arn = data.aws_acm_certificate.beta.arn
+  certificate_arn = data.aws_acm_certificate.cert.arn
   origin_url      = module.api.cloudfront_friendly_endpoint
 }
