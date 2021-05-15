@@ -18,6 +18,7 @@ module.exports = {
       keppel: "#34B4A1",
       casablanca: "#F8B03D",
       aquamarine: "#79CDE0",
+      "cornflower-blue": "#6A80EF",
       pink: "#DD9BC7",
       purple: "#9473B0",
     },

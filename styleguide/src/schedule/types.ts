@@ -1,6 +1,6 @@
 export type Performer = {
   fullName: string;
-  profilePicture: string;
+  profilePicture: string | null;
 };
 
 export type Status = "CONFIRMED" | "TBC";
@@ -8,11 +8,13 @@ export type Status = "CONFIRMED" | "TBC";
 export type BaseEvent = {
   start: string;
   end: string;
-  title: string;
+  title?: string;
+  status: Status;
   type:
     | "LIVE_CODING"
     | "PERFORMANCE"
     | "INTERMISSION"
+    | "INTERVIEW"
     | "LIGHTNING_TALK"
     | "QUIZ"
     | "CLOSING"
@@ -21,12 +23,10 @@ export type BaseEvent = {
 };
 
 export type EventWithPerformer = BaseEvent & {
-  status: Status;
-  performer: Performer;
+  performer: Performer | null;
 };
 
 export type EventWithPerformers = BaseEvent & {
-  status: Status;
   performers: Performer[];
 };
 

@@ -12,7 +12,7 @@ const program: ScheduleProgram = {
       date: "2021-06-16",
       mc: {
         fullName: "Harry Percival",
-        profilePicture: "...",
+        profilePicture: null,
         status: "TBC",
       },
       events: [
@@ -20,10 +20,9 @@ const program: ScheduleProgram = {
           start: "2021-06-16T17:00",
           end: "2021-06-16T20:00",
           type: "LIVE_CODING",
-          title: "Live Coding with Aaron Bassett",
           performer: {
             fullName: "Aaron Bassett",
-            profilePicture: "...",
+            profilePicture: "/images/aaron-basset.jpeg",
           },
           status: "TBC",
         },
@@ -31,6 +30,7 @@ const program: ScheduleProgram = {
         {
           start: "2021-06-16T20:00",
           end: "2021-06-16T20:15",
+          status: "CONFIRMED",
           type: "INTERMISSION",
           title: "Live Coding wrap up",
         },
@@ -42,7 +42,7 @@ const program: ScheduleProgram = {
           title: "Artistic Performance by Ania Wsz",
           performer: {
             fullName: "Ania Wsz",
-            profilePicture: "...",
+            profilePicture: "/images/ania-wsz.jpg",
           },
           status: "CONFIRMED",
         },
@@ -54,7 +54,7 @@ const program: ScheduleProgram = {
           title: "Lightning talk by Tania Allard",
           performer: {
             fullName: "Tania Allard",
-            profilePicture: "...",
+            profilePicture: "/images/tania-allard.jpg",
           },
           status: "CONFIRMED",
         },
@@ -66,7 +66,7 @@ const program: ScheduleProgram = {
           title: "Lightning talk by Alessandro Molina",
           performer: {
             fullName: "Alessandro Molina",
-            profilePicture: "...",
+            profilePicture: "/images/alessandro-molina.jpg",
           },
           status: "CONFIRMED",
         },
@@ -79,15 +79,15 @@ const program: ScheduleProgram = {
           performers: [
             {
               fullName: "Fiorella De Luca",
-              profilePicture: "...",
+              profilePicture: "/images/fiorella-de-luca.jpg",
             },
             {
               fullName: "Sabrina Scoma",
-              profilePicture: "...",
+              profilePicture: "/images/sabrina-scoma.jpg",
             },
             {
               fullName: "Ambra Tonon",
-              profilePicture: "...",
+              profilePicture: "/images/ambra-tonon.jpg",
             },
           ],
           status: "TBC",
@@ -101,11 +101,11 @@ const program: ScheduleProgram = {
           performers: [
             {
               fullName: "Lelio Campanile",
-              profilePicture: "...",
+              profilePicture: "/images/lelio-campanile.jpg",
             },
             {
               fullName: "Luca Fedrizzi",
-              profilePicture: "...",
+              profilePicture: "/images/luca-fedrizzi.jpg",
             },
           ],
           status: "CONFIRMED",
@@ -118,7 +118,7 @@ const program: ScheduleProgram = {
           title: "Lightning Talk - TBD",
           performer: {
             fullName: "TBC",
-            profilePicture: "...",
+            profilePicture: null,
           },
           status: "TBC",
         },
@@ -130,7 +130,7 @@ const program: ScheduleProgram = {
           title: "Artistic Performance - TBD",
           performer: {
             fullName: "TBC",
-            profilePicture: "...",
+            profilePicture: null,
           },
           status: "TBC",
         },
@@ -153,143 +153,249 @@ const program: ScheduleProgram = {
       ],
     },
     {
-      date: "2021-06-16",
+      date: "2021-06-17",
       mc: {
-        fullName: "Harry Percival",
-        profilePicture: "...",
+        fullName: "Cheuk Ting Ho",
+        profilePicture: "/images/cheuk-ting-ho.jpg",
         status: "TBC",
       },
       events: [
         {
-          start: "2021-06-16T17:00",
-          end: "2021-06-16T20:00",
+          start: "2021-06-17T17:00",
+          end: "2021-06-17T20:00",
           type: "LIVE_CODING",
-          title: "Live Coding with Aaron Bassett",
           performer: {
-            fullName: "Aaron Bassett",
-            profilePicture: "...",
+            fullName: "Nina Zakharenko",
+            profilePicture: "/images/nina-zakharenko.jpg",
           },
           status: "TBC",
         },
 
         {
-          start: "2021-06-16T20:00",
-          end: "2021-06-16T20:15",
+          start: "2021-06-17T20:00",
+          end: "2021-06-17T20:15",
+          type: "INTERMISSION",
+          status: "CONFIRMED",
+          title: "Live Coding wrap up",
+        },
+
+        {
+          start: "2021-06-17T20:15",
+          end: "2021-06-17T20:30",
+          type: "LIGHTNING_TALK",
+          title: "Lightning Talk - TBD",
+          performer: {
+            fullName: "TBC",
+            profilePicture: null,
+          },
+          status: "TBC",
+        },
+
+        {
+          start: "2021-06-17T20:30",
+          end: "2021-06-17T20:40",
+          type: "LIGHTNING_TALK",
+          title: "TBC",
+          performers: [
+            {
+              fullName: "Ernesto Arbitrio",
+              profilePicture: "/images/ernesto-arbitrio.jpg",
+            },
+            {
+              fullName: "Alessia Marcolini",
+              profilePicture: "/images/alessia-marcolini.jpg",
+            },
+          ],
+          status: "CONFIRMED",
+        },
+
+        {
+          start: "2021-06-17T20:40",
+          end: "2021-06-17T20:50",
+          type: "LIGHTNING_TALK",
+          title: "Lightning Talk - TBD",
+          performer: {
+            fullName: "TBC",
+            profilePicture: null,
+          },
+          status: "TBC",
+        },
+
+        {
+          start: "2021-06-17T20:50",
+          end: "2021-06-17T21:10",
+          type: "DIVERSITY_SUCCESS_STORY",
+          title: "Diversity Success Story - TBD",
+          performers: [],
+          status: "TBC",
+        },
+
+        {
+          start: "2021-06-17T21:10",
+          end: "2021-06-17T22:00",
+          type: "INTERVIEW",
+          title: "Interview with Ines Montani and Sebastián Ramírez",
+          performers: [
+            {
+              fullName: "Ines Montani",
+              profilePicture: "/images/ines-montani.png",
+            },
+            {
+              fullName: "Sebastián Ramírez",
+              profilePicture: "/images/sebastian-ramirez.jpg",
+            },
+          ],
+          status: "CONFIRMED",
+        },
+
+        {
+          start: "2021-06-17T22:00",
+          end: "2021-06-17T22:10",
+          type: "LIGHTNING_TALK",
+          title: "Lightning Talk - TBD",
+          performer: {
+            fullName: "TBC",
+            profilePicture: null,
+          },
+          status: "TBC",
+        },
+
+        {
+          start: "2021-06-17T22:10",
+          end: "2021-06-17T22:30",
+          type: "PERFORMANCE",
+          title: "Artistic Performance - TBD",
+          performer: {
+            fullName: "TBC",
+            profilePicture: null,
+          },
+          status: "TBC",
+        },
+
+        {
+          start: "2021-06-17T23:30",
+          end: "2021-06-17T23:40",
+          type: "CLOSING",
+          title: "Closing session",
+          status: "CONFIRMED",
+        },
+      ],
+    },
+    {
+      date: "2021-06-18",
+      mc: {
+        fullName: "Miriah Peterson",
+        profilePicture: "/images/miriah-peterson.jpg",
+        status: "CONFIRMED",
+      },
+      events: [
+        {
+          start: "2021-06-18T17:00",
+          end: "2021-06-18T20:00",
+          type: "LIVE_CODING",
+          performer: {
+            fullName: "Al Sweigart",
+            profilePicture: "/images/al-sweigart.jpg",
+          },
+          status: "CONFIRMED",
+        },
+
+        {
+          start: "2021-06-18T20:00",
+          end: "2021-06-18T20:15",
+          status: "CONFIRMED",
           type: "INTERMISSION",
           title: "Live Coding wrap up",
         },
 
         {
-          start: "2021-06-16T20:15",
-          end: "2021-06-16T20:30",
+          start: "2021-06-18T20:15",
+          end: "2021-06-18T20:30",
           type: "PERFORMANCE",
-          title: "Artistic Performance by Ania Wsz",
-          performer: {
-            fullName: "Ania Wsz",
-            profilePicture: "...",
-          },
-          status: "CONFIRMED",
+          title: "Artistic Performance TBC",
+          performer: null,
+          status: "TBC",
         },
 
         {
-          start: "2021-06-16T20:30",
-          end: "2021-06-16T20:40",
+          start: "2021-06-18T20:30",
+          end: "2021-06-18T20:40",
           type: "LIGHTNING_TALK",
-          title: "Lightning talk by Tania Allard",
-          performer: {
-            fullName: "Tania Allard",
-            profilePicture: "...",
-          },
-          status: "CONFIRMED",
+          title: "TBC",
+          performer: null,
+          status: "TBC",
         },
 
         {
-          start: "2021-06-16T20:40",
-          end: "2021-06-16T20:50",
-          type: "LIGHTNING_TALK",
-          title: "Lightning talk by Alessandro Molina",
-          performer: {
-            fullName: "Alessandro Molina",
-            profilePicture: "...",
-          },
-          status: "CONFIRMED",
-        },
-
-        {
-          start: "2021-06-16T21:00",
-          end: "2021-06-16T21:10",
+          start: "2021-06-18T20:50",
+          end: "2021-06-18T21:10",
           type: "DIVERSITY_SUCCESS_STORY",
-          title: "Diversity Success Story - TBD",
+          title: "Diversity Success Story - Eleonora Rocca",
           performers: [
             {
+              fullName: "Eleonora Rocca",
+              profilePicture: "/images/eleonora-rocca.jpg",
+            },
+            {
               fullName: "Fiorella De Luca",
-              profilePicture: "...",
+              profilePicture: "/images/fiorella-de-luca.jpg",
             },
             {
               fullName: "Sabrina Scoma",
-              profilePicture: "...",
+              profilePicture: "/images/sabrina-scoma.jpg",
             },
             {
               fullName: "Ambra Tonon",
-              profilePicture: "...",
+              profilePicture: "/images/ambra-tonon.jpg",
             },
           ],
           status: "TBC",
         },
 
         {
-          start: "2021-06-16T21:10",
-          end: "2021-06-16T22:00",
+          start: "2021-06-18T21:10",
+          end: "2021-06-18T22:00",
           type: "AMA",
-          title: "PSF - Ask Me Anything",
-          performers: [
-            {
-              fullName: "Lelio Campanile",
-              profilePicture: "...",
-            },
-            {
-              fullName: "Luca Fedrizzi",
-              profilePicture: "...",
-            },
-          ],
-          status: "CONFIRMED",
+          title: "TBC",
+          performers: [],
+          status: "TBC",
         },
 
         {
-          start: "2021-06-16T22:00",
-          end: "2021-06-16T22:10",
+          start: "2021-06-18T22:00",
+          end: "2021-06-18T22:10",
           type: "LIGHTNING_TALK",
           title: "Lightning Talk - TBD",
           performer: {
             fullName: "TBC",
-            profilePicture: "...",
+            profilePicture: null,
           },
           status: "TBC",
         },
 
         {
-          start: "2021-06-16T22:10",
-          end: "2021-06-16T22:30",
+          start: "2021-06-18T22:10",
+          end: "2021-06-18T22:30",
           type: "PERFORMANCE",
           title: "Artistic Performance - TBD",
           performer: {
             fullName: "TBC",
-            profilePicture: "...",
+            profilePicture: null,
           },
           status: "TBC",
         },
 
         {
-          start: "2021-06-16T22:30",
-          end: "2021-06-16T23:30",
+          start: "2021-06-18T22:30",
+          end: "2021-06-18T23:30",
           type: "QUIZ",
-          title: "Pub Quiz",
-          status: "CONFIRMED",
+          title: "Game",
+          status: "TBC",
         },
 
         {
-          start: "2021-06-16T23:30",
-          end: "2021-06-16T23:40",
+          start: "2021-06-18T23:30",
+          end: "2021-06-18T23:40",
           type: "CLOSING",
           title: "Closing session",
           status: "CONFIRMED",
@@ -298,7 +404,5 @@ const program: ScheduleProgram = {
     },
   ],
 };
-
-program.days.push(program.days[0]);
 
 export const Standard = () => <Schedule program={program} />;

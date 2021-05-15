@@ -11,6 +11,7 @@ export const Colors = () => {
       <div className="w-40 h-40 border-2 border-black bg-aquamarine" />
       <div className="w-40 h-40 border-2 border-black bg-pink" />
       <div className="w-40 h-40 border-2 border-black bg-purple" />
+      <div className="w-40 h-40 border-2 border-black bg-cornflower-blue" />
     </div>
   );
 };

@@ -68,9 +68,19 @@ const TimeSlots = ({ slots }: { slots: Slot[] }) => (
 const getSlots = (events: Event[], uniformSize: boolean = false) => {
   const slots: Slot[] = [];
 
+  const seenSlots = new Set();
+
   events.forEach((event, index) => {
     const start = parseISO(event.start);
     const end = parseISO(event.end);
+
+    const key = `${format(start, "HH:mm")}-${format(end, "HH:mm")}`;
+
+    if (seenSlots.has(key)) {
+      return;
+    }
+
+    seenSlots.add(key);
 
     const totalMinutes = differenceInMinutes(start, end);
     const rows = uniformSize ? 10 : totalMinutes / 5;
@@ -87,6 +97,12 @@ const getSlots = (events: Event[], uniformSize: boolean = false) => {
   });
 
   return slots;
+};
+
+const DayHeader = ({ day }: { day: ScheduleDay }) => {
+  const date = parseISO(day.date);
+
+  return <div className="bg-white p-4">{format(date, "d MMMM yyyy")}</div>;
 };
 
 export const Schedule = ({ program }: Props) => {
@@ -118,9 +134,7 @@ export const Schedule = ({ program }: Props) => {
         <div className="bg-white p-4"></div>
 
         {days.map((day) => (
-          <div key={day.date} className="bg-white p-4">
-            {day.date}
-          </div>
+          <DayHeader key={day.date} day={day} />
         ))}
       </div>
 
