@@ -112,7 +112,8 @@ export const Header = ({
 
   return (
     <div
-      className={clsx(`bg-${backgroundColor}`, {
+      className={clsx({
+        [`bg-${backgroundColor}`]: !menuOpen,
         "bg-orange": menuOpen,
       })}
     >
