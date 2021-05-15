@@ -1,11 +1,7 @@
 import React from "react";
 import { Header } from "./header";
 
-export default {
-  title: "Header",
-};
-
-export const Standard = () => (
+export const Standard = (props) => (
   <Header
     links={[
       {
@@ -17,5 +13,28 @@ export const Standard = () => (
         title: "Schedule",
       },
     ]}
+    {...props}
   />
 );
+
+export default {
+  title: "Header",
+  component: Standard,
+  argTypes: {
+    backgroundColor: {
+      control: {
+        type: "radio",
+        options: [
+          "white",
+          "black",
+          "orange",
+          "keppel",
+          "casablanca",
+          "aquamarine",
+          "pink",
+          "purple",
+        ],
+      },
+    },
+  },
+};

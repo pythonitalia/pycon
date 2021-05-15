@@ -91,12 +91,28 @@ const Menu = ({ links }: { links: Link[] }) => {
   );
 };
 
-export const Header = ({ links = [] }: { links?: Link[] }) => {
+type BackgroundColor =
+  | "white"
+  | "black"
+  | "orange"
+  | "keppel"
+  | "casablanca"
+  | "aquamarine"
+  | "pink"
+  | "purple";
+
+export const Header = ({
+  links = [],
+  backgroundColor = "white",
+}: {
+  links?: Link[];
+  backgroundColor?: BackgroundColor;
+}) => {
   const [menuOpen, toggleMenuOpen] = useToggle(false);
 
   return (
     <div
-      className={clsx({
+      className={clsx(`bg-${backgroundColor}`, {
         "bg-orange": menuOpen,
       })}
     >
