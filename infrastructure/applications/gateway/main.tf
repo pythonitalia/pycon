@@ -3,6 +3,7 @@ locals {
   domain  = local.is_prod ? "${local.domain_name}.beta.python.it" : "${terraform.workspace}-${local.domain_name}.beta.python.it"
 
   # Services URLs
+  pycon_backend_service_url       = local.is_prod ? "https://admin.pycon.it" : "https://admin.pycon.it"
   association_backend_service_url = local.is_prod ? "https://association-api.beta.python.it" : "https://${terraform.workspace}-association-api.beta.python.it"
   users_service_url               = local.is_prod ? "https://users-api.beta.python.it" : "https://${terraform.workspace}-users-api.beta.python.it"
 }
@@ -25,6 +26,7 @@ module "lambda" {
     # Services
     USERS_SERVICE               = local.users_service_url
     ASSOCIATION_BACKEND_SERVICE = local.association_backend_service_url
+    PYCON_BACKEND_SERVICE       = local.pycon_backend_service_url
 
     # Secrets
     PASTAPORTO_SECRET         = var.pastaporto_secret
