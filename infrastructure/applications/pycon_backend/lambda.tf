@@ -62,6 +62,7 @@ resource "aws_lambda_function" "backend_lambda" {
       PINPOINT_APPLICATION_ID          = var.pinpoint_application_id
       SOCIAL_AUTH_GOOGLE_OAUTH2_KEY    = var.social_auth_google_oauth2_key
       SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = var.social_auth_google_oauth2_secret
+      PASTAPORTO_SECRET                = var.pastaporto_secret
     }
   }
 }
