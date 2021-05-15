@@ -31,16 +31,21 @@ class RequestAuth:
 class PastaportoUserInfo:
     id: int
     email: str
+    is_staff: bool
 
     @classmethod
     def from_data(cls, data: dict[str, Any]):
-        return cls(id=data["id"], email=data["email"])
+        return cls(id=int(data["id"]), email=data["email"], is_staff=data["isStaff"])
 
 
 @dataclass
 class Pastaporto:
     user_info: Optional[PastaportoUserInfo] = None
     credentials: list[Credential] = field(default_factory=list)
+
+    @property
+    def is_authenticated(self):
+        return self.user_info is not None
 
     @classmethod
     def from_token(cls, token: str, secret: str):

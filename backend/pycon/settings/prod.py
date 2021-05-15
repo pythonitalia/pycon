@@ -53,3 +53,5 @@ SIMULATE_PRETIX_DB = False
 DATABASES["pretix"] = {**DATABASES["default"], "NAME": "pretix"}
 
 CSRF_TRUSTED_ORIGINS = ["admin.pycon.it", "pycon.it"]
+
+PASTAPORTO_SECRET = env("PASTAPORTO_SECRET")

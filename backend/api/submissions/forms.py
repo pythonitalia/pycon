@@ -1,8 +1,9 @@
-from api.forms import ContextAwareModelForm, HashidModelChoiceField
-from conferences.models import AudienceLevel, Conference
 from django import forms
 from django.core import exceptions
 from django.utils.translation import gettext_lazy as _
+
+from api.forms import ContextAwareModelForm, HashidModelChoiceField
+from conferences.models import AudienceLevel, Conference
 from integrations.tasks import notify_new_submission
 from languages.models import Language
 from notifications.aws import send_comment_notification
@@ -13,7 +14,7 @@ class SendSubmissionCommentForm(ContextAwareModelForm):
     submission = HashidModelChoiceField(queryset=Submission.objects.all())
 
     def save(self, commit=True):
-        self.instance.author = self.context.request.user
+        self.instance.author_id = self.context.request.user.id
         comment = super().save(commit=commit)
 
         send_comment_notification(comment)
@@ -115,7 +116,7 @@ class SendSubmissionForm(SubmissionForm):
 
     def save(self, commit=True):
         request = self.context.request
-        self.instance.speaker = request.user
+        self.instance.speaker_id = request.user.id
         instance = super().save(commit=commit)
         notify_new_submission(
             instance.title,

@@ -95,5 +95,6 @@ jobs:
           DEBUG: True
           SLACK_INCOMING_WEBHOOK_URL: ${{ secrets.TF_VAR_slack_incoming_webhook_url }}
           DATABASE_URL: postgresql://postgres:postgres@localhost:${{ job.services.postgres.ports['5432'] }}/postgres
+          PASTAPORTO_SECRET: pastaporto_xxx
       - run: yarn tsc
         working-directory: frontend

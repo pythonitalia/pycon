@@ -21,6 +21,7 @@ class FakeUsersRepository(AbstractUsersRepository):
     def __init__(self, users: list[User]) -> None:
         super().__init__()
 
+        self.USERS = users
         self.USERS_BY_EMAIL = {user.email: user for user in users}
         self.USERS_BY_ID = {user.id: user for user in users}
 
@@ -30,12 +31,16 @@ class FakeUsersRepository(AbstractUsersRepository):
     async def get_by_id(self, id: int) -> Optional[User]:
         return self.USERS_BY_ID.get(id, None)
 
+    async def get_batch_by_ids(self, ids: list[int]) -> list[User]:
+        return [user for user in self.USERS if user.id in ids]
+
     async def create_user(self, user: User) -> User:
         self._id_counter = self._id_counter + 1
 
         new_user = dataclasses.replace(
             user, id=self._id_counter, password=user.password
         )
+        self.USERS.append(new_user)
         self.USERS_BY_EMAIL[new_user.email] = new_user
         self.USERS_BY_ID[new_user.id] = new_user
         return new_user

@@ -26,7 +26,7 @@ export const ResetPasswordPage = () => {
   const [changePassword, { loading, error, data }] = useResetPasswordMutation({
     onCompleted(data) {
       if (
-        data?.resetPassword.__typename === "OperationResult" &&
+        data?.resetPassword.__typename === "OperationSuccess" &&
         data.resetPassword.ok
       ) {
         addMessage({
@@ -59,7 +59,6 @@ export const ResetPasswordPage = () => {
       changePassword({
         variables: {
           token,
-          userId,
           password: formState.values.password,
         },
       });
@@ -68,8 +67,8 @@ export const ResetPasswordPage = () => {
   );
 
   const getErrors = (key: "token" | "password") =>
-    (data?.resetPassword.__typename === "ResetPasswordMutationErrors" &&
-      data?.resetPassword[key]) ||
+    (data?.resetPassword.__typename === "ResetPasswordValidationError" &&
+      (data?.resetPassword[key] ?? []).map((e) => e.message)) ||
     [];
 
   const tokenErrors = getErrors("token");

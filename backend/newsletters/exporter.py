@@ -2,8 +2,9 @@ import dataclasses
 import typing
 from collections import defaultdict
 
-from conferences.models import Conference
 from django.db.models import Q
+
+from conferences.models import Conference
 from pretix.db import user_has_admission_ticket
 from schedule.models import ScheduleItem
 from submissions.models import Submission
@@ -52,11 +53,11 @@ class Endpoint:
 
 def convert_user_to_endpoint(user: User) -> Endpoint:
     pretix_conferences = Conference.objects.exclude(pretix_event_id__exact="")
-    submissions = Submission.objects.filter(speaker=user).values(
+    submissions = Submission.objects.filter(speaker_id=user.id).values(
         "conference__code", "status"
     )
     schedule_items = ScheduleItem.objects.filter(
-        Q(submission__speaker=user) | Q(additional_speakers=user)
+        Q(submission__speaker_id=user.id) | Q(additional_speakers__user_id=user.id)
     ).values("conference__code", "title")
 
     talks_by_conference: typing.DefaultDict[str, typing.List[str]] = defaultdict(list)

@@ -5,7 +5,7 @@
     "fields": {
       "created": "2019-09-01T15:18:46.795Z",
       "modified": "2019-09-01T15:18:46.795Z",
-      "author": 1,
+      "author_id": 1,
       "title": {
         "en": "Example title",
         "it": "Titolo d'esempio"

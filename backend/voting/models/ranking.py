@@ -5,6 +5,7 @@ from django.db.models import Count
 from django.db.models.functions import Sqrt
 from django.utils.translation import gettext_lazy as _
 from model_utils.fields import AutoCreatedField
+
 from submissions.models import Submission
 
 
@@ -75,8 +76,8 @@ class RankRequest(models.Model):
                 vote_info = {}
                 for vote in submission_votes:
                     vote_info[vote.id] = {
-                        "normalised_vote": vote.value * users_weight[vote.user.id],
-                        "scale_factor": users_weight[vote.user.id],
+                        "normalised_vote": vote.value * users_weight[vote.user_id],
+                        "scale_factor": users_weight[vote.user_id],
                     }
                 score = sum([v["normalised_vote"] for v in vote_info.values()]) / sum(
                     [v["scale_factor"] for v in vote_info.values()]

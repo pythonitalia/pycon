@@ -1,9 +1,10 @@
 from datetime import timedelta
 
 from django.utils import timezone
+from pytest import mark
+
 from helpers.tests import get_image_url_from_request
 from i18n.strings import LazyI18nString
-from pytest import mark
 
 
 def _query_blog_posts(client):
@@ -20,7 +21,6 @@ def _query_blog_posts(client):
                 image
                 author {
                     id
-                    email
                 }
             }
         }
@@ -49,7 +49,7 @@ def test_query_blog_posts(rf, graphql_client, user_factory, post_factory):
         "content": str(past_post.content),
         "published": past_post.published.isoformat(),
         "image": get_image_url_from_request(request, past_post.image),
-        "author": {"id": str(past_post.author.id), "email": past_post.author.email},
+        "author": {"id": str(past_post.author_id)},
     } == resp["data"]["blogPosts"][1]
 
     assert {
@@ -61,8 +61,7 @@ def test_query_blog_posts(rf, graphql_client, user_factory, post_factory):
         "published": present_post.published.isoformat(),
         "image": get_image_url_from_request(request, present_post.image),
         "author": {
-            "id": str(present_post.author.id),
-            "email": present_post.author.email,
+            "id": str(present_post.author_id),
         },
     } == resp["data"]["blogPosts"][0]
 
@@ -88,7 +87,6 @@ def test_query_single_post(rf, graphql_client, user_factory, post_factory):
                 image
                 author {
                     id
-                    email
                 }
             }
         } """
@@ -102,7 +100,7 @@ def test_query_single_post(rf, graphql_client, user_factory, post_factory):
         "content": str(post.content),
         "published": post.published.isoformat(),
         "image": get_image_url_from_request(request, post.image),
-        "author": {"id": str(post.author.id), "email": post.author.email},
+        "author": {"id": str(post.author_id)},
     } == resp["data"]["blogPost"]
 
     resp = graphql_client.query(

@@ -3,11 +3,12 @@ from typing import cast
 
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy.sql.expression import select
+from ward import test
+
 from users.domain.entities import User
 from users.domain.repository import UsersRepository
 from users.tests.factories import user_factory
 from users.tests.session import db, second_session
-from ward import test
 
 
 @test("create user")
@@ -241,3 +242,28 @@ async def _(db=db, user_factory=user_factory):
     found_users = await repository.search("")
 
     assert len(found_users) == 0
+
+
+@test("get multiple users by id")
+async def _(db=db, user_factory=user_factory):
+    u1 = await user_factory(email="marco@email.it", fullname="Hello Ciao", name="")
+    u2 = await user_factory(
+        email="nina@email.it", fullname="Nina Nana", name="Nope Hello!"
+    )
+    u3 = await user_factory(
+        email="ohhello@email.it", fullname="Not In my name", name=""
+    )
+    u4 = await user_factory(
+        email="notincluded@email.it", fullname="Ciao mondo!", name=""
+    )
+
+    repository = UsersRepository(db)
+    users = await repository.get_batch_by_ids([u1.id, u2.id, u3.id])
+
+    assert len(users) == 3
+    found_ids = [u.id for u in users]
+
+    assert u1.id in found_ids
+    assert u2.id in found_ids
+    assert u3.id in found_ids
+    assert u4.id not in found_ids

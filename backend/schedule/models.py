@@ -1,15 +1,19 @@
-from conferences.models import Conference
-from django.conf import settings
+from collections import namedtuple
+
 from django.core import exceptions
 from django.db import models
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
-from helpers.unique_slugify import unique_slugify
 from model_utils import Choices
 from model_utils.models import TimeStampedModel
 from ordered_model.models import OrderedModel
+
+from conferences.models import Conference
+from helpers.unique_slugify import unique_slugify
 from pycon.constants import COLORS
 from submissions.models import Submission
+
+SpeakerEntity = namedtuple("SpeakerEntity", ("id",))
 
 
 class Day(models.Model):
@@ -113,9 +117,6 @@ class ScheduleItem(TimeStampedModel):
     )
     duration = models.PositiveIntegerField(null=True, blank=True)
 
-    additional_speakers = models.ManyToManyField(
-        settings.AUTH_USER_MODEL, verbose_name=_("speakers"), blank=True
-    )
     language = models.ForeignKey(
         "languages.Language",
         verbose_name=_("language"),
@@ -133,10 +134,15 @@ class ScheduleItem(TimeStampedModel):
 
     @cached_property
     def speakers(self):
-        speakers = set(self.additional_speakers.all())
+        speakers = set(
+            [
+                SpeakerEntity(speaker.user_id)
+                for speaker in self.additional_speakers.all()
+            ]
+        )
 
         if self.submission:
-            speakers.add(self.submission.speaker)
+            speakers.add(SpeakerEntity(self.submission.speaker_id))
 
         return speakers
 
@@ -173,3 +179,21 @@ class ScheduleItem(TimeStampedModel):
         verbose_name = _("Schedule item")
         verbose_name_plural = _("Schedule items")
         unique_together = ("slug", "conference")
+
+
+class ScheduleItemAdditionalSpeaker(models.Model):
+    scheduleitem = models.ForeignKey(
+        ScheduleItem,
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+        verbose_name=_("schedule item"),
+        related_name="additional_speakers",
+    )
+    user_id = models.IntegerField(verbose_name=_("user"))
+
+    class Meta:
+        verbose_name = _("Schedule item additional speaker")
+        verbose_name_plural = _("Schedule item additional speakers")
+        unique_together = ("user_id", "scheduleitem")
+        db_table = "schedule_scheduleitem_additional_speakers"

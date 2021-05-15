@@ -2,9 +2,10 @@ from datetime import datetime
 from typing import List, Optional
 
 import strawberry
+from strawberry import LazyType
+
 from api.languages.types import Language
 from api.voting.types import VoteType
-from strawberry import LazyType
 from voting.models import Vote
 
 from .permissions import CanSeeSubmissionDetail, CanSeeSubmissionPrivateFields
@@ -33,9 +34,10 @@ class SubmissionTag:
     name: str
 
 
-@strawberry.type
+@strawberry.federation.type(keys=["id"])
 class SubmissionCommentAuthor:
-    name: str
+    id: strawberry.ID
+    is_speaker: bool
 
 
 @strawberry.type
@@ -45,6 +47,11 @@ class SubmissionComment:
     created: datetime
     author: SubmissionCommentAuthor
     submission: LazyType["Submission", "api.submissions.types"]
+
+
+@strawberry.federation.type(keys=["id"])
+class SubmissionSpeaker:
+    id: strawberry.ID
 
 
 @strawberry.type
@@ -57,7 +64,6 @@ class Submission:
     speaker_level: Optional[str] = private_field()
     previous_talk_video: Optional[str] = private_field()
     notes: Optional[str] = private_field()
-    speaker: Optional[LazyType["User", "api.users.types"]] = private_field()
     topic: Optional[LazyType["Topic", "api.conferences.types"]] = restricted_field()
     type: Optional[SubmissionType] = restricted_field()
     duration: Optional[
@@ -66,6 +72,10 @@ class Submission:
     audience_level: Optional[
         LazyType["AudienceLevel", "api.conferences.types"]
     ] = restricted_field()
+
+    @strawberry.field(permission_classes=[CanSeeSubmissionPrivateFields])
+    def speaker(self) -> SubmissionSpeaker:
+        return SubmissionSpeaker(id=self.speaker_id)
 
     @strawberry.field
     def id(self, info) -> strawberry.ID:
@@ -80,8 +90,7 @@ class Submission:
         comments = (
             self.comments.all()
             .order_by("created")
-            .select_related("author")
-            .values("id", "text", "created", "author__id", "author__name")
+            .values("id", "text", "created", "author_id", "submission__speaker_id")
         )
 
         return [
@@ -91,9 +100,9 @@ class Submission:
                 created=comment["created"],
                 submission=self,
                 author=SubmissionCommentAuthor(
-                    name="Speaker"
-                    if comment["author__id"] == self.speaker.id
-                    else comment["author__name"]
+                    id=comment["author_id"],
+                    is_speaker=comment["author_id"]
+                    == comment["submission__speaker_id"],
                 ),
             )
             for comment in comments

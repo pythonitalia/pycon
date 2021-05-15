@@ -1,55 +1,40 @@
-from typing import List, Optional
+from typing import List
 
 import strawberry
+
 from api.pretix.query import get_user_orders
 from api.pretix.types import PretixOrder
 from api.submissions.types import Submission
 from conferences.models import Conference
+from submissions.models import Submission as SubmissionModel
 
-# TODO: merge Me User and User
 
+@strawberry.federation.type(keys=["id"], extend=True)
+class User:
+    id: strawberry.ID = strawberry.federation.field(external=True)
+    email: str = strawberry.federation.field(external=True)
+    isStaff: bool = strawberry.federation.field(external=True)
 
-@strawberry.type
-class MeUser:
-    id: strawberry.ID
-    email: str
-    name: Optional[str]
-    full_name: Optional[str]
-    gender: Optional[str]
-    open_to_recruiting: Optional[bool]
-    open_to_newsletter: Optional[bool]
-    date_birth: Optional[str]
-    country: Optional[str]
+    @classmethod
+    def resolve_reference(
+        cls, id: strawberry.ID, email: str = "", isStaff: bool = False
+    ):
+        return cls(id=id, email=email, isStaff=isStaff)
 
-    @strawberry.field
+    @strawberry.federation.field(requires=["email"])
     def orders(self, info, conference: str) -> List[PretixOrder]:
         conference = Conference.objects.get(code=conference)
-
         return get_user_orders(conference, self.email)
 
     @strawberry.field
     def submissions(self, info, conference: str) -> List[Submission]:
-        return self.submissions.filter(conference__code=conference)
+        return SubmissionModel.objects.filter(
+            speaker_id=self.id, conference__code=conference
+        )
 
-    @strawberry.field
-    def can_edit_schedule(self, info) -> bool:
-        return self.is_staff or self.is_superuser
-
-
-@strawberry.type
-class User:
-    id: strawberry.ID
-    email: str
-    name: str
-    full_name: str
-    username: str
-    name: str
-    full_name: str
-    gender: str
-    open_to_recruiting: bool
-    open_to_newsletter: bool
-    date_birth: str
-    country: str
+    @strawberry.federation.field(requires=["isStaff"])
+    def can_edit_schedule(self) -> bool:
+        return self.isStaff
 
 
 @strawberry.type

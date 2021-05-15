@@ -1,8 +1,9 @@
 import time_machine
+from ward import test
+
 from users.tests.api import graphql_client
 from users.tests.factories import user_factory
 from users.tests.session import db
-from ward import test
 
 
 @test("cannot get me if unlogged")
@@ -56,4 +57,4 @@ async def _(graphql_client=graphql_client, db=db, user_factory=user_factory):
     response = await graphql_client.query(query)
 
     assert not response.errors
-    assert response.data["me"] == {"id": 1, "email": "test@me.it"}
+    assert response.data["me"] == {"id": "1", "email": "test@me.it"}

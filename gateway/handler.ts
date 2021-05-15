@@ -51,8 +51,11 @@ exports.graphqlHandler = async (event: any, context: any) => {
     cors: {
       credentials: true,
       methods: ["GET", "POST", "OPTIONS", "HEAD"],
-      // @ts-ignore
-      origin: [/python-italia\.vercel\.app$/],
+      origin: [
+        // @ts-ignore
+        /python-italia\.vercel\.app$/,
+        "pycon.it",
+      ],
     },
   });
 

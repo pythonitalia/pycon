@@ -77,8 +77,8 @@ export const RequestResetPasswordPage = () => {
         </Alert>
       )}
 
-      {data?.requestPasswordReset.__typename === "OperationResult" &&
-        data.requestPasswordReset.ok && (
+      {data?.requestResetPassword.__typename === "OperationSuccess" &&
+        data.requestResetPassword.ok && (
           <Alert
             sx={{
               mb: 3,

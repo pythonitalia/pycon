@@ -1,7 +1,8 @@
+from ward import test
+
 from users.tests.api import admin_graphql_client
 from users.tests.factories import user_factory
 from users.tests.session import db
-from ward import test
 
 
 @test("unlogged cannot fetch me")
@@ -38,7 +39,10 @@ async def _(
 
     response = await admin_graphql_client.query(query)
     assert not response.errors
-    assert response.data["me"] == {"id": logged_user.id, "email": logged_user.email}
+    assert response.data["me"] == {
+        "id": str(logged_user.id),
+        "email": logged_user.email,
+    }
 
 
 @test("only staff accounts can fetch me")

@@ -20,6 +20,15 @@ type SignupFormProps = {
   password: string;
 };
 
+const getErrorMessageIfAny = (typename?: string) => {
+  switch (typename) {
+    case "EmailAlreadyUsed":
+      return "An account with this email already exists";
+    default:
+      return null;
+  }
+};
+
 export const SignupForm: React.SFC = () => {
   const [loggedIn, setLoggedIn] = useLoginState();
   const language = useCurrentLanguage();
@@ -33,7 +42,7 @@ export const SignupForm: React.SFC = () => {
 
   const [signup, { loading, error, data }] = useSignupMutation({
     onCompleted(signupData) {
-      if (!signupData || signupData.register.__typename !== "MeUser") {
+      if (!signupData || signupData.register.__typename !== "RegisterSuccess") {
         return;
       }
 
@@ -54,21 +63,18 @@ export const SignupForm: React.SFC = () => {
     (e) => {
       e.preventDefault();
       signup({
-        variables: formState.values,
+        variables: { input: formState.values },
       });
     },
     [signup, formState],
   );
 
-  const errorMessage =
-    data && data.register.__typename === "RegisterErrors"
-      ? data.register.nonFieldErrors.join(" ")
-      : (error || "").toString();
+  const errorMessage = getErrorMessageIfAny(data?.register?.__typename);
 
-  const getFieldErrors = (field: "validationEmail" | "validationPassword") =>
+  const getFieldErrors = (field: "email" | "password") =>
     (data &&
-      data.register.__typename === "RegisterErrors" &&
-      data.register[field]) ||
+      data.register.__typename === "RegisterValidationError" &&
+      (data.register.errors[field] ?? []).map((e) => e.message)) ||
     [];
 
   // TODO reuse from login page (or make it visible in all pages)
@@ -100,7 +106,7 @@ export const SignupForm: React.SFC = () => {
 
           <InputWrapper
             sx={{ mb: 0 }}
-            errors={getFieldErrors("validationEmail")}
+            errors={getFieldErrors("email")}
             label={<FormattedMessage id="signup.email" />}
           >
             <Input
@@ -123,7 +129,7 @@ export const SignupForm: React.SFC = () => {
           </Link>
 
           <InputWrapper
-            errors={getFieldErrors("validationPassword")}
+            errors={getFieldErrors("password")}
             label={<FormattedMessage id="signup.password" />}
           >
             <Input
@@ -139,7 +145,7 @@ export const SignupForm: React.SFC = () => {
             <FormattedMessage id="signup.signupButton" />
           </Button>
         </form>
-        <Box>
+        {/* <Box>
           <Text mb={4} as="h2">
             <FormattedMessage id="signup.signupWithSocial" />
           </Text>
@@ -147,7 +153,7 @@ export const SignupForm: React.SFC = () => {
           <Link external={true} path="/login/google/" variant="google">
             <FormattedMessage id="signup.useGoogle" />
           </Link>
-        </Box>
+        </Box> */}
       </Grid>
     </Box>
   );

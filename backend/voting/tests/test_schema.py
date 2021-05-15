@@ -5,7 +5,7 @@ from pytest import mark
 def test_get_logged_user_vote_on_a_submission(graphql_client, user, vote_factory):
     graphql_client.force_login(user)
 
-    vote = vote_factory(user=user, value=1)
+    vote = vote_factory(user_id=user.id, value=1)
 
     response = graphql_client.query(
         """query MyVote($conference: String!) {
@@ -26,7 +26,7 @@ def test_get_logged_user_vote_on_a_submission(graphql_client, user, vote_factory
 
 @mark.django_db
 def test_cannot_get_my_vote_as_unlogged(graphql_client, user, vote_factory):
-    vote = vote_factory(user=user)
+    vote = vote_factory(user_id=user.id)
 
     response = graphql_client.query(
         """query MyVote($conference: String!) {

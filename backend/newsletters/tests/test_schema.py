@@ -1,6 +1,9 @@
 import pytest
-from newsletters.models import Subscription
 from pytest import mark
+
+from newsletters.models import Subscription
+
+pytestmark = mark.skip
 
 
 @mark.django_db
@@ -109,7 +112,7 @@ def _update_user_newsletter(graphql_client, user, open_to_newsletter):
             dateBirth: $date_birth
         }){
             __typename
-            ... on MeUser {
+            ... on User {
                 id
                 openToNewsletter
             }

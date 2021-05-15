@@ -2,13 +2,13 @@ from datetime import datetime
 from typing import TYPE_CHECKING, List, Optional
 
 import strawberry
-from api.languages.types import Language
-from api.submissions.types import Submission
-from api.users.types import User
 from strawberry import LazyType
 
+from api.languages.types import Language
+from api.submissions.types import Submission
+
 if TYPE_CHECKING:  # pragma: no cover
-    from api.conferences.types import Conference, AudienceLevel  # noqa
+    from api.conferences.types import AudienceLevel, Conference  # noqa
 
 
 @strawberry.type
@@ -17,6 +17,11 @@ class Room:
     name: str
     conference: LazyType["Conference", "api.conferences.types"]
     type: str
+
+
+@strawberry.federation.type(keys=["id"])
+class ScheduleItemUser:
+    id: strawberry.ID
 
 
 @strawberry.type
@@ -32,7 +37,7 @@ class ScheduleItem:
     type: str
     duration: Optional[int]
     highlight_color: Optional[str]
-    speakers: List[User]
+    speakers: List[ScheduleItemUser]
     language: Language
     audience_level: Optional[LazyType["AudienceLevel", "api.conferences.types"]]
 

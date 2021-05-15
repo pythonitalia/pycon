@@ -1,10 +1,11 @@
 import strawberry
+
 from users.domain import entities
 
 
 @strawberry.type
 class User:
-    id: int
+    id: strawberry.ID
     email: str
     is_active: bool
     is_staff: bool

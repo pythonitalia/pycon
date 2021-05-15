@@ -1,10 +1,11 @@
 import factory
 import factory.fuzzy
-from conferences.tests.factories import ConferenceFactory
 from factory.django import DjangoModelFactory
-from hotels.models import HotelRoom
-from i18n.tests.factories import LanguageFactory
 from pytest_factoryboy import register
+
+from conferences.tests.factories import ConferenceFactory
+from hotels.models import HotelRoom, HotelRoomReservation
+from i18n.tests.factories import LanguageFactory
 
 
 @register
@@ -19,3 +20,15 @@ class HotelRoomFactory(DjangoModelFactory):
 
     class Meta:
         model = HotelRoom
+
+
+@register
+class HotelRoomReservationFactory(DjangoModelFactory):
+    order_code = "AAAABB"
+    room = factory.SubFactory(HotelRoomFactory)
+    user_id = factory.Faker("pyint", min_value=1)
+    checkin = factory.Faker("past_date")
+    checkout = factory.Faker("future_date")
+
+    class Meta:
+        model = HotelRoomReservation

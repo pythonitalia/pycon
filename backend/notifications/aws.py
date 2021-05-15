@@ -3,6 +3,7 @@ from urllib.parse import urljoin
 
 import boto3
 from django.conf import settings
+
 from newsletters.exporter import Endpoint
 from users.models import User
 
@@ -53,24 +54,26 @@ def send_notification(
 
 
 def send_comment_notification(comment):
-    submission = comment.submission
+    # TODO Implement me
+    pass
+    # submission = comment.submission
 
-    users: typing.Set[User] = set([submission.speaker])
-    # also send notification to all other commenters
-    users = users.union(set([comment.author for comment in submission.comments.all()]))
-    # don't notify current user
-    users.discard(comment.author)
+    # users: typing.Set[User] = set([submission.speaker_id])
+    # # also send notification to all other commenters
+    # users = users.union(set([comment.author for comment in submission.comments.all()]))
+    # # don't notify current user
+    # users.discard(comment.author)
 
-    if not users:
-        return
+    # if not users:
+    #     return
 
-    submission_url = urljoin(
-        settings.FRONTEND_URL, f"/en/submission/{submission.hashid}"
-    )
+    # submission_url = urljoin(
+    #     settings.FRONTEND_URL, f"/en/submission/{submission.hashid}"
+    # )
 
-    substitutions = {
-        "submission_url": [submission_url],
-        "submission": [submission.title],
-    }
+    # substitutions = {
+    #     "submission_url": [submission_url],
+    #     "submission": [submission.title],
+    # }
 
-    send_notification("pycon-11-new-comment-on-submission", users, substitutions)
+    # send_notification("pycon-11-new-comment-on-submission", users, substitutions)

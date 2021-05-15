@@ -1,7 +1,8 @@
+from ward import test
+
 from users.tests.api import internalapi_graphql_client
 from users.tests.factories import user_factory
 from users.tests.session import db
-from ward import test
 
 
 @test("get user by id")
@@ -24,7 +25,7 @@ async def _(
 
     response = await internalapi_graphql_client.query(query, variables={"id": user.id})
     assert not response.errors
-    assert {"id": user.id, "email": user.email, "isStaff": False} == response.data[
+    assert {"id": str(user.id), "email": user.email, "isStaff": False} == response.data[
         "user"
     ]
 

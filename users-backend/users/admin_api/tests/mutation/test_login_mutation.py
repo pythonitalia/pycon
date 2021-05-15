@@ -1,7 +1,8 @@
+from ward import test
+
 from users.tests.api import admin_graphql_client
 from users.tests.factories import user_factory
 from users.tests.session import db
-from ward import test
 
 
 @test("login only accepts admin users")
@@ -96,7 +97,7 @@ async def _(
 
     assert not response.errors
     assert response.data["login"]["__typename"] == "LoginSuccess"
-    assert response.data["login"]["user"]["id"] == user.id
+    assert response.data["login"]["user"]["id"] == str(user.id)
 
 
 @test("cannot login with empty password")

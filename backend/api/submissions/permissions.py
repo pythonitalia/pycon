@@ -1,5 +1,7 @@
-from api.permissions import HasTokenPermission
 from strawberry.permission import BasePermission
+
+from api.permissions import HasTokenPermission
+from pretix.db import user_has_admission_ticket
 from submissions.models import Submission
 
 
@@ -10,57 +12,69 @@ class CanSeeSubmissionDetail(BasePermission):
         if HasTokenPermission().has_permission(source, info):
             return True
 
-        user = info.context.request.user
-
         conference = source.conference
 
         if conference.is_voting_closed:
             return True
 
-        if not user.is_authenticated:
+        pastaporto = info.context.request.pastaporto
+
+        if not pastaporto.is_authenticated:
             return False
 
-        if user.is_staff or source.speaker == user:
+        user_info = info.context.request.user
+
+        if user_info.is_staff or source.speaker_id == user_info.id:
             return True
 
-        if user.has_sent_submission(conference):
+        if Submission.objects.filter(
+            speaker_id=user_info.id, conference=conference
+        ).exists():
             return True
 
-        return user.has_conference_ticket(conference)
+        return user_has_admission_ticket(user_info.email, conference.pretix_event_id)
 
 
 class CanSeeSubmissionPrivateFields(BasePermission):
     message = "You can't see the private fields for this submission"
 
     def has_permission(self, source, info):
-        user = info.context.request.user
+        pastaporto = info.context.request.pastaporto
 
         # TODO: this should be cached
         if source.schedule_items.exists():  # pragma: no cover
             return True
 
-        if not user.is_authenticated:
+        if not pastaporto.is_authenticated:
             return False
 
-        return user.is_staff or source.speaker == user
+        return (
+            pastaporto.user_info.is_staff
+            or source.speaker_id == pastaporto.user_info.id
+        )
 
 
 class CanSendComment(BasePermission):
     message = "You can't send a comment"
 
     def has_permission(self, source, info):
-        user = info.context.request.user
+        pastaporto = info.context.request.pastaporto
+        user_info = pastaporto.user_info
 
-        if user.is_staff:
+        if user_info.is_staff:
             return True
 
         input = info.context.input
         submission = Submission.objects.get_by_hashid(input.submission)
 
-        if submission.speaker == user:
+        if submission.speaker_id == user_info.id:
             return True
 
-        if user.has_sent_submission(submission.conference):
+        if Submission.objects.filter(
+            speaker_id=user_info.id, conference=submission.conference
+        ).exists():
             return True
 
-        return user.has_conference_ticket(submission.conference)
+        return user_has_admission_ticket(
+            user_info.email, submission.conference.pretix_event_id
+        )

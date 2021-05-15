@@ -37,9 +37,8 @@ class SendSubmissionComment(FormMutation):
             text=result.text,
             submission=result.submission,
             author=SubmissionCommentAuthor(
-                name="Speaker"
-                if result.author == result.submission.speaker
-                else result.author.name
+                id=result.author_id,
+                is_speaker=result.author_id == result.submission.speaker_id,
             ),
             created=result.created,
         )

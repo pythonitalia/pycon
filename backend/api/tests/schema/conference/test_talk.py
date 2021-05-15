@@ -1,4 +1,5 @@
 from pytest import mark
+
 from schedule.models import ScheduleItem
 
 
@@ -13,7 +14,7 @@ def test_get_talk_not_found(conference_factory, graphql_client):
                 talk(slug: "example") {
                     title
                     speakers {
-                        name
+                        id
                     }
                 }
             }
@@ -43,7 +44,7 @@ def test_get_talk_by_slug(conference_factory, schedule_item_factory, graphql_cli
                     title
                     slug
                     speakers {
-                        name
+                        id
                     }
                 }
             }
@@ -62,4 +63,4 @@ def test_get_talk_by_slug(conference_factory, schedule_item_factory, graphql_cli
 
     speaker_data = talk_data["speakers"][0]
 
-    assert speaker_data["name"] == keynote.submission.speaker.name
+    assert speaker_data["id"] == str(keynote.submission.speaker_id)

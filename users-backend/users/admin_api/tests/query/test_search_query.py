@@ -1,7 +1,8 @@
+from ward import test
+
 from users.tests.api import admin_graphql_client
 from users.tests.factories import user_factory, user_factory_batch
 from users.tests.session import db
-from ward import test
 
 
 @test("search users by email")
@@ -35,7 +36,7 @@ async def _(
     response = await admin_graphql_client.query(query, variables={"query": "user"})
     assert not response.errors
     assert response.data == {
-        "search": {"users": [{"id": logged_user.id, "email": logged_user.email}]}
+        "search": {"users": [{"id": str(logged_user.id), "email": logged_user.email}]}
     }
 
 
@@ -71,10 +72,10 @@ async def _(
         query, variables={"query": "user email"}
     )
     assert not response.errors
-    assert {"id": logged_user.id, "email": logged_user.email} in response.data[
+    assert {"id": str(logged_user.id), "email": logged_user.email} in response.data[
         "search"
     ]["users"]
-    assert {"id": another_user.id, "email": another_user.email} in response.data[
+    assert {"id": str(another_user.id), "email": another_user.email} in response.data[
         "search"
     ]["users"]
 
@@ -110,10 +111,10 @@ async def _(
     response = await admin_graphql_client.query(query, variables={"query": "Giorg"})
     assert not response.errors
     assert len(response.data["search"]["users"]) == 2
-    assert {"id": logged_user.id, "email": logged_user.email} in response.data[
+    assert {"id": str(logged_user.id), "email": logged_user.email} in response.data[
         "search"
     ]["users"]
-    assert {"id": another_user.id, "email": another_user.email} in response.data[
+    assert {"id": str(another_user.id), "email": another_user.email} in response.data[
         "search"
     ]["users"]
 
@@ -319,10 +320,10 @@ async def _(
     response = await admin_graphql_client.query(query, variables={"query": "Giorg"})
     assert not response.errors
     assert len(response.data["search"]["users"]) == 2
-    assert {"id": logged_user.id, "email": logged_user.email} in response.data[
+    assert {"id": str(logged_user.id), "email": logged_user.email} in response.data[
         "search"
     ]["users"]
-    assert {"id": another_user.id, "email": another_user.email} in response.data[
+    assert {"id": str(another_user.id), "email": another_user.email} in response.data[
         "search"
     ]["users"]
 

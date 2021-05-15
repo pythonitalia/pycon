@@ -3,6 +3,9 @@ from itertools import groupby
 from typing import List, Optional
 
 import strawberry
+from django.conf import settings
+from django.utils import translation
+
 from api.cms.types import FAQ, Menu
 from api.events.types import Event
 from api.hotels.types import HotelRoom
@@ -14,8 +17,6 @@ from api.sponsors.types import SponsorsByLevel
 from api.submissions.types import Submission, SubmissionType
 from api.voting.types import RankSubmission
 from cms.models import GenericCopy
-from django.conf import settings
-from django.utils import translation
 from schedule.models import ScheduleItem as ScheduleItemModel
 from voting.models import RankRequest as RankRequestModel
 
@@ -50,7 +51,6 @@ class ScheduleSlot:
                 "language",
                 "audience_level",
                 "submission",
-                "submission__speaker",
                 "submission__type",
                 "submission__duration",
                 "submission__audience_level",
