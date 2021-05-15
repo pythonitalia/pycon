@@ -4,8 +4,8 @@ import Router from "next/router";
 import { Fragment, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
-import { Alert } from "~/components/alert";
 
+import { Alert } from "~/components/alert";
 import { MetaTags } from "~/components/meta-tags";
 import { PageLoading } from "~/components/page-loading";
 import { useLoginState } from "~/components/profile/hooks";
