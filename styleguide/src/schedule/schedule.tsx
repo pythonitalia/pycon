@@ -1,7 +1,8 @@
+import clsx from "clsx";
 import { format } from "date-fns";
 import differenceInMinutes from "date-fns/fp/differenceInMinutes";
 import parseISO from "date-fns/parseISO";
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import { Title } from "../title";
 import { ScheduleItem } from "./schedule-item";
 import { Event, ScheduleProgram, ScheduleDay } from "./types";
@@ -10,7 +11,15 @@ type Props = {
   program: ScheduleProgram;
 };
 
-const Day = ({ day, slots }: { day: ScheduleDay; slots: Slot[] }) => {
+const Day = ({
+  day,
+  slots,
+  className,
+}: {
+  day: ScheduleDay;
+  slots: Slot[];
+  className?: string;
+}) => {
   return (
     <Fragment>
       {day.events.map((event, index) => {
@@ -20,6 +29,7 @@ const Day = ({ day, slots }: { day: ScheduleDay; slots: Slot[] }) => {
           <ScheduleItem
             key={event.start}
             event={event}
+            className={className}
             style={{
               gridRowStart: slot.rowStart,
               gridRowEnd: slot.rowEnd,
@@ -99,16 +109,36 @@ const getSlots = (events: Event[], uniformSize: boolean = false) => {
   return slots;
 };
 
-const DayHeader = ({ day }: { day: ScheduleDay }) => {
+const DayHeader = ({
+  day,
+  className,
+  onClick,
+}: {
+  day: ScheduleDay;
+  className?: string;
+  onClick?: () => void;
+}) => {
   const date = parseISO(day.date);
 
-  return <div className="bg-white p-4">{format(date, "d MMMM yyyy")}</div>;
+  return (
+    <div
+      className={clsx(
+        "bg-white p-2 md:p-4 text-center md:text-left",
+        className
+      )}
+      onClick={onClick}
+    >
+      {format(date, "d MMMM")}
+      <span className="hidden md:inline">{format(date, " yyyy")}</span>
+    </div>
+  );
 };
 
 export const Schedule = ({ program }: Props) => {
   const uniformSize = true;
 
   const { days } = program;
+
   const allEvents = days.flatMap((d) => d.events);
 
   const slots = getSlots(allEvents, uniformSize);
@@ -116,6 +146,8 @@ export const Schedule = ({ program }: Props) => {
 
   const totalMinutes = differenceInMinutes(start, end);
   const rows = uniformSize ? slots.length * 10 : totalMinutes / 5;
+
+  const [selectedDay, setSelectedDay] = useState(days[0].date);
 
   return (
     <div>
@@ -126,29 +158,53 @@ export const Schedule = ({ program }: Props) => {
       </header>
 
       <div
-        className="sticky top-0 z-10 grid gap-1 bg-black border-black border-b-4"
-        style={{
-          gridTemplateColumns: `80px repeat(${days.length}, 1fr)`,
-        }}
+        className="schedule-head"
+        style={
+          {
+            "--days": days.length,
+          } as any
+        }
       >
-        <div className="bg-white p-4"></div>
+        <div className="bg-white p-4 hidden md:block"></div>
 
         {days.map((day) => (
-          <DayHeader key={day.date} day={day} />
+          <DayHeader
+            key={day.date}
+            day={day}
+            onClick={() => setSelectedDay(day.date)}
+            className={clsx(
+              {
+                "bg-purple": day.date === selectedDay,
+              },
+              "md:bg-white"
+            )}
+          />
         ))}
       </div>
 
       <div
-        className="grid gap-1 bg-black"
-        style={{
-          gridTemplateRows: `repeat(${rows}, 10px)`,
-          gridTemplateColumns: `80px repeat(${days.length}, 1fr)`,
-        }}
+        className="schedule-grid"
+        style={
+          {
+            "--rows": rows,
+            "--days": days.length,
+          } as any
+        }
       >
         <TimeSlots slots={slots} />
 
         {days.map((day) => (
-          <Day key={day.date} day={day} slots={slots} />
+          <Day
+            key={day.date}
+            day={day}
+            slots={slots}
+            className={clsx(
+              {
+                hidden: day.date !== selectedDay,
+              },
+              "md:block"
+            )}
+          />
         ))}
       </div>
     </div>

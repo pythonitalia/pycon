@@ -17,3 +17,22 @@
     --tw-translate-x: calc(var(--index) * -100% / var(--per-page));
   }
 }
+
+.schedule-head {
+  @apply sticky top-0 z-10 grid gap-1 bg-black border-black border-b-4;
+  grid-template-columns: repeat(var(--days), 1fr);
+}
+
+.schedule-grid {
+  @apply grid gap-1 bg-black;
+
+  grid-template-rows: repeat(var(--rows), 10px);
+  grid-template-columns: 80px 1fr;
+}
+
+@screen md {
+  .schedule-head,
+  .schedule-grid {
+    grid-template-columns: 80px repeat(var(--days), 1fr);
+  }
+}

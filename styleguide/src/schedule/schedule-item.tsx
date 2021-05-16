@@ -22,10 +22,12 @@ const getTitle = (event: Event, performers: { fullName: string }[]) => {
 
 export const ScheduleItem = ({
   event,
+  className,
   ...props
 }: {
   event: Event;
   style: React.CSSProperties;
+  className?: string;
 }) => {
   const performers = getPerformers(event);
 
@@ -45,7 +47,10 @@ export const ScheduleItem = ({
     return (
       <div
         key={event.start}
-        className="flex flex-col p-4 font-bold text-white bg-aquamarine"
+        className={clsx(
+          "flex flex-col p-4 font-bold text-white bg-aquamarine",
+          className
+        )}
         {...props}
       >
         To be announced
@@ -56,7 +61,7 @@ export const ScheduleItem = ({
   return (
     <div
       key={event.start}
-      className={clsx("flex flex-col p-4 font-bold", background)}
+      className={clsx("flex flex-col p-4 font-bold", background, className)}
       {...props}
     >
       {getTitle(event, performers)}
