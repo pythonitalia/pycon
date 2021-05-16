@@ -7,8 +7,9 @@ from django.db.models import Q
 from django.utils import timezone
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
-from i18n.fields import I18nCharField, I18nTextField
 from model_utils.models import TimeStampedModel
+
+from i18n.fields import I18nCharField, I18nTextField
 
 
 class PostManager(models.Manager):
@@ -27,7 +28,7 @@ class PostManager(models.Manager):
 
 
 class Post(TimeStampedModel):
-    author = models.ForeignKey("users.User", on_delete=models.CASCADE)
+    author_id = models.IntegerField(verbose_name=_("author"))
     title = I18nCharField(_("title"), max_length=200)
     slug = I18nCharField(_("slug"), max_length=200, blank=True)
     content = I18nTextField(_("content"), blank=True)

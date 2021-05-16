@@ -5,3 +5,5 @@ SLACK_INCOMING_WEBHOOK_URL = ""
 USE_SCHEDULER = False
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+PASTAPORTO_SECRET = env("PASTAPORTO_SECRET", default="pastaporto_xxxxxxxx")

@@ -1,4 +1,5 @@
 from pytest import mark
+
 from schedule.models import ScheduleItem
 
 
@@ -13,7 +14,7 @@ def test_get_conference_keynotes_empty(conference_factory, graphql_client):
                 keynotes {
                     title
                     speakers {
-                        name
+                        id
                     }
                 }
             }
@@ -38,8 +39,8 @@ def test_get_conference_keynotes_returns_only_keynotes(
         type=ScheduleItem.TYPES.keynote,
         additional_speakers__size=1,
     )
-    speaker = keynote.submission.speaker
-    additional_speaker = keynote.additional_speakers.first()
+    speaker_id = keynote.submission.speaker_id
+    additional_speaker = keynote.additional_speakers.first().user_id
 
     resp = graphql_client.query(
         """
@@ -48,8 +49,7 @@ def test_get_conference_keynotes_returns_only_keynotes(
                 keynotes {
                     title
                     speakers {
-                        name
-                        fullName
+                        id
                     }
                 }
             }
@@ -66,10 +66,7 @@ def test_get_conference_keynotes_returns_only_keynotes(
     assert keynote_data["title"] == keynote.title
     assert len(keynote_data["speakers"]) == 2
 
-    assert {"name": speaker.name, "fullName": speaker.full_name} in keynote_data[
-        "speakers"
-    ]
+    assert {"id": str(speaker_id)} in keynote_data["speakers"]
     assert {
-        "name": additional_speaker.name,
-        "fullName": additional_speaker.full_name,
+        "id": str(additional_speaker),
     } in keynote_data["speakers"]

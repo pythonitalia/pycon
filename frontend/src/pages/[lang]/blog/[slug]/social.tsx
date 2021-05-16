@@ -6,7 +6,7 @@ import { Box, Flex, Heading, jsx, Text } from "theme-ui";
 
 import { CardType, getSize } from "~/helpers/social-card";
 import { useCurrentLanguage } from "~/locale/context";
-import { PostQuery, useBlogSocialCardQuery } from "~/types";
+import { useBlogSocialCardQuery } from "~/types";
 
 const Snakes: React.FC = (props) => (
   <svg fill="none" viewBox="0 0 170 200" {...props}>

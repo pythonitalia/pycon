@@ -5,7 +5,9 @@ from pythonit_toolkit.pastaporto.actions import PastaportoAction
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.requests import Request
 from starlette.websockets import WebSocket
+from strawberry.dataloader import DataLoader
 
+from users.api.dataloader import users_dataloader
 from users.domain.repository import UsersRepository
 
 
@@ -18,6 +20,10 @@ class Context:
     @property
     def users_repository(self) -> UsersRepository:
         return UsersRepository(session=self.session)
+
+    @property
+    def users_dataloader(self) -> DataLoader:
+        return users_dataloader
 
 
 class Info:

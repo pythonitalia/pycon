@@ -29,6 +29,7 @@ module "pycon_backend" {
   pretix_api_token                 = var.pretix_api_token
   pinpoint_application_id          = var.pinpoint_application_id
   ssl_certificate                  = var.ssl_certificate
+  pastaporto_secret                = var.pastaporto_secret
 }
 
 module "gateway" {

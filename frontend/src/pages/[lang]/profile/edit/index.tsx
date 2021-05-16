@@ -82,9 +82,10 @@ export const EditProfilePage: React.FC = () => {
   const router = useRouter();
   const language = useCurrentLanguage();
   const [loggedIn] = useLoginState();
-  const [formState, { text, select, checkbox, raw }] = useFormState<
-    MeUserFields
-  >(
+  const [
+    formState,
+    { text, select, checkbox, raw },
+  ] = useFormState<MeUserFields>(
     {},
     {
       withIds: true,
@@ -115,8 +116,11 @@ export const EditProfilePage: React.FC = () => {
     const validationKey = "validation" + toTileCase(key);
     const validationError =
       (updateProfileData &&
-        updateProfileData.update.__typename === "UpdateErrors" &&
-        (updateProfileData.update as any)[validationKey].join(", ")) ||
+        updateProfileData.updateProfile.__typename ===
+          "UpdateProfileValidationError" &&
+        (updateProfileData.updateProfile as any).errors[validationKey]
+          .map((e) => e.message)
+          .join(", ")) ||
       "";
     return validationError;
   };
@@ -130,7 +134,7 @@ export const EditProfilePage: React.FC = () => {
     },
   ] = useUpdateProfileMutation({
     onCompleted: (data) => {
-      if (data?.update?.__typename === "MeUser") {
+      if (data?.updateProfile?.__typename === "User") {
         router.push("/[lang]/profile", `/${language}/profile`);
       }
     },
@@ -153,13 +157,15 @@ export const EditProfilePage: React.FC = () => {
 
         update({
           variables: {
-            name: formState.values.name,
-            fullName: formState.values.fullName,
-            gender: formState.values.gender,
-            dateBirth: formState.values.dateBirth.toISOString().split("T")[0],
-            country: formState.values.country,
-            openToRecruiting: formState.values.openToRecruiting,
-            openToNewsletter: formState.values.openToNewsletter,
+            input: {
+              name: formState.values.name,
+              fullName: formState.values.fullName,
+              gender: formState.values.gender,
+              dateBirth: formState.values.dateBirth.toISOString().split("T")[0],
+              country: formState.values.country,
+              openToRecruiting: formState.values.openToRecruiting,
+              openToNewsletter: formState.values.openToNewsletter,
+            },
           },
         });
       } catch (err) {
@@ -170,11 +176,6 @@ export const EditProfilePage: React.FC = () => {
     },
     [update, formState],
   );
-
-  const errorMessage =
-    updateProfileData && updateProfileData.update.__typename === "UpdateErrors"
-      ? updateProfileData.update.nonFieldErrors.join(" ")
-      : updateProfileError;
 
   return (
     <Box
@@ -196,12 +197,6 @@ export const EditProfilePage: React.FC = () => {
       {loading && "Loading..."}
       {!loading && (
         <Box as="form" onSubmit={onFormSubmit}>
-          {errorMessage && (
-            <Alert variant="alert" sx={{ mb: 3 }}>
-              {errorMessage}
-            </Alert>
-          )}
-
           <SectionWrapper titleId="profile.edit.personalHeader">
             <InputWrapper
               errors={[formState.errors?.name || getValidationError("name")]}

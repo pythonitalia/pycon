@@ -1,5 +1,6 @@
 import strawberry
 from pythonit_toolkit.api.permissions import IsAuthenticated
+
 from users.api.context import Info
 from users.api.types import User
 
@@ -8,5 +9,7 @@ from users.api.types import User
 class Query:
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def me(self, info: Info) -> User:
-        me = await info.context.users_repository.get_by_id(info.context.request.user.id)
+        me = await info.context.users_repository.get_by_id(
+            int(info.context.request.user.id)
+        )
         return User.from_domain(me)

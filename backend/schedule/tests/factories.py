@@ -1,12 +1,12 @@
 import factory
 import factory.fuzzy
-from conferences.tests.factories import ConferenceFactory
 from factory.django import DjangoModelFactory
-from languages.tests.factories import LanguageFactory
 from pytest_factoryboy import register
-from schedule.models import Day, Room, ScheduleItem, Slot
+
+from conferences.tests.factories import ConferenceFactory
+from languages.tests.factories import LanguageFactory
+from schedule.models import Day, Room, ScheduleItem, ScheduleItemAdditionalSpeaker, Slot
 from submissions.tests.factories import SubmissionFactory
-from users.tests.factories import UserFactory
 
 
 @register
@@ -72,8 +72,19 @@ class ScheduleItemFactory(DjangoModelFactory):
             return
 
         self.additional_speakers.set(
-            UserFactory.simple_generate_batch(create, size, **kwargs)
+            ScheduleItemAdditionalSpeakerFactory.simple_generate_batch(
+                create, size, **kwargs
+            )
         )
 
     class Meta:
         model = ScheduleItem
+
+
+@register
+class ScheduleItemAdditionalSpeakerFactory(DjangoModelFactory):
+    user_id = factory.Faker("pyint", min_value=1)
+    scheduleitem = factory.SubFactory(ScheduleItemFactory)
+
+    class Meta:
+        model = ScheduleItemAdditionalSpeaker

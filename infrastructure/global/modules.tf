@@ -36,6 +36,15 @@ module "certs_beta" {
   }
 }
 
+module "certs" {
+  source = "./certs"
+
+  providers = {
+    aws    = aws
+    aws.us = aws.us
+  }
+}
+
 # Buckets
 
 module "buckets" {

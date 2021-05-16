@@ -1,6 +1,6 @@
 locals {
   is_prod = terraform.workspace == "production"
-  domain  = local.is_prod ? "${local.domain_name}.beta.python.it" : "${terraform.workspace}-${local.domain_name}.beta.python.it"
+  domain  = local.is_prod ? "${local.domain_name}.python.it" : "${terraform.workspace}-${local.domain_name}.python.it"
 
   # TODO: Need to coordinate between env and vercel
   association_frontend_url = "https://associazione.python.it"
@@ -64,8 +64,8 @@ module "lambda" {
   }
 }
 
-data "aws_acm_certificate" "beta" {
-  domain   = "*.beta.python.it"
+data "aws_acm_certificate" "cert" {
+  domain   = "*.python.it"
   statuses = ["ISSUED"]
 }
 
@@ -76,7 +76,7 @@ module "api" {
   use_domain           = true
   domain               = local.domain
   zone_name            = "python.it"
-  certificate_arn      = data.aws_acm_certificate.beta.arn
+  certificate_arn      = data.aws_acm_certificate.cert.arn
   lambda_invoke_arn    = module.lambda.invoke_arn
   lambda_function_name = module.lambda.function_name
 }

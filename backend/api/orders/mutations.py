@@ -2,14 +2,14 @@ import typing
 from urllib.parse import urljoin
 
 import strawberry
-from api.permissions import IsAuthenticated
-from conferences.models.conference import Conference
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
+
+from api.permissions import IsAuthenticated
+from conferences.models.conference import Conference
 from hotels.models import HotelRoom, HotelRoomReservation
 from pretix import CreateOrderHotelRoom, CreateOrderInput, Order, create_order
 from pretix.exceptions import PretixError
-from users.models import User
 
 
 @strawberry.type
@@ -43,7 +43,7 @@ class OrdersMutations:
 
         if len(input.hotel_rooms) > 0:
             create_hotel_reservations(
-                pretix_order, input.hotel_rooms, user=info.context.request.user
+                pretix_order, input.hotel_rooms, user_id=info.context.request.user.id
             )
 
         return_url = urljoin(
@@ -98,7 +98,7 @@ def validate_hotel_rooms(hotel_rooms: typing.List[CreateOrderHotelRoom], *, conf
 
 
 def create_hotel_reservations(
-    pretix_order: Order, hotel_rooms: typing.List[CreateOrderHotelRoom], user: User
+    pretix_order: Order, hotel_rooms: typing.List[CreateOrderHotelRoom], user_id: int
 ):
     for room in hotel_rooms:
         HotelRoomReservation.objects.create(
@@ -106,5 +106,5 @@ def create_hotel_reservations(
             order_code=pretix_order.code,
             checkin=room.checkin,
             checkout=room.checkout,
-            user=user,
+            user_id=user_id,
         )

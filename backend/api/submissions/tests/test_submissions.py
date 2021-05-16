@@ -49,6 +49,7 @@ def test_returns_none_when_token_is_invalid(graphql_client, submission_factory):
 
 
 @mark.django_db
+@mark.skip(reason="not used?")
 def test_returns_submission_with_valid_token(
     graphql_client, token_factory, submission_factory
 ):

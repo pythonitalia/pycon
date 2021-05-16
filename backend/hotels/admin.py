@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
+
 from pretix.db import get_orders_status
 from pretix.utils import order_status_to_text
 
@@ -14,7 +15,14 @@ class HotelRoomAdmin(admin.ModelAdmin):
 
 @admin.register(HotelRoomReservation)
 class HotelRoomReservationAdmin(admin.ModelAdmin):
-    list_display = ("order_code", "order_status", "room", "user", "checkin", "checkout")
+    list_display = (
+        "order_code",
+        "order_status",
+        "room",
+        "user_id",
+        "checkin",
+        "checkout",
+    )
     list_filter = ("order_code", "room__conference", "room")
 
     def order_status(self, obj):

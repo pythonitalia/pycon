@@ -1,4 +1,5 @@
 from pytest import mark, raises
+
 from voting.models import Vote
 from voting.tests.fixtures.vote import get_random_vote
 
@@ -56,7 +57,7 @@ def test_submit_vote(
 
     assert vote.value == score_index
     assert vote.submission.hashid == variables["submission"]
-    assert vote.user == user
+    assert vote.user_id == user.id
 
 
 def test_reject_vote_when_voting_is_not_open(
@@ -83,12 +84,12 @@ def test_user_can_vote_different_submissions(
 
     conference = conference_factory(active_voting=True)
 
-    submission1 = submission_factory(conference=conference, id=1)
+    submission1 = submission_factory(conference=conference)
     resp1, variables1 = _submit_vote(graphql_client, submission1)
 
     assert resp1["data"]["sendVote"]["__typename"] == "VoteType"
 
-    vote1 = Vote.objects.get(user=user, submission=submission1)
+    vote1 = Vote.objects.get(user_id=user.id, submission=submission1)
     assert vote1.value == variables1["value_index"]
 
     submission2 = submission_factory(conference=conference)
@@ -97,7 +98,7 @@ def test_user_can_vote_different_submissions(
 
     assert resp2["data"]["sendVote"]["__typename"] == "VoteType"
 
-    vote2 = Vote.objects.get(user=user, submission=submission2)
+    vote2 = Vote.objects.get(user_id=user.id, submission=submission2)
     assert vote2.value == variables2["value_index"]
 
     assert Vote.objects.all().count() == 2
@@ -115,25 +116,23 @@ def test_updating_vote_when_user_votes_the_same_submission(
 
     assert resp["data"]["sendVote"]["__typename"] == "VoteType"
 
-    vote1 = Vote.objects.get(user=user, submission=submission)
+    vote1 = Vote.objects.get(user_id=user.id, submission=submission)
     assert vote1.value == variables["value_index"]
 
     resp, variables = _submit_vote(graphql_client, submission, value_index=3)
 
     assert resp["data"]["sendVote"]["__typename"] == "VoteType"
 
-    vote1 = Vote.objects.get(user=user, submission=submission)
+    vote1 = Vote.objects.get(user_id=user.id, submission=submission)
 
     assert vote1.value == variables["value_index"]
 
 
-def test_cannot_vote_without_a_ticket(
-    graphql_client, user, conference_factory, mocker, submission_factory
-):
+def test_cannot_vote_without_a_ticket(graphql_client, user, mocker, submission_factory):
     graphql_client.force_login(user)
     submission = submission_factory(conference__active_voting=True)
     admission_ticket_mock = mocker.patch(
-        "users.models.user_has_admission_ticket", return_value=False
+        "voting.helpers.user_has_admission_ticket", return_value=False
     )
 
     resp, _ = _submit_vote(graphql_client, submission, value_index=3)
@@ -147,7 +146,7 @@ def test_cannot_vote_without_a_ticket(
     admission_ticket_mock.assert_called()
 
     with raises(Vote.DoesNotExist):
-        Vote.objects.get(user=user, submission=submission)
+        Vote.objects.get(user_id=user.id, submission=submission)
 
 
 @mark.django_db

@@ -1,5 +1,8 @@
 import pytest
+
 from newsletters.exporter import convert_user_to_endpoint
+
+pytestmark = pytest.mark.skip(reason="disabled export for now")
 
 
 @pytest.mark.django_db
@@ -8,7 +11,7 @@ def test_convert_to_item(
 ):
     user = user_factory()
 
-    submission = submission_factory(speaker=user, conference=conference)
+    submission = submission_factory(speaker_id=user.id, conference=conference)
     item = schedule_item_factory(
         type="submission", submission=submission, conference=conference
     )

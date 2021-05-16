@@ -1,10 +1,12 @@
 import pytest
+from django.test.client import Client
+from pythonit_toolkit.api.graphql_test_client import SimulatedUser
+
 from api.tests.factories import *  # noqa
 from api.tests.fixtures import *  # noqa
 from blog.tests.factories import *  # noqa
 from cms.tests.factories import *  # noqa
 from conferences.tests.factories import *  # noqa
-from django.test.client import Client
 from events.tests.factories import *  # noqa
 from hotels.tests.factories import *  # noqa
 from languages.models import Language
@@ -14,24 +16,26 @@ from pages.tests.factories import *  # noqa
 from schedule.tests.factories import *  # noqa
 from sponsors.tests.factories import *  # noqa
 from submissions.tests.factories import *  # noqa
-from users.models import User
-from users.tests.factories import *  # noqa
 from voting.tests.factories import *  # noqa
 from voting.tests.fixtures import *  # noqa
 
 
 @pytest.fixture()
 def user(db):
-    user = User._default_manager.create_user("user@example.com", "password")
+    return SimulatedUser(id=1, email="simulated@user.it", is_staff=False)
 
-    return user
+
+@pytest.fixture()
+def user_factory(db):
+    def func(is_staff=False):
+        return SimulatedUser(id=1, email="simulated@user.it", is_staff=is_staff)
+
+    return func
 
 
 @pytest.fixture()
 def admin_user(db):
-    user = User._default_manager.create_superuser("admin@example.com", "password")
-
-    return user
+    return SimulatedUser(id=1, email="admin@user.it", is_staff=True)
 
 
 @pytest.fixture

@@ -23,7 +23,7 @@ def test_generate_graphql_schema():
 
         call_command("graphql_schema", stdout=out)
 
-    assert "Successfully dumped GraphQL schema to schema.json\n" in out.getvalue()
+    assert "Successfully dumped GraphQL schema to schema.json" in out.getvalue()
 
     mock_j.assert_called_once()
     assert mock_j.call_args_list[0][0][0] == {"data": {"a": 1}}

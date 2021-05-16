@@ -1,18 +1,10 @@
 from typing import List
 
 import strawberry
-from api.permissions import IsAuthenticated
-from graphql import GraphQLError
+
 from users.models import get_countries
 
-from .types import Country, MeUser
-
-
-@strawberry.type
-class UsersQuery:
-    @strawberry.field(permission_classes=[IsAuthenticated])
-    def me(self, info) -> MeUser:
-        return info.context.request.user
+from .types import Country
 
 
 @strawberry.type

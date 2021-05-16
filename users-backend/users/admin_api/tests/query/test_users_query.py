@@ -1,7 +1,8 @@
+from ward import test
+
 from users.tests.api import admin_graphql_client
 from users.tests.factories import user_factory
 from users.tests.session import db
-from ward import test
 
 
 @test("unlogged cannot fetch users")
@@ -66,9 +67,15 @@ async def _(
     response = await admin_graphql_client.query(query)
 
     assert not response.errors
-    assert {"id": user1.id, "email": user1.email} in response.data["users"]["items"]
-    assert {"id": user2.id, "email": user2.email} in response.data["users"]["items"]
-    assert {"id": user3.id, "email": user3.email} in response.data["users"]["items"]
+    assert {"id": str(user1.id), "email": user1.email} in response.data["users"][
+        "items"
+    ]
+    assert {"id": str(user2.id), "email": user2.email} in response.data["users"][
+        "items"
+    ]
+    assert {"id": str(user3.id), "email": user3.email} in response.data["users"][
+        "items"
+    ]
 
 
 @test("fetch all users paginated")
@@ -98,5 +105,7 @@ async def _(
     response = await admin_graphql_client.query(query)
 
     assert not response.errors
-    assert {"id": admin.id, "email": admin.email} in response.data["users"]["items"]
+    assert {"id": str(admin.id), "email": admin.email} in response.data["users"][
+        "items"
+    ]
     assert response.data["users"]["pageInfo"] == {"totalCount": 4, "hasMore": True}

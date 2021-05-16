@@ -1,16 +1,28 @@
-mutation Signup($email: String!, $password: String!) {
-  register(input: { email: $email, password: $password }) {
+mutation Signup($input: RegisterInput!) {
+  register(input: $input) {
     __typename
-
-    ... on MeUser {
-      id
-      email
+    ... on RegisterSuccess {
+      user {
+        id
+        email
+        fullname
+        name
+      }
     }
-
-    ... on RegisterErrors {
-      validationEmail: email
-      validationPassword: password
-      nonFieldErrors
+    ... on EmailAlreadyUsed {
+      message
+    }
+    ... on RegisterValidationError {
+      errors {
+        email {
+          message
+          type
+        }
+        password {
+          message
+          type
+        }
+      }
     }
   }
 }

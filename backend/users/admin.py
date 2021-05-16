@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
+from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 
 from .models import User
@@ -74,6 +75,13 @@ class PyConUserAdmin(UserAdmin):
     list_display = ("email", "full_name", "is_staff", "is_superuser")
     search_fields = ("email",)
     ordering = ("email",)
+
+    def get_queryset(self, request):
+        return (
+            super()
+            .get_queryset(request)
+            .filter(Q(is_staff=True) | Q(is_superuser=True))
+        )
 
 
 admin.site.register(User, PyConUserAdmin)

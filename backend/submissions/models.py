@@ -1,5 +1,3 @@
-from api.helpers.ids import encode_hashid
-from django.conf import settings
 from django.core import exceptions
 from django.db import models
 from django.urls import reverse
@@ -7,6 +5,8 @@ from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from model_utils import Choices
 from model_utils.models import TimeStampedModel
+
+from api.helpers.ids import encode_hashid
 
 from .managers import SubmissionManager
 
@@ -47,12 +47,7 @@ class Submission(TimeStampedModel):
     )
     previous_talk_video = models.URLField(_("previous talk video"), blank=True)
 
-    speaker = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        verbose_name=_("speaker"),
-        on_delete=models.PROTECT,
-        related_name="submissions",
-    )
+    speaker_id = models.IntegerField(verbose_name=_("speaker"))
 
     topic = models.ForeignKey(
         "conferences.Topic", verbose_name=_("topic"), on_delete=models.PROTECT
@@ -88,7 +83,7 @@ class Submission(TimeStampedModel):
         return encode_hashid(self.pk)
 
     def can_edit(self, request):
-        return self.speaker == request.user
+        return self.speaker_id == request.user.id
 
     def clean(self):
         if (
@@ -187,17 +182,12 @@ class SubmissionComment(TimeStampedModel):
         related_name="comments",
     )
 
-    author = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        verbose_name=_("author"),
-        on_delete=models.CASCADE,
-        related_name="comments",
-    )
+    author_id = models.IntegerField(verbose_name=_("author"))
 
     text = models.CharField(_("text"), max_length=500)
 
     def __str__(self):
-        return f"{self.author.full_name} {self.submission.title}"
+        return f"{self.author_id} {self.submission.title}"
 
     class Meta:
         verbose_name = _("comment")

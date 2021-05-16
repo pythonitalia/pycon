@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service: [gateway, users-backend]
+        service: [gateway, users-backend, association-backend]
 
     steps:
       - uses: actions/checkout@master

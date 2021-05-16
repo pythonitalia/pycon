@@ -1,23 +1,23 @@
 import random
 
 import factory.fuzzy
+from django.conf import settings
+from factory.django import DjangoModelFactory
+from pytest_factoryboy import register
+
 from conferences.tests.factories import (
     AudienceLevelFactory,
     ConferenceFactory,
     DurationFactory,
     TopicFactory,
 )
-from django.conf import settings
-from factory.django import DjangoModelFactory
 from languages.models import Language
-from pytest_factoryboy import register
 from submissions.models import (
     Submission,
     SubmissionComment,
     SubmissionTag,
     SubmissionType,
 )
-from users.tests.factories import UserFactory
 
 
 @register
@@ -51,7 +51,7 @@ class SubmissionFactory(DjangoModelFactory):
     notes = factory.Faker("text")
     type = factory.SubFactory(SubmissionTypeFactory)
     duration = factory.SubFactory(DurationFactory)
-    speaker = factory.SubFactory(UserFactory)
+    speaker_id = factory.Faker("pyint", min_value=1)
     topic = factory.SubFactory(TopicFactory)
     audience_level = factory.SubFactory(AudienceLevelFactory)
     speaker_level = factory.fuzzy.FuzzyChoice(
@@ -129,4 +129,4 @@ class SubmissionCommentFactory(DjangoModelFactory):
 
     submission = factory.SubFactory(SubmissionFactory)
     text = factory.Faker("text")
-    author = factory.SubFactory(UserFactory)
+    author_id = factory.Faker("pyint", min_value=1)

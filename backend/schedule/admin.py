@@ -46,7 +46,8 @@ class ScheduleItemAdmin(admin.ModelAdmin):
     )
     autocomplete_fields = ("submission",)
     prepopulated_fields = {"slug": ("title",)}
-    filter_horizontal = ("rooms", "additional_speakers")
+    # TODO add back a way to add additional speakers
+    filter_horizontal = ("rooms",)
 
 
 @admin.register(Room)

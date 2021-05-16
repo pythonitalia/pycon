@@ -42,4 +42,13 @@ data "aws_iam_policy_document" "lambda_role" {
     resources = ["*"]
     effect    = "Allow"
   }
+
+  # SES
+  statement {
+    actions = [
+      "ses:SendTemplatedEmail",
+    ]
+    resources = ["*"]
+    effect    = "Allow"
+  }
 }

@@ -10,7 +10,7 @@ from users.domain import entities
 
 @strawberry.type
 class User:
-    id: int
+    id: strawberry.ID
     fullname: str
     name: str
     email: str

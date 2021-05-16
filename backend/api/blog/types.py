@@ -2,24 +2,42 @@ from datetime import datetime
 from typing import Optional
 
 import strawberry
-from api.users.types import User
 
 from ..helpers.i18n import make_localized_resolver
+
+
+@strawberry.federation.type(keys=["id"])
+class BlogPostAuthor:
+    id: strawberry.ID
 
 
 @strawberry.type
 class Post:
     id: strawberry.ID
-    author: User
+    author: BlogPostAuthor
     title: str = strawberry.field(resolver=make_localized_resolver("title"))
     slug: str = strawberry.field(resolver=make_localized_resolver("slug"))
     excerpt: str = strawberry.field(resolver=make_localized_resolver("excerpt"))
     content: str = strawberry.field(resolver=make_localized_resolver("content"))
+    image: Optional[str]
     published: datetime
 
-    @strawberry.field
-    def image(self, info) -> Optional[str]:
-        if not self.image:
-            return None
-
-        return info.context.request.build_absolute_uri(self.image.url)
+    def __init__(
+        self,
+        id: strawberry.ID,
+        author: BlogPostAuthor,
+        title: str,
+        slug: str,
+        excerpt: str,
+        content: str,
+        published: datetime,
+        image: Optional[str],
+    ) -> None:
+        self.id = id
+        self.author = author
+        self.title = title
+        self.slug = slug
+        self.excerpt = excerpt
+        self.content = content
+        self.published = published
+        self.image = image
