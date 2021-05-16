@@ -31,7 +31,7 @@ export const Button: React.FC<ButtonProps> = ({
       }, 600);
       return () => clearInterval(interval);
     }
-  });
+  }, [loading]);
 
   return (
     <button
