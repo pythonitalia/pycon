@@ -8,7 +8,7 @@ import { Modal } from "~/components/modal";
 import { getMessageForError, isErrorTypename } from "~/helpers/errors-to-text";
 
 import { useLoginMutation } from "./login.generated";
-import { useRegisterMutation } from "./register.generated";
+import { RegisterErrors, useRegisterMutation } from "./register.generated";
 
 type ModalSigningProps = {
   showModal: boolean;
@@ -74,6 +74,29 @@ export const ModalSigning: React.FC<ModalSigningProps> = ({
     : registerData.data?.register;
   const mutationResultTypename = mutationData?.__typename;
   const operationFailed = isErrorTypename(mutationResultTypename);
+  const mutationErrors =
+    mutationData?.__typename === "RegisterValidationError" &&
+    mutationData.errors;
+  console.log(mutationErrors);
+
+  const getFieldsError = (errors: RegisterErrors) => {
+    return ["email", "password"]
+      .map((field) => {
+        if (errors[field]) {
+          return errors[field].map((error) => {
+            console.log(field, error.type);
+            switch (true) {
+              case error.type === "value_error.any_str.min_length" &&
+                field === "password":
+                return "La password e' troppo corta, deve esser almeno 8. ";
+              case error.type === "value_error.email" && field === "email":
+                return "L'email inserita non e' valida. ";
+            }
+          });
+        }
+      })
+      .join(" - ");
+  };
 
   return (
     <Modal
@@ -116,6 +139,11 @@ export const ModalSigning: React.FC<ModalSigningProps> = ({
         {operationFailed && mutationResultTypename && (
           <Alert variant={Variant.ERROR}>
             {getMessageForError(mutationResultTypename)}
+          </Alert>
+        )}
+        {mutationErrors && (
+          <Alert variant={Variant.ERROR}>
+            {getFieldsError(mutationErrors)}
           </Alert>
         )}
 
