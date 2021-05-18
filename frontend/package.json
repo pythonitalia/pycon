@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.2.5",
-    "@babel/plugin-transform-react-jsx": "^7.12.1",
+    "@babel/plugin-transform-react-jsx": "^7.14.3",
     "@babel/plugin-transform-react-pure-annotations": "^7.12.1",
     "@babel/preset-react": "^7.12.1",
     "@emotion/babel-plugin-jsx-pragmatic": "^0.1.5",
