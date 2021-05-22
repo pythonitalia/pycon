@@ -56,9 +56,9 @@ resource "aws_route53_record" "_matrix__tcp_python_it_srv" {
 
 resource "aws_route53_record" "associazione_python_it_cname" {
   zone_id = aws_route53_zone.pythonit.id
-  name    = "associazione.python.it"
+  name    = "associazione"
   type    = "CNAME"
-  records = ["python-it.netlify.com."]
+  records = ["cname.vercel-dns.com."]
   ttl     = "3600"
 }
 
