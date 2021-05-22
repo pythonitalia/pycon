@@ -585,7 +585,7 @@ six = ">=1.4.0"
 
 [[package]]
 name = "pythonit-toolkit"
-version = "0.1.44"
+version = "0.1.52"
 description = ""
 category = "main"
 optional = false
@@ -618,7 +618,7 @@ socks = ["PySocks (>=1.5.6,!=1.5.7)", "win-inet-pton"]
 
 [[package]]
 name = "rfc3986"
-version = "1.4.0"
+version = "1.5.0"
 description = "Validating URI References per RFC 3986"
 category = "main"
 optional = false
@@ -874,7 +874,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "7966b045fc0e540ea919b52707bcc0afa1a1c00306b87d4e6ff5850b59a673b8"
+content-hash = "8f8d415b779b2f1a1d165ac59373845752ee03aab9b9568f06bf2d2b4d11f075"
 
 [metadata.files]
 alembic = [
@@ -1267,16 +1267,16 @@ python-multipart = [
     {file = "python-multipart-0.0.5.tar.gz", hash = "sha256:f7bb5f611fc600d15fa47b3974c8aa16e93724513b49b5f95c81e6624c83fa43"},
 ]
 pythonit-toolkit = [
-    {file = "pythonit-toolkit-0.1.44.tar.gz", hash = "sha256:d11e56872da3f862f92cc403f881efedacd1fcd1f1154e5e19e3452f14b53653"},
-    {file = "pythonit_toolkit-0.1.44-py3-none-any.whl", hash = "sha256:66efe84820ecd2c424470abbe9febf872d9c4f6805877adb8d48069c7143ab45"},
+    {file = "pythonit-toolkit-0.1.52.tar.gz", hash = "sha256:55964fad924ce845f9d1bd8036224be02f9ff2526aa00289d1de40ebf5757b81"},
+    {file = "pythonit_toolkit-0.1.52-py3-none-any.whl", hash = "sha256:e79d23e12935901d9fa4548661ec51aecefe7658cf6f771380070eb0924c9957"},
 ]
 requests = [
     {file = "requests-2.25.1-py2.py3-none-any.whl", hash = "sha256:c210084e36a42ae6b9219e00e48287def368a26d03a048ddad7bfee44f75871e"},
     {file = "requests-2.25.1.tar.gz", hash = "sha256:27973dd4a904a4f13b263a19c866c13b92a39ed1c964655f025f3f8d3d75b804"},
 ]
 rfc3986 = [
-    {file = "rfc3986-1.4.0-py2.py3-none-any.whl", hash = "sha256:af9147e9aceda37c91a05f4deb128d4b4b49d6b199775fd2d2927768abdc8f50"},
-    {file = "rfc3986-1.4.0.tar.gz", hash = "sha256:112398da31a3344dc25dbf477d8df6cb34f9278a94fee2625d89e4514be8bb9d"},
+    {file = "rfc3986-1.5.0-py2.py3-none-any.whl", hash = "sha256:a86d6e1f5b1dc238b218b012df0aa79409667bb209e58da56d0b94704e712a97"},
+    {file = "rfc3986-1.5.0.tar.gz", hash = "sha256:270aaf10d87d0d4e095063c65bf3ddbc6ee3d0b226328ce21e036f946e421835"},
 ]
 rich = [
     {file = "rich-9.13.0-py3-none-any.whl", hash = "sha256:9004f6449c89abadf689dad6f92393e760b8c3a8a8c4ea6d8d474066307c0e66"},
