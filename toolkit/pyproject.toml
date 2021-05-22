@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pythonit-toolkit"
-version = "0.1.52"
+version = "0.1.53-alpha.5"
 description = ""
 authors = ["Python Italia"]
 
@@ -11,6 +11,7 @@ starlette = {version = "^0.14.2", optional = true}
 strawberry-graphql = "*"
 pydantic = {version = "*", optional = true}
 boto3 = "^1.17.39"
+sentry-sdk = "^1.1.0"
 
 [tool.poetry.dev-dependencies]
 ward = "^0.54.0b0"
