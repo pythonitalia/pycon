@@ -15,7 +15,7 @@ from src.customers.tests.fake_repository import FakeCustomersRepository
 
 @test("manage subscription user")
 async def _():
-    user = PastaportoUserInfo(id=1, email="test@email.it")
+    user = PastaportoUserInfo(id=1, email="test@email.it", is_staff=False)
     customer = Customer(
         id=1,
         user_id=1,
@@ -41,7 +41,7 @@ async def _():
 
 @test("fails if the user doesnt have an active subscription")
 async def _():
-    user = PastaportoUserInfo(id=1, email="test@email.it")
+    user = PastaportoUserInfo(id=1, email="test@email.it", is_staff=False)
     customer = Customer(
         id=1,
         user_id=1,
@@ -66,7 +66,7 @@ async def _():
 
 @test("fails if the user doesnt have any subscription")
 async def _():
-    user = PastaportoUserInfo(id=1, email="test@email.it")
+    user = PastaportoUserInfo(id=1, email="test@email.it", is_staff=False)
     customer = Customer(
         id=1,
         user_id=1,
@@ -84,7 +84,7 @@ async def _():
 
 @test("fails if the user doesnt have a customer")
 async def _():
-    user = PastaportoUserInfo(id=1, email="test@email.it")
+    user = PastaportoUserInfo(id=1, email="test@email.it", is_staff=False)
     customer = Customer(
         id=1,
         user_id=3,
