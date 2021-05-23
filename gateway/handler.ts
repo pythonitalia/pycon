@@ -1,14 +1,18 @@
 import { ApolloServer } from "@pythonit/apollo-server-lambda-with-cors-regex";
+import * as ServerlessSentry from "@sentry/serverless";
 
 import { createContext } from "./context";
 import { gateway } from "./gateway";
 import { apolloHeadersPlugin } from "./plugins/apollo-headers";
+import { initSentry, SentryPlugin } from "./plugins/sentry";
+
+initSentry(true);
 
 const server = new ApolloServer({
   gateway,
   subscriptions: false,
   introspection: true,
-  plugins: [apolloHeadersPlugin(true)],
+  plugins: [SentryPlugin(true), apolloHeadersPlugin(true)],
   context: async ({ event }) => {
     return createContext(event.headers["Cookie"]);
   },
@@ -46,40 +50,42 @@ const handleManyCookies = (headers: any = {}) => {
   return { headers };
 };
 
-exports.graphqlHandler = async (event: any, context: any) => {
-  const serverHandler = server.createHandler({
-    cors: {
-      credentials: true,
-      methods: ["GET", "POST", "OPTIONS", "HEAD"],
-      origin: [
-        // @ts-ignore
-        /python-italia\.vercel\.app$/,
-        "https://associazione.python.it",
-        "https://pycon.it",
-      ],
-    },
-  });
-
-  try {
-    const response: any = await new Promise((resolve, reject) => {
-      serverHandler(event, context, (err: any, response: any = {}) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-
-        resolve(response);
-      });
+exports.graphqlHandler = ServerlessSentry.AWSLambda.wrapHandler(
+  async (event: any, context: any) => {
+    const serverHandler = server.createHandler({
+      cors: {
+        credentials: true,
+        methods: ["GET", "POST", "OPTIONS", "HEAD"],
+        origin: [
+          // @ts-ignore
+          /python-italia\.vercel\.app$/,
+          "https://associazione.python.it",
+          "https://pycon.it",
+        ],
+      },
     });
 
-    const { headers, ...responseData } = response;
-    const newHeaders = handleManyCookies(headers);
+    try {
+      const response: any = await new Promise((resolve, reject) => {
+        serverHandler(event, context, (err: any, response: any = {}) => {
+          if (err) {
+            reject(err);
+            return;
+          }
 
-    return {
-      ...responseData,
-      ...newHeaders,
-    };
-  } catch (e) {
-    console.error("server handler error:", e);
-  }
-};
+          resolve(response);
+        });
+      });
+
+      const { headers, ...responseData } = response;
+      const newHeaders = handleManyCookies(headers);
+
+      return {
+        ...responseData,
+        ...newHeaders,
+      };
+    } catch (e) {
+      console.error("server handler error:", e);
+    }
+  },
+);
