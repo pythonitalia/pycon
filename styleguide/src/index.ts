@@ -8,3 +8,5 @@ export { SplitSection } from "./split-section/split-section";
 export { Schedule } from "./schedule/schedule";
 export { ScheduleProgram } from "./schedule/types";
 export { Colors } from "./colors/colors";
+export { Wrapper } from "./wrapper/wrapper";
+export { Paragraph } from "./paragraph/paragraph";
