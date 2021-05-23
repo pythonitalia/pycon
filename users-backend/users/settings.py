@@ -37,6 +37,9 @@ IDENTITY_EXPIRES_AFTER_MINUTES = config(
     "IDENTITY_EXPIRES_AFTER_MINUTES", cast=int, default=60
 )
 
+# Sentry
+SENTRY_DSN = config("SENTRY_DSN", cast=Secret, default="")
+
 # Pagination
 
 DEFAULT_PAGINATION_TO = 20

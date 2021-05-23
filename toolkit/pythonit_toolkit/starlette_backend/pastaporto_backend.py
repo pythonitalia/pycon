@@ -26,7 +26,12 @@ class PastaportoAuthBackend(AuthenticationBackend):
 
         try:
             pastaporto = Pastaporto.from_token(pastaporto_token, self.pastaporto_secret)
-            set_user({"id": pastaporto.user_info.id, "ip_address": "{{auto}}"})
+
+            if pastaporto.is_authenticated:
+                set_user({"id": pastaporto.user_info.id, "ip_address": "{{auto}}"})
+            else:
+                set_user(None)
+
             return RequestAuth(pastaporto), pastaporto.user_info
         except InvalidPastaportoError as e:
             set_user(None)
