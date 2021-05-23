@@ -48,6 +48,7 @@ module "lambda" {
   env_vars = {
     DEBUG        = "false"
     DATABASE_URL = "postgresql://${data.aws_db_instance.database.master_username}:${var.database_password}@${data.aws_db_instance.database.address}:${data.aws_db_instance.database.port}/association"
+    SENTRY_DSN   = var.sentry_dsn
 
     # Services
     ASSOCIATION_FRONTEND_URL = local.association_frontend_url

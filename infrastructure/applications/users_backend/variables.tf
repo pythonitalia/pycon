@@ -2,6 +2,7 @@ variable "secret_key" {}
 variable "google_auth_client_id" {}
 variable "google_auth_client_secret" {}
 variable "database_password" {}
+variable "sentry_dsn" {}
 
 variable "pastaporto_secret" {}
 variable "identity_secret" {}

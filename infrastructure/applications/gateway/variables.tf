@@ -6,6 +6,7 @@ variable "admin_variant" {
   type    = bool
   default = false
 }
+variable "sentry_dsn" {}
 
 locals {
   application = var.admin_variant ? "admin-gateway" : "gateway"

@@ -52,6 +52,7 @@ module "lambda" {
     GOOGLE_AUTH_CLIENT_SECRET = var.google_auth_client_secret
     DATABASE_URL              = "postgresql+asyncpg://${data.aws_db_instance.database.master_username}:${var.database_password}@${data.aws_db_instance.database.address}:${data.aws_db_instance.database.port}/users"
     EMAIL_BACKEND             = "pythonit_toolkit.emails.backends.ses.SESEmailBackend"
+    SENTRY_DSN                = var.sentry_dsn
 
     # Services
     ASSOCIATION_FRONTEND_URL = local.association_frontend_url

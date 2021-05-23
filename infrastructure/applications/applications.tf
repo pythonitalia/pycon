@@ -39,6 +39,7 @@ module "gateway" {
   identity_secret           = var.identity_secret
   service_to_service_secret = var.service_to_service_secret
   pastaporto_action_secret  = var.pastaporto_action_secret
+  sentry_dsn                = var.gateway_sentry_dsn
 
   providers = {
     aws    = aws
@@ -54,6 +55,7 @@ module "admin_gateway" {
   service_to_service_secret = var.service_to_service_secret
   pastaporto_action_secret  = var.pastaporto_action_secret
   admin_variant             = true
+  sentry_dsn                = var.gateway_sentry_dsn
 
   providers = {
     aws    = aws
@@ -72,6 +74,7 @@ module "users_backend" {
   identity_secret           = var.identity_secret
   service_to_service_secret = var.service_to_service_secret
   pastaporto_action_secret  = var.pastaporto_action_secret
+  sentry_dsn                = var.users_backend_sentry_dsn
 
   depends_on = [module.database]
 }
@@ -84,6 +87,7 @@ module "association_backend" {
   stripe_secret_api_key        = var.stripe_secret_api_key
   stripe_subscription_price_id = var.association_backend_stripe_membership_price_id
   stripe_webhook_secret        = var.association_backend_stripe_webhook_secret
+  sentry_dsn                   = var.association_backend_sentry_dsn
 
   depends_on = [module.database]
 }
