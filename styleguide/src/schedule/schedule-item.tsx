@@ -61,11 +61,13 @@ export const ScheduleItem = ({
   return (
     <div
       key={event.start}
-      className={clsx("flex flex-col p-4 font-bold", background, className)}
+      className={clsx("flex flex-col p-4 font-bold justify-between", background, className)}
       {...props}
     >
-      {getTitle(event, performers)}
-      <footer className="mt-auto font-normal text-white">
+      <div>
+        {getTitle(event, performers)}
+      </div>
+      <footer className="font-normal text-white">
         {performers.map((p) => p.fullName).join(" & ")}
       </footer>
     </div>

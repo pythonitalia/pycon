@@ -137,7 +137,7 @@ const DayHeader = ({
 export const Schedule = ({ program }: Props) => {
   const uniformSize = true;
 
-  const { days } = program;
+  const days = [program.days[0], program.days[1], program.days[2]]
 
   const allEvents = days.flatMap((d) => d.events);
 
@@ -165,7 +165,7 @@ export const Schedule = ({ program }: Props) => {
           } as any
         }
       >
-        <div className="bg-white p-4 hidden md:block"></div>
+        <div className="bg-white p-4 hidden md:flex"></div>
 
         {days.map((day) => (
           <DayHeader
@@ -202,7 +202,7 @@ export const Schedule = ({ program }: Props) => {
               {
                 hidden: day.date !== selectedDay,
               },
-              "md:block"
+              "md:flex"
             )}
           />
         ))}

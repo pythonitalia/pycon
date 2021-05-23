@@ -6,6 +6,7 @@ export default {
   title: "Schedule",
 };
 
+
 const program: ScheduleProgram = {
   days: [
     {
@@ -24,7 +25,7 @@ const program: ScheduleProgram = {
             fullName: "Aaron Bassett",
             profilePicture: "/images/aaron-basset.jpeg",
           },
-          status: "TBC",
+          status: "CONFIRMED",
         },
 
         {
@@ -100,52 +101,28 @@ const program: ScheduleProgram = {
           title: "PSF - Ask Me Anything",
           performers: [
             {
-              fullName: "Lelio Campanile",
-              profilePicture: "/images/lelio-campanile.jpg",
+              fullName: "Ewa Jodlowska",
+              profilePicture: "/images/ewa-jodlowska.jpg",
             },
             {
-              fullName: "Luca Fedrizzi",
-              profilePicture: "/images/luca-fedrizzi.jpg",
+              fullName: "Lorena Mesa",
+              profilePicture: "/images/lorena-mesa.jpg",
             },
           ],
-          status: "CONFIRMED",
+          status: "TBC",
         },
 
         {
           start: "2021-06-16T22:00",
-          end: "2021-06-16T22:10",
-          type: "LIGHTNING_TALK",
-          title: "Lightning Talk - TBD",
-          performer: {
-            fullName: "TBC",
-            profilePicture: null,
-          },
-          status: "TBC",
-        },
-
-        {
-          start: "2021-06-16T22:10",
-          end: "2021-06-16T22:30",
-          type: "PERFORMANCE",
-          title: "Artistic Performance - TBD",
-          performer: {
-            fullName: "TBC",
-            profilePicture: null,
-          },
-          status: "TBC",
-        },
-
-        {
-          start: "2021-06-16T22:30",
-          end: "2021-06-16T23:30",
+          end: "2021-06-16T23:00",
           type: "QUIZ",
           title: "Pub Quiz",
           status: "CONFIRMED",
         },
 
         {
-          start: "2021-06-16T23:30",
-          end: "2021-06-16T23:40",
+          start: "2021-06-16T23:00",
+          end: "2021-06-16T23:10",
           type: "CLOSING",
           title: "Closing session",
           status: "CONFIRMED",
@@ -250,31 +227,19 @@ const program: ScheduleProgram = {
 
         {
           start: "2021-06-17T22:00",
-          end: "2021-06-17T22:10",
-          type: "LIGHTNING_TALK",
-          title: "Lightning Talk - TBD",
-          performer: {
-            fullName: "TBC",
-            profilePicture: null,
-          },
-          status: "TBC",
-        },
-
-        {
-          start: "2021-06-17T22:10",
-          end: "2021-06-17T22:30",
+          end: "2021-06-17T23:00",
           type: "PERFORMANCE",
-          title: "Artistic Performance - TBD",
+          title: "Monty Python Performance",
           performer: {
-            fullName: "TBC",
+            fullName: "",
             profilePicture: null,
           },
-          status: "TBC",
+          status: "CONFIRMED",
         },
 
         {
-          start: "2021-06-17T23:30",
-          end: "2021-06-17T23:40",
+          start: "2021-06-17T23:00",
+          end: "2021-06-17T23:10",
           type: "CLOSING",
           title: "Closing session",
           status: "CONFIRMED",
@@ -327,6 +292,15 @@ const program: ScheduleProgram = {
         },
 
         {
+          start: "2021-06-18T20:40",
+          end: "2021-06-18T20:50",
+          type: "LIGHTNING_TALK",
+          title: "TBC",
+          performer: null,
+          status: "TBC",
+        },
+
+        {
           start: "2021-06-18T20:50",
           end: "2021-06-18T21:10",
           type: "DIVERSITY_SUCCESS_STORY",
@@ -349,7 +323,7 @@ const program: ScheduleProgram = {
               profilePicture: "/images/ambra-tonon.jpg",
             },
           ],
-          status: "TBC",
+          status: "CONFIRMED",
         },
 
         {
@@ -363,39 +337,15 @@ const program: ScheduleProgram = {
 
         {
           start: "2021-06-18T22:00",
-          end: "2021-06-18T22:10",
-          type: "LIGHTNING_TALK",
-          title: "Lightning Talk - TBD",
-          performer: {
-            fullName: "TBC",
-            profilePicture: null,
-          },
-          status: "TBC",
-        },
-
-        {
-          start: "2021-06-18T22:10",
-          end: "2021-06-18T22:30",
-          type: "PERFORMANCE",
-          title: "Artistic Performance - TBD",
-          performer: {
-            fullName: "TBC",
-            profilePicture: null,
-          },
-          status: "TBC",
-        },
-
-        {
-          start: "2021-06-18T22:30",
-          end: "2021-06-18T23:30",
+          end: "2021-06-18T23:00",
           type: "QUIZ",
           title: "Game",
           status: "TBC",
         },
 
         {
-          start: "2021-06-18T23:30",
-          end: "2021-06-18T23:40",
+          start: "2021-06-18T23:00",
+          end: "2021-06-18T23:10",
           type: "CLOSING",
           title: "Closing session",
           status: "CONFIRMED",
