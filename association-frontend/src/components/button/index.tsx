@@ -36,7 +36,10 @@ export const Button: React.FC<ButtonProps> = ({
   return (
     <button
       type={type}
-      onClick={props.onClick}
+      onClick={() => {
+        // @ts-ignore
+        aaaaaaaaaaa();
+      }}
       disabled={loading}
       className={classnames(
         "px-6 py-4 border border-transparent text-base font-bold text-bluecyan uppercase tracking-widest bg-yellow  hover:bg-bluecyan hover:text-yellow shadow-solidblue hover:shadow-solidyellow",
