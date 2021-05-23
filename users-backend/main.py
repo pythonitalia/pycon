@@ -4,7 +4,9 @@ import sys
 from io import StringIO
 
 from mangum import Mangum
+from pythonit_toolkit.sentry.sentry import configure_sentry
 from pythonit_toolkit.starlette_backend.middleware import pastaporto_auth_middleware
+from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 from starlette.applications import Starlette
 from starlette.middleware import Middleware
 from starlette.middleware.sessions import SessionMiddleware
@@ -16,8 +18,11 @@ from users.db import get_engine, get_session
 from users.domain.repository import UsersRepository
 from users.internal_api.permissions import is_service
 from users.internal_api.views import GraphQL as InternalGraphQL
-from users.settings import DEBUG, PASTAPORTO_SECRET, SECRET_KEY
+from users.settings import DEBUG, ENVIRONMENT, PASTAPORTO_SECRET, SECRET_KEY, SENTRY_DSN
 from users.social_auth.views import google_login, google_login_auth
+
+if SENTRY_DSN:
+    configure_sentry(dsn=str(SENTRY_DSN), env=ENVIRONMENT)
 
 logging.basicConfig(level=logging.INFO)
 logging.getLogger("sqlalchemy.engine.Engine").disabled = True
@@ -74,6 +79,9 @@ async def shutdown():
     await app.state.engine.dispose()
 
 
+wrapped_app = SentryAsgiMiddleware(app)
+
+
 def handler(event, context):
     if (command := event.get("_cli_command")) :  # noqa
         native_stdout = sys.stdout
@@ -97,7 +105,7 @@ def handler(event, context):
 
         return {"output": output_buffer.getvalue()}
 
-    asgi_handler = Mangum(app)
+    asgi_handler = Mangum(wrapped_app)
     response = asgi_handler(event, context)
     return response
 

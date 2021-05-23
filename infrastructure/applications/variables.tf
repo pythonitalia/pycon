@@ -14,12 +14,17 @@ variable "pinpoint_application_id" {}
 variable "pretix_sentry_dsn" {}
 variable "stripe_secret_api_key" {}
 
+# Gateway secrets
+variable "gateway_sentry_dsn" {}
+
 # Users backend secrets
 variable "users_backend_secret_key" {}
+variable "users_backend_sentry_dsn" {}
 
 # Association backend secrets
 variable "association_backend_stripe_membership_price_id" {}
 variable "association_backend_stripe_webhook_secret" {}
+variable "association_backend_sentry_dsn" {}
 
 # Secrets
 variable "pastaporto_secret" {}

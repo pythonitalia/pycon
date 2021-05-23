@@ -5,6 +5,7 @@ from starlette.datastructures import Secret
 
 config = Config(".env")
 
+ENV = config("ENV", cast=str, default="local")
 DEBUG = config("DEBUG", cast=bool, default=False)
 DATABASE_URL = config("DATABASE_URL")
 
@@ -12,6 +13,9 @@ DATABASE_URL = config("DATABASE_URL")
 ASSOCIATION_FRONTEND_URL = config(
     "ASSOCIATION_FRONTEND_URL",
 )
+
+# Sentry
+SENTRY_DSN = config("SENTRY_DSN", cast=Secret, default="")
 
 # Stripe
 STRIPE_SECRET_API_KEY = config("STRIPE_SECRET_API_KEY", cast=Secret)

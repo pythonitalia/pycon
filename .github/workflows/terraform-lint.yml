@@ -70,6 +70,9 @@ jobs:
           TF_VAR_stripe_secret_api_key: ${{ secrets.TF_VAR_stripe_secret_api_key }}
           TF_VAR_association_backend_stripe_membership_price_id: ${{ secrets.TF_VAR_association_backend_stripe_membership_price_id }}
           TF_VAR_association_backend_stripe_webhook_secret: ${{ secrets.TF_VAR_association_backend_stripe_webhook_secret }}
+          TF_VAR_association_backend_sentry_dsn: ${{ secrets.TF_VAR_association_backend_sentry_dsn }}
+          TF_VAR_gateway_sentry_dsn: ${{ secrets.TF_VAR_gateway_sentry_dsn }}
+          TF_VAR_users_backend_sentry_dsn: ${{ secrets.TF_VAR_users_backend_sentry_dsn }}
           TF_IN_AUTOMATION: 1
       - name: Find Plan comment
         uses: peter-evans/find-comment@v1

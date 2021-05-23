@@ -4,14 +4,19 @@ import sys
 from io import StringIO
 
 from mangum import Mangum
+from pythonit_toolkit.sentry.sentry import configure_sentry
 from pythonit_toolkit.starlette_backend.middleware import pastaporto_auth_middleware
+from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 from starlette.applications import Starlette
 from starlette.routing import Route
 
 from src.api.views import GraphQL
-from src.association.settings import DEBUG, PASTAPORTO_SECRET
+from src.association.settings import DEBUG, ENV, PASTAPORTO_SECRET, SENTRY_DSN
 from src.database.db import database
 from src.webhooks.views import stripe_webhook
+
+if SENTRY_DSN:
+    configure_sentry(dsn=str(SENTRY_DSN), env=ENV)
 
 logging.basicConfig(level=logging.INFO)
 logging.getLogger("sqlalchemy.engine.Engine").disabled = True
@@ -41,6 +46,9 @@ async def shutdown():
         await database.disconnect()
 
 
+wrapped_app = SentryAsgiMiddleware(app)
+
+
 def handler(event, context):
     if (command := event.get("_cli_command")) :  # noqa
         native_stdout = sys.stdout
@@ -64,7 +72,7 @@ def handler(event, context):
 
         return {"output": output_buffer.getvalue()}
 
-    asgi_handler = Mangum(app)
+    asgi_handler = Mangum(wrapped_app)
     response = asgi_handler(event, context)
     return response
 

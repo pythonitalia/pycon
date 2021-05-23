@@ -21,8 +21,9 @@ httpx = "^0.16.1"
 Authlib = "^0.15.3"
 itsdangerous = "^1.1.0"
 mangum = "^0.10.0"
-pythonit-toolkit = "^0.1.52"
+pythonit-toolkit = "^0.1.53"
 graphql-core = "^3.1.5"
+sentry-sdk = "^1.1.0"
 
 [tool.poetry.dev-dependencies]
 pdbpp = "^0.10.2"
@@ -35,7 +36,7 @@ coverage = "^5.4"
 time-machine = "^2.0.1"
 
 [tool.taskipy.tasks]
-server = "uvicorn main:app --port 8050 --reload"
+server = "uvicorn main:wrapped_app --port 8050 --reload"
 test = "RUNNING_TESTS=1 python scripts/prepare_db.py && RUNNING_TESTS=1 coverage run -m ward"
 "test:coverage" = "task test || coverage xml -i && coverage xml -i"
 migrate = "alembic upgrade head"

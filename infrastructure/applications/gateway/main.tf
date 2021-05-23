@@ -20,8 +20,9 @@ module "lambda" {
   docker_tag             = terraform.workspace
   role_arn               = data.aws_iam_role.lambda.arn
   env_vars = {
-    NODE_ENV = "production"
-    VARIANT  = var.admin_variant ? "admin" : "default"
+    NODE_ENV   = "production"
+    VARIANT    = var.admin_variant ? "admin" : "default"
+    SENTRY_DSN = var.sentry_dsn
 
     # Services
     USERS_SERVICE               = local.users_service_url

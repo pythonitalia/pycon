@@ -15,7 +15,7 @@ from src.customers.tests.fake_repository import FakeCustomersRepository
 
 @test("subscribe user without existing customer profile")
 async def _():
-    user = PastaportoUserInfo(id=1, email="test@email.it")
+    user = PastaportoUserInfo(id=1, email="test@email.it", is_staff=False)
 
     checkout_session_id = await subscribe_user_to_association(
         user,
@@ -27,7 +27,7 @@ async def _():
 
 @test("subscribe user with active subscription fails")
 async def _():
-    user = PastaportoUserInfo(id=1, email="test@email.it")
+    user = PastaportoUserInfo(id=1, email="test@email.it", is_staff=False)
     customer = Customer(
         id=1,
         user_id=1,
@@ -53,7 +53,7 @@ async def _():
 
 @test("subscribe user with canceled subscription works")
 async def _():
-    user = PastaportoUserInfo(id=1, email="test@email.it")
+    user = PastaportoUserInfo(id=1, email="test@email.it", is_staff=False)
     customer = Customer(
         id=1,
         user_id=1,
