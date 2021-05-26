@@ -40,7 +40,7 @@ module "gateway" {
   service_to_service_secret = var.service_to_service_secret
   pastaporto_action_secret  = var.pastaporto_action_secret
   sentry_dsn                = var.gateway_sentry_dsn
-  apollo_key                = var.apollo_key
+  apollo_key                = var.default_apollo_key
 
   providers = {
     aws    = aws
@@ -57,7 +57,7 @@ module "admin_gateway" {
   pastaporto_action_secret  = var.pastaporto_action_secret
   admin_variant             = true
   sentry_dsn                = var.gateway_sentry_dsn
-  apollo_key                = var.apollo_key
+  apollo_key                = var.admin_apollo_key
 
   providers = {
     aws    = aws

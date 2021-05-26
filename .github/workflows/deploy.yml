@@ -146,6 +146,8 @@ jobs:
           TF_VAR_association_backend_sentry_dsn: ${{ secrets.TF_VAR_association_backend_sentry_dsn }}
           TF_VAR_gateway_sentry_dsn: ${{ secrets.TF_VAR_gateway_sentry_dsn }}
           TF_VAR_users_backend_sentry_dsn: ${{ secrets.TF_VAR_users_backend_sentry_dsn }}
+          TF_VAR_admin_apollo_key: ${{ secrets.TF_VAR_admin_apollo_key }}
+          TF_VAR_default_apollo_key: ${{ secrets.TF_VAR_default_apollo_key }}
 
   migrate-pycon-backend-db:
     runs-on: ubuntu-latest
