@@ -1,0 +1,84 @@
+name: 'Start all microservices'
+inputs:
+  postgres-port:
+    description: 'Postgres port'
+    required: true
+
+outputs:
+  association-backend-url:
+    description: "Association backend service URL"
+    value: ${{ steps.association-backend-startup.outputs.url }}
+  users-backend-url:
+    description: "Association backend service URL"
+    value: ${{ steps.users-backend-startup.outputs.url }}
+  pycon-backend-url:
+    description: "Association backend service URL"
+    value: ${{ steps.pycon-backend-startup.outputs.url }}
+
+runs:
+  using: "composite"
+
+  steps:
+    - name: Install poetry
+      shell: bash
+      run: pip install poetry
+    - name: Install rush
+      shell: bash
+      run: |
+        wget https://github.com/shenwei356/rush/releases/download/v0.4.2/rush_linux_amd64.tar.gz
+        tar -zxvf rush_linux_amd64.tar.gz
+        mkdir -p $HOME/bin/
+        cp rush $HOME/bin/
+        echo "$HOME/bin" >> $GITHUB_PATH
+    - name: Install services dependencies
+      shell: bash
+      run: echo backend:users-backend:association-backend | rush -D ":" -k 'cd ./{1} && poetry install'
+
+    - name: Start PyCon Backend
+      id: pycon-backend-startup
+      shell: bash
+      working-directory: ./backend
+      run: |
+        GITHUB_ACTIONS=true \
+        CI=true \
+        DATABASE_URL=psql://postgres:postgres@localhost:${{ inputs.postgres-port }}/postgres  \
+        FRONTEND_URL=x  \
+        ALLOWED_HOSTS='*' \
+        DEBUG=False \
+        DJANGO_SETTINGS_MODULE=pycon.settings.dev \
+        poetry run python manage.py runserver 0.0.0.0:8000 &
+
+        echo "::set-output name=url::http://localhost:8000"
+
+    - name: Start Users Backend
+      id: users-backend-startup
+      shell: bash
+      working-directory: ./users-backend
+      run: |
+        GITHUB_ACTIONS=true \
+        CI=true \
+        DATABASE_URL=postgresql+asyncpg://postgres:postgres@localhost:${{ inputs.postgres-port }}/postgres \
+        IDENTITY_SECRET=xx \
+        PASTAPORTO_SECRET=x \
+        ASSOCIATION_FRONTEND_URL=x \
+        SECRET_KEY=x \
+        poetry run task server &
+
+        echo "::set-output name=url::http://localhost:8050"
+
+    - name: Start Association Backend
+      shell: bash
+      id: association-backend-startup
+      working-directory: ./association-backend
+      run: |
+        GITHUB_ACTIONS=true \
+        CI=true \
+        DATABASE_URL=postgresql://postgres:postgres@localhost:${{ inputs.postgres-port }}/postgres \
+        ASSOCIATION_FRONTEND_URL=xx \
+        STRIPE_SECRET_API_KEY=xx \
+        STRIPE_SUBSCRIPTION_PRICE_ID=x \
+        STRIPE_WEBHOOK_SIGNATURE_SECRET=x \
+        PASTAPORTO_SECRET=x \
+        poetry run task server &
+
+        echo "::set-output name=url::http://localhost:8060"

@@ -1,0 +1,49 @@
+name: 'Generate and publish schema to Apollo'
+inputs:
+  service-name:
+    description: 'Name of the service'
+    required: true
+  schema-graphql-url:
+    description: 'GraphQL URL to call to generate the schema'
+    required: true
+  service-graphql-url:
+    description: 'Service GraphQL URL'
+    required: true
+  apollo-key:
+    description: 'Apollo Key'
+    required: true
+  graph:
+    description: 'What graph to use'
+    required: true
+    default: 'default-python-italia'
+  variant:
+    description: 'Variant of the graph'
+    required: true
+    default: 'ghactions'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Generate schema file
+      shell: bash
+      run: |
+        if [[ "${{ inputs.schema-graphql-url }}" =~ ^http.* ]]; then
+          rover subgraph introspect ${{ inputs.schema-graphql-url }} > ./schema.graphql
+        else
+          cp ${{ inputs.schema-graphql-url }} ./schema.graphql
+        fi
+
+    - name: Publish service ${{ inputs.service-name }} to Apollo Studio
+      shell: bash
+      env:
+        APOLLO_KEY: ${{ inputs.apollo-key }}
+      run: |
+        rover subgraph publish ${{ inputs.graph }}@${{ inputs.variant }} \
+          --schema ./schema.graphql \
+          --name ${{ inputs.service-name }} \
+          --convert \
+          --routing-url ${{ inputs.service-graphql-url }}
+
+    - name: Cleanup
+      shell: bash
+      run: rm ./schema.graphql

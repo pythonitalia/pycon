@@ -5,7 +5,7 @@ from django.urls import include, path
 from django.views.decorators.csrf import csrf_exempt
 
 from api.schema import schema
-from api.views import GraphQLView
+from api.views import GraphQLView, health_check
 from submissions.views import SubmissionAutocomplete
 
 urlpatterns = [
@@ -17,5 +17,6 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("graphql", csrf_exempt(GraphQLView.as_view(schema=schema)), name="graphql"),
     path("user/", include("users.urls")),
+    path("health-check/", health_check),
     path("", include("social_django.urls", namespace="social")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
