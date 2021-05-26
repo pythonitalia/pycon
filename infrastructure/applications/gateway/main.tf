@@ -19,10 +19,15 @@ module "lambda" {
   docker_repository_name = "gateway"
   docker_tag             = terraform.workspace
   role_arn               = data.aws_iam_role.lambda.arn
+  memory_size            = 1024
+
   env_vars = {
-    NODE_ENV   = "production"
-    VARIANT    = var.admin_variant ? "admin" : "default"
-    SENTRY_DSN = var.sentry_dsn
+    NODE_ENV             = "production"
+    VARIANT              = var.admin_variant ? "admin" : "default"
+    SENTRY_DSN           = var.sentry_dsn
+    APOLLO_KEY           = var.apollo_key
+    APOLLO_GRAPH_ID      = var.admin_variant ? "admin-python-italia" : "default-python-italia"
+    APOLLO_GRAPH_VARIANT = terraform.workspace
 
     # Services
     USERS_SERVICE               = local.users_service_url
