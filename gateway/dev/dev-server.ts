@@ -1,5 +1,7 @@
 import { ApolloServer } from "apollo-server";
 
+import "../init";
+
 import { createContext } from "../context";
 import { createGateway } from "../gateway";
 import { apolloHeadersPlugin } from "../plugins/apollo-headers";

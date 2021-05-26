@@ -1,17 +1,8 @@
 import { buildFederatedSchema } from "@apollo/federation";
-import { gql } from "apollo-server";
 
-import { ClearAuthAction } from "../actions/clear-auth-action";
+import { ClearAuthAction } from "../../actions/clear-auth-action";
 
-const typeDefs = gql`
-  type Query {
-    logout: String!
-  }
-
-  type Mutation {
-    logout: String!
-  }
-`;
+const typeDefs = require("./schema.graphql");
 
 const resolvers = {
   Query: {
