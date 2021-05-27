@@ -32,7 +32,7 @@ runs:
         echo "$HOME/bin" >> $GITHUB_PATH
     - name: Install services dependencies
       shell: bash
-      run: echo backend:users-backend:association-backend | rush -D ":" -k 'cd ./{1} && poetry install'
+      run: echo backend:users-backend:association-backend | rush -D ":" 'cd ./{1} && poetry install'
 
     - name: Start PyCon Backend
       id: pycon-backend-startup
