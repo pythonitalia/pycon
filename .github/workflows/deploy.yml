@@ -196,6 +196,7 @@ jobs:
 
   update-apollo-studio-graphs:
     runs-on: ubuntu-latest
+    needs: [terraform]
     services:
       postgres:
         image: postgres:11.10
