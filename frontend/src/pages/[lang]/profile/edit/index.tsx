@@ -82,10 +82,9 @@ export const EditProfilePage: React.FC = () => {
   const router = useRouter();
   const language = useCurrentLanguage();
   const [loggedIn] = useLoginState();
-  const [
-    formState,
-    { text, select, checkbox, raw },
-  ] = useFormState<MeUserFields>(
+  const [formState, { text, select, checkbox, raw }] = useFormState<
+    MeUserFields
+  >(
     {},
     {
       withIds: true,
