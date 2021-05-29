@@ -11,8 +11,6 @@ export const {
 
   // Services
   USERS_SERVICE,
-  ASSOCIATION_BACKEND_SERVICE,
-  PYCON_BACKEND_SERVICE,
 
   // Other configuration
   IS_DEV = process.env.NODE_ENV === "development",

@@ -1,6 +1,7 @@
 locals {
-  is_prod = terraform.workspace == "production"
-  domain  = local.is_prod ? "${local.domain_name}.python.it" : "${terraform.workspace}-${local.domain_name}.python.it"
+  is_prod           = terraform.workspace == "production"
+  domain            = local.is_prod ? "${local.domain_name}.python.it" : "${terraform.workspace}-${local.domain_name}.python.it"
+  users_service_url = local.is_prod ? "https://users-api.python.it" : "https://${terraform.workspace}-users-api.python.it"
 }
 
 data "aws_iam_role" "lambda" {
@@ -23,7 +24,7 @@ module "lambda" {
     APOLLO_KEY           = var.apollo_key
     APOLLO_GRAPH_ID      = var.admin_variant ? "admin-python-italia" : "default-python-italia"
     APOLLO_GRAPH_VARIANT = terraform.workspace
-
+    USERS_SERVICE        = local.users_service_url
     # Secrets
     PASTAPORTO_SECRET         = var.pastaporto_secret
     IDENTITY_SECRET           = var.identity_secret
