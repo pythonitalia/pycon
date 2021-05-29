@@ -1,6 +1,7 @@
 import cookie from "cookie";
 
 import { createPastaporto } from "./pastaporto";
+import { Pastaporto } from "./pastaporto/entities";
 import { removeIdentityTokens } from "./pastaporto/identity";
 
 export const createContext = async (cookiesHeader?: string) => {
@@ -31,6 +32,8 @@ export const createContext = async (cookiesHeader?: string) => {
   } catch (e) {
     console.log("Unable to create pastaporto, deleting identity tokens", e);
     removeIdentityTokens(context);
+
+    context.pastaporto = Pastaporto.unauthenticated();
   }
   return context;
 };
