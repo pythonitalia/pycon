@@ -19,26 +19,19 @@ runs:
   using: "composite"
 
   steps:
-    - name: Install poetry
-      shell: bash
-      run: pip install poetry
-    - name: Install rush
-      shell: bash
-      run: |
-        wget https://github.com/shenwei356/rush/releases/download/v0.4.2/rush_linux_amd64.tar.gz
-        tar -zxvf rush_linux_amd64.tar.gz
-        mkdir -p $HOME/bin/
-        cp rush $HOME/bin/
-        echo "$HOME/bin" >> $GITHUB_PATH
     - name: Install services dependencies
       shell: bash
-      run: echo backend:users-backend:association-backend | rush -D ":" 'cd ./{1} && poetry install'
+      run: |
+        echo "::group::Install dependencies"
+        echo backend:users-backend:association-backend | rush -D ":" 'cd ./{1} && poetry install'
+        echo "::endgroup::"
 
     - name: Start PyCon Backend
       id: pycon-backend-startup
       shell: bash
       working-directory: ./backend
       run: |
+        echo "::group::Start PyCon Backend"
         GITHUB_ACTIONS=true \
         CI=true \
         DATABASE_URL=psql://postgres:postgres@localhost:${{ inputs.postgres-port }}/postgres  \
@@ -47,6 +40,7 @@ runs:
         DEBUG=False \
         DJANGO_SETTINGS_MODULE=pycon.settings.dev \
         poetry run python manage.py runserver 0.0.0.0:8000 &
+        echo "::endgroup::"
 
         echo "::set-output name=url::http://localhost:8000"
 
@@ -55,6 +49,8 @@ runs:
       shell: bash
       working-directory: ./users-backend
       run: |
+        echo "::group::Start Users Backend"
+
         GITHUB_ACTIONS=true \
         CI=true \
         DATABASE_URL=postgresql+asyncpg://postgres:postgres@localhost:${{ inputs.postgres-port }}/postgres \
@@ -64,6 +60,8 @@ runs:
         SECRET_KEY=x \
         poetry run task server &
 
+        echo "::endgroup::"
+
         echo "::set-output name=url::http://localhost:8050"
 
     - name: Start Association Backend
@@ -71,6 +69,8 @@ runs:
       id: association-backend-startup
       working-directory: ./association-backend
       run: |
+        echo "::group::Start Association Backend"
+
         GITHUB_ACTIONS=true \
         CI=true \
         DATABASE_URL=postgresql://postgres:postgres@localhost:${{ inputs.postgres-port }}/postgres \
@@ -80,5 +80,7 @@ runs:
         STRIPE_WEBHOOK_SIGNATURE_SECRET=x \
         PASTAPORTO_SECRET=x \
         poetry run task server &
+
+        echo "::endgroup::"
 
         echo "::set-output name=url::http://localhost:8060"

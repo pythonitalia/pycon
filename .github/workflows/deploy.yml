@@ -7,6 +7,8 @@ on:
 
 env:
   TF_WORKSPACE: "production"
+  APOLLO_ROVER_VERSION: 0.1.5
+  RUSH_VERSION: 0.4.2
 
 jobs:
   build-and-push-service:
@@ -89,6 +91,106 @@ jobs:
         with:
           name: built-email-templates
           path: email-templates/build_production
+
+  create-graph-schemas:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:11.10
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 2s --health-timeout 2s --health-retries 5
+    outputs:
+      default-pycon-backend-schema: ${{ steps.default-pycon-backend-schema.outputs.schema-path }}
+      default-users-backend-schema: ${{ steps.default-users-backend-schema.outputs.schema-path }}
+      default-association-backend-schema: ${{ steps.default-association-backend-schema.outputs.schema-path }}
+      admin-users-backend-schema: ${{ steps.admin-users-backend-schema.outputs.schema-path }}
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-python@v2
+        with:
+          python-version: "3.9.1"
+      - name: Cache Rover
+        uses: actions/cache@v1
+        id: cache-rover
+        with:
+          path: ~/.rover/bin
+          key: rover-cache-${{ env.APOLLO_ROVER_VERSION }}
+      - name: Install apollo rover
+        if: steps.cache-rover.outputs.cache-hit != 'true'
+        run: curl -sSL https://rover.apollo.dev/nix/v$APOLLO_ROVER_VERSION | sh
+      - name: Append rover to path
+        run: echo "$HOME/.rover/bin" >> $GITHUB_PATH
+      - name: Cache Rush
+        uses: actions/cache@v1
+        id: cache-rush
+        with:
+          path: ~/rush-bin/
+          key: rush-cache-${{ env.RUSH_VERSION }}
+      - name: Install rush
+        if: steps.cache-rush.outputs.cache-hit != 'true'
+        run: |
+          wget https://github.com/shenwei356/rush/releases/download/v$RUSH_VERSION/rush_linux_amd64.tar.gz
+          tar -zxvf rush_linux_amd64.tar.gz
+          mkdir -p $HOME/rush-bin/
+          cp rush $HOME/rush-bin/
+      - name: Append rush to path
+        run: echo "$HOME/rush-bin" >> $GITHUB_PATH
+      - name: Install poetry
+        run: pip install poetry
+      - name: Cache deps
+        uses: actions/cache@v1
+        id: cache
+        with:
+          path: ~/.cache/pypoetry/virtualenvs/
+          key: services-cache-${{ hashFiles('**/poetry.lock') }}-v3
+      - name: Start all services
+        uses: ./.github/actions/start-services
+        id: services
+        with:
+          postgres-port: ${{ job.services.postgres.ports['5432'] }}
+      - name: Prepare directory
+        run: mkdir -p ./schemas
+
+      - name: Generate PyCon Backend schema
+        id: default-pycon-backend-schema
+        uses: ./.github/actions/generate-graphql-schema
+        with:
+          service-name: users-backend
+          schema-graphql-url: ${{ steps.services.outputs.pycon-backend-url }}/graphql
+
+      - name: Generate Association Backend schema
+        id: default-association-backend-schema
+        uses: ./.github/actions/generate-graphql-schema
+        with:
+          service-name: association-backend
+          schema-graphql-url: ${{ steps.services.outputs.association-backend-url }}/graphql
+
+      - name: Generate Users Backend schema
+        id: default-users-backend-schema
+        uses: ./.github/actions/generate-graphql-schema
+        with:
+          service-name: pycon-backend
+          schema-graphql-url: ${{ steps.services.outputs.users-backend-url }}/graphql
+
+      # Admin graph
+      - name: Generate Users Backend admin schema
+        id: admin-users-backend-schema
+        uses: ./.github/actions/generate-graphql-schema
+        with:
+          service-name: users-backend
+          variant: admin
+          schema-graphql-url: ${{ steps.services.outputs.users-backend-url }}/admin-api
+
+      - name: Upload graphql files
+        uses: actions/upload-artifact@v2
+        with:
+          name: graphql-files
+          path: ./schemas
 
   terraform:
     runs-on: ubuntu-latest
@@ -194,101 +296,90 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
 
-  update-apollo-studio-graphs:
+  update-default-apollo-studio-graph:
     runs-on: ubuntu-latest
-    needs: [terraform]
-    services:
-      postgres:
-        image: postgres:11.10
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: postgres
-        ports:
-          - 5432:5432
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    needs: [create-graph-schemas, terraform]
+
+    strategy:
+      matrix:
+        service:
+          - name: users-backend
+            path: ${{ needs.create-graph-schemas.outputs.default-users-backend-schema }}
+            url: https://users-api.python.it/graphql
+          - name: association-backend
+            path: ${{ needs.create-graph-schemas.outputs.default-association-backend-schema }}
+            url: https://association-api.python.it/graphql
+          - name: pycon-backend
+            path: ${{ needs.create-graph-schemas.outputs.default-pycon-backend-schema }}
+            url: https://admin.pycon.it/graphql
+          - name: logout
+            path: ./gateway/internal-services/logout/schema.graphql
+            url: https://logout
+
     steps:
       - uses: actions/checkout@master
-      - uses: actions/setup-python@v2
+      - uses: actions/download-artifact@v2
         with:
-          python-version: "3.9.1"
-
-      - name: Install apollo rover
-        run: |
-          curl -sSL https://rover.apollo.dev/nix/v0.1.3 | sh
-          echo "$HOME/.rover/bin" >> $GITHUB_PATH
-
-      - name: Cache Poetry
+          name: graphql-files
+          path: ./schemas/
+      - name: Cache Apollo Rover
         uses: actions/cache@v1
-        id: cache
+        id: cache-rover
         with:
-          path: ~/.cache/pypoetry/virtualenvs/
-          key: services-cache-${{ hashFiles('**/poetry.lock') }}-v3
-
-      - name: Start all services
-        uses: ./.github/actions/start-services
-        id: services
+          path: ~/.rover/bin
+          key: rover-cache-${{ env.APOLLO_ROVER_VERSION }}
+      - name: Install Apollo Rover
+        if: steps.cache-rover.outputs.cache-hit != 'true'
+        run: curl -sSL https://rover.apollo.dev/nix/v$APOLLO_ROVER_VERSION | sh
+      - name: Append Apollo Rover to path
+        run: echo "$HOME/.rover/bin" >> $GITHUB_PATH
+      - name: Publish schema
+        uses: ./.github/actions/publish-graph-schema
         with:
-          postgres-port: ${{ job.services.postgres.ports['5432'] }}
-
-      # Default graph
-      - name: Publish PyCon Backend schema
-        uses: ./.github/actions/generate-publish-schema
-        with:
-          service-name: pycon-backend
-          schema-graphql-url: ${{ steps.services.outputs.pycon-backend-url }}/graphql
-          service-graphql-url: https://admin.pycon.it/graphql
+          service-name: ${{ matrix.service.name }}
+          schema-path: ${{ matrix.service.path }}
+          service-graphql-url: ${{ matrix.service.url }}
           apollo-key: ${{ secrets.TF_VAR_DEFAULT_APOLLO_KEY }}
           graph: default-python-italia
           variant: production
 
-      - name: Publish Association Backend schema
-        uses: ./.github/actions/generate-publish-schema
-        with:
-          service-name: association-backend
-          schema-graphql-url: ${{ steps.services.outputs.association-backend-url }}/graphql
-          service-graphql-url: https://association-api.python.it/graphql
-          apollo-key: ${{ secrets.TF_VAR_DEFAULT_APOLLO_KEY }}
-          graph: default-python-italia
-          variant: production
+  update-admin-apollo-studio-graph:
+    runs-on: ubuntu-latest
+    needs: [create-graph-schemas, terraform]
 
-      - name: Publish Users Backend schema
-        uses: ./.github/actions/generate-publish-schema
-        with:
-          service-name: users-backend
-          schema-graphql-url: ${{ steps.services.outputs.users-backend-url }}/graphql
-          service-graphql-url: https://users-api.python.it/graphql
-          apollo-key: ${{ secrets.TF_VAR_DEFAULT_APOLLO_KEY }}
-          graph: default-python-italia
-          variant: production
+    strategy:
+      matrix:
+        service:
+          - name: users-backend
+            path: ${{ needs.create-graph-schemas.outputs.admin-users-backend-schema }}
+            url: https://users-api.python.it/admin-api
+          - name: logout
+            path: ./gateway/internal-services/logout/schema.graphql
+            url: https://logout
 
-      - name: Publish Internal service Logout schema
-        uses: ./.github/actions/generate-publish-schema
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/download-artifact@v2
         with:
-          service-name: logout
-          schema-graphql-url: ./gateway/internal-services/logout/schema.graphql
-          service-graphql-url: https://logout
-          apollo-key: ${{ secrets.TF_VAR_DEFAULT_APOLLO_KEY }}
-          graph: default-python-italia
-          variant: production
-
-      # Admin graph
-      - name: Publish Users Backend admin schema
-        uses: ./.github/actions/generate-publish-schema
+          name: graphql-files
+          path: ./schemas/
+      - name: Cache Apollo Rover
+        uses: actions/cache@v1
+        id: cache-rover
         with:
-          service-name: users-backend
-          schema-graphql-url: ${{ steps.services.outputs.users-backend-url }}/admin-api
-          service-graphql-url: https://users-api.python.it/admin-api
-          apollo-key: ${{ secrets.TF_VAR_ADMIN_APOLLO_KEY }}
-          graph: admin-python-italia
-          variant: production
-
-      - name: Publish Internal service Logout schema
-        uses: ./.github/actions/generate-publish-schema
+          path: ~/.rover/bin
+          key: rover-cache-${{ env.APOLLO_ROVER_VERSION }}
+      - name: Install Apollo Rover
+        if: steps.cache-rover.outputs.cache-hit != 'true'
+        run: curl -sSL https://rover.apollo.dev/nix/v$APOLLO_ROVER_VERSION | sh
+      - name: Append Apollo Rover to path
+        run: echo "$HOME/.rover/bin" >> $GITHUB_PATH
+      - name: Publish schema
+        uses: ./.github/actions/publish-graph-schema
         with:
-          service-name: logout
-          schema-graphql-url: ./gateway/internal-services/logout/schema.graphql
-          service-graphql-url: https://logout
+          service-name: ${{ matrix.service.name }}
+          schema-path: ${{ matrix.service.path }}
+          service-graphql-url: ${{ matrix.service.url }}
           apollo-key: ${{ secrets.TF_VAR_ADMIN_APOLLO_KEY }}
           graph: admin-python-italia
           variant: production

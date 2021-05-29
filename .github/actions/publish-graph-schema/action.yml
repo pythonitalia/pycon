@@ -3,8 +3,8 @@ inputs:
   service-name:
     description: 'Name of the service'
     required: true
-  schema-graphql-url:
-    description: 'GraphQL URL to call to generate the schema'
+  schema-path:
+    description: 'Path to the schema file'
     required: true
   service-graphql-url:
     description: 'Service GraphQL URL'
@@ -24,26 +24,13 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Generate schema file
-      shell: bash
-      run: |
-        if [[ "${{ inputs.schema-graphql-url }}" =~ ^http.* ]]; then
-          rover subgraph introspect ${{ inputs.schema-graphql-url }} > ./schema.graphql
-        else
-          cp ${{ inputs.schema-graphql-url }} ./schema.graphql
-        fi
-
     - name: Publish service ${{ inputs.service-name }} to Apollo Studio
       shell: bash
       env:
         APOLLO_KEY: ${{ inputs.apollo-key }}
       run: |
         rover subgraph publish ${{ inputs.graph }}@${{ inputs.variant }} \
-          --schema ./schema.graphql \
+          --schema ${{ inputs.schema-path }} \
           --name ${{ inputs.service-name }} \
           --convert \
           --routing-url ${{ inputs.service-graphql-url }}
-
-    - name: Cleanup
-      shell: bash
-      run: rm ./schema.graphql
