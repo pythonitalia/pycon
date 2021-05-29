@@ -53,6 +53,7 @@
   "dependencies": {
     "clsx": "^1.1.1",
     "date-fns": "^2.21.3",
+    "react-icalendar-link": "^3.0.1",
     "react-use": "^17.2.4"
   }
 }

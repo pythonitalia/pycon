@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import React from "react";
+import { ICALLink } from "./ical-link";
 import { EventWithPerformer, Event, EventWithPerformers } from "./types";
 
 const getPerformers = (event: Event) => {
@@ -29,8 +30,6 @@ export const ScheduleItem = ({
   style: React.CSSProperties;
   className?: string;
 }) => {
-  const performers = getPerformers(event);
-
   const background = {
     LIVE_CODING: "bg-keppel",
     PERFORMANCE: "bg-cornflower-blue",
@@ -58,18 +57,32 @@ export const ScheduleItem = ({
     );
   }
 
+  const performersList = getPerformers(event);
+
+  const title = getTitle(event, performersList);
+  const performers = performersList.map((p) => p.fullName).join(" & ");
+
   return (
     <div
       key={event.start}
-      className={clsx("flex flex-col p-4 font-bold justify-between", background, className)}
+      className={clsx(
+        "flex flex-col p-4 font-bold justify-between",
+        background,
+        className
+      )}
       {...props}
     >
-      <div>
-        {getTitle(event, performers)}
+      <div className="flex justify-between">
+        {title}
+
+        <ICALLink
+          title={title || "Unknown"}
+          description={performers}
+          start={event.start}
+          end={event.end}
+        />
       </div>
-      <footer className="font-normal text-white">
-        {performers.map((p) => p.fullName).join(" & ")}
-      </footer>
+      <footer className="font-normal text-white">{performers}</footer>
     </div>
   );
 };
