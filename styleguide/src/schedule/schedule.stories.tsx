@@ -18,8 +18,8 @@ const program: ScheduleProgram = {
       },
       events: [
         {
-          start: "2021-06-16T17:00",
-          end: "2021-06-16T20:00",
+          start: "2021-06-16T17:00+02:00",
+          end: "2021-06-16T20:00+02:00",
           type: "LIVE_CODING",
           performer: {
             fullName: "Aaron Bassett",
@@ -29,16 +29,16 @@ const program: ScheduleProgram = {
         },
 
         {
-          start: "2021-06-16T20:00",
-          end: "2021-06-16T20:15",
+          start: "2021-06-16T20:00+02:00",
+          end: "2021-06-16T20:15+02:00",
           status: "CONFIRMED",
           type: "INTERMISSION",
           title: "Live Coding wrap up",
         },
 
         {
-          start: "2021-06-16T20:15",
-          end: "2021-06-16T20:30",
+          start: "2021-06-16T20:15+02:00",
+          end: "2021-06-16T20:30+02:00",
           type: "PERFORMANCE",
           title: "Artistic Performance by Ania Wsz",
           performer: {
@@ -49,8 +49,8 @@ const program: ScheduleProgram = {
         },
 
         {
-          start: "2021-06-16T20:30",
-          end: "2021-06-16T20:40",
+          start: "2021-06-16T20:30+02:00",
+          end: "2021-06-16T20:40+02:00",
           type: "LIGHTNING_TALK",
           title: "Lightning talk by Tania Allard",
           performer: {
@@ -61,8 +61,8 @@ const program: ScheduleProgram = {
         },
 
         {
-          start: "2021-06-16T20:40",
-          end: "2021-06-16T20:50",
+          start: "2021-06-16T20:40+02:00",
+          end: "2021-06-16T20:50+02:00",
           type: "LIGHTNING_TALK",
           title: "Lightning talk by Alessandro Molina",
           performer: {
@@ -73,8 +73,8 @@ const program: ScheduleProgram = {
         },
 
         {
-          start: "2021-06-16T20:50",
-          end: "2021-06-16T21:10",
+          start: "2021-06-16T20:50+02:00",
+          end: "2021-06-16T21:10+02:00",
           type: "DIVERSITY_SUCCESS_STORY",
           title: "Diversity Success Story - TBD",
           performers: [
@@ -95,8 +95,8 @@ const program: ScheduleProgram = {
         },
 
         {
-          start: "2021-06-16T21:10",
-          end: "2021-06-16T22:00",
+          start: "2021-06-16T21:10+02:00",
+          end: "2021-06-16T22:00+02:00",
           type: "AMA",
           title: "PSF - Ask Me Anything",
           performers: [
@@ -113,16 +113,16 @@ const program: ScheduleProgram = {
         },
 
         {
-          start: "2021-06-16T22:00",
-          end: "2021-06-16T23:00",
+          start: "2021-06-16T22:00+02:00",
+          end: "2021-06-16T23:00+02:00",
           type: "QUIZ",
           title: "Pub Quiz",
           status: "CONFIRMED",
         },
 
         {
-          start: "2021-06-16T23:00",
-          end: "2021-06-16T23:10",
+          start: "2021-06-16T23:00+02:00",
+          end: "2021-06-16T23:10+02:00",
           type: "CLOSING",
           title: "Closing session",
           status: "CONFIRMED",
@@ -138,8 +138,8 @@ const program: ScheduleProgram = {
       },
       events: [
         {
-          start: "2021-06-17T17:00",
-          end: "2021-06-17T20:00",
+          start: "2021-06-17T17:00+02:00",
+          end: "2021-06-17T20:00+02:00",
           type: "LIVE_CODING",
           performer: {
             fullName: "Nina Zakharenko",
@@ -149,16 +149,16 @@ const program: ScheduleProgram = {
         },
 
         {
-          start: "2021-06-17T20:00",
-          end: "2021-06-17T20:15",
+          start: "2021-06-17T20:00+02:00",
+          end: "2021-06-17T20:15+02:00",
           type: "INTERMISSION",
           status: "CONFIRMED",
           title: "Live Coding wrap up",
         },
 
         {
-          start: "2021-06-17T20:15",
-          end: "2021-06-17T20:30",
+          start: "2021-06-17T20:15+02:00",
+          end: "2021-06-17T20:30+02:00",
           type: "LIGHTNING_TALK",
           title: "Lightning Talk - TBD",
           performer: {
@@ -169,8 +169,8 @@ const program: ScheduleProgram = {
         },
 
         {
-          start: "2021-06-17T20:30",
-          end: "2021-06-17T20:40",
+          start: "2021-06-17T20:30+02:00",
+          end: "2021-06-17T20:40+02:00",
           type: "LIGHTNING_TALK",
           title: "TBC",
           performers: [
@@ -187,8 +187,8 @@ const program: ScheduleProgram = {
         },
 
         {
-          start: "2021-06-17T20:40",
-          end: "2021-06-17T20:50",
+          start: "2021-06-17T20:40+02:00",
+          end: "2021-06-17T20:50+02:00",
           type: "LIGHTNING_TALK",
           title: "Lightning Talk - TBD",
           performer: {
@@ -199,8 +199,8 @@ const program: ScheduleProgram = {
         },
 
         {
-          start: "2021-06-17T20:50",
-          end: "2021-06-17T21:10",
+          start: "2021-06-17T20:50+02:00",
+          end: "2021-06-17T21:10+02:00",
           type: "DIVERSITY_SUCCESS_STORY",
           title: "Diversity Success Story - TBD",
           performers: [],
@@ -208,8 +208,8 @@ const program: ScheduleProgram = {
         },
 
         {
-          start: "2021-06-17T21:10",
-          end: "2021-06-17T22:00",
+          start: "2021-06-17T21:10+02:00",
+          end: "2021-06-17T22:00+02:00",
           type: "INTERVIEW",
           title: "Interview with Ines Montani and Sebastián Ramírez",
           performers: [
@@ -226,8 +226,8 @@ const program: ScheduleProgram = {
         },
 
         {
-          start: "2021-06-17T22:00",
-          end: "2021-06-17T23:00",
+          start: "2021-06-17T22:00+02:00",
+          end: "2021-06-17T23:00+02:00",
           type: "PERFORMANCE",
           title: "Monty Python Performance",
           performer: {
@@ -238,8 +238,8 @@ const program: ScheduleProgram = {
         },
 
         {
-          start: "2021-06-17T23:00",
-          end: "2021-06-17T23:10",
+          start: "2021-06-17T23:00+02:00",
+          end: "2021-06-17T23:10+02:00",
           type: "CLOSING",
           title: "Closing session",
           status: "CONFIRMED",
@@ -255,8 +255,8 @@ const program: ScheduleProgram = {
       },
       events: [
         {
-          start: "2021-06-18T17:00",
-          end: "2021-06-18T20:00",
+          start: "2021-06-18T17:00+02:00",
+          end: "2021-06-18T20:00+02:00",
           type: "LIVE_CODING",
           performer: {
             fullName: "Al Sweigart",
@@ -266,16 +266,16 @@ const program: ScheduleProgram = {
         },
 
         {
-          start: "2021-06-18T20:00",
-          end: "2021-06-18T20:15",
+          start: "2021-06-18T20:00+02:00",
+          end: "2021-06-18T20:15+02:00",
           status: "CONFIRMED",
           type: "INTERMISSION",
           title: "Live Coding wrap up",
         },
 
         {
-          start: "2021-06-18T20:15",
-          end: "2021-06-18T20:30",
+          start: "2021-06-18T20:15+02:00",
+          end: "2021-06-18T20:30+02:00",
           type: "PERFORMANCE",
           title: "Artistic Performance TBC",
           performer: null,
@@ -283,8 +283,8 @@ const program: ScheduleProgram = {
         },
 
         {
-          start: "2021-06-18T20:30",
-          end: "2021-06-18T20:40",
+          start: "2021-06-18T20:30+02:00",
+          end: "2021-06-18T20:40+02:00",
           type: "LIGHTNING_TALK",
           title: "TBC",
           performer: null,
@@ -292,8 +292,8 @@ const program: ScheduleProgram = {
         },
 
         {
-          start: "2021-06-18T20:40",
-          end: "2021-06-18T20:50",
+          start: "2021-06-18T20:40+02:00",
+          end: "2021-06-18T20:50+02:00",
           type: "LIGHTNING_TALK",
           title: "TBC",
           performer: null,
@@ -301,8 +301,8 @@ const program: ScheduleProgram = {
         },
 
         {
-          start: "2021-06-18T20:50",
-          end: "2021-06-18T21:10",
+          start: "2021-06-18T20:50+02:00",
+          end: "2021-06-18T21:10+02:00",
           type: "DIVERSITY_SUCCESS_STORY",
           title: "Diversity Success Story - Eleonora Rocca",
           performers: [
@@ -327,8 +327,8 @@ const program: ScheduleProgram = {
         },
 
         {
-          start: "2021-06-18T21:10",
-          end: "2021-06-18T22:00",
+          start: "2021-06-18T21:10+02:00",
+          end: "2021-06-18T22:00+02:00",
           type: "AMA",
           title: "TBC",
           performers: [],
@@ -336,16 +336,16 @@ const program: ScheduleProgram = {
         },
 
         {
-          start: "2021-06-18T22:00",
-          end: "2021-06-18T23:00",
+          start: "2021-06-18T22:00+02:00",
+          end: "2021-06-18T23:00+02:00",
           type: "QUIZ",
           title: "Game",
           status: "TBC",
         },
 
         {
-          start: "2021-06-18T23:00",
-          end: "2021-06-18T23:10",
+          start: "2021-06-18T23:00+02:00",
+          end: "2021-06-18T23:10+02:00",
           type: "CLOSING",
           title: "Closing session",
           status: "CONFIRMED",

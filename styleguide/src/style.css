@@ -2,6 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+.dotted-underline {
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: theme('colors.purple');
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+}
+
+.wavy-underline {
+  text-decoration: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: theme('colors.aquamarine');
+}
+
 .carousel-container {
   --per-page: 1;
   --tw-translate-x: calc(var(--current-index) * -100% / var(--per-page));

@@ -11,6 +11,14 @@ type Props = {
   program: ScheduleProgram;
 };
 
+const getUserTimeZone = () => {
+  try {
+    return ` (${Intl.DateTimeFormat().resolvedOptions().timeZone})`;
+  } catch {
+    return "";
+  }
+};
+
 const Day = ({
   day,
   slots,
@@ -68,7 +76,13 @@ const TimeSlots = ({ slots }: { slots: Slot[] }) => (
             gridRowEnd: slot.rowEnd,
           }}
         >
-          {format(slot.start, "HH:mm")}
+          <time
+            dateTime={slot.start.toISOString()}
+            className="dotted-underline cursor-help"
+            title={`This time is using your device's timezone${getUserTimeZone()}.`}
+          >
+            {format(slot.start, "HH:mm")}
+          </time>
         </div>
       );
     })}
@@ -118,7 +132,9 @@ const DayHeader = ({
   className?: string;
   onClick?: () => void;
 }) => {
-  const date = parseISO(day.date);
+  // use the first event as the day date to make sure we use the
+  // correct day based on the user time zone
+  const date = parseISO(day.events[0].start);
 
   return (
     <div
@@ -137,7 +153,7 @@ const DayHeader = ({
 export const Schedule = ({ program }: Props) => {
   const uniformSize = true;
 
-  const days = [program.days[0], program.days[1], program.days[2]]
+  const days = [program.days[0], program.days[1], program.days[2]];
 
   const allEvents = days.flatMap((d) => d.events);
 
