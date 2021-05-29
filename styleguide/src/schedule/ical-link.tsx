@@ -18,7 +18,6 @@ export const ICALLink = ({
     startTime: start,
     endTime: end,
     location: "https://pyfest.online",
-    attendees: ["Hello World <hello@world.com>", "Hey <hey@test.com>"],
   };
 
   return (
