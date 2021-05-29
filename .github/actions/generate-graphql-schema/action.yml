@@ -1,0 +1,28 @@
+name: 'Generate and publish schema to Apollo'
+inputs:
+  service-name:
+    description: 'Name of the service'
+    required: true
+  variant:
+    description: 'Schema variant'
+    required: true
+    default: 'default'
+  schema-graphql-url:
+    description: 'GraphQL URL to call to generate the schema'
+    required: true
+
+outputs:
+  schema-path:
+    description: 'Schema Path'
+    value: ${{ steps.generate.outputs.path }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Generate schema file
+      id: generate
+      shell: bash
+      run: |
+        export SCHEMA_PATH=./schemas/${{ inputs.variant }}-${{ inputs.service-name }}.graphql
+        rover subgraph introspect ${{ inputs.schema-graphql-url }} > $SCHEMA_PATH
+        echo "::set-output name=path::$SCHEMA_PATH"

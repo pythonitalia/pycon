@@ -7,6 +7,7 @@ variable "admin_variant" {
   default = false
 }
 variable "sentry_dsn" {}
+variable "apollo_key" {}
 
 locals {
   application = var.admin_variant ? "admin-gateway" : "gateway"

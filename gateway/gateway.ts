@@ -49,16 +49,24 @@ class ServiceRemoteGraphQLDataSource extends RemoteGraphQLDataSource {
   }
 }
 
-export const gateway = new ApolloGateway({
-  serviceList: getServices(),
-  experimental_pollInterval: IS_DEV ? 5000 : 0,
-  buildService({ name, url }) {
-    if (name === "logout") {
-      return new LocalGraphQLDataSource(logoutSchema);
-    }
+export const createGateway = () => {
+  const options: any = {};
 
-    return new ServiceRemoteGraphQLDataSource({
-      url,
-    });
-  },
-});
+  if (IS_DEV) {
+    options.serviceList = getServices();
+    options.experimental_pollInterval = 5000;
+  }
+
+  return new ApolloGateway({
+    ...options,
+    buildService({ name, url }) {
+      if (name === "logout") {
+        return new LocalGraphQLDataSource(logoutSchema);
+      }
+
+      return new ServiceRemoteGraphQLDataSource({
+        url,
+      });
+    },
+  });
+};

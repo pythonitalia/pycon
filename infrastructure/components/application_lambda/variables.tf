@@ -16,3 +16,7 @@ variable "subnet_ids" {
   type    = list(string)
   default = []
 }
+variable "memory_size" {
+  type    = number
+  default = 512
+}

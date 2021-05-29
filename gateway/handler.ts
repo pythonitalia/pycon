@@ -1,15 +1,17 @@
 import { ApolloServer } from "@pythonit/apollo-server-lambda-with-cors-regex";
 import * as ServerlessSentry from "@sentry/serverless";
 
+import "./init";
+
 import { createContext } from "./context";
-import { gateway } from "./gateway";
+import { createGateway } from "./gateway";
 import { apolloHeadersPlugin } from "./plugins/apollo-headers";
 import { initSentry, SentryPlugin } from "./plugins/sentry";
 
 initSentry(true);
 
 const server = new ApolloServer({
-  gateway,
+  gateway: createGateway(),
   subscriptions: false,
   introspection: true,
   plugins: [SentryPlugin(true), apolloHeadersPlugin(true)],
@@ -50,24 +52,28 @@ const handleManyCookies = (headers: any = {}) => {
   return { headers };
 };
 
+let serverHandler: ReturnType<ApolloServer["createHandler"]> | null = null;
+
 exports.graphqlHandler = ServerlessSentry.AWSLambda.wrapHandler(
   async (event: any, context: any) => {
-    const serverHandler = server.createHandler({
-      cors: {
-        credentials: true,
-        methods: ["GET", "POST", "OPTIONS", "HEAD"],
-        origin: [
-          // @ts-ignore
-          /python-italia\.vercel\.app$/,
-          "https://associazione.python.it",
-          "https://pycon.it",
-        ],
-      },
-    });
+    if (!serverHandler) {
+      serverHandler = server.createHandler({
+        cors: {
+          credentials: true,
+          methods: ["GET", "POST", "OPTIONS", "HEAD"],
+          origin: [
+            // @ts-ignore
+            /python-italia\.vercel\.app$/,
+            "https://associazione.python.it",
+            "https://pycon.it",
+          ],
+        },
+      });
+    }
 
     try {
       const response: any = await new Promise((resolve, reject) => {
-        serverHandler(event, context, (err: any, response: any = {}) => {
+        serverHandler!(event, context, (err: any, response: any = {}) => {
           if (err) {
             reject(err);
             return;
