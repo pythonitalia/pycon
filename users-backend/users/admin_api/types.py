@@ -4,11 +4,10 @@ from datetime import date
 from typing import Optional
 
 import strawberry
-
 from users.domain import entities
 
 
-@strawberry.type
+@strawberry.federation.type(keys=["id"])
 class User:
     id: strawberry.ID
     fullname: str

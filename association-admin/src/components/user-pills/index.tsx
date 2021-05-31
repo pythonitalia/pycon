@@ -25,7 +25,7 @@ export const UserPills: React.FC<Props> = ({ user }) => {
     );
   }
 
-  if (true) {
+  if (user.isPythonItaliaMember) {
     pills.push(
       <Pill key="is-associated" variant="success">
         Associated

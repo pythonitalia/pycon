@@ -1,11 +1,10 @@
 from typing import Optional
 
 import strawberry
+from pythonit_toolkit.api.permissions import IsStaff
 from strawberry import ID
-
 from users.admin_api.context import Info
 from users.admin_api.pagination import Paginated
-from users.admin_api.permissions import IsStaff
 from users.admin_api.types import SearchResults, User
 
 

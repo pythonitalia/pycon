@@ -10,6 +10,7 @@ from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 from starlette.applications import Starlette
 from starlette.routing import Route
 
+from src.admin_api.views import GraphQL as AdminGraphQL
 from src.api.views import GraphQL
 from src.association.settings import DEBUG, ENV, PASTAPORTO_SECRET, SENTRY_DSN
 from src.database.db import database
@@ -26,6 +27,7 @@ app = Starlette(
     debug=DEBUG,
     routes=[
         Route("/graphql", GraphQL()),
+        Route("/admin-api", AdminGraphQL()),
         Route("/stripe-webhook", stripe_webhook, methods=["POST"]),
     ],
     middleware=[

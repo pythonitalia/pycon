@@ -7,7 +7,7 @@ import {
 
 const DEFAULT_SERVICES = [
   {
-    name: "users",
+    name: "users-backend",
     url: `${USERS_SERVICE}/graphql`,
   },
   {
@@ -26,8 +26,12 @@ const DEFAULT_SERVICES = [
 
 const ADMIN_SERVICES = [
   {
-    name: "users:admin",
+    name: "users-backend:admin",
     url: `${USERS_SERVICE}/admin-api`,
+  },
+  {
+    name: "association-backend:admin",
+    url: `${ASSOCIATION_BACKEND_SERVICE}/admin-api`,
   },
   {
     name: "logout",
