@@ -11,5 +11,14 @@ query UserDetail($id: ID!) {
     country
     isActive
     isStaff
+    subscriptions {
+      id
+      status
+      invoices {
+        status
+        start
+        end
+      }
+    }
   }
 }

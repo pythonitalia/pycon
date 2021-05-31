@@ -10,9 +10,9 @@ logger = logging.getLogger(__name__)
 
 class CustomersRepository:
     async def get_for_user_id(self, user_id: UserID) -> Optional[Customer]:
-        return await Customer.objects.select_related("subscriptions").get_or_none(
-            user_id=user_id
-        )
+        return await Customer.objects.select_related(
+            ["subscriptions", "subscriptions__invoices"]
+        ).get_or_none(user_id=user_id)
 
     async def get_for_stripe_customer_id(
         self, stripe_customer_id: str

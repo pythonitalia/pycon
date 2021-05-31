@@ -10,7 +10,10 @@ import { PageHeader } from "~/components/page-header";
 import { Table } from "~/components/table";
 import { UserPills } from "~/components/user-pills";
 
-import { useUserDetailQuery } from "./user.generated";
+import {
+  MembershipSubscriptionInvoice,
+  useUserDetailQuery,
+} from "./user.generated";
 
 type UserInfoProps = {
   label: string;
@@ -79,7 +82,7 @@ export const UserDetailDashboardHandler = () => {
                 </Heading>
               }
             >
-              <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <ul className="grid grid-cols-1 gap-3 md:grid-cols-2">
                 <UserInfo label="ID" text={`${user.id}`} />
                 <UserInfo
                   label="Email"
@@ -117,18 +120,18 @@ export const UserDetailDashboardHandler = () => {
               </ul>
             </Card>
             <Card
-              heading={<Heading size="medium">Association history</Heading>}
+              heading={
+                <Heading size="medium">Association Payments Invoices</Heading>
+              }
             >
-              <Table<{ id: number }>
+              <Table<MembershipSubscriptionInvoice>
                 border
                 keyGetter={(item) => `${item.id}`}
-                rowGetter={(item) => [
-                  "20 Gennaio 2020",
-                  "20 Gennaio 2021",
-                  "Stripe",
-                ]}
-                data={[{ id: 1 }, { id: 2 }, { id: 3 }]}
-                headers={["Start", "End", "Where"]}
+                rowGetter={(item) => [item.start, item.end, item.status]}
+                data={user.subscriptions.flatMap(
+                  (subscription) => subscription.invoices,
+                )}
+                headers={["Start", "End", "Status"]}
               />
             </Card>
           </div>
