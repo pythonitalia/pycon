@@ -33,7 +33,7 @@
     "@next/mdx": "^10.0.0",
     "@now/node": "^1.8.4",
     "@sentry/browser": "^5.29.2",
-    "@sentry/node": "^5.29.2",
+    "@sentry/node": "^6.5.0",
     "@sentry/tracing": "^5.29.2",
     "@sentry/webpack-plugin": "^1.14.0",
     "@theme-ui/match-media": "^0.3.1",
