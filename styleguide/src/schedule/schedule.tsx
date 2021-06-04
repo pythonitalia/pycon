@@ -215,7 +215,7 @@ export const Schedule = ({ program }: Props) => {
               {
                 hidden: day.date !== selectedDay,
               },
-              "md:flex"
+              "md:block"
             )}
           >
             🎤 MC: <strong className="font-bold">{day.mc.fullName}</strong>
