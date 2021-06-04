@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+p > a {
+  font-weight: bold;
+  text-decoration: underline;
+}
+
 .dotted-underline {
   text-decoration: underline;
   text-decoration-style: dotted;
