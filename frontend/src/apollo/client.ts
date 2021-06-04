@@ -5,7 +5,6 @@ import { onError } from "@apollo/client/link/error";
 import * as Sentry from "@sentry/node";
 import { DefinitionNode, GraphQLError } from "graphql";
 import { print } from "graphql/language/printer";
-import fetch from "isomorphic-fetch";
 
 import { setLoginState } from "../components/profile/hooks";
 import introspectionQueryResultData from "../generated/fragment-types.json";
