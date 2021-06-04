@@ -53,4 +53,44 @@ module.exports = withSourceMaps({
 
     return config;
   },
+  async redirects() {
+    return [
+      {
+        source: "/",
+        has: [
+          {
+            type: "header",
+            key: "Accept-Language",
+            value: "^en.*$",
+          },
+        ],
+        permanent: false,
+        destination: "/en",
+      },
+      {
+        source: "/",
+        has: [
+          {
+            type: "header",
+            key: "Accept-Language",
+            value: "^((?!it|en).)*$",
+          },
+        ],
+        permanent: false,
+        destination: "/en",
+      },
+      {
+        source: "/",
+        has: [
+          {
+            type: "header",
+            key: "Accept-Language",
+            value: ".*it.*",
+          },
+        ],
+        permanent: false,
+        destination: "/it",
+      },
+    ];
+  },
 });
