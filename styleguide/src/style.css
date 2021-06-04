@@ -10,7 +10,7 @@ p > a {
 .dotted-underline {
   text-decoration: underline;
   text-decoration-style: dotted;
-  text-decoration-color: theme('colors.purple');
+  text-decoration-color: theme("colors.purple");
   text-underline-offset: 2px;
   text-decoration-thickness: 1px;
 }
@@ -18,7 +18,7 @@ p > a {
 .wavy-underline {
   text-decoration: underline;
   text-decoration-style: wavy;
-  text-decoration-color: theme('colors.aquamarine');
+  text-decoration-color: theme("colors.aquamarine");
 }
 
 .carousel-container {
@@ -38,8 +38,12 @@ p > a {
 }
 
 .schedule-head {
-  @apply sticky top-0 z-10 grid gap-1 bg-black border-black border-b-4;
+  @apply grid gap-1 bg-black border-black border-b-4;
   grid-template-columns: repeat(var(--days), 1fr);
+}
+
+.schedule-head-mc {
+  grid-template-columns: 1fr;
 }
 
 .schedule-grid {
@@ -51,7 +55,8 @@ p > a {
 
 @screen md {
   .schedule-head,
-  .schedule-grid {
+  .schedule-grid,
+  .schedule-head-mc {
     grid-template-columns: 80px repeat(var(--days), 1fr);
   }
 }

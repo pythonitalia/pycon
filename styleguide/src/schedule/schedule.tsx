@@ -174,7 +174,7 @@ export const Schedule = ({ program }: Props) => {
       </header>
 
       <div
-        className="schedule-head"
+        className="schedule-head sticky top-0 z-10"
         style={
           {
             "--days": days.length,
@@ -195,6 +195,31 @@ export const Schedule = ({ program }: Props) => {
               "md:bg-white"
             )}
           />
+        ))}
+      </div>
+
+      <div
+        className="schedule-head schedule-head-mc"
+        style={
+          {
+            "--days": days.length,
+          } as any
+        }
+      >
+        <div className="bg-white p-4 hidden md:flex"></div>
+
+        {days.map((day) => (
+          <div
+            className={clsx(
+              "bg-pink p-2 md:p-4 text-center md:text-left",
+              {
+                hidden: day.date !== selectedDay,
+              },
+              "md:flex"
+            )}
+          >
+            🎤 MC: <strong className="font-bold">{day.mc.fullName}</strong>
+          </div>
         ))}
       </div>
 
