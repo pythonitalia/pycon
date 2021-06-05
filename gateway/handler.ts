@@ -66,6 +66,7 @@ exports.graphqlHandler = ServerlessSentry.AWSLambda.wrapHandler(
             /python-italia\.vercel\.app$/,
             "https://associazione.python.it",
             "https://pycon.it",
+            "https://studio.apollographql.com",
           ],
         },
       });
