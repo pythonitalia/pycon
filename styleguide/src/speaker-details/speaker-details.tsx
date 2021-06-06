@@ -1,6 +1,5 @@
 import React, { ReactNode } from "react";
 import { SpeakerSquare } from "../speaker-square/speaker-square";
-import { Wrapper } from "../wrapper/wrapper";
 
 type Props = {
   name: string;
@@ -28,40 +27,38 @@ export const SpeakerDetails = ({
   bio,
   twitter,
 }: Props) => (
-  <Wrapper>
-    <div className="md:flex w-full flex-row">
-      <div className="w-full border-4 md:w-1/4 self-start">
-        <SpeakerSquare
-          name={name}
-          portraitUrl={portraitUrl}
-          subtitle={subtitle}
-          className="bg-aquamarine"
-        />
-      </div>
-      <div className="flex-1 md:ml-20 self-start">
-        <div className="w-full mb-8">
-          {website ? (
-            <Row title="Website">
-              <a href={website} className="hover:underline">
-                {website}
-              </a>
-            </Row>
-          ) : null}
-          {twitter ? (
-            <Row title="twitter">
-              <a
-                href={`https://twitter.com/${twitter}`}
-                className="hover:underline"
-              >
-                {twitter}
-              </a>
-            </Row>
-          ) : null}
-          {occupation ? <Row title="occupation">{occupation}</Row> : null}
-        </div>
-
-        <div>{bio}</div>
-      </div>
+  <div className="md:flex w-full flex-row">
+    <div className="w-full border-4 md:w-1/4 self-start">
+      <SpeakerSquare
+        name={name}
+        portraitUrl={portraitUrl}
+        subtitle={subtitle}
+        className="bg-aquamarine"
+      />
     </div>
-  </Wrapper>
+    <div className="flex-1 md:ml-20 self-start">
+      <div className="w-full mb-8">
+        {website ? (
+          <Row title="Website">
+            <a href={website} className="hover:underline">
+              {website}
+            </a>
+          </Row>
+        ) : null}
+        {twitter ? (
+          <Row title="twitter">
+            <a
+              href={`https://twitter.com/${twitter}`}
+              className="hover:underline"
+            >
+              {twitter}
+            </a>
+          </Row>
+        ) : null}
+        {occupation ? <Row title="occupation">{occupation}</Row> : null}
+      </div>
+
+      <div>{bio}</div>
+    </div>
+  </div>
 );
