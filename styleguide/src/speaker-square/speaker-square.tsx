@@ -8,7 +8,7 @@ export const SpeakerSquare = ({
   className,
 }: {
   name: string;
-  subtitle: string;
+  subtitle?: string;
   portraitUrl: string;
   className?: string;
 }) => (
@@ -25,7 +25,7 @@ export const SpeakerSquare = ({
     />
     <div className="p-8 text-white font-medium flex justify-end flex-col">
       <p className="uppercase text-2xl">{name}</p>
-      <p className="text-lg">{subtitle}</p>
+      {subtitle ? <p className="text-lg">{subtitle}</p> : null}
     </div>
   </div>
 );

@@ -1,6 +1,7 @@
 export { Header } from "./header/header";
 export { Title } from "./title/title";
 export { SpeakerSquare } from "./speaker-square/speaker-square";
+export { SpeakerDetails } from "./speaker-details/speaker-details";
 export { Page } from "./page/page";
 export { Marquee } from "./marquee/marquee";
 export { Carousel } from "./carousel/carousel";
