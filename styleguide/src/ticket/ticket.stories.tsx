@@ -3,6 +3,18 @@ import { Ticket } from "./ticket";
 
 export default {
   title: "Ticket",
+  argTypes: {
+    name: {
+      defaultValue: "Ester Beltrami",
+      control: {
+        type: "text",
+      },
+    },
+  },
 };
 
-export const Primary = () => <Ticket name="wtf">Hello world 🦙</Ticket>;
+export const Primary = (props) => (
+  <div className="max-w-2xl">
+    <Ticket {...props} />
+  </div>
+);
