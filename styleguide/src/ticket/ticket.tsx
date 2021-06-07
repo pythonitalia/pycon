@@ -20,7 +20,7 @@ export const Ticket = ({ name }: TicketProps) => {
         </div>
       </div>
 
-      <div className="flex border-t-4 border-b-4 border-black border-solid bg-purple">
+      <div className="flex border-t-4 border-b-4 border-l-4 border-r-4 border-black border-solid bg-purple">
         <div className="ml-4">
           <div className="my-3 text-5xl font-bold">{name}</div>
           <div className="my-2 text-xl text-white ">Made.com</div>
@@ -28,7 +28,7 @@ export const Ticket = ({ name }: TicketProps) => {
         </div>
       </div>
 
-      <div className="flex border-b-4 border-black border-solid">
+      <div className="flex border-b-4 border-l-4 border-r-4 border-black border-solid">
         <div className="w-1/3 px-2 pt-2 bg-green">
           <PythonSquare1 />
         </div>
