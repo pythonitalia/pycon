@@ -32,10 +32,10 @@ export const Ticket = ({ name }: TicketProps) => {
         <div className="w-1/3 px-2 pt-2 bg-green">
           <PythonSquare1 />
         </div>
-        <div className="w-1/3 border-l-4 border-r-4 border-black border-solid bg-aquamarine ">
+        <div className="w-1/3 border-l-4 border-r-4 border-black border-solid bg-casablanca ">
           <PythonSquare2 />
         </div>
-        <div className="w-1/3 bg-casablanca ">
+        <div className="w-1/3 bg-aquamarine ">
           <PythonSquare3 />
         </div>
       </div>
