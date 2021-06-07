@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import React, { ReactNode } from "react";
+import { Color } from "../types";
 
 export const Paragraph = ({
   children,
@@ -8,15 +9,7 @@ export const Paragraph = ({
 }: {
   children: ReactNode;
   bold?: boolean;
-  color?:
-    | "aquamarine"
-    | "casablanca"
-    | "black"
-    | "orange"
-    | "keppel"
-    | "pink"
-    | "purple"
-    | "white";
+  color?: Color;
 }) => (
   <p
     className={clsx("mb-8", {

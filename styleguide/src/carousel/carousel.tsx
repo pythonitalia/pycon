@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import React, { useState } from "react";
 import { Title } from "../title";
+import { Color } from "../types";
 
 type Props = {
   title: string;
@@ -30,7 +31,13 @@ const RightArrow = ({ className }: { className?: string }) => (
   </svg>
 );
 
-const COLORS = ["orange", "keppel", "casablanca", "aquamarine", "purple"];
+const COLORS: Color[] = [
+  "orange",
+  "keppel",
+  "casablanca",
+  "aquamarine",
+  "purple",
+];
 
 const ArrowButton = ({
   onClick,

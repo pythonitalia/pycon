@@ -7,6 +7,7 @@ import { TwitterIcon } from "../icons/twitter";
 import { Logo } from "../logo/logo";
 import { MenuButton } from "../menu-button/menu-button";
 import { SocialLink } from "../social-link/social-link";
+import { Color } from "../types";
 
 type Link = {
   href: string;
@@ -91,22 +92,13 @@ const Menu = ({ links }: { links: Link[] }) => {
   );
 };
 
-type BackgroundColor =
-  | "white"
-  | "black"
-  | "orange"
-  | "keppel"
-  | "casablanca"
-  | "aquamarine"
-  | "pink"
-  | "purple";
 
 export const Header = ({
   links = [],
   backgroundColor = "white",
 }: {
   links?: Link[];
-  backgroundColor?: BackgroundColor;
+  backgroundColor?: Color;
 }) => {
   const [menuOpen, toggleMenuOpen] = useToggle(false);
 
