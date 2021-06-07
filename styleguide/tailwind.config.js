@@ -21,6 +21,7 @@ module.exports = {
       "cornflower-blue": "#6A80EF",
       pink: "#DD9BC7",
       purple: "#9473B0",
+      green: "#34B4A1",
     },
     extend: {
       animation: {
