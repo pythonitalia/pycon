@@ -12,4 +12,4 @@ export { Colors } from "./colors/colors";
 export { Wrapper } from "./wrapper/wrapper";
 export { Paragraph } from "./paragraph/paragraph";
 export { LocalTime } from "./local-time/local-time";
-export { Ticket } from "./ticket/ticket";
+export { Ticket, TicketHolder, Lanyard } from "./ticket";
