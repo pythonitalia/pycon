@@ -56,7 +56,7 @@ export const PythonSquare1 = () => {
         fill="none"
         width="365"
         height="365"
-        viewBox="0 -10 365 365"
+        viewBox="0 -12 365 365"
         className="w-full h-full"
       >
         <g clipPath="url(#clip0)">
