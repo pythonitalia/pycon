@@ -29,4 +29,9 @@ export default {
   },
 };
 
-export const Primary = (props) => <TicketWithHolder {...props} />;
+export const Primary = (props) => (
+  <TicketWithHolder
+    {...props}
+    ticket={{ name: "Marco Acierno", username: "@marcoacierno" }}
+  />
+);

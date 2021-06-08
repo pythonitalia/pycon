@@ -7,9 +7,14 @@ import { TicketHolder } from "./ticket-holder";
 type Props = {
   ticketSize: "medium";
   ticket: TicketProps;
+  ticketHolderRef?: React.Ref<HTMLDivElement>;
 };
 
-export const TicketWithHolder = ({ ticketSize, ticket }: Props) => {
+export const TicketWithHolder = ({
+  ticketSize,
+  ticket,
+  ticketHolderRef,
+}: Props) => {
   return (
     <div
       className={clsx({
@@ -18,7 +23,7 @@ export const TicketWithHolder = ({ ticketSize, ticket }: Props) => {
     >
       <Lanyard />
 
-      <TicketHolder>
+      <TicketHolder ref={ticketHolderRef}>
         <Ticket {...ticket} />
       </TicketHolder>
     </div>

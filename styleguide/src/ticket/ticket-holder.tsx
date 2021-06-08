@@ -4,9 +4,12 @@ type Props = {
   children: React.ReactNode;
 };
 
-export const TicketHolder = ({ children }: Props) => {
-  return (
-    <div className="relative z-10 px-4 pt-20 pb-4 bg-white shadow-xl -mt-7 rounded-xl">
+export const TicketHolder = React.forwardRef<HTMLDivElement, Props>(
+  ({ children }, ref) => (
+    <div
+      ref={ref}
+      className="relative z-10 px-4 pt-20 pb-4 bg-white shadow-xl -mt-7 rounded-xl"
+    >
       {/* large */}
       <div className="absolute w-16 h-5 rounded-xl top-4 left-1/4 bg-orange"></div>
 
@@ -18,5 +21,5 @@ export const TicketHolder = ({ children }: Props) => {
 
       {children}
     </div>
-  );
-};
+  )
+);
