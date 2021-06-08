@@ -11,3 +11,4 @@ export { ScheduleProgram } from "./schedule/types";
 export { Colors } from "./colors/colors";
 export { Wrapper } from "./wrapper/wrapper";
 export { Paragraph } from "./paragraph/paragraph";
+export { LocalTime } from "./local-time/local-time";

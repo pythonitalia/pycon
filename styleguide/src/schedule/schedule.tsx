@@ -3,20 +3,13 @@ import { format } from "date-fns";
 import differenceInMinutes from "date-fns/fp/differenceInMinutes";
 import parseISO from "date-fns/parseISO";
 import React, { Fragment, useState } from "react";
+import { LocalTime } from "../local-time/local-time";
 import { Title } from "../title";
 import { ScheduleItem } from "./schedule-item";
 import { Event, ScheduleProgram, ScheduleDay } from "./types";
 
 type Props = {
   program: ScheduleProgram;
-};
-
-const getUserTimeZone = () => {
-  try {
-    return ` (${Intl.DateTimeFormat().resolvedOptions().timeZone})`;
-  } catch {
-    return "";
-  }
 };
 
 const Day = ({
@@ -76,13 +69,7 @@ const TimeSlots = ({ slots }: { slots: Slot[] }) => (
             gridRowEnd: slot.rowEnd,
           }}
         >
-          <time
-            dateTime={slot.start.toISOString()}
-            className="dotted-underline cursor-help"
-            title={`This time is using your device's timezone${getUserTimeZone()}.`}
-          >
-            {format(slot.start, "HH:mm")}
-          </time>
+          <LocalTime datetime={slot.start} format="just-time" />
         </div>
       );
     })}
