@@ -4,6 +4,7 @@ import { Title } from "../title";
 type Props = {
   title: string;
   children: React.ReactNode;
+  illustrationFirst?: boolean;
 };
 
 const Illustration = (props: React.SVGProps<SVGSVGElement>) => {
@@ -90,22 +91,39 @@ const Illustration = (props: React.SVGProps<SVGSVGElement>) => {
   );
 };
 
-export const SplitSection = ({ title, children }: Props) => (
-  <div>
-    <div className="max-w-7xl mx-auto md:grid md:grid-cols-2">
-      <div className="p-8 md:p-16 border-black border-b-4 md:border-b-0 md:border-r-4">
-        <Title>{title}</Title>
+export const SplitSection = ({
+  title,
+  children,
+  illustrationFirst = false,
+}: Props) => {
+  let top = (
+    <div className="p-8 md:p-16 md:w-1/2 ">
+      <Title>{title}</Title>
 
-        {children}
-      </div>
-      <div className="p-8 md:p-16 relative overflow-hidden">
-        <div className="max-w-xs">
-          <div className="relative aspect-w-1 aspect-h-1">
-            <div className="absolute w-full h-full bg-keppel top-10 left-20"></div>
-            <Illustration className="w-full" />
-          </div>
+      {children}
+    </div>
+  );
+  let bottom = (
+    <div className="p-8 md:p-16 relative overflow-hidden md:w-1/2">
+      <div className="max-w-xs">
+        <div className="relative aspect-w-1 aspect-h-1">
+          <div className="absolute w-full h-full bg-keppel top-10 left-20"></div>
+          <Illustration className="w-full" />
         </div>
       </div>
     </div>
-  </div>
-);
+  );
+
+  if (illustrationFirst) {
+    [bottom, top] = [top, bottom];
+  }
+
+  return (
+    <div>
+      <div className="max-w-7xl mx-auto md:flex md:grid-cols-2 divide-y-4 md:divide-y-0 md:divide-x-4">
+        {top}
+        {bottom}
+      </div>
+    </div>
+  );
+};

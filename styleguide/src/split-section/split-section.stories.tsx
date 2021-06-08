@@ -1,12 +1,8 @@
 import React from "react";
 import { SplitSection } from "./split-section";
 
-export default {
-  title: "SplitSection",
-};
-
-export const Standard = () => (
-  <SplitSection title="The speakers">
+export const Standard = ({ ...props }) => (
+  <SplitSection title="The speakers" {...props}>
     <p className="font-bold text-purple-600 mb-8">
       Lorem ipsum dolor sit, amet consectetur adipisicing elit.
     </p>
@@ -18,3 +14,15 @@ export const Standard = () => (
     </p>
   </SplitSection>
 );
+
+export default {
+  title: "SplitSection",
+  component: Standard,
+  argTypes: {
+    illustrationFirst: {
+      control: {
+        type: "boolean",
+      },
+    },
+  },
+};
