@@ -9,9 +9,11 @@ import {
 
 type TicketProps = {
   name: string;
+  company?: string;
+  username?: string;
 };
 
-export const Ticket = ({ name }: TicketProps) => {
+export const Ticket = ({ name, company, username }: TicketProps) => {
   return (
     <div>
       <div className="flex bg-white">
@@ -28,8 +30,8 @@ export const Ticket = ({ name }: TicketProps) => {
       <div className="flex border-t-4 border-b-4 border-l-4 border-r-4 border-black border-solid bg-purple">
         <div className="mx-4">
           <div className="my-3 text-5xl font-bold">{name}</div>
-          <div className="my-2 text-xl text-white ">Made.com</div>
-          <div className="my-2 ">@etty</div>
+          <div className="my-2 text-xl text-white ">{company}</div>
+          <div className="my-2 ">{username}</div>
         </div>
       </div>
 

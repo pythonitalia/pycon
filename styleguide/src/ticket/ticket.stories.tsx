@@ -11,6 +11,18 @@ export default {
       control: {
         type: "text",
       },
+    }, 
+    company: {
+      defaultValue: "Made.com",
+      control: {
+        type: "text",
+      },
+    },
+    username: {
+      defaultValue: "@etty",
+      control: {
+        type: "text",
+      },
     },
   },
   parameters: {
