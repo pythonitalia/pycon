@@ -1,1 +1,1 @@
-export { EmbeddedVideo } from "./embedded-video"
+export { EmbeddedTwitch } from "./embedded-twitch"

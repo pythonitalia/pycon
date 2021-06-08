@@ -5,7 +5,7 @@ import { Marquee } from "../marquee/marquee";
 import { Page } from "./page";
 import { Carousel } from "../carousel/carousel";
 import { SpeakerSquare } from "../speaker-square/speaker-square";
-import { EmbeddedVideo } from "../embedded-video";
+import { EmbeddedTwitch } from "../embedded-video";
 
 export default {
   title: "Page examples",
@@ -16,13 +16,8 @@ export const Standard = () => (
     <Page>
       <Header />
       <Marquee>Style guides rock 🚀</Marquee>
+      <EmbeddedTwitch channel={"aaronbassettdev"} width={620} height={378}></EmbeddedTwitch>
 
-      <div className="flex">
-
-      <EmbeddedVideo link={"https://www.youtube.com/embed/3xesPv0fflg"} width={560} height={315}></EmbeddedVideo>
-      <EmbeddedVideo link={"https://player.twitch.tv/?video=1048767004&parent=localhost&autoplay=false"} width={620} height={315}></EmbeddedVideo>
-
-      </div>
 
       <SplitSection title="The speakers">
         <p className="mb-8 font-bold text-purple-600">
