@@ -1,14 +1,15 @@
 import clsx from "clsx";
 import React from "react";
 import { Lanyard } from "./lanyard";
-import { Ticket } from "./ticket";
+import { Ticket, TicketProps } from "./ticket";
 import { TicketHolder } from "./ticket-holder";
 
 type Props = {
   ticketSize: "medium";
+  ticket: TicketProps;
 };
 
-export const TicketWithHolder = ({ ticketSize }: Props) => {
+export const TicketWithHolder = ({ ticketSize, ticket }: Props) => {
   return (
     <div
       className={clsx({
@@ -18,7 +19,7 @@ export const TicketWithHolder = ({ ticketSize }: Props) => {
       <Lanyard />
 
       <TicketHolder>
-        <Ticket name={"Test name"} />
+        <Ticket {...ticket} />
       </TicketHolder>
     </div>
   );

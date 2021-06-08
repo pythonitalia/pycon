@@ -7,7 +7,7 @@ import {
   PythonSquare3,
 } from "./pythons";
 
-type TicketProps = {
+export type TicketProps = {
   name: string;
   company?: string;
   username?: string;
