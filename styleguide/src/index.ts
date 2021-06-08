@@ -12,4 +12,5 @@ export { Colors } from "./colors/colors";
 export { Wrapper } from "./wrapper/wrapper";
 export { Paragraph } from "./paragraph/paragraph";
 export { LocalTime } from "./local-time/local-time";
-export { Ticket, TicketHolder, Lanyard } from "./ticket";
+export { Ticket, TicketHolder, Lanyard, TicketWithHolder } from "./ticket";
+export { FullscreenOverlay } from "./fullscreen-overlay";
