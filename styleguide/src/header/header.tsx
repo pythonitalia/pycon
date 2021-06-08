@@ -36,15 +36,7 @@ const Menu = ({ links }: { links: Link[] }) => {
       <MenuLinks links={linksB} />
 
       <div className="space-y-4">
-        <h2 className="uppercase font-bold text-xl">Contact</h2>
-
-        <p>
-          Become a sponsor
-          <br />{" "}
-          <a href="mailto:sponsor@pycon.it" className="text-white underline">
-            sponsor@pycon.it
-          </a>
-        </p>
+        <h2 className="text-xl font-bold uppercase">Contact</h2>
 
         <p>
           Enquiries
