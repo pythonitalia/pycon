@@ -16,7 +16,7 @@ export const Standard = () => (
     <Page>
       <Header />
       <Marquee>Style guides rock 🚀</Marquee>
-      <EmbeddedTwitch channel={"aaronbassettdev"} width={620} height={378}></EmbeddedTwitch>
+      <EmbeddedTwitch channel={"landonorris"} width={620} height={378}></EmbeddedTwitch>
 
 
       <SplitSection title="The speakers">
