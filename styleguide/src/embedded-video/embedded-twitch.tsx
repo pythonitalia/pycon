@@ -1,6 +1,6 @@
 import React from "react";
 
-type EmbeddedVideoProps = {
+type EmbeddedTwitchProps = {
   channel: string;
   autoplay?: boolean;
   width: number;
@@ -8,7 +8,7 @@ type EmbeddedVideoProps = {
   parent?: string;
 };
 
-export const EmbeddedTwitch = ({ channel, autoplay=false, width, height, parent="localhost" }: EmbeddedVideoProps) => {
+export const EmbeddedTwitch = ({ channel, autoplay=false, width, height, parent="localhost" }: EmbeddedTwitchProps) => {
   return (
     <div className="flex items-center justify-center ">
       <iframe
