@@ -21,6 +21,8 @@ module.exports = {
       "cornflower-blue": "#6A80EF",
       pink: "#DD9BC7",
       purple: "#9473B0",
+      green: "#34B4A1",
+      grey: "#c6c6c6",
     },
     extend: {
       animation: {
@@ -31,6 +33,9 @@ module.exports = {
           "0%": { transform: "translateX(0%)" },
           "100%": { transform: "translateX(-100%)" },
         },
+      },
+      zIndex: {
+        "-1": "-1",
       },
     },
   },

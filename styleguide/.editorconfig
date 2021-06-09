@@ -1,0 +1,4 @@
+root = true
+
+[*.{ts,tsx}]
+indent_size = 2
