@@ -1,5 +1,4 @@
 import React from "react";
-import { Button } from "../button/button";
 import { Paragraph } from "../paragraph/paragraph";
 import { Title } from "../title";
 import { Wrapper } from "./wrapper";
@@ -29,21 +28,5 @@ export const Primary = () => (
       saepe adipisci rerum, itaque minima voluptas quasi porro eius accusamus
       quo aspernatur laborum nam enim. Iusto iure doloribus molestias et.
     </Paragraph>
-  </Wrapper>
-);
-
-export const CenteredContent = () => (
-  <Wrapper center>
-    <div>
-      <Button onClick={() => {}} color="pink">
-        Button
-      </Button>
-      <Button onClick={() => {}} color="orange">
-        Button 2
-      </Button>
-      <Button onClick={() => {}} color="purple">
-        Button 3
-      </Button>
-    </div>
   </Wrapper>
 );
