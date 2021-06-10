@@ -3,17 +3,17 @@ import React from "react";
 type EmbeddedTwitchProps = {
   channel: string;
   autoplay?: boolean;
-  width: number;
-  height: number;
   parent?: string;
 };
 
-export const EmbeddedTwitch = ({ channel, autoplay=false, width, height, parent="localhost" }: EmbeddedTwitchProps) => {
+export const EmbeddedTwitch = ({ channel, autoplay=false, parent="localhost" }: EmbeddedTwitchProps) => {
   return (
-    <div className="flex items-center justify-center ">
+    <div className="flex items-center justify-center w-full h-full">
+      <div className="relative w-full h-full pt-xl">
       <iframe
-        width={width}
-        height={height}
+        className="absolute top-0 w-full h-full"
+        width="100%"
+        height="100%"
         src={`https://player.twitch.tv/?channel=${channel}&parent=${parent}&autoplay=${autoplay}`}
         title="YouTube video player"
         frameborder="0"
@@ -21,6 +21,7 @@ export const EmbeddedTwitch = ({ channel, autoplay=false, width, height, parent=
 
         allowfullscreen="true"
       ></iframe>
+      </div>
     </div>
   );
 };
