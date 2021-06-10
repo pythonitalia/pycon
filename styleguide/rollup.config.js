@@ -10,55 +10,80 @@ const assetFileNames = (assetInfo) =>
     ? "index.css"
     : "assets/[name]-[hash][extname]";
 
-export default {
-  input: "./src/index.ts",
-  external: [
-    ...Object.keys(pkg.dependencies || {}),
-    ...Object.keys(pkg.peerDependencies || {}),
-  ],
-  output: [
-    {
-      file: `${pkg.module}`,
-      format: "es",
-      sourcemap: true,
-      assetFileNames,
-    },
-    {
-      file: `${pkg.main}`,
-      format: "cjs",
-      sourcemap: true,
-      assetFileNames,
-    },
-  ],
-  plugins: [
-    commonjs(),
-    typescript({
-      typescript: ts,
-      tsconfig: "tsconfig.json",
-      tsconfigDefaults: {
-        exclude: [
-          "**/*.spec.ts",
-          "**/*.test.ts",
-          "**/*.stories.ts",
-          "**/*.spec.tsx",
-          "**/*.test.tsx",
-          "**/*.stories.tsx",
-          "node_modules",
-          "bower_components",
-          "jspm_packages",
-          "dist",
-        ],
-        compilerOptions: {
-          sourceMap: true,
-          declaration: true,
-        },
+const plugins = [
+  commonjs(),
+  typescript({
+    typescript: ts,
+    tsconfig: "tsconfig.json",
+    tsconfigDefaults: {
+      exclude: [
+        "**/*.spec.ts",
+        "**/*.test.ts",
+        "**/*.stories.ts",
+        "**/*.spec.tsx",
+        "**/*.test.tsx",
+        "**/*.stories.tsx",
+        "node_modules",
+        "bower_components",
+        "jspm_packages",
+        "dist",
+      ],
+      compilerOptions: {
+        sourceMap: true,
+        declaration: true,
       },
-    }),
-    styles({ mode: "extract", config: { path: "./postcss.config.js" } }),
-    terser({
-      output: {
-        comments: false,
+    },
+  }),
+  styles({ mode: "extract", config: { path: "./postcss.config.js" } }),
+  terser({
+    output: {
+      comments: false,
+    },
+  }),
+];
+
+const external = [
+  ...Object.keys(pkg.dependencies || {}),
+  ...Object.keys(pkg.peerDependencies || {}),
+];
+
+export default [
+  {
+    input: "./src/index.ts",
+    external,
+    output: [
+      {
+        file: `${pkg.module}`,
+        format: "es",
+        sourcemap: true,
+        assetFileNames,
       },
-    }),
-  ],
-};
+      {
+        file: `${pkg.main}`,
+        format: "cjs",
+        sourcemap: true,
+        assetFileNames,
+      },
+    ],
+    plugins,
+  },
+  {
+    input: "./src/icons/index.ts",
+    external,
+    output: [
+      {
+        file: `dist/icons/index.esm.js`,
+        format: "es",
+        sourcemap: true,
+        assetFileNames,
+      },
+      {
+        file: `dist/icons/index.js`,
+        format: "cjs",
+        sourcemap: true,
+        assetFileNames,
+      },
+    ],
+    plugins,
+  },
+];
