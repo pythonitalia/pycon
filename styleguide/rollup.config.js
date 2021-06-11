@@ -12,28 +12,6 @@ const assetFileNames = (assetInfo) =>
 
 const plugins = [
   commonjs(),
-  typescript({
-    typescript: ts,
-    tsconfig: "tsconfig.json",
-    tsconfigDefaults: {
-      exclude: [
-        "**/*.spec.ts",
-        "**/*.test.ts",
-        "**/*.stories.ts",
-        "**/*.spec.tsx",
-        "**/*.test.tsx",
-        "**/*.stories.tsx",
-        "node_modules",
-        "bower_components",
-        "jspm_packages",
-        "dist",
-      ],
-      compilerOptions: {
-        sourceMap: true,
-        declaration: true,
-      },
-    },
-  }),
   styles({ mode: "extract", config: { path: "./postcss.config.js" } }),
   terser({
     output: {
@@ -65,7 +43,31 @@ export default [
         assetFileNames,
       },
     ],
-    plugins,
+    plugins: [
+      typescript({
+        typescript: ts,
+        tsconfig: "tsconfig.json",
+        tsconfigDefaults: {
+          exclude: [
+            "**/*.spec.ts",
+            "**/*.test.ts",
+            "**/*.stories.ts",
+            "**/*.spec.tsx",
+            "**/*.test.tsx",
+            "**/*.stories.tsx",
+            "node_modules",
+            "bower_components",
+            "jspm_packages",
+            "dist",
+          ],
+          compilerOptions: {
+            sourceMap: true,
+            declaration: true,
+          },
+        },
+      }),
+      ...plugins,
+    ],
   },
   {
     input: "./src/icons/index.ts",
@@ -84,7 +86,34 @@ export default [
         assetFileNames,
       },
     ],
-    plugins,
+    plugins: [
+      typescript({
+        typescript: ts,
+        tsconfig: "tsconfig.json",
+        tsconfigOverride: {
+          include: ["./src/icons"],
+        },
+        tsconfigDefaults: {
+          exclude: [
+            "**/*.spec.ts",
+            "**/*.test.ts",
+            "**/*.stories.ts",
+            "**/*.spec.tsx",
+            "**/*.test.tsx",
+            "**/*.stories.tsx",
+            "node_modules",
+            "bower_components",
+            "jspm_packages",
+            "dist",
+          ],
+          compilerOptions: {
+            sourceMap: true,
+            declaration: true,
+          },
+        },
+      }),
+      ...plugins,
+    ],
   },
   {
     input: "./src/illustrations/index.ts",
@@ -103,6 +132,33 @@ export default [
         assetFileNames,
       },
     ],
-    plugins,
+    plugins: [
+      typescript({
+        typescript: ts,
+        tsconfig: "tsconfig.json",
+        tsconfigOverride: {
+          include: ["./src/illustrations"],
+        },
+        tsconfigDefaults: {
+          exclude: [
+            "**/*.spec.ts",
+            "**/*.test.ts",
+            "**/*.stories.ts",
+            "**/*.spec.tsx",
+            "**/*.test.tsx",
+            "**/*.stories.tsx",
+            "node_modules",
+            "bower_components",
+            "jspm_packages",
+            "dist",
+          ],
+          compilerOptions: {
+            sourceMap: true,
+            declaration: true,
+          },
+        },
+      }),
+      ...plugins,
+    ],
   },
 ];
