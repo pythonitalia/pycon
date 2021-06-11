@@ -44,5 +44,10 @@ export default {
         type: "boolean",
       },
     },
+    hideIllustrationOnMobile: {
+      control: {
+        type: "boolean",
+      },
+    },
   },
 };

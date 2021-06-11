@@ -1,6 +1,6 @@
 {
   "name": "@python-italia/pycon-styleguide",
-  "version": "0.1.26",
+  "version": "0.1.28",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
@@ -8,7 +8,7 @@
     ".": "./dist/index.js",
     "./style": "./dist/index.css",
     "./icons": "./dist/icons/index.js",
-    "./illustrations": "./dist/icons/illustrations.js"
+    "./illustrations": "./dist/illustrations/index.js"
   },
   "scripts": {
     "test": "jest",

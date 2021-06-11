@@ -9,6 +9,7 @@ type Props = {
   children: React.ReactNode;
   illustration?: (props: any) => React.ReactElement;
   illustrationFirst?: boolean;
+  hideIllustrationOnMobile?: boolean;
   highlightColor?: Color;
 };
 
@@ -16,18 +17,24 @@ export const SplitSection = ({
   title,
   children,
   illustrationFirst = false,
+  hideIllustrationOnMobile = false,
   illustration: Illustration = SnakeCouple,
   highlightColor = "keppel",
 }: Props) => {
   let top = (
-    <div className="p-8 md:p-16 md:w-1/2 ">
+    <div className="p-8 md:p-16 md:w-1/2">
       <Title>{title}</Title>
 
       {children}
     </div>
   );
   let bottom = (
-    <div className="p-8 md:p-16 relative overflow-hidden md:w-1/2">
+    <div
+      className={clsx("p-8 md:p-16 relative overflow-hidden md:w-1/2", {
+        hidden: hideIllustrationOnMobile,
+        "md:block": hideIllustrationOnMobile,
+      })}
+    >
       <div className="max-w-xs">
         <div className="relative aspect-w-1 aspect-h-1">
           <div
@@ -53,7 +60,9 @@ export const SplitSection = ({
 
   return (
     <div>
-      <div className="max-w-7xl mx-auto md:flex md:grid-cols-2 divide-y-4 md:divide-y-0 md:divide-x-4">
+      <div className={clsx("max-w-7xl mx-auto md:flex md:grid-cols-2 md:divide-y-0 md:divide-x-4", {
+        "divide-y-4": !hideIllustrationOnMobile
+      })}>
         {top}
         {bottom}
       </div>
