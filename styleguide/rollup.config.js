@@ -86,4 +86,23 @@ export default [
     ],
     plugins,
   },
+  {
+    input: "./src/illustrations/index.ts",
+    external,
+    output: [
+      {
+        file: `dist/illustrations/index.esm.js`,
+        format: "es",
+        sourcemap: true,
+        assetFileNames,
+      },
+      {
+        file: `dist/illustrations/index.js`,
+        format: "cjs",
+        sourcemap: true,
+        assetFileNames,
+      },
+    ],
+    plugins,
+  },
 ];
