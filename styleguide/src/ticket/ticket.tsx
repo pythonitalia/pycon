@@ -18,18 +18,18 @@ export const Ticket = ({ name, company, username }: TicketProps) => {
     <div>
       <div className="flex bg-white">
         <div className="flex w-full mb-2 border-4 border-black border-solid">
-          <div className="w-24 border-r-2 border-black border-solid min-w-min bg-purple">
+          <div className="w-1/3 border-r-2 border-black border-solid min-w-min bg-purple">
             <PythonSquare0 />
           </div>
           <div className="flex items-center justify-center flex-grow">
-            <div className="text-5xl font-bold ">PyFest</div>
+            <div className="text-4xl font-bold sm:text-5xl ">PyFest</div>
           </div>
         </div>
       </div>
 
       <div className="flex border-t-4 border-b-4 border-l-4 border-r-4 border-black border-solid bg-purple">
         <div className="mx-4">
-          <div className="my-3 text-5xl font-bold">{name}</div>
+          <div className="my-3 text-4xl font-bold sm:text-5xl">{name}</div>
           <div className="my-2 text-xl text-white ">{company}</div>
           <div className="my-2 ">{username}</div>
         </div>
