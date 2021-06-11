@@ -1,9 +1,14 @@
 {
   "name": "@python-italia/pycon-styleguide",
-  "version": "0.1.24",
+  "version": "0.1.25",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js",
+    "./style": "./dist/index.css",
+    "./icons": "./dist/icons/index.js"
+  },
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",

@@ -1,5 +1,9 @@
 import React, { ReactNode } from "react";
 
-export const Wrapper = ({ children }: { children: ReactNode }) => (
-  <div className="max-w-7xl mx-auto px-8 py-8">{children}</div>
+type Props = {
+  children: ReactNode;
+};
+
+export const Wrapper = ({ children }: Props) => (
+  <div className="px-8 py-8 mx-auto max-w-7xl">{children}</div>
 );
