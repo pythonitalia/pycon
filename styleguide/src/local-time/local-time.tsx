@@ -20,12 +20,21 @@ export const LocalTime = ({
 }: {
   datetime: Date;
   format: keyof typeof FORMAT_MAP;
-}) => (
-  <time
-    dateTime={datetime.toISOString()}
-    className="dotted-underline cursor-help"
-    title={`This time is using your device's timezone${getUserTimeZone()}.`}
-  >
-    {format(datetime, FORMAT_MAP[formatType])}
-  </time>
-);
+}) => {
+  const userTimeZone = getUserTimeZone();
+
+  return (
+    <time
+      dateTime={datetime.toISOString()}
+      className="dotted-underline cursor-help inline-block leading-5"
+      title={
+        userTimeZone
+          ? `This time is using your device's timezone ${userTimeZone}.`
+          : ""
+      }
+    >
+      {format(datetime, FORMAT_MAP[formatType])}{" "}
+      <span className="text-2xs">({format(datetime, "O")})</span>
+    </time>
+  );
+};
