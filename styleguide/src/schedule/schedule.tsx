@@ -126,7 +126,7 @@ const DayHeader = ({
   return (
     <div
       className={clsx(
-        "bg-white p-2 md:p-4 text-center md:text-left",
+        "p-2 md:p-4 text-center md:text-left",
         className
       )}
       onClick={onClick}
@@ -177,6 +177,7 @@ export const Schedule = ({ program }: Props) => {
             onClick={() => setSelectedDay(day.date)}
             className={clsx(
               {
+                "bg-white": day.date !== selectedDay,
                 "bg-purple": day.date === selectedDay,
               },
               "md:bg-white"
