@@ -131,7 +131,7 @@ const DayHeader = ({
       )}
       onClick={onClick}
     >
-      {format(date, "d MMMM")}
+      {format(date, "EEEE d MMMM")}
       <span className="hidden md:inline">{format(date, " yyyy")}</span>
     </div>
   );
