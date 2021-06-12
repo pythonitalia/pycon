@@ -156,7 +156,7 @@ export const Schedule = ({ program }: Props) => {
     <div>
       <header className="bg-orange py-8 border-black border-b-4">
         <div className="max-w-7xl m-auto px-8">
-          <Title marginBottom={false}>Schedule June 2021</Title>
+          <Title marginBottom={false}>Schedule</Title>
         </div>
       </header>
 
