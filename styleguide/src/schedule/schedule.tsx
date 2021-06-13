@@ -12,6 +12,9 @@ type Props = {
   program: ScheduleProgram;
 };
 
+const getSlotKey = ({ start }: { start: string }) =>
+  `${format(parseISO(start), "HH:mm")}`;
+
 const Day = ({
   day,
   slots,
@@ -23,8 +26,18 @@ const Day = ({
 }) => {
   return (
     <Fragment>
-      {day.events.map((event, index) => {
-        const slot = slots[index];
+      {day.events.map((event) => {
+        const key = getSlotKey(event);
+        const slot = slots.find((slot) => slot.key == key);
+
+        if (!slot) {
+          console.warn("missing slot for", event);
+
+          return;
+        }
+
+        const increase =
+          event.size !== undefined ? (event.size - 1) * 10 + 1 : 0;
 
         return (
           <ScheduleItem
@@ -33,7 +46,8 @@ const Day = ({
             className={className}
             style={{
               gridRowStart: slot.rowStart,
-              gridRowEnd: slot.rowEnd,
+              // TODO: this is a hack to support bigger slots
+              gridRowEnd: slot.rowEnd + increase,
             }}
           />
         );
@@ -42,19 +56,12 @@ const Day = ({
   );
 };
 
-const getFirstAndLastTime = (events: { start: string; end: string }[]) => {
-  const times = events
-    .flatMap((e) => [parseISO(e.start), parseISO(e.end)])
-    .sort();
-
-  return [times[0], times[times.length - 1]];
-};
-
 type Slot = {
   start: Date;
   end: Date;
   rowStart: number;
   rowEnd: number;
+  key: string;
 };
 
 const TimeSlots = ({ slots }: { slots: Slot[] }) => (
@@ -85,7 +92,7 @@ const getSlots = (events: Event[], uniformSize: boolean = false) => {
     const start = parseISO(event.start);
     const end = parseISO(event.end);
 
-    const key = `${format(start, "HH:mm")}-${format(end, "HH:mm")}`;
+    const key = getSlotKey(event);
 
     if (seenSlots.has(key)) {
       return;
@@ -93,19 +100,28 @@ const getSlots = (events: Event[], uniformSize: boolean = false) => {
 
     seenSlots.add(key);
 
-    const totalMinutes = differenceInMinutes(start, end);
-    const rows = uniformSize ? 10 : totalMinutes / 5;
-
-    const rowStart = index === 0 ? 1 : slots[index - 1].rowEnd;
-    const rowEnd = rowStart + rows;
-
     slots.push({
       start,
       end,
-      rowStart,
-      rowEnd,
+      key,
+      rowStart: 0,
+      rowEnd: 0,
     });
   });
+
+  slots.sort((a, b) => (a.start < b.start ? -1 : a.start > b.start ? 1 : 0));
+
+  let previousSlot: Slot | null = null;
+
+  for (const slot of slots) {
+    const totalMinutes = differenceInMinutes(slot.start, slot.end);
+    const rows = uniformSize ? 10 : totalMinutes / 5;
+
+    slot.rowStart = previousSlot?.rowEnd || 1;
+    slot.rowEnd = slot.rowStart + rows + 1;
+
+    previousSlot = slot;
+  }
 
   return slots;
 };
@@ -125,10 +141,7 @@ const DayHeader = ({
 
   return (
     <div
-      className={clsx(
-        "p-2 md:p-4 text-center md:text-left",
-        className
-      )}
+      className={clsx("p-2 md:p-4 text-center md:text-left", className)}
       onClick={onClick}
     >
       {format(date, "EEEE d MMMM")}
@@ -145,10 +158,7 @@ export const Schedule = ({ program }: Props) => {
   const allEvents = days.flatMap((d) => d.events);
 
   const slots = getSlots(allEvents, uniformSize);
-  const [start, end] = getFirstAndLastTime(allEvents);
-
-  const totalMinutes = differenceInMinutes(start, end);
-  const rows = uniformSize ? slots.length * 10 : totalMinutes / 5;
+  const rows = Math.max(...slots.map((slot) => slot.rowEnd)) - 1;
 
   const [selectedDay, setSelectedDay] = useState(days[0].date);
 

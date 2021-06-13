@@ -1,6 +1,9 @@
 export type Performer = {
   fullName: string;
   profilePicture: string | null;
+  bio?: string | null;
+  twitter?: string | null;
+  website?: string | null;
 };
 
 export type Status = "CONFIRMED" | "TBC";
@@ -9,7 +12,9 @@ export type BaseEvent = {
   start: string;
   end: string;
   title?: string;
+  slug?: string;
   status: Status;
+  size?: number;
   type:
     | "LIVE_CODING"
     | "PERFORMANCE"
