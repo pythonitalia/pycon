@@ -18,3 +18,4 @@ export { Button } from "./button/button";
 export { VStack } from "./vstack/vstack";
 export { HStack } from "./hstack/hstack";
 export { Spacer } from "./spacer/spacer";
+export { IntermissionText } from "./livestream-itermission-text";
