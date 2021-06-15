@@ -22,14 +22,14 @@ export const Ticket = ({ name, company, username }: TicketProps) => {
             <PythonSquare0 />
           </div>
           <div className="flex items-center justify-center flex-grow">
-            <div className="text-4xl font-bold sm:text-5xl ">PyFest</div>
+            <div className="text-4xl font-bold ticket:text-5xl ">PyFest</div>
           </div>
         </div>
       </div>
 
       <div className="flex border-t-4 border-b-4 border-l-4 border-r-4 border-black border-solid bg-purple">
         <div className="mx-4">
-          <div className="my-3 text-4xl font-bold sm:text-5xl">{name}</div>
+          <div className="my-3 text-4xl font-bold ticket:text-5xl">{name}</div>
           <div className="my-2 text-xl text-white ">{company}</div>
           <div className="my-2 ">{username}</div>
         </div>
