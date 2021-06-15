@@ -51,6 +51,9 @@ module.exports = {
       zIndex: {
         "-1": "-1",
       },
+      screens: {
+        ticket: { raw: "(min-height: 810px) and (min-width: 640px)" },
+      },
     },
   },
   variants: {

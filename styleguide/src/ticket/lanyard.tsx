@@ -8,7 +8,7 @@ export const Lanyard = () => {
           // @ts-ignore
           "--tw-scale-y": 8,
         }}
-        className="z-30 h-1 origin-bottom scale-y-150 sm:h-24 transform-gpu w-14 bg-cornflower-blue"
+        className="z-30 h-1 origin-bottom scale-y-150 ticket:h-24 transform-gpu w-14 bg-cornflower-blue"
       />
       <div className="z-30 h-10 -mt-2 transform-gpu rounded-b-md w-14 bg-cornflower-blue" />
 

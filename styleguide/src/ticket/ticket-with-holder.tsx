@@ -17,7 +17,7 @@ export const TicketWithHolder = ({
 }: Props) => {
   return (
     <div
-      className={clsx("w-full px-4 sm:px-0", {
+      className={clsx("w-full px-4 ticket:px-0", {
         "max-w-md": ticketSize === "medium",
       })}
     >
