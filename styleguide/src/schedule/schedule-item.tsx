@@ -1,5 +1,7 @@
 import clsx from "clsx";
+import { parseISO } from "date-fns";
 import React from "react";
+import { LocalTime } from "../local-time/local-time";
 import { ICALLink } from "./ical-link";
 import { EventWithPerformer, Event, EventWithPerformers } from "./types";
 
@@ -62,6 +64,8 @@ export const ScheduleItem = ({
   const title = getTitle(event, performersList);
   const performers = performersList.map((p) => p.fullName).join(" & ");
 
+  const actualStart = event.actualStart ? parseISO(event.actualStart) : null;
+
   return (
     <div
       key={event.start}
@@ -73,7 +77,15 @@ export const ScheduleItem = ({
       {...props}
     >
       <div className="flex justify-between">
-        {title}
+        <div>
+          {title}
+
+          {actualStart ? (
+            <div className="text-sm font-normal">
+              Starts at <LocalTime format="just-time" datetime={actualStart} />
+            </div>
+          ) : null}
+        </div>
 
         <ICALLink
           title={title || "Unknown"}

@@ -137,13 +137,14 @@ const program: ScheduleProgram = {
       events: [
         {
           start: "2021-06-17T17:00+02:00",
+          actualStart: "2021-06-17T18:30+02:00",
           end: "2021-06-17T20:00+02:00",
           type: "LIVE_CODING",
           performer: {
-            fullName: "Nina Zakharenko",
-            profilePicture: "/images/nina-zakharenko.jpg",
+            fullName: "TBC",
+            profilePicture: null,
           },
-          status: "TBC",
+          status: "CONFIRMED",
         },
 
         {

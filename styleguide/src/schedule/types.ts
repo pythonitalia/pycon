@@ -10,6 +10,7 @@ export type Status = "CONFIRMED" | "TBC";
 
 export type BaseEvent = {
   start: string;
+  actualStart?: string;
   end: string;
   title?: string;
   slug?: string;
