@@ -57,6 +57,9 @@ module.exports = {
       scale: {
         10000: "100",
       },
+      padding: {
+        xl: '32rem',
+       }
     },
   },
   variants: {

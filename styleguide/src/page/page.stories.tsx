@@ -5,6 +5,7 @@ import { Marquee } from "../marquee/marquee";
 import { Page } from "./page";
 import { Carousel } from "../carousel/carousel";
 import { SpeakerSquare } from "../speaker-square/speaker-square";
+import { EmbeddedTwitch } from "../embedded-video";
 
 export default {
   title: "Page examples",
@@ -15,8 +16,11 @@ export const Standard = () => (
     <Page>
       <Header />
       <Marquee>Style guides rock 🚀</Marquee>
+      <EmbeddedTwitch channel={"landonorris"} backgroundColor={"casablanca"}></EmbeddedTwitch>
+
+
       <SplitSection title="The speakers">
-        <p className="font-bold text-purple-600 mb-8">
+        <p className="mb-8 font-bold text-purple-600">
           Lorem ipsum dolor sit, amet consectetur adipisicing elit.
         </p>
         <p>
