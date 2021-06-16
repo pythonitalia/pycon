@@ -3,13 +3,7 @@ import React from "react";
 export const Lanyard = () => {
   return (
     <div className="flex flex-col items-center justify-center w-full">
-      <div
-        style={{
-          // @ts-ignore
-          "--tw-scale-y": 8,
-        }}
-        className="z-30 h-1 origin-bottom scale-y-150 ticket:h-24 transform-gpu w-14 bg-cornflower-blue"
-      />
+      <div className="z-30 h-1 origin-bottom ticket:scale-y-150 scale-y-10000 ticket:h-24 transform-gpu w-14 bg-cornflower-blue" />
       <div className="z-30 h-10 -mt-2 transform-gpu rounded-b-md w-14 bg-cornflower-blue" />
 
       <div

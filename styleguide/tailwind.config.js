@@ -54,6 +54,9 @@ module.exports = {
       screens: {
         ticket: { raw: "(min-height: 810px) and (min-width: 640px)" },
       },
+      scale: {
+        10000: "100",
+      },
     },
   },
   variants: {

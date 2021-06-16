@@ -16,7 +16,7 @@ export const FullscreenOverlay = ({
   const OverlayComponent = overlayAs ?? "div";
 
   return (
-    <div className="fixed inset-0 z-20">
+    <div className="fixed inset-0 z-20 !border-0">
       <OverlayComponent
         style={overlayStyle}
         className="absolute inset-0 z-10 transition-opacity bg-black bg-opacity-75"
