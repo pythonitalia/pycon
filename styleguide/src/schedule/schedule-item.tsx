@@ -78,23 +78,39 @@ export const ScheduleItem = ({
     >
       <div className="flex justify-between">
         <div>
-          {title}
+          {event.status === "CANCELLED" ? <span>Cancelled 😢</span> : null}
+          <div
+            className={clsx({
+              "line-through": event.status === "CANCELLED",
+            })}
+          >
+            {title}
 
-          {actualStart ? (
-            <div className="text-sm font-normal">
-              Starts at <LocalTime format="just-time" datetime={actualStart} />
-            </div>
-          ) : null}
+            {actualStart ? (
+              <div className="text-sm font-normal">
+                Starts at{" "}
+                <LocalTime format="just-time" datetime={actualStart} />
+              </div>
+            ) : null}
+          </div>
         </div>
 
-        <ICALLink
-          title={title || "Unknown"}
-          description={performers}
-          start={event.start}
-          end={event.end}
-        />
+        {event.status === "CONFIRMED" ? (
+          <ICALLink
+            title={title || "Unknown"}
+            description={performers}
+            start={event.start}
+            end={event.end}
+          />
+        ) : null}
       </div>
-      <footer className="font-normal text-white">{performers}</footer>
+      <footer
+        className={clsx("font-normal text-white", {
+          "line-through": event.status === "CANCELLED",
+        })}
+      >
+        {performers}
+      </footer>
     </div>
   );
 };

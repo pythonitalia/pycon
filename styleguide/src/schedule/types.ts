@@ -6,7 +6,7 @@ export type Performer = {
   website?: string | null;
 };
 
-export type Status = "CONFIRMED" | "TBC";
+export type Status = "CONFIRMED" | "TBC" | "CANCELLED";
 
 export type BaseEvent = {
   start: string;

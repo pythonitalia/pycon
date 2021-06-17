@@ -275,7 +275,7 @@ const program: ScheduleProgram = {
             profilePicture: "/images/al-sweigart.jpg",
           },
           slug: "al-sweigart-live-coding",
-          status: "CONFIRMED",
+          status: "CANCELLED",
         },
 
         {
