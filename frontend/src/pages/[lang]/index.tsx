@@ -38,7 +38,7 @@ export const HomePage = () => {
       <FormattedMessage id="home.title">
         {(text) => <MetaTags title={text} />}
       </FormattedMessage>
-      <HomepageHero />
+      <HomepageHero hideBuyTickets={true} />
 
       <Marquee message={conference.marquee!} />
 

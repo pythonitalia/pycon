@@ -6,7 +6,11 @@ import { Link } from "../link";
 import { BuyTicketsCTA } from "./buy-tickets-cta";
 import { Landscape } from "./landscape";
 
-export const HomepageHero: React.SFC = () => (
+type Props = {
+  hideBuyTickets?: boolean;
+};
+
+export const HomepageHero = ({ hideBuyTickets = false }: Props) => (
   <Box
     sx={{
       position: "relative",
@@ -30,32 +34,34 @@ export const HomepageHero: React.SFC = () => (
       }}
     />
 
-    <Box
-      sx={{
-        position: "absolute",
-        bottom: -50,
-        left: 0,
-        zIndex: 1,
-        width: "100%",
-      }}
-    >
+    {!hideBuyTickets && (
       <Box
         sx={{
-          px: 3,
-          maxWidth: "container",
+          position: "absolute",
+          bottom: -50,
+          left: 0,
+          zIndex: 1,
           width: "100%",
-          mx: "auto",
         }}
       >
-        <Link path="/[lang]/tickets">
-          <BuyTicketsCTA
-            sx={{
-              width: 122,
-              height: 122,
-            }}
-          />
-        </Link>
+        <Box
+          sx={{
+            px: 3,
+            maxWidth: "container",
+            width: "100%",
+            mx: "auto",
+          }}
+        >
+          <Link path="/[lang]/tickets">
+            <BuyTicketsCTA
+              sx={{
+                width: 122,
+                height: 122,
+              }}
+            />
+          </Link>
+        </Box>
       </Box>
-    </Box>
+    )}
   </Box>
 );
