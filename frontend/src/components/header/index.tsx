@@ -62,8 +62,6 @@ const Links: React.SFC<{
   </Fragment>
 );
 
-const WARNING_MESSAGE_HEIGHT = 0;
-
 export const Header = () => {
   const language = useCurrentLanguage();
   const router = useRouter();
@@ -95,7 +93,7 @@ export const Header = () => {
         ref={headerRef}
         sx={
           {
-            top: WARNING_MESSAGE_HEIGHT,
+            top: 0,
             left: 0,
             pt: 3,
             width: "100%",
