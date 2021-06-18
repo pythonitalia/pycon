@@ -224,25 +224,29 @@ export const HomePage = () => {
         </Grid>
       </Box>
 
-      <Box sx={{ borderBottom: "primary" }}>
-        <Box sx={{ py: 4 }}>
-          <Heading
-            as="h1"
-            sx={{
-              px: 3,
-              maxWidth: "container",
-              mx: "auto",
-            }}
-          >
-            Sponsors
-          </Heading>
-        </Box>
-      </Box>
+      {conference.sponsorsByLevel.length > 0 && (
+        <Fragment>
+          <Box sx={{ borderBottom: "primary" }}>
+            <Box sx={{ py: 4 }}>
+              <Heading
+                as="h1"
+                sx={{
+                  px: 3,
+                  maxWidth: "container",
+                  mx: "auto",
+                }}
+              >
+                Sponsors
+              </Heading>
+            </Box>
+          </Box>
 
-      <SponsorsSection
-        sx={{ mt: 5, pb: 5, borderBottom: "primary" }}
-        sponsorsByLevel={conference.sponsorsByLevel}
-      />
+          <SponsorsSection
+            sx={{ mt: 5, pb: 5, borderBottom: "primary" }}
+            sponsorsByLevel={conference.sponsorsByLevel}
+          />
+        </Fragment>
+      )}
 
       <Grid
         columns={[1, 2]}

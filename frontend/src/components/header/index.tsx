@@ -62,7 +62,7 @@ const Links: React.SFC<{
   </Fragment>
 );
 
-const WARNING_MESSAGE_HEIGHT = [80, 80, 60];
+const WARNING_MESSAGE_HEIGHT = 0;
 
 export const Header = () => {
   const language = useCurrentLanguage();
@@ -91,39 +91,6 @@ export const Header = () => {
 
   return (
     <Fragment>
-      <Box
-        sx={
-          {
-            height: WARNING_MESSAGE_HEIGHT,
-            backgroundColor: "black",
-            color: "white",
-            position: open ? "fixed" : "relative",
-            width: "100%",
-            zIndex: "header",
-          } as any
-        }
-      >
-        <Box
-          sx={{
-            width: "100%",
-            maxWidth: "largeContainer",
-            mx: "auto",
-            px: 2,
-            display: "flex",
-            alignItems: "center",
-            height: "100%",
-          }}
-        >
-          <Link
-            sx={{ color: "white", textUnderlineOffset: 4 }}
-            path="/[lang]/blog/[slug]"
-            params={{ slug: "pycon-11-cancelled" }}
-          >
-            <FormattedMessage id="header.coronaVirus" />
-          </Link>
-        </Box>
-      </Box>
-
       <Box
         ref={headerRef}
         sx={
