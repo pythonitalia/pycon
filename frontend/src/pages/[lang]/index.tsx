@@ -169,7 +169,7 @@ export const HomePage = () => {
           Component={EventCard}
         />
       )}
-
+      {/*
       <Box
         sx={{
           borderBottom: "primary",
@@ -222,7 +222,7 @@ export const HomePage = () => {
             }}
           />
         </Grid>
-      </Box>
+      </Box> */}
 
       {conference.sponsorsByLevel.length > 0 && (
         <Fragment>
