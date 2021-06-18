@@ -4,7 +4,6 @@ import { Language } from "./get-initial-locale";
 
 interface ContextProps {
   readonly locale: string;
-  // readonly setLocale: (locale: string) => void;
 }
 
 export const AlternateLinksContext = React.createContext({
@@ -16,7 +15,6 @@ export const useAlternateLinks = () => useContext(AlternateLinksContext);
 
 export const LocaleContext = React.createContext<ContextProps>({
   locale: "en",
-  // setLocale: () => null,
 });
 
 export const LocaleProvider: React.FC<{ lang: string }> = ({
