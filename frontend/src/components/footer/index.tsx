@@ -2,7 +2,6 @@
 /** @jsx jsx */
 import { Box, Grid, jsx } from "theme-ui";
 
-import withApollo from "~/apollo/with-apollo";
 import { useFooterQuery } from "~/types";
 
 import { LogoBlack } from "../icons/logo-black";
@@ -27,7 +26,7 @@ const MenuItems: React.SFC = ({ children, ...props }) => (
   </Box>
 );
 
-const FooterComponent = () => {
+export const Footer = () => {
   const { data } = useFooterQuery({
     variables: {
       code: process.env.conferenceCode,
@@ -108,5 +107,3 @@ const FooterComponent = () => {
     </Box>
   );
 };
-
-export const Footer = withApollo(FooterComponent);

@@ -3,12 +3,16 @@ import { InMemoryCache } from "@apollo/client/cache";
 import { ApolloClient, Operation } from "@apollo/client/core";
 import { onError } from "@apollo/client/link/error";
 import * as Sentry from "@sentry/node";
+import merge from "deepmerge";
 import { DefinitionNode, GraphQLError } from "graphql";
 import { print } from "graphql/language/printer";
 import fetch from "isomorphic-fetch";
+import isEqual from "lodash/isEqual";
+import { useMemo } from "react";
 
 import { setLoginState } from "../components/profile/hooks";
 import introspectionQueryResultData from "../generated/fragment-types.json";
+export const APOLLO_STATE_PROP_NAME = "__APOLLO_STATE__";
 
 const isUserLoggedOut = (graphErrors: readonly GraphQLError[]) =>
   !!graphErrors.find(
@@ -75,10 +79,42 @@ const sentryLink = new ApolloLink((operation, forward) => {
 
 const link = ApolloLink.from([sentryLink, errorLink, httpLink]);
 
-export const getApolloClient = ({ initialState }: any) =>
-  new ApolloClient({
-    link,
-    cache: new InMemoryCache({
-      possibleTypes: introspectionQueryResultData.possibleTypes,
-    }).restore(initialState || {}),
-  });
+let cachedClient: ApolloClient<any> | null = null;
+
+export const getApolloClient = (initialState = null) => {
+  if (cachedClient === null) {
+    cachedClient = new ApolloClient({
+      ssrMode: typeof window === "undefined",
+      link,
+      cache: new InMemoryCache({
+        possibleTypes: introspectionQueryResultData.possibleTypes,
+      }),
+    });
+  }
+
+  if (initialState) {
+    const existingCache = cachedClient.extract();
+    const data = merge(initialState, existingCache, {
+      // combine arrays using object equality (like in sets)
+      arrayMerge: (destinationArray, sourceArray) => [
+        ...sourceArray,
+        ...destinationArray.filter((d) =>
+          sourceArray.every((s) => !isEqual(d, s)),
+        ),
+      ],
+    });
+
+    // Restore the cache with the merged data
+    cachedClient.cache.restore(data);
+  }
+
+  return cachedClient;
+};
+
+export function addApolloState(pageProps) {
+  if (pageProps?.props) {
+    pageProps.props[APOLLO_STATE_PROP_NAME] = getApolloClient().cache.extract();
+  }
+
+  return pageProps;
+}

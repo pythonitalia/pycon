@@ -1,3 +1,4 @@
+import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import React from "react";
@@ -7,11 +8,9 @@ import { getInitialLocale } from "~/locale/get-initial-locale";
 
 export const HomeNoLang = () => {
   const router = useRouter();
-
-  React.useEffect(() => {
+  if (typeof window !== "undefined") {
     router.replace("/[lang]", `/${getInitialLocale()}`);
-  }, []);
-
+  }
   return (
     <Head>
       <meta name="robots" content="noindex, nofollow" />
@@ -19,26 +18,26 @@ export const HomeNoLang = () => {
   );
 };
 
-HomeNoLang.getInitialProps = async ({ req, res }) => {
-  if (!req) {
-    return {};
-  }
+// HomeNoLang.getInitialProps = async ({ req, res }) => {
+//   if (!req) {
+//     return {};
+//   }
 
-  // TODO: Convert user selection of language from localStorage to cookie
-  // so we can read it here
+//   // TODO: Convert user selection of language from localStorage to cookie
+//   // so we can read it here
 
-  const acceptLanguage = req.headers["accept-language"];
+//   const acceptLanguage = req.headers["accept-language"];
 
-  if (!acceptLanguage) {
-    return {};
-  }
+//   if (!acceptLanguage) {
+//     return {};
+//   }
 
-  const language = getBestLanguageForUser(acceptLanguage);
-  res.writeHead(302, {
-    Location: `/${language}`,
-  });
-  res.end();
-  return {};
-};
+//   const language = getBestLanguageForUser(acceptLanguage);
+//   res.writeHead(302, {
+//     Location: `/${language}`,
+//   });
+//   res.end();
+//   return {};
+// };
 
-export default HomeNoLang;
+export default dynamic(() => Promise.resolve(HomeNoLang), { ssr: false });

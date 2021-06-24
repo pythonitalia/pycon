@@ -1,14 +1,13 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { ApolloClient } from "@apollo/client/core";
-import { getDataFromTree } from "@apollo/client/react/ssr";
+import { ApolloProvider } from "@apollo/client";
 import * as Sentry from "@sentry/node";
 import { Integrations as TracingIntegrations } from "@sentry/tracing";
-import App, { AppContext } from "next/app";
+import App from "next/app";
 import { createIntl, createIntlCache, RawIntlProvider } from "react-intl";
 import { Box, Flex, jsx, ThemeProvider } from "theme-ui";
 
-import { getApolloClient } from "~/apollo/client";
+import { APOLLO_STATE_PROP_NAME, getApolloClient } from "~/apollo/client";
 import { ErrorBoundary } from "~/components/error-boundary";
 import { Footer } from "~/components/footer";
 import { Header } from "~/components/header";
@@ -44,20 +43,23 @@ class MyApp extends App<{
     super.componentDidCatch(error, errorInfo);
   }
 
-  static async getInitialProps(appContext: AppContext) {
-    const appProps = await App.getInitialProps(appContext);
-    const { req } = appContext.ctx;
+  // static async getInitialProps(appContext: AppContext) {
+  //   const appProps = await App.getInitialProps(appContext);
+  //   const { req } = appContext.ctx;
 
-    const host = req
-      ? ((req as any).protocol || "https") + "://" + req.headers.host
-      : null;
-    const path = req ? req.url : null;
+  //   const host = req
+  //     ? ((req as any).protocol || "https") + "://" + req.headers.host
+  //     : null;
+  //   const path = req ? req.url : null;
 
-    return { ...appProps, host, path };
-  }
+  //   return { ...appProps, host, path };
+  // }
 
   render() {
     const { Component, pageProps, router, host, path, err } = this.props;
+    const apolloClient = getApolloClient(
+      this.props.pageProps[APOLLO_STATE_PROP_NAME],
+    );
     const locale = (router.query.lang as "en" | "it") ?? "en";
 
     const intl = createIntl(
@@ -71,31 +73,33 @@ class MyApp extends App<{
     return (
       <ThemeProvider theme={theme}>
         <URLContext.Provider value={{ host, path }}>
-          <RawIntlProvider value={intl}>
-            <LocaleProvider lang={locale}>
-              <GlobalStyles />
-              {isSocial(router.pathname) ? (
-                <Component {...pageProps} />
-              ) : (
-                <Flex
-                  sx={{
-                    flexDirection: "column",
-                    minHeight: "100vh",
-                  }}
-                >
-                  <Header />
+          <ApolloProvider client={apolloClient}>
+            <RawIntlProvider value={intl}>
+              <LocaleProvider lang={locale}>
+                <GlobalStyles />
+                {isSocial(router.pathname) ? (
+                  <Component {...pageProps} />
+                ) : (
+                  <Flex
+                    sx={{
+                      flexDirection: "column",
+                      minHeight: "100vh",
+                    }}
+                  >
+                    <Header />
 
-                  <Box sx={{ mt: [100, 130] }}>
-                    <ErrorBoundary>
-                      <Component {...pageProps} err={err} />
-                    </ErrorBoundary>
-                  </Box>
+                    <Box sx={{ mt: [100, 130] }}>
+                      <ErrorBoundary>
+                        <Component {...pageProps} err={err} />
+                      </ErrorBoundary>
+                    </Box>
 
-                  <Footer />
-                </Flex>
-              )}
-            </LocaleProvider>
-          </RawIntlProvider>
+                    <Footer />
+                  </Flex>
+                )}
+              </LocaleProvider>
+            </RawIntlProvider>
+          </ApolloProvider>
         </URLContext.Provider>
       </ThemeProvider>
     );

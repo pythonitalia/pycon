@@ -70,11 +70,13 @@ const Keynote = ({ title, speakers, image, highlightColor }: KeynoteProps) => (
 );
 
 export const KeynotersSection = () => {
-  const { data } = useKeynotesSectionQuery({
+  const { data, loading } = useKeynotesSectionQuery({
     variables: {
       code: process.env.conferenceCode,
     },
   });
+
+  console.log("loading keynoters", loading);
 
   if (!data) {
     return null;

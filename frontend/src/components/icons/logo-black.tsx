@@ -3,7 +3,7 @@ import React from "react";
 export const LogoBlack: React.FC = (props) => (
   <svg {...props} viewBox="0 0 1932 450" fill="none">
     <rect width="1932" height="450" fill="white" />
-    <g clip-path="url(#clip0)">
+    <g clipPath="url(#clip0)">
       <path d="M1500.53 0.949951H0.25V449.69H1500.53V0.949951Z" fill="black" />
       <path
         d="M1483 17V433H451.71V17H1483ZM1500 0H434.71V450H1500V0Z"

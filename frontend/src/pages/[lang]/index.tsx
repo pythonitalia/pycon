@@ -5,8 +5,7 @@ import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, Flex, Grid, Heading, jsx, Text } from "theme-ui";
 
-import { getApolloClient } from "~/apollo/client";
-import withApollo from "~/apollo/with-apollo";
+import { addApolloState, getApolloClient } from "~/apollo/client";
 import { GridSlider } from "~/components/grid-slider";
 import { EventCard } from "~/components/home-events/event-card";
 import { HomepageHero } from "~/components/homepage-hero";
@@ -19,24 +18,27 @@ import { SponsorsSection } from "~/components/sponsors-section";
 import { YouTubeLite } from "~/components/youtube-lite";
 import { formatDeadlineDate, formatDeadlineTime } from "~/helpers/deadlines";
 import { useCurrentLanguage } from "~/locale/context";
-import { IndexPageDocument, useIndexPageQuery } from "~/types";
+import {
+  IndexPageQuery,
+  queryFooter,
+  queryHeader,
+  queryIndexPage,
+  queryKeynotesSection,
+  useIndexPageQuery,
+} from "~/types";
+
+type Props = {};
 
 export const HomePage = () => {
   const language = useCurrentLanguage();
-  const { loading, data } = useIndexPageQuery({
+  const {
+    data: { conference, blogPosts },
+  } = useIndexPageQuery({
     variables: {
-      code: process.env.conferenceCode!,
+      code: process.env.conferenceCode,
       language,
     },
   });
-
-  console.log("index page", loading);
-
-  if (loading || !data) {
-    return null;
-  }
-
-  const { conference, blogPosts } = data;
 
   return (
     <Fragment>
@@ -286,25 +288,31 @@ export const HomePage = () => {
   );
 };
 
-export const getStaticProps: GetStaticProps = async ({}) => {
-  const apolloClient = getApolloClient({});
+export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
+  const language = params.lang as string;
 
-  await apolloClient.query({
-    query: IndexPageDocument,
-    variables: {
-      language: "en",
-      code: "pycon12",
-    },
+  await queryHeader({
+    code: process.env.conferenceCode,
+    language,
   });
 
-  console.log("apolloClient.cache.extract()", apolloClient.cache.extract());
+  await queryFooter({
+    code: process.env.conferenceCode,
+  });
 
-  return {
-    props: {
-      initialState: apolloClient.cache.extract(),
-    },
+  await queryKeynotesSection({
+    code: process.env.conferenceCode,
+  });
+
+  await queryIndexPage({
+    language,
+    code: process.env.conferenceCode,
+  });
+
+  return addApolloState({
+    props: {},
     revalidate: 1,
-  };
+  });
 };
 
 export const getStaticPaths: GetStaticPaths = async () =>
@@ -313,4 +321,4 @@ export const getStaticPaths: GetStaticPaths = async () =>
     fallback: "blocking",
   });
 
-export default withApollo(HomePage);
+export default HomePage;

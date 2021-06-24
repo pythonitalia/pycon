@@ -3,6 +3,8 @@ generates:
     schema: ${API_URL:https://beri.python.it/graphql}
     documents: ./**/*.graphql
     plugins:
+      - add:
+          content: 'import { getApolloClient } from "~/apollo/client";'
       - "typescript"
       - "typescript-operations"
       - "typescript-react-apollo"
@@ -10,6 +12,7 @@ generates:
           definitions:
             - VotingSubmissions
             - MeSubmissions
+      - codegen-apollo-client-query.ts
     config:
       withHooks: true
       withHOC: false

@@ -7,7 +7,6 @@ import { FormattedMessage } from "react-intl";
 import { Box, Flex, Grid, Heading, jsx } from "theme-ui";
 import useOnClickOutside from "use-onclickoutside";
 
-import withApollo from "~/apollo/with-apollo";
 import { useLoginState } from "~/components/profile/hooks";
 import { useToggle } from "~/helpers/use-toggle";
 import { useAlternateLinks, useCurrentLanguage } from "~/locale/context";
@@ -62,7 +61,7 @@ const Links: React.SFC<{
   </Fragment>
 );
 
-const HeaderComponent = () => {
+export const Header = () => {
   const language = useCurrentLanguage();
   const router = useRouter();
   const { loading, data } = useHeaderQuery({
@@ -247,5 +246,3 @@ const HeaderComponent = () => {
     </Fragment>
   );
 };
-
-export const Header = withApollo(HeaderComponent);
