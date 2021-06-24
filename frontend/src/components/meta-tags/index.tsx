@@ -18,7 +18,9 @@ export const MetaTags: React.SFC<Props> = ({
   children,
 }) => {
   const language = useCurrentLanguage();
-  const { host, path } = useCurrentUrl();
+  // const { host, path } = useCurrentUrl();
+  const host = "http://aaa";
+  const path = "aaa";
   const socialCard = useDefaultSocialCard
     ? `${host}/api/social/en`
     : `${host}/api/social${path}`;

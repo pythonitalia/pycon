@@ -5,7 +5,7 @@ import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, Flex, Grid, Heading, jsx, Text } from "theme-ui";
 
-import { addApolloState, getApolloClient } from "~/apollo/client";
+import { addApolloState } from "~/apollo/client";
 import { GridSlider } from "~/components/grid-slider";
 import { EventCard } from "~/components/home-events/event-card";
 import { HomepageHero } from "~/components/homepage-hero";
@@ -17,11 +17,9 @@ import { MetaTags } from "~/components/meta-tags";
 import { SponsorsSection } from "~/components/sponsors-section";
 import { YouTubeLite } from "~/components/youtube-lite";
 import { formatDeadlineDate, formatDeadlineTime } from "~/helpers/deadlines";
+import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
 import {
-  IndexPageQuery,
-  queryFooter,
-  queryHeader,
   queryIndexPage,
   queryKeynotesSection,
   useIndexPageQuery,
@@ -291,14 +289,7 @@ export const HomePage = () => {
 export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
   const language = params.lang as string;
 
-  await queryHeader({
-    code: process.env.conferenceCode,
-    language,
-  });
-
-  await queryFooter({
-    code: process.env.conferenceCode,
-  });
+  await prefetchSharedQueries(language);
 
   await queryKeynotesSection({
     code: process.env.conferenceCode,

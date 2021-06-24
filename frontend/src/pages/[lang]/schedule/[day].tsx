@@ -13,6 +13,7 @@ import { formatDay } from "~/components/day-selector/format-day";
 import { MetaTags } from "~/components/meta-tags";
 import { useLoginState } from "~/components/profile/hooks";
 import { ScheduleView } from "~/components/schedule-view";
+import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentUser } from "~/helpers/use-current-user";
 import { useCurrentLanguage } from "~/locale/context";
 import { Language } from "~/locale/get-initial-locale";
@@ -120,7 +121,9 @@ const PageContent: React.FC<PageContentProps> = ({
   );
 };
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  await prefetchSharedQueries(params.lang as string);
+
   await querySchedule({
     code: process.env.conferenceCode,
     fetchSubmissions: false,
