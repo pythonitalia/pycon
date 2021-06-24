@@ -1,9 +1,12 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
+import { GetStaticPaths, GetStaticProps } from "next";
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, Flex, Grid, Heading, jsx, Text } from "theme-ui";
 
+import { getApolloClient } from "~/apollo/client";
+import withApollo from "~/apollo/with-apollo";
 import { GridSlider } from "~/components/grid-slider";
 import { EventCard } from "~/components/home-events/event-card";
 import { HomepageHero } from "~/components/homepage-hero";
@@ -16,7 +19,7 @@ import { SponsorsSection } from "~/components/sponsors-section";
 import { YouTubeLite } from "~/components/youtube-lite";
 import { formatDeadlineDate, formatDeadlineTime } from "~/helpers/deadlines";
 import { useCurrentLanguage } from "~/locale/context";
-import { useIndexPageQuery } from "~/types";
+import { IndexPageDocument, useIndexPageQuery } from "~/types";
 
 export const HomePage = () => {
   const language = useCurrentLanguage();
@@ -26,6 +29,8 @@ export const HomePage = () => {
       language,
     },
   });
+
+  console.log("index page", loading);
 
   if (loading || !data) {
     return null;
@@ -281,4 +286,31 @@ export const HomePage = () => {
   );
 };
 
-export default HomePage;
+export const getStaticProps: GetStaticProps = async ({}) => {
+  const apolloClient = getApolloClient({});
+
+  await apolloClient.query({
+    query: IndexPageDocument,
+    variables: {
+      language: "en",
+      code: "pycon12",
+    },
+  });
+
+  console.log("apolloClient.cache.extract()", apolloClient.cache.extract());
+
+  return {
+    props: {
+      initialState: apolloClient.cache.extract(),
+    },
+    revalidate: 1,
+  };
+};
+
+export const getStaticPaths: GetStaticPaths = async () =>
+  Promise.resolve({
+    paths: [],
+    fallback: "blocking",
+  });
+
+export default withApollo(HomePage);
