@@ -1,13 +1,16 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import React, { useState } from "react";
-import { Box, Flex, jsx } from "theme-ui";
+import { Box, Flex, jsx, ThemeUIStyleObject } from "theme-ui";
 
 import { ArrowIcon } from "../icons/arrow";
 
-export const YouTubeLite: React.SFC<{ videoId: string }> = ({
+export const YouTubeLite = ({
   videoId,
   ...props
+}: {
+  videoId: string;
+  sx?: ThemeUIStyleObject;
 }) => {
   videoId = encodeURIComponent(videoId);
   const posterUrl = `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`;

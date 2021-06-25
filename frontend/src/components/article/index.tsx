@@ -10,6 +10,7 @@ type ArticleProps = {
   title: string;
   published?: string;
   description?: string;
+  children: React.ReactNode;
 };
 
 const formateDate = (datetime: string, language: Language) => {
@@ -24,7 +25,7 @@ const formateDate = (datetime: string, language: Language) => {
   return formatter.format(d);
 };
 
-export const Article: React.FC<ArticleProps> = (props) => {
+export const Article = (props: ArticleProps) => {
   const language = useCurrentLanguage();
 
   return (

@@ -7,7 +7,7 @@ import { Box, Grid, jsx, Text } from "theme-ui";
 import { CFPIllustration } from "~/components/illustrations/cfp";
 import { Link } from "~/components/link";
 
-export const Introduction: React.SFC = () => (
+export const Introduction = () => (
   <Box
     sx={{
       borderTop: "primary",

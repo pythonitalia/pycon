@@ -1,6 +1,6 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import { Box, Grid, jsx } from "theme-ui";
+/** @jsxImportSource theme-ui */
+
+import { Box, Grid, ThemeUIStyleObject } from "theme-ui";
 
 import { useFooterQuery } from "~/types";
 
@@ -8,7 +8,13 @@ import { LogoBlack } from "../icons/logo-black";
 import { Link } from "../link";
 import { SocialLinks } from "../social-links";
 
-const MenuItems: React.SFC = ({ children, ...props }) => (
+const MenuItems = ({
+  children,
+  ...props
+}: {
+  children: React.ReactNode;
+  sx?: ThemeUIStyleObject;
+}) => (
   <Box
     as="ul"
     sx={{

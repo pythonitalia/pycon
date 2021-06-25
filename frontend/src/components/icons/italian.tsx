@@ -1,8 +1,12 @@
 import React from "react";
+import { ThemeUIStyleObject } from "theme-ui";
 
-export const ItalianIcon: React.SFC<{ active?: boolean }> = ({
+export const ItalianIcon = ({
   active = false,
   ...props
+}: {
+  active?: boolean;
+  sx?: ThemeUIStyleObject;
 }) => (
   <svg viewBox="0 0 50 50" fill="none" {...props}>
     <g clipPath="url(#prefix__clip0)">

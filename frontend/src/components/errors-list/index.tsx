@@ -1,12 +1,13 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import React from "react";
-import { Box, jsx } from "theme-ui";
+/** @jsxImportSource theme-ui */
 
-export const ErrorsList: React.SFC<{ errors?: string[] }> = ({
-  errors,
-  ...props
-}) => {
+import { Box, ThemeUIStyleObject } from "theme-ui";
+
+type Props = {
+  errors?: string[];
+  sx?: ThemeUIStyleObject;
+};
+
+export const ErrorsList = ({ errors, ...props }: Props) => {
   if (!errors) {
     return null;
   }

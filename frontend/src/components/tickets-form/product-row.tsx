@@ -2,7 +2,7 @@
 /** @jsx jsx */
 import moment from "moment";
 import { FormattedMessage } from "react-intl";
-import { Box, Grid, jsx, Text } from "theme-ui";
+import { Box, Grid, jsx, Text, ThemeUIStyleObject } from "theme-ui";
 
 import { useCurrentLanguage } from "~/locale/context";
 
@@ -41,9 +41,10 @@ type ProductRowProps = {
     checkout: moment.Moment,
   ) => void;
   removeHotelRoom?: (index: number) => void;
+  sx?: ThemeUIStyleObject;
 };
 
-export const ProductRow: React.SFC<ProductRowProps> = ({
+export const ProductRow = ({
   className,
   hotel,
   ticket,
@@ -53,7 +54,7 @@ export const ProductRow: React.SFC<ProductRowProps> = ({
   quantity,
   addProduct,
   removeProduct,
-}) => {
+}: ProductRowProps) => {
   const lang = useCurrentLanguage();
   const dateFormatter = new Intl.DateTimeFormat(lang, {
     day: "2-digit",

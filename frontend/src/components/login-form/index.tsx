@@ -1,10 +1,8 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
 import Router, { useRouter } from "next/router";
 import { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
-import { Box, Grid, Input, jsx, Text } from "theme-ui";
+import { Box, Grid, Input, Text, ThemeUIStyleObject } from "theme-ui";
 
 import { useLoginState } from "~/components/profile/hooks";
 import { useMessages } from "~/helpers/use-messages";
@@ -23,9 +21,10 @@ type LoginFormFields = {
 
 type FormProps = {
   next?: string;
+  sx?: ThemeUIStyleObject;
 };
 
-export const LoginForm: React.SFC<FormProps> = ({ next, ...props }) => {
+export const LoginForm = ({ next, ...props }: FormProps) => {
   const lang = useCurrentLanguage();
   const router = useRouter();
   const [loggedIn, setLoggedIn] = useLoginState();

@@ -1,11 +1,13 @@
 import React from "react";
-import { Box } from "theme-ui";
+import { Box, ThemeUIStyleObject } from "theme-ui";
 
 type Props = {
   variant: "alert" | "success" | "info";
+  children: React.ReactNode;
+  sx?: ThemeUIStyleObject;
 };
 
-export const Alert: React.SFC<Props> = ({ variant, children, ...props }) => {
+export const Alert = ({ variant, children, ...props }: Props) => {
   let backgroundColor;
 
   switch (variant) {

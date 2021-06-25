@@ -1,6 +1,4 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import { Flex, jsx } from "theme-ui";
+import { Flex, ThemeUIStyleObject } from "theme-ui";
 
 import Facebook from "../icons/social/facebook";
 import Instagram from "../icons/social/instagram";
@@ -9,6 +7,7 @@ import { SocialCircle } from "./social-circle";
 
 type SocialLinksProps = {
   variant?: string;
+  sx?: ThemeUIStyleObject;
 };
 
 export const SocialLinks: React.FC<SocialLinksProps> = (props) => (

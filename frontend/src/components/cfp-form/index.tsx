@@ -1,5 +1,3 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
 import { ApolloError } from "@apollo/client";
 import React, { Fragment, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
@@ -10,7 +8,6 @@ import {
   Flex,
   Grid,
   Input,
-  jsx,
   Label,
   Radio,
   Select,
@@ -74,17 +71,18 @@ type Props = {
 // when the submission doesn't have it and when we initialize the form
 const SPEAKER_LEVEL_NEW_VALUE = "new";
 
-export const CfpForm: React.SFC<Props> = ({
+export const CfpForm = ({
   onSubmit,
   conferenceCode,
   submission,
   loading: submissionLoading,
   error: submissionError,
   data: submissionData,
-}) => {
-  const [formState, { text, textarea, radio, select, checkbox }] = useFormState<
-    CfpFormFields
-  >(
+}: Props) => {
+  const [
+    formState,
+    { text, textarea, radio, select, checkbox },
+  ] = useFormState<CfpFormFields>(
     {},
     {
       withIds: true,

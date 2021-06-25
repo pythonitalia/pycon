@@ -1,7 +1,6 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+/** @jsxImportSource theme-ui */
 import { FormattedMessage } from "react-intl";
-import { Box, Grid, Heading, jsx, Text } from "theme-ui";
+import { Box, Grid, Heading, Text } from "theme-ui";
 
 import { InputWrapper } from "~/components/input-wrapper";
 import { Link } from "~/components/link";

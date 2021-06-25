@@ -1,6 +1,6 @@
-import React from "react";
+/** @jsxImportSource theme-ui */
 
-export const LogoBlack: React.FC = (props) => (
+export const LogoBlack = (props) => (
   <svg {...props} viewBox="0 0 1932 450" fill="none">
     <rect width="1932" height="450" fill="white" />
     <g clipPath="url(#clip0)">

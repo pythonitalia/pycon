@@ -1,8 +1,8 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FormattedMessage } from "react-intl";
-import { Button as ThemeButton, jsx } from "theme-ui";
+import { Button as ThemeButton, jsx, ThemeUIStyleObject } from "theme-ui";
 
 type ButtonProps = {
   disabled?: boolean;
@@ -10,6 +10,8 @@ type ButtonProps = {
   type?: "button" | "reset" | "submit";
   variant?: string;
   onClick?: () => void;
+  children: React.ReactNode;
+  sx?: ThemeUIStyleObject;
 };
 
 const useInterval = (callback: () => void, delay: number) => {
@@ -29,12 +31,12 @@ const useInterval = (callback: () => void, delay: number) => {
   }, [delay]);
 };
 
-export const Button: React.SFC<ButtonProps> = ({
+export const Button = ({
   disabled,
   loading,
   children,
   ...props
-}) => {
+}: ButtonProps) => {
   const clocks = [
     "🕐",
     "🕑",

@@ -1,8 +1,6 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
 import React, { useRef } from "react";
 import useSyncScroll from "react-use-sync-scroll";
-import { Box, Grid, jsx } from "theme-ui";
+import { Box, Grid, ThemeUIStyleObject } from "theme-ui";
 
 import { ScheduleEntry } from "./events";
 import { isTraining } from "./is-training";
@@ -129,7 +127,12 @@ const getEntryPosition = ({
 
 const GridContainer = React.forwardRef<
   null,
-  { totalColumns: number; totalRows: number; children: React.ReactNode }
+  {
+    totalColumns: number;
+    totalRows: number;
+    children: React.ReactNode;
+    sx?: ThemeUIStyleObject;
+  }
 >(({ totalColumns, totalRows, children, ...props }, ref) => (
   <Box
     sx={{ width: "100%", overflow: "hidden", overflowX: "scroll" }}

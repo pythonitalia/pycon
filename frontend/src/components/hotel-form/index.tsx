@@ -24,14 +24,14 @@ type Props = {
   removeHotelRoom: (id: string, index: number) => void;
 };
 
-export const HotelForm: React.SFC<Props> = ({
+export const HotelForm = ({
   hotelRooms,
   conferenceEnd,
   conferenceStart,
   addHotelRoom,
   removeHotelRoom,
   selectedHotelRooms,
-}) => {
+}: Props) => {
   const lang = useCurrentLanguage();
   const dateFormatter = new Intl.DateTimeFormat(lang, {
     month: "long",

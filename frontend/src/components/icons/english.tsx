@@ -1,8 +1,12 @@
 import React from "react";
+import { ThemeUIStyleObject } from "theme-ui";
 
-export const EnglishIcon: React.SFC<{ active?: boolean }> = ({
+export const EnglishIcon = ({
   active = false,
   ...props
+}: {
+  active?: boolean;
+  sx?: ThemeUIStyleObject;
 }) => (
   <svg viewBox="0 0 50 50" fill="none" {...props}>
     <path

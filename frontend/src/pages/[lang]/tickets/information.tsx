@@ -1,7 +1,5 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+/** @jsxImportSource theme-ui */
 import { useRouter } from "next/router";
-import { jsx } from "theme-ui";
 
 import { InformationSection } from "~/components/tickets-page/information-section";
 import { useCart } from "~/components/tickets-page/use-cart";

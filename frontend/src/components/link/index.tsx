@@ -2,7 +2,7 @@
 /** @jsx jsx */
 import NextLink from "next/link";
 import React, { useState } from "react";
-import { Box, jsx, Link as ThemeLink } from "theme-ui";
+import { Box, jsx, Link as ThemeLink, ThemeUIStyleObject } from "theme-ui";
 
 import { useHover } from "~/helpers/use-hover";
 import { useCurrentLanguage } from "~/locale/context";
@@ -69,9 +69,11 @@ type LinkProps = {
   after?: React.ReactElement | null;
   params?: Params;
   external?: boolean;
+  sx?: ThemeUIStyleObject;
+  children: React.ReactNode;
 };
 
-export const Link: React.FC<LinkProps> = ({
+export const Link = ({
   children,
   path,
   backgroundColor,
@@ -82,7 +84,7 @@ export const Link: React.FC<LinkProps> = ({
   external = false,
   params = null,
   ...additionalProps
-}) => {
+}: LinkProps) => {
   const language = useCurrentLanguage();
 
   if (!url) {

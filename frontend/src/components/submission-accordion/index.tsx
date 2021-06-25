@@ -1,8 +1,8 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+/** @jsxImportSource theme-ui */
+
 import React, { Fragment, useCallback, useState } from "react";
 import { FormattedMessage } from "react-intl";
-import { Box, Grid, Heading, jsx, Text } from "theme-ui";
+import { Box, Grid, Heading, Text } from "theme-ui";
 
 import { EnglishIcon } from "~/components/icons/english";
 import { ItalianIcon } from "~/components/icons/italian";
@@ -412,9 +412,11 @@ export const SubmissionAccordion: React.SFC<Props> = ({
                   label={<FormattedMessage id="voting.length" />}
                   value={
                     <FormattedMessage id="voting.minutes">
-                      {(text) =>
-                        `${duration.name} (${duration.duration} ${text})`
-                      }
+                      {(text) => (
+                        <span>
+                          {duration.name} ({duration.duration} {text})
+                        </span>
+                      )}
                     </FormattedMessage>
                   }
                 />
@@ -442,16 +444,16 @@ export const SubmissionAccordion: React.SFC<Props> = ({
 };
 
 type SubmissionInfoProps = {
-  label: string | React.ReactElement;
-  value: string | React.ReactElement;
+  label: string | React.ReactNode;
+  value: string | React.ReactNode;
   headingColor: string;
 };
 
-const SubmissionInfo: React.SFC<SubmissionInfoProps> = ({
+const SubmissionInfo = ({
   label,
   value,
   headingColor,
-}) => (
+}: SubmissionInfoProps) => (
   <li
     sx={{
       "& + &": {

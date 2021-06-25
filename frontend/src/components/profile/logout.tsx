@@ -47,7 +47,7 @@ export const Logout = () => {
           <FormattedMessage id="profile.logout" />
         </Heading>
 
-        <Text mb={4}>
+        <Text mb={4} as="div">
           <FormattedMessage id="profile.seeYourSoon" />
         </Text>
 

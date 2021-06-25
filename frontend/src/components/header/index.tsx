@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { Fragment, useEffect, useRef } from "react";
 import { FormattedMessage } from "react-intl";
-import { Box, Flex, Grid, Heading, jsx } from "theme-ui";
+import { Box, Flex, Grid, Heading, jsx, ThemeUIStyleObject } from "theme-ui";
 import useOnClickOutside from "use-onclickoutside";
 
 import { useLoginState } from "~/components/profile/hooks";
@@ -25,9 +25,12 @@ const ProfileLink = dynamic(
   { ssr: false },
 );
 
-const LanguagePicker: React.SFC<{ language: string }> = ({
+const LanguagePicker = ({
   language,
   ...props
+}: {
+  language: string;
+  sx?: ThemeUIStyleObject;
 }) => {
   const alternateLinks = useAlternateLinks();
   return (
@@ -42,9 +45,11 @@ const LanguagePicker: React.SFC<{ language: string }> = ({
   );
 };
 
-const Links: React.SFC<{
+const Links = ({
+  links,
+}: {
   links: { href: string; title: string; page?: { slug: string } | null }[];
-}> = ({ links }) => (
+}) => (
   <Fragment>
     {links.map((link) => {
       let path = link.page ? "/[lang]/[slug]" : link.href;

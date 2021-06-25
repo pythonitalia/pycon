@@ -1,7 +1,5 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
 import React from "react";
-import { Box, Flex, jsx, Text } from "theme-ui";
+import { Box, Flex, Text, ThemeUIStyleObject } from "theme-ui";
 
 import { EnglishIcon } from "~/components/icons/english";
 import { ItalianIcon } from "~/components/icons/italian";
@@ -25,11 +23,19 @@ const getType = (submission?: SubmissionType | null) =>
     ? ItemTypes.TRAINING
     : ItemTypes.TALK;
 
-const BaseDraggable: React.SFC<{
+const BaseDraggable = ({
+  adminMode,
+  type,
+  children,
+  metadata,
+  ...props
+}: {
   type: string;
   metadata?: any;
   adminMode?: boolean;
-}> = ({ adminMode, type, children, metadata, ...props }) => {
+  children: React.ReactNode;
+  sx?: ThemeUIStyleObject;
+}) => {
   const [_, drag] = useDragOrDummy({
     adminMode,
     item: {
@@ -82,6 +88,7 @@ export const Submission = ({
   ...props
 }: {
   submission: SubmissionType;
+  sx?: ThemeUIStyleObject;
 }) => {
   const itemType = getType(submission);
 
@@ -136,12 +143,19 @@ export const CustomEvent = ({ ...props }) => (
   </BaseEvent>
 );
 
-export const ScheduleEntry: React.SFC<{
+export const ScheduleEntry = ({
+  item,
+  adminMode,
+  slot,
+  rooms,
+  ...props
+}: {
   adminMode: boolean;
   item: Item;
   slot: Slot;
   rooms: Room[];
-}> = ({ item, adminMode, slot, rooms, ...props }) => {
+  sx?: ThemeUIStyleObject;
+}) => {
   const type = getType(item.submission);
 
   const backgroundColor = getColorForItem(item);

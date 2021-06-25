@@ -1,9 +1,10 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import React from "react";
-import { jsx, useThemeUI } from "theme-ui";
+import { jsx, ThemeUIStyleObject, useThemeUI } from "theme-ui";
 
-export const BuyTicketsCTA: React.SFC = (props) => {
+type Props = {
+  sx?: ThemeUIStyleObject;
+};
+
+export const BuyTicketsCTA = (props: Props) => {
   const { theme } = useThemeUI();
 
   return (

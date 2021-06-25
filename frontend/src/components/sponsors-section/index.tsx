@@ -1,6 +1,4 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import { Box, Heading, jsx } from "theme-ui";
+import { Box, Heading, ThemeUIStyleObject } from "theme-ui";
 
 import { SponsorsGrid } from "./sponsors-grid";
 import { Sponsor } from "./types";
@@ -11,12 +9,10 @@ type Props = {
     sponsors: Sponsor[];
     highlightColor?: string | null;
   }[];
+  sx?: ThemeUIStyleObject;
 };
 
-export const SponsorsSection: React.SFC<Props> = ({
-  sponsorsByLevel,
-  ...props
-}) => (
+export const SponsorsSection = ({ sponsorsByLevel, ...props }: Props) => (
   <Box {...props}>
     {sponsorsByLevel.map(({ level, sponsors, highlightColor }) => (
       <Box key={level}>

@@ -1,7 +1,4 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import { Global } from "@emotion/core";
-import { jsx } from "theme-ui";
+import { Global } from "@emotion/react";
 
 export const GlobalStyles = () => (
   <Global

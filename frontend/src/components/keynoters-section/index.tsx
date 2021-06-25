@@ -76,8 +76,6 @@ export const KeynotersSection = () => {
     },
   });
 
-  console.log("loading keynoters", loading);
-
   if (!data) {
     return null;
   }

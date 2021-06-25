@@ -1,8 +1,6 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
 import { useRouter } from "next/router";
 import { Fragment } from "react";
-import { Box, Flex, Heading, jsx } from "theme-ui";
+import { Box, Flex, Heading } from "theme-ui";
 
 import { LogoOrange } from "~/components/logo/orange";
 import { CardType, getSize } from "~/helpers/social-card";

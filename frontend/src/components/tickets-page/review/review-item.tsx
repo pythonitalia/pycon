@@ -1,7 +1,5 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
 import React, { Fragment } from "react";
-import { jsx, Text } from "theme-ui";
+import { Text, ThemeUIStyleObject } from "theme-ui";
 
 export const ReviewItem = ({
   label,
@@ -9,6 +7,7 @@ export const ReviewItem = ({
 }: {
   label: string | React.ReactElement;
   value?: string | React.ReactElement;
+  sx?: ThemeUIStyleObject;
 }) => (
   <Fragment>
     <Text

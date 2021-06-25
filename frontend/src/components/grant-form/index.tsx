@@ -47,7 +47,7 @@ export type GrantFormFields = {
 
 type Props = { conference: string };
 
-export const GrantForm: React.SFC<Props> = ({ conference }) => {
+export const GrantForm = ({ conference }: Props) => {
   const [
     formState,
     { text, number: numberInput, email, textarea, select, checkbox },

@@ -7,7 +7,7 @@ import { Box, Flex, Heading, jsx, Text } from "theme-ui";
 import { CardType, getSize } from "~/helpers/social-card";
 import { useTalkSocialCardQuery } from "~/types";
 
-const Snakes: React.SFC = (props) => (
+const Snakes = (props) => (
   <svg fill="none" viewBox="0 0 170 200" {...props}>
     <path
       d="M164.786 191.282c0 .022.023 7.829 0 7.829H140.89v-.308c9.139-9.482 9.139-28.472 0-37.954-9.14-9.493-9.14-28.471 0-37.953 9.139-9.494 9.139-28.472 0-37.968-9.14-9.482-9.14-28.46 0-37.953 9.139-9.494 7.957-28.472-1.18-37.968l.023-.06c14.852 7.737 25.053 23.56 25.053 41.392v140.943z"
