@@ -4,7 +4,10 @@ import { createPastaporto } from "./pastaporto";
 import { Pastaporto } from "./pastaporto/entities";
 import { removeIdentityTokens } from "./pastaporto/identity";
 
-export const createContext = async (cookiesHeader?: string) => {
+export const createContext = async (
+  allHeaders: any,
+  cookiesHeader?: string,
+) => {
   let cookies = null;
   if (cookiesHeader) {
     cookies = cookie.parse(cookiesHeader);
@@ -16,6 +19,7 @@ export const createContext = async (cookiesHeader?: string) => {
   const context: { [key: string]: any } = {
     setCookies: new Array(),
     setHeaders: new Array(),
+    allHeaders,
   };
 
   if (cookies) {

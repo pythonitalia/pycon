@@ -15,11 +15,9 @@ class HasTokenPermission(BasePermission):
     message = "Invalid or no token provided"
 
     def has_permission(self, source, info, **kwargs):
-        token = info.context.request.headers.get("Authorization")
+        token = info.context.request.headers.get("X-Backend-Token")
 
         if token:
-            token = token.split(" ")[1]
-
             return APIToken.objects.filter(token=token).exists()
 
         return False

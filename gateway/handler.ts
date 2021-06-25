@@ -16,7 +16,7 @@ const server = new ApolloServer({
   introspection: true,
   plugins: [SentryPlugin(true), apolloHeadersPlugin(true)],
   context: async ({ event }) => {
-    return createContext(event.headers["Cookie"]);
+    return createContext(event.headers, event.headers["Cookie"]);
   },
 });
 

@@ -12,6 +12,7 @@ import { getServices } from "./services";
 
 const PASTAPORTO_X_HEADER = "x-pastaporto";
 const PASTAPORTO_ACTION_X_HEADER = "x-pastaporto-action";
+const BACKEND_TOKEN_X_HEADER = "x-backend-token";
 
 class ServiceRemoteGraphQLDataSource extends RemoteGraphQLDataSource {
   // @ts-ignore
@@ -19,6 +20,17 @@ class ServiceRemoteGraphQLDataSource extends RemoteGraphQLDataSource {
     const pastaporto: Pastaporto = context.pastaporto;
     if (pastaporto) {
       request!.http!.headers.set(PASTAPORTO_X_HEADER, pastaporto.sign());
+    }
+
+    const gatewayRequestHeaders = context.allHeaders;
+    if (
+      gatewayRequestHeaders &&
+      gatewayRequestHeaders[BACKEND_TOKEN_X_HEADER]
+    ) {
+      request!.http!.headers.set(
+        BACKEND_TOKEN_X_HEADER,
+        gatewayRequestHeaders[BACKEND_TOKEN_X_HEADER],
+      );
     }
   }
 
