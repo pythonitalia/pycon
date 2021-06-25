@@ -2,7 +2,6 @@ import { ApolloLink, HttpLink } from "@apollo/client";
 import { InMemoryCache } from "@apollo/client/cache";
 import { ApolloClient, Operation } from "@apollo/client/core";
 import { onError } from "@apollo/client/link/error";
-import * as Sentry from "@sentry/node";
 import merge from "deepmerge";
 import { DefinitionNode, GraphQLError } from "graphql";
 import { print } from "graphql/language/printer";
@@ -62,22 +61,7 @@ export const getQueryType = (operation: Operation): string | undefined => {
   return queryType;
 };
 
-const sentryLink = new ApolloLink((operation, forward) => {
-  Sentry.addBreadcrumb({
-    category: "graphql",
-    data: {
-      type: getQueryType(operation),
-      name: operation.operationName,
-      query: print(operation.query),
-      variables: operation.variables,
-    },
-    level: Sentry.Severity.Debug,
-  });
-
-  return forward(operation);
-});
-
-const link = ApolloLink.from([sentryLink, errorLink, httpLink]);
+const link = ApolloLink.from([errorLink, httpLink]);
 
 let cachedClient: ApolloClient<any> | null = null;
 

@@ -1,16 +1,20 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
+import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 import { Container, jsx } from "theme-ui";
 
+import { addApolloState } from "~/apollo/client";
 import { Alert } from "~/components/alert";
 import { LoginForm } from "~/components/login-form";
 import { MetaTags } from "~/components/meta-tags";
 import { useLoginState } from "~/components/profile/hooks";
 import { Submission } from "~/components/submission";
+import { prefetchSharedQueries } from "~/helpers/prefetch";
 import {
+  querySubmission,
   SubmissionQuery,
   useIsVotingClosedQuery,
   useSubmissionQuery,
@@ -103,5 +107,35 @@ export const SubmissionPage = () => {
     </Container>
   );
 };
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const language = params.lang as string;
+  const id = params.id as string;
+
+  try {
+    await querySubmission({
+      id,
+    });
+  } catch (e) {
+    console.error(`Unable to fetch submission_id=${id}`, e);
+    return {
+      props: {},
+      notFound: true,
+    };
+  }
+
+  await prefetchSharedQueries(language);
+
+  return addApolloState({
+    props: {},
+    revalidate: 1,
+  });
+};
+
+export const getStaticPaths: GetStaticPaths = async () =>
+  Promise.resolve({
+    paths: [],
+    fallback: "blocking",
+  });
 
 export default SubmissionPage;

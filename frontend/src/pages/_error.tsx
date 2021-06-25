@@ -1,7 +1,5 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import * as Sentry from "@sentry/node";
-import NextErrorComponent from "next/error";
 import { FormattedMessage } from "react-intl";
 import { Box, Heading, jsx, Text } from "theme-ui";
 
@@ -41,33 +39,5 @@ const ErrorPage = ({ statusCode }) => (
     />
   </Box>
 );
-
-ErrorPage.getInitialProps = async ({ res, err, asPath }) => {
-  // https://github.com/vercel/next.js/issues/8592
-  // @ts-ignore
-  const errorInitialProps = await NextErrorComponent.getInitialProps({
-    res,
-    err,
-  });
-
-  // @ts-ignore
-  errorInitialProps.hasGetInitialPropsRun = true;
-
-  if (res?.statusCode === 404) {
-    return { statusCode: 404 };
-  }
-
-  if (err) {
-    Sentry.captureException(err);
-    await Sentry.flush(2000);
-    return errorInitialProps;
-  }
-
-  Sentry.captureException(
-    new Error(`_error.js getInitialProps missing data at path: ${asPath}`),
-  );
-  await Sentry.flush(2000);
-  return errorInitialProps;
-};
 
 export default ErrorPage;

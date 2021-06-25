@@ -1,0 +1,8 @@
+query AllTalks($code: String!) {
+  conference(code: $code) {
+    talks {
+      id
+      slug
+    }
+  }
+}

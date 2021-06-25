@@ -1,6 +1,5 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import * as Sentry from "@sentry/node";
 import { Component } from "react";
 import { Box, Heading, jsx, Text } from "theme-ui";
 
@@ -17,19 +16,6 @@ export class ErrorBoundary extends Component<
   constructor(props: Readonly<{}>) {
     super(props);
     this.state = { error: null, errorInfo: null, eventId: null };
-  }
-
-  componentDidCatch(error: any, errorInfo: any) {
-    Sentry.withScope((scope) => {
-      scope.setExtras(errorInfo);
-      const eventId = Sentry.captureException(error);
-      this.setState({ eventId });
-
-      this.setState({
-        error,
-        errorInfo,
-      });
-    });
   }
 
   render() {

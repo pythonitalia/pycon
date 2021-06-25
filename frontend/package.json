@@ -6,7 +6,7 @@
   "author": "Python Italia",
   "license": "MIT",
   "scripts": {
-    "dev": "NODE_ENV=development PORT=3000 node server.js",
+    "dev": "NODE_ENV=development PORT=3000 next dev",
     "build": "npm run codegen && next build",
     "start": "next start",
     "codegen": "graphql-codegen -r dotenv/config -c codegen.yml",
@@ -32,10 +32,7 @@
     "@mdx-js/loader": "^1.6.19",
     "@next/mdx": "^10.0.0",
     "@now/node": "^1.8.4",
-    "@sentry/browser": "^5.29.2",
-    "@sentry/node": "^5.29.2",
-    "@sentry/tracing": "^5.29.2",
-    "@sentry/webpack-plugin": "^1.14.0",
+    "@sentry/nextjs": "^6.7.2",
     "@theme-ui/match-media": "^0.3.1",
     "@types/styled-system": "^5.1.10",
     "@zeit/next-source-maps": "^0.0.3",
@@ -50,7 +47,7 @@
     "lodash": "^4.17.21",
     "marksy": "^8.0.0",
     "moment": "^2.29.1",
-    "next": "10.0.3",
+    "next": "11.0.1",
     "next-with-apollo": "^5.1.0",
     "puppeteer": "^5.4.1",
     "puppeteer-core": "^5.4.1",
@@ -63,7 +60,7 @@
     "react-use-form-state": "^0.13.2",
     "react-use-sync-scroll": "^0.1.0",
     "styled-system": "^5.1.5",
-    "theme-ui": "0.4.0-rc.5",
+    "theme-ui": "^0.6.0",
     "use-local-storage-state": "^6.0.0",
     "use-onclickoutside": "^0.3.1",
     "yup": "^0.29.3"
@@ -84,7 +81,7 @@
     "ts-jest": "^26.4.3",
     "tslint": "^6.1.2",
     "tslint-react": "^5.0.0",
-    "typescript": "^4.0.5"
+    "typescript": "4.3.4"
   },
   "resolutions": {
     "@theme-ui/core": "0.4.0-rc.1",

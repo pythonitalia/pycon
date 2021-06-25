@@ -13,18 +13,6 @@ export default class MyDocument extends Document<{
   css: string;
   url: string;
 }> {
-  // static async getInitialProps(ctx: DocumentContext) {
-  //   const initialProps = await Document.getInitialProps(ctx);
-
-  //   const host = ctx.req
-  //     ? ((ctx.req as any).protocol || "https") + "://" + ctx.req.headers.host
-  //     : null;
-
-  //   const url = host + ctx.req.url;
-
-  //   return { ...initialProps, url };
-  // }
-
   render() {
     return (
       <Html>
