@@ -2,7 +2,19 @@ import { NowRequest, NowResponse } from "@now/node";
 import chromium from "chrome-aws-lambda";
 import puppeteer from "puppeteer-core";
 
-import { CardType, getSize } from "~/helpers/social-card";
+// import { CardType, getSize } from "~/helpers/social-card";
+export type CardType = "social" | "social-square" | "social-twitter";
+
+export const getSize = (cardType: CardType) => {
+  switch (cardType) {
+    case "social":
+      return { width: 1200, height: 630 };
+    case "social-twitter":
+      return { width: 1200, height: 600 };
+    case "social-square":
+      return { width: 1200, height: 1200 };
+  }
+};
 
 export default async (req: NowRequest, res: NowResponse) => {
   const type = "png";
