@@ -4,20 +4,23 @@ const path = require("path");
 const { withSentryConfig } = require("@sentry/nextjs");
 
 const {
+  SENTRY_ORG,
   SENTRY_PROJECT,
   SENTRY_AUTH_TOKEN,
   VERCEL_GITHUB_COMMIT_SHA,
   CONFERENCE_CODE,
   API_URL,
   API_TOKEN,
+  VERCEL_ENV,
 } = process.env;
 
 const SentryWebpackPluginOptions = {
   silent: true,
-  org: "python-italia",
+  org: SENTRY_ORG,
   project: SENTRY_PROJECT,
   authToken: SENTRY_AUTH_TOKEN,
   release: VERCEL_GITHUB_COMMIT_SHA,
+  dryRun: VERCEL_ENV !== "production",
 };
 
 module.exports = withSentryConfig(
