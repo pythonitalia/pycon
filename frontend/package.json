@@ -47,6 +47,7 @@
     "marksy": "^8.0.0",
     "moment": "^2.29.1",
     "next": "11.0.1",
+    "next-cookies": "^2.0.3",
     "next-with-apollo": "^5.2.1",
     "puppeteer": "^10.0.0",
     "puppeteer-core": "^10.0.0",

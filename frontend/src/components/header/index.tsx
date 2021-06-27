@@ -1,10 +1,10 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+/** @jsxImportSource theme-ui */
+
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { Fragment, useEffect, useRef } from "react";
 import { FormattedMessage } from "react-intl";
-import { Box, Flex, Grid, Heading, jsx, ThemeUIStyleObject } from "theme-ui";
+import { Box, Flex, Grid, Heading, ThemeUIStyleObject } from "theme-ui";
 import useOnClickOutside from "use-onclickoutside";
 
 import { useLoginState } from "~/components/profile/hooks";

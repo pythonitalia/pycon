@@ -1,23 +1,23 @@
+import cookies from "next-cookies";
+
+import { GetServerSideProps } from "next";
 import Head from "next/head";
-import { useRouter } from "next/router";
-import React, { Fragment, useEffect } from "react";
 
-import { getInitialLocale } from "~/locale/get-initial-locale";
+export const HomeNoLang = () => (
+  <Head>
+    <meta name="robots" content="noindex, nofollow" />
+  </Head>
+);
 
-export const HomeNoLang = () => {
-  const router = useRouter();
-  useEffect(() => {
-    router.replace("/[lang]", `/${getInitialLocale()}`);
-    // window.location.href = `/${getInitialLocale()}`;
-  }, []);
-
-  return (
-    <Fragment>
-      <Head>
-        <meta name="robots" content="noindex, nofollow" />
-      </Head>
-    </Fragment>
-  );
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { pyconLocale } = cookies(context);
+  const res = context.res;
+  res.setHeader("location", `/${pyconLocale}`);
+  res.statusCode = 302;
+  res.end();
+  return {
+    props: {},
+  };
 };
 
 export default HomeNoLang;

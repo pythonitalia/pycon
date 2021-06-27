@@ -10,6 +10,7 @@ export const isLocale = (locale: string) => VALID_LOCALES.includes(locale);
 
 export function getInitialLocale(): string {
   // preference from the previous session
+
   const localSetting = localStorage.getItem("locale");
 
   if (localSetting && isLocale(localSetting)) {
