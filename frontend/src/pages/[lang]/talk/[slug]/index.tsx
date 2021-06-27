@@ -1,10 +1,9 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+/** @jsxImportSource theme-ui */
 import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
-import { Box, Flex, Grid, Heading, jsx, Text } from "theme-ui";
+import { Box, Flex, Grid, Heading, Text } from "theme-ui";
 
 import { addApolloState } from "~/apollo/client";
 import { Article } from "~/components/article";
@@ -97,7 +96,7 @@ export const TalkPage = () => {
                 top: talk.image ? "90%" : "70%",
               }}
             >
-              <Text sx={{ fontWeight: "bold" }}>
+              <Text as="div" sx={{ fontWeight: "bold" }}>
                 <FormattedMessage id="blog.author" />
               </Text>
 

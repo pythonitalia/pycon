@@ -76,7 +76,7 @@ export const ProductRow = ({
             {ticket.name}
           </Text>
 
-          <Text>
+          <Text as="div">
             <FormattedMessage
               id={hotel ? "order.hotelPrice" : "order.price"}
               values={{
@@ -98,9 +98,9 @@ export const ProductRow = ({
             </Text>
           </Text>
 
-          <Text>{ticket.description}</Text>
+          <Text as="div">{ticket.description}</Text>
           {ticket.availableUntil && (
-            <Text>
+            <Text as="div">
               <FormattedMessage
                 id="order.availableUntil"
                 values={{

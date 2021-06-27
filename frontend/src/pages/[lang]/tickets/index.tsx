@@ -1,7 +1,5 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+/** @jsxImportSource theme-ui */
 import { useRouter } from "next/router";
-import { jsx } from "theme-ui";
 
 import { useLoginState } from "~/components/profile/hooks";
 import { TicketsSection } from "~/components/tickets-page/tickets-section";

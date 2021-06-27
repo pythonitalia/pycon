@@ -1,3 +1,5 @@
+/** @jsxImportSource theme-ui */
+
 import React, { useRef } from "react";
 import useSyncScroll from "react-use-sync-scroll";
 import { Box, Grid, ThemeUIStyleObject } from "theme-ui";

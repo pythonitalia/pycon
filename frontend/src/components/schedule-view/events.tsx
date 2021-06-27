@@ -1,3 +1,5 @@
+/** @jsxImportSource theme-ui */
+
 import React from "react";
 import { Box, Flex, Text, ThemeUIStyleObject } from "theme-ui";
 
@@ -218,7 +220,7 @@ export const ScheduleEntry = ({
 
         <Flex sx={{ color: "white", mt: "auto" }}>
           <Box sx={{ mr: "auto" }}>
-            <Text sx={{ fontWeight: "bold" }}>
+            <Text as="div" sx={{ fontWeight: "bold" }}>
               {item.speakers.map((s) => s.fullName).join(" & ")}
             </Text>
             {audienceLevel && <Text>{audienceLevel}</Text>}

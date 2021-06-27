@@ -1,12 +1,11 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+/** @jsxImportSource theme-ui */
 import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
-import React, { Fragment } from "react";
+import React from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { FormattedMessage } from "react-intl";
-import { Box, jsx } from "theme-ui";
+import { Box } from "theme-ui";
 
 import { addApolloState } from "~/apollo/client";
 import { formatDay } from "~/components/day-selector/format-day";

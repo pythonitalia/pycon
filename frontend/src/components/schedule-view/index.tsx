@@ -1,8 +1,8 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+/** @jsxImportSource theme-ui */
+
 import React, { Fragment, useCallback } from "react";
 import { FormattedMessage } from "react-intl";
-import { Box, Flex, Heading, jsx } from "theme-ui";
+import { Box, Flex, Heading } from "theme-ui";
 
 import { DaySelector } from "~/components/day-selector";
 import {
