@@ -1,10 +1,10 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+/** @jsxImportSource theme-ui */
+
 import { Fragment } from "react";
 import { Box, Heading, jsx, Text } from "theme-ui";
 
 import { useCurrentLanguage } from "~/locale/context";
-import { Language } from "~/locale/get-initial-locale";
+import { Language } from "~/locale/languages";
 
 type ArticleProps = {
   title: string;

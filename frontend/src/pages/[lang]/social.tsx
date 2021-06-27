@@ -5,7 +5,7 @@ import { Box, Flex, Heading } from "theme-ui";
 import { LogoOrange } from "~/components/logo/orange";
 import { CardType, getSize } from "~/helpers/social-card";
 import { useCurrentLanguage } from "~/locale/context";
-import { Language } from "~/locale/get-initial-locale";
+import { Language } from "./languages";
 import { useSocialCardQuery } from "~/types";
 
 const getDays = ({ start, end }: { start: string; end: string }) => {

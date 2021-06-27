@@ -3,7 +3,7 @@
 import { Box, Flex, Heading, jsx, Text } from "theme-ui";
 
 import { useCurrentLanguage } from "~/locale/context";
-import { Language } from "~/locale/get-initial-locale";
+import { Language } from "./languages";
 
 import { PyConEvent } from "./types";
 

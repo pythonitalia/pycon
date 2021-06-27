@@ -5,7 +5,7 @@ import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
 import { useCurrentLanguage } from "~/locale/context";
-import { Language } from "~/locale/get-initial-locale";
+import { Language } from "./languages";
 
 type Props = {
   deadlines: {

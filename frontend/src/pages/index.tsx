@@ -2,6 +2,7 @@ import cookies from "next-cookies";
 
 import { GetServerSideProps } from "next";
 import Head from "next/head";
+import { DEFAULT_LOCALE } from "~/locale/languages";
 
 export const HomeNoLang = () => (
   <Head>
@@ -12,7 +13,7 @@ export const HomeNoLang = () => (
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { pyconLocale } = cookies(context);
   const res = context.res;
-  res.setHeader("location", `/${pyconLocale || "en"}`);
+  res.setHeader("location", `/${pyconLocale || DEFAULT_LOCALE}`);
   res.statusCode = 302;
   res.end();
   return {
