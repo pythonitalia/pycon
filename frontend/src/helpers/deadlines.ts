@@ -1,4 +1,4 @@
-import { Language } from "./languages";
+import { Language } from "~/locale/languages";
 
 export const formatDeadlineDate = (datetime: string, language: Language) => {
   const d = new Date(datetime);

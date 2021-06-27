@@ -4,10 +4,8 @@ import { ApolloClient, Operation } from "@apollo/client/core";
 import { onError } from "@apollo/client/link/error";
 import merge from "deepmerge";
 import { DefinitionNode, GraphQLError } from "graphql";
-import { print } from "graphql/language/printer";
 import fetch from "isomorphic-fetch";
 import isEqual from "lodash/isEqual";
-import { useMemo } from "react";
 
 import { setLoginState } from "../components/profile/hooks";
 import introspectionQueryResultData from "../generated/fragment-types.json";
@@ -23,7 +21,7 @@ const errorLink = onError(({ graphQLErrors, networkError, operation }) => {
   if (graphQLErrors) {
     graphQLErrors.map(({ message, locations, path }) =>
       console.warn(
-        `[GraphQL error - ${operation}]: Message: ${message}, Location: ${locations}, Path: ${path}`,
+        `[GraphQL error - ${operation.operationName}]: Message: ${message}, Location: ${locations}, Path: ${path}`,
       ),
     );
 
@@ -39,7 +37,9 @@ const errorLink = onError(({ graphQLErrors, networkError, operation }) => {
   }
 
   if (networkError) {
-    console.warn(`[Network error - ${operation}]: ${networkError}`);
+    console.warn(
+      `[Network error - ${operation.operationName}]: ${networkError}`,
+    );
   }
 });
 

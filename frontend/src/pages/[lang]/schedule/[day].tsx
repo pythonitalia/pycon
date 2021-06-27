@@ -15,7 +15,7 @@ import { ScheduleView } from "~/components/schedule-view";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentUser } from "~/helpers/use-current-user";
 import { useCurrentLanguage } from "~/locale/context";
-import { Language } from "./languages";
+import { Language } from "~/locale/languages";
 import {
   querySchedule,
   queryScheduleDays,

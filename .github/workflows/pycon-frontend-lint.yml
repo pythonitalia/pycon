@@ -10,17 +10,6 @@ on:
       - ".github/workflows/frontend.yml"
 
 jobs:
-  eslint:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@master
-
-      - name: ESLint checks
-        uses: ./.github/eslint-action
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
   check:
     runs-on: ubuntu-latest
 
@@ -96,5 +85,6 @@ jobs:
           SLACK_INCOMING_WEBHOOK_URL: ${{ secrets.TF_VAR_slack_incoming_webhook_url }}
           DATABASE_URL: postgresql://postgres:postgres@localhost:${{ job.services.postgres.ports['5432'] }}/postgres
           PASTAPORTO_SECRET: pastaporto_xxx
+          API_URL: http://localhost:8000/graphql
       - run: yarn tsc
         working-directory: frontend

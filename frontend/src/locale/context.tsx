@@ -2,7 +2,7 @@ import cookies from "next-cookies";
 
 import React, { useContext } from "react";
 
-import { Language } from "./languages";
+import { Language } from "~/locale/languages";
 
 interface ContextProps {
   readonly locale: string;
