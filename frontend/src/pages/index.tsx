@@ -12,7 +12,7 @@ export const HomeNoLang = () => (
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { pyconLocale } = cookies(context);
   const res = context.res;
-  res.setHeader("location", `/${pyconLocale}`);
+  res.setHeader("location", `/${pyconLocale || "en"}`);
   res.statusCode = 302;
   res.end();
   return {
