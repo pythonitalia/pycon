@@ -25,6 +25,7 @@ export const LoginSuccessPage = () => {
         router.replace("/[lang]/profile", `/${language}/profile/`);
       }
     },
+    skip: typeof window === "undefined",
   });
 
   useEffect(() => {

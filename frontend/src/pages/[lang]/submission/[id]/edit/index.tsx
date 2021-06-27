@@ -32,7 +32,10 @@ export const EditSubmissionPage = () => {
     loading: submissionLoading,
     error: submissionError,
     data: submissionData,
-  } = useGetSubmissionQuery({ variables: { id } });
+  } = useGetSubmissionQuery({
+    variables: { id },
+    skip: typeof window === "undefined",
+  });
 
   const onSubmit = async (input: CfpFormFields) => {
     const response = await updateSubmission({

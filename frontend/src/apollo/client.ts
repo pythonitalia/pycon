@@ -19,11 +19,11 @@ const isUserLoggedOut = (graphErrors: readonly GraphQLError[]) =>
       e.message === "User not logged in" || e.message === "Not authenticated",
   );
 
-const errorLink = onError(({ graphQLErrors, networkError }) => {
+const errorLink = onError(({ graphQLErrors, networkError, operation }) => {
   if (graphQLErrors) {
     graphQLErrors.map(({ message, locations, path }) =>
       console.warn(
-        `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
+        `[GraphQL error - ${operation}]: Message: ${message}, Location: ${locations}, Path: ${path}`,
       ),
     );
 
@@ -39,7 +39,7 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
   }
 
   if (networkError) {
-    console.warn(`[Network error]: ${networkError}`);
+    console.warn(`[Network error - ${operation}]: ${networkError}`);
   }
 });
 

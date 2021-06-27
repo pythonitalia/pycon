@@ -1,10 +1,18 @@
+/** @jsxImportSource theme-ui */
+
+import { GetStaticProps, GetStaticPaths } from "next";
 import { useRouter } from "next/router";
 import React, { Fragment } from "react";
 import { Box, Flex, Heading, Text } from "theme-ui";
+import { addApolloState } from "~/apollo/client";
 
 import { CardType, getSize } from "~/helpers/social-card";
 import { useCurrentLanguage } from "~/locale/context";
-import { useBlogSocialCardQuery } from "~/types";
+import {
+  queryBlogIndex,
+  queryBlogSocialCard,
+  useBlogSocialCardQuery,
+} from "~/types";
 
 const Snakes = (props) => (
   <svg fill="none" viewBox="0 0 170 200" {...props}>
@@ -130,6 +138,55 @@ export const SocialCard: React.FC = () => {
       </Flex>
     </Fragment>
   );
+};
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const language = params.lang as string;
+  const slug = params.slug as string;
+
+  await queryBlogSocialCard({
+    slug,
+    language,
+  });
+
+  return addApolloState({
+    props: {},
+    revalidate: 1,
+  });
+};
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const {
+    data: { blogPosts: italianBlogPosts },
+  } = await queryBlogIndex({
+    language: "it",
+  });
+
+  const {
+    data: { blogPosts: englishBlogPosts },
+  } = await queryBlogIndex({
+    language: "en",
+  });
+
+  const paths = [
+    ...italianBlogPosts.map((blogPost) => ({
+      params: {
+        lang: "it",
+        slug: blogPost.slug,
+      },
+    })),
+    ...englishBlogPosts.map((blogPost) => ({
+      params: {
+        lang: "en",
+        slug: blogPost.slug,
+      },
+    })),
+  ];
+
+  return {
+    paths,
+    fallback: false,
+  };
 };
 
 export default SocialCard;

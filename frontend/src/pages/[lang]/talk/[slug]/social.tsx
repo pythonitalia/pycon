@@ -1,11 +1,16 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+/** @jsxImportSource theme-ui */
+import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import React, { Fragment } from "react";
-import { Box, Flex, Heading, jsx, Text } from "theme-ui";
+import { Box, Flex, Heading, Text } from "theme-ui";
+import { addApolloState } from "~/apollo/client";
 
 import { CardType, getSize } from "~/helpers/social-card";
-import { useTalkSocialCardQuery } from "~/types";
+import {
+  queryAllTalks,
+  queryTalkSocialCard,
+  useTalkSocialCardQuery,
+} from "~/types";
 
 const Snakes = (props) => (
   <svg fill="none" viewBox="0 0 170 200" {...props}>
@@ -134,6 +139,50 @@ export const SocialCard: React.FC<Props> = () => {
       </Flex>
     </Fragment>
   );
+};
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const slug = params.slug as string;
+
+  await queryTalkSocialCard({
+    code: process.env.conferenceCode,
+    slug,
+  });
+
+  return addApolloState({
+    props: {},
+    revalidate: 1,
+  });
+};
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const {
+    data: {
+      conference: { talks },
+    },
+  } = await queryAllTalks({
+    code: process.env.conferenceCode,
+  });
+
+  const paths = [
+    ...talks.map((talk) => ({
+      params: {
+        lang: "en",
+        slug: talk.slug,
+      },
+    })),
+    ...talks.map((talk) => ({
+      params: {
+        lang: "it",
+        slug: talk.slug,
+      },
+    })),
+  ];
+
+  return {
+    paths,
+    fallback: false,
+  };
 };
 
 export default SocialCard;
