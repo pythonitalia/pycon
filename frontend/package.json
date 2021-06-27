@@ -36,7 +36,6 @@
     "@sentry/nextjs": "^6.7.2",
     "@theme-ui/match-media": "^0.10.1",
     "@types/styled-system": "^5.1.11",
-    "@zeit/next-source-maps": "^0.0.3",
     "chrome-aws-lambda": "^10.0.0",
     "concurrently": "^6.2.0",
     "deepmerge": "^4.2.2",

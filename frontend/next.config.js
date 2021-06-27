@@ -1,6 +1,5 @@
 require("dotenv").config();
 const path = require("path");
-// const withSourceMaps = require("@zeit/next-source-maps");
 const { withSentryConfig } = require("@sentry/nextjs");
 
 const {
