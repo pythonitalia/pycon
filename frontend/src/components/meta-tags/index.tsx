@@ -1,7 +1,7 @@
 import Head from "next/head";
+import { useRouter } from "next/router";
 import React from "react";
 
-import { useCurrentUrl } from "~/helpers/use-url";
 import messages from "~/locale";
 import { useCurrentLanguage } from "~/locale/context";
 
@@ -9,21 +9,22 @@ type Props = {
   title?: React.ReactNode | string | null;
   description?: string;
   useDefaultSocialCard?: boolean;
+  children: React.ReactNode;
 };
 
-export const MetaTags: React.SFC<Props> = ({
+export const MetaTags = ({
   title,
   description,
   useDefaultSocialCard = true,
   children,
-}) => {
+}: Props) => {
+  const { asPath } = useRouter();
   const language = useCurrentLanguage();
-  // const { host, path } = useCurrentUrl();
-  const host = "http://aaa";
-  const path = "aaa";
   const socialCard = useDefaultSocialCard
-    ? `${host}/api/social/en`
-    : `${host}/api/social${path}`;
+    ? `${process.env.NEXT_PUBLIC_SOCIAL_CARD_SERVICE}?url=${process.env.NEXT_PUBLIC_SITE_URL}en`
+    : `${process.env.NEXT_PUBLIC_SOCIAL_CARD_SERVICE}?url=${
+        process.env.NEXT_PUBLIC_SITE_URL
+      }${asPath.substr(1)}/social`;
 
   const titleTemplate = messages[language].titleTemplate;
 

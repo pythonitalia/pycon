@@ -1,10 +1,5 @@
 {
   "trailingSlash": false,
-  "functions": {
-    "src/pages/api/social/[...path]": {
-      "excludeFiles": "node_modules/**"
-    }
-  },
   "headers": [
     {
       "source": "/:lang*/profile",

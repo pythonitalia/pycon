@@ -229,3 +229,11 @@ resource "aws_route53_record" "www2_python_it_cname" {
   records = ["python.it."]
   ttl     = "3600"
 }
+
+resource "aws_route53_record" "socialcards" {
+  zone_id = aws_route53_zone.pythonit.id
+  name    = "socialcards"
+  type    = "CNAME"
+  records = ["cname.vercel-dns.com"]
+  ttl     = "3600"
+}
