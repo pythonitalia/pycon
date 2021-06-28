@@ -9,11 +9,13 @@ query Talk($slug: String!, $code: String!) {
       description
 
       submission {
+        id
         abstract
         elevatorPitch
       }
 
       speakers {
+        id
         fullName
       }
     }
