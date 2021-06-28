@@ -1,5 +1,4 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+/** @jsxImportSource theme-ui */
 import { useApolloClient } from "@apollo/client";
 import Router from "next/router";
 import { useCallback } from "react";

@@ -1,5 +1,4 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+/** @jsxImportSource theme-ui */
 import Image from "next/image";
 import { Box, Flex, Heading, jsx, Text } from "theme-ui";
 

@@ -5,10 +5,10 @@ import { Box, Heading, Text } from "theme-ui";
 
 import { Link } from "~/components/link";
 
-const ErrorPage = () => (
+const Error404 = () => (
   <Box sx={{ mt: 4, mx: "auto", maxWidth: "container", px: 3, pb: 6 }}>
     <Heading as="h2" sx={{ mb: 2 }}>
-      Ops something went wrong :(
+      We cannot find the page you are looking for!
     </Heading>
 
     <Text as="div">
@@ -37,4 +37,4 @@ const ErrorPage = () => (
   </Box>
 );
 
-export default ErrorPage;
+export default Error404;

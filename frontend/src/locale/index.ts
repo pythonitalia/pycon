@@ -396,7 +396,6 @@ export const messages = {
     "schedule.loading": "Loading...",
 
     "error404.goToHomepage": "Go to the homepage",
-    "error404.message": "We couldn't find the page you are looking for :(",
   },
   it: {
     titleTemplate: "%s | PyCon Italia",
@@ -791,8 +790,6 @@ export const messages = {
     "schedule.pageTitle": "Schedule {day}",
     "schedule.loading": "Caricamento in corso...",
 
-    "error404.message":
-      "Non siamo riusciti a trovare la pagina che stai cercando :(",
     "error404.goToHomepage": "Vai alla homepage",
   },
 };

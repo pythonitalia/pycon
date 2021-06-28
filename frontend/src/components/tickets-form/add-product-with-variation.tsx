@@ -1,5 +1,4 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+/** @jsxImportSource theme-ui */
 import React, { useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { Flex, jsx, Select } from "theme-ui";

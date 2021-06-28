@@ -1,5 +1,4 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+/** @jsxImportSource theme-ui */
 import { ApolloProvider } from "@apollo/client";
 import App from "next/app";
 import { createIntl, createIntlCache, RawIntlProvider } from "react-intl";

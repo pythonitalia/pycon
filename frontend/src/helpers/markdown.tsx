@@ -1,5 +1,4 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+/** @jsxImportSource theme-ui */
 import marksy from "marksy";
 import { createElement } from "react";
 import { jsx } from "theme-ui";

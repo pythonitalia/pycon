@@ -1,5 +1,4 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+/** @jsxImportSource theme-ui */
 import moment from "moment";
 import { FormattedMessage } from "react-intl";
 import { Box, Grid, jsx, Text, ThemeUIStyleObject } from "theme-ui";

@@ -1,5 +1,4 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+/** @jsxImportSource theme-ui */
 import React, { Fragment, useCallback } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";

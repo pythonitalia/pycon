@@ -1,5 +1,4 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+/** @jsxImportSource theme-ui */
 import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import { Fragment } from "react";
@@ -12,7 +11,7 @@ import { PageLoading } from "~/components/page-loading";
 import { compile } from "~/helpers/markdown";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
-import ErrorPage from "~/pages/_error";
+import Error404 from "~/pages/404";
 import { queryAllPages, queryPage, usePageQuery } from "~/types";
 
 export const Page = () => {
@@ -33,13 +32,13 @@ export const Page = () => {
   }
 
   if (!data) {
-    return <ErrorPage statusCode={404} />;
+    return <Error404 />;
   }
 
   const { page } = data;
 
   if (!page) {
-    return <ErrorPage statusCode={404} />;
+    return <Error404 />;
   }
 
   return (

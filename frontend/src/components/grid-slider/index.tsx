@@ -1,5 +1,4 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+/** @jsxImportSource theme-ui */
 import { useState } from "react";
 import { Box, Flex, Grid, Heading, jsx } from "theme-ui";
 

@@ -1,5 +1,4 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+/** @jsxImportSource theme-ui */
 import { Fragment } from "react";
 import { Box, Grid, jsx } from "theme-ui";
 

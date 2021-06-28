@@ -1,5 +1,4 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+/** @jsxImportSource theme-ui */
 import NextLink from "next/link";
 import React, { useState } from "react";
 import { Box, jsx, Link as ThemeLink, ThemeUIStyleObject } from "theme-ui";

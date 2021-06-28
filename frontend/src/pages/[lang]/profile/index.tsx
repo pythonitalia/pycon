@@ -1,5 +1,4 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+/** @jsxImportSource theme-ui */
 import Router from "next/router";
 import { Fragment, useEffect } from "react";
 import { FormattedMessage } from "react-intl";

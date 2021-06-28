@@ -1,5 +1,4 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+/** @jsxImportSource theme-ui */
 import moment from "moment";
 import React, { useState } from "react";
 import { FormattedMessage } from "react-intl";

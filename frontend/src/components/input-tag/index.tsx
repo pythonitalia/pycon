@@ -1,5 +1,4 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+/** @jsxImportSource theme-ui */
 import { useCallback } from "react";
 import { jsx } from "theme-ui";
 

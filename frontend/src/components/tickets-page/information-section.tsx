@@ -1,5 +1,4 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+/** @jsxImportSource theme-ui */
 import React, { useCallback, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
@@ -30,9 +29,10 @@ export const InformationSection: React.SFC<Props> = ({
     "orderInformation.invalidFiscalCode",
   );
 
-  const [formState, { text, select, textarea }] = useFormState<
-    InvoiceInformationState
-  >({ ...invoiceInformation });
+  const [
+    formState,
+    { text, select, textarea },
+  ] = useFormState<InvoiceInformationState>({ ...invoiceInformation });
 
   const isBusiness = invoiceInformation.isBusiness;
   const isItalian = formState.values.country === "IT";

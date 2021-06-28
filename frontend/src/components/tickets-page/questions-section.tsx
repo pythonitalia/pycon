@@ -1,5 +1,4 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+/** @jsxImportSource theme-ui */
 import React, { FormEvent, useCallback, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, Heading, Input, jsx, Select } from "theme-ui";

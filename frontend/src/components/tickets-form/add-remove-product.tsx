@@ -1,5 +1,4 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+/** @jsxImportSource theme-ui */
 import { Flex, Input, jsx } from "theme-ui";
 
 import { Button } from "../button/button";

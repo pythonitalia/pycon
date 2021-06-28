@@ -1,5 +1,4 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+/** @jsxImportSource theme-ui */
 import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import { Fragment } from "react";

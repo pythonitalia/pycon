@@ -1,5 +1,4 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+/** @jsxImportSource theme-ui */
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, Container, Heading, jsx, Text } from "theme-ui";

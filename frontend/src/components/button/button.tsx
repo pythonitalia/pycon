@@ -1,5 +1,4 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+/** @jsxImportSource theme-ui */
 import React, { useEffect, useRef, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { Button as ThemeButton, jsx, ThemeUIStyleObject } from "theme-ui";

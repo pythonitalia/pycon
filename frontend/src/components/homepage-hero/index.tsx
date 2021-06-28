@@ -1,5 +1,4 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+/** @jsxImportSource theme-ui */
 import { Box, jsx } from "theme-ui";
 
 import { Link } from "../link";

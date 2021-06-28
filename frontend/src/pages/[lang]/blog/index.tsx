@@ -1,5 +1,4 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+/** @jsxImportSource theme-ui */
 import { GetStaticPaths, GetStaticProps } from "next";
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";

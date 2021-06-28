@@ -1,5 +1,4 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+/** @jsxImportSource theme-ui */
 import { Box, Flex, Heading, jsx, Text } from "theme-ui";
 
 import { useCurrentLanguage } from "~/locale/context";

@@ -1,5 +1,4 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+/** @jsxImportSource theme-ui */
 import React, { CSSProperties } from "react";
 import { default as ReactSelect, Props } from "react-select";
 import { jsx } from "theme-ui";
