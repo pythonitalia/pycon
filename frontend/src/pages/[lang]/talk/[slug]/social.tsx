@@ -155,34 +155,9 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   });
 };
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const {
-    data: {
-      conference: { talks },
-    },
-  } = await queryAllTalks({
-    code: process.env.conferenceCode,
-  });
-
-  const paths = [
-    ...talks.map((talk) => ({
-      params: {
-        lang: "en",
-        slug: talk.slug,
-      },
-    })),
-    ...talks.map((talk) => ({
-      params: {
-        lang: "it",
-        slug: talk.slug,
-      },
-    })),
-  ];
-
-  return {
-    paths,
-    fallback: false,
-  };
-};
+export const getStaticPaths: GetStaticPaths = async () => ({
+  paths: [],
+  fallback: "blocking",
+});
 
 export default SocialCard;

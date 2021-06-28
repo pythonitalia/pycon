@@ -155,38 +155,9 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   });
 };
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const {
-    data: { blogPosts: italianBlogPosts },
-  } = await queryBlogIndex({
-    language: "it",
-  });
-
-  const {
-    data: { blogPosts: englishBlogPosts },
-  } = await queryBlogIndex({
-    language: "en",
-  });
-
-  const paths = [
-    ...italianBlogPosts.map((blogPost) => ({
-      params: {
-        lang: "it",
-        slug: blogPost.slug,
-      },
-    })),
-    ...englishBlogPosts.map((blogPost) => ({
-      params: {
-        lang: "en",
-        slug: blogPost.slug,
-      },
-    })),
-  ];
-
-  return {
-    paths,
-    fallback: false,
-  };
-};
+export const getStaticPaths: GetStaticPaths = async () => ({
+  paths: [],
+  fallback: "blocking",
+});
 
 export default SocialCard;
