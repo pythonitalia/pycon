@@ -1,78 +1,76 @@
-// import { NowRequest, NowResponse } from "@now/node";
-// import chromium from "chrome-aws-lambda";
-// import puppeteer from "puppeteer-core";
+import { NowRequest, NowResponse } from "@now/node";
+import chrome from "chrome-aws-lambda";
+import puppeteer from "puppeteer-core";
 
-// // import { CardType, getSize } from "~/helpers/social-card";
-// export type CardType = "social" | "social-square" | "social-twitter";
+import { CardType, getSize } from "~/helpers/social-card";
 
-// export const getSize = (cardType: CardType) => {
-//   switch (cardType) {
-//     case "social":
-//       return { width: 1200, height: 630 };
-//     case "social-twitter":
-//       return { width: 1200, height: 600 };
-//     case "social-square":
-//       return { width: 1200, height: 1200 };
-//   }
-// };
+export default async (req: NowRequest, res: NowResponse) => {
+  const type = "png";
+  const userAgent = req.headers["user-agent"];
+  const path = (req.query.path as string[]).join("/");
+  const sizeName = getSizeNameForScraper(userAgent);
+  const secure = !req.headers.host.includes("localhost");
+  const url = `http${secure ? "s" : ""}://${
+    req.headers.host
+  }/${path}/social?card-type=${sizeName}`;
 
-// export default async (req: NowRequest, res: NowResponse) => {
-//   const type = "png";
-//   const userAgent = req.headers["user-agent"];
-//   const path = (req.query.path as string[]).join("/");
-//   const sizeName = getSizeNameForScraper(userAgent);
-//   const url = `https://${req.headers.host}/${path}/social?card-type=${sizeName}`;
+  console.log("Taking screenshot of", url);
+  const options = process.env.AWS_REGION
+    ? {
+        args: chrome.args,
+        executablePath: await chrome.executablePath,
+        headless: chrome.headless,
+      }
+    : {
+        args: [],
+        executablePath:
+          process.platform === "win32"
+            ? "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
+            : process.platform === "linux"
+            ? "/usr/bin/google-chrome"
+            : "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+      };
 
-//   console.log("Taking screenshot of", url);
+  try {
+    const size = getSize(sizeName);
 
-//   try {
-//     const size = getSize(sizeName);
+    const browser = await puppeteer.launch(options);
 
-//     const browser = await puppeteer.launch({
-//       // Required
-//       executablePath: await chromium.executablePath,
+    const page = await browser.newPage();
+    await page.setViewport({ ...size, deviceScaleFactor: 2 });
+    await page.goto(url);
+    await page.waitForSelector("#social-card");
 
-//       // Optional
-//       args: chromium.args,
-//       defaultViewport: chromium.defaultViewport,
-//       headless: true,
-//     });
+    const file = await page.screenshot();
 
-//     const page = await browser.newPage();
-//     await page.setViewport({ ...size, deviceScaleFactor: 2 });
-//     await page.goto(url);
-//     await page.waitForSelector("#social-card");
+    res.statusCode = 200;
+    res.setHeader("Content-Type", `image/${type}`);
+    res.end(file);
+  } catch (e) {
+    res.statusCode = 500;
+    res.setHeader("Content-Type", "text/html");
+    res.end("<h1>Server Error</h1><p>Sorry, there was a problem</p>");
+    console.error(e.message);
+  }
+};
 
-//     const file = await page.screenshot();
+export type Scraper = "twitter" | "generic";
 
-//     res.statusCode = 200;
-//     res.setHeader("Content-Type", `image/${type}`);
-//     res.end(file);
-//   } catch (e) {
-//     res.statusCode = 500;
-//     res.setHeader("Content-Type", "text/html");
-//     res.end("<h1>Server Error</h1><p>Sorry, there was a problem</p>");
-//     console.error(e.message);
-//   }
-// };
+const getSizeNameForScraper = (userAgent: string): CardType => {
+  const scraper = getScraperName(userAgent);
 
-// export type Scraper = "twitter" | "generic";
+  switch (scraper) {
+    case "twitter":
+      return "social-twitter";
+    default:
+      return "social";
+  }
+};
 
-// const getSizeNameForScraper = (userAgent: string): CardType => {
-//   const scraper = getScraperName(userAgent);
+const getScraperName = (userAgent: string): Scraper => {
+  if (userAgent.indexOf("Twitterbot/") !== -1) {
+    return "twitter";
+  }
 
-//   switch (scraper) {
-//     case "twitter":
-//       return "social-twitter";
-//     default:
-//       return "social";
-//   }
-// };
-
-// const getScraperName = (userAgent: string): Scraper => {
-//   if (userAgent.indexOf("Twitterbot/") !== -1) {
-//     return "twitter";
-//   }
-
-//   return "generic";
-// };
+  return "generic";
+};
