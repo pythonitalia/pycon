@@ -22,7 +22,7 @@ const writeApolloClientQuery = (definition) => {
   )}`;
 
   return `
-export async function query${codeFriendlyName}(variables: ${definitionName}QueryVariables): Promise<${definitionName}QueryResult> {
+export async function query${codeFriendlyName}(variables?: ${definitionName}QueryVariables): Promise<${definitionName}QueryResult> {
   const client = getApolloClient();
   // @ts-ignore
   return client.query({

@@ -1,5 +1,6 @@
 /** @jsxImportSource theme-ui */
 
+import { GetStaticProps, GetStaticPaths } from "next";
 import { useRouter } from "next/router";
 import React, { useCallback, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
@@ -7,15 +8,21 @@ import { useFormState } from "react-use-form-state";
 import { Box, Card, Checkbox, Input, jsx, Label, Select, Text } from "theme-ui";
 // @ts-ignore
 import * as yup from "yup";
+import { addApolloState } from "~/apollo/client";
 
 import { Alert } from "~/components/alert";
 import { Button } from "~/components/button/button";
 import { InputWrapper } from "~/components/input-wrapper";
 import { MetaTags } from "~/components/meta-tags";
 import { useLoginState } from "~/components/profile/hooks";
+import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCountries } from "~/helpers/use-countries";
 import { useCurrentLanguage } from "~/locale/context";
-import { useMyEditProfileQuery, useUpdateProfileMutation } from "~/types";
+import {
+  queryCountries,
+  useMyEditProfileQuery,
+  useUpdateProfileMutation,
+} from "~/types";
 
 type MeUserFields = {
   name: string;
@@ -370,5 +377,24 @@ export const EditProfilePage: React.FC = () => {
     </Box>
   );
 };
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const lang = params.lang as string;
+
+  await prefetchSharedQueries(lang);
+
+  await queryCountries();
+
+  return addApolloState({
+    props: {},
+    revalidate: 1,
+  });
+};
+
+export const getStaticPaths: GetStaticPaths = async () =>
+  Promise.resolve({
+    paths: [],
+    fallback: "blocking",
+  });
 
 export default EditProfilePage;
