@@ -13,26 +13,16 @@ import { PageLoading } from "~/components/page-loading";
 import { SpeakerDetail } from "~/components/speaker-detail";
 import { compile } from "~/helpers/markdown";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
-import { useCurrentLanguage } from "~/locale/context";
 import { queryAllTalks, queryTalk, useTalkQuery } from "~/types";
 
 export const TalkPage = () => {
   const router = useRouter();
   const slug = router.query.slug as string;
 
-  const ssrHeaders = process.browser
-    ? {}
-    : {
-        Authorization: `Bearer ${process.env.API_TOKEN}`,
-      };
-
   const { data, loading } = useTalkQuery({
     variables: {
       code: process.env.conferenceCode,
       slug,
-    },
-    context: {
-      headers: ssrHeaders,
     },
   });
 
