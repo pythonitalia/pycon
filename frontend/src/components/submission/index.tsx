@@ -14,7 +14,7 @@ type Props = {
   submission: SubmissionQuery["submission"];
 };
 
-export const Submission: React.SFC<Props> = ({ submission }) => (
+export const Submission = ({ submission }: Props) => (
   <Fragment>
     <MetaTags title={submission.title} />
 
@@ -39,31 +39,35 @@ export const Submission: React.SFC<Props> = ({ submission }) => (
               mb: 4,
             }}
           >
-            <Text sx={{ fontWeight: "bold" }}>
+            <Text as="div" sx={{ fontWeight: "bold" }}>
               <FormattedMessage id="cfp.topicLabel" />
             </Text>
 
-            <Text sx={{ mb: 3 }}>{submission.topic!.name}</Text>
+            <Text as="div" sx={{ mb: 3 }}>
+              {submission.topic!.name}
+            </Text>
 
-            <Text sx={{ fontWeight: "bold" }}>
+            <Text as="div" sx={{ fontWeight: "bold" }}>
               <FormattedMessage id="cfp.audienceLevelLabel" />
             </Text>
 
-            <Text sx={{ mb: 3 }}>{submission.audienceLevel!.name}</Text>
+            <Text as="div" sx={{ mb: 3 }}>
+              {submission.audienceLevel!.name}
+            </Text>
 
-            <Text sx={{ fontWeight: "bold" }}>
+            <Text as="div" sx={{ fontWeight: "bold" }}>
               <FormattedMessage id="cfp.languagesLabel" />
             </Text>
 
-            <Text sx={{ mb: 3 }}>
+            <Text as="div" sx={{ mb: 3 }}>
               {submission.languages!.map((lang) => lang.name).join(", ")}
             </Text>
 
-            <Text sx={{ fontWeight: "bold" }}>
+            <Text as="div" sx={{ fontWeight: "bold" }}>
               <FormattedMessage id="cfp.lengthLabel" />
             </Text>
 
-            <Text>
+            <Text as="div">
               {submission.duration!.name} ({submission.duration!.duration}{" "}
               <FormattedMessage id="cfp.minutes" />)
             </Text>

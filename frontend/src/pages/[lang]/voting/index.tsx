@@ -1,9 +1,11 @@
 /** @jsxImportSource theme-ui */
+import { GetStaticProps, GetStaticPaths } from "next";
 import { useRouter } from "next/router";
 import { useCallback, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import { Box, Grid, Heading, jsx, Select, Text } from "theme-ui";
+import { addApolloState } from "~/apollo/client";
 
 import { Alert } from "~/components/alert";
 import { Link } from "~/components/link";
@@ -12,6 +14,7 @@ import { MetaTags } from "~/components/meta-tags";
 import { useLoginState } from "~/components/profile/hooks";
 import { SubmissionAccordion } from "~/components/submission-accordion";
 import { TagsFilter } from "~/components/tags-filter";
+import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useVotingSubmissionsQuery } from "~/types";
 
 type VoteTypes = "all" | "votedOnly" | "notVoted";
@@ -352,5 +355,21 @@ export const VotingPage: React.SFC = () => {
     </Box>
   );
 };
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const lang = params.lang as string;
+
+  await prefetchSharedQueries(lang);
+
+  return addApolloState({
+    props: {},
+  });
+};
+
+export const getStaticPaths: GetStaticPaths = async () =>
+  Promise.resolve({
+    paths: [],
+    fallback: "blocking",
+  });
 
 export default VotingPage;

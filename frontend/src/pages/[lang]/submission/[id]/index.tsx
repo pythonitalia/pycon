@@ -13,7 +13,7 @@ import { useLoginState } from "~/components/profile/hooks";
 import { Submission } from "~/components/submission";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import {
-  querySubmission,
+  queryIsVotingClosed,
   SubmissionQuery,
   useIsVotingClosedQuery,
   useSubmissionQuery,
@@ -109,21 +109,12 @@ export const SubmissionPage = () => {
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const language = params.lang as string;
-  const id = params.id as string;
-
-  try {
-    await querySubmission({
-      id,
-    });
-  } catch (e) {
-    console.error(`Unable to fetch submission_id=${id}`, e);
-    return {
-      props: {},
-      notFound: true,
-    };
-  }
 
   await prefetchSharedQueries(language);
+
+  await queryIsVotingClosed({
+    conference: process.env.conferenceCode,
+  });
 
   return addApolloState({
     props: {},
