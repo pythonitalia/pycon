@@ -9,7 +9,7 @@ type Props = {
   title?: React.ReactNode | string | null;
   description?: string;
   useDefaultSocialCard?: boolean;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 };
 
 export const MetaTags = ({

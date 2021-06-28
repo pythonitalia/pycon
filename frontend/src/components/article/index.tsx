@@ -32,7 +32,10 @@ export const Article = (props: ArticleProps) => {
     <Fragment>
       <Heading sx={{ fontSize: 6 }}>{props.title}</Heading>
       {props.published && (
-        <Text sx={{ fontSize: 2, mt: 3, fontWeight: "bold", color: "orange" }}>
+        <Text
+          as="div"
+          sx={{ fontSize: 2, mt: 3, fontWeight: "bold", color: "orange" }}
+        >
           {formateDate(props.published, language)}
         </Text>
       )}

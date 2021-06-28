@@ -82,7 +82,7 @@ export const BlogArticlePage = () => {
                 top: "70%",
               }}
             >
-              <Text sx={{ fontWeight: "bold" }}>
+              <Text as="div" sx={{ fontWeight: "bold" }}>
                 <FormattedMessage id="blog.author" />
               </Text>
 
