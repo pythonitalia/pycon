@@ -1,7 +1,6 @@
 import Head from "next/head";
 import React from "react";
 
-import { useCurrentUrl } from "~/helpers/use-url";
 import messages from "~/locale";
 import { useCurrentLanguage } from "~/locale/context";
 
@@ -18,7 +17,8 @@ export const MetaTags: React.SFC<Props> = ({
   children,
 }) => {
   const language = useCurrentLanguage();
-  const { host, path } = useCurrentUrl();
+  const host = "to-remove";
+  const path = "to-remove";
   const socialCard = useDefaultSocialCard
     ? `${host}/api/social/en`
     : `${host}/api/social${path}`;

@@ -2,13 +2,14 @@ import { ApolloLink, HttpLink } from "@apollo/client";
 import { InMemoryCache } from "@apollo/client/cache";
 import { ApolloClient, Operation } from "@apollo/client/core";
 import { onError } from "@apollo/client/link/error";
-import * as Sentry from "@sentry/node";
+import merge from "deepmerge";
 import { DefinitionNode, GraphQLError } from "graphql";
-import { print } from "graphql/language/printer";
 import fetch from "isomorphic-fetch";
+import isEqual from "lodash/isEqual";
 
 import { setLoginState } from "../components/profile/hooks";
 import introspectionQueryResultData from "../generated/fragment-types.json";
+export const APOLLO_STATE_PROP_NAME = "__APOLLO_STATE__";
 
 const isUserLoggedOut = (graphErrors: readonly GraphQLError[]) =>
   !!graphErrors.find(
@@ -16,11 +17,11 @@ const isUserLoggedOut = (graphErrors: readonly GraphQLError[]) =>
       e.message === "User not logged in" || e.message === "Not authenticated",
   );
 
-const errorLink = onError(({ graphQLErrors, networkError }) => {
+const errorLink = onError(({ graphQLErrors, networkError, operation }) => {
   if (graphQLErrors) {
     graphQLErrors.map(({ message, locations, path }) =>
       console.warn(
-        `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
+        `[GraphQL error - ${operation.operationName}]: Message: ${message}, Location: ${locations}, Path: ${path}`,
       ),
     );
 
@@ -36,7 +37,9 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
   }
 
   if (networkError) {
-    console.warn(`[Network error]: ${networkError}`);
+    console.warn(
+      `[Network error - ${operation.operationName}]: ${networkError}`,
+    );
   }
 });
 
@@ -58,27 +61,44 @@ export const getQueryType = (operation: Operation): string | undefined => {
   return queryType;
 };
 
-const sentryLink = new ApolloLink((operation, forward) => {
-  Sentry.addBreadcrumb({
-    category: "graphql",
-    data: {
-      type: getQueryType(operation),
-      name: operation.operationName,
-      query: print(operation.query),
-      variables: operation.variables,
-    },
-    level: Sentry.Severity.Debug,
-  });
+const link = ApolloLink.from([errorLink, httpLink]);
 
-  return forward(operation);
-});
+let cachedClient: ApolloClient<any> | null = null;
 
-const link = ApolloLink.from([sentryLink, errorLink, httpLink]);
+export const getApolloClient = (initialState = null) => {
+  if (cachedClient === null) {
+    cachedClient = new ApolloClient({
+      ssrMode: typeof window === "undefined",
+      link,
+      cache: new InMemoryCache({
+        possibleTypes: introspectionQueryResultData.possibleTypes,
+      }),
+    });
+  }
 
-export const getApolloClient = ({ initialState }: any) =>
-  new ApolloClient({
-    link,
-    cache: new InMemoryCache({
-      possibleTypes: introspectionQueryResultData.possibleTypes,
-    }).restore(initialState || {}),
-  });
+  if (initialState) {
+    const existingCache = cachedClient.extract();
+    const data = merge(initialState, existingCache, {
+      // combine arrays using object equality (like in sets)
+      arrayMerge: (destinationArray, sourceArray) => [
+        ...sourceArray,
+        ...destinationArray.filter((d) =>
+          sourceArray.every((s) => !isEqual(d, s)),
+        ),
+      ],
+    });
+
+    // Restore the cache with the merged data
+    cachedClient.cache.restore(data);
+  }
+
+  return cachedClient;
+};
+
+export function addApolloState(pageProps) {
+  if (pageProps?.props) {
+    pageProps.props[APOLLO_STATE_PROP_NAME] = getApolloClient().cache.extract();
+  }
+
+  return pageProps;
+}
