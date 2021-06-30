@@ -1,4 +1,4 @@
-query IsCFPOpen($conference: String!) {
+query IsCfpOpen($conference: String!) {
   conference(code: $conference) {
     id
     isCFPOpen
