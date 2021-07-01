@@ -1,16 +1,19 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
+import { GetStaticPaths, GetStaticProps } from "next";
+import Error from "next/error";
 import { useRouter } from "next/router";
 import { Fragment } from "react";
 import { Box, jsx } from "theme-ui";
 
+import { addApolloState } from "~/apollo/client";
 import { Article } from "~/components/article";
 import { MetaTags } from "~/components/meta-tags";
 import { PageLoading } from "~/components/page-loading";
 import { compile } from "~/helpers/markdown";
+import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
-import ErrorPage from "~/pages/_error";
-import { usePageQuery } from "~/types";
+import { queryAllPages, queryPage, usePageQuery } from "~/types";
 
 export const Page = () => {
   const router = useRouter();
@@ -30,13 +33,13 @@ export const Page = () => {
   }
 
   if (!data) {
-    return <ErrorPage statusCode={404} />;
+    return <Error statusCode={404} />;
   }
 
   const { page } = data;
 
   if (!page) {
-    return <ErrorPage statusCode={404} />;
+    return <Error statusCode={404} />;
   }
 
   return (
@@ -48,6 +51,59 @@ export const Page = () => {
       </Box>
     </Fragment>
   );
+};
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const language = params.lang as string;
+  const slug = params.slug as string;
+
+  await prefetchSharedQueries(language);
+
+  await queryPage({
+    code: process.env.conferenceCode,
+    language,
+    slug,
+  });
+
+  return addApolloState({
+    props: {},
+    revalidate: 1,
+  });
+};
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const {
+    data: { pages: italianPages },
+  } = await queryAllPages({
+    code: process.env.conferenceCode,
+    language: "it",
+  });
+  const {
+    data: { pages: englishPages },
+  } = await queryAllPages({
+    code: process.env.conferenceCode,
+    language: "en",
+  });
+
+  const paths = [
+    ...italianPages.map((page) => ({
+      params: {
+        lang: "it",
+        slug: page.slug,
+      },
+    })),
+    ...englishPages.map((page) => ({
+      params: {
+        lang: "en",
+        slug: page.slug,
+      },
+    })),
+  ];
+
+  return {
+    paths,
+    fallback: false,
+  };
 };
 
 export default Page;

@@ -1,12 +1,15 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
+import { GetStaticProps, GetStaticPaths } from "next";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, jsx } from "theme-ui";
+import { addApolloState } from "~/apollo/client";
 
 import { GrantForm } from "~/components/grant-form";
 import { Introduction } from "~/components/grants-introduction";
 import { MetaTags } from "~/components/meta-tags";
+import { prefetchSharedQueries } from "~/helpers/prefetch";
 
 export const GrantsPage = () => {
   const code = process.env.conferenceCode;
@@ -32,5 +35,21 @@ export const GrantsPage = () => {
     </React.Fragment>
   );
 };
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const lang = params.lang as string;
+
+  await prefetchSharedQueries(lang);
+
+  return addApolloState({
+    props: {},
+  });
+};
+
+export const getStaticPaths: GetStaticPaths = async () =>
+  Promise.resolve({
+    paths: [],
+    fallback: "blocking",
+  });
 
 export default GrantsPage;
