@@ -25,7 +25,7 @@ module.exports = withSourceMaps({
     SENTRY_DSN: SENTRY_DSN || null,
   },
   images: {
-    domains: ["production-pycon-backend-media.s3.amazonaws.com"],
+    domains: ["production-pycon-backend-media.s3.amazonaws.com", "localhost"],
   },
   webpack: (config, options) => {
     config.resolve.alias["~"] = path.resolve(__dirname) + "/src";

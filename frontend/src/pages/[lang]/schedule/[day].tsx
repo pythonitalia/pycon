@@ -13,7 +13,7 @@ import { useLoginState } from "~/components/profile/hooks";
 import { ScheduleView } from "~/components/schedule-view";
 import { useCurrentUser } from "~/helpers/use-current-user";
 import { useCurrentLanguage } from "~/locale/context";
-import { Language } from "~/locale/get-initial-locale";
+import { Language } from "~/locale/languages";
 import { ScheduleQuery, useScheduleQuery } from "~/types";
 
 const Meta: React.FC<{
