@@ -1,11 +1,13 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
+import { GetStaticProps, GetStaticPaths } from "next";
 import { useRouter } from "next/router";
 import React, { Fragment } from "react";
 import { Box, Flex, Heading, jsx, Text } from "theme-ui";
+import { addApolloState } from "~/apollo/client";
 
 import { CardType, getSize } from "~/helpers/social-card";
-import { useTalkSocialCardQuery } from "~/types";
+import { queryTalkSocialCard, useTalkSocialCardQuery } from "~/types";
 
 const Snakes: React.SFC = (props) => (
   <svg fill="none" viewBox="0 0 170 200" {...props}>
@@ -135,5 +137,24 @@ export const SocialCard: React.FC<Props> = () => {
     </Fragment>
   );
 };
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const slug = params.slug as string;
+
+  await queryTalkSocialCard({
+    code: process.env.conferenceCode,
+    slug,
+  });
+
+  return addApolloState({
+    props: {},
+    revalidate: 1,
+  });
+};
+
+export const getStaticPaths: GetStaticPaths = async () => ({
+  paths: [],
+  fallback: "blocking",
+});
 
 export default SocialCard;
