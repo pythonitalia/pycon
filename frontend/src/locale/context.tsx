@@ -1,6 +1,8 @@
+import cookies from "next-cookies";
+
 import React, { useContext } from "react";
 
-import { Language } from "./get-initial-locale";
+import { Language } from "~/locale/languages";
 
 interface ContextProps {
   readonly locale: string;
@@ -22,8 +24,11 @@ export const LocaleProvider: React.FC<{ lang: string }> = ({
   children,
 }) => {
   React.useEffect(() => {
-    if (lang !== localStorage.getItem("locale")) {
-      localStorage.setItem("locale", lang);
+    const { pyconLocale } = cookies({
+      req: { headers: { cookie: document.cookie } },
+    });
+    if (lang !== pyconLocale) {
+      document.cookie = `pyconLocale=${lang}; path=/`;
     }
   }, [lang]);
 
