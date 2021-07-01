@@ -1,9 +1,11 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
+import { GetStaticPaths, GetStaticProps } from "next";
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
-import { Box, Flex, Grid, Heading, jsx, Text } from "theme-ui";
+import { Box, Grid, Heading, jsx, Text } from "theme-ui";
 
+import { addApolloState } from "~/apollo/client";
 import { GridSlider } from "~/components/grid-slider";
 import { EventCard } from "~/components/home-events/event-card";
 import { HomepageHero } from "~/components/homepage-hero";
@@ -15,23 +17,26 @@ import { MetaTags } from "~/components/meta-tags";
 import { SponsorsSection } from "~/components/sponsors-section";
 import { YouTubeLite } from "~/components/youtube-lite";
 import { formatDeadlineDate, formatDeadlineTime } from "~/helpers/deadlines";
+import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
-import { useIndexPageQuery } from "~/types";
+import {
+  queryIndexPage,
+  queryKeynotesSection,
+  useIndexPageQuery,
+} from "~/types";
+
+type Props = {};
 
 export const HomePage = () => {
   const language = useCurrentLanguage();
-  const { loading, data } = useIndexPageQuery({
+  const {
+    data: { conference, blogPosts },
+  } = useIndexPageQuery({
     variables: {
-      code: process.env.conferenceCode!,
+      code: process.env.conferenceCode,
       language,
     },
   });
-
-  if (loading || !data) {
-    return null;
-  }
-
-  const { conference, blogPosts } = data;
 
   return (
     <Fragment>
@@ -179,9 +184,7 @@ export const HomePage = () => {
           sx={{
             py: 5,
             px: 3,
-
             gridTemplateColumns: [null, null, "8fr 2fr 10fr"],
-
             maxWidth: "container",
             mx: "auto",
           }}
@@ -204,7 +207,6 @@ export const HomePage = () => {
             >
               {conference.gettingThereText}
             </Text>
-
             <Box>
               <Link
                 target="_blank"
@@ -215,7 +217,6 @@ export const HomePage = () => {
               </Link>
             </Box>
           </Flex>
-
           <MapWithLink
             sx={{
               gridColumnStart: [null, null, 3],
@@ -280,5 +281,31 @@ export const HomePage = () => {
     </Fragment>
   );
 };
+
+export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
+  const language = params.lang as string;
+
+  await prefetchSharedQueries(language);
+
+  await queryKeynotesSection({
+    code: process.env.conferenceCode,
+  });
+
+  await queryIndexPage({
+    language,
+    code: process.env.conferenceCode,
+  });
+
+  return addApolloState({
+    props: {},
+    revalidate: 1,
+  });
+};
+
+export const getStaticPaths: GetStaticPaths = async () =>
+  Promise.resolve({
+    paths: [],
+    fallback: "blocking",
+  });
 
 export default HomePage;
