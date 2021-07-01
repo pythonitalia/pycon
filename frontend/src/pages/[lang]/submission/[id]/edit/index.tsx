@@ -1,8 +1,10 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
+import { GetStaticProps, GetStaticPaths } from "next";
 import { useRouter } from "next/router";
 import { FormattedMessage } from "react-intl";
 import { Box, jsx } from "theme-ui";
+import { addApolloState } from "~/apollo/client";
 
 import { Alert } from "~/components/alert";
 import {
@@ -10,8 +12,14 @@ import {
   CfpFormFields,
   SubmissionStructure,
 } from "~/components/cfp-form";
+import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
-import { useGetSubmissionQuery, useUpdateSubmissionMutation } from "~/types";
+import {
+  queryCfpForm,
+  queryTags,
+  useGetSubmissionQuery,
+  useUpdateSubmissionMutation,
+} from "~/types";
 
 export const EditSubmissionPage = () => {
   const code = process.env.conferenceCode;
@@ -97,5 +105,28 @@ export const EditSubmissionPage = () => {
     </Box>
   );
 };
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const language = params.lang as string;
+
+  await prefetchSharedQueries(language);
+
+  await queryTags();
+
+  await queryCfpForm({
+    conference: process.env.conferenceCode,
+  });
+
+  return addApolloState({
+    props: {},
+    revalidate: 1,
+  });
+};
+
+export const getStaticPaths: GetStaticPaths = async () =>
+  Promise.resolve({
+    paths: [],
+    fallback: "blocking",
+  });
 
 export default EditSubmissionPage;
