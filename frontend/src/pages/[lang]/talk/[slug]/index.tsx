@@ -1,9 +1,11 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
+import { GetStaticProps, GetStaticPaths } from "next";
 import { useRouter } from "next/router";
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, Flex, Grid, Heading, jsx, Text } from "theme-ui";
+import { addApolloState } from "~/apollo/client";
 
 import { Article } from "~/components/article";
 import { BlogPostIllustration } from "~/components/illustrations/blog-post";
@@ -11,27 +13,17 @@ import { MetaTags } from "~/components/meta-tags";
 import { PageLoading } from "~/components/page-loading";
 import { SpeakerDetail } from "~/components/speaker-detail";
 import { compile } from "~/helpers/markdown";
-import { useCurrentLanguage } from "~/locale/context";
-import { useTalkQuery } from "~/types";
+import { prefetchSharedQueries } from "~/helpers/prefetch";
+import { queryAllTalks, queryTalk, useTalkQuery } from "~/types";
 
 export const TalkPage = () => {
   const router = useRouter();
   const slug = router.query.slug as string;
-  const language = useCurrentLanguage();
-
-  const ssrHeaders = process.browser
-    ? {}
-    : {
-        Authorization: `Bearer ${process.env.API_TOKEN}`,
-      };
 
   const { data, loading } = useTalkQuery({
     variables: {
       code: process.env.conferenceCode,
       slug,
-    },
-    context: {
-      headers: ssrHeaders,
     },
   });
 
@@ -125,6 +117,53 @@ export const TalkPage = () => {
       </Grid>
     </Fragment>
   );
+};
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const language = params.lang as string;
+  const slug = params.slug as string;
+
+  await prefetchSharedQueries(language);
+
+  await queryTalk({
+    code: process.env.conferenceCode,
+    slug,
+  });
+
+  return addApolloState({
+    props: {},
+    revalidate: 1,
+  });
+};
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const {
+    data: {
+      conference: { talks },
+    },
+  } = await queryAllTalks({
+    code: process.env.conferenceCode,
+  });
+
+  const paths = [
+    ...talks.map((talk) => ({
+      params: {
+        lang: "en",
+        slug: talk.slug,
+      },
+    })),
+    ...talks.map((talk) => ({
+      params: {
+        lang: "it",
+        slug: talk.slug,
+      },
+    })),
+  ];
+
+  return {
+    paths,
+    fallback: false,
+  };
 };
 
 export default TalkPage;

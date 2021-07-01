@@ -28,6 +28,7 @@ fragment ScheduleSlotFragment on ScheduleSlot {
     }
 
     speakers {
+      id
       fullName
     }
 

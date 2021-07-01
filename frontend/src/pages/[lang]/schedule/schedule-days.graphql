@@ -1,0 +1,8 @@
+query ScheduleDays($code: String!) {
+  conference(code: $code) {
+    id
+    days {
+      day
+    }
+  }
+}
