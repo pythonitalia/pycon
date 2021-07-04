@@ -13,6 +13,8 @@ const {
   CONFERENCE_CODE,
   API_URL,
   API_TOKEN,
+  NEXT_PUBLIC_SOCIAL_CARD_SERVICE,
+  NEXT_PUBLIC_VERCEL_URL,
 } = process.env;
 
 module.exports = withSourceMaps({
@@ -23,6 +25,12 @@ module.exports = withSourceMaps({
     API_URL: API_URL,
     conferenceCode: CONFERENCE_CODE || "pycon-demo",
     SENTRY_DSN: SENTRY_DSN || null,
+    NEXT_PUBLIC_SOCIAL_CARD_SERVICE:
+      NEXT_PUBLIC_SOCIAL_CARD_SERVICE ||
+      "https://socialcards.python.it/api/card",
+    NEXT_PUBLIC_SITE_URL: NEXT_PUBLIC_VERCEL_URL
+      ? `https://${NEXT_PUBLIC_VERCEL_URL}/`
+      : `http://localhost:3000/`,
   },
   images: {
     domains: ["production-pycon-backend-media.s3.amazonaws.com"],
