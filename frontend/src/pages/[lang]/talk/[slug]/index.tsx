@@ -1,12 +1,12 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { GetStaticProps, GetStaticPaths } from "next";
+import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, Flex, Grid, Heading, jsx, Text } from "theme-ui";
-import { addApolloState } from "~/apollo/client";
 
+import { addApolloState } from "~/apollo/client";
 import { Article } from "~/components/article";
 import { BlogPostIllustration } from "~/components/illustrations/blog-post";
 import { MetaTags } from "~/components/meta-tags";
@@ -123,12 +123,13 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const language = params.lang as string;
   const slug = params.slug as string;
 
-  await prefetchSharedQueries(language);
-
-  await queryTalk({
-    code: process.env.conferenceCode,
-    slug,
-  });
+  await Promise.all([
+    prefetchSharedQueries(language),
+    queryTalk({
+      code: process.env.conferenceCode,
+      slug,
+    }),
+  ]);
 
   return addApolloState({
     props: {},

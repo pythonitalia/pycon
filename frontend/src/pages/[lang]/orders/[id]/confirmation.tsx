@@ -1,13 +1,16 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
+import { GetStaticProps, GetStaticPaths } from "next";
 import { useRouter } from "next/router";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, Heading, jsx, Text } from "theme-ui";
+import { addApolloState } from "~/apollo/client";
 
 import { Alert } from "~/components/alert";
 import { PageLoading } from "~/components/page-loading";
 import { useLoginState } from "~/components/profile/hooks";
+import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useOrderQuery } from "~/types";
 
 const OrderCanceled = () => (
@@ -71,5 +74,21 @@ export const OrderConfirmationPage = () => {
     </Box>
   );
 };
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const lang = params.lang as string;
+
+  await prefetchSharedQueries(lang);
+
+  return addApolloState({
+    props: {},
+  });
+};
+
+export const getStaticPaths: GetStaticPaths = async () =>
+  Promise.resolve({
+    paths: [],
+    fallback: "blocking",
+  });
 
 export default OrderConfirmationPage;
