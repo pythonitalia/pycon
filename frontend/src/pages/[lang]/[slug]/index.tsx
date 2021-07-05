@@ -57,13 +57,14 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const language = params.lang as string;
   const slug = params.slug as string;
 
-  await prefetchSharedQueries(language);
-
-  await queryPage({
-    code: process.env.conferenceCode,
-    language,
-    slug,
-  });
+  await Promise.all([
+    prefetchSharedQueries(language),
+    queryPage({
+      code: process.env.conferenceCode,
+      language,
+      slug,
+    }),
+  ]);
 
   return addApolloState({
     props: {},
