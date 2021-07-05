@@ -1,12 +1,12 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { GetStaticProps, GetStaticPaths } from "next";
+import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, Flex, Grid, jsx, Text } from "theme-ui";
-import { addApolloState } from "~/apollo/client";
 
+import { addApolloState } from "~/apollo/client";
 import { Article } from "~/components/article";
 import { BlogPostIllustration } from "~/components/illustrations/blog-post";
 import { MetaTags } from "~/components/meta-tags";
@@ -100,12 +100,13 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const language = params.lang as string;
   const slug = params.slug as string;
 
-  await prefetchSharedQueries(language);
-
-  await queryPost({
-    slug,
-    language,
-  });
+  await Promise.all([
+    prefetchSharedQueries(language),
+    queryPost({
+      slug,
+      language,
+    }),
+  ]);
 
   return addApolloState({
     props: {},
@@ -114,17 +115,21 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const {
-    data: { blogPosts: italianBlogPosts },
-  } = await queryBlogIndex({
-    language: "it",
-  });
-
-  const {
-    data: { blogPosts: englishBlogPosts },
-  } = await queryBlogIndex({
-    language: "en",
-  });
+  const [
+    {
+      data: { blogPosts: italianBlogPosts },
+    },
+    {
+      data: { blogPosts: englishBlogPosts },
+    },
+  ] = await Promise.all([
+    queryBlogIndex({
+      language: "it",
+    }),
+    queryBlogIndex({
+      language: "en",
+    }),
+  ]);
 
   const paths = [
     ...italianBlogPosts.map((blogPost) => ({
