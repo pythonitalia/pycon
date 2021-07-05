@@ -285,16 +285,16 @@ export const HomePage = () => {
 export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
   const language = params.lang as string;
 
-  await prefetchSharedQueries(language);
-
-  await queryKeynotesSection({
-    code: process.env.conferenceCode,
-  });
-
-  await queryIndexPage({
-    language,
-    code: process.env.conferenceCode,
-  });
+  await Promise.all([
+    prefetchSharedQueries(language),
+    queryKeynotesSection({
+      code: process.env.conferenceCode,
+    }),
+    queryIndexPage({
+      language,
+      code: process.env.conferenceCode,
+    }),
+  ]);
 
   return addApolloState({
     props: {},
