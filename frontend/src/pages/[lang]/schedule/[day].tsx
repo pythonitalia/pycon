@@ -122,12 +122,13 @@ const PageContent: React.FC<PageContentProps> = ({
 };
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-  await prefetchSharedQueries(params.lang as string);
-
-  await querySchedule({
-    code: process.env.conferenceCode,
-    fetchSubmissions: false,
-  });
+  await Promise.all([
+    prefetchSharedQueries(params.lang as string),
+    querySchedule({
+      code: process.env.conferenceCode,
+      fetchSubmissions: false,
+    }),
+  ]);
 
   return addApolloState({
     props: {},
