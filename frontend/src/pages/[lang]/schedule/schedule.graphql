@@ -17,6 +17,7 @@ query Schedule($code: String!, $fetchSubmissions: Boolean!) {
     }
 
     durations {
+      id
       duration
       allowedSubmissionTypes {
         name
