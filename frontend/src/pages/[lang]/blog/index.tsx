@@ -1,14 +1,17 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
+import { GetStaticPaths, GetStaticProps } from "next";
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, Heading, jsx, Text } from "theme-ui";
 
+import { addApolloState } from "~/apollo/client";
 import { Link } from "~/components/link";
 import { MetaTags } from "~/components/meta-tags";
 import { PageLoading } from "~/components/page-loading";
+import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
-import { useBlogIndexQuery } from "~/types";
+import { queryBlogIndex, useBlogIndexQuery } from "~/types";
 
 export const BlogPage = () => {
   const language = useCurrentLanguage();
@@ -55,5 +58,27 @@ export const BlogPage = () => {
     </Fragment>
   );
 };
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const language = params.lang as string;
+
+  await Promise.all([
+    prefetchSharedQueries(language),
+    queryBlogIndex({
+      language,
+    }),
+  ]);
+
+  return addApolloState({
+    props: {},
+    revalidate: 1,
+  });
+};
+
+export const getStaticPaths: GetStaticPaths = async () =>
+  Promise.resolve({
+    paths: [],
+    fallback: "blocking",
+  });
 
 export default BlogPage;
