@@ -1,11 +1,11 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { GetStaticProps, GetStaticPaths } from "next";
+import { GetStaticPaths, GetStaticProps } from "next";
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, Container, Heading, jsx, Text } from "theme-ui";
-import { addApolloState } from "~/apollo/client";
 
+import { addApolloState } from "~/apollo/client";
 import { Alert } from "~/components/alert";
 import { Introduction } from "~/components/cfp-introduction";
 import { CfpSendSubmission } from "~/components/cfp-send-submission";
@@ -97,17 +97,16 @@ export const CFPPage: React.SFC = () => {
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const lang = params.lang as string;
 
-  await prefetchSharedQueries(lang);
-
-  await queryIsCfpOpen({
-    conference: process.env.conferenceCode,
-  });
-
-  await queryCfpForm({
-    conference: process.env.conferenceCode,
-  });
-
-  await queryTags();
+  await Promise.all([
+    prefetchSharedQueries(lang),
+    queryIsCfpOpen({
+      conference: process.env.conferenceCode,
+    }),
+    queryCfpForm({
+      conference: process.env.conferenceCode,
+    }),
+    queryTags(),
+  ]);
 
   return addApolloState({
     props: {},
