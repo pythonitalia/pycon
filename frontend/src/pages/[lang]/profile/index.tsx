@@ -1,12 +1,12 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { GetStaticProps, GetStaticPaths } from "next";
+import { GetStaticPaths, GetStaticProps } from "next";
 import Router from "next/router";
 import { Fragment, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
-import { addApolloState } from "~/apollo/client";
 
+import { addApolloState } from "~/apollo/client";
 import { Alert } from "~/components/alert";
 import { MetaTags } from "~/components/meta-tags";
 import { PageLoading } from "~/components/page-loading";
@@ -92,9 +92,7 @@ export const MyProfilePage = () => {
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const lang = params.lang as string;
 
-  await prefetchSharedQueries(lang);
-
-  await queryCountries();
+  await Promise.all([prefetchSharedQueries(lang), queryCountries()]);
 
   return addApolloState({
     props: {},

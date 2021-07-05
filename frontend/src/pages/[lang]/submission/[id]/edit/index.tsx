@@ -1,11 +1,11 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { GetStaticProps, GetStaticPaths } from "next";
+import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import { FormattedMessage } from "react-intl";
 import { Box, jsx } from "theme-ui";
-import { addApolloState } from "~/apollo/client";
 
+import { addApolloState } from "~/apollo/client";
 import { Alert } from "~/components/alert";
 import {
   CfpForm,
@@ -109,13 +109,13 @@ export const EditSubmissionPage = () => {
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const language = params.lang as string;
 
-  await prefetchSharedQueries(language);
-
-  await queryTags();
-
-  await queryCfpForm({
-    conference: process.env.conferenceCode,
-  });
+  await Promise.all([
+    prefetchSharedQueries(language),
+    queryTags(),
+    queryCfpForm({
+      conference: process.env.conferenceCode,
+    }),
+  ]);
 
   return addApolloState({
     props: {},

@@ -1,12 +1,12 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { GetStaticProps, GetStaticPaths } from "next";
+import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 import { Container, jsx } from "theme-ui";
-import { addApolloState } from "~/apollo/client";
 
+import { addApolloState } from "~/apollo/client";
 import { Alert } from "~/components/alert";
 import { LoginForm } from "~/components/login-form";
 import { MetaTags } from "~/components/meta-tags";
@@ -111,11 +111,12 @@ export const SubmissionPage = () => {
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const language = params.lang as string;
 
-  await prefetchSharedQueries(language);
-
-  await queryIsVotingClosed({
-    conference: process.env.conferenceCode,
-  });
+  await Promise.all([
+    prefetchSharedQueries(language),
+    queryIsVotingClosed({
+      conference: process.env.conferenceCode,
+    }),
+  ]);
 
   return addApolloState({
     props: {},
