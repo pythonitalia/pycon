@@ -1,24 +1,37 @@
-import { useRouter } from "next/dist/client/router";
+import { GetStaticPaths, GetStaticProps } from "next";
 import Head from "next/head";
-import React from "react";
 
-import { useCurrentLanguage } from "~/locale/context";
+import { queryScheduleDays } from "~/types";
 
-export const SchedulePage = () => {
-  const router = useRouter();
-  const language = useCurrentLanguage();
+export const SchedulePage = () => (
+  <Head>
+    <meta name="robots" content="noindex, nofollow" />
+  </Head>
+);
 
-  // TODO: from backend
-
-  React.useEffect(() => {
-    router.replace(`/${language}/schedule/2020-11-06`);
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const lang = params.lang as string;
+  const {
+    data: {
+      conference: { days },
+    },
+  } = await queryScheduleDays({
+    code: process.env.conferenceCode,
   });
 
-  return (
-    <Head>
-      <meta name="robots" content="noindex, nofollow" />
-    </Head>
-  );
+  const firstDay = days[0].day;
+  return {
+    redirect: {
+      destination: `/${lang}/schedule/${firstDay}/`,
+      permanent: false,
+    },
+  };
 };
+
+export const getStaticPaths: GetStaticPaths = async () =>
+  Promise.resolve({
+    paths: [],
+    fallback: "blocking",
+  });
 
 export default SchedulePage;

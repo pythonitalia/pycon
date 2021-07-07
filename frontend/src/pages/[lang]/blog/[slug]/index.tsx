@@ -1,17 +1,20 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
+import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, Flex, Grid, jsx, Text } from "theme-ui";
 
+import { addApolloState } from "~/apollo/client";
 import { Article } from "~/components/article";
 import { BlogPostIllustration } from "~/components/illustrations/blog-post";
 import { MetaTags } from "~/components/meta-tags";
 import { PageLoading } from "~/components/page-loading";
 import { compile } from "~/helpers/markdown";
+import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
-import { usePostQuery } from "~/types";
+import { queryBlogIndex, queryPost, usePostQuery } from "~/types";
 
 export const BlogArticlePage = () => {
   const language = useCurrentLanguage();
@@ -91,6 +94,62 @@ export const BlogArticlePage = () => {
       </Grid>
     </Fragment>
   );
+};
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const language = params.lang as string;
+  const slug = params.slug as string;
+
+  await Promise.all([
+    prefetchSharedQueries(language),
+    queryPost({
+      slug,
+      language,
+    }),
+  ]);
+
+  return addApolloState({
+    props: {},
+    revalidate: 1,
+  });
+};
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const [
+    {
+      data: { blogPosts: italianBlogPosts },
+    },
+    {
+      data: { blogPosts: englishBlogPosts },
+    },
+  ] = await Promise.all([
+    queryBlogIndex({
+      language: "it",
+    }),
+    queryBlogIndex({
+      language: "en",
+    }),
+  ]);
+
+  const paths = [
+    ...italianBlogPosts.map((blogPost) => ({
+      params: {
+        lang: "it",
+        slug: blogPost.slug,
+      },
+    })),
+    ...englishBlogPosts.map((blogPost) => ({
+      params: {
+        lang: "en",
+        slug: blogPost.slug,
+      },
+    })),
+  ];
+
+  return {
+    paths,
+    fallback: false,
+  };
 };
 
 export default BlogArticlePage;

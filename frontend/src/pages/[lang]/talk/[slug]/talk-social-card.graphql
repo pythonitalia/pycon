@@ -5,6 +5,7 @@ query TalkSocialCard($slug: String!, $code: String!) {
       id
       title
       speakers {
+        id
         fullName
       }
     }

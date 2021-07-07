@@ -1,9 +1,11 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
+import { GetStaticPaths, GetStaticProps } from "next";
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, Container, Heading, jsx, Text } from "theme-ui";
 
+import { addApolloState } from "~/apollo/client";
 import { Alert } from "~/components/alert";
 import { Introduction } from "~/components/cfp-introduction";
 import { CfpSendSubmission } from "~/components/cfp-send-submission";
@@ -12,7 +14,13 @@ import { LoginForm } from "~/components/login-form";
 import { MetaTags } from "~/components/meta-tags";
 import { useLoginState } from "~/components/profile/hooks";
 import { MySubmissions } from "~/components/profile/my-submissions";
-import { useIsCfpOpenQuery } from "~/types";
+import { prefetchSharedQueries } from "~/helpers/prefetch";
+import {
+  queryCfpForm,
+  queryIsCfpOpen,
+  queryTags,
+  useIsCfpOpenQuery,
+} from "~/types";
 
 const CfpSectionOrClosedMessage: React.SFC<{ open: boolean }> = ({ open }) => {
   if (open) {
@@ -85,5 +93,30 @@ export const CFPPage: React.SFC = () => {
     </Fragment>
   );
 };
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const lang = params.lang as string;
+
+  await Promise.all([
+    prefetchSharedQueries(lang),
+    queryIsCfpOpen({
+      conference: process.env.conferenceCode,
+    }),
+    queryCfpForm({
+      conference: process.env.conferenceCode,
+    }),
+    queryTags(),
+  ]);
+
+  return addApolloState({
+    props: {},
+  });
+};
+
+export const getStaticPaths: GetStaticPaths = async () =>
+  Promise.resolve({
+    paths: [],
+    fallback: "blocking",
+  });
 
 export default CFPPage;

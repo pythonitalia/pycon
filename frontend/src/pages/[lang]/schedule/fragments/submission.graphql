@@ -3,18 +3,22 @@ fragment SubmissionFragment on Submission {
   title
 
   duration {
+    id
     duration
   }
 
   audienceLevel {
+    id
     name
   }
 
   speaker {
+    id
     fullName
   }
 
   type {
+    id
     name
   }
 }

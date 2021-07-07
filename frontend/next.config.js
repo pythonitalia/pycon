@@ -33,7 +33,7 @@ module.exports = withSourceMaps({
       : `http://localhost:3000/`,
   },
   images: {
-    domains: ["production-pycon-backend-media.s3.amazonaws.com"],
+    domains: ["production-pycon-backend-media.s3.amazonaws.com", "localhost"],
   },
   webpack: (config, options) => {
     config.resolve.alias["~"] = path.resolve(__dirname) + "/src";
