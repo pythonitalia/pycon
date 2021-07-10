@@ -12,7 +12,7 @@
     "lint": "next lint",
     "codegen": "graphql-codegen -r dotenv/config -c codegen.yml",
     "codegen:watch": "yarn codegen --watch",
-    "test": "jest src/"
+    "test": "jest src/ --passWithNoTests"
   },
   "dependencies": {
     "@apollo/client": "^3.2.5",

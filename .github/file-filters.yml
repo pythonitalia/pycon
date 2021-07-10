@@ -1,6 +1,0 @@
-toolkit:
-  - "toolkit/**"
-users-backend:
-  - "users-backend/**"
-gateway:
-  - "gateway/**"
