@@ -35,17 +35,7 @@ repos:
       hooks:
           - id: end-of-file-fixer
             files: '^.*\.(py|mjml|js|jsx|tf|tfvars|conf)$'
-          - id: file-contents-sorter
-            files: "^requirements(-test)?.in$"
-
-    -   repo: https://github.com/pre-commit/mirrors-eslint
-        rev: 'v7.30.0'
-        hooks:
-        -   id: eslint
-            additional_dependencies:
-                - eslint-config-next@11.0.1
-                - eslint-config-prettier@8.3.0
-                - eslint-plugin-simple-import-sort@7.0.0
-                - "@typescript-eslint/eslint-plugin@4.28.2"
-            files: \.tsx?$
-            types: [file]
+          - id: check-merge-conflict
+          - id: debug-statements
+          - id: detect-aws-credentials
+          - id: detect-private-key
