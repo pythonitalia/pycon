@@ -1,13 +1,13 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { GetStaticProps, GetStaticPaths } from "next";
+import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import { useCallback, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import { Box, Grid, Heading, jsx, Select, Text } from "theme-ui";
-import { addApolloState } from "~/apollo/client";
 
+import { addApolloState } from "~/apollo/client";
 import { Alert } from "~/components/alert";
 import { Link } from "~/components/link";
 import { LoginForm } from "~/components/login-form";
@@ -257,7 +257,11 @@ export const VotingPage: React.SFC = () => {
                 id="voting.closed.body"
                 values={{
                   twitter: (
-                    <a target="_blank" href="https://twitter.com/pyconit">
+                    <a
+                      target="_blank"
+                      href="https://twitter.com/pyconit"
+                      rel="noreferrer"
+                    >
                       Twitter
                     </a>
                   ),

@@ -10,17 +10,6 @@ on:
       - ".github/workflows/frontend.yml"
 
 jobs:
-  eslint:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@master
-
-      - name: ESLint checks
-        uses: ./.github/eslint-action
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
   check:
     runs-on: ubuntu-latest
 

@@ -33,7 +33,7 @@ export const EventCard = (props: PyConEvent) => {
     >
       <Box sx={{ paddingBottom: "100%", display: "inline-block" }} />
 
-      {props.image && <img src={props.image} />}
+      {props.image && <img src={props.image} alt="Event image" />}
 
       <Box
         sx={{

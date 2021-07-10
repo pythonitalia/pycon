@@ -1,10 +1,4 @@
-import Document, {
-  DocumentContext,
-  Head,
-  Html,
-  Main,
-  NextScript,
-} from "next/document";
+import Document, { Head, Html, Main, NextScript } from "next/document";
 import React from "react";
 import { InitializeColorMode } from "theme-ui";
 
@@ -23,8 +17,7 @@ export default class MyDocument extends Document<{
           <script
             async={true}
             defer={true}
-            // @ts-ignore
-            dataDomain="pycon.it"
+            data-domain="pycon.it"
             src="https://plausible.io/js/plausible.js"
           />
         </Head>

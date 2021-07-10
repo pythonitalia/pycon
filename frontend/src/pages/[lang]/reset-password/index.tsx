@@ -1,12 +1,12 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { GetStaticProps, GetStaticPaths } from "next";
+import { GetStaticPaths, GetStaticProps } from "next";
 import { useCallback } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import { Box, Heading, Input, jsx } from "theme-ui";
-import { addApolloState } from "~/apollo/client";
 
+import { addApolloState } from "~/apollo/client";
 import { Alert } from "~/components/alert";
 import { Button } from "~/components/button/button";
 import { InputWrapper } from "~/components/input-wrapper";
@@ -25,10 +25,8 @@ export const RequestResetPasswordPage = () => {
     },
   );
 
-  const [
-    sendResetPassword,
-    { loading, error, data },
-  ] = useRequestPasswordResetMutation();
+  const [sendResetPassword, { loading, error, data }] =
+    useRequestPasswordResetMutation();
 
   const onSubmit = useCallback(
     (e) => {

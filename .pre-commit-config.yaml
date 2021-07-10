@@ -26,12 +26,10 @@ repos:
           - <<: *python_settings
             id: flake8
     - repo: https://github.com/pre-commit/mirrors-prettier
-      rev: v2.1.2
+      rev: v2.3.2
       hooks:
           - id: prettier
             files: '.*/.*\.(js|jsx|ts|tsx|graphql)$'
-            additional_dependencies:
-              - "@trivago/prettier-plugin-sort-imports@1.4.1"
     - repo: https://github.com/pre-commit/pre-commit-hooks
       rev: v2.2.3
       hooks:
@@ -40,11 +38,14 @@ repos:
           - id: file-contents-sorter
             files: "^requirements(-test)?.in$"
 
-    - repo: local
-      hooks:
-          - id: eslint
-            name: eslint
+    -   repo: https://github.com/pre-commit/mirrors-eslint
+        rev: 'v7.30.0'
+        hooks:
+        -   id: eslint
+            additional_dependencies:
+                - eslint-config-next@11.0.1
+                - eslint-config-prettier@8.3.0
+                - eslint-plugin-simple-import-sort@7.0.0
+                - "@typescript-eslint/eslint-plugin@4.28.2"
+            files: \.tsx?$
             types: [file]
-            files: '^frontend/.*\.(js|jsx|ts|tsx)$'
-            entry: bash -c 'cd frontend && yarn run eslint "$@"'
-            language: system

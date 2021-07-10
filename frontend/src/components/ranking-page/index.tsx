@@ -24,7 +24,7 @@ const COLORS = [
 
 export const RankingPage: React.SFC = () => {
   const conferenceCode = process.env.conferenceCode;
-  const { loading, error, data } = useRankingSubmissionQuery({
+  const { loading, data } = useRankingSubmissionQuery({
     variables: {
       conference: conferenceCode,
     },

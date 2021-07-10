@@ -43,7 +43,7 @@ export const LoginForm: React.SFC<FormProps> = ({ next, ...props }) => {
     }
   };
 
-  const [login, { loading, error, data: loginData }] = useLoginMutation({
+  const [login, { loading, data: loginData }] = useLoginMutation({
     onCompleted: onLoginCompleted,
   });
   const [formState, { email, password }] = useFormState<LoginFormFields>(

@@ -61,7 +61,4 @@ module.exports = withSourceMaps({
 
     return config;
   },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
 });

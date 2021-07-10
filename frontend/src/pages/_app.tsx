@@ -12,6 +12,7 @@ import { GlobalStyles } from "~/components/styles";
 import messages from "~/locale";
 import { LocaleProvider } from "~/locale/context";
 import { theme } from "~/theme";
+
 const intlCache = createIntlCache();
 
 const isSocial = (path: string) => path.endsWith("/social");

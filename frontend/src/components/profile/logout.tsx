@@ -1,7 +1,5 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { useApolloClient } from "@apollo/client";
-import Router from "next/router";
 import { useCallback } from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, Heading, jsx, Text } from "theme-ui";

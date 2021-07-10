@@ -11,7 +11,6 @@ import { EventCard } from "~/components/home-events/event-card";
 import { HomepageHero } from "~/components/homepage-hero";
 import { KeynotersSection } from "~/components/keynoters-section";
 import { Link } from "~/components/link";
-import { MapWithLink } from "~/components/map-with-link";
 import { Marquee } from "~/components/marquee";
 import { MetaTags } from "~/components/meta-tags";
 import { SponsorsSection } from "~/components/sponsors-section";
@@ -24,8 +23,6 @@ import {
   queryKeynotesSection,
   useIndexPageQuery,
 } from "~/types";
-
-type Props = {};
 
 export const HomePage = () => {
   const language = useCurrentLanguage();
@@ -174,56 +171,6 @@ export const HomePage = () => {
           Component={EventCard}
         />
       )}
-      {/*
-      <Box
-        sx={{
-          borderBottom: "primary",
-        }}
-      >
-        <Grid
-          sx={{
-            py: 5,
-            px: 3,
-            gridTemplateColumns: [null, null, "8fr 2fr 10fr"],
-            maxWidth: "container",
-            mx: "auto",
-          }}
-        >
-          <Flex
-            sx={{
-              flexDirection: "column",
-              justifyContent: "center",
-            }}
-          >
-            <Heading as="h1">
-              <FormattedMessage id="home.gettingThere" />
-            </Heading>
-            <Text
-              sx={{
-                mt: 4,
-                mb: 3,
-              }}
-              as="p"
-            >
-              {conference.gettingThereText}
-            </Text>
-            <Box>
-              <Link
-                target="_blank"
-                variant="arrow-button"
-                path={conference.map!.link!}
-              >
-                <FormattedMessage id="home.findRoute" />
-              </Link>
-            </Box>
-          </Flex>
-          <MapWithLink
-            sx={{
-              gridColumnStart: [null, null, 3],
-            }}
-          />
-        </Grid>
-      </Box> */}
 
       {conference.sponsorsByLevel.length > 0 && (
         <Fragment>
@@ -282,7 +229,7 @@ export const HomePage = () => {
   );
 };
 
-export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
+export const getStaticProps: GetStaticProps = async ({ params }) => {
   const language = params.lang as string;
 
   await Promise.all([

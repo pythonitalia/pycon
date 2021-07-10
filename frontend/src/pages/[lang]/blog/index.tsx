@@ -16,7 +16,7 @@ import { queryBlogIndex, useBlogIndexQuery } from "~/types";
 export const BlogPage = () => {
   const language = useCurrentLanguage();
 
-  const { data, loading, error } = useBlogIndexQuery({
+  const { data, loading } = useBlogIndexQuery({
     variables: {
       language,
     },

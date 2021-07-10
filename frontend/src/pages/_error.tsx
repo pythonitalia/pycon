@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import * as Sentry from "@sentry/node";
