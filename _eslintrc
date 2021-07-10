@@ -4,13 +4,21 @@
     "es6": true,
     "node": true
   },
+  "ignorePatterns": [
+    "src/**/*.generated.ts",
+    "src/generated",
+    "next.config.js",
+    "public/"
+  ],
   "extends": [
     "plugin:@typescript-eslint/recommended",
     "next",
     "next/core-web-vitals",
     "prettier"
   ],
-  "plugins": ["simple-import-sort"],
+  "plugins": [
+    "simple-import-sort"
+  ],
   "rules": {
     "simple-import-sort/imports": "error",
     "simple-import-sort/exports": "error",
