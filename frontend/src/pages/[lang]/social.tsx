@@ -65,6 +65,7 @@ export const SocialPage = () => {
         <Flex>
           <img
             src="/images/main-illustration.png"
+            alt=""
             sx={{
               height: size.height - padding * 2,
               width: size.height - padding * 2,

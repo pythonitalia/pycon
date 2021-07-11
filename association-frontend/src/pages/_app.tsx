@@ -1,15 +1,17 @@
-import { authExchange } from "@urql/exchange-auth";
-import { cacheExchange, dedupExchange, fetchExchange } from "urql";
+/* eslint-disable @next/next/no-page-custom-font */
 
-import { withUrqlClient } from "next-urql";
+/* eslint-disable @next/next/google-font-display */
+import "tailwindcss/tailwind.css";
+
+import { authExchange } from "@urql/exchange-auth";
 import Head from "next/head";
+import { withUrqlClient } from "next-urql";
+import { cacheExchange, dedupExchange, fetchExchange } from "urql";
 
 import { Hero } from "~/components/hero";
 import { UserProvider } from "~/components/user-provider";
 import { API_URL } from "~/helpers/config";
 import { StripeProvider } from "~/hooks/use-stripe";
-
-import "tailwindcss/tailwind.css";
 
 type AuthState = {
   token?: string;
@@ -55,11 +57,6 @@ export default withUrqlClient(
               return null;
             }
 
-            // if (typeof window !== "undefined") {
-            //   // @ts-ignore
-            //   Router.replace("/logout");
-            // }
-
             return null;
           },
           addAuthToOperation({
@@ -75,7 +72,7 @@ export default withUrqlClient(
         fetchExchange,
       ],
       fetchOptions: () => {
-        const options: { [key: string]: string | object } = {
+        const options: { [key: string]: string | { cookie: string } } = {
           credentials: "include",
         };
 

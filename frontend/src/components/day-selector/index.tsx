@@ -56,7 +56,7 @@ export const DaySelector: React.FC<{
           display: ["none", "block"],
         }}
       >
-        {days.map((day, index) => (
+        {days.map((day) => (
           <Box
             key={day.day}
             as="li"
@@ -79,23 +79,6 @@ export const DaySelector: React.FC<{
                   backgroundColor: "lightViolet",
                 },
               }}
-              after={
-                index === 0 && (
-                  <Box
-                    sx={{
-                      color: currentDay === day.day ? "white" : "red",
-                      position: "absolute",
-                      fontSize: 10,
-                      fontWeight: "bold",
-                      top: "2px",
-                      right: "8px",
-                      lineHeight: 1.2,
-                    }}
-                  >
-                    Beginners day
-                  </Box>
-                )
-              }
             >
               {formatDay(day.day, language, timezone)}
             </Link>

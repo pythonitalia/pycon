@@ -23,6 +23,7 @@ const SponsorItem: React.FC<ItemProps> = ({ sponsor, color }) => (
       backgroundColor: color,
     }}
   >
+    {/*eslint-disable-next-line react/jsx-no-target-blank*/}
     <a
       target="_blank"
       href={sponsor.link!}

@@ -1,8 +1,8 @@
-import { GetStaticProps, GetStaticPaths } from "next";
+import { GetStaticPaths, GetStaticProps } from "next";
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
-import { addApolloState } from "~/apollo/client";
 
+import { addApolloState } from "~/apollo/client";
 import { MetaTags } from "~/components/meta-tags";
 import { SignupForm } from "~/components/signup-form";
 import { prefetchSharedQueries } from "~/helpers/prefetch";

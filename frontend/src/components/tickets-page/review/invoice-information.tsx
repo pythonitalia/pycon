@@ -6,7 +6,6 @@ import { Box, Grid, Heading, jsx } from "theme-ui";
 
 import { Link } from "~/components/link";
 import { useCountries } from "~/helpers/use-countries";
-import { useCurrentLanguage } from "~/locale/context";
 
 import { InvoiceInformationState } from "../types";
 import { ReviewItem } from "./review-item";
@@ -31,7 +30,6 @@ type Props = {
 
 export const InvoiceInformation: React.SFC<Props> = ({ data }) => {
   const countries = useCountries();
-  const lang = useCurrentLanguage();
   const isBusiness = data.isBusiness;
 
   return (
@@ -86,8 +84,9 @@ export const InvoiceInformation: React.SFC<Props> = ({ data }) => {
 
             switch (field.key) {
               case "country":
-                outputValue = countries.find((c) => c.value === inputValue)
-                  ?.label;
+                outputValue = countries.find(
+                  (c) => c.value === inputValue,
+                )?.label;
                 break;
               case "companyName":
                 if (!isBusiness) {

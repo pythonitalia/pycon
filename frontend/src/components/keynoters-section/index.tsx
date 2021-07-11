@@ -34,6 +34,7 @@ const Keynote = ({ title, speakers, image, highlightColor }: KeynoteProps) => (
         }}
         layout="fill"
         src={image}
+        alt="Speaker photo"
       />
     )}
     <Box

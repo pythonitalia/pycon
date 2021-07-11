@@ -2,7 +2,7 @@ import * as React from "react";
 
 const { useState } = React;
 
-// eslint-disable-next-line no-empty-function
+// eslint-disable-next-line @typescript-eslint/no-empty-function
 const noop = () => {};
 
 export type Element =

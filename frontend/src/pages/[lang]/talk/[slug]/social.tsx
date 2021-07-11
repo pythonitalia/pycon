@@ -1,11 +1,11 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { GetStaticProps, GetStaticPaths } from "next";
+import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import React, { Fragment } from "react";
 import { Box, Flex, Heading, jsx, Text } from "theme-ui";
-import { addApolloState } from "~/apollo/client";
 
+import { addApolloState } from "~/apollo/client";
 import { CardType, getSize } from "~/helpers/social-card";
 import { queryTalkSocialCard, useTalkSocialCardQuery } from "~/types";
 
@@ -60,8 +60,6 @@ const Snakes: React.SFC = (props) => (
   </svg>
 );
 
-type Props = {};
-
 const getTitleFontSize = (cardType: CardType) => {
   switch (cardType) {
     case "social":
@@ -72,7 +70,7 @@ const getTitleFontSize = (cardType: CardType) => {
   }
 };
 
-export const SocialCard: React.FC<Props> = () => {
+export const SocialCard = () => {
   const router = useRouter();
   const cardType = (router.query["card-type"] as CardType) || "social";
   const slug = router.query.slug as string;

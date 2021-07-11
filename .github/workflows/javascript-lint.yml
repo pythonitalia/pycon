@@ -3,11 +3,31 @@ name: Javascript Lint
 on: pull_request
 
 jobs:
-  tests:
+  changes:
     runs-on: ubuntu-latest
+    outputs:
+      services: ${{ steps.filter.outputs.changes }}
+    steps:
+    - uses: dorny/paths-filter@v2
+      id: filter
+      with:
+        token: ${{ github.token }}
+        filters: |
+          gateway:
+            - "gateway/**"
+          frontend:
+            - "frontend/**"
+          association-frontend:
+            - "association-frontend/**"
+
+  eslint:
+    runs-on: ubuntu-latest
+    needs: [changes]
+    if: ${{ needs.changes.outputs.services != '[]' && needs.changes.outputs.services != '' }}
     strategy:
+      fail-fast: false
       matrix:
-        service: [gateway]
+        service: ${{ fromJSON(needs.changes.outputs.services) }}
     defaults:
       run:
         working-directory: ./${{ matrix.service }}
@@ -16,21 +36,42 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '14'
-      - uses: dorny/paths-filter@v2
-        id: changed
-        with:
-          token: ${{ github.token }}
-          filters: .github/file-filters.yml
       - name: Cache dependencies
-        if: steps.changed.outputs.changed.${{ matrix.service }} == 'true'
         uses: actions/cache@v1
         id: cache
         with:
           path: ./node_modules
-          key: node_modules-${{ matrix.service }}-${{ hashFiles('yarn.lock') }}-v2
+          key: node_modules-${{ matrix.service }}-${{ hashFiles('yarn.lock') }}-v3
       - name: Install dependencies
-        if: steps.changed.outputs.changed.${{ matrix.service }} == 'true'
+        run: yarn install
+      - name: Codegen
+        if: ${{ matrix.service == 'frontend' || matrix.service == 'association-frontend' }}
+        run: yarn run codegen
+      - name: Lint
+        run: yarn run lint
+
+  tests:
+    runs-on: ubuntu-latest
+    needs: [changes]
+    strategy:
+      fail-fast: false
+      matrix:
+        service: ${{ fromJSON(needs.changes.outputs.services) }}
+    defaults:
+      run:
+        working-directory: ./${{ matrix.service }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: Cache dependencies
+        uses: actions/cache@v1
+        id: cache
+        with:
+          path: ./node_modules
+          key: node_modules-${{ matrix.service }}-${{ hashFiles('yarn.lock') }}-v3
+      - name: Install dependencies
         run: yarn install
       - name: Unit tests
-        if: steps.changed.outputs.changed.${{ matrix.service }} == 'true'
         run: yarn run test

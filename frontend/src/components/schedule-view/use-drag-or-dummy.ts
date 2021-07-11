@@ -9,7 +9,7 @@ import {
 export const useDragOrDummy = <
   DragObject extends DragObjectWithType,
   DropResult,
-  CollectedProps
+  CollectedProps,
 >(
   spec: { adminMode?: boolean } & DragSourceHookSpec<
     DragObject,
@@ -18,6 +18,7 @@ export const useDragOrDummy = <
   >,
 ): [CollectedProps, ConnectDragSource, ConnectDragPreview] => {
   if (spec.adminMode) {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     return useDrag(spec);
   }
 

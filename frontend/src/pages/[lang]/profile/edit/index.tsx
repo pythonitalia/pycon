@@ -7,11 +7,9 @@ import React, { useCallback, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import { Box, Card, Checkbox, Input, jsx, Label, Select, Text } from "theme-ui";
-// @ts-ignore
 import * as yup from "yup";
 
 import { addApolloState } from "~/apollo/client";
-import { Alert } from "~/components/alert";
 import { Button } from "~/components/button/button";
 import { InputWrapper } from "~/components/input-wrapper";
 import { MetaTags } from "~/components/meta-tags";
@@ -89,17 +87,19 @@ export const EditProfilePage: React.FC = () => {
   const router = useRouter();
   const language = useCurrentLanguage();
   const [loggedIn] = useLoginState();
-  const [
-    formState,
-    { text, select, checkbox, raw },
-  ] = useFormState<MeUserFields>(
-    {},
-    {
-      withIds: true,
-    },
-  );
+  const [formState, { text, select, checkbox, raw }] =
+    useFormState<MeUserFields>(
+      {},
+      {
+        withIds: true,
+      },
+    );
 
-  const { data: profileData, loading, error } = useMyEditProfileQuery({
+  const {
+    data: profileData,
+    loading,
+    error,
+  } = useMyEditProfileQuery({
     skip: !loggedIn,
     onCompleted: (data) => onMyProfileFetched(data, formState),
   });
@@ -132,20 +132,14 @@ export const EditProfilePage: React.FC = () => {
     return validationError;
   };
 
-  const [
-    update,
-    {
-      loading: updateProfileLoading,
-      error: updateProfileError,
-      data: updateProfileData,
-    },
-  ] = useUpdateProfileMutation({
-    onCompleted: (data) => {
-      if (data?.updateProfile?.__typename === "User") {
-        router.push("/[lang]/profile", `/${language}/profile`);
-      }
-    },
-  });
+  const [update, { loading: updateProfileLoading, data: updateProfileData }] =
+    useUpdateProfileMutation({
+      onCompleted: (data) => {
+        if (data?.updateProfile?.__typename === "User") {
+          router.push("/[lang]/profile", `/${language}/profile`);
+        }
+      },
+    });
 
   useEffect(() => {
     if (profileData && !loading) {

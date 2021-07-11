@@ -5,7 +5,7 @@ import { HotelRoom, OrderState, Voucher } from "../types";
 export const calculateProductPrice = (
   product: Ticket,
   voucher?: Voucher | null,
-) => {
+): number => {
   const basePrice = parseFloat(product.defaultPrice);
 
   if (voucher) {
@@ -38,7 +38,7 @@ export const calculateTotalAmount = (
     [x: string]: HotelRoom;
     [x: number]: HotelRoom;
   },
-) => {
+): number => {
   const ticketsPrice = Object.values(state.selectedProducts)
     .flat()
     .reduce(

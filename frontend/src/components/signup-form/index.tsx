@@ -40,7 +40,7 @@ export const SignupForm: React.SFC = () => {
     }
   });
 
-  const [signup, { loading, error, data }] = useSignupMutation({
+  const [signup, { loading, data }] = useSignupMutation({
     onCompleted(signupData) {
       if (!signupData || signupData.register.__typename !== "RegisterSuccess") {
         return;

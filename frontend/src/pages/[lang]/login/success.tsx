@@ -1,12 +1,12 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { GetStaticProps, GetStaticPaths } from "next";
+import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, jsx } from "theme-ui";
-import { addApolloState } from "~/apollo/client";
 
+import { addApolloState } from "~/apollo/client";
 import { useLoginState } from "~/components/profile/hooks";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useMessages } from "~/helpers/use-messages";
@@ -21,7 +21,7 @@ export const LoginSuccessPage = () => {
   const { addMessage } = useMessages();
 
   const errorMessage = useTranslatedMessage("global.somethingWentWrong");
-  const { loading, error, data } = useSocialLoginCheckQuery({
+  const { loading, error } = useSocialLoginCheckQuery({
     onCompleted(data) {
       if (data.me) {
         setLoggedIn(true);
