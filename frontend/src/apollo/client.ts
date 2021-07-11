@@ -9,6 +9,7 @@ import isEqual from "lodash/isEqual";
 
 import { setLoginState } from "../components/profile/hooks";
 import introspectionQueryResultData from "../generated/fragment-types.json";
+
 export const APOLLO_STATE_PROP_NAME = "__APOLLO_STATE__";
 
 const isUserLoggedOut = (graphErrors: readonly GraphQLError[]) =>

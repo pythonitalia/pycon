@@ -9,7 +9,7 @@
     "dev": "NODE_ENV=development PORT=3000 node server.js",
     "build": "npm run codegen && next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint src",
     "codegen": "graphql-codegen -r dotenv/config -c codegen.yml",
     "codegen:watch": "yarn codegen --watch",
     "test": "jest src/ --passWithNoTests"

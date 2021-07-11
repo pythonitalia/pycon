@@ -5,5 +5,6 @@ export const useSSRResponsiveValue = (values: any[]) => {
     return values[0];
   }
 
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   return useResponsiveValue(values);
 };

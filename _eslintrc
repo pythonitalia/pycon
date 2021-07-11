@@ -8,7 +8,9 @@
     "src/**/*.generated.ts",
     "src/generated",
     "next.config.js",
-    "public/"
+    "public/",
+    "**/*.graphql",
+    "src/types.tsx"
   ],
   "extends": [
     "plugin:@typescript-eslint/recommended",
