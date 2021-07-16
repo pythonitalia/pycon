@@ -35,13 +35,6 @@ module "pycon_backend" {
 module "gateway" {
   source = "./gateway"
 
-  pastaporto_secret         = var.pastaporto_secret
-  identity_secret           = var.identity_secret
-  service_to_service_secret = var.service_to_service_secret
-  pastaporto_action_secret  = var.pastaporto_action_secret
-  sentry_dsn                = var.gateway_sentry_dsn
-  apollo_key                = var.default_apollo_key
-
   providers = {
     aws    = aws
     aws.us = aws.us
@@ -49,15 +42,8 @@ module "gateway" {
 }
 
 module "admin_gateway" {
-  source = "./gateway"
-
-  pastaporto_secret         = var.pastaporto_secret
-  identity_secret           = var.identity_secret
-  service_to_service_secret = var.service_to_service_secret
-  pastaporto_action_secret  = var.pastaporto_action_secret
-  admin_variant             = true
-  sentry_dsn                = var.gateway_sentry_dsn
-  apollo_key                = var.admin_apollo_key
+  source        = "./gateway"
+  admin_variant = true
 
   providers = {
     aws    = aws

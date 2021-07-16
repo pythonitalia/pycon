@@ -48,16 +48,16 @@ module "lambda" {
   env_vars = {
     DEBUG        = "false"
     DATABASE_URL = "postgresql://${data.aws_db_instance.database.master_username}:${var.database_password}@${data.aws_db_instance.database.address}:${data.aws_db_instance.database.port}/association"
-    SENTRY_DSN   = var.sentry_dsn
+    SENTRY_DSN   = module.secrets.value.sentry_dsn
 
     # Services
     ASSOCIATION_FRONTEND_URL = local.association_frontend_url
 
     # Secrets
-    STRIPE_WEBHOOK_SIGNATURE_SECRET = var.stripe_webhook_secret
-    STRIPE_SUBSCRIPTION_PRICE_ID    = var.stripe_subscription_price_id
-    STRIPE_SECRET_API_KEY           = var.stripe_secret_api_key
-    PASTAPORTO_SECRET               = var.pastaporto_secret
+    STRIPE_WEBHOOK_SIGNATURE_SECRET = module.secrets.value.stripe_webhook_secret
+    STRIPE_SUBSCRIPTION_PRICE_ID    = module.secrets.value.stripe_membership_price_id
+    STRIPE_SECRET_API_KEY           = module.secrets.value.stripe_secret_api_key
+    PASTAPORTO_SECRET               = module.common_secrets.value.pastaporto_secret
   }
 }
 
