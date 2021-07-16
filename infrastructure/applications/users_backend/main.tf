@@ -50,7 +50,7 @@ module "lambda" {
     SECRET_KEY                = module.secrets.value.secret_key
     GOOGLE_AUTH_CLIENT_ID     = module.secrets.value.google_auth_client_id
     GOOGLE_AUTH_CLIENT_SECRET = module.secrets.value.google_auth_client_secret
-    DATABASE_URL              = "postgresql+asyncpg://${data.aws_db_instance.database.master_username}:${var.database_password}@${data.aws_db_instance.database.address}:${data.aws_db_instance.database.port}/users"
+    DATABASE_URL              = "postgresql+asyncpg://${data.aws_db_instance.database.master_username}:${module.common_secrets.value.database_password}@${data.aws_db_instance.database.address}:${data.aws_db_instance.database.port}/users"
     EMAIL_BACKEND             = "pythonit_toolkit.emails.backends.ses.SESEmailBackend"
     SENTRY_DSN                = module.secrets.value.sentry_dsn
 

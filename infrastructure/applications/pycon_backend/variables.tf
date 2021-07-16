@@ -1,1 +1,1 @@
-variable "database_password" {}
+variable "ssl_certificate" {}

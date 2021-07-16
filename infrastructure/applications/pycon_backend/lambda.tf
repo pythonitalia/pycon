@@ -45,7 +45,7 @@ resource "aws_lambda_function" "backend_lambda" {
 
   environment {
     variables = {
-      DATABASE_URL                     = "postgres://${data.aws_db_instance.database.master_username}:${var.database_password}@${data.aws_db_instance.database.address}:${data.aws_db_instance.database.port}/${data.aws_db_instance.database.db_name}"
+      DATABASE_URL                     = "postgres://${data.aws_db_instance.database.master_username}:${module.common_secrets.value.database_password}@${data.aws_db_instance.database.address}:${data.aws_db_instance.database.port}/${data.aws_db_instance.database.db_name}"
       DEBUG                            = "False"
       SECRET_KEY                       = module.secrets.value.secret_key
       MAPBOX_PUBLIC_API_KEY            = module.secrets.value.mapbox_public_api_key

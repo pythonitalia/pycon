@@ -47,7 +47,7 @@ module "lambda" {
   security_group_ids = [data.aws_security_group.rds.id, data.aws_security_group.lambda.id]
   env_vars = {
     DEBUG        = "false"
-    DATABASE_URL = "postgresql://${data.aws_db_instance.database.master_username}:${var.database_password}@${data.aws_db_instance.database.address}:${data.aws_db_instance.database.port}/association"
+    DATABASE_URL = "postgresql://${data.aws_db_instance.database.master_username}:${module.common_secrets.value.database_password}@${data.aws_db_instance.database.address}:${data.aws_db_instance.database.port}/association"
     SENTRY_DSN   = module.secrets.value.sentry_dsn
 
     # Services

@@ -68,7 +68,7 @@ resource "aws_elastic_beanstalk_environment" "env" {
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
     name      = "DATABASE_PASSWORD"
-    value     = var.database_password
+    value     = module.common_secrets.value.database_password
   }
 
   setting {

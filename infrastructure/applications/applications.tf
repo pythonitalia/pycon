@@ -8,13 +8,17 @@ module "pretix" {
   source = "./pretix"
   count  = local.deploy_pretix ? 1 : 0
 
-  database_password = var.database_password
+  mail_user         = var.mail_user
+  mail_password     = var.mail_password
+  secret_key        = var.pretix_secret_key
+  sentry_dsn        = var.pretix_sentry_dsn
+  ssl_certificate   = var.ssl_certificate
 }
 
 module "pycon_backend" {
   source = "./pycon_backend"
 
-  database_password = var.database_password
+  ssl_certificate = var.ssl_certificate
 }
 
 module "gateway" {
@@ -38,17 +42,11 @@ module "admin_gateway" {
 
 module "users_backend" {
   source = "./users_backend"
-
-  database_password = var.database_password
-
   depends_on = [module.database]
 }
 
 module "association_backend" {
   source = "./association_backend"
-
-  database_password = var.database_password
-
   depends_on = [module.database]
 }
 
@@ -60,6 +58,4 @@ module "email_templates" {
 
 module "database" {
   source = "./database"
-
-  database_password = var.database_password
 }
