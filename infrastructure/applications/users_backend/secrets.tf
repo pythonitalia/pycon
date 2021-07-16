@@ -1,5 +1,5 @@
 module "secrets" {
-  source = "../../components/secrets"
+  source  = "../../components/secrets"
   service = "users-backend"
 }
 
