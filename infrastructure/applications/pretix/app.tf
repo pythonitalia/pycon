@@ -80,25 +80,25 @@ resource "aws_elastic_beanstalk_environment" "env" {
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
     name      = "MAIL_USER"
-    value     = var.mail_user
+    value     = module.secrets.value.mail_user
   }
 
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
     name      = "MAIL_PASSWORD"
-    value     = var.mail_password
+    value     = module.secrets.value.mail_password
   }
 
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
     name      = "SENTRY_DSN"
-    value     = var.sentry_dsn
+    value     = module.secrets.value.sentry_dsn
   }
 
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
     name      = "SECRET_KEY"
-    value     = var.secret_key
+    value     = module.secrets.value.secret_key
   }
 
   # Are the load balancers multizone?

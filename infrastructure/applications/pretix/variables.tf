@@ -1,6 +1,0 @@
-variable "mail_user" {}
-variable "mail_password" {}
-variable "secret_key" {}
-variable "sentry_dsn" {}
-variable "ssl_certificate" {}
-variable "pretix_sentry_dsn" {}

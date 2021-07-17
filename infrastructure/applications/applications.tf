@@ -7,19 +7,10 @@ locals {
 module "pretix" {
   source = "./pretix"
   count  = local.deploy_pretix ? 1 : 0
-
-  mail_user         = var.mail_user
-  mail_password     = var.mail_password
-  secret_key        = var.pretix_secret_key
-  sentry_dsn        = var.pretix_sentry_dsn
-  ssl_certificate   = var.ssl_certificate
-  pretix_sentry_dsn = var.pretix_sentry_dsn
 }
 
 module "pycon_backend" {
   source = "./pycon_backend"
-
-  ssl_certificate = var.ssl_certificate
 }
 
 module "gateway" {

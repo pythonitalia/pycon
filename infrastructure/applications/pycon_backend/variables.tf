@@ -1,1 +1,0 @@
-variable "ssl_certificate" {}
