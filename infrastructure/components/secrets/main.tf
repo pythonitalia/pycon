@@ -3,11 +3,11 @@ data "external" "secrets" {
 
   query = {
     workspace = terraform.workspace
-    service = var.service
+    service   = var.service
   }
 }
 
 output "value" {
-  value = data.external.secrets.result
-  # sensitive = true
+  value     = data.external.secrets.result
+  sensitive = true
 }
