@@ -13,6 +13,7 @@ module "pretix" {
   secret_key        = var.pretix_secret_key
   sentry_dsn        = var.pretix_sentry_dsn
   ssl_certificate   = var.ssl_certificate
+  pretix_sentry_dsn = var.pretix_sentry_dsn
 }
 
 module "pycon_backend" {
@@ -41,12 +42,12 @@ module "admin_gateway" {
 }
 
 module "users_backend" {
-  source = "./users_backend"
+  source     = "./users_backend"
   depends_on = [module.database]
 }
 
 module "association_backend" {
-  source = "./association_backend"
+  source     = "./association_backend"
   depends_on = [module.database]
 }
 
