@@ -47,21 +47,21 @@ module "lambda" {
   security_group_ids = [data.aws_security_group.rds.id, data.aws_security_group.lambda.id]
   env_vars = {
     DEBUG                     = "false"
-    SECRET_KEY                = var.secret_key
-    GOOGLE_AUTH_CLIENT_ID     = var.google_auth_client_id
-    GOOGLE_AUTH_CLIENT_SECRET = var.google_auth_client_secret
-    DATABASE_URL              = "postgresql+asyncpg://${data.aws_db_instance.database.master_username}:${var.database_password}@${data.aws_db_instance.database.address}:${data.aws_db_instance.database.port}/users"
+    SECRET_KEY                = module.secrets.value.secret_key
+    GOOGLE_AUTH_CLIENT_ID     = module.secrets.value.google_auth_client_id
+    GOOGLE_AUTH_CLIENT_SECRET = module.secrets.value.google_auth_client_secret
+    DATABASE_URL              = "postgresql+asyncpg://${data.aws_db_instance.database.master_username}:${module.common_secrets.value.database_password}@${data.aws_db_instance.database.address}:${data.aws_db_instance.database.port}/users"
     EMAIL_BACKEND             = "pythonit_toolkit.emails.backends.ses.SESEmailBackend"
-    SENTRY_DSN                = var.sentry_dsn
+    SENTRY_DSN                = module.secrets.value.sentry_dsn
 
     # Services
     ASSOCIATION_FRONTEND_URL = local.association_frontend_url
 
     # Secrets
-    PASTAPORTO_SECRET         = var.pastaporto_secret
-    IDENTITY_SECRET           = var.identity_secret
-    SERVICE_TO_SERVICE_SECRET = var.service_to_service_secret
-    PASTAPORTO_ACTION_SECRET  = var.pastaporto_action_secret
+    PASTAPORTO_SECRET         = module.common_secrets.value.pastaporto_secret
+    IDENTITY_SECRET           = module.common_secrets.value.identity_secret
+    SERVICE_TO_SERVICE_SECRET = module.common_secrets.value.service_to_service_secret
+    PASTAPORTO_ACTION_SECRET  = module.common_secrets.value.pastaporto_action_secret
   }
 }
 

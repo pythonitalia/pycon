@@ -45,12 +45,12 @@ resource "aws_lambda_function" "backend_lambda" {
 
   environment {
     variables = {
-      DATABASE_URL                     = "postgres://${data.aws_db_instance.database.master_username}:${var.database_password}@${data.aws_db_instance.database.address}:${data.aws_db_instance.database.port}/${data.aws_db_instance.database.db_name}"
+      DATABASE_URL                     = "postgres://${data.aws_db_instance.database.master_username}:${module.common_secrets.value.database_password}@${data.aws_db_instance.database.address}:${data.aws_db_instance.database.port}/${data.aws_db_instance.database.db_name}"
       DEBUG                            = "False"
-      SECRET_KEY                       = var.secret_key
-      MAPBOX_PUBLIC_API_KEY            = var.mapbox_public_api_key
-      SENTRY_DSN                       = var.sentry_dsn
-      SLACK_INCOMING_WEBHOOK_URL       = var.slack_incoming_webhook_url
+      SECRET_KEY                       = module.secrets.value.secret_key
+      MAPBOX_PUBLIC_API_KEY            = module.secrets.value.mapbox_public_api_key
+      SENTRY_DSN                       = module.secrets.value.sentry_dsn
+      SLACK_INCOMING_WEBHOOK_URL       = module.secrets.value.slack_incoming_webhook_url
       ALLOWED_HOSTS                    = "*"
       DJANGO_SETTINGS_MODULE           = "pycon.settings.prod"
       AWS_MEDIA_BUCKET                 = aws_s3_bucket.backend_media.id
@@ -58,11 +58,11 @@ resource "aws_lambda_function" "backend_lambda" {
       EMAIL_BACKEND                    = "django_ses.SESBackend"
       FRONTEND_URL                     = "https://pycon.it"
       PRETIX_API                       = "https://tickets.pycon.it/api/v1/"
-      PRETIX_API_TOKEN                 = var.pretix_api_token
-      PINPOINT_APPLICATION_ID          = var.pinpoint_application_id
-      SOCIAL_AUTH_GOOGLE_OAUTH2_KEY    = var.social_auth_google_oauth2_key
-      SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = var.social_auth_google_oauth2_secret
-      PASTAPORTO_SECRET                = var.pastaporto_secret
+      PRETIX_API_TOKEN                 = module.secrets.value.pretix_api_token
+      PINPOINT_APPLICATION_ID          = module.secrets.value.pinpoint_application_id
+      SOCIAL_AUTH_GOOGLE_OAUTH2_KEY    = module.secrets.value.google_oauth2_key
+      SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = module.secrets.value.google_oauth2_secret
+      PASTAPORTO_SECRET                = module.common_secrets.value.pastaporto_secret
     }
   }
 }

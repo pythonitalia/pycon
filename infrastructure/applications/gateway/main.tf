@@ -20,16 +20,16 @@ module "lambda" {
   env_vars = {
     NODE_ENV             = "production"
     VARIANT              = var.admin_variant ? "admin" : "default"
-    SENTRY_DSN           = var.sentry_dsn
-    APOLLO_KEY           = var.apollo_key
+    SENTRY_DSN           = module.secrets.value.sentry_dsn
+    APOLLO_KEY           = var.admin_variant ? module.secrets.value.admin_apollo_key : module.secrets.value.default_apollo_key
     APOLLO_GRAPH_ID      = var.admin_variant ? "admin-python-italia" : "default-python-italia"
     APOLLO_GRAPH_VARIANT = terraform.workspace
     USERS_SERVICE        = local.users_service_url
     # Secrets
-    PASTAPORTO_SECRET         = var.pastaporto_secret
-    IDENTITY_SECRET           = var.identity_secret
-    SERVICE_TO_SERVICE_SECRET = var.service_to_service_secret
-    PASTAPORTO_ACTION_SECRET  = var.pastaporto_action_secret
+    PASTAPORTO_SECRET         = module.common_secrets.value.pastaporto_secret
+    IDENTITY_SECRET           = module.common_secrets.value.identity_secret
+    SERVICE_TO_SERVICE_SECRET = module.common_secrets.value.service_to_service_secret
+    PASTAPORTO_ACTION_SECRET  = module.common_secrets.value.pastaporto_action_secret
   }
 }
 
