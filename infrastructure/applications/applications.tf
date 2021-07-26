@@ -11,6 +11,11 @@ module "pretix" {
 
 module "pycon_backend" {
   source = "./pycon_backend"
+
+  providers = {
+    aws    = aws
+    aws.us = aws.us
+  }
 }
 
 module "gateway" {
