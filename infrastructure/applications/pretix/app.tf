@@ -49,7 +49,7 @@ resource "aws_elastic_beanstalk_environment" "env" {
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "IamInstanceProfile"
-    value     = "ng-beanstalk-ec2-user-production"
+    value     = aws_iam_instance_profile.pretix.name
   }
 
   setting {

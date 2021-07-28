@@ -52,6 +52,13 @@ DEFAULT_FROM_EMAIL = "noreply@pycon.it"
 SIMULATE_PRETIX_DB = False
 DATABASES["pretix"] = {**DATABASES["default"], "NAME": "pretix"}
 
-CSRF_TRUSTED_ORIGINS = ["admin.pycon.it", "pycon.it"]
+# TODO: Make this setting dynamic
+CSRF_TRUSTED_ORIGINS = [
+    # Staging domain
+    "pastaporto-admin.pycon.it",
+    # Production domain
+    "admin.pycon.it",
+    "pycon.it",
+]
 
 PASTAPORTO_SECRET = env("PASTAPORTO_SECRET")

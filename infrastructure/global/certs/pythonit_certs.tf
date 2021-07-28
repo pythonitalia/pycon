@@ -1,4 +1,4 @@
-data "aws_route53_zone" "domain" {
+data "aws_route53_zone" "pythonit_domain" {
   name = "python.it."
 }
 
@@ -25,7 +25,7 @@ resource "aws_route53_record" "pythonit_validation" {
 
   name    = each.value.name
   type    = each.value.type
-  zone_id = data.aws_route53_zone.domain.zone_id
+  zone_id = data.aws_route53_zone.pythonit_domain.zone_id
   records = [each.value.record]
   ttl     = 60
 }

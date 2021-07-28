@@ -1,10 +1,5 @@
-resource "aws_iam_instance_profile" "pycon" {
-  name = "ng-beanstalk-ec2-user-${terraform.workspace}"
-  role = aws_iam_role.pycon.name
-}
-
-resource "aws_iam_role" "pycon" {
-  name = "ng-beanstalk-ec2-role-${terraform.workspace}"
+resource "aws_iam_role" "pretix" {
+  name = "pretix-${terraform.workspace}"
 
   assume_role_policy = <<EOF
 {
@@ -23,9 +18,14 @@ resource "aws_iam_role" "pycon" {
 EOF
 }
 
-resource "aws_iam_role_policy" "pycon" {
-  name = "pycon_with_ECR"
-  role = aws_iam_role.pycon.id
+resource "aws_iam_instance_profile" "pretix" {
+  name = "pretix-${terraform.workspace}"
+  role = aws_iam_role.pretix.name
+}
+
+resource "aws_iam_role_policy" "pretix" {
+  name = "pretix-policy-${terraform.workspace}"
+  role = aws_iam_role.pretix.id
 
   policy = <<EOF
 {

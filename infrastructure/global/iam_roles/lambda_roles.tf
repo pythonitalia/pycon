@@ -46,9 +46,23 @@ data "aws_iam_policy_document" "lambda_role" {
   # SES
   statement {
     actions = [
-      "ses:SendTemplatedEmail",
+      "ses:*"
     ]
     resources = ["*"]
     effect    = "Allow"
+  }
+
+  # S3
+  statement {
+    actions = [
+      "s3:PutObject",
+      "s3:PutObjectAcl",
+      "s3:GetObject",
+      "s3:GetObjectVersion",
+    ]
+    resources = [
+      "arn:aws:s3:::*-pycon-backend-media/*"
+    ]
+    effect = "Allow"
   }
 }
