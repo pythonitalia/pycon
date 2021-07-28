@@ -24,7 +24,7 @@ resource "aws_iam_instance_profile" "pretix" {
 }
 
 resource "aws_iam_role_policy" "pretix" {
-  name = "pretix-policy-${terraform.worksapce}"
+  name = "pretix-policy-${terraform.workspace}"
   role = aws_iam_role.pretix.id
 
   policy = <<EOF
