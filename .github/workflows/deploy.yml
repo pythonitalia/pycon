@@ -275,6 +275,7 @@ jobs:
     needs: [create-graph-schemas, terraform]
 
     strategy:
+      fail-fast: false
       matrix:
         service:
           - name: users-backend
@@ -322,6 +323,7 @@ jobs:
     needs: [create-graph-schemas, terraform]
 
     strategy:
+      fail-fast: false
       matrix:
         service:
           - name: users-backend
