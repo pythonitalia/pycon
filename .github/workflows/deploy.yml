@@ -295,7 +295,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [create-graph-schemas, terraform]
     environment:
-      name: ${{ env.TF_WORKSPACE }}
+      name: ${{ fromJSON('["pastaporto", "production"]')[github.ref == 'refs/heads/master'] }}
 
     strategy:
       fail-fast: false
@@ -347,7 +347,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [create-graph-schemas, terraform]
     environment:
-      name: ${{ env.TF_WORKSPACE }}
+      name: ${{ fromJSON('["pastaporto", "production"]')[github.ref == 'refs/heads/master'] }}
 
     strategy:
       fail-fast: false
