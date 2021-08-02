@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - master
+  workflow_dispatch:
+    types: [deploy-staging]
 
 env:
-  TF_WORKSPACE: "production"
+  TF_WORKSPACE:  ${{ fromJSON('["pastaporto", "production"]')[github.ref == 'refs/heads/master'] }}
   APOLLO_ROVER_VERSION: 0.1.9
   RUSH_VERSION: 0.4.2
 
@@ -42,7 +44,7 @@ jobs:
           file: ./${{ matrix.service }}/Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
           push: true
-          tags: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/${{ matrix.service }}:production
+          tags: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/${{ matrix.service }}:${{ env.TF_WORKSPACE }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
 
@@ -72,7 +74,7 @@ jobs:
           file: ./backend/Dockerfile.lambda
           builder: ${{ steps.buildx.outputs.name }}
           push: true
-          tags: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/pycon-backend:production
+          tags: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/pycon-backend:${{ env.TF_WORKSPACE }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
 
@@ -232,7 +234,7 @@ jobs:
       - uses: actions/checkout@master
       - name: Migrate PyCon Backend DB
         run: |
-          aws lambda invoke --function-name production-pycon-backend --cli-binary-format raw-in-base64-out --payload '{ "_serverless-wsgi": { "command": "manage", "data": "migrate" } }' response.json
+          aws lambda invoke --function-name ${{ env.TF_WORKSPACE }}-pycon-backend --cli-binary-format raw-in-base64-out --payload '{ "_serverless-wsgi": { "command": "manage", "data": "migrate" } }' response.json
           cat response.json
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -247,7 +249,7 @@ jobs:
       - uses: actions/checkout@master
       - name: Migrate Users Backend DB
         run: |
-          aws lambda invoke --function-name production-users-backend --cli-binary-format raw-in-base64-out --payload '{ "_cli_command": { "action": "migrate" } }' response.json
+          aws lambda invoke --function-name ${{ env.TF_WORKSPACE }}-users-backend --cli-binary-format raw-in-base64-out --payload '{ "_cli_command": { "action": "migrate" } }' response.json
           cat response.json
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -262,7 +264,7 @@ jobs:
       - uses: actions/checkout@master
       - name: Migrate Association Backend DB
         run: |
-          aws lambda invoke --function-name production-association-backend --cli-binary-format raw-in-base64-out --payload '{ "_cli_command": { "action": "migrate" } }' response.json
+          aws lambda invoke --function-name ${{ env.TF_WORKSPACE }}-association-backend --cli-binary-format raw-in-base64-out --payload '{ "_cli_command": { "action": "migrate" } }' response.json
           cat response.json
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -316,7 +318,7 @@ jobs:
           service-graphql-url: ${{ matrix.service.url }}
           apollo-key: ${{ secrets.TF_VAR_DEFAULT_APOLLO_KEY }}
           graph: default-python-italia
-          variant: production
+          variant: ${{ env.TF_WORKSPACE }}
 
   update-admin-apollo-studio-graph:
     runs-on: ubuntu-latest
@@ -358,4 +360,4 @@ jobs:
           service-graphql-url: ${{ matrix.service.url }}
           apollo-key: ${{ secrets.TF_VAR_ADMIN_APOLLO_KEY }}
           graph: admin-python-italia
-          variant: production
+          variant: ${{ env.TF_WORKSPACE }}
