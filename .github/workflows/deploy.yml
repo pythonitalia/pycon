@@ -4,11 +4,8 @@ on:
   push:
     branches:
       - master
-  workflow_dispatch:
-    inputs:
-      comment-id:
-        description: 'The comment-id of the slash command'
-        required: true
+  repository_dispatch:
+    types: [deploy-command]
 
 env:
   TF_WORKSPACE:  ${{ fromJSON('["pastaporto", "production"]')[github.ref == 'refs/heads/master'] }}
