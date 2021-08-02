@@ -5,7 +5,7 @@ on:
     branches:
       - master
   workflow_dispatch:
-    types: [deploy-staging]
+    types: [deploy-staging-command]
 
 env:
   TF_WORKSPACE:  ${{ fromJSON('["pastaporto", "production"]')[github.ref == 'refs/heads/master'] }}
