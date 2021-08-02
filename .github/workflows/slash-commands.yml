@@ -13,7 +13,6 @@ jobs:
         with:
           token: ${{ secrets.BOT_TOKEN }}
           reaction-token: ${{ secrets.BOT_TOKEN }}
-          reaction-type: hooray
           permission: admin
           dispatch-type: workflow
           commands: |
