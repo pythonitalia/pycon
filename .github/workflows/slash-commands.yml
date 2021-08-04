@@ -36,7 +36,7 @@ jobs:
             deploy
           static-args: |
             comment-id=${{ github.event.comment.id }}
-            ref=${{ fromJSON(steps.get-pr.outputs.result).head.sha }}
+            ref=${{ fromJSON(steps.get-pr.outputs.result).head.ref }}
       - name: Edit comment with error message
         if: steps.scd.outputs.error-message
         uses: peter-evans/create-or-update-comment@v1
