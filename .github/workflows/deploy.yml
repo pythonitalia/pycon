@@ -16,8 +16,32 @@ env:
   RUSH_VERSION: 0.4.2
 
 jobs:
+  changed-services:
+    runs-on: ubuntu-latest
+    outputs:
+      services: ${{ steps.filter.outputs.changes }}
+    steps:
+      - uses: actions/checkout@master
+        with:
+          ref: ${{ github.ref }}
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          token: ${{ github.token }}
+          filters: |
+            gateway:
+              - "gateway/**"
+            association-backend:
+              - "association-backend/**"
+            pycon-backend:
+              - backend/**"
+            users-backend:
+              - users-backend/**"
+
   build-and-push-service:
     runs-on: ubuntu-latest
+    needs: [changed-services]
+
     strategy:
       matrix:
         service:
@@ -32,17 +56,21 @@ jobs:
 
     steps:
       - uses: actions/checkout@master
+        if: ${{ contains(matrix.service.name, fromJSON(needs.changed-services.outputs.services)) }}
         with:
           ref: ${{ github.ref }}
       - name: Docker login
+        if: ${{ contains(matrix.service.name, fromJSON(needs.changed-services.outputs.services)) }}
         run: aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       - name: Set up Docker Buildx
+        if: ${{ contains(matrix.service.name, fromJSON(needs.changed-services.outputs.services)) }}
         id: buildx
         uses: docker/setup-buildx-action@v1
       - name: Cache Docker layers
+        if: ${{ contains(matrix.service.name, fromJSON(needs.changed-services.outputs.services)) }}
         uses: actions/cache@v2
         with:
           path: /tmp/.buildx-cache
@@ -51,6 +79,7 @@ jobs:
             ${{ runner.os }}-buildx-
             ${{ runner.os }}-buildx-${{ github.sha }}
       - name: Build and push
+        if: ${{ contains(matrix.service.name, fromJSON(needs.changed-services.outputs.services)) }}
         uses: docker/build-push-action@v2
         with:
           context: ./${{ matrix.service.dir }}
