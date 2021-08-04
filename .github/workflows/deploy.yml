@@ -110,6 +110,8 @@ jobs:
 
   create-graph-schemas:
     runs-on: ubuntu-latest
+    needs: [changed-services]
+    if: ${{ needs.changed-services.outputs.services != '[]' && needs.changed-services.outputs.services != '' }}
     services:
       postgres:
         image: postgres:11.10
@@ -210,6 +212,7 @@ jobs:
           name: graphql-files
           path: ./schemas
 
+  # Apply infrastructure changes
   terraform:
     runs-on: ubuntu-latest
     needs: [build-emails, build-and-push-service]
@@ -245,6 +248,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: eu-central-1
 
+  # Migrate the database
   migrate-pycon-backend-db:
     runs-on: ubuntu-latest
     needs: [terraform]
@@ -296,9 +300,11 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
 
+  # Upload new schemas to Apollo Studio
   update-default-apollo-studio-graph:
     runs-on: ubuntu-latest
-    needs: [create-graph-schemas, terraform]
+    needs: [create-graph-schemas, terraform, changed-services]
+    if: ${{ needs.changed-services.outputs.services != '[]' && needs.changed-services.outputs.services != '' }}
     environment:
       name: ${{ fromJSON('["pastaporto", "production"]')[github.ref == 'refs/heads/master'] }}
 
@@ -350,7 +356,8 @@ jobs:
 
   update-admin-apollo-studio-graph:
     runs-on: ubuntu-latest
-    needs: [create-graph-schemas, terraform]
+    needs: [create-graph-schemas, terraform, changed-services]
+    if: ${{ needs.changed-services.outputs.services != '[]' && needs.changed-services.outputs.services != '' }}
     environment:
       name: ${{ fromJSON('["pastaporto", "production"]')[github.ref == 'refs/heads/master'] }}
 
