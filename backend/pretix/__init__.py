@@ -5,8 +5,9 @@ from urllib.parse import urljoin
 
 import requests
 import strawberry
-from conferences.models.conference import Conference
 from django.conf import settings
+
+from conferences.models.conference import Conference
 from hotels.models import HotelRoom
 
 from .exceptions import PretixError
@@ -15,10 +16,13 @@ logger = logging.getLogger(__file__)
 
 
 def get_api_url(conference, endpoint, query):
-    return urljoin(
-        settings.PRETIX_API,
-        f"organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/{endpoint}",  # noqa
-    ) + append_qs(query or {})
+    return (
+        urljoin(
+            settings.PRETIX_API,
+            f"organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/{endpoint}",  # noqa
+        )
+        + append_qs(query or {})
+    )
 
 
 def append_qs(querystring):
@@ -112,9 +116,9 @@ class CreateOrderTicketAnswer:
 @strawberry.input
 class CreateOrderTicket:
     ticket_id: str
-    variation: typing.Optional[str]
     attendee_name: str
     attendee_email: str
+    variation: typing.Optional[str] = None
     answers: typing.Optional[typing.List[CreateOrderTicketAnswer]] = None
     voucher: typing.Optional[str] = None
 
