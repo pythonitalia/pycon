@@ -303,13 +303,13 @@ jobs:
         service:
           - name: users-backend
             path: ${{ needs.create-graph-schemas.outputs.default-users-backend-schema }}
-            url: https://users-api.python.it/graphql
+            url: https://${{ fromJSON('["pastaporto-", ""]')[github.ref == 'refs/heads/master'] }}users-api.python.it/graphql
           - name: association-backend
             path: ${{ needs.create-graph-schemas.outputs.default-association-backend-schema }}
-            url: https://association-api.python.it/graphql
+            url: https://${{ fromJSON('["pastaporto-", ""]')[github.ref == 'refs/heads/master'] }}association-api.python.it/graphql
           - name: pycon-backend
             path: ${{ needs.create-graph-schemas.outputs.default-pycon-backend-schema }}
-            url: https://admin.pycon.it/graphql
+            url: https://${{ fromJSON('["pastaporto-", ""]')[github.ref == 'refs/heads/master'] }}admin.pycon.it/graphql
           - name: logout
             path: ./gateway/internal-services/logout/schema.graphql
             url: https://logout
@@ -355,7 +355,7 @@ jobs:
         service:
           - name: users-backend
             path: ${{ needs.create-graph-schemas.outputs.admin-users-backend-schema }}
-            url: https://users-api.python.it/admin-api
+            url: https://${{ fromJSON('["pastaporto-", ""]')[github.ref == 'refs/heads/master'] }}users-api.python.it/admin-api
           - name: logout
             path: ./gateway/internal-services/logout/schema.graphql
             url: https://logout
