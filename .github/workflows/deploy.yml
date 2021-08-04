@@ -56,21 +56,21 @@ jobs:
 
     steps:
       - uses: actions/checkout@master
-        if: ${{ contains(matrix.service.name, fromJSON(needs.changed-services.outputs.services)) }}
+        if: ${{ contains(fromJSON(needs.changed-services.outputs.services), matrix.service.name) }}
         with:
           ref: ${{ github.ref }}
       - name: Docker login
-        if: ${{ contains(matrix.service.name, fromJSON(needs.changed-services.outputs.services)) }}
+        if: ${{ contains(fromJSON(needs.changed-services.outputs.services), matrix.service.name) }}
         run: aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       - name: Set up Docker Buildx
-        if: ${{ contains(matrix.service.name, fromJSON(needs.changed-services.outputs.services)) }}
+        if: ${{ contains(fromJSON(needs.changed-services.outputs.services), matrix.service.name) }}
         id: buildx
         uses: docker/setup-buildx-action@v1
       - name: Cache Docker layers
-        if: ${{ contains(matrix.service.name, fromJSON(needs.changed-services.outputs.services)) }}
+        if: ${{ contains(fromJSON(needs.changed-services.outputs.services), matrix.service.name) }}
         uses: actions/cache@v2
         with:
           path: /tmp/.buildx-cache
@@ -79,7 +79,7 @@ jobs:
             ${{ runner.os }}-buildx-
             ${{ runner.os }}-buildx-${{ github.sha }}
       - name: Build and push
-        if: ${{ contains(matrix.service.name, fromJSON(needs.changed-services.outputs.services)) }}
+        if: ${{ contains(fromJSON(needs.changed-services.outputs.services), matrix.service.name) }}
         uses: docker/build-push-action@v2
         with:
           context: ./${{ matrix.service.dir }}
