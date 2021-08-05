@@ -229,7 +229,7 @@ jobs:
           path: email-templates/build_production
       - uses: hashicorp/setup-terraform@v1
         with:
-          terraform_version: 0.14.4
+          terraform_version: 1.0.4
       - name: Terraform Init
         run: terraform init
         env:
