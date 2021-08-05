@@ -3,7 +3,7 @@ name: Deploy
 on:
   push:
     branches:
-      - master
+      - main
   workflow_dispatch:
     inputs:
       comment-id:
@@ -11,7 +11,7 @@ on:
         required: true
 
 env:
-  TF_WORKSPACE:  ${{ fromJSON('["pastaporto", "production"]')[github.ref == 'refs/heads/master'] }}
+  TF_WORKSPACE:  ${{ fromJSON('["pastaporto", "production"]')[github.ref == 'refs/heads/main'] }}
   APOLLO_ROVER_VERSION: 0.1.9
   RUSH_VERSION: 0.4.2
 
@@ -21,7 +21,7 @@ jobs:
     outputs:
       services: ${{ steps.filter.outputs.changes }}
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
         with:
           ref: ${{ github.ref }}
       - uses: dorny/paths-filter@v2
@@ -55,7 +55,7 @@ jobs:
             dir: backend
 
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
         if: ${{ contains(fromJSON(needs.changed-services.outputs.services), matrix.service.name) }}
         with:
           ref: ${{ github.ref }}
@@ -96,7 +96,7 @@ jobs:
       run:
         working-directory: ./email-templates/
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
         with:
           ref: ${{ github.ref }}
       - name: Install dependencies
@@ -128,7 +128,7 @@ jobs:
       default-association-backend-schema: ${{ steps.default-association-backend-schema.outputs.schema-path }}
       admin-users-backend-schema: ${{ steps.admin-users-backend-schema.outputs.schema-path }}
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
         with:
           ref: ${{ github.ref }}
       - uses: actions/setup-python@v2
@@ -220,7 +220,7 @@ jobs:
       run:
         working-directory: ./infrastructure/applications
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
         with:
           ref: ${{ github.ref }}
       - uses: actions/download-artifact@v2
@@ -254,7 +254,7 @@ jobs:
     needs: [terraform, changed-services]
     if: contains(fromJSON(needs.changed-services.outputs.services), 'pycon-backend')
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
         with:
           ref: ${{ github.ref }}
       - name: Migrate PyCon Backend DB
@@ -272,7 +272,7 @@ jobs:
     needs: [terraform, changed-services]
     if: contains(fromJSON(needs.changed-services.outputs.services), 'users-backend')
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
         with:
           ref: ${{ github.ref }}
       - name: Migrate Users Backend DB
@@ -290,7 +290,7 @@ jobs:
     needs: [terraform, changed-services]
     if: contains(fromJSON(needs.changed-services.outputs.services), 'association-backend')
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
         with:
           ref: ${{ github.ref }}
       - name: Migrate Association Backend DB
@@ -309,7 +309,7 @@ jobs:
     needs: [create-graph-schemas, terraform, changed-services]
     if: ${{ needs.changed-services.outputs.services != '[]' && needs.changed-services.outputs.services != '' }}
     environment:
-      name: ${{ fromJSON('["pastaporto", "production"]')[github.ref == 'refs/heads/master'] }}
+      name: ${{ fromJSON('["pastaporto", "production"]')[github.ref == 'refs/heads/main'] }}
 
     strategy:
       fail-fast: false
@@ -317,19 +317,19 @@ jobs:
         service:
           - name: users-backend
             path: ${{ needs.create-graph-schemas.outputs.default-users-backend-schema }}
-            url: https://${{ fromJSON('["pastaporto-", ""]')[github.ref == 'refs/heads/master'] }}users-api.python.it/graphql
+            url: https://${{ fromJSON('["pastaporto-", ""]')[github.ref == 'refs/heads/main'] }}users-api.python.it/graphql
           - name: association-backend
             path: ${{ needs.create-graph-schemas.outputs.default-association-backend-schema }}
-            url: https://${{ fromJSON('["pastaporto-", ""]')[github.ref == 'refs/heads/master'] }}association-api.python.it/graphql
+            url: https://${{ fromJSON('["pastaporto-", ""]')[github.ref == 'refs/heads/main'] }}association-api.python.it/graphql
           - name: pycon-backend
             path: ${{ needs.create-graph-schemas.outputs.default-pycon-backend-schema }}
-            url: https://${{ fromJSON('["pastaporto-", ""]')[github.ref == 'refs/heads/master'] }}admin.pycon.it/graphql
+            url: https://${{ fromJSON('["pastaporto-", ""]')[github.ref == 'refs/heads/main'] }}admin.pycon.it/graphql
           - name: logout
             path: ./gateway/internal-services/logout/schema.graphql
             url: https://logout
 
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
         with:
           ref: ${{ github.ref }}
       - uses: actions/download-artifact@v2
@@ -362,7 +362,7 @@ jobs:
     needs: [create-graph-schemas, terraform, changed-services]
     if: ${{ needs.changed-services.outputs.services != '[]' && needs.changed-services.outputs.services != '' }}
     environment:
-      name: ${{ fromJSON('["pastaporto", "production"]')[github.ref == 'refs/heads/master'] }}
+      name: ${{ fromJSON('["pastaporto", "production"]')[github.ref == 'refs/heads/main'] }}
 
     strategy:
       fail-fast: false
@@ -370,13 +370,13 @@ jobs:
         service:
           - name: users-backend
             path: ${{ needs.create-graph-schemas.outputs.admin-users-backend-schema }}
-            url: https://${{ fromJSON('["pastaporto-", ""]')[github.ref == 'refs/heads/master'] }}users-api.python.it/admin-api
+            url: https://${{ fromJSON('["pastaporto-", ""]')[github.ref == 'refs/heads/main'] }}users-api.python.it/admin-api
           - name: logout
             path: ./gateway/internal-services/logout/schema.graphql
             url: https://logout
 
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
         with:
           ref: ${{ github.ref }}
       - uses: actions/download-artifact@v2
