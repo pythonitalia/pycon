@@ -37,7 +37,7 @@ jobs:
             deploy-toolkit
           static-args: |
             comment-id=${{ github.event.comment.id }}
-            event-number=${{ github.event.number }}
+            event-number=${{ github.event.issue.number }}
             ref=${{ fromJSON(steps.get-pr.outputs.result).head.ref }}
       - name: Edit comment with error message
         if: steps.scd.outputs.error-message
