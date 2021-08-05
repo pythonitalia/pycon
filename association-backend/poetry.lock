@@ -573,7 +573,7 @@ six = ">=1.4.0"
 
 [[package]]
 name = "pythonit-toolkit"
-version = "0.1.53"
+version = "0.1.55.dev1628202090"
 description = ""
 category = "main"
 optional = false
@@ -890,7 +890,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "eacca1a7ba5b780372ce447257a7f6cc626267c41b91a016b4dc4f1253500e2c"
+content-hash = "76bfe909869532fccb2352a4b1d303ccbfb53eab2cb1ba66d8bead941a556e21"
 
 [metadata.files]
 alembic = [
@@ -1279,8 +1279,8 @@ python-multipart = [
     {file = "python-multipart-0.0.5.tar.gz", hash = "sha256:f7bb5f611fc600d15fa47b3974c8aa16e93724513b49b5f95c81e6624c83fa43"},
 ]
 pythonit-toolkit = [
-    {file = "pythonit-toolkit-0.1.53.tar.gz", hash = "sha256:9748bc1ca35ed9202ed885aca479302422b0d79474c82d134e461f9b01cc9b6d"},
-    {file = "pythonit_toolkit-0.1.53-py3-none-any.whl", hash = "sha256:c2360dbed93950fc4526d3cd9b50819bd3bf6c97e45a551acf1d732a02b17215"},
+    {file = "pythonit-toolkit-0.1.55.dev1628202090.tar.gz", hash = "sha256:d9694544de0575bd4983f2c1718686ac1d4c6a41eebbb35007fd1c0510688a18"},
+    {file = "pythonit_toolkit-0.1.55.dev1628202090-py3-none-any.whl", hash = "sha256:ed6e7a4e82d711798c2241a189ac6c7f3c9def3bc92abb043efd3eb3bf3ed913"},
 ]
 requests = [
     {file = "requests-2.25.1-py2.py3-none-any.whl", hash = "sha256:c210084e36a42ae6b9219e00e48287def368a26d03a048ddad7bfee44f75871e"},
