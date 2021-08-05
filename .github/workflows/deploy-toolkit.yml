@@ -84,7 +84,7 @@ jobs:
           git config user.email "noreply@python.it"
 
           git add pyproject.toml
-          git commit -m "🔨 Published Toolkit v$(poetry version -s)"
+          git commit -m "🔨 Published Toolkit v$(poetry version -s) [skip ci]"
           git push
       - name: Create or update comment
         uses: peter-evans/create-or-update-comment@v1
