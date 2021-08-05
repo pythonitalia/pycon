@@ -34,6 +34,7 @@ jobs:
           event-type-suffix: ""
           commands: |
             deploy
+            deploy-toolkit
           static-args: |
             comment-id=${{ github.event.comment.id }}
             ref=${{ fromJSON(steps.get-pr.outputs.result).head.ref }}
