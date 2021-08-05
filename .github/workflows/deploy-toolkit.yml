@@ -1,0 +1,42 @@
+name: Deploy Toolkit library
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'toolkit/**/*'
+  workflow_dispatch:
+    inputs:
+      comment-id:
+        description: 'The comment-id of the slash command'
+        required: true
+
+jobs:
+  publish-library:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref }}
+      - name: Install poetry
+        run: pip install poetry
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - name: Update version
+        working-directory: ./toolkit
+        if: ${{ github.ref == 'refs/heads/main' }}
+        run: poetry version patch
+      - name: Update to pre-release version
+        working-directory: ./toolkit
+        if: ${{ github.ref != 'refs/heads/main' }}
+        run: |
+          poetry version patch
+          poetry version $(poetry version -s)-dev.$(date '+%s')
+      - name: Build & Publish
+        working-directory: ./toolkit
+        env:
+          POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
+        run: poetry publish --username __token__ --build
