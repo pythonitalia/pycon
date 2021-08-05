@@ -9,6 +9,8 @@ import jwt
 from .exceptions import InvalidPastaportoError
 from .tokens import decode_pastaporto
 
+# Test edit
+
 
 class Credential(str, Enum):
     AUTHENTICATED = "authenticated"
