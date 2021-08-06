@@ -40,7 +40,7 @@ jobs:
           token: ${{ secrets.BOT_TOKEN }}
           issue-number: ${{ github.event.inputs.event-number }}
           comment-author: pythonitaliabot
-          body-includes: "# Pre-release"
+          body-includes: "Pre-release"
       - name: Create or update comment
         uses: peter-evans/create-or-update-comment@v1
         if: ${{ github.ref != 'refs/heads/main' }}
