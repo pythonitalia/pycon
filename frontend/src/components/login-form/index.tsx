@@ -84,13 +84,19 @@ export const LoginForm: React.SFC<FormProps> = ({ next, ...props }) => {
         }}
       >
         {messages.map((message) => (
-          <Alert variant={message.type} key={message.message}>
+          <Alert
+            data-testid="generic-error-alert"
+            variant={message.type}
+            key={message.message}
+          >
             {message.message}
           </Alert>
         ))}
 
         {loginData?.login?.__typename === "WrongEmailOrPassword" && (
-          <Alert variant="alert">Wrong username or password</Alert>
+          <Alert data-testid="wrong-username-or-password-alert" variant="alert">
+            Wrong username or password
+          </Alert>
         )}
       </Box>
       <Grid
@@ -116,6 +122,7 @@ export const LoginForm: React.SFC<FormProps> = ({ next, ...props }) => {
           </Text>
 
           <InputWrapper
+            data-testid="email-input-wrapper"
             sx={{ mb: 0 }}
             errors={getFieldErrors("email")}
             label={<FormattedMessage id="login.email" />}
@@ -163,7 +170,7 @@ export const LoginForm: React.SFC<FormProps> = ({ next, ...props }) => {
             <FormattedMessage id="login.recoverPassword" />
           </Link>
 
-          <Button type="submit" loading={loading}>
+          <Button data-testid="login-button" type="submit" loading={loading}>
             <FormattedMessage id="login.loginButton" />
           </Button>
         </form>

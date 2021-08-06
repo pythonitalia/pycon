@@ -47,6 +47,10 @@
     {
       "name": "👀 eslint config",
       "path": "eslint-config-pythonit"
+    },
+    {
+      "name": "🧪 E2E Tests",
+      "path": "e2e-tests"
     }
   ],
   "settings": {},
