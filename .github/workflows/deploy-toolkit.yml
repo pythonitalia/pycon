@@ -42,6 +42,7 @@ jobs:
           comment-author: pythonitaliabot
           body-includes: "Pre-release"
       - name: Create or update comment
+        id: initial-comment
         uses: peter-evans/create-or-update-comment@v1
         if: ${{ github.ref != 'refs/heads/main' }}
         with:
@@ -91,7 +92,7 @@ jobs:
         if: ${{ github.ref != 'refs/heads/main' }}
         with:
           token: ${{ secrets.BOT_TOKEN }}
-          comment-id: ${{ steps.find_comment.outputs.comment-id }}
+          comment-id: ${{ steps.initial-comment.outputs.comment-id }}
           issue-number: ${{ github.event.inputs.event-number }}
           body: |
             # Pre-release
