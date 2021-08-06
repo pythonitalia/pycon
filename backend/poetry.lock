@@ -1132,7 +1132,7 @@ postgresql = ["psycopg2"]
 
 [[package]]
 name = "pythonit-toolkit"
-version = "0.1.52"
+version = "0.1.55"
 description = ""
 category = "main"
 optional = false
@@ -1142,6 +1142,7 @@ python-versions = ">=3.9,<4.0"
 boto3 = ">=1.17.39,<2.0.0"
 pydantic = "*"
 PyJWT = ">=2.0.1,<3.0.0"
+sentry-sdk = ">=1.1.0,<2.0.0"
 starlette = ">=0.14.2,<0.15.0"
 strawberry-graphql = "*"
 
@@ -1237,7 +1238,7 @@ crt = ["botocore[crt] (>=1.20.29,<2.0a.0)"]
 
 [[package]]
 name = "sentry-sdk"
-version = "0.19.5"
+version = "1.3.1"
 description = "Python client for Sentry (https://sentry.io)"
 category = "main"
 optional = false
@@ -1256,6 +1257,7 @@ chalice = ["chalice (>=1.16.0)"]
 django = ["django (>=1.8)"]
 falcon = ["falcon (>=1.4)"]
 flask = ["flask (>=0.11)", "blinker (>=1.1)"]
+httpx = ["httpx (>=0.16.0)"]
 pure_eval = ["pure-eval", "executing", "asttokens"]
 pyspark = ["pyspark (>=2.4.4)"]
 rq = ["rq (>=0.6)"]
@@ -1485,7 +1487,7 @@ testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "c1dccf84bb6208eda7f8d007a83661002326229b6fcb04bc101aba083e500202"
+content-hash = "ddb49b177326403c1008ae451de3720fbf7a0f7cfb0de5c581b134323580417f"
 
 [metadata.files]
 amqp = [
@@ -2113,8 +2115,8 @@ python3-openid = [
     {file = "python3_openid-3.2.0-py3-none-any.whl", hash = "sha256:6626f771e0417486701e0b4daff762e7212e820ca5b29fcc0d05f6f8736dfa6b"},
 ]
 pythonit-toolkit = [
-    {file = "pythonit-toolkit-0.1.52.tar.gz", hash = "sha256:55964fad924ce845f9d1bd8036224be02f9ff2526aa00289d1de40ebf5757b81"},
-    {file = "pythonit_toolkit-0.1.52-py3-none-any.whl", hash = "sha256:e79d23e12935901d9fa4548661ec51aecefe7658cf6f771380070eb0924c9957"},
+    {file = "pythonit-toolkit-0.1.55.tar.gz", hash = "sha256:4c1641d23fdeb4171f0a2613cbedd1b4ddcf511efab5664a467edac6e0f842a5"},
+    {file = "pythonit_toolkit-0.1.55-py3-none-any.whl", hash = "sha256:ee178114b6dc259d5b96dbd3ef32b13c7a17527e7a448646f2f91fc7acbefb6d"},
 ]
 pytz = [
     {file = "pytz-2019.3-py2.py3-none-any.whl", hash = "sha256:1c557d7d0e871de1f5ccd5833f60fb2550652da6be2693c1e02300743d21500d"},
@@ -2185,8 +2187,8 @@ s3transfer = [
     {file = "s3transfer-0.4.2.tar.gz", hash = "sha256:cb022f4b16551edebbb31a377d3f09600dbada7363d8c5db7976e7f47732e1b2"},
 ]
 sentry-sdk = [
-    {file = "sentry-sdk-0.19.5.tar.gz", hash = "sha256:737a094e49a529dd0fdcaafa9e97cf7c3d5eb964bd229821d640bc77f3502b3f"},
-    {file = "sentry_sdk-0.19.5-py2.py3-none-any.whl", hash = "sha256:0a711ec952441c2ec89b8f5d226c33bc697914f46e876b44a4edd3e7864cf4d0"},
+    {file = "sentry-sdk-1.3.1.tar.gz", hash = "sha256:ebe99144fa9618d4b0e7617e7929b75acd905d258c3c779edcd34c0adfffe26c"},
+    {file = "sentry_sdk-1.3.1-py2.py3-none-any.whl", hash = "sha256:f33d34c886d0ba24c75ea8885a8b3a172358853c7cbde05979fc99c29ef7bc52"},
 ]
 six = [
     {file = "six-1.15.0-py2.py3-none-any.whl", hash = "sha256:8b74bedcbbbaca38ff6d7491d76f2b06b3592611af620f8426e82dddb04a5ced"},
