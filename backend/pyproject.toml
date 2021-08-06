@@ -65,7 +65,7 @@ flake8 = "^3.7"
 black = {version = "^20.8b1",allow-prereleases = true}
 requests-mock = "^1.7"
 pytest-mock = "^3.4"
-freezegun = "^0.3.12"
+freezegun = "^1.1.0"
 pytest-cache = "^1.0"
 bpython = "^0.18"
 
