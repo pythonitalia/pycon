@@ -406,7 +406,7 @@ six = "*"
 
 [[package]]
 name = "django-fsm"
-version = "2.6.1"
+version = "2.7.1"
 description = "Django friendly finite state machine support."
 category = "main"
 optional = false
@@ -1487,7 +1487,7 @@ testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "5f6575da848eb76d9aed0295040c5035bb6ab9a52e8d67c9995e86544d201d06"
+content-hash = "1961bdfa77e3456964a5eba30d762838169f69becb1a1d92209cb6803a96d089"
 
 [metadata.files]
 amqp = [
@@ -1703,8 +1703,8 @@ django-environ = [
     {file = "django_environ-0.4.4-py2.py3-none-any.whl", hash = "sha256:e9c171b9d5f540e6f3bc42866941d9cd0bd77fb110a7c13a7c4857a2c08cfa40"},
 ]
 django-fsm = [
-    {file = "django-fsm-2.6.1.tar.gz", hash = "sha256:96f776736042b8cde03483cb4b27c3a62580da40fc9b942845349718afdf5d0f"},
-    {file = "django_fsm-2.6.1-py2.py3-none-any.whl", hash = "sha256:cacd5485c726b411c6728c9ae3120303c9badf8aa0edff2db3aecdbe3a906945"},
+    {file = "django-fsm-2.7.1.tar.gz", hash = "sha256:219b204777a932720d8583cb1f34713bd08b4713e1beb39ab2e674810e21d5e9"},
+    {file = "django_fsm-2.7.1-py2.py3-none-any.whl", hash = "sha256:c96a844853de0f5dc67791b64beb367b5d56f992dff7c00f9b88c483e09f15ec"},
 ]
 django-model-utils = [
     {file = "django-model-utils-4.1.1.tar.gz", hash = "sha256:eb5dd05ef7d7ce6bc79cae54ea7c4a221f6f81e2aad7722933aee66489e7264b"},
