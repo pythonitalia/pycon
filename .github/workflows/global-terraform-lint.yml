@@ -1,13 +1,13 @@
 on:
   pull_request:
     paths:
-      - "infrastructure/applications/**/*"
-      - "infrastructure/applications/*"
+      - "infrastructure/global/**/*"
+      - "infrastructure/global/*"
 
-name: Terraform Lint
+name: Global Terraform Lint
 
 env:
-  TF_WORKSPACE: "production"
+  TF_WORKSPACE: "default"
 
 jobs:
   lint:
@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./infrastructure/applications
+        working-directory: ./infrastructure/global
     steps:
       - uses: actions/checkout@v2
       - uses: hashicorp/setup-terraform@v1
@@ -57,7 +57,7 @@ jobs:
           token: ${{ secrets.BOT_TOKEN }}
           issue-number: ${{ github.event.pull_request.number }}
           comment-author: pythonitaliabot
-          body-includes: "# Terraform"
+          body-includes: "# Global Terraform"
       - name: Create or Update comment
         uses: peter-evans/create-or-update-comment@v1
         if: steps.find_comment.outputs.comment-id != ''
@@ -67,7 +67,7 @@ jobs:
           issue-number: ${{ github.event.pull_request.number }}
           edit-mode: replace
           body: |
-            # Terraform
+            # Global Terraform
 
             ## Terraform Validation 🤖
             ${{ steps.validate.outputs.stdout }}
