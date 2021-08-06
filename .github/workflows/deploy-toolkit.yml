@@ -40,8 +40,9 @@ jobs:
           token: ${{ secrets.BOT_TOKEN }}
           issue-number: ${{ github.event.inputs.event-number }}
           comment-author: pythonitaliabot
-          body-includes: "# Pre-release"
+          body-includes: "Pre-release"
       - name: Create or update comment
+        id: initial-comment
         uses: peter-evans/create-or-update-comment@v1
         if: ${{ github.ref != 'refs/heads/main' }}
         with:
@@ -84,14 +85,14 @@ jobs:
           git config user.email "noreply@python.it"
 
           git add pyproject.toml
-          git commit -m "🔨 Published Toolkit v$(poetry version -s) [skip ci]"
+          git commit -m "🔨 Publish Toolkit v$(poetry version -s) [skip ci]"
           git push
       - name: Create or update comment
         uses: peter-evans/create-or-update-comment@v1
         if: ${{ github.ref != 'refs/heads/main' }}
         with:
           token: ${{ secrets.BOT_TOKEN }}
-          comment-id: ${{ steps.find_comment.outputs.comment-id }}
+          comment-id: ${{ steps.initial-comment.outputs.comment-id }}
           issue-number: ${{ github.event.inputs.event-number }}
           body: |
             # Pre-release
