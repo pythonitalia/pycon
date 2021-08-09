@@ -63,7 +63,7 @@ const VALID_LOGIN_MOCKS = createLoginMock({
 });
 
 describe("Login form", () => {
-  test("should show login form", () => {
+  test("should render", () => {
     render(
       <MockedProvider>
         <LoginForm />
