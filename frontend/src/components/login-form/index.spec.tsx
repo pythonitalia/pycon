@@ -12,6 +12,7 @@ import {
 } from "~/test-utils";
 import { LoginDocument } from "~/types";
 
+import { LOGIN_KEY } from "../profile/hooks";
 import { LoginForm } from "./index";
 
 afterEach(() => {
@@ -81,7 +82,7 @@ describe("Login form", () => {
   });
 
   describe("with correct credentials", () => {
-    test("should redirect to profile", async () => {
+    test("should login and redirect to profile", async () => {
       render(
         <MockedProvider mocks={VALID_LOGIN_MOCKS}>
           <LoginForm />
@@ -100,6 +101,8 @@ describe("Login form", () => {
         fireEvent.click(screen.getByText("Login 👉"));
         return wait(1);
       });
+
+      expect(window.localStorage.getItem(LOGIN_KEY)).toBe("true");
 
       expect(MockedRouterPush).toHaveBeenCalledWith(
         "/[lang]/profile",
