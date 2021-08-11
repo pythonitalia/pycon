@@ -45,6 +45,7 @@
       "path": "email-templates"
     },
     {
+      "name": "👀 eslint config",
       "path": "eslint-config-pycon"
     }
   ],
