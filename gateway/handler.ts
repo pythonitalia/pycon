@@ -1,7 +1,8 @@
-import "./init";
-
+/* eslint-disable simple-import-sort/imports */
 import { ApolloServer } from "@pythonit/apollo-server-lambda-with-cors-regex";
 import * as ServerlessSentry from "@sentry/serverless";
+
+import "./init";
 
 import { createContext } from "./context";
 import { createGateway } from "./gateway";
