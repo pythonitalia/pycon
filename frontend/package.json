@@ -63,7 +63,7 @@
     "yup": "^0.29.3"
   },
   "devDependencies": {
-    "@python-italia/eslint-config-pycon": "^1.0.3",
+    "@python-italia/eslint-config-pycon": "^1.0.4",
     "@testing-library/dom": "^8.1.0",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^12.0.0",

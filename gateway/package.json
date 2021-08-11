@@ -27,7 +27,7 @@
     "lint": "eslint ."
   },
   "devDependencies": {
-    "@python-italia/eslint-config-pycon": "^1.0.3",
+    "@python-italia/eslint-config-pycon": "^1.0.4",
     "@trivago/prettier-plugin-sort-imports": "^2.0.2",
     "@types/cookie": "^0.4.0",
     "@types/jest": "^26.0.21",
