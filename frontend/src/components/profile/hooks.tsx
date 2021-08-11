@@ -1,4 +1,4 @@
-const LOGIN_KEY = "login_state_2";
+export const LOGIN_KEY = "login_state_2";
 
 const getLoginState = () => {
   const value =

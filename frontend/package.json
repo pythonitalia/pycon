@@ -12,13 +12,12 @@
     "lint": "eslint src",
     "codegen": "graphql-codegen -r dotenv/config -c codegen.yml",
     "codegen:watch": "yarn codegen --watch",
-    "test": "jest src/ --passWithNoTests"
+    "test": "jest src/"
   },
   "dependencies": {
     "@apollo/client": "^3.2.5",
     "@babel/plugin-transform-react-jsx": "^7.12.1",
     "@babel/plugin-transform-react-pure-annotations": "^7.12.1",
-    "@babel/preset-react": "^7.12.1",
     "@emotion/babel-plugin-jsx-pragmatic": "^0.1.5",
     "@emotion/core": "^10.0.35",
     "@graphql-codegen/add": "^2.0.0",
@@ -64,18 +63,25 @@
     "yup": "^0.29.3"
   },
   "devDependencies": {
+    "@testing-library/dom": "^8.1.0",
+    "@testing-library/jest-dom": "^5.14.1",
+    "@testing-library/react": "^12.0.0",
+    "@testing-library/user-event": "^13.2.1",
     "@types/jest": "^26.0.15",
     "@types/node": "^14.14.6",
     "@types/react": "^16.9.55",
     "@types/react-dom": "^16.9.9",
+    "@types/testing-library__jest-dom": "^5.14.1",
     "@typescript-eslint/eslint-plugin": "^4.28.2",
     "eslint": "^7.30.0",
     "eslint-config-next": "^11.0.1",
     "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-jest-dom": "^3.9.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
-    "jest": "^26.6.3",
+    "eslint-plugin-testing-library": "^4.10.1",
+    "jest": "^27.0.6",
     "prettier": "^2.3.2",
-    "ts-jest": "^26.4.3",
+    "ts-jest": "^27.0.4",
     "typescript": "^4.3.5"
   },
   "resolutions": {

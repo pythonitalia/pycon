@@ -123,6 +123,7 @@ export const LoginForm: React.SFC<FormProps> = ({ next, ...props }) => {
               placeholder="guido@python.org"
               required={true}
               type="email"
+              data-testid="email-input"
             />
           </InputWrapper>
 
@@ -146,6 +147,7 @@ export const LoginForm: React.SFC<FormProps> = ({ next, ...props }) => {
               {...password("password")}
               required={true}
               type="password"
+              data-testid="password-input"
             />
           </InputWrapper>
 
