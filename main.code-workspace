@@ -43,6 +43,9 @@
     {
       "name": "✉️ Email Templates",
       "path": "email-templates"
+    },
+    {
+      "path": "eslint-config-pycon"
     }
   ],
   "settings": {},

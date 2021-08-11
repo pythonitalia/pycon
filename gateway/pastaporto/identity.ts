@@ -10,7 +10,7 @@ export type DecodedIdentity = {
 
 export const decodeIdentity = (
   token: string,
-  ignoreExpiration: boolean = false,
+  ignoreExpiration = false,
 ): DecodedIdentity => {
   return jwt.verify(token, IDENTITY_SECRET!, {
     issuer: "gateway",

@@ -1,6 +1,6 @@
-import { ApolloServer } from "apollo-server";
-
 import "../init";
+
+import { ApolloServer } from "apollo-server";
 
 import { createContext } from "../context";
 import { createGateway } from "../gateway";

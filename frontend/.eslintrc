@@ -1,1 +1,3 @@
-../_eslintrc
+{
+  "extends": ["@python-italia/eslint-config-pycon"]
+}
