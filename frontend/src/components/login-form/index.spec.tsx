@@ -8,6 +8,7 @@ import {
   MockedProvider,
   render,
   screen,
+  userEvent,
   wait,
 } from "~/test-utils";
 import { LoginDocument } from "~/types";
@@ -89,21 +90,15 @@ describe("Login form", () => {
         </MockedProvider>,
       );
 
-      fireEvent.change(screen.getByTestId("email-input"), {
-        target: { value: "email@email.it" },
-      });
-
-      fireEvent.change(screen.getByTestId("password-input"), {
-        target: { value: "password" },
-      });
+      userEvent.type(screen.getByTestId("email-input"), "email@email.it");
+      userEvent.type(screen.getByTestId("password-input"), "password");
 
       await act(() => {
-        fireEvent.click(screen.getByText("Login 👉"));
+        userEvent.click(screen.getByRole("button", { name: "Login 👉" }));
         return wait(1);
       });
 
       expect(window.localStorage.getItem(LOGIN_KEY)).toBe("true");
-
       expect(MockedRouterPush).toHaveBeenCalledWith(
         "/[lang]/profile",
         "/en/profile",
@@ -126,7 +121,7 @@ describe("Login form", () => {
       });
 
       await act(() => {
-        fireEvent.click(screen.getByText("Login 👉"));
+        userEvent.click(screen.getByRole("button", { name: "Login 👉" }));
         return wait(1);
       });
 
@@ -169,16 +164,11 @@ describe("Login form", () => {
         </MockedProvider>,
       );
 
-      fireEvent.change(screen.getByTestId("email-input"), {
-        target: { value: "email@email.it" },
-      });
-
-      fireEvent.change(screen.getByTestId("password-input"), {
-        target: { value: "password" },
-      });
+      userEvent.type(screen.getByTestId("email-input"), "email@email.it");
+      userEvent.type(screen.getByTestId("password-input"), "password");
 
       await act(() => {
-        fireEvent.click(screen.getByText("Login 👉"));
+        userEvent.click(screen.getByRole("button", { name: "Login 👉" }));
         return wait(1);
       });
 
@@ -251,16 +241,11 @@ describe("Login form", () => {
         </MockedProvider>,
       );
 
-      fireEvent.change(screen.getByTestId("email-input"), {
-        target: { value: "email@email" },
-      });
-
-      fireEvent.change(screen.getByTestId("password-input"), {
-        target: { value: "password" },
-      });
+      userEvent.type(screen.getByTestId("email-input"), "email@email");
+      userEvent.type(screen.getByTestId("password-input"), "password");
 
       await act(() => {
-        fireEvent.click(screen.getByText("Login 👉"));
+        userEvent.click(screen.getByRole("button", { name: "Login 👉" }));
         return wait(1);
       });
 

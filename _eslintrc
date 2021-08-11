@@ -19,7 +19,21 @@
     "prettier"
   ],
   "plugins": [
-    "simple-import-sort"
+    "simple-import-sort",
+    "testing-library",
+    "jest-dom"
+  ],
+  "overrides": [
+    {
+      "files": [
+        "**/__tests__/**/*.[jt]s?(x)",
+        "**/?(*.)+(spec|test).[jt]s?(x)"
+      ],
+      "extends": [
+        "plugin:testing-library/react",
+        "plugin:jest-dom/recommended"
+      ]
+    }
   ],
   "rules": {
     "simple-import-sort/imports": "error",

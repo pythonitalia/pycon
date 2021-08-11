@@ -37,3 +37,4 @@ export const wait = (ms: number): Promise<void> =>
   new Promise((resolve) => setTimeout(resolve, ms));
 
 export { act, fireEvent, screen, waitFor } from "@testing-library/react";
+export { default as userEvent } from "@testing-library/user-event";
