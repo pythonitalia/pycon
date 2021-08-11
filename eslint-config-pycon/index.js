@@ -32,10 +32,6 @@ module.exports = {
       extends: ["plugin:testing-library/react", "plugin:jest-dom/recommended"],
       plugins: ["testing-library", "jest-dom"],
     },
-    {
-      files: ["**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(spec|test).[jt]s?(x)"],
-      extends: ["plugin:testing-library/react", "plugin:jest-dom/recommended"],
-    },
   ],
   rules: {
     "simple-import-sort/imports": "error",

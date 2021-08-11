@@ -1940,10 +1940,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@python-italia/eslint-config-pycon@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@python-italia/eslint-config-pycon/-/eslint-config-pycon-1.0.2.tgz#3cb251a85334e7a8d8ab588f141849d20829f5d9"
-  integrity sha512-c38AD5fTgZ0dYuTrML5pzUz+KPH2uQOEV7Uwu/0UXHx0Oht3MqUmmAkyCpfD4UfsV34oHpH7qq31QQaQgY8aJA==
+"@python-italia/eslint-config-pycon@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@python-italia/eslint-config-pycon/-/eslint-config-pycon-1.0.3.tgz#0f0f0d039e550660f6d55520ad81518ac5e0ccd7"
+  integrity sha512-zKRwtnOMleY11/s36WGMTpT5a9/bHzvYubGS4Zl76lNSjtAQoyPjE6rU2EzYs3aTOHhZagBzKMJbE7x50s1n1w==
   dependencies:
     "@typescript-eslint/eslint-plugin" "^4.29.1"
     eslint "^7.32.0"
