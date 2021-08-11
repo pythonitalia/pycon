@@ -63,6 +63,7 @@ exports.graphqlHandler = ServerlessSentry.AWSLambda.wrapHandler(
           credentials: true,
           methods: ["GET", "POST", "OPTIONS", "HEAD"],
           origin: [
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             /python-italia\.vercel\.app$/,
             "http://localhost:3000",
