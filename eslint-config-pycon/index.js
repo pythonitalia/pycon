@@ -49,6 +49,7 @@ module.exports = {
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "no-unused-vars": "off",
     "no-debugger": "error",
+    "@next/next/no-img-element": "off",
     "@typescript-eslint/no-unused-vars": [
       "warn",
       {
