@@ -6,7 +6,7 @@ on:
       - "infrastructure/global/**/*"
       - "infrastructure/global/*"
 
-name: Deploy Global Terraform
+name: Global Terraform Deploy
 
 env:
   TF_WORKSPACE: "default"
