@@ -10,6 +10,7 @@
     "codegen:watch": "yarn codegen --watch",
     "lint": "eslint src --ext .jsx,.js,.tsx,.ts",
     "lint:ts": "tsc --noemit",
+    "lint:prettier": "prettier --check src/**/*",
     "test": "exit 0"
   },
   "dependencies": {
