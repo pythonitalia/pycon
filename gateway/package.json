@@ -24,10 +24,11 @@
     "dev:admin": "NODE_ENV=development VARIANT=admin nodemon",
     "test": "jest",
     "test:coverage": "jest --collect-coverage",
-    "lint": "eslint ."
+    "lint": "eslint . --ext .js,.ts",
+    "lint:ts": "tsc --noemit"
   },
   "devDependencies": {
-    "@python-italia/eslint-config": "^1.0.4",
+    "@python-italia/eslint-config": "^1.0.12",
     "@trivago/prettier-plugin-sort-imports": "^2.0.2",
     "@types/cookie": "^0.4.0",
     "@types/jest": "^26.0.21",

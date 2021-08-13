@@ -9,7 +9,8 @@
     "dev": "next dev",
     "build": "npm run codegen && next build",
     "start": "next start",
-    "lint": "eslint src",
+    "lint": "eslint src --ext .jsx,.js,.tsx,.ts",
+    "lint:ts": "tsc --noemit",
     "codegen": "graphql-codegen -r dotenv/config -c codegen.yml",
     "codegen:watch": "yarn codegen --watch",
     "test": "jest src/"
@@ -63,7 +64,7 @@
     "yup": "^0.29.3"
   },
   "devDependencies": {
-    "@python-italia/eslint-config": "^1.0.4",
+    "@python-italia/eslint-config": "^1.0.12",
     "@testing-library/dom": "^8.1.0",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^12.0.0",

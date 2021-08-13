@@ -12,7 +12,12 @@ module.exports = {
     "**/*.graphql",
     "src/types.tsx",
   ],
-  extends: ["plugin:@typescript-eslint/recommended", "prettier"],
+  parser: "@typescript-eslint/parser",
+  extends: [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier",
+  ],
   plugins: ["simple-import-sort"],
   overrides: [
     {

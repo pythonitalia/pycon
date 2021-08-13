@@ -1940,18 +1940,20 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@python-italia/eslint-config@^1.0.4":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@python-italia/eslint-config/-/eslint-config-1.0.4.tgz#c55a664aa5164b8665cf8704ecc4e22a51b6aacd"
-  integrity sha512-2tztmTS2sOgjeqMVXfrllf3Pvdy4C2FIpB+i2+VMKFuOMaVRkZ0cf/NNOWU3yrUQjFwk5zloWOoedxWfoYoixQ==
+"@python-italia/eslint-config@^1.0.12":
+  version "1.0.12"
+  resolved "https://registry.yarnpkg.com/@python-italia/eslint-config/-/eslint-config-1.0.12.tgz#452e21fe07c71549e454a741f4e194ecc6577abb"
+  integrity sha512-+TUNHT1z61SWG6N7tOsR9dDVCLSfb3XbuEQtWpxqjy2PTqpxZDzv8Yi1SRcL/gRxFrUZq9IlCJsy5HUv7dTo4w==
   dependencies:
     "@typescript-eslint/eslint-plugin" "^4.29.1"
+    "@typescript-eslint/parser" "^4.29.1"
     eslint "^7.32.0"
     eslint-config-next "^11.1.0"
     eslint-config-prettier "^8.3.0"
     eslint-plugin-jest-dom "^3.9.0"
     eslint-plugin-simple-import-sort "^7.0.0"
     eslint-plugin-testing-library "^4.10.1"
+    typescript "^4.3.5"
 
 "@react-dnd/asap@^4.0.0":
   version "4.0.0"
@@ -2618,7 +2620,7 @@
     eslint-scope "^5.1.1"
     eslint-utils "^3.0.0"
 
-"@typescript-eslint/parser@^4.20.0":
+"@typescript-eslint/parser@^4.20.0", "@typescript-eslint/parser@^4.29.1":
   version "4.29.1"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/parser/-/parser-4.29.1.tgz#17dfbb45c9032ffa0fe15881d20fbc2a4bdeb02d"
   integrity sha512-3fL5iN20hzX3Q4OkG7QEPFjZV2qsVGiDhEwwh+EkmE/w7oteiOvUNzmpu5eSwGJX/anCryONltJ3WDmAzAoCMg==
