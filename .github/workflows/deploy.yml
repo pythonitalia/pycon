@@ -219,6 +219,8 @@ jobs:
   terraform:
     runs-on: ubuntu-latest
     needs: [build-emails, build-and-push-service]
+    environment:
+      name: ${{ fromJSON('["pastaporto", "production"]')[github.ref == 'refs/heads/main'] }}
     defaults:
       run:
         working-directory: ./infrastructure/applications
