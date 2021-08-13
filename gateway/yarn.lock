@@ -778,10 +778,10 @@
   resolved "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570"
   integrity sha1-p3c2C1s5oaLlEG+OhY8v0tBgxXA=
 
-"@python-italia/eslint-config@^1.0.12":
-  version "1.0.12"
-  resolved "https://registry.yarnpkg.com/@python-italia/eslint-config/-/eslint-config-1.0.12.tgz#452e21fe07c71549e454a741f4e194ecc6577abb"
-  integrity sha512-+TUNHT1z61SWG6N7tOsR9dDVCLSfb3XbuEQtWpxqjy2PTqpxZDzv8Yi1SRcL/gRxFrUZq9IlCJsy5HUv7dTo4w==
+"@python-italia/eslint-config@^1.0.13":
+  version "1.0.13"
+  resolved "https://registry.yarnpkg.com/@python-italia/eslint-config/-/eslint-config-1.0.13.tgz#f58c8242ec3559cbb1aff111f2d5e08bf8f5e3f6"
+  integrity sha512-5H+vykXms8OnVBs4nn6Yu5n1+/EfmJObIhVneMLbIwBPvzsGs6rtnSw3Fnu0e+rZip8BYj2l7QUBn82Ohvxo2Q==
   dependencies:
     "@typescript-eslint/eslint-plugin" "^4.29.1"
     "@typescript-eslint/parser" "^4.29.1"
