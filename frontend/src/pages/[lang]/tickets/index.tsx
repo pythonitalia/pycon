@@ -1,8 +1,10 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
+import { jsx } from "theme-ui";
+
 import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
-import { jsx } from "theme-ui";
 
 import { addApolloState } from "~/apollo/client";
 import { useLoginState } from "~/components/profile/hooks";

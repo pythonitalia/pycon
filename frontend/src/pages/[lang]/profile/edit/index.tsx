@@ -1,13 +1,14 @@
 /** @jsxRuntime classic */
-/** @jsx jsx */
 
-import { GetStaticPaths, GetStaticProps } from "next";
-import { useRouter } from "next/router";
+/** @jsx jsx */
 import React, { useCallback, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import { Box, Card, Checkbox, Input, jsx, Label, Select, Text } from "theme-ui";
 import * as yup from "yup";
+
+import { GetStaticPaths, GetStaticProps } from "next";
+import { useRouter } from "next/router";
 
 import { addApolloState } from "~/apollo/client";
 import { Button } from "~/components/button/button";

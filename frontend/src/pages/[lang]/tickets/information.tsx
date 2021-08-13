@@ -1,7 +1,9 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
-import { useRouter } from "next/router";
 import { jsx } from "theme-ui";
+
+import { useRouter } from "next/router";
 
 import { InformationSection } from "~/components/tickets-page/information-section";
 import { useCart } from "~/components/tickets-page/use-cart";
@@ -21,9 +23,9 @@ export const TicketsInformationPage = () => {
           onUpdateInformation={updateInformation}
           invoiceInformation={state.invoiceInformation}
           onNextStep={() => {
-            const productIds = Object.values(
-              state.selectedProducts,
-            ).flatMap((instances) => instances.map((product) => product.id));
+            const productIds = Object.values(state.selectedProducts).flatMap(
+              (instances) => instances.map((product) => product.id),
+            );
 
             const selectedProductsInfo = tickets.filter((ticket) =>
               productIds.includes(ticket.id),

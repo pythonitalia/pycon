@@ -1,10 +1,13 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
+
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
 import * as Sentry from "@sentry/node";
-import NextErrorComponent from "next/error";
 import { FormattedMessage } from "react-intl";
 import { Box, Heading, jsx, Text } from "theme-ui";
+
+import NextErrorComponent from "next/error";
 
 import { Link } from "~/components/link";
 
