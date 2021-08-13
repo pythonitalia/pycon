@@ -1,4 +1,4 @@
-name: Deploy Toolkit library
+name: Toolkit Library Deploy
 
 on:
   push:
