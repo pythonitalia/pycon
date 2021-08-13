@@ -13,15 +13,19 @@ export const calculateProductPrice = (
     const value = parseFloat(voucher.value);
 
     switch (priceMode) {
-      case "none":
+      case "none": {
         return basePrice;
-      case "set":
+      }
+      case "set": {
         return value;
-      case "subtract":
+      }
+      case "subtract": {
         return basePrice - value;
-      case "percent":
+      }
+      case "percent": {
         const percentage = value / 100;
         return basePrice - basePrice * percentage;
+      }
     }
   }
 
