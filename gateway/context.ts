@@ -17,8 +17,8 @@ export const createContext = async (
   let refreshToken = null;
 
   const context: { [key: string]: any } = {
-    setCookies: new Array(),
-    setHeaders: new Array(),
+    setCookies: [],
+    setHeaders: [],
     allHeaders,
   };
 

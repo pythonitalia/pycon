@@ -1,6 +1,6 @@
 const cookie = require("cookie");
 
-export const apolloHeadersPlugin = (applyCookies: boolean = false) => {
+export const apolloHeadersPlugin = (applyCookies = false) => {
   return {
     requestDidStart() {
       return {

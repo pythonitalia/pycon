@@ -43,6 +43,10 @@
     {
       "name": "✉️ Email Templates",
       "path": "email-templates"
+    },
+    {
+      "name": "👀 eslint config",
+      "path": "eslint-config-pythonit"
     }
   ],
   "settings": {},
