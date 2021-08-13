@@ -1,5 +1,5 @@
 {
-  "name": "@python-italia/eslint-config-pycon",
+  "name": "@python-italia/eslint-config",
   "version": "1.0.4",
   "main": "index.js",
   "license": "MIT",
