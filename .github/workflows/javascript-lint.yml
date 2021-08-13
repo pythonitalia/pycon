@@ -20,7 +20,7 @@ jobs:
           association-frontend:
             - "association-frontend/**"
 
-  eslint:
+  lint:
     runs-on: ubuntu-latest
     needs: [changes]
     if: ${{ needs.changes.outputs.services != '[]' && needs.changes.outputs.services != '' }}
@@ -49,10 +49,15 @@ jobs:
         run: yarn run codegen
       - name: Lint
         run: yarn run lint
+      - name: TS Lint
+        run: yarn run lint:ts
+      - name: Prettier
+        run: yarn run lint:prettier
 
   tests:
     runs-on: ubuntu-latest
     needs: [changes]
+    if: ${{ needs.changes.outputs.services != '[]' && needs.changes.outputs.services != '' }}
     strategy:
       fail-fast: false
       matrix:

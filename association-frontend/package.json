@@ -8,7 +8,9 @@
     "start": "next start",
     "codegen": "graphql-codegen -r dotenv/config -c codegen.yml",
     "codegen:watch": "yarn codegen --watch",
-    "lint": "eslint src",
+    "lint": "eslint src --ext .jsx,.js,.tsx,.ts",
+    "lint:ts": "tsc --noemit",
+    "lint:prettier": "prettier --check src/**/*",
     "test": "exit 0"
   },
   "dependencies": {
@@ -35,10 +37,10 @@
     "@graphql-codegen/typescript-operations": "^1.17.14",
     "@graphql-codegen/typescript-react-apollo": "^2.2.1",
     "@graphql-codegen/typescript-urql": "^2.0.3",
-    "@python-italia/eslint-config": "^1.0.4",
+    "@python-italia/eslint-config": "^1.0.13",
     "@testing-library/dom": "^8.1.0",
     "@testing-library/user-event": "^13.2.1",
-    "@trivago/prettier-plugin-sort-imports": "^1.4.1",
+    "@trivago/prettier-plugin-sort-imports": "^2.0.2",
     "@types/jest": "^26.0.20",
     "@types/node": "^14.14.22",
     "@types/react": "^17.0.0",

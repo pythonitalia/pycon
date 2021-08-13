@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 
 import { ClearAuthAction } from "../actions/clear-auth-action";
 import { IDENTITY_SECRET } from "../config";
+import { ApolloContext } from "../context";
 
 export type DecodedIdentity = {
   sub: string;
@@ -76,7 +77,7 @@ export const createRefreshToken = (sub: string, jwtAuthId: number): string => {
   );
 };
 
-export const removeIdentityTokens = async (temporaryContext: object) => {
+export const removeIdentityTokens = async (temporaryContext: ApolloContext) => {
   console.log("Clearing identity tokens");
 
   // Clear the cookies if the jwt are not valid anymore
