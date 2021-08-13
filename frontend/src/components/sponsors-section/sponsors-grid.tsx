@@ -1,7 +1,9 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
-import Image from "next/image";
 import { Box, Grid, jsx } from "theme-ui";
+
+import Image from "next/image";
 
 import { useSSRResponsiveValue } from "~/helpers/use-ssr-responsive-value";
 

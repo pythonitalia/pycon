@@ -1,7 +1,9 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
-import Image from "next/image";
 import { Box, Flex, Heading, jsx, Text } from "theme-ui";
+
+import Image from "next/image";
 
 import { useKeynotesSectionQuery } from "~/types";
 

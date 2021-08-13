@@ -1,10 +1,12 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
-import { GetStaticPaths, GetStaticProps } from "next";
-import Router from "next/router";
 import { Fragment, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
+
+import { GetStaticPaths, GetStaticProps } from "next";
+import Router from "next/router";
 
 import { addApolloState } from "~/apollo/client";
 import { Alert } from "~/components/alert";
@@ -23,7 +25,11 @@ export const MyProfilePage = () => {
   const [loggedIn, setLoginState] = useLoginState();
   const lang = useCurrentLanguage();
 
-  const { loading, error, data: profileData } = useMyProfileQuery({
+  const {
+    loading,
+    error,
+    data: profileData,
+  } = useMyProfileQuery({
     skip: !loggedIn,
     variables: {
       conference: process.env.conferenceCode,

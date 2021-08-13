@@ -1,4 +1,5 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
 import { ApolloError } from "@apollo/client";
 import React, { Fragment, useEffect } from "react";
@@ -82,14 +83,13 @@ export const CfpForm: React.SFC<Props> = ({
   error: submissionError,
   data: submissionData,
 }) => {
-  const [formState, { text, textarea, radio, select, checkbox }] = useFormState<
-    CfpFormFields
-  >(
-    {},
-    {
-      withIds: true,
-    },
-  );
+  const [formState, { text, textarea, radio, select, checkbox }] =
+    useFormState<CfpFormFields>(
+      {},
+      {
+        withIds: true,
+      },
+    );
 
   const setupCleanForm = (data: CfpFormQuery) => {
     const submissionTypes = data.conference.submissionTypes;

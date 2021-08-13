@@ -1,4 +1,5 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
 import React, { useCallback, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
@@ -18,7 +19,8 @@ type Props = {
   invoiceInformation: InvoiceInformationState;
 };
 
-const FISCAL_CODE_REGEX = /^[A-Za-z]{6}[0-9]{2}[A-Za-z]{1}[0-9]{2}[A-Za-z]{1}[0-9]{3}[A-Za-z]{1}$/;
+const FISCAL_CODE_REGEX =
+  /^[A-Za-z]{6}[0-9]{2}[A-Za-z]{1}[0-9]{2}[A-Za-z]{1}[0-9]{3}[A-Za-z]{1}$/;
 
 export const InformationSection: React.SFC<Props> = ({
   onNextStep,
@@ -30,9 +32,8 @@ export const InformationSection: React.SFC<Props> = ({
     "orderInformation.invalidFiscalCode",
   );
 
-  const [formState, { text, select, textarea }] = useFormState<
-    InvoiceInformationState
-  >({ ...invoiceInformation });
+  const [formState, { text, select, textarea }] =
+    useFormState<InvoiceInformationState>({ ...invoiceInformation });
 
   const isBusiness = invoiceInformation.isBusiness;
   const isItalian = formState.values.country === "IT";
