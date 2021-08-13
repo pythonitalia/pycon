@@ -47,7 +47,7 @@
     "lodash": "^4.17.21",
     "marksy": "^8.0.0",
     "moment": "^2.29.1",
-    "next": "^11.0.1",
+    "next": "^11.1.0",
     "next-cookies": "^2.0.3",
     "next-with-apollo": "^5.1.0",
     "react": "^17.0.1",
