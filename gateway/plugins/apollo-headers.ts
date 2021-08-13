@@ -1,11 +1,11 @@
 import cookie from "cookie";
-import { GraphQLResponse } from "graphql-request/dist/types";
 
 import { ApolloContext } from "../context";
 
 export type RequestContext = {
   context: ApolloContext;
-  response: GraphQLResponse;
+  response: any;
+  [key: string]: any;
 };
 
 export const apolloHeadersPlugin = (applyCookies = false) => {

@@ -15,7 +15,12 @@ const server = new ApolloServer({
   gateway: createGateway(),
   subscriptions: false,
   introspection: true,
-  plugins: [SentryPlugin(true), apolloHeadersPlugin(true)],
+  plugins: [
+    SentryPlugin(true),
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    apolloHeadersPlugin(true),
+  ],
   context: async ({ event }) => {
     return createContext(event.headers, event.headers["Cookie"]);
   },
