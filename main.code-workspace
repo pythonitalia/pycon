@@ -47,6 +47,9 @@
     {
       "name": "👀 eslint config",
       "path": "eslint-config-pythonit"
+    },
+    {
+      "path": ".devcontainer"
     }
   ],
   "settings": {},
