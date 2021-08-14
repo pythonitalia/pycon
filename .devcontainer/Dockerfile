@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/vscode/devcontainers/python:3.9
+FROM mcr.microsoft.com/vscode/devcontainers/universal:linux
 
-RUN pip install poetry pre-commit
-RUN poetry config virtualenvs.in-project true
+# RUN pip install poetry pre-commit
+# RUN poetry config virtualenvs.in-project true
