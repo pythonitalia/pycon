@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+  association-frontend:
+    build:
+      context: ./association-frontend
+      dockerfile: Dockerfile.local
+    volumes:
+      - ${LOCAL_WORKSPACE_FOLDER}/association-frontend/:/app/
+    ports:
+      - 3020:3020
+  database:
+    image: postgres:11.10
+    restart: unless-stopped
+    volumes:
+      - ./scripts/postgres-databases.sh:/docker-entrypoint-initdb.d
+      - db_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=pythonitalia
+      - POSTGRES_USER=pythonitalia
+      - POSTGRES_DB=pythonitalia
+    ports:
+      - 5432:5432
+
+volumes:
+  db_data:

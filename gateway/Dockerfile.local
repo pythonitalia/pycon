@@ -1,0 +1,11 @@
+FROM node:alpine AS deps
+
+WORKDIR /app
+
+COPY package.json yarn.lock ./
+
+RUN yarn install --frozen-lockfile
+
+FROM node:alpine AS runner
+
+CMD [ "yarn", "dev" ]

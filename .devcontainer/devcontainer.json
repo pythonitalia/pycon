@@ -3,5 +3,16 @@
   "mounts": [
     "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
   ],
-  "dockerFile": "Dockerfile"
+  "runArgs": ["--init"],
+  "dockerFile": "Dockerfile",
+  "forwardPorts": [
+      3000,
+      3010,
+      3020,
+      8000,
+  ],
+  "remoteEnv": {
+    "LOCAL_WORKSPACE_FOLDER": "${localWorkspaceFolder}"
+  },
+  "postCreateCommand": "sh ./.devcontainer/init.sh"
 }
