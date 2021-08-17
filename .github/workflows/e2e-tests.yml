@@ -35,6 +35,8 @@ jobs:
           cp rush $HOME/rush-bin/
       - name: Append rush to path
         run: echo "$HOME/rush-bin" >> $GITHUB_PATH
+      - name: Install poetry
+        run: pip install poetry
       - name: Start all services
         uses: ./.github/actions/start-services
         id: services
