@@ -1,0 +1,30 @@
+name: E2E Tests
+
+on: pull_request
+
+jobs:
+  e2e-tests:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:11.10
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 2s --health-timeout 2s --health-retries 5
+    steps:
+      - uses: actions/checkout@v2
+      - name: Start all services
+        uses: ./.github/actions/start-services
+        id: services
+        with:
+          postgres-port: ${{ job.services.postgres.ports['5432'] }}
+      - name: Install e2e dependencies
+        working-directory: ./e2e-tests
+        run: yarn install
+      - name: Run tests
+        working-directory: ./e2e-tests
+        run: yarn test
