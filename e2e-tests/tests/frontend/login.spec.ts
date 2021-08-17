@@ -1,12 +1,13 @@
 import { nanoid } from "nanoid";
 import { test, expect } from "@playwright/test";
+import { PYCON_FRONTEND_URL } from "../config";
 
 test.describe("User login", async () => {
   test("with not existent account fails", async ({ page }) => {
     const email = `e2e-does-not-exist-user@pythonit.dev`;
     const password = "fakelongpassword";
 
-    await page.goto("http://localhost:3000/en/login");
+    await page.goto(`${PYCON_FRONTEND_URL}/en/login`);
     await page.waitForLoadState();
 
     await page.fill("data-testid=email-input", email);
@@ -25,7 +26,7 @@ test.describe("User login", async () => {
     const email = `e2e-${nanoid()}-user@pythonit`;
     const password = "fakelongpassword";
 
-    await page.goto("http://localhost:3000/en/login");
+    await page.goto(`${PYCON_FRONTEND_URL}/en/login`);
     await page.waitForLoadState();
 
     await page.fill("data-testid=email-input", email);

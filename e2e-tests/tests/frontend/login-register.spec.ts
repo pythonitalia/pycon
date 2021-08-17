@@ -1,5 +1,6 @@
 import { nanoid } from "nanoid";
 import { test, expect } from "@playwright/test";
+import { PYCON_FRONTEND_URL } from "../config";
 
 test.describe("User register and login", async () => {
   test("with email and password", async ({ browser }) => {
@@ -10,7 +11,7 @@ test.describe("User register and login", async () => {
     const signUpPage = await signUpContext.newPage();
 
     signUpPage.setDefaultTimeout(5000);
-    await signUpPage.goto("http://localhost:3000/en/signup");
+    await signUpPage.goto(`${PYCON_FRONTEND_URL}/en/signup`);
 
     await signUpPage.fill("data-testid=email-input", email);
     await signUpPage.fill("data-testid=password-input", password);
@@ -26,7 +27,7 @@ test.describe("User register and login", async () => {
     const loginContext = await browser.newContext();
     const loginPage = await loginContext.newPage();
 
-    await loginPage.goto("http://localhost:3000/en/login");
+    await loginPage.goto(`${PYCON_FRONTEND_URL}/en/login`);
     await loginPage.fill("data-testid=email-input", email);
     await loginPage.fill("data-testid=password-input", password);
     await loginPage.click("data-testid=login-button");
@@ -47,7 +48,7 @@ test.describe("User register and login", async () => {
     const signUpPage = await signUpContext.newPage();
 
     signUpPage.setDefaultTimeout(5000);
-    await signUpPage.goto("http://localhost:3000/en/signup");
+    await signUpPage.goto(`${PYCON_FRONTEND_URL}/en/signup`);
 
     await signUpPage.fill("data-testid=email-input", email);
     await signUpPage.fill("data-testid=password-input", password);
@@ -63,7 +64,7 @@ test.describe("User register and login", async () => {
     const loginContext = await browser.newContext();
     const loginPage = await loginContext.newPage();
 
-    await loginPage.goto("http://localhost:3000/en/login");
+    await loginPage.goto(`${PYCON_FRONTEND_URL}/en/login`);
     await loginPage.fill("data-testid=email-input", email);
     await loginPage.fill("data-testid=password-input", "not-valid-password");
     await loginPage.click("data-testid=login-button");
