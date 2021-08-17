@@ -23,7 +23,7 @@ export const ErrorsList: React.SFC<{ errors?: string[] }> = ({
       {...props}
     >
       {errors.map((error) => (
-        <Box as="li" key={error} sx={{ pl: 0 }}>
+        <Box data-testid="error-item" as="li" key={error} sx={{ pl: 0 }}>
           {error}
         </Box>
       ))}

@@ -192,7 +192,7 @@ export const EditProfilePage: React.FC = () => {
         {(text) => <MetaTags title={text} />}
       </FormattedMessage>
 
-      <Text mb={4} as="h1">
+      <Text mb={4} as="h1" data-testid="my-profile-header">
         <FormattedMessage id="profile.header" />
       </Text>
 

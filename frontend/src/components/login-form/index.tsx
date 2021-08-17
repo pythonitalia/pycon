@@ -150,6 +150,7 @@ export const LoginForm: React.SFC<FormProps> = ({ next, ...props }) => {
             sx={{ mb: 0 }}
             errors={getFieldErrors("password")}
             label={<FormattedMessage id="login.password" />}
+            data-testid="password-input-wrapper"
           >
             <Input
               id="login-password"

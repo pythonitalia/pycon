@@ -1,15 +1,42 @@
+import { nanoid } from "nanoid";
 import { test, expect } from "@playwright/test";
 
-test.describe("User can login", () => {
-  test.beforeEach(async ({ page }) => {
-    page.setDefaultTimeout(5000);
+test.describe("User login", async () => {
+  test("with not existent account fails", async ({ page }) => {
+    const email = `e2e-does-not-exist-user@pythonit.dev`;
+    const password = "fakelongpassword";
+
     await page.goto("http://localhost:3000/en/login");
+    await page.waitForLoadState();
+
+    await page.fill("data-testid=email-input", email);
+    await page.fill("data-testid=password-input", password);
+    await page.click("data-testid=login-button");
+
+    await page.waitForLoadState();
+
+    await expect(page).toHaveURL(/.*login/);
+    await expect(
+      page.locator("data-testid=wrong-username-or-password-alert"),
+    ).toHaveText("Wrong username or password");
   });
 
-  test("with email and password", async ({ page }) => {
-    await page.fill('[data-testid="email-input"]', "e2e-user@pythonit.dev");
-    await page.fill('[data-testid="password-input"]', "fake");
-    await page.click('[data-testid="login-button"]');
-    // todo
+  test("with improperly formatted email fails", async ({ page }) => {
+    const email = `e2e-${nanoid()}-user@pythonit`;
+    const password = "fakelongpassword";
+
+    await page.goto("http://localhost:3000/en/login");
+    await page.waitForLoadState();
+
+    await page.fill("data-testid=email-input", email);
+    await page.fill("data-testid=password-input", password);
+    await page.click("data-testid=login-button");
+
+    await page.waitForLoadState();
+
+    await expect(page).toHaveURL(/.*login/);
+    await expect(page.locator("data-testid=email-input-wrapper")).toContainText(
+      "value is not a valid email address",
+    );
   });
 });

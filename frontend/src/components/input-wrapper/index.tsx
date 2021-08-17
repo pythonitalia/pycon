@@ -37,6 +37,6 @@ export const InputWrapper: React.SFC<{
       {children}
     </Text>
 
-    <ErrorsList sx={{ mt: 2 }} errors={errors} />
+    <ErrorsList data-testid="errors" sx={{ mt: 2 }} errors={errors} />
   </Box>
 );

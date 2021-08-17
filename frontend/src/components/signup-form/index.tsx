@@ -110,6 +110,7 @@ export const SignupForm: React.SFC = () => {
             sx={{ mb: 0 }}
             errors={getFieldErrors("email")}
             label={<FormattedMessage id="signup.email" />}
+            data-testid="email-input-wrapper"
           >
             <Input
               {...email("email")}
@@ -117,6 +118,7 @@ export const SignupForm: React.SFC = () => {
               required={true}
               type="email"
               tabIndex={1}
+              data-testid="email-input"
             />
           </InputWrapper>
 
@@ -133,6 +135,7 @@ export const SignupForm: React.SFC = () => {
           <InputWrapper
             errors={getFieldErrors("password")}
             label={<FormattedMessage id="signup.password" />}
+            data-testid="password-input-wrapper"
           >
             <Input
               {...password("password")}
@@ -140,10 +143,11 @@ export const SignupForm: React.SFC = () => {
               type="password"
               tabIndex={2}
               mb={4}
+              data-testid="password-input"
             />
           </InputWrapper>
 
-          <Button type="submit" loading={loading}>
+          <Button type="submit" loading={loading} data-testid="signup-button">
             <FormattedMessage id="signup.signupButton" />
           </Button>
         </form>
