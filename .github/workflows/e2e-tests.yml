@@ -26,6 +26,9 @@ jobs:
         with:
           path: ~/rush-bin/
           key: rush-cache-${{ env.RUSH_VERSION }}
+      - uses: actions/setup-python@v2
+        with:
+          python-version: "3.9.1"
       - name: Install rush
         if: steps.cache-rush.outputs.cache-hit != 'true'
         run: |
@@ -42,6 +45,7 @@ jobs:
         id: services
         with:
           postgres-port: ${{ job.services.postgres.ports['5432'] }}
+          start-frontend-services: "true"
       - name: Install e2e dependencies
         working-directory: ./e2e-tests
         run: yarn install

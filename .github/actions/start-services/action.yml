@@ -1,8 +1,14 @@
 name: 'Start all microservices'
+description: 'Use this action to start all Python Italia services'
+
 inputs:
   postgres-port:
     description: 'Postgres port'
     required: true
+  start-frontend-services:
+    description: 'Set to true to start FE services'
+    required: false
+    default: "false"
 
 outputs:
   association-backend-url:
@@ -19,11 +25,19 @@ runs:
   using: "composite"
 
   steps:
-    - name: Install services dependencies
+    - name: Install backend dependencies
       shell: bash
       run: |
         echo "::group::Install dependencies"
         echo backend:users-backend:association-backend | rush -D ":" 'cd ./{1} && poetry install'
+        echo "::endgroup::"
+
+    - name: Install frontend dependencies
+      shell: bash
+      if: ${{ inputs.start-frontend-services == "true" }}
+      run: |
+        echo "::group::Install dependencies"
+        echo frontend:association-frontend | rush -D ":" 'cd ./{1} && yarn install'
         echo "::endgroup::"
 
     - name: Start PyCon Backend
