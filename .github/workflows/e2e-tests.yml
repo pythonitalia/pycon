@@ -2,6 +2,9 @@ name: E2E Tests
 
 on: pull_request
 
+env:
+  RUSH_VERSION: 0.4.2
+
 jobs:
   e2e-tests:
     runs-on: ubuntu-latest
