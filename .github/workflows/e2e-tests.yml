@@ -17,6 +17,21 @@ jobs:
         options: --health-cmd pg_isready --health-interval 2s --health-timeout 2s --health-retries 5
     steps:
       - uses: actions/checkout@v2
+      - name: Cache Rush
+        uses: actions/cache@v1
+        id: cache-rush
+        with:
+          path: ~/rush-bin/
+          key: rush-cache-${{ env.RUSH_VERSION }}
+      - name: Install rush
+        if: steps.cache-rush.outputs.cache-hit != 'true'
+        run: |
+          wget https://github.com/shenwei356/rush/releases/download/v$RUSH_VERSION/rush_linux_amd64.tar.gz
+          tar -zxvf rush_linux_amd64.tar.gz
+          mkdir -p $HOME/rush-bin/
+          cp rush $HOME/rush-bin/
+      - name: Append rush to path
+        run: echo "$HOME/rush-bin" >> $GITHUB_PATH
       - name: Start all services
         uses: ./.github/actions/start-services
         id: services
