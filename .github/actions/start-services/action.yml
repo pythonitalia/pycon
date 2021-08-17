@@ -34,11 +34,12 @@ runs:
 
     - name: Install frontend dependencies
       shell: bash
-      if: ${{ inputs.start-frontend-services == "true" }}
       run: |
-        echo "::group::Install dependencies"
-        echo frontend:association-frontend | rush -D ":" 'cd ./{1} && yarn install'
-        echo "::endgroup::"
+        if "${{ inputs.start-frontend-services }}" == "true"; then
+          echo "::group::Install dependencies"
+          echo frontend:association-frontend | rush -D ":" 'cd ./{1} && yarn install'
+          echo "::endgroup::"
+        fi
 
     - name: Start PyCon Backend
       id: pycon-backend-startup
