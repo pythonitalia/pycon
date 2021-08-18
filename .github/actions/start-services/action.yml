@@ -37,7 +37,7 @@ runs:
       run: |
         if "${{ inputs.start-frontend-services }}" == "true"; then
           echo "::group::Install dependencies"
-          echo frontend:association-frontend | rush -D ":" 'cd ./{1} && yarn install'
+          echo frontend:association-frontend | rush -D ":" 'cd ./{1} && yarn install --network-concurrency 8'
           echo "::endgroup::"
         fi
 
@@ -99,3 +99,17 @@ runs:
         echo "::endgroup::"
 
         echo "::set-output name=url::http://localhost:8060"
+
+    # FE
+    - name: Start PyCon Frontend
+      shell: bash
+      id: pycon-frontend-startup
+      working-directory: ./frontend
+      run: |
+        echo "::group::Start PyCon Frontend"
+
+        GITHUB_ACTIONS=true yarn dev &
+
+        echo "::endgroup::"
+
+        echo "::set-output name=url::http://localhost:3000"
