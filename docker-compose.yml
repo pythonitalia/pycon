@@ -1,0 +1,110 @@
+version: '3.9'
+
+services:
+  # Default Gateway
+  gateway:
+    image: pythonit-gateway:latest
+
+  # PyCon Backend
+  pycon-backend:
+    image: pythonit-pycon-backend:latest
+    networks:
+      - main
+      - default
+    environment:
+      - DATABASE_URL=psql://pycon:pycon@pycon-backend-db/pycon
+      - SECRET_KEY=secret-key
+      - DEBUG=True
+      - SLACK_INCOMING_WEBHOOK_URL=None
+      - PASTAPORTO_SECRET=pastaporto-secret
+    ports:
+      - "8000:8000"
+
+  pycon-backend-db:
+    image: postgres:11.10
+    networks:
+      - main
+    environment:
+      POSTGRES_USER: pycon
+      POSTGRES_PASSWORD: pycon
+      POSTGRES_DB: pycon
+
+  # Association Backend
+  association-backend:
+    image: pythonit-association-backend:latest
+    networks:
+      - main
+      - default
+    environment:
+      - DATABASE_URL=postgresql://association:association@association-backend-db/association
+      - PASTAPORTO_SECRET=pastaporto-secret
+      - DEBUG=True
+      - STRIPE_SECRET_API_KEY=None
+      - STRIPE_SUBSCRIPTION_PRICE_ID=price_1IkVzxD5MZ3GejSORRBZCvK6
+      - STRIPE_WEBHOOK_SIGNATURE_SECRET=None
+      - ASSOCIATION_FRONTEND_URL=http://localhost:3020
+    ports:
+      - "8060:8060"
+
+  association-backend-db:
+    image: postgres:11.10
+    networks:
+      - main
+    environment:
+      POSTGRES_USER: association
+      POSTGRES_PASSWORD: association
+      POSTGRES_DB: association
+
+  # Users Backend
+  users-backend:
+    image: pythonit-users-backend:latest
+    networks:
+      - main
+      - default
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://users:users@users-backend-db/users
+      - PASTAPORTO_SECRET=pastaporto-secret
+      - IDENTITY_SECRET=identity-secret
+      - SERVICE_TO_SERVICE_SECRET=service-to-service-secret
+      - PASTAPORTO_ACTION_SECRET=pastaporto-action-secret
+      - SECRET_KEY=users-secret-key
+      - ASSOCIATION_FRONTEND_URL=http://localhost:3020
+    ports:
+      - "8050:8050"
+
+  users-backend-db:
+    image: postgres:11.10
+    networks:
+      - main
+    environment:
+      POSTGRES_USER: users
+      POSTGRES_PASSWORD: users
+      POSTGRES_DB: users
+
+  # Migrations
+  migrate-pycon-db:
+    extends: pycon-backend
+    command: migrate
+    depends_on:
+      - pycon-backend-db
+    profiles:
+      - migrate
+
+  migrate-association-db:
+    extends: association-backend
+    command: alembic upgrade head
+    depends_on:
+      - association-backend-db
+    profiles:
+      - migrate
+
+  migrate-users-db:
+    extends: users-backend
+    command: alembic upgrade head
+    depends_on:
+      - users-backend-db
+    profiles:
+      - migrate
+
+networks:
+  main:

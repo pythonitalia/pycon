@@ -1,0 +1,83 @@
+FROM python:3.9-alpine
+
+ARG FUNCTION_DIR="/home/app/"
+
+deps:
+    RUN apk add build-base jpeg-dev zlib-dev libxml2-dev libxslt-dev postgresql-libs make cmake libtool \
+        autoconf \
+        libexecinfo-dev \
+        libcurl \
+        gcc \
+        musl-dev \
+        python3-dev \
+        libffi-dev \
+        openssl-dev \
+        cargo
+
+    RUN apk add --no-cache --virtual .build-deps postgresql-dev automake git
+
+    ENV LIBRARY_PATH=/lib:/usr/lib
+
+    RUN pip install awslambdaric
+
+    COPY poetry.lock .
+    COPY pyproject.toml .
+
+    RUN pip install poetry
+    RUN poetry config virtualenvs.create false
+    RUN poetry install --no-dev
+
+    RUN mkdir /libs && cp /usr/lib/libpq.so.5 \
+        /usr/lib/libpq.so.5 \
+        /usr/lib/libldap_r-2.4.so.2 \
+        /usr/lib/liblber-2.4.so.2 \
+        /usr/lib/libsasl2.so.3 \
+        /usr/lib/libxslt.so.1 \
+        /usr/lib/libexslt.so.0 \
+        /usr/lib/libxml2.so.2 \
+        /usr/lib/libgcrypt.so.20 \
+        /usr/lib/libgpg-error.so.0 \
+        /usr/lib/libstdc++.so.6 \
+        /usr/lib/libgcc_s.so.1 \
+        /usr/lib/libjpeg.so.8 \
+        /libs
+
+    SAVE ARTIFACT /usr/local/lib/python3.9/site-packages deps
+    SAVE ARTIFACT /libs libs
+    SAVE ARTIFACT /usr/local/lib/*.so* user-libs/
+
+docker:
+    COPY . ${FUNCTION_DIR}
+    COPY +deps/deps /usr/local/lib/python3.9/site-packages
+    COPY +deps/libs /usr/lib/
+    COPY +deps/user-libs /usr/local/lib/
+
+    RUN mkdir -p ${FUNCTION_DIR}/assets
+
+    WORKDIR ${FUNCTION_DIR}
+
+    RUN SLACK_INCOMING_WEBHOOK_URL=example \
+        AWS_MEDIA_BUCKET=example \
+        AWS_REGION_NAME=eu-central-1 \
+        SECRET_KEY=DEMO \
+        PASTAPORTO_SECRET=demo \
+        python manage.py collectstatic --noinput
+
+    EXPOSE 8000
+
+# Build images
+local:
+    FROM +docker
+    ENV DJANGO_SETTINGS_MODULE=pycon.settings.dev
+
+    ENTRYPOINT ["/usr/local/bin/python", "manage.py"]
+    CMD ["runserver", "0.0.0.0:8000"]
+    SAVE IMAGE pythonit-pycon-backend:latest
+
+lambda:
+    FROM +docker
+    ENV DJANGO_SETTINGS_MODULE=pycon.settings.prod
+
+    ENTRYPOINT ["/usr/local/bin/python", "-m", "awslambdaric"]
+    CMD [ "wsgi_handler.handler" ]
+    SAVE IMAGE pycon-backend-lambda:latest

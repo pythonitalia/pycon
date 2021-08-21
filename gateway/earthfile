@@ -1,0 +1,24 @@
+FROM node:14
+
+RUN npm install -g yarn
+
+deps:
+    COPY package.json yarn.lock ./
+    RUN yarn install
+    SAVE ARTIFACT node_modules deps
+
+build:
+    COPY . .
+    RUN yarn tsc
+    SAVE ARTIFACT . dist
+    SAVE ARTIFACT ./internal-services/logout/schema.graphql logout-schema
+
+docker:
+    COPY +build/dist .
+    COPY +build/logout-schema ./internal-services/logout/schema.graphql
+
+    COPY +deps/deps node_modules
+
+local:
+    FROM +docker
+    ENTRYPOINT ["node", "index.js"]

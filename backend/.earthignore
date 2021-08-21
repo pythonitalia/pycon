@@ -1,0 +1,10 @@
+.vscode/
+django-static/
+cov.xml
+.env
+*.pyo
+*.pyc
+**/__pycache__/**
+**/node_modules/**
+*.sqlite3
+Dockerfile
