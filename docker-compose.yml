@@ -1,0 +1,29 @@
+version: '3.9'
+
+services:
+  pycon-backend-db:
+    image: postgres:11.10
+    ports:
+      - "5430:5432"
+    environment:
+      POSTGRES_USER: pycon
+      POSTGRES_PASSWORD: pycon
+      POSTGRES_DB: pycon
+
+  users-backend-db:
+    image: postgres:11.10
+    ports:
+      - "5440:5432"
+    environment:
+      POSTGRES_USER: users
+      POSTGRES_PASSWORD: users
+      POSTGRES_DB: users
+
+  association-backend-db:
+    image: postgres:11.10
+    ports:
+      - "5450:5432"
+    environment:
+      POSTGRES_USER: association
+      POSTGRES_PASSWORD: association
+      POSTGRES_DB: association
