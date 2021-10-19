@@ -66,23 +66,24 @@ async def _():
         jwt_auth_id=1,
     )
 
-    token = jwt.encode(
-        {
-            "jti": user.get_reset_password_jwt_id(),
-            "user_id": 10,
-            "exp": datetime.now(timezone.utc) + timedelta(minutes=30),
-            "iat": datetime.now(timezone.utc),
-            "iss": "users",
-            "aud": "users/not-reset-password",
-        },
-        str(SECRET_KEY),
-    )
-
-    with raises(ResetPasswordTokenInvalidError):
-        await reset_password(
-            ResetPasswordInput(token=token, new_password="testnewpassword"),
-            repository=FakeUsersRepository([user]),
+    with time_machine.travel("2021-10-10 15:00:00Z", tick=False):
+        token = jwt.encode(
+            {
+                "jti": user.get_reset_password_jwt_id(),
+                "user_id": 10,
+                "exp": datetime.now(timezone.utc) + timedelta(minutes=30),
+                "iat": datetime.now(timezone.utc),
+                "iss": "users",
+                "aud": "users/not-reset-password",
+            },
+            str(SECRET_KEY),
         )
+
+        with raises(ResetPasswordTokenInvalidError):
+            await reset_password(
+                ResetPasswordInput(token=token, new_password="testnewpassword"),
+                repository=FakeUsersRepository([user]),
+            )
 
 
 @test("cannot reset password with jwt without id")
@@ -126,23 +127,24 @@ async def _():
         jwt_auth_id=1,
     )
 
-    token = jwt.encode(
-        {
-            "jti": "reset-password:20:1",
-            "user_id": 20,
-            "exp": datetime.now(timezone.utc) + timedelta(minutes=30),
-            "iat": datetime.now(timezone.utc),
-            "iss": "users",
-            "aud": "users/reset-password",
-        },
-        str(SECRET_KEY),
-    )
-
-    with raises(UserDoesNotExistError):
-        await reset_password(
-            ResetPasswordInput(token=token, new_password="testnewpassword"),
-            repository=FakeUsersRepository([user]),
+    with time_machine.travel("2021-10-10 15:00:00Z", tick=False):
+        token = jwt.encode(
+            {
+                "jti": "reset-password:20:1",
+                "user_id": 20,
+                "exp": datetime.now(timezone.utc) + timedelta(minutes=30),
+                "iat": datetime.now(timezone.utc),
+                "iss": "users",
+                "aud": "users/reset-password",
+            },
+            str(SECRET_KEY),
         )
+
+        with raises(UserDoesNotExistError):
+            await reset_password(
+                ResetPasswordInput(token=token, new_password="testnewpassword"),
+                repository=FakeUsersRepository([user]),
+            )
 
 
 @test("cannot reset password with expired jwt")
