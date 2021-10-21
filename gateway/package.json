@@ -23,9 +23,13 @@
     "dev": "NODE_ENV=development VARIANT=default nodemon",
     "dev:admin": "NODE_ENV=development VARIANT=admin nodemon",
     "test": "jest",
-    "test:coverage": "jest --collect-coverage"
+    "test:coverage": "jest --collect-coverage",
+    "lint": "eslint . --ext .js,.ts",
+    "lint:ts": "tsc --noemit",
+    "lint:prettier": "prettier --check ./**/*"
   },
   "devDependencies": {
+    "@python-italia/eslint-config": "^1.0.13",
     "@trivago/prettier-plugin-sort-imports": "^2.0.2",
     "@types/cookie": "^0.4.0",
     "@types/jest": "^26.0.21",
@@ -33,7 +37,7 @@
     "jest": "^26.6.3",
     "jest-extended": "^0.11.5",
     "nodemon": "^2.0.7",
-    "prettier": "^2.2.1",
+    "prettier": "^2.3.2",
     "ts-jest": "^26.5.4",
     "ts-node": "^9.1.1"
   }

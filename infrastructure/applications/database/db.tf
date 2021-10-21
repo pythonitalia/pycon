@@ -17,11 +17,11 @@ resource "aws_db_instance" "database" {
   engine                      = "postgres"
   identifier                  = "pythonit-${terraform.workspace}"
   allow_major_version_upgrade = true
-  engine_version              = "11.10"
+  engine_version              = "11.12"
   instance_class              = "db.t2.micro"
   name                        = "${local.normalized_workspace}backend"
   username                    = "root"
-  password                    = var.database_password
+  password                    = module.common_secrets.value.database_password
   multi_az                    = "false"
   availability_zone           = "eu-central-1a"
   skip_final_snapshot         = true

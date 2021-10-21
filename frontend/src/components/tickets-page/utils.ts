@@ -1,12 +1,12 @@
 import { InvoiceInformationState, OrderState } from "./types";
 
-export const hasSelectedAtLeastOneProduct = (state: OrderState) =>
+export const hasSelectedAtLeastOneProduct = (state: OrderState): boolean =>
   Object.values(state.selectedProducts).length > 0 ||
   Object.values(state.selectedHotelRooms).length > 0;
 
 type InvoiceInformationKeys = (keyof InvoiceInformationState)[];
 
-export const hasOrderInformation = (state: OrderState) => {
+export const hasOrderInformation = (state: OrderState): boolean => {
   const requiredKeys: InvoiceInformationKeys = [
     "name",
     "address",
@@ -35,7 +35,7 @@ export const hasOrderInformation = (state: OrderState) => {
 export const hasAnsweredTicketsQuestions = (
   state: OrderState,
   tickets: { id: string; questions: { id: string; required: boolean }[] }[],
-) => {
+): boolean => {
   const selectedProducts = Object.values(state.selectedProducts).flat();
 
   if (
@@ -59,7 +59,8 @@ export const hasAnsweredTicketsQuestions = (
       for (const question of ticket.questions) {
         if (
           question.required &&
-          (!answers.hasOwnProperty(question.id) || answers[question.id] === "")
+          (!Object.prototype.hasOwnProperty.call(answers, question.id) ||
+            answers[question.id] === "")
         ) {
           return true;
         }

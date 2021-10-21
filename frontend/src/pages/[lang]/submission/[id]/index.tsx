@@ -1,16 +1,22 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
-import { useRouter } from "next/router";
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 import { Container, jsx } from "theme-ui";
 
+import { GetStaticPaths, GetStaticProps } from "next";
+import { useRouter } from "next/router";
+
+import { addApolloState } from "~/apollo/client";
 import { Alert } from "~/components/alert";
 import { LoginForm } from "~/components/login-form";
 import { MetaTags } from "~/components/meta-tags";
 import { useLoginState } from "~/components/profile/hooks";
 import { Submission } from "~/components/submission";
+import { prefetchSharedQueries } from "~/helpers/prefetch";
 import {
+  queryIsVotingClosed,
   SubmissionQuery,
   useIsVotingClosedQuery,
   useSubmissionQuery,
@@ -103,5 +109,27 @@ export const SubmissionPage = () => {
     </Container>
   );
 };
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const language = params.lang as string;
+
+  await Promise.all([
+    prefetchSharedQueries(language),
+    queryIsVotingClosed({
+      conference: process.env.conferenceCode,
+    }),
+  ]);
+
+  return addApolloState({
+    props: {},
+    revalidate: 1,
+  });
+};
+
+export const getStaticPaths: GetStaticPaths = async () =>
+  Promise.resolve({
+    paths: [],
+    fallback: "blocking",
+  });
 
 export default SubmissionPage;

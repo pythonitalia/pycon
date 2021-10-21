@@ -1,13 +1,19 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
-import { useRouter } from "next/router";
 import { jsx } from "theme-ui";
 
+import { GetStaticPaths, GetStaticProps } from "next";
+import { useRouter } from "next/router";
+
+import { addApolloState } from "~/apollo/client";
 import { useLoginState } from "~/components/profile/hooks";
 import { TicketsSection } from "~/components/tickets-page/tickets-section";
 import { useCart } from "~/components/tickets-page/use-cart";
 import { TicketsPageWrapper } from "~/components/tickets-page/wrapper";
+import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
+import { queryTickets } from "~/types";
 
 export const TicketsPage = () => {
   const language = useCurrentLanguage();
@@ -58,5 +64,29 @@ export const TicketsPage = () => {
     </TicketsPageWrapper>
   );
 };
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const language = params.lang as string;
+
+  await Promise.all([
+    prefetchSharedQueries(language),
+    queryTickets({
+      conference: process.env.conferenceCode,
+      language,
+      isLogged: false,
+    }),
+  ]);
+
+  return addApolloState({
+    props: {},
+    revalidate: 1,
+  });
+};
+
+export const getStaticPaths: GetStaticPaths = async () =>
+  Promise.resolve({
+    paths: [],
+    fallback: "blocking",
+  });
 
 export default TicketsPage;

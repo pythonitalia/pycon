@@ -1,11 +1,16 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
-import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, jsx } from "theme-ui";
 
+import { GetStaticPaths, GetStaticProps } from "next";
+import { useRouter } from "next/router";
+
+import { addApolloState } from "~/apollo/client";
 import { useLoginState } from "~/components/profile/hooks";
+import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useMessages } from "~/helpers/use-messages";
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
 import { useCurrentLanguage } from "~/locale/context";
@@ -18,7 +23,7 @@ export const LoginSuccessPage = () => {
   const { addMessage } = useMessages();
 
   const errorMessage = useTranslatedMessage("global.somethingWentWrong");
-  const { loading, error, data } = useSocialLoginCheckQuery({
+  const { loading, error } = useSocialLoginCheckQuery({
     onCompleted(data) {
       if (data.me) {
         setLoggedIn(true);
@@ -54,5 +59,21 @@ export const LoginSuccessPage = () => {
     </Box>
   );
 };
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const lang = params.lang as string;
+
+  await prefetchSharedQueries(lang);
+
+  return addApolloState({
+    props: {},
+  });
+};
+
+export const getStaticPaths: GetStaticPaths = async () =>
+  Promise.resolve({
+    paths: [],
+    fallback: "blocking",
+  });
 
 export default LoginSuccessPage;

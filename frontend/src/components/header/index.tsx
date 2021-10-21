@@ -1,11 +1,13 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
-import dynamic from "next/dynamic";
-import { useRouter } from "next/router";
 import { Fragment, useEffect, useRef } from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, Flex, Grid, Heading, jsx } from "theme-ui";
 import useOnClickOutside from "use-onclickoutside";
+
+import dynamic from "next/dynamic";
+import { useRouter } from "next/router";
 
 import { useLoginState } from "~/components/profile/hooks";
 import { useToggle } from "~/helpers/use-toggle";
@@ -30,13 +32,12 @@ const LanguagePicker: React.SFC<{ language: string }> = ({
   ...props
 }) => {
   const alternateLinks = useAlternateLinks();
-
   return (
     <Flex sx={{ alignItems: "center", height: 50, mt: "-4px" }} {...props}>
-      <Link path={alternateLinks.en} sx={{ height: 40 }}>
+      <Link path={alternateLinks.en} sx={{ height: 40 }} external={true}>
         <EnglishIcon active={language === "en"} sx={{ width: 40, mr: 2 }} />
       </Link>
-      <Link path={alternateLinks.it} sx={{ height: 40 }}>
+      <Link path={alternateLinks.it} sx={{ height: 40 }} external={true}>
         <ItalianIcon active={language === "it"} sx={{ width: 40, mr: 4 }} />
       </Link>
     </Flex>
@@ -61,8 +62,6 @@ const Links: React.SFC<{
     })}
   </Fragment>
 );
-
-const WARNING_MESSAGE_HEIGHT = [80, 80, 60];
 
 export const Header = () => {
   const language = useCurrentLanguage();
@@ -92,43 +91,10 @@ export const Header = () => {
   return (
     <Fragment>
       <Box
-        sx={
-          {
-            height: WARNING_MESSAGE_HEIGHT,
-            backgroundColor: "black",
-            color: "white",
-            position: open ? "fixed" : "relative",
-            width: "100%",
-            zIndex: "header",
-          } as any
-        }
-      >
-        <Box
-          sx={{
-            width: "100%",
-            maxWidth: "largeContainer",
-            mx: "auto",
-            px: 2,
-            display: "flex",
-            alignItems: "center",
-            height: "100%",
-          }}
-        >
-          <Link
-            sx={{ color: "white", textUnderlineOffset: 4 }}
-            path="/[lang]/blog/[slug]"
-            params={{ slug: "pycon-11-cancelled" }}
-          >
-            <FormattedMessage id="header.coronaVirus" />
-          </Link>
-        </Box>
-      </Box>
-
-      <Box
         ref={headerRef}
         sx={
           {
-            top: WARNING_MESSAGE_HEIGHT,
+            top: 0,
             left: 0,
             pt: 3,
             width: "100%",

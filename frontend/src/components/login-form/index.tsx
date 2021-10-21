@@ -1,10 +1,12 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
-import Router, { useRouter } from "next/router";
 import { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import { Box, Grid, Input, jsx, Text } from "theme-ui";
+
+import Router, { useRouter } from "next/router";
 
 import { useLoginState } from "~/components/profile/hooks";
 import { useMessages } from "~/helpers/use-messages";
@@ -43,7 +45,7 @@ export const LoginForm: React.SFC<FormProps> = ({ next, ...props }) => {
     }
   };
 
-  const [login, { loading, error, data: loginData }] = useLoginMutation({
+  const [login, { loading, data: loginData }] = useLoginMutation({
     onCompleted: onLoginCompleted,
   });
   const [formState, { email, password }] = useFormState<LoginFormFields>(
@@ -123,6 +125,7 @@ export const LoginForm: React.SFC<FormProps> = ({ next, ...props }) => {
               placeholder="guido@python.org"
               required={true}
               type="email"
+              data-testid="email-input"
             />
           </InputWrapper>
 
@@ -146,6 +149,7 @@ export const LoginForm: React.SFC<FormProps> = ({ next, ...props }) => {
               {...password("password")}
               required={true}
               type="password"
+              data-testid="password-input"
             />
           </InputWrapper>
 

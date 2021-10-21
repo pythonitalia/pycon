@@ -1,4 +1,4 @@
-import { Language } from "~/locale/get-initial-locale";
+import { Language } from "~/locale/languages";
 
 export const formatDay = (
   day: string,

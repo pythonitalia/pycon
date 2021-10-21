@@ -1,13 +1,18 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
 import { useCallback } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import { Box, Heading, Input, jsx } from "theme-ui";
 
+import { GetStaticPaths, GetStaticProps } from "next";
+
+import { addApolloState } from "~/apollo/client";
 import { Alert } from "~/components/alert";
 import { Button } from "~/components/button/button";
 import { InputWrapper } from "~/components/input-wrapper";
+import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useRequestPasswordResetMutation } from "~/types";
 
 type FormFields = {
@@ -22,10 +27,8 @@ export const RequestResetPasswordPage = () => {
     },
   );
 
-  const [
-    sendResetPassword,
-    { loading, error, data },
-  ] = useRequestPasswordResetMutation();
+  const [sendResetPassword, { loading, error, data }] =
+    useRequestPasswordResetMutation();
 
   const onSubmit = useCallback(
     (e) => {
@@ -100,5 +103,21 @@ export const RequestResetPasswordPage = () => {
     </Box>
   );
 };
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const lang = params.lang as string;
+
+  await prefetchSharedQueries(lang);
+
+  return addApolloState({
+    props: {},
+  });
+};
+
+export const getStaticPaths: GetStaticPaths = async () =>
+  Promise.resolve({
+    paths: [],
+    fallback: "blocking",
+  });
 
 export default RequestResetPasswordPage;

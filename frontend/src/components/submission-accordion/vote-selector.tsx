@@ -1,4 +1,5 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
 import { FormattedMessage } from "react-intl";
 import { Box, Heading, jsx, Label, Radio } from "theme-ui";
@@ -59,7 +60,7 @@ export const VoteSelector: React.SFC<Props> = ({
             cursor: "pointer",
           }}
           key={option.value}
-          onClick={(_) => onVote(option.value)}
+          onClick={() => onVote(option.value)}
         >
           <InputWrapper sx={{ mb: 2, mr: 4, textTransform: "none" }}>
             <Label>

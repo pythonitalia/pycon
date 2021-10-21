@@ -1,11 +1,15 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
-import { useRouter } from "next/router";
 import React, { Fragment } from "react";
 import { Box, Flex, Heading, jsx, Text } from "theme-ui";
 
+import { GetStaticPaths, GetStaticProps } from "next";
+import { useRouter } from "next/router";
+
+import { addApolloState } from "~/apollo/client";
 import { CardType, getSize } from "~/helpers/social-card";
-import { useTalkSocialCardQuery } from "~/types";
+import { queryTalkSocialCard, useTalkSocialCardQuery } from "~/types";
 
 const Snakes: React.SFC = (props) => (
   <svg fill="none" viewBox="0 0 170 200" {...props}>
@@ -58,8 +62,6 @@ const Snakes: React.SFC = (props) => (
   </svg>
 );
 
-type Props = {};
-
 const getTitleFontSize = (cardType: CardType) => {
   switch (cardType) {
     case "social":
@@ -70,7 +72,7 @@ const getTitleFontSize = (cardType: CardType) => {
   }
 };
 
-export const SocialCard: React.FC<Props> = () => {
+export const SocialCard = () => {
   const router = useRouter();
   const cardType = (router.query["card-type"] as CardType) || "social";
   const slug = router.query.slug as string;
@@ -135,5 +137,24 @@ export const SocialCard: React.FC<Props> = () => {
     </Fragment>
   );
 };
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const slug = params.slug as string;
+
+  await queryTalkSocialCard({
+    code: process.env.conferenceCode,
+    slug,
+  });
+
+  return addApolloState({
+    props: {},
+    revalidate: 1,
+  });
+};
+
+export const getStaticPaths: GetStaticPaths = async () => ({
+  paths: [],
+  fallback: "blocking",
+});
 
 export default SocialCard;

@@ -1,11 +1,13 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
 import { Global } from "@emotion/core";
+import React from "react";
 import { jsx } from "theme-ui";
 
-export const GlobalStyles = () => (
+export const GlobalStyles = (): React.ReactElement => (
   <Global
-    styles={(theme) => ({
+    styles={() => ({
       "*": {
         margin: 0,
         padding: 0,
@@ -21,9 +23,10 @@ export const GlobalStyles = () => (
         .article h6, \
         .article p, \
         .article ol, \
-        .article ul": {
-        marginBottom: "1em",
-      },
+        .article ul":
+        {
+          marginBottom: "1em",
+        },
       ".article ol, .article ul, .article li": {
         paddingLeft: "1em",
       },

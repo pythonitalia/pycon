@@ -1,9 +1,10 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
 import { Box, Flex, Heading, jsx, Text } from "theme-ui";
 
 import { useCurrentLanguage } from "~/locale/context";
-import { Language } from "~/locale/get-initial-locale";
+import { Language } from "~/locale/languages";
 
 import { PyConEvent } from "./types";
 
@@ -33,7 +34,7 @@ export const EventCard = (props: PyConEvent) => {
     >
       <Box sx={{ paddingBottom: "100%", display: "inline-block" }} />
 
-      {props.image && <img src={props.image} />}
+      {props.image && <img src={props.image} alt="Event image" />}
 
       <Box
         sx={{

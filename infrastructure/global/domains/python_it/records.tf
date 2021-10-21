@@ -145,8 +145,8 @@ resource "aws_route53_record" "mail_python_it_txt" {
 resource "aws_route53_record" "milano_python_it_a" {
   zone_id = aws_route53_zone.pythonit.id
   name    = "milano.python.it"
-  type    = "A"
-  records = ["192.30.252.154", "192.30.252.153"]
+  type    = "CNAME"
+  records = ["pythonmilano.github.io"]
   ttl     = "3600"
 }
 
@@ -227,5 +227,13 @@ resource "aws_route53_record" "www2_python_it_cname" {
   name    = "www2.python.it"
   type    = "CNAME"
   records = ["python.it."]
+  ttl     = "3600"
+}
+
+resource "aws_route53_record" "socialcards" {
+  zone_id = aws_route53_zone.pythonit.id
+  name    = "socialcards"
+  type    = "CNAME"
+  records = ["cname.vercel-dns.com"]
   ttl     = "3600"
 }

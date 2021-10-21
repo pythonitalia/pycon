@@ -1,4 +1,5 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
 import * as Sentry from "@sentry/node";
 import { Component } from "react";
@@ -6,15 +7,19 @@ import { Box, Heading, jsx, Text } from "theme-ui";
 
 import { Link } from "../link";
 
+type Props = {
+  children: React.ReactNode;
+};
+
 export class ErrorBoundary extends Component<
-  {},
+  Props,
   {
     errorInfo: any | null;
     error: string | null;
     eventId: any | null;
   }
 > {
-  constructor(props: Readonly<{}>) {
+  constructor(props: Readonly<Props>) {
     super(props);
     this.state = { error: null, errorInfo: null, eventId: null };
   }

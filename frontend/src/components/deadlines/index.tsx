@@ -1,11 +1,12 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
 import { useCurrentLanguage } from "~/locale/context";
-import { Language } from "~/locale/get-initial-locale";
+import { Language } from "~/locale/languages";
 
 type Props = {
   deadlines: {

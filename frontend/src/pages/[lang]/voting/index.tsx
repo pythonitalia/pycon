@@ -1,11 +1,15 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
-import { useRouter } from "next/router";
 import { useCallback, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import { Box, Grid, Heading, jsx, Select, Text } from "theme-ui";
 
+import { GetStaticPaths, GetStaticProps } from "next";
+import { useRouter } from "next/router";
+
+import { addApolloState } from "~/apollo/client";
 import { Alert } from "~/components/alert";
 import { Link } from "~/components/link";
 import { LoginForm } from "~/components/login-form";
@@ -13,6 +17,7 @@ import { MetaTags } from "~/components/meta-tags";
 import { useLoginState } from "~/components/profile/hooks";
 import { SubmissionAccordion } from "~/components/submission-accordion";
 import { TagsFilter } from "~/components/tags-filter";
+import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useVotingSubmissionsQuery } from "~/types";
 
 type VoteTypes = "all" | "votedOnly" | "notVoted";
@@ -254,7 +259,11 @@ export const VotingPage: React.SFC = () => {
                 id="voting.closed.body"
                 values={{
                   twitter: (
-                    <a target="_blank" href="https://twitter.com/pyconit">
+                    <a
+                      target="_blank"
+                      href="https://twitter.com/pyconit"
+                      rel="noreferrer"
+                    >
                       Twitter
                     </a>
                   ),
@@ -280,7 +289,9 @@ export const VotingPage: React.SFC = () => {
             </Alert>
           </Box>
           <LoginForm
-            next={process.browser ? window.location?.pathname : null}
+            next={
+              typeof window !== "undefined" ? window.location?.pathname : null
+            }
           />
         </Box>
       )}
@@ -353,5 +364,21 @@ export const VotingPage: React.SFC = () => {
     </Box>
   );
 };
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const lang = params.lang as string;
+
+  await prefetchSharedQueries(lang);
+
+  return addApolloState({
+    props: {},
+  });
+};
+
+export const getStaticPaths: GetStaticPaths = async () =>
+  Promise.resolve({
+    paths: [],
+    fallback: "blocking",
+  });
 
 export default VotingPage;

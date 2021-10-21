@@ -1,20 +1,30 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
-import { useRouter } from "next/router";
-import React, { Fragment } from "react";
+import React from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { FormattedMessage } from "react-intl";
 import { Box, jsx } from "theme-ui";
 
+import { GetStaticPaths, GetStaticProps } from "next";
+import { useRouter } from "next/router";
+
+import { addApolloState } from "~/apollo/client";
 import { formatDay } from "~/components/day-selector/format-day";
 import { MetaTags } from "~/components/meta-tags";
 import { useLoginState } from "~/components/profile/hooks";
 import { ScheduleView } from "~/components/schedule-view";
+import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentUser } from "~/helpers/use-current-user";
 import { useCurrentLanguage } from "~/locale/context";
-import { Language } from "~/locale/get-initial-locale";
-import { ScheduleQuery, useScheduleQuery } from "~/types";
+import { Language } from "~/locale/languages";
+import {
+  querySchedule,
+  queryScheduleDays,
+  ScheduleQuery,
+  useScheduleQuery,
+} from "~/types";
 
 const Meta: React.FC<{
   day: string;
@@ -111,6 +121,51 @@ const PageContent: React.FC<PageContentProps> = ({
       )}
     </React.Fragment>
   );
+};
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  await Promise.all([
+    prefetchSharedQueries(params.lang as string),
+    querySchedule({
+      code: process.env.conferenceCode,
+      fetchSubmissions: false,
+    }),
+  ]);
+
+  return addApolloState({
+    props: {},
+    revalidate: 1,
+  });
+};
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const {
+    data: {
+      conference: { days },
+    },
+  } = await queryScheduleDays({
+    code: process.env.conferenceCode,
+  });
+
+  const paths = [
+    ...days.map((day) => ({
+      params: {
+        lang: "en",
+        day: day.day,
+      },
+    })),
+    ...days.map((day) => ({
+      params: {
+        lang: "it",
+        day: day.day,
+      },
+    })),
+  ];
+
+  return {
+    paths,
+    fallback: false,
+  };
 };
 
 export default ScheduleDayPage;

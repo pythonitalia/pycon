@@ -15,7 +15,7 @@ const updateProductReducer = (
   const productItems = selectedProducts[id] ? [...selectedProducts[id]] : [];
 
   switch (action.type) {
-    case "incrementProduct":
+    case "incrementProduct": {
       productItems.push({
         id: action.id,
         variation: action.variation,
@@ -24,7 +24,8 @@ const updateProductReducer = (
         attendeeEmail: "",
       });
       break;
-    case "decrementProduct":
+    }
+    case "decrementProduct": {
       let indexToRemove = 0;
 
       if (action.variation) {
@@ -37,6 +38,7 @@ const updateProductReducer = (
         productItems.splice(indexToRemove, 1);
       }
       break;
+    }
   }
 
   if (productItems.length === 0) {

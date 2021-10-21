@@ -1,44 +1,48 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
-import { Box, Flex, Grid, Heading, jsx, Text } from "theme-ui";
+import { Box, Grid, Heading, jsx, Text } from "theme-ui";
 
+import { GetStaticPaths, GetStaticProps } from "next";
+
+import { addApolloState } from "~/apollo/client";
 import { GridSlider } from "~/components/grid-slider";
 import { EventCard } from "~/components/home-events/event-card";
 import { HomepageHero } from "~/components/homepage-hero";
 import { KeynotersSection } from "~/components/keynoters-section";
 import { Link } from "~/components/link";
-import { MapWithLink } from "~/components/map-with-link";
 import { Marquee } from "~/components/marquee";
 import { MetaTags } from "~/components/meta-tags";
 import { SponsorsSection } from "~/components/sponsors-section";
 import { YouTubeLite } from "~/components/youtube-lite";
 import { formatDeadlineDate, formatDeadlineTime } from "~/helpers/deadlines";
+import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
-import { useIndexPageQuery } from "~/types";
+import {
+  queryIndexPage,
+  queryKeynotesSection,
+  useIndexPageQuery,
+} from "~/types";
 
 export const HomePage = () => {
   const language = useCurrentLanguage();
-  const { loading, data } = useIndexPageQuery({
+  const {
+    data: { conference, blogPosts },
+  } = useIndexPageQuery({
     variables: {
-      code: process.env.conferenceCode!,
+      code: process.env.conferenceCode,
       language,
     },
   });
-
-  if (loading || !data) {
-    return null;
-  }
-
-  const { conference, blogPosts } = data;
 
   return (
     <Fragment>
       <FormattedMessage id="home.title">
         {(text) => <MetaTags title={text} />}
       </FormattedMessage>
-      <HomepageHero />
+      <HomepageHero hideBuyTickets={true} />
 
       <Marquee message={conference.marquee!} />
 
@@ -170,79 +174,29 @@ export const HomePage = () => {
         />
       )}
 
-      <Box
-        sx={{
-          borderBottom: "primary",
-        }}
-      >
-        <Grid
-          sx={{
-            py: 5,
-            px: 3,
-
-            gridTemplateColumns: [null, null, "8fr 2fr 10fr"],
-
-            maxWidth: "container",
-            mx: "auto",
-          }}
-        >
-          <Flex
-            sx={{
-              flexDirection: "column",
-              justifyContent: "center",
-            }}
-          >
-            <Heading as="h1">
-              <FormattedMessage id="home.gettingThere" />
-            </Heading>
-            <Text
-              sx={{
-                mt: 4,
-                mb: 3,
-              }}
-              as="p"
-            >
-              {conference.gettingThereText}
-            </Text>
-
-            <Box>
-              <Link
-                target="_blank"
-                variant="arrow-button"
-                path={conference.map!.link!}
+      {conference.sponsorsByLevel.length > 0 && (
+        <Fragment>
+          <Box sx={{ borderBottom: "primary" }}>
+            <Box sx={{ py: 4 }}>
+              <Heading
+                as="h1"
+                sx={{
+                  px: 3,
+                  maxWidth: "container",
+                  mx: "auto",
+                }}
               >
-                <FormattedMessage id="home.findRoute" />
-              </Link>
+                Sponsors
+              </Heading>
             </Box>
-          </Flex>
+          </Box>
 
-          <MapWithLink
-            sx={{
-              gridColumnStart: [null, null, 3],
-            }}
+          <SponsorsSection
+            sx={{ mt: 5, pb: 5, borderBottom: "primary" }}
+            sponsorsByLevel={conference.sponsorsByLevel}
           />
-        </Grid>
-      </Box>
-
-      <Box sx={{ borderBottom: "primary" }}>
-        <Box sx={{ py: 4 }}>
-          <Heading
-            as="h1"
-            sx={{
-              px: 3,
-              maxWidth: "container",
-              mx: "auto",
-            }}
-          >
-            Sponsors
-          </Heading>
-        </Box>
-      </Box>
-
-      <SponsorsSection
-        sx={{ mt: 5, pb: 5, borderBottom: "primary" }}
-        sponsorsByLevel={conference.sponsorsByLevel}
-      />
+        </Fragment>
+      )}
 
       <Grid
         columns={[1, 2]}
@@ -276,5 +230,31 @@ export const HomePage = () => {
     </Fragment>
   );
 };
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const language = params.lang as string;
+
+  await Promise.all([
+    prefetchSharedQueries(language),
+    queryKeynotesSection({
+      code: process.env.conferenceCode,
+    }),
+    queryIndexPage({
+      language,
+      code: process.env.conferenceCode,
+    }),
+  ]);
+
+  return addApolloState({
+    props: {},
+    revalidate: 1,
+  });
+};
+
+export const getStaticPaths: GetStaticPaths = async () =>
+  Promise.resolve({
+    paths: [],
+    fallback: "blocking",
+  });
 
 export default HomePage;

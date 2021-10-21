@@ -1,8 +1,10 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
-import NextLink from "next/link";
 import React from "react";
 import { Box, jsx, Link as ThemeLink } from "theme-ui";
+
+import NextLink from "next/link";
 
 import { useHover } from "~/helpers/use-hover";
 import { useCurrentLanguage } from "~/locale/context";
@@ -66,7 +68,6 @@ type LinkProps = {
   variant?: string;
   target?: string;
   backgroundColor?: string;
-  after?: React.ReactElement | null;
   params?: Params;
   external?: boolean;
 };
@@ -75,7 +76,6 @@ export const Link: React.FC<LinkProps> = ({
   children,
   path,
   backgroundColor,
-  after,
   target,
   variant,
   url,
@@ -130,7 +130,7 @@ export const Link: React.FC<LinkProps> = ({
 
   const component = (hovered: boolean) => <ForwardedLink hovered={hovered} />;
 
-  const [hoverable, _] = useHover(component);
+  const [hoverable] = useHover(component);
 
   if (external || isExternalLink({ path, target })) {
     return hoverable;

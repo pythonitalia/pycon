@@ -2,15 +2,6 @@
   "trailingSlash": false,
   "headers": [
     {
-      "source": "/:path*",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "max-age=0, s-maxage=300, stale-while-revalidate"
-        }
-      ]
-    },
-    {
       "source": "/:lang*/profile",
       "headers": [
         {

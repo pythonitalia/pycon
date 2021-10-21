@@ -24,10 +24,10 @@ jobs:
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
         with:
-          python-version: "3.9.1"
+          python-version: "3.9.5"
       - run: pip install poetry
 
       - name: Cache Poetry
@@ -64,5 +64,5 @@ jobs:
           exit $STATUS
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:${{ job.services.postgres.ports['5432'] }}/postgres
-          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+          STRIPE_SECRET_KEY: fake-key
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

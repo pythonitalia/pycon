@@ -1,13 +1,18 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
-import { useRouter } from "next/router";
 import { useCallback } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import { Box, Button, Heading, Input, jsx } from "theme-ui";
 
+import { GetStaticPaths, GetStaticProps } from "next";
+import { useRouter } from "next/router";
+
+import { addApolloState } from "~/apollo/client";
 import { Alert } from "~/components/alert";
 import { InputWrapper } from "~/components/input-wrapper";
+import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useMessages } from "~/helpers/use-messages";
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
 import { useCurrentLanguage } from "~/locale/context";
@@ -107,5 +112,21 @@ export const ResetPasswordPage = () => {
     </Box>
   );
 };
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const lang = params.lang as string;
+
+  await prefetchSharedQueries(lang);
+
+  return addApolloState({
+    props: {},
+  });
+};
+
+export const getStaticPaths: GetStaticPaths = async () =>
+  Promise.resolve({
+    paths: [],
+    fallback: "blocking",
+  });
 
 export default ResetPasswordPage;

@@ -1,10 +1,14 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
-import Router from "next/router";
 import { Fragment, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
+import { GetStaticPaths, GetStaticProps } from "next";
+import Router from "next/router";
+
+import { addApolloState } from "~/apollo/client";
 import { Alert } from "~/components/alert";
 import { MetaTags } from "~/components/meta-tags";
 import { PageLoading } from "~/components/page-loading";
@@ -13,14 +17,19 @@ import { Logout } from "~/components/profile/logout";
 import { MyOrders } from "~/components/profile/my-orders";
 import { MyProfile } from "~/components/profile/my-profile";
 import { MySubmissions } from "~/components/profile/my-submissions";
+import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
-import { useMyProfileQuery } from "~/types";
+import { queryCountries, useMyProfileQuery } from "~/types";
 
 export const MyProfilePage = () => {
   const [loggedIn, setLoginState] = useLoginState();
   const lang = useCurrentLanguage();
 
-  const { loading, error, data: profileData } = useMyProfileQuery({
+  const {
+    loading,
+    error,
+    data: profileData,
+  } = useMyProfileQuery({
     skip: !loggedIn,
     variables: {
       conference: process.env.conferenceCode,
@@ -85,5 +94,22 @@ export const MyProfilePage = () => {
     </Fragment>
   );
 };
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const lang = params.lang as string;
+
+  await Promise.all([prefetchSharedQueries(lang), queryCountries()]);
+
+  return addApolloState({
+    props: {},
+    revalidate: 1,
+  });
+};
+
+export const getStaticPaths: GetStaticPaths = async () =>
+  Promise.resolve({
+    paths: [],
+    fallback: "blocking",
+  });
 
 export default MyProfilePage;

@@ -1,7 +1,9 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
-import Image from "next/image";
 import { Box, Grid, jsx } from "theme-ui";
+
+import Image from "next/image";
 
 import { useSSRResponsiveValue } from "~/helpers/use-ssr-responsive-value";
 
@@ -23,6 +25,7 @@ const SponsorItem: React.FC<ItemProps> = ({ sponsor, color }) => (
       backgroundColor: color,
     }}
   >
+    {/*eslint-disable-next-line react/jsx-no-target-blank*/}
     <a
       target="_blank"
       href={sponsor.link!}

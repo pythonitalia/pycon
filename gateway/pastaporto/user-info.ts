@@ -1,4 +1,4 @@
-import { GraphQLClient, gql } from "graphql-request";
+import { gql, GraphQLClient } from "graphql-request";
 import jwt from "jsonwebtoken";
 
 import { SERVICE_TO_SERVICE_SECRET, USERS_SERVICE } from "../config";
@@ -29,7 +29,7 @@ export const fetchUserInfo = async (id: string): Promise<User | null> => {
   });
 
   const query = gql`
-    query($id: ID) {
+    query ($id: ID) {
       user(id: $id) {
         id
         email

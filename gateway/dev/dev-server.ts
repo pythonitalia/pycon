@@ -24,11 +24,12 @@ const server = new ApolloServer({
       "http://localhost:3020",
       "http://localhost:3010",
       "http://localhost:3000",
+      "https://studio.apollographql.com",
     ],
     credentials: true,
   },
   context: async ({ req, res }) => {
-    const context = await createContext(req.headers.cookie);
+    const context = await createContext(req.headers, req.headers.cookie);
     return {
       ...context,
       res,

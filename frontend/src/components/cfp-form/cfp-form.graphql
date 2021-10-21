@@ -1,4 +1,4 @@
-query CFPForm($conference: String!) {
+query CfpForm($conference: String!) {
   conference(code: $conference) {
     id
 

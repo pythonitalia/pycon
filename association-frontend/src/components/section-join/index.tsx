@@ -97,7 +97,8 @@ const BecomeMemberMainCopy = () => (
 );
 
 const ManageSubscription = () => {
-  const [{}, manageSubscriptionMutation] = useManageSubscriptionMutation();
+  const [{ data: _ }, manageSubscriptionMutation] =
+    useManageSubscriptionMutation();
   const onClick = async () => {
     const result = await manageSubscriptionMutation();
     if (

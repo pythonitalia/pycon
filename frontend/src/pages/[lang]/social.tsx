@@ -1,13 +1,15 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
-import { useRouter } from "next/router";
 import { Fragment } from "react";
 import { Box, Flex, Heading, jsx } from "theme-ui";
+
+import { useRouter } from "next/router";
 
 import { LogoOrange } from "~/components/logo/orange";
 import { CardType, getSize } from "~/helpers/social-card";
 import { useCurrentLanguage } from "~/locale/context";
-import { Language } from "~/locale/get-initial-locale";
+import { Language } from "~/locale/languages";
 import { useSocialCardQuery } from "~/types";
 
 const getDays = ({ start, end }: { start: string; end: string }) => {
@@ -65,6 +67,7 @@ export const SocialPage = () => {
         <Flex>
           <img
             src="/images/main-illustration.png"
+            alt=""
             sx={{
               height: size.height - padding * 2,
               width: size.height - padding * 2,

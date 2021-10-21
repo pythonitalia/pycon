@@ -1,4 +1,5 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
 import React from "react";
 import { FormattedMessage } from "react-intl";
@@ -24,7 +25,7 @@ const COLORS = [
 
 export const RankingPage: React.SFC = () => {
   const conferenceCode = process.env.conferenceCode;
-  const { loading, error, data } = useRankingSubmissionQuery({
+  const { loading, data } = useRankingSubmissionQuery({
     variables: {
       conference: conferenceCode,
     },

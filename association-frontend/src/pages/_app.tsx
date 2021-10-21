@@ -1,3 +1,6 @@
+/* eslint-disable @next/next/no-page-custom-font */
+
+/* eslint-disable @next/next/google-font-display */
 import { authExchange } from "@urql/exchange-auth";
 import { cacheExchange, dedupExchange, fetchExchange } from "urql";
 
@@ -55,11 +58,6 @@ export default withUrqlClient(
               return null;
             }
 
-            // if (typeof window !== "undefined") {
-            //   // @ts-ignore
-            //   Router.replace("/logout");
-            // }
-
             return null;
           },
           addAuthToOperation({
@@ -75,7 +73,7 @@ export default withUrqlClient(
         fetchExchange,
       ],
       fetchOptions: () => {
-        const options: { [key: string]: string | object } = {
+        const options: { [key: string]: string | { cookie: string } } = {
           credentials: "include",
         };
 

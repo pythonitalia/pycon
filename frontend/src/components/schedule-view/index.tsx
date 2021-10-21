@@ -1,14 +1,13 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
 import React, { Fragment, useCallback } from "react";
-import { FormattedMessage } from "react-intl";
 import { Box, Flex, Heading, jsx } from "theme-ui";
 
 import { DaySelector } from "~/components/day-selector";
 import {
   ScheduleQuery,
   useAddScheduleSlotMutation,
-  useScheduleQuery,
   useUpdateOrCreateSlotItemMutation,
 } from "~/types";
 
@@ -51,10 +50,8 @@ export const ScheduleView: React.SFC<{
     variables: { code, day: currentDay, duration: 60 },
   });
 
-  const [
-    addOrCreateScheduleItem,
-    { loading: updatingSchedule },
-  ] = useUpdateOrCreateSlotItemMutation();
+  const [addOrCreateScheduleItem, { loading: updatingSchedule }] =
+    useUpdateOrCreateSlotItemMutation();
 
   const addCustomScheduleItem = useCallback(
     (slotId: string, itemRooms: string[]) =>

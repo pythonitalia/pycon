@@ -1,10 +1,18 @@
-const cookie = require("cookie");
+import cookie from "cookie";
 
-export const apolloHeadersPlugin = (applyCookies: boolean = false) => {
+import { ApolloContext } from "../context";
+
+export type RequestContext = {
+  context: ApolloContext;
+  response: any;
+  [key: string]: any;
+};
+
+export const apolloHeadersPlugin = (applyCookies = false) => {
   return {
     requestDidStart() {
       return {
-        willSendResponse(requestContext: any) {
+        willSendResponse(requestContext: RequestContext) {
           const { setHeaders = [], setCookies = [] } = requestContext.context;
 
           // inform user about wrong usage
@@ -16,7 +24,6 @@ export const apolloHeadersPlugin = (applyCookies: boolean = false) => {
           }
 
           // set headers
-          // @ts-ignore
           setHeaders.forEach(({ key, value }) => {
             requestContext.response.http.headers.append(key, value);
           });
@@ -24,7 +31,6 @@ export const apolloHeadersPlugin = (applyCookies: boolean = false) => {
           if (applyCookies) {
             // set cookies
             const serializedCookieArray = setCookies.map(
-              // @ts-ignore
               ({ name, value, options }) =>
                 cookie.serialize(name, value, options),
             );
