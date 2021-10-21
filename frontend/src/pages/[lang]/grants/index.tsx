@@ -1,9 +1,11 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
-import { GetStaticPaths, GetStaticProps } from "next";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, jsx } from "theme-ui";
+
+import { GetStaticPaths, GetStaticProps } from "next";
 
 import { addApolloState } from "~/apollo/client";
 import { GrantForm } from "~/components/grant-form";

@@ -1,10 +1,12 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
-import { GetStaticPaths, GetStaticProps } from "next";
-import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, jsx } from "theme-ui";
+
+import { GetStaticPaths, GetStaticProps } from "next";
+import { useRouter } from "next/router";
 
 import { addApolloState } from "~/apollo/client";
 import { useLoginState } from "~/components/profile/hooks";

@@ -1,4 +1,5 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
 import moment from "moment";
 import { useCallback, useMemo } from "react";
@@ -25,12 +26,14 @@ export const AddHotelRoom: React.SFC<Props> = ({
   conferenceStart,
   addRoom,
 }) => {
-  const momentConferenceStart = useMemo(() => moment(conferenceStart), [
-    conferenceStart,
-  ]);
-  const momentConferenceEnd = useMemo(() => moment(conferenceEnd), [
-    conferenceEnd,
-  ]);
+  const momentConferenceStart = useMemo(
+    () => moment(conferenceStart),
+    [conferenceStart],
+  );
+  const momentConferenceEnd = useMemo(
+    () => moment(conferenceEnd),
+    [conferenceEnd],
+  );
   const [formState, { select }] = useFormState<Form>();
 
   const conferenceRunningDays = momentConferenceEnd.diff(

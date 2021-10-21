@@ -1,11 +1,13 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
-import dynamic from "next/dynamic";
-import { useRouter } from "next/router";
 import { Fragment, useEffect, useRef } from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, Flex, Grid, Heading, jsx } from "theme-ui";
 import useOnClickOutside from "use-onclickoutside";
+
+import dynamic from "next/dynamic";
+import { useRouter } from "next/router";
 
 import { useLoginState } from "~/components/profile/hooks";
 import { useToggle } from "~/helpers/use-toggle";
