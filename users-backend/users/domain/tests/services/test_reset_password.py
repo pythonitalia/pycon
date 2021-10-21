@@ -79,11 +79,11 @@ async def _():
             str(SECRET_KEY),
         )
 
-    with raises(ResetPasswordTokenInvalidError):
-        await reset_password(
-            ResetPasswordInput(token=token, new_password="testnewpassword"),
-            repository=FakeUsersRepository([user]),
-        )
+        with raises(ResetPasswordTokenInvalidError):
+            await reset_password(
+                ResetPasswordInput(token=token, new_password="testnewpassword"),
+                repository=FakeUsersRepository([user]),
+            )
 
 
 @test("cannot reset password with jwt without id")
@@ -140,11 +140,11 @@ async def _():
             str(SECRET_KEY),
         )
 
-    with raises(UserDoesNotExistError):
-        await reset_password(
-            ResetPasswordInput(token=token, new_password="testnewpassword"),
-            repository=FakeUsersRepository([user]),
-        )
+        with raises(UserDoesNotExistError):
+            await reset_password(
+                ResetPasswordInput(token=token, new_password="testnewpassword"),
+                repository=FakeUsersRepository([user]),
+            )
 
 
 @test("cannot reset password with expired jwt")
