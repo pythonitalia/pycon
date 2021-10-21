@@ -9,7 +9,9 @@
     "dev": "next dev",
     "build": "npm run codegen && next build",
     "start": "next start",
-    "lint": "eslint src",
+    "lint": "eslint src --ext .jsx,.js,.tsx,.ts",
+    "lint:ts": "tsc --noemit",
+    "lint:prettier": "prettier --check src/**/*",
     "codegen": "graphql-codegen -r dotenv/config -c codegen.yml",
     "codegen:watch": "yarn codegen --watch",
     "test": "jest src/"
@@ -22,7 +24,7 @@
     "@emotion/core": "^10.0.35",
     "@graphql-codegen/add": "^2.0.0",
     "@graphql-codegen/cli": "^1.20.1",
-    "@graphql-codegen/fragment-matcher": "^2.0.0",
+    "@graphql-codegen/fragment-matcher": "^3.1.0",
     "@graphql-codegen/introspection": "^1.18.0",
     "@graphql-codegen/near-operation-file-preset": "^1.17.11",
     "@graphql-codegen/typescript": "^1.17.11",
@@ -63,11 +65,12 @@
     "yup": "^0.29.3"
   },
   "devDependencies": {
-    "@python-italia/eslint-config": "^1.0.4",
+    "@python-italia/eslint-config": "^1.0.13",
     "@testing-library/dom": "^8.1.0",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^12.0.0",
     "@testing-library/user-event": "^13.2.1",
+    "@trivago/prettier-plugin-sort-imports": "^2.0.2",
     "@types/jest": "^26.0.15",
     "@types/node": "^14.14.6",
     "@types/react": "^16.9.55",

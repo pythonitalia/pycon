@@ -1,11 +1,13 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
-import { GetStaticPaths, GetStaticProps } from "next";
-import { useRouter } from "next/router";
 import { useCallback, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import { Box, Grid, Heading, jsx, Select, Text } from "theme-ui";
+
+import { GetStaticPaths, GetStaticProps } from "next";
+import { useRouter } from "next/router";
 
 import { addApolloState } from "~/apollo/client";
 import { Alert } from "~/components/alert";
@@ -287,7 +289,9 @@ export const VotingPage: React.SFC = () => {
             </Alert>
           </Box>
           <LoginForm
-            next={process.browser ? window.location?.pathname : null}
+            next={
+              typeof window !== "undefined" ? window.location?.pathname : null
+            }
           />
         </Box>
       )}

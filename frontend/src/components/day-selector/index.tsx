@@ -1,8 +1,10 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
-import { useRouter } from "next/router";
 import React from "react";
 import { Box, jsx, Select } from "theme-ui";
+
+import { useRouter } from "next/router";
 
 import { Link } from "~/components/link";
 import { useCurrentLanguage } from "~/locale/context";

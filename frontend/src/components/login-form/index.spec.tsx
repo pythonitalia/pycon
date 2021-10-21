@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import Router, { useRouter } from "next/router";
 import { mocked } from "ts-jest/utils";
+
+import Router, { useRouter } from "next/router";
 
 import {
   act,

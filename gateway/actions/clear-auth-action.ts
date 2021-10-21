@@ -1,7 +1,7 @@
 import { IS_DEV } from "../config";
 import { PastaportoAction } from "./entities";
 
-type Options = {};
+type Options = void;
 
 export class ClearAuthAction extends PastaportoAction<Options, void, void> {
   async apply(context: any) {

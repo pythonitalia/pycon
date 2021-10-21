@@ -12,8 +12,12 @@ module.exports = {
     "**/*.graphql",
     "src/types.tsx",
   ],
-  extends: ["plugin:@typescript-eslint/recommended", "prettier"],
-  plugins: ["simple-import-sort"],
+  parser: "@typescript-eslint/parser",
+  extends: [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier",
+  ],
   overrides: [
     {
       files: [
@@ -34,8 +38,6 @@ module.exports = {
     },
   ],
   rules: {
-    "simple-import-sort/imports": "error",
-    "simple-import-sort/exports": "error",
     "import/first": "error",
     "import/newline-after-import": "error",
     "import/no-duplicates": "error",

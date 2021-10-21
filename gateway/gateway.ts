@@ -15,8 +15,10 @@ const PASTAPORTO_ACTION_X_HEADER = "x-pastaporto-action";
 const BACKEND_TOKEN_X_HEADER = "x-backend-token";
 
 class ServiceRemoteGraphQLDataSource extends RemoteGraphQLDataSource {
-  // @ts-ignore
-  async willSendRequest({ request, context }) {
+  async willSendRequest({
+    request,
+    context,
+  }: Parameters<NonNullable<RemoteGraphQLDataSource["willSendRequest"]>>[0]) {
     const pastaporto: Pastaporto = context.pastaporto;
     if (pastaporto) {
       request!.http!.headers.set(PASTAPORTO_X_HEADER, pastaporto.sign());
@@ -34,8 +36,12 @@ class ServiceRemoteGraphQLDataSource extends RemoteGraphQLDataSource {
     }
   }
 
-  // @ts-ignore
-  didReceiveResponse({ response, request, context }) {
+  didReceiveResponse({
+    response,
+    context,
+  }: Parameters<
+    NonNullable<RemoteGraphQLDataSource["didReceiveResponse"]>
+  >[0]) {
     const headers = response.http!.headers;
     const pastaportoAction = headers.get(PASTAPORTO_ACTION_X_HEADER);
 
@@ -46,8 +52,10 @@ class ServiceRemoteGraphQLDataSource extends RemoteGraphQLDataSource {
     return response;
   }
 
-  // @ts-ignore
-  async process({ request, context }) {
+  async process({
+    request,
+    context,
+  }: Parameters<NonNullable<RemoteGraphQLDataSource["process"]>>[0]) {
     const response = await super.process({
       request,
       context,

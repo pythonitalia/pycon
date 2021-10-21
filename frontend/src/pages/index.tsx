@@ -1,6 +1,6 @@
 import { GetServerSideProps } from "next";
-import Head from "next/head";
 import cookies from "next-cookies";
+import Head from "next/head";
 
 import { DEFAULT_LOCALE } from "~/locale/languages";
 
