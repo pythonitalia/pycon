@@ -19,7 +19,6 @@ def decode_service_to_service_token(
     return jwt.decode(
         token,
         secret,
-        verify=True,
         audience=audience,
         issuer=issuer,
         algorithms=["HS256"],

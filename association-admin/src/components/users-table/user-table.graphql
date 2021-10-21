@@ -1,8 +1,0 @@
-fragment UserDataForTable on User {
-  id
-  email
-  fullname
-  name
-  isStaff
-  isActive
-}

@@ -21,10 +21,6 @@
       "path": "association-frontend"
     },
     {
-      "name": "👻 Association Admin",
-      "path": "association-admin"
-    },
-    {
       "name": "🦘 Association Backend",
       "path": "association-backend"
     },
