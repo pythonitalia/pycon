@@ -1,9 +1,11 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
-import { GetStaticPaths, GetStaticProps } from "next";
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, Grid, Heading, jsx, Text } from "theme-ui";
+
+import { GetStaticPaths, GetStaticProps } from "next";
 
 import { addApolloState } from "~/apollo/client";
 import { GridSlider } from "~/components/grid-slider";

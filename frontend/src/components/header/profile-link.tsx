@@ -1,4 +1,5 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";

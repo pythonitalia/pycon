@@ -1,5 +1,6 @@
-import cookies from "next-cookies";
 import React, { useContext } from "react";
+
+import cookies from "next-cookies";
 
 import { Language } from "~/locale/languages";
 

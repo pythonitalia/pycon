@@ -1,9 +1,11 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
-import { useRouter } from "next/router";
 import React, { Fragment, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, jsx, Text } from "theme-ui";
+
+import { useRouter } from "next/router";
 
 import { Alert } from "~/components/alert";
 import { MetaTags } from "~/components/meta-tags";

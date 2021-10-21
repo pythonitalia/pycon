@@ -1,10 +1,12 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
+import { Fragment } from "react";
+import { Box, jsx } from "theme-ui";
+
 import { GetStaticPaths, GetStaticProps } from "next";
 import Error from "next/error";
 import { useRouter } from "next/router";
-import { Fragment } from "react";
-import { Box, jsx } from "theme-ui";
 
 import { addApolloState } from "~/apollo/client";
 import { Article } from "~/components/article";

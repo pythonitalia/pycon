@@ -1,4 +1,4 @@
-name: Deploy Toolkit library
+name: Toolkit Library Deploy
 
 on:
   push:
@@ -28,7 +28,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: 3.9
+          python-version: 3.9.5
       - name: Metadata
         id: metadata
         run: echo "::set-output name=commit::$(git rev-parse HEAD)"

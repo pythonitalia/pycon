@@ -1,6 +1,7 @@
-import { GetStaticPaths, GetStaticProps } from "next";
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
+
+import { GetStaticPaths, GetStaticProps } from "next";
 
 import { addApolloState } from "~/apollo/client";
 import { LoginForm } from "~/components/login-form";
