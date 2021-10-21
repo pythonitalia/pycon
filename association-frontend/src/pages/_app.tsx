@@ -1,17 +1,18 @@
 /* eslint-disable @next/next/no-page-custom-font */
 
 /* eslint-disable @next/next/google-font-display */
-import "tailwindcss/tailwind.css";
-
 import { authExchange } from "@urql/exchange-auth";
-import Head from "next/head";
-import { withUrqlClient } from "next-urql";
 import { cacheExchange, dedupExchange, fetchExchange } from "urql";
+
+import { withUrqlClient } from "next-urql";
+import Head from "next/head";
 
 import { Hero } from "~/components/hero";
 import { UserProvider } from "~/components/user-provider";
 import { API_URL } from "~/helpers/config";
 import { StripeProvider } from "~/hooks/use-stripe";
+
+import "tailwindcss/tailwind.css";
 
 type AuthState = {
   token?: string;
