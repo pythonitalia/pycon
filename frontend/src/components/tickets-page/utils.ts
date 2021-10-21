@@ -59,7 +59,8 @@ export const hasAnsweredTicketsQuestions = (
       for (const question of ticket.questions) {
         if (
           question.required &&
-          (!answers.hasOwnProperty(question.id) || answers[question.id] === "")
+          (!Object.prototype.hasOwnProperty.call(answers, question.id) ||
+            answers[question.id] === "")
         ) {
           return true;
         }

@@ -21,7 +21,7 @@ export const getPastaportoActionFromToken = (token: string) => {
   switch (action) {
     case Action.AUTH:
       return new AuthAction(
-        (decodedToken.payload as unknown) as AuthActionPayload,
+        decodedToken.payload as unknown as AuthActionPayload,
       );
     default:
       throw new Error(`Unsupported pastaporto action: ${decodedToken.action}`);

@@ -1,0 +1,8 @@
+.cache/
+.docz/
+public/
+src/generated
+src/**/*.generated.ts
+_schema.json
+package.json
+src/helpers/types.ts

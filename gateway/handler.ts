@@ -1,4 +1,3 @@
-/* eslint-disable simple-import-sort/imports */
 import { ApolloServer } from "@pythonit/apollo-server-lambda-with-cors-regex";
 import * as ServerlessSentry from "@sentry/serverless";
 
@@ -15,7 +14,12 @@ const server = new ApolloServer({
   gateway: createGateway(),
   subscriptions: false,
   introspection: true,
-  plugins: [SentryPlugin(true), apolloHeadersPlugin(true)],
+  plugins: [
+    SentryPlugin(true),
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    apolloHeadersPlugin(true),
+  ],
   context: async ({ event }) => {
     return createContext(event.headers, event.headers["Cookie"]);
   },
@@ -63,6 +67,7 @@ exports.graphqlHandler = ServerlessSentry.AWSLambda.wrapHandler(
           credentials: true,
           methods: ["GET", "POST", "OPTIONS", "HEAD"],
           origin: [
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             /python-italia\.vercel\.app$/,
             "http://localhost:3000",

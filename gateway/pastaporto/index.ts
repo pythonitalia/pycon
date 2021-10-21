@@ -2,6 +2,7 @@ import { AuthenticationError } from "apollo-server-errors";
 import { TokenExpiredError } from "jsonwebtoken";
 
 import { AuthAction, AuthActionPayload } from "../actions/auth-action";
+import { ApolloContext } from "../context";
 import { Pastaporto } from "./entities";
 import {
   DecodedIdentity,
@@ -12,7 +13,7 @@ import {
 
 export const createPastaporto = async (
   token: string | null,
-  temporaryContext: object,
+  temporaryContext: ApolloContext,
   refreshToken: string | null = null,
 ): Promise<Pastaporto> => {
   if (!token) {
@@ -72,7 +73,7 @@ export const canRefreshIdentity = (
 
 const createNewIdentity = async (
   decodedIdentity: DecodedIdentity,
-  temporaryContext: object,
+  temporaryContext: ApolloContext,
 ) => {
   // Create a new refreshed identity for the user
   // We use the AuthAction sending the temporary context object

@@ -6,7 +6,7 @@ on:
       - "infrastructure/global/**/*"
       - "infrastructure/global/*"
 
-name: Deploy Global Terraform
+name: Global Terraform Deploy
 
 env:
   TF_WORKSPACE: "default"
@@ -33,7 +33,7 @@ jobs:
         id: validate
         run: terraform validate -no-color
       - name: Terraform Apply
-        run: terraform apply -no-color -auto-approve
+        run: terraform apply -no-color -auto-approve &> /dev/null
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}

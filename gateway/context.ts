@@ -4,6 +4,14 @@ import { createPastaporto } from "./pastaporto";
 import { Pastaporto } from "./pastaporto/entities";
 import { removeIdentityTokens } from "./pastaporto/identity";
 
+export type ApolloContext = {
+  setCookies?: any[];
+  setHeaders?: any[];
+  allHeaders?: any;
+  pastaporto?: Pastaporto;
+  res?: any;
+};
+
 export const createContext = async (
   allHeaders: any,
   cookiesHeader?: string,
@@ -16,7 +24,7 @@ export const createContext = async (
   let identity = null;
   let refreshToken = null;
 
-  const context: { [key: string]: any } = {
+  const context: ApolloContext = {
     setCookies: [],
     setHeaders: [],
     allHeaders,

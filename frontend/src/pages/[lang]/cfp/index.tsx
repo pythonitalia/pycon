@@ -1,9 +1,11 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
-import { GetStaticPaths, GetStaticProps } from "next";
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, Container, Heading, jsx, Text } from "theme-ui";
+
+import { GetStaticPaths, GetStaticProps } from "next";
 
 import { addApolloState } from "~/apollo/client";
 import { Alert } from "~/components/alert";
@@ -84,7 +86,11 @@ export const CFPPage: React.SFC = () => {
 
               <LoginForm
                 sx={{ mt: 4 }}
-                next={process.browser ? window.location?.pathname : null}
+                next={
+                  typeof window !== "undefined"
+                    ? window.location?.pathname
+                    : null
+                }
               />
             </Fragment>
           )}

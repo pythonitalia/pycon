@@ -1,5 +1,6 @@
-import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+
+import { useRouter } from "next/router";
 
 import { Button } from "~/components/button";
 import { ModalSigning } from "~/components/modal-signing";
@@ -96,7 +97,8 @@ const BecomeMemberMainCopy = () => (
 );
 
 const ManageSubscription = () => {
-  const [{}, manageSubscriptionMutation] = useManageSubscriptionMutation();
+  const [{ data: _ }, manageSubscriptionMutation] =
+    useManageSubscriptionMutation();
   const onClick = async () => {
     const result = await manageSubscriptionMutation();
     if (

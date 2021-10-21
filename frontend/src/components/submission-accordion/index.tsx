@@ -1,4 +1,5 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
 import React, { Fragment, useCallback, useState } from "react";
 import { FormattedMessage } from "react-intl";
@@ -116,45 +117,45 @@ export const SubmissionAccordion: React.SFC<Props> = ({
   }, [open]);
   const conferenceCode = process.env.conferenceCode;
 
-  const [
-    sendVote,
-    { loading, error, data: submissionData },
-  ] = useSendVoteMutation({
-    update(cache, { data }) {
-      if (error || data?.sendVote.__typename === "SendVoteErrors") {
-        return;
-      }
+  const [sendVote, { loading, error, data: submissionData }] =
+    useSendVoteMutation({
+      update(cache, { data }) {
+        if (error || data?.sendVote.__typename === "SendVoteErrors") {
+          return;
+        }
 
-      const cachedQuery = readVotingSubmissionsQueryCache<SendVoteMutation>({
-        cache,
-        variables: {
-          conference: conferenceCode,
-        },
-      });
-
-      const submissions = [...cachedQuery!.conference.submissions!];
-      const updatedSubmissionIndex = submissions.findIndex((i) => i.id === id)!;
-      const updatedSubmission = {
-        ...submissions[updatedSubmissionIndex]!,
-      };
-      updatedSubmission.myVote = data!.sendVote;
-      submissions[updatedSubmissionIndex] = updatedSubmission;
-
-      writeVotingSubmissionsQueryCache<SendVoteMutation>({
-        cache,
-        variables: {
-          conference: conferenceCode,
-        },
-        data: {
-          ...cachedQuery,
-          conference: {
-            ...cachedQuery.conference,
-            submissions,
+        const cachedQuery = readVotingSubmissionsQueryCache<SendVoteMutation>({
+          cache,
+          variables: {
+            conference: conferenceCode,
           },
-        },
-      });
-    },
-  });
+        });
+
+        const submissions = [...cachedQuery!.conference.submissions!];
+        const updatedSubmissionIndex = submissions.findIndex(
+          (i) => i.id === id,
+        )!;
+        const updatedSubmission = {
+          ...submissions[updatedSubmissionIndex]!,
+        };
+        updatedSubmission.myVote = data!.sendVote;
+        submissions[updatedSubmissionIndex] = updatedSubmission;
+
+        writeVotingSubmissionsQueryCache<SendVoteMutation>({
+          cache,
+          variables: {
+            conference: conferenceCode,
+          },
+          data: {
+            ...cachedQuery,
+            conference: {
+              ...cachedQuery.conference,
+              submissions,
+            },
+          },
+        });
+      },
+    });
 
   const onSubmitVote = useCallback(
     (value) => {
