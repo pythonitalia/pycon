@@ -19,7 +19,7 @@
   "dependencies": {
     "@apollo/client": "^3.2.5",
     "@babel/plugin-transform-react-jsx": "^7.12.1",
-    "@babel/plugin-transform-react-pure-annotations": "^7.12.1",
+    "@babel/plugin-transform-react-pure-annotations": "^7.14.5",
     "@emotion/babel-plugin-jsx-pragmatic": "^0.1.5",
     "@emotion/core": "^10.0.35",
     "@graphql-codegen/add": "^2.0.0",
