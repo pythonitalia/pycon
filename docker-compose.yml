@@ -134,6 +134,7 @@ services:
     build: ./gateway
     networks: [pycon_net]
     entrypoint: ""
+    working_dir: /var/task
     command: sh -c "yarn install &&
       nodemon"
     volumes:
