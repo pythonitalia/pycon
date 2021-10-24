@@ -413,9 +413,11 @@ export const SubmissionAccordion: React.SFC<Props> = ({
                   label={<FormattedMessage id="voting.length" />}
                   value={
                     <FormattedMessage id="voting.minutes">
-                      {(text) =>
-                        `${duration.name} (${duration.duration} ${text})`
-                      }
+                      {(text) => (
+                        <>
+                          `${duration.name} (${duration.duration} ${text})`
+                        </>
+                      )}
                     </FormattedMessage>
                   }
                 />
