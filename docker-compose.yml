@@ -87,9 +87,44 @@ services:
       timeout: 5s
       retries: 5
 
+  association-backend:
+    build: ./association-backend
+    networks: [pycon_net]
+    entrypoint: ""
+    command: sh -c "python -m alembic upgrade head &&
+      python -m uvicorn main:wrapped_app --host 0.0.0.0 --port 8060 --reload"
+    depends_on:
+      association-backend-db:
+        condition: service_healthy
+    environment:
+      <<: *enviroment_defaults
+      DATABASE_URL: postgresql://association-backend:association-backend@association-backend-db/association-backend
+    volumes:
+      - ./association-backend:/home/app/
+    tty: true
+    stdin_open: true
+    ports:
+      - 8060:8060
+
+  association-backend-db:
+    image: postgres:11.13
+    networks: [pycon_net]
+    volumes:
+      - association-backend-db-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: association-backend
+      POSTGRES_PASSWORD: association-backend
+      POSTGRES_DB: association-backend
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U association-backend"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
 networks:
   pycon_net:
 
 volumes:
   pycon-backend-db-data:
   users-backend-db-data:
+  association-backend-db-data:
