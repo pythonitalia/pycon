@@ -37,10 +37,41 @@ services:
   pycon-backend-db:
     image: postgres:11.10
     networks: [pycon_net]
+    # volumes:
+    #   - pycon-backend-db-data:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: pycon
       POSTGRES_PASSWORD: pycon
       POSTGRES_DB: pycon
 
+  users-backend:
+    build: ./users-backend
+    networks: [pycon_net]
+    entrypoint: ""
+    command: sh -c "python -m alembic upgrade head &&
+      python -m uvicorn main:wrapped_app --port 8050 --reload"
+    environment:
+      <<: *enviroment_defaults
+      DATABASE_URL: postgresql+asyncpg://users-backend:users-backend@users-backend/users-backend
+    volumes:
+      - ./users-backend:/home/app/
+    tty: true
+    stdin_open: true
+    ports:
+      - 8050:8050
+
+  users-backend-db:
+    image: postgres:11.10
+    networks: [pycon_net]
+    # volumes:
+    #   - users-backend-db-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: users-backend
+      POSTGRES_PASSWORD: users-backend
+      POSTGRES_DB: users-backend
+
 networks:
   pycon_net:
+# volumes:
+#   pycon-backend-db-data:
+#   users-backend-db-data:
