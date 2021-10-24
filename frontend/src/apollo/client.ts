@@ -45,7 +45,10 @@ const errorLink = onError(({ graphQLErrors, networkError, operation }) => {
 });
 
 const httpLink = new HttpLink({
-  uri: process.env.API_URL,
+  uri:
+    typeof window === "undefined"
+      ? process.env.API_URL_SERVER
+      : process.env.API_URL,
   fetch,
   credentials: "include",
 });

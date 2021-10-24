@@ -1,10 +1,14 @@
 x-defaults:
   environment: &enviroment_defaults
     DEBUG: "True"
+    NODE_ENV: "development"
     PRETIX_API: http://tickets.pycon.it/api/v1/
     PRETIX_API_TOKEN: None # ask for a token
     SECRET_KEY: secret-key
     SLACK_INCOMING_WEBHOOK_URL: None
+    API_URL: http://127.0.0.1:4000/graphql
+    API_URL_SERVER: http://gateway:4000/graphql
+    # Stripe
     STRIPE_SECRET_API_KEY: None # Ask if you need it
     STRIPE_SUBSCRIPTION_PRICE_ID: price_1IkVzxD5MZ3GejSORRBZCvK6
     STRIPE_WEBHOOK_SIGNATURE_SECRET: None
@@ -137,12 +141,30 @@ services:
       - ./gateway/:/app/
     environment:
       <<: *enviroment_defaults
-      NODE_ENV: development
       VARIANT: default
     tty: true
     stdin_open: true
     ports:
       - 4000:4000
+
+  pycon-frontend:
+    image: node:alpine
+    networks: [pycon_net]
+    entrypoint: ""
+    working_dir: /home/node/app
+    command: sh -c "yarn install &&
+      yarn run dev"
+    volumes:
+      - ./frontend/:/home/node/app
+      - /home/node/app/node_modules/
+    environment:
+      <<: *enviroment_defaults
+    tty: true
+    stdin_open: true
+    ports:
+      - 3000:3000
+    depends_on:
+      - gateway
 
 networks:
   pycon_net:
