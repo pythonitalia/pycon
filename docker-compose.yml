@@ -1,5 +1,3 @@
-version: "3.9"
-
 x-defaults:
   environment: &enviroment_defaults
     DEBUG: "True"
@@ -10,17 +8,25 @@ x-defaults:
     STRIPE_SECRET_API_KEY: None # Ask if you need it
     STRIPE_SUBSCRIPTION_PRICE_ID: price_1IkVzxD5MZ3GejSORRBZCvK6
     STRIPE_WEBHOOK_SIGNATURE_SECRET: None
-    PASTAPORTO_SECRET: pastaporto-secret
+    # URLs
     ASSOCIATION_FRONTEND_URL: http://localhost:3020
+    # Secrets
+    PASTAPORTO_SECRET: pastaporto-secret
+    IDENTITY_SECRET: identity-secret
+    SERVICE_TO_SERVICE_SECRET: service-to-service-secret
+    PASTAPORTO_ACTION_SECRET: pastaporto-action-secret
 
 services:
   pycon-backend:
     build: ./backend
     networks: [pycon_net]
     entrypoint: ""
-    command: sh -c "python manage.py create_admin &&
-      python manage.py migrate &&
+    command: sh -c "python manage.py migrate &&
+      python manage.py create_admin &&
       python manage.py runserver 0.0.0.0:8000"
+    depends_on:
+      pycon-backend-db:
+        condition: service_healthy
     tty: true
     stdin_open: true
     ports:
@@ -31,28 +37,34 @@ services:
       <<: *enviroment_defaults
       DATABASE_URL: psql://pycon:pycon@pycon-backend-db/pycon
       DJANGO_SETTINGS_MODULE: pycon.settings.dev
-    depends_on:
-      - pycon-backend-db
 
   pycon-backend-db:
-    image: postgres:11.10
+    image: postgres:11.13
     networks: [pycon_net]
-    # volumes:
-    #   - pycon-backend-db-data:/var/lib/postgresql/data
+    volumes:
+      - pycon-backend-db-data:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: pycon
       POSTGRES_PASSWORD: pycon
       POSTGRES_DB: pycon
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pycon"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   users-backend:
     build: ./users-backend
     networks: [pycon_net]
     entrypoint: ""
     command: sh -c "python -m alembic upgrade head &&
-      python -m uvicorn main:wrapped_app --port 8050 --reload"
+      python -m uvicorn main:wrapped_app --host 0.0.0.0 --port 8050 --reload"
+    depends_on:
+      users-backend-db:
+        condition: service_healthy
     environment:
       <<: *enviroment_defaults
-      DATABASE_URL: postgresql+asyncpg://users-backend:users-backend@users-backend/users-backend
+      DATABASE_URL: postgresql+asyncpg://users-backend:users-backend@users-backend-db/users-backend
     volumes:
       - ./users-backend:/home/app/
     tty: true
@@ -61,17 +73,23 @@ services:
       - 8050:8050
 
   users-backend-db:
-    image: postgres:11.10
+    image: postgres:11.13
     networks: [pycon_net]
-    # volumes:
-    #   - users-backend-db-data:/var/lib/postgresql/data
+    volumes:
+      - users-backend-db-data:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: users-backend
       POSTGRES_PASSWORD: users-backend
       POSTGRES_DB: users-backend
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U users-backend"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 networks:
   pycon_net:
-# volumes:
-#   pycon-backend-db-data:
-#   users-backend-db-data:
+
+volumes:
+  pycon-backend-db-data:
+  users-backend-db-data:
