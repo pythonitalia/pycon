@@ -15,6 +15,10 @@ x-defaults:
     IDENTITY_SECRET: identity-secret
     SERVICE_TO_SERVICE_SECRET: service-to-service-secret
     PASTAPORTO_ACTION_SECRET: pastaporto-action-secret
+    # Services URLs
+    PYCON_BACKEND_SERVICE: http://pycon-backend:8000
+    USERS_SERVICE: http://users-backend:8050
+    ASSOCIATION_BACKEND_SERVICE: http://association-backend:8060
 
 services:
   pycon-backend:
@@ -37,6 +41,7 @@ services:
       <<: *enviroment_defaults
       DATABASE_URL: psql://pycon:pycon@pycon-backend-db/pycon
       DJANGO_SETTINGS_MODULE: pycon.settings.dev
+      ALLOWED_HOSTS: "*"
 
   pycon-backend-db:
     image: postgres:11.13
@@ -120,6 +125,24 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+
+  gateway:
+    build: ./gateway
+    networks: [pycon_net]
+    entrypoint: ""
+    command: sh -c "npm install &&
+      nodemon"
+    volumes:
+      - /app/node_modules/
+      - ./gateway/:/app/
+    environment:
+      <<: *enviroment_defaults
+      NODE_ENV: development
+      VARIANT: default
+    tty: true
+    stdin_open: true
+    ports:
+      - 4000:4000
 
 networks:
   pycon_net:
