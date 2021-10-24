@@ -50,14 +50,14 @@ test = ["pycodestyle (>=2.5.0,<2.6.0)", "flake8 (>=3.7.9,<3.8.0)", "uvloop (>=0.
 
 [[package]]
 name = "boto3"
-version = "1.18.61"
+version = "1.19.2"
 description = "The AWS SDK for Python"
 category = "main"
 optional = false
 python-versions = ">= 3.6"
 
 [package.dependencies]
-botocore = ">=1.21.61,<1.22.0"
+botocore = ">=1.22.2,<1.23.0"
 jmespath = ">=0.7.1,<1.0.0"
 s3transfer = ">=0.5.0,<0.6.0"
 
@@ -66,7 +66,7 @@ crt = ["botocore[crt] (>=1.21.0,<2.0a0)"]
 
 [[package]]
 name = "botocore"
-version = "1.21.61"
+version = "1.22.2"
 description = "Low-level, data-driven core of boto 3."
 category = "main"
 optional = false
@@ -78,7 +78,7 @@ python-dateutil = ">=2.1,<3.0.0"
 urllib3 = ">=1.25.4,<1.27"
 
 [package.extras]
-crt = ["awscrt (==0.11.24)"]
+crt = ["awscrt (==0.12.5)"]
 
 [[package]]
 name = "cached-property"
@@ -441,7 +441,7 @@ python-versions = ">=3.5"
 
 [[package]]
 name = "ormar"
-version = "0.10.21"
+version = "0.10.22"
 description = "A simple async ORM with fastapi in mind and pydantic validation."
 category = "main"
 optional = false
@@ -610,7 +610,7 @@ six = ">=1.4.0"
 
 [[package]]
 name = "pythonit-toolkit"
-version = "0.1.55"
+version = "0.1.56"
 description = ""
 category = "main"
 optional = false
@@ -619,7 +619,7 @@ python-versions = ">=3.9,<4.0"
 [package.dependencies]
 boto3 = ">=1.17.39,<2.0.0"
 pydantic = "*"
-PyJWT = ">=2.0.1,<3.0.0"
+PyJWT = "2.0.1"
 sentry-sdk = ">=1.1.0,<2.0.0"
 starlette = ">=0.14.2,<0.15.0"
 strawberry-graphql = "*"
@@ -984,12 +984,12 @@ asyncpg = [
     {file = "asyncpg-0.21.0.tar.gz", hash = "sha256:53cb2a0eb326f61e34ef4da2db01d87ce9c0ebe396f65a295829df334e31863f"},
 ]
 boto3 = [
-    {file = "boto3-1.18.61-py3-none-any.whl", hash = "sha256:d2a8f8cd0a53093b2f1ab5a4b233533f1aa04e751209266597a05f50a46f6683"},
-    {file = "boto3-1.18.61.tar.gz", hash = "sha256:08dc897299ecc9eef6df3cd296864154dfbc9f78edb8995b93258b59d747cbdc"},
+    {file = "boto3-1.19.2-py3-none-any.whl", hash = "sha256:1b8fac5f11ee1d185770d7619f2212e67e636ce190512770d0d36fd162739628"},
+    {file = "boto3-1.19.2.tar.gz", hash = "sha256:11a6035060230e92327d4f10fef6bc44188b2cd68504012bc25ed62ac31d670b"},
 ]
 botocore = [
-    {file = "botocore-1.21.61-py3-none-any.whl", hash = "sha256:eda50985c229b01c7de6f0a0ccb561dfa52ded06c8c59044f624133a33357b94"},
-    {file = "botocore-1.21.61.tar.gz", hash = "sha256:92ae0ca56a6582bddf42aca199ac3f67579910860bcd86166ae10f7a83f8841b"},
+    {file = "botocore-1.22.2-py3-none-any.whl", hash = "sha256:681d0d854d08beb9a5727152e95a884439b76cf19fb38d69ca2f17f1404d48ae"},
+    {file = "botocore-1.22.2.tar.gz", hash = "sha256:011360e79a4b843aa6591573cfa61e8eddc99b91adab1dfdb9a2b7f2c8511193"},
 ]
 cached-property = [
     {file = "cached-property-1.5.2.tar.gz", hash = "sha256:9fa5755838eecbb2d234c3aa390bd80fbd3ac6b6869109bfc1b499f7bd89a130"},
@@ -1268,8 +1268,8 @@ mslex = [
     {file = "mslex-0.3.0.tar.gz", hash = "sha256:4a1ac3f25025cad78ad2fe499dd16d42759f7a3801645399cce5c404415daa97"},
 ]
 ormar = [
-    {file = "ormar-0.10.21-py3-none-any.whl", hash = "sha256:c430d62f32ec1be9ac76ba4f92abaee1651d56870e1164f754a9ee364d7e2b6d"},
-    {file = "ormar-0.10.21.tar.gz", hash = "sha256:9557d648b9c6db19c18e7b1419dc6c4a50d8dee6372ebb42f70c454ba63ee3d2"},
+    {file = "ormar-0.10.22-py3-none-any.whl", hash = "sha256:d38d53dc191442902c541db06a1c260f5a3820d1690cbcd79a3b6edca37b4653"},
+    {file = "ormar-0.10.22.tar.gz", hash = "sha256:6235f2898c818350970ea3b60ddda41d92c75308be60520a6e5466dbb9ceafe3"},
 ]
 pdbpp = [
     {file = "pdbpp-0.10.3-py2.py3-none-any.whl", hash = "sha256:79580568e33eb3d6f6b462b1187f53e10cd8e4538f7d31495c9181e2cf9665d1"},
@@ -1405,8 +1405,8 @@ python-multipart = [
     {file = "python-multipart-0.0.5.tar.gz", hash = "sha256:f7bb5f611fc600d15fa47b3974c8aa16e93724513b49b5f95c81e6624c83fa43"},
 ]
 pythonit-toolkit = [
-    {file = "pythonit-toolkit-0.1.55.tar.gz", hash = "sha256:4c1641d23fdeb4171f0a2613cbedd1b4ddcf511efab5664a467edac6e0f842a5"},
-    {file = "pythonit_toolkit-0.1.55-py3-none-any.whl", hash = "sha256:ee178114b6dc259d5b96dbd3ef32b13c7a17527e7a448646f2f91fc7acbefb6d"},
+    {file = "pythonit-toolkit-0.1.56.tar.gz", hash = "sha256:f8c28bc7e19b1aa610e7a8a6e70386a6fe945ebb13d0b43009b54054dea5a140"},
+    {file = "pythonit_toolkit-0.1.56-py3-none-any.whl", hash = "sha256:30c84495f87d44d0d0dbf95e705a0bfd77b669746044eaffa7a45e79a6c59bcf"},
 ]
 requests = [
     {file = "requests-2.26.0-py2.py3-none-any.whl", hash = "sha256:6c1246513ecd5ecd4528a0906f910e8f0f9c6b8ec72030dc9fd154dc1a6efd24"},
