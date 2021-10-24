@@ -158,6 +158,7 @@ services:
     volumes:
       - ./frontend/:/home/node/app
       - /home/node/app/node_modules/
+      - /home/node/app/.next
     environment:
       <<: *enviroment_defaults
     tty: true
@@ -177,6 +178,7 @@ services:
     volumes:
       - ./association-frontend/:/home/node/app
       - /home/node/app/node_modules/
+      - /home/node/app/.next
     environment:
       <<: *enviroment_defaults
     tty: true
