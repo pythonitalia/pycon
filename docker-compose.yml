@@ -9,7 +9,6 @@ x-defaults:
     API_URL: http://127.0.0.1:4000/graphql
     API_URL_SERVER: http://gateway:4000/graphql
     # Stripe
-    STRIPE_SECRET_API_KEY: None # Ask if you need it
     STRIPE_SUBSCRIPTION_PRICE_ID: price_1IkVzxD5MZ3GejSORRBZCvK6
     STRIPE_WEBHOOK_SIGNATURE_SECRET: None
     # URLs
@@ -46,6 +45,15 @@ services:
       DATABASE_URL: psql://pycon:pycon@pycon-backend-db/pycon
       DJANGO_SETTINGS_MODULE: pycon.settings.dev
       ALLOWED_HOSTS: "*"
+      PRETIX_API_TOKEN: ${PRETIX_API_TOKEN}
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'wget -q -O- --tries=1 --no-verbose --header=''Content-Type:application/json'' --post-data ''{"query": "{__typename}"}'' http://127.0.0.1:8000/graphql || exit 1',
+        ]
+      interval: 5s
+      timeout: 5s
 
   pycon-backend-db:
     image: postgres:11.13
@@ -60,7 +68,6 @@ services:
       test: ["CMD-SHELL", "pg_isready -U pycon"]
       interval: 5s
       timeout: 5s
-      retries: 5
 
   users-backend:
     build: ./users-backend
@@ -80,6 +87,14 @@ services:
     stdin_open: true
     ports:
       - 8050:8050
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'wget -q -O- --tries=1 --no-verbose --header=''Content-Type:application/json'' --post-data ''{"query": "{__typename}"}'' http://127.0.0.1:8050/graphql || exit 1',
+        ]
+      interval: 5s
+      timeout: 5s
 
   users-backend-db:
     image: postgres:11.13
@@ -94,7 +109,6 @@ services:
       test: ["CMD-SHELL", "pg_isready -U users-backend"]
       interval: 5s
       timeout: 5s
-      retries: 5
 
   association-backend:
     build: ./association-backend
@@ -107,6 +121,7 @@ services:
         condition: service_healthy
     environment:
       <<: *enviroment_defaults
+      STRIPE_SECRET_API_KEY: ${STRIPE_SECRET_API_KEY}
       DATABASE_URL: postgresql://association-backend:association-backend@association-backend-db/association-backend
     volumes:
       - ./association-backend:/home/app/
@@ -114,6 +129,14 @@ services:
     stdin_open: true
     ports:
       - 8060:8060
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'wget -q -O- --tries=1 --no-verbose --header=''Content-Type:application/json'' --post-data ''{"query": "{__typename}"}'' http://127.0.0.1:8060/graphql || exit 1',
+        ]
+      interval: 5s
+      timeout: 5s
 
   association-backend-db:
     image: postgres:11.13
@@ -128,7 +151,6 @@ services:
       test: ["CMD-SHELL", "pg_isready -U association-backend"]
       interval: 5s
       timeout: 5s
-      retries: 5
 
   gateway:
     build: ./gateway
@@ -147,6 +169,21 @@ services:
     stdin_open: true
     ports:
       - 4000:4000
+    depends_on:
+      pycon-backend:
+        condition: service_healthy
+      users-backend:
+        condition: service_healthy
+      association-backend:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'wget -q -O- --tries=1 --no-verbose --header=''Content-Type:application/json'' --post-data ''{"query": "{__typename}"}'' http://127.0.0.1:4000/graphql || exit 1',
+        ]
+      interval: 5s
+      timeout: 5s
 
   pycon-frontend:
     image: node:alpine
@@ -166,7 +203,8 @@ services:
     ports:
       - 3000:3000
     depends_on:
-      - gateway
+      gateway:
+        condition: service_healthy
 
   association-frontend:
     image: node:alpine
@@ -181,12 +219,14 @@ services:
       - /home/node/app/.next
     environment:
       <<: *enviroment_defaults
+      STRIPE_KEY: ${STRIPE_PUBLIC_KEY}
     tty: true
     stdin_open: true
     ports:
       - 3020:3020
     depends_on:
-      - gateway
+      gateway:
+        condition: service_healthy
 
 networks:
   pycon_net:
