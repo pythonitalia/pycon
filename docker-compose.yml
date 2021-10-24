@@ -134,11 +134,11 @@ services:
     build: ./gateway
     networks: [pycon_net]
     entrypoint: ""
-    command: sh -c "npm install &&
+    command: sh -c "yarn install &&
       nodemon"
     volumes:
-      - /app/node_modules/
-      - ./gateway/:/app/
+      - /var/task/node_modules/
+      - ./gateway/:/var/task/
     environment:
       <<: *enviroment_defaults
       VARIANT: default
@@ -163,6 +163,25 @@ services:
     stdin_open: true
     ports:
       - 3000:3000
+    depends_on:
+      - gateway
+
+  association-frontend:
+    image: node:alpine
+    networks: [pycon_net]
+    entrypoint: ""
+    working_dir: /home/node/app
+    command: sh -c "yarn install &&
+      yarn run dev"
+    volumes:
+      - ./association-frontend/:/home/node/app
+      - /home/node/app/node_modules/
+    environment:
+      <<: *enviroment_defaults
+    tty: true
+    stdin_open: true
+    ports:
+      - 3020:3020
     depends_on:
       - gateway
 

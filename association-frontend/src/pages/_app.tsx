@@ -9,7 +9,7 @@ import Head from "next/head";
 
 import { Hero } from "~/components/hero";
 import { UserProvider } from "~/components/user-provider";
-import { API_URL } from "~/helpers/config";
+import { API_URL, API_URL_SERVER } from "~/helpers/config";
 import { StripeProvider } from "~/hooks/use-stripe";
 
 import "tailwindcss/tailwind.css";
@@ -43,7 +43,7 @@ const App = ({ Component, pageProps, resetUrqlClient }) => {
 export default withUrqlClient(
   (ssrExchange, ctx) => {
     return {
-      url: API_URL,
+      url: typeof window === "undefined" ? API_URL_SERVER : API_URL,
       exchanges: [
         dedupExchange,
         cacheExchange,
