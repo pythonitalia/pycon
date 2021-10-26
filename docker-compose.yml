@@ -25,7 +25,9 @@ x-defaults:
 
 services:
   pycon-backend:
-    build: ./backend
+    build:
+      context: ./backend
+      dockerfile: ../Dockerfile.python.local
     networks: [pycon_net]
     entrypoint: ""
     command: sh -c "python manage.py migrate &&
@@ -70,10 +72,13 @@ services:
       timeout: 5s
 
   users-backend:
-    build: ./users-backend
+    build:
+      context: ./users-backend
+      dockerfile: ../Dockerfile.python.local
     networks: [pycon_net]
     entrypoint: ""
-    command: sh -c "python -m alembic upgrade head &&
+    command: sh -c "poetry install &&
+      poetry run task migrate &&
       python -m uvicorn main:wrapped_app --host 0.0.0.0 --port 8050 --reload"
     depends_on:
       users-backend-db:
@@ -111,10 +116,13 @@ services:
       timeout: 5s
 
   association-backend:
-    build: ./association-backend
+    build:
+      context: ./association-backend
+      dockerfile: ../Dockerfile.python.local
     networks: [pycon_net]
     entrypoint: ""
-    command: sh -c "python -m alembic upgrade head &&
+    command: sh -c "poetry install &&
+      poetry run task migrate &&
       python -m uvicorn main:wrapped_app --host 0.0.0.0 --port 8060 --reload"
     depends_on:
       association-backend-db:
@@ -153,15 +161,15 @@ services:
       timeout: 5s
 
   gateway:
-    build: ./gateway
+    build:
+      context: ./gateway
+      dockerfile: ../Dockerfile.node.local
     networks: [pycon_net]
     entrypoint: ""
-    working_dir: /var/task
-    command: sh -c "yarn install &&
-      nodemon"
+    command: sh -c "yarn dev"
     volumes:
-      - /var/task/node_modules/
-      - ./gateway/:/var/task/
+      - ./gateway/:/home/node/app
+      - /home/node/app/node_modules/
     environment:
       <<: *enviroment_defaults
       VARIANT: default
@@ -186,12 +194,13 @@ services:
       timeout: 5s
 
   pycon-frontend:
-    image: node:alpine
+    build:
+      context: ./frontend
+      dockerfile: ../Dockerfile.node.local
     networks: [pycon_net]
     entrypoint: ""
     working_dir: /home/node/app
-    command: sh -c "yarn install &&
-      yarn run dev"
+    command: sh -c "yarn run dev"
     volumes:
       - ./frontend/:/home/node/app
       - /home/node/app/node_modules/
@@ -207,12 +216,13 @@ services:
         condition: service_healthy
 
   association-frontend:
-    image: node:alpine
+    build:
+      context: ./association-frontend
+      dockerfile: ../Dockerfile.node.local
     networks: [pycon_net]
     entrypoint: ""
     working_dir: /home/node/app
-    command: sh -c "yarn install &&
-      yarn run dev"
+    command: sh -c "yarn run dev"
     volumes:
       - ./association-frontend/:/home/node/app
       - /home/node/app/node_modules/

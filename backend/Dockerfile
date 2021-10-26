@@ -21,10 +21,10 @@ RUN apk add build-base jpeg-dev zlib-dev libxml2-dev libxslt-dev postgresql-libs
 RUN apk add --no-cache --virtual .build-deps postgresql-dev
 ENV LIBRARY_PATH=/lib:/usr/lib
 
+RUN pip3 install poetry
+
 COPY poetry.lock ${FUNCTION_DIR}
 COPY pyproject.toml ${FUNCTION_DIR}
-
-RUN pip3 install poetry
 
 RUN apk add automake git
 
