@@ -55,7 +55,7 @@ services:
           'wget -q -O- --tries=1 --no-verbose --header=''Content-Type:application/json'' --post-data ''{"query": "{__typename}"}'' http://127.0.0.1:8000/graphql || exit 1',
         ]
       interval: 5s
-      timeout: 5s
+      timeout: 30s
 
   pycon-backend-db:
     image: postgres:11.13
@@ -99,7 +99,7 @@ services:
           'wget -q -O- --tries=1 --no-verbose --header=''Content-Type:application/json'' --post-data ''{"query": "{__typename}"}'' http://127.0.0.1:8050/graphql || exit 1',
         ]
       interval: 5s
-      timeout: 5s
+      timeout: 30s
 
   users-backend-db:
     image: postgres:11.13
@@ -144,7 +144,7 @@ services:
           'wget -q -O- --tries=1 --no-verbose --header=''Content-Type:application/json'' --post-data ''{"query": "{__typename}"}'' http://127.0.0.1:8060/graphql || exit 1',
         ]
       interval: 5s
-      timeout: 5s
+      timeout: 30s
 
   association-backend-db:
     image: postgres:11.13
@@ -191,7 +191,7 @@ services:
           'wget -q -O- --tries=1 --no-verbose --header=''Content-Type:application/json'' --post-data ''{"query": "{__typename}"}'' http://127.0.0.1:4000/graphql || exit 1',
         ]
       interval: 5s
-      timeout: 5s
+      timeout: 30s
 
   pycon-frontend:
     build:
