@@ -77,8 +77,7 @@ services:
       dockerfile: ../Dockerfile.python.local
     networks: [pycon_net]
     entrypoint: ""
-    command: sh -c "poetry install &&
-      poetry run task migrate &&
+    command: sh -c "poetry run task migrate &&
       python -m uvicorn main:wrapped_app --host 0.0.0.0 --port 8050 --reload"
     depends_on:
       users-backend-db:
@@ -122,8 +121,7 @@ services:
       dockerfile: ../Dockerfile.python.local
     networks: [pycon_net]
     entrypoint: ""
-    command: sh -c "poetry install &&
-      poetry run task migrate &&
+    command: sh -c "poetry run task migrate &&
       python -m uvicorn main:wrapped_app --host 0.0.0.0 --port 8060 --reload"
     depends_on:
       association-backend-db:
