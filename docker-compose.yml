@@ -54,8 +54,9 @@ services:
           "CMD-SHELL",
           'wget -q -O- --tries=1 --no-verbose --header=''Content-Type:application/json'' --post-data ''{"query": "{__typename}"}'' http://127.0.0.1:8000/graphql || exit 1',
         ]
-      interval: 30s
-      timeout: 30s
+      interval: 10s
+      timeout: 10s
+      retries: 10
 
   pycon-backend-db:
     image: postgres:11.13
@@ -98,8 +99,9 @@ services:
           "CMD-SHELL",
           'wget -q -O- --tries=1 --no-verbose --header=''Content-Type:application/json'' --post-data ''{"query": "{__typename}"}'' http://127.0.0.1:8050/graphql || exit 1',
         ]
-      interval: 30s
-      timeout: 30s
+      interval: 10s
+      timeout: 10s
+      retries: 10
 
   users-backend-db:
     image: postgres:11.13
@@ -143,8 +145,9 @@ services:
           "CMD-SHELL",
           'wget -q -O- --tries=1 --no-verbose --header=''Content-Type:application/json'' --post-data ''{"query": "{__typename}"}'' http://127.0.0.1:8060/graphql || exit 1',
         ]
-      interval: 30s
-      timeout: 30s
+      interval: 10s
+      timeout: 10s
+      retries: 10
 
   association-backend-db:
     image: postgres:11.13
@@ -190,8 +193,9 @@ services:
           "CMD-SHELL",
           'wget -q -O- --tries=1 --no-verbose --header=''Content-Type:application/json'' --post-data ''{"query": "{__typename}"}'' http://127.0.0.1:4000/graphql || exit 1',
         ]
-      interval: 30s
-      timeout: 30s
+      interval: 10s
+      timeout: 10s
+      retries: 10
 
   pycon-frontend:
     build:
