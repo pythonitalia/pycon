@@ -204,7 +204,7 @@ services:
     networks: [pycon_net]
     entrypoint: ""
     working_dir: /home/node/app
-    command: sh -c "yarn run dev"
+    command: sh -c "yarn codegen && yarn run dev"
     volumes:
       - ./frontend/:/home/node/app
       - /home/node/app/node_modules/
@@ -226,7 +226,7 @@ services:
     networks: [pycon_net]
     entrypoint: ""
     working_dir: /home/node/app
-    command: sh -c "yarn run dev"
+    command: sh -c "yarn codegen && yarn run dev"
     volumes:
       - ./association-frontend/:/home/node/app
       - /home/node/app/node_modules/
