@@ -37,7 +37,7 @@ class ServiceStatus(Enum):
         if self == self.EXITED:
             return '[red]:no_entry_sign: Exited[/red]'
 
-        if self == self.WAITING:
+        if self == self.WAITING or self == self.UNKNOWN:
             return '[dim cyan]:hourglass: Waiting[/dim cyan]'
 
 @dataclass
@@ -101,7 +101,7 @@ class Service:
         output = result.stdout.strip().replace("'", "")
         if output == 'null':
             return StatusRequest(
-                status=ServiceStatus.UNKNOWN,
+                status=ServiceStatus.WAITING,
             )
 
         json_output = json.loads(output)
@@ -148,7 +148,6 @@ def create_services_table():
 @app.command()
 def dev():
     console = Console()
-    console.print(':wave: Starting your local environment via Docker now')
 
     docker_process = subprocess.Popen(
         ['docker-compose', 'up'],
