@@ -1,6 +1,6 @@
 generates:
   src/types.tsx:
-    schema: ${API_URL:https://beri.python.it/graphql}
+    schema: ${API_URL_SERVER:https://beri.python.it/graphql}
     documents: ./**/*.graphql
     plugins:
       - add:
@@ -19,7 +19,7 @@ generates:
       withComponent: false
 
   src/generated/fragment-types.json:
-    schema: ${API_URL:https://beri.python.it/graphql}
+    schema: ${API_URL_SERVER:https://beri.python.it/graphql}
     documents: ./**/*.graphql
     config:
       apolloClientVersion: 3

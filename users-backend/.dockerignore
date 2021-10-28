@@ -6,4 +6,3 @@ tests/
 .isort.cfg
 coverage.xml
 Dockerfile
-

@@ -1,0 +1,249 @@
+x-defaults:
+  environment: &enviroment_defaults
+    DEBUG: "True"
+    NODE_ENV: "development"
+    PRETIX_API: http://tickets.pycon.it/api/v1/
+    PRETIX_API_TOKEN: None # ask for a token
+    SECRET_KEY: secret-key
+    SLACK_INCOMING_WEBHOOK_URL: None
+    API_URL: http://127.0.0.1:4000/graphql
+    API_URL_SERVER: http://gateway:4000/graphql
+    # Stripe
+    STRIPE_SUBSCRIPTION_PRICE_ID: price_1IkVzxD5MZ3GejSORRBZCvK6
+    # URLs
+    ASSOCIATION_FRONTEND_URL: http://localhost:3020
+    # Secrets
+    PASTAPORTO_SECRET: pastaporto-secret
+    IDENTITY_SECRET: identity-secret
+    SERVICE_TO_SERVICE_SECRET: service-to-service-secret
+    PASTAPORTO_ACTION_SECRET: pastaporto-action-secret
+    # Services URLs
+    PYCON_BACKEND_SERVICE: http://pycon-backend:8000
+    USERS_SERVICE: http://users-backend:8050
+    ASSOCIATION_BACKEND_SERVICE: http://association-backend:8060
+
+services:
+  pycon-backend:
+    build:
+      context: ./backend
+      dockerfile: ../Dockerfile.python.local
+    networks: [pycon_net]
+    entrypoint: ""
+    command: sh -c "python manage.py migrate &&
+      python manage.py create_admin &&
+      python manage.py runserver 0.0.0.0:8000"
+    depends_on:
+      pycon-backend-db:
+        condition: service_healthy
+    tty: true
+    stdin_open: true
+    ports:
+      - 8000:8000
+    volumes:
+      - ./backend:/home/app/
+    environment:
+      <<: *enviroment_defaults
+      DATABASE_URL: psql://pycon:pycon@pycon-backend-db/pycon
+      DJANGO_SETTINGS_MODULE: pycon.settings.dev
+      ALLOWED_HOSTS: "*"
+      PRETIX_API_TOKEN: ${PRETIX_API_TOKEN}
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'wget -q -O- --tries=1 --no-verbose --header=''Content-Type:application/json'' --post-data ''{"query": "{__typename}"}'' http://127.0.0.1:8000/graphql || exit 1',
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+  pycon-backend-db:
+    image: postgres:11.13
+    networks: [pycon_net]
+    volumes:
+      - pycon-backend-db-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: pycon
+      POSTGRES_PASSWORD: pycon
+      POSTGRES_DB: pycon
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pycon"]
+      interval: 5s
+      timeout: 5s
+
+  users-backend:
+    build:
+      context: ./users-backend
+      dockerfile: ../Dockerfile.python.local
+    networks: [pycon_net]
+    entrypoint: ""
+    command: sh -c "poetry run task migrate &&
+      python -m uvicorn main:wrapped_app --host 0.0.0.0 --port 8050 --reload"
+    depends_on:
+      users-backend-db:
+        condition: service_healthy
+    environment:
+      <<: *enviroment_defaults
+      DATABASE_URL: postgresql+asyncpg://users-backend:users-backend@users-backend-db/users-backend
+    volumes:
+      - ./users-backend:/home/app/
+    tty: true
+    stdin_open: true
+    ports:
+      - 8050:8050
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'wget -q -O- --tries=1 --no-verbose --header=''Content-Type:application/json'' --post-data ''{"query": "{__typename}"}'' http://127.0.0.1:8050/graphql || exit 1',
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+  users-backend-db:
+    image: postgres:11.13
+    networks: [pycon_net]
+    volumes:
+      - users-backend-db-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: users-backend
+      POSTGRES_PASSWORD: users-backend
+      POSTGRES_DB: users-backend
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U users-backend"]
+      interval: 5s
+      timeout: 5s
+
+  association-backend:
+    build:
+      context: ./association-backend
+      dockerfile: ../Dockerfile.python.local
+    networks: [pycon_net]
+    entrypoint: ""
+    command: sh -c "poetry run task migrate &&
+      python -m uvicorn main:wrapped_app --host 0.0.0.0 --port 8060 --reload"
+    depends_on:
+      association-backend-db:
+        condition: service_healthy
+    environment:
+      <<: *enviroment_defaults
+      STRIPE_SECRET_API_KEY: ${STRIPE_SECRET_API_KEY}
+      STRIPE_WEBHOOK_SIGNATURE_SECRET: ${STRIPE_WEBHOOK_SIGNATURE_SECRET}
+      DATABASE_URL: postgresql://association-backend:association-backend@association-backend-db/association-backend
+    volumes:
+      - ./association-backend:/home/app/
+    tty: true
+    stdin_open: true
+    ports:
+      - 8060:8060
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'wget -q -O- --tries=1 --no-verbose --header=''Content-Type:application/json'' --post-data ''{"query": "{__typename}"}'' http://127.0.0.1:8060/graphql || exit 1',
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+  association-backend-db:
+    image: postgres:11.13
+    networks: [pycon_net]
+    volumes:
+      - association-backend-db-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: association-backend
+      POSTGRES_PASSWORD: association-backend
+      POSTGRES_DB: association-backend
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U association-backend"]
+      interval: 5s
+      timeout: 5s
+
+  gateway:
+    build:
+      context: ./gateway
+      dockerfile: ../Dockerfile.node.local
+    networks: [pycon_net]
+    entrypoint: ""
+    command: sh -c "yarn dev"
+    volumes:
+      - ./gateway/:/home/node/app
+      - /home/node/app/node_modules/
+    environment:
+      <<: *enviroment_defaults
+      VARIANT: default
+    tty: true
+    stdin_open: true
+    ports:
+      - 4000:4000
+    depends_on:
+      pycon-backend:
+        condition: service_healthy
+      users-backend:
+        condition: service_healthy
+      association-backend:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'wget -q -O- --tries=1 --no-verbose --header=''Content-Type:application/json'' --post-data ''{"query": "{__typename}"}'' http://127.0.0.1:4000/graphql || exit 1',
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+  pycon-frontend:
+    build:
+      context: ./frontend
+      dockerfile: ../Dockerfile.node.local
+    networks: [pycon_net]
+    entrypoint: ""
+    working_dir: /home/node/app
+    command: sh -c "yarn codegen && yarn run dev"
+    volumes:
+      - ./frontend/:/home/node/app
+      - /home/node/app/node_modules/
+      - /home/node/app/.next
+    environment:
+      <<: *enviroment_defaults
+    tty: true
+    stdin_open: true
+    ports:
+      - 3000:3000
+    depends_on:
+      gateway:
+        condition: service_healthy
+
+  association-frontend:
+    build:
+      context: ./association-frontend
+      dockerfile: ../Dockerfile.node.local
+    networks: [pycon_net]
+    entrypoint: ""
+    working_dir: /home/node/app
+    command: sh -c "yarn codegen && yarn run dev"
+    volumes:
+      - ./association-frontend/:/home/node/app
+      - /home/node/app/node_modules/
+      - /home/node/app/.next
+    environment:
+      <<: *enviroment_defaults
+      STRIPE_KEY: ${STRIPE_PUBLIC_KEY}
+    tty: true
+    stdin_open: true
+    ports:
+      - 3020:3020
+    depends_on:
+      gateway:
+        condition: service_healthy
+
+networks:
+  pycon_net:
+
+volumes:
+  pycon-backend-db-data:
+  users-backend-db-data:
+  association-backend-db-data:
