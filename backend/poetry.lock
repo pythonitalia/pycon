@@ -463,7 +463,7 @@ bounce = ["requests (<3)", "m2crypto"]
 
 [[package]]
 name = "django-storages"
-version = "1.11.1"
+version = "1.12.2"
 description = "Support for many storage backends in Django"
 category = "main"
 optional = false
@@ -473,10 +473,10 @@ python-versions = ">=3.5"
 Django = ">=2.2"
 
 [package.extras]
-azure = ["azure-storage-blob (>=1.3.1,<12.0.0)"]
+azure = ["azure-storage-blob (>=12.0.0)"]
 boto3 = ["boto3 (>=1.4.4)"]
 dropbox = ["dropbox (>=7.2.1)"]
-google = ["google-cloud-storage (>=1.15.0)"]
+google = ["google-cloud-storage (>=1.27.0)"]
 libcloud = ["apache-libcloud"]
 sftp = ["paramiko"]
 
@@ -1483,7 +1483,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "2c56b60eb989429a70dc9e39963b3bdf08abdd4de3f072eefddd05185a8cc911"
+content-hash = "5c6a4ce56a3653e732cb989a0dbb271ca1ce18252c3ac7c222f9ea3536b34c10"
 
 [metadata.files]
 amqp = [
@@ -1740,8 +1740,8 @@ django-ses = [
     {file = "django_ses-1.0.3-py2.py3-none-any.whl", hash = "sha256:45f041acb9f2f8df85f3fddd63b04f1d381982bdc7730a3dc1f88e5795758bdd"},
 ]
 django-storages = [
-    {file = "django-storages-1.11.1.tar.gz", hash = "sha256:c823dbf56c9e35b0999a13d7e05062b837bae36c518a40255d522fbe3750fbb4"},
-    {file = "django_storages-1.11.1-py3-none-any.whl", hash = "sha256:f28765826d507a0309cfaa849bd084894bc71d81bf0d09479168d44785396f80"},
+    {file = "django-storages-1.12.2.tar.gz", hash = "sha256:0013ebe4904521e2fa28f33591a03a7210304d73363e7eadd7cdcf81c12ba003"},
+    {file = "django_storages-1.12.2-py3-none-any.whl", hash = "sha256:683b70617f4be9baa17b2d6d7df46cf6afe31b5eb17ece3ca82f773f555592a7"},
 ]
 django-timezone-field = [
     {file = "django-timezone-field-4.0.tar.gz", hash = "sha256:7e3620fe2211c2d372fad54db8f86ff884098d018d56fda4dca5e64929e05ffc"},
