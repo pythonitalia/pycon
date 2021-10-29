@@ -1901,7 +1901,7 @@
     lru_map "^0.3.3"
     tslib "^1.9.3"
 
-"@sentry/tracing@5.30.0", "@sentry/tracing@^5.29.2":
+"@sentry/tracing@5.30.0":
   version "5.30.0"
   resolved "https://registry.yarnpkg.com/@sentry/tracing/-/tracing-5.30.0.tgz#501d21f00c3f3be7f7635d8710da70d9419d4e1f"
   integrity sha512-dUFowCr0AIMwiLD7Fs314Mdzcug+gBVo/+NCMyDw8tFxJkwWAKl7Qa2OZxLQ0ZHjakcj1hNKfCQJ9rhyfOl4Aw==
@@ -1910,6 +1910,17 @@
     "@sentry/minimal" "5.30.0"
     "@sentry/types" "5.30.0"
     "@sentry/utils" "5.30.0"
+    tslib "^1.9.3"
+
+"@sentry/tracing@^6.13.3":
+  version "6.13.3"
+  resolved "https://registry.yarnpkg.com/@sentry/tracing/-/tracing-6.13.3.tgz#ca657d4afa99c50f15e638fe38405bac33e780ee"
+  integrity sha512-yyOFIhqlprPM0g4f35Icear3eZk2mwyYcGEzljJfY2iU6pJwj1lzia5PfSwiCW7jFGMmlBJNhOAIpfhlliZi8Q==
+  dependencies:
+    "@sentry/hub" "6.13.3"
+    "@sentry/minimal" "6.13.3"
+    "@sentry/types" "6.13.3"
+    "@sentry/utils" "6.13.3"
     tslib "^1.9.3"
 
 "@sentry/types@5.30.0":
