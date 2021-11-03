@@ -27,8 +27,8 @@ class Client:
                     SERVICE_JWT_HEADER: token,
                 },
             )
+
             data = await response.json()
-            print(data)
             return data
 
     def user(self, id: ID):
