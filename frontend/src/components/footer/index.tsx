@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
-import { Box, Grid, jsx } from "theme-ui";
+import { Box, Grid, jsx, Flex } from "theme-ui";
 
 import { useFooterQuery } from "~/types";
 
@@ -103,7 +103,26 @@ export const Footer = () => {
           ))}
         </MenuItems>
 
-        <SocialLinks sx={{ justifyContent: ["center", null, "flex-end"] }} />
+        <Flex
+          sx={{
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <SocialLinks sx={{ justifyContent: ["center", null, "flex-end"] }} />
+          <a
+            target="_blank"
+            href="https://vercel.com/?utm_source=python-italia&utm_campaign=oss"
+            sx={{
+              mt: 4,
+            }}
+          >
+            <img
+              src="https://www.datocms-assets.com/31049/1618983297-powered-by-vercel.svg"
+              alt="Powered by Vercel Logo"
+            />
+          </a>
+        </Flex>
       </Grid>
     </Box>
   );
