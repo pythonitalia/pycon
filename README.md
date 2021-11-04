@@ -5,7 +5,7 @@
 # PyCon Italia website
 
 > The monorepo for the new PyCon Italia website, based on Django, Strawberry,
-> NextJS and React.
+> Next.js and React.
 
 ## How to setup
 
