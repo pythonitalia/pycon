@@ -103,16 +103,24 @@ export const Footer = () => {
           ))}
         </MenuItems>
 
-        <Flex sx={{
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}>
-            <SocialLinks sx={{ justifyContent: ["center", null, "flex-end"] }} />
-            <a href="https://vercel.com/?utm_source=python-italia&utm_campaign=oss" sx={{
-              mt: 5
-            }}>
-              <img src="https://www.datocms-assets.com/31049/1618983297-powered-by-vercel.svg" alt="Powered by Vercel Logo" />
-            </a>
+        <Flex
+          sx={{
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <SocialLinks sx={{ justifyContent: ["center", null, "flex-end"] }} />
+          <a
+            href="https://vercel.com/?utm_source=python-italia&utm_campaign=oss"
+            sx={{
+              mt: 3,
+            }}
+          >
+            <img
+              src="https://www.datocms-assets.com/31049/1618983297-powered-by-vercel.svg"
+              alt="Powered by Vercel Logo"
+            />
+          </a>
         </Flex>
       </Grid>
     </Box>
