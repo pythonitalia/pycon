@@ -4,7 +4,6 @@ from typing import Any, Dict, Optional
 import httpx
 import jwt
 from pythonit_toolkit.headers import SERVICE_JWT_HEADER
-from strawberry import ID
 
 INTERNAL_JWT_SECRET = os.getenv("INTERNAL_JWT_SECRET", "a-very-secret-secret")
 
@@ -31,20 +30,25 @@ class Client:
             data = await response.json()
             return data
 
-    def user(self, id: ID):
+    def users(self):
         query = """
-            query ($id: ID) {
-                user(id: $id) {
+            query{
+                 users {
                     id
+                    fullname
+                    name
                     email
-                    isStaff
+                    gender
+                    dateBirth
+                    openToRecruiting
+                    openToNewsletter
+                    country
                     isActive
-                    jwtAuthId
+                    isStaff
                 }
             }
         """
 
         return self.execute(
             query,
-            {"id": id},
         )

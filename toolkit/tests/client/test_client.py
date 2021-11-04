@@ -17,9 +17,24 @@ class MockResponse:
 
 @test("get a user")
 async def _():
+    mock_data = [
+        {
+            "id": 1,
+            "fullname": "Hello",
+            "name": "World",
+            "email": "hello@world.it",
+            "gender": "Female",
+            "dateBirth": None,
+            "openToRecruiting": False,
+            "openToNewsletter": True,
+            "country": "United Kingdom",
+            "isActive": True,
+            "isStaff": False,
+        },
+    ]
     with patch("httpx.AsyncClient.post") as post_mock:
-        post_mock.return_value = MockResponse([{"id": 1}])
+        post_mock.return_value = MockResponse(mock_data)
 
-        response = await Client().user(1)
+        response = await Client().users()
 
-        assert response == [{"id": 1}]
+        assert response == mock_data

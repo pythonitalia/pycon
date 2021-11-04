@@ -1,9 +1,8 @@
 from functools import reduce
-from typing import Any, Optional
+from typing import Any, Optional, Union
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.expression import or_, select
-
 from users.domain.entities import User
 from users.domain.paginable import Paginable
 from users.starlette_password.hashers import make_password
@@ -42,8 +41,12 @@ class UsersRepository(AbstractUsersRepository):
     def __init__(self, session: Optional[AsyncSession] = None) -> None:
         self.session = session
 
-    async def get_users(self) -> Paginable[User]:
-        return Paginable(self.session, User)
+    async def get_users(self, paginate=True) -> Union[list[User], Paginable[User]]:
+        if paginate:
+            return Paginable(self.session, User)
+
+        users = (await self.session.execute(select(User))).scalars().all()
+        return users
 
     async def get_batch_by_ids(self, ids: list[int]) -> list[User]:
         query = select(User).where(User.id.in_(ids))

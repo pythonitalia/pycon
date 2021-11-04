@@ -16,3 +16,8 @@ class Query:
         logger.info("Internal api request to get user_id=%s information", id)
         user = await info.context.users_repository.get_by_id(int(id))
         return User.from_domain(user) if user else None
+
+    @strawberry.field()
+    async def users(self, info: Info) -> list[User]:
+        users = await info.context.users_repository.get_users(paginate=False)
+        return [User.from_domain(user) for user in users]
