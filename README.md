@@ -46,3 +46,5 @@ STRIPE_SECRET_API_KEY=
 ```
 
 Adding the secret keys after the `=` symbol.
+
+[<img src="https://www.datocms-assets.com/31049/1618983297-powered-by-vercel.svg">](https://vercel.com?utm_source=strawberry-graphql&utm_campaign=oss)
