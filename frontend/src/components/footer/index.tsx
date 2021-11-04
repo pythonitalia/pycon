@@ -106,10 +106,11 @@ export const Footer = () => {
         <Flex sx={{
           flexDirection: 'column',
           alignItems: 'center',
-          mt: 5
         }}>
             <SocialLinks sx={{ justifyContent: ["center", null, "flex-end"] }} />
-            <a href="https://vercel.com/?utm_source=python-italia&utm_campaign=oss">
+            <a href="https://vercel.com/?utm_source=python-italia&utm_campaign=oss" sx={{
+              mt: 5
+            }}>
               <img src="https://www.datocms-assets.com/31049/1618983297-powered-by-vercel.svg" alt="Powered by Vercel Logo" />
             </a>
         </Flex>
