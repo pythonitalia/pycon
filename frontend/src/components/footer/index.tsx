@@ -111,9 +111,10 @@ export const Footer = () => {
         >
           <SocialLinks sx={{ justifyContent: ["center", null, "flex-end"] }} />
           <a
+            target="_blank"
             href="https://vercel.com/?utm_source=python-italia&utm_campaign=oss"
             sx={{
-              mt: 3,
+              mt: 4,
             }}
           >
             <img
