@@ -1,26 +1,26 @@
 pycon-frontend:
-  - any: ['frontend/*']
+- any: ['frontend/*']
 
 pycon-backend:
-  - any: ['backend/*']
+- any: ['backend/*']
 
 association-backend:
-  - any: ['association-backend/*']
+- any: ['association-backend/*']
 
 association-frontend:
-  - any: ['association-frontend/*']
+- any: ['association-frontend/*']
 
 users-backend:
-  - any: ['users-backend/*']
+- any: ['users-backend/*']
 
 gateway:
-  - any: ['gateway/*']
+- any: ['gateway/*']
 
 infrastructure:
-  - any: ['infrastructure/*']
+- any: ['infrastructure/*']
 
 🐙 github:
-  - any: ['.github/*']
+- any: ['.github/*']
 
 🔨toolkit:
-  - any: ['toolkit/*']
+- any: ['toolkit/*']
