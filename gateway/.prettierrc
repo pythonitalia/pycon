@@ -1,1 +1,9 @@
-../.prettierrc
+{
+  "semi": true,
+  "singleQuote": false,
+  "trailingComma": "all",
+  "tabWidth": 2,
+  "useTabs": false,
+  "importOrder": ["^..?/init$", "^next", "^~", "^[./]", ".css$"],
+  "importOrderSeparation": true
+}
