@@ -10,7 +10,7 @@ import { Box, jsx } from "theme-ui";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 
-import { addApolloState } from "~/apollo/client";
+import { addApolloState, getApolloClient } from "~/apollo/client";
 import { formatDay } from "~/components/day-selector/format-day";
 import { MetaTags } from "~/components/meta-tags";
 import { useLoginState } from "~/components/profile/hooks";
@@ -124,26 +124,29 @@ const PageContent: React.FC<PageContentProps> = ({
 };
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const client = getApolloClient();
+
   await Promise.all([
-    prefetchSharedQueries(params.lang as string),
-    querySchedule({
+    prefetchSharedQueries(client, params.lang as string),
+    querySchedule(client, {
       code: process.env.conferenceCode,
       fetchSubmissions: false,
     }),
   ]);
 
-  return addApolloState({
+  return addApolloState(client, {
     props: {},
-    revalidate: 1,
   });
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
+  const client = getApolloClient();
+
   const {
     data: {
       conference: { days },
     },
-  } = await queryScheduleDays({
+  } = await queryScheduleDays(client, {
     code: process.env.conferenceCode,
   });
 
@@ -164,7 +167,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
   return {
     paths,
-    fallback: false,
+    fallback: "blocking",
   };
 };
 

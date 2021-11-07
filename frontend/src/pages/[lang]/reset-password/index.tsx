@@ -8,7 +8,7 @@ import { Box, Heading, Input, jsx } from "theme-ui";
 
 import { GetStaticPaths, GetStaticProps } from "next";
 
-import { addApolloState } from "~/apollo/client";
+import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Alert } from "~/components/alert";
 import { Button } from "~/components/button/button";
 import { InputWrapper } from "~/components/input-wrapper";
@@ -106,10 +106,11 @@ export const RequestResetPasswordPage = () => {
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const lang = params.lang as string;
+  const client = getApolloClient();
 
-  await prefetchSharedQueries(lang);
+  await prefetchSharedQueries(client, lang);
 
-  return addApolloState({
+  return addApolloState(client, {
     props: {},
   });
 };

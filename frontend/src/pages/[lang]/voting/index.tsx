@@ -9,7 +9,7 @@ import { Box, Grid, Heading, jsx, Select, Text } from "theme-ui";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 
-import { addApolloState } from "~/apollo/client";
+import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Alert } from "~/components/alert";
 import { Link } from "~/components/link";
 import { LoginForm } from "~/components/login-form";
@@ -367,10 +367,11 @@ export const VotingPage: React.SFC = () => {
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const lang = params.lang as string;
+  const client = getApolloClient();
 
-  await prefetchSharedQueries(lang);
+  await prefetchSharedQueries(client, lang);
 
-  return addApolloState({
+  return addApolloState(client, {
     props: {},
   });
 };

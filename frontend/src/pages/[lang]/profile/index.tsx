@@ -8,7 +8,7 @@ import { jsx } from "theme-ui";
 import { GetStaticPaths, GetStaticProps } from "next";
 import Router from "next/router";
 
-import { addApolloState } from "~/apollo/client";
+import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Alert } from "~/components/alert";
 import { MetaTags } from "~/components/meta-tags";
 import { PageLoading } from "~/components/page-loading";
@@ -97,12 +97,15 @@ export const MyProfilePage = () => {
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const lang = params.lang as string;
+  const client = getApolloClient();
 
-  await Promise.all([prefetchSharedQueries(lang), queryCountries()]);
+  await Promise.all([
+    prefetchSharedQueries(client, lang),
+    queryCountries(client),
+  ]);
 
-  return addApolloState({
+  return addApolloState(client, {
     props: {},
-    revalidate: 1,
   });
 };
 

@@ -7,7 +7,7 @@ import { Box, Heading, jsx, Text } from "theme-ui";
 
 import { GetStaticPaths, GetStaticProps } from "next";
 
-import { addApolloState } from "~/apollo/client";
+import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Link } from "~/components/link";
 import { MetaTags } from "~/components/meta-tags";
 import { PageLoading } from "~/components/page-loading";
@@ -63,17 +63,17 @@ export const BlogPage = () => {
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const language = params.lang as string;
+  const client = getApolloClient();
 
   await Promise.all([
-    prefetchSharedQueries(language),
-    queryBlogIndex({
+    prefetchSharedQueries(client, language),
+    queryBlogIndex(client, {
       language,
     }),
   ]);
 
-  return addApolloState({
+  return addApolloState(client, {
     props: {},
-    revalidate: 1,
   });
 };
 

@@ -7,7 +7,7 @@ import { Box, jsx } from "theme-ui";
 
 import { GetStaticPaths, GetStaticProps } from "next";
 
-import { addApolloState } from "~/apollo/client";
+import { addApolloState, getApolloClient } from "~/apollo/client";
 import { GrantForm } from "~/components/grant-form";
 import { Introduction } from "~/components/grants-introduction";
 import { MetaTags } from "~/components/meta-tags";
@@ -40,10 +40,11 @@ export const GrantsPage = () => {
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const lang = params.lang as string;
+  const client = getApolloClient();
 
-  await prefetchSharedQueries(lang);
+  await prefetchSharedQueries(client, lang);
 
-  return addApolloState({
+  return addApolloState(client, {
     props: {},
   });
 };
