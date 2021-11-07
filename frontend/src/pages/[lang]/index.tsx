@@ -3,7 +3,7 @@
 /** @jsx jsx */
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
-import { Box, Grid, Heading, jsx, Text } from "theme-ui";
+import { Box, Grid, Heading, jsx, Text, Flex } from "theme-ui";
 
 import { GetStaticPaths, GetStaticProps } from "next";
 
@@ -13,6 +13,7 @@ import { EventCard } from "~/components/home-events/event-card";
 import { HomepageHero } from "~/components/homepage-hero";
 import { KeynotersSection } from "~/components/keynoters-section";
 import { Link } from "~/components/link";
+import { MapWithLink } from "~/components/map-with-link";
 import { Marquee } from "~/components/marquee";
 import { MetaTags } from "~/components/meta-tags";
 import { SponsorsSection } from "~/components/sponsors-section";
@@ -173,6 +174,60 @@ export const HomePage = () => {
           Component={EventCard}
         />
       )}
+
+      <Box
+        sx={{
+          borderBottom: "primary",
+        }}
+      >
+        <Grid
+          sx={{
+            py: 5,
+            px: 3,
+
+            gridTemplateColumns: [null, null, "8fr 2fr 10fr"],
+
+            maxWidth: "container",
+            mx: "auto",
+          }}
+        >
+          <Flex
+            sx={{
+              flexDirection: "column",
+              justifyContent: "center",
+            }}
+          >
+            <Heading as="h1">
+              <FormattedMessage id="home.gettingThere" />
+            </Heading>
+            <Text
+              sx={{
+                mt: 4,
+                mb: 3,
+              }}
+              as="p"
+            >
+              {conference.gettingThereText}
+            </Text>
+
+            <Box>
+              <Link
+                target="_blank"
+                variant="arrow-button"
+                path={conference.map!.link!}
+              >
+                <FormattedMessage id="home.findRoute" />
+              </Link>
+            </Box>
+          </Flex>
+
+          <MapWithLink
+            sx={{
+              gridColumnStart: [null, null, 3],
+            }}
+          />
+        </Grid>
+      </Box>
 
       {conference.sponsorsByLevel.length > 0 && (
         <Fragment>
