@@ -28,12 +28,6 @@ import {
 
 export const HomePage = () => {
   const language = useCurrentLanguage();
-  const { data } = useIndexPageQuery({
-    variables: {
-      code: process.env.conferenceCode,
-      language,
-    },
-  });
   const {
     data: { conference, blogPosts },
   } = useIndexPageQuery({
