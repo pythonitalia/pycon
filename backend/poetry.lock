@@ -145,21 +145,23 @@ crt = ["awscrt (==0.12.5)"]
 
 [[package]]
 name = "bpython"
-version = "0.18"
-description = "Fancy Interface to the Python Interpreter"
+version = "0.22"
+description = ""
 category = "dev"
 optional = false
-python-versions = "*"
+python-versions = ">=3.6"
 
 [package.dependencies]
-curtsies = ">=0.1.18"
+curtsies = ">=0.3.5"
+cwcwidth = "*"
 greenlet = "*"
 pygments = "*"
+pyxdg = "*"
 requests = "*"
-six = ">=1.5"
 
 [package.extras]
-jedi = ["jedi"]
+clipboard = ["pyperclip"]
+jedi = ["jedi (>=0.16)"]
 urwid = ["urwid"]
 watch = ["watchdog"]
 
@@ -1164,6 +1166,14 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "pyxdg"
+version = "0.27"
+description = "PyXDG contains implementations of freedesktop.org standards in python."
+category = "dev"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "redis"
 version = "3.3.11"
 description = "Python client for Redis key-value store"
@@ -1494,7 +1504,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "0c671b64c26a9ba3b51f0ca04f452e344b0fb0f2c99d4c1c1657512b11477220"
+content-hash = "8ca5288dcdac8ecfec90dcff2fa4134b1aef581cdfdaadfe5577535236f18960"
 
 [metadata.files]
 amqp = [
@@ -1546,8 +1556,8 @@ botocore = [
     {file = "botocore-1.22.2.tar.gz", hash = "sha256:011360e79a4b843aa6591573cfa61e8eddc99b91adab1dfdb9a2b7f2c8511193"},
 ]
 bpython = [
-    {file = "bpython-0.18-py2.py3-none-any.whl", hash = "sha256:c7c6de7309311fd607d6cb47ef7e2d6e065d0a299199d51220d57732850a3efa"},
-    {file = "bpython-0.18.tar.gz", hash = "sha256:56cc20dbe568c98c81de4990fddf5862c0d8d3ab0ad1cf7057988abc5f7686c2"},
+    {file = "bpython-0.22-py3-none-any.whl", hash = "sha256:8a052068918f7acb1428ecee74ce3299605e8e57a128f4c25d905903dd08aeab"},
+    {file = "bpython-0.22.tar.gz", hash = "sha256:6786163c26546f16f08dabdcc6b85d12b21a9ea5f039d24479e73cc8a003d0f7"},
 ]
 cached-property = [
     {file = "cached-property-1.5.2.tar.gz", hash = "sha256:9fa5755838eecbb2d234c3aa390bd80fbd3ac6b6869109bfc1b499f7bd89a130"},
@@ -2227,6 +2237,10 @@ pythonit-toolkit = [
 pytz = [
     {file = "pytz-2019.3-py2.py3-none-any.whl", hash = "sha256:1c557d7d0e871de1f5ccd5833f60fb2550652da6be2693c1e02300743d21500d"},
     {file = "pytz-2019.3.tar.gz", hash = "sha256:b02c06db6cf09c12dd25137e563b31700d3b80fcc4ad23abb7a315f2789819be"},
+]
+pyxdg = [
+    {file = "pyxdg-0.27-py2.py3-none-any.whl", hash = "sha256:2d6701ab7c74bbab8caa6a95e0a0a129b1643cf6c298bf7c569adec06d0709a0"},
+    {file = "pyxdg-0.27.tar.gz", hash = "sha256:80bd93aae5ed82435f20462ea0208fb198d8eec262e831ee06ce9ddb6b91c5a5"},
 ]
 redis = [
     {file = "redis-3.3.11-py2.py3-none-any.whl", hash = "sha256:3613daad9ce5951e426f460deddd5caf469e08a3af633e9578fc77d362becf62"},
