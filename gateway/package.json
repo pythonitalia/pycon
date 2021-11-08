@@ -9,7 +9,7 @@
     "@sentry/node": "^6.4.1",
     "@sentry/serverless": "^6.4.1",
     "@sentry/tracing": "^6.4.1",
-    "apollo-server": "2.21.0",
+    "apollo-server": "2.25.3",
     "apollo-server-lambda": "2.21.1",
     "cookie": "^0.4.1",
     "cors": "^2.8.5",
