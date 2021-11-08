@@ -9,7 +9,7 @@ import { Box, Button, Heading, Input, jsx } from "theme-ui";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 
-import { addApolloState } from "~/apollo/client";
+import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Alert } from "~/components/alert";
 import { InputWrapper } from "~/components/input-wrapper";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
@@ -115,10 +115,11 @@ export const ResetPasswordPage = () => {
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const lang = params.lang as string;
+  const client = getApolloClient();
 
-  await prefetchSharedQueries(lang);
+  await prefetchSharedQueries(client, lang);
 
-  return addApolloState({
+  return addApolloState(client, {
     props: {},
   });
 };

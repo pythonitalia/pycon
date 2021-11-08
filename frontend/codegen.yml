@@ -4,7 +4,7 @@ generates:
     documents: ./**/*.graphql
     plugins:
       - add:
-          content: 'import { getApolloClient } from "~/apollo/client";'
+          content: 'import { ApolloClient } from "@apollo/client/core";'
       - "typescript"
       - "typescript-operations"
       - "typescript-react-apollo"

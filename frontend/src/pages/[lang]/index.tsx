@@ -7,7 +7,7 @@ import { Box, Grid, Heading, jsx, Text } from "theme-ui";
 
 import { GetStaticPaths, GetStaticProps } from "next";
 
-import { addApolloState } from "~/apollo/client";
+import { addApolloState, getApolloClient } from "~/apollo/client";
 import { GridSlider } from "~/components/grid-slider";
 import { EventCard } from "~/components/home-events/event-card";
 import { HomepageHero } from "~/components/homepage-hero";
@@ -28,6 +28,12 @@ import {
 
 export const HomePage = () => {
   const language = useCurrentLanguage();
+  const { data } = useIndexPageQuery({
+    variables: {
+      code: process.env.conferenceCode,
+      language,
+    },
+  });
   const {
     data: { conference, blogPosts },
   } = useIndexPageQuery({
@@ -233,21 +239,21 @@ export const HomePage = () => {
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const language = params.lang as string;
+  const client = getApolloClient();
 
   await Promise.all([
-    prefetchSharedQueries(language),
-    queryKeynotesSection({
+    prefetchSharedQueries(client, language),
+    queryKeynotesSection(client, {
       code: process.env.conferenceCode,
     }),
-    queryIndexPage({
+    queryIndexPage(client, {
       language,
       code: process.env.conferenceCode,
     }),
   ]);
 
-  return addApolloState({
+  return addApolloState(client, {
     props: {},
-    revalidate: 1,
   });
 };
 

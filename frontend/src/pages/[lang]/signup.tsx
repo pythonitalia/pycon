@@ -3,7 +3,7 @@ import { FormattedMessage } from "react-intl";
 
 import { GetStaticPaths, GetStaticProps } from "next";
 
-import { addApolloState } from "~/apollo/client";
+import { addApolloState, getApolloClient } from "~/apollo/client";
 import { MetaTags } from "~/components/meta-tags";
 import { SignupForm } from "~/components/signup-form";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
@@ -20,10 +20,11 @@ export const SignupPage = () => (
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const lang = params.lang as string;
+  const client = getApolloClient();
 
-  await prefetchSharedQueries(lang);
+  await prefetchSharedQueries(client, lang);
 
-  return addApolloState({
+  return addApolloState(client, {
     props: {},
   });
 };
