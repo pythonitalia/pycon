@@ -48,7 +48,7 @@ const MyApp = (props) => {
               >
                 <Header />
 
-                <Box sx={{ mt: [100, 130] }}>
+                <Box>
                   <ErrorBoundary>
                     <Component {...pageProps} err={err} />
                   </ErrorBoundary>

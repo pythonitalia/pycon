@@ -15,13 +15,13 @@ export const HomepageHero = ({ hideBuyTickets = false }: Props) => (
   <Box
     sx={{
       position: "relative",
-      mt: [-100, -180],
+      mt: -130,
     }}
   >
     <Box
       sx={{
         display: "inline-block",
-        paddingBottom: ["70vh", "53%"],
+        paddingBottom: ["70vh", "calc(100vh - 125px)"],
       }}
     />
 
