@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Any, Dict, List
 from unittest.mock import patch
 
-from pythonit_toolkit.api.client import Client
+from pythonit_toolkit.api.service_client import ServiceClient
 from ward import test
 
 
@@ -32,7 +32,7 @@ async def _():
     with patch("httpx.AsyncClient.post") as post_mock:
         post_mock.return_value = MockResponse(mock_data)
 
-        response = await Client(
+        response = await ServiceClient(
             jwt_secret="mysecret", issuer="pycon", audience="users-service"
         ).execute(document=query)
 

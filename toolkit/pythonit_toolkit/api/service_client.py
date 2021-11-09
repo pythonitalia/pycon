@@ -5,7 +5,7 @@ from pythonit_toolkit.headers import SERVICE_JWT_HEADER
 from pythonit_toolkit.pastaporto.tokens import generate_token
 
 
-class Client:
+class ServiceClient:
     url = "/internal-api"
 
     def __init__(self, jwt_secret: str, issuer: str, audience: str):
