@@ -24,3 +24,15 @@ def decode_service_to_service_token(
         algorithms=["HS256"],
         options={"require": ["exp", "iss", "aud", "iat"]},
     )
+
+
+def generate_token(secret, issuer: str, audience: str, expires_in: str = "1m"):
+    return jwt.encode(
+        {
+            "issuer": issuer,
+            "audience": audience,
+            "expires_in": expires_in,
+        },
+        secret,
+        algorithm="HS256",
+    )

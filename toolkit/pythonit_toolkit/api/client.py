@@ -1,27 +1,31 @@
-import os
 from typing import Any, Dict, Optional
 
 import httpx
-import jwt
 from pythonit_toolkit.headers import SERVICE_JWT_HEADER
-
-INTERNAL_JWT_SECRET = os.getenv("INTERNAL_JWT_SECRET", "a-very-secret-secret")
+from pythonit_toolkit.pastaporto.tokens import generate_token
 
 
 class Client:
     url = "/internal-api"
 
+    def __init__(self, jwt_secret: str, issuer: str, audience: str):
+        self.jwt_secret = jwt_secret
+        self.issuer = issuer
+        self.audience = audience
+
     async def execute(
         self,
-        query: str,
+        document: str,
         variables: Optional[Dict[str, Any]] = None,
     ):
-        token = jwt.encode({"some": "payload"}, INTERNAL_JWT_SECRET, algorithm="HS256")
+        token = generate_token(
+            self.jwt_secret, issuer=self.issuer, audience=self.audience
+        )
 
         async with httpx.AsyncClient() as client:
             response = await client.post(
                 self.url,
-                data={"query": query, "variables": variables},
+                data={"query": document, "variables": variables},
                 headers={
                     SERVICE_JWT_HEADER: token,
                 },
@@ -29,26 +33,3 @@ class Client:
 
             data = await response.json()
             return data
-
-    def users(self):
-        query = """
-            query{
-                 users {
-                    id
-                    fullname
-                    name
-                    email
-                    gender
-                    dateBirth
-                    openToRecruiting
-                    openToNewsletter
-                    country
-                    isActive
-                    isStaff
-                }
-            }
-        """
-
-        return self.execute(
-            query,
-        )
