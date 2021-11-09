@@ -3,6 +3,7 @@ from typing import Any, Optional, Union
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.expression import or_, select
+
 from users.domain.entities import User
 from users.domain.paginable import Paginable
 from users.starlette_password.hashers import make_password
@@ -41,10 +42,7 @@ class UsersRepository(AbstractUsersRepository):
     def __init__(self, session: Optional[AsyncSession] = None) -> None:
         self.session = session
 
-    async def get_users(self, paginate=True) -> Union[list[User], Paginable[User]]:
-        if paginate:
-            return Paginable(self.session, User)
-
+    async def get_users(self) -> Union[list[User], Paginable[User]]:
         users = (await self.session.execute(select(User))).scalars().all()
         return users
 

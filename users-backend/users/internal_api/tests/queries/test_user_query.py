@@ -1,7 +1,8 @@
+from ward import test
+
 from users.tests.api import internalapi_graphql_client
 from users.tests.factories import user_factory
 from users.tests.session import db
-from ward import test
 
 
 @test("get user by id")
@@ -50,25 +51,3 @@ async def _(
     response = await internalapi_graphql_client.query(query, variables={"id": 100})
     assert not response.errors
     assert response.data["user"] is None
-
-
-@test("get all the users")
-async def _(
-    internalapi_graphql_client=internalapi_graphql_client,
-    db=db,
-    user_factory=user_factory,
-):
-    internalapi_graphql_client.force_service_login()
-
-    await user_factory(email="testuser@user.it")
-
-    query = """query {
-        users {
-            id
-            email
-        }
-    }"""
-
-    response = await internalapi_graphql_client.query(query)
-    assert not response.errors
-    assert response.data["users"]
