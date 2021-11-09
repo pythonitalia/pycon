@@ -11,7 +11,6 @@ class MockResponse:
     data: List[Dict[str, Any]]
 
     async def json(self):
-        print("take your data!")
         return self.data
 
 
