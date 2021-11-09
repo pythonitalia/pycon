@@ -33,11 +33,12 @@ async def _():
     with patch("httpx.AsyncClient.post") as post_mock:
         post_mock.return_value = MockResponse(mock_data)
         cleint = ServiceClient(
+            url="http://localhost:8050",
+            issuer="pycon",
+            audience="users-service",
             jwt_secret="mysecret",
         )
 
-        response = await cleint.execute(
-            document=query, issuer="pycon", audience="users-service"
-        )
+        response = await cleint.execute(document=query)
 
         assert response == mock_data
