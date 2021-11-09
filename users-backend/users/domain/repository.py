@@ -1,5 +1,5 @@
 from functools import reduce
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.expression import or_, select
@@ -42,7 +42,7 @@ class UsersRepository(AbstractUsersRepository):
     def __init__(self, session: Optional[AsyncSession] = None) -> None:
         self.session = session
 
-    async def get_users(self) -> Union[list[User], Paginable[User]]:
+    async def get_users(self) -> Paginable[User]:
         users = (await self.session.execute(select(User))).scalars().all()
         return users
 
