@@ -29,11 +29,15 @@ async def _():
             "id": 1,
         },
     ]
+
     with patch("httpx.AsyncClient.post") as post_mock:
         post_mock.return_value = MockResponse(mock_data)
+        cleint = ServiceClient(
+            jwt_secret="mysecret",
+        )
 
-        response = await ServiceClient(
-            jwt_secret="mysecret", issuer="pycon", audience="users-service"
-        ).execute(document=query)
+        response = await cleint.execute(
+            document=query, issuer="pycon", audience="users-service"
+        )
 
         assert response == mock_data
