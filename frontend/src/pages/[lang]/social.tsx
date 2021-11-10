@@ -137,7 +137,7 @@ export const SocialPage = () => {
               <Heading
                 sx={{
                   textTransform: "uppercase",
-                  fontSize: 6,
+                  fontSize: 5,
                   fontWeight: "bold",
                   color: "white",
                   mt: "auto",
