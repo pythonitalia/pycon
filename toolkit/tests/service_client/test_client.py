@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, Dict, List
+from typing import Any, Optional
 from unittest.mock import patch
 
 from pythonit_toolkit.api.service_client import ServiceClient
@@ -8,13 +8,13 @@ from ward import test
 
 @dataclass
 class MockResponse:
-    data: List[Dict[str, Any]]
+    return_value: Optional[Any] = None
 
     async def json(self):
-        return self.data
+        return self.return_value
 
 
-@test("get a user")
+@test("execute a query")
 async def _():
     query = """
         query{
@@ -26,7 +26,7 @@ async def _():
     mock_response = {"data": {"users": [{"id": 1}]}}
 
     with patch("httpx.AsyncClient.post") as post_mock:
-        post_mock.return_value = MockResponse(mock_response)
+        post_mock.return_value = MockResponse(return_value=mock_response)
         cleint = ServiceClient(
             url="http://localhost:8050",
             issuer="pycon",
