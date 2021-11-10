@@ -1,10 +1,12 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
-import { useRouter } from "next/router";
 import { Fragment } from "react";
 import { Box, Flex, Heading, jsx } from "theme-ui";
 
-import { LogoOrange } from "~/components/logo/orange";
+import { useRouter } from "next/router";
+
+import { Logo } from "~/components/logo";
 import { CardType, getSize } from "~/helpers/social-card";
 import { useCurrentLanguage } from "~/locale/context";
 import { Language } from "~/locale/languages";
@@ -79,9 +81,11 @@ export const SocialPage = () => {
               width: size.width - size.height,
             }}
           >
-            <LogoOrange
+            <Logo
               sx={{
-                width: size.width - size.height,
+                width: `calc(${size.width - size.height}px - 14px)`,
+                ml: "7px",
+                mt: "7px",
               }}
             />
 

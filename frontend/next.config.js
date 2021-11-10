@@ -37,6 +37,7 @@ module.exports = withSourceMaps({
       "pastaporto-pycon-backend-media.s3.amazonaws.com",
       "production-pycon-backend-media.s3.amazonaws.com",
       "localhost",
+      "pycon-backend",
     ],
   },
   webpack: (config, options) => {

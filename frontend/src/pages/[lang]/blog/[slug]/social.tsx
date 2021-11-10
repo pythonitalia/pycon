@@ -1,11 +1,13 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
-import { GetStaticPaths, GetStaticProps } from "next";
-import { useRouter } from "next/router";
 import React, { Fragment } from "react";
 import { Box, Flex, Heading, jsx, Text } from "theme-ui";
 
-import { addApolloState } from "~/apollo/client";
+import { GetStaticPaths, GetStaticProps } from "next";
+import { useRouter } from "next/router";
+
+import { addApolloState, getApolloClient } from "~/apollo/client";
 import { CardType, getSize } from "~/helpers/social-card";
 import { useCurrentLanguage } from "~/locale/context";
 import { queryBlogSocialCard, useBlogSocialCardQuery } from "~/types";
@@ -139,15 +141,15 @@ export const SocialCard: React.FC = () => {
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const language = params.lang as string;
   const slug = params.slug as string;
+  const client = getApolloClient();
 
-  await queryBlogSocialCard({
+  await queryBlogSocialCard(client, {
     slug,
     language,
   });
 
-  return addApolloState({
+  return addApolloState(client, {
     props: {},
-    revalidate: 1,
   });
 };
 

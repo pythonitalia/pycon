@@ -5,25 +5,46 @@
 # PyCon Italia website
 
 > The monorepo for the new PyCon Italia website, based on Django, Strawberry,
-> NextJS and React.
+> Next.js and React.
 
 ## How to setup
 
-### Gateway
+Use our local docker-compose setup to start all services you need.
 
-TODO
+After cloning the project, you can run:
 
-### PyCon Backend
+```
+docker-compose up
+```
 
-Follow the [README in the backend service](./backend/README.md) to setup the
-backend.
+to start the services.
 
-### PyCon Frontend
+You will find the services at the following ports:
 
-Currently in order to run the frontend you also need the backend up and running,
-we will, in future, provide a staging environment that can be used for
-development, without you having to setup the backend as well.
+| Service name         | Address               |
+| -------------------- | --------------------- |
+| PyCon Backend        | http://localhost:8000 |
+| PyCon Frontend       | http://localhost:3000 |
+| Association Frontend | http://localhost:3020 |
+| Association Backend  | http://localhost:8060 |
+| Users Backend        | http://localhost:8050 |
+| GraphQL Gateway      | http://localhost:4000 |
 
-Follow the [README in the frontend service](./frontend/README.md) to setup the
-frontend.
+Everything you need to get started is already configured
+and will work out of the box.
 
+If you need to work with our Stripe or Pretix integration, you will have to ask
+on our Discord channel which secret key you need and why you need it.
+
+Once given, create a `.env` file at the project root with inside:
+
+```text
+STRIPE_PUBLIC_KEY=
+PRETIX_API_TOKEN=
+STRIPE_WEBHOOK_SIGNATURE_SECRET=
+STRIPE_SECRET_API_KEY=
+```
+
+Adding the secret keys after the `=` symbol.
+
+[<img src="https://www.datocms-assets.com/31049/1618983297-powered-by-vercel.svg">](https://vercel.com?utm_source=python-italia&utm_campaign=oss)

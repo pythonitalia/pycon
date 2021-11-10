@@ -1,15 +1,16 @@
 /** @jsxRuntime classic */
-/** @jsx jsx */
 
-import { GetStaticPaths, GetStaticProps } from "next";
-import { useRouter } from "next/router";
+/** @jsx jsx */
 import React, { useCallback, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import { Box, Card, Checkbox, Input, jsx, Label, Select, Text } from "theme-ui";
 import * as yup from "yup";
 
-import { addApolloState } from "~/apollo/client";
+import { GetStaticPaths, GetStaticProps } from "next";
+import { useRouter } from "next/router";
+
+import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Button } from "~/components/button/button";
 import { InputWrapper } from "~/components/input-wrapper";
 import { MetaTags } from "~/components/meta-tags";
@@ -375,12 +376,15 @@ export const EditProfilePage: React.FC = () => {
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const lang = params.lang as string;
+  const client = getApolloClient();
 
-  await Promise.all([prefetchSharedQueries(lang), queryCountries()]);
+  await Promise.all([
+    prefetchSharedQueries(client, lang),
+    queryCountries(client),
+  ]);
 
-  return addApolloState({
+  return addApolloState(client, {
     props: {},
-    revalidate: 1,
   });
 };
 

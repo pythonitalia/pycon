@@ -1,10 +1,12 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
-import { GetStaticPaths, GetStaticProps } from "next";
-import { useRouter } from "next/router";
 import { jsx } from "theme-ui";
 
-import { addApolloState } from "~/apollo/client";
+import { GetStaticPaths, GetStaticProps } from "next";
+import { useRouter } from "next/router";
+
+import { addApolloState, getApolloClient } from "~/apollo/client";
 import { useLoginState } from "~/components/profile/hooks";
 import { TicketsSection } from "~/components/tickets-page/tickets-section";
 import { useCart } from "~/components/tickets-page/use-cart";
@@ -65,19 +67,19 @@ export const TicketsPage = () => {
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const language = params.lang as string;
+  const client = getApolloClient();
 
   await Promise.all([
-    prefetchSharedQueries(language),
-    queryTickets({
+    prefetchSharedQueries(client, language),
+    queryTickets(client, {
       conference: process.env.conferenceCode,
       language,
       isLogged: false,
     }),
   ]);
 
-  return addApolloState({
+  return addApolloState(client, {
     props: {},
-    revalidate: 1,
   });
 };
 

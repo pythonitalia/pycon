@@ -1,12 +1,14 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
-import { GetStaticPaths, GetStaticProps } from "next";
-import { useRouter } from "next/router";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, Heading, jsx, Text } from "theme-ui";
 
-import { addApolloState } from "~/apollo/client";
+import { GetStaticPaths, GetStaticProps } from "next";
+import { useRouter } from "next/router";
+
+import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Alert } from "~/components/alert";
 import { PageLoading } from "~/components/page-loading";
 import { useLoginState } from "~/components/profile/hooks";
@@ -77,10 +79,11 @@ export const OrderConfirmationPage = () => {
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const lang = params.lang as string;
+  const client = getApolloClient();
 
-  await prefetchSharedQueries(lang);
+  await prefetchSharedQueries(client, lang);
 
-  return addApolloState({
+  return addApolloState(client, {
     props: {},
   });
 };

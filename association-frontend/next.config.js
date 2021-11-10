@@ -1,6 +1,9 @@
+const { API_URL, API_URL_SERVER, STRIPE_KEY } = process.env;
+
 module.exports = {
-  publicRuntimeConfig: {
-    stripeKey: process.env.STRIPE_KEY,
-    apiUrl: process.env.API_URL ?? "http://localhost:4000/graphql",
+  env: {
+    API_URL: API_URL,
+    API_URL_SERVER: API_URL_SERVER,
+    STRIPE_KEY: STRIPE_KEY,
   },
 };

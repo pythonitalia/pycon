@@ -1,6 +1,8 @@
-from pythonit_toolkit.api.builder import create_root_type
+from strawberry.tools import create_type
 
 from .mutations.manage_user_subscription import manage_user_subscription
 from .mutations.subscribe_user_to_association import subscribe_user_to_association
 
-Mutation = create_root_type([subscribe_user_to_association, manage_user_subscription])
+Mutation = create_type(
+    "Mutation", [subscribe_user_to_association, manage_user_subscription]
+)

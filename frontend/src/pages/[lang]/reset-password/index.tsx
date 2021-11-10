@@ -1,12 +1,14 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
-import { GetStaticPaths, GetStaticProps } from "next";
 import { useCallback } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import { Box, Heading, Input, jsx } from "theme-ui";
 
-import { addApolloState } from "~/apollo/client";
+import { GetStaticPaths, GetStaticProps } from "next";
+
+import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Alert } from "~/components/alert";
 import { Button } from "~/components/button/button";
 import { InputWrapper } from "~/components/input-wrapper";
@@ -104,10 +106,11 @@ export const RequestResetPasswordPage = () => {
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const lang = params.lang as string;
+  const client = getApolloClient();
 
-  await prefetchSharedQueries(lang);
+  await prefetchSharedQueries(client, lang);
 
-  return addApolloState({
+  return addApolloState(client, {
     props: {},
   });
 };

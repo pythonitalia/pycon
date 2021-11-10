@@ -1,11 +1,13 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
-import { GetStaticPaths, GetStaticProps } from "next";
-import { useRouter } from "next/router";
 import React, { Fragment } from "react";
 import { Box, Flex, Heading, jsx, Text } from "theme-ui";
 
-import { addApolloState } from "~/apollo/client";
+import { GetStaticPaths, GetStaticProps } from "next";
+import { useRouter } from "next/router";
+
+import { addApolloState, getApolloClient } from "~/apollo/client";
 import { CardType, getSize } from "~/helpers/social-card";
 import { queryTalkSocialCard, useTalkSocialCardQuery } from "~/types";
 
@@ -138,15 +140,15 @@ export const SocialCard = () => {
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const slug = params.slug as string;
+  const client = getApolloClient();
 
-  await queryTalkSocialCard({
+  await queryTalkSocialCard(client, {
     code: process.env.conferenceCode,
     slug,
   });
 
-  return addApolloState({
+  return addApolloState(client, {
     props: {},
-    revalidate: 1,
   });
 };
 

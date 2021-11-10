@@ -1,6 +1,6 @@
 /** @jsxRuntime classic */
-/** @jsx jsx */
 
+/** @jsx jsx */
 import React from "react";
 import { jsx } from "theme-ui";
 

@@ -2,6 +2,7 @@ import { buildFederatedSchema } from "@apollo/federation";
 
 import { ClearAuthAction } from "../../actions/clear-auth-action";
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const typeDefs = require("./schema.graphql");
 
 const resolvers = {

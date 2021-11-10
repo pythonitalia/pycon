@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
       - name: Terraform Format
         id: fmt
         run: terraform fmt -check
@@ -27,10 +27,10 @@ jobs:
       run:
         working-directory: ./infrastructure/applications
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
       - uses: hashicorp/setup-terraform@v1
         with:
-          terraform_version: 0.14.4
+          terraform_version: 1.0.4
       - name: Terraform Init
         run: terraform init
         env:
@@ -54,26 +54,15 @@ jobs:
         uses: peter-evans/find-comment@v1
         id: find_comment
         with:
+          token: ${{ secrets.BOT_TOKEN }}
           issue-number: ${{ github.event.pull_request.number }}
-          comment-author: 'github-actions[bot]'
-          body-includes: Terraform
-      - name: Create comment
-        uses: peter-evans/create-or-update-comment@v1
-        if: steps.find_comment.outputs.comment-id == ''
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            # Terraform
-
-            ## Terraform Validation 🤖
-            ${{ steps.validate.outputs.stdout }}
-
-            ## Terraform Plan 📖
-            ${{ steps.plan.outcome }}
-      - name: Update comment
+          comment-author: pythonitaliabot
+          body-includes: "# Terraform"
+      - name: Create or Update comment
         uses: peter-evans/create-or-update-comment@v1
         if: steps.find_comment.outputs.comment-id != ''
         with:
+          token: ${{ secrets.BOT_TOKEN }}
           comment-id: ${{ steps.find_comment.outputs.comment-id }}
           issue-number: ${{ github.event.pull_request.number }}
           edit-mode: replace

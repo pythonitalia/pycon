@@ -1,12 +1,14 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
-import { GetStaticPaths, GetStaticProps } from "next";
-import Error from "next/error";
-import { useRouter } from "next/router";
 import { Fragment } from "react";
 import { Box, jsx } from "theme-ui";
 
-import { addApolloState } from "~/apollo/client";
+import { GetStaticPaths, GetStaticProps } from "next";
+import Error from "next/error";
+import { useRouter } from "next/router";
+
+import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Article } from "~/components/article";
 import { MetaTags } from "~/components/meta-tags";
 import { PageLoading } from "~/components/page-loading";
@@ -56,32 +58,34 @@ export const Page = () => {
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const language = params.lang as string;
   const slug = params.slug as string;
+  const client = getApolloClient();
 
   await Promise.all([
-    prefetchSharedQueries(language),
-    queryPage({
+    prefetchSharedQueries(client, language),
+    queryPage(client, {
       code: process.env.conferenceCode,
       language,
       slug,
     }),
   ]);
 
-  return addApolloState({
+  return addApolloState(client, {
     props: {},
-    revalidate: 1,
   });
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
+  const client = getApolloClient();
+
   const {
     data: { pages: italianPages },
-  } = await queryAllPages({
+  } = await queryAllPages(client, {
     code: process.env.conferenceCode,
     language: "it",
   });
   const {
     data: { pages: englishPages },
-  } = await queryAllPages({
+  } = await queryAllPages(client, {
     code: process.env.conferenceCode,
     language: "en",
   });
@@ -103,7 +107,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
   return {
     paths,
-    fallback: false,
+    fallback: "blocking",
   };
 };
 

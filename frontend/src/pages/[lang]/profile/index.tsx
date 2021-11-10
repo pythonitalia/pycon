@@ -1,12 +1,14 @@
 /** @jsxRuntime classic */
+
 /** @jsx jsx */
-import { GetStaticPaths, GetStaticProps } from "next";
-import Router from "next/router";
 import { Fragment, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
-import { addApolloState } from "~/apollo/client";
+import { GetStaticPaths, GetStaticProps } from "next";
+import Router from "next/router";
+
+import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Alert } from "~/components/alert";
 import { MetaTags } from "~/components/meta-tags";
 import { PageLoading } from "~/components/page-loading";
@@ -23,7 +25,11 @@ export const MyProfilePage = () => {
   const [loggedIn, setLoginState] = useLoginState();
   const lang = useCurrentLanguage();
 
-  const { loading, error, data: profileData } = useMyProfileQuery({
+  const {
+    loading,
+    error,
+    data: profileData,
+  } = useMyProfileQuery({
     skip: !loggedIn,
     variables: {
       conference: process.env.conferenceCode,
@@ -91,12 +97,15 @@ export const MyProfilePage = () => {
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const lang = params.lang as string;
+  const client = getApolloClient();
 
-  await Promise.all([prefetchSharedQueries(lang), queryCountries()]);
+  await Promise.all([
+    prefetchSharedQueries(client, lang),
+    queryCountries(client),
+  ]);
 
-  return addApolloState({
+  return addApolloState(client, {
     props: {},
-    revalidate: 1,
   });
 };
 

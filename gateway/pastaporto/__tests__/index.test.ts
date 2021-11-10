@@ -1,4 +1,4 @@
-import { createRefreshToken, createIdentityToken } from "../identity";
+import { createIdentityToken, createRefreshToken } from "../identity";
 import { canRefreshIdentity, createPastaporto } from "../index";
 import { fetchUserInfo } from "../user-info";
 

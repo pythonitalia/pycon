@@ -8,7 +8,9 @@
     "start": "next start",
     "codegen": "graphql-codegen -r dotenv/config -c codegen.yml",
     "codegen:watch": "yarn codegen --watch",
-    "lint": "eslint src",
+    "lint": "eslint src --ext .jsx,.js,.tsx,.ts",
+    "lint:ts": "tsc --noemit",
+    "lint:prettier": "prettier --check src/**/*",
     "test": "exit 0"
   },
   "dependencies": {
@@ -19,7 +21,6 @@
     "next": "^11.0.1",
     "next-urql": "^3.0.1",
     "postcss": "^8.2.9",
-    "prettier": "^2.3.2",
     "react": "17.0.1",
     "react-dom": "17.0.1",
     "react-is": "^17.0.2",
@@ -35,17 +36,16 @@
     "@graphql-codegen/typescript-operations": "^1.17.14",
     "@graphql-codegen/typescript-react-apollo": "^2.2.1",
     "@graphql-codegen/typescript-urql": "^2.0.3",
-    "@trivago/prettier-plugin-sort-imports": "^1.4.1",
+    "@python-italia/eslint-config": "^1.0.13",
+    "@testing-library/dom": "^8.1.0",
+    "@testing-library/user-event": "^13.2.1",
+    "@trivago/prettier-plugin-sort-imports": "^2.0.2",
     "@types/jest": "^26.0.20",
     "@types/node": "^14.14.22",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
-    "@typescript-eslint/eslint-plugin": "^4.28.2",
     "common-tags": "^1.8.0",
-    "eslint": "^7.30.0",
-    "eslint-config-next": "^11.0.1",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-simple-import-sort": "^7.0.0",
+    "prettier": "^2.4.1",
     "typescript": "^4.3.5"
   }
 }
