@@ -5,6 +5,11 @@ from pythonit_toolkit.headers import SERVICE_JWT_HEADER
 from pythonit_toolkit.pastaporto.tokens import generate_token
 
 
+class ServiceResponse:
+    errors: Optional[Dict[str, Any]]
+    data: Optional[Dict[str, Any]]
+
+
 class ServiceClient:
     def __init__(
         self,
@@ -37,4 +42,4 @@ class ServiceClient:
             )
 
             data = await response.json()
-            return data
+            return ServiceResponse(errors=data.get("errors"), data=data.get("data"))
