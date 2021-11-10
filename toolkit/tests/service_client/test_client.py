@@ -34,6 +34,6 @@ async def _():
             jwt_secret="mysecret",
         )
 
-        response = await cleint.execute(document=query)
+        response = await client.execute(document=query)
 
         assert response.data == {"users": [{"id": 1}]}
