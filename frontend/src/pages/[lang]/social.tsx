@@ -19,7 +19,7 @@ const getDays = ({ start, end }: { start: string; end: string }) => {
   const startDate = new Date(start);
   const endDate = new Date(end);
 
-  return `${startDate.getDate()} - ${endDate.getDate()}`;
+  return `${startDate.getUTCDate()} - ${endDate.getUTCDate()}`;
 };
 
 const getMonth = ({ end }: { end: string }, language: Language) => {
@@ -153,7 +153,7 @@ export const SocialPage = () => {
   );
 };
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getStaticProps: GetStaticProps = async () => {
   const client = getApolloClient();
 
   await querySocialCard(client, {
