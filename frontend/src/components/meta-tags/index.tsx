@@ -21,7 +21,7 @@ export const MetaTags: React.SFC<Props> = ({
   const language = useCurrentLanguage();
   const { asPath } = useRouter();
   const socialCard = useDefaultSocialCard
-    ? `${process.env.NEXT_PUBLIC_SOCIAL_CARD_SERVICE}?url=${process.env.NEXT_PUBLIC_SITE_URL}en`
+    ? `${process.env.NEXT_PUBLIC_SOCIAL_CARD_SERVICE}?url=${process.env.NEXT_PUBLIC_SITE_URL}en/social`
     : `${process.env.NEXT_PUBLIC_SOCIAL_CARD_SERVICE}?url=${
         process.env.NEXT_PUBLIC_SITE_URL
       }${asPath.substr(1)}/social`;
