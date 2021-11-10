@@ -16,6 +16,7 @@ import { Link } from "~/components/link";
 import { MapWithLink } from "~/components/map-with-link";
 import { Marquee } from "~/components/marquee";
 import { MetaTags } from "~/components/meta-tags";
+import { NewsletterSection } from "~/components/newsletter";
 import { SponsorsSection } from "~/components/sponsors-section";
 import { YouTubeLite } from "~/components/youtube-lite";
 import { formatDeadlineDate, formatDeadlineTime } from "~/helpers/deadlines";
@@ -26,7 +27,6 @@ import {
   queryKeynotesSection,
   useIndexPageQuery,
 } from "~/types";
-import { NewsletterSection } from "~/components/newsletter";
 
 export const HomePage = () => {
   const language = useCurrentLanguage();
@@ -285,10 +285,10 @@ export const HomePage = () => {
           mx: "auto",
         }}
       >
-      <Box sx={{ py: 5, pr: [0, 4],  }}>
+        <Box sx={{ py: 5, pr: [0, 4] }}>
           <NewsletterSection />
         </Box>
-        </Grid>
+      </Grid>
     </Fragment>
   );
 };
