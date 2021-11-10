@@ -80,7 +80,6 @@ export const HomePage = () => {
           maxWidth: "container",
           mx: "auto",
           gridTemplateColumns: [null, null, "10fr 2fr 9fr"],
-          display: "none",
         }}
       >
         <Box sx={{ mb: [4, 4, 0] }}>
@@ -99,12 +98,12 @@ export const HomePage = () => {
           </Box>
         </Box>
 
-        <Box sx={{ gridColumnStart: [null, null, 3] }}>
-          <Heading as="h1" sx={{ mb: 3 }}>
-            {conference.votingTitle}
-          </Heading>
+        {conference.cfpDeadline && (
+          <Box sx={{ gridColumnStart: [null, null, 3] }}>
+            <Heading as="h1" sx={{ mb: 3 }}>
+              {conference.cfpTitle}
+            </Heading>
 
-          {conference.votingDeadline && (
             <Box
               sx={{
                 border: "primary",
@@ -127,16 +126,10 @@ export const HomePage = () => {
                   <FormattedMessage id="home.deadline.begins" />
                 </Heading>
                 <Box>
-                  {formatDeadlineDate(
-                    conference.votingDeadline.start,
-                    language,
-                  )}
+                  {formatDeadlineDate(conference.cfpDeadline.start, language)}
                 </Box>
                 <Box sx={{ fontSize: 0 }}>
-                  {formatDeadlineTime(
-                    conference.votingDeadline.start,
-                    language,
-                  )}
+                  {formatDeadlineTime(conference.cfpDeadline.start, language)}
                 </Box>
               </Box>
               <Box sx={{ flex: 1, p: 3, textAlign: "center" }}>
@@ -144,27 +137,27 @@ export const HomePage = () => {
                   <FormattedMessage id="home.deadline.deadline" />
                 </Heading>
                 <Box>
-                  {formatDeadlineDate(conference.votingDeadline.end, language)}
+                  {formatDeadlineDate(conference.cfpDeadline.end, language)}
                 </Box>
                 <Box sx={{ fontSize: 0 }}>
-                  {formatDeadlineTime(conference.votingDeadline.end, language)}
+                  {formatDeadlineTime(conference.cfpDeadline.end, language)}
                 </Box>
               </Box>
             </Box>
-          )}
 
-          <Heading as="h2" sx={{ color: "yellow", fontSize: 3, mb: 3 }}>
-            {conference.votingSubtitle}
-          </Heading>
+            <Heading as="h2" sx={{ color: "yellow", fontSize: 3, mb: 3 }}>
+              {conference.cfpSubtitle}
+            </Heading>
 
-          <Text as="p" sx={{ mb: 4 }}>
-            {conference.votingText}
-          </Text>
+            <Text as="p" sx={{ mb: 4 }}>
+              {conference.cfpText}
+            </Text>
 
-          <Link path="/[lang]/voting" variant="arrow-button">
+            {/* <Link path="/[lang]/voting" variant="arrow-button">
             <FormattedMessage id="home.voting.vote" />
-          </Link>
-        </Box>
+          </Link> */}
+          </Box>
+        )}
       </Grid>
 
       {conference.events.length > 0 && (
