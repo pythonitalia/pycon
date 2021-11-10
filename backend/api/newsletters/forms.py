@@ -1,6 +1,7 @@
 from django import forms
 from newsletters.models import Subscription
 from strawberry_forms.forms import FormWithContext
+from newsletters.mailchimp import subscribe
 
 
 class SubscribeToNewsletterForm(FormWithContext):
@@ -8,9 +9,8 @@ class SubscribeToNewsletterForm(FormWithContext):
 
     def save(self):
         email = self.cleaned_data.get("email")
-        subscription, _ = Subscription.objects.get_or_create(email=email)
 
-        return subscription
+        return subscribe(email)
 
 
 class UnsubscribeToNewsletterForm(FormWithContext):

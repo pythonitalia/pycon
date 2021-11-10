@@ -11,6 +11,8 @@ x-defaults:
     API_URL_SERVER: http://gateway:4000/graphql
     # Stripe
     STRIPE_SUBSCRIPTION_PRICE_ID: price_1IkVzxD5MZ3GejSORRBZCvK6
+    # Mailchimp
+    MAILCHIMP_LIST_ID: "12345abcdf89"
     # URLs
     ASSOCIATION_FRONTEND_URL: http://localhost:3020
     # Secrets
@@ -18,6 +20,7 @@ x-defaults:
     IDENTITY_SECRET: identity-secret
     SERVICE_TO_SERVICE_SECRET: service-to-service-secret
     PASTAPORTO_ACTION_SECRET: pastaporto-action-secret
+    MAILCHIMP_SECRET_KEY: mailchimp-secret
     # Services URLs
     PYCON_BACKEND_SERVICE: http://pycon-backend:8000
     USERS_SERVICE: http://users-backend:8050
