@@ -4,13 +4,15 @@
 import { Fragment } from "react";
 import { Box, Flex, Heading, jsx } from "theme-ui";
 
+import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 
+import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Logo } from "~/components/logo";
 import { CardType, getSize } from "~/helpers/social-card";
 import { useCurrentLanguage } from "~/locale/context";
 import { Language } from "~/locale/languages";
-import { useSocialCardQuery } from "~/types";
+import { querySocialCard, useSocialCardQuery } from "~/types";
 
 const getDays = ({ start, end }: { start: string; end: string }) => {
   // assuming the same month
@@ -150,5 +152,23 @@ export const SocialPage = () => {
     </Fragment>
   );
 };
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const client = getApolloClient();
+
+  await querySocialCard(client, {
+    code: process.env.conferenceCode,
+  });
+
+  return addApolloState(client, {
+    props: {},
+  });
+};
+
+export const getStaticPaths: GetStaticPaths = async () =>
+  Promise.resolve({
+    paths: [],
+    fallback: "blocking",
+  });
 
 export default SocialPage;
