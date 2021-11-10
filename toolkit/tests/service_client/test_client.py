@@ -23,14 +23,10 @@ async def _():
             }
         }
     """
-    mock_data = [
-        {
-            "id": 1,
-        },
-    ]
+    mock_response = {"data": {"users": [{"id": 1}]}}
 
     with patch("httpx.AsyncClient.post") as post_mock:
-        post_mock.return_value = MockResponse(mock_data)
+        post_mock.return_value = MockResponse(mock_response)
         cleint = ServiceClient(
             url="http://localhost:8050",
             issuer="pycon",
@@ -40,4 +36,4 @@ async def _():
 
         response = await cleint.execute(document=query)
 
-        assert response == mock_data
+        assert response.data == {"users": [{"id": 1}]}

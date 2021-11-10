@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from typing import Any, Dict, Optional
 
 import httpx
@@ -5,6 +6,7 @@ from pythonit_toolkit.headers import SERVICE_JWT_HEADER
 from pythonit_toolkit.pastaporto.tokens import generate_token
 
 
+@dataclass
 class ServiceResponse:
     errors: Optional[Dict[str, Any]]
     data: Optional[Dict[str, Any]]
