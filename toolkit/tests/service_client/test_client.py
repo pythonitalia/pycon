@@ -27,7 +27,7 @@ async def _():
 
     with patch("httpx.AsyncClient.post") as post_mock:
         post_mock.return_value = MockResponse(return_value=mock_response)
-        cleint = ServiceClient(
+        client = ServiceClient(
             url="http://localhost:8050",
             issuer="pycon",
             audience="users-service",
