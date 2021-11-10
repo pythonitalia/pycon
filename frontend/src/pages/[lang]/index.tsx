@@ -26,6 +26,7 @@ import {
   queryKeynotesSection,
   useIndexPageQuery,
 } from "~/types";
+import { NewsletterSection } from "~/components/newsletter";
 
 export const HomePage = () => {
   const language = useCurrentLanguage();
@@ -275,6 +276,19 @@ export const HomePage = () => {
           </Box>
         </Box>
       </Grid>
+
+      <Grid
+        columns={[1, 2]}
+        sx={{
+          px: 3,
+          maxWidth: "container",
+          mx: "auto",
+        }}
+      >
+      <Box sx={{ py: 5, pr: [0, 4],  }}>
+          <NewsletterSection />
+        </Box>
+        </Grid>
     </Fragment>
   );
 };

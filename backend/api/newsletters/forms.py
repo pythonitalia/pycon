@@ -1,7 +1,7 @@
 from django import forms
 from newsletters.models import Subscription
 from strawberry_forms.forms import FormWithContext
-from newsletters.mailchimp import subscribe
+from api.newsletters.mailchimp import subscribe
 
 
 class SubscribeToNewsletterForm(FormWithContext):
