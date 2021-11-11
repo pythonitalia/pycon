@@ -25,6 +25,10 @@ class ServiceClient:
         self.audience = audience
         self.jwt_secret = jwt_secret
 
+        for arg in ("url", "issuer", "audience", "jwt_secret"):
+            if not getattr(self, arg):
+                raise ValueError(f"Argument '{arg}' can't be empty")
+
     async def execute(
         self,
         document: str,
