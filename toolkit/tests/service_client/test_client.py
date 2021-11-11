@@ -1,23 +1,7 @@
-from dataclasses import dataclass
-from typing import Any, Optional, Type
-from unittest.mock import patch
+from unittest.mock import AsyncMock, patch
 
 from pythonit_toolkit.api.service_client import ServiceClient
 from ward import raises, test
-
-
-@dataclass
-class MockResponse:
-    return_value: Optional[Any] = None
-    side_effect: Optional[Type] = None
-
-    async def json(self):
-        return self.return_value
-
-    def raise_for_status(self):
-        if self.side_effect:
-            raise self.side_effect
-        return True
 
 
 @test("execute a query")
@@ -32,7 +16,9 @@ async def _():
     mock_response = {"data": {"users": [{"id": 1}]}}
 
     with patch("httpx.AsyncClient.post") as post_mock:
-        post_mock.return_value = MockResponse(return_value=mock_response)
+        post_mock.return_value = AsyncMock()
+        post_mock.return_value.json.return_value = mock_response
+
         client = ServiceClient(
             url="http://localhost:8050",
             issuer="pycon",
@@ -49,9 +35,8 @@ async def _():
 async def _():
 
     with raises(Exception), patch("httpx.AsyncClient.post") as post_mock:
-        post_mock.return_value = MockResponse(
-            side_effect=Exception("Something went wrong")
-        )
+        post_mock.return_value = AsyncMock()
+        post_mock.return_value.json.side_effect = Exception("Something went wrong")
 
         client = ServiceClient(
             url="http://localhost:8050",
