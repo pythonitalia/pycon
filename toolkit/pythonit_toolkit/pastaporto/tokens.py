@@ -1,8 +1,7 @@
-import datetime
+from datetime import datetime, timedelta, timezone
 from typing import Any
 
 import jwt
-import timezone
 
 
 def decode_pastaporto(token: str, secret: str) -> dict[str, Any]:
@@ -36,8 +35,7 @@ def generate_service_to_service_token(secret, issuer: str, audience: str):
         {
             "iss": issuer,
             "aud": audience,
-            "exp": datetime.datetime.now(tz=timezone.utc)
-            + datetime.timedelta(seconds=30),
+            "exp": datetime.now(tz=timezone.utc) + timedelta(seconds=30),
         },
         secret,
         algorithm="HS256",
