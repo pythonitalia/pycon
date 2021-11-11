@@ -26,9 +26,7 @@ def decode_service_to_service_token(
     )
 
 
-def generate_service_to_service_token(
-    secret, issuer: str, audience: str, expires_in: str = "1m"
-):
+def generate_service_to_service_token(secret, issuer: str, audience: str):
     if not secret:
         raise ValueError("Secret can not be empty")
 
@@ -36,7 +34,7 @@ def generate_service_to_service_token(
         {
             "issuer": issuer,
             "audience": audience,
-            "expires_in": expires_in,
+            "expires_in": "1m",
         },
         secret,
         algorithm="HS256",

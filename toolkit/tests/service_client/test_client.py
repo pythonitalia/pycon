@@ -20,29 +20,29 @@ class MockResponse:
         return True
 
 
-# @test("execute a query")
-# async def _():
-#     query = """
-#         query{
-#             users {
-#                 id
-#             }
-#         }
-#     """
-#     mock_response = {"data": {"users": [{"id": 1}]}}
+@test("execute a query")
+async def _():
+    query = """
+        query{
+            users {
+                id
+            }
+        }
+    """
+    mock_response = {"data": {"users": [{"id": 1}]}}
 
-#     with patch("httpx.AsyncClient.post") as post_mock:
-#         post_mock.return_value = MockResponse(return_value=mock_response)
-#         client = ServiceClient(
-#             url="http://localhost:8050",
-#             issuer="pycon",
-#             audience="users-service",
-#             jwt_secret="mysecret",
-#         )
+    with patch("httpx.AsyncClient.post") as post_mock:
+        post_mock.return_value = MockResponse(return_value=mock_response)
+        client = ServiceClient(
+            url="http://localhost:8050",
+            issuer="pycon",
+            audience="users-service",
+            jwt_secret="mysecret",
+        )
 
-#         response = await client.execute(document=query)
+        response = await client.execute(document=query)
 
-#         assert response.data == {"users": [{"id": 1}]}
+        assert response.data == {"users": [{"id": 1}]}
 
 
 @test("raise Exception")
