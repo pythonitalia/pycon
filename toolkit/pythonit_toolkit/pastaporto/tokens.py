@@ -26,7 +26,12 @@ def decode_service_to_service_token(
     )
 
 
-def generate_token(secret, issuer: str, audience: str, expires_in: str = "1m"):
+def generate_service_to_service_token(
+    secret, issuer: str, audience: str, expires_in: str = "1m"
+):
+    if not secret:
+        raise ValueError("Secret can not be empty")
+
     return jwt.encode(
         {
             "issuer": issuer,

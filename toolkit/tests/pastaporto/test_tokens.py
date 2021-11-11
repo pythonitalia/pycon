@@ -1,7 +1,10 @@
 from datetime import datetime, timedelta, timezone
 
 import jwt
-from pythonit_toolkit.pastaporto.tokens import decode_service_to_service_token
+from pythonit_toolkit.pastaporto.tokens import (
+    decode_service_to_service_token,
+    generate_service_to_service_token,
+)
 from ward import raises, test
 
 
@@ -72,3 +75,22 @@ async def _():
         decode_service_to_service_token(
             test_token, "secret", issuer="test", audience="association-backend"
         )
+
+
+@test("generate a token")
+async def _():
+    token = generate_service_to_service_token("secret", issuer="me", audience="you")
+
+    assert (
+        token
+        == "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3N1ZXIiOiJtZSIsImF1ZGllbmNlIjoieW91IiwiZXhwaXJlc19pbiI6IjFtIn0.ZXNfbPE8osJRQU4ZCH3CWSm0bZyUukBzy6rkResdTYQ"
+    )
+
+
+@test("raise ValueError if secret is empty")
+async def _():
+
+    with raises(ValueError) as exc:
+        generate_service_to_service_token("", issuer="me", audience="you")
+
+    assert str(exc.raised) == "Secret can not be empty"

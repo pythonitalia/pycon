@@ -3,7 +3,7 @@ from typing import Any, Dict, Optional
 
 import httpx
 from pythonit_toolkit.headers import SERVICE_JWT_HEADER
-from pythonit_toolkit.pastaporto.tokens import generate_token
+from pythonit_toolkit.pastaporto.tokens import generate_service_to_service_token
 
 
 @dataclass
@@ -34,7 +34,7 @@ class ServiceClient:
         document: str,
         variables: Optional[Dict[str, Any]] = None,
     ):
-        token = generate_token(
+        token = generate_service_to_service_token(
             self.jwt_secret, issuer=self.issuer, audience=self.audience
         )
 
@@ -46,6 +46,8 @@ class ServiceClient:
                     SERVICE_JWT_HEADER: token,
                 },
             )
+
+            response.raise_for_status()
 
             data = await response.json()
             return ServiceResponse(errors=data.get("errors"), data=data.get("data"))

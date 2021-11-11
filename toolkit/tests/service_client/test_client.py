@@ -13,6 +13,9 @@ class MockResponse:
     async def json(self):
         return self.return_value
 
+    def raise_for_status(self):
+        return True
+
 
 @test("execute a query")
 async def _():
@@ -37,3 +40,8 @@ async def _():
         response = await client.execute(document=query)
 
         assert response.data == {"users": [{"id": 1}]}
+
+
+@test("raise ValueError if arguments are empty")
+async def _():
+    pass
