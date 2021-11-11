@@ -34,8 +34,8 @@ def generate_service_to_service_token(secret, issuer: str, audience: str):
 
     return jwt.encode(
         {
-            "issuer": issuer,
-            "audience": audience,
+            "iss": issuer,
+            "aud": audience,
             "exp": datetime.datetime.now(tz=timezone.utc)
             + datetime.timedelta(seconds=30),
         },
