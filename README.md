@@ -5,7 +5,7 @@
 # PyCon Italia website
 
 > The monorepo for the new PyCon Italia website, based on Django, Strawberry,
-> NextJS and React.
+> Next.js and React.
 
 ## How to setup
 
@@ -46,3 +46,5 @@ STRIPE_SECRET_API_KEY=
 ```
 
 Adding the secret keys after the `=` symbol.
+
+[<img src="https://www.datocms-assets.com/31049/1618983297-powered-by-vercel.svg">](https://vercel.com?utm_source=python-italia&utm_campaign=oss)

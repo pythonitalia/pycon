@@ -3,16 +3,17 @@
 /** @jsx jsx */
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
-import { Box, Grid, Heading, jsx, Text } from "theme-ui";
+import { Box, Grid, Heading, jsx, Text, Flex } from "theme-ui";
 
 import { GetStaticPaths, GetStaticProps } from "next";
 
-import { addApolloState } from "~/apollo/client";
+import { addApolloState, getApolloClient } from "~/apollo/client";
 import { GridSlider } from "~/components/grid-slider";
 import { EventCard } from "~/components/home-events/event-card";
 import { HomepageHero } from "~/components/homepage-hero";
 import { KeynotersSection } from "~/components/keynoters-section";
 import { Link } from "~/components/link";
+import { MapWithLink } from "~/components/map-with-link";
 import { Marquee } from "~/components/marquee";
 import { MetaTags } from "~/components/meta-tags";
 import { SponsorsSection } from "~/components/sponsors-section";
@@ -79,7 +80,6 @@ export const HomePage = () => {
           maxWidth: "container",
           mx: "auto",
           gridTemplateColumns: [null, null, "10fr 2fr 9fr"],
-          display: "none",
         }}
       >
         <Box sx={{ mb: [4, 4, 0] }}>
@@ -98,12 +98,12 @@ export const HomePage = () => {
           </Box>
         </Box>
 
-        <Box sx={{ gridColumnStart: [null, null, 3] }}>
-          <Heading as="h1" sx={{ mb: 3 }}>
-            {conference.votingTitle}
-          </Heading>
+        {conference.cfpDeadline && (
+          <Box sx={{ gridColumnStart: [null, null, 3] }}>
+            <Heading as="h1" sx={{ mb: 3 }}>
+              {conference.cfpTitle}
+            </Heading>
 
-          {conference.votingDeadline && (
             <Box
               sx={{
                 border: "primary",
@@ -126,16 +126,10 @@ export const HomePage = () => {
                   <FormattedMessage id="home.deadline.begins" />
                 </Heading>
                 <Box>
-                  {formatDeadlineDate(
-                    conference.votingDeadline.start,
-                    language,
-                  )}
+                  {formatDeadlineDate(conference.cfpDeadline.start, language)}
                 </Box>
                 <Box sx={{ fontSize: 0 }}>
-                  {formatDeadlineTime(
-                    conference.votingDeadline.start,
-                    language,
-                  )}
+                  {formatDeadlineTime(conference.cfpDeadline.start, language)}
                 </Box>
               </Box>
               <Box sx={{ flex: 1, p: 3, textAlign: "center" }}>
@@ -143,27 +137,27 @@ export const HomePage = () => {
                   <FormattedMessage id="home.deadline.deadline" />
                 </Heading>
                 <Box>
-                  {formatDeadlineDate(conference.votingDeadline.end, language)}
+                  {formatDeadlineDate(conference.cfpDeadline.end, language)}
                 </Box>
                 <Box sx={{ fontSize: 0 }}>
-                  {formatDeadlineTime(conference.votingDeadline.end, language)}
+                  {formatDeadlineTime(conference.cfpDeadline.end, language)}
                 </Box>
               </Box>
             </Box>
-          )}
 
-          <Heading as="h2" sx={{ color: "yellow", fontSize: 3, mb: 3 }}>
-            {conference.votingSubtitle}
-          </Heading>
+            <Heading as="h2" sx={{ color: "yellow", fontSize: 3, mb: 3 }}>
+              {conference.cfpSubtitle}
+            </Heading>
 
-          <Text as="p" sx={{ mb: 4 }}>
-            {conference.votingText}
-          </Text>
+            <Text as="p" sx={{ mb: 4 }}>
+              {conference.cfpText}
+            </Text>
 
-          <Link path="/[lang]/voting" variant="arrow-button">
+            {/* <Link path="/[lang]/voting" variant="arrow-button">
             <FormattedMessage id="home.voting.vote" />
-          </Link>
-        </Box>
+          </Link> */}
+          </Box>
+        )}
       </Grid>
 
       {conference.events.length > 0 && (
@@ -173,6 +167,60 @@ export const HomePage = () => {
           Component={EventCard}
         />
       )}
+
+      <Box
+        sx={{
+          borderBottom: "primary",
+        }}
+      >
+        <Grid
+          sx={{
+            py: 5,
+            px: 3,
+
+            gridTemplateColumns: [null, null, "8fr 2fr 10fr"],
+
+            maxWidth: "container",
+            mx: "auto",
+          }}
+        >
+          <Flex
+            sx={{
+              flexDirection: "column",
+              justifyContent: "center",
+            }}
+          >
+            <Heading as="h1">
+              <FormattedMessage id="home.gettingThere" />
+            </Heading>
+            <Text
+              sx={{
+                mt: 4,
+                mb: 3,
+              }}
+              as="p"
+            >
+              {conference.gettingThereText}
+            </Text>
+
+            <Box>
+              <Link
+                target="_blank"
+                variant="arrow-button"
+                path={conference.map!.link!}
+              >
+                <FormattedMessage id="home.findRoute" />
+              </Link>
+            </Box>
+          </Flex>
+
+          <MapWithLink
+            sx={{
+              gridColumnStart: [null, null, 3],
+            }}
+          />
+        </Grid>
+      </Box>
 
       {conference.sponsorsByLevel.length > 0 && (
         <Fragment>
@@ -233,21 +281,21 @@ export const HomePage = () => {
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const language = params.lang as string;
+  const client = getApolloClient();
 
   await Promise.all([
-    prefetchSharedQueries(language),
-    queryKeynotesSection({
+    prefetchSharedQueries(client, language),
+    queryKeynotesSection(client, {
       code: process.env.conferenceCode,
     }),
-    queryIndexPage({
+    queryIndexPage(client, {
       language,
       code: process.env.conferenceCode,
     }),
   ]);
 
-  return addApolloState({
+  return addApolloState(client, {
     props: {},
-    revalidate: 1,
   });
 };
 

@@ -1,0 +1,26 @@
+pycon-frontend:
+- frontend/*
+
+pycon-backend:
+- backend/*
+
+association-backend:
+- association-backend/*
+
+association-frontend:
+- association-frontend/*
+
+users-backend:
+- users-backend/*
+
+gateway:
+- gateway/*
+
+infrastructure:
+- infrastructure/*
+
+🐙 github:
+- .github/*
+
+🔨toolkit:
+- toolkit/*

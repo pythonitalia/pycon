@@ -69,19 +69,21 @@ const link = ApolloLink.from([errorLink, httpLink]);
 
 let cachedClient: ApolloClient<any> | null = null;
 
+const createClient = () => {
+  return new ApolloClient({
+    ssrMode: typeof window === "undefined",
+    link,
+    cache: new InMemoryCache({
+      possibleTypes: introspectionQueryResultData.possibleTypes,
+    }),
+  });
+};
+
 export const getApolloClient = (initialState = null) => {
-  if (cachedClient === null) {
-    cachedClient = new ApolloClient({
-      ssrMode: typeof window === "undefined",
-      link,
-      cache: new InMemoryCache({
-        possibleTypes: introspectionQueryResultData.possibleTypes,
-      }),
-    });
-  }
+  const client = cachedClient ?? createClient();
 
   if (initialState) {
-    const existingCache = cachedClient.extract();
+    const existingCache = client.extract();
     const data = merge(initialState, existingCache, {
       // combine arrays using object equality (like in sets)
       arrayMerge: (destinationArray, sourceArray) => [
@@ -93,16 +95,26 @@ export const getApolloClient = (initialState = null) => {
     });
 
     // Restore the cache with the merged data
-    cachedClient.cache.restore(data);
+    client.cache.restore(data);
   }
 
+  if (typeof window === "undefined") {
+    return client;
+  }
+
+  if (!cachedClient) {
+    cachedClient = client;
+  }
   return cachedClient;
 };
 
-export function addApolloState(pageProps) {
+export function addApolloState(client, pageProps) {
   if (pageProps?.props) {
-    pageProps.props[APOLLO_STATE_PROP_NAME] = getApolloClient().cache.extract();
+    pageProps.props[APOLLO_STATE_PROP_NAME] = client.cache.extract();
   }
 
-  return pageProps;
+  return {
+    ...pageProps,
+    revalidate: 30,
+  };
 }
