@@ -56,6 +56,6 @@ class ServiceClient:
             errors = data.get("errors", None)
 
             if errors:
-                return ServiceError(errors)
+                raise ServiceError(errors)
 
             return ServiceResponse(data=data.get("data"))
