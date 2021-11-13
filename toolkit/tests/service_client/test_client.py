@@ -21,8 +21,8 @@ async def _():
 
         client = ServiceClient(
             url="http://localhost:8050",
-            issuer="pycon",
-            audience="users-service",
+            caller="pycon",
+            service_name="users-service",
             jwt_secret="mysecret",
         )
 
@@ -40,8 +40,8 @@ async def _():
 
         client = ServiceClient(
             url="http://localhost:8050",
-            issuer="pycon",
-            audience="users-service",
+            caller="pycon",
+            service_name="users-service",
             jwt_secret="mysecret",
         )
 
@@ -55,38 +55,38 @@ def _():
     with raises(ValueError) as exc:
         ServiceClient(
             url="",
-            issuer="pycon",
-            audience="users-service",
+            caller="pycon",
+            service_name="users-service",
             jwt_secret="mysecret",
         )
 
     assert str(exc.raised) == "Argument 'url' can't be empty"
 
 
-@test("raise ValueError if issuer is empty")
+@test("raise ValueError if caller is empty")
 def _():
     with raises(ValueError) as exc:
         ServiceClient(
             url="http://localhost:8050",
-            issuer="",
-            audience="users-service",
+            caller="",
+            service_name="users-service",
             jwt_secret="mysecret",
         )
 
-    assert str(exc.raised) == "Argument 'issuer' can't be empty"
+    assert str(exc.raised) == "Argument 'caller' can't be empty"
 
 
-@test("raise ValueError if audience is empty")
+@test("raise ValueError if service_name is empty")
 def _():
     with raises(ValueError) as exc:
         ServiceClient(
             url="http://localhost:8050",
-            issuer="pycon",
-            audience="",
+            caller="pycon",
+            service_name="",
             jwt_secret="mysecret",
         )
 
-    assert str(exc.raised) == "Argument 'audience' can't be empty"
+    assert str(exc.raised) == "Argument 'service_name' can't be empty"
 
 
 @test("raise ValueError if jwt_secret is empty")
@@ -94,8 +94,8 @@ def _():
     with raises(ValueError) as exc:
         ServiceClient(
             url="http://localhost:8050",
-            issuer="pycon",
-            audience="users-service",
+            caller="pycon",
+            service_name="users-service",
             jwt_secret="",
         )
 

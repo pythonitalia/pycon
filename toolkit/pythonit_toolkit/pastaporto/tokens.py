@@ -27,14 +27,14 @@ def decode_service_to_service_token(
     )
 
 
-def generate_service_to_service_token(secret: str, issuer: str, audience: str):
+def generate_service_to_service_token(secret: str, caller: str, service_name: str):
     if not secret:
         raise ValueError("Secret can not be empty")
 
     return jwt.encode(
         {
-            "iss": issuer,
-            "aud": audience,
+            "iss": caller,
+            "aud": service_name,
             "exp": datetime.now(tz=timezone.utc) + timedelta(seconds=30),
         },
         str(secret),

@@ -20,16 +20,16 @@ class ServiceClient:
     def __init__(
         self,
         url: str,
-        issuer: str,
-        audience: str,
+        caller: str,
+        service_name: str,
         jwt_secret: str,
     ):
         self.url = url
-        self.issuer = issuer
-        self.audience = audience
+        self.caller = caller
+        self.service_name = service_name
         self.jwt_secret = jwt_secret
 
-        for arg in ("url", "issuer", "audience", "jwt_secret"):
+        for arg in ("url", "caller", "service_name", "jwt_secret"):
             if not getattr(self, arg):
                 raise ValueError(f"Argument '{arg}' can't be empty")
 
@@ -39,7 +39,7 @@ class ServiceClient:
         variables: Optional[Dict[str, Any]] = None,
     ) -> Union[ServiceError, ServiceResponse]:
         token = generate_service_to_service_token(
-            self.jwt_secret, issuer=self.issuer, audience=self.audience
+            self.jwt_secret, caller=self.caller, service_name=self.service_name
         )
 
         async with httpx.AsyncClient() as client:
