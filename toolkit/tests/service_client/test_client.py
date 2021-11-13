@@ -50,7 +50,7 @@ async def _():
         assert response.errors == ["Something went wrong"]
 
 
-@test("raise ValueError if url is empty")
+@test("url is required when creating the ServiceClient instance")
 def _():
     with raises(ValueError) as exc:
         ServiceClient(
@@ -63,7 +63,7 @@ def _():
     assert str(exc.raised) == "Argument 'url' can't be empty"
 
 
-@test("raise ValueError if caller is empty")
+@test("caller is required when creating the ServiceClient instance")
 def _():
     with raises(ValueError) as exc:
         ServiceClient(
@@ -76,7 +76,7 @@ def _():
     assert str(exc.raised) == "Argument 'caller' can't be empty"
 
 
-@test("raise ValueError if service_name is empty")
+@test("service_name is required when creating the ServiceClient instance")
 def _():
     with raises(ValueError) as exc:
         ServiceClient(
@@ -89,7 +89,7 @@ def _():
     assert str(exc.raised) == "Argument 'service_name' can't be empty"
 
 
-@test("raise ValueError if jwt_secret is empty")
+@test("jwt_secret is required when creating the ServiceClient instance")
 def _():
     with raises(ValueError) as exc:
         ServiceClient(

@@ -78,7 +78,7 @@ async def _():
         )
 
 
-@test("generate a token")
+@test("Generate a service to service token")
 async def _():
     with time_machine.travel("2021-11-13 18:41:10", tick=False):
 
@@ -90,7 +90,7 @@ async def _():
         )
 
 
-@test("raise ValueError if secret is empty")
+@test("Secret is required when creating a service-to-service token")
 async def _():
 
     with raises(ValueError) as exc:
