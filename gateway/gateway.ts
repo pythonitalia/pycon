@@ -5,10 +5,8 @@ import {
 } from "@apollo/gateway";
 
 import { getPastaportoActionFromToken } from "./actions";
-import { IS_DEV } from "./config";
 import { schema as logoutSchema } from "./internal-services/logout";
 import { Pastaporto } from "./pastaporto/entities";
-import { getServices } from "./services";
 
 const PASTAPORTO_X_HEADER = "x-pastaporto";
 const PASTAPORTO_ACTION_X_HEADER = "x-pastaporto-action";
@@ -72,10 +70,10 @@ class ServiceRemoteGraphQLDataSource extends RemoteGraphQLDataSource {
 export const createGateway = () => {
   const options: any = {};
 
-  if (IS_DEV) {
-    options.serviceList = getServices();
-    options.experimental_pollInterval = 5000;
-  }
+  // if (IS_DEV) {
+  //   options.serviceList = getServices();
+  //   options.experimental_pollInterval = 5000;
+  // }
 
   return new ApolloGateway({
     ...options,

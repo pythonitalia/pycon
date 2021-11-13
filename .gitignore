@@ -115,3 +115,5 @@ secrets.auto.tfvars
 
 **/coverage/**
 
+.variant
+.ready

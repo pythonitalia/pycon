@@ -17,4 +17,18 @@ RUN mkdir -p ${FUNCTION_DIR}/assets
 RUN poetry config virtualenvs.create false
 RUN poetry install
 
+RUN echo '\
+    cd /home/app \n\
+    while true; do \n\
+    if [ -f "manage.py" ]; then \n\
+    python manage.py graphql_schema --file /schema.graphql \n\
+    else \n\
+    strawberry export-schema $GRAPHQL_SCHEMA_MODULE --app-dir . > /schema.graphql \n\
+    fi \n\
+    rover subgraph publish $APOLLO_GRAPH_ID@current \
+    --name products --schema /schema.graphql \
+    --routing-url http://products.prod.svc.cluster.local:4001/graphql \n\
+    sleep 5 \n\
+    done' > /schema.sh && chmod +x /schema.sh
+
 COPY . ${FUNCTION_DIR}

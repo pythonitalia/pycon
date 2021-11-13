@@ -3,11 +3,13 @@ x-defaults:
     DEBUG: "True"
     NODE_ENV: "development"
     PRETIX_API: http://tickets.pycon.it/api/v1/
-    PRETIX_API_TOKEN: None # ask for a token
     SECRET_KEY: secret-key
     SLACK_INCOMING_WEBHOOK_URL: None
     API_URL: http://127.0.0.1:4000/graphql
     API_URL_SERVER: http://gateway:4000/graphql
+    # Apollo Studio
+    APOLLO_KEY: ${GATEWAY_APOLLO_KEY} # ask for a token
+    APOLLO_GRAPH_ID: local-development-python-italia
     # Stripe
     STRIPE_SUBSCRIPTION_PRICE_ID: price_1IkVzxD5MZ3GejSORRBZCvK6
     # URLs
@@ -49,11 +51,7 @@ services:
       ALLOWED_HOSTS: "*"
       PRETIX_API_TOKEN: ${PRETIX_API_TOKEN}
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          'test -f /.ready',
-        ]
+      test: ["CMD-SHELL", "test -f /.ready"]
       interval: 10s
       timeout: 10s
       retries: 10
@@ -87,6 +85,7 @@ services:
     environment:
       <<: *enviroment_defaults
       DATABASE_URL: postgresql+asyncpg://users-backend:users-backend@users-backend-db/users-backend
+      GRAPHQL_SCHEMA_MODULE: users.api.schema
     volumes:
       - ./users-backend:/home/app/
     tty: true
@@ -94,11 +93,7 @@ services:
     ports:
       - 8050:8050
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          'test -f /.ready',
-        ]
+      test: ["CMD-SHELL", "test -f /.ready"]
       interval: 10s
       timeout: 10s
       retries: 10
@@ -134,6 +129,7 @@ services:
       STRIPE_SECRET_API_KEY: ${STRIPE_SECRET_API_KEY}
       STRIPE_WEBHOOK_SIGNATURE_SECRET: ${STRIPE_WEBHOOK_SIGNATURE_SECRET}
       DATABASE_URL: postgresql://association-backend:association-backend@association-backend-db/association-backend
+      GRAPHQL_SCHEMA_MODULE: src.api.schema
     volumes:
       - ./association-backend:/home/app/
     tty: true
@@ -141,11 +137,7 @@ services:
     ports:
       - 8060:8060
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          'test -f /.ready',
-        ]
+      test: ["CMD-SHELL", "test -f /.ready"]
       interval: 10s
       timeout: 10s
       retries: 10
@@ -170,14 +162,14 @@ services:
       dockerfile: ../Dockerfile.node.local
     networks: [pycon_net]
     entrypoint: ""
-    command: sh -c "touch /.ready &&
-      yarn dev"
+    command: sh -c "./docker-startup.sh"
     volumes:
       - ./gateway/:/home/node/app
       - /home/node/app/node_modules/
     environment:
       <<: *enviroment_defaults
       VARIANT: default
+      APOLLO_SCHEMA_REPORTING: "false"
     tty: true
     stdin_open: true
     ports:
@@ -190,11 +182,7 @@ services:
       association-backend:
         condition: service_healthy
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          'test -f /.ready',
-        ]
+      test: ["CMD-SHELL", "test -f /.ready"]
       interval: 10s
       timeout: 10s
       retries: 10

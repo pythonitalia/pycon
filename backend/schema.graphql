@@ -1,0 +1,632 @@
+type AddScheduleSlotError {
+  message: String!
+}
+
+union AddScheduleSlotErrorDay = AddScheduleSlotError | Day
+
+type AudienceLevel {
+  id: ID!
+  name: String!
+}
+
+type BlogPostAuthor @key(fields: "id") {
+  id: ID!
+}
+
+type Conference {
+  id: ID!
+  name(language: String = null): String!
+  introduction(language: String = null): String!
+  code: String!
+  start: DateTime!
+  end: DateTime!
+  map: Map
+  pretixEventUrl: String!
+  voucher(code: String!): Voucher
+  timezone: String!
+  tickets(language: String!): [TicketItem!]!
+  hotelRooms: [HotelRoom!]!
+  deadlines: [Deadline!]!
+  isCFPOpen: Boolean!
+  isVotingOpen: Boolean!
+  isVotingClosed: Boolean!
+  deadline(type: String!): Deadline
+  audienceLevels: [AudienceLevel!]!
+  topics: [Topic!]!
+  languages: [Language!]!
+  durations: [Duration!]!
+  submissionTypes: [SubmissionType!]!
+  submissions: [Submission!]
+  events: [Event!]!
+  rooms: [Room!]!
+  faqs: [FAQ!]!
+  sponsorsByLevel: [SponsorsByLevel!]!
+  copy(key: String!, language: String = null): String
+  menu(identifier: String!): Menu
+  keynotes: [ScheduleItem!]!
+  talks: [ScheduleItem!]!
+  talk(slug: String!): ScheduleItem
+  ranking: [RankSubmission!]!
+  days: [Day!]!
+}
+
+type Country {
+  code: String!
+  name: String!
+}
+
+input CreateOrderHotelRoom {
+  roomId: String!
+  checkin: Date!
+  checkout: Date!
+}
+
+input CreateOrderInput {
+  email: String!
+  locale: String!
+  paymentProvider: String!
+  invoiceInformation: InvoiceInformation!
+  tickets: [CreateOrderTicket!]!
+  hotelRooms: [CreateOrderHotelRoom!]!
+}
+
+type CreateOrderResult {
+  paymentUrl: String!
+}
+
+union CreateOrderResultError = CreateOrderResult | Error
+
+input CreateOrderTicket {
+  ticketId: String!
+  attendeeName: String!
+  attendeeEmail: String!
+  variation: String = null
+  answers: [CreateOrderTicketAnswer!] = null
+  voucher: String = null
+}
+
+input CreateOrderTicketAnswer {
+  questionId: String!
+  value: String!
+}
+
+"""Date (isoformat)"""
+scalar Date
+
+"""Date with time (isoformat)"""
+scalar DateTime
+
+type Day {
+  day: Date!
+  slots(room: ID = null): [ScheduleSlot!]!
+}
+
+type Deadline {
+  type: String!
+  name(language: String = null): String!
+  description(language: String = null): String!
+  start: DateTime!
+  end: DateTime!
+  conference: Conference!
+}
+
+"""Decimal (fixed-point)"""
+scalar Decimal
+
+type Duration {
+  id: ID!
+  conference: Conference!
+  name: String!
+  duration: Int!
+  notes: String!
+  allowedSubmissionTypes: [SubmissionType!]!
+}
+
+type Error {
+  message: String!
+}
+
+type Event {
+  id: ID!
+  conference: Conference!
+  title(language: String = null): String!
+  slug(language: String = null): String!
+  content(language: String = null): String!
+  map: Map
+  image: String
+  locationName: String
+  start: DateTime!
+  end: DateTime!
+}
+
+type FAQ {
+  question(language: String = null): String!
+  answer(language: String = null): String!
+}
+
+type GrantRequest {
+  id: ID!
+}
+
+type HotelRoom {
+  id: String!
+  name(language: String = null): String!
+  description(language: String = null): String!
+  price: String!
+  isSoldOut: Boolean!
+  capacityLeft: Int!
+}
+
+input InvoiceInformation {
+  isBusiness: Boolean!
+  company: String
+  name: String!
+  street: String!
+  zipcode: String!
+  city: String!
+  country: String!
+  vatId: String!
+  fiscalCode: String!
+}
+
+type Language {
+  id: ID!
+  code: String!
+  name: String!
+}
+
+type Map {
+  latitude: Decimal!
+  longitude: Decimal!
+  link: String
+  image(width: Int = 1280, height: Int = 400, zoom: Int = 15): String!
+}
+
+type Menu {
+  title(language: String = null): String!
+  links: [MenuLink!]!
+}
+
+type MenuLink {
+  href(language: String = null): String!
+  title(language: String = null): String!
+  isPrimary: Boolean!
+  page: Page
+}
+
+type Mutation {
+  sendSubmission(input: SendSubmissionInput!): SendSubmissionOutput!
+  updateSubmission(input: UpdateSubmissionInput!): UpdateSubmissionOutput!
+  sendSubmissionComment(input: SendSubmissionCommentInput!): SendSubmissionCommentOutput!
+  sendVote(input: SendVoteInput!): SendVoteOutput!
+  createOrder(conference: String!, input: CreateOrderInput!): CreateOrderResultError!
+  sendGrantRequest(input: SendGrantRequestInput!): SendGrantRequestOutput!
+  subscribeToNewsletter(input: SubscribeToNewsletterInput!): SubscribeToNewsletterOutput!
+  unsubscribeToNewsletter(input: UnsubscribeToNewsletterInput!): UnsubscribeToNewsletterOutput!
+  addScheduleSlot(conference: ID!, duration: Int!, day: Date!): AddScheduleSlotErrorDay!
+  updateOrCreateSlotItem(input: UpdateOrCreateSlotItemInput!): UpdateOrCreateSlotItemErrorUpdateOrCreateSlotItemResult!
+}
+
+type NewsletterSubscription {
+  id: ID!
+  email: String!
+}
+
+type OperationResult {
+  ok: Boolean!
+}
+
+type Option {
+  id: ID!
+  name: String!
+}
+
+type Page {
+  id: ID!
+  title(language: String = null): String!
+  slug(language: String = null): String!
+  content(language: String = null): String!
+  excerpt: String
+  image: String
+}
+
+type Post {
+  id: ID!
+  author: BlogPostAuthor!
+  title(language: String = null): String!
+  slug(language: String = null): String!
+  excerpt(language: String = null): String!
+  content(language: String = null): String!
+  image: String
+  published: DateTime!
+}
+
+type PretixOrder {
+  code: String!
+  status: PretixOrderStatus!
+  total: String!
+  url: String!
+  email: String!
+}
+
+enum PretixOrderStatus {
+  PENDING
+  PAID
+  EXPIRED
+  CANCELED
+}
+
+type ProductVariation {
+  id: ID!
+  value: String!
+  description: String!
+  active: Boolean!
+  defaultPrice: String!
+}
+
+type Query {
+  _service: _Service!
+  _entities(representations: [_Any!]!): [_Entity]!
+  conference(code: String!): Conference!
+  blogPosts: [Post!]!
+  blogPost(slug: String!): Post
+  submission(id: ID!): Submission
+  submissions(code: String!): [Submission!]
+  submissionTags: [SubmissionTag!]!
+  pages(code: String!): [Page!]!
+  page(code: String!, slug: String!): Page
+  countries: [Country!]!
+  country(code: String! = ""): Country!
+  order(conferenceCode: String!, code: String!): PretixOrder
+}
+
+type Question {
+  id: ID!
+  name: String!
+  required: Boolean!
+  options: [Option!]!
+}
+
+type RankSubmission {
+  submission: Submission!
+  absoluteRank: Int!
+  absoluteScore: Decimal!
+  topicRank: Int!
+}
+
+type Room {
+  id: ID!
+  name: String!
+  conference: Conference!
+  type: String!
+}
+
+type ScheduleItem {
+  id: ID!
+  conference: Conference!
+  title: String!
+  start: DateTime!
+  end: DateTime!
+  submission: Submission
+  slug: String!
+  description: String!
+  type: String!
+  duration: Int
+  highlightColor: String
+  speakers: [ScheduleItemUser!]!
+  language: Language!
+  audienceLevel: AudienceLevel
+  rooms: [Room!]!
+  image: String
+}
+
+type ScheduleItemUser @key(fields: "id") {
+  id: ID!
+}
+
+type ScheduleSlot {
+  hour: Time!
+  duration: Int!
+  id: ID!
+  items: [ScheduleItem!]!
+}
+
+type SendGrantRequestErrors {
+  name: [String!]!
+  fullName: [String!]!
+  conference: [String!]!
+  email: [String!]!
+  age: [String!]!
+  gender: [String!]!
+  occupation: [String!]!
+  grantType: [String!]!
+  pythonUsage: [String!]!
+  beenToOtherEvents: [String!]!
+  interestedInVolunteering: [String!]!
+  needsFundsForTravel: [String!]!
+  why: [String!]!
+  notes: [String!]!
+  travellingFrom: [String!]!
+  nonFieldErrors: [String!]!
+}
+
+input SendGrantRequestInput {
+  name: String!
+  fullName: String!
+  conference: ID!
+  email: String!
+  age: Int!
+  gender: String = null
+  occupation: String!
+  grantType: String!
+  pythonUsage: String!
+  beenToOtherEvents: String!
+  interestedInVolunteering: String!
+  needsFundsForTravel: Boolean!
+  why: String!
+  notes: String = null
+  travellingFrom: String!
+}
+
+"""Output"""
+union SendGrantRequestOutput = SendGrantRequestErrors | GrantRequest
+
+type SendSubmissionCommentErrors {
+  text: [String!]!
+  submission: [String!]!
+  nonFieldErrors: [String!]!
+}
+
+input SendSubmissionCommentInput {
+  text: String!
+  submission: ID!
+}
+
+"""Output"""
+union SendSubmissionCommentOutput = SendSubmissionCommentErrors | SubmissionComment
+
+type SendSubmissionErrors {
+  title: [String!]!
+  abstract: [String!]!
+  topic: [String!]!
+  languages: [String!]!
+  conference: [String!]!
+  type: [String!]!
+  duration: [String!]!
+  elevatorPitch: [String!]!
+  notes: [String!]!
+  audienceLevel: [String!]!
+  tags: [String!]!
+  speakerLevel: [String!]!
+  previousTalkVideo: [String!]!
+  nonFieldErrors: [String!]!
+}
+
+input SendSubmissionInput {
+  title: String!
+  abstract: String!
+  topic: ID!
+  languages: [ID!]!
+  conference: ID!
+  type: ID!
+  duration: ID!
+  elevatorPitch: String = ""
+  notes: String = ""
+  audienceLevel: ID!
+  tags: [ID!] = null
+  speakerLevel: String!
+  previousTalkVideo: String = null
+}
+
+"""Output"""
+union SendSubmissionOutput = SendSubmissionErrors | Submission
+
+type SendVoteErrors {
+  submission: [String!]!
+  value: [String!]!
+  nonFieldErrors: [String!]!
+}
+
+input SendVoteInput {
+  submission: ID!
+  value: Int!
+}
+
+"""Output"""
+union SendVoteOutput = SendVoteErrors | VoteType
+
+type Sponsor {
+  level: String!
+  name: String!
+  link: String
+  image: String
+}
+
+type SponsorsByLevel {
+  level: String!
+  sponsors: [Sponsor!]!
+  highlightColor: String
+}
+
+type Submission {
+  conference: Conference!
+  title: String!
+  slug: String!
+  elevatorPitch: String
+  abstract: String
+  speakerLevel: String
+  previousTalkVideo: String
+  notes: String
+  topic: Topic
+  type: SubmissionType
+  duration: Duration
+  audienceLevel: AudienceLevel
+  speaker: SubmissionSpeaker!
+  id: ID!
+  canEdit: Boolean!
+  comments: [SubmissionComment!]!
+  myVote: VoteType
+  languages: [Language!]
+  tags: [SubmissionTag!]
+}
+
+type SubmissionComment {
+  id: ID!
+  text: String!
+  created: DateTime!
+  author: SubmissionCommentAuthor!
+  submission: Submission!
+}
+
+type SubmissionCommentAuthor @key(fields: "id") {
+  id: ID!
+  isSpeaker: Boolean!
+}
+
+type SubmissionSpeaker @key(fields: "id") {
+  id: ID!
+}
+
+type SubmissionTag {
+  id: ID!
+  name: String!
+}
+
+type SubmissionType {
+  id: ID!
+  name: String!
+}
+
+type SubscribeToNewsletterErrors {
+  email: [String!]!
+  nonFieldErrors: [String!]!
+}
+
+input SubscribeToNewsletterInput {
+  email: String!
+}
+
+"""Output"""
+union SubscribeToNewsletterOutput = SubscribeToNewsletterErrors | NewsletterSubscription
+
+type TicketItem {
+  id: ID!
+  name: String!
+  description: String
+  active: Boolean!
+  defaultPrice: String!
+  variations: [ProductVariation!]!
+  availableFrom: String
+  availableUntil: String
+  questions: [Question!]!
+}
+
+"""Time (isoformat)"""
+scalar Time
+
+type Topic {
+  id: ID!
+  name: String!
+}
+
+type UnsubscribeToNewsletterErrors {
+  email: [String!]!
+  nonFieldErrors: [String!]!
+}
+
+input UnsubscribeToNewsletterInput {
+  email: String!
+}
+
+"""Output"""
+union UnsubscribeToNewsletterOutput = UnsubscribeToNewsletterErrors | OperationResult
+
+type UpdateOrCreateSlotItemError {
+  message: String!
+}
+
+union UpdateOrCreateSlotItemErrorUpdateOrCreateSlotItemResult = UpdateOrCreateSlotItemError | UpdateOrCreateSlotItemResult
+
+input UpdateOrCreateSlotItemInput {
+  slotId: ID!
+  rooms: [ID!]!
+  title: String = null
+  itemId: ID = null
+  submissionId: ID = null
+}
+
+type UpdateOrCreateSlotItemResult {
+  updatedSlots: [ScheduleSlot!]!
+}
+
+type UpdateSubmissionErrors {
+  instance: [String!]!
+  title: [String!]!
+  abstract: [String!]!
+  topic: [String!]!
+  languages: [String!]!
+  type: [String!]!
+  duration: [String!]!
+  elevatorPitch: [String!]!
+  notes: [String!]!
+  audienceLevel: [String!]!
+  tags: [String!]!
+  speakerLevel: [String!]!
+  previousTalkVideo: [String!]!
+  nonFieldErrors: [String!]!
+}
+
+input UpdateSubmissionInput {
+  instance: ID!
+  title: String!
+  abstract: String!
+  topic: ID!
+  languages: [ID!]!
+  type: ID!
+  duration: ID!
+  elevatorPitch: String = ""
+  notes: String = ""
+  audienceLevel: ID!
+  tags: [ID!] = null
+  speakerLevel: String!
+  previousTalkVideo: String = null
+}
+
+"""Output"""
+union UpdateSubmissionOutput = UpdateSubmissionErrors | Submission
+
+extend type User @key(fields: "id") {
+  id: ID! @external
+  email: String! @external
+  isStaff: Boolean! @external
+  orders(conference: String!): [PretixOrder!]! @requires(fields: "email")
+  submissions(conference: String!): [Submission!]!
+  canEditSchedule: Boolean! @requires(fields: "isStaff")
+}
+
+type VoteType {
+  id: ID!
+  value: Int!
+  submission: Submission!
+}
+
+type Voucher {
+  id: ID!
+  code: String!
+  validUntil: DateTime
+  value: String!
+  items: [ID!]!
+  allItems: Boolean!
+  redeemed: Int!
+  maxUsages: Int!
+  priceMode: String!
+  variationId: ID
+}
+
+scalar _Any
+
+union _Entity = User | SubmissionSpeaker | ScheduleItemUser | SubmissionCommentAuthor | BlogPostAuthor
+
+type _Service {
+  sdl: String!
+}

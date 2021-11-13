@@ -7,3 +7,4 @@ dist
 **/__tests__/**
 dev/**
 dev-types.d.ts
+.variant
