@@ -1,6 +1,7 @@
 from dataclasses import dataclass
-from django.conf import settings
+
 import requests
+from django.conf import settings
 
 
 @dataclass
@@ -10,6 +11,9 @@ class MailchimpSubscription:
 
 
 def subscribe(email: str):
+    if not settings.MAILCHIMP_SECRET_KEY:
+        raise ValueError("Mailchimp integration is not configured")
+
     url = f"https://{settings.MAILCHIMP_DC}.api.mailchimp.com/3.0/lists/{settings.MAILCHIMP_LIST_ID}/members"
     headers = {
         "Accept": "application/json",
