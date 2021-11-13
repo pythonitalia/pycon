@@ -31,11 +31,14 @@ def generate_service_to_service_token(secret: str, issuer: str, audience: str):
     if not secret:
         raise ValueError("Secret can not be empty")
 
+    now = datetime.now(tz=timezone.utc)
+
     return jwt.encode(
         {
             "iss": issuer,
             "aud": audience,
-            "exp": datetime.now(tz=timezone.utc) + timedelta(seconds=60),
+            "iat": now,
+            "exp": now + timedelta(seconds=60),
         },
         str(secret),
         algorithm="HS256",
