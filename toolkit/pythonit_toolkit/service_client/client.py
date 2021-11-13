@@ -47,6 +47,7 @@ class ServiceClient:
                 self.url,
                 data={"query": document, "variables": variables},
                 headers={
+                    "content-type": "application/json",
                     SERVICE_JWT_HEADER: token,
                 },
             )
