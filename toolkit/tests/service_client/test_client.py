@@ -1,6 +1,6 @@
 from unittest.mock import AsyncMock, patch
 
-from pythonit_toolkit.api.service_client import ServiceClient
+from pythonit_toolkit.service_client import ServiceClient
 from ward import each, raises, test
 
 
