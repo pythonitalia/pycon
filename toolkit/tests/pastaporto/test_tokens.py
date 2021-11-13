@@ -86,7 +86,7 @@ async def _():
 
         assert (
             token
-            == "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtZSIsImF1ZCI6InlvdSIsImV4cCI6MTYzNjgyODkzMH0.USy6g043fdWG35yCIM021GXQHUp7L0HO8PHUPKRDAD4"
+            == "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtZSIsImF1ZCI6InlvdSIsImlhdCI6MTYzNjgyODg3MCwiZXhwIjoxNjM2ODI4OTMwfQ.LnS-GDGazo6q5-54h9oGCmixRwA84QJX7I-TnU3gEvI"
         )
 
 
