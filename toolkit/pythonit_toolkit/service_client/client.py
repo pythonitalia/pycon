@@ -39,7 +39,7 @@ class ServiceClient:
         variables: Optional[Dict[str, Any]] = None,
     ) -> Union[ServiceError, ServiceResponse]:
         token = generate_service_to_service_token(
-            self.jwt_secret, caller=self.caller, service_name=self.service_name
+            self.jwt_secret, issuer=self.caller, audience=self.service_name
         )
 
         async with httpx.AsyncClient() as client:
