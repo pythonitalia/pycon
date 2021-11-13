@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, Dict, Optional, Union
+from typing import Any, Optional, Union
 
 import httpx
 from pythonit_toolkit.headers import SERVICE_JWT_HEADER
@@ -8,12 +8,12 @@ from pythonit_toolkit.pastaporto.tokens import generate_service_to_service_token
 
 @dataclass
 class ServiceResponse:
-    data: Optional[Dict[str, Any]]
+    data: Optional[dict[str, Any]]
 
 
 @dataclass
 class ServiceError(Exception):
-    errors: Dict[str, Any]
+    errors: list[dict[str, Any]]
 
 
 class ServiceClient:
@@ -36,7 +36,7 @@ class ServiceClient:
     async def execute(
         self,
         document: str,
-        variables: Optional[Dict[str, Any]] = None,
+        variables: Optional[dict[str, Any]] = None,
     ) -> Union[ServiceError, ServiceResponse]:
         token = generate_service_to_service_token(
             self.jwt_secret, issuer=self.caller, audience=self.service_name
@@ -52,6 +52,7 @@ class ServiceClient:
             )
 
             response.raise_for_status()
+
             data = await response.json()
             errors = data.get("errors", None)
 

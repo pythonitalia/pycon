@@ -31,12 +31,14 @@ async def _():
         assert response.data == {"users": [{"id": 1}]}
 
 
-@test("return errors when an excaption is thrown in the service")
+@test("return errors when an exception is thrown in the service")
 async def _():
 
-    with raises(Exception), patch("httpx.AsyncClient.post") as post_mock:
+    mock_response = {"errors": [{"message": "something went wrong"}]}
+
+    with raises(Exception) as exc, patch("httpx.AsyncClient.post") as post_mock:
         post_mock.return_value = AsyncMock()
-        post_mock.return_value.json.side_effect = Exception("Something went wrong")
+        post_mock.return_value.json.return_value = mock_response
 
         client = ServiceClient(
             url="http://localhost:8050",
@@ -45,9 +47,9 @@ async def _():
             jwt_secret="mysecret",
         )
 
-        response = await client.execute(document="""{ users { id }}""")
+        await client.execute(document="""{ users { id }}""")
 
-        assert response.errors == ["Something went wrong"]
+    assert exc.raised.errors == [{"message": "something went wrong"}]
 
 
 @test("url is required when creating the ServiceClient instance")
