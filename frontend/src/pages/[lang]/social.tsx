@@ -4,20 +4,22 @@
 import { Fragment } from "react";
 import { Box, Flex, Heading, jsx } from "theme-ui";
 
+import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 
-import { LogoOrange } from "~/components/logo/orange";
+import { addApolloState, getApolloClient } from "~/apollo/client";
+import { Logo } from "~/components/logo";
 import { CardType, getSize } from "~/helpers/social-card";
 import { useCurrentLanguage } from "~/locale/context";
 import { Language } from "~/locale/languages";
-import { useSocialCardQuery } from "~/types";
+import { querySocialCard, useSocialCardQuery } from "~/types";
 
 const getDays = ({ start, end }: { start: string; end: string }) => {
   // assuming the same month
   const startDate = new Date(start);
   const endDate = new Date(end);
 
-  return `${startDate.getDate()} - ${endDate.getDate()}`;
+  return `${startDate.getUTCDate()} - ${endDate.getUTCDate()}`;
 };
 
 const getMonth = ({ end }: { end: string }, language: Language) => {
@@ -81,9 +83,11 @@ export const SocialPage = () => {
               width: size.width - size.height,
             }}
           >
-            <LogoOrange
+            <Logo
               sx={{
-                width: size.width - size.height,
+                width: `calc(${size.width - size.height}px - 14px)`,
+                ml: "7px",
+                mt: "7px",
               }}
             />
 
@@ -133,7 +137,7 @@ export const SocialPage = () => {
               <Heading
                 sx={{
                   textTransform: "uppercase",
-                  fontSize: 6,
+                  fontSize: 5,
                   fontWeight: "bold",
                   color: "white",
                   mt: "auto",
@@ -148,5 +152,23 @@ export const SocialPage = () => {
     </Fragment>
   );
 };
+
+export const getStaticProps: GetStaticProps = async () => {
+  const client = getApolloClient();
+
+  await querySocialCard(client, {
+    code: process.env.conferenceCode,
+  });
+
+  return addApolloState(client, {
+    props: {},
+  });
+};
+
+export const getStaticPaths: GetStaticPaths = async () =>
+  Promise.resolve({
+    paths: [],
+    fallback: "blocking",
+  });
 
 export default SocialPage;

@@ -31,6 +31,7 @@ services:
     entrypoint: ""
     command: sh -c "python manage.py migrate &&
       python manage.py create_admin &&
+      touch /.ready &&
       python manage.py runserver 0.0.0.0:8000"
     depends_on:
       pycon-backend-db:
@@ -51,7 +52,7 @@ services:
       test:
         [
           "CMD-SHELL",
-          'wget -q -O- --tries=1 --no-verbose --header=''Content-Type:application/json'' --post-data ''{"query": "{__typename}"}'' http://127.0.0.1:8000/graphql || exit 1',
+          'test -f /.ready',
         ]
       interval: 10s
       timeout: 10s
@@ -78,6 +79,7 @@ services:
     networks: [pycon_net]
     entrypoint: ""
     command: sh -c "poetry run task migrate &&
+      touch /.ready &&
       python -m uvicorn main:wrapped_app --host 0.0.0.0 --port 8050 --reload"
     depends_on:
       users-backend-db:
@@ -95,7 +97,7 @@ services:
       test:
         [
           "CMD-SHELL",
-          'wget -q -O- --tries=1 --no-verbose --header=''Content-Type:application/json'' --post-data ''{"query": "{__typename}"}'' http://127.0.0.1:8050/graphql || exit 1',
+          'test -f /.ready',
         ]
       interval: 10s
       timeout: 10s
@@ -122,6 +124,7 @@ services:
     networks: [pycon_net]
     entrypoint: ""
     command: sh -c "poetry run task migrate &&
+      touch /.ready &&
       python -m uvicorn main:wrapped_app --host 0.0.0.0 --port 8060 --reload"
     depends_on:
       association-backend-db:
@@ -141,7 +144,7 @@ services:
       test:
         [
           "CMD-SHELL",
-          'wget -q -O- --tries=1 --no-verbose --header=''Content-Type:application/json'' --post-data ''{"query": "{__typename}"}'' http://127.0.0.1:8060/graphql || exit 1',
+          'test -f /.ready',
         ]
       interval: 10s
       timeout: 10s
@@ -167,7 +170,8 @@ services:
       dockerfile: ../Dockerfile.node.local
     networks: [pycon_net]
     entrypoint: ""
-    command: sh -c "yarn dev"
+    command: sh -c "touch /.ready &&
+      yarn dev"
     volumes:
       - ./gateway/:/home/node/app
       - /home/node/app/node_modules/
@@ -189,7 +193,7 @@ services:
       test:
         [
           "CMD-SHELL",
-          'wget -q -O- --tries=1 --no-verbose --header=''Content-Type:application/json'' --post-data ''{"query": "{__typename}"}'' http://127.0.0.1:4000/graphql || exit 1',
+          'test -f /.ready',
         ]
       interval: 10s
       timeout: 10s

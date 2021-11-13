@@ -1,6 +1,7 @@
 import { GetStaticPaths, GetStaticProps } from "next";
 import Head from "next/head";
 
+import { getApolloClient } from "~/apollo/client";
 import { queryScheduleDays } from "~/types";
 
 export const SchedulePage = () => (
@@ -11,11 +12,12 @@ export const SchedulePage = () => (
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const lang = params.lang as string;
+  const client = getApolloClient();
   const {
     data: {
       conference: { days },
     },
-  } = await queryScheduleDays({
+  } = await queryScheduleDays(client, {
     code: process.env.conferenceCode,
   });
 

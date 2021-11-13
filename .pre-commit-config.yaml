@@ -26,10 +26,12 @@ repos:
           - <<: *python_settings
             id: flake8
     - repo: https://github.com/pre-commit/mirrors-prettier
-      rev: v2.3.2
+      rev: v2.4.1
       hooks:
           - id: prettier
             files: '.*/.*\.(js|jsx|ts|tsx|graphql)$'
+            additional_dependencies:
+            - "@trivago/prettier-plugin-sort-imports@3.1.0"
     - repo: https://github.com/pre-commit/pre-commit-hooks
       rev: v2.2.3
       hooks:

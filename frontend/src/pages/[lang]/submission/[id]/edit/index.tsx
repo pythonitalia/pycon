@@ -7,7 +7,7 @@ import { Box, jsx } from "theme-ui";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 
-import { addApolloState } from "~/apollo/client";
+import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Alert } from "~/components/alert";
 import {
   CfpForm,
@@ -110,18 +110,18 @@ export const EditSubmissionPage = () => {
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const language = params.lang as string;
+  const client = getApolloClient();
 
   await Promise.all([
-    prefetchSharedQueries(language),
-    queryTags(),
-    queryCfpForm({
+    prefetchSharedQueries(client, language),
+    queryTags(client),
+    queryCfpForm(client, {
       conference: process.env.conferenceCode,
     }),
   ]);
 
-  return addApolloState({
+  return addApolloState(client, {
     props: {},
-    revalidate: 1,
   });
 };
 
