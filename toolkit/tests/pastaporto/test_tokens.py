@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta, timezone
 
 import jwt
+import time_machine
 from pythonit_toolkit.pastaporto.tokens import (
     decode_service_to_service_token,
     generate_service_to_service_token,
@@ -79,9 +80,14 @@ async def _():
 
 @test("generate a token")
 async def _():
-    token = generate_service_to_service_token("secret", issuer="me", audience="you")
+    with time_machine.travel("2021-11-13 18:41:10", tick=False):
 
-    assert token
+        token = generate_service_to_service_token("secret", issuer="me", audience="you")
+
+        assert (
+            token
+            == "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtZSIsImF1ZCI6InlvdSIsImV4cCI6MTYzNjgyODkzMH0.USy6g043fdWG35yCIM021GXQHUp7L0HO8PHUPKRDAD4"
+        )
 
 
 @test("raise ValueError if secret is empty")

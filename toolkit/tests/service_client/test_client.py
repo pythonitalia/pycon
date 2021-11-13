@@ -31,7 +31,7 @@ async def _():
         assert response.data == {"users": [{"id": 1}]}
 
 
-@test("raise Exception")
+@test("return errors when an excaption is thrown in the service")
 async def _():
 
     with raises(Exception), patch("httpx.AsyncClient.post") as post_mock:
