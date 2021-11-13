@@ -1,7 +1,7 @@
 from unittest.mock import AsyncMock, patch
 
 from pythonit_toolkit.api.service_client import ServiceClient
-from ward import raises, test
+from ward import each, raises, test
 
 
 @test("execute a query")
@@ -45,43 +45,51 @@ async def _():
             jwt_secret="mysecret",
         )
 
-        await client.execute(document="""{ users { id }}""")
+        response = await client.execute(document="""{ users { id }}""")
+
+        assert response.errors == ["Something went wrong"]
 
 
-for url, issuer, audience, jwt_secret, expected_error in [
-    ("", "pycon", "users-service", "mysecret", "Argument 'url' can't be empty"),
-    (
-        "http://localhost:8050",
+@test("raise ValueError if arguments are empty")
+async def _(
+    url=each(
         "",
-        "users-service",
-        "mysecret",
-        "Argument 'issuer' can't be empty",
-    ),
-    (
         "http://localhost:8050",
+        "http://localhost:8050",
+        "http://localhost:8050",
+    ),
+    issuer=each(
         "pycon",
         "",
-        "mysecret",
-        "Argument 'audience' can't be empty",
-    ),
-    (
-        "http://localhost:8050",
         "pycon",
+        "pycon",
+    ),
+    audience=each(
+        "users-service",
         "users-service",
         "",
-        "Argument 'jwt_secret' can't be empty",
+        "users-service",
     ),
-]:
+    jwt_secret=each(
+        "mysecret",
+        "mysecret",
+        "mysecret",
+        "",
+    ),
+    missing_argument=each(
+        "url",
+        "issuer",
+        "audience",
+        "jwt_secret",
+    ),
+):
 
-    @test("raise ValueError if arguments are empty")
-    async def _():
+    with raises(ValueError) as exc:
+        ServiceClient(
+            url=url,
+            issuer=issuer,
+            audience=audience,
+            jwt_secret=jwt_secret,
+        )
 
-        with raises(ValueError) as exc:
-            ServiceClient(
-                url=url,
-                issuer=issuer,
-                audience=audience,
-                jwt_secret=jwt_secret,
-            )
-
-        assert str(exc.raised) == expected_error
+    assert str(exc.raised) == f"Argument '{missing_argument}' can't be empty"
