@@ -1,6 +1,7 @@
 import json
-import respx
 
+import respx
+from pythonit_toolkit.headers import SERVICE_JWT_HEADER
 from pythonit_toolkit.service_client import ServiceClient
 from ward import raises, test
 
@@ -31,7 +32,13 @@ async def _():
         response = await client.execute(document=query)
 
         assert url_mock.called
-        content_sent = json.loads(url_mock.calls[0].request.content)
+        call = url_mock.calls[0]
+
+        # Make sure we send the JWT header
+        assert SERVICE_JWT_HEADER in call.request.headers
+
+        # Make sure the GraphQL request looks ok
+        content_sent = json.loads(call.request.content)
         assert "users {" in content_sent["query"]
         assert content_sent["variables"] is None
         assert response.data == {"users": [{"id": 1}]}
