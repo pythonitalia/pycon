@@ -21,6 +21,7 @@ starlette = "^0.14.2"
 pdbpp = "^0.10.2"
 taskipy = "^1.6.0"
 coverage = "^5.5"
+respx = "^0.18.2"
 
 [tool.taskipy.tasks]
 test = "coverage run -m ward"

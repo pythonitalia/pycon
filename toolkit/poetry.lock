@@ -385,6 +385,17 @@ python-versions = "*"
 six = ">=1.4.0"
 
 [[package]]
+name = "respx"
+version = "0.18.2"
+description = "A utility for mocking out the Python HTTPX and HTTP Core libraries."
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+httpx = ">=0.20.0"
+
+[[package]]
 name = "rfc3986"
 version = "1.5.0"
 description = "Validating URI References per RFC 3986"
@@ -623,7 +634,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "92d833afe8e16d4e57f5d0cc3c3a98945aa2cdb8abe7baea79d30916cd6a0f99"
+content-hash = "bc5f47cb8e7e6d9f7e0f9f65c094ca224177ab711b159ef96bc68353abb57184"
 
 [metadata.files]
 anyio = [
@@ -920,6 +931,10 @@ python-dateutil = [
 ]
 python-multipart = [
     {file = "python-multipart-0.0.5.tar.gz", hash = "sha256:f7bb5f611fc600d15fa47b3974c8aa16e93724513b49b5f95c81e6624c83fa43"},
+]
+respx = [
+    {file = "respx-0.18.2-py2.py3-none-any.whl", hash = "sha256:09fb4fc49f3900fb124d13b188c90355a45efde29fd18c5e2f513804cf7f84c6"},
+    {file = "respx-0.18.2.tar.gz", hash = "sha256:d39ff874f514dc4293b2e1f7c5e6c8c2ad871ee02ef49b3f57535257008495d8"},
 ]
 rfc3986 = [
     {file = "rfc3986-1.5.0-py2.py3-none-any.whl", hash = "sha256:a86d6e1f5b1dc238b218b012df0aa79409667bb209e58da56d0b94704e712a97"},

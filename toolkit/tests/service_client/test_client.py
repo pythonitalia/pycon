@@ -1,4 +1,5 @@
-from unittest.mock import AsyncMock, patch
+import json
+import respx
 
 from pythonit_toolkit.service_client import ServiceClient
 from ward import raises, test
@@ -15,12 +16,13 @@ async def _():
     """
     mock_response = {"data": {"users": [{"id": 1}]}}
 
-    with patch("httpx.AsyncClient.post") as post_mock:
-        post_mock.return_value = AsyncMock()
-        post_mock.return_value.json.return_value = mock_response
+    with respx.mock as req_mock:
+        url_mock = req_mock.post("http://localhost:8050/internal-api").respond(
+            200, json=mock_response
+        )
 
         client = ServiceClient(
-            url="http://localhost:8050",
+            url="http://localhost:8050/internal-api",
             caller="pycon",
             service_name="users-service",
             jwt_secret="mysecret",
@@ -28,20 +30,24 @@ async def _():
 
         response = await client.execute(document=query)
 
+        assert url_mock.called
+        content_sent = json.loads(url_mock.calls[0].request.content)
+        assert "users {" in content_sent["query"]
+        assert content_sent["variables"] is None
         assert response.data == {"users": [{"id": 1}]}
 
 
 @test("return errors when an exception is thrown in the service")
 async def _():
-
     mock_response = {"errors": [{"message": "something went wrong"}]}
 
-    with raises(Exception) as exc, patch("httpx.AsyncClient.post") as post_mock:
-        post_mock.return_value = AsyncMock()
-        post_mock.return_value.json.return_value = mock_response
+    with raises(Exception) as exc, respx.mock as req_mock:
+        req_mock.post("http://localhost:8050/internal-api").respond(
+            200, json=mock_response
+        )
 
         client = ServiceClient(
-            url="http://localhost:8050",
+            url="http://localhost:8050/internal-api",
             caller="pycon",
             service_name="users-service",
             jwt_secret="mysecret",
