@@ -45,9 +45,8 @@ class ServiceClient:
         async with httpx.AsyncClient() as client:
             response = await client.post(
                 self.url,
-                data={"query": document, "variables": variables},
+                json={"query": document, "variables": variables},
                 headers={
-                    "content-type": "application/json",
                     SERVICE_JWT_HEADER: token,
                 },
             )
