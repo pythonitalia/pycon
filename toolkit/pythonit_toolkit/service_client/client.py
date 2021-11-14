@@ -53,7 +53,7 @@ class ServiceClient:
 
             response.raise_for_status()
 
-            data = await response.json()
+            data = response.json()
             errors = data.get("errors", None)
 
             if errors:
