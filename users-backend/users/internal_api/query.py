@@ -3,6 +3,7 @@ from typing import Optional
 
 import strawberry
 from strawberry import ID
+
 from users.internal_api.context import Info
 from users.internal_api.types import User
 

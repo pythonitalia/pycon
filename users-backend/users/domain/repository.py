@@ -3,7 +3,6 @@ from typing import Any, Optional
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.expression import or_, select
-
 from users.domain.entities import User
 from users.domain.paginable import Paginable
 from users.starlette_password.hashers import make_password
