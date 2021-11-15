@@ -23,8 +23,7 @@ def test_subscribe_mailchimp_success_response(requests_mock):
 
     resp = subscribe("sushi@pycon.it")
 
-    assert resp.id == "63b71566-4658-11ec-81d3-0242ac130003"
-    assert resp.email == "sushi@pycon.it"
+    assert resp is True
 
 
 @override_settings(MAILCHIMP_LIST_ID="1234")
@@ -41,8 +40,7 @@ def test_subscribe_mailchimp_already_exists(requests_mock):
 
     resp = subscribe("pizza@pycon.it")
 
-    assert resp.id == "59588eec-4658-11ec-81d3-0242ac130003"
-    assert resp.email == "pizza@pycon.it"
+    assert resp is True
 
 
 @override_settings(MAILCHIMP_LIST_ID="1234")

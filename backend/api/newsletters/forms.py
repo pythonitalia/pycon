@@ -1,7 +1,12 @@
+import logging
+
 from django import forms
+
+from integrations.mailchimp import MailchimpError, subscribe
 from newsletters.models import Subscription
 from strawberry_forms.forms import FormWithContext
-from integrations.mailchimp import subscribe
+
+logger = logging.getLogger(__name__)
 
 
 class SussbscribeToNewsletterForm(FormWithContext):
@@ -10,7 +15,11 @@ class SussbscribeToNewsletterForm(FormWithContext):
     def save(self):
         email = self.cleaned_data.get("email")
 
-        return subscribe(email)
+        try:
+            return subscribe(email)
+        except MailchimpError as e:
+            logger.error(e, exc_info=True)
+            return False
 
 
 class UnsubscribeToNewsletterForm(FormWithContext):

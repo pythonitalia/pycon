@@ -3,12 +3,13 @@ from pytest import mark
 
 from newsletters.models import Subscription
 
-pytestmark = mark.skip
+# pytestmark = mark.skip
 
 
-@mark.django_db
-def test_subscribe_to_newsletter(graphql_client):
+def test_subscribe_to_newsletter(graphql_client, mocker):
+    mocker.patch("integrations.mailchimp.subscribe").return_value = True
     email = "me@example.it"
+
     variables = {"email": email}
 
     query = """
@@ -18,24 +19,19 @@ def test_subscribe_to_newsletter(graphql_client):
             }) {
             __typename
 
-            ... on SubscribeToNewsletterErrors {
-                validationEmail: email
-            }
-
-            ... on NewsletterSubscription {
-                id
-                email
+            ... on OperationResult {
+                ok
             }
         }
     }
     """
     resp = graphql_client.query(query, variables=variables)
-    assert (
-        resp["data"]["subscribeToNewsletter"]["__typename"] == "NewsletterSubscription"
-    )
-    assert resp["data"]["subscribeToNewsletter"]["email"] == email
+
+    assert resp["data"]["subscribeToNewsletter"]["__typename"] == "OperationResult"
+    assert resp["data"]["subscribeToNewsletter"]["ok"] is True
 
 
+@pytest.mark.skip
 @mark.django_db
 def test_unsubscribe_to_newsletter(graphql_client, subscription_factory):
     email = "me@example.it"
@@ -66,6 +62,7 @@ def test_unsubscribe_to_newsletter(graphql_client, subscription_factory):
     assert resp["data"]["unsubscribeToNewsletter"]["ok"] is True
 
 
+@pytest.mark.skip
 @mark.django_db
 def test_unsubscribe_not_registered_mail_to_newsletter(graphql_client):
     """If the mail is already unsubscribed (it's not in the subcription table)
@@ -131,6 +128,7 @@ def _update_user_newsletter(graphql_client, user, open_to_newsletter):
     return graphql_client.query(query=query, variables=variables), variables
 
 
+@pytest.mark.skip
 @mark.django_db
 def test_subscribe_when_update_user(graphql_client, user_factory):
     user = user_factory(open_to_newsletter=False)
@@ -143,6 +141,7 @@ def test_subscribe_when_update_user(graphql_client, user_factory):
     assert Subscription.objects.get(email=user.email)
 
 
+@pytest.mark.skip
 @mark.django_db
 def test_unsubscribe_when_update_user(graphql_client, user_factory):
     user = user_factory(open_to_newsletter=True)

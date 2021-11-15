@@ -1,5 +1,7 @@
-from api.newsletters.forms import SubscribeToNewsletterForm, UnsubscribeToNewsletterForm
-from api.newsletters.types import NewsletterSubscription
+from api.newsletters.forms import (
+    SussbscribeToNewsletterForm,
+    UnsubscribeToNewsletterForm,
+)
 from api.types import OperationResult
 from strawberry_forms.mutations import FormMutation
 
@@ -7,11 +9,11 @@ from strawberry_forms.mutations import FormMutation
 class SubscribeToNewsletter(FormMutation):
     @classmethod
     def transform(cls, result):
-        return NewsletterSubscription(id=result.id, email=result.email)
+        return OperationResult(ok=result)
 
     class Meta:
-        form_class = SubscribeToNewsletterForm
-        output_types = (NewsletterSubscription,)
+        form_class = SussbscribeToNewsletterForm
+        output_types = (OperationResult,)
 
 
 class UnsubscribeToNewsletter(FormMutation):

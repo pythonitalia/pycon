@@ -1,13 +1,5 @@
-from dataclasses import dataclass
-
 import requests
 from django.conf import settings
-
-
-@dataclass
-class MailchimpResponse:
-    id: str
-    email: str
 
 
 class MailchimpError(Exception):
@@ -17,7 +9,7 @@ class MailchimpError(Exception):
         return super().__init__(message)
 
 
-def subscribe(email: str) -> MailchimpResponse:
+def subscribe(email: str) -> bool:
     if not settings.MAILCHIMP_SECRET_KEY:
         raise ValueError("Mailchimp integration is not configured")
 
@@ -33,10 +25,8 @@ def subscribe(email: str) -> MailchimpResponse:
 
     data = response.json()
 
-    if data["status"] == "subscribed":
-        return MailchimpResponse(id=data["id"], email=data["email_address"])
-    elif data["title"] == "Member Exists":
-        return MailchimpResponse(id=data["instance"], email=email)
+    if data["status"] == "subscribed" or data["title"] == "Member Exists":
+        return True
     else:
         raise MailchimpError(
             status=data.get("status"),
