@@ -61,6 +61,7 @@ export const messages = {
     "manageTicket.notAnswered": "Not answered",
     "manageTicket.save": "Save changes",
     "manageTicket.goBack": "Or go back",
+    "login.title": "Login",
     "login.email": "Email",
     "login.password": "Password",
     "login.loginButton": "Login 👉",
