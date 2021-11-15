@@ -21,7 +21,7 @@ httpx = "0.20.0"
 Authlib = "^0.15.3"
 itsdangerous = "^1.1.0"
 mangum = "^0.10.0"
-pythonit-toolkit = "0.1.59-dev.1637018504"
+pythonit-toolkit = "0.1.59"
 graphql-core = "^3.1.5"
 sentry-sdk = "^1.1.0"
 
