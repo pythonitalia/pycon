@@ -25,7 +25,7 @@ async def _():
         client = ServiceClient(
             url="http://localhost:8050/internal-api",
             caller="pycon",
-            service_name="users-service",
+            service_name="users-backend",
             jwt_secret="mysecret",
         )
 
@@ -56,7 +56,7 @@ async def _():
         client = ServiceClient(
             url="http://localhost:8050/internal-api",
             caller="pycon",
-            service_name="users-service",
+            service_name="users-backend",
             jwt_secret="mysecret",
         )
 
@@ -71,7 +71,7 @@ def _():
         ServiceClient(
             url="",
             caller="pycon",
-            service_name="users-service",
+            service_name="users-backend",
             jwt_secret="mysecret",
         )
 
@@ -84,7 +84,7 @@ def _():
         ServiceClient(
             url="http://localhost:8050",
             caller="",
-            service_name="users-service",
+            service_name="users-backend",
             jwt_secret="mysecret",
         )
 
@@ -110,7 +110,7 @@ def _():
         ServiceClient(
             url="http://localhost:8050",
             caller="pycon",
-            service_name="users-service",
+            service_name="users-backend",
             jwt_secret="",
         )
 

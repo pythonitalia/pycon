@@ -78,5 +78,5 @@ class GraphQLClient:
         self.service_to_service_token = fake_service_to_service_token(
             str(key or self._service_to_service_secret),
             issuer="gateway",
-            audience="users-service",
+            audience="users-backend",
         )

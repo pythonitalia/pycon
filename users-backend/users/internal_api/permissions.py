@@ -11,7 +11,7 @@ def is_service(request: Request) -> bool:
 
     try:
         decode_service_to_service_token(
-            token, secret, issuer="gateway", audience="users-service"
+            token, secret, issuer="gateway", audience="users-backend"
         )
         return True
     except (

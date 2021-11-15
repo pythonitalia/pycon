@@ -16,28 +16,28 @@ async def _():
             "iat": datetime.now(timezone.utc),
             "exp": datetime.now(timezone.utc) + timedelta(seconds=10),
             "iss": "test",
-            "aud": "users-service",
+            "aud": "users-backend",
         },
         "secret",
         algorithm="HS256",
     )
 
     decode_service_to_service_token(
-        test_token, "secret", issuer="test", audience="users-service"
+        test_token, "secret", issuer="test", audience="users-backend"
     )
 
 
 @test("reject tokens without expiration")
 async def _():
     test_token = jwt.encode(
-        {"iat": datetime.now(timezone.utc), "iss": "test", "aud": "users-service"},
+        {"iat": datetime.now(timezone.utc), "iss": "test", "aud": "users-backend"},
         "secret",
         algorithm="HS256",
     )
 
     with raises(jwt.MissingRequiredClaimError):
         decode_service_to_service_token(
-            test_token, "secret", issuer="test", audience="users-service"
+            test_token, "secret", issuer="test", audience="users-backend"
         )
 
 
@@ -55,7 +55,7 @@ async def _():
 
     with raises(jwt.MissingRequiredClaimError):
         decode_service_to_service_token(
-            test_token, "secret", issuer="test", audience="users-service"
+            test_token, "secret", issuer="test", audience="users-backend"
         )
 
 
@@ -66,7 +66,7 @@ async def _():
             "iat": datetime.now(timezone.utc),
             "exp": datetime.now(timezone.utc) + timedelta(seconds=10),
             "iss": "test",
-            "aud": "users-service",
+            "aud": "users-backend",
         },
         "secret",
         algorithm="HS256",
