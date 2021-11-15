@@ -3,64 +3,75 @@ from unittest.mock import MagicMock
 from pythonit_toolkit.api.permissions import IsService
 from pythonit_toolkit.headers import SERVICE_JWT_HEADER
 from pythonit_toolkit.pastaporto.tokens import generate_service_to_service_token
-from ward import raises, test
+from ward import fixture, raises, test
+
+
+@fixture
+def fake_info():
+    def _fake_info(token):
+        headers = {SERVICE_JWT_HEADER: token}
+        mock_info = MagicMock()
+        mock_info.context.request.headers.get = headers.get
+        return mock_info
+
+    return _fake_info
 
 
 @test("Allowed callers pass the permission")
-async def _():
+async def _(fake_info=fake_info):
     test_token = generate_service_to_service_token("test", "gateway", "users-backend")
+    mock_info = fake_info(test_token)
+
     PermissionClass = IsService(["gateway"], "test", "users-backend")
-    headers = {SERVICE_JWT_HEADER: test_token}
-    mock_info = MagicMock()
-    mock_info.context.request.headers.get = headers.get
+
     assert PermissionClass().has_permission(None, mock_info) is True
 
 
 @test("Not allowed allowed callers fail the permission")
-async def _():
+async def _(fake_info=fake_info):
     test_token = generate_service_to_service_token(
         "test", "pycon-backend", "users-backend"
     )
+    mock_info = fake_info(test_token)
+
     PermissionClass = IsService(["gateway"], "test", "users-backend")
-    headers = {SERVICE_JWT_HEADER: test_token}
-    mock_info = MagicMock()
-    mock_info.context.request.headers.get = headers.get
+
     assert PermissionClass().has_permission(None, mock_info) is False
 
 
 @test("Multiple allowed callers pass the permission")
-async def _():
+async def _(fake_info=fake_info):
     test_token = generate_service_to_service_token(
         "test", "association-backend", "users-backend"
     )
+    mock_info = fake_info(test_token)
+
     PermissionClass = IsService(
         ["gateway", "association-backend"], "test", "users-backend"
     )
-    headers = {SERVICE_JWT_HEADER: test_token}
-    mock_info = MagicMock()
-    mock_info.context.request.headers.get = headers.get
+
     assert PermissionClass().has_permission(None, mock_info) is True
 
 
 @test("Wrong secret fail permission")
-async def _():
+async def _(fake_info=fake_info):
     test_token = generate_service_to_service_token(
         "wrong-secret", "pycon-backend", "users-backend"
     )
+    mock_info = fake_info(test_token)
+
     PermissionClass = IsService(["gateway"], "test", "users-backend")
-    headers = {SERVICE_JWT_HEADER: test_token}
-    mock_info = MagicMock()
-    mock_info.context.request.headers.get = headers.get
+
     assert PermissionClass().has_permission(None, mock_info) is False
 
 
 @test("Token for another service fails permission")
-async def _():
+async def _(fake_info=fake_info):
     test_token = generate_service_to_service_token("test", "pycon-backend", "gateway")
+    mock_info = fake_info(test_token)
+
     PermissionClass = IsService(["pycon-backend"], "test", "users-backend")
-    headers = {SERVICE_JWT_HEADER: test_token}
-    mock_info = MagicMock()
-    mock_info.context.request.headers.get = headers.get
+
     assert PermissionClass().has_permission(None, mock_info) is False
 
 
