@@ -27,7 +27,7 @@ async def _(fake_info=fake_info):
     assert PermissionClass().has_permission(None, mock_info) is True
 
 
-@test("Not allowed allowed callers fail the permission")
+@test("Not allowed callers fail the permission")
 async def _(fake_info=fake_info):
     test_token = generate_service_to_service_token(
         "test", "pycon-backend", "users-backend"
