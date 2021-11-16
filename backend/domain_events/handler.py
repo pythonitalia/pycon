@@ -32,8 +32,8 @@ def handle_new_cfp_submission(data):
                         "fields": [
                             {"type": "mrkdwn", "text": "*Topic*"},
                             {"type": "mrkdwn", "text": "*Duration*"},
-                            {"type": "plain_text", "text": str(duration)},
                             {"type": "mrkdwn", "text": str(topic)},
+                            {"type": "plain_text", "text": str(duration)},
                         ],
                     }
                 ]
