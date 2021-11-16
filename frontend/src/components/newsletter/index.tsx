@@ -5,9 +5,11 @@ import React, { useCallback, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, Heading, Input, jsx, Text } from "theme-ui";
 
+import { Alert } from "~/components/alert";
 import { useSubscribeMutation } from "~/types";
 
 import { Button } from "../button/button";
+import { ErrorsList } from "../errors-list";
 
 const NewsletterForm = () => {
   const [email, setEmail] = useState("");
@@ -19,9 +21,7 @@ const NewsletterForm = () => {
       e.preventDefault();
       if (
         loading ||
-        (data &&
-          data.subscribeToNewsletter.__typename ===
-            "SubscribeToNewsletterErrors")
+        data?.subscribeToNewsletter.__typename === "OperationResult"
       ) {
         return;
       }
@@ -33,20 +33,31 @@ const NewsletterForm = () => {
     },
     [email],
   );
-  if (data) {
-    return (
-      <FormattedMessage id="newsletter.success">
-        {(txt) => <Text variant="prefooter">{txt}</Text>}
-      </FormattedMessage>
-    );
-  }
-  if (error) {
+  const getErrors = (key: "validationEmail" | "nonFieldErrors") =>
+    (data?.subscribeToNewsletter?.__typename ===
+      "SubscribeToNewsletterErrors" &&
+      data.subscribeToNewsletter[key]) ||
+    [];
+
+  if (
+    data?.subscribeToNewsletter.__typename == "OperationResult" &&
+    data.subscribeToNewsletter.ok
+  ) {
     return (
       <Box>
-        <Text
-          color="danger"
-          dangerouslySetInnerHTML={{ __html: error.toString() }}
-        />
+        <FormattedMessage id="newsletter.text">
+          {(txt) => (
+            <Text variant="prefooter" mb={3}>
+              {txt}
+            </Text>
+          )}
+        </FormattedMessage>
+
+        <FormattedMessage id="newsletter.success">
+          {(txt) => (
+            <Text sx={{ color: "green", fontWeight: "bold" }}>{txt}</Text>
+          )}
+        </FormattedMessage>
       </Box>
     );
   }
@@ -63,13 +74,7 @@ const NewsletterForm = () => {
         </FormattedMessage>
         <Input
           sx={{
-            color: "white",
             listStyle: "none",
-
-            a: {
-              color: "white",
-              textDecoration: "none",
-            },
             mb: 3,
           }}
           placeholder="my@email.org"
@@ -80,9 +85,19 @@ const NewsletterForm = () => {
           required={true}
           type="email"
         />
+        <ErrorsList sx={{ mb: 4 }} errors={getErrors("validationEmail")} />
+
         <Button type="submit" disabled={!canSubmit} loading={loading}>
           <FormattedMessage id="newsletter.button" />
         </Button>
+
+        {(error ||
+          (data?.subscribeToNewsletter.__typename == "OperationResult" &&
+            !data.subscribeToNewsletter.ok)) && (
+          <Alert variant="alert">
+            <FormattedMessage id="newsletter.error" />
+          </Alert>
+        )}
       </Box>
     </Box>
   );

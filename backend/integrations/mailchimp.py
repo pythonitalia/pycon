@@ -1,5 +1,9 @@
+import logging
+
 import requests
 from django.conf import settings
+
+logger = logging.getLogger(__name__)
 
 
 class MailchimpError(Exception):
@@ -24,10 +28,10 @@ def subscribe(email: str) -> bool:
     )
 
     data = response.json()
-
     if data["status"] == "subscribed" or data["title"] == "Member Exists":
         return True
     else:
+        logger.error("Error from mailchimp: %s", data)
         raise MailchimpError(
             status=data.get("status"),
             title=data.get("title"),

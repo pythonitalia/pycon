@@ -75,7 +75,8 @@ export const messages = {
     "newsletter.text":
       "Stay in the loop, sign up for email updates about events, news and offer!",
     "newsletter.button": "Signup 👉",
-    "newsletter.success": "🎉 Thanks for subscribing! 🎉",
+    "newsletter.success": "Thanks for subscribing! 🎉",
+    "newsletter.error": "Something went wrong, please try again.",
     "signup.title": "Signup",
     "signup.email": "Email",
     "signup.password": "Password",
@@ -475,7 +476,8 @@ export const messages = {
     "newsletter.text":
       "Rimani aggiornato, iscriviti per ricevere aggiornamenti via email su eventi, novità e offerte!",
     "newsletter.button": "Iscriviti 👉",
-    "newsletter.success": "🎉 Grazie per esserti iscritto! 🎉",
+    "newsletter.success": "Grazie per esserti iscritto! 🎉",
+    "newsletter.error": "Si è verificato un errore, riprova piu' tardi.",
     "signup.title": "Registrati",
     "signup.email": "Email",
     "signup.password": "Password",

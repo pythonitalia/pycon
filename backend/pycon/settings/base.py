@@ -195,7 +195,12 @@ LOGGING = {
     "disable_existing_loggers": False,
     "handlers": {"console": {"class": "logging.StreamHandler"}},
     "loggers": {
-        "app_api": {"handlers": ["console"], "level": "WARNING"},
+        "pycon.api": {"handlers": ["console"], "level": "WARNING", "propagate": True},
+        "pycon.integrations": {
+            "handlers": ["console"],
+            "level": "WARNING",
+            "propagate": True,
+        },
         "qinspect": {"handlers": ["console"], "level": "DEBUG", "propagate": True},
     },
 }
