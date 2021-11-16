@@ -26,7 +26,7 @@ def process_message(record):
     receipt_handle = record["receiptHandle"]
 
     message_attributes = record["messageAttributes"]
-    message_type = message_attributes["MessageType"]["StringValue"]
+    message_type = message_attributes["MessageType"]["stringValue"]
 
     handler = HANDLERS.get(message_type, None)
 
