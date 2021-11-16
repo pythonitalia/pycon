@@ -1,7 +1,7 @@
 from integrations import slack
 
 
-def handle_new_cfp_submission(data, record):
+def handle_new_cfp_submission(data):
     title = data["title"]
     elevator_pitch = data["elevator_pitch"]
     submission_type = data["submission_type"]

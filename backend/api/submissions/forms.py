@@ -4,7 +4,7 @@ from django.utils.translation import gettext_lazy as _
 
 from api.forms import ContextAwareModelForm, HashidModelChoiceField
 from conferences.models import AudienceLevel, Conference
-from domain_messages.publisher import notify_new_submission
+from domain_events.publisher import notify_new_submission
 from languages.models import Language
 from notifications.aws import send_comment_notification
 from submissions.models import Submission, SubmissionComment, SubmissionTag
@@ -119,13 +119,13 @@ class SendSubmissionForm(SubmissionForm):
         self.instance.speaker_id = request.user.id
         instance = super().save(commit=commit)
         notify_new_submission(
-            instance.id,
-            instance.title,
-            instance.elevator_pitch,
-            instance.type.name,
-            request.build_absolute_uri(instance.get_admin_url()),
-            instance.duration.duration,
-            instance.topic.name,
+            submission_id=instance.id,
+            title=instance.title,
+            elevator_pitch=instance.elevator_pitch,
+            submission_type=instance.type.name,
+            admin_url=request.build_absolute_uri(instance.get_admin_url()),
+            duration=instance.duration.duration,
+            topic=instance.topic.name,
         )
         return instance
 
