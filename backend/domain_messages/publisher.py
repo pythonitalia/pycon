@@ -38,6 +38,9 @@ def notify_new_submission(
     )
     queue.send_message(
         MessageBody=body,
-        MessageAttributes={"MessageType": {"StringValue": "NewCFPSubmission"}},
-        MessageDeduplicationId=submission_id,
+        MessageAttributes={
+            "MessageType": {"StringValue": "NewCFPSubmission", "DataType": "String"}
+        },
+        MessageDeduplicationId=f"{submission_id}",
+        MessageGroupId="NewCFPSubmission",
     )
