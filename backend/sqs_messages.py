@@ -42,7 +42,7 @@ def process_message(record):
         data = json.loads(record["body"])
         handler(data, record)
 
-        sqs = boto3.resource("sqs")
+        sqs = boto3.client("sqs")
         sqs.delete_message(
             QueueUrl=settings.SQS_QUEUE_URL, ReceiptHandle=receipt_handle
         )
