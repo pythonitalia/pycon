@@ -5,6 +5,7 @@ import strawberry
 from strawberry import ID
 
 from users.internal_api.context import Info
+from users.internal_api.permissions import IsService
 from users.internal_api.types import User
 
 logger = logging.getLogger(__name__)
@@ -12,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 @strawberry.type
 class Query:
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsService(["gateway", "pycon-backend"])])
     async def user(self, info: Info, id: ID) -> Optional[User]:
         logger.info("Internal api request to get user_id=%s information", id)
         user = await info.context.users_repository.get_by_id(int(id))

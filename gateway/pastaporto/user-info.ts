@@ -18,7 +18,7 @@ export const fetchUserInfo = async (id: string): Promise<User | null> => {
 
   const token: string = jwt.sign({}, SERVICE_TO_SERVICE_SECRET!, {
     issuer: "gateway",
-    audience: "users-service",
+    audience: "users-backend",
     expiresIn: "1m",
   });
 

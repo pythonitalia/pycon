@@ -10,13 +10,12 @@ from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 from starlette.applications import Starlette
 from starlette.middleware import Middleware
 from starlette.middleware.sessions import SessionMiddleware
-from starlette.responses import JSONResponse
 from starlette.routing import Route
+
 from users.admin_api.views import GraphQL as AdminGraphQL
 from users.api.views import GraphQL
 from users.db import get_engine, get_session
 from users.domain.repository import UsersRepository
-from users.internal_api.permissions import is_service
 from users.internal_api.views import GraphQL as InternalGraphQL
 from users.settings import DEBUG, ENVIRONMENT, PASTAPORTO_SECRET, SECRET_KEY, SENTRY_DSN
 from users.social_auth.views import google_login, google_login_auth
@@ -43,17 +42,6 @@ app = Starlette(
         pastaporto_auth_middleware(PASTAPORTO_SECRET),
     ],
 )
-
-
-@app.middleware("http")
-async def internal_api_middleware(request, call_next):
-    if request.url.path != "/internal-api":
-        return await call_next(request)
-
-    if not is_service(request):
-        return JSONResponse({"error": "Forbidden"}, 400)
-    else:
-        return await call_next(request)
 
 
 @app.middleware("http")
