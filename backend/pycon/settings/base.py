@@ -20,6 +20,7 @@ FRONTEND_URL = env("FRONTEND_URL")
 # Application definition
 
 INSTALLED_APPS = [
+    "custom_admin",
     "dal",
     "dal_select2",
     "dal_admin_filters",
@@ -76,7 +77,7 @@ ROOT_URLCONF = "pycon.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [root("frontend")],
+        "DIRS": [],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -84,7 +85,9 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-            ]
+                "custom_admin.context_processors.admin_settings",
+            ],
+            "debug": True,
         },
     }
 ]
@@ -185,6 +188,8 @@ if PRETIX_API:
     PRETIX_API_TOKEN = env("PRETIX_API_TOKEN")
 
 SIMULATE_PRETIX_DB = True
+
+ENV = env("ENV", default="local")
 
 LOGGING = {
     "version": 1,

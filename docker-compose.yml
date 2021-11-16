@@ -1,7 +1,9 @@
 x-defaults:
-  environment: &enviroment_defaults
+  environment:
+    &enviroment_defaults
     DEBUG: "True"
     NODE_ENV: "development"
+    ENV: "local"
     PRETIX_API: http://tickets.pycon.it/api/v1/
     PRETIX_API_TOKEN: None # ask for a token
     SECRET_KEY: secret-key
@@ -27,12 +29,10 @@ services:
     build:
       context: ./backend
       dockerfile: ../Dockerfile.python.local
-    networks: [pycon_net]
+    networks: [ pycon_net ]
     entrypoint: ""
-    command: sh -c "python manage.py migrate &&
-      python manage.py create_admin &&
-      touch /.ready &&
-      python manage.py runserver 0.0.0.0:8000"
+    command: sh -c "python manage.py migrate && python manage.py create_admin &&
+      touch /.ready && python manage.py runserver 0.0.0.0:8000"
     depends_on:
       pycon-backend-db:
         condition: service_healthy
@@ -49,18 +49,14 @@ services:
       ALLOWED_HOSTS: "*"
       PRETIX_API_TOKEN: ${PRETIX_API_TOKEN}
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          'test -f /.ready',
-        ]
+      test: [ "CMD-SHELL", 'test -f /.ready' ]
       interval: 10s
       timeout: 10s
       retries: 10
 
   pycon-backend-db:
     image: postgres:11.13
-    networks: [pycon_net]
+    networks: [ pycon_net ]
     volumes:
       - pycon-backend-db-data:/var/lib/postgresql/data
     environment:
@@ -68,7 +64,7 @@ services:
       POSTGRES_PASSWORD: pycon
       POSTGRES_DB: pycon
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U pycon"]
+      test: [ "CMD-SHELL", "pg_isready -U pycon" ]
       interval: 5s
       timeout: 5s
 
@@ -76,11 +72,10 @@ services:
     build:
       context: ./users-backend
       dockerfile: ../Dockerfile.python.local
-    networks: [pycon_net]
+    networks: [ pycon_net ]
     entrypoint: ""
-    command: sh -c "poetry run task migrate &&
-      touch /.ready &&
-      python -m uvicorn main:wrapped_app --host 0.0.0.0 --port 8050 --reload"
+    command: sh -c "poetry run task migrate && touch /.ready && python -m uvicorn
+      main:wrapped_app --host 0.0.0.0 --port 8050 --reload"
     depends_on:
       users-backend-db:
         condition: service_healthy
@@ -94,18 +89,14 @@ services:
     ports:
       - 8050:8050
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          'test -f /.ready',
-        ]
+      test: [ "CMD-SHELL", 'test -f /.ready' ]
       interval: 10s
       timeout: 10s
       retries: 10
 
   users-backend-db:
     image: postgres:11.13
-    networks: [pycon_net]
+    networks: [ pycon_net ]
     volumes:
       - users-backend-db-data:/var/lib/postgresql/data
     environment:
@@ -113,7 +104,7 @@ services:
       POSTGRES_PASSWORD: users-backend
       POSTGRES_DB: users-backend
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U users-backend"]
+      test: [ "CMD-SHELL", "pg_isready -U users-backend" ]
       interval: 5s
       timeout: 5s
 
@@ -121,11 +112,10 @@ services:
     build:
       context: ./association-backend
       dockerfile: ../Dockerfile.python.local
-    networks: [pycon_net]
+    networks: [ pycon_net ]
     entrypoint: ""
-    command: sh -c "poetry run task migrate &&
-      touch /.ready &&
-      python -m uvicorn main:wrapped_app --host 0.0.0.0 --port 8060 --reload"
+    command: sh -c "poetry run task migrate && touch /.ready && python -m uvicorn
+      main:wrapped_app --host 0.0.0.0 --port 8060 --reload"
     depends_on:
       association-backend-db:
         condition: service_healthy
@@ -141,18 +131,14 @@ services:
     ports:
       - 8060:8060
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          'test -f /.ready',
-        ]
+      test: [ "CMD-SHELL", 'test -f /.ready' ]
       interval: 10s
       timeout: 10s
       retries: 10
 
   association-backend-db:
     image: postgres:11.13
-    networks: [pycon_net]
+    networks: [ pycon_net ]
     volumes:
       - association-backend-db-data:/var/lib/postgresql/data
     environment:
@@ -160,7 +146,7 @@ services:
       POSTGRES_PASSWORD: association-backend
       POSTGRES_DB: association-backend
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U association-backend"]
+      test: [ "CMD-SHELL", "pg_isready -U association-backend" ]
       interval: 5s
       timeout: 5s
 
@@ -168,10 +154,9 @@ services:
     build:
       context: ./gateway
       dockerfile: ../Dockerfile.node.local
-    networks: [pycon_net]
+    networks: [ pycon_net ]
     entrypoint: ""
-    command: sh -c "touch /.ready &&
-      yarn dev"
+    command: sh -c "touch /.ready && yarn dev"
     volumes:
       - ./gateway/:/home/node/app
       - /home/node/app/node_modules/
@@ -190,11 +175,7 @@ services:
       association-backend:
         condition: service_healthy
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          'test -f /.ready',
-        ]
+      test: [ "CMD-SHELL", 'test -f /.ready' ]
       interval: 10s
       timeout: 10s
       retries: 10
@@ -203,7 +184,7 @@ services:
     build:
       context: ./frontend
       dockerfile: ../Dockerfile.node.local
-    networks: [pycon_net]
+    networks: [ pycon_net ]
     entrypoint: ""
     working_dir: /home/node/app
     command: sh -c "yarn codegen && yarn run dev"
@@ -225,7 +206,7 @@ services:
     build:
       context: ./association-frontend
       dockerfile: ../Dockerfile.node.local
-    networks: [pycon_net]
+    networks: [ pycon_net ]
     entrypoint: ""
     working_dir: /home/node/app
     command: sh -c "yarn codegen && yarn run dev"
@@ -247,7 +228,8 @@ services:
 networks:
   pycon_net:
 
+    null
 volumes:
-  pycon-backend-db-data:
-  users-backend-db-data:
-  association-backend-db-data:
+  pycon-backend-db-data: null
+  users-backend-db-data: null
+  association-backend-db-data: null
