@@ -1,8 +1,11 @@
 from dal_admin_filters import AutocompleteFilter
+from django import forms
 from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import format_html
 
+from users.autocomplete import UsersBackendAutocomplete
+from users.client import get_users_data_by_ids
 from voting.models import RankRequest, RankSubmission, Vote
 
 
@@ -18,14 +21,35 @@ class ConferenceFilter(AutocompleteFilter):
     autocomplete_url = "submission-conference-autocomplete"
 
 
+class VoteAdminForm(forms.ModelForm):
+    class Meta:
+        model = Vote
+        widgets = {
+            "user_id": UsersBackendAutocomplete(admin.site),
+        }
+        fields = ["value", "user_id", "submission"]
+
+
 @admin.register(Vote)
 class VoteAdmin(admin.ModelAdmin):
-    list_display = ("submission", "user_id", "value")
+    form = VoteAdminForm
+    list_display = ("submission", "user_display_name", "value")
     list_filter = (SubmissionFilter, "value")
     search_fields = (
         "submission__title",
         "user_id",
     )
+
+    def user_display_name(self, obj):
+        return self._users_by_id[str(obj.user_id)]["displayName"]
+
+    user_display_name.short_description = "User"
+
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        author_ids = queryset.values_list("user_id", flat=True)
+        self._users_by_id = get_users_data_by_ids(list(author_ids))
+        return queryset
 
     class Media:
         js = ["admin/js/jquery.init.js"]
