@@ -46,9 +46,16 @@ class UsersBackendAutocomplete(AutocompleteSelect):
         default = (None, [], 0)
         groups = [default]
 
-        users_by_id = get_users_data_by_ids(value)
+        if value and value[0]:
+            users_by_id = get_users_data_by_ids(value)
+        else:
+            users_by_id = {}
+
         selected_choices = {str(v) for v in value}
         for choice in value:
+            if not choice:
+                continue
+
             index = len(default[1])
             subgroup = default[1]
             subgroup.append(
