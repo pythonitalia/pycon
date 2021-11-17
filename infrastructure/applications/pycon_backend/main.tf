@@ -2,6 +2,7 @@ locals {
   is_prod           = terraform.workspace == "production"
   admin_domain      = "admin"
   full_admin_domain = local.is_prod ? "${local.admin_domain}.pycon.it" : "${terraform.workspace}-${local.admin_domain}.pycon.it"
+  users_backend_url = local.is_prod ? "https://users-api.python.it" : "https://${terraform.workspace}-users-api.python.it"
 }
 data "aws_vpc" "default" {
   filter {
@@ -68,6 +69,7 @@ module "lambda" {
     SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = module.secrets.value.google_oauth2_secret
     PASTAPORTO_SECRET                = module.common_secrets.value.pastaporto_secret
     FORCE_PYCON_HOST                 = local.is_prod
+    USERS_SERVICE                    = local.users_backend_url
   }
 }
 
