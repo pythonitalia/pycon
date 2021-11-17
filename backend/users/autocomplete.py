@@ -22,7 +22,6 @@ class UsersBackendAutocomplete(AutocompleteSelect):
         Nested attributes require a double dash as per
         https://select2.org/configuration/data-attributes#nested-subkey-options
         """
-        # attrs = super().build_attrs(base_attrs, extra_attrs=extra_attrs)
         attrs = {}
         attrs.setdefault("class", "")
         attrs.update(
