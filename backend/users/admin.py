@@ -90,7 +90,7 @@ class PyConUserAdmin(UserAdmin):
         my_urls = [
             path(
                 "users-autocomplete/",
-                users_autocomplete,
+                self.admin_site.admin_view(users_autocomplete),
                 name="users-admin-autocomplete",
             ),
         ]
