@@ -1,12 +1,29 @@
+from django import forms
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 from ordered_model.admin import OrderedModelAdmin
 
-from .models import Day, Room, ScheduleItem, Slot
+from users.autocomplete import UsersBackendAutocomplete
+
+from .models import Day, Room, ScheduleItem, ScheduleItemAdditionalSpeaker, Slot
 
 
 class SlotInline(admin.TabularInline):
     model = Slot
+
+
+class ScheduleItemAdditionalSpeakerInlineForm(forms.ModelForm):
+    class Meta:
+        model = ScheduleItemAdditionalSpeaker
+        widgets = {
+            "user_id": UsersBackendAutocomplete(admin.site),
+        }
+        fields = ["scheduleitem", "user_id"]
+
+
+class ScheduleItemAdditionalSpeakerInline(admin.TabularInline):
+    model = ScheduleItemAdditionalSpeaker
+    form = ScheduleItemAdditionalSpeakerInlineForm
 
 
 @admin.register(ScheduleItem)
@@ -38,7 +55,6 @@ class ScheduleItemAdmin(admin.ModelAdmin):
                     "audience_level",
                     "description",
                     "submission",
-                    "additional_speakers",
                 )
             },
         ),
@@ -46,8 +62,10 @@ class ScheduleItemAdmin(admin.ModelAdmin):
     )
     autocomplete_fields = ("submission",)
     prepopulated_fields = {"slug": ("title",)}
-    # TODO add back a way to add additional speakers
     filter_horizontal = ("rooms",)
+    inlines = [
+        ScheduleItemAdditionalSpeakerInline,
+    ]
 
 
 @admin.register(Room)
