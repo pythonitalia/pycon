@@ -13,4 +13,7 @@ class AdminUsersMixin(admin.ModelAdmin):
         return queryset
 
     def get_user_display_name(self, obj_id: Any) -> str:
-        return self._PREFETCHED_USERS_BY_ID[str(obj_id)]["displayName"]
+        return self.get_user_data(obj_id)["displayName"]
+
+    def get_user_data(self, obj_id: Any) -> str:
+        return self._PREFETCHED_USERS_BY_ID[str(obj_id)]
