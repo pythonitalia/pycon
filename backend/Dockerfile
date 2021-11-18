@@ -64,6 +64,7 @@ COPY . ${FUNCTION_DIR}
 ENV DJANGO_SETTINGS_MODULE=pycon.settings.prod
 
 RUN USERS_SERVICE=empty \
+    SERVICE_TO_SERVICE_SECRET=empty \
     SLACK_INCOMING_WEBHOOK_URL=example \
     AWS_MEDIA_BUCKET=example \
     AWS_REGION_NAME=eu-central-1 \
