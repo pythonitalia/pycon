@@ -2,7 +2,7 @@ from django import forms
 from django.contrib import admin
 
 from users.autocomplete import UsersBackendAutocomplete
-from users.client import get_users_data_by_ids
+from users.mixins import AdminUsersMixin
 
 from .models import Post
 
@@ -25,17 +25,12 @@ class PostAdminForm(forms.ModelForm):
 
 
 @admin.register(Post)
-class PostAdmin(admin.ModelAdmin):
+class PostAdmin(AdminUsersMixin):
     form = PostAdminForm
     list_display = ("title", "published", "author_display_name")
+    user_fk = "author_id"
 
     def author_display_name(self, obj):
-        return self._users_by_id[str(obj.author_id)]["displayName"]
+        return self.get_user_display_name(obj.author_id)
 
     author_display_name.short_description = "Author"
-
-    def get_queryset(self, request):
-        queryset = super().get_queryset(request)
-        author_ids = queryset.values_list("author_id", flat=True)
-        self._users_by_id = get_users_data_by_ids(list(author_ids))
-        return queryset

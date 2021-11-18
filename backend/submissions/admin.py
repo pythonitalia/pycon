@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 
 from users.autocomplete import UsersBackendAutocomplete
-from users.client import get_users_data_by_ids
+from users.mixins import AdminUsersMixin
 
 from .models import Submission, SubmissionComment, SubmissionTag, SubmissionType
 
@@ -49,7 +49,7 @@ class SubmissionAdminForm(forms.ModelForm):
 
 
 @admin.register(Submission)
-class SubmissionAdmin(admin.ModelAdmin):
+class SubmissionAdmin(AdminUsersMixin):
     form = SubmissionAdminForm
     list_display = (
         "title",
@@ -87,17 +87,12 @@ class SubmissionAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}
     filter_horizontal = ("tags",)
     inlines = [SubmissionCommentInline]
+    user_fk = "speaker_id"
 
     def speaker_display_name(self, obj):
-        return self._users_by_id[str(obj.speaker_id)]["displayName"]
+        return self.get_user_display_name(obj.author_id)
 
     speaker_display_name.short_description = "Speaker"
-
-    def get_queryset(self, request):
-        queryset = super().get_queryset(request)
-        author_ids = queryset.values_list("speaker_id", flat=True)
-        self._users_by_id = get_users_data_by_ids(list(author_ids))
-        return queryset
 
     class Media:
         js = ["admin/js/jquery.init.js"]
