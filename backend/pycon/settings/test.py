@@ -7,3 +7,6 @@ STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
 
 EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
 PASTAPORTO_SECRET = "pastaporto_test_xxx"
+
+USERS_SERVICE = "http://fake-service"
+SERVICE_TO_SERVICE_SECRET = "secret-to-secret"

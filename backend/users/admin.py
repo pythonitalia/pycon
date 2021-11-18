@@ -2,8 +2,10 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.db.models import Q
+from django.urls import path
 from django.utils.translation import gettext_lazy as _
 
+from .admin_views import users_autocomplete
 from .models import User
 
 
@@ -82,6 +84,17 @@ class PyConUserAdmin(UserAdmin):
             .get_queryset(request)
             .filter(Q(is_staff=True) | Q(is_superuser=True))
         )
+
+    def get_urls(self):
+        urls = super().get_urls()
+        my_urls = [
+            path(
+                "users-autocomplete/",
+                self.admin_site.admin_view(users_autocomplete),
+                name="users-admin-autocomplete",
+            ),
+        ]
+        return my_urls + urls
 
 
 admin.site.register(User, PyConUserAdmin)
