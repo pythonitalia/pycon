@@ -34,6 +34,8 @@ runs:
         echo "::group::Start PyCon Backend"
         GITHUB_ACTIONS=true \
         CI=true \
+        USERS_SERVICE=http://localhost:8050 \
+        SERVICE_TO_SERVICE_SECRET=service-to-service \
         DATABASE_URL=psql://postgres:postgres@localhost:${{ inputs.postgres-port }}/postgres  \
         FRONTEND_URL=x  \
         ALLOWED_HOSTS='*' \
