@@ -18,6 +18,13 @@ const animation = keyframes`
   }
 `;
 
+// This is the font width of the character 0 at the font size of 32px
+// It should be roughly the same as a CSS 1ch value.
+// To calculate it I used this solution: https://stackoverflow.com/a/21015393
+// getTextWidth("0", getCanvasFontSize(el))
+// Where el must be the marquee text
+const WIDTH_OF_0_FOR_MARQUEE_SIZE = 22.399993896484375;
+
 export const Marquee = ({ message }: MarqueeProps) => {
   const messageWithSeparator = `${message} / `;
   const ch = `${messageWithSeparator.length}ch`;
@@ -25,15 +32,21 @@ export const Marquee = ({ message }: MarqueeProps) => {
   const [numOfShadows, setNumOfShadows] = useState(50);
   useEffect(() => {
     const listener = () => {
+      // Since our text is at a fixed font size and doesn't increase/decrease
+      // with the width of the screen, we need to manually calculate how many
+      // text shadows we think we will need to cover the entire screen
       setNumOfShadows(
         Math.ceil(
           window.innerWidth /
-            (22.399993896484375 * messageWithSeparator.length),
+            (WIDTH_OF_0_FOR_MARQUEE_SIZE * messageWithSeparator.length),
         ),
       );
     };
-    window.addEventListener("resize", listener);
+    // We want to replace the crazy high value added to avoid blank space due to SSR
+    // with a real value from the browser
     listener();
+
+    window.addEventListener("resize", listener);
     return () => {
       window.removeEventListener("resize", listener);
     };
