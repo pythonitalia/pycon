@@ -19,7 +19,7 @@ const animation = keyframes`
 `;
 
 export const Marquee = ({ message }: MarqueeProps) => {
-  const messageWithSeparator = `${message} /`;
+  const messageWithSeparator = `${message} / `;
   const ch = `${messageWithSeparator.length}ch`;
   // Huge number so that the SSR version doesn't show blank space at first render
   const [numOfShadows, setNumOfShadows] = useState(50);
