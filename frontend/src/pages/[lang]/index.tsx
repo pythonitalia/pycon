@@ -278,7 +278,7 @@ export const HomePage = () => {
       </Grid>
 
       <Grid
-        columns={[1, 2]}
+        columns={[1, null, 2]}
         sx={{
           px: 3,
           maxWidth: "container",
