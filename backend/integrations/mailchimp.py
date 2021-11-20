@@ -30,10 +30,10 @@ def subscribe(email: str) -> bool:
     data = response.json()
     if data["status"] == "subscribed" or data["title"] == "Member Exists":
         return True
-    else:
-        logger.error("Error from mailchimp: %s", data)
-        raise MailchimpError(
-            status=data.get("status"),
-            title=data.get("title"),
-            detail=data.get("detail"),
-        )
+
+    logger.error("Error from mailchimp: %s", data)
+    raise MailchimpError(
+        status=data.get("status"),
+        title=data.get("title"),
+        detail=data.get("detail"),
+    )
