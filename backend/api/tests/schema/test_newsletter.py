@@ -3,7 +3,6 @@ from pytest import mark
 
 from newsletters.models import Subscription
 
-# pytestmark = mark.skip
 
 
 def test_subscribe_to_newsletter(graphql_client, mocker):
