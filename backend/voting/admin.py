@@ -96,7 +96,7 @@ class RankSubmissionAdmin(AdminUsersMixin):
         return " ".join(langs)
 
     def speaker(self, obj):
-        return obj.submission.speaker_id
+        return self.get_user_display_name(obj.submission.speaker_id)
 
     def gender(self, obj):
         emoji = {
