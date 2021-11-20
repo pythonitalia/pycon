@@ -52,7 +52,7 @@ class VoteAdmin(AdminUsersMixin):
 
 @admin.register(RankSubmission)
 class RankSubmissionAdmin(AdminUsersMixin):
-    user_fk = "speaker_id"
+    user_fk = "submission.speaker_id"
     list_display = (
         "absolute_rank",
         "absolute_score",
