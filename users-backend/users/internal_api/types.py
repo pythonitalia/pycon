@@ -13,6 +13,7 @@ class User:
     is_active: bool
     is_staff: bool
     jwt_auth_id: int
+    gender: str
 
     @strawberry.field
     def display_name(self) -> str:
@@ -29,4 +30,5 @@ class User:
             fullname=user.fullname,
             username=user.username,
             name=user.name,
+            gender=user.gender,
         )
