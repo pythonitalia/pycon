@@ -9,7 +9,7 @@ from strawberry_forms.forms import FormWithContext
 logger = logging.getLogger(__name__)
 
 
-class SussbscribeToNewsletterForm(FormWithContext):
+class SubscribeToNewsletterForm(FormWithContext):
     email = forms.EmailField()
 
     def save(self):
@@ -18,7 +18,11 @@ class SussbscribeToNewsletterForm(FormWithContext):
         try:
             return subscribe(email)
         except Exception as e:
-            logger.error("Unable to subscribe the user to mailchimp due to an error", e, exc_info=True)
+            logger.error(
+                "Unable to subscribe the user to mailchimp due to an error",
+                e,
+                exc_info=True,
+            )
             return False
 
 
