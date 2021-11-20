@@ -19,7 +19,7 @@ class SubscribeToNewsletterForm(FormWithContext):
             return subscribe(email)
         except Exception as e:
             logger.error(
-                "Unable to subscribe the user to mailchimp due to an error",
+                "Unable to subscribe the user to mailchimp due to an error %s",
                 e,
                 exc_info=True,
             )
