@@ -71,6 +71,7 @@ module "lambda" {
     FORCE_PYCON_HOST                 = local.is_prod
     USERS_SERVICE                    = local.users_backend_url
     SERVICE_TO_SERVICE_SECRET        = module.common_secrets.value.service_to_service_secret
+    SQS_QUEUE_URL                    = aws_sqs_queue.queue.id
   }
 }
 

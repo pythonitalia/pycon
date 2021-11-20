@@ -14,6 +14,7 @@ import traceback
 
 # imports serverless_wsgi from the root
 import serverless_wsgi
+from sqs_messages import process_sqs_messages
 
 
 def import_app(config):
@@ -35,10 +36,15 @@ def import_app(config):
 
 
 def handler(event, context):
+    if "Records" in event:
+        process_sqs_messages(event)
+        return
+
     """Lambda event handler, invokes the WSGI wrapper and handles command invocation"""
     if "_serverless-wsgi" in event:
         import shlex
         import subprocess
+
         from werkzeug._compat import StringIO, to_native
 
         native_stdout = sys.stdout
