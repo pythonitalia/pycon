@@ -20,7 +20,6 @@ x-defaults:
     IDENTITY_SECRET: identity-secret
     SERVICE_TO_SERVICE_SECRET: service-to-service-secret
     PASTAPORTO_ACTION_SECRET: pastaporto-action-secret
-    MAILCHIMP_SECRET_KEY: mailchimp-secret
     # Services URLs
     PYCON_BACKEND_SERVICE: http://pycon-backend:8000
     USERS_SERVICE: http://users-backend:8050
