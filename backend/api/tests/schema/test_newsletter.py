@@ -24,7 +24,7 @@ def test_subscribe_to_newsletter(graphql_client):
     }
     """
 
-    with patch("integrations.mailchimp.subscribe") as mock_subscription:
+    with patch("api.newsletters.forms.subscribe") as mock_subscription:
         mock_subscription.return_value = True
 
         resp = graphql_client.query(query, variables=variables)
