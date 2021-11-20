@@ -107,7 +107,7 @@ class RankSubmissionAdmin(AdminUsersMixin):
             "not_say": "⛔️",
         }
 
-        speaker_gender = self.get_user_data(obj.speaker_id)["gender"]
+        speaker_gender = self.get_user_data(obj.submission.speaker_id)["gender"]
         return emoji[speaker_gender]
 
     gender.short_description = "Gender"
