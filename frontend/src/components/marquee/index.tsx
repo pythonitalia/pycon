@@ -26,7 +26,7 @@ const animation = keyframes`
 const WIDTH_OF_0_FOR_MARQUEE_SIZE = 22.399993896484375;
 
 export const Marquee = ({ message }: MarqueeProps) => {
-  const messageWithSeparator = `${message} / `;
+  const messageWithSeparator = `${message}`;
   const ch = `${messageWithSeparator.length}ch`;
   // Huge number so that the SSR version doesn't show blank space at first render
   const [numOfShadows, setNumOfShadows] = useState(50);
@@ -68,13 +68,23 @@ export const Marquee = ({ message }: MarqueeProps) => {
           display: "inline-block",
           whiteSpace: "nowrap",
           willChange: "transform",
-          animation: `${animation} 2.5s linear infinite`,
+          animation: `${animation} 5s linear infinite`,
           width: `${ch}`,
           textShadow: new Array(numOfShadows)
             .fill(0)
             .map((_, i) => `calc(${ch} * ${i + 1}) 0 currentColor`)
             .join(","),
+          userSelect: "none",
+          "&:after": {
+            content: "'/'",
+            m: "0 7px",
+          },
         }}
+        css={`
+          @media (prefers-reduced-motion: reduce) {
+            animation: none !important;
+          }
+        `}
       >
         {messageWithSeparator}
       </Text>
