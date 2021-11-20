@@ -72,6 +72,8 @@ module "lambda" {
     USERS_SERVICE                    = local.users_backend_url
     SERVICE_TO_SERVICE_SECRET        = module.common_secrets.value.service_to_service_secret
     SQS_QUEUE_URL                    = aws_sqs_queue.queue.id
+    MAILCHIMP_SECRET_KEY             = module.common_secrets.value.mailchimp_secret_key
+    MAILCHIMP_LIST_ID                = module.common_secrets.value.mailchimp_list_id
   }
 }
 
