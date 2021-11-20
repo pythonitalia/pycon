@@ -1,5 +1,7 @@
 name: Deploy
 
+concurrency: deploy-${{ fromJSON('["pastaporto", "production"]')[github.ref == 'refs/heads/main'] }}
+
 on:
   push:
     branches:
