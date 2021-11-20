@@ -7,6 +7,7 @@ from newsletters.models import Subscription
 
 
 def test_subscribe_to_newsletter(graphql_client, mocker):
+    mocker.patch("integrations.mailchimp.subscribe").return_value = True
     email = "me@example.it"
     variables = {"email": email}
 
@@ -24,11 +25,10 @@ def test_subscribe_to_newsletter(graphql_client, mocker):
     }
     """
 
-    with mocker.patch("integrations.mailchimp.subscribe", return_value=True):
-        resp = graphql_client.query(query, variables=variables)
+    resp = graphql_client.query(query, variables=variables)
 
-        assert resp["data"]["subscribeToNewsletter"]["__typename"] == "OperationResult"
-        assert resp["data"]["subscribeToNewsletter"]["ok"] is True
+    assert resp["data"]["subscribeToNewsletter"]["__typename"] == "OperationResult"
+    assert resp["data"]["subscribeToNewsletter"]["ok"] is True
 
 
 @pytest.mark.skip
