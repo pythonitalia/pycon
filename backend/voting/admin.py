@@ -51,7 +51,7 @@ class VoteAdmin(AdminUsersMixin):
 
 
 @admin.register(RankSubmission)
-class RankSubmissionAdmin(admin.ModelAdmin):
+class RankSubmissionAdmin(AdminUsersMixin):
     list_display = (
         "absolute_rank",
         "absolute_score",
@@ -105,7 +105,11 @@ class RankSubmissionAdmin(admin.ModelAdmin):
             "other": "🧑🏻‍🎤",
             "not_say": "⛔️",
         }
-        return emoji[obj.submission.speaker.gender]
+
+        speaker_gender = self.get_user_data(obj.speaker_id)["gender"]
+        return emoji[speaker_gender]
+
+    gender.short_description = "Gender"
 
     def view_submission(self, obj):  # pragma: no cover
         return format_html(
