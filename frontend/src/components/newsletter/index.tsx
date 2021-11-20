@@ -6,7 +6,7 @@ import { FormattedMessage } from "react-intl";
 import { Box, Heading, Input, jsx, Text } from "theme-ui";
 
 import { Alert } from "~/components/alert";
-import { useSubscribeMutation } from "~/types";
+import { NewsletterSubscriptionResult, useSubscribeMutation } from "~/types";
 
 import { Button } from "../button/button";
 import { ErrorsList } from "../errors-list";
@@ -21,7 +21,7 @@ const NewsletterForm = () => {
       e.preventDefault();
       if (
         loading ||
-        data?.subscribeToNewsletter.__typename === "OperationResult"
+        data?.subscribeToNewsletter.__typename === "NewsletterSubscribeResult"
       ) {
         return;
       }
@@ -39,10 +39,18 @@ const NewsletterForm = () => {
       data.subscribeToNewsletter[key]) ||
     [];
 
+  const unableToSubscribe =
+    data?.subscribeToNewsletter.__typename == "NewsletterSubscribeResult" &&
+    data?.subscribeToNewsletter.status ===
+      NewsletterSubscriptionResult.UnableToSubscribe;
+
   if (
-    data?.subscribeToNewsletter.__typename == "OperationResult" &&
-    data.subscribeToNewsletter.ok
+    data?.subscribeToNewsletter.__typename == "NewsletterSubscribeResult" &&
+    !unableToSubscribe
   ) {
+    const success =
+      data?.subscribeToNewsletter.status ==
+      NewsletterSubscriptionResult.Subscribed;
     return (
       <Box>
         <FormattedMessage id="newsletter.text">
@@ -53,7 +61,9 @@ const NewsletterForm = () => {
           )}
         </FormattedMessage>
 
-        <FormattedMessage id="newsletter.success">
+        <FormattedMessage
+          id={success ? "newsletter.success" : "newsletter.confirmViaEmail"}
+        >
           {(txt) => (
             <Text sx={{ color: "green", fontWeight: "bold" }}>{txt}</Text>
           )}
@@ -91,9 +101,7 @@ const NewsletterForm = () => {
           <FormattedMessage id="newsletter.button" />
         </Button>
 
-        {(error ||
-          (data?.subscribeToNewsletter.__typename == "OperationResult" &&
-            !data.subscribeToNewsletter.ok)) && (
+        {(error || unableToSubscribe) && (
           <Alert variant="alert">
             <FormattedMessage id="newsletter.error" />
           </Alert>

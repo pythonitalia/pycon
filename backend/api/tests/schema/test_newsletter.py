@@ -3,6 +3,7 @@ from unittest.mock import patch
 import pytest
 from pytest import mark
 
+from integrations.mailchimp import SubscriptionResult
 from newsletters.models import Subscription
 
 
@@ -17,51 +18,23 @@ def test_subscribe_to_newsletter(graphql_client):
             }) {
             __typename
 
-            ... on OperationResult {
-                ok
+            ... on NewsletterSubscribeResult {
+                status
             }
         }
     }
     """
 
     with patch("api.newsletters.forms.subscribe") as mock_subscription:
-        mock_subscription.return_value = True
+        mock_subscription.return_value = SubscriptionResult.UNABLE_TO_SUBSCRIBE
 
         resp = graphql_client.query(query, variables=variables)
 
-        assert resp["data"]["subscribeToNewsletter"]["__typename"] == "OperationResult"
-        assert resp["data"]["subscribeToNewsletter"]["ok"] is True
-
-
-@pytest.mark.skip
-@mark.django_db
-def test_unsubscribe_to_newsletter(graphql_client, subscription_factory):
-    email = "me@example.it"
-
-    subscription_factory.create(email=email)
-
-    variables = {"email": email}
-
-    query = """
-            mutation($email: String!) {
-                unsubscribeToNewsletter(input: {
-                    email: $email
-                }) {
-                __typename
-
-                ... on UnsubscribeToNewsletterErrors {
-                    email
-                }
-
-                ... on OperationResult {
-                    ok
-                }
-            }
-        }
-        """
-    resp = graphql_client.query(query, variables=variables)
-    assert resp["data"]["unsubscribeToNewsletter"]["__typename"] == "OperationResult"
-    assert resp["data"]["unsubscribeToNewsletter"]["ok"] is True
+        assert (
+            resp["data"]["subscribeToNewsletter"]["__typename"]
+            == "NewsletterSubscribeResult"
+        )
+        assert resp["data"]["subscribeToNewsletter"]["status"] == "SUBSCRIBED"
 
 
 @pytest.mark.skip
@@ -85,8 +58,8 @@ def test_unsubscribe_not_registered_mail_to_newsletter(graphql_client):
                     email
                 }
 
-                ... on OperationResult {
-                    ok
+                ... on NewsletterSubscribeResult {
+                    status
                 }
             }
         }
@@ -94,7 +67,7 @@ def test_unsubscribe_not_registered_mail_to_newsletter(graphql_client):
 
     resp = graphql_client.query(query, variables=variables)
 
-    assert resp["data"]["unsubscribeToNewsletter"]["ok"] is True
+    assert resp["data"]["unsubscribeToNewsletter"]["status"] is True
 
 
 def _update_user_newsletter(graphql_client, user, open_to_newsletter):

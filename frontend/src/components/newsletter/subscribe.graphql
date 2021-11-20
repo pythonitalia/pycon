@@ -2,8 +2,8 @@ mutation subscribe($email: String!) {
   subscribeToNewsletter(input: { email: $email }) {
     __typename
 
-    ... on OperationResult {
-      ok
+    ... on NewsletterSubscribeResult {
+      status
     }
 
     ... on SubscribeToNewsletterErrors {

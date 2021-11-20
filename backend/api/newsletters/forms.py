@@ -2,7 +2,7 @@ import logging
 
 from django import forms
 
-from integrations.mailchimp import subscribe
+from integrations.mailchimp import SubscriptionResult, subscribe
 from newsletters.models import Subscription
 from strawberry_forms.forms import FormWithContext
 
@@ -23,7 +23,7 @@ class SubscribeToNewsletterForm(FormWithContext):
                 e,
                 exc_info=True,
             )
-            return False
+            return SubscriptionResult.UNABLE_TO_SUBSCRIBE
 
 
 class UnsubscribeToNewsletterForm(FormWithContext):
