@@ -1,10 +1,12 @@
+from unittest.mock import patch
+
 import pytest
 from pytest import mark
 
 from newsletters.models import Subscription
 
 
-def test_subscribe_to_newsletter(graphql_client, mocker):
+def test_subscribe_to_newsletter(graphql_client):
     email = "me@example.it"
     variables = {"email": email}
 
@@ -22,7 +24,7 @@ def test_subscribe_to_newsletter(graphql_client, mocker):
     }
     """
 
-    with mocker.patch("integrations.mailchimp.subscribe") as mock_subscription:
+    with patch("integrations.mailchimp.subscribe") as mock_subscription:
         mock_subscription.return_value = True
 
         resp = graphql_client.query(query, variables=variables)
