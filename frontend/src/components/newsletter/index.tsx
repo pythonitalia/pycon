@@ -14,60 +14,53 @@ import { ErrorsList } from "../errors-list";
 const NewsletterForm = () => {
   const [email, setEmail] = useState("");
   const [subscribe, { loading, error, data }] = useSubscribeMutation();
+  const subscribeToNewsletter = data?.subscribeToNewsletter;
+
+  const hasFormErrors =
+    subscribeToNewsletter?.__typename === "SubscribeToNewsletterErrors";
+  const hasCompletedSubscription =
+    subscribeToNewsletter?.__typename === "NewsletterSubscribeResult";
+  const isUnableToSubscribe =
+    hasCompletedSubscription &&
+    subscribeToNewsletter?.status ===
+      NewsletterSubscriptionResult.UnableToSubscribe;
 
   const canSubmit = email.trim() !== "" && !loading;
   const onSubmit = useCallback(
     async (e) => {
       e.preventDefault();
-      if (
-        loading ||
-        data?.subscribeToNewsletter.__typename === "NewsletterSubscribeResult"
-      ) {
+
+      if (loading || hasCompletedSubscription) {
         return;
       }
+
       subscribe({
         variables: {
           email,
         },
       });
     },
-    [email],
+    [email, hasCompletedSubscription, loading],
   );
+
   const getErrors = (key: "validationEmail" | "nonFieldErrors") =>
-    (data?.subscribeToNewsletter?.__typename ===
-      "SubscribeToNewsletterErrors" &&
-      data.subscribeToNewsletter[key]) ||
-    [];
+    (hasFormErrors && data.subscribeToNewsletter[key]) || [];
 
-  const unableToSubscribe =
-    data?.subscribeToNewsletter.__typename == "NewsletterSubscribeResult" &&
-    data?.subscribeToNewsletter.status ===
-      NewsletterSubscriptionResult.UnableToSubscribe;
-
-  if (
-    data?.subscribeToNewsletter.__typename == "NewsletterSubscribeResult" &&
-    !unableToSubscribe
-  ) {
+  if (hasCompletedSubscription && !isUnableToSubscribe) {
     const success =
-      data?.subscribeToNewsletter.status ==
-      NewsletterSubscriptionResult.Subscribed;
+      subscribeToNewsletter.status == NewsletterSubscriptionResult.Subscribed;
+
     return (
       <Box>
-        <FormattedMessage id="newsletter.text">
-          {(txt) => (
-            <Text variant="prefooter" mb={3}>
-              {txt}
-            </Text>
-          )}
-        </FormattedMessage>
+        <Text variant="prefooter" mb={3}>
+          <FormattedMessage id="newsletter.text" />
+        </Text>
 
-        <FormattedMessage
-          id={success ? "newsletter.success" : "newsletter.confirmViaEmail"}
-        >
-          {(txt) => (
-            <Text sx={{ color: "green", fontWeight: "bold" }}>{txt}</Text>
-          )}
-        </FormattedMessage>
+        <Text sx={{ color: "green", fontWeight: "bold" }}>
+          <FormattedMessage
+            id={success ? "newsletter.success" : "newsletter.confirmViaEmail"}
+          />
+        </Text>
       </Box>
     );
   }
@@ -75,13 +68,9 @@ const NewsletterForm = () => {
   return (
     <Box as="form" onSubmit={onSubmit}>
       <Box>
-        <FormattedMessage id="newsletter.text">
-          {(txt) => (
-            <Text variant="prefooter" mb={3}>
-              {txt}
-            </Text>
-          )}
-        </FormattedMessage>
+        <Text variant="prefooter" mb={3}>
+          <FormattedMessage id="newsletter.text" />
+        </Text>
         <Input
           sx={{
             listStyle: "none",
@@ -101,7 +90,7 @@ const NewsletterForm = () => {
           <FormattedMessage id="newsletter.button" />
         </Button>
 
-        {(error || unableToSubscribe) && (
+        {(error || isUnableToSubscribe) && (
           <Alert variant="alert">
             <FormattedMessage id="newsletter.error" />
           </Alert>
@@ -111,11 +100,11 @@ const NewsletterForm = () => {
   );
 };
 
-export const NewsletterSection: React.SFC = () => (
+export const NewsletterSection = () => (
   <Box>
-    <FormattedMessage id="newsletter.header">
-      {(txt) => <Heading sx={{ fontSize: 5, mb: 4 }}>{txt}</Heading>}
-    </FormattedMessage>
+    <Heading sx={{ fontSize: 5, mb: 4 }}>
+      <FormattedMessage id="newsletter.header" />
+    </Heading>
     <NewsletterForm />
   </Box>
 );
