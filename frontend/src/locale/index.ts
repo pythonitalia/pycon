@@ -481,7 +481,7 @@ export const messages = {
     "newsletter.success": "Grazie per esserti iscritto! 🎉",
     "newsletter.confirmViaEmail":
       "Grazie per esserti iscritto! 🎉 Controlla le tue email per confermare l'iscrizione!",
-    "newsletter.error": "Si è verificato un errore, riprova piu' tardi.",
+    "newsletter.error": "Si è verificato un errore, riprova più tardi.",
     "signup.title": "Registrati",
     "signup.email": "Email",
     "signup.password": "Password",
