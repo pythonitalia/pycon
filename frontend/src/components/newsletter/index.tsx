@@ -87,7 +87,7 @@ const NewsletterForm = () => {
             listStyle: "none",
             mb: 3,
           }}
-          placeholder="my@email.org"
+          placeholder="guido@python.org"
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             setEmail(e.target.value)
           }
