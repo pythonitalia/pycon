@@ -195,7 +195,12 @@ LOGGING = {
     "disable_existing_loggers": False,
     "handlers": {"console": {"class": "logging.StreamHandler"}},
     "loggers": {
-        "app_api": {"handlers": ["console"], "level": "WARNING"},
+        "pycon.api": {"handlers": ["console"], "level": "WARNING", "propagate": True},
+        "pycon.integrations": {
+            "handlers": ["console"],
+            "level": "WARNING",
+            "propagate": True,
+        },
         "qinspect": {"handlers": ["console"], "level": "DEBUG", "propagate": True},
     },
 }
@@ -208,3 +213,7 @@ QUERY_INSPECT_TRACEBACK_ROOTS = [root(".")]
 PINPOINT_APPLICATION_ID = env("PINPOINT_APPLICATION_ID", default="")
 
 SQS_QUEUE_URL = env("SQS_QUEUE_URL", default="")
+
+MAILCHIMP_SECRET_KEY = env("MAILCHIMP_SECRET_KEY", default="")
+MAILCHIMP_DC = env("MAILCHIMP_DC", default="us3")
+MAILCHIMP_LIST_ID = env("MAILCHIMP_LIST_ID", default="")
