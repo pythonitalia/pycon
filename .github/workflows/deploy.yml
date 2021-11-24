@@ -10,11 +10,11 @@ on:
 
 jobs:
   build-and-publish-services:
-    uses: .github/workflows/deploy.build-and-publish-service.yml@${{ github.ref }}
+    uses: .github/workflows/deploy.build-and-publish-service.yml@${{github.ref}}
     with:
       service: gateway
       directory: gateway
-      ref: ${{ github.ref }}
+      ref: ${{github.ref}}
     secrets:
       aws_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
       aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
