@@ -41,6 +41,7 @@ jobs:
       - uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: 1.0.4
+          terraform_wrapper: false
       - name: Terraform Init
         run: terraform init
       - name: Apply changes
@@ -58,9 +59,7 @@ jobs:
           done <<< "$APPLY_OUTPUT"
           echo "]" >> logs.txt
 
-          cat logs.txt
-          # aws logs put-log-events --log-group-name $CLOUDWATCH_LOG_GROUP --log-stream-name ci-${{ inputs.environment }}-$(date +"%Y%m%d%H%M%S") --log-events file://logs.txt
+          aws logs put-log-events --log-group-name $CLOUDWATCH_LOG_GROUP --log-stream-name ci-${{ inputs.environment }}-$(date +"%Y%m%d%H%M%S") --log-events file://logs.txt
           rm logs.txt
-
         env:
           GITHUB_TOKEN: ${{ secrets.github_token }}
