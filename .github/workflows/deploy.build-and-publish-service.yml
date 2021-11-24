@@ -9,6 +9,9 @@ on:
       directory:
         required: true
         type: string
+      ref:
+        required: true
+        type: string
     secrets:
       aws_account_id:
         required: true
@@ -23,11 +26,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: ${{ github.ref }}
+          ref: ${{ inputs.ref }}
       - name: Get service githash
         id: git
         run: |
-          hash=$(git rev-list -1 ${{ github.ref }} -- ${{ inputs.directory }})
+          hash=$(git rev-list -1 ${{ inputs.ref }} -- ${{ inputs.directory }})
           echo '::set-output name=githash::$hash'
       - name: Check if commit is already on ECR
         id: image
