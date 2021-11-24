@@ -48,7 +48,7 @@ jobs:
 
           event_input = github_event.get('input', {})
           # TODO Replace with production
-          print('event_input', event_input)
+          print('github_event', github_event)
           environment = event_input.get('environment', 'test')
           requested_services = event_input.get('services', 'all')
 
