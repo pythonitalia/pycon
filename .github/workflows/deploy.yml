@@ -46,9 +46,8 @@ jobs:
           with open(os.environ['GITHUB_EVENT_PATH']) as json_file:
             github_event = json.load(json_file)
 
-          event_input = github_event.get('input', {})
+          event_input = github_event.get('inputs', {})
           # TODO Replace with production
-          print('github_event', github_event)
           environment = event_input.get('environment', 'test')
           requested_services = event_input.get('services', 'all')
 
