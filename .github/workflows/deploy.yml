@@ -21,7 +21,7 @@ env:
   #     { "name": "gateway", "dir": "gateway" },
   #   ]'
   ALL_SERVICES: '[
-      { "name": "gateway", "dir": "gateway" },
+      { "name": "gateway", "dir": "gateway" }
     ]'
 
 jobs:
