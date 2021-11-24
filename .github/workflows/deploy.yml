@@ -34,6 +34,7 @@ jobs:
     outputs:
       services-matrix: ${{ steps.services.outputs.services-matrix }}
       services-names: ${{ steps.services.outputs.services-names }}
+      environment: ${{ steps.services.outputs.environment }}
     steps:
       - name: Prepare services to deploy
         id: services
@@ -45,9 +46,13 @@ jobs:
           with open(os.environ['GITHUB_EVENT_PATH']) as json_file:
             github_event = json.load(json_file)
 
+          event_input = github_event.get('input', {})
+          # TODO Replace with production
+          environment = event_input.get('environment', 'test')
+          requested_services = event_input.get('services', 'all')
+
           all_services = json.loads(os.environ['ALL_SERVICES'])
           allowed_services = [service['name'] for service in all_services]
-          requested_services = github_event.get('input', {}).get('services', 'all')
 
           if requested_services == 'all':
             requested_services = allowed_services
@@ -68,6 +73,7 @@ jobs:
 
           print(f'::set-output name=services-matrix::{json.dumps(json.dumps(matrix))}')
           print(f'::set-output name=services-names::{json.dumps(requested_services)}')
+          print(f'::set-output name=environment::{environment}')
   # build-and-publish-services:
   #   needs: [services]
   #   uses: pythonitalia/pycon/.github/workflows/deploy.build-and-publish-services.yml@WEB-159-new-deployment-pipeline
@@ -81,7 +87,7 @@ jobs:
     needs: [services, build-and-publish-services]
     uses: pythonitalia/pycon/.github/workflows/deploy.terraform.yml@WEB-159-new-deployment-pipeline
     with:
-      environment: ${{ inputs.environment }}
+      environment: ${{ needs.services.outputs.environment }}
       services: ${{fromJSON(needs.services.outputs.services-names)}}
     secrets:
       aws_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
