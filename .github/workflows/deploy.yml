@@ -7,10 +7,49 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      services:
+        description: 'Comma-separated list of services to deploy. Leave empty to deploy all.'
+        default: ""
+        required: false
 
 jobs:
+  services:
+    runs-on: ubuntu-latest
+    outputs:
+      services-matrix: ${{ steps.init.outputs.matrix }}
+    steps:
+      # - name: Prepare services to deploy
+      #   id: init
+      #   run: |
+      #     services_to_deploy=""
+      #     if [ -z "${{github.event.inputs.services}}" ]
+      #     then
+      #           echo ""
+      #     else
+      #           echo "\$var is NOT empty"
+      #     fi
+      #     echo "::set-output name=matrix::{\"services\":[\"\"]}"
+      - name: Prepare services to deploy
+        id: init
+        run: |
+          import os
+          import json
+
+          def read_event(path):
+            with open(path) as json_file:
+              data = json.load(json_file)
+              return data
+          path = os.environ['GITHUB_EVENT_PATH']
+          print('Event path is %s' % path)
+          event = read_event(path)
+          print(json.dumps(event,indent=2))
+          url = event['head_commit']['url']
+          print('HEAD is at %s' % url)
+        shell: python
   build-and-publish-services:
     uses: pythonitalia/pycon/.github/workflows/deploy.build-and-publish-service.yml@WEB-159-new-deployment-pipeline
+    needs: [services]
     with:
       service: gateway
       directory: gateway
