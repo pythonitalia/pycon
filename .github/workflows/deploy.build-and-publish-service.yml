@@ -1,0 +1,67 @@
+name: Build and Publish Service
+
+on:
+  workflow_call:
+    inputs:
+      service:
+        required: true
+        type: string
+      directory:
+        required: true
+        type: string
+    secrets:
+      aws_account_id:
+        required: true
+      aws_access_key_id:
+        required: true
+      aws_secret_access_key:
+        required: true
+
+jobs:
+  publish_docker_image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref }}
+      - name: Get service githash
+        id: git
+        run: |
+          hash=$(git rev-list -1 ${{ github.ref }} -- ${{ inputs.directory }})
+          echo '::set-output name=githash::$hash'
+      - name: Check if commit is already on ECR
+        id: image
+        run: |
+          aws ecr describe-images --repository-name=pythonit/${{ inputs.service }} --image-ids=imageTag=${{ steps.git.outputs.githash }}
+          if [[ $? == 0 ]]; then
+            echo '::set-output name=image_exists::1'
+          else
+            echo '::set-output name=image_exists::0'
+          fi
+      - name: Docker login
+        run: aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin ${{ secrets.aws_account_id }}.dkr.ecr.eu-central-1.amazonaws.com
+        if: ${{ steps.image.outputs.image_exists == 0 }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.aws_access_key_id }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.aws_secret_access_key }}
+      - name: Set up Docker Buildx
+        if: ${{ steps.image.outputs.image_exists == 0 }}
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Cache Docker layers
+        if: ${{ steps.image.outputs.image_exists == 0 }}
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}-${{ inputs.service }}
+      - name: Build and push
+        if: ${{ steps.image.outputs.image_exists == 0 }}
+        uses: docker/build-push-action@v2
+        with:
+          context: ./${{ inputs.directory }}
+          file: ./${{ inputs.directory }}/Dockerfile
+          builder: ${{ steps.buildx.outputs.name }}
+          push: true
+          tags: ${{ secrets.aws_account_id }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/${{ inputs.service }}:${{ steps.git.outputs.githash }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
