@@ -46,6 +46,7 @@ jobs:
       - name: Apply changes
         run: |
           # aws logs create-log-stream --log-group-name $CLOUDWATCH_LOG_GROUP --log-stream-name ci-${{ inputs.environment }}-$(date +"%Y%m%d%H%M%S")
+          set +e
           APPLY_OUTPUT=$(terraform apply -no-color -auto-approve)
 
           echo "[" >> logs.txt
@@ -57,6 +58,7 @@ jobs:
           done <<< "$APPLY_OUTPUT"
           echo "]" >> logs.txt
 
+          cat logs.txt
           aws logs put-log-events --log-group-name $CLOUDWATCH_LOG_GROUP --log-stream-name ci-${{ inputs.environment }}-$(date +"%Y%m%d%H%M%S") --log-events file://logs.txt
           rm logs.txt
 
