@@ -8,6 +8,10 @@ on:
       - main
   workflow_dispatch:
     inputs:
+      environment:
+        description: "Name of the environment you want to deploy"
+        default: "pastaporto"
+        required: true
       services:
         description: 'Comma-separated list of services to deploy. Use "all" to deploy all.'
         default: "all"
@@ -29,6 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       services-matrix: ${{ steps.services.outputs.services-matrix }}
+      services-names: ${{ steps.services.outputs.services-names }}
     steps:
       - name: Prepare services to deploy
         id: services
@@ -62,11 +67,22 @@ jobs:
             matrix['service'].append(service_data)
 
           print(f'::set-output name=services-matrix::{json.dumps(json.dumps(matrix))}')
-  build-and-publish-services:
-    needs: [services]
-    uses: pythonitalia/pycon/.github/workflows/deploy.build-and-publish-services.yml@WEB-159-new-deployment-pipeline
+          print(f'::set-output name=services-names::{json.dumps(requested_services)}')
+  # build-and-publish-services:
+  #   needs: [services]
+  #   uses: pythonitalia/pycon/.github/workflows/deploy.build-and-publish-services.yml@WEB-159-new-deployment-pipeline
+  #   with:
+  #     services: ${{fromJSON(needs.services.outputs.services-matrix)}}
+  #   secrets:
+  #     aws_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
+  #     aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #     aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  terraform:
+    needs: [services, build-and-publish-services]
+    uses: pythonitalia/pycon/.github/workflows/deploy.terraform.yml@WEB-159-new-deployment-pipeline
     with:
-      services: ${{fromJSON(needs.services.outputs.services-matrix)}}
+      environment: ${{ inputs.environment }}
+      services: ${{fromJSON(needs.services.outputs.services-names)}}
     secrets:
       aws_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
       aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}

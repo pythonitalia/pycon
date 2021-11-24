@@ -1,0 +1,49 @@
+name: Terraform
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+      services:
+        required: true
+        type: string
+    secrets:
+      aws_account_id:
+        required: true
+      aws_access_key_id:
+        required: true
+      aws_secret_access_key:
+        required: true
+
+env:
+  CLOUDWATCH_LOG_GROUP: /github/deploy/terraform-logs
+
+jobs:
+  deploy-changes:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./infrastructure/applications
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref }}
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.aws_access_key_id }}
+          aws-secret-access-key: ${{ secrets.aws_secret_access_key }}
+          aws-region: eu-central-1
+      - uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.0.4
+      - name: Terraform Init
+        run: terraform init
+      - name: Apply changes
+        run: |
+          aws logs create-log-stream --log-group-name $CLOUDWATCH_LOG_GROUP --log-stream-name ci-${{ inputs.environment }}-$(date +"%m-%d-%y_%T")
+          APPLY_OUTPUT=$(terraform apply -no-color -auto-approve)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
