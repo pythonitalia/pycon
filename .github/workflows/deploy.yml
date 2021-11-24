@@ -88,7 +88,7 @@ jobs:
     needs: [services]
     uses: pythonitalia/pycon/.github/workflows/deploy.terraform.yml@WEB-159-new-deployment-pipeline
     with:
-      environment: "pastaporto"
+      environment: ${{ needs.services.outputs.environment }}
       services: ${{ fromJSON(needs.services.outputs.services-names) }}
     secrets:
       aws_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
