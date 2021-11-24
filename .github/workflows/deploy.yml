@@ -45,7 +45,7 @@ jobs:
           requested_services = github_event.get('input', {}).get('services', 'all')
 
           if requested_services == 'all':
-            requested_services = all_services
+            requested_services = allowed_services
           else:
             requested_services = requested_services.split(',')
 
