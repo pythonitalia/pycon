@@ -1,12 +1,9 @@
-name: Build and Publish Service
+name: Build and Publish Services
 
 on:
   workflow_call:
     inputs:
-      service:
-        required: true
-        type: string
-      directory:
+      services:
         required: true
         type: string
     secrets:
@@ -20,6 +17,9 @@ on:
 jobs:
   publish-docker-image:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix: ${{fromJSON(inputs.services)}}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -33,13 +33,13 @@ jobs:
       - name: Get service githash
         id: git
         run: |
-          hash=$(git rev-list -1 ${{ github.ref }} -- ${{ inputs.directory }})
+          hash=$(git rev-list -1 ${{ github.ref }} -- ${{ matrix.service.dir }})
           echo "::set-output name=githash::$hash"
       - name: Check if commit is already on ECR
         id: image
         run: |
           set +e
-          aws ecr describe-images --repository-name=pythonit/${{ inputs.service }} --image-ids=imageTag=${{ steps.git.outputs.githash }}
+          aws ecr describe-images --repository-name=pythonit/${{ matrix.service.name }} --image-ids=imageTag=${{ steps.git.outputs.githash }}
           if [[ $? == 0 ]]; then
             echo '::set-output name=image_exists::1'
           else
@@ -57,15 +57,15 @@ jobs:
         uses: actions/cache@v2
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}-${{ inputs.service }}
+          key: ${{ runner.os }}-buildx-${{ github.sha }}-${{ matrix.service.name }}
       - name: Build and push
         if: ${{ steps.image.outputs.image_exists == 0 }}
         uses: docker/build-push-action@v2
         with:
-          context: ./${{ inputs.directory }}
-          file: ./${{ inputs.directory }}/Dockerfile
+          context: ./${{ matrix.service.dir }}
+          file: ./${{ matrix.service.dir }}/Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
           push: true
-          tags: ${{ secrets.aws_account_id }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/${{ inputs.service }}:${{ steps.git.outputs.githash }}
+          tags: ${{ secrets.aws_account_id }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/${{ matrix.service.name }}:${{ steps.git.outputs.githash }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache

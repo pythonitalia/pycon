@@ -56,16 +56,10 @@ jobs:
           print(f'echo "::set-output name=services-matrix::{json.dumps(requested_services))}"')
   build-and-publish-services:
     needs: [services]
-    runs-on: ubuntu-latest
-    strategy:
-      matrix: ${{fromJSON(needs.services.outputs.services-matrix)}}
-    steps:
-      - name: Images
-        uses: pythonitalia/pycon/.github/workflows/deploy.build-and-publish-service.yml@WEB-159-new-deployment-pipeline
-        with:
-          service: gateway
-          directory: gateway
-        secrets:
-          aws_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
-          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    uses: pythonitalia/pycon/.github/workflows/deploy.build-and-publish-services.yml@WEB-159-new-deployment-pipeline
+    with:
+      services: ${{fromJSON(needs.services.outputs.services-matrix)}}
+    secrets:
+      aws_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
+      aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
