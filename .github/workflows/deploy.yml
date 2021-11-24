@@ -53,7 +53,7 @@ jobs:
             if service not in allowed_services:
               raise ValueError(f"Invalid service: {service}")
 
-          print(f'echo "::set-output name=services-matrix::{json.dumps(requested_services))}"')
+          print(f'echo "::set-output name=services-matrix::{json.dumps(requested_services)}"')
   build-and-publish-services:
     needs: [services]
     uses: pythonitalia/pycon/.github/workflows/deploy.build-and-publish-services.yml@WEB-159-new-deployment-pipeline
