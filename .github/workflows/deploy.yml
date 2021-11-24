@@ -41,7 +41,7 @@ jobs:
             github_event = json.load(json_file)
 
           all_services = json.loads(os.environ['ALL_SERVICES'])
-          allowed_services = [service.name for service in all_services]
+          allowed_services = [service['name'] for service in all_services]
           requested_services = github_event.get('input', {}).get('services', 'all')
 
           if requested_services == 'all':
@@ -49,12 +49,20 @@ jobs:
           else:
             requested_services = requested_services.split(',')
 
-          for service in requested_services:
-            if service not in allowed_services:
-              raise ValueError(f"Invalid service: {service}")
+          matrix = {
+            service: []
+          }
+          for requested_service in requested_services:
+            if requested_service not in allowed_services:
+              raise ValueError(f"Invalid service: {requested_service}")
+
+            service_data = next(
+              (service for service in all_services if service['name'] == requested_service),
+            )
+            matrix['service'].append(service_data)
 
           print("requested_services is", requested_services)
-          print(f'echo "::set-output name=services-matrix::{json.dumps(requested_services)}"')
+          print(f'echo "::set-output name=services-matrix::{json.dumps(matrix)}"')
   build-and-publish-services:
     needs: [services]
     uses: pythonitalia/pycon/.github/workflows/deploy.build-and-publish-services.yml@WEB-159-new-deployment-pipeline
