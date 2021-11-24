@@ -73,7 +73,6 @@ jobs:
 
           print(f'::set-output name=services-matrix::{json.dumps(json.dumps(matrix))}')
           print(f'::set-output name=services-names::{json.dumps(requested_services)}')
-          print("ffenvironment", environment)
           print(f'::set-output name=environment::"{environment}"')
   # build-and-publish-services:
   #   needs: [services]
@@ -95,3 +94,4 @@ jobs:
       aws_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
       aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
       aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      github_token: ${{ secrets.GITHUB_TOKEN }}
