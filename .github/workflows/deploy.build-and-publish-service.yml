@@ -31,7 +31,7 @@ jobs:
         id: git
         run: |
           hash=$(git rev-list -1 ${{ inputs.ref }} -- ${{ inputs.directory }})
-          echo '::set-output name=githash::$hash'
+          echo "::set-output name=githash::$hash"
       - name: Check if commit is already on ECR
         id: image
         run: |
