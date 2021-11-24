@@ -79,9 +79,6 @@ jobs:
       - name: test
         run: |
           echo "before"
-          echo "${{needs.services.outputs.services-matrix}}"
-          # echo "after"
-          # echo ${{fromJSON(needs.services.outputs.services-matrix)}}
     # uses: pythonitalia/pycon/.github/workflows/deploy.build-and-publish-services.yml@WEB-159-new-deployment-pipeline
     # with:
     #   services: ${{fromJSON(needs.services.outputs.services-matrix)}}
