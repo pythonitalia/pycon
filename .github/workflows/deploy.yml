@@ -72,7 +72,7 @@ jobs:
             matrix['service'].append(service_data)
 
           print(f'::set-output name=services-matrix::{json.dumps(json.dumps(matrix))}')
-          print(f'::set-output name=services-names::{json.dumps(requested_services)}')
+          print(f'::set-output name=services-names::{json.dumps(json.dumps(requested_services))}')
           print(f'::set-output name=environment::"{environment}"')
   # build-and-publish-services:
   #   needs: [services]
