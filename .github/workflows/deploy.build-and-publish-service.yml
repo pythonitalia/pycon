@@ -41,6 +41,7 @@ jobs:
       - name: Check if commit is already on ECR
         id: image
         run: |
+          set +e
           aws ecr describe-images --repository-name=pythonit/${{ inputs.service }} --image-ids=imageTag=${{ steps.git.outputs.githash }}
           if [[ $? == 0 ]]; then
             echo '::set-output name=image_exists::1'
