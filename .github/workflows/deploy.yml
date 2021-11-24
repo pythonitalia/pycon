@@ -61,7 +61,7 @@ jobs:
             )
             matrix['service'].append(service_data)
 
-          print("requested_services is", requested_services)
+          print("matrix is", matrix)
           print(f'::set-output name=services-matrix::{json.dumps(json.dumps(matrix))}')
   # build-and-publish-services:
   #   needs: [services]
