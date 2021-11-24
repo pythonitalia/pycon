@@ -50,7 +50,7 @@ jobs:
             requested_services = requested_services.split(',')
 
           matrix = {
-            service: []
+            "service": []
           }
           for requested_service in requested_services:
             if requested_service not in allowed_services:
