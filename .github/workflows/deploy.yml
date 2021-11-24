@@ -9,8 +9,8 @@ on:
   workflow_dispatch:
     inputs:
       services:
-        description: 'Comma-separated list of services to deploy. Leave empty to deploy all.'
-        default: ""
+        description: 'Comma-separated list of services to deploy. Use "all" to deploy all.'
+        default: "all"
         required: false
 
 jobs:
@@ -36,16 +36,10 @@ jobs:
           import os
           import json
 
-          def read_event(path):
-            with open(path) as json_file:
-              data = json.load(json_file)
-              return data
-          path = os.environ['GITHUB_EVENT_PATH']
-          print('Event path is %s' % path)
-          event = read_event(path)
-          print(json.dumps(event,indent=2))
-          url = event['head_commit']['url']
-          print('HEAD is at %s' % url)
+          with open(os.environ['GITHUB_EVENT_PATH']) as json_file:
+            github_event = json.load(json_file)
+
+          print(json.dumps(github_event, indent=2))
         shell: python
   build-and-publish-services:
     uses: pythonitalia/pycon/.github/workflows/deploy.build-and-publish-service.yml@WEB-159-new-deployment-pipeline
