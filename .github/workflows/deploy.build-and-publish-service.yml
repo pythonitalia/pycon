@@ -9,9 +9,6 @@ on:
       directory:
         required: true
         type: string
-      ref:
-        required: true
-        type: string
     secrets:
       aws_account_id:
         required: true
@@ -26,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: ${{ inputs.ref }}
+          ref: ${{ github.ref }}
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -36,7 +33,7 @@ jobs:
       - name: Get service githash
         id: git
         run: |
-          hash=$(git rev-list -1 ${{ inputs.ref }} -- ${{ inputs.directory }})
+          hash=$(git rev-list -1 ${{ github.ref }} -- ${{ inputs.directory }})
           echo "::set-output name=githash::$hash"
       - name: Check if commit is already on ECR
         id: image
@@ -48,9 +45,9 @@ jobs:
           else
             echo '::set-output name=image_exists::0'
           fi
-      - name: Docker login
-        run: aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin ${{ secrets.aws_account_id }}.dkr.ecr.eu-central-1.amazonaws.com
+      - name: Login to Amazon ECR
         if: ${{ steps.image.outputs.image_exists == 0 }}
+        uses: aws-actions/amazon-ecr-login@v1
       - name: Set up Docker Buildx
         if: ${{ steps.image.outputs.image_exists == 0 }}
         id: buildx

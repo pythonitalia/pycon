@@ -14,7 +14,6 @@ jobs:
     with:
       service: gateway
       directory: gateway
-      ref: ${{github.ref}}
     secrets:
       aws_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
       aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
