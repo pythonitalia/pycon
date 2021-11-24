@@ -62,7 +62,7 @@ jobs:
             matrix['service'].append(service_data)
 
           print("requested_services is", requested_services)
-          print(f'echo "::set-output name=services-matrix::{json.dumps(json.dumps(matrix))}"')
+          print(f'::set-output name=services-matrix::{json.dumps(matrix)}')
   build-and-publish-services:
     needs: [services]
     uses: pythonitalia/pycon/.github/workflows/deploy.build-and-publish-services.yml@WEB-159-new-deployment-pipeline
