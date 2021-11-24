@@ -13,6 +13,17 @@ on:
         default: "all"
         required: false
 
+env:
+  # ALL_SERVICES: '[
+  #     { "name": "pycon-backend", "dir": "backend" },
+  #     { "name": "association-backend", "dir": "association-backend" },
+  #     { "name": "association-backend", "dir": "association-backend" },
+  #     { "name": "gateway", "dir": "gateway" },
+  #   ]'
+  ALL_SERVICES: '[
+      { "name": "gateway", "dir": "gateway" },
+    ]'
+
 jobs:
   services:
     runs-on: ubuntu-latest
@@ -31,7 +42,8 @@ jobs:
       #     fi
       #     echo "::set-output name=matrix::{\"services\":[\"\"]}"
       - name: Prepare services to deploy
-        id: init
+        id: services
+        shell: python
         run: |
           import os
           import json
@@ -39,11 +51,25 @@ jobs:
           with open(os.environ['GITHUB_EVENT_PATH']) as json_file:
             github_event = json.load(json_file)
 
-          print(json.dumps(github_event, indent=2))
-        shell: python
+          all_services = json.loads(os.environ['ALL_SERVICES'])
+          allowed_services = [service.name for service in all_services]
+          requested_services = github_event.get('input', {}).get('services', 'all')
+
+          if requested_services == 'all':
+            requested_services = all_services
+          else:
+            requested_services = requested_services.split(',')
+
+          for service in requested_services:
+            if service not in allowed_services:
+              raise ValueError(f"Invalid service: {service}")
+
+          print(f'echo "::set-output name=services-matrix::{json.dumps(requested_services))}"')
   build-and-publish-services:
-    uses: pythonitalia/pycon/.github/workflows/deploy.build-and-publish-service.yml@WEB-159-new-deployment-pipeline
     needs: [services]
+    strategy:
+      matrix: ${{fromJSON(needs.services.outputs.services-matrix)}}
+    uses: pythonitalia/pycon/.github/workflows/deploy.build-and-publish-service.yml@WEB-159-new-deployment-pipeline
     with:
       service: gateway
       directory: gateway
