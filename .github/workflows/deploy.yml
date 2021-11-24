@@ -10,7 +10,7 @@ on:
 
 jobs:
   build-and-publish-services:
-    uses: .github/workflows/deploy.build-and-publish-service.yml@${{github.ref}}
+    uses: pythonitalia/pycon/.github/workflows/deploy.build-and-publish-service.yml@${{github.ref}}
     with:
       service: gateway
       directory: gateway
