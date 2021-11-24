@@ -73,7 +73,7 @@ jobs:
 
           print(f'::set-output name=services-matrix::{json.dumps(json.dumps(matrix))}')
           print(f'::set-output name=services-names::{json.dumps(json.dumps(requested_services))}')
-          print(f'::set-output name=environment::"{environment}"')
+          print(f'::set-output name=environment::{environment}')
   # build-and-publish-services:
   #   needs: [services]
   #   uses: pythonitalia/pycon/.github/workflows/deploy.build-and-publish-services.yml@WEB-159-new-deployment-pipeline
