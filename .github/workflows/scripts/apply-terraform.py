@@ -23,8 +23,10 @@ client.create_log_stream(
     logGroupName=os.environ["CLOUDWATCH_LOG_GROUP"],
     logStreamName=sys.argv[1],
 )
-client.put_log_events(
+response = client.put_log_events(
     logGroupName=os.environ["CLOUDWATCH_LOG_GROUP"],
     logStreamName=sys.argv[1],
     logEvents=logs,
 )
+
+print("response", response)

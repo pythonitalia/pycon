@@ -47,7 +47,7 @@ jobs:
       - name: Terraform Init
         run: terraform init
       - name: Apply changes
-        run: python ${{ github.workspace }}/.github/workflows/scripts/apply-terraform.py ci-${{ inputs.environment }}-$(date +"%Y/%m/%d/%H%M%S")
+        run: python ${{ github.workspace }}/.github/workflows/scripts/apply-terraform.py $(date +"%Y/%m/%d/%H%M%S")/ci/${{ inputs.environment }}
         env:
           CLOUDWATCH_LOG_GROUP: /github/deploy/terraform-logs
           GITHUB_TOKEN: ${{ secrets.github_token }}
