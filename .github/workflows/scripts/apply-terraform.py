@@ -8,14 +8,14 @@ import boto3
 result = subprocess.run(
     ["terraform", "apply", "-no-color", "-auto-approve"],
     stdout=subprocess.PIPE,
-    stderr=subprocess.PIPE,
+    stderr=subprocess.STDOUT,
 )
 
 
 logs = []
 timestamp = int(time.time() * 1000)
 for line in result.stdout.splitlines():
-    logs.append({"timestamp": timestamp, "message": str(line)})
+    logs.append({"timestamp": timestamp, "message": line.decode("utf-8")})
 
 
 client = boto3.client("logs")
