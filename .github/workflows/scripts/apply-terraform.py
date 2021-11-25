@@ -13,7 +13,7 @@ result = subprocess.run(
 
 
 logs = []
-timestamp = int(time.time())
+timestamp = int(time.time() * 1000)
 for line in result.stdout.splitlines():
     logs.append({"timestamp": timestamp, "message": str(line)})
 
