@@ -15,7 +15,15 @@ result = subprocess.run(
 logs = []
 timestamp = int(time.time() * 1000)
 for line in result.stdout.splitlines():
-    logs.append({"timestamp": timestamp, "message": line.decode("utf-8")})
+    message = line.decode("utf-8")
+    if not message:
+        continue
+    logs.append({"timestamp": timestamp, "message": message})
+
+
+logs.append(
+    {"timestamp": timestamp, "message": f"Terraform Exit code: {result.returncode}"}
+)
 
 
 client = boto3.client("logs")
