@@ -1,5 +1,6 @@
 import os
 import subprocess
+import sys
 import time
 
 import boto3
@@ -20,6 +21,6 @@ for line in result.stdout.splitlines():
 client = boto3.client("logs")
 client.put_log_events(
     logGroupName=os.environ["CLOUDWATCH_LOG_GROUP"],
-    logStreamName=os.environ["CLOUDWATCH_STREAM_NAME"],
+    logStreamName=sys.argv[1],
     logEvents=logs,
 )
