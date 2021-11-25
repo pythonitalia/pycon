@@ -45,26 +45,6 @@ jobs:
       - name: Terraform Init
         run: terraform init
       - name: Apply changes
-        run: |
-          # aws logs create-log-stream --log-group-name $CLOUDWATCH_LOG_GROUP --log-stream-name ci-${{ inputs.environment }}-$(date +"%Y%m%d%H%M%S")
-          set +e
-          APPLY_OUTPUT=$(terraform apply -no-color -auto-approve)
-          EXIT_CODE=$?
-
-          echo "[" >> logs.txt
-          while IFS= read -r line; do
-            echo "{" >> logs.txt
-            echo "\"message\": \"$line\"," >> logs.txt
-            echo "\"timestamp\": \"$(date +%s)\"" >> logs.txt
-            echo "}," >> logs.txt
-          done <<< "$APPLY_OUTPUT"
-          echo "{" >> logs.txt
-          echo "\"message\": \"Exit code: $EXIT_CODE\"," >> logs.txt
-          echo "\"timestamp\": \"$(date +%s)\"" >> logs.txt
-          echo "}" >> logs.txt
-          echo "]" >> logs.txt
-
-          aws logs put-log-events --log-group-name $CLOUDWATCH_LOG_GROUP --log-stream-name ci-${{ inputs.environment }}-$(date +"%Y%m%d%H%M%S") --log-events file://logs.txt
-          rm logs.txt
+        run: python ${{ env.GITHUB_WORKSPACE }}.github/workflows/scripts/apply-terraform.py
         env:
           GITHUB_TOKEN: ${{ secrets.github_token }}
