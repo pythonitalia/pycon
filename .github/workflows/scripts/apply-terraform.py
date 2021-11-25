@@ -15,7 +15,7 @@ result = subprocess.run(
 logs = []
 timestamp = int(time.time())
 for line in result.stdout.splitlines():
-    logs.append({"timestamp": timestamp, "message": line})
+    logs.append({"timestamp": timestamp, "message": str(line)})
 
 
 client = boto3.client("logs")
