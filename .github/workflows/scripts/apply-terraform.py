@@ -19,6 +19,10 @@ for line in result.stdout.splitlines():
 
 
 client = boto3.client("logs")
+client.create_log_stream(
+    logGroupName=os.environ["CLOUDWATCH_LOG_GROUP"],
+    logStreamName=sys.argv[1],
+)
 client.put_log_events(
     logGroupName=os.environ["CLOUDWATCH_LOG_GROUP"],
     logStreamName=sys.argv[1],
