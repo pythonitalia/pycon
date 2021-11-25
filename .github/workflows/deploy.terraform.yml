@@ -19,6 +19,8 @@ on:
       github_token:
         required: true
 
+env:
+  TF_WORKSPACE: ${{ inputs.environment }}
 
 jobs:
   deploy-changes:
@@ -47,7 +49,9 @@ jobs:
       - name: Terraform Init
         run: terraform init
       - name: Apply changes
-        run: python ${{ github.workspace }}/.github/workflows/scripts/apply-terraform.py $(date +"%Y/%m/%d/%H%M%S")/ci/${{ inputs.environment }}
+        run: python ${{ github.workspace }}/.github/workflows/scripts/apply-terraform.py
         env:
+          SERVICES: ${{ inputs.services }}
           CLOUDWATCH_LOG_GROUP: /github/deploy/terraform-logs
+          CLOUDWATCH_LOG_STREAM: $(date +"%Y/%m/%d/%H%M%S")/ci/${{ inputs.environment }}
           GITHUB_TOKEN: ${{ secrets.github_token }}
