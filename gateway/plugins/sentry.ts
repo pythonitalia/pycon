@@ -5,7 +5,7 @@ import { ApolloServerPlugin } from "apollo-server-plugin-base";
 import { GraphQLRequestContextDidEncounterErrors } from "apollo-server-types";
 import { GraphQLError } from "graphql";
 
-import { ENV, SENTRY_DSN, VARIANT } from "../config";
+import { ENV, SENTRY_DSN } from "../config";
 import { Pastaporto } from "../pastaporto/entities";
 
 type ApolloContext = {
@@ -85,7 +85,6 @@ const configureScope = (
     scope.setUser(null);
   }
 
-  scope.setTag("variant", VARIANT);
   scope.setTag("kind", context.operation!.operation);
   scope.setExtra("query", context.request.query);
   scope.setExtra("variables", removePIIs(context.request.variables));

@@ -2,7 +2,6 @@ import {
   ASSOCIATION_BACKEND_SERVICE,
   PYCON_BACKEND_SERVICE,
   USERS_SERVICE,
-  VARIANT,
 } from "./config";
 
 const DEFAULT_SERVICES = [
@@ -24,21 +23,6 @@ const DEFAULT_SERVICES = [
   },
 ];
 
-const ADMIN_SERVICES = [
-  {
-    name: "users:admin",
-    url: `${USERS_SERVICE}/admin-api`,
-  },
-  {
-    name: "logout",
-    url: `http://logout.service`,
-  },
-];
-
 export const getServices = () => {
-  if (VARIANT === "admin") {
-    return ADMIN_SERVICES;
-  }
-
   return DEFAULT_SERVICES;
 };
