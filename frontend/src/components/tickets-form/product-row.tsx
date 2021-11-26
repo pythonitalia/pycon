@@ -10,6 +10,7 @@ import { useCurrentLanguage } from "~/locale/context";
 import { AddHotelRoom } from "./add-hotel-room";
 import { AddProductWithVariation } from "./add-product-with-variation";
 import { AddRemoveProduct } from "./add-remove-product";
+import { ProductSelectedVariationsList } from "./product-selected-variations-list";
 
 type RowTicket = {
   id: string;
@@ -29,6 +30,11 @@ type RowTicket = {
   }[];
 };
 
+type SelectedProduct = {
+  id: string;
+  variation?: string;
+};
+
 type ProductRowProps = {
   className?: string;
   ticket: RowTicket;
@@ -44,19 +50,23 @@ type ProductRowProps = {
     checkout: moment.Moment,
   ) => void;
   removeHotelRoom?: (index: number) => void;
+  selectedProducts?: {
+    [id: string]: SelectedProduct[];
+  };
 };
 
-export const ProductRow: React.SFC<ProductRowProps> = ({
+export const ProductRow = ({
   className,
   hotel,
   ticket,
+  selectedProducts,
   conferenceStart,
   conferenceEnd,
   addHotelRoom,
   quantity,
   addProduct,
   removeProduct,
-}) => {
+}: ProductRowProps) => {
   const lang = useCurrentLanguage();
   const dateFormatter = new Intl.DateTimeFormat(lang, {
     day: "2-digit",
@@ -158,6 +168,14 @@ export const ProductRow: React.SFC<ProductRowProps> = ({
           />
         )}
       </Grid>
+
+      {hasVariation && (
+        <ProductSelectedVariationsList
+          product={ticket}
+          selectedProducts={selectedProducts}
+          removeProduct={removeProduct}
+        />
+      )}
     </Box>
   );
 };
