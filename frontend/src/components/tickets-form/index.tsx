@@ -17,23 +17,23 @@ type Props = {
   removeProduct: (id: string, variant?: string) => void;
 };
 
-export const TicketsForm: React.SFC<Props> = ({
+export const TicketsForm = ({
   isBusiness,
   tickets,
   selectedProducts,
   addProduct,
   removeProduct,
-}) => {
+}: Props) => {
   const ticketsToShow = tickets.filter((ticket) => {
     if (ticket.variations!.length > 0) {
       return true;
     }
 
-    if (isBusiness && ticket.name.toLowerCase().includes("business")) {
+    if (isBusiness && ticket.type === "BUSINESS") {
       return true;
     }
 
-    if (!isBusiness && !ticket.name.toLowerCase().includes("business")) {
+    if (!isBusiness && ticket.type !== "BUSINESS") {
       return true;
     }
 
