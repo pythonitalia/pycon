@@ -39,6 +39,9 @@ def _get_category_for_ticket(item, categories):
 
 
 def _get_quantity_left_for_ticket(item, quotas):
+    if item["show_quota_left"] is False:
+        return None
+
     return sum(
         quota["available_number"]
         for quota in quotas.values()

@@ -52,3 +52,5 @@ def test_get_conference_tickets(
         Option(id=5, name="Vegetarian"),
         Option(id=6, name="Vegan"),
     ]
+
+    assert tickets[1].quantity_left is None
