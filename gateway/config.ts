@@ -16,7 +16,6 @@ export const {
 
   // Other configuration
   IS_DEV = process.env.NODE_ENV === "development",
-  VARIANT = "default",
   SENTRY_DSN = "",
   ENV = "local",
 } = process.env;
