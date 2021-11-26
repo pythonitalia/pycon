@@ -262,7 +262,7 @@ export const EditProfilePage: React.FC = () => {
                     </option>
                   )}
                 </FormattedMessage>
-                <FormattedMessage id="profile.gender.notSay">
+                <FormattedMessage id="profile.gender.not_say">
                   {(msg) => (
                     <option key="notSay" value="not_say">
                       {msg}
