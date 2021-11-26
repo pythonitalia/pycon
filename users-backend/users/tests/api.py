@@ -1,10 +1,9 @@
 from asgi_lifespan import LifespanManager
 from httpx import AsyncClient
-from pythonit_toolkit.api.graphql_test_client import GraphQLClient
-from ward import Scope, fixture
-
 from main import app
+from pythonit_toolkit.api.graphql_test_client import GraphQLClient
 from users.settings import PASTAPORTO_SECRET, SERVICE_TO_SERVICE_SECRET
+from ward import Scope, fixture
 
 
 @fixture(scope=Scope.Global)
@@ -22,13 +21,6 @@ async def testclient(client=client):
 @fixture()
 async def graphql_client(testclient=testclient):
     yield GraphQLClient(testclient, pastaporto_secret=PASTAPORTO_SECRET)
-
-
-@fixture()
-async def admin_graphql_client(testclient=testclient):
-    yield GraphQLClient(
-        testclient, admin_endpoint=True, pastaporto_secret=PASTAPORTO_SECRET
-    )
 
 
 @fixture()

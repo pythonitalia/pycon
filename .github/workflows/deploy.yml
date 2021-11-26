@@ -106,7 +106,6 @@ jobs:
       default-pycon-backend-schema: ${{ steps.default-pycon-backend-schema.outputs.schema-path }}
       default-users-backend-schema: ${{ steps.default-users-backend-schema.outputs.schema-path }}
       default-association-backend-schema: ${{ steps.default-association-backend-schema.outputs.schema-path }}
-      admin-users-backend-schema: ${{ steps.admin-users-backend-schema.outputs.schema-path }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -176,15 +175,6 @@ jobs:
         with:
           service-name: pycon-backend
           schema-graphql-url: ${{ steps.services.outputs.users-backend-url }}/graphql
-
-      # Admin graph
-      - name: Generate Users Backend admin schema
-        id: admin-users-backend-schema
-        uses: ./.github/actions/generate-graphql-schema
-        with:
-          service-name: users-backend
-          variant: admin
-          schema-graphql-url: ${{ steps.services.outputs.users-backend-url }}/admin-api
 
       - name: Upload graphql files
         uses: actions/upload-artifact@v2
@@ -345,9 +335,6 @@ jobs:
       fail-fast: false
       matrix:
         service:
-          - name: users-backend
-            path: ${{ needs.create-graph-schemas.outputs.admin-users-backend-schema }}
-            url: https://${{ fromJSON('["pastaporto-", ""]')[github.ref == 'refs/heads/main'] }}users-api.python.it/admin-api
           - name: logout
             path: ./gateway/internal-services/logout/schema.graphql
             url: https://logout
