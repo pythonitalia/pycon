@@ -19,6 +19,8 @@ type RowTicket = {
   availableUntil?: string;
   defaultPrice: string;
   variations?: { id: string; value: string; defaultPrice: string }[];
+  category: string;
+  type: "BUSINESS" | "STANDARD";
   questions: {
     id: string;
     name: string;
@@ -65,7 +67,7 @@ export const ProductRow: React.SFC<ProductRowProps> = ({
   const hasVariation = ticket.variations && ticket.variations.length > 0;
 
   return (
-    <Box sx={{ mb: 4 }} className={className}>
+    <Box sx={{ my: 4 }} className={className}>
       <Grid
         sx={{
           gridTemplateColumns: ["1fr", hotel ? "1fr 370px" : "1fr 180px"],

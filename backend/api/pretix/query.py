@@ -32,7 +32,15 @@ def _is_hotel(item: dict):
     return item.get("default_price") == "0.00"
 
 
-def _create_ticket_type_from_api(item, id, questions, language):
+def _get_category_for_ticket(item, categories):
+    category_id = str(item["category"])
+
+    return categories.get(category_id)
+
+
+def _create_ticket_type_from_api(item, id, categories, questions, language):
+    category = _get_category_for_ticket(item, categories)
+
     return TicketItem(
         id=id,
         name=item["name"].get("language", item["name"]["en"]),
@@ -41,6 +49,7 @@ def _create_ticket_type_from_api(item, id, questions, language):
             if item["description"]
             else None
         ),
+        category=category["name"].get(language, category["name"]["en"]),
         variations=[
             ProductVariation(
                 id=variation["id"],
@@ -81,10 +90,17 @@ def get_questions_for_ticket(item, questions, language):
 def get_conference_tickets(conference: Conference, language: str) -> List[TicketItem]:
     items = pretix.get_items(conference)
     questions = pretix.get_questions(conference).values()
+    categories = pretix.get_categories(conference)
 
     return sorted(
         [
-            _create_ticket_type_from_api(item, id, questions, language)
+            _create_ticket_type_from_api(
+                item=item,
+                id=id,
+                categories=categories,
+                questions=questions,
+                language=language,
+            )
             for id, item in items.items()
             if item["active"] and not _is_hotel(item)
         ],

@@ -68,6 +68,7 @@ class TicketItem:
     description: Optional[str]
     active: bool
     default_price: str
+    category: str
     variations: List[ProductVariation]
     # TODO: correct types
     available_from: Optional[str]

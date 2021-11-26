@@ -41,7 +41,7 @@ export const HotelForm: React.SFC<Props> = ({
 
   return (
     <Box>
-      <Heading mb={3} as="h2">
+      <Heading mb={3} as="h1">
         <FormattedMessage id="order.hotelRooms" />
       </Heading>
       {hotelRooms.map((room) => (
