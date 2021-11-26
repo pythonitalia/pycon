@@ -4,7 +4,6 @@ query Submission($id: ID!) {
     title
     abstract
     elevatorPitch
-    notes
     canEdit
     topic {
       id
