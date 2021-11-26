@@ -19,10 +19,10 @@ module "lambda" {
 
   env_vars = {
     NODE_ENV             = "production"
-    VARIANT              = var.admin_variant ? "admin" : "default"
+    VARIANT              = "default"
     SENTRY_DSN           = module.secrets.value.sentry_dsn
-    APOLLO_KEY           = var.admin_variant ? module.secrets.value.admin_apollo_key : module.secrets.value.default_apollo_key
-    APOLLO_GRAPH_ID      = var.admin_variant ? "admin-python-italia" : "default-python-italia"
+    APOLLO_KEY           = module.secrets.value.default_apollo_key
+    APOLLO_GRAPH_ID      = "default-python-italia"
     APOLLO_GRAPH_VARIANT = terraform.workspace
     USERS_SERVICE        = local.users_service_url
     # Secrets
