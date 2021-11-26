@@ -66,6 +66,8 @@ export const HotelForm: React.SFC<Props> = ({
                 (selectedHotelRooms[room.id] ?? []).length >= room.capacityLeft,
               defaultPrice: room.price,
               questions: [],
+              category: "hotel",
+              type: "HOTEL",
             }}
           />
           {(selectedHotelRooms[room.id] ?? []).map((selectedRoom, index) => (

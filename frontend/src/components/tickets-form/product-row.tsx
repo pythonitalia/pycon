@@ -21,7 +21,7 @@ type RowTicket = {
   defaultPrice: string;
   variations?: { id: string; value: string; defaultPrice: string }[];
   category: string;
-  type: "BUSINESS" | "STANDARD";
+  type: "HOTEL" | "BUSINESS" | "STANDARD";
   questions: {
     id: string;
     name: string;
