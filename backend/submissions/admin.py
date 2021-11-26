@@ -90,7 +90,7 @@ class SubmissionAdmin(AdminUsersMixin):
     user_fk = "speaker_id"
 
     def speaker_display_name(self, obj):
-        return self.get_user_display_name(obj.author_id)
+        return self.get_user_display_name(obj.speaker_id)
 
     speaker_display_name.short_description = "Speaker"
 
