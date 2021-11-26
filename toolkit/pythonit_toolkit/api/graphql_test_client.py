@@ -29,7 +29,6 @@ class GraphQLClient:
         *,
         pastaporto_secret: Optional[str] = None,
         service_to_service_secret: Optional[str] = None,
-        admin_endpoint: bool = False,
         internal_api_endpoint: bool = False
     ):
         self._client = client
@@ -40,8 +39,6 @@ class GraphQLClient:
 
         if internal_api_endpoint:
             self.endpoint = "/internal-api"
-        elif admin_endpoint:
-            self.endpoint = "/admin-api"
         else:
             self.endpoint = "/graphql"
 
@@ -74,9 +71,14 @@ class GraphQLClient:
             staff=user.is_staff,
         )
 
-    def force_service_login(self, key: Optional[str] = None):
+    def force_service_login(
+        self,
+        issuer: str = "gateway",
+        audience: str = "users-backend",
+        key: Optional[str] = None,
+    ):
         self.service_to_service_token = fake_service_to_service_token(
             str(key or self._service_to_service_secret),
-            issuer="gateway",
-            audience="users-service",
+            issuer=issuer,
+            audience=audience,
         )

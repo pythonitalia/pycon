@@ -2,6 +2,7 @@ x-defaults:
   environment: &enviroment_defaults
     DEBUG: "True"
     NODE_ENV: "development"
+    ENV: "local"
     PRETIX_API: http://tickets.pycon.it/api/v1/
     PRETIX_API_TOKEN: None # ask for a token
     SECRET_KEY: secret-key
@@ -48,6 +49,9 @@ services:
       DJANGO_SETTINGS_MODULE: pycon.settings.dev
       ALLOWED_HOSTS: "*"
       PRETIX_API_TOKEN: ${PRETIX_API_TOKEN}
+      MAILCHIMP_SECRET_KEY: ${MAILCHIMP_SECRET_KEY}
+      MAILCHIMP_DC: ${MAILCHIMP_DC}
+      MAILCHIMP_LIST_ID: ${MAILCHIMP_LIST_ID}
     healthcheck:
       test:
         [

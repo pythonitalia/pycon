@@ -20,6 +20,7 @@ FRONTEND_URL = env("FRONTEND_URL")
 # Application definition
 
 INSTALLED_APPS = [
+    "custom_admin",
     "dal",
     "dal_select2",
     "dal_admin_filters",
@@ -76,7 +77,7 @@ ROOT_URLCONF = "pycon.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [root("frontend")],
+        "DIRS": [],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -84,6 +85,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "custom_admin.context_processors.admin_settings",
             ]
         },
     }
@@ -168,9 +170,7 @@ SOCIAL_AUTH_POSTGRES_JSONFIELD = True
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = f"{FRONTEND_URL}/en/login/success/"
 # SOCIAL_AUTH_LOGIN_ERROR_URL = f"{FRONTEND_URL}/login/"
 
-CELERY_BROKER_URL = ""
 SLACK_INCOMING_WEBHOOK_URl = ""
-USE_SCHEDULER = False
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 MAPBOX_PUBLIC_API_KEY = env("MAPBOX_PUBLIC_API_KEY", default="")
@@ -186,12 +186,19 @@ if PRETIX_API:
 
 SIMULATE_PRETIX_DB = True
 
+ENV = env("ENV", default="local")
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "handlers": {"console": {"class": "logging.StreamHandler"}},
     "loggers": {
-        "app_api": {"handlers": ["console"], "level": "WARNING"},
+        "pycon.api": {"handlers": ["console"], "level": "WARNING", "propagate": True},
+        "pycon.integrations": {
+            "handlers": ["console"],
+            "level": "WARNING",
+            "propagate": True,
+        },
         "qinspect": {"handlers": ["console"], "level": "DEBUG", "propagate": True},
     },
 }
@@ -202,3 +209,9 @@ QUERY_INSPECT_LOG_TRACEBACKS = True
 QUERY_INSPECT_TRACEBACK_ROOTS = [root(".")]
 
 PINPOINT_APPLICATION_ID = env("PINPOINT_APPLICATION_ID", default="")
+
+SQS_QUEUE_URL = env("SQS_QUEUE_URL", default="")
+
+MAILCHIMP_SECRET_KEY = env("MAILCHIMP_SECRET_KEY", default="")
+MAILCHIMP_DC = env("MAILCHIMP_DC", default="us3")
+MAILCHIMP_LIST_ID = env("MAILCHIMP_LIST_ID", default="")

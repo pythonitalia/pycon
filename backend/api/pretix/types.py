@@ -55,6 +55,12 @@ class Question:
     options: List[Option]
 
 
+@strawberry.enum
+class TicketType(Enum):
+    STANDARD = "standard"
+    BUSINESS = "business"
+
+
 @strawberry.type
 class TicketItem:
     id: strawberry.ID
@@ -62,11 +68,19 @@ class TicketItem:
     description: Optional[str]
     active: bool
     default_price: str
+    category: str
     variations: List[ProductVariation]
     # TODO: correct types
     available_from: Optional[str]
     available_until: Optional[str]
     questions: List[Question]
+
+    @strawberry.field
+    def type(self) -> TicketType:
+        if "business" in self.name.lower():
+            return TicketType.BUSINESS
+
+        return TicketType.STANDARD
 
 
 @strawberry.type

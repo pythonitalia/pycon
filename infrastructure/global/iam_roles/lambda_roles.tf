@@ -65,4 +65,16 @@ data "aws_iam_policy_document" "lambda_role" {
     ]
     effect = "Allow"
   }
+
+  # SQS
+  statement {
+    actions = [
+      "sqs:SendMessage",
+      "sqs:DeleteMessage",
+      "sqs:GetQueueAttributes",
+      "sqs:ReceiveMessage",
+    ]
+    resources = ["*"]
+    effect    = "Allow"
+  }
 }

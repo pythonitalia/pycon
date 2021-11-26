@@ -40,4 +40,4 @@ jobs:
         working-directory: backend
         run: poetry run python manage.py makemigrations --check
         env:
-          DJANGO_SETTINGS_MODULE: pycon.settings.dev
+          DJANGO_SETTINGS_MODULE: pycon.settings.test

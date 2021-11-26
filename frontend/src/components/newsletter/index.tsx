@@ -5,48 +5,62 @@ import React, { useCallback, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, Heading, Input, jsx, Text } from "theme-ui";
 
-import { useSubscribeMutation } from "~/types";
+import { Alert } from "~/components/alert";
+import { NewsletterSubscriptionResult, useSubscribeMutation } from "~/types";
 
 import { Button } from "../button/button";
+import { ErrorsList } from "../errors-list";
 
 const NewsletterForm = () => {
   const [email, setEmail] = useState("");
   const [subscribe, { loading, error, data }] = useSubscribeMutation();
+  const subscribeToNewsletter = data?.subscribeToNewsletter;
+
+  const hasFormErrors =
+    subscribeToNewsletter?.__typename === "SubscribeToNewsletterErrors";
+  const hasCompletedSubscription =
+    subscribeToNewsletter?.__typename === "NewsletterSubscribeResult";
+  const isUnableToSubscribe =
+    hasCompletedSubscription &&
+    subscribeToNewsletter?.status ===
+      NewsletterSubscriptionResult.UnableToSubscribe;
 
   const canSubmit = email.trim() !== "" && !loading;
   const onSubmit = useCallback(
     async (e) => {
       e.preventDefault();
-      if (
-        loading ||
-        (data &&
-          data.subscribeToNewsletter.__typename ===
-            "SubscribeToNewsletterErrors")
-      ) {
+
+      if (loading || hasCompletedSubscription) {
         return;
       }
+
       subscribe({
         variables: {
           email,
         },
       });
     },
-    [email],
+    [email, hasCompletedSubscription, loading],
   );
-  if (data) {
-    return (
-      <FormattedMessage id="newsletter.success">
-        {(txt) => <Text variant="prefooter">{txt}</Text>}
-      </FormattedMessage>
-    );
-  }
-  if (error) {
+
+  const getErrors = (key: "validationEmail" | "nonFieldErrors") =>
+    (hasFormErrors && data.subscribeToNewsletter[key]) || [];
+
+  if (hasCompletedSubscription && !isUnableToSubscribe) {
+    const success =
+      subscribeToNewsletter.status == NewsletterSubscriptionResult.Subscribed;
+
     return (
       <Box>
-        <Text
-          color="danger"
-          dangerouslySetInnerHTML={{ __html: error.toString() }}
-        />
+        <Text variant="prefooter" mb={3}>
+          <FormattedMessage id="newsletter.text" />
+        </Text>
+
+        <Text sx={{ color: "green", fontWeight: "bold" }}>
+          <FormattedMessage
+            id={success ? "newsletter.success" : "newsletter.confirmViaEmail"}
+          />
+        </Text>
       </Box>
     );
   }
@@ -54,25 +68,15 @@ const NewsletterForm = () => {
   return (
     <Box as="form" onSubmit={onSubmit}>
       <Box>
-        <FormattedMessage id="newsletter.text">
-          {(txt) => (
-            <Text variant="prefooter" mb={3}>
-              {txt}
-            </Text>
-          )}
-        </FormattedMessage>
+        <Text variant="prefooter" mb={3}>
+          <FormattedMessage id="newsletter.text" />
+        </Text>
         <Input
           sx={{
-            color: "white",
             listStyle: "none",
-
-            a: {
-              color: "white",
-              textDecoration: "none",
-            },
             mb: 3,
           }}
-          placeholder="my@email.org"
+          placeholder="guido@python.org"
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             setEmail(e.target.value)
           }
@@ -80,19 +84,27 @@ const NewsletterForm = () => {
           required={true}
           type="email"
         />
+        <ErrorsList sx={{ mb: 4 }} errors={getErrors("validationEmail")} />
+
         <Button type="submit" disabled={!canSubmit} loading={loading}>
           <FormattedMessage id="newsletter.button" />
         </Button>
+
+        {(error || isUnableToSubscribe) && (
+          <Alert variant="alert">
+            <FormattedMessage id="newsletter.error" />
+          </Alert>
+        )}
       </Box>
     </Box>
   );
 };
 
-export const NewsletterSection: React.SFC = () => (
+export const NewsletterSection = () => (
   <Box>
-    <FormattedMessage id="newsletter.header">
-      {(txt) => <Heading sx={{ fontSize: 5, mb: 4 }}>{txt}</Heading>}
-    </FormattedMessage>
+    <Heading sx={{ fontSize: 5, mb: 4 }}>
+      <FormattedMessage id="newsletter.header" />
+    </Heading>
     <NewsletterForm />
   </Box>
 );

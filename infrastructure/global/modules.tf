@@ -50,3 +50,9 @@ module "certs" {
 module "buckets" {
   source = "./buckets"
 }
+
+# Cloudwatch
+
+module "cloudwatch" {
+  source = "./cloudwatch"
+}

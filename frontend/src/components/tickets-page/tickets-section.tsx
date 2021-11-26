@@ -122,24 +122,24 @@ export const TicketsSection: React.SFC<Props> = ({
         </Flex>
       </Box>
 
+      {tickets && (
+        <TicketsForm
+          isBusiness={invoiceInformation.isBusiness}
+          tickets={tickets}
+          selectedProducts={selectedProducts}
+          addProduct={addProduct}
+          removeProduct={removeProduct}
+        />
+      )}
+
       <Box
         sx={{
           maxWidth: "container",
           mx: "auto",
           px: 3,
-          mt: 5,
+          mt: 4,
         }}
       >
-        {tickets && (
-          <TicketsForm
-            isBusiness={invoiceInformation.isBusiness}
-            tickets={tickets}
-            selectedProducts={selectedProducts}
-            addProduct={addProduct}
-            removeProduct={removeProduct}
-          />
-        )}
-
         {hotelRooms && (
           <HotelForm
             selectedHotelRooms={selectedHotelRooms}

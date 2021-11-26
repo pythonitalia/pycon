@@ -5,8 +5,6 @@ from .base import *  # noqa
 from .base import DATABASES, MIDDLEWARE, env
 
 SECRET_KEY = env("SECRET_KEY")
-# CELERY_BROKER_URL = env("CELERY_BROKER_URL")
-USE_SCHEDULER = False
 
 # if FRONTEND_URL == "http://testfrontend.it/":
 #     raise ImproperlyConfigured("Please configure FRONTEND_URL for production")
@@ -62,3 +60,6 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 PASTAPORTO_SECRET = env("PASTAPORTO_SECRET")
+
+USERS_SERVICE = env("USERS_SERVICE")
+SERVICE_TO_SERVICE_SECRET = env("SERVICE_TO_SERVICE_SECRET")
