@@ -65,28 +65,28 @@ export const TicketsPage = () => {
   );
 };
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const language = params.lang as string;
-  const client = getApolloClient();
+// export const getStaticProps: GetStaticProps = async ({ params }) => {
+//   const language = params.lang as string;
+//   const client = getApolloClient();
 
-  await Promise.all([
-    prefetchSharedQueries(client, language),
-    queryTickets(client, {
-      conference: process.env.conferenceCode,
-      language,
-      isLogged: false,
-    }),
-  ]);
+//   await Promise.all([
+//     prefetchSharedQueries(client, language),
+//     queryTickets(client, {
+//       conference: process.env.conferenceCode,
+//       language,
+//       isLogged: false,
+//     }),
+//   ]);
 
-  return addApolloState(client, {
-    props: {},
-  });
-};
+//   return addApolloState(client, {
+//     props: {},
+//   });
+// };
 
-export const getStaticPaths: GetStaticPaths = async () =>
-  Promise.resolve({
-    paths: [],
-    fallback: "blocking",
-  });
+// export const getStaticPaths: GetStaticPaths = async () =>
+//   Promise.resolve({
+//     paths: [],
+//     fallback: "blocking",
+//   });
 
 export default TicketsPage;
