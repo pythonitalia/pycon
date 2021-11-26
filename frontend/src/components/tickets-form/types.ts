@@ -3,9 +3,11 @@ export type Ticket = {
   id: string;
   defaultPrice: string;
   category: string;
-  type: "BUSINESS" | "STANDARD";
+  type: "HOTEL" | "BUSINESS" | "STANDARD";
   description?: string | null;
   variations?: { id: string; value: string; defaultPrice: string }[];
+  availableUntil?: string;
+  soldOut?: boolean;
   questions: {
     id: string;
     name: string;

@@ -11,24 +11,7 @@ import { AddHotelRoom } from "./add-hotel-room";
 import { AddProductWithVariation } from "./add-product-with-variation";
 import { AddRemoveProduct } from "./add-remove-product";
 import { ProductSelectedVariationsList } from "./product-selected-variations-list";
-
-type RowTicket = {
-  id: string;
-  name: string;
-  soldOut?: boolean;
-  description?: string | null;
-  availableUntil?: string;
-  defaultPrice: string;
-  variations?: { id: string; value: string; defaultPrice: string }[];
-  category: string;
-  type: "HOTEL" | "BUSINESS" | "STANDARD";
-  questions: {
-    id: string;
-    name: string;
-    required: boolean;
-    options: { id: string; name: string }[];
-  }[];
-};
+import { Ticket } from "./types";
 
 type SelectedProduct = {
   id: string;
@@ -37,7 +20,7 @@ type SelectedProduct = {
 
 type ProductRowProps = {
   className?: string;
-  ticket: RowTicket;
+  ticket: Ticket;
   quantity?: number;
   hotel?: boolean;
   conferenceStart?: string;
