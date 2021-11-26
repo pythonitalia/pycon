@@ -107,6 +107,14 @@ def get_questions(conference: Conference):
     return {str(result["id"]): result for result in data["results"]}
 
 
+def get_categories(conference: Conference):
+    response = pretix(conference, "categories")
+    response.raise_for_status()
+
+    data = response.json()
+    return {str(result["id"]): result for result in data["results"]}
+
+
 @strawberry.input
 class CreateOrderTicketAnswer:
     question_id: str

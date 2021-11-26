@@ -83,3 +83,18 @@ def pretix_questions():
             },
         ],
     }
+
+
+@pytest.fixture
+def pretix_categories():
+    return {
+        "count": 1,
+        "next": None,
+        "previous": None,
+        "results": [
+            {
+                "id": 1,
+                "name": {"en": "Example"},
+            },
+        ],
+    }

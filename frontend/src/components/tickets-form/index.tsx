@@ -6,7 +6,6 @@ import { Box, jsx } from "theme-ui";
 
 import { SelectedProducts } from "../tickets-page/types";
 import { ProductRow } from "./product-row";
-import { SelectedProductsWithVariationsList } from "./selected-products-with-variation-list";
 import { Ticket } from "./types";
 
 type Props = {
@@ -40,24 +39,33 @@ export const TicketsForm = ({
     return false;
   });
 
+  const ticketsByCategory = ticketsToShow.reduce((acc, ticket) => {
+    const category = ticket.category;
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    acc[category].push(ticket);
+    return acc;
+  }, {} as { [category: string]: Ticket[] });
+
   return (
     <React.Fragment>
-      {ticketsToShow.map((ticket) => (
-        <Box key={ticket.id}>
-          <ProductRow
-            quantity={selectedProducts[ticket.id]?.length ?? 0}
-            ticket={ticket}
-            addProduct={addProduct}
-            removeProduct={removeProduct}
-          />
+      {Object.entries(ticketsByCategory).map(([category, categoryTickets]) => (
+        <Box key={category} sx={{ borderBottom: "primary" }}>
+          <Box sx={{ maxWidth: "container", mx: "auto", px: 3 }}>
+            {categoryTickets.map((ticket) => (
+              <ProductRow
+                key={ticket.id}
+                quantity={selectedProducts[ticket.id]?.length ?? 0}
+                ticket={ticket}
+                addProduct={addProduct}
+                removeProduct={removeProduct}
+                selectedProducts={selectedProducts}
+              />
+            ))}
+          </Box>
         </Box>
       ))}
-
-      <SelectedProductsWithVariationsList
-        selectedProducts={selectedProducts}
-        products={tickets}
-        removeProduct={removeProduct}
-      />
     </React.Fragment>
   );
 };

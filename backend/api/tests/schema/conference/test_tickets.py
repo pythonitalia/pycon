@@ -8,6 +8,7 @@ def test_returns_tickets(graphql_client, conference, mocker):
     get_tickets_mock.return_value = [
         TicketItem(
             name="Example Ticket",
+            category="student",
             id="1",
             description="",
             active=True,
@@ -42,6 +43,7 @@ def test_is_business(graphql_client, conference, mocker):
     get_tickets_mock.return_value = [
         TicketItem(
             name="Business Ticket",
+            category="student",
             id="1",
             description="",
             active=True,
@@ -53,6 +55,7 @@ def test_is_business(graphql_client, conference, mocker):
         ),
         TicketItem(
             name="Normal Ticket",
+            category="student",
             id="2",
             description="",
             active=True,

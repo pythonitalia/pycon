@@ -10,26 +10,17 @@ import { useCurrentLanguage } from "~/locale/context";
 import { AddHotelRoom } from "./add-hotel-room";
 import { AddProductWithVariation } from "./add-product-with-variation";
 import { AddRemoveProduct } from "./add-remove-product";
+import { ProductSelectedVariationsList } from "./product-selected-variations-list";
+import { Ticket } from "./types";
 
-type RowTicket = {
+type SelectedProduct = {
   id: string;
-  name: string;
-  soldOut?: boolean;
-  description?: string | null;
-  availableUntil?: string;
-  defaultPrice: string;
-  variations?: { id: string; value: string; defaultPrice: string }[];
-  questions: {
-    id: string;
-    name: string;
-    required: boolean;
-    options: { id: string; name: string }[];
-  }[];
+  variation?: string;
 };
 
 type ProductRowProps = {
   className?: string;
-  ticket: RowTicket;
+  ticket: Ticket;
   quantity?: number;
   hotel?: boolean;
   conferenceStart?: string;
@@ -42,19 +33,23 @@ type ProductRowProps = {
     checkout: moment.Moment,
   ) => void;
   removeHotelRoom?: (index: number) => void;
+  selectedProducts?: {
+    [id: string]: SelectedProduct[];
+  };
 };
 
-export const ProductRow: React.SFC<ProductRowProps> = ({
+export const ProductRow = ({
   className,
   hotel,
   ticket,
+  selectedProducts,
   conferenceStart,
   conferenceEnd,
   addHotelRoom,
   quantity,
   addProduct,
   removeProduct,
-}) => {
+}: ProductRowProps) => {
   const lang = useCurrentLanguage();
   const dateFormatter = new Intl.DateTimeFormat(lang, {
     day: "2-digit",
@@ -65,7 +60,7 @@ export const ProductRow: React.SFC<ProductRowProps> = ({
   const hasVariation = ticket.variations && ticket.variations.length > 0;
 
   return (
-    <Box sx={{ mb: 4 }} className={className}>
+    <Box sx={{ my: 4 }} className={className}>
       <Grid
         sx={{
           gridTemplateColumns: ["1fr", hotel ? "1fr 370px" : "1fr 180px"],
@@ -156,6 +151,14 @@ export const ProductRow: React.SFC<ProductRowProps> = ({
           />
         )}
       </Grid>
+
+      {hasVariation && (
+        <ProductSelectedVariationsList
+          product={ticket}
+          selectedProducts={selectedProducts}
+          removeProduct={removeProduct}
+        />
+      )}
     </Box>
   );
 };
