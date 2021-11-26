@@ -98,3 +98,25 @@ def pretix_categories():
             },
         ],
     }
+
+
+@pytest.fixture
+def pretix_quotas():
+    return {
+        "count": 1,
+        "next": None,
+        "previous": None,
+        "results": [
+            {
+                "id": 1,
+                "name": "Ticket Quota",
+                "size": 200,
+                "available_number": 118,
+                "items": [1],
+                "variations": [],
+                "subevent": None,
+                "close_when_sold_out": False,
+                "closed": False,
+            }
+        ],
+    }
