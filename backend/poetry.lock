@@ -366,15 +366,16 @@ tags = ["django-taggit"]
 
 [[package]]
 name = "django-environ"
-version = "0.4.4"
-description = "Django-environ allows you to utilize 12factor inspired environment variables to configure your Django application."
+version = "0.8.1"
+description = "A package that allows you to utilize 12factor inspired environment variables to configure your Django application."
 category = "main"
 optional = false
-python-versions = "*"
+python-versions = ">=3.4,<4"
 
-[package.dependencies]
-django = "*"
-six = "*"
+[package.extras]
+develop = ["coverage[toml] (>=5.0a4)", "pytest (>=4.6.11)", "furo (>=2021.8.17b43,<2021.9.0)", "sphinx (>=3.5.0)", "sphinx-notfound-page"]
+docs = ["furo (>=2021.8.17b43,<2021.9.0)", "sphinx (>=3.5.0)", "sphinx-notfound-page"]
+testing = ["coverage[toml] (>=5.0a4)", "pytest (>=4.6.11)"]
 
 [[package]]
 name = "django-fsm"
@@ -1476,7 +1477,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "4ee4655dd3ce319df7c4d49c687bd06bc71bc9a790d827d43babb5753f9a9206"
+content-hash = "242d77bd263bb0c7e916fbda68b5a3f6f56df24ab216e06b13e2511f067c5c5b"
 
 [metadata.files]
 aniso8601 = [
@@ -1720,8 +1721,8 @@ django-autocomplete-light = [
     {file = "django-autocomplete-light-3.5.1.tar.gz", hash = "sha256:52e8d468060a5911c44300a374d74058c90e65bfdf87ace151abac67279c4ae5"},
 ]
 django-environ = [
-    {file = "django-environ-0.4.4.tar.gz", hash = "sha256:ee2f8405d83137e3328b26b3de01bd715b5395fca22feb919dcc905fb6099cfa"},
-    {file = "django_environ-0.4.4-py2.py3-none-any.whl", hash = "sha256:e9c171b9d5f540e6f3bc42866941d9cd0bd77fb110a7c13a7c4857a2c08cfa40"},
+    {file = "django-environ-0.8.1.tar.gz", hash = "sha256:6f0bc902b43891656b20486938cba0861dc62892784a44919170719572a534cb"},
+    {file = "django_environ-0.8.1-py2.py3-none-any.whl", hash = "sha256:42593bee519a527602a467c7b682aee1a051c2597f98c45f4f4f44169ecdb6e5"},
 ]
 django-fsm = [
     {file = "django-fsm-2.6.1.tar.gz", hash = "sha256:96f776736042b8cde03483cb4b27c3a62580da40fc9b942845349718afdf5d0f"},
