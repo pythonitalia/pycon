@@ -1,5 +1,3 @@
-data "aws_caller_identity" "current" {}
-
 data "aws_db_instance" "database" {
   db_instance_identifier = "pythonit-${terraform.workspace}"
 }
@@ -58,12 +56,16 @@ resource "aws_eip" "ip" {
   }
 }
 
+data "aws_ecr_repository" "repo" {
+  name = "pythonit/pretix"
+}
+
 resource "aws_ecs_task_definition" "pretix_service" {
   family = "${terraform.workspace}-pretix"
   container_definitions = jsonencode([
     {
       name      = "pretix"
-      image     = "${data.aws_caller_identity.current.account_id}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/pretix:latest"
+      image     = "${data.aws_ecr_repository.repo.repository_url}:latest"
       cpu       = 10
       memory    = 512
       essential = true
