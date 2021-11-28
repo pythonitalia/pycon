@@ -67,7 +67,7 @@ resource "aws_ecs_task_definition" "pretix_service" {
       name      = "pretix"
       image     = "${data.aws_ecr_repository.repo.repository_url}:latest"
       cpu       = 2048
-      memory    = 1024
+      memory    = 1900
       essential = true
       environment = [
         {
