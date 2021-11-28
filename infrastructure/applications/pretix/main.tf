@@ -60,12 +60,17 @@ data "aws_ecr_repository" "repo" {
   name = "pythonit/pretix"
 }
 
+data "aws_ecr_image" "image" {
+  repository_name = data.aws_ecr_repository.repo.name
+  image_tag       = "latest"
+}
+
 resource "aws_ecs_task_definition" "pretix_service" {
   family = "${terraform.workspace}-pretix"
   container_definitions = jsonencode([
     {
       name      = "pretix"
-      image     = "${data.aws_ecr_repository.repo.repository_url}:latest"
+      image     = "${data.aws_ecr_repository.repo.repository_url}:${data.aws_ecr_image.image.image_digest}"
       cpu       = 2048
       memory    = 1900
       essential = true
