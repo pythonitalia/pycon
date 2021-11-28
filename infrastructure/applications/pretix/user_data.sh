@@ -25,3 +25,5 @@ EOF
 chmod +x /usr/local/bin/pretixcron.sh
 echo "15,45 * * * * /usr/local/bin/pretixcron.sh" > /etc/cron.d/pretixcron
 
+sudo mkdir -p /var/pretix/data/media
+sudo chown -R 15371:15371 /var/pretix/data/media
