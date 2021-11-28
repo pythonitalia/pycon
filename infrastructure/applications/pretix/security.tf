@@ -4,7 +4,7 @@ resource "aws_security_group" "instance" {
   vpc_id      = data.aws_vpc.default.id
 }
 
-resource "aws_security_group_rule" "instance_out_all" {
+resource "aws_security_group_rule" "out_all" {
   type              = "egress"
   from_port         = 0
   to_port           = 0

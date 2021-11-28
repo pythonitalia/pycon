@@ -31,7 +31,7 @@ data "aws_ami" "ecs" {
 
 resource "aws_instance" "pretix" {
   ami               = data.aws_ami.ecs.id
-  instance_type     = "t3.micro"
+  instance_type     = "t3.small"
   subnet_id         = data.aws_subnet.public.id
   availability_zone = "eu-central-1a"
   vpc_security_group_ids = [
@@ -66,8 +66,8 @@ resource "aws_ecs_task_definition" "pretix_service" {
     {
       name      = "pretix"
       image     = "${data.aws_ecr_repository.repo.repository_url}:latest"
-      cpu       = 10
-      memory    = 512
+      cpu       = 2048
+      memory    = 1024
       essential = true
       environment = [
         {
@@ -113,6 +113,16 @@ resource "aws_ecs_task_definition" "pretix_service" {
         {
           sourceVolume  = "media"
           containerPath = "/data/media"
+        },
+        {
+          sourceVolume  = "data"
+          containerPath = "/var/pretix-data"
+        }
+      ]
+      systemControls = [
+        {
+          "namespace" : "net.core.somaxconn",
+          "value" : "4096"
         }
       ]
     },
@@ -121,6 +131,11 @@ resource "aws_ecs_task_definition" "pretix_service" {
   volume {
     name      = "media"
     host_path = "/var/pretix/data/media"
+  }
+
+  volume {
+    name      = "data"
+    host_path = "/var/pretix-data"
   }
 
   requires_compatibilities = []

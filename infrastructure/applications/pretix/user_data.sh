@@ -14,3 +14,14 @@ EOF
 
 chmod +x /usr/local/bin/claimspace.sh
 echo "0 0 * * * root /usr/local/bin/claimspace.sh" > /etc/cron.d/claimspace
+
+# Run pretix cron
+cat << "EOF" > /usr/local/bin/pretixcron.sh
+#!/bin/bash
+docker exec `docker ps --no-trunc -q --filter="name=.*pretix.*" | head -n 1` pretix cron
+exit 0
+EOF
+
+chmod +x /usr/local/bin/pretixcron.sh
+echo "15,45 * * * * /usr/local/bin/pretixcron.sh" > /etc/cron.d/pretixcron
+
