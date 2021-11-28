@@ -1,4 +1,4 @@
-FROM pretix/standalone:4.0.0
+FROM pretix/standalone:4.4
 
 COPY ./entrypoint.sh /entrypoint.sh
 COPY ./settings.py /pretix/src/production_settings.py
