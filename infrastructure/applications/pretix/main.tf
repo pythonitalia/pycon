@@ -70,7 +70,7 @@ resource "aws_ecs_task_definition" "pretix_service" {
   container_definitions = jsonencode([
     {
       name      = "pretix"
-      image     = "${data.aws_ecr_repository.repo.repository_url}:${data.aws_ecr_image.image.image_digest}"
+      image     = "${data.aws_ecr_repository.repo.repository_url}@${data.aws_ecr_image.image.image_digest}"
       cpu       = 2048
       memory    = 1900
       essential = true
