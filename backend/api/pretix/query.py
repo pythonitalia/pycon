@@ -42,7 +42,10 @@ def _get_quantity_left_for_ticket(item, quotas):
     if item["show_quota_left"] is False:
         return None
 
-    return sum(
+    # tickets can be in multiple quotas, in that case the one that has the least amount of tickets
+    # should become the source of truth for availability. See:
+    # https://docs.pretix.eu/en/latest/development/concepts.html#quotas
+    return min(
         quota["available_number"]
         for quota in quotas.values()
         if item["id"] in quota["items"]
