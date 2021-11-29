@@ -116,7 +116,7 @@ def get_categories(conference: Conference):
 
 
 def get_quotas(conference: Conference):
-    response = pretix(conference, "quotas")
+    response = pretix(conference, "quotas", qs={"with_availability": "true"})
     response.raise_for_status()
 
     data = response.json()
