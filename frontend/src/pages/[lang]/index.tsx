@@ -16,6 +16,7 @@ import { Link } from "~/components/link";
 import { MapWithLink } from "~/components/map-with-link";
 import { Marquee } from "~/components/marquee";
 import { MetaTags } from "~/components/meta-tags";
+import { NewsletterSection } from "~/components/newsletter";
 import { SponsorsSection } from "~/components/sponsors-section";
 import { YouTubeLite } from "~/components/youtube-lite";
 import { formatDeadlineDate, formatDeadlineTime } from "~/helpers/deadlines";
@@ -273,6 +274,19 @@ export const HomePage = () => {
               </Box>
             ))}
           </Box>
+        </Box>
+      </Grid>
+
+      <Grid
+        columns={[1, null, 2]}
+        sx={{
+          px: 3,
+          maxWidth: "container",
+          mx: "auto",
+        }}
+      >
+        <Box sx={{ py: 5, pr: [0, 4] }}>
+          <NewsletterSection />
         </Box>
       </Grid>
     </Fragment>

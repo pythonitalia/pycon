@@ -170,9 +170,7 @@ SOCIAL_AUTH_POSTGRES_JSONFIELD = True
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = f"{FRONTEND_URL}/en/login/success/"
 # SOCIAL_AUTH_LOGIN_ERROR_URL = f"{FRONTEND_URL}/login/"
 
-CELERY_BROKER_URL = ""
 SLACK_INCOMING_WEBHOOK_URl = ""
-USE_SCHEDULER = False
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 MAPBOX_PUBLIC_API_KEY = env("MAPBOX_PUBLIC_API_KEY", default="")
@@ -195,7 +193,12 @@ LOGGING = {
     "disable_existing_loggers": False,
     "handlers": {"console": {"class": "logging.StreamHandler"}},
     "loggers": {
-        "app_api": {"handlers": ["console"], "level": "WARNING"},
+        "pycon.api": {"handlers": ["console"], "level": "WARNING", "propagate": True},
+        "pycon.integrations": {
+            "handlers": ["console"],
+            "level": "WARNING",
+            "propagate": True,
+        },
         "qinspect": {"handlers": ["console"], "level": "DEBUG", "propagate": True},
     },
 }
@@ -206,3 +209,9 @@ QUERY_INSPECT_LOG_TRACEBACKS = True
 QUERY_INSPECT_TRACEBACK_ROOTS = [root(".")]
 
 PINPOINT_APPLICATION_ID = env("PINPOINT_APPLICATION_ID", default="")
+
+SQS_QUEUE_URL = env("SQS_QUEUE_URL", default="")
+
+MAILCHIMP_SECRET_KEY = env("MAILCHIMP_SECRET_KEY", default="")
+MAILCHIMP_DC = env("MAILCHIMP_DC", default="us3")
+MAILCHIMP_LIST_ID = env("MAILCHIMP_LIST_ID", default="")

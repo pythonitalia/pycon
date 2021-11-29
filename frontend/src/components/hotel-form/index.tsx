@@ -41,7 +41,7 @@ export const HotelForm: React.SFC<Props> = ({
 
   return (
     <Box>
-      <Heading mb={3} as="h2">
+      <Heading mb={3} as="h1">
         <FormattedMessage id="order.hotelRooms" />
       </Heading>
       {hotelRooms.map((room) => (
@@ -66,6 +66,8 @@ export const HotelForm: React.SFC<Props> = ({
                 (selectedHotelRooms[room.id] ?? []).length >= room.capacityLeft,
               defaultPrice: room.price,
               questions: [],
+              category: "hotel",
+              type: "HOTEL",
             }}
           />
           {(selectedHotelRooms[room.id] ?? []).map((selectedRoom, index) => (

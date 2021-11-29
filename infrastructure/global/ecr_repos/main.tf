@@ -3,7 +3,8 @@ locals {
     "pycon-backend",
     "users-backend",
     "gateway",
-    "association-backend"
+    "association-backend",
+    "pretix"
   ]
 }
 

@@ -126,6 +126,6 @@ class SubmissionCommentAuthor:
             if not user:
                 raise ValueError("No user found")
 
-            name = user.name
+            name = user.name or user.fullname or "No name"
 
         return name

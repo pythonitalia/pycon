@@ -12,19 +12,15 @@ type SelectedProduct = {
   variation?: string;
 };
 
-export const SelectedProductsWithVariationsList: React.SFC<{
-  products: Ticket[];
+export const ProductSelectedVariationsList: React.SFC<{
+  product: Ticket;
   selectedProducts: {
     [id: string]: SelectedProduct[];
   };
   removeProduct: (id: string, variation: string) => void;
-}> = ({ products, selectedProducts, removeProduct }) => {
+}> = ({ product, selectedProducts, removeProduct }) => {
   const productsToShow = Object.values(selectedProducts).filter(
     (p) => p.length > 0 && p[0].variation,
-  );
-
-  const productsById = Object.fromEntries(
-    products.map((product) => [product.id, product]),
   );
 
   return (
@@ -45,7 +41,11 @@ export const SelectedProductsWithVariationsList: React.SFC<{
 
         return Object.values(groups).map((group) => {
           const firstProduct = group[0];
-          const product = productsById[firstProduct.id];
+
+          // we only want to show variation for this specific product
+          if (firstProduct.id !== product.id) {
+            return null;
+          }
 
           return (
             <Grid

@@ -1,30 +1,14 @@
-from functools import wraps
-
-from celery import shared_task
-from django.conf import settings
 from integrations import slack
 
 
-def switchable_task(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        if settings.USE_SCHEDULER:
-            return func.delay(*args, **kwargs)
-        return func(*args, **kwargs)
+def handle_new_cfp_submission(data):
+    title = data["title"]
+    elevator_pitch = data["elevator_pitch"]
+    submission_type = data["submission_type"]
+    admin_url = data["admin_url"]
+    topic = data["topic"]
+    duration = data["duration"]
 
-    return wrapper
-
-
-@switchable_task
-@shared_task
-def notify_new_submission(
-    title: str,
-    elevator_pitch: str,
-    submission_type: str,
-    admin_url,
-    topic: str,
-    duration: int,
-):
     slack.send_message(
         [
             {
@@ -48,11 +32,14 @@ def notify_new_submission(
                         "fields": [
                             {"type": "mrkdwn", "text": "*Topic*"},
                             {"type": "mrkdwn", "text": "*Duration*"},
-                            {"type": "plain_text", "text": str(duration)},
                             {"type": "mrkdwn", "text": str(topic)},
+                            {"type": "plain_text", "text": str(duration)},
                         ],
                     }
                 ]
             }
         ],
     )
+
+
+HANDLERS = {"NewCFPSubmission": handle_new_cfp_submission}

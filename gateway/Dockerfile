@@ -25,6 +25,5 @@ COPY --from=build /app/dist ./
 COPY --from=build /app/internal-services/logout/schema.graphql ./internal-services/logout/schema.graphql
 
 ENV NODE_ENV=production
-ENV VARIANT=default
 
 CMD [ "handler.graphqlHandler" ]

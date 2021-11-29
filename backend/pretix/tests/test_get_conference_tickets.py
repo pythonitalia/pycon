@@ -13,17 +13,29 @@ def test_get_conference_tickets_no_tickets(conference, requests_mock):
     requests_mock.get(
         "https://pretix/api/organizers/events/questions", json={"results": []}
     )
+    requests_mock.get(
+        "https://pretix/api/organizers/events/categories", json={"results": []}
+    )
+    requests_mock.get(
+        "https://pretix/api/organizers/events/quotas", json={"results": []}
+    )
     assert get_conference_tickets(conference, "en") == []
 
 
 @override_settings(PRETIX_API="https://pretix/api/")
 @pytest.mark.django_db
 def test_get_conference_tickets(
-    conference, requests_mock, pretix_items, pretix_questions
+    conference, requests_mock, pretix_items, pretix_questions, pretix_categories, pretix_quotas
 ):
     requests_mock.get("https://pretix/api/organizers/events/items", json=pretix_items)
     requests_mock.get(
         "https://pretix/api/organizers/events/questions", json=pretix_questions
+    )
+    requests_mock.get(
+        "https://pretix/api/organizers/events/categories", json=pretix_categories
+    )
+    requests_mock.get(
+        "https://pretix/api/organizers/events/quotas", json=pretix_quotas
     )
     tickets = get_conference_tickets(conference, "en")
 
@@ -32,6 +44,7 @@ def test_get_conference_tickets(
     ticket = tickets[0]
 
     assert ticket.name == "Regular ticket"
+    assert ticket.quantity_left == 118
     assert ticket.questions[0].name == "Codice Fiscale"
     assert ticket.questions[1].name == "Food preferences"
     assert ticket.questions[1].options == [
@@ -39,3 +52,5 @@ def test_get_conference_tickets(
         Option(id=5, name="Vegetarian"),
         Option(id=6, name="Vegan"),
     ]
+
+    assert tickets[1].quantity_left is None

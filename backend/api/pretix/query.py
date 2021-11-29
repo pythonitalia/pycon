@@ -32,7 +32,29 @@ def _is_hotel(item: dict):
     return item.get("default_price") == "0.00"
 
 
-def _create_ticket_type_from_api(item, id, questions, language):
+def _get_category_for_ticket(item, categories):
+    category_id = str(item["category"])
+
+    return categories.get(category_id)
+
+
+def _get_quantity_left_for_ticket(item, quotas):
+    if item["show_quota_left"] is False:
+        return None
+
+    # tickets can be in multiple quotas, in that case the one that has the least amount of tickets
+    # should become the source of truth for availability. See:
+    # https://docs.pretix.eu/en/latest/development/concepts.html#quotas
+    return min(
+        quota["available_number"]
+        for quota in quotas.values()
+        if item["id"] in quota["items"]
+    )
+
+
+def _create_ticket_type_from_api(item, id, categories, questions, quotas, language):
+    category = _get_category_for_ticket(item, categories)
+
     return TicketItem(
         id=id,
         name=item["name"].get("language", item["name"]["en"]),
@@ -41,6 +63,7 @@ def _create_ticket_type_from_api(item, id, questions, language):
             if item["description"]
             else None
         ),
+        category=category["name"].get(language, category["name"]["en"]),
         variations=[
             ProductVariation(
                 id=variation["id"],
@@ -56,6 +79,7 @@ def _create_ticket_type_from_api(item, id, questions, language):
         available_from=item["available_from"],
         available_until=item["available_until"],
         questions=get_questions_for_ticket(item, questions, language),
+        quantity_left=_get_quantity_left_for_ticket(item, quotas),
     )
 
 
@@ -81,10 +105,19 @@ def get_questions_for_ticket(item, questions, language):
 def get_conference_tickets(conference: Conference, language: str) -> List[TicketItem]:
     items = pretix.get_items(conference)
     questions = pretix.get_questions(conference).values()
+    categories = pretix.get_categories(conference)
+    quotas = pretix.get_quotas(conference)
 
     return sorted(
         [
-            _create_ticket_type_from_api(item, id, questions, language)
+            _create_ticket_type_from_api(
+                item=item,
+                id=id,
+                categories=categories,
+                questions=questions,
+                language=language,
+                quotas=quotas,
+            )
             for id, item in items.items()
             if item["active"] and not _is_hotel(item)
         ],

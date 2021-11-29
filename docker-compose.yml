@@ -49,6 +49,9 @@ services:
       DJANGO_SETTINGS_MODULE: pycon.settings.dev
       ALLOWED_HOSTS: "*"
       PRETIX_API_TOKEN: ${PRETIX_API_TOKEN}
+      MAILCHIMP_SECRET_KEY: ${MAILCHIMP_SECRET_KEY}
+      MAILCHIMP_DC: ${MAILCHIMP_DC}
+      MAILCHIMP_LIST_ID: ${MAILCHIMP_LIST_ID}
     healthcheck:
       test:
         [
@@ -178,7 +181,6 @@ services:
       - /home/node/app/node_modules/
     environment:
       <<: *enviroment_defaults
-      VARIANT: default
     tty: true
     stdin_open: true
     ports:

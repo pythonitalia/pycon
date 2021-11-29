@@ -29,7 +29,7 @@ export const messages = {
     "profile.gender.female": "Female",
     "profile.gender.male": "Male",
     "profile.gender.other": "Other",
-    "profile.gender.notSay": "Prefer not to say",
+    "profile.gender.not_say": "Prefer not to say",
     "profile.header": "My profile",
     "profile.loading": "Loading...",
     "profile.profileHeader": "My Profile",
@@ -75,7 +75,10 @@ export const messages = {
     "newsletter.text":
       "Stay in the loop, sign up for email updates about events, news and offer!",
     "newsletter.button": "Signup 👉",
-    "newsletter.success": "🎉 Thanks for subscribing! 🎉",
+    "newsletter.success": "Thanks for subscribing! 🎉",
+    "newsletter.confirmViaEmail":
+      "Thanks for subscribing! 🎉 Check your emails to confirm your subscription!",
+    "newsletter.error": "Something went wrong, please try again.",
     "signup.title": "Signup",
     "signup.email": "Email",
     "signup.password": "Password",
@@ -428,7 +431,7 @@ export const messages = {
     "profile.gender.female": "Femmina",
     "profile.gender.male": "Maschio",
     "profile.gender.other": "Altro",
-    "profile.gender.notSay": "Preferisco non dirlo",
+    "profile.gender.not_say": "Preferisco non dirlo",
     "profile.header": "Il mio profilo",
     "profile.loading": "Caricamento...",
     "profile.profileHeader": "Il mio profilo",
@@ -475,7 +478,10 @@ export const messages = {
     "newsletter.text":
       "Rimani aggiornato, iscriviti per ricevere aggiornamenti via email su eventi, novità e offerte!",
     "newsletter.button": "Iscriviti 👉",
-    "newsletter.success": "🎉 Grazie per esserti iscritto! 🎉",
+    "newsletter.success": "Grazie per esserti iscritto! 🎉",
+    "newsletter.confirmViaEmail":
+      "Grazie per esserti iscritto! 🎉 Controlla le tue email per confermare l'iscrizione!",
+    "newsletter.error": "Si è verificato un errore, riprova più tardi.",
     "signup.title": "Registrati",
     "signup.email": "Email",
     "signup.password": "Password",

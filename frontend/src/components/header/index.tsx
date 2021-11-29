@@ -100,7 +100,7 @@ export const Header = () => {
             width: "100%",
             height: open ? "100%" : "",
             zIndex: "header",
-            position: open ? "fixed" : "absolute",
+            position: open ? "fixed" : "relative",
             borderBottom: open ? "primary" : "",
             backgroundColor: open ? "orange" : "",
             overflowY: open ? "scroll" : "initial",
