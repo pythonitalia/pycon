@@ -111,6 +111,16 @@ export const Submission: React.SFC<Props> = ({ submission }) => (
             {compile(submission.abstract).tree}
           </Box>
 
+          {submission.notes && (
+            <Fragment>
+              <Heading sx={{ mb: 2 }}>
+                <FormattedMessage id="cfp.notesLabel" />
+              </Heading>
+
+              <Box className="article">{compile(submission.notes).tree}</Box>
+            </Fragment>
+          )}
+
           <Flex
             sx={{
               flexWrap: "wrap",

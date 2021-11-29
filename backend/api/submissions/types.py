@@ -63,7 +63,6 @@ class Submission:
     abstract: Optional[str] = restricted_field()
     speaker_level: Optional[str] = private_field()
     previous_talk_video: Optional[str] = private_field()
-    notes: Optional[str] = private_field()
     topic: Optional[LazyType["Topic", "api.conferences.types"]] = restricted_field()
     type: Optional[SubmissionType] = restricted_field()
     duration: Optional[
@@ -72,6 +71,12 @@ class Submission:
     audience_level: Optional[
         LazyType["AudienceLevel", "api.conferences.types"]
     ] = restricted_field()
+
+    @strawberry.field
+    def notes(self, info) -> Optional[str]:
+        if CanSeeSubmissionPrivateFields().has_permission(self, info):
+            return self.notes
+        return None
 
     @strawberry.field(permission_classes=[CanSeeSubmissionPrivateFields])
     def speaker(self) -> SubmissionSpeaker:
