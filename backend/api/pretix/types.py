@@ -74,6 +74,7 @@ class TicketItem:
     available_from: Optional[str]
     available_until: Optional[str]
     questions: List[Question]
+    quantity_left: Optional[int]
 
     @strawberry.field
     def type(self) -> TicketType:

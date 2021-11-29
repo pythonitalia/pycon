@@ -70,7 +70,7 @@ FAKE_PRETIX_ITEMS = {
             "original_price": None,
             "require_approval": False,
             "generate_tickets": None,
-            "show_quota_left": None,
+            "show_quota_left": False,
             "hidden_if_available": None,
             "allow_waitinglist": True,
             "issue_giftcard": False,
