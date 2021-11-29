@@ -224,6 +224,7 @@ export const messages = {
     "order.selectSize": "Select...",
     "order.hotelRooms": "Hotel rooms",
     "order.availableUntil": "Available until {date}",
+    "order.ticketsLeft": "{count, plural, =0 {Sold out} one {# left} other {# left}}",
 
     "orderInformation.heading": "Invoice information",
     "orderInformation.individualConsumer": "Individual Customer",
@@ -618,6 +619,7 @@ export const messages = {
     "order.selectSize": "Taglia...",
     "order.hotelRooms": "Stanze hotel",
     "order.availableUntil": "Disponibile fino al {date}",
+    "order.ticketsLeft": "{count, plural, =0 {Sold out} one {# rimasto} other {# rimasti}}",
 
     "orderReview.edit": "Modifica",
     "orderReview.usingVoucher": "Codice sconto usato",

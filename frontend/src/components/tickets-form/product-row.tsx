@@ -2,7 +2,7 @@
 
 /** @jsx jsx */
 import moment from "moment";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, FormattedPlural } from "react-intl";
 import { Box, Grid, jsx, Text } from "theme-ui";
 
 import { useCurrentLanguage } from "~/locale/context";
@@ -135,11 +135,34 @@ export const ProductRow = ({
         )}
 
         {!ticket.soldOut && !hotel && !hasVariation && (
-          <AddRemoveProduct
-            quantity={quantity!}
-            increase={() => addProduct && addProduct(ticket.id)}
-            decrease={() => removeProduct && removeProduct(ticket.id)}
-          />
+          <div>
+            <AddRemoveProduct
+              quantity={quantity!}
+              increase={() => addProduct && addProduct(ticket.id)}
+              decrease={() => removeProduct && removeProduct(ticket.id)}
+            />
+
+            {ticket.quantityLeft !== null && (
+              <Text
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "flex-end",
+                  textAlign: "right",
+                  mt: 2,
+                  fontSize: 2,
+                }}
+              >
+                <FormattedMessage
+                  id="order.ticketsLeft"
+                  values={{
+                    count: ticket.quantityLeft,
+                  }}
+                />{" "}
+                <span sx={{ fontSize: "1.2em", ml: 1 }}>🎟️</span>
+              </Text>
+            )}
+          </div>
         )}
 
         {!ticket.soldOut && !hotel && hasVariation && (
