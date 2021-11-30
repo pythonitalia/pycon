@@ -68,7 +68,7 @@ export const HotelForm = ({
               questions: [],
               category: "hotel",
               type: "HOTEL",
-              quantityLeft: room.capacityLeft
+              quantityLeft: room.capacityLeft,
             }}
           />
           {(selectedHotelRooms[room.id] ?? []).map((selectedRoom, index) => (
