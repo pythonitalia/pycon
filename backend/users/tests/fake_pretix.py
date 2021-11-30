@@ -11,7 +11,7 @@ FAKE_PRETIX_ITEMS = {
             "active": True,
             "sales_channels": ["web"],
             "description": None,
-            "default_price": "2000.00",
+            "default_price": "500.00",
             "free_price": False,
             "tax_rate": "0.00",
             "tax_rule": None,
