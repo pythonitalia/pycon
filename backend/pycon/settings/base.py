@@ -215,3 +215,5 @@ SQS_QUEUE_URL = env("SQS_QUEUE_URL", default="")
 MAILCHIMP_SECRET_KEY = env("MAILCHIMP_SECRET_KEY", default="")
 MAILCHIMP_DC = env("MAILCHIMP_DC", default="us3")
 MAILCHIMP_LIST_ID = env("MAILCHIMP_LIST_ID", default="")
+
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
