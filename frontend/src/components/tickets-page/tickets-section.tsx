@@ -42,7 +42,7 @@ type Props = {
   onUpdateIsBusiness: (isBusiness: boolean) => void;
 };
 
-export const TicketsSection: React.SFC<Props> = ({
+export const TicketsSection = ({
   tickets,
   state,
   hotelRooms,
@@ -57,7 +57,7 @@ export const TicketsSection: React.SFC<Props> = ({
   onNextStep,
   invoiceInformation,
   onUpdateIsBusiness,
-}) => {
+}: Props) => {
   const [shouldShowNoTickets, setShouldShowNoTickets] = useState(false);
 
   const onContinue = () => {
