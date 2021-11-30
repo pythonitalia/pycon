@@ -1,9 +1,9 @@
 import math
-from datetime import datetime
 from decimal import Decimal
 from typing import List, Optional
 
 from dateutil.parser import parse
+from django.utils import timezone
 
 import pretix
 import pretix.db
@@ -108,7 +108,7 @@ def get_questions_for_ticket(item, questions, language):
 
 
 def _is_ticket_available(item) -> bool:
-    now = datetime.now()
+    now = timezone.now()
 
     if available_from := item["available_from"]:
         available_from = parse(available_from)
