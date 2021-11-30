@@ -39,7 +39,7 @@ def _get_category_for_ticket(item, categories):
 
 
 def _get_quantity_left_for_ticket(item, quotas):
-    if item["show_quota_left"] is False:
+    if not bool(item["show_quota_left"]):
         return None
 
     # tickets can be in multiple quotas, in that case the one that has the least amount of tickets
