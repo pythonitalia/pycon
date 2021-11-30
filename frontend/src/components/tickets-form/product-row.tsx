@@ -2,7 +2,7 @@
 
 /** @jsx jsx */
 import moment from "moment";
-import { FormattedMessage, FormattedPlural } from "react-intl";
+import { FormattedMessage } from "react-intl";
 import { Box, Grid, jsx, Text } from "theme-ui";
 
 import { useCurrentLanguage } from "~/locale/context";
