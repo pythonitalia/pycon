@@ -1,6 +1,9 @@
 import math
+from datetime import datetime
 from decimal import Decimal
 from typing import List, Optional
+
+from dateutil.parser import parse
 
 import pretix
 import pretix.db
@@ -104,8 +107,39 @@ def get_questions_for_ticket(item, questions, language):
     ]
 
 
-def get_conference_tickets(conference: Conference, language: str) -> List[TicketItem]:
+def _is_ticket_available(item) -> bool:
+    now = datetime.now()
+
+    if available_from := item["available_from"]:
+        available_from = parse(available_from)
+
+        if available_from >= now:
+            return False
+
+    if available_until := item["available_until"]:
+        available_until = parse(available_until)
+
+        if available_until < now:
+            return False
+
+    return True
+
+
+def get_conference_tickets(
+    conference: Conference, language: str, show_unavailable_tickets: bool = False
+) -> List[TicketItem]:
     items = pretix.get_items(conference)
+
+    # hide non active items and items that are hotels
+    items = {
+        key: item
+        for key, item in items.items()
+        if item["active"] and not _is_hotel(item)
+    }
+
+    if not show_unavailable_tickets:
+        items = {key: item for key, item in items.items() if _is_ticket_available(item)}
+
     questions = pretix.get_questions(conference).values()
     categories = pretix.get_categories(conference)
     quotas = pretix.get_quotas(conference)
@@ -130,7 +164,6 @@ def get_conference_tickets(conference: Conference, language: str) -> List[Ticket
                 quotas=quotas,
             )
             for id, item in items.items()
-            if item["active"] and not _is_hotel(item)
         ],
         key=sort_func,
     )
