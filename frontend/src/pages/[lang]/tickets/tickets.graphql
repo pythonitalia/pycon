@@ -16,6 +16,7 @@ query Tickets($conference: String!, $language: String!, $isLogged: Boolean!) {
       description
       defaultPrice
       availableUntil
+      quantityLeft
       type
       category
 
