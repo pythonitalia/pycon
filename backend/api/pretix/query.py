@@ -1,3 +1,5 @@
+import math
+from decimal import Decimal
 from typing import List, Optional
 
 import pretix
@@ -108,6 +110,15 @@ def get_conference_tickets(conference: Conference, language: str) -> List[Ticket
     categories = pretix.get_categories(conference)
     quotas = pretix.get_quotas(conference)
 
+    def sort_func(ticket):
+        # If the item has variations, it means it is the
+        # t-shirt product. We want to show it always at the bottom
+        if len(ticket.variations) > 0:
+            return math.inf
+
+        # Order all other tickets by price (low -> high)
+        return Decimal(ticket.default_price)
+
     return sorted(
         [
             _create_ticket_type_from_api(
@@ -121,5 +132,5 @@ def get_conference_tickets(conference: Conference, language: str) -> List[Ticket
             for id, item in items.items()
             if item["active"] and not _is_hotel(item)
         ],
-        key=lambda ticket: len(ticket.variations) > 0,
+        key=sort_func,
     )
