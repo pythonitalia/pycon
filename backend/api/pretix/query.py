@@ -54,23 +54,23 @@ def _get_quantity_left_for_ticket(item, quotas):
     )
 
 
+def _get_by_language(item, key, language):
+    return item[key].get(language, item[key]["en"]) if item[key] else None
+
+
 def _create_ticket_type_from_api(item, id, categories, questions, quotas, language):
     category = _get_category_for_ticket(item, categories)
 
     return TicketItem(
         id=id,
-        name=item["name"].get("language", item["name"]["en"]),
-        description=(
-            item["description"].get(language, item["description"]["en"])
-            if item["description"]
-            else None
-        ),
-        category=category["name"].get(language, category["name"]["en"]),
+        name=_get_by_language(item, "name", language),
+        description=_get_by_language(item, "description", language),
+        category=_get_by_language(category, "name", language),
         variations=[
             ProductVariation(
                 id=variation["id"],
-                value=variation["value"].get(language, variation["value"]["en"]),
-                description=variation["description"].get(language, ""),
+                value=_get_by_language(variation, "value", language),
+                description=_get_by_language(variation, "description", language),
                 active=variation["active"],
                 default_price=variation["default_price"],
             )
