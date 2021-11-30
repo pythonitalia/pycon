@@ -44,8 +44,8 @@ COPY --from=build-stage /usr/local/lib/*.so* /usr/local/lib/
 COPY --from=build-stage /usr/lib/libpq.so.5 \
     /usr/lib/libpq.so.5 \
     /usr/lib/libldap_r-2.4.so.2 \
-    /usr/lib/liblber-2.4.so.2 \
-    /usr/lib/libsasl2.so.3 \
+    /usr/lib/liblber* \
+    /usr/lib/libsasl* \
     /usr/lib/libxslt.so.1 \
     /usr/lib/libexslt.so.0 \
     /usr/lib/libxml2.so.2 \
