@@ -108,16 +108,18 @@ def get_questions_for_ticket(item, questions, language):
 
 
 def _is_ticket_available(item) -> bool:
+    now = datetime.now()
+
     if available_from := item["available_from"]:
         available_from = parse(available_from)
 
-        if available_from > datetime.now():
+        if available_from >= now:
             return False
 
     if available_until := item["available_until"]:
         available_until = parse(available_until)
 
-        if available_until < datetime.now():
+        if available_until < now:
             return False
 
     return True
@@ -127,6 +129,13 @@ def get_conference_tickets(
     conference: Conference, language: str, show_unavailable_tickets: bool = False
 ) -> List[TicketItem]:
     items = pretix.get_items(conference)
+
+    # hide non active items and items that are hotels
+    items = {
+        key: item
+        for key, item in items.items()
+        if item["active"] and not _is_hotel(item)
+    }
 
     if not show_unavailable_tickets:
         items = {key: item for key, item in items.items() if _is_ticket_available(item)}
@@ -155,7 +164,6 @@ def get_conference_tickets(
                 quotas=quotas,
             )
             for id, item in items.items()
-            if item["active"] and not _is_hotel(item)
         ],
         key=sort_func,
     )
