@@ -154,9 +154,9 @@ export const HomePage = () => {
               {conference.cfpText}
             </Text>
 
-            {/* <Link path="/[lang]/voting" variant="arrow-button">
-            <FormattedMessage id="home.voting.vote" />
-          </Link> */}
+            <Link path="/[lang]/cfp" variant="arrow-button">
+              <FormattedMessage id="home.cfp.submit" />
+            </Link>
           </Box>
         )}
       </Grid>
