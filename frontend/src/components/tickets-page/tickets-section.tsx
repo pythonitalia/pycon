@@ -12,6 +12,7 @@ import { TicketsForm } from "~/components/tickets-form";
 import { Ticket } from "~/components/tickets-form/types";
 
 import { Button } from "../button/button";
+import { Link } from "../link";
 import {
   HotelRoom,
   InvoiceInformationState,
@@ -130,19 +131,17 @@ export const TicketsSection = ({
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-
-            // don't judge
-            br: {
-              mt: 2,
-            },
           }}
         >
-          <FormattedMessage
-            id="tickets.covid19explanation"
-            values={{
-              br: <br />,
-            }}
-          />
+          <span>
+            <FormattedMessage
+              id="tickets.covid19explanation"
+              values={{
+                br: <br />,
+                linkcovid: <Link path="/[lang]/covid-19">COVID-19</Link>,
+              }}
+            />
+          </span>
         </Box>
       </Box>
 

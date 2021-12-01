@@ -201,7 +201,8 @@ export const messages = {
     "tickets.heading": "Get some tickets",
     "tickets.covid19explanation": `This year we are selling both regular and late tickets together to better cover our costs due to the current COVID-19 situation limiting how many tickets we can sell.{br}
     If you can afford (and want to!) to pay more to help us, that would be greatly appreciated! But don't feel forced to do so! We want everyone to pay what they feel comfortable with!{br}
-    All tickets will give you access to the same conference without any difference! This is a symbolic gesture to support our expenses during those difficult times.`,
+    All tickets will give you access to the same conference without any difference! This is a symbolic gesture to support our expenses during those difficult times.{br}
+    Information on refunds and COVID-19 are available on our page {linkcovid}.`,
 
     "addHotelRoom.checkin": "Check-in",
     "addHotelRoom.checkout": "Check-out",
@@ -601,7 +602,8 @@ export const messages = {
     "tickets.heading": "Acquista biglietti",
     "tickets.covid19explanation": `Per la prossima edizione abbiamo deciso di vendere i biglietti Regular e Late insieme per aiutarci a coprire meglio i costi della conferenza causati dalla situazione COVID-19 che limita quanti biglietti possiamo vendere.{br}
     Se puoi permetterti (e vuoi!) di pagare di più per aiutarci, grazie mille! Ma non sentirti costretto a farlo, vogliamo che chiunque paghi la cifra che preferisce!{br}
-    Tutti i biglietti ti danno accesso alla conferenza, senza nessuna differenza. Acquistare un biglietto a prezzo maggiorato é un gesto simbolico per aiutare la conferenza in questi tempi difficili.`,
+    Tutti i biglietti ti danno accesso alla conferenza, senza nessuna differenza. Acquistare un biglietto a prezzo maggiorato é un gesto simbolico per aiutare la conferenza in questi tempi difficili.{br}
+    Informazioni su rimborsi e COVID-19 disponibili sulla nostra pagina {linkcovid}.`,
 
     "addHotelRoom.checkin": "Check-in",
     "addHotelRoom.checkout": "Check-out",
