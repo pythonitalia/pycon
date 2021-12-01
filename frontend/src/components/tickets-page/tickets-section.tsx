@@ -120,6 +120,30 @@ export const TicketsSection = ({
             </Label>
           </Flex>
         </Flex>
+
+        <Box
+          sx={{
+            maxWidth: "container",
+            mx: "auto",
+            px: 3,
+            mt: 4,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+
+            // don't judge
+            br: {
+              mt: 2,
+            },
+          }}
+        >
+          <FormattedMessage
+            id="tickets.covid19explanation"
+            values={{
+              br: <br />,
+            }}
+          />
+        </Box>
       </Box>
 
       {tickets && (
