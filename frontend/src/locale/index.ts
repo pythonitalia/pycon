@@ -600,7 +600,7 @@ export const messages = {
     "tickets.loading": "Caricamento in corso 🕐",
     "tickets.heading": "Acquista biglietti",
     "tickets.covid19explanation": `Per la prossima edizione abbiamo deciso di vendere i biglietti Regular e Late insieme per aiutarci a coprire meglio i costi della conferenza causati dalla situazione COVID-19 che limita quanti biglietti possiamo vendere.{br}
-    Se puoi permetterti (e vuoi!) di pagare di più per aiutarci, sarebbe molto apprezzato! Ma non sentirti costretto a farlo, vogliamo che chiunque paghi la cifra che preferisce!{br}
+    Se puoi permetterti (e vuoi!) di pagare di più per aiutarci, grazie mille! Ma non sentirti costretto a farlo, vogliamo che chiunque paghi la cifra che preferisce!{br}
     Tutti i biglietti ti danno accesso alla conferenza, senza nessuna differenza. Acquistare un biglietto a prezzo maggiorato é un gesto simbolico per aiutare la conferenza in questi tempi difficili.`,
 
     "addHotelRoom.checkin": "Check-in",
