@@ -36,7 +36,7 @@ class HotelRoomReservationAdmin(AdminUsersMixin):
         "checkin",
         "checkout",
     )
-    list_filter = ("order_code", "room__conference", "room")
+    list_filter = ("room__conference", "room")
     user_fk = "user_id"
     readonly_fields = ("user_info", "checkin", "checkout", "order_code", "room")
 
