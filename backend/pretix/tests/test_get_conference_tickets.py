@@ -1,8 +1,11 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
+
 import pytest
+from django.test import override_settings
+from django.utils import timezone
+
 from api.pretix.query import get_conference_tickets
 from api.pretix.types import Option
-from django.test import override_settings
 
 
 @override_settings(PRETIX_API="https://pretix/api/")
@@ -71,7 +74,7 @@ def test_get_conference_tickets_hides_when_available_from_is_future(
     pretix_quotas,
 ):
     for item in pretix_items["results"]:
-        item["available_from"] = (datetime.now() + timedelta(days=1)).isoformat()
+        item["available_from"] = (timezone.now() + timedelta(days=1)).isoformat()
         item["available_until"] = None
 
     requests_mock.get("https://pretix/api/organizers/events/items", json=pretix_items)
@@ -86,6 +89,7 @@ def test_get_conference_tickets_hides_when_available_from_is_future(
 
     assert len(tickets) == 0
 
+
 @override_settings(PRETIX_API="https://pretix/api/")
 @pytest.mark.django_db
 def test_get_conference_tickets_hides_when_available_until_is_past(
@@ -98,7 +102,7 @@ def test_get_conference_tickets_hides_when_available_until_is_past(
 ):
     for item in pretix_items["results"]:
         item["available_from"] = None
-        item["available_until"] = (datetime.now() - timedelta(days=1)).isoformat()
+        item["available_until"] = (timezone.now() - timedelta(days=1)).isoformat()
 
     requests_mock.get("https://pretix/api/organizers/events/items", json=pretix_items)
     requests_mock.get(
