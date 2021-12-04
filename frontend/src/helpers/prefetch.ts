@@ -8,7 +8,6 @@ export const prefetchSharedQueries = async (
 ) => {
   const header = queryHeader(client, {
     code: process.env.conferenceCode,
-    language,
   });
 
   const footer = queryFooter(client, {

@@ -32,10 +32,7 @@ export const DaySelector: React.FC<{
         <Select
           sx={{ mt: 3, width: "100%" }}
           onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-            router.push(
-              "/[lang]/schedule/[day]",
-              getDayUrl(language, e.target.value),
-            )
+            router.push("/schedule/[day]", getDayUrl(language, e.target.value))
           }
         >
           {days.map((day, index) => (
@@ -68,7 +65,7 @@ export const DaySelector: React.FC<{
             }}
           >
             <Link
-              path="/[lang]/schedule/[day]"
+              path="/schedule/[day]"
               url={getDayUrl(language, day.day)}
               variant="button"
               sx={{

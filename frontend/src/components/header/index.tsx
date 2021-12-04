@@ -11,7 +11,7 @@ import { useRouter } from "next/router";
 
 import { useLoginState } from "~/components/profile/hooks";
 import { useToggle } from "~/helpers/use-toggle";
-import { useAlternateLinks, useCurrentLanguage } from "~/locale/context";
+import { useCurrentLanguage } from "~/locale/context";
 import { useHeaderQuery } from "~/types";
 
 import { Button } from "../button/button";
@@ -27,32 +27,29 @@ const ProfileLink = dynamic(
   { ssr: false },
 );
 
-const LanguagePicker: React.SFC<{ language: string }> = ({
-  language,
-  ...props
-}) => {
-  const alternateLinks = useAlternateLinks();
+const LanguagePicker = ({ language, ...props }: { language: string }) => {
+  const { asPath, ...all } = useRouter();
+  console.log("all", all);
   return (
     <Flex sx={{ alignItems: "center", height: 50, mt: "-4px" }} {...props}>
-      <Link path={alternateLinks.en} sx={{ height: 40 }} external={true}>
+      <Link path={asPath} locale="en" sx={{ height: 40 }}>
         <EnglishIcon active={language === "en"} sx={{ width: 40, mr: 2 }} />
       </Link>
-      <Link path={alternateLinks.it} sx={{ height: 40 }} external={true}>
+      <Link path={asPath} locale="it" sx={{ height: 40 }}>
         <ItalianIcon active={language === "it"} sx={{ width: 40, mr: 4 }} />
       </Link>
     </Flex>
   );
 };
 
-const Links: React.SFC<{
+const Links = ({
+  links,
+}: {
   links: { href: string; title: string; page?: { slug: string } | null }[];
-}> = ({ links }) => (
+}) => (
   <Fragment>
     {links.map((link) => {
-      let path = link.page ? "/[lang]/[slug]" : link.href;
-
-      // nasty hack to make client side routing work with next.js
-      path = path.replace("/en", "/[lang]").replace("/it", "/[lang]");
+      const path = link.page ? "/" : link.href;
 
       return (
         <Link variant="header" path={path} key={link.href} params={link.page}>
@@ -69,7 +66,6 @@ export const Header = () => {
   const { loading, data } = useHeaderQuery({
     variables: {
       code: process.env.conferenceCode!,
-      language,
     },
   });
 
@@ -85,8 +81,17 @@ export const Header = () => {
   }
 
   const {
-    conference: { conferenceMenu, programMenu },
+    conference: {
+      conferenceMenuEn,
+      programMenuEn,
+      conferenceMenuIt,
+      programMenuIt,
+    },
   } = data;
+
+  const conferenceMenu =
+    language === "it" ? conferenceMenuIt : conferenceMenuEn;
+  const programMenu = language === "it" ? programMenuIt : programMenuEn;
 
   return (
     <Fragment>
@@ -117,7 +122,7 @@ export const Header = () => {
             alignItems: "flex-start",
           }}
         >
-          <Link path="/[lang]">
+          <Link path="/">
             <Logo
               sx={{
                 width: ["166px", null, "250px"],
@@ -186,7 +191,7 @@ export const Header = () => {
               />
 
               <Link
-                path={loggedIn ? "/[lang]/profile" : "/[lang]/login"}
+                path={loggedIn ? "/profile" : "/login"}
                 variant="header"
                 sx={{ mr: 5, display: ["block", "none"] }}
               >

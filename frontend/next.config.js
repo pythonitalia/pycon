@@ -18,6 +18,12 @@ const {
 } = process.env;
 
 module.exports = withSourceMaps({
+  i18n: {
+    locales: ["default", "en", "it"],
+    defaultLocale: "default",
+    localeDetection: false,
+  },
+  trailingSlash: false,
   serverRuntimeConfig: {
     API_TOKEN: API_TOKEN,
   },

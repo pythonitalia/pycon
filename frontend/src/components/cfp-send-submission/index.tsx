@@ -74,7 +74,7 @@ export const CfpSendSubmission: React.SFC = () => {
 
     if (response.data?.mutationOp.__typename === "Submission") {
       const id = response.data.mutationOp.id;
-      router.push(`/[lang]/submission/[id]`, `/${lang}/submission/${id}`);
+      router.push(`/submission/[id]`, `/${lang}/submission/${id}`);
     }
   };
 

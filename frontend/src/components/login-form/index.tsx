@@ -41,7 +41,7 @@ export const LoginForm: React.SFC<FormProps> = ({ next, ...props }) => {
       setLoggedIn(true);
       clearMessages();
 
-      Router.push(nextUrl.replace(/^\/(en|it)/, "/[lang]"), nextUrl);
+      Router.push(nextUrl);
     }
   };
 
@@ -57,7 +57,7 @@ export const LoginForm: React.SFC<FormProps> = ({ next, ...props }) => {
 
   useEffect(() => {
     if (loggedIn) {
-      Router.push(nextUrl.replace(/^\/(en|it)/, "/[lang]"), nextUrl);
+      Router.push(nextUrl);
     }
 
     clearMessages();

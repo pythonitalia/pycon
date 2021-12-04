@@ -1,6 +1,7 @@
-import React, { useContext } from "react";
+import React, { useContext, useMemo } from "react";
 
 import cookies from "next-cookies";
+import { useRouter } from "next/router";
 
 import { Language } from "~/locale/languages";
 
@@ -19,28 +20,37 @@ export const LocaleContext = React.createContext<ContextProps>({
   locale: "en",
 });
 
-export const LocaleProvider: React.FC<{ lang: string }> = ({
-  lang,
+export const LocaleProvider = ({
   children,
-}) => {
+}: React.PropsWithChildren<{ lang: string }>) => {
+  const language = useCurrentLanguage();
+
   React.useEffect(() => {
     const { pyconLocale } = cookies({
       req: { headers: { cookie: document.cookie } },
     });
-    if (lang !== pyconLocale) {
-      document.cookie = `pyconLocale=${lang}; path=/`;
+    if (language !== pyconLocale) {
+      document.cookie = `pyconLocale=${language}; path=/`;
     }
-  }, [lang]);
+  }, [language]);
+
+  const links = useMemo(() => {
+    // language
+    return {
+      en: "/en/abc",
+      it: "/it/abc",
+    };
+  }, [language]);
 
   return (
-    <LocaleContext.Provider value={{ locale: lang }}>
+    <AlternateLinksContext.Provider value={links}>
       {children}
-    </LocaleContext.Provider>
+    </AlternateLinksContext.Provider>
   );
 };
 
 export const useCurrentLanguage = () => {
-  const { locale } = useContext(LocaleContext);
+  const { locale } = useRouter();
 
   return locale as Language;
 };

@@ -53,7 +53,7 @@ export const HomepageHero = ({ hideBuyTickets = false }: Props) => (
             mx: "auto",
           }}
         >
-          <Link path="/[lang]/tickets">
+          <Link path="/tickets">
             <BuyTicketsCTA
               sx={{
                 width: 122,

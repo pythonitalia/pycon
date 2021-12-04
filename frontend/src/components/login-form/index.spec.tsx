@@ -100,10 +100,7 @@ describe("Login form", () => {
       });
 
       expect(window.localStorage.getItem(LOGIN_KEY)).toBe("true");
-      expect(MockedRouterPush).toHaveBeenCalledWith(
-        "/[lang]/profile",
-        "/en/profile",
-      );
+      expect(MockedRouterPush).toHaveBeenCalledWith("/profile", "/en/profile");
     });
 
     test("should redirect to next url if passed via code", async () => {

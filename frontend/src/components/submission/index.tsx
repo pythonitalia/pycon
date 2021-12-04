@@ -74,7 +74,7 @@ export const Submission: React.SFC<Props> = ({ submission }) => (
           {submission.canEdit && (
             <Link
               variant="buttonFullWidth"
-              path="/[lang]/submission/[id]/edit"
+              path="/submission/[id]/edit"
               params={{
                 id: submission.id,
               }}

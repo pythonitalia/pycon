@@ -38,7 +38,7 @@ export const SignupForm: React.SFC = () => {
 
   useLayoutEffect(() => {
     if (loggedIn) {
-      router.push("/[lang]/profile", `/${language}/profile`);
+      router.push("/profile", `/${language}/profile`);
     }
   });
 
@@ -50,7 +50,7 @@ export const SignupForm: React.SFC = () => {
 
       setLoggedIn(true);
 
-      router.push("/[lang]/profile", `/${language}/profile`);
+      router.push("/profile", `/${language}/profile`);
     },
   });
 
@@ -125,7 +125,7 @@ export const SignupForm: React.SFC = () => {
               display: "block",
               mb: 4,
             }}
-            path={`/[lang]/login/`}
+            path={`/login/`}
           >
             <FormattedMessage id="signup.alreadyHaveAccount" />
           </Link>

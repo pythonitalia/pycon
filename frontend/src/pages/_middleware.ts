@@ -3,21 +3,33 @@ import { NextResponse } from "next/server";
 
 import { DEFAULT_LOCALE, VALID_LOCALES } from "~/locale/languages";
 
+const PUBLIC_FILE = /\.(.*)$/;
+
 export function middleware(req: NextRequest, _ev: NextFetchEvent) {
-  const { pathname } = req.nextUrl;
-  const locale = getLocale(req.cookies.pyconLocale);
+  const shouldHandleLocale =
+    !PUBLIC_FILE.test(req.nextUrl.pathname) &&
+    !req.nextUrl.pathname.includes("/api/") &&
+    req.nextUrl.locale === "default";
 
-  if (pathname === "/") {
-    return NextResponse.redirect(`/${locale}`);
-  }
+  console.log("shouldHandleLocale", shouldHandleLocale);
+  return shouldHandleLocale
+    ? NextResponse.redirect(`/en${req.nextUrl.href}`)
+    : undefined;
 
-  return NextResponse.next();
+  // const { pathname } = req.nextUrl;
+  // const locale = getLocale(req.cookies.pyconLocale);
+
+  // if (pathname === "/") {
+  //   return NextResponse.redirect(`/${locale}`);
+  // }
+
+  // return NextResponse.next();
 }
 
-const getLocale = (cookie: string): string => {
-  if (cookie && VALID_LOCALES.findIndex((e) => e === cookie) !== -1) {
-    return cookie;
-  }
+// const getLocale = (cookie: string): string => {
+//   if (cookie && VALID_LOCALES.findIndex((e) => e === cookie) !== -1) {
+//     return cookie;
+//   }
 
-  return DEFAULT_LOCALE;
-};
+//   return DEFAULT_LOCALE;
+// };
