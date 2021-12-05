@@ -12,6 +12,7 @@ export function middleware(req: NextRequest, _ev: NextFetchEvent) {
     req.nextUrl.locale === "default";
   const locale = getLocale(req.cookies.pyconLocale);
 
+  console.log("req.nextUrl.href =>", req.nextUrl.href, "req.nextUrl", req.nextUrl)
   return shouldHandleLocale
     ? NextResponse.redirect(`/${locale}${req.nextUrl.href}`)
     : undefined;
