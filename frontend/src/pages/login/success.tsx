@@ -18,7 +18,6 @@ import { useSocialLoginCheckQuery } from "~/types";
 
 export const LoginSuccessPage = () => {
   const [loggedIn, setLoggedIn] = useLoginState();
-  const language = useCurrentLanguage();
   const router = useRouter();
   const { addMessage } = useMessages();
 
@@ -27,14 +26,14 @@ export const LoginSuccessPage = () => {
     onCompleted(data) {
       if (data.me) {
         setLoggedIn(true);
-        router.replace("/profile", `/${language}/profile/`);
+        router.replace("/profile");
       }
     },
   });
 
   useEffect(() => {
     if (loggedIn) {
-      router.replace("/profile", `/${language}/profile/`);
+      router.replace("/profile");
     }
 
     if (!loading && error) {
@@ -43,7 +42,7 @@ export const LoginSuccessPage = () => {
         type: "alert",
       });
 
-      router.push("/login", `/${language}/login/`);
+      router.push("/login");
     }
   }, [loggedIn, loading, error]);
 

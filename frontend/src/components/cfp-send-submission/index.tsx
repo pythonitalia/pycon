@@ -15,7 +15,6 @@ import {
 } from "~/types";
 
 export const CfpSendSubmission: React.SFC = () => {
-  const lang = useCurrentLanguage();
   const code = process.env.conferenceCode;
   const router = useRouter();
 
@@ -74,7 +73,7 @@ export const CfpSendSubmission: React.SFC = () => {
 
     if (response.data?.mutationOp.__typename === "Submission") {
       const id = response.data.mutationOp.id;
-      router.push(`/submission/[id]`, `/${lang}/submission/${id}`);
+      router.push(`/submission/[id]`, `/submission/${id}`);
     }
   };
 

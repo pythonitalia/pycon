@@ -86,7 +86,6 @@ const toTileCase = (word: string) =>
 
 export const EditProfilePage: React.FC = () => {
   const router = useRouter();
-  const language = useCurrentLanguage();
   const [loggedIn] = useLoginState();
   const [formState, { text, select, checkbox, raw }] =
     useFormState<MeUserFields>(
@@ -137,7 +136,7 @@ export const EditProfilePage: React.FC = () => {
     useUpdateProfileMutation({
       onCompleted: (data) => {
         if (data?.updateProfile?.__typename === "User") {
-          router.push("/profile", `/${language}/profile`);
+          router.push("/profile");
         }
       },
     });

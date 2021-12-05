@@ -39,7 +39,7 @@ export const ResetPasswordPage = () => {
           type: "success",
         });
 
-        router.push("/login", `/${language}/login`);
+        router.push("/login");
       }
     },
   });

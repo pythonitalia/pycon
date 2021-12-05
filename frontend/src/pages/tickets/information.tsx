@@ -38,10 +38,9 @@ export const TicketsInformationPage = () => {
             if (numberOfQuestions > 0) {
               router.push(
                 "/tickets/questions/",
-                `/${language}/tickets/questions/`,
               );
             } else {
-              router.push("/tickets/review/", `/${language}/tickets/review/`);
+              router.push("/tickets/review/");
             }
           }}
         />

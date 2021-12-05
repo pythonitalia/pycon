@@ -25,7 +25,7 @@ export const TicketsQuestionsPage = () => {
           updateQuestionAnswer={updateQuestionAnswer}
           selectedProducts={state.selectedProducts}
           onNextStep={() => {
-            router.push("/tickets/review/", `/${language}/tickets/review/`);
+            router.push("/tickets/review/");
           }}
         />
       )}

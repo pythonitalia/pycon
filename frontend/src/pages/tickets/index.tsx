@@ -48,14 +48,13 @@ export const TicketsPage = () => {
           invoiceInformation={state.invoiceInformation}
           onUpdateIsBusiness={updateIsBusiness}
           onNextStep={() => {
-            const nextUrl = `/${language}/tickets/information/`;
+            const nextUrl = `/tickets/information/`;
 
             if (isLoggedIn) {
               router.push("/tickets/information/", nextUrl);
             } else {
               router.push(
                 `/login?next=${nextUrl}`,
-                `/${language}/login?next=${nextUrl}`,
               );
             }
           }}

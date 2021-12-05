@@ -23,7 +23,6 @@ import { queryCountries, useMyProfileQuery } from "~/types";
 
 export const MyProfilePage = () => {
   const [loggedIn, setLoginState] = useLoginState();
-  const lang = useCurrentLanguage();
 
   const {
     loading,
@@ -37,7 +36,7 @@ export const MyProfilePage = () => {
   });
 
   useEffect(() => {
-    const loginUrl = `/${lang}/login`;
+    const loginUrl = `/login`;
 
     if (error) {
       setLoginState(false);
@@ -48,7 +47,7 @@ export const MyProfilePage = () => {
 
   useEffect(() => {
     if (!loggedIn) {
-      const loginUrl = `/${lang}/login`;
+      const loginUrl = `/login`;
       setLoginState(false);
       Router.push("/login", loginUrl);
     }

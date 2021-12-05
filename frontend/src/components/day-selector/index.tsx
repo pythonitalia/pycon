@@ -14,7 +14,7 @@ import { formatDay } from "./format-day";
 // TODO: beginners day could be an attribute on the backend
 
 const getDayUrl = (language: string, day: string) =>
-  `/${language}/schedule/${day}`;
+  `/schedule/${day}`;
 
 export const DaySelector: React.FC<{
   currentDay: string | null;

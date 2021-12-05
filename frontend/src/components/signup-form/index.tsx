@@ -33,12 +33,11 @@ const getErrorMessageIfAny = (typename?: string) => {
 
 export const SignupForm: React.SFC = () => {
   const [loggedIn, setLoggedIn] = useLoginState();
-  const language = useCurrentLanguage();
   const router = useRouter();
 
   useLayoutEffect(() => {
     if (loggedIn) {
-      router.push("/profile", `/${language}/profile`);
+      router.push("/profile");
     }
   });
 
@@ -50,7 +49,7 @@ export const SignupForm: React.SFC = () => {
 
       setLoggedIn(true);
 
-      router.push("/profile", `/${language}/profile`);
+      router.push("/profile");
     },
   });
 

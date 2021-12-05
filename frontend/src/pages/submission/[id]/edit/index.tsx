@@ -27,7 +27,6 @@ export const EditSubmissionPage = () => {
   const code = process.env.conferenceCode;
   const router = useRouter();
   const id = router.query.id as string;
-  const language = useCurrentLanguage();
 
   const [
     updateSubmission,
@@ -68,7 +67,7 @@ export const EditSubmissionPage = () => {
     if (response.data?.mutationOp.__typename === "Submission") {
       router.push(
         "/submission/[id]",
-        `/${language}/submission/${response.data.mutationOp.id}/`,
+        `/submission/${response.data.mutationOp.id}/`,
       );
     }
   };
