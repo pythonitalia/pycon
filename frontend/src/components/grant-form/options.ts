@@ -17,7 +17,7 @@ export const GENDER_OPTIONS = [
   },
   {
     value: "not_say",
-    messageId: "profile.gender.notSay",
+    messageId: "profile.gender.not_say",
   },
 ];
 
