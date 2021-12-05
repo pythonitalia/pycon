@@ -19,7 +19,7 @@ export const LocaleProvider = ({
     }
   }, [language]);
 
-  return children;
+  return <>{children}</>;
 };
 
 export const useCurrentLanguage = () => {
