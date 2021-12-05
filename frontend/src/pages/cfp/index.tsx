@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
-import { Fragment } from "react";
+import { Fragment, useMemo } from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, Container, Heading, jsx, Text } from "theme-ui";
 
@@ -17,19 +17,20 @@ import { MetaTags } from "~/components/meta-tags";
 import { useLoginState } from "~/components/profile/hooks";
 import { MySubmissions } from "~/components/profile/my-submissions";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
+import { formatDeadlineDate } from "~/helpers/deadlines";
 import {
   queryCfpForm,
   queryIsCfpOpen,
   queryTags,
   useIsCfpOpenQuery,
 } from "~/types";
+import { useCurrentLanguage } from "~/locale/context";
 
 const CfpSectionOrClosedMessage: React.SFC<{ open: boolean }> = ({ open }) => {
   if (open) {
     return (
       <Fragment>
         <MySubmissions sx={{ mb: 4 }} />
-
         <CfpSendSubmission />
       </Fragment>
     );
@@ -57,18 +58,26 @@ const CfpSectionOrClosedMessage: React.SFC<{ open: boolean }> = ({ open }) => {
 
 export const CFPPage: React.SFC = () => {
   const [isLoggedIn, _] = useLoginState();
+  const language = useCurrentLanguage();
+
   const code = process.env.conferenceCode;
 
   const { loading, data } = useIsCfpOpenQuery({
     variables: { conference: code },
   });
 
+  const cfpDeadline = useMemo(() => {
+    return data?.conference.deadlines.filter(
+      (deadline) => deadline.type === "cfp",
+    )[0].end;
+  }, data);
+
   return (
     <Fragment>
       <FormattedMessage id="cfp.pageTitle">
         {(text) => <MetaTags title={text} />}
       </FormattedMessage>
-      <Introduction />
+      <Introduction deadline={formatDeadlineDate(cfpDeadline, language)} />
 
       <Box sx={{ px: 3 }}>
         <Container sx={{ maxWidth: "container", p: 0 }}>

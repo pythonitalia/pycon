@@ -8,7 +8,7 @@ import { Box, Grid, jsx, Text } from "theme-ui";
 import { CFPIllustration } from "~/components/illustrations/cfp";
 import { Link } from "~/components/link";
 
-export const Introduction: React.SFC = () => (
+export const Introduction: React.SFC = ({ deadline }: { deadline: string }) => (
   <Box
     sx={{
       borderTop: "primary",
@@ -45,7 +45,13 @@ export const Introduction: React.SFC = () => (
           }}
           as="p"
         >
-          <FormattedMessage id="cfp.introductionCopy" />
+          <FormattedMessage
+            id="cfp.introductionCopy"
+            values={{
+              deadline: <strong>{deadline}</strong>,
+              br: <br />,
+            }}
+          />
         </Text>
 
         <Link path="/call-for-proposals" variant="arrow-button" sx={{ mt: 4 }}>

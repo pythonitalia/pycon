@@ -2,5 +2,9 @@ query IsCfpOpen($conference: String!) {
   conference(code: $conference) {
     id
     isCFPOpen
+    deadlines {
+      end
+      type
+    }
   }
 }
