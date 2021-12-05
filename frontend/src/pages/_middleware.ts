@@ -10,26 +10,17 @@ export function middleware(req: NextRequest, _ev: NextFetchEvent) {
     !PUBLIC_FILE.test(req.nextUrl.pathname) &&
     !req.nextUrl.pathname.includes("/api/") &&
     req.nextUrl.locale === "default";
+  const locale = getLocale(req.cookies.pyconLocale);
 
-  console.log("shouldHandleLocale", shouldHandleLocale);
   return shouldHandleLocale
-    ? NextResponse.redirect(`/en${req.nextUrl.href}`)
+    ? NextResponse.redirect(`/${locale}${req.nextUrl.pathname}`)
     : undefined;
-
-  // const { pathname } = req.nextUrl;
-  // const locale = getLocale(req.cookies.pyconLocale);
-
-  // if (pathname === "/") {
-  //   return NextResponse.redirect(`/${locale}`);
-  // }
-
-  // return NextResponse.next();
 }
 
-// const getLocale = (cookie: string): string => {
-//   if (cookie && VALID_LOCALES.findIndex((e) => e === cookie) !== -1) {
-//     return cookie;
-//   }
+const getLocale = (cookie: string): string => {
+  if (cookie && VALID_LOCALES.findIndex((e) => e === cookie) !== -1) {
+    return cookie;
+  }
 
-//   return DEFAULT_LOCALE;
-// };
+  return DEFAULT_LOCALE;
+};
