@@ -10,8 +10,8 @@ import { Box, Heading, jsx, Text } from "theme-ui";
 import { GetStaticProps } from "next";
 import NextErrorComponent from "next/error";
 
-import { Link } from "~/components/link";
 import { getApolloClient, addApolloState } from "~/apollo/client";
+import { Link } from "~/components/link";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 
 const ErrorPage = ({ statusCode }) => (
@@ -52,14 +52,11 @@ const ErrorPage = ({ statusCode }) => (
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
   const client = getApolloClient();
 
-  await Promise.all([
-    prefetchSharedQueries(client, locale),
-  ]);
+  await Promise.all([prefetchSharedQueries(client, locale)]);
 
   return addApolloState(client, {
     props: {},
   });
 };
-
 
 export default ErrorPage;

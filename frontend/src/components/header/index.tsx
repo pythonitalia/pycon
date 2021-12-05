@@ -28,8 +28,7 @@ const ProfileLink = dynamic(
 );
 
 const LanguagePicker = ({ language, ...props }: { language: string }) => {
-  const { asPath, ...all } = useRouter();
-  console.log("all", all);
+  const { asPath } = useRouter();
   return (
     <Flex sx={{ alignItems: "center", height: 50, mt: "-4px" }} {...props}>
       <Link path={asPath} locale="en" sx={{ height: 40 }}>

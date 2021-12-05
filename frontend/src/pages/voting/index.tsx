@@ -48,7 +48,7 @@ const getAsArray = (value: string | string[]): string[] => {
   return Array.isArray(value) ? value : [value];
 };
 
-export const VotingPage: React.SFC = () => {
+export const VotingPage = () => {
   const [loggedIn] = useLoginState();
   const [votedSubmissions, setVotedSubmissions] = useState(new Set());
   const router = useRouter();
@@ -77,11 +77,7 @@ export const VotingPage: React.SFC = () => {
           }
         });
 
-        const currentPath = router.pathname.replace(
-          "[lang]",
-          router.query.lang as string,
-        );
-
+        const currentPath = router.pathname;
         router.replace("/voting", `${currentPath}?${qs.toString()}`);
       },
     },

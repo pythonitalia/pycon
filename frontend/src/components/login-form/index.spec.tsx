@@ -100,7 +100,7 @@ describe("Login form", () => {
       });
 
       expect(window.localStorage.getItem(LOGIN_KEY)).toBe("true");
-      expect(MockedRouterPush).toHaveBeenCalledWith("/profile", "/en/profile");
+      expect(MockedRouterPush).toHaveBeenCalledWith("/profile");
     });
 
     test("should redirect to next url if passed via code", async () => {
@@ -124,7 +124,6 @@ describe("Login form", () => {
       });
 
       expect(MockedRouterPush).toHaveBeenCalledWith(
-        "https://pycon.it",
         "https://pycon.it",
       );
     });
@@ -171,7 +170,6 @@ describe("Login form", () => {
       });
 
       expect(MockedRouterPush).toHaveBeenCalledWith(
-        "http://next-url.pycon.it",
         "http://next-url.pycon.it",
       );
     });

@@ -138,7 +138,6 @@ export const Link: React.FC<LinkProps> = ({
     return hoverable;
   }
 
-  console.log("locale", locale, "lang", language);
   return (
     <NextLink as={url} href={path} passHref={true} locale={locale || language}>
       {hoverable}

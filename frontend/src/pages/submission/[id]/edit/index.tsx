@@ -108,7 +108,7 @@ export const EditSubmissionPage = () => {
   );
 };
 
-export const getStaticProps: GetStaticProps = async ({locale}) => {
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
   const client = getApolloClient();
 
   await Promise.all([
