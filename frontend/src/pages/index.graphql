@@ -21,6 +21,8 @@ query IndexPage($code: String!, $language: String!) {
     gettingThereText: copy(key: "getting-there-text", language: $language)
 
     map {
+      id
+      image(width: 1280, height: 400, zoom: 15)
       link
     }
 

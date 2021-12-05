@@ -25,6 +25,7 @@ import { useCurrentLanguage } from "~/locale/context";
 import {
   queryIndexPage,
   queryKeynotesSection,
+  queryMapWithLink,
   useIndexPageQuery,
 } from "~/types";
 
@@ -297,6 +298,9 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
     prefetchSharedQueries(client, locale),
     queryKeynotesSection(client, {
       code: process.env.conferenceCode,
+    }),
+    queryMapWithLink(client, {
+      code: process.env.conferenceCode
     }),
     queryIndexPage(client, {
       language: locale,
