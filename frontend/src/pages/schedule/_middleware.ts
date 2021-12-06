@@ -2,7 +2,6 @@
 import type { NextFetchEvent, NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
-import { getApolloClient } from "~/apollo/client";
 import { DEFAULT_LOCALE } from "~/locale/languages";
 import { queryScheduleDays } from "~/types";
 
@@ -17,6 +16,8 @@ export async function middleware(req: NextRequest, _ev: NextFetchEvent) {
   (global as any)[GLOBAL_KEY] = false
   // @ts-ignore
   process.__DEV__ = false;
+
+  const { getApolloClient } = require("~/apollo/client")
 
   console.log("a")
   const { pathname, locale } = req.nextUrl;
