@@ -6,7 +6,6 @@ import { jsx } from "theme-ui";
 import { useRouter } from "next/router";
 
 import { CfpForm, CfpFormFields } from "~/components/cfp-form";
-import { useCurrentLanguage } from "~/locale/context";
 import {
   readMeSubmissionsQueryCache,
   SendSubmissionMutation,

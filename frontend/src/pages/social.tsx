@@ -4,7 +4,7 @@
 import { Fragment } from "react";
 import { Box, Flex, Heading, jsx } from "theme-ui";
 
-import { GetStaticPaths, GetStaticProps } from "next";
+import { GetStaticProps } from "next";
 import { useRouter } from "next/router";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";

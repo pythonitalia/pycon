@@ -7,7 +7,7 @@ import { useFormState } from "react-use-form-state";
 import { Box, Card, Checkbox, Input, jsx, Label, Select, Text } from "theme-ui";
 import * as yup from "yup";
 
-import { GetStaticPaths, GetStaticProps } from "next";
+import { GetStaticProps } from "next";
 import { useRouter } from "next/router";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
@@ -17,7 +17,6 @@ import { MetaTags } from "~/components/meta-tags";
 import { useLoginState } from "~/components/profile/hooks";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCountries } from "~/helpers/use-countries";
-import { useCurrentLanguage } from "~/locale/context";
 import {
   queryCountries,
   useMyEditProfileQuery,

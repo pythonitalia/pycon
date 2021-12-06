@@ -10,7 +10,6 @@ import Router, { useRouter } from "next/router";
 
 import { useLoginState } from "~/components/profile/hooks";
 import { useMessages } from "~/helpers/use-messages";
-import { useCurrentLanguage } from "~/locale/context";
 import { LoginMutation, useLoginMutation } from "~/types";
 
 import { Alert } from "../alert";

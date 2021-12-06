@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, jsx } from "theme-ui";
 
-import { GetStaticPaths, GetStaticProps } from "next";
+import { GetStaticProps } from "next";
 import { useRouter } from "next/router";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
@@ -13,7 +13,6 @@ import { useLoginState } from "~/components/profile/hooks";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useMessages } from "~/helpers/use-messages";
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
-import { useCurrentLanguage } from "~/locale/context";
 import { useSocialLoginCheckQuery } from "~/types";
 
 export const LoginSuccessPage = () => {

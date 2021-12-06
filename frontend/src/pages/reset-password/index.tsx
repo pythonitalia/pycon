@@ -6,7 +6,7 @@ import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import { Box, Heading, Input, jsx } from "theme-ui";
 
-import { GetStaticPaths, GetStaticProps } from "next";
+import { GetStaticProps } from "next";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Alert } from "~/components/alert";

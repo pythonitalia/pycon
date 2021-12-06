@@ -3,12 +3,10 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
-import * as Sentry from "@sentry/node";
 import { FormattedMessage } from "react-intl";
 import { Box, Heading, jsx, Text } from "theme-ui";
 
 import { GetStaticProps } from "next";
-import NextErrorComponent from "next/error";
 
 import { getApolloClient, addApolloState } from "~/apollo/client";
 import { Link } from "~/components/link";

@@ -8,10 +8,8 @@ import { useRouter } from "next/router";
 import { InformationSection } from "~/components/tickets-page/information-section";
 import { useCart } from "~/components/tickets-page/use-cart";
 import { TicketsPageWrapper } from "~/components/tickets-page/wrapper";
-import { useCurrentLanguage } from "~/locale/context";
 
 export const TicketsInformationPage = () => {
-  const language = useCurrentLanguage();
   const router = useRouter();
 
   const { state, updateInformation } = useCart();

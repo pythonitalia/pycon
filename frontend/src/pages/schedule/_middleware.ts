@@ -2,7 +2,6 @@
 import type { NextFetchEvent, NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { getApolloClient } from "~/apollo/client";
-import locale from "~/locale";
 
 import { DEFAULT_LOCALE } from "~/locale/languages";
 import { queryScheduleDays } from "~/types";

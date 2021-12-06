@@ -15,7 +15,6 @@ import { InputWrapper } from "~/components/input-wrapper";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useMessages } from "~/helpers/use-messages";
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
-import { useCurrentLanguage } from "~/locale/context";
 import { useResetPasswordMutation } from "~/types";
 
 type FormFields = {
@@ -24,7 +23,6 @@ type FormFields = {
 
 export const ResetPasswordPage = () => {
   const router = useRouter();
-  const language = useCurrentLanguage();
   const { addMessage } = useMessages();
   const successMessage = useTranslatedMessage("resetPassword.youCanNowLogin");
 

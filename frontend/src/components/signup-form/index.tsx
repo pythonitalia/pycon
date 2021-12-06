@@ -9,7 +9,6 @@ import { Box, Grid, Input, jsx, Text } from "theme-ui";
 import { useRouter } from "next/router";
 
 import { useLoginState } from "~/components/profile/hooks";
-import { useCurrentLanguage } from "~/locale/context";
 import { useSignupMutation } from "~/types";
 
 import { Alert } from "../alert";

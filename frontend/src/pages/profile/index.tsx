@@ -5,7 +5,7 @@ import { Fragment, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
-import { GetStaticPaths, GetStaticProps } from "next";
+import { GetStaticProps } from "next";
 import Router from "next/router";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
@@ -18,7 +18,6 @@ import { MyOrders } from "~/components/profile/my-orders";
 import { MyProfile } from "~/components/profile/my-profile";
 import { MySubmissions } from "~/components/profile/my-submissions";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
-import { useCurrentLanguage } from "~/locale/context";
 import { queryCountries, useMyProfileQuery } from "~/types";
 
 export const MyProfilePage = () => {

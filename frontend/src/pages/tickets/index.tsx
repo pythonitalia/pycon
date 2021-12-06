@@ -3,7 +3,7 @@
 /** @jsx jsx */
 import { jsx } from "theme-ui";
 
-import { GetStaticPaths, GetStaticProps } from "next";
+import { GetStaticProps } from "next";
 import { useRouter } from "next/router";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
@@ -12,11 +12,9 @@ import { TicketsSection } from "~/components/tickets-page/tickets-section";
 import { useCart } from "~/components/tickets-page/use-cart";
 import { TicketsPageWrapper } from "~/components/tickets-page/wrapper";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
-import { useCurrentLanguage } from "~/locale/context";
 import { queryTickets } from "~/types";
 
 export const TicketsPage = () => {
-  const language = useCurrentLanguage();
   const [isLoggedIn] = useLoginState();
 
   const router = useRouter();

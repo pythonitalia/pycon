@@ -15,7 +15,6 @@ import {
   SubmissionStructure,
 } from "~/components/cfp-form";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
-import { useCurrentLanguage } from "~/locale/context";
 import {
   queryCfpForm,
   queryTags,

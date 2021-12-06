@@ -1,7 +1,7 @@
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 
-import { GetStaticPaths, GetStaticProps } from "next";
+import { GetStaticProps } from "next";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { MetaTags } from "~/components/meta-tags";
