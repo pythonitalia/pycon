@@ -27,16 +27,19 @@ query IndexPage($code: String!, $language: String!) {
     }
 
     cfpDeadline: deadline(type: "cfp") {
+      id
       start
       end
     }
 
     votingDeadline: deadline(type: "voting") {
+      id
       start
       end
     }
 
     faqs {
+      id
       question(language: $language)
       answer(language: $language)
     }

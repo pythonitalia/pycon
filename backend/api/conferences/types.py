@@ -231,6 +231,7 @@ class Conference:
 
 @strawberry.type
 class Deadline:
+    id: strawberry.ID
     type: str
     name: str = strawberry.field(resolver=make_localized_resolver("name"))
     description: str = strawberry.field(resolver=make_localized_resolver("description"))
