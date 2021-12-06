@@ -1,4 +1,4 @@
-import { GetStaticProps } from "next";
+import { GetStaticPaths, GetStaticProps } from "next";
 import Head from "next/head";
 
 import { getApolloClient } from "~/apollo/client";
@@ -10,7 +10,7 @@ export const SchedulePage = () => (
   </Head>
 );
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
   const client = getApolloClient();
   const {
     data: {
@@ -23,10 +23,16 @@ export const getStaticProps: GetStaticProps = async () => {
   const firstDay = days[0].day;
   return {
     redirect: {
-      destination: `/schedule/${firstDay}/`,
+      destination: `/${locale}/schedule/${firstDay}/`,
       permanent: false,
     },
   };
 };
+
+export const getStaticPaths: GetStaticPaths = async () =>
+  Promise.resolve({
+    paths: [],
+    fallback: "blocking",
+  });
 
 export default SchedulePage;
