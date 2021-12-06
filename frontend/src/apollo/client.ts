@@ -79,9 +79,6 @@ const createClient = () => {
         SponsorsByLevel: {
           keyFields: ["level"]
         },
-        Sponsor: {
-          keyFields: ["name"]
-        },
       }
     }),
   });

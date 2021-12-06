@@ -56,6 +56,7 @@ query IndexPage($code: String!, $language: String!) {
       level
       highlightColor
       sponsors {
+        id
         name
         link
         image
