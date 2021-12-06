@@ -25,15 +25,15 @@ export async function middleware(req: NextRequest, _ev: NextFetchEvent) {
   console.log("b")
 
   const client = getApolloClient();
-  console.log("c")
-  const {
-    data: {
-      conference: { days },
-    },
-  } = await queryScheduleDays(client, {
-    code: process.env.conferenceCode,
-  });
-  console.log("d")
+  console.log("client", client)
+  // const {
+  //   data: {
+  //     conference: { days },
+  //   },
+  // } = await queryScheduleDays(client, {
+  //   code: process.env.conferenceCode,
+  // });
+  // console.log("d", days, "client", client)
 
   // const firstDay = days[0].day;
   // const language = locale === "default" ? DEFAULT_LOCALE : locale;
