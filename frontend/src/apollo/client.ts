@@ -77,9 +77,9 @@ const createClient = () => {
       possibleTypes: introspectionQueryResultData.possibleTypes,
       typePolicies: {
         SponsorsByLevel: {
-          keyFields: ["level"]
+          keyFields: ["level"],
         },
-      }
+      },
     }),
   });
 };
