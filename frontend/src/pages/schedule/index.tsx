@@ -10,7 +10,7 @@ export const SchedulePage = () => (
   </Head>
 );
 
-export const getStaticProps: GetStaticProps = async ({}) => {
+export const getStaticProps: GetStaticProps = async () => {
   const client = getApolloClient();
   const {
     data: {
