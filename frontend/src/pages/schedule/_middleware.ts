@@ -6,10 +6,15 @@ import { getApolloClient } from "~/apollo/client";
 import { DEFAULT_LOCALE } from "~/locale/languages";
 import { queryScheduleDays } from "~/types";
 
+const __ = "__";
+const GLOBAL_KEY = [__, __].join("DEV");
+
 export async function middleware(req: NextRequest, _ev: NextFetchEvent) {
   this.__DEV__ = false;
   // @ts-ignore
   global.__DEV__ = false;
+  // @ts-ignore
+  (global as any)[GLOBAL_KEY] = false
   // @ts-ignore
   process.__DEV__ = false;
 
