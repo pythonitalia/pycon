@@ -1,3 +1,4 @@
+/* eslint import/first: "off", @typescript-eslint/ban-ts-comment: "off" */
 // @ts-ignore
 global.__DEV__ = false;
 
