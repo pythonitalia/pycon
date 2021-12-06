@@ -123,9 +123,7 @@ describe("Login form", () => {
         return wait(1);
       });
 
-      expect(MockedRouterPush).toHaveBeenCalledWith(
-        "https://pycon.it",
-      );
+      expect(MockedRouterPush).toHaveBeenCalledWith("https://pycon.it");
     });
 
     test("should redirect to next url if present in url", async () => {
@@ -169,9 +167,7 @@ describe("Login form", () => {
         return wait(1);
       });
 
-      expect(MockedRouterPush).toHaveBeenCalledWith(
-        "http://next-url.pycon.it",
-      );
+      expect(MockedRouterPush).toHaveBeenCalledWith("http://next-url.pycon.it");
     });
   });
 

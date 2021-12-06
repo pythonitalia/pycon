@@ -36,9 +36,7 @@ export const TicketsInformationPage = () => {
               .reduce((sum, length) => sum + length, 0);
 
             if (numberOfQuestions > 0) {
-              router.push(
-                "/tickets/questions/",
-              );
+              router.push("/tickets/questions/");
             } else {
               router.push("/tickets/review/");
             }

@@ -53,9 +53,7 @@ export const TicketsPage = () => {
             if (isLoggedIn) {
               router.push("/tickets/information/", nextUrl);
             } else {
-              router.push(
-                `/login?next=${nextUrl}`,
-              );
+              router.push(`/login?next=${nextUrl}`);
             }
           }}
         />

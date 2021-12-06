@@ -300,7 +300,7 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
       code: process.env.conferenceCode,
     }),
     queryMapWithLink(client, {
-      code: process.env.conferenceCode
+      code: process.env.conferenceCode,
     }),
     queryIndexPage(client, {
       language: locale,
