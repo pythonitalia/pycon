@@ -1,3 +1,6 @@
+// @ts-ignore
+global.__DEV__ = false;
+
 import type { NextFetchEvent, NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
