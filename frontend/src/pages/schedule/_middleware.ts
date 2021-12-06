@@ -1,6 +1,6 @@
 /* eslint import/first: "off", @typescript-eslint/ban-ts-comment: "off" */
 // @ts-ignore
-global.__DEV__ = false;
+this.__DEV__ = false;
 
 import type { NextFetchEvent, NextRequest } from "next/server";
 import { NextResponse } from "next/server";
