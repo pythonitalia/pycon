@@ -1,4 +1,4 @@
-/* eslint import/first: "off", @typescript-eslint/ban-ts-comment: "off" */
+/* eslint import/first: "off", @typescript-eslint/ban-ts-comment: "off", @typescript-eslint/no-var-requires: "off" */
 import type { NextFetchEvent, NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
@@ -17,7 +17,8 @@ export async function middleware(req: NextRequest, _ev: NextFetchEvent) {
   // @ts-ignore
   process.__DEV__ = false;
 
-  const { getApolloClient } = require("~/apollo/client")
+  // @ts-ignore
+  const { getApolloClient } = require("../../apollo/client")
 
   console.log("a")
   const { pathname, locale } = req.nextUrl;
