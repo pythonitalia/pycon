@@ -3,15 +3,23 @@ import { NextResponse } from "next/server";
 
 import { DEFAULT_LOCALE, VALID_LOCALES } from "~/locale/languages";
 
+const PUBLIC_FILE = /\.(.*)$/;
+
 export function middleware(req: NextRequest, _ev: NextFetchEvent) {
-  const { pathname } = req.nextUrl;
+  const shouldHandleLocale =
+    !PUBLIC_FILE.test(req.nextUrl.pathname) &&
+    !req.nextUrl.pathname.includes("/api/") &&
+    !req.nextUrl.pathname.includes("/admin") &&
+    req.nextUrl.locale === "default";
   const locale = getLocale(req.cookies.pyconLocale);
 
-  if (pathname === "/") {
-    return NextResponse.redirect(`/${locale}`);
+  if (!shouldHandleLocale) {
+    return undefined;
   }
 
-  return NextResponse.next();
+  return NextResponse.redirect(
+    `/${locale}${req.nextUrl.pathname.replace("/default", "")}`,
+  );
 }
 
 const getLocale = (cookie: string): string => {

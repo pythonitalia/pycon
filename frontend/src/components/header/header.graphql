@@ -1,23 +1,45 @@
-fragment Link on MenuLink {
-  title(language: $language)
-  href(language: $language)
-
-  page {
-    slug(language: $language)
-  }
-}
-
-query Header($code: String!, $language: String!) {
+query Header($code: String!) {
   conference(code: $code) {
     id
-    conferenceMenu: menu(identifier: "conference-nav") {
+    conferenceMenuEn: menu(identifier: "conference-nav") {
       links {
-        ...Link
+        title(language: "en")
+        href(language: "en")
+
+        page {
+          slug(language: "en")
+        }
       }
     }
-    programMenu: menu(identifier: "program-nav") {
+    programMenuEn: menu(identifier: "program-nav") {
       links {
-        ...Link
+        title(language: "en")
+        href(language: "en")
+
+        page {
+          slug(language: "en")
+        }
+      }
+    }
+
+    conferenceMenuIt: menu(identifier: "conference-nav") {
+      links {
+        title(language: "it")
+        href(language: "it")
+
+        page {
+          slug(language: "it")
+        }
+      }
+    }
+    programMenuIt: menu(identifier: "program-nav") {
+      links {
+        title(language: "it")
+        href(language: "it")
+
+        page {
+          slug(language: "it")
+        }
       }
     }
   }

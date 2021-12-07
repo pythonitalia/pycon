@@ -75,6 +75,11 @@ const createClient = () => {
     link,
     cache: new InMemoryCache({
       possibleTypes: introspectionQueryResultData.possibleTypes,
+      typePolicies: {
+        SponsorsByLevel: {
+          keyFields: ["level"],
+        },
+      },
     }),
   });
 };

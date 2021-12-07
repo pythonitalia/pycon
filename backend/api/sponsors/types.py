@@ -1,10 +1,12 @@
 import typing
 
 import strawberry
+from strawberry import ID
 
 
 @strawberry.type
 class Sponsor:
+    id: ID
     level: str
     name: str
 

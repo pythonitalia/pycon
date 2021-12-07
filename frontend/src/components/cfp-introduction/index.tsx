@@ -48,11 +48,7 @@ export const Introduction: React.SFC = () => (
           <FormattedMessage id="cfp.introductionCopy" />
         </Text>
 
-        <Link
-          path="/[lang]/call-for-proposals"
-          variant="arrow-button"
-          sx={{ mt: 4 }}
-        >
+        <Link path="/call-for-proposals" variant="arrow-button" sx={{ mt: 4 }}>
           <FormattedMessage id="cfp.learnMore" />
         </Link>
       </Box>

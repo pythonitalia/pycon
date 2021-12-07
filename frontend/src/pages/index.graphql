@@ -1,0 +1,65 @@
+query IndexPage($code: String!, $language: String!) {
+  blogPosts {
+    id
+    slug
+    title(language: $language)
+  }
+
+  conference(code: $code) {
+    id
+    name(language: $language)
+    introduction(language: $language)
+
+    marquee: copy(key: "marquee", language: $language)
+    introTitle: copy(key: "intro-title-1", language: $language)
+    introText: copy(key: "intro-text-1", language: $language)
+
+    cfpTitle: copy(key: "cfp-title", language: $language)
+    cfpSubtitle: copy(key: "cfp-subtitle", language: $language)
+    cfpText: copy(key: "cfp-text", language: $language)
+
+    gettingThereText: copy(key: "getting-there-text", language: $language)
+
+    map {
+      id
+      link
+    }
+
+    cfpDeadline: deadline(type: "cfp") {
+      id
+      start
+      end
+    }
+
+    votingDeadline: deadline(type: "voting") {
+      id
+      start
+      end
+    }
+
+    faqs {
+      id
+      question(language: $language)
+      answer(language: $language)
+    }
+
+    events {
+      id
+      title
+      locationName
+      image
+      start
+    }
+
+    sponsorsByLevel {
+      level
+      highlightColor
+      sponsors {
+        id
+        name
+        link
+        image
+      }
+    }
+  }
+}

@@ -2,6 +2,7 @@ query MapWithLink($code: String!) {
   conference(code: $code) {
     id
     map {
+      id
       image(width: 1280, height: 400, zoom: 15)
       link
     }

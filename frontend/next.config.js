@@ -18,6 +18,21 @@ const {
 } = process.env;
 
 module.exports = withSourceMaps({
+  i18n: {
+    locales: ["default", "en", "it"],
+    defaultLocale: "default",
+    localeDetection: false,
+  },
+  trailingSlash: false,
+  async redirects() {
+    return [
+      {
+        source: "/admin/:match*",
+        destination: "https://admin.pycon.it/admin/:match",
+        permanent: true,
+      },
+    ];
+  },
   serverRuntimeConfig: {
     API_TOKEN: API_TOKEN,
   },

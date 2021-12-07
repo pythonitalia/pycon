@@ -820,4 +820,5 @@ export const messages = {
   },
 };
 
+messages["default"] = messages["en"];
 export default messages;

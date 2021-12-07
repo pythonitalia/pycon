@@ -13,7 +13,7 @@ export const ProfileLink = () => {
 
   return (
     <Link
-      path={loggedIn ? "/[lang]/profile" : "/[lang]/login"}
+      path={loggedIn ? "/profile" : "/login"}
       variant="arrow-button"
       sx={{ mr: 5, display: ["none", "block"] }}
     >

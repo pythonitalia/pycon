@@ -236,7 +236,7 @@ export const TicketsRecap: React.SFC<Props> = ({
             textTransform: "uppercase",
             backgroundColor: "cinderella",
           }}
-          path={`/[lang]/tickets/questions/`}
+          path={`/tickets/questions/`}
         >
           <FormattedMessage id="orderReview.edit" />
         </Link>
