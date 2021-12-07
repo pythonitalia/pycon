@@ -22,7 +22,6 @@ query IndexPage($code: String!, $language: String!) {
 
     map {
       id
-      image(width: 1280, height: 400, zoom: 15)
       link
     }
 
