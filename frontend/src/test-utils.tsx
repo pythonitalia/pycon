@@ -1,4 +1,7 @@
-import { MockedProvider as OriginalMockedProvider, MockedProviderProps } from "@apollo/client/testing";
+import {
+  MockedProvider as OriginalMockedProvider,
+  MockedProviderProps,
+} from "@apollo/client/testing";
 import {
   render as originalRender,
   RenderOptions,
