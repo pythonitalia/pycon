@@ -24,17 +24,6 @@ module.exports = withSourceMaps({
     localeDetection: false,
   },
   trailingSlash: false,
-  async redirects() {
-    return [
-      {
-        source: '/schedule',
-        destination: '/schedule/2022-06-02',
-        permanent: false,
-        locale: false,
-
-      },
-    ]
-  },
   serverRuntimeConfig: {
     API_TOKEN: API_TOKEN,
   },
