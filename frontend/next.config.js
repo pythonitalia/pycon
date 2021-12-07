@@ -30,6 +30,8 @@ module.exports = withSourceMaps({
         source: '/schedule',
         destination: '/schedule/2022-06-02',
         permanent: false,
+        locale: false,
+
       },
     ]
   },
