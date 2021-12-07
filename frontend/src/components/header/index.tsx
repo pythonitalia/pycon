@@ -48,7 +48,7 @@ const Links = ({
 }) => (
   <Fragment>
     {links.map((link) => {
-      const path = link.page ? "/" : link.href;
+      const path = link.href;
 
       return (
         <Link variant="header" path={path} key={link.href} params={link.page}>
