@@ -15,7 +15,7 @@ repos:
           id: isort
           name: isort (python)
     - repo: https://github.com/python/black
-      rev: 20.8b1
+      rev: 21.12b0
       hooks:
           - <<: *python_settings
             id: black
