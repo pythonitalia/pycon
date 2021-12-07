@@ -33,55 +33,6 @@ module.exports = withSourceMaps({
       },
     ];
   },
-  async Headers() {
-    return [
-      {
-        source: "/:lang*/profile",
-        headers: [
-          {
-            key: "Cache-Control",
-            value: "no-cache",
-          },
-        ],
-      },
-      {
-        source: "/:lang*/profile/:path*",
-        headers: [
-          {
-            key: "Cache-Control",
-            value: "no-cache",
-          },
-        ],
-      },
-      {
-        source: "/login/:path*",
-        headers: [
-          {
-            key: "Cache-Control",
-            value: "no-cache",
-          },
-        ],
-      },
-      {
-        source: "/complete/:path*",
-        headers: [
-          {
-            key: "Cache-Control",
-            value: "no-cache",
-          },
-        ],
-      },
-      {
-        source: "/:lang*/login/success",
-        headers: [
-          {
-            key: "Cache-Control",
-            value: "no-cache",
-          },
-        ],
-      },
-    ];
-  },
   serverRuntimeConfig: {
     API_TOKEN: API_TOKEN,
   },
