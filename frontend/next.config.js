@@ -24,6 +24,64 @@ module.exports = withSourceMaps({
     localeDetection: false,
   },
   trailingSlash: false,
+  async redirects() {
+    return [
+      {
+        source: "/admin/:match*",
+        destination: "https://admin.pycon.it/admin/:match",
+        permanent: true,
+      },
+    ];
+  },
+  async Headers() {
+    return [
+      {
+        source: "/:lang*/profile",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "no-cache",
+          },
+        ],
+      },
+      {
+        source: "/:lang*/profile/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "no-cache",
+          },
+        ],
+      },
+      {
+        source: "/login/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "no-cache",
+          },
+        ],
+      },
+      {
+        source: "/complete/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "no-cache",
+          },
+        ],
+      },
+      {
+        source: "/:lang*/login/success",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "no-cache",
+          },
+        ],
+      },
+    ];
+  },
   serverRuntimeConfig: {
     API_TOKEN: API_TOKEN,
   },
