@@ -137,15 +137,15 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const paths = [
     ...italianBlogPosts.map((blogPost) => ({
       params: {
-        lang: "it",
         slug: blogPost.slug,
       },
+      locale: "it",
     })),
     ...englishBlogPosts.map((blogPost) => ({
       params: {
-        lang: "en",
         slug: blogPost.slug,
       },
+      locale: "en",
     })),
   ];
 

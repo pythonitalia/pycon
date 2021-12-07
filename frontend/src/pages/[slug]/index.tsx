@@ -93,15 +93,15 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const paths = [
     ...italianPages.map((page) => ({
       params: {
-        lang: "it",
         slug: page.slug,
       },
+      locale: "it"
     })),
     ...englishPages.map((page) => ({
       params: {
-        lang: "en",
         slug: page.slug,
       },
+      locale: "en"
     })),
   ];
 
