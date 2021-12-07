@@ -1,5 +1,6 @@
 query Page($code: String!, $slug: String!, $language: String!) {
   page(code: $code, slug: $slug) {
+    id
     title(language: $language)
     content(language: $language)
     image
