@@ -226,6 +226,7 @@ export const messages = {
     "order.hotelPrice": "Price: {price}/night EUR.",
 
     "order.inclVat": "(incl. 22% VAT)",
+    "order.hotelNoVat": "(incl. 0% VAT)",
     "order.selectSize": "Select...",
     "order.hotelRooms": "Hotel rooms",
     "order.availableUntil": "Available until {date}",
@@ -339,7 +340,7 @@ export const messages = {
     "orderReview.ticketPrice": "{finalPrice}",
     "orderReview.ticketPriceWithVoucher": "{basePrice} {finalPrice}",
     "orderReview.hotelPrice":
-      "{roomPrice}€ x{numNights, plural, one {1 night} other {{numNights} nights}} (incl. 22% VAT)",
+      "{roomPrice}€ x{numNights, plural, one {1 night} other {{numNights} nights}} (incl. 0% VAT)",
     "orderReview.edit": "Edit",
     "orderReview.totalAmount": "{total}",
 
@@ -627,6 +628,7 @@ export const messages = {
     "order.price": "Prezzo: {price} EUR",
     "order.hotelPrice": "Price: {price}/notte EUR.",
     "order.inclVat": "(incl. 22% IVA)",
+    "order.hotelNoVat": "(incl. 0% IVA)",
     "order.selectSize": "Taglia...",
     "order.hotelRooms": "Stanze hotel",
     "order.availableUntil": "Disponibile fino al {date}",
@@ -639,7 +641,7 @@ export const messages = {
     "orderReview.ticketPriceWithVoucher": "{basePrice} {finalPrice}",
     "orderReview.totalAmount": "{total}",
     "orderReview.hotelPrice":
-      "{roomPrice}€ x{numNights, plural, one {1 notte} other {{numNights} notti}} (incl. 22% IVA)",
+      "{roomPrice}€ x{numNights, plural, one {1 notte} other {{numNights} notti}} (incl. 0% IVA)",
 
     "voucher.voucherHeading": "Codice sconto",
     "voucher.redeemVoucher": "Usa",

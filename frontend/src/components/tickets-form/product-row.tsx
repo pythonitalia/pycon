@@ -89,7 +89,9 @@ export const ProductRow = ({
                 ml: 1,
               }}
             >
-              <FormattedMessage id="order.inclVat" />
+              <FormattedMessage
+                id={hotel ? "order.hotelNoVat" : "order.inclVat"}
+              />
             </Text>
           </Text>
 
