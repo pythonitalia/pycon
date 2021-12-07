@@ -155,13 +155,13 @@ export const getStaticPaths: GetStaticPaths = async () => {
       params: {
         day: day.day,
       },
-      locale: "en"
+      locale: "en",
     })),
     ...days.map((day) => ({
       params: {
         day: day.day,
       },
-      locale: "it"
+      locale: "it",
     })),
   ];
 

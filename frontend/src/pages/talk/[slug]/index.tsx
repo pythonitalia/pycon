@@ -152,15 +152,15 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const paths = [
     ...talks.map((talk) => ({
       params: {
-        lang: "en",
         slug: talk.slug,
       },
+      locale: "en",
     })),
     ...talks.map((talk) => ({
       params: {
-        lang: "it",
         slug: talk.slug,
       },
+      locale: "it",
     })),
   ];
 
