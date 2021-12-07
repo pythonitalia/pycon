@@ -12,11 +12,13 @@ export function middleware(req: NextRequest, _ev: NextFetchEvent) {
     req.nextUrl.locale === "default";
   const locale = getLocale(req.cookies.pyconLocale);
 
-  return shouldHandleLocale
-    ? NextResponse.redirect(
-        `/${locale}${req.nextUrl.pathname.replace("/default", "")}`,
-      )
-    : undefined;
+  if (!shouldHandleLocale) {
+    return undefined;
+  }
+
+  return NextResponse.redirect(
+    `/${locale}${req.nextUrl.pathname.replace("/default", "")}`,
+  );
 }
 
 const getLocale = (cookie: string): string => {
