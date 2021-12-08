@@ -10,6 +10,7 @@ export function middleware(req: NextRequest, _ev: NextFetchEvent) {
     !PUBLIC_FILE.test(req.nextUrl.pathname) &&
     !req.nextUrl.pathname.includes("/api/") &&
     !req.nextUrl.pathname.includes("/admin") &&
+    !req.nextUrl.pathname.includes("/graphql") &&
     req.nextUrl.locale === "default";
   const locale = getLocale(req.cookies.pyconLocale);
 

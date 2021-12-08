@@ -15,6 +15,7 @@ const {
   API_TOKEN,
   NEXT_PUBLIC_SOCIAL_CARD_SERVICE,
   NEXT_PUBLIC_VERCEL_URL,
+  GRAPHQL_GATEWAY_URL,
 } = process.env;
 
 module.exports = withSourceMaps({
@@ -29,7 +30,15 @@ module.exports = withSourceMaps({
       {
         source: "/admin/:match*",
         destination: "https://admin.pycon.it/admin/:match",
-        permanent: true,
+        permanent: false,
+      },
+    ];
+  },
+  async rewrites() {
+    return [
+      {
+        source: "/graphql",
+        destination: GRAPHQL_GATEWAY_URL,
       },
     ];
   },
