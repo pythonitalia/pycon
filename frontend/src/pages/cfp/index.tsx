@@ -65,19 +65,17 @@ export const CFPPage: React.SFC = () => {
   const { loading, data } = useIsCfpOpenQuery({
     variables: { conference: code },
   });
-
-  const cfpDeadline = useMemo(() => {
-    return data?.conference.deadlines.filter(
-      (deadline) => deadline.type === "cfp",
-    )[0].end;
-  }, data);
-
   return (
     <Fragment>
       <FormattedMessage id="cfp.pageTitle">
         {(text) => <MetaTags title={text} />}
       </FormattedMessage>
-      <Introduction deadline={formatDeadlineDate(cfpDeadline, language)} />
+      <Introduction
+        deadline={formatDeadlineDate(
+          data?.conference.cfpDeadline?.end,
+          language,
+        )}
+      />
 
       <Box sx={{ px: 3 }}>
         <Container sx={{ maxWidth: "container", p: 0 }}>
