@@ -163,9 +163,13 @@ export const GrantForm: React.SFC<Props> = ({ conference }) => {
           label={<FormattedMessage id="grants.form.fields.grantType" />}
         >
           <Select {...select("grantType")} required={true}>
-            {GRANT_TYPE_OPTIONS.map(({ value, messageId }) => (
+            {GRANT_TYPE_OPTIONS.map(({ value, disabled, messageId }) => (
               <FormattedMessage id={messageId} key={messageId}>
-                {(msg) => <option value={value}>{msg}</option>}
+                {(msg) => (
+                  <option disabled={disabled} value={value}>
+                    {msg}
+                  </option>
+                )}
               </FormattedMessage>
             ))}
           </Select>
