@@ -11,6 +11,7 @@ class Deadline(TimeFramedModel):
         ("cfp", _("Call for proposal")),
         ("voting", _("Voting")),
         ("refund", _("Ticket refund")),
+        ("grants", _("Grants")),
         ("custom", _("Custom deadline")),
     )
 
