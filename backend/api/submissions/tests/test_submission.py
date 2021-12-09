@@ -34,21 +34,10 @@ def test_can_only_see_title_if_not_logged(graphql_client, user, submission_facto
         variables={"id": submission.hashid},
     )
 
-    assert {
-        "message": "You can't see details for this submission",
-        "locations": [{"line": 5, "column": 17}],
-        "path": ["submission", "elevatorPitch"],
-    } in resp["errors"]
-
-    assert {
-        "message": "You can't see the private fields for this submission",
-        "locations": [{"line": 6, "column": 17}],
-        "path": ["submission", "previousTalkVideo"],
-    } in resp["errors"]
-
+    assert not resp.get("errors")
     assert resp["data"]["submission"]["title"] == submission.title
-    assert resp["data"]["submission"]["elevatorPitch"] is None
-    assert resp["data"]["submission"]["previousTalkVideo"] is None
+    assert resp["data"]["submission"]["elevatorPitch"] == ""
+    assert resp["data"]["submission"]["previousTalkVideo"] == ""
 
 
 def test_can_see_submission_ticket_only_fields_if_has_ticket(
@@ -72,15 +61,10 @@ def test_can_see_submission_ticket_only_fields_if_has_ticket(
         variables={"id": submission.hashid},
     )
 
-    assert resp["errors"][0] == {
-        "message": "You can't see the private fields for this submission",
-        "locations": [{"line": 6, "column": 17}],
-        "path": ["submission", "previousTalkVideo"],
-    }
-
+    assert not resp.get("errors")
     assert resp["data"]["submission"]["title"] == submission.title
     assert resp["data"]["submission"]["elevatorPitch"] == submission.elevator_pitch
-    assert resp["data"]["submission"]["previousTalkVideo"] is None
+    assert resp["data"]["submission"]["previousTalkVideo"] == ""
 
 
 def test_can_see_submission_ticket_only_fields_if_has_sent_at_least_one_talk(
@@ -105,15 +89,10 @@ def test_can_see_submission_ticket_only_fields_if_has_sent_at_least_one_talk(
         variables={"id": submission.hashid},
     )
 
-    assert resp["errors"][0] == {
-        "message": "You can't see the private fields for this submission",
-        "locations": [{"line": 6, "column": 17}],
-        "path": ["submission", "previousTalkVideo"],
-    }
-
+    assert not resp.get("errors")
     assert resp["data"]["submission"]["title"] == submission.title
     assert resp["data"]["submission"]["elevatorPitch"] == submission.elevator_pitch
-    assert resp["data"]["submission"]["previousTalkVideo"] is None
+    assert resp["data"]["submission"]["previousTalkVideo"] == ""
 
 
 def test_can_see_all_submission_fields_if_speaker(
