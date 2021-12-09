@@ -1,4 +1,4 @@
-from datetime import date, datetime, time
+from datetime import date, datetime, time, timezone
 from itertools import groupby
 from typing import List, Optional
 
@@ -23,7 +23,7 @@ from voting.models import RankRequest as RankRequestModel
 from ..helpers.i18n import make_localized_resolver
 from ..helpers.maps import Map, resolve_map
 from ..permissions import CanSeeSubmissions
-
+from enum import Enum
 
 @strawberry.type
 class AudienceLevel:
@@ -229,6 +229,13 @@ class Conference:
         return self.days.prefetch_related("slots", "slots__items").all()
 
 
+@strawberry.enum
+class DeadlineStatus(Enum):
+    IN_THE_FUTURE = 'in-the-future'
+    HAPPENING_NOW = 'happening-now'
+    IN_THE_PAST = 'in-the-past'
+
+
 @strawberry.type
 class Deadline:
     id: strawberry.ID
@@ -238,6 +245,18 @@ class Deadline:
     start: datetime
     end: datetime
     conference: Conference
+
+    @strawberry.field
+    def status(self) -> DeadlineStatus:
+        now = timezone.now()
+        if now >= self.start and now <= self.end:
+            return DeadlineStatus.HAPPENING_NOW
+
+        if self.start > self.end:
+            return DeadlineStatus.IN_THE_FUTURE
+
+        if self.start < self.end:
+            return DeadlineStatus.IN_THE_PAST
 
 
 @strawberry.type

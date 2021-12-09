@@ -12,9 +12,23 @@ import { GrantForm } from "~/components/grant-form";
 import { Introduction } from "~/components/grants-introduction";
 import { MetaTags } from "~/components/meta-tags";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
+import { queryGrantDeadline, useGrantDeadlineQuery } from "~/types";
 
 export const GrantsPage = () => {
   const code = process.env.conferenceCode;
+  const {
+    data: {
+      conference: {
+        deadline
+      }
+    },
+  } = useGrantDeadlineQuery({
+    variables: {
+      conference: code,
+    }
+  })
+
+  console.log("deadline", deadline)
 
   return (
     <React.Fragment>
@@ -41,7 +55,12 @@ export const GrantsPage = () => {
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
   const client = getApolloClient();
 
-  await prefetchSharedQueries(client, locale);
+  await Promise.all([
+    prefetchSharedQueries(client, locale),
+    queryGrantDeadline(client, {
+      conference: process.env.conferenceCode
+    })
+  ])
 
   return addApolloState(client, {
     props: {},
