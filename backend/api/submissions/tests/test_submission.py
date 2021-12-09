@@ -36,8 +36,8 @@ def test_can_only_see_title_if_not_logged(graphql_client, user, submission_facto
 
     assert not resp.get("errors")
     assert resp["data"]["submission"]["title"] == submission.title
-    assert resp["data"]["submission"]["elevatorPitch"] == ""
-    assert resp["data"]["submission"]["previousTalkVideo"] == ""
+    assert resp["data"]["submission"]["elevatorPitch"] is None
+    assert resp["data"]["submission"]["previousTalkVideo"] is None
 
 
 def test_can_see_submission_ticket_only_fields_if_has_ticket(
@@ -64,7 +64,7 @@ def test_can_see_submission_ticket_only_fields_if_has_ticket(
     assert not resp.get("errors")
     assert resp["data"]["submission"]["title"] == submission.title
     assert resp["data"]["submission"]["elevatorPitch"] == submission.elevator_pitch
-    assert resp["data"]["submission"]["previousTalkVideo"] == ""
+    assert resp["data"]["submission"]["previousTalkVideo"] is None
 
 
 def test_can_see_submission_ticket_only_fields_if_has_sent_at_least_one_talk(
@@ -92,7 +92,7 @@ def test_can_see_submission_ticket_only_fields_if_has_sent_at_least_one_talk(
     assert not resp.get("errors")
     assert resp["data"]["submission"]["title"] == submission.title
     assert resp["data"]["submission"]["elevatorPitch"] == submission.elevator_pitch
-    assert resp["data"]["submission"]["previousTalkVideo"] == ""
+    assert resp["data"]["submission"]["previousTalkVideo"] is None
 
 
 def test_can_see_all_submission_fields_if_speaker(
