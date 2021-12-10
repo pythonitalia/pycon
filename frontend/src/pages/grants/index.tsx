@@ -3,7 +3,7 @@
 /** @jsx jsx */
 import React from "react";
 import { FormattedMessage } from "react-intl";
-import { Box, jsx } from "theme-ui";
+import { Box, jsx, Text } from "theme-ui";
 
 import { GetStaticProps } from "next";
 
@@ -12,23 +12,74 @@ import { GrantForm } from "~/components/grant-form";
 import { Introduction } from "~/components/grants-introduction";
 import { MetaTags } from "~/components/meta-tags";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
-import { queryGrantDeadline, useGrantDeadlineQuery } from "~/types";
+import { useCurrentLanguage } from "~/locale/context";
+import { Language } from "~/locale/languages";
+import {
+  DeadlineStatus,
+  queryGrantDeadline,
+  useGrantDeadlineQuery,
+} from "~/types";
+
+const formatDate = (date: string, language: Language) => {
+  const formatter = new Intl.DateTimeFormat(language, {
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    year: "numeric",
+  });
+
+  return formatter.format(new Date(date));
+};
+
+const GrantsComingSoon = ({ start }: { start: string }) => {
+  const language = useCurrentLanguage();
+
+  return (
+    <Box>
+      <Text>
+        <FormattedMessage
+          id="grants.comingSoon"
+          values={{
+            start: (
+              <Text as="span" sx={{ fontWeight: "bold" }}>
+                {formatDate(start, language)}
+              </Text>
+            ),
+          }}
+        />
+      </Text>
+    </Box>
+  );
+};
+
+const GrantsClosed = () => {
+  return (
+    <Box>
+      <Text>
+        <FormattedMessage id="grants.closed" />
+      </Text>
+    </Box>
+  );
+};
 
 export const GrantsPage = () => {
   const code = process.env.conferenceCode;
   const {
     data: {
-      conference: {
-        deadline
-      }
+      conference: { deadline },
     },
   } = useGrantDeadlineQuery({
     variables: {
       conference: code,
-    }
-  })
+    },
+  });
 
-  console.log("deadline", deadline)
+  if (!deadline) {
+    return null;
+  }
+
+  const { status, start, end } = deadline;
 
   return (
     <React.Fragment>
@@ -46,7 +97,13 @@ export const GrantsPage = () => {
           my: 5,
         }}
       >
-        <GrantForm conference={code} />
+        {status === DeadlineStatus.HappeningNow && (
+          <GrantForm end={end} conference={code} />
+        )}
+        {status === DeadlineStatus.InTheFuture && (
+          <GrantsComingSoon start={start} />
+        )}
+        {status === DeadlineStatus.InThePast && <GrantsClosed />}
       </Box>
     </React.Fragment>
   );
@@ -58,9 +115,9 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
   await Promise.all([
     prefetchSharedQueries(client, locale),
     queryGrantDeadline(client, {
-      conference: process.env.conferenceCode
-    })
-  ])
+      conference: process.env.conferenceCode,
+    }),
+  ]);
 
   return addApolloState(client, {
     props: {},

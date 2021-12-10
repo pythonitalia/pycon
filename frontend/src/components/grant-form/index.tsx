@@ -16,6 +16,7 @@ import {
   Textarea,
 } from "theme-ui";
 
+import { useCurrentLanguage } from "~/locale/context";
 import { useSendGrantRequestMutation } from "~/types";
 
 import { Alert } from "../alert";
@@ -46,9 +47,10 @@ export type GrantFormFields = {
   travellingFrom: string;
 };
 
-type Props = { conference: string };
+type Props = { conference: string; end: string };
 
-export const GrantForm: React.SFC<Props> = ({ conference }) => {
+export const GrantForm = ({ conference, end }: Props) => {
+  const language = useCurrentLanguage();
   const [
     formState,
     { text, number: numberInput, email, textarea, select, checkbox },
@@ -106,6 +108,14 @@ export const GrantForm: React.SFC<Props> = ({ conference }) => {
     return [];
   };
 
+  const formatter = new Intl.DateTimeFormat(language, {
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    year: "numeric",
+  });
+
   if (!loading && data?.sendGrantRequest.__typename === "GrantRequest") {
     return (
       <Text>
@@ -116,8 +126,20 @@ export const GrantForm: React.SFC<Props> = ({ conference }) => {
 
   return (
     <Fragment>
-      <Text mb={4} as="h1">
+      <Text mb={2} as="h1">
         <FormattedMessage id="grants.form.title" />
+      </Text>
+      <Text mb={4}>
+        <FormattedMessage
+          id="grants.closesAt"
+          values={{
+            end: (
+              <Text as="span" sx={{ fontWeight: "bold" }}>
+                {formatter.format(new Date(end))}
+              </Text>
+            ),
+          }}
+        />
       </Text>
       <Box as="form" onSubmit={onSubmit}>
         <Heading sx={{ mb: 3 }}>

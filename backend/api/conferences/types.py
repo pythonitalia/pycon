@@ -1,10 +1,11 @@
-from datetime import date, datetime, time, timezone
+from datetime import date, datetime, time
+from enum import Enum
 from itertools import groupby
 from typing import List, Optional
 
 import strawberry
 from django.conf import settings
-from django.utils import translation
+from django.utils import timezone, translation
 
 from api.cms.types import FAQ, Menu
 from api.events.types import Event
@@ -23,7 +24,7 @@ from voting.models import RankRequest as RankRequestModel
 from ..helpers.i18n import make_localized_resolver
 from ..helpers.maps import Map, resolve_map
 from ..permissions import CanSeeSubmissions
-from enum import Enum
+
 
 @strawberry.type
 class AudienceLevel:
@@ -231,9 +232,9 @@ class Conference:
 
 @strawberry.enum
 class DeadlineStatus(Enum):
-    IN_THE_FUTURE = 'in-the-future'
-    HAPPENING_NOW = 'happening-now'
-    IN_THE_PAST = 'in-the-past'
+    IN_THE_FUTURE = "in-the-future"
+    HAPPENING_NOW = "happening-now"
+    IN_THE_PAST = "in-the-past"
 
 
 @strawberry.type
@@ -249,14 +250,14 @@ class Deadline:
     @strawberry.field
     def status(self) -> DeadlineStatus:
         now = timezone.now()
+
         if now >= self.start and now <= self.end:
             return DeadlineStatus.HAPPENING_NOW
 
-        if self.start > self.end:
+        if self.start > now:
             return DeadlineStatus.IN_THE_FUTURE
 
-        if self.start < self.end:
-            return DeadlineStatus.IN_THE_PAST
+        return DeadlineStatus.IN_THE_PAST
 
 
 @strawberry.type
