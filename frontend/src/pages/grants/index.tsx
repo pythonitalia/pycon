@@ -20,6 +20,8 @@ import {
   useGrantDeadlineQuery,
 } from "~/types";
 
+import ErrorPage from "../_error";
+
 const formatDate = (date: string, language: Language) => {
   const formatter = new Intl.DateTimeFormat(language, {
     month: "long",
@@ -76,7 +78,7 @@ export const GrantsPage = () => {
   });
 
   if (!deadline) {
-    return null;
+    return <ErrorPage statusCode={404} />;
   }
 
   const { status, start, end } = deadline;

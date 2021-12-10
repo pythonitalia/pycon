@@ -261,7 +261,7 @@ export const messages = {
     "grants.learnMore": "Learn more",
     "grants.comingSoon": "The grants form will open on {start}!",
     "grants.closed":
-      "The grants form is now closed! If you sent a request, you will be contacted by us in the new few weeks with our decision.",
+      "The grants form is now closed! If you sent a request, you will be contacted by us in the next few weeks with our decision.",
     "grants.closesAt": "You have until {end} to send your request!",
 
     "grants.form.title": "Request a grant",
