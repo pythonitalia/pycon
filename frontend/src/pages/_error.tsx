@@ -3,13 +3,14 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
-import * as Sentry from "@sentry/node";
 import { FormattedMessage } from "react-intl";
 import { Box, Heading, jsx, Text } from "theme-ui";
 
-import NextErrorComponent from "next/error";
+import { GetStaticProps } from "next";
 
+import { getApolloClient, addApolloState } from "~/apollo/client";
 import { Link } from "~/components/link";
+import { prefetchSharedQueries } from "~/helpers/prefetch";
 
 const ErrorPage = ({ statusCode }) => (
   <Box sx={{ mt: 4, mx: "auto", maxWidth: "container", px: 3, pb: 6 }}>
@@ -20,7 +21,7 @@ const ErrorPage = ({ statusCode }) => (
     {statusCode === 404 && (
       <Text>
         <FormattedMessage id="error404.message" />
-        <Link path="/[lang]/" sx={{ display: "block", mt: 2 }}>
+        <Link path="/" sx={{ display: "block", mt: 2 }}>
           <FormattedMessage id="error404.goToHomepage" />
         </Link>
       </Text>
@@ -46,32 +47,14 @@ const ErrorPage = ({ statusCode }) => (
   </Box>
 );
 
-ErrorPage.getInitialProps = async ({ res, err, asPath }) => {
-  // https://github.com/vercel/next.js/issues/8592
-  // @ts-ignore
-  const errorInitialProps = await NextErrorComponent.getInitialProps({
-    res,
-    err,
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
+  const client = getApolloClient();
+
+  await Promise.all([prefetchSharedQueries(client, locale)]);
+
+  return addApolloState(client, {
+    props: {},
   });
-
-  // @ts-ignore
-  errorInitialProps.hasGetInitialPropsRun = true;
-
-  if (res?.statusCode === 404) {
-    return { statusCode: 404 };
-  }
-
-  if (err) {
-    Sentry.captureException(err);
-    await Sentry.flush(2000);
-    return errorInitialProps;
-  }
-
-  Sentry.captureException(
-    new Error(`_error.js getInitialProps missing data at path: ${asPath}`),
-  );
-  await Sentry.flush(2000);
-  return errorInitialProps;
 };
 
 export default ErrorPage;

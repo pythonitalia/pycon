@@ -89,10 +89,6 @@ export const QuestionsSection: React.SFC<Props> = ({
               {products.map((selectedProductInfo, index) => {
                 const product = productsById[selectedProductInfo.id];
 
-                console.log(selectedProductInfo.id);
-
-                console.log(productsById);
-
                 if (product.questions.length === 0) {
                   return null;
                 }

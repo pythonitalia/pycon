@@ -45,7 +45,9 @@ class Submission(TimeStampedModel):
     speaker_level = models.CharField(
         _("speaker level"), choices=SPEAKER_LEVELS, max_length=20
     )
-    previous_talk_video = models.URLField(_("previous talk video"), blank=True)
+    previous_talk_video = models.URLField(
+        _("previous talk video"), blank=True, max_length=2049
+    )
 
     speaker_id = models.IntegerField(verbose_name=_("speaker"))
 

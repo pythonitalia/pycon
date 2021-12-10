@@ -114,8 +114,11 @@ class RankSubmissionAdmin(AdminUsersMixin):
 
     def view_submission(self, obj):  # pragma: no cover
         return format_html(
-            '<a class="button" ' 'href="{{}}" target="_blank" >Open</a>&nbsp;',
-            reverse("admin:submissions_submission_change", args=(obj.submission.id,)),
+            '<a class="button" href="{url}">Open</a>&nbsp;',
+            url=reverse(
+                "admin:submissions_submission_change",
+                kwargs={"object_id": obj.submission.id},
+            ),
         )
 
     view_submission.short_description = "View"
@@ -128,9 +131,10 @@ class RankRequestAdmin(admin.ModelAdmin):
 
     def view_rank(self, obj):
         return format_html(
-            f'<a class="button" '
-            f'href="{{}}?rank_request_id__id__exact={obj.id}">Open</a>&nbsp;',
-            reverse("admin:voting_ranksubmission_changelist"),
+            '<a class="button" '
+            'href="{url}?'
+            f'rank_request_id__id__exact={obj.id}">Open</a>&nbsp;',
+            url=reverse("admin:voting_ranksubmission_changelist"),
         )
 
     view_rank.short_description = "View"

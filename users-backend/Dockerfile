@@ -41,18 +41,18 @@ WORKDIR ${FUNCTION_DIR}
 COPY --from=build-stage /usr/local/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages
 
 COPY --from=build-stage /usr/local/lib/*.so* /usr/local/lib/
-COPY --from=build-stage /usr/lib/libpq.so.5 \
-    /usr/lib/libpq.so.5 \
-    /usr/lib/libldap_r-2.4.so.2 \
-    /usr/lib/liblber-2.4.so.2 \
-    /usr/lib/libsasl2.so.3 \
-    /usr/lib/libxslt.so.1 \
-    /usr/lib/libexslt.so.0 \
-    /usr/lib/libxml2.so.2 \
-    /usr/lib/libgcrypt.so.20 \
-    /usr/lib/libgpg-error.so.0 \
-    /usr/lib/libstdc++.so.6 \
-    /usr/lib/libgcc_s.so.1 \
+COPY --from=build-stage /usr/lib/libpq* \
+    /usr/lib/libpq* \
+    /usr/lib/libldap_r* \
+    /usr/lib/liblber* \
+    /usr/lib/libsasl* \
+    /usr/lib/libxslt* \
+    /usr/lib/libexslt* \
+    /usr/lib/libxml2* \
+    /usr/lib/libgcrypt* \
+    /usr/lib/libgpg-error* \
+    /usr/lib/libstdc++* \
+    /usr/lib/libgcc_s* \
     /usr/lib/
 
 RUN mkdir -p ${FUNCTION_DIR}/assets

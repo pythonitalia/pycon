@@ -1,8 +1,13 @@
+locals {
+  is_prod = terraform.workspace == "production"
+  alias   = local.is_prod ? "tickets.pycon.it" : "${terraform.workspace}-tickets.pycon.it"
+}
+
 resource "aws_cloudfront_distribution" "distribution" {
-  aliases = ["tickets.pycon.it"]
+  aliases = [local.alias]
 
   origin {
-    domain_name = aws_elastic_beanstalk_environment.env.cname
+    domain_name = aws_eip.ip.public_dns
     origin_id   = "pretix"
 
     custom_origin_config {
@@ -15,7 +20,7 @@ resource "aws_cloudfront_distribution" "distribution" {
 
   enabled             = true
   is_ipv6_enabled     = true
-  comment             = "Pretix"
+  comment             = "Pretix ${terraform.workspace}"
   wait_for_deployment = false
 
   viewer_certificate {
@@ -51,8 +56,4 @@ resource "aws_cloudfront_distribution" "distribution" {
       restriction_type = "none"
     }
   }
-}
-
-output "pretix_distribution_id" {
-  value = aws_cloudfront_distribution.distribution.id
 }

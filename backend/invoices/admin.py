@@ -183,8 +183,8 @@ class InvoiceAdmin(AdminViews):
     admin_views = (("Sync invoices from pretix", "sync_invoices_from_pretix"),)
 
     def sync_invoices_from_pretix(self, request, **kwargs):
-        orders = get_orders(Conference.objects.get(code="pycon11"))
-        invoices = get_invoices(Conference.objects.get(code="pycon11"))
+        orders = get_orders(Conference.objects.get(code="pycon12"))
+        invoices = get_invoices(Conference.objects.get(code="pycon12"))
 
         sender = Sender.objects.first()  # TODO: conference based
 

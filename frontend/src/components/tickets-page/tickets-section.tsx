@@ -12,6 +12,7 @@ import { TicketsForm } from "~/components/tickets-form";
 import { Ticket } from "~/components/tickets-form/types";
 
 import { Button } from "../button/button";
+import { Link } from "../link";
 import {
   HotelRoom,
   InvoiceInformationState,
@@ -42,7 +43,7 @@ type Props = {
   onUpdateIsBusiness: (isBusiness: boolean) => void;
 };
 
-export const TicketsSection: React.SFC<Props> = ({
+export const TicketsSection = ({
   tickets,
   state,
   hotelRooms,
@@ -57,7 +58,7 @@ export const TicketsSection: React.SFC<Props> = ({
   onNextStep,
   invoiceInformation,
   onUpdateIsBusiness,
-}) => {
+}: Props) => {
   const [shouldShowNoTickets, setShouldShowNoTickets] = useState(false);
 
   const onContinue = () => {
@@ -120,26 +121,48 @@ export const TicketsSection: React.SFC<Props> = ({
             </Label>
           </Flex>
         </Flex>
+
+        <Box
+          sx={{
+            maxWidth: "container",
+            mx: "auto",
+            px: 3,
+            mt: 4,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <span>
+            <FormattedMessage
+              id="tickets.covid19explanation"
+              values={{
+                br: <br />,
+                linkcovid: <Link path="/covid-19">COVID-19</Link>,
+              }}
+            />
+          </span>
+        </Box>
       </Box>
+
+      {tickets && (
+        <TicketsForm
+          isBusiness={invoiceInformation.isBusiness}
+          tickets={tickets}
+          selectedProducts={selectedProducts}
+          addProduct={addProduct}
+          removeProduct={removeProduct}
+        />
+      )}
 
       <Box
         sx={{
           maxWidth: "container",
           mx: "auto",
           px: 3,
-          mt: 5,
+          mt: 4,
         }}
       >
-        {tickets && (
-          <TicketsForm
-            isBusiness={invoiceInformation.isBusiness}
-            tickets={tickets}
-            selectedProducts={selectedProducts}
-            addProduct={addProduct}
-            removeProduct={removeProduct}
-          />
-        )}
-
         {hotelRooms && (
           <HotelForm
             selectedHotelRooms={selectedHotelRooms}

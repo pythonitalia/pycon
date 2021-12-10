@@ -29,7 +29,7 @@ export const fetchUserInfo = async (id: string): Promise<User | null> => {
   });
 
   const query = gql`
-    query ($id: ID) {
+    query ($id: ID!) {
       user(id: $id) {
         id
         email

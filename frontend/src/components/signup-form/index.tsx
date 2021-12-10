@@ -9,7 +9,6 @@ import { Box, Grid, Input, jsx, Text } from "theme-ui";
 import { useRouter } from "next/router";
 
 import { useLoginState } from "~/components/profile/hooks";
-import { useCurrentLanguage } from "~/locale/context";
 import { useSignupMutation } from "~/types";
 
 import { Alert } from "../alert";
@@ -33,12 +32,11 @@ const getErrorMessageIfAny = (typename?: string) => {
 
 export const SignupForm: React.SFC = () => {
   const [loggedIn, setLoggedIn] = useLoginState();
-  const language = useCurrentLanguage();
   const router = useRouter();
 
   useLayoutEffect(() => {
     if (loggedIn) {
-      router.push("/[lang]/profile", `/${language}/profile`);
+      router.push("/profile");
     }
   });
 
@@ -50,7 +48,7 @@ export const SignupForm: React.SFC = () => {
 
       setLoggedIn(true);
 
-      router.push("/[lang]/profile", `/${language}/profile`);
+      router.push("/profile");
     },
   });
 
@@ -125,7 +123,7 @@ export const SignupForm: React.SFC = () => {
               display: "block",
               mb: 4,
             }}
-            path={`/[lang]/login/`}
+            path={`/login/`}
           >
             <FormattedMessage id="signup.alreadyHaveAccount" />
           </Link>

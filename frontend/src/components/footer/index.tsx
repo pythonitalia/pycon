@@ -72,7 +72,7 @@ export const Footer = () => {
           gridTemplateColumns: [null, null, "5fr 1fr 2fr 2fr 3fr"],
         }}
       >
-        <Link path="/[lang]">
+        <Link path="/">
           <LogoBlack
             sx={{
               width: "100%",

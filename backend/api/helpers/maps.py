@@ -3,6 +3,7 @@ from typing import Optional
 
 import strawberry
 from django.conf import settings
+from strawberry import ID
 
 
 def generate_map_image(
@@ -21,6 +22,7 @@ def generate_map_image(
 
 @strawberry.type
 class Map:
+    id: ID
     latitude: Decimal
     longitude: Decimal
     link: Optional[str]
@@ -47,5 +49,8 @@ def resolve_map(root, info) -> Optional[Map]:
         return None
 
     return Map(
-        latitude=root.latitude, longitude=root.longitude, link=root.map_link or None
+        id=ID(str(root.id)),
+        latitude=root.latitude,
+        longitude=root.longitude,
+        link=root.map_link or None,
     )

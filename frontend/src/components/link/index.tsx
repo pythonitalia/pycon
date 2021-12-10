@@ -67,6 +67,7 @@ type LinkProps = {
   path: string;
   variant?: string;
   target?: string;
+  locale?: "it" | "en";
   backgroundColor?: string;
   params?: Params;
   external?: boolean;
@@ -81,12 +82,13 @@ export const Link: React.FC<LinkProps> = ({
   url,
   external = false,
   params = null,
+  locale,
   ...additionalProps
 }) => {
   const language = useCurrentLanguage();
 
   if (!url) {
-    url = path.replace("[lang]", language);
+    url = path;
 
     Object.entries(params || {}).forEach(([param, value]) => {
       url = url.replace(`[${param}]`, value);
@@ -137,7 +139,7 @@ export const Link: React.FC<LinkProps> = ({
   }
 
   return (
-    <NextLink as={url} href={path} passHref={true}>
+    <NextLink as={url} href={path} passHref={true} locale={locale || language}>
       {hoverable}
     </NextLink>
   );

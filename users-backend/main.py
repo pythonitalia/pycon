@@ -11,8 +11,6 @@ from starlette.applications import Starlette
 from starlette.middleware import Middleware
 from starlette.middleware.sessions import SessionMiddleware
 from starlette.routing import Route
-
-from users.admin_api.views import GraphQL as AdminGraphQL
 from users.api.views import GraphQL
 from users.db import get_engine, get_session
 from users.domain.repository import UsersRepository
@@ -28,7 +26,6 @@ logging.getLogger("sqlalchemy.engine.Engine").disabled = True
 
 routes = [
     Route("/graphql", GraphQL()),
-    Route("/admin-api", AdminGraphQL()),
     Route("/internal-api", InternalGraphQL()),
     Route("/login/google", google_login),
     Route("/login/google/auth", google_login_auth, name="auth"),

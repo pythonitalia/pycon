@@ -12,6 +12,7 @@ export const messages = {
     "home.deadline.begins": "Begins",
     "home.deadline.deadline": "Deadline",
     "home.voting.vote": "Vote now",
+    "home.cfp.submit": "Send proposal",
     "home.gettingThere": "Getting there",
     "home.findRoute": "Find a route",
     "home.conferenceHighlights": "Conference highlight",
@@ -29,7 +30,7 @@ export const messages = {
     "profile.gender.female": "Female",
     "profile.gender.male": "Male",
     "profile.gender.other": "Other",
-    "profile.gender.notSay": "Prefer not to say",
+    "profile.gender.not_say": "Prefer not to say",
     "profile.header": "My profile",
     "profile.loading": "Loading...",
     "profile.profileHeader": "My Profile",
@@ -199,6 +200,10 @@ export const messages = {
     "tickets.pageTitle": "Buy your ticket for PyCon Italy",
     "tickets.loading": "Please wait 🕐",
     "tickets.heading": "Get some tickets",
+    "tickets.covid19explanation": `This year we are selling both regular and late tickets together to better cover our costs due to the current COVID-19 situation limiting how many tickets we can sell.{br}
+    If you can afford (and want to!) to pay more to help us, that would be greatly appreciated! But don't feel forced to do so! We want everyone to pay what they feel comfortable with!{br}
+    All tickets will give you access to the same conference without any difference! This is a symbolic gesture to support our expenses during those difficult times.{br}
+    Information on refunds and COVID-19 are available on our page {linkcovid}.`,
 
     "addHotelRoom.checkin": "Check-in",
     "addHotelRoom.checkout": "Check-out",
@@ -221,9 +226,12 @@ export const messages = {
     "order.hotelPrice": "Price: {price}/night EUR.",
 
     "order.inclVat": "(incl. 22% VAT)",
+    "order.hotelNoVat": "(incl. 0% VAT)",
     "order.selectSize": "Select...",
     "order.hotelRooms": "Hotel rooms",
     "order.availableUntil": "Available until {date}",
+    "order.ticketsLeft":
+      "{count, plural, =0 {Sold out} one {# left} other {# left}}",
 
     "orderInformation.heading": "Invoice information",
     "orderInformation.individualConsumer": "Individual Customer",
@@ -332,7 +340,7 @@ export const messages = {
     "orderReview.ticketPrice": "{finalPrice}",
     "orderReview.ticketPriceWithVoucher": "{basePrice} {finalPrice}",
     "orderReview.hotelPrice":
-      "{roomPrice}€ x{numNights, plural, one {1 night} other {{numNights} nights}} (incl. 22% VAT)",
+      "{roomPrice}€ x{numNights, plural, one {1 night} other {{numNights} nights}} (incl. 0% VAT)",
     "orderReview.edit": "Edit",
     "orderReview.totalAmount": "{total}",
 
@@ -414,6 +422,7 @@ export const messages = {
     "home.deadline.begins": "Inizio",
     "home.deadline.deadline": "Fine",
     "home.voting.vote": "Vota adesso",
+    "home.cfp.submit": "Invia proposta",
     "home.gettingThere": "Come arrivare",
     "home.findRoute": "Raggiungici",
     "home.conferenceHighlights": "Eventi sociali",
@@ -431,7 +440,7 @@ export const messages = {
     "profile.gender.female": "Femmina",
     "profile.gender.male": "Maschio",
     "profile.gender.other": "Altro",
-    "profile.gender.notSay": "Preferisco non dirlo",
+    "profile.gender.not_say": "Preferisco non dirlo",
     "profile.header": "Il mio profilo",
     "profile.loading": "Caricamento...",
     "profile.profileHeader": "Il mio profilo",
@@ -594,6 +603,10 @@ export const messages = {
     "tickets.pageTitle": "Compra il tuo biglietto per PyCon Italia",
     "tickets.loading": "Caricamento in corso 🕐",
     "tickets.heading": "Acquista biglietti",
+    "tickets.covid19explanation": `Per la prossima edizione abbiamo deciso di vendere i biglietti Regular e Late insieme per aiutarci a coprire meglio i costi della conferenza causati dalla situazione COVID-19 che limita quanti biglietti possiamo vendere.{br}
+    Se puoi permetterti (e vuoi!) di pagare di più per aiutarci, grazie mille! Ma non sentirti costretto a farlo, vogliamo che chiunque paghi la cifra che preferisce!{br}
+    Tutti i biglietti ti danno accesso alla conferenza, senza nessuna differenza. Acquistare un biglietto a prezzo maggiorato é un gesto simbolico per aiutare la conferenza in questi tempi difficili.{br}
+    Informazioni su rimborsi e COVID-19 disponibili sulla nostra pagina {linkcovid}.`,
 
     "addHotelRoom.checkin": "Check-in",
     "addHotelRoom.checkout": "Check-out",
@@ -615,9 +628,12 @@ export const messages = {
     "order.price": "Prezzo: {price} EUR",
     "order.hotelPrice": "Price: {price}/notte EUR.",
     "order.inclVat": "(incl. 22% IVA)",
+    "order.hotelNoVat": "(incl. 0% IVA)",
     "order.selectSize": "Taglia...",
     "order.hotelRooms": "Stanze hotel",
     "order.availableUntil": "Disponibile fino al {date}",
+    "order.ticketsLeft":
+      "{count, plural, =0 {Sold out} one {# rimasto} other {# rimasti}}",
 
     "orderReview.edit": "Modifica",
     "orderReview.usingVoucher": "Codice sconto usato",
@@ -625,7 +641,7 @@ export const messages = {
     "orderReview.ticketPriceWithVoucher": "{basePrice} {finalPrice}",
     "orderReview.totalAmount": "{total}",
     "orderReview.hotelPrice":
-      "{roomPrice}€ x{numNights, plural, one {1 notte} other {{numNights} notti}} (incl. 22% IVA)",
+      "{roomPrice}€ x{numNights, plural, one {1 notte} other {{numNights} notti}} (incl. 0% IVA)",
 
     "voucher.voucherHeading": "Codice sconto",
     "voucher.redeemVoucher": "Usa",
@@ -804,4 +820,5 @@ export const messages = {
   },
 };
 
+messages["default"] = messages["en"];
 export default messages;

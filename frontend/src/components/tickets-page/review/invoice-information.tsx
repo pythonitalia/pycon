@@ -122,7 +122,7 @@ export const InvoiceInformation: React.SFC<Props> = ({ data }) => {
             textTransform: "uppercase",
             backgroundColor: "cinderella",
           }}
-          path={`/[lang]/tickets/information/`}
+          path={`/tickets/information/`}
         >
           <FormattedMessage id="orderReview.edit" />
         </Link>

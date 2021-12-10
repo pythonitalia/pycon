@@ -64,22 +64,22 @@ export const TicketsPageWrapper: React.SFC<Props> = ({ children }) => {
     }
 
     if (!isLoggedIn) {
-      router.replace("/[lang]/login", `/${language}/login/`);
+      router.replace("/login");
       return;
     }
 
     if (!hasSelectedAtLeastOneProduct(state)) {
-      router.replace("/[lang]/tickets", `/${language}/tickets/`);
+      router.replace("/tickets");
       return;
     }
 
     if (!hasOrderInformation(state)) {
-      router.replace("/[lang]/information", `/${language}/information/`);
+      router.replace("/information");
       return;
     }
 
     if (tickets.length > 0 && !hasAnsweredTicketsQuestions(state, tickets)) {
-      router.replace("/[lang]/questions", `/${language}/questions/`);
+      router.replace("/questions");
       return;
     }
   }, [typeof location === "undefined" ? null : location.pathname, tickets]);

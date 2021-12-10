@@ -1,5 +1,5 @@
-resource "aws_iam_role" "pretix" {
-  name = "pretix-${terraform.workspace}"
+resource "aws_iam_role" "instance" {
+  name = "${terraform.workspace}-pretix-role"
 
   assume_role_policy = <<EOF
 {
@@ -18,14 +18,19 @@ resource "aws_iam_role" "pretix" {
 EOF
 }
 
-resource "aws_iam_instance_profile" "pretix" {
-  name = "pretix-${terraform.workspace}"
-  role = aws_iam_role.pretix.name
+resource "aws_iam_role_policy_attachment" "ecs_policy" {
+  role       = aws_iam_role.instance.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
+}
+
+resource "aws_iam_instance_profile" "instance" {
+  name = "${terraform.workspace}-pretix-instance-profile"
+  role = aws_iam_role.instance.name
 }
 
 resource "aws_iam_role_policy" "pretix" {
-  name = "pretix-policy-${terraform.workspace}"
-  role = aws_iam_role.pretix.id
+  name = "${terraform.workspace}-pretix-policy"
+  role = aws_iam_role.instance.id
 
   policy = <<EOF
 {
@@ -49,7 +54,6 @@ resource "aws_iam_role_policy" "pretix" {
         "ecr:ListImages",
         "ecr:DescribeImages",
         "ecr:BatchGetImage",
-        "s3:*",
         "ses:*"
       ],
       "Effect": "Allow",

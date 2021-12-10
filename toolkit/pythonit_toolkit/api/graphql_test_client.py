@@ -29,7 +29,6 @@ class GraphQLClient:
         *,
         pastaporto_secret: Optional[str] = None,
         service_to_service_secret: Optional[str] = None,
-        admin_endpoint: bool = False,
         internal_api_endpoint: bool = False
     ):
         self._client = client
@@ -40,8 +39,6 @@ class GraphQLClient:
 
         if internal_api_endpoint:
             self.endpoint = "/internal-api"
-        elif admin_endpoint:
-            self.endpoint = "/admin-api"
         else:
             self.endpoint = "/graphql"
 

@@ -7,7 +7,8 @@ x-defaults:
     PRETIX_API_TOKEN: None # ask for a token
     SECRET_KEY: secret-key
     SLACK_INCOMING_WEBHOOK_URL: None
-    API_URL: http://127.0.0.1:4000/graphql
+    API_URL: /graphql
+    GRAPHQL_GATEWAY_URL: http://gateway:4000/graphql
     API_URL_SERVER: http://gateway:4000/graphql
     # Stripe
     STRIPE_SUBSCRIPTION_PRICE_ID: price_1IkVzxD5MZ3GejSORRBZCvK6
@@ -181,7 +182,6 @@ services:
       - /home/node/app/node_modules/
     environment:
       <<: *enviroment_defaults
-      VARIANT: default
     tty: true
     stdin_open: true
     ports:

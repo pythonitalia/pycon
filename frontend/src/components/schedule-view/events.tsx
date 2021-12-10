@@ -106,12 +106,12 @@ export const Submission = ({
 
 const getItemUrl = (item: Item) => {
   if (item.type === "submission") {
-    return `/[lang]/talk/[slug]`;
+    return `/talk/[slug]`;
   }
 
   // TODO: check tbd
   if (item.type === "keynote") {
-    return `/[lang]/keynote/[slug]`;
+    return `/talk/[slug]`;
   }
 
   return "";

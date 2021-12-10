@@ -25,14 +25,14 @@ type Props = {
   removeHotelRoom: (id: string, index: number) => void;
 };
 
-export const HotelForm: React.SFC<Props> = ({
+export const HotelForm = ({
   hotelRooms,
   conferenceEnd,
   conferenceStart,
   addHotelRoom,
   removeHotelRoom,
   selectedHotelRooms,
-}) => {
+}: Props) => {
   const lang = useCurrentLanguage();
   const dateFormatter = new Intl.DateTimeFormat(lang, {
     month: "long",
@@ -41,7 +41,7 @@ export const HotelForm: React.SFC<Props> = ({
 
   return (
     <Box>
-      <Heading mb={3} as="h2">
+      <Heading mb={3} as="h1">
         <FormattedMessage id="order.hotelRooms" />
       </Heading>
       {hotelRooms.map((room) => (
@@ -66,6 +66,9 @@ export const HotelForm: React.SFC<Props> = ({
                 (selectedHotelRooms[room.id] ?? []).length >= room.capacityLeft,
               defaultPrice: room.price,
               questions: [],
+              category: "hotel",
+              type: "HOTEL",
+              quantityLeft: room.capacityLeft,
             }}
           />
           {(selectedHotelRooms[room.id] ?? []).map((selectedRoom, index) => (

@@ -13,8 +13,7 @@ import { formatDay } from "./format-day";
 
 // TODO: beginners day could be an attribute on the backend
 
-const getDayUrl = (language: string, day: string) =>
-  `/${language}/schedule/${day}`;
+const getDayUrl = (day: string) => `/schedule/${day}`;
 
 export const DaySelector: React.FC<{
   currentDay: string | null;
@@ -32,10 +31,7 @@ export const DaySelector: React.FC<{
         <Select
           sx={{ mt: 3, width: "100%" }}
           onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-            router.push(
-              "/[lang]/schedule/[day]",
-              getDayUrl(language, e.target.value),
-            )
+            router.push("/schedule/[day]", getDayUrl(e.target.value))
           }
         >
           {days.map((day, index) => (
@@ -68,8 +64,8 @@ export const DaySelector: React.FC<{
             }}
           >
             <Link
-              path="/[lang]/schedule/[day]"
-              url={getDayUrl(language, day.day)}
+              path="/schedule/[day]"
+              url={getDayUrl(day.day)}
               variant="button"
               sx={{
                 backgroundColor: currentDay === day.day ? "violet" : "white",

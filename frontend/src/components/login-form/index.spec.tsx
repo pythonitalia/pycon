@@ -100,10 +100,7 @@ describe("Login form", () => {
       });
 
       expect(window.localStorage.getItem(LOGIN_KEY)).toBe("true");
-      expect(MockedRouterPush).toHaveBeenCalledWith(
-        "/[lang]/profile",
-        "/en/profile",
-      );
+      expect(MockedRouterPush).toHaveBeenCalledWith("/profile");
     });
 
     test("should redirect to next url if passed via code", async () => {
@@ -126,10 +123,7 @@ describe("Login form", () => {
         return wait(1);
       });
 
-      expect(MockedRouterPush).toHaveBeenCalledWith(
-        "https://pycon.it",
-        "https://pycon.it",
-      );
+      expect(MockedRouterPush).toHaveBeenCalledWith("https://pycon.it");
     });
 
     test("should redirect to next url if present in url", async () => {
@@ -173,10 +167,7 @@ describe("Login form", () => {
         return wait(1);
       });
 
-      expect(MockedRouterPush).toHaveBeenCalledWith(
-        "http://next-url.pycon.it",
-        "http://next-url.pycon.it",
-      );
+      expect(MockedRouterPush).toHaveBeenCalledWith("http://next-url.pycon.it");
     });
   });
 

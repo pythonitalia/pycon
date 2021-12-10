@@ -101,8 +101,12 @@ class Conference:
         return str(self.timezone)
 
     @strawberry.field
-    def tickets(self, info, language: str) -> List[TicketItem]:
-        return get_conference_tickets(self, language=language)
+    def tickets(
+        self, info, language: str, show_unavailable_tickets: bool = False
+    ) -> List[TicketItem]:
+        return get_conference_tickets(
+            self, language=language, show_unavailable_tickets=show_unavailable_tickets
+        )
 
     @strawberry.field
     def hotel_rooms(self, info) -> List[HotelRoom]:
@@ -227,6 +231,7 @@ class Conference:
 
 @strawberry.type
 class Deadline:
+    id: strawberry.ID
     type: str
     name: str = strawberry.field(resolver=make_localized_resolver("name"))
     description: str = strawberry.field(resolver=make_localized_resolver("description"))

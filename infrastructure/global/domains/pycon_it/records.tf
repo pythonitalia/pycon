@@ -150,14 +150,6 @@ resource "aws_route53_record" "slack_pycon_it_cname" {
   ttl     = "3600"
 }
 
-resource "aws_route53_record" "tickets_pycon_it_cname" {
-  zone_id = aws_route53_zone.pyconit.id
-  name    = "tickets.pycon.it"
-  type    = "CNAME"
-  records = ["d3ex7joy4im5c0.cloudfront.net."]
-  ttl     = "3600"
-}
-
 resource "aws_route53_record" "wasp_pycon_it_a" {
   zone_id = aws_route53_zone.pyconit.id
   name    = "wasp.pycon.it"

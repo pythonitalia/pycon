@@ -4,11 +4,10 @@ import { queryFooter, queryHeader } from "~/types";
 
 export const prefetchSharedQueries = async (
   client: ApolloClient<any>,
-  language: string,
+  _language: string,
 ) => {
   const header = queryHeader(client, {
     code: process.env.conferenceCode,
-    language,
   });
 
   const footer = queryFooter(client, {

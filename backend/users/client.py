@@ -7,6 +7,7 @@ from pythonit_toolkit.service_client import ServiceClient
 GET_USERS_BY_IDS = """query GetUsersByIds($ids: [ID!]!) {
     usersByIds(ids: $ids) {
         id
+        email
         displayName
         isActive
         isStaff

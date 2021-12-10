@@ -27,16 +27,6 @@ module "gateway" {
   }
 }
 
-module "admin_gateway" {
-  source        = "./gateway"
-  admin_variant = true
-
-  providers = {
-    aws    = aws
-    aws.us = aws.us
-  }
-}
-
 module "users_backend" {
   source     = "./users_backend"
   depends_on = [module.database]

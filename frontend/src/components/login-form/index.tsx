@@ -10,7 +10,6 @@ import Router, { useRouter } from "next/router";
 
 import { useLoginState } from "~/components/profile/hooks";
 import { useMessages } from "~/helpers/use-messages";
-import { useCurrentLanguage } from "~/locale/context";
 import { LoginMutation, useLoginMutation } from "~/types";
 
 import { Alert } from "../alert";
@@ -28,20 +27,19 @@ type FormProps = {
 };
 
 export const LoginForm: React.SFC<FormProps> = ({ next, ...props }) => {
-  const lang = useCurrentLanguage();
   const router = useRouter();
   const [loggedIn, setLoggedIn] = useLoginState();
 
   const { messages, clearMessages } = useMessages();
 
-  const nextUrl = (router.query.next as string) || next || `/${lang}/profile`;
+  const nextUrl = (router.query.next as string) || next || `/profile`;
 
   const onLoginCompleted = (data: LoginMutation) => {
     if (data && data.login.__typename === "LoginSuccess") {
       setLoggedIn(true);
       clearMessages();
 
-      Router.push(nextUrl.replace(/^\/(en|it)/, "/[lang]"), nextUrl);
+      Router.push(nextUrl);
     }
   };
 
@@ -57,7 +55,7 @@ export const LoginForm: React.SFC<FormProps> = ({ next, ...props }) => {
 
   useEffect(() => {
     if (loggedIn) {
-      Router.push(nextUrl.replace(/^\/(en|it)/, "/[lang]"), nextUrl);
+      Router.push(nextUrl);
     }
 
     clearMessages();
@@ -134,7 +132,7 @@ export const LoginForm: React.SFC<FormProps> = ({ next, ...props }) => {
               display: "block",
               mb: 4,
             }}
-            path={`/${lang}/signup/`}
+            path="/signup"
           >
             <FormattedMessage id="login.dontHaveAccount" />
           </Link>
@@ -158,7 +156,7 @@ export const LoginForm: React.SFC<FormProps> = ({ next, ...props }) => {
               display: "block",
               mb: 4,
             }}
-            path={`/${lang}/reset-password/`}
+            path="/reset-password"
           >
             <FormattedMessage id="login.recoverPassword" />
           </Link>

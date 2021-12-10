@@ -26,10 +26,18 @@ USE_X_FORWARDED_HOST = True
 SITE_URL = "https://tickets.pycon.it"
 
 MAIL_FROM = SERVER_EMAIL = DEFAULT_FROM_EMAIL = "noreply@pycon.it"
-EMAIL_HOST = "email-smtp.us-east-1.amazonaws.com"
+EMAIL_HOST = "email-smtp.eu-central-1.amazonaws.com"
 EMAIL_PORT = 587
 EMAIL_HOST_USER = "{{mail_user}}"
 EMAIL_HOST_PASSWORD = "{{mail_password}}"
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 EMAIL_SUBJECT_PREFIX = "[PyCon Tickets] "
+
+HAS_CELERY = False
+CELERY_TASK_ALWAYS_EAGER = True
+
+PRETIX_INSTANCE_NAME = "Python Italia"
+
+# Config
+PRETIX_REGISTRATION = False
