@@ -69,6 +69,7 @@ class TicketItem:
     active: bool
     default_price: str
     category: str
+    tax_rate: float
     variations: List[ProductVariation]
     # TODO: correct types
     available_from: Optional[str]
