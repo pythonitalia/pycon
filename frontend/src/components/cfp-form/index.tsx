@@ -116,28 +116,6 @@ export const CfpForm: React.SFC<Props> = ({
     variables: {
       conference: conferenceCode,
     },
-    onCompleted(data) {
-      if (submission) {
-        formState.setField("type", submission!.type.id);
-        formState.setField("title", submission!.title);
-        formState.setField("elevatorPitch", submission!.elevatorPitch);
-        formState.setField("topic", submission!.topic.id);
-        formState.setField("length", submission!.duration.id);
-        formState.setField("audienceLevel", submission!.audienceLevel.id);
-        formState.setField(
-          "languages",
-          submission!.languages.map((l) => l.code),
-        );
-        formState.setField("abstract", submission!.abstract);
-        formState.setField("notes", submission!.notes);
-        formState.setField(
-          "tags",
-          submission!.tags.map((t) => t.id),
-        );
-        formState.setField("speakerLevel", submission!.speakerLevel);
-        formState.setField("previousTalkVideo", submission!.previousTalkVideo);
-      }
-    },
   });
 
   const submitSubmission = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -183,6 +161,29 @@ export const CfpForm: React.SFC<Props> = ({
       formState.setField("length", allowedDurations[0].id);
     }
   }, [formState.values.type]);
+
+  useEffect(() => {
+    if (!conferenceLoading && submission) {
+      formState.setField("type", submission!.type.id);
+      formState.setField("title", submission!.title);
+      formState.setField("elevatorPitch", submission!.elevatorPitch);
+      formState.setField("topic", submission!.topic.id);
+      formState.setField("length", submission!.duration.id);
+      formState.setField("audienceLevel", submission!.audienceLevel.id);
+      formState.setField(
+        "languages",
+        submission!.languages.map((l) => l.code),
+      );
+      formState.setField("abstract", submission!.abstract);
+      formState.setField("notes", submission!.notes);
+      formState.setField(
+        "tags",
+        submission!.tags.map((t) => t.id),
+      );
+      formState.setField("speakerLevel", submission!.speakerLevel);
+      formState.setField("previousTalkVideo", submission!.previousTalkVideo);
+    }
+  }, [conferenceLoading]);
 
   if (conferenceLoading) {
     return (
