@@ -30,7 +30,7 @@ def private_field() -> StrawberryField:
 
     def resolver(self, info: Info):
         if CanSeeSubmissionPrivateFields().has_permission(self, info):
-            return getattr(self, info.field_name)
+            return getattr(self, info.python_name)
         return None
 
     return strawberry.field(resolver=resolver)
