@@ -20,7 +20,6 @@ import {
 } from "theme-ui";
 
 import {
-  CfpFormQuery,
   SendSubmissionMutation,
   UpdateSubmissionMutation,
   useCfpFormQuery,
