@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 import { Alert } from "~/components/alert";
 import { MetaTags } from "~/components/meta-tags";
 import { useLoginState } from "~/components/profile/hooks";
+import { useCurrentUser } from "~/helpers/use-current-user";
 import { useCurrentLanguage } from "~/locale/context";
 import { TicketsQueryResult, useTicketsQuery } from "~/types";
 
@@ -33,19 +34,20 @@ export const TicketsPageWrapper: React.SFC<Props> = ({ children }) => {
   const code = process.env.conferenceCode;
   const language = useCurrentLanguage();
   const [isLoggedIn] = useLoginState();
+  const { user: me } = useCurrentUser({
+    skip: !isLoggedIn,
+  });
 
   const { loading, error, data } = useTicketsQuery({
     variables: {
       conference: code,
       language,
-      isLogged: isLoggedIn,
     },
   });
 
   const hotelRooms = data?.conference.hotelRooms || [];
   const tickets = data?.conference.tickets || [];
   const conference = data?.conference;
-  const me = data?.me;
   const router = useRouter();
 
   const { state } = useCart();
