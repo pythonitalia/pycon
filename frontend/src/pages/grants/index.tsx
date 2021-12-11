@@ -14,7 +14,6 @@ import { MetaTags } from "~/components/meta-tags";
 import { formatDeadlineDateTime } from "~/helpers/deadlines";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
-import { Language } from "~/locale/languages";
 import {
   DeadlineStatus,
   queryGrantDeadline,
