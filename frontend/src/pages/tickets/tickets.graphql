@@ -1,9 +1,4 @@
-query Tickets($conference: String!, $language: String!, $isLogged: Boolean!) {
-  me @include(if: $isLogged) {
-    id
-    email
-  }
-
+query Tickets($conference: String!, $language: String!) {
   conference(code: $conference) {
     id
     start
