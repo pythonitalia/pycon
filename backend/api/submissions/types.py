@@ -3,6 +3,8 @@ from typing import List, Optional
 
 import strawberry
 from strawberry import LazyType
+from strawberry.field import StrawberryField
+from strawberry.types import Info
 
 from api.languages.types import Language
 from api.voting.types import VoteType
@@ -11,15 +13,27 @@ from voting.models import Vote
 from .permissions import CanSeeSubmissionDetail, CanSeeSubmissionPrivateFields
 
 
-def restricted_field():
+def restricted_field() -> StrawberryField:
     """Field that can only be seen by admin, the submitter or who has the ticket
     until voting is not closed, after it will be public"""
-    return strawberry.field(permission_classes=[CanSeeSubmissionDetail])
+
+    def resolver(self, info: Info):
+        if CanSeeSubmissionDetail().has_permission(self, info):
+            return getattr(self, info.python_name)
+        return None
+
+    return strawberry.field(resolver=resolver)
 
 
-def private_field():
+def private_field() -> StrawberryField:
     """Field that can only be seen by admin and the submitter"""
-    return strawberry.field(permission_classes=[CanSeeSubmissionPrivateFields])
+
+    def resolver(self, info: Info):
+        if CanSeeSubmissionPrivateFields().has_permission(self, info):
+            return getattr(self, info.python_name)
+        return None
+
+    return strawberry.field(resolver=resolver)
 
 
 @strawberry.type
@@ -63,7 +77,6 @@ class Submission:
     abstract: Optional[str] = restricted_field()
     speaker_level: Optional[str] = private_field()
     previous_talk_video: Optional[str] = private_field()
-    notes: Optional[str] = private_field()
     topic: Optional[LazyType["Topic", "api.conferences.types"]] = restricted_field()
     type: Optional[SubmissionType] = restricted_field()
     duration: Optional[
@@ -72,6 +85,7 @@ class Submission:
     audience_level: Optional[
         LazyType["AudienceLevel", "api.conferences.types"]
     ] = restricted_field()
+    notes: Optional[str] = private_field()
 
     @strawberry.field(permission_classes=[CanSeeSubmissionPrivateFields])
     def speaker(self) -> SubmissionSpeaker:
