@@ -1,3 +1,4 @@
+import pytest
 import pytz
 import time_machine
 from django.utils import timezone
@@ -600,19 +601,17 @@ def test_is_voting_open_false_when_no_deadlines(graphql_client, conference):
 
 
 @mark.django_db
-@mark.parametrize("voting_closed", (True, False))
-def test_is_voting_closed(
-    graphql_client, conference_factory, deadline_factory, voting_closed
+def test_is_voting_closed_in_the_past(
+    graphql_client,
+    conference_factory,
+    deadline_factory,
 ):
     now = timezone.now()
-
     conference = conference_factory(timezone=pytz.timezone("America/Los_Angeles"))
 
     deadline_factory(
         start=now - timezone.timedelta(days=2),
-        end=now - timezone.timedelta(days=1)
-        if voting_closed
-        else now + timezone.timedelta(days=1),
+        end=now - timezone.timedelta(days=1),
         conference=conference,
         type="voting",
     )
@@ -628,7 +627,38 @@ def test_is_voting_closed(
         variables={"code": conference.code},
     )
 
-    assert resp["data"]["conference"]["isVotingClosed"] is voting_closed
+    assert resp["data"]["conference"]["isVotingClosed"] is True
+
+
+@pytest.mark.xfail(reason="it only check if the deadline has passed atm")
+@mark.django_db
+def test_is_voting_closed_in_the_future(
+    graphql_client,
+    conference_factory,
+    deadline_factory,
+):
+    now = timezone.now()
+    conference = conference_factory(timezone=pytz.timezone("America/Los_Angeles"))
+
+    deadline_factory(
+        start=now + timezone.timedelta(days=1),
+        end=now + timezone.timedelta(days=2),
+        conference=conference,
+        type="voting",
+    )
+
+    resp = graphql_client.query(
+        """
+        query($code: String!) {
+            conference(code: $code) {
+                isVotingClosed
+            }
+        }
+        """,
+        variables={"code": conference.code},
+    )
+
+    assert resp["data"]["conference"]["isVotingClosed"] is True
 
 
 @mark.django_db

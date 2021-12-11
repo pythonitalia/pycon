@@ -1,11 +1,10 @@
 from datetime import date, datetime, time
-from enum import Enum
 from itertools import groupby
 from typing import List, Optional
 
 import strawberry
 from django.conf import settings
-from django.utils import timezone, translation
+from django.utils import translation
 
 from api.cms.types import FAQ, Menu
 from api.events.types import Event
@@ -18,6 +17,7 @@ from api.sponsors.types import SponsorsByLevel
 from api.submissions.types import Submission, SubmissionType
 from api.voting.types import RankSubmission
 from cms.models import GenericCopy
+from conferences.models.deadline import DeadlineStatus
 from schedule.models import ScheduleItem as ScheduleItemModel
 from voting.models import RankRequest as RankRequestModel
 
@@ -230,11 +230,7 @@ class Conference:
         return self.days.prefetch_related("slots", "slots__items").all()
 
 
-@strawberry.enum
-class DeadlineStatus(Enum):
-    IN_THE_FUTURE = "in-the-future"
-    HAPPENING_NOW = "happening-now"
-    IN_THE_PAST = "in-the-past"
+DeadlineStatusType = strawberry.enum(DeadlineStatus)
 
 
 @strawberry.type
@@ -246,18 +242,7 @@ class Deadline:
     start: datetime
     end: datetime
     conference: Conference
-
-    @strawberry.field
-    def status(self) -> DeadlineStatus:
-        now = timezone.now()
-
-        if now >= self.start and now <= self.end:
-            return DeadlineStatus.HAPPENING_NOW
-
-        if self.start > now:
-            return DeadlineStatus.IN_THE_FUTURE
-
-        return DeadlineStatus.IN_THE_PAST
+    status: DeadlineStatusType
 
 
 @strawberry.type
