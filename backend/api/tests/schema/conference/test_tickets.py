@@ -1,5 +1,6 @@
-from api.pretix.types import TicketItem
 from pytest import mark
+
+from api.pretix.types import TicketItem
 
 
 @mark.django_db
@@ -13,6 +14,7 @@ def test_returns_tickets(graphql_client, conference, mocker):
             description="",
             active=True,
             default_price="100.00",
+            tax_rate=0.0,
             variations=[],
             available_from=None,
             available_until=None,
@@ -49,6 +51,7 @@ def test_is_business(graphql_client, conference, mocker):
             description="",
             active=True,
             default_price="100.00",
+            tax_rate=0.0,
             variations=[],
             available_from=None,
             available_until=None,
@@ -62,6 +65,7 @@ def test_is_business(graphql_client, conference, mocker):
             description="",
             active=True,
             default_price="100.00",
+            tax_rate=0.0,
             variations=[],
             available_from=None,
             available_until=None,
