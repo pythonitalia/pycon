@@ -16,7 +16,6 @@ import {
   Textarea,
 } from "theme-ui";
 
-import { useCurrentLanguage } from "~/locale/context";
 import { useSendGrantRequestMutation } from "~/types";
 
 import { Alert } from "../alert";
@@ -50,7 +49,6 @@ export type GrantFormFields = {
 type Props = { conference: string };
 
 export const GrantForm = ({ conference }: Props) => {
-  const language = useCurrentLanguage();
   const [
     formState,
     { text, number: numberInput, email, textarea, select, checkbox },
@@ -203,9 +201,13 @@ export const GrantForm = ({ conference }: Props) => {
           label={<FormattedMessage id="grants.form.fields.occupation" />}
         >
           <Select {...select("occupation")} required={true}>
-            {OCCUPATION_OPTIONS.map(({ value, messageId }) => (
+            {OCCUPATION_OPTIONS.map(({ value, disabled, messageId }) => (
               <FormattedMessage id={messageId} key={messageId}>
-                {(msg) => <option value={value}>{msg}</option>}
+                {(msg) => (
+                  <option disabled={disabled} value={value}>
+                    {msg}
+                  </option>
+                )}
               </FormattedMessage>
             ))}
           </Select>
@@ -222,11 +224,17 @@ export const GrantForm = ({ conference }: Props) => {
           }
         >
           <Select {...select("interestedInVolunteering")} required={true}>
-            {INTERESTED_IN_VOLUNTEERING_OPTIONS.map(({ value, messageId }) => (
-              <FormattedMessage id={messageId} key={messageId}>
-                {(msg) => <option value={value}>{msg}</option>}
-              </FormattedMessage>
-            ))}
+            {INTERESTED_IN_VOLUNTEERING_OPTIONS.map(
+              ({ value, disabled, messageId }) => (
+                <FormattedMessage id={messageId} key={messageId}>
+                  {(msg) => (
+                    <option disabled={disabled} value={value}>
+                      {msg}
+                    </option>
+                  )}
+                </FormattedMessage>
+              ),
+            )}
           </Select>
         </InputWrapper>
 
@@ -278,9 +286,13 @@ export const GrantForm = ({ conference }: Props) => {
             label={<FormattedMessage id="grants.form.fields.gender" />}
           >
             <Select {...select("gender")}>
-              {GENDER_OPTIONS.map(({ value, messageId }) => (
+              {GENDER_OPTIONS.map(({ value, disabled, messageId }) => (
                 <FormattedMessage id={messageId} key={messageId}>
-                  {(msg) => <option value={value}>{msg}</option>}
+                  {(msg) => (
+                    <option disabled={disabled} value={value}>
+                      {msg}
+                    </option>
+                  )}
                 </FormattedMessage>
               ))}
             </Select>
