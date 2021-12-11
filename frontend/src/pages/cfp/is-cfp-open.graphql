@@ -3,6 +3,7 @@ query IsCfpOpen($conference: String!) {
     id
     isCFPOpen
     cfpDeadline: deadline(type: "cfp") {
+      id
       end
     }
   }

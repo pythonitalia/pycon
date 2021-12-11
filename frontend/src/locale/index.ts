@@ -115,7 +115,9 @@ export const messages = {
     "cfp.introductionHeading": "Make a proposal",
     "cfp.introductionSubtitle": "PyCon Italy is looking for you!",
     "cfp.introductionCopy":
-      "PyCon Italy is seeking speakers of all experience levels and backgrounds to contribute to our conference program! If you use Python professionally, as a hobbyist or are just excited about Python or programming and open source communities, we’d love to hear from you. We want you and your ideas at PyCon!{br}You have until {deadline} to submit a proposal!",
+      "PyCon Italy is seeking speakers of all experience levels and backgrounds to contribute to our conference program! If you use Python professionally, as a hobbyist or are just excited about Python or programming and open source communities, we’d love to hear from you. We want you and your ideas at PyCon!",
+    "cfp.introductionDeadline":
+      "You have until {deadline} to submit a proposal!",
     "cfp.learnMore": "Learn more",
     "cfp.youridea": "Your idea",
     "cfp.choosetype": "Choose a format",
@@ -526,7 +528,9 @@ export const messages = {
     "cfp.introductionHeading": "Invia una proposta",
     "cfp.introductionSubtitle": "PyCon Italy cerca te!",
     "cfp.introductionCopy":
-      "PyCon Italia è alla ricerca di speakers con ogni background per contribuire al nostro progamma. Se usi Python professionalmente, come hobbista o se semplicemente sei un appassionato di Python o programmazione, proponi un talk! Vogliamo sentire ciò che hai da condividere!{br} Hai tempo fino al {deadline} per inviare una proposta!",
+      "PyCon Italia è alla ricerca di speakers con ogni background per contribuire al nostro progamma. Se usi Python professionalmente, come hobbista o se semplicemente sei un appassionato di Python o programmazione, proponi un talk! Vogliamo sentire ciò che hai da condividere!",
+    "cfp.introductionDeadline":
+      "Hai tempo fino al {deadline} per inviare una proposta!",
     "cfp.learnMore": "Maggiori informazioni",
     "cfp.yourProposals": "Le tue proposte",
     "cfp.elevatorPitchLabel": "Elevator pitch",
