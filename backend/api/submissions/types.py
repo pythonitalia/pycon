@@ -19,7 +19,7 @@ def restricted_field() -> StrawberryField:
 
     def resolver(self, info: Info):
         if CanSeeSubmissionDetail().has_permission(self, info):
-            return getattr(self, info.field_name)
+            return getattr(self, info.python_name)
         return None
 
     return strawberry.field(resolver=resolver)
