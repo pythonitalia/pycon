@@ -1,4 +1,3 @@
-import pytest
 from django.utils import timezone
 from pytest import mark
 
@@ -188,7 +187,6 @@ def test_can_see_all_submission_fields_if_vote_closed(
     assert resp["data"]["submission"]["previousTalkVideo"] is None
 
 
-@pytest.mark.xfail(reason="will fix in onother PR")
 def test_can_see_all_submission_fields_if_vote_not_open(
     graphql_client, user, submission_factory, conference_factory, deadline_factory
 ):

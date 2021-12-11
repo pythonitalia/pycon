@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from model_utils.models import TimeFramedModel, TimeStampedModel
@@ -7,7 +8,7 @@ from timezone_field import TimeZoneField
 from helpers.models import GeoLocalizedModel
 from i18n.fields import I18nCharField, I18nTextField
 
-from .deadline import Deadline, DeadlineStatus
+from .deadline import Deadline
 
 
 class Conference(GeoLocalizedModel, TimeFramedModel, TimeStampedModel):
@@ -56,7 +57,8 @@ class Conference(GeoLocalizedModel, TimeFramedModel, TimeStampedModel):
         try:
             cfp_deadline = self.deadlines.get(type=Deadline.TYPES.cfp)
 
-            return cfp_deadline.status == DeadlineStatus.HAPPENING_NOW
+            now = timezone.now()
+            return cfp_deadline.start <= now <= cfp_deadline.end
         except Deadline.DoesNotExist:
             return False
 
@@ -65,7 +67,8 @@ class Conference(GeoLocalizedModel, TimeFramedModel, TimeStampedModel):
         try:
             voting_deadline = self.deadlines.get(type=Deadline.TYPES.voting)
 
-            return voting_deadline.status == DeadlineStatus.HAPPENING_NOW
+            now = timezone.now()
+            return voting_deadline.start <= now <= voting_deadline.end
         except Deadline.DoesNotExist:
             return False
 
@@ -74,10 +77,8 @@ class Conference(GeoLocalizedModel, TimeFramedModel, TimeStampedModel):
         try:
             voting_deadline = self.deadlines.get(type=Deadline.TYPES.voting)
 
-            return voting_deadline.status in (
-                DeadlineStatus.IN_THE_PAST,
-                DeadlineStatus.IN_THE_FUTURE,
-            )
+            now = timezone.now()
+            return voting_deadline.end <= now
         except Deadline.DoesNotExist:
             return False
 
