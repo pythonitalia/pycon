@@ -12,7 +12,11 @@ import { MetaTags } from "~/components/meta-tags";
 import { useLoginState } from "~/components/profile/hooks";
 import { useCurrentUser } from "~/helpers/use-current-user";
 import { useCurrentLanguage } from "~/locale/context";
-import { TicketsQueryResult, useTicketsQuery } from "~/types";
+import {
+  CurrentUserQueryResult,
+  TicketsQueryResult,
+  useTicketsQuery,
+} from "~/types";
 
 import { useCart } from "./use-cart";
 import {
@@ -26,7 +30,7 @@ type Props = {
     tickets: TicketsQueryResult["data"]["conference"]["tickets"];
     hotelRooms: TicketsQueryResult["data"]["conference"]["hotelRooms"];
     conference: TicketsQueryResult["data"]["conference"];
-    me: TicketsQueryResult["data"]["me"];
+    me: CurrentUserQueryResult["data"]["me"];
   }) => React.ReactElement;
 };
 
