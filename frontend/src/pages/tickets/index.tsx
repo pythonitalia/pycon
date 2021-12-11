@@ -67,8 +67,11 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
     prefetchSharedQueries(client, locale),
     queryTickets(client, {
       conference: process.env.conferenceCode,
-      language: locale,
-      isLogged: false,
+      language: "it",
+    }),
+    queryTickets(client, {
+      conference: process.env.conferenceCode,
+      language: "en",
     }),
   ]);
 

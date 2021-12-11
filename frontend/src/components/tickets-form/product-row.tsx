@@ -91,6 +91,9 @@ export const ProductRow = ({
             >
               <FormattedMessage
                 id={hotel ? "order.hotelNoVat" : "order.inclVat"}
+                values={{
+                  taxRate: ticket.taxRate,
+                }}
               />
             </Text>
           </Text>

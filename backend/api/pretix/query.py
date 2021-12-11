@@ -65,7 +65,7 @@ def _create_ticket_type_from_api(item, id, categories, questions, quotas, langua
     category = _get_category_for_ticket(item, categories)
 
     return TicketItem(
-        id=id,
+        id=f"{id}-{language}",
         name=_get_by_language(item, "name", language),
         description=_get_by_language(item, "description", language),
         category=_get_by_language(category, "name", language),
@@ -79,6 +79,7 @@ def _create_ticket_type_from_api(item, id, categories, questions, quotas, langua
             )
             for variation in item.get("variations", [])
         ],
+        tax_rate=item["tax_rate"],
         active=item["active"],
         default_price=item["default_price"],
         available_from=item["available_from"],
