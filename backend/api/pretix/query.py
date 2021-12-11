@@ -146,9 +146,8 @@ def get_conference_tickets(
     quotas = pretix.get_quotas(conference)
 
     def sort_func(ticket):
-        # If the item has variations, it means it is the
-        # t-shirt product. We want to show it always at the bottom
-        if len(ticket.variations) > 0:
+        # Gadgets (tshirt/membership) should appear at the end
+        if ticket.category == "Gadget":
             return math.inf
 
         # Order all other tickets by price (low -> high)
