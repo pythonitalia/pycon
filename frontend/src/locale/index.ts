@@ -116,6 +116,8 @@ export const messages = {
     "cfp.introductionSubtitle": "PyCon Italy is looking for you!",
     "cfp.introductionCopy":
       "PyCon Italy is seeking speakers of all experience levels and backgrounds to contribute to our conference program! If you use Python professionally, as a hobbyist or are just excited about Python or programming and open source communities, we’d love to hear from you. We want you and your ideas at PyCon!",
+    "cfp.introductionDeadline":
+      "You have until {deadline} to submit a proposal!",
     "cfp.learnMore": "Learn more",
     "cfp.youridea": "Your idea",
     "cfp.choosetype": "Choose a format",
@@ -152,6 +154,7 @@ export const messages = {
     "cfp.selectDuration": "Select a duration",
     "cfp.selectTopic": "Select a topic",
     "cfp.selectAudience": "Select an audience",
+    "cfp.selectSpeakerLevel": "Select a level of experience",
     "cfp.cannotEdit": "You cannot edit this submission",
     "cfp.validationErrors": "Some fields are not correct",
     "cfp.speakerLevel": "Experience",
@@ -256,7 +259,12 @@ export const messages = {
       "Would you really love to join PyCon Italia but can't afford it? We can help you!",
     "grants.introductionCopy":
       "Thanks to the help of the Python Software Foundation we are glad to give financial support to everyone who may need it in order to join PyCon Italia.",
+    "grants.introductionDeadline":
+      "You have until {deadline} to send your request!",
     "grants.learnMore": "Learn more",
+    "grants.comingSoon": "The grants form will open on {start}!",
+    "grants.closed":
+      "The grants form is now closed! If you sent a request, you will be contacted by us in the next few weeks with our decision.",
 
     "grants.form.title": "Request a grant",
     "grants.form.sendingRequest": "Sending grant request",
@@ -516,7 +524,6 @@ export const messages = {
       "Non dimenticare che la votazione comunitaria aprirà presto. Se hai proposto un talk o hai un biglietto per la conferenza puoi vedere la lista di tutti i talk e votare i tuoi preferiti!",
     "cfp.closed.buyTicket": "Compra il tuo biglietto ora!",
     "cfp.pageTitle": "Invia una proposta",
-    "cfp.introductionCopyHead": "Lorem ipsum",
     "cfp.youridea": "La tua idea",
     "cfp.choosetype": "Scegli una categoria",
     "cfp.format": "Categoria",
@@ -528,6 +535,8 @@ export const messages = {
     "cfp.introductionSubtitle": "PyCon Italy cerca te!",
     "cfp.introductionCopy":
       "PyCon Italia è alla ricerca di speakers con ogni background per contribuire al nostro progamma. Se usi Python professionalmente, come hobbista o se semplicemente sei un appassionato di Python o programmazione, proponi un talk! Vogliamo sentire ciò che hai da condividere!",
+    "cfp.introductionDeadline":
+      "Hai tempo fino al {deadline} per inviare una proposta!",
     "cfp.learnMore": "Maggiori informazioni",
     "cfp.yourProposals": "Le tue proposte",
     "cfp.elevatorPitchLabel": "Elevator pitch",
@@ -558,6 +567,7 @@ export const messages = {
     "cfp.selectDuration": "Seleziona una durata",
     "cfp.selectTopic": "Seleziona un argomento",
     "cfp.selectAudience": "Seleziona livello",
+    "cfp.selectSpeakerLevel": "Seleziona un livello di esperienza",
     "cfp.loading": "Caricamento",
     "cfp.cannotEdit": "Non puoi modificare questa submission",
     "cfp.validationErrors": "Alcuni campi non sono corretti",
@@ -674,7 +684,12 @@ export const messages = {
       "Vorresti essere presente a PyCon Italia ma hai difficoltà economiche? Chiedici aiuto!",
     "grants.introductionCopy":
       "Grazie all'aiuto della Python Software Foundation siamo lieti di mettere a disposizione di chi ne avesse bisogno un programma di supporto per chi vorrebbe essere presente a PyCon Italia ma per motivi economici non potrebbe riuscirci.",
+    "grants.introductionDeadline":
+      "Hai fino al {deadline} per inviare la tua richiesta!",
     "grants.learnMore": "Maggiori informazioni",
+    "grants.comingSoon": "Il form per i grant apre il {start}!",
+    "grants.closed":
+      "Il form per richiede grant è chiuso! Se hai inviato una richiesta sarai contattato nelle prossime settimane con l'esito.",
 
     "grants.form.title": "Chiedi un grant",
     "grants.form.sendingRequest": "Invio richiesta in corso",

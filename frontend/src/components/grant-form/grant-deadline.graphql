@@ -1,0 +1,11 @@
+query GrantDeadline($conference: String!) {
+  conference(code: $conference) {
+    id
+    deadline(type: "grants") {
+      id
+      start
+      end
+      status
+    }
+  }
+}

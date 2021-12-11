@@ -20,7 +20,6 @@ import {
 } from "theme-ui";
 
 import {
-  CfpFormQuery,
   SendSubmissionMutation,
   UpdateSubmissionMutation,
   useCfpFormQuery,
@@ -70,10 +69,28 @@ type Props = {
   data: SendSubmissionMutation | UpdateSubmissionMutation;
 };
 
-// value of the first option in the speaker level value
-// this is stored here because it's also used in the edit submission as default value
-// when the submission doesn't have it and when we initialize the form
-const SPEAKER_LEVEL_NEW_VALUE = "new";
+const SPEAKER_LEVEL_OPTIONS = [
+  {
+    value: "",
+    disabled: true,
+    messageId: "cfp.selectSpeakerLevel",
+  },
+  {
+    disabled: false,
+    value: "new",
+    messageId: "cfp.speakerLevel.new",
+  },
+  {
+    disabled: false,
+    value: "intermediate",
+    messageId: "cfp.speakerLevel.intermediate",
+  },
+  {
+    disabled: false,
+    value: "experienced",
+    messageId: "cfp.speakerLevel.experienced",
+  },
+];
 
 export const CfpForm: React.SFC<Props> = ({
   onSubmit,
@@ -91,41 +108,6 @@ export const CfpForm: React.SFC<Props> = ({
       },
     );
 
-  const setupCleanForm = (data: CfpFormQuery) => {
-    const submissionTypes = data.conference.submissionTypes;
-
-    if (submissionTypes.length === 0) {
-      return;
-    }
-
-    const type = submissionTypes[0].id;
-    formState.setField("type", type);
-
-    const durations = data.conference.durations;
-
-    if (durations.length > 0) {
-      // Check if we have a valid duration to preselect that is also allowed
-      // in the type we automatically selected
-      const validDurations = durations.filter(
-        (d) => d.allowedSubmissionTypes.findIndex((t) => t.id === type) !== -1,
-      );
-
-      if (validDurations.length > 0) {
-        formState.setField("length", validDurations[0].id);
-      }
-    }
-
-    if (data.conference.topics.length > 0) {
-      formState.setField("topic", data.conference.topics[0].id);
-    }
-
-    if (data.conference.audienceLevels.length > 0) {
-      formState.setField("audienceLevel", data.conference.audienceLevels[0].id);
-    }
-
-    formState.setField("speakerLevel", SPEAKER_LEVEL_NEW_VALUE);
-  };
-
   const {
     loading: conferenceLoading,
     error: conferenceError,
@@ -133,33 +115,6 @@ export const CfpForm: React.SFC<Props> = ({
   } = useCfpFormQuery({
     variables: {
       conference: conferenceCode,
-    },
-    onCompleted(data) {
-      if (submission) {
-        formState.setField("type", submission!.type.id);
-        formState.setField("title", submission!.title);
-        formState.setField("elevatorPitch", submission!.elevatorPitch);
-        formState.setField("topic", submission!.topic.id);
-        formState.setField("length", submission!.duration.id);
-        formState.setField("audienceLevel", submission!.audienceLevel.id);
-        formState.setField(
-          "languages",
-          submission!.languages.map((l) => l.code),
-        );
-        formState.setField("abstract", submission!.abstract);
-        formState.setField("notes", submission!.notes);
-        formState.setField(
-          "tags",
-          submission!.tags.map((t) => t.id),
-        );
-        formState.setField(
-          "speakerLevel",
-          submission!.speakerLevel || SPEAKER_LEVEL_NEW_VALUE,
-        );
-        formState.setField("previousTalkVideo", submission!.previousTalkVideo);
-      } else {
-        setupCleanForm(data);
-      }
     },
   });
 
@@ -206,6 +161,29 @@ export const CfpForm: React.SFC<Props> = ({
       formState.setField("length", allowedDurations[0].id);
     }
   }, [formState.values.type]);
+
+  useEffect(() => {
+    if (!conferenceLoading && submission) {
+      formState.setField("type", submission!.type.id);
+      formState.setField("title", submission!.title);
+      formState.setField("elevatorPitch", submission!.elevatorPitch);
+      formState.setField("topic", submission!.topic.id);
+      formState.setField("length", submission!.duration.id);
+      formState.setField("audienceLevel", submission!.audienceLevel.id);
+      formState.setField(
+        "languages",
+        submission!.languages.map((l) => l.code),
+      );
+      formState.setField("abstract", submission!.abstract);
+      formState.setField("notes", submission!.notes);
+      formState.setField(
+        "tags",
+        submission!.tags.map((t) => t.id),
+      );
+      formState.setField("speakerLevel", submission!.speakerLevel);
+      formState.setField("previousTalkVideo", submission!.previousTalkVideo);
+    }
+  }, [conferenceLoading]);
 
   if (conferenceLoading) {
     return (
@@ -457,19 +435,15 @@ export const CfpForm: React.SFC<Props> = ({
           errors={getErrors("validationSpeakerLevel")}
         >
           <Select {...select("speakerLevel")} required={true}>
-            <FormattedMessage id="cfp.speakerLevel.new">
-              {(copy) => (
-                <option value={SPEAKER_LEVEL_NEW_VALUE}>{copy}</option>
-              )}
-            </FormattedMessage>
-
-            <FormattedMessage id="cfp.speakerLevel.intermediate">
-              {(copy) => <option value="intermediate">{copy}</option>}
-            </FormattedMessage>
-
-            <FormattedMessage id="cfp.speakerLevel.experienced">
-              {(copy) => <option value="experienced">{copy}</option>}
-            </FormattedMessage>
+            {SPEAKER_LEVEL_OPTIONS.map(({ value, disabled, messageId }) => (
+              <FormattedMessage id={messageId} key={messageId}>
+                {(copy) => (
+                  <option disabled={disabled} value={value}>
+                    {copy}
+                  </option>
+                )}
+              </FormattedMessage>
+            ))}
           </Select>
         </InputWrapper>
 

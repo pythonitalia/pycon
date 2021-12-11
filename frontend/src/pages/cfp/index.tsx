@@ -24,12 +24,11 @@ import {
   useIsCfpOpenQuery,
 } from "~/types";
 
-const CfpSectionOrClosedMessage: React.SFC<{ open: boolean }> = ({ open }) => {
+const CfpSectionOrClosedMessage = ({ open }: { open: boolean }) => {
   if (open) {
     return (
       <Fragment>
         <MySubmissions sx={{ mb: 4 }} />
-
         <CfpSendSubmission />
       </Fragment>
     );
@@ -55,8 +54,9 @@ const CfpSectionOrClosedMessage: React.SFC<{ open: boolean }> = ({ open }) => {
   );
 };
 
-export const CFPPage: React.SFC = () => {
+export const CFPPage = () => {
   const [isLoggedIn, _] = useLoginState();
+
   const code = process.env.conferenceCode;
 
   const { loading, data } = useIsCfpOpenQuery({
@@ -68,7 +68,13 @@ export const CFPPage: React.SFC = () => {
       <FormattedMessage id="cfp.pageTitle">
         {(text) => <MetaTags title={text} />}
       </FormattedMessage>
-      <Introduction />
+      <Introduction
+        deadline={
+          data?.conference.isCFPOpen
+            ? data?.conference.cfpDeadline?.end
+            : undefined
+        }
+      />
 
       <Box sx={{ px: 3 }}>
         <Container sx={{ maxWidth: "container", p: 0 }}>

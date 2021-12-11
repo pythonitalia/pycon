@@ -1,6 +1,9 @@
 import pytz
+import time_machine
 from django.utils import timezone
 from pytest import mark
+
+from api.conferences.types import DeadlineStatus
 
 
 @mark.django_db
@@ -134,6 +137,73 @@ def test_get_conference_single_deadline(
         "end": deadline_cfp.end.isoformat(),
         "type": "cfp",
     } == resp["data"]["conference"]["deadline"]
+
+
+@mark.django_db
+@time_machine.travel("2020-10-10 10:00:00", tick=False)
+def test_get_conference_deadline_status(
+    graphql_client, conference_factory, deadline_factory
+):
+    now = timezone.now()
+
+    conference = conference_factory(timezone=pytz.timezone("America/Los_Angeles"))
+
+    # CFP happening now
+    deadline_factory(
+        start=now - timezone.timedelta(days=1),
+        end=now + timezone.timedelta(days=3),
+        conference=conference,
+        type="cfp",
+    )
+
+    # Grants in the past
+    deadline_factory(
+        start=now - timezone.timedelta(days=3),
+        end=now - timezone.timedelta(days=1),
+        conference=conference,
+        type="grants",
+    )
+
+    # Voting in the future
+    deadline_factory(
+        start=now + timezone.timedelta(days=10),
+        end=now + timezone.timedelta(days=15),
+        conference=conference,
+        type="voting",
+    )
+
+    resp = graphql_client.query(
+        """
+        query($code: String!) {
+            conference(code: $code) {
+                deadlineCfp: deadline(type: "cfp") {
+                    status
+                }
+                deadlineGrants: deadline(type: "grants") {
+                    status
+                }
+                deadlineVoting: deadline(type: "voting") {
+                    status
+                }
+            }
+        }
+        """,
+        variables={"code": conference.code},
+    )
+
+    assert not resp.get("errors")
+
+    assert {"status": DeadlineStatus.HAPPENING_NOW.name} == resp["data"]["conference"][
+        "deadlineCfp"
+    ]
+
+    assert {"status": DeadlineStatus.IN_THE_PAST.name} == resp["data"]["conference"][
+        "deadlineGrants"
+    ]
+
+    assert {"status": DeadlineStatus.IN_THE_FUTURE.name} == resp["data"]["conference"][
+        "deadlineVoting"
+    ]
 
 
 @mark.django_db
@@ -608,9 +678,7 @@ def test_can_see_submissions_if_they_have_sent_one(
 
 @mark.django_db
 def test_get_conference_voucher_with_invalid_code(graphql_client, conference, mocker):
-    get_voucher_mock = mocker.patch(
-        "api.pretix.query.pretix.db.get_voucher", return_value=None
-    )
+    mocker.patch("api.pretix.query.pretix.db.get_voucher", return_value=None)
 
     response = graphql_client.query(
         """query($code: String!, $voucherCode: String!) {

@@ -1,10 +1,11 @@
 from datetime import date, datetime, time
+from enum import Enum
 from itertools import groupby
 from typing import List, Optional
 
 import strawberry
 from django.conf import settings
-from django.utils import translation
+from django.utils import timezone, translation
 
 from api.cms.types import FAQ, Menu
 from api.events.types import Event
@@ -229,6 +230,13 @@ class Conference:
         return self.days.prefetch_related("slots", "slots__items").all()
 
 
+@strawberry.enum
+class DeadlineStatus(Enum):
+    IN_THE_FUTURE = "in-the-future"
+    HAPPENING_NOW = "happening-now"
+    IN_THE_PAST = "in-the-past"
+
+
 @strawberry.type
 class Deadline:
     id: strawberry.ID
@@ -238,6 +246,18 @@ class Deadline:
     start: datetime
     end: datetime
     conference: Conference
+
+    @strawberry.field
+    def status(self) -> DeadlineStatus:
+        now = timezone.now()
+
+        if now >= self.start and now <= self.end:
+            return DeadlineStatus.HAPPENING_NOW
+
+        if self.start > now:
+            return DeadlineStatus.IN_THE_FUTURE
+
+        return DeadlineStatus.IN_THE_PAST
 
 
 @strawberry.type
