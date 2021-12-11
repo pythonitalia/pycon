@@ -11,6 +11,7 @@ import { addApolloState, getApolloClient } from "~/apollo/client";
 import { GrantForm } from "~/components/grant-form";
 import { Introduction } from "~/components/grants-introduction";
 import { MetaTags } from "~/components/meta-tags";
+import { formatDeadlineDateTime } from "~/helpers/deadlines";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
 import { Language } from "~/locale/languages";
@@ -21,18 +22,6 @@ import {
 } from "~/types";
 
 import ErrorPage from "../_error";
-
-const formatDate = (date: string, language: Language) => {
-  const formatter = new Intl.DateTimeFormat(language, {
-    month: "long",
-    day: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-    year: "numeric",
-  });
-
-  return formatter.format(new Date(date));
-};
 
 const GrantsComingSoon = ({ start }: { start: string }) => {
   const language = useCurrentLanguage();
@@ -45,7 +34,7 @@ const GrantsComingSoon = ({ start }: { start: string }) => {
           values={{
             start: (
               <Text as="span" sx={{ fontWeight: "bold" }}>
-                {formatDate(start, language)}
+                {formatDeadlineDateTime(start, language)}
               </Text>
             ),
           }}
@@ -89,7 +78,7 @@ export const GrantsPage = () => {
         {(text) => <MetaTags title={text} />}
       </FormattedMessage>
 
-      <Introduction />
+      <Introduction end={status === DeadlineStatus.HappeningNow ? end : null} />
 
       <Box
         sx={{
@@ -100,7 +89,7 @@ export const GrantsPage = () => {
         }}
       >
         {status === DeadlineStatus.HappeningNow && (
-          <GrantForm end={end} conference={code} />
+          <GrantForm conference={code} />
         )}
         {status === DeadlineStatus.InTheFuture && (
           <GrantsComingSoon start={start} />

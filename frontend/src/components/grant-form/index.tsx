@@ -47,9 +47,9 @@ export type GrantFormFields = {
   travellingFrom: string;
 };
 
-type Props = { conference: string; end: string };
+type Props = { conference: string };
 
-export const GrantForm = ({ conference, end }: Props) => {
+export const GrantForm = ({ conference }: Props) => {
   const language = useCurrentLanguage();
   const [
     formState,
@@ -108,14 +108,6 @@ export const GrantForm = ({ conference, end }: Props) => {
     return [];
   };
 
-  const formatter = new Intl.DateTimeFormat(language, {
-    month: "long",
-    day: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-    year: "numeric",
-  });
-
   if (!loading && data?.sendGrantRequest.__typename === "GrantRequest") {
     return (
       <Text>
@@ -126,20 +118,8 @@ export const GrantForm = ({ conference, end }: Props) => {
 
   return (
     <Fragment>
-      <Text mb={2} as="h1">
+      <Text mb={4} as="h1">
         <FormattedMessage id="grants.form.title" />
-      </Text>
-      <Text mb={4}>
-        <FormattedMessage
-          id="grants.closesAt"
-          values={{
-            end: (
-              <Text as="span" sx={{ fontWeight: "bold" }}>
-                {formatter.format(new Date(end))}
-              </Text>
-            ),
-          }}
-        />
       </Text>
       <Box as="form" onSubmit={onSubmit}>
         <Heading sx={{ mb: 3 }}>

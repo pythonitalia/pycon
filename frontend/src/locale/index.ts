@@ -258,11 +258,12 @@ export const messages = {
       "Would you really love to join PyCon Italia but can't afford it? We can help you!",
     "grants.introductionCopy":
       "Thanks to the help of the Python Software Foundation we are glad to give financial support to everyone who may need it in order to join PyCon Italia.",
+    "grants.introductionDeadline":
+      "You have until {deadline} to send your request!",
     "grants.learnMore": "Learn more",
     "grants.comingSoon": "The grants form will open on {start}!",
     "grants.closed":
       "The grants form is now closed! If you sent a request, you will be contacted by us in the next few weeks with our decision.",
-    "grants.closesAt": "You have until {end} to send your request!",
 
     "grants.form.title": "Request a grant",
     "grants.form.sendingRequest": "Sending grant request",
@@ -681,11 +682,12 @@ export const messages = {
       "Vorresti essere presente a PyCon Italia ma hai difficoltà economiche? Chiedici aiuto!",
     "grants.introductionCopy":
       "Grazie all'aiuto della Python Software Foundation siamo lieti di mettere a disposizione di chi ne avesse bisogno un programma di supporto per chi vorrebbe essere presente a PyCon Italia ma per motivi economici non potrebbe riuscirci.",
+    "grants.introductionDeadline":
+      "Hai fino al {deadline} per inviare la tua richiesta!",
     "grants.learnMore": "Maggiori informazioni",
     "grants.comingSoon": "Il form per i grant apre il {start}!",
     "grants.closed":
       "Il form per richiede grant è chiuso! Se hai inviato una richiesta sarai contattato nelle prossime settimane con l'esito.",
-    "grants.closesAt": "Hai fino al {end} per inviare la tua richiesta!",
 
     "grants.form.title": "Chiedi un grant",
     "grants.form.sendingRequest": "Invio richiesta in corso",
