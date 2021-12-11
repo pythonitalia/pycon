@@ -3,7 +3,7 @@ export type Ticket = {
   id: string;
   defaultPrice: string;
   category: string;
-  taxRate: number;
+  taxRate?: number;
   quantityLeft?: number | null;
   type: "HOTEL" | "BUSINESS" | "STANDARD";
   description?: string | null;
