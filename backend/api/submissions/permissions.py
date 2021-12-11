@@ -41,10 +41,6 @@ class CanSeeSubmissionPrivateFields(BasePermission):
     def has_permission(self, source, info):
         pastaporto = info.context.request.pastaporto
 
-        # TODO: this should be cached
-        if source.schedule_items.exists():  # pragma: no cover
-            return True
-
         if not pastaporto.is_authenticated:
             return False
 
