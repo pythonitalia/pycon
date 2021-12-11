@@ -34,7 +34,6 @@ jobs:
           event-type-suffix: ""
           commands: |
             deploy
-            deploy-toolkit
           static-args: |
             comment-id=${{ github.event.comment.id }}
             event-number=${{ github.event.issue.number }}
