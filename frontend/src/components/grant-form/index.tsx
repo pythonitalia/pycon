@@ -48,7 +48,7 @@ export type GrantFormFields = {
 
 type Props = { conference: string };
 
-export const GrantForm: React.SFC<Props> = ({ conference }) => {
+export const GrantForm = ({ conference }: Props) => {
   const [
     formState,
     { text, number: numberInput, email, textarea, select, checkbox },
@@ -201,9 +201,13 @@ export const GrantForm: React.SFC<Props> = ({ conference }) => {
           label={<FormattedMessage id="grants.form.fields.occupation" />}
         >
           <Select {...select("occupation")} required={true}>
-            {OCCUPATION_OPTIONS.map(({ value, messageId }) => (
+            {OCCUPATION_OPTIONS.map(({ value, disabled, messageId }) => (
               <FormattedMessage id={messageId} key={messageId}>
-                {(msg) => <option value={value}>{msg}</option>}
+                {(msg) => (
+                  <option disabled={disabled} value={value}>
+                    {msg}
+                  </option>
+                )}
               </FormattedMessage>
             ))}
           </Select>
@@ -220,11 +224,17 @@ export const GrantForm: React.SFC<Props> = ({ conference }) => {
           }
         >
           <Select {...select("interestedInVolunteering")} required={true}>
-            {INTERESTED_IN_VOLUNTEERING_OPTIONS.map(({ value, messageId }) => (
-              <FormattedMessage id={messageId} key={messageId}>
-                {(msg) => <option value={value}>{msg}</option>}
-              </FormattedMessage>
-            ))}
+            {INTERESTED_IN_VOLUNTEERING_OPTIONS.map(
+              ({ value, disabled, messageId }) => (
+                <FormattedMessage id={messageId} key={messageId}>
+                  {(msg) => (
+                    <option disabled={disabled} value={value}>
+                      {msg}
+                    </option>
+                  )}
+                </FormattedMessage>
+              ),
+            )}
           </Select>
         </InputWrapper>
 
@@ -276,9 +286,13 @@ export const GrantForm: React.SFC<Props> = ({ conference }) => {
             label={<FormattedMessage id="grants.form.fields.gender" />}
           >
             <Select {...select("gender")}>
-              {GENDER_OPTIONS.map(({ value, messageId }) => (
+              {GENDER_OPTIONS.map(({ value, disabled, messageId }) => (
                 <FormattedMessage id={messageId} key={messageId}>
-                  {(msg) => <option value={value}>{msg}</option>}
+                  {(msg) => (
+                    <option disabled={disabled} value={value}>
+                      {msg}
+                    </option>
+                  )}
                 </FormattedMessage>
               ))}
             </Select>
