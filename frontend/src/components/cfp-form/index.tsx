@@ -116,11 +116,11 @@ export const CfpForm: React.SFC<Props> = ({
     }
 
     if (data.conference.topics.length > 0) {
-      formState.setField("topic", data.conference.topics[0].id);
+      formState.setField("topic", "");
     }
 
     if (data.conference.audienceLevels.length > 0) {
-      formState.setField("audienceLevel", data.conference.audienceLevels[0].id);
+      formState.setField("audienceLevel", "");
     }
 
     formState.setField("speakerLevel", SPEAKER_LEVEL_NEW_VALUE);
