@@ -228,7 +228,7 @@ export const messages = {
     "order.price": "Price: {price} EUR.",
     "order.hotelPrice": "Price: {price}/night EUR.",
 
-    "order.inclVat": "(incl. 22% VAT)",
+    "order.inclVat": "(incl. {taxRate}% VAT)",
     "order.hotelNoVat": "(incl. 0% VAT)",
     "order.selectSize": "Select...",
     "order.hotelRooms": "Hotel rooms",
@@ -637,7 +637,7 @@ export const messages = {
     "order.soldout": "Sold out",
     "order.price": "Prezzo: {price} EUR",
     "order.hotelPrice": "Price: {price}/notte EUR.",
-    "order.inclVat": "(incl. 22% IVA)",
+    "order.inclVat": "(incl. {taxRate}% IVA)",
     "order.hotelNoVat": "(incl. 0% IVA)",
     "order.selectSize": "Taglia...",
     "order.hotelRooms": "Stanze hotel",

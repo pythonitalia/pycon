@@ -19,6 +19,7 @@ query Tickets($conference: String!, $language: String!, $isLogged: Boolean!) {
       quantityLeft
       type
       category
+      taxRate
 
       variations {
         id

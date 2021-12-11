@@ -79,6 +79,7 @@ def _create_ticket_type_from_api(item, id, categories, questions, quotas, langua
             )
             for variation in item.get("variations", [])
         ],
+        tax_rate=item["tax_rate"],
         active=item["active"],
         default_price=item["default_price"],
         available_from=item["available_from"],
