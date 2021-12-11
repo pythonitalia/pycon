@@ -23,3 +23,21 @@ export const formatDeadlineTime = (datetime: string, language: Language) => {
 
   return formatter.format(d);
 };
+
+export const formatDeadlineDateTime = (
+  datetime: string,
+  language: Language,
+) => {
+  const d = new Date(datetime);
+
+  const formatter = new Intl.DateTimeFormat(language, {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    timeZoneName: "short",
+  });
+
+  return formatter.format(d);
+};
