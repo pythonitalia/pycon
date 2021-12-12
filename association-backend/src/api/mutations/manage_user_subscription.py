@@ -31,7 +31,6 @@ async def manage_user_subscription(info: Info[Context, Any]) -> CustomerPortalRe
     try:
         billing_portal_url = await service_manage_user_association_subscription(
             info.context.request.user,
-            customers_repository=info.context.customers_repository,
         )
         return CustomerPortalResponse(billing_portal_url=billing_portal_url)
     except (exceptions.CustomerNotAvailable, exceptions.NoSubscriptionAvailable):

@@ -9,7 +9,6 @@ from alembic import context
 # Import models here
 # Maybe improve this?
 from src.association_membership.domain.entities import *
-from src.customers.domain.entities import *
 
 from src.database.db import metadata
 from src.association.settings import DATABASE_URL
