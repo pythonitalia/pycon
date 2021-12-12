@@ -1,13 +1,16 @@
+from __future__ import annotations
+
 import typing
 
 import strawberry
 from strawberry import ID
 
+from sponsors.models import SponsorLevel as SponsorLevelModel
+
 
 @strawberry.type
 class Sponsor:
     id: ID
-    level: str
     name: str
 
     @strawberry.field
@@ -28,3 +31,8 @@ class SponsorsByLevel:
     level: str
     sponsors: typing.List[Sponsor]
     highlight_color: typing.Optional[str]
+
+    @classmethod
+    def from_model(cls, level: SponsorLevelModel) -> SponsorsByLevel:
+        sponsors = [sponsor for sponsor in level.sponsors.all()]
+        return cls(level.name, sponsors, level.highlight_color)

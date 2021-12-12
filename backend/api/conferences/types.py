@@ -1,5 +1,4 @@
 from datetime import date, datetime, time
-from itertools import groupby
 from typing import List, Optional
 
 import strawberry
@@ -173,20 +172,9 @@ class Conference:
 
     @strawberry.field
     def sponsors_by_level(self, info) -> List[SponsorsByLevel]:
-        from sponsors.models import Sponsor
+        levels = self.sponsor_levels.all().order_by("order")
 
-        sponsors = (
-            Sponsor.objects.filter(level__conference__code=self.code)
-            .order_by("level", "order")
-            .select_related("level")
-        )
-
-        by_level = groupby(sponsors, key=lambda sponsor: sponsor.level)
-
-        return [
-            SponsorsByLevel(level.name, list(sponsors), level.highlight_color)
-            for level, sponsors in by_level
-        ]
+        return [SponsorsByLevel.from_model(level) for level in levels]
 
     @strawberry.field
     def copy(self, info, key: str, language: Optional[str] = None) -> Optional[str]:
