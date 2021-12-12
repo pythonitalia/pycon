@@ -14,7 +14,7 @@ class CanSeeSubmissionDetail(BasePermission):
 
         conference = source.conference
 
-        if conference.is_voting_closed:
+        if source.schedule_items.exists():  # pragma: no cover
             return True
 
         pastaporto = info.context.request.pastaporto
@@ -26,6 +26,9 @@ class CanSeeSubmissionDetail(BasePermission):
 
         if user_info.is_staff or source.speaker_id == user_info.id:
             return True
+
+        if conference.is_voting_closed:
+            return False
 
         if Submission.objects.filter(
             speaker_id=user_info.id, conference=conference

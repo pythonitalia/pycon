@@ -131,10 +131,14 @@ class Submission:
         except Vote.DoesNotExist:
             return None
 
-    @strawberry.field(permission_classes=[CanSeeSubmissionDetail])
+    @strawberry.field
     def languages(self, info) -> Optional[List[Language]]:
-        return self.languages.all()
+        if CanSeeSubmissionDetail().has_permission(self, info):
+            return self.languages.all()
+        return None
 
-    @strawberry.field(permission_classes=[CanSeeSubmissionDetail])
+    @strawberry.field
     def tags(self, info) -> Optional[List[SubmissionTag]]:
-        return self.tags.all()
+        if CanSeeSubmissionDetail().has_permission(self, info):
+            return self.tags.all()
+        return None
