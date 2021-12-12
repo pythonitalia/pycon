@@ -33,9 +33,9 @@ class SponsorLevel(OrderedModel):
     highlight_color = models.CharField(
         choices=COLORS, max_length=15, blank=True, verbose_name=_("highlight color")
     )
-    levels = models.ManyToManyField(
+    sponsors = models.ManyToManyField(
         Sponsor,
-        verbose_name=_("levels"),
+        verbose_name=_("sponsors"),
         related_name="levels",
     )
     objects = SponsorLevelManager()
