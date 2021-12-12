@@ -6,7 +6,7 @@ from submissions.models import Submission
 from voting.helpers import pastaporto_user_info_can_vote
 
 
-class CanSeeSubmissionDetail(BasePermission):
+class CanSeeSubmissionRestrictedFields(BasePermission):
     message = "You can't see details for this submission"
 
     def has_permission(self, source, info):

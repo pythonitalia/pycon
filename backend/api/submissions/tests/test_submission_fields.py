@@ -66,9 +66,9 @@ def test_voting_open_and_user_cannot_vote(
 ):
     submission = _submission(submission_factory, user)
     graphql_client.force_login(other_user)
-    mocker.patch(
-        "api.submissions.permissions.pastaporto_user_info_can_vote"
-    ).return_value = False
+    can_vote_mock = mocker.patch(
+        "api.submissions.permissions.pastaporto_user_info_can_vote", return_value=False
+    )
 
     data = _query(graphql_client, submission)
 
@@ -91,6 +91,8 @@ def test_voting_open_and_user_cannot_vote(
     assert data["submission"]["previousTalkVideo"] is None
     assert data["submission"]["notes"] is None
 
+    can_vote_mock.assert_called()
+
 
 @pytest.mark.django_db
 def test_voting_open_and_user_can_vote(
@@ -98,9 +100,9 @@ def test_voting_open_and_user_can_vote(
 ):
     submission = _submission(submission_factory, user)
     graphql_client.force_login(other_user)
-    mocker.patch(
-        "api.submissions.permissions.pastaporto_user_info_can_vote"
-    ).return_value = True
+    can_vote_mock = mocker.patch(
+        "api.submissions.permissions.pastaporto_user_info_can_vote", return_value=True
+    )
 
     data = _query(graphql_client, submission)
 
@@ -128,6 +130,8 @@ def test_voting_open_and_user_can_vote(
     assert data["submission"]["speakerLevel"] is None
     assert data["submission"]["previousTalkVideo"] is None
     assert data["submission"]["notes"] is None
+
+    can_vote_mock.assert_called()
 
 
 @pytest.mark.django_db

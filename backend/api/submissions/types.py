@@ -10,7 +10,7 @@ from api.languages.types import Language
 from api.voting.types import VoteType
 from voting.models import Vote
 
-from .permissions import CanSeeSubmissionDetail, CanSeeSubmissionPrivateFields
+from .permissions import CanSeeSubmissionPrivateFields, CanSeeSubmissionRestrictedFields
 
 
 def restricted_field() -> StrawberryField:
@@ -18,7 +18,7 @@ def restricted_field() -> StrawberryField:
     until voting is not closed, after it will be public"""
 
     def resolver(self, info: Info):
-        if CanSeeSubmissionDetail().has_permission(self, info):
+        if CanSeeSubmissionRestrictedFields().has_permission(self, info):
             return getattr(self, info.python_name)
         return None
 
@@ -99,7 +99,7 @@ class Submission:
     def can_edit(self, info) -> bool:
         return self.can_edit(info.context.request)
 
-    @strawberry.field(permission_classes=[CanSeeSubmissionDetail])
+    @strawberry.field(permission_classes=[CanSeeSubmissionRestrictedFields])
     def comments(self, info) -> List[SubmissionComment]:
         comments = (
             self.comments.all()
@@ -133,12 +133,12 @@ class Submission:
 
     @strawberry.field
     def languages(self, info) -> Optional[List[Language]]:
-        if CanSeeSubmissionDetail().has_permission(self, info):
+        if CanSeeSubmissionRestrictedFields().has_permission(self, info):
             return self.languages.all()
         return None
 
     @strawberry.field
     def tags(self, info) -> Optional[List[SubmissionTag]]:
-        if CanSeeSubmissionDetail().has_permission(self, info):
+        if CanSeeSubmissionRestrictedFields().has_permission(self, info):
             return self.tags.all()
         return None
