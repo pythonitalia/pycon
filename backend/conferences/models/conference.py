@@ -8,7 +8,7 @@ from timezone_field import TimeZoneField
 from helpers.models import GeoLocalizedModel
 from i18n.fields import I18nCharField, I18nTextField
 
-from .deadline import Deadline
+from .deadline import Deadline, DeadlineStatus
 
 
 class Conference(GeoLocalizedModel, TimeFramedModel, TimeStampedModel):
@@ -79,6 +79,15 @@ class Conference(GeoLocalizedModel, TimeFramedModel, TimeStampedModel):
 
             now = timezone.now()
             return voting_deadline.end <= now
+        except Deadline.DoesNotExist:
+            return False
+
+    @cached_property
+    def is_grants_closed(self):
+        try:
+            grants_deadline = self.deadlines.get(type=Deadline.TYPES.grants)
+
+            return grants_deadline.status == DeadlineStatus.HAPPENING_NOW
         except Deadline.DoesNotExist:
             return False
 
