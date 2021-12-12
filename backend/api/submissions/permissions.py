@@ -3,6 +3,7 @@ from strawberry.permission import BasePermission
 from api.permissions import HasTokenPermission
 from pretix.db import user_has_admission_ticket
 from submissions.models import Submission
+from voting.helpers import pastaporto_user_info_can_vote
 
 
 class CanSeeSubmissionDetail(BasePermission):
@@ -30,12 +31,7 @@ class CanSeeSubmissionDetail(BasePermission):
         if conference.is_voting_closed:
             return False
 
-        if Submission.objects.filter(
-            speaker_id=user_info.id, conference=conference
-        ).exists():
-            return True
-
-        return user_has_admission_ticket(user_info.email, conference.pretix_event_id)
+        return pastaporto_user_info_can_vote(pastaporto, conference)
 
 
 class CanSeeSubmissionPrivateFields(BasePermission):

@@ -60,11 +60,47 @@ def _query(graphql_client, submission):
     return response["data"]
 
 
-def test_voting_open_and_user_can_vote(
-    graphql_client, submission_factory, user, other_user
+@pytest.mark.django_db
+def test_voting_open_and_user_cannot_vote(
+    graphql_client, submission_factory, user, other_user, mocker
 ):
     submission = _submission(submission_factory, user)
     graphql_client.force_login(other_user)
+    mocker.patch(
+        "api.submissions.permissions.pastaporto_user_info_can_vote"
+    ).return_value = False
+
+    data = _query(graphql_client, submission)
+
+    # ✔️ public
+    assert data["submission"]["title"] == submission.title
+    assert data["submission"]["slug"] == submission.slug
+
+    # ❌ restricted
+    assert data["submission"]["elevatorPitch"] is None
+    assert data["submission"]["abstract"] is None
+    assert data["submission"]["topic"] is None
+    assert data["submission"]["type"] is None
+    assert data["submission"]["duration"] is None
+    assert data["submission"]["audienceLevel"] is None
+    assert data["submission"]["languages"] is None
+    assert data["submission"]["tags"] is None
+
+    # ❌ private
+    assert data["submission"]["speakerLevel"] is None
+    assert data["submission"]["previousTalkVideo"] is None
+    assert data["submission"]["notes"] is None
+
+
+@pytest.mark.django_db
+def test_voting_open_and_user_can_vote(
+    graphql_client, submission_factory, user, other_user, mocker
+):
+    submission = _submission(submission_factory, user)
+    graphql_client.force_login(other_user)
+    mocker.patch(
+        "api.submissions.permissions.pastaporto_user_info_can_vote"
+    ).return_value = True
 
     data = _query(graphql_client, submission)
 
@@ -94,6 +130,7 @@ def test_voting_open_and_user_can_vote(
     assert data["submission"]["notes"] is None
 
 
+@pytest.mark.django_db
 def test_voring_closed_and_user_is_authenticated(
     graphql_client, other_user, submission_factory, user
 ):
