@@ -33,12 +33,14 @@ def test_user_can_vote_if_has_bought_a_ticket_for_this_edition(
     admission_ticket_mock.assert_called()
 
 
+@pytest.mark.xfail
 def test_user_can_vote_if_has_bought_a_ticket_in_past_editions():
-    pass
+    assert False
 
 
+@pytest.mark.xfail
 def test_user_can_vote_if_is_a_member_of_python_italy():
-    pass
+    assert False
 
 
 @pytest.mark.django_db
