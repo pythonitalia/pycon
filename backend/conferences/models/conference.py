@@ -83,7 +83,7 @@ class Conference(GeoLocalizedModel, TimeFramedModel, TimeStampedModel):
             return False
 
     @cached_property
-    def is_grants_closed(self):
+    def is_grants_open(self):
         try:
             grants_deadline = self.deadlines.get(type=Deadline.TYPES.grants)
 

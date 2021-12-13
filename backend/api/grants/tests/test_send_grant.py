@@ -71,6 +71,7 @@ def test_send_grant(graphql_client, user, conference_factory, grant_factory):
     assert response["data"]["sendGrantRequest"]["id"]
 
 
+@pytest.mark.django_db
 def test_cannot_send_a_grant_if_grants_are_closed(
     graphql_client, user, conference_factory, grant_factory
 ):
@@ -81,5 +82,20 @@ def test_cannot_send_a_grant_if_grants_are_closed(
 
     assert not response.get("errors")
     assert response["data"]["sendGrantRequest"]["nonFieldErrors"] == [
-        "The grants form is now " "closed!"
+        "The grants form is now closed!"
+    ]
+
+
+@pytest.mark.django_db
+def test_cannot_send_a_grant_if_grants_deadline_do_not_exists(
+    graphql_client, user, conference, grant_factory
+):
+    assert list(conference.deadlines.all()) == []
+    graphql_client.force_login(user)
+
+    response = _send_grant(graphql_client, grant_factory, conference)
+
+    assert not response.get("errors")
+    assert response["data"]["sendGrantRequest"]["nonFieldErrors"] == [
+        "The grants form is now closed!"
     ]

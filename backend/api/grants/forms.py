@@ -20,7 +20,7 @@ class GrantForm(ContextAwareModelForm):
         if not conference and self.instance:
             conference = self.instance.conference
 
-        if not conference.is_grants_closed:
+        if not conference.is_grants_open:
             raise exceptions.ValidationError(_("The grants form is now closed!"))
 
     class Meta:
