@@ -31,6 +31,8 @@ async def _():
     subscription = Subscription(id=1, user_id=user.id, status=SubscriptionStatus.ACTIVE)
     payment = Payment(
         id=1,
+        idempotency_key="iv_abcabc",
+        subscription=subscription,
         total=1000,
         status=PaymentStatus.PAID,
         payment_date=datetime.now(timezone.utc),
@@ -68,6 +70,8 @@ async def _():
     payment = Payment(
         id=1,
         total=1000,
+        idempotency_key="iv_abcabc",
+        subscription=subscription,
         status=PaymentStatus.PAID,
         payment_date=datetime.now(timezone.utc),
         period_start=datetime.now(timezone.utc) + timedelta(days=0),
@@ -112,6 +116,8 @@ async def _():
     payment = Payment(
         id=1,
         total=1000,
+        idempotency_key="iv_abcabc",
+        subscription=subscription,
         status=PaymentStatus.PAID,
         payment_date=datetime.now(timezone.utc),
         period_start=datetime.now(timezone.utc) + timedelta(days=0),
