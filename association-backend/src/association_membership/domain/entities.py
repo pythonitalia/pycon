@@ -124,8 +124,8 @@ class PretixPayment(ormar.Model):
     id: int = ormar.Integer(primary_key=True)
     payment: Payment = ormar.ForeignKey(Payment, nullable=False)
     order_code: str = ormar.String(max_length=256, unique=True)
-    pretix_event_organizer: str = ormar.String(max_length=512)
-    pretix_event_id: str = ormar.String(max_length=512)
+    event_organizer: str = ormar.String(max_length=512)
+    event_id: str = ormar.String(max_length=512)
 
 
 class StripeSubscriptionPayment(ormar.Model):
