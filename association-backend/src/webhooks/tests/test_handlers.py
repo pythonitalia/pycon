@@ -1,5 +1,6 @@
 from datetime import datetime, timezone
 
+import time_machine
 from stripe import util
 from ward import raises, test
 
@@ -76,32 +77,33 @@ async def _(db=db):
     subscription = await SubscriptionFactory(user_id=1)
     await StripeCustomerFactory(user_id=1, stripe_customer_id="cus_customer_id")
 
-    await handle_invoice_paid(
-        util.convert_to_stripe_object(
-            {
-                **RAW_INVOICE_PAID_PAYLOAD,
-                "data": {
-                    **RAW_INVOICE_PAID_PAYLOAD["data"],
-                    "object": {
-                        **RAW_INVOICE_PAID_PAYLOAD["data"]["object"],
-                        "lines": {
-                            "data": [
-                                {
-                                    **RAW_INVOICE_PAID_PAYLOAD["data"]["object"][
-                                        "lines"
-                                    ]["data"][0],
-                                    "period": {
-                                        "end": 1607979272,  # Mon Dec 14 2020 20:54:32 GMT+0000
-                                        "start": 1576356872,  # Sat Dec 14 2019 20:54:32 GMT+0000
-                                    },
-                                }
-                            ],
+    with time_machine.travel("2021-10-10 12:00:00", tick=False):
+        await handle_invoice_paid(
+            util.convert_to_stripe_object(
+                {
+                    **RAW_INVOICE_PAID_PAYLOAD,
+                    "data": {
+                        **RAW_INVOICE_PAID_PAYLOAD["data"],
+                        "object": {
+                            **RAW_INVOICE_PAID_PAYLOAD["data"]["object"],
+                            "lines": {
+                                "data": [
+                                    {
+                                        **RAW_INVOICE_PAID_PAYLOAD["data"]["object"][
+                                            "lines"
+                                        ]["data"][0],
+                                        "period": {
+                                            "end": 1607979272,  # Mon Dec 14 2020 20:54:32 GMT+0000
+                                            "start": 1576356872,  # Sat Dec 14 2019 20:54:32 GMT+0000
+                                        },
+                                    }
+                                ],
+                            },
                         },
                     },
-                },
-            }
+                }
+            )
         )
-    )
 
     subscription = await Subscription.objects.select_related(
         ["payments", "payments__stripesubscriptionpayments"]
