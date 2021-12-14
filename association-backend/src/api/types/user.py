@@ -15,5 +15,5 @@ class User:
         )
         return cls(
             id=id,
-            is_python_italia_member=subscription.is_active,
+            is_python_italia_member=subscription.is_active if subscription else False,
         )

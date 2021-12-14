@@ -2,7 +2,6 @@ import logging
 
 from pythonit_toolkit.pastaporto.entities import PastaportoUserInfo
 
-from src.association_membership.domain.entities import Subscription
 from src.association_membership.domain.exceptions import (
     CustomerNotAvailable,
     NoSubscriptionAvailable,
@@ -17,7 +16,7 @@ async def manage_user_association_subscription(
     user: PastaportoUserInfo,
     *,
     association_repository: AssociationMembershipRepository,
-) -> Subscription:
+) -> str:
     """This service creates a CustomerPortalSession and returns its url"""
     subscription = await association_repository.get_user_subscription(user.id)
 

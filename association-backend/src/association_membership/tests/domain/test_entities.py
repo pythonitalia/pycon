@@ -1,27 +1,19 @@
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 
-from ward import fixture, test
+from ward import test
 
 from src.association_membership.domain.entities import (
-    InvoiceStatus,
+    PaymentStatus,
     Subscription,
-    SubscriptionInvoice,
     SubscriptionStatus,
 )
-from src.customers.domain.entities import Customer
-
-
-@fixture
-def fake_customer():
-    return Customer(id=1, user_id=1, stripe_customer_id="cus_11")
 
 
 @test("change subscription status to active")
-async def _(fake_customer=fake_customer):
+async def _():
     subscription = Subscription(
         id=1,
-        stripe_subscription_id="sub_1",
-        customer=fake_customer,
+        user_id=1,
         status=SubscriptionStatus.PENDING,
     )
 
@@ -32,11 +24,9 @@ async def _(fake_customer=fake_customer):
 
 
 @test("change subscription status to canceled")
-async def _(fake_customer=fake_customer):
+async def _():
     subscription = Subscription(
         id=1,
-        stripe_subscription_id="sub_1",
-        customer=fake_customer,
         status=SubscriptionStatus.PENDING,
     )
 
@@ -46,24 +36,23 @@ async def _(fake_customer=fake_customer):
     assert subscription.status == SubscriptionStatus.CANCELED
 
 
-@test("add invoice to subscription")
-async def _(fake_customer=fake_customer):
+@test("add stripe subscription payment to subscription")
+async def _():
     subscription = Subscription(
         id=1,
-        stripe_subscription_id="sub_1",
-        customer=fake_customer,
         status=SubscriptionStatus.PENDING,
     )
 
-    invoice = SubscriptionInvoice(
-        status=InvoiceStatus.OPEN,
-        subscription=subscription,
-        payment_date=datetime.now(timezone.utc),
-        period_start=datetime.now(timezone.utc),
-        period_end=datetime.now(timezone.utc) + timedelta(days=30),
-        stripe_invoice_id="ivv_invoice",
-        invoice_pdf="https://invoice.stripe/invoice/",
+    subscription.add_stripe_subscription_payment(
+        total=1000,
+        status=PaymentStatus.PAID,
+        payment_date=datetime.fromtimestamp(1618062032, tz=timezone.utc),
+        period_start=datetime.fromtimestamp(1618062032, tz=timezone.utc),
+        period_end=datetime.fromtimestamp(1618062032, tz=timezone.utc),
+        stripe_subscription_id="cs_xxx",
+        stripe_invoice_id="iv_xx",
+        invoice_pdf="https://pdfpdf",
     )
-    subscription.add_invoice(invoice)
 
-    assert subscription._add_invoice == [invoice]
+    assert len(subscription._add_stripe_subscription_payment) > 0
+    assert subscription._add_stripe_subscription_payment[0].stripe_subscription_id == "cs_xxx"
