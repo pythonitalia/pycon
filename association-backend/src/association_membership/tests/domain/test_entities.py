@@ -12,7 +12,6 @@ from src.association_membership.domain.entities import (
 @test("change subscription status to active")
 async def _():
     subscription = Subscription(
-        id=1,
         user_id=1,
         status=SubscriptionStatus.PENDING,
     )
@@ -26,7 +25,7 @@ async def _():
 @test("change subscription status to canceled")
 async def _():
     subscription = Subscription(
-        id=1,
+        user_id=1,
         status=SubscriptionStatus.PENDING,
     )
 
@@ -39,7 +38,7 @@ async def _():
 @test("add stripe subscription payment to subscription")
 async def _():
     subscription = Subscription(
-        id=1,
+        user_id=1,
         status=SubscriptionStatus.PENDING,
     )
 
@@ -55,4 +54,7 @@ async def _():
     )
 
     assert len(subscription._add_stripe_subscription_payment) > 0
-    assert subscription._add_stripe_subscription_payment[0].stripe_subscription_id == "cs_xxx"
+    assert (
+        subscription._add_stripe_subscription_payment[0].stripe_subscription_id
+        == "cs_xxx"
+    )

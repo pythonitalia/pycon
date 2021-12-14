@@ -1,8 +1,15 @@
 from datetime import datetime, timedelta, timezone
+
 from pythonit_toolkit.pastaporto.entities import PastaportoUserInfo
 from ward import raises, test
 
-from src.association_membership.domain.entities import Payment, PaymentStatus, StripeSubscriptionPayment, Subscription, SubscriptionStatus
+from src.association_membership.domain.entities import (
+    Payment,
+    PaymentStatus,
+    StripeSubscriptionPayment,
+    Subscription,
+    SubscriptionStatus,
+)
 from src.association_membership.domain.exceptions import AlreadySubscribed
 from src.association_membership.domain.services.subscribe_user_to_association import (
     subscribe_user_to_association,
@@ -20,17 +27,15 @@ async def _():
         user,
         association_repository=FakeAssociationMembershipRepository(),
     )
-    assert checkout_session_id == "cs_session_cus_test_1"
+    assert checkout_session_id == "cs_xxx"
 
 
 @test("subscribe user with active subscription fails")
 async def _():
     user = PastaportoUserInfo(id=1, email="test@email.it", is_staff=False)
-    subscription = Subscription(
-        user_id=user.id,
-        status=SubscriptionStatus.ACTIVE
-    )
+    subscription = Subscription(id=1, user_id=user.id, status=SubscriptionStatus.ACTIVE)
     payment = Payment(
+        id=1,
         total=1000,
         status=PaymentStatus.PAID,
         payment_date=datetime.now(timezone.utc),
@@ -38,10 +43,11 @@ async def _():
         period_end=datetime.now(timezone.utc) + timedelta(days=30),
     )
     StripeSubscriptionPayment(
+        id=1,
         payment=payment,
-        stripe_subscription_id='sub_abcabc',
-        stripe_invoice_id='iv_abcabc',
-        invoice_pdf='https://stripe.com/pdf/xxx'
+        stripe_subscription_id="sub_abcabc",
+        stripe_invoice_id="iv_abcabc",
+        invoice_pdf="https://stripe.com/pdf/xxx",
     )
 
     with raises(AlreadySubscribed):
@@ -54,10 +60,7 @@ async def _():
 @test("subscribe user with canceled subscription works")
 async def _():
     user = PastaportoUserInfo(id=1, email="test@email.it", is_staff=False)
-    subscription = Subscription(
-        user_id=user.id,
-        status=SubscriptionStatus.CANCELED
-    )
+    subscription = Subscription(user_id=user.id, status=SubscriptionStatus.CANCELED)
     payment = Payment(
         total=1000,
         status=PaymentStatus.PAID,
@@ -67,9 +70,9 @@ async def _():
     )
     StripeSubscriptionPayment(
         payment=payment,
-        stripe_subscription_id='sub_abcabc',
-        stripe_invoice_id='iv_abcabc',
-        invoice_pdf='https://stripe.com/pdf/xxx'
+        stripe_subscription_id="sub_abcabc",
+        stripe_invoice_id="iv_abcabc",
+        invoice_pdf="https://stripe.com/pdf/xxx",
     )
 
     checkout_session_id = await subscribe_user_to_association(
