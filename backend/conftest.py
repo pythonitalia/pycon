@@ -8,6 +8,7 @@ from blog.tests.factories import *  # noqa
 from cms.tests.factories import *  # noqa
 from conferences.tests.factories import *  # noqa
 from events.tests.factories import *  # noqa
+from grants.tests.factories import *  # noqa
 from hotels.tests.factories import *  # noqa
 from languages.models import Language
 from languages.tests.factories import *  # noqa
