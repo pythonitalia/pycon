@@ -6,12 +6,16 @@ from ward import test
 from src.association.tests.api import graphql_client
 from src.association.tests.session import db
 from src.association_membership.domain.entities import SubscriptionStatus
-from src.association_membership.tests.factories import SubscriptionFactory
+from src.association_membership.tests.factories import (
+    StripeCustomerFactory,
+    SubscriptionFactory,
+)
 
 
 @test("Manage user subscription")
 async def _(graphql_client=graphql_client, db=db):
-    await SubscriptionFactory(customer__user_id=1, status=SubscriptionStatus.ACTIVE)
+    await SubscriptionFactory(user_id=1, status=SubscriptionStatus.ACTIVE)
+    await StripeCustomerFactory(user_id=1)
 
     graphql_client.force_login(
         SimulatedUser(id=1, email="test@user.it", is_staff=False),
@@ -27,7 +31,7 @@ async def _(graphql_client=graphql_client, db=db):
     }"""
 
     with patch(
-        "src.customers.domain.repository.stripe.billing_portal.Session.create",
+        "src.association_membership.domain.repository.stripe.billing_portal.Session.create",
     ) as mock_create:
         mock_create.return_value.url = (
             "https://stripe.com/stripe_test_customer_portal/cus_test_12345"
@@ -63,7 +67,8 @@ async def _(graphql_client=graphql_client, db=db):
 @test("Cannot manage subscription if user doesnt have one")
 async def _(graphql_client=graphql_client, db=db):
     # user id 5 has a subscription
-    await SubscriptionFactory(customer__user_id=5, status=SubscriptionStatus.ACTIVE)
+    await SubscriptionFactory(user_id=5, status=SubscriptionStatus.ACTIVE)
+    await StripeCustomerFactory(user_id=5)
 
     # but user 1 doesn't have one
     graphql_client.force_login(
@@ -83,7 +88,8 @@ async def _(graphql_client=graphql_client, db=db):
 
 @test("Cannot manage subscription if all subscriptions are canceled")
 async def _(graphql_client=graphql_client, db=db):
-    await SubscriptionFactory(customer__user_id=1, status=SubscriptionStatus.CANCELED)
+    await SubscriptionFactory(user_id=1, status=SubscriptionStatus.CANCELED)
+    await StripeCustomerFactory(user_id=1)
 
     graphql_client.force_login(
         SimulatedUser(id=1, email="test@user.it", is_staff=False),
@@ -98,3 +104,25 @@ async def _(graphql_client=graphql_client, db=db):
     response = await graphql_client.query(query, variables={})
 
     assert response.data["manageUserSubscription"]["__typename"] == "NoSubscription"
+
+
+@test("Cannot manage subscription if not subscribed via stripe")
+async def _(graphql_client=graphql_client, db=db):
+    await SubscriptionFactory(user_id=1, status=SubscriptionStatus.ACTIVE)
+
+    graphql_client.force_login(
+        SimulatedUser(id=1, email="test@user.it", is_staff=False),
+    )
+
+    query = """mutation {
+        manageUserSubscription {
+            __typename
+        }
+    }"""
+
+    response = await graphql_client.query(query, variables={})
+
+    assert (
+        response.data["manageUserSubscription"]["__typename"]
+        == "NotSubscribedViaStripe"
+    )

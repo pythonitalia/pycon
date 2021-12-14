@@ -6,7 +6,10 @@ from ward import test
 from src.association.tests.api import graphql_client
 from src.association.tests.session import db
 from src.association_membership.domain.entities import SubscriptionStatus
-from src.association_membership.tests.factories import SubscriptionFactory
+from src.association_membership.tests.factories import (
+    StripeCustomerFactory,
+    SubscriptionFactory,
+)
 
 
 @test("Subscribe user to association")
@@ -25,9 +28,9 @@ async def _(graphql_client=graphql_client, db=db):
     }"""
 
     with patch(
-        "src.customers.domain.repository.stripe.checkout.Session.create",
+        "src.association_membership.domain.repository.stripe.checkout.Session.create",
     ) as mock_create_session, patch(
-        "src.customers.domain.repository.stripe.Customer.create"
+        "src.association_membership.domain.repository.stripe.Customer.create"
     ) as mock_customers_create:
         mock_customers_create.return_value.id = "cus_created"
         mock_create_session.return_value.id = "cs_xxx"
@@ -41,7 +44,8 @@ async def _(graphql_client=graphql_client, db=db):
 
 @test("Subscribe user to association with existing canceled subscription")
 async def _(graphql_client=graphql_client, db=db):
-    await SubscriptionFactory(customer__user_id=1, status=SubscriptionStatus.CANCELED)
+    await SubscriptionFactory(user_id=1, status=SubscriptionStatus.CANCELED)
+    await StripeCustomerFactory(user_id=1, stripe_customer_id="cus_123")
 
     graphql_client.force_login(
         SimulatedUser(id=1, email="test@user.it", is_staff=False),
@@ -57,7 +61,7 @@ async def _(graphql_client=graphql_client, db=db):
     }"""
 
     with patch(
-        "src.customers.domain.repository.stripe.checkout.Session.create",
+        "src.association_membership.domain.repository.stripe.checkout.Session.create",
     ) as mock_create:
         mock_create.return_value.id = "cs_xxx"
         response = await graphql_client.query(query, variables={})
@@ -70,7 +74,7 @@ async def _(graphql_client=graphql_client, db=db):
 
 @test("cannot subscribe to association with existing active subscription")
 async def _(graphql_client=graphql_client, db=db):
-    await SubscriptionFactory(customer__user_id=1, status=SubscriptionStatus.ACTIVE)
+    await SubscriptionFactory(user_id=1, status=SubscriptionStatus.ACTIVE)
 
     graphql_client.force_login(
         SimulatedUser(id=1, email="test@user.it", is_staff=False),
