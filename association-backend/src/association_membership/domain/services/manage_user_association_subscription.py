@@ -6,9 +6,9 @@ from src.association_membership.domain.entities import Subscription
 from src.association_membership.domain.exceptions import (
     CustomerNotAvailable,
     NoSubscriptionAvailable,
+    NotSubscribedViaStripe,
 )
-
-# from src.customers.domain.repository import CustomersRepository
+from src.association_membership.domain.repository import AssociationMembershipRepository
 
 logger = logging.getLogger(__name__)
 
@@ -16,18 +16,25 @@ logger = logging.getLogger(__name__)
 async def manage_user_association_subscription(
     user: PastaportoUserInfo,
     *,
-    customers_repository,
+    association_repository: AssociationMembershipRepository,
 ) -> Subscription:
     """This service creates a CustomerPortalSession and returns its url"""
-    # customer = await customers_repository.get_for_user_id(user.id)
+    subscription = await association_repository.get_user_subscription(user.id)
 
-    # if not customer:
-    #     raise CustomerNotAvailable()
+    if not subscription:
+        raise CustomerNotAvailable()
 
-    # if not customer.has_active_subscription():
-    #     raise NoSubscriptionAvailable()
+    if not subscription.is_active:
+        raise NoSubscriptionAvailable()
 
-    # billing_portal_url = await customers_repository.create_stripe_portal_session_url(
-    #     customer
-    # )
-    # return billing_portal_url
+    stripe_customer = await association_repository.get_stripe_customer_from_user_id(
+        user.id
+    )
+
+    if not stripe_customer:
+        raise NotSubscribedViaStripe()
+
+    billing_portal_url = await association_repository.create_stripe_portal_session_url(
+        stripe_customer
+    )
+    return billing_portal_url

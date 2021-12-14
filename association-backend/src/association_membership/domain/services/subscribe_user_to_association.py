@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 async def subscribe_user_to_association(
     user: PastaportoUserInfo, *, association_repository: AssociationMembershipRepository
 ) -> str:
-    subscription = await association_repository.get_user_subscription(user)
+    subscription = await association_repository.get_user_subscription(user.id)
 
     if not subscription:
         subscription = await association_repository.create_subscription(user)

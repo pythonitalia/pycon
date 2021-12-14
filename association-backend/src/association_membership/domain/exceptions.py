@@ -11,3 +11,7 @@ class CustomerNotAvailable(Exception):
 
 class NoSubscriptionAvailable(Exception):
     """Raised when the user doesn't have any subscription to manage"""
+
+
+class NotSubscribedViaStripe(Exception):
+    """Raised when the user is not subscribed to Python Italia using Stripe"""

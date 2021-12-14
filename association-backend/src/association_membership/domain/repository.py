@@ -1,7 +1,6 @@
 import logging
 from typing import Optional
 
-import ormar
 import stripe
 from pythonit_toolkit.pastaporto.entities import PastaportoUserInfo
 
@@ -19,11 +18,14 @@ logger = logging.getLogger(__name__)
 
 
 class AssociationMembershipRepository:
-    async def get_user_subscription(
-        self, user: PastaportoUserInfo
-    ) -> Optional[Subscription]:
-        subscription = await Subscription.objects.get_or_none(user_id=user.id)
+    async def get_user_subscription(self, user_id: int) -> Optional[Subscription]:
+        subscription = await Subscription.objects.get_or_none(user_id=user_id)
         return subscription
+
+    async def get_stripe_customer_from_user_id(
+        self, user_id: int
+    ) -> Optional[StripeCustomer]:
+        return await StripeCustomer.objects.get_or_none(user_id=user_id)
 
     async def create_subscription(self, user: PastaportoUserInfo) -> Subscription:
         subscription = await Subscription.objects.create(
@@ -37,6 +39,21 @@ class AssociationMembershipRepository:
 
         await StripeCustomer.objects.create(
             user_id=user.id, stripe_customer_id=stripe_customer.id
+        )
+        return subscription
+
+    async def get_subscription_from_stripe_customer(
+        self, stripe_customer_id: str
+    ) -> Optional[Subscription]:
+        stripe_customer = await StripeCustomer.objects.get_or_none(
+            stripe_customer_id=stripe_customer_id
+        )
+
+        if not stripe_customer:
+            return None
+
+        subscription = await Subscription.objects.get_or_none(
+            user_id=stripe_customer.user_id
         )
         return subscription
 
@@ -62,56 +79,21 @@ class AssociationMembershipRepository:
         )
         return checkout_session.id
 
-    # async def get_customer_for_user_id(self, user_id: UserID) -> Optional[StripeCustomer]:
-    #     customer = await StripeCustomer.objects.get_or_none(
-    #         user_id=stripe_customer_id
-    #     )
-    #     return customer
+    async def create_stripe_portal_session_url(
+        self, stripe_customer: StripeCustomer
+    ) -> str:
+        session = stripe.billing_portal.Session.create(
+            customer=stripe_customer.stripe_customer_id
+        )
+        return session.url
 
-    # async def get_by_stripe_id(
-    #     self, stripe_subscription_id: str
-    # ) -> Optional[Subscription]:
-    #     return await Subscription.objects.get_or_none(
-    #         stripe_subscription_id=stripe_subscription_id
-    #     )
+    async def save_subscription(self, subscription: Subscription) -> Subscription:
+        await subscription.update()
 
-    # async def get_or_create_subscription(
-    #     self,
-    #     *,
-    #     customer: Customer,
-    #     stripe_subscription_id: str,
-    # ) -> Subscription:
-    #     try:
-    #         subscription = await Subscription.objects.get(
-    #             stripe_subscription_id=stripe_subscription_id
-    #         )
+        for (
+            stripe_subscription_payment
+        ) in subscription._add_stripe_subscription_payment:
+            await stripe_subscription_payment.payment.save()
+            await stripe_subscription_payment.save()
 
-    #         if subscription.customer.id != customer.id:
-    #             logger.error(
-    #                 "Trying to get stripe_subscription_id=%s for customer_id=%s"
-    #                 " but the customer associated to the"
-    #                 " found subscription (associated_customer_id=%s)"
-    #                 " is not the same as passed customer",
-    #                 stripe_subscription_id,
-    #                 customer.id,
-    #                 subscription.customer.id,
-    #             )
-    #             raise ValueError("Subscription found but assigned to another customer")
-    #     except ormar.NoMatch:
-    #         subscription = await Subscription.objects.create(
-    #             stripe_subscription_id=stripe_subscription_id,
-    #             customer=customer,
-    #             status=SubscriptionStatus.PENDING,
-    #         )
-
-    #     return subscription
-
-    # async def save_subscription(self, subscription: Subscription) -> Subscription:
-    #     await subscription.update()
-
-    #     for invoice in subscription._add_invoice:
-    #         invoice.subscription = subscription
-    #         await invoice.save()
-    #         await subscription.invoices.add(invoice)
-
-    #     return subscription
+        return subscription

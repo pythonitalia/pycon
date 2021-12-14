@@ -1,5 +1,7 @@
 import strawberry
 
+from src.association_membership.domain.repository import AssociationMembershipRepository
+
 
 @strawberry.federation.type(keys=["id"], extend=True)
 class User:
@@ -8,8 +10,10 @@ class User:
 
     @classmethod
     async def resolve_reference(cls, id: str):
-        # customer = await CustomersRepository().get_for_user_id(int(id))
+        subscription = await AssociationMembershipRepository().get_user_subscription(
+            int(id)
+        )
         return cls(
             id=id,
-            is_python_italia_member=False,
+            is_python_italia_member=subscription.is_active,
         )
