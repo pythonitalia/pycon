@@ -40,7 +40,7 @@ export const CreateOrderButtons: React.SFC<Props> = ({ state, email }) => {
       )
         .flat()
         .map((product) => ({
-          ticketId: product.id,
+          ticketId: product.id.replace("-en", "").replace("-it", ""),
           variation: product.variation,
           attendeeName: product.attendeeName,
           attendeeEmail: product.attendeeEmail,
