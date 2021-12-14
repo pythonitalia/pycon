@@ -1,8 +1,8 @@
 """new_structure
 
-Revision ID: f5978b53b2c0
+Revision ID: 0e7e963ac389
 Revises: 
-Create Date: 2021-12-14 21:07:35.165407
+Create Date: 2021-12-14 21:47:15.699936
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'f5978b53b2c0'
+revision = '0e7e963ac389'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -50,6 +50,8 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('payment', sa.Integer(), nullable=False),
     sa.Column('order_code', sa.String(length=256), nullable=False),
+    sa.Column('pretix_event_organizer', sa.String(length=512), nullable=False),
+    sa.Column('pretix_event_id', sa.String(length=512), nullable=False),
     sa.ForeignKeyConstraint(['payment'], ['payments.id'], name='fk_pretix_payments_payments_id_payment'),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('order_code')

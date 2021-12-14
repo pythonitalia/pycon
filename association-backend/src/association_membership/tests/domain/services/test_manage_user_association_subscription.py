@@ -127,6 +127,8 @@ async def _():
         id=1,
         payment=payment,
         order_code="ABC",
+        pretix_event_organizer="local-test",
+        pretix_event_id="pycon-demo",
     )
 
     fake_repository = FakeAssociationMembershipRepository([subscription], [])
