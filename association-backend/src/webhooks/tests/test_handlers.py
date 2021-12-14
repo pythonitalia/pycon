@@ -1,149 +1,116 @@
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 
+from stripe import util
 from ward import raises, test
 
 from src.association.tests.session import db
 from src.association_membership.domain.entities import (
-    InvoiceStatus,
+    PaymentStatus,
     Subscription,
     SubscriptionStatus,
 )
 from src.association_membership.tests.factories import (
+    StripeCustomerFactory,
     SubscriptionFactory,
-    SubscriptionInvoiceFactory,
 )
-from src.customers.tests.factories import CustomerFactory
-from src.webhooks.exceptions import NoCustomerFoundForEvent, NoSubscriptionFoundForEvent
-from src.webhooks.handlers import (
-    handle_customer_subscription_deleted,
-    handle_invoice_paid,
-)
-from src.webhooks.tests.payloads import (
-    CUSTOMER_SUBSCRIPTION_DELETED_PAYLOAD,
-    INVOICE_PAID_PAYLOAD,
-)
+from src.webhooks.exceptions import NoCustomerFoundForEvent
+from src.webhooks.handlers import handle_invoice_paid
+from src.webhooks.tests.payloads import INVOICE_PAID_PAYLOAD, RAW_INVOICE_PAID_PAYLOAD
 
 
-@test("invoice paid with users without existing subscription")
+@test("receive a paid stripe subscription invoice")
 async def _(db=db):
-    customer = await CustomerFactory(stripe_customer_id="cus_customer_id")
-
+    subscription = await SubscriptionFactory(user_id=1)
+    await StripeCustomerFactory(user_id=1, stripe_customer_id="cus_customer_id")
     await handle_invoice_paid(INVOICE_PAID_PAYLOAD)
 
-    subscription = await Subscription.objects.select_related("invoices").get(
-        stripe_subscription_id="sub_subscription_id"
-    )
+    subscription = await Subscription.objects.select_related(
+        ["payments", "payments__stripesubscriptionpayments"]
+    ).get(user_id=1)
 
     assert subscription.status == SubscriptionStatus.ACTIVE
-    assert subscription.customer.id == customer.id
 
-    invoice = subscription.invoices[0]
-    assert invoice.status == InvoiceStatus.PAID
-    assert invoice.subscription.id == subscription.id
-    assert invoice.payment_date == datetime.fromtimestamp(1618062032, tz=timezone.utc)
-    assert invoice.period_start == datetime.fromtimestamp(1618062031, tz=timezone.utc)
-    assert invoice.period_end == datetime.fromtimestamp(1649598031, tz=timezone.utc)
-    assert invoice.stripe_invoice_id == "in_1Ieh35AQv52awOkHrNk0JBjD"
+    payment = subscription.payments[0]
+    assert payment.status == PaymentStatus.PAID
+    assert payment.total == 1000
+    assert payment.subscription.id == subscription.id
+    assert payment.payment_date == datetime.fromtimestamp(1618062032, tz=timezone.utc)
+    assert payment.period_start == datetime.fromtimestamp(1618062031, tz=timezone.utc)
+    assert payment.period_end == datetime.fromtimestamp(1649598031, tz=timezone.utc)
+
+    stripe_subscription_payment = payment.stripesubscriptionpayments[0]
+    assert stripe_subscription_payment.stripe_subscription_id == "sub_subscription_id"
     assert (
-        invoice.invoice_pdf
+        stripe_subscription_payment.stripe_invoice_id == "in_1Ieh35AQv52awOkHrNk0JBjD"
+    )
+    assert (
+        stripe_subscription_payment.invoice_pdf
         == "https://pay.stripe.com/invoice/acct_1AEbpzAQv52awOkH/invst_JHFYBOjnsmDH6yxnhbD2jeX09nN1QUC/pdf"
     )
 
 
-@test("invoice paid with users with existing subscription")
+@test("receive the same paid invoice twice doesn't record the payment twice")
 async def _(db=db):
-    customer = await CustomerFactory(stripe_customer_id="cus_customer_id")
-
-    subscription = await SubscriptionFactory(
-        customer=customer, stripe_subscription_id="sub_subscription_id"
-    )
-
-    now = datetime.now(timezone.utc)
-    await SubscriptionInvoiceFactory(
-        subscription=subscription,
-        payment_date=now - timedelta(days=300),
-        period_start=now - timedelta(days=300),
-        period_end=now - timedelta(days=250),
-        status=InvoiceStatus.PAID,
-    )
+    subscription = await SubscriptionFactory(user_id=1)
+    await StripeCustomerFactory(user_id=1, stripe_customer_id="cus_customer_id")
 
     await handle_invoice_paid(INVOICE_PAID_PAYLOAD)
 
-    refreshed_subscription = await Subscription.objects.select_related("invoices").get(
-        stripe_subscription_id="sub_subscription_id"
+    subscription = await Subscription.objects.select_related(
+        ["payments", "payments__stripesubscriptionpayments"]
+    ).get(user_id=1)
+    assert subscription.status == SubscriptionStatus.ACTIVE
+    assert len(subscription.payments) == 1
+
+    await handle_invoice_paid(INVOICE_PAID_PAYLOAD)
+
+    subscription = await Subscription.objects.select_related(
+        ["payments", "payments__stripesubscriptionpayments"]
+    ).get(user_id=1)
+    assert subscription.status == SubscriptionStatus.ACTIVE
+    assert len(subscription.payments) == 1
+
+
+@test("receive a paid invoice for the past doesn't mark it as active")
+async def _(db=db):
+    subscription = await SubscriptionFactory(user_id=1)
+    await StripeCustomerFactory(user_id=1, stripe_customer_id="cus_customer_id")
+
+    await handle_invoice_paid(
+        util.convert_to_stripe_object(
+            {
+                **RAW_INVOICE_PAID_PAYLOAD,
+                "data": {
+                    **RAW_INVOICE_PAID_PAYLOAD["data"],
+                    "object": {
+                        **RAW_INVOICE_PAID_PAYLOAD["data"]["object"],
+                        "lines": {
+                            "data": [
+                                {
+                                    **RAW_INVOICE_PAID_PAYLOAD["data"]["object"][
+                                        "lines"
+                                    ]["data"][0],
+                                    "period": {
+                                        "end": 1607979272,  # Mon Dec 14 2020 20:54:32 GMT+0000
+                                        "start": 1576356872,  # Sat Dec 14 2019 20:54:32 GMT+0000
+                                    },
+                                }
+                            ],
+                        },
+                    },
+                },
+            }
+        )
     )
 
-    assert refreshed_subscription.status == SubscriptionStatus.ACTIVE
-
-    assert len(refreshed_subscription.invoices) == 2
-
-    invoices = sorted(
-        refreshed_subscription.invoices, key=lambda invoice: invoice.payment_date
-    )
-
-    invoice = invoices[1]
-    assert invoice.status == InvoiceStatus.PAID
-    assert invoice.subscription.id == refreshed_subscription.id
-    assert invoice.payment_date == datetime.fromtimestamp(1618062032, tz=timezone.utc)
-    assert invoice.period_start == datetime.fromtimestamp(1618062031, tz=timezone.utc)
-    assert invoice.period_end == datetime.fromtimestamp(1649598031, tz=timezone.utc)
-    assert invoice.stripe_invoice_id == "in_1Ieh35AQv52awOkHrNk0JBjD"
-    assert (
-        invoice.invoice_pdf
-        == "https://pay.stripe.com/invoice/acct_1AEbpzAQv52awOkH/invst_JHFYBOjnsmDH6yxnhbD2jeX09nN1QUC/pdf"
-    )
+    subscription = await Subscription.objects.select_related(
+        ["payments", "payments__stripesubscriptionpayments"]
+    ).get(user_id=1)
+    assert subscription.status == SubscriptionStatus.PENDING
+    assert len(subscription.payments) == 1
 
 
-@test("invoice paid to user without customer")
+@test("receiving a paid invoice for a customer without subscription throws an error")
 async def _(db=db):
     with raises(NoCustomerFoundForEvent):
         await handle_invoice_paid(INVOICE_PAID_PAYLOAD)
-
-    assert (
-        await Subscription.objects.select_related("invoices")
-        .filter(stripe_subscription_id="sub_subscription_id")
-        .exists()
-        is False
-    )
-
-
-@test("subscription deleted but doesnt exist locally")
-async def _(db=db):
-    with raises(NoSubscriptionFoundForEvent):
-        await handle_customer_subscription_deleted(
-            CUSTOMER_SUBSCRIPTION_DELETED_PAYLOAD
-        )
-
-
-@test("subscription deleted")
-async def _(db=db):
-    subscription = await SubscriptionFactory(
-        customer__stripe_customer_id="cus_customer_id",
-        stripe_subscription_id="sub_subscription_id",
-    )
-
-    await handle_customer_subscription_deleted(CUSTOMER_SUBSCRIPTION_DELETED_PAYLOAD)
-
-    refreshed_subscription = await Subscription.objects.get(id=subscription.id)
-
-    assert refreshed_subscription.status == SubscriptionStatus.CANCELED
-
-
-@test("subscription deleted for an already canceled subscription")
-async def _(db=db):
-    subscription = await SubscriptionFactory(
-        customer__stripe_customer_id="cus_customer_id",
-        stripe_subscription_id="sub_subscription_id",
-    )
-
-    await handle_customer_subscription_deleted(CUSTOMER_SUBSCRIPTION_DELETED_PAYLOAD)
-
-    refreshed_subscription = await Subscription.objects.get(id=subscription.id)
-
-    assert refreshed_subscription.status == SubscriptionStatus.CANCELED
-
-    await handle_customer_subscription_deleted(CUSTOMER_SUBSCRIPTION_DELETED_PAYLOAD)
-
-    refreshed_subscription = await Subscription.objects.get(id=subscription.id)
-
-    assert refreshed_subscription.status == SubscriptionStatus.CANCELED

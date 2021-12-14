@@ -82,11 +82,13 @@ class Subscription(ormar.Model):
         self._add_stripe_subscription_payment.append(
             StripeSubscriptionPayment(
                 payment=Payment(
+                    idempotency_key=stripe_invoice_id,
                     total=total,
                     status=status,
                     payment_date=payment_date,
                     period_start=period_start,
                     period_end=period_end,
+                    subscription=self.id,
                 ),
                 stripe_subscription_id=stripe_subscription_id,
                 stripe_invoice_id=stripe_invoice_id,
@@ -100,6 +102,10 @@ class Payment(ormar.Model):
         tablename = "payments"
 
     id: int = ormar.Integer(primary_key=True)
+    subscription: Subscription = ormar.ForeignKey(Subscription, nullable=False)
+    # idempotency_key is used as a generic method to keep track of "already handled payments"
+    # if a payment comes with the same idempotency_key it gets rejected
+    idempotency_key: str = ormar.String(max_length=256, nullable=False, unique=True)
     total: int = ormar.Integer()
     payment_date: datetime = DateTimeWithTimeZone()
     period_start: datetime = DateTimeWithTimeZone()
@@ -126,7 +132,7 @@ class StripeSubscriptionPayment(ormar.Model):
 
     id: int = ormar.Integer(primary_key=True)
     payment: Payment = ormar.ForeignKey(Payment, nullable=False)
-    stripe_subscription_id: str = ormar.String(max_length=256, unique=True)
+    stripe_subscription_id: str = ormar.String(max_length=256)
     stripe_invoice_id: str = ormar.String(max_length=256, unique=True)
     invoice_pdf: str = ormar.Text()
 

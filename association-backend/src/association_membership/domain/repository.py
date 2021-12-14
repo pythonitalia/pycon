@@ -9,6 +9,7 @@ from src.association.settings import (
     STRIPE_SUBSCRIPTION_PRICE_ID,
 )
 from src.association_membership.domain.entities import (
+    Payment,
     StripeCustomer,
     Subscription,
     SubscriptionStatus,
@@ -56,6 +57,9 @@ class AssociationMembershipRepository:
             user_id=stripe_customer.user_id
         )
         return subscription
+
+    async def is_payment_already_processed(self, idempotency_key: str) -> bool:
+        return await Payment.objects.filter(idempotency_key=idempotency_key).exists()
 
     async def create_checkout_session(self, subscription: Subscription) -> str:
         customer = await StripeCustomer.objects.get(
