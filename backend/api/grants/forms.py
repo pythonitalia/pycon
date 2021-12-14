@@ -1,14 +1,27 @@
+from django import forms
+from django.core import exceptions
+from django.utils.translation import gettext_lazy as _
+
 from api.forms import ContextAwareModelForm
 from conferences.models import Conference
-from django import forms
-
-from .models import Grant
+from grants.models import Grant
 
 
 class GrantForm(ContextAwareModelForm):
     conference = forms.ModelChoiceField(
         queryset=Conference.objects.all(), to_field_name="code", required=True
     )
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        conference = cleaned_data.get("conference", None)
+
+        if not conference and self.instance:
+            conference = self.instance.conference
+
+        if not conference.is_grants_open:
+            raise exceptions.ValidationError(_("The grants form is now closed!"))
 
     class Meta:
         model = Grant

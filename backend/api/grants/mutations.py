@@ -1,7 +1,8 @@
 import strawberry
-from grants.forms import GrantForm
+
 from strawberry_forms.mutations import FormMutation
 
+from .forms import GrantForm
 from .types import GrantRequest
 
 
