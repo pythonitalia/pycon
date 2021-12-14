@@ -4,6 +4,8 @@ from django.forms import BaseInlineFormSet
 from django.forms.models import ModelForm
 from django.utils.translation import gettext_lazy as _
 
+from sponsors.models import SponsorLevel
+
 from .models import AudienceLevel, Conference, Deadline, Duration, Topic
 
 
@@ -55,6 +57,10 @@ class DurationInline(admin.StackedInline):
     filter_horizontal = ("allowed_submission_types",)
 
 
+class SponsorLevelInline(admin.TabularInline):
+    model = SponsorLevel
+
+
 @admin.register(Conference)
 class ConferenceAdmin(admin.ModelAdmin):
     readonly_fields = ("created", "modified")
@@ -102,7 +108,7 @@ class ConferenceAdmin(admin.ModelAdmin):
             },
         ),
     )
-    inlines = [DeadlineInline, DurationInline]
+    inlines = [DeadlineInline, DurationInline, SponsorLevelInline]
 
 
 @admin.register(Topic)
