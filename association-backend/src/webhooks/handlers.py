@@ -1,13 +1,9 @@
 import logging
 from datetime import datetime, timezone
 
-from src.association_membership.domain.entities import (
-    InvoiceStatus,
-    SubscriptionInvoice,
-)
+from src.association_membership.domain.entities import PaymentStatus
 from src.association_membership.domain.repository import AssociationMembershipRepository
-from src.customers.domain.repository import CustomersRepository
-from src.webhooks.exceptions import NoCustomerFoundForEvent, NoSubscriptionFoundForEvent
+from src.webhooks.exceptions import NoCustomerFoundForEvent
 
 logger = logging.getLogger(__name__)
 
@@ -17,70 +13,67 @@ async def handle_invoice_paid(event):
     stripe_customer_id = invoice.customer
     stripe_subscription_id = invoice.subscription
 
-    customers_repository = CustomersRepository()
-    customer = await customers_repository.get_for_stripe_customer_id(stripe_customer_id)
+    # Take the first item they purchased
+    # users can only buy the subscription
+    # so the lines will always be 1
+    # If we change and allow people to buy
+    # multiple this we need to update this
+    assert (
+        len(invoice.lines.data) == 1
+    ), f"event_id={event.id} has more items than excepted"
+    assert (
+        invoice.status == "paid"
+    ), f"event_id={event.id} has invoice_status={invoice.status}"
 
-    if not customer:
+    membership_repository = AssociationMembershipRepository()
+    subscription = await membership_repository.get_subscription_from_stripe_customer(
+        stripe_customer_id
+    )
+
+    if not subscription:
         logger.error(
-            "Unable to process stripe event invoice paid because stripe_customer_id=%s"
-            " doesn't have an associated Customer locally",
+            "Unable to process stripe event_id=%s invoice paid because stripe_customer_id=%s"
+            " doesn't have an associated Customer locally or a subscription",
+            event.id,
             stripe_customer_id,
         )
         raise NoCustomerFoundForEvent()
 
-    membership_repository = AssociationMembershipRepository()
-    subscription = await membership_repository.get_or_create_subscription(
-        customer=customer, stripe_subscription_id=stripe_subscription_id
-    )
-
-    # Take the first item they purchased
-    # users can only buy the subscription
-    # so the lines will always be 1
-    assert len(invoice.lines.data) == 1
+    if await membership_repository.is_payment_already_processed(invoice.id):
+        logger.info(
+            "Ignoring event_id=%s from Stripe because we already processed "
+            "the payment of invoice_id=%s",
+            event.id,
+            invoice.id,
+        )
+        return
 
     invoice_period = invoice.lines.data[0].period
-    subscription.add_invoice(
-        SubscriptionInvoice(
-            status=InvoiceStatus(invoice.status),
-            subscription=subscription,
-            payment_date=datetime.fromtimestamp(
-                invoice.status_transitions.paid_at, tz=timezone.utc
-            ),
-            period_start=datetime.fromtimestamp(invoice_period.start, tz=timezone.utc),
-            period_end=datetime.fromtimestamp(invoice_period.end, tz=timezone.utc),
-            stripe_invoice_id=invoice.id,
-            invoice_pdf=invoice.invoice_pdf,
-        )
+
+    period_start = datetime.fromtimestamp(invoice_period.start, tz=timezone.utc)
+    period_end = datetime.fromtimestamp(invoice_period.end, tz=timezone.utc)
+    now = datetime.now(timezone.utc)
+
+    subscription.add_stripe_subscription_payment(
+        total=invoice.total,
+        status=PaymentStatus.PAID,
+        payment_date=datetime.fromtimestamp(
+            invoice.status_transitions.paid_at, tz=timezone.utc
+        ),
+        period_start=period_start,
+        period_end=period_end,
+        stripe_subscription_id=stripe_subscription_id,
+        stripe_invoice_id=invoice.id,
+        invoice_pdf=invoice.invoice_pdf,
     )
-    subscription.mark_as_active()
+
+    # If the payment we just received is for the current
+    # period, we mark the subscription as active
+    if period_start <= now <= period_end:
+        subscription.mark_as_active()
     await membership_repository.save_subscription(subscription)
-
-
-async def handle_customer_subscription_deleted(event):
-    stripe_subscription = event.data.object
-    membership_repository = AssociationMembershipRepository()
-    subscription = await membership_repository.get_by_stripe_id(stripe_subscription.id)
-
-    if not subscription:
-        logger.error(
-            "Received subscription canceled for subscription %s"
-            " but no subscription with this stripe id exists in our"
-            " database!",
-            stripe_subscription.id,
-        )
-        raise NoSubscriptionFoundForEvent()
-
-    subscription.mark_as_canceled()
-    await membership_repository.save_subscription(subscription)
-    logger.info(
-        "Successfully marked local subscription_id=%s"
-        " as canceled from stripe event for stripe_subscription_id=%s",
-        subscription.id,
-        stripe_subscription.id,
-    )
 
 
 HANDLERS = {
-    "customer.subscription.deleted": handle_customer_subscription_deleted,
     "invoice.paid": handle_invoice_paid,
 }

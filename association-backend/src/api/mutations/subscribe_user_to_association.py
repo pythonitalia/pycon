@@ -45,7 +45,6 @@ async def subscribe_user_to_association(
     try:
         checkout_session_id = await service_subscribe_user_to_association(
             info.context.request.user,
-            customers_repository=info.context.customers_repository,
             association_repository=info.context.association_repository,
         )
         return CheckoutSession.from_domain(checkout_session_id)
