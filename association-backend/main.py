@@ -13,7 +13,7 @@ from starlette.routing import Route
 from src.api.views import GraphQL
 from src.association.settings import DEBUG, ENV, PASTAPORTO_SECRET, SENTRY_DSN
 from src.database.db import database
-from src.webhooks.views import stripe_webhook
+from src.webhooks.views import pretix_webhook, stripe_webhook
 
 if SENTRY_DSN:
     configure_sentry(dsn=str(SENTRY_DSN), env=ENV)
@@ -27,6 +27,7 @@ app = Starlette(
     routes=[
         Route("/graphql", GraphQL()),
         Route("/stripe-webhook", stripe_webhook, methods=["POST"]),
+        Route("/pretix-webhook", pretix_webhook, methods=["POST"]),
     ],
     middleware=[
         pastaporto_auth_middleware(PASTAPORTO_SECRET),
@@ -50,7 +51,7 @@ wrapped_app = SentryAsgiMiddleware(app)
 
 
 def handler(event, context):
-    if (command := event.get("_cli_command")) :  # noqa
+    if command := event.get("_cli_command"):  # noqa
         native_stdout = sys.stdout
         native_stderr = sys.stderr
         output_buffer = StringIO()

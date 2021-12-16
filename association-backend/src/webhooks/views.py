@@ -4,8 +4,7 @@ import stripe
 from starlette.responses import Response
 
 from src.association.settings import STRIPE_WEBHOOK_SECRET
-from src.webhooks.exceptions import WebhookError
-from src.webhooks.handlers import HANDLERS
+from src.webhooks.handlers import run_handler
 
 logger = logging.getLogger(__file__)
 
@@ -28,18 +27,12 @@ async def stripe_webhook(request):
         raise
 
     event_type = event["type"]
-    handler = HANDLERS.get(event_type, None)
+    await run_handler("stripe", event_type, event)
+    return Response(None, 200)
 
-    if not handler:
-        logger.info("No handler found for stripe_event=%s", event_type)
-        return Response(None, 204)
 
-    logger.info("Running handler for stripe_event=%s", event_type)
-    try:
-        await handler(event)
-    except WebhookError as e:
-        logger.exception(
-            "Known error while handling stripe_event=%s", event_type, exc_info=e
-        )
-
+async def pretix_webhook(request):
+    payload = await request.body()
+    action = payload["action"]
+    await run_handler("pretix", action, payload)
     return Response(None, 200)

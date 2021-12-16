@@ -72,8 +72,3 @@ async def handle_invoice_paid(event):
     if period_start <= now <= period_end:
         subscription.mark_as_active()
     await membership_repository.save_subscription(subscription)
-
-
-HANDLERS = {
-    "invoice.paid": handle_invoice_paid,
-}
