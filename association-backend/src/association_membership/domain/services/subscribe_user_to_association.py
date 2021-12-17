@@ -14,7 +14,8 @@ async def subscribe_user_to_association(
     subscription = await association_repository.get_user_subscription(user.id)
 
     if not subscription:
-        subscription = await association_repository.create_subscription(user)
+        subscription = await association_repository.create_subscription(user.id)
+        await association_repository.create_stripe_customer(user)
 
     if subscription.is_active:
         raise AlreadySubscribed()

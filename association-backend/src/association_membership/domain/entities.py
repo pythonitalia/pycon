@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 from datetime import datetime
 from enum import Enum
-from typing import Any, List
+from typing import Any, List, Union
 
 import ormar
 import sqlalchemy
@@ -50,7 +50,7 @@ class Subscription(ormar.Model):
         nullable=False,
     )
 
-    _add_stripe_subscription_payment: List[StripeSubscriptionPayment] = PrivateAttr(
+    _add_payments: List[Union[StripeSubscriptionPayment, PretixPayment]] = PrivateAttr(
         default_factory=list
     )
 
@@ -68,6 +68,37 @@ class Subscription(ormar.Model):
         logger.info("Switching subscription from status %s to %s", self.status, to)
         self.status = to
 
+    def add_pretix_payment(
+        self,
+        *,
+        organizer: str,
+        event: str,
+        order_code: str,
+        total: int,
+        status: PaymentStatus,
+        payment_date: datetime,
+        period_start: datetime,
+        period_end: datetime,
+    ):
+        self._add_payments.append(
+            PretixPayment(
+                payment=Payment(
+                    idempotency_key=PretixPayment.generate_idempotency_key(
+                        organizer, event, order_code
+                    ),
+                    total=total,
+                    status=status,
+                    payment_date=payment_date,
+                    period_start=period_start,
+                    period_end=period_end,
+                    subscription=self.id,
+                ),
+                order_code=order_code,
+                event_organizer=organizer,
+                event_id=event,
+            )
+        )
+
     def add_stripe_subscription_payment(
         self,
         total: int,
@@ -79,7 +110,7 @@ class Subscription(ormar.Model):
         stripe_invoice_id: str,
         invoice_pdf: str,
     ):
-        self._add_stripe_subscription_payment.append(
+        self._add_payments.append(
             StripeSubscriptionPayment(
                 payment=Payment(
                     idempotency_key=stripe_invoice_id,
@@ -126,6 +157,10 @@ class PretixPayment(ormar.Model):
     order_code: str = ormar.String(max_length=256, unique=True)
     event_organizer: str = ormar.String(max_length=512)
     event_id: str = ormar.String(max_length=512)
+
+    @staticmethod
+    def generate_idempotency_key(organizer: str, event: str, order_code: str) -> str:
+        return f"{organizer}-{event}-{order_code}"
 
 
 class StripeSubscriptionPayment(ormar.Model):

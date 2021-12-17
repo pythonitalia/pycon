@@ -32,7 +32,7 @@ async def stripe_webhook(request):
 
 
 async def pretix_webhook(request):
-    payload = await request.body()
+    payload = await request.json()
     action = payload["action"]
     await run_handler("pretix", action, payload)
     return Response(None, 200)

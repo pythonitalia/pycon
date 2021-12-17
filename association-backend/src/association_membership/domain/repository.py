@@ -28,11 +28,13 @@ class AssociationMembershipRepository:
     ) -> Optional[StripeCustomer]:
         return await StripeCustomer.objects.get_or_none(user_id=user_id)
 
-    async def create_subscription(self, user: PastaportoUserInfo) -> Subscription:
+    async def create_subscription(self, user_id: int) -> Subscription:
         subscription = await Subscription.objects.create(
-            user_id=user.id, status=SubscriptionStatus.PENDING
+            user_id=user_id, status=SubscriptionStatus.PENDING
         )
+        return subscription
 
+    async def create_stripe_customer(self, user: PastaportoUserInfo):
         # TODO check existing customer and re-use it?
         stripe_customer = stripe.Customer.create(
             email=user.email, metadata={"user_id": user.id}
@@ -41,7 +43,6 @@ class AssociationMembershipRepository:
         await StripeCustomer.objects.create(
             user_id=user.id, stripe_customer_id=stripe_customer.id
         )
-        return subscription
 
     async def get_subscription_from_stripe_customer(
         self, stripe_customer_id: str
@@ -94,10 +95,8 @@ class AssociationMembershipRepository:
     async def save_subscription(self, subscription: Subscription) -> Subscription:
         await subscription.update()
 
-        for (
-            stripe_subscription_payment
-        ) in subscription._add_stripe_subscription_payment:
-            await stripe_subscription_payment.payment.save()
-            await stripe_subscription_payment.save()
+        for add_payment in subscription._add_payments:
+            await add_payment.payment.save()
+            await add_payment.save()
 
         return subscription
