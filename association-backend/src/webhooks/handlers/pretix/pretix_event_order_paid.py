@@ -83,7 +83,7 @@ async def pretix_event_order_paid(payload):
     )
     if await repository.is_payment_already_processed(idempotency_key):
         logger.info(
-            "Ignoring action=%s (%s/%s) from Pretix because we already processed "
+            "Ignoring action=%s (organizer=%s event=%s) from Pretix because we already processed "
             "the payment with key=%s from order_code=%s",
             action,
             organizer,

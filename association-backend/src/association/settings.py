@@ -22,6 +22,8 @@ if not RUNNING_TESTS:
     )
     USERS_SERVICE_URL = config("USERS_SERVICE")
 
+    PRETIX_WEBHOOK_SECRET = config("PRETIX_WEBHOOK_SECRET", cast=Secret)
+
 # Sentry
 SENTRY_DSN = config("SENTRY_DSN", cast=Secret, default="")
 
@@ -55,3 +57,5 @@ if RUNNING_TESTS:
 
     ASSOCIATION_FRONTEND_URL = "http://association-frontend-url"
     USERS_SERVICE_URL = "http://users-backend-url"
+
+    PRETIX_WEBHOOK_SECRET = "pretix-webhook-secret"

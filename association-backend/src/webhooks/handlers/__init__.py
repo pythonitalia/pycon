@@ -20,19 +20,17 @@ HANDLERS = {
 def get_handler(
     service: Literal["stripe", "pretix"], event: str
 ) -> Optional[Callable[[Any], None]]:
-    handler = HANDLERS.get(service, {}).get(event, None)
-
-    if not handler:
-        logger.info("No handler found for event=%s and service=%s", event, service)
-        return None
-
-    return handler
+    return HANDLERS.get(service, {}).get(event, None)
 
 
 async def run_handler(
     service: Literal["stripe", "pretix"], event_name: str, payload: Any
 ):
     handler = get_handler(service, event_name)
+
+    if not handler:
+        logger.info("No handler found for event=%s and service=%s", event_name, service)
+        return None
 
     logger.info("Running handler for event_name=%s and service=%s", event_name, service)
     try:

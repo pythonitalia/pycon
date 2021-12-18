@@ -1,6 +1,7 @@
 import logging
 
 import stripe
+from starlette.authentication import requires
 from starlette.responses import Response
 
 from src.association.settings import STRIPE_WEBHOOK_SECRET
@@ -31,6 +32,7 @@ async def stripe_webhook(request):
     return Response(None, 200)
 
 
+@requires(["authenticated", "pretix"], status_code=404)
 async def pretix_webhook(request):
     payload = await request.json()
     action = payload["action"]

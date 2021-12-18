@@ -8,11 +8,14 @@ from pythonit_toolkit.sentry.sentry import configure_sentry
 from pythonit_toolkit.starlette_backend.middleware import pastaporto_auth_middleware
 from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 from starlette.applications import Starlette
+from starlette.middleware import Middleware
+from starlette.middleware.authentication import AuthenticationMiddleware
 from starlette.routing import Route
 
 from src.api.views import GraphQL
 from src.association.settings import DEBUG, ENV, PASTAPORTO_SECRET, SENTRY_DSN
 from src.database.db import database
+from src.webhooks.auth import PretixAuthBackend
 from src.webhooks.views import pretix_webhook, stripe_webhook
 
 if SENTRY_DSN:
@@ -31,6 +34,7 @@ app = Starlette(
     ],
     middleware=[
         pastaporto_auth_middleware(PASTAPORTO_SECRET),
+        Middleware(AuthenticationMiddleware, backend=PretixAuthBackend()),
     ],
 )
 
