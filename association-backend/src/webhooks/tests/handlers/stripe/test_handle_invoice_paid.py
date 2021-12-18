@@ -16,7 +16,7 @@ from src.association_membership.tests.factories import (
 )
 from src.webhooks.exceptions import NoCustomerFoundForEvent
 from src.webhooks.handlers.stripe.handle_invoice_paid import handle_invoice_paid
-from src.webhooks.tests.stripe.payloads import (
+from src.webhooks.tests.handlers.stripe.payloads import (
     INVOICE_PAID_PAYLOAD,
     RAW_INVOICE_PAID_PAYLOAD,
 )
