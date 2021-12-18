@@ -53,6 +53,9 @@ async def pretix_event_order_paid(payload):
         membership_positions.append(position)
 
     if not membership_positions:
+        logger.info(
+            "No membership positions for order_code=%s so nothing to do", order_code
+        )
         return
 
     if len(membership_positions) > 1:
