@@ -107,6 +107,22 @@ resource "aws_ecs_task_definition" "pretix_service" {
           name  = "SECRET_KEY"
           value = module.secrets.value.secret_key
         },
+        {
+          name  = "PRETIX_REDIS_LOCATION",
+          value = "redis://${aws_elasticache_cluster.cache.cache_nodes.0.address}/0"
+        },
+        {
+          name  = "PRETIX_REDIS_SESSIONS",
+          value = "false"
+        },
+        {
+          name  = "PRETIX_CELERY_BROKER",
+          value = "redis://${aws_elasticache_cluster.cache.cache_nodes.0.address}/1"
+        },
+        {
+          name  = "PRETIX_CELERY_BACKEND",
+          value = "redis://${aws_elasticache_cluster.cache.cache_nodes.0.address}/2"
+        }
       ]
       portMappings = [
         {

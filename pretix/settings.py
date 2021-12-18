@@ -34,9 +34,6 @@ EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 EMAIL_SUBJECT_PREFIX = "[PyCon Tickets] "
 
-HAS_CELERY = False
-CELERY_TASK_ALWAYS_EAGER = True
-
 PRETIX_INSTANCE_NAME = "Python Italia"
 
 # Config

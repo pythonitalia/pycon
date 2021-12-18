@@ -22,3 +22,11 @@ data "aws_subnet" "public" {
     values = ["eu-central-1a"]
   }
 }
+
+data "aws_subnet_ids" "private" {
+  vpc_id = data.aws_vpc.default.id
+
+  tags = {
+    Type = "private"
+  }
+}
