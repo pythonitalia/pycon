@@ -15,9 +15,14 @@ class PretixAPI:
             f"{PRETIX_API_URL}organizers/{self.organizer}/events/{self.event}"
         )
 
-    def _request(self, endpoint: str, method: METHODS = "get"):
+    def _request(
+        self, endpoint: str, *, method: METHODS = "get", qs: dict[str, str] = None
+    ):
         url = f"{self.base_url}/{endpoint}/"
         headers = {"Authorization": f"Token {str(PRETIX_API_TOKEN)}"}
+
+        if qs:
+            url = f"{url}?" + "&".join([f"{key}={value}" for key, value in qs.items()])
 
         with httpx.Client(headers=headers) as client:
             response = getattr(client, method)(url)
@@ -29,8 +34,8 @@ class PretixAPI:
         response = self._request(f"orders/{order_code}")
         return response.json()
 
-    def get_item_data(self, item_id: str) -> dict:
-        response = self._request(f"items/{item_id}")
+    def get_items(self, qs: dict[str, str]) -> dict:
+        response = self._request("items", qs=qs)
         return response.json()
 
     def get_categories(self) -> dict:

@@ -14,10 +14,9 @@ from src.association_membership.domain.entities import (
 from src.association_membership.tests.factories import SubscriptionFactory
 from src.webhooks.exceptions import NoUserFoundWithEmail
 from src.webhooks.handlers.pretix.pretix_event_order_paid import pretix_event_order_paid
-from src.webhooks.tests.pretix.payloads import (
+from src.webhooks.tests.handlers.pretix.payloads import (
     CATEGORIES,
-    ITEM_100_DATA,
-    ITEM_200_DATA,
+    ITEMS_WITH_CATEGORY,
     ORDER_DATA_WITH_MEMBERSHIP,
     ORDER_DATA_WITHOUT_MEMBERSHIP,
     ORDER_PAID,
@@ -31,8 +30,8 @@ async def _(db=db):
             "http://pretix-api/organizers/test-organizer/events/local-conf-test/orders/9YKZK/"
         ).respond(json=ORDER_DATA_WITH_MEMBERSHIP)
         mock.get(
-            "http://pretix-api/organizers/test-organizer/events/local-conf-test/items/100/"
-        ).respond(json=ITEM_100_DATA)
+            "http://pretix-api/organizers/test-organizer/events/local-conf-test/items/?active=true&category=25"
+        ).respond(json=ITEMS_WITH_CATEGORY)
         mock.get(
             "http://pretix-api/organizers/test-organizer/events/local-conf-test/categories/"
         ).respond(json=CATEGORIES)
@@ -75,8 +74,8 @@ async def _(db=db):
             "http://pretix-api/organizers/test-organizer/events/local-conf-test/orders/9YKZK/"
         ).respond(json=ORDER_DATA_WITH_MEMBERSHIP)
         mock.get(
-            "http://pretix-api/organizers/test-organizer/events/local-conf-test/items/100/"
-        ).respond(json=ITEM_100_DATA)
+            "http://pretix-api/organizers/test-organizer/events/local-conf-test/items/?active=true&category=25"
+        ).respond(json=ITEMS_WITH_CATEGORY)
         mock.get(
             "http://pretix-api/organizers/test-organizer/events/local-conf-test/categories/"
         ).respond(json=CATEGORIES)
@@ -113,8 +112,8 @@ async def _(db=db):
             "http://pretix-api/organizers/test-organizer/events/local-conf-test/orders/9YKZK/"
         ).respond(json=ORDER_DATA_WITHOUT_MEMBERSHIP)
         mock.get(
-            "http://pretix-api/organizers/test-organizer/events/local-conf-test/items/200/"
-        ).respond(json=ITEM_200_DATA)
+            "http://pretix-api/organizers/test-organizer/events/local-conf-test/items/?active=true&category=25"
+        ).respond(json=ITEMS_WITH_CATEGORY)
         mock.get(
             "http://pretix-api/organizers/test-organizer/events/local-conf-test/categories/"
         ).respond(json=CATEGORIES)
@@ -133,8 +132,8 @@ async def _(db=db):
             "http://pretix-api/organizers/test-organizer/events/local-conf-test/orders/9YKZK/"
         ).respond(json=ORDER_DATA_WITH_MEMBERSHIP)
         mock.get(
-            "http://pretix-api/organizers/test-organizer/events/local-conf-test/items/100/"
-        ).respond(json=ITEM_100_DATA)
+            "http://pretix-api/organizers/test-organizer/events/local-conf-test/items/?active=true&category=25"
+        ).respond(json=ITEMS_WITH_CATEGORY)
         mock.get(
             "http://pretix-api/organizers/test-organizer/events/local-conf-test/categories/"
         ).respond(json=CATEGORIES)
@@ -160,8 +159,8 @@ async def _(db=db):
             "http://pretix-api/organizers/test-organizer/events/local-conf-test/orders/9YKZK/"
         ).respond(json=ORDER_DATA_WITH_MEMBERSHIP)
         mock.get(
-            "http://pretix-api/organizers/test-organizer/events/local-conf-test/items/100/"
-        ).respond(json=ITEM_100_DATA)
+            "http://pretix-api/organizers/test-organizer/events/local-conf-test/items/?active=true&category=25"
+        ).respond(json=ITEMS_WITH_CATEGORY)
         mock.get(
             "http://pretix-api/organizers/test-organizer/events/local-conf-test/categories/"
         ).respond(json=CATEGORIES)
@@ -187,8 +186,8 @@ async def _(db=db):
             "http://pretix-api/organizers/test-organizer/events/local-conf-test/orders/9YKZK/"
         ).respond(json=ORDER_DATA_WITH_MEMBERSHIP)
         mock.get(
-            "http://pretix-api/organizers/test-organizer/events/local-conf-test/items/100/"
-        ).respond(json=ITEM_100_DATA)
+            "http://pretix-api/organizers/test-organizer/events/local-conf-test/items/?active=true&category=25"
+        ).respond(json=ITEMS_WITH_CATEGORY)
         mock.get(
             "http://pretix-api/organizers/test-organizer/events/local-conf-test/categories/"
         ).respond(json=CATEGORIES)
@@ -216,8 +215,8 @@ async def _(db=db):
             "http://pretix-api/organizers/test-organizer/events/local-conf-test/orders/9YKZK/"
         ).respond(json=ORDER_DATA_WITH_MEMBERSHIP)
         mock.get(
-            "http://pretix-api/organizers/test-organizer/events/local-conf-test/items/100/"
-        ).respond(json=ITEM_100_DATA)
+            "http://pretix-api/organizers/test-organizer/events/local-conf-test/items/?active=true&category=25"
+        ).respond(json=ITEMS_WITH_CATEGORY)
         mock.get(
             "http://pretix-api/organizers/test-organizer/events/local-conf-test/categories/"
         ).respond(json=CATEGORIES)

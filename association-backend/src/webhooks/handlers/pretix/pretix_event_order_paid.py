@@ -31,26 +31,36 @@ async def pretix_event_order_paid(payload):
     pretix_api = PretixAPI(organizer, event)
 
     order_data = pretix_api.get_order_data(order_code)
-    categories = {
-        result["id"]: result for result in pretix_api.get_categories()["results"]
-    }
+    categories = pretix_api.get_categories()["results"]
+    association_category = next(
+        (
+            category
+            for category in categories
+            if category["internal_name"] == "Association"
+        ),
+        None,
+    )
+
+    if not association_category:
+        logger.info(
+            "Ignoring order_code=%s paid event for organizer=%s event=%s "
+            "because there isn't an association category",
+            order_code,
+            organizer,
+            event,
+        )
+        return
+
+    valid_items = pretix_api.get_items(
+        qs={"category": association_category["id"], "active": "true"}
+    )
+    valid_items_ids = [item["id"] for item in valid_items["results"]]
 
     order_positions = order_data["positions"]
     membership_positions = []
     for position in order_positions:
-        item_data = pretix_api.get_item_data(position["item"])
-        category = categories.get(item_data["category"], None)
-
-        assert (
-            category
-        ), f"order_code={order_code} item={item_data['id']} does not have a valid category={item_data['category']}"
-
-        # Items that are part of a category named "Association"
-        # are considerated special items that should subscribe the user to the association
-        if category["internal_name"] != "Association":
-            continue
-
-        membership_positions.append(position)
+        if position["item"] in valid_items_ids:
+            membership_positions.append(position)
 
     if not membership_positions:
         logger.info(
