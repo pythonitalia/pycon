@@ -5,7 +5,6 @@ from io import StringIO
 
 from mangum import Mangum
 from pythonit_toolkit.sentry.sentry import configure_sentry
-from pythonit_toolkit.starlette_backend.middleware import pastaporto_auth_middleware
 from pythonit_toolkit.starlette_backend.pastaporto_backend import on_auth_error
 from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 from starlette.applications import Starlette
