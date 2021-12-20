@@ -23,7 +23,7 @@ def _(method=each("get", "delete", "patch")):
 def _():
     client = TestClient(app)
     response = client.post("/pretix-webhook", auth=("pretix", "secret"))
-    assert response.status_code == 400
+    assert response.status_code == 401
     assert "Invalid auth" in str(response.content)
 
 
