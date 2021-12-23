@@ -5,7 +5,7 @@ from src.association.settings import PASTAPORTO_SECRET
 from src.webhooks.auth_backend import PretixAuthBackend
 
 
-class WrapperAuthBackend(AuthenticationBackend):
+class RouterAuthBackend(AuthenticationBackend):
     def __init__(self):
         self.pretix_auth_backend = PretixAuthBackend()
         self.pastaporto_backend = PastaportoAuthBackend(PASTAPORTO_SECRET)

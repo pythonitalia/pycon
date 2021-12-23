@@ -13,7 +13,7 @@ from starlette.middleware.authentication import AuthenticationMiddleware
 from starlette.routing import Route
 
 from src.api.views import GraphQL
-from src.association.auth import WrapperAuthBackend
+from src.association.auth import RouterAuthBackend
 from src.association.settings import DEBUG, ENV, SENTRY_DSN
 from src.database.db import database
 from src.webhooks.views import pretix_webhook, stripe_webhook
@@ -35,7 +35,7 @@ app = Starlette(
     middleware=[
         Middleware(
             AuthenticationMiddleware,
-            backend=WrapperAuthBackend(),
+            backend=RouterAuthBackend(),
             on_error=on_auth_error,
         ),
     ],

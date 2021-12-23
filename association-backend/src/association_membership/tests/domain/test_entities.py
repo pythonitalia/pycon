@@ -56,5 +56,5 @@ async def _():
         invoice_pdf="https://pdfpdf",
     )
 
-    assert len(subscription._add_payments) > 0
+    assert len(subscription._add_payments) == 1
     assert subscription._add_payments[0].stripe_subscription_id == "cs_xxx"
