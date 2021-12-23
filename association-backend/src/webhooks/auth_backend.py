@@ -14,7 +14,7 @@ from src.association.settings import PRETIX_WEBHOOK_SECRET
 class PretixAuthBackend(AuthenticationBackend):
     async def authenticate(self, request):
         if request.url.path != "/pretix-webhook":
-            return
+            raise ValueError("PretixAuthBackend used outside pretix-webhook")
 
         if "Authorization" not in request.headers:
             return
