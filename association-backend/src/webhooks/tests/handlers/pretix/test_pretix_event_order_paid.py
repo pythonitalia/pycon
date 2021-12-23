@@ -12,12 +12,19 @@ from src.association_membership.domain.entities import (
     SubscriptionStatus,
 )
 from src.association_membership.tests.factories import SubscriptionFactory
-from src.webhooks.exceptions import NoUserFoundWithEmail
+from src.webhooks.exceptions import (
+    NotEnoughPaid,
+    NoUserFoundWithEmail,
+    UserIsAlreadyAMember,
+)
 from src.webhooks.handlers.pretix.pretix_event_order_paid import pretix_event_order_paid
 from src.webhooks.tests.handlers.pretix.payloads import (
     CATEGORIES,
     ITEMS_WITH_CATEGORY,
     ORDER_DATA_WITH_MEMBERSHIP,
+    ORDER_DATA_WITH_REFUND_EVERYTHING_AND_NOT_ENOUGH_TO_COVER_MEMBERSHIP,
+    ORDER_DATA_WITH_REFUND_EVERYTHING_BUT_MEMBERSHIP,
+    ORDER_DATA_WITH_REFUNDS,
     ORDER_DATA_WITHOUT_MEMBERSHIP,
     ORDER_PAID,
 )
@@ -224,14 +231,106 @@ async def _(db=db):
             json={"data": {"userByEmail": {"id": 1}}}
         )
 
-        with raises(ValueError) as exc:
+        with raises(UserIsAlreadyAMember) as exc:
             await pretix_event_order_paid(ORDER_PAID)
 
     created_subscription = await Subscription.objects.select_related(
         ["payments", "payments__pretixpayments", "payments__stripesubscriptionpayments"]
     ).get(user_id=1)
 
-    # We still accept the payment but we don't change to ACTIVE
+    # We still accept the payment but we don't change ACTIVE
     assert created_subscription.status == SubscriptionStatus.ACTIVE
     assert len(created_subscription.payments) == 0
     assert str(exc.raised) == "User is already subscribed to the association"
+
+
+@test("can subscribe with mix of manual and refunds")
+async def _(db=db):
+    with respx.mock as mock, time_machine.travel("2021-12-16 01:04:50Z", tick=False):
+        mock.get(
+            "http://pretix-api/organizers/test-organizer/events/local-conf-test/orders/9YKZK/"
+        ).respond(json=ORDER_DATA_WITH_REFUNDS)
+        mock.get(
+            "http://pretix-api/organizers/test-organizer/events/local-conf-test/items/?active=true&category=25"
+        ).respond(json=ITEMS_WITH_CATEGORY)
+        mock.get(
+            "http://pretix-api/organizers/test-organizer/events/local-conf-test/categories/"
+        ).respond(json=CATEGORIES)
+        mock.post("http://users-backend-url/internal-api").respond(
+            json={"data": {"userByEmail": {"id": 1}}}
+        )
+
+        await pretix_event_order_paid(ORDER_PAID)
+
+    created_subscription = await Subscription.objects.select_related(
+        ["payments", "payments__pretixpayments", "payments__stripesubscriptionpayments"]
+    ).get(user_id=1)
+
+    assert created_subscription.status == SubscriptionStatus.ACTIVE
+    assert created_subscription.user_id == 1
+    assert len(created_subscription.payments) == 1
+
+    payment = created_subscription.payments[0]
+    assert payment.total == 1000
+
+
+@test(
+    "if some has been refunded but the user paid enough to cover the membership price it gets accepted"
+)
+async def _(db=db):
+    with respx.mock as mock, time_machine.travel("2021-12-16 01:04:50Z", tick=False):
+        mock.get(
+            "http://pretix-api/organizers/test-organizer/events/local-conf-test/orders/9YKZK/"
+        ).respond(json=ORDER_DATA_WITH_REFUND_EVERYTHING_BUT_MEMBERSHIP)
+        mock.get(
+            "http://pretix-api/organizers/test-organizer/events/local-conf-test/items/?active=true&category=25"
+        ).respond(json=ITEMS_WITH_CATEGORY)
+        mock.get(
+            "http://pretix-api/organizers/test-organizer/events/local-conf-test/categories/"
+        ).respond(json=CATEGORIES)
+        mock.post("http://users-backend-url/internal-api").respond(
+            json={"data": {"userByEmail": {"id": 1}}}
+        )
+
+        await pretix_event_order_paid(ORDER_PAID)
+
+    created_subscription = await Subscription.objects.select_related(
+        ["payments", "payments__pretixpayments", "payments__stripesubscriptionpayments"]
+    ).get(user_id=1)
+
+    assert created_subscription.status == SubscriptionStatus.ACTIVE
+    assert created_subscription.user_id == 1
+    assert len(created_subscription.payments) == 1
+
+    payment = created_subscription.payments[0]
+    assert payment.total == 1000
+
+
+@test("if the order doesn't have enough to cover the price gets rejected")
+async def _(db=db):
+    with respx.mock as mock, time_machine.travel("2021-12-16 01:04:50Z", tick=False):
+        mock.get(
+            "http://pretix-api/organizers/test-organizer/events/local-conf-test/orders/9YKZK/"
+        ).respond(
+            json=ORDER_DATA_WITH_REFUND_EVERYTHING_AND_NOT_ENOUGH_TO_COVER_MEMBERSHIP
+        )
+        mock.get(
+            "http://pretix-api/organizers/test-organizer/events/local-conf-test/items/?active=true&category=25"
+        ).respond(json=ITEMS_WITH_CATEGORY)
+        mock.get(
+            "http://pretix-api/organizers/test-organizer/events/local-conf-test/categories/"
+        ).respond(json=CATEGORIES)
+        mock.post("http://users-backend-url/internal-api").respond(
+            json={"data": {"userByEmail": {"id": 1}}}
+        )
+
+        with raises(NotEnoughPaid):
+            await pretix_event_order_paid(ORDER_PAID)
+
+    created_subscription = await Subscription.objects.select_related(
+        ["payments", "payments__pretixpayments", "payments__stripesubscriptionpayments"]
+    ).get(user_id=1)
+
+    assert created_subscription.status == SubscriptionStatus.PENDING
+    assert created_subscription.user_id == 1
+    assert len(created_subscription.payments) == 0
