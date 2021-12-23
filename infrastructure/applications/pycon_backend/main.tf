@@ -63,7 +63,7 @@ module "lambda" {
     EMAIL_BACKEND                    = "django_ses.SESBackend"
     FRONTEND_URL                     = "https://pycon.it"
     PRETIX_API                       = "https://tickets.pycon.it/api/v1/"
-    PRETIX_API_TOKEN                 = module.secrets.value.pretix_api_token
+    PRETIX_API_TOKEN                 = module.common_secrets.value.pretix_api_token
     PINPOINT_APPLICATION_ID          = module.secrets.value.pinpoint_application_id
     SOCIAL_AUTH_GOOGLE_OAUTH2_KEY    = module.secrets.value.google_oauth2_key
     SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = module.secrets.value.google_oauth2_secret

@@ -55,6 +55,9 @@ module "lambda" {
     ASSOCIATION_FRONTEND_URL = local.association_frontend_url
     USERS_SERVICE            = local.users_backend_url
 
+    PRETIX_API                       = "https://tickets.pycon.it/api/v1/"
+    PRETIX_API_TOKEN                 = module.common_secrets.value.pretix_api_token
+
     # Secrets
     STRIPE_WEBHOOK_SIGNATURE_SECRET = module.secrets.value.stripe_webhook_secret
     STRIPE_SUBSCRIPTION_PRICE_ID    = module.secrets.value.stripe_membership_price_id
