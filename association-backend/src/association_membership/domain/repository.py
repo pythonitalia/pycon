@@ -95,7 +95,7 @@ class AssociationMembershipRepository:
     async def save_subscription(self, subscription: Subscription) -> Subscription:
         await subscription.update()
 
-        for add_payment in subscription._add_payments:
+        for add_payment in subscription._payments_to_add:
             await add_payment.payment.save()
             await add_payment.save()
 

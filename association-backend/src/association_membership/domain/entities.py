@@ -50,9 +50,9 @@ class Subscription(ormar.Model):
         nullable=False,
     )
 
-    _add_payments: List[Union[StripeSubscriptionPayment, PretixPayment]] = PrivateAttr(
-        default_factory=list
-    )
+    _payments_to_add: List[
+        Union[StripeSubscriptionPayment, PretixPayment]
+    ] = PrivateAttr(default_factory=list)
 
     def mark_as_canceled(self):
         self._change_state(SubscriptionStatus.CANCELED)
@@ -80,7 +80,7 @@ class Subscription(ormar.Model):
         period_start: datetime,
         period_end: datetime,
     ):
-        self._add_payments.append(
+        self._payments_to_add.append(
             PretixPayment(
                 payment=Payment(
                     idempotency_key=PretixPayment.generate_idempotency_key(
@@ -110,7 +110,7 @@ class Subscription(ormar.Model):
         stripe_invoice_id: str,
         invoice_pdf: str,
     ):
-        self._add_payments.append(
+        self._payments_to_add.append(
             StripeSubscriptionPayment(
                 payment=Payment(
                     idempotency_key=stripe_invoice_id,
