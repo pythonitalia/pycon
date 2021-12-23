@@ -4,6 +4,7 @@ locals {
 
   # TODO: Need to coordinate between env and vercel
   association_frontend_url = "https://associazione.python.it"
+  users_backend_url        = local.is_prod ? "https://users-api.python.it" : "https://${terraform.workspace}-users-api.python.it"
 }
 
 data "aws_db_instance" "database" {
@@ -52,12 +53,14 @@ module "lambda" {
 
     # Services
     ASSOCIATION_FRONTEND_URL = local.association_frontend_url
+    USERS_SERVICE            = local.users_backend_url
 
     # Secrets
     STRIPE_WEBHOOK_SIGNATURE_SECRET = module.secrets.value.stripe_webhook_secret
     STRIPE_SUBSCRIPTION_PRICE_ID    = module.secrets.value.stripe_membership_price_id
     STRIPE_SECRET_API_KEY           = module.secrets.value.stripe_secret_api_key
     PASTAPORTO_SECRET               = module.common_secrets.value.pastaporto_secret
+    PRETIX_WEBHOOK_SECRET           = module.secrets.value.pretix_webhook_secret
   }
 }
 
