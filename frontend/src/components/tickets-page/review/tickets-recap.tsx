@@ -215,7 +215,12 @@ export const TicketsRecap: React.SFC<Props> = ({
                             }}
                           >
                             {moneyFormatter.format(finalPrice)}{" "}
-                            <FormattedMessage id="order.inclVat" />
+                            <FormattedMessage
+                              id="order.inclVat"
+                              values={{
+                                taxRate: product.taxRate,
+                              }}
+                            />
                           </Text>
                         ),
                       }}
