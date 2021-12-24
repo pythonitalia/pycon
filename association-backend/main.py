@@ -5,15 +5,18 @@ from io import StringIO
 
 from mangum import Mangum
 from pythonit_toolkit.sentry.sentry import configure_sentry
-from pythonit_toolkit.starlette_backend.middleware import pastaporto_auth_middleware
+from pythonit_toolkit.starlette_backend.pastaporto_backend import on_auth_error
 from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 from starlette.applications import Starlette
+from starlette.middleware import Middleware
+from starlette.middleware.authentication import AuthenticationMiddleware
 from starlette.routing import Route
 
 from src.api.views import GraphQL
-from src.association.settings import DEBUG, ENV, PASTAPORTO_SECRET, SENTRY_DSN
+from src.association.auth import RouterAuthBackend
+from src.association.settings import DEBUG, ENV, SENTRY_DSN
 from src.database.db import database
-from src.webhooks.views import stripe_webhook
+from src.webhooks.views import pretix_webhook, stripe_webhook
 
 if SENTRY_DSN:
     configure_sentry(dsn=str(SENTRY_DSN), env=ENV)
@@ -27,9 +30,14 @@ app = Starlette(
     routes=[
         Route("/graphql", GraphQL()),
         Route("/stripe-webhook", stripe_webhook, methods=["POST"]),
+        Route("/pretix-webhook", pretix_webhook, methods=["POST"]),
     ],
     middleware=[
-        pastaporto_auth_middleware(PASTAPORTO_SECRET),
+        Middleware(
+            AuthenticationMiddleware,
+            backend=RouterAuthBackend(),
+            on_error=on_auth_error,
+        ),
     ],
 )
 
@@ -50,7 +58,7 @@ wrapped_app = SentryAsgiMiddleware(app)
 
 
 def handler(event, context):
-    if (command := event.get("_cli_command")) :  # noqa
+    if command := event.get("_cli_command"):  # noqa
         native_stdout = sys.stdout
         native_stderr = sys.stderr
         output_buffer = StringIO()

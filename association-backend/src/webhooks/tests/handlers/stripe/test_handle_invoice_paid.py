@@ -15,8 +15,11 @@ from src.association_membership.tests.factories import (
     SubscriptionFactory,
 )
 from src.webhooks.exceptions import NoCustomerFoundForEvent
-from src.webhooks.handlers import handle_invoice_paid
-from src.webhooks.tests.payloads import INVOICE_PAID_PAYLOAD, RAW_INVOICE_PAID_PAYLOAD
+from src.webhooks.handlers.stripe.handle_invoice_paid import handle_invoice_paid
+from src.webhooks.tests.handlers.stripe.payloads import (
+    INVOICE_PAID_PAYLOAD,
+    RAW_INVOICE_PAID_PAYLOAD,
+)
 
 
 @test("receive a paid stripe subscription invoice")

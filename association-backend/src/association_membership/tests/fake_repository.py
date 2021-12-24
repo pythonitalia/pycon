@@ -1,4 +1,8 @@
-from src.association_membership.domain.entities import Subscription, SubscriptionStatus
+from src.association_membership.domain.entities import (
+    StripeCustomer,
+    Subscription,
+    SubscriptionStatus,
+)
 
 
 class FakeAssociationMembershipRepository:
@@ -17,8 +21,17 @@ class FakeAssociationMembershipRepository:
             else {}
         )
 
-    async def create_subscription(self, user):
-        return Subscription(user_id=user.id, status=SubscriptionStatus.PENDING)
+    async def create_subscription(self, user_id):
+        sub = Subscription(user_id=user_id, status=SubscriptionStatus.PENDING)
+        self.SUBSCRIPTIONS_BY_USER_ID[user_id] = sub
+        return sub
+
+    async def create_stripe_customer(self, user):
+        stripe_customer = StripeCustomer(
+            user_id=user.id, stripe_customer_id=f"cus_{user.id}"
+        )
+        self.STRIPE_CUSTOMERS_BY_USER_ID[user.id] = stripe_customer
+        return stripe_customer
 
     async def get_stripe_customer_from_user_id(self, user_id):
         return self.STRIPE_CUSTOMERS_BY_USER_ID.get(user_id, None)

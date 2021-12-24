@@ -3,7 +3,7 @@ x-defaults:
     DEBUG: "True"
     NODE_ENV: "development"
     ENV: "local"
-    PRETIX_API: http://tickets.pycon.it/api/v1/
+    PRETIX_API: https://tickets.pycon.it/api/v1/
     PRETIX_API_TOKEN: None # ask for a token
     SECRET_KEY: secret-key
     SLACK_INCOMING_WEBHOOK_URL: None
@@ -138,6 +138,8 @@ services:
       <<: *enviroment_defaults
       STRIPE_SECRET_API_KEY: ${STRIPE_SECRET_API_KEY}
       STRIPE_WEBHOOK_SIGNATURE_SECRET: ${STRIPE_WEBHOOK_SIGNATURE_SECRET}
+      PRETIX_API_TOKEN: ${PRETIX_API_TOKEN}
+      PRETIX_WEBHOOK_SECRET: "secret"
       DATABASE_URL: postgresql://association-backend:association-backend@association-backend-db/association-backend
     volumes:
       - ./association-backend:/home/app/

@@ -5,14 +5,24 @@ from starlette.datastructures import Secret
 
 config = Config(".env")
 
+# Unit-tests
+RUNNING_TESTS = config("RUNNING_TESTS", cast=bool, default=False)
+
 ENV = config("ENV", cast=str, default="local")
 DEBUG = config("DEBUG", cast=bool, default=False)
 DATABASE_URL = config("DATABASE_URL")
 
+PRETIX_API_URL = config("PRETIX_API", default=None)
+PRETIX_API_TOKEN = config("PRETIX_API_TOKEN", cast=Secret, default=None)
+
 # Services URLs
-ASSOCIATION_FRONTEND_URL = config(
-    "ASSOCIATION_FRONTEND_URL",
-)
+if not RUNNING_TESTS:
+    ASSOCIATION_FRONTEND_URL = config(
+        "ASSOCIATION_FRONTEND_URL",
+    )
+    USERS_SERVICE_URL = config("USERS_SERVICE")
+
+    PRETIX_WEBHOOK_SECRET = config("PRETIX_WEBHOOK_SECRET", cast=Secret)
 
 # Sentry
 SENTRY_DSN = config("SENTRY_DSN", cast=Secret, default="")
@@ -27,9 +37,7 @@ stripe.api_key = str(STRIPE_SECRET_API_KEY)
 
 # Secrets
 PASTAPORTO_SECRET = config("PASTAPORTO_SECRET", cast=str)
-
-# Unit-tests
-RUNNING_TESTS = config("RUNNING_TESTS", cast=bool, default=False)
+SERVICE_TO_SERVICE_SECRET = config("SERVICE_TO_SERVICE_SECRET", cast=Secret)
 
 if RUNNING_TESTS:
     original_url = make_url(DATABASE_URL)
@@ -43,3 +51,11 @@ if RUNNING_TESTS:
         query=original_url.query,
     )
     DATABASE_URL = str(test_db_url)
+
+    PRETIX_API_URL = "http://pretix-api/"
+    PRETIX_API_TOKEN = "pretix-token"
+
+    ASSOCIATION_FRONTEND_URL = "http://association-frontend-url"
+    USERS_SERVICE_URL = "http://users-backend-url"
+
+    PRETIX_WEBHOOK_SECRET = "pretix-webhook-secret"
