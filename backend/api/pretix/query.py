@@ -7,6 +7,7 @@ from django.utils import timezone
 
 import pretix
 import pretix.db
+from api.pretix.constants import ASSOCIATION_CATEGORY_INTERNAL_NAME
 from conferences.models.conference import Conference
 
 from .types import Option, PretixOrder, ProductVariation, Question, TicketItem, Voucher
@@ -146,8 +147,11 @@ def get_conference_tickets(
     quotas = pretix.get_quotas(conference)
 
     def sort_func(ticket):
-        # Gadgets (tshirt/membership) should appear at the end
-        if ticket.category == "Gadget":
+        # Make gadgets and association appear at the end
+        if (
+            ticket.category == "Gadget"
+            or ticket.category == ASSOCIATION_CATEGORY_INTERNAL_NAME
+        ):
             return math.inf
 
         # Order all other tickets by price (low -> high)

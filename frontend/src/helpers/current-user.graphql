@@ -10,5 +10,6 @@ query CurrentUser {
     openToRecruiting
     openToNewsletter
     canEditSchedule
+    isPythonItaliaMember
   }
 }

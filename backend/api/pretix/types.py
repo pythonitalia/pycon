@@ -4,6 +4,8 @@ from typing import List, Optional
 
 import strawberry
 
+from api.pretix.constants import ASSOCIATION_CATEGORY_INTERNAL_NAME
+
 
 @strawberry.enum
 class PretixOrderStatus(Enum):
@@ -59,6 +61,7 @@ class Question:
 class TicketType(Enum):
     STANDARD = "standard"
     BUSINESS = "business"
+    ASSOCIATION = "association"
 
 
 @strawberry.type
@@ -81,6 +84,9 @@ class TicketItem:
     def type(self) -> TicketType:
         if "business" in self.name.lower():
             return TicketType.BUSINESS
+
+        if self.category == ASSOCIATION_CATEGORY_INTERNAL_NAME:
+            return TicketType.ASSOCIATION
 
         return TicketType.STANDARD
 

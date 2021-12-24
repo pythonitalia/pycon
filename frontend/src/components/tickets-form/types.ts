@@ -5,7 +5,7 @@ export type Ticket = {
   category: string;
   taxRate?: number;
   quantityLeft?: number | null;
-  type: "HOTEL" | "BUSINESS" | "STANDARD";
+  type: "HOTEL" | "BUSINESS" | "STANDARD" | "ASSOCIATION";
   description?: string | null;
   variations?: { id: string; value: string; defaultPrice: string }[];
   availableUntil?: string;

@@ -215,6 +215,9 @@ export const messages = {
     "order.creatingOrder": "Creating order 🕐",
     "order.payWithCard": "Pay with card",
     "order.payWithBankTransfer": "Pay with bank transfer",
+    "order.userAlreadyMember": "You are already a member! Thank you!",
+    "order.addMembership": "Add membership",
+    "order.removeMembership": "Remove membership",
     "order.needToSelectProducts":
       "You need to select at least one ticket, a t-shirt or a hotel room before continuing",
     "order.hotelRoomCartInfo":
