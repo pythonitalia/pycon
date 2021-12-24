@@ -160,7 +160,7 @@ class PretixPayment(ormar.Model):
 
     @staticmethod
     def generate_idempotency_key(organizer: str, event: str, order_code: str) -> str:
-        return f"{organizer}-{event}-{order_code}"
+        return f"{organizer}_{event}_{order_code}"
 
 
 class StripeSubscriptionPayment(ormar.Model):
