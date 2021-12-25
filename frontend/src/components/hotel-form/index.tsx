@@ -6,7 +6,7 @@ import { FormattedMessage } from "react-intl";
 import { Box, Flex, Heading, jsx } from "theme-ui";
 
 import { useCurrentLanguage } from "~/locale/context";
-import { HotelRoom } from "~/types";
+import { CurrentUserQueryResult, HotelRoom } from "~/types";
 
 import { Button } from "../button/button";
 import { ProductRow } from "../tickets-form/product-row";
@@ -23,6 +23,7 @@ type Props = {
     checkout: moment.Moment,
   ) => void;
   removeHotelRoom: (id: string, index: number) => void;
+  me: CurrentUserQueryResult["data"]["me"];
 };
 
 export const HotelForm = ({
@@ -32,6 +33,7 @@ export const HotelForm = ({
   addHotelRoom,
   removeHotelRoom,
   selectedHotelRooms,
+  me,
 }: Props) => {
   const lang = useCurrentLanguage();
   const dateFormatter = new Intl.DateTimeFormat(lang, {
@@ -55,6 +57,7 @@ export const HotelForm = ({
             sx={{
               marginBottom: 0,
             }}
+            me={me}
             hotel={true}
             conferenceStart={conferenceStart}
             conferenceEnd={conferenceEnd}

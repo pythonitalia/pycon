@@ -175,6 +175,7 @@ export const TicketsSection = ({
             hotelRooms={hotelRooms}
             addHotelRoom={addHotelRoom}
             removeHotelRoom={removeHotelRoom}
+            me={me}
           />
         )}
 
