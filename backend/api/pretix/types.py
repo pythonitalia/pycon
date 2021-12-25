@@ -72,6 +72,7 @@ class TicketItem:
     active: bool
     default_price: str
     category: str
+    category_internal_name: Optional[str]
     tax_rate: float
     variations: List[ProductVariation]
     # TODO: correct types
@@ -85,7 +86,7 @@ class TicketItem:
         if "business" in self.name.lower():
             return TicketType.BUSINESS
 
-        if self.category == ASSOCIATION_CATEGORY_INTERNAL_NAME:
+        if self.category_internal_name == ASSOCIATION_CATEGORY_INTERNAL_NAME:
             return TicketType.ASSOCIATION
 
         return TicketType.STANDARD

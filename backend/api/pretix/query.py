@@ -70,6 +70,7 @@ def _create_ticket_type_from_api(item, id, categories, questions, quotas, langua
         name=_get_by_language(item, "name", language),
         description=_get_by_language(item, "description", language),
         category=_get_by_language(category, "name", language),
+        category_internal_name=category.get("internal_name", None),
         variations=[
             ProductVariation(
                 id=variation["id"],
@@ -150,7 +151,7 @@ def get_conference_tickets(
         # Make gadgets and association appear at the end
         if (
             ticket.category == "Gadget"
-            or ticket.category == ASSOCIATION_CATEGORY_INTERNAL_NAME
+            or ticket.category_internal_name == ASSOCIATION_CATEGORY_INTERNAL_NAME
         ):
             return math.inf
 

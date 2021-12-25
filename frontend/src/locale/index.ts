@@ -632,6 +632,9 @@ export const messages = {
       "Scegli un biglietto, una maglietta o una stanza di hotel prima di continuare",
     "order.hotelRoomCartInfo":
       "{roomName} con check-in il {checkin} e check-out {checkout}",
+    "order.userAlreadyMember": "Sei già iscritto! Grazie!",
+    "order.addMembership": "Aggiungi iscrizione",
+    "order.removeMembership": "Rimuovi iscrizione",
     "orderConfirmation.manage": "Fai click qui per gestire il tuo ordine.",
     "orderConfirmation.heading": "Ordine confermato",
     "orderConfirmation.heading.canceled": "Ordine cancellato!",

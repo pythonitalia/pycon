@@ -38,7 +38,7 @@ type ProductRowProps = {
   selectedProducts?: {
     [id: string]: SelectedProduct[];
   };
-  me: CurrentUserQueryResult["data"]["me"]
+  me: CurrentUserQueryResult["data"]["me"];
 };
 
 export const ProductRow = ({
@@ -63,8 +63,6 @@ export const ProductRow = ({
 
   const hasVariation = ticket.variations && ticket.variations.length > 0;
   const isMembershipProduct = ticket.type === TicketType.Association;
-
-  console.log("me", me)
 
   return (
     <Box sx={{ my: 4 }} className={className}>
