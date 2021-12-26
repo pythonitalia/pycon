@@ -1,3 +1,5 @@
+import asyncio
+import json
 import logging
 import subprocess
 import sys
@@ -16,6 +18,7 @@ from src.api.views import GraphQL
 from src.association.auth import RouterAuthBackend
 from src.association.settings import DEBUG, ENV, SENTRY_DSN
 from src.database.db import database
+from src.webhooks.handlers import run_handler
 from src.webhooks.views import pretix_webhook, stripe_webhook
 
 if SENTRY_DSN:
@@ -58,6 +61,16 @@ wrapped_app = SentryAsgiMiddleware(app)
 
 
 def handler(event, context):
+    if event := event.get("event"):
+        startup()
+        try:
+            asyncio.run(
+                run_handler("crons", event["name"], json.loads(event["payload"]))
+            )
+        finally:
+            shutdown()
+        return
+
     if command := event.get("_cli_command"):  # noqa
         native_stdout = sys.stdout
         native_stderr = sys.stderr

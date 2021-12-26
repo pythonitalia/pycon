@@ -3,6 +3,7 @@ from typing import Any, Callable, Literal, Optional
 
 from src.webhooks.exceptions import WebhookError
 
+from .crons.membership_check_expiration import membership_check_expiration
 from .pretix.pretix_event_order_paid import pretix_event_order_paid
 from .stripe.handle_invoice_paid import handle_invoice_paid
 
@@ -14,6 +15,7 @@ HANDLERS = {
         "invoice.paid": handle_invoice_paid,
     },
     "pretix": {"pretix.event.order.paid": pretix_event_order_paid},
+    "crons": {"membership.check_expiration": membership_check_expiration},
 }
 
 
