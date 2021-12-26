@@ -58,6 +58,7 @@ export const TicketsPageWrapper: React.SFC<Props> = ({ children }) => {
   const { state, removeProduct } = useCart();
 
   useEffect(() => {
+    let ticketsHaveBeenUpdated = false;
     if (me?.isPythonItaliaMember) {
       // If the user is a member, remove the association membership from the cart
       const selectedProducts: any[] = Object.values(
@@ -75,6 +76,12 @@ export const TicketsPageWrapper: React.SFC<Props> = ({ children }) => {
         }
 
         removeProduct(product.id);
+        ticketsHaveBeenUpdated = true;
+      }
+
+      if (ticketsHaveBeenUpdated && typeof window !== "undefined") {
+        // This is an hack because the products are not correctly removed :(
+        window.location.reload();
       }
     }
   }, [me]);
