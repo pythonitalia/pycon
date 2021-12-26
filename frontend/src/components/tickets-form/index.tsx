@@ -28,7 +28,10 @@ export const TicketsForm = ({
   me,
 }: Props) => {
   const ticketsToShow = tickets.filter((ticket) => {
-    if (ticket.variations!.length > 0 || ticket.type === TicketType.Association) {
+    if (
+      ticket.variations!.length > 0 ||
+      ticket.type === TicketType.Association
+    ) {
       return true;
     }
 
