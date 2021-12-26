@@ -60,15 +60,17 @@ async def shutdown():
 wrapped_app = SentryAsgiMiddleware(app)
 
 
+async def event_handler(event):
+    try:
+        await startup()
+        await run_handler("crons", event["name"], json.loads(event["payload"]))
+    finally:
+        await shutdown()
+
+
 def handler(event, context):
-    if event := event.get("event"):
-        startup()
-        try:
-            asyncio.run(
-                run_handler("crons", event["name"], json.loads(event["payload"]))
-            )
-        finally:
-            shutdown()
+    if received_event := event.get("event"):
+        asyncio.run(event_handler(received_event))
         return
 
     if command := event.get("_cli_command"):  # noqa
