@@ -215,6 +215,9 @@ export const messages = {
     "order.creatingOrder": "Creating order 🕐",
     "order.payWithCard": "Pay with card",
     "order.payWithBankTransfer": "Pay with bank transfer",
+    "order.userAlreadyMember": "You are already a member! Thank you!",
+    "order.addMembership": "Add membership",
+    "order.removeMembership": "Remove membership",
     "order.needToSelectProducts":
       "You need to select at least one ticket, a t-shirt or a hotel room before continuing",
     "order.hotelRoomCartInfo":
@@ -629,6 +632,9 @@ export const messages = {
       "Scegli un biglietto, una maglietta o una stanza di hotel prima di continuare",
     "order.hotelRoomCartInfo":
       "{roomName} con check-in il {checkin} e check-out {checkout}",
+    "order.userAlreadyMember": "Sei già iscritto! Grazie!",
+    "order.addMembership": "Aggiungi iscrizione",
+    "order.removeMembership": "Rimuovi iscrizione",
     "orderConfirmation.manage": "Fai click qui per gestire il tuo ordine.",
     "orderConfirmation.heading": "Ordine confermato",
     "orderConfirmation.heading.canceled": "Ordine cancellato!",

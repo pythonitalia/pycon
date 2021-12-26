@@ -30,7 +30,7 @@ export const TicketsPage = () => {
 
   return (
     <TicketsPageWrapper>
-      {({ tickets, hotelRooms, conference }) => (
+      {({ tickets, hotelRooms, conference, me }) => (
         <TicketsSection
           state={state}
           conferenceStart={conference.start}
@@ -45,6 +45,7 @@ export const TicketsPage = () => {
           removeHotelRoom={removeHotelRoom}
           invoiceInformation={state.invoiceInformation}
           onUpdateIsBusiness={updateIsBusiness}
+          me={me}
           onNextStep={() => {
             const nextUrl = `/tickets/information/`;
 

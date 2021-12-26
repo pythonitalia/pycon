@@ -10,6 +10,7 @@ def test_returns_tickets(graphql_client, conference, mocker):
         TicketItem(
             name="Example Ticket",
             category="student",
+            category_internal_name=None,
             id="1",
             description="",
             active=True,
@@ -47,6 +48,7 @@ def test_is_business(graphql_client, conference, mocker):
         TicketItem(
             name="Business Ticket",
             category="student",
+            category_internal_name=None,
             id="1",
             description="",
             active=True,
@@ -61,6 +63,7 @@ def test_is_business(graphql_client, conference, mocker):
         TicketItem(
             name="Normal Ticket",
             category="student",
+            category_internal_name=None,
             id="2",
             description="",
             active=True,

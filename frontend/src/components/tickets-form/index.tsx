@@ -4,6 +4,8 @@
 import React from "react";
 import { Box, jsx } from "theme-ui";
 
+import { CurrentUserQueryResult, TicketType } from "~/types";
+
 import { SelectedProducts } from "../tickets-page/types";
 import { ProductRow } from "./product-row";
 import { Ticket } from "./types";
@@ -14,6 +16,7 @@ type Props = {
   selectedProducts: SelectedProducts;
   addProduct: (id: string, variant?: string) => void;
   removeProduct: (id: string, variant?: string) => void;
+  me: CurrentUserQueryResult["data"]["me"];
 };
 
 export const TicketsForm = ({
@@ -22,17 +25,21 @@ export const TicketsForm = ({
   selectedProducts,
   addProduct,
   removeProduct,
+  me,
 }: Props) => {
   const ticketsToShow = tickets.filter((ticket) => {
-    if (ticket.variations!.length > 0) {
+    if (
+      ticket.variations!.length > 0 ||
+      ticket.type === TicketType.Association
+    ) {
       return true;
     }
 
-    if (isBusiness && ticket.type === "BUSINESS") {
+    if (isBusiness && ticket.type === TicketType.Business) {
       return true;
     }
 
-    if (!isBusiness && ticket.type !== "BUSINESS") {
+    if (!isBusiness && ticket.type !== TicketType.Business) {
       return true;
     }
 
@@ -61,6 +68,7 @@ export const TicketsForm = ({
                 addProduct={addProduct}
                 removeProduct={removeProduct}
                 selectedProducts={selectedProducts}
+                me={me}
               />
             ))}
           </Box>

@@ -10,6 +10,7 @@ import { Alert } from "~/components/alert";
 import { HotelForm } from "~/components/hotel-form";
 import { TicketsForm } from "~/components/tickets-form";
 import { Ticket } from "~/components/tickets-form/types";
+import { CurrentUserQueryResult } from "~/types";
 
 import { Button } from "../button/button";
 import { Link } from "../link";
@@ -41,6 +42,7 @@ type Props = {
   ) => void;
   removeHotelRoom: (id: string, index: number) => void;
   onUpdateIsBusiness: (isBusiness: boolean) => void;
+  me: CurrentUserQueryResult["data"]["me"];
 };
 
 export const TicketsSection = ({
@@ -58,6 +60,7 @@ export const TicketsSection = ({
   onNextStep,
   invoiceInformation,
   onUpdateIsBusiness,
+  me,
 }: Props) => {
   const [shouldShowNoTickets, setShouldShowNoTickets] = useState(false);
 
@@ -152,6 +155,7 @@ export const TicketsSection = ({
           selectedProducts={selectedProducts}
           addProduct={addProduct}
           removeProduct={removeProduct}
+          me={me}
         />
       )}
 
@@ -171,6 +175,7 @@ export const TicketsSection = ({
             hotelRooms={hotelRooms}
             addHotelRoom={addHotelRoom}
             removeHotelRoom={removeHotelRoom}
+            me={me}
           />
         )}
 

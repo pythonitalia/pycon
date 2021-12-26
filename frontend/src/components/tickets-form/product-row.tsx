@@ -6,8 +6,10 @@ import { FormattedMessage } from "react-intl";
 import { Box, Grid, jsx, Text } from "theme-ui";
 
 import { useCurrentLanguage } from "~/locale/context";
+import { CurrentUserQueryResult, TicketType } from "~/types";
 
 import { AddHotelRoom } from "./add-hotel-room";
+import { AddMembershipSubscription } from "./add-membership-subscription";
 import { AddProductWithVariation } from "./add-product-with-variation";
 import { AddRemoveProduct } from "./add-remove-product";
 import { ProductSelectedVariationsList } from "./product-selected-variations-list";
@@ -36,6 +38,7 @@ type ProductRowProps = {
   selectedProducts?: {
     [id: string]: SelectedProduct[];
   };
+  me: CurrentUserQueryResult["data"]["me"];
 };
 
 export const ProductRow = ({
@@ -49,6 +52,7 @@ export const ProductRow = ({
   quantity,
   addProduct,
   removeProduct,
+  me,
 }: ProductRowProps) => {
   const lang = useCurrentLanguage();
   const dateFormatter = new Intl.DateTimeFormat(lang, {
@@ -58,6 +62,7 @@ export const ProductRow = ({
   });
 
   const hasVariation = ticket.variations && ticket.variations.length > 0;
+  const isMembershipProduct = ticket.type === TicketType.Association;
 
   return (
     <Box sx={{ my: 4 }} className={className}>
@@ -139,7 +144,7 @@ export const ProductRow = ({
           />
         )}
 
-        {!ticket.soldOut && !hotel && !hasVariation && (
+        {!ticket.soldOut && !hotel && !hasVariation && !isMembershipProduct && (
           <div>
             <AddRemoveProduct
               quantity={quantity!}
@@ -168,6 +173,15 @@ export const ProductRow = ({
               </Text>
             )}
           </div>
+        )}
+
+        {!ticket.soldOut && isMembershipProduct && (
+          <AddMembershipSubscription
+            me={me}
+            added={quantity === 1}
+            add={() => addProduct?.(ticket.id)}
+            remove={() => removeProduct?.(ticket.id)}
+          />
         )}
 
         {!ticket.soldOut && !hotel && hasVariation && (

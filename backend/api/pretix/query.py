@@ -7,6 +7,7 @@ from django.utils import timezone
 
 import pretix
 import pretix.db
+from api.pretix.constants import ASSOCIATION_CATEGORY_INTERNAL_NAME
 from conferences.models.conference import Conference
 
 from .types import Option, PretixOrder, ProductVariation, Question, TicketItem, Voucher
@@ -69,6 +70,7 @@ def _create_ticket_type_from_api(item, id, categories, questions, quotas, langua
         name=_get_by_language(item, "name", language),
         description=_get_by_language(item, "description", language),
         category=_get_by_language(category, "name", language),
+        category_internal_name=category.get("internal_name", None),
         variations=[
             ProductVariation(
                 id=variation["id"],
@@ -146,9 +148,11 @@ def get_conference_tickets(
     quotas = pretix.get_quotas(conference)
 
     def sort_func(ticket):
-        # If the item has variations, it means it is the
-        # t-shirt product. We want to show it always at the bottom
-        if len(ticket.variations) > 0:
+        # Make gadgets and association appear at the end
+        if (
+            ticket.category == "Gadget"
+            or ticket.category_internal_name == ASSOCIATION_CATEGORY_INTERNAL_NAME
+        ):
             return math.inf
 
         # Order all other tickets by price (low -> high)
