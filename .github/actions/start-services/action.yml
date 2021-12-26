@@ -80,6 +80,9 @@ runs:
         STRIPE_SECRET_API_KEY=xx \
         STRIPE_SUBSCRIPTION_PRICE_ID=x \
         STRIPE_WEBHOOK_SIGNATURE_SECRET=x \
+        USERS_SERVICE=x \
+        PRETIX_WEBHOOK_SECRET=x \
+        SERVICE_TO_SERVICE_SECRET=x \
         PASTAPORTO_SECRET=x \
         poetry run task server &
 
