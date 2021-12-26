@@ -1,6 +1,12 @@
-import { useCurrentUserQuery } from "~/types";
+import { CurrentUserQueryResult, useCurrentUserQuery } from "~/types";
 
-export const useCurrentUser = ({ skip }: { skip?: boolean }) => {
+type CurrentUser = {
+  loading: boolean;
+  error: any;
+  user?: CurrentUserQueryResult["data"]["me"];
+};
+
+export const useCurrentUser = ({ skip }: { skip?: boolean }): CurrentUser => {
   const { loading, error, data } = useCurrentUserQuery({
     skip,
     errorPolicy: "all",
