@@ -8,7 +8,7 @@ resource "aws_cloudwatch_event_target" "membership_check_status_to_lambda" {
   arn  = module.lambda.arn
   rule = aws_cloudwatch_event_rule.membership_check_status.id
   input = jsonencode({
-    "event" : {
+    "cron_event" : {
       "name" : "membership.check_status",
       "payload" : {}
     }
