@@ -69,10 +69,6 @@ async def event_handler(event):
 
 
 def handler(event, context):
-    if received_event := event.get("event"):
-        asyncio.run(event_handler(received_event))
-        return
-
     if command := event.get("_cli_command"):  # noqa
         native_stdout = sys.stdout
         native_stderr = sys.stderr
@@ -94,6 +90,11 @@ def handler(event, context):
             sys.stderr = native_stderr
 
         return {"output": output_buffer.getvalue()}
+
+    if received_event := event.get("detail"):
+        print("event =>", event)
+        asyncio.run(event_handler(received_event))
+        return
 
     asgi_handler = Mangum(wrapped_app)
     response = asgi_handler(event, context)
