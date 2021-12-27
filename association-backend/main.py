@@ -61,8 +61,11 @@ wrapped_app = SentryAsgiMiddleware(app)
 
 
 async def event_handler(event):
+    print("event_handler=>", event)
     try:
         await startup()
+        print("run handler=>", event["name"], "payload", event["payload"])
+        print("parsed payload=>", json.loads(event["payload"]))
         await run_handler("crons", event["name"], json.loads(event["payload"]))
     finally:
         await shutdown()
@@ -91,8 +94,9 @@ def handler(event, context):
 
         return {"output": output_buffer.getvalue()}
 
-    print("event =>", event)
-    if received_event := event.get("detail"):
+    # {'event': {'name': 'membership.check_status', 'payload': {}}}
+    if received_event := event.get("event"):
+        print("received_event=>",received_event)
         asyncio.run(event_handler(received_event))
         return
 
