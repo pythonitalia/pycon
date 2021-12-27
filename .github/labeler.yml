@@ -21,6 +21,3 @@ infrastructure:
 
 🐙 github:
 - .github/*
-
-🔨toolkit:
-- toolkit/*
