@@ -1,8 +1,8 @@
 export const messages = {
   en: {
-    titleTemplate: "%s | PyCon Italy",
+    titleTemplate: "%s | PyCon Italia",
     description:
-      "Join PyCon Italy from the 2nd to the 5th of June 2022 in Florence, Italy!",
+      "Join PyCon Italia from the 2nd to the 5th of June 2022 in Florence, Italy!",
     "global.yes": "Yes",
     "global.no": "No",
     "global.loading": "Loading",
@@ -113,9 +113,9 @@ export const messages = {
     "cfp.pageTitle": "Make a proposal",
     "cfp.loading": "Please wait",
     "cfp.introductionHeading": "Make a proposal",
-    "cfp.introductionSubtitle": "PyCon Italy is looking for you!",
+    "cfp.introductionSubtitle": "PyCon Italia is looking for you!",
     "cfp.introductionCopy":
-      "PyCon Italy is seeking speakers of all experience levels and backgrounds to contribute to our conference program! If you use Python professionally, as a hobbyist or are just excited about Python or programming and open source communities, we’d love to hear from you. We want you and your ideas at PyCon!",
+      "PyCon Italia is seeking speakers of all experience levels and backgrounds to contribute to our conference program! If you use Python professionally, as a hobbyist or are just excited about Python or programming and open source communities, we’d love to hear from you. We want you and your ideas at PyCon!",
     "cfp.introductionDeadline":
       "You have until {deadline} to submit a proposal!",
     "cfp.learnMore": "Learn more",
@@ -200,7 +200,7 @@ export const messages = {
     "blog.author": "Author",
     "inputTag.selectTags": "Select some tags...",
 
-    "tickets.pageTitle": "Buy your ticket for PyCon Italy",
+    "tickets.pageTitle": "Buy your ticket for PyCon Italia",
     "tickets.loading": "Please wait 🕐",
     "tickets.heading": "Get some tickets",
     "tickets.covid19explanation": `This year we are selling both regular and late tickets together to better cover our costs due to the current COVID-19 situation limiting how many tickets we can sell.{br}
@@ -371,7 +371,7 @@ export const messages = {
 
     "voting.heading": "Community voting",
     "voting.introduction": `This is your opportunity to have a say on what you want to see at
-      PyCon Italy! Voting will help us creating a program that better
+      PyCon Italia! Voting will help us creating a program that better
       reflects what everyone wants to see!`,
     "voting.seoTitle": "Voting",
     "voting.close": "Close",
@@ -535,7 +535,7 @@ export const messages = {
     "cfp.tutorial": "Tutorial",
     "cfp.title": "Titolo",
     "cfp.introductionHeading": "Invia una proposta",
-    "cfp.introductionSubtitle": "PyCon Italy cerca te!",
+    "cfp.introductionSubtitle": "PyCon Italia cerca te!",
     "cfp.introductionCopy":
       "PyCon Italia è alla ricerca di speakers con ogni background per contribuire al nostro progamma. Se usi Python professionalmente, come hobbista o se semplicemente sei un appassionato di Python o programmazione, proponi un talk! Vogliamo sentire ciò che hai da condividere!",
     "cfp.introductionDeadline":
