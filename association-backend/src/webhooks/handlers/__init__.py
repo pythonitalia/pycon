@@ -26,7 +26,7 @@ def get_handler(
 
 
 async def run_handler(
-    service: Literal["stripe", "pretix"], event_name: str, payload: Any
+    service: Literal["stripe", "pretix", "crons"], event_name: str, payload: Any
 ):
     handler = get_handler(service, event_name)
 
