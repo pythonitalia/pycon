@@ -50,7 +50,7 @@ export const messages = {
     "profile.openToNewsletter":
       "I want to receive E-mail for main communications",
     "profile.openToRecruiting":
-      "I want to receive a few selected job offers through PyCon",
+      "I want to receive a few selected job offers through PyCon Italia",
     "profile.edit.title": "Edit profile",
     "profile.manageTicket": "Manage ticket",
     "profile.myTicketsHeader": "My Tickets",
@@ -89,7 +89,7 @@ export const messages = {
     "submission.loading": "Loading",
     "submission.notFound": "Not found",
     "submission.socialCard.prefix": "I submitted:",
-    "submission.socialCard.suffix": "to PyCon 11 🙌",
+    "submission.socialCard.suffix": "to PyCon Italia 2022 🙌",
     "submission.comments": "Comments",
     "submission.noComments": "No comments yet",
     "submission.sendComment": "Send",
@@ -115,7 +115,7 @@ export const messages = {
     "cfp.introductionHeading": "Make a proposal",
     "cfp.introductionSubtitle": "PyCon Italia is looking for you!",
     "cfp.introductionCopy":
-      "PyCon Italia is seeking speakers of all experience levels and backgrounds to contribute to our conference program! If you use Python professionally, as a hobbyist or are just excited about Python or programming and open source communities, we’d love to hear from you. We want you and your ideas at PyCon!",
+      "PyCon Italia is seeking speakers of all experience levels and backgrounds to contribute to our conference program! If you use Python professionally, as a hobbyist or are just excited about Python or programming and open source communities, we’d love to hear from you. We want you and your ideas at PyCon Italia!",
     "cfp.introductionDeadline":
       "You have until {deadline} to submit a proposal!",
     "cfp.learnMore": "Learn more",
@@ -471,7 +471,7 @@ export const messages = {
     "profile.openToNewsletter":
       "Desidero ricevere E-mail per le comunicazioni più importanti",
     "profile.openToRecruiting":
-      "Desidero ricevere alcune proposte di lavoro selezionate attraverso PyCon",
+      "Desidero ricevere alcune proposte di lavoro selezionate attraverso PyCon Italia",
     "profile.edit.title": "Modifica profilo",
     "profile.myTicketsHeader": "I miei biglietti",
     "profile.manageTicket": "Gestisci biglietto",
@@ -511,7 +511,7 @@ export const messages = {
     "submission.loading": "Caricamento in corso",
     "submission.notFound": "Non trovato",
     "submission.socialCard.prefix": "Ho proposto:",
-    "submission.socialCard.suffix": "a PyCon 11 🙌",
+    "submission.socialCard.suffix": "a PyCon Italia 2022 🙌",
     "submission.comments": "Commenti",
     "submission.commentHead": "{author}, {when}:",
     "submission.noComments": "Nessun commento",
