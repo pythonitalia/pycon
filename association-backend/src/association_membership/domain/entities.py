@@ -65,7 +65,13 @@ class Subscription(ormar.Model):
         return self.status == SubscriptionStatus.ACTIVE
 
     def _change_state(self, to: SubscriptionStatus):
-        logger.info("Switching subscription from status %s to %s", self.status, to)
+        logger.info(
+            "Switching subscription_id=%s of user_id=%s from status %s to %s",
+            self.id,
+            self.user_id,
+            self.status,
+            to,
+        )
         self.status = to
 
     def add_pretix_payment(
