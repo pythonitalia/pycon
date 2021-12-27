@@ -91,8 +91,8 @@ def handler(event, context):
 
         return {"output": output_buffer.getvalue()}
 
+    print("event =>", event)
     if received_event := event.get("detail"):
-        print("event =>", event)
         asyncio.run(event_handler(received_event))
         return
 
