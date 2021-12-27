@@ -382,3 +382,43 @@ async def _(db=db):
             id=subscription_1.id
         )
         assert updated_subscription_1.status == SubscriptionStatus.CANCELED
+
+
+@test("subscription with overlapping canceled and valid payment is marked active")
+async def _(db=db):
+    repository = AssociationMembershipRepository()
+
+    with time_machine.travel("2020-10-10 10:00:00", tick=False):
+        subscription_1 = await SubscriptionFactory(
+            user_id=1, status=SubscriptionStatus.CANCELED
+        )
+        subscription_1.add_pretix_payment(
+            organizer="python-italia",
+            event="pycon-demo",
+            order_code="XXYYZZ",
+            total=1000,
+            status=PaymentStatus.CANCELED,
+            payment_date=datetime.datetime(2019, 10, 10, 1, 4, 43, tzinfo=timezone.utc),
+            period_start=datetime.datetime(2019, 10, 10, 1, 4, 43, tzinfo=timezone.utc),
+            period_end=datetime.datetime(2022, 10, 10, 1, 4, 43, tzinfo=timezone.utc),
+        )
+
+        subscription_1.add_pretix_payment(
+            organizer="python-italia",
+            event="pycon-demo",
+            order_code="ABCABCABC",
+            total=1000,
+            status=PaymentStatus.PAID,
+            payment_date=datetime.datetime(2019, 10, 10, 1, 4, 43, tzinfo=timezone.utc),
+            period_start=datetime.datetime(2019, 10, 10, 1, 4, 43, tzinfo=timezone.utc),
+            period_end=datetime.datetime(2020, 11, 10, 1, 4, 43, tzinfo=timezone.utc),
+        )
+
+        await repository.save_subscription(subscription_1)
+
+        await membership_check_status({})
+
+        updated_subscription_1 = await Subscription.objects.get_or_none(
+            id=subscription_1.id
+        )
+        assert updated_subscription_1.status == SubscriptionStatus.ACTIVE
