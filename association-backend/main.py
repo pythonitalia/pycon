@@ -18,6 +18,7 @@ from src.api.views import GraphQL
 from src.association.auth import RouterAuthBackend
 from src.association.settings import DEBUG, ENV, SENTRY_DSN
 from src.database.db import database
+from src.internal_api.views import GraphQL as InternalGraphQL
 from src.webhooks.handlers import run_handler
 from src.webhooks.views import pretix_webhook, stripe_webhook
 
@@ -33,6 +34,7 @@ app = Starlette(
     debug=DEBUG,
     routes=[
         Route("/graphql", GraphQL()),
+        Route("/internal-api", InternalGraphQL()),
         Route("/stripe-webhook", stripe_webhook, methods=["POST"]),
         Route("/pretix-webhook", pretix_webhook, methods=["POST"]),
     ],
