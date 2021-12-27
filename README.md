@@ -47,4 +47,13 @@ STRIPE_SECRET_API_KEY=
 
 Adding the secret keys after the `=` symbol.
 
+## Libraries & External repos
+
+Libraries used by this project are in separate repositories.
+
+| Name          | Description                                             | Link                                                   |
+| ------------- | ------------------------------------------------------- | ------------------------------------------------------ |
+| Toolkit       | Backend Toolkit used to share code between all services | https://github.com/pythonitalia/pythonit-toolkit       |
+| ESLint Config | ESLint config used by the FE services                   | https://github.com/pythonitalia/eslint-config-pythonit |
+
 [<img src="https://www.datocms-assets.com/31049/1618983297-powered-by-vercel.svg">](https://vercel.com?utm_source=python-italia&utm_campaign=oss)
