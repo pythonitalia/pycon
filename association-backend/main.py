@@ -92,7 +92,7 @@ def handler(event, context):
 
         return {"output": output_buffer.getvalue()}
 
-    if received_event := event.get("cron_event"):
+    if received_event := event.get("cronEvent"):
         asyncio.run(event_handler(received_event))
         return
 
