@@ -66,7 +66,7 @@ class Subscription(ormar.Model):
 
     def _change_state(self, to: SubscriptionStatus):
         logger.info(
-            "Switching subscription_id=%s of user_id=%s from status %s to %s",
+            "Switching subscription_id=%s of user_id=%s from old_status=%s to status=%s",
             self.id,
             self.user_id,
             self.status,
