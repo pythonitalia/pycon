@@ -317,3 +317,39 @@ async def _(db=db):
             id=subscription_1.id
         )
         assert updated_subscription_1.status == SubscriptionStatus.ACTIVE
+
+
+@test("pending subscriptions are ignored")
+async def _(db=db):
+    repository = AssociationMembershipRepository()
+    with time_machine.travel("2020-10-10 10:00:00", tick=False):
+        subscription_1 = await SubscriptionFactory(
+            user_id=1, status=SubscriptionStatus.PENDING
+        )
+
+        await repository.save_subscription(subscription_1)
+
+        await membership_check_status({})
+
+        updated_subscription_1 = await Subscription.objects.get_or_none(
+            id=subscription_1.id
+        )
+        assert updated_subscription_1.status == SubscriptionStatus.PENDING
+
+
+@test("canceled subscriptions with no payments are left untouched")
+async def _(db=db):
+    repository = AssociationMembershipRepository()
+    with time_machine.travel("2020-10-10 10:00:00", tick=False):
+        subscription_1 = await SubscriptionFactory(
+            user_id=1, status=SubscriptionStatus.CANCELED
+        )
+
+        await repository.save_subscription(subscription_1)
+
+        await membership_check_status({})
+
+        updated_subscription_1 = await Subscription.objects.get_or_none(
+            id=subscription_1.id
+        )
+        assert updated_subscription_1.status == SubscriptionStatus.CANCELED
