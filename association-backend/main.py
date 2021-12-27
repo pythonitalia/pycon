@@ -1,3 +1,5 @@
+import asyncio
+import json
 import logging
 import subprocess
 import sys
@@ -16,11 +18,13 @@ from src.api.views import GraphQL
 from src.association.auth import RouterAuthBackend
 from src.association.settings import DEBUG, ENV, SENTRY_DSN
 from src.database.db import database
+from src.webhooks.handlers import run_handler
 from src.webhooks.views import pretix_webhook, stripe_webhook
 
 if SENTRY_DSN:
     configure_sentry(dsn=str(SENTRY_DSN), env=ENV)
 
+logging.getLogger().setLevel(logging.INFO)
 logging.basicConfig(level=logging.INFO)
 logging.getLogger("sqlalchemy.engine.Engine").disabled = True
 
@@ -57,6 +61,14 @@ async def shutdown():
 wrapped_app = SentryAsgiMiddleware(app)
 
 
+async def event_handler(event):
+    try:
+        await startup()
+        await run_handler("crons", event["name"], event["payload"])
+    finally:
+        await shutdown()
+
+
 def handler(event, context):
     if command := event.get("_cli_command"):  # noqa
         native_stdout = sys.stdout
@@ -79,6 +91,10 @@ def handler(event, context):
             sys.stderr = native_stderr
 
         return {"output": output_buffer.getvalue()}
+
+    if received_event := event.get("cronEvent"):
+        asyncio.run(event_handler(received_event))
+        return
 
     asgi_handler = Mangum(wrapped_app)
     response = asgi_handler(event, context)
