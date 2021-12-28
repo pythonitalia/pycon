@@ -1,4 +1,4 @@
-from ward import test
+from ward import each, test
 
 from src.association.tests.session import db
 from src.association_membership.domain.entities import SubscriptionStatus
@@ -44,12 +44,13 @@ async def _(
     assert response.data["userIdIsMember"] is True
 
 
-@test("user is not a member")
+@test("user has a {status} membership so is not a member")
 async def _(
     internalapi_graphql_client=internalapi_graphql_client,
     db=db,
+    status=each(SubscriptionStatus.CANCELED, SubscriptionStatus.PENDING),
 ):
-    await SubscriptionFactory(user_id=1, status=SubscriptionStatus.CANCELED)
+    await SubscriptionFactory(user_id=1, status=status)
 
     internalapi_graphql_client.force_service_login(
         issuer="pycon-backend", audience="association-backend"
