@@ -50,10 +50,10 @@ class HotelRoomReservationAdmin(AdminUsersMixin):
         return False
 
     def user_display_name(self, obj):
-        return self.get_user_display_name(obj.id)
+        return self.get_user_display_name(obj.user_id)
 
     def user_info(self, obj):
-        user_data = self.get_user_data(obj.id)
+        user_data = self.get_user_data(obj.user_id)
         display_name = user_data["displayName"]
         email = user_data["email"]
         id = user_data["id"]
