@@ -1,6 +1,9 @@
+import os
 import sqlite3
 
 import requests
+
+pretix_token = os.environ["PRETIX_TOKEN"]
 
 con = sqlite3.connect("p3.db")
 con.row_factory = sqlite3.Row
@@ -114,7 +117,7 @@ for order_row in cur:
             "send_email": "false",
             "positions": positions,
         },
-        headers={"Authorization": "Token"},
+        headers={"Authorization": f"Token {pretix_token}"},
     )
 
     if response.status_code == 400:
