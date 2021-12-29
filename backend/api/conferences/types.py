@@ -4,6 +4,7 @@ from typing import List, Optional
 import strawberry
 from django.conf import settings
 from django.utils import translation
+from strawberry import ID
 
 from api.cms.types import FAQ, Menu
 from api.events.types import Event
@@ -23,6 +24,53 @@ from voting.models import RankRequest as RankRequestModel
 from ..helpers.i18n import make_localized_resolver
 from ..helpers.maps import Map, resolve_map
 from ..permissions import CanSeeSubmissions
+
+
+@strawberry.type
+class KeynoteSpeaker:
+    id: ID
+    name: str
+    photo: str
+    bio: str
+    pronouns: str
+    twitter_handle: str
+    instagram_handle: str
+    website: str
+
+    @classmethod
+    def from_django_model(cls, instance):
+        return cls(
+            id=instance.id,
+            name=instance.name,
+            photo=instance.photo.url,
+            bio=instance.bio,
+            pronouns=instance.pronouns,
+            twitter_handle=instance.twitter_handle,
+            instagram_handle=instance.instagram_handle,
+            website=instance.website,
+        )
+
+
+@strawberry.type
+class Keynote:
+    id: ID
+    keynote_title: str
+    keynote_description: str
+    highlight_color: str
+    speakers: List[KeynoteSpeaker]
+
+    @classmethod
+    def from_django_model(cls, instance):
+        return cls(
+            id=instance.id,
+            keynote_title=instance.keynote_title,
+            keynote_description=instance.keynote_description,
+            highlight_color=instance.highlight_color,
+            speakers=[
+                KeynoteSpeaker.from_django_model(speaker)
+                for speaker in instance.speakers.all()
+            ],
+        )
 
 
 @strawberry.type
@@ -191,8 +239,8 @@ class Conference:
         )
 
     @strawberry.field
-    def keynotes(self, info) -> List[ScheduleItem]:
-        return self.schedule_items.filter(type=ScheduleItemModel.TYPES.keynote).all()
+    def keynotes(self, info) -> List[Keynote]:
+        return [Keynote.from_django_model(keynote) for keynote in self.keynotes.all()]
 
     @strawberry.field
     def talks(self, info) -> List[ScheduleItem]:

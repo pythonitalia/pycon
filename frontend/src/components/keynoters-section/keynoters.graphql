@@ -3,12 +3,12 @@ query KeynotesSection($code: String!) {
     id
     keynotes {
       id
-      title
+      keynoteTitle
       highlightColor
-      image
       speakers {
         id
-        fullName
+        name
+        photo
       }
     }
   }

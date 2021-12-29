@@ -6,7 +6,15 @@ from django.utils.translation import gettext_lazy as _
 
 from sponsors.models import SponsorLevel
 
-from .models import AudienceLevel, Conference, Deadline, Duration, Topic
+from .models import (
+    AudienceLevel,
+    Conference,
+    Deadline,
+    Duration,
+    Keynote,
+    KeynoteSpeaker,
+    Topic,
+)
 
 
 def validate_deadlines_form(forms):
@@ -127,3 +135,33 @@ class DeadlineAdmin(admin.ModelAdmin):
         ("Info", {"fields": ("name", "description", "type", "conference")}),
         ("Dates", {"fields": ("start", "end")}),
     )
+
+
+class KeynoteSpeakerInline(admin.StackedInline):
+    model = KeynoteSpeaker
+    extra = 1
+
+
+@admin.register(Keynote)
+class KeynoteAdmin(admin.ModelAdmin):
+    list_display = (
+        "keynote_title",
+        "conference",
+    )
+    list_filter = ("conference",)
+    fieldsets = (
+        (
+            _("Keynote"),
+            {
+                "fields": (
+                    "conference",
+                    "keynote_title",
+                    "keynote_description",
+                    "highlight_color",
+                )
+            },
+        ),
+    )
+    inlines = [
+        KeynoteSpeakerInline,
+    ]
