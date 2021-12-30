@@ -95,9 +95,9 @@ const KeynotesPage = () => {
       />
 
       <Grid
-        gap={5}
+        gap={[3, 3, 5]}
         sx={{
-          gridTemplateColumns: ["1fr", null, "1fr 1fr 1fr"],
+          gridTemplateColumns: ["1fr", "1fr 1fr", "1fr 1fr 1fr"],
           mx: "auto",
           px: 3,
           pb: 5,
