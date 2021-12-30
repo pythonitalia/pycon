@@ -1,0 +1,22 @@
+query Keynote($conference: String!, $slug: String!) {
+  conference(code: $conference) {
+    id
+    keynote(slug: $slug) {
+      id
+      keynoteTitle
+      keynoteDescription
+      slug
+      speakers {
+        id
+        name
+        bio
+        pronouns
+        twitterHandle
+        instagramHandle
+        website
+        photo
+        highlightColor
+      }
+    }
+  }
+}

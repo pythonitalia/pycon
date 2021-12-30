@@ -13,14 +13,12 @@ class Keynote(TimeStampedModel):
         related_name="keynotes",
         null=False,
     )
+    slug = models.SlugField(_("slug"), max_length=200)
     keynote_title = models.CharField(
         _("keynote title"), blank=False, max_length=512, default=""
     )
     keynote_description = models.TextField(
         _("keynote description"), blank=False, default=""
-    )
-    highlight_color = models.CharField(
-        choices=COLORS, max_length=15, blank=True, verbose_name=_("highlight color")
     )
 
     def __str__(self) -> str:
@@ -53,6 +51,9 @@ class KeynoteSpeaker(TimeStampedModel):
     pronouns = models.CharField(
         _("pronouns"),
         max_length=512,
+    )
+    highlight_color = models.CharField(
+        choices=COLORS, max_length=15, blank=True, verbose_name=_("highlight color")
     )
     twitter_handle = models.CharField(
         _("twitter handle"),

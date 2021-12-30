@@ -4,7 +4,7 @@ from typing import List, Optional
 import strawberry
 from django.conf import settings
 from django.utils import translation
-from strawberry import ID
+from strawberry import ID, Private
 
 from api.cms.types import FAQ, Menu
 from api.events.types import Event
@@ -30,21 +30,27 @@ from ..permissions import CanSeeSubmissions
 class KeynoteSpeaker:
     id: ID
     name: str
-    photo: str
     bio: str
     pronouns: str
     twitter_handle: str
     instagram_handle: str
     website: str
+    highlight_color: str
+    _photo_url: Private[str]
+
+    @strawberry.field
+    def photo(self, info) -> str:
+        return info.context.request.build_absolute_uri(self._photo_url)
 
     @classmethod
     def from_django_model(cls, instance):
         return cls(
             id=instance.id,
             name=instance.name,
-            photo=instance.photo.url,
+            _photo_url=instance.photo.url,
             bio=instance.bio,
             pronouns=instance.pronouns,
+            highlight_color=instance.highlight_color,
             twitter_handle=instance.twitter_handle,
             instagram_handle=instance.instagram_handle,
             website=instance.website,
@@ -56,7 +62,7 @@ class Keynote:
     id: ID
     keynote_title: str
     keynote_description: str
-    highlight_color: str
+    slug: str
     speakers: List[KeynoteSpeaker]
 
     @classmethod
@@ -65,10 +71,10 @@ class Keynote:
             id=instance.id,
             keynote_title=instance.keynote_title,
             keynote_description=instance.keynote_description,
-            highlight_color=instance.highlight_color,
+            slug=instance.slug,
             speakers=[
                 KeynoteSpeaker.from_django_model(speaker)
-                for speaker in instance.speakers.all()
+                for speaker in instance.speakers.order_by("created", "id").all()
             ],
         )
 
@@ -241,6 +247,11 @@ class Conference:
     @strawberry.field
     def keynotes(self, info) -> List[Keynote]:
         return [Keynote.from_django_model(keynote) for keynote in self.keynotes.all()]
+
+    @strawberry.field
+    def keynote(self, info, slug: str) -> Optional[Keynote]:
+        keynote = self.keynotes.filter(slug=slug).first()
+        return Keynote.from_django_model(keynote) if keynote else None
 
     @strawberry.field
     def talks(self, info) -> List[ScheduleItem]:

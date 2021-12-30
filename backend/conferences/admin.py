@@ -155,9 +155,9 @@ class KeynoteAdmin(admin.ModelAdmin):
             {
                 "fields": (
                     "conference",
+                    "slug",
                     "keynote_title",
                     "keynote_description",
-                    "highlight_color",
                 )
             },
         ),

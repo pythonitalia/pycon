@@ -4,11 +4,12 @@ query KeynotesSection($code: String!) {
     keynotes {
       id
       keynoteTitle
-      highlightColor
+      slug
       speakers {
         id
         name
         photo
+        highlightColor
       }
     }
   }

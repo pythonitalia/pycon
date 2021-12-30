@@ -1,0 +1,9 @@
+query AllKeynotes($conference: String!) {
+  conference(code: $conference) {
+    id
+    keynotes {
+      id
+      slug
+    }
+  }
+}

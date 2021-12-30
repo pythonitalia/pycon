@@ -211,6 +211,8 @@ export const messages = {
     "addHotelRoom.checkin": "Check-in",
     "addHotelRoom.checkout": "Check-out",
 
+    "keynote.speakers": "Speakers",
+
     "order.nextStep": "Next step",
     "order.creatingOrder": "Creating order 🕐",
     "order.payWithCard": "Pay with card",
@@ -775,6 +777,8 @@ export const messages = {
     "orderReview.nights": "notti",
     "orderReview.checkin": "Check-in",
     "orderReview.checkout": "Check-out",
+
+    "keynote.speakers": "Speakers",
 
     "ranking.heading": "Risultati della votazione comunitaria",
     "ranking.introduction": "Ecco qui i risultati della votazione comunitaria!",
