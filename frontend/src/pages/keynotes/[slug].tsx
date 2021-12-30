@@ -90,7 +90,7 @@ const KeynotePage = () => {
       />
 
       <Grid
-        gap={5}
+        gap={[0, null, 5]}
         sx={{
           mx: "auto",
           px: 3,
