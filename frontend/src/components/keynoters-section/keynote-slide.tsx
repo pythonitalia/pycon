@@ -26,11 +26,15 @@ export const KeynoteSlide = ({
       params={{
         slug,
       }}
-      sx={!standalone ? {
-        '&:last-child': {
-          borderRight: 'primary',
-        }
-      } : undefined}
+      sx={
+        !standalone
+          ? {
+              "&:last-child": {
+                borderRight: "primary",
+              },
+            }
+          : undefined
+      }
     >
       <Box
         sx={{

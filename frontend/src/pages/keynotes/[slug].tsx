@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
-import { Fragment } from "react";
+import { Fragment, useCallback } from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, Grid, Flex, Heading, jsx, Text } from "theme-ui";
 
@@ -13,6 +13,7 @@ import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Article } from "~/components/article";
 import { BlogPostIllustration } from "~/components/illustrations/blog-post";
 import { Link } from "~/components/link";
+import { Marquee } from "~/components/marquee";
 import { MetaTags } from "~/components/meta-tags";
 import { compile } from "~/helpers/markdown";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
@@ -66,6 +67,7 @@ const KeynoteInfoLine = ({ property, value, to }: KeynoteInfoLineProps) => (
 const KeynotePage = () => {
   const {
     query: { slug },
+    push,
   } = useRouter();
   const {
     data: {
@@ -79,6 +81,9 @@ const KeynotePage = () => {
       slug,
     },
   });
+  const goBack = useCallback(() => {
+    push("/keynotes");
+  }, []);
   const firstSpeaker = speakers[0];
   return (
     <Fragment>
@@ -227,6 +232,22 @@ const KeynotePage = () => {
           </Box>
         </Grid>
       ))}
+
+      <Box
+        sx={{
+          pt: 4,
+        }}
+      />
+
+      <Box
+        sx={{
+          color: "black",
+          cursor: "pointer",
+        }}
+        onClick={goBack}
+      >
+        <Marquee separator=">" message="Back to Keynotes" />
+      </Box>
     </Fragment>
   );
 };
