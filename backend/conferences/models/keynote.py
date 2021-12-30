@@ -1,11 +1,12 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from model_utils.models import TimeStampedModel
+from ordered_model.models import OrderedModel
 
 from pycon.constants import COLORS
 
 
-class Keynote(TimeStampedModel):
+class Keynote(OrderedModel, TimeStampedModel):
     conference = models.ForeignKey(
         "conferences.Conference",
         on_delete=models.CASCADE,
@@ -20,16 +21,17 @@ class Keynote(TimeStampedModel):
     keynote_description = models.TextField(
         _("keynote description"), blank=False, default=""
     )
+    order_with_respect_to = "conference"
 
     def __str__(self) -> str:
         return f"{self.keynote_title} at {self.conference.code}"
 
-    class Meta:
+    class Meta(OrderedModel.Meta):
         verbose_name = _("Keynote")
         verbose_name_plural = _("Keynotes")
 
 
-class KeynoteSpeaker(TimeStampedModel):
+class KeynoteSpeaker(TimeStampedModel, OrderedModel):
     keynote = models.ForeignKey(
         "conferences.Keynote",
         on_delete=models.CASCADE,
@@ -68,7 +70,8 @@ class KeynoteSpeaker(TimeStampedModel):
         blank=True,
     )
     website = models.URLField(_("website"), blank=True, default="", max_length=2049)
+    order_with_respect_to = "keynote"
 
-    class Meta:
+    class Meta(OrderedModel.Meta):
         verbose_name = _("Keynote Speaker")
         verbose_name_plural = _("Keynote Speakers")

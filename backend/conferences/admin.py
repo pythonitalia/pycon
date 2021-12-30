@@ -3,6 +3,11 @@ from django.core import exceptions
 from django.forms import BaseInlineFormSet
 from django.forms.models import ModelForm
 from django.utils.translation import gettext_lazy as _
+from ordered_model.admin import (
+    OrderedInlineModelAdminMixin,
+    OrderedModelAdmin,
+    OrderedStackedInline,
+)
 
 from sponsors.models import SponsorLevel
 
@@ -137,16 +142,36 @@ class DeadlineAdmin(admin.ModelAdmin):
     )
 
 
-class KeynoteSpeakerInline(admin.StackedInline):
+class KeynoteSpeakerInline(OrderedStackedInline):
     model = KeynoteSpeaker
     extra = 1
+    fields = (
+        "keynote",
+        "name",
+        "photo",
+        "bio",
+        "pronouns",
+        "highlight_color",
+        "twitter_handle",
+        "instagram_handle",
+        "website",
+        "order",
+        "move_up_down_links",
+    )
+    readonly_fields = (
+        "order",
+        "move_up_down_links",
+    )
+    extra = 1
+    ordering = ("order",)
 
 
 @admin.register(Keynote)
-class KeynoteAdmin(admin.ModelAdmin):
+class KeynoteAdmin(OrderedInlineModelAdminMixin, OrderedModelAdmin):
     list_display = (
         "keynote_title",
         "conference",
+        "move_up_down_links",
     )
     list_filter = ("conference",)
     fieldsets = (

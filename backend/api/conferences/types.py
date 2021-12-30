@@ -74,7 +74,7 @@ class Keynote:
             slug=instance.slug,
             speakers=[
                 KeynoteSpeaker.from_django_model(speaker)
-                for speaker in instance.speakers.order_by("created", "id").all()
+                for speaker in instance.speakers.all()
             ],
         )
 
