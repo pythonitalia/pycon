@@ -52,7 +52,7 @@ const KeynoteInfoLine = ({ property, value, to }: KeynoteInfoLineProps) => (
             color: "black",
           }}
           external
-          href={to}
+          path={to}
           target="_blank"
           rel="noopener noreferrer"
         >
