@@ -89,7 +89,6 @@ class SubmissionAdmin(AdminUsersMixin):
         "abstract",
         "notes",
         "previous_talk_video",
-        "comments__text",
     )
     prepopulated_fields = {"slug": ("title",)}
     filter_horizontal = ("tags",)
