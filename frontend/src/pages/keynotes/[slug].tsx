@@ -18,6 +18,7 @@ import { MetaTags } from "~/components/meta-tags";
 import { compile } from "~/helpers/markdown";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { queryAllKeynotes, queryKeynote, useKeynoteQuery } from "~/types";
+import { KeynoteSlide } from "~/components/keynoters-section/keynote-slide";
 
 type KeynoteInfoLineProps = {
   property: string;
@@ -162,46 +163,7 @@ const KeynotePage = () => {
             gridTemplateColumns: [null, null, "0.5fr 1fr"],
           }}
         >
-          <Box
-            sx={{
-              width: "100%",
-              height: 350,
-              position: "relative",
-              border: "primary",
-            }}
-          >
-            <Image
-              sx={{
-                filter: "grayscale(1)",
-                objectFit: "cover",
-              }}
-              src={speaker.photo}
-              layout="fill"
-            />
-            <Box
-              sx={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: "100%",
-                backgroundColor: speaker.highlightColor || "cinderella",
-                mixBlendMode: "multiply",
-              }}
-            />
-            <Text
-              sx={{
-                position: "absolute",
-                bottom: 3,
-                left: 3,
-                fontSize: 4,
-                textTransform: "uppercase",
-                color: "white",
-              }}
-            >
-              {speaker.name}
-            </Text>
-          </Box>
+          <KeynoteSlide keynoteTitle="" standalone slug={null} speakers={[speaker]} />
 
           <Box>
             {speaker.website && (

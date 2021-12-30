@@ -6,22 +6,26 @@ import { Box, Flex, Heading, jsx, Text } from "theme-ui";
 import Image from "next/image";
 
 import { Link } from "~/components/link";
-import { Keynote } from "~/types";
+import { KeynoteSpeaker } from "~/types";
 
-type KeynoteSlide = Keynote & {
-  standalone: boolean;
-};
+type KeynoteSlide = {
+  keynoteTitle: string;
+  slug: string | null;
+  speakers: KeynoteSpeaker[];
+  standalone?: boolean;
+}
 
 export const KeynoteSlide = ({
   keynoteTitle: title,
   slug,
   speakers,
-  standalone,
+  standalone = false,
 }: KeynoteSlide) => {
   const image = speakers[0].photo;
   const highlightColor = speakers[0].highlightColor;
+  const Wrapper = slug ? Link : Box;
   return (
-    <Link
+    <Wrapper
       path="/keynotes/[slug]"
       params={{
         slug,
@@ -40,23 +44,26 @@ export const KeynoteSlide = ({
         sx={{
           position: "relative",
           borderLeft: "primary",
-          height: "100%",
+          paddingBottom: '100%',
           ...(standalone
             ? {
                 borderRight: "primary",
                 borderTop: "primary",
                 borderBottom: "primary",
               }
-            : {}),
+            : {
+              height: '100%',
+            }),
         }}
       >
-        <Box sx={{ display: "inline-block", pt: "100%" }} />
         {image && (
           <Image
             sx={{
               position: "absolute",
               top: 0,
               left: 0,
+              width: '100%',
+              height: '100%',
               filter: "grayscale(1)",
               objectFit: "cover",
             }}
@@ -93,9 +100,9 @@ export const KeynoteSlide = ({
           <Heading variant="caps" as="h3">
             {speakers.map((speaker) => speaker.name).join(" & ")}
           </Heading>
-          <Text>{title}</Text>
+          {title && <Text>{title}</Text>}
         </Flex>
       </Box>
-    </Link>
+    </Wrapper>
   );
 };
