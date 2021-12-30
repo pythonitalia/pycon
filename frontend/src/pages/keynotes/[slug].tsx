@@ -12,13 +12,13 @@ import { useRouter } from "next/router";
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Article } from "~/components/article";
 import { BlogPostIllustration } from "~/components/illustrations/blog-post";
+import { KeynoteSlide } from "~/components/keynoters-section/keynote-slide";
 import { Link } from "~/components/link";
 import { Marquee } from "~/components/marquee";
 import { MetaTags } from "~/components/meta-tags";
 import { compile } from "~/helpers/markdown";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { queryAllKeynotes, queryKeynote, useKeynoteQuery } from "~/types";
-import { KeynoteSlide } from "~/components/keynoters-section/keynote-slide";
 
 type KeynoteInfoLineProps = {
   property: string;
@@ -163,7 +163,12 @@ const KeynotePage = () => {
             gridTemplateColumns: [null, null, "0.5fr 1fr"],
           }}
         >
-          <KeynoteSlide keynoteTitle="" standalone slug={null} speakers={[speaker]} />
+          <KeynoteSlide
+            keynoteTitle=""
+            standalone
+            slug={null}
+            speakers={[speaker]}
+          />
 
           <Box>
             {speaker.website && (

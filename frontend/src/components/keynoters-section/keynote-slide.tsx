@@ -13,7 +13,7 @@ type KeynoteSlide = {
   slug: string | null;
   speakers: KeynoteSpeaker[];
   standalone?: boolean;
-}
+};
 
 export const KeynoteSlide = ({
   keynoteTitle: title,
@@ -44,7 +44,7 @@ export const KeynoteSlide = ({
         sx={{
           position: "relative",
           borderLeft: "primary",
-          paddingBottom: '100%',
+          paddingBottom: "100%",
           ...(standalone
             ? {
                 borderRight: "primary",
@@ -52,8 +52,8 @@ export const KeynoteSlide = ({
                 borderBottom: "primary",
               }
             : {
-              height: '100%',
-            }),
+                height: "100%",
+              }),
         }}
       >
         {image && (
@@ -62,8 +62,8 @@ export const KeynoteSlide = ({
               position: "absolute",
               top: 0,
               left: 0,
-              width: '100%',
-              height: '100%',
+              width: "100%",
+              height: "100%",
               filter: "grayscale(1)",
               objectFit: "cover",
             }}
