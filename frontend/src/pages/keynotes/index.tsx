@@ -20,6 +20,7 @@ import { compile } from "~/helpers/markdown";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
 import {
+  Keynote,
   queryAllKeynotes,
   queryKeynote,
   queryKeynotesPage,
@@ -104,7 +105,7 @@ const KeynotesPage = () => {
           maxWidth: "container",
         }}
       >
-        {keynotes.map((keynote) => (
+        {keynotes.map((keynote: Keynote) => (
           <KeynoteSlide standalone={true} {...keynote} />
         ))}
       </Grid>
