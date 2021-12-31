@@ -74,7 +74,7 @@ const KeynotePage = () => {
   const {
     data: {
       conference: {
-        keynote: { keynoteTitle, keynoteDescription, speakers },
+        keynote: { title, description, speakers },
       },
     },
   } = useKeynoteQuery({
@@ -89,7 +89,7 @@ const KeynotePage = () => {
 
   return (
     <Fragment>
-      <MetaTags title={keynoteTitle} />
+      <MetaTags title={title} />
       <Box
         sx={{
           borderTop: "primary",
@@ -107,8 +107,8 @@ const KeynotePage = () => {
         }}
       >
         <Box>
-          <Article title={keynoteTitle}>
-            <Box>{compile(keynoteDescription).tree}</Box>
+          <Article title={title}>
+            <Box>{compile(description).tree}</Box>
           </Article>
         </Box>
         <Box sx={{ mb: 5 }}>
@@ -164,12 +164,7 @@ const KeynotePage = () => {
             gridTemplateColumns: [null, null, "0.5fr 1fr"],
           }}
         >
-          <KeynoteSlide
-            keynoteTitle=""
-            standalone
-            slug={null}
-            speakers={[speaker]}
-          />
+          <KeynoteSlide title="" standalone slug={null} speakers={[speaker]} />
 
           <Box>
             {speaker.website && (

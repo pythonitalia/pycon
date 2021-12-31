@@ -3,7 +3,7 @@ query KeynotesSection($code: String!) {
     id
     keynotes {
       id
-      keynoteTitle
+      title
       slug
       speakers {
         id

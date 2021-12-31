@@ -9,14 +9,14 @@ import { Link } from "~/components/link";
 import { KeynoteSpeaker } from "~/types";
 
 type KeynoteSlide = {
-  keynoteTitle: string;
+  title: string;
   slug: string | null;
   speakers: KeynoteSpeaker[];
   standalone?: boolean;
 };
 
 export const KeynoteSlide = ({
-  keynoteTitle: title,
+  title,
   slug,
   speakers,
   standalone = false,

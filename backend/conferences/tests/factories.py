@@ -1,12 +1,21 @@
 import factory
 import factory.fuzzy
 import pytz
-from conferences.models import AudienceLevel, Conference, Deadline, Duration, Topic
 from django.utils import timezone
 from factory.django import DjangoModelFactory
+from pytest_factoryboy import register
+
+from conferences.models import (
+    AudienceLevel,
+    Conference,
+    Deadline,
+    Duration,
+    Keynote,
+    KeynoteSpeaker,
+    Topic,
+)
 from i18n.tests.factories import LanguageFactory
 from languages.models import Language
-from pytest_factoryboy import register
 from submissions.models import SubmissionType
 
 
@@ -179,3 +188,25 @@ class DurationFactory(DjangoModelFactory):
 
     class Meta:
         model = Duration
+
+
+@register
+class KeynoteFactory(DjangoModelFactory):
+    conference = factory.SubFactory(ConferenceFactory)
+    slug = factory.Faker("slug")
+    keynote_title = factory.Faker("word")
+    keynote_description = factory.Faker("word")
+
+    class Meta:
+        model = Keynote
+
+
+@register
+class KeynoteSpeakerFactory(DjangoModelFactory):
+    keynote = factory.SubFactory(KeynoteFactory)
+    name = factory.Faker("word")
+    bio = factory.Faker("word")
+    pronouns = "she / her"
+
+    class Meta:
+        model = KeynoteSpeaker

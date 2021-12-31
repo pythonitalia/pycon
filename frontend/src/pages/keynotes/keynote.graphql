@@ -3,8 +3,8 @@ query Keynote($conference: String!, $slug: String!) {
     id
     keynote(slug: $slug) {
       id
-      keynoteTitle
-      keynoteDescription
+      title
+      description
       slug
       speakers {
         id

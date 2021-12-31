@@ -60,8 +60,8 @@ class KeynoteSpeaker:
 @strawberry.type
 class Keynote:
     id: ID
-    keynote_title: str
-    keynote_description: str
+    title: str
+    description: str
     slug: str
     speakers: List[KeynoteSpeaker]
 
@@ -69,8 +69,8 @@ class Keynote:
     def from_django_model(cls, instance):
         return cls(
             id=instance.id,
-            keynote_title=instance.keynote_title,
-            keynote_description=instance.keynote_description,
+            title=instance.keynote_title,
+            description=instance.keynote_description,
             slug=instance.slug,
             speakers=[
                 KeynoteSpeaker.from_django_model(speaker)
