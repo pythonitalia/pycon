@@ -10,3 +10,13 @@ export const getSize = (cardType: CardType) => {
       return { width: 1200, height: 1200 };
   }
 };
+
+export const getTitleFontSize = (cardType: CardType) => {
+  switch (cardType) {
+    case "social":
+    case "social-twitter":
+      return 7;
+    case "social-square":
+      return 8;
+  }
+};

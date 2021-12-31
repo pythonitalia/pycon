@@ -10,7 +10,7 @@ import { useRouter } from "next/router";
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { SocialSnakes } from "~/components/illustrations/social-snakes";
 import { CardType, getSize, getTitleFontSize } from "~/helpers/social-card";
-import { queryTalkSocialCard, useTalkSocialCardQuery } from "~/types";
+import { queryKeynoteSocialCard, useKeynoteSocialCardQuery } from "~/types";
 
 export const SocialCard = () => {
   const router = useRouter();
@@ -18,18 +18,14 @@ export const SocialCard = () => {
   const slug = router.query.slug as string;
   const code = process.env.conferenceCode;
 
-  const { loading, data } = useTalkSocialCardQuery({
+  const { data } = useKeynoteSocialCardQuery({
     variables: {
       slug,
-      code,
+      conference: code,
     },
   });
 
-  if (loading) {
-    return null;
-  }
-
-  const talk = data.conference.talk;
+  const keynote = data.conference.keynote;
 
   return (
     <Fragment>
@@ -56,7 +52,7 @@ export const SocialCard = () => {
               mb: 3,
             }}
           >
-            {talk.speakers.map((speaker) => speaker.fullName).join("&")}
+            {keynote.speakers.map((speaker) => speaker.name).join(" & ")}
           </Text>
 
           <Heading
@@ -66,7 +62,7 @@ export const SocialCard = () => {
               fontWeight: "bold",
             }}
           >
-            {talk.title}
+            {keynote.title}
           </Heading>
         </Box>
 
@@ -82,8 +78,8 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const slug = params.slug as string;
   const client = getApolloClient();
 
-  await queryTalkSocialCard(client, {
-    code: process.env.conferenceCode,
+  await queryKeynoteSocialCard(client, {
+    conference: process.env.conferenceCode,
     slug,
   });
 

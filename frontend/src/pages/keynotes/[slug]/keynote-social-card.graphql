@@ -1,0 +1,13 @@
+query KeynoteSocialCard($conference: String!, $slug: String!) {
+  conference(code: $conference) {
+    id
+    keynote(slug: $slug) {
+      id
+      title
+      speakers {
+        id
+        name
+      }
+    }
+  }
+}

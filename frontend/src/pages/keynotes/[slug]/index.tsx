@@ -83,13 +83,29 @@ const KeynotePage = () => {
       slug: slug as string,
     },
   });
+
   const goBack = useCallback(() => {
     push("/keynotes");
   }, []);
 
+  const speakersName = speakers.map((speaker) => speaker.name).join(" & ");
+
   return (
     <Fragment>
-      <MetaTags title={title} />
+      <FormattedMessage
+        id="keynote.socialDescription"
+        values={{
+          speakersName,
+        }}
+      >
+        {(socialDescription) => (
+          <MetaTags
+            title={title}
+            description={socialDescription}
+            useDefaultSocialCard={false}
+          />
+        )}
+      </FormattedMessage>
       <Box
         sx={{
           borderTop: "primary",
@@ -142,9 +158,7 @@ const KeynotePage = () => {
                   <FormattedMessage id="keynote.speakers" />
                 </Text>
 
-                <Text>
-                  {speakers.map((speaker) => speaker.name).join(" & ")}
-                </Text>
+                <Text>{speakersName}</Text>
               </Box>
 
               {topic && (
