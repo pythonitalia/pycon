@@ -212,6 +212,10 @@ export const messages = {
     "addHotelRoom.checkout": "Check-out",
 
     "keynote.speakers": "Speakers",
+    "keynote.instagram": "Instagram",
+    "keynote.twitter": "Twitter",
+    "keynote.website": "Website",
+    "keynote.pronouns": "Pronouns",
 
     "order.nextStep": "Next step",
     "order.creatingOrder": "Creating order 🕐",
@@ -779,6 +783,10 @@ export const messages = {
     "orderReview.checkout": "Check-out",
 
     "keynote.speakers": "Speakers",
+    "keynote.instagram": "Instagram",
+    "keynote.twitter": "Twitter",
+    "keynote.website": "Website",
+    "keynote.pronouns": "Pronomi",
 
     "ranking.heading": "Risultati della votazione comunitaria",
     "ranking.introduction": "Ecco qui i risultati della votazione comunitaria!",

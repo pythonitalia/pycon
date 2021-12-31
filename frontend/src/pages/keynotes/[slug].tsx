@@ -3,10 +3,9 @@
 /** @jsx jsx */
 import { Fragment, useCallback } from "react";
 import { FormattedMessage } from "react-intl";
-import { Box, Grid, Flex, Heading, jsx, Text } from "theme-ui";
+import { Box, Grid, Flex, jsx, Text } from "theme-ui";
 
 import { GetStaticPaths, GetStaticProps } from "next";
-import Image from "next/image";
 import { useRouter } from "next/router";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
@@ -44,7 +43,9 @@ const KeynoteInfoLine = ({ property, value, to }: KeynoteInfoLineProps) => (
         color: "violet",
         userSelect: "none",
       }}
-    >{`${property}:`}</Text>
+    >
+      {property}:
+    </Text>
     <Text>
       {to ? (
         <Link
@@ -85,7 +86,7 @@ const KeynotePage = () => {
   const goBack = useCallback(() => {
     push("/keynotes");
   }, []);
-  const firstSpeaker = speakers[0];
+
   return (
     <Fragment>
       <MetaTags title={keynoteTitle} />
@@ -173,27 +174,30 @@ const KeynotePage = () => {
           <Box>
             {speaker.website && (
               <KeynoteInfoLine
-                property="Website"
+                property={<FormattedMessage id="keynote.website" />}
                 value={speaker.website}
                 to={speaker.website}
               />
             )}
             {speaker.twitterHandle && (
               <KeynoteInfoLine
-                property="Twitter"
+                property={<FormattedMessage id="keynote.twitter" />}
                 value={`@${speaker.twitterHandle}`}
                 to={`https://twitter.com/${speaker.twitterHandle}`}
               />
             )}
             {speaker.instagramHandle && (
               <KeynoteInfoLine
-                property="Instagram"
+                property={<FormattedMessage id="keynote.instagram" />}
                 value={`@${speaker.instagramHandle}`}
                 to={`https://instagram.com/${speaker.instagramHandle}`}
               />
             )}
             {speaker.pronouns && (
-              <KeynoteInfoLine property="Pronouns" value={speaker.pronouns} />
+              <KeynoteInfoLine
+                property={<FormattedMessage id="keynote.pronouns" />}
+                value={speaker.pronouns}
+              />
             )}
             <Text>{speaker.bio}</Text>
           </Box>
