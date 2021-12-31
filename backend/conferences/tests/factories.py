@@ -207,6 +207,7 @@ class KeynoteSpeakerFactory(DjangoModelFactory):
     name = factory.Faker("word")
     bio = factory.Faker("word")
     pronouns = "she / her"
+    photo = factory.django.ImageField()
 
     class Meta:
         model = KeynoteSpeaker
