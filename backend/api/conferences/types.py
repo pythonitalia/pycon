@@ -69,8 +69,8 @@ class Keynote:
     def from_django_model(cls, instance):
         return cls(
             id=instance.id,
-            title=instance.keynote_title,
-            description=instance.keynote_description,
+            title=instance.title,
+            description=instance.description,
             slug=instance.slug,
             speakers=[
                 KeynoteSpeaker.from_django_model(speaker)

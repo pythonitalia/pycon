@@ -15,16 +15,14 @@ class Keynote(OrderedModel, TimeStampedModel):
         null=False,
     )
     slug = models.SlugField(_("slug"), max_length=200)
-    keynote_title = models.CharField(
+    title = models.CharField(
         _("keynote title"), blank=False, max_length=512, default=""
     )
-    keynote_description = models.TextField(
-        _("keynote description"), blank=False, default=""
-    )
+    description = models.TextField(_("keynote description"), blank=False, default="")
     order_with_respect_to = "conference"
 
     def __str__(self) -> str:
-        return f"{self.keynote_title} at {self.conference.code}"
+        return f"{self.title} at {self.conference.code}"
 
     class Meta(OrderedModel.Meta):
         verbose_name = _("Keynote")

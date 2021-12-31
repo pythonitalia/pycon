@@ -194,8 +194,8 @@ class DurationFactory(DjangoModelFactory):
 class KeynoteFactory(DjangoModelFactory):
     conference = factory.SubFactory(ConferenceFactory)
     slug = factory.Faker("slug")
-    keynote_title = factory.Faker("word")
-    keynote_description = factory.Faker("word")
+    title = factory.Faker("word")
+    description = factory.Faker("word")
 
     class Meta:
         model = Keynote

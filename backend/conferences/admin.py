@@ -169,7 +169,7 @@ class KeynoteSpeakerInline(OrderedStackedInline):
 @admin.register(Keynote)
 class KeynoteAdmin(OrderedInlineModelAdminMixin, OrderedModelAdmin):
     list_display = (
-        "keynote_title",
+        "title",
         "conference",
         "move_up_down_links",
     )
@@ -181,8 +181,8 @@ class KeynoteAdmin(OrderedInlineModelAdminMixin, OrderedModelAdmin):
                 "fields": (
                     "conference",
                     "slug",
-                    "keynote_title",
-                    "keynote_description",
+                    "title",
+                    "description",
                 )
             },
         ),
