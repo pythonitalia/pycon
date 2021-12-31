@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
-import { Fragment, useCallback } from "react";
+import React, { Fragment, useCallback } from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, Grid, Flex, jsx, Text } from "theme-ui";
 
@@ -20,7 +20,7 @@ import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { queryAllKeynotes, queryKeynote, useKeynoteQuery } from "~/types";
 
 type KeynoteInfoLineProps = {
-  property: string | Element;
+  property: string | React.ReactNode;
   value: string;
   to?: string;
 };
@@ -101,7 +101,7 @@ const KeynotePage = () => {
         {(socialDescription) => (
           <MetaTags
             title={title}
-            description={socialDescription}
+            description={socialDescription.join(" ")}
             useDefaultSocialCard={false}
           />
         )}
