@@ -183,6 +183,7 @@ class KeynoteAdmin(OrderedInlineModelAdminMixin, OrderedModelAdmin):
                     "slug",
                     "title",
                     "description",
+                    "topic",
                 )
             },
         ),

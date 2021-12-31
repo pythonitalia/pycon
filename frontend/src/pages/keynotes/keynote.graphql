@@ -6,6 +6,10 @@ query Keynote($conference: String!, $slug: String!) {
       title
       description
       slug
+      topic {
+        id
+        name
+      }
       speakers {
         id
         name

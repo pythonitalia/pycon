@@ -27,6 +27,25 @@ from ..permissions import CanSeeSubmissions
 
 
 @strawberry.type
+class AudienceLevel:
+    id: strawberry.ID
+    name: str
+
+
+@strawberry.type
+class Topic:
+    id: strawberry.ID
+    name: str
+
+    @classmethod
+    def from_django_model(cls, instance):
+        return cls(
+            id=instance.id,
+            name=instance.name,
+        )
+
+
+@strawberry.type
 class KeynoteSpeaker:
     id: ID
     name: str
@@ -63,6 +82,7 @@ class Keynote:
     title: str
     description: str
     slug: str
+    topic: Optional[Topic]
     speakers: List[KeynoteSpeaker]
 
     @classmethod
@@ -72,23 +92,12 @@ class Keynote:
             title=instance.title,
             description=instance.description,
             slug=instance.slug,
+            topic=Topic.from_django_model(instance.topic) if instance.topic else None,
             speakers=[
                 KeynoteSpeaker.from_django_model(speaker)
                 for speaker in instance.speakers.all()
             ],
         )
-
-
-@strawberry.type
-class AudienceLevel:
-    id: strawberry.ID
-    name: str
-
-
-@strawberry.type
-class Topic:
-    id: strawberry.ID
-    name: str
 
 
 @strawberry.type

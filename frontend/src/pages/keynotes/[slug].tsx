@@ -74,7 +74,7 @@ const KeynotePage = () => {
   const {
     data: {
       conference: {
-        keynote: { title, description, speakers },
+        keynote: { title, description, topic, speakers },
       },
     },
   } = useKeynoteQuery({
@@ -125,7 +125,8 @@ const KeynotePage = () => {
               }}
             />
 
-            <Box
+            <Grid
+              gap={2}
               sx={{
                 border: "primary",
                 p: 4,
@@ -133,15 +134,29 @@ const KeynotePage = () => {
                 width: "80%",
                 position: "absolute",
                 left: 0,
-                top: "90%",
+                top: topic ? "70%" : "90%",
               }}
             >
-              <Text sx={{ fontWeight: "bold" }}>
-                <FormattedMessage id="keynote.speakers" />
-              </Text>
+              <Box>
+                <Text sx={{ fontWeight: "bold" }}>
+                  <FormattedMessage id="keynote.speakers" />
+                </Text>
 
-              <Text>{speakers.map((speaker) => speaker.name).join(" & ")}</Text>
-            </Box>
+                <Text>
+                  {speakers.map((speaker) => speaker.name).join(" & ")}
+                </Text>
+              </Box>
+
+              {topic && (
+                <Box>
+                  <Text sx={{ fontWeight: "bold" }}>
+                    <FormattedMessage id="keynote.topic" />
+                  </Text>
+
+                  <Text>{topic.name}</Text>
+                </Box>
+              )}
+            </Grid>
           </Flex>
         </Box>
       </Grid>

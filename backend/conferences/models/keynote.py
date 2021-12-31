@@ -19,6 +19,13 @@ class Keynote(OrderedModel, TimeStampedModel):
         _("keynote title"), blank=False, max_length=512, default=""
     )
     description = models.TextField(_("keynote description"), blank=False, default="")
+    topic = models.ForeignKey(
+        "conferences.Topic",
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        default=None,
+    )
     order_with_respect_to = "conference"
 
     def __str__(self) -> str:

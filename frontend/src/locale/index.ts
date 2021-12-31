@@ -216,6 +216,7 @@ export const messages = {
     "keynote.twitter": "Twitter",
     "keynote.website": "Website",
     "keynote.pronouns": "Pronouns",
+    "keynote.topic": "Topic",
 
     "order.nextStep": "Next step",
     "order.creatingOrder": "Creating order 🕐",
@@ -787,6 +788,7 @@ export const messages = {
     "keynote.twitter": "Twitter",
     "keynote.website": "Website",
     "keynote.pronouns": "Pronomi",
+    "keynote.topic": "Topic",
 
     "ranking.heading": "Risultati della votazione comunitaria",
     "ranking.introduction": "Ecco qui i risultati della votazione comunitaria!",
