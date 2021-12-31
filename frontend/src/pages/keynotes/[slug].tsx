@@ -79,7 +79,7 @@ const KeynotePage = () => {
   } = useKeynoteQuery({
     variables: {
       conference: process.env.conferenceCode,
-      slug,
+      slug: slug as string,
     },
   });
   const goBack = useCallback(() => {
