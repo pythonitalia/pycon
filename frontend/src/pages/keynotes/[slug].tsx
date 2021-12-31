@@ -20,7 +20,7 @@ import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { queryAllKeynotes, queryKeynote, useKeynoteQuery } from "~/types";
 
 type KeynoteInfoLineProps = {
-  property: string;
+  property: string | Element;
   value: string;
   to?: string;
 };
