@@ -83,7 +83,13 @@ class SubmissionAdmin(AdminUsersMixin):
         (_("Speaker"), {"fields": ("speaker_level", "previous_talk_video")}),
     )
     list_filter = ("conference", "type", "topic", "status")
-    search_fields = ("title", "abstract")
+    search_fields = (
+        "title",
+        "elevator_pitch",
+        "abstract",
+        "notes",
+        "previous_talk_video",
+    )
     prepopulated_fields = {"slug": ("title",)}
     filter_horizontal = ("tags",)
     inlines = [SubmissionCommentInline]
