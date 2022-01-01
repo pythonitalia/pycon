@@ -8,7 +8,7 @@ import Image from "next/image";
 import { Link } from "~/components/link";
 import { KeynoteSpeaker } from "~/types";
 
-type KeynoteSlide = {
+type Props = {
   title: string;
   slug: string | null;
   speakers: KeynoteSpeaker[];
@@ -20,7 +20,7 @@ export const KeynoteSlide = ({
   slug,
   speakers,
   standalone = false,
-}: KeynoteSlide) => {
+}: Props) => {
   const image = speakers[0].photo;
   const highlightColor = speakers[0].highlightColor;
   const Wrapper = slug ? Link : Box;

@@ -280,7 +280,7 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
   });
 };
 
-export const getStaticPaths: GetStaticPaths = async ({}) => {
+export const getStaticPaths: GetStaticPaths = async () => {
   const client = getApolloClient();
   const {
     data: {
@@ -290,6 +290,7 @@ export const getStaticPaths: GetStaticPaths = async ({}) => {
     conference: process.env.conferenceCode,
     language: "it",
   });
+
   const {
     data: {
       conference: { keynotes: englishKeynotes },
@@ -298,6 +299,7 @@ export const getStaticPaths: GetStaticPaths = async ({}) => {
     conference: process.env.conferenceCode,
     language: "en",
   });
+
   const paths = [
     ...englishKeynotes.map((keynote) => ({
       params: {
