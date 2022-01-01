@@ -193,9 +193,9 @@ class DurationFactory(DjangoModelFactory):
 @register
 class KeynoteFactory(DjangoModelFactory):
     conference = factory.SubFactory(ConferenceFactory)
-    slug = factory.Faker("slug")
-    title = factory.Faker("word")
-    description = factory.Faker("word")
+    slug = LanguageFactory("slug")
+    title = LanguageFactory("word")
+    description = LanguageFactory("word")
 
     class Meta:
         model = Keynote
@@ -204,9 +204,9 @@ class KeynoteFactory(DjangoModelFactory):
 @register
 class KeynoteSpeakerFactory(DjangoModelFactory):
     keynote = factory.SubFactory(KeynoteFactory)
-    name = factory.Faker("word")
-    bio = factory.Faker("word")
-    pronouns = "she / her"
+    name = factory.Faker("name")
+    bio = LanguageFactory("word")
+    pronouns = LanguageFactory("word")
     photo = factory.django.ImageField()
 
     class Meta:

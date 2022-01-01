@@ -1,6 +1,7 @@
 from pytest import mark
 
 from helpers.tests import get_image_url_from_request
+from i18n.strings import LazyI18nString
 
 
 @mark.django_db
@@ -12,7 +13,7 @@ def test_get_conference_keynotes_empty(conference_factory, graphql_client):
         query($code: String!) {
             conference(code: $code) {
                 keynotes {
-                    title
+                    title(language: "en")
                     speakers {
                         id
                     }
@@ -37,7 +38,11 @@ def test_get_conference_keynotes(
 ):
     conference = conference_factory()
 
-    keynote = keynote_factory(conference=conference, topic=topic_factory())
+    keynote = keynote_factory(
+        title=LazyI18nString({"en": "title", "it": "titolo"}),
+        conference=conference,
+        topic=topic_factory(),
+    )
     speaker = keynote_speaker_factory(keynote=keynote)
 
     resp = graphql_client.query(
@@ -45,7 +50,8 @@ def test_get_conference_keynotes(
         query($code: String!) {
             conference(code: $code) {
                 keynotes {
-                    title
+                    titleEn: title(language: "en")
+                    titleIt: title(language: "it")
                     topic {
                         id
                         name
@@ -65,7 +71,8 @@ def test_get_conference_keynotes(
 
     keynote_data = resp["data"]["conference"]["keynotes"][0]
 
-    assert keynote_data["title"] == keynote.title
+    assert keynote_data["titleEn"] == "title"
+    assert keynote_data["titleIt"] == "titolo"
     assert keynote_data["topic"]["id"] == str(keynote.topic.id)
     assert len(keynote_data["speakers"]) == 1
 
@@ -78,12 +85,13 @@ def test_get_conference_keynotes_without_topic(
     keynote_factory,
     keynote_speaker_factory,
     graphql_client,
-    topic_factory,
     rf,
 ):
     conference = conference_factory()
 
-    keynote = keynote_factory(conference=conference)
+    keynote = keynote_factory(
+        title=LazyI18nString({"en": "title", "it": "titolo"}), conference=conference
+    )
     speaker = keynote_speaker_factory(keynote=keynote)
 
     resp = graphql_client.query(
@@ -91,7 +99,7 @@ def test_get_conference_keynotes_without_topic(
         query($code: String!) {
             conference(code: $code) {
                 keynotes {
-                    title
+                    title(language: "en")
                     topic {
                         id
                         name
@@ -112,7 +120,7 @@ def test_get_conference_keynotes_without_topic(
 
     keynote_data = resp["data"]["conference"]["keynotes"][0]
 
-    assert keynote_data["title"] == keynote.title
+    assert keynote_data["title"] == "title"
     assert keynote_data["topic"] is None
     assert len(keynote_data["speakers"]) == 1
 
@@ -134,7 +142,12 @@ def test_get_single_conference_keynote(
 ):
     conference = conference_factory()
 
-    keynote = keynote_factory(conference=conference, topic=topic_factory())
+    keynote = keynote_factory(
+        slug=LazyI18nString({"en": "title", "it": "titolo"}),
+        title=LazyI18nString({"en": "title", "it": "titolo"}),
+        conference=conference,
+        topic=topic_factory(),
+    )
     speaker = keynote_speaker_factory(keynote=keynote)
 
     resp = graphql_client.query(
@@ -142,7 +155,7 @@ def test_get_single_conference_keynote(
         query($code: String!, $slug: String!) {
             conference(code: $code) {
                 keynote(slug: $slug) {
-                    title
+                    title(language: "en")
                     topic {
                         id
                         name
@@ -154,14 +167,14 @@ def test_get_single_conference_keynote(
             }
         }
         """,
-        variables={"code": conference.code, "slug": keynote.slug},
+        variables={"code": conference.code, "slug": "title"},
     )
 
     assert "errors" not in resp
 
     keynote_data = resp["data"]["conference"]["keynote"]
 
-    assert keynote_data["title"] == keynote.title
+    assert keynote_data["title"] == "title"
     assert keynote_data["topic"]["id"] == str(keynote.topic.id)
     assert len(keynote_data["speakers"]) == 1
 
