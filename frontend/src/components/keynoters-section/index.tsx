@@ -1,20 +1,20 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
-import { Box, Flex, Heading, jsx, Text } from "theme-ui";
+import { jsx } from "theme-ui";
 
-import Image from "next/image";
-
-import { Link } from "~/components/link";
-import { Keynote, useKeynotesSectionQuery } from "~/types";
+import { useCurrentLanguage } from "~/locale/context";
+import { useKeynotesSectionQuery } from "~/types";
 
 import { GridSlider } from "../grid-slider";
 import { KeynoteSlide } from "./keynote-slide";
 
 export const KeynotersSection = () => {
+  const language = useCurrentLanguage();
   const { data } = useKeynotesSectionQuery({
     variables: {
       code: process.env.conferenceCode,
+      language,
     },
   });
 

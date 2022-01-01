@@ -1,10 +1,10 @@
-query KeynotesSection($code: String!) {
+query KeynotesSection($code: String!, $language: String!) {
   conference(code: $code) {
     id
     keynotes {
       id
-      title
-      slug
+      title(language: $language)
+      slug(language: $language)
       speakers {
         id
         name

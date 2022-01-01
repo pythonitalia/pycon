@@ -298,6 +298,7 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
     prefetchSharedQueries(client, locale),
     queryKeynotesSection(client, {
       code: process.env.conferenceCode,
+      language: locale,
     }),
     queryMapWithLink(client, {
       code: process.env.conferenceCode,
