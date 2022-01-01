@@ -1,5 +1,7 @@
 from pytest import mark
 
+from helpers.tests import get_image_url_from_request
+
 
 @mark.django_db
 def test_get_conference_keynotes_empty(conference_factory, graphql_client):
@@ -77,6 +79,7 @@ def test_get_conference_keynotes_without_topic(
     keynote_speaker_factory,
     graphql_client,
     topic_factory,
+    rf,
 ):
     conference = conference_factory()
 
@@ -95,6 +98,7 @@ def test_get_conference_keynotes_without_topic(
                     }
                     speakers {
                         name
+                        photo
                     }
                 }
             }
@@ -112,4 +116,9 @@ def test_get_conference_keynotes_without_topic(
     assert keynote_data["topic"] is None
     assert len(keynote_data["speakers"]) == 1
 
-    assert {"name": speaker.name} in keynote_data["speakers"]
+    req = rf.get("/")
+
+    assert {
+        "name": speaker.name,
+        "photo": get_image_url_from_request(req, speaker.photo),
+    } in keynote_data["speakers"]
