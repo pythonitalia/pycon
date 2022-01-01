@@ -236,7 +236,7 @@ const KeynotePage = () => {
                 value={speaker.pronouns}
               />
             )}
-            <Text>{speaker.bio}</Text>
+            {speaker.bio && <Text>{compile(speaker.bio).tree}</Text>}
           </Box>
         </Grid>
       ))}
