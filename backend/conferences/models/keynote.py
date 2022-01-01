@@ -1,9 +1,26 @@
+import json
+
+from django.conf import settings
 from django.db import models
+from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from model_utils.models import TimeStampedModel
-from ordered_model.models import OrderedModel
+from ordered_model.models import OrderedModel, OrderedModelManager
 
+from i18n.fields import I18nCharField, I18nTextField
 from pycon.constants import COLORS
+
+
+class KeynoteManager(OrderedModelManager):
+    def by_slug(self, slug):
+        term = json.dumps(slug)
+
+        filters = Q()
+
+        for lang, __ in settings.LANGUAGES:
+            filters |= Q(**{f"slug__{lang}": term})
+
+        return self.get_queryset().filter(filters)
 
 
 class Keynote(OrderedModel, TimeStampedModel):
@@ -14,11 +31,9 @@ class Keynote(OrderedModel, TimeStampedModel):
         related_name="keynotes",
         null=False,
     )
-    slug = models.SlugField(_("slug"), max_length=200)
-    title = models.CharField(
-        _("keynote title"), blank=False, max_length=512, default=""
-    )
-    description = models.TextField(_("keynote description"), blank=False, default="")
+    slug = I18nCharField(_("slug"), max_length=200, unique=True)
+    title = I18nCharField(_("keynote title"), blank=False, max_length=512, default="")
+    description = I18nTextField(_("keynote description"), blank=False, default="")
     topic = models.ForeignKey(
         "conferences.Topic",
         blank=True,
@@ -27,6 +42,7 @@ class Keynote(OrderedModel, TimeStampedModel):
         default=None,
     )
     order_with_respect_to = "conference"
+    objects = KeynoteManager()
 
     def __str__(self) -> str:
         return f"{self.title} at {self.conference.code}"
@@ -51,11 +67,11 @@ class KeynoteSpeaker(TimeStampedModel, OrderedModel):
         blank=False,
     )
     photo = models.ImageField(_("photo"), null=False, blank=False, upload_to="keynotes")
-    bio = models.TextField(
+    bio = I18nTextField(
         _("bio"),
         blank=False,
     )
-    pronouns = models.CharField(
+    pronouns = I18nCharField(
         _("pronouns"),
         max_length=512,
     )

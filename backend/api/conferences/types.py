@@ -49,13 +49,35 @@ class Topic:
 class KeynoteSpeaker:
     id: ID
     name: str
-    bio: str
-    pronouns: str
+    bio: str = strawberry.field(resolver=make_localized_resolver("bio"))
+    pronouns: str = strawberry.field(resolver=make_localized_resolver("pronouns"))
     twitter_handle: str
     instagram_handle: str
     website: str
     highlight_color: str
     _photo_url: Private[str]
+
+    def __init__(
+        self,
+        id: ID,
+        name: str,
+        bio: str,
+        pronouns: str,
+        twitter_handle: str,
+        instagram_handle: str,
+        website: str,
+        highlight_color: str,
+        _photo_url: str,
+    ):
+        self.id = id
+        self.name = name
+        self.bio = bio
+        self.pronouns = pronouns
+        self.twitter_handle = twitter_handle
+        self.instagram_handle = instagram_handle
+        self.website = website
+        self.highlight_color = highlight_color
+        self._photo_url = _photo_url
 
     @strawberry.field
     def photo(self, info) -> str:
@@ -79,11 +101,27 @@ class KeynoteSpeaker:
 @strawberry.type
 class Keynote:
     id: ID
-    title: str
-    description: str
-    slug: str
+    title: str = strawberry.field(resolver=make_localized_resolver("title"))
+    description: str = strawberry.field(resolver=make_localized_resolver("description"))
+    slug: str = strawberry.field(resolver=make_localized_resolver("slug"))
     topic: Optional[Topic]
     speakers: List[KeynoteSpeaker]
+
+    def __init__(
+        self,
+        id: ID,
+        title: str,
+        description: str,
+        slug: str,
+        topic: Optional[Topic],
+        speakers: List[KeynoteSpeaker],
+    ):
+        self.id = id
+        self.title = title
+        self.description = description
+        self.slug = slug
+        self.topic = topic
+        self.speakers = speakers
 
     @classmethod
     def from_django_model(cls, instance):
@@ -259,7 +297,7 @@ class Conference:
 
     @strawberry.field
     def keynote(self, info, slug: str) -> Optional[Keynote]:
-        keynote = self.keynotes.filter(slug=slug).first()
+        keynote = self.keynotes.by_slug(slug).first()
         return Keynote.from_django_model(keynote) if keynote else None
 
     @strawberry.field

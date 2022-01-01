@@ -17,6 +17,7 @@ import { Marquee } from "~/components/marquee";
 import { MetaTags } from "~/components/meta-tags";
 import { compile } from "~/helpers/markdown";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
+import { useCurrentLanguage } from "~/locale/context";
 import { queryAllKeynotes, queryKeynote, useKeynoteQuery } from "~/types";
 
 type KeynoteInfoLineProps = {
@@ -67,6 +68,7 @@ const KeynoteInfoLine = ({ property, value, to }: KeynoteInfoLineProps) => (
 );
 
 const KeynotePage = () => {
+  const language = useCurrentLanguage();
   const {
     query: { slug },
     push,
@@ -81,6 +83,7 @@ const KeynotePage = () => {
     variables: {
       conference: process.env.conferenceCode,
       slug: slug as string,
+      language,
     },
   });
 
@@ -150,7 +153,7 @@ const KeynotePage = () => {
                 width: "80%",
                 position: "absolute",
                 left: 0,
-                top: topic ? "70%" : "90%",
+                top: topic ? "60%" : "70%",
               }}
             >
               <Box>
@@ -159,6 +162,16 @@ const KeynotePage = () => {
                 </Text>
 
                 <Text>{speakersName}</Text>
+              </Box>
+
+              <Box>
+                <Text sx={{ fontWeight: "bold" }}>
+                  <FormattedMessage id="keynote.language" />
+                </Text>
+
+                <Text>
+                  <FormattedMessage id="keynote.englishLanguage" />
+                </Text>
               </Box>
 
               {topic && (
@@ -258,6 +271,7 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
     queryKeynote(client, {
       conference: process.env.conferenceCode,
       slug,
+      language: locale,
     }),
   ]);
 
@@ -266,23 +280,32 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
   });
 };
 
-export const getStaticPaths: GetStaticPaths = async () => {
+export const getStaticPaths: GetStaticPaths = async ({}) => {
   const client = getApolloClient();
   const {
     data: {
-      conference: { keynotes },
+      conference: { keynotes: italianKeynotes },
     },
   } = await queryAllKeynotes(client, {
     conference: process.env.conferenceCode,
+    language: "it",
+  });
+  const {
+    data: {
+      conference: { keynotes: englishKeynotes },
+    },
+  } = await queryAllKeynotes(client, {
+    conference: process.env.conferenceCode,
+    language: "en",
   });
   const paths = [
-    ...keynotes.map((keynote) => ({
+    ...englishKeynotes.map((keynote) => ({
       params: {
         slug: keynote.slug,
       },
       locale: "en",
     })),
-    ...keynotes.map((keynote) => ({
+    ...italianKeynotes.map((keynote) => ({
       params: {
         slug: keynote.slug,
       },

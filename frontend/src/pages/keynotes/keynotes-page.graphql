@@ -6,8 +6,8 @@ query KeynotesPage($conference: String!, $language: String!) {
     description: copy(key: "keynotes-description", language: $language)
     keynotes {
       id
-      title
-      slug
+      title(language: $language)
+      slug(language: $language)
       speakers {
         id
         name

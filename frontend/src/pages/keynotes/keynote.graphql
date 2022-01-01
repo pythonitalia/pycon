@@ -1,11 +1,11 @@
-query Keynote($conference: String!, $slug: String!) {
+query Keynote($conference: String!, $slug: String!, $language: String!) {
   conference(code: $conference) {
     id
     keynote(slug: $slug) {
       id
-      title
-      description
-      slug
+      title(language: $language)
+      description(language: $language)
+      slug(language: $language)
       topic {
         id
         name
@@ -13,8 +13,8 @@ query Keynote($conference: String!, $slug: String!) {
       speakers {
         id
         name
-        bio
-        pronouns
+        bio(language: $language)
+        pronouns(language: $language)
         twitterHandle
         instagramHandle
         website

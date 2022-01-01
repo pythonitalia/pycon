@@ -219,6 +219,8 @@ export const messages = {
     "keynote.topic": "Topic",
     "keynote.socialDescription": "Keynote by {speakersName}",
     "keynote.backToKeynotes": "Back to keynotes",
+    "keynote.language": "Language",
+    "keynote.englishLanguage": "English",
 
     "order.nextStep": "Next step",
     "order.creatingOrder": "Creating order 🕐",
@@ -793,6 +795,8 @@ export const messages = {
     "keynote.topic": "Topic",
     "keynote.socialDescription": "Keynote di {speakersName}",
     "keynote.backToKeynotes": "Torna ai keynotes",
+    "keynote.language": "Lingua",
+    "keynote.englishLanguage": "Inglese",
 
     "ranking.heading": "Risultati della votazione comunitaria",
     "ranking.introduction": "Ecco qui i risultati della votazione comunitaria!",

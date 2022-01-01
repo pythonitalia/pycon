@@ -1,9 +1,9 @@
-query AllKeynotes($conference: String!) {
+query AllKeynotes($conference: String!, $language: String!) {
   conference(code: $conference) {
     id
     keynotes {
       id
-      slug
+      slug(language: $language)
     }
   }
 }

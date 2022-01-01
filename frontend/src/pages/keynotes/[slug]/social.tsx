@@ -10,9 +10,11 @@ import { useRouter } from "next/router";
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { SocialSnakes } from "~/components/illustrations/social-snakes";
 import { CardType, getSize, getTitleFontSize } from "~/helpers/social-card";
+import { useCurrentLanguage } from "~/locale/context";
 import { queryKeynoteSocialCard, useKeynoteSocialCardQuery } from "~/types";
 
 export const SocialCard = () => {
+  const language = useCurrentLanguage();
   const router = useRouter();
   const cardType = (router.query["card-type"] as CardType) || "social";
   const slug = router.query.slug as string;
@@ -22,6 +24,7 @@ export const SocialCard = () => {
     variables: {
       slug,
       conference: code,
+      language,
     },
   });
 
@@ -74,13 +77,14 @@ export const SocialCard = () => {
   );
 };
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
   const slug = params.slug as string;
   const client = getApolloClient();
 
   await queryKeynoteSocialCard(client, {
     conference: process.env.conferenceCode,
     slug,
+    language: locale,
   });
 
   return addApolloState(client, {
