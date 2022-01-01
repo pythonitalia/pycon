@@ -5,6 +5,7 @@ from api.users.types import User
 from .blog.schema import BlogQuery
 from .conferences.schema import ConferenceQuery
 from .grants.mutations import GrantsMutations
+from .job_board.schema import JobBoardQuery
 from .newsletters.schema import NewsletterMutations
 from .orders.mutations import OrdersMutations
 from .orders.query import OrdersQuery
@@ -24,6 +25,7 @@ class Query(
     PagesQuery,
     CountryQuery,
     OrdersQuery,
+    JobBoardQuery,
 ):
     pass
 

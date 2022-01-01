@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     "newsletters.apps.NewslettersConfig",
     "ordered_model",
     "invoices",
+    "job_board",
 ]
 
 MIDDLEWARE = [
