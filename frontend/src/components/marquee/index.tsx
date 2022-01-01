@@ -73,7 +73,7 @@ export const Marquee = ({ message, separator = "/" }: MarqueeProps) => {
           whiteSpace: "nowrap",
           willChange: "transform",
           animation: `${animation} ${
-            5000 * message.length * 0.1
+            5000 * (message.length * 0.1)
           }ms linear infinite`,
           width: `${ch}`,
           textShadow: new Array(numOfShadows)

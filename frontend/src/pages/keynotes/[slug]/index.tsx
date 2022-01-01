@@ -241,7 +241,9 @@ const KeynotePage = () => {
         }}
         onClick={goBack}
       >
-        <Marquee separator=">" message="Back to Keynotes" />
+        <FormattedMessage id="keynote.backToKeynotes">
+          {(message) => <Marquee separator=">" message={message.join("")} />}
+        </FormattedMessage>
       </Box>
     </Fragment>
   );
