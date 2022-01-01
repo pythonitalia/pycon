@@ -1,7 +1,6 @@
 from typing import List, Optional
 
 import strawberry
-
 from job_board.models import JobListing
 
 from .types import JobListing as JobListingType

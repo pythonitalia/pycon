@@ -1,10 +1,9 @@
 import factory
 import factory.fuzzy
 from factory.django import DjangoModelFactory
-from pytest_factoryboy import register
-
-from job_board.models import JobListing
 from i18n.tests.factories import LanguageFactory
+from job_board.models import JobListing
+from pytest_factoryboy import register
 
 
 @register

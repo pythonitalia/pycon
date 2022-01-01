@@ -16,7 +16,16 @@ class JobListing:
     company_logo: Optional[str]
     apply_url: Optional[str]
 
-    def __init__(self, id: str, title: str, slug: str, description: str, company: str, company_logo: Optional[str], apply_url: Optional[str]) -> None:
+    def __init__(
+        self,
+        id: str,
+        title: str,
+        slug: str,
+        description: str,
+        company: str,
+        company_logo: Optional[str],
+        apply_url: Optional[str],
+    ) -> None:
         self.id = id
         self.title = title
         self.slug = slug
