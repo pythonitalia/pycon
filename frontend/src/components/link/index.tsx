@@ -71,6 +71,7 @@ type LinkProps = {
   backgroundColor?: string;
   params?: Params;
   external?: boolean;
+  rel?: string;
 };
 
 export const Link: React.FC<LinkProps> = ({

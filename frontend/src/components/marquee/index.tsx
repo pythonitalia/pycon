@@ -7,6 +7,7 @@ import { Flex, jsx, Text } from "theme-ui";
 
 type MarqueeProps = {
   message: string;
+  separator?: string;
 };
 
 const animation = keyframes`
@@ -25,8 +26,11 @@ const animation = keyframes`
 // Where el must be the marquee text
 const WIDTH_OF_0_FOR_MARQUEE_SIZE = 22.399993896484375;
 
-export const Marquee = ({ message }: MarqueeProps) => {
-  const messageWithSeparator = `${message}`;
+export const Marquee = ({ message, separator = "/" }: MarqueeProps) => {
+  const countSeparator = message.length > 13;
+  const messageWithSeparator = countSeparator
+    ? `${message} ${separator}`
+    : `${message}`;
   const ch = `${messageWithSeparator.length}ch`;
   // Huge number so that the SSR version doesn't show blank space at first render
   const [numOfShadows, setNumOfShadows] = useState(50);
@@ -68,7 +72,9 @@ export const Marquee = ({ message }: MarqueeProps) => {
           display: "inline-block",
           whiteSpace: "nowrap",
           willChange: "transform",
-          animation: `${animation} 5s linear infinite`,
+          animation: `${animation} ${
+            5000 * (message.length * 0.1)
+          }ms linear infinite`,
           width: `${ch}`,
           textShadow: new Array(numOfShadows)
             .fill(0)
@@ -76,7 +82,7 @@ export const Marquee = ({ message }: MarqueeProps) => {
             .join(","),
           userSelect: "none",
           "&:after": {
-            content: "'/'",
+            content: `'${separator}'`,
             m: "0 7px",
           },
         }}
@@ -86,7 +92,7 @@ export const Marquee = ({ message }: MarqueeProps) => {
           }
         `}
       >
-        {messageWithSeparator}
+        {message}
       </Text>
     </Flex>
   );

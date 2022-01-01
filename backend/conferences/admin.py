@@ -3,10 +3,23 @@ from django.core import exceptions
 from django.forms import BaseInlineFormSet
 from django.forms.models import ModelForm
 from django.utils.translation import gettext_lazy as _
+from ordered_model.admin import (
+    OrderedInlineModelAdminMixin,
+    OrderedModelAdmin,
+    OrderedStackedInline,
+)
 
 from sponsors.models import SponsorLevel
 
-from .models import AudienceLevel, Conference, Deadline, Duration, Topic
+from .models import (
+    AudienceLevel,
+    Conference,
+    Deadline,
+    Duration,
+    Keynote,
+    KeynoteSpeaker,
+    Topic,
+)
 
 
 def validate_deadlines_form(forms):
@@ -127,3 +140,54 @@ class DeadlineAdmin(admin.ModelAdmin):
         ("Info", {"fields": ("name", "description", "type", "conference")}),
         ("Dates", {"fields": ("start", "end")}),
     )
+
+
+class KeynoteSpeakerInline(OrderedStackedInline):
+    model = KeynoteSpeaker
+    extra = 1
+    fields = (
+        "keynote",
+        "name",
+        "photo",
+        "bio",
+        "pronouns",
+        "highlight_color",
+        "twitter_handle",
+        "instagram_handle",
+        "website",
+        "order",
+        "move_up_down_links",
+    )
+    readonly_fields = (
+        "order",
+        "move_up_down_links",
+    )
+    extra = 1
+    ordering = ("order",)
+
+
+@admin.register(Keynote)
+class KeynoteAdmin(OrderedInlineModelAdminMixin, OrderedModelAdmin):
+    list_display = (
+        "title",
+        "conference",
+        "move_up_down_links",
+    )
+    list_filter = ("conference",)
+    fieldsets = (
+        (
+            _("Keynote"),
+            {
+                "fields": (
+                    "conference",
+                    "slug",
+                    "title",
+                    "description",
+                    "topic",
+                )
+            },
+        ),
+    )
+    inlines = [
+        KeynoteSpeakerInline,
+    ]

@@ -1,0 +1,19 @@
+query KeynotesPage($conference: String!, $language: String!) {
+  conference(code: $conference) {
+    id
+    title: copy(key: "keynotes-title", language: $language)
+    subtitle: copy(key: "keynotes-subtitle", language: $language)
+    description: copy(key: "keynotes-description", language: $language)
+    keynotes {
+      id
+      title(language: $language)
+      slug(language: $language)
+      speakers {
+        id
+        name
+        photo
+        highlightColor
+      }
+    }
+  }
+}
