@@ -30,6 +30,29 @@ PYCON10_TO_PRETIX_TICKET_ID = {
     256: 119,
 }
 
+PYCON9_TO_PRETIX_TICKET_ID = {
+    # early business
+    232: 124,
+    # early personal
+    233: 122,
+    # early student
+    234: 120,
+    # on-desk business
+    238: 127,
+    # on-desk personal
+    239: 126,
+    # regular business
+    235: 125,
+    # regular personal
+    236: 123,
+    # regular student
+    237: 121,
+}
+
+CONFERENCE_CODE = "pycon9"
+CODE_PREFIX = "PY9"
+TICKETS_MAP = PYCON9_TO_PRETIX_TICKET_ID
+
 cur = con.cursor()
 cur.execute(
     """
@@ -41,7 +64,7 @@ cur.execute(
         fare.conference = :conference AND
         fare.ticket_type = 'conference'
 """,
-    {"conference": "pycon10"},
+    {"conference": CONFERENCE_CODE},
 )
 
 total_imported = 0
@@ -50,7 +73,7 @@ total_duplicate = 0
 
 for order_row in cur:
     order_id = int(order_row["order_id"])
-    code = f"PY10{order_id}"
+    code = f"{CODE_PREFIX}{order_id}"
 
     order_items_cur = con.cursor()
     order_items_cur.execute(
@@ -90,7 +113,7 @@ for order_row in cur:
 
         positions.append(
             {
-                "item": PYCON10_TO_PRETIX_TICKET_ID[order_item_row["fare_id"]],
+                "item": TICKETS_MAP[order_item_row["fare_id"]],
                 "attendee_name": attendee_name,
                 "attendee_email": order_item_row["ticket_assigned_to"]
                 or order_item_row["user_email"],
@@ -105,7 +128,7 @@ for order_row in cur:
     assert user_email
 
     response = requests.post(
-        "https://tickets.pycon.it/api/v1/organizers/python-italia/events/pycon10/orders/",
+        f"https://tickets.pycon.it/api/v1/organizers/python-italia/events/{CONFERENCE_CODE}/orders/",
         json={
             "code": code,
             "status": "p",
