@@ -4,5 +4,6 @@ from .models import JobListing
 
 
 @admin.register(JobListing)
-class PostAdmin:
+class PostAdmin(admin.ModelAdmin):
+    model = JobListing
     list_display = ("title", "company")
