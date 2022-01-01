@@ -122,3 +122,47 @@ def test_get_conference_keynotes_without_topic(
         "name": speaker.name,
         "photo": get_image_url_from_request(req, speaker.photo),
     } in keynote_data["speakers"]
+
+
+@mark.django_db
+def test_get_single_conference_keynote(
+    conference_factory,
+    keynote_factory,
+    keynote_speaker_factory,
+    graphql_client,
+    topic_factory,
+):
+    conference = conference_factory()
+
+    keynote = keynote_factory(conference=conference, topic=topic_factory())
+    speaker = keynote_speaker_factory(keynote=keynote)
+
+    resp = graphql_client.query(
+        """
+        query($code: String!, $slug: String!) {
+            conference(code: $code) {
+                keynote(slug: $slug) {
+                    title
+                    topic {
+                        id
+                        name
+                    }
+                    speakers {
+                        name
+                    }
+                }
+            }
+        }
+        """,
+        variables={"code": conference.code, "slug": keynote.slug},
+    )
+
+    assert "errors" not in resp
+
+    keynote_data = resp["data"]["conference"]["keynote"]
+
+    assert keynote_data["title"] == keynote.title
+    assert keynote_data["topic"]["id"] == str(keynote.topic.id)
+    assert len(keynote_data["speakers"]) == 1
+
+    assert {"name": speaker.name} in keynote_data["speakers"]
