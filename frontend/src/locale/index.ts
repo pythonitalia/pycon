@@ -292,7 +292,8 @@ export const messages = {
     "grants.form.fields.fullName.description":
       "The name that appears on your passport, ID and other legal documents. Will be useful in case we give you a grant.",
     "grants.form.fields.name": "Name",
-    "grants.form.fields.name.description": "The name you use daily and how you prefer to be called in case we need to contact you.",
+    "grants.form.fields.name.description":
+      "The name you use daily and how you prefer to be called in case we need to contact you.",
     "grants.form.fields.email": "Email",
     "grants.form.fields.email.description":
       "Here you will receive a notification about your application.",
@@ -721,7 +722,8 @@ export const messages = {
     "grants.form.fields.fullName.description":
       "Il nome che appare sul passaporto, Carta di Identità o altri documenti legali. Sarà utile nel caso un cui ti daremo un grant.",
     "grants.form.fields.name": "Nome",
-    "grants.form.fields.name.description": "Il nome che usi quotidianamente e come preferisci essere chiamato nel caso in cui abbiamo bisogno di contattarti.",
+    "grants.form.fields.name.description":
+      "Il nome che usi quotidianamente e come preferisci essere chiamato nel caso in cui abbiamo bisogno di contattarti.",
     "grants.form.fields.email": "Email",
     "grants.form.fields.email.description":
       "Qui riceverai una notifica sulla tua richiesta",
@@ -759,9 +761,9 @@ export const messages = {
     "grants.form.fields.notes": "Qualcos'altro da aggiungere?",
     "grants.form.fields.travellingFrom": "Da dove partirai?",
     "grants.form.fields.needsFundsForTravel":
-      "Hai bisogno di supporto finanziario per venire a PyCon Italia?",
+      "Hai bisogno di aiuti finanziari per per venire a Pycon Italia?",
     "grants.form.fields.needsFundsForTravel.label":
-      "Fai click qui se hai bisogno di supporto finanziario per venire alla conferenza",
+      "Fai click qui se hai bisogno di supporto finanziario per il viaggio",
     "grants.form.submit": "Invia",
 
     "orderReview.heading": "Recap ordine",
