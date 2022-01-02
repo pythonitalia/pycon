@@ -23,7 +23,7 @@ export const YouTubeLite: React.SFC<{ videoId: string }> = ({
         frameBorder="0"
         allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
         allowFullScreen={true}
-        src={`https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1`}
+        src={`https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&modestbranding=1&rel=0`}
         {...props}
       />
     );
