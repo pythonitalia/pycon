@@ -288,11 +288,12 @@ export const messages = {
     "grants.form.optionalInformation": "Optional information",
     "grants.form.optionalInformation.description":
       "Providing this information will help us making sure that the event is as inclusive as possible.",
-    "grants.form.fields.fullName": "Full name",
+    "grants.form.fields.fullName": "Legal name",
     "grants.form.fields.fullName.description":
-      "This is the name you use on your passport. Will be useful in case we give you a grant.",
+      "The name that appears on your passport, ID and other legal documents. Will be useful in case we give you a grant.",
     "grants.form.fields.name": "Name",
-    "grants.form.fields.name.description": "How should we call you?",
+    "grants.form.fields.name.description":
+      "The name you use daily and how you prefer to be called in case we need to contact you.",
     "grants.form.fields.email": "Email",
     "grants.form.fields.email.description":
       "Here you will receive a notification about your application.",
@@ -717,11 +718,12 @@ export const messages = {
     "grants.form.optionalInformation.description":
       "Questo informazioni ci aiutano a rendere la conferenza più inclusiva e diversa.",
 
-    "grants.form.fields.fullName": "Nome completo",
+    "grants.form.fields.fullName": "Nome legale",
     "grants.form.fields.fullName.description":
-      "Il tuo nome completo. Sarà utile nel casi un cui ti daremo un grant.",
+      "Il nome che appare sul passaporto, Carta di Identità o altri documenti legali. Sarà utile nel caso un cui ti daremo un grant.",
     "grants.form.fields.name": "Nome",
-    "grants.form.fields.name.description": "Come ti chiami?",
+    "grants.form.fields.name.description":
+      "Il nome che usi quotidianamente e come preferisci essere chiamato nel caso in cui abbiamo bisogno di contattarti.",
     "grants.form.fields.email": "Email",
     "grants.form.fields.email.description":
       "Qui riceverai una notifica sulla tua richiesta",
@@ -759,9 +761,9 @@ export const messages = {
     "grants.form.fields.notes": "Qualcos'altro da aggiungere?",
     "grants.form.fields.travellingFrom": "Da dove partirai?",
     "grants.form.fields.needsFundsForTravel":
-      "Hai bisogno di supporto finanziario per venire a PyCon Italia?",
+      "Hai bisogno di aiuti finanziari per per venire a Pycon Italia?",
     "grants.form.fields.needsFundsForTravel.label":
-      "Fai click qui se hai bisogno di supporto finanziario per venire alla conferenza",
+      "Fai click qui se hai bisogno di supporto finanziario per il viaggio",
     "grants.form.submit": "Invia",
 
     "orderReview.heading": "Recap ordine",
