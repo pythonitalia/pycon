@@ -761,7 +761,7 @@ export const messages = {
     "grants.form.fields.notes": "Qualcos'altro da aggiungere?",
     "grants.form.fields.travellingFrom": "Da dove partirai?",
     "grants.form.fields.needsFundsForTravel":
-      "Hai bisogno di aiuti finanziari per per venire a Pycon Italia?",
+      "Hai bisogno di aiuti finanziari per venire a Pycon Italia?",
     "grants.form.fields.needsFundsForTravel.label":
       "Fai click qui se hai bisogno di supporto finanziario per il viaggio",
     "grants.form.submit": "Invia",
