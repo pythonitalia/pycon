@@ -717,7 +717,7 @@ export const messages = {
     "grants.form.optionalInformation.description":
       "Questo informazioni ci aiutano a rendere la conferenza più inclusiva e diversa.",
 
-    "grants.form.fields.fullName": "Nome Legale",
+    "grants.form.fields.fullName": "Nome legale",
     "grants.form.fields.fullName.description":
       "Il nome che appare sul passaporto, Carta di Identità o altri documenti legali. Sarà utile nel casi un cui ti daremo un grant.",
     "grants.form.fields.name": "Nome",
