@@ -720,7 +720,7 @@ export const messages = {
 
     "grants.form.fields.fullName": "Nome legale",
     "grants.form.fields.fullName.description":
-      "Il nome che appare sul passaporto, Carta di Identità o altri documenti legali. Sarà utile nel caso un cui ti daremo un grant.",
+      "Il nome che appare sul passaporto, Carta di Identità o altri documenti legali. Sarà utile nel caso in cui ti daremo un grant.",
     "grants.form.fields.name": "Nome",
     "grants.form.fields.name.description":
       "Il nome che usi quotidianamente e come preferisci essere chiamato nel caso in cui abbiamo bisogno di contattarti.",
