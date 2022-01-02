@@ -26,7 +26,7 @@ export const SocialLinks: React.FC<SocialLinksProps> = (props) => (
     }}
     {...props}
   >
-    <SocialCircle variant={props.variant} color="#79CDE0">
+    <SocialCircle variant={props.variant} color="#1DA1F2">
       <a
         target="_blank"
         rel="noreferrer noopener"
@@ -35,7 +35,7 @@ export const SocialLinks: React.FC<SocialLinksProps> = (props) => (
         <Twitter />
       </a>
     </SocialCircle>
-    <SocialCircle variant={props.variant} color="#9473B0">
+    <SocialCircle variant={props.variant} color="#1877F2">
       <a
         target="_blank"
         rel="noreferrer noopener"
@@ -44,7 +44,7 @@ export const SocialLinks: React.FC<SocialLinksProps> = (props) => (
         <Facebook />
       </a>
     </SocialCircle>
-    <SocialCircle variant={props.variant} color="#F17A5D">
+    <SocialCircle variant={props.variant} color="#C32AA3">
       <a
         target="_blank"
         rel="noreferrer noopener"
@@ -53,7 +53,7 @@ export const SocialLinks: React.FC<SocialLinksProps> = (props) => (
         <Instagram />
       </a>
     </SocialCircle>
-    <SocialCircle variant={props.variant} color="#6A80EF">
+    <SocialCircle variant={props.variant} color="#0A66C2">
       <a
         target="_blank"
         rel="noreferrer noopener"
