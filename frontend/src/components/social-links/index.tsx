@@ -26,7 +26,7 @@ export const SocialLinks: React.FC<SocialLinksProps> = (props) => (
     }}
     {...props}
   >
-    <SocialCircle variant={props.variant} color="#1DA1F2">
+    <SocialCircle variant={props.variant} color="#1D9BF0">
       <a
         target="_blank"
         rel="noreferrer noopener"
@@ -53,7 +53,7 @@ export const SocialLinks: React.FC<SocialLinksProps> = (props) => (
         <Instagram />
       </a>
     </SocialCircle>
-    <SocialCircle variant={props.variant} color="#0A66C2">
+    <SocialCircle variant={props.variant} color="#2867B2">
       <a
         target="_blank"
         rel="noreferrer noopener"
