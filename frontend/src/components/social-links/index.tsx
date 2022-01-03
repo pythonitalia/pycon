@@ -44,7 +44,7 @@ export const SocialLinks: React.FC<SocialLinksProps> = (props) => (
         <Facebook />
       </a>
     </SocialCircle>
-    <SocialCircle variant={props.variant} color="#C32AA3">
+    <SocialCircle variant={props.variant} color="#FF0076">
       <a
         target="_blank"
         rel="noreferrer noopener"
