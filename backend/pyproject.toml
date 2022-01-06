@@ -62,6 +62,7 @@ pytest-mock = "^3.4"
 pytest-cache = "^1.0"
 bpython = "^0.22"
 time-machine = "^2.4.1"
+respx = "0.18.2"
 
 [build-system]
 requires = ["poetry>=0.12"]

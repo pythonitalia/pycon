@@ -1186,6 +1186,17 @@ requests = ">=2.0.0"
 rsa = ["oauthlib[signedtoken] (>=3.0.0)"]
 
 [[package]]
+name = "respx"
+version = "0.18.2"
+description = "A utility for mocking out the Python HTTPX and HTTP Core libraries."
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+httpx = ">=0.20.0"
+
+[[package]]
 name = "rfc3986"
 version = "1.5.0"
 description = "Validating URI References per RFC 3986"
@@ -1476,7 +1487,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "952195f797bfcaf997e46522cbc4e2a4bfcb0cbd6f1ec3822d142d11d480ec18"
+content-hash = "33293cf2e43ab941dd63b5ee416c3ea84c395de3acb6e512e3f66a3d98c7735b"
 
 [metadata.files]
 aniso8601 = [
@@ -2277,6 +2288,10 @@ requests-oauthlib = [
     {file = "requests-oauthlib-1.3.0.tar.gz", hash = "sha256:b4261601a71fd721a8bd6d7aa1cc1d6a8a93b4a9f5e96626f8e4d91e8beeaa6a"},
     {file = "requests_oauthlib-1.3.0-py2.py3-none-any.whl", hash = "sha256:7f71572defaecd16372f9006f33c2ec8c077c3cfa6f5911a9a90202beb513f3d"},
     {file = "requests_oauthlib-1.3.0-py3.7.egg", hash = "sha256:fa6c47b933f01060936d87ae9327fead68768b69c6c9ea2109c48be30f2d4dbc"},
+]
+respx = [
+    {file = "respx-0.18.2-py2.py3-none-any.whl", hash = "sha256:09fb4fc49f3900fb124d13b188c90355a45efde29fd18c5e2f513804cf7f84c6"},
+    {file = "respx-0.18.2.tar.gz", hash = "sha256:d39ff874f514dc4293b2e1f7c5e6c8c2ad871ee02ef49b3f57535257008495d8"},
 ]
 rfc3986 = [
     {file = "rfc3986-1.5.0-py2.py3-none-any.whl", hash = "sha256:a86d6e1f5b1dc238b218b012df0aa79409667bb209e58da56d0b94704e712a97"},
