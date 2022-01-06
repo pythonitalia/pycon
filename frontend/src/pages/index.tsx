@@ -63,9 +63,11 @@ export const HomePage = () => {
         </Heading>
 
         <Box>
-          <Heading as="h2" sx={{ color: "purple", fontSize: 3, mb: 3 }}>
-            {conference.introTitle}
-          </Heading>
+          {conference.introTitle && (
+            <Heading as="h2" sx={{ color: "purple", fontSize: 3, mb: 3 }}>
+              {conference.introTitle}
+            </Heading>
+          )}
 
           <Text as="p" sx={{ mb: 3 }}>
             {conference.introText}
