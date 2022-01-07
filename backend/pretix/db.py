@@ -1,11 +1,12 @@
 from typing import List, Optional
 
-from api.pretix.types import Voucher
 from django.conf import settings
 from django.db import connections
 
+from api.pretix.types import Voucher
 
-def user_has_admission_ticket(email: str, event_slug: int):
+
+def user_has_admission_ticket(*, email: str, event_organizer: str, event_slug: int):
     if settings.SIMULATE_PRETIX_DB:
         return True
 
@@ -21,13 +22,16 @@ def user_has_admission_ticket(email: str, event_slug: int):
                 ON tItem.id = tPosition.item_id
                 LEFT JOIN pretixbase_event AS tEvent
                 ON tEvent.id = tOrder.event_id
+                LEFT JOIN pretixbase_organizer AS tOrganizer
+                ON tOrganizer.id = tEvent.organizer_id
                 WHERE tPosition.attendee_email = %s
                 AND tOrder.status = 'p'
                 AND tItem.admission IS TRUE
                 AND tEvent.slug = %s
+                AND tOrganizer.slug = %s
             );
         """,
-            [email, event_slug],
+            [email, event_slug, event_organizer],
         )
 
         exists = cursor.fetchone()

@@ -10,6 +10,7 @@ from ordered_model.admin import (
 )
 
 from sponsors.models import SponsorLevel
+from voting.models import IncludedEvent
 
 from .models import (
     AudienceLevel,
@@ -74,6 +75,10 @@ class SponsorLevelInline(admin.TabularInline):
     model = SponsorLevel
 
 
+class IncludedEventInline(admin.TabularInline):
+    model = IncludedEvent
+
+
 @admin.register(Conference)
 class ConferenceAdmin(admin.ModelAdmin):
     readonly_fields = ("created", "modified")
@@ -121,7 +126,7 @@ class ConferenceAdmin(admin.ModelAdmin):
             },
         ),
     )
-    inlines = [DeadlineInline, DurationInline, SponsorLevelInline]
+    inlines = [DeadlineInline, DurationInline, SponsorLevelInline, IncludedEventInline]
 
 
 @admin.register(Topic)

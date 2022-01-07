@@ -1,7 +1,6 @@
 from strawberry.permission import BasePermission
 
 from api.permissions import HasTokenPermission
-from pretix.db import user_has_admission_ticket
 from submissions.models import Submission
 from voting.helpers import pastaporto_user_info_can_vote
 
@@ -65,11 +64,7 @@ class CanSendComment(BasePermission):
         if submission.speaker_id == user_info.id:
             return True
 
-        if Submission.objects.filter(
-            speaker_id=user_info.id, conference=submission.conference
-        ).exists():
-            return True
-
-        return user_has_admission_ticket(
-            user_info.email, submission.conference.pretix_event_id
+        return pastaporto_user_info_can_vote(
+            pastaporto,
+            submission.conference,
         )
