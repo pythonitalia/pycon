@@ -1,3 +1,5 @@
+import respx
+from django.conf import settings
 from pytest import mark, raises
 
 from voting.models import Vote
@@ -128,14 +130,20 @@ def test_updating_vote_when_user_votes_the_same_submission(
     assert vote1.value == variables["value_index"]
 
 
-def test_cannot_vote_without_a_ticket(graphql_client, user, mocker, submission_factory):
+def test_cannot_vote_without_a_ticket_or_membership(
+    graphql_client, user, mocker, submission_factory
+):
     graphql_client.force_login(user)
     submission = submission_factory(conference__active_voting=True)
     admission_ticket_mock = mocker.patch(
         "voting.helpers.user_has_admission_ticket", return_value=False
     )
 
-    resp, _ = _submit_vote(graphql_client, submission, value_index=3)
+    with respx.mock as mock:
+        mock.post(f"{settings.ASSOCIATION_BACKEND_SERVICE}/internal-api").respond(
+            json={"data": {"userIdIsMember": False}}
+        )
+        resp, _ = _submit_vote(graphql_client, submission, value_index=3)
 
     assert not resp.get("errors")
     assert resp["data"]["sendVote"]["__typename"] == "SendVoteErrors"
