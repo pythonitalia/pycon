@@ -1,5 +1,6 @@
 import pytest
 from django.test import override_settings
+
 from pretix import get_order
 
 
@@ -7,7 +8,8 @@ from pretix import get_order
 @pytest.mark.django_db
 def test_gets_order(conference, requests_mock):
     requests_mock.get(
-        f"https://pretix/api/organizers/events/orders/ABC/", json={"code": "ABC"}
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/orders/ABC/",
+        json={"code": "ABC"},
     )
 
     order = get_order(conference, "ABC")
@@ -19,7 +21,8 @@ def test_gets_order(conference, requests_mock):
 @pytest.mark.django_db
 def test_return_none_when_404(conference, requests_mock):
     requests_mock.get(
-        f"https://pretix/api/organizers/events/orders/ABC/", status_code=404
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/orders/ABC/",
+        status_code=404,
     )
 
     assert get_order(conference, "ABC") is None

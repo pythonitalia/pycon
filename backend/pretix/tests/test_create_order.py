@@ -1,6 +1,7 @@
 import pytest
 from django.test import override_settings
 from django.utils import timezone
+
 from pretix import (
     CreateOrderHotelRoom,
     CreateOrderInput,
@@ -35,11 +36,11 @@ def test_creates_order(conference, hotel_room, requests_mock, invoice_informatio
     hotel_room.save()
 
     requests_mock.post(
-        f"https://pretix/api/organizers/events/orders/",
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/orders/",
         json={"payments": [{"payment_url": "http://example.com"}], "code": 123},
     )
     requests_mock.get(
-        f"https://pretix/api/organizers/events/questions",
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/questions",
         json={
             "results": [
                 {"id": "1", "type": "S"},
@@ -48,7 +49,7 @@ def test_creates_order(conference, hotel_room, requests_mock, invoice_informatio
         },
     )
     requests_mock.get(
-        f"https://pretix/api/organizers/events/items",
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items",
         json={"results": [{"id": "123", "admission": True}]},
     )
 
@@ -88,13 +89,16 @@ def test_creates_order(conference, hotel_room, requests_mock, invoice_informatio
 @pytest.mark.django_db
 def test_raises_when_response_is_400(conference, requests_mock, invoice_information):
     requests_mock.post(
-        f"https://pretix/api/organizers/events/orders/", status_code=400, json={}
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/orders/",
+        status_code=400,
+        json={},
     )
     requests_mock.get(
-        f"https://pretix/api/organizers/events/questions", json={"results": []}
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/questions",
+        json={"results": []},
     )
     requests_mock.get(
-        f"https://pretix/api/organizers/events/items",
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items",
         json={"results": [{"id": "123", "admission": False}]},
     )
 
@@ -126,11 +130,11 @@ def test_raises_value_error_if_answer_value_is_wrong(
     conference, requests_mock, invoice_information
 ):
     requests_mock.post(
-        f"https://pretix/api/organizers/events/orders/",
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/orders/",
         json={"payments": [{"payment_url": "http://example.com"}], "code": 123},
     )
     requests_mock.get(
-        f"https://pretix/api/organizers/events/questions",
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/questions",
         json={
             "results": [
                 {"id": "1", "type": "S"},
@@ -139,7 +143,7 @@ def test_raises_value_error_if_answer_value_is_wrong(
         },
     )
     requests_mock.get(
-        f"https://pretix/api/organizers/events/items",
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items",
         json={"results": [{"id": "123", "admission": True}]},
     )
 
@@ -223,12 +227,12 @@ def test_not_required_and_empty_answer_is_skipped(
     conference, requests_mock, invoice_information
 ):
     orders_mock = requests_mock.post(
-        f"https://pretix/api/organizers/events/orders/",
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/orders/",
         json={"payments": [{"payment_url": "http://example.com"}], "code": 123},
     )
 
     requests_mock.get(
-        f"https://pretix/api/organizers/events/questions",
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/questions",
         json={
             "results": [
                 {"id": "1", "type": "S", "required": False},
@@ -243,7 +247,7 @@ def test_not_required_and_empty_answer_is_skipped(
     )
 
     requests_mock.get(
-        f"https://pretix/api/organizers/events/items",
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items",
         json={"results": [{"id": "123", "admission": True}]},
     )
 
@@ -293,11 +297,11 @@ def test_create_order_with_positions_with_voucher_and_one_without(
     conference, requests_mock, invoice_information
 ):
     orders_mock = requests_mock.post(
-        f"https://pretix/api/organizers/events/orders/",
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/orders/",
         json={"payments": [{"payment_url": "http://example.com"}], "code": 123},
     )
     requests_mock.get(
-        f"https://pretix/api/organizers/events/questions",
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/questions",
         json={
             "results": [
                 {"id": "1", "type": "S"},
@@ -306,7 +310,7 @@ def test_create_order_with_positions_with_voucher_and_one_without(
         },
     )
     requests_mock.get(
-        f"https://pretix/api/organizers/events/items",
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items",
         json={"results": [{"id": "123", "admission": True}]},
     )
 
