@@ -43,7 +43,7 @@ def test_notify_new_submission():
             "admin_url": "test_admin_url",
             "topic": "test_topic",
             "duration": "42",
-            "author_id": 10,
+            "speaker_id": 10,
         },
         deduplication_id="1",
     )

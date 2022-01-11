@@ -2,7 +2,7 @@ import json
 import logging
 from unittest.mock import call, patch
 
-from pytest import fixture
+from pytest import fixture, raises
 
 from sqs_messages import process_sqs_messages
 
@@ -69,17 +69,11 @@ def test_process_sqs_messages_fails_with_exception(mock_boto3, settings, caplog)
 
     fake_handlers = {"Type": fake_handler}
 
-    with patch("sqs_messages.HANDLERS") as handlers:
+    with patch("sqs_messages.HANDLERS") as handlers, raises(
+        ValueError, match="Exception message"
+    ):
         handlers.get = fake_handlers.get
         process_sqs_messages(SQS_MESSAGE_PAYLOAD)
-
-    mock_boto3.client().delete_message.assert_called_once_with(
-        QueueUrl=settings.SQS_QUEUE_URL,
-        ReceiptHandle="82adf785-8fed-4f13-a94a-7f083052371f",
-    )
-    assert caplog.messages == [
-        "Failed to process message_id=376a615c-fcd1-44db-ad39-059bbca4d835 (Type)"
-    ]
 
 
 def test_process_sqs_messages_with_multiple_messages(mock_boto3, settings):

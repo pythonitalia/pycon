@@ -126,7 +126,7 @@ class SendSubmissionForm(SubmissionForm):
             admin_url=request.build_absolute_uri(instance.get_admin_url()),
             duration=instance.duration.duration,
             topic=instance.topic.name,
-            author_id=instance.author_id,
+            speaker_id=instance.speaker_id,
         )
         return instance
 
