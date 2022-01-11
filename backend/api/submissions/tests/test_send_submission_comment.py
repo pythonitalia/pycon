@@ -58,7 +58,7 @@ def test_user_needs_a_ticket_to_comment(
 ):
     submission = submission_factory()
     mocker.patch(
-        "api.submissions.permissions.user_has_admission_ticket"
+        "api.submissions.permissions.pastaporto_user_info_can_vote"
     ).return_value = False
 
     graphql_client.force_login(user)
