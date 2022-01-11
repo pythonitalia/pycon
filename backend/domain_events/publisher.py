@@ -28,6 +28,7 @@ def notify_new_submission(
     admin_url: str,
     duration: int,
     topic: str,
+    author_id: int,
 ):
     publish_message(
         "NewCFPSubmission",
@@ -38,6 +39,7 @@ def notify_new_submission(
             "admin_url": admin_url,
             "topic": topic,
             "duration": str(duration),
+            "author_id": author_id,
         },
         deduplication_id=str(submission_id),
     )
