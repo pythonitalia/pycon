@@ -12,16 +12,20 @@ from api.pretix.types import Option
 @pytest.mark.django_db
 def test_get_conference_tickets_no_tickets(conference, requests_mock):
     requests_mock.get(
-        "https://pretix/api/organizers/events/items", json={"results": []}
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items",
+        json={"results": []},
     )
     requests_mock.get(
-        "https://pretix/api/organizers/events/questions", json={"results": []}
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/questions",
+        json={"results": []},
     )
     requests_mock.get(
-        "https://pretix/api/organizers/events/categories", json={"results": []}
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/categories",
+        json={"results": []},
     )
     requests_mock.get(
-        "https://pretix/api/organizers/events/quotas", json={"results": []}
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/quotas",
+        json={"results": []},
     )
     assert get_conference_tickets(conference, "en") == []
 
@@ -36,14 +40,22 @@ def test_get_conference_tickets(
     pretix_categories,
     pretix_quotas,
 ):
-    requests_mock.get("https://pretix/api/organizers/events/items", json=pretix_items)
     requests_mock.get(
-        "https://pretix/api/organizers/events/questions", json=pretix_questions
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items",
+        json=pretix_items,
     )
     requests_mock.get(
-        "https://pretix/api/organizers/events/categories", json=pretix_categories
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/questions",
+        json=pretix_questions,
     )
-    requests_mock.get("https://pretix/api/organizers/events/quotas", json=pretix_quotas)
+    requests_mock.get(
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/categories",
+        json=pretix_categories,
+    )
+    requests_mock.get(
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/quotas",
+        json=pretix_quotas,
+    )
     tickets = get_conference_tickets(conference, "en")
 
     assert len(tickets) == 2
@@ -77,14 +89,22 @@ def test_get_conference_tickets_hides_when_available_from_is_future(
         item["available_from"] = (timezone.now() + timedelta(days=1)).isoformat()
         item["available_until"] = None
 
-    requests_mock.get("https://pretix/api/organizers/events/items", json=pretix_items)
     requests_mock.get(
-        "https://pretix/api/organizers/events/questions", json=pretix_questions
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items",
+        json=pretix_items,
     )
     requests_mock.get(
-        "https://pretix/api/organizers/events/categories", json=pretix_categories
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/questions",
+        json=pretix_questions,
     )
-    requests_mock.get("https://pretix/api/organizers/events/quotas", json=pretix_quotas)
+    requests_mock.get(
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/categories",
+        json=pretix_categories,
+    )
+    requests_mock.get(
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/quotas",
+        json=pretix_quotas,
+    )
     tickets = get_conference_tickets(conference, "en")
 
     assert len(tickets) == 0
@@ -104,14 +124,22 @@ def test_get_conference_tickets_hides_when_available_until_is_past(
         item["available_from"] = None
         item["available_until"] = (timezone.now() - timedelta(days=1)).isoformat()
 
-    requests_mock.get("https://pretix/api/organizers/events/items", json=pretix_items)
     requests_mock.get(
-        "https://pretix/api/organizers/events/questions", json=pretix_questions
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items",
+        json=pretix_items,
     )
     requests_mock.get(
-        "https://pretix/api/organizers/events/categories", json=pretix_categories
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/questions",
+        json=pretix_questions,
     )
-    requests_mock.get("https://pretix/api/organizers/events/quotas", json=pretix_quotas)
+    requests_mock.get(
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/categories",
+        json=pretix_categories,
+    )
+    requests_mock.get(
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/quotas",
+        json=pretix_quotas,
+    )
     tickets = get_conference_tickets(conference, "en")
 
     assert len(tickets) == 0

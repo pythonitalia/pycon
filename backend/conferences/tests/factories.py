@@ -30,6 +30,9 @@ class ConferenceFactory(DjangoModelFactory):
 
     timezone = pytz.timezone("Europe/Rome")
 
+    pretix_organizer_id = "base-pretix-organizer-id"
+    pretix_event_id = "base-pretix-event-id"
+
     @classmethod
     def _create(cls, model_class, *args, **kwargs):
         specified_deadlines = {}

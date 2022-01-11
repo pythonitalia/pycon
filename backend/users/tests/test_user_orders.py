@@ -32,12 +32,12 @@ def test_get_user_orders(graphql_client, user, conference_factory, requests_mock
     graphql_client.force_login(user)
 
     requests_mock.get(
-        f"https://pretix/api/organizers/org/events/event/orders?email={user.email}",
+        "https://pretix/api/organizers/org/events/event/orders?email={user.email}",
         json={"count": 1, "results": [FAKE_PRETIX_ORDER]},
     )
 
     requests_mock.get(
-        f"https://pretix/api/organizers/org/events/event/items", json=FAKE_PRETIX_ITEMS
+        "https://pretix/api/organizers/org/events/event/items", json=FAKE_PRETIX_ITEMS
     )
 
     response = _query_orders(graphql_client, conference)
@@ -63,12 +63,12 @@ def test_get_user_orders_without_any_order(
     graphql_client.force_login(user)
 
     requests_mock.get(
-        f"https://pretix/api/organizers/org/events/event/orders?email={user.email}",
+        "https://pretix/api/organizers/org/events/event/orders?email={user.email}",
         json={"count": 0, "results": []},
     )
 
     items_mock = requests_mock.get(
-        f"https://pretix/api/organizers/org/events/event/items", json=FAKE_PRETIX_ITEMS
+        "https://pretix/api/organizers/org/events/event/items", json=FAKE_PRETIX_ITEMS
     )
 
     response = _query_orders(graphql_client, conference)

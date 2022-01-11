@@ -78,7 +78,11 @@ def convert_user_to_endpoint(user: User) -> Endpoint:
         has_ticket=[
             conference.code
             for conference in pretix_conferences
-            if user_has_admission_ticket(user.email, conference.pretix_event_id)
+            if user_has_admission_ticket(
+                email=user.email,
+                event_organizer=conference.pretix_organizer_id,
+                event_slug=conference.pretix_event_id,
+            )
         ],
         has_cancelled_talks=list(
             set(

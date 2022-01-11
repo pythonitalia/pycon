@@ -1,5 +1,6 @@
 import pytest
 from django.test import override_settings
+
 from pretix import get_invoices
 
 
@@ -7,7 +8,7 @@ from pretix import get_invoices
 @pytest.mark.django_db
 def test_gets_invoices(conference, requests_mock):
     requests_mock.get(
-        f"https://pretix/api/organizers/events/invoices",
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/invoices",
         json={"next": None, "results": []},
     )
 

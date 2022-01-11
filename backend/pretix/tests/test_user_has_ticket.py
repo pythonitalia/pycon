@@ -1,12 +1,18 @@
 from django.test import override_settings
-from pretix.db import user_has_admission_ticket
 from pytest import mark
+
+from pretix.db import user_has_admission_ticket
 
 
 @override_settings(SIMULATE_PRETIX_DB=True)
 def test_user_always_has_ticket_when_db_is_simulated():
     assert (
-        user_has_admission_ticket("nina@fake-work-email.ca", "this-is-an-email") is True
+        user_has_admission_ticket(
+            email="nina@fake-work-email.ca",
+            event_organizer="organizer",
+            event_slug="event",
+        )
+        is True
     )
 
 
@@ -19,6 +25,10 @@ def test_user_has_admission_ticket(mocker, has_ticket):
     )
 
     assert (
-        user_has_admission_ticket("nina@fake-work-email.ca", "this-is-an-email")
+        user_has_admission_ticket(
+            email="nina@fake-work-email.ca",
+            event_organizer="organizer",
+            event_slug="slug",
+        )
         is has_ticket
     )
