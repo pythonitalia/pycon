@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { Text, Textarea, TextareaProps } from "theme-ui";
 
 type LimitedTextareaPros = TextareaProps & {
