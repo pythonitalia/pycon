@@ -31,6 +31,7 @@ def test_notify_new_submission():
             "test_admin_url",
             42,
             "test_topic",
+            10,
         )
 
     mock_publish.assert_called_once_with(
@@ -42,6 +43,7 @@ def test_notify_new_submission():
             "admin_url": "test_admin_url",
             "topic": "test_topic",
             "duration": "42",
+            "speaker_id": 10,
         },
         deduplication_id="1",
     )

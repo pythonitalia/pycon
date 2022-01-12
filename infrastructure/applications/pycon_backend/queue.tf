@@ -1,6 +1,7 @@
 resource "aws_sqs_queue" "queue" {
-  name       = "${terraform.workspace}-pycon-backend.fifo"
-  fifo_queue = true
+  name                       = "${terraform.workspace}-pycon-backend.fifo"
+  fifo_queue                 = true
+  visibility_timeout_seconds = 60 * 30
 
   tags = {
     Env = terraform.workspace

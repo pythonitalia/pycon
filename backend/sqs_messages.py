@@ -40,27 +40,8 @@ def process_message(record):
         )
         return
 
-    try:
-        data = json.loads(record["body"])
-        handler(data)
-    except Exception as exc:
-        # In future we should re-schedule the message with a delay if it fails
-        # because of an exception, or see if SQS already supports this
-        # (docs say they do, but I don't see anything)
-        # (maybe we need to configure the dead-letter queue)
-        # for now it is ok to just delete the message
-        # and not retry it, since we use this only for slack
-        # notifications when someone sends a CFP
-        logger.error(
-            "Failed to process message_id=%s (%s)",
-            message_id,
-            message_type,
-            exc_info=exc,
-        )
-    finally:
-        # Always delete the message from SQS
-        # so they don't hang around "in flight" for days
-        sqs = boto3.client("sqs")
-        sqs.delete_message(
-            QueueUrl=settings.SQS_QUEUE_URL, ReceiptHandle=receipt_handle
-        )
+    data = json.loads(record["body"])
+    handler(data)
+
+    sqs = boto3.client("sqs")
+    sqs.delete_message(QueueUrl=settings.SQS_QUEUE_URL, ReceiptHandle=receipt_handle)
