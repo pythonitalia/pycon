@@ -29,6 +29,7 @@ import { Alert } from "../alert";
 import { Button } from "../button/button";
 import { TagLine } from "../input-tag";
 import { InputWrapper } from "../input-wrapper";
+import LimitedTextarea from "../limited-textarea/index";
 
 export type CfpFormFields = {
   type: string;
@@ -272,7 +273,7 @@ export const CfpForm: React.SFC<Props> = ({
               }
               errors={getErrors("validationElevatorPitch")}
             >
-              <Textarea
+              <LimitedTextarea
                 sx={{
                   resize: "vertical",
                   minHeight: 340,
@@ -280,6 +281,7 @@ export const CfpForm: React.SFC<Props> = ({
                 {...textarea("elevatorPitch")}
                 maxLength={300}
                 rows={6}
+                limit={300}
               />
             </InputWrapper>
           </Box>
