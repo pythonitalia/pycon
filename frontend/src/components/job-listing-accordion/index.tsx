@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
-import { useState } from "react";
+import React, { useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { Text, Box, Grid, Flex, jsx } from "theme-ui";
 
@@ -50,39 +50,20 @@ export const JobListingAccordion = ({
         >
           <Image layout="fill" src={job.companyLogo} />
         </Box>
-        <Flex
+        <AccordionColumn
           sx={{
-            py: 4,
-            alignItems: "center",
             display: ["flex", null, "none"],
           }}
         >
           {job.company} - {job.title}
-        </Flex>
+        </AccordionColumn>
+        <AccordionColumn>{job.company}</AccordionColumn>
+        <AccordionColumn>{job.title}</AccordionColumn>
         <Flex
           sx={{
             py: 4,
-            alignItems: "center",
-            display: ["none", null, "flex"],
-          }}
-        >
-          {job.company}
-        </Flex>
-        <Flex
-          sx={{
-            py: 4,
-            alignItems: "center",
-            display: ["none", null, "flex"],
-          }}
-        >
-          {job.title}
-        </Flex>
-        <Flex
-          sx={{
-            py: 4,
-            alignItems: "center",
-
             px: 4,
+            alignItems: "center",
             borderLeft: "primary",
           }}
         >
@@ -135,8 +116,8 @@ export const JobListingAccordion = ({
                   <FormattedMessage id="jobboard.applyNow" />
                 </Link>
               )}
-              <InfoBox labelId="jobboard.company" value={job.company} />
-              <InfoBox labelId="jobboard.role" value={job.title} />
+              <JobExtraInfo labelId="jobboard.company" value={job.company} />
+              <JobExtraInfo labelId="jobboard.role" value={job.title} />
             </Grid>
           </Grid>
         </Box>
@@ -145,7 +126,33 @@ export const JobListingAccordion = ({
   );
 };
 
-const InfoBox = ({ labelId, value }: { labelId: string; value: string }) => (
+const AccordionColumn = ({
+  children,
+  className,
+}: {
+  children?: React.ReactNode;
+  className?: string;
+  sx?: any;
+}) => (
+  <Flex
+    sx={{
+      py: 4,
+      alignItems: "center",
+      display: ["none", null, "flex"],
+    }}
+    className={className}
+  >
+    {children}
+  </Flex>
+);
+
+const JobExtraInfo = ({
+  labelId,
+  value,
+}: {
+  labelId: string;
+  value: string;
+}) => (
   <Box>
     <Text
       sx={{
