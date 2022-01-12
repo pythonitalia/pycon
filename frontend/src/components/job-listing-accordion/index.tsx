@@ -38,7 +38,7 @@ export const JobListingAccordion = ({
           px: 3,
           maxWidth: "container",
           cursor: "pointer",
-          gridTemplateColumns: ["1fr 200px", null, "100px 1fr 1fr 200px"],
+          gridTemplateColumns: ["1fr 100px", null, "100px 1fr 1fr 200px"],
         }}
         onClick={() => setExpanded(!expanded)}
       >
@@ -63,8 +63,8 @@ export const JobListingAccordion = ({
         <AccordionColumn>{job.title}</AccordionColumn>
         <Flex
           sx={{
-            py: 4,
-            px: 4,
+            py: [2, 4],
+            px: [2, 4],
             alignItems: "center",
             borderLeft: "primary",
           }}
