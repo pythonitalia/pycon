@@ -11,6 +11,7 @@ from conferences.tests.factories import *  # noqa
 from events.tests.factories import *  # noqa
 from grants.tests.factories import *  # noqa
 from hotels.tests.factories import *  # noqa
+from job_board.tests.factories import *  # noqa
 from languages.models import Language
 from languages.tests.factories import *  # noqa
 from newsletters.tests.factories import *  # noqa
