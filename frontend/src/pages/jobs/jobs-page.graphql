@@ -1,0 +1,11 @@
+query AllJobListings($language: String!) {
+  jobListings {
+    id
+    slug(language: $language)
+    title(language: $language)
+    description(language: $language)
+    applyUrl
+    company
+    companyLogo
+  }
+}

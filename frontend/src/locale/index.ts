@@ -386,8 +386,8 @@ export const messages = {
       PyCon Italia! Voting will help us creating a program that better
       reflects what everyone wants to see!`,
     "voting.seoTitle": "Voting",
-    "voting.close": "Close",
-    "voting.readMore": "Read more",
+    "global.accordion.close": "Close",
+    "global.accordion.readMore": "Read more",
     "voting.topic": "Topic",
     "voting.tags": "Tags",
     "voting.audienceLevel": "Audience level",
@@ -419,6 +419,11 @@ export const messages = {
     "unsubscribe.succeed.title": "Thank you",
     "unsubscribe.succeed.message":
       "You have been successfully unsubscribed from this newsletter.",
+
+    "jobboard.title": "Jobs board",
+    "jobboard.applyNow": "Apply now",
+    "jobboard.company": "Company",
+    "jobboard.role": "Role",
 
     "ticketsTable.name": "Name",
     "ticketsTable.price": "Price",
@@ -815,8 +820,8 @@ export const messages = {
     "voting.introduction": `Questa è la tua opportunità per aiutarci a dare forma al programma di PyCon Italia.
       Il tuo voto ci aiuterà a creare un programma che più rispecchia ciò che la community vuole vedere.`,
     "voting.seoTitle": "Votazione",
-    "voting.close": "Chiudi",
-    "voting.readMore": "Apri",
+    "global.accordion.close": "Chiudi",
+    "global.accordion.readMore": "Apri",
     "voting.topic": "Argomento",
     "voting.tags": "Tags",
     "voting.audienceLevel": "Livello audience",
@@ -858,6 +863,11 @@ export const messages = {
 
     "schedule.pageTitle": "Schedule {day}",
     "schedule.loading": "Caricamento in corso...",
+
+    "jobboard.title": "Offerte di lavoro",
+    "jobboard.applyNow": "Candidati",
+    "jobboard.company": "Azienda",
+    "jobboard.role": "Ruolo",
 
     "error404.message":
       "Non siamo riusciti a trovare la pagina che stai cercando :(",

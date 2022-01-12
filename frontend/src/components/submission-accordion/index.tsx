@@ -310,7 +310,9 @@ export const SubmissionAccordion: React.SFC<Props> = ({
               userSelect: "none",
             }}
           >
-            <FormattedMessage id={open ? "voting.close" : "voting.readMore"} />
+            <FormattedMessage
+              id={open ? "global.accordion.close" : "global.accordion.readMore"}
+            />
           </Text>
         </Grid>
       </Box>
