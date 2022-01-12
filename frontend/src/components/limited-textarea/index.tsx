@@ -12,13 +12,10 @@ const LimitedTextarea = ({
 }: LimitedTextareaPros) => {
   const [content, setContent] = useState(value.slice(0, limit));
 
-  console.log(value, content);
-
   return (
     <>
       <Textarea
         onChange={(event) => {
-          console.log(event.target.value);
           onChange(event);
           setContent(event.target.value.slice(0, limit));
         }}
