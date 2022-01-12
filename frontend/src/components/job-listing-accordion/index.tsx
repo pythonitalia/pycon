@@ -48,7 +48,7 @@ export const JobListingAccordion = ({
             display: ["none", null, "block"],
           }}
         >
-          <Image layout="fill" src={job.companyLogo} />
+          {job.companyLogo && <Image layout="fill" src={job.companyLogo} />}
         </Box>
         <AccordionColumn
           sx={{
