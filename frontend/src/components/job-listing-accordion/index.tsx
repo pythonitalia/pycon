@@ -46,8 +46,8 @@ export const JobListingAccordion = ({
           sx={{
             position: "relative",
             display: ["none", null, "block"],
-            borderRight: job.companyLogo ? 'primary' : null,
-            borderLeft: job.companyLogo ? 'primary' : null,
+            borderRight: job.companyLogo ? "primary" : null,
+            borderLeft: job.companyLogo ? "primary" : null,
           }}
         >
           {job.companyLogo && <Image layout="fill" src={job.companyLogo} />}

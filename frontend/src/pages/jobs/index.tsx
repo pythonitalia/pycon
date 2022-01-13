@@ -3,7 +3,7 @@
 /** @jsx jsx */
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
-import { Box, Grid, Flex, Heading, jsx } from "theme-ui";
+import { Box, Heading, jsx } from "theme-ui";
 
 import { GetStaticProps } from "next";
 
@@ -25,7 +25,7 @@ const JobsBoardPage = () => {
       language,
     },
   });
-  console.log("jobListings", jobListings);
+
   return (
     <Fragment>
       <FormattedMessage id="jobboard.title">
