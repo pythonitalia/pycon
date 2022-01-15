@@ -29,7 +29,7 @@ import { Alert } from "../alert";
 import { Button } from "../button/button";
 import { TagLine } from "../input-tag";
 import { InputWrapper } from "../input-wrapper";
-import LimitedTextarea from "../limited-textarea/index";
+import { LimitedTextarea } from "../limited-textarea";
 
 export type CfpFormFields = {
   type: string;

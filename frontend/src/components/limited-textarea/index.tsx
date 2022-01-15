@@ -22,4 +22,3 @@ const LimitedTextarea = ({ value, limit, ...props }: LimitedTextareaPros) => {
   );
 };
 
-export default LimitedTextarea;
