@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 
 from users.autocomplete import UsersBackendAutocomplete
-from users.mixins import AdminUsersMixin
+from users.mixins import AdminUsersMixin, SearchUsersMixin
 
 from .models import Submission, SubmissionComment, SubmissionTag, SubmissionType
 
@@ -49,7 +49,7 @@ class SubmissionAdminForm(forms.ModelForm):
 
 
 @admin.register(Submission)
-class SubmissionAdmin(AdminUsersMixin):
+class SubmissionAdmin(AdminUsersMixin, SearchUsersMixin):
     form = SubmissionAdminForm
     list_display = (
         "title",
