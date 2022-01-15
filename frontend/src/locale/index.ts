@@ -235,9 +235,16 @@ export const messages = {
       "{roomName} with check-in the {checkin} and check-out the {checkout}",
     "orderConfirmation.heading": "Order confirmation!",
     "orderConfirmation.heading.canceled": "Order canceled!",
+    "orderConfirmation.heading.pending": "Order pending!",
     "orderConfirmation.successMessage":
       "Thanks for the order! You should receive an email confirmation soon!",
+    "orderConfirmation.pendingMessage":
+      "Your order is still pending and not paid! If you paid by card, click the link below and try again",
+    "orderConfirmation.bankMessage": `If you paid via bank transfer, contact us at {email} with your order code {code}
+      once the transfer is done and we will confirm it once we receive the transfer.`,
     "orderConfirmation.manage": "Click here to manage the order.",
+    "orderConfirmation.pendingManage":
+      "Click here to try again or change your payment method.",
     "order.soldout": "Sold out",
     "order.price": "Price: {price} EUR.",
     "order.hotelPrice": "Price: {price}/night EUR.",
@@ -655,8 +662,15 @@ export const messages = {
     "orderConfirmation.manage": "Fai click qui per gestire il tuo ordine.",
     "orderConfirmation.heading": "Ordine confermato",
     "orderConfirmation.heading.canceled": "Ordine cancellato!",
+    "orderConfirmation.heading.pending": "Ordine non processato!",
     "orderConfirmation.successMessage":
       "Grazie per l'ordine, riceverai una email di conferma a breve.",
+    "orderConfirmation.pendingManage":
+      "Clicca qui per riprovare o cambiare metodo di pagamento",
+    "orderConfirmation.pendingMessage":
+      "Il tuo ordine è ancora pending e non confermato! Se hai pagato con card, clicca il link sotto per riprovare",
+    "orderConfirmation.bankMessage": `Se hai pagato con bonifico bancario, contattaci a {email} con il tuo codice {code}
+      appena il bonifico è stato eseguito e confermeremo l'ordine il prima possibile.`,
     "order.soldout": "Sold out",
     "order.price": "Prezzo: {price} EUR",
     "order.hotelPrice": "Price: {price}/notte EUR.",

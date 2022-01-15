@@ -37,6 +37,48 @@ const OrderSucceeded = ({ url }: { url: string }) => (
   </React.Fragment>
 );
 
+const OrderPending = ({ url, code }: { url: string; code: string }) => (
+  <React.Fragment>
+    <Heading sx={{ mb: 3 }}>
+      <FormattedMessage id="orderConfirmation.heading.pending" />
+    </Heading>
+    <Text>
+      <FormattedMessage id="orderConfirmation.pendingMessage" />
+    </Text>
+    <Text>
+      <a href={url} target="_blank" rel="noopener noreferrer">
+        <FormattedMessage id="orderConfirmation.pendingManage" />
+      </a>
+    </Text>
+    <Text
+      sx={{
+        mt: 2,
+      }}
+    >
+      <FormattedMessage
+        id="orderConfirmation.bankMessage"
+        values={{
+          code: (
+            <Text
+              as="span"
+              sx={{
+                fontWeight: "bold",
+              }}
+            >
+              {code}
+            </Text>
+          ),
+          email: (
+            <a target="_blank" href="mailto:info@pycon.it">
+              info@pycon.it
+            </a>
+          ),
+        }}
+      />
+    </Text>
+  </React.Fragment>
+);
+
 export const OrderConfirmationPage = () => {
   const [loggedIn, _] = useLoginState();
 
@@ -68,10 +110,10 @@ export const OrderConfirmationPage = () => {
 
   return (
     <Box sx={{ maxWidth: "container", px: 3, mx: "auto" }}>
-      {data.order.status === "CANCELED" ? (
-        <OrderCanceled />
-      ) : (
-        <OrderSucceeded url={data.order.url} />
+      {data.order.status === "CANCELED" && <OrderCanceled />}
+      {data.order.status === "PAID" && <OrderSucceeded url={data.order.url} />}
+      {data.order.status === "PENDING" && (
+        <OrderPending code={code} url={data.order.url} />
       )}
     </Box>
   );
