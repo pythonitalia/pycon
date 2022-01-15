@@ -11,6 +11,7 @@ import { InputWrapper } from "~/components/input-wrapper";
 import { useSendCommentMutation } from "~/types";
 
 import { Button } from "../button/button";
+import LimitedTextarea from "../limited-textarea";
 
 type Form = {
   comment: string;
@@ -62,7 +63,7 @@ export const AddComment: React.SFC<Props> = ({ submissionId }) => {
   return (
     <Box as="form" onSubmit={onSubmit} sx={{ mb: 4 }}>
       <InputWrapper sx={{ mb: 2 }} errors={getErrors("validationText")}>
-        <Textarea
+        <LimitedTextarea
           sx={{
             resize: "vertical",
             minHeight: 200,
@@ -70,6 +71,7 @@ export const AddComment: React.SFC<Props> = ({ submissionId }) => {
           {...textarea("comment")}
           required={true}
           maxLength={500}
+          limit={500}
         />
       </InputWrapper>
 

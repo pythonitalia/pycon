@@ -382,13 +382,15 @@ export const CfpForm: React.SFC<Props> = ({
           description={<FormattedMessage id="cfp.abstractDescription" />}
           errors={getErrors("validationAbstract")}
         >
-          <Textarea
+          <LimitedTextarea
             sx={{
               resize: "vertical",
               minHeight: 200,
             }}
             {...textarea("abstract")}
             rows={6}
+            maxLength={5000}
+            limit={5000}
           />
         </InputWrapper>
 
