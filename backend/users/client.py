@@ -16,8 +16,8 @@ GET_USERS_BY_IDS = """query GetUsersByIds($ids: [ID!]!) {
 }
 """
 
-GET_USERS_BY_NAME = """
-    query GetUsersByName($query: String!){
+SEARCH_USERS = """
+    query searchUsers($query: String!){
         searchUsers(query: $query) {
             id
         }
@@ -47,6 +47,6 @@ def get_user_data_by_query(query: str):
         jwt_secret=settings.SERVICE_TO_SERVICE_SECRET,
     )
     client_execute = async_to_sync(client.execute)
-    users_data = client_execute(GET_USERS_BY_NAME, {"query": query}).data
+    users_data = client_execute(SEARCH_USERS, {"query": query}).data
 
     return [user["id"] for user in users_data["searchUsers"]]
