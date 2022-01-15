@@ -245,6 +245,9 @@ export const messages = {
     "orderConfirmation.manage": "Click here to manage the order.",
     "orderConfirmation.pendingManage":
       "Click here to try again or change your payment method.",
+    "orderConfirmation.tryAgain":
+      "Try again creating a new order going back to our {link} page",
+    "orderConfirmation.tickets": "Tickets",
     "order.soldout": "Sold out",
     "order.price": "Price: {price} EUR.",
     "order.hotelPrice": "Price: {price}/night EUR.",
@@ -671,6 +674,9 @@ export const messages = {
       "Il tuo ordine è ancora pending e non confermato! Se hai pagato con card, clicca il link sotto per riprovare",
     "orderConfirmation.bankMessage": `Se hai pagato con bonifico bancario, contattaci a {email} con il tuo codice {code}
       appena il bonifico è stato eseguito e confermeremo l'ordine il prima possibile.`,
+    "orderConfirmation.tryAgain":
+      "Prova a creare un nuovo ordine nella pagina {link}",
+    "orderConfirmation.tickets": "Biglietti",
     "order.soldout": "Sold out",
     "order.price": "Prezzo: {price} EUR",
     "order.hotelPrice": "Price: {price}/notte EUR.",
