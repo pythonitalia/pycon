@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Alert } from "~/components/alert";
+import { Link } from "~/components/link";
 import { PageLoading } from "~/components/page-loading";
 import { useLoginState } from "~/components/profile/hooks";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
@@ -20,6 +21,18 @@ const OrderCanceled = () => (
     <Heading sx={{ mb: 3 }}>
       <FormattedMessage id="orderConfirmation.heading.canceled" />
     </Heading>
+    <Text>
+      <FormattedMessage
+        id="orderConfirmation.tryAgain"
+        values={{
+          link: (
+            <Link path="/tickets">
+              <FormattedMessage id="orderConfirmation.tickets" />
+            </Link>
+          ),
+        }}
+      />
+    </Text>
   </React.Fragment>
 );
 
@@ -34,6 +47,48 @@ const OrderSucceeded = ({ url }: { url: string }) => (
     <a href={url} target="_blank" rel="noopener noreferrer">
       <FormattedMessage id="orderConfirmation.manage" />
     </a>
+  </React.Fragment>
+);
+
+const OrderPending = ({ url, code }: { url: string; code: string }) => (
+  <React.Fragment>
+    <Heading sx={{ mb: 3 }}>
+      <FormattedMessage id="orderConfirmation.heading.pending" />
+    </Heading>
+    <Text>
+      <FormattedMessage id="orderConfirmation.pendingMessage" />
+    </Text>
+    <Text>
+      <a href={url} target="_blank" rel="noopener noreferrer">
+        <FormattedMessage id="orderConfirmation.pendingManage" />
+      </a>
+    </Text>
+    <Text
+      sx={{
+        mt: 2,
+      }}
+    >
+      <FormattedMessage
+        id="orderConfirmation.bankMessage"
+        values={{
+          code: (
+            <Text
+              as="span"
+              sx={{
+                fontWeight: "bold",
+              }}
+            >
+              {code}
+            </Text>
+          ),
+          email: (
+            <a target="_blank" href="mailto:info@pycon.it">
+              info@pycon.it
+            </a>
+          ),
+        }}
+      />
+    </Text>
   </React.Fragment>
 );
 
@@ -68,10 +123,11 @@ export const OrderConfirmationPage = () => {
 
   return (
     <Box sx={{ maxWidth: "container", px: 3, mx: "auto" }}>
-      {data.order.status === "CANCELED" ? (
-        <OrderCanceled />
-      ) : (
-        <OrderSucceeded url={data.order.url} />
+      {(data.order.status === "CANCELED" ||
+        data.order.status === "EXPIRED") && <OrderCanceled />}
+      {data.order.status === "PAID" && <OrderSucceeded url={data.order.url} />}
+      {data.order.status === "PENDING" && (
+        <OrderPending code={code} url={data.order.url} />
       )}
     </Box>
   );
