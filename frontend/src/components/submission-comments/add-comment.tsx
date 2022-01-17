@@ -71,7 +71,6 @@ export const AddComment: React.SFC<Props> = ({ submissionId }) => {
           {...textarea("comment")}
           required={true}
           maxLength={500}
-          limit={500}
         />
       </InputWrapper>
 

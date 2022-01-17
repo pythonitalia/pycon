@@ -281,7 +281,6 @@ export const CfpForm: React.SFC<Props> = ({
                 {...textarea("elevatorPitch")}
                 maxLength={300}
                 rows={6}
-                limit={300}
               />
             </InputWrapper>
           </Box>
@@ -390,7 +389,6 @@ export const CfpForm: React.SFC<Props> = ({
             {...textarea("abstract")}
             rows={6}
             maxLength={5000}
-            limit={5000}
           />
         </InputWrapper>
 

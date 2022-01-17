@@ -1,26 +1,21 @@
 import { useState } from "react";
 import { Text, Textarea, TextareaProps } from "theme-ui";
 
-type LimitedTextareaPros = TextareaProps & {
-  value: string;
-  limit: number;
-};
-
 export const LimitedTextarea = ({
   value,
-  limit,
+  maxLength,
   ...props
-}: LimitedTextareaPros) => {
+}: TextareaProps) => {
   return (
     <>
-      <Textarea value={value} {...props} />
+      <Textarea value={value} maxLength={maxLength} {...props} />
       <Text
         variant="labelDescription"
         as="p"
         mb={4}
-        color={value.length >= limit ? "red" : "black"}
+        color={(value as string)?.length >= maxLength ? "red" : "black"}
       >
-        {value.length}/{limit}
+        {(value as string)?.length}/{maxLength}
       </Text>
     </>
   );
