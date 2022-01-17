@@ -1,6 +1,4 @@
-{% extends 'admin/base.html' %}
-
-{% block extrastyle %}{{ block.super }}
+{% extends 'admin/base.html' %} {% block extrastyle %}{{ block.super }}
 <style>
   @media (prefers-color-scheme: dark) {
     :root {
@@ -119,13 +117,27 @@
   #header {
     margin-top: 40px;
   }
-</style>
-{% endblock extrastyle %}
 
-{% block userlinks %}
+  {% if CURRENT_ENV != "production" %}
+  .main,
+  #toggle-nav-sidebar {
+    background-color: #ffe9b5;
+  }
+  {% endif %}
+</style>
+{% endblock extrastyle %} {% block userlinks %}
 <div
-  style="position: fixed; z-index: 100; top: 0; left: 0; right: 0; background-color: #417690; text-align: center; padding: 15px 30px;">
+  style="
+    position: fixed;
+    z-index: 100;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: #417690;
+    text-align: center;
+    padding: 15px 30px;
+  "
+>
   {{CURRENT_ENV}} environment
 </div>
-{{ block.super }}
-{% endblock %}
+{{ block.super }} {% endblock %}
