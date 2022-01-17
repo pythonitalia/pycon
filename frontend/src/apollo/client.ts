@@ -79,6 +79,9 @@ const createClient = () => {
         SponsorsByLevel: {
           keyFields: ["level"],
         },
+        TicketItem: {
+          keyFields: ["id", "language"],
+        },
       },
     }),
   });

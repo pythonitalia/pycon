@@ -28,7 +28,7 @@ export const CreateOrderButtons: React.SFC<Props> = ({ state, email }) => {
           return;
         }
 
-        window.localStorage.removeItem("tickets-cart");
+        window.localStorage.removeItem("tickets-cart-v2");
         window.location.href = result.createOrder.paymentUrl;
       },
     });
@@ -40,7 +40,7 @@ export const CreateOrderButtons: React.SFC<Props> = ({ state, email }) => {
       )
         .flat()
         .map((product) => ({
-          ticketId: product.id.replace("-en", "").replace("-it", ""),
+          ticketId: product.id,
           variation: product.variation,
           attendeeName: product.attendeeName,
           attendeeEmail: product.attendeeEmail,
