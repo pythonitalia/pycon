@@ -3,14 +3,14 @@ export const messages = {
     titleTemplate: "%s | PyCon Italia",
     description:
       "Join PyCon Italia from the 2nd to the 5th of June 2022 in Florence, Italy!",
+    "global.accordion.close": "Close",
+    "global.accordion.readMore": "Read more",
     "global.yes": "Yes",
     "global.no": "No",
     "global.learnMore": "Learn more",
     "global.loading": "Loading",
     "global.button.loading": "Loading {emoji}",
     "global.somethingWentWrong": "Something went wrong, please try again",
-    "global.accordion.close": "Close",
-    "global.accordion.readMore": "Read more",
 
     "home.title": "Home",
     "home.deadline.begins": "Begins",
@@ -456,10 +456,10 @@ export const messages = {
     "global.accordion.readMore": "Apri",
     "global.yes": "Si",
     "global.no": "No",
+    "global.learnMore": "Maggiori informazioni",
     "global.loading": "Caricamento in corso...",
     "global.button.loading": "Invio {emoji}",
     "global.somethingWentWrong": "Qualcosa è andato male, prova di nuovo",
-    "global.learnMore": "Maggiori informazioni",
 
     "home.title": "Home",
     "home.deadline.begins": "Inizio",
