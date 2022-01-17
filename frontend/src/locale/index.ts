@@ -409,7 +409,8 @@ export const messages = {
     "voting.needToBeLoggedIn": "Login or create an account to vote",
     "voting.errors.cannotVote.heading": "Sorry, you can't vote!",
     "voting.errors.cannotVote.body":
-      "Please check our voting guidelines on {linkVotingInfo} and buy your ticket {linkTicket} to join us at PyCon Italia",
+      "Please check our {linkVotingInfo} and buy your ticket {linkTicket} to join us at PyCon Italia",
+    "voting.errors.cannotVote.linkVotingInfo.text": "voting guidelines",
     "voting.loading": "Loading",
     "voting.fullDetails": "Full details",
     "voting.allTopics": "All topics",
@@ -855,7 +856,8 @@ export const messages = {
     "voting.needToBeLoggedIn": "Esegui l'accesso o crea un account per votare",
     "voting.errors.cannotVote.heading": "Ci dispiace, non puoi votare!",
     "voting.errors.cannotVote.body":
-      "Per favore, controlla le nostre linee guida per votare su {linkVotingInfo} e acquista il tuo biglietto {linkTicket} per partecipare a PyCon Italia",
+      "Per favore, controlla le nostre {linkVotingInfo} per votare e acquista il tuo biglietto {linkTicket} per partecipare a PyCon Italia",
+    "voting.errors.cannotVote.linkVotingInfo.text": "linee guida",
     "voting.fullDetails": "Continua a leggere",
     "voting.allTopics": "Tutti gli argomenti",
     "voting.allLanguages": "Tutte le lingue",

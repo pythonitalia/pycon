@@ -222,6 +222,7 @@ export const VotingPage = () => {
               maxWidth: "container",
               mx: "auto",
               px: 3,
+              py: 0,
             }}
           >
             {!cannotVoteErrors && error && (
@@ -229,7 +230,7 @@ export const VotingPage = () => {
             )}
 
             {cannotVoteErrors && error && (
-              <Box sx={{ px: 3 }}>
+              <Box sx={{ pt: 4 }}>
                 <Heading>
                   <FormattedMessage id="voting.errors.cannotVote.heading" />
                 </Heading>
@@ -239,7 +240,9 @@ export const VotingPage = () => {
                     id="voting.errors.cannotVote.body"
                     values={{
                       linkVotingInfo: (
-                        <Link path="/voting-info">pycon.it/voting-info</Link>
+                        <Link path="/voting-info">
+                          <FormattedMessage id="voting.errors.cannotVote.linkVotingInfo.text" />
+                        </Link>
                       ),
                       linkTicket: <Link path="/tickets">here</Link>,
                     }}
