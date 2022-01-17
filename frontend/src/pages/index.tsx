@@ -102,10 +102,10 @@ export const HomePage = () => {
           </Box>
         </Box>
 
-        {conference.cfpDeadline && (
+        {conference.votingDeadline && (
           <Box sx={{ gridColumnStart: [null, null, 3] }}>
             <Heading as="h1" sx={{ mb: 3 }}>
-              {conference.cfpTitle}
+              {conference.votingTitle}
             </Heading>
 
             <Box
@@ -130,10 +130,16 @@ export const HomePage = () => {
                   <FormattedMessage id="home.deadline.begins" />
                 </Heading>
                 <Box>
-                  {formatDeadlineDate(conference.cfpDeadline.start, language)}
+                  {formatDeadlineDate(
+                    conference.votingDeadline.start,
+                    language,
+                  )}
                 </Box>
                 <Box sx={{ fontSize: 0 }}>
-                  {formatDeadlineTime(conference.cfpDeadline.start, language)}
+                  {formatDeadlineTime(
+                    conference.votingDeadline.start,
+                    language,
+                  )}
                 </Box>
               </Box>
               <Box sx={{ flex: 1, p: 3, textAlign: "center" }}>
@@ -141,25 +147,27 @@ export const HomePage = () => {
                   <FormattedMessage id="home.deadline.deadline" />
                 </Heading>
                 <Box>
-                  {formatDeadlineDate(conference.cfpDeadline.end, language)}
+                  {formatDeadlineDate(conference.votingDeadline.end, language)}
                 </Box>
                 <Box sx={{ fontSize: 0 }}>
-                  {formatDeadlineTime(conference.cfpDeadline.end, language)}
+                  {formatDeadlineTime(conference.votingDeadline.end, language)}
                 </Box>
               </Box>
             </Box>
 
             <Heading as="h2" sx={{ color: "yellow", fontSize: 3, mb: 3 }}>
-              {conference.cfpSubtitle}
+              {conference.votingSubtitle}
             </Heading>
 
             <Text as="p" sx={{ mb: 4 }}>
-              {conference.cfpText}
+              {conference.votingText}
             </Text>
 
-            <Link path="/cfp" variant="arrow-button">
-              <FormattedMessage id="home.cfp.submit" />
-            </Link>
+            {false && (
+              <Link path="/voting" variant="arrow-button">
+                <FormattedMessage id="home.voting.vote" />
+              </Link>
+            )}
           </Box>
         )}
       </Grid>
