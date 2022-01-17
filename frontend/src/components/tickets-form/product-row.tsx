@@ -187,7 +187,7 @@ export const ProductRow = ({
         {!ticket.soldOut && !hotel && hasVariation && (
           <AddProductWithVariation
             addVariation={(variation: string) =>
-              addProduct && addProduct(ticket.id, variation)
+              addProduct?.(ticket.id, variation)
             }
             ticket={ticket}
           />

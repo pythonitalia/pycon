@@ -38,7 +38,13 @@ export const AddProductWithVariation: React.SFC<{
       </Select>
 
       <Button
-        onClick={() => addVariation(currentVariation)}
+        onClick={() => {
+          if (currentVariation === "") {
+            return;
+          }
+
+          addVariation(currentVariation);
+        }}
         variant="plus"
         sx={{ ml: 3 }}
       >
