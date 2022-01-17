@@ -1,3 +1,5 @@
+from typing import Optional
+
 import strawberry
 
 from users.domain import entities
@@ -7,7 +9,7 @@ from users.domain import entities
 class User:
     id: strawberry.ID
     fullname: str
-    username: str
+    username: Optional[str]
     name: str
     email: str
     is_active: bool
