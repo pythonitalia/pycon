@@ -103,7 +103,10 @@ export const VotingPage = () => {
       (e) => e.message === "You need to have a ticket to see submissions",
     ) !== -1;
 
-  const isVotingClosed = data && !data.conference.isVotingOpen;
+  const isVotingClosed = data && !data?.conference?.isVotingOpen;
+  const userCannotVote =
+    loggedIn && (loading || (cannotVoteErrors ?? false) || (error ?? false));
+  const showFilters = !isVotingClosed && !userCannotVote;
 
   return (
     <Box>
@@ -130,12 +133,15 @@ export const VotingPage = () => {
                 <FormattedMessage id="voting.heading" />
               </Heading>
 
-              <Text my={4}>
+              <Text mt={4}>
                 <FormattedMessage id="voting.introduction" />
               </Text>
+              <Link path="/voting-info" variant="arrow-button" sx={{ my: 4 }}>
+                <FormattedMessage id="global.learnMore" />
+              </Link>
             </Box>
 
-            {!isVotingClosed && (
+            {showFilters && (
               <Grid
                 sx={{
                   gridTemplateColumns: [null, null, "1fr 1fr"],
@@ -208,30 +214,52 @@ export const VotingPage = () => {
         </Box>
       </Box>
 
-      {loggedIn && (loading || cannotVoteErrors || error) && (
-        <Box
-          sx={{
-            maxWidth: "container",
-            mx: "auto",
-            px: 3,
-          }}
-        >
-          {!cannotVoteErrors && error && (
-            <Alert variant="alert">{error.message}</Alert>
-          )}
+      {userCannotVote && (
+        <Box>
+          <Box
+            sx={{
+              maxWidth: "container",
+              mx: "auto",
+              px: 3,
+              py: 0,
+            }}
+          >
+            {!cannotVoteErrors && error && (
+              <Alert variant="alert">{error.message}</Alert>
+            )}
 
-          {cannotVoteErrors && error && (
-            <Alert variant="alert">
-              <Link path="/tickets">
-                <FormattedMessage id="voting.buyTicketToVote" />
-              </Link>
-            </Alert>
-          )}
-          {loading && (
-            <Alert variant="info">
-              <FormattedMessage id="voting.loading" />
-            </Alert>
-          )}
+            {cannotVoteErrors && error && (
+              <Box sx={{ pt: 4 }}>
+                <Heading>
+                  <FormattedMessage id="voting.errors.cannotVote.heading" />
+                </Heading>
+
+                <Text my={4}>
+                  <FormattedMessage
+                    id="voting.errors.cannotVote.body"
+                    values={{
+                      linkVotingInfo: (
+                        <Link path="/voting-info">
+                          <FormattedMessage id="voting.errors.cannotVote.linkVotingInfo.text" />
+                        </Link>
+                      ),
+                      linkTicket: (
+                        <Link path="/tickets">
+                          {" "}
+                          <FormattedMessage id="voting.errors.cannotVote.linkTicket.text" />
+                        </Link>
+                      ),
+                    }}
+                  />
+                </Text>
+              </Box>
+            )}
+            {loading && (
+              <Alert variant="info">
+                <FormattedMessage id="voting.loading" />
+              </Alert>
+            )}
+          </Box>
         </Box>
       )}
 

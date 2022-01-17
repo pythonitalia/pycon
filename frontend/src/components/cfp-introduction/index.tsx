@@ -77,7 +77,7 @@ export const Introduction = ({ deadline }: { deadline?: string }) => {
             variant="arrow-button"
             sx={{ mt: 4 }}
           >
-            <FormattedMessage id="cfp.learnMore" />
+            <FormattedMessage id="global.learnMore" />
           </Link>
         </Box>
         <Box
