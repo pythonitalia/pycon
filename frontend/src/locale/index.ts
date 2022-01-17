@@ -5,9 +5,13 @@ export const messages = {
       "Join PyCon Italia from the 2nd to the 5th of June 2022 in Florence, Italy!",
     "global.yes": "Yes",
     "global.no": "No",
+    "global.learnMore": "Learn more",
     "global.loading": "Loading",
     "global.button.loading": "Loading {emoji}",
     "global.somethingWentWrong": "Something went wrong, please try again",
+    "global.accordion.close": "Close",
+    "global.accordion.readMore": "Read more",
+
     "home.title": "Home",
     "home.deadline.begins": "Begins",
     "home.deadline.deadline": "Deadline",
@@ -118,7 +122,6 @@ export const messages = {
       "PyCon Italia is seeking speakers of all experience levels and backgrounds to contribute to our conference program! If you use Python professionally, as a hobbyist or are just excited about Python or programming and open source communities, we’d love to hear from you. We want you and your ideas at PyCon Italia!",
     "cfp.introductionDeadline":
       "You have until {deadline} to submit a proposal!",
-    "cfp.learnMore": "Learn more",
     "cfp.youridea": "Your idea",
     "cfp.choosetype": "Choose a format",
     "cfp.format": "Format",
@@ -285,7 +288,6 @@ export const messages = {
       "Thanks to the help of the Python Software Foundation we are glad to give financial support to everyone who may need it in order to join PyCon Italia.",
     "grants.introductionDeadline":
       "You have until {deadline} to send your request!",
-    "grants.learnMore": "Learn more",
     "grants.comingSoon": "The grants form will open on {start}!",
     "grants.closed":
       "The grants form is now closed! If you sent a request, you will be contacted by us in the next few weeks with our decision.",
@@ -396,8 +398,6 @@ export const messages = {
       PyCon Italia! Voting will help us creating a program that better
       reflects what everyone wants to see!`,
     "voting.seoTitle": "Voting",
-    "global.accordion.close": "Close",
-    "global.accordion.readMore": "Read more",
     "voting.topic": "Topic",
     "voting.tags": "Tags",
     "voting.audienceLevel": "Audience level",
@@ -407,7 +407,9 @@ export const messages = {
     "voting.sendingVote": "Sending vote",
     "voting.voteSent": "Vote sent!",
     "voting.needToBeLoggedIn": "Login or create an account to vote",
-    "voting.buyTicketToVote": "You need a ticket to vote",
+    "voting.errors.cannotVote.heading": "Sorry, you can't vote!",
+    "voting.errors.cannotVote.body":
+      "Please check our voting guidelines on {linkVotingInfo} and buy your ticket {linkTicket} to join us at PyCon Italia",
     "voting.loading": "Loading",
     "voting.fullDetails": "Full details",
     "voting.allTopics": "All topics",
@@ -420,7 +422,6 @@ export const messages = {
     "voting.closed.heading": "Voting is now closed!",
     "voting.closed.body":
       "Thanks for all the people that have bought a ticket and voted! Follow us on {twitter} for updates",
-
     "voting.abstract": "Abstract",
     "voting.elevatorPitch": "Elevator pitch",
     "voting.notes": "Notes",
@@ -451,11 +452,15 @@ export const messages = {
   it: {
     titleTemplate: "%s | PyCon Italia",
     description: "Partecipa a PyCon Italia! Dal 2 al 5 Giugno 2022 a Firenze!",
+    "global.accordion.close": "Chiudi",
+    "global.accordion.readMore": "Apri",
     "global.yes": "Si",
     "global.no": "No",
     "global.loading": "Caricamento in corso...",
     "global.button.loading": "Invio {emoji}",
     "global.somethingWentWrong": "Qualcosa è andato male, prova di nuovo",
+    "global.learnMore": "Maggiori informazioni",
+
     "home.title": "Home",
     "home.deadline.begins": "Inizio",
     "home.deadline.deadline": "Fine",
@@ -567,7 +572,6 @@ export const messages = {
       "PyCon Italia è alla ricerca di speakers con ogni background per contribuire al nostro progamma. Se usi Python professionalmente, come hobbista o se semplicemente sei un appassionato di Python o programmazione, proponi un talk! Vogliamo sentire ciò che hai da condividere!",
     "cfp.introductionDeadline":
       "Hai tempo fino al {deadline} per inviare una proposta!",
-    "cfp.learnMore": "Maggiori informazioni",
     "cfp.yourProposals": "Le tue proposte",
     "cfp.elevatorPitchLabel": "Elevator pitch",
     "cfp.elevatorPitchDescription":
@@ -729,7 +733,6 @@ export const messages = {
       "Grazie all'aiuto della Python Software Foundation siamo lieti di mettere a disposizione di chi ne avesse bisogno un programma di supporto per chi vorrebbe essere presente a PyCon Italia ma per motivi economici non potrebbe riuscirci.",
     "grants.introductionDeadline":
       "Hai fino al {deadline} per inviare la tua richiesta!",
-    "grants.learnMore": "Maggiori informazioni",
     "grants.comingSoon": "Il form per i grant apre il {start}!",
     "grants.closed":
       "Il form per richiede grant è chiuso! Se hai inviato una richiesta sarai contattato nelle prossime settimane con l'esito.",
@@ -840,8 +843,6 @@ export const messages = {
     "voting.introduction": `Questa è la tua opportunità per aiutarci a dare forma al programma di PyCon Italia.
       Il tuo voto ci aiuterà a creare un programma che più rispecchia ciò che la community vuole vedere.`,
     "voting.seoTitle": "Votazione",
-    "global.accordion.close": "Chiudi",
-    "global.accordion.readMore": "Apri",
     "voting.topic": "Argomento",
     "voting.tags": "Tags",
     "voting.audienceLevel": "Livello audience",
@@ -852,7 +853,9 @@ export const messages = {
     "voting.sendingVote": "Invio in corso",
     "voting.voteSent": "Voto inviato!",
     "voting.needToBeLoggedIn": "Esegui l'accesso o crea un account per votare",
-    "voting.buyTicketToVote": "Devi comprare un biglietto per poter votare",
+    "voting.errors.cannotVote.heading": "Ci dispiace, non puoi votare!",
+    "voting.errors.cannotVote.body":
+      "Per favore, controlla le nostre linee guida per votare su {linkVotingInfo} e acquista il tuo biglietto {linkTicket} per partecipare a PyCon Italia",
     "voting.fullDetails": "Continua a leggere",
     "voting.allTopics": "Tutti gli argomenti",
     "voting.allLanguages": "Tutte le lingue",

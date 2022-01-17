@@ -74,7 +74,7 @@ export const Introduction = ({ end }: { end: string | null }) => {
           )}
 
           <Link path="/grants-info" variant="button" sx={{ mt: 4 }}>
-            <FormattedMessage id="grants.learnMore" />
+            <FormattedMessage id="global.learnMore" />
           </Link>
         </Box>
         <Box
