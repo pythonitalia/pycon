@@ -11,7 +11,7 @@ import { InputWrapper } from "~/components/input-wrapper";
 import { useSendCommentMutation } from "~/types";
 
 import { Button } from "../button/button";
-import LimitedTextarea from "../limited-textarea";
+import { LimitedTextarea } from "../limited-textarea";
 
 type Form = {
   comment: string;
