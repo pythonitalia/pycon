@@ -16,6 +16,14 @@ GET_USERS_BY_IDS = """query GetUsersByIds($ids: [ID!]!) {
 }
 """
 
+SEARCH_USERS = """
+    query searchUsers($query: String!){
+        searchUsers(query: $query) {
+            id
+        }
+    }
+"""
+
 
 def get_users_data_by_ids(ids: list[int]) -> dict[str, dict[str, Any]]:
     client = ServiceClient(
@@ -29,3 +37,16 @@ def get_users_data_by_ids(ids: list[int]) -> dict[str, dict[str, Any]]:
     users_by_id = {user["id"]: user for user in users_data["usersByIds"]}
 
     return users_by_id
+
+
+def get_user_data_by_query(query: str):
+    client = ServiceClient(
+        url=f"{settings.USERS_SERVICE}/internal-api",
+        service_name="users-backend",
+        caller="pycon-backend",
+        jwt_secret=settings.SERVICE_TO_SERVICE_SECRET,
+    )
+    client_execute = async_to_sync(client.execute)
+    users_data = client_execute(SEARCH_USERS, {"query": query}).data
+
+    return [user["id"] for user in users_data["searchUsers"]]
