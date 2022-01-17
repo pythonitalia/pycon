@@ -40,7 +40,7 @@ export const useCart = () => {
 
   if (typeof window !== "undefined") {
     storedCart = JSON.parse(
-      window.localStorage.getItem("tickets-cart")!,
+      window.localStorage.getItem("tickets-cart-v2")!,
     ) as OrderState | null;
 
     if (storedCart) {
@@ -63,7 +63,7 @@ export const useCart = () => {
 
   useEffect(() => {
     window.localStorage.setItem(
-      "tickets-cart",
+      "tickets-cart-v2",
       JSON.stringify(state, cartReplacer),
     );
   }, [state]);
