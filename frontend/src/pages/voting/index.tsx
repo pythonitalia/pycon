@@ -103,7 +103,7 @@ export const VotingPage = () => {
       (e) => e.message === "You need to have a ticket to see submissions",
     ) !== -1;
 
-  const isVotingClosed = !(data?.conference?.isVotingOpen ?? false);
+  const isVotingClosed = data && !data?.conference?.isVotingOpen;
   const userCannotVote =
     loggedIn && (loading || (cannotVoteErrors ?? false) || (error ?? false));
   const showFilters = !isVotingClosed && !userCannotVote;
