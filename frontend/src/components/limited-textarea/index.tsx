@@ -6,7 +6,11 @@ type LimitedTextareaPros = TextareaProps & {
   limit: number;
 };
 
-const LimitedTextarea = ({ value, limit, ...props }: LimitedTextareaPros) => {
+export const LimitedTextarea = ({
+  value,
+  limit,
+  ...props
+}: LimitedTextareaPros) => {
   return (
     <>
       <Textarea value={value} {...props} />
