@@ -244,7 +244,12 @@ export const VotingPage = () => {
                           <FormattedMessage id="voting.errors.cannotVote.linkVotingInfo.text" />
                         </Link>
                       ),
-                      linkTicket: <Link path="/tickets">here</Link>,
+                      linkTicket: (
+                        <Link path="/tickets">
+                          {" "}
+                          <FormattedMessage id="voting.errors.cannotVote.linkTicket.text" />
+                        </Link>
+                      ),
                     }}
                   />
                 </Text>
