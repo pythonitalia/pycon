@@ -89,9 +89,9 @@ export const VotingPage = () => {
       return;
     }
 
-    filters.setField("vote", router.query.vote ?? "all");
-    filters.setField("language", router.query.language ?? "");
-    filters.setField("topic", router.query.topic ?? "");
+    filters.setField("vote", (router.query.vote as VoteTypes) ?? "all");
+    filters.setField("language", (router.query.language as string) ?? "");
+    filters.setField("topic", (router.query.topic as string) ?? "");
     filters.setField("tags", getAsArray(router.query.tags));
   }, [router.isReady]);
 
