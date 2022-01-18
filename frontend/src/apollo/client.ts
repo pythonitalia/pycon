@@ -76,6 +76,16 @@ const createClient = () => {
     cache: new InMemoryCache({
       possibleTypes: introspectionQueryResultData.possibleTypes,
       typePolicies: {
+        Query: {
+          fields: {
+            submissions: {
+              keyArgs: ["code"],
+              merge(existing = [], incoming) {
+                return [...existing, ...incoming];
+              },
+            },
+          },
+        },
         SponsorsByLevel: {
           keyFields: ["level"],
         },

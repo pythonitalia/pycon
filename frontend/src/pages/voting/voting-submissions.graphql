@@ -1,7 +1,11 @@
 #import "../../fragments/submission-accordion.graphql"
 
-query VotingSubmissions($conference: String!) {
-  conference(code: $conference) {
+query VotingSubmissions(
+  $conference: String!
+  $after: String
+  $loadMore: Boolean!
+) {
+  conference(code: $conference) @skip(if: $loadMore) {
     id
     isVotingOpen
 
@@ -15,13 +19,13 @@ query VotingSubmissions($conference: String!) {
       name
       code
     }
-
-    submissions {
-      ...submissionAccordion
-    }
   }
 
-  submissionTags {
+  submissions(code: $conference, after: $after) {
+    ...submissionAccordion
+  }
+
+  submissionTags @skip(if: $loadMore) {
     id
     name
   }

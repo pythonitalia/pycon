@@ -9,6 +9,7 @@ export const messages = {
     "global.no": "No",
     "global.learnMore": "Learn more",
     "global.loading": "Loading",
+    "global.loadMore": "Load more",
     "global.button.loading": "Loading {emoji}",
     "global.somethingWentWrong": "Something went wrong, please try again",
 
@@ -462,7 +463,7 @@ export const messages = {
     "global.loading": "Caricamento in corso...",
     "global.button.loading": "Invio {emoji}",
     "global.somethingWentWrong": "Qualcosa è andato male, prova di nuovo",
-
+    "global.loadMore": "Carica altri",
     "home.title": "Home",
     "home.deadline.begins": "Inizio",
     "home.deadline.deadline": "Fine",
