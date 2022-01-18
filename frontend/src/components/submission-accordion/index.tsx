@@ -9,12 +9,7 @@ import { EnglishIcon } from "~/components/icons/english";
 import { ItalianIcon } from "~/components/icons/italian";
 import { Link } from "~/components/link";
 import { compile } from "~/helpers/markdown";
-import {
-  readVotingSubmissionsQueryCache,
-  SendVoteMutation,
-  useSendVoteMutation,
-  writeVotingSubmissionsQueryCache,
-} from "~/types";
+import { useSendVoteMutation } from "~/types";
 
 import { VOTE_VALUES, VoteSelector } from "./vote-selector";
 

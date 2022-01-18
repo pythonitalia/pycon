@@ -38,6 +38,7 @@ export const useInfiniteFetchScroll = ({
     let afterItem = after;
     let newData;
 
+    // eslint-disable-next-line
     while (true) {
       const { data: tempData } = await fetchData(afterItem);
 
