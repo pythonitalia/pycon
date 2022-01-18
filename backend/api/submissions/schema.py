@@ -31,7 +31,7 @@ class SubmissionsQuery:
         conference = ConferenceModel.objects.filter(code=code).first()
 
         if not conference or not CanSeeSubmissions().has_permission(conference, info):
-            raise PermissionError("Cannot fetch submissions")
+            raise PermissionError("You need to have a ticket to see submissions")
 
         qs = conference.submissions.order_by("id").all()
         if after:
