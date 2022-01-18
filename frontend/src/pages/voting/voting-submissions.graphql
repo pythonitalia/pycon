@@ -8,6 +8,10 @@ query VotingSubmissions(
   conference(code: $conference) @skip(if: $loadMore) {
     id
     isVotingOpen
+    votingDeadline: deadline(type: "voting") {
+      id
+      end
+    }
 
     topics {
       id

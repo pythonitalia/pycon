@@ -19,9 +19,11 @@ import { MetaTags } from "~/components/meta-tags";
 import { useLoginState } from "~/components/profile/hooks";
 import { SubmissionAccordion } from "~/components/submission-accordion";
 import { TagsFilter } from "~/components/tags-filter";
+import { formatDeadlineDateTime } from "~/helpers/deadlines";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useInfiniteFetchScroll } from "~/helpers/use-infinite-fetch-scroll";
 import { Submission, useVotingSubmissionsQuery } from "~/types";
+import { useCurrentLanguage } from "~/locale/context";
 
 type VoteTypes = "all" | "votedOnly" | "notVoted";
 
@@ -55,6 +57,7 @@ export const VotingPage = () => {
   const [loggedIn] = useLoginState();
   const [votedSubmissions, setVotedSubmissions] = useState(new Set());
   const router = useRouter();
+  const language = useCurrentLanguage();
 
   const [filters, { select, raw }] = useFormState<Filters>(
     {
@@ -169,7 +172,9 @@ export const VotingPage = () => {
   const userCannotVote =
     loggedIn && (loading || (cannotVoteErrors ?? false) || (error ?? false));
   const showFilters = !isVotingClosed && !userCannotVote;
-
+  const votingDeadlilne = data?.conference?.isVotingOpen
+    ? data?.conference.votingDeadline?.end
+    : undefined;
   return (
     <Box>
       <FormattedMessage id="voting.seoTitle">
@@ -198,6 +203,25 @@ export const VotingPage = () => {
               <Text mt={4}>
                 <FormattedMessage id="voting.introduction" />
               </Text>
+              {votingDeadlilne && (
+                <Text
+                  sx={{
+                    fontSize: 2,
+                  }}
+                  as="p"
+                >
+                  <FormattedMessage
+                    id="voting.introductionDeadline"
+                    values={{
+                      deadline: (
+                        <Text as="span" sx={{ fontWeight: "bold" }}>
+                          {formatDeadlineDateTime(votingDeadlilne, language)}
+                        </Text>
+                      ),
+                    }}
+                  />
+                </Text>
+              )}
               <Link path="/voting-info" variant="arrow-button" sx={{ my: 4 }}>
                 <FormattedMessage id="global.learnMore" />
               </Link>
