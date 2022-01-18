@@ -22,8 +22,8 @@ import { TagsFilter } from "~/components/tags-filter";
 import { formatDeadlineDateTime } from "~/helpers/deadlines";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useInfiniteFetchScroll } from "~/helpers/use-infinite-fetch-scroll";
-import { useVotingSubmissionsQuery } from "~/types";
 import { useCurrentLanguage } from "~/locale/context";
+import { useVotingSubmissionsQuery } from "~/types";
 
 type VoteTypes = "all" | "votedOnly" | "notVoted";
 
@@ -434,31 +434,33 @@ export const VotingPage = () => {
         </Box>
       )}
 
-      <Flex
-        sx={{
-          maxWidth: "container",
-          mx: "auto",
-          my: 5,
-          px: [3, 3, 3, 0],
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        {isFetchingMore && (
-          <FormattedMessage
-            id="global.button.loading"
-            values={{
-              emoji: <AnimatedEmoji play={true} />,
-            }}
-          />
-        )}
+      {loggedIn && !isVotingClosed && data?.submissions && (
+        <Flex
+          sx={{
+            maxWidth: "container",
+            mx: "auto",
+            my: 5,
+            px: [3, 3, 3, 0],
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          {isFetchingMore && (
+            <FormattedMessage
+              id="global.button.loading"
+              values={{
+                emoji: <AnimatedEmoji play={true} />,
+              }}
+            />
+          )}
 
-        {hasMore && !loading && !isFetchingMore && (
-          <Button onClick={forceLoadMore}>
-            <FormattedMessage id="global.loadMore" />
-          </Button>
-        )}
-      </Flex>
+          {hasMore && !loading && !isFetchingMore && (
+            <Button onClick={forceLoadMore}>
+              <FormattedMessage id="global.loadMore" />
+            </Button>
+          )}
+        </Flex>
+      )}
     </Box>
   );
 };
