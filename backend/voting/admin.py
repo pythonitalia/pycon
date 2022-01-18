@@ -33,8 +33,9 @@ class VoteAdminForm(forms.ModelForm):
 @admin.register(Vote)
 class VoteAdmin(AdminUsersMixin):
     form = VoteAdminForm
-    list_display = ("submission", "user_display_name", "value")
-    list_filter = (SubmissionFilter, "value")
+    readonly_fields = ("created", "modified")
+    list_display = ("submission", "user_display_name", "value", "created", "modified")
+    list_filter = ("conference", SubmissionFilter, "value")
     search_fields = (
         "submission__title",
         "user_id",
