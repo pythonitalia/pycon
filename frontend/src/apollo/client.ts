@@ -79,7 +79,7 @@ const createClient = () => {
         Query: {
           fields: {
             submissions: {
-              keyArgs: ["code"],
+              keyArgs: ["code", "filter"],
               merge(existing = [], incoming) {
                 return [...existing, ...incoming];
               },

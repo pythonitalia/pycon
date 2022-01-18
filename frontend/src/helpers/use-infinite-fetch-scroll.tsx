@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 import { useOnBottomScroll } from "./use-on-bottom-scroll";
 
@@ -6,15 +6,23 @@ export const useInfiniteFetchScroll = ({
   fetchMore,
   hasMoreResultsCallback,
   after,
+  filters,
 }: {
   fetchMore: (variables: any) => any;
   hasMoreResultsCallback: (newData: any) => boolean;
   after?: number;
+  filters?: any;
 }): {
   isFetchingMore: boolean;
+  hasMore: boolean;
+  forceLoadMore: () => void;
 } => {
   const [isFetchingMore, setIsFetchingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+
+  useEffect(() => {
+    setHasMore(true);
+  }, [filters]);
 
   const fetchMoreSubmissionsCallback = useCallback(async () => {
     if (!after || !hasMore || isFetchingMore) {
@@ -40,5 +48,9 @@ export const useInfiniteFetchScroll = ({
 
   return {
     isFetchingMore,
+    hasMore,
+    forceLoadMore: () => {
+      fetchMoreSubmissionsCallback();
+    },
   };
 };

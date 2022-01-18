@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import { Flex, Box, Grid, Heading, jsx, Select, Text } from "theme-ui";
@@ -12,6 +12,7 @@ import { useRouter } from "next/router";
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Alert } from "~/components/alert";
 import { AnimatedEmoji } from "~/components/animated-emoji";
+import { Button } from "~/components/button/button";
 import { Link } from "~/components/link";
 import { LoginForm } from "~/components/login-form";
 import { MetaTags } from "~/components/meta-tags";
@@ -52,20 +53,12 @@ const getAsArray = (value: string | string[]): string[] => {
 
 export const VotingPage = () => {
   const [loggedIn] = useLoginState();
-  const [votedSubmissions, setVotedSubmissions] = useState(new Set());
   const router = useRouter();
 
   const [filters, { select, raw }] = useFormState<Filters>(
-    {
-      vote: (router.query.vote as VoteTypes) ?? "all",
-      language: (router.query.language as string) ?? "",
-      topic: (router.query.topic as string) ?? "",
-      tags: getAsArray(router.query.tags),
-    },
+    {},
     {
       onChange(e, stateValues, nextStateValues) {
-        setVotedSubmissions(new Set());
-
         const qs = new URLSearchParams();
         const keys = Object.keys(nextStateValues) as (keyof Filters)[];
 
@@ -85,27 +78,41 @@ export const VotingPage = () => {
     },
   );
 
+  useEffect(() => {
+    if (!router.isReady) {
+      return;
+    }
+
+    filters.setField("vote", router.query.vote ?? "all");
+    filters.setField("language", router.query.language);
+    filters.setField("topic", router.query.topic);
+    filters.setField("tags", getAsArray(router.query.tags));
+  }, [router.isReady]);
+
+  console.log("filters", filters.values);
+
   const { loading, error, data, fetchMore } = useVotingSubmissionsQuery({
     variables: {
       conference: process.env.conferenceCode,
       loadMore: false,
+      filter: {
+        language: filters.values.language,
+        vote: filters.values.vote,
+        topic: filters.values.topic,
+        tags: filters.values.tags,
+      },
     },
     errorPolicy: "all",
     skip: !loggedIn,
   });
 
-  const onVote = useCallback(
-    (submission) =>
-      setVotedSubmissions((submissions) => submissions.add(submission.id)),
-    [],
-  );
-
-  const { isFetchingMore } = useInfiniteFetchScroll({
+  const { isFetchingMore, hasMore, forceLoadMore } = useInfiniteFetchScroll({
     fetchMore,
     after: data?.submissions?.at?.(-1)?.id,
     hasMoreResultsCallback(newData) {
       return newData.submissions.length > 0;
     },
+    filters: filters.values,
   });
 
   const cannotVoteErrors =
@@ -310,83 +317,43 @@ export const VotingPage = () => {
             listStyle: "none",
           }}
         >
-          {data.submissions
-            .filter((submission) => {
-              if (
-                filters.values.topic &&
-                submission.topic?.id !== filters.values.topic
-              ) {
-                return false;
-              }
-
-              if (
-                filters.values.language &&
-                submission.languages?.findIndex(
-                  (language) => language.code === filters.values.language,
-                ) === -1
-              ) {
-                return false;
-              }
-
-              if (
-                filters.values.tags.length > 0 &&
-                submission.tags?.every(
-                  (st) => filters.values.tags.indexOf(st.id) === -1,
-                )
-              ) {
-                return false;
-              }
-
-              const voteStatusFilter = filters.values.vote;
-
-              if (
-                voteStatusFilter === "notVoted" &&
-                submission.myVote !== null &&
-                !votedSubmissions.has(submission.id)
-              ) {
-                return false;
-              }
-
-              if (
-                voteStatusFilter === "votedOnly" &&
-                submission.myVote === null
-              ) {
-                return false;
-              }
-
-              return true;
-            })
-            .map((submission, index) => (
-              <SubmissionAccordion
-                backgroundColor={COLORS[index % COLORS.length].background}
-                headingColor={COLORS[index % COLORS.length].heading}
-                vote={submission.myVote}
-                key={submission.id}
-                submission={submission}
-                onVote={onVote}
-              />
-            ))}
+          {data.submissions.map((submission, index) => (
+            <SubmissionAccordion
+              backgroundColor={COLORS[index % COLORS.length].background}
+              headingColor={COLORS[index % COLORS.length].heading}
+              vote={submission.myVote}
+              key={submission.id}
+              submission={submission}
+            />
+          ))}
         </Box>
       )}
-      {isFetchingMore && (
-        <Flex
-          sx={{
-            maxWidth: "container",
-            mx: "auto",
-            my: 5,
-            px: [3, 3, 3, 0],
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
+
+      <Flex
+        sx={{
+          maxWidth: "container",
+          mx: "auto",
+          my: 5,
+          px: [3, 3, 3, 0],
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {isFetchingMore && (
           <FormattedMessage
             id="global.button.loading"
             values={{
               emoji: <AnimatedEmoji play={true} />,
             }}
           />
-        </Flex>
-      )}
+        )}
+
+        {hasMore && !loading && !isFetchingMore && (
+          <Button onClick={forceLoadMore}>
+            <FormattedMessage id="global.loadMore" />
+          </Button>
+        )}
+      </Flex>
     </Box>
   );
 };

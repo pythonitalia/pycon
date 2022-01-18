@@ -4,6 +4,8 @@ query VotingSubmissions(
   $conference: String!
   $after: String
   $loadMore: Boolean!
+  # filters
+  $filter: SubmissionsFilter
 ) {
   conference(code: $conference) @skip(if: $loadMore) {
     id
@@ -21,7 +23,7 @@ query VotingSubmissions(
     }
   }
 
-  submissions(code: $conference, after: $after) {
+  submissions(code: $conference, after: $after, filter: $filter) {
     ...submissionAccordion
   }
 

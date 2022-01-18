@@ -9,12 +9,7 @@ import { EnglishIcon } from "~/components/icons/english";
 import { ItalianIcon } from "~/components/icons/italian";
 import { Link } from "~/components/link";
 import { compile } from "~/helpers/markdown";
-import {
-  readVotingSubmissionsQueryCache,
-  SendVoteMutation,
-  useSendVoteMutation,
-  writeVotingSubmissionsQueryCache,
-} from "~/types";
+import { useSendVoteMutation } from "~/types";
 
 import { VOTE_VALUES, VoteSelector } from "./vote-selector";
 
@@ -64,7 +59,6 @@ type Props = {
     id: string;
     value: number;
   } | null;
-  onVote?: (submission: VoteSubmission) => void;
   submission: VoteSubmission;
 };
 
@@ -96,7 +90,6 @@ export const SubmissionAccordion: React.SFC<Props> = ({
   backgroundColor,
   headingColor,
   vote,
-  onVote,
   submission,
   renderTitle,
   showVoting = true,
@@ -115,7 +108,6 @@ export const SubmissionAccordion: React.SFC<Props> = ({
   const toggleAccordion = useCallback(() => {
     setOpen(!open);
   }, [open]);
-  const conferenceCode = process.env.conferenceCode;
 
   const [sendVote, { loading, error, data: submissionData }] =
     useSendVoteMutation({
@@ -124,33 +116,14 @@ export const SubmissionAccordion: React.SFC<Props> = ({
           return;
         }
 
-        const cachedQuery = readVotingSubmissionsQueryCache<SendVoteMutation>({
-          cache,
-          variables: {
-            conference: conferenceCode,
-          },
-        });
-
-        const submissions = [...cachedQuery!.conference.submissions!];
-        const updatedSubmissionIndex = submissions.findIndex(
-          (i) => i.id === id,
-        )!;
-        const updatedSubmission = {
-          ...submissions[updatedSubmissionIndex]!,
-        };
-        updatedSubmission.myVote = data!.sendVote;
-        submissions[updatedSubmissionIndex] = updatedSubmission;
-
-        writeVotingSubmissionsQueryCache<SendVoteMutation>({
-          cache,
-          variables: {
-            conference: conferenceCode,
-          },
-          data: {
-            ...cachedQuery,
-            conference: {
-              ...cachedQuery.conference,
-              submissions,
+        cache.modify({
+          id: cache.identify({
+            id,
+            __typename: "Submission",
+          }),
+          fields: {
+            myVote() {
+              return data!.sendVote;
             },
           },
         });
@@ -159,13 +132,11 @@ export const SubmissionAccordion: React.SFC<Props> = ({
 
   const onSubmitVote = useCallback(
     (value) => {
-      if (loading || !onVote) {
+      if (loading) {
         return;
       }
 
       const prevVote = vote ?? { id: `${Math.random()}` };
-
-      onVote(submission);
 
       sendVote({
         variables: {
