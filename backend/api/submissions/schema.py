@@ -43,4 +43,4 @@ class SubmissionsQuery:
 
     @strawberry.field
     def submission_tags(self, info) -> typing.List[SubmissionTag]:
-        return SubmissionTagModel.objects.all()
+        return SubmissionTagModel.objects.order_by("name").all()
