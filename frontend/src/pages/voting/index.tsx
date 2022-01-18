@@ -86,6 +86,44 @@ export const VotingPage = () => {
     },
   );
 
+  const filterVisibleSubmissions = (submission) => {
+    if (filters.values.topic && submission.topic?.id !== filters.values.topic) {
+      return false;
+    }
+
+    if (
+      filters.values.language &&
+      submission.languages?.findIndex(
+        (language) => language.code === filters.values.language,
+      ) === -1
+    ) {
+      return false;
+    }
+
+    if (
+      filters.values.tags.length > 0 &&
+      submission.tags?.every((st) => filters.values.tags.indexOf(st.id) === -1)
+    ) {
+      return false;
+    }
+
+    const voteStatusFilter = filters.values.vote;
+
+    if (
+      voteStatusFilter === "notVoted" &&
+      submission.myVote !== null &&
+      !votedSubmissions.has(submission.id)
+    ) {
+      return false;
+    }
+
+    if (voteStatusFilter === "votedOnly" && submission.myVote === null) {
+      return false;
+    }
+
+    return true;
+  };
+
   const { loading, error, data, fetchMore } = useVotingSubmissionsQuery({
     variables: {
       conference: process.env.conferenceCode,
@@ -106,6 +144,13 @@ export const VotingPage = () => {
     after: data?.submissions?.at?.(-1)?.id,
     hasMoreResultsCallback(newData) {
       return newData.submissions.length > 0;
+    },
+    shouldFetchAgain(newData) {
+      if (newData.submissions.filter(filterVisibleSubmissions).length === 0) {
+        return newData.submissions?.at?.(-1)?.id ?? null;
+      }
+
+      return null;
     },
   });
 
@@ -340,51 +385,7 @@ export const VotingPage = () => {
           }}
         >
           {data.submissions
-            .filter((submission) => {
-              if (
-                filters.values.topic &&
-                submission.topic?.id !== filters.values.topic
-              ) {
-                return false;
-              }
-
-              if (
-                filters.values.language &&
-                submission.languages?.findIndex(
-                  (language) => language.code === filters.values.language,
-                ) === -1
-              ) {
-                return false;
-              }
-
-              if (
-                filters.values.tags.length > 0 &&
-                submission.tags?.every(
-                  (st) => filters.values.tags.indexOf(st.id) === -1,
-                )
-              ) {
-                return false;
-              }
-
-              const voteStatusFilter = filters.values.vote;
-
-              if (
-                voteStatusFilter === "notVoted" &&
-                submission.myVote !== null &&
-                !votedSubmissions.has(submission.id)
-              ) {
-                return false;
-              }
-
-              if (
-                voteStatusFilter === "votedOnly" &&
-                submission.myVote === null
-              ) {
-                return false;
-              }
-
-              return true;
-            })
+            .filter(filterVisibleSubmissions)
             .map((submission, index) => (
               <SubmissionAccordion
                 backgroundColor={COLORS[index % COLORS.length].background}
