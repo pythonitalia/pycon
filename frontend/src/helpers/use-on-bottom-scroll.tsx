@@ -6,7 +6,7 @@ export const useOnBottomScroll = (callback: () => void) => {
     const scrollContainerBottomPosition = Math.round(
       scrollNode.scrollTop + window.innerHeight,
     );
-    const scrollPosition = Math.round(scrollNode.scrollHeight - 0);
+    const scrollPosition = Math.round(scrollNode.scrollHeight - 500);
 
     if (scrollPosition <= scrollContainerBottomPosition) {
       callback();

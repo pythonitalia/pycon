@@ -12,6 +12,8 @@ export const useInfiniteFetchScroll = ({
   after?: number;
 }): {
   isFetchingMore: boolean;
+  hasMore: boolean;
+  forceLoadMore: () => void;
 } => {
   const [isFetchingMore, setIsFetchingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
@@ -40,5 +42,9 @@ export const useInfiniteFetchScroll = ({
 
   return {
     isFetchingMore,
+    hasMore,
+    forceLoadMore: () => {
+      fetchMoreSubmissionsCallback();
+    },
   };
 };

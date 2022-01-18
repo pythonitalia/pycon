@@ -12,6 +12,7 @@ import { useRouter } from "next/router";
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Alert } from "~/components/alert";
 import { AnimatedEmoji } from "~/components/animated-emoji";
+import { Button } from "~/components/button/button";
 import { Link } from "~/components/link";
 import { LoginForm } from "~/components/login-form";
 import { MetaTags } from "~/components/meta-tags";
@@ -100,7 +101,7 @@ export const VotingPage = () => {
     [],
   );
 
-  const { isFetchingMore } = useInfiniteFetchScroll({
+  const { isFetchingMore, hasMore, forceLoadMore } = useInfiniteFetchScroll({
     fetchMore,
     after: data?.submissions?.at?.(-1)?.id,
     hasMoreResultsCallback(newData) {
@@ -396,25 +397,32 @@ export const VotingPage = () => {
             ))}
         </Box>
       )}
-      {isFetchingMore && (
-        <Flex
-          sx={{
-            maxWidth: "container",
-            mx: "auto",
-            my: 5,
-            px: [3, 3, 3, 0],
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
+
+      <Flex
+        sx={{
+          maxWidth: "container",
+          mx: "auto",
+          my: 5,
+          px: [3, 3, 3, 0],
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {isFetchingMore && (
           <FormattedMessage
             id="global.button.loading"
             values={{
               emoji: <AnimatedEmoji play={true} />,
             }}
           />
-        </Flex>
-      )}
+        )}
+
+        {hasMore && !loading && !isFetchingMore && (
+          <Button onClick={forceLoadMore}>
+            <FormattedMessage id="global.loadMore" />
+          </Button>
+        )}
+      </Flex>
     </Box>
   );
 };
