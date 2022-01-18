@@ -22,7 +22,7 @@ import { TagsFilter } from "~/components/tags-filter";
 import { formatDeadlineDateTime } from "~/helpers/deadlines";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useInfiniteFetchScroll } from "~/helpers/use-infinite-fetch-scroll";
-import { Submission, useVotingSubmissionsQuery } from "~/types";
+import { useVotingSubmissionsQuery } from "~/types";
 import { useCurrentLanguage } from "~/locale/context";
 
 type VoteTypes = "all" | "votedOnly" | "notVoted";
