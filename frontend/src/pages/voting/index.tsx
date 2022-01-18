@@ -203,7 +203,7 @@ export const VotingPage = () => {
               <Text mt={4}>
                 <FormattedMessage id="voting.introduction" />
               </Text>
-              {votingDeadlilne && (
+              {votingDeadline && (
                 <Text
                   sx={{
                     fontSize: 2,
