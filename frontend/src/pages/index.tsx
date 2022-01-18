@@ -163,11 +163,9 @@ export const HomePage = () => {
               {conference.votingText}
             </Text>
 
-            {false && (
-              <Link path="/voting" variant="arrow-button">
-                <FormattedMessage id="home.voting.vote" />
-              </Link>
-            )}
+            <Link path="/voting" variant="arrow-button">
+              <FormattedMessage id="home.voting.vote" />
+            </Link>
           </Box>
         )}
       </Grid>
