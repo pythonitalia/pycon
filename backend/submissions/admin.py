@@ -1,9 +1,10 @@
 from django import forms
 from django.contrib import admin
+from django.utils.html import mark_safe
 from django.utils.translation import gettext_lazy as _
 
 from users.autocomplete import UsersBackendAutocomplete
-from users.mixins import AdminUsersMixin
+from users.mixins import AdminUsersMixin, SearchUsersMixin
 
 from .models import Submission, SubmissionComment, SubmissionTag, SubmissionType
 
@@ -49,7 +50,7 @@ class SubmissionAdminForm(forms.ModelForm):
 
 
 @admin.register(Submission)
-class SubmissionAdmin(AdminUsersMixin):
+class SubmissionAdmin(AdminUsersMixin, SearchUsersMixin):
     form = SubmissionAdminForm
     list_display = (
         "title",
@@ -60,6 +61,7 @@ class SubmissionAdmin(AdminUsersMixin):
         "topic",
         "duration",
         "audience_level",
+        "open_submission",
         "created",
         "modified",
     )
@@ -104,6 +106,17 @@ class SubmissionAdmin(AdminUsersMixin):
         return self.get_user_display_name(obj.speaker_id)
 
     speaker_display_name.short_description = "Speaker"
+
+    def open_submission(self, obj):  # pragma: no cover
+        return mark_safe(
+            f"""
+                <a class="button" href="https://www.pycon.it/{obj.hashid}"
+                    target="_blank">Open</a>&nbsp;
+            """
+        )
+
+    open_submission.short_description = "Open"
+    open_submission.allow_tags = True
 
     class Media:
         js = ["admin/js/jquery.init.js"]

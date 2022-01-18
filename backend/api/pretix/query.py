@@ -66,7 +66,8 @@ def _create_ticket_type_from_api(item, id, categories, questions, quotas, langua
     category = _get_category_for_ticket(item, categories)
 
     return TicketItem(
-        id=f"{id}-{language}",
+        id=id,
+        language=language,
         name=_get_by_language(item, "name", language),
         description=_get_by_language(item, "description", language),
         category=_get_by_language(category, "name", language),

@@ -4,13 +4,15 @@
 import { useCallback, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
-import { Box, Grid, Heading, jsx, Select, Text } from "theme-ui";
+import { Flex, Box, Grid, Heading, jsx, Select, Text } from "theme-ui";
 
 import { GetStaticProps } from "next";
 import { useRouter } from "next/router";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Alert } from "~/components/alert";
+import { AnimatedEmoji } from "~/components/animated-emoji";
+import { Button } from "~/components/button/button";
 import { Link } from "~/components/link";
 import { LoginForm } from "~/components/login-form";
 import { MetaTags } from "~/components/meta-tags";
@@ -18,6 +20,7 @@ import { useLoginState } from "~/components/profile/hooks";
 import { SubmissionAccordion } from "~/components/submission-accordion";
 import { TagsFilter } from "~/components/tags-filter";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
+import { useInfiniteFetchScroll } from "~/helpers/use-infinite-fetch-scroll";
 import { useVotingSubmissionsQuery } from "~/types";
 
 type VoteTypes = "all" | "votedOnly" | "notVoted";
@@ -83,9 +86,48 @@ export const VotingPage = () => {
     },
   );
 
-  const { loading, error, data } = useVotingSubmissionsQuery({
+  const filterVisibleSubmissions = (submission) => {
+    if (filters.values.topic && submission.topic?.id !== filters.values.topic) {
+      return false;
+    }
+
+    if (
+      filters.values.language &&
+      submission.languages?.findIndex(
+        (language) => language.code === filters.values.language,
+      ) === -1
+    ) {
+      return false;
+    }
+
+    if (
+      filters.values.tags.length > 0 &&
+      submission.tags?.every((st) => filters.values.tags.indexOf(st.id) === -1)
+    ) {
+      return false;
+    }
+
+    const voteStatusFilter = filters.values.vote;
+
+    if (
+      voteStatusFilter === "notVoted" &&
+      submission.myVote !== null &&
+      !votedSubmissions.has(submission.id)
+    ) {
+      return false;
+    }
+
+    if (voteStatusFilter === "votedOnly" && submission.myVote === null) {
+      return false;
+    }
+
+    return true;
+  };
+
+  const { loading, error, data, fetchMore } = useVotingSubmissionsQuery({
     variables: {
       conference: process.env.conferenceCode,
+      loadMore: false,
     },
     errorPolicy: "all",
     skip: !loggedIn,
@@ -97,13 +139,31 @@ export const VotingPage = () => {
     [],
   );
 
+  const { isFetchingMore, hasMore, forceLoadMore } = useInfiniteFetchScroll({
+    fetchMore,
+    after: data?.submissions?.at?.(-1)?.id,
+    hasMoreResultsCallback(newData) {
+      return newData.submissions.length > 0;
+    },
+    shouldFetchAgain(newData) {
+      if (newData.submissions.filter(filterVisibleSubmissions).length === 0) {
+        return newData.submissions?.at?.(-1)?.id ?? null;
+      }
+
+      return null;
+    },
+  });
+
   const cannotVoteErrors =
     error &&
     error.graphQLErrors.findIndex(
       (e) => e.message === "You need to have a ticket to see submissions",
     ) !== -1;
 
-  const isVotingClosed = data && !data.conference.isVotingOpen;
+  const isVotingClosed = data && !data?.conference?.isVotingOpen;
+  const userCannotVote =
+    loggedIn && (loading || (cannotVoteErrors ?? false) || (error ?? false));
+  const showFilters = !isVotingClosed && !userCannotVote;
 
   return (
     <Box>
@@ -130,12 +190,15 @@ export const VotingPage = () => {
                 <FormattedMessage id="voting.heading" />
               </Heading>
 
-              <Text my={4}>
+              <Text mt={4}>
                 <FormattedMessage id="voting.introduction" />
               </Text>
+              <Link path="/voting-info" variant="arrow-button" sx={{ my: 4 }}>
+                <FormattedMessage id="global.learnMore" />
+              </Link>
             </Box>
 
-            {!isVotingClosed && (
+            {showFilters && (
               <Grid
                 sx={{
                   gridTemplateColumns: [null, null, "1fr 1fr"],
@@ -208,30 +271,52 @@ export const VotingPage = () => {
         </Box>
       </Box>
 
-      {loggedIn && (loading || cannotVoteErrors || error) && (
-        <Box
-          sx={{
-            maxWidth: "container",
-            mx: "auto",
-            px: 3,
-          }}
-        >
-          {!cannotVoteErrors && error && (
-            <Alert variant="alert">{error.message}</Alert>
-          )}
+      {userCannotVote && (
+        <Box>
+          <Box
+            sx={{
+              maxWidth: "container",
+              mx: "auto",
+              px: 3,
+              py: 0,
+            }}
+          >
+            {!cannotVoteErrors && error && (
+              <Alert variant="alert">{error.message}</Alert>
+            )}
 
-          {cannotVoteErrors && error && (
-            <Alert variant="alert">
-              <Link path="/tickets">
-                <FormattedMessage id="voting.buyTicketToVote" />
-              </Link>
-            </Alert>
-          )}
-          {loading && (
-            <Alert variant="info">
-              <FormattedMessage id="voting.loading" />
-            </Alert>
-          )}
+            {cannotVoteErrors && error && (
+              <Box sx={{ pt: 4 }}>
+                <Heading>
+                  <FormattedMessage id="voting.errors.cannotVote.heading" />
+                </Heading>
+
+                <Text my={4}>
+                  <FormattedMessage
+                    id="voting.errors.cannotVote.body"
+                    values={{
+                      linkVotingInfo: (
+                        <Link path="/voting-info">
+                          <FormattedMessage id="voting.errors.cannotVote.linkVotingInfo.text" />
+                        </Link>
+                      ),
+                      linkTicket: (
+                        <Link path="/tickets">
+                          {" "}
+                          <FormattedMessage id="voting.errors.cannotVote.linkTicket.text" />
+                        </Link>
+                      ),
+                    }}
+                  />
+                </Text>
+              </Box>
+            )}
+            {loading && (
+              <Alert variant="info">
+                <FormattedMessage id="voting.loading" />
+              </Alert>
+            )}
+          </Box>
         </Box>
       )}
 
@@ -292,59 +377,15 @@ export const VotingPage = () => {
         </Box>
       )}
 
-      {loggedIn && !isVotingClosed && data?.conference.submissions && (
+      {loggedIn && !isVotingClosed && data?.submissions && (
         <Box
           as="ul"
           sx={{
             listStyle: "none",
           }}
         >
-          {data.conference.submissions
-            .filter((submission) => {
-              if (
-                filters.values.topic &&
-                submission.topic?.id !== filters.values.topic
-              ) {
-                return false;
-              }
-
-              if (
-                filters.values.language &&
-                submission.languages?.findIndex(
-                  (language) => language.code === filters.values.language,
-                ) === -1
-              ) {
-                return false;
-              }
-
-              if (
-                filters.values.tags.length > 0 &&
-                submission.tags?.every(
-                  (st) => filters.values.tags.indexOf(st.id) === -1,
-                )
-              ) {
-                return false;
-              }
-
-              const voteStatusFilter = filters.values.vote;
-
-              if (
-                voteStatusFilter === "notVoted" &&
-                submission.myVote !== null &&
-                !votedSubmissions.has(submission.id)
-              ) {
-                return false;
-              }
-
-              if (
-                voteStatusFilter === "votedOnly" &&
-                submission.myVote === null
-              ) {
-                return false;
-              }
-
-              return true;
-            })
+          {data.submissions
+            .filter(filterVisibleSubmissions)
             .map((submission, index) => (
               <SubmissionAccordion
                 backgroundColor={COLORS[index % COLORS.length].background}
@@ -357,6 +398,32 @@ export const VotingPage = () => {
             ))}
         </Box>
       )}
+
+      <Flex
+        sx={{
+          maxWidth: "container",
+          mx: "auto",
+          my: 5,
+          px: [3, 3, 3, 0],
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {isFetchingMore && (
+          <FormattedMessage
+            id="global.button.loading"
+            values={{
+              emoji: <AnimatedEmoji play={true} />,
+            }}
+          />
+        )}
+
+        {hasMore && !loading && !isFetchingMore && (
+          <Button onClick={forceLoadMore}>
+            <FormattedMessage id="global.loadMore" />
+          </Button>
+        )}
+      </Flex>
     </Box>
   );
 };

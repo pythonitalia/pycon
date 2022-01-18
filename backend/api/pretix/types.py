@@ -68,6 +68,7 @@ class TicketType(Enum):
 class TicketItem:
     id: strawberry.ID
     name: str
+    language: str
     description: Optional[str]
     active: bool
     default_price: str
