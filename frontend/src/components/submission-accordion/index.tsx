@@ -115,7 +115,6 @@ export const SubmissionAccordion: React.SFC<Props> = ({
   const toggleAccordion = useCallback(() => {
     setOpen(!open);
   }, [open]);
-  const conferenceCode = process.env.conferenceCode;
 
   const [sendVote, { loading, error, data: submissionData }] =
     useSendVoteMutation({
@@ -124,33 +123,14 @@ export const SubmissionAccordion: React.SFC<Props> = ({
           return;
         }
 
-        const cachedQuery = readVotingSubmissionsQueryCache<SendVoteMutation>({
-          cache,
-          variables: {
-            conference: conferenceCode,
-          },
-        });
-
-        const submissions = [...cachedQuery!.conference.submissions!];
-        const updatedSubmissionIndex = submissions.findIndex(
-          (i) => i.id === id,
-        )!;
-        const updatedSubmission = {
-          ...submissions[updatedSubmissionIndex]!,
-        };
-        updatedSubmission.myVote = data!.sendVote;
-        submissions[updatedSubmissionIndex] = updatedSubmission;
-
-        writeVotingSubmissionsQueryCache<SendVoteMutation>({
-          cache,
-          variables: {
-            conference: conferenceCode,
-          },
-          data: {
-            ...cachedQuery,
-            conference: {
-              ...cachedQuery.conference,
-              submissions,
+        cache.modify({
+          id: cache.identify({
+            id,
+            __typename: "Submission",
+          }),
+          fields: {
+            myVote() {
+              return data!.sendVote;
             },
           },
         });

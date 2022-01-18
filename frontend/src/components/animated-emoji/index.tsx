@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Fragment, useState } from "react";
 
 import { useInterval } from "~/helpers/use-interval";
 
@@ -26,5 +26,5 @@ export const AnimatedEmoji = ({ play }: { play: boolean }) => {
     },
     play ? 100 : null,
   );
-  return clocks[count % clocks.length];
+  return <Fragment>{clocks[count % clocks.length]}</Fragment>;
 };
