@@ -62,7 +62,10 @@ class SubmissionAdmin(AdminUsersMixin, SearchUsersMixin):
         "duration",
         "audience_level",
         "open_submission",
+        "created",
+        "modified",
     )
+    readonly_fields = ("created", "modified")
     fieldsets = (
         (
             _("Submission"),
@@ -72,6 +75,8 @@ class SubmissionAdmin(AdminUsersMixin, SearchUsersMixin):
                     "slug",
                     "speaker_id",
                     "status",
+                    "created",
+                    "modified",
                     "type",
                     "duration",
                     "topic",
