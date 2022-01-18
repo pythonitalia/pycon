@@ -1,7 +1,10 @@
 import typing
 
 import strawberry
-from api.permissions import HasTokenPermission
+
+from api.helpers.ids import decode_hashid
+from api.permissions import CanSeeSubmissions, IsAuthenticated
+from conferences.models import Conference as ConferenceModel
 from submissions.models import Submission as SubmissionModel
 from submissions.models import SubmissionTag as SubmissionTagModel
 
@@ -17,9 +20,22 @@ class SubmissionsQuery:
         except SubmissionModel.DoesNotExist:
             return None
 
-    @strawberry.field(permission_classes=[HasTokenPermission])
-    def submissions(self, info, code: str) -> typing.Optional[typing.List[Submission]]:
-        return SubmissionModel.objects.filter(conference__code=code).all()
+    @strawberry.field(permission_classes=[IsAuthenticated])
+    def submissions(
+        self, info, code: str, after: typing.Optional[str] = None
+    ) -> typing.Optional[typing.List[Submission]]:
+        conference = ConferenceModel.objects.filter(code=code).first()
+
+        if not conference or not CanSeeSubmissions().has_permission(conference, info):
+            raise PermissionError("Cannot fetch submissions")
+
+        qs = conference.submissions.order_by("id").all()
+        if after:
+            decoded_id = decode_hashid(after)
+            qs = qs.filter(
+                id__gt=decoded_id,
+            )
+        return qs[:50]
 
     @strawberry.field
     def submission_tags(self, info) -> typing.List[SubmissionTag]:
