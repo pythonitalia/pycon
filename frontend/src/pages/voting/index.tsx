@@ -21,7 +21,7 @@ import { SubmissionAccordion } from "~/components/submission-accordion";
 import { TagsFilter } from "~/components/tags-filter";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useInfiniteFetchScroll } from "~/helpers/use-infinite-fetch-scroll";
-import { useVotingSubmissionsQuery } from "~/types";
+import { Submission, useVotingSubmissionsQuery } from "~/types";
 
 type VoteTypes = "all" | "votedOnly" | "notVoted";
 
@@ -141,13 +141,18 @@ export const VotingPage = () => {
 
   const { isFetchingMore, hasMore, forceLoadMore } = useInfiniteFetchScroll({
     fetchMore,
-    after: data?.submissions?.at?.(-1)?.id,
+    after:
+      data && data.submissions.length > 0
+        ? (data.submissions[data.submissions.length - 1]?.id as any)
+        : undefined,
     hasMoreResultsCallback(newData) {
       return newData.submissions.length > 0;
     },
     shouldFetchAgain(newData) {
       if (newData.submissions.filter(filterVisibleSubmissions).length === 0) {
-        return newData.submissions?.at?.(-1)?.id ?? null;
+        return newData.submissions.length > 0
+          ? newData.submissions[newData.submissions.length - 1].id
+          : null;
       }
 
       return null;
