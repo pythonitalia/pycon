@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
-import { useCallback, useState } from "react";
+import { useEffect, useCallback, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import { Flex, Box, Grid, Heading, jsx, Select, Text } from "theme-ui";
@@ -57,12 +57,7 @@ export const VotingPage = () => {
   const router = useRouter();
 
   const [filters, { select, raw }] = useFormState<Filters>(
-    {
-      vote: (router.query.vote as VoteTypes) ?? "all",
-      language: (router.query.language as string) ?? "",
-      topic: (router.query.topic as string) ?? "",
-      tags: getAsArray(router.query.tags),
-    },
+    {},
     {
       onChange(e, stateValues, nextStateValues) {
         setVotedSubmissions(new Set());
@@ -85,6 +80,17 @@ export const VotingPage = () => {
       },
     },
   );
+
+  useEffect(() => {
+    if (!router.isReady) {
+      return;
+    }
+
+    filters.setField("vote", router.query.vote ?? "all");
+    filters.setField("language", router.query.language ?? "");
+    filters.setField("topic", router.query.topic ?? "");
+    filters.setField("tags", getAsArray(router.query.tags));
+  }, [router.isReady]);
 
   const filterVisibleSubmissions = (submission) => {
     if (filters.values.topic && submission.topic?.id !== filters.values.topic) {
