@@ -22,7 +22,11 @@ class SubmissionsQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     def submissions(
-        self, info, code: str, after: typing.Optional[str] = None
+        self,
+        info,
+        code: str,
+        after: typing.Optional[str] = None,
+        limit: typing.Optional[int] = 50,
     ) -> typing.Optional[typing.List[Submission]]:
         conference = ConferenceModel.objects.filter(code=code).first()
 
@@ -35,7 +39,7 @@ class SubmissionsQuery:
             qs = qs.filter(
                 id__gt=decoded_id,
             )
-        return qs[:50]
+        return qs[:limit]
 
     @strawberry.field
     def submission_tags(self, info) -> typing.List[SubmissionTag]:
