@@ -35,7 +35,7 @@ class VoteAdmin(AdminUsersMixin):
     form = VoteAdminForm
     readonly_fields = ("created", "modified")
     list_display = ("submission", "user_display_name", "value", "created", "modified")
-    list_filter = ("conference", SubmissionFilter, "value")
+    list_filter = ("submission__conference", SubmissionFilter, "value")
     search_fields = (
         "submission__title",
         "user_id",
