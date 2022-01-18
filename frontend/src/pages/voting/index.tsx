@@ -172,7 +172,7 @@ export const VotingPage = () => {
   const userCannotVote =
     loggedIn && (loading || (cannotVoteErrors ?? false) || (error ?? false));
   const showFilters = !isVotingClosed && !userCannotVote;
-  const votingDeadlilne = data?.conference?.isVotingOpen
+  const votingDeadline = data?.conference?.isVotingOpen
     ? data?.conference.votingDeadline?.end
     : undefined;
   return (
@@ -215,7 +215,7 @@ export const VotingPage = () => {
                     values={{
                       deadline: (
                         <Text as="span" sx={{ fontWeight: "bold" }}>
-                          {formatDeadlineDateTime(votingDeadlilne, language)}
+                          {formatDeadlineDateTime(votingDeadline, language)}
                         </Text>
                       ),
                     }}
