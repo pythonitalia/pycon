@@ -4,13 +4,14 @@
 import { useCallback, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
-import { Box, Grid, Heading, jsx, Select, Text } from "theme-ui";
+import { Flex, Box, Grid, Heading, jsx, Select, Text } from "theme-ui";
 
 import { GetStaticProps } from "next";
 import { useRouter } from "next/router";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Alert } from "~/components/alert";
+import { AnimatedEmoji } from "~/components/animated-emoji";
 import { Link } from "~/components/link";
 import { LoginForm } from "~/components/login-form";
 import { MetaTags } from "~/components/meta-tags";
@@ -18,6 +19,7 @@ import { useLoginState } from "~/components/profile/hooks";
 import { SubmissionAccordion } from "~/components/submission-accordion";
 import { TagsFilter } from "~/components/tags-filter";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
+import { useInfiniteFetchScroll } from "~/helpers/use-infinite-fetch-scroll";
 import { useVotingSubmissionsQuery } from "~/types";
 
 type VoteTypes = "all" | "votedOnly" | "notVoted";
@@ -83,9 +85,10 @@ export const VotingPage = () => {
     },
   );
 
-  const { loading, error, data } = useVotingSubmissionsQuery({
+  const { loading, error, data, fetchMore } = useVotingSubmissionsQuery({
     variables: {
       conference: process.env.conferenceCode,
+      loadMore: false,
     },
     errorPolicy: "all",
     skip: !loggedIn,
@@ -96,6 +99,14 @@ export const VotingPage = () => {
       setVotedSubmissions((submissions) => submissions.add(submission.id)),
     [],
   );
+
+  const { isFetchingMore } = useInfiniteFetchScroll({
+    fetchMore,
+    after: data?.submissions?.at?.(-1)?.id,
+    hasMoreResultsCallback(newData) {
+      return newData.submissions.length > 0;
+    },
+  });
 
   const cannotVoteErrors =
     error &&
@@ -320,14 +331,14 @@ export const VotingPage = () => {
         </Box>
       )}
 
-      {loggedIn && !isVotingClosed && data?.conference.submissions && (
+      {loggedIn && !isVotingClosed && data?.submissions && (
         <Box
           as="ul"
           sx={{
             listStyle: "none",
           }}
         >
-          {data.conference.submissions
+          {data.submissions
             .filter((submission) => {
               if (
                 filters.values.topic &&
@@ -384,6 +395,25 @@ export const VotingPage = () => {
               />
             ))}
         </Box>
+      )}
+      {isFetchingMore && (
+        <Flex
+          sx={{
+            maxWidth: "container",
+            mx: "auto",
+            my: 5,
+            px: [3, 3, 3, 0],
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <FormattedMessage
+            id="global.button.loading"
+            values={{
+              emoji: <AnimatedEmoji play={true} />,
+            }}
+          />
+        </Flex>
       )}
     </Box>
   );
