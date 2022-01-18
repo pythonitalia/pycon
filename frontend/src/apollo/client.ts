@@ -81,6 +81,10 @@ const createClient = () => {
             submissions: {
               keyArgs: ["code"],
               merge(existing = [], incoming) {
+                if (incoming === null) {
+                  return null;
+                }
+
                 return [...existing, ...incoming];
               },
             },

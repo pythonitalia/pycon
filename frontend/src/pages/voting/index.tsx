@@ -151,13 +151,17 @@ export const VotingPage = () => {
   const { isFetchingMore, hasMore, forceLoadMore } = useInfiniteFetchScroll({
     fetchMore,
     after:
-      data && data.submissions.length > 0
+      data && data.submissions && data.submissions.length > 0
         ? (data.submissions[data.submissions.length - 1]?.id as any)
         : undefined,
     hasMoreResultsCallback(newData) {
-      return newData.submissions.length > 0;
+      return newData && newData.submissions && newData.submissions.length > 0;
     },
     shouldFetchAgain(newData) {
+      if (!newData || newData.submissions === null) {
+        return null;
+      }
+
       if (newData.submissions.filter(filterVisibleSubmissions).length === 0) {
         return newData.submissions.length > 0
           ? newData.submissions[newData.submissions.length - 1].id
@@ -181,6 +185,7 @@ export const VotingPage = () => {
   const votingDeadline = data?.conference?.isVotingOpen
     ? data?.conference.votingDeadline?.end
     : undefined;
+
   return (
     <Box>
       <FormattedMessage id="voting.seoTitle">
