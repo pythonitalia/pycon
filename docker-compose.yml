@@ -250,6 +250,19 @@ services:
       gateway:
         condition: service_healthy
 
+  email-templates:
+    build:
+      context: ./email-templates
+      dockerfile: ../Dockerfile.node.local
+    command: sh -c "yarn run watch"
+    ports:
+      - 3500:3500
+      - 3501:3501
+    volumes:
+      - ./email-templates/:/home/node/app
+      - /home/node/app/node_modules/
+
+
 networks:
   pycon_net:
 
