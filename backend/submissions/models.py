@@ -188,6 +188,12 @@ class SubmissionComment(TimeStampedModel):
 
     text = models.CharField(_("text"), max_length=500)
 
+    def get_admin_url(self):
+        return reverse(
+            "admin:%s_%s_change" % (self._meta.app_label, self._meta.model_name),
+            args=(self.pk,),
+        )
+
     def __str__(self):
         return f"{self.author_id} {self.submission.title}"
 

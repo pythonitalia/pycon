@@ -1,7 +1,9 @@
 from .base import *  # noqa
 
 SECRET_KEY = "do not use this in production"
-SLACK_INCOMING_WEBHOOK_URL = ""
+
+CFP_SLACK_INCOMING_WEBHOOK_URL = ""
+SUBMISSION_COMMENT_SLACK_INCOMING_WEBHOOK_URL = ""
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 

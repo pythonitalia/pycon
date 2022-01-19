@@ -11,19 +11,24 @@ class SlackIncomingWebhookError(Exception):
     pass
 
 
-def send_message(blocks: List[dict], attachments: List[dict]):
+def send_message(blocks: List[dict], attachments: List[dict], *, channel: str):
+    if channel == "cfp":
+        token = settings.CFP_SLACK_INCOMING_WEBHOOK_URL
+    elif channel == "submission-comments":
+        token = settings.SUBMISSION_COMMENT_SLACK_INCOMING_WEBHOOK_URL
+
     """
     Performs a HTTP post to the Incoming Webhooks slack api.
     Blocks reference: https://api.slack.com/reference/messaging/blocks
     """
-    if not settings.SLACK_INCOMING_WEBHOOK_URL:
+    if not token:
         logger.info(
             "SLACK_INCOMING_WEBHOOK_URL env variable not set,"
             "skipping slack notification"
         )
         return
     rv = post(
-        url=settings.SLACK_INCOMING_WEBHOOK_URL,
+        url=token,
         json={"blocks": blocks, "attachments": attachments},
     )
     if rv.status_code != 200:

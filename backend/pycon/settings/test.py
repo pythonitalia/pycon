@@ -1,7 +1,8 @@
 from .base import *  # noqa
 
 SECRET_KEY = "this-key-should-only-be-used-for-tests"
-SLACK_INCOMING_WEBHOOK_URL = ""
+CFP_SLACK_INCOMING_WEBHOOK_URL = ""
+SUBMISSION_COMMENT_SLACK_INCOMING_WEBHOOK_URL = ""
 STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
 
 EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
