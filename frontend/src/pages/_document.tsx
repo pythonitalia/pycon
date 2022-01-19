@@ -38,7 +38,6 @@ export default class MyDocument extends Document<{
           })(window,document,"static.olark.com/jsclient/loader.js");
           /* Add configuration calls below this comment */
           olark.identify('1751-12112149-10-1389');</script>
-          <!-- end olark code -->
         </body>
       </Html>
     );
