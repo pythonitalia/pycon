@@ -26,7 +26,7 @@ export default class MyDocument extends Document<{
           <InitializeColorMode />
           <Main />
           <NextScript />
-          <script type="text/javascript">
+          <script type="text/javascript">{`
           ;(function(o,l,a,r,k,y){if(o.olark)return;
           r="script";y=l.createElement(r);r=l.getElementsByTagName(r)[0];
           y.async=1;y.src="//"+a;r.parentNode.insertBefore(y,r);
@@ -37,7 +37,7 @@ export default class MyDocument extends Document<{
           k=y._={s:[],t:[+new Date],c:{},l:a};
           })(window,document,"static.olark.com/jsclient/loader.js");
           /* Add configuration calls below this comment */
-          olark.identify('1751-12112149-10-1389');</script>
+          olark.identify('1751-12112149-10-1389');`}</script>
         </body>
       </Html>
     );
