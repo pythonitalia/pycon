@@ -26,7 +26,6 @@ export default class MyDocument extends Document<{
           <InitializeColorMode />
           <Main />
           <NextScript />
-          <!-- begin olark code -->
           <script type="text/javascript">
           ;(function(o,l,a,r,k,y){if(o.olark)return;
           r="script";y=l.createElement(r);r=l.getElementsByTagName(r)[0];
