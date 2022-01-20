@@ -4,13 +4,100 @@ from pythonit_toolkit.service_client import ServiceClient
 
 from integrations import slack
 
-USER_NAME_FROM_ID = """query UserNameFromId($userId: ID!) {
-    user(id: $userId) {
+USERS_NAMES_FROM_IDS = """query UserNamesFromIds($ids: [ID!]!) {
+    usersByIds(ids: $ids) {
+        id
         fullname
         name
         username
     }
 }"""
+
+
+def execute_service_client_query(query, variables):
+    client = ServiceClient(
+        url=f"{settings.USERS_SERVICE}/internal-api",
+        service_name="users-backend",
+        caller="pycon-backend",
+        jwt_secret=settings.SERVICE_TO_SERVICE_SECRET,
+    )
+    return async_to_sync(client.execute)(query, variables)
+
+
+def get_name(user_data):
+    return (
+        user_data["fullname"]
+        or user_data["name"]
+        or user_data["username"]
+        or "<no name specified>"
+    )
+
+
+def handle_new_submission_comment(data):
+    speaker_id = data["speaker_id"]
+    submission_title = data["submission_title"]
+    author_id = data["author_id"]
+    admin_url = data["admin_url"]
+    comment = data["comment"]
+
+    users_result = execute_service_client_query(
+        USERS_NAMES_FROM_IDS, {"ids": [speaker_id, author_id]}
+    )
+    users_by_id = {int(user["id"]): user for user in users_result.data["usersByIds"]}
+
+    speaker_name = get_name(users_by_id[speaker_id])
+    comment_author_name = get_name(users_by_id[author_id])
+
+    slack.send_message(
+        [
+            {
+                "type": "section",
+                "text": {
+                    "text": f"New comment on submission {submission_title}",
+                    "type": "mrkdwn",
+                },
+            }
+        ],
+        [
+            {
+                "blocks": [
+                    {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": f"*<{admin_url}|Open admin>*",
+                        },
+                    },
+                    {
+                        "type": "section",
+                        "fields": [
+                            {
+                                "type": "mrkdwn",
+                                "text": "*Comment*",
+                            },
+                            {"type": "plain_text", "text": " ", "emoji": False},
+                            {"type": "plain_text", "text": comment, "emoji": False},
+                        ],
+                    },
+                    {
+                        "type": "section",
+                        "fields": [
+                            {"type": "mrkdwn", "text": "*Submission Author*"},
+                            {"type": "mrkdwn", "text": "*Comment Author*"},
+                            {"type": "plain_text", "text": speaker_name},
+                            {"type": "plain_text", "text": comment_author_name},
+                            {"type": "mrkdwn", "text": "*Is Submission Author*"},
+                            {
+                                "type": "plain_text",
+                                "text": "Yes" if speaker_id == author_id else "No",
+                            },
+                        ],
+                    },
+                ],
+            },
+        ],
+        channel="submission-comments",
+    )
 
 
 def handle_new_cfp_submission(data):
@@ -22,21 +109,11 @@ def handle_new_cfp_submission(data):
     duration = data["duration"]
     speaker_id = data["speaker_id"]
 
-    client = ServiceClient(
-        url=f"{settings.USERS_SERVICE}/internal-api",
-        service_name="users-backend",
-        caller="pycon-backend",
-        jwt_secret=settings.SERVICE_TO_SERVICE_SECRET,
+    user_result = execute_service_client_query(
+        USERS_NAMES_FROM_IDS, {"ids": [speaker_id]}
     )
-    client_execute = async_to_sync(client.execute)
-    user_result = client_execute(USER_NAME_FROM_ID, {"userId": speaker_id})
-    user_data = user_result.data
-    user_name = (
-        user_data["user"]["fullname"]
-        or user_data["user"]["name"]
-        or user_data["user"]["username"]
-        or "<no name specified>"
-    )
+    user_data = user_result.data["usersByIds"][0]
+    user_name = get_name(user_data)
 
     slack.send_message(
         [
@@ -68,7 +145,11 @@ def handle_new_cfp_submission(data):
                 ]
             }
         ],
+        channel="cfp",
     )
 
 
-HANDLERS = {"NewCFPSubmission": handle_new_cfp_submission}
+HANDLERS = {
+    "NewSubmissionComment": handle_new_submission_comment,
+    "NewCFPSubmission": handle_new_cfp_submission,
+}

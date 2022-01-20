@@ -3,6 +3,8 @@ import json
 import boto3
 from django.conf import settings
 
+from submissions.models import SubmissionComment
+
 
 def publish_message(type: str, body: dict, *, deduplication_id: str):
     if not settings.SQS_QUEUE_URL:
@@ -17,6 +19,24 @@ def publish_message(type: str, body: dict, *, deduplication_id: str):
         MessageAttributes={"MessageType": {"StringValue": type, "DataType": "String"}},
         MessageDeduplicationId=deduplication_id,
         MessageGroupId=type,
+    )
+
+
+def notify_new_comment_on_submission(
+    comment: SubmissionComment,
+    request,
+):
+    admin_url = request.build_absolute_uri(comment.get_admin_url())
+    publish_message(
+        "NewSubmissionComment",
+        body={
+            "speaker_id": comment.submission.speaker_id,
+            "submission_title": comment.submission.title,
+            "author_id": comment.author_id,
+            "comment": comment.text,
+            "admin_url": admin_url,
+        },
+        deduplication_id=str(comment.id),
     )
 
 
