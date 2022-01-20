@@ -45,6 +45,8 @@ def handle_new_submission_comment(data):
     admin_url = data["admin_url"]
     comment = data["comment"]
 
+    logger.info("Received new submission comment event (data=%s)", data)
+
     users_result = execute_service_client_query(
         USERS_NAMES_FROM_IDS, {"ids": [speaker_id, author_id]}
     )
@@ -52,8 +54,6 @@ def handle_new_submission_comment(data):
 
     speaker_name = get_name(users_by_id[speaker_id])
     comment_author_name = get_name(users_by_id[author_id])
-
-    logger.info("Received new submission comment event (data=%s)", data)
 
     slack.send_message(
         [
