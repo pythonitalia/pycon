@@ -1,8 +1,13 @@
+from logging import getLogger
+
 from asgiref.sync import async_to_sync
 from django.conf import settings
 from pythonit_toolkit.service_client import ServiceClient
 
 from integrations import slack
+
+logger = getLogger(__name__)
+
 
 USERS_NAMES_FROM_IDS = """query UserNamesFromIds($ids: [ID!]!) {
     usersByIds(ids: $ids) {
@@ -47,6 +52,8 @@ def handle_new_submission_comment(data):
 
     speaker_name = get_name(users_by_id[speaker_id])
     comment_author_name = get_name(users_by_id[author_id])
+
+    logger.info("Received new submission comment event (data=%s)", data)
 
     slack.send_message(
         [
