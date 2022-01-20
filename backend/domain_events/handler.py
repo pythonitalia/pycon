@@ -43,7 +43,7 @@ def handle_new_submission_comment(data):
     users_result = execute_service_client_query(
         USERS_NAMES_FROM_IDS, {"ids": [speaker_id, author_id]}
     )
-    users_by_id = {user["id"]: user for user in users_result.data["usersByIds"]}
+    users_by_id = {int(user["id"]): user for user in users_result.data["usersByIds"]}
 
     speaker_name = get_name(users_by_id[speaker_id])
     comment_author_name = get_name(users_by_id[author_id])
