@@ -1,13 +1,8 @@
-from logging import getLogger
-
 from asgiref.sync import async_to_sync
 from django.conf import settings
 from pythonit_toolkit.service_client import ServiceClient
 
 from integrations import slack
-
-logger = getLogger(__name__)
-
 
 USERS_NAMES_FROM_IDS = """query UserNamesFromIds($ids: [ID!]!) {
     usersByIds(ids: $ids) {
@@ -45,8 +40,6 @@ def handle_new_submission_comment(data):
     admin_url = data["admin_url"]
     comment = data["comment"]
 
-    logger.info("Received new submission comment event (data=%s)", data)
-
     users_result = execute_service_client_query(
         USERS_NAMES_FROM_IDS, {"ids": [speaker_id, author_id]}
     )
@@ -72,18 +65,36 @@ def handle_new_submission_comment(data):
                         "type": "section",
                         "text": {
                             "type": "mrkdwn",
-                            "text": f"*<{admin_url}|Open admin>*\n"
-                            f"*Comment*\n{comment}",
+                            "text": f"*<{admin_url}|Open admin>*",
                         },
+                    },
+                    {
+                        "type": "section",
+                        "fields": [
+                            {
+                                "type": "mrkdwn",
+                                "text": "*Comment*",
+                            },
+                            {"type": "plain_text", "text": " ", "emoji": False},
+                            {"type": "plain_text", "text": comment, "emoji": False},
+                        ],
+                    },
+                    {
+                        "type": "section",
                         "fields": [
                             {"type": "mrkdwn", "text": "*Submission Author*"},
                             {"type": "mrkdwn", "text": "*Comment Author*"},
                             {"type": "plain_text", "text": speaker_name},
                             {"type": "plain_text", "text": comment_author_name},
+                            {"type": "mrkdwn", "text": "*Is Submission Author*"},
+                            {
+                                "type": "plain_text",
+                                "text": "Yes" if speaker_id == author_id else "No",
+                            },
                         ],
-                    }
-                ]
-            }
+                    },
+                ],
+            },
         ],
         channel="submission-comments",
     )
