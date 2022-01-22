@@ -1,0 +1,74 @@
+---
+title: "[PyCon Italia] Your submission received a comment"
+preheader: "Your submission @{{submissionName}} received a comment"
+---
+
+<extends src="src/layouts/base.html">
+  <block name="template">
+    <table class="w-full font-sans">
+      <tr>
+        <td align="center" class="bg-gray-100">
+          <table class="w-600 sm:w-full">
+            <tr>
+              <component src="src/components/head.html" />
+            </tr>
+            <tr>
+              <td align="center" class="sm:px-24">
+                <table class="w-full">
+                  <tr>
+                    <td
+                      class="p-48 text-base text-left text-gray-800 bg-white sm:px-24 leading-24"
+                    >
+                      <p class="m-0 mb-16">Hi @{{userName}}!</p>
+                      <p class="m-0 mb-16">
+                        There is a new comment on the submission
+                        @{{submissionTitle}} from @{{commenterName}}:
+                      </p>
+                      <p class="m-0 mb-24">@{{text}}</p>
+                      <div class="mb-24 leading-full">
+                        <a
+                          href="@{{submissionlink}}"
+                          target="_blank"
+                          class="inline-block px-24 py-16 text-base font-semibold text-center text-white no-underline select-none bg-primary hover:bg-darker"
+                        >
+                          <!--[if mso
+                            ]><i
+                              style="
+                                letter-spacing: 24px;
+                                mso-font-width: -100%;
+                                mso-text-raise: 30px;
+                              "
+                              >&#8202;</i
+                            ><!
+                          [endif]-->
+                          <span style="mso-text-raise: 16px"
+                            >Open Submission</span
+                          >
+                          <!--[if mso
+                            ]><i
+                              style="
+                                letter-spacing: 24px;
+                                mso-font-width: -100%;
+                              "
+                              >&#8202;</i
+                            ><!
+                          [endif]-->
+                        </a>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="h-48"></td>
+                  </tr>
+                  <tr>
+                    <component src="src/components/footer.html" />
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </block>
+</extends>

@@ -63,6 +63,7 @@ module "lambda" {
     AWS_MEDIA_BUCKET                              = aws_s3_bucket.backend_media.id
     AWS_REGION_NAME                               = aws_s3_bucket.backend_media.region
     EMAIL_BACKEND                                 = "django_ses.SESBackend"
+    PYTHONIT_EMAIL_BACKEND                        = "pythonit_toolkit.emails.backends.ses.SESEmailBackend"
     FRONTEND_URL                                  = "https://pycon.it"
     PRETIX_API                                    = "https://tickets.pycon.it/api/v1/"
     PRETIX_API_TOKEN                              = module.common_secrets.value.pretix_api_token

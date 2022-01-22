@@ -30,6 +30,7 @@ def notify_new_comment_on_submission(
     publish_message(
         "NewSubmissionComment",
         body={
+            "comment_id": comment.id,
             "speaker_id": comment.submission.speaker_id,
             "submission_title": comment.submission.title,
             "author_id": comment.author_id,

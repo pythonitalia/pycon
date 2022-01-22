@@ -1,8 +1,11 @@
 from asgiref.sync import async_to_sync
 from django.conf import settings
+from pythonit_toolkit.emails.templates import EmailTemplate
 from pythonit_toolkit.service_client import ServiceClient
 
+from domain_events.publisher import publish_message
 from integrations import slack
+from notifications.emails import send_email
 
 USERS_NAMES_FROM_IDS = """query UserNamesFromIds($ids: [ID!]!) {
     usersByIds(ids: $ids) {
@@ -10,6 +13,7 @@ USERS_NAMES_FROM_IDS = """query UserNamesFromIds($ids: [ID!]!) {
         fullname
         name
         username
+        email
     }
 }"""
 
@@ -34,10 +38,56 @@ def get_name(user_data):
 
 
 def handle_new_submission_comment(data):
+    publish_message(
+        "NewSubmissionComment/SlackNotification",
+        body=data,
+        deduplication_id=data["comment_id"],
+    )
+
+    publish_message(
+        "NewSubmissionComment/EmailNotification",
+        body=data,
+        deduplication_id=data["comment_id"],
+    )
+
+
+def handle_send_email_notification_for_new_submission_comment(data):
+    speaker_id = data["speaker_id"]
+    submission_title = data["submission_title"]
+    author_id = data["author_id"]
+    comment = data["comment"]
+    commenters_ids = data["commenters_ids"]
+    submission_url = data["submission_url"]
+
+    users_result = execute_service_client_query(
+        USERS_NAMES_FROM_IDS, {"ids": commenters_ids + [speaker_id, author_id]}
+    )
+    users_by_id = {int(user["id"]): user for user in users_result.data["usersByIds"]}
+    comment_author_user = users_by_id[comment.author_id]
+    commenters_with_speaker = commenters_ids + [speaker_id]
+
+    for commenter_id in commenters_with_speaker:
+        commenter_data = users_by_id[commenter_id]
+        send_email(
+            template=EmailTemplate.NEW_COMMENT_ON_SUBMISSION,
+            to=commenter_data["email"],
+            subject=f"New comment on Submission {submission_title}",
+            variables={
+                "submissionTitle": submission_title,
+                "userName": commenter_data["fullname"],
+                "commenterName": comment_author_user["fullname"],
+                "text": comment.text,
+                "submissionlink": submission_url,
+            },
+        )
+
+
+def handle_send_slack_notification_for_new_submission_comment(data):
     speaker_id = data["speaker_id"]
     submission_title = data["submission_title"]
     author_id = data["author_id"]
     admin_url = data["admin_url"]
+    submission_url = data["submission_url"]
     comment = data["comment"]
 
     users_result = execute_service_client_query(
@@ -65,7 +115,7 @@ def handle_new_submission_comment(data):
                         "type": "section",
                         "text": {
                             "type": "mrkdwn",
-                            "text": f"*<{admin_url}|Open admin>*",
+                            "text": f"*<{admin_url}|Open admin>* *<{submission_url}|Open site>*",
                         },
                     },
                     {
@@ -150,6 +200,8 @@ def handle_new_cfp_submission(data):
 
 
 HANDLERS = {
+    "NewSubmissionComment/SlackNotification": handle_send_slack_notification_for_new_submission_comment,
+    "NewSubmissionComment/EmailNotification": handle_send_email_notification_for_new_submission_comment,
     "NewSubmissionComment": handle_new_submission_comment,
     "NewCFPSubmission": handle_new_cfp_submission,
 }
