@@ -16,7 +16,7 @@ def test_publish_message(settings):
         MessageAttributes={
             "MessageType": {"StringValue": "MessageType", "DataType": "String"}
         },
-        MessageDeduplicationId="idid",
+        MessageDeduplicationId="MessageType-idid",
         MessageGroupId="MessageType",
     )
 
