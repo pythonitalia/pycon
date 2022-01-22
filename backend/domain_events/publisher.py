@@ -15,7 +15,7 @@ def publish_message(type: str, body: dict, *, deduplication_id: str):
     queue.send_message(
         MessageBody=json_body,
         MessageAttributes={"MessageType": {"StringValue": type, "DataType": "String"}},
-        MessageDeduplicationId=deduplication_id,
+        MessageDeduplicationId=f"{type}-{deduplication_id}",
         MessageGroupId=type,
     )
 
