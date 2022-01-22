@@ -78,8 +78,8 @@ def handle_send_email_notification_for_new_submission_comment(data):
             subject=f"New comment on Submission {submission_title}",
             variables={
                 "submissionTitle": submission_title,
-                "userName": commenter_data["fullname"],
-                "commenterName": comment_author_user["fullname"],
+                "userName": get_name(commenter_data),
+                "commenterName": get_name(comment_author_user),
                 "text": comment,
                 "submissionlink": submission_url,
             },
@@ -119,19 +119,16 @@ def handle_send_slack_notification_for_new_submission_comment(data):
                         "type": "section",
                         "text": {
                             "type": "mrkdwn",
-                            "text": f"*<{admin_url}|Open admin>* *<{submission_url}|Open site>*",
+                            "text": f"*<{admin_url}|Open admin>* | *<{submission_url}|Open site>*",
                         },
                     },
                     {
                         "type": "section",
-                        "fields": [
-                            {
-                                "type": "mrkdwn",
-                                "text": "*Comment*",
-                            },
-                            {"type": "plain_text", "text": " ", "emoji": False},
-                            {"type": "plain_text", "text": comment, "emoji": False},
-                        ],
+                        "text": {"type": "mrkdwn", "text": "*Comment*", "emoji": False},
+                    },
+                    {
+                        "type": "section",
+                        "text": {"type": "plain_text", "text": comment, "emoji": False},
                     },
                     {
                         "type": "section",
