@@ -124,7 +124,7 @@ def handle_send_slack_notification_for_new_submission_comment(data):
                     },
                     {
                         "type": "section",
-                        "text": {"type": "mrkdwn", "text": "*Comment*", "emoji": False},
+                        "text": {"type": "mrkdwn", "text": "*Comment*"},
                     },
                     {
                         "type": "section",
