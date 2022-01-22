@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 
-import { USER_INFO_CACHE } from "~/components/profile/hooks";
 import { CurrentUserQueryResult, useCurrentUserQuery } from "~/types";
 
 import { updateOlarkFields } from "./olark";

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { USER_INFO_CACHE } from "~/components/profile/hooks";
 
 export const updateOlarkFields = (newData: any = null) => {
@@ -39,7 +40,9 @@ export const updateOlarkFields = (newData: any = null) => {
       newData === null
         ? JSON.parse(window.localStorage.getItem(USER_INFO_CACHE))
         : newData;
-  } catch (e) {}
+  } catch (e) {
+    console.log("Unable to restore user cache", e);
+  }
 
   if (!user) {
     // if we can't restore the user somehow, or it is invalid from JSON or whatever
