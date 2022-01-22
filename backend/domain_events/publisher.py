@@ -26,6 +26,11 @@ def notify_new_comment_on_submission(
     comment: SubmissionComment,
     request,
 ):
+    submission = comment.submission
+    all_commenters_ids = list(
+        submission.comments.distinct().values_list("author_id", flat=True)
+    )
+
     admin_url = request.build_absolute_uri(comment.get_admin_url())
     publish_message(
         "NewSubmissionComment",
@@ -36,6 +41,7 @@ def notify_new_comment_on_submission(
             "author_id": comment.author_id,
             "comment": comment.text,
             "admin_url": admin_url,
+            "all_commenters_ids": all_commenters_ids,
         },
         deduplication_id=str(comment.id),
     )
