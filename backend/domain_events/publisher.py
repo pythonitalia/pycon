@@ -3,8 +3,6 @@ import json
 import boto3
 from django.conf import settings
 
-from submissions.models import SubmissionComment
-
 
 def publish_message(type: str, body: dict, *, deduplication_id: str):
     if not settings.SQS_QUEUE_URL:
@@ -23,7 +21,7 @@ def publish_message(type: str, body: dict, *, deduplication_id: str):
 
 
 def notify_new_comment_on_submission(
-    comment: SubmissionComment,
+    comment,
     request,
 ):
     submission = comment.submission
