@@ -28,7 +28,7 @@ export default class MyDocument extends Document<{
           <Main />
           <NextScript />
           <Script
-            strategy="afterInteractive"
+            strategy="lazyOnload"
             dangerouslySetInnerHTML={{
               __html: `
 ;(function(o,l,a,r,k,y){if(o.olark)return;
