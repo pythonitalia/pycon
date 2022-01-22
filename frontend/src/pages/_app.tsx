@@ -2,6 +2,7 @@
 
 /** @jsx jsx */
 import { ApolloProvider } from "@apollo/client";
+import { useEffect } from "react";
 import { createIntl, createIntlCache, RawIntlProvider } from "react-intl";
 import { Box, Flex, jsx, ThemeProvider } from "theme-ui";
 
@@ -12,6 +13,7 @@ import { ErrorBoundary } from "~/components/error-boundary";
 import { Footer } from "~/components/footer";
 import { Header } from "~/components/header";
 import { GlobalStyles } from "~/components/styles";
+import { updateOlarkFields } from "~/helpers/olark";
 import messages from "~/locale";
 import { LocaleProvider, useCurrentLanguage } from "~/locale/context";
 import { theme } from "~/theme";
@@ -33,6 +35,18 @@ const MyApp = (props) => {
     intlCache,
   );
 
+  useEffect(() => {
+    const listener = () => {
+      updateOlarkFields();
+    };
+
+    // Once Olark is loaded we try restoring the data
+    window.addEventListener("olarkLoaded", listener);
+    return () => {
+      window.removeEventListener("olarkLoaded", listener);
+    };
+  }, []);
+
   return (
     <ThemeProvider theme={theme}>
       <Script
@@ -49,7 +63,10 @@ y.configure=function(i,j){y("configure",i,j);k.c[i]=j};
 k=y._={s:[],t:[+new Date],c:{},l:a};
 })(window,document,"static.olark.com/jsclient/loader.js");
 /* Add configuration calls below this comment */
-olark.identify('1751-12112149-10-1389');`,
+olark.identify('1751-12112149-10-1389');
+var olarkLoadedEvent = new Event('olarkLoaded');
+window.dispatchEvent(olarkLoadedEvent);
+`,
         }}
       />
 
