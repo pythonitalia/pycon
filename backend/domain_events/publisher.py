@@ -1,4 +1,5 @@
 import json
+from urllib.parse import urljoin
 
 import boto3
 from django.conf import settings
@@ -28,8 +29,9 @@ def notify_new_comment_on_submission(
     all_commenters_ids = list(
         submission.comments.distinct().values_list("author_id", flat=True)
     )
-
+    submission_url = urljoin(settings.FRONTEND_URL, f"/submission/{submission.hashid}")
     admin_url = request.build_absolute_uri(comment.get_admin_url())
+
     publish_message(
         "NewSubmissionComment",
         body={
@@ -40,6 +42,7 @@ def notify_new_comment_on_submission(
             "comment": comment.text,
             "admin_url": admin_url,
             "all_commenters_ids": all_commenters_ids,
+            "submission_url": submission_url,
         },
         deduplication_id=str(comment.id),
     )
