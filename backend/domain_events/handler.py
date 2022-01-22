@@ -75,7 +75,7 @@ def handle_send_email_notification_for_new_submission_comment(data):
         send_email(
             template=EmailTemplate.NEW_COMMENT_ON_SUBMISSION,
             to=commenter_data["email"],
-            subject=f"New comment on Submission {submission_title}",
+            subject=f"[PyCon Italia 2022] New comment on Submission {submission_title}",
             variables={
                 "submissionTitle": submission_title,
                 "userName": get_name(commenter_data),
