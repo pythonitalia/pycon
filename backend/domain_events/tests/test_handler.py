@@ -115,11 +115,10 @@ def test_handle_new_submission_comment_email_action():
             call(
                 template=EmailTemplate.NEW_COMMENT_ON_SUBMISSION,
                 to="speaker@email.it",
-                subject="New comment on Submission Test submission",
+                subject="[PyCon Italia 2022] New comment on Submission Test submission",
                 variables={
                     "submissionTitle": "Test submission",
                     "userName": "Speaker Name",
-                    "commenterName": "Marco Acierno",
                     "text": "Comment here",
                     "submissionlink": "https://twitter.it",
                 },
@@ -180,11 +179,10 @@ def test_handle_new_submission_comment_email_action_with_multiple_people():
             call(
                 template=EmailTemplate.NEW_COMMENT_ON_SUBMISSION,
                 to="speaker@email.it",
-                subject="New comment on Submission Test submission",
+                subject="[PyCon Italia 2022] New comment on Submission Test submission",
                 variables={
                     "submissionTitle": "Test submission",
                     "userName": "Speaker Name",
-                    "commenterName": "Marco Acierno",
                     "text": "Comment here",
                     "submissionlink": "https://twitter.it",
                 },
@@ -192,11 +190,10 @@ def test_handle_new_submission_comment_email_action_with_multiple_people():
             call(
                 template=EmailTemplate.NEW_COMMENT_ON_SUBMISSION,
                 to="ester@email.it",
-                subject="New comment on Submission Test submission",
+                subject="[PyCon Italia 2022] New comment on Submission Test submission",
                 variables={
                     "submissionTitle": "Test submission",
                     "userName": "Ester Beltrami",
-                    "commenterName": "Marco Acierno",
                     "text": "Comment here",
                     "submissionlink": "https://twitter.it",
                 },
