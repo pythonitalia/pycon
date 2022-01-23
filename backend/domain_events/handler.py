@@ -28,12 +28,9 @@ def execute_service_client_query(query, variables):
     return async_to_sync(client.execute)(query, variables)
 
 
-def get_name(user_data):
+def get_name(user_data, fallback: str = "<no name specified>"):
     return (
-        user_data["fullname"]
-        or user_data["name"]
-        or user_data["username"]
-        or "<no name specified>"
+        user_data["fullname"] or user_data["name"] or user_data["username"] or fallback
     )
 
 
@@ -62,7 +59,6 @@ def handle_send_email_notification_for_new_submission_comment(data):
         USERS_NAMES_FROM_IDS, {"ids": all_commenters_ids}
     )
     users_by_id = {int(user["id"]): user for user in users_result.data["usersByIds"]}
-    comment_author_user = users_by_id[author_id]
 
     # Notify everyone who commented on the submission
     # but not the person posting the comment
@@ -78,8 +74,7 @@ def handle_send_email_notification_for_new_submission_comment(data):
             subject=f"[PyCon Italia 2022] New comment on Submission {submission_title}",
             variables={
                 "submissionTitle": submission_title,
-                "userName": get_name(commenter_data),
-                "commenterName": get_name(comment_author_user),
+                "userName": get_name(commenter_data, "there"),
                 "text": comment,
                 "submissionlink": submission_url,
             },
