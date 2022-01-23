@@ -216,3 +216,10 @@ MAILCHIMP_DC = env("MAILCHIMP_DC", default="us3")
 MAILCHIMP_LIST_ID = env("MAILCHIMP_LIST_ID", default="")
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
+
+PYTHONIT_EMAIL_BACKEND = env(
+    "PYTHONIT_EMAIL_BACKEND",
+    default="pythonit_toolkit.emails.backends.local.LocalEmailBackend",
+)
+DEFAULT_EMAIL_FROM = env("DEFAULT_EMAIL_FROM", default="noreply@pycon.it")
+ENVIRONMENT = env("ENV", default="local")

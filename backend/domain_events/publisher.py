@@ -1,9 +1,8 @@
 import json
+from urllib.parse import urljoin
 
 import boto3
 from django.conf import settings
-
-from submissions.models import SubmissionComment
 
 
 def publish_message(type: str, body: dict, *, deduplication_id: str):
@@ -17,24 +16,33 @@ def publish_message(type: str, body: dict, *, deduplication_id: str):
     queue.send_message(
         MessageBody=json_body,
         MessageAttributes={"MessageType": {"StringValue": type, "DataType": "String"}},
-        MessageDeduplicationId=deduplication_id,
+        MessageDeduplicationId=f"{type}-{deduplication_id}",
         MessageGroupId=type,
     )
 
 
 def notify_new_comment_on_submission(
-    comment: SubmissionComment,
+    comment,
     request,
 ):
+    submission = comment.submission
+    all_commenters_ids = list(
+        submission.comments.distinct().values_list("author_id", flat=True)
+    )
+    submission_url = urljoin(settings.FRONTEND_URL, f"/submission/{submission.hashid}")
     admin_url = request.build_absolute_uri(comment.get_admin_url())
+
     publish_message(
         "NewSubmissionComment",
         body={
+            "comment_id": comment.id,
             "speaker_id": comment.submission.speaker_id,
             "submission_title": comment.submission.title,
             "author_id": comment.author_id,
             "comment": comment.text,
             "admin_url": admin_url,
+            "all_commenters_ids": all_commenters_ids,
+            "submission_url": submission_url,
         },
         deduplication_id=str(comment.id),
     )

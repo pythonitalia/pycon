@@ -9,7 +9,6 @@ from domain_events.publisher import (
     notify_new_submission,
 )
 from languages.models import Language
-from notifications.aws import send_comment_notification
 from submissions.models import Submission, SubmissionComment, SubmissionTag
 
 
@@ -21,7 +20,6 @@ class SendSubmissionCommentForm(ContextAwareModelForm):
         self.instance.author_id = self.context.request.user.id
         comment = super().save(commit=commit)
 
-        send_comment_notification(comment)
         notify_new_comment_on_submission(
             comment,
             request,

@@ -1,5 +1,4 @@
 import typing
-from urllib.parse import urljoin
 
 import boto3
 from django.conf import settings
@@ -12,9 +11,9 @@ def _get_client():
     return boto3.client("pinpoint", region_name="eu-central-1")
 
 
-def chunks(l, n):
-    for i in range(0, len(l), n):
-        yield l[i : i + n]  # noqa
+def chunks(arr, n):
+    for i in range(0, len(arr), n):
+        yield arr[i : i + n]  # noqa
 
 
 def send_endpoints_to_pinpoint(endpoints: typing.Iterable[Endpoint]):
@@ -51,29 +50,3 @@ def send_notification(
     )
 
     # TODO: validate that it has been sent correctly
-
-
-def send_comment_notification(comment):
-    # TODO Implement me
-    pass
-    # submission = comment.submission
-
-    # users: typing.Set[User] = set([submission.speaker_id])
-    # # also send notification to all other commenters
-    # users = users.union(set([comment.author for comment in submission.comments.all()]))
-    # # don't notify current user
-    # users.discard(comment.author)
-
-    # if not users:
-    #     return
-
-    # submission_url = urljoin(
-    #     settings.FRONTEND_URL, f"/en/submission/{submission.hashid}"
-    # )
-
-    # substitutions = {
-    #     "submission_url": [submission_url],
-    #     "submission": [submission.title],
-    # }
-
-    # send_notification("pycon-11-new-comment-on-submission", users, substitutions)
