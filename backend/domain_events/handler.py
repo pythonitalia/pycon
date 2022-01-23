@@ -51,7 +51,6 @@ def handle_new_submission_comment(data):
 def handle_send_email_notification_for_new_submission_comment(data):
     submission_title = data["submission_title"]
     author_id = data["author_id"]
-    comment = data["comment"]
     all_commenters_ids = data["all_commenters_ids"]
     submission_url = data["submission_url"]
 
@@ -75,7 +74,6 @@ def handle_send_email_notification_for_new_submission_comment(data):
             variables={
                 "submissionTitle": submission_title,
                 "userName": get_name(commenter_data, "there"),
-                "text": comment,
                 "submissionlink": submission_url,
             },
         )

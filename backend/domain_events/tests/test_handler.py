@@ -119,7 +119,6 @@ def test_handle_new_submission_comment_email_action():
                 variables={
                     "submissionTitle": "Test submission",
                     "userName": "Speaker Name",
-                    "text": "Comment here",
                     "submissionlink": "https://twitter.it",
                 },
             )
@@ -183,7 +182,6 @@ def test_handle_new_submission_comment_email_action_with_multiple_people():
                 variables={
                     "submissionTitle": "Test submission",
                     "userName": "Speaker Name",
-                    "text": "Comment here",
                     "submissionlink": "https://twitter.it",
                 },
             ),
@@ -194,7 +192,6 @@ def test_handle_new_submission_comment_email_action_with_multiple_people():
                 variables={
                     "submissionTitle": "Test submission",
                     "userName": "Ester Beltrami",
-                    "text": "Comment here",
                     "submissionlink": "https://twitter.it",
                 },
             ),
