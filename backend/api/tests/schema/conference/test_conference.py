@@ -664,7 +664,7 @@ def test_is_voting_closed_in_the_future(
 @mark.django_db
 def test_can_see_submissions_as_staff(graphql_client, submission_factory, user_factory):
     user = user_factory(is_staff=True)
-    submission = submission_factory()
+    submission = submission_factory(status="proposed")
 
     graphql_client.force_login(user)
 
@@ -750,4 +750,4 @@ def test_filter_submission_by_status(
     )
 
     assert len(response["data"]["conference"]["submissions"]) == 1
-    assert response["data"]["conference"]["submissions"]["status"] == "proposed"
+    assert response["data"]["conference"]["submissions"][0]["status"] == "proposed"
