@@ -17,6 +17,7 @@ import { Logout } from "~/components/profile/logout";
 import { MyOrders } from "~/components/profile/my-orders";
 import { MyProfile } from "~/components/profile/my-profile";
 import { MySubmissions } from "~/components/profile/my-submissions";
+import { updateOlarkFields } from "~/helpers/olark";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { queryCountries, useMyProfileQuery } from "~/types";
 
@@ -33,6 +34,12 @@ export const MyProfilePage = () => {
       conference: process.env.conferenceCode,
     },
   });
+
+  useEffect(() => {
+    if (profileData?.me) {
+      updateOlarkFields(profileData.me);
+    }
+  }, [profileData]);
 
   useEffect(() => {
     const loginUrl = `/login`;
