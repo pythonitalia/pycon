@@ -732,7 +732,7 @@ def test_filter_submission_by_status(graphql_client, submission_factory, confere
     query = """
         query($code: String!) {
             conference(code: $code) {
-                submissions (status: $status) {
+                submissions{
                     id
                 }
             }
@@ -741,7 +741,7 @@ def test_filter_submission_by_status(graphql_client, submission_factory, confere
 
     response = graphql_client.query(
         query,
-        variables={"code": conference.code, "status": "proposed"},
+        variables={"code": conference.code},
     )
 
     assert len(response["data"]["conference"]["submissions"]) == 1
