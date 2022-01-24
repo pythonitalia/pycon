@@ -5,7 +5,7 @@ from pytest import mark
 def test_get_logged_user_vote_on_a_submission(graphql_client, user, vote_factory):
     graphql_client.force_login(user)
 
-    vote = vote_factory(user_id=user.id, value=1)
+    vote = vote_factory(user_id=user.id, value=1, submission__status="proposed")
 
     response = graphql_client.query(
         """query MyVote($conference: String!) {
