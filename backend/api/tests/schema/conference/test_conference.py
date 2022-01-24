@@ -664,7 +664,7 @@ def test_is_voting_closed_in_the_future(
 @mark.django_db
 def test_can_see_submissions_as_staff(graphql_client, submission_factory, user_factory):
     user = user_factory(is_staff=True)
-    submission = submission_factory(status="proposed")
+    submission = submission_factory()
 
     graphql_client.force_login(user)
 
@@ -687,8 +687,8 @@ def test_can_see_submissions_if_they_have_sent_one(
     graphql_client, conference, submission_factory, user_factory
 ):
     user = user_factory()
-    submission_factory(conference=conference, status="proposed")
-    submission_factory(conference=conference, speaker_id=user.id, status="proposed")
+    submission_factory(conference=conference)
+    submission_factory(conference=conference, speaker_id=user.id)
 
     graphql_client.force_login(user)
 

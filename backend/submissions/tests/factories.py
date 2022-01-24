@@ -58,7 +58,7 @@ class SubmissionFactory(DjangoModelFactory):
         Submission.SPEAKER_LEVELS, getter=lambda c: c[0]
     )
     previous_talk_video = factory.Faker("url")
-    status = factory.fuzzy.FuzzyChoice(Submission.STATUS, getter=lambda c: c[0])
+    status = "proposed"
 
     @factory.post_generation
     def custom_submission_type(self, create, extracted, **kwargs):
