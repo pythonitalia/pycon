@@ -738,6 +738,7 @@ def test_filter_submission_by_status(
             conference(code: $code) {
                 submissions{
                     id
+                    status
                 }
             }
         }
