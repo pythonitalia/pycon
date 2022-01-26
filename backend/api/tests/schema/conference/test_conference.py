@@ -722,3 +722,32 @@ def test_get_conference_voucher_with_invalid_code(graphql_client, conference, mo
     )
 
     assert response["data"]["conference"]["voucher"] is None
+
+
+@mark.django_db
+def test_filter_submission_by_status(
+    graphql_client, submission_factory, conference, mocker, user
+):
+    mocker.patch("voting.helpers.pastaporto_user_info_can_vote", return_value=True)
+    submission_factory(conference=conference, status="cancelled")
+    submission_factory(conference=conference, status="proposed")
+    graphql_client.force_login(user)
+
+    query = """
+        query($code: String!) {
+            conference(code: $code) {
+                submissions{
+                    id
+                    status
+                }
+            }
+        }
+    """
+
+    response = graphql_client.query(
+        query,
+        variables={"code": conference.code},
+    )
+
+    assert len(response["data"]["conference"]["submissions"]) == 1
+    assert response["data"]["conference"]["submissions"][0]["status"] == "proposed"

@@ -19,6 +19,7 @@ from api.voting.types import RankSubmission
 from cms.models import GenericCopy
 from conferences.models.deadline import DeadlineStatus
 from schedule.models import ScheduleItem as ScheduleItemModel
+from submissions.models import Submission as SubmissionModel
 from voting.models import RankRequest as RankRequestModel
 
 from ..helpers.i18n import make_localized_resolver
@@ -255,9 +256,9 @@ class Conference:
 
     @strawberry.field(permission_classes=[CanSeeSubmissions])
     def submissions(self, info) -> Optional[List[Submission]]:
-        return self.submissions.all().select_related(
-            "audience_level", "duration", "type", "topic"
-        )
+        return self.submissions.filter(
+            status=SubmissionModel.STATUS.proposed
+        ).select_related("audience_level", "duration", "type", "topic")
 
     @strawberry.field
     def events(self, info) -> List[Event]:

@@ -73,6 +73,7 @@ class Submission:
     conference: LazyType["Conference", "api.conferences.types"]
     title: str
     slug: str
+    status: str
     elevator_pitch: Optional[str] = restricted_field()
     abstract: Optional[str] = restricted_field()
     speaker_level: Optional[str] = private_field()
