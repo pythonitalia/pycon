@@ -230,7 +230,7 @@ export const SubmissionAccordion: React.SFC<Props> = ({
               </Text>
             )}
           </Text>
-          {hasVote ? (
+          {showVoting && hasVote ? (
             <Text
               sx={{
                 fontWeight: "bold",
