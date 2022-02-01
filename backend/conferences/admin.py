@@ -189,6 +189,7 @@ class KeynoteAdmin(OrderedInlineModelAdminMixin, OrderedModelAdmin):
                     "title",
                     "description",
                     "topic",
+                    "published",
                 )
             },
         ),
@@ -196,3 +197,6 @@ class KeynoteAdmin(OrderedInlineModelAdminMixin, OrderedModelAdmin):
     inlines = [
         KeynoteSpeakerInline,
     ]
+
+    def get_queryset(self, request):
+        return Keynote.all_objects.all()

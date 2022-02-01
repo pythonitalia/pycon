@@ -3,6 +3,7 @@ import json
 from django.conf import settings
 from django.db import models
 from django.db.models import Q
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from model_utils.models import TimeStampedModel
 from ordered_model.models import OrderedModel, OrderedModelManager
@@ -12,6 +13,9 @@ from pycon.constants import COLORS
 
 
 class KeynoteManager(OrderedModelManager):
+    def get_queryset(self):
+        return super().get_queryset().filter(published__lte=timezone.now())
+
     def by_slug(self, slug):
         term = json.dumps(slug)
 
@@ -41,8 +45,11 @@ class Keynote(OrderedModel, TimeStampedModel):
         on_delete=models.SET_NULL,
         default=None,
     )
+    published = models.DateTimeField(_("published"), default=timezone.now)
     order_with_respect_to = "conference"
+
     objects = KeynoteManager()
+    all_objects = models.Manager()
 
     def __str__(self) -> str:
         return f"{self.title} at {self.conference.code}"
