@@ -56,3 +56,9 @@ module "buckets" {
 module "cloudwatch" {
   source = "./cloudwatch"
 }
+
+# budibase
+
+module "budibase" {
+  source = "./budibase"
+}
