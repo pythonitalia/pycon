@@ -1,3 +1,5 @@
+import time_machine
+from django.utils import timezone
 from pytest import mark
 
 from helpers.tests import get_image_url_from_request
@@ -29,6 +31,7 @@ def test_get_conference_keynotes_empty(conference_factory, graphql_client):
 
 
 @mark.django_db
+@time_machine.travel("2020-10-10 10:00:00Z", tick=False)
 def test_get_conference_keynotes(
     conference_factory,
     keynote_factory,
@@ -42,8 +45,17 @@ def test_get_conference_keynotes(
         title=LazyI18nString({"en": "title", "it": "titolo"}),
         conference=conference,
         topic=topic_factory(),
+        published=timezone.datetime(1995, 12, 1, 5, 10, 3),
     )
     speaker = keynote_speaker_factory(keynote=keynote)
+
+    future_keynote = keynote_factory(
+        title=LazyI18nString({"en": "nope", "it": "noope"}),
+        conference=conference,
+        topic=topic_factory(),
+        published=timezone.datetime(2050, 12, 1, 5, 10, 3),
+    )
+    keynote_speaker_factory(keynote=future_keynote)
 
     resp = graphql_client.query(
         """
