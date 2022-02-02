@@ -35,8 +35,14 @@ class VoteAdminForm(forms.ModelForm):
 
 class VoteResource(ModelResource):
     class Meta:
-        model: Vote
-        fields = ("value", "submission_id", "user_id", "submission__conference__code")
+        model = Vote
+        fields = (
+            "id",
+            "value",
+            "user_id",
+            "submission",
+            "submission__conference__code",
+        )
 
 
 @admin.register(Vote)
