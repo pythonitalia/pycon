@@ -4,6 +4,7 @@ from django.contrib import admin
 from import_export.admin import ExportMixin
 from import_export.resources import ModelResource
 
+from conferences.models.conference import Conference
 from users.client import get_user_data_by_query, get_users_data_by_ids
 
 
@@ -36,10 +37,14 @@ class SearchUsersMixin(admin.ModelAdmin):
 
 class ResourceUsersMixin(ModelResource):
     def get_queryset(self):
-        queryset = super().get_queryset()
-        users_ids = queryset.values_list(self.user_fk, flat=True)
+        qs = super().get_queryset()
+
+        # TODO: find a way to used admin form's fields
+        conference = Conference.objects.all().order_by("-start")[0]
+        qs = qs.filter(**{self.conference_filter_by: conference})
+        users_ids = qs.values_list(self.user_fk, flat=True)
         self._PREFETCHED_USERS_BY_ID = get_users_data_by_ids(list(users_ids))
-        return queryset
+        return qs
 
     def get_user_display_name(self, obj_id: Any) -> str:
         return self.get_user_data(obj_id)["displayName"]

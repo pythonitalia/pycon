@@ -36,11 +36,12 @@ class VoteAdminForm(forms.ModelForm):
 class VoteResource(ModelResource):
     class Meta:
         model: Vote
-        fields = ("value", "submission_id", "user_id")
+        fields = ("value", "submission_id", "user_id", "submission__conference__code")
 
 
 @admin.register(Vote)
 class VoteAdmin(ExportMixin, AdminUsersMixin):
+    resource_class = VoteResource
     form = VoteAdminForm
     readonly_fields = ("created", "modified")
     list_display = ("submission", "user_display_name", "value", "created", "modified")
@@ -73,10 +74,12 @@ EXPORT_RANK_SUBMISSION_FIELDS = (
     "submission__audience_level__name",
     "submission__duration__name",
     "submission__speaker_id",
+    "rank_request__conference__code",
 )
 
 
 class RankSubmissionResource(ResourceUsersMixin):
+    conference_filter_by = "rank_request__conference"
     user_fk = "submission__speaker_id"
     submission__hashid = Field()
     submission__language = Field()
