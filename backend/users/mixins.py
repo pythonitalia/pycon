@@ -1,6 +1,8 @@
 from typing import Any
 
 from django.contrib import admin
+from import_export.admin import ExportMixin
+from import_export.resources import ModelResource
 
 from users.client import get_user_data_by_query, get_users_data_by_ids
 
@@ -30,3 +32,27 @@ class SearchUsersMixin(admin.ModelAdmin):
 
         queryset |= self.model.objects.filter(**{f"{self.user_fk}__in": speaker_ids})
         return queryset, may_have_duplicates
+
+
+class ResourceUsersMixin(ModelResource):
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        users_ids = queryset.values_list(self.user_fk, flat=True)
+        self._PREFETCHED_USERS_BY_ID = get_users_data_by_ids(list(users_ids))
+        return queryset
+
+    def get_user_display_name(self, obj_id: Any) -> str:
+        return self.get_user_data(obj_id)["displayName"]
+
+    def get_user_data(self, obj_id: Any) -> dict[str, Any]:
+        return self._PREFETCHED_USERS_BY_ID[str(obj_id)]
+
+
+class ExportUsersMixin(ExportMixin):
+    # https://github.com/django-import-export/django-import-export/blob/125c1cff2958a43f9824843ee90c27f5dc0280d5/import_export/resources.py#L933
+    # I want the queryset to be done in the ResourceUsersMixin in order to have the Users
+    # data stored and available when we export, so here I will return None
+    # so that the baseclass Resource will call my custom get_queryset
+    # The disadvantage is that we lose the request object and the filters...
+    def get_export_queryset(self, request):
+        return None

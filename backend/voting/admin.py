@@ -4,10 +4,11 @@ from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import format_html
 from import_export.admin import ExportMixin
+from import_export.fields import Field
 from import_export.resources import ModelResource
 
 from users.autocomplete import UsersBackendAutocomplete
-from users.mixins import AdminUsersMixin
+from users.mixins import AdminUsersMixin, ExportUsersMixin, ResourceUsersMixin
 from voting.models import RankRequest, RankSubmission, Vote
 
 
@@ -35,6 +36,7 @@ class VoteAdminForm(forms.ModelForm):
 class VoteResource(ModelResource):
     class Meta:
         model: Vote
+        fields = ("value", "submission_id", "user_id")
 
 
 @admin.register(Vote)
@@ -59,13 +61,52 @@ class VoteAdmin(ExportMixin, AdminUsersMixin):
         js = ["admin/js/jquery.init.js"]
 
 
-class RankSubmissionResource(ModelResource):
+EXPORT_RANK_SUBMISSION_FIELDS = (
+    "absolute_rank",
+    "absolute_score",
+    "topic_rank",
+    "submission__id",
+    "submission__hashid",
+    "submission__title",
+    "submission__type__name",
+    "submission__topic__name",
+    "submission__audience_level__name",
+    "submission__duration__name",
+    "submission__speaker_id",
+)
+
+
+class RankSubmissionResource(ResourceUsersMixin):
+    user_fk = "submission__speaker_id"
+    submission__hashid = Field()
+    submission__language = Field()
+    gender = Field()
+    full_name = Field()
+    tags = Field()
+
+    def dehydrate_submission__hashid(self, obj):
+        return obj.submission.hashid
+
+    def dehydrate_submission__language(self, obj):
+        return [lang.code for lang in obj.submission.languages.all()]
+
+    def dehydrate_gender(self, obj):
+        return self.get_user_data(obj.submission.speaker_id)["gender"]
+
+    def dehydrate_full_name(self, obj):
+        return self.get_user_display_name(obj.submission.speaker_id)
+
+    def dehydrate_tags(self, obj):
+        return [t.name for t in obj.submission.tags.all()]
+
     class Meta:
         model = RankSubmission
+        fields = EXPORT_RANK_SUBMISSION_FIELDS
+        export_order = EXPORT_RANK_SUBMISSION_FIELDS
 
 
 @admin.register(RankSubmission)
-class RankSubmissionAdmin(ExportMixin, AdminUsersMixin):
+class RankSubmissionAdmin(ExportUsersMixin, AdminUsersMixin):
     resource_class = RankSubmissionResource
     user_fk = "submission__speaker_id"
     list_display = (
