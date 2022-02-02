@@ -3,6 +3,8 @@ from django import forms
 from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import format_html
+from import_export.admin import ExportMixin
+from import_export.resources import ModelResource
 
 from users.autocomplete import UsersBackendAutocomplete
 from users.mixins import AdminUsersMixin
@@ -30,8 +32,13 @@ class VoteAdminForm(forms.ModelForm):
         fields = ["value", "user_id", "submission"]
 
 
+class VoteResource(ModelResource):
+    class Meta:
+        model: Vote
+
+
 @admin.register(Vote)
-class VoteAdmin(AdminUsersMixin):
+class VoteAdmin(ExportMixin, AdminUsersMixin):
     form = VoteAdminForm
     readonly_fields = ("created", "modified")
     list_display = ("submission", "user_display_name", "value", "created", "modified")
@@ -40,6 +47,7 @@ class VoteAdmin(AdminUsersMixin):
         "submission__title",
         "user_id",
     )
+
     user_fk = "user_id"
 
     def user_display_name(self, obj):
@@ -51,8 +59,14 @@ class VoteAdmin(AdminUsersMixin):
         js = ["admin/js/jquery.init.js"]
 
 
+class RankSubmissionResource(ModelResource):
+    class Meta:
+        model = RankSubmission
+
+
 @admin.register(RankSubmission)
-class RankSubmissionAdmin(AdminUsersMixin):
+class RankSubmissionAdmin(ExportMixin, AdminUsersMixin):
+    resource_class = RankSubmissionResource
     user_fk = "submission__speaker_id"
     list_display = (
         "absolute_rank",

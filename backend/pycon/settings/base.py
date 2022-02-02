@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     "ordered_model",
     "invoices",
     "job_board",
+    "import_export",
 ]
 
 MIDDLEWARE = [

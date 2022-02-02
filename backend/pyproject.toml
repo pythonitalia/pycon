@@ -43,6 +43,7 @@ mypy_extensions = "^0.4.3"
 strawberry-graphql = "^0.90"
 Werkzeug = "^1.0.1"
 pythonit-toolkit = "0.1.70"
+django-import-export = "^2.7.1"
 
 [tool.poetry.dev-dependencies]
 pylint = "=2.6.0"
