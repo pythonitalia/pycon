@@ -3,9 +3,13 @@ from django import forms
 from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import format_html
+from import_export.admin import ExportMixin
+from import_export.fields import Field
+from import_export.resources import ModelResource
+from import_export.widgets import DecimalWidget
 
 from users.autocomplete import UsersBackendAutocomplete
-from users.mixins import AdminUsersMixin
+from users.mixins import AdminUsersMixin, ResourceUsersMixin
 from voting.models import RankRequest, RankSubmission, Vote
 
 
@@ -30,8 +34,21 @@ class VoteAdminForm(forms.ModelForm):
         fields = ["value", "user_id", "submission"]
 
 
+class VoteResource(ModelResource):
+    class Meta:
+        model = Vote
+        fields = (
+            "id",
+            "value",
+            "user_id",
+            "submission",
+            "submission__conference__code",
+        )
+
+
 @admin.register(Vote)
-class VoteAdmin(AdminUsersMixin):
+class VoteAdmin(ExportMixin, AdminUsersMixin):
+    resource_class = VoteResource
     form = VoteAdminForm
     readonly_fields = ("created", "modified")
     list_display = ("submission", "user_display_name", "value", "created", "modified")
@@ -40,6 +57,7 @@ class VoteAdmin(AdminUsersMixin):
         "submission__title",
         "user_id",
     )
+
     user_fk = "user_id"
 
     def user_display_name(self, obj):
@@ -51,8 +69,68 @@ class VoteAdmin(AdminUsersMixin):
         js = ["admin/js/jquery.init.js"]
 
 
+EXPORT_RANK_SUBMISSION_FIELDS = (
+    "absolute_rank",
+    "absolute_score",
+    "submission__topic__name",
+    "topic_rank",
+    "submission__id",
+    "submission__hashid",
+    "submission__title",
+    "submission__audience_level__name",
+    "submission__type__name",
+    "submission__duration__name",
+    "submission__language",
+    "vote_count",
+    "tags",
+    "submission__speaker_id",
+    "full_name",
+    "gender",
+    "rank_request__conference__code",
+)
+
+
+class RankSubmissionResource(ResourceUsersMixin):
+    conference_filter_by = "rank_request__conference"
+    user_fk = "submission__speaker_id"
+    submission__hashid = Field()
+    submission__language = Field()
+    gender = Field()
+    full_name = Field()
+    tags = Field()
+    vote_count = Field()
+
+    absolute_score = Field(
+        column_name="absolute_score", attribute="absolute_score", widget=DecimalWidget()
+    )
+
+    def dehydrate_submission__hashid(self, obj):
+        return obj.submission.hashid
+
+    def dehydrate_submission__language(self, obj):
+        return [lang.code for lang in obj.submission.languages.all()]
+
+    def dehydrate_gender(self, obj):
+        return self.get_user_data(obj.submission.speaker_id)["gender"]
+
+    def dehydrate_full_name(self, obj):
+        return self.get_user_display_name(obj.submission.speaker_id)
+
+    def dehydrate_tags(self, obj):
+        return [t.name for t in obj.submission.tags.all()]
+
+    def dehydrate_vote_count(self, obj):
+        return Vote.objects.filter(submission=obj.submission).count()
+
+    class Meta:
+        model = RankSubmission
+        fields = EXPORT_RANK_SUBMISSION_FIELDS
+        export_order = EXPORT_RANK_SUBMISSION_FIELDS
+
+
 @admin.register(RankSubmission)
-class RankSubmissionAdmin(AdminUsersMixin):
+class RankSubmissionAdmin(ExportMixin, AdminUsersMixin):
+    resource_class = RankSubmissionResource
     user_fk = "submission__speaker_id"
     list_display = (
         "absolute_rank",

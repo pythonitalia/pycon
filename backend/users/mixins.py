@@ -1,13 +1,16 @@
 from typing import Any
 
 from django.contrib import admin
+from import_export.resources import ModelResource
 
 from users.client import get_user_data_by_query, get_users_data_by_ids
 
 
-class AdminUsersMixin(admin.ModelAdmin):
-    def get_queryset(self, request):
-        queryset = super().get_queryset(request)
+class UserMixin:
+    user_fk = None
+    _PREFETCHED_USERS_BY_ID = {}
+
+    def get_users_by_ids(self, queryset):
         users_ids = queryset.values_list(self.user_fk, flat=True)
         self._PREFETCHED_USERS_BY_ID = get_users_data_by_ids(list(users_ids))
         return queryset
@@ -17,6 +20,13 @@ class AdminUsersMixin(admin.ModelAdmin):
 
     def get_user_data(self, obj_id: Any) -> dict[str, Any]:
         return self._PREFETCHED_USERS_BY_ID[str(obj_id)]
+
+
+class AdminUsersMixin(admin.ModelAdmin, UserMixin):
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        self.get_users_by_ids(queryset)
+        return queryset
 
 
 class SearchUsersMixin(admin.ModelAdmin):
@@ -30,3 +40,9 @@ class SearchUsersMixin(admin.ModelAdmin):
 
         queryset |= self.model.objects.filter(**{f"{self.user_fk}__in": speaker_ids})
         return queryset, may_have_duplicates
+
+
+class ResourceUsersMixin(ModelResource, UserMixin):
+    def before_export(self, queryset, *args, **kwargs):
+        self.get_users_by_ids(queryset)
+        return queryset
