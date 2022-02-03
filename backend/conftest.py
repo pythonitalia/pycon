@@ -30,9 +30,10 @@ def user(db):
 
 @pytest.fixture()
 def user_factory(db):
-    def func(is_staff=False):
+    def func(is_staff=False, email=None):
+        faker = Faker()
         return SimulatedUser(
-            id=Faker().pyint(), email="simulated@user.it", is_staff=is_staff
+            id=faker.pyint(), email=email or faker.email(), is_staff=is_staff
         )
 
     return func
