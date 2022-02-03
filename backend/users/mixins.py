@@ -40,7 +40,7 @@ class ResourceUsersMixin(ModelResource):
         qs = super().get_queryset()
 
         # TODO: find a way to used admin form's fields
-        conference = Conference.objects.all().order_by("-start")[0]
+        conference = Conference.objects.all().order_by("-start").first()
         qs = qs.filter(**{self.conference_filter_by: conference})
         users_ids = qs.values_list(self.user_fk, flat=True)
         self._PREFETCHED_USERS_BY_ID = get_users_data_by_ids(list(users_ids))
