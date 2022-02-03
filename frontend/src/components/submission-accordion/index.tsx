@@ -13,7 +13,7 @@ import { useSendVoteMutation } from "~/types";
 
 import { VOTE_VALUES, VoteSelector } from "./vote-selector";
 
-type VoteSubmission = {
+type Submission = {
   id: string;
   title: string;
   abstract?: string | null;
@@ -48,6 +48,9 @@ type VoteSubmission = {
         code: string;
       }[]
     | null;
+  speaker?: {
+    fullName: string;
+  } | null;
 };
 
 type Props = {
@@ -59,8 +62,8 @@ type Props = {
     id: string;
     value: number;
   } | null;
-  onVote?: (submission: VoteSubmission) => void;
-  submission: VoteSubmission;
+  onVote?: (submission: Submission) => void;
+  submission: Submission;
 };
 
 const usePersistedOpenState = (
@@ -87,7 +90,7 @@ const usePersistedOpenState = (
   return [open, setValue];
 };
 
-export const SubmissionAccordion: React.SFC<Props> = ({
+export const SubmissionAccordion: React.FC<Props> = ({
   backgroundColor,
   headingColor,
   vote,
@@ -104,6 +107,7 @@ export const SubmissionAccordion: React.SFC<Props> = ({
     audienceLevel,
     duration,
     languages,
+    speaker: { fullName },
   },
 }) => {
   const [open, setOpen] = usePersistedOpenState(id);
@@ -229,6 +233,7 @@ export const SubmissionAccordion: React.SFC<Props> = ({
                 />
               </Text>
             )}
+            {fullName && <Text>{fullName}</Text>}
           </Text>
           {showVoting && hasVote ? (
             <Text

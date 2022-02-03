@@ -111,6 +111,17 @@ export const RankingPage: React.FC = () => {
             .filter(filterVisibleSubmissions)
             .map((rankSubmission, index) => (
               <SubmissionAccordion
+                renderTitle={(title) => (
+                  <React.Fragment>
+                    <Text sx={{ fontWeight: "bold" }} as="span">
+                      {filters.values.topic
+                        ? rankSubmission.topicRank
+                        : rankSubmission.absoluteRank}
+                      .
+                    </Text>{" "}
+                    {title}
+                  </React.Fragment>
+                )}
                 showVoting={false}
                 backgroundColor={COLORS[index % COLORS.length].background}
                 headingColor={COLORS[index % COLORS.length].heading}

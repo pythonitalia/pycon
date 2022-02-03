@@ -71,6 +71,7 @@ class ScheduleItemUser:
 class SubmissionSpeaker:
     id: strawberry.ID = strawberry.federation.field(external=True)
     full_name: str
+    gender: str
 
     @classmethod
     async def resolve_reference(cls, info: Info, id: str):
@@ -83,6 +84,7 @@ class SubmissionSpeaker:
         return cls(
             id=id,
             full_name=user.fullname,
+            gender=user.gender,
         )
 
 
