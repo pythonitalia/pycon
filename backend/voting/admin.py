@@ -92,6 +92,7 @@ class RankSubmissionResource(ResourceUsersMixin):
     gender = Field()
     full_name = Field()
     tags = Field()
+    vote_count = Field()
 
     def dehydrate_submission__hashid(self, obj):
         return obj.submission.hashid
@@ -107,6 +108,9 @@ class RankSubmissionResource(ResourceUsersMixin):
 
     def dehydrate_tags(self, obj):
         return [t.name for t in obj.submission.tags.all()]
+
+    def dehydrate_vote_count(self, obj):
+        return Vote.objects.filter(submission=obj.submission).count()
 
     class Meta:
         model = RankSubmission
