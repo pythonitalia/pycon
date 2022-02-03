@@ -6,6 +6,7 @@ from django.utils.html import format_html
 from import_export.admin import ExportMixin
 from import_export.fields import Field
 from import_export.resources import ModelResource
+from import_export.widgets import DecimalWidget
 
 from users.autocomplete import UsersBackendAutocomplete
 from users.mixins import AdminUsersMixin, ResourceUsersMixin
@@ -93,6 +94,10 @@ class RankSubmissionResource(ResourceUsersMixin):
     full_name = Field()
     tags = Field()
     vote_count = Field()
+
+    absolute_score = Field(
+        column_name="absolute_score", attribute="absolute_score", widget=DecimalWidget()
+    )
 
     def dehydrate_submission__hashid(self, obj):
         return obj.submission.hashid
