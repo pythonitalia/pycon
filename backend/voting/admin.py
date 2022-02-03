@@ -72,15 +72,20 @@ class VoteAdmin(ExportMixin, AdminUsersMixin):
 EXPORT_RANK_SUBMISSION_FIELDS = (
     "absolute_rank",
     "absolute_score",
+    "submission__topic__name",
     "topic_rank",
     "submission__id",
     "submission__hashid",
     "submission__title",
-    "submission__type__name",
-    "submission__topic__name",
     "submission__audience_level__name",
+    "submission__type__name",
     "submission__duration__name",
+    "submission__language",
+    "vote_count",
+    "tags",
     "submission__speaker_id",
+    "full_name",
+    "gender",
     "rank_request__conference__code",
 )
 
