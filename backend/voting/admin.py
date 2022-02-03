@@ -8,7 +8,7 @@ from import_export.fields import Field
 from import_export.resources import ModelResource
 
 from users.autocomplete import UsersBackendAutocomplete
-from users.mixins import AdminUsersMixin, ExportUsersMixin, ResourceUsersMixin
+from users.mixins import AdminUsersMixin, ResourceUsersMixin
 from voting.models import RankRequest, RankSubmission, Vote
 
 
@@ -119,7 +119,7 @@ class RankSubmissionResource(ResourceUsersMixin):
 
 
 @admin.register(RankSubmission)
-class RankSubmissionAdmin(ExportUsersMixin, AdminUsersMixin):
+class RankSubmissionAdmin(ExportMixin, AdminUsersMixin):
     resource_class = RankSubmissionResource
     user_fk = "submission__speaker_id"
     list_display = (
