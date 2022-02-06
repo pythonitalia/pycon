@@ -69,7 +69,9 @@ class RankRequest(models.Model):
 
         from voting.models import Vote
 
-        submissions = Submission.objects.filter(conference=conference)
+        submissions = Submission.objects.filter(
+            conference=conference, status=Submission.STATUS.proposed
+        )
         votes = Vote.objects.filter(submission__conference=conference)
 
         users_weight = RankRequest.get_users_weights(votes)

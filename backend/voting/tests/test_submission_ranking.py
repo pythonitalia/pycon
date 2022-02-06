@@ -5,7 +5,7 @@ import pytest
 
 from voting.models import RankRequest, Vote
 
-pytestmark = pytest.mark.skip(reason="skip for now")
+pytestmark = pytest.mark.django_db
 
 
 @pytest.fixture
@@ -18,7 +18,7 @@ def _setup_random(
     # only 5% of the users will make a proposal usually...
     SUBMISSION_NUMBER = int(USERS_NUMBER * 0.5)
 
-    users = user_factory.create_batch(USERS_NUMBER)
+    users = [user_factory() for _ in range(USERS_NUMBER)]
     submissions = submission_factory.create_batch(
         SUBMISSION_NUMBER, conference=conference
     )
@@ -44,7 +44,8 @@ def _setup_random(
 @pytest.fixture
 def _setup_equal(conference_factory, user_factory, submission_factory, vote_factory):
     conference = conference_factory()
-    users = user_factory.create_batch(15)
+
+    users = [user_factory() for _ in range(15)]
     submissions = submission_factory.create_batch(5, conference=conference)
 
     vote_factory(user_id=users[0].id, submission=submissions[0], value=1)
@@ -90,18 +91,18 @@ def _setup_equal(conference_factory, user_factory, submission_factory, vote_fact
     vote_factory(user_id=users[13].id, submission=submissions[0], value=1)
 
     users_weights = {
-        users[0].pk: pytest.approx(sqrt(4)),
-        users[1].pk: pytest.approx(sqrt(3)),
-        users[2].pk: pytest.approx(sqrt(2)),
-        users[3].pk: pytest.approx(sqrt(1)),
-        users[5].pk: pytest.approx(sqrt(4)),
-        users[6].pk: pytest.approx(sqrt(3)),
-        users[7].pk: pytest.approx(sqrt(2)),
-        users[8].pk: pytest.approx(sqrt(1)),
-        users[10].pk: pytest.approx(sqrt(4)),
-        users[11].pk: pytest.approx(sqrt(3)),
-        users[12].pk: pytest.approx(sqrt(2)),
-        users[13].pk: pytest.approx(sqrt(1)),
+        users[0].id: pytest.approx(sqrt(4)),
+        users[1].id: pytest.approx(sqrt(3)),
+        users[2].id: pytest.approx(sqrt(2)),
+        users[3].id: pytest.approx(sqrt(1)),
+        users[5].id: pytest.approx(sqrt(4)),
+        users[6].id: pytest.approx(sqrt(3)),
+        users[7].id: pytest.approx(sqrt(2)),
+        users[8].id: pytest.approx(sqrt(1)),
+        users[10].id: pytest.approx(sqrt(4)),
+        users[11].id: pytest.approx(sqrt(3)),
+        users[12].id: pytest.approx(sqrt(2)),
+        users[13].id: pytest.approx(sqrt(1)),
     }
     votes = Vote.objects.all()
     ranked_submissions = [
@@ -146,6 +147,18 @@ def test_most_voted_based_algorithm(_setup_equal):
         assert round(rank.absolute_score, 2) == round(
             ranked_submissions[index]["score"], 2
         )
+
+
+def test_ranking_only_on_proposed_submissions(conference, submission_factory):
+    valid_submission = submission_factory(status="proposed", conference=conference)
+    cancelled_submission = submission_factory(status="cancelled", conference=conference)
+
+    ranking = RankRequest.objects.create(conference=conference)
+
+    submissions_ids = [rs.submission.pk for rs in ranking.rank_submissions.all()]
+    assert len(submissions_ids) == 1
+    assert valid_submission.pk in submissions_ids
+    assert cancelled_submission.pk not in submissions_ids
 
 
 @pytest.mark.django_db
