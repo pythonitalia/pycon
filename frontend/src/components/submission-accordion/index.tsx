@@ -90,7 +90,7 @@ const usePersistedOpenState = (
   return [open, setValue];
 };
 
-export const SubmissionAccordion: React.FC<Props> = ({
+export const SubmissionAccordion = ({
   backgroundColor,
   headingColor,
   vote,
@@ -109,7 +109,7 @@ export const SubmissionAccordion: React.FC<Props> = ({
     languages,
     speaker,
   },
-}) => {
+}: Props) => {
   const [open, setOpen] = usePersistedOpenState(id);
   const toggleAccordion = useCallback(() => {
     setOpen(!open);
