@@ -1,5 +1,5 @@
 resource "aws_instance" "main" {
-  ami               = "ami-0e922aab60e65a57e"
+  ami               = "ami-0cf11524536d89b14"
   instance_type     = "t3.small"
   subnet_id         = data.aws_subnet.public.id
   availability_zone = "eu-central-1a"
@@ -12,7 +12,7 @@ resource "aws_instance" "main" {
   key_name             = "pretix"
 
   tags = {
-    Name = "budibase-instance"
+    Name = "appsmith-instance"
   }
 }
 
@@ -20,6 +20,6 @@ resource "aws_eip" "ip" {
   instance = aws_instance.main.id
   vpc      = true
   tags = {
-    Name = "budibase"
+    Name = "appsmith"
   }
 }

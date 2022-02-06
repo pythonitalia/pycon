@@ -1,6 +1,6 @@
 resource "aws_security_group" "instance" {
-  name        = "budibase-instance"
-  description = "budibase instance"
+  name        = "appsmith-instance"
+  description = "appsmith instance"
   vpc_id      = data.aws_vpc.default.id
 }
 

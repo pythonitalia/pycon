@@ -57,8 +57,8 @@ module "cloudwatch" {
   source = "./cloudwatch"
 }
 
-# budibase
+# appsmith
 
-module "budibase" {
-  source = "./budibase"
+module "appsmith" {
+  source = "./appsmith"
 }

@@ -1,5 +1,5 @@
 resource "aws_iam_role" "instance" {
-  name = "budibase-role"
+  name = "appsmith-role"
 
   assume_role_policy = <<EOF
 {
@@ -19,12 +19,12 @@ EOF
 }
 
 resource "aws_iam_instance_profile" "instance" {
-  name = "budibase-instance-profile"
+  name = "appsmith-instance-profile"
   role = aws_iam_role.instance.name
 }
 
-resource "aws_iam_role_policy" "budibase" {
-  name = "budibase-policy"
+resource "aws_iam_role_policy" "appsmith" {
+  name = "appsmith-policy"
   role = aws_iam_role.instance.id
 
   policy = <<EOF
