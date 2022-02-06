@@ -301,7 +301,9 @@ def test_ranked_submission_user_can_see_public_and_restricted_fields(
     rank_request_factory,
 ):
     submission = _submission(submission_factory, user=user, conference=conference)
-    rank_request_factory(conference=conference, submissions=[submission])
+    rank_request_factory(
+        conference=conference, submissions=[submission], is_public=True
+    )
 
     data = _query(graphql_client, submission)
 
@@ -331,7 +333,41 @@ def test_ranked_submission_user_can_see_public_and_restricted_fields(
     assert data["submission"]["notes"] is None
 
 
-def test_not_ranked_submission_is_not_public(
+def test_ranking_is_not_public_cannot_see_restricted_and_private_fields(
+    graphql_client,
+    rank_request_factory,
+    conference,
+    user,
+    submission_factory,
+):
+    submission = _submission(submission_factory, user=user, conference=conference)
+    rank_request_factory(
+        conference=conference, submissions=[submission], is_public=False
+    )
+
+    data = _query(graphql_client, submission)
+
+    # ✔️ public
+    assert data["submission"]["title"] == submission.title
+    assert data["submission"]["slug"] == submission.slug
+
+    # ❌ restricted
+    assert data["submission"]["elevatorPitch"] is None
+    assert data["submission"]["abstract"] is None
+    assert data["submission"]["topic"] is None
+    assert data["submission"]["type"] is None
+    assert data["submission"]["duration"] is None
+    assert data["submission"]["audienceLevel"] is None
+    assert data["submission"]["languages"] is None
+    assert data["submission"]["tags"] is None
+
+    # ❌ private
+    assert data["submission"]["speakerLevel"] is None
+    assert data["submission"]["previousTalkVideo"] is None
+    assert data["submission"]["notes"] is None
+
+
+def test_ranking_does_not_exists_cannot_see_restricted_and_private_fields(
     graphql_client,
     conference_factory,
     user,

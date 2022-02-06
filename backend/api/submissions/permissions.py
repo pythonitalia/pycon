@@ -16,7 +16,7 @@ class CanSeeSubmissionRestrictedFields(BasePermission):
         conference = source.conference
 
         try:
-            if conference.rankrequest:
+            if conference.rankrequest and conference.rankrequest.is_public:
                 return True
         except RankRequest.DoesNotExist:
             pass
