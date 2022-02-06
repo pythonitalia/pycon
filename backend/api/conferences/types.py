@@ -24,7 +24,7 @@ from voting.models import RankRequest as RankRequestModel
 
 from ..helpers.i18n import make_localized_resolver
 from ..helpers.maps import Map, resolve_map
-from ..permissions import CanSeeSubmissions
+from ..permissions import CanSeeSubmissions, IsStaffPermission
 
 
 @strawberry.type
@@ -312,13 +312,17 @@ class Conference:
     @strawberry.field
     def ranking(self, info) -> Optional[RankRequest]:
         try:
-            rank_requests = RankRequestModel.objects.filter(
-                conference=self, is_public=True
-            )
+            rank_requests = RankRequestModel.objects.filter(conference=self)
             if not rank_requests:
                 return None
 
             rank_request = rank_requests[0]
+
+            if not rank_request.is_public and not IsStaffPermission().has_permission(
+                self, info
+            ):
+                return None
+
             return RankRequest(
                 is_public=rank_request.is_public,
                 ranked_submissions=rank_request.rank_submissions.all().order_by(
