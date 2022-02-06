@@ -46,8 +46,8 @@ export const RankingPage: React.FC = () => {
     return true;
   };
 
-  if (!loading && !data?.conference?.ranking) {
-    return <ErrorPage statusCode={404} />;
+  if (!data?.conference?.ranking) {
+    return loading ? <Box /> : <ErrorPage statusCode={404} />;
   }
 
   return (

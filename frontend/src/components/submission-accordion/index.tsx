@@ -107,7 +107,7 @@ export const SubmissionAccordion: React.FC<Props> = ({
     audienceLevel,
     duration,
     languages,
-    speaker: { fullName },
+    speaker,
   },
 }) => {
   const [open, setOpen] = usePersistedOpenState(id);
@@ -115,26 +115,28 @@ export const SubmissionAccordion: React.FC<Props> = ({
     setOpen(!open);
   }, [open]);
 
-  const [sendVote, { loading, error, data: submissionData }] =
-    useSendVoteMutation({
-      update(cache, { data }) {
-        if (error || data?.sendVote.__typename === "SendVoteErrors") {
-          return;
-        }
+  const [
+    sendVote,
+    { loading, error, data: submissionData },
+  ] = useSendVoteMutation({
+    update(cache, { data }) {
+      if (error || data?.sendVote.__typename === "SendVoteErrors") {
+        return;
+      }
 
-        cache.modify({
-          id: cache.identify({
-            id,
-            __typename: "Submission",
-          }),
-          fields: {
-            myVote() {
-              return data!.sendVote;
-            },
+      cache.modify({
+        id: cache.identify({
+          id,
+          __typename: "Submission",
+        }),
+        fields: {
+          myVote() {
+            return data!.sendVote;
           },
-        });
-      },
-    });
+        },
+      });
+    },
+  });
 
   const onSubmitVote = useCallback(
     (value) => {
@@ -169,9 +171,10 @@ export const SubmissionAccordion: React.FC<Props> = ({
   const isInItalian = submission.languages?.find((l) => l.code === "it");
   const isInEnglish = submission.languages?.find((l) => l.code === "en");
   const hasVote = !!submission.myVote;
+  const showMiddleColumn = (showVoting && hasVote) || speaker?.fullName;
 
-  const voteSpace = hasVote ? "150px" : 0;
-  const headerGrid = [`1fr 0px 30px 130px`, `1fr ${voteSpace} 110px 150px`];
+  const middleSpace = showMiddleColumn ? "150px" : 0;
+  const headerGrid = [`1fr 0px 30px 130px`, `1fr ${middleSpace} 110px 150px`];
 
   return (
     <Box
@@ -233,9 +236,9 @@ export const SubmissionAccordion: React.FC<Props> = ({
                 />
               </Text>
             )}
-            {fullName && <Text>{fullName}</Text>}
           </Text>
-          {showVoting && hasVote ? (
+
+          {showMiddleColumn ? (
             <Text
               sx={{
                 fontWeight: "bold",
@@ -243,12 +246,16 @@ export const SubmissionAccordion: React.FC<Props> = ({
                 visibility: ["hidden", "visible"],
               }}
             >
-              <FormattedMessage
-                id={
-                  VOTE_VALUES.find((i) => i.value === submission.myVote!.value)!
-                    .textId
-                }
-              />
+              {showVoting && hasVote && (
+                <FormattedMessage
+                  id={
+                    VOTE_VALUES.find(
+                      (i) => i.value === submission.myVote!.value,
+                    )!.textId
+                  }
+                />
+              )}
+              {speaker?.fullName}
             </Text>
           ) : (
             <Box />
