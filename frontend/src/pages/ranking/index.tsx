@@ -111,6 +111,7 @@ export const RankingPage: React.FC = () => {
           as="ul"
           sx={{
             listStyle: "none",
+            mb: 4,
           }}
         >
           {data?.conference?.ranking?.rankedSubmissions
