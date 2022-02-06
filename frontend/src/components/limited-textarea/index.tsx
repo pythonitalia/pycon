@@ -13,9 +13,9 @@ export const LimitedTextarea = ({
         variant="labelDescription"
         as="p"
         mb={4}
-        color={(value as string)?.length >= maxLength ? "red" : "black"}
+        color={value?.length >= maxLength ? "red" : "black"}
       >
-        {(value as string)?.length}/{maxLength}
+        {value?.length}/{maxLength}
       </Text>
     </>
   );
