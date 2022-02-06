@@ -112,7 +112,7 @@ export const ScheduleView: React.SFC<{
 
   return (
     <Fragment>
-      {shouldShowAdmin && <ItemsPanel submissions={submissions!} />}
+      {shouldShowAdmin && <ItemsPanel submissions={submissions ?? []} />}
       {(addingSlot || updatingSchedule) && <LoadingOverlay />}
       <Box
         sx={{ flex: 1, width: shouldShowAdmin ? "calc(100% - 300px)" : "100%" }}
