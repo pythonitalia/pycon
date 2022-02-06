@@ -58,10 +58,10 @@ class SubmissionAdmin(AdminUsersMixin, SearchUsersMixin):
         "type",
         "status",
         "conference",
+        "open_submission",
         "topic",
         "duration",
         "audience_level",
-        "open_submission",
         "created",
         "modified",
     )
@@ -110,7 +110,7 @@ class SubmissionAdmin(AdminUsersMixin, SearchUsersMixin):
     def open_submission(self, obj):  # pragma: no cover
         return mark_safe(
             f"""
-                <a class="button" href="https://www.pycon.it/{obj.hashid}"
+                <a class="button" href="https://www.pycon.it/submission/{obj.hashid}"
                     target="_blank">Open</a>&nbsp;
             """
         )
