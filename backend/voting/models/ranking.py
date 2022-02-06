@@ -16,6 +16,7 @@ class RankRequest(models.Model):
     )
 
     created = AutoCreatedField(_("created"))
+    is_public = models.BooleanField(_("is_public"))
 
     def __str__(self):
         return (

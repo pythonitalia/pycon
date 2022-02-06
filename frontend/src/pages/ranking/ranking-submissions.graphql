@@ -9,13 +9,16 @@ query RankingSubmission($conference: String!) {
     }
 
     ranking {
-      absoluteRank
-      topicRank
-
-      submission {
-        ...submissionAccordion
-        speaker {
-          fullName
+      isPublic
+      rankedSubmissions {
+        absoluteRank
+        topicRank
+        absoluteScore
+        submission {
+          ...submissionAccordion
+          speaker {
+            fullName
+          }
         }
       }
     }

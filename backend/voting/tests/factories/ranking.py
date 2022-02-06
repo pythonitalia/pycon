@@ -15,6 +15,7 @@ class RankRequestFactory(factory.django.DjangoModelFactory):
 
     conference = factory.SubFactory(ConferenceFactory)
     created = factory.Faker("past_datetime", tzinfo=pytz.UTC)
+    is_public = True
 
     class Meta:
         model = RankRequest

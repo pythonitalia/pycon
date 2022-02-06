@@ -14,6 +14,7 @@ import { MetaTags } from "~/components/meta-tags";
 import { SubmissionAccordion } from "~/components/submission-accordion";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useRankingSubmissionQuery } from "~/types";
+import ErrorPage from "../_error";
 
 const COLORS = [
   {
@@ -44,6 +45,11 @@ export const RankingPage: React.FC = () => {
     }
     return true;
   };
+
+  if (!loading && !data?.conference?.ranking) {
+    return <ErrorPage statusCode={404} />;
+  }
+
   return (
     <Box>
       <FormattedMessage id="ranking.seoTitle">
@@ -84,7 +90,7 @@ export const RankingPage: React.FC = () => {
                 <FormattedMessage id="voting.allTopics">
                   {(text) => <option value="">{text}</option>}
                 </FormattedMessage>
-                {data?.conference.topics.map((topic) => (
+                {data?.conference?.topics.map((topic) => (
                   <option key={topic.id} value={topic.id}>
                     {topic.name}
                   </option>
@@ -100,14 +106,14 @@ export const RankingPage: React.FC = () => {
           )}
         </Box>
       </Box>
-      {data?.conference.ranking && (
+      {data?.conference?.ranking && (
         <Box
           as="ul"
           sx={{
             listStyle: "none",
           }}
         >
-          {data?.conference.ranking
+          {data?.conference?.ranking?.rankedSubmissions
             .filter(filterVisibleSubmissions)
             .map((rankSubmission, index) => (
               <SubmissionAccordion

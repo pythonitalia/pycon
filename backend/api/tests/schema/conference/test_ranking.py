@@ -1,8 +1,9 @@
 from pytest import mark
 
+pytestmark = mark.django_db
 
-@mark.django_db
-def test_get_conference_ranking_empty(conference_factory, graphql_client):
+
+def test_conference_ranking_not_exists(conference_factory, graphql_client):
     conference = conference_factory()
 
     resp = graphql_client.query(
@@ -10,9 +11,12 @@ def test_get_conference_ranking_empty(conference_factory, graphql_client):
         query($code: String!) {
             conference(code: $code) {
                 ranking {
-                    absoluteRank
-                    topicRank
-                    absoluteScore
+                    isPublic
+                    rankedSubmissions {
+                        absoluteRank
+                        topicRank
+                        absoluteScore
+                    }
                 }
             }
         }
@@ -21,14 +25,35 @@ def test_get_conference_ranking_empty(conference_factory, graphql_client):
     )
 
     assert "errors" not in resp
-    assert resp["data"]["conference"]["ranking"] == []
+    assert resp["data"]["conference"]["ranking"] is None
 
 
-@mark.django_db
+def test_conference_ranking_not_public(
+    conference, rank_request_factory, graphql_client
+):
+    rank_request_factory(conference=conference, is_public=False)
+
+    resp = graphql_client.query(
+        """
+        query($code: String!) {
+            conference(code: $code) {
+                ranking {
+                    isPublic
+                }
+            }
+        }
+        """,
+        variables={"code": conference.code},
+    )
+
+    assert "errors" not in resp
+    assert resp["data"]["conference"]["ranking"] is None
+
+
 def test_get_ranking(
     conference, rank_request_factory, rank_submission_factory, graphql_client
 ):
-    rank_request = rank_request_factory(conference=conference)
+    rank_request = rank_request_factory(conference=conference, is_public=True)
     rank_submission = rank_submission_factory(rank_request=rank_request)
 
     resp = graphql_client.query(
@@ -36,9 +61,12 @@ def test_get_ranking(
         query($code: String!) {
             conference(code: $code) {
                 ranking {
-                    absoluteRank
-                    topicRank
-                    absoluteScore
+                    isPublic
+                    rankedSubmissions {
+                        absoluteRank
+                        topicRank
+                        absoluteScore
+                    }
                 }
             }
         }
@@ -47,9 +75,9 @@ def test_get_ranking(
     )
 
     assert "errors" not in resp
-    assert len(resp["data"]["conference"]["ranking"])
+    assert resp["data"]["conference"]["ranking"]["isPublic"] is True
 
-    rank_submission_data = resp["data"]["conference"]["ranking"][0]
+    rank_submission_data = resp["data"]["conference"]["ranking"]["rankedSubmissions"][0]
 
     assert rank_submission_data["absoluteRank"] == rank_submission.absolute_rank
     assert rank_submission_data["topicRank"] == rank_submission.topic_rank

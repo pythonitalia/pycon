@@ -15,7 +15,7 @@ from api.pretix.types import TicketItem, Voucher
 from api.schedule.types import Room, ScheduleItem
 from api.sponsors.types import SponsorsByLevel
 from api.submissions.types import Submission, SubmissionType
-from api.voting.types import RankSubmission
+from api.voting.types import RankRequest
 from cms.models import GenericCopy
 from conferences.models.deadline import DeadlineStatus
 from schedule.models import ScheduleItem as ScheduleItemModel
@@ -310,15 +310,23 @@ class Conference:
         return self.schedule_items.filter(slug=slug).first()
 
     @strawberry.field
-    def ranking(self, info) -> List[RankSubmission]:
+    def ranking(self, info) -> Optional[RankRequest]:
         try:
-            return (
-                RankRequestModel.objects.get(conference=self)
-                .rank_submissions.all()
-                .order_by("absolute_rank")
+            rank_requests = RankRequestModel.objects.filter(
+                conference=self, is_public=True
+            )
+            if not rank_requests:
+                return None
+
+            rank_request = rank_requests[0]
+            return RankRequest(
+                is_public=rank_request.is_public,
+                ranked_submissions=rank_request.rank_submissions.all().order_by(
+                    "absolute_rank"
+                ),
             )
         except RankRequestModel.DoesNotExist:
-            return []
+            return None
 
     @strawberry.field
     def days(self, info) -> List[Day]:
