@@ -11,9 +11,11 @@ import { GetStaticProps } from "next";
 import { getApolloClient, addApolloState } from "~/apollo/client";
 import { Alert } from "~/components/alert";
 import { MetaTags } from "~/components/meta-tags";
+import { PageLoading } from "~/components/page-loading";
 import { SubmissionAccordion } from "~/components/submission-accordion";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useRankingSubmissionQuery } from "~/types";
+
 import ErrorPage from "../_error";
 
 const COLORS = [
@@ -46,8 +48,12 @@ export const RankingPage: React.FC = () => {
     return true;
   };
 
+  if (loading) {
+    return <PageLoading titleId="global.loading" />;
+  }
+
   if (!data?.conference?.ranking) {
-    return loading ? <Box /> : <ErrorPage statusCode={404} />;
+    return <ErrorPage statusCode={404} />;
   }
 
   return (
