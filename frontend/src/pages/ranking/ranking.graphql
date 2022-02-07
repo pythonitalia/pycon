@@ -6,6 +6,18 @@ query Ranking($conference: String!, $topic: ID!) {
 
     ranking(topic: $topic) {
       isPublic
+      stats {
+        id
+        type
+        value
+        name
+      }
+
+      speakersStat: stat(type: "speakers") {
+        id
+        value
+      }
+
       rankedSubmissions {
         absoluteRank
         topicRank

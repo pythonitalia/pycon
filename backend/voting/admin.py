@@ -10,7 +10,7 @@ from import_export.widgets import DecimalWidget
 
 from users.autocomplete import UsersBackendAutocomplete
 from users.mixins import AdminUsersMixin, ResourceUsersMixin
-from voting.models import RankRequest, RankSubmission, Vote
+from voting.models import RankRequest, RankStat, RankSubmission, Vote
 
 
 class SubmissionFilter(AutocompleteFilter):
@@ -206,7 +206,7 @@ class RankSubmissionAdmin(ExportMixin, AdminUsersMixin):
 
 @admin.register(RankRequest)
 class RankRequestAdmin(admin.ModelAdmin):
-    list_display = ("conference", "created", "view_rank")
+    list_display = ("conference", "created", "is_public", "view_rank")
 
     def view_rank(self, obj):
         return format_html(
@@ -218,3 +218,8 @@ class RankRequestAdmin(admin.ModelAdmin):
 
     view_rank.short_description = "View"
     view_rank.allow_tags = True
+
+
+@admin.register(RankStat)
+class RankStatAdmin(admin.ModelAdmin):
+    list_filter = ("rank_request__conference",)

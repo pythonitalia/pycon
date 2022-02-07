@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from decimal import Decimal
 from enum import Enum
-from typing import List
+from typing import List, Optional
 
 import strawberry
 from strawberry import LazyType
@@ -32,9 +32,25 @@ class VoteType:
 
 
 @strawberry.type
+class RankStat:
+    id: strawberry.ID
+    type: str
+    name: str
+    value: int
+
+
+@strawberry.type
 class RankRequest:
     is_public: bool
     ranked_submissions: List[RankSubmission]
+
+    @strawberry.field
+    def stats(self, info) -> List["RankStat"]:
+        return self.stats.all()
+
+    @strawberry.field
+    def stat(self, info, type: str) -> Optional["RankStat"]:
+        return self.stats.filter(type=type).first()
 
 
 @strawberry.type

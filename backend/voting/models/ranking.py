@@ -6,7 +6,33 @@ from django.db.models.functions import Sqrt
 from django.utils.translation import gettext_lazy as _
 from model_utils.fields import AutoCreatedField
 
+from helpers.constants import GENDERS
 from submissions.models import Submission
+from users.client import get_users_data_by_ids
+
+
+class RankStat(models.Model):
+    class Type(models.TextChoices):
+        SPEAKERS = "speakers", _("Speakers")
+        SUBMISSIONS = "submissions", _("Submissions")
+        GENDER = "gender", _("Gender")
+        SUBMISSION_TYPE = "submission_type", _("Submission  Type")
+        LANGUAGE = "language", _("Language")
+        AUDIENCE_LEVEL = "audience_level", _("Audience Level")
+
+    # name = I18nCharField(_("name"), max_length=100)
+    name = models.CharField(_("Name"), max_length=50)
+    value = models.PositiveIntegerField(_("Value"))
+    type = models.CharField(_("type"), choices=Type.choices, max_length=25)
+    rank_request = models.ForeignKey(
+        "voting.RankRequest",
+        on_delete=models.CASCADE,
+        verbose_name=_("Rank Request"),
+        related_name="stats",
+    )
+
+    def __str__(self):
+        return f"{self.type} ({self.name}) at <{self.rank_request.conference.code}> | {self.value}"
 
 
 class RankRequest(models.Model):
@@ -33,6 +59,7 @@ class RankRequest(models.Model):
         ranked_submissions = self.build_ranking(self.conference)
 
         self.save_rank_submissions(ranked_submissions)
+        self.build_stats()
 
     def build_ranking(self, conference):
         """Builds the ranking
@@ -128,6 +155,81 @@ class RankRequest(models.Model):
             for index, rank in enumerate(list(g)):
                 ranked_obj[rank["submission_id"]].topic_rank = index + 1
                 ranked_obj[rank["submission_id"]].save()
+
+    def build_stats(self):
+        submissions = self.rank_submissions.all()
+
+        # N. of submissions
+        RankStat.objects.create(
+            name="Submissions",
+            type=RankStat.Type.SUBMISSIONS,
+            value=submissions.count(),
+            rank_request=self,
+        )
+
+        # N. of speakers
+        distinct_speakers = RankRequest.objects.values(
+            "rank_submissions__submission__speaker_id"
+        ).distinct()
+        RankStat.objects.create(
+            name="Speakers",
+            type=RankStat.Type.SPEAKERS,
+            value=distinct_speakers.count(),
+            rank_request=self,
+        )
+
+        # Gender
+        speaker_ids = [
+            i["rank_submissions__submission__speaker_id"] for i in distinct_speakers
+        ]
+        PREFETCHED_USERS_BY_ID = get_users_data_by_ids(list(speaker_ids))
+
+        def filter_by_gender(user):
+            return user["gender"] == key
+
+        for key, value in GENDERS:
+            count = len(list(filter(filter_by_gender, PREFETCHED_USERS_BY_ID.values())))
+
+            RankStat.objects.create(
+                name=f"{value}",
+                type=RankStat.Type.SPEAKERS,
+                value=count,
+                rank_request=self,
+            )
+
+        # N. submissions by SubmissionType
+        for submission_type in self.conference.submission_types.all():
+            count = submissions.filter(submission__type=submission_type).count()
+
+            RankStat.objects.create(
+                name=f"{submission_type.name}",
+                type=RankStat.Type.SUBMISSION_TYPE,
+                value=count,
+                rank_request=self,
+            )
+
+        # N. submissions by Audience Level
+        for audience_level in self.conference.audience_levels.all():
+            count = submissions.filter(
+                submission__audience_level=audience_level
+            ).count()
+
+            RankStat.objects.create(
+                name=f"{audience_level.name}",
+                type=RankStat.Type.SUBMISSION_TYPE,
+                value=count,
+                rank_request=self,
+            )
+
+        # N. submissions by Language
+        for language in self.conference.languages.all():
+            count = submissions.filter(submission__languages=language).count()
+            RankStat.objects.create(
+                name=f"{language.name}",
+                type=RankStat.Type.LANGUAGE,
+                value=count,
+                rank_request=self,
+            )
 
 
 class RankSubmission(models.Model):
