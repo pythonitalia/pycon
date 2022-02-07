@@ -27,10 +27,8 @@ class RankRequest(models.Model):
     def save(self, *args, **kwargs):
         super(RankRequest, self).save(*args, **kwargs)
 
-        exising_submissions = self.rank_submissions.all()
-
         # do not recreate ranking
-        if exising_submissions:
+        if self.rank_submissions.exists():
             return
         ranked_submissions = self.build_ranking(self.conference)
 
