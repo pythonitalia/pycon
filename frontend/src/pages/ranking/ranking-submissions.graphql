@@ -1,0 +1,27 @@
+#import "../../fragments/submission-accordion.graphql"
+
+query RankingSubmission($conference: String!) {
+  conference(code: $conference) {
+    id
+    topics {
+      id
+      name
+    }
+
+    ranking {
+      isPublic
+      rankedSubmissions {
+        absoluteRank
+        topicRank
+        absoluteScore
+        submission {
+          ...submissionAccordion
+          speaker {
+            id
+            fullName
+          }
+        }
+      }
+    }
+  }
+}

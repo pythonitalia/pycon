@@ -6,11 +6,17 @@ import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import { Box, Grid, Heading, jsx, Select, Text } from "theme-ui";
 
+import { GetStaticProps } from "next";
+
+import { getApolloClient, addApolloState } from "~/apollo/client";
+import { Alert } from "~/components/alert";
+import { MetaTags } from "~/components/meta-tags";
+import { PageLoading } from "~/components/page-loading";
 import { SubmissionAccordion } from "~/components/submission-accordion";
+import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useRankingSubmissionQuery } from "~/types";
 
-import { Alert } from "../alert";
-import { MetaTags } from "../meta-tags";
+import ErrorPage from "../_error";
 
 const COLORS = [
   {
@@ -23,7 +29,7 @@ const COLORS = [
   },
 ];
 
-export const RankingPage: React.SFC = () => {
+export const RankingPage: React.FC = () => {
   const conferenceCode = process.env.conferenceCode;
   const { loading, data } = useRankingSubmissionQuery({
     variables: {
@@ -32,6 +38,23 @@ export const RankingPage: React.SFC = () => {
   });
 
   const [filters, { select }] = useFormState();
+  const filterVisibleSubmissions = (submission) => {
+    if (
+      filters.values.topic &&
+      submission.submission.topic?.id !== filters.values.topic
+    ) {
+      return false;
+    }
+    return true;
+  };
+
+  if (loading) {
+    return <PageLoading titleId="global.loading" />;
+  }
+
+  if (!data?.conference?.ranking) {
+    return <ErrorPage statusCode={404} />;
+  }
 
   return (
     <Box>
@@ -73,7 +96,7 @@ export const RankingPage: React.SFC = () => {
                 <FormattedMessage id="voting.allTopics">
                   {(text) => <option value="">{text}</option>}
                 </FormattedMessage>
-                {data?.conference.topics.map((topic) => (
+                {data?.conference?.topics.map((topic) => (
                   <option key={topic.id} value={topic.id}>
                     {topic.name}
                   </option>
@@ -89,27 +112,18 @@ export const RankingPage: React.SFC = () => {
           )}
         </Box>
       </Box>
-      {data?.conference.ranking && (
+      {data?.conference?.ranking && (
         <Box
           as="ul"
           sx={{
             listStyle: "none",
-            mt: [3, 0],
+            mb: 4,
           }}
         >
-          {data?.conference.ranking
-            .filter((submission) => {
-              if (
-                filters.values.topic &&
-                submission.submission.topic?.id !== filters.values.topic
-              ) {
-                return false;
-              }
-              return true;
-            })
+          {data?.conference?.ranking?.rankedSubmissions
+            .filter(filterVisibleSubmissions)
             .map((rankSubmission, index) => (
               <SubmissionAccordion
-                showVoting={false}
                 renderTitle={(title) => (
                   <React.Fragment>
                     <Text sx={{ fontWeight: "bold" }} as="span">
@@ -121,6 +135,7 @@ export const RankingPage: React.SFC = () => {
                     {title}
                   </React.Fragment>
                 )}
+                showVoting={false}
                 backgroundColor={COLORS[index % COLORS.length].background}
                 headingColor={COLORS[index % COLORS.length].heading}
                 key={rankSubmission.submission.id}
@@ -132,3 +147,15 @@ export const RankingPage: React.SFC = () => {
     </Box>
   );
 };
+
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
+  const client = getApolloClient();
+
+  await prefetchSharedQueries(client, locale);
+
+  return addApolloState(client, {
+    props: {},
+  });
+};
+
+export default RankingPage;

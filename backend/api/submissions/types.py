@@ -88,9 +88,11 @@ class Submission:
     ] = restricted_field()
     notes: Optional[str] = private_field()
 
-    @strawberry.field(permission_classes=[CanSeeSubmissionRestrictedFields])
-    def speaker(self) -> SubmissionSpeaker:
-        return SubmissionSpeaker(id=self.speaker_id)
+    @strawberry.field
+    def speaker(self, info) -> Optional[SubmissionSpeaker]:
+        if CanSeeSubmissionRestrictedFields().has_permission(self, info):
+            return SubmissionSpeaker(id=self.speaker_id)
+        return None
 
     @strawberry.field
     def id(self, info) -> strawberry.ID:

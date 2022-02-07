@@ -13,7 +13,7 @@ import { useSendVoteMutation } from "~/types";
 
 import { VOTE_VALUES, VoteSelector } from "./vote-selector";
 
-type VoteSubmission = {
+type Submission = {
   id: string;
   title: string;
   abstract?: string | null;
@@ -48,6 +48,9 @@ type VoteSubmission = {
         code: string;
       }[]
     | null;
+  speaker?: {
+    fullName: string;
+  } | null;
 };
 
 type Props = {
@@ -59,8 +62,8 @@ type Props = {
     id: string;
     value: number;
   } | null;
-  onVote?: (submission: VoteSubmission) => void;
-  submission: VoteSubmission;
+  onVote?: (submission: Submission) => void;
+  submission: Submission;
 };
 
 const usePersistedOpenState = (
@@ -87,7 +90,7 @@ const usePersistedOpenState = (
   return [open, setValue];
 };
 
-export const SubmissionAccordion: React.SFC<Props> = ({
+export const SubmissionAccordion = ({
   backgroundColor,
   headingColor,
   vote,
@@ -104,33 +107,36 @@ export const SubmissionAccordion: React.SFC<Props> = ({
     audienceLevel,
     duration,
     languages,
+    speaker,
   },
-}) => {
+}: Props) => {
   const [open, setOpen] = usePersistedOpenState(id);
   const toggleAccordion = useCallback(() => {
     setOpen(!open);
   }, [open]);
 
-  const [sendVote, { loading, error, data: submissionData }] =
-    useSendVoteMutation({
-      update(cache, { data }) {
-        if (error || data?.sendVote.__typename === "SendVoteErrors") {
-          return;
-        }
+  const [
+    sendVote,
+    { loading, error, data: submissionData },
+  ] = useSendVoteMutation({
+    update(cache, { data }) {
+      if (error || data?.sendVote.__typename === "SendVoteErrors") {
+        return;
+      }
 
-        cache.modify({
-          id: cache.identify({
-            id,
-            __typename: "Submission",
-          }),
-          fields: {
-            myVote() {
-              return data!.sendVote;
-            },
+      cache.modify({
+        id: cache.identify({
+          id,
+          __typename: "Submission",
+        }),
+        fields: {
+          myVote() {
+            return data!.sendVote;
           },
-        });
-      },
-    });
+        },
+      });
+    },
+  });
 
   const onSubmitVote = useCallback(
     (value) => {
@@ -165,9 +171,10 @@ export const SubmissionAccordion: React.SFC<Props> = ({
   const isInItalian = submission.languages?.find((l) => l.code === "it");
   const isInEnglish = submission.languages?.find((l) => l.code === "en");
   const hasVote = !!submission.myVote;
+  const showMiddleColumn = (showVoting && hasVote) || speaker?.fullName;
 
-  const voteSpace = hasVote ? "150px" : 0;
-  const headerGrid = [`1fr 0px 30px 130px`, `1fr ${voteSpace} 110px 150px`];
+  const middleSpace = showMiddleColumn ? "150px" : 0;
+  const headerGrid = [`1fr 0px 30px 130px`, `1fr ${middleSpace} 110px 150px`];
 
   return (
     <Box
@@ -230,7 +237,8 @@ export const SubmissionAccordion: React.SFC<Props> = ({
               </Text>
             )}
           </Text>
-          {hasVote ? (
+
+          {showMiddleColumn ? (
             <Text
               sx={{
                 fontWeight: "bold",
@@ -238,12 +246,16 @@ export const SubmissionAccordion: React.SFC<Props> = ({
                 visibility: ["hidden", "visible"],
               }}
             >
-              <FormattedMessage
-                id={
-                  VOTE_VALUES.find((i) => i.value === submission.myVote!.value)!
-                    .textId
-                }
-              />
+              {showVoting && hasVote && (
+                <FormattedMessage
+                  id={
+                    VOTE_VALUES.find(
+                      (i) => i.value === submission.myVote!.value,
+                    )!.textId
+                  }
+                />
+              )}
+              {speaker?.fullName}
             </Text>
           ) : (
             <Box />

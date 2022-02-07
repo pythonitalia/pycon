@@ -16,6 +16,7 @@ class RankRequest(models.Model):
     )
 
     created = AutoCreatedField(_("created"))
+    is_public = models.BooleanField(_("is_public"))
 
     def __str__(self):
         return (
@@ -26,6 +27,9 @@ class RankRequest(models.Model):
     def save(self, *args, **kwargs):
         super(RankRequest, self).save(*args, **kwargs)
 
+        # do not recreate ranking
+        if self.rank_submissions.exists():
+            return
         ranked_submissions = self.build_ranking(self.conference)
 
         self.save_rank_submissions(ranked_submissions)

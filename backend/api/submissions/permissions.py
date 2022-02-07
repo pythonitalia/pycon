@@ -3,6 +3,7 @@ from strawberry.permission import BasePermission
 from api.permissions import HasTokenPermission
 from submissions.models import Submission
 from voting.helpers import pastaporto_user_info_can_vote
+from voting.models.ranking import RankRequest
 
 
 class CanSeeSubmissionRestrictedFields(BasePermission):
@@ -13,6 +14,12 @@ class CanSeeSubmissionRestrictedFields(BasePermission):
             return True
 
         conference = source.conference
+
+        try:
+            if conference.rankrequest and conference.rankrequest.is_public:
+                return True
+        except RankRequest.DoesNotExist:
+            pass
 
         if source.schedule_items.exists():  # pragma: no cover
             return True

@@ -139,7 +139,7 @@ def _setup_equal(conference_factory, user_factory, submission_factory, vote_fact
 def test_most_voted_based_algorithm(_setup_equal):
     conference, votes, _, ranked_submissions = _setup_equal
 
-    ranking = RankRequest.objects.create(conference=conference)
+    ranking = RankRequest.objects.create(conference=conference, is_public=True)
     for index, rank in enumerate(
         ranking.rank_submissions.all().order_by("absolute_rank")
     ):
@@ -153,7 +153,7 @@ def test_ranking_only_on_proposed_submissions(conference, submission_factory):
     valid_submission = submission_factory(status="proposed", conference=conference)
     cancelled_submission = submission_factory(status="cancelled", conference=conference)
 
-    ranking = RankRequest.objects.create(conference=conference)
+    ranking = RankRequest.objects.create(conference=conference, is_public=True)
 
     submissions_ids = [rs.submission.pk for rs in ranking.rank_submissions.all()]
     assert len(submissions_ids) == 1
