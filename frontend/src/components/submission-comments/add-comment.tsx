@@ -4,7 +4,7 @@
 import { useCallback } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
-import { Box, jsx, Textarea } from "theme-ui";
+import { Box, jsx } from "theme-ui";
 
 import { Alert } from "~/components/alert";
 import { InputWrapper } from "~/components/input-wrapper";
@@ -23,8 +23,10 @@ type Props = {
 
 export const AddComment: React.SFC<Props> = ({ submissionId }) => {
   const [formState, { textarea }] = useFormState<Form>();
-  const [sendComment, { loading, data: sendCommentData, error }] =
-    useSendCommentMutation();
+  const [
+    sendComment,
+    { loading, data: sendCommentData, error },
+  ] = useSendCommentMutation();
 
   const onSubmit = useCallback(
     async (e) => {
