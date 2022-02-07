@@ -1,10 +1,17 @@
 from django.contrib import admin
+from import_export.admin import ExportMixin
+from import_export.resources import ModelResource
 
 from .models import Grant
 
 
+class VoteResource(ModelResource):
+    class Meta:
+        model = Grant
+
+
 @admin.register(Grant)
-class GrantAdmin(admin.ModelAdmin):
+class GrantAdmin(ExportMixin, admin.ModelAdmin):
     list_display = (
         "email",
         "full_name",
