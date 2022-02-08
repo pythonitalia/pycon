@@ -24,6 +24,5 @@ export const prefetchTopics = async (
   const topics = queryTopics(client, {
     code: process.env.conferenceCode,
   });
-  console.log("prefetchTopics", topics);
-  return new Promise(() => topics);
+  return topics;
 };

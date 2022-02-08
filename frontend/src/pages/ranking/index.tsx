@@ -14,7 +14,7 @@ import { MetaTags } from "~/components/meta-tags";
 import { PageLoading } from "~/components/page-loading";
 import { SubmissionAccordion } from "~/components/submission-accordion";
 import { prefetchSharedQueries, prefetchTopics } from "~/helpers/prefetch";
-import { useRankingSubmissionQuery, useTopicsQuery } from "~/types";
+import { Topic, useRankingQuery } from "~/types";
 
 import ErrorPage from "../_error";
 
@@ -29,18 +29,17 @@ const COLORS = [
   },
 ];
 
-export const RankingPage: React.FC = () => {
-  const conferenceCode = process.env.conferenceCode;
-  const topicsData = useTopicsQuery({
-    variables: {
-      code: process.env.conferenceCode,
-    },
-  });
-  console.log(topicsData);
+type RankingPageProps = {
+  topics: Topic[];
+};
 
-  const { loading, data } = useRankingSubmissionQuery({
+export const RankingPage = ({ topics }: RankingPageProps) => {
+  const conferenceCode = process.env.conferenceCode;
+
+  const { loading, data } = useRankingQuery({
     variables: {
       conference: conferenceCode,
+      topic: topics[0].id,
     },
   });
 
@@ -100,7 +99,7 @@ export const RankingPage: React.FC = () => {
                   borderRadius: 0,
                 }}
               >
-                {data?.conference?.topics.map((topic) => (
+                {topics.map((topic) => (
                   <option key={topic.id} value={topic.id}>
                     {topic.name}
                   </option>
@@ -154,12 +153,18 @@ export const RankingPage: React.FC = () => {
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
   const client = getApolloClient();
-
+  console.log("GetStaticProps ranking");
   await prefetchSharedQueries(client, locale);
-  const topics = await prefetchTopics(client, locale);
-  console.log("prefetchTopics");
+  const {
+    data: {
+      conference: { topics },
+    },
+  } = await prefetchTopics(client, locale);
+
   return addApolloState(client, {
-    props: {},
+    props: {
+      topics: topics,
+    },
   });
 };
 
