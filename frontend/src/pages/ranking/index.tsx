@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
-import React from "react";
+import React, { useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import { Box, Grid, Heading, jsx, Select, Text } from "theme-ui";
@@ -29,21 +29,25 @@ const COLORS = [
   },
 ];
 
+type Filters = {
+  topic: string;
+};
+
 type RankingPageProps = {
   topics: Topic[];
 };
 
 export const RankingPage = ({ topics }: RankingPageProps) => {
   const conferenceCode = process.env.conferenceCode;
+  const [curentTopic, setCurrentTopic] = useState(topics[0].id);
 
   const { loading, data } = useRankingQuery({
     variables: {
       conference: conferenceCode,
-      topicId: topics[0].id,
+      topic: curentTopic,
     },
   });
 
-  const [filters, { select }] = useFormState();
   const filterVisibleSubmissions = (submission) => {
     if (
       filters.values.topic &&
@@ -53,6 +57,15 @@ export const RankingPage = ({ topics }: RankingPageProps) => {
     }
     return true;
   };
+
+  const [filters, { select }] = useFormState<Filters>(
+    {},
+    {
+      onChange(e, stateValues, nextStateValues) {
+        setCurrentTopic(nextStateValues.topic);
+      },
+    },
+  );
 
   if (loading) {
     return <PageLoading titleId="global.loading" />;
