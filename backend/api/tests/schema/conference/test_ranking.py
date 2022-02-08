@@ -10,7 +10,7 @@ def test_conference_ranking_does_not_exists(conference_factory, graphql_client):
         ]
     )
     query = """
-        query($code: String!, $topic: String!) {
+        query($code: String!, $topic: ID!) {
             conference(code: $code) {
                 ranking(topic: $topic) {
                     isPublic
@@ -26,7 +26,7 @@ def test_conference_ranking_does_not_exists(conference_factory, graphql_client):
 
     resp = graphql_client.query(
         query,
-        variables={"code": conference.code, "topic": str(conference.topics.first().id)},
+        variables={"code": conference.code, "topic": conference.topics.first().id},
     )
 
     assert "errors" not in resp
@@ -43,7 +43,7 @@ def test_conference_ranking_is_not_public(
     )
     rank_request_factory(conference=conference, is_public=False)
     query = """
-        query($code: String!, $topic: String!) {
+        query($code: String!, $topic: ID!) {
             conference(code: $code) {
                 ranking(topic: $topic) {
                     isPublic
@@ -54,7 +54,7 @@ def test_conference_ranking_is_not_public(
 
     resp = graphql_client.query(
         query,
-        variables={"code": conference.code, "topic": str(conference.topics.first().id)},
+        variables={"code": conference.code, "topic": conference.topics.first().id},
     )
 
     assert "errors" not in resp
@@ -67,7 +67,7 @@ def test_conference_ranking_is_public_anyone_can_see(
     rank_request = rank_request_factory(conference=conference, is_public=True)
     rank_submission = rank_submission_factory(rank_request=rank_request)
     query = """
-        query($code: String!, $topic: String!) {
+        query($code: String!, $topic: ID!) {
             conference(code: $code) {
                 ranking(topic: $topic) {
                     isPublic
@@ -112,7 +112,7 @@ def test_conference_ranking_is_not_public_admin_can_see(
     rank_request = rank_request_factory(conference=conference, is_public=False)
     rank_submission = rank_submission_factory(rank_request=rank_request)
     query = """
-        query($code: String!, $topic: String!) {
+        query($code: String!, $topic: ID!) {
             conference(code: $code) {
                 ranking(topic: $topic) {
                     isPublic
@@ -130,7 +130,7 @@ def test_conference_ranking_is_not_public_admin_can_see(
         query,
         variables={
             "code": conference.code,
-            "topic": str(rank_submission.submission.topic.id),
+            "topic": rank_submission.submission.topic.id,
         },
     )
 
@@ -157,7 +157,7 @@ def test_conference_ranking_is_not_public_users_cannot_see(
     rank_request = rank_request_factory(conference=conference, is_public=False)
     rank_submission = rank_submission_factory(rank_request=rank_request)
     query = """
-        query($code: String!, $topic: String!) {
+        query($code: String!, $topic: ID!) {
             conference(code: $code) {
                 ranking(topic: $topic) {
                     isPublic
@@ -175,7 +175,7 @@ def test_conference_ranking_is_not_public_users_cannot_see(
         query,
         variables={
             "code": conference.code,
-            "topic": str(rank_submission.submission.topic.id),
+            "topic": rank_submission.submission.topic.id,
         },
     )
 

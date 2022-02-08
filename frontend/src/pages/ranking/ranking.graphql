@@ -1,6 +1,6 @@
 #import "../../fragments/submission-accordion.graphql"
 
-query Ranking($conference: String!, $topic: String!) {
+query Ranking($conference: String!, $topic: ID!) {
   conference(code: $conference) {
     id
 

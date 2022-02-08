@@ -310,7 +310,7 @@ class Conference:
         return self.schedule_items.filter(slug=slug).first()
 
     @strawberry.field
-    def ranking(self, info, topic: str) -> Optional[RankRequest]:
+    def ranking(self, info, topic: strawberry.ID) -> Optional[RankRequest]:
         try:
             rank_requests = RankRequestModel.objects.filter(conference=self)
             if not rank_requests:
