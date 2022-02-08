@@ -16,13 +16,3 @@ export const prefetchSharedQueries = async (
 
   return Promise.all([header, footer]);
 };
-
-export const prefetchTopics = async (
-  client: ApolloClient<any>,
-  _language: string,
-) => {
-  const topics = queryTopics(client, {
-    code: process.env.conferenceCode,
-  });
-  return topics;
-};

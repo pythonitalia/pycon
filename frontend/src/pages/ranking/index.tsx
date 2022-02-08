@@ -13,8 +13,8 @@ import { Alert } from "~/components/alert";
 import { MetaTags } from "~/components/meta-tags";
 import { PageLoading } from "~/components/page-loading";
 import { SubmissionAccordion } from "~/components/submission-accordion";
-import { prefetchSharedQueries, prefetchTopics } from "~/helpers/prefetch";
-import { Topic, useRankingQuery } from "~/types";
+import { prefetchSharedQueries } from "~/helpers/prefetch";
+import { useRankingQuery, useTopicsQuery, queryTopics } from "~/types";
 
 import ErrorPage from "../_error";
 
@@ -33,18 +33,24 @@ type Filters = {
   topic: string;
 };
 
-type RankingPageProps = {
-  topics: Topic[];
-};
-
-export const RankingPage = ({ topics }: RankingPageProps) => {
+export const RankingPage = () => {
   const conferenceCode = process.env.conferenceCode;
-  const [curentTopic, setCurrentTopic] = useState(topics[0].id);
+
+  const {
+    data: {
+      conference: { topics },
+    },
+  } = useTopicsQuery({
+    variables: {
+      code: conferenceCode,
+    },
+  });
+  const [filters, { select }] = useFormState<Filters>({ topic: topics[0].id });
 
   const { loading, data } = useRankingQuery({
     variables: {
       conference: conferenceCode,
-      topic: curentTopic,
+      topic: filters.values.topic,
     },
   });
 
@@ -57,15 +63,6 @@ export const RankingPage = ({ topics }: RankingPageProps) => {
     }
     return true;
   };
-
-  const [filters, { select }] = useFormState<Filters>(
-    {},
-    {
-      onChange(e, stateValues, nextStateValues) {
-        setCurrentTopic(nextStateValues.topic);
-      },
-    },
-  );
 
   if (loading) {
     return <PageLoading titleId="global.loading" />;
@@ -166,18 +163,16 @@ export const RankingPage = ({ topics }: RankingPageProps) => {
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
   const client = getApolloClient();
-  console.log("GetStaticProps ranking");
-  await prefetchSharedQueries(client, locale);
-  const {
-    data: {
-      conference: { topics },
-    },
-  } = await prefetchTopics(client, locale);
+
+  await Promise.all([
+    prefetchSharedQueries(client, locale),
+    queryTopics(client, {
+      code: process.env.conferenceCode,
+    }),
+  ]);
 
   return addApolloState(client, {
-    props: {
-      topics: topics,
-    },
+    props: {},
   });
 };
 
