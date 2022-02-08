@@ -175,7 +175,7 @@ def test_conference_ranking_is_not_public_users_cannot_see(
         query,
         variables={
             "code": conference.code,
-            "topic": rank_submission.submission.topic.id,
+            "topic": str(rank_submission.submission.topic.id),
         },
     )
 
