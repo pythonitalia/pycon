@@ -1,10 +1,10 @@
 #import "../../fragments/submission-accordion.graphql"
 
-query Ranking($conference: String!, $topic: String!) {
+query Ranking($conference: String!, $topicId: Int!) {
   conference(code: $conference) {
     id
 
-    ranking(topic: $topic) {
+    ranking(topic: $topicId) {
       isPublic
       rankedSubmissions {
         absoluteRank

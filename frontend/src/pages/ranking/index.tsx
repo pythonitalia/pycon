@@ -39,7 +39,7 @@ export const RankingPage = ({ topics }: RankingPageProps) => {
   const { loading, data } = useRankingQuery({
     variables: {
       conference: conferenceCode,
-      topic: topics[0].id,
+      topicId: topics[0].id,
     },
   });
 
