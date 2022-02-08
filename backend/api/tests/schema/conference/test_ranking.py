@@ -6,9 +6,9 @@ pytestmark = mark.django_db
 def test_conference_ranking_does_not_exists(conference_factory, graphql_client):
     conference = conference_factory()
     query = """
-        query($code: String!) {
+        query($code: String!, $topic: String!) {
             conference(code: $code) {
-                ranking {
+                ranking(topic: $topic) {
                     isPublic
                     rankedSubmissions {
                         absoluteRank
@@ -22,7 +22,7 @@ def test_conference_ranking_does_not_exists(conference_factory, graphql_client):
 
     resp = graphql_client.query(
         query,
-        variables={"code": conference.code},
+        variables={"code": conference.code, "topic": conference.topics.first().id},
     )
 
     assert "errors" not in resp
@@ -34,9 +34,9 @@ def test_conference_ranking_is_not_public(
 ):
     rank_request_factory(conference=conference, is_public=False)
     query = """
-        query($code: String!) {
+        query($code: String!, $topic: String!) {
             conference(code: $code) {
-                ranking {
+                ranking(topic: $topic) {
                     isPublic
                 }
             }
@@ -45,7 +45,7 @@ def test_conference_ranking_is_not_public(
 
     resp = graphql_client.query(
         query,
-        variables={"code": conference.code},
+        variables={"code": conference.code, "topic": conference.topics.first().id},
     )
 
     assert "errors" not in resp
@@ -58,9 +58,9 @@ def test_conference_ranking_is_public_anyone_can_see(
     rank_request = rank_request_factory(conference=conference, is_public=True)
     rank_submission = rank_submission_factory(rank_request=rank_request)
     query = """
-        query($code: String!) {
+        query($code: String!, $topic: String!) {
             conference(code: $code) {
-                ranking {
+                ranking(topic: $topic) {
                     isPublic
                     rankedSubmissions {
                         absoluteRank
@@ -74,7 +74,10 @@ def test_conference_ranking_is_public_anyone_can_see(
 
     resp = graphql_client.query(
         query,
-        variables={"code": conference.code},
+        variables={
+            "code": conference.code,
+            "topic": rank_submission.submission.topic.id,
+        },
     )
 
     assert "errors" not in resp
@@ -100,9 +103,9 @@ def test_conference_ranking_is_not_public_admin_can_see(
     rank_request = rank_request_factory(conference=conference, is_public=False)
     rank_submission = rank_submission_factory(rank_request=rank_request)
     query = """
-        query($code: String!) {
+        query($code: String!, $topic: String!) {
             conference(code: $code) {
-                ranking {
+                ranking(topic: $topic) {
                     isPublic
                     rankedSubmissions {
                         absoluteRank
@@ -116,7 +119,10 @@ def test_conference_ranking_is_not_public_admin_can_see(
 
     resp = graphql_client.query(
         query,
-        variables={"code": conference.code},
+        variables={
+            "code": conference.code,
+            "topic": rank_submission.submission.topic.id,
+        },
     )
 
     assert "errors" not in resp
@@ -140,11 +146,11 @@ def test_conference_ranking_is_not_public_users_cannot_see(
 ):
     graphql_client.force_login(user)
     rank_request = rank_request_factory(conference=conference, is_public=False)
-    rank_submission_factory(rank_request=rank_request)
+    rank_submission = rank_submission_factory(rank_request=rank_request)
     query = """
-        query($code: String!) {
+        query($code: String!, $topic: String!) {
             conference(code: $code) {
-                ranking {
+                ranking(topic: $topic) {
                     isPublic
                     rankedSubmissions {
                         absoluteRank
@@ -158,7 +164,10 @@ def test_conference_ranking_is_not_public_users_cannot_see(
 
     resp = graphql_client.query(
         query,
-        variables={"code": conference.code},
+        variables={
+            "code": conference.code,
+            "topic": rank_submission.submission.topic.id,
+        },
     )
 
     assert "errors" not in resp
