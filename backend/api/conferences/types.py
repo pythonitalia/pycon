@@ -310,7 +310,7 @@ class Conference:
         return self.schedule_items.filter(slug=slug).first()
 
     @strawberry.field
-    def ranking(self, info) -> Optional[RankRequest]:
+    def ranking(self, info, topic: Optional[str] = None) -> Optional[RankRequest]:
         try:
             rank_requests = RankRequestModel.objects.filter(conference=self)
             if not rank_requests:
@@ -325,9 +325,9 @@ class Conference:
 
             return RankRequest(
                 is_public=rank_request.is_public,
-                ranked_submissions=rank_request.rank_submissions.all().order_by(
-                    "absolute_rank"
-                ),
+                ranked_submissions=rank_request.rank_submissions.filter(
+                    topic=topic
+                ).order_by("absolute_rank"),
             )
         except RankRequestModel.DoesNotExist:
             return None

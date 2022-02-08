@@ -1,6 +1,6 @@
 import { ApolloClient } from "@apollo/client/core";
 
-import { queryFooter, queryHeader } from "~/types";
+import { queryFooter, queryHeader, queryTopics } from "~/types";
 
 export const prefetchSharedQueries = async (
   client: ApolloClient<any>,
@@ -15,4 +15,15 @@ export const prefetchSharedQueries = async (
   });
 
   return Promise.all([header, footer]);
+};
+
+export const prefetchTopics = async (
+  client: ApolloClient<any>,
+  _language: string,
+) => {
+  const topics = queryTopics(client, {
+    code: process.env.conferenceCode,
+  });
+  console.log("prefetchTopics", topics);
+  return new Promise(() => topics);
 };
