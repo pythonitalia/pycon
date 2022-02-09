@@ -324,7 +324,7 @@ class Conference:
                 return None
 
             submissions = rank_request.rank_submissions.filter(
-                submission__topic__id=int(topic)
+                submission__topic__id=topic
             ).order_by("absolute_rank")
             return RankRequest(
                 is_public=rank_request.is_public,
