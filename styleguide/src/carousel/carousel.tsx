@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Title } from "../title";
 import { Color } from "../types";
 
@@ -7,6 +7,9 @@ type Props = {
   title: string;
   children: React.ReactNode;
 };
+
+const MAX_PAGE_SIZE = 4;
+const MIN_PAGE_SIZE = 1;
 
 const LeftArrow = ({ className }: { className?: string }) => (
   <svg width="46" height="53" viewBox="0 0 46 53" className={className}>
@@ -61,20 +64,43 @@ const ArrowButton = ({
 
 export const Carousel = ({ title, children }: Props) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [pageSize, setPageSize] = useState(MAX_PAGE_SIZE);
 
   const totalCount = React.Children.count(children);
 
   const previous = () => setCurrentIndex(Math.max(0, currentIndex - 1));
   const next = () =>
-    setCurrentIndex(Math.min(totalCount - 1, currentIndex + 1));
+    setCurrentIndex(Math.min(totalCount - pageSize, currentIndex + 1));
+
+  useEffect(() => {
+    const listener = () => {
+      if (window.innerWidth >= 768) {
+        const maxIndexForSize = totalCount - MAX_PAGE_SIZE;
+
+        setPageSize(MAX_PAGE_SIZE);
+        setCurrentIndex((value) =>
+          value > maxIndexForSize ? maxIndexForSize : value
+        );
+      } else {
+        setPageSize(MIN_PAGE_SIZE);
+      }
+    };
+
+    listener();
+    window.addEventListener("resize", listener);
+
+    return () => {
+      window.removeEventListener("resize", listener);
+    };
+  }, []);
 
   return (
     <div>
-      <div className="border-black border-b-4">
-        <div className="max-w-7xl mx-auto px-8 py-8 flex">
+      <div className="border-b-4 border-black">
+        <div className="flex px-8 py-8 mx-auto max-w-7xl">
           <Title marginBottom={false}>{title}</Title>
 
-          <div className="ml-auto flex 2xl:hidden">
+          <div className="flex ml-auto 2xl:hidden">
             <button className="flex h-full py-4" onClick={previous}>
               <LeftArrow className="h-5" />
             </button>
@@ -84,12 +110,12 @@ export const Carousel = ({ title, children }: Props) => {
           </div>
         </div>
       </div>
-      <div className="max-w-7xl mx-auto flex-1 w-full relative">
+      <div className="relative flex-1 w-full mx-auto max-w-7xl">
         <ArrowButton onClick={previous} className="pr-16 -left-28" />
 
-        <div className="w-full overflow-hidden border-black border-l-4">
+        <div className="w-full overflow-hidden border-l-4 border-black">
           <div
-            className="flex transform transition-transform carousel-container"
+            className="flex transition-transform transform carousel-container"
             style={
               {
                 "--current-index": currentIndex,
@@ -99,8 +125,8 @@ export const Carousel = ({ title, children }: Props) => {
           >
             {React.Children.map(children, (child, index) => {
               return (
-                <div className="w-full md:w-1/4 flex-shrink-0">
-                  <div className="aspect-w-1 aspect-h-1 border-r-4 border-black">
+                <div className="flex-shrink-0 w-full md:w-1/4">
+                  <div className="border-r-4 border-black aspect-w-1 aspect-h-1">
                     {React.cloneElement(child as React.ReactElement, {
                       className: `bg-${COLORS[index % COLORS.length]}`,
                     })}
