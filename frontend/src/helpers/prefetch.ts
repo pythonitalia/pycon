@@ -1,6 +1,6 @@
 import { ApolloClient } from "@apollo/client/core";
 
-import { queryFooter, queryHeader, queryTopics } from "~/types";
+import { queryFooter, queryHeader } from "~/types";
 
 export const prefetchSharedQueries = async (
   client: ApolloClient<any>,
