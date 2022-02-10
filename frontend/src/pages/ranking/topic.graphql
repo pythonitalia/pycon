@@ -1,0 +1,9 @@
+query Topics($code: String!) {
+  conference(code: $code) {
+    id
+    topics {
+      id
+      name
+    }
+  }
+}

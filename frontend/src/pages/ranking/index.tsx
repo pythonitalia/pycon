@@ -14,7 +14,7 @@ import { MetaTags } from "~/components/meta-tags";
 import { PageLoading } from "~/components/page-loading";
 import { SubmissionAccordion } from "~/components/submission-accordion";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
-import { useRankingSubmissionQuery } from "~/types";
+import { useRankingQuery, useTopicsQuery, queryTopics } from "~/types";
 
 import ErrorPage from "../_error";
 
@@ -29,15 +29,31 @@ const COLORS = [
   },
 ];
 
-export const RankingPage: React.FC = () => {
+type Filters = {
+  topic: string;
+};
+
+export const RankingPage = () => {
   const conferenceCode = process.env.conferenceCode;
-  const { loading, data } = useRankingSubmissionQuery({
+
+  const {
+    data: {
+      conference: { topics },
+    },
+  } = useTopicsQuery({
+    variables: {
+      code: conferenceCode,
+    },
+  });
+  const [filters, { select }] = useFormState<Filters>({ topic: topics[0].id });
+
+  const { loading, data } = useRankingQuery({
     variables: {
       conference: conferenceCode,
+      topic: filters.values.topic,
     },
   });
 
-  const [filters, { select }] = useFormState();
   const filterVisibleSubmissions = (submission) => {
     if (
       filters.values.topic &&
@@ -93,10 +109,7 @@ export const RankingPage: React.FC = () => {
                   borderRadius: 0,
                 }}
               >
-                <FormattedMessage id="voting.allTopics">
-                  {(text) => <option value="">{text}</option>}
-                </FormattedMessage>
-                {data?.conference?.topics.map((topic) => (
+                {topics.map((topic) => (
                   <option key={topic.id} value={topic.id}>
                     {topic.name}
                   </option>
@@ -151,7 +164,12 @@ export const RankingPage: React.FC = () => {
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
   const client = getApolloClient();
 
-  await prefetchSharedQueries(client, locale);
+  await Promise.all([
+    prefetchSharedQueries(client, locale),
+    queryTopics(client, {
+      code: process.env.conferenceCode,
+    }),
+  ]);
 
   return addApolloState(client, {
     props: {},
