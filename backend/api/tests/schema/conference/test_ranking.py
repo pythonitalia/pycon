@@ -1,6 +1,11 @@
-from pytest import mark
+import pytest
 
-pytestmark = mark.django_db
+pytestmark = pytest.mark.django_db
+
+
+@pytest.fixture(autouse=True)
+def mock_users(mocker):
+    mocker.patch("voting.models.ranking.get_users_data_by_ids", return_value={})
 
 
 def test_conference_ranking_does_not_exists(conference_factory, graphql_client):
@@ -15,9 +20,8 @@ def test_conference_ranking_does_not_exists(conference_factory, graphql_client):
                 ranking(topic: $topic) {
                     isPublic
                     rankedSubmissions {
-                        absoluteRank
-                        topicRank
-                        absoluteScore
+                        rank
+                        score
                     }
                 }
             }
@@ -72,9 +76,8 @@ def test_conference_ranking_is_public_anyone_can_see(
                 ranking(topic: $topic) {
                     isPublic
                     rankedSubmissions {
-                        absoluteRank
-                        topicRank
-                        absoluteScore
+                        rank
+                        score
                     }
                 }
             }
@@ -94,11 +97,8 @@ def test_conference_ranking_is_public_anyone_can_see(
 
     rank_submission_data = resp["data"]["conference"]["ranking"]["rankedSubmissions"][0]
 
-    assert rank_submission_data["absoluteRank"] == rank_submission.absolute_rank
-    assert rank_submission_data["topicRank"] == rank_submission.topic_rank
-    assert float(rank_submission_data["absoluteScore"]) == float(
-        rank_submission.absolute_score
-    )
+    assert rank_submission_data["rank"] == rank_submission.rank
+    assert float(rank_submission_data["score"]) == float(rank_submission.score)
 
 
 def test_conference_ranking_is_not_public_admin_can_see(
@@ -117,9 +117,8 @@ def test_conference_ranking_is_not_public_admin_can_see(
                 ranking(topic: $topic) {
                     isPublic
                     rankedSubmissions {
-                        absoluteRank
-                        topicRank
-                        absoluteScore
+                        rank
+                        score
                     }
                 }
             }
@@ -139,11 +138,8 @@ def test_conference_ranking_is_not_public_admin_can_see(
 
     rank_submission_data = resp["data"]["conference"]["ranking"]["rankedSubmissions"][0]
 
-    assert rank_submission_data["absoluteRank"] == rank_submission.absolute_rank
-    assert rank_submission_data["topicRank"] == rank_submission.topic_rank
-    assert float(rank_submission_data["absoluteScore"]) == float(
-        rank_submission.absolute_score
-    )
+    assert rank_submission_data["rank"] == rank_submission.rank
+    assert float(rank_submission_data["score"]) == float(rank_submission.score)
 
 
 def test_conference_ranking_is_not_public_users_cannot_see(
@@ -162,9 +158,8 @@ def test_conference_ranking_is_not_public_users_cannot_see(
                 ranking(topic: $topic) {
                     isPublic
                     rankedSubmissions {
-                        absoluteRank
-                        topicRank
-                        absoluteScore
+                        rank
+                        score
                     }
                 }
             }

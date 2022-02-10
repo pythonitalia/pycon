@@ -43,19 +43,15 @@ class RankStat:
 class RankRequest:
     is_public: bool
     ranked_submissions: List[RankSubmission]
+    stats: List[RankStat]
 
     @strawberry.field
-    def stats(self, info) -> List["RankStat"]:
-        return self.stats.all()
-
-    @strawberry.field
-    def stat(self, info, type: str) -> Optional["RankStat"]:
+    def stat(self, info, type: str) -> Optional[RankStat]:
         return self.stats.filter(type=type).first()
 
 
 @strawberry.type
 class RankSubmission:
     submission: LazyType["Submission", "api.submissions.types"]
-    absolute_rank: int
-    absolute_score: Decimal
-    topic_rank: int
+    rank: int
+    score: Decimal

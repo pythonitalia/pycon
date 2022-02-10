@@ -70,10 +70,9 @@ class VoteAdmin(ExportMixin, AdminUsersMixin):
 
 
 EXPORT_RANK_SUBMISSION_FIELDS = (
-    "absolute_rank",
-    "absolute_score",
+    "rank",
+    "score",
     "submission__topic__name",
-    "topic_rank",
     "submission__id",
     "submission__hashid",
     "submission__title",
@@ -100,9 +99,7 @@ class RankSubmissionResource(ResourceUsersMixin):
     tags = Field()
     vote_count = Field()
 
-    absolute_score = Field(
-        column_name="absolute_score", attribute="absolute_score", widget=DecimalWidget()
-    )
+    score = Field(column_name="score", attribute="score", widget=DecimalWidget())
 
     def dehydrate_submission__hashid(self, obj):
         return obj.submission.hashid
@@ -133,20 +130,19 @@ class RankSubmissionAdmin(ExportMixin, AdminUsersMixin):
     resource_class = RankSubmissionResource
     user_fk = "submission__speaker_id"
     list_display = (
-        "absolute_rank",
-        "absolute_score",
+        "rank",
+        "score",
         "duration",
         "title",
         "type",
         "topic",
-        "topic_rank",
         "level",
         "language",
         "speaker",
         "gender",
         "view_submission",
     )
-    ordering = ("absolute_rank",)
+    ordering = ("rank",)
     list_filter = (
         "rank_request_id",
         "submission__type",

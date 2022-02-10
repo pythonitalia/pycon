@@ -56,9 +56,9 @@ class RankRequest(models.Model):
         # do not recreate ranking
         if self.rank_submissions.exists():
             return
-        ranked_submissions = self.build_ranking(self.conference)
+        ranked_submissions_by_topic = self.build_ranking(self.conference)
 
-        self.save_rank_submissions(ranked_submissions)
+        self.save_rank_submissions(ranked_submissions_by_topic)
         self.build_stats()
 
     def build_ranking(self, conference):
@@ -101,60 +101,63 @@ class RankRequest(models.Model):
 
         users_weight = RankRequest.get_users_weights(votes)
 
-        ranking = []
-        for submission in submissions:
-            submission_votes = votes.filter(submission=submission)
+        # group by topic to generate the relative ranking
+        def group_by(submission: Submission):
+            return submission.topic_id
 
-            if submission_votes:
-                vote_info = {}
-                for vote in submission_votes:
-                    vote_info[vote.id] = {
-                        "normalised_vote": vote.value * users_weight[vote.user_id],
-                        "scale_factor": users_weight[vote.user_id],
-                    }
-                score = sum([v["normalised_vote"] for v in vote_info.values()]) / sum(
-                    [v["scale_factor"] for v in vote_info.values()]
-                )
-            else:
-                score = 0
-            rank = {
-                "submission_id": submission.id,
-                "submission__topic_id": submission.topic_id,
-                "score": score,
-            }
-            ranking.append(rank)
-        return sorted(ranking, key=lambda k: k["score"], reverse=True)
+        ranking = []
+        for topic_id, grouped_submissions in itertools.groupby(submissions, group_by):
+            topic_ranking = []
+            for submission in grouped_submissions:
+                submission_votes = votes.filter(submission=submission)
+
+                if submission_votes:
+                    vote_info = {}
+                    for vote in submission_votes:
+                        vote_info[vote.id] = {
+                            "normalised_vote": vote.value
+                            * users_weight[(vote.user_id, topic_id)],
+                            "scale_factor": users_weight[(vote.user_id, topic_id)],
+                        }
+                    score = sum(
+                        [v["normalised_vote"] for v in vote_info.values()]
+                    ) / sum([v["scale_factor"] for v in vote_info.values()])
+                else:
+                    score = 0
+                rank = {
+                    "submission_id": submission.id,
+                    "submission__topic_id": submission.topic_id,
+                    "score": score,
+                }
+                topic_ranking.append(rank)
+                sorted(topic_ranking, key=lambda k: k["score"], reverse=True)
+
+                ranking.append(topic_ranking)
+        return ranking
 
     @staticmethod
     def get_users_weights(votes):
-        queryset = votes.values("user_id").annotate(weight=Sqrt(Count("submission_id")))
-        return {weight["user_id"]: weight["weight"] for weight in queryset}
+        queryset = votes.values("submission__topic_id", "user_id").annotate(
+            weight=Sqrt(Count("submission__topic_id"))
+        )
+        return {
+            (weight["user_id"], weight["submission__topic_id"]): weight["weight"]
+            for weight in queryset
+        }
 
-    def save_rank_submissions(self, scored_submissions):
+    def save_rank_submissions(self, ranked_submissions_by_topic):
         """Save the list of ranked submissions calculating the rank position
         from the score
         """
 
-        ranked_obj = {}
-        for index, rank in enumerate(scored_submissions):
-            rank_submission = RankSubmission(
-                rank_request=self,
-                submission=Submission.objects.get(pk=rank["submission_id"]),
-                absolute_rank=index + 1,
-                absolute_score=rank["score"],
-            )
-            ranked_obj[rank["submission_id"]] = rank_submission
-
-        # group by topic to generate the relative ranking
-        def group_by(item):
-            return item["submission__topic_id"]
-
-        scored_submissions = sorted(scored_submissions, key=group_by)
-
-        for k, g in itertools.groupby(scored_submissions, group_by):
-            for index, rank in enumerate(list(g)):
-                ranked_obj[rank["submission_id"]].topic_rank = index + 1
-                ranked_obj[rank["submission_id"]].save()
+        for submissions in ranked_submissions_by_topic:
+            for index, rank in enumerate(submissions):
+                RankSubmission.objects.create(
+                    rank_request=self,
+                    submission=Submission.objects.get(pk=rank["submission_id"]),
+                    rank=index + 1,
+                    score=rank["score"],
+                )
 
     def build_stats(self):
         submissions = self.rank_submissions.all()
@@ -245,15 +248,12 @@ class RankSubmission(models.Model):
         "submissions.Submission", on_delete=models.CASCADE, verbose_name=_("submission")
     )
 
-    absolute_rank = models.PositiveIntegerField(_("absolute rank"))
-    absolute_score = models.DecimalField(
-        _("absolute score"), decimal_places=6, max_digits=9
-    )
-    topic_rank = models.PositiveIntegerField(_("topic rank"))
+    rank = models.PositiveIntegerField(_("rank"))
+    score = models.DecimalField(_("score"), decimal_places=6, max_digits=9)
 
     def __str__(self):
         return (
             f"<{self.rank_request.conference.code}>"
             f" | {self.submission.title}"
-            f" | {self.absolute_rank}"
+            f" | {self.rank}"
         )

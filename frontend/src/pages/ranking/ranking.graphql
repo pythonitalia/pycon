@@ -19,9 +19,8 @@ query Ranking($conference: String!, $topic: ID!) {
       }
 
       rankedSubmissions {
-        absoluteRank
-        topicRank
-        absoluteScore
+        rank
+        score
         submission {
           ...submissionAccordion
           speaker {

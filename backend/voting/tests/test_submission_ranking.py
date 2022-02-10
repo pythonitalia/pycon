@@ -140,13 +140,9 @@ def test_most_voted_based_algorithm(_setup_equal):
     conference, votes, _, ranked_submissions = _setup_equal
 
     ranking = RankRequest.objects.create(conference=conference, is_public=True)
-    for index, rank in enumerate(
-        ranking.rank_submissions.all().order_by("absolute_rank")
-    ):
+    for index, rank in enumerate(ranking.rank_submissions.all().order_by("rank")):
         assert rank.submission.id == ranked_submissions[index]["submission_id"]
-        assert round(rank.absolute_score, 2) == round(
-            ranked_submissions[index]["score"], 2
-        )
+        assert round(rank.score, 2) == round(ranked_submissions[index]["score"], 2)
 
 
 def test_ranking_only_on_proposed_submissions(conference, submission_factory):

@@ -325,10 +325,11 @@ class Conference:
 
             submissions = rank_request.rank_submissions.filter(
                 submission__topic__id=topic
-            ).order_by("absolute_rank")
+            ).order_by("rank")
             return RankRequest(
                 is_public=rank_request.is_public,
                 ranked_submissions=submissions,
+                stats=rank_request.stats.all(),
             )
         except RankRequestModel.DoesNotExist:
             return None

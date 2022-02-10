@@ -140,10 +140,7 @@ export const RankingPage = () => {
                 renderTitle={(title) => (
                   <React.Fragment>
                     <Text sx={{ fontWeight: "bold" }} as="span">
-                      {filters.values.topic
-                        ? rankSubmission.topicRank
-                        : rankSubmission.absoluteRank}
-                      .
+                      {rankSubmission.rank}
                     </Text>{" "}
                     {title}
                   </React.Fragment>
