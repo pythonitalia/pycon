@@ -121,10 +121,10 @@ export const RankingPage = () => {
                 <FormattedMessage
                   id="ranking.introduction"
                   values={{
-                    speakersNumber:
-                      data?.conference?.ranking?.speakersStat.value,
-                    proposalNumber:
-                      data?.conference?.ranking?.submissionsStat.value,
+                    speakersNumber: getRankingStat("speakers", "speakers")
+                      ?.value,
+                    proposalNumber: getRankingStat("submissions", "submissions")
+                      ?.value,
                     br: <br />,
                   }}
                 />
@@ -206,7 +206,7 @@ export const RankingPage = () => {
               <FormattedMessage
                 id="ranking.stats.submissions"
                 values={{
-                  value: data?.conference?.ranking?.submissionsStat.value,
+                  value: getRankingStat("submissions", "submissions")?.value,
                 }}
               />
             </Text>
@@ -214,7 +214,7 @@ export const RankingPage = () => {
               <FormattedMessage
                 id="ranking.stats.speakers"
                 values={{
-                  value: data?.conference?.ranking?.speakersStat.value,
+                  value: getRankingStat("speakers", "speakers")?.value,
                 }}
               />
             </Text>
@@ -222,7 +222,7 @@ export const RankingPage = () => {
               <FormattedMessage
                 id="ranking.stats.gender.women"
                 values={{
-                  value: getRankingStat("gender", "female").value,
+                  value: getRankingStat("gender", "female")?.value,
                 }}
               />
             </Text>
@@ -230,7 +230,7 @@ export const RankingPage = () => {
               <FormattedMessage
                 id="ranking.stats.gender.women"
                 values={{
-                  value: getRankingStat("gender", "male").value,
+                  value: getRankingStat("gender", "male")?.value,
                 }}
               />
             </Text>
@@ -239,7 +239,7 @@ export const RankingPage = () => {
               <FormattedMessage
                 id="ranking.stats.language.italian"
                 values={{
-                  value: getRankingStat("language", "italian").value,
+                  value: getRankingStat("language", "italian")?.value,
                 }}
               />
             </Text>
@@ -247,7 +247,7 @@ export const RankingPage = () => {
               <FormattedMessage
                 id="ranking.stats.language.english"
                 values={{
-                  value: getRankingStat("language", "english").value,
+                  value: getRankingStat("language", "english")?.value,
                 }}
               />
             </Text>

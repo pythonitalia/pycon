@@ -13,16 +13,6 @@ query Ranking($conference: String!, $topic: ID!) {
         name
       }
 
-      speakersStat: stat(type: "speakers") {
-        id
-        value
-      }
-
-      submissionsStat: stat(type: "submissions") {
-        id
-        value
-      }
-
       rankedSubmissions {
         rank
         score
