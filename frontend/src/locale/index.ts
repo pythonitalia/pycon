@@ -853,7 +853,7 @@ of PyCon italia! There were {proposalNumber} proposals this year to choose from
       scegliere inviate da ben {speakersNumber} fantastici speakers!
 `,
     "ranking.topicComment":
-      "Ben {value} proposte per la track {name} quest'anno!",
+      "Abbiamo ricevuto {value} proposte per la track {name} quest'anno!",
     "ranking.seoTitle": "Ranking",
     "ranking.details": "Dettagli",
     "ranking.stats.heading": "Alcune statistiche",
