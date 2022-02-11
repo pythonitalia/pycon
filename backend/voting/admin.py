@@ -142,7 +142,10 @@ class RankSubmissionAdmin(ExportMixin, AdminUsersMixin):
         "gender",
         "view_submission",
     )
-    ordering = ("rank",)
+    ordering = (
+        "submission__topic_id",
+        "rank",
+    )
     list_filter = (
         "rank_request_id",
         "submission__type",

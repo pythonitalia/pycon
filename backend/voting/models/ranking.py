@@ -96,7 +96,7 @@ class RankRequest(models.Model):
 
         submissions = Submission.objects.filter(
             conference=conference, status=Submission.STATUS.proposed
-        )
+        ).order_by("topic_id")
         votes = Vote.objects.filter(submission__conference=conference)
 
         users_weight = RankRequest.get_users_weights(votes)
@@ -105,8 +105,10 @@ class RankRequest(models.Model):
         def group_by(submission: Submission):
             return submission.topic_id
 
-        ranking = []
-        for topic_id, grouped_submissions in itertools.groupby(submissions, group_by):
+        rankings = []
+        for topic_id, grouped_submissions in itertools.groupby(
+            submissions, key=group_by
+        ):
             topic_ranking = []
             for submission in grouped_submissions:
                 submission_votes = votes.filter(submission=submission)
@@ -132,8 +134,8 @@ class RankRequest(models.Model):
                 topic_ranking.append(rank)
                 sorted(topic_ranking, key=lambda k: k["score"], reverse=True)
 
-                ranking.append(topic_ranking)
-        return ranking
+            rankings.append(topic_ranking)
+        return rankings
 
     @staticmethod
     def get_users_weights(votes):
