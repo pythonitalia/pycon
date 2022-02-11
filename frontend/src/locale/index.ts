@@ -389,8 +389,10 @@ export const messages = {
       "Voucher code correct, but no product in the cart can be discounted",
 
     "ranking.heading": "Community voting results",
-    "ranking.introduction":
-      "Here there are the results of the community voting!",
+    "ranking.introduction": `Here there are the results of the community voting! {br}
+      Thanks to all the people who voted and helped prepare the program for the next edition
+      of PyCon italia! There were {proposalNumber} proposals this year to choose from
+      {speakersNumber} fantastic speakers!`,
     "ranking.seoTitle": "Ranking",
     "ranking.details": "Details",
 
@@ -833,7 +835,11 @@ export const messages = {
     "keynote.englishLanguage": "Inglese",
 
     "ranking.heading": "Risultati della votazione comunitaria",
-    "ranking.introduction": "Ecco qui i risultati della votazione comunitaria!",
+    "ranking.introduction": `Ecco qui i risultati della votazione comunitaria!{br}
+      Grazie a tutte persone che hanno votato e hanno cosi' contribuito a preparare il programma
+      per la prossima edizione di PyCon italia! C'erano ben {proposalNumber} proposte quest'anno da
+      scegliere inviate da ben {speakerNumber} fantastici speakers!
+`,
     "ranking.seoTitle": "Ranking",
     "ranking.details": "Dettagli",
 

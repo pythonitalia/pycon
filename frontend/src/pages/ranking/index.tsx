@@ -98,7 +98,15 @@ export const RankingPage = () => {
               </Heading>
 
               <Text my={4}>
-                <FormattedMessage id="ranking.introduction" />
+                <FormattedMessage
+                  id="ranking.introduction"
+                  values={{
+                    speakersNumber:
+                      data?.conference?.ranking?.speakersStat.value,
+                    proposalNumber: "222",
+                    br: <br />,
+                  }}
+                />
               </Text>
             </Box>
             <Box>
