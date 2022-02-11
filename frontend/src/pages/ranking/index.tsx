@@ -69,25 +69,19 @@ export const RankingPage = () => {
     return true;
   };
 
-  const getRankingStat = (
-    type: string,
-    name?: string,
-  ): RankStat | RankStat[] | null => {
-    if (!data?.conference?.ranking?.stats) {
-      return null;
-    }
-    const stat = data.conference.ranking.stats.filter(
+  const getRankingStat = (type: string, name: string): RankStat => {
+    const stat = data?.conference?.ranking?.stats.filter(
       (stat) =>
         stat.type.toLowerCase() === type &&
         ((name && stat.name.toLowerCase() == name) || !name),
     );
-    if (!name) {
-      return stat;
-    }
-    if (stat.length > 0) {
-      return stat[0];
-    }
-    return null;
+    return stat && stat[0];
+  };
+
+  const getRankingStats = (type: string): RankStat[] => {
+    return data?.conference?.ranking?.stats.filter(
+      (stat) => stat.type.toLowerCase() === type,
+    );
   };
 
   if (loading) {
@@ -259,7 +253,7 @@ export const RankingPage = () => {
             </Text>
           </Box>
           <Box>
-            {getRankingStat("submission_type").map((stat) => (
+            {getRankingStats("submission_type").map((stat) => (
               <Text>
                 <FormattedMessage
                   id="ranking.stats.submissionType"
@@ -270,7 +264,7 @@ export const RankingPage = () => {
                 />
               </Text>
             ))}
-            {getRankingStat("audience_level").map((stat) => (
+            {getRankingStats("audience_level").map((stat) => (
               <Text>
                 <FormattedMessage
                   id="ranking.stats.audienceLevel"
