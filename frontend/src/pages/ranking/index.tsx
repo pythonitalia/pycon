@@ -53,7 +53,6 @@ export const RankingPage = () => {
     },
   });
 
-  console.log(JSON.stringify(data?.conference?.ranking?.stats));
   const filterVisibleSubmissions = (submission) => {
     if (
       filters.values.topic &&
