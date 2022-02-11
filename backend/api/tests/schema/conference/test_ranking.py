@@ -14,6 +14,7 @@ def test_conference_ranking_does_not_exists(conference_factory, graphql_client):
             "Sushi",
         ]
     )
+
     query = """
         query($code: String!, $topic: ID!) {
             conference(code: $code) {
