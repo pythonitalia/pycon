@@ -394,6 +394,8 @@ export const messages = {
       per la prossima edizione di PyCon italia! C'erano ben {proposalNumber} proposte quest'anno da
       scegliere inviate da ben {speakersNumber} fantastici speakers!
 `,
+    "ranking.topicComment":
+      "Ben {value} proposte per la track {name} quest'anno!",
     "ranking.seoTitle": "Ranking",
     "ranking.details": "Details",
     "ranking.stats.heading": "Alcune statistiche",
@@ -405,6 +407,7 @@ export const messages = {
     "ranking.stats.language.italian": "{value} proposte in Inglese",
     "ranking.stats.submissionType": "{value} {name} proposti",
     "ranking.stats.audienceLevel": "{value} proposte per livello {name}",
+    "ranking.stats.topic": "{value} proposte per la track {name}",
 
     "voting.heading": "Community voting",
     "voting.introduction": `This is your opportunity to have a say on what you want to see at
@@ -849,6 +852,8 @@ export const messages = {
     Thanks to all the people who voted and helped prepare the program for the next edition
     of PyCon italia! There were {proposalNumber} proposals this year to choose from
     {speakersNumber} fantastic speakers!`,
+    "ranking.topicComment":
+      "We received {value} proposals for the track {name} this year!",
     "ranking.seoTitle": "Ranking",
     "ranking.details": "Dettagli",
     "ranking.stats.heading": "Some stats",
@@ -860,6 +865,7 @@ export const messages = {
     "ranking.stats.language.italian": "{value} proposals in English",
     "ranking.stats.submissionType": "{value} {name} proposed",
     "ranking.stats.audienceLevel": "{value} {name} level proposals",
+    "ranking.stats.topic": "{value} proposals for the track {name}",
 
     "voteSelector.whatDoYouThink": "Cosa pensi di questa proposta?",
     "voteSelector.notInterested": "Non mi interessa",

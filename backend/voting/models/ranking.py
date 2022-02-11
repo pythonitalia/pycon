@@ -17,6 +17,7 @@ class RankStat(models.Model):
         SUBMISSIONS = "submissions", _("Submissions")
         GENDER = "gender", _("Gender")
         SUBMISSION_TYPE = "submission_type", _("Submission  Type")
+        TOPIC = "topic", _("Topic")
         LANGUAGE = "language", _("Language")
         AUDIENCE_LEVEL = "audience_level", _("Audience Level")
 
@@ -231,6 +232,16 @@ class RankRequest(models.Model):
             RankStat.objects.create(
                 name=f"{language.name}",
                 type=RankStat.Type.LANGUAGE,
+                value=count,
+                rank_request=self,
+            )
+
+        # N. submissions by Topic
+        for topic in self.conference.topics.all():
+            count = submissions.filter(submission__topic=topic).count()
+            RankStat.objects.create(
+                name=f"{topic.name}",
+                type=RankStat.Type.TOPIC,
                 value=count,
                 rank_request=self,
             )

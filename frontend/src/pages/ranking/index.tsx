@@ -73,7 +73,7 @@ export const RankingPage = () => {
     const stat = data?.conference?.ranking?.stats.filter(
       (stat) =>
         stat.type.toLowerCase() === type &&
-        ((name && stat.name.toLowerCase() == name) || !name),
+        ((name && stat.name.toLowerCase() == name.toLowerCase()) || !name),
     );
     return stat && stat[0];
   };
@@ -83,6 +83,11 @@ export const RankingPage = () => {
       (stat) => stat.type.toLowerCase() === type,
     );
   };
+  const topicStat = getRankingStat(
+    "topic",
+    topics.filter((item) => item.id === filters.values.topic.toString())[0]
+      .name,
+  );
 
   if (loading) {
     return <PageLoading titleId="global.loading" />;
@@ -131,19 +136,29 @@ export const RankingPage = () => {
               </Text>
             </Box>
             <Box>
-              <Select
-                {...select("topic")}
-                sx={{
-                  background: "orange",
-                  borderRadius: 0,
+              <Box mb={4}>
+                <Select
+                  {...select("topic")}
+                  sx={{
+                    background: "orange",
+                    borderRadius: 0,
+                  }}
+                >
+                  {topics.map((topic) => (
+                    <option key={topic.id} value={topic.id}>
+                      {topic.name}
+                    </option>
+                  ))}
+                </Select>
+              </Box>
+
+              <FormattedMessage
+                id="ranking.topicComment"
+                values={{
+                  value: topicStat?.value,
+                  name: topicStat?.name,
                 }}
-              >
-                {topics.map((topic) => (
-                  <option key={topic.id} value={topic.id}>
-                    {topic.name}
-                  </option>
-                ))}
-              </Select>
+              />
             </Box>
           </Grid>
 
@@ -251,8 +266,6 @@ export const RankingPage = () => {
                 }}
               />
             </Text>
-          </Box>
-          <Box>
             {getRankingStats("submission_type").map((stat) => (
               <Text>
                 <FormattedMessage
@@ -264,10 +277,23 @@ export const RankingPage = () => {
                 />
               </Text>
             ))}
+          </Box>
+          <Box>
             {getRankingStats("audience_level").map((stat) => (
               <Text>
                 <FormattedMessage
                   id="ranking.stats.audienceLevel"
+                  values={{
+                    value: stat.value,
+                    name: stat.name,
+                  }}
+                />
+              </Text>
+            ))}
+            {getRankingStats("topic").map((stat) => (
+              <Text>
+                <FormattedMessage
+                  id="ranking.stats.topic"
                   values={{
                     value: stat.value,
                     name: stat.name,
