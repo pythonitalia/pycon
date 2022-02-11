@@ -228,7 +228,7 @@ export const RankingPage = () => {
             </Text>
             <Text>
               <FormattedMessage
-                id="ranking.stats.gender.women"
+                id="ranking.stats.gender.men"
                 values={{
                   value: getRankingStat("gender", "male")?.value,
                 }}
