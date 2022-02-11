@@ -19,6 +19,7 @@ import {
   useTopicsQuery,
   queryTopics,
   queryRanking,
+  RankStat,
 } from "~/types";
 
 import ErrorPage from "../_error";
@@ -68,7 +69,10 @@ export const RankingPage = () => {
     return true;
   };
 
-  const getRankingStat = (type: string, name?: string) => {
+  const getRankingStat = (
+    type: string,
+    name?: string,
+  ): RankStat | RankStat[] | null => {
     if (!data?.conference?.ranking?.stats) {
       return null;
     }
