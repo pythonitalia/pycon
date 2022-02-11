@@ -20,7 +20,6 @@ class RankStat(models.Model):
         LANGUAGE = "language", _("Language")
         AUDIENCE_LEVEL = "audience_level", _("Audience Level")
 
-    # name = I18nCharField(_("name"), max_length=100)
     name = models.CharField(_("Name"), max_length=50)
     value = models.PositiveIntegerField(_("Value"))
     type = models.CharField(_("type"), choices=Type.choices, max_length=25)
@@ -197,7 +196,7 @@ class RankRequest(models.Model):
 
             RankStat.objects.create(
                 name=f"{value}",
-                type=RankStat.Type.SPEAKERS,
+                type=RankStat.Type.GENDER,
                 value=count,
                 rank_request=self,
             )
@@ -221,7 +220,7 @@ class RankRequest(models.Model):
 
             RankStat.objects.create(
                 name=f"{audience_level.name}",
-                type=RankStat.Type.SUBMISSION_TYPE,
+                type=RankStat.Type.AUDIENCE_LEVEL,
                 value=count,
                 rank_request=self,
             )

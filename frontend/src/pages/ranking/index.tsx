@@ -32,7 +32,6 @@ const COLORS = [
 type Filters = {
   topic: string;
 };
-
 export const RankingPage = () => {
   const conferenceCode = process.env.conferenceCode;
 
@@ -54,6 +53,7 @@ export const RankingPage = () => {
     },
   });
 
+  console.log(JSON.stringify(data?.conference?.ranking?.stats));
   const filterVisibleSubmissions = (submission) => {
     if (
       filters.values.topic &&
@@ -62,6 +62,24 @@ export const RankingPage = () => {
       return false;
     }
     return true;
+  };
+
+  const getRankingStat = (type: string, name?: string) => {
+    if (!data?.conference?.ranking?.stats) {
+      return null;
+    }
+    const stat = data.conference.ranking.stats.filter(
+      (stat) =>
+        stat.type.toLowerCase() === type &&
+        ((name && stat.name.toLowerCase() == name) || !name),
+    );
+    if (!name) {
+      return stat;
+    }
+    if (stat.length > 0) {
+      return stat[0];
+    }
+    return null;
   };
 
   if (loading) {
@@ -103,7 +121,8 @@ export const RankingPage = () => {
                   values={{
                     speakersNumber:
                       data?.conference?.ranking?.speakersStat.value,
-                    proposalNumber: "222",
+                    proposalNumber:
+                      data?.conference?.ranking?.submissionsStat.value,
                     br: <br />,
                   }}
                 />
@@ -162,6 +181,101 @@ export const RankingPage = () => {
             ))}
         </Box>
       )}
+
+      <Box
+        sx={{
+          maxWidth: "container",
+          mx: "auto",
+          px: 3,
+          mb: 4,
+        }}
+      >
+        <Heading mb={4}>
+          <FormattedMessage id="ranking.stats.heading" />
+        </Heading>
+        <Grid
+          gap={4}
+          sx={{
+            gridTemplateColumns: [null, "1fr 1fr"],
+          }}
+        >
+          <Box>
+            <Text>
+              <FormattedMessage
+                id="ranking.stats.submissions"
+                values={{
+                  value: data?.conference?.ranking?.submissionsStat.value,
+                }}
+              />
+            </Text>
+            <Text>
+              <FormattedMessage
+                id="ranking.stats.speakers"
+                values={{
+                  value: data?.conference?.ranking?.speakersStat.value,
+                }}
+              />
+            </Text>
+            <Text>
+              <FormattedMessage
+                id="ranking.stats.gender.women"
+                values={{
+                  value: getRankingStat("gender", "female").value,
+                }}
+              />
+            </Text>
+            <Text>
+              <FormattedMessage
+                id="ranking.stats.gender.women"
+                values={{
+                  value: getRankingStat("gender", "male").value,
+                }}
+              />
+            </Text>
+
+            <Text>
+              <FormattedMessage
+                id="ranking.stats.language.italian"
+                values={{
+                  value: getRankingStat("language", "italian").value,
+                }}
+              />
+            </Text>
+            <Text>
+              <FormattedMessage
+                id="ranking.stats.language.english"
+                values={{
+                  value: getRankingStat("language", "english").value,
+                }}
+              />
+            </Text>
+          </Box>
+          <Box>
+            {getRankingStat("submission_type").map((stat) => (
+              <Text>
+                <FormattedMessage
+                  id="ranking.stats.submissionType"
+                  values={{
+                    value: stat.value,
+                    name: stat.name,
+                  }}
+                />
+              </Text>
+            ))}
+            {getRankingStat("audience_level").map((stat) => (
+              <Text>
+                <FormattedMessage
+                  id="ranking.stats.audienceLevel"
+                  values={{
+                    value: stat.value,
+                    name: stat.name,
+                  }}
+                />
+              </Text>
+            ))}
+          </Box>
+        </Grid>
+      </Box>
     </Box>
   );
 };
