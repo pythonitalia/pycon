@@ -14,7 +14,12 @@ import { MetaTags } from "~/components/meta-tags";
 import { PageLoading } from "~/components/page-loading";
 import { SubmissionAccordion } from "~/components/submission-accordion";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
-import { useRankingQuery, useTopicsQuery, queryTopics } from "~/types";
+import {
+  useRankingQuery,
+  useTopicsQuery,
+  queryTopics,
+  queryRanking,
+} from "~/types";
 
 import ErrorPage from "../_error";
 
@@ -282,10 +287,19 @@ export const RankingPage = () => {
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
   const client = getApolloClient();
 
+  const {
+    data: {
+      conference: { topics },
+    },
+  } = await queryTopics(client, {
+    code: process.env.conferenceCode,
+  });
+
   await Promise.all([
     prefetchSharedQueries(client, locale),
-    queryTopics(client, {
-      code: process.env.conferenceCode,
+    queryRanking(client, {
+      conference: process.env.conferenceCode,
+      topic: topics[0].id,
     }),
   ]);
 
