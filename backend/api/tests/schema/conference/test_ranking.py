@@ -1,14 +1,16 @@
 import pytest
 
-pytestmark = pytest.mark.django_db
+pytestmark = [pytest.mark.django_db]
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture
 def mock_users(mocker):
     mocker.patch("voting.models.ranking.get_users_data_by_ids", return_value={})
 
 
-def test_conference_ranking_does_not_exists(conference_factory, graphql_client):
+def test_conference_ranking_does_not_exists(
+    conference_factory, graphql_client, mock_users
+):
     conference = conference_factory(
         topics=[
             "Sushi",
@@ -39,7 +41,7 @@ def test_conference_ranking_does_not_exists(conference_factory, graphql_client):
 
 
 def test_conference_ranking_is_not_public(
-    conference_factory, rank_request_factory, graphql_client
+    conference_factory, rank_request_factory, graphql_client, mock_users
 ):
     conference = conference_factory(
         topics=[
@@ -67,7 +69,11 @@ def test_conference_ranking_is_not_public(
 
 
 def test_conference_ranking_is_public_anyone_can_see(
-    conference, rank_request_factory, rank_submission_factory, graphql_client
+    conference,
+    rank_request_factory,
+    rank_submission_factory,
+    graphql_client,
+    mock_users,
 ):
     rank_request = rank_request_factory(conference=conference, is_public=True)
     rank_submission = rank_submission_factory(rank_request=rank_request)
@@ -108,6 +114,7 @@ def test_conference_ranking_is_not_public_admin_can_see(
     rank_submission_factory,
     graphql_client,
     admin_user,
+    mock_users,
 ):
     graphql_client.force_login(admin_user)
     rank_request = rank_request_factory(conference=conference, is_public=False)
@@ -149,6 +156,7 @@ def test_conference_ranking_is_not_public_users_cannot_see(
     rank_submission_factory,
     graphql_client,
     user,
+    mock_users,
 ):
     graphql_client.force_login(user)
     rank_request = rank_request_factory(conference=conference, is_public=False)
