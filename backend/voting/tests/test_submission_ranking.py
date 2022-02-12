@@ -6,6 +6,11 @@ pytestmark = pytest.mark.django_db
 
 
 @pytest.fixture
+def mock_users(mocker):
+    mocker.patch("voting.models.ranking.get_users_data_by_ids", return_value={})
+
+
+@pytest.fixture
 def _setup_simple_weigths(
     conference_factory, user_factory, submission_factory, vote_factory
 ):
@@ -80,7 +85,7 @@ def _setup_simple_weigths(
 
 
 @pytest.mark.django_db
-def test_most_voted_based_algorithm(_setup_simple_weigths):
+def test_most_voted_based_algorithm(_setup_simple_weigths, mock_users):
     conference, _, _, ranked_submissions = _setup_simple_weigths
 
     ranking = RankRequest.objects.create(conference=conference, is_public=True)
@@ -89,7 +94,9 @@ def test_most_voted_based_algorithm(_setup_simple_weigths):
         assert round(rank.score, 2) == round(ranked_submissions[index]["score"], 2)
 
 
-def test_ranking_only_on_proposed_submissions(conference, submission_factory):
+def test_ranking_only_on_proposed_submissions(
+    conference, submission_factory, mock_users
+):
     valid_submission = submission_factory(status="proposed", conference=conference)
     cancelled_submission = submission_factory(status="cancelled", conference=conference)
 

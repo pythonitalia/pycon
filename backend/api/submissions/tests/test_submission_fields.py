@@ -299,7 +299,9 @@ def test_ranked_submission_user_can_see_public_and_restricted_fields(
     user,
     submission_factory,
     rank_request_factory,
+    mocker,
 ):
+    mocker.patch("voting.models.ranking.get_users_data_by_ids", return_value={})
     submission = _submission(submission_factory, user=user, conference=conference)
     rank_request_factory(
         conference=conference, submissions=[submission], is_public=True
@@ -334,12 +336,9 @@ def test_ranked_submission_user_can_see_public_and_restricted_fields(
 
 
 def test_ranking_is_not_public_cannot_see_restricted_and_private_fields(
-    graphql_client,
-    rank_request_factory,
-    conference,
-    user,
-    submission_factory,
+    graphql_client, rank_request_factory, conference, user, submission_factory, mocker
 ):
+    mocker.patch("voting.models.ranking.get_users_data_by_ids", return_value={})
     submission = _submission(submission_factory, user=user, conference=conference)
     rank_request_factory(
         conference=conference, submissions=[submission], is_public=False
