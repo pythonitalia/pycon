@@ -28,6 +28,7 @@ def _setup_simple_weigths(
 
     user1 = user_factory()
     user2 = user_factory()
+    user3 = user_factory()
 
     vote_factory(user_id=user1.id, submission=submissions[0], value=1)
     vote_factory(user_id=user1.id, submission=submissions[1], value=2)
@@ -35,12 +36,15 @@ def _setup_simple_weigths(
     vote_factory(user_id=user1.id, submission=submissions[3], value=4)
 
     vote_factory(user_id=user2.id, submission=submissions[0], value=1)
-    vote_factory(user_id=user2.id, submission=submissions[6], value=4)
+    vote_factory(user_id=user2.id, submission=submissions[6], value=1)
+
+    vote_factory(user_id=user3.id, submission=submissions[5], value=4)
 
     users_weights = {
         (user1.id, sushi.id): 2.0,
         (user2.id, pizza.id): 1.0,
         (user2.id, sushi.id): 1.0,
+        (user3.id, pizza.id): 1.0,
     }
     votes = Vote.objects.all()
 
@@ -53,7 +57,7 @@ def _setup_simple_weigths(
         {
             "submission_id": submissions[6].id,
             "submission__topic_id": submissions[6].topic.id,
-            "score": 4.0,
+            "score": 1.0,
         },
         {
             "submission_id": submissions[2].id,
@@ -63,7 +67,7 @@ def _setup_simple_weigths(
         {
             "submission_id": submissions[5].id,
             "submission__topic_id": submissions[5].topic.id,
-            "score": 0.0,
+            "score": 4.0,
         },
         {
             "submission_id": submissions[4].id,
