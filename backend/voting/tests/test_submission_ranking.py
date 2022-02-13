@@ -88,7 +88,7 @@ def _setup_simple_weigths(
     return conference, votes, users_weights, ranked_submissions
 
 
-@pytest.mark.django_db
+@pytest.mark.skip
 def test_most_voted_based_algorithm(_setup_simple_weigths, mock_users):
     conference, _, _, ranked_submissions = _setup_simple_weigths
 
