@@ -402,6 +402,7 @@ of PyCon italia! There were {proposalNumber} proposals this year to choose from
     "ranking.stats.speakers": "{value} people proposed themselves as speakers",
     "ranking.stats.gender.women": "{value} proposals by female speakers",
     "ranking.stats.gender.men": "{value} proposals by male speakers",
+    "ranking.stats.gender.other": "{value} from unspecified gender speakers",
     "ranking.stats.language.english": "{value} proposals in Italian",
     "ranking.stats.language.italian": "{value} proposals in English",
     "ranking.stats.submissionType": "{value} {name} proposed",
@@ -861,6 +862,8 @@ of PyCon italia! There were {proposalNumber} proposals this year to choose from
     "ranking.stats.speakers": "{value} persone si sono proposte come speaker",
     "ranking.stats.gender.women": "{value} proposte da speaker donne",
     "ranking.stats.gender.men": "{value} proposte da speaker uomini",
+    "ranking.stats.gender.other":
+      "{value} proposte da speaker di gender non specificato",
     "ranking.stats.language.english": "{value} proposte in Italiano",
     "ranking.stats.language.italian": "{value} proposte in Inglese",
     "ranking.stats.submissionType": "{value} {name} proposti",

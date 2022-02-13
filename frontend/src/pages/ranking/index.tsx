@@ -249,7 +249,16 @@ export const RankingPage = () => {
                 }}
               />
             </Text>
-
+            <Text>
+              <FormattedMessage
+                id="ranking.stats.gender.other"
+                values={{
+                  value:
+                    getRankingStat("gender", "other")?.value +
+                    getRankingStat("gender", "prefer not to say")?.value,
+                }}
+              />
+            </Text>
             <Text>
               <FormattedMessage
                 id="ranking.stats.language.italian"
