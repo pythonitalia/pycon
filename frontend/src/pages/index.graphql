@@ -14,9 +14,9 @@ query IndexPage($code: String!, $language: String!) {
     introTitle: copy(key: "intro-title-1", language: $language)
     introText: copy(key: "intro-text-1", language: $language)
 
-    votingTitle: copy(key: "voting-title", language: $language)
-    votingSubtitle: copy(key: "voting-subtitle", language: $language)
-    votingText: copy(key: "voting-text", language: $language)
+    sponsorsTitle: copy(key: "sponsors-title", language: $language)
+    sponsorsSubtitle: copy(key: "sponsors-subtitle", language: $language)
+    sponsorsText: copy(key: "sponsors-text", language: $language)
 
     gettingThereText: copy(key: "getting-there-text", language: $language)
 

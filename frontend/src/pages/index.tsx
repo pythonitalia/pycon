@@ -19,7 +19,6 @@ import { MetaTags } from "~/components/meta-tags";
 import { NewsletterSection } from "~/components/newsletter";
 import { SponsorsSection } from "~/components/sponsors-section";
 import { YouTubeLite } from "~/components/youtube-lite";
-import { formatDeadlineDate, formatDeadlineTime } from "~/helpers/deadlines";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
 import {
@@ -102,72 +101,23 @@ export const HomePage = () => {
           </Box>
         </Box>
 
-        {conference.votingDeadline && (
-          <Box sx={{ gridColumnStart: [null, null, 3] }}>
-            <Heading as="h1" sx={{ mb: 3 }}>
-              {conference.votingTitle}
-            </Heading>
+        <Box sx={{ gridColumnStart: [null, null, 3] }}>
+          <Heading as="h1" sx={{ mb: 3 }}>
+            {conference.sponsorsTitle}
+          </Heading>
 
-            <Box
-              sx={{
-                border: "primary",
-                mb: 3,
-                display: ["block", "flex"],
-                mx: "auto",
-                width: ["80%", null, "100%"],
-              }}
-            >
-              <Box
-                sx={{
-                  flex: 1,
-                  p: 3,
-                  textAlign: "center",
-                  borderRight: [null, "primary"],
-                  borderBottom: ["primary", "none"],
-                }}
-              >
-                <Heading variant="caps" color="violet">
-                  <FormattedMessage id="home.deadline.begins" />
-                </Heading>
-                <Box>
-                  {formatDeadlineDate(
-                    conference.votingDeadline.start,
-                    language,
-                  )}
-                </Box>
-                <Box sx={{ fontSize: 0 }}>
-                  {formatDeadlineTime(
-                    conference.votingDeadline.start,
-                    language,
-                  )}
-                </Box>
-              </Box>
-              <Box sx={{ flex: 1, p: 3, textAlign: "center" }}>
-                <Heading variant="caps" color="orange">
-                  <FormattedMessage id="home.deadline.deadline" />
-                </Heading>
-                <Box>
-                  {formatDeadlineDate(conference.votingDeadline.end, language)}
-                </Box>
-                <Box sx={{ fontSize: 0 }}>
-                  {formatDeadlineTime(conference.votingDeadline.end, language)}
-                </Box>
-              </Box>
-            </Box>
+          <Heading as="h2" sx={{ color: "yellow", fontSize: 3, mb: 3 }}>
+            {conference.sponsorsSubtitle}
+          </Heading>
 
-            <Heading as="h2" sx={{ color: "yellow", fontSize: 3, mb: 3 }}>
-              {conference.votingSubtitle}
-            </Heading>
+          <Text as="p" sx={{ mb: 4 }}>
+            {conference.sponsorsText}
+          </Text>
 
-            <Text as="p" sx={{ mb: 4 }}>
-              {conference.votingText}
-            </Text>
-
-            <Link path="/voting" variant="arrow-button">
-              <FormattedMessage id="home.voting.vote" />
-            </Link>
-          </Box>
-        )}
+          <Link path="/sponsor" variant="arrow-button">
+            <FormattedMessage id="home.sponsor.cta" />
+          </Link>
+        </Box>
       </Grid>
 
       {conference.events.length > 0 && (
