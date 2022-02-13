@@ -45,10 +45,6 @@ class RankRequest:
     ranked_submissions: List[RankSubmission]
     stats: List[RankStat]
 
-    @strawberry.field
-    def stat(self, info, type: str) -> Optional[RankStat]:
-        return self.stats.filter(type=type).first()
-
 
 @strawberry.type
 class RankSubmission:
