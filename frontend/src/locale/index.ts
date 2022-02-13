@@ -475,7 +475,7 @@ export const messages = {
     "home.findRoute": "Raggiungici",
     "home.conferenceHighlights": "Eventi sociali",
     "home.latestNews": "Ultime notizie",
-    "home.sponsor.cta": "Sponsorizzaci!",
+    "home.sponsor.cta": "Sponsorizzazione!",
     "buttons.save": "Salva 💾",
     "profile.title": "Il tuo profilo",
     "profile.notSet": "Non impostato",
