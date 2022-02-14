@@ -390,9 +390,11 @@ export const messages = {
 
     "ranking.heading": "Community voting results",
     "ranking.introduction": `Here there are the results of the community voting! {br}
-Thanks to all the people who voted and helped prepare the program for the next edition
-of PyCon italia! There were {proposalNumber} proposals this year to choose from
-{speakersNumber} fantastic speakers!`,
+      Thanks to all the people who voted and helped prepare the program for the next edition
+      of PyCon italia! There were {proposalNumber} proposals this year to choose from
+      {speakersNumber} fantastic speakers!{br}{br}
+      The results of the vote are only indicative: the programme committee reserves the right
+      to select proposals in order to create a balanced programme.`,
     "ranking.topicComment":
       "We received {value} proposals for the track {name} this year!",
     "ranking.seoTitle": "Ranking",
@@ -851,7 +853,9 @@ of PyCon italia! There were {proposalNumber} proposals this year to choose from
     "ranking.introduction": `Ecco qui i risultati della votazione comunitaria!{br}
       Grazie a tutte persone che hanno votato e hanno cosi' contribuito a preparare il programma
       per la prossima edizione di PyCon italia! C'erano ben {proposalNumber} proposte quest'anno da
-      scegliere inviate da ben {speakersNumber} fantastici speakers!
+      scegliere inviate da ben {speakersNumber} fantastici speakers!{br}
+      I risultati della votazione sono solo indicativi: il comitato del programma si riserva il
+      diritto di segliere le proposte al fine di creare un programma equilibrato.
 `,
     "ranking.topicComment":
       "Abbiamo ricevuto {value} proposte per la track {name} quest'anno!",
