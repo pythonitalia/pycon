@@ -78,7 +78,6 @@ class RankRequest(models.Model):
         """
 
         return RankRequest.users_most_voted_based(conference)
-        # return RankRequest.simple_sum(conference)
 
     @staticmethod
     def users_most_voted_based(conference):
@@ -132,7 +131,9 @@ class RankRequest(models.Model):
                     "score": score,
                 }
                 topic_ranking.append(rank)
-                sorted(topic_ranking, key=lambda k: k["score"], reverse=True)
+                topic_ranking = sorted(
+                    topic_ranking, key=lambda k: k["score"], reverse=True
+                )
 
             rankings.append(topic_ranking)
         return rankings

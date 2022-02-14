@@ -145,6 +145,7 @@ class RankSubmissionAdmin(ExportMixin, AdminUsersMixin):
     ordering = (
         "submission__topic_id",
         "rank",
+        "-score",
     )
     list_filter = (
         "rank_request_id",
