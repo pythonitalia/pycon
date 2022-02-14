@@ -21,6 +21,7 @@ EXPORT_GRANTS_FIELDS = (
     "needs_funds_for_travel",
     "why",
     "notes",
+    "travelling_from",
     "conference__code",
     "created",
 )
