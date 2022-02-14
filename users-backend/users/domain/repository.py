@@ -3,6 +3,7 @@ from typing import Any, Optional
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.expression import or_, select
+
 from users.domain.entities import User
 from users.domain.paginable import Paginable
 from users.starlette_password.hashers import make_password
@@ -46,6 +47,11 @@ class UsersRepository(AbstractUsersRepository):
 
     async def get_batch_by_ids(self, ids: list[int]) -> list[User]:
         query = select(User).where(User.id.in_(ids))
+        users = (await self.session.execute(query)).scalars().all()
+        return users
+
+    async def get_batch_by_emails(self, emails: list[str]) -> list[User]:
+        query = select(User).where(User.email.in_(emails))
         users = (await self.session.execute(query)).scalars().all()
         return users
 

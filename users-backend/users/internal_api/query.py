@@ -3,6 +3,7 @@ from typing import Optional
 
 import strawberry
 from strawberry import ID
+
 from users.internal_api.context import Info
 from users.internal_api.permissions import IsService
 from users.internal_api.types import User
@@ -35,3 +36,8 @@ class Query:
     async def user_by_email(self, info: Info, email: str) -> Optional[User]:
         user = await info.context.users_repository.get_by_email(email)
         return User.from_domain(user) if user else None
+
+    @strawberry.field(permission_classes=[IsService(["pycon-backend"])])
+    async def users_by_emails(self, info: Info, emails: list[str]) -> list[User]:
+        users = await info.context.users_repository.get_batch_by_emails(emails)
+        return [User.from_domain(user) for user in users]
