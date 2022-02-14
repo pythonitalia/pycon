@@ -853,7 +853,7 @@ export const messages = {
     "ranking.introduction": `Ecco qui i risultati della votazione comunitaria!{br}
       Grazie a tutte persone che hanno votato e hanno cosi' contribuito a preparare il programma
       per la prossima edizione di PyCon italia! C'erano ben {proposalNumber} proposte quest'anno da
-      scegliere inviate da ben {speakersNumber} fantastici speakers!{br}
+      scegliere inviate da ben {speakersNumber} fantastici speakers!{br}{br}
       I risultati della votazione sono solo indicativi: il comitato del programma si riserva il
       diritto di segliere le proposte al fine di creare un programma equilibrato.
 `,
