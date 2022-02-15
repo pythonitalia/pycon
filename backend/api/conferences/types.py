@@ -311,11 +311,9 @@ class Conference:
 
     @strawberry.field
     def ranking(self, info, topic: strawberry.ID) -> Optional[RankRequest]:
-        rank_requests = RankRequestModel.objects.filter(conference=self)
-        if not rank_requests:
+        rank_request = RankRequestModel.objects.filter(conference=self).first()
+        if not rank_request:
             return None
-
-        rank_request = rank_requests[0]
 
         if not rank_request.is_public and not IsStaffPermission().has_permission(
             self, info
