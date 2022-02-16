@@ -1,3 +1,4 @@
+import logging
 from datetime import date, datetime, time
 from typing import List, Optional
 
@@ -25,6 +26,8 @@ from voting.models import RankRequest as RankRequestModel
 from ..helpers.i18n import make_localized_resolver
 from ..helpers.maps import Map, resolve_map
 from ..permissions import CanSeeSubmissions, IsStaffPermission
+
+logger = logging.getLogger(__name__)
 
 
 @strawberry.type
@@ -313,11 +316,13 @@ class Conference:
     def ranking(self, info, topic: strawberry.ID) -> Optional[RankRequest]:
         rank_request = RankRequestModel.objects.filter(conference=self).first()
         if not rank_request:
+            logger.info("No ranking request found for conference %s", self.code)
             return None
 
         if not rank_request.is_public and not IsStaffPermission().has_permission(
             self, info
         ):
+            logger.info("Ranking is not public or user don't have permissions")
             return None
 
         submissions = rank_request.rank_submissions.filter(
