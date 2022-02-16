@@ -10,7 +10,7 @@ from import_export.widgets import DecimalWidget
 
 from users.autocomplete import UsersBackendAutocomplete
 from users.mixins import AdminUsersMixin, ResourceUsersMixin
-from voting.models import RankRequest, RankSubmission, Vote
+from voting.models import RankRequest, RankStat, RankSubmission, Vote
 
 
 class SubmissionFilter(AutocompleteFilter):
@@ -70,10 +70,9 @@ class VoteAdmin(ExportMixin, AdminUsersMixin):
 
 
 EXPORT_RANK_SUBMISSION_FIELDS = (
-    "absolute_rank",
-    "absolute_score",
+    "rank",
+    "score",
     "submission__topic__name",
-    "topic_rank",
     "submission__id",
     "submission__hashid",
     "submission__title",
@@ -100,9 +99,7 @@ class RankSubmissionResource(ResourceUsersMixin):
     tags = Field()
     vote_count = Field()
 
-    absolute_score = Field(
-        column_name="absolute_score", attribute="absolute_score", widget=DecimalWidget()
-    )
+    score = Field(column_name="score", attribute="score", widget=DecimalWidget())
 
     def dehydrate_submission__hashid(self, obj):
         return obj.submission.hashid
@@ -133,20 +130,23 @@ class RankSubmissionAdmin(ExportMixin, AdminUsersMixin):
     resource_class = RankSubmissionResource
     user_fk = "submission__speaker_id"
     list_display = (
-        "absolute_rank",
-        "absolute_score",
+        "rank",
+        "score",
         "duration",
         "title",
         "type",
         "topic",
-        "topic_rank",
         "level",
         "language",
         "speaker",
         "gender",
         "view_submission",
     )
-    ordering = ("absolute_rank",)
+    ordering = (
+        "submission__topic_id",
+        "rank",
+        "-score",
+    )
     list_filter = (
         "rank_request_id",
         "submission__type",
@@ -206,7 +206,7 @@ class RankSubmissionAdmin(ExportMixin, AdminUsersMixin):
 
 @admin.register(RankRequest)
 class RankRequestAdmin(admin.ModelAdmin):
-    list_display = ("conference", "created", "view_rank")
+    list_display = ("conference", "created", "is_public", "view_rank")
 
     def view_rank(self, obj):
         return format_html(
@@ -218,3 +218,8 @@ class RankRequestAdmin(admin.ModelAdmin):
 
     view_rank.short_description = "View"
     view_rank.allow_tags = True
+
+
+@admin.register(RankStat)
+class RankStatAdmin(admin.ModelAdmin):
+    list_filter = ("rank_request__conference",)

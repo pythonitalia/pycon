@@ -47,9 +47,8 @@ class RankSubmissionFactory(factory.django.DjangoModelFactory):
     rank_request = factory.SubFactory(RankRequestFactory)
     submission = factory.SubFactory(SubmissionFactory)
 
-    absolute_rank = factory.Sequence(lambda n: n + 1)
-    absolute_score = factory.Sequence(lambda n: (n + 1) * random.randint(n, 100))
-    topic_rank = factory.Sequence(lambda n: n + 1)
+    rank = factory.Sequence(lambda n: n + 1)
+    score = factory.Sequence(lambda n: (n + 1) * random.randint(n, 100))
 
     class Meta:
         model = RankSubmission
