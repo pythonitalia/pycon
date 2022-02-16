@@ -311,27 +311,23 @@ class Conference:
 
     @strawberry.field
     def ranking(self, info, topic: strawberry.ID) -> Optional[RankRequest]:
-        try:
-            rank_requests = RankRequestModel.objects.filter(conference=self)
-            if not rank_requests:
-                return None
-
-            rank_request = rank_requests[0]
-
-            if not rank_request.is_public and not IsStaffPermission().has_permission(
-                self, info
-            ):
-                return None
-
-            submissions = rank_request.rank_submissions.filter(
-                submission__topic__id=topic
-            ).order_by("absolute_rank")
-            return RankRequest(
-                is_public=rank_request.is_public,
-                ranked_submissions=submissions,
-            )
-        except RankRequestModel.DoesNotExist:
+        rank_request = RankRequestModel.objects.filter(conference=self).first()
+        if not rank_request:
             return None
+
+        if not rank_request.is_public and not IsStaffPermission().has_permission(
+            self, info
+        ):
+            return None
+
+        submissions = rank_request.rank_submissions.filter(
+            submission__topic__id=topic
+        ).order_by("rank")
+        return RankRequest(
+            is_public=rank_request.is_public,
+            ranked_submissions=submissions,
+            stats=rank_request.stats.all(),
+        )
 
     @strawberry.field
     def days(self, info) -> List[Day]:

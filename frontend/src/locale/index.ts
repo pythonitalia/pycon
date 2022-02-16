@@ -390,10 +390,27 @@ export const messages = {
       "Voucher code correct, but no product in the cart can be discounted",
 
     "ranking.heading": "Community voting results",
-    "ranking.introduction":
-      "Here there are the results of the community voting!",
+    "ranking.introduction": `Here there are the results of the community voting! {br}
+      Thanks to all the people who voted and helped prepare the program for the next edition
+      of PyCon italia! There were {proposalNumber} proposals this year to choose from
+      {speakersNumber} fantastic speakers!{br}{br}
+      The results of the vote are only indicative: the programme committee reserves the right
+      to select proposals in order to create a balanced programme.`,
+    "ranking.topicComment":
+      "We received {value} proposals for the track {name} this year!",
     "ranking.seoTitle": "Ranking",
     "ranking.details": "Details",
+    "ranking.stats.heading": "Some stats",
+    "ranking.stats.submissions": "{value} proposals in total",
+    "ranking.stats.speakers": "{value} people proposed themselves as speakers",
+    "ranking.stats.gender.women": "{value} proposals by female speakers",
+    "ranking.stats.gender.men": "{value} proposals by male speakers",
+    "ranking.stats.gender.other": "{value} from unspecified gender speakers",
+    "ranking.stats.language.english": "{value} proposals in Italian",
+    "ranking.stats.language.italian": "{value} proposals in English",
+    "ranking.stats.submissionType": "{value} {name} proposed",
+    "ranking.stats.audienceLevel": "{value} {name} level proposals",
+    "ranking.stats.topic": "{value} proposals for the track {name}",
 
     "voting.heading": "Community voting",
     "voting.introduction": `This is your opportunity to have a say on what you want to see at
@@ -835,9 +852,29 @@ export const messages = {
     "keynote.englishLanguage": "Inglese",
 
     "ranking.heading": "Risultati della votazione comunitaria",
-    "ranking.introduction": "Ecco qui i risultati della votazione comunitaria!",
+    "ranking.introduction": `Ecco qui i risultati della votazione comunitaria!{br}
+      Grazie a tutte persone che hanno votato e hanno cosi' contribuito a preparare il programma
+      per la prossima edizione di PyCon italia! C'erano ben {proposalNumber} proposte quest'anno da
+      scegliere inviate da ben {speakersNumber} fantastici speakers!{br}{br}
+      I risultati della votazione sono solo indicativi: il comitato del programma si riserva il
+      diritto di segliere le proposte al fine di creare un programma equilibrato.
+`,
+    "ranking.topicComment":
+      "Abbiamo ricevuto {value} proposte per la track {name} quest'anno!",
     "ranking.seoTitle": "Ranking",
     "ranking.details": "Dettagli",
+    "ranking.stats.heading": "Alcune statistiche",
+    "ranking.stats.submissions": "{value} proposte in totale",
+    "ranking.stats.speakers": "{value} persone si sono proposte come speaker",
+    "ranking.stats.gender.women": "{value} proposte da speaker donne",
+    "ranking.stats.gender.men": "{value} proposte da speaker uomini",
+    "ranking.stats.gender.other":
+      "{value} proposte da speaker di gender non specificato",
+    "ranking.stats.language.english": "{value} proposte in Italiano",
+    "ranking.stats.language.italian": "{value} proposte in Inglese",
+    "ranking.stats.submissionType": "{value} {name} proposti",
+    "ranking.stats.audienceLevel": "{value} proposte per livello {name}",
+    "ranking.stats.topic": "{value} proposte per la track {name}",
 
     "voteSelector.whatDoYouThink": "Cosa pensi di questa proposta?",
     "voteSelector.notInterested": "Non mi interessa",

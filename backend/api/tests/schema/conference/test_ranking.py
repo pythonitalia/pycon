@@ -1,23 +1,47 @@
-from pytest import mark
+import pytest
+import respx
+from django.conf import settings
 
-pytestmark = mark.django_db
+pytestmark = [pytest.mark.django_db]
 
 
-def test_conference_ranking_does_not_exists(conference_factory, graphql_client):
+@pytest.fixture
+def mock_users(mocker):
+
+    with respx.mock as mock:
+        mock.post(f"{settings.USERS_SERVICE}/internal-api").respond(
+            json={
+                "data": {
+                    "usersByIds": [
+                        {
+                            "id": 10,
+                            "fullname": "Marco Acierno",
+                            "name": "Marco",
+                            "username": "marco",
+                        }
+                    ]
+                }
+            }
+        )
+
+
+def test_conference_ranking_does_not_exists(
+    conference_factory, graphql_client, mock_users
+):
     conference = conference_factory(
         topics=[
             "Sushi",
         ]
     )
+
     query = """
         query($code: String!, $topic: ID!) {
             conference(code: $code) {
                 ranking(topic: $topic) {
                     isPublic
                     rankedSubmissions {
-                        absoluteRank
-                        topicRank
-                        absoluteScore
+                        rank
+                        score
                     }
                 }
             }
@@ -34,7 +58,7 @@ def test_conference_ranking_does_not_exists(conference_factory, graphql_client):
 
 
 def test_conference_ranking_is_not_public(
-    conference_factory, rank_request_factory, graphql_client
+    conference_factory, rank_request_factory, graphql_client, mock_users
 ):
     conference = conference_factory(
         topics=[
@@ -62,7 +86,11 @@ def test_conference_ranking_is_not_public(
 
 
 def test_conference_ranking_is_public_anyone_can_see(
-    conference, rank_request_factory, rank_submission_factory, graphql_client
+    conference,
+    rank_request_factory,
+    rank_submission_factory,
+    graphql_client,
+    mock_users,
 ):
     rank_request = rank_request_factory(conference=conference, is_public=True)
     rank_submission = rank_submission_factory(rank_request=rank_request)
@@ -72,9 +100,8 @@ def test_conference_ranking_is_public_anyone_can_see(
                 ranking(topic: $topic) {
                     isPublic
                     rankedSubmissions {
-                        absoluteRank
-                        topicRank
-                        absoluteScore
+                        rank
+                        score
                     }
                 }
             }
@@ -94,11 +121,8 @@ def test_conference_ranking_is_public_anyone_can_see(
 
     rank_submission_data = resp["data"]["conference"]["ranking"]["rankedSubmissions"][0]
 
-    assert rank_submission_data["absoluteRank"] == rank_submission.absolute_rank
-    assert rank_submission_data["topicRank"] == rank_submission.topic_rank
-    assert float(rank_submission_data["absoluteScore"]) == float(
-        rank_submission.absolute_score
-    )
+    assert rank_submission_data["rank"] == rank_submission.rank
+    assert float(rank_submission_data["score"]) == float(rank_submission.score)
 
 
 def test_conference_ranking_is_not_public_admin_can_see(
@@ -107,6 +131,7 @@ def test_conference_ranking_is_not_public_admin_can_see(
     rank_submission_factory,
     graphql_client,
     admin_user,
+    mock_users,
 ):
     graphql_client.force_login(admin_user)
     rank_request = rank_request_factory(conference=conference, is_public=False)
@@ -117,9 +142,8 @@ def test_conference_ranking_is_not_public_admin_can_see(
                 ranking(topic: $topic) {
                     isPublic
                     rankedSubmissions {
-                        absoluteRank
-                        topicRank
-                        absoluteScore
+                        rank
+                        score
                     }
                 }
             }
@@ -139,11 +163,8 @@ def test_conference_ranking_is_not_public_admin_can_see(
 
     rank_submission_data = resp["data"]["conference"]["ranking"]["rankedSubmissions"][0]
 
-    assert rank_submission_data["absoluteRank"] == rank_submission.absolute_rank
-    assert rank_submission_data["topicRank"] == rank_submission.topic_rank
-    assert float(rank_submission_data["absoluteScore"]) == float(
-        rank_submission.absolute_score
-    )
+    assert rank_submission_data["rank"] == rank_submission.rank
+    assert float(rank_submission_data["score"]) == float(rank_submission.score)
 
 
 def test_conference_ranking_is_not_public_users_cannot_see(
@@ -152,19 +173,22 @@ def test_conference_ranking_is_not_public_users_cannot_see(
     rank_submission_factory,
     graphql_client,
     user,
+    mock_users,
 ):
     graphql_client.force_login(user)
     rank_request = rank_request_factory(conference=conference, is_public=False)
-    rank_submission = rank_submission_factory(rank_request=rank_request)
+    rank_submission = rank_submission_factory(
+        rank_request=rank_request, submission__speaker_id=10
+    )
+
     query = """
         query($code: String!, $topic: ID!) {
             conference(code: $code) {
                 ranking(topic: $topic) {
                     isPublic
                     rankedSubmissions {
-                        absoluteRank
-                        topicRank
-                        absoluteScore
+                        rank
+                        score
                     }
                 }
             }

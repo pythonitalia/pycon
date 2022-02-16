@@ -6,7 +6,33 @@ from django.db.models.functions import Sqrt
 from django.utils.translation import gettext_lazy as _
 from model_utils.fields import AutoCreatedField
 
+from helpers.constants import GENDERS
 from submissions.models import Submission
+from users.client import get_users_data_by_ids
+
+
+class RankStat(models.Model):
+    class Type(models.TextChoices):
+        SPEAKERS = "speakers", _("Speakers")
+        SUBMISSIONS = "submissions", _("Submissions")
+        GENDER = "gender", _("Gender")
+        SUBMISSION_TYPE = "submission_type", _("Submission  Type")
+        TOPIC = "topic", _("Topic")
+        LANGUAGE = "language", _("Language")
+        AUDIENCE_LEVEL = "audience_level", _("Audience Level")
+
+    name = models.CharField(_("Name"), max_length=50)
+    value = models.PositiveIntegerField(_("Value"))
+    type = models.CharField(_("type"), choices=Type.choices, max_length=25)
+    rank_request = models.ForeignKey(
+        "voting.RankRequest",
+        on_delete=models.CASCADE,
+        verbose_name=_("Rank Request"),
+        related_name="stats",
+    )
+
+    def __str__(self):
+        return f"{self.type} ({self.name}) at <{self.rank_request.conference.code}> | {self.value}"
 
 
 class RankRequest(models.Model):
@@ -30,9 +56,10 @@ class RankRequest(models.Model):
         # do not recreate ranking
         if self.rank_submissions.exists():
             return
-        ranked_submissions = self.build_ranking(self.conference)
+        ranked_submissions_by_topic = self.build_ranking(self.conference)
 
-        self.save_rank_submissions(ranked_submissions)
+        self.save_rank_submissions(ranked_submissions_by_topic)
+        self.build_stats()
 
     def build_ranking(self, conference):
         """Builds the ranking
@@ -51,7 +78,6 @@ class RankRequest(models.Model):
         """
 
         return RankRequest.users_most_voted_based(conference)
-        # return RankRequest.simple_sum(conference)
 
     @staticmethod
     def users_most_voted_based(conference):
@@ -69,65 +95,159 @@ class RankRequest(models.Model):
 
         submissions = Submission.objects.filter(
             conference=conference, status=Submission.STATUS.proposed
-        )
+        ).order_by("topic_id")
         votes = Vote.objects.filter(submission__conference=conference)
 
         users_weight = RankRequest.get_users_weights(votes)
 
-        ranking = []
-        for submission in submissions:
-            submission_votes = votes.filter(submission=submission)
+        # group by topic to generate the relative ranking
+        def group_by(submission: Submission):
+            return submission.topic_id
 
-            if submission_votes:
-                vote_info = {}
-                for vote in submission_votes:
-                    vote_info[vote.id] = {
-                        "normalised_vote": vote.value * users_weight[vote.user_id],
-                        "scale_factor": users_weight[vote.user_id],
-                    }
-                score = sum([v["normalised_vote"] for v in vote_info.values()]) / sum(
-                    [v["scale_factor"] for v in vote_info.values()]
+        rankings = []
+        for topic_id, grouped_submissions in itertools.groupby(
+            submissions, key=group_by
+        ):
+            topic_ranking = []
+            for submission in grouped_submissions:
+                submission_votes = votes.filter(submission=submission)
+
+                if submission_votes:
+                    vote_info = {}
+                    for vote in submission_votes:
+                        vote_info[vote.id] = {
+                            "normalised_vote": vote.value
+                            * users_weight[(vote.user_id, topic_id)],
+                            "scale_factor": users_weight[(vote.user_id, topic_id)],
+                        }
+                    score = sum(
+                        [v["normalised_vote"] for v in vote_info.values()]
+                    ) / sum([v["scale_factor"] for v in vote_info.values()])
+                else:
+                    score = 0
+                rank = {
+                    "submission_id": submission.id,
+                    "submission__topic_id": submission.topic_id,
+                    "score": score,
+                }
+                topic_ranking.append(rank)
+                topic_ranking = sorted(
+                    topic_ranking, key=lambda k: k["score"], reverse=True
                 )
-            else:
-                score = 0
-            rank = {
-                "submission_id": submission.id,
-                "submission__topic_id": submission.topic_id,
-                "score": score,
-            }
-            ranking.append(rank)
-        return sorted(ranking, key=lambda k: k["score"], reverse=True)
+
+            rankings.append(topic_ranking)
+        return rankings
 
     @staticmethod
     def get_users_weights(votes):
-        queryset = votes.values("user_id").annotate(weight=Sqrt(Count("submission_id")))
-        return {weight["user_id"]: weight["weight"] for weight in queryset}
+        queryset = votes.values("submission__topic_id", "user_id").annotate(
+            weight=Sqrt(Count("submission__topic_id"))
+        )
+        return {
+            (weight["user_id"], weight["submission__topic_id"]): weight["weight"]
+            for weight in queryset
+        }
 
-    def save_rank_submissions(self, scored_submissions):
+    def save_rank_submissions(self, ranked_submissions_by_topic):
         """Save the list of ranked submissions calculating the rank position
         from the score
         """
 
-        ranked_obj = {}
-        for index, rank in enumerate(scored_submissions):
-            rank_submission = RankSubmission(
+        for submissions in ranked_submissions_by_topic:
+            for index, rank in enumerate(submissions):
+                RankSubmission.objects.create(
+                    rank_request=self,
+                    submission=Submission.objects.get(pk=rank["submission_id"]),
+                    rank=index + 1,
+                    score=rank["score"],
+                )
+
+    def build_stats(self):
+        submissions = self.rank_submissions.all()
+        if not submissions:
+            return
+
+        # N. of submissions
+        RankStat.objects.create(
+            name="Submissions",
+            type=RankStat.Type.SUBMISSIONS,
+            value=submissions.count(),
+            rank_request=self,
+        )
+
+        # N. of speakers
+        distinct_speakers = RankRequest.objects.values(
+            "rank_submissions__submission__speaker_id"
+        ).distinct()
+        RankStat.objects.create(
+            name="Speakers",
+            type=RankStat.Type.SPEAKERS,
+            value=distinct_speakers.count(),
+            rank_request=self,
+        )
+
+        # Gender
+        speaker_ids = [
+            i["rank_submissions__submission__speaker_id"] for i in distinct_speakers
+        ]
+        PREFETCHED_USERS_BY_ID = get_users_data_by_ids(list(speaker_ids))
+
+        def filter_by_gender(user):
+            return user["gender"] == key
+
+        for key, value in GENDERS:
+            count = len(list(filter(filter_by_gender, PREFETCHED_USERS_BY_ID.values())))
+
+            RankStat.objects.create(
+                name=f"{value}",
+                type=RankStat.Type.GENDER,
+                value=count,
                 rank_request=self,
-                submission=Submission.objects.get(pk=rank["submission_id"]),
-                absolute_rank=index + 1,
-                absolute_score=rank["score"],
             )
-            ranked_obj[rank["submission_id"]] = rank_submission
 
-        # group by topic to generate the relative ranking
-        def group_by(item):
-            return item["submission__topic_id"]
+        # N. submissions by SubmissionType
+        for submission_type in self.conference.submission_types.all():
+            count = submissions.filter(submission__type=submission_type).count()
 
-        scored_submissions = sorted(scored_submissions, key=group_by)
+            RankStat.objects.create(
+                name=f"{submission_type.name}",
+                type=RankStat.Type.SUBMISSION_TYPE,
+                value=count,
+                rank_request=self,
+            )
 
-        for k, g in itertools.groupby(scored_submissions, group_by):
-            for index, rank in enumerate(list(g)):
-                ranked_obj[rank["submission_id"]].topic_rank = index + 1
-                ranked_obj[rank["submission_id"]].save()
+        # N. submissions by Audience Level
+        for audience_level in self.conference.audience_levels.all():
+            count = submissions.filter(
+                submission__audience_level=audience_level
+            ).count()
+
+            RankStat.objects.create(
+                name=f"{audience_level.name}",
+                type=RankStat.Type.AUDIENCE_LEVEL,
+                value=count,
+                rank_request=self,
+            )
+
+        # N. submissions by Language
+        for language in self.conference.languages.all():
+            count = submissions.filter(submission__languages=language).count()
+            RankStat.objects.create(
+                name=f"{language.name}",
+                type=RankStat.Type.LANGUAGE,
+                value=count,
+                rank_request=self,
+            )
+
+        # N. submissions by Topic
+        for topic in self.conference.topics.all():
+            count = submissions.filter(submission__topic=topic).count()
+            RankStat.objects.create(
+                name=f"{topic.name}",
+                type=RankStat.Type.TOPIC,
+                value=count,
+                rank_request=self,
+            )
 
 
 class RankSubmission(models.Model):
@@ -143,15 +263,12 @@ class RankSubmission(models.Model):
         "submissions.Submission", on_delete=models.CASCADE, verbose_name=_("submission")
     )
 
-    absolute_rank = models.PositiveIntegerField(_("absolute rank"))
-    absolute_score = models.DecimalField(
-        _("absolute score"), decimal_places=6, max_digits=9
-    )
-    topic_rank = models.PositiveIntegerField(_("topic rank"))
+    rank = models.PositiveIntegerField(_("rank"))
+    score = models.DecimalField(_("score"), decimal_places=6, max_digits=9)
 
     def __str__(self):
         return (
             f"<{self.rank_request.conference.code}>"
             f" | {self.submission.title}"
-            f" | {self.absolute_rank}"
+            f" | {self.rank}"
         )
