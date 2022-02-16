@@ -31,20 +31,43 @@ class GrantResource(ResourceUsersByEmailsMixin):
     search_field = "email"
     has_sent_submission = Field()
     submission_title = Field()
+    submission_link = Field()
     USERS_SUBMISSIONS = {}
 
     def dehydrate_has_sent_submission(self, obj):
         return "yes" if obj.email in self.USERS_SUBMISSIONS else "no"
 
     def dehydrate_submission_title(self, obj):
-        return self.USERS_SUBMISSIONS.get(obj.email, "")
+        submissions = self.USERS_SUBMISSIONS.get(obj.email)
+        if not submissions:
+            return
+        return " | ".join([s["title"] for s in submissions])
+
+    def dehydrate_submission_link(self, obj):
+        submissions = self.USERS_SUBMISSIONS.get(obj.email)
+        if not submissions:
+            return
+        return "\n".join([s["link"] for s in submissions])
 
     def before_export(self, queryset, *args, **kwargs):
         super().before_export(queryset, *args, **kwargs)
-        ids = {u["id"]: u["email"] for u in self._PREFETCHED_USERS_BY_EMAIL.values()}
-        submissions = Submission.objects.filter(speaker_id__in=ids.keys())
+        users_ids = {
+            u["id"]: u["email"] for u in self._PREFETCHED_USERS_BY_EMAIL.values()
+        }
+        submissions = Submission.objects.filter(speaker_id__in=users_ids.keys())
 
-        self.USERS_SUBMISSIONS = {ids[str(s.speaker_id)]: s.title for s in submissions}
+        self.USERS_SUBMISSIONS = {}
+        for submission in submissions:
+            user_email = users_ids[str(submission.speaker_id)]
+            self.USERS_SUBMISSIONS.setdefault(user_email, [])
+
+            self.USERS_SUBMISSIONS[user_email].append(
+                {
+                    "title": submission.title,
+                    "link": f"https://pycon.it/submission/{submission.hashid}",
+                }
+            )
+
         return queryset
 
     class Meta:
