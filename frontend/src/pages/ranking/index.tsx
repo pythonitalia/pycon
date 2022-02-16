@@ -320,19 +320,10 @@ export const RankingPage = () => {
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
   const client = getApolloClient();
 
-  const {
-    data: {
-      conference: { topics },
-    },
-  } = await queryTopics(client, {
-    code: process.env.conferenceCode,
-  });
-
   await Promise.all([
     prefetchSharedQueries(client, locale),
-    queryRanking(client, {
-      conference: process.env.conferenceCode,
-      topic: topics[0].id,
+    queryTopics(client, {
+      code: process.env.conferenceCode,
     }),
   ]);
 
