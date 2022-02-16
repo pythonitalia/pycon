@@ -176,9 +176,11 @@ class RankRequest(models.Model):
         )
 
         # N. of speakers
-        distinct_speakers = RankRequest.objects.values(
-            "rank_submissions__submission__speaker_id"
-        ).distinct()
+        distinct_speakers = (
+            RankRequest.objects.filter(conference=self.conference)
+            .values("rank_submissions__submission__speaker_id")
+            .distinct()
+        )
         RankStat.objects.create(
             name="Speakers",
             type=RankStat.Type.SPEAKERS,

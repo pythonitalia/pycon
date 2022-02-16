@@ -66,7 +66,7 @@ class SubmissionFactory(DjangoModelFactory):
             return
 
         if extracted:
-            self.submission_type = self.conference.submission_types.get(name=extracted)
+            self.type = self.conference.submission_types.get(name=extracted)
 
     @factory.post_generation
     def custom_audience_level(self, create, extracted, **kwargs):
