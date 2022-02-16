@@ -1,30 +1,132 @@
 import pytest
+import respx
+from django.conf import settings
 
-from voting.models import RankRequest, Vote
+from voting.models import RankRequest, RankStat, Vote
 
 pytestmark = pytest.mark.django_db
 
 
 @pytest.fixture
-def mock_users(mocker):
-    mocker.patch("voting.models.ranking.get_users_data_by_ids", return_value={})
+def mock_users():
+    with respx.mock as mock:
+        mock.post(f"{settings.USERS_SERVICE}/internal-api").respond(
+            json={
+                "data": {
+                    "usersByIds": [
+                        {
+                            "id": 1,
+                            "gender": "male",
+                        },
+                        {
+                            "id": 2,
+                            "gender": "male",
+                        },
+                        {
+                            "id": 3,
+                            "gender": "female",
+                        },
+                        {
+                            "id": 4,
+                            "gender": "not_say",
+                        },
+                        {
+                            "id": 5,
+                            "gender": "other",
+                        },
+                    ]
+                }
+            }
+        )
+
+        yield
 
 
 @pytest.fixture
-def _setup_simple_weigths(
-    conference_factory, user_factory, submission_factory, vote_factory
-):
-    conference = conference_factory(topics=["Pizza", "Sushi"])
+def _voting_fixture(conference_factory, user_factory, submission_factory, vote_factory):
+    conference = conference_factory(
+        topics=["Pizza", "Sushi"],
+        submission_types=["Talk", "Workshop"],
+        audience_levels=("adult", "senior"),
+        languages=["en", "it"],
+    )
     sushi = conference.topics.get(name="Sushi")
     pizza = conference.topics.get(name="Pizza")
     submissions = []
-    submissions.append(submission_factory(conference=conference, topic=sushi))
-    submissions.append(submission_factory(conference=conference, topic=sushi))
-    submissions.append(submission_factory(conference=conference, topic=sushi))
-    submissions.append(submission_factory(conference=conference, topic=sushi))
-    submissions.append(submission_factory(conference=conference, topic=pizza))
-    submissions.append(submission_factory(conference=conference, topic=pizza))
-    submissions.append(submission_factory(conference=conference, topic=pizza))
+    submissions.append(
+        submission_factory(
+            conference=conference,
+            topic=sushi,
+            speaker_id=1,
+            languages=["en"],
+            custom_submission_type="Talk",
+            custom_audience_level="senior",
+        )
+    )
+    submissions.append(
+        submission_factory(
+            conference=conference,
+            topic=sushi,
+            speaker_id=2,
+            languages=["en", "it"],
+            custom_submission_type="Workshop",
+            custom_audience_level="senior",
+        )
+    )
+    submissions.append(
+        submission_factory(
+            conference=conference,
+            topic=sushi,
+            speaker_id=3,
+            languages=["en"],
+            custom_submission_type="Workshop",
+            custom_audience_level="adult",
+        )
+    )
+    submissions.append(
+        submission_factory(
+            conference=conference,
+            topic=sushi,
+            speaker_id=4,
+            languages=["it"],
+            custom_submission_type="Talk",
+            custom_audience_level="senior",
+        )
+    )
+    submissions.append(
+        submission_factory(
+            conference=conference,
+            topic=pizza,
+            speaker_id=1,
+            languages=["en", "it"],
+            custom_submission_type="Workshop",
+            custom_audience_level="senior",
+        )
+    )
+    submissions.append(
+        submission_factory(
+            conference=conference,
+            topic=pizza,
+            speaker_id=2,
+            languages=[
+                "it",
+            ],
+            custom_submission_type="Talk",
+            custom_audience_level="senior",
+        )
+    )
+    submissions.append(
+        submission_factory(
+            conference=conference,
+            topic=pizza,
+            speaker_id=5,
+            languages=[
+                "en",
+            ],
+            custom_submission_type="Talk",
+            custom_audience_level="senior",
+        )
+    )
 
     user1 = user_factory()
     user2 = user_factory()
@@ -89,8 +191,8 @@ def _setup_simple_weigths(
 
 
 @pytest.mark.skip
-def test_most_voted_based_algorithm(_setup_simple_weigths, mock_users):
-    conference, _, _, ranked_submissions = _setup_simple_weigths
+def test_most_voted_based_algorithm(_voting_fixture, mock_users):
+    conference, _, _, ranked_submissions = _voting_fixture
 
     ranking = RankRequest.objects.create(conference=conference, is_public=True)
     for index, rank in enumerate(ranking.rank_submissions.all().order_by("rank")):
@@ -112,6 +214,44 @@ def test_ranking_only_on_proposed_submissions(
     assert cancelled_submission.pk not in submissions_ids
 
 
-def test_weights(_setup_simple_weigths):
-    _, votes, weights, _ = _setup_simple_weigths
+def test_weights(_voting_fixture):
+    _, votes, weights, _ = _voting_fixture
     assert weights == RankRequest.get_users_weights(votes)
+
+
+def test_stats(mock_users, _voting_fixture):
+    conference, _, _, _ = _voting_fixture
+
+    ranking = RankRequest.objects.create(conference=conference, is_public=True)
+
+    stats = ranking.stats.all()
+
+    assert len(stats) == 14
+    assert stats.filter(type=RankStat.Type.SUBMISSIONS).first().value == 7
+    assert stats.filter(type=RankStat.Type.SPEAKERS).first().value == 5
+    assert stats.filter(type=RankStat.Type.LANGUAGE, name="English").first().value == 5
+    assert stats.filter(type=RankStat.Type.LANGUAGE, name="Italian").first().value == 4
+    assert (
+        stats.filter(type=RankStat.Type.SUBMISSION_TYPE, name="Talk").first().value == 4
+    )
+    assert (
+        stats.filter(type=RankStat.Type.SUBMISSION_TYPE, name="Workshop").first().value
+        == 3
+    )
+    assert (
+        stats.filter(type=RankStat.Type.AUDIENCE_LEVEL, name="adult").first().value == 1
+    )
+    assert (
+        stats.filter(type=RankStat.Type.AUDIENCE_LEVEL, name="senior").first().value
+        == 6
+    )
+
+    assert stats.filter(type=RankStat.Type.TOPIC, name="Sushi").first().value == 4
+    assert stats.filter(type=RankStat.Type.TOPIC, name="Pizza").first().value == 3
+    assert stats.filter(type=RankStat.Type.GENDER, name="Male").first().value == 2
+    assert stats.filter(type=RankStat.Type.GENDER, name="Female").first().value == 1
+    assert (
+        stats.filter(type=RankStat.Type.GENDER, name="Prefer not to say").first().value
+        == 1
+    )
+    assert stats.filter(type=RankStat.Type.GENDER, name="Other").first().value == 1
