@@ -1,11 +1,28 @@
 import pytest
+import respx
+from django.conf import settings
 
 pytestmark = [pytest.mark.django_db]
 
 
 @pytest.fixture
 def mock_users(mocker):
-    mocker.patch("voting.models.ranking.get_users_data_by_ids", return_value={})
+
+    with respx.mock as mock:
+        mock.post(f"{settings.USERS_SERVICE}/internal-api").respond(
+            json={
+                "data": {
+                    "usersByIds": [
+                        {
+                            "id": 10,
+                            "fullname": "Marco Acierno",
+                            "name": "Marco",
+                            "username": "marco",
+                        }
+                    ]
+                }
+            }
+        )
 
 
 def test_conference_ranking_does_not_exists(
@@ -160,7 +177,10 @@ def test_conference_ranking_is_not_public_users_cannot_see(
 ):
     graphql_client.force_login(user)
     rank_request = rank_request_factory(conference=conference, is_public=False)
-    rank_submission = rank_submission_factory(rank_request=rank_request)
+    rank_submission = rank_submission_factory(
+        rank_request=rank_request, submission__speaker_id=10
+    )
+
     query = """
         query($code: String!, $topic: ID!) {
             conference(code: $code) {

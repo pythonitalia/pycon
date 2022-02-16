@@ -164,6 +164,8 @@ class RankRequest(models.Model):
 
     def build_stats(self):
         submissions = self.rank_submissions.all()
+        if not submissions:
+            return
 
         # N. of submissions
         RankStat.objects.create(
