@@ -59,7 +59,7 @@
     "react-use-sync-scroll": "^0.1.0",
     "styled-system": "^5.1.5",
     "theme-ui": "0.4.0-rc.5",
-    "use-local-storage-state": "^6.0.0",
+    "use-local-storage-state": "^14.0.0",
     "use-onclickoutside": "^0.4.0",
     "yup": "^0.29.3"
   },
