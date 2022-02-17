@@ -49,7 +49,7 @@ class GrantResource(ResourceUsersByEmailsMixin):
         if not submissions:
             return
         return "\n".join(
-            [f"https://pycon.it/submission/{obj.hashid}" for s in submissions]
+            [f"https://pycon.it/submission/{s.hashid}" for s in submissions]
         )
 
     def dehydrate_submission_admin_link(self, obj):
@@ -58,7 +58,7 @@ class GrantResource(ResourceUsersByEmailsMixin):
             return
         return "\n".join(
             [
-                f"https://admin.pycon.it/admin/submissions/submission/{obj.id}/change/"
+                f"https://admin.pycon.it/admin/submissions/submission/{s.id}/change/"
                 for s in submissions
             ]
         )
