@@ -75,11 +75,7 @@ class GrantResource(ResourceUsersByEmailsMixin):
             user_email = users_ids[str(submission.speaker_id)]
             self.USERS_SUBMISSIONS.setdefault(user_email, [])
 
-            self.USERS_SUBMISSIONS[user_email].append(
-                {
-                    "title": submission.title,
-                }
-            )
+            self.USERS_SUBMISSIONS[user_email].append(submission)
 
         return queryset
 
