@@ -31,7 +31,8 @@ class GrantResource(ResourceUsersByEmailsMixin):
     search_field = "email"
     has_sent_submission = Field()
     submission_title = Field()
-    submission_link = Field()
+    submission_admin_link = Field()
+    submission_pycon_link = Field()
     USERS_SUBMISSIONS = {}
 
     def dehydrate_has_sent_submission(self, obj):
@@ -43,11 +44,24 @@ class GrantResource(ResourceUsersByEmailsMixin):
             return
         return " | ".join([s["title"] for s in submissions])
 
-    def dehydrate_submission_link(self, obj):
+    def dehydrate_submission_pycon_link(self, obj):
         submissions = self.USERS_SUBMISSIONS.get(obj.email)
         if not submissions:
             return
-        return "\n".join([s["link"] for s in submissions])
+        return "\n".join(
+            [f"https://pycon.it/submission/{obj.hashid}" for s in submissions]
+        )
+
+    def dehydrate_submission_admin_link(self, obj):
+        submissions = self.USERS_SUBMISSIONS.get(obj.email)
+        if not submissions:
+            return
+        return "\n".join(
+            [
+                f"https://admin.pycon.it/admin/submissions/submission/{obj.id}/change/"
+                for s in submissions
+            ]
+        )
 
     def before_export(self, queryset, *args, **kwargs):
         super().before_export(queryset, *args, **kwargs)
@@ -64,7 +78,6 @@ class GrantResource(ResourceUsersByEmailsMixin):
             self.USERS_SUBMISSIONS[user_email].append(
                 {
                     "title": submission.title,
-                    "link": f"https://pycon.it/submission/{submission.hashid}",
                 }
             )
 
