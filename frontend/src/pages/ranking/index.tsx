@@ -18,7 +18,6 @@ import {
   useRankingQuery,
   useTopicsQuery,
   queryTopics,
-  queryRanking,
   RankStat,
 } from "~/types";
 
