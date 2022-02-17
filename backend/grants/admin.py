@@ -42,7 +42,7 @@ class GrantResource(ResourceUsersByEmailsMixin):
         submissions = self.USERS_SUBMISSIONS.get(obj.email)
         if not submissions:
             return
-        return " | ".join([s["title"] for s in submissions])
+        return " | ".join([s.title for s in submissions])
 
     def dehydrate_submission_pycon_link(self, obj):
         submissions = self.USERS_SUBMISSIONS.get(obj.email)
