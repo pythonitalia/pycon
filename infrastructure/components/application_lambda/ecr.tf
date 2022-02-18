@@ -8,5 +8,10 @@ data "aws_caller_identity" "current" {}
 
 data "aws_ecr_image" "image" {
   repository_name = local.repository_name
-  image_tag       = var.docker_tag
+  image_tag       = var.docker_tag != null ? var.docker_tag : data.external.githash.result.githash
+}
+
+data "external" "githash" {
+  program     = ["python", abspath("${path.module}/githash.py")]
+  working_dir = abspath("${path.root}/../../${var.local_path}")
 }

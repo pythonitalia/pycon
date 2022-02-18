@@ -50,7 +50,7 @@ jobs:
       - name: Get service githash
         id: git
         run: |
-          hash=$(git rev-list -1 ${{ github.ref }} -- ${{ matrix.service.dir }})
+          hash=$(git rev-list -1 HEAD -- ${{ matrix.service.dir }})
           echo "::set-output name=githash::$hash"
       - name: Check if commit is already on ECR
         id: image
