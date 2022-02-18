@@ -52,16 +52,6 @@ jobs:
         id: git
         run: |
           hash=$(git rev-list -1 HEAD -- ${{ matrix.service.dir }})
-          pwd
-          echo "abc $hash"
-          echo "dot"
-          git rev-list -1 HEAD -- .
-          echo "be"
-          git rev-list -1 HEAD -- backend/
-          echo "fe"
-          git rev-list -1 HEAD -- frontend/
-          echo "name ${{ matrix.service.name }}"
-          echo "dir ${{ matrix.service.dir }}"
           echo "::set-output name=githash::$hash"
       - name: Check if commit is already on ECR
         id: image
