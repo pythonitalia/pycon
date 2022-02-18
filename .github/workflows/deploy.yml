@@ -76,9 +76,6 @@ jobs:
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ steps.git.outputs.githash }}-${{ matrix.service.name }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-            ${{ runner.os }}-buildx-${{ steps.git.outputs.githash }}
       - name: Build and push
         if: ${{ steps.image.outputs.image_exists == 0 }}
         uses: docker/build-push-action@v2
