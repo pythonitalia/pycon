@@ -318,7 +318,7 @@ python-versions = ">=2.7"
 
 [[package]]
 name = "django"
-version = "3.2.9"
+version = "3.2.12"
 description = "A high-level Python Web framework that encourages rapid development and clean, pragmatic design."
 category = "main"
 optional = false
@@ -1602,7 +1602,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "6c4f7e13f1f5926c78ac01675ea9a18a434778822ffc332b47cd4b5ad73f101b"
+content-hash = "201a0186bbca015538748e3d67b0024d2bcd958263aa85cd79518f5db4d59e02"
 
 [metadata.files]
 aniso8601 = [
@@ -1840,8 +1840,8 @@ diff-match-patch = [
     {file = "diff_match_patch-20200713-py3-none-any.whl", hash = "sha256:8bf9d9c4e059d917b5c6312bac0c137971a32815ddbda9c682b949f2986b4d34"},
 ]
 django = [
-    {file = "Django-3.2.9-py3-none-any.whl", hash = "sha256:e22c9266da3eec7827737cde57694d7db801fedac938d252bf27377cec06ed1b"},
-    {file = "Django-3.2.9.tar.gz", hash = "sha256:51284300f1522ffcdb07ccbdf676a307c6678659e1284f0618e5a774127a6a08"},
+    {file = "Django-3.2.12-py3-none-any.whl", hash = "sha256:9b06c289f9ba3a8abea16c9c9505f25107809fb933676f6c891ded270039d965"},
+    {file = "Django-3.2.12.tar.gz", hash = "sha256:9772e6935703e59e993960832d66a614cf0233a1c5123bc6224ecc6ad69e41e2"},
 ]
 django-admin-views = []
 django-autocomplete-light = [
