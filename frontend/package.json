@@ -6,7 +6,7 @@
   "author": "Python Italia",
   "license": "MIT",
   "scripts": {
-    "dev": "next dev",
+    "dev": "concurrently \"npm run codegen:watch\" \"next dev\"",
     "build": "npm run codegen && next build",
     "start": "next start",
     "lint": "eslint src --ext .jsx,.js,.tsx,.ts",
