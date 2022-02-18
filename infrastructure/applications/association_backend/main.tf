@@ -42,7 +42,6 @@ module "lambda" {
   source = "../../components/application_lambda"
 
   application        = local.application
-  docker_tag         = terraform.workspace
   role_arn           = data.aws_iam_role.lambda.arn
   subnet_ids         = [for subnet in data.aws_subnet_ids.private.ids : subnet]
   security_group_ids = [data.aws_security_group.rds.id, data.aws_security_group.lambda.id]
@@ -55,8 +54,8 @@ module "lambda" {
     ASSOCIATION_FRONTEND_URL = local.association_frontend_url
     USERS_SERVICE            = local.users_backend_url
 
-    PRETIX_API                       = "https://tickets.pycon.it/api/v1/"
-    PRETIX_API_TOKEN                 = module.common_secrets.value.pretix_api_token
+    PRETIX_API       = "https://tickets.pycon.it/api/v1/"
+    PRETIX_API_TOKEN = module.common_secrets.value.pretix_api_token
 
     # Secrets
     STRIPE_WEBHOOK_SIGNATURE_SECRET = module.secrets.value.stripe_webhook_secret

@@ -2,9 +2,6 @@ variable "application" {}
 variable "docker_repository_name" {
   default = ""
 }
-variable "docker_tag" {
-  default = null
-}
 variable "role_arn" {}
 variable "env_vars" {
   type    = map(string)

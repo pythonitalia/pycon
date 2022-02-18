@@ -11,11 +11,10 @@ data "aws_iam_role" "lambda" {
 module "lambda" {
   source = "../../components/application_lambda"
 
-  application            = local.application
-  docker_repository_name = "gateway"
-  docker_tag             = terraform.workspace
-  role_arn               = data.aws_iam_role.lambda.arn
-  memory_size            = 1024
+  application = local.application
+  local_path  = local.local_path
+  role_arn    = data.aws_iam_role.lambda.arn
+  memory_size = 1024
 
   env_vars = {
     NODE_ENV             = "production"
