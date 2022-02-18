@@ -38,7 +38,7 @@
         "en": "This is a demo conference, sorry it is not happening!",
         "it": "Questa \u00e8 una conferenze di prova."
       },
-      "pretix_event_url": "https://pretix.eu/demo/democon/",
+      "pretix_event_url": "https://tickets.pycon.it/test-organizer/local-conf-test/",
       "pretix_organizer_id": "test-organizer",
       "pretix_event_id": "local-conf-test",
       "pretix_hotel_ticket_id": 96,
