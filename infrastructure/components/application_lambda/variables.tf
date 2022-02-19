@@ -2,7 +2,6 @@ variable "application" {}
 variable "docker_repository_name" {
   default = ""
 }
-variable "docker_tag" {}
 variable "role_arn" {}
 variable "env_vars" {
   type    = map(string)
@@ -19,4 +18,7 @@ variable "subnet_ids" {
 variable "memory_size" {
   type    = number
   default = 512
+}
+variable "local_path" {
+  default = null
 }
