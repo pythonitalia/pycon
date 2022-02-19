@@ -100,3 +100,6 @@ def _to_native(x, charset=sys.getdefaultencoding(), errors="strict"):  # noqa
     if x is None or isinstance(x, str):
         return x
     return x.decode(charset, errors)
+
+
+# new test
