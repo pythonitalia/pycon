@@ -26,24 +26,22 @@ runs:
   using: "composite"
   steps:
     - name: Download & Publish service ${{ inputs.service-name }} to Apollo Studio
-      if: inputs.schema-path == ""
       shell: bash
-      run: |
-        rover subgraph introspect ${{ inputs.service-graphql-url }} > ${{ inputs.service-name }}-schema.graphql
-        rover subgraph publish ${{ inputs.graph }}@${{ inputs.variant }} \
-          --schema ${{ inputs.service-name }}-schema.graphql \
-          --name ${{ inputs.service-name }} \
-          --convert \
-          --routing-url ${{ inputs.service-graphql-url }}
-
-    - name: Publish pre-built service ${{ inputs.service-name }} to Apollo Studio
-      shell: bash
-      if: inputs.schema-path != ""
       env:
         APOLLO_KEY: ${{ inputs.apollo-key }}
       run: |
-        rover subgraph publish ${{ inputs.graph }}@${{ inputs.variant }} \
-          --schema ${{ inputs.schema-path }} \
-          --name ${{ inputs.service-name }} \
-          --convert \
-          --routing-url ${{ inputs.service-graphql-url }}
+
+        if [[ "${{inputs.schema-path}}" == "" ]]; then
+          rover subgraph introspect ${{ inputs.service-graphql-url }} > ${{ inputs.service-name }}-schema.graphql
+          rover subgraph publish ${{ inputs.graph }}@${{ inputs.variant }} \
+            --schema ${{ inputs.service-name }}-schema.graphql \
+            --name ${{ inputs.service-name }} \
+            --convert \
+            --routing-url ${{ inputs.service-graphql-url }}
+        else
+          rover subgraph publish ${{ inputs.graph }}@${{ inputs.variant }} \
+            --schema ${{ inputs.schema-path }} \
+            --name ${{ inputs.service-name }} \
+            --convert \
+            --routing-url ${{ inputs.service-graphql-url }}
+        fi
