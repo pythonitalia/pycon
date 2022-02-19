@@ -140,34 +140,8 @@ jobs:
         run: curl -sSL https://rover.apollo.dev/nix/v$APOLLO_ROVER_VERSION | sh
       - name: Append rover to path
         run: echo "$HOME/.rover/bin" >> $GITHUB_PATH
-      - name: Cache Rush
-        uses: actions/cache@v1
-        id: cache-rush
-        with:
-          path: ~/rush-bin/
-          key: rush-cache-${{ env.RUSH_VERSION }}
-      - name: Install rush
-        if: steps.cache-rush.outputs.cache-hit != 'true'
-        run: |
-          wget https://github.com/shenwei356/rush/releases/download/v$RUSH_VERSION/rush_linux_amd64.tar.gz
-          tar -zxvf rush_linux_amd64.tar.gz
-          mkdir -p $HOME/rush-bin/
-          cp rush $HOME/rush-bin/
-      - name: Append rush to path
-        run: echo "$HOME/rush-bin" >> $GITHUB_PATH
-      - name: Install poetry
-        run: pip install poetry
-      - name: Cache deps
-        uses: actions/cache@v1
-        id: cache
-        with:
-          path: ~/.cache/pypoetry/virtualenvs/
-          key: services-cache-${{ hashFiles('**/poetry.lock') }}-v3
-      - name: Start all services
-        uses: ./.github/actions/start-services
-        id: services
-        with:
-          postgres-port: ${{ job.services.postgres.ports['5432'] }}
+      - name: Run services
+        run: docker-compose up -d
       - name: Prepare directory
         run: mkdir -p ./schemas
 
