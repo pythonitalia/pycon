@@ -11,7 +11,6 @@ from starlette.applications import Starlette
 from starlette.middleware import Middleware
 from starlette.middleware.sessions import SessionMiddleware
 from starlette.routing import Route
-
 from users.api.views import GraphQL
 from users.db import get_engine, get_session
 from users.domain.repository import UsersRepository
@@ -69,7 +68,7 @@ wrapped_app = SentryAsgiMiddleware(app)
 
 
 def handler(event, context):
-    if command := event.get("_cli_command"):  # noqa
+    if (command := event.get("_cli_command")) :  # noqa
         native_stdout = sys.stdout
         native_stderr = sys.stderr
         output_buffer = StringIO()
