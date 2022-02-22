@@ -391,9 +391,10 @@ export const messages = {
 
     "ranking.heading": "Community voting results",
     "ranking.introduction.left": `Here there are the results of the community voting! 🎉{br}
-      Thanks very much to whoever took the time to cast their vote! Your effort and commitment
+      Thanks very much to whoever took the time to cast their vote. Your effort and commitment
       is really appreciated, and will help us a lot to shape the next PyCon Italia conference
-      programme. This year we received a total of {proposalNumber} proposals, from
+      programme! 🙏 {br}
+      This year we received a total of {proposalNumber} proposals, from
       {speakersNumber}  wonderful potential speakers.
       {br}{br}
       The ranking of the talks (please, see below) has been generated automatically, taking
@@ -866,9 +867,11 @@ export const messages = {
 
     "ranking.heading": "Risultati della votazione comunitaria",
     "ranking.introduction.left": `Ecco qui i risultati della votazione comunitaria! 🎉{br}
-      Grazie a tutti coloro che hanno votato, contribuendo così alla definizione del programma
-      per la prossima edizione di PyCon Italia! In totale quest'anno abbiamo ricevuto {proposalNumber}
-      proposte, da {speakersNumber} fantastici potenziali speakers!
+      Grazie a tutti coloro che hanno trovato il tempo per condividere le proprie preferenze
+      votando i talk. Il vostro impegno e i vostri contributi ci aiuteranno moltissimo nella
+      definizione del programma per la prossima edizione di PyCon Italia! 🙏 {br}
+      In totale quest'anno abbiamo ricevuto {proposalNumber} proposte, da {speakersNumber}
+      fantastici potenziali speakers!
       {br}{br}
       La seguente classifica di talk è stata generata in maniera automatica, considerando
       esclusivamente le preferenze espresse in fase di votazione comunitaria. Il punteggio
