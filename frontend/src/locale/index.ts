@@ -390,7 +390,7 @@ export const messages = {
       "Voucher code correct, but no product in the cart can be discounted",
 
     "ranking.heading": "Community voting results",
-    "ranking.introduction.left": `Here there are the results of the community voting! 🎉{br}{br}
+    "ranking.introduction.left": `Here there are the results of the community voting! 🎉{br}
       Thanks very much to whoever took the time to cast their vote! Your effort and commitment
       is really appreciated, and will help us a lot to shape the next PyCon Italia conference
       programme. This year we received a total of {proposalNumber} proposals, from
@@ -865,7 +865,7 @@ export const messages = {
     "keynote.englishLanguage": "Inglese",
 
     "ranking.heading": "Risultati della votazione comunitaria",
-    "ranking.introduction.left": `Ecco qui i risultati della votazione comunitaria! 🎉{br}{br}
+    "ranking.introduction.left": `Ecco qui i risultati della votazione comunitaria! 🎉{br}
       Grazie a tutti coloro che hanno votato, contribuendo così alla definizione del programma
       per la prossima edizione di PyCon Italia! In totale quest'anno abbiamo ricevuto {proposalNumber}
       proposte, da {speakersNumber} fantastici potenziali speakers!

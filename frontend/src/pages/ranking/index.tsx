@@ -117,12 +117,33 @@ export const RankingPage = () => {
             }}
           >
             <Box>
-              <Box mb={4}>
-                <Heading>
-                  <FormattedMessage id="ranking.heading" />
-                </Heading>
-              </Box>
-
+              <Heading>
+                <FormattedMessage id="ranking.heading" />
+              </Heading>
+            </Box>
+            <Box>
+              <Select
+                {...select("topic")}
+                sx={{
+                  background: "orange",
+                  borderRadius: 0,
+                }}
+              >
+                {topics.map((topic) => (
+                  <option key={topic.id} value={topic.id}>
+                    {topic.name}
+                  </option>
+                ))}
+              </Select>
+            </Box>
+          </Grid>
+          <Grid
+            gap={4}
+            sx={{
+              gridTemplateColumns: [null, "1fr 1fr"],
+            }}
+          >
+            <Box>
               <Text my={4}>
                 <FormattedMessage
                   id="ranking.introduction.left"
@@ -137,22 +158,6 @@ export const RankingPage = () => {
               </Text>
             </Box>
             <Box>
-              <Box mb={4}>
-                <Select
-                  {...select("topic")}
-                  sx={{
-                    background: "orange",
-                    borderRadius: 0,
-                  }}
-                >
-                  {topics.map((topic) => (
-                    <option key={topic.id} value={topic.id}>
-                      {topic.name}
-                    </option>
-                  ))}
-                </Select>
-              </Box>
-
               <FormattedMessage
                 id="ranking.topicComment"
                 values={{
@@ -165,7 +170,6 @@ export const RankingPage = () => {
               <FormattedMessage id="ranking.introduction.right" />
             </Box>
           </Grid>
-
           {loading && (
             <Alert variant="info">
               <FormattedMessage id="voting.loading" />
