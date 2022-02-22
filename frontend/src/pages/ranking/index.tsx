@@ -143,19 +143,16 @@ export const RankingPage = () => {
               gridTemplateColumns: [null, "1fr 1fr"],
             }}
           >
-            <Box>
-              <Text my={4}>
-                <FormattedMessage
-                  id="ranking.introduction.left"
-                  values={{
-                    speakersNumber: getRankingStat("speakers", "speakers")
-                      ?.value,
-                    proposalNumber: getRankingStat("submissions", "submissions")
-                      ?.value,
-                    br: <br />,
-                  }}
-                />
-              </Text>
+            <Box my={4}>
+              <FormattedMessage
+                id="ranking.introduction.left"
+                values={{
+                  speakersNumber: getRankingStat("speakers", "speakers")?.value,
+                  proposalNumber: getRankingStat("submissions", "submissions")
+                    ?.value,
+                  br: <br />,
+                }}
+              />
             </Box>
             <Box>
               <FormattedMessage
