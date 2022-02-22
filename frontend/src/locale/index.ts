@@ -390,12 +390,24 @@ export const messages = {
       "Voucher code correct, but no product in the cart can be discounted",
 
     "ranking.heading": "Community voting results",
-    "ranking.introduction": `Here there are the results of the community voting! {br}
-      Thanks to all the people who voted and helped prepare the program for the next edition
-      of PyCon italia! There were {proposalNumber} proposals this year to choose from
-      {speakersNumber} fantastic speakers!{br}{br}
-      The results of the vote are only indicative: the programme committee reserves the right
-      to select proposals in order to create a balanced programme.`,
+    "ranking.introduction": `Here there are the results of the community voting!{br}
+      Thanks very much to whoever took the time to cast their vote! Your effort and commitment
+      is really appreciated, and will help us a lot to shape the next PyCon Italia conference
+      programme. This year we received a total of {proposalNumber} proposals, from
+      {speakersNumber}  wonderful potential speakers.
+      {br}{br}
+      The ranking of the talks (please, see below) has been generated automatically, taking
+      into account only the votes received for each talk. In particular, the algorithm assigned
+      a score to each talk resulting from the average of their votes, normalised by the
+      “weight” of each voter (that is proportional to the total number of talks voted,
+      in each track/topic)
+      {br}{br}
+      Note: Community voting results will be merely considered as a proxy for community
+      preferences, and will guide the Programme Committee through the selection of the talks.
+      Nonetheless the final version of the programme will also take into consideration
+      additional criteria (e.g. gender diversity, topic diversity, speakers experience,
+      language of the talk) aiming at creating a balanced and diverse conference.
+    `,
     "ranking.topicComment":
       "We received {value} proposals for the track {name} this year!",
     "ranking.seoTitle": "Ranking",
@@ -853,12 +865,22 @@ export const messages = {
 
     "ranking.heading": "Risultati della votazione comunitaria",
     "ranking.introduction": `Ecco qui i risultati della votazione comunitaria!{br}
-      Grazie a tutte persone che hanno votato e hanno cosi' contribuito a preparare il programma
-      per la prossima edizione di PyCon italia! C'erano ben {proposalNumber} proposte quest'anno da
-      scegliere inviate da ben {speakersNumber} fantastici speakers!{br}{br}
-      I risultati della votazione sono solo indicativi: il comitato del programma si riserva il
-      diritto di segliere le proposte al fine di creare un programma equilibrato.
-`,
+      Grazie a tutti coloro che hanno votato, contribuendo così alla definizione del programma
+      per la prossima edizione di PyCon Italia! In totale quest'anno abbiamo ricevuto {proposalNumber}
+      proposte, da {speakersNumber} fantastici potenziali speakers!
+      {br}{br}
+      La seguente classifica di talk è stata generata in maniera automatica, considerando
+      esclusivamente le preferenze espresse in fase di votazione comunitaria. Il punteggio
+      assegnato a ciascun talk è ottenuto dalla media dei voti ricevuti, normalizzata per
+      il “peso” di ciascun votante (proporzionale al numero di talk votati per ciascuna track/topic
+      ).
+      {br}{br}
+      Nota: Gli esiti della votazione saranno considerati nella definizione del programma,
+      in quanto indicativi delle preferenze della comunità. Il comitato di programma si riserva
+      tuttavia il diritto di selezionare proposte considerando criteri aggiuntivi (quali ad
+      es. diversità di genere, argomenti, esperienza dello speaker, lingua del talk), al
+      fine di creare un programma equilibrato.
+    `,
     "ranking.topicComment":
       "Abbiamo ricevuto {value} proposte per la track {name} quest'anno!",
     "ranking.seoTitle": "Ranking",
