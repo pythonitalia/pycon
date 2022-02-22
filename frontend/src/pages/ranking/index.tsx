@@ -117,7 +117,7 @@ export const RankingPage = () => {
             }}
           >
             <Box>
-              <Heading>
+              <Heading mb={4}>
                 <FormattedMessage id="ranking.heading" />
               </Heading>
 
@@ -152,6 +152,7 @@ export const RankingPage = () => {
               </Box>
 
               <FormattedMessage id="ranking.introduction.right" />
+              <br />
               <FormattedMessage
                 id="ranking.topicComment"
                 values={{
