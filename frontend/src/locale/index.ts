@@ -876,8 +876,8 @@ export const messages = {
       La seguente classifica di talk è stata generata in maniera automatica, considerando
       esclusivamente le preferenze espresse in fase di votazione comunitaria. Il punteggio
       assegnato a ciascun talk è ottenuto dalla media dei voti ricevuti, normalizzata per
-      il “peso” di ciascun votante (proporzionale al numero di talk votati per ciascuna track/topic
-      ).
+      il “peso” di ciascun votante (proporzionale al numero di talk votati per ciascuna
+        track/topic).
     `,
     "ranking.introduction.right": `
       Nota: Gli esiti della votazione saranno considerati nella definizione del programma,
