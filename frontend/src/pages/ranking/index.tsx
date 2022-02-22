@@ -154,7 +154,7 @@ export const RankingPage = () => {
                 }}
               />
             </Box>
-            <Box>
+            <Box my={4}>
               <FormattedMessage
                 id="ranking.topicComment"
                 values={{
