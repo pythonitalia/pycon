@@ -866,7 +866,7 @@ export const messages = {
     "keynote.englishLanguage": "Inglese",
 
     "ranking.heading": "Risultati della votazione comunitaria",
-    "ranking.introduction.left": `Ecco qui i risultati della votazione comunitaria! 🎉{br}
+    "ranking.introduction.left": `Ecco quì i risultati della votazione comunitaria! 🎉{br}
       Grazie a tutti coloro che hanno trovato il tempo per condividere le proprie preferenze
       votando i talk. Il vostro impegno e i vostri contributi ci aiuteranno moltissimo nella
       definizione del programma per la prossima edizione di PyCon Italia! 🙏 {br}
