@@ -117,9 +117,11 @@ export const RankingPage = () => {
             }}
           >
             <Box>
-              <Heading mb={4}>
-                <FormattedMessage id="ranking.heading" />
-              </Heading>
+              <Box mb={4}>
+                <Heading>
+                  <FormattedMessage id="ranking.heading" />
+                </Heading>
+              </Box>
 
               <Text my={4}>
                 <FormattedMessage
@@ -158,6 +160,7 @@ export const RankingPage = () => {
                   name: topicStat?.name,
                 }}
               />
+              <br />
               <br />
               <FormattedMessage id="ranking.introduction.right" />
             </Box>
