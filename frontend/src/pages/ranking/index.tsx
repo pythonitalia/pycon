@@ -155,14 +155,15 @@ export const RankingPage = () => {
               />
             </Box>
             <Box my={4}>
-              <FormattedMessage
-                mb={4}
-                id="ranking.topicComment"
-                values={{
-                  value: topicStat?.value,
-                  name: topicStat?.name,
-                }}
-              />
+              <Text mb={4}>
+                <FormattedMessage
+                  id="ranking.topicComment"
+                  values={{
+                    value: topicStat?.value,
+                    name: topicStat?.name,
+                  }}
+                />
+              </Text>
               <FormattedMessage id="ranking.introduction.right" />
             </Box>
           </Grid>
