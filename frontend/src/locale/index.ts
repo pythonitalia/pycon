@@ -396,18 +396,18 @@ export const messages = {
       programme. This year we received a total of {proposalNumber} proposals, from
       {speakersNumber}  wonderful potential speakers.
       {br}{br}
-      Note: Community voting results will be merely considered as a proxy for community
-      preferences, and will guide the Programme Committee through the selection of the talks.
-      Nonetheless the final version of the programme will also take into consideration
-      additional criteria (e.g. gender diversity, topic diversity, speakers experience,
-      language of the talk) aiming at creating a balanced and diverse conference.
-    `,
-    "ranking.introduction.right": `
       The ranking of the talks (please, see below) has been generated automatically, taking
       into account only the votes received for each talk. In particular, the algorithm assigned
       a score to each talk resulting from the average of their votes, normalised by the
       “weight” of each voter (that is proportional to the total number of talks voted,
       in each track/topic).
+    `,
+    "ranking.introduction.right": `
+      Note: Community voting results will be merely considered as a proxy for community
+      preferences, and will guide the Programme Committee through the selection of the talks.
+      Nonetheless the final version of the programme will also take into consideration
+      additional criteria (e.g. gender diversity, topic diversity, speakers experience,
+      language of the talk) aiming at creating a balanced and diverse conference.
     `,
     "ranking.topicComment":
       "We received {value} proposals for the track {name} this year!",
@@ -870,18 +870,18 @@ export const messages = {
       per la prossima edizione di PyCon Italia! In totale quest'anno abbiamo ricevuto {proposalNumber}
       proposte, da {speakersNumber} fantastici potenziali speakers!
       {br}{br}
-      Nota: Gli esiti della votazione saranno considerati nella definizione del programma,
-      in quanto indicativi delle preferenze della comunità. Il comitato di programma si riserva
-      tuttavia il diritto di selezionare proposte considerando criteri aggiuntivi (quali ad
-      es. diversità di genere, argomenti, esperienza dello speaker, lingua del talk), al
-      fine di creare un programma equilibrato.
-    `,
-    "ranking.introduction.right": `
       La seguente classifica di talk è stata generata in maniera automatica, considerando
       esclusivamente le preferenze espresse in fase di votazione comunitaria. Il punteggio
       assegnato a ciascun talk è ottenuto dalla media dei voti ricevuti, normalizzata per
       il “peso” di ciascun votante (proporzionale al numero di talk votati per ciascuna track/topic
       ).
+    `,
+    "ranking.introduction.right": `
+      Nota: Gli esiti della votazione saranno considerati nella definizione del programma,
+      in quanto indicativi delle preferenze della comunità. Il comitato di programma si riserva
+      tuttavia il diritto di selezionare proposte considerando criteri aggiuntivi (quali ad
+      es. diversità di genere, argomenti, esperienza dello speaker, lingua del talk), al
+      fine di creare un programma equilibrato.
     `,
     "ranking.topicComment":
       "Abbiamo ricevuto {value} proposte per la track {name} quest'anno!",

@@ -151,8 +151,6 @@ export const RankingPage = () => {
                 </Select>
               </Box>
 
-              <FormattedMessage id="ranking.introduction.right" />
-              <br />
               <FormattedMessage
                 id="ranking.topicComment"
                 values={{
@@ -160,6 +158,8 @@ export const RankingPage = () => {
                   name: topicStat?.name,
                 }}
               />
+              <br />
+              <FormattedMessage id="ranking.introduction.right" />
             </Box>
           </Grid>
 
