@@ -120,47 +120,53 @@ export const RankingPage = () => {
               <Heading>
                 <FormattedMessage id="ranking.heading" />
               </Heading>
-
-              <Text my={4}>
-                <FormattedMessage
-                  id="ranking.introduction"
-                  values={{
-                    speakersNumber: getRankingStat("speakers", "speakers")
-                      ?.value,
-                    proposalNumber: getRankingStat("submissions", "submissions")
-                      ?.value,
-                    br: <br />,
-                  }}
-                />
-              </Text>
             </Box>
             <Box>
-              <Box mb={4}>
-                <Select
-                  {...select("topic")}
-                  sx={{
-                    background: "orange",
-                    borderRadius: 0,
-                  }}
-                >
-                  {topics.map((topic) => (
-                    <option key={topic.id} value={topic.id}>
-                      {topic.name}
-                    </option>
-                  ))}
-                </Select>
-              </Box>
-
+              <Select
+                {...select("topic")}
+                sx={{
+                  background: "orange",
+                  borderRadius: 0,
+                }}
+              >
+                {topics.map((topic) => (
+                  <option key={topic.id} value={topic.id}>
+                    {topic.name}
+                  </option>
+                ))}
+              </Select>
+            </Box>
+          </Grid>
+          <Grid
+            gap={4}
+            sx={{
+              gridTemplateColumns: [null, "1fr 1fr"],
+            }}
+          >
+            <Box my={4}>
               <FormattedMessage
-                id="ranking.topicComment"
+                id="ranking.introduction.left"
                 values={{
-                  value: topicStat?.value,
-                  name: topicStat?.name,
+                  speakersNumber: getRankingStat("speakers", "speakers")?.value,
+                  proposalNumber: getRankingStat("submissions", "submissions")
+                    ?.value,
+                  br: <br />,
                 }}
               />
             </Box>
+            <Box my={4}>
+              <Text mb={4}>
+                <FormattedMessage
+                  id="ranking.topicComment"
+                  values={{
+                    value: topicStat?.value,
+                    name: topicStat?.name,
+                  }}
+                />
+              </Text>
+              <FormattedMessage id="ranking.introduction.right" />
+            </Box>
           </Grid>
-
           {loading && (
             <Alert variant="info">
               <FormattedMessage id="voting.loading" />
