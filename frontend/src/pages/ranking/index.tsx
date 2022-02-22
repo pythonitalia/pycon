@@ -123,7 +123,7 @@ export const RankingPage = () => {
 
               <Text my={4}>
                 <FormattedMessage
-                  id="ranking.introduction"
+                  id="ranking.introduction.left"
                   values={{
                     speakersNumber: getRankingStat("speakers", "speakers")
                       ?.value,
@@ -151,6 +151,7 @@ export const RankingPage = () => {
                 </Select>
               </Box>
 
+              <FormattedMessage id="ranking.introduction.right" />
               <FormattedMessage
                 id="ranking.topicComment"
                 values={{
