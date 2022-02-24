@@ -18,4 +18,8 @@ resource "aws_elasticache_cluster" "cache" {
   security_group_ids = [
     aws_security_group.instance.id
   ]
+
+  lifecycle {
+    ignore_changes = [engine_version]
+  }
 }

@@ -31,4 +31,8 @@ resource "aws_db_instance" "database" {
 
   db_subnet_group_name   = data.aws_db_subnet_group.rds.name
   vpc_security_group_ids = [data.aws_security_group.rds.id]
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }

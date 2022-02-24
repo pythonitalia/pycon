@@ -4,6 +4,8 @@ locals {
 
   # TODO: Need to coordinate between env and vercel
   association_frontend_url = "https://associazione.python.it"
+
+  db_connection = local.is_prod ? "postgresql+asyncpg://${data.aws_db_instance.database.master_username}:${module.common_secrets.value.database_password}@${data.aws_db_proxy.proxy[0].endpoint}:${data.aws_db_instance.database.port}/users" : "postgresql+asyncpg://${data.aws_db_instance.database.master_username}:${module.common_secrets.value.database_password}@${data.aws_db_instance.database.address}:${data.aws_db_instance.database.port}/users"
 }
 
 data "aws_db_instance" "database" {
@@ -29,6 +31,12 @@ data "aws_subnet_ids" "private" {
   }
 }
 
+data "aws_db_proxy" "proxy" {
+  count = local.is_prod ? 1 : 0
+  name  = "pythonit-${terraform.workspace}-database-proxy"
+}
+
+
 data "aws_security_group" "rds" {
   name = "pythonit-rds-security-group"
 }
@@ -49,7 +57,7 @@ module "lambda" {
     SECRET_KEY                = module.secrets.value.secret_key
     GOOGLE_AUTH_CLIENT_ID     = module.secrets.value.google_auth_client_id
     GOOGLE_AUTH_CLIENT_SECRET = module.secrets.value.google_auth_client_secret
-    DATABASE_URL              = "postgresql+asyncpg://${data.aws_db_instance.database.master_username}:${module.common_secrets.value.database_password}@${data.aws_db_instance.database.address}:${data.aws_db_instance.database.port}/users"
+    DATABASE_URL              = local.db_connection
     EMAIL_BACKEND             = "pythonit_toolkit.emails.backends.ses.SESEmailBackend"
     SENTRY_DSN                = module.secrets.value.sentry_dsn
 
