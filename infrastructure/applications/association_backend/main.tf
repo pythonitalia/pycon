@@ -5,6 +5,8 @@ locals {
   # TODO: Need to coordinate between env and vercel
   association_frontend_url = "https://associazione.python.it"
   users_backend_url        = local.is_prod ? "https://users-api.python.it" : "https://${terraform.workspace}-users-api.python.it"
+
+  db_connection = local.is_prod ? "postgresql://${data.aws_db_instance.database.master_username}:${module.common_secrets.value.database_password}@${data.aws_db_proxy.proxy[0].endpoint}:${data.aws_db_instance.database.port}/association" : "postgresql://${data.aws_db_instance.database.master_username}:${module.common_secrets.value.database_password}@${data.aws_db_instance.database.address}:${data.aws_db_instance.database.port}/association"
 }
 
 data "aws_db_instance" "database" {
@@ -38,6 +40,11 @@ data "aws_security_group" "rds" {
   name = "pythonit-rds-security-group"
 }
 
+data "aws_db_proxy" "proxy" {
+  count = local.is_prod ? 1 : 0
+  name  = "pythonit-${terraform.workspace}-database-proxy"
+}
+
 module "lambda" {
   source = "../../components/application_lambda"
 
@@ -47,7 +54,7 @@ module "lambda" {
   security_group_ids = [data.aws_security_group.rds.id, data.aws_security_group.lambda.id]
   env_vars = {
     DEBUG        = "false"
-    DATABASE_URL = "postgresql://${data.aws_db_instance.database.master_username}:${module.common_secrets.value.database_password}@${data.aws_db_instance.database.address}:${data.aws_db_instance.database.port}/association"
+    DATABASE_URL = local.db_connection
     SENTRY_DSN   = module.secrets.value.sentry_dsn
 
     # Services

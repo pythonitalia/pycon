@@ -4,7 +4,9 @@ locals {
   full_admin_domain       = local.is_prod ? "${local.admin_domain}.pycon.it" : "${terraform.workspace}-${local.admin_domain}.pycon.it"
   users_backend_url       = local.is_prod ? "https://users-api.python.it" : "https://${terraform.workspace}-users-api.python.it"
   association_backend_url = local.is_prod ? "https://association-api.python.it" : "https://${terraform.workspace}-association-api.python.it"
+  db_connection           = local.is_prod ? "postgres://${data.aws_db_instance.database.master_username}:${module.common_secrets.value.database_password}@${data.aws_db_proxy.proxy[0].endpoint}:${data.aws_db_instance.database.port}/${data.aws_db_instance.database.db_name}" : "postgres://${data.aws_db_instance.database.master_username}:${module.common_secrets.value.database_password}@${data.aws_db_instance.database.address}:${data.aws_db_instance.database.port}/${data.aws_db_instance.database.db_name}"
 }
+
 data "aws_vpc" "default" {
   filter {
     name   = "tag:Name"
@@ -36,6 +38,11 @@ data "aws_db_instance" "database" {
   db_instance_identifier = "pythonit-${terraform.workspace}"
 }
 
+data "aws_db_proxy" "proxy" {
+  count = local.is_prod ? 1 : 0
+  name  = "pythonit-${terraform.workspace}-database-proxy"
+}
+
 data "aws_acm_certificate" "cert" {
   domain   = "*.pycon.it"
   statuses = ["ISSUED"]
@@ -51,7 +58,7 @@ module "lambda" {
   subnet_ids         = [for subnet in data.aws_subnet_ids.private.ids : subnet]
   security_group_ids = [data.aws_security_group.rds.id, data.aws_security_group.lambda.id]
   env_vars = {
-    DATABASE_URL                                  = "postgres://${data.aws_db_instance.database.master_username}:${module.common_secrets.value.database_password}@${data.aws_db_instance.database.address}:${data.aws_db_instance.database.port}/${data.aws_db_instance.database.db_name}"
+    DATABASE_URL                                  = local.db_connection
     DEBUG                                         = "False"
     SECRET_KEY                                    = module.secrets.value.secret_key
     MAPBOX_PUBLIC_API_KEY                         = module.secrets.value.mapbox_public_api_key
