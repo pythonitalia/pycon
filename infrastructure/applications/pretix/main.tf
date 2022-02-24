@@ -65,6 +65,11 @@ data "aws_ecr_image" "image" {
   image_tag       = "latest"
 }
 
+data "aws_db_proxy" "proxy" {
+  count = local.is_prod ? 1 : 0
+  name  = "pythonit-${terraform.workspace}-database-proxy"
+}
+
 resource "aws_ecs_task_definition" "pretix_service" {
   family = "${terraform.workspace}-pretix"
   container_definitions = jsonencode([
@@ -89,7 +94,7 @@ resource "aws_ecs_task_definition" "pretix_service" {
         },
         {
           name  = "DATABASE_HOST"
-          value = data.aws_db_instance.database.address
+          value = local.is_prod ? data.aws_db_proxy.proxy[0].endpoint : data.aws_db_instance.database.address
         },
         {
           name  = "MAIL_USER"
