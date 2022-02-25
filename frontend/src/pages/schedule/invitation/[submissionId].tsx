@@ -277,7 +277,7 @@ const Invitation = () => {
           {!isSubmitting &&
             submitAnswerData?.updateScheduleInvitation.__typename ===
               "ScheduleInvitationNotFound" && (
-              <Alert variant="error">
+              <Alert variant="alert">
                 <FormattedMessage id="schedule.invitation.unableToFindInvitation" />
               </Alert>
             )}
