@@ -498,7 +498,7 @@ export const messages = {
     "schedule.invitation.presence.CANT_ATTEND":
       "I can't attend the conference anymore",
     "schedule.invitation.presence.notes":
-      "Please provide us more information to help us find a better time",
+      "Please provide more information to help us find a better time",
     "schedule.invitation.submitAnswer": "Submit answer",
     "schedule.invitation.wait": "Please wait",
     "schedule.invitation.sendingAnswer": "Sending your answer!",
