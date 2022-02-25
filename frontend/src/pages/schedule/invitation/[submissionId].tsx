@@ -269,7 +269,7 @@ const Invitation = () => {
           )}
           {!isSubmitting &&
             submitAnswerData?.updateScheduleInvitation.__typename ===
-              "OperationResult" && (
+              "ScheduleInvitation" && (
               <Alert variant="success">
                 <FormattedMessage id="schedule.invitation.answerSentWithSuccess" />
               </Alert>
