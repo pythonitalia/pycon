@@ -1,5 +1,7 @@
 from django import forms
 from django.contrib import admin
+from django.urls import reverse
+from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from ordered_model.admin import (
     OrderedInlineModelAdminMixin,
@@ -107,9 +109,31 @@ class ScheduleItemInvitationProxy(ScheduleItem):
 
 @admin.register(ScheduleItemInvitationProxy)
 class ScheduleItemInvitationProxyAdmin(admin.ModelAdmin):
-    list_display = ("slot", "title", "status", "conference", "speaker_invitation_notes")
-    list_filter = ("conference", "slot")
+    list_display = (
+        "slot",
+        "status",
+        "title",
+        "conference",
+        "speaker_invitation_notes",
+        "open_schedule_item",
+        "open_submission",
+    )
+    list_filter = (
+        "conference",
+        "slot",
+        "status",
+    )
     list_display_links = None
+
+    def open_schedule_item(self, obj) -> str:
+        url = reverse("admin:schedule_scheduleitem_change", args=[obj.id])
+        return mark_safe(f'<a class="button" target="_blank" href="{url}">Schedule</a>')
+
+    def open_submission(self, obj) -> str:
+        url = reverse("admin:submissions_submission_change", args=[obj.id])
+        return mark_safe(
+            f'<a class="button" target="_blank" href="{url}">Submission</a>'
+        )
 
     def has_add_permission(self, *args, **kwargs) -> bool:
         return False
