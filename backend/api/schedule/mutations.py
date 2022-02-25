@@ -2,15 +2,18 @@ import typing
 from datetime import date, datetime, time, timedelta
 
 import strawberry
+
 from api.conferences.types import Day, ScheduleSlot
 from api.helpers.ids import decode_hashid
+from api.schedule.types import ScheduleInvitation, ScheduleInvitationOption
+from api.submissions.permissions import IsSubmissionSpeakerOrStaff
 from conferences.models import Conference
 from languages.models import Language
 from schedule.models import Day as DayModel
 from schedule.models import ScheduleItem, Slot
 from submissions.models import Submission
 
-from ..permissions import IsStaffPermission
+from ..permissions import IsAuthenticated, IsStaffPermission
 
 
 @strawberry.type
@@ -41,8 +44,49 @@ class UpdateOrCreateSlotItemResult:
     updated_slots: typing.List[ScheduleSlot]
 
 
+@strawberry.input
+class UpdateScheduleInvitationInput:
+    submission_id: strawberry.ID
+    option: ScheduleInvitationOption
+    notes: str
+
+
+@strawberry.type
+class ScheduleInvitationNotFound:
+    message: str = "Invitation not found"
+
+
 @strawberry.type
 class ScheduleMutations:
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    def update_schedule_invitation(
+        self, info, input: UpdateScheduleInvitationInput
+    ) -> typing.Union[ScheduleInvitationNotFound, ScheduleInvitation]:
+        submission = Submission.objects.get_by_hashid(input.submission_id)
+
+        if not IsSubmissionSpeakerOrStaff().has_object_permission(info, submission):
+            return ScheduleInvitationNotFound()
+
+        # TODO We assume here that a submission can only be in one schedule item
+        # since currently we do not schedule the same talk to appear multiple times
+        # in the future this needs to be fixed :)
+        schedule_item = (
+            ScheduleItem.objects.filter(
+                submission_id=submission.id,
+                conference_id=submission.conference_id,
+            )
+            .exclude(status=ScheduleItem.STATUS.cancelled)
+            .first()
+        )
+
+        if not schedule_item:
+            return ScheduleInvitationNotFound()
+
+        schedule_item.status = input.option.to_schedule_item_status()
+        schedule_item.speaker_invitation_notes = input.notes
+        schedule_item.save()
+        return ScheduleInvitation.from_django_model(schedule_item)
+
     @strawberry.mutation(permission_classes=[IsStaffPermission])
     def add_schedule_slot(
         self, info, conference: strawberry.ID, duration: int, day: date

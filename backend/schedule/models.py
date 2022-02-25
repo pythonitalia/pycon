@@ -103,6 +103,8 @@ class ScheduleItem(TimeStampedModel):
     STATUS = Choices(
         ("confirmed", _("Confirmed")),
         ("maybe", _("Maybe")),
+        ("rejected", _("Speaker Rejected")),
+        ("cant_attend", _("Speaker can't attend anymore")),
         ("waiting_confirmation", _("Waiting confirmation")),
         ("cancelled", _("Cancelled")),
     )
@@ -161,6 +163,12 @@ class ScheduleItem(TimeStampedModel):
         blank=True,
         null=True,
         on_delete=models.PROTECT,
+    )
+
+    speaker_invitation_notes = models.TextField(
+        verbose_name=_("Speaker invitation notes"),
+        default="",
+        blank=True,
     )
 
     @cached_property

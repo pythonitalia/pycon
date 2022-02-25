@@ -75,3 +75,15 @@ class CanSendComment(BasePermission):
             pastaporto,
             submission.conference,
         )
+
+
+class IsSubmissionSpeakerOrStaff(BasePermission):
+    message = "Not authorized"
+
+    def has_object_permission(self, info, submission):
+        pastaporto = info.context.request.pastaporto
+        user_info = pastaporto.user_info
+        if user_info.is_staff:
+            return True
+
+        return submission.speaker_id == user_info.id

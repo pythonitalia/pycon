@@ -70,6 +70,7 @@ class ScheduleItemAdmin(admin.ModelAdmin):
             },
         ),
         (_("Schedule"), {"fields": ("slot", "duration", "rooms")}),
+        (_("Invitation"), {"fields": ("speaker_invitation_notes",)}),
     )
     autocomplete_fields = ("submission",)
     prepopulated_fields = {"slug": ("title",)}
