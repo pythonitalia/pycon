@@ -98,6 +98,32 @@ class ScheduleItemAdmin(admin.ModelAdmin):
     ]
 
 
+class ScheduleItemInvitationProxy(ScheduleItem):
+    class Meta:
+        proxy = True
+        verbose_name = _("Schedule invitation")
+        verbose_name_plural = _("Schedule invitations")
+
+
+@admin.register(ScheduleItemInvitationProxy)
+class ScheduleItemInvitationProxyAdmin(admin.ModelAdmin):
+    list_display = ("slot", "title", "status", "conference", "speaker_invitation_notes")
+    list_filter = ("conference", "slot")
+    list_display_links = None
+
+    def has_add_permission(self, *args, **kwargs) -> bool:
+        return False
+
+    def has_delete_permission(self, *args, **kwargs) -> bool:
+        return False
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.filter(
+            submission__isnull=False,
+        ).order_by("slot__day", "slot__hour")
+
+
 @admin.register(Room)
 class RoomAdmin(OrderedModelAdmin):
     list_display = ("name", "conference")
