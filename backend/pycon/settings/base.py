@@ -224,3 +224,5 @@ PYTHONIT_EMAIL_BACKEND = env(
 )
 DEFAULT_EMAIL_FROM = env("DEFAULT_EMAIL_FROM", default="noreply@pycon.it")
 ENVIRONMENT = env("ENV", default="local")
+
+SPEAKERS_EMAIL_ADDRESS = env("SPEAKERS_EMAIL_ADDRESS", default="")

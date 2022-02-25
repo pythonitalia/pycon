@@ -88,3 +88,25 @@ def send_schedule_invitation_email(schedule_item):
         },
         deduplication_id=str(schedule_item.id),
     )
+
+
+def send_new_schedule_invitation_answer(schedule_item, request):
+    invitation_admin_url = request.build_absolute_uri(
+        schedule_item.get_invitation_admin_url()
+    )
+    schedule_item_admin_url = request.build_absolute_uri(schedule_item.get_admin_url())
+    submission = schedule_item.submission
+
+    publish_message(
+        "NewScheduleInvitationAnswer",
+        body={
+            "speaker_id": submission.speaker_id,
+            "submission_title": submission.title,
+            "status": schedule_item.status,
+            "speaker_notes": schedule_item.speaker_invitation_notes,
+            "time_slot": str(schedule_item.slot),
+            "invitation_admin_url": invitation_admin_url,
+            "schedule_item_admin_url": schedule_item_admin_url,
+        },
+        deduplication_id=str(schedule_item.id),
+    )

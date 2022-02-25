@@ -3,6 +3,7 @@ from collections import namedtuple
 from django.core import exceptions
 from django.db import models
 from django.db.models import Case, When
+from django.urls import reverse
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from model_utils import Choices
@@ -213,6 +214,18 @@ class ScheduleItem(TimeStampedModel):
             kwargs["update_fields"].append("title")
 
         super().save(**kwargs)
+
+    def get_invitation_admin_url(self):
+        return reverse(
+            "admin:schedule_scheduleiteminvitationproxy_change",
+            args=(self.pk,),
+        )
+
+    def get_admin_url(self):
+        return reverse(
+            "admin:%s_%s_change" % (self._meta.app_label, self._meta.model_name),
+            args=(self.pk,),
+        )
 
     class Meta:
         verbose_name = _("Schedule item")

@@ -8,6 +8,7 @@ from api.helpers.ids import decode_hashid
 from api.schedule.types import ScheduleInvitation, ScheduleInvitationOption
 from api.submissions.permissions import IsSubmissionSpeakerOrStaff
 from conferences.models import Conference
+from domain_events.publisher import send_new_schedule_invitation_answer
 from languages.models import Language
 from schedule.models import Day as DayModel
 from schedule.models import ScheduleItem, Slot
@@ -85,6 +86,9 @@ class ScheduleMutations:
         schedule_item.status = input.option.to_schedule_item_status()
         schedule_item.speaker_invitation_notes = input.notes
         schedule_item.save()
+        send_new_schedule_invitation_answer(
+            schedule_item=schedule_item, request=info.context.request
+        )
         return ScheduleInvitation.from_django_model(schedule_item)
 
     @strawberry.mutation(permission_classes=[IsStaffPermission])

@@ -123,7 +123,22 @@ class ScheduleItemInvitationProxyAdmin(admin.ModelAdmin):
         "slot",
         "status",
     )
-    list_display_links = None
+    fieldsets = (
+        (
+            None,
+            {
+                "fields": (
+                    "title",
+                    "slot",
+                    "status",
+                    "speaker_invitation_notes",
+                    "conference",
+                    "open_schedule_item",
+                    "open_submission",
+                ),
+            },
+        ),
+    )
 
     def open_schedule_item(self, obj) -> str:
         url = reverse("admin:schedule_scheduleitem_change", args=[obj.id])
@@ -139,6 +154,9 @@ class ScheduleItemInvitationProxyAdmin(admin.ModelAdmin):
         return False
 
     def has_delete_permission(self, *args, **kwargs) -> bool:
+        return False
+
+    def has_change_permission(self, *args, **kwargs) -> bool:
         return False
 
     def get_queryset(self, request):

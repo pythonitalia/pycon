@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Optional
 
 from django.conf import settings
 from pythonit_toolkit.emails import get_email_backend
@@ -11,12 +11,18 @@ def send_email(
     to: str,
     subject: str,
     from_: Optional[str] = None,
-    variables: Optional[dict[str, str]] = None
+    variables: Optional[dict[str, str]] = None,
+    reply_to: List[str] = None,
 ):
     from_ = from_ or settings.DEFAULT_EMAIL_FROM
     backend = get_email_backend(
         settings.PYTHONIT_EMAIL_BACKEND, environment=settings.ENVIRONMENT
     )
     backend.send_email(
-        template=template, from_=from_, to=to, subject=subject, variables=variables
+        template=template,
+        from_=from_,
+        to=to,
+        subject=subject,
+        variables=variables,
+        reply_to=reply_to,
     )
