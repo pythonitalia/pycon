@@ -1163,7 +1163,7 @@ postgresql = ["psycopg2"]
 
 [[package]]
 name = "pythonit-toolkit"
-version = "0.1.70"
+version = "0.1.71"
 description = ""
 category = "main"
 optional = false
@@ -1593,7 +1593,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "0b188e7491749ee92f32c4a7e4cb08d2ca646c01dcd5a144a728d59dd983bd0c"
+content-hash = "0781bf3924df48b0c20fe20cf43d13000a66000c28d58535ac0ea784f242c299"
 
 [metadata.files]
 aniso8601 = [
@@ -2389,8 +2389,8 @@ python3-openid = [
     {file = "python3_openid-3.2.0-py3-none-any.whl", hash = "sha256:6626f771e0417486701e0b4daff762e7212e820ca5b29fcc0d05f6f8736dfa6b"},
 ]
 pythonit-toolkit = [
-    {file = "pythonit-toolkit-0.1.70.tar.gz", hash = "sha256:05971d1628582b2109dd0377e1c965d9c21837039979b9046915e2aca3aa67eb"},
-    {file = "pythonit_toolkit-0.1.70-py3-none-any.whl", hash = "sha256:2987fee17c7ec74e6889beaf9c835962838a60aa31994071f6fb5eacbc1968ef"},
+    {file = "pythonit-toolkit-0.1.71.tar.gz", hash = "sha256:992ded2e2ed0ae28367596731ec76ea231b192427569e45aa273503185633eab"},
+    {file = "pythonit_toolkit-0.1.71-py3-none-any.whl", hash = "sha256:45c38d33c729ad774b13e90e8bf669d2d9b0476328f9fa05b4dc75a4c26ec040"},
 ]
 pytz = [
     {file = "pytz-2019.3-py2.py3-none-any.whl", hash = "sha256:1c557d7d0e871de1f5ccd5833f60fb2550652da6be2693c1e02300743d21500d"},

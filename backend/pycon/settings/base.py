@@ -20,6 +20,7 @@ FRONTEND_URL = env("FRONTEND_URL")
 # Application definition
 
 INSTALLED_APPS = [
+    "schedule.apps.ScheduleConfig",
     "custom_admin",
     "dal",
     "dal_select2",
@@ -40,7 +41,6 @@ INSTALLED_APPS = [
     "conferences.apps.ConferencesConfig",
     "languages.apps.LanguagesConfig",
     "submissions.apps.SubmissionsConfig",
-    "schedule.apps.ScheduleConfig",
     "voting.apps.VotingConfig",
     "blog.apps.BlogConfig",
     "pages.apps.PagesConfig",

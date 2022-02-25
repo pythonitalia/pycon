@@ -7,6 +7,7 @@ from ordered_model.admin import (
     OrderedTabularInline,
 )
 
+from domain_events.publisher import send_schedule_invitation_email
 from users.autocomplete import UsersBackendAutocomplete
 
 from .models import (
@@ -17,6 +18,20 @@ from .models import (
     ScheduleItemAdditionalSpeaker,
     Slot,
 )
+
+
+@admin.action(description="Send schedule invitation")
+def send_schedule_invitation(modeladmin, request, queryset):
+    # We only want to send it to those we are still waiting for confirmation
+    # and that have a submission
+    queryset = queryset.filter(
+        status=ScheduleItem.STATUS.waiting_confirmation,
+        submission__isnull=False,
+        type=ScheduleItem.TYPES.submission,
+    )
+
+    for schedule_item in queryset:
+        send_schedule_invitation_email(schedule_item)
 
 
 class SlotInline(admin.TabularInline):
@@ -77,6 +92,9 @@ class ScheduleItemAdmin(admin.ModelAdmin):
     filter_horizontal = ("rooms",)
     inlines = [
         ScheduleItemAdditionalSpeakerInline,
+    ]
+    actions = [
+        send_schedule_invitation,
     ]
 
 
