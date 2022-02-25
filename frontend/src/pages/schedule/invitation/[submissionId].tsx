@@ -31,7 +31,7 @@ import {
 } from "~/types";
 
 type SpeakerResponseForm = {
-  option: string;
+  option: ScheduleInvitationOption;
   notes: string;
 };
 
