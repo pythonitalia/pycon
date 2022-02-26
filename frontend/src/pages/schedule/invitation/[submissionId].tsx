@@ -83,7 +83,7 @@ const Invitation = () => {
           input: {
             submissionId,
             option: formState.values.option,
-            notes: formState.values.notes,
+            notes: EXTRA_NOTES_OPTIONS.includes(formState.values.option) ? formState.values.notes : "",
           },
         },
       });
