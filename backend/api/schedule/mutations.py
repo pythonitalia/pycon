@@ -2,6 +2,7 @@ import typing
 from datetime import date, datetime, time, timedelta
 
 import strawberry
+from django.db import transaction
 
 from api.conferences.types import Day, ScheduleSlot
 from api.helpers.ids import decode_hashid
@@ -83,9 +84,21 @@ class ScheduleMutations:
         if not schedule_item:
             return ScheduleInvitationNotFound()
 
-        schedule_item.status = input.option.to_schedule_item_status()
-        schedule_item.speaker_invitation_notes = input.notes
-        schedule_item.save()
+        new_status = input.option.to_schedule_item_status()
+        new_notes = input.notes
+
+        if (
+            schedule_item.status == new_status
+            and schedule_item.speaker_invitation_notes == new_notes
+        ):
+            # If nothing changed, do nothing
+            return ScheduleInvitation.from_django_model(schedule_item)
+
+        with transaction.atomic():
+            schedule_item.status = new_status
+            schedule_item.speaker_invitation_notes = new_notes
+            schedule_item.save()
+
         send_new_schedule_invitation_answer(
             schedule_item=schedule_item, request=info.context.request
         )
