@@ -2,6 +2,7 @@ from collections import namedtuple
 
 from django.core import exceptions
 from django.db import models
+from django.db.models import Case, When
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from model_utils import Choices
@@ -44,31 +45,39 @@ class Day(models.Model):
         verbose_name=_("conference"),
         related_name="days",
     )
-    rooms = models.ManyToManyField(
-        Room,
-        related_name="days",
-        verbose_name=_("rooms"),
-        through="DayRoomThroughModel",
-    )
+
+    def ordered_rooms(self):
+        added_rooms = self.added_rooms.all()
+        ordered_pks = added_rooms.values_list("room_id", flat=True)
+        orders = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(ordered_pks)])
+        rooms = Room.objects.filter(id__in=ordered_pks).order_by(orders)
+        return rooms
 
     def __str__(self):
         return f"{self.day.isoformat()} at {self.conference}"
 
 
 class DayRoomThroughModel(OrderedModel):
-    room = models.ForeignKey(
-        Room,
-        on_delete=models.CASCADE,
-        verbose_name=_("room"),
-        related_name="+",
-    )
     day = models.ForeignKey(
         Day,
         on_delete=models.CASCADE,
         verbose_name=_("day"),
-        related_name="+",
+        related_name="added_rooms",
     )
-    order_with_respect_to = "room"
+    room = models.ForeignKey(
+        Room,
+        on_delete=models.CASCADE,
+        verbose_name=_("room"),
+    )
+    order_with_respect_to = "day"
+
+    class Meta:
+        ordering = (
+            "day",
+            "order",
+        )
+        verbose_name = _("Day - Room")
+        verbose_name_plural = _("Day - Rooms")
 
 
 class Slot(models.Model):
