@@ -4,8 +4,6 @@ from urllib.parse import urljoin
 import boto3
 from django.conf import settings
 
-from schedule.models import ScheduleItem
-
 
 def publish_message(type: str, body: dict, *, deduplication_id: str):
     if not settings.SQS_QUEUE_URL:
@@ -115,6 +113,8 @@ def send_new_schedule_invitation_answer(schedule_item, request):
 
 
 def _schedule_item_status_to_message(status: str):
+    from schedule.models import ScheduleItem
+
     if status == ScheduleItem.STATUS.confirm:
         return "I am happy with the time slot."
 
