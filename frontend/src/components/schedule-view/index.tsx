@@ -107,7 +107,7 @@ export const ScheduleView: React.SFC<{
     [code, currentDay],
   );
 
-  const { rooms, days, submissions } = schedule.conference!;
+  const { days, submissions } = schedule.conference!;
   const day = days.find((d) => d.day === currentDay);
 
   return (
