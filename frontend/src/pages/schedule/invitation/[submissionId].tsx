@@ -72,7 +72,6 @@ const Invitation = () => {
     notes: "",
   });
 
-  console.log("submissionId", submissionId);
   const submitAnswer = useCallback(
     (e) => {
       if (isSubmitting) {
@@ -115,8 +114,6 @@ const Invitation = () => {
       </Box>
     );
   }
-
-  console.log("data", data, "error", error);
 
   if (!invitation) {
     return (
