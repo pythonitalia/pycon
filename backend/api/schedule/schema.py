@@ -8,10 +8,12 @@ from api.submissions.permissions import IsSubmissionSpeakerOrStaff
 from schedule.models import ScheduleItem as ScheduleItemModel
 from submissions.models import Submission as SubmissionModel
 
+from ..permissions import IsAuthenticated
+
 
 @strawberry.type
 class ScheduleQuery:
-    @strawberry.field
+    @strawberry.field(permission_classes=[IsAuthenticated])
     def schedule_invitation(
         self, info, submission_id: ID
     ) -> Optional[ScheduleInvitation]:
