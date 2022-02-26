@@ -18,6 +18,7 @@ from .models import (
     Room,
     ScheduleItem,
     ScheduleItemAdditionalSpeaker,
+    ScheduleItemInvitation,
     Slot,
 )
 
@@ -100,15 +101,8 @@ class ScheduleItemAdmin(admin.ModelAdmin):
     ]
 
 
-class ScheduleItemInvitationProxy(ScheduleItem):
-    class Meta:
-        proxy = True
-        verbose_name = _("Schedule invitation")
-        verbose_name_plural = _("Schedule invitations")
-
-
-@admin.register(ScheduleItemInvitationProxy)
-class ScheduleItemInvitationProxyAdmin(admin.ModelAdmin):
+@admin.register(ScheduleItemInvitation)
+class ScheduleItemInvitationAdmin(admin.ModelAdmin):
     list_display = (
         "slot",
         "status",

@@ -249,3 +249,10 @@ class ScheduleItemAdditionalSpeaker(models.Model):
         verbose_name_plural = _("Schedule item additional speakers")
         unique_together = ("user_id", "scheduleitem")
         db_table = "schedule_scheduleitem_additional_speakers"
+
+
+class ScheduleItemInvitation(ScheduleItem):
+    class Meta:
+        proxy = True
+        verbose_name = _("Schedule invitation")
+        verbose_name_plural = _("Schedule invitations")
