@@ -77,13 +77,16 @@ const Invitation = () => {
       if (isSubmitting) {
         return;
       }
+
       e.preventDefault();
       updateScheduleInvitation({
         variables: {
           input: {
             submissionId,
             option: formState.values.option,
-            notes: EXTRA_NOTES_OPTIONS.includes(formState.values.option) ? formState.values.notes : "",
+            notes: EXTRA_NOTES_OPTIONS.includes(formState.values.option)
+              ? formState.values.notes
+              : "",
           },
         },
       });

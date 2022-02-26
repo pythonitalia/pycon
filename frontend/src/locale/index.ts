@@ -1002,7 +1002,7 @@ export const messages = {
       "Per favore conferma la tua presenza e se lo slot assegnato va bene",
     "schedule.invitation.presence.CONFIRM": "Lo slot orario va bene per me",
     "schedule.invitation.presence.MAYBE":
-    "Lo slot orario va bene ma preferirei un altro",
+      "Lo slot orario va bene ma preferirei un altro",
     "schedule.invitation.presence.REJECT": "Lo slot orario non va bene per me",
     "schedule.invitation.presence.CANT_ATTEND":
       "Non possono più partecipare a PyCon",
