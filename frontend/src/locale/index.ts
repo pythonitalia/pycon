@@ -993,6 +993,31 @@ export const messages = {
     "error404.message":
       "Non siamo riusciti a trovare la pagina che stai cercando :(",
     "error404.goToHomepage": "Vai alla homepage",
+
+    "schedule.invitation.congratulations":
+      "Congratulazioni! La tua submission {submissionTitle} è stata accettata!",
+    "schedule.invitation.program": "Il tuo intervento è previsto il:",
+    "schedule.invitation.date": "{start} a {end}",
+    "schedule.invitation.confirmPresence":
+      "Per favore conferma la tua presenza e se lo slot assegnato va bene",
+    "schedule.invitation.presence.CONFIRM": "Lo slot orario va bene per me",
+    "schedule.invitation.presence.MAYBE":
+    "Lo slot orario va bene ma preferirei un altro",
+    "schedule.invitation.presence.REJECT": "Lo slot orario non va bene per me",
+    "schedule.invitation.presence.CANT_ATTEND":
+      "Non possono più partecipare a PyCon",
+    "schedule.invitation.presence.notes":
+      "Per favore dacci più informazioni per trovare un orario che funzioni",
+    "schedule.invitation.submitAnswer": "Invia risposta",
+    "schedule.invitation.wait": "Caricamento in corso",
+    "schedule.invitation.sendingAnswer": "Caricamento in corso",
+    "schedule.invitation.answerSentWithSuccess":
+      "Grazie! La tua risposta è stata salvata",
+    "schedule.invitation.unableToFindInvitation":
+      "Impossibile salvare la tua risposta. Riprova tra qualche minuto o contattaci",
+    "schedule.invitation.invitationNotValid":
+      "Impossibile trovare questo invito",
+    "schedule.invitation.currentAnswer": "Risposta attuale: {answer}",
   },
 };
 
