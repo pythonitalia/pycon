@@ -172,6 +172,10 @@ class Day:
             return list(self.slots.filter(items__rooms__id=room))
         return list(self.slots.all())
 
+    @strawberry.field
+    def rooms(self) -> List[Room]:
+        return self.ordered_rooms().all()
+
     @classmethod
     def from_db(cls, instance):
         obj = cls(instance.day)

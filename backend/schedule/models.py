@@ -2,6 +2,7 @@ from collections import namedtuple
 
 from django.core import exceptions
 from django.db import models
+from django.db.models import Case, When
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from model_utils import Choices
@@ -16,32 +17,7 @@ from submissions.models import Submission
 SpeakerEntity = namedtuple("SpeakerEntity", ("id",))
 
 
-class Day(models.Model):
-    day = models.DateField()
-    conference = models.ForeignKey(
-        Conference,
-        on_delete=models.CASCADE,
-        verbose_name=_("conference"),
-        related_name="days",
-    )
-
-    def __str__(self):
-        return f"{self.day.isoformat()} at {self.conference}"
-
-
-class Slot(models.Model):
-    day = models.ForeignKey(Day, on_delete=models.CASCADE, related_name="slots")
-    hour = models.TimeField()
-    duration = models.PositiveSmallIntegerField()
-
-    def __str__(self):
-        return f"{self.day} - {self.hour}"
-
-    class Meta:
-        ordering = ["hour"]
-
-
-class Room(OrderedModel):
+class Room(models.Model):
     TYPES = Choices(("talk", _("Talk room")), ("training", _("Training room")))
 
     name = models.CharField(_("name"), max_length=100)
@@ -59,6 +35,61 @@ class Room(OrderedModel):
     class Meta:
         verbose_name = _("Room")
         verbose_name_plural = _("Rooms")
+
+
+class Day(models.Model):
+    day = models.DateField()
+    conference = models.ForeignKey(
+        Conference,
+        on_delete=models.CASCADE,
+        verbose_name=_("conference"),
+        related_name="days",
+    )
+
+    def ordered_rooms(self):
+        added_rooms = self.added_rooms.all()
+        ordered_pks = added_rooms.values_list("room_id", flat=True)
+        orders = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(ordered_pks)])
+        rooms = Room.objects.filter(id__in=ordered_pks).order_by(orders)
+        return rooms
+
+    def __str__(self):
+        return f"{self.day.isoformat()} at {self.conference}"
+
+
+class DayRoomThroughModel(OrderedModel):
+    day = models.ForeignKey(
+        Day,
+        on_delete=models.CASCADE,
+        verbose_name=_("day"),
+        related_name="added_rooms",
+    )
+    room = models.ForeignKey(
+        Room,
+        on_delete=models.CASCADE,
+        verbose_name=_("room"),
+    )
+    order_with_respect_to = "day"
+
+    class Meta:
+        ordering = (
+            "day",
+            "order",
+        )
+        verbose_name = _("Day - Room")
+        verbose_name_plural = _("Day - Rooms")
+
+
+class Slot(models.Model):
+    day = models.ForeignKey(Day, on_delete=models.CASCADE, related_name="slots")
+    hour = models.TimeField()
+    duration = models.PositiveSmallIntegerField()
+
+    def __str__(self):
+        return f"{self.day} - {self.hour}"
+
+    class Meta:
+        ordering = ["hour"]
 
 
 class ScheduleItem(TimeStampedModel):

@@ -142,7 +142,7 @@ export const ScheduleView: React.SFC<{
         {day && (
           <Schedule
             slots={day.slots}
-            rooms={rooms}
+            rooms={day.rooms}
             adminMode={shouldShowAdmin}
             addCustomScheduleItem={addCustomScheduleItem}
             addSubmissionToSchedule={addSubmissionToSchedule}
