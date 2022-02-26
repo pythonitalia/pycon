@@ -1,5 +1,6 @@
 import json
 from urllib.parse import urljoin
+from uuid import uuid4
 
 import boto3
 from django.conf import settings
@@ -108,7 +109,7 @@ def send_new_schedule_invitation_answer(schedule_item, request):
             "invitation_admin_url": invitation_admin_url,
             "schedule_item_admin_url": schedule_item_admin_url,
         },
-        deduplication_id=str(schedule_item.id),
+        deduplication_id=str(uuid4()),
     )
 
 
