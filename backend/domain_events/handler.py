@@ -218,7 +218,7 @@ def handle_schedule_invitation_sent(data):
 def handle_new_schedule_invitation_answer(data):
     speaker_id = data["speaker_id"]
     submission_title = data["submission_title"]
-    status = data["status"]
+    answer = data["answer"]
     speaker_notes = data["speaker_notes"]
     time_slot = data["time_slot"]
     invitation_admin_url = data["invitation_admin_url"]
@@ -238,7 +238,7 @@ def handle_new_schedule_invitation_answer(data):
             "speakerName": get_name(speaker_data),
             "speakerEmail": speaker_data["email"],
             "timeSlot": time_slot,
-            "status": status,
+            "answer": answer,
             "notes": speaker_notes,
             "invitationAdminUrl": invitation_admin_url,
             "scheduleItemAdminUrl": schedule_item_admin_url,
