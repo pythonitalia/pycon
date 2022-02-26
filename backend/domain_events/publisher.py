@@ -115,7 +115,7 @@ def send_new_schedule_invitation_answer(schedule_item, request):
 def _schedule_item_status_to_message(status: str):
     from schedule.models import ScheduleItem
 
-    if status == ScheduleItem.STATUS.confirm:
+    if status == ScheduleItem.STATUS.confirmed:
         return "I am happy with the time slot."
 
     if status == ScheduleItem.STATUS.maybe:
@@ -126,3 +126,5 @@ def _schedule_item_status_to_message(status: str):
 
     if status == ScheduleItem.STATUS.cant_attend:
         return "I can't attend the conference anymore"
+
+    return "Undefined"
