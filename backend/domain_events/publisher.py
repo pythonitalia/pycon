@@ -4,6 +4,8 @@ from urllib.parse import urljoin
 import boto3
 from django.conf import settings
 
+from schedule.models import ScheduleItem
+
 
 def publish_message(type: str, body: dict, *, deduplication_id: str):
     if not settings.SQS_QUEUE_URL:
@@ -102,7 +104,7 @@ def send_new_schedule_invitation_answer(schedule_item, request):
         body={
             "speaker_id": submission.speaker_id,
             "submission_title": submission.title,
-            "status": schedule_item.status,
+            "answer": _schedule_item_status_to_message(schedule_item.status),
             "speaker_notes": schedule_item.speaker_invitation_notes,
             "time_slot": str(schedule_item.slot),
             "invitation_admin_url": invitation_admin_url,
@@ -110,3 +112,17 @@ def send_new_schedule_invitation_answer(schedule_item, request):
         },
         deduplication_id=str(schedule_item.id),
     )
+
+
+def _schedule_item_status_to_message(status: str):
+    if status == ScheduleItem.STATUS.confirm:
+        return "I am happy with the time slot."
+
+    if status == ScheduleItem.STATUS.maybe:
+        return "I can make this time slot work if it is not possible to change"
+
+    if status == ScheduleItem.STATUS.rejected:
+        return "The time slot does not work for me"
+
+    if status == ScheduleItem.STATUS.cant_attend:
+        return "I can't attend the conference anymore"
