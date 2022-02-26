@@ -6,7 +6,9 @@ from pythonit_toolkit.emails.templates import EmailTemplate
 
 from domain_events.handler import (
     handle_new_cfp_submission,
+    handle_new_schedule_invitation_answer,
     handle_new_submission_comment,
+    handle_schedule_invitation_sent,
     handle_send_email_notification_for_new_submission_comment,
     handle_send_slack_notification_for_new_submission_comment,
 )
@@ -237,3 +239,95 @@ def test_handle_new_submission_comment_slack_action():
     assert "Marco Acierno" in str(slack_mock.send_message.mock_calls[0])
     assert "Speaker Name" in str(slack_mock.send_message.mock_calls[0])
     assert "Test submission" in str(slack_mock.send_message.mock_calls[0])
+
+
+def test_handle_schedule_invitation_sent():
+    data = {
+        "speaker_id": 10,
+        "invitation_url": "https://url",
+        "submission_title": "Title title",
+    }
+
+    with patch(
+        "domain_events.handler.send_email"
+    ) as email_mock, respx.mock as req_mock:
+        req_mock.post(f"{settings.USERS_SERVICE}/internal-api").respond(
+            json={
+                "data": {
+                    "usersByIds": [
+                        {
+                            "id": 10,
+                            "fullname": "Marco Acierno",
+                            "name": "Marco",
+                            "username": "marco",
+                            "email": "marco@placeholder.it",
+                        },
+                    ]
+                }
+            }
+        )
+
+        handle_schedule_invitation_sent(data)
+
+    email_mock.assert_called_once_with(
+        template=EmailTemplate.SUBMISSION_ACCEPTED,
+        to="marco@placeholder.it",
+        subject="[PyCon Italia 2022] Your submission was accepted!",
+        variables={
+            "submissionTitle": "Title title",
+            "firstname": "Marco Acierno",
+            "invitationlink": "https://url",
+        },
+    )
+
+
+def test_handle_new_schedule_invitation_answer(settings):
+    settings.SPEAKERS_EMAIL_ADDRESS = "speakers@placeholder.com"
+
+    data = {
+        "speaker_id": 10,
+        "submission_title": "Title title",
+        "answer": "Yellow",
+        "speaker_notes": "Sub",
+        "time_slot": "2020-10-10 13:00",
+        "invitation_admin_url": "https://admin",
+        "schedule_item_admin_url": "https://schedule",
+    }
+
+    with patch(
+        "domain_events.handler.send_email"
+    ) as email_mock, respx.mock as req_mock:
+        req_mock.post(f"{settings.USERS_SERVICE}/internal-api").respond(
+            json={
+                "data": {
+                    "usersByIds": [
+                        {
+                            "id": 10,
+                            "fullname": "Marco Acierno",
+                            "name": "Marco",
+                            "username": "marco",
+                            "email": "marco@placeholder.it",
+                        },
+                    ]
+                }
+            }
+        )
+
+        handle_new_schedule_invitation_answer(data)
+
+    email_mock.assert_called_once_with(
+        template=EmailTemplate.NEW_SCHEDULE_INVITATION_ANSWER,
+        to="speakers@placeholder.com",
+        subject="[PyCon Italia 2022] Schedule Invitation Answer: Title title",
+        variables={
+            "submissionTitle": "Title title",
+            "speakerName": "Marco Acierno",
+            "speakerEmail": "marco@placeholer.it",
+            "timeSlot": "2020-10-10 13:00",
+            "answer": "Yellow",
+            "notes": "Sub",
+            "invitationAdminUrl": "https://admin",
+            "scheduleItemAdminUrl": "https://schedule",
+        },
+        reply_to=["marco@placeholder.it"],
+    )
