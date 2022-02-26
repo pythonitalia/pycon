@@ -58,7 +58,7 @@ const Invitation = () => {
   const language = useCurrentLanguage();
   const router = useRouter();
   const submissionId = router.query.submissionId as string;
-  const { loading, data, error } = useGetScheduleInvitationQuery({
+  const { loading, data } = useGetScheduleInvitationQuery({
     variables: {
       submissionId,
     },
