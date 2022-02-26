@@ -1,11 +1,22 @@
 from django import forms
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
-from ordered_model.admin import OrderedModelAdmin
+from ordered_model.admin import (
+    OrderedInlineModelAdminMixin,
+    OrderedModelAdmin,
+    OrderedTabularInline,
+)
 
 from users.autocomplete import UsersBackendAutocomplete
 
-from .models import Day, Room, ScheduleItem, ScheduleItemAdditionalSpeaker, Slot
+from .models import (
+    Day,
+    DayRoomThroughModel,
+    Room,
+    ScheduleItem,
+    ScheduleItemAdditionalSpeaker,
+    Slot,
+)
 
 
 class SlotInline(admin.TabularInline):
@@ -74,8 +85,21 @@ class RoomAdmin(OrderedModelAdmin):
     list_filter = ("conference",)
 
 
+class DayRoomThroughModelInline(OrderedTabularInline):
+    model = DayRoomThroughModel
+    fields = (
+        "room",
+        "order",
+        "move_up_down_links",
+    )
+    readonly_fields = (
+        "order",
+        "move_up_down_links",
+    )
+
+
 @admin.register(Day)
-class DayAdmin(admin.ModelAdmin):
+class DayAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
     list_display = ("day", "conference")
     list_filter = ("conference",)
-    inlines = (SlotInline,)
+    inlines = (SlotInline, DayRoomThroughModelInline)

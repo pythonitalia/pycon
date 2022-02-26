@@ -16,32 +16,7 @@ from submissions.models import Submission
 SpeakerEntity = namedtuple("SpeakerEntity", ("id",))
 
 
-class Day(models.Model):
-    day = models.DateField()
-    conference = models.ForeignKey(
-        Conference,
-        on_delete=models.CASCADE,
-        verbose_name=_("conference"),
-        related_name="days",
-    )
-
-    def __str__(self):
-        return f"{self.day.isoformat()} at {self.conference}"
-
-
-class Slot(models.Model):
-    day = models.ForeignKey(Day, on_delete=models.CASCADE, related_name="slots")
-    hour = models.TimeField()
-    duration = models.PositiveSmallIntegerField()
-
-    def __str__(self):
-        return f"{self.day} - {self.hour}"
-
-    class Meta:
-        ordering = ["hour"]
-
-
-class Room(OrderedModel):
+class Room(models.Model):
     TYPES = Choices(("talk", _("Talk room")), ("training", _("Training room")))
 
     name = models.CharField(_("name"), max_length=100)
@@ -59,6 +34,53 @@ class Room(OrderedModel):
     class Meta:
         verbose_name = _("Room")
         verbose_name_plural = _("Rooms")
+
+
+class Day(models.Model):
+    day = models.DateField()
+    conference = models.ForeignKey(
+        Conference,
+        on_delete=models.CASCADE,
+        verbose_name=_("conference"),
+        related_name="days",
+    )
+    rooms = models.ManyToManyField(
+        Room,
+        related_name="days",
+        verbose_name=_("rooms"),
+        through="DayRoomThroughModel",
+    )
+
+    def __str__(self):
+        return f"{self.day.isoformat()} at {self.conference}"
+
+
+class DayRoomThroughModel(OrderedModel):
+    room = models.ForeignKey(
+        Room,
+        on_delete=models.CASCADE,
+        verbose_name=_("room"),
+        related_name="+",
+    )
+    day = models.ForeignKey(
+        Day,
+        on_delete=models.CASCADE,
+        verbose_name=_("day"),
+        related_name="+",
+    )
+    order_with_respect_to = "room"
+
+
+class Slot(models.Model):
+    day = models.ForeignKey(Day, on_delete=models.CASCADE, related_name="slots")
+    hour = models.TimeField()
+    duration = models.PositiveSmallIntegerField()
+
+    def __str__(self):
+        return f"{self.day} - {self.hour}"
+
+    class Meta:
+        ordering = ["hour"]
 
 
 class ScheduleItem(TimeStampedModel):

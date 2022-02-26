@@ -172,6 +172,11 @@ class Day:
             return list(self.slots.filter(items__rooms__id=room))
         return list(self.slots.all())
 
+    @strawberry.field
+    def rooms(self) -> List[Room]:
+        breakpoint()
+        return self.rooms.all()
+
     @classmethod
     def from_db(cls, instance):
         obj = cls(instance.day)
@@ -331,7 +336,7 @@ class Conference:
 
     @strawberry.field
     def days(self, info) -> List[Day]:
-        return self.days.prefetch_related("slots", "slots__items").all()
+        return self.days.prefetch_related("slots", "rooms", "slots__items").all()
 
 
 DeadlineStatusType = strawberry.enum(DeadlineStatus)

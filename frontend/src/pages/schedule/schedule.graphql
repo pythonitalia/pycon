@@ -7,6 +7,11 @@ query Schedule($code: String!, $fetchSubmissions: Boolean!) {
     timezone
     days {
       day
+      rooms {
+        id
+        name
+        type
+      }
       slots {
         ...ScheduleSlotFragment
       }
@@ -22,12 +27,6 @@ query Schedule($code: String!, $fetchSubmissions: Boolean!) {
       allowedSubmissionTypes {
         name
       }
-    }
-
-    rooms {
-      id
-      name
-      type
     }
   }
 }
