@@ -30,7 +30,10 @@ def send_schedule_invitation(modeladmin, request, queryset):
     queryset = queryset.filter(
         status=ScheduleItem.STATUS.waiting_confirmation,
         submission__isnull=False,
-        type=ScheduleItem.TYPES.submission,
+        type__in=[
+            ScheduleItem.TYPES.submission,
+            ScheduleItem.TYPES.training,
+        ],
     )
 
     for schedule_item in queryset:
