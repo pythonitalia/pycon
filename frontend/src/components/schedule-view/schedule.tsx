@@ -140,7 +140,7 @@ const GridContainer = React.forwardRef<
     <Grid
       gap={"4px"}
       sx={{
-        minWidth: "1500px",
+        minWidth: "2000px",
         gridTemplateColumns: `80px repeat(${totalColumns}, 1fr)`,
         gridTemplateRows: `repeat(${totalRows - 1}, 10px)`,
         py: "4px",
