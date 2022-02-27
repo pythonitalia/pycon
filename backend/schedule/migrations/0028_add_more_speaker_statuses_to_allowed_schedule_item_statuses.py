@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('schedule', '0026_allow_storing_speaker_invitation_notes_on_the_schedule_item'),
+        ('schedule', '0027_allow_storing_speaker_invitation_notes_on_the_schedule_item'),
     ]
 
     operations = [

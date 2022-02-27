@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('schedule', '0027_add_more_speaker_statuses_to_allowed_schedule_item_statuses'),
+        ('schedule', '0028_add_more_speaker_statuses_to_allowed_schedule_item_statuses'),
     ]
 
     operations = [

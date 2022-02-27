@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('schedule', '0025_additional_speakers_fk'),
+        ('schedule', '0026_add_ability_to_specify_rooms_of_the_day'),
     ]
 
     operations = [
