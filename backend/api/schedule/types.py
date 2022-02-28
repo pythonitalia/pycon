@@ -82,34 +82,24 @@ class ScheduleInvitationOption(Enum):
     CANT_ATTEND = "cant_attend"
 
     def to_schedule_item_status(self):
-        if self == ScheduleInvitationOption.CONFIRM:
-            return ScheduleItemModel.STATUS.confirmed
-
-        if self == ScheduleInvitationOption.MAYBE:
-            return ScheduleItemModel.STATUS.maybe
-
-        if self == ScheduleInvitationOption.REJECT:
-            return ScheduleItemModel.STATUS.rejected
-
-        if self == ScheduleInvitationOption.CANT_ATTEND:
-            return ScheduleItemModel.STATUS.cant_attend
+        return MAP_OPTION_TO_ITEM_STATUS.get(self)
 
     @staticmethod
     def from_schedule_item_status(schedule_item_status: str):
-        if schedule_item_status == ScheduleItemModel.STATUS.waiting_confirmation:
-            return ScheduleInvitationOption.NO_ANSWER
+        return MAP_ITEM_STATUS_TO_OPTION.get(schedule_item_status)
 
-        if schedule_item_status == ScheduleItemModel.STATUS.confirmed:
-            return ScheduleInvitationOption.CONFIRM
 
-        if schedule_item_status == ScheduleItemModel.STATUS.maybe:
-            return ScheduleInvitationOption.MAYBE
+MAP_OPTION_TO_ITEM_STATUS = {
+    ScheduleInvitationOption.CONFIRM: ScheduleItemModel.STATUS.confirmed,
+    ScheduleInvitationOption.MAYBE: ScheduleItemModel.STATUS.maybe,
+    ScheduleInvitationOption.REJECT: ScheduleItemModel.STATUS.rejected,
+    ScheduleInvitationOption.CANT_ATTEND: ScheduleItemModel.STATUS.cant_attend,
+    ScheduleInvitationOption.NO_ANSWER: ScheduleItemModel.STATUS.waiting_confirmation,
+}
 
-        if schedule_item_status == ScheduleItemModel.STATUS.rejected:
-            return ScheduleInvitationOption.REJECT
-
-        if schedule_item_status == ScheduleItemModel.STATUS.cant_attend:
-            return ScheduleInvitationOption.CANT_ATTEND
+MAP_ITEM_STATUS_TO_OPTION = {
+    item: option for option, item in MAP_OPTION_TO_ITEM_STATUS.items()
+}
 
 
 @strawberry.type

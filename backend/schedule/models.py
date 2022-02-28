@@ -217,7 +217,7 @@ class ScheduleItem(TimeStampedModel):
 
     def get_invitation_admin_url(self):
         return reverse(
-            "admin:schedule_scheduleiteminvitationproxy_change",
+            "admin:schedule_scheduleiteminvitation_change",
             args=(self.pk,),
         )
 
