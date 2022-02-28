@@ -322,7 +322,7 @@ def test_handle_new_schedule_invitation_answer(settings):
         variables={
             "submissionTitle": "Title title",
             "speakerName": "Marco Acierno",
-            "speakerEmail": "marco@placeholer.it",
+            "speakerEmail": "marco@placeholder.it",
             "timeSlot": "2020-10-10 13:00",
             "answer": "Yellow",
             "notes": "Sub",
