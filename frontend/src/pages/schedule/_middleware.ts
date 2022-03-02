@@ -10,14 +10,15 @@ export async function middleware(req: NextRequest, _ev: NextFetchEvent) {
   }
 
   const client = getApolloClient();
-  console.log("a")
-  const out = await queryScheduleDays(client, {
-    code: process.env.conferenceCode,
-  });
-  console.log("b", out)
-  const days = out.data.conference.days
-  console.log("c", days)
-  const firstDay = days[0].day;
-  console.log("d", firstDay)
-  return NextResponse.redirect(`/schedule/${firstDay}`);
+  console.log("a", client)
+  // const out = await queryScheduleDays(client, {
+  //   code: process.env.conferenceCode,
+  // });
+  // console.log("b", out)
+  // const days = out.data.conference.days
+  // console.log("c", days)
+  // const firstDay = days[0].day;
+  // console.log("d", firstDay)
+  // return NextResponse.redirect(`/schedule/${firstDay}`);
+  return undefined;
 }
