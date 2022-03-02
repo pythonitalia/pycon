@@ -1,18 +1,28 @@
-import Head from "next/head";
-import { useRouter } from "next/router";
+import { GetServerSideProps } from "next";
 
-export const SchedulePage = () => {
-  const { replace } = useRouter();
+import { getApolloClient } from "~/apollo/client";
+import { queryScheduleDays } from "~/types";
 
-  // TODO Replace with _middleware
-  if (typeof window !== "undefined") {
-    replace("/schedule/2022-06-02");
-  }
-  return (
-    <Head>
-      <meta name="robots" content="noindex, nofollow" />
-    </Head>
-  );
+const ScheduleIndex = () => {
+  return null;
 };
 
-export default SchedulePage;
+export const getServerSideProps: GetServerSideProps = async () => {
+  // TODO Convert to _middleware
+  const client = getApolloClient();
+
+  const out = await queryScheduleDays(client, {
+    code: process.env.conferenceCode,
+  });
+  const days = out.data.conference.days;
+  const firstDay = days[0].day;
+
+  return {
+    redirect: {
+      permanent: false,
+      destination: `/schedule/${firstDay}`,
+    },
+  };
+};
+
+export default ScheduleIndex;
