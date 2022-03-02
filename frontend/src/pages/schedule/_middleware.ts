@@ -9,6 +9,7 @@ export async function middleware(req: NextRequest, _ev: NextFetchEvent) {
     return undefined;
   }
 
+  const client = getApolloClient();
   console.log("aee", fetch)
 
   // const client = getApolloClient();
