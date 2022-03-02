@@ -90,6 +90,9 @@ const createClient = () => {
             },
           },
         },
+        Day: {
+          keyFields: ["day"],
+        },
         SponsorsByLevel: {
           keyFields: ["level"],
         },
