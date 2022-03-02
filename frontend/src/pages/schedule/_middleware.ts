@@ -9,8 +9,10 @@ export async function middleware(req: NextRequest, _ev: NextFetchEvent) {
     return undefined;
   }
 
-  const client = getApolloClient();
-  console.log("a", client)
+  console.log("aee", fetch)
+
+  // const client = getApolloClient();
+  // console.log("a", client)
   // const out = await queryScheduleDays(client, {
   //   code: process.env.conferenceCode,
   // });
