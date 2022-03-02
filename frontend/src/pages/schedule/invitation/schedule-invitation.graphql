@@ -1,0 +1,16 @@
+query GetScheduleInvitation($submissionId: ID!) {
+  scheduleInvitation(submissionId: $submissionId) {
+    id
+    option
+    notes
+    submission {
+      id
+      title
+    }
+    dates {
+      id
+      start
+      end
+    }
+  }
+}

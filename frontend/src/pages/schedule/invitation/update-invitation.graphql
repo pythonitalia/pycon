@@ -1,0 +1,15 @@
+mutation UpdateScheduleInvitation($input: UpdateScheduleInvitationInput!) {
+  updateScheduleInvitation(input: $input) {
+    __typename
+
+    ... on ScheduleInvitation {
+      id
+      option
+      notes
+    }
+
+    ... on ScheduleInvitationNotFound {
+      message
+    }
+  }
+}

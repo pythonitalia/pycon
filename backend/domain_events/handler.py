@@ -193,9 +193,67 @@ def handle_new_cfp_submission(data):
     )
 
 
+def handle_schedule_invitation_sent(data):
+    speaker_id = data["speaker_id"]
+    invitation_url = data["invitation_url"]
+    submission_title = data["submission_title"]
+
+    users_result = execute_service_client_query(
+        USERS_NAMES_FROM_IDS, {"ids": [speaker_id]}
+    )
+    speaker_data = users_result.data["usersByIds"][0]
+
+    send_email(
+        template=EmailTemplate.SUBMISSION_ACCEPTED,
+        to=speaker_data["email"],
+        subject="[PyCon Italia 2022] Your submission was accepted!",
+        variables={
+            "submissionTitle": submission_title,
+            "firstname": get_name(speaker_data, "there"),
+            "invitationlink": invitation_url,
+        },
+    )
+
+
+def handle_new_schedule_invitation_answer(data):
+    speaker_id = data["speaker_id"]
+    submission_title = data["submission_title"]
+    answer = data["answer"]
+    speaker_notes = data["speaker_notes"]
+    time_slot = data["time_slot"]
+    invitation_admin_url = data["invitation_admin_url"]
+    schedule_item_admin_url = data["schedule_item_admin_url"]
+
+    users_result = execute_service_client_query(
+        USERS_NAMES_FROM_IDS, {"ids": [speaker_id]}
+    )
+    speaker_data = users_result.data["usersByIds"][0]
+
+    send_email(
+        template=EmailTemplate.NEW_SCHEDULE_INVITATION_ANSWER,
+        to=settings.SPEAKERS_EMAIL_ADDRESS,
+        subject=f"[PyCon Italia 2022] Schedule Invitation Answer: {submission_title}",
+        variables={
+            "submissionTitle": submission_title,
+            "speakerName": get_name(speaker_data),
+            "speakerEmail": speaker_data["email"],
+            "timeSlot": time_slot,
+            "answer": answer,
+            "notes": speaker_notes,
+            "invitationAdminUrl": invitation_admin_url,
+            "scheduleItemAdminUrl": schedule_item_admin_url,
+        },
+        reply_to=[
+            speaker_data["email"],
+        ],
+    )
+
+
 HANDLERS = {
     "NewSubmissionComment/SlackNotification": handle_send_slack_notification_for_new_submission_comment,
     "NewSubmissionComment/EmailNotification": handle_send_email_notification_for_new_submission_comment,
     "NewSubmissionComment": handle_new_submission_comment,
     "NewCFPSubmission": handle_new_cfp_submission,
+    "ScheduleInvitationSent": handle_schedule_invitation_sent,
+    "NewScheduleInvitationAnswer": handle_new_schedule_invitation_answer,
 }

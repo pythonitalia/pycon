@@ -1,0 +1,24 @@
+---
+title: "[PyCon Italia 2022] New answer from speaker"
+preheader: ""
+---
+
+<extends src="src/layouts/base.html">
+  <block name="template">
+    <h1>New speaker answer</h1>
+    <h2>Reply to this email to send an email to the speaker.</h2>
+
+    <p><b>Submission</b>: @{{submissionTitle}}</p>
+    <p><b>Speaker name</b>: @{{speakerName}}</p>
+    <p><b>Speaker email</b>: @{{speakerEmail}}</p>
+    <p><b>Time slot</b>: @{{timeSlot}}</p>
+    <p><b>Answer</b>: @{{answer}}</p>
+    <p><b>Notes</b>: @{{notes}}</p>
+    <p>
+      <a href="@{{invitationAdminUrl}}" target="_blank">Open invitation in admin</a>
+    </p>
+    <p>
+      <a href="@{{scheduleItemAdminUrl}}" target="_blank">Open schedule item in admin</a>
+    </p>
+  </block>
+</extends>

@@ -11,6 +11,7 @@ from .orders.mutations import OrdersMutations
 from .orders.query import OrdersQuery
 from .pages.schema import PagesQuery
 from .schedule.mutations import ScheduleMutations
+from .schedule.schema import ScheduleQuery
 from .submissions.mutations import SubmissionsMutations
 from .submissions.schema import SubmissionsQuery
 from .users.schema import CountryQuery
@@ -26,6 +27,7 @@ class Query(
     CountryQuery,
     OrdersQuery,
     JobBoardQuery,
+    ScheduleQuery,
 ):
     pass
 

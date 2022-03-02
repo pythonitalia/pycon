@@ -69,6 +69,7 @@ module "lambda" {
     DJANGO_SETTINGS_MODULE                        = "pycon.settings.prod"
     AWS_MEDIA_BUCKET                              = aws_s3_bucket.backend_media.id
     AWS_REGION_NAME                               = aws_s3_bucket.backend_media.region
+    SPEAKERS_EMAIL_ADDRESS                        = module.secrets.value.speakers_email_address
     EMAIL_BACKEND                                 = "django_ses.SESBackend"
     PYTHONIT_EMAIL_BACKEND                        = "pythonit_toolkit.emails.backends.ses.SESEmailBackend"
     FRONTEND_URL                                  = "https://pycon.it"

@@ -3,6 +3,7 @@ from collections import namedtuple
 from django.core import exceptions
 from django.db import models
 from django.db.models import Case, When
+from django.urls import reverse
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from model_utils import Choices
@@ -103,6 +104,8 @@ class ScheduleItem(TimeStampedModel):
     STATUS = Choices(
         ("confirmed", _("Confirmed")),
         ("maybe", _("Maybe")),
+        ("rejected", _("Speaker Rejected")),
+        ("cant_attend", _("Speaker can't attend anymore")),
         ("waiting_confirmation", _("Waiting confirmation")),
         ("cancelled", _("Cancelled")),
     )
@@ -163,6 +166,15 @@ class ScheduleItem(TimeStampedModel):
         on_delete=models.PROTECT,
     )
 
+    speaker_invitation_notes = models.TextField(
+        verbose_name=_("Speaker invitation notes"),
+        default="",
+        blank=True,
+    )
+    speaker_invitation_sent_at = models.DateTimeField(
+        _("speaker invitation sent at"), null=True, blank=True
+    )
+
     @cached_property
     def speakers(self):
         speakers = set(
@@ -206,6 +218,18 @@ class ScheduleItem(TimeStampedModel):
 
         super().save(**kwargs)
 
+    def get_invitation_admin_url(self):
+        return reverse(
+            "admin:schedule_scheduleiteminvitation_change",
+            args=(self.pk,),
+        )
+
+    def get_admin_url(self):
+        return reverse(
+            "admin:%s_%s_change" % (self._meta.app_label, self._meta.model_name),
+            args=(self.pk,),
+        )
+
     class Meta:
         verbose_name = _("Schedule item")
         verbose_name_plural = _("Schedule items")
@@ -228,3 +252,10 @@ class ScheduleItemAdditionalSpeaker(models.Model):
         verbose_name_plural = _("Schedule item additional speakers")
         unique_together = ("user_id", "scheduleitem")
         db_table = "schedule_scheduleitem_additional_speakers"
+
+
+class ScheduleItemInvitation(ScheduleItem):
+    class Meta:
+        proxy = True
+        verbose_name = _("Schedule invitation")
+        verbose_name_plural = _("Schedule invitations")

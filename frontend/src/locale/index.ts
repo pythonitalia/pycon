@@ -484,6 +484,31 @@ export const messages = {
 
     "error404.goToHomepage": "Go to the homepage",
     "error404.message": "We couldn't find the page you are looking for :(",
+
+    "schedule.invitation.congratulations":
+      "Congratulations! Your submission {submissionTitle} was accepted!",
+    "schedule.invitation.program": "It is currently scheduled for:",
+    "schedule.invitation.date": "{start} to {end}",
+    "schedule.invitation.confirmPresence":
+      "Please confirm your presence and that the time works for you, if it doesn't or you can't attend anymore, please let us know as soon as possible.",
+    "schedule.invitation.presence.CONFIRM": "I am happy with the time slot.",
+    "schedule.invitation.presence.MAYBE":
+      "I can make this time slot work if it is not possible to change",
+    "schedule.invitation.presence.REJECT": "The time slot does not work for me",
+    "schedule.invitation.presence.CANT_ATTEND":
+      "I can't attend the conference anymore",
+    "schedule.invitation.presence.notes":
+      "Please provide more information to help us find a better time",
+    "schedule.invitation.submitAnswer": "Submit answer",
+    "schedule.invitation.wait": "Please wait",
+    "schedule.invitation.sendingAnswer": "Sending your answer!",
+    "schedule.invitation.answerSentWithSuccess":
+      "Thank you! Your answer has been correctly saved",
+    "schedule.invitation.unableToFindInvitation":
+      "We were unable to save your answer, your invitation might no longer be valid. Please contact us",
+    "schedule.invitation.invitationNotValid":
+      "Unable to find this invitation. Please contact us if you think this is a mistake",
+    "schedule.invitation.currentAnswer": "Your current answer is: {answer}",
   },
   it: {
     titleTemplate: "%s | PyCon Italia",
@@ -968,6 +993,31 @@ export const messages = {
     "error404.message":
       "Non siamo riusciti a trovare la pagina che stai cercando :(",
     "error404.goToHomepage": "Vai alla homepage",
+
+    "schedule.invitation.congratulations":
+      "Congratulazioni! La tua submission {submissionTitle} è stata accettata!",
+    "schedule.invitation.program": "Il tuo intervento è previsto il:",
+    "schedule.invitation.date": "{start} a {end}",
+    "schedule.invitation.confirmPresence":
+      "Per favore conferma la tua presenza e se lo slot assegnato va bene",
+    "schedule.invitation.presence.CONFIRM": "Lo slot orario va bene per me",
+    "schedule.invitation.presence.MAYBE":
+      "Lo slot orario va bene ma preferirei un altro",
+    "schedule.invitation.presence.REJECT": "Lo slot orario non va bene per me",
+    "schedule.invitation.presence.CANT_ATTEND":
+      "Non possono più partecipare a PyCon",
+    "schedule.invitation.presence.notes":
+      "Per favore dacci più informazioni per trovare un orario che funzioni",
+    "schedule.invitation.submitAnswer": "Invia risposta",
+    "schedule.invitation.wait": "Caricamento in corso",
+    "schedule.invitation.sendingAnswer": "Caricamento in corso",
+    "schedule.invitation.answerSentWithSuccess":
+      "Grazie! La tua risposta è stata salvata",
+    "schedule.invitation.unableToFindInvitation":
+      "Impossibile salvare la tua risposta. Riprova tra qualche minuto o contattaci",
+    "schedule.invitation.invitationNotValid":
+      "Impossibile trovare questo invito",
+    "schedule.invitation.currentAnswer": "Risposta attuale: {answer}",
   },
 };
 

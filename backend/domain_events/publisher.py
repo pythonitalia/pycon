@@ -1,5 +1,6 @@
 import json
 from urllib.parse import urljoin
+from uuid import uuid4
 
 import boto3
 from django.conf import settings
@@ -71,3 +72,60 @@ def notify_new_submission(
         },
         deduplication_id=str(submission_id),
     )
+
+
+def send_schedule_invitation_email(schedule_item):
+    submission = schedule_item.submission
+    invitation_url = urljoin(
+        settings.FRONTEND_URL, f"/schedule/invitation/{submission.hashid}"
+    )
+
+    publish_message(
+        "ScheduleInvitationSent",
+        body={
+            "speaker_id": submission.speaker_id,
+            "submission_title": submission.title,
+            "invitation_url": invitation_url,
+        },
+        deduplication_id=str(schedule_item.id),
+    )
+
+
+def send_new_schedule_invitation_answer(schedule_item, request):
+    invitation_admin_url = request.build_absolute_uri(
+        schedule_item.get_invitation_admin_url()
+    )
+    schedule_item_admin_url = request.build_absolute_uri(schedule_item.get_admin_url())
+    submission = schedule_item.submission
+
+    publish_message(
+        "NewScheduleInvitationAnswer",
+        body={
+            "speaker_id": submission.speaker_id,
+            "submission_title": submission.title,
+            "answer": _schedule_item_status_to_message(schedule_item.status),
+            "speaker_notes": schedule_item.speaker_invitation_notes,
+            "time_slot": str(schedule_item.slot),
+            "invitation_admin_url": invitation_admin_url,
+            "schedule_item_admin_url": schedule_item_admin_url,
+        },
+        deduplication_id=str(uuid4()),
+    )
+
+
+def _schedule_item_status_to_message(status: str):
+    from schedule.models import ScheduleItem
+
+    if status == ScheduleItem.STATUS.confirmed:
+        return "I am happy with the time slot."
+
+    if status == ScheduleItem.STATUS.maybe:
+        return "I can make this time slot work if it is not possible to change"
+
+    if status == ScheduleItem.STATUS.rejected:
+        return "The time slot does not work for me"
+
+    if status == ScheduleItem.STATUS.cant_attend:
+        return "I can't attend the conference anymore"
+
+    return "Undefined"

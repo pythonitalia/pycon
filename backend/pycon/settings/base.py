@@ -20,6 +20,7 @@ FRONTEND_URL = env("FRONTEND_URL")
 # Application definition
 
 INSTALLED_APPS = [
+    "schedule.apps.ScheduleConfig",
     "custom_admin",
     "dal",
     "dal_select2",
@@ -40,7 +41,6 @@ INSTALLED_APPS = [
     "conferences.apps.ConferencesConfig",
     "languages.apps.LanguagesConfig",
     "submissions.apps.SubmissionsConfig",
-    "schedule.apps.ScheduleConfig",
     "voting.apps.VotingConfig",
     "blog.apps.BlogConfig",
     "pages.apps.PagesConfig",
@@ -224,3 +224,5 @@ PYTHONIT_EMAIL_BACKEND = env(
 )
 DEFAULT_EMAIL_FROM = env("DEFAULT_EMAIL_FROM", default="noreply@pycon.it")
 ENVIRONMENT = env("ENV", default="local")
+
+SPEAKERS_EMAIL_ADDRESS = env("SPEAKERS_EMAIL_ADDRESS", default="")

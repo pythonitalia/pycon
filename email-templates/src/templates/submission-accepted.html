@@ -1,0 +1,81 @@
+---
+title: "[PyCon Italia 2022] Your submission was accepted!"
+preheader: "Yay! Your submission was accepted at PyCon Italia 2022"
+---
+
+<extends src="src/layouts/base.html">
+  <block name="template">
+    <table class="w-full font-sans">
+      <tr>
+        <td align="center" class="bg-gray-100">
+          <table class="w-600 sm:w-full">
+            <tr>
+              <component src="src/components/head-pycon.html" />
+            </tr>
+            <tr>
+              <td align="center" class="sm:px-24">
+                <table class="w-full">
+                  <tr>
+                    <td
+                      class="bg-white text-gray-800 text-base text-left p-48 sm:px-24 leading-24"
+                    >
+                      <p class="m-0 mb-16">👋 @{{firstname}}!</p>
+                      <p class="m-0 mb-16">
+                        Your submission @{{submissionTitle}} was accepted at
+                        PyCon Italia 2022!
+                      </p>
+                      <p class="m-0 mb-24">
+                        Please head to the link below to confirm the time slot
+                        and your presence!
+                      </p>
+                      <div class="leading-full mb-24">
+                        <a
+                          href="@{{invitationlink}}"
+                          target="_blank"
+                          class="inline-block py-16 px-24 select-none text-base font-semibold text-center no-underline text-white bg-primary hover:bg-darker"
+                        >
+                          <!--[if mso
+                            ]><i
+                              style="
+                                letter-spacing: 24px;
+                                mso-font-width: -100%;
+                                mso-text-raise: 30px;
+                              "
+                              >&#8202;</i
+                            ><!
+                          [endif]-->
+                          <span style="mso-text-raise: 16px"
+                            >Invitation page</span
+                          >
+                          <!--[if mso
+                            ]><i
+                              style="
+                                letter-spacing: 24px;
+                                mso-font-width: -100%;
+                              "
+                              >&#8202;</i
+                            ><!
+                          [endif]-->
+                        </a>
+                      </div>
+                      <p class="m-0 mb-0">
+                        Please try and confirm your presence as soon as
+                        possible.
+                      </p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="h-48"></td>
+                  </tr>
+                  <tr>
+                    <component src="src/components/footer.html" />
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </block>
+</extends>
