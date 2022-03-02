@@ -171,6 +171,9 @@ class ScheduleItem(TimeStampedModel):
         default="",
         blank=True,
     )
+    speaker_invitation_sent_at = models.DateTimeField(
+        _("speaker invitation sent at"), null=True, blank=True
+    )
 
     @cached_property
     def speakers(self):

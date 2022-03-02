@@ -1,6 +1,7 @@
 from django import forms
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from ordered_model.admin import (
@@ -23,10 +24,25 @@ from .models import (
 )
 
 
-@admin.action(description="Send schedule invitation")
-def send_schedule_invitation(modeladmin, request, queryset):
+@admin.action(description="Send schedule invitation to all (waiting confirmation)")
+def send_schedule_invitation_to_all(modeladmin, request, queryset):
     # We only want to send it to those we are still waiting for confirmation
     # and that have a submission
+    _send_invitations(queryset=queryset)
+    messages.add_message(request, messages.INFO, "Invitations sent")
+
+
+@admin.action(
+    description="Send schedule invitation to uninvited (waiting confirmation)"
+)
+def send_schedule_invitation_to_uninvited(modeladmin, request, queryset):
+    # We only want to send it to those we are still waiting for confirmation
+    # and that have a submission
+    _send_invitations(queryset=queryset, uninvited_only=True)
+    messages.add_message(request, messages.INFO, "Invitations sent")
+
+
+def _send_invitations(*, queryset, uninvited_only: bool = False):
     queryset = queryset.filter(
         status=ScheduleItem.STATUS.waiting_confirmation,
         submission__isnull=False,
@@ -36,8 +52,13 @@ def send_schedule_invitation(modeladmin, request, queryset):
         ],
     )
 
+    if uninvited_only:
+        queryset = queryset.filter(speaker_invitation_sent_at__isnull=True)
+
     for schedule_item in queryset:
+        schedule_item.speaker_invitation_sent_at = timezone.now()
         send_schedule_invitation_email(schedule_item)
+        schedule_item.save()
 
 
 class SlotInline(admin.TabularInline):
@@ -91,7 +112,10 @@ class ScheduleItemAdmin(admin.ModelAdmin):
             },
         ),
         (_("Schedule"), {"fields": ("slot", "duration", "rooms")}),
-        (_("Invitation"), {"fields": ("speaker_invitation_notes",)}),
+        (
+            _("Invitation"),
+            {"fields": ("speaker_invitation_notes", "speaker_invitation_sent_at")},
+        ),
     )
     autocomplete_fields = ("submission",)
     prepopulated_fields = {"slug": ("title",)}
@@ -100,7 +124,8 @@ class ScheduleItemAdmin(admin.ModelAdmin):
         ScheduleItemAdditionalSpeakerInline,
     ]
     actions = [
-        send_schedule_invitation,
+        send_schedule_invitation_to_all,
+        send_schedule_invitation_to_uninvited,
     ]
 
 
@@ -112,6 +137,7 @@ class ScheduleItemInvitationAdmin(admin.ModelAdmin):
         "title",
         "conference",
         "speaker_invitation_notes",
+        "speaker_invitation_sent_at",
         "open_schedule_item",
         "open_submission",
     )
@@ -129,6 +155,7 @@ class ScheduleItemInvitationAdmin(admin.ModelAdmin):
                     "slot",
                     "status",
                     "speaker_invitation_notes",
+                    "speaker_invitation_sent_at",
                     "conference",
                     "open_schedule_item",
                     "open_submission",
