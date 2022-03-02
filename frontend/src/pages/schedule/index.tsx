@@ -3,7 +3,9 @@ import { GetServerSideProps } from "next";
 import { getApolloClient } from "~/apollo/client";
 import { queryScheduleDays } from "~/types";
 
-const ScheduleIndex = () => {};
+const ScheduleIndex = () => {
+  return null;
+};
 
 export const getServerSideProps: GetServerSideProps = async () => {
   // TODO Convert to _middleware
