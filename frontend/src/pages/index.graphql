@@ -14,9 +14,26 @@ query IndexPage($code: String!, $language: String!) {
     introTitle: copy(key: "intro-title-1", language: $language)
     introText: copy(key: "intro-text-1", language: $language)
 
-    sponsorsTitle: copy(key: "sponsors-title", language: $language)
-    sponsorsSubtitle: copy(key: "sponsors-subtitle", language: $language)
-    sponsorsText: copy(key: "sponsors-text", language: $language)
+    homepageSection1Title: copy(
+      key: "homepage-section1-title"
+      language: $language
+    )
+    homepageSection1Subtitle: copy(
+      key: "homepage-section1-subtitle"
+      language: $language
+    )
+    homepageSection1Text: copy(
+      key: "homepage-section1-text"
+      language: $language
+    )
+    homepageSection1CTALink: copy(
+      key: "homepage-section1-cta-link"
+      language: $language
+    )
+    homepageSection1CTAText: copy(
+      key: "homepage-section1-cta-text"
+      language: $language
+    )
 
     gettingThereText: copy(key: "getting-there-text", language: $language)
 
