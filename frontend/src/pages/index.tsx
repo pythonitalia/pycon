@@ -103,19 +103,22 @@ export const HomePage = () => {
 
         <Box sx={{ gridColumnStart: [null, null, 3] }}>
           <Heading as="h1" sx={{ mb: 3 }}>
-            {conference.sponsorsTitle}
+            {conference.homepageSection1Title}
           </Heading>
 
           <Heading as="h2" sx={{ color: "yellow", fontSize: 3, mb: 3 }}>
-            {conference.sponsorsSubtitle}
+            {conference.homepageSection1Subtitle}
           </Heading>
 
           <Text as="p" sx={{ mb: 4 }}>
-            {conference.sponsorsText}
+            {conference.homepageSection1Text}
           </Text>
 
-          <Link path="/sponsor" variant="arrow-button">
-            <FormattedMessage id="home.sponsor.cta" />
+          <Link
+            path={conference.homepageSection1CTALink}
+            variant="arrow-button"
+          >
+            {conference.homepageSection1CTAText}
           </Link>
         </Box>
       </Grid>
