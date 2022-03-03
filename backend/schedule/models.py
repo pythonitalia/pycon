@@ -87,7 +87,7 @@ class Slot(models.Model):
     duration = models.PositiveSmallIntegerField()
 
     def __str__(self):
-        return f"{self.day} - {self.hour}"
+        return f"[{self.day.conference.name}] {self.day.day} - {self.hour}"
 
     class Meta:
         ordering = ["hour"]

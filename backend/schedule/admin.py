@@ -79,6 +79,48 @@ class ScheduleItemAdditionalSpeakerInline(admin.TabularInline):
     form = ScheduleItemAdditionalSpeakerInlineForm
 
 
+class ScheduleItemAdminForm(forms.ModelForm):
+    new_slot = forms.ModelChoiceField(
+        queryset=Slot.objects.all(), required=False, empty_label="(Don't move)"
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["slot"].queryset = (
+            self.fields["slot"]
+            .queryset.filter(day__conference_id=self.instance.conference_id)
+            .order_by("day__day", "hour")
+        )
+
+        self.fields["new_slot"].queryset = (
+            self.fields["new_slot"]
+            .queryset.filter(day__conference_id=self.instance.conference_id)
+            .order_by("day__day", "hour")
+        )
+
+    class Meta:
+        model = ScheduleItem
+        fields = (
+            "conference",
+            "type",
+            "status",
+            "language",
+            "title",
+            "slug",
+            "image",
+            "highlight_color",
+            "audience_level",
+            "description",
+            "submission",
+            "slot",
+            "new_slot",
+            "duration",
+            "rooms",
+            "speaker_invitation_notes",
+            "speaker_invitation_sent_at",
+        )
+
+
 @admin.register(ScheduleItem)
 class ScheduleItemAdmin(admin.ModelAdmin):
     list_display = (
@@ -92,6 +134,7 @@ class ScheduleItemAdmin(admin.ModelAdmin):
     )
     list_filter = ("conference", "status", "type")
     ordering = ("conference", "slot")
+    form = ScheduleItemAdminForm
     fieldsets = (
         (
             _("Event"),
@@ -111,7 +154,7 @@ class ScheduleItemAdmin(admin.ModelAdmin):
                 )
             },
         ),
-        (_("Schedule"), {"fields": ("slot", "duration", "rooms")}),
+        (_("Schedule"), {"fields": ("slot", "new_slot", "duration", "rooms")}),
         (
             _("Invitation"),
             {"fields": ("speaker_invitation_notes", "speaker_invitation_sent_at")},
@@ -127,6 +170,12 @@ class ScheduleItemAdmin(admin.ModelAdmin):
         send_schedule_invitation_to_all,
         send_schedule_invitation_to_uninvited,
     ]
+
+    def save_form(self, request, form, change):
+        if form.cleaned_data["new_slot"]:
+            form.instance.slot = form.cleaned_data["new_slot"]
+
+        return super().save_form(request, form, change)
 
 
 @admin.register(ScheduleItemInvitation)
