@@ -107,14 +107,14 @@ six = "*"
 
 [[package]]
 name = "boto3"
-version = "1.21.8"
+version = "1.21.12"
 description = "The AWS SDK for Python"
 category = "main"
 optional = false
 python-versions = ">= 3.6"
 
 [package.dependencies]
-botocore = ">=1.24.8,<1.25.0"
+botocore = ">=1.24.12,<1.25.0"
 jmespath = ">=0.7.1,<1.0.0"
 s3transfer = ">=0.5.0,<0.6.0"
 
@@ -123,7 +123,7 @@ crt = ["botocore[crt] (>=1.21.0,<2.0a0)"]
 
 [[package]]
 name = "botocore"
-version = "1.24.8"
+version = "1.24.12"
 description = "Low-level, data-driven core of boto 3."
 category = "main"
 optional = false
@@ -516,7 +516,7 @@ doc = ["sphinx", "sphinx-rtd-theme"]
 
 [[package]]
 name = "faker"
-version = "13.2.0"
+version = "13.3.0"
 description = "Faker is a Python package that generates fake data for you."
 category = "dev"
 optional = false
@@ -1163,7 +1163,7 @@ postgresql = ["psycopg2"]
 
 [[package]]
 name = "pythonit-toolkit"
-version = "0.1.73"
+version = "0.1.74"
 description = ""
 category = "main"
 optional = false
@@ -1593,7 +1593,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "0a3c0a85053d8407a9065e611330a097fa3d049d2984848a645cd9c5282eea97"
+content-hash = "9a9798d59432bae9e95969c6ede29e201019945107d67847e969e37394537501"
 
 [metadata.files]
 aniso8601 = [
@@ -1630,12 +1630,12 @@ blessings = [
     {file = "blessings-1.7.tar.gz", hash = "sha256:98e5854d805f50a5b58ac2333411b0482516a8210f23f43308baeb58d77c157d"},
 ]
 boto3 = [
-    {file = "boto3-1.21.8-py3-none-any.whl", hash = "sha256:9b6903fe9cc92d2f6111db28675263f1ab45adbcf1483025c82a304ce7790b71"},
-    {file = "boto3-1.21.8.tar.gz", hash = "sha256:f2ce641957c1782e382548ced4a447189e45851bbe58c1f6752ff2b661527de7"},
+    {file = "boto3-1.21.12-py3-none-any.whl", hash = "sha256:75709628320cea8ce137975dc33b75213c2e4f6e7cd09e55290de7245e2c79e2"},
+    {file = "boto3-1.21.12.tar.gz", hash = "sha256:c92ec20a670721b5a1bc013b305a84db2b7f9c716653b3056ce7e2fbd2a180ef"},
 ]
 botocore = [
-    {file = "botocore-1.24.8-py3-none-any.whl", hash = "sha256:9fbc5c57b31850c51c87abc3e166ed4e0f343665bec4e1a0ff814fbc9704642c"},
-    {file = "botocore-1.24.8.tar.gz", hash = "sha256:a5431d806dc75fb1844463d921759fcd8d387674443af8d7fd0867f296b02759"},
+    {file = "botocore-1.24.12-py3-none-any.whl", hash = "sha256:0cd7395311a3fef4aad8df8f511b4f7d221c24ae30934bd5c03458b0fc096d0c"},
+    {file = "botocore-1.24.12.tar.gz", hash = "sha256:0174999a04b0a2e42457106093ace9b36fa94772a442d9bcf60750263d1d073e"},
 ]
 bpython = [
     {file = "bpython-0.22.1-py3-none-any.whl", hash = "sha256:27ab07d64b9f0268990612aa5c1ab7be8705aa819b14b72c9e4b3b0418458937"},
@@ -1887,8 +1887,8 @@ factory-boy = [
     {file = "factory_boy-3.1.0.tar.gz", hash = "sha256:ded73e49135c24bd4d3f45bf1eb168f8d290090f5cf4566b8df3698317dc9c08"},
 ]
 faker = [
-    {file = "Faker-13.2.0-py3-none-any.whl", hash = "sha256:206050b40d6dfb6efe8ccfbbb9866c56477c53edfdab83f80de3b59f38a88ce0"},
-    {file = "Faker-13.2.0.tar.gz", hash = "sha256:edb62f9511a0977abcea6a78e43b99d1f26c915d2142bbf4c6bf02a9bb597c7f"},
+    {file = "Faker-13.3.0-py3-none-any.whl", hash = "sha256:7e878365aaf2f6a3f88a689c5f8209b8b93f45e3e9c991272552553006856637"},
+    {file = "Faker-13.3.0.tar.gz", hash = "sha256:618b140c77475786dbe3a5409ad53521cb76746ab7a5c77b99c663f3ef1b1bc2"},
 ]
 fancycompleter = [
     {file = "fancycompleter-0.9.1-py3-none-any.whl", hash = "sha256:dd076bca7d9d524cc7f25ec8f35ef95388ffef9ef46def4d3d25e9b044ad7080"},
@@ -2389,8 +2389,8 @@ python3-openid = [
     {file = "python3_openid-3.2.0-py3-none-any.whl", hash = "sha256:6626f771e0417486701e0b4daff762e7212e820ca5b29fcc0d05f6f8736dfa6b"},
 ]
 pythonit-toolkit = [
-    {file = "pythonit-toolkit-0.1.73.tar.gz", hash = "sha256:f18b262b5fd4b920ac0d5bbc4d3fb978ef11d234d177e88b5ba7b069318bda51"},
-    {file = "pythonit_toolkit-0.1.73-py3-none-any.whl", hash = "sha256:14084b2cab6706535a04564704aa406d7935fb5b978247dd99cfd4f0bcdcbfe7"},
+    {file = "pythonit-toolkit-0.1.74.tar.gz", hash = "sha256:dee88e5967bc164bb4c9d0e1122f909f77a48c495a838823298ff54d0ba79ba8"},
+    {file = "pythonit_toolkit-0.1.74-py3-none-any.whl", hash = "sha256:2f48b389b00ce77feb05328a7e3089d94f4326f2e80a7ae73141db08408bc38a"},
 ]
 pytz = [
     {file = "pytz-2019.3-py2.py3-none-any.whl", hash = "sha256:1c557d7d0e871de1f5ccd5833f60fb2550652da6be2693c1e02300743d21500d"},
