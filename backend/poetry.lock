@@ -434,20 +434,21 @@ Django = ">=1.11"
 
 [[package]]
 name = "django-ses"
-version = "1.0.3"
+version = "2.6.0"
 description = "A Django email backend for Amazon's Simple Email Service"
 category = "main"
 optional = false
-python-versions = ">=2.7"
+python-versions = ">=3.5"
 
 [package.dependencies]
 boto3 = ">=1.0.0"
-django = ">1.10"
+django = ">=2.2"
 future = ">=0.16.0"
 pytz = ">=2016.10"
 
 [package.extras]
 bounce = ["requests (<3)", "m2crypto"]
+events = ["requests (<3)", "m2crypto"]
 
 [[package]]
 name = "django-storages"
@@ -1593,7 +1594,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "9a9798d59432bae9e95969c6ede29e201019945107d67847e969e37394537501"
+content-hash = "f9a51267edd895413d3d8b005ba976f186c75768c2e893da5ad5f7070ea0e0f9"
 
 [metadata.files]
 aniso8601 = [
@@ -1863,8 +1864,8 @@ django-queryinspect = [
     {file = "django_queryinspect-1.1.0-py2-none-any.whl", hash = "sha256:3a09644be2c6e068309db79063601ae328da89a5f00f039ea7fc683d1e4bf3e2"},
 ]
 django-ses = [
-    {file = "django-ses-1.0.3.tar.gz", hash = "sha256:9c0a3e59e1e2424093820fa7cd519aa35f9ba978c26917a97a30c682449f0df6"},
-    {file = "django_ses-1.0.3-py2.py3-none-any.whl", hash = "sha256:45f041acb9f2f8df85f3fddd63b04f1d381982bdc7730a3dc1f88e5795758bdd"},
+    {file = "django-ses-2.6.0.tar.gz", hash = "sha256:84f3f9db35d7fd8429b794245bec6b024d7570ba245aa42a4e78707c4d2ce2a9"},
+    {file = "django_ses-2.6.0-py2.py3-none-any.whl", hash = "sha256:0cbc20c312320c0e7e93badd3dbdb892675f95a4673fb55ee78bdd49729e4fed"},
 ]
 django-storages = [
     {file = "django-storages-1.11.1.tar.gz", hash = "sha256:c823dbf56c9e35b0999a13d7e05062b837bae36c518a40255d522fbe3750fbb4"},
