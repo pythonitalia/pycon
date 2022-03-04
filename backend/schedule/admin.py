@@ -10,7 +10,10 @@ from ordered_model.admin import (
     OrderedTabularInline,
 )
 
-from domain_events.publisher import send_schedule_invitation_email
+from domain_events.publisher import (
+    send_new_submission_time_slot,
+    send_schedule_invitation_email,
+)
 from users.autocomplete import UsersBackendAutocomplete
 
 from .models import (
@@ -83,6 +86,7 @@ class ScheduleItemAdminForm(forms.ModelForm):
     new_slot = forms.ModelChoiceField(
         queryset=Slot.objects.all(), required=False, empty_label="(Don't move)"
     )
+    notify_new_time_slot = forms.BooleanField(required=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -114,6 +118,7 @@ class ScheduleItemAdminForm(forms.ModelForm):
             "submission",
             "slot",
             "new_slot",
+            "notify_new_time_slot",
             "duration",
             "rooms",
             "speaker_invitation_notes",
@@ -154,7 +159,18 @@ class ScheduleItemAdmin(admin.ModelAdmin):
                 )
             },
         ),
-        (_("Schedule"), {"fields": ("slot", "new_slot", "duration", "rooms")}),
+        (
+            _("Schedule"),
+            {
+                "fields": (
+                    "slot",
+                    "new_slot",
+                    "notify_new_time_slot",
+                    "duration",
+                    "rooms",
+                )
+            },
+        ),
         (
             _("Invitation"),
             {"fields": ("speaker_invitation_notes", "speaker_invitation_sent_at")},
@@ -175,7 +191,12 @@ class ScheduleItemAdmin(admin.ModelAdmin):
         if form.cleaned_data["new_slot"]:
             form.instance.slot = form.cleaned_data["new_slot"]
 
-        return super().save_form(request, form, change)
+        return_value = super().save_form(request, form, change)
+
+        if form.cleaned_data["notify_new_time_slot"]:
+            send_new_submission_time_slot(form.instance)
+
+        return return_value
 
 
 @admin.register(ScheduleItemInvitation)

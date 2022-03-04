@@ -11,6 +11,7 @@ from domain_events.handler import (
     handle_schedule_invitation_sent,
     handle_send_email_notification_for_new_submission_comment,
     handle_send_slack_notification_for_new_submission_comment,
+    handle_submission_time_slot_changed,
 )
 
 
@@ -273,6 +274,46 @@ def test_handle_schedule_invitation_sent():
         template=EmailTemplate.SUBMISSION_ACCEPTED,
         to="marco@placeholder.it",
         subject="[PyCon Italia 2022] Your submission was accepted!",
+        variables={
+            "submissionTitle": "Title title",
+            "firstname": "Marco Acierno",
+            "invitationlink": "https://url",
+        },
+    )
+
+
+def test_handle_submission_time_slot_changed():
+    data = {
+        "speaker_id": 10,
+        "invitation_url": "https://url",
+        "submission_title": "Title title",
+    }
+
+    with patch(
+        "domain_events.handler.send_email"
+    ) as email_mock, respx.mock as req_mock:
+        req_mock.post(f"{settings.USERS_SERVICE}/internal-api").respond(
+            json={
+                "data": {
+                    "usersByIds": [
+                        {
+                            "id": 10,
+                            "fullname": "Marco Acierno",
+                            "name": "Marco",
+                            "username": "marco",
+                            "email": "marco@placeholder.it",
+                        },
+                    ]
+                }
+            }
+        )
+
+        handle_submission_time_slot_changed(data)
+
+    email_mock.assert_called_once_with(
+        template=EmailTemplate.SUBMISSION_SCHEDULE_TIME_CHANGED,
+        to="marco@placeholder.it",
+        subject="[PyCon Italia 2022] Your Submission time slot has been changed!",
         variables={
             "submissionTitle": "Title title",
             "firstname": "Marco Acierno",

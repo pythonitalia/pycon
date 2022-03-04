@@ -129,3 +129,20 @@ def _schedule_item_status_to_message(status: str):
         return "I can't attend the conference anymore"
 
     return "Undefined"
+
+
+def send_new_submission_time_slot(schedule_item):
+    submission = schedule_item.submission
+    invitation_url = urljoin(
+        settings.FRONTEND_URL, f"/schedule/invitation/{submission.hashid}"
+    )
+
+    publish_message(
+        "SubmissionTimeSlotChanged",
+        body={
+            "speaker_id": submission.speaker_id,
+            "submission_title": submission.title,
+            "invitation_url": invitation_url,
+        },
+        deduplication_id=str(schedule_item.id),
+    )

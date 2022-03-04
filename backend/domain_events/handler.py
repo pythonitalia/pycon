@@ -215,6 +215,28 @@ def handle_schedule_invitation_sent(data):
     )
 
 
+def handle_submission_time_slot_changed(data):
+    speaker_id = data["speaker_id"]
+    invitation_url = data["invitation_url"]
+    submission_title = data["submission_title"]
+
+    users_result = execute_service_client_query(
+        USERS_NAMES_FROM_IDS, {"ids": [speaker_id]}
+    )
+    speaker_data = users_result.data["usersByIds"][0]
+
+    send_email(
+        template=EmailTemplate.SUBMISSION_SCHEDULE_TIME_CHANGED,
+        to=speaker_data["email"],
+        subject="[PyCon Italia 2022] Your Submission time slot has been changed!",
+        variables={
+            "submissionTitle": submission_title,
+            "firstname": get_name(speaker_data, "there"),
+            "invitationlink": invitation_url,
+        },
+    )
+
+
 def handle_new_schedule_invitation_answer(data):
     speaker_id = data["speaker_id"]
     submission_title = data["submission_title"]
@@ -256,4 +278,5 @@ HANDLERS = {
     "NewCFPSubmission": handle_new_cfp_submission,
     "ScheduleInvitationSent": handle_schedule_invitation_sent,
     "NewScheduleInvitationAnswer": handle_new_schedule_invitation_answer,
+    "SubmissionTimeSlotChanged": handle_submission_time_slot_changed,
 }
