@@ -13,9 +13,6 @@ def test_get_talk_not_found(conference_factory, graphql_client):
             conference(code: $code) {
                 talk(slug: "example") {
                     title
-                    speakers {
-                        id
-                    }
                 }
             }
         }
@@ -44,7 +41,9 @@ def test_get_talk_by_slug(conference_factory, schedule_item_factory, graphql_cli
                     title
                     slug
                     speakers {
-                        id
+                        ... on ScheduleItemUser {
+                            id
+                        }
                     }
                 }
             }
