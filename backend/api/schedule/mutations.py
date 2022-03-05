@@ -38,7 +38,17 @@ class UpdateOrCreateSlotItemInput:
     rooms: typing.List[strawberry.ID]
     title: typing.Optional[str] = None
     item_id: typing.Optional[strawberry.ID] = None
+    keynote_id: typing.Optional[strawberry.ID] = None
     submission_id: typing.Optional[strawberry.ID] = None
+
+    def get_schedule_item_type(self):
+        if self.keynote_id:
+            return ScheduleItem.TYPES.keynote
+
+        if self.submission_id:
+            return ScheduleItem.TYPES.submission
+
+        return ScheduleItem.TYPES.custom
 
 
 @strawberry.type
@@ -130,18 +140,16 @@ class ScheduleMutations:
         # TODO: validate this is not none
         slot = Slot.objects.select_related("day").filter(id=input.slot_id).first()
 
+        keynote_id = input.keynote_id
         submission_id = (
             decode_hashid(input.submission_id) if input.submission_id else None
         )
 
         data = {
-            "type": (
-                ScheduleItem.TYPES.submission
-                if submission_id
-                else ScheduleItem.TYPES.custom
-            ),
+            "type": input.get_schedule_item_type(),
             "slot": slot,
             "submission_id": submission_id,
+            "keynote_id": keynote_id,
             "conference": slot.day.conference,
         }
 
@@ -164,6 +172,7 @@ class ScheduleMutations:
 
             # make sure we keep the same type and submission
             data["submission_id"] = schedule_item.submission_id
+            data["keynote_id"] = schedule_item.keynote_id
             data["type"] = schedule_item.type
 
             ScheduleItem.objects.filter(id=input.item_id).update(**data)

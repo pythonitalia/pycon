@@ -1,4 +1,5 @@
-from collections import namedtuple
+from dataclasses import dataclass
+from typing import Optional
 
 from django.core import exceptions
 from django.db import models
@@ -10,12 +11,16 @@ from model_utils import Choices
 from model_utils.models import TimeStampedModel
 from ordered_model.models import OrderedModel
 
-from conferences.models import Conference
+from conferences.models import Conference, Keynote
 from helpers.unique_slugify import unique_slugify
 from pycon.constants import COLORS
 from submissions.models import Submission
 
-SpeakerEntity = namedtuple("SpeakerEntity", ("id",))
+
+@dataclass
+class SpeakerEntity:
+    id: Optional[str] = None
+    full_name: str = ""
 
 
 class Room(models.Model):
@@ -142,6 +147,15 @@ class ScheduleItem(TimeStampedModel):
         verbose_name=_("submission"),
         related_name="schedule_items",
     )
+    keynote = models.ForeignKey(
+        Keynote,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        verbose_name=_("keynote"),
+        related_name="schedule_items",
+    )
+
     image = models.ImageField(
         _("image"), null=True, blank=True, upload_to="schedule_items"
     )
@@ -177,15 +191,17 @@ class ScheduleItem(TimeStampedModel):
 
     @cached_property
     def speakers(self):
-        speakers = set(
-            [
-                SpeakerEntity(speaker.user_id)
-                for speaker in self.additional_speakers.all()
-            ]
-        )
+        speakers = [
+            SpeakerEntity(id=speaker.user_id)
+            for speaker in self.additional_speakers.all()
+        ]
 
-        if self.submission:
-            speakers.add(SpeakerEntity(self.submission.speaker_id))
+        if self.submission_id:
+            speakers.append(SpeakerEntity(id=self.submission.speaker_id))
+
+        if self.keynote_id:
+            for speaker_keynote in self.keynote.speakers.all():
+                speakers.append(SpeakerEntity(full_name=speaker_keynote.name))
 
         return speakers
 
@@ -206,8 +222,11 @@ class ScheduleItem(TimeStampedModel):
             )
 
     def save(self, **kwargs):
-        if self.submission and not self.title:
+        if self.submission_id and not self.title:
             self.title = self.submission.title
+
+        if self.keynote_id and not self.title:
+            self.title = self.keynote.title.localize("em")
 
         if not self.slug:
             unique_slugify(self, self.title)

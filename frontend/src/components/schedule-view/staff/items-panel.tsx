@@ -4,14 +4,18 @@
 import React, { useState } from "react";
 import { Box, Heading, Input, jsx } from "theme-ui";
 
-import { AllTracksEvent, CustomEvent, Submission } from "../events";
-import { Submission as SubmissionType } from "../types";
+import { AllTracksEvent, CustomEvent, Keynote, Submission } from "../events";
+import { Submission as SubmissionType, Keynote as KeynoteType } from "../types";
 
 type ItemsPanelProp = {
   submissions: SubmissionType[];
+  keynotes: KeynoteType[];
 };
 
-export const ItemsPanel: React.SFC<ItemsPanelProp> = ({ submissions }) => {
+export const ItemsPanel: React.SFC<ItemsPanelProp> = ({
+  submissions,
+  keynotes,
+}) => {
   const [query, setQuery] = useState("");
 
   // TODO: https://fusejs.io/
@@ -41,7 +45,13 @@ export const ItemsPanel: React.SFC<ItemsPanelProp> = ({ submissions }) => {
       <AllTracksEvent sx={{ mb: 4, width: "100%" }} />
       <CustomEvent sx={{ mb: 4, width: "100%" }} />
 
-      <Heading sx={{ mb: 4 }}>Submissions</Heading>
+      <Heading sx={{ mb: 4 }}>Keynotes</Heading>
+
+      {keynotes.map((keynote) => (
+        <Keynote sx={{ mb: 3, width: "100%" }} keynote={keynote} />
+      ))}
+
+      <Heading sx={{ my: 4 }}>Submissions</Heading>
 
       <Box>
         <Input

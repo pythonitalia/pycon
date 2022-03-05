@@ -1,8 +1,9 @@
-import { Submission } from "~/components/schedule-view/types";
+import { Keynote, Submission } from "~/components/schedule-view/types";
 
 type Item = {
   id: string;
   submission?: Submission | null;
+  keynote?: Keynote | null;
   audienceLevel?: { name: string } | null;
 };
 
@@ -29,6 +30,10 @@ export const getColorForItem = (item: Item) => {
 
   if (item.submission) {
     return getColorForSubmission(item.submission);
+  }
+
+  if (item.keynote) {
+    return "yellow";
   }
 
   return COLOR_MAP.custom;

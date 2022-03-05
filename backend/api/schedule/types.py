@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from enum import Enum
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, List, Optional, Union
 
 import strawberry
 from strawberry import LazyType
@@ -11,7 +11,7 @@ from schedule.models import ScheduleItem as ScheduleItemModel
 
 if TYPE_CHECKING:  # pragma: no cover
     import api  # noqa
-    from api.conferences.types import AudienceLevel, Conference  # noqa
+    from api.conferences.types import AudienceLevel, Conference, Keynote  # noqa
 
 
 @strawberry.type
@@ -28,6 +28,11 @@ class ScheduleItemUser:
 
 
 @strawberry.type
+class ScheduleItemNamedUser:
+    full_name: str
+
+
+@strawberry.type
 class ScheduleItem:
     id: strawberry.ID
     conference: LazyType["Conference", "api.conferences.types"]
@@ -40,9 +45,28 @@ class ScheduleItem:
     type: str
     duration: Optional[int]
     highlight_color: Optional[str]
-    speakers: List[ScheduleItemUser]
     language: Language
     audience_level: Optional[LazyType["AudienceLevel", "api.conferences.types"]]
+
+    @strawberry.field
+    def speakers(self) -> List[Union[ScheduleItemUser, ScheduleItemNamedUser]]:
+        speakers = []
+        for speaker in self.speakers:
+            if not speaker.id:
+                speakers.append(ScheduleItemNamedUser(full_name=speaker.full_name))
+            else:
+                speakers.append(ScheduleItemUser(id=speaker.id))
+
+        return speakers
+
+    @strawberry.field
+    def keynote(self) -> Optional[LazyType["Keynote", "api.conferences.types"]]:
+        from api.conferences.types import Keynote
+
+        if not self.keynote_id:
+            return None
+
+        return Keynote.from_django_model(self.keynote)
 
     @strawberry.field
     def rooms(self, info) -> List[Room]:

@@ -3,6 +3,7 @@ export const ItemTypes = {
   TRAINING: "training",
   TALK: "talk",
   CUSTOM: "custom",
+  KEYNOTE: "keynote",
 };
 
 export type Submission = {
@@ -12,6 +13,20 @@ export type Submission = {
   duration?: { duration: number } | null;
   audienceLevel?: { name: string } | null;
   speaker?: { fullName: string } | null;
+};
+
+type KeynoteSpeaker = {
+  id: string;
+  name: string;
+  photo: string;
+  highlightColor: string;
+};
+
+export type Keynote = {
+  id: string;
+  title: string;
+  slug: string;
+  speakers: KeynoteSpeaker[];
 };
 
 export type Item = {

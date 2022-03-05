@@ -1,4 +1,5 @@
 #import "./fragments/submission.graphql"
+#import "./fragments/keynote.graphql"
 #import "./fragments/schedule-slot.graphql"
 
 query Schedule($code: String!, $fetchSubmissions: Boolean!) {
@@ -19,6 +20,10 @@ query Schedule($code: String!, $fetchSubmissions: Boolean!) {
 
     submissions @include(if: $fetchSubmissions) {
       ...SubmissionFragment
+    }
+
+    keynotes @include(if: $fetchSubmissions) {
+      ...KeynoteFragment
     }
 
     durations {

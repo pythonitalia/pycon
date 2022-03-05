@@ -5,8 +5,15 @@ query TalkSocialCard($slug: String!, $code: String!) {
       id
       title
       speakers {
-        id
-        fullName
+        __typename
+        ... on ScheduleItemUser {
+          id
+          fullName
+        }
+
+        ... on ScheduleItemNamedUser {
+          fullName
+        }
       }
     }
   }
