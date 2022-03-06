@@ -269,10 +269,6 @@ class Conference:
         return self.events.all()
 
     @strawberry.field
-    def rooms(self, info) -> List[Room]:
-        return self.rooms.all()
-
-    @strawberry.field
     def faqs(self, info) -> List[FAQ]:
         return self.faqs.all()
 
