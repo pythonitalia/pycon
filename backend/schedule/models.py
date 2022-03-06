@@ -27,16 +27,10 @@ class Room(models.Model):
     TYPES = Choices(("talk", _("Talk room")), ("training", _("Training room")))
 
     name = models.CharField(_("name"), max_length=100)
-    conference = models.ForeignKey(
-        Conference,
-        on_delete=models.CASCADE,
-        verbose_name=_("conference"),
-        related_name="rooms",
-    )
     type = models.CharField(_("type"), choices=TYPES, max_length=10, default=TYPES.talk)
 
     def __str__(self):
-        return f"{self.name} at {self.conference}"
+        return self.name
 
     class Meta:
         verbose_name = _("Room")
