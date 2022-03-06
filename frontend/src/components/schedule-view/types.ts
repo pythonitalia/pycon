@@ -38,6 +38,7 @@ export type Item = {
   rooms: Room[];
   duration?: number | null;
   submission?: Submission | null;
+  keynote?: Keynote | null;
   audienceLevel?: { name: string } | null;
   speakers: { fullName: string }[];
 };
