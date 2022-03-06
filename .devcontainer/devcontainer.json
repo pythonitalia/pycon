@@ -3,7 +3,7 @@
 // Update the VARIANT arg in docker-compose.yml to pick a Python version
 {
   "name": "PyCon",
-  "dockerComposeFile": "docker-compose.yml",
+  "dockerComposeFile": "../docker-compose.yml",
   "service": "app",
   "workspaceFolder": "/workspace",
 
