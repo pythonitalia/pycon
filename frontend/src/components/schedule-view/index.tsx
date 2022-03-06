@@ -81,6 +81,20 @@ export const ScheduleView: React.SFC<{
     [],
   );
 
+  const addKeynoteToSchedule = useCallback(
+    (slotId: string, itemRooms: string[], keynoteId: string) =>
+      addOrCreateScheduleItem({
+        variables: {
+          input: {
+            slotId,
+            keynoteId,
+            rooms: itemRooms,
+          },
+        },
+      }),
+    [],
+  );
+
   const moveItem = useCallback(
     (slotId: string, itemRooms: string[], itemId: string) =>
       addOrCreateScheduleItem({
@@ -107,12 +121,14 @@ export const ScheduleView: React.SFC<{
     [code, currentDay],
   );
 
-  const { days, submissions } = schedule.conference!;
+  const { days, submissions, keynotes } = schedule.conference!;
   const day = days.find((d) => d.day === currentDay);
 
   return (
     <Fragment>
-      {shouldShowAdmin && <ItemsPanel submissions={submissions ?? []} />}
+      {shouldShowAdmin && (
+        <ItemsPanel keynotes={keynotes ?? []} submissions={submissions ?? []} />
+      )}
       {(addingSlot || updatingSchedule) && <LoadingOverlay />}
       <Box
         sx={{ flex: 1, width: shouldShowAdmin ? "calc(100% - 300px)" : "100%" }}
@@ -146,6 +162,7 @@ export const ScheduleView: React.SFC<{
             adminMode={shouldShowAdmin}
             addCustomScheduleItem={addCustomScheduleItem}
             addSubmissionToSchedule={addSubmissionToSchedule}
+            addKeynoteToSchedule={addKeynoteToSchedule}
             moveItem={moveItem}
           />
         )}

@@ -15,8 +15,14 @@ query Talk($slug: String!, $code: String!) {
       }
 
       speakers {
-        id
-        fullName
+        ... on ScheduleItemUser {
+          id
+          fullName
+        }
+
+        ... on ScheduleItemNamedUser {
+          fullName
+        }
       }
     }
   }

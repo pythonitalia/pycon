@@ -163,12 +163,18 @@ export const Schedule: React.SFC<{
     rooms: string[],
     submissionId: string,
   ) => void;
+  addKeynoteToSchedule: (
+    slotId: string,
+    rooms: string[],
+    keynoteId: string,
+  ) => void;
 }> = ({
   adminMode,
   slots,
   rooms,
   addCustomScheduleItem,
   addSubmissionToSchedule,
+  addKeynoteToSchedule,
   moveItem,
 }) => {
   const rowOffset = 6;
@@ -178,8 +184,18 @@ export const Schedule: React.SFC<{
   const handleDrop = (item: any, slot: Slot, index: number) => {
     if (item.itemId) {
       moveItem(slot.id, [rooms[index].id], item.itemId);
-    } else if (item.event.id) {
-      addSubmissionToSchedule(slot.id, [rooms[index].id], item.event.id);
+    } else if (item.event.submissionId) {
+      addSubmissionToSchedule(
+        slot.id,
+        [rooms[index].id],
+        item.event.submissionId,
+      );
+    } else if (item.event.keynoteId) {
+      addKeynoteToSchedule(
+        slot.id,
+        rooms.filter((room) => room.type !== "training").map((room) => room.id),
+        item.event.keynoteId,
+      );
     } else {
       const roomIds = item.event.allTracks
         ? rooms.map((room) => room.id)

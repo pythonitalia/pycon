@@ -28,6 +28,7 @@ export const Placeholder: React.SFC<{
 
   if (columnStart === 2) {
     accept.push(ItemTypes.ALL_TRACKS_EVENT);
+    accept.push(ItemTypes.KEYNOTE);
   }
 
   if (roomType === "training") {

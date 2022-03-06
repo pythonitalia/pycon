@@ -102,6 +102,14 @@ class ScheduleItemAdminForm(forms.ModelForm):
             .order_by("day__day", "hour")
         )
 
+        self.fields["submission"].queryset = self.fields["submission"].queryset.filter(
+            conference_id=self.instance.conference_id
+        )
+
+        self.fields["keynote"].queryset = self.fields["keynote"].queryset.filter(
+            conference_id=self.instance.conference_id
+        )
+
     class Meta:
         model = ScheduleItem
         fields = (
@@ -121,6 +129,7 @@ class ScheduleItemAdminForm(forms.ModelForm):
             "notify_new_time_slot",
             "duration",
             "rooms",
+            "keynote",
             "speaker_invitation_notes",
             "speaker_invitation_sent_at",
         )
@@ -156,6 +165,7 @@ class ScheduleItemAdmin(admin.ModelAdmin):
                     "audience_level",
                     "description",
                     "submission",
+                    "keynote",
                 )
             },
         ),

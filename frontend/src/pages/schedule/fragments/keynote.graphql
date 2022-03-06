@@ -1,0 +1,11 @@
+fragment KeynoteFragment on Keynote {
+  id
+  title(language: "en")
+  slug(language: "en")
+  speakers {
+    id
+    name
+    photo
+    highlightColor
+  }
+}

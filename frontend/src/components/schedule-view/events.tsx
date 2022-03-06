@@ -89,7 +89,7 @@ export const Submission = ({
   return (
     <BaseEvent
       type={itemType}
-      metadata={{ event: { id: submission.id } }}
+      metadata={{ event: { submissionId: submission.id } }}
       sx={{ backgroundColor: getColorForSubmission(submission) }}
       {...props}
     >
@@ -109,9 +109,8 @@ const getItemUrl = (item: Item) => {
     return `/talk/[slug]`;
   }
 
-  // TODO: check tbd
   if (item.type === "keynote") {
-    return `/talk/[slug]`;
+    return `/keynotes/[slug]`;
   }
 
   return "";
@@ -134,6 +133,19 @@ export const CustomEvent = ({ ...props }) => (
     {...props}
   >
     Custom event
+  </BaseEvent>
+);
+
+export const Keynote = ({ keynote, ...props }) => (
+  <BaseEvent
+    type={ItemTypes.KEYNOTE}
+    metadata={{ event: { keynoteId: keynote.id } }}
+    sx={{
+      backgroundColor: "yellow",
+    }}
+    {...props}
+  >
+    {keynote.title}
   </BaseEvent>
 );
 
@@ -209,9 +221,10 @@ export const ScheduleEntry: React.SFC<{
               {item.speakers.map((s) => s.fullName).join(" & ")}
             </Text>
             {audienceLevel && <Text>{audienceLevel}</Text>}
+            {item.type === "keynote" && <Text>Keynote</Text>}
           </Box>
 
-          {item.submission && (
+          {(item.submission || item.keynote) && (
             <LanguageIcon
               sx={{
                 width: 30,

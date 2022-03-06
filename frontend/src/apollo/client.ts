@@ -99,6 +99,9 @@ const createClient = () => {
         TicketItem: {
           keyFields: ["id", "language"],
         },
+        ScheduleItemNamedUser: {
+          keyFields: ["fullName"],
+        },
       },
     }),
   });
