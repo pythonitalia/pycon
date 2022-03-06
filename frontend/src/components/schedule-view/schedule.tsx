@@ -191,7 +191,11 @@ export const Schedule: React.SFC<{
         item.event.submissionId,
       );
     } else if (item.event.keynoteId) {
-      addKeynoteToSchedule(slot.id, [rooms[index].id], item.event.keynoteId);
+      addKeynoteToSchedule(
+        slot.id,
+        rooms.filter((room) => room.type !== "training").map((room) => room.id),
+        item.event.keynoteId,
+      );
     } else {
       const roomIds = item.event.allTracks
         ? rooms.map((room) => room.id)
