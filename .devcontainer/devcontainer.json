@@ -4,7 +4,7 @@
 {
   "name": "PyCon",
   "dockerComposeFile": "../docker-compose.yml",
-  "service": "app",
+  "service": "dev_env",
   "workspaceFolder": "/workspace",
 
   // Set *default* container specific settings.json values on container create.
