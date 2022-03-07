@@ -205,8 +205,8 @@ def test_filter_days_by_room(
     slot = slot_factory(day=day, hour=time(8, 45), duration=60)
     slot_2 = slot_factory(day=day, hour=time(9, 45), duration=60)
 
-    room = room_factory(name="Papa John's", conference=conference)
-    room_2 = room_factory(name="Sushi", conference=conference)
+    room = room_factory(name="Papa John's")
+    room_2 = room_factory(name="Sushi")
 
     schedule_item_factory(slot=slot, rooms=[room])
     item_2 = schedule_item_factory(slot=slot_2, image=None, rooms=[room, room_2])

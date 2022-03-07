@@ -11,10 +11,13 @@ export const getServerSideProps: GetServerSideProps = async () => {
   // TODO Convert to _middleware
   const client = getApolloClient();
 
-  const out = await queryScheduleDays(client, {
+  const {
+    data: {
+      conference: { days },
+    },
+  } = await queryScheduleDays(client, {
     code: process.env.conferenceCode,
   });
-  const days = out.data.conference.days;
   const firstDay = days[0].day;
 
   return {

@@ -18,7 +18,6 @@ if TYPE_CHECKING:  # pragma: no cover
 class Room:
     id: strawberry.ID
     name: str
-    conference: LazyType["Conference", "api.conferences.types"]
     type: str
 
 

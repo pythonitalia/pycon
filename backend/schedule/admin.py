@@ -272,8 +272,11 @@ class ScheduleItemInvitationAdmin(admin.ModelAdmin):
 
 @admin.register(Room)
 class RoomAdmin(OrderedModelAdmin):
-    list_display = ("name", "conference")
-    list_filter = ("conference",)
+    list_display = (
+        "name",
+        "type",
+    )
+    list_filter = ("type",)
 
 
 class DayRoomThroughModelInline(OrderedTabularInline):

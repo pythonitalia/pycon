@@ -12,7 +12,6 @@ from submissions.tests.factories import SubmissionFactory
 @register
 class RoomFactory(DjangoModelFactory):
     name = factory.Faker("word")
-    conference = factory.SubFactory(ConferenceFactory)
 
     class Meta:
         model = Room

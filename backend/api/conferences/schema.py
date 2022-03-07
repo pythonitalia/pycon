@@ -1,9 +1,6 @@
-from typing import Optional
-
 import strawberry
-from api.pretix.query import get_voucher
-from api.pretix.types import Voucher
-from conferences.models import Conference, conference
+
+from conferences.models import Conference
 
 from . import types
 
@@ -12,4 +9,4 @@ from . import types
 class ConferenceQuery:
     @strawberry.field
     def conference(self, info, code: str) -> types.Conference:
-        return Conference.objects.prefetch_related("durations", "rooms").get(code=code)
+        return Conference.objects.prefetch_related("durations").get(code=code)

@@ -387,27 +387,6 @@ def test_get_conference_durations(
 
 
 @mark.django_db
-def test_query_conference_rooms(graphql_client, room_factory):
-    room = room_factory()
-
-    response = graphql_client.query(
-        """
-    query($code: String!) {
-        conference(code: $code) {
-            rooms {
-                name
-            }
-        }
-    }
-    """,
-        variables={"code": room.conference.code},
-    )
-
-    assert len(response["data"]["conference"]["rooms"]) == 1
-    assert response["data"]["conference"]["rooms"][0] == {"name": room.name}
-
-
-@mark.django_db
 def test_get_conference_without_map(conference, graphql_client):
     resp = graphql_client.query(
         """
