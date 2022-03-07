@@ -7,6 +7,7 @@ import { Box, Flex, Grid, Heading, jsx } from "theme-ui";
 import useOnClickOutside from "use-onclickoutside";
 
 import dynamic from "next/dynamic";
+import { default as NextLink } from "next/link";
 import { useRouter } from "next/router";
 
 import { useLoginState } from "~/components/profile/hooks";
@@ -15,6 +16,7 @@ import { useCurrentLanguage } from "~/locale/context";
 import { useHeaderQuery } from "~/types";
 
 import { Button } from "../button/button";
+import { BuyTicketsCTA } from "../homepage-hero/buy-tickets-cta";
 import { EnglishIcon } from "../icons/english";
 import { ItalianIcon } from "../icons/italian";
 import { Link } from "../link";
@@ -135,6 +137,18 @@ export const Header = () => {
               alignItems: "center",
             }}
           >
+            <NextLink href="/tickets">
+              <a>
+                <BuyTicketsCTA
+                  sx={{
+                    width: 90,
+                    height: 90,
+                    mr: 3,
+                  }}
+                />
+              </a>
+            </NextLink>
+
             <LanguagePicker
               language={language}
               sx={{
