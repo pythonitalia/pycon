@@ -223,7 +223,6 @@ class ScheduleItemInvitationAdmin(admin.ModelAdmin):
     )
     list_filter = (
         "conference",
-        "slot",
         "status",
     )
     fieldsets = (
