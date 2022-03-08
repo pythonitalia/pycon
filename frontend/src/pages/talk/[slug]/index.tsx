@@ -78,25 +78,27 @@ export const TalkPage = () => {
               }}
             />
 
-            <Box
-              sx={{
-                border: "primary",
-                p: 4,
-                backgroundColor: "cinderella",
-                width: "80%",
-                position: "absolute",
-                left: 0,
-                top: talk.image ? "90%" : "70%",
-              }}
-            >
-              <Text sx={{ fontWeight: "bold" }}>
-                <FormattedMessage id="blog.author" />
-              </Text>
+            {talk.speakers.length > 0 && (
+              <Box
+                sx={{
+                  border: "primary",
+                  p: 4,
+                  backgroundColor: "cinderella",
+                  width: "80%",
+                  position: "absolute",
+                  left: 0,
+                  top: talk.image ? "90%" : "70%",
+                }}
+              >
+                <Text sx={{ fontWeight: "bold" }}>
+                  <FormattedMessage id="blog.author" />
+                </Text>
 
-              <Text>
-                {talk.speakers.map(({ fullName }) => fullName).join(" & ")}
-              </Text>
-            </Box>
+                <Text>
+                  {talk.speakers.map(({ fullName }) => fullName).join(" & ")}
+                </Text>
+              </Box>
+            )}
           </Flex>
         </Box>
       </Grid>
