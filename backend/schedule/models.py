@@ -95,6 +95,7 @@ class Slot(models.Model):
 class ScheduleItem(TimeStampedModel):
     TYPES = Choices(
         ("submission", _("Submission")),
+        ("talk", _("Talk")),
         ("training", _("Training")),
         ("keynote", _("Keynote")),
         ("custom", _("Custom")),

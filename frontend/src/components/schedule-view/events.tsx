@@ -105,7 +105,11 @@ export const Submission = ({
 };
 
 const getItemUrl = (item: Item) => {
-  if (item.type === "submission") {
+  if (
+    item.type === "submission" ||
+    item.type === "training" ||
+    item.type === "talk"
+  ) {
     return `/talk/[slug]`;
   }
 
@@ -113,7 +117,7 @@ const getItemUrl = (item: Item) => {
     return `/keynotes/[slug]`;
   }
 
-  return "";
+  return undefined;
 };
 
 export const AllTracksEvent = ({ ...props }) => (
@@ -174,6 +178,9 @@ export const ScheduleEntry: React.SFC<{
     ? item.audienceLevel.name
     : null;
 
+  const itemUrl = getItemUrl(item);
+  const WrapperComponent = itemUrl ? Link : Box;
+
   return (
     <BaseDraggable
       adminMode={adminMode}
@@ -188,8 +195,8 @@ export const ScheduleEntry: React.SFC<{
       }}
       {...props}
     >
-      <Link
-        path={getItemUrl(item)}
+      <WrapperComponent
+        path={itemUrl}
         params={{ slug: item.slug }}
         sx={{
           color: "inherit",
@@ -232,7 +239,7 @@ export const ScheduleEntry: React.SFC<{
             />
           )}
         </Flex>
-      </Link>
+      </WrapperComponent>
     </BaseDraggable>
   );
 };
