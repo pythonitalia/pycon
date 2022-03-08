@@ -137,18 +137,23 @@ export const Header = () => {
               alignItems: "center",
             }}
           >
-            <NextLink href="/tickets">
-              <a>
-                <BuyTicketsCTA
-                  sx={{
-                    width: 90,
-                    height: 90,
-                    mr: 3,
-                  }}
-                />
-              </a>
-            </NextLink>
-
+            <Box
+              sx={{
+                display: ["none", null, "block"],
+              }}
+            >
+              <NextLink href="/tickets">
+                <a>
+                  <BuyTicketsCTA
+                    sx={{
+                      width: 90,
+                      height: 90,
+                      mr: 3,
+                    }}
+                  />
+                </a>
+              </NextLink>
+            </Box>
             <LanguagePicker
               language={language}
               sx={{
