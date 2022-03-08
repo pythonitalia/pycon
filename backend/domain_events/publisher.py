@@ -79,9 +79,12 @@ def send_schedule_invitation_email(schedule_item, is_reminder: bool = False):
     invitation_url = urljoin(
         settings.FRONTEND_URL, f"/schedule/invitation/{submission.hashid}"
     )
+    event_name = (
+        "ScheduleInvitationReminderSent" if is_reminder else "ScheduleInvitationSent"
+    )
 
     publish_message(
-        "ScheduleInvitationSent",
+        event_name,
         body={
             "speaker_id": submission.speaker_id,
             "submission_title": submission.title,

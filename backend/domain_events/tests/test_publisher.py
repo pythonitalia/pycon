@@ -1,7 +1,13 @@
 import json
 from unittest.mock import patch
 
-from domain_events.publisher import notify_new_submission, publish_message
+import pytest
+
+from domain_events.publisher import (
+    notify_new_submission,
+    publish_message,
+    send_schedule_invitation_email,
+)
 
 
 def test_publish_message(settings):
@@ -46,4 +52,47 @@ def test_notify_new_submission():
             "speaker_id": 10,
         },
         deduplication_id="1",
+    )
+
+
+@pytest.mark.django_db
+def test_send_schedule_invitation_email_reminder(
+    schedule_item_factory, submission_factory, settings
+):
+    settings.FRONTEND_URL = "https://pycon.it"
+    schedule_item = schedule_item_factory(submission=submission_factory())
+    with patch("domain_events.publisher.publish_message") as mock_publish:
+        send_schedule_invitation_email(schedule_item, is_reminder=True)
+
+    mock_publish.assert_called_once_with(
+        "ScheduleInvitationReminderSent",
+        body={
+            "speaker_id": schedule_item.submission.speaker_id,
+            "submission_title": schedule_item.submission.title,
+            "invitation_url": f"https://pycon.it/schedule/invitation/{schedule_item.submission.hashid}",
+            "is_reminder": True,
+        },
+        deduplication_id=str(schedule_item.id),
+    )
+
+
+@pytest.mark.django_db
+def test_send_schedule_invitation_email(
+    schedule_item_factory, submission_factory, settings
+):
+    settings.FRONTEND_URL = "https://pycon.it"
+    schedule_item = schedule_item_factory(submission=submission_factory())
+    breakpoint()
+    with patch("domain_events.publisher.publish_message") as mock_publish:
+        send_schedule_invitation_email(schedule_item, is_reminder=False)
+
+    mock_publish.assert_called_once_with(
+        "ScheduleInvitationSent",
+        body={
+            "speaker_id": schedule_item.submission.speaker_id,
+            "submission_title": schedule_item.submission.title,
+            "invitation_url": f"https://pycon.it/schedule/invitation/{schedule_item.submission.hashid}",
+            "is_reminder": True,
+        },
+        deduplication_id=str(schedule_item.id),
     )
