@@ -283,6 +283,7 @@ HANDLERS = {
     "NewSubmissionComment": handle_new_submission_comment,
     "NewCFPSubmission": handle_new_cfp_submission,
     "ScheduleInvitationSent": handle_schedule_invitation_sent,
+    "ScheduleInvitationReminderSent": handle_schedule_invitation_sent,
     "NewScheduleInvitationAnswer": handle_new_schedule_invitation_answer,
     "SubmissionTimeSlotChanged": handle_submission_time_slot_changed,
 }
