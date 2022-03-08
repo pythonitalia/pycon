@@ -8,6 +8,7 @@ from domain_events.publisher import (
     publish_message,
     send_schedule_invitation_email,
 )
+from schedule.models import ScheduleItem
 
 
 def test_publish_message(settings):
@@ -60,7 +61,9 @@ def test_send_schedule_invitation_email_reminder(
     schedule_item_factory, submission_factory, settings
 ):
     settings.FRONTEND_URL = "https://pycon.it"
-    schedule_item = schedule_item_factory(submission=submission_factory())
+    schedule_item = schedule_item_factory(
+        type=ScheduleItem.TYPES.talk, submission=submission_factory()
+    )
     with patch("domain_events.publisher.publish_message") as mock_publish:
         send_schedule_invitation_email(schedule_item, is_reminder=True)
 
@@ -81,8 +84,9 @@ def test_send_schedule_invitation_email(
     schedule_item_factory, submission_factory, settings
 ):
     settings.FRONTEND_URL = "https://pycon.it"
-    schedule_item = schedule_item_factory(submission=submission_factory())
-    breakpoint()
+    schedule_item = schedule_item_factory(
+        type=ScheduleItem.TYPES.talk, submission=submission_factory()
+    )
     with patch("domain_events.publisher.publish_message") as mock_publish:
         send_schedule_invitation_email(schedule_item, is_reminder=False)
 
@@ -92,7 +96,7 @@ def test_send_schedule_invitation_email(
             "speaker_id": schedule_item.submission.speaker_id,
             "submission_title": schedule_item.submission.title,
             "invitation_url": f"https://pycon.it/schedule/invitation/{schedule_item.submission.hashid}",
-            "is_reminder": True,
+            "is_reminder": False,
         },
         deduplication_id=str(schedule_item.id),
     )
