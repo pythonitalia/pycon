@@ -222,7 +222,7 @@ export const ScheduleEntry: React.SFC<{
           )}
         </Text>
 
-        <Flex sx={{ color: "white", mt: "auto" }}>
+        <Flex sx={{ color: item.keynote ? "black" : "white", mt: "auto" }}>
           <Box sx={{ mr: "auto" }}>
             <Text sx={{ fontWeight: "bold" }}>
               {item.speakers.map((s) => s.fullName).join(" & ")}
