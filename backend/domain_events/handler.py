@@ -197,7 +197,7 @@ def handle_schedule_invitation_sent(data):
     speaker_id = data["speaker_id"]
     invitation_url = data["invitation_url"]
     submission_title = data["submission_title"]
-    is_reminder = data.get("submission_title", False)
+    is_reminder = data.get("is_reminder", False)
 
     users_result = execute_service_client_query(
         USERS_NAMES_FROM_IDS, {"ids": [speaker_id]}
