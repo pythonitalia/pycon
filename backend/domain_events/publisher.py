@@ -74,7 +74,7 @@ def notify_new_submission(
     )
 
 
-def send_schedule_invitation_email(schedule_item):
+def send_schedule_invitation_email(schedule_item, is_reminder: bool = False):
     submission = schedule_item.submission
     invitation_url = urljoin(
         settings.FRONTEND_URL, f"/schedule/invitation/{submission.hashid}"
@@ -86,6 +86,7 @@ def send_schedule_invitation_email(schedule_item):
             "speaker_id": submission.speaker_id,
             "submission_title": submission.title,
             "invitation_url": invitation_url,
+            "is_reminder": is_reminder,
         },
         deduplication_id=str(schedule_item.id),
     )

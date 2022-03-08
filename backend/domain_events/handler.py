@@ -197,16 +197,22 @@ def handle_schedule_invitation_sent(data):
     speaker_id = data["speaker_id"]
     invitation_url = data["invitation_url"]
     submission_title = data["submission_title"]
+    is_reminder = data.get("submission_title", False)
 
     users_result = execute_service_client_query(
         USERS_NAMES_FROM_IDS, {"ids": [speaker_id]}
     )
     speaker_data = users_result.data["usersByIds"][0]
+    subject = (
+        "[PyCon Italia 2022] Reminder: Your submission was accepted, confirm your presence"
+        if is_reminder
+        else "[PyCon Italia 2022] Your submission was accepted!"
+    )
 
     send_email(
         template=EmailTemplate.SUBMISSION_ACCEPTED,
         to=speaker_data["email"],
-        subject="[PyCon Italia 2022] Your submission was accepted!",
+        subject=subject,
         variables={
             "submissionTitle": submission_title,
             "firstname": get_name(speaker_data, "there"),

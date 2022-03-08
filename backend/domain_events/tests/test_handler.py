@@ -282,6 +282,47 @@ def test_handle_schedule_invitation_sent():
     )
 
 
+def test_handle_schedule_invitation_sent_reminder():
+    data = {
+        "speaker_id": 10,
+        "invitation_url": "https://url",
+        "submission_title": "Title title",
+        "is_reminder": True,
+    }
+
+    with patch(
+        "domain_events.handler.send_email"
+    ) as email_mock, respx.mock as req_mock:
+        req_mock.post(f"{settings.USERS_SERVICE}/internal-api").respond(
+            json={
+                "data": {
+                    "usersByIds": [
+                        {
+                            "id": 10,
+                            "fullname": "Marco Acierno",
+                            "name": "Marco",
+                            "username": "marco",
+                            "email": "marco@placeholder.it",
+                        },
+                    ]
+                }
+            }
+        )
+
+        handle_schedule_invitation_sent(data)
+
+    email_mock.assert_called_once_with(
+        template=EmailTemplate.SUBMISSION_ACCEPTED,
+        to="marco@placeholder.it",
+        subject="[PyCon Italia 2022] Reminder: Your submission was accepted, confirm your presence",
+        variables={
+            "submissionTitle": "Title title",
+            "firstname": "Marco Acierno",
+            "invitationlink": "https://url",
+        },
+    )
+
+
 def test_handle_submission_time_slot_changed():
     data = {
         "speaker_id": 10,

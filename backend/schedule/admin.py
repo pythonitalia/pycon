@@ -29,23 +29,34 @@ from .models import (
 
 @admin.action(description="Send schedule invitation to all (waiting confirmation)")
 def send_schedule_invitation_to_all(modeladmin, request, queryset):
-    # We only want to send it to those we are still waiting for confirmation
-    # and that have a submission
     _send_invitations(queryset=queryset)
     messages.add_message(request, messages.INFO, "Invitations sent")
+
+
+@admin.action(description="Send reminder to waiting confirmation invitations")
+def send_schedule_invitation_reminder_to_waiting(modeladmin, request, queryset):
+    _send_invitations(queryset=queryset, invited_only=True, is_reminder=True)
+    messages.add_message(request, messages.INFO, "Invitations reminder sent")
 
 
 @admin.action(
     description="Send schedule invitation to uninvited (waiting confirmation)"
 )
 def send_schedule_invitation_to_uninvited(modeladmin, request, queryset):
-    # We only want to send it to those we are still waiting for confirmation
-    # and that have a submission
     _send_invitations(queryset=queryset, uninvited_only=True)
     messages.add_message(request, messages.INFO, "Invitations sent")
 
 
-def _send_invitations(*, queryset, uninvited_only: bool = False):
+def _send_invitations(
+    *,
+    queryset,
+    invited_only: bool = False,
+    uninvited_only: bool = False,
+    is_reminder: bool = False,
+):
+    # We only want to send it to those we are still waiting for confirmation
+    # and that have a submission
+
     queryset = queryset.filter(
         status=ScheduleItem.STATUS.waiting_confirmation,
         submission__isnull=False,
@@ -57,10 +68,12 @@ def _send_invitations(*, queryset, uninvited_only: bool = False):
 
     if uninvited_only:
         queryset = queryset.filter(speaker_invitation_sent_at__isnull=True)
+    elif invited_only:
+        queryset = queryset.filter(speaker_invitation_sent_at__isnull=False)
 
     for schedule_item in queryset:
         schedule_item.speaker_invitation_sent_at = timezone.now()
-        send_schedule_invitation_email(schedule_item)
+        send_schedule_invitation_email(schedule_item, is_reminder=is_reminder)
         schedule_item.save()
 
 
@@ -195,6 +208,7 @@ class ScheduleItemAdmin(admin.ModelAdmin):
     actions = [
         send_schedule_invitation_to_all,
         send_schedule_invitation_to_uninvited,
+        send_schedule_invitation_reminder_to_waiting,
     ]
 
     def save_form(self, request, form, change):
