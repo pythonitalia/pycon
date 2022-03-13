@@ -58,18 +58,13 @@ const ArrowRightBackground = ({
 const isExternalLink = ({ path, target }: { path: string; target?: string }) =>
   path.startsWith("http") || path.startsWith("mailto") || target === "_blank";
 
-type Params = {
-  [param: string]: string;
-};
-
 type LinkProps = {
   path: string;
   variant?: string;
   target?: string;
   locale?: "it" | "en";
   backgroundColor?: string;
-  params?: Params;
-  querystring?: Params;
+  params?: any;
   external?: boolean;
   rel?: string;
 };
