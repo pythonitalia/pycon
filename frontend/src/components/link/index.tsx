@@ -3,6 +3,7 @@
 /** @jsx jsx */
 import React from "react";
 import { Box, jsx, Link as ThemeLink } from "theme-ui";
+import { UrlObject } from "url";
 
 import NextLink from "next/link";
 
@@ -64,7 +65,7 @@ type Params = {
 
 type LinkProps = {
   url?: string;
-  path: string;
+  path: string | UrlObject;
   variant?: string;
   target?: string;
   locale?: "it" | "en";
@@ -140,7 +141,7 @@ export const Link: React.FC<LinkProps> = ({
     <NextLink
       href={{
         pathname: path,
-        query: params
+        query: params,
       }}
       passHref={true}
       locale={locale || language}
