@@ -1,6 +1,7 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
+import { ParsedUrlQuery } from "querystring";
 import React from "react";
 import { Box, jsx, Link as ThemeLink } from "theme-ui";
 
@@ -64,7 +65,7 @@ type LinkProps = {
   target?: string;
   locale?: "it" | "en";
   backgroundColor?: string;
-  params?: any;
+  params?: ParsedUrlQuery;
   external?: boolean;
   rel?: string;
 };
