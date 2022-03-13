@@ -158,7 +158,8 @@ export const ScheduleEntry: React.SFC<{
   item: Item;
   slot: Slot;
   rooms: Room[];
-}> = ({ item, adminMode, slot, rooms, ...props }) => {
+  day: string;
+}> = ({ item, adminMode, slot, rooms, day, ...props }) => {
   const type = getType(item.submission);
 
   const backgroundColor = getColorForItem(item);
@@ -198,6 +199,7 @@ export const ScheduleEntry: React.SFC<{
       <WrapperComponent
         path={itemUrl}
         params={{ slug: item.slug }}
+        querystring={{ day }}
         sx={{
           color: "inherit",
           textDecoration: "none",

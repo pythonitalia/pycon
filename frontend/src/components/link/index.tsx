@@ -70,6 +70,7 @@ type LinkProps = {
   locale?: "it" | "en";
   backgroundColor?: string;
   params?: Params;
+  querystring?: Params;
   external?: boolean;
   rel?: string;
 };
@@ -83,6 +84,7 @@ export const Link: React.FC<LinkProps> = ({
   url,
   external = false,
   params = null,
+  querystring = undefined,
   locale,
   ...additionalProps
 }) => {
@@ -140,7 +142,18 @@ export const Link: React.FC<LinkProps> = ({
   }
 
   return (
-    <NextLink as={url} href={path} passHref={true} locale={locale || language}>
+    <NextLink
+      as={{
+        pathname: url,
+        query: querystring,
+      }}
+      href={{
+        pathname: path,
+        query: querystring,
+      }}
+      passHref={true}
+      locale={locale || language}
+    >
       {hoverable}
     </NextLink>
   );
