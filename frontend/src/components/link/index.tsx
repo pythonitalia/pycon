@@ -3,7 +3,6 @@
 /** @jsx jsx */
 import React from "react";
 import { Box, jsx, Link as ThemeLink } from "theme-ui";
-import { UrlObject } from "url";
 
 import NextLink from "next/link";
 
@@ -64,8 +63,7 @@ type Params = {
 };
 
 type LinkProps = {
-  url?: string | UrlObject;
-  path: string | UrlObject;
+  path: string;
   variant?: string;
   target?: string;
   locale?: "it" | "en";
@@ -82,17 +80,12 @@ export const Link: React.FC<LinkProps> = ({
   backgroundColor,
   target,
   variant,
-  url,
   external = false,
   params = null,
   locale,
   ...additionalProps
 }) => {
   const language = useCurrentLanguage();
-
-  if (!url) {
-    url = path;
-  }
 
   const ForwardedLink = React.forwardRef<any, { hovered: boolean }>(
     (props, ref) => (
