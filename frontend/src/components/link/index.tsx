@@ -64,7 +64,7 @@ type Params = {
 };
 
 type LinkProps = {
-  url?: string;
+  url?: string | UrlObject;
   path: string | UrlObject;
   variant?: string;
   target?: string;
