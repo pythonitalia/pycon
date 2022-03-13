@@ -6,7 +6,6 @@ import { Box, Flex, Heading, jsx } from "theme-ui";
 
 import { DaySelector } from "~/components/day-selector";
 import {
-  Day,
   ScheduleQuery,
   useAddScheduleSlotMutation,
   useUpdateOrCreateSlotItemMutation,

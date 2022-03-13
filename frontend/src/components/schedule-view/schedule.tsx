@@ -4,7 +4,6 @@
 import React, { useRef } from "react";
 import useSyncScroll from "react-use-sync-scroll";
 import { Box, Grid, jsx } from "theme-ui";
-import { Day } from "~/types";
 
 import { ScheduleEntry } from "./events";
 import { isTraining } from "./is-training";
