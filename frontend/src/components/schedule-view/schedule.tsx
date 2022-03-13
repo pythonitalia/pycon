@@ -4,7 +4,6 @@
 import React, { useRef } from "react";
 import useSyncScroll from "react-use-sync-scroll";
 import { Box, Grid, jsx } from "theme-ui";
-
 import { Day } from "~/types";
 
 import { ScheduleEntry } from "./events";
@@ -170,7 +169,7 @@ export const Schedule: React.SFC<{
     rooms: string[],
     keynoteId: string,
   ) => void;
-  day: Day;
+  currentDay: string;
 }> = ({
   adminMode,
   slots,
@@ -179,7 +178,7 @@ export const Schedule: React.SFC<{
   addSubmissionToSchedule,
   addKeynoteToSchedule,
   moveItem,
-  day,
+  currentDay,
 }) => {
   const rowOffset = 6;
   const totalRows = SLOT_SIZE * slots.length;
@@ -312,7 +311,7 @@ export const Schedule: React.SFC<{
                   slot={slot}
                   rooms={rooms}
                   adminMode={adminMode}
-                  day={day.day}
+                  day={currentDay}
                   sx={
                     {
                       position: "relative",
