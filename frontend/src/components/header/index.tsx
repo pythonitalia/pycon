@@ -31,10 +31,16 @@ const LanguagePicker = ({ language, ...props }: { language: string }) => {
   const { route, query } = useRouter();
   return (
     <Flex sx={{ alignItems: "center", height: 50, mt: "-4px" }} {...props}>
-      <Link path={route} params={query} locale="en" sx={{ height: 40 }}>
+      <Link path={{
+        pathname: route,
+        query,
+        }} locale="en" sx={{ height: 40 }}>
         <EnglishIcon active={language === "en"} sx={{ width: 40, mr: 2 }} />
       </Link>
-      <Link path={route} params={query} locale="it" sx={{ height: 40 }}>
+      <Link path={{
+        pathname: route,
+        query,
+        }} locale="it" sx={{ height: 40 }}>
         <ItalianIcon active={language === "it"} sx={{ width: 40, mr: 4 }} />
       </Link>
     </Flex>
