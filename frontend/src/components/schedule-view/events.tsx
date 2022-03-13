@@ -198,8 +198,7 @@ export const ScheduleEntry: React.SFC<{
     >
       <WrapperComponent
         path={itemUrl}
-        params={{ slug: item.slug }}
-        querystring={{ day }}
+        params={{ slug: item.slug, day }}
         sx={{
           color: "inherit",
           textDecoration: "none",

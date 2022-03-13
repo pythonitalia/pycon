@@ -84,7 +84,6 @@ export const Link: React.FC<LinkProps> = ({
   url,
   external = false,
   params = null,
-  querystring = undefined,
   locale,
   ...additionalProps
 }) => {
@@ -92,10 +91,6 @@ export const Link: React.FC<LinkProps> = ({
 
   if (!url) {
     url = path;
-
-    Object.entries(params || {}).forEach(([param, value]) => {
-      url = url.replace(`[${param}]`, value);
-    });
   }
 
   const ForwardedLink = React.forwardRef<any, { hovered: boolean }>(
@@ -143,13 +138,9 @@ export const Link: React.FC<LinkProps> = ({
 
   return (
     <NextLink
-      as={{
-        pathname: url,
-        query: querystring,
-      }}
       href={{
         pathname: path,
-        query: querystring,
+        query: params
       }}
       passHref={true}
       locale={locale || language}
