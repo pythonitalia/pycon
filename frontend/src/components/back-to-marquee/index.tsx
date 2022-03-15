@@ -32,7 +32,7 @@ export const BackToMarquee = ({ goBack, backTo }: Props) => {
         onClick={goBack}
       >
         <FormattedMessage id={messageId}>
-          {(message) => <Marquee separator=">" message={message.join("")} />}
+          {(message) => <Marquee separator=" > " message={message.join("")} />}
         </FormattedMessage>
       </Box>
     </Fragment>

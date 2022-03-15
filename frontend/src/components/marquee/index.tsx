@@ -24,7 +24,7 @@ const animation = keyframes`
 // To calculate it I used this solution: https://stackoverflow.com/a/21015393
 // getTextWidth("0", getCanvasFontSize(el))
 // Where el must be the marquee text
-const WIDTH_OF_0_FOR_MARQUEE_SIZE = 22.399993896484375;
+const WIDTH_OF_0_FOR_MARQUEE_SIZE = 22.4;
 
 export const Marquee = ({ message, separator = "/" }: MarqueeProps) => {
   const countSeparator = message.length > 13;
@@ -54,7 +54,7 @@ export const Marquee = ({ message, separator = "/" }: MarqueeProps) => {
     return () => {
       window.removeEventListener("resize", listener);
     };
-  }, []);
+  }, [message]);
 
   return (
     <Flex
@@ -75,7 +75,7 @@ export const Marquee = ({ message, separator = "/" }: MarqueeProps) => {
           animation: `${animation} ${
             5000 * (message.length * 0.1)
           }ms linear infinite`,
-          width: `${ch}`,
+          width: ch,
           textShadow: new Array(numOfShadows)
             .fill(0)
             .map((_, i) => `calc(${ch} * ${i + 1}) 0 currentColor`)
