@@ -51,7 +51,7 @@ export const BlogPage = () => {
 
             <Text sx={{ mb: 2 }}>{post.excerpt}</Text>
 
-            <Link path={`/blog/[slug]`} params={{ slug: post.slug }}>
+            <Link path="/blog/[slug]" params={{ slug: post.slug }}>
               <FormattedMessage id="blog.readMore" />
             </Link>
           </Box>

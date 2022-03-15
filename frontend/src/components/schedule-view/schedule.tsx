@@ -168,6 +168,7 @@ export const Schedule: React.SFC<{
     rooms: string[],
     keynoteId: string,
   ) => void;
+  currentDay: string;
 }> = ({
   adminMode,
   slots,
@@ -176,6 +177,7 @@ export const Schedule: React.SFC<{
   addSubmissionToSchedule,
   addKeynoteToSchedule,
   moveItem,
+  currentDay,
 }) => {
   const rowOffset = 6;
   const totalRows = SLOT_SIZE * slots.length;
@@ -308,6 +310,7 @@ export const Schedule: React.SFC<{
                   slot={slot}
                   rooms={rooms}
                   adminMode={adminMode}
+                  day={currentDay}
                   sx={
                     {
                       position: "relative",

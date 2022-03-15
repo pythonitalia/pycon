@@ -65,7 +65,9 @@ export const DaySelector: React.FC<{
           >
             <Link
               path="/schedule/[day]"
-              url={getDayUrl(day.day)}
+              params={{
+                day: day.day,
+              }}
               variant="button"
               sx={{
                 backgroundColor: currentDay === day.day ? "violet" : "white",

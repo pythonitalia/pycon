@@ -10,10 +10,10 @@ import { useRouter } from "next/router";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Article } from "~/components/article";
+import { BackToMarquee } from "~/components/back-to-marquee";
 import { BlogPostIllustration } from "~/components/illustrations/blog-post";
 import { KeynoteSlide } from "~/components/keynoters-section/keynote-slide";
 import { Link } from "~/components/link";
-import { Marquee } from "~/components/marquee";
 import { MetaTags } from "~/components/meta-tags";
 import { compile } from "~/helpers/markdown";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
@@ -70,7 +70,7 @@ const KeynoteInfoLine = ({ property, value, to }: KeynoteInfoLineProps) => (
 const KeynotePage = () => {
   const language = useCurrentLanguage();
   const {
-    query: { slug },
+    query: { slug, day },
     push,
   } = useRouter();
   const {
@@ -88,8 +88,12 @@ const KeynotePage = () => {
   });
 
   const goBack = useCallback(() => {
-    push("/keynotes");
-  }, []);
+    if (day) {
+      push(`/schedule/${day}`);
+    } else {
+      push("/keynotes");
+    }
+  }, [day]);
 
   const speakersName = speakers.map((speaker) => speaker.name).join(" & ");
 
@@ -240,24 +244,7 @@ const KeynotePage = () => {
           </Box>
         </Grid>
       ))}
-
-      <Box
-        sx={{
-          pt: 4,
-        }}
-      />
-
-      <Box
-        sx={{
-          color: "black",
-          cursor: "pointer",
-        }}
-        onClick={goBack}
-      >
-        <FormattedMessage id="keynote.backToKeynotes">
-          {(message) => <Marquee separator=">" message={message.join("")} />}
-        </FormattedMessage>
-      </Box>
+      <BackToMarquee backTo={day ? "schedule" : "keynotes"} goBack={goBack} />
     </Fragment>
   );
 };

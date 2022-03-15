@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
-import { Fragment } from "react";
+import { Fragment, useCallback } from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, Flex, Grid, Heading, jsx, Text } from "theme-ui";
 
@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Article } from "~/components/article";
+import { BackToMarquee } from "~/components/back-to-marquee";
 import { BlogPostIllustration } from "~/components/illustrations/blog-post";
 import { MetaTags } from "~/components/meta-tags";
 import { PageLoading } from "~/components/page-loading";
@@ -21,6 +22,7 @@ import { queryAllTalks, queryTalk, useTalkQuery } from "~/types";
 export const TalkPage = () => {
   const router = useRouter();
   const slug = router.query.slug as string;
+  const day = router.query.day as string;
 
   const { data, loading } = useTalkQuery({
     variables: {
@@ -39,6 +41,10 @@ export const TalkPage = () => {
     ? talk.submission.abstract
     : talk.description;
   const elevatorPitch = talk.submission ? talk.submission.elevatorPitch : null;
+
+  const goBack = useCallback(() => {
+    router.push(`/schedule/${day}`);
+  }, [day]);
 
   return (
     <Fragment>
@@ -119,6 +125,8 @@ export const TalkPage = () => {
           <SpeakerDetail speaker={speaker} key={speaker.fullName} />
         ))}
       </Grid>
+
+      <BackToMarquee backTo="schedule" goBack={goBack} />
     </Fragment>
   );
 };

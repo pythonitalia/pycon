@@ -164,6 +164,7 @@ export const ScheduleView: React.SFC<{
             addSubmissionToSchedule={addSubmissionToSchedule}
             addKeynoteToSchedule={addKeynoteToSchedule}
             moveItem={moveItem}
+            currentDay={currentDay}
           />
         )}
 

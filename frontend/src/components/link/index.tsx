@@ -1,6 +1,7 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
+import { ParsedUrlQuery } from "querystring";
 import React from "react";
 import { Box, jsx, Link as ThemeLink } from "theme-ui";
 
@@ -58,18 +59,13 @@ const ArrowRightBackground = ({
 const isExternalLink = ({ path, target }: { path: string; target?: string }) =>
   path.startsWith("http") || path.startsWith("mailto") || target === "_blank";
 
-type Params = {
-  [param: string]: string;
-};
-
 type LinkProps = {
-  url?: string;
   path: string;
   variant?: string;
   target?: string;
   locale?: "it" | "en";
   backgroundColor?: string;
-  params?: Params;
+  params?: ParsedUrlQuery;
   external?: boolean;
   rel?: string;
 };
@@ -80,21 +76,12 @@ export const Link: React.FC<LinkProps> = ({
   backgroundColor,
   target,
   variant,
-  url,
   external = false,
   params = null,
   locale,
   ...additionalProps
 }) => {
   const language = useCurrentLanguage();
-
-  if (!url) {
-    url = path;
-
-    Object.entries(params || {}).forEach(([param, value]) => {
-      url = url.replace(`[${param}]`, value);
-    });
-  }
 
   const ForwardedLink = React.forwardRef<any, { hovered: boolean }>(
     (props, ref) => (
@@ -140,7 +127,14 @@ export const Link: React.FC<LinkProps> = ({
   }
 
   return (
-    <NextLink as={url} href={path} passHref={true} locale={locale || language}>
+    <NextLink
+      href={{
+        pathname: path,
+        query: params,
+      }}
+      passHref={true}
+      locale={locale || language}
+    >
       {hoverable}
     </NextLink>
   );

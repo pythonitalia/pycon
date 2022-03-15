@@ -480,6 +480,7 @@ export const messages = {
 
     "schedule.pageTitle": "Schedule {day}",
     "schedule.loading": "Loading...",
+    "schedule.backToSchedule": "Back to schedule",
 
     "error404.goToHomepage": "Go to the homepage",
     "error404.message": "We couldn't find the page you are looking for :(",
@@ -982,6 +983,7 @@ export const messages = {
 
     "schedule.pageTitle": "Schedule {day}",
     "schedule.loading": "Caricamento in corso...",
+    "schedule.backToSchedule": "Torna al programma",
 
     "jobboard.title": "Offerte di lavoro",
     "jobboard.applyNow": "Candidati",
