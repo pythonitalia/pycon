@@ -133,7 +133,6 @@ export const TicketsSection = ({
             mt: 4,
             display: "flex",
             alignItems: "center",
-            justifyContent: "center",
           }}
         >
           <span>
