@@ -707,7 +707,7 @@ export const messages = {
     "tickets.pageTitle": "Compra il tuo biglietto per PyCon Italia",
     "tickets.loading": "Caricamento in corso 🕐",
     "tickets.heading": "Acquista biglietti",
-    "tickets.covid19explanation": `Vogliamo ringrazziare tutti coloro che hanno acquistato un biglietto Late in anticipo!{br}
+    "tickets.covid19explanation": `Vogliamo ringraziare tutti coloro che hanno acquistato un biglietto Late in anticipo!{br}
     I biglietti Regular non saranno più in vendita dal 3 Aprile, quindi affrettati ad acquistarlo ora!{br}
     Informazioni su rimborsi e COVID-19 disponibili sulla nostra pagina {linkcovid}.`,
 
