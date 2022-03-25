@@ -208,7 +208,7 @@ export const messages = {
     "tickets.loading": "Please wait 🕐",
     "tickets.heading": "Get some tickets",
     "tickets.covid19explanation": `We want to thank everyone who purchased a Late ticket early!{br}
-    We will stop selling Regular tickets on April 3rd so make sure you get your ticket by then!{br}
+    We will stop selling the Regular tickets on April 3rd!{br}
     Information on refunds and COVID-19 are available on our page {linkcovid}.{br}`,
 
     "addHotelRoom.checkin": "Check-in",
@@ -708,7 +708,7 @@ export const messages = {
     "tickets.loading": "Caricamento in corso 🕐",
     "tickets.heading": "Acquista biglietti",
     "tickets.covid19explanation": `Vogliamo ringraziare tutti coloro che hanno acquistato un biglietto Late in anticipo!{br}
-    I biglietti Regular non saranno più in vendita dal 3 Aprile, quindi affrettati ad acquistarlo ora!{br}
+    I biglietti Regular non saranno più in vendita dal 3 Aprile!{br}
     Informazioni su rimborsi e COVID-19 disponibili sulla nostra pagina {linkcovid}.`,
 
     "addHotelRoom.checkin": "Check-in",
