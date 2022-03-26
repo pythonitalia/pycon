@@ -9,6 +9,7 @@ query Talk($slug: String!, $code: String!, $isLoggedIn: Boolean!) {
       description
       hasLimitedCapacity
       spacesLeft
+      hasSpacesLeft
       userHasSpot @include(if: $isLoggedIn)
 
       submission {

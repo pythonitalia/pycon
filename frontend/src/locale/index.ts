@@ -517,6 +517,7 @@ export const messages = {
     "talk.unregisterCta": "Cancel registration",
     "talk.buyATicket": "You need to buy a ticket to book: {link}",
     "talk.buyATicketCTA": "Tickets",
+    "talk.eventIsFull": "No spaces left",
   },
   it: {
     titleTemplate: "%s | PyCon Italia",
@@ -1034,6 +1035,7 @@ export const messages = {
     "talk.unregisterCta": "Cancella registrazione",
     "talk.buyATicket": "Devi acquistare un biglietto per registrarti: {link}",
     "talk.buyATicketCTA": "Biglietti",
+    "talk.eventIsFull": "Nessun posto rimasto",
   },
 };
 

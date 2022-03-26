@@ -158,7 +158,13 @@ export const TalkPage = () => {
                 </Alert>
               )}
 
-              {isLoggedIn && !talk.userHasSpot && (
+              {!talk.userHasSpot && !talk.hasSpacesLeft && (
+                <Alert variant="info">
+                  <FormattedMessage id="talk.eventIsFull" />
+                </Alert>
+              )}
+
+              {isLoggedIn && talk.hasSpacesLeft && !talk.userHasSpot && (
                 <Button
                   loading={isBookingSpot}
                   onClick={bookSpot}

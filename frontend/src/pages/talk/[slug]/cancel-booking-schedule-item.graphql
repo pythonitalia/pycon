@@ -5,6 +5,7 @@ mutation CancelBookingScheduleItem($id: ID!) {
     ... on ScheduleItem {
       id
       userHasSpot
+      hasSpacesLeft
       spacesLeft
     }
   }

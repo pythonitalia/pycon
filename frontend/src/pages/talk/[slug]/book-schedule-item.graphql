@@ -6,6 +6,7 @@ mutation BookSpotScheduleItem($id: ID!) {
       id
       userHasSpot
       spacesLeft
+      hasSpacesLeft
     }
   }
 }

@@ -49,6 +49,7 @@ def test_cancel_booking(
             __typename
             ... on ScheduleItem {
                 userHasSpot
+                hasSpacesLeft
                 spacesLeft
             }
         }
@@ -59,6 +60,7 @@ def test_cancel_booking(
     assert response["data"]["cancelBookingScheduleItem"]["__typename"] == "ScheduleItem"
     assert response["data"]["cancelBookingScheduleItem"]["userHasSpot"] is False
     assert response["data"]["cancelBookingScheduleItem"]["spacesLeft"] == 30
+    assert response["data"]["cancelBookingScheduleItem"]["hasSpacesLeft"] is True
 
     assert not ScheduleItemAttendee.objects.filter(
         schedule_item=schedule_item, user_id=user.id
