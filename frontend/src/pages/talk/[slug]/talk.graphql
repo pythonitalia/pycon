@@ -7,6 +7,8 @@ query Talk($slug: String!, $code: String!) {
       image
       highlightColor
       description
+      hasLimitedCapacity
+      spacesLeft
 
       submission {
         id

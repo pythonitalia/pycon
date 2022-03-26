@@ -184,6 +184,13 @@ class ScheduleItem(TimeStampedModel):
         _("speaker invitation sent at"), null=True, blank=True
     )
 
+    attendees_total_capacity = models.PositiveIntegerField(
+        verbose_name=_("Attendees total capacity"),
+        help_text=_("Maximum capacity for this event. Leave blank for unlimited."),
+        null=True,
+        blank=True,
+    )
+
     @cached_property
     def speakers(self):
         speakers = [

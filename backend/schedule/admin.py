@@ -145,6 +145,7 @@ class ScheduleItemAdminForm(forms.ModelForm):
             "keynote",
             "speaker_invitation_notes",
             "speaker_invitation_sent_at",
+            "attendees_total_capacity",
         )
 
 
@@ -198,6 +199,7 @@ class ScheduleItemAdmin(admin.ModelAdmin):
             _("Invitation"),
             {"fields": ("speaker_invitation_notes", "speaker_invitation_sent_at")},
         ),
+        (_("Booking"), {"fields": ("attendees_total_capacity",)}),
     )
     autocomplete_fields = ("submission",)
     prepopulated_fields = {"slug": ("title",)}

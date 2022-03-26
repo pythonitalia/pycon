@@ -48,6 +48,14 @@ class ScheduleItem:
     audience_level: Optional[LazyType["AudienceLevel", "api.conferences.types"]]
 
     @strawberry.field
+    def has_limited_capacity(self) -> bool:
+        return self.attendees_total_capacity is not None
+
+    @strawberry.field
+    def spaces_left(self) -> int:
+        return 1
+
+    @strawberry.field
     def speakers(self) -> List[Union[ScheduleItemUser, ScheduleItemNamedUser]]:
         speakers = []
         for speaker in self.speakers:

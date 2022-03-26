@@ -508,6 +508,12 @@ export const messages = {
     "schedule.invitation.invitationNotValid":
       "Unable to find this invitation. Please contact us if you think this is a mistake",
     "schedule.invitation.currentAnswer": "Your current answer is: {answer}",
+    "talk.bookToAttend":
+      "This event has limited capacity, you need to book a seat to attend.",
+    "talk.bookCta": "Book now",
+    "talk.spacesLeft": "Spaces left: {spacesLeft}",
+    "talk.spotReserved": "You are in! Your spot for this event is reserved",
+    "talk.loginToBook": "Login to book",
   },
   it: {
     titleTemplate: "%s | PyCon Italia",
@@ -1016,6 +1022,12 @@ export const messages = {
     "schedule.invitation.invitationNotValid":
       "Impossibile trovare questo invito",
     "schedule.invitation.currentAnswer": "Risposta attuale: {answer}",
+    "talk.bookToAttend":
+      "Questo evento ha una capacità limitata, è necessario prenotare un posto per partecipare.",
+    "talk.bookCta": "Prentota",
+    "talk.spacesLeft": "Posti rimanenti: {spacesLeft}",
+    "talk.spotReserved": "Sei registrato per questo evento!",
+    "talk.loginToBook": "Loggati per prenotare",
   },
 };
 

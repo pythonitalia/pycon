@@ -9,11 +9,14 @@ import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
+import { Alert } from "~/components/alert";
 import { Article } from "~/components/article";
 import { BackToMarquee } from "~/components/back-to-marquee";
+import { Button } from "~/components/button/button";
 import { BlogPostIllustration } from "~/components/illustrations/blog-post";
 import { MetaTags } from "~/components/meta-tags";
 import { PageLoading } from "~/components/page-loading";
+import { useLoginState } from "~/components/profile/hooks";
 import { SpeakerDetail } from "~/components/speaker-detail";
 import { compile } from "~/helpers/markdown";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
@@ -23,6 +26,7 @@ export const TalkPage = () => {
   const router = useRouter();
   const slug = router.query.slug as string;
   const day = router.query.day as string;
+  const [isLoggedIn] = useLoginState();
 
   const { data, loading } = useTalkQuery({
     variables: {
@@ -70,7 +74,7 @@ export const TalkPage = () => {
           </Article>
         </Box>
 
-        <Box sx={{ mb: 5 }}>
+        <Flex sx={{ mb: 5, flexDirection: ["column-reverse", "column"] }}>
           <Flex
             sx={{
               position: "relative",
@@ -106,7 +110,41 @@ export const TalkPage = () => {
               </Box>
             )}
           </Flex>
-        </Box>
+          {talk.hasLimitedCapacity && (
+            <Flex
+              sx={{
+                mt: [0, 5],
+                mb: [5, 0],
+                flexDirection: "column",
+              }}
+            >
+              <Text sx={{ fontWeight: "bold" }}>
+                <FormattedMessage id="talk.bookToAttend" />
+              </Text>
+              {isLoggedIn && (
+                <Button sx={{ my: 2 }}>
+                  <FormattedMessage id="talk.bookCta" />
+                </Button>
+              )}
+              {!isLoggedIn && (
+                <Button sx={{ my: 2 }}>
+                  <FormattedMessage id="talk.loginToBook" />
+                </Button>
+              )}
+
+              <Alert variant="success">
+                <FormattedMessage id="talk.spotReserved" />
+              </Alert>
+
+              <FormattedMessage
+                id="talk.spacesLeft"
+                values={{
+                  spacesLeft: talk.spacesLeft,
+                }}
+              />
+            </Flex>
+          )}
+        </Flex>
       </Grid>
 
       <Box sx={{ borderTop: "primary" }} />
