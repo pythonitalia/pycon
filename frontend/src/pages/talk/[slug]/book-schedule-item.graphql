@@ -1,0 +1,11 @@
+mutation BookSpotScheduleItem($id: ID!) {
+  bookSpotScheduleItem(id: $id) {
+    __typename
+
+    ... on ScheduleItem {
+      id
+      userHasSpot
+      spacesLeft
+    }
+  }
+}

@@ -1,0 +1,11 @@
+mutation CancelBookingScheduleItem($id: ID!) {
+  cancelBookingScheduleItem(id: $id) {
+    __typename
+
+    ... on ScheduleItem {
+      id
+      userHasSpot
+      spacesLeft
+    }
+  }
+}

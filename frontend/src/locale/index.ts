@@ -514,6 +514,9 @@ export const messages = {
     "talk.spacesLeft": "Spaces left: {spacesLeft}",
     "talk.spotReserved": "You are in! Your spot for this event is reserved",
     "talk.loginToBook": "Login to book",
+    "talk.unregisterCta": "Cancel registration",
+    "talk.buyATicket": "You need to buy a ticket to book: {link}",
+    "talk.buyATicketCTA": "Tickets",
   },
   it: {
     titleTemplate: "%s | PyCon Italia",
@@ -1028,6 +1031,9 @@ export const messages = {
     "talk.spacesLeft": "Posti rimanenti: {spacesLeft}",
     "talk.spotReserved": "Sei registrato per questo evento!",
     "talk.loginToBook": "Loggati per prenotare",
+    "talk.unregisterCta": "Cancella registrazione",
+    "talk.buyATicket": "Devi acquistare un biglietto per registrarti: {link}",
+    "talk.buyATicketCTA": "Biglietti",
   },
 };
 

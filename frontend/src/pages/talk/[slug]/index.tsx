@@ -14,13 +14,20 @@ import { Article } from "~/components/article";
 import { BackToMarquee } from "~/components/back-to-marquee";
 import { Button } from "~/components/button/button";
 import { BlogPostIllustration } from "~/components/illustrations/blog-post";
+import { Link } from "~/components/link";
 import { MetaTags } from "~/components/meta-tags";
 import { PageLoading } from "~/components/page-loading";
 import { useLoginState } from "~/components/profile/hooks";
 import { SpeakerDetail } from "~/components/speaker-detail";
 import { compile } from "~/helpers/markdown";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
-import { queryAllTalks, queryTalk, useTalkQuery } from "~/types";
+import {
+  queryAllTalks,
+  queryTalk,
+  useBookSpotScheduleItemMutation,
+  useCancelBookingScheduleItemMutation,
+  useTalkQuery,
+} from "~/types";
 
 export const TalkPage = () => {
   const router = useRouter();
@@ -28,14 +35,24 @@ export const TalkPage = () => {
   const day = router.query.day as string;
   const [isLoggedIn] = useLoginState();
 
-  const { data, loading } = useTalkQuery({
+  const { data } = useTalkQuery({
+    returnPartialData: true,
     variables: {
       code: process.env.conferenceCode,
       slug,
+      isLoggedIn,
     },
   });
+  const [executeBookSpot, { data: bookSpotData, loading: isBookingSpot }] =
+    useBookSpotScheduleItemMutation();
+  const [executeCancelBooking, { loading: isCancellingBooking }] =
+    useCancelBookingScheduleItemMutation();
 
-  if (loading) {
+  const goBack = useCallback(() => {
+    router.push(`/schedule/${day}`);
+  }, [day]);
+
+  if (!data) {
     return <PageLoading titleId="global.loading" />;
   }
 
@@ -46,9 +63,21 @@ export const TalkPage = () => {
     : talk.description;
   const elevatorPitch = talk.submission ? talk.submission.elevatorPitch : null;
 
-  const goBack = useCallback(() => {
-    router.push(`/schedule/${day}`);
-  }, [day]);
+  const bookSpot = () => {
+    executeBookSpot({
+      variables: {
+        id: talk?.id,
+      },
+    });
+  };
+
+  const cancelBookingSpot = () => {
+    executeCancelBooking({
+      variables: {
+        id: talk?.id,
+      },
+    });
+  };
 
   return (
     <Fragment>
@@ -115,26 +144,61 @@ export const TalkPage = () => {
               sx={{
                 mt: [0, 5],
                 mb: [5, 0],
+                alignItems: isLoggedIn ? "stretch" : "flex-start",
                 flexDirection: "column",
               }}
             >
               <Text sx={{ fontWeight: "bold" }}>
                 <FormattedMessage id="talk.bookToAttend" />
               </Text>
-              {isLoggedIn && (
-                <Button sx={{ my: 2 }}>
+
+              {talk.userHasSpot && (
+                <Alert variant="success">
+                  <FormattedMessage id="talk.spotReserved" />
+                </Alert>
+              )}
+
+              {isLoggedIn && !talk.userHasSpot && (
+                <Button
+                  loading={isBookingSpot}
+                  onClick={bookSpot}
+                  sx={{ my: 2 }}
+                >
                   <FormattedMessage id="talk.bookCta" />
                 </Button>
               )}
+
               {!isLoggedIn && (
-                <Button sx={{ my: 2 }}>
+                <Link variant="arrow-button" path="/login" sx={{ my: 2 }}>
                   <FormattedMessage id="talk.loginToBook" />
+                </Link>
+              )}
+
+              {isLoggedIn && talk.userHasSpot && (
+                <Button
+                  loading={isCancellingBooking}
+                  onClick={cancelBookingSpot}
+                  sx={{ my: 2 }}
+                >
+                  <FormattedMessage id="talk.unregisterCta" />
                 </Button>
               )}
 
-              <Alert variant="success">
-                <FormattedMessage id="talk.spotReserved" />
-              </Alert>
+              {bookSpotData?.bookSpotScheduleItem?.__typename ===
+                "UserNeedsConferenceTicket" && (
+                <Alert variant="alert">
+                  <FormattedMessage
+                    id="talk.buyATicket"
+                    values={{
+                      link: (
+                        <Link path="/tickets">
+                          <FormattedMessage id="talk.buyATicketCTA" />
+                        </Link>
+                      ),
+                    }}
+                  />
+                </Alert>
+              )}
 
               <FormattedMessage
                 id="talk.spacesLeft"
@@ -178,6 +242,7 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
     queryTalk(client, {
       code: process.env.conferenceCode,
       slug,
+      isLoggedIn: false,
     }),
   ]);
 

@@ -53,7 +53,15 @@ class ScheduleItem:
 
     @strawberry.field
     def spaces_left(self) -> int:
-        return 1
+        if not self.attendees_total_capacity:
+            return 0
+
+        return self.attendees_total_capacity - self.attendees.count()
+
+    @strawberry.field
+    def user_has_spot(self, info) -> bool:
+        user_id = info.context.request.user.id
+        return self.attendees.filter(user_id=user_id).exists()
 
     @strawberry.field
     def speakers(self) -> List[Union[ScheduleItemUser, ScheduleItemNamedUser]]:

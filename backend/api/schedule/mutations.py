@@ -3,16 +3,19 @@ from datetime import date, datetime, time, timedelta
 
 import strawberry
 from django.db import transaction
+from strawberry import ID
 
 from api.conferences.types import Day, ScheduleSlot
 from api.helpers.ids import decode_hashid
 from api.schedule.types import ScheduleInvitation, ScheduleInvitationOption
+from api.schedule.types import ScheduleItem as ScheduleItemType
 from api.submissions.permissions import IsSubmissionSpeakerOrStaff
 from conferences.models import Conference
 from domain_events.publisher import send_new_schedule_invitation_answer
 from languages.models import Language
+from pretix.db import user_has_admission_ticket
 from schedule.models import Day as DayModel
-from schedule.models import ScheduleItem, Slot
+from schedule.models import ScheduleItem, ScheduleItemAttendee, Slot
 from submissions.models import Submission
 
 from ..permissions import IsAuthenticated, IsStaffPermission
@@ -69,7 +72,86 @@ class ScheduleInvitationNotFound:
 
 
 @strawberry.type
+class UserIsAlreadyBooked:
+    message: str = "You are already booked for this event"
+
+
+@strawberry.type
+class UserIsNotBooked:
+    message: str = "You are not booked for this event"
+
+
+@strawberry.type
+class ScheduleItemNotBookable:
+    message: str = "This event does not require booking"
+
+
+@strawberry.type
+class UserNeedsConferenceTicket:
+    message: str = "You need to buy a ticket"
+
+
+BookSpotScheduleItemResult = strawberry.union(
+    "BookSpotScheduleItemResult",
+    (
+        ScheduleItemType,
+        UserNeedsConferenceTicket,
+        UserIsAlreadyBooked,
+        ScheduleItemNotBookable,
+    ),
+)
+
+CancelSpotScheduleItemResult = strawberry.union(
+    "CancelSpotScheduleItemResult",
+    (ScheduleItemType, UserIsNotBooked, ScheduleItemNotBookable),
+)
+
+
+@strawberry.type
 class ScheduleMutations:
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    def book_spot_schedule_item(self, info, id: ID) -> BookSpotScheduleItemResult:
+        schedule_item = ScheduleItem.objects.get(id=id)
+        user_id = info.context.request.user.id
+
+        if not user_has_admission_ticket(
+            email=info.context.request.user.email,
+            event_organizer=schedule_item.conference.pretix_organizer_id,
+            event_slug=schedule_item.conference.pretix_event_id,
+        ):
+            return UserNeedsConferenceTicket()
+
+        if schedule_item.attendees_total_capacity is None:
+            return ScheduleItemNotBookable()
+
+        if schedule_item.attendees.filter(user_id=user_id).exists():
+            return UserIsAlreadyBooked()
+
+        ScheduleItemAttendee.objects.create(
+            schedule_item=schedule_item, user_id=user_id
+        )
+        schedule_item._type_definition = ScheduleItemType._type_definition
+        return schedule_item
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    def cancel_booking_schedule_item(
+        self, info, id: ID
+    ) -> CancelSpotScheduleItemResult:
+        schedule_item = ScheduleItem.objects.get(id=id)
+        user_id = info.context.request.user.id
+
+        if schedule_item.attendees_total_capacity is None:
+            return ScheduleItemNotBookable()
+
+        if not schedule_item.attendees.filter(user_id=user_id).exists():
+            return UserIsNotBooked()
+
+        ScheduleItemAttendee.objects.filter(
+            schedule_item=schedule_item, user_id=user_id
+        ).delete()
+        schedule_item._type_definition = ScheduleItemType._type_definition
+        return schedule_item
+
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     def update_schedule_invitation(
         self, info, input: UpdateScheduleInvitationInput
