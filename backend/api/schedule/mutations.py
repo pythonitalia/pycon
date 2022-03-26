@@ -91,10 +91,16 @@ class UserNeedsConferenceTicket:
     message: str = "You need to buy a ticket"
 
 
+@strawberry.type
+class ScheduleItemIsFull:
+    message: str = "This event is full"
+
+
 BookSpotScheduleItemResult = strawberry.union(
     "BookSpotScheduleItemResult",
     (
         ScheduleItemType,
+        ScheduleItemIsFull,
         UserNeedsConferenceTicket,
         UserIsAlreadyBooked,
         ScheduleItemNotBookable,
@@ -126,6 +132,9 @@ class ScheduleMutations:
 
         if schedule_item.attendees.filter(user_id=user_id).exists():
             return UserIsAlreadyBooked()
+
+        if schedule_item.attendees.count() >= schedule_item.attendees_total_capacity:
+            return ScheduleItemIsFull()
 
         ScheduleItemAttendee.objects.create(
             schedule_item=schedule_item, user_id=user_id
