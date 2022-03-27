@@ -206,6 +206,13 @@ export const TalkPage = () => {
                 </Alert>
               )}
 
+              {bookSpotData?.bookSpotScheduleItem?.__typename ===
+                "ScheduleItemIsFull" && (
+                <Alert variant="alert">
+                  <FormattedMessage id="talk.eventIsFull" />
+                </Alert>
+              )}
+
               <FormattedMessage
                 id="talk.spacesLeft"
                 values={{
