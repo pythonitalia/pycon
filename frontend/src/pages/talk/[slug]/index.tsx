@@ -35,7 +35,7 @@ export const TalkPage = () => {
   const day = router.query.day as string;
   const [isLoggedIn] = useLoginState();
 
-  const { data } = useTalkQuery({
+  const { data, loading: isLoadingTalkData } = useTalkQuery({
     returnPartialData: true,
     variables: {
       code: process.env.conferenceCode,
@@ -158,9 +158,15 @@ export const TalkPage = () => {
                 </Alert>
               )}
 
-              {!talk.userHasSpot && !talk.hasSpacesLeft && (
+              {!talk.userHasSpot && !isLoadingTalkData && !talk.hasSpacesLeft && (
                 <Alert variant="info">
                   <FormattedMessage id="talk.eventIsFull" />
+                </Alert>
+              )}
+
+              {isLoggedIn && isLoadingTalkData && (
+                <Alert variant="info">
+                  <FormattedMessage id="global.loading" />
                 </Alert>
               )}
 
