@@ -25,6 +25,19 @@ module.exports = withSourceMaps({
     localeDetection: false,
   },
   trailingSlash: false,
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          {
+            key: "X-Frame-Options",
+            value: "DENY",
+          },
+        ],
+      },
+    ];
+  },
   async redirects() {
     return [
       {
