@@ -32,7 +32,7 @@ def simple_schedule_item(
     )
 
 
-def test_book_spot_schedule_item(graphql_client, user, mocker, simple_schedule_item):
+def test_book_schedule_item(graphql_client, user, mocker, simple_schedule_item):
     mocker.patch("api.schedule.mutations.user_has_admission_ticket", return_value=True)
     graphql_client.force_login(user)
 
@@ -40,7 +40,7 @@ def test_book_spot_schedule_item(graphql_client, user, mocker, simple_schedule_i
 
     response = graphql_client.query(
         """mutation($id: ID!) {
-        bookSpotScheduleItem(id: $id) {
+        bookScheduleItem(id: $id) {
             __typename
             ... on ScheduleItem {
                 spacesLeft
@@ -51,9 +51,9 @@ def test_book_spot_schedule_item(graphql_client, user, mocker, simple_schedule_i
         variables={"id": schedule_item.id},
     )
 
-    assert response["data"]["bookSpotScheduleItem"]["__typename"] == "ScheduleItem"
-    assert response["data"]["bookSpotScheduleItem"]["spacesLeft"] == 29
-    assert response["data"]["bookSpotScheduleItem"]["userHasSpot"] is True
+    assert response["data"]["bookScheduleItem"]["__typename"] == "ScheduleItem"
+    assert response["data"]["bookScheduleItem"]["spacesLeft"] == 29
+    assert response["data"]["bookScheduleItem"]["userHasSpot"] is True
 
     assert ScheduleItemAttendee.objects.filter(
         schedule_item=schedule_item, user_id=user.id
@@ -74,7 +74,7 @@ def test_needs_ticket_to_book(
 
     response = graphql_client.query(
         """mutation($id: ID!) {
-        bookSpotScheduleItem(id: $id) {
+        bookScheduleItem(id: $id) {
             __typename
         }
     }""",
@@ -82,7 +82,7 @@ def test_needs_ticket_to_book(
     )
 
     assert (
-        response["data"]["bookSpotScheduleItem"]["__typename"]
+        response["data"]["bookScheduleItem"]["__typename"]
         == "UserNeedsConferenceTicket"
     )
 
@@ -106,16 +106,14 @@ def test_cannot_overbook(
 
     response = graphql_client.query(
         """mutation($id: ID!) {
-        bookSpotScheduleItem(id: $id) {
+        bookScheduleItem(id: $id) {
             __typename
         }
     }""",
         variables={"id": schedule_item.id},
     )
 
-    assert (
-        response["data"]["bookSpotScheduleItem"]["__typename"] == "ScheduleItemIsFull"
-    )
+    assert response["data"]["bookScheduleItem"]["__typename"] == "ScheduleItemIsFull"
 
     assert not ScheduleItemAttendee.objects.filter(
         schedule_item=schedule_item, user_id=user.id
@@ -135,16 +133,14 @@ def test_user_cannot_book_twice(
 
     response = graphql_client.query(
         """mutation($id: ID!) {
-        bookSpotScheduleItem(id: $id) {
+        bookScheduleItem(id: $id) {
             __typename
         }
     }""",
         variables={"id": schedule_item.id},
     )
 
-    assert (
-        response["data"]["bookSpotScheduleItem"]["__typename"] == "UserIsAlreadyBooked"
-    )
+    assert response["data"]["bookScheduleItem"]["__typename"] == "UserIsAlreadyBooked"
 
     assert ScheduleItemAttendee.objects.filter(
         schedule_item=schedule_item, user_id=user.id
@@ -164,7 +160,7 @@ def test_user_cannot_book_any_event(
 
     response = graphql_client.query(
         """mutation($id: ID!) {
-        bookSpotScheduleItem(id: $id) {
+        bookScheduleItem(id: $id) {
             __typename
         }
     }""",
@@ -172,8 +168,7 @@ def test_user_cannot_book_any_event(
     )
 
     assert (
-        response["data"]["bookSpotScheduleItem"]["__typename"]
-        == "ScheduleItemNotBookable"
+        response["data"]["bookScheduleItem"]["__typename"] == "ScheduleItemNotBookable"
     )
 
     assert not ScheduleItemAttendee.objects.filter(

@@ -96,8 +96,8 @@ class ScheduleItemIsFull:
     message: str = "This event is full"
 
 
-BookSpotScheduleItemResult = strawberry.union(
-    "BookSpotScheduleItemResult",
+BookScheduleItemResult = strawberry.union(
+    "BookScheduleItemResult",
     (
         ScheduleItemType,
         ScheduleItemIsFull,
@@ -107,8 +107,8 @@ BookSpotScheduleItemResult = strawberry.union(
     ),
 )
 
-CancelSpotScheduleItemResult = strawberry.union(
-    "CancelSpotScheduleItemResult",
+CancelBookingScheduleItemResult = strawberry.union(
+    "CancelBookingScheduleItemResult",
     (ScheduleItemType, UserIsNotBooked, ScheduleItemNotBookable),
 )
 
@@ -116,7 +116,7 @@ CancelSpotScheduleItemResult = strawberry.union(
 @strawberry.type
 class ScheduleMutations:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
-    def book_spot_schedule_item(self, info, id: ID) -> BookSpotScheduleItemResult:
+    def book_schedule_item(self, info, id: ID) -> BookScheduleItemResult:
         schedule_item = ScheduleItem.objects.get(id=id)
         user_id = info.context.request.user.id
 
@@ -145,7 +145,7 @@ class ScheduleMutations:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     def cancel_booking_schedule_item(
         self, info, id: ID
-    ) -> CancelSpotScheduleItemResult:
+    ) -> CancelBookingScheduleItemResult:
         schedule_item = ScheduleItem.objects.get(id=id)
         user_id = info.context.request.user.id
 

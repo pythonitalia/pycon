@@ -1,5 +1,5 @@
-mutation BookSpotScheduleItem($id: ID!) {
-  bookSpotScheduleItem(id: $id) {
+mutation BookScheduleItem($id: ID!) {
+  bookScheduleItem(id: $id) {
     __typename
 
     ... on ScheduleItem {

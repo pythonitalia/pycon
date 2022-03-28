@@ -24,7 +24,7 @@ import { prefetchSharedQueries } from "~/helpers/prefetch";
 import {
   queryAllTalks,
   queryTalk,
-  useBookSpotScheduleItemMutation,
+  useBookScheduleItemMutation,
   useCancelBookingScheduleItemMutation,
   useTalkQuery,
 } from "~/types";
@@ -43,8 +43,10 @@ export const TalkPage = () => {
       isLoggedIn,
     },
   });
-  const [executeBookSpot, { data: bookSpotData, loading: isBookingSpot }] =
-    useBookSpotScheduleItemMutation();
+  const [
+    executeBookScheduleItem,
+    { data: bookSpotData, loading: isBookingSpot },
+  ] = useBookScheduleItemMutation();
   const [executeCancelBooking, { loading: isCancellingBooking }] =
     useCancelBookingScheduleItemMutation();
 
@@ -63,15 +65,15 @@ export const TalkPage = () => {
     : talk.description;
   const elevatorPitch = talk.submission ? talk.submission.elevatorPitch : null;
 
-  const bookSpot = () => {
-    executeBookSpot({
+  const bookScheduleItem = () => {
+    executeBookScheduleItem({
       variables: {
         id: talk?.id,
       },
     });
   };
 
-  const cancelBookingSpot = () => {
+  const cancelBooking = () => {
     executeCancelBooking({
       variables: {
         id: talk?.id,
@@ -173,7 +175,7 @@ export const TalkPage = () => {
               {isLoggedIn && talk.hasSpacesLeft && !talk.userHasSpot && (
                 <Button
                   loading={isBookingSpot}
-                  onClick={bookSpot}
+                  onClick={bookScheduleItem}
                   sx={{ my: 2 }}
                 >
                   <FormattedMessage id="talk.bookCta" />
@@ -189,14 +191,14 @@ export const TalkPage = () => {
               {isLoggedIn && talk.userHasSpot && (
                 <Button
                   loading={isCancellingBooking}
-                  onClick={cancelBookingSpot}
+                  onClick={cancelBooking}
                   sx={{ my: 2 }}
                 >
                   <FormattedMessage id="talk.unregisterCta" />
                 </Button>
               )}
 
-              {bookSpotData?.bookSpotScheduleItem?.__typename ===
+              {bookSpotData?.bookScheduleItem?.__typename ===
                 "UserNeedsConferenceTicket" && (
                 <Alert variant="alert">
                   <FormattedMessage
@@ -212,7 +214,7 @@ export const TalkPage = () => {
                 </Alert>
               )}
 
-              {bookSpotData?.bookSpotScheduleItem?.__typename ===
+              {bookSpotData?.bookScheduleItem?.__typename ===
                 "ScheduleItemIsFull" && (
                 <Alert variant="alert">
                   <FormattedMessage id="talk.eventIsFull" />
