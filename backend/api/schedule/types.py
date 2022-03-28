@@ -53,14 +53,14 @@ class ScheduleItem:
 
     @strawberry.field
     def has_spaces_left(self) -> bool:
-        if not self.attendees_total_capacity:
+        if self.attendees_total_capacity is None:
             return True
 
         return self.attendees_total_capacity - self.attendees.count() > 0
 
     @strawberry.field
     def spaces_left(self) -> int:
-        if not self.attendees_total_capacity:
+        if self.attendees_total_capacity is None:
             return 0
 
         return self.attendees_total_capacity - self.attendees.count()

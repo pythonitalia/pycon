@@ -41,6 +41,10 @@ export type Item = {
   keynote?: Keynote | null;
   audienceLevel?: { name: string } | null;
   speakers: { fullName: string }[];
+  hasLimitedCapacity: boolean;
+  userHasSpot: boolean;
+  hasSpacesLeft: boolean;
+  spacesLeft: number;
 };
 
 export type Slot = {
