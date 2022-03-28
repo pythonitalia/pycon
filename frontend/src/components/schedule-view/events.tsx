@@ -2,6 +2,7 @@
 
 /** @jsx jsx */
 import React from "react";
+import { FormattedMessage } from "react-intl";
 import { Box, Flex, jsx, Text } from "theme-ui";
 
 import { EnglishIcon } from "~/components/icons/english";
@@ -230,6 +231,25 @@ export const ScheduleEntry: React.SFC<{
             </Text>
             {audienceLevel && <Text>{audienceLevel}</Text>}
             {item.type === "keynote" && <Text>Keynote</Text>}
+            {item.hasLimitedCapacity && item.hasSpacesLeft && (
+              <Text sx={{ color: "black" }}>
+                <FormattedMessage
+                  id="talk.spacesLeft"
+                  values={{
+                    spacesLeft: (
+                      <Text as="span" sx={{ fontWeight: "bold" }}>
+                        {item.spacesLeft}
+                      </Text>
+                    ),
+                  }}
+                />
+              </Text>
+            )}
+            {item.hasLimitedCapacity && !item.hasSpacesLeft && (
+              <Text sx={{ color: "black" }}>
+                <FormattedMessage id="talk.eventIsFull" />
+              </Text>
+            )}
           </Box>
 
           {(item.submission || item.keynote) && (
