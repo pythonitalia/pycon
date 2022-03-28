@@ -184,6 +184,15 @@ class ScheduleItem(TimeStampedModel):
         _("speaker invitation sent at"), null=True, blank=True
     )
 
+    attendees_total_capacity = models.PositiveIntegerField(
+        verbose_name=_("Attendees total capacity"),
+        help_text=_(
+            "Maximum capacity for this event. Leave blank to not limit attendees."
+        ),
+        null=True,
+        blank=True,
+    )
+
     @cached_property
     def speakers(self):
         speakers = [
@@ -266,6 +275,22 @@ class ScheduleItemAdditionalSpeaker(models.Model):
         verbose_name_plural = _("Schedule item additional speakers")
         unique_together = ("user_id", "scheduleitem")
         db_table = "schedule_scheduleitem_additional_speakers"
+
+
+class ScheduleItemAttendee(TimeStampedModel):
+    user_id = models.IntegerField(verbose_name=_("user"))
+    schedule_item = models.ForeignKey(
+        ScheduleItem,
+        on_delete=models.CASCADE,
+        verbose_name=_("schedule item"),
+        related_name="attendees",
+    )
+
+    class Meta:
+        unique_together = (
+            "user_id",
+            "schedule_item",
+        )
 
 
 class ScheduleItemInvitation(ScheduleItem):

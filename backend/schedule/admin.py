@@ -22,6 +22,7 @@ from .models import (
     Room,
     ScheduleItem,
     ScheduleItemAdditionalSpeaker,
+    ScheduleItemAttendee,
     ScheduleItemInvitation,
     Slot,
 )
@@ -95,6 +96,20 @@ class ScheduleItemAdditionalSpeakerInline(admin.TabularInline):
     form = ScheduleItemAdditionalSpeakerInlineForm
 
 
+class ScheduleItemAttendeeInlineForm(forms.ModelForm):
+    class Meta:
+        model = ScheduleItemAttendee
+        widgets = {
+            "user_id": UsersBackendAutocomplete(admin.site),
+        }
+        fields = ["schedule_item", "user_id"]
+
+
+class ScheduleItemAttendeeInline(admin.TabularInline):
+    model = ScheduleItemAttendee
+    form = ScheduleItemAttendeeInlineForm
+
+
 class ScheduleItemAdminForm(forms.ModelForm):
     new_slot = forms.ModelChoiceField(
         queryset=Slot.objects.all(), required=False, empty_label="(Don't move)"
@@ -145,6 +160,7 @@ class ScheduleItemAdminForm(forms.ModelForm):
             "keynote",
             "speaker_invitation_notes",
             "speaker_invitation_sent_at",
+            "attendees_total_capacity",
         )
 
 
@@ -198,18 +214,27 @@ class ScheduleItemAdmin(admin.ModelAdmin):
             _("Invitation"),
             {"fields": ("speaker_invitation_notes", "speaker_invitation_sent_at")},
         ),
+        (_("Booking"), {"fields": ("attendees_total_capacity", "spaces_left")}),
     )
     autocomplete_fields = ("submission",)
     prepopulated_fields = {"slug": ("title",)}
     filter_horizontal = ("rooms",)
     inlines = [
         ScheduleItemAdditionalSpeakerInline,
+        ScheduleItemAttendeeInline,
     ]
     actions = [
         send_schedule_invitation_to_all,
         send_schedule_invitation_to_uninvited,
         send_schedule_invitation_reminder_to_waiting,
     ]
+    readonly_fields = ("spaces_left",)
+
+    def spaces_left(self, obj):
+        if obj.attendees_total_capacity is None:
+            return None
+
+        return obj.attendees_total_capacity - obj.attendees.count()
 
     def save_form(self, request, form, change):
         if form.cleaned_data["new_slot"]:

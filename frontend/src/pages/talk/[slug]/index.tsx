@@ -9,29 +9,52 @@ import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
+import { Alert } from "~/components/alert";
 import { Article } from "~/components/article";
 import { BackToMarquee } from "~/components/back-to-marquee";
+import { Button } from "~/components/button/button";
 import { BlogPostIllustration } from "~/components/illustrations/blog-post";
+import { Link } from "~/components/link";
 import { MetaTags } from "~/components/meta-tags";
 import { PageLoading } from "~/components/page-loading";
+import { useLoginState } from "~/components/profile/hooks";
 import { SpeakerDetail } from "~/components/speaker-detail";
 import { compile } from "~/helpers/markdown";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
-import { queryAllTalks, queryTalk, useTalkQuery } from "~/types";
+import {
+  queryAllTalks,
+  queryTalk,
+  useBookScheduleItemMutation,
+  useCancelBookingScheduleItemMutation,
+  useTalkQuery,
+} from "~/types";
 
 export const TalkPage = () => {
   const router = useRouter();
   const slug = router.query.slug as string;
   const day = router.query.day as string;
+  const [isLoggedIn] = useLoginState();
 
-  const { data, loading } = useTalkQuery({
+  const { data, loading: isLoadingTalkData } = useTalkQuery({
+    returnPartialData: true,
     variables: {
       code: process.env.conferenceCode,
       slug,
+      isLoggedIn,
     },
   });
+  const [
+    executeBookScheduleItem,
+    { data: bookSpotData, loading: isBookingSpot },
+  ] = useBookScheduleItemMutation();
+  const [executeCancelBooking, { loading: isCancellingBooking }] =
+    useCancelBookingScheduleItemMutation();
 
-  if (loading) {
+  const goBack = useCallback(() => {
+    router.push(`/schedule/${day}`);
+  }, [day]);
+
+  if (!data) {
     return <PageLoading titleId="global.loading" />;
   }
 
@@ -42,9 +65,21 @@ export const TalkPage = () => {
     : talk.description;
   const elevatorPitch = talk.submission ? talk.submission.elevatorPitch : null;
 
-  const goBack = useCallback(() => {
-    router.push(`/schedule/${day}`);
-  }, [day]);
+  const bookScheduleItem = () => {
+    executeBookScheduleItem({
+      variables: {
+        id: talk?.id,
+      },
+    });
+  };
+
+  const cancelBooking = () => {
+    executeCancelBooking({
+      variables: {
+        id: talk?.id,
+      },
+    });
+  };
 
   return (
     <Fragment>
@@ -70,7 +105,7 @@ export const TalkPage = () => {
           </Article>
         </Box>
 
-        <Box sx={{ mb: 5 }}>
+        <Flex sx={{ mb: 5, flexDirection: ["column-reverse", "column"] }}>
           <Flex
             sx={{
               position: "relative",
@@ -106,7 +141,95 @@ export const TalkPage = () => {
               </Box>
             )}
           </Flex>
-        </Box>
+          {talk.hasLimitedCapacity && (
+            <Flex
+              sx={{
+                mt: [0, 5],
+                mb: [5, 0],
+                alignItems: isLoggedIn ? "stretch" : "flex-start",
+                flexDirection: "column",
+              }}
+            >
+              <Text sx={{ fontWeight: "bold" }}>
+                <FormattedMessage id="talk.bookToAttend" />
+              </Text>
+
+              {talk.userHasSpot && (
+                <Alert variant="success">
+                  <FormattedMessage id="talk.spotReserved" />
+                </Alert>
+              )}
+
+              {!talk.userHasSpot && !isLoadingTalkData && !talk.hasSpacesLeft && (
+                <Alert variant="info">
+                  <FormattedMessage id="talk.eventIsFull" />
+                </Alert>
+              )}
+
+              {isLoggedIn && isLoadingTalkData && (
+                <Alert variant="info">
+                  <FormattedMessage id="global.loading" />
+                </Alert>
+              )}
+
+              {isLoggedIn && talk.hasSpacesLeft && !talk.userHasSpot && (
+                <Button
+                  loading={isBookingSpot}
+                  onClick={bookScheduleItem}
+                  sx={{ my: 2 }}
+                >
+                  <FormattedMessage id="talk.bookCta" />
+                </Button>
+              )}
+
+              {!isLoggedIn && (
+                <Link variant="arrow-button" path="/login" sx={{ my: 2 }}>
+                  <FormattedMessage id="talk.loginToBook" />
+                </Link>
+              )}
+
+              {isLoggedIn && talk.userHasSpot && (
+                <Button
+                  loading={isCancellingBooking}
+                  onClick={cancelBooking}
+                  sx={{ my: 2 }}
+                >
+                  <FormattedMessage id="talk.unregisterCta" />
+                </Button>
+              )}
+
+              {bookSpotData?.bookScheduleItem?.__typename ===
+                "UserNeedsConferenceTicket" && (
+                <Alert variant="alert">
+                  <FormattedMessage
+                    id="talk.buyATicket"
+                    values={{
+                      link: (
+                        <Link path="/tickets">
+                          <FormattedMessage id="talk.buyATicketCTA" />
+                        </Link>
+                      ),
+                    }}
+                  />
+                </Alert>
+              )}
+
+              {bookSpotData?.bookScheduleItem?.__typename ===
+                "ScheduleItemIsFull" && (
+                <Alert variant="alert">
+                  <FormattedMessage id="talk.eventIsFull" />
+                </Alert>
+              )}
+
+              <FormattedMessage
+                id="talk.spacesLeft"
+                values={{
+                  spacesLeft: talk.spacesLeft,
+                }}
+              />
+            </Flex>
+          )}
+        </Flex>
       </Grid>
 
       <Box sx={{ borderTop: "primary" }} />
@@ -140,6 +263,7 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
     queryTalk(client, {
       code: process.env.conferenceCode,
       slug,
+      isLoggedIn: false,
     }),
   ]);
 

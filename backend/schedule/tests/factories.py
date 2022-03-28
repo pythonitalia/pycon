@@ -5,7 +5,14 @@ from pytest_factoryboy import register
 
 from conferences.tests.factories import ConferenceFactory
 from languages.tests.factories import LanguageFactory
-from schedule.models import Day, Room, ScheduleItem, ScheduleItemAdditionalSpeaker, Slot
+from schedule.models import (
+    Day,
+    Room,
+    ScheduleItem,
+    ScheduleItemAdditionalSpeaker,
+    ScheduleItemAttendee,
+    Slot,
+)
 from submissions.tests.factories import SubmissionFactory
 
 
@@ -87,3 +94,12 @@ class ScheduleItemAdditionalSpeakerFactory(DjangoModelFactory):
 
     class Meta:
         model = ScheduleItemAdditionalSpeaker
+
+
+@register
+class ScheduleItemAttendeeFactory(DjangoModelFactory):
+    user_id = factory.Faker("pyint", min_value=1)
+    schedule_item = factory.SubFactory(ScheduleItemFactory)
+
+    class Meta:
+        model = ScheduleItemAttendee
