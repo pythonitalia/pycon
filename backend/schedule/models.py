@@ -193,6 +193,13 @@ class ScheduleItem(TimeStampedModel):
         blank=True,
     )
 
+    exclude_from_voucher_generation = models.BooleanField(
+        help_text=_(
+            "If true this speaker will not be included in the voucher generation."
+        ),
+        default=False,
+    )
+
     @cached_property
     def speakers(self):
         speakers = [
@@ -298,3 +305,33 @@ class ScheduleItemInvitation(ScheduleItem):
         proxy = True
         verbose_name = _("Schedule invitation")
         verbose_name_plural = _("Schedule invitations")
+
+
+class SpeakerVoucher(TimeStampedModel):
+    conference = models.ForeignKey(
+        Conference,
+        on_delete=models.PROTECT,
+        verbose_name=_("conference"),
+        related_name="conference_speaker_vouchers",
+    )
+    user_id = models.IntegerField(verbose_name=_("user"))
+
+    voucher_code = models.TextField(
+        help_text=_(
+            "Voucher code generated for this speaker. "
+            "If the speaker has multiple events, only one code will be generated."
+        ),
+        blank=False,
+        null=False,
+    )
+    pretix_voucher_id = models.IntegerField(
+        help_text=_("ID of the voucher in the Pretix database"),
+        blank=False,
+        null=False,
+    )
+
+    class Meta:
+        unique_together = (
+            "conference",
+            "user_id",
+        )

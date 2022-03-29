@@ -2,6 +2,7 @@ from django import forms
 from django.contrib import admin, messages
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.crypto import get_random_string
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from ordered_model.admin import (
@@ -14,7 +15,9 @@ from domain_events.publisher import (
     send_new_submission_time_slot,
     send_schedule_invitation_email,
 )
+from pretix import create_voucher
 from users.autocomplete import UsersBackendAutocomplete
+from users.mixins import AdminUsersMixin
 
 from .models import (
     Day,
@@ -25,7 +28,83 @@ from .models import (
     ScheduleItemAttendee,
     ScheduleItemInvitation,
     Slot,
+    SpeakerVoucher,
 )
+
+
+@admin.action(description="Generate voucher codes")
+def generate_voucher_codes(modeladmin, request, queryset):
+    queryset = queryset.filter(
+        submission__isnull=False,
+        type__in=[
+            ScheduleItem.TYPES.submission,
+            ScheduleItem.TYPES.training,
+        ],
+    )
+
+    is_filtered_by_conference = (
+        queryset.values_list("conference_id").distinct().count() == 1
+    )
+
+    if not is_filtered_by_conference:
+        messages.error(request, "Please select only one conference")
+        return
+
+    conference = queryset.only("conference_id").first().conference
+
+    if not conference.pretix_speaker_voucher_quota_id:
+        messages.error(
+            request,
+            "Please configure the speaker voucher quota ID in the conference settings",
+        )
+        return
+
+    excluded_speakers = (
+        queryset.filter(exclude_from_voucher_generation=True)
+        .values_list("submission__speaker_id", flat=True)
+        .distinct()
+    )
+
+    existing_vouchers_users = SpeakerVoucher.objects.filter(
+        conference_id=conference.id,
+    ).values_list("user_id", flat=True)
+
+    created_codes = 0
+
+    for schedule_item in (
+        queryset.exclude(submission__speaker_id__in=existing_vouchers_users)
+        .exclude(submission__speaker_id__in=excluded_speakers)
+        .order_by("submission__speaker_id")
+    ):
+        if SpeakerVoucher.objects.filter(
+            conference_id=schedule_item.conference_id,
+            user_id=schedule_item.submission.speaker_id,
+        ).exists():
+            continue
+
+        charset = list("ABCDEFGHKLMNPQRSTUVWXYZ23456789")
+        random_string = get_random_string(length=20, allowed_chars=charset)
+
+        code = f"SPEAKER-{random_string}"
+        pretix_voucher = create_voucher(
+            conference=schedule_item.conference,
+            code=code,
+            comment=f"Voucher for speaker_id={schedule_item.submission.speaker_id}",
+            tag="speakers",
+            quota_id=schedule_item.conference.pretix_speaker_voucher_quota_id,
+        )
+        pretix_voucher_id = pretix_voucher["id"]
+
+        SpeakerVoucher.objects.create(
+            conference_id=schedule_item.conference_id,
+            user_id=schedule_item.submission.speaker_id,
+            voucher_code=code,
+            pretix_voucher_id=pretix_voucher_id,
+        )
+
+        created_codes = created_codes + 1
+
+    messages.info(request, f"Created {created_codes} new vouchers")
 
 
 @admin.action(description="Send schedule invitation to all (waiting confirmation)")
@@ -215,6 +294,7 @@ class ScheduleItemAdmin(admin.ModelAdmin):
             {"fields": ("speaker_invitation_notes", "speaker_invitation_sent_at")},
         ),
         (_("Booking"), {"fields": ("attendees_total_capacity", "spaces_left")}),
+        (_("Voucher"), {"fields": ("exclude_from_voucher_generation",)}),
     )
     autocomplete_fields = ("submission",)
     prepopulated_fields = {"slug": ("title",)}
@@ -227,6 +307,7 @@ class ScheduleItemAdmin(admin.ModelAdmin):
         send_schedule_invitation_to_all,
         send_schedule_invitation_to_uninvited,
         send_schedule_invitation_reminder_to_waiting,
+        generate_voucher_codes,
     ]
     readonly_fields = ("spaces_left",)
 
@@ -335,3 +416,23 @@ class DayAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
     list_display = ("day", "conference")
     list_filter = ("conference",)
     inlines = (SlotInline, DayRoomThroughModelInline)
+
+
+class SpeakerVoucherForm(forms.ModelForm):
+    class Meta:
+        model = SpeakerVoucher
+        widgets = {
+            "user_id": UsersBackendAutocomplete(admin.site),
+        }
+        fields = ["conference", "user_id", "voucher_code"]
+
+
+@admin.register(SpeakerVoucher)
+class SpeakerVoucherAdmin(AdminUsersMixin):
+    form = SpeakerVoucherForm
+    list_filter = ("conference",)
+    list_display = ("conference", "user_display_name", "voucher_code", "created")
+    user_fk = "user_id"
+
+    def user_display_name(self, obj):
+        return self.get_user_display_name(obj.user_id)

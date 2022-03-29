@@ -50,6 +50,12 @@ class Conference(GeoLocalizedModel, TimeFramedModel, TimeStampedModel):
         _("pretix hotel checkout question id"), blank=True, null=True
     )
 
+    pretix_speaker_voucher_quota_id = models.IntegerField(
+        _("Pretix speaker voucher quota id"),
+        blank=True,
+        null=True,
+    )
+
     introduction = I18nTextField(_("introduction"), blank=False)
 
     @property

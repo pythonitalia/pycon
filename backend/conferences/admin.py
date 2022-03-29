@@ -103,6 +103,10 @@ class ConferenceAdmin(admin.ModelAdmin):
             {"fields": ("pretix_organizer_id", "pretix_event_id", "pretix_event_url")},
         ),
         (
+            "Speaker Voucher",
+            {"fields": ("pretix_speaker_voucher_quota_id",)},
+        ),
+        (
             "Hotel",
             {
                 "fields": (
