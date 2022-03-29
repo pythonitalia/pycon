@@ -449,6 +449,6 @@ def test_handle_speaker_voucher_email_sent(settings):
         template=EmailTemplate.SPEAKER_VOUCHER_CODE,
         to="marco@placeholder.it",
         subject="[PyCon Italia 2022] Your Speaker Voucher Code",
-        variables={"speakerName": "Marco Acierno", "voucherCode": "ABC123"},
+        variables={"firstname": "Marco Acierno", "voucherCode": "ABC123"},
         reply_to=["speakers@placeholder.com"],
     )
