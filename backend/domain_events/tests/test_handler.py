@@ -11,6 +11,7 @@ from domain_events.handler import (
     handle_schedule_invitation_sent,
     handle_send_email_notification_for_new_submission_comment,
     handle_send_slack_notification_for_new_submission_comment,
+    handle_speaker_voucher_email_sent,
     handle_submission_time_slot_changed,
 )
 
@@ -412,4 +413,42 @@ def test_handle_new_schedule_invitation_answer(settings):
             "scheduleItemAdminUrl": "https://schedule",
         },
         reply_to=["marco@placeholder.it"],
+    )
+
+
+def test_handle_speaker_voucher_email_sent(settings):
+    settings.SPEAKERS_EMAIL_ADDRESS = "speakers@placeholder.com"
+
+    data = {
+        "speaker_id": 10,
+        "voucher_code": "ABC123",
+    }
+
+    with patch(
+        "domain_events.handler.send_email"
+    ) as email_mock, respx.mock as req_mock:
+        req_mock.post(f"{settings.USERS_SERVICE}/internal-api").respond(
+            json={
+                "data": {
+                    "usersByIds": [
+                        {
+                            "id": 10,
+                            "fullname": "Marco Acierno",
+                            "name": "Marco",
+                            "username": "marco",
+                            "email": "marco@placeholder.it",
+                        },
+                    ]
+                }
+            }
+        )
+
+        handle_speaker_voucher_email_sent(data)
+
+    email_mock.assert_called_once_with(
+        template=EmailTemplate.SPEAKER_VOUCHER_CODE,
+        to="marco@placeholder.it",
+        subject="[PyCon Italia 2022] Your Speaker Voucher Code",
+        variables={"speakerName": "Marco Acierno", "voucherCode": "ABC123"},
+        reply_to=["speakers@placeholder.com"],
     )
