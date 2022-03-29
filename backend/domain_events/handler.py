@@ -277,6 +277,29 @@ def handle_new_schedule_invitation_answer(data):
     )
 
 
+def handle_speaker_voucher_email_sent(data):
+    speaker_id = data["speaker_id"]
+    voucher_code = data["voucher_code"]
+
+    users_result = execute_service_client_query(
+        USERS_NAMES_FROM_IDS, {"ids": [speaker_id]}
+    )
+    speaker_data = users_result.data["usersByIds"][0]
+
+    send_email(
+        template=EmailTemplate.SPEAKER_VOUCHER_CODE,
+        to=speaker_data["email"],
+        subject="[PyCon Italia 2022] Your Speaker Voucher Code",
+        variables={
+            "firstname": get_name(speaker_data, "there"),
+            "voucherCode": voucher_code,
+        },
+        reply_to=[
+            settings.SPEAKERS_EMAIL_ADDRESS,
+        ],
+    )
+
+
 HANDLERS = {
     "NewSubmissionComment/SlackNotification": handle_send_slack_notification_for_new_submission_comment,
     "NewSubmissionComment/EmailNotification": handle_send_email_notification_for_new_submission_comment,
@@ -286,4 +309,5 @@ HANDLERS = {
     "ScheduleInvitationReminderSent": handle_schedule_invitation_sent,
     "NewScheduleInvitationAnswer": handle_new_schedule_invitation_answer,
     "SubmissionTimeSlotChanged": handle_submission_time_slot_changed,
+    "SpeakerVoucherEmailSent": handle_speaker_voucher_email_sent,
 }

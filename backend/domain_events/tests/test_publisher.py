@@ -7,6 +7,7 @@ from domain_events.publisher import (
     notify_new_submission,
     publish_message,
     send_schedule_invitation_email,
+    send_speaker_voucher_email,
 )
 from schedule.models import ScheduleItem
 
@@ -99,4 +100,25 @@ def test_send_schedule_invitation_email(
             "is_reminder": False,
         },
         deduplication_id=str(schedule_item.id),
+    )
+
+
+@pytest.mark.django_db
+def test_send_speaker_voucher_email(speaker_voucher_factory):
+    speaker_voucher = speaker_voucher_factory(
+        user_id=123,
+        voucher_code="ABC123",
+        pretix_voucher_id=2,
+    )
+
+    with patch("domain_events.publisher.publish_message") as mock_publish:
+        send_speaker_voucher_email(speaker_voucher)
+
+    mock_publish.assert_called_once_with(
+        "SpeakerVoucherEmailSent",
+        body={
+            "speaker_id": 123,
+            "voucher_code": "ABC123",
+        },
+        deduplication_id=str(speaker_voucher.id),
     )
