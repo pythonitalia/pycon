@@ -44,6 +44,29 @@ def pretix(conference, endpoint, qs={}, method="get", **kwargs):
     )
 
 
+def create_voucher(
+    conference: Conference, code: str, comment: str, tag: str, quota_id: int
+):
+    payload = {
+        "code": code,
+        "comment": comment,
+        "tag": tag,
+        "max_usages": 1,
+        "valid_until": None,
+        "block_quota": False,
+        "allow_ignore_quota": False,
+        "price_mode": "set",
+        "value": "0.00",
+        "item": None,
+        "variation": None,
+        "quota": quota_id,
+        "subevent": None,
+    }
+    response = pretix(conference, "vouchers/", method="post", json=payload)
+    response.raise_for_status()
+    return response.json()
+
+
 def get_order(conference, code):
     response = pretix(conference, f"orders/{code}/")
 
