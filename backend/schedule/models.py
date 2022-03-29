@@ -330,6 +330,10 @@ class SpeakerVoucher(TimeStampedModel):
         null=False,
     )
 
+    voucher_email_sent_at = models.DateTimeField(
+        help_text=_("When the email was last sent"), blank=True, null=True
+    )
+
     class Meta:
         unique_together = (
             "conference",

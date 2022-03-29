@@ -150,3 +150,14 @@ def send_new_submission_time_slot(schedule_item):
         },
         deduplication_id=str(schedule_item.id),
     )
+
+
+def send_speaker_voucher_email(speaker_voucher):
+    publish_message(
+        "SpeakerVoucherEmailSent",
+        body={
+            "speaker_id": speaker_voucher.user_id,
+            "voucher_code": speaker_voucher.voucher_code,
+        },
+        deduplication_id=str(speaker_voucher.id),
+    )
