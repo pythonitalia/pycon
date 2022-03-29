@@ -42,7 +42,7 @@ jsonschema = "^3.2.0"
 mypy_extensions = "^0.4.3"
 strawberry-graphql = "^0.90"
 Werkzeug = "^1.0.1"
-pythonit-toolkit = "0.1.75"
+pythonit-toolkit = "0.1.76"
 django-import-export = "^2.7.1"
 
 [tool.poetry.dev-dependencies]
