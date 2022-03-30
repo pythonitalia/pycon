@@ -224,7 +224,15 @@ export const ScheduleEntry: React.SFC<{
           )}
         </Text>
 
-        <Flex sx={{ color: item.keynote ? "black" : "white", mt: "auto" }}>
+        <Flex
+          sx={{
+            color:
+              item.type === "keynote" || item.type === "talk"
+                ? "black"
+                : "white",
+            mt: "auto",
+          }}
+        >
           <Box sx={{ mr: "auto" }}>
             <Text sx={{ fontWeight: "bold" }}>
               {item.speakers.map((s) => s.fullName).join(" & ")}
@@ -252,7 +260,10 @@ export const ScheduleEntry: React.SFC<{
             )}
           </Box>
 
-          {(item.submission || item.keynote) && (
+          {(item.type === "submission" ||
+            item.type === "training" ||
+            item.type === "keynote" ||
+            item.type === "talk") && (
             <LanguageIcon
               sx={{
                 width: 30,
