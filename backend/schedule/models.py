@@ -312,7 +312,7 @@ class SpeakerVoucher(TimeStampedModel):
         Conference,
         on_delete=models.PROTECT,
         verbose_name=_("conference"),
-        related_name="conference_speaker_vouchers",
+        related_name="+",
     )
     user_id = models.IntegerField(verbose_name=_("user"))
 

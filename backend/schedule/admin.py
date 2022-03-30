@@ -11,14 +11,13 @@ from ordered_model.admin import (
     OrderedTabularInline,
 )
 
+from conferences.models import SpeakerVoucher
 from domain_events.publisher import (
     send_new_submission_time_slot,
     send_schedule_invitation_email,
-    send_speaker_voucher_email,
 )
 from pretix import create_voucher
 from users.autocomplete import UsersBackendAutocomplete
-from users.mixins import AdminUsersMixin
 
 from .models import (
     Day,
@@ -29,7 +28,6 @@ from .models import (
     ScheduleItemAttendee,
     ScheduleItemInvitation,
     Slot,
-    SpeakerVoucher,
 )
 
 
@@ -417,50 +415,3 @@ class DayAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
     list_display = ("day", "conference")
     list_filter = ("conference",)
     inlines = (SlotInline, DayRoomThroughModelInline)
-
-
-class SpeakerVoucherForm(forms.ModelForm):
-    class Meta:
-        model = SpeakerVoucher
-        widgets = {
-            "user_id": UsersBackendAutocomplete(admin.site),
-        }
-        fields = ["conference", "user_id", "voucher_code", "voucher_email_sent_at"]
-
-
-@admin.action(description="Send voucher via email")
-def send_voucher_via_email(modeladmin, request, queryset):
-    is_filtered_by_conference = (
-        queryset.values_list("conference_id").distinct().count() == 1
-    )
-
-    if not is_filtered_by_conference:
-        messages.error(request, "Please select only one conference")
-        return
-
-    for speaker_voucher in queryset:
-        send_speaker_voucher_email(speaker_voucher)
-        speaker_voucher.voucher_email_sent_at = timezone.now()
-        speaker_voucher.save()
-
-    messages.success(request, "Voucher emails sent!")
-
-
-@admin.register(SpeakerVoucher)
-class SpeakerVoucherAdmin(AdminUsersMixin):
-    form = SpeakerVoucherForm
-    list_filter = ("conference",)
-    list_display = (
-        "conference",
-        "user_display_name",
-        "voucher_code",
-        "voucher_email_sent_at",
-        "created",
-    )
-    user_fk = "user_id"
-    actions = [
-        send_voucher_via_email,
-    ]
-
-    def user_display_name(self, obj):
-        return self.get_user_display_name(obj.user_id)

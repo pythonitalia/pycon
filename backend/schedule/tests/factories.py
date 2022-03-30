@@ -12,7 +12,6 @@ from schedule.models import (
     ScheduleItemAdditionalSpeaker,
     ScheduleItemAttendee,
     Slot,
-    SpeakerVoucher,
 )
 from submissions.tests.factories import SubmissionFactory
 
@@ -104,12 +103,3 @@ class ScheduleItemAttendeeFactory(DjangoModelFactory):
 
     class Meta:
         model = ScheduleItemAttendee
-
-
-@register
-class SpeakerVoucherFactory(DjangoModelFactory):
-    user_id = factory.Faker("pyint", min_value=1)
-    conference = factory.SubFactory(ConferenceFactory)
-
-    class Meta:
-        model = SpeakerVoucher
