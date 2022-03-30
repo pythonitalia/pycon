@@ -6,9 +6,12 @@ from django.forms.fields import BooleanField
 from django.utils import timezone
 from pytest import fixture, mark, raises
 
-from conferences.admin import DeadlineForm, validate_deadlines_form
+from conferences.admin import (
+    DeadlineForm,
+    send_voucher_via_email,
+    validate_deadlines_form,
+)
 from conferences.models import SpeakerVoucher
-from schedule.admin import send_voucher_via_email
 from schedule.models import ScheduleItem
 
 pytestmark = mark.django_db
