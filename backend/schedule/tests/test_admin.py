@@ -4,6 +4,7 @@ import pytest
 import time_machine
 from django.utils import timezone
 
+from conferences.models import SpeakerVoucher
 from schedule.admin import (
     generate_voucher_codes,
     send_schedule_invitation_reminder_to_waiting,
@@ -11,7 +12,7 @@ from schedule.admin import (
     send_schedule_invitation_to_uninvited,
     send_voucher_via_email,
 )
-from schedule.models import ScheduleItem, SpeakerVoucher
+from schedule.models import ScheduleItem
 
 pytestmark = pytest.mark.django_db
 

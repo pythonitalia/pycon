@@ -1,7 +1,9 @@
-from django.contrib import admin
+from django import forms
+from django.contrib import admin, messages
 from django.core import exceptions
 from django.forms import BaseInlineFormSet
 from django.forms.models import ModelForm
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from ordered_model.admin import (
     OrderedInlineModelAdminMixin,
@@ -9,7 +11,11 @@ from ordered_model.admin import (
     OrderedStackedInline,
 )
 
+from conferences.models import SpeakerVoucher
+from domain_events.publisher import send_speaker_voucher_email
 from sponsors.models import SponsorLevel
+from users.autocomplete import UsersBackendAutocomplete
+from users.mixins import AdminUsersMixin
 from voting.models import IncludedEvent
 
 from .models import (
@@ -204,3 +210,50 @@ class KeynoteAdmin(OrderedInlineModelAdminMixin, OrderedModelAdmin):
 
     def get_queryset(self, request):
         return Keynote.all_objects.all()
+
+
+@admin.action(description="Send voucher via email")
+def send_voucher_via_email(modeladmin, request, queryset):
+    is_filtered_by_conference = (
+        queryset.values_list("conference_id").distinct().count() == 1
+    )
+
+    if not is_filtered_by_conference:
+        messages.error(request, "Please select only one conference")
+        return
+
+    for speaker_voucher in queryset:
+        send_speaker_voucher_email(speaker_voucher)
+        speaker_voucher.voucher_email_sent_at = timezone.now()
+        speaker_voucher.save()
+
+    messages.success(request, "Voucher emails sent!")
+
+
+class SpeakerVoucherForm(forms.ModelForm):
+    class Meta:
+        model = SpeakerVoucher
+        widgets = {
+            "user_id": UsersBackendAutocomplete(admin.site),
+        }
+        fields = ["conference", "user_id", "voucher_code", "voucher_email_sent_at"]
+
+
+@admin.register(SpeakerVoucher)
+class SpeakerVoucherAdmin(AdminUsersMixin):
+    form = SpeakerVoucherForm
+    list_filter = ("conference",)
+    list_display = (
+        "conference",
+        "user_display_name",
+        "voucher_code",
+        "voucher_email_sent_at",
+        "created",
+    )
+    user_fk = "user_id"
+    actions = [
+        send_voucher_via_email,
+    ]
+
+    def user_display_name(self, obj):
+        return self.get_user_display_name(obj.user_id)

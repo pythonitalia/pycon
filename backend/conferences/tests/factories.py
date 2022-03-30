@@ -12,6 +12,7 @@ from conferences.models import (
     Duration,
     Keynote,
     KeynoteSpeaker,
+    SpeakerVoucher,
     Topic,
 )
 from i18n.tests.factories import LanguageFactory
@@ -214,3 +215,12 @@ class KeynoteSpeakerFactory(DjangoModelFactory):
 
     class Meta:
         model = KeynoteSpeaker
+
+
+@register
+class SpeakerVoucherFactory(DjangoModelFactory):
+    user_id = factory.Faker("pyint", min_value=1)
+    conference = factory.SubFactory(ConferenceFactory)
+
+    class Meta:
+        model = SpeakerVoucher
