@@ -13,6 +13,7 @@ from ordered_model.admin import (
 
 from conferences.models import SpeakerVoucher
 from domain_events.publisher import send_speaker_voucher_email
+from pretix import create_voucher
 from sponsors.models import SponsorLevel
 from users.autocomplete import UsersBackendAutocomplete
 from users.mixins import AdminUsersMixin
@@ -222,12 +223,51 @@ def send_voucher_via_email(modeladmin, request, queryset):
         messages.error(request, "Please select only one conference")
         return
 
-    for speaker_voucher in queryset:
+    count = 0
+    for speaker_voucher in queryset.filter(pretix_voucher_id__isnull=False):
         send_speaker_voucher_email(speaker_voucher)
         speaker_voucher.voucher_email_sent_at = timezone.now()
         speaker_voucher.save()
+        count = count + 1
 
-    messages.success(request, "Voucher emails sent!")
+    messages.success(request, f"{count} Voucher emails sent!")
+
+
+@admin.action(description="Create speaker vouchers on Pretix")
+def create_speaker_vouchers_on_pretix(modeladmin, request, queryset):
+    is_filtered_by_conference = (
+        queryset.values_list("conference_id").distinct().count() == 1
+    )
+
+    if not is_filtered_by_conference:
+        messages.error(request, "Please select only one conference")
+        return
+
+    conference = queryset.only("conference_id").first().conference
+
+    if not conference.pretix_speaker_voucher_quota_id:
+        messages.error(
+            request,
+            "Please configure the speaker voucher quota ID in the conference settings",
+        )
+        return
+
+    count = 0
+
+    for speaker_voucher in queryset.filter(pretix_voucher_id__isnull=True):
+        pretix_voucher = create_voucher(
+            conference=speaker_voucher.conference,
+            code=speaker_voucher.voucher_code,
+            comment=f"Voucher for user_id={speaker_voucher.user_id}",
+            tag="speakers",
+            quota_id=speaker_voucher.conference.pretix_speaker_voucher_quota_id,
+        )
+        pretix_voucher_id = pretix_voucher["id"]
+        speaker_voucher.pretix_voucher_id = pretix_voucher_id
+        speaker_voucher.save()
+        count = count + 1
+
+    messages.success(request, f"{count} Vouchers created on Pretix!")
 
 
 class SpeakerVoucherForm(forms.ModelForm):
@@ -236,24 +276,40 @@ class SpeakerVoucherForm(forms.ModelForm):
         widgets = {
             "user_id": UsersBackendAutocomplete(admin.site),
         }
-        fields = ["conference", "user_id", "voucher_code", "voucher_email_sent_at"]
+        fields = [
+            "conference",
+            "user_id",
+            "voucher_code",
+            "pretix_voucher_id",
+            "voucher_email_sent_at",
+        ]
 
 
 @admin.register(SpeakerVoucher)
 class SpeakerVoucherAdmin(AdminUsersMixin):
     form = SpeakerVoucherForm
-    list_filter = ("conference",)
+    list_filter = ("conference", ("pretix_voucher_id", admin.EmptyFieldListFilter))
     list_display = (
         "conference",
         "user_display_name",
         "voucher_code",
+        "created_on_pretix",
         "voucher_email_sent_at",
         "created",
     )
     user_fk = "user_id"
     actions = [
+        create_speaker_vouchers_on_pretix,
         send_voucher_via_email,
     ]
+
+    def created_on_pretix(self, obj):
+        return obj.pretix_voucher_id is not None
+
+    created_on_pretix.boolean = True
+
+    def get_changeform_initial_data(self, request):
+        return {"voucher_code": SpeakerVoucher.generate_code()}
 
     def user_display_name(self, obj):
         return self.get_user_display_name(obj.user_id)
