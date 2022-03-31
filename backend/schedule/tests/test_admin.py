@@ -18,7 +18,7 @@ pytestmark = pytest.mark.django_db
 def test_mark_speakers_to_receive_vouchers(
     rf, schedule_item_factory, conference_factory, submission_factory, mocker
 ):
-    mocker.patch("schedule.admin.get_random_string", side_effect=["1", "2"])
+    mocker.patch("conferences.models.get_random_string", side_effect=["1", "2"])
     mocker.patch("schedule.admin.messages")
 
     conference = conference_factory(pretix_speaker_voucher_quota_id=123)
@@ -55,7 +55,7 @@ def test_mark_speakers_to_receive_vouchers(
 def test_mark_speakers_to_receive_vouchers_doesnt_work_with_multiple_conferences(
     rf, schedule_item_factory, conference_factory, submission_factory, mocker
 ):
-    mocker.patch("schedule.admin.get_random_string", side_effect=["1", "2"])
+    mocker.patch("conferences.models.get_random_string", side_effect=["1", "2"])
     mock_messages = mocker.patch("schedule.admin.messages")
 
     conference = conference_factory(pretix_speaker_voucher_quota_id=123)
@@ -95,7 +95,7 @@ def test_mark_speakers_to_receive_vouchers_only_created_once(
     mocker,
     speaker_voucher_factory,
 ):
-    mocker.patch("schedule.admin.get_random_string", side_effect=["2"])
+    mocker.patch("conferences.models.get_random_string", side_effect=["2"])
     mocker.patch("schedule.admin.messages")
 
     conference = conference_factory(pretix_speaker_voucher_quota_id=123)
@@ -140,7 +140,7 @@ def test_mark_speakers_to_receive_vouchers_only_created_once(
 def test_mark_speakers_to_receive_vouchers_ignores_excluded_speakers(
     rf, schedule_item_factory, conference_factory, submission_factory, mocker
 ):
-    mocker.patch("schedule.admin.get_random_string", side_effect=["1", "2"])
+    mocker.patch("conferences.models.get_random_string", side_effect=["1", "2"])
     mocker.patch("schedule.admin.messages")
 
     conference = conference_factory(pretix_speaker_voucher_quota_id=123)
@@ -173,7 +173,7 @@ def test_mark_speakers_to_receive_vouchers_ignores_excluded_speakers(
 def test_mark_speakers_to_receive_vouchers_ignores_excluded_speakers_even_when_has_multiple_items(
     rf, schedule_item_factory, conference_factory, submission_factory, mocker
 ):
-    mocker.patch("schedule.admin.get_random_string", side_effect=["1", "2"])
+    mocker.patch("conferences.models.get_random_string", side_effect=["1", "2"])
     mocker.patch("schedule.admin.messages")
 
     conference = conference_factory(pretix_speaker_voucher_quota_id=123)
