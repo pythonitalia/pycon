@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
 from model_utils.models import TimeStampedModel
 
@@ -24,13 +25,19 @@ class SpeakerVoucher(TimeStampedModel):
     )
     pretix_voucher_id = models.IntegerField(
         help_text=_("ID of the voucher in the Pretix database"),
-        blank=False,
-        null=False,
+        blank=True,
+        null=True,
     )
 
     voucher_email_sent_at = models.DateTimeField(
         help_text=_("When the email was last sent"), blank=True, null=True
     )
+
+    @staticmethod
+    def generate_code() -> str:
+        charset = list("ABCDEFGHKLMNPQRSTUVWXYZ23456789")
+        random_string = get_random_string(length=20, allowed_chars=charset)
+        return f"SPEAKER-{random_string}"
 
     class Meta:
         verbose_name = _("Speakers Voucher")

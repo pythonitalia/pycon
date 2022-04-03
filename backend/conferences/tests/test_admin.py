@@ -8,6 +8,7 @@ from pytest import fixture, mark, raises
 
 from conferences.admin import (
     DeadlineForm,
+    create_speaker_vouchers_on_pretix,
     send_voucher_via_email,
     validate_deadlines_form,
 )
@@ -279,3 +280,211 @@ def test_send_voucher_via_email_requires_filtering_by_conference(
 
     assert speaker_voucher_1.voucher_email_sent_at is None
     assert speaker_voucher_2.voucher_email_sent_at is None
+
+
+def test_create_speaker_vouchers_on_pretix(
+    rf, conference_factory, mocker, speaker_voucher_factory
+):
+    mock_create_voucher = mocker.patch(
+        "conferences.admin.create_voucher",
+        side_effect=[
+            {"id": 1},
+            {"id": 2},
+        ],
+    )
+    mocker.patch("conferences.admin.messages")
+
+    conference = conference_factory(pretix_speaker_voucher_quota_id=123)
+
+    voucher_1 = speaker_voucher_factory(
+        conference=conference,
+        user_id=500,
+        voucher_code="SPEAKER-123",
+        pretix_voucher_id=None,
+    )
+
+    voucher_2 = speaker_voucher_factory(
+        conference=conference,
+        user_id=600,
+        voucher_code="SPEAKER-456",
+        pretix_voucher_id=None,
+    )
+
+    create_speaker_vouchers_on_pretix(
+        None,
+        request=rf.get("/"),
+        queryset=SpeakerVoucher.objects.filter(conference=conference),
+    )
+
+    mock_create_voucher.assert_has_calls(
+        [
+            call(
+                conference=conference,
+                code="SPEAKER-123",
+                comment="Voucher for user_id=500",
+                tag="speakers",
+                quota_id=123,
+            ),
+            call(
+                conference=conference,
+                code="SPEAKER-456",
+                comment="Voucher for user_id=600",
+                tag="speakers",
+                quota_id=123,
+            ),
+        ],
+    )
+
+    voucher_1.refresh_from_db()
+    voucher_2.refresh_from_db()
+
+    assert voucher_1.pretix_voucher_id == 1
+    assert voucher_2.pretix_voucher_id == 2
+
+
+def test_create_speaker_vouchers_on_pretix_only_for_missing_ones(
+    rf, conference_factory, mocker, speaker_voucher_factory
+):
+    mock_create_voucher = mocker.patch(
+        "conferences.admin.create_voucher",
+        side_effect=[
+            {"id": 1},
+        ],
+    )
+    mocker.patch("conferences.admin.messages")
+
+    conference = conference_factory(pretix_speaker_voucher_quota_id=123)
+
+    voucher_1 = speaker_voucher_factory(
+        conference=conference,
+        user_id=500,
+        voucher_code="SPEAKER-123",
+        pretix_voucher_id=None,
+    )
+
+    voucher_2 = speaker_voucher_factory(
+        conference=conference,
+        user_id=600,
+        voucher_code="SPEAKER-456",
+        pretix_voucher_id=1155,
+    )
+
+    create_speaker_vouchers_on_pretix(
+        None,
+        request=rf.get("/"),
+        queryset=SpeakerVoucher.objects.filter(conference=conference),
+    )
+
+    mock_create_voucher.assert_called_once_with(
+        conference=conference,
+        code="SPEAKER-123",
+        comment="Voucher for user_id=500",
+        tag="speakers",
+        quota_id=123,
+    )
+
+    voucher_1.refresh_from_db()
+    voucher_2.refresh_from_db()
+
+    assert voucher_1.pretix_voucher_id == 1
+    assert voucher_2.pretix_voucher_id == 1155
+
+
+def test_create_speaker_vouchers_on_pretix_doesnt_work_with_multiple_conferences(
+    rf, conference_factory, mocker, speaker_voucher_factory
+):
+    mock_create_voucher = mocker.patch(
+        "conferences.admin.create_voucher",
+        side_effect=[
+            {"id": 1},
+            {"id": 2},
+        ],
+    )
+    mock_messages = mocker.patch("conferences.admin.messages")
+
+    conference = conference_factory(pretix_speaker_voucher_quota_id=123)
+    conference_2 = conference_factory(pretix_speaker_voucher_quota_id=123)
+
+    voucher_1 = speaker_voucher_factory(
+        conference=conference,
+        user_id=500,
+        voucher_code="SPEAKER-123",
+        pretix_voucher_id=None,
+    )
+
+    voucher_2 = speaker_voucher_factory(
+        conference=conference_2,
+        user_id=600,
+        voucher_code="SPEAKER-456",
+        pretix_voucher_id=None,
+    )
+
+    request = rf.get("/")
+
+    create_speaker_vouchers_on_pretix(
+        None,
+        request=request,
+        queryset=SpeakerVoucher.objects.filter(
+            conference__in=[conference, conference_2]
+        ),
+    )
+
+    mock_create_voucher.assert_not_called()
+    mock_messages.error.assert_called_once_with(
+        request, "Please select only one conference"
+    )
+
+    voucher_1.refresh_from_db()
+    voucher_2.refresh_from_db()
+
+    assert voucher_1.pretix_voucher_id is None
+    assert voucher_2.pretix_voucher_id is None
+
+
+def test_create_speaker_vouchers_on_pretix_doesnt_work_without_pretix_config(
+    rf, conference_factory, mocker, speaker_voucher_factory
+):
+    mock_create_voucher = mocker.patch(
+        "conferences.admin.create_voucher",
+        side_effect=[
+            {"id": 1},
+            {"id": 2},
+        ],
+    )
+    mock_messages = mocker.patch("conferences.admin.messages")
+
+    conference = conference_factory(pretix_speaker_voucher_quota_id=None)
+
+    voucher_1 = speaker_voucher_factory(
+        conference=conference,
+        user_id=500,
+        voucher_code="SPEAKER-123",
+        pretix_voucher_id=None,
+    )
+
+    voucher_2 = speaker_voucher_factory(
+        conference=conference,
+        user_id=600,
+        voucher_code="SPEAKER-456",
+        pretix_voucher_id=None,
+    )
+
+    request = rf.get("/")
+
+    create_speaker_vouchers_on_pretix(
+        None,
+        request=request,
+        queryset=SpeakerVoucher.objects.filter(conference=conference),
+    )
+
+    mock_create_voucher.assert_not_called()
+    mock_messages.error.assert_called_once_with(
+        request,
+        "Please configure the speaker voucher quota ID in the conference settings",
+    )
+
+    voucher_1.refresh_from_db()
+    voucher_2.refresh_from_db()
+
+    assert voucher_1.pretix_voucher_id is None
+    assert voucher_2.pretix_voucher_id is None

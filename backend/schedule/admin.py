@@ -2,7 +2,6 @@ from django import forms
 from django.contrib import admin, messages
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.crypto import get_random_string
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from ordered_model.admin import (
@@ -16,7 +15,6 @@ from domain_events.publisher import (
     send_new_submission_time_slot,
     send_schedule_invitation_email,
 )
-from pretix import create_voucher
 from users.autocomplete import UsersBackendAutocomplete
 
 from .models import (
@@ -31,8 +29,8 @@ from .models import (
 )
 
 
-@admin.action(description="Generate voucher codes")
-def generate_voucher_codes(modeladmin, request, queryset):
+@admin.action(description="Mark Speakers to receive Vouchers")
+def mark_speakers_to_receive_vouchers(modeladmin, request, queryset):
     queryset = queryset.filter(
         submission__isnull=False,
         type__in=[
@@ -50,13 +48,6 @@ def generate_voucher_codes(modeladmin, request, queryset):
         return
 
     conference = queryset.only("conference_id").first().conference
-
-    if not conference.pretix_speaker_voucher_quota_id:
-        messages.error(
-            request,
-            "Please configure the speaker voucher quota ID in the conference settings",
-        )
-        return
 
     excluded_speakers = (
         queryset.filter(exclude_from_voucher_generation=True)
@@ -81,24 +72,10 @@ def generate_voucher_codes(modeladmin, request, queryset):
         ).exists():
             continue
 
-        charset = list("ABCDEFGHKLMNPQRSTUVWXYZ23456789")
-        random_string = get_random_string(length=20, allowed_chars=charset)
-
-        code = f"SPEAKER-{random_string}"
-        pretix_voucher = create_voucher(
-            conference=schedule_item.conference,
-            code=code,
-            comment=f"Voucher for speaker_id={schedule_item.submission.speaker_id}",
-            tag="speakers",
-            quota_id=schedule_item.conference.pretix_speaker_voucher_quota_id,
-        )
-        pretix_voucher_id = pretix_voucher["id"]
-
         SpeakerVoucher.objects.create(
             conference_id=schedule_item.conference_id,
             user_id=schedule_item.submission.speaker_id,
-            voucher_code=code,
-            pretix_voucher_id=pretix_voucher_id,
+            voucher_code=SpeakerVoucher.generate_code(),
         )
 
         created_codes = created_codes + 1
@@ -306,7 +283,7 @@ class ScheduleItemAdmin(admin.ModelAdmin):
         send_schedule_invitation_to_all,
         send_schedule_invitation_to_uninvited,
         send_schedule_invitation_reminder_to_waiting,
-        generate_voucher_codes,
+        mark_speakers_to_receive_vouchers,
     ]
     readonly_fields = ("spaces_left",)
 
