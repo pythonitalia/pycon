@@ -28,7 +28,7 @@ export const CreateOrderButtons: React.SFC<Props> = ({ state, email }) => {
           return;
         }
 
-        window.localStorage.removeItem("tickets-cart-v2");
+        window.localStorage.removeItem("tickets-cart-v3");
         window.location.href = result.createOrder.paymentUrl;
       },
     });
