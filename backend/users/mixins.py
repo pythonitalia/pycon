@@ -33,7 +33,7 @@ class UserMixin:
         return user["displayName"]
 
     def get_user_data(self, obj_id: Any) -> dict[str, Any]:
-        return self._PREFETCHED_USERS_BY_ID[str(obj_id)]
+        return self._PREFETCHED_USERS_BY_ID.get(str(obj_id), None)
 
 
 class AdminUsersMixin(admin.ModelAdmin, UserMixin):
@@ -69,4 +69,14 @@ class ResourceUsersByEmailsMixin(ModelResource, UserMixin):
     def before_export(self, queryset, *args, **kwargs):
         emails = queryset.values_list(self.search_field, flat=True)
         self._PREFETCHED_USERS_BY_EMAIL = get_users_data_by_emails(list(emails))
+        return queryset
+
+
+class ResourceUsersByIdsMixin(ModelResource, UserMixin):
+    search_field = None
+    _PREFETCHED_USERS_BY_ID = {}
+
+    def before_export(self, queryset, *args, **kwargs):
+        emails = queryset.values_list(self.search_field, flat=True)
+        self._PREFETCHED_USERS_BY_ID = get_users_data_by_ids(list(emails))
         return queryset
