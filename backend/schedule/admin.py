@@ -15,7 +15,9 @@ from domain_events.publisher import (
     send_new_submission_time_slot,
     send_schedule_invitation_email,
 )
+from pretix.db import user_has_admission_ticket
 from users.autocomplete import UsersBackendAutocomplete
+from users.mixins import AdminUsersMixin
 
 from .models import (
     Day,
@@ -306,12 +308,14 @@ class ScheduleItemAdmin(admin.ModelAdmin):
 
 
 @admin.register(ScheduleItemInvitation)
-class ScheduleItemInvitationAdmin(admin.ModelAdmin):
+class ScheduleItemInvitationAdmin(AdminUsersMixin):
     list_display = (
         "slot",
         "status",
         "title",
+        "speaker_display_name",
         "conference",
+        "speaker_has_ticket",
         "speaker_invitation_notes",
         "speaker_invitation_sent_at",
         "open_schedule_item",
@@ -338,6 +342,24 @@ class ScheduleItemInvitationAdmin(admin.ModelAdmin):
             },
         ),
     )
+    user_fk = "submission__speaker_id"
+
+    def speaker_display_name(self, obj):
+        return self.get_user_display_name(obj.submission.speaker_id)
+
+    def speaker_has_ticket(self, obj) -> bool:
+        user = self.get_user_data(obj.submission.speaker_id)
+
+        if not user:
+            return None
+
+        return user_has_admission_ticket(
+            email=user["email"],
+            event_organizer=obj.conference.pretix_organizer_id,
+            event_slug=obj.conference.pretix_event_id,
+        )
+
+    speaker_has_ticket.boolean = True
 
     def open_schedule_item(self, obj) -> str:
         url = reverse("admin:schedule_scheduleitem_change", args=[obj.id])
