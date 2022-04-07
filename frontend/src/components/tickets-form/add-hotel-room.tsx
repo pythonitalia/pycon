@@ -27,13 +27,14 @@ export const AddHotelRoom: React.SFC<Props> = ({
   addRoom,
 }) => {
   const momentConferenceStart = useMemo(
-    () => moment(conferenceStart),
+    () => moment.utc(conferenceStart),
     [conferenceStart],
   );
   const momentConferenceEnd = useMemo(
-    () => moment(conferenceEnd),
+    () => moment.utc(conferenceEnd),
     [conferenceEnd],
   );
+
   const [formState, { select }] = useFormState<Form>();
 
   const conferenceRunningDays = momentConferenceEnd.diff(
@@ -80,6 +81,7 @@ export const AddHotelRoom: React.SFC<Props> = ({
   const dateFormatter = new Intl.DateTimeFormat(lang, {
     month: "long",
     day: "2-digit",
+    timeZone: "Europe/Rome",
   });
 
   return (

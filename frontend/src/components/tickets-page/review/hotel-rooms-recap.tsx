@@ -27,6 +27,7 @@ export const HotelRoomsRecap: React.SFC<Props> = ({
   const dateFormatter = new Intl.DateTimeFormat(lang, {
     month: "long",
     day: "2-digit",
+    timeZone: "Europe/Rome",
   });
   const hotelRooms = Object.values(selectedHotelRooms).flat();
 
