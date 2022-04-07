@@ -39,6 +39,7 @@ export const HotelForm = ({
   const dateFormatter = new Intl.DateTimeFormat(lang, {
     month: "long",
     day: "2-digit",
+    timeZone: "Europe/Rome",
   });
 
   return (

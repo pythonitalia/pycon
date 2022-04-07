@@ -48,8 +48,8 @@ export const useCart = () => {
       Object.values(storedCart.selectedHotelRooms).forEach(
         (reservations: any) => {
           reservations.forEach((reservation) => {
-            reservation.checkin = moment(reservation.checkin);
-            reservation.checkout = moment(reservation.checkout);
+            reservation.checkin = moment.utc(reservation.checkin);
+            reservation.checkout = moment.utc(reservation.checkout);
           });
         },
       );

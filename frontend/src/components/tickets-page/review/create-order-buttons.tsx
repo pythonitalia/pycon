@@ -55,8 +55,8 @@ export const CreateOrderButtons: React.SFC<Props> = ({ state, email }) => {
         .flat()
         .map((selectedRoom) => ({
           roomId: selectedRoom.id,
-          checkin: selectedRoom.checkin.format("YYYY-MM-DD"),
-          checkout: selectedRoom.checkout.format("YYYY-MM-DD"),
+          checkin: selectedRoom.checkin.utc().format("YYYY-MM-DD"),
+          checkout: selectedRoom.checkout.utc().format("YYYY-MM-DD"),
         }));
 
       createOrder({
