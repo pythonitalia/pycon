@@ -40,9 +40,6 @@ class HotelRoomReservationAdmin(AdminUsersMixin):
     user_fk = "user_id"
     readonly_fields = ("user_info", "checkin", "checkout", "order_code", "room")
 
-    def has_delete_permission(self, *args, **kwargs) -> bool:
-        return False
-
     def has_add_permission(self, *args, **kwargs) -> bool:
         return False
 
