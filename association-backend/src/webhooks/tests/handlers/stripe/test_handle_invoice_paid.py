@@ -26,7 +26,9 @@ from src.webhooks.tests.handlers.stripe.payloads import (
 async def _(db=db):
     subscription = await SubscriptionFactory(user_id=1)
     await StripeCustomerFactory(user_id=1, stripe_customer_id="cus_customer_id")
-    await handle_invoice_paid(INVOICE_PAID_PAYLOAD)
+
+    with time_machine.travel("2022-02-10 12:00:00", tick=False):
+        await handle_invoice_paid(INVOICE_PAID_PAYLOAD)
 
     subscription = await Subscription.objects.select_related(
         ["payments", "payments__stripesubscriptionpayments"]
@@ -58,7 +60,8 @@ async def _(db=db):
     subscription = await SubscriptionFactory(user_id=1)
     await StripeCustomerFactory(user_id=1, stripe_customer_id="cus_customer_id")
 
-    await handle_invoice_paid(INVOICE_PAID_PAYLOAD)
+    with time_machine.travel("2022-02-10 12:00:00", tick=False):
+        await handle_invoice_paid(INVOICE_PAID_PAYLOAD)
 
     subscription = await Subscription.objects.select_related(
         ["payments", "payments__stripesubscriptionpayments"]
