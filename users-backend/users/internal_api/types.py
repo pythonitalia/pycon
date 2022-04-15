@@ -19,7 +19,8 @@ class User:
 
     @strawberry.field
     def display_name(self) -> str:
-        return self.fullname or self.name or self.username or self.email
+        name = self.fullname or self.name or self.username
+        return f"{name} <{self.email}>"
 
     @classmethod
     def from_domain(cls, user: entities.User):
