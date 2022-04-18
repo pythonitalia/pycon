@@ -36,6 +36,7 @@ async def _():
             open_to_newsletter=False,
             date_birth=date(2020, 10, 1),
             country="IT",
+            tagline="New tagline",
         ),
         users_repository=FakeUsersRepository([user]),
     )
@@ -47,6 +48,7 @@ async def _():
     assert user.open_to_newsletter is False
     assert user.date_birth == date(2020, 10, 1)
     assert user.country == "IT"
+    assert user.tagline == "New tagline"
 
 
 @test("cannot update not active user")
@@ -78,6 +80,7 @@ async def _():
                 open_to_newsletter=False,
                 date_birth=date(2020, 10, 1),
                 country="IT",
+                tagline="Nope",
             ),
             users_repository=FakeUsersRepository([user]),
         )
@@ -96,6 +99,7 @@ async def _():
                 open_to_newsletter=False,
                 date_birth=date(2020, 10, 1),
                 country="IT",
+                tagline="Nope",
             ),
             users_repository=FakeUsersRepository([]),
         )

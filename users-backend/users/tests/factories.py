@@ -4,9 +4,10 @@ from datetime import timezone
 
 import factory
 from factory.alchemy import SQLAlchemyModelFactory
+from ward import fixture
+
 from users.domain.entities import User
 from users.starlette_password.hashers import make_password
-from ward import fixture
 
 from .session import test_session
 
@@ -28,6 +29,7 @@ class UserFactory(SQLAlchemyModelFactory):
     open_to_recruiting = False
     open_to_newsletter = False
     country = "US"
+    tagline = "Hello World"
     date_joined = datetime.datetime.now(timezone.utc)
 
     @factory.post_generation

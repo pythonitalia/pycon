@@ -30,6 +30,7 @@ async def _(db=db, second_session=second_session):
             open_to_newsletter=False,
             open_to_recruiting=True,
             country="IT",
+            tagline="Sushi expert",
             is_active=True,
             is_staff=False,
             is_superuser=False,
@@ -51,6 +52,7 @@ async def _(db=db, second_session=second_session):
     assert db_user.open_to_newsletter is False
     assert db_user.open_to_recruiting is True
     assert db_user.country == "IT"
+    assert db_user.tagline == "Sushi expert"
     assert db_user.is_active is True
     assert db_user.is_staff is False
     assert db_user.is_superuser is False
@@ -107,6 +109,7 @@ async def _(
     assert found_user.open_to_newsletter is raw_query_user.open_to_newsletter
     assert found_user.open_to_recruiting is raw_query_user.open_to_recruiting
     assert found_user.country == raw_query_user.country
+    assert found_user.tagline == raw_query_user.tagline
     assert found_user.is_active is raw_query_user.is_active
     assert found_user.is_staff is raw_query_user.is_staff
     assert found_user.is_superuser is raw_query_user.is_superuser
@@ -146,6 +149,7 @@ async def _(
     assert found_user.open_to_newsletter is raw_query_user.open_to_newsletter
     assert found_user.open_to_recruiting is raw_query_user.open_to_recruiting
     assert found_user.country == raw_query_user.country
+    assert found_user.tagline == raw_query_user.tagline
     assert found_user.is_active is raw_query_user.is_active
     assert found_user.is_staff is raw_query_user.is_staff
     assert found_user.is_superuser is raw_query_user.is_superuser

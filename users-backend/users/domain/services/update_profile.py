@@ -17,6 +17,7 @@ class UpdateProfileInput(BaseModel):
     open_to_newsletter: bool
     country: str
     date_birth: Optional[date]
+    tagline: str
 
 
 async def update_profile(
@@ -40,6 +41,7 @@ async def update_profile(
     user.open_to_recruiting = input.open_to_recruiting
     user.date_birth = input.date_birth
     user.country = input.country
+    user.tagline = input.tagline
 
     await users_repository.save_user(user)
     updated_user = dataclasses.replace(user, password=None)

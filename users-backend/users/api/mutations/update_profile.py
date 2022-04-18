@@ -24,6 +24,7 @@ from users.domain.services.update_profile import (
         "open_to_newsletter",
         "date_birth",
         "country",
+        "tagline",
     ],
 )
 class UpdateProfileInput:
@@ -39,6 +40,7 @@ class UpdateProfileErrors:
     open_to_newsletter: PydanticError = None
     date_birth: PydanticError = None
     country: PydanticError = None
+    tagline: PydanticError = None
 
 
 UpdateProfileValidationError = create_validation_error_type(

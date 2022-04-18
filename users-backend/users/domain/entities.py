@@ -8,6 +8,7 @@ import jwt
 from sqlalchemy import Boolean, Column, Date, DateTime, Integer, String, Table
 from sqlalchemy.orm import registry
 from starlette.authentication import BaseUser
+
 from users.settings import SECRET_KEY
 from users.starlette_password.hashers import (
     check_password,
@@ -33,6 +34,7 @@ class User(BaseUser):
     open_to_recruiting: bool = False
     open_to_newsletter: bool = False
     country: str = ""
+    tagline: str = ""
     is_active: bool = True
     is_staff: bool = False
     is_superuser: bool = False
@@ -106,6 +108,7 @@ user_table = Table(
     Column("open_to_recruiting", Boolean(), default=False, nullable=False),
     Column("open_to_newsletter", Boolean(), default=False, nullable=False),
     Column("country", String(50), nullable=False),
+    Column("tagline", String(2000), nullable=True),
     Column("date_joined", DateTime(timezone=True), nullable=False),
     Column("last_login", DateTime(timezone=True), nullable=True),
     Column("is_active", Boolean(), default=True, nullable=False),

@@ -25,6 +25,7 @@ async def _(graphql_client=graphql_client, db=db, user_factory=user_factory):
                 openToRecruiting
                 openToNewsletter
                 country
+                tagline
                 dateBirth
             }
         }
@@ -40,6 +41,7 @@ async def _(graphql_client=graphql_client, db=db, user_factory=user_factory):
                 "openToRecruiting": False,
                 "openToNewsletter": True,
                 "country": "IT",
+                "tagline": "Tag",
                 "dateBirth": None,
             }
         },
@@ -55,4 +57,5 @@ async def _(graphql_client=graphql_client, db=db, user_factory=user_factory):
     assert raw_query_user.open_to_recruiting is False
     assert raw_query_user.open_to_newsletter is True
     assert raw_query_user.country == "IT"
+    assert raw_query_user.tagline == "Tag"
     assert raw_query_user.date_birth is None

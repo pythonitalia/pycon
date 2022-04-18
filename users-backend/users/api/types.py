@@ -23,6 +23,7 @@ class User:
     open_to_newsletter: bool
     date_birth: Optional[date]
     country: str
+    tagline: str
     is_staff: bool
 
     @classmethod
@@ -39,6 +40,7 @@ class User:
             open_to_newsletter=entity.open_to_newsletter,
             date_birth=entity.date_birth,
             country=entity.country,
+            tagline=entity.tagline,
             is_staff=entity.is_staff,
         )
 
