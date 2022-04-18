@@ -1,6 +1,6 @@
 from pytest import mark
 
-from pretix.db import user_has_admission_ticket
+from pretix import user_has_admission_ticket
 
 pytestmark = mark.django_db
 

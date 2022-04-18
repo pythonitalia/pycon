@@ -1,42 +1,9 @@
-from dataclasses import dataclass
 from typing import List, Optional
 
 from django.conf import settings
 from django.db import connections
 
 from api.pretix.types import Voucher
-from pretix import pretix
-
-
-@dataclass
-class Conference:
-    pretix_organizer_id: str
-    pretix_event_id: str
-
-
-def user_has_admission_ticket(
-    *, email: str, event_organizer: str, event_slug: int
-) -> bool:
-    response = pretix(
-        conference=Conference(
-            pretix_organizer_id=event_organizer, pretix_event_id=event_slug
-        ),
-        endpoint="tickets/attendee-has-ticket",
-        method="post",
-        json={
-            "attendee_email": email,
-            # TODO: In the future this method should be changed to send multiple events
-            "events": [
-                {
-                    "organizer_slug": event_organizer,
-                    "event_slug": event_slug,
-                }
-            ],
-        },
-    )
-    response.raise_for_status()
-    data = response.json()
-    return data["user_has_admission_ticket"]
 
 
 def get_orders_status(orders: List[str]):
