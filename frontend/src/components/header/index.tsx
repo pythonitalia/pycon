@@ -31,7 +31,7 @@ const LanguagePicker = ({ language, ...props }: { language: string }) => {
   const { route, query } = useRouter();
 
   return (
-    <Flex sx={{ alignItems: "center", height: 50, mt: "-4px" }} {...props}>
+    <Flex sx={{ alignItems: "center" }} {...props}>
       <Link path={route} params={query} locale="en" sx={{ height: 40 }}>
         <EnglishIcon active={language === "en"} sx={{ width: 40, mr: 2 }} />
       </Link>
@@ -59,6 +59,18 @@ const Links = ({
     })}
   </Fragment>
 );
+
+const ScheduleLink = () => {
+  return (
+    <Link
+      variant="button"
+      path="/schedule"
+      sx={{ mr: 2, background: "orange" }}
+    >
+      <FormattedMessage id="schedule" />
+    </Link>
+  );
+};
 
 export const Header = () => {
   const language = useCurrentLanguage();
@@ -136,14 +148,21 @@ export const Header = () => {
               alignItems: "center",
             }}
           >
-            <LanguagePicker
-              language={language}
+            <Box
               sx={{
-                display: ["none", "block"],
+                display: "flex",
+                alignItems: "center",
               }}
-            />
-
-            <ProfileLink />
+            >
+              <LanguagePicker
+                language={language}
+                sx={{
+                  display: ["none", "block"],
+                }}
+              />
+              <ScheduleLink />
+              <ProfileLink />
+            </Box>
 
             <Button
               sx={{

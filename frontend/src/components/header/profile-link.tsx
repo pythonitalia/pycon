@@ -15,7 +15,7 @@ export const ProfileLink = () => {
     <Link
       path={loggedIn ? "/profile" : "/login"}
       variant="arrow-button"
-      sx={{ mr: 5, display: ["none", "block"] }}
+      sx={{ mr: 4, display: ["none", "block"] }}
     >
       {loggedIn && <FormattedMessage id="header.profile" />}
       {!loggedIn && <FormattedMessage id="header.login" />}
