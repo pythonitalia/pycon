@@ -133,6 +133,7 @@ export const HomePage = () => {
 
       <Box
         sx={{
+          borderTop: "primary",
           borderBottom: "primary",
         }}
       >
