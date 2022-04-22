@@ -1,4 +1,4 @@
-import { Text, Textarea } from "theme-ui";
+import { Text, Textarea, TextareaProps } from "theme-ui";
 
 export const LimitedTextarea = ({
   value,
@@ -7,7 +7,7 @@ export const LimitedTextarea = ({
 }: {
   value: string;
   maxLength: number;
-}) => {
+} & TextareaProps) => {
   return (
     <>
       <Textarea value={value} maxLength={maxLength} {...props} />
