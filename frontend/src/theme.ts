@@ -174,7 +174,7 @@ export const theme: Theme = {
     "arrow-button": {
       variant: "links.button",
       height: 50,
-      border: "none",
+      borderColor: "transparent",
       "&:hover": {
         backgroundColor: "none",
       },
