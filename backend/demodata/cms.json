@@ -84,42 +84,6 @@
       }
   },
   {
-    "model": "cms.genericcopy",
-    "pk": 7,
-    "fields": {
-      "created": "2022-04-24T10:14:24.403Z",
-      "modified": "2022-04-24T10:14:24.403Z",
-      "key": "homepage-section1-cta-text",
-      "content": { "en": "Help Us", "it": "Aiutaci" },
-      "conference": 1
-    }
-  },
-  {
-    "model": "cms.genericcopy",
-    "pk": 8,
-    "fields": {
-      "created": "2022-04-24T10:14:52.875Z",
-      "modified": "2022-04-24T10:16:04.640Z",
-      "key": "homepage-section1-cta-link",
-      "content": { "en": "/help-us", "it": "/help-us" },
-      "conference": 1
-    }
-  },
-  {
-    "model": "cms.genericcopy",
-    "pk": 9,
-    "fields": {
-      "created": "2022-04-24T10:15:20.413Z",
-      "modified": "2022-04-24T10:15:20.413Z",
-      "key": "homepage-section1-text",
-      "content": {
-        "en": "🐍🐍 Help us! 🐍🐍",
-        "it": "🐍🐍 Aiutaci! 🐍🐍"
-      },
-      "conference": 1
-    }
-  },
-  {
       "model": "cms.faq",
       "pk": 1,
       "fields": {
