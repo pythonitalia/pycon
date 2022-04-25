@@ -4,6 +4,8 @@ from integrations.mailchimp import SubscriptionResult, subscribe
 
 SUSHI_AT_PYCON_MD5 = "b18048f470386b1e7b7f4500d1251d36"
 
+pytestmark = pytest.mark.skip
+
 
 def test_mailchimp_not_configure(settings):
     settings.MAILCHIMP_SECRET_KEY = ""

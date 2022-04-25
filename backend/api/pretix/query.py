@@ -10,7 +10,13 @@ import pretix.db
 from api.pretix.constants import ASSOCIATION_CATEGORY_INTERNAL_NAME
 from conferences.models.conference import Conference
 
-from .types import Option, PretixOrder, ProductVariation, Question, TicketItem, Voucher
+from .types import (
+    PretixOrder,
+    PretixTicket,
+    TicketItem,
+    Voucher,
+    _create_ticket_type_from_api,
+)
 
 
 def get_voucher(conference: Conference, code: str) -> Optional[Voucher]:
@@ -33,82 +39,21 @@ def get_user_orders(conference, email):
     return [PretixOrder.from_data(order) for order in orders["results"]]
 
 
+def get_user_tickets(
+    conference: Conference, email: str, language: str
+) -> List[PretixTicket]:
+    tickets = pretix.get_user_tickets(conference, email)
+
+    if not tickets:
+        return []
+
+    categories = pretix.get_categories(conference)
+    return [PretixTicket.from_data(ticket, language, categories) for ticket in tickets]
+
+
 # TODO: we should probably use a category for this
 def _is_hotel(item: dict):
     return item.get("default_price") == "0.00"
-
-
-def _get_category_for_ticket(item, categories):
-    category_id = str(item["category"])
-
-    return categories.get(category_id)
-
-
-def _get_quantity_left_for_ticket(item, quotas):
-    if not bool(item["show_quota_left"]):
-        return None
-
-    # tickets can be in multiple quotas, in that case the one that has the least amount of tickets
-    # should become the source of truth for availability. See:
-    # https://docs.pretix.eu/en/latest/development/concepts.html#quotas
-    return min(
-        quota["available_number"]
-        for quota in quotas.values()
-        if item["id"] in quota["items"]
-    )
-
-
-def _get_by_language(item, key, language):
-    return item[key].get(language, item[key]["en"]) if item[key] else None
-
-
-def _create_ticket_type_from_api(item, id, categories, questions, quotas, language):
-    category = _get_category_for_ticket(item, categories)
-
-    return TicketItem(
-        id=id,
-        language=language,
-        name=_get_by_language(item, "name", language),
-        description=_get_by_language(item, "description", language),
-        category=_get_by_language(category, "name", language),
-        category_internal_name=category.get("internal_name", None),
-        variations=[
-            ProductVariation(
-                id=variation["id"],
-                value=_get_by_language(variation, "value", language),
-                description=_get_by_language(variation, "description", language),
-                active=variation["active"],
-                default_price=variation["default_price"],
-            )
-            for variation in item.get("variations", [])
-        ],
-        tax_rate=item["tax_rate"],
-        active=item["active"],
-        default_price=item["default_price"],
-        available_from=item["available_from"],
-        available_until=item["available_until"],
-        questions=get_questions_for_ticket(item, questions, language),
-        quantity_left=_get_quantity_left_for_ticket(item, quotas),
-    )
-
-
-def get_questions_for_ticket(item, questions, language):
-    return [
-        Question(
-            id=question["id"],
-            name=question["question"].get(language, question["question"]["en"]),
-            required=question["required"],
-            options=[
-                Option(
-                    id=option["id"],
-                    name=option["answer"].get(language, option["answer"]["en"]),
-                )
-                for option in question["options"]
-            ],
-        )
-        for question in questions
-        if item["id"] in question["items"]
-    ]
 
 
 def _is_ticket_available(item) -> bool:

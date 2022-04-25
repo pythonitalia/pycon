@@ -347,3 +347,18 @@ def create_order(conference: Conference, order_data: CreateOrderInput) -> Order:
     data = response.json()
 
     return Order(code=data["code"], payment_url=data["payments"][0]["payment_url"])
+
+
+def get_user_tickets(conference: Conference, email: str):
+    response = pretix(
+        conference=conference,
+        endpoint="tickets/attendee-tickets",
+        method="get",
+        qs={
+            "attendee_email": email,
+        },
+    )
+
+    response.raise_for_status()
+
+    return response.json()
