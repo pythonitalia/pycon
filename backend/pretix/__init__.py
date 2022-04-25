@@ -16,7 +16,7 @@ from .exceptions import PretixError
 logger = logging.getLogger(__file__)
 
 
-def get_api_url(conference, endpoint) -> str:
+def get_api_url(conference: Conference, endpoint: str) -> str:
     return urljoin(
         settings.PRETIX_API,
         f"organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/{endpoint}",  # noqa
@@ -24,7 +24,11 @@ def get_api_url(conference, endpoint) -> str:
 
 
 def pretix(
-    conference, endpoint, qs: Optional[Dict[str, Any]] = None, method="get", **kwargs
+    conference: Conference,
+    endpoint: str,
+    qs: Optional[Dict[str, Any]] = None,
+    method="get",
+    **kwargs,
 ):
     return requests.request(
         method,
@@ -58,7 +62,7 @@ def create_voucher(
     return response.json()
 
 
-def get_order(conference, code):
+def get_order(conference: Conference, code: str):
     response = pretix(conference, f"orders/{code}/")
 
     if response.status_code == 404:
@@ -75,7 +79,9 @@ def get_user_orders(conference: Conference, email: str):
     return response.json()
 
 
-def _get_paginated(conference, endpoint, qs: Optional[Dict[str, Any]] = None):
+def _get_paginated(
+    conference: Conference, endpoint: str, qs: Optional[Dict[str, Any]] = None
+):
     url = get_api_url(conference, endpoint)
 
     while url is not None:
