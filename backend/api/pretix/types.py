@@ -1,10 +1,11 @@
 from datetime import datetime
 from enum import Enum
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 import strawberry
 
 from api.pretix.constants import ASSOCIATION_CATEGORY_INTERNAL_NAME
+from pretix.types import Quota
 
 
 @strawberry.enum
@@ -58,6 +59,13 @@ class Option:
     id: strawberry.ID
     name: str
 
+    @classmethod
+    def from_data(cls, data, language: str):
+        return cls(
+            id=data["id"],
+            name=_get_by_language(data, "answer", language),
+        )
+
 
 @strawberry.type
 class Question:
@@ -65,6 +73,15 @@ class Question:
     name: str
     required: bool
     options: List[Option]
+
+    @classmethod
+    def from_data(cls, data, language: str):
+        return cls(
+            id=data["id"],
+            name=_get_by_language(data, "question", language),
+            required=data["required"],
+            options=[Option.from_data(option, language) for option in data["options"]],
+        )
 
 
 @strawberry.enum
@@ -82,69 +99,6 @@ def _get_category_for_ticket(item, categories):
 
 def _get_by_language(item, key, language):
     return item[key].get(language, item[key]["en"]) if item[key] else None
-
-
-def _get_quantity_left_for_ticket(item, quotas):
-    if not bool(item["show_quota_left"]):
-        return None
-
-    # tickets can be in multiple quotas, in that case the one that has the least amount of tickets
-    # should become the source of truth for availability. See:
-    # https://docs.pretix.eu/en/latest/development/concepts.html#quotas
-    return min(
-        quota["available_number"]
-        for quota in quotas.values()
-        if item["id"] in quota["items"]
-    )
-
-
-def get_questions_for_ticket(item, questions, language):
-    return [
-        Question(
-            id=question["id"],
-            name=question["question"].get(language, question["question"]["en"]),
-            required=question["required"],
-            options=[
-                Option(
-                    id=option["id"],
-                    name=option["answer"].get(language, option["answer"]["en"]),
-                )
-                for option in question["options"]
-            ],
-        )
-        for question in questions
-        if item["id"] in question["items"]
-    ]
-
-
-def _create_ticket_type_from_api(item, id, categories, questions, quotas, language):
-    category = _get_category_for_ticket(item, categories)
-
-    return TicketItem(
-        id=id,
-        language=language,
-        name=_get_by_language(item, "name", language),
-        description=_get_by_language(item, "description", language),
-        category=_get_by_language(category, "name", language),
-        category_internal_name=category.get("internal_name", None),
-        variations=[
-            ProductVariation(
-                id=variation["id"],
-                value=_get_by_language(variation, "value", language),
-                description=_get_by_language(variation, "description", language),
-                active=variation["active"],
-                default_price=variation["default_price"],
-            )
-            for variation in item.get("variations", [])
-        ],
-        tax_rate=item["tax_rate"],
-        active=item["active"],
-        default_price=item["default_price"],
-        available_from=item["available_from"],
-        available_until=item["available_until"],
-        questions=get_questions_for_ticket(item, questions, language),
-        quantity_left=_get_quantity_left_for_ticket(item, quotas),
-    )
 
 
 @strawberry.type
@@ -176,9 +130,15 @@ class TicketItem:
         return TicketType.STANDARD
 
     @classmethod
-    def from_data(cls, data, language: str, categories):
+    def from_data(
+        cls,
+        data,
+        language: str,
+        categories,
+        questions,
+        quotas: Optional[Dict[str, Quota]] = None,
+    ):
         category = _get_category_for_ticket(data, categories)
-
         return cls(
             id=data["id"],
             language=language,
@@ -195,21 +155,49 @@ class TicketItem:
                 ProductVariation.from_data(variation, language)
                 for variation in data.get("variations", [])
             ],
-            questions=[],
-            quantity_left=None,
+            questions=[
+                Question.from_data(question, language)
+                for question in questions
+                if data["id"] in question["items"]
+            ],
+            quantity_left=cls._get_quantity_left(data, quotas),
+        )
+
+    @staticmethod
+    def _get_quantity_left(data, quotas: Optional[Dict[str, Quota]]):
+        if not bool(data["show_quota_left"]):
+            return None
+
+        # For user's tickets we don't need quantity left
+        if not quotas:
+            return None
+
+        # tickets can be in multiple quotas, in that case the one that has the least amount of tickets
+        # should become the source of truth for availability. See:
+        # https://docs.pretix.eu/en/latest/development/concepts.html#quotas
+        return min(
+            quota["available_number"]
+            for quota in quotas.values()
+            if int(data["id"]) in quota["items"]
         )
 
 
 @strawberry.type
-class PretixTicket:
-    price: str
+class PretixOrderPosition:
+    id: strawberry.ID
+    name: str
+    email: str
     item: TicketItem
 
     @classmethod
     def from_data(cls, data, language: str, categories):
         item = data["item"]
+        questions = [answer["question"] for answer in data["answers"]]
         return cls(
-            price=data["price"], item=TicketItem.from_data(item, language, categories)
+            id=data["id"],
+            name=data["attendee_name"],
+            email=data["attendee_email"],
+            item=TicketItem.from_data(item, language, categories, questions),
         )
 
 

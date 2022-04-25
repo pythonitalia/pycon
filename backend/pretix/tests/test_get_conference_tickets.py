@@ -56,21 +56,39 @@ def test_get_conference_tickets(
         "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/quotas",
         json=pretix_quotas,
     )
+
     tickets = get_conference_tickets(conference, "en")
 
     assert len(tickets) == 2
-
     ticket = tickets[0]
-
+    assert ticket.id == 1
+    assert ticket.language == "en"
     assert ticket.name == "Regular ticket"
+    assert ticket.description == "Regular ticket fare"
+    assert ticket.category == "Tickets"
+    assert ticket.category_internal_name == "tickets"
+    assert ticket.tax_rate == "0.00"
+    assert ticket.active is True
+    assert ticket.default_price == "500.00"
+    assert ticket.available_from is None
+    assert ticket.available_until is None
     assert ticket.quantity_left == 118
+    assert ticket.questions[0].id == 1
     assert ticket.questions[0].name == "Codice Fiscale"
+    assert ticket.questions[0].required is True
+    assert ticket.questions[1].id == 2
     assert ticket.questions[1].name == "Food preferences"
+    assert ticket.questions[1].required is True
     assert ticket.questions[1].options == [
         Option(id=4, name="No preferences"),
         Option(id=5, name="Vegetarian"),
         Option(id=6, name="Vegan"),
     ]
+    assert tickets[1].variations[0].id == 1
+    assert tickets[1].variations[0].value == "Small"
+    assert tickets[1].variations[0].description == "slim fit"
+    assert tickets[1].variations[0].active is True
+    assert tickets[1].variations[0].default_price == "20.00"
 
     assert tickets[1].quantity_left is None
 

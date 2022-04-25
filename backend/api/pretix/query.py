@@ -10,13 +10,7 @@ import pretix.db
 from api.pretix.constants import ASSOCIATION_CATEGORY_INTERNAL_NAME
 from conferences.models.conference import Conference
 
-from .types import (
-    PretixOrder,
-    PretixTicket,
-    TicketItem,
-    Voucher,
-    _create_ticket_type_from_api,
-)
+from .types import PretixOrder, PretixOrderPosition, TicketItem, Voucher
 
 
 def get_voucher(conference: Conference, code: str) -> Optional[Voucher]:
@@ -41,14 +35,17 @@ def get_user_orders(conference, email):
 
 def get_user_tickets(
     conference: Conference, email: str, language: str
-) -> List[PretixTicket]:
+) -> List[PretixOrderPosition]:
     tickets = pretix.get_user_tickets(conference, email)
 
     if not tickets:
         return []
 
     categories = pretix.get_categories(conference)
-    return [PretixTicket.from_data(ticket, language, categories) for ticket in tickets]
+    return [
+        PretixOrderPosition.from_data(ticket, language, categories)
+        for ticket in tickets
+    ]
 
 
 # TODO: we should probably use a category for this
@@ -106,15 +103,14 @@ def get_conference_tickets(
 
     return sorted(
         [
-            _create_ticket_type_from_api(
-                item=item,
-                id=id,
+            TicketItem.from_data(
+                item,
                 categories=categories,
                 questions=questions,
                 language=language,
                 quotas=quotas,
             )
-            for id, item in items.items()
+            for item in items.values()
         ],
         key=sort_func,
     )
