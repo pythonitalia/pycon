@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from datetime import datetime
 from enum import Enum
 from typing import Dict, List, Optional
@@ -5,7 +7,13 @@ from typing import Dict, List, Optional
 import strawberry
 
 from api.pretix.constants import ASSOCIATION_CATEGORY_INTERNAL_NAME
-from pretix.types import Quota
+from pretix.types import Category as CategoryDict
+from pretix.types import Item as ItemDict
+from pretix.types import Option as OptionDict
+from pretix.types import OrderPosition as OrderPositionDict
+from pretix.types import ProductVariation as ProductVariationDict
+from pretix.types import Question as QuestionDict
+from pretix.types import Quota as QuotaDict
 
 
 @strawberry.enum
@@ -25,7 +33,7 @@ class PretixOrder:
     email: str
 
     @classmethod
-    def from_data(cls, data):
+    def from_data(cls, data) -> PretixOrder:
         return cls(
             code=data["code"],
             status=PretixOrderStatus(data["status"]),
@@ -44,7 +52,7 @@ class ProductVariation:
     default_price: str
 
     @classmethod
-    def from_data(cls, data, language: str):
+    def from_data(cls, data: ProductVariationDict, language: str) -> ProductVariation:
         return cls(
             id=data["id"],
             value=_get_by_language(data, "value", language),
@@ -60,10 +68,34 @@ class Option:
     name: str
 
     @classmethod
-    def from_data(cls, data, language: str):
+    def from_data(cls, data: OptionDict, language: str) -> Option:
         return cls(
             id=data["id"],
             name=_get_by_language(data, "answer", language),
+        )
+
+
+@strawberry.type
+class Answer:
+    answer: str
+
+    @classmethod
+    def from_data(cls, data: QuestionDict, language: str) -> Answer:
+
+        # If it's an option answer it's not translated
+        if data.get("options"):
+            options = [
+                option
+                for option in data["options"]
+                if option["id"] in data["answer_options"]
+            ]
+            options_answers = [
+                _get_by_language(option, "answer", language) for option in options
+            ]
+            return cls(answer=", ".join(options_answers))
+
+        return cls(
+            answer=data["answer"],
         )
 
 
@@ -73,14 +105,16 @@ class Question:
     name: str
     required: bool
     options: List[Option]
+    answer: Optional[Answer]
 
     @classmethod
-    def from_data(cls, data, language: str):
+    def from_data(cls, data: QuestionDict, language: str) -> Question:
         return cls(
             id=data["id"],
             name=_get_by_language(data, "question", language),
             required=data["required"],
             options=[Option.from_data(option, language) for option in data["options"]],
+            answer=Answer.from_data(data, language) if data.get("answer") else None,
         )
 
 
@@ -132,11 +166,11 @@ class TicketItem:
     @classmethod
     def from_data(
         cls,
-        data,
+        data: ItemDict,
         language: str,
-        categories,
-        questions,
-        quotas: Optional[Dict[str, Quota]] = None,
+        categories: Dict[str, CategoryDict],
+        questions: Dict[str, Question],
+        quotas: Optional[Dict[str, QuotaDict]] = None,
     ):
         category = _get_category_for_ticket(data, categories)
         return cls(
@@ -164,7 +198,7 @@ class TicketItem:
         )
 
     @staticmethod
-    def _get_quantity_left(data, quotas: Optional[Dict[str, Quota]]):
+    def _get_quantity_left(data, quotas: Optional[Dict[str, QuotaDict]]):
         if not bool(data["show_quota_left"]):
             return None
 
@@ -190,14 +224,23 @@ class PretixOrderPosition:
     item: TicketItem
 
     @classmethod
-    def from_data(cls, data, language: str, categories):
-        item = data["item"]
-        questions = [answer["question"] for answer in data["answers"]]
+    def from_data(
+        cls, data: OrderPositionDict, language: str, categories: List[CategoryDict]
+    ):
+        for answer in data["answers"]:
+            answer["question"]["answer"] = answer["answer"]
+            answer["question"]["answer_options"] = answer["options"]
+
         return cls(
             id=data["id"],
             name=data["attendee_name"],
             email=data["attendee_email"],
-            item=TicketItem.from_data(item, language, categories, questions),
+            item=TicketItem.from_data(
+                data["item"],
+                language=language,
+                categories=categories,
+                questions=[answer["question"] for answer in data["answers"]],
+            ),
         )
 
 

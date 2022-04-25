@@ -51,9 +51,11 @@ def test_get_user_tickets(
     assert ticket.item.questions[0].required is True
     assert ticket.item.questions[0].options == [
         Option(id=1, name="Sushi"),
-        Option(id=2, name="Fiorentina"),
+        Option(id=2, name="Fiorentina Meat"),
         Option(id=3, name="Thai"),
     ]
+    assert ticket.item.questions[0].answer.answer == "Fiorentina Meat"
     assert ticket.item.questions[1].id == 4
     assert ticket.item.questions[1].name == "Intollerance"
     assert ticket.item.questions[1].required is True
+    assert ticket.item.questions[1].answer.answer == "Cat"

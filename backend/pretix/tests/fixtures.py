@@ -118,13 +118,16 @@ def pretix_user_tickets():
                             {
                                 "id": 1,
                                 "identifier": "9MYPHN7J",
-                                "answer": {"en": "Sushi", "it": "Sushi"},
+                                "answer": {"en": "Sushi", "it": "Cibo Giapponese"},
                                 "position": 0,
                             },
                             {
                                 "id": 2,
                                 "identifier": "KN98FFNU",
-                                "answer": {"en": "Fiorentina", "it": "Fiorentina"},
+                                "answer": {
+                                    "en": "Fiorentina Meat",
+                                    "it": "Bistecca Toscana",
+                                },
                                 "position": 1,
                             },
                             {
@@ -151,7 +154,7 @@ def pretix_user_tickets():
                         "valid_datetime_max": None,
                         "valid_file_portrait": False,
                     },
-                    "answer": "Fiorentina",
+                    "answer": "Bistecca Toscana",
                     "options": [2],
                 },
                 {

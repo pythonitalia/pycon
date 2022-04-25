@@ -1,6 +1,6 @@
 import logging
-import typing
 from datetime import date
+from typing import Any, Dict, List, Optional
 from urllib.parse import urljoin
 
 import requests
@@ -9,36 +9,27 @@ from django.conf import settings
 
 from conferences.models.conference import Conference
 from hotels.models import HotelRoom
+from pretix.types import Category, Question, Quota
 
 from .exceptions import PretixError
 
 logger = logging.getLogger(__file__)
 
 
-def get_api_url(conference, endpoint, query):
-    return (
-        urljoin(
-            settings.PRETIX_API,
-            f"organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/{endpoint}",  # noqa
-        )
-        + append_qs(query or {})
+def get_api_url(conference, endpoint) -> str:
+    return urljoin(
+        settings.PRETIX_API,
+        f"organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/{endpoint}",  # noqa
     )
 
 
-def append_qs(querystring):
-    items = querystring.items()
-
-    if len(items) > 0:
-        return "?" + "&".join([f"{key}={value}" for key, value in items])
-
-    return ""
-
-
-def pretix(conference, endpoint, qs={}, method="get", **kwargs):
-    method = getattr(requests, method)
-
-    return method(
-        get_api_url(conference, endpoint, qs),
+def pretix(
+    conference, endpoint, qs: Optional[Dict[str, Any]] = None, method="get", **kwargs
+):
+    return requests.request(
+        method,
+        get_api_url(conference, endpoint),
+        params=qs or {},
         headers={"Authorization": f"Token {settings.PRETIX_API_TOKEN}"},
         **kwargs,
     )
@@ -84,12 +75,14 @@ def get_user_orders(conference: Conference, email: str):
     return response.json()
 
 
-def _get_paginated(conference, endpoint, qs=None):
-    url = get_api_url(conference, endpoint, qs)
+def _get_paginated(conference, endpoint, qs: Optional[Dict[str, Any]] = None):
+    url = get_api_url(conference, endpoint)
 
     while url is not None:
         response = requests.get(
-            url, headers={"Authorization": f"Token {settings.PRETIX_API_TOKEN}"}
+            url,
+            params=qs,
+            headers={"Authorization": f"Token {settings.PRETIX_API_TOKEN}"},
         )
 
         response.raise_for_status()
@@ -105,7 +98,7 @@ def get_orders(conference: Conference):
 
 
 def get_all_order_positions(
-    conference: Conference, params: typing.Dict[str, typing.Any] = None
+    conference: Conference, params: Optional[Dict[str, Any]] = None
 ):
     return _get_paginated(conference, "orderpositions", params)
 
@@ -114,7 +107,7 @@ def get_invoices(conference: Conference):
     return _get_paginated(conference, "invoices")
 
 
-def get_items(conference: Conference, params: typing.Dict[str, typing.Any] = None):
+def get_items(conference: Conference, params: Optional[Dict[str, Any]] = None):
     response = pretix(conference, "items", params)
     response.raise_for_status()
 
@@ -122,7 +115,7 @@ def get_items(conference: Conference, params: typing.Dict[str, typing.Any] = Non
     return {str(result["id"]): result for result in data["results"]}
 
 
-def get_questions(conference: Conference):
+def get_questions(conference: Conference) -> Dict[str, Question]:
     response = pretix(conference, "questions")
     response.raise_for_status()
 
@@ -130,7 +123,7 @@ def get_questions(conference: Conference):
     return {str(result["id"]): result for result in data["results"]}
 
 
-def get_categories(conference: Conference):
+def get_categories(conference: Conference) -> Dict[str, Category]:
     response = pretix(conference, "categories")
     response.raise_for_status()
 
@@ -138,7 +131,7 @@ def get_categories(conference: Conference):
     return {str(result["id"]): result for result in data["results"]}
 
 
-def get_quotas(conference: Conference):
+def get_quotas(conference: Conference) -> Dict[str, Quota]:
     response = pretix(conference, "quotas", qs={"with_availability": "true"})
     response.raise_for_status()
 
@@ -157,9 +150,9 @@ class CreateOrderTicket:
     ticket_id: str
     attendee_name: str
     attendee_email: str
-    variation: typing.Optional[str] = None
-    answers: typing.Optional[typing.List[CreateOrderTicketAnswer]] = None
-    voucher: typing.Optional[str] = None
+    variation: Optional[str] = None
+    answers: Optional[List[CreateOrderTicketAnswer]] = None
+    voucher: Optional[str] = None
 
 
 @strawberry.input
@@ -172,7 +165,7 @@ class CreateOrderHotelRoom:
 @strawberry.input
 class InvoiceInformation:
     is_business: bool
-    company: typing.Optional[str]
+    company: Optional[str]
     name: str
     street: str
     zipcode: str
@@ -188,8 +181,8 @@ class CreateOrderInput:
     locale: str
     payment_provider: str
     invoice_information: InvoiceInformation
-    tickets: typing.List[CreateOrderTicket]
-    hotel_rooms: typing.List[CreateOrderHotelRoom]
+    tickets: List[CreateOrderTicket]
+    hotel_rooms: List[CreateOrderHotelRoom]
 
 
 @strawberry.type
@@ -256,11 +249,9 @@ def normalize_position(ticket: CreateOrderTicket, items: dict, questions: dict):
 
 
 def create_hotel_positions(
-    hotel_rooms: typing.List[CreateOrderHotelRoom], locale: str, conference: Conference
+    hotel_rooms: List[CreateOrderHotelRoom], locale: str, conference: Conference
 ):
-    rooms: typing.List[HotelRoom] = list(
-        HotelRoom.objects.filter(conference=conference).all()
-    )
+    rooms: List[HotelRoom] = list(HotelRoom.objects.filter(conference=conference).all())
 
     positions = []
 
