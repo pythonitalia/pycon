@@ -27,6 +27,7 @@ def test_get_conference_tickets_no_tickets(conference, requests_mock):
         "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/quotas",
         json={"results": []},
     )
+
     assert get_conference_tickets(conference, "en") == []
 
 
@@ -89,7 +90,6 @@ def test_get_conference_tickets(
     assert tickets[1].variations[0].description == "slim fit"
     assert tickets[1].variations[0].active is True
     assert tickets[1].variations[0].default_price == "20.00"
-
     assert tickets[1].quantity_left is None
 
 
@@ -123,6 +123,7 @@ def test_get_conference_tickets_hides_when_available_from_is_future(
         "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/quotas",
         json=pretix_quotas,
     )
+
     tickets = get_conference_tickets(conference, "en")
 
     assert len(tickets) == 0
@@ -158,6 +159,7 @@ def test_get_conference_tickets_hides_when_available_until_is_past(
         "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/quotas",
         json=pretix_quotas,
     )
+
     tickets = get_conference_tickets(conference, "en")
 
     assert len(tickets) == 0
