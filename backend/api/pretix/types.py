@@ -7,13 +7,15 @@ from typing import Dict, List, Optional
 import strawberry
 
 from api.pretix.constants import ASSOCIATION_CATEGORY_INTERNAL_NAME
-from pretix.types import Category as CategoryDict
-from pretix.types import Item as ItemDict
-from pretix.types import Option as OptionDict
-from pretix.types import OrderPosition as OrderPositionDict
-from pretix.types import ProductVariation as ProductVariationDict
-from pretix.types import Question as QuestionDict
-from pretix.types import Quota as QuotaDict
+from pretix.types import (
+    Category as CategoryDict,
+    Item as ItemDict,
+    Option as OptionDict,
+    OrderPosition as OrderPositionDict,
+    ProductVariation as ProductVariationDict,
+    Question as QuestionDict,
+    Quota as QuotaDict,
+)
 
 
 @strawberry.enum
