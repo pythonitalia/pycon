@@ -81,7 +81,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          pnpm publish --no-git-checks
+          pnpm publish --tag fromJSON('["pr", "latest"]')[github.ref == 'refs/heads/main'] --no-git-checks
           new_version=$(node -e "console.log(require('./package.json').version);")
           echo "::set-output name=version::$new_version"
       - name: Commit version
