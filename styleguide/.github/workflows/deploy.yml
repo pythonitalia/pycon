@@ -69,11 +69,11 @@ jobs:
           edit-mode: replace
       - name: Update version
         if: ${{ github.ref == 'refs/heads/main' }}
-        run: pnpm version patch --git-tag-version false --commit-hooks false
+        run: pnpm version patch --no-git-tag-version
       - name: Update to pre-release version
         if: ${{ github.ref != 'refs/heads/main' }}
         run: |
-          pnpm version patch --git-tag-version false --commit-hooks false
+          pnpm version patch --no-git-tag-version
           new_version=$(node -e "console.log(require('./package.json').version);")
           pnpm version $new_version-rc.$(date '+%s')
       - name: Build & Publish
