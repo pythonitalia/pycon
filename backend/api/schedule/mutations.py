@@ -13,7 +13,7 @@ from api.submissions.permissions import IsSubmissionSpeakerOrStaff
 from conferences.models import Conference
 from domain_events.publisher import send_new_schedule_invitation_answer
 from languages.models import Language
-from pretix.db import user_has_admission_ticket
+from pretix import user_has_admission_ticket
 from schedule.models import Day as DayModel
 from schedule.models import ScheduleItem, ScheduleItemAttendee, Slot
 from submissions.models import Submission

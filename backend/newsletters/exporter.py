@@ -5,7 +5,7 @@ from collections import defaultdict
 from django.db.models import Q
 
 from conferences.models import Conference
-from pretix.db import user_has_admission_ticket
+from pretix import user_has_admission_ticket
 from schedule.models import ScheduleItem
 from submissions.models import Submission
 from users.models import User

@@ -15,3 +15,5 @@ SERVICE_TO_SERVICE_SECRET = "secret-to-secret"
 MAILCHIMP_SECRET_KEY = "super-secret-key-for-tests"
 MAILCHIMP_DC = "us5"
 MAILCHIMP_LIST_ID = "12345678ab"
+
+PRETIX_API = "http://pretix-api:9000/"

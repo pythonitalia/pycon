@@ -17,7 +17,7 @@ from domain_events.publisher import (
     send_new_submission_time_slot,
     send_schedule_invitation_email,
 )
-from pretix.db import user_has_admission_ticket
+from pretix import user_has_admission_ticket
 from users.autocomplete import UsersBackendAutocomplete
 from users.mixins import AdminUsersMixin, ResourceUsersByIdsMixin
 
