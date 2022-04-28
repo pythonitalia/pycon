@@ -1,3 +1,4 @@
+import respx
 from pytest import mark
 
 from submissions.models import SubmissionComment
@@ -73,7 +74,11 @@ def test_user_needs_a_ticket_to_comment(
 
     graphql_client.force_login(user)
 
-    resp = _send_comment(graphql_client, submission, "Hello world!")
+    with respx.mock as mock:
+        mock.post(f"{settings.ASSOCIATION_BACKEND_SERVICE}/internal-api").respond(
+            json={"data": {"userIdIsMember": False}}
+        )
+        resp = _send_comment(graphql_client, submission, "Hello world!")
 
     assert resp["errors"][0]["message"] == "You can't send a comment"
 
