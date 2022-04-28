@@ -4,7 +4,7 @@ from pythonit_toolkit.pastaporto.entities import Pastaporto
 from pythonit_toolkit.service_client import ServiceClient
 
 from conferences.models import Conference
-from pretix.db import user_has_admission_ticket
+from pretix import user_has_admission_ticket
 from submissions.models import Submission
 
 IS_USER_MEMBER_OF_PYTHON_ITALIA = """query($userId: ID!) {

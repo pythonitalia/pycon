@@ -43,13 +43,23 @@ def _submit_vote(client, submission, **kwargs):
 @mark.django_db
 @mark.parametrize("score_index", [1, 2, 3, 4])
 def test_submit_vote(
-    graphql_client, user, conference_factory, submission_factory, score_index
+    graphql_client,
+    user,
+    conference_factory,
+    submission_factory,
+    score_index,
+    requests_mock,
 ):
     graphql_client.force_login(user)
 
     conference = conference_factory(active_voting=True)
 
     submission = submission_factory(conference=conference)
+
+    requests_mock.post(
+        f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket/",
+        json={"user_has_admission_ticket": True},
+    )
 
     resp, variables = _submit_vote(graphql_client, submission, value_index=score_index)
 
@@ -63,11 +73,15 @@ def test_submit_vote(
 
 
 def test_reject_vote_when_voting_is_not_open(
-    graphql_client, user, conference_factory, submission_factory
+    graphql_client, user, conference_factory, submission_factory, requests_mock
 ):
     graphql_client.force_login(user)
 
     conference = conference_factory()
+    requests_mock.post(
+        f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket/",
+        json={"user_has_admission_ticket": True},
+    )
 
     submission = submission_factory(conference=conference)
 
@@ -80,11 +94,15 @@ def test_reject_vote_when_voting_is_not_open(
 
 
 def test_user_can_vote_different_submissions(
-    graphql_client, user, conference_factory, submission_factory
+    graphql_client, user, conference_factory, submission_factory, requests_mock
 ):
     graphql_client.force_login(user)
 
     conference = conference_factory(active_voting=True)
+    requests_mock.post(
+        f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket/",
+        json={"user_has_admission_ticket": True},
+    )
 
     submission1 = submission_factory(conference=conference)
     resp1, variables1 = _submit_vote(graphql_client, submission1)
@@ -107,11 +125,16 @@ def test_user_can_vote_different_submissions(
 
 
 def test_updating_vote_when_user_votes_the_same_submission(
-    graphql_client, user, conference_factory, submission_factory
+    graphql_client, user, conference_factory, submission_factory, requests_mock
 ):
     graphql_client.force_login(user)
 
     conference = conference_factory(active_voting=True)
+
+    requests_mock.post(
+        f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket/",
+        json={"user_has_admission_ticket": True},
+    )
 
     submission = submission_factory(conference=conference, id=1)
     resp, variables = _submit_vote(graphql_client, submission, value_index=1)
@@ -131,12 +154,15 @@ def test_updating_vote_when_user_votes_the_same_submission(
 
 
 def test_cannot_vote_without_a_ticket_or_membership(
-    graphql_client, user, mocker, submission_factory
+    graphql_client, user, submission_factory, requests_mock
 ):
     graphql_client.force_login(user)
     submission = submission_factory(conference__active_voting=True)
-    admission_ticket_mock = mocker.patch(
-        "voting.helpers.user_has_admission_ticket", return_value=False
+    conference = submission.conference
+
+    requests_mock.post(
+        f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket/",
+        json={"user_has_admission_ticket": False},
     )
 
     with respx.mock as mock:
@@ -150,8 +176,6 @@ def test_cannot_vote_without_a_ticket_or_membership(
     assert resp["data"]["sendVote"]["nonFieldErrors"] == [
         "You cannot vote without a ticket"
     ]
-
-    admission_ticket_mock.assert_called()
 
     with raises(Vote.DoesNotExist):
         Vote.objects.get(user_id=user.id, submission=submission)

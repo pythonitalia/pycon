@@ -346,6 +346,33 @@ def create_order(conference: Conference, order_data: CreateOrderInput) -> Order:
     return Order(code=data["code"], payment_url=data["payments"][0]["payment_url"])
 
 
+def user_has_admission_ticket(
+    *, email: str, event_organizer: str, event_slug: str
+) -> bool:
+    response = pretix(
+        conference=Conference(
+            pretix_organizer_id=event_organizer, pretix_event_id=event_slug
+        ),
+        endpoint="tickets/attendee-has-ticket/",
+        method="post",
+        json={
+            "attendee_email": email,
+            # TODO: In the future this method should be changed to send multiple events
+            "events": [
+                {
+                    "organizer_slug": event_organizer,
+                    "event_slug": event_slug,
+                }
+            ],
+        },
+    )
+
+    response.raise_for_status()
+
+    data = response.json()
+    return data["user_has_admission_ticket"]
+
+
 def get_user_tickets(conference: Conference, email: str):
     response = pretix(
         conference=conference,
@@ -355,7 +382,5 @@ def get_user_tickets(conference: Conference, email: str):
             "attendee_email": email,
         },
     )
-
-    response.raise_for_status()
 
     return response.json()

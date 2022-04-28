@@ -1,3 +1,4 @@
+import respx
 from pytest import mark
 
 from submissions.models import SubmissionComment
@@ -36,7 +37,15 @@ def _send_comment(client, submission, text):
 
 
 @mark.django_db
-def test_send_comment(graphql_client, user, submission, mocker):
+def test_send_comment(
+    graphql_client, user, submission, mocker, requests_mock, settings
+):
+    conference = submission.conference
+    requests_mock.post(
+        f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket/",
+        json={"user_has_admission_ticket": True},
+    )
+
     mocker.patch("notifications.aws.send_notification")
 
     graphql_client.force_login(user)
@@ -54,16 +63,22 @@ def test_send_comment(graphql_client, user, submission, mocker):
 
 @mark.django_db
 def test_user_needs_a_ticket_to_comment(
-    graphql_client, user, submission_factory, mocker
+    graphql_client, user, submission_factory, requests_mock, settings
 ):
     submission = submission_factory()
-    mocker.patch(
-        "api.submissions.permissions.pastaporto_user_info_can_vote"
-    ).return_value = False
+    conference = submission.conference
+    requests_mock.post(
+        f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket/",
+        json={"user_has_admission_ticket": False},
+    )
 
     graphql_client.force_login(user)
 
-    resp = _send_comment(graphql_client, submission, "Hello world!")
+    with respx.mock as mock:
+        mock.post(f"{settings.ASSOCIATION_BACKEND_SERVICE}/internal-api").respond(
+            json={"data": {"userIdIsMember": False}}
+        )
+        resp = _send_comment(graphql_client, submission, "Hello world!")
 
     assert resp["errors"][0]["message"] == "You can't send a comment"
 
@@ -127,7 +142,15 @@ def test_user_can_send_comment_to_own_submission(
     assert resp["data"]["sendSubmissionComment"]["__typename"] == "SubmissionComment"
 
 
-def test_cannot_send_empty_comment(graphql_client, user, submission):
+def test_cannot_send_empty_comment(
+    graphql_client, user, submission, requests_mock, settings
+):
+    conference = submission.conference
+    requests_mock.post(
+        f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket/",
+        json={"user_has_admission_ticket": True},
+    )
+
     graphql_client.force_login(user)
 
     resp = _send_comment(graphql_client, submission, "")
