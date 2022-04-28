@@ -9,11 +9,11 @@ pytestmark = mark.django_db
 def test_user_has_admission_ticket(
     settings, has_ticket, conference_factory, requests_mock
 ):
-    settings.PRETIX_API = "http://localhost:9090"
+    settings.PRETIX_API = "http://localhost:9090/"
     conference = conference_factory()
 
     requests_mock.post(
-        f"{settings.PRETIX_API}/organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket",
+        f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket",
         json={"user_has_admission_ticket": has_ticket},
     )
 

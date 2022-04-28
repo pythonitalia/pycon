@@ -357,7 +357,7 @@ class Conference:
 
 
 def user_has_admission_ticket(
-    *, email: str, event_organizer: str, event_slug: int
+    *, email: str, event_organizer: str, event_slug: str
 ) -> bool:
     response = pretix(
         conference=Conference(

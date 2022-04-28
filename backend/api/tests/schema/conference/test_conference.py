@@ -705,9 +705,13 @@ def test_get_conference_voucher_with_invalid_code(graphql_client, conference, mo
 
 @mark.django_db
 def test_filter_submission_by_status(
-    graphql_client, submission_factory, conference, mocker, user
+    graphql_client, submission_factory, conference, user, requests_mock, settings
 ):
-    mocker.patch("voting.helpers.pastaporto_user_info_can_vote", return_value=True)
+    requests_mock.post(
+        f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket",
+        json={"user_has_admission_ticket": True},
+    )
+
     submission_factory(conference=conference, status="cancelled")
     submission_factory(conference=conference, status="proposed")
     graphql_client.force_login(user)

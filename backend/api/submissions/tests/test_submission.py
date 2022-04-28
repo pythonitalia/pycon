@@ -98,10 +98,18 @@ def test_can_edit_submission_if_cfp_is_closed(graphql_client, user, submission_f
 
 
 @mark.django_db
-def test_get_submission_comments(graphql_client, user, submission_comment_factory):
+def test_get_submission_comments(
+    graphql_client, user, submission_comment_factory, requests_mock, settings
+):
     graphql_client.force_login(user)
 
     comment = submission_comment_factory()
+    conference = comment.submission.conference
+
+    requests_mock.post(
+        f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket",
+        json={"user_has_admission_ticket": True},
+    )
 
     response = graphql_client.query(
         """
@@ -131,8 +139,19 @@ def test_get_submission_comments(graphql_client, user, submission_comment_factor
 
 @mark.django_db
 def test_get_submission_comments_returns_speaker_as_name(
-    graphql_client, user, submission, submission_comment_factory
+    graphql_client,
+    user,
+    submission,
+    submission_comment_factory,
+    requests_mock,
+    settings,
 ):
+    conference = submission.conference
+    requests_mock.post(
+        f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket",
+        json={"user_has_admission_ticket": True},
+    )
+
     graphql_client.force_login(user)
 
     comment = submission_comment_factory(
