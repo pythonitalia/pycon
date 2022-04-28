@@ -75,7 +75,7 @@ jobs:
         run: |
           pnpm version patch --no-git-tag-version
           new_version=$(node -e "console.log(require('./package.json').version);")
-          pnpm version $new_version-rc.$(date '+%s')
+          pnpm version $new_version-rc.$(date '+%s') --no-git-tag-version
       - name: Build & Publish
         id: release
         env:
