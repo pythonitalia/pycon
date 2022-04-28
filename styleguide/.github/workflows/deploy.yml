@@ -1,0 +1,116 @@
+name: Deploy Styleguide
+
+concurrency: deploy
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/**/*'
+      - 'package.json'
+  workflow_dispatch:
+    inputs:
+      comment-id:
+        description: 'The comment-id of the slash command'
+        required: true
+      event-number:
+        description: 'The event-id of the slash command'
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+          ref: ${{ github.ref }}
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          registry-url: 'https://registry.npmjs.org'
+      - name: Cache pnpm modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-
+      - uses: pnpm/action-setup@v2.1.0
+        with:
+          version: 7.0.0-rc.9
+          run_install: true
+      - name: Metadata
+        id: metadata
+        run: echo "::set-output name=commit::$(git rev-parse HEAD)"
+      - name: Find Release Comment
+        uses: peter-evans/find-comment@v1
+        id: find_comment
+        if: ${{ github.ref != 'refs/heads/main' }}
+        with:
+          token: ${{ secrets.BOT_TOKEN }}
+          issue-number: ${{ github.event.inputs.event-number }}
+          comment-author: pythonitaliabot
+          body-includes: "Pre-release"
+      - name: Create or update comment
+        id: initial-comment
+        uses: peter-evans/create-or-update-comment@v1
+        if: ${{ github.ref != 'refs/heads/main' }}
+        with:
+          token: ${{ secrets.BOT_TOKEN }}
+          comment-id: ${{ steps.find_comment.outputs.comment-id }}
+          issue-number: ${{ github.event.inputs.event-number }}
+          body: |
+            # Pre-release
+            :wave:
+
+            Releasing commit [${{ steps.metadata.outputs.commit }}] to NPM as pre-release! :package:
+          edit-mode: replace
+      - name: Update version
+        if: ${{ github.ref == 'refs/heads/main' }}
+        run: pnpm version patch --git-tag-version false --commit-hooks false
+      - name: Update to pre-release version
+        if: ${{ github.ref != 'refs/heads/main' }}
+        run: |
+          pnpm version patch --git-tag-version false --commit-hooks false
+          new_version=$(node -e "console.log(require('./package.json').version);")
+          pnpm version $new_version-rc.$(date '+%s')
+      - name: Build & Publish
+        id: release
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          pnpm publish
+          new_version=$(node -e "console.log(require('./package.json').version);")
+          echo "::set-output name=version::$new_version"
+      - name: Commit version
+        if: ${{ github.ref == 'refs/heads/main' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+        run: |
+          new_version=$(node -e "console.log(require('./package.json').version);")
+
+          git remote set-url origin https://${{ secrets.BOT_TOKEN }}@github.com/${{ github.repository }}
+          git config user.name "Python Italia [bot]"
+          git config user.email "noreply@python.it"
+          git add package.json
+          git commit -m "🔨 Publish Styleguide v$new_version [skip ci]"
+          git push
+      - name: Create or update comment
+        uses: peter-evans/create-or-update-comment@v1
+        if: ${{ github.ref != 'refs/heads/main' }}
+        with:
+          token: ${{ secrets.BOT_TOKEN }}
+          comment-id: ${{ steps.initial-comment.outputs.comment-id }}
+          issue-number: ${{ github.event.inputs.event-number }}
+          body: |
+            # Pre-release
+            :wave:
+
+            Pre-release **${{ steps.release.outputs.version }}** [${{ steps.metadata.outputs.commit }}] has been released on NPM! :rocket:
+            You can try it by doing:
+            ```shell
+            npm install pythonitalia-styleguide==${{ steps.release.outputs.version }}
+            ```
+          edit-mode: replace
