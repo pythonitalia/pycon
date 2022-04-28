@@ -3,7 +3,7 @@ from typing import List
 import strawberry
 
 from api.pretix.query import get_user_orders, get_user_tickets
-from api.pretix.types import PretixOrder, PretixOrderPosition
+from api.pretix.types import AttendeeTicket, PretixOrder
 from api.submissions.types import Submission
 from conferences.models import Conference
 from submissions.models import Submission as SubmissionModel
@@ -27,9 +27,7 @@ class User:
         return get_user_orders(conference, self.email)
 
     @strawberry.federation.field(requires=["email"])
-    def tickets(
-        self, info, conference: str, language: str
-    ) -> List[PretixOrderPosition]:
+    def tickets(self, info, conference: str, language: str) -> List[AttendeeTicket]:
         conference = Conference.objects.get(code=conference)
         return get_user_tickets(conference, self.email, language)
 

@@ -10,7 +10,7 @@ import pretix.db
 from api.pretix.constants import ASSOCIATION_CATEGORY_INTERNAL_NAME
 from conferences.models.conference import Conference
 
-from .types import PretixOrder, PretixOrderPosition, TicketItem, Voucher
+from .types import AttendeeTicket, PretixOrder, TicketItem, Voucher
 
 
 def get_voucher(conference: Conference, code: str) -> Optional[Voucher]:
@@ -35,7 +35,7 @@ def get_user_orders(conference, email):
 
 def get_user_tickets(
     conference: Conference, email: str, language: str
-) -> List[PretixOrderPosition]:
+) -> List[AttendeeTicket]:
     tickets = pretix.get_user_tickets(conference, email)
 
     if not tickets:
@@ -43,8 +43,7 @@ def get_user_tickets(
 
     categories = pretix.get_categories(conference)
     return [
-        PretixOrderPosition.from_data(ticket, language, categories)
-        for ticket in tickets
+        AttendeeTicket.from_data(ticket, language, categories) for ticket in tickets
     ]
 
 

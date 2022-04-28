@@ -219,7 +219,7 @@ class TicketItem:
 
 
 @strawberry.type
-class PretixOrderPosition:
+class AttendeeTicket:
     id: strawberry.ID
     name: str
     email: str
