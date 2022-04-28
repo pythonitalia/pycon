@@ -38,6 +38,7 @@ specifiers:
   tailwindcss-blend-mode: ^1.0.0
   ts-jest: ^27.1.4
   ts-toolbelt: '>=9.6.0 <10.0.0'
+  tslib: ^2.4.0
   typescript: ^4.6.3
   webpack: '>=4.0.0 <5.0.0 || >=5.0.0 <6.0.0'
 
@@ -81,6 +82,7 @@ devDependencies:
   tailwindcss-blend-mode: 1.0.0
   ts-jest: 27.1.4_bhpqwu5pz3vooogaqndb77zgie
   ts-toolbelt: 9.6.0
+  tslib: 2.4.0
   typescript: 4.6.3
   webpack: 4.46.0
 
@@ -3282,7 +3284,7 @@ packages:
       flat-cache: 3.0.4
       micromatch: 4.0.4
       react-docgen-typescript: 2.2.2_typescript@4.6.3
-      tslib: 2.3.1
+      tslib: 2.4.0
       typescript: 4.6.3
       webpack: 4.46.0
     transitivePeerDependencies:
@@ -4008,7 +4010,7 @@ packages:
       '@ts-type/package-dts': 1.0.58_eplkujznvbb2eteywygn2culbq
       '@types/node': 17.0.23
       pkg-dir: 5.0.0
-      tslib: 2.3.1
+      tslib: 2.4.0
       upath2: 3.1.12_@types+node@17.0.23
     transitivePeerDependencies:
       - '@types/bluebird'
@@ -4356,7 +4358,7 @@ packages:
     resolution: {integrity: sha512-O0yuUDnZeQDL+ncNGlJ78BiO4jnYI3bvMsD5prT0/nsgijG/LpNBIr63gTjVTNsiGkgQhiyCShTgxt8oXOrklA==}
     engines: {node: '>=4'}
     dependencies:
-      tslib: 2.3.1
+      tslib: 2.4.0
     dev: true
 
   /async-each/1.0.3:
@@ -5018,7 +5020,7 @@ packages:
     resolution: {integrity: sha512-gxGWBrTT1JuMx6R+o5PTXMmUnhnVzLQ9SNutD4YqKtI6ap897t3tKECYla6gCWEkplXnlNybEkZg9GEGxKFCgw==}
     dependencies:
       pascal-case: 3.1.2
-      tslib: 2.3.1
+      tslib: 2.4.0
     dev: true
 
   /camelcase-css/2.0.1:
@@ -6036,7 +6038,7 @@ packages:
     resolution: {integrity: sha512-Kv5nKlh6yRrdrGvxeJ2e5y2eRUpkUosIW4A2AS38zwSz27zu7ufDwQPi5Jhs3XAlGNetl3bmnGhQsMtkKJnj3w==}
     dependencies:
       no-case: 3.0.4
-      tslib: 2.3.1
+      tslib: 2.4.0
     dev: true
 
   /dotenv-expand/5.1.0:
@@ -6058,7 +6060,7 @@ packages:
       prop-types: 15.8.1
       react: 18.0.0
       react-is: 17.0.2
-      tslib: 2.3.1
+      tslib: 2.4.0
     dev: true
 
   /duplexify/3.7.1:
@@ -8791,7 +8793,7 @@ packages:
   /lower-case/2.0.2:
     resolution: {integrity: sha512-7fm3l3NAF9WfN6W3JOmf5drwpVqX78JtoGJ3A6W0a6ZnldM41w2fV5D490psKFTpMds8TJse/eHLFFsNHHjHgg==}
     dependencies:
-      tslib: 2.3.1
+      tslib: 2.4.0
     dev: true
 
   /lowlight/1.20.0:
@@ -9272,7 +9274,7 @@ packages:
     resolution: {integrity: sha512-fgAN3jGAh+RoxUGZHTSOLJIqUc2wmoBwGR4tbpNAKmmovFoWq0OdRkb0VkldReO2a2iBT/OEulG9XSUc10r3zg==}
     dependencies:
       lower-case: 2.0.2
-      tslib: 2.3.1
+      tslib: 2.4.0
     dev: true
 
   /node-dir/0.1.17:
@@ -9667,7 +9669,7 @@ packages:
     resolution: {integrity: sha512-RXlj7zCYokReqWpOPH9oYivUzLYZ5vAPIfEmCTNViosC78F8F0H9y7T7gG2M39ymgutxF5gcFEsyZQSph9Bp3A==}
     dependencies:
       dot-case: 3.0.4
-      tslib: 2.3.1
+      tslib: 2.4.0
     dev: true
 
   /parent-module/1.0.1:
@@ -9731,7 +9733,7 @@ packages:
     resolution: {integrity: sha512-uWlGT3YSnK9x3BQJaOdcZwrnV6hPpd8jFH1/ucpiLRPh/2zCVJKS19E4GvYHvaCcACn3foXZ0cLB9Wrx1KGe5g==}
     dependencies:
       no-case: 3.0.4
-      tslib: 2.3.1
+      tslib: 2.4.0
     dev: true
 
   /pascalcase/0.1.1:
@@ -9765,7 +9767,7 @@ packages:
   /path-is-network-drive/1.0.13:
     resolution: {integrity: sha512-Hg74mRN6mmXV+gTm3INjFK40ncAmC/Lo4qoQaSZ+GT3hZzlKdWQSqAjqyPeW0SvObP2W073WyYEBWY9d3wOm3A==}
     dependencies:
-      tslib: 2.3.1
+      tslib: 2.4.0
     dev: true
 
   /path-key/2.0.1:
@@ -9785,7 +9787,7 @@ packages:
   /path-strip-sep/1.0.10:
     resolution: {integrity: sha512-JpCy+8LAJQQTO1bQsb/84s1g+/Stm3h39aOpPRBQ/paMUGVPPZChLTOTKHoaCkc/6sKuF7yVsnq5Pe1S6xQGcA==}
     dependencies:
-      tslib: 2.3.1
+      tslib: 2.4.0
     dev: true
 
   /path-to-regexp/0.1.7:
@@ -10810,14 +10812,14 @@ packages:
       - '@types/react'
     dev: true
 
-  /react-universal-interface/0.6.2_react@18.0.0+tslib@2.3.1:
+  /react-universal-interface/0.6.2_react@18.0.0+tslib@2.4.0:
     resolution: {integrity: sha512-dg8yXdcQmvgR13RIlZbTRQOoUrDciFVoSBZILwjE2LFISxZZ8loVJKAkuzswl5js8BHda79bIb2b84ehU8IjXw==}
     peerDependencies:
       react: '*'
       tslib: '*'
     dependencies:
       react: 18.0.0
-      tslib: 2.3.1
+      tslib: 2.4.0
     dev: false
 
   /react-use/17.3.2_zpnidt7m3osuk7shl3s4oenomq:
@@ -10835,13 +10837,13 @@ packages:
       nano-css: 5.3.4_zpnidt7m3osuk7shl3s4oenomq
       react: 18.0.0
       react-dom: 18.0.0_react@18.0.0
-      react-universal-interface: 0.6.2_react@18.0.0+tslib@2.3.1
+      react-universal-interface: 0.6.2_react@18.0.0+tslib@2.4.0
       resize-observer-polyfill: 1.5.1
       screenfull: 5.2.0
       set-harmonic-interval: 1.0.1
       throttle-debounce: 3.0.1
       ts-easing: 0.2.0
-      tslib: 2.3.1
+      tslib: 2.4.0
     dev: false
 
   /react/18.0.0:
@@ -11176,7 +11178,7 @@ packages:
       resolve: 1.22.0
       rollup: 2.70.1
       source-map-js: 1.0.2
-      tslib: 2.3.1
+      tslib: 2.4.0
     dev: true
 
   /rollup-plugin-terser/7.0.2_rollup@2.70.1:
@@ -11205,7 +11207,7 @@ packages:
       fs-extra: 10.0.0
       resolve: 1.22.0
       rollup: 2.70.1
-      tslib: 2.3.1
+      tslib: 2.4.0
       typescript: 4.6.3
     transitivePeerDependencies:
       - '@types/bluebird'
@@ -12307,12 +12309,12 @@ packages:
       '@types/bluebird': 3.5.36
       '@types/node': 17.0.23
       ts-toolbelt: 9.6.0
-      tslib: 2.3.1
+      tslib: 2.4.0
       typedarray-dts: 1.0.0
     dev: true
 
-  /tslib/2.3.1:
-    resolution: {integrity: sha512-77EbyPPpMz+FRFRuAFlWMtmgUWGe9UOG2Z25NqCwiIjRhOf5iKGuzSe5P2w1laq+FkRy4p+PCuVkJSGkzTEKVw==}
+  /tslib/2.4.0:
+    resolution: {integrity: sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==}
 
   /tty-browserify/0.0.0:
     resolution: {integrity: sha1-oVe6QC2iTpv5V/mqadUk7tQpAaY=}
@@ -12547,7 +12549,7 @@ packages:
       '@types/node': 17.0.23
       path-is-network-drive: 1.0.13
       path-strip-sep: 1.0.10
-      tslib: 2.3.1
+      tslib: 2.4.0
     dev: true
 
   /uri-js/4.2.2:
