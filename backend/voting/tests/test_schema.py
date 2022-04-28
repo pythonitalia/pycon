@@ -9,7 +9,7 @@ def test_get_logged_user_vote_on_a_submission(
     conference = vote.submission.conference
 
     requests_mock.post(
-        f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket",
+        f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket/",
         json={"user_has_admission_ticket": True},
     )
 
@@ -65,7 +65,7 @@ def test_get_my_vote_when_the_user_never_voted(
     conference = submission.conference
 
     requests_mock.post(
-        f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket",
+        f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket/",
         json={"user_has_admission_ticket": True},
     )
 

@@ -13,7 +13,7 @@ def test_user_has_admission_ticket(
     conference = conference_factory()
 
     requests_mock.post(
-        f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket",
+        f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket/",
         json={"user_has_admission_ticket": has_ticket},
     )
 

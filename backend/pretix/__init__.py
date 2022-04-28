@@ -363,7 +363,7 @@ def user_has_admission_ticket(
         conference=Conference(
             pretix_organizer_id=event_organizer, pretix_event_id=event_slug
         ),
-        endpoint="tickets/attendee-has-ticket",
+        endpoint="tickets/attendee-has-ticket/",
         method="post",
         json={
             "attendee_email": email,
@@ -376,6 +376,7 @@ def user_has_admission_ticket(
             ],
         },
     )
+
     response.raise_for_status()
     data = response.json()
     return data["user_has_admission_ticket"]

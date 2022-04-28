@@ -57,7 +57,7 @@ def test_submit_vote(
     submission = submission_factory(conference=conference)
 
     requests_mock.post(
-        f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket",
+        f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket/",
         json={"user_has_admission_ticket": True},
     )
 
@@ -79,7 +79,7 @@ def test_reject_vote_when_voting_is_not_open(
 
     conference = conference_factory()
     requests_mock.post(
-        f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket",
+        f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket/",
         json={"user_has_admission_ticket": True},
     )
 
@@ -100,7 +100,7 @@ def test_user_can_vote_different_submissions(
 
     conference = conference_factory(active_voting=True)
     requests_mock.post(
-        f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket",
+        f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket/",
         json={"user_has_admission_ticket": True},
     )
 
@@ -132,7 +132,7 @@ def test_updating_vote_when_user_votes_the_same_submission(
     conference = conference_factory(active_voting=True)
 
     requests_mock.post(
-        f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket",
+        f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket/",
         json={"user_has_admission_ticket": True},
     )
 
@@ -161,7 +161,7 @@ def test_cannot_vote_without_a_ticket_or_membership(
     conference = submission.conference
 
     requests_mock.post(
-        f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket",
+        f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket/",
         json={"user_has_admission_ticket": False},
     )
 

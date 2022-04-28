@@ -42,7 +42,7 @@ def test_send_comment(
 ):
     conference = submission.conference
     requests_mock.post(
-        f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket",
+        f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket/",
         json={"user_has_admission_ticket": True},
     )
 
@@ -68,7 +68,7 @@ def test_user_needs_a_ticket_to_comment(
     submission = submission_factory()
     conference = submission.conference
     requests_mock.post(
-        f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket",
+        f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket/",
         json={"user_has_admission_ticket": False},
     )
 
@@ -147,7 +147,7 @@ def test_cannot_send_empty_comment(
 ):
     conference = submission.conference
     requests_mock.post(
-        f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket",
+        f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket/",
         json={"user_has_admission_ticket": True},
     )
 

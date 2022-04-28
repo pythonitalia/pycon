@@ -107,7 +107,7 @@ def test_get_submission_comments(
     conference = comment.submission.conference
 
     requests_mock.post(
-        f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket",
+        f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket/",
         json={"user_has_admission_ticket": True},
     )
 
@@ -148,7 +148,7 @@ def test_get_submission_comments_returns_speaker_as_name(
 ):
     conference = submission.conference
     requests_mock.post(
-        f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket",
+        f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket/",
         json={"user_has_admission_ticket": True},
     )
 

@@ -708,7 +708,7 @@ def test_filter_submission_by_status(
     graphql_client, submission_factory, conference, user, requests_mock, settings
 ):
     requests_mock.post(
-        f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket",
+        f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket/",
         json={"user_has_admission_ticket": True},
     )
 
