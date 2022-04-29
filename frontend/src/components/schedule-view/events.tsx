@@ -267,6 +267,7 @@ export const ScheduleEntry: React.SFC<{
             <LanguageIcon
               sx={{
                 width: 30,
+                flexShrink: 0,
               }}
             />
           )}
