@@ -56,7 +56,7 @@ export const SocialCard = () => {
               mb: 3,
             }}
           >
-            {talk.speakers.map((speaker) => speaker.fullName).join("&")}
+            {talk.speakers.map((speaker) => speaker.fullName).join(" & ")}
           </Text>
 
           <Heading
