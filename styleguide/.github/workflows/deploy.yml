@@ -7,15 +7,15 @@ on:
     branches:
       - main
     paths:
-      - 'src/**/*'
-      - 'package.json'
+      - "src/**/*"
+      - "package.json"
   workflow_dispatch:
     inputs:
       comment-id:
-        description: 'The comment-id of the slash command'
+        description: "The comment-id of the slash command"
         required: true
       event-number:
-        description: 'The event-id of the slash command'
+        description: "The event-id of the slash command"
         required: true
 
 jobs:
@@ -29,7 +29,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-          registry-url: 'https://registry.npmjs.org'
+          registry-url: "https://registry.npmjs.org"
       - name: Cache pnpm modules
         uses: actions/cache@v2
         with:
@@ -81,7 +81,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          pnpm publish --tag fromJSON('["pr", "latest"]')[github.ref == 'refs/heads/main'] --no-git-checks
+          pnpm publish --tag ${{ fromJSON('["pr", "latest"]')[github.ref == 'refs/heads/main'] }} --no-git-checks
           new_version=$(node -e "console.log(require('./package.json').version);")
           echo "::set-output name=version::$new_version"
       - name: Commit version
