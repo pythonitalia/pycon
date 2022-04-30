@@ -6,7 +6,12 @@ export default {
   title: "Speaker Square",
 };
 
-const Template = (args: any) => <SpeakerSquare {...args} />;
+const Template = (args: any) => (
+  <SpeakerSquare
+    {...args}
+    linkWrapper={args.url ? <a href={args.url} /> : null}
+  />
+);
 
 export const Primary = Template.bind({});
 
