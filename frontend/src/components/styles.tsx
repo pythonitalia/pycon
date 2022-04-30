@@ -29,6 +29,7 @@ export const GlobalStyles = (): React.ReactElement => (
         },
       ".article ol, .article ul, .article li": {
         paddingLeft: "1em",
+        listStyleType: "disc",
       },
     })}
   />
