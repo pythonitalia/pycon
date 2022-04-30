@@ -113,7 +113,7 @@ export const Carousel = ({ title, children }: Props) => {
           </div>
         </div>
       </div>
-      <div className="relative flex-1 w-full mx-auto max-w-7xl border-b-4 border-black">
+      <div className="relative flex-1 w-full mx-auto max-w-7xl">
         <ArrowButton onClick={previous} className="pr-16 -left-28" />
 
         <div className="w-full overflow-hidden border-l-4 border-black">
@@ -143,6 +143,7 @@ export const Carousel = ({ title, children }: Props) => {
           direction="right"
         />
       </div>
+      <div className="border-b-4 border-black" />
     </div>
   );
 };
