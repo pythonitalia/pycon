@@ -1,13 +1,11 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
+import { Carousel, SpeakerSquare } from "@python-italia/pycon-styleguide";
 import { jsx } from "theme-ui";
 
 import { useCurrentLanguage } from "~/locale/context";
 import { useKeynotesSectionQuery } from "~/types";
-
-import { GridSlider } from "../grid-slider";
-import { KeynoteSlide } from "./keynote-slide";
 
 export const KeynotersSection = () => {
   const language = useCurrentLanguage();
@@ -27,6 +25,21 @@ export const KeynotersSection = () => {
   } = data;
 
   return (
-    <GridSlider title="Keynoters" items={keynotes} Component={KeynoteSlide} />
+    <div
+      sx={{
+        borderTop: "primary",
+      }}
+    >
+      <Carousel title="Keynoters">
+        {keynotes.map((keynote, index) => (
+          <SpeakerSquare
+            key={index}
+            name={keynote.speakers[0].name}
+            subtitle={keynote.title}
+            portraitUrl={keynote.speakers[0].photo}
+          />
+        ))}
+      </Carousel>
+    </div>
   );
 };
