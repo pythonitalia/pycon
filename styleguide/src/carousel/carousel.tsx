@@ -96,21 +96,24 @@ export const Carousel = ({ title, children }: Props) => {
 
   return (
     <div>
-      <div className="border-b-4 border-black">
+      <div className="border-y-4 border-black">
         <div className="flex px-8 py-8 mx-auto max-w-7xl">
           <Title marginBottom={false}>{title}</Title>
 
           <div className="flex ml-auto 2xl:hidden">
-            <button className="flex h-full py-4" onClick={previous}>
+            <button
+              className="flex items-center h-full py-4"
+              onClick={previous}
+            >
               <LeftArrow className="h-5" />
             </button>
-            <button className="flex h-full py-4" onClick={next}>
+            <button className="flex items-center h-full py-4" onClick={next}>
               <RightArrow className="h-5" />
             </button>
           </div>
         </div>
       </div>
-      <div className="relative flex-1 w-full mx-auto max-w-7xl">
+      <div className="relative flex-1 w-full mx-auto max-w-7xl border-b-4 border-black">
         <ArrowButton onClick={previous} className="pr-16 -left-28" />
 
         <div className="w-full overflow-hidden border-l-4 border-black">
@@ -123,17 +126,15 @@ export const Carousel = ({ title, children }: Props) => {
               } as any
             }
           >
-            {React.Children.map(children, (child, index) => {
-              return (
-                <div className="flex-shrink-0 w-full md:w-1/4">
-                  <div className="border-r-4 border-black aspect-w-1 aspect-h-1">
-                    {React.cloneElement(child as React.ReactElement, {
-                      className: `bg-${COLORS[index % COLORS.length]}`,
-                    })}
-                  </div>
+            {React.Children.map(children, (child, index) => (
+              <div className="flex-shrink-0 w-full md:w-1/4">
+                <div className="border-r-4 border-black aspect-w-1 aspect-h-1">
+                  {React.cloneElement(child as React.ReactElement, {
+                    className: `bg-${COLORS[index % COLORS.length]}`,
+                  })}
                 </div>
-              );
-            })}
+              </div>
+            ))}
           </div>
         </div>
         <ArrowButton

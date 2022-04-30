@@ -6,9 +6,9 @@ export default {
   title: "Carousel",
 };
 
-export const Standard = () => (
+export const Standard = ({ items }) => (
   <Carousel title="The speakers">
-    {new Array(10).fill(null).map((_, index) => (
+    {new Array(items).fill(null).map((_, index) => (
       <SpeakerSquare
         key={index}
         name={`Speaker ${index + 1}`}
@@ -19,3 +19,7 @@ export const Standard = () => (
     ))}
   </Carousel>
 );
+
+Standard.args = {
+  items: 10,
+};
