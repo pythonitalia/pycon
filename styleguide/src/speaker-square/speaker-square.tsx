@@ -21,7 +21,7 @@ export const SpeakerSquare = ({
         src={portraitUrl}
         className="absolute top-0 left-0 w-full h-full filter grayscale brightness-75 object-cover"
       />
-      <Wrapper href={url}>
+      <Wrapper href={url} className="aspect-w-1 aspect-h-1">
         <div
           className={clsx(
             "absolute top-0 left-0 w-full h-full opacity-50 blend-lighten",
