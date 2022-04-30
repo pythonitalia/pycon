@@ -131,6 +131,7 @@ export const theme: Theme = {
   links: {
     heading: {
       color: "text",
+      fontSize: 5,
     },
     header: {
       color: "white",
