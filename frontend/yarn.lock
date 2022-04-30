@@ -2025,10 +2025,10 @@
     eslint-plugin-testing-library "^4.10.1"
     typescript "^4.3.5"
 
-"@python-italia/pycon-styleguide@0.1.49-rcefe07162d0aafceda953d99a71393e8a1d6fb774":
-  version "0.1.49-rcefe07162d0aafceda953d99a71393e8a1d6fb774"
-  resolved "https://registry.yarnpkg.com/@python-italia/pycon-styleguide/-/pycon-styleguide-0.1.49-rcefe07162d0aafceda953d99a71393e8a1d6fb774.tgz#3ea7b2d56c48729775a06f4724e473d78ea7ab5b"
-  integrity sha512-Zo9yopd4ZDEtHUn1TFFK7JvCOGjfLBfw8493tFxSlrkkDVoZzs6JU9gposa0LqG0TYlSRB+Zppsm1JzbOGM0cQ==
+"@python-italia/pycon-styleguide@0.1.49":
+  version "0.1.49"
+  resolved "https://registry.yarnpkg.com/@python-italia/pycon-styleguide/-/pycon-styleguide-0.1.49.tgz#3894e32c2e7304b62ff2cb3076c8e320d3b1c5b4"
+  integrity sha512-SWAXSbGM4/8MKfqHmeBB/QQFDnRXHV22fMwAAw8ktnc9CNpcfeSF3u7g/X2Xwb1MY4Oq9nydiF+/hj3eLF1DRQ==
   dependencies:
     "@python-italia/pycon-styleguide" "^0.1.43"
     clsx "^1.1.1"

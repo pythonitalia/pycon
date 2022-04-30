@@ -250,6 +250,7 @@ export const theme: Theme = {
       color: "violet",
     },
     heading: {
+      fontSize: 5,
       fontFamily: "heading",
       fontWeight: "heading",
       lineHeight: "heading",

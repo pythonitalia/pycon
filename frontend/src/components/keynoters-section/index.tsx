@@ -25,21 +25,15 @@ export const KeynotersSection = () => {
   } = data;
 
   return (
-    <div
-      sx={{
-        borderTop: "primary",
-      }}
-    >
-      <Carousel title="Keynoters">
-        {keynotes.map((keynote, index) => (
-          <SpeakerSquare
-            key={index}
-            name={keynote.speakers[0].name}
-            subtitle={keynote.title}
-            portraitUrl={keynote.speakers[0].photo}
-          />
-        ))}
-      </Carousel>
-    </div>
+    <Carousel title="Keynoters">
+      {keynotes.map((keynote, index) => (
+        <SpeakerSquare
+          key={index}
+          name={keynote.speakers[0].name}
+          subtitle={keynote.title}
+          portraitUrl={keynote.speakers[0].photo}
+        />
+      ))}
+    </Carousel>
   );
 };
