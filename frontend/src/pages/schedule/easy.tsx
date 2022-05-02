@@ -78,7 +78,6 @@ const EasyViewSchedule = () => {
                   <ul
                     sx={{
                       my: 3,
-
                       listStyleType: "none",
                     }}
                   >
@@ -129,27 +128,29 @@ const EasyViewSchedule = () => {
                                   }}
                                 />
                               </div>
-                              <div>
-                                <Text as="span" sx={{ fontWeight: "bold" }}>
-                                  <FormattedMessage
-                                    defaultMessage="Type"
-                                    id="scheduleEasy.type"
-                                  />
-                                </Text>
-                                :{" "}
-                                {item.rooms[0].type === "talk" && (
-                                  <FormattedMessage
-                                    defaultMessage="Talk"
-                                    id="scheduleEasy.type.talk"
-                                  />
-                                )}
-                                {item.rooms[0].type === "training" && (
-                                  <FormattedMessage
-                                    defaultMessage="Workshop / Training"
-                                    id="scheduleEasy.type.workshop"
-                                  />
-                                )}
-                              </div>
+                              {item.type !== "custom" && (
+                                <div>
+                                  <Text as="span" sx={{ fontWeight: "bold" }}>
+                                    <FormattedMessage
+                                      defaultMessage="Type"
+                                      id="scheduleEasy.type"
+                                    />
+                                  </Text>
+                                  :{" "}
+                                  {item.rooms[0].type === "talk" && (
+                                    <FormattedMessage
+                                      defaultMessage="Talk"
+                                      id="scheduleEasy.type.talk"
+                                    />
+                                  )}
+                                  {item.rooms[0].type === "training" && (
+                                    <FormattedMessage
+                                      defaultMessage="Workshop / Training"
+                                      id="scheduleEasy.type.workshop"
+                                    />
+                                  )}
+                                </div>
+                              )}
                               {item.speakers.length > 0 && (
                                 <div>
                                   <Text as="span" sx={{ fontWeight: "bold" }}>
