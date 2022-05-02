@@ -68,7 +68,7 @@ type LinkProps = {
   params?: ParsedUrlQuery;
   external?: boolean;
   rel?: string;
-  noHover: boolean;
+  noHover?: boolean;
 };
 
 export const Link: React.FC<LinkProps> = ({
