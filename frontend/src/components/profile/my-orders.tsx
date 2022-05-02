@@ -53,6 +53,9 @@ export const MyOrders: React.FC<Props> = ({ orders }) => {
               href={item.url}
               target="_blank"
               rel="noopener noreferrer"
+              sx={{
+                textDecoration: "underline",
+              }}
             >
               <FormattedMessage id="profile.manageOrder" />
             </a>,

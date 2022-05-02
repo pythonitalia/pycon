@@ -59,7 +59,13 @@ export const MySubmissions: React.FC<Props> = ({ className }) => {
               item.title,
               item.topic.name,
               item.type.name,
-              <Link key="openSubmission" path={`/submission/${item.id}`}>
+              <Link
+                key="openSubmission"
+                path={`/submission/${item.id}`}
+                sx={{
+                  textDecoration: "underline",
+                }}
+              >
                 {viewSubmissionHeader}
               </Link>,
             ]}
