@@ -62,6 +62,9 @@ export const Footer = () => {
           px: 3,
           mt: "auto",
           zIndex: "footer",
+          "@media print": {
+            display: "none",
+          },
         } as any
       }
     >

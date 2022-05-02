@@ -105,7 +105,7 @@ export const Submission = ({
   );
 };
 
-const getItemUrl = (item: Item) => {
+export const getItemUrl = (item: Item) => {
   if (
     item.type === "submission" ||
     item.type === "training" ||
