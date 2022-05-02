@@ -60,7 +60,7 @@ data "aws_route53_zone" "pycon_zone" {
 }
 
 resource "aws_route53_record" "cdn_record" {
-  zone_id = data.aws_route53_zone.zone.zone_id
+  zone_id = data.aws_route53_zone.pycon_zone.zone_id
   name    = local.cdn_domain
   type    = "A"
 
