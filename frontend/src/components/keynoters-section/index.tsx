@@ -7,6 +7,8 @@ import { jsx } from "theme-ui";
 import { useCurrentLanguage } from "~/locale/context";
 import { useKeynotesSectionQuery } from "~/types";
 
+import { Link } from "../link";
+
 export const KeynotersSection = () => {
   const language = useCurrentLanguage();
   const { data } = useKeynotesSectionQuery({
@@ -32,7 +34,7 @@ export const KeynotersSection = () => {
           name={keynote.speakers[0].name}
           subtitle={keynote.title}
           portraitUrl={keynote.speakers[0].photo}
-          url={`/keynotes/${keynote.slug}/`}
+          linkWrapper={<Link noHover path={`/keynotes/${keynote.slug}/`} />}
         />
       ))}
     </Carousel>
