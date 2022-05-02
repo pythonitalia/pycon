@@ -60,8 +60,8 @@ resource "aws_route53_record" "cdn_record" {
   type    = "A"
 
   alias {
-    name                   = aws_cloudfront_distribution.application.domain_name
-    zone_id                = aws_cloudfront_distribution.application.hosted_zone_id
+    name                   = aws_cloudfront_distribution.media_cdn.domain_name
+    zone_id                = aws_cloudfront_distribution.media_cdn.hosted_zone_id
     evaluate_target_health = false
   }
 }
