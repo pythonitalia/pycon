@@ -183,6 +183,7 @@ export const theme: Theme = {
     buttonFullWidth: {
       variant: "links.arrow-button",
       border: "primary",
+      borderColor: "black",
       backgroundColor: "yellow",
       width: "100%",
       textAlign: "center",

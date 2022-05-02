@@ -3,7 +3,7 @@
 /** @jsx jsx */
 import React, { Fragment, useCallback, useState } from "react";
 import { FormattedMessage } from "react-intl";
-import { Box, Grid, Heading, jsx, Text } from "theme-ui";
+import { Flex, Box, Grid, Heading, jsx, Text } from "theme-ui";
 
 import { EnglishIcon } from "~/components/icons/english";
 import { ItalianIcon } from "~/components/icons/italian";
@@ -259,7 +259,7 @@ export const SubmissionAccordion = ({
             <Box />
           )}
 
-          <Box
+          <Flex
             sx={{
               textAlign: "right",
               py: 3,
@@ -281,7 +281,7 @@ export const SubmissionAccordion = ({
                 }}
               />
             )}
-          </Box>
+          </Flex>
 
           <Text
             sx={{

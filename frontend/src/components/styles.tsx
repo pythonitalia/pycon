@@ -31,6 +31,28 @@ export const GlobalStyles = (): React.ReactElement => (
         paddingLeft: "1em",
         listStyleType: "disc",
       },
+      ".article h1, .article h2, .article h3, .article h4, .article h5, .article h6":
+        {
+          fontWeight: "bold",
+        },
+      ".article h1": {
+        fontSize: "2rem",
+      },
+      ".article h2": {
+        fontSize: "1.5rem",
+      },
+      ".article h3": {
+        fontSize: "1.1rem",
+      },
+      ".article h4": {
+        fontSize: "1rem",
+      },
+      ".article h5": {
+        fontSize: "0.8rem",
+      },
+      ".article h6": {
+        fontSize: "0.8rem",
+      },
     })}
   />
 );
