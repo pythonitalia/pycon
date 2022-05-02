@@ -13,7 +13,12 @@ resource "aws_cloudfront_distribution" "media_cdn" {
     domain_name = aws_s3_bucket.backend_media.bucket_regional_domain_name
     origin_id   = "default"
 
-    s3_origin_config {}
+    custom_origin_config {
+      origin_protocol_policy = "https-only"
+      http_port              = "80"
+      https_port             = "443"
+      origin_ssl_protocols   = ["TLSv1"]
+    }
   }
 
   viewer_certificate {
