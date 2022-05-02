@@ -121,6 +121,9 @@ export const Header = () => {
             borderBottom: open ? "primary" : "",
             backgroundColor: open ? "orange" : "",
             overflowY: open ? "scroll" : "initial",
+            "@media print": {
+              display: "none",
+            },
           } as any
         }
       >

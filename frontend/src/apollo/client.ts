@@ -136,13 +136,13 @@ export const getApolloClient = (initialState = null) => {
   return cachedClient;
 };
 
-export function addApolloState(client, pageProps) {
+export function addApolloState(client, pageProps, revalidate = 30) {
   if (pageProps?.props) {
     pageProps.props[APOLLO_STATE_PROP_NAME] = client.cache.extract();
   }
 
   return {
     ...pageProps,
-    revalidate: 30,
+    revalidate,
   };
 }

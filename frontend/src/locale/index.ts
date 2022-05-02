@@ -1038,6 +1038,19 @@ export const messages = {
     "talk.buyATicket": "Devi acquistare un biglietto per registrarti: {link}",
     "talk.buyATicketCTA": "Biglietti",
     "talk.eventIsFull": "Nessun posto rimasto",
+
+    "scheduleEasy.title": "Titolo",
+    "scheduleEasy.day": "Giorno {day}",
+    "scheduleEasy.duration": "Durata",
+    "scheduleEasy.when": "Data/Orario",
+    "scheduleEasy.rooms": "Stanza/e",
+    "scheduleEasy.type": "Tipo",
+    "scheduleEasy.durationText": "{duration} minuti",
+    "scheduleEasy.language": "Lingua",
+    "scheduleEasy.requiresBooking": "🚨 Prenotazione richiesta",
+    "scheduleEasy.saveAsPdf": "Salva come pdf / stampa",
+    "scheduleEasy.bookingInstructions":
+      "Questo evento ha capacità limitata. Usa il link sotto per prenotarti.",
   },
 };
 
