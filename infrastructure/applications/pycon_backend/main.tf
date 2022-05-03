@@ -5,6 +5,7 @@ locals {
   users_backend_url       = local.is_prod ? "https://users-api.python.it" : "https://${terraform.workspace}-users-api.python.it"
   association_backend_url = local.is_prod ? "https://association-api.python.it" : "https://${terraform.workspace}-association-api.python.it"
   db_connection           = local.is_prod ? "postgres://${data.aws_db_instance.database.master_username}:${module.common_secrets.value.database_password}@${data.aws_db_proxy.proxy[0].endpoint}:${data.aws_db_instance.database.port}/${data.aws_db_instance.database.db_name}" : "postgres://${data.aws_db_instance.database.master_username}:${module.common_secrets.value.database_password}@${data.aws_db_instance.database.address}:${data.aws_db_instance.database.port}/${data.aws_db_instance.database.db_name}"
+  cdn_url                 = local.is_prod ? "cdn.pycon.it" : "${terraform.workspace}-cdn.pycon.it"
 }
 
 data "aws_vpc" "default" {
@@ -74,6 +75,7 @@ module "lambda" {
     PYTHONIT_EMAIL_BACKEND                        = "pythonit_toolkit.emails.backends.ses.SESEmailBackend"
     FRONTEND_URL                                  = "https://pycon.it"
     PRETIX_API                                    = "https://tickets.pycon.it/api/v1/"
+    AWS_S3_CUSTOM_DOMAIN                          = local.cdn_url
     PRETIX_API_TOKEN                              = module.common_secrets.value.pretix_api_token
     PINPOINT_APPLICATION_ID                       = module.secrets.value.pinpoint_application_id
     SOCIAL_AUTH_GOOGLE_OAUTH2_KEY                 = module.secrets.value.google_oauth2_key
