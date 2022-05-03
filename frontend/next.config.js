@@ -71,8 +71,8 @@ module.exports = withSourceMaps({
   },
   images: {
     domains: [
-      "pastaporto-pycon-backend-media.s3.amazonaws.com",
-      "production-pycon-backend-media.s3.amazonaws.com",
+      "pastaporto-cdn.pycon.it",
+      "cdn.pycon.it",
       "localhost",
       "pycon-backend",
     ],
