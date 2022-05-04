@@ -131,6 +131,7 @@ export const LoginForm: React.SFC<FormProps> = ({ next, ...props }) => {
             sx={{
               display: "block",
               mb: 4,
+              textDecoration: "underline",
             }}
             path="/signup"
           >
@@ -155,6 +156,7 @@ export const LoginForm: React.SFC<FormProps> = ({ next, ...props }) => {
             sx={{
               display: "block",
               mb: 4,
+              textDecoration: "underline",
             }}
             path="/reset-password"
           >

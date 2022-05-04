@@ -122,6 +122,7 @@ export const SignupForm: React.SFC = () => {
             sx={{
               display: "block",
               mb: 4,
+              textDecoration: "underline",
             }}
             path={`/login/`}
           >
@@ -145,15 +146,6 @@ export const SignupForm: React.SFC = () => {
             <FormattedMessage id="signup.signupButton" />
           </Button>
         </form>
-        {/* <Box>
-          <Text mb={4} as="h2">
-            <FormattedMessage id="signup.signupWithSocial" />
-          </Text>
-
-          <Link external={true} path="/login/google/" variant="google">
-            <FormattedMessage id="signup.useGoogle" />
-          </Link>
-        </Box> */}
       </Grid>
     </Box>
   );
