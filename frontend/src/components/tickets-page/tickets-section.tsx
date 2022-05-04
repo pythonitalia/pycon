@@ -140,7 +140,16 @@ export const TicketsSection = ({
               id="tickets.covid19explanation"
               values={{
                 br: <br />,
-                linkcovid: <Link path="/covid-19">COVID-19</Link>,
+                linkcovid: (
+                  <Link
+                    sx={{
+                      textDecoration: "underline",
+                    }}
+                    path="/covid-19"
+                  >
+                    COVID-19
+                  </Link>
+                ),
               }}
             />
           </span>
