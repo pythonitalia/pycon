@@ -62,7 +62,7 @@ const Links = ({
       const path = link.href;
 
       return (
-        <Link variant="header" path={path} key={link.href} params={link.page}>
+        <Link variant="header" path={path} key={link.href}>
           {link.title}
         </Link>
       );
