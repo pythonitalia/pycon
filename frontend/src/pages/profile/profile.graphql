@@ -37,6 +37,7 @@ query MyProfile($conference: String!, $language: String!) {
           id
           answer {
             answer
+            options
           }
           name
           options {

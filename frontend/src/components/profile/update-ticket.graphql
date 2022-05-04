@@ -1,0 +1,9 @@
+mutation UpdateTicket(
+  $conference: String!
+  $input: UpdateAttendeeTicketInput!
+) {
+  __typename
+  updateAttendeeTicket(conference: $conference, input: $input) {
+    ok
+  }
+}

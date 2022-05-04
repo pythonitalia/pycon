@@ -15,6 +15,7 @@ type Props = {
   tickets: Ticket[];
   selectedProducts: SelectedProducts;
   onNextStep: () => void;
+  nextStepMessageId?: string;
   updateQuestionAnswer: (data: {
     id: string;
     index: number;
@@ -36,13 +37,13 @@ export const QuestionsSection: React.SFC<Props> = ({
   onNextStep,
   updateQuestionAnswer,
   updateTicketInfo,
+  nextStepMessageId = "order.nextStep",
   showHeading = true,
 }) => {
   const productsById = Object.fromEntries(
     tickets.map((product) => [product.id, product]),
   );
-  // console.log(productsById);
-  // console.log(selectedProducts);
+
   const onSubmit = useCallback((e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onNextStep();
@@ -51,9 +52,7 @@ export const QuestionsSection: React.SFC<Props> = ({
   useEffect(() => {
     Object.values(selectedProducts).forEach((products) => {
       products.forEach((selectedProductInfo, index) => {
-        console.log("selecdedProductInfo.id: ", selectedProductInfo.id);
         const product = productsById[selectedProductInfo.id];
-        console.log("product", product);
         product.questions
           .filter((question) => question.options.length > 0)
           .forEach((question) => {
@@ -96,20 +95,13 @@ export const QuestionsSection: React.SFC<Props> = ({
             <Box key={id}>
               {products.map((selectedProductInfo, index) => {
                 const product = productsById[selectedProductInfo.id];
-                // console.log("selectedProductInfo", selectedProductInfo);
-                console.log("product", product);
+
                 if (product.questions.length === 0) {
                   return null;
                 }
 
                 const answers = selectedProductInfo.answers;
-                console.log("answers: ", answers);
-                console.log(
-                  "selectedProductInfo.attendeeName",
-                  selectedProductInfo.attendeeName,
-                );
-                console.log("product.questions", product.questions);
-                console.log("int", parseInt(product.questions[0].id));
+
                 return (
                   <Box key={`${id}${index}`}>
                     <Heading as="h2" sx={{ mb: 2 }}>
@@ -176,7 +168,7 @@ export const QuestionsSection: React.SFC<Props> = ({
                                   answer: e.target.value,
                                 })
                               }
-                              value={answers[parseInt(question.id)]}
+                              value={answers[question.id]}
                             />
                           ) : (
                             <Select
@@ -210,7 +202,7 @@ export const QuestionsSection: React.SFC<Props> = ({
           ))}
 
           <Button>
-            <FormattedMessage id="order.nextStep" />
+            <FormattedMessage id={nextStepMessageId} />
           </Button>
         </form>
       </Box>

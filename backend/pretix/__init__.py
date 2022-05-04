@@ -7,6 +7,7 @@ import requests
 import strawberry
 from django.conf import settings
 
+from api.pretix.types import UpdateAttendeeTicketInput
 from conferences.models.conference import Conference
 from hotels.models import HotelRoom
 from pretix.types import Category, Question, Quota
@@ -30,6 +31,7 @@ def pretix(
     method="get",
     **kwargs,
 ):
+    print(get_api_url(conference, endpoint))
     return requests.request(
         method,
         get_api_url(conference, endpoint),
@@ -383,4 +385,19 @@ def get_user_tickets(conference: Conference, email: str):
         },
     )
 
+    return response.json()
+
+
+def update_ticket(conference: Conference, attendee_ticket: UpdateAttendeeTicketInput):
+    print("Updating Ticket")
+    print(attendee_ticket)
+
+    print(attendee_ticket.to_json())
+    response = pretix(
+        conference=conference,
+        endpoint=f"orderpositions/{attendee_ticket.id}/",
+        method="PATCH",
+        data=attendee_ticket.to_json(),
+    )
+    print(response.content)
     return response.json()

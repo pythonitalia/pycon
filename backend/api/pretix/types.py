@@ -80,6 +80,7 @@ class Option:
 @strawberry.type
 class Answer:
     answer: str
+    options: Optional[List[str]]
 
     @classmethod
     def from_data(cls, data: QuestionDict, language: str) -> Answer:
@@ -94,11 +95,11 @@ class Answer:
             options_answers = [
                 _get_by_language(option, "answer", language) for option in options
             ]
-            return cls(answer=", ".join(options_answers))
+            return cls(
+                answer=", ".join(options_answers), options=data["answer_options"]
+            )
 
-        return cls(
-            answer=data["answer"],
-        )
+        return cls(answer=data["answer"], options=[])
 
 
 @strawberry.type
@@ -258,3 +259,32 @@ class Voucher:
     max_usages: int
     price_mode: str
     variation_id: Optional[strawberry.ID]
+
+
+@strawberry.input
+class AnswerInput:
+    answer: str
+    question: strawberry.ID
+    options: Optional[List[strawberry.ID]] = None
+
+    def to_json(self):
+        data = {"answer": self.answer, "question": self.question}
+        if self.options:
+            data["options"] = self.options
+
+        return data
+
+
+@strawberry.input
+class UpdateAttendeeTicketInput:
+    id: strawberry.ID
+    name: str
+    email: str
+    answers: List[AnswerInput]
+
+    def to_json(self):
+        return {
+            "attendee_email": self.email,
+            "attendee_name": self.name,
+            "answers": [answer.to_json() for answer in self.answers],
+        }

@@ -21,18 +21,6 @@ export const Modal: React.FC<ModalProps> = ({
           zIndex: "20",
           inset: 0,
           display: show ? "block" : "none",
-          // border: "3px solid red",
-
-          // width: "500px",
-          // background: "gray",
-          // opacity: 0.75,
-          // border: "1px solid #ccc",
-          // transition: "1.1s ease-out",
-          // boxShadow: "-2rem 2rem 2rem rgba(0, 0, 0, 0.2)",
-          // filter: "blur(0)",
-          // transform: "scale(1)",
-          // opacity: 1,
-          // visibility: "visible",
         } as any
       }
       role="dialog"
@@ -44,8 +32,6 @@ export const Modal: React.FC<ModalProps> = ({
           justifyContent: "center",
           minHeight: "100vh",
           paddingX: 4,
-          // textAlign: "center",
-          // border: "3px solid green",
         }}
       >
         <Box
@@ -55,8 +41,6 @@ export const Modal: React.FC<ModalProps> = ({
             transition: "opacity 150ms cubic-bezier(0.4, 0, 0.2, 1)",
             bg: "gray",
             opacity: 0.75,
-
-            // border: "5px dotted violet",
           }}
           onClick={onClose}
         ></Box>
@@ -83,15 +67,19 @@ export const Modal: React.FC<ModalProps> = ({
               justifyContent: "right",
               width: "80%",
               maxWidth: "container",
-              // minHeight: "100vh",
               paddingX: 4,
               textAlign: "right",
-              // border: "1px solid green",
+              border: "1px solid green",
               paddingY: 3,
-              cursor: "pointer",
             }}
           >
-            <Button variant="plus" onClick={onClose}>
+            <Button
+              variant="plus"
+              sx={{
+                cursor: "pointer",
+              }}
+              onClick={onClose}
+            >
               x
             </Button>
           </Box>
