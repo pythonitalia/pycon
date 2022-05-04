@@ -4,7 +4,7 @@
 import { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
-import { Box, Grid, Input, jsx, Text } from "theme-ui";
+import { Box, Grid, Input, jsx, Heading } from "theme-ui";
 
 import Router, { useRouter } from "next/router";
 
@@ -109,9 +109,9 @@ export const LoginForm: React.SFC<FormProps> = ({ next, ...props }) => {
             login({ variables: { input: formState.values } });
           }}
         >
-          <Text mb={4} as="h2">
+          <Heading mb={4} as="h2">
             <FormattedMessage id="login.loginWithEmail" />
-          </Text>
+          </Heading>
 
           <InputWrapper
             sx={{ mb: 0 }}
@@ -131,6 +131,7 @@ export const LoginForm: React.SFC<FormProps> = ({ next, ...props }) => {
             sx={{
               display: "block",
               mb: 4,
+              textDecoration: "underline",
             }}
             path="/signup"
           >
@@ -155,6 +156,7 @@ export const LoginForm: React.SFC<FormProps> = ({ next, ...props }) => {
             sx={{
               display: "block",
               mb: 4,
+              textDecoration: "underline",
             }}
             path="/reset-password"
           >
@@ -165,15 +167,6 @@ export const LoginForm: React.SFC<FormProps> = ({ next, ...props }) => {
             <FormattedMessage id="login.loginButton" />
           </Button>
         </form>
-        {/* <Box>
-          <Text mb={4} as="h2">
-            <FormattedMessage id="login.loginWithSocial" />
-          </Text>
-
-          <Link external={true} path="/login/google/" variant="google">
-            <FormattedMessage id="login.useGoogle" />
-          </Link>
-        </Box> */}
       </Grid>
     </Box>
   );

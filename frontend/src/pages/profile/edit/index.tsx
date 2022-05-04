@@ -4,7 +4,17 @@
 import React, { useCallback, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
-import { Box, Card, Checkbox, Input, jsx, Label, Select, Text } from "theme-ui";
+import {
+  Heading,
+  Box,
+  Card,
+  Checkbox,
+  Input,
+  jsx,
+  Label,
+  Select,
+  Text,
+} from "theme-ui";
 import * as yup from "yup";
 
 import { GetStaticProps } from "next";
@@ -40,9 +50,9 @@ const SectionWrapper: React.FC<{
   <Card>
     <Box mb={5}>
       {titleId && (
-        <Text mb={3} as="h3">
+        <Heading mb={3} as="h3">
           <FormattedMessage id={titleId} />
-        </Text>
+        </Heading>
       )}
       {children}
     </Box>
@@ -190,9 +200,9 @@ export const EditProfilePage: React.FC = () => {
         {(text) => <MetaTags title={text} />}
       </FormattedMessage>
 
-      <Text mb={4} as="h1">
+      <Heading mb={4} as="h1">
         <FormattedMessage id="profile.header" />
-      </Text>
+      </Heading>
 
       {loading && "Loading..."}
       {!loading && (

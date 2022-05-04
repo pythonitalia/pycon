@@ -57,7 +57,7 @@ export const HomePage = () => {
           gridTemplateColumns: [null, "8fr 12fr"],
         }}
       >
-        <Heading as="h1" variant="caps">
+        <Heading as="h1" sx={{ fontSize: 5 }} variant="caps">
           {conference.name}
         </Heading>
 

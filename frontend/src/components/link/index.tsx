@@ -2,7 +2,7 @@
 
 /** @jsx jsx */
 import { ParsedUrlQuery } from "querystring";
-import React from "react";
+import React, { Fragment } from "react";
 import { Box, jsx, Link as ThemeLink } from "theme-ui";
 
 import NextLink from "next/link";
@@ -68,6 +68,7 @@ type LinkProps = {
   params?: ParsedUrlQuery;
   external?: boolean;
   rel?: string;
+  noHover?: boolean;
 };
 
 export const Link: React.FC<LinkProps> = ({
@@ -79,6 +80,7 @@ export const Link: React.FC<LinkProps> = ({
   external = false,
   params = null,
   locale,
+  noHover = false,
   ...additionalProps
 }) => {
   const language = useCurrentLanguage();
@@ -104,16 +106,20 @@ export const Link: React.FC<LinkProps> = ({
 
         {variant === "google" && <GoogleIcon />}
 
-        <Box
-          as="span"
-          sx={{
-            position: "relative",
-            zIndex: 10,
-          }}
-        >
-          {children}
-          {props.hovered}
-        </Box>
+        {noHover && <Fragment>{children}</Fragment>}
+
+        {!noHover && (
+          <Box
+            as="span"
+            sx={{
+              position: "relative",
+              zIndex: 10,
+            }}
+          >
+            {children}
+            {props.hovered}
+          </Box>
+        )}
       </ThemeLink>
     ),
   );

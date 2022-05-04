@@ -73,7 +73,9 @@ describe("Login form", () => {
       </MockedProvider>,
     );
 
-    expect(screen.getByText("Don't have an account?")).toBeInTheDocument();
+    expect(
+      screen.getByText("Don't have an account? Click to create one"),
+    ).toBeInTheDocument();
     expect(
       screen.getByText("Password forgotten? Click here to reset it!"),
     ).toBeInTheDocument();

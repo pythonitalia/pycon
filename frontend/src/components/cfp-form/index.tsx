@@ -17,6 +17,7 @@ import {
   Select,
   Text,
   Textarea,
+  Heading,
 } from "theme-ui";
 
 import {
@@ -225,9 +226,9 @@ export const CfpForm: React.SFC<Props> = ({
 
   return (
     <Fragment>
-      <Text mt={5} mb={5} as="h1">
+      <Heading mt={5} mb={5} as="h1">
         <FormattedMessage id="cfp.youridea" />
-      </Text>
+      </Heading>
       <form onSubmit={submitSubmission} sx={{ mb: 4 }}>
         <Label mb={3} htmlFor="type">
           <FormattedMessage id="cfp.choosetype" />
@@ -421,9 +422,9 @@ export const CfpForm: React.SFC<Props> = ({
           />
         </InputWrapper>
 
-        <Text mb={2} as="h2">
+        <Heading mb={2} as="h2">
           <FormattedMessage id="cfp.aboutYou" />
-        </Text>
+        </Heading>
 
         <Text variant="labelDescription" as="p" mb={4}>
           <FormattedMessage id="cfp.aboutYouDescription" />

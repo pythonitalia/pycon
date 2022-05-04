@@ -32,10 +32,20 @@ const LanguagePicker = ({ language, ...props }: { language: string }) => {
 
   return (
     <Flex sx={{ alignItems: "center" }} {...props}>
-      <Link path={route} params={query} locale="en" sx={{ height: 40 }}>
+      <Link
+        path={route}
+        params={query}
+        locale="en"
+        sx={{ height: 40, display: "inline-block" }}
+      >
         <EnglishIcon active={language === "en"} sx={{ width: 40, mr: 2 }} />
       </Link>
-      <Link path={route} params={query} locale="it" sx={{ height: 40 }}>
+      <Link
+        path={route}
+        params={query}
+        locale="it"
+        sx={{ height: 40, display: "inline-block" }}
+      >
         <ItalianIcon active={language === "it"} sx={{ width: 40, mr: 4 }} />
       </Link>
     </Flex>

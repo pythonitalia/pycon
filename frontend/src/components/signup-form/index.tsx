@@ -4,7 +4,7 @@
 import React, { useCallback, useLayoutEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
-import { Box, Grid, Input, jsx, Text } from "theme-ui";
+import { Box, Grid, Input, jsx, Heading } from "theme-ui";
 
 import { useRouter } from "next/router";
 
@@ -100,9 +100,9 @@ export const SignupForm: React.SFC = () => {
         }}
       >
         <form onSubmit={onFormSubmit} method="post">
-          <Text mb={4} as="h2">
+          <Heading mb={4} as="h2">
             <FormattedMessage id="signup.signupWithEmail" />
-          </Text>
+          </Heading>
 
           <InputWrapper
             sx={{ mb: 0 }}
@@ -122,6 +122,7 @@ export const SignupForm: React.SFC = () => {
             sx={{
               display: "block",
               mb: 4,
+              textDecoration: "underline",
             }}
             path={`/login/`}
           >
@@ -145,15 +146,6 @@ export const SignupForm: React.SFC = () => {
             <FormattedMessage id="signup.signupButton" />
           </Button>
         </form>
-        {/* <Box>
-          <Text mb={4} as="h2">
-            <FormattedMessage id="signup.signupWithSocial" />
-          </Text>
-
-          <Link external={true} path="/login/google/" variant="google">
-            <FormattedMessage id="signup.useGoogle" />
-          </Link>
-        </Box> */}
       </Grid>
     </Box>
   );

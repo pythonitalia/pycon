@@ -131,6 +131,7 @@ export const theme: Theme = {
   links: {
     heading: {
       color: "text",
+      fontSize: 5,
     },
     header: {
       color: "white",
@@ -182,6 +183,7 @@ export const theme: Theme = {
     buttonFullWidth: {
       variant: "links.arrow-button",
       border: "primary",
+      borderColor: "black",
       backgroundColor: "yellow",
       width: "100%",
       textAlign: "center",
@@ -250,6 +252,7 @@ export const theme: Theme = {
       color: "violet",
     },
     heading: {
+      fontSize: 5,
       fontFamily: "heading",
       fontWeight: "heading",
       lineHeight: "heading",
