@@ -1,10 +1,11 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
-import { useRouter } from "next/router";
 import { useState, useCallback } from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, Heading, jsx } from "theme-ui";
+
+import { useRouter } from "next/router";
 
 import { Button } from "~/components/button/button";
 import { Modal } from "~/components/modal";
@@ -20,11 +21,11 @@ type Props = {
 };
 
 export const MyTickets: React.FC<Props> = ({ tickets }) => {
-  const router = useRouter();
   const code = process.env.conferenceCode;
   const ticketHeader = useTranslatedMessage("profile.ticketFor");
   const nameHeader = useTranslatedMessage("orderReview.attendeeName");
   const emailHeader = useTranslatedMessage("orderReview.attendeeEmail");
+  const [currentTicket, setCurrentTicket] = useState({ id: null, show: false });
 
   const headers = [
     ticketHeader,
@@ -52,23 +53,6 @@ export const MyTickets: React.FC<Props> = ({ tickets }) => {
       return acc;
     }, {}),
   );
-  const [showModals, setShowModals] = useState(
-    Object.fromEntries(tickets.map((item) => [item.id, false])),
-  );
-  const toggleModal = (ticketId?: string) => {
-    return () => {
-      console.log("toggleModal", ticketId);
-      if (ticketId) {
-        console.log("toggleModal ", ticketId, " to ", !showModals[ticketId]);
-        showModals[ticketId] = !showModals[ticketId];
-      } else {
-        console.log("setting false");
-        Object.keys(showModals).forEach((item) => (showModals[item] = false));
-      }
-      console.log("showModals: ", showModals);
-      setShowModals({ ...showModals });
-    };
-  };
 
   const [
     updateTicket,
@@ -77,9 +61,7 @@ export const MyTickets: React.FC<Props> = ({ tickets }) => {
     onCompleted(result) {
       console.log(result);
       if (result.updateAttendeeTicket.__typename === "OperationResult") {
-        console.log("push!");
-        toggleModal()();
-        router.push("/profile");
+        setCurrentTicket({ id: null, show: false });
       }
     },
   });
@@ -87,6 +69,7 @@ export const MyTickets: React.FC<Props> = ({ tickets }) => {
   const updateTicketCallback = useCallback(
     (id: string) => {
       return () => {
+        console.log("updateTicketCallback");
         const answers = tickets
           .filter((item) => item.id == id)[0]
           .item.questions.map((question) => {
@@ -157,40 +140,44 @@ export const MyTickets: React.FC<Props> = ({ tickets }) => {
             item.email,
             ...item.item.questions.map((question) => question.answer.answer),
             <Box>
-              <Button onClick={toggleModal(item.id)} variant="small">
+              <Button
+                onClick={() => setCurrentTicket({ id: item.id, show: true })}
+                variant="small"
+              >
                 <FormattedMessage id="profile.manageTicket" />
               </Button>
-              {showModals[item.id] && (
-                <Modal
-                  show={showModals[item.id]}
-                  onClose={toggleModal(item.id)}
-                >
-                  <QuestionsSection
-                    tickets={[
-                      {
-                        ...item.item,
-                        id: item.id,
-                      },
-                    ]}
-                    updateTicketInfo={({ id, index, key, value }) => {
-                      selectedProducts[id][index][key] = value;
-                      setSelectedProducts({ ...selectedProducts });
-                    }}
-                    updateQuestionAnswer={({ id, index, question, answer }) => {
-                      selectedProducts[id][index]["answers"][question] = answer;
-                      setSelectedProducts({ ...selectedProducts });
-                    }}
-                    selectedProducts={selectedProducts}
-                    showHeading={false}
-                    nextStepMessageId="buttons.save"
-                    onNextStep={updateTicketCallback(item.id)}
-                    nextStepLoading={updatingTicket}
-                  />
-                </Modal>
-              )}
             </Box>,
           ]}
         />
+        {currentTicket.id && (
+          <Modal
+            show={currentTicket.show}
+            onClose={() => setCurrentTicket({ id: null, show: false })}
+          >
+            <QuestionsSection
+              tickets={[
+                {
+                  ...tickets.filter((item) => item.id == currentTicket.id)[0]
+                    .item,
+                  id: currentTicket.id,
+                },
+              ]}
+              updateTicketInfo={({ id, index, key, value }) => {
+                selectedProducts[id][index][key] = value;
+                setSelectedProducts({ ...selectedProducts });
+              }}
+              updateQuestionAnswer={({ id, index, question, answer }) => {
+                selectedProducts[id][index]["answers"][question] = answer;
+                setSelectedProducts({ ...selectedProducts });
+              }}
+              selectedProducts={selectedProducts}
+              showHeading={false}
+              nextStepMessageId="buttons.save"
+              onNextStep={updateTicketCallback(currentTicket.id)}
+              nextStepLoading={updatingTicket}
+            />
+          </Modal>
+        )}
       </Box>
     </Box>
   );
