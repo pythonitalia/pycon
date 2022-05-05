@@ -48,6 +48,8 @@ export const messages = {
     "profile.manageOrder": "Manage order",
     "profile.myTickets": "My Tickets",
     "profile.ticketFor": "Ticket for",
+    "profile.myTickets.update.succeed.message":
+      "The ticket was successfully saved.",
     "profile.status.pending": "Pending",
     "profile.status.paid": "Paid",
     "profile.status.expired": "Expired",
@@ -58,7 +60,6 @@ export const messages = {
       "I want to receive a few selected job offers through PyCon Italia",
     "profile.edit.title": "Edit profile",
     "profile.manageTicket": "Manage ticket",
-    "profile.myTicketsHeader": "My Tickets",
     "profile.edit.personalHeader": "Personal data",
     "profile.edit.privacyHeader": "Privacy settings",
     "profile.logout": "Logout",
@@ -566,6 +567,8 @@ export const messages = {
     "profile.mySubmissionsHeader": "Le mie submissions",
     "profile.myOrders": "I miei ordini",
     "profile.myTickets": "I miei biglietti",
+    "profile.myTickets.update.succeed.message":
+      "Il biglietto e' stato salvato correttamente!",
     "profile.ticketFor": "Biglietto per",
     "profile.status.pending": "In attesa",
     "profile.status.paid": "Pagato",
@@ -576,7 +579,6 @@ export const messages = {
     "profile.openToRecruiting":
       "Desidero ricevere alcune proposte di lavoro selezionate attraverso PyCon Italia",
     "profile.edit.title": "Modifica profilo",
-    "profile.myTicketsHeader": "I miei biglietti",
     "profile.manageTicket": "Gestisci biglietto",
     "profile.edit.personalHeader": "Dati personali",
     "profile.edit.privacyHeader": "Impostazioni privacy",

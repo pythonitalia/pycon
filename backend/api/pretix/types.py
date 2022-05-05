@@ -228,7 +228,7 @@ class AttendeeTicket:
 
     @classmethod
     def from_data(
-        cls, data: OrderPositionDict, language: str, categories: List[CategoryDict]
+        cls, data: OrderPositionDict, language: str, categories: Dict[str, CategoryDict]
     ):
         for answer in data["answers"]:
             answer["question"]["answer"] = answer["answer"]

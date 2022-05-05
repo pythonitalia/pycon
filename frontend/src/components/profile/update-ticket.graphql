@@ -4,6 +4,37 @@ mutation UpdateTicket(
 ) {
   __typename
   updateAttendeeTicket(conference: $conference, input: $input) {
-    ok
+    __typename
+
+    ... on AttendeeTicket {
+      id
+      name
+      email
+      item {
+        id
+        name
+        language
+        description
+        category
+        questions {
+          id
+          answer {
+            answer
+            options
+          }
+          name
+          options {
+            id
+            name
+          }
+        }
+      }
+    }
+    ... on UpdateAttendeeTicketError {
+      message
+    }
+    ... on OperationResult {
+      ok
+    }
   }
 }

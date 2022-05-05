@@ -1,11 +1,27 @@
+import logging
+
 import strawberry
 from strawberry.types import Info
 
+import pretix
 from api.permissions import IsAuthenticated
-from api.pretix.types import UpdateAttendeeTicketInput
+from api.pretix.query import get_user_tickets
+from api.pretix.types import AttendeeTicket, UpdateAttendeeTicketInput
 from api.types import OperationResult
 from conferences.models.conference import Conference
-from pretix import update_ticket
+
+logger = logging.getLogger(__name__)
+
+
+@strawberry.type
+class UpdateAttendeeTicketError:
+    message: str = ""
+
+
+UpdateAttendeeTicketResult = strawberry.union(
+    "UpdateAttendeeTicketResult",
+    (OperationResult, AttendeeTicket, UpdateAttendeeTicketError),
+)
 
 
 @strawberry.type
@@ -13,10 +29,30 @@ class AttendeeTicketMutation:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     def update_attendee_ticket(
         self, info: Info, conference: str, input: UpdateAttendeeTicketInput
-    ) -> OperationResult:
-        print("update_attendee_ticket")
-        print(input)
+    ) -> UpdateAttendeeTicketResult:
         conference = Conference.objects.get(code=conference)
 
-        update_ticket(conference, input)
+        try:
+            pretix.update_ticket(conference, input)
+
+            # TODO: filter by orderposition
+            tickets = get_user_tickets(
+                conference, info.context.request.user.email, language="en"
+            )
+
+            tickets = list(filter(lambda ticket: str(ticket.id) == input.id, tickets))
+            if tickets:
+                return tickets[0]
+
+        except Exception as e:
+            logger.error(
+                "Unable to update the AttendeeTicket %s due to an error %s",
+                input.id,
+                e,
+                exc_info=True,
+            )
+            return UpdateAttendeeTicketError(e)
+
+        # If the user has changed the email, the ticket will not be returned but
+        # the mutation succeeded.
         return OperationResult(ok=True)

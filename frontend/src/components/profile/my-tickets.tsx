@@ -7,6 +7,7 @@ import { Box, Heading, jsx } from "theme-ui";
 
 import { useRouter } from "next/router";
 
+import { Alert } from "~/components/alert";
 import { Button } from "~/components/button/button";
 import { Modal } from "~/components/modal";
 import { Table } from "~/components/table";
@@ -27,13 +28,7 @@ export const MyTickets: React.FC<Props> = ({ tickets }) => {
   const emailHeader = useTranslatedMessage("orderReview.attendeeEmail");
   const [currentTicket, setCurrentTicket] = useState({ id: null, show: false });
 
-  const headers = [
-    ticketHeader,
-    nameHeader,
-    emailHeader,
-    ...tickets[0].item.questions.map((question) => question.name),
-    "",
-  ];
+  const headers = [ticketHeader, nameHeader, emailHeader, ""];
 
   const [selectedProducts, setSelectedProducts] = useState(
     tickets.reduce((acc, ticket) => {
@@ -56,11 +51,10 @@ export const MyTickets: React.FC<Props> = ({ tickets }) => {
 
   const [
     updateTicket,
-    { data: ticketData, loading: updatingTicket },
+    { data: updatedData, loading: updatingTicket, error: updatedError },
   ] = useUpdateTicketMutation({
     onCompleted(result) {
-      console.log(result);
-      if (result.updateAttendeeTicket.__typename === "OperationResult") {
+      if (result.updateAttendeeTicket.__typename === "AttendeeTicket") {
         setCurrentTicket({ id: null, show: false });
       }
     },
@@ -69,7 +63,6 @@ export const MyTickets: React.FC<Props> = ({ tickets }) => {
   const updateTicketCallback = useCallback(
     (id: string) => {
       return () => {
-        console.log("updateTicketCallback");
         const answers = tickets
           .filter((item) => item.id == id)[0]
           .item.questions.map((question) => {
@@ -94,7 +87,7 @@ export const MyTickets: React.FC<Props> = ({ tickets }) => {
             }
             return data;
           });
-        console.log("Updating the ticket!!");
+
         updateTicket({
           variables: {
             conference: code,
@@ -138,7 +131,6 @@ export const MyTickets: React.FC<Props> = ({ tickets }) => {
             item.item.name,
             item.name,
             item.email,
-            ...item.item.questions.map((question) => question.answer.answer),
             <Box>
               <Button
                 onClick={() => setCurrentTicket({ id: item.id, show: true })}
@@ -149,6 +141,14 @@ export const MyTickets: React.FC<Props> = ({ tickets }) => {
             </Box>,
           ]}
         />
+        {["AttendeeTicket", "OperationSuccess"].indexOf(
+          updatedData?.updateAttendeeTicket.__typename,
+        ) >= 0 && (
+          <Alert variant="success">
+            <FormattedMessage id="profile.myTickets.update.succeed.message" />
+          </Alert>
+        )}
+
         {currentTicket.id && (
           <Modal
             show={currentTicket.show}
@@ -176,6 +176,16 @@ export const MyTickets: React.FC<Props> = ({ tickets }) => {
               onNextStep={updateTicketCallback(currentTicket.id)}
               nextStepLoading={updatingTicket}
             />
+
+            <Box sx={{ ml: 3 }}>
+              {(updatedData?.updateAttendeeTicket.__typename ===
+                "UpdateAttendeeTicketError" ||
+                updatedError) && (
+                <Alert variant="alert">
+                  <FormattedMessage id="global.somethingWentWrong" />
+                </Alert>
+              )}
+            </Box>
           </Modal>
         )}
       </Box>

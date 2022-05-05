@@ -62,15 +62,11 @@ export const Modal: React.FC<ModalProps> = ({
           <Box
             sx={{
               display: "flex",
-              position: "fixed",
               alignItems: "right",
               justifyContent: "right",
-              width: "80%",
               maxWidth: "container",
-              paddingX: 4,
               textAlign: "right",
-              border: "1px solid green",
-              paddingY: 3,
+              m: -1,
             }}
           >
             <Button
