@@ -1,6 +1,7 @@
 from asgiref.sync import async_to_sync
 from django.conf import settings
 from pythonit_toolkit.emails.templates import EmailTemplate
+from pythonit_toolkit.emails.utils import mark_safe
 from pythonit_toolkit.service_client import ServiceClient
 
 from domain_events.publisher import publish_message
@@ -316,7 +317,7 @@ def handle_speaker_communication_sent(data):
         subject=f"[PyCon Italia 2022] {subject}",
         variables={
             "firstname": get_name(speaker_data, "there"),
-            "body": body.replace("\n", "<br />"),
+            "body": mark_safe(body.replace("\n", "<br />")),
         },
         reply_to=[
             settings.SPEAKERS_EMAIL_ADDRESS,
