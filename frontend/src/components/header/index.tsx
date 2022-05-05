@@ -158,7 +158,7 @@ export const Header = () => {
 
           <Flex
             sx={{
-              alignItems: "center",
+              alignItems: ["flex-start", "center"],
             }}
           >
             <Box
@@ -183,8 +183,6 @@ export const Header = () => {
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
-
-                mt: "-5px",
 
                 px: 3,
                 py: 2,
