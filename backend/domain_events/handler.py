@@ -316,7 +316,7 @@ def handle_speaker_communication_sent(data):
         subject=f"[PyCon Italia 2022] {subject}",
         variables={
             "firstname": get_name(speaker_data, "there"),
-            "body": body,
+            "body": body.replace("\n", "<br />"),
         },
         reply_to=[
             settings.SPEAKERS_EMAIL_ADDRESS,
