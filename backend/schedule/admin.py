@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib import admin, messages
-from django.urls import reverse
+from django.db.models import Q
+from django.template.response import TemplateResponse
+from django.urls import path, reverse
 from django.utils import timezone
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
@@ -16,8 +18,10 @@ from conferences.models import SpeakerVoucher
 from domain_events.publisher import (
     send_new_submission_time_slot,
     send_schedule_invitation_email,
+    send_speaker_communication_email,
 )
 from pretix import user_has_admission_ticket
+from schedule.forms import EmailSpeakersForm
 from users.autocomplete import UsersBackendAutocomplete
 from users.mixins import AdminUsersMixin, ResourceUsersByIdsMixin
 
@@ -290,6 +294,58 @@ class ScheduleItemAdmin(admin.ModelAdmin):
         mark_speakers_to_receive_vouchers,
     ]
     readonly_fields = ("spaces_left",)
+
+    def get_urls(self):
+        return [
+            path(
+                "email-speakers/",
+                self.admin_site.admin_view(self.email_speakers),
+                name="schedule-email-speakers",
+            )
+        ] + super().get_urls()
+
+    def email_speakers(self, request):
+        form = EmailSpeakersForm(request.POST or None)
+        context = dict(
+            self.admin_site.each_context(request),
+            form=form,
+        )
+
+        if request.method == "POST" and form.is_valid():
+            conference = form.cleaned_data["conference"]
+            subject = form.cleaned_data["subject"]
+            body = form.cleaned_data["body"]
+
+            schedule_items = conference.schedule_items.filter(
+                Q(submission__isnull=False) | Q(additional_speakers__isnull=False)
+            )
+            notified_ids = set()
+
+            for schedule_item in schedule_items.all():
+                if (
+                    schedule_item.submission_id
+                    and schedule_item.submission.speaker_id not in notified_ids
+                ):
+                    send_speaker_communication_email(
+                        user_id=schedule_item.submission.speaker_id,
+                        subject=subject,
+                        body=body,
+                    )
+                    notified_ids.add(schedule_item.submission.speaker_id)
+
+                for additional_speaker in schedule_item.additional_speakers.all():
+                    if additional_speaker.user_id in notified_ids:
+                        continue
+
+                    notified_ids.add(additional_speaker.user_id)
+
+                    send_speaker_communication_email(
+                        user_id=additional_speaker.user_id, subject=subject, body=body
+                    )
+
+            messages.success(request, f"Scheduled {len(notified_ids)} emails.")
+
+        return TemplateResponse(request, "email-speakers.html", context)
 
     def spaces_left(self, obj):
         if obj.attendees_total_capacity is None:
