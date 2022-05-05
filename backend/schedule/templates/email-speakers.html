@@ -1,0 +1,15 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block content %}
+
+<p>Send an email to all speakers</p>
+
+<form action="{% url 'admin:schedule-email-speakers' %}" method="post">
+  {{ form.as_p }}
+  {% csrf_token %}
+
+  <input type="submit" value="Send emails" />
+</form>
+
+{% endblock %}

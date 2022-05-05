@@ -1163,7 +1163,7 @@ postgresql = ["psycopg2"]
 
 [[package]]
 name = "pythonit-toolkit"
-version = "0.1.76"
+version = "0.1.78"
 description = ""
 category = "main"
 optional = false
@@ -1434,7 +1434,7 @@ fastapi = ["fastapi (>=0.65.2)"]
 
 [[package]]
 name = "tablib"
-version = "3.2.0"
+version = "3.2.1"
 description = "Format agnostic tabular data library (XLS, JSON, YAML, CSV)"
 category = "main"
 optional = false
@@ -1593,7 +1593,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "16d445cc22b44e14dc4e40e7a98311f39545d55b8bc87603c25047bf56312843"
+content-hash = "f9bc235d59269028e8cbe6a1bbc2779445b01a8791f2709c563c2f721c22ff0c"
 
 [metadata.files]
 aniso8601 = [
@@ -2389,8 +2389,8 @@ python3-openid = [
     {file = "python3_openid-3.2.0-py3-none-any.whl", hash = "sha256:6626f771e0417486701e0b4daff762e7212e820ca5b29fcc0d05f6f8736dfa6b"},
 ]
 pythonit-toolkit = [
-    {file = "pythonit-toolkit-0.1.76.tar.gz", hash = "sha256:26aa0604a4461232ddd228f6ec4953d5f7329fdc4bc29a47c375acdfc32b7c94"},
-    {file = "pythonit_toolkit-0.1.76-py3-none-any.whl", hash = "sha256:17c96438c3a1bbff49a3b04ad16ec0f87247579d8de5df7cef28c6877c633abb"},
+    {file = "pythonit-toolkit-0.1.78.tar.gz", hash = "sha256:cc5654677b48bd2a251d38a504f53cb45da1ec9f5511c17b55263e47df55a3ab"},
+    {file = "pythonit_toolkit-0.1.78-py3-none-any.whl", hash = "sha256:c61e0fcedf36aa602cbfc87053911385f5c0c9052d7952fcc17adb0069317fcd"},
 ]
 pytz = [
     {file = "pytz-2019.3-py2.py3-none-any.whl", hash = "sha256:1c557d7d0e871de1f5ccd5833f60fb2550652da6be2693c1e02300743d21500d"},
@@ -2497,8 +2497,8 @@ strawberry-graphql = [
     {file = "strawberry_graphql-0.90.3-py3-none-any.whl", hash = "sha256:080f3abc3f98c58b9cfc29d43714acdc6b2e35da5a0902153471224b400205dc"},
 ]
 tablib = [
-    {file = "tablib-3.2.0-py3-none-any.whl", hash = "sha256:1ba12da7b0b17e33f5997fb1bc8ed560aae3535f5892ae5e5c01a056c47d4d78"},
-    {file = "tablib-3.2.0.tar.gz", hash = "sha256:12d8686454c721de88d8ca5adf07e1f419ef6dbcecedf65e8950d4a329daf3a0"},
+    {file = "tablib-3.2.1-py3-none-any.whl", hash = "sha256:870d7e688f738531a14937a055e8bba404fbc388e77d4d500b2c904075d1019c"},
+    {file = "tablib-3.2.1.tar.gz", hash = "sha256:a57f2770b8c225febec1cb1e65012a69cf30dd28be810e0ff98d024768c7d0f1"},
 ]
 time-machine = [
     {file = "time-machine-2.6.0.tar.gz", hash = "sha256:676d0e462f504eb1ef9903cbb92fe4d285af2080fbcbeece9e4b78db5be08687"},

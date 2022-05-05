@@ -1,4 +1,5 @@
 import json
+from hashlib import md5
 from urllib.parse import urljoin
 from uuid import uuid4
 
@@ -160,4 +161,18 @@ def send_speaker_voucher_email(speaker_voucher):
             "voucher_code": speaker_voucher.voucher_code,
         },
         deduplication_id=str(speaker_voucher.id),
+    )
+
+
+def send_speaker_communication_email(user_id: int, subject: str, body: str):
+    deduplication_id = str(md5(f"{user_id}-{subject}".encode("utf-8")).hexdigest())
+
+    publish_message(
+        "SpeakerCommunicationSent",
+        body={
+            "user_id": user_id,
+            "subject": subject,
+            "body": body,
+        },
+        deduplication_id=deduplication_id,
     )

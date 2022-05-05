@@ -1,6 +1,7 @@
 from asgiref.sync import async_to_sync
 from django.conf import settings
 from pythonit_toolkit.emails.templates import EmailTemplate
+from pythonit_toolkit.emails.utils import mark_safe
 from pythonit_toolkit.service_client import ServiceClient
 
 from domain_events.publisher import publish_message
@@ -300,6 +301,30 @@ def handle_speaker_voucher_email_sent(data):
     )
 
 
+def handle_speaker_communication_sent(data):
+    user_id = data["user_id"]
+    subject = data["subject"]
+    body = data["body"]
+
+    users_result = execute_service_client_query(
+        USERS_NAMES_FROM_IDS, {"ids": [user_id]}
+    )
+    speaker_data = users_result.data["usersByIds"][0]
+
+    send_email(
+        template=EmailTemplate.SPEAKER_COMMUNICATION,
+        to=speaker_data["email"],
+        subject=f"[PyCon Italia 2022] {subject}",
+        variables={
+            "firstname": get_name(speaker_data, "there"),
+            "body": mark_safe(body.replace("\n", "<br />")),
+        },
+        reply_to=[
+            settings.SPEAKERS_EMAIL_ADDRESS,
+        ],
+    )
+
+
 HANDLERS = {
     "NewSubmissionComment/SlackNotification": handle_send_slack_notification_for_new_submission_comment,
     "NewSubmissionComment/EmailNotification": handle_send_email_notification_for_new_submission_comment,
@@ -310,4 +335,5 @@ HANDLERS = {
     "NewScheduleInvitationAnswer": handle_new_schedule_invitation_answer,
     "SubmissionTimeSlotChanged": handle_submission_time_slot_changed,
     "SpeakerVoucherEmailSent": handle_speaker_voucher_email_sent,
+    "SpeakerCommunicationSent": handle_speaker_communication_sent,
 }
