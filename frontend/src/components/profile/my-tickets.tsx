@@ -142,7 +142,7 @@ export const MyTickets: React.FC<Props> = ({ tickets }) => {
               item.item.name,
               item.name,
               item.email,
-              <Box>
+              <Box sx={{ m: -2 }}>
                 <Button
                   onClick={() => setCurrentTicket({ id: item.id, show: true })}
                   variant="small"
