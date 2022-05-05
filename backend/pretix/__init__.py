@@ -397,7 +397,7 @@ def update_ticket(conference: Conference, attendee_ticket: UpdateAttendeeTicketI
         conference=conference,
         endpoint=f"orderpositions/{attendee_ticket.id}/",
         method="PATCH",
-        data=attendee_ticket.to_json(),
+        json=attendee_ticket.to_json(),
     )
     print(response.content)
     return response.json()

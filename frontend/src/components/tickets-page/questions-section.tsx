@@ -16,6 +16,7 @@ type Props = {
   selectedProducts: SelectedProducts;
   onNextStep: () => void;
   nextStepMessageId?: string;
+  nextStepLoading?: boolean;
   updateQuestionAnswer: (data: {
     id: string;
     index: number;
@@ -39,6 +40,7 @@ export const QuestionsSection: React.SFC<Props> = ({
   updateTicketInfo,
   nextStepMessageId = "order.nextStep",
   showHeading = true,
+  nextStepLoading = false,
 }) => {
   const productsById = Object.fromEntries(
     tickets.map((product) => [product.id, product]),
@@ -201,7 +203,7 @@ export const QuestionsSection: React.SFC<Props> = ({
             </Box>
           ))}
 
-          <Button>
+          <Button loading={nextStepLoading}>
             <FormattedMessage id={nextStepMessageId} />
           </Button>
         </form>

@@ -1,6 +1,7 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
+import { useRouter } from "next/router";
 import { useState, useCallback } from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, Heading, jsx } from "theme-ui";
@@ -19,6 +20,7 @@ type Props = {
 };
 
 export const MyTickets: React.FC<Props> = ({ tickets }) => {
+  const router = useRouter();
   const code = process.env.conferenceCode;
   const ticketHeader = useTranslatedMessage("profile.ticketFor");
   const nameHeader = useTranslatedMessage("orderReview.attendeeName");
@@ -53,9 +55,17 @@ export const MyTickets: React.FC<Props> = ({ tickets }) => {
   const [showModals, setShowModals] = useState(
     Object.fromEntries(tickets.map((item) => [item.id, false])),
   );
-  const toggleModal = (id: string) => {
+  const toggleModal = (ticketId?: string) => {
     return () => {
-      showModals[id] = !showModals[id];
+      console.log("toggleModal", ticketId);
+      if (ticketId) {
+        console.log("toggleModal ", ticketId, " to ", !showModals[ticketId]);
+        showModals[ticketId] = !showModals[ticketId];
+      } else {
+        console.log("setting false");
+        Object.keys(showModals).forEach((item) => (showModals[item] = false));
+      }
+      console.log("showModals: ", showModals);
       setShowModals({ ...showModals });
     };
   };
@@ -65,8 +75,11 @@ export const MyTickets: React.FC<Props> = ({ tickets }) => {
     { data: ticketData, loading: updatingTicket },
   ] = useUpdateTicketMutation({
     onCompleted(result) {
-      if (result.updateAttendeeTicket.__typename !== "OperationResult") {
-        return;
+      console.log(result);
+      if (result.updateAttendeeTicket.__typename === "OperationResult") {
+        console.log("push!");
+        toggleModal()();
+        router.push("/profile");
       }
     },
   });
@@ -98,7 +111,7 @@ export const MyTickets: React.FC<Props> = ({ tickets }) => {
             }
             return data;
           });
-
+        console.log("Updating the ticket!!");
         updateTicket({
           variables: {
             conference: code,
@@ -171,6 +184,7 @@ export const MyTickets: React.FC<Props> = ({ tickets }) => {
                     showHeading={false}
                     nextStepMessageId="buttons.save"
                     onNextStep={updateTicketCallback(item.id)}
+                    nextStepLoading={updatingTicket}
                   />
                 </Modal>
               )}
