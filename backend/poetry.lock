@@ -434,20 +434,20 @@ Django = ">=1.11"
 
 [[package]]
 name = "django-ses"
-version = "1.0.3"
+version = "3.0.1"
 description = "A Django email backend for Amazon's Simple Email Service"
 category = "main"
 optional = false
-python-versions = ">=2.7"
+python-versions = ">=3.7,<4.0"
 
 [package.dependencies]
 boto3 = ">=1.0.0"
-django = ">1.10"
-future = ">=0.16.0"
+django = ">=2.2"
 pytz = ">=2016.10"
 
 [package.extras]
-bounce = ["requests (<3)", "m2crypto"]
+bounce = ["cryptography (>=36.0.2,<37.0.0)", "requests (>=2.27.1,<3.0.0)"]
+events = ["cryptography (>=36.0.2,<37.0.0)", "requests (>=2.27.1,<3.0.0)"]
 
 [[package]]
 name = "django-storages"
@@ -549,14 +549,6 @@ python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
 mccabe = ">=0.6.0,<0.7.0"
 pycodestyle = ">=2.7.0,<2.8.0"
 pyflakes = ">=2.3.0,<2.4.0"
-
-[[package]]
-name = "future"
-version = "0.18.2"
-description = "Clean single-source support for Python 3 and 2"
-category = "main"
-optional = false
-python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
 
 [[package]]
 name = "graphql-core"
@@ -1593,7 +1585,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "f9bc235d59269028e8cbe6a1bbc2779445b01a8791f2709c563c2f721c22ff0c"
+content-hash = "5ae57cbec519f4845e52933837cfdccef8d41105a28a7e5734caefd408fe5e4f"
 
 [metadata.files]
 aniso8601 = [
@@ -1863,8 +1855,8 @@ django-queryinspect = [
     {file = "django_queryinspect-1.1.0-py2-none-any.whl", hash = "sha256:3a09644be2c6e068309db79063601ae328da89a5f00f039ea7fc683d1e4bf3e2"},
 ]
 django-ses = [
-    {file = "django-ses-1.0.3.tar.gz", hash = "sha256:9c0a3e59e1e2424093820fa7cd519aa35f9ba978c26917a97a30c682449f0df6"},
-    {file = "django_ses-1.0.3-py2.py3-none-any.whl", hash = "sha256:45f041acb9f2f8df85f3fddd63b04f1d381982bdc7730a3dc1f88e5795758bdd"},
+    {file = "django-ses-3.0.1.tar.gz", hash = "sha256:f2d1aa805bfbbc4d5e73e4a0e7399287bac426b45689e3fd15810793986a89ed"},
+    {file = "django_ses-3.0.1-py3-none-any.whl", hash = "sha256:0c11df1fd51e631ce70ccc2faf676f2538f433516bd04e7eca20d815885a0bac"},
 ]
 django-storages = [
     {file = "django-storages-1.11.1.tar.gz", hash = "sha256:c823dbf56c9e35b0999a13d7e05062b837bae36c518a40255d522fbe3750fbb4"},
@@ -1897,9 +1889,6 @@ fancycompleter = [
 flake8 = [
     {file = "flake8-3.9.2-py2.py3-none-any.whl", hash = "sha256:bf8fd333346d844f616e8d47905ef3a3384edae6b4e9beb0c5101e25e3110907"},
     {file = "flake8-3.9.2.tar.gz", hash = "sha256:07528381786f2a6237b061f6e96610a4167b226cb926e2aa2b6b1d78057c576b"},
-]
-future = [
-    {file = "future-0.18.2.tar.gz", hash = "sha256:b1bead90b70cf6ec3f0710ae53a525360fa360d306a86583adc6bf83a4db537d"},
 ]
 graphql-core = [
     {file = "graphql-core-3.1.7.tar.gz", hash = "sha256:62ec192150ccecd9a18cfb79e3e72eb7d1fd68fb594ef19c40099b6deec8ef0c"},
