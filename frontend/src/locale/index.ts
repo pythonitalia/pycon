@@ -47,9 +47,13 @@ export const messages = {
     "profile.price": "Price",
     "profile.manageOrder": "Manage order",
     "profile.myTickets": "My Tickets",
+    "profile.myTickets.notickets":
+      "No tickets assigned to your email, you can buy one {linkTicket}",
     "profile.ticketFor": "Ticket for",
-    "profile.myTickets.update.succeed.message":
+    "profile.myTickets.update.AttendeeTicket.message":
       "The ticket was successfully saved.",
+    "profile.myTickets.update.TicketReassigned.message":
+      "The ticket was successfully reassigned to {email}.",
     "profile.status.pending": "Pending",
     "profile.status.paid": "Paid",
     "profile.status.expired": "Expired",
@@ -567,8 +571,12 @@ export const messages = {
     "profile.mySubmissionsHeader": "Le mie submissions",
     "profile.myOrders": "I miei ordini",
     "profile.myTickets": "I miei biglietti",
-    "profile.myTickets.update.succeed.message":
+    "profile.myTickets.notickets":
+      "Nessun ticket associato a questa email, puoi comprarne uno {linkTicket}",
+    "profile.myTickets.update.AttendeeTicket.message":
       "Il biglietto e' stato salvato correttamente!",
+    "profile.myTickets.update.TicketReassigned.message":
+      "Il biglietto e' stato correttamente riassegnato a {email}.",
     "profile.ticketFor": "Biglietto per",
     "profile.status.pending": "In attesa",
     "profile.status.paid": "Pagato",

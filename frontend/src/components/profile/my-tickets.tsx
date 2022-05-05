@@ -16,9 +16,10 @@ import { useTranslatedMessage } from "~/helpers/use-translated-message";
 import { AttendeeTicket, useUpdateTicketMutation } from "~/types";
 
 import { ProductState } from "../tickets-page/types";
+import { Link } from "~/components/link";
 
 type Props = {
-  tickets: AttendeeTicket[];
+  tickets?: AttendeeTicket[];
 };
 
 export const MyTickets: React.FC<Props> = ({ tickets }) => {
@@ -54,7 +55,11 @@ export const MyTickets: React.FC<Props> = ({ tickets }) => {
     { data: updatedData, loading: updatingTicket, error: updatedError },
   ] = useUpdateTicketMutation({
     onCompleted(result) {
-      if (result.updateAttendeeTicket.__typename === "AttendeeTicket") {
+      if (
+        ["AttendeeTicket", "TicketReassigned"].indexOf(
+          result.updateAttendeeTicket.__typename,
+        ) > -1
+      ) {
         setCurrentTicket({ id: null, show: false });
       }
     },
@@ -121,31 +126,45 @@ export const MyTickets: React.FC<Props> = ({ tickets }) => {
         <Heading mb={5} as="h2" sx={{ fontSize: 5 }}>
           <FormattedMessage id="profile.myTickets" />
         </Heading>
+        {tickets.length === 0 && (
+          <FormattedMessage
+            id="profile.myTickets.notickets"
+            values={{ linkTicket: <Link path="/tickets">here</Link> }}
+          />
+        )}
+        {tickets.length > 0 && (
+          <Table
+            headers={headers}
+            mobileHeaders={headers}
+            data={tickets}
+            keyGetter={(item) => item.id}
+            rowGetter={(item) => [
+              item.item.name,
+              item.name,
+              item.email,
+              <Box>
+                <Button
+                  onClick={() => setCurrentTicket({ id: item.id, show: true })}
+                  variant="small"
+                >
+                  <FormattedMessage id="profile.manageTicket" />
+                </Button>
+              </Box>,
+            ]}
+          />
+        )}
 
-        <Table
-          headers={headers}
-          mobileHeaders={headers}
-          data={tickets}
-          keyGetter={(item) => item.id}
-          rowGetter={(item) => [
-            item.item.name,
-            item.name,
-            item.email,
-            <Box>
-              <Button
-                onClick={() => setCurrentTicket({ id: item.id, show: true })}
-                variant="small"
-              >
-                <FormattedMessage id="profile.manageTicket" />
-              </Button>
-            </Box>,
-          ]}
-        />
-        {["AttendeeTicket", "OperationSuccess"].indexOf(
-          updatedData?.updateAttendeeTicket.__typename,
-        ) >= 0 && (
+        {updatedData?.updateAttendeeTicket.__typename === "AttendeeTicket" && (
           <Alert variant="success">
-            <FormattedMessage id="profile.myTickets.update.succeed.message" />
+            <FormattedMessage
+              id={`profile.myTickets.update.AttendeeTicket.message`}
+            />
+          </Alert>
+        )}
+        {updatedData?.updateAttendeeTicket.__typename ===
+          "TicketReassigned" && (
+          <Alert variant="success">
+            {updatedData.updateAttendeeTicket.message}
           </Alert>
         )}
 

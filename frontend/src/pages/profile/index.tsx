@@ -85,9 +85,7 @@ export const MyProfilePage = () => {
         <MyOrders orders={profileData.me.orders} />
       )}
 
-      {profileData.me.tickets.length > 0 && (
-        <MyTickets tickets={profileData.me.tickets} />
-      )}
+      <MyTickets tickets={profileData.me.tickets} />
 
       <MySubmissions
         sx={{

@@ -7,7 +7,6 @@ import pretix
 from api.permissions import IsAuthenticated
 from api.pretix.query import get_user_tickets
 from api.pretix.types import AttendeeTicket, UpdateAttendeeTicketInput
-from api.types import OperationResult
 from conferences.models.conference import Conference
 
 logger = logging.getLogger(__name__)
@@ -18,9 +17,14 @@ class UpdateAttendeeTicketError:
     message: str = ""
 
 
+@strawberry.type
+class TicketReassigned:
+    message: str = "Ticket was Successfully reassigned to {email}"
+
+
 UpdateAttendeeTicketResult = strawberry.union(
     "UpdateAttendeeTicketResult",
-    (OperationResult, AttendeeTicket, UpdateAttendeeTicketError),
+    (TicketReassigned, AttendeeTicket, UpdateAttendeeTicketError),
 )
 
 
@@ -55,4 +59,6 @@ class AttendeeTicketMutation:
 
         # If the user has changed the email, the ticket will not be returned but
         # the mutation succeeded.
-        return OperationResult(ok=True)
+        return TicketReassigned(
+            message=TicketReassigned.message.format(email=input.email)
+        )
