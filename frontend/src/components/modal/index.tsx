@@ -43,7 +43,7 @@ export const Modal: React.FC<ModalProps> = ({
             opacity: 0.75,
           }}
           onClick={onClose}
-        ></Box>
+        />
 
         <Box
           sx={{
