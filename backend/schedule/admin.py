@@ -472,7 +472,7 @@ class ScheduleItemInvitationAdmin(ExportMixin, AdminUsersMixin):
         return mark_safe(f'<a class="button" target="_blank" href="{url}">Schedule</a>')
 
     def open_submission(self, obj) -> str:
-        url = reverse("admin:submissions_submission_change", args=[obj.id])
+        url = reverse("admin:submissions_submission_change", args=[obj.submission_id])
         return mark_safe(
             f'<a class="button" target="_blank" href="{url}">Submission</a>'
         )
