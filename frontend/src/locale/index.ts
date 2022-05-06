@@ -89,7 +89,8 @@ export const messages = {
     "signup.email": "Email",
     "signup.password": "Password",
     "signup.password2": "Confirm Password",
-    "signup.passwordMismatch": 'Make sure "Password" and "Confirm Password" match!',
+    "signup.passwordMismatch":
+      'Make sure "Password" and "Confirm Password" match!',
     "signup.signupButton": "Signup 👉",
     "deadlines.start": "Start",
     "deadlines.end": "End",

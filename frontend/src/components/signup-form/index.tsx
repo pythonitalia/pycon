@@ -168,7 +168,7 @@ export const SignupForm = () => {
             />
           </InputWrapper>
 
-          <Button my={2} type="submit" loading={loading}>
+          <Button sx={{ my: 2 }} type="submit" loading={loading}>
             <FormattedMessage id="signup.signupButton" />
           </Button>
         </form>
