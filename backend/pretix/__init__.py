@@ -385,19 +385,33 @@ def get_user_tickets(conference: Conference, email: str):
         },
     )
 
+    response.raise_for_status()
+
     return response.json()
 
 
-def update_ticket(conference: Conference, attendee_ticket: UpdateAttendeeTicketInput):
-    print("Updating Ticket")
-    print(attendee_ticket)
+def get_user_ticket(conference: Conference, email: str, id: int):
 
-    print(attendee_ticket.to_json())
+    # TODO: filter by orderposition in the PretixAPI
+    tickets = get_user_tickets(conference, email)
+
+    def filter_by(ticket):
+        return str(ticket["id"]) == id and ticket["attendee_email"] == email
+
+    tickets = list(filter(filter_by, tickets))
+
+    if tickets:
+        return tickets[0]
+
+
+def update_ticket(conference: Conference, attendee_ticket: UpdateAttendeeTicketInput):
     response = pretix(
         conference=conference,
         endpoint=f"orderpositions/{attendee_ticket.id}/",
         method="PATCH",
         json=attendee_ticket.to_json(),
     )
-    print(response.content)
+
+    response.raise_for_status()
+
     return response.json()

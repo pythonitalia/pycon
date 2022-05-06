@@ -29,15 +29,25 @@ UpdateAttendeeTicketResult = strawberry.union(
 )
 
 
+def is_ticket_owner(conference: Conference, email: str, id: str) -> bool:
+    ticket = pretix.get_user_ticket(conference, email, id)
+    return ticket is not None
+
+
 @strawberry.type
 class AttendeeTicketMutation:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     def update_attendee_ticket(
-        self, info: Info, conference: str, input: UpdateAttendeeTicketInput
+        self, info: Info, code: str, input: UpdateAttendeeTicketInput
     ) -> UpdateAttendeeTicketResult:
-        conference = Conference.objects.get(code=conference)
-
+        conference = Conference.objects.get(code=code)
         try:
+            email = info.context.request.user.email
+            if not is_ticket_owner(conference, email, input.id):
+                return UpdateAttendeeTicketError(
+                    message="You are not allowed to updtae this ticket."
+                )
+
             pretix.update_ticket(conference, input)
 
             # TODO: filter by orderposition
@@ -56,7 +66,7 @@ class AttendeeTicketMutation:
                 e,
                 exc_info=True,
             )
-            return UpdateAttendeeTicketError(e)
+            return UpdateAttendeeTicketError(message=str(e))
 
         # If the user has changed the email, the ticket will not be returned but
         # the mutation succeeded.

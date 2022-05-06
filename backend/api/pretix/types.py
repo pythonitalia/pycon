@@ -280,11 +280,13 @@ class UpdateAttendeeTicketInput:
     id: strawberry.ID
     name: str
     email: str
-    answers: List[AnswerInput]
+    answers: Optional[List[AnswerInput]] = None
 
     def to_json(self):
         return {
             "attendee_email": self.email,
             "attendee_name": self.name,
-            "answers": [answer.to_json() for answer in self.answers],
+            "answers": [answer.to_json() for answer in self.answers]
+            if self.answers
+            else [],
         }

@@ -262,6 +262,60 @@ def pretix_user_tickets():
 
 
 @pytest.fixture
+def update_user_ticket():
+    return {
+        "addon_to": None,
+        "answers": [
+            {
+                "answer": "Vegan",
+                "option_identifiers": ["AAXXXSSS"],
+                "options": [18],
+                "question": 31,
+                "question_identifier": "AAXXXSSS",
+            },
+            {
+                "answer": "Vegan",
+                "option_identifiers": [],
+                "options": [],
+                "question": 32,
+                "question_identifier": "AAXXXSSS",
+            },
+        ],
+        "attendee_email": "sheldon@cooper.com",
+        "attendee_name": "Leonard",
+        "attendee_name_parts": {"_legacy": "Leonard"},
+        "canceled": False,
+        "checkins": [],
+        "city": None,
+        "company": None,
+        "country": None,
+        "downloads": [
+            {
+                "output": "pdf",
+                "url": "http://tickets.pycon.it/api/v1/organizers/test-organizer/events/local-conf-test/orderpositions/5638/download/pdf/",
+            }
+        ],
+        "id": 5638,
+        "item": 67,
+        "order": "A3WNA",
+        "positionid": 1,
+        "price": "80.00",
+        "pseudonymization_id": "AAAAZZZZ`",
+        "seat": None,
+        "secret": "dfafsdfsdfasfasdfaseeee",
+        "state": None,
+        "street": None,
+        "subevent": None,
+        "tax_rate": "22.00",
+        "tax_rule": 6,
+        "tax_value": "14.43",
+        "variation": None,
+        "voucher": None,
+        "zipcode": None,
+    }
+
+
+@pytest.fixture
 def pretix_order():
     return {
         "code": "A5AFZ",
