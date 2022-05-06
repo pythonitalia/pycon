@@ -19,6 +19,7 @@ class UpdateAttendeeTicketError:
 
 @strawberry.type
 class TicketReassigned:
+    id: strawberry.ID
     message: str = "Ticket was Successfully reassigned to {email}"
 
 
@@ -60,5 +61,5 @@ class AttendeeTicketMutation:
         # If the user has changed the email, the ticket will not be returned but
         # the mutation succeeded.
         return TicketReassigned(
-            message=TicketReassigned.message.format(email=input.email)
+            id=input.id, message=TicketReassigned.message.format(email=input.email)
         )

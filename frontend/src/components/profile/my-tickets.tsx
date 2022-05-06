@@ -63,6 +63,21 @@ export const MyTickets: React.FC<Props> = ({ tickets }) => {
         setCurrentTicket({ id: null, show: false });
       }
     },
+    update(cache, { data }) {
+      if (data.updateAttendeeTicket.__typename === "TicketReassigned") {
+        cache.modify({
+          id: cache.identify({
+            id: data.id,
+            __typename: "AttendeeTicket",
+          }),
+          fields: {
+            tickets(existingTicketRefs, { DELETE }) {
+              return DELETE;
+            },
+          },
+        });
+      }
+    },
   });
 
   const updateTicketCallback = useCallback(

@@ -34,6 +34,7 @@ mutation UpdateTicket(
       message
     }
     ... on TicketReassigned {
+      id
       message
     }
   }
