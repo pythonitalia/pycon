@@ -97,8 +97,7 @@ export const QuestionsSection: React.SFC<Props> = ({
             <Box key={id}>
               {products.map((selectedProductInfo, index) => {
                 const product = productsById[selectedProductInfo.id];
-                // console.log("selectedProductInfo.id", selectedProductInfo.id)
-                // console.log("productsById", JSON.stringify(productsById))
+
                 if (product.questions.length === 0) {
                   return null;
                 }
