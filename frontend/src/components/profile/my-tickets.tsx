@@ -230,7 +230,12 @@ export const MyTickets = ({ tickets = [] }: Props) => {
                 selectedProducts[id][index]["answers"][question] = answer;
                 setSelectedProducts({ ...selectedProducts });
               }}
-              selectedProducts={selectedProducts}
+              selectedProducts={Object.assign(
+                {},
+                ...Object.entries(selectedProducts)
+                  .filter(([k, v]) => k == currentTicketId)
+                  .map(([k, v]) => ({ [k]: v })),
+              )}
               showHeading={false}
               nextStepMessageId="buttons.save"
               onNextStep={updateTicketCallback(currentTicketId)}
