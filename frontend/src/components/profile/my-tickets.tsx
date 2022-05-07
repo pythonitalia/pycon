@@ -22,7 +22,7 @@ type Props = {
   tickets?: AttendeeTicket[];
 };
 
-export const MyTickets: React.FC<Props> = ({ tickets }) => {
+export const MyTickets = ({ tickets }: Props) => {
   const code = process.env.conferenceCode;
   const ticketHeader = useTranslatedMessage("profile.ticketFor");
   const nameHeader = useTranslatedMessage("orderReview.attendeeName");
