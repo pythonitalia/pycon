@@ -60,6 +60,7 @@ export const MyTickets = ({ tickets = [] }: Props) => {
       return accumulator;
     }, {}),
   );
+
   const [
     updateTicket,
     { data: updatedData, loading: updatingTicket, error: updatedError },
@@ -90,6 +91,7 @@ export const MyTickets = ({ tickets = [] }: Props) => {
         setCurrentTicketId(null);
       }
     },
+
     update(cache, { data }) {
       if (data.updateAttendeeTicket.__typename === "TicketReassigned") {
         setCurrentTicketId(null);
@@ -117,7 +119,9 @@ export const MyTickets = ({ tickets = [] }: Props) => {
         });
       }
     },
-    onError(err) {},
+    onError(err) {
+      console.log(err);
+    },
   });
 
   const updateTicketCallback = useCallback(
@@ -151,6 +155,7 @@ export const MyTickets = ({ tickets = [] }: Props) => {
         updateTicket({
           variables: {
             conference: code,
+            language: language,
             input: {
               id,
               name: selectedProducts[id][0].attendeeName,

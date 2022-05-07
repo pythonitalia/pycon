@@ -42,7 +42,11 @@ UpdateAttendeeTicketResult = strawberry.union(
 class AttendeeTicketMutation:
     @strawberry.mutation(permission_classes=[IsTicketOwner])
     def update_attendee_ticket(
-        self, info: Info, conference: str, input: UpdateAttendeeTicketInput
+        self,
+        info: Info,
+        conference: str,
+        input: UpdateAttendeeTicketInput,
+        language: str = "en",
     ) -> UpdateAttendeeTicketResult:
         conference = Conference.objects.get(code=conference)
         try:
@@ -54,7 +58,7 @@ class AttendeeTicketMutation:
 
         # TODO: filter by orderposition
         tickets = get_user_tickets(
-            conference, info.context.request.user.email, language="en"
+            conference, info.context.request.user.email, language=language
         )
 
         ticket = next(filter(lambda ticket: str(ticket.id) == input.id, tickets), None)
