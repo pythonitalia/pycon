@@ -31,7 +31,6 @@ export const MyTickets = ({ tickets = [] }: Props) => {
 
   const language = useCurrentLanguage();
   const { user } = useCurrentUser({ skip: false });
-  console.log(user);
   const ticketHeader = useTranslatedMessage("profile.ticketFor");
   const nameHeader = useTranslatedMessage("orderReview.attendeeName");
   const emailHeader = useTranslatedMessage("orderReview.attendeeEmail");
@@ -74,6 +73,7 @@ export const MyTickets = ({ tickets = [] }: Props) => {
     },
     update(cache, { data }) {
       if (data.updateAttendeeTicket.__typename === "TicketReassigned") {
+        setCurrentTicketId(null);
         const { me } = cache.readQuery({
           query: MyProfileDocument,
           variables: {
@@ -238,11 +238,6 @@ export const MyTickets = ({ tickets = [] }: Props) => {
             />
 
             <Box sx={{ ml: 3 }}>
-              {console.log(
-                "__typename",
-                updatedData?.updateAttendeeTicket.__typename,
-              )}
-              {console.log("updatedError", updatedError)}
               {(updatedData?.updateAttendeeTicket.__typename ===
                 "UpdateAttendeeTicketError" ||
                 updatedError) && (
