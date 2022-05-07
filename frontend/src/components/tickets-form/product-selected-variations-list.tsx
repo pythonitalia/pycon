@@ -5,7 +5,7 @@ import React from "react";
 import { Box, Flex, Grid, jsx } from "theme-ui";
 
 import { Button } from "../button/button";
-import { Ticket } from "./types";
+import { TicketItem } from "~/types";
 
 type SelectedProduct = {
   id: string;
@@ -13,7 +13,7 @@ type SelectedProduct = {
 };
 
 export const ProductSelectedVariationsList: React.SFC<{
-  product: Ticket;
+  product: TicketItem;
   selectedProducts: {
     [id: string]: SelectedProduct[];
   };

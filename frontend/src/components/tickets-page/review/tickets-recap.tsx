@@ -6,8 +6,8 @@ import { FormattedMessage } from "react-intl";
 import { Box, Grid, Heading, jsx, Text } from "theme-ui";
 
 import { Link } from "~/components/link";
-import { Ticket } from "~/components/tickets-form/types";
 import { useCurrentLanguage } from "~/locale/context";
+import { TicketItem } from "~/types";
 
 import { SelectedProducts } from "../types";
 import { calculateProductPrice } from "./prices";
@@ -16,8 +16,8 @@ import { ReviewItem } from "./review-item";
 type Props = {
   selectedProducts: SelectedProducts;
   productsById: {
-    [x: string]: Ticket;
-    [x: number]: Ticket;
+    [x: string]: TicketItem;
+    [x: number]: TicketItem;
   };
 };
 

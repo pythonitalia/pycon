@@ -6,10 +6,10 @@ import { FormattedMessage } from "react-intl";
 import { Flex, jsx, Select } from "theme-ui";
 
 import { Button } from "../button/button";
-import { Ticket } from "./types";
+import { TicketItem } from "~/types";
 
 export const AddProductWithVariation: React.SFC<{
-  ticket: Ticket;
+  ticket: TicketItem;
   addVariation: (variationId: string) => void;
 }> = ({ ticket, addVariation }) => {
   const [currentVariation, setCurrentVariation] = useState("");

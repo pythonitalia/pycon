@@ -6,13 +6,13 @@ import { FormattedMessage } from "react-intl";
 import { Box, Heading, Input, jsx, Select } from "theme-ui";
 
 import { InputWrapper } from "~/components/input-wrapper";
-import { Ticket } from "~/components/tickets-form/types";
+import { TicketItem } from "~/types";
 
 import { Button } from "../button/button";
 import { SelectedProducts } from "./types";
 
 type Props = {
-  tickets: Ticket[];
+  tickets: TicketItem[];
   selectedProducts: SelectedProducts;
   onNextStep: () => void;
   nextStepMessageId?: string;
@@ -29,7 +29,7 @@ type Props = {
     key: string;
     value: string;
   }) => void;
-  showHeading: boolean;
+  showHeading?: boolean;
 };
 
 export const QuestionsSection: React.SFC<Props> = ({

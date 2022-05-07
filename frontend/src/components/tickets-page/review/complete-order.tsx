@@ -5,12 +5,12 @@ import React from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, Heading, jsx, Text } from "theme-ui";
 
-import { Ticket } from "~/components/tickets-form/types";
 import { useCurrentLanguage } from "~/locale/context";
 
 import { HotelRoom, OrderState } from "../types";
 import { CreateOrderButtons } from "./create-order-buttons";
 import { calculateTotalAmount } from "./prices";
+import { TicketItem } from "~/types";
 
 type Props = {
   email: string;
@@ -20,8 +20,8 @@ type Props = {
     [x: number]: HotelRoom;
   };
   productsById: {
-    [x: string]: Ticket;
-    [x: number]: Ticket;
+    [x: string]: TicketItem;
+    [x: number]: TicketItem;
   };
 };
 

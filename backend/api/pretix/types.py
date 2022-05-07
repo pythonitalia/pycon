@@ -126,6 +126,7 @@ class TicketType(Enum):
     STANDARD = "standard"
     BUSINESS = "business"
     ASSOCIATION = "association"
+    HOTEL = "hotel"
 
 
 def _get_category_for_ticket(item, categories):
@@ -142,7 +143,7 @@ def _get_by_language(item, key, language):
 class TicketItem:
     id: strawberry.ID
     name: str
-    language: str
+    language: Optional[str]
     description: Optional[str]
     active: Optional[bool]
     default_price: Optional[str]
@@ -165,6 +166,12 @@ class TicketItem:
             return TicketType.ASSOCIATION
 
         return TicketType.STANDARD
+
+    @strawberry.field
+    def sold_out(self) -> Optional[bool]:
+        if self.quantity_left is None:
+            return False
+        return self.quantity_left <= 0
 
     @classmethod
     def from_data(
