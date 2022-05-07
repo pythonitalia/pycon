@@ -5,7 +5,7 @@ from conferences.models.conference import Conference
 
 
 class IsTicketOwner(BasePermission):
-    message = "You have not the rights to edit this ticket."
+    message = "You are not allowed to update this ticket."
 
     def has_permission(self, source, info, **kwargs):
         pastaporto = info.context.request.pastaporto

@@ -1,6 +1,7 @@
 import logging
 
 import strawberry
+from requests import HTTPError
 from strawberry.types import Info
 
 import pretix
@@ -47,7 +48,7 @@ class AttendeeTicketMutation:
             if tickets:
                 return tickets[0]
 
-        except Exception as e:
+        except HTTPError as e:
             logger.error(
                 "Unable to update the AttendeeTicket %s due to an error %s",
                 input.id,

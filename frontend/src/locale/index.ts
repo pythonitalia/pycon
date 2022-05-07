@@ -5,6 +5,7 @@ export const messages = {
       "Join PyCon Italia from the 2nd to the 5th of June 2022 in Florence, Italy!",
     "global.accordion.close": "Close",
     "global.accordion.readMore": "Read more",
+    "global.here": "here",
     "global.yes": "Yes",
     "global.no": "No",
     "global.learnMore": "Learn more",
@@ -47,8 +48,8 @@ export const messages = {
     "profile.price": "Price",
     "profile.manageOrder": "Manage order",
     "profile.myTickets": "My Tickets",
-    "profile.myTickets.notickets":
-      "No tickets assigned to your email, you can buy one {linkTicket}",
+    "profile.myTickets.notickets": `No tickets found assigned to your email: {email}.
+    Make sure the attendee email and your email matches in your order or buy a ticket {linkTicket}.`,
     "profile.ticketFor": "Ticket for",
     "profile.myTickets.update.AttendeeTicket.message":
       "The ticket was successfully saved.",
@@ -530,6 +531,7 @@ export const messages = {
     description: "Partecipa a PyCon Italia! Dal 2 al 5 Giugno 2022 a Firenze!",
     "global.accordion.close": "Chiudi",
     "global.accordion.readMore": "Apri",
+    "global.here": "qui",
     "global.yes": "Si",
     "global.no": "No",
     "global.learnMore": "Maggiori informazioni",
@@ -571,8 +573,8 @@ export const messages = {
     "profile.mySubmissionsHeader": "Le mie submissions",
     "profile.myOrders": "I miei ordini",
     "profile.myTickets": "I miei biglietti",
-    "profile.myTickets.notickets":
-      "Nessun ticket associato a questa email, puoi comprarne uno {linkTicket}",
+    "profile.myTickets.notickets": `Non è stato trovato nessun ticket associato alla tua mail {email}.
+    Perfavore, assicurati che l'email del partecipante e la tua email corrispondano nel tuo ordine o acquista un biglietto {linkTicket}.`,
     "profile.myTickets.update.AttendeeTicket.message":
       "Il biglietto e' stato salvato correttamente!",
     "profile.myTickets.update.TicketReassigned.message":

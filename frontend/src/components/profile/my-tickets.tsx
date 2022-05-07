@@ -11,6 +11,7 @@ import { Link } from "~/components/link";
 import { Modal } from "~/components/modal";
 import { Table } from "~/components/table";
 import { QuestionsSection } from "~/components/tickets-page/questions-section";
+import { useCurrentUser } from "~/helpers/use-current-user";
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
 import { AttendeeTicket, useUpdateTicketMutation } from "~/types";
 
@@ -22,6 +23,9 @@ type Props = {
 
 export const MyTickets = ({ tickets = [] }: Props) => {
   const code = process.env.conferenceCode;
+
+  const { user } = useCurrentUser({ skip: false });
+  console.log(user);
   const ticketHeader = useTranslatedMessage("profile.ticketFor");
   const nameHeader = useTranslatedMessage("orderReview.attendeeName");
   const emailHeader = useTranslatedMessage("orderReview.attendeeEmail");
@@ -66,12 +70,14 @@ export const MyTickets = ({ tickets = [] }: Props) => {
       if (data.updateAttendeeTicket.__typename === "TicketReassigned") {
         cache.modify({
           id: cache.identify({
-            id: data.id,
-            __typename: "AttendeeTicket",
+            id: user.id,
+            __typename: "User",
           }),
           fields: {
             tickets(existingTicketRefs, { DELETE }) {
-              return DELETE;
+              return existingTicketRefs.filter(
+                (ticketRef) => data.updateAttendeeTicket.id !== ticketRef,
+              );
             },
           },
         });
@@ -146,7 +152,14 @@ export const MyTickets = ({ tickets = [] }: Props) => {
         {tickets.length === 0 && (
           <FormattedMessage
             id="profile.myTickets.notickets"
-            values={{ linkTicket: <Link path="/tickets">here</Link> }}
+            values={{
+              email: user.email,
+              linkTicket: (
+                <Link path="/tickets">
+                  <FormattedMessage id="global.here" />
+                </Link>
+              ),
+            }}
           />
         )}
         {tickets.length > 0 && (
@@ -210,8 +223,11 @@ export const MyTickets = ({ tickets = [] }: Props) => {
             />
 
             <Box sx={{ ml: 3 }}>
-              {console.log(updatedData?.updateAttendeeTicket.__typename)}
-              {console.log(updatedError)}
+              {console.log(
+                "__typename",
+                updatedData?.updateAttendeeTicket.__typename,
+              )}
+              {console.log("updatedError", updatedError)}
               {(updatedData?.updateAttendeeTicket.__typename ===
                 "UpdateAttendeeTicketError" ||
                 updatedError) && (
