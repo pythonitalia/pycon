@@ -13,7 +13,12 @@ import { Table } from "~/components/table";
 import { QuestionsSection } from "~/components/tickets-page/questions-section";
 import { useCurrentUser } from "~/helpers/use-current-user";
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
-import { AttendeeTicket, useUpdateTicketMutation } from "~/types";
+import { useCurrentLanguage } from "~/locale/context";
+import {
+  AttendeeTicket,
+  useUpdateTicketMutation,
+  MyProfileDocument,
+} from "~/types";
 
 import { ProductState } from "../tickets-page/types";
 
@@ -24,6 +29,7 @@ type Props = {
 export const MyTickets = ({ tickets = [] }: Props) => {
   const code = process.env.conferenceCode;
 
+  const language = useCurrentLanguage();
   const { user } = useCurrentUser({ skip: false });
   console.log(user);
   const ticketHeader = useTranslatedMessage("profile.ticketFor");
@@ -68,17 +74,26 @@ export const MyTickets = ({ tickets = [] }: Props) => {
     },
     update(cache, { data }) {
       if (data.updateAttendeeTicket.__typename === "TicketReassigned") {
-        cache.modify({
-          id: cache.identify({
-            id: user.id,
-            __typename: "User",
-          }),
-          fields: {
-            tickets(existingTicketRefs, { DELETE }) {
-              return existingTicketRefs.filter(
-                (ticketRef) => data.updateAttendeeTicket.id !== ticketRef,
-              );
+        const { me } = cache.readQuery({
+          query: MyProfileDocument,
+          variables: {
+            conference: process.env.conferenceCode,
+            language: language,
+          },
+        });
+        cache.writeQuery({
+          query: MyProfileDocument,
+          data: {
+            me: {
+              ...me,
+              tickets: me.tickets.filter(
+                (ticket) => ticket.id !== data.updateAttendeeTicket.id,
+              ),
             },
+          },
+          variables: {
+            conference: process.env.conferenceCode,
+            language: language,
           },
         });
       }
@@ -153,7 +168,7 @@ export const MyTickets = ({ tickets = [] }: Props) => {
           <FormattedMessage
             id="profile.myTickets.notickets"
             values={{
-              email: user.email,
+              email: user?.email,
               linkTicket: (
                 <Link path="/tickets">
                   <FormattedMessage id="global.here" />
