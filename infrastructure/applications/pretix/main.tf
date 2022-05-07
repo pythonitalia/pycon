@@ -105,7 +105,7 @@ resource "aws_ecs_task_definition" "pretix_service" {
           value = module.secrets.value.mail_password
         },
         {
-          name  = "SENTRY_DSN"
+          name  = "PRETIX_SENTRY_DSN"
           value = module.secrets.value.sentry_dsn
         },
         {
