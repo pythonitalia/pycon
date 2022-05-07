@@ -106,8 +106,8 @@ class Answer:
 class Question:
     id: strawberry.ID
     name: str
-    required: bool
-    options: List[Option]
+    required: Optional[bool]
+    options: Optional[List[Option]]
     answer: Optional[Answer]
 
     @classmethod
@@ -144,20 +144,20 @@ class TicketItem:
     name: str
     language: str
     description: Optional[str]
-    active: bool
-    default_price: str
-    category: str
+    active: Optional[bool]
+    default_price: Optional[str]
+    category: Optional[str]
     category_internal_name: Optional[str]
-    tax_rate: float
-    variations: List[ProductVariation]
+    tax_rate: Optional[float]
+    variations: Optional[List[ProductVariation]]
     # TODO: correct types
     available_from: Optional[str]
     available_until: Optional[str]
-    questions: List[Question]
+    questions: Optional[List[Question]]
     quantity_left: Optional[int]
 
     @strawberry.field
-    def type(self) -> TicketType:
+    def type(self) -> Optional[TicketType]:
         if "business" in self.name.lower():
             return TicketType.BUSINESS
 

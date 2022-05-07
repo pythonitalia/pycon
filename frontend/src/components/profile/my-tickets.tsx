@@ -25,9 +25,11 @@ import { ProductState } from "../tickets-page/types";
 type Props = {
   tickets: AttendeeTicket[];
 };
-function snakeToCamel(str) {
+
+const snakeToCamel = (str: string) => {
   return str.replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase());
-}
+};
+
 export const MyTickets = ({ tickets = [] }: Props) => {
   const code = process.env.conferenceCode;
 
