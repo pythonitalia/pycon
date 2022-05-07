@@ -40,8 +40,9 @@ export const MyTickets = ({ tickets = [] }: Props) => {
   const headers = [ticketHeader, nameHeader, emailHeader, ""];
 
   const [selectedProducts, setSelectedProducts] = useState(
-    tickets.reduce((acc, ticket) => {
-      (acc[ticket.id] = acc[ticket.id] || []).push({
+    tickets.reduce((accumulator, ticket) => {
+      // if accumulator[ticket.id] is undefined assign empty list
+      (accumulator[ticket.id] = accumulator[ticket.id] || []).push({
         id: ticket.id,
         attendeeName: ticket.name,
         attendeeEmail: ticket.email,
@@ -54,7 +55,7 @@ export const MyTickets = ({ tickets = [] }: Props) => {
           ]),
         ),
       } as ProductState);
-      return acc;
+      return accumulator;
     }, {}),
   );
 

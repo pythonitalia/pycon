@@ -1,7 +1,6 @@
 import logging
 
 import strawberry
-from requests import HTTPError
 from strawberry.types import Info
 
 import pretix
@@ -14,11 +13,6 @@ logger = logging.getLogger(__name__)
 
 
 @strawberry.type
-class UpdateAttendeeTicketError:
-    message: str = "Something went wrong while updating the ticket, please try again."
-
-
-@strawberry.type
 class TicketReassigned:
     id: strawberry.ID
     email: str
@@ -26,7 +20,7 @@ class TicketReassigned:
 
 UpdateAttendeeTicketResult = strawberry.union(
     "UpdateAttendeeTicketResult",
-    (TicketReassigned, AttendeeTicket, UpdateAttendeeTicketError),
+    (TicketReassigned, AttendeeTicket),
 )
 
 
@@ -37,25 +31,17 @@ class AttendeeTicketMutation:
         self, info: Info, conference_code: str, input: UpdateAttendeeTicketInput
     ) -> UpdateAttendeeTicketResult:
         conference = Conference.objects.get(code=conference_code)
-        try:
-            pretix.update_ticket(conference, input)
-            # TODO: filter by orderposition
-            tickets = get_user_tickets(
-                conference, info.context.request.user.email, language="en"
-            )
 
-            tickets = list(filter(lambda ticket: str(ticket.id) == input.id, tickets))
-            if tickets:
-                return tickets[0]
+        pretix.update_ticket(conference, input)
 
-        except HTTPError as e:
-            logger.error(
-                "Unable to update the AttendeeTicket %s due to an error %s",
-                input.id,
-                e,
-                exc_info=True,
-            )
-            return UpdateAttendeeTicketError(message=str(e))
+        # TODO: filter by orderposition
+        tickets = get_user_tickets(
+            conference, info.context.request.user.email, language="en"
+        )
+
+        tickets = list(filter(lambda ticket: str(ticket.id) == input.id, tickets))
+        if tickets:
+            return tickets[0]
 
         # If the user has changed the email, the ticket will not be returned but
         # the mutation succeeded.
