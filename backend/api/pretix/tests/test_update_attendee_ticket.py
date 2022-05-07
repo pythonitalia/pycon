@@ -15,8 +15,8 @@ def test_cannot_update_ticket_if_i_am_not_the_owner(
     )
 
     query = """
-    mutation UpdateTicket($conferenceCode: String!, $input: UpdateAttendeeTicketInput!) {
-        updateAttendeeTicket(conferenceCode: $conferenceCode, input: $input) {
+    mutation UpdateTicket($conference: String!, $input: UpdateAttendeeTicketInput!) {
+        updateAttendeeTicket(conference: $conference, input: $input) {
             ... on AttendeeTicket {
                 id
             }
@@ -27,7 +27,7 @@ def test_cannot_update_ticket_if_i_am_not_the_owner(
     response = graphql_client.query(
         query,
         variables={
-            "conferenceCode": conference.code,
+            "conference": conference.code,
             "input": {
                 "id": pretix_user_tickets[0]["id"],
                 "name": "Ester",
@@ -56,8 +56,8 @@ def test_update_ticket_errors_handling(
     )
 
     query = """
-    mutation UpdateTicket($conferenceCode: String!, $input: UpdateAttendeeTicketInput!) {
-        updateAttendeeTicket(conferenceCode: $conferenceCode, input: $input) {
+    mutation UpdateTicket($conference: String!, $input: UpdateAttendeeTicketInput!) {
+        updateAttendeeTicket(conference: $conference, input: $input) {
             ... on AttendeeTicket {
                 id
             }
@@ -68,7 +68,7 @@ def test_update_ticket_errors_handling(
     response = graphql_client.query(
         query,
         variables={
-            "conferenceCode": conference.code,
+            "conference": conference.code,
             "input": {
                 "id": "999",
                 "name": "Ester",
@@ -129,8 +129,8 @@ def test_update_ticket(
     )
 
     query = """
-    mutation UpdateTicket($conferenceCode: String!, $input: UpdateAttendeeTicketInput!) {
-        updateAttendeeTicket(conferenceCode: $conferenceCode, input: $input) {
+    mutation UpdateTicket($conference: String!, $input: UpdateAttendeeTicketInput!) {
+        updateAttendeeTicket(conference: $conference, input: $input) {
             __typename
             ... on AttendeeTicket {
                 id
@@ -144,7 +144,7 @@ def test_update_ticket(
     response = graphql_client.query(
         query,
         variables={
-            "conferenceCode": conference.code,
+            "conference": conference.code,
             "input": {
                 "id": "999",
                 "name": "Penny",
@@ -199,8 +199,8 @@ def test_update_email_reassign_the_ticket(
     )
 
     query = """
-    mutation UpdateTicket($conferenceCode: String!, $input: UpdateAttendeeTicketInput!) {
-        updateAttendeeTicket(conferenceCode: $conferenceCode, input: $input) {
+    mutation UpdateTicket($conference: String!, $input: UpdateAttendeeTicketInput!) {
+        updateAttendeeTicket(conference: $conference, input: $input) {
             __typename
              ... on TicketReassigned {
                 id
@@ -213,7 +213,7 @@ def test_update_email_reassign_the_ticket(
     response = graphql_client.query(
         query,
         variables={
-            "conferenceCode": conference.code,
+            "conference": conference.code,
             "input": {
                 "id": "999",
                 "name": pretix_user_tickets[0]["attendee_name"],

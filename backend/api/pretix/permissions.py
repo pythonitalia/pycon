@@ -13,7 +13,7 @@ class IsTicketOwner(BasePermission):
         if not pastaporto.is_authenticated:
             return False
 
-        conference = Conference.objects.get(code=kwargs["conferenceCode"])
+        conference = Conference.objects.get(code=kwargs["conference"])
         if not conference:
             return False
 

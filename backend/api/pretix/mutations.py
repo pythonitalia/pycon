@@ -28,9 +28,9 @@ UpdateAttendeeTicketResult = strawberry.union(
 class AttendeeTicketMutation:
     @strawberry.mutation(permission_classes=[IsTicketOwner])
     def update_attendee_ticket(
-        self, info: Info, conference_code: str, input: UpdateAttendeeTicketInput
+        self, info: Info, conference: str, input: UpdateAttendeeTicketInput
     ) -> UpdateAttendeeTicketResult:
-        conference = Conference.objects.get(code=conference_code)
+        conference = Conference.objects.get(code=conference)
 
         pretix.update_ticket(conference, input)
 
@@ -39,9 +39,9 @@ class AttendeeTicketMutation:
             conference, info.context.request.user.email, language="en"
         )
 
-        tickets = list(filter(lambda ticket: str(ticket.id) == input.id, tickets))
-        if tickets:
-            return tickets[0]
+        ticket = next(filter(lambda ticket: str(ticket.id) == input.id, tickets), None)
+        if ticket:
+            return ticket
 
         # If the user has changed the email, the ticket will not be returned but
         # the mutation succeeded.

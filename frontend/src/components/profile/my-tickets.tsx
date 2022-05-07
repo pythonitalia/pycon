@@ -134,7 +134,7 @@ export const MyTickets = ({ tickets = [] }: Props) => {
           });
         updateTicket({
           variables: {
-            conferenceCode: code,
+            conference: code,
             input: {
               id,
               name: selectedProducts[id][0].attendeeName,
@@ -244,9 +244,7 @@ export const MyTickets = ({ tickets = [] }: Props) => {
             />
 
             <Box sx={{ ml: 3 }}>
-              {(updatedData?.updateAttendeeTicket.__typename ===
-                "UpdateAttendeeTicketError" ||
-                updatedError) && (
+              {updatedError && (
                 <Alert variant="alert">
                   {error ? (
                     error
