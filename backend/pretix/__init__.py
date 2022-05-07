@@ -31,7 +31,6 @@ def pretix(
     method="get",
     **kwargs,
 ):
-    print(get_api_url(conference, endpoint))
     return requests.request(
         method,
         get_api_url(conference, endpoint),
@@ -390,7 +389,7 @@ def get_user_tickets(conference: Conference, email: str):
     return response.json()
 
 
-def get_user_ticket(conference: Conference, email: str, id: int):
+def get_user_ticket(conference: Conference, email: str, id: str):
 
     # TODO: filter by orderposition in the PretixAPI
     tickets = get_user_tickets(conference, email)
@@ -402,6 +401,11 @@ def get_user_ticket(conference: Conference, email: str, id: int):
 
     if tickets:
         return tickets[0]
+
+
+def is_ticket_owner(conference: Conference, email: str, id: str) -> bool:
+    ticket = get_user_ticket(conference, email, id)
+    return ticket is not None
 
 
 def update_ticket(conference: Conference, attendee_ticket: UpdateAttendeeTicketInput):

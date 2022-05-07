@@ -4,7 +4,7 @@ import strawberry
 from strawberry.types import Info
 
 import pretix
-from api.permissions import IsAuthenticated
+from api.pretix.permissions import IsTicketOwner
 from api.pretix.query import get_user_tickets
 from api.pretix.types import AttendeeTicket, UpdateAttendeeTicketInput
 from conferences.models.conference import Conference
@@ -14,13 +14,13 @@ logger = logging.getLogger(__name__)
 
 @strawberry.type
 class UpdateAttendeeTicketError:
-    message: str = ""
+    message: str = "Something went wrong while updating the ticket, please try again."
 
 
 @strawberry.type
 class TicketReassigned:
     id: strawberry.ID
-    message: str = "Ticket was Successfully reassigned to {email}"
+    email: str
 
 
 UpdateAttendeeTicketResult = strawberry.union(
@@ -29,27 +29,15 @@ UpdateAttendeeTicketResult = strawberry.union(
 )
 
 
-def is_ticket_owner(conference: Conference, email: str, id: str) -> bool:
-    ticket = pretix.get_user_ticket(conference, email, id)
-    return ticket is not None
-
-
 @strawberry.type
 class AttendeeTicketMutation:
-    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @strawberry.mutation(permission_classes=[IsTicketOwner])
     def update_attendee_ticket(
-        self, info: Info, code: str, input: UpdateAttendeeTicketInput
+        self, info: Info, conference_code: str, input: UpdateAttendeeTicketInput
     ) -> UpdateAttendeeTicketResult:
-        conference = Conference.objects.get(code=code)
+        conference = Conference.objects.get(code=conference_code)
         try:
-            email = info.context.request.user.email
-            if not is_ticket_owner(conference, email, input.id):
-                return UpdateAttendeeTicketError(
-                    message="You are not allowed to updtae this ticket."
-                )
-
             pretix.update_ticket(conference, input)
-
             # TODO: filter by orderposition
             tickets = get_user_tickets(
                 conference, info.context.request.user.email, language="en"
@@ -70,6 +58,4 @@ class AttendeeTicketMutation:
 
         # If the user has changed the email, the ticket will not be returned but
         # the mutation succeeded.
-        return TicketReassigned(
-            id=input.id, message=TicketReassigned.message.format(email=input.email)
-        )
+        return TicketReassigned(id=input.id, email=input.email)

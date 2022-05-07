@@ -1,9 +1,9 @@
 mutation UpdateTicket(
-  $conference: String!
+  $conferenceCode: String!
   $input: UpdateAttendeeTicketInput!
 ) {
   __typename
-  updateAttendeeTicket(conference: $conference, input: $input) {
+  updateAttendeeTicket(conferenceCode: $conferenceCode, input: $input) {
     __typename
 
     ... on AttendeeTicket {
@@ -35,7 +35,7 @@ mutation UpdateTicket(
     }
     ... on TicketReassigned {
       id
-      message
+      email
     }
   }
 }

@@ -5,10 +5,9 @@ import { useState, useCallback } from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, Heading, jsx } from "theme-ui";
 
-import { useRouter } from "next/router";
-
 import { Alert } from "~/components/alert";
 import { Button } from "~/components/button/button";
+import { Link } from "~/components/link";
 import { Modal } from "~/components/modal";
 import { Table } from "~/components/table";
 import { QuestionsSection } from "~/components/tickets-page/questions-section";
@@ -16,18 +15,18 @@ import { useTranslatedMessage } from "~/helpers/use-translated-message";
 import { AttendeeTicket, useUpdateTicketMutation } from "~/types";
 
 import { ProductState } from "../tickets-page/types";
-import { Link } from "~/components/link";
 
 type Props = {
-  tickets?: AttendeeTicket[];
+  tickets: AttendeeTicket[];
 };
 
-export const MyTickets = ({ tickets }: Props) => {
+export const MyTickets = ({ tickets = [] }: Props) => {
   const code = process.env.conferenceCode;
   const ticketHeader = useTranslatedMessage("profile.ticketFor");
   const nameHeader = useTranslatedMessage("orderReview.attendeeName");
   const emailHeader = useTranslatedMessage("orderReview.attendeeEmail");
-  const [currentTicket, setCurrentTicket] = useState({ id: null, show: false });
+  const [currentTicketId, setCurrentTicketId] = useState(null);
+  const [error, setError] = useState(null);
 
   const headers = [ticketHeader, nameHeader, emailHeader, ""];
 
@@ -60,7 +59,7 @@ export const MyTickets = ({ tickets }: Props) => {
           result.updateAttendeeTicket.__typename,
         ) > -1
       ) {
-        setCurrentTicket({ id: null, show: false });
+        setCurrentTicketId(null);
       }
     },
     update(cache, { data }) {
@@ -77,6 +76,10 @@ export const MyTickets = ({ tickets }: Props) => {
           },
         });
       }
+    },
+    onError(err) {
+      console.error(err);
+      setError(err.message);
     },
   });
 
@@ -107,10 +110,9 @@ export const MyTickets = ({ tickets }: Props) => {
             }
             return data;
           });
-
         updateTicket({
           variables: {
-            conference: code,
+            conferenceCode: code,
             input: {
               id,
               name: selectedProducts[id][0].attendeeName,
@@ -159,7 +161,7 @@ export const MyTickets = ({ tickets }: Props) => {
               item.email,
               <Box sx={{ m: -2 }}>
                 <Button
-                  onClick={() => setCurrentTicket({ id: item.id, show: true })}
+                  onClick={() => setCurrentTicketId(item.id)}
                   variant="small"
                 >
                   <FormattedMessage id="profile.manageTicket" />
@@ -168,32 +170,28 @@ export const MyTickets = ({ tickets }: Props) => {
             ]}
           />
         )}
-
-        {updatedData?.updateAttendeeTicket.__typename === "AttendeeTicket" && (
+        {["AttendeeTicket", "TicketReassigned"].indexOf(
+          updatedData?.updateAttendeeTicket.__typename,
+        ) > -1 && (
           <Alert variant="success">
             <FormattedMessage
-              id={`profile.myTickets.update.AttendeeTicket.message`}
+              id={`profile.myTickets.update.${updatedData.updateAttendeeTicket.__typename}.message`}
+              values={{ email: updatedData.updateAttendeeTicket.email }}
             />
           </Alert>
         )}
-        {updatedData?.updateAttendeeTicket.__typename ===
-          "TicketReassigned" && (
-          <Alert variant="success">
-            {updatedData.updateAttendeeTicket.message}
-          </Alert>
-        )}
 
-        {currentTicket.id && (
+        {currentTicketId && (
           <Modal
-            show={currentTicket.show}
-            onClose={() => setCurrentTicket({ id: null, show: false })}
+            show={!!currentTicketId}
+            onClose={() => setCurrentTicketId(null)}
           >
             <QuestionsSection
               tickets={[
                 {
-                  ...tickets.filter((item) => item.id == currentTicket.id)[0]
+                  ...tickets.filter((item) => item.id == currentTicketId)[0]
                     .item,
-                  id: currentTicket.id,
+                  id: currentTicketId,
                 },
               ]}
               updateTicketInfo={({ id, index, key, value }) => {
@@ -207,16 +205,22 @@ export const MyTickets = ({ tickets }: Props) => {
               selectedProducts={selectedProducts}
               showHeading={false}
               nextStepMessageId="buttons.save"
-              onNextStep={updateTicketCallback(currentTicket.id)}
+              onNextStep={updateTicketCallback(currentTicketId)}
               nextStepLoading={updatingTicket}
             />
 
             <Box sx={{ ml: 3 }}>
+              {console.log(updatedData?.updateAttendeeTicket.__typename)}
+              {console.log(updatedError)}
               {(updatedData?.updateAttendeeTicket.__typename ===
                 "UpdateAttendeeTicketError" ||
                 updatedError) && (
                 <Alert variant="alert">
-                  <FormattedMessage id="global.somethingWentWrong" />
+                  {error ? (
+                    error
+                  ) : (
+                    <FormattedMessage id="global.somethingWentWrong" />
+                  )}
                 </Alert>
               )}
             </Box>
