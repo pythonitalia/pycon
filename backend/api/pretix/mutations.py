@@ -56,7 +56,7 @@ class AttendeeTicketMutation:
             data = e.response.json()
             return _get_update_tickets_errors(data, input)
 
-        # TODO: filter by orderposition
+        # TODO: filter by orderposition in the Pretix API
         tickets = get_user_tickets(
             conference, info.context.request.user.email, language=language
         )
