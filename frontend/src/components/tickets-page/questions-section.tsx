@@ -115,6 +115,7 @@ export const QuestionsSection: React.SFC<Props> = ({
                       label={
                         <FormattedMessage id="orderQuestions.attendeeName" />
                       }
+                      errors={[selectedProductInfo?.errors?.attendeeName]}
                     >
                       <Input
                         required={true}
@@ -135,6 +136,7 @@ export const QuestionsSection: React.SFC<Props> = ({
                       label={
                         <FormattedMessage id="orderQuestions.attendeeEmail" />
                       }
+                      errors={[selectedProductInfo?.errors?.attendeeEmail]}
                     >
                       <Input
                         required={true}
@@ -156,6 +158,7 @@ export const QuestionsSection: React.SFC<Props> = ({
                         <InputWrapper
                           isRequired={question.required}
                           label={question.name}
+                          errors={[selectedProductInfo?.errors[question.id]]}
                         >
                           {question.options.length === 0 ? (
                             <Input

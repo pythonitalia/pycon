@@ -30,9 +30,18 @@ mutation UpdateTicket(
         }
       }
     }
+
     ... on TicketReassigned {
       id
       email
+    }
+
+    ... on UpdateAttendeeTicketErrors {
+      id
+      errors {
+        field
+        message
+      }
     }
   }
 }

@@ -25,7 +25,9 @@ import { ProductState } from "../tickets-page/types";
 type Props = {
   tickets: AttendeeTicket[];
 };
-
+function snakeToCamel(str) {
+  return str.replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase());
+}
 export const MyTickets = ({ tickets = [] }: Props) => {
   const code = process.env.conferenceCode;
 
@@ -35,7 +37,6 @@ export const MyTickets = ({ tickets = [] }: Props) => {
   const nameHeader = useTranslatedMessage("orderReview.attendeeName");
   const emailHeader = useTranslatedMessage("orderReview.attendeeEmail");
   const [currentTicketId, setCurrentTicketId] = useState(null);
-  const [error, setError] = useState(null);
 
   const headers = [ticketHeader, nameHeader, emailHeader, ""];
 
@@ -46,6 +47,7 @@ export const MyTickets = ({ tickets = [] }: Props) => {
         id: ticket.id,
         attendeeName: ticket.name,
         attendeeEmail: ticket.email,
+        errors: {},
         answers: Object.fromEntries(
           ticket.item.questions.map((question) => [
             question.id,
@@ -58,17 +60,33 @@ export const MyTickets = ({ tickets = [] }: Props) => {
       return accumulator;
     }, {}),
   );
-
   const [
     updateTicket,
     { data: updatedData, loading: updatingTicket, error: updatedError },
   ] = useUpdateTicketMutation({
     onCompleted(result) {
       if (
+        result.updateAttendeeTicket.__typename === "UpdateAttendeeTicketErrors"
+      ) {
+        selectedProducts[
+          result.updateAttendeeTicket.id
+        ][0].errors = Object.fromEntries(
+          result.updateAttendeeTicket.errors.map((error) => [
+            snakeToCamel(error.field),
+            error.message,
+          ]),
+        );
+
+        setSelectedProducts({ ...selectedProducts });
+      }
+
+      if (
         ["AttendeeTicket", "TicketReassigned"].indexOf(
           result.updateAttendeeTicket.__typename,
         ) > -1
       ) {
+        selectedProducts[result.updateAttendeeTicket.id][0].errors = {};
+        setSelectedProducts({ ...selectedProducts });
         setCurrentTicketId(null);
       }
     },
@@ -99,10 +117,7 @@ export const MyTickets = ({ tickets = [] }: Props) => {
         });
       }
     },
-    onError(err) {
-      console.error(err);
-      setError(err.message);
-    },
+    onError(err) {},
   });
 
   const updateTicketCallback = useCallback(
@@ -120,7 +135,7 @@ export const MyTickets = ({ tickets = [] }: Props) => {
               )[0];
               answer = option.name;
             } else {
-              answer = selectedProducts[id][0].answers[question.id];
+              answer = selectedProducts[id][0].answers[question.id] || "";
             }
 
             const data = {
@@ -132,6 +147,7 @@ export const MyTickets = ({ tickets = [] }: Props) => {
             }
             return data;
           });
+
         updateTicket({
           variables: {
             conference: code,
@@ -245,13 +261,7 @@ export const MyTickets = ({ tickets = [] }: Props) => {
 
             <Box sx={{ ml: 3 }}>
               {updatedError && (
-                <Alert variant="alert">
-                  {error ? (
-                    error
-                  ) : (
-                    <FormattedMessage id="global.somethingWentWrong" />
-                  )}
-                </Alert>
+                <Alert variant="alert">{updatedError.message}</Alert>
               )}
             </Box>
           </Modal>

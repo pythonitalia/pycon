@@ -42,24 +42,35 @@ def test_cannot_update_ticket_if_i_am_not_the_owner(
 
 
 @override_settings(PRETIX_API="https://pretix/api/")
-def test_update_ticket_errors_handling(
-    graphql_client, mocker, requests_mock, user, conference_factory
-):
+def test_invalid_data(graphql_client, mocker, requests_mock, user, conference_factory):
     graphql_client.force_login(user)
     conference = conference_factory(pretix_organizer_id="org", pretix_event_id="event")
     mocker.patch("pretix.is_ticket_owner", return_value=True)
 
     requests_mock.patch(
         "https://pretix/api/organizers/org/events/event/orderpositions/999/",
-        text="Not Found",
         status_code=404,
+        json={
+            "attendee_name": ["This field may not be blank."],
+            "attendee_email": ["Enter a valid email address."],
+            "answers": [
+                {"options": ['Invalid pk "344" - object does not exist.']},
+                {},
+                {"answer": ["This field may not be blank."]},
+                {"answer": ["This field may not be blank."]},
+            ],
+        },
     )
 
     query = """
     mutation UpdateTicket($conference: String!, $input: UpdateAttendeeTicketInput!) {
         updateAttendeeTicket(conference: $conference, input: $input) {
-            ... on AttendeeTicket {
+            ... on UpdateAttendeeTicketErrors {
                 id
+                errors {
+                    field
+                    message
+                }
             }
         }
     }
@@ -71,13 +82,30 @@ def test_update_ticket_errors_handling(
             "conference": conference.code,
             "input": {
                 "id": "999",
-                "name": "Ester",
-                "email": "ester@pycon.it",
+                "name": " ",
+                "email": " foo@",
+                "answers": [
+                    {"answer": "No preferences", "question": "31", "options": ["344"]},
+                    {"answer": "Vegan", "question": "32"},
+                    {"answer": "", "question": "44"},
+                    {"answer": "", "question": "43"},
+                ],
             },
         },
     )
 
-    assert "404 Client Error" in response["errors"][0]["message"]
+    assert not response.get("errors")
+    assert response["data"]["updateAttendeeTicket"]["id"] == "999"
+    assert response["data"]["updateAttendeeTicket"]["errors"] == [
+        {"field": "attendee_name", "message": "This field may not be blank."},
+        {"field": "attendee_email", "message": "Enter a valid email " "address."},
+        {
+            "field": "31",
+            "message": 'Invalid pk "344" - object does not exist.',
+        },
+        {"field": "44", "message": "This field may not be blank."},
+        {"field": "43", "message": "This field may not be blank."},
+    ]
 
 
 @override_settings(PRETIX_API="https://pretix/api/")
