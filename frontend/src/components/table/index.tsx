@@ -57,16 +57,12 @@ export const Table = <T,>({
               <Box
                 key={keyGetter(content)}
                 sx={{
+                  display: "flex",
+                  alignItems: "center",
                   borderTop: [null, "primary"],
                   py: [0, 3],
                   pr: [0, 3],
                   wordBreak: "break-word",
-                  [`&:nth-of-type(${headers.length}n)`]: {
-                    pb: [3, 0],
-                  },
-                  "&:last-child": {
-                    pb: 0,
-                  },
                   "&:before": mobileHeader
                     ? {
                         content: `'${mobileHeader}:'`,

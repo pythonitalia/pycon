@@ -188,10 +188,10 @@ export const MyTickets = ({ tickets = [] }: Props) => {
               item.item.name,
               item.name,
               item.email,
-              <Box sx={{ m: -2 }}>
+              <Box>
                 <Button
                   onClick={() => setCurrentTicketId(item.id)}
-                  variant="small"
+                  variant="primary"
                 >
                   <FormattedMessage id="profile.manageTicket" />
                 </Button>
