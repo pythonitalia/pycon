@@ -220,9 +220,9 @@ export const MyTickets = ({ tickets = [] }: Props) => {
             ]}
           />
         )}
-        {["AttendeeTicket", "TicketReassigned"].indexOf(
-          updatedData?.updateAttendeeTicket.__typename,
-        ) > -1 && (
+        {(updatedData?.updateAttendeeTicket.__typename === "AttendeeTicket" ||
+          updatedData?.updateAttendeeTicket.__typename ===
+            "TicketReassigned") && (
           <Alert variant="success">
             <FormattedMessage
               id={`profile.myTickets.update.${updatedData.updateAttendeeTicket.__typename}.message`}
