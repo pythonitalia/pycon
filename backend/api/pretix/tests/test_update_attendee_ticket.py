@@ -89,6 +89,7 @@ def test_update_ticket(
     pretix_user_tickets,
     update_user_ticket,
     pretix_categories,
+    pretix_questions,
 ):
     graphql_client.force_login(user)
     conference = conference_factory(pretix_organizer_id="org", pretix_event_id="event")
@@ -126,6 +127,10 @@ def test_update_ticket(
     requests_mock.get(
         "https://pretix/api/organizers/org/events/event/categories",
         json=pretix_categories,
+    )
+    requests_mock.get(
+        "https://pretix/api/organizers/org/events/event/questions",
+        json=pretix_questions,
     )
 
     query = """

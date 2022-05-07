@@ -50,8 +50,8 @@ export const MyTickets = ({ tickets = [] }: Props) => {
           ticket.item.questions.map((question) => [
             question.id,
             question.options.length > 0
-              ? question.answer.options[0]
-              : question.answer.answer,
+              ? question.answer?.options[0]
+              : question.answer?.answer,
           ]),
         ),
       } as ProductState);

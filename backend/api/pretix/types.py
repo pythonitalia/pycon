@@ -8,6 +8,7 @@ import strawberry
 
 from api.pretix.constants import ASSOCIATION_CATEGORY_INTERNAL_NAME
 from pretix.types import (
+    Answer as AnswerDict,
     Category as CategoryDict,
     Item as ItemDict,
     Option as OptionDict,
@@ -84,22 +85,21 @@ class Answer:
 
     @classmethod
     def from_data(cls, data: QuestionDict, language: str) -> Answer:
-
         # If it's an option answer it's not translated
         if data.get("options"):
             options = [
                 option
                 for option in data["options"]
-                if option["id"] in data["answer_options"]
+                if option["id"] in data["answer"]["options"]
             ]
             options_answers = [
                 _get_by_language(option, "answer", language) for option in options
             ]
             return cls(
-                answer=", ".join(options_answers), options=data["answer_options"]
+                answer=", ".join(options_answers), options=data["answer"]["options"]
             )
 
-        return cls(answer=data["answer"], options=[])
+        return cls(answer=data["answer"]["answer"], options=[])
 
 
 @strawberry.type
@@ -228,11 +228,26 @@ class AttendeeTicket:
 
     @classmethod
     def from_data(
-        cls, data: OrderPositionDict, language: str, categories: Dict[str, CategoryDict]
+        cls,
+        data: OrderPositionDict,
+        language: str,
+        categories: Dict[str, CategoryDict],
+        questions: List[QuestionDict],
     ):
-        for answer in data["answers"]:
-            answer["question"]["answer"] = answer["answer"]
-            answer["question"]["answer_options"] = answer["options"]
+        def get_answer(question_id: int) -> Optional[AnswerDict]:
+            return next(
+                filter(lambda a: a["question"]["id"] == question_id, data["answers"]),
+                None,
+            )
+
+        data["item"]["questions"] = []
+        for question in questions:
+            if data["item"]["id"] not in question["items"]:
+                continue
+            answer = get_answer(question["id"])
+            question["answer"] = answer
+
+            data["item"]["questions"].append(question)
 
         return cls(
             id=data["id"],
@@ -242,7 +257,7 @@ class AttendeeTicket:
                 data["item"],
                 language=language,
                 categories=categories,
-                questions=[answer["question"] for answer in data["answers"]],
+                questions=data["item"]["questions"],
             ),
         )
 

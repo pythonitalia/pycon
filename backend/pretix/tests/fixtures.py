@@ -10,7 +10,7 @@ def pretix_questions():
         "results": [
             {
                 "id": 1,
-                "question": {"en": "Codice Fiscale"},
+                "question": {"en": "Vat number", "it": "Codice Fiscale"},
                 "type": "S",
                 "required": True,
                 "items": [1, 2],
@@ -34,19 +34,19 @@ def pretix_questions():
                     {
                         "id": 4,
                         "identifier": "AAA",
-                        "answer": {"en": "No preferences"},
+                        "answer": {"en": "No preferences", "it": "Nessuna Preferenza"},
                         "position": 0,
                     },
                     {
                         "id": 5,
                         "identifier": "BBB",
-                        "answer": {"en": "Vegetarian"},
+                        "answer": {"en": "Vegetarian", "it": "Vegetariano"},
                         "position": 1,
                     },
                     {
                         "id": 6,
                         "identifier": "CCC",
-                        "answer": {"en": "Vegan"},
+                        "answer": {"en": "Vegan", "it": "Vegano"},
                         "position": 2,
                     },
                 ],
@@ -116,24 +116,24 @@ def pretix_user_tickets():
                         "items": [1, 2],
                         "options": [
                             {
-                                "id": 1,
-                                "identifier": "9MYPHN7J",
-                                "answer": {"en": "Sushi", "it": "Cibo Giapponese"},
+                                "id": 4,
+                                "identifier": "AAA",
+                                "answer": {
+                                    "en": "No preferences",
+                                    "it": "Nessuna Preferenza",
+                                },
                                 "position": 0,
                             },
                             {
-                                "id": 2,
-                                "identifier": "KN98FFNU",
-                                "answer": {
-                                    "en": "Fiorentina Meat",
-                                    "it": "Bistecca Toscana",
-                                },
+                                "id": 5,
+                                "identifier": "BBB",
+                                "answer": {"en": "Vegetarian", "it": "Vegetariano"},
                                 "position": 1,
                             },
                             {
-                                "id": 3,
-                                "identifier": "Q7NEWPZV",
-                                "answer": {"en": "Thai", "it": "Thai"},
+                                "id": 6,
+                                "identifier": "CCC",
+                                "answer": {"en": "Vegan", "it": "Vegano"},
                                 "position": 2,
                             },
                         ],
@@ -154,12 +154,12 @@ def pretix_user_tickets():
                         "valid_datetime_max": None,
                         "valid_file_portrait": False,
                     },
-                    "answer": "Bistecca Toscana",
-                    "options": [2],
+                    "answer": "Nessuna Preferenza",
+                    "options": [4],
                 },
                 {
                     "question": {
-                        "id": 4,
+                        "id": 3,
                         "question": {"en": "Intollerance", "it": "Allergie"},
                         "type": "S",
                         "required": True,
