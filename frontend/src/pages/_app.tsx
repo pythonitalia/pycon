@@ -21,7 +21,8 @@ import { theme } from "~/theme";
 
 const intlCache = createIntlCache();
 
-const isSocial = (path: string) => path.endsWith("/social");
+const isStandalonePage = (path: string) =>
+  path.endsWith("/social") || path.endsWith("/badge");
 
 const MyApp = (props) => {
   const { Component, pageProps, router, err } = props;
@@ -48,12 +49,15 @@ const MyApp = (props) => {
     };
   }, []);
 
+  const standalonePage = isStandalonePage(router.pathname);
+
   return (
     <ThemeProvider theme={theme}>
-      <Script
-        strategy="lazyOnload"
-        dangerouslySetInnerHTML={{
-          __html: `
+      {!standalonePage && (
+        <Script
+          strategy="lazyOnload"
+          dangerouslySetInnerHTML={{
+            __html: `
 (function(o,l,a,r,k,y){if(o.olark)return;
 r="script";y=l.createElement(r);r=l.getElementsByTagName(r)[0];
 y.async=1;y.src="//"+a;r.parentNode.insertBefore(y,r);
@@ -68,14 +72,15 @@ olark.identify('1751-12112149-10-1389');
 var olarkLoadedEvent = new Event('olarkLoaded');
 window.dispatchEvent(olarkLoadedEvent);
 `,
-        }}
-      />
+          }}
+        />
+      )}
 
       <ApolloProvider client={apolloClient}>
         <RawIntlProvider value={intl}>
           <LocaleProvider lang={locale}>
             <GlobalStyles />
-            {isSocial(router.pathname) ? (
+            {standalonePage ? (
               <Component {...pageProps} />
             ) : (
               <Flex
