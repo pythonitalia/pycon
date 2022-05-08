@@ -152,7 +152,8 @@ export const MyTickets = ({ tickets = [] }: Props) => {
               data["options"] = [option.id];
             }
             return data;
-          });
+          })
+          .filter((item) => item.answer !== "");
 
         updateTicket({
           variables: {
