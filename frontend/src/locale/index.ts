@@ -48,8 +48,16 @@ export const messages = {
     "profile.price": "Price",
     "profile.manageOrder": "Manage order",
     "profile.myTickets": "My Tickets",
-    "profile.myTickets.notickets": `No tickets found assigned to your email: {email}.
-    Make sure the attendee email and your email matches in your order or buy a ticket {linkTicket}.`,
+    "profile.myTickets.notickets": `
+      No tickets were found assigned to your email: {email}.
+      {br}
+      Make sure the attendee email in your order ("My Orders" above, click on "Manage order" to edit)
+      and your profile's email ({email}) matches or buy a ticket {linkTicket}.
+      {br}
+      {br}
+      If you have not purchased the ticket yourself, please ask the person who purchased the ticket
+      for you to add your email {email} as the attendee email to make your ticket appear here.
+    `,
     "profile.ticketFor": "Ticket for",
     "profile.myTickets.update.AttendeeTicket.message":
       "The ticket was successfully saved.",
@@ -573,8 +581,16 @@ export const messages = {
     "profile.mySubmissionsHeader": "Le mie submissions",
     "profile.myOrders": "I miei ordini",
     "profile.myTickets": "I miei biglietti",
-    "profile.myTickets.notickets": `Non è stato trovato nessun ticket associato alla tua mail {email}.
-    Perfavore, assicurati che l'email del partecipante e la tua email corrispondano nel tuo ordine o acquista un biglietto {linkTicket}.`,
+    "profile.myTickets.notickets": `
+      Non sono stati trovati biglietti assegnati alla tua email: {email}.
+      {br}
+      Assicurati che l'e-mail del partecipante nel tuo ordine ("I miei ordini" qui sopra, puoi modificarlo con "Gestisci l'ordine")
+      e l'e-mail del tuo profilo ({email}) corrisponda oppure acquista un biglietto {linkTicket}.
+      {br}
+      {br}
+      Se non hai acquistato tu personalmente il biglietto, chiedi alla persona che ha acquistato il biglietto
+      di aggiungere la tua email {email} come l'email del partecipante per far apparire il tuo biglietto qui
+    `,
     "profile.myTickets.update.AttendeeTicket.message":
       "Il biglietto e' stato salvato correttamente!",
     "profile.myTickets.update.TicketReassigned.message":

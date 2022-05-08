@@ -199,6 +199,7 @@ export const MyTickets = ({ tickets = [] }: Props) => {
                   <FormattedMessage id="global.here" />
                 </Link>
               ),
+              br: <br />,
             }}
           />
         )}
