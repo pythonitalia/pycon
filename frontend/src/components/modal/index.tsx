@@ -27,7 +27,7 @@ export const Modal: React.FC<ModalProps> = ({
       sx={
         {
           position: "fixed",
-          overflowY: show ? "hidden" : "auto",
+          overflowY: "auto",
           zIndex: "20",
           inset: 0,
           display: show ? "block" : "none",
@@ -40,7 +40,6 @@ export const Modal: React.FC<ModalProps> = ({
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          minHeight: "100vh",
           paddingX: 4,
         }}
       >
@@ -61,7 +60,7 @@ export const Modal: React.FC<ModalProps> = ({
             width: "100%",
             maxWidth: "container",
             marginX: "auto",
-            overflow: "hidden",
+            maxHeight: "container",
             backgroundColor: "white",
             border: "primary",
             zIndex: "50",
