@@ -58,12 +58,14 @@ export const QuestionsSection: React.SFC<Props> = ({
         product.questions
           .filter((question) => question.options.length > 0)
           .forEach((question) => {
-            updateQuestionAnswer({
-              id: selectedProductInfo.id,
-              index,
-              question: question.id,
-              answer: question.options[0].id,
-            });
+            if (!selectedProductInfo.answers[question.id]) {
+              updateQuestionAnswer({
+                id: selectedProductInfo.id,
+                index,
+                question: question.id,
+                answer: question.options[0].id,
+              });
+            }
           });
       });
     });
@@ -111,11 +113,16 @@ export const QuestionsSection: React.SFC<Props> = ({
                     </Heading>
 
                     <InputWrapper
+                      key="attendeeName"
                       isRequired={true}
                       label={
                         <FormattedMessage id="orderQuestions.attendeeName" />
                       }
-                      errors={[selectedProductInfo?.errors?.attendeeName]}
+                      errors={
+                        selectedProductInfo?.errors && [
+                          selectedProductInfo?.errors?.attendeeName,
+                        ]
+                      }
                     >
                       <Input
                         required={true}
@@ -132,11 +139,16 @@ export const QuestionsSection: React.SFC<Props> = ({
                     </InputWrapper>
 
                     <InputWrapper
+                      key="attendeeEmail"
                       isRequired={true}
                       label={
                         <FormattedMessage id="orderQuestions.attendeeEmail" />
                       }
-                      errors={[selectedProductInfo?.errors?.attendeeEmail]}
+                      errors={
+                        selectedProductInfo?.errors && [
+                          selectedProductInfo?.errors?.attendeeEmail,
+                        ]
+                      }
                     >
                       <Input
                         required={true}
@@ -158,7 +170,11 @@ export const QuestionsSection: React.SFC<Props> = ({
                         <InputWrapper
                           isRequired={question.required}
                           label={question.name}
-                          errors={[selectedProductInfo?.errors[question.id]]}
+                          errors={
+                            selectedProductInfo?.errors && [
+                              selectedProductInfo?.errors[question.id],
+                            ]
+                          }
                         >
                           {question.options.length === 0 ? (
                             <Input
@@ -181,14 +197,14 @@ export const QuestionsSection: React.SFC<Props> = ({
                               value={answers[question.id]}
                               onChange={(
                                 e: React.ChangeEvent<HTMLSelectElement>,
-                              ) =>
+                              ) => {
                                 updateQuestionAnswer({
                                   id: selectedProductInfo.id,
                                   index,
                                   question: question.id,
                                   answer: e.target.value,
-                                })
-                              }
+                                });
+                              }}
                             >
                               {question.options.map((option) => (
                                 <option key={option.id} value={option.id}>
