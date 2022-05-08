@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Box } from "theme-ui";
 
 import { Button } from "~/components/button/button";
@@ -12,12 +13,21 @@ export const Modal: React.FC<ModalProps> = ({
   onClose,
   ...props
 }) => {
+  useEffect(() => {
+    if (show) {
+      document.body.style.overflow = "hidden";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [show]);
+
   return (
     <Box
       sx={
         {
           position: "fixed",
-          overflowY: "auto",
+          overflowY: show ? "hidden" : "auto",
           zIndex: "20",
           inset: 0,
           display: show ? "block" : "none",
