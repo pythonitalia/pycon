@@ -48,6 +48,13 @@ class AttendeeTicketMutation:
         input: UpdateAttendeeTicketInput,
         language: str = "en",
     ) -> UpdateAttendeeTicketResult:
+
+        if not input.email.strip():
+            error = UpdateAttendeeTicketError(
+                field="attendee_email", message="This field may not be blank."
+            )
+            return UpdateAttendeeTicketErrors(id=input.id, errors=[error])
+
         conference = Conference.objects.get(code=conference)
         try:
             pretix.update_ticket(conference, input)

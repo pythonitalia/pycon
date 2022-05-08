@@ -1,3 +1,4 @@
+import pytest
 from django.test import override_settings
 
 
@@ -98,13 +99,50 @@ def test_invalid_data(graphql_client, mocker, requests_mock, user, conference_fa
     assert response["data"]["updateAttendeeTicket"]["id"] == "999"
     assert response["data"]["updateAttendeeTicket"]["errors"] == [
         {"field": "attendee_name", "message": "This field may not be blank."},
-        {"field": "attendee_email", "message": "Enter a valid email " "address."},
+        {"field": "attendee_email", "message": "Enter a valid email address."},
         {
             "field": "31",
             "message": 'Invalid pk "344" - object does not exist.',
         },
         {"field": "44", "message": "This field may not be blank."},
         {"field": "43", "message": "This field may not be blank."},
+    ]
+
+
+@pytest.mark.django_db
+def test_cannot_update_empty_email(graphql_client, user, conference, mocker):
+    graphql_client.force_login(user)
+    mocker.patch("pretix.is_ticket_owner", return_value=True)
+    query = """
+    mutation UpdateTicket($conference: String!, $input: UpdateAttendeeTicketInput!) {
+        updateAttendeeTicket(conference: $conference, input: $input) {
+            ... on UpdateAttendeeTicketErrors {
+                id
+                errors {
+                    field
+                    message
+                }
+            }
+        }
+    }
+    """
+
+    response = graphql_client.query(
+        query,
+        variables={
+            "conference": conference.code,
+            "input": {
+                "id": "999",
+                "email": "                            ",
+                "name": "Marco",
+            },
+        },
+    )
+
+    assert not response.get("errors")
+    assert response["data"]["updateAttendeeTicket"]["id"] == "999"
+    assert response["data"]["updateAttendeeTicket"]["errors"] == [
+        {"field": "attendee_email", "message": "This field may not be blank."},
     ]
 
 
