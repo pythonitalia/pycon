@@ -1,5 +1,6 @@
-import { HotelRoom, OrderState, Voucher } from "../types";
 import { TicketItem } from "~/types";
+
+import { HotelRoom, OrderState, Voucher } from "../types";
 
 export const calculateProductPrice = (
   product: TicketItem,

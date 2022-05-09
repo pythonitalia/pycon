@@ -39,6 +39,7 @@ export const Modal: React.FC<ModalProps> = ({
         sx={{
           display: "flex",
           alignItems: "center",
+          height: "100%",
           justifyContent: "center",
           paddingX: 4,
         }}
