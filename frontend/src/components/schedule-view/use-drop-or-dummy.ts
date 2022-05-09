@@ -8,7 +8,7 @@ import {
 export const useDropOrDummy = <
   DragObject extends DragObjectWithType,
   DropResult,
-  CollectedProps,
+  CollectedProps
 >(
   spec: { adminMode: boolean } & DropTargetHookSpec<
     DragObject,

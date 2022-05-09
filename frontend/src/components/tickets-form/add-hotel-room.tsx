@@ -26,14 +26,12 @@ export const AddHotelRoom: React.SFC<Props> = ({
   conferenceStart,
   addRoom,
 }) => {
-  const momentConferenceStart = useMemo(
-    () => moment.utc(conferenceStart),
-    [conferenceStart],
-  );
-  const momentConferenceEnd = useMemo(
-    () => moment.utc(conferenceEnd),
-    [conferenceEnd],
-  );
+  const momentConferenceStart = useMemo(() => moment.utc(conferenceStart), [
+    conferenceStart,
+  ]);
+  const momentConferenceEnd = useMemo(() => moment.utc(conferenceEnd), [
+    conferenceEnd,
+  ]);
 
   const [formState, { select }] = useFormState<Form>();
 

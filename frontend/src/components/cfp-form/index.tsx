@@ -101,13 +101,15 @@ export const CfpForm: React.SFC<Props> = ({
   error: submissionError,
   data: submissionData,
 }) => {
-  const [formState, { text, textarea, radio, select, checkbox }] =
-    useFormState<CfpFormFields>(
-      {},
-      {
-        withIds: true,
-      },
-    );
+  const [
+    formState,
+    { text, textarea, radio, select, checkbox },
+  ] = useFormState<CfpFormFields>(
+    {},
+    {
+      withIds: true,
+    },
+  );
 
   const {
     loading: conferenceLoading,

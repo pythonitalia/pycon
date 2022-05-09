@@ -96,19 +96,17 @@ const toTileCase = (word: string) =>
 export const EditProfilePage: React.FC = () => {
   const router = useRouter();
   const [loggedIn] = useLoginState();
-  const [formState, { text, select, checkbox, raw }] =
-    useFormState<MeUserFields>(
-      {},
-      {
-        withIds: true,
-      },
-    );
+  const [
+    formState,
+    { text, select, checkbox, raw },
+  ] = useFormState<MeUserFields>(
+    {},
+    {
+      withIds: true,
+    },
+  );
 
-  const {
-    data: profileData,
-    loading,
-    error,
-  } = useMyEditProfileQuery({
+  const { data: profileData, loading, error } = useMyEditProfileQuery({
     skip: !loggedIn,
     onCompleted: (data) => onMyProfileFetched(data, formState),
   });
@@ -141,14 +139,16 @@ export const EditProfilePage: React.FC = () => {
     return validationError;
   };
 
-  const [update, { loading: updateProfileLoading, data: updateProfileData }] =
-    useUpdateProfileMutation({
-      onCompleted: (data) => {
-        if (data?.updateProfile?.__typename === "User") {
-          router.push("/profile");
-        }
-      },
-    });
+  const [
+    update,
+    { loading: updateProfileLoading, data: updateProfileData },
+  ] = useUpdateProfileMutation({
+    onCompleted: (data) => {
+      if (data?.updateProfile?.__typename === "User") {
+        router.push("/profile");
+      }
+    },
+  });
 
   useEffect(() => {
     if (profileData && !loading) {

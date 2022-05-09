@@ -85,9 +85,8 @@ export const InvoiceInformation: React.SFC<Props> = ({ data }) => {
 
             switch (field.key) {
               case "country":
-                outputValue = countries.find(
-                  (c) => c.value === inputValue,
-                )?.label;
+                outputValue = countries.find((c) => c.value === inputValue)
+                  ?.label;
                 break;
               case "companyName":
                 if (!isBusiness) {
