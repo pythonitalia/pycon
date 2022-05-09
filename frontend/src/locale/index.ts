@@ -5,6 +5,7 @@ export const messages = {
       "Join PyCon Italia from the 2nd to the 5th of June 2022 in Florence, Italy!",
     "global.accordion.close": "Close",
     "global.accordion.readMore": "Read more",
+    "global.here": "here",
     "global.yes": "Yes",
     "global.no": "No",
     "global.learnMore": "Learn more",
@@ -46,8 +47,22 @@ export const messages = {
     "profile.status": "Status",
     "profile.price": "Price",
     "profile.manageOrder": "Manage order",
-    "profile.items": "Tickets",
+    "profile.myTickets": "My Tickets",
+    "profile.myTickets.notickets": `
+      No tickets were found assigned to your email: {email}.
+      {br}
+      Make sure the attendee email in your order ("My Orders" above, click on "Manage order" to edit)
+      and your profile's email ({email}) matches or buy a ticket {linkTicket}.
+      {br}
+      {br}
+      If you have not purchased the ticket yourself, please ask the person who purchased the ticket
+      for you to add your email {email} as the attendee email to make your ticket appear here.
+    `,
     "profile.ticketFor": "Ticket for",
+    "profile.myTickets.update.AttendeeTicket.message":
+      "The ticket was successfully saved.",
+    "profile.myTickets.update.TicketReassigned.message":
+      "The ticket was successfully reassigned to {email}.",
     "profile.status.pending": "Pending",
     "profile.status.paid": "Paid",
     "profile.status.expired": "Expired",
@@ -58,7 +73,6 @@ export const messages = {
       "I want to receive a few selected job offers through PyCon Italia",
     "profile.edit.title": "Edit profile",
     "profile.manageTicket": "Manage ticket",
-    "profile.myTicketsHeader": "My Tickets",
     "profile.edit.personalHeader": "Personal data",
     "profile.edit.privacyHeader": "Privacy settings",
     "profile.logout": "Logout",
@@ -525,6 +539,7 @@ export const messages = {
     description: "Partecipa a PyCon Italia! Dal 2 al 5 Giugno 2022 a Firenze!",
     "global.accordion.close": "Chiudi",
     "global.accordion.readMore": "Apri",
+    "global.here": "qui",
     "global.yes": "Si",
     "global.no": "No",
     "global.learnMore": "Maggiori informazioni",
@@ -562,10 +577,24 @@ export const messages = {
     "profile.orderId": "Ordine #",
     "profile.status": "Stato",
     "profile.price": "Prezzo",
-    "profile.items": "Biglietti",
     "profile.manageOrder": "Gestisci ordine",
     "profile.mySubmissionsHeader": "Le mie submissions",
     "profile.myOrders": "I miei ordini",
+    "profile.myTickets": "I miei biglietti",
+    "profile.myTickets.notickets": `
+      Non sono stati trovati biglietti assegnati alla tua email: {email}.
+      {br}
+      Assicurati che l'e-mail del partecipante nel tuo ordine ("I miei ordini" qui sopra, puoi modificarlo con "Gestisci l'ordine")
+      e l'e-mail del tuo profilo ({email}) corrisponda oppure acquista un biglietto {linkTicket}.
+      {br}
+      {br}
+      Se non hai acquistato tu personalmente il biglietto, chiedi alla persona che ha acquistato il biglietto
+      di aggiungere la tua email {email} come l'email del partecipante per far apparire il tuo biglietto qui
+    `,
+    "profile.myTickets.update.AttendeeTicket.message":
+      "Il biglietto e' stato salvato correttamente!",
+    "profile.myTickets.update.TicketReassigned.message":
+      "Il biglietto e' stato correttamente riassegnato a {email}.",
     "profile.ticketFor": "Biglietto per",
     "profile.status.pending": "In attesa",
     "profile.status.paid": "Pagato",
@@ -576,7 +605,6 @@ export const messages = {
     "profile.openToRecruiting":
       "Desidero ricevere alcune proposte di lavoro selezionate attraverso PyCon Italia",
     "profile.edit.title": "Modifica profilo",
-    "profile.myTicketsHeader": "I miei biglietti",
     "profile.manageTicket": "Gestisci biglietto",
     "profile.edit.personalHeader": "Dati personali",
     "profile.edit.privacyHeader": "Impostazioni privacy",

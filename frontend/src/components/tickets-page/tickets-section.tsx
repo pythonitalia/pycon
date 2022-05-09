@@ -9,8 +9,7 @@ import { Box, Flex, Heading, jsx, Label, Radio } from "theme-ui";
 import { Alert } from "~/components/alert";
 import { HotelForm } from "~/components/hotel-form";
 import { TicketsForm } from "~/components/tickets-form";
-import { Ticket } from "~/components/tickets-form/types";
-import { CurrentUserQueryResult } from "~/types";
+import { CurrentUserQueryResult, TicketItem } from "~/types";
 
 import { Button } from "../button/button";
 import { Link } from "../link";
@@ -25,7 +24,7 @@ import { hasSelectedAtLeastOneProduct } from "./utils";
 
 type Props = {
   state: OrderState;
-  tickets: Ticket[];
+  tickets: TicketItem[];
   hotelRooms: HotelRoom[];
   conferenceStart: string;
   conferenceEnd: string;

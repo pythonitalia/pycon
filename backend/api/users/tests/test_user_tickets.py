@@ -9,7 +9,12 @@ pytestmark = pytest.mark.django_db
 
 @override_settings(PRETIX_API="https://pretix/api/")
 def test_get_user_tickets(
-    user, conference_factory, requests_mock, pretix_user_tickets, pretix_categories
+    user,
+    conference_factory,
+    requests_mock,
+    pretix_user_tickets,
+    pretix_categories,
+    pretix_questions,
 ):
     conference = conference_factory(pretix_organizer_id="org", pretix_event_id="event")
 
@@ -23,6 +28,10 @@ def test_get_user_tickets(
         json=pretix_categories,
     )
 
+    requests_mock.get(
+        "https://pretix/api/organizers/org/events/event/questions",
+        json=pretix_questions,
+    )
     user = User.resolve_reference(user.id, user.email)
     tickets = user.tickets(info=None, conference=conference.code, language="en")
 
@@ -45,17 +54,23 @@ def test_get_user_tickets(
     assert ticket.item.available_until is None
     assert ticket.item.quantity_left is None
 
-    assert len(ticket.item.questions) == 2
-    assert ticket.item.questions[0].id == 2
-    assert ticket.item.questions[0].name == "Food preferences"
+    assert len(ticket.item.questions) == 3
+    assert ticket.item.questions[0].id == 1
+    assert ticket.item.questions[0].name == "Vat number"
     assert ticket.item.questions[0].required is True
-    assert ticket.item.questions[0].options == [
-        Option(id=1, name="Sushi"),
-        Option(id=2, name="Fiorentina Meat"),
-        Option(id=3, name="Thai"),
-    ]
-    assert ticket.item.questions[0].answer.answer == "Fiorentina Meat"
-    assert ticket.item.questions[1].id == 4
-    assert ticket.item.questions[1].name == "Intollerance"
+    assert ticket.item.questions[0].answer is None
+
+    assert ticket.item.questions[1].id == 2
+    assert ticket.item.questions[1].name == "Food preferences"
     assert ticket.item.questions[1].required is True
-    assert ticket.item.questions[1].answer.answer == "Cat"
+    assert ticket.item.questions[1].options == [
+        Option(id=4, name="No preferences"),
+        Option(id=5, name="Vegetarian"),
+        Option(id=6, name="Vegan"),
+    ]
+    assert ticket.item.questions[1].answer.answer == "No preferences"
+
+    assert ticket.item.questions[2].id == 3
+    assert ticket.item.questions[2].name == "Intollerances / Allergies"
+    assert ticket.item.questions[2].required is False
+    assert ticket.item.questions[2].answer.answer == "Cat"

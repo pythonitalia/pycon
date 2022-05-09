@@ -10,7 +10,7 @@ def pretix_questions():
         "results": [
             {
                 "id": 1,
-                "question": {"en": "Codice Fiscale"},
+                "question": {"en": "Vat number", "it": "Codice Fiscale"},
                 "type": "S",
                 "required": True,
                 "items": [1, 2],
@@ -34,19 +34,19 @@ def pretix_questions():
                     {
                         "id": 4,
                         "identifier": "AAA",
-                        "answer": {"en": "No preferences"},
+                        "answer": {"en": "No preferences", "it": "Nessuna Preferenza"},
                         "position": 0,
                     },
                     {
                         "id": 5,
                         "identifier": "BBB",
-                        "answer": {"en": "Vegetarian"},
+                        "answer": {"en": "Vegetarian", "it": "Vegetariano"},
                         "position": 1,
                     },
                     {
                         "id": 6,
                         "identifier": "CCC",
-                        "answer": {"en": "Vegan"},
+                        "answer": {"en": "Vegan", "it": "Vegano"},
                         "position": 2,
                     },
                 ],
@@ -116,24 +116,24 @@ def pretix_user_tickets():
                         "items": [1, 2],
                         "options": [
                             {
-                                "id": 1,
-                                "identifier": "9MYPHN7J",
-                                "answer": {"en": "Sushi", "it": "Cibo Giapponese"},
+                                "id": 4,
+                                "identifier": "AAA",
+                                "answer": {
+                                    "en": "No preferences",
+                                    "it": "Nessuna Preferenza",
+                                },
                                 "position": 0,
                             },
                             {
-                                "id": 2,
-                                "identifier": "KN98FFNU",
-                                "answer": {
-                                    "en": "Fiorentina Meat",
-                                    "it": "Bistecca Toscana",
-                                },
+                                "id": 5,
+                                "identifier": "BBB",
+                                "answer": {"en": "Vegetarian", "it": "Vegetariano"},
                                 "position": 1,
                             },
                             {
-                                "id": 3,
-                                "identifier": "Q7NEWPZV",
-                                "answer": {"en": "Thai", "it": "Thai"},
+                                "id": 6,
+                                "identifier": "CCC",
+                                "answer": {"en": "Vegan", "it": "Vegano"},
                                 "position": 2,
                             },
                         ],
@@ -154,12 +154,12 @@ def pretix_user_tickets():
                         "valid_datetime_max": None,
                         "valid_file_portrait": False,
                     },
-                    "answer": "Bistecca Toscana",
-                    "options": [2],
+                    "answer": "Nessuna Preferenza",
+                    "options": [4],
                 },
                 {
                     "question": {
-                        "id": 4,
+                        "id": 3,
                         "question": {"en": "Intollerance", "it": "Allergie"},
                         "type": "S",
                         "required": True,
@@ -259,6 +259,60 @@ def pretix_user_tickets():
             },
         }
     ]
+
+
+@pytest.fixture
+def update_user_ticket():
+    return {
+        "addon_to": None,
+        "answers": [
+            {
+                "answer": "Vegan",
+                "option_identifiers": ["AAXXXSSS"],
+                "options": [18],
+                "question": 31,
+                "question_identifier": "AAXXXSSS",
+            },
+            {
+                "answer": "Vegan",
+                "option_identifiers": [],
+                "options": [],
+                "question": 32,
+                "question_identifier": "AAXXXSSS",
+            },
+        ],
+        "attendee_email": "sheldon@cooper.com",
+        "attendee_name": "Leonard",
+        "attendee_name_parts": {"_legacy": "Leonard"},
+        "canceled": False,
+        "checkins": [],
+        "city": None,
+        "company": None,
+        "country": None,
+        "downloads": [
+            {
+                "output": "pdf",
+                "url": "http://tickets.pycon.it/api/v1/organizers/test-organizer/events/local-conf-test/orderpositions/5638/download/pdf/",
+            }
+        ],
+        "id": 5638,
+        "item": 67,
+        "order": "A3WNA",
+        "positionid": 1,
+        "price": "80.00",
+        "pseudonymization_id": "AAAAZZZZ`",
+        "seat": None,
+        "secret": "dfafsdfsdfasfasdfaseeee",
+        "state": None,
+        "street": None,
+        "subevent": None,
+        "tax_rate": "22.00",
+        "tax_rule": 6,
+        "tax_value": "14.43",
+        "variation": None,
+        "voucher": None,
+        "zipcode": None,
+    }
 
 
 @pytest.fixture

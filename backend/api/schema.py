@@ -10,6 +10,7 @@ from .newsletters.schema import NewsletterMutations
 from .orders.mutations import OrdersMutations
 from .orders.query import OrdersQuery
 from .pages.schema import PagesQuery
+from .pretix.mutations import AttendeeTicketMutation
 from .schedule.mutations import ScheduleMutations
 from .schedule.schema import ScheduleQuery
 from .submissions.mutations import SubmissionsMutations
@@ -40,6 +41,7 @@ class Mutation(
     GrantsMutations,
     NewsletterMutations,
     ScheduleMutations,
+    AttendeeTicketMutation,
 ):
     pass
 

@@ -17,21 +17,21 @@ import { Logout } from "~/components/profile/logout";
 import { MyOrders } from "~/components/profile/my-orders";
 import { MyProfile } from "~/components/profile/my-profile";
 import { MySubmissions } from "~/components/profile/my-submissions";
+import { MyTickets } from "~/components/profile/my-tickets";
 import { updateOlarkFields } from "~/helpers/olark";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
+import { useCurrentLanguage } from "~/locale/context";
 import { queryCountries, useMyProfileQuery } from "~/types";
 
 export const MyProfilePage = () => {
   const [loggedIn, setLoginState] = useLoginState();
+  const language = useCurrentLanguage();
 
-  const {
-    loading,
-    error,
-    data: profileData,
-  } = useMyProfileQuery({
+  const { loading, error, data: profileData } = useMyProfileQuery({
     skip: !loggedIn,
     variables: {
       conference: process.env.conferenceCode,
+      language: language,
     },
   });
 
@@ -84,6 +84,8 @@ export const MyProfilePage = () => {
       {profileData.me.orders.length > 0 && (
         <MyOrders orders={profileData.me.orders} />
       )}
+
+      <MyTickets tickets={profileData.me.tickets} />
 
       <MySubmissions
         sx={{

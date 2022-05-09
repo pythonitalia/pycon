@@ -1,3 +1,4 @@
+import { TicketItem } from "~/types";
 import { InvoiceInformationState, OrderState } from "./types";
 
 export const hasSelectedAtLeastOneProduct = (state: OrderState): boolean =>
@@ -34,7 +35,7 @@ export const hasOrderInformation = (state: OrderState): boolean => {
 
 export const hasAnsweredTicketsQuestions = (
   state: OrderState,
-  tickets: { id: string; questions: { id: string; required: boolean }[] }[],
+  tickets: TicketItem[],
 ): boolean => {
   const selectedProducts = Object.values(state.selectedProducts).flat();
 

@@ -8,6 +8,7 @@ import strawberry
 
 from api.pretix.constants import ASSOCIATION_CATEGORY_INTERNAL_NAME
 from pretix.types import (
+    Answer as AnswerDict,
     Category as CategoryDict,
     Item as ItemDict,
     Option as OptionDict,
@@ -80,33 +81,33 @@ class Option:
 @strawberry.type
 class Answer:
     answer: str
+    options: Optional[List[str]]
 
     @classmethod
     def from_data(cls, data: QuestionDict, language: str) -> Answer:
-
         # If it's an option answer it's not translated
         if data.get("options"):
             options = [
                 option
                 for option in data["options"]
-                if option["id"] in data["answer_options"]
+                if option["id"] in data["answer"]["options"]
             ]
             options_answers = [
                 _get_by_language(option, "answer", language) for option in options
             ]
-            return cls(answer=", ".join(options_answers))
+            return cls(
+                answer=", ".join(options_answers), options=data["answer"]["options"]
+            )
 
-        return cls(
-            answer=data["answer"],
-        )
+        return cls(answer=data["answer"]["answer"], options=[])
 
 
 @strawberry.type
 class Question:
     id: strawberry.ID
     name: str
-    required: bool
-    options: List[Option]
+    required: Optional[bool]
+    options: Optional[List[Option]]
     answer: Optional[Answer]
 
     @classmethod
@@ -125,6 +126,7 @@ class TicketType(Enum):
     STANDARD = "standard"
     BUSINESS = "business"
     ASSOCIATION = "association"
+    HOTEL = "hotel"
 
 
 def _get_category_for_ticket(item, categories):
@@ -141,22 +143,22 @@ def _get_by_language(item, key, language):
 class TicketItem:
     id: strawberry.ID
     name: str
-    language: str
+    language: Optional[str]
     description: Optional[str]
-    active: bool
-    default_price: str
-    category: str
+    active: Optional[bool]
+    default_price: Optional[str]
+    category: Optional[str]
     category_internal_name: Optional[str]
-    tax_rate: float
-    variations: List[ProductVariation]
+    tax_rate: Optional[float]
+    variations: Optional[List[ProductVariation]]
     # TODO: correct types
     available_from: Optional[str]
     available_until: Optional[str]
-    questions: List[Question]
+    questions: Optional[List[Question]]
     quantity_left: Optional[int]
 
     @strawberry.field
-    def type(self) -> TicketType:
+    def type(self) -> Optional[TicketType]:
         if "business" in self.name.lower():
             return TicketType.BUSINESS
 
@@ -164,6 +166,12 @@ class TicketItem:
             return TicketType.ASSOCIATION
 
         return TicketType.STANDARD
+
+    @strawberry.field
+    def sold_out(self) -> Optional[bool]:
+        if self.quantity_left is None:
+            return False
+        return self.quantity_left <= 0
 
     @classmethod
     def from_data(
@@ -227,11 +235,26 @@ class AttendeeTicket:
 
     @classmethod
     def from_data(
-        cls, data: OrderPositionDict, language: str, categories: List[CategoryDict]
+        cls,
+        data: OrderPositionDict,
+        language: str,
+        categories: Dict[str, CategoryDict],
+        questions: List[QuestionDict],
     ):
-        for answer in data["answers"]:
-            answer["question"]["answer"] = answer["answer"]
-            answer["question"]["answer_options"] = answer["options"]
+        def get_answer(question_id: int) -> Optional[AnswerDict]:
+            return next(
+                filter(lambda a: a["question"]["id"] == question_id, data["answers"]),
+                None,
+            )
+
+        data["item"]["questions"] = []
+        for question in questions:
+            if data["item"]["id"] not in question["items"]:
+                continue
+            answer = get_answer(question["id"])
+            question["answer"] = answer
+
+            data["item"]["questions"].append(question)
 
         return cls(
             id=data["id"],
@@ -241,7 +264,7 @@ class AttendeeTicket:
                 data["item"],
                 language=language,
                 categories=categories,
-                questions=[answer["question"] for answer in data["answers"]],
+                questions=data["item"]["questions"],
             ),
         )
 
@@ -258,3 +281,34 @@ class Voucher:
     max_usages: int
     price_mode: str
     variation_id: Optional[strawberry.ID]
+
+
+@strawberry.input
+class AnswerInput:
+    answer: str
+    question: strawberry.ID
+    options: Optional[List[strawberry.ID]] = None
+
+    def to_json(self):
+        data = {"answer": self.answer, "question": self.question}
+        if self.options:
+            data["options"] = self.options
+
+        return data
+
+
+@strawberry.input
+class UpdateAttendeeTicketInput:
+    id: strawberry.ID
+    name: str
+    email: str
+    answers: Optional[List[AnswerInput]] = None
+
+    def to_json(self):
+        return {
+            "attendee_email": self.email,
+            "attendee_name": self.name,
+            "answers": [answer.to_json() for answer in self.answers]
+            if self.answers
+            else [],
+        }

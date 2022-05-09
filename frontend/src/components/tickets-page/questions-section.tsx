@@ -6,15 +6,17 @@ import { FormattedMessage } from "react-intl";
 import { Box, Heading, Input, jsx, Select } from "theme-ui";
 
 import { InputWrapper } from "~/components/input-wrapper";
-import { Ticket } from "~/components/tickets-form/types";
+import { TicketItem } from "~/types";
 
 import { Button } from "../button/button";
 import { SelectedProducts } from "./types";
 
 type Props = {
-  tickets: Ticket[];
+  tickets: TicketItem[];
   selectedProducts: SelectedProducts;
   onNextStep: () => void;
+  nextStepMessageId?: string;
+  nextStepLoading?: boolean;
   updateQuestionAnswer: (data: {
     id: string;
     index: number;
@@ -27,6 +29,7 @@ type Props = {
     key: string;
     value: string;
   }) => void;
+  showHeading?: boolean;
 };
 
 export const QuestionsSection: React.SFC<Props> = ({
@@ -35,6 +38,9 @@ export const QuestionsSection: React.SFC<Props> = ({
   onNextStep,
   updateQuestionAnswer,
   updateTicketInfo,
+  nextStepMessageId = "order.nextStep",
+  showHeading = true,
+  nextStepLoading = false,
 }) => {
   const productsById = Object.fromEntries(
     tickets.map((product) => [product.id, product]),
@@ -52,12 +58,14 @@ export const QuestionsSection: React.SFC<Props> = ({
         product.questions
           .filter((question) => question.options.length > 0)
           .forEach((question) => {
-            updateQuestionAnswer({
-              id: selectedProductInfo.id,
-              index,
-              question: question.id,
-              answer: question.options[0].id,
-            });
+            if (!selectedProductInfo.answers[question.id]) {
+              updateQuestionAnswer({
+                id: selectedProductInfo.id,
+                index,
+                question: question.id,
+                answer: question.options[0].id,
+              });
+            }
           });
       });
     });
@@ -65,17 +73,20 @@ export const QuestionsSection: React.SFC<Props> = ({
 
   return (
     <React.Fragment>
-      <Heading as="h1" sx={{ pb: 5, mb: 5, borderBottom: "primary" }}>
-        <Box
-          sx={{
-            maxWidth: "container",
-            mx: "auto",
-            px: 3,
-          }}
-        >
-          <FormattedMessage id="orderQuestions.heading" />
-        </Box>
-      </Heading>
+      {showHeading && (
+        <Heading as="h1" sx={{ pb: 5, mb: 5, borderBottom: "primary" }}>
+          <Box
+            sx={{
+              maxWidth: "container",
+              mx: "auto",
+              px: 3,
+            }}
+          >
+            <FormattedMessage id="orderQuestions.heading" />
+          </Box>
+        </Heading>
+      )}
+
       <Box
         sx={{
           maxWidth: "container",
@@ -102,9 +113,15 @@ export const QuestionsSection: React.SFC<Props> = ({
                     </Heading>
 
                     <InputWrapper
+                      key="attendeeName"
                       isRequired={true}
                       label={
                         <FormattedMessage id="orderQuestions.attendeeName" />
+                      }
+                      errors={
+                        selectedProductInfo?.errors && [
+                          selectedProductInfo?.errors?.attendeeName,
+                        ]
                       }
                     >
                       <Input
@@ -122,9 +139,15 @@ export const QuestionsSection: React.SFC<Props> = ({
                     </InputWrapper>
 
                     <InputWrapper
+                      key="attendeeEmail"
                       isRequired={true}
                       label={
                         <FormattedMessage id="orderQuestions.attendeeEmail" />
+                      }
+                      errors={
+                        selectedProductInfo?.errors && [
+                          selectedProductInfo?.errors?.attendeeEmail,
+                        ]
                       }
                     >
                       <Input
@@ -147,6 +170,11 @@ export const QuestionsSection: React.SFC<Props> = ({
                         <InputWrapper
                           isRequired={question.required}
                           label={question.name}
+                          errors={
+                            selectedProductInfo?.errors && [
+                              selectedProductInfo?.errors[question.id],
+                            ]
+                          }
                         >
                           {question.options.length === 0 ? (
                             <Input
@@ -169,14 +197,14 @@ export const QuestionsSection: React.SFC<Props> = ({
                               value={answers[question.id]}
                               onChange={(
                                 e: React.ChangeEvent<HTMLSelectElement>,
-                              ) =>
+                              ) => {
                                 updateQuestionAnswer({
                                   id: selectedProductInfo.id,
                                   index,
                                   question: question.id,
                                   answer: e.target.value,
-                                })
-                              }
+                                });
+                              }}
                             >
                               {question.options.map((option) => (
                                 <option key={option.id} value={option.id}>
@@ -194,8 +222,8 @@ export const QuestionsSection: React.SFC<Props> = ({
             </Box>
           ))}
 
-          <Button>
-            <FormattedMessage id="order.nextStep" />
+          <Button loading={nextStepLoading}>
+            <FormattedMessage id={nextStepMessageId} />
           </Button>
         </form>
       </Box>

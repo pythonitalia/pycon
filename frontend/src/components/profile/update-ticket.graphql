@@ -1,0 +1,52 @@
+mutation UpdateTicket(
+  $conference: String!
+  $input: UpdateAttendeeTicketInput!
+  $language: String!
+) {
+  __typename
+  updateAttendeeTicket(
+    conference: $conference
+    input: $input
+    language: $language
+  ) {
+    __typename
+
+    ... on AttendeeTicket {
+      id
+      name
+      email
+      item {
+        id
+        name
+        language
+        description
+        category
+        questions {
+          id
+          answer {
+            answer
+            options
+          }
+          name
+          options {
+            id
+            name
+          }
+        }
+      }
+    }
+
+    ... on TicketReassigned {
+      id
+      email
+    }
+
+    ... on UpdateAttendeeTicketErrors {
+      id
+      errors {
+        field
+        message
+      }
+    }
+  }
+}

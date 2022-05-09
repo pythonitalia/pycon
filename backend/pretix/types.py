@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import List, Optional, TypedDict
 
 
@@ -27,8 +29,7 @@ class Question(TypedDict):
     question: Locale
     required: bool
     options: Optional[List[Option]]
-    answer: Optional[str]
-    answer_options: Optional[List[int]]
+    answer: Optional[Answer]
 
 
 class Answer(TypedDict):
@@ -62,6 +63,7 @@ class Item(TypedDict):
     available_until: str
     category: Category
     variations: List[ProductVariation]
+    questions: Optional[List[Question]]
 
 
 class OrderPosition(TypedDict):

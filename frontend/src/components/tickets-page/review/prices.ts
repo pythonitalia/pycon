@@ -1,9 +1,8 @@
-import { Ticket } from "~/components/tickets-form/types";
-
 import { HotelRoom, OrderState, Voucher } from "../types";
+import { TicketItem } from "~/types";
 
 export const calculateProductPrice = (
-  product: Ticket,
+  product: TicketItem,
   voucher?: Voucher | null,
 ): number => {
   const basePrice = parseFloat(product.defaultPrice);
@@ -35,8 +34,8 @@ export const calculateProductPrice = (
 export const calculateTotalAmount = (
   state: OrderState,
   productsById: {
-    [x: string]: Ticket;
-    [x: number]: Ticket;
+    [x: string]: TicketItem;
+    [x: number]: TicketItem;
   },
   hotelRoomsById: {
     [x: string]: HotelRoom;

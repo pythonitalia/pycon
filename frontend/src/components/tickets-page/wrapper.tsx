@@ -17,6 +17,7 @@ import {
   TicketsQueryResult,
   TicketType,
   useTicketsQuery,
+  TicketItem,
 } from "~/types";
 
 import { useCart } from "./use-cart";
@@ -28,14 +29,14 @@ import {
 
 type Props = {
   children: (props: {
-    tickets: TicketsQueryResult["data"]["conference"]["tickets"];
+    tickets: TicketItem[];
     hotelRooms: TicketsQueryResult["data"]["conference"]["hotelRooms"];
     conference: TicketsQueryResult["data"]["conference"];
     me: CurrentUserQueryResult["data"]["me"];
   }) => React.ReactElement;
 };
 
-export const TicketsPageWrapper: React.SFC<Props> = ({ children }) => {
+export const TicketsPageWrapper: React.FC<Props> = ({ children }) => {
   const code = process.env.conferenceCode;
   const language = useCurrentLanguage();
   const [isLoggedIn] = useLoginState();
@@ -113,7 +114,8 @@ export const TicketsPageWrapper: React.SFC<Props> = ({ children }) => {
       router.replace("/information");
       return;
     }
-
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     if (tickets.length > 0 && !hasAnsweredTicketsQuestions(state, tickets)) {
       router.replace("/questions");
       return;
@@ -160,7 +162,10 @@ export const TicketsPageWrapper: React.SFC<Props> = ({ children }) => {
           </Box>
         )}
 
-        {!loading && children({ tickets, hotelRooms, conference, me })}
+        {!loading &&
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          children({ tickets, hotelRooms, conference, me })}
       </Box>
     </Box>
   );

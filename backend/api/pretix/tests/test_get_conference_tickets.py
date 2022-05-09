@@ -75,7 +75,7 @@ def test_get_conference_tickets(
     assert ticket.available_until is None
     assert ticket.quantity_left == 118
     assert ticket.questions[0].id == 1
-    assert ticket.questions[0].name == "Codice Fiscale"
+    assert ticket.questions[0].name == "Vat number"
     assert ticket.questions[0].required is True
     assert ticket.questions[1].id == 2
     assert ticket.questions[1].name == "Food preferences"

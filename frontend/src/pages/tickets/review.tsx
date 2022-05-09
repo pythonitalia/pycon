@@ -5,7 +5,6 @@ import React from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, Heading, jsx } from "theme-ui";
 
-import { Ticket } from "~/components/tickets-form/types";
 import { CompleteOrder } from "~/components/tickets-page/review/complete-order";
 import { HotelRoomsRecap } from "~/components/tickets-page/review/hotel-rooms-recap";
 import { InvoiceInformation } from "~/components/tickets-page/review/invoice-information";
@@ -14,10 +13,11 @@ import { Voucher } from "~/components/tickets-page/review/voucher";
 import { HotelRoom, OrderState } from "~/components/tickets-page/types";
 import { useCart } from "~/components/tickets-page/use-cart";
 import { TicketsPageWrapper } from "~/components/tickets-page/wrapper";
+import { TicketItem } from "~/types";
 
 type Props = {
   state: OrderState;
-  tickets: Ticket[];
+  tickets: TicketItem[];
   hotelRooms: HotelRoom[];
   email: string;
   applyVoucher: (voucher: any) => void;

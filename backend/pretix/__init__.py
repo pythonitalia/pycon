@@ -7,6 +7,7 @@ import requests
 import strawberry
 from django.conf import settings
 
+from api.pretix.types import UpdateAttendeeTicketInput
 from conferences.models.conference import Conference
 from hotels.models import HotelRoom
 from pretix.types import Category, Question, Quota
@@ -382,5 +383,39 @@ def get_user_tickets(conference: Conference, email: str):
             "attendee_email": email,
         },
     )
+
+    response.raise_for_status()
+
+    return response.json()
+
+
+def get_user_ticket(conference: Conference, email: str, id: str):
+
+    # TODO: filter by orderposition in the PretixAPI
+    tickets = get_user_tickets(conference, email)
+
+    def filter_by(ticket):
+        return str(ticket["id"]) == id and ticket["attendee_email"] == email
+
+    tickets = list(filter(filter_by, tickets))
+
+    if tickets:
+        return tickets[0]
+
+
+def is_ticket_owner(conference: Conference, email: str, id: str) -> bool:
+    ticket = get_user_ticket(conference, email, id)
+    return ticket is not None
+
+
+def update_ticket(conference: Conference, attendee_ticket: UpdateAttendeeTicketInput):
+    response = pretix(
+        conference=conference,
+        endpoint=f"orderpositions/{attendee_ticket.id}/",
+        method="PATCH",
+        json=attendee_ticket.to_json(),
+    )
+
+    response.raise_for_status()
 
     return response.json()

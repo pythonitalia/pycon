@@ -4,15 +4,14 @@
 import React from "react";
 import { Box, jsx } from "theme-ui";
 
-import { CurrentUserQueryResult, TicketType } from "~/types";
+import { CurrentUserQueryResult, TicketType, TicketItem } from "~/types";
 
 import { SelectedProducts } from "../tickets-page/types";
 import { ProductRow } from "./product-row";
-import { Ticket } from "./types";
 
 type Props = {
   isBusiness: boolean;
-  tickets: Ticket[];
+  tickets: TicketItem[];
   selectedProducts: SelectedProducts;
   addProduct: (id: string, variant?: string) => void;
   removeProduct: (id: string, variant?: string) => void;
@@ -53,7 +52,7 @@ export const TicketsForm = ({
     }
     acc[category].push(ticket);
     return acc;
-  }, {} as { [category: string]: Ticket[] });
+  }, {} as { [category: string]: TicketItem[] });
 
   return (
     <React.Fragment>

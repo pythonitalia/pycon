@@ -41,6 +41,7 @@ export type ProductState = {
   attendeeName: string;
   attendeeEmail: string;
   voucher?: Voucher | null;
+  errors?: { [id: string]: string };
 };
 
 export type SelectedProducts = {

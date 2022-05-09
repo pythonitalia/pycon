@@ -6,7 +6,7 @@ import { FormattedMessage } from "react-intl";
 import { Box, Flex, Heading, jsx } from "theme-ui";
 
 import { useCurrentLanguage } from "~/locale/context";
-import { CurrentUserQueryResult, HotelRoom } from "~/types";
+import { CurrentUserQueryResult, HotelRoom, TicketType } from "~/types";
 
 import { Button } from "../button/button";
 import { ProductRow } from "../tickets-form/product-row";
@@ -63,6 +63,8 @@ export const HotelForm = ({
             conferenceStart={conferenceStart}
             conferenceEnd={conferenceEnd}
             addHotelRoom={addHotelRoom}
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
             ticket={{
               ...room,
               soldOut:
@@ -71,7 +73,7 @@ export const HotelForm = ({
               defaultPrice: room.price,
               questions: [],
               category: "hotel",
-              type: "HOTEL",
+              type: TicketType.Hotel,
               quantityLeft: room.capacityLeft,
             }}
           />
