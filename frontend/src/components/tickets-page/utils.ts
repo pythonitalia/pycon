@@ -1,4 +1,5 @@
 import { TicketItem } from "~/types";
+
 import { InvoiceInformationState, OrderState } from "./types";
 
 export const hasSelectedAtLeastOneProduct = (state: OrderState): boolean =>

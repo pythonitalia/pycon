@@ -50,10 +50,8 @@ export const ScheduleView: React.SFC<{
     variables: { code, day: currentDay, duration: 60 },
   });
 
-  const [
-    addOrCreateScheduleItem,
-    { loading: updatingSchedule },
-  ] = useUpdateOrCreateSlotItemMutation();
+  const [addOrCreateScheduleItem, { loading: updatingSchedule }] =
+    useUpdateOrCreateSlotItemMutation();
 
   const addCustomScheduleItem = useCallback(
     (slotId: string, itemRooms: string[]) =>

@@ -5,8 +5,9 @@ import React, { useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { Flex, jsx, Select } from "theme-ui";
 
-import { Button } from "../button/button";
 import { TicketItem } from "~/types";
+
+import { Button } from "../button/button";
 
 export const AddProductWithVariation: React.SFC<{
   ticket: TicketItem;

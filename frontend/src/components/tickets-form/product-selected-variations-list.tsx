@@ -4,8 +4,9 @@
 import React from "react";
 import { Box, Flex, Grid, jsx } from "theme-ui";
 
-import { Button } from "../button/button";
 import { TicketItem } from "~/types";
+
+import { Button } from "../button/button";
 
 type SelectedProduct = {
   id: string;

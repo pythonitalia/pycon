@@ -47,10 +47,8 @@ export const TalkPage = () => {
     executeBookScheduleItem,
     { data: bookSpotData, loading: isBookingSpot },
   ] = useBookScheduleItemMutation();
-  const [
-    executeCancelBooking,
-    { loading: isCancellingBooking },
-  ] = useCancelBookingScheduleItemMutation();
+  const [executeCancelBooking, { loading: isCancellingBooking }] =
+    useCancelBookingScheduleItemMutation();
 
   const goBack = useCallback(() => {
     router.push(`/schedule/${day}`);

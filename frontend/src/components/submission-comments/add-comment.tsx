@@ -22,10 +22,8 @@ type Props = {
 
 export const AddComment: React.SFC<Props> = ({ submissionId }) => {
   const [formState, { textarea }] = useFormState<Form>();
-  const [
-    sendComment,
-    { loading, data: sendCommentData, error },
-  ] = useSendCommentMutation();
+  const [sendComment, { loading, data: sendCommentData, error }] =
+    useSendCommentMutation();
 
   const onSubmit = useCallback(
     async (e) => {

@@ -27,10 +27,8 @@ export const RequestResetPasswordPage = () => {
     },
   );
 
-  const [
-    sendResetPassword,
-    { loading, error, data },
-  ] = useRequestPasswordResetMutation();
+  const [sendResetPassword, { loading, error, data }] =
+    useRequestPasswordResetMutation();
 
   const onSubmit = useCallback(
     (e) => {

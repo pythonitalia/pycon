@@ -21,9 +21,9 @@ export const TicketsInformationPage = () => {
           onUpdateInformation={updateInformation}
           invoiceInformation={state.invoiceInformation}
           onNextStep={() => {
-            const productIds = Object.values(
-              state.selectedProducts,
-            ).flatMap((instances) => instances.map((product) => product.id));
+            const productIds = Object.values(state.selectedProducts).flatMap(
+              (instances) => instances.map((product) => product.id),
+            );
 
             const selectedProductsInfo = tickets.filter((ticket) =>
               productIds.includes(ticket.id),

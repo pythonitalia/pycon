@@ -6,11 +6,11 @@ import { FormattedMessage } from "react-intl";
 import { Box, Heading, jsx, Text } from "theme-ui";
 
 import { useCurrentLanguage } from "~/locale/context";
+import { TicketItem } from "~/types";
 
 import { HotelRoom, OrderState } from "../types";
 import { CreateOrderButtons } from "./create-order-buttons";
 import { calculateTotalAmount } from "./prices";
-import { TicketItem } from "~/types";
 
 type Props = {
   email: string;
