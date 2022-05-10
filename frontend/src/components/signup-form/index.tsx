@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
-import React, { useCallback, useLayoutEffect } from "react";
+import { useCallback, useLayoutEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import { Box, Grid, Input, jsx, Heading } from "theme-ui";
@@ -9,6 +9,7 @@ import { Box, Grid, Input, jsx, Heading } from "theme-ui";
 import { useRouter } from "next/router";
 
 import { useLoginState } from "~/components/profile/hooks";
+import { useTranslatedMessage } from "~/helpers/use-translated-message";
 import { useSignupMutation } from "~/types";
 
 import { Alert } from "../alert";
@@ -19,6 +20,7 @@ import { Link } from "../link";
 type SignupFormProps = {
   email: string;
   password: string;
+  password2: string;
 };
 
 const getErrorMessageIfAny = (typename?: string) => {
@@ -30,7 +32,10 @@ const getErrorMessageIfAny = (typename?: string) => {
   }
 };
 
-export const SignupForm: React.SFC = () => {
+export const SignupForm = () => {
+  const passwordMismatchMessage = useTranslatedMessage(
+    "signup.passwordMismatch",
+  );
   const [loggedIn, setLoggedIn] = useLoginState();
   const router = useRouter();
 
@@ -62,8 +67,17 @@ export const SignupForm: React.SFC = () => {
   const onFormSubmit = useCallback(
     (e) => {
       e.preventDefault();
+
+      const email = formState.values.email;
+      const password = formState.values.password;
+
       signup({
-        variables: { input: formState.values },
+        variables: {
+          input: {
+            email,
+            password,
+          },
+        },
       });
     },
     [signup, formState],
@@ -77,10 +91,10 @@ export const SignupForm: React.SFC = () => {
       (data.register.errors[field] ?? []).map((e) => e.message)) ||
     [];
 
-  // TODO reuse from login page (or make it visible in all pages)
-  // {location?.state?.message && (
-  //   <Alert variant="alert">{location.state.message}</Alert>
-  // )}
+  const isPasswordMismatching =
+    formState.touched.password &&
+    formState.touched.password2 &&
+    formState.values.password !== formState.values.password2;
 
   return (
     <Box
@@ -121,7 +135,7 @@ export const SignupForm: React.SFC = () => {
           <Link
             sx={{
               display: "block",
-              mb: 4,
+              mb: 3,
               textDecoration: "underline",
             }}
             path={`/login/`}
@@ -138,11 +152,23 @@ export const SignupForm: React.SFC = () => {
               required={true}
               type="password"
               tabIndex={2}
-              mb={4}
             />
           </InputWrapper>
 
-          <Button type="submit" loading={loading}>
+          <InputWrapper
+            errors={isPasswordMismatching ? [passwordMismatchMessage] : []}
+            label={<FormattedMessage id="signup.password2" />}
+          >
+            <Input
+              {...password("password2")}
+              required={true}
+              type="password"
+              tabIndex={2}
+              mb={0}
+            />
+          </InputWrapper>
+
+          <Button sx={{ my: 2 }} type="submit" loading={loading}>
             <FormattedMessage id="signup.signupButton" />
           </Button>
         </form>

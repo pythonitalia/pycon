@@ -102,6 +102,9 @@ export const messages = {
     "signup.title": "Signup",
     "signup.email": "Email",
     "signup.password": "Password",
+    "signup.password2": "Confirm Password",
+    "signup.passwordMismatch":
+      'Make sure "Password" and "Confirm Password" match!',
     "signup.signupButton": "Signup 👉",
     "deadlines.start": "Start",
     "deadlines.end": "End",
@@ -636,6 +639,8 @@ export const messages = {
     "signup.title": "Registrati",
     "signup.email": "Email",
     "signup.password": "Password",
+    "signup.password2": "Conferma Password",
+    "signup.passwordMismatch": "Assicurati che le password coincidono",
     "signup.signupButton": "Registrati 👉",
     "deadlines.start": "Inizio",
     "deadlines.end": "Fine",
