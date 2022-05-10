@@ -28,7 +28,7 @@
     "@graphql-codegen/introspection": "^1.18.0",
     "@graphql-codegen/near-operation-file-preset": "^2.2.6",
     "@graphql-codegen/typescript": "^1.17.11",
-    "@graphql-codegen/typescript-operations": "^1.17.7",
+    "@graphql-codegen/typescript-operations": "^2.4.0",
     "@graphql-codegen/typescript-react-apollo": "^3.2.8",
     "@mdx-js/loader": "^1.6.19",
     "@next/mdx": "^10.0.0",
