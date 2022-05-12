@@ -192,7 +192,8 @@ export const ScheduleEntry: React.SFC<{
         zIndex: ["scheduleDraggable"],
         backgroundColor,
         position: "relative",
-        p: 2,
+        px: 20,
+        py: 3,
         fontSize: 1,
       }}
       {...props}
@@ -204,7 +205,7 @@ export const ScheduleEntry: React.SFC<{
           color: "inherit",
           textDecoration: "none",
           height: "100%",
-          maxHeight: 135,
+          maxHeight: [null, 135],
           display: "block",
           "> span": {
             height: "100%",
@@ -214,6 +215,18 @@ export const ScheduleEntry: React.SFC<{
         }}
       >
         <Text>
+          {item.type !== "custom" ? (
+            <Text
+              sx={{
+                fontWeight: "bold",
+                display: [null, "block"],
+                mb: 2,
+              }}
+            >
+              {item.rooms.map((room) => room.name).join(", ")}
+            </Text>
+          ) : null}
+
           {item.title}
 
           {marker && (
@@ -230,7 +243,7 @@ export const ScheduleEntry: React.SFC<{
               item.type === "keynote" || item.type === "talk"
                 ? "black"
                 : "white",
-            mt: "auto",
+            mt: ["20px", "auto"],
           }}
         >
           <Box sx={{ mr: "auto" }}>
