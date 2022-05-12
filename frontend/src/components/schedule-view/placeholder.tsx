@@ -58,6 +58,7 @@ export const Placeholder: React.SFC<{
         backgroundColor,
         p: 2,
         fontSize: 1,
+        display: ["none", "block"],
       }}
     >
       {adminMode && `Placeholder ${duration}`}

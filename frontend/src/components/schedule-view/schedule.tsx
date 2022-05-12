@@ -3,7 +3,7 @@
 /** @jsx jsx */
 import React, { useRef } from "react";
 import useSyncScroll from "react-use-sync-scroll";
-import { Box, Grid, jsx } from "theme-ui";
+import { Box, jsx } from "theme-ui";
 
 import { ScheduleEntry } from "./events";
 import { isTraining } from "./is-training";
@@ -137,18 +137,19 @@ const GridContainer = React.forwardRef<
     ref={ref}
     {...props}
   >
-    <Grid
-      gap={"4px"}
+    <div
       sx={{
-        minWidth: "2000px",
+        minWidth: [null, "2000px"],
         gridTemplateColumns: `80px repeat(${totalColumns}, 1fr)`,
         gridTemplateRows: `repeat(${totalRows - 1}, 10px)`,
         py: "4px",
         backgroundColor: "black",
+        gap: "4px",
+        display: ["block", "grid"],
       }}
     >
       {children}
-    </Grid>
+    </div>
   </Box>
 ));
 
@@ -226,6 +227,7 @@ export const Schedule: React.SFC<{
           zIndex: ["scheduleHeader"],
           overflowX: "hidden",
           mb: "-4px",
+          display: ["none", "grid"],
         }}
       >
         <Box
@@ -268,7 +270,7 @@ export const Schedule: React.SFC<{
           const rowEnd = getRowEndForSlot(slotIndex);
 
           return (
-            <React.Fragment key={slot.id}>
+            <div sx={{ display: "contents" }} key={slot.id}>
               <Box
                 sx={{
                   gridColumnStart: 1,
@@ -276,8 +278,8 @@ export const Schedule: React.SFC<{
                   gridRowStart: "var(--start)",
                   gridRowEnd: "var(--end)",
                   backgroundColor: "white",
-                  p: 2,
-                  textAlign: "center",
+                  p: [3, 2],
+                  textAlign: [null, "center"],
                   fontWeight: "bold",
                 }}
                 style={
@@ -327,7 +329,7 @@ export const Schedule: React.SFC<{
                   }
                 />
               ))}
-            </React.Fragment>
+            </div>
           );
         })}
       </GridContainer>
