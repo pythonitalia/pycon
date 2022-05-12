@@ -55,7 +55,7 @@ export const JobListingAccordion = ({
               layout="fill"
               sx={{
                 objectFit: "contain",
-                padding: "10px",
+                padding: "5px !important",
               }}
               src={job.companyLogo}
             />
