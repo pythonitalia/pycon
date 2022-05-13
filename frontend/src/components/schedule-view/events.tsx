@@ -192,8 +192,8 @@ export const ScheduleEntry: React.SFC<{
         zIndex: ["scheduleDraggable"],
         backgroundColor,
         position: "relative",
-        px: 20,
-        py: 3,
+        px: [20, 2],
+        py: [3, 2],
         fontSize: 1,
       }}
       {...props}
@@ -219,7 +219,7 @@ export const ScheduleEntry: React.SFC<{
             <Text
               sx={{
                 fontWeight: "bold",
-                display: ["block", null],
+                display: ["block", "none"],
                 mb: 2,
               }}
             >
