@@ -6,7 +6,7 @@ from pretix import get_user_ticket
 @override_settings(PRETIX_API="https://pretix/api/")
 def test_user_ticket(requests_mock, user, conference_factory, pretix_user_tickets):
     conference = conference_factory(pretix_organizer_id="org", pretix_event_id="event")
-    pretix_user_tickets[0]["attendee_email"] = user.email.uppercase()
+    pretix_user_tickets[0]["attendee_email"] = user.email.upper()
 
     requests_mock.get(
         f"https://pretix/api/organizers/org/events/event/tickets/attendee-tickets?attendee_email={user.email}",
