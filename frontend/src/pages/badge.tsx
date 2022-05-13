@@ -98,7 +98,7 @@ const Badge = () => {
             fontSize: "36px",
             fontWeight: "800",
             lineHeight: "38px",
-            mt: "60px",
+            mt: "40px",
             mb: "8px",
           }}
         >
