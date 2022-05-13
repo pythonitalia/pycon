@@ -2,7 +2,7 @@
 
 /** @jsx jsx */
 import { Box, Grid, Heading, jsx, Text, Flex } from "theme-ui";
-
+import { useRouter } from 'next/router'
 import { Logo } from "~/components/logo";
 
 const Separator = (props) => (
@@ -23,7 +23,7 @@ const Separator = (props) => (
   </svg>
 );
 
-const RightBackground = (props) => (
+const RightBackground = ({ textColor, ...props }) => (
   <svg
     width="74"
     height="425"
@@ -34,12 +34,37 @@ const RightBackground = (props) => (
   >
     <path
       d="M91 12.808V433.177C91 433.246 90.9303 433.28 90.8607 433.28H20.9755C46.9779 405.985 46.8647 351.922 20.6185 324.835C-5.73206 297.643 -5.73206 243.226 20.6185 216C46.9691 188.808 46.9691 134.391 20.6185 107.165C-5.73206 79.9732 -5.73206 25.5557 20.6185 -1.67042C46.6209 -28.4724 43.6786 -81.7995 18.2768 -109.38C61.5329 -85.8497 91 -39.4286 91 12.808Z"
-      fill="#F17A5D"
+      fill={textColor}
     />
   </svg>
 );
 
 const Badge = () => {
+  const router = useRouter()
+
+  const name = router.query.name;
+  const tagline = router.query.tagline;
+  const variant = router.query.variant;
+
+  const isSpeaker = variant === 'speaker';
+  const isParticipant = variant === 'participant';
+  const isKeynoter = variant === 'keynoter';
+  const isStaff = variant === 'staff';
+
+  let textColor = '#F17A5D'
+
+  if (isSpeaker) {
+    textColor = '#F17A5D'
+  } else if (isKeynoter) {
+    textColor = '#9373B0'
+  } else if (isParticipant) {
+    textColor = '#36B39F'
+  } else if (isStaff) {
+    textColor = '#F6AF3C'
+  }
+
+  console.log("router", router.query)
+
   return (
     <Box
       sx={{
@@ -77,10 +102,12 @@ const Badge = () => {
             mb: "8px",
           }}
         >
-          Marco Acierno
+          {name}
         </Text>
 
-        <Text>Hello ask me everything about Graph QL :)</Text>
+        <Text>
+          {tagline}
+        </Text>
       </Box>
 
       <Text
@@ -91,13 +118,17 @@ const Badge = () => {
           fontSize: "20px",
           lineHeight: "26px",
           fontWeight: "800",
-          color: "#F17A5D",
+          color: textColor,
         }}
       >
-        Speaker
+        {isSpeaker && `Speaker`}
+        {isParticipant && `Participant`}
+        {isKeynoter && `Keynoter`}
+        {isStaff && `Staff`}
       </Text>
 
       <RightBackground
+        textColor={textColor}
         sx={{
           position: "absolute",
           top: 0,
