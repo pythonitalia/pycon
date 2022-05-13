@@ -45,8 +45,10 @@ const Badge = () => {
       sx={{
         // width: '550px',
         // height: '850px',
-        width: "275px",
-        height: "425px",
+        // width: "275px",
+        // height: "425px",
+        width: "10cm",
+        height: "10cm",
         backgroundColor: "#FCE8DE",
         position: "relative",
         overflow: "hidden",
