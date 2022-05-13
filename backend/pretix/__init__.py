@@ -396,7 +396,7 @@ def get_user_ticket(conference: Conference, email: str, id: str):
 
     def filter_by(ticket):
         return (
-            str(ticket["id"]) == id
+            str(ticket["id"]) == str(id)
             and ticket["attendee_email"].lower() == email.lower()
         )
 

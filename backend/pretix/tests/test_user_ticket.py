@@ -16,6 +16,9 @@ def test_user_ticket(requests_mock, user, conference_factory, pretix_user_ticket
     ticket = get_user_ticket(conference, user.email, pretix_user_tickets[0]["id"])
 
     assert ticket
-    assert ticket.id == pretix_user_tickets[0]["id"]
-    assert ticket.name.lower() == pretix_user_tickets[0]["attendee_name"].lower()
-    assert ticket.email == pretix_user_tickets[0]["attendee_email"]
+    assert ticket["id"] == pretix_user_tickets[0]["id"]
+    assert (
+        ticket["attendee_name"].lower()
+        == pretix_user_tickets[0]["attendee_name"].lower()
+    )
+    assert ticket["attendee_email"] == pretix_user_tickets[0]["attendee_email"]
