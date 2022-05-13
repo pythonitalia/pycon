@@ -219,7 +219,7 @@ export const ScheduleEntry: React.SFC<{
             <Text
               sx={{
                 fontWeight: "bold",
-                display: [null, "block"],
+                display: [null, "block", "none"],
                 mb: 2,
               }}
             >
