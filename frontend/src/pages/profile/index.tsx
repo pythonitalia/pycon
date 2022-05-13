@@ -37,6 +37,7 @@ export const MyProfilePage = () => {
       conference: process.env.conferenceCode,
       language: language,
     },
+    fetchPolicy: "no-cache",
   });
 
   useEffect(() => {
