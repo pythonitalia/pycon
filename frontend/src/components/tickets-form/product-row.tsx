@@ -5,6 +5,7 @@ import moment from "moment";
 import { FormattedMessage } from "react-intl";
 import { Box, Grid, jsx, Text } from "theme-ui";
 
+import { compile } from "~/helpers/markdown";
 import { useCurrentLanguage } from "~/locale/context";
 import { CurrentUserQueryResult, TicketType, TicketItem } from "~/types";
 
@@ -102,7 +103,9 @@ export const ProductRow = ({
             </Text>
           </Text>
 
-          <Text>{ticket.description}</Text>
+          {ticket.description && (
+            <Text>{compile(ticket.description).tree}</Text>
+          )}
           {ticket.availableUntil && (
             <Text>
               <FormattedMessage
