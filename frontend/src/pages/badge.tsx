@@ -1,6 +1,7 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
+import { useState, useEffect } from 'react'
 import { Box, Grid, Heading, jsx, Text, Flex } from "theme-ui";
 import { useRouter } from 'next/router'
 import { Logo } from "~/components/logo";
@@ -42,9 +43,22 @@ const RightBackground = ({ textColor, ...props }) => (
 const Badge = () => {
   const router = useRouter()
 
-  const name = router.query.name;
-  const tagline = router.query.tagline;
-  const variant = router.query.variant;
+  const [name, setName] = useState("unset")
+  const [tagline, setTagline] = useState("unset")
+  const [variant, setVariant] = useState("participant")
+
+  useEffect(() => {
+    // @ts-ignore
+    window.changeBadgeData = ({name, tagline, variant}) => {
+      setName(name)
+      setTagline(tagline)
+      setVariant(variant)
+    }
+  }, []);
+
+  // const name = router.query.name;
+  // const tagline = router.query.tagline;
+  // const variant = router.query.variant;
 
   const isSpeaker = variant === 'speaker';
   const isParticipant = variant === 'participant';
@@ -60,7 +74,7 @@ const Badge = () => {
   } else if (isParticipant) {
     textColor = '#36B39F'
   } else if (isStaff) {
-    textColor = '#F6AF3C'
+    textColor = '#DC9BC4'
   }
 
   console.log("router", router.query)

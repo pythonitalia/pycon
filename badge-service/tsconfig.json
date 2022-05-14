@@ -1,0 +1,7 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "lib": ["es2015", "dom"]
+  },
+  "include": ["node_modules/@types/puppeteer/index.d.ts"]
+}
