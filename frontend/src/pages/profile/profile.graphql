@@ -33,6 +33,7 @@ query MyProfile($conference: String!, $language: String!) {
         language
         description
         category
+        admission
         questions {
           id
           answer {
