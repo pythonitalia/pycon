@@ -143,6 +143,7 @@ def _get_by_language(item, key, language):
 class TicketItem:
     id: strawberry.ID
     name: str
+    admission: bool
     language: Optional[str]
     description: Optional[str]
     active: Optional[bool]
@@ -190,6 +191,7 @@ class TicketItem:
             description=_get_by_language(data, "description", language),
             tax_rate=data["tax_rate"],
             active=data["active"],
+            admission=data["admission"],
             default_price=data["default_price"],
             available_from=data["available_from"],
             available_until=data["available_until"],

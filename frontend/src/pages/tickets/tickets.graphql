@@ -16,6 +16,7 @@ query Tickets($conference: String!, $language: String!) {
       type
       category
       taxRate
+      admission
 
       variations {
         id

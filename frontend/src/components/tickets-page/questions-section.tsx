@@ -112,58 +112,62 @@ export const QuestionsSection: React.SFC<Props> = ({
                       {product.name}
                     </Heading>
 
-                    <InputWrapper
-                      key="attendeeName"
-                      isRequired={true}
-                      label={
-                        <FormattedMessage id="orderQuestions.attendeeName" />
-                      }
-                      errors={
-                        selectedProductInfo?.errors && [
-                          selectedProductInfo?.errors?.attendeeName,
-                        ]
-                      }
-                    >
-                      <Input
-                        required={true}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                          updateTicketInfo({
-                            id: selectedProductInfo.id,
-                            index,
-                            key: "attendeeName",
-                            value: e.target.value,
-                          })
+                    {product.admission && (
+                      <InputWrapper
+                        key="attendeeName"
+                        isRequired={true}
+                        label={
+                          <FormattedMessage id="orderQuestions.attendeeName" />
                         }
-                        value={selectedProductInfo.attendeeName}
-                      />
-                    </InputWrapper>
+                        errors={
+                          selectedProductInfo?.errors && [
+                            selectedProductInfo?.errors?.attendeeName,
+                          ]
+                        }
+                      >
+                        <Input
+                          required={true}
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            updateTicketInfo({
+                              id: selectedProductInfo.id,
+                              index,
+                              key: "attendeeName",
+                              value: e.target.value,
+                            })
+                          }
+                          value={selectedProductInfo.attendeeName}
+                        />
+                      </InputWrapper>
+                    )}
 
-                    <InputWrapper
-                      key="attendeeEmail"
-                      isRequired={true}
-                      label={
-                        <FormattedMessage id="orderQuestions.attendeeEmail" />
-                      }
-                      errors={
-                        selectedProductInfo?.errors && [
-                          selectedProductInfo?.errors?.attendeeEmail,
-                        ]
-                      }
-                    >
-                      <Input
-                        required={true}
-                        type="email"
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                          updateTicketInfo({
-                            id: selectedProductInfo.id,
-                            index,
-                            key: "attendeeEmail",
-                            value: e.target.value,
-                          })
+                    {product.admission && (
+                      <InputWrapper
+                        key="attendeeEmail"
+                        isRequired={true}
+                        label={
+                          <FormattedMessage id="orderQuestions.attendeeEmail" />
                         }
-                        value={selectedProductInfo.attendeeEmail}
-                      />
-                    </InputWrapper>
+                        errors={
+                          selectedProductInfo?.errors && [
+                            selectedProductInfo?.errors?.attendeeEmail,
+                          ]
+                        }
+                      >
+                        <Input
+                          required={true}
+                          type="email"
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            updateTicketInfo({
+                              id: selectedProductInfo.id,
+                              index,
+                              key: "attendeeEmail",
+                              value: e.target.value,
+                            })
+                          }
+                          value={selectedProductInfo.attendeeEmail}
+                        />
+                      </InputWrapper>
+                    )}
 
                     {product.questions.map((question) => (
                       <Box key={question.id}>
