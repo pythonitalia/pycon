@@ -331,7 +331,7 @@ class Conference:
 
     @strawberry.field
     def days(self, info) -> List[Day]:
-        return self.days.prefetch_related("slots", "slots__items").all()
+        return self.days.order_by("day").prefetch_related("slots", "slots__items").all()
 
 
 DeadlineStatusType = strawberry.enum(DeadlineStatus)
