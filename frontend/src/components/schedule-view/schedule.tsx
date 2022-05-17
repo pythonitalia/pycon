@@ -60,6 +60,7 @@ const getRowEndForTraining = ({
   const duration = item.submission
     ? item.submission.duration!.duration
     : item.duration || 0;
+
   const end = start + duration;
 
   let endingSlotIndex = slots.findIndex(
@@ -73,11 +74,16 @@ const getRowEndForTraining = ({
   }
 
   const endingSlot = slots[endingSlotIndex];
+
   const endingSlotEnd =
     convertHoursToMinutes(endingSlot.hour) + endingSlot.duration;
   delta = endingSlotEnd - end;
 
   const minutesToGridRow = endingSlot.duration / SLOT_SIZE;
+
+  if (delta === 0) {
+    return getRowEndForSlot(endingSlotIndex);
+  }
 
   if (delta <= 0) {
     return SLOT_SIZE * (endingSlotIndex + 1) + rowOffset;
