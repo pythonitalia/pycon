@@ -93,7 +93,7 @@ export const TalkPage = () => {
     });
   };
 
-  const bookingState = bookingStateData?.conference?.talk ?? {};
+  const bookingState: any = bookingStateData?.conference?.talk ?? {};
 
   return (
     <Fragment>
@@ -284,7 +284,6 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
     queryTalk(client, {
       code: process.env.conferenceCode,
       slug,
-      isLoggedIn: false,
     }),
   ]);
 
