@@ -41,7 +41,6 @@ export const TalkPage = () => {
     variables: {
       code: process.env.conferenceCode,
       slug,
-      isLoggedIn,
     },
   });
 
