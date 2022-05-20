@@ -27,6 +27,7 @@ import {
   useBookScheduleItemMutation,
   useCancelBookingScheduleItemMutation,
   useTalkQuery,
+  useWorkshopBookingStateQuery,
 } from "~/types";
 
 export const TalkPage = () => {
@@ -35,7 +36,7 @@ export const TalkPage = () => {
   const day = router.query.day as string;
   const [isLoggedIn] = useLoginState();
 
-  const { data, loading: isLoadingTalkData } = useTalkQuery({
+  const { data } = useTalkQuery({
     returnPartialData: true,
     variables: {
       code: process.env.conferenceCode,
@@ -43,6 +44,18 @@ export const TalkPage = () => {
       isLoggedIn,
     },
   });
+
+  const { data: bookingStateData, loading: isLoadingBookingState } =
+    useWorkshopBookingStateQuery({
+      variables: {
+        code: process.env.conferenceCode,
+        slug,
+      },
+      skip: !isLoggedIn,
+      fetchPolicy: "network-only",
+      nextFetchPolicy: "cache-first",
+    });
+
   const [
     executeBookScheduleItem,
     { data: bookSpotData, loading: isBookingSpot },
@@ -80,6 +93,8 @@ export const TalkPage = () => {
       },
     });
   };
+
+  const bookingState = bookingStateData?.conference?.talk ?? {};
 
   return (
     <Fragment>
@@ -154,33 +169,38 @@ export const TalkPage = () => {
                 <FormattedMessage id="talk.bookToAttend" />
               </Text>
 
-              {talk.userHasSpot && (
+              {!isLoadingBookingState && bookingState.userHasSpot && (
                 <Alert variant="success">
                   <FormattedMessage id="talk.spotReserved" />
                 </Alert>
               )}
 
-              {!talk.userHasSpot && !isLoadingTalkData && !talk.hasSpacesLeft && (
-                <Alert variant="info">
-                  <FormattedMessage id="talk.eventIsFull" />
-                </Alert>
-              )}
+              {!isLoadingBookingState &&
+                !bookingState.userHasSpot &&
+                !bookingState.hasSpacesLeft && (
+                  <Alert variant="info">
+                    <FormattedMessage id="talk.eventIsFull" />
+                  </Alert>
+                )}
 
-              {isLoggedIn && isLoadingTalkData && (
+              {isLoggedIn && isLoadingBookingState && (
                 <Alert variant="info">
                   <FormattedMessage id="global.loading" />
                 </Alert>
               )}
 
-              {isLoggedIn && talk.hasSpacesLeft && !talk.userHasSpot && (
-                <Button
-                  loading={isBookingSpot}
-                  onClick={bookScheduleItem}
-                  sx={{ my: 2 }}
-                >
-                  <FormattedMessage id="talk.bookCta" />
-                </Button>
-              )}
+              {isLoggedIn &&
+                !isLoadingBookingState &&
+                bookingState.hasSpacesLeft &&
+                !bookingState.userHasSpot && (
+                  <Button
+                    loading={isBookingSpot}
+                    onClick={bookScheduleItem}
+                    sx={{ my: 2 }}
+                  >
+                    <FormattedMessage id="talk.bookCta" />
+                  </Button>
+                )}
 
               {!isLoggedIn && (
                 <Link variant="arrow-button" path="/login" sx={{ my: 2 }}>
@@ -188,15 +208,17 @@ export const TalkPage = () => {
                 </Link>
               )}
 
-              {isLoggedIn && talk.userHasSpot && (
-                <Button
-                  loading={isCancellingBooking}
-                  onClick={cancelBooking}
-                  sx={{ my: 2 }}
-                >
-                  <FormattedMessage id="talk.unregisterCta" />
-                </Button>
-              )}
+              {isLoggedIn &&
+                !isLoadingBookingState &&
+                bookingState.userHasSpot && (
+                  <Button
+                    loading={isCancellingBooking}
+                    onClick={cancelBooking}
+                    sx={{ my: 2 }}
+                  >
+                    <FormattedMessage id="talk.unregisterCta" />
+                  </Button>
+                )}
 
               {bookSpotData?.bookScheduleItem?.__typename ===
                 "UserNeedsConferenceTicket" && (
