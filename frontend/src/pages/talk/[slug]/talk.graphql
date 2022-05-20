@@ -1,4 +1,4 @@
-query Talk($slug: String!, $code: String!, $isLoggedIn: Boolean!) {
+query Talk($slug: String!, $code: String!) {
   conference(code: $code) {
     id
     talk(slug: $slug) {
@@ -10,7 +10,6 @@ query Talk($slug: String!, $code: String!, $isLoggedIn: Boolean!) {
       hasLimitedCapacity
       spacesLeft
       hasSpacesLeft
-      userHasSpot @include(if: $isLoggedIn)
 
       submission {
         id

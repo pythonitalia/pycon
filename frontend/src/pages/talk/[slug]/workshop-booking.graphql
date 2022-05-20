@@ -1,0 +1,12 @@
+query WorkshopBookingState($slug: String!, $code: String!) {
+  conference(code: $code) {
+    id
+    talk(slug: $slug) {
+      id
+      hasLimitedCapacity
+      spacesLeft
+      hasSpacesLeft
+      userHasSpot
+    }
+  }
+}

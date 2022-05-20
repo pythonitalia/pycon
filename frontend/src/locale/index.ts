@@ -1063,7 +1063,7 @@ export const messages = {
     "schedule.invitation.currentAnswer": "Risposta attuale: {answer}",
     "talk.bookToAttend":
       "Questo evento ha una capacità limitata, è necessario prenotare un posto per partecipare.",
-    "talk.bookCta": "Prentota",
+    "talk.bookCta": "Prenota",
     "talk.spacesLeft": "Posti rimanenti: {spacesLeft}",
     "talk.spotReserved": "Sei registrato per questo evento!",
     "talk.loginToBook": "Loggati per prenotare",
