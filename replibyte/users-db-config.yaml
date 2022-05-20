@@ -1,0 +1,39 @@
+encryption_key: $DB_ENCRYPTION_KEY
+
+source:
+  connection_uri: $DATABASE_URL
+  transformers:
+    - database: public
+      table: users
+      columns:
+        - name: full_name
+          transformer_name: first-name
+        - name: name
+          transformer_name: first-name
+        - name: username
+          transformer_name: random
+        - name: gender
+          transformer_name: random
+        - name: email
+          transformer_name: custom-wasm
+          transformer_options:
+            path: "transformers/email-transformer/target/wasm32-wasi/release/email-transformer.wasm"
+        - name: password
+          transformer_name: custom-wasm
+          transformer_options:
+            path: "transformers/fixedtext-transformer/target/wasm32-wasi/release/fixedtext-transformer.wasm"
+        - name: date_birth
+          transformer_name: custom-wasm
+          transformer_options:
+            path: "transformers/date-transformer/target/wasm32-wasi/release/date-transformer.wasm"
+
+datastore:
+  aws:
+    bucket: $BUCKET_NAME
+    region: eu-central-1
+    credentials:
+      access_key_id: $ACCESS_KEY_ID
+      secret_access_key: $AWS_SECRET_ACCESS_KEY
+
+destination:
+  connection_uri: $USERS_DB_URL
