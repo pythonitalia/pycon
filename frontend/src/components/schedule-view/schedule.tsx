@@ -10,7 +10,12 @@ import { isTraining } from "./is-training";
 import { Placeholder } from "./placeholder";
 import { Item, Room, Slot } from "./types";
 
-const SLOT_SIZE = 12;
+const getSlotSize = (slot: Slot) => {
+  if (slot.type === "FREE_TIME") {
+    return 3;
+  }
+  return 12;
+};
 
 const fakeBottomBorder = {
   content: "''",
@@ -36,9 +41,6 @@ const formatHour = (value: string) => {
   return [hour, minutes].join(".");
 };
 
-const getRowStartForSlot = (index: number) => SLOT_SIZE * index + 1;
-const getRowEndForSlot = (index: number) => SLOT_SIZE * (index + 1) + 1;
-
 const convertHoursToMinutes = (value: string) => {
   const [hour, minutes] = value.split(":").map((x) => parseInt(x, 10));
 
@@ -63,35 +65,19 @@ const getRowEndForTraining = ({
 
   const end = start + duration;
 
+  const currentSlotIndex = slots.findIndex((s) => s.id === slot.id);
+
   let endingSlotIndex = slots.findIndex(
     (s) => convertHoursToMinutes(s.hour) + s.duration >= end,
   );
-
-  let delta = 0;
 
   if (endingSlotIndex === -1) {
     endingSlotIndex = slots.length - 1;
   }
 
-  const endingSlot = slots[endingSlotIndex];
-
-  const endingSlotEnd =
-    convertHoursToMinutes(endingSlot.hour) + endingSlot.duration;
-  delta = endingSlotEnd - end;
-
-  const minutesToGridRow = endingSlot.duration / SLOT_SIZE;
-
-  if (delta === 0) {
-    return getRowEndForSlot(endingSlotIndex);
-  }
-
-  if (delta <= 0) {
-    return SLOT_SIZE * (endingSlotIndex + 1) + rowOffset;
-  }
-
-  const offset = delta > 0 ? delta / minutesToGridRow : 0;
-
-  return SLOT_SIZE * endingSlotIndex + rowOffset + offset;
+  return slots
+    .slice(currentSlotIndex, endingSlotIndex + 1)
+    .reduce((acc, s) => acc + getSlotSize(s), 0);
 };
 
 const getEntryPosition = ({
@@ -100,12 +86,16 @@ const getEntryPosition = ({
   slot,
   slots,
   rowOffset,
+  rowStart,
+  rowEnd,
 }: {
   rowOffset: number;
   item: Item;
   slot: Slot;
   slots: Slot[];
   rooms: Room[];
+  rowStart: number;
+  rowEnd: number;
 }) => {
   // find all the indexes for the rooms of this item, then
   // sort them and use the first one for the index of the item
@@ -117,13 +107,9 @@ const getEntryPosition = ({
     .sort();
 
   const index = roomIndexes[0];
-  const slotIndex = slots.findIndex((s) => s.id === slot.id);
-
-  const rowStart = getRowStartForSlot(slotIndex);
-  let rowEnd = getRowEndForSlot(slotIndex);
 
   if (isTraining(item)) {
-    rowEnd = getRowEndForTraining({ item, rowOffset, slot, slots });
+    rowEnd = rowStart + getRowEndForTraining({ item, rowOffset, slot, slots });
   }
 
   return {
@@ -187,7 +173,7 @@ export const Schedule: React.SFC<{
   currentDay,
 }) => {
   const rowOffset = 6;
-  const totalRows = SLOT_SIZE * slots.length;
+  const totalRows = slots.reduce((count, slot) => count + getSlotSize(slot), 0);
   const totalColumns = rooms.length;
 
   const handleDrop = (item: any, slot: Slot, index: number) => {
@@ -205,6 +191,11 @@ export const Schedule: React.SFC<{
         rooms.filter((room) => room.type !== "training").map((room) => room.id),
         item.event.keynoteId,
       );
+    } else if (item.event.roomChange) {
+      const roomIds = rooms
+        .filter((room) => room.type !== "training")
+        .map((room) => room.id);
+      addCustomScheduleItem(slot.id, roomIds, "Room Change");
     } else {
       const roomIds = item.event.allTracks
         ? rooms.map((room) => room.id)
@@ -220,6 +211,8 @@ export const Schedule: React.SFC<{
   const refsRef = useRef([headerRef, scheduleRef]);
 
   useSyncScroll(refsRef, { vertical: false, horizontal: true });
+
+  let rowStartPos = 1;
 
   return (
     <React.Fragment>
@@ -271,9 +264,11 @@ export const Schedule: React.SFC<{
         totalRows={totalRows}
         totalColumns={totalColumns}
       >
-        {slots.map((slot, slotIndex) => {
-          const rowStart = getRowStartForSlot(slotIndex);
-          const rowEnd = getRowEndForSlot(slotIndex);
+        {slots.map((slot) => {
+          const rowStart = rowStartPos;
+          const rowEnd = rowStartPos + getSlotSize(slot);
+
+          rowStartPos = rowEnd;
 
           return (
             <div sx={{ display: "contents" }} key={slot.id}>
@@ -330,6 +325,8 @@ export const Schedule: React.SFC<{
                         slot,
                         slots,
                         rowOffset,
+                        rowStart,
+                        rowEnd,
                       }),
                     } as any
                   }

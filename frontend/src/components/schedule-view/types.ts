@@ -4,6 +4,7 @@ export const ItemTypes = {
   TALK: "talk",
   CUSTOM: "custom",
   KEYNOTE: "keynote",
+  ROOM_CHANGE: "room_change",
 };
 
 export type Submission = {
@@ -51,6 +52,7 @@ export type Slot = {
   id: string;
   duration: number;
   hour: string;
+  type: "DEFAULT" | "FREE_TIME";
   items: Item[];
 };
 

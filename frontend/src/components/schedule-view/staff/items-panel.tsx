@@ -4,7 +4,13 @@
 import React, { useState } from "react";
 import { Box, Heading, Input, jsx } from "theme-ui";
 
-import { AllTracksEvent, CustomEvent, Keynote, Submission } from "../events";
+import {
+  AllTracksEvent,
+  CustomEvent,
+  Keynote,
+  RoomChangeEvent,
+  Submission,
+} from "../events";
 import { Submission as SubmissionType, Keynote as KeynoteType } from "../types";
 
 type ItemsPanelProp = {
@@ -43,6 +49,7 @@ export const ItemsPanel: React.SFC<ItemsPanelProp> = ({
       <Heading sx={{ mb: 4 }}>Special items</Heading>
 
       <AllTracksEvent sx={{ mb: 4, width: "100%" }} />
+      <RoomChangeEvent sx={{ mb: 4, width: "100%" }} />
       <CustomEvent sx={{ mb: 4, width: "100%" }} />
 
       <Heading sx={{ mb: 4 }}>Keynotes</Heading>

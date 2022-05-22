@@ -1,4 +1,5 @@
 from datetime import date, datetime, time
+from enum import Enum
 from typing import List, Optional
 
 import strawberry
@@ -139,10 +140,17 @@ class Keynote:
         )
 
 
+@strawberry.enum
+class ScheduleSlotType(Enum):
+    DEFAULT = "default"
+    FREE_TIME = "free_time"
+
+
 @strawberry.type
 class ScheduleSlot:
     hour: time
     duration: int
+    type: ScheduleSlotType
     id: strawberry.ID
 
     @strawberry.field

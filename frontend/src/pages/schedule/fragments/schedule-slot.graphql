@@ -5,6 +5,7 @@ fragment ScheduleSlotFragment on ScheduleSlot {
   id
   hour
   duration
+  type
 
   items {
     id
