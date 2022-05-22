@@ -290,6 +290,7 @@ services:
     networks: [pycon_net]
     environment:
       - USERS_DB_URL="postgres://users:users@users-backend-db/users"
+      - PYCON_BACKEND_DB_URL="postgres://pycon:pycon@pycon-backend-db/pycon"
       - DB_ENCRYPTION_KEY
       - BUCKET_NAME
       - ACCESS_KEY_ID
