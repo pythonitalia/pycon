@@ -260,6 +260,7 @@ class ScheduleMutations:
                     hour=schedule_item.slot.hour,
                     duration=schedule_item.slot.duration,
                     id=schedule_item.slot.id,
+                    type=schedule_item.slot.type,
                 )
             )
 
