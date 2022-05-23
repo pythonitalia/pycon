@@ -54,13 +54,13 @@ export const ScheduleView: React.SFC<{
     useUpdateOrCreateSlotItemMutation();
 
   const addCustomScheduleItem = useCallback(
-    (slotId: string, itemRooms: string[]) =>
+    (slotId: string, itemRooms: string[], title = "Custom") =>
       addOrCreateScheduleItem({
         variables: {
           input: {
             slotId,
             rooms: itemRooms,
-            title: "Custom",
+            title,
           },
         },
       }),

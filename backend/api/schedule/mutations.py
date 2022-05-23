@@ -7,15 +7,17 @@ from strawberry import ID
 
 from api.conferences.types import Day, ScheduleSlot
 from api.helpers.ids import decode_hashid
-from api.schedule.types import ScheduleInvitation, ScheduleInvitationOption
-from api.schedule.types import ScheduleItem as ScheduleItemType
+from api.schedule.types import (
+    ScheduleInvitation,
+    ScheduleInvitationOption,
+    ScheduleItem as ScheduleItemType,
+)
 from api.submissions.permissions import IsSubmissionSpeakerOrStaff
 from conferences.models import Conference
 from domain_events.publisher import send_new_schedule_invitation_answer
 from languages.models import Language
 from pretix import user_has_admission_ticket
-from schedule.models import Day as DayModel
-from schedule.models import ScheduleItem, ScheduleItemAttendee, Slot
+from schedule.models import Day as DayModel, ScheduleItem, ScheduleItemAttendee, Slot
 from submissions.models import Submission
 
 from ..permissions import IsAuthenticated, IsStaffPermission
@@ -258,6 +260,7 @@ class ScheduleMutations:
                     hour=schedule_item.slot.hour,
                     duration=schedule_item.slot.duration,
                     id=schedule_item.slot.id,
+                    type=schedule_item.slot.type,
                 )
             )
 
@@ -285,7 +288,9 @@ class ScheduleMutations:
         schedule_item.rooms.set(input.rooms)
 
         updated_slots.append(
-            ScheduleSlot(hour=slot.hour, duration=slot.duration, id=slot.id)
+            ScheduleSlot(
+                hour=slot.hour, duration=slot.duration, id=slot.id, type=slot.type
+            )
         )
 
         return UpdateOrCreateSlotItemResult(updated_slots=updated_slots)

@@ -81,9 +81,19 @@ class DayRoomThroughModel(OrderedModel):
 
 
 class Slot(models.Model):
+    TYPES = Choices(
+        # Type of slot where something is happening in the conference
+        ("default", _("Default")),
+        # Free time, that can used to change rooms or represent time between social events
+        ("free_time", _("Free Time")),
+    )
+
     day = models.ForeignKey(Day, on_delete=models.CASCADE, related_name="slots")
     hour = models.TimeField()
     duration = models.PositiveSmallIntegerField()
+    type = models.CharField(
+        choices=TYPES, max_length=100, verbose_name=_("type"), default=TYPES.default
+    )
 
     def __str__(self):
         return f"[{self.day.conference.name}] {self.day.day} - {self.hour}"

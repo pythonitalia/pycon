@@ -131,6 +131,16 @@ export const AllTracksEvent = ({ ...props }) => (
   </BaseEvent>
 );
 
+export const RoomChangeEvent = ({ ...props }) => (
+  <BaseEvent
+    type={ItemTypes.ALL_TRACKS_EVENT}
+    metadata={{ event: { roomChange: true } }}
+    {...props}
+  >
+    Room change event
+  </BaseEvent>
+);
+
 export const CustomEvent = ({ ...props }) => (
   <BaseEvent
     type={ItemTypes.CUSTOM}
