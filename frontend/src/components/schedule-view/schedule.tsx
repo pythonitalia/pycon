@@ -149,7 +149,11 @@ export const Schedule: React.SFC<{
   slots: Slot[];
   rooms: Room[];
   adminMode: boolean;
-  addCustomScheduleItem: (slotId: string, rooms: string[]) => void;
+  addCustomScheduleItem: (
+    slotId: string,
+    rooms: string[],
+    title?: string,
+  ) => void;
   moveItem: (slotId: string, rooms: string[], itemId: string) => void;
   addSubmissionToSchedule: (
     slotId: string,
