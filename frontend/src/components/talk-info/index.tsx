@@ -10,7 +10,7 @@ import { BlogPostIllustration } from "../illustrations/blog-post";
 type Props = {
   talk: {
     speakers: { fullName: string }[];
-    image: string;
+    image?: string;
     audienceLevel: string;
     topic: string;
     duration: number;
