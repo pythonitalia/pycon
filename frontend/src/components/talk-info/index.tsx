@@ -11,9 +11,9 @@ type Props = {
   talk: {
     speakers: { fullName: string }[];
     image?: string;
-    audienceLevel: string;
-    topic: string;
-    duration: number;
+    audienceLevel?: string;
+    topic?: string;
+    duration?: number;
     language: {
       code: string;
     };
@@ -79,21 +79,27 @@ export const TalkInfo = ({ talk }: Props) => {
           </InfoLine>
         )}
 
-        <InfoLine label={<FormattedMessage id="cfp.topicLabel" />}>
-          {talk.topic}
-        </InfoLine>
+        {talk.topic ? (
+          <InfoLine label={<FormattedMessage id="cfp.topicLabel" />}>
+            {talk.topic}
+          </InfoLine>
+        ) : null}
 
-        <InfoLine label={<FormattedMessage id="cfp.audienceLevelLabel" />}>
-          {talk.audienceLevel}
-        </InfoLine>
+        {talk.audienceLevel ? (
+          <InfoLine label={<FormattedMessage id="cfp.audienceLevelLabel" />}>
+            {talk.audienceLevel}
+          </InfoLine>
+        ) : null}
 
         <InfoLine label={<FormattedMessage id="talk.language" />}>
           <FormattedMessage id={`talk.language.${talk.language.code}`} />
         </InfoLine>
 
-        <InfoLine label={<FormattedMessage id="talk.duration" />}>
-          <FormattedDuration seconds={talk.duration * 60} />
-        </InfoLine>
+        {talk.duration ? (
+          <InfoLine label={<FormattedMessage id="talk.duration" />}>
+            <FormattedDuration seconds={talk.duration * 60} />
+          </InfoLine>
+        ) : null}
       </Box>
     </Flex>
   );
