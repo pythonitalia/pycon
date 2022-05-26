@@ -19,6 +19,7 @@ import { MetaTags } from "~/components/meta-tags";
 import { PageLoading } from "~/components/page-loading";
 import { useLoginState } from "~/components/profile/hooks";
 import { SpeakerDetail } from "~/components/speaker-detail";
+import { TalkInfo } from "~/components/talk-info";
 import { compile } from "~/helpers/markdown";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import {
@@ -120,41 +121,14 @@ export const TalkPage = () => {
         </Box>
 
         <Flex sx={{ mb: 5, flexDirection: ["column-reverse", "column"] }}>
-          <Flex
-            sx={{
-              position: "relative",
-              justifyContent: "flex-end",
-              alignItems: "flex-start",
+          <TalkInfo
+            talk={{
+              ...talk,
+              duration: talk.submission.duration.duration,
+              audienceLevel: talk.submission.audienceLevel.name,
             }}
-          >
-            <BlogPostIllustration
-              sx={{
-                width: "80%",
-              }}
-            />
+          />
 
-            {talk.speakers.length > 0 && (
-              <Box
-                sx={{
-                  border: "primary",
-                  p: 4,
-                  backgroundColor: "cinderella",
-                  width: "80%",
-                  position: "absolute",
-                  left: 0,
-                  top: talk.image ? "90%" : "70%",
-                }}
-              >
-                <Text sx={{ fontWeight: "bold" }}>
-                  <FormattedMessage id="blog.author" />
-                </Text>
-
-                <Text>
-                  {talk.speakers.map(({ fullName }) => fullName).join(" & ")}
-                </Text>
-              </Box>
-            )}
-          </Flex>
           {talk.hasLimitedCapacity && (
             <Flex
               sx={{

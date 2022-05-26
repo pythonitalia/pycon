@@ -536,6 +536,22 @@ export const messages = {
     "talk.buyATicket": "You need to buy a ticket to book: {link}",
     "talk.buyATicketCTA": "Tickets",
     "talk.eventIsFull": "No spaces left",
+    "talk.speaker": "{count, plural, one {Speaker} other {Speakers}}",
+    "talk.language": "Language",
+    "talk.language.it": "Italian",
+    "talk.language.en": "English",
+    "talk.duration": "Duration",
+    "react-intl-formatted-duration.longFormatting": "{minutes} {seconds}",
+    "react-intl-formatted-duration.duration": "{value} {unit}",
+    "react-intl-formatted-duration.timerFormatting": "{minutes}:{seconds}",
+    "react-intl-formatted-duration.daysUnit":
+      "{value, plural, one {day} other {days}}",
+    "react-intl-formatted-duration.hoursUnit":
+      "{value, plural, one {hour} other {hours}}",
+    "react-intl-formatted-duration.minutesUnit":
+      "{value, plural, one {minute} other {minutes}}",
+    "react-intl-formatted-duration.secondsUnit":
+      "{value, plural, one {second} other {seconds}}",
   },
   it: {
     titleTemplate: "%s | PyCon Italia",
@@ -1071,6 +1087,11 @@ export const messages = {
     "talk.buyATicket": "Devi acquistare un biglietto per registrarti: {link}",
     "talk.buyATicketCTA": "Biglietti",
     "talk.eventIsFull": "Nessun posto rimasto",
+    "talk.speaker": "{count, plural, one {Speaker} other {Speaker}}",
+    "talk.language": "Lingua",
+    "talk.language.it": "Italiano",
+    "talk.language.en": "Inglese",
+    "talk.duration": "Durata",
 
     "scheduleEasy.title": "Titolo",
     "scheduleEasy.day": "Giorno {day}",
@@ -1084,6 +1105,18 @@ export const messages = {
     "scheduleEasy.saveAsPdf": "Salva come pdf / stampa",
     "scheduleEasy.bookingInstructions":
       "Questo evento ha capacità limitata. Usa il link sotto per prenotarti.",
+
+    "react-intl-formatted-duration.longFormatting": "{minutes} {seconds}",
+    "react-intl-formatted-duration.duration": "{value} {unit}",
+    "react-intl-formatted-duration.timerFormatting": "{minutes}:{seconds}",
+    "react-intl-formatted-duration.daysUnit":
+      "{value, plural, one {giorno} other {giorni}}",
+    "react-intl-formatted-duration.hoursUnit":
+      "{value, plural, one {ora} other {ore}}",
+    "react-intl-formatted-duration.minutesUnit":
+      "{value, plural, one {minuto} other {minuti}}",
+    "react-intl-formatted-duration.secondsUnit":
+      "{value, plural, one {secondo} other {secondi}}",
   },
 };
 

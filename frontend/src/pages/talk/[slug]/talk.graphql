@@ -11,10 +11,24 @@ query Talk($slug: String!, $code: String!) {
       spacesLeft
       hasSpacesLeft
 
+      language {
+        code
+      }
+
       submission {
         id
         abstract
         elevatorPitch
+
+        duration {
+          id
+          duration
+        }
+
+        audienceLevel {
+          id
+          name
+        }
       }
 
       speakers {
