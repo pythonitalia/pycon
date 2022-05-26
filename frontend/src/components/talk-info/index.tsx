@@ -49,6 +49,7 @@ export const TalkInfo = ({ talk }: Props) => {
       <BlogPostIllustration
         sx={{
           width: "80%",
+          display: ["none", "none", "block"],
         }}
       />
 
@@ -57,8 +58,8 @@ export const TalkInfo = ({ talk }: Props) => {
           border: "primary",
           p: 4,
           backgroundColor: "cinderella",
-          width: "80%",
-          position: "absolute",
+          width: ["100%", "100%", "80%"],
+          position: [null, null, "absolute"],
           left: 0,
           top: talk.image ? "90%" : "70%",
         }}

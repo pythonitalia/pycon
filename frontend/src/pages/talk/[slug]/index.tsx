@@ -13,7 +13,6 @@ import { Alert } from "~/components/alert";
 import { Article } from "~/components/article";
 import { BackToMarquee } from "~/components/back-to-marquee";
 import { Button } from "~/components/button/button";
-import { BlogPostIllustration } from "~/components/illustrations/blog-post";
 import { Link } from "~/components/link";
 import { MetaTags } from "~/components/meta-tags";
 import { PageLoading } from "~/components/page-loading";
@@ -101,7 +100,7 @@ export const TalkPage = () => {
       <MetaTags title={talk.title} useDefaultSocialCard={false} />
 
       <Grid
-        gap={5}
+        gap={[1, 1, 5]}
         sx={{
           mx: "auto",
           px: 3,
