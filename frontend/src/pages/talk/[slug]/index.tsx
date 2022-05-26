@@ -124,6 +124,7 @@ export const TalkPage = () => {
           <TalkInfo
             talk={{
               ...talk,
+              topic: talk.submission.topic.name,
               duration: talk.submission.duration.duration,
               audienceLevel: talk.submission.audienceLevel.name,
             }}

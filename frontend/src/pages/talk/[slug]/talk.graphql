@@ -29,6 +29,10 @@ query Talk($slug: String!, $code: String!) {
           id
           name
         }
+
+        topic {
+          name
+        }
       }
 
       speakers {

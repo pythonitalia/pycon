@@ -12,6 +12,7 @@ type Props = {
     speakers: { fullName: string }[];
     image: string;
     audienceLevel: string;
+    topic: string;
     duration: number;
     language: {
       code: string;
@@ -76,6 +77,10 @@ export const TalkInfo = ({ talk }: Props) => {
             {talk.speakers.map(({ fullName }) => fullName).join(" & ")}
           </InfoLine>
         )}
+
+        <InfoLine label={<FormattedMessage id="cfp.topicLabel" />}>
+          {talk.topic}
+        </InfoLine>
 
         <InfoLine label={<FormattedMessage id="cfp.audienceLevelLabel" />}>
           {talk.audienceLevel}
