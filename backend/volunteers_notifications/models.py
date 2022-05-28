@@ -4,10 +4,6 @@ from model_utils.models import TimeStampedModel
 
 class Notification(TimeStampedModel):
     title = models.TextField()
-    subtitle = models.TextField(
-        default="",
-        blank=True,
-    )
     body = models.TextField()
 
     def __str__(self):

@@ -351,7 +351,6 @@ def handle_volunteers_push_notification_sent(data):
                                 "body": notification.body,
                             },
                             "sound": "default",
-                            "badge": 1,
                         },
                     }
                 ),

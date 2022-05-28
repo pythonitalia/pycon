@@ -17,6 +17,7 @@ from .submissions.mutations import SubmissionsMutations
 from .submissions.schema import SubmissionsQuery
 from .users.schema import CountryQuery
 from .volunteers_notifications.mutations import VolunteersNotificationsMutation
+from .volunteers_notifications.query import VolunteersNotificationsQuery
 from .voting.mutations import VotesMutations
 
 
@@ -30,6 +31,7 @@ class Query(
     OrdersQuery,
     JobBoardQuery,
     ScheduleQuery,
+    VolunteersNotificationsQuery,
 ):
     pass
 
