@@ -52,6 +52,16 @@ data "aws_iam_policy_document" "lambda_role" {
     effect    = "Allow"
   }
 
+  # SNS
+  statement {
+    actions = [
+      "sns:CreatePlatformEndpoint",
+      "sns:Publish"
+    ]
+    resources = ["*"]
+    effect    = "Allow"
+  }
+
   # S3
   statement {
     actions = [
