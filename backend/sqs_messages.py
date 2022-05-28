@@ -9,10 +9,6 @@ from domain_events.handler import HANDLERS
 
 logger = getLogger(__name__)
 
-AWS_PROFILE = 'localstack'
-ENDPOINT_URL = 'http://localstack:4566/'
-# boto3.setup_default_session(profile_name=AWS_PROFILE)
-
 
 def process_sqs_messages(event):
     apps.populate(settings.INSTALLED_APPS)
