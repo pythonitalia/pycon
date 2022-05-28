@@ -16,6 +16,7 @@ from .schedule.schema import ScheduleQuery
 from .submissions.mutations import SubmissionsMutations
 from .submissions.schema import SubmissionsQuery
 from .users.schema import CountryQuery
+from .volunteers_notifications.mutations import VolunteersNotificationsMutation
 from .voting.mutations import VotesMutations
 
 
@@ -42,6 +43,7 @@ class Mutation(
     NewsletterMutations,
     ScheduleMutations,
     AttendeeTicketMutation,
+    VolunteersNotificationsMutation,
 ):
     pass
 

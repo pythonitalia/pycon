@@ -176,3 +176,14 @@ def send_speaker_communication_email(user_id: int, subject: str, body: str):
         },
         deduplication_id=deduplication_id,
     )
+
+
+def send_volunteers_push_notification(notification_id: int, volunteers_device_id: int):
+    publish_message(
+        "VolunteersPushNotificationSent",
+        body={
+            "notification_id": notification_id,
+            "volunteers_device_id": volunteers_device_id,
+        },
+        deduplication_id=f"{notification_id}-{volunteers_device_id}",
+    )

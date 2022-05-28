@@ -1,3 +1,6 @@
+import json
+
+import boto3
 from asgiref.sync import async_to_sync
 from django.conf import settings
 from pythonit_toolkit.emails.templates import EmailTemplate
@@ -325,6 +328,44 @@ def handle_speaker_communication_sent(data):
     )
 
 
+def handle_volunteers_push_notification_sent(data):
+    from volunteers_notifications.models import Notification, VolunteerDevice
+
+    notification_id = data["notification_id"]
+    volunteers_device_id = data["volunteers_device_id"]
+
+    notification = Notification.objects.get(id=notification_id)
+    device = VolunteerDevice.objects.get(id=volunteers_device_id)
+
+    sns = boto3.client("sns")
+    sns.publish(
+        TargetArn=device.endpoint_arn,
+        Message=json.dumps(
+            {
+                "default": notification.body,
+                "APNS": json.dumps(
+                    {
+                        "aps": {
+                            "alert": {
+                                "title": notification.title,
+                                "body": notification.body,
+                            },
+                            "sound": "default",
+                            "badge": 1,
+                        },
+                    }
+                ),
+                "GCM": json.dumps(
+                    {
+                        "message": notification.body,
+                    }
+                ),
+            }
+        ),
+        MessageStructure="json",
+    )
+
+
 HANDLERS = {
     "NewSubmissionComment/SlackNotification": handle_send_slack_notification_for_new_submission_comment,
     "NewSubmissionComment/EmailNotification": handle_send_email_notification_for_new_submission_comment,
@@ -336,4 +377,5 @@ HANDLERS = {
     "SubmissionTimeSlotChanged": handle_submission_time_slot_changed,
     "SpeakerVoucherEmailSent": handle_speaker_voucher_email_sent,
     "SpeakerCommunicationSent": handle_speaker_communication_sent,
+    "VolunteersPushNotificationSent": handle_volunteers_push_notification_sent,
 }

@@ -66,6 +66,8 @@ module "lambda" {
     SENTRY_DSN                                    = module.secrets.value.sentry_dsn
     CFP_SLACK_INCOMING_WEBHOOK_URL                = module.secrets.value.cfp_slack_incoming_webhook_url
     SUBMISSION_COMMENT_SLACK_INCOMING_WEBHOOK_URL = module.secrets.value.submission_comment_slack_incoming_webhook_url
+    VOLUNTEERS_PUSH_NOTIFICATIONS_IOS_ARN         = module.secrets.value.volunteers_push_notifications_ios_arn
+    VOLUNTEERS_PUSH_NOTIFICATIONS_ANDROID_ARN     = module.secrets.value.volunteers_push_notifications_android_arn
     ALLOWED_HOSTS                                 = "*"
     DJANGO_SETTINGS_MODULE                        = "pycon.settings.prod"
     AWS_MEDIA_BUCKET                              = aws_s3_bucket.backend_media.id
