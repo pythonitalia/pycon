@@ -250,7 +250,7 @@ export const ScheduleEntry: React.SFC<{
         <Flex
           sx={{
             color:
-              item.type === "keynote" || item.type === "talk"
+              !audienceLevel
                 ? "black"
                 : "white",
             mt: ["20px", "auto"],
