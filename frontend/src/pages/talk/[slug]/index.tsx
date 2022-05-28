@@ -125,7 +125,7 @@ export const TalkPage = () => {
               ...talk,
               topic: talk.submission?.topic?.name,
               duration: talk.submission?.duration?.duration,
-              audienceLevel: talk.submission?.audienceLevel?.name,
+              audienceLevel: talk.audienceLevel ?? talk.submission?.audienceLevel?.name,
             }}
           />
 
