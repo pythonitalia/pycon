@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     "invoices",
     "job_board",
     "import_export",
+    "volunteers_notifications.apps.VolunteersNotificationsConfig",
 ]
 
 MIDDLEWARE = [
@@ -226,3 +227,10 @@ DEFAULT_EMAIL_FROM = env("DEFAULT_EMAIL_FROM", default="noreply@pycon.it")
 ENVIRONMENT = env("ENV", default="local")
 
 SPEAKERS_EMAIL_ADDRESS = env("SPEAKERS_EMAIL_ADDRESS", default="")
+
+VOLUNTEERS_PUSH_NOTIFICATIONS_IOS_ARN = env(
+    "VOLUNTEERS_PUSH_NOTIFICATIONS_IOS_ARN", default=""
+).strip()
+VOLUNTEERS_PUSH_NOTIFICATIONS_ANDROID_ARN = env(
+    "VOLUNTEERS_PUSH_NOTIFICATIONS_ANDROID_ARN", default=""
+).strip()
