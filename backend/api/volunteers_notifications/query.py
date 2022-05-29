@@ -26,6 +26,7 @@ class Notification:
 
 @strawberry.type
 class VolunteersNotificationsQuery:
+    @strawberry.field
     def notifications(self) -> List[Notification]:
         return [
             Notification.from_django(notification)
