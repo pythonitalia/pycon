@@ -8,6 +8,8 @@ GET_USERS_BY_IDS = """query GetUsersByIds($ids: [ID!]!) {
     usersByIds(ids: $ids) {
         id
         email
+        fullname
+        name
         displayName
         isActive
         isStaff
