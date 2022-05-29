@@ -17,6 +17,7 @@ class Notification:
     @staticmethod
     def from_django(instance: NotificationModel) -> "Notification":
         return Notification(
+            id=instance.id,
             title=instance.title,
             body=instance.body,
             sent_at=instance.created,
