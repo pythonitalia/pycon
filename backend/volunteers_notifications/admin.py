@@ -10,6 +10,7 @@ class NotificationAdmin(admin.ModelAdmin):
         "title",
         "created",
     )
+    readonly_fields = ("created",)
 
     def save_model(self, request, obj, form, change) -> None:
         if change:
