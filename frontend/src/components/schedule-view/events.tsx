@@ -249,10 +249,7 @@ export const ScheduleEntry: React.SFC<{
 
         <Flex
           sx={{
-            color:
-              !audienceLevel
-                ? "black"
-                : "white",
+            color: !audienceLevel ? "black" : "white",
             mt: ["20px", "auto"],
           }}
         >
