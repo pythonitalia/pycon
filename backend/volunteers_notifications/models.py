@@ -13,7 +13,7 @@ class Notification(TimeStampedModel):
         verbose_name = "Notification"
         verbose_name_plural = "Notifications"
         ordering = [
-            "created",
+            "-created",
         ]
 
 
