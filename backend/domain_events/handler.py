@@ -356,8 +356,9 @@ def handle_volunteers_push_notification_sent(data):
                 ),
                 "GCM": json.dumps(
                     {
+                        "title": notification.title,
                         "message": notification.body,
-                    }
+                    },
                 ),
             }
         ),

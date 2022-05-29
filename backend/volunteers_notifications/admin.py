@@ -32,4 +32,5 @@ class NotificationAdmin(admin.ModelAdmin):
 
 @admin.register(VolunteerDevice)
 class VolunteerDeviceAdmin(admin.ModelAdmin):
-    list_display = ("device_token", "user_id")
+    list_display = ("device_token", "platform")
+    list_filter = ("platform",)

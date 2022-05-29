@@ -22,7 +22,6 @@ class VolunteerDevice(TimeStampedModel):
         ANDROID = "android", "Android"
         IOS = "ios", "iOS"
 
-    user_id = models.IntegerField(verbose_name="user", null=True, blank=True)
     device_token = models.TextField(unique=True, blank=False)
     endpoint_arn = models.TextField(unique=True, blank=False)
     platform = models.CharField(max_length=30, choices=Platform.choices)
