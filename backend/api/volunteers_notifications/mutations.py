@@ -24,7 +24,7 @@ class Platform(Enum):
 @strawberry.type
 class VolunteersNotificationsMutation:
     @strawberry.mutation
-    def register_volunteers_device(self, device_token: str, platform: Platform) -> bool:
+    def register_volunteer_device(self, device_token: str, platform: Platform) -> bool:
         if not platform.platform_application_arn:
             raise ValueError("Push notifications are not enabled in this environment")
 

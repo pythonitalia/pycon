@@ -2,12 +2,14 @@ from datetime import datetime
 from typing import List
 
 import strawberry
+from strawberry import ID
 
 from volunteers_notifications.models import Notification as NotificationModel
 
 
 @strawberry.type
 class Notification:
+    id: ID
     title: str
     body: str
     sent_at: datetime

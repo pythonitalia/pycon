@@ -6,7 +6,7 @@ pytestmark = pytest.mark.django_db
 
 
 @pytest.mark.parametrize("platform", ["ios", "android"])
-def test_register_volunteers_device(graphql_client, mocker, settings, platform):
+def test_register_volunteer_device(graphql_client, mocker, settings, platform):
     settings.VOLUNTEERS_PUSH_NOTIFICATIONS_IOS_ARN = "arn::ios_arn"
     settings.VOLUNTEERS_PUSH_NOTIFICATIONS_ANDROID_ARN = "arn::android_arn"
 
@@ -18,14 +18,14 @@ def test_register_volunteers_device(graphql_client, mocker, settings, platform):
     response = graphql_client.query(
         """
         mutation($deviceToken: String!, $platform: Platform!) {
-            registerVolunteersDevice(deviceToken: $deviceToken, platform: $platform)
+            registerVolunteerDevice(deviceToken: $deviceToken, platform: $platform)
         }
         """,
         variables={"platform": platform.upper(), "deviceToken": "test"},
     )
 
     assert not response.get("errors")
-    assert response["data"]["registerVolunteersDevice"] is True
+    assert response["data"]["registerVolunteerDevice"] is True
 
     device = VolunteerDevice.objects.get()
     assert device.device_token == "test"
@@ -56,14 +56,14 @@ def test_register_again_the_same_device(graphql_client, mocker, settings, platfo
     response = graphql_client.query(
         """
         mutation($deviceToken: String!, $platform: Platform!) {
-            registerVolunteersDevice(deviceToken: $deviceToken, platform: $platform)
+            registerVolunteerDevice(deviceToken: $deviceToken, platform: $platform)
         }
         """,
         variables={"platform": platform.upper(), "deviceToken": "test"},
     )
 
     assert not response.get("errors")
-    assert response["data"]["registerVolunteersDevice"] is True
+    assert response["data"]["registerVolunteerDevice"] is True
 
     device = VolunteerDevice.objects.get()
     assert device.device_token == "test"
@@ -91,7 +91,7 @@ def test_cant_register_if_feature_is_disabled(
     response = graphql_client.query(
         """
         mutation($deviceToken: String!, $platform: Platform!) {
-            registerVolunteersDevice(deviceToken: $deviceToken, platform: $platform)
+            registerVolunteerDevice(deviceToken: $deviceToken, platform: $platform)
         }
         """,
         variables={"platform": platform.upper(), "deviceToken": "test"},
