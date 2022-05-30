@@ -1,6 +1,8 @@
 import json
+import logging
 
 import boto3
+import botocore
 from asgiref.sync import async_to_sync
 from django.conf import settings
 from pythonit_toolkit.emails.templates import EmailTemplate
@@ -10,6 +12,8 @@ from pythonit_toolkit.service_client import ServiceClient
 from domain_events.publisher import publish_message
 from integrations import slack
 from notifications.emails import send_email
+
+logger = logging.getLogger(__name__)
 
 USERS_NAMES_FROM_IDS = """query UserNamesFromIds($ids: [ID!]!) {
     usersByIds(ids: $ids) {
@@ -338,32 +342,54 @@ def handle_volunteers_push_notification_sent(data):
     device = VolunteerDevice.objects.get(id=volunteers_device_id)
 
     sns = boto3.client("sns")
-    sns.publish(
-        TargetArn=device.endpoint_arn,
-        Message=json.dumps(
-            {
-                "default": notification.body,
-                "APNS": json.dumps(
-                    {
-                        "aps": {
-                            "alert": {
-                                "title": notification.title,
-                                "body": notification.body,
+    try:
+        logger.info(
+            "Publishing notification_id=%s to device_id=%s", notification_id, device.id
+        )
+        sns.publish(
+            TargetArn=device.endpoint_arn,
+            Message=json.dumps(
+                {
+                    "default": notification.body,
+                    "APNS": json.dumps(
+                        {
+                            "aps": {
+                                "alert": {
+                                    "title": notification.title,
+                                    "body": notification.body,
+                                },
+                                "sound": "default",
                             },
-                            "sound": "default",
+                        }
+                    ),
+                    "GCM": json.dumps(
+                        {
+                            "title": notification.title,
+                            "message": notification.body,
                         },
-                    }
-                ),
-                "GCM": json.dumps(
-                    {
-                        "title": notification.title,
-                        "message": notification.body,
-                    },
-                ),
-            }
-        ),
-        MessageStructure="json",
-    )
+                    ),
+                }
+            ),
+            MessageStructure="json",
+        )
+    except (
+        botocore.errorfactory.EndpointDisabledException,
+        botocore.errorfactory.InvalidParameterException,
+    ) as e:
+        logger.warning(
+            "Known error sending push notification_id=%s to device_id=%s",
+            notification_id,
+            device.id,
+            exc_info=e,
+        )
+    except Exception as e:
+        logger.warning(
+            "Failed to push notification_id=%s to device_id=%s",
+            notification_id,
+            device.id,
+            exc_info=e,
+        )
+        raise
 
 
 HANDLERS = {
