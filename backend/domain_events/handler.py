@@ -2,7 +2,6 @@ import json
 import logging
 
 import boto3
-import botocore
 from asgiref.sync import async_to_sync
 from django.conf import settings
 from pythonit_toolkit.emails.templates import EmailTemplate
@@ -373,8 +372,8 @@ def handle_volunteers_push_notification_sent(data):
             MessageStructure="json",
         )
     except (
-        botocore.errorfactory.EndpointDisabledException,
-        botocore.errorfactory.InvalidParameterException,
+        sns.exceptions.EndpointDisabled,
+        sns.exceptions.InvalidParameter,
     ) as e:
         logger.warning(
             "Known error sending push notification_id=%s to device_id=%s",
