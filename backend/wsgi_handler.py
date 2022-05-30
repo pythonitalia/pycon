@@ -8,6 +8,7 @@ the request when the handler is called by AWS Lambda.
 Author: Logan Raarup <logan@logan.dk>
 """
 import importlib
+import logging
 import os
 import sys
 import traceback
@@ -15,6 +16,8 @@ import traceback
 # imports serverless_wsgi from the root
 import serverless_wsgi
 from sqs_messages import process_sqs_messages
+
+logging.getLogger().setLevel(logging.INFO)
 
 
 def import_app(config):
