@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib import admin, messages
 from django.db.models import Q
+from django.http import HttpResponse
 from django.template.response import TemplateResponse
 from django.urls import path, reverse
 from django.utils import timezone
@@ -8,6 +9,7 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from import_export.admin import ExportMixin
 from import_export.fields import Field
+from import_export.formats.base_formats import CSV
 from ordered_model.admin import (
     OrderedInlineModelAdminMixin,
     OrderedModelAdmin,
@@ -301,8 +303,26 @@ class ScheduleItemAdmin(admin.ModelAdmin):
                 "email-speakers/",
                 self.admin_site.admin_view(self.email_speakers),
                 name="schedule-email-speakers",
-            )
+            ),
+            path(
+                "<int:object_id>/export-attendees/",
+                self.admin_site.admin_view(self.export_attendees),
+                name="schedule-export-attendees",
+            ),
         ] + super().get_urls()
+
+    def export_attendees(self, request, object_id: int):
+        schedule_item = ScheduleItem.objects.get(id=object_id)
+        resource = ScheduleItemAttendeeResource()
+        data = resource.export(schedule_item.attendees.all())
+        csv_format = CSV()
+        export_data = csv_format.export_data(data)
+        date_str = timezone.now().strftime("%Y-%m-%d")
+        response = HttpResponse(export_data, content_type=csv_format.get_content_type())
+        response[
+            "Content-Disposition"
+        ] = f'attachment; filename="{schedule_item.slug}-attendees-{date_str}.csv"'
+        return response
 
     def email_speakers(self, request):
         form = EmailSpeakersForm(request.POST or None)
@@ -410,6 +430,50 @@ class ScheduleItemInvitationResource(ResourceUsersByIdsMixin):
         model = ScheduleItem
         fields = SCHEDULE_ITEM_INVITATION_FIELDS
         export_order = SCHEDULE_ITEM_INVITATION_FIELDS
+
+
+SCHEDULE_ITEM_ATTENDEE_FIELDS = [
+    "full_name",
+    "name",
+    "email",
+]
+
+
+class ScheduleItemAttendeeResource(ResourceUsersByIdsMixin):
+    search_field = "user_id"
+
+    full_name = Field()
+    name = Field()
+    email = Field()
+
+    def dehydrate_email(self, obj):
+        user = self.get_user_data(obj.user_id)
+
+        if not user:
+            return "<no user>"
+
+        return user["email"]
+
+    def dehydrate_full_name(self, obj):
+        user = self.get_user_data(obj.user_id)
+
+        if not user:
+            return "<no user>"
+
+        return user["fullname"]
+
+    def dehydrate_name(self, obj):
+        user = self.get_user_data(obj.user_id)
+
+        if not user:
+            return "<no user>"
+
+        return user["name"]
+
+    class Meta:
+        model = ScheduleItemAttendee
+        fields = SCHEDULE_ITEM_ATTENDEE_FIELDS
+        export_order = SCHEDULE_ITEM_ATTENDEE_FIELDS
 
 
 @admin.register(ScheduleItemInvitation)
