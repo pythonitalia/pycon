@@ -44,11 +44,14 @@ export const TalkInfo = ({ talk }: Props) => {
         position: "relative",
         justifyContent: "flex-end",
         alignItems: "flex-start",
+        flexDirection: "column",
       }}
     >
       <BlogPostIllustration
         sx={{
           width: "80%",
+          position: "relative",
+          right: "-20%",
           display: ["none", "none", "block"],
         }}
       />
@@ -59,9 +62,9 @@ export const TalkInfo = ({ talk }: Props) => {
           p: 4,
           backgroundColor: "cinderella",
           width: ["100%", "100%", "80%"],
-          position: [null, null, "absolute"],
-          left: 0,
-          top: talk.image ? "90%" : "70%",
+          mt: [0, 0, -100],
+          mb: [0, 0, -50],
+          position: "relative",
         }}
       >
         {talk.speakers.length > 0 && (
