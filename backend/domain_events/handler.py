@@ -372,8 +372,8 @@ def handle_volunteers_push_notification_sent(data):
             MessageStructure="json",
         )
     except (
-        sns.exceptions.EndpointDisabled,
-        sns.exceptions.InvalidParameter,
+        sns.exceptions.EndpointDisabledException,
+        sns.exceptions.InvalidParameterException,
     ) as e:
         logger.warning(
             "Known error sending push notification_id=%s to device_id=%s",
