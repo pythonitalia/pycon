@@ -42,6 +42,7 @@ def process_message(record):
         return
 
     data = json.loads(record["body"])
+    logger.info("Processing sqs message_type=%s", message_type)
     handler(data)
 
     sqs = boto3.client("sqs")
