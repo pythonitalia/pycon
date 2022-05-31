@@ -4,6 +4,7 @@ from datetime import date, datetime, time, timedelta
 import strawberry
 from django.db import transaction
 from strawberry import ID
+
 from api.conferences.types import Day, ScheduleSlot
 from api.helpers.ids import decode_hashid
 from api.schedule.types import (
@@ -110,8 +111,8 @@ CancelBookingScheduleItemResult = strawberry.union(
 
 @strawberry.type
 class ScheduleMutations:
-    @transaction.atomic
     @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @transaction.atomic
     def book_schedule_item(self, info, id: ID) -> BookScheduleItemResult:
         # lock the schedule item so we can update attendees correctly
         schedule_item = ScheduleItem.objects.select_for_update().get(id=id)
@@ -131,18 +132,20 @@ class ScheduleMutations:
             return UserIsAlreadyBooked()
 
         # If there are no spaces left for this event, add them to the waiting list
-        is_in_waiting_list = schedule_item.attendees.count() >= schedule_item.attendees_total_capacity
+        is_in_waiting_list = (
+            schedule_item.attendees.count() >= schedule_item.attendees_total_capacity
+        )
 
         ScheduleItemAttendee.objects.create(
             schedule_item=schedule_item,
             user_id=user_id,
-            is_in_waiting_list=is_in_waiting_list
+            is_in_waiting_list=is_in_waiting_list,
         )
         schedule_item._type_definition = ScheduleItemType._type_definition
         return schedule_item
 
-    @transaction.atomic
     @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @transaction.atomic
     def cancel_booking_schedule_item(
         self, info, id: ID
     ) -> CancelBookingScheduleItemResult:
@@ -157,9 +160,30 @@ class ScheduleMutations:
         if not schedule_item.attendees.filter(user_id=user_id).exists():
             return UserIsNotBooked()
 
-        ScheduleItemAttendee.objects.filter(
+        existing_booking = ScheduleItemAttendee.objects.get(
             schedule_item=schedule_item, user_id=user_id
-        ).delete()
+        )
+
+        if not existing_booking.is_in_waiting_list:
+            # Someone is canceling their booking
+            # so we check if someone is in the waiting list
+            # and we give the space to the first person in the list
+            waiting_attendee = (
+                ScheduleItemAttendee.objects.filter(
+                    schedule_item=schedule_item, is_in_waiting_list=True
+                )
+                .order_by("created")
+                .first()
+            )
+
+            if waiting_attendee:
+                # we found someone waiting, we can give the space to them
+                waiting_attendee.is_in_waiting_list = False
+                waiting_attendee.save()
+
+        # delete the booking of the person canceling
+        existing_booking.delete()
+
         schedule_item._type_definition = ScheduleItemType._type_definition
         return schedule_item
 

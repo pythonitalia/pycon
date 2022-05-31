@@ -56,14 +56,21 @@ class ScheduleItem:
         if self.attendees_total_capacity is None:
             return True
 
-        return self.attendees_total_capacity - self.attendees.count() > 0
+        return (
+            self.attendees_total_capacity
+            - self.attendees.filter(is_in_waiting_list=False).count()
+            > 0
+        )
 
     @strawberry.field
     def spaces_left(self) -> int:
         if self.attendees_total_capacity is None:
             return 0
 
-        return self.attendees_total_capacity - self.attendees.count()
+        return (
+            self.attendees_total_capacity
+            - self.attendees.filter(is_in_waiting_list=False).count()
+        )
 
     @strawberry.field
     def user_has_spot(self, info) -> bool:
