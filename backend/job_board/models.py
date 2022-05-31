@@ -6,11 +6,13 @@ from django.db import models
 from django.db.models import Q
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
-from i18n.fields import I18nCharField, I18nTextField
 from model_utils.models import TimeStampedModel
+from ordered_model.models import OrderedModel, OrderedModelManager
+
+from i18n.fields import I18nCharField, I18nTextField
 
 
-class JobListingManager(models.Manager):
+class JobListingManager(OrderedModelManager):
     def by_slug(self, slug):
         term = json.dumps(slug)
 
@@ -22,7 +24,7 @@ class JobListingManager(models.Manager):
         return self.get_queryset().filter(filters)
 
 
-class JobListing(TimeStampedModel):
+class JobListing(TimeStampedModel, OrderedModel):
     title = I18nCharField(_("title"), max_length=200)
     slug = I18nCharField(_("slug"), max_length=200, blank=True)
     company = models.CharField(_("company"), max_length=100)
@@ -35,7 +37,7 @@ class JobListing(TimeStampedModel):
     objects = JobListingManager()
 
     class Meta:
-        ordering = ["created"]
+        ordering = ["order"]
 
     def __str__(self):
         return f"[{self.company}] - {self.title}"
