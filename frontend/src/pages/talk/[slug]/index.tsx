@@ -152,14 +152,7 @@ export const TalkPage = () => {
                 !bookingState.userHasSpot &&
                 !bookingState.hasSpacesLeft && (
                   <Alert variant="info">
-                    <FormattedMessage id="talk.eventIsFull" />
-                  </Alert>
-                )}
-
-              {!isLoadingBookingState &&
-                !bookingState.userHasSpot &&
-                !bookingState.hasSpacesLeft && (
-                  <Alert variant="info">
+                    <FormattedMessage id="talk.eventIsFull" />{" "}
                     <Link
                       target="_blank"
                       rel="noopener noreferrer"
