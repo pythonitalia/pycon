@@ -8,9 +8,10 @@ import { useCurrentLanguage } from "~/locale/context";
 import { Language } from "~/locale/languages";
 
 type ArticleProps = {
-  title: string;
+  title?: string;
   published?: string;
   description?: string;
+  className?: string;
 };
 
 const formateDate = (datetime: string, language: Language) => {
@@ -30,14 +31,14 @@ export const Article: React.FC<ArticleProps> = (props) => {
 
   return (
     <Fragment>
-      <Heading sx={{ fontSize: 6 }}>{props.title}</Heading>
+      {props.title && <Heading sx={{ fontSize: 6 }}>{props.title}</Heading>}
       {props.published && (
         <Text sx={{ fontSize: 2, mt: 3, fontWeight: "bold", color: "orange" }}>
           {formateDate(props.published, language)}
         </Text>
       )}
 
-      <Box sx={{ mt: 4, mb: 5 }} className="article">
+      <Box sx={{ mt: 4, mb: 5 }} className={`article ${props.className}`}>
         {props.children}
       </Box>
     </Fragment>

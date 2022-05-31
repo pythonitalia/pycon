@@ -10,6 +10,7 @@ import Image from "next/image";
 import { compile } from "~/helpers/markdown";
 import { JobListing } from "~/types";
 
+import { Article } from "../article";
 import { Link } from "../link";
 
 export const JobListingAccordion = ({
@@ -101,15 +102,18 @@ export const JobListingAccordion = ({
               gridTemplateColumns: ["1fr", "2fr 1fr"],
             }}
           >
-            <Box
+            <Article
               sx={{
+                mt: 0,
+                mb: 0,
+                pr: [0, 2],
                 "p + p": {
                   pt: 2,
                 },
               }}
             >
               {compile(job.description).tree}
-            </Box>
+            </Article>
             <Grid
               gap={3}
               sx={{
