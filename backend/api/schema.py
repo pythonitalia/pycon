@@ -3,6 +3,7 @@ import strawberry
 from api.users.types import User
 
 from .blog.schema import BlogQuery
+from .checklist.query import ChecklistQuery
 from .conferences.schema import ConferenceQuery
 from .grants.mutations import GrantsMutations
 from .job_board.schema import JobBoardQuery
@@ -32,6 +33,7 @@ class Query(
     JobBoardQuery,
     ScheduleQuery,
     VolunteersNotificationsQuery,
+    ChecklistQuery,
 ):
     pass
 

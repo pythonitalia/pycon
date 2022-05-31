@@ -6,6 +6,7 @@ from pythonit_toolkit.api.graphql_test_client import SimulatedUser
 from api.tests.factories import *  # noqa
 from api.tests.fixtures import *  # noqa
 from blog.tests.factories import *  # noqa
+from checklist.tests.factories import *  # noqa
 from cms.tests.factories import *  # noqa
 from conferences.tests.factories import *  # noqa
 from events.tests.factories import *  # noqa
