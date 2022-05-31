@@ -529,6 +529,7 @@ export const messages = {
     "talk.bookToAttend":
       "This event has limited capacity, you need to book a seat to attend.",
     "talk.bookCta": "Book now",
+    "talk.registerToWaitingList": "To join the waiting list, click here",
     "talk.spacesLeft": "Spaces left: {spacesLeft}",
     "talk.spotReserved": "You are in! Your spot for this event is reserved",
     "talk.loginToBook": "Login to book",
@@ -1080,6 +1081,8 @@ export const messages = {
     "talk.bookToAttend":
       "Questo evento ha una capacità limitata, è necessario prenotare un posto per partecipare.",
     "talk.bookCta": "Prenota",
+    "talk.registerToWaitingList":
+      "Per registrarti nella lista d'attesa, clicca qui",
     "talk.spacesLeft": "Posti rimanenti: {spacesLeft}",
     "talk.spotReserved": "Sei registrato per questo evento!",
     "talk.loginToBook": "Loggati per prenotare",

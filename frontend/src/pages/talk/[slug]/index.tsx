@@ -156,6 +156,26 @@ export const TalkPage = () => {
                   </Alert>
                 )}
 
+              {!isLoadingBookingState &&
+                !bookingState.userHasSpot &&
+                !bookingState.hasSpacesLeft && (
+                  <Alert variant="info">
+                    <Link
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      external
+                      path={`https://docs.google.com/forms/d/e/1FAIpQLSflvOqitSgLp2nEapfiObkYT9Bl5wzwVjL86jJeTiHETajL_Q/viewform?usp=pp_url&entry.1538206145=${encodeURIComponent(
+                        talk.title,
+                      )}`}
+                      sx={{
+                        textDecoration: "underline",
+                      }}
+                    >
+                      <FormattedMessage id="talk.registerToWaitingList" />
+                    </Link>
+                  </Alert>
+                )}
+
               {isLoggedIn && isLoadingBookingState && (
                 <Alert variant="info">
                   <FormattedMessage id="global.loading" />
