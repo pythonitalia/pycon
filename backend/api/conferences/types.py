@@ -13,7 +13,7 @@ from api.hotels.types import HotelRoom
 from api.languages.types import Language
 from api.pretix.query import get_conference_tickets, get_voucher
 from api.pretix.types import TicketItem, Voucher
-from api.schedule.types import Room, ScheduleItem
+from api.schedule.types import DayRoom, ScheduleItem
 from api.sponsors.types import SponsorsByLevel
 from api.submissions.types import Submission, SubmissionType
 from api.voting.types import RankRequest
@@ -181,8 +181,19 @@ class Day:
         return list(self.slots.all())
 
     @strawberry.field
-    def rooms(self) -> List[Room]:
-        return self.ordered_rooms().all()
+    def rooms(self) -> List[DayRoom]:
+        data = self.added_rooms.values(
+            "id", "streaming_link", "room__type", "room__name"
+        )
+        return [
+            DayRoom(
+                id=room["id"],
+                name=room["room__name"],
+                type=room["room__type"],
+                streaming_link=room["streaming_link"],
+            )
+            for room in data
+        ]
 
     @classmethod
     def from_db(cls, instance):

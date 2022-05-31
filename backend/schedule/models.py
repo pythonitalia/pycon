@@ -70,6 +70,7 @@ class DayRoomThroughModel(OrderedModel):
         verbose_name=_("room"),
     )
     order_with_respect_to = "day"
+    streaming_link = models.URLField(_("Streaming URL"), blank=True)
 
     class Meta:
         ordering = (

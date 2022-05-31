@@ -21,6 +21,14 @@ class Room:
     type: str
 
 
+@strawberry.type
+class DayRoom:
+    id: strawberry.ID
+    name: str
+    type: str
+    streaming_link: str
+
+
 @strawberry.federation.type(keys=["id"])
 class ScheduleItemUser:
     id: strawberry.ID
