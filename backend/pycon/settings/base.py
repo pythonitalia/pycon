@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     "job_board",
     "import_export",
     "volunteers_notifications.apps.VolunteersNotificationsConfig",
+    "checklist.apps.ChecklistConfig",
 ]
 
 MIDDLEWARE = [
