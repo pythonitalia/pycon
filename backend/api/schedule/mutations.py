@@ -4,7 +4,6 @@ from datetime import date, datetime, time, timedelta
 import strawberry
 from django.db import transaction
 from strawberry import ID
-
 from api.conferences.types import Day, ScheduleSlot
 from api.helpers.ids import decode_hashid
 from api.schedule.types import (
@@ -93,16 +92,10 @@ class UserNeedsConferenceTicket:
     message: str = "You need to buy a ticket"
 
 
-@strawberry.type
-class ScheduleItemIsFull:
-    message: str = "This event is full"
-
-
 BookScheduleItemResult = strawberry.union(
     "BookScheduleItemResult",
     (
         ScheduleItemType,
-        ScheduleItemIsFull,
         UserNeedsConferenceTicket,
         UserIsAlreadyBooked,
         ScheduleItemNotBookable,
@@ -117,9 +110,11 @@ CancelBookingScheduleItemResult = strawberry.union(
 
 @strawberry.type
 class ScheduleMutations:
+    @transaction.atomic
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     def book_schedule_item(self, info, id: ID) -> BookScheduleItemResult:
-        schedule_item = ScheduleItem.objects.get(id=id)
+        # lock the schedule item so we can update attendees correctly
+        schedule_item = ScheduleItem.objects.select_for_update().get(id=id)
         user_id = info.context.request.user.id
 
         if not user_has_admission_ticket(
@@ -135,20 +130,25 @@ class ScheduleMutations:
         if schedule_item.attendees.filter(user_id=user_id).exists():
             return UserIsAlreadyBooked()
 
-        if schedule_item.attendees.count() >= schedule_item.attendees_total_capacity:
-            return ScheduleItemIsFull()
+        # If there are no spaces left for this event, add them to the waiting list
+        is_in_waiting_list = schedule_item.attendees.count() >= schedule_item.attendees_total_capacity
 
         ScheduleItemAttendee.objects.create(
-            schedule_item=schedule_item, user_id=user_id
+            schedule_item=schedule_item,
+            user_id=user_id,
+            is_in_waiting_list=is_in_waiting_list
         )
         schedule_item._type_definition = ScheduleItemType._type_definition
         return schedule_item
 
+    @transaction.atomic
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     def cancel_booking_schedule_item(
         self, info, id: ID
     ) -> CancelBookingScheduleItemResult:
-        schedule_item = ScheduleItem.objects.get(id=id)
+        # lock the schedule item so we can update attendees correctly
+
+        schedule_item = ScheduleItem.objects.select_for_update().get(id=id)
         user_id = info.context.request.user.id
 
         if schedule_item.attendees_total_capacity is None:

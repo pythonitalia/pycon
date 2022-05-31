@@ -68,7 +68,12 @@ class ScheduleItem:
     @strawberry.field
     def user_has_spot(self, info) -> bool:
         user_id = info.context.request.user.id
-        return self.attendees.filter(user_id=user_id).exists()
+        return self.attendees.filter(user_id=user_id, is_in_waiting_list=False).exists()
+
+    @strawberry.field
+    def user_is_in_waiting_list(self, info) -> bool:
+        user_id = info.context.request.user.id
+        return self.attendees.filter(user_id=user_id, is_in_waiting_list=True).exists()
 
     @strawberry.field
     def speakers(self) -> List[Union[ScheduleItemUser, ScheduleItemNamedUser]]:

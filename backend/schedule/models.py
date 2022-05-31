@@ -302,6 +302,7 @@ class ScheduleItemAttendee(TimeStampedModel):
         verbose_name=_("schedule item"),
         related_name="attendees",
     )
+    is_in_waiting_list = models.BooleanField(default=False)
 
     class Meta:
         unique_together = (

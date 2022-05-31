@@ -167,12 +167,14 @@ class ScheduleItemAttendeeInlineForm(forms.ModelForm):
         widgets = {
             "user_id": UsersBackendAutocomplete(admin.site),
         }
-        fields = ["schedule_item", "user_id"]
+        fields = ["schedule_item", "user_id", "is_in_waiting_list", ]
 
 
 class ScheduleItemAttendeeInline(admin.TabularInline):
     model = ScheduleItemAttendee
     form = ScheduleItemAttendeeInlineForm
+    readonly_fields = ('created',)
+    ordering = ('created',)
 
 
 class ScheduleItemAdminForm(forms.ModelForm):
@@ -279,7 +281,7 @@ class ScheduleItemAdmin(admin.ModelAdmin):
             _("Invitation"),
             {"fields": ("speaker_invitation_notes", "speaker_invitation_sent_at")},
         ),
-        (_("Booking"), {"fields": ("attendees_total_capacity", "spaces_left")}),
+        (_("Booking"), {"fields": ("attendees_total_capacity", "spaces_left", "people_in_waiting_list")}),
         (_("Voucher"), {"fields": ("exclude_from_voucher_generation",)}),
     )
     autocomplete_fields = ("submission",)
@@ -295,7 +297,7 @@ class ScheduleItemAdmin(admin.ModelAdmin):
         send_schedule_invitation_reminder_to_waiting,
         mark_speakers_to_receive_vouchers,
     ]
-    readonly_fields = ("spaces_left",)
+    readonly_fields = ("spaces_left", "people_in_waiting_list",)
 
     def get_urls(self):
         return [
@@ -371,7 +373,13 @@ class ScheduleItemAdmin(admin.ModelAdmin):
         if obj.attendees_total_capacity is None:
             return None
 
-        return obj.attendees_total_capacity - obj.attendees.count()
+        return obj.attendees_total_capacity - obj.attendees.filter(is_in_waiting_list=False).count()
+
+    def people_in_waiting_list(self, obj):
+        if obj.attendees_total_capacity is None:
+            return None
+
+        return obj.attendees.filter(is_in_waiting_list=True).count()
 
     def save_form(self, request, form, change):
         if form.cleaned_data["new_slot"]:
@@ -436,6 +444,7 @@ SCHEDULE_ITEM_ATTENDEE_FIELDS = [
     "full_name",
     "name",
     "email",
+    "is_in_waiting_list",
 ]
 
 

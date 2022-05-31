@@ -45,6 +45,7 @@ def test_book_schedule_item(graphql_client, user, mocker, simple_schedule_item):
             ... on ScheduleItem {
                 spacesLeft
                 userHasSpot
+                userIsInWaitingList
             }
         }
     }""",
@@ -54,6 +55,7 @@ def test_book_schedule_item(graphql_client, user, mocker, simple_schedule_item):
     assert response["data"]["bookScheduleItem"]["__typename"] == "ScheduleItem"
     assert response["data"]["bookScheduleItem"]["spacesLeft"] == 29
     assert response["data"]["bookScheduleItem"]["userHasSpot"] is True
+    assert response["data"]["bookScheduleItem"]["userIsInWaitingList"] is False
 
     assert ScheduleItemAttendee.objects.filter(
         schedule_item=schedule_item, user_id=user.id
@@ -91,7 +93,7 @@ def test_needs_ticket_to_book(
     ).exists()
 
 
-def test_cannot_overbook(
+def test_adds_user_to_waiting_list_after_sold_out(
     graphql_client, user, simple_schedule_item, mocker, schedule_item_attendee_factory
 ):
     mocker.patch("api.schedule.mutations.user_has_admission_ticket", return_value=True)
@@ -108,15 +110,21 @@ def test_cannot_overbook(
         """mutation($id: ID!) {
         bookScheduleItem(id: $id) {
             __typename
+            ... on ScheduleItem {
+                userHasSpot
+                userIsInWaitingList
+            }
         }
     }""",
         variables={"id": schedule_item.id},
     )
 
-    assert response["data"]["bookScheduleItem"]["__typename"] == "ScheduleItemIsFull"
+    assert response["data"]["bookScheduleItem"]["__typename"] == "ScheduleItem"
+    assert response["data"]["bookScheduleItem"]["userHasSpot"] is False
+    assert response["data"]["bookScheduleItem"]["userIsInWaitingList"] is True
 
-    assert not ScheduleItemAttendee.objects.filter(
-        schedule_item=schedule_item, user_id=user.id
+    assert ScheduleItemAttendee.objects.filter(
+        schedule_item=schedule_item, user_id=user.id, is_in_waiting_list=True
     ).exists()
 
 
