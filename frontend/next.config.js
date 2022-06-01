@@ -45,6 +45,11 @@ module.exports = withSourceMaps({
         destination: "https://admin.pycon.it/admin/:match",
         permanent: false,
       },
+      {
+        source: "/discord",
+        destination: "https://discord.gg/XAS3ZgRKDq",
+        permanent: false,
+      },
     ];
   },
   async rewrites() {
