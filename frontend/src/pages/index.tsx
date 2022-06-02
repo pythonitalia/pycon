@@ -27,6 +27,7 @@ import {
   queryMapWithLink,
   useIndexPageQuery,
 } from "~/types";
+
 import StreamingPage from "./streaming";
 
 export const HomePage = () => {

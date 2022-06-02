@@ -94,9 +94,17 @@ export const Header = () => {
   const [loggedIn] = useLoginState();
   const [open, toggleOpen, _, close] = useToggle(false);
   const headerRef = useRef(null);
+  const {
+    query: { photo },
+  } = useRouter();
+  const isInPhotoMode = photo == "1";
 
   useOnClickOutside(headerRef, close);
   useEffect(close, [router.asPath]);
+
+  if (isInPhotoMode) {
+    return null;
+  }
 
   if (loading || !data) {
     return null;
