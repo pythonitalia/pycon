@@ -5,6 +5,8 @@ import React, { useRef } from "react";
 import useSyncScroll from "react-use-sync-scroll";
 import { Box, jsx } from "theme-ui";
 
+import { useRouter } from "next/router";
+
 import { ScheduleEntry } from "./events";
 import { isTraining } from "./is-training";
 import { Placeholder } from "./placeholder";
@@ -122,8 +124,13 @@ const getEntryPosition = ({
 
 const GridContainer = React.forwardRef<
   null,
-  { totalColumns: number; totalRows: number; children: React.ReactNode }
->(({ totalColumns, totalRows, children, ...props }, ref) => (
+  {
+    totalColumns: number;
+    totalRows: number;
+    isInPhotoMode: boolean;
+    children: React.ReactNode;
+  }
+>(({ totalColumns, totalRows, children, isInPhotoMode, ...props }, ref) => (
   <Box
     sx={{ width: "100%", overflow: "hidden", overflowX: "scroll" }}
     ref={ref}
@@ -131,7 +138,7 @@ const GridContainer = React.forwardRef<
   >
     <div
       sx={{
-        minWidth: [null, "2000px"],
+        minWidth: isInPhotoMode ? "100vw" : [null, "2000px"],
         gridTemplateColumns: `80px repeat(${totalColumns}, 1fr)`,
         gridTemplateRows: `repeat(${totalRows - 1}, 10px)`,
         py: "4px",
@@ -179,6 +186,10 @@ export const Schedule: React.SFC<{
   const rowOffset = 6;
   const totalRows = slots.reduce((count, slot) => count + getSlotSize(slot), 0);
   const totalColumns = rooms.length;
+  const {
+    query: { photo },
+  } = useRouter();
+  const isInPhotoMode = photo == "1";
 
   const handleDrop = (item: any, slot: Slot, index: number) => {
     if (item.itemId) {
@@ -221,6 +232,7 @@ export const Schedule: React.SFC<{
   return (
     <React.Fragment>
       <GridContainer
+        isInPhotoMode={isInPhotoMode}
         totalRows={rowOffset}
         totalColumns={totalColumns}
         ref={headerRef}
@@ -264,81 +276,86 @@ export const Schedule: React.SFC<{
       </GridContainer>
 
       <GridContainer
+        isInPhotoMode={isInPhotoMode}
         ref={scheduleRef}
         totalRows={totalRows}
         totalColumns={totalColumns}
       >
-        {slots.map((slot) => {
-          const rowStart = rowStartPos;
-          const rowEnd = rowStartPos + getSlotSize(slot);
+        {slots
+          .filter(
+            (slot) => isInPhotoMode && slot.items[0].title !== "Registration",
+          )
+          .map((slot) => {
+            const rowStart = rowStartPos;
+            const rowEnd = rowStartPos + getSlotSize(slot);
 
-          rowStartPos = rowEnd;
+            rowStartPos = rowEnd;
 
-          return (
-            <div sx={{ display: "contents" }} key={slot.id}>
-              <Box
-                sx={{
-                  gridColumnStart: 1,
-                  gridColumnEnd: 1,
-                  gridRowStart: "var(--start)",
-                  gridRowEnd: "var(--end)",
-                  backgroundColor: "white",
-                  p: [3, 2],
-                  textAlign: [null, "center"],
-                  fontWeight: "bold",
-                }}
-                style={
-                  {
-                    "--start": rowStart,
-                    "--end": rowEnd,
-                  } as any
-                }
-              >
-                <Box>{formatHour(slot.hour)}</Box>
-              </Box>
-
-              {rooms.map((room, index) => (
-                <Placeholder
-                  key={`${room.id}-${slot.id}`}
-                  columnStart={index + 2}
-                  rowStart={rowStart}
-                  rowEnd={rowEnd}
-                  duration={slot.duration}
-                  roomType={room.type}
-                  adminMode={adminMode}
-                  onDrop={(item: any) => handleDrop(item, slot, index)}
-                />
-              ))}
-
-              {slot.items.map((item) => (
-                <ScheduleEntry
-                  key={item.id}
-                  item={item}
-                  slot={slot}
-                  rooms={rooms}
-                  adminMode={adminMode}
-                  day={currentDay}
-                  sx={
+            return (
+              <div sx={{ display: "contents" }} key={slot.id}>
+                <Box
+                  sx={{
+                    gridColumnStart: 1,
+                    gridColumnEnd: 1,
+                    gridRowStart: "var(--start)",
+                    gridRowEnd: "var(--end)",
+                    backgroundColor: "white",
+                    p: [3, 2],
+                    textAlign: [null, "center"],
+                    fontWeight: "bold",
+                  }}
+                  style={
                     {
-                      position: "relative",
-                      "&::before": fakeTopBorder,
-                      "&::after": fakeBottomBorder,
-                      ...getEntryPosition({
-                        item,
-                        rooms,
-                        slot,
-                        slots,
-                        rowOffset,
-                        rowStart,
-                        rowEnd,
-                      }),
+                      "--start": rowStart,
+                      "--end": rowEnd,
                     } as any
                   }
-                />
-              ))}
-            </div>
-          );
-        })}
+                >
+                  <Box>{formatHour(slot.hour)}</Box>
+                </Box>
+
+                {rooms.map((room, index) => (
+                  <Placeholder
+                    key={`${room.id}-${slot.id}`}
+                    columnStart={index + 2}
+                    rowStart={rowStart}
+                    rowEnd={rowEnd}
+                    duration={slot.duration}
+                    roomType={room.type}
+                    adminMode={adminMode}
+                    onDrop={(item: any) => handleDrop(item, slot, index)}
+                  />
+                ))}
+
+                {slot.items.map((item) => (
+                  <ScheduleEntry
+                    key={item.id}
+                    item={item}
+                    slot={slot}
+                    rooms={rooms}
+                    adminMode={adminMode}
+                    day={currentDay}
+                    sx={
+                      {
+                        position: "relative",
+                        "&::before": fakeTopBorder,
+                        "&::after": fakeBottomBorder,
+                        ...getEntryPosition({
+                          item,
+                          rooms,
+                          slot,
+                          slots,
+                          rowOffset,
+                          rowStart,
+                          rowEnd,
+                        }),
+                      } as any
+                    }
+                  />
+                ))}
+              </div>
+            );
+          })}
       </GridContainer>
     </React.Fragment>
   );

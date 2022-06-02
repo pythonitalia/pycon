@@ -4,6 +4,8 @@
 import React, { Fragment, useCallback } from "react";
 import { Box, Flex, Heading, jsx } from "theme-ui";
 
+import { useRouter } from "next/router";
+
 import { DaySelector } from "~/components/day-selector";
 import {
   ScheduleQuery,
@@ -45,6 +47,10 @@ export const ScheduleView: React.SFC<{
   schedule: ScheduleQuery;
 }> = ({ day: currentDay, shouldShowAdmin, schedule }) => {
   const code = process.env.conferenceCode;
+  const {
+    query: { photo },
+  } = useRouter();
+  const isInPhotoMode = photo == "1";
 
   const [addSlot, { loading: addingSlot }] = useAddScheduleSlotMutation({
     variables: { code, day: currentDay, duration: 60 },
@@ -133,27 +139,29 @@ export const ScheduleView: React.SFC<{
       <Box
         sx={{ flex: 1, width: shouldShowAdmin ? "calc(100% - 300px)" : "100%" }}
       >
-        <Box sx={{ backgroundColor: "orange", borderTop: "primary" }}>
-          <Box
-            sx={{
-              display: ["block", null, "flex"],
-              py: 4,
-              px: 3,
-              maxWidth: "largeContainer",
-              mx: "auto",
-            }}
-          >
-            <Heading sx={{ fontSize: 6 }}>Schedule</Heading>
+        {!isInPhotoMode && (
+          <Box sx={{ backgroundColor: "orange", borderTop: "primary" }}>
+            <Box
+              sx={{
+                display: ["block", null, "flex"],
+                py: 4,
+                px: 3,
+                maxWidth: "largeContainer",
+                mx: "auto",
+              }}
+            >
+              <Heading sx={{ fontSize: 6 }}>Schedule</Heading>
 
-            <Box sx={{ ml: "auto" }}>
-              <DaySelector
-                days={days}
-                currentDay={currentDay}
-                timezone={schedule.conference.timezone}
-              />
+              <Box sx={{ ml: "auto" }}>
+                <DaySelector
+                  days={days}
+                  currentDay={currentDay}
+                  timezone={schedule.conference.timezone}
+                />
+              </Box>
             </Box>
           </Box>
-        </Box>
+        )}
 
         {day && (
           <Schedule

@@ -1,14 +1,15 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
-import { GetStaticProps } from "next";
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, Grid, Heading, jsx, Text } from "theme-ui";
+
+import { GetStaticProps } from "next";
+
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Alert } from "~/components/alert";
 import { Link } from "~/components/link";
-
 import { MetaTags } from "~/components/meta-tags";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { queryStreaming, useStreamingQuery } from "~/types";

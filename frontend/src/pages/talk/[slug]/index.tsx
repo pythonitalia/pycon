@@ -44,27 +44,23 @@ export const TalkPage = () => {
     },
   });
 
-  const {
-    data: bookingStateData,
-    loading: isLoadingBookingState,
-  } = useWorkshopBookingStateQuery({
-    variables: {
-      code: process.env.conferenceCode,
-      slug,
-    },
-    skip: !isLoggedIn,
-    fetchPolicy: "network-only",
-    nextFetchPolicy: "cache-first",
-  });
+  const { data: bookingStateData, loading: isLoadingBookingState } =
+    useWorkshopBookingStateQuery({
+      variables: {
+        code: process.env.conferenceCode,
+        slug,
+      },
+      skip: !isLoggedIn,
+      fetchPolicy: "network-only",
+      nextFetchPolicy: "cache-first",
+    });
 
   const [
     executeBookScheduleItem,
     { data: bookSpotData, loading: isBookingSpot },
   ] = useBookScheduleItemMutation();
-  const [
-    executeCancelBooking,
-    { loading: isCancellingBooking },
-  ] = useCancelBookingScheduleItemMutation();
+  const [executeCancelBooking, { loading: isCancellingBooking }] =
+    useCancelBookingScheduleItemMutation();
 
   const goBack = useCallback(() => {
     router.push(`/schedule/${day}`);
