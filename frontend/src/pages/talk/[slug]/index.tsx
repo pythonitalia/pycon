@@ -148,7 +148,8 @@ export const TalkPage = () => {
                 </Alert>
               )}
 
-              {!isLoadingBookingState &&
+              {isLoggedIn &&
+                !isLoadingBookingState &&
                 !bookingState.userHasSpot &&
                 !bookingState.hasSpacesLeft && (
                   <Alert variant="info">
@@ -156,7 +157,8 @@ export const TalkPage = () => {
                   </Alert>
                 )}
 
-              {!isLoadingBookingState &&
+              {isLoggedIn &&
+                !isLoadingBookingState &&
                 !bookingState.userHasSpot &&
                 !bookingState.hasSpacesLeft && (
                   <Alert variant="info">
