@@ -116,7 +116,7 @@ class ScheduleItem:
             return self.slido_url
 
         # For multi-room items we use the first room slido url
-        return self.slot.day.added_rooms.get(id=self.rooms.first().id).slido_url
+        return self.slot.day.added_rooms.get(room_id=self.rooms.first().id).slido_url
 
 
 @strawberry.type
