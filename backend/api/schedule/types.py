@@ -26,7 +26,8 @@ class DayRoom:
     id: strawberry.ID
     name: str
     type: str
-    streaming_link: str
+    streaming_url: str
+    slido_url: str
 
 
 @strawberry.federation.type(keys=["id"])
@@ -108,6 +109,14 @@ class ScheduleItem:
             return None
 
         return info.context.request.build_absolute_uri(self.image.url)
+
+    @strawberry.field
+    def slido_url(self, info) -> str:
+        if self.slido_url:
+            return self.slido_url
+
+        # For multi-room items we use the first room slido url
+        return self.slot.day.added_rooms.get(id=self.rooms.first().id).slido_url
 
 
 @strawberry.type

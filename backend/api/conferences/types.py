@@ -4,7 +4,7 @@ from typing import List, Optional
 
 import strawberry
 from django.conf import settings
-from django.utils import translation
+from django.utils import timezone, translation
 from strawberry import ID, Private
 
 from api.cms.types import FAQ, Menu
@@ -181,16 +181,28 @@ class Day:
         return list(self.slots.all())
 
     @strawberry.field
+    def running_events(self, info) -> List[ScheduleItem]:
+        current_slot = self.slots.filter(
+            hour__lte=timezone.now().astimezone(self.conference.timezone)
+        ).last()
+
+        if not current_slot:
+            return []
+
+        return [item for item in current_slot.items.all()]
+
+    @strawberry.field
     def rooms(self) -> List[DayRoom]:
         data = self.added_rooms.values(
-            "id", "streaming_link", "room__type", "room__name"
+            "id", "streaming_url", "slido_url", "room__type", "room__name"
         )
         return [
             DayRoom(
                 id=room["id"],
                 name=room["room__name"],
                 type=room["room__type"],
-                streaming_link=room["streaming_link"],
+                streaming_url=room["streaming_url"],
+                slido_url=room["slido_url"],
             )
             for room in data
         ]
@@ -351,6 +363,11 @@ class Conference:
     @strawberry.field
     def days(self, info) -> List[Day]:
         return self.days.order_by("day").prefetch_related("slots", "slots__items").all()
+
+    @strawberry.field
+    def is_running(self, info) -> bool:
+        now = timezone.now()
+        return self.start <= now <= self.end
 
 
 DeadlineStatusType = strawberry.enum(DeadlineStatus)

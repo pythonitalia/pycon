@@ -44,23 +44,27 @@ export const TalkPage = () => {
     },
   });
 
-  const { data: bookingStateData, loading: isLoadingBookingState } =
-    useWorkshopBookingStateQuery({
-      variables: {
-        code: process.env.conferenceCode,
-        slug,
-      },
-      skip: !isLoggedIn,
-      fetchPolicy: "network-only",
-      nextFetchPolicy: "cache-first",
-    });
+  const {
+    data: bookingStateData,
+    loading: isLoadingBookingState,
+  } = useWorkshopBookingStateQuery({
+    variables: {
+      code: process.env.conferenceCode,
+      slug,
+    },
+    skip: !isLoggedIn,
+    fetchPolicy: "network-only",
+    nextFetchPolicy: "cache-first",
+  });
 
   const [
     executeBookScheduleItem,
     { data: bookSpotData, loading: isBookingSpot },
   ] = useBookScheduleItemMutation();
-  const [executeCancelBooking, { loading: isCancellingBooking }] =
-    useCancelBookingScheduleItemMutation();
+  const [
+    executeCancelBooking,
+    { loading: isCancellingBooking },
+  ] = useCancelBookingScheduleItemMutation();
 
   const goBack = useCallback(() => {
     router.push(`/schedule/${day}`);
@@ -223,6 +227,27 @@ export const TalkPage = () => {
                 }}
               />
             </Flex>
+          )}
+          {talk.slidoUrl && (
+            <Link
+              path={talk.slidoUrl}
+              variant="button"
+              target="_blank"
+              sx={{
+                backgroundColor: "yellow",
+                width: "fit-content",
+                py: 1,
+                mt: [0, 2, 5],
+                mb: [2, 0],
+                position: "relative",
+                textTransform: "none",
+                "&:hover": {
+                  backgroundColor: "orange",
+                },
+              }}
+            >
+              <FormattedMessage id="streaming.qa" />
+            </Link>
           )}
         </Flex>
       </Grid>

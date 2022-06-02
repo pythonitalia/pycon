@@ -37,6 +37,8 @@ query IndexPage($code: String!, $language: String!) {
 
     gettingThereText: copy(key: "getting-there-text", language: $language)
 
+    isRunning
+
     map {
       id
       link

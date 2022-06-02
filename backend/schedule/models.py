@@ -70,7 +70,8 @@ class DayRoomThroughModel(OrderedModel):
         verbose_name=_("room"),
     )
     order_with_respect_to = "day"
-    streaming_link = models.URLField(_("Streaming URL"), blank=True)
+    streaming_url = models.URLField(_("Streaming URL"), blank=True, default="")
+    slido_url = models.URLField(_("Sli.do URL"), blank=True, default="")
 
     class Meta:
         ordering = (
@@ -210,6 +211,8 @@ class ScheduleItem(TimeStampedModel):
         ),
         default=False,
     )
+
+    slido_url = models.URLField(_("Sli.do URL"), blank=True, default="")
 
     @cached_property
     def speakers(self):

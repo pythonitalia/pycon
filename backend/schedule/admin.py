@@ -568,7 +568,7 @@ class RoomAdmin(OrderedModelAdmin):
 
 class DayRoomThroughModelInline(OrderedTabularInline):
     model = DayRoomThroughModel
-    fields = ("room", "order", "move_up_down_links", "streaming_link")
+    fields = ("room", "order", "move_up_down_links", "streaming_url", "slido_url")
     readonly_fields = (
         "order",
         "move_up_down_links",
