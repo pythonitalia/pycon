@@ -194,11 +194,11 @@ class Day:
     @strawberry.field
     def rooms(self) -> List[DayRoom]:
         data = self.added_rooms.values(
-            "id", "streaming_url", "slido_url", "room__type", "room__name"
+            "room__id", "streaming_url", "slido_url", "room__type", "room__name"
         )
         return [
             DayRoom(
-                id=room["id"],
+                id=room["room__id"],
                 name=room["room__name"],
                 type=room["room__type"],
                 streaming_url=room["streaming_url"],
