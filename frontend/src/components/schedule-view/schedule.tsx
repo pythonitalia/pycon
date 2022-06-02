@@ -283,7 +283,9 @@ export const Schedule: React.SFC<{
       >
         {slots
           .filter(
-            (slot) => !isInPhotoMode || (isInPhotoMode && slot?.items[0]?.title !== "Registration")
+            (slot) =>
+              !isInPhotoMode ||
+              (isInPhotoMode && slot?.items[0]?.title !== "Registration"),
           )
           .map((slot) => {
             const rowStart = rowStartPos;
