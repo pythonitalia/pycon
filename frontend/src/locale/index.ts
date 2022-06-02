@@ -526,6 +526,8 @@ export const messages = {
     "schedule.invitation.invitationNotValid":
       "Unable to find this invitation. Please contact us if you think this is a mistake",
     "schedule.invitation.currentAnswer": "Your current answer is: {answer}",
+    "streaming.qa": "Click here to ask questions",
+
     "talk.bookToAttend":
       "This event has limited capacity, you need to book a seat to attend.",
     "talk.bookCta": "Book now",
@@ -1078,6 +1080,8 @@ export const messages = {
     "schedule.invitation.invitationNotValid":
       "Impossibile trovare questo invito",
     "schedule.invitation.currentAnswer": "Risposta attuale: {answer}",
+    "streaming.qa": "Clicca qui per fare domande",
+
     "talk.bookToAttend":
       "Questo evento ha una capacità limitata, è necessario prenotare un posto per partecipare.",
     "talk.bookCta": "Prenota",

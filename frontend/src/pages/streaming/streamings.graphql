@@ -1,0 +1,28 @@
+query Streaming($code: String!) {
+  conference(code: $code) {
+    id
+    timezone
+    days {
+      day
+
+      runningEvents {
+        id
+        slidoUrl
+        duration
+        title
+        rooms {
+          id
+          name
+        }
+      }
+
+      rooms {
+        id
+        name
+        type
+        streamingUrl
+        slidoUrl
+      }
+    }
+  }
+}

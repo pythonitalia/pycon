@@ -10,6 +10,7 @@ query Talk($slug: String!, $code: String!) {
       hasLimitedCapacity
       spacesLeft
       hasSpacesLeft
+      slidoUrl
 
       language {
         code

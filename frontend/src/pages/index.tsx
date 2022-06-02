@@ -27,6 +27,7 @@ import {
   queryMapWithLink,
   useIndexPageQuery,
 } from "~/types";
+import StreamingPage from "./streaming";
 
 export const HomePage = () => {
   const language = useCurrentLanguage();
@@ -256,7 +257,7 @@ export const HomePage = () => {
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
   const client = getApolloClient();
 
-  await Promise.all([
+  const queries = await Promise.all([
     prefetchSharedQueries(client, locale),
     queryKeynotesSection(client, {
       code: process.env.conferenceCode,
@@ -270,6 +271,15 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
       code: process.env.conferenceCode,
     }),
   ]);
+
+  if (queries[3].data.conference.isRunning) {
+    return {
+      redirect: {
+        destination: "/streaming",
+        permanent: false,
+      },
+    };
+  }
 
   return addApolloState(client, {
     props: {},
