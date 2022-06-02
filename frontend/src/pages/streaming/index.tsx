@@ -69,64 +69,66 @@ export const StreamingPage = () => {
           }}
           gap={4}
         >
-          {day?.rooms.map((room) => {
-            const runningEvent = day.runningEvents.filter(
-              (event) =>
-                event.rooms.findIndex((item) => item.id === room.id) !== -1,
-            )[0];
-            return (
-              <Box sx={{ mb: 5 }}>
-                <Heading as="h1" sx={{ mb: 1 }}>
-                  {room.name}
-                </Heading>
-                <Text sx={{ mb: 3 }}>{runningEvent?.title ?? " "}</Text>
-                <Box
-                  sx={{
-                    position: "relative",
-                    paddingBottom: "56.5%",
-                    height: 0,
-                  }}
-                >
-                  <iframe
-                    height="320px"
-                    width="100%"
-                    src={room.streamingUrl}
-                    allow-fullscreen
-                    scrolling="no"
+          {day?.rooms
+            .filter((room) => room.type !== "training")
+            .map((room) => {
+              const runningEvent = day.runningEvents.filter(
+                (event) =>
+                  event.rooms.findIndex((item) => item.id === room.id) !== -1,
+              )[0];
+              return (
+                <Box sx={{ mb: 5 }}>
+                  <Heading as="h1" sx={{ mb: 1 }}>
+                    {room.name}
+                  </Heading>
+                  <Text sx={{ mb: 3 }}>{runningEvent?.title ?? "\u00A0"}</Text>
+                  <Box
                     sx={{
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      width: "100%",
-                      height: "100%",
-                      backgroundColor: "black",
-                    }}
-                  />
-                </Box>
-
-                {runningEvent && (
-                  <Link
-                    path={runningEvent?.slidoUrl}
-                    variant="button"
-                    target="_blank"
-                    sx={{
-                      backgroundColor: "yellow",
-                      py: 1,
-                      mr: "-4px",
-                      mt: 3,
                       position: "relative",
-                      textTransform: "none",
-                      "&:hover": {
-                        backgroundColor: "orange",
-                      },
+                      paddingBottom: "56.5%",
+                      height: 0,
                     }}
                   >
-                    <FormattedMessage id="streaming.qa" />
-                  </Link>
-                )}
-              </Box>
-            );
-          })}
+                    <iframe
+                      height="320px"
+                      width="100%"
+                      src={room.streamingUrl}
+                      allow-fullscreen
+                      scrolling="no"
+                      sx={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        width: "100%",
+                        height: "100%",
+                        backgroundColor: "black",
+                      }}
+                    />
+                  </Box>
+
+                  {runningEvent && (
+                    <Link
+                      path={runningEvent?.slidoUrl}
+                      variant="button"
+                      target="_blank"
+                      sx={{
+                        backgroundColor: "yellow",
+                        py: 1,
+                        mr: "-4px",
+                        mt: 3,
+                        position: "relative",
+                        textTransform: "none",
+                        "&:hover": {
+                          backgroundColor: "orange",
+                        },
+                      }}
+                    >
+                      <FormattedMessage id="streaming.qa" />
+                    </Link>
+                  )}
+                </Box>
+              );
+            })}
         </Grid>
       </Box>
     </Fragment>
