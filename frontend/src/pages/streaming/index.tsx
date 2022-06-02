@@ -66,15 +66,14 @@ export const StreamingPage = () => {
             px: 3,
             my: 5,
             gridTemplateColumns: ["1fr", "1fr", "1fr 1fr"],
-            gridGap: 4,
           }}
+          gap={4}
         >
           {day?.rooms.map((room) => {
             const runningEvent = day.runningEvents.filter(
               (event) =>
                 event.rooms.findIndex((item) => item.id === room.id) !== -1,
             )[0];
-            console.log("runningEvent", runningEvent);
             return (
               <Box sx={{ mb: 5 }}>
                 <Heading as="h1" sx={{ mb: 1 }}>
