@@ -48,12 +48,15 @@ const MyApp = (props) => {
     };
   }, []);
 
+  const enableOlark = false;
+
   return (
     <ThemeProvider theme={theme}>
-      <Script
-        strategy="lazyOnload"
-        dangerouslySetInnerHTML={{
-          __html: `
+      {enableOlark && (
+        <Script
+          strategy="lazyOnload"
+          dangerouslySetInnerHTML={{
+            __html: `
 (function(o,l,a,r,k,y){if(o.olark)return;
 r="script";y=l.createElement(r);r=l.getElementsByTagName(r)[0];
 y.async=1;y.src="//"+a;r.parentNode.insertBefore(y,r);
@@ -68,8 +71,9 @@ olark.identify('1751-12112149-10-1389');
 var olarkLoadedEvent = new Event('olarkLoaded');
 window.dispatchEvent(olarkLoadedEvent);
 `,
-        }}
-      />
+          }}
+        />
+      )}
 
       <ApolloProvider client={apolloClient}>
         <RawIntlProvider value={intl}>
