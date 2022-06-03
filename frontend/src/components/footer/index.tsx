@@ -3,6 +3,8 @@
 /** @jsx jsx */
 import { Box, Grid, jsx, Flex } from "theme-ui";
 
+import { useRouter } from "next/router";
+
 import { useFooterQuery } from "~/types";
 
 import { LogoBlack } from "../icons/logo-black";
@@ -33,8 +35,12 @@ export const Footer = () => {
       code: process.env.conferenceCode,
     },
   });
+  const {
+    query: { photo },
+  } = useRouter();
+  const isInPhotoMode = photo == "1";
 
-  if (!data) {
+  if (!data || isInPhotoMode) {
     return null;
   }
 
