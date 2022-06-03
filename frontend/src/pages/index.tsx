@@ -6,6 +6,7 @@ import { FormattedMessage } from "react-intl";
 import { Box, Grid, Heading, jsx, Text, Flex } from "theme-ui";
 
 import { GetStaticProps } from "next";
+import { PHASE_PRODUCTION_BUILD } from "next/constants";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { GridSlider } from "~/components/grid-slider";
@@ -273,7 +274,10 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
     }),
   ]);
 
-  if (queries[3].data.conference.isRunning) {
+  if (
+    process.env.NEXT_PHASE !== PHASE_PRODUCTION_BUILD &&
+    queries[3].data.conference.isRunning
+  ) {
     return {
       redirect: {
         destination: "/streaming",
