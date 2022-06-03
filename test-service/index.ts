@@ -1,8 +1,25 @@
 const puppeteer = require("puppeteer");
 
 const screenshots = [
+  // {
+  //   day: "2022-06-03",
+  //   states: [
+  //     {
+  //       title: "mattina",
+  //       scroll: 0,
+  //     },
+  //     {
+  //       title: "pomeriggio",
+  //       scroll: 1050,
+  //     },
+  //     {
+  //       title: "sera",
+  //       scroll: 1050,
+  //     },
+  //   ],
+  // },
   {
-    day: "2022-06-03",
+    day: "2022-06-04",
     states: [
       {
         title: "mattina",
@@ -12,10 +29,10 @@ const screenshots = [
         title: "pomeriggio",
         scroll: 1050,
       },
-      {
-        title: "sera",
-        scroll: 1050,
-      },
+      // {
+      //   title: "sera",
+      //   scroll: 1050,
+      // },
     ],
   },
 ];
