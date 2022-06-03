@@ -16,7 +16,7 @@ const screenshots = [
 (async () => {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
-  await page.setViewport({ width: 1920, height: 1080 });
+  await page.setViewport({ width: 1920, height: 1080, deviceScaleFactor: 2 });
 
   for (const screenshot of screenshots) {
     await page.goto(`https://pycon.it/en/schedule/${screenshot.day}?photo=1`, {
