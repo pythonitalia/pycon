@@ -8,7 +8,14 @@ const screenshots = [
         title: "mattina",
         scroll: 0,
       },
-      // { title: "pomeriggio", scroll: 1050 },
+      {
+        title: "pomeriggio",
+        scroll: 1050,
+      },
+      {
+        title: "sera",
+        scroll: 1050,
+      },
     ],
   },
 ];
@@ -26,7 +33,13 @@ const screenshots = [
       // @ts-ignore
       await page.evaluate((value) => {
         // @ts-ignore
-        window.scrollBy(0, value);
+        window.scrollBy(0, 0);
+        // @ts-ignore
+        window.requestAnimationFrame(() => {
+          // @ts-ignore
+          window.scrollBy(0, value);
+        });
+        // @ts-ignore
       }, state.scroll);
       await page.screenshot({
         path: `programma-${screenshot.day}-${state.title}.jpeg`,
