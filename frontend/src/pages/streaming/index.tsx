@@ -94,7 +94,7 @@ export const StreamingPage = () => {
                       height="320px"
                       width="100%"
                       src={room.streamingUrl}
-                      allow-fullscreen
+                      allowFullScreen
                       scrolling="no"
                       sx={{
                         position: "absolute",
