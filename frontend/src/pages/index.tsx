@@ -274,6 +274,7 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
     }),
   ]);
 
+  console.log("process.env.NEXT_PHASE", process.env.NEXT_PHASE);
   if (
     process.env.NEXT_PHASE !== PHASE_PRODUCTION_BUILD &&
     queries[3].data.conference.isRunning
