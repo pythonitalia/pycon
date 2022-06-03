@@ -226,6 +226,7 @@ class ScheduleItemAdminForm(forms.ModelForm):
             "speaker_invitation_notes",
             "speaker_invitation_sent_at",
             "attendees_total_capacity",
+            "slido_url",
         )
 
 
@@ -260,6 +261,7 @@ class ScheduleItemAdmin(admin.ModelAdmin):
                     "description",
                     "submission",
                     "keynote",
+                    "slido_url",
                 )
             },
         ),
