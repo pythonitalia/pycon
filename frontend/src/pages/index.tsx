@@ -274,11 +274,19 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
     }),
   ]);
 
-  console.log("process.env.NEXT_PHASE", process.env.NEXT_PHASE);
-  if (
-    process.env.NEXT_PHASE !== PHASE_PRODUCTION_BUILD &&
-    queries[3].data.conference.isRunning
-  ) {
+  return addApolloState(client, {
+    props: {},
+  });
+};
+
+export async function getServerSideProps({ locale }) {
+  const client = getApolloClient();
+  const indexPage = queryIndexPage(client, {
+    language: locale,
+    code: process.env.conferenceCode,
+  });
+
+  if (indexPage.data.conference.isRunning) {
     return {
       redirect: {
         destination: "/streaming",
@@ -287,9 +295,9 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
     };
   }
 
-  return addApolloState(client, {
+  return {
     props: {},
-  });
-};
+  };
+}
 
 export default HomePage;
