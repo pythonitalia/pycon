@@ -32,7 +32,7 @@ class JobListing(TimeStampedModel, OrderedModel):
         _("company logo"), null=True, blank=True, upload_to="job-listings"
     )
     description = I18nTextField(_("description"), blank=True)
-    apply_url = models.URLField(_("URL where you can apply"), blank=True)
+    apply_url = models.TextField(_("URL where you can apply"), blank=True)
 
     objects = JobListingManager()
 
