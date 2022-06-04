@@ -3,6 +3,7 @@
 /** @jsx jsx */
 import React, { useState } from "react";
 import { FormattedMessage } from "react-intl";
+import QRCode from "react-qr-code";
 import { Text, Box, Grid, Flex, jsx } from "theme-ui";
 
 import Image from "next/image";
@@ -39,7 +40,7 @@ export const JobListingAccordion = ({
           px: 3,
           maxWidth: "container",
           cursor: "pointer",
-          gridTemplateColumns: ["1fr 100px", null, "100px 1fr 1fr 200px"],
+          gridTemplateColumns: ["1fr 100px", null, "100px 1fr 1fr 250px 200px"],
         }}
         onClick={() => setExpanded(!expanded)}
       >
@@ -71,6 +72,9 @@ export const JobListingAccordion = ({
         </AccordionColumn>
         <AccordionColumn>{job.company}</AccordionColumn>
         <AccordionColumn>{job.title}</AccordionColumn>
+        <AccordionColumn sx={{ p: 2 }}>
+          {job.applyUrl && <QRCode size={100} value={job.applyUrl} />}
+        </AccordionColumn>
         <Flex
           sx={{
             py: [2, 4],
