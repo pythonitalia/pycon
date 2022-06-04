@@ -256,28 +256,28 @@ export const HomePage = () => {
   );
 };
 
-export const getStaticProps: GetStaticProps = async ({ locale }) => {
-  const client = getApolloClient();
+// export const getStaticProps: GetStaticProps = async ({ locale }) => {
+//   const client = getApolloClient();
 
-  await Promise.all([
-    prefetchSharedQueries(client, locale),
-    queryKeynotesSection(client, {
-      code: process.env.conferenceCode,
-      language: locale,
-    }),
-    queryMapWithLink(client, {
-      code: process.env.conferenceCode,
-    }),
-    queryIndexPage(client, {
-      language: locale,
-      code: process.env.conferenceCode,
-    }),
-  ]);
+//   await Promise.all([
+//     prefetchSharedQueries(client, locale),
+//     queryKeynotesSection(client, {
+//       code: process.env.conferenceCode,
+//       language: locale,
+//     }),
+//     queryMapWithLink(client, {
+//       code: process.env.conferenceCode,
+//     }),
+//     queryIndexPage(client, {
+//       language: locale,
+//       code: process.env.conferenceCode,
+//     }),
+//   ]);
 
-  return addApolloState(client, {
-    props: {},
-  });
-};
+//   return addApolloState(client, {
+//     props: {},
+//   });
+// };
 
 export async function getServerSideProps({ locale }) {
   const client = getApolloClient();
