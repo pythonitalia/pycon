@@ -259,7 +259,7 @@ export const HomePage = () => {
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
   const client = getApolloClient();
 
-  const queries = await Promise.all([
+  await Promise.all([
     prefetchSharedQueries(client, locale),
     queryKeynotesSection(client, {
       code: process.env.conferenceCode,
@@ -281,7 +281,7 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
 
 export async function getServerSideProps({ locale }) {
   const client = getApolloClient();
-  const indexPage = queryIndexPage(client, {
+  const indexPage = await queryIndexPage(client, {
     language: locale,
     code: process.env.conferenceCode,
   });
