@@ -256,48 +256,27 @@ export const HomePage = () => {
   );
 };
 
-// export const getStaticProps: GetStaticProps = async ({ locale }) => {
-//   const client = getApolloClient();
-
-//   await Promise.all([
-//     prefetchSharedQueries(client, locale),
-//     queryKeynotesSection(client, {
-//       code: process.env.conferenceCode,
-//       language: locale,
-//     }),
-//     queryMapWithLink(client, {
-//       code: process.env.conferenceCode,
-//     }),
-//     queryIndexPage(client, {
-//       language: locale,
-//       code: process.env.conferenceCode,
-//     }),
-//   ]);
-
-//   return addApolloState(client, {
-//     props: {},
-//   });
-// };
-
-export async function getServerSideProps({ locale }) {
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
   const client = getApolloClient();
-  const indexPage = await queryIndexPage(client, {
-    language: locale,
-    code: process.env.conferenceCode,
-  });
 
-  if (indexPage.data.conference.isRunning) {
-    return {
-      redirect: {
-        destination: "/streaming",
-        permanent: false,
-      },
-    };
-  }
+  await Promise.all([
+    prefetchSharedQueries(client, locale),
+    queryKeynotesSection(client, {
+      code: process.env.conferenceCode,
+      language: locale,
+    }),
+    queryMapWithLink(client, {
+      code: process.env.conferenceCode,
+    }),
+    queryIndexPage(client, {
+      language: locale,
+      code: process.env.conferenceCode,
+    }),
+  ]);
 
-  return {
+  return addApolloState(client, {
     props: {},
-  };
-}
+  });
+};
 
 export default HomePage;
