@@ -6,7 +6,7 @@ locals {
   association_frontend_url = "https://associazione.python.it"
   users_backend_url        = local.is_prod ? "https://users-api.python.it" : "https://${terraform.workspace}-users-api.python.it"
 
-  db_connection = local.is_prod ? "postgresql://${data.aws_db_instance.database.master_username}:${module.common_secrets.value.database_password}@${data.aws_db_proxy.proxy[0].endpoint}:${data.aws_db_instance.database.port}/association" : "postgresql://${data.aws_db_instance.database.master_username}:${module.common_secrets.value.database_password}@${data.aws_db_instance.database.address}:${data.aws_db_instance.database.port}/association"
+  db_connection = var.enable_proxy ? "postgresql://${data.aws_db_instance.database.master_username}:${module.common_secrets.value.database_password}@${data.aws_db_proxy.proxy[0].endpoint}:${data.aws_db_instance.database.port}/association" : "postgresql://${data.aws_db_instance.database.master_username}:${module.common_secrets.value.database_password}@${data.aws_db_instance.database.address}:${data.aws_db_instance.database.port}/association"
 }
 
 data "aws_db_instance" "database" {

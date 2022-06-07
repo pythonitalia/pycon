@@ -1,5 +1,9 @@
+locals {
+  enable_proxy = false
+}
+
 data "aws_secretsmanager_secret" "credentials" {
-  count = local.is_prod ? 1 : 0
+  count = local.enable_proxy ? 1 : 0
   name  = "/pythonit/${terraform.workspace}/common/database"
 }
 
@@ -20,7 +24,7 @@ data "aws_subnet_ids" "private" {
 
 
 resource "aws_db_proxy" "proxy" {
-  count                  = local.is_prod ? 1 : 0
+  count                  = local.enable_proxy ? 1 : 0
   name                   = "pythonit-${terraform.workspace}-database-proxy"
   debug_logging          = false
   engine_family          = "POSTGRESQL"
@@ -39,7 +43,7 @@ resource "aws_db_proxy" "proxy" {
 }
 
 resource "aws_iam_role" "proxy_role" {
-  count              = local.is_prod ? 1 : 0
+  count              = local.enable_proxy ? 1 : 0
   name               = "pythonit-${terraform.workspace}-proxy-role"
   assume_role_policy = <<EOF
 {
@@ -76,13 +80,13 @@ resource "aws_iam_role_policy" "pretix" {
 }
 
 resource "aws_db_proxy_default_target_group" "proxy" {
-  count         = local.is_prod ? 1 : 0
+  count         = local.enable_proxy ? 1 : 0
   db_proxy_name = aws_db_proxy.proxy[0].name
 }
 
 
 resource "aws_db_proxy_target" "proxy_target" {
-  count                  = local.is_prod ? 1 : 0
+  count                  = local.enable_proxy ? 1 : 0
   db_instance_identifier = aws_db_instance.database.id
   db_proxy_name          = aws_db_proxy.proxy[0].name
   target_group_name      = aws_db_proxy_default_target_group.proxy[0].name
