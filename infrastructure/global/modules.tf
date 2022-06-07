@@ -56,9 +56,3 @@ module "buckets" {
 module "cloudwatch" {
   source = "./cloudwatch"
 }
-
-# appsmith
-
-module "appsmith" {
-  source = "./appsmith"
-}
