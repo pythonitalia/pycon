@@ -104,26 +104,30 @@ export const HomePage = () => {
           </Box>
         </Box>
 
-        <Box sx={{ gridColumnStart: [null, null, 3] }}>
-          <Heading as="h1" sx={{ mb: 3 }}>
-            {conference.homepageSection1Title}
-          </Heading>
+        {conference.homepageSection1Title && (
+          <Box sx={{ gridColumnStart: [null, null, 3] }}>
+            <Heading as="h1" sx={{ mb: 3 }}>
+              {conference.homepageSection1Title}
+            </Heading>
 
-          <Heading as="h2" sx={{ color: "yellow", fontSize: 3, mb: 3 }}>
-            {conference.homepageSection1Subtitle}
-          </Heading>
+            <Heading as="h2" sx={{ color: "yellow", fontSize: 3, mb: 3 }}>
+              {conference.homepageSection1Subtitle}
+            </Heading>
 
-          <Text as="p" sx={{ mb: 4 }}>
-            {conference.homepageSection1Text}
-          </Text>
+            <Text as="p" sx={{ mb: 4 }}>
+              {conference.homepageSection1Text}
+            </Text>
 
-          <Link
-            path={conference.homepageSection1CTALink}
-            variant="arrow-button"
-          >
-            {conference.homepageSection1CTAText}
-          </Link>
-        </Box>
+            {conference.homepageSection1CTALink && (
+              <Link
+                path={conference.homepageSection1CTALink}
+                variant="arrow-button"
+              >
+                {conference.homepageSection1CTAText}
+              </Link>
+            )}
+          </Box>
+        )}
       </Grid>
 
       {conference.events.length > 0 && (
