@@ -6,13 +6,13 @@ locals {
 # Applications
 
 module "pretix" {
-  source = "./pretix"
-  count  = local.deploy_pretix ? 1 : 0
+  source       = "./pretix"
+  count        = local.deploy_pretix ? 1 : 0
   enable_proxy = local.enable_proxy
 }
 
 module "pycon_backend" {
-  source = "./pycon_backend"
+  source       = "./pycon_backend"
   enable_proxy = local.enable_proxy
 
   providers = {
@@ -49,5 +49,6 @@ module "email_templates" {
 # Other resources
 
 module "database" {
-  source = "./database"
+  source       = "./database"
+  enable_proxy = local.enable_proxy
 }
