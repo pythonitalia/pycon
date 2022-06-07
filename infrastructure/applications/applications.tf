@@ -1,16 +1,19 @@
 locals {
   deploy_pretix = terraform.workspace == "production"
+  enable_proxy  = false
 }
 
 # Applications
 
 module "pretix" {
-  source = "./pretix"
-  count  = local.deploy_pretix ? 1 : 0
+  source       = "./pretix"
+  count        = local.deploy_pretix ? 1 : 0
+  enable_proxy = local.enable_proxy
 }
 
 module "pycon_backend" {
-  source = "./pycon_backend"
+  source       = "./pycon_backend"
+  enable_proxy = local.enable_proxy
 
   providers = {
     aws    = aws
@@ -28,13 +31,15 @@ module "gateway" {
 }
 
 module "users_backend" {
-  source     = "./users_backend"
-  depends_on = [module.database]
+  source       = "./users_backend"
+  depends_on   = [module.database]
+  enable_proxy = local.enable_proxy
 }
 
 module "association_backend" {
-  source     = "./association_backend"
-  depends_on = [module.database]
+  source       = "./association_backend"
+  depends_on   = [module.database]
+  enable_proxy = local.enable_proxy
 }
 
 module "email_templates" {
@@ -44,5 +49,6 @@ module "email_templates" {
 # Other resources
 
 module "database" {
-  source = "./database"
+  source       = "./database"
+  enable_proxy = local.enable_proxy
 }

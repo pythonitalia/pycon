@@ -94,7 +94,7 @@ resource "aws_ecs_task_definition" "pretix_service" {
         },
         {
           name  = "DATABASE_HOST"
-          value = local.is_prod ? data.aws_db_proxy.proxy[0].endpoint : data.aws_db_instance.database.address
+          value = var.enable_proxy ? data.aws_db_proxy.proxy[0].endpoint : data.aws_db_instance.database.address
         },
         {
           name  = "MAIL_USER"

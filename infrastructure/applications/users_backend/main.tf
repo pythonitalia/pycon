@@ -4,8 +4,9 @@ locals {
 
   # TODO: Need to coordinate between env and vercel
   association_frontend_url = "https://associazione.python.it"
+  enable_proxy             = false
 
-  db_connection = local.is_prod ? "postgresql+asyncpg://${data.aws_db_instance.database.master_username}:${module.common_secrets.value.database_password}@${data.aws_db_proxy.proxy[0].endpoint}:${data.aws_db_instance.database.port}/users" : "postgresql+asyncpg://${data.aws_db_instance.database.master_username}:${module.common_secrets.value.database_password}@${data.aws_db_instance.database.address}:${data.aws_db_instance.database.port}/users"
+  db_connection = local.enable_proxy ? "postgresql+asyncpg://${data.aws_db_instance.database.master_username}:${module.common_secrets.value.database_password}@${data.aws_db_proxy.proxy[0].endpoint}:${data.aws_db_instance.database.port}/users" : "postgresql+asyncpg://${data.aws_db_instance.database.master_username}:${module.common_secrets.value.database_password}@${data.aws_db_instance.database.address}:${data.aws_db_instance.database.port}/users"
 }
 
 data "aws_db_instance" "database" {
