@@ -1,6 +1,6 @@
 locals {
   deploy_pretix = terraform.workspace == "production"
-  enable_proxy  = false
+  enable_proxy  = true
 }
 
 # Applications
