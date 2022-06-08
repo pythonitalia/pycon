@@ -1,6 +1,7 @@
 locals {
-  deploy_pretix = terraform.workspace == "production"
-  enable_proxy  = true
+  is_prod       = terraform.workspace == "production"
+  deploy_pretix = local.is_prod
+  enable_proxy  = local.is_prod ? true : false
 }
 
 # Applications
