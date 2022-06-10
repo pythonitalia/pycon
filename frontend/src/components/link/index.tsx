@@ -5,8 +5,6 @@ import { ParsedUrlQuery } from "querystring";
 import React, { Fragment } from "react";
 import { Box, jsx, Link as ThemeLink } from "theme-ui";
 
-import NextLink from "next/link";
-
 import { useHover } from "~/helpers/use-hover";
 import { useCurrentLanguage } from "~/locale/context";
 
@@ -84,6 +82,8 @@ export const Link: React.FC<LinkProps> = ({
   ...additionalProps
 }) => {
   const language = useCurrentLanguage();
+  const normalizedLocale = locale || language;
+  const href = createHref({ path, params, locale: normalizedLocale });
 
   const ForwardedLink = React.forwardRef<any, { hovered: boolean }>(
     (props, ref) => (
@@ -91,7 +91,7 @@ export const Link: React.FC<LinkProps> = ({
         as="a"
         target={target}
         variant={variant}
-        href={path}
+        href={href}
         {...props}
         {...additionalProps}
         ref={ref}
@@ -133,15 +133,31 @@ export const Link: React.FC<LinkProps> = ({
   }
 
   return (
-    <NextLink
-      href={{
-        pathname: path,
-        query: params,
-      }}
-      passHref={true}
-      locale={locale || language}
-    >
+    <a href={href} {...additionalProps}>
       {hoverable}
-    </NextLink>
+    </a>
   );
+};
+
+const createHref = ({ path, params, locale }) => {
+  const { resolvedPath, unusedParams } = Object.entries(params || {}).reduce(
+    (state, [key, value]) => {
+      const newPath = state.resolvedPath.replace(`[${key}]`, value);
+
+      if (newPath === state.resolvedPath) {
+        state.unusedParams[key] = value;
+        return state;
+      }
+
+      state.resolvedPath = newPath;
+      return state;
+    },
+    { resolvedPath: path, unusedParams: {} },
+  );
+
+  const queryParams = Object.entries(unusedParams)
+    .map(([key, value]) => `${key}=${value}`)
+    .join("&");
+
+  return `/${locale}${resolvedPath}?${queryParams}`;
 };
