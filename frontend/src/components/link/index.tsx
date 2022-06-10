@@ -88,10 +88,8 @@ export const Link: React.FC<LinkProps> = ({
   const ForwardedLink = React.forwardRef<any, { hovered: boolean }>(
     (props, ref) => (
       <ThemeLink
-        as="a"
-        target={target}
+        as="span"
         variant={variant}
-        href={href}
         {...props}
         {...additionalProps}
         ref={ref}
@@ -133,7 +131,7 @@ export const Link: React.FC<LinkProps> = ({
   }
 
   return (
-    <a href={href} {...additionalProps}>
+    <a href={href} target={target} {...additionalProps}>
       {hoverable}
     </a>
   );
@@ -159,5 +157,7 @@ const createHref = ({ path, params, locale }) => {
     .map(([key, value]) => `${key}=${value}`)
     .join("&");
 
-  return `/${locale}${resolvedPath}?${queryParams}`;
+  return `/${locale}${resolvedPath}${
+    queryParams.length > 0 ? `?${queryParams}` : ""
+  }`;
 };
