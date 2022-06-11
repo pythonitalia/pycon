@@ -67,7 +67,7 @@ type LinkProps = {
   external?: boolean;
   rel?: string;
   noHover?: boolean;
-  as?: string;
+  as?: any;
   onClick?: (event) => void;
 };
 
