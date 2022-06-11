@@ -1,0 +1,12 @@
+[package]
+name = "date-transformer"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+fake = { version = "2.4.3", features=['chrono']}
+rand = "0.8"
+chrono = "0.4"
+time = "0.3.9"

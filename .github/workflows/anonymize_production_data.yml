@@ -1,0 +1,57 @@
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 4 * * *'
+
+jobs:
+  anonymize-users-db:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.aws_access_key_id }}
+          aws-secret-access-key: ${{ secrets.aws_secret_access_key }}
+          aws-region: eu-central-1
+      - name: Open tunnel to DB
+        run: |
+          docker run \
+            --rm \
+            -e AWS_ACCESS_KEY_ID \
+            -e AWS_SECRET_ACCESS_KEY \
+            -e PORT_7777_LICENSE \
+            -p 7777:7777 \
+            port7777/7777:1 \
+            --region=eu-central-1 \
+            --database=pythonit-production \
+            --ttl=1 \
+            --verbose &
+        env:
+          PORT_7777_LICENSE: ${{ secrets.PORT_7777_LICENSE }}
+      - name: Fetch DB credentials
+        id: db-credentials
+        run: |
+          OUTPUT=$(aws secretsmanager get-secret-value --secret-id $SECRET_ID)
+          PASSWORD=$(echo $OUTPUT | jq '.SecretString | fromjson | .password')
+          USERNAME=$(echo $OUTPUT | jq '.SecretString | fromjson | .username')
+          echo "::set-output name=password::$PASSWORD"
+          echo "::set-output name=username::$USERNAME"
+        env:
+          SECRET_ID: ${{ secrets.RDS_CREDENTIALS_SECRET_ID }}
+      - name: Wait for tunnel
+        run: while ! nc -z localhost 7777; do sleep 1; done;
+      - name: Backup users database
+        run: |
+          docker run \
+            -it \
+            --rm \
+            --name replibyte \
+            -e ENCRYPTION_KEY \
+            -v "$(pwd)/replibyte/users-db-config.yaml:/config.yaml:ro" \
+            ghcr.io/qovery/replibyte \
+            --config config.yaml dump create --name users-latest
+        env:
+          DATABASE_URL: postgres://${{ steps.db-credentials.outputs.username }}:${{ steps.db-credentials.outputs.password }}@127.0.0.1:7777/users
+          BUCKET_NAME: ${{ secrets.REPLIBYTE_BUCKET_NAME }}
+          ENCRYPTION_KEY: ${{ secrets.REPLIBYTE_ENCRYPTION_KEY }}
