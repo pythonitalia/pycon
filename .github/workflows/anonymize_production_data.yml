@@ -93,7 +93,7 @@ jobs:
       # End Restore transformers
 
       - name: Wait for tunnel
-        run: while ! nc -z localhost 7777; do sleep 1; done;
+        run: while ! pg_isready -h 127.0.0.1 -p 7777 -d users; do sleep 1; done;
       - name: Anonymize Users database
         run: |
           docker run \
