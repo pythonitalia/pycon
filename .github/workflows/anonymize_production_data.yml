@@ -60,3 +60,5 @@ jobs:
           DATABASE_URL: postgres://${{ steps.db-credentials.outputs.username }}:${{ steps.db-credentials.outputs.password }}@127.0.0.1:7777/users
           BUCKET_NAME: ${{ secrets.REPLIBYTE_BUCKET_NAME }}
           ENCRYPTION_KEY: ${{ secrets.REPLIBYTE_ENCRYPTION_KEY }}
+          ACCESS_KEY_ID: ${{ secrets.aws_access_key_id }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.aws_secret_access_key }}
