@@ -43,12 +43,14 @@ jobs:
           SECRET_ID: ${{ secrets.RDS_CREDENTIALS_SECRET_ID }}
       - name: Wait for tunnel
         run: while ! nc -z localhost 7777; do sleep 1; done;
-      - name: Backup users database
+      - name: Anonymize Users database
         run: |
           docker run \
             --rm \
             --name replibyte \
             -e ENCRYPTION_KEY \
+            -e BUCKET_NAME \
+            -e DATABASE_URL \
             -v "$(pwd)/replibyte/users-db-config.yaml:/config.yaml:ro" \
             ghcr.io/qovery/replibyte \
             --config config.yaml dump create --name users-latest
