@@ -67,6 +67,8 @@ type LinkProps = {
   external?: boolean;
   rel?: string;
   noHover?: boolean;
+  as?: string;
+  onClick?: (event) => void;
 };
 
 export const Link: React.FC<LinkProps> = ({
@@ -83,7 +85,13 @@ export const Link: React.FC<LinkProps> = ({
 }) => {
   const language = useCurrentLanguage();
   const normalizedLocale = locale || language;
-  const href = createHref({ path, params, locale: normalizedLocale, external });
+  const isExternal = external || isExternalLink({ path, target });
+  const href = createHref({
+    path,
+    params,
+    locale: normalizedLocale,
+    external: isExternal,
+  });
 
   const ForwardedLink = React.forwardRef<any, { hovered: boolean }>(
     (props, ref) => (

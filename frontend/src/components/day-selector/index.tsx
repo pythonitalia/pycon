@@ -4,8 +4,6 @@
 import React from "react";
 import { Box, jsx, Select } from "theme-ui";
 
-import { useRouter } from "next/router";
-
 import { Link } from "~/components/link";
 import { useCurrentLanguage } from "~/locale/context";
 
@@ -21,12 +19,8 @@ export const DaySelector: React.FC<{
   }[];
   changeDay: (day: string) => void;
 }> = ({ currentDay, days, timezone, changeDay }) => {
-  // const router = useRouter();
   const language = useCurrentLanguage();
 
-  // const changeDay = (day) => {
-  //   router.push("/schedule/[day]", getDayUrl(day));
-  // };
   return (
     <React.Fragment>
       <Box sx={{ display: ["block", "none"] }}>
