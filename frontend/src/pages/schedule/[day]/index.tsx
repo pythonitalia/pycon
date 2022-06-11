@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
-import React from "react";
+import React, { useState } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { FormattedMessage } from "react-intl";
@@ -26,6 +26,8 @@ import {
   useScheduleQuery,
 } from "~/types";
 
+const getDayUrl = (day: string) => `/schedule/${day}`;
+
 const Meta: React.FC<{
   day: string;
   language: Language;
@@ -45,10 +47,18 @@ export const ScheduleDayPage: React.FC = () => {
 
   const router = useRouter();
   const day = router.query.day as string;
+  const [currentDay, setCurrentDay] = useState(day);
 
   const shouldFetchCurrentUser = loggedIn && router.query.admin !== undefined;
   const { user } = useCurrentUser({ skip: !shouldFetchCurrentUser });
   const shouldShowAdmin = user ? user.canEditSchedule : false;
+
+  const changeDay = (day: string) => {
+    setCurrentDay(day);
+    router.push("/schedule/[day]", getDayUrl(day), {
+      shallow: true,
+    });
+  };
 
   const { loading, data } = useScheduleQuery({
     variables: {
@@ -64,7 +74,8 @@ export const ScheduleDayPage: React.FC = () => {
           loading={loading}
           shouldShowAdmin={shouldShowAdmin}
           data={data}
-          day={day}
+          day={currentDay}
+          changeDay={changeDay}
         />
       </DndProvider>
     );
@@ -75,7 +86,8 @@ export const ScheduleDayPage: React.FC = () => {
       loading={loading}
       shouldShowAdmin={shouldShowAdmin}
       data={data}
-      day={day}
+      day={currentDay}
+      changeDay={changeDay}
     />
   );
 };
@@ -85,6 +97,7 @@ type PageContentProps = {
   shouldShowAdmin: boolean;
   data: ScheduleQuery;
   day: string;
+  changeDay: (day: string) => void;
 };
 
 const PageContent: React.FC<PageContentProps> = ({
@@ -92,6 +105,7 @@ const PageContent: React.FC<PageContentProps> = ({
   shouldShowAdmin,
   data,
   day,
+  changeDay,
 }) => {
   const language = useCurrentLanguage();
 
@@ -117,6 +131,7 @@ const PageContent: React.FC<PageContentProps> = ({
           schedule={data}
           day={day}
           shouldShowAdmin={shouldShowAdmin}
+          changeDay={changeDay}
         />
       )}
     </React.Fragment>

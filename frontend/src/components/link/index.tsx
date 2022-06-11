@@ -5,8 +5,6 @@ import { ParsedUrlQuery } from "querystring";
 import React, { Fragment } from "react";
 import { Box, jsx, Link as ThemeLink } from "theme-ui";
 
-import NextLink from "next/link";
-
 import { useHover } from "~/helpers/use-hover";
 import { useCurrentLanguage } from "~/locale/context";
 
@@ -69,6 +67,8 @@ type LinkProps = {
   external?: boolean;
   rel?: string;
   noHover?: boolean;
+  as?: any;
+  onClick?: (event) => void;
 };
 
 export const Link: React.FC<LinkProps> = ({
@@ -84,14 +84,21 @@ export const Link: React.FC<LinkProps> = ({
   ...additionalProps
 }) => {
   const language = useCurrentLanguage();
+  const normalizedLocale = locale || language;
+  const isExternal = external || isExternalLink({ path, target });
+  const href = createHref({
+    path,
+    params,
+    locale: normalizedLocale,
+    external: isExternal,
+  });
 
   const ForwardedLink = React.forwardRef<any, { hovered: boolean }>(
     (props, ref) => (
       <ThemeLink
-        as="a"
-        target={target}
         variant={variant}
-        href={path}
+        href={href}
+        target={target}
         {...props}
         {...additionalProps}
         ref={ref}
@@ -128,20 +135,34 @@ export const Link: React.FC<LinkProps> = ({
 
   const [hoverable] = useHover(component);
 
-  if (external || isExternalLink({ path, target })) {
-    return hoverable;
+  return hoverable;
+};
+
+const createHref = ({ path, params, locale, external }) => {
+  if (external) {
+    return path;
   }
 
-  return (
-    <NextLink
-      href={{
-        pathname: path,
-        query: params,
-      }}
-      passHref={true}
-      locale={locale || language}
-    >
-      {hoverable}
-    </NextLink>
+  const { resolvedPath, unusedParams } = Object.entries(params || {}).reduce(
+    (state, [key, value]) => {
+      const newPath = state.resolvedPath.replace(`[${key}]`, value);
+
+      if (newPath === state.resolvedPath) {
+        state.unusedParams[key] = value;
+        return state;
+      }
+
+      state.resolvedPath = newPath;
+      return state;
+    },
+    { resolvedPath: path, unusedParams: {} },
   );
+
+  const queryParams = Object.entries(unusedParams)
+    .map(([key, value]) => `${key}=${value}`)
+    .join("&");
+
+  return `/${locale}${resolvedPath}${
+    queryParams.length > 0 ? `?${queryParams}` : ""
+  }`;
 };

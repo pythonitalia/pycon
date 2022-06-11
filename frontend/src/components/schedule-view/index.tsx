@@ -45,7 +45,8 @@ export const ScheduleView: React.SFC<{
   shouldShowAdmin: boolean;
   day?: string;
   schedule: ScheduleQuery;
-}> = ({ day: currentDay, shouldShowAdmin, schedule }) => {
+  changeDay: (day: string) => void;
+}> = ({ day: currentDay, shouldShowAdmin, schedule, changeDay }) => {
   const code = process.env.conferenceCode;
   const {
     query: { photo },
@@ -157,6 +158,7 @@ export const ScheduleView: React.SFC<{
                   days={days}
                   currentDay={currentDay}
                   timezone={schedule.conference.timezone}
+                  changeDay={changeDay}
                 />
               </Box>
             </Box>

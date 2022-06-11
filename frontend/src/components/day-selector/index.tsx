@@ -4,16 +4,11 @@
 import React from "react";
 import { Box, jsx, Select } from "theme-ui";
 
-import { useRouter } from "next/router";
-
-import { Link } from "~/components/link";
 import { useCurrentLanguage } from "~/locale/context";
 
 import { formatDay } from "./format-day";
 
 // TODO: beginners day could be an attribute on the backend
-
-const getDayUrl = (day: string) => `/schedule/${day}`;
 
 export const DaySelector: React.FC<{
   currentDay: string | null;
@@ -21,8 +16,8 @@ export const DaySelector: React.FC<{
   days: {
     day: string;
   }[];
-}> = ({ currentDay, days, timezone }) => {
-  const router = useRouter();
+  changeDay: (day: string) => void;
+}> = ({ currentDay, days, timezone, changeDay }) => {
   const language = useCurrentLanguage();
 
   return (
@@ -31,7 +26,7 @@ export const DaySelector: React.FC<{
         <Select
           sx={{ mt: 3, width: "100%" }}
           onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-            router.push("/schedule/[day]", getDayUrl(e.target.value))
+            changeDay(e.target.value)
           }
         >
           {days.map((day, index) => (
@@ -63,25 +58,33 @@ export const DaySelector: React.FC<{
               display: "inline-block",
             }}
           >
-            <Link
-              path="/schedule/[day]"
-              params={{
-                day: day.day,
-              }}
+            <Box
               variant="button"
+              onClick={() => changeDay(day.day)}
               sx={{
+                px: 3,
+                fontSize: 2,
+                lineHeight: "43px",
+                display: "inline-block",
+                fontFamily: "body",
+                fontWeight: "heading",
+                color: "#000",
+                textDecoration: "none",
+                border: "primary",
                 backgroundColor: currentDay === day.day ? "violet" : "white",
                 py: 1,
                 mr: "-4px",
                 position: "relative",
                 textTransform: "none",
+                userSelect: "none",
                 "&:hover": {
                   backgroundColor: "lightViolet",
                 },
+                cursor: "pointer",
               }}
             >
               {formatDay(day.day, language, timezone)}
-            </Link>
+            </Box>
           </Box>
         ))}
       </Box>
