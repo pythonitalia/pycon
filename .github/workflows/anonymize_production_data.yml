@@ -57,7 +57,7 @@ jobs:
             --region=eu-central-1 \
             --database=pythonit-production \
             --ttl=1 \
-            --verbose &
+            --verbose
         env:
           PORT_7777_LICENSE: ${{ secrets.PORT_7777_LICENSE }}
       - name: Fetch DB credentials
