@@ -13,21 +13,20 @@ import { formatDay } from "./format-day";
 
 // TODO: beginners day could be an attribute on the backend
 
-const getDayUrl = (day: string) => `/schedule/${day}`;
-
 export const DaySelector: React.FC<{
   currentDay: string | null;
   timezone: string;
   days: {
     day: string;
   }[];
-}> = ({ currentDay, days, timezone }) => {
-  const router = useRouter();
+  changeDay: (day: string) => void;
+}> = ({ currentDay, days, timezone, changeDay }) => {
+  // const router = useRouter();
   const language = useCurrentLanguage();
 
-  const changeDay = (day) => {
-    router.push("/schedule/[day]", getDayUrl(day));
-  };
+  // const changeDay = (day) => {
+  //   router.push("/schedule/[day]", getDayUrl(day));
+  // };
   return (
     <React.Fragment>
       <Box sx={{ display: ["block", "none"] }}>
