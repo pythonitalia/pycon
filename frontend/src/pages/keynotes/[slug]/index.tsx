@@ -189,25 +189,6 @@ const KeynotePage = () => {
               )}
             </Grid>
           </Flex>
-          <Link
-            path="https://app.sli.do/event/aky15QGFg4bx7o1Lv1VEjw?section=f1d73b4c-9146-49ad-892f-e98c3f24b65e"
-            variant="button"
-            target="_blank"
-            sx={{
-              backgroundColor: "yellow",
-              width: "fit-content",
-              py: 1,
-              mt: [0, 2, 6],
-              mb: [2, 0],
-              position: "relative",
-              textTransform: "none",
-              "&:hover": {
-                backgroundColor: "orange",
-              },
-            }}
-          >
-            <FormattedMessage id="streaming.qa" />
-          </Link>
         </Box>
       </Grid>
 
