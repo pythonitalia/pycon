@@ -4,7 +4,6 @@
 import React from "react";
 import { Box, jsx, Select } from "theme-ui";
 
-import { Link } from "~/components/link";
 import { useCurrentLanguage } from "~/locale/context";
 
 import { formatDay } from "./format-day";

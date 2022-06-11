@@ -96,7 +96,6 @@ export const Link: React.FC<LinkProps> = ({
   const ForwardedLink = React.forwardRef<any, { hovered: boolean }>(
     (props, ref) => (
       <ThemeLink
-        as="a"
         variant={variant}
         href={href}
         target={target}
