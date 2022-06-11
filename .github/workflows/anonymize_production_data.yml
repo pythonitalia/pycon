@@ -51,6 +51,8 @@ jobs:
             -e ENCRYPTION_KEY \
             -e BUCKET_NAME \
             -e DATABASE_URL \
+            -e ACCESS_KEY_ID \
+            -e AWS_SECRET_ACCESS_KEY \
             -v "$(pwd)/replibyte/users-db-config.yaml:/config.yaml:ro" \
             ghcr.io/qovery/replibyte \
             --config config.yaml dump create --name users-latest
