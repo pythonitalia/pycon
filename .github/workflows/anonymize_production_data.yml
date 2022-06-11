@@ -54,6 +54,7 @@ jobs:
             -e ACCESS_KEY_ID \
             -e AWS_SECRET_ACCESS_KEY \
             -v "$(pwd)/replibyte/users-db-config.yaml:/config.yaml:ro" \
+            -v "$(pwd)/replibyte/transformers/:/transformers:ro" \
             ghcr.io/qovery/replibyte \
             --config config.yaml dump create --name users-latest
         env:
