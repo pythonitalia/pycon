@@ -65,8 +65,8 @@ jobs:
         id: db-credentials
         run: |
           OUTPUT=$(aws secretsmanager get-secret-value --secret-id $SECRET_ID)
-          PASSWORD=$(echo $OUTPUT | jq '.SecretString | fromjson | .password')
-          USERNAME=$(echo $OUTPUT | jq '.SecretString | fromjson | .username')
+          PASSWORD=$(echo $OUTPUT | jq -r '.SecretString | fromjson | .password')
+          USERNAME=$(echo $OUTPUT | jq -r '.SecretString | fromjson | .username')
           echo "::add-mask::$PASSWORD"
           echo "::add-mask::$USERNAME"
           echo "::set-output name=password::$PASSWORD"
