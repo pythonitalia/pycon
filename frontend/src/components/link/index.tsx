@@ -83,13 +83,15 @@ export const Link: React.FC<LinkProps> = ({
 }) => {
   const language = useCurrentLanguage();
   const normalizedLocale = locale || language;
-  const href = createHref({ path, params, locale: normalizedLocale });
+  const href = createHref({ path, params, locale: normalizedLocale, external });
 
   const ForwardedLink = React.forwardRef<any, { hovered: boolean }>(
     (props, ref) => (
       <ThemeLink
-        as="span"
+        as="a"
         variant={variant}
+        href={href}
+        target={target}
         {...props}
         {...additionalProps}
         ref={ref}
@@ -126,18 +128,14 @@ export const Link: React.FC<LinkProps> = ({
 
   const [hoverable] = useHover(component);
 
-  if (external || isExternalLink({ path, target })) {
-    return hoverable;
-  }
-
-  return (
-    <a href={href} target={target} {...additionalProps}>
-      {hoverable}
-    </a>
-  );
+  return hoverable;
 };
 
-const createHref = ({ path, params, locale }) => {
+const createHref = ({ path, params, locale, external }) => {
+  if (external) {
+    return path;
+  }
+
   const { resolvedPath, unusedParams } = Object.entries(params || {}).reduce(
     (state, [key, value]) => {
       const newPath = state.resolvedPath.replace(`[${key}]`, value);

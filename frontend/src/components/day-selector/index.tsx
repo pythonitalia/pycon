@@ -25,13 +25,16 @@ export const DaySelector: React.FC<{
   const router = useRouter();
   const language = useCurrentLanguage();
 
+  const changeDay = (day) => {
+    router.push("/schedule/[day]", getDayUrl(day));
+  };
   return (
     <React.Fragment>
       <Box sx={{ display: ["block", "none"] }}>
         <Select
           sx={{ mt: 3, width: "100%" }}
           onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-            router.push("/schedule/[day]", getDayUrl(e.target.value))
+            changeDay(e.target.value)
           }
         >
           {days.map((day, index) => (
@@ -64,11 +67,9 @@ export const DaySelector: React.FC<{
             }}
           >
             <Link
-              path="/schedule/[day]"
-              params={{
-                day: day.day,
-              }}
+              as="div"
               variant="button"
+              onClick={() => changeDay(day.day)}
               sx={{
                 backgroundColor: currentDay === day.day ? "violet" : "white",
                 py: 1,
@@ -78,6 +79,7 @@ export const DaySelector: React.FC<{
                 "&:hover": {
                   backgroundColor: "lightViolet",
                 },
+                cursor: "pointer",
               }}
             >
               {formatDay(day.day, language, timezone)}
