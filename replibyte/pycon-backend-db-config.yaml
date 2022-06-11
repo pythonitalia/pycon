@@ -1,4 +1,4 @@
-encryption_key: $DB_ENCRYPTION_KEY
+encryption_key: $ENCRYPTION_KEY
 
 source:
   connection_uri: $DATABASE_URL

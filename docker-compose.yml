@@ -263,42 +263,6 @@ services:
       - ./email-templates/:/home/node/app
       - /home/node/app/node_modules/
 
-  replibyte:
-    image: ghcr.io/qovery/replibyte:latest
-    depends_on:
-      - pycon-backend-db
-      - users-backend-db
-      - association-backend-db
-    network_mode: host
-    volumes:
-      - ${PWD}/replibyte:/config
-    environment:
-      - DB_ENCRYPTION_KEY
-      - BUCKET_NAME
-      - ACCESS_KEY_ID
-      - AWS_SECRET_ACCESS_KEY
-      - DATABASE_URL
-    profiles:
-      - dump
-
-  restore-dump:
-    image: ghcr.io/qovery/replibyte:latest
-    depends_on:
-      - pycon-backend-db
-      - users-backend-db
-      - association-backend-db
-    networks: [pycon_net]
-    environment:
-      - USERS_DB_URL="postgres://users:users@users-backend-db/users"
-      - PYCON_BACKEND_DB_URL="postgres://pycon:pycon@pycon-backend-db/pycon"
-      - DB_ENCRYPTION_KEY
-      - BUCKET_NAME
-      - ACCESS_KEY_ID
-      - AWS_SECRET_ACCESS_KEY
-    volumes:
-      - ${PWD}/replibyte:/config
-    profiles:
-      - dump
 
 networks:
   pycon_net:
