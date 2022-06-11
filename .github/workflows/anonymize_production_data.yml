@@ -1,3 +1,5 @@
+name: Anonymize production databases
+
 on:
   workflow_dispatch:
   schedule:
@@ -44,7 +46,6 @@ jobs:
       - name: Backup users database
         run: |
           docker run \
-            -it \
             --rm \
             --name replibyte \
             -e ENCRYPTION_KEY \
