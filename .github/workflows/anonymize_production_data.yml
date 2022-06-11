@@ -49,6 +49,7 @@ jobs:
         run: |
           docker run \
             --rm \
+            -d \
             -e AWS_ACCESS_KEY_ID \
             -e AWS_SECRET_ACCESS_KEY \
             -e PORT_7777_LICENSE \
