@@ -99,6 +99,7 @@ jobs:
           docker run \
             --rm \
             --name replibyte \
+            --network host \
             -e ENCRYPTION_KEY \
             -e BUCKET_NAME \
             -e DATABASE_URL \
