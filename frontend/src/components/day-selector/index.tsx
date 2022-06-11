@@ -59,16 +59,25 @@ export const DaySelector: React.FC<{
               display: "inline-block",
             }}
           >
-            <Link
-              as="div"
+            <Box
               variant="button"
               onClick={() => changeDay(day.day)}
               sx={{
+                px: 3,
+                fontSize: 2,
+                lineHeight: "43px",
+                display: "inline-block",
+                fontFamily: "body",
+                fontWeight: "heading",
+                color: "#000",
+                textDecoration: "none",
+                border: "primary",
                 backgroundColor: currentDay === day.day ? "violet" : "white",
                 py: 1,
                 mr: "-4px",
                 position: "relative",
                 textTransform: "none",
+                userSelect: "none",
                 "&:hover": {
                   backgroundColor: "lightViolet",
                 },
@@ -76,7 +85,7 @@ export const DaySelector: React.FC<{
               }}
             >
               {formatDay(day.day, language, timezone)}
-            </Link>
+            </Box>
           </Box>
         ))}
       </Box>
