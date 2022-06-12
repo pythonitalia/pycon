@@ -1,5 +1,6 @@
 import datetime
 from datetime import timezone
+from unittest.mock import call, patch
 
 import time_machine
 from ward import test
@@ -422,3 +423,54 @@ async def _(db=db):
             id=subscription_1.id
         )
         assert updated_subscription_1.status == SubscriptionStatus.ACTIVE
+
+
+@test("subscription with a finished and a new payment")
+async def _(db=db):
+    repository = AssociationMembershipRepository()
+
+    with time_machine.travel("2020-10-10 10:00:00", tick=False):
+        subscription_1 = await SubscriptionFactory(
+            user_id=1, status=SubscriptionStatus.ACTIVE
+        )
+        subscription_1.add_pretix_payment(
+            organizer="python-italia",
+            event="pycon-demo",
+            order_code="ABCABCABC",
+            total=1000,
+            status=PaymentStatus.PAID,
+            payment_date=datetime.datetime(2020, 1, 1, 1, 4, 43, tzinfo=timezone.utc),
+            period_start=datetime.datetime(2020, 1, 1, 1, 4, 43, tzinfo=timezone.utc),
+            period_end=datetime.datetime(2021, 1, 1, 1, 4, 43, tzinfo=timezone.utc),
+        )
+        subscription_1.add_pretix_payment(
+            organizer="python-italia",
+            event="pycon-demo",
+            order_code="XXYYZZ",
+            total=1000,
+            status=PaymentStatus.PAID,
+            payment_date=datetime.datetime(2021, 1, 1, 1, 4, 43, tzinfo=timezone.utc),
+            period_start=datetime.datetime(2021, 1, 1, 1, 4, 43, tzinfo=timezone.utc),
+            period_end=datetime.datetime(2022, 1, 1, 1, 4, 43, tzinfo=timezone.utc),
+        )
+
+        await repository.save_subscription(subscription_1)
+
+    with time_machine.travel("2021-01-01 10:00:00", tick=False):
+        with patch(
+            "src.webhooks.handlers.crons.membership_check_status.logger"
+        ) as logger_mock:
+            await membership_check_status({})
+
+        updated_subscription_1 = await Subscription.objects.get_or_none(
+            id=subscription_1.id
+        )
+        assert updated_subscription_1.status == SubscriptionStatus.ACTIVE
+
+    logger_mock.info.assert_has_calls(
+        [
+            call("Found subscriptions_to_cancel_count=%s subscriptions to cancel", 0),
+            call("Found subscriptions_to_enable_count=%s subscriptions to activate", 0),
+        ],
+        any_order=True,
+    )
