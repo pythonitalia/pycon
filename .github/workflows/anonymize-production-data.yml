@@ -38,6 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build-transformer]
     strategy:
+      fail-fast: false
       matrix:
         service:
           - db: users

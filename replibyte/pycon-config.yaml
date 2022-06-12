@@ -23,6 +23,75 @@ source:
           transformer_name: random
         - name: previous_talk_video
           transformer_name: random
+    - database: public
+      table: volunteers_notifications_volunteerdevice
+      columns:
+        - name: device_token
+          transformer_name: random
+        - name: endpoint_arn
+          transformer_name: random
+    - database: public
+      table: grants_grant
+      columns:
+        - name: name
+          transformer_name: first-name
+        - name: full_name
+          transformer_name: first-name
+        - name: email
+          transformer_name: custom-wasm
+          transformer_options:
+            path: "transformers/email-transformer/target/wasm32-wasi/release/email-transformer.wasm"
+        - name: gender
+          transformer_name: random
+        - name: occupation
+          transformer_name: random
+        - name: grant_type
+          transformer_name: random
+        - name: python_usage
+          transformer_name: random
+        - name: been_to_other_events
+          transformer_name: random
+        - name: interested_in_volunteering
+          transformer_name: random
+        - name: why
+          transformer_name: random
+        - name: notes
+          transformer_name: random
+        - name: travelling_from
+          transformer_name: random
+  skip:
+    - database: public
+      table: django_session
+    - database: public
+      table: invoices_address
+    - database: public
+      table: invoices_invoice
+    - database: public
+      table: invoices_item
+    - database: public
+      table: invoices_sender
+    - database: public
+      table: orders_order
+    - database: public
+      table: orders_orderitem
+    - database: public
+      table: social_auth_association
+    - database: public
+      table: social_auth_code
+    - database: public
+      table: social_auth_nonce
+    - database: public
+      table: social_auth_partial
+    - database: public
+      table: social_auth_usersocialauth
+    - database: public
+      table: tickets_ticket
+    - database: public
+      table: tickets_ticketquestion
+    - database: public
+      table: tickets_ticketquestionchoice
+    - database: public
+      table: tickets_useranswer
 
 datastore:
   aws:
