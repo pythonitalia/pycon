@@ -6,7 +6,6 @@ import { FormattedMessage } from "react-intl";
 import { Box, Flex, Grid, Heading, jsx } from "theme-ui";
 import useOnClickOutside from "use-onclickoutside";
 
-import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 
 import { useLoginState } from "~/components/profile/hooks";
@@ -20,12 +19,8 @@ import { ItalianIcon } from "../icons/italian";
 import { Link } from "../link";
 import { Logo } from "../logo";
 import { SocialLinks } from "../social-links";
+import { ProfileLink } from "./profile-link";
 import { SnakeBurger } from "./snake-burger";
-
-const ProfileLink = dynamic(
-  () => import("./profile-link").then((mod) => mod.ProfileLink),
-  { ssr: false },
-);
 
 const LanguagePicker = ({ language, ...props }: { language: string }) => {
   const { route, query } = useRouter();

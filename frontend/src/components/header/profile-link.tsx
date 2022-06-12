@@ -1,6 +1,7 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
+import { useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx } from "theme-ui";
 
@@ -10,15 +11,22 @@ import { Link } from "../link";
 
 export const ProfileLink = () => {
   const [loggedIn] = useLoginState();
+  const [firstRender, setFirstRender] = useState(false);
+
+  useEffect(() => {
+    if (firstRender) {
+      setFirstRender(false);
+    }
+  }, []);
 
   return (
     <Link
-      path={loggedIn ? "/profile" : "/login"}
+      path={!firstRender && loggedIn ? "/profile" : "/login"}
       variant="arrow-button"
       sx={{ mr: 4, display: ["none", "block"] }}
     >
-      {loggedIn && <FormattedMessage id="header.profile" />}
-      {!loggedIn && <FormattedMessage id="header.login" />}
+      {!firstRender && loggedIn && <FormattedMessage id="header.profile" />}
+      {firstRender || (!loggedIn && <FormattedMessage id="header.login" />)}
     </Link>
   );
 };
