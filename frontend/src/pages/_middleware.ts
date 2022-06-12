@@ -18,9 +18,10 @@ export function middleware(req: NextRequest, _ev: NextFetchEvent) {
     return undefined;
   }
 
-  return NextResponse.redirect(
-    `/${locale}${req.nextUrl.pathname.replace("/default", "")}`,
-  );
+  const url = req.nextUrl.clone();
+  url.pathname = `${locale}${url.pathname}`;
+
+  return NextResponse.redirect(url);
 }
 
 const getLocale = (cookie: string): string => {
