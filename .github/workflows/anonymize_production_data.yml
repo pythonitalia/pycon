@@ -41,11 +41,11 @@ jobs:
       matrix:
         service:
           - db: users
-            service: users
+            name: users
           - db: association
-            service: association
+            name: association
           - db: productionbackend
-            service: pycon
+            name: pycon
     steps:
       - uses: actions/checkout@v3
       - name: Configure AWS credentials
@@ -103,7 +103,7 @@ jobs:
 
       - name: Wait for tunnel
         run: while ! pg_isready -h 127.0.0.1 -p 7777; do sleep 1; done;
-      - name: Anonymize ${{ matrix.service }} Database
+      - name: Anonymize ${{ matrix.service.name }} Database
         run: |
           docker run \
             --rm \
@@ -114,11 +114,11 @@ jobs:
             -e DATABASE_URL \
             -e AWS_ACCESS_KEY_ID \
             -e AWS_SECRET_ACCESS_KEY \
-            -v "$(pwd)/replibyte/${{ matrix.service }}-config.yaml:/config.yaml:ro" \
+            -v "$(pwd)/replibyte/${{ matrix.service.name }}-config.yaml:/config.yaml:ro" \
             -v "$(pwd)/replibyte/transformers/:/transformers:ro" \
             ghcr.io/qovery/replibyte \
-            --config config.yaml dump create --name ${{ matrix.service }}-latest
+            --config config.yaml dump create --name ${{ matrix.service.name }}-latest
         env:
-          DATABASE_URL: postgres://${{ steps.db-credentials.outputs.username }}:${{ steps.db-credentials.outputs.password }}@127.0.0.1:7777/${{ matrix.db }}
+          DATABASE_URL: postgres://${{ steps.db-credentials.outputs.username }}:${{ steps.db-credentials.outputs.password }}@127.0.0.1:7777/${{ matrix.service.db }}
           BUCKET_NAME: ${{ secrets.REPLIBYTE_BUCKET_NAME }}
           ENCRYPTION_KEY: ${{ secrets.REPLIBYTE_ENCRYPTION_KEY }}
