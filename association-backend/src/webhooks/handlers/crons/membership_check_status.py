@@ -45,14 +45,29 @@ async def update_expired_subscriptions():
     repository = AssociationMembershipRepository()
 
     now = datetime.now(timezone.utc)
+
     # Ideally in the future we should use the psql NOW() function
-    qs = Subscription.objects.filter(status=SubscriptionStatus.ACTIVE,).exclude(
+    subscriptions_with_payment_qs = Subscription.objects.filter(
         payments__status=PaymentStatus.PAID,
         payments__period_start__lte=now,
         payments__period_end__gte=now,
     )
-    subscriptions_to_cancel = await qs.all()
-    subscriptions_to_cancel_count = await qs.count()
+    subscriptions_with_payment = set(
+        await subscriptions_with_payment_qs.values_list("id", flatten=True)
+    )
+
+    qs = Subscription.objects.filter(status=SubscriptionStatus.ACTIVE).exclude(
+        payments__status=PaymentStatus.PAID,
+        payments__period_start__lte=now,
+        payments__period_end__gte=now,
+    )
+
+    subscriptions_to_cancel = [
+        subscription
+        for subscription in await qs.all()
+        if subscription.id not in subscriptions_with_payment
+    ]
+    subscriptions_to_cancel_count = len(subscriptions_to_cancel)
 
     logger.info(
         "Found subscriptions_to_cancel_count=%s subscriptions to cancel",
