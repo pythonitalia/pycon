@@ -1,0 +1,36 @@
+encryption_key: $ENCRYPTION_KEY
+
+source:
+  connection_uri: $DATABASE_URL
+  transformers:
+    - database: public
+      table: api_apitoken
+      columns:
+        - name: token
+          transformer_name: custom-wasm
+          transformer_options:
+            path: "transformers/fixedtext-transformer/target/wasm32-wasi/release/fixedtext-transformer.wasm"
+    - database: public
+      table: submissions_submission
+      columns:
+        - name: title
+          transformer_name: random
+        - name: notes
+          transformer_name: random
+        - name: elevator_pitch
+          transformer_name: random
+        - name: abstract
+          transformer_name: random
+        - name: previous_talk_video
+          transformer_name: random
+
+datastore:
+  aws:
+    bucket: $BUCKET_NAME
+    region: eu-central-1
+    credentials:
+      access_key_id: $AWS_ACCESS_KEY_ID
+      secret_access_key: $AWS_SECRET_ACCESS_KEY
+
+destination:
+  connection_uri: $PYCON_BACKEND_DB_URL

@@ -12,4 +12,4 @@ datastore:
       secret_access_key: $AWS_SECRET_ACCESS_KEY
 
 destination:
-  connection_uri: $PYCON_BACKEND_DB_URL
+  connection_uri: $ASSOCIATION_BACKEND_DB_URL
