@@ -106,11 +106,7 @@ export const Submission = ({
 };
 
 export const getItemUrl = (item: Item) => {
-  if (
-    item.type === "submission" ||
-    item.type === "training" ||
-    item.type === "talk"
-  ) {
+  if (item.type === "training" || item.type === "talk") {
     return `/talk/[slug]`;
   }
 
@@ -280,8 +276,7 @@ export const ScheduleEntry: React.SFC<{
             )}
           </Box>
 
-          {(item.type === "submission" ||
-            item.type === "training" ||
+          {(item.type === "training" ||
             item.type === "keynote" ||
             item.type === "talk") && (
             <LanguageIcon
