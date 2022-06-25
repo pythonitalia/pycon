@@ -13,8 +13,13 @@ const server = new ApolloServer({
   introspection: true,
   plugins: [SentryPlugin(true)],
   context: async ({ event, express }) => {
+    const baseContext = await createContext(
+      event.headers,
+      event.headers["Cookie"],
+    );
+    console.log("create context, express:", express);
     return {
-      ...createContext(event.headers, event.headers["Cookie"]),
+      ...baseContext,
       res: express.res,
     };
   },
