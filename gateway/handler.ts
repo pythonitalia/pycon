@@ -4,7 +4,6 @@ import "./init";
 
 import { createContext } from "./context";
 import { createGateway } from "./gateway";
-import { apolloHeadersPlugin } from "./plugins/apollo-headers";
 import { initSentry, SentryPlugin } from "./plugins/sentry";
 
 initSentry(true);
@@ -12,7 +11,7 @@ initSentry(true);
 const server = new ApolloServer({
   gateway: createGateway(),
   introspection: true,
-  plugins: [SentryPlugin(true), apolloHeadersPlugin(true)],
+  plugins: [SentryPlugin(true)],
   context: async ({ event }) => {
     return createContext(event.headers, event.headers["Cookie"]);
   },
