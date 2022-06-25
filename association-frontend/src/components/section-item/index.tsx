@@ -29,13 +29,13 @@ type SectionItemProps = {
   overlayTheme?: OverlayTheme;
 };
 
-const BackgroundWrapper: React.FC<BackgroundWrapperProps> = ({
+const BackgroundWrapper = ({
   backgroundImageClass,
   overlay,
   overlayTheme,
   children,
   id,
-}) => {
+}: React.PropsWithChildren<BackgroundWrapperProps>) => {
   return (
     <div
       className={classnames(
@@ -61,13 +61,13 @@ const BackgroundWrapper: React.FC<BackgroundWrapperProps> = ({
   );
 };
 
-const InnerContent: React.FC<InnerContentProps> = ({
+const InnerContent = ({
   title,
   subTitle,
   textTheme,
   children,
   id,
-}) => {
+}: React.PropsWithChildren<InnerContentProps>) => {
   return (
     <div id={id} className={classnames("bg-transparent")}>
       <div className="max-w-full mx-auto md:max-w-xl">
@@ -97,14 +97,14 @@ const InnerContent: React.FC<InnerContentProps> = ({
   );
 };
 
-export const SectionItem: React.FC<SectionItemProps> = ({
+export const SectionItem = ({
   withBackground = false,
   backgroundImageClass = "bg-pycon-group",
   overlay = true,
   overlayTheme = "black",
   id,
   ...props
-}) => {
+}: React.PropsWithChildren<SectionItemProps>) => {
   if (withBackground) {
     return (
       <BackgroundWrapper

@@ -7,13 +7,13 @@ type ModalProps = {
   title: string;
 };
 
-export const Modal: React.FC<ModalProps> = ({
+export const Modal = ({
   showModal = true,
   closeModalHandler,
   children,
   className,
   title,
-}) => (
+}: React.PropsWithChildren<ModalProps>) => (
   <div
     className={classnames(
       "fixed z-20 inset-0 overflow-y-auto",
