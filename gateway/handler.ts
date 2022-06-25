@@ -12,8 +12,11 @@ const server = new ApolloServer({
   gateway: createGateway(),
   introspection: true,
   plugins: [SentryPlugin(true)],
-  context: async ({ event }) => {
-    return createContext(event.headers, event.headers["Cookie"]);
+  context: async ({ event, express }) => {
+    return {
+      ...createContext(event.headers, event.headers["Cookie"]),
+      res: express.res,
+    };
   },
 });
 
