@@ -12,10 +12,15 @@ export type ApolloContext = {
   res?: any;
 };
 
-export const createContext = async (
-  allHeaders: any,
-  cookiesHeader?: string,
-) => {
+export const createContext = async ({
+  allHeaders,
+  cookiesHeader,
+  res,
+}: {
+  allHeaders: any;
+  cookiesHeader?: string;
+  res: any;
+}) => {
   let cookies = null;
   if (cookiesHeader) {
     cookies = cookie.parse(cookiesHeader);
@@ -28,6 +33,7 @@ export const createContext = async (
     setCookies: [],
     setHeaders: [],
     allHeaders,
+    res,
   };
 
   if (cookies) {

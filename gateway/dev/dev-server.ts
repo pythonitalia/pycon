@@ -28,11 +28,11 @@ const server = new ApolloServer({
     credentials: true,
   },
   context: async ({ req, res }) => {
-    const context = await createContext(req.headers, req.headers.cookie);
-    return {
-      ...context,
+    return createContext({
+      allHeaders: req.headers,
+      cookiesHeader: req.headers.cookie,
       res,
-    };
+    });
   },
 });
 
