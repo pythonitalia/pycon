@@ -9,15 +9,12 @@ import { Hero } from "~/components/hero";
 import { UserProvider } from "~/components/user-provider";
 import { StripeProvider } from "~/hooks/use-stripe";
 
-import "tailwindcss/tailwind.css";
+import "../styles.css";
 
 const client = createClient({
   url: "/graphql",
-  fetchOptions: () => {
-    const options: { [key: string]: string | { cookie: string } } = {
-      credentials: "include",
-    };
-    return options;
+  fetchOptions: {
+    credentials: "include",
   },
 });
 
