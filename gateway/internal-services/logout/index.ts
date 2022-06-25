@@ -12,7 +12,6 @@ const resolvers = {
   Mutation: {
     async logout(_: any, __: any, context: any) {
       const action = new ClearAuthAction();
-      console.log("logout called with context:", context);
       await action.apply(context);
       return "ok";
     },
