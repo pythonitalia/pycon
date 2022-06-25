@@ -2,7 +2,7 @@ FROM node:14.15.4
 
 WORKDIR /home/node/app
 
-RUN wget -qO- https://get.pnpm.io/install.sh | sh -
+RUN wget -qO- https://get.pnpm.io/install.sh | SHELL=`which bash` bash -
 
 COPY package.json pnpm-lock.yaml ./
 RUN pnpm install

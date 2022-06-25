@@ -1,6 +1,6 @@
 FROM amazon/aws-lambda-nodejs:14 as build
 
-RUN wget -qO- https://get.pnpm.io/install.sh | sh -
+RUN wget -qO- https://get.pnpm.io/install.sh | SHELL=`which bash` bash -
 
 WORKDIR /app
 
