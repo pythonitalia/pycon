@@ -114,7 +114,6 @@ export const SentryPlugin = (isServerless: boolean): ApolloServerPlugin => {
                 scope.addBreadcrumb({
                   category: "query-path",
                   message: err.path.join(" > "),
-                  level: Sentry.Severity.Debug,
                 });
               }
 
