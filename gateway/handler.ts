@@ -1,4 +1,4 @@
-import { ApolloServer } from "@pythonit/apollo-server-lambda-with-cors-regex";
+import { ApolloServer } from "apollo-server-lambda";
 import * as ServerlessSentry from "@sentry/serverless";
 
 import "./init";
@@ -12,7 +12,6 @@ initSentry(true);
 
 const server = new ApolloServer({
   gateway: createGateway(),
-  subscriptions: false,
   introspection: true,
   plugins: [
     SentryPlugin(true),
@@ -63,18 +62,18 @@ exports.graphqlHandler = ServerlessSentry.AWSLambda.wrapHandler(
   async (event: any, context: any) => {
     if (!serverHandler) {
       serverHandler = server.createHandler({
-        cors: {
-          credentials: true,
-          methods: ["GET", "POST", "OPTIONS", "HEAD"],
-          origin: [
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            /python-italia\.vercel\.app$/,
-            "http://localhost:3000",
-            "https://associazione.python.it",
-            "https://pycon.it",
-            "https://studio.apollographql.com",
-          ],
+        expressGetMiddlewareOptions: {
+          cors: {
+            credentials: true,
+            methods: ["GET", "POST", "OPTIONS", "HEAD"],
+            origin: [
+              /python-italia\.vercel\.app$/,
+              "http://localhost:3000",
+              "https://associazione.python.it",
+              "https://pycon.it",
+              "https://studio.apollographql.com",
+            ],
+          },
         },
       });
     }

@@ -6,7 +6,6 @@
   "dependencies": {
     "@apollo/federation": "^0.36.1",
     "@apollo/gateway": "2.0.5",
-    "@pythonit/apollo-server-lambda-with-cors-regex": "^2.23.7",
     "@sentry/node": "^6.4.1",
     "@sentry/serverless": "^6.4.1",
     "@sentry/tracing": "^6.4.1",

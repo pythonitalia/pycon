@@ -40,7 +40,6 @@ export const apolloHeadersPlugin = (applyCookies = false) => {
               JSON.stringify(serializedCookieArray),
             );
           }
-          return requestContext;
         },
       };
     },

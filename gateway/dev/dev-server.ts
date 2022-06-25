@@ -13,7 +13,6 @@ initSentry(false);
 
 const server = new ApolloServer({
   gateway: createGateway(),
-  subscriptions: false,
   plugins: [
     SentryPlugin(false),
     apolloHeadersPlugin(false),
