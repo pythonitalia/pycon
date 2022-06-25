@@ -1,18 +1,18 @@
 FROM amazon/aws-lambda-nodejs:14 as build
 
-RUN npm install -g yarn
+RUN wget -qO- https://get.pnpm.io/install.sh | sh -
 
 WORKDIR /app
 
 ENV NODE_ENV=production
 
-COPY package.json yarn.lock ./
+COPY package.json pnpm-lock.yaml ./
 
-RUN yarn install --prod
+RUN pnpm install
 
 COPY . .
 
-RUN yarn tsc
+RUN pnpm run tsc
 
 FROM amazon/aws-lambda-nodejs:14
 
