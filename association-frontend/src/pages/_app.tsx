@@ -1,14 +1,7 @@
 /* eslint-disable @next/next/no-page-custom-font */
 
 /* eslint-disable @next/next/google-font-display */
-import { authExchange } from "@urql/exchange-auth";
-import {
-  Provider as UrqlProvider,
-  createClient,
-  cacheExchange,
-  dedupExchange,
-  fetchExchange,
-} from "urql";
+import { Provider as UrqlProvider, createClient } from "urql";
 
 import Head from "next/head";
 
@@ -18,39 +11,8 @@ import { StripeProvider } from "~/hooks/use-stripe";
 
 import "tailwindcss/tailwind.css";
 
-type AuthState = {
-  token?: string;
-};
-
 const client = createClient({
   url: "/graphql",
-  exchanges: [
-    dedupExchange,
-    cacheExchange,
-    authExchange({
-      didAuthError({ error }) {
-        return error.graphQLErrors.some(
-          (e) => e.message === "Not authenticated",
-        );
-      },
-      async getAuth({ authState }: { authState?: AuthState }) {
-        if (!authState) {
-          return null;
-        }
-
-        return null;
-      },
-      addAuthToOperation({
-        operation,
-      }: {
-        authState?: AuthState;
-        operation: any;
-      }) {
-        return operation;
-      },
-    }),
-    fetchExchange,
-  ],
   fetchOptions: () => {
     const options: { [key: string]: string | { cookie: string } } = {
       credentials: "include",

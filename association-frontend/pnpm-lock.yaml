@@ -17,14 +17,12 @@ specifiers:
   '@types/node': ^18.0.0
   '@types/react': ^18.0.14
   '@types/react-dom': ^18.0.5
-  '@urql/exchange-auth': ^0.1.7
   autoprefixer: ^10.4.7
   classnames: ^2.3.1
   common-tags: ^1.8.2
   graphql: ^16.5.0
   graphql-tag: ^2.12.6
   next: ^12.1.6
-  next-urql: ^3.3.3
   postcss: ^8.4.14
   prettier: ^2.7.1
   react: 18.2.0
@@ -37,13 +35,11 @@ specifiers:
 
 dependencies:
   '@stripe/stripe-js': 1.32.0
-  '@urql/exchange-auth': 0.1.7_graphql@16.5.0
   autoprefixer: 10.4.7_postcss@8.4.14
   classnames: 2.3.1
   graphql: 16.5.0
   graphql-tag: 2.12.6_graphql@16.5.0
   next: 12.1.6_biqbaboplfbrettd7655fr4n2y
-  next-urql: 3.3.3_react@18.2.0+urql@2.2.2
   postcss: 8.4.14
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
@@ -1833,16 +1829,6 @@ packages:
       graphql: ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
     dependencies:
       '@graphql-typed-document-node/core': 3.1.1_graphql@16.5.0
-      graphql: 16.5.0
-      wonka: 4.0.15
-    dev: false
-
-  /@urql/exchange-auth/0.1.7_graphql@16.5.0:
-    resolution: {integrity: sha512-4Bmmi6YMW1YjZnTdr0Gfp9IoIY1fpNGq/fo1XHWEFEYe+IEOEDQhKT1CyhztyvvKpFw2C46D32MJRWJHQUPo/g==}
-    peerDependencies:
-      graphql: ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
-    dependencies:
-      '@urql/core': 2.5.0_graphql@16.5.0
       graphql: 16.5.0
       wonka: 4.0.15
     dev: false
@@ -4366,17 +4352,6 @@ packages:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
     dev: true
 
-  /next-urql/3.3.3_react@18.2.0+urql@2.2.2:
-    resolution: {integrity: sha512-mKdpbvxW7FifHjupRKNjE1YuZxhLF+GlN/y1sARcUSEdrCv10dRkFGQl03p4UpWtdggCyZ5lOVBBaQGW7UNfiQ==}
-    peerDependencies:
-      react: '>=16.8.0'
-      urql: ^2.0.0
-    dependencies:
-      react: 18.2.0
-      react-ssr-prepass: 1.5.0_react@18.2.0
-      urql: 2.2.2_aez2jvt6lsvokp3l4ousdbdxf4
-    dev: false
-
   /next/12.1.6_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-cebwKxL3/DhNKfg9tPZDQmbRKjueqykHHbgaoG4VBRH3AHQJ2HO0dbKFiS1hPhe1/qgc2d/hFeadsbPicmLD+A==}
     engines: {node: '>=12.22.0'}
@@ -4949,14 +4924,6 @@ packages:
 
   /react-is/18.2.0:
     resolution: {integrity: sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==}
-
-  /react-ssr-prepass/1.5.0_react@18.2.0:
-    resolution: {integrity: sha512-yFNHrlVEReVYKsLI5lF05tZoHveA5pGzjFbFJY/3pOqqjGOmMmqx83N4hIjN2n6E1AOa+eQEUxs3CgRnPmT0RQ==}
-    peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0
-    dependencies:
-      react: 18.2.0
-    dev: false
 
   /react-use-form-state/0.13.2_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-bP2H5V6bBFZCJIrbpUcahvJX/f5rGueOvIjg818sq3wg0aX6BFz70u81yhaSg2aCZq0aF3R8eMc2MRWIjr5yhw==}
