@@ -94,7 +94,7 @@ export const SentryPlugin = (isServerless: boolean): ApolloServerPlugin => {
   const Sentry = isServerless ? ServerlessSentry : NodeSentry;
 
   return {
-    requestDidStart() {
+    async requestDidStart() {
       return {
         async didEncounterErrors(
           context: GraphQLRequestContextDidEncounterErrors<ApolloContext>,

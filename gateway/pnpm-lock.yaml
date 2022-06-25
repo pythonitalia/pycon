@@ -29,7 +29,7 @@ specifiers:
   prettier: ^2.4.1
   ts-jest: ^26.5.4
   ts-node: ^9.1.1
-  typescript: ^4.2.2
+  typescript: ^4.7.4
 
 dependencies:
   '@apollo/federation': 0.36.1_graphql@15.8.0
