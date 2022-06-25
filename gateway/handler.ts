@@ -74,8 +74,9 @@ exports.graphqlHandler = ServerlessSentry.AWSLambda.wrapHandler(
     try {
       const response = await new Promise((resolve, reject) =>
         serverHandler!(event, context, (err, response) => {
+          console.log("callback called with:", err, response);
           if (err) {
-            reject();
+            reject(err);
             return;
           }
           resolve(response);
