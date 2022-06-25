@@ -53,7 +53,10 @@ let serverHandler: ReturnType<ApolloServer["createHandler"]> | null = null;
 
 exports.graphqlHandler = ServerlessSentry.AWSLambda.wrapHandler(
   async (event: any, context: any) => {
+    console.log("graphqlHandler", event, context);
+
     if (!serverHandler) {
+      console.log("creating handler");
       serverHandler = server.createHandler({
         expressGetMiddlewareOptions: {
           cors: {
@@ -70,15 +73,21 @@ exports.graphqlHandler = ServerlessSentry.AWSLambda.wrapHandler(
         },
       });
     }
+    console.log("processing request");
 
     try {
+      console.log("pre-calling handler in promise");
       const response = await new Promise((resolve, reject) =>
         serverHandler!(event, context, (err, response) => {
           console.log("callback called with:", err, response);
           if (err) {
+            console.log("rejecting promise");
+            console.log("reject:", err);
             reject(err);
             return;
           }
+          console.log("resolving promise with success");
+          console.log("response value is", response);
           resolve(response);
         }),
       );
