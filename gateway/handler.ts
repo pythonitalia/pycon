@@ -1,6 +1,6 @@
 import { ApolloServer } from "apollo-server-lambda";
 import * as ServerlessSentry from "@sentry/serverless";
-
+import { express } from "express";
 import "./init";
 
 import { createContext } from "./context";
@@ -51,12 +51,34 @@ const handleManyCookies = (headers: any = {}) => {
   return { headers };
 };
 
+const manyCookiesMiddleware = (
+  _: any,
+  res: { [x: string]: any; headers: any },
+  next: () => void,
+) => {
+  const { headers, ...responseData } = res;
+  const newHeaders = handleManyCookies(headers);
+
+  res.headers = {
+    ...responseData,
+    ...newHeaders,
+  };
+
+  next();
+};
+
 let serverHandler: ReturnType<ApolloServer["createHandler"]> | null = null;
 
 exports.graphqlHandler = ServerlessSentry.AWSLambda.wrapHandler(
   async (event: any, context: any) => {
     if (!serverHandler) {
       serverHandler = server.createHandler({
+        expressAppFromMiddleware(middleware) {
+          const app = express();
+          app.use(manyCookiesMiddleware);
+          app.use(middleware);
+          return app;
+        },
         expressGetMiddlewareOptions: {
           cors: {
             credentials: true,
@@ -74,24 +96,8 @@ exports.graphqlHandler = ServerlessSentry.AWSLambda.wrapHandler(
     }
 
     try {
-      const response: any = await new Promise((resolve, reject) => {
-        serverHandler!(event, context, (err: any, response: any = {}) => {
-          if (err) {
-            reject(err);
-            return;
-          }
-
-          resolve(response);
-        });
-      });
-
-      const { headers, ...responseData } = response;
-      const newHeaders = handleManyCookies(headers);
-
-      return {
-        ...responseData,
-        ...newHeaders,
-      };
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      return serverHandler(event, context, () => {});
     } catch (e) {
       console.error("server handler error:", e);
     }
