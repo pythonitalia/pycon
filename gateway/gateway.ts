@@ -52,14 +52,11 @@ class ServiceRemoteGraphQLDataSource extends RemoteGraphQLDataSource {
     return response;
   }
 
-  async process({
-    request,
-    context,
-  }: Parameters<NonNullable<RemoteGraphQLDataSource["process"]>>[0]) {
-    const response = await super.process({
-      request,
-      context,
-    });
+  async process(
+    options: Parameters<NonNullable<RemoteGraphQLDataSource["process"]>>[0],
+  ) {
+    const { context } = options;
+    const response = await super.process(options);
 
     if (context.pastaportoAction) {
       await context.pastaportoAction.apply(context);

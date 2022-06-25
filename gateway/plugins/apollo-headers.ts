@@ -10,9 +10,9 @@ export type RequestContext = {
 
 export const apolloHeadersPlugin = (applyCookies = false) => {
   return {
-    requestDidStart() {
+    async requestDidStart() {
       return {
-        willSendResponse(requestContext: RequestContext) {
+        async willSendResponse(requestContext: RequestContext) {
           const { setHeaders = [], setCookies = [] } = requestContext.context;
 
           // inform user about wrong usage
@@ -37,10 +37,9 @@ export const apolloHeadersPlugin = (applyCookies = false) => {
 
             requestContext.response.http.headers.set(
               "Set-Cookie",
-              JSON.stringify(serializedCookieArray),
+              serializedCookieArray,
             );
           }
-          return requestContext;
         },
       };
     },

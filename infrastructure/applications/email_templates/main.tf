@@ -1,6 +1,6 @@
 locals {
   email_templates_path = abspath("${path.root}/../../email-templates")
-  build_output_path    = "${local.email_templates_path}/build_production/"
+  build_output_path    = "${local.email_templates_path}/build_production"
 }
 
 resource "aws_ses_template" "template" {
