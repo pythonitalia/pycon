@@ -43,6 +43,9 @@
     "nodemon": "2.0.18",
     "prettier": "^2.7.1",
     "ts-jest": "^28.0.5",
-    "ts-node": "10.8.1"
+    "ts-node": "9.1.1"
+  },
+  "resolutions": {
+    "typescript": "4.6.3"
   }
 }
