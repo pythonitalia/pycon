@@ -6,12 +6,12 @@
     "watch": "maizzle serve"
   },
   "dependencies": {
-    "@maizzle/framework": "^3.0.0",
-    "autoprefixer": "^10.0.2",
-    "glob": "^7.1.6",
-    "postcss": "^8.1.0"
+    "@maizzle/framework": "^4.0.2",
+    "autoprefixer": "^10.4.7",
+    "glob": "^8.0.3",
+    "postcss": "^8.4.14"
   },
   "devDependencies": {
-    "@maizzle/cli": "^1.4.0"
+    "@maizzle/cli": "^1.5.1"
   }
 }
