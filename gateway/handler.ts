@@ -1,6 +1,6 @@
 import { ApolloServer } from "apollo-server-lambda";
 import * as ServerlessSentry from "@sentry/serverless";
-import { express } from "express";
+import express from "express";
 import "./init";
 
 import { createContext } from "./context";
@@ -51,11 +51,7 @@ const handleManyCookies = (headers: any = {}) => {
   return { headers };
 };
 
-const manyCookiesMiddleware = (
-  _: any,
-  res: { [x: string]: any; headers: any },
-  next: () => void,
-) => {
+const manyCookiesMiddleware = (_: any, res: any, next: () => void) => {
   const { headers, ...responseData } = res;
   const newHeaders = handleManyCookies(headers);
 

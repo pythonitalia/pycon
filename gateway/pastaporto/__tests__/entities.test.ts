@@ -27,9 +27,7 @@ describe("Unauthenticated pastaporto", () => {
   });
 
   test("Sign unauthenticated pastaporto", () => {
-    jest
-      .useFakeTimers("modern")
-      .setSystemTime(new Date("2021-03-20 14:35:31Z").getTime());
+    jest.setSystemTime(new Date("2021-03-20 14:35:31Z").getTime());
 
     const unauthenticated = Pastaporto.unauthenticated();
     const expectedToken = jwt.sign(
@@ -122,9 +120,7 @@ describe("Pastaporto", () => {
   });
 
   test("Sign authenticated pastaporto", () => {
-    jest
-      .useFakeTimers("modern")
-      .setSystemTime(new Date("2021-03-20 14:35:31Z").getTime());
+    jest.setSystemTime(new Date("2021-03-20 14:35:31Z").getTime());
 
     const pastaporto = new Pastaporto(new UserInfo(5, "test@email.it", false), [
       Credential.AUTHENTICATED,
