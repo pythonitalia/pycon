@@ -19,7 +19,9 @@ const server = new ApolloServer({
   },
 });
 
-const handleManyCookies = (headers: any = {}) => {
+const manyCookiesMiddleware = (_req: any, res: any, next: () => void) => {
+  const { headers } = res;
+
   // In Apollo server we can only set 1 set-cookie and nothing else
   // so what we do is that we set in Set-Cookie a serialized JSON Array
   // with all the cookies we want to set
@@ -32,11 +34,9 @@ const handleManyCookies = (headers: any = {}) => {
       headers["set-cookie"] = null;
       const value = JSON.parse(setCookie);
       if (Array.isArray(value)) {
-        return {
-          headers,
-          multiValueHeaders: {
-            "Set-Cookie": value,
-          },
+        res.headers = headers;
+        res.multiValueHeaders = {
+          "Set-Cookie": value,
         };
       }
     } catch (err) {
@@ -44,21 +44,8 @@ const handleManyCookies = (headers: any = {}) => {
         'updating cookies to "multiValueHeaders" raised an error',
         err,
       );
-      return { headers };
     }
   }
-
-  return { headers };
-};
-
-const manyCookiesMiddleware = (_: any, res: any, next: () => void) => {
-  const { headers, ...responseData } = res;
-  const newHeaders = handleManyCookies(headers);
-
-  res.headers = {
-    ...responseData,
-    ...newHeaders,
-  };
 
   next();
 };
