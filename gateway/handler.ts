@@ -56,12 +56,6 @@ exports.graphqlHandler = ServerlessSentry.AWSLambda.wrapHandler(
   async (event: any, context: any) => {
     if (!serverHandler) {
       serverHandler = server.createHandler({
-        expressAppFromMiddleware(middleware) {
-          const app = express();
-          app.use(manyCookiesMiddleware);
-          app.use(middleware);
-          return app;
-        },
         expressGetMiddlewareOptions: {
           cors: {
             credentials: true,
@@ -79,8 +73,17 @@ exports.graphqlHandler = ServerlessSentry.AWSLambda.wrapHandler(
     }
 
     try {
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      return serverHandler(event, context, () => {});
+      const response = new Promise((resolve, reject) =>
+        serverHandler!(event, context, (err, response) => {
+          if (err) {
+            reject();
+            return;
+          }
+          resolve(response);
+        }),
+      );
+      console.log("response", response);
+      return response;
     } catch (e) {
       console.error("server handler error:", e);
     }
