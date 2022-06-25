@@ -24,8 +24,6 @@
   },
   "scripts": {
     "dev": "NODE_ENV=development nodemon",
-    "test": "",
-    "test:coverage": "jest --collect-coverage",
     "tsc": "tsc",
     "lint": "eslint . --ext .js,.ts",
     "lint:ts": "tsc --noemit",

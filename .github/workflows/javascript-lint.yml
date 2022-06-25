@@ -13,8 +13,6 @@ jobs:
       with:
         token: ${{ github.token }}
         filters: |
-          gateway:
-            - "gateway/**"
           frontend:
             - "frontend/**"
           association-frontend:
