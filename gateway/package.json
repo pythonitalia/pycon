@@ -24,7 +24,7 @@
   },
   "scripts": {
     "dev": "NODE_ENV=development nodemon",
-    "test": "jest",
+    "test": "",
     "test:coverage": "jest --collect-coverage",
     "tsc": "tsc",
     "lint": "eslint . --ext .js,.ts",
