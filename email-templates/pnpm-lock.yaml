@@ -6,12 +6,18 @@ specifiers:
   autoprefixer: ^10.4.7
   glob: ^8.0.3
   postcss: ^8.4.14
+  tailwindcss-box-shadow: ^1.0.0
+  tailwindcss-email-variants: ^2.0.0
+  tailwindcss-mso: ^1.2.0
 
 dependencies:
   '@maizzle/framework': 4.0.2_glob@8.0.3
   autoprefixer: 10.4.7_postcss@8.4.14
   glob: 8.0.3
   postcss: 8.4.14
+  tailwindcss-box-shadow: 1.0.0
+  tailwindcss-email-variants: 2.0.0
+  tailwindcss-mso: 1.2.0
 
 devDependencies:
   '@maizzle/cli': 1.5.1
@@ -2347,6 +2353,14 @@ packages:
     resolution: {integrity: sha512-H5ZhCF25riFd9uB5UCkVKo61m3S/xZk1x4wA6yp/L3RFP6Z/eHH1ymQcGLo7J3GMPfm0V/7m1tryHuGVxpqEBQ==}
     dev: false
 
+  /lodash.forown/4.4.0:
+    resolution: {integrity: sha512-xcpca6BCshoe5SFSrQOoV8FBEbNzcBa6QQYmtv48eEFNzdwQLkHkcWSaBlecHhyHb1BUk1xqFdXoiSLJkt/w5w==}
+    dev: false
+
+  /lodash.get/4.4.2:
+    resolution: {integrity: sha512-z+Uw/vLuy6gQe8cfaFWD7p0wVv8fJl3mbzXh33RS+0oW2wvUqiRXiQ69gLWSLpgB5/6sU+r6BlQR0MBILadqTQ==}
+    dev: false
+
   /lodash.intersection/4.4.0:
     resolution: {integrity: sha512-N+L0cCfnqMv6mxXtSPeKt+IavbOBBSiAEkKyLasZ8BVcP9YXQgxLO12oPR8OyURwKV8l5vJKiE1M8aS70heuMg==}
     dev: false
@@ -2356,6 +2370,10 @@ packages:
 
   /lodash.isfinite/3.3.2:
     resolution: {integrity: sha512-7FGG40uhC8Mm633uKW1r58aElFlBlxCrg9JfSi3P6aYiWmfiWF0PgMd86ZUsxE5GwWPdHoS2+48bwTh2VPkIQA==}
+    dev: false
+
+  /lodash.isobject/3.0.2:
+    resolution: {integrity: sha512-3/Qptq2vr7WeJbB4KHUSKlq8Pl7ASXi3UG6CMbBm8WRtXi8+GHm7mKaU3urfpSEzWe2wCIChs6/sdocUsTKJiA==}
     dev: false
 
   /lodash.isplainobject/4.0.6:
@@ -4113,6 +4131,26 @@ packages:
   /symbol-observable/3.0.0:
     resolution: {integrity: sha512-6tDOXSHiVjuCaasQSWTmHUWn4PuG7qa3+1WT031yTc/swT7+rLiw3GOrFxaH1E3lLP09dH3bVuVDf2gK5rxG3Q==}
     engines: {node: '>=0.10'}
+
+  /tailwindcss-box-shadow/1.0.0:
+    resolution: {integrity: sha512-H54nAGO+BIZiwvAp0LVh1tXGQ5GgaQMypAz4D7+Zkp0zLKtTNLRLocMT8bcZ3eVZ9EHKpU4i179q7O1P8gotfg==}
+    engines: {node: '>=12.13.0'}
+    dev: false
+
+  /tailwindcss-email-variants/2.0.0:
+    resolution: {integrity: sha512-oNiHQCnh2KPfShPjqJLD2PqEgSZ9J4BUJPq3nsufJraxmMq2bowI3651GQBsxh5usT9CgmUNEkDe04d80DN9gQ==}
+    peerDependencies:
+      tailwindcss: '>=3.1.0'
+    dependencies:
+      lodash.get: 4.4.2
+    dev: false
+
+  /tailwindcss-mso/1.2.0:
+    resolution: {integrity: sha512-uhC+8cMccrpjvnvllGMdgON1rwRsCmnt8/68btmOEHYexmo5RAN7I/wYZDEpPAIXV2AcNqDs11LzP+7IWslCew==}
+    dependencies:
+      lodash.forown: 4.4.0
+      lodash.isobject: 3.0.2
+    dev: false
 
   /tailwindcss/3.1.4:
     resolution: {integrity: sha512-NrxbFV4tYsga/hpWbRyUfIaBrNMXDxx5BsHgBS4v5tlyjf+sDsgBg5m9OxjrXIqAS/uR9kicxLKP+bEHI7BSeQ==}

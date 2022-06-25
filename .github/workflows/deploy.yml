@@ -102,7 +102,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Build templates
-        run: pnpm run production
+        run: pnpm run build
       - uses: actions/upload-artifact@v2
         with:
           name: built-email-templates
