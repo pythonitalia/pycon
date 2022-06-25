@@ -38,15 +38,11 @@ describe("Pastaporto creation flow", () => {
       setCookies: [],
     };
 
-    jest
-      .useFakeTimers("modern")
-      .setSystemTime(new Date("2021-03-20 14:35:31Z").getTime());
+    jest.setSystemTime(new Date("2021-03-20 14:35:31Z").getTime());
 
     const token = createIdentityToken("1", 1);
 
-    jest
-      .useFakeTimers("modern")
-      .setSystemTime(new Date("2021-03-25 14:35:31Z").getTime());
+    jest.setSystemTime(new Date("2021-03-25 14:35:31Z").getTime());
 
     await expect(createPastaporto(token, context, null)).rejects.toThrow(
       "Identity is not valid (expired token)",
@@ -67,15 +63,11 @@ describe("Pastaporto creation flow", () => {
       setCookies: [],
     };
 
-    jest
-      .useFakeTimers("modern")
-      .setSystemTime(new Date("2021-03-20 14:35:31Z").getTime());
+    jest.setSystemTime(new Date("2021-03-20 14:35:31Z").getTime());
 
     const token = createIdentityToken("1", 1);
 
-    jest
-      .useFakeTimers("modern")
-      .setSystemTime(new Date("2021-03-25 14:35:31Z").getTime());
+    jest.setSystemTime(new Date("2021-03-25 14:35:31Z").getTime());
 
     const refreshToken = createRefreshToken("1", 1);
 
@@ -99,16 +91,12 @@ describe("Pastaporto creation flow", () => {
       setCookies: [],
     };
 
-    jest
-      .useFakeTimers("modern")
-      .setSystemTime(new Date("2021-03-20 14:35:31Z").getTime());
+    jest.setSystemTime(new Date("2021-03-20 14:35:31Z").getTime());
 
     const token = createIdentityToken("1", 1);
     const refreshToken = createRefreshToken("1", 1);
 
-    jest
-      .useFakeTimers("modern")
-      .setSystemTime(new Date("2022-10-25 14:35:31Z").getTime());
+    jest.setSystemTime(new Date("2022-10-25 14:35:31Z").getTime());
 
     await expect(
       createPastaporto(token, context, refreshToken),
@@ -173,15 +161,11 @@ describe("Pastaporto creation flow", () => {
       setCookies: [],
     };
 
-    jest
-      .useFakeTimers("modern")
-      .setSystemTime(new Date("2021-03-20 14:35:31Z").getTime());
+    jest.setSystemTime(new Date("2021-03-20 14:35:31Z").getTime());
 
     const token = createIdentityToken("1", 1);
 
-    jest
-      .useFakeTimers("modern")
-      .setSystemTime(new Date("2021-03-25 14:35:31Z").getTime());
+    jest.setSystemTime(new Date("2021-03-25 14:35:31Z").getTime());
 
     const refreshToken = createRefreshToken("1", 1);
 
@@ -217,15 +201,11 @@ describe("Pastaporto creation flow", () => {
 
 describe("Can refresh token", () => {
   test("rejects expired token", () => {
-    jest
-      .useFakeTimers("modern")
-      .setSystemTime(new Date("2021-03-20 14:35:31Z").getTime());
+    jest.setSystemTime(new Date("2021-03-20 14:35:31Z").getTime());
 
     const testToken = createRefreshToken("10", 1);
 
-    jest
-      .useFakeTimers("modern")
-      .setSystemTime(new Date("2050-03-20 14:35:31Z").getTime());
+    jest.setSystemTime(new Date("2050-03-20 14:35:31Z").getTime());
 
     expect(
       canRefreshIdentity(testToken, { sub: "10", jwtAuthId: 1 }),
@@ -233,15 +213,11 @@ describe("Can refresh token", () => {
   });
 
   test("rejects token for a different user", () => {
-    jest
-      .useFakeTimers("modern")
-      .setSystemTime(new Date("2021-03-20 14:35:31Z").getTime());
+    jest.setSystemTime(new Date("2021-03-20 14:35:31Z").getTime());
 
     const testToken = createRefreshToken("10", 1);
 
-    jest
-      .useFakeTimers("modern")
-      .setSystemTime(new Date("2050-03-20 14:35:31Z").getTime());
+    jest.setSystemTime(new Date("2050-03-20 14:35:31Z").getTime());
 
     expect(
       canRefreshIdentity(testToken, { sub: "30", jwtAuthId: 1 }),
@@ -249,15 +225,11 @@ describe("Can refresh token", () => {
   });
 
   test("accepts valid token", () => {
-    jest
-      .useFakeTimers("modern")
-      .setSystemTime(new Date("2021-03-20 14:35:31Z").getTime());
+    jest.setSystemTime(new Date("2021-03-20 14:35:31Z").getTime());
 
     const testToken = createRefreshToken("10", 1);
 
-    jest
-      .useFakeTimers("modern")
-      .setSystemTime(new Date("2021-04-20 14:35:31Z").getTime());
+    jest.setSystemTime(new Date("2021-04-20 14:35:31Z").getTime());
 
     expect(
       canRefreshIdentity(testToken, { sub: "10", jwtAuthId: 1 }),

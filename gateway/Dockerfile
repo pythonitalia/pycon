@@ -1,18 +1,24 @@
 FROM amazon/aws-lambda-nodejs:14 as build
 
-RUN npm install -g yarn
+RUN npm install -g pnpm; \
+    pnpm --version; \
+    pnpm setup; \
+    mkdir -p /usr/local/share/pnpm &&\
+    export PNPM_HOME="/usr/local/share/pnpm" &&\
+    export PATH="$PNPM_HOME:$PATH"; \
+    pnpm bin -g
 
 WORKDIR /app
 
 ENV NODE_ENV=production
 
-COPY package.json yarn.lock ./
+COPY package.json pnpm-lock.yaml ./
 
-RUN yarn install --prod
+RUN pnpm install
 
 COPY . .
 
-RUN yarn tsc
+RUN pnpm run tsc
 
 FROM amazon/aws-lambda-nodejs:14
 

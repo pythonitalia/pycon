@@ -4,8 +4,6 @@ import "../init";
 
 import { createContext } from "../context";
 import { createGateway } from "../gateway";
-import { apolloHeadersPlugin } from "../plugins/apollo-headers";
-import { formatCookiesForExpressPlugin } from "../plugins/format-cookies-express";
 import { initSentry, SentryPlugin } from "../plugins/sentry";
 import { getPort } from "./utils";
 
@@ -13,12 +11,7 @@ initSentry(false);
 
 const server = new ApolloServer({
   gateway: createGateway(),
-  subscriptions: false,
-  plugins: [
-    SentryPlugin(false),
-    apolloHeadersPlugin(false),
-    formatCookiesForExpressPlugin,
-  ],
+  plugins: [SentryPlugin(false)],
   cors: {
     origin: [
       "http://localhost:3020",
@@ -29,11 +22,11 @@ const server = new ApolloServer({
     credentials: true,
   },
   context: async ({ req, res }) => {
-    const context = await createContext(req.headers, req.headers.cookie);
-    return {
-      ...context,
+    return createContext({
+      allHeaders: req.headers,
+      cookiesHeader: req.headers.cookie,
       res,
-    };
+    });
   },
 });
 

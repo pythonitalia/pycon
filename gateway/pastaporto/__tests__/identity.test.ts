@@ -28,9 +28,7 @@ LZsBajFgIDr1OMCUeeo23oNOgdkpPPfGM5VKTLciCQ==
 
 describe("Decode Identity", () => {
   test("Decode valid not expired identity", () => {
-    jest
-      .useFakeTimers("modern")
-      .setSystemTime(new Date("2021-03-20 14:00:00Z").getTime());
+    jest.setSystemTime(new Date("2021-03-20 14:00:00Z").getTime());
 
     const testToken = jwt.sign({}, "abc", {
       issuer: "gateway",
@@ -44,9 +42,7 @@ describe("Decode Identity", () => {
   });
 
   test("Allow expired tokens if specified", () => {
-    jest
-      .useFakeTimers("modern")
-      .setSystemTime(new Date("2021-03-20 14:30:00Z").getTime());
+    jest.setSystemTime(new Date("2021-03-20 14:30:00Z").getTime());
 
     const testToken = jwt.sign({}, "abc", {
       issuer: "gateway",
@@ -56,17 +52,13 @@ describe("Decode Identity", () => {
       algorithm: "HS256",
     });
 
-    jest
-      .useFakeTimers("modern")
-      .setSystemTime(new Date("2021-03-20 15:00:00Z").getTime());
+    jest.setSystemTime(new Date("2021-03-20 15:00:00Z").getTime());
 
     expect(decodeIdentity(testToken, true)).toContainEntry(["sub", "10"]);
   });
 
   test("Ignore expired tokens by default", () => {
-    jest
-      .useFakeTimers("modern")
-      .setSystemTime(new Date("2021-03-20 14:30:00Z").getTime());
+    jest.setSystemTime(new Date("2021-03-20 14:30:00Z").getTime());
 
     const testToken = jwt.sign({}, "abc", {
       issuer: "gateway",
@@ -76,9 +68,7 @@ describe("Decode Identity", () => {
       algorithm: "HS256",
     });
 
-    jest
-      .useFakeTimers("modern")
-      .setSystemTime(new Date("2021-03-20 15:30:00Z").getTime());
+    jest.setSystemTime(new Date("2021-03-20 15:30:00Z").getTime());
 
     expect(() => decodeIdentity(testToken, false)).toThrow(TokenExpiredError);
   });
@@ -86,9 +76,7 @@ describe("Decode Identity", () => {
   test.each([true, false])(
     "Reject tokens not issued by gateway and expiration %p",
     (ignoreExpiration) => {
-      jest
-        .useFakeTimers("modern")
-        .setSystemTime(new Date("2021-03-20 14:25:00Z").getTime());
+      jest.setSystemTime(new Date("2021-03-20 14:25:00Z").getTime());
 
       const testToken = jwt.sign({}, "abc", {
         issuer: "other",
@@ -111,9 +99,7 @@ describe("Decode Identity", () => {
     "Reject tokens with different audience and expiration %p",
     (ignoreExpiration) => {
       // Expires at 20 March 2021 14:45:57 GMT+00:00
-      jest
-        .useFakeTimers("modern")
-        .setSystemTime(new Date("2021-03-20 14:35:00Z").getTime());
+      jest.setSystemTime(new Date("2021-03-20 14:35:00Z").getTime());
 
       const testToken = jwt.sign({}, "abc", {
         issuer: "gateway",
@@ -135,9 +121,7 @@ describe("Decode Identity", () => {
   test.each([true, false])(
     "Ignore tokens with None algo and with expiration %p",
     (ignoreExpiration) => {
-      jest
-        .useFakeTimers("modern")
-        .setSystemTime(new Date("2021-03-20 14:40:00Z").getTime());
+      jest.setSystemTime(new Date("2021-03-20 14:40:00Z").getTime());
 
       const testToken = jwt.sign({}, "abc", {
         issuer: "gateway",
@@ -156,9 +140,7 @@ describe("Decode Identity", () => {
   test.each([true, false])(
     "Ignore tokens not using HS256 algo and with expiration %p",
     async (ignoreExpiration) => {
-      jest
-        .useFakeTimers("modern")
-        .setSystemTime(new Date("2021-03-20 14:45:00Z").getTime());
+      jest.setSystemTime(new Date("2021-03-20 14:45:00Z").getTime());
 
       const testToken = jwt.sign({}, TEST_PRIVATE_KEY, {
         issuer: "gateway",
@@ -177,9 +159,7 @@ describe("Decode Identity", () => {
   test.each([true, false])(
     "Reject tokens with wrong secret and check expiration %p",
     async (ignoreExpiration) => {
-      jest
-        .useFakeTimers("modern")
-        .setSystemTime(new Date("2021-03-20 14:40:31Z").getTime());
+      jest.setSystemTime(new Date("2021-03-20 14:40:31Z").getTime());
 
       const testToken = jwt.sign({}, "abc123", {
         issuer: "gateway",
@@ -198,9 +178,7 @@ describe("Decode Identity", () => {
 
 describe("Create identity", () => {
   test("Create identity", () => {
-    jest
-      .useFakeTimers("modern")
-      .setSystemTime(new Date("2021-03-20 14:35:31Z").getTime());
+    jest.setSystemTime(new Date("2021-03-20 14:35:31Z").getTime());
 
     const expectedToken = jwt.sign(
       {
@@ -234,9 +212,7 @@ describe("Create identity", () => {
 
 describe("Decode refresh token", () => {
   test("Accept valid refresh token for subject", () => {
-    jest
-      .useFakeTimers("modern")
-      .setSystemTime(new Date("2021-03-20 14:40:31Z").getTime());
+    jest.setSystemTime(new Date("2021-03-20 14:40:31Z").getTime());
 
     const testToken = jwt.sign({}, "abc", {
       issuer: "gateway",
@@ -252,9 +228,7 @@ describe("Decode refresh token", () => {
   });
 
   test("Reject refresh token for another subject", () => {
-    jest
-      .useFakeTimers("modern")
-      .setSystemTime(new Date("2021-03-20 14:40:31Z").getTime());
+    jest.setSystemTime(new Date("2021-03-20 14:40:31Z").getTime());
 
     const testToken = jwt.sign({}, "abc", {
       issuer: "gateway",
@@ -273,9 +247,7 @@ describe("Decode refresh token", () => {
   });
 
   test("Reject expired refresh token", () => {
-    jest
-      .useFakeTimers("modern")
-      .setSystemTime(new Date("2050-03-20 14:40:31Z").getTime());
+    jest.setSystemTime(new Date("2050-03-20 14:40:31Z").getTime());
 
     const testToken = jwt.sign({}, "abc", {
       issuer: "gateway",
@@ -285,9 +257,7 @@ describe("Decode refresh token", () => {
       algorithm: "HS256",
     });
 
-    jest
-      .useFakeTimers("modern")
-      .setSystemTime(new Date("2050-04-01 14:40:31Z").getTime());
+    jest.setSystemTime(new Date("2050-04-01 14:40:31Z").getTime());
 
     expect(() =>
       decodeRefreshToken(testToken, { sub: "10", jwtAuthId: 1 }),
@@ -295,9 +265,7 @@ describe("Decode refresh token", () => {
   });
 
   test("Reject refresh token with wrong audience", () => {
-    jest
-      .useFakeTimers("modern")
-      .setSystemTime(new Date("2021-03-20 14:40:31Z").getTime());
+    jest.setSystemTime(new Date("2021-03-20 14:40:31Z").getTime());
 
     const testToken = jwt.sign({}, "abc", {
       issuer: "gateway",
@@ -316,9 +284,7 @@ describe("Decode refresh token", () => {
   });
 
   test("Reject refresh token with wrong issuer", () => {
-    jest
-      .useFakeTimers("modern")
-      .setSystemTime(new Date("2021-03-20 14:40:31Z").getTime());
+    jest.setSystemTime(new Date("2021-03-20 14:40:31Z").getTime());
 
     const testToken = jwt.sign({}, "abc", {
       issuer: "users",
@@ -337,9 +303,7 @@ describe("Decode refresh token", () => {
   });
 
   test("Reject refresh token with wrong secret key", () => {
-    jest
-      .useFakeTimers("modern")
-      .setSystemTime(new Date("2021-03-20 14:40:31Z").getTime());
+    jest.setSystemTime(new Date("2021-03-20 14:40:31Z").getTime());
 
     const testToken = jwt.sign({}, "abc123", {
       issuer: "gateway",
@@ -357,9 +321,7 @@ describe("Decode refresh token", () => {
 
 describe("Create refresh token", () => {
   test("Create refresh token", () => {
-    jest
-      .useFakeTimers("modern")
-      .setSystemTime(new Date("2021-03-20 14:35:31Z").getTime());
+    jest.setSystemTime(new Date("2021-03-20 14:35:31Z").getTime());
 
     const expectedToken = jwt.sign(
       {

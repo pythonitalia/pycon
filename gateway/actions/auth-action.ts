@@ -34,34 +34,23 @@ export class AuthAction extends PastaportoAction<
     const identityToken = createIdentityToken(sub, this.payload.jwtAuthId);
     let refreshToken;
 
-    // clear previous set cookies (clear identity cookies)
-    context.setCookies.splice(0, context.setCookies.length);
-
-    context.setCookies.push({
-      name: "identity",
-      value: identityToken,
-      options: {
-        httpOnly: true,
-        maxAge: SECONDS_IN_84_DAYS,
-        path: "/",
-        sameSite: "lax",
-        secure: !IS_DEV,
-      },
+    context.res.cookie("identity", identityToken, {
+      httpOnly: true,
+      maxAge: SECONDS_IN_84_DAYS,
+      path: "/",
+      sameSite: "lax",
+      secure: !IS_DEV,
     });
 
     if (!this.options?.identityOnly) {
       refreshToken = createRefreshToken(sub, this.payload.jwtAuthId);
 
-      context.setCookies.push({
-        name: "refreshIdentity",
-        value: refreshToken,
-        options: {
-          httpOnly: true,
-          maxAge: SECONDS_IN_84_DAYS,
-          path: "/",
-          sameSite: "lax",
-          secure: !IS_DEV,
-        },
+      context.res.cookie("refreshIdentity", refreshToken, {
+        httpOnly: true,
+        maxAge: SECONDS_IN_84_DAYS,
+        path: "/",
+        sameSite: "lax",
+        secure: !IS_DEV,
       });
     }
 

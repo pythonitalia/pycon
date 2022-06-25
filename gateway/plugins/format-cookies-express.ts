@@ -3,9 +3,9 @@ import cookie from "cookie";
 import { RequestContext } from "./apollo-headers";
 
 export const formatCookiesForExpressPlugin = {
-  requestDidStart() {
+  async requestDidStart() {
     return {
-      willSendResponse(requestContext: RequestContext) {
+      async willSendResponse(requestContext: RequestContext) {
         // Under express we can set multiple cookies
         // by just calling response.append
         // this plugin assumes we set the express response in the context

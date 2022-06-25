@@ -2,8 +2,16 @@ FROM node:14.15.4
 
 WORKDIR /home/node/app
 
-COPY package.json yarn.lock ./
-RUN yarn install
+RUN npm install -g pnpm; \
+    pnpm --version; \
+    pnpm setup; \
+    mkdir -p /usr/local/share/pnpm &&\
+    export PNPM_HOME="/usr/local/share/pnpm" &&\
+    export PATH="$PNPM_HOME:$PATH"; \
+    pnpm bin -g
+
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install
 
 COPY . .
 
