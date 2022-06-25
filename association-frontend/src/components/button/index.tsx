@@ -13,7 +13,7 @@ type ButtonProps = {
 
 const loadingEmojis = ["🐍", "🕑", "🕓", "🕗", "🕙", "🧨"];
 
-export const Button: React.FC<ButtonProps> = ({
+export const Button = ({
   type,
   link,
   text,
@@ -21,7 +21,7 @@ export const Button: React.FC<ButtonProps> = ({
   children,
   loading = false,
   ...props
-}) => {
+}: React.PropsWithChildren<ButtonProps>) => {
   const [emojiIndex, setEmojiIndex] = useState(0);
 
   useEffect(() => {
