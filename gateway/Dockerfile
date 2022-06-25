@@ -1,6 +1,12 @@
 FROM amazon/aws-lambda-nodejs:14 as build
 
-RUN wget -qO- https://get.pnpm.io/install.sh | SHELL=`which bash` bash -
+RUN npm install -g pnpm; \
+    pnpm --version; \
+    pnpm setup; \
+    mkdir -p /usr/local/share/pnpm &&\
+    export PNPM_HOME="/usr/local/share/pnpm" &&\
+    export PATH="$PNPM_HOME:$PATH"; \
+    pnpm bin -g
 
 WORKDIR /app
 

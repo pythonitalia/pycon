@@ -2,7 +2,13 @@ FROM node:14.15.4
 
 WORKDIR /home/node/app
 
-RUN wget -qO- https://get.pnpm.io/install.sh | SHELL=`which bash` bash -
+RUN npm install -g pnpm; \
+    pnpm --version; \
+    pnpm setup; \
+    mkdir -p /usr/local/share/pnpm &&\
+    export PNPM_HOME="/usr/local/share/pnpm" &&\
+    export PATH="$PNPM_HOME:$PATH"; \
+    pnpm bin -g
 
 COPY package.json pnpm-lock.yaml ./
 RUN pnpm install

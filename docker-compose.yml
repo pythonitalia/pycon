@@ -179,7 +179,7 @@ services:
     networks: [pycon_net]
     entrypoint: ""
     command: sh -c "touch /.ready &&
-      yarn dev"
+      pnpm dev"
     volumes:
       - ./gateway/:/home/node/app
       - /home/node/app/node_modules/
@@ -213,7 +213,7 @@ services:
     networks: [pycon_net]
     entrypoint: ""
     working_dir: /home/node/app
-    command: sh -c "yarn codegen && yarn run dev"
+    command: sh -c "pnpm codegen && pnpm run dev"
     volumes:
       - ./frontend/:/home/node/app
       - /home/node/app/node_modules/
@@ -235,7 +235,7 @@ services:
     networks: [pycon_net]
     entrypoint: ""
     working_dir: /home/node/app
-    command: sh -c "yarn codegen && yarn run dev"
+    command: sh -c "pnpm codegen && pnpm run dev"
     volumes:
       - ./association-frontend/:/home/node/app
       - /home/node/app/node_modules/
@@ -255,7 +255,7 @@ services:
     build:
       context: ./email-templates
       dockerfile: ../Dockerfile.node.local
-    command: sh -c "yarn run watch"
+    command: sh -c "pnpm run watch"
     ports:
       - 3500:3500
       - 3501:3501
