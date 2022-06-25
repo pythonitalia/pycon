@@ -44,7 +44,7 @@ jobs:
         id: cache
         with:
           path: ./node_modules
-          key: node_modules-${{ matrix.service }}-${{ hashFiles('pnpm-lock.yaml') }}-v3
+          key: node_modules-${{ matrix.service }}-${{ hashFiles('pnpm-lock.yaml') }}-v4
       - name: Install dependencies
         run: pnpm install
       - name: Codegen
@@ -81,7 +81,7 @@ jobs:
         id: cache
         with:
           path: ./node_modules
-          key: node_modules-${{ matrix.service }}-${{ hashFiles('pnpm-lock.yaml') }}-v3
+          key: node_modules-${{ matrix.service }}-${{ hashFiles('pnpm-lock.yaml') }}-v4
       - name: Install dependencies
         run: pnpm install
       - name: Codegen
