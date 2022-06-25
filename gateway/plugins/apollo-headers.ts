@@ -37,7 +37,7 @@ export const apolloHeadersPlugin = (applyCookies = false) => {
 
             requestContext.response.http.headers.set(
               "Set-Cookie",
-              JSON.stringify(serializedCookieArray),
+              serializedCookieArray,
             );
           }
         },

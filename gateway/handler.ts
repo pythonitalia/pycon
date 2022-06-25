@@ -76,21 +76,6 @@ exports.graphqlHandler = ServerlessSentry.AWSLambda.wrapHandler(
     console.log("processing request");
 
     try {
-      console.log("pre-calling handler");
-      // const response = await new Promise((resolve, reject) =>
-      //   serverHandler!(event, context, (err, response) => {
-      //     console.log("callback called with:", err, response);
-      //     if (err) {
-      //       console.log("rejecting promise");
-      //       console.log("reject:", err);
-      //       reject(err);
-      //       return;
-      //     }
-      //     console.log("resolving promise with success");
-      //     console.log("response value is", response);
-      //     resolve(response);
-      //   }),
-      // );
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       const response = await serverHandler!(event, context, null);
