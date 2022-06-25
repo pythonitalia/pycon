@@ -2,8 +2,10 @@ FROM node:14.15.4
 
 WORKDIR /home/node/app
 
-COPY package.json yarn.lock ./
-RUN yarn install
+RUN wget -qO- https://get.pnpm.io/install.sh | sh -
+
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install
 
 COPY . .
 
