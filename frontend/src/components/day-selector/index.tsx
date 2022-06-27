@@ -62,7 +62,8 @@ export const DaySelector: React.FC<{
             <Box
               variant="button"
               as="a"
-              // @ts-ignore
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              /* @ts-ignore:next-line */
               href={getDayUrl(day.day)}
               onClick={(e) => {
                 e.preventDefault();
