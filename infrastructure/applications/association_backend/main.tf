@@ -41,7 +41,7 @@ data "aws_security_group" "rds" {
 }
 
 data "aws_db_proxy" "proxy" {
-  count = local.is_prod ? 1 : 0
+  count = var.enable_proxy ? 1 : 0
   name  = "pythonit-${terraform.workspace}-database-proxy"
 }
 
