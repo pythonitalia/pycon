@@ -1,6 +1,7 @@
 import * as cheerio from "cheerio";
 import * as fs from "node:fs/promises";
 import * as pathModule from "node:path";
+import * as S3 from "aws-sdk/clients/s3";
 
 const BASE_OUTPUT_PATH = "output";
 
@@ -16,6 +17,7 @@ const PAGES_TO_IGNORE = [
 ];
 
 const VISITED_URLS = new Set();
+const S3_CLIENT = new S3();
 
 const scape = async (url: string, host: string) => {
   console.log(`Scraping: ${url}`);
@@ -62,24 +64,51 @@ const storeImages = async (body: cheerio.CheerioAPI) => {
 const downloadImage = async (src: string): Promise<string> => {
   const filename = src.replace("https://cdn.pycon.it/", "");
   const response = await fetch(src);
-  const path = `${BASE_OUTPUT_PATH}/images/${filename}`;
+  const path = `images/${filename}`;
 
-  await fs.mkdir(pathModule.dirname(path), { recursive: true });
-  await fs.writeFile(path, Buffer.from(await response.arrayBuffer()));
+  await S3_CLIENT.putObject(
+    {
+      Key: path,
+      Bucket: "pycon-archive-test-website",
+      Body: Buffer.from(await response.arrayBuffer()),
+      ContentType: `image/${pathModule.extname(path).slice(1)}`,
+      ACL: "public-read",
+    },
+    undefined,
+  ).promise();
   return `/images/${filename}`;
 };
 
 const storeContent = async (path: string, body: string) => {
   let finalPath;
+  let contentType;
 
+  // if (path.endsWith(".js")) {
+  //   finalPath = `${BASE_OUTPUT_PATH}/${path}`;
+  // } else {
+  //   finalPath = `${BASE_OUTPUT_PATH}/${path}/index.html`;
+  // }
   if (path.endsWith(".js")) {
-    finalPath = `${BASE_OUTPUT_PATH}/${path}`;
+    finalPath = path;
+    contentType = "application/javascript";
   } else {
-    finalPath = `${BASE_OUTPUT_PATH}/${path}/index.html`;
+    finalPath = `${path.slice(1)}/index.html`;
+    contentType = "text/html";
   }
 
-  await fs.mkdir(pathModule.dirname(finalPath), { recursive: true });
-  await fs.writeFile(finalPath, body);
+  // await fs.mkdir(pathModule.dirname(finalPath), { recursive: true });
+  // await fs.writeFile(finalPath, body);
+
+  await S3_CLIENT.putObject(
+    {
+      Key: finalPath,
+      Bucket: "pycon-archive-test-website",
+      Body: body,
+      ContentType: contentType,
+      ACL: "public-read",
+    },
+    undefined,
+  ).promise();
 };
 
 const findUrls = async (body: cheerio.CheerioAPI) => {
