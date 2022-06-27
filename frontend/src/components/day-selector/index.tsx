@@ -5,6 +5,7 @@ import React from "react";
 import { Box, jsx, Select } from "theme-ui";
 
 import { useCurrentLanguage } from "~/locale/context";
+import { getDayUrl } from "~/pages/schedule/[day]";
 
 import { formatDay } from "./format-day";
 
@@ -60,7 +61,14 @@ export const DaySelector: React.FC<{
           >
             <Box
               variant="button"
-              onClick={() => changeDay(day.day)}
+              as="a"
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              /* @ts-ignore:next-line */
+              href={getDayUrl(day.day)}
+              onClick={(e) => {
+                e.preventDefault();
+                changeDay(day.day);
+              }}
               sx={{
                 px: 3,
                 fontSize: 2,
