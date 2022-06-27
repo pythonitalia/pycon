@@ -26,7 +26,7 @@ import {
   useScheduleQuery,
 } from "~/types";
 
-const getDayUrl = (day: string) => `/schedule/${day}`;
+export const getDayUrl = (day: string) => `/schedule/${day}`;
 
 const Meta: React.FC<{
   day: string;
