@@ -30,7 +30,7 @@ const scape = async (url: string, host: string) => {
     const newUrls = await findUrls(parsableBody);
 
     await storeImages(parsableBody);
-    await storePage(path, parsableBody.html());
+    await storeContent(path, parsableBody.html());
 
     // const promises = [];
 
@@ -50,10 +50,7 @@ const storeImages = async (body: cheerio.CheerioAPI) => {
   for (const image of images) {
     const src = image.attribs.src;
 
-    if (
-      !src.startsWith("https://cdn.pycon.it/") ||
-      src.startsWith("data:image")
-    ) {
+    if (!src.startsWith("https://cdn.pycon.it/")) {
       continue;
     }
 
@@ -72,8 +69,15 @@ const downloadImage = async (src: string): Promise<string> => {
   return `/images/${filename}`;
 };
 
-const storePage = async (path: string, body: string) => {
-  const finalPath = `${BASE_OUTPUT_PATH}/${path}/index.html`;
+const storeContent = async (path: string, body: string) => {
+  let finalPath;
+
+  if (path.endsWith(".js")) {
+    finalPath = `${BASE_OUTPUT_PATH}/${path}`;
+  } else {
+    finalPath = `${BASE_OUTPUT_PATH}/${path}/index.html`;
+  }
+
   await fs.mkdir(pathModule.dirname(finalPath), { recursive: true });
   await fs.writeFile(finalPath, body);
 };
