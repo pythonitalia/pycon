@@ -26,7 +26,7 @@ resource "aws_eip_association" "nat_ip_assoc" {
 resource "aws_instance" "nat" {
   for_each               = toset(keys(local.public_azs_cidr))
   ami                    = data.aws_ami.nat.id
-  instance_type          = "t3.micro"
+  instance_type          = "t3.nano"
   subnet_id              = aws_subnet.public[each.key].id
   availability_zone      = each.key
   vpc_security_group_ids = [aws_security_group.nat.id]
