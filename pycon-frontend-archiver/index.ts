@@ -8,11 +8,16 @@ const BASE_OUTPUT_PATH = "output";
 type Type = "document" | "style" | "script";
 
 const PAGES_TO_IGNORE = [
+  "/en/profile/edit",
+  "/it/profile/edit",
+  "/en/profile",
+  "/it/profile",
+  "/en/signup",
+  "/it/signup",
   "/en/login",
   "/it/login",
   "/en/tickets",
   "/it/tickets",
-  "/it/",
   "/en/",
   "/en/_error",
   "/it/_error",
@@ -41,6 +46,7 @@ const scape = async (url: string, host: string) => {
 
     const newUrls = await findUrls(parsableBody);
 
+    await removeUnavailableContent(parsableBody);
     await storeImages(parsableBody);
     await storeContent(
       path,
@@ -48,17 +54,20 @@ const scape = async (url: string, host: string) => {
       type,
     );
 
-    // const promises = [];
-
     for (const newUrl of newUrls) {
-      // promises.push(scape(`${host}${newUrl}`, host));
       await scape(`${host}${newUrl}`, host);
     }
-
-    // await Promise.all(promises);
   } catch (e) {
     console.log("Error while scraping", e);
   }
+};
+
+const removeUnavailableContent = async (body: cheerio.CheerioAPI) => {
+  const ticketsLink = body('a[href="/en/tickets"],a[href="/it/tickets"]');
+  ticketsLink.remove();
+
+  const loginButton = body('a[href="/en/login"],a[href="/it/login"]');
+  loginButton.remove();
 };
 
 const storeImages = async (body: cheerio.CheerioAPI) => {
