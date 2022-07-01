@@ -64,7 +64,7 @@ export const DaySelector: React.FC<{
               as="a"
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               /* @ts-ignore:next-line */
-              href={getDayUrl(day.day)}
+              href={getDayUrl(day.day, language)}
               onClick={(e) => {
                 e.preventDefault();
                 changeDay(day.day);
