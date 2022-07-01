@@ -73,7 +73,13 @@ const removeUnavailableContent = async (body: cheerio.CheerioAPI) => {
 const storeImages = async (body: cheerio.CheerioAPI) => {
   const images = body("img");
   for (const image of images) {
-    const src = image.attribs.src;
+    let src = image.attribs.src;
+
+    if (src.startsWith("/_next/image")) {
+      // Extract the real URL
+      const parsedUrl = new URL(src, "https://cdn.pycon.it/");
+      src = parsedUrl.searchParams.get("url");
+    }
 
     if (!src.startsWith("https://cdn.pycon.it/")) {
       continue;
