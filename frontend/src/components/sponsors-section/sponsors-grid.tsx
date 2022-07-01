@@ -61,6 +61,8 @@ const SponsorItem: React.FC<ItemProps> = ({ sponsor, color }) => (
             loading="lazy"
             sx={{
               objectFit: "contain",
+              width: "100%",
+              height: "100%",
             }}
             src={sponsor.image}
             alt={sponsor.name}
