@@ -3,8 +3,6 @@
 /** @jsx jsx */
 import { Box, Flex, Heading, jsx, Text } from "theme-ui";
 
-import Image from "next/image";
-
 import { Link } from "~/components/link";
 import { KeynoteSpeaker } from "~/types";
 
@@ -57,7 +55,7 @@ export const KeynoteSlide = ({
         }}
       >
         {image && (
-          <Image
+          <img
             sx={{
               position: "absolute",
               top: 0,
@@ -67,7 +65,7 @@ export const KeynoteSlide = ({
               filter: "grayscale(1)",
               objectFit: "cover",
             }}
-            layout="fill"
+            loading="lazy"
             src={image}
             alt="Speaker photo"
           />
