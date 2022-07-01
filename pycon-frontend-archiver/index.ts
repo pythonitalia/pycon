@@ -29,7 +29,7 @@ const S3_CLIENT = new S3();
 const scape = async (url: string, host: string) => {
   console.log(`Scraping: ${url}`);
   try {
-    const response = await fetch(url);
+    const response = await fetch(`${url}?archive=1`);
 
     const path = url.replace(host, "");
     let type: Type;
