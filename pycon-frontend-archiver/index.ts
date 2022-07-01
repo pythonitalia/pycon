@@ -5,6 +5,8 @@ import * as S3 from "aws-sdk/clients/s3";
 
 const BASE_OUTPUT_PATH = "output";
 
+type Type = "document" | "style" | "script";
+
 const PAGES_TO_IGNORE = [
   "/en/login",
   "/it/login",
@@ -25,6 +27,14 @@ const scape = async (url: string, host: string) => {
     const response = await fetch(url);
 
     const path = url.replace(host, "");
+    let type: Type;
+    if (path.endsWith(".js")) {
+      type = "script";
+    } else if (path.endsWith(".css")) {
+      type = "style";
+    } else {
+      type = "document";
+    }
     const body = await response.text();
 
     const parsableBody = cheerio.load(body);
@@ -32,7 +42,11 @@ const scape = async (url: string, host: string) => {
     const newUrls = await findUrls(parsableBody);
 
     await storeImages(parsableBody);
-    await storeContent(path, parsableBody.html());
+    await storeContent(
+      path,
+      type !== "document" ? body : parsableBody.html(),
+      type,
+    );
 
     // const promises = [];
 
@@ -79,25 +93,21 @@ const downloadImage = async (src: string): Promise<string> => {
   return `/images/${filename}`;
 };
 
-const storeContent = async (path: string, body: string) => {
+const storeContent = async (path: string, body: string, type: Type) => {
   let finalPath;
   let contentType;
 
-  // if (path.endsWith(".js")) {
-  //   finalPath = `${BASE_OUTPUT_PATH}/${path}`;
-  // } else {
-  //   finalPath = `${BASE_OUTPUT_PATH}/${path}/index.html`;
-  // }
-  if (path.endsWith(".js")) {
+  path = path.slice(1);
+  if (type === "script") {
     finalPath = path;
     contentType = "application/javascript";
+  } else if (type === "style") {
+    finalPath = path;
+    contentType = "text/css";
   } else {
-    finalPath = `${path.slice(1)}/index.html`;
+    finalPath = `${path}/index.html`;
     contentType = "text/html";
   }
-
-  // await fs.mkdir(pathModule.dirname(finalPath), { recursive: true });
-  // await fs.writeFile(finalPath, body);
 
   await S3_CLIENT.putObject(
     {
@@ -112,7 +122,7 @@ const storeContent = async (path: string, body: string) => {
 };
 
 const findUrls = async (body: cheerio.CheerioAPI) => {
-  const links = body("a, script");
+  const links = body('a, script, link[rel="stylesheet"]');
   const urlsFound: Set<string> = new Set();
 
   for (const linkElement of links) {
