@@ -6,8 +6,6 @@ import { FormattedMessage } from "react-intl";
 import QRCode from "react-qr-code";
 import { Text, Box, Grid, Flex, jsx } from "theme-ui";
 
-import Image from "next/image";
-
 import { compile } from "~/helpers/markdown";
 import { JobListing } from "~/types";
 
@@ -53,11 +51,13 @@ export const JobListingAccordion = ({
           }}
         >
           {job.companyLogo && (
-            <Image
-              layout="fill"
+            <img
+              loading="lazy"
               sx={{
+                width: "100%",
+                height: "100%",
                 objectFit: "contain",
-                padding: "5px !important",
+                padding: "10px !important",
               }}
               src={job.companyLogo}
             />
