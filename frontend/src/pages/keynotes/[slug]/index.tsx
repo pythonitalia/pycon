@@ -245,7 +245,7 @@ const KeynotePage = () => {
         </Grid>
       ))}
       <BackToMarquee
-        href={day ? `${language}/schedule/${day}` : `${language}/keynotes/`}
+        href={day ? `/schedule/${day}` : `/keynotes/`}
         backTo={day ? "schedule" : "keynotes"}
         goBack={goBack}
       />
