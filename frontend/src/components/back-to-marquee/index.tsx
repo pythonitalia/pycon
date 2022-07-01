@@ -5,14 +5,16 @@ import React, { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, jsx } from "theme-ui";
 
+import { Link } from "../link";
 import { Marquee } from "../marquee";
 
 type Props = {
   goBack: () => void;
   backTo: "schedule" | "keynotes";
+  href: string;
 };
 
-export const BackToMarquee = ({ goBack, backTo }: Props) => {
+export const BackToMarquee = ({ goBack, backTo, href }: Props) => {
   const messageId =
     backTo === "schedule"
       ? "schedule.backToSchedule"
@@ -24,7 +26,8 @@ export const BackToMarquee = ({ goBack, backTo }: Props) => {
           pt: 4,
         }}
       />
-      <Box
+      <Link
+        path={href}
         sx={{
           color: "black",
           cursor: "pointer",
@@ -34,7 +37,7 @@ export const BackToMarquee = ({ goBack, backTo }: Props) => {
         <FormattedMessage id={messageId}>
           {(message) => <Marquee separator=" > " message={message.join("")} />}
         </FormattedMessage>
-      </Box>
+      </Link>
     </Fragment>
   );
 };

@@ -266,7 +266,11 @@ export const TalkPage = () => {
         ))}
       </Grid>
 
-      <BackToMarquee backTo="schedule" goBack={goBack} />
+      <BackToMarquee
+        href={`/schedule/${day}`}
+        backTo="schedule"
+        goBack={goBack}
+      />
     </Fragment>
   );
 };

@@ -2,56 +2,55 @@
 
 /** @jsx jsx */
 import { ParsedUrlQuery } from "querystring";
-import React, { Fragment } from "react";
-import { Box, jsx, Link as ThemeLink } from "theme-ui";
+import React from "react";
+import { Box, Flex, jsx, Link as ThemeLink } from "theme-ui";
 
-import { useHover } from "~/helpers/use-hover";
 import { useCurrentLanguage } from "~/locale/context";
 
-import { GoogleIcon } from "../icons/google";
-
 const ArrowRightBackground = ({
-  backgroundColor,
-}: {
-  backgroundColor: string;
-}) => (
-  <Box
+  children,
+}: React.PropsWithChildren<unknown>) => (
+  <Flex
     sx={{
-      position: "absolute",
       top: 0,
       left: 0,
-      height: 50,
-      width: "calc(100% + 25px)",
+      height: 51,
+      "&:hover": {
+        "div, .arrow-sec": {
+          backgroundColor: "orange",
+          fill: "orange",
+        },
+      },
     }}
   >
     <Box
       sx={{
-        position: "absolute",
-        top: "-4px",
-        left: 0,
-        right: 24,
         borderTop: "primary",
         borderBottom: "primary",
         borderLeft: "primary",
-        height: 50,
-        backgroundColor,
+        height: 51,
+        backgroundColor: "yellow",
       }}
-    />
+    >
+      {children}
+    </Box>
     <svg
       viewBox="2 0 32 66"
       preserveAspectRatio="none"
       vectorEffect="non-scaling-stroke"
       sx={{
-        position: "absolute",
-        top: "-4px",
-        height: 50,
+        height: 51,
         right: 0,
       }}
     >
       <path d="M1 0V66L30 33L1 0Z" stroke="black" strokeWidth="5" />
-      <path d="M0 2.5L27.5 33L0 63.5V2.5Z" sx={{ fill: backgroundColor }} />
+      <path
+        className="arrow-sec"
+        d="M0 2.5L27.5 33L0 63.5V2.5Z"
+        sx={{ fill: "yellow" }}
+      />
     </svg>
-  </Box>
+  </Flex>
 );
 
 const isExternalLink = ({ path, target }: { path: string; target?: string }) =>
@@ -80,7 +79,6 @@ export const Link: React.FC<LinkProps> = ({
   external = false,
   params = null,
   locale,
-  noHover = false,
   ...additionalProps
 }) => {
   const language = useCurrentLanguage();
@@ -93,49 +91,48 @@ export const Link: React.FC<LinkProps> = ({
     external: isExternal,
   });
 
-  const ForwardedLink = React.forwardRef<any, { hovered: boolean }>(
-    (props, ref) => (
-      <ThemeLink
-        variant={variant}
-        href={href}
-        target={target}
-        {...props}
-        {...additionalProps}
-        ref={ref}
+  const Content = () => {
+    return (
+      <Box
+        as="span"
+        sx={{
+          position: "relative",
+          zIndex: 10,
+          px: variant === "arrow-button" ? 3 : 0,
+        }}
       >
-        {variant === "arrow-button" && (
-          <ArrowRightBackground
-            backgroundColor={
-              props.hovered ? "orange" : backgroundColor || "yellow"
+        {children}
+      </Box>
+    );
+  };
+
+  const ForwardedLink = React.forwardRef<any>((props, ref) => (
+    <ThemeLink
+      variant={variant}
+      href={href}
+      target={target}
+      sx={
+        variant === "arrow-button"
+          ? {
+              p: 0,
+              border: 0,
             }
-          />
-        )}
+          : {}
+      }
+      {...props}
+      {...additionalProps}
+      ref={ref}
+    >
+      {variant === "arrow-button" && (
+        <ArrowRightBackground>
+          <Content />
+        </ArrowRightBackground>
+      )}
+      {variant !== "arrow-button" && <Content />}
+    </ThemeLink>
+  ));
 
-        {variant === "google" && <GoogleIcon />}
-
-        {noHover && <Fragment>{children}</Fragment>}
-
-        {!noHover && (
-          <Box
-            as="span"
-            sx={{
-              position: "relative",
-              zIndex: 10,
-            }}
-          >
-            {children}
-            {props.hovered}
-          </Box>
-        )}
-      </ThemeLink>
-    ),
-  );
-
-  const component = (hovered: boolean) => <ForwardedLink hovered={hovered} />;
-
-  const [hoverable] = useHover(component);
-
-  return hoverable;
+  return <ForwardedLink />;
 };
 
 const createHref = ({ path, params, locale, external }) => {
