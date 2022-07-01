@@ -91,21 +91,6 @@ export const Link: React.FC<LinkProps> = ({
     external: isExternal,
   });
 
-  const Content = () => {
-    return (
-      <Box
-        as="span"
-        sx={{
-          position: "relative",
-          zIndex: 10,
-          px: variant === "arrow-button" ? 3 : 0,
-        }}
-      >
-        {children}
-      </Box>
-    );
-  };
-
   const ForwardedLink = React.forwardRef<any>((props, ref) => (
     <ThemeLink
       variant={variant}
@@ -125,10 +110,18 @@ export const Link: React.FC<LinkProps> = ({
     >
       {variant === "arrow-button" && (
         <ArrowRightBackground>
-          <Content />
+          <Box
+            as="span"
+            sx={{
+              zIndex: 10,
+              px: 3,
+            }}
+          >
+            {children}
+          </Box>
         </ArrowRightBackground>
       )}
-      {variant !== "arrow-button" && <Content />}
+      {variant !== "arrow-button" && children}
     </ThemeLink>
   ));
 
