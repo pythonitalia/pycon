@@ -6,7 +6,6 @@ import { FormattedMessage } from "react-intl";
 import { Box, Grid, Heading, jsx, Text, Flex } from "theme-ui";
 
 import { GetStaticProps } from "next";
-import { PHASE_PRODUCTION_BUILD } from "next/constants";
 import { useRouter } from "next/router";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
