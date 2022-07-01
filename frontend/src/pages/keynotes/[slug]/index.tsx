@@ -244,7 +244,11 @@ const KeynotePage = () => {
           </Box>
         </Grid>
       ))}
-      <BackToMarquee backTo={day ? "schedule" : "keynotes"} goBack={goBack} />
+      <BackToMarquee
+        href={day ? `${language}/schedule/${day}` : `${language}/keynotes/`}
+        backTo={day ? "schedule" : "keynotes"}
+        goBack={goBack}
+      />
     </Fragment>
   );
 };
