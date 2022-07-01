@@ -90,9 +90,10 @@ export const Header = () => {
   const [open, toggleOpen, _, close] = useToggle(false);
   const headerRef = useRef(null);
   const {
-    query: { photo },
+    query: { photo, archive },
   } = useRouter();
   const isInPhotoMode = photo == "1";
+  const isInArchiveMode = archive == "1";
 
   useOnClickOutside(headerRef, close);
   useEffect(close, [router.asPath]);
@@ -177,7 +178,7 @@ export const Header = () => {
                 }}
               />
               <ScheduleLink />
-              <ProfileLink />
+              {!isInArchiveMode && <ProfileLink />}
             </Box>
 
             <Button

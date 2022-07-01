@@ -6,7 +6,7 @@ import { FormattedMessage } from "react-intl";
 import { Box, Grid, Heading, jsx, Text, Flex } from "theme-ui";
 
 import { GetStaticProps } from "next";
-import { PHASE_PRODUCTION_BUILD } from "next/constants";
+import { useRouter } from "next/router";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { GridSlider } from "~/components/grid-slider";
@@ -29,8 +29,6 @@ import {
   useIndexPageQuery,
 } from "~/types";
 
-import StreamingPage from "./streaming";
-
 export const HomePage = () => {
   const language = useCurrentLanguage();
   const {
@@ -41,13 +39,17 @@ export const HomePage = () => {
       language,
     },
   });
+  const {
+    query: { archive },
+  } = useRouter();
+  const isInArchiveMode = archive == "1";
 
   return (
     <Fragment>
       <FormattedMessage id="home.title">
         {(text) => <MetaTags title={text} />}
       </FormattedMessage>
-      <HomepageHero hideBuyTickets={false} />
+      <HomepageHero hideBuyTickets={isInArchiveMode} />
 
       <Marquee message={conference.marquee!} />
 
