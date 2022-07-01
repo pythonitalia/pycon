@@ -3,8 +3,6 @@
 /** @jsx jsx */
 import { Box, Grid, jsx } from "theme-ui";
 
-import Image from "next/image";
-
 import { useSSRResponsiveValue } from "~/helpers/use-ssr-responsive-value";
 
 import { Sponsor } from "./types";
@@ -59,11 +57,13 @@ const SponsorItem: React.FC<ItemProps> = ({ sponsor, color }) => (
             right: "40px",
           }}
         >
-          <Image
+          <img
+            loading="lazy"
             sx={{
               objectFit: "contain",
+              width: "100%",
+              height: "100%",
             }}
-            layout="fill"
             src={sponsor.image}
             alt={sponsor.name}
           />
