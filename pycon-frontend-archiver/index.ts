@@ -5,6 +5,9 @@ import * as S3 from "aws-sdk/clients/s3";
 
 const BASE_OUTPUT_PATH = "output";
 
+const SITE_URL = "https://pycon.it";
+const CDN_URL = "https://cdn.pycon.it/";
+
 type Type = "document" | "style" | "script";
 
 const PAGES_TO_IGNORE = [
@@ -27,9 +30,15 @@ const VISITED_URLS = new Set();
 const S3_CLIENT = new S3();
 
 const scape = async (url: string, host: string) => {
-  console.log(`Scraping: ${url}`);
   try {
-    const response = await fetch(`${url}?archive=1`);
+    if (VISITED_URLS.has(url)) {
+      console.log(`Ignoring: ${url}`);
+      return;
+    }
+
+    console.log(`Scraping: ${url}`);
+
+    const response = await fetch(url);
 
     const path = url.replace(host, "");
     let type: Type;
@@ -46,13 +55,14 @@ const scape = async (url: string, host: string) => {
 
     const newUrls = await findUrls(parsableBody);
 
-    await removeUnavailableContent(parsableBody);
     await storeImages(parsableBody);
     await storeContent(
       path,
       type !== "document" ? body : parsableBody.html(),
       type,
     );
+
+    await discoverHiddenLinks(parsableBody, newUrls);
 
     for (const newUrl of newUrls) {
       await scape(`${host}${newUrl}`, host);
@@ -62,30 +72,57 @@ const scape = async (url: string, host: string) => {
   }
 };
 
-const removeUnavailableContent = async (body: cheerio.CheerioAPI) => {
-  const ticketsLink = body('a[href="/en/tickets"],a[href="/it/tickets"]');
-  ticketsLink.remove();
+const discoverHiddenLinks = async (
+  body: cheerio.CheerioAPI,
+  urls: Set<string>,
+) => {
+  const nextDataPayload = body('script[id="__NEXT_DATA__"]');
 
-  const loginButton = body('a[href="/en/login"],a[href="/it/login"]');
-  loginButton.remove();
+  if (nextDataPayload.length > 0) {
+    try {
+      const parsedPayload = JSON.parse(nextDataPayload.first().text());
+      const apolloState = parsedPayload.props.pageProps.__APOLLO_STATE__;
+      for (const [key, item] of Object.entries<any>(apolloState)) {
+        if (!key.startsWith("Conference")) {
+          continue;
+        }
+
+        const conferenceNavMenu = item['menu({"identifier":"conference-nav"})'];
+        await extractMenuLinks(conferenceNavMenu, urls);
+
+        const programNavMenu = item['menu({"identifier":"program-nav"})'];
+        await extractMenuLinks(programNavMenu, urls);
+      }
+    } catch (e) {
+      console.log("Unable to parse next payload: ", e);
+    }
+  }
 };
 
-const storeImages = async (body: cheerio.CheerioAPI) => {
-  const images = body("img");
-  for (const image of images) {
-    const src = image.attribs.src;
+const extractMenuLinks = async (menu: any, urls: Set<string>) => {
+  const links = menu.links;
+  for (const link of links) {
+    const href = link['href({"language":"en"})'];
 
-    if (!src.startsWith("https://cdn.pycon.it/")) {
+    const enHref = `/en${href}`;
+    const itHref = `/it${href}`;
+
+    if (!VISITED_URLS.has(itHref)) {
+      urls.add(itHref);
+      VISITED_URLS.add(itHref);
       continue;
     }
 
-    const newSrc = await downloadImage(src);
-    image.attribs.src = newSrc;
+    if (!VISITED_URLS.has(enHref)) {
+      urls.add(enHref);
+      VISITED_URLS.add(enHref);
+      continue;
+    }
   }
 };
 
 const downloadImage = async (src: string): Promise<string> => {
-  const filename = src.replace("https://cdn.pycon.it/", "");
+  const filename = src.replace(CDN_URL, "");
   const response = await fetch(src);
   const path = `images/${filename}`;
 
@@ -169,5 +206,5 @@ const findUrls = async (body: cheerio.CheerioAPI) => {
 
   await fs.mkdir(BASE_OUTPUT_PATH);
 
-  await scape("https://pycon.it/en", "https://pycon.it");
+  await scape("https://pycon.it/en", SITE_URL);
 })();
