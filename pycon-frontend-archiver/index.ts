@@ -7,6 +7,7 @@ const BASE_OUTPUT_PATH = "output";
 
 const SITE_URL = "https://pycon.it";
 const CDN_URL = "https://cdn.pycon.it/";
+const BUCKET_NAME = "2022.pycon.it";
 
 type Type = "document" | "style" | "script";
 
@@ -116,7 +117,11 @@ const discoverHiddenLinks = async (
 const extractMenuLinks = async (menu: any, urls: Set<string>) => {
   const links = menu.links;
   for (const link of links) {
-    const href = link['href({"language":"en"})'];
+    const href: string = link['href({"language":"en"})'];
+
+    if (!href.startsWith("/")) {
+      continue;
+    }
 
     const enHref = `/en${href}`;
     const itHref = `/it${href}`;
@@ -143,7 +148,7 @@ const downloadImage = async (src: string): Promise<string> => {
   await S3_CLIENT.putObject(
     {
       Key: path,
-      Bucket: "pycon-archive-test-website",
+      Bucket: BUCKET_NAME,
       Body: Buffer.from(await response.arrayBuffer()),
       ContentType: `image/${pathModule.extname(path).slice(1)}`,
       ACL: "public-read",
@@ -172,7 +177,7 @@ const storeContent = async (path: string, body: string, type: Type) => {
   await S3_CLIENT.putObject(
     {
       Key: finalPath,
-      Bucket: "2022.pycon.it",
+      Bucket: BUCKET_NAME,
       Body: body,
       ContentType: contentType,
       ACL: "public-read",
@@ -192,9 +197,14 @@ const findUrls = async (body: cheerio.CheerioAPI) => {
       continue;
     }
 
-    const link = attrLink.split("?")[0];
+    let link = attrLink.split("?")[0];
+    link = link.split("#")[0];
 
-    if (link.startsWith("http") || link.startsWith("mailto")) {
+    if (
+      link.startsWith("www.") ||
+      link.startsWith("http") ||
+      link.startsWith("mailto")
+    ) {
       continue;
     }
 

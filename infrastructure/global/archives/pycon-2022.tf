@@ -11,7 +11,7 @@ data "aws_acm_certificate" "cert" {
 
 resource "aws_s3_bucket" "archive_2022" {
   bucket = "2022.pycon.it"
-  acl    = "public-read"
+  acl    = "private"
 
   website {
     index_document = "index.html"
