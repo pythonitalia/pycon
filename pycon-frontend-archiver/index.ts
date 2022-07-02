@@ -72,6 +72,20 @@ const scape = async (url: string, host: string) => {
   }
 };
 
+const storeImages = async (body: cheerio.CheerioAPI) => {
+  const images = body("img");
+  for (const image of images) {
+    const src = image.attribs.src;
+
+    if (!src.startsWith("https://cdn.pycon.it/")) {
+      continue;
+    }
+
+    const newSrc = await downloadImage(src);
+    image.attribs.src = newSrc;
+  }
+};
+
 const discoverHiddenLinks = async (
   body: cheerio.CheerioAPI,
   urls: Set<string>,
