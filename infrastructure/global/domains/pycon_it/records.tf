@@ -189,11 +189,3 @@ resource "aws_route53_record" "www_pycon_it_cname" {
   records = ["pycon.it."]
   ttl     = "3600"
 }
-
-resource "aws_route53_record" "pycon_2022" {
-  zone_id = aws_route53_zone.pyconit.id
-  name    = "2022.pycon.it"
-  type    = "CNAME"
-  records = ["cname.vercel-dns.com"]
-  ttl     = "3600"
-}

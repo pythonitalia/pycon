@@ -158,7 +158,7 @@ const storeContent = async (path: string, body: string, type: Type) => {
   await S3_CLIENT.putObject(
     {
       Key: finalPath,
-      Bucket: "pycon-archive-test-website",
+      Bucket: "2022.pycon.it",
       Body: body,
       ContentType: contentType,
       ACL: "public-read",
