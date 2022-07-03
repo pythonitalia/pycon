@@ -1,4 +1,4 @@
-import { IS_DEV } from "config";
+import { IS_DEV } from "./config";
 import cookie from "cookie";
 
 import { createPastaporto } from "./pastaporto/create-pastaporto";
