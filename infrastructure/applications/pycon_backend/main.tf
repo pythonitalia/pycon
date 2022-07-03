@@ -80,8 +80,6 @@ module "lambda" {
     AWS_S3_CUSTOM_DOMAIN                          = local.cdn_url
     PRETIX_API_TOKEN                              = module.common_secrets.value.pretix_api_token
     PINPOINT_APPLICATION_ID                       = module.secrets.value.pinpoint_application_id
-    SOCIAL_AUTH_GOOGLE_OAUTH2_KEY                 = module.secrets.value.google_oauth2_key
-    SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET              = module.secrets.value.google_oauth2_secret
     PASTAPORTO_SECRET                             = module.common_secrets.value.pastaporto_secret
     FORCE_PYCON_HOST                              = local.is_prod
     ASSOCIATION_BACKEND_SERVICE                   = local.association_backend_url

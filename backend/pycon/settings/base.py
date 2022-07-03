@@ -1,7 +1,7 @@
 import environ
 from django.utils.translation import gettext_lazy as _
 
-root = environ.Path(__file__) - 3  # three folder back (/a/b/c/ - 3 = /)
+root = environ.Path(__file__) - 3
 
 env = environ.Env(
     DEBUG=(bool, False),
@@ -35,7 +35,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "api.apps.ApiConfig",
     "timezone_field",
-    "social_django",
     "users",
     "strawberry.django",
     "conferences.apps.ConferencesConfig",
@@ -146,33 +145,8 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = root("media")
 
 AUTH_USER_MODEL = "users.User"
-SOCIAL_AUTH_USER_MODEL = "users.User"
 
-SOCIAL_AUTH_PIPELINE = (
-    "social_core.pipeline.social_auth.social_details",
-    "social_core.pipeline.social_auth.social_uid",
-    "social_core.pipeline.social_auth.auth_allowed",
-    "social_core.pipeline.social_auth.social_user",
-    "social_core.pipeline.user.get_username",
-    "social_core.pipeline.social_auth.associate_by_email",
-    "social_core.pipeline.user.create_user",
-    "social_core.pipeline.social_auth.associate_user",
-    "social_core.pipeline.social_auth.load_extra_data",
-    "social_core.pipeline.user.user_details",
-)
-
-AUTHENTICATION_BACKENDS = (
-    "social_core.backends.google.GoogleOAuth2",
-    "django.contrib.auth.backends.ModelBackend",
-)
-
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env("SOCIAL_AUTH_GOOGLE_OAUTH2_KEY", default="")
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env("SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET", default="")
-
-SOCIAL_AUTH_POSTGRES_JSONFIELD = True
-
-SOCIAL_AUTH_LOGIN_REDIRECT_URL = f"{FRONTEND_URL}/en/login/success/"
-# SOCIAL_AUTH_LOGIN_ERROR_URL = f"{FRONTEND_URL}/login/"
+AUTHENTICATION_BACKENDS = ("django.contrib.auth.backends.ModelBackend",)
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 MAPBOX_PUBLIC_API_KEY = env("MAPBOX_PUBLIC_API_KEY", default="")
