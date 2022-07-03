@@ -17,10 +17,6 @@ const DEFAULT_SERVICES = [
     name: "pycon-backend",
     url: `${PYCON_BACKEND_SERVICE}/graphql`,
   },
-  {
-    name: "logout",
-    url: `http://logout.service`,
-  },
 ];
 
 export const getServices = () => {

@@ -1,11 +1,6 @@
-import {
-  ApolloGateway,
-  LocalGraphQLDataSource,
-  RemoteGraphQLDataSource,
-} from "@apollo/gateway";
+import { ApolloGateway, RemoteGraphQLDataSource } from "@apollo/gateway";
 
 import { IS_DEV } from "./config";
-import { schema as logoutSchema } from "./internal-services/logout";
 import { getServices } from "./services";
 
 const PASTAPORTO_X_HEADER = "x-pastaporto";
@@ -59,11 +54,7 @@ export const createGateway = () => {
 
   return new ApolloGateway({
     ...options,
-    buildService({ name, url }) {
-      if (name === "logout") {
-        return new LocalGraphQLDataSource(logoutSchema);
-      }
-
+    buildService({ url }) {
       return new ServiceRemoteGraphQLDataSource({
         url,
       });

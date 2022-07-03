@@ -63,6 +63,8 @@ ASSOCIATION_FRONTEND_URL = config(
 
 RUNNING_TESTS = config("RUNNING_TESTS", cast=bool, default=False)
 
+IDENTITY_COOKIE_KEY = "identity_v2"
+
 if RUNNING_TESTS:
     original_url = make_url(DATABASE_URL)
     test_db_url = URL.create(
