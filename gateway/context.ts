@@ -25,7 +25,13 @@ export const createContext = async ({
   }
 
   const identity = cookies?.["identity_v2"] ?? null;
-  const pastaporto = await createPastaporto(identity);
+  let pastaporto = null;
+  try {
+    pastaporto = await createPastaporto(identity);
+  } catch (e) {
+    console.error("Error creating pastaporto.", e);
+  }
+
   const context: ApolloContext = {
     setCookies: [],
     setHeaders: [],
