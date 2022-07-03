@@ -9,6 +9,7 @@ from strawberry.asgi.handlers.http_handler import HTTPHandler
 
 from users.api.context import Context
 from users.api.schema import schema
+from users.settings import ENVIRONMENT
 
 
 class CustomHTTPHandler(HTTPHandler):
@@ -47,8 +48,9 @@ class CustomHTTPHandler(HTTPHandler):
             response.set_cookie(
                 key="identity_v2",
                 value=context._authenticated_as.create_identity_token(),
+                expires=60 * 60 * 24 * 90,
                 httponly=True,
-                secure=False,  # True
+                secure=ENVIRONMENT != "local",
                 samesite="strict",
             )
 
