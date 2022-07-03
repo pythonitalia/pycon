@@ -837,6 +837,14 @@ python-versions = ">=3.7"
 python-dateutil = "*"
 
 [[package]]
+name = "toml"
+version = "0.10.2"
+description = "Python Library for Tom's Obvious, Minimal Language"
+category = "main"
+optional = false
+python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
+
+[[package]]
 name = "tomli"
 version = "1.2.3"
 description = "A lil' TOML parser"
@@ -909,7 +917,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "c0675783080e398ba6942f2be6b68299f4460d0b328250a269dc415f4d232a4c"
+content-hash = "4427c11210ad6d82ea66451c4b02e953477c33b2162941d1efa7856d12f5801d"
 
 [metadata.files]
 alembic = [
@@ -1624,6 +1632,10 @@ time-machine = [
     {file = "time_machine-2.7.1-cp39-cp39-musllinux_1_1_x86_64.whl", hash = "sha256:ff07a5635d42957f2bd7eb5ca6579f64de368c842e754a4d3414520693b75db9"},
     {file = "time_machine-2.7.1-cp39-cp39-win32.whl", hash = "sha256:8c6314e7e0ffd7af82c8026786d5551aff973e0c86ec1368b0590be9a7620cad"},
     {file = "time_machine-2.7.1-cp39-cp39-win_amd64.whl", hash = "sha256:d50a2620d726788cbde97c58e0f6f61d10337d16d088a1fad789f50a1b5ff4d1"},
+]
+toml = [
+    {file = "toml-0.10.2-py2.py3-none-any.whl", hash = "sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b"},
+    {file = "toml-0.10.2.tar.gz", hash = "sha256:b3bda1d108d5dd99f4a20d24d9c348e91c4db7ab1b749200bded2f839ccbe68f"},
 ]
 tomli = [
     {file = "tomli-1.2.3-py3-none-any.whl", hash = "sha256:e3069e4be3ead9668e21cb9b074cd948f7b3113fd9c8bba083f48247aab8b11c"},
