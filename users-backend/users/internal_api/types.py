@@ -3,6 +3,7 @@ from typing import Optional
 import strawberry
 
 from users.domain import entities
+from users.domain.services.create_pastaporto import create_not_authenticated_pastaporto
 
 
 @strawberry.type
@@ -35,3 +36,12 @@ class User:
             name=user.name,
             gender=user.gender,
         )
+
+
+@strawberry.type
+class CreatePastaporto:
+    pastaporto_token: str
+
+    @classmethod
+    def not_authenticated(cls) -> str:
+        return cls(pastaporto_token=create_not_authenticated_pastaporto())

@@ -25,9 +25,11 @@ async def _(
 
     response = await internalapi_graphql_client.query(query, variables={"id": user.id})
     assert not response.errors
-    assert {"id": str(user.id), "email": user.email, "isStaff": False} == response.data[
-        "user"
-    ]
+    assert {
+        "id": str(user.id),
+        "email": user.email,
+        "is_staff": False,
+    } == response.data["user"]
 
 
 @test("get user by not existent id")

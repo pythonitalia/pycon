@@ -6,11 +6,8 @@ import { GraphQLRequestContextDidEncounterErrors } from "apollo-server-types";
 import { GraphQLError } from "graphql";
 
 import { ENV, SENTRY_DSN } from "../config";
-import { Pastaporto } from "../pastaporto/entities";
 
-type ApolloContext = {
-  pastaporto: Pastaporto;
-};
+type ApolloContext = {};
 
 export const initSentry = (isServerless: boolean) => {
   if (!SENTRY_DSN) {
@@ -76,15 +73,6 @@ const configureScope = (
   scope: NodeSentry.Scope,
   context: GraphQLRequestContextDidEncounterErrors<ApolloContext>,
 ) => {
-  if (context.context.pastaporto.userInfo) {
-    scope.setUser({
-      id: `${context.context.pastaporto.userInfo.id}`,
-      ip_address: "{{auto}}",
-    });
-  } else {
-    scope.setUser(null);
-  }
-
   scope.setTag("kind", context.operation!.operation);
   scope.setExtra("query", context.request.query);
   scope.setExtra("variables", removePIIs(context.request.variables));

@@ -4,14 +4,11 @@ import {
   RemoteGraphQLDataSource,
 } from "@apollo/gateway";
 
-import { getPastaportoActionFromToken } from "./actions";
 import { IS_DEV } from "./config";
 import { schema as logoutSchema } from "./internal-services/logout";
-import { Pastaporto } from "./pastaporto/entities";
 import { getServices } from "./services";
 
 const PASTAPORTO_X_HEADER = "x-pastaporto";
-const PASTAPORTO_ACTION_X_HEADER = "x-pastaporto-action";
 const BACKEND_TOKEN_X_HEADER = "x-backend-token";
 
 class ServiceRemoteGraphQLDataSource extends RemoteGraphQLDataSource {
@@ -19,9 +16,8 @@ class ServiceRemoteGraphQLDataSource extends RemoteGraphQLDataSource {
     request,
     context,
   }: Parameters<NonNullable<RemoteGraphQLDataSource["willSendRequest"]>>[0]) {
-    const pastaporto: Pastaporto = context.pastaporto;
-    if (pastaporto) {
-      request!.http!.headers.set(PASTAPORTO_X_HEADER, pastaporto.sign());
+    if (context.pastaporto) {
+      request!.http!.headers.set(PASTAPORTO_X_HEADER, context.pastaporto);
     }
 
     const gatewayRequestHeaders = context.allHeaders;
@@ -43,23 +39,10 @@ class ServiceRemoteGraphQLDataSource extends RemoteGraphQLDataSource {
     NonNullable<RemoteGraphQLDataSource["didReceiveResponse"]>
   >[0]) {
     const headers = response.http!.headers;
-    const pastaportoAction = headers.get(PASTAPORTO_ACTION_X_HEADER);
+    const setCookie = headers.get("set-cookie");
 
-    if (pastaportoAction) {
-      context.pastaportoAction = getPastaportoActionFromToken(pastaportoAction);
-    }
-
-    return response;
-  }
-
-  async process(
-    options: Parameters<NonNullable<RemoteGraphQLDataSource["process"]>>[0],
-  ) {
-    const { context } = options;
-    const response = await super.process(options);
-
-    if (context.pastaportoAction) {
-      await context.pastaportoAction.apply(context);
+    if (setCookie) {
+      context.res.set("set-cookie", setCookie);
     }
 
     return response;

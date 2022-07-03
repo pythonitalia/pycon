@@ -8,7 +8,8 @@ import jwt
 from sqlalchemy import Boolean, Column, Date, DateTime, Integer, String, Table
 from sqlalchemy.orm import registry
 from starlette.authentication import BaseUser
-from users.settings import SECRET_KEY
+
+from users.settings import IDENTITY_SECRET, SECRET_KEY
 from users.starlette_password.hashers import (
     check_password,
     is_password_usable,
@@ -68,6 +69,9 @@ class User(BaseUser):
     def get_reset_password_jwt_id(self) -> str:
         return f"reset-password:{self.id}:{self.jwt_auth_id}"
 
+    def get_auth_jwt_id(self) -> str:
+        return f"auth:{self.id}:{self.jwt_auth_id}"
+
     def create_reset_password_token(self) -> str:
         now = datetime.now(timezone.utc)
         return jwt.encode(
@@ -80,6 +84,21 @@ class User(BaseUser):
                 "aud": "users/reset-password",
             },
             str(SECRET_KEY),
+            algorithm="HS256",
+        )
+
+    def create_identity_token(self) -> str:
+        now = datetime.now(timezone.utc)
+        return jwt.encode(
+            {
+                "jti": self.get_auth_jwt_id(),
+                "sub": self.id,
+                "exp": now + timedelta(days=90),
+                "iat": now,
+                "iss": "users",
+                "aud": "identity",
+            },
+            str(IDENTITY_SECRET),
             algorithm="HS256",
         )
 

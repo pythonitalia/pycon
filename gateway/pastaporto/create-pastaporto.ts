@@ -5,16 +5,12 @@ import { SERVICE_TO_SERVICE_SECRET, USERS_SERVICE } from "../config";
 
 const USERS_SERVICE_INTERNAL_API_ENDPOINT = `${USERS_SERVICE}/internal-api`;
 
-export type User = {
-  id: number;
-  email: string;
-  isStaff: boolean;
-  isActive: boolean;
-  jwtAuthId: number;
-};
-
-export const fetchUserInfo = async (id: string): Promise<User | null> => {
-  console.info("fetching user info for:", id);
+export const createPastaporto = async (
+  identityToken: string | null,
+): Promise<string | null> => {
+  if (!identityToken) {
+    return null;
+  }
 
   const token: string = jwt.sign({}, SERVICE_TO_SERVICE_SECRET!, {
     issuer: "gateway",
@@ -29,17 +25,13 @@ export const fetchUserInfo = async (id: string): Promise<User | null> => {
   });
 
   const query = gql`
-    query ($id: ID!) {
-      user(id: $id) {
-        id
-        email
-        isStaff
-        isActive
-        jwtAuthId
+    query ($identityToken: String) {
+      createPastaporto(identityToken: $identityToken) {
+        pastaportoToken
       }
     }
   `;
 
-  const data = await client.request(query, { id });
-  return data.user as User;
+  const data = await client.request(query, { identityToken });
+  return data.createPastaporto.pastaportoToken;
 };
