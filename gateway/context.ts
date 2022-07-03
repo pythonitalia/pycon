@@ -1,3 +1,4 @@
+import { IS_DEV } from "config";
 import cookie from "cookie";
 
 import { createPastaporto } from "./pastaporto/create-pastaporto";
@@ -30,6 +31,13 @@ export const createContext = async ({
     pastaporto = await createPastaporto(identity);
   } catch (e) {
     console.error("Error creating pastaporto.", e);
+    res.cookie("identity_v2", "invalid", {
+      httpOnly: true,
+      maxAge: -1,
+      path: "/",
+      sameSite: "strict",
+      secure: !IS_DEV,
+    });
   }
 
   const context: ApolloContext = {
