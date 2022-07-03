@@ -26,7 +26,6 @@ module "lambda" {
     PASTAPORTO_SECRET         = module.common_secrets.value.pastaporto_secret
     IDENTITY_SECRET           = module.common_secrets.value.identity_secret
     SERVICE_TO_SERVICE_SECRET = module.common_secrets.value.service_to_service_secret
-    PASTAPORTO_ACTION_SECRET  = module.common_secrets.value.pastaporto_action_secret
   }
 }
 

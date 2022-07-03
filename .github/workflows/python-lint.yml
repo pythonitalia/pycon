@@ -53,7 +53,6 @@ jobs:
           IDENTITY_SECRET: 'secret'
           PASTAPORTO_SECRET: 'secret'
           SERVICE_TO_SERVICE_SECRET: 'secret'
-          PASTAPORTO_ACTION_SECRET: 'secret'
           SECRET_KEY: 'secret'
           STRIPE_SECRET_API_KEY: 'secret_stripe_key'
           STRIPE_SUBSCRIPTION_PRICE_ID: 'secret_price_id'
