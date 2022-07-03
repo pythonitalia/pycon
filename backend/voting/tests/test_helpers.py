@@ -2,7 +2,6 @@ import pytest
 import respx
 from django.conf import settings
 from pythonit_toolkit.pastaporto.entities import Pastaporto, PastaportoUserInfo
-
 from voting.helpers import pastaporto_user_info_can_vote
 
 pytestmark = pytest.mark.django_db
@@ -11,7 +10,7 @@ pytestmark = pytest.mark.django_db
 def _get_pastaporto(user) -> Pastaporto:
     return Pastaporto(
         PastaportoUserInfo.from_data(
-            {"id": user.id, "email": user.email, "isStaff": user.is_staff}
+            {"id": user.id, "email": user.email, "is_staff": user.is_staff}
         )
     )
 

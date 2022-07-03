@@ -1,14 +1,13 @@
+import { IS_DEV } from "./config";
 import cookie from "cookie";
 
-import { createPastaporto } from "./pastaporto";
-import { Pastaporto } from "./pastaporto/entities";
-import { removeIdentityTokens } from "./pastaporto/identity";
+import { createPastaporto } from "./pastaporto/create-pastaporto";
 
 export type ApolloContext = {
   setCookies?: any[];
   setHeaders?: any[];
   allHeaders?: any;
-  pastaporto?: Pastaporto;
+  pastaporto: string | null;
   res?: any;
 };
 
@@ -26,32 +25,27 @@ export const createContext = async ({
     cookies = cookie.parse(cookiesHeader);
   }
 
-  let identity = null;
-  let refreshToken = null;
+  const identity = cookies?.["identity_v2"] ?? null;
+  let pastaporto = null;
+  try {
+    pastaporto = await createPastaporto(identity);
+  } catch (e) {
+    console.error("Error creating pastaporto.", e);
+    res.cookie("identity_v2", "invalid", {
+      httpOnly: true,
+      maxAge: -1,
+      path: "/",
+      sameSite: "strict",
+      secure: !IS_DEV,
+    });
+  }
 
   const context: ApolloContext = {
     setCookies: [],
     setHeaders: [],
+    pastaporto,
     allHeaders,
     res,
   };
-
-  if (cookies) {
-    identity = cookies["identity"];
-    refreshToken = cookies["refreshIdentity"];
-  }
-
-  try {
-    context.pastaporto = await createPastaporto(
-      identity,
-      context,
-      refreshToken,
-    );
-  } catch (e) {
-    console.log("Unable to create pastaporto, deleting identity tokens", e);
-    removeIdentityTokens(context);
-
-    context.pastaporto = Pastaporto.unauthenticated();
-  }
   return context;
 };

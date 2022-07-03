@@ -27,9 +27,6 @@ WORKDIR ${LAMBDA_TASK_ROOT}
 COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/dist ./
 
-# Copy some static files
-COPY --from=build /app/internal-services/logout/schema.graphql ./internal-services/logout/schema.graphql
-
 ENV NODE_ENV=production
 
 CMD [ "handler.graphqlHandler" ]

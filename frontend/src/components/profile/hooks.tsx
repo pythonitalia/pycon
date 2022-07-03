@@ -1,7 +1,7 @@
 import { updateOlarkFields } from "~/helpers/olark";
 
-export const LOGIN_KEY = "login_state_2";
-export const USER_INFO_CACHE = "user_info_cache";
+export const LOGIN_KEY = "login_state_v3";
+export const USER_INFO_CACHE = "user_info_cache_v2";
 
 const getLoginState = () => {
   const value =

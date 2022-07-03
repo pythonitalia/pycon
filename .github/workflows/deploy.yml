@@ -232,9 +232,6 @@ jobs:
           - name: pycon-backend
             path: ""
             url: https://${{ fromJSON('["pastaporto-", ""]')[github.ref == 'refs/heads/main'] }}admin.pycon.it/graphql
-          - name: logout
-            path: ./gateway/internal-services/logout/schema.graphql
-            url: https://logout
 
     steps:
       - uses: actions/checkout@v2

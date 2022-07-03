@@ -30,7 +30,6 @@ PASTAPORTO_SECRET = config("PASTAPORTO_SECRET", cast=Secret)
 SERVICE_TO_SERVICE_SECRET = config(
     "SERVICE_TO_SERVICE_SECRET", cast=Secret, default=None
 )
-PASTAPORTO_ACTION_SECRET = config("PASTAPORTO_ACTION_SECRET", cast=Secret, default=None)
 SECRET_KEY = config("SECRET_KEY", cast=Secret)
 
 IDENTITY_EXPIRES_AFTER_MINUTES = config(
@@ -62,6 +61,8 @@ ASSOCIATION_FRONTEND_URL = config(
 # Unit test configuration
 
 RUNNING_TESTS = config("RUNNING_TESTS", cast=bool, default=False)
+
+IDENTITY_COOKIE_KEY = "identity_v2"
 
 if RUNNING_TESTS:
     original_url = make_url(DATABASE_URL)
