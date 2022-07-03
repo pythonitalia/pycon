@@ -28,7 +28,7 @@ async def _(
     assert {
         "id": str(user.id),
         "email": user.email,
-        "is_staff": False,
+        "isStaff": False,
     } == response.data["user"]
 
 

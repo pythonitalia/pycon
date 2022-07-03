@@ -5,6 +5,7 @@ import jwt
 import strawberry
 from strawberry import ID
 
+from users.domain.services import exceptions
 from users.domain.services.create_pastaporto import create_pastaporto
 from users.internal_api.context import Info
 from users.internal_api.permissions import IsService
@@ -23,23 +24,26 @@ class Query:
         if not identity_token:
             return CreatePastaporto.not_authenticated()
 
-        decoded_identity = jwt.decode(
-            identity_token,
-            str(IDENTITY_SECRET),
-            audience="identity",
-            issuer="users",
-            algorithms=["HS256"],
-        )
+        try:
+            decoded_identity = jwt.decode(
+                identity_token,
+                str(IDENTITY_SECRET),
+                audience="identity",
+                issuer="users",
+                algorithms=["HS256"],
+            )
+        except jwt.exceptions.InvalidTokenError as e:
+            raise ValueError("Identity token is not valid") from e
+
         user_id = decoded_identity["sub"]
         user = await info.context.users_repository.get_by_id(int(user_id))
 
-        if not user.is_active:
+        try:
+            pastaporto_token = create_pastaporto(user, decoded_identity)
+        except (exceptions.TokenNotValidAnymoreError, exceptions.UserIsNotActiveError):
             return CreatePastaporto.not_authenticated()
 
-        if user.get_auth_jwt_id() != decoded_identity["jti"]:
-            return CreatePastaporto.not_authenticated()
-
-        return CreatePastaporto(pastaporto_token=create_pastaporto(user))
+        return CreatePastaporto(pastaporto_token=pastaporto_token)
 
     @strawberry.field(permission_classes=[IsService(["gateway", "pycon-backend"])])
     async def user(self, info: Info, id: ID) -> Optional[User]:

@@ -25,3 +25,7 @@ class ResetPasswordTokenExpiredError(Exception):
 
 class UserDoesNotExistError(Exception):
     """Raised when the user requested does not exist"""
+
+
+class TokenNotValidAnymoreError(Exception):
+    """Raised when the token is not valid anymore (jwt id invalided)"""

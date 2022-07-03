@@ -1,5 +1,6 @@
 import dataclasses
 from datetime import datetime, timedelta, timezone
+from typing import Any
 
 import jwt
 from pythonit_toolkit.pastaporto.entities import (
@@ -9,10 +10,23 @@ from pythonit_toolkit.pastaporto.entities import (
 )
 
 from users.domain.entities import User
+from users.domain.services.exceptions import (
+    TokenNotValidAnymoreError,
+    UserIsNotActiveError,
+)
 from users.settings import PASTAPORTO_SECRET
 
 
-def create_pastaporto(user: User) -> str:
+def create_pastaporto(user: User, decoded_identity: dict[str, Any]) -> str:
+    if not user.is_active:
+        raise UserIsNotActiveError()
+
+    if user.get_auth_jwt_id() != decoded_identity["jti"]:
+        raise TokenNotValidAnymoreError()
+
+    if decoded_identity["sub"] != user.id:
+        raise ValueError("Mismatching sub != passed user id")
+
     credentials = [Credential.AUTHENTICATED]
 
     if user.is_staff or user.is_superuser:
