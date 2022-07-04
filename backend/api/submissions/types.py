@@ -129,6 +129,9 @@ class Submission:
     def my_vote(self, info) -> Optional[VoteType]:
         request = info.context.request
 
+        if not request.user.is_authenticated:
+            return None
+
         try:
             return self.votes.get(user_id=request.user.id)
         except Vote.DoesNotExist:
