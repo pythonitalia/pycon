@@ -28,6 +28,7 @@ def pastaporto_auth(get_response):
 
         if not pastaporto_token:
             request.pastaporto = AnonymousPastaporto()
+            request.user = AnonymousUser()
             return get_response(request)
 
         try:
