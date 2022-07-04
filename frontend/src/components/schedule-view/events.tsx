@@ -210,14 +210,10 @@ export const ScheduleEntry: React.SFC<{
         sx={{
           color: "inherit",
           textDecoration: "none",
-          height: "100%",
           maxHeight: [null, 135],
-          display: "block",
-          "> span": {
-            height: "100%",
-            display: "flex",
-            flexDirection: "column",
-          },
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
         }}
       >
         <Text>
