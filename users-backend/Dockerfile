@@ -7,7 +7,7 @@ ARG FUNCTION_DIR
 RUN mkdir -p ${FUNCTION_DIR}
 WORKDIR ${FUNCTION_DIR}
 
-RUN apt-get install build-base jpeg-dev zlib-dev libxml2-dev libxslt-dev postgresql-libs make cmake libtool \
+RUN apt-get install -y build-base jpeg-dev zlib-dev libxml2-dev libxslt-dev postgresql-libs make cmake libtool \
     autoconf \
     libexecinfo-dev \
     libcurl \
@@ -19,7 +19,7 @@ RUN apt-get install build-base jpeg-dev zlib-dev libxml2-dev libxslt-dev postgre
     cargo \
     automake
 
-RUN apt-get install --no-cache --virtual .build-deps postgresql-dev
+RUN apt-get install -y --no-cache --virtual .build-deps postgresql-dev
 ENV LIBRARY_PATH=/lib:/usr/lib
 
 RUN pip3 install awslambdaric
