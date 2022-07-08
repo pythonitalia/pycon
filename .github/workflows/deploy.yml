@@ -93,6 +93,9 @@ jobs:
           else
             echo '::set-output name=image_exists::0'
           fi
+      - name: Set up QEMU dependency
+        if: ${{ steps.image.outputs.image_exists == 0 }}
+        uses: docker/setup-qemu-action@v1
       - name: Login to Amazon ECR
         if: ${{ steps.image.outputs.image_exists == 0 }}
         uses: aws-actions/amazon-ecr-login@v1
