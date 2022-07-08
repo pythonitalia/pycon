@@ -83,6 +83,7 @@ jobs:
           file: ./${{ matrix.service.dir }}/Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
           push: true
+          platforms: linux/arm64
           tags: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/${{ matrix.service.name }}:${{ steps.git.outputs.githash }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
