@@ -7,7 +7,7 @@ ARG FUNCTION_DIR
 RUN mkdir -p ${FUNCTION_DIR}
 WORKDIR ${FUNCTION_DIR}
 
-RUN apt-get install -y build-base jpeg-dev zlib-dev libxml2-dev libxslt-dev postgresql-libs make cmake libtool \
+RUN apt-get update -y && apt-get install -y build-base jpeg-dev zlib-dev libxml2-dev libxslt-dev postgresql-libs make cmake libtool \
     autoconf \
     libexecinfo-dev \
     libcurl \
