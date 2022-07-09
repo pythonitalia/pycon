@@ -7,21 +7,8 @@ ARG FUNCTION_DIR
 RUN mkdir -p ${FUNCTION_DIR}
 WORKDIR ${FUNCTION_DIR}
 
-# RUN apt-get update -y && apt-get install -y build-base jpeg-dev zlib-dev libxml2-dev libxslt-dev postgresql-libs make cmake libtool \
-#     autoconf \
-#     libexecinfo-dev \
-#     libcurl \
-#     gcc \
-#     musl-dev \
-#     python3-dev \
-#     libffi-dev \
-#     openssl-dev \
-#     cargo \
-#     automake
-
 RUN apt-get update -y && apt-get install -y gcc
 
-# RUN apt-get install -y --no-cache --virtual .build-deps postgresql-dev
 ENV LIBRARY_PATH=/lib:/usr/lib
 
 RUN pip3 install awslambdaric
@@ -31,7 +18,7 @@ COPY pyproject.toml ${FUNCTION_DIR}
 
 RUN pip3 install poetry==1.1.13
 
-RUN poetry config virtualenvs.create false
+RUN poetry config virtualenvs.path /venv
 RUN poetry install --no-dev
 
 FROM python:3.9-slim
@@ -61,5 +48,5 @@ RUN mkdir -p ${FUNCTION_DIR}/assets
 
 COPY . ${FUNCTION_DIR}
 
-ENTRYPOINT ["/usr/local/bin/python", "-m", "awslambdaric"]
+ENTRYPOINT ["/venv/bin/python", "-m", "awslambdaric"]
 CMD [ "main.handler" ]

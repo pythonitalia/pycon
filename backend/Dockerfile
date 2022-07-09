@@ -7,20 +7,15 @@ ARG FUNCTION_DIR
 RUN mkdir -p ${FUNCTION_DIR}
 WORKDIR ${FUNCTION_DIR}
 
-# RUN apk add build-base jpeg-dev zlib-dev libxml2-dev libxslt-dev postgresql-libs make cmake libtool \
-#     autoconf \
-#     libexecinfo-dev \
-#     libcurl \
-#     gcc \
-#     musl-dev \
-#     python3-dev \
-#     libffi-dev \
-#     openssl-dev \
-#     cargo
-
-# RUN apk add --no-cache --virtual .build-deps postgresql-dev
-
-RUN apt-get update -y && apt-get install -y gcc libpq-dev git libtiff5-dev libjpeg62-turbo-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev
+RUN apt-get update -y && apt-get install -y gcc \
+    libpq-dev \
+    git \
+    libtiff5-dev \
+    libjpeg62-turbo-dev \
+    zlib1g-dev \
+    libfreetype6-dev \
+    liblcms2-dev \
+    libwebp-dev
 
 ENV LIBRARY_PATH=/lib:/usr/lib
 
@@ -73,7 +68,7 @@ RUN USERS_SERVICE=empty \
     AWS_REGION_NAME=eu-central-1 \
     SECRET_KEY=DEMO \
     PASTAPORTO_SECRET=demo \
-    python manage.py collectstatic --noinput
+    /venv/bin/python manage.py collectstatic --noinput
 
 ENTRYPOINT ["/venv/bin/python", "-m", "awslambdaric"]
 CMD [ "wsgi_handler.handler" ]
