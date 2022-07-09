@@ -23,6 +23,9 @@ jobs:
   create-db:
     runs-on: ubuntu-latest
     if: github.ref != 'refs/heads/main'
+    defaults:
+      run:
+        working-directory: ./infrastructure/applications
     steps:
       - uses: actions/checkout@v2
         with:
