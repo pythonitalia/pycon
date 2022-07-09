@@ -48,7 +48,7 @@ wrapt = ">=1.11,<1.13"
 
 [[package]]
 name = "atomicwrites"
-version = "1.4.0"
+version = "1.4.1"
 description = "Atomic file writes."
 category = "dev"
 optional = false
@@ -118,14 +118,14 @@ six = "*"
 
 [[package]]
 name = "boto3"
-version = "1.24.22"
+version = "1.24.26"
 description = "The AWS SDK for Python"
 category = "main"
 optional = false
 python-versions = ">= 3.7"
 
 [package.dependencies]
-botocore = ">=1.27.22,<1.28.0"
+botocore = ">=1.27.26,<1.28.0"
 jmespath = ">=0.7.1,<2.0.0"
 s3transfer = ">=0.6.0,<0.7.0"
 
@@ -134,7 +134,7 @@ crt = ["botocore[crt] (>=1.21.0,<2.0a0)"]
 
 [[package]]
 name = "botocore"
-version = "1.27.22"
+version = "1.27.26"
 description = "Low-level, data-driven core of boto 3."
 category = "main"
 optional = false
@@ -497,7 +497,7 @@ doc = ["sphinx", "sphinx-rtd-theme"]
 
 [[package]]
 name = "faker"
-version = "13.14.0"
+version = "13.15.0"
 description = "Faker is a Python package that generates fake data for you."
 category = "dev"
 optional = false
@@ -1059,7 +1059,7 @@ pytest = ">=3.3.2"
 
 [[package]]
 name = "pytest-mock"
-version = "3.8.1"
+version = "3.8.2"
 description = "Thin-wrapper around the mock package for easier use with pytest"
 category = "dev"
 optional = false
@@ -1492,10 +1492,13 @@ category = "main"
 optional = false
 python-versions = "*"
 
+[extras]
+lambda = ["awslambdaric"]
+
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "5008cbae33a7741b8e3137179e365bf743c6044d079124db023174886aac05e6"
+content-hash = "72ce5cb9545a65373ee1e65cb209071c195982af7abf32375abae0ae5f18592c"
 
 [metadata.files]
 aniso8601 = []
