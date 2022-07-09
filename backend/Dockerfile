@@ -31,7 +31,7 @@ COPY pyproject.toml ${FUNCTION_DIR}
 
 RUN pip3 install awslambdaric
 
-RUN poetry config virtualenvs.create false
+RUN poetry config virtualenvs.path /venv
 RUN poetry install --no-dev
 
 FROM python:3.9-slim
@@ -40,7 +40,7 @@ ARG FUNCTION_DIR
 
 WORKDIR ${FUNCTION_DIR}
 
-COPY --from=build-stage /usr/local/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages
+COPY --from=build-stage /venv /venv
 
 COPY --from=build-stage /usr/local/lib/*.so* /usr/local/lib/
 COPY --from=build-stage /usr/lib/libpq* \
@@ -75,5 +75,5 @@ RUN USERS_SERVICE=empty \
     PASTAPORTO_SECRET=demo \
     python manage.py collectstatic --noinput
 
-ENTRYPOINT ["/usr/local/bin/python", "-m", "awslambdaric"]
+ENTRYPOINT ["/venv/bin/python", "-m", "awslambdaric"]
 CMD [ "wsgi_handler.handler" ]
