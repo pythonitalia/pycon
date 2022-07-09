@@ -1,24 +1,27 @@
 ARG FUNCTION_DIR="/home/app/"
 
-FROM python:3.9-alpine as build-stage
+FROM python:3.9-slim as build-stage
 
 ARG FUNCTION_DIR
 
 RUN mkdir -p ${FUNCTION_DIR}
 WORKDIR ${FUNCTION_DIR}
 
-RUN apk add build-base jpeg-dev zlib-dev libxml2-dev libxslt-dev postgresql-libs make cmake libtool \
-    autoconf \
-    libexecinfo-dev \
-    libcurl \
-    gcc \
-    musl-dev \
-    python3-dev \
-    libffi-dev \
-    openssl-dev \
-    cargo
+# RUN apk add build-base jpeg-dev zlib-dev libxml2-dev libxslt-dev postgresql-libs make cmake libtool \
+#     autoconf \
+#     libexecinfo-dev \
+#     libcurl \
+#     gcc \
+#     musl-dev \
+#     python3-dev \
+#     libffi-dev \
+#     openssl-dev \
+#     cargo
 
-RUN apk add --no-cache --virtual .build-deps postgresql-dev
+# RUN apk add --no-cache --virtual .build-deps postgresql-dev
+
+RUN apt-get update -y && apt-get install -y gcc
+
 ENV LIBRARY_PATH=/lib:/usr/lib
 
 RUN pip3 install poetry
@@ -33,7 +36,7 @@ RUN pip3 install awslambdaric
 RUN poetry config virtualenvs.create false
 RUN poetry install --no-dev
 
-FROM python:3.9-alpine
+FROM python:3.9-slim
 
 ARG FUNCTION_DIR
 
