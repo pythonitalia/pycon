@@ -20,7 +20,7 @@ WORKDIR ${FUNCTION_DIR}
 
 # RUN apk add --no-cache --virtual .build-deps postgresql-dev
 
-RUN apt-get update -y && apt-get install -y gcc git
+RUN apt-get update -y && apt-get install -y gcc git jpeg-dev zlib-dev
 
 ENV LIBRARY_PATH=/lib:/usr/lib
 
