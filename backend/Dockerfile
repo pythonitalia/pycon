@@ -20,7 +20,7 @@ WORKDIR ${FUNCTION_DIR}
 
 # RUN apk add --no-cache --virtual .build-deps postgresql-dev
 
-RUN apt-get update -y && apt-get install -y gcc git libtiff5-dev libjpeg62-turbo-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev
+RUN apt-get update -y && apt-get install -y gcc libpq-dev git libtiff5-dev libjpeg62-turbo-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev
 
 ENV LIBRARY_PATH=/lib:/usr/lib
 
