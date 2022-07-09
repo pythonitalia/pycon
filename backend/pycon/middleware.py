@@ -28,7 +28,8 @@ def pastaporto_auth(get_response):
 
         if not pastaporto_token:
             request.pastaporto = AnonymousPastaporto()
-            request.user = AnonymousUser()
+            if request.path == "/graphql":
+                request.user = AnonymousUser()
             return get_response(request)
 
         try:
