@@ -29,7 +29,7 @@ RUN pip3 install awslambdaric
 COPY poetry.lock ${FUNCTION_DIR}
 COPY pyproject.toml ${FUNCTION_DIR}
 
-RUN pip3 install poetry
+RUN pip3 install poetry==1.1.13
 
 RUN poetry config virtualenvs.create false
 RUN poetry install --no-dev

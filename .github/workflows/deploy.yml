@@ -22,7 +22,7 @@ env:
 jobs:
   create-db:
     runs-on: ubuntu-latest
-    if: ${{ github.ref != 'refs/heads/main' }}
+    if: github.ref != 'refs/heads/main'
     steps:
       - uses: actions/checkout@v2
         with:
@@ -44,7 +44,7 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       - name: Terraform apply
-        run: terraform apply -target module.database -no-color -auto-approve &> /dev/null
+        run: terraform apply -target module.database -no-color -auto-approve
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
