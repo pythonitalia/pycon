@@ -11,7 +11,7 @@ RUN apt-get update -y && apt-get install -y gcc \
     libpq-dev \
     git \
     libtiff5-dev \
-    libjpeg62-turbo-dev \
+    libjpeg62 \
     zlib1g-dev \
     libfreetype6-dev \
     liblcms2-dev \
