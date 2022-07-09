@@ -14,7 +14,7 @@ resource "aws_lambda_function" "lambda" {
   memory_size   = var.memory_size
   package_type  = "Image"
   image_uri     = local.image_uri
-  architectures = ["arm64", "x86_64"]
+  architectures = [var.architecture]
 
   dynamic "vpc_config" {
     for_each = local.use_vpc ? [1] : []
