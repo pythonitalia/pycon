@@ -49,5 +49,5 @@ RUN mkdir -p ${FUNCTION_DIR}/assets
 
 COPY . ${FUNCTION_DIR}
 
-ENTRYPOINT ["/.venv/bin/python", "-m", "awslambdaric"]
+ENTRYPOINT ["/home/app/.venv/bin/python", "-m", "awslambdaric"]
 CMD [ "main.handler" ]

@@ -68,7 +68,7 @@ RUN USERS_SERVICE=empty \
     AWS_REGION_NAME=eu-central-1 \
     SECRET_KEY=DEMO \
     PASTAPORTO_SECRET=demo \
-    /.venv/bin/python manage.py collectstatic --noinput
+    ${FUNCTION_DIR}/.venv/bin/python manage.py collectstatic --noinput
 
-ENTRYPOINT ["/.venv/bin/python", "-m", "awslambdaric"]
+ENTRYPOINT ["/home/app/.venv/bin/python", "-m", "awslambdaric"]
 CMD [ "wsgi_handler.handler" ]
