@@ -18,7 +18,7 @@ COPY pyproject.toml ${FUNCTION_DIR}
 
 RUN pip3 install poetry
 
-RUN poetry config virtualenvs.path /venv
+RUN poetry config virtualenvs.in-project true
 RUN poetry install --no-dev
 
 FROM python:3.9-slim
@@ -27,6 +27,7 @@ ARG FUNCTION_DIR
 
 WORKDIR ${FUNCTION_DIR}
 
+COPY --from=build-stage ${FUNCTION_DIR}/.venv ${FUNCTION_DIR}/.venv
 COPY --from=build-stage /usr/local/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages
 
 COPY --from=build-stage /usr/local/lib/*.so* /usr/local/lib/
@@ -48,5 +49,5 @@ RUN mkdir -p ${FUNCTION_DIR}/assets
 
 COPY . ${FUNCTION_DIR}
 
-ENTRYPOINT ["/venv/bin/python", "-m", "awslambdaric"]
+ENTRYPOINT ["/.venv/bin/python", "-m", "awslambdaric"]
 CMD [ "main.handler" ]
