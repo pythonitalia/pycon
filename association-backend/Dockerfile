@@ -11,15 +11,13 @@ RUN apt-get update -y && apt-get install -y gcc
 
 ENV LIBRARY_PATH=/lib:/usr/lib
 
-RUN pip3 install awslambdaric
-
 COPY poetry.lock ${FUNCTION_DIR}
 COPY pyproject.toml ${FUNCTION_DIR}
 
 RUN pip3 install poetry
 
 RUN poetry config virtualenvs.in-project true
-RUN poetry install --no-dev
+RUN poetry install --no-dev -E lambda
 
 FROM python:3.9-slim
 

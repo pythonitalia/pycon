@@ -24,10 +24,8 @@ RUN pip3 install poetry==1.1.13
 COPY poetry.lock ${FUNCTION_DIR}
 COPY pyproject.toml ${FUNCTION_DIR}
 
-RUN pip3 install awslambdaric
-
 RUN poetry config virtualenvs.in-project true
-RUN poetry install --no-dev
+RUN poetry install --no-dev -E lambda
 
 FROM python:3.9-slim
 
