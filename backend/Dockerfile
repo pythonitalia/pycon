@@ -20,16 +20,14 @@ WORKDIR ${FUNCTION_DIR}
 
 # RUN apk add --no-cache --virtual .build-deps postgresql-dev
 
-RUN apt-get update -y && apt-get install -y gcc
+RUN apt-get update -y && apt-get install -y gcc git
 
 ENV LIBRARY_PATH=/lib:/usr/lib
 
-RUN pip3 install poetry
+RUN pip3 install poetry==1.1.13
 
 COPY poetry.lock ${FUNCTION_DIR}
 COPY pyproject.toml ${FUNCTION_DIR}
-
-RUN apk add automake git
 
 RUN pip3 install awslambdaric
 
