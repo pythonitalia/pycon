@@ -19,6 +19,8 @@ WORKDIR ${FUNCTION_DIR}
 #     cargo \
 #     automake
 
+RUN apt install -y gcc
+
 # RUN apt-get install -y --no-cache --virtual .build-deps postgresql-dev
 ENV LIBRARY_PATH=/lib:/usr/lib
 
