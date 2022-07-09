@@ -18,7 +18,7 @@ from logging import getLogger
 import serverless_wsgi
 from sqs_messages import process_sqs_messages
 
-logging.getLogger().setLevel(logging.DEBUG)
+logging.getLogger().setLevel(logging.INFO)
 logger = getLogger(__name__)
 
 
