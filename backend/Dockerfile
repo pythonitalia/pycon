@@ -9,7 +9,8 @@ WORKDIR ${FUNCTION_DIR}
 
 RUN apt-get update -y && apt-get install -y gcc \
     libpq-dev \
-    git
+    git \
+    zlib1g-dev
 
 ENV LIBRARY_PATH=/lib:/usr/lib
 
