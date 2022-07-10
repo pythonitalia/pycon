@@ -17,7 +17,7 @@ on:
 
 env:
   TF_WORKSPACE:  ${{ fromJSON('["pastaporto", "production"]')[github.ref == 'refs/heads/main'] }}
-  APOLLO_ROVER_VERSION: 0.1.9
+  APOLLO_ROVER_VERSION: 0.7.0
 
 jobs:
   create-db:
