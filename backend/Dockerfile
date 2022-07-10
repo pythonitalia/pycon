@@ -10,7 +10,8 @@ WORKDIR ${FUNCTION_DIR}
 RUN apt-get update -y && apt-get install -y gcc \
     libpq-dev \
     git \
-    zlib1g-dev
+    zlib1g-dev \
+    libjpeg62
 
 ENV LIBRARY_PATH=/lib:/usr/lib
 
