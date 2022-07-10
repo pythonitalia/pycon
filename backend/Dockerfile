@@ -7,11 +7,12 @@ ARG FUNCTION_DIR
 RUN mkdir -p ${FUNCTION_DIR}
 WORKDIR ${FUNCTION_DIR}
 
-RUN apt-get update -y && apt-get install -y gcc \
-    libpq-dev \
-    git \
-    zlib1g-dev \
-    libjpeg62
+RUN apt-get update -y && apt-get install -y \
+    gcc libpq-dev git \
+    # Pillow
+    libtiff5-dev libjpeg8-dev libopenjp2-7-dev zlib1g-dev \
+    libfreetype6-dev liblcms2-dev libwebp-dev tcl8.6-dev tk8.6-dev python3-tk \
+    libharfbuzz-dev libfribidi-dev libxcb1-dev
 
 ENV LIBRARY_PATH=/lib:/usr/lib
 
@@ -31,24 +32,21 @@ WORKDIR ${FUNCTION_DIR}
 
 COPY --from=build-stage ${FUNCTION_DIR}/.venv ${FUNCTION_DIR}/.venv
 
-RUN apt-get update -y && apt-get install -y libjpeg62
-
-
-# COPY --from=build-stage /usr/local/lib/*.so* /usr/local/lib/
-# COPY --from=build-stage /usr/lib/libpq* \
-#     /usr/lib/libpq* \
-#     /usr/lib/libldap_r* \
-#     /usr/lib/liblber* \
-#     /usr/lib/libsasl* \
-#     /usr/lib/libxslt* \
-#     /usr/lib/libexslt* \
-#     /usr/lib/libxml2* \
-#     /usr/lib/libgcrypt* \
-#     /usr/lib/libgpg-error* \
-#     /usr/lib/libstdc++* \
-#     /usr/lib/libgcc_s* \
-#     /usr/lib/libjpeg* \
-#     /usr/lib/
+COPY --from=build-stage /usr/local/lib/*.so* /usr/local/lib/
+COPY --from=build-stage /usr/lib/libpq* \
+    /usr/lib/libpq* \
+    /usr/lib/libldap_r* \
+    /usr/lib/liblber* \
+    /usr/lib/libsasl* \
+    /usr/lib/libxslt* \
+    /usr/lib/libexslt* \
+    /usr/lib/libxml2* \
+    /usr/lib/libgcrypt* \
+    /usr/lib/libgpg-error* \
+    /usr/lib/libstdc++* \
+    /usr/lib/libgcc_s* \
+    /usr/lib/libjpeg* \
+    /usr/lib/
 
 RUN mkdir -p ${FUNCTION_DIR}/assets
 
