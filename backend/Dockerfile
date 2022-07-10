@@ -26,6 +26,7 @@ RUN tar -czvf /libs.tar.gz /usr/lib/x86_64-linux-gnu/libpq* \
     /usr/lib/x86_64-linux-gnu/libstdc++* \
     /usr/lib/x86_64-linux-gnu/libjpeg* \
     /usr/lib/x86_64-linux-gnu/libopenjp2* \
+    /usr/lib/x86_64-linux-gnu/libdeflate* \
     /usr/lib/x86_64-linux-gnu/libjbig* \
     /usr/lib/x86_64-linux-gnu/liblcms2* \
     /usr/lib/x86_64-linux-gnu/libwebp* \
