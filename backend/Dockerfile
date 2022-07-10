@@ -32,21 +32,7 @@ WORKDIR ${FUNCTION_DIR}
 
 COPY --from=build-stage ${FUNCTION_DIR}/.venv ${FUNCTION_DIR}/.venv
 
-COPY --from=build-stage /usr/local/lib/*.so* /usr/local/lib/
-COPY --from=build-stage /usr/local/lib/libpq* \
-    /usr/local/lib/libpq* \
-    /usr/local/lib/libldap_r* \
-    /usr/local/lib/liblber* \
-    /usr/local/lib/libsasl* \
-    /usr/local/lib/libxslt* \
-    /usr/local/lib/libexslt* \
-    /usr/local/lib/libxml2* \
-    /usr/local/lib/libgcrypt* \
-    /usr/local/lib/libgpg-error* \
-    /usr/local/lib/libstdc++* \
-    /usr/local/lib/libgcc_s* \
-    /usr/local/lib/libjpeg* \
-    /usr/local/lib/
+RUN apt-get update -y && apt-get install -y libjpeg62 libopenjp2-7-dev
 
 RUN mkdir -p ${FUNCTION_DIR}/assets
 
