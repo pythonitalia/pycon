@@ -47,9 +47,7 @@ ARG FUNCTION_DIR
 WORKDIR ${FUNCTION_DIR}
 
 COPY --from=build-stage ${FUNCTION_DIR}/.venv ${FUNCTION_DIR}/.venv
-
 COPY --from=build-stage /usr/local/lib/*.so* /usr/local/lib/
-
 COPY --from=build-stage /libs.tar.gz /libs.tar.gz
 
 RUN tar -xvf /libs.tar.gz -C / && rm /libs.tar.gz && ldconfig
