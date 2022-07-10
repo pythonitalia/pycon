@@ -3,10 +3,6 @@ inputs:
   service-name:
     description: 'Name of the service'
     required: true
-  schema-path:
-    description: 'Path to the schema file'
-    default: ''
-    required: false
   service-graphql-url:
     description: 'Service GraphQL URL'
     required: true
@@ -30,18 +26,9 @@ runs:
       env:
         APOLLO_KEY: ${{ inputs.apollo-key }}
       run: |
-
-        if [[ "${{inputs.schema-path}}" == "" ]]; then
           rover subgraph introspect ${{ inputs.service-graphql-url }} > ${{ inputs.service-name }}-schema.graphql
           rover subgraph publish ${{ inputs.graph }}@${{ inputs.variant }} \
             --schema ${{ inputs.service-name }}-schema.graphql \
             --name ${{ inputs.service-name }} \
             --convert \
             --routing-url ${{ inputs.service-graphql-url }}
-        else
-          rover subgraph publish ${{ inputs.graph }}@${{ inputs.variant }} \
-            --schema ${{ inputs.schema-path }} \
-            --name ${{ inputs.service-name }} \
-            --convert \
-            --routing-url ${{ inputs.service-graphql-url }}
-        fi

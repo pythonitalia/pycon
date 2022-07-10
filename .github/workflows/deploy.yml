@@ -265,13 +265,10 @@ jobs:
       matrix:
         service:
           - name: users-backend
-            path: ""
             url: https://${{ fromJSON('["pastaporto-", ""]')[github.ref == 'refs/heads/main'] }}users-api.python.it/graphql
           - name: association-backend
-            path: ""
             url: https://${{ fromJSON('["pastaporto-", ""]')[github.ref == 'refs/heads/main'] }}association-api.python.it/graphql
           - name: pycon-backend
-            path: ""
             url: https://${{ fromJSON('["pastaporto-", ""]')[github.ref == 'refs/heads/main'] }}admin.pycon.it/graphql
 
     steps:
@@ -293,7 +290,6 @@ jobs:
         uses: ./.github/actions/publish-graph-schema
         with:
           service-name: ${{ matrix.service.name }}
-          schema-path: ${{ matrix.service.path }}
           service-graphql-url: ${{ matrix.service.url }}
           apollo-key: ${{ secrets.DEFAULT_APOLLO_KEY }}
           graph: default-python-italia
