@@ -299,7 +299,7 @@ python-versions = ">=2.7"
 
 [[package]]
 name = "django"
-version = "3.2.12"
+version = "3.2.14"
 description = "A high-level Python Web framework that encourages rapid development and clean, pragmatic design."
 category = "main"
 optional = false
@@ -1498,7 +1498,7 @@ lambda = ["awslambdaric"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "72ce5cb9545a65373ee1e65cb209071c195982af7abf32375abae0ae5f18592c"
+content-hash = "0203475727b38ebb43b73639b410db2d09225607fcd0bd1920fe18ed0c2fe540"
 
 [metadata.files]
 aniso8601 = []
