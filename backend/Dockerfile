@@ -33,21 +33,21 @@ WORKDIR ${FUNCTION_DIR}
 COPY --from=build-stage ${FUNCTION_DIR}/.venv ${FUNCTION_DIR}/.venv
 
 COPY --from=build-stage /usr/local/lib/*.so* /usr/local/lib/
-COPY --from=build-stage /usr/lib/x86_64-linux-gnu/*.* /usr/lib/x86_64-linux-gnu/
-COPY --from=build-stage /usr/lib/libpq* \
-    /usr/lib/libpq* \
-    /usr/lib/libldap_r* \
-    /usr/lib/liblber* \
-    /usr/lib/libsasl* \
-    /usr/lib/libxslt* \
-    /usr/lib/libexslt* \
-    /usr/lib/libxml2* \
-    /usr/lib/libgcrypt* \
-    /usr/lib/libgpg-error* \
-    /usr/lib/libstdc++* \
-    /usr/lib/libgcc_s* \
-    /usr/lib/libjpeg* \
-    /usr/lib/
+COPY --from=build-stage /usr/lib/x86_64-linux-gnu/libpq* \
+    /usr/lib/x86_64-linux-gnu/libpq* \
+    /usr/lib/x86_64-linux-gnu/libldap_r* \
+    /usr/lib/x86_64-linux-gnu/liblber* \
+    /usr/lib/x86_64-linux-gnu/libsasl* \
+    /usr/lib/x86_64-linux-gnu/libxslt* \
+    /usr/lib/x86_64-linux-gnu/libexslt* \
+    /usr/lib/x86_64-linux-gnu/libxml2* \
+    /usr/lib/x86_64-linux-gnu/libgcrypt* \
+    /usr/lib/x86_64-linux-gnu/libgpg-error* \
+    /usr/lib/x86_64-linux-gnu/libstdc++* \
+    /usr/lib/x86_64-linux-gnu/libgcc_s* \
+    /usr/lib/x86_64-linux-gnu/libjpeg* \
+    /usr/lib/x86_64-linux-gnu/libtiff* \
+    /usr/lib/x86_64-linux-gnu/
 
 RUN mkdir -p ${FUNCTION_DIR}/assets
 
