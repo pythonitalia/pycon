@@ -22,31 +22,35 @@ env:
 jobs:
   create-db:
     runs-on: ubuntu-latest
-    if: github.ref != 'refs/heads/main'
     defaults:
       run:
         working-directory: ./infrastructure/applications
     steps:
       - uses: actions/checkout@v2
+        if: github.ref != 'refs/heads/main'
         with:
           ref: ${{ github.ref }}
           fetch-depth: 0
       - name: Configure AWS credentials
+        if: github.ref != 'refs/heads/main'
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.aws_access_key_id }}
           aws-secret-access-key: ${{ secrets.aws_secret_access_key }}
           aws-region: eu-central-1
       - uses: hashicorp/setup-terraform@v1
+        if: github.ref != 'refs/heads/main'
         with:
           terraform_version: 1.2.4
       - name: Terraform Init
+        if: github.ref != 'refs/heads/main'
         run: terraform init
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       - name: Terraform apply
+        if: github.ref != 'refs/heads/main'
         run: terraform apply -target module.database -no-color -auto-approve &> /dev/null
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
