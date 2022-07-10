@@ -32,7 +32,9 @@ WORKDIR ${FUNCTION_DIR}
 
 COPY --from=build-stage ${FUNCTION_DIR}/.venv ${FUNCTION_DIR}/.venv
 
-RUN apt-get update -y && apt-get install -y libjpeg62 libopenjp2-7-dev
+RUN apt-get update -y && apt-get install -y libtiff5-dev libjpeg62 libopenjp2-7-dev \
+    libfreetype6-dev liblcms2-dev libwebp-dev tcl8.6-dev tk8.6-dev python3-tk \
+    libharfbuzz-dev libfribidi-dev libxcb1-dev
 
 RUN mkdir -p ${FUNCTION_DIR}/assets
 
