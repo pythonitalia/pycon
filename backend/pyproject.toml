@@ -43,6 +43,7 @@ strawberry-graphql = "^0.90"
 Werkzeug = "^1.0.1"
 pythonit-toolkit = "0.1.81"
 django-import-export = "^2.7.1"
+awslambdaric = {version = "^2.0.4", optional = true}
 
 [tool.poetry.dev-dependencies]
 pylint = "=2.6.0"
@@ -63,6 +64,9 @@ pytest-cache = "^1.0"
 bpython = "^0.22"
 time-machine = "^2.4.1"
 respx = "0.18.2"
+
+[tool.poetry.extras]
+lambda = ["awslambdaric"]
 
 [build-system]
 requires = ["poetry>=0.12"]

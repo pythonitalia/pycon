@@ -26,6 +26,7 @@ ormar = "0.11.1"
 mangum = "^0.11.0"
 sentry-sdk = "^1.1.0"
 psycopg2-binary = "^2.8.6"
+awslambdaric = {version = "^2.0.4", optional = true}
 
 
 [tool.poetry.dev-dependencies]
@@ -42,6 +43,8 @@ pdbpp = "^0.10.2"
 Faker = "^8.1.0"
 respx = "0.18.2"
 
+[tool.poetry.extras]
+lambda = ["awslambdaric"]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
