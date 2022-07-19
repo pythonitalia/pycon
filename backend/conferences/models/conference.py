@@ -58,6 +58,19 @@ class Conference(GeoLocalizedModel, TimeFramedModel, TimeStampedModel):
 
     introduction = I18nTextField(_("introduction"), blank=False)
 
+    slack_new_proposal_incoming_webhook_url = models.URLField(
+        _("New proposal Slack incoming webhook for notification"),
+        max_length=1024,
+        blank=True,
+        default="",
+    )
+    slack_new_proposal_comment_incoming_webhook_url = models.URLField(
+        _("New proposal comment Slack incoming webhook for notification"),
+        max_length=1024,
+        blank=True,
+        default="",
+    )
+
     @property
     def is_cfp_open(self):
         try:
