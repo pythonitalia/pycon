@@ -133,6 +133,7 @@ class SendSubmissionForm(SubmissionForm):
             duration=instance.duration.duration,
             topic=instance.topic.name,
             speaker_id=instance.speaker_id,
+            conference_id=instance.conference_id,
         )
         return instance
 

@@ -87,6 +87,10 @@ def handle_send_email_notification_for_new_submission_comment(data):
 
 
 def handle_send_slack_notification_for_new_submission_comment(data):
+    from conferences.models import Conference
+
+    conference = Conference.objects.get(id=data["conference_id"])
+
     speaker_id = data["speaker_id"]
     submission_title = data["submission_title"]
     author_id = data["author_id"]
@@ -107,7 +111,7 @@ def handle_send_slack_notification_for_new_submission_comment(data):
             {
                 "type": "section",
                 "text": {
-                    "text": f"New comment on submission {submission_title}",
+                    "text": f"New comment on proposal {submission_title}",
                     "type": "mrkdwn",
                 },
             }
@@ -147,11 +151,13 @@ def handle_send_slack_notification_for_new_submission_comment(data):
                 ],
             },
         ],
-        channel="submission-comments",
+        token=conference.slack_new_proposal_comment_incoming_webhook_url,
     )
 
 
 def handle_new_cfp_submission(data):
+    from conferences.models import Conference
+
     title = data["title"]
     elevator_pitch = data["elevator_pitch"]
     submission_type = data["submission_type"]
@@ -159,6 +165,8 @@ def handle_new_cfp_submission(data):
     topic = data["topic"]
     duration = data["duration"]
     speaker_id = data["speaker_id"]
+
+    conference = Conference.objects.get(id=data["conference_id"])
 
     user_result = execute_service_client_query(
         USERS_NAMES_FROM_IDS, {"ids": [speaker_id]}
@@ -171,7 +179,7 @@ def handle_new_cfp_submission(data):
             {
                 "type": "section",
                 "text": {
-                    "text": f"New _{submission_type}_ Submission by {user_name}",
+                    "text": f"New _{submission_type}_ proposal by {user_name}",
                     "type": "mrkdwn",
                 },
             }
@@ -196,7 +204,7 @@ def handle_new_cfp_submission(data):
                 ]
             }
         ],
-        channel="cfp",
+        token=conference.slack_new_proposal_incoming_webhook_url,
     )
 
 
