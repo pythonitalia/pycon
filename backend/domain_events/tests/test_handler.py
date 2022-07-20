@@ -1,5 +1,6 @@
 from unittest.mock import call, patch
 
+import pytest
 import respx
 from django.conf import settings
 from pythonit_toolkit.emails.templates import EmailTemplate
@@ -16,7 +17,13 @@ from domain_events.handler import (
 )
 
 
-def test_handle_new_cfp_submission():
+@pytest.mark.django_db
+def test_handle_new_cfp_submission(conference_factory):
+    conference = conference_factory(
+        slack_new_proposal_comment_incoming_webhook_url="https://123",
+        slack_new_proposal_incoming_webhook_url="https://456",
+    )
+
     data = {
         "title": "test_title",
         "elevator_pitch": "test_elevator_pitch",
@@ -25,6 +32,7 @@ def test_handle_new_cfp_submission():
         "topic": "test_topic",
         "duration": "50",
         "speaker_id": 10,
+        "conference_id": conference.id,
     }
 
     with patch("domain_events.handler.slack") as slack_mock, respx.mock as req_mock:
@@ -46,6 +54,7 @@ def test_handle_new_cfp_submission():
 
     slack_mock.send_message.assert_called_once()
     assert "Marco Acierno" in str(slack_mock.send_message.mock_calls[0])
+    assert "https://456" in str(slack_mock.send_message.mock_calls[0])
 
 
 def test_handle_new_submission_comment_triggers_more_actions():
@@ -204,7 +213,12 @@ def test_handle_new_submission_comment_email_action_with_multiple_people():
     )
 
 
-def test_handle_new_submission_comment_slack_action():
+@pytest.mark.django_db
+def test_handle_new_submission_comment_slack_action(conference_factory):
+    conference = conference_factory(
+        slack_new_proposal_comment_incoming_webhook_url="https://123",
+        slack_new_proposal_incoming_webhook_url="https://456",
+    )
     data = {
         "speaker_id": 20,
         "submission_title": "Test submission",
@@ -212,6 +226,7 @@ def test_handle_new_submission_comment_slack_action():
         "admin_url": "https://google.it",
         "submission_url": "https://twitter.it",
         "comment": "Comment here",
+        "conference_id": conference.id,
     }
 
     with patch("domain_events.handler.slack") as slack_mock, respx.mock as req_mock:
@@ -241,6 +256,7 @@ def test_handle_new_submission_comment_slack_action():
     assert "Marco Acierno" in str(slack_mock.send_message.mock_calls[0])
     assert "Speaker Name" in str(slack_mock.send_message.mock_calls[0])
     assert "Test submission" in str(slack_mock.send_message.mock_calls[0])
+    assert "https://123" in str(slack_mock.send_message.mock_calls[0])
 
 
 def test_handle_schedule_invitation_sent():

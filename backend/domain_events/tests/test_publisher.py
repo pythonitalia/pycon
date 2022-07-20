@@ -40,6 +40,7 @@ def test_notify_new_submission():
             42,
             "test_topic",
             10,
+            123,
         )
 
     mock_publish.assert_called_once_with(
@@ -52,6 +53,7 @@ def test_notify_new_submission():
             "topic": "test_topic",
             "duration": "42",
             "speaker_id": 10,
+            "conference_id": 123,
         },
         deduplication_id="1",
     )
