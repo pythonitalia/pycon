@@ -20,6 +20,7 @@ FRONTEND_URL = env("FRONTEND_URL")
 # Application definition
 
 INSTALLED_APPS = [
+    "custom_auth",
     "schedule.apps.ScheduleConfig",
     "custom_admin",
     "dal",
@@ -146,7 +147,7 @@ MEDIA_ROOT = root("media")
 
 AUTH_USER_MODEL = "users.User"
 
-AUTHENTICATION_BACKENDS = ("django.contrib.auth.backends.ModelBackend",)
+AUTHENTICATION_BACKENDS = ("custom_auth.backend.UsersAuthBackend",)
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 MAPBOX_PUBLIC_API_KEY = env("MAPBOX_PUBLIC_API_KEY", default="")
@@ -209,3 +210,6 @@ VOLUNTEERS_PUSH_NOTIFICATIONS_IOS_ARN = env(
 VOLUNTEERS_PUSH_NOTIFICATIONS_ANDROID_ARN = env(
     "VOLUNTEERS_PUSH_NOTIFICATIONS_ANDROID_ARN", default=""
 ).strip()
+
+USERS_SERVICE_URL = env("USERS_SERVICE")
+SERVICE_TO_SERVICE_SECRET = env("SERVICE_TO_SERVICE_SECRET")
