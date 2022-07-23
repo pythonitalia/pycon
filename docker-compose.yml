@@ -66,6 +66,8 @@ services:
   pycon-backend-db:
     image: postgres:11.13
     networks: [pycon_net]
+    ports:
+      - "15501:5432"
     volumes:
       - pycon-backend-db-data:/var/lib/postgresql/data
     environment:
@@ -111,6 +113,8 @@ services:
   users-backend-db:
     image: postgres:11.13
     networks: [pycon_net]
+    ports:
+      - "15500:5432"
     volumes:
       - users-backend-db-data:/var/lib/postgresql/data
     environment:
@@ -160,6 +164,8 @@ services:
   association-backend-db:
     image: postgres:11.13
     networks: [pycon_net]
+    ports:
+      - "15503:5432"
     volumes:
       - association-backend-db-data:/var/lib/postgresql/data
     environment:
