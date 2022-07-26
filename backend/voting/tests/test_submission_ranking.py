@@ -10,7 +10,7 @@ pytestmark = pytest.mark.django_db
 @pytest.fixture
 def mock_users():
     with respx.mock as mock:
-        mock.post(f"{settings.USERS_SERVICE}/internal-api").respond(
+        mock.post(f"{settings.USERS_SERVICE_URL}/internal-api").respond(
             json={
                 "data": {
                     "usersByIds": [

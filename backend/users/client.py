@@ -38,7 +38,7 @@ GET_USERS_BY_EMAILS = """
 
 def get_users_data_by_ids(ids: list[int]) -> dict[str, dict[str, Any]]:
     client = ServiceClient(
-        url=f"{settings.USERS_SERVICE}/internal-api",
+        url=f"{settings.USERS_SERVICE_URL}/internal-api",
         service_name="users-backend",
         caller="pycon-backend",
         jwt_secret=settings.SERVICE_TO_SERVICE_SECRET,
@@ -52,7 +52,7 @@ def get_users_data_by_ids(ids: list[int]) -> dict[str, dict[str, Any]]:
 
 def get_user_data_by_query(query: str):
     client = ServiceClient(
-        url=f"{settings.USERS_SERVICE}/internal-api",
+        url=f"{settings.USERS_SERVICE_URL}/internal-api",
         service_name="users-backend",
         caller="pycon-backend",
         jwt_secret=settings.SERVICE_TO_SERVICE_SECRET,
@@ -65,7 +65,7 @@ def get_user_data_by_query(query: str):
 
 def get_users_data_by_emails(emails: list[str]) -> dict[str, dict[str, Any]]:
     client = ServiceClient(
-        url=f"{settings.USERS_SERVICE}/internal-api",
+        url=f"{settings.USERS_SERVICE_URL}/internal-api",
         service_name="users-backend",
         caller="pycon-backend",
         jwt_secret=settings.SERVICE_TO_SERVICE_SECRET,
