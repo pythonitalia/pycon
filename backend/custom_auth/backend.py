@@ -36,9 +36,10 @@ class UsersAuthBackend(BaseBackend):
 
         user_data = login_data["login"]
 
-        # We either create a django user or re-use one that exists
         try:
             django_user = User.objects.get(email=user_data["email"])
+            django_user.full_name = user_data["fullname"]
+            django_user.save()
         except User.DoesNotExist:
             django_user = User.objects.create(
                 email=user_data["email"],
