@@ -64,7 +64,7 @@ services:
       retries: 10
 
   pycon-backend-db:
-    image: postgres:11.13
+    image: postgres:13.4
     networks: [pycon_net]
     ports:
       - "15501:5432"
@@ -111,7 +111,7 @@ services:
       retries: 10
 
   users-backend-db:
-    image: postgres:11.13
+    image: postgres:13.4
     networks: [pycon_net]
     ports:
       - "15500:5432"
@@ -162,7 +162,7 @@ services:
       retries: 10
 
   association-backend-db:
-    image: postgres:11.13
+    image: postgres:13.4
     networks: [pycon_net]
     ports:
       - "15503:5432"
