@@ -36,7 +36,7 @@ class UsersAuthBackend(BaseBackend):
                 {"input": {"email": username, "password": password, "staffOnly": True}},
             ).data
         except ServiceError as e:
-            logger.exception("Failed to login in django admin", e)
+            logger.exception("Failed to login in django admin", exc_info=e)
             return None
 
         if login_data["login"] is None:
