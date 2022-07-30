@@ -1,9 +1,14 @@
+import logging
+
 from asgiref.sync import async_to_sync
 from django.conf import settings
 from django.contrib.auth.backends import BaseBackend
-from pythonit_toolkit.service_client import ServiceClient
+from pythonit_toolkit.service_client import ServiceClient, ServiceError
 
 from users.models import User
+
+logger = logging.getLogger(__name__)
+
 
 LOGIN_QUERY = """mutation($input: LoginInput!) {
     login(input: $input) {
@@ -25,10 +30,14 @@ class UsersAuthBackend(BaseBackend):
             jwt_secret=str(settings.SERVICE_TO_SERVICE_SECRET),
         )
         client_execute = async_to_sync(client.execute)
-        login_data = client_execute(
-            LOGIN_QUERY,
-            {"input": {"email": username, "password": password, "staffOnly": True}},
-        ).data
+        try:
+            login_data = client_execute(
+                LOGIN_QUERY,
+                {"input": {"email": username, "password": password, "staffOnly": True}},
+            ).data
+        except ServiceError as e:
+            logger.exception("Failed to login in django admin", e)
+            return None
 
         if login_data["login"] is None:
             # User not found / not active / or anything else
