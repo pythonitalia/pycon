@@ -91,3 +91,17 @@ def test_authenticate_with_validation_error():
         )
 
     assert logged_user is None
+
+
+def test_get_user():
+    backend = UsersAuthBackend()
+    user = User.objects.create(full_name="Hello", email="anotheremail@test.it")
+
+    assert backend.get_user(user.id).id == user.id
+
+
+def test_not_existent_user():
+    backend = UsersAuthBackend()
+    User.objects.create(id=1, full_name="Hello", email="anotheremail@test.it")
+
+    assert backend.get_user(5000) is None
