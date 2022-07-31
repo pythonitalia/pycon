@@ -76,3 +76,18 @@ def test_authenticate_with_existing_user():
 
     assert logged_user.id == existing_user.id
     assert logged_user.full_name == "Test user"
+
+
+def test_authenticate_with_validation_error():
+    backend = UsersAuthBackend()
+
+    with respx.mock as mock:
+        mock.post(f"{settings.USERS_SERVICE_URL}/internal-api").respond(
+            json={"errors": [{"message": "Invalid data"}]}
+        )
+
+        logged_user = backend.authenticate(
+            request=None, username="marco", password="hello"
+        )
+
+    assert logged_user is None
