@@ -1,5 +1,6 @@
 resource "aws_s3_bucket" "backend_media" {
-  bucket = "${terraform.workspace}-pycon-backend-media"
+  bucket        = "${terraform.workspace}-pycon-backend-media"
+  force_destroy = !local.is_prod
 
   cors_rule {
     allowed_headers = ["*"]
