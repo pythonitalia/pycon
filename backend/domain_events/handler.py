@@ -27,7 +27,7 @@ USERS_NAMES_FROM_IDS = """query UserNamesFromIds($ids: [ID!]!) {
 
 def execute_service_client_query(query, variables):
     client = ServiceClient(
-        url=f"{settings.USERS_SERVICE}/internal-api",
+        url=f"{settings.USERS_SERVICE_URL}/internal-api",
         service_name="users-backend",
         caller="pycon-backend",
         jwt_secret=settings.SERVICE_TO_SERVICE_SECRET,

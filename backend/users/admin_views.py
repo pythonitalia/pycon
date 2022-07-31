@@ -15,7 +15,7 @@ SEARCH_USERS = """query SearchUsers($query: String!) {
 def users_autocomplete(request):
     term = request.GET.get("term", "")
     client = ServiceClient(
-        url=f"{settings.USERS_SERVICE}/internal-api",
+        url=f"{settings.USERS_SERVICE_URL}/internal-api",
         service_name="users-backend",
         caller="pycon-backend",
         jwt_secret=settings.SERVICE_TO_SERVICE_SECRET,

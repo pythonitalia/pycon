@@ -28,7 +28,7 @@ def test_handle_new_cfp_submission():
     }
 
     with patch("domain_events.handler.slack") as slack_mock, respx.mock as req_mock:
-        req_mock.post(f"{settings.USERS_SERVICE}/internal-api").respond(
+        req_mock.post(f"{settings.USERS_SERVICE_URL}/internal-api").respond(
             json={
                 "data": {
                     "usersByIds": [
@@ -88,7 +88,7 @@ def test_handle_new_submission_comment_email_action():
     with patch(
         "domain_events.handler.send_email"
     ) as mock_email, respx.mock as req_mock:
-        req_mock.post(f"{settings.USERS_SERVICE}/internal-api").respond(
+        req_mock.post(f"{settings.USERS_SERVICE_URL}/internal-api").respond(
             json={
                 "data": {
                     "usersByIds": [
@@ -144,7 +144,7 @@ def test_handle_new_submission_comment_email_action_with_multiple_people():
     with patch(
         "domain_events.handler.send_email"
     ) as mock_email, respx.mock as req_mock:
-        req_mock.post(f"{settings.USERS_SERVICE}/internal-api").respond(
+        req_mock.post(f"{settings.USERS_SERVICE_URL}/internal-api").respond(
             json={
                 "data": {
                     "usersByIds": [
@@ -215,7 +215,7 @@ def test_handle_new_submission_comment_slack_action():
     }
 
     with patch("domain_events.handler.slack") as slack_mock, respx.mock as req_mock:
-        req_mock.post(f"{settings.USERS_SERVICE}/internal-api").respond(
+        req_mock.post(f"{settings.USERS_SERVICE_URL}/internal-api").respond(
             json={
                 "data": {
                     "usersByIds": [
@@ -253,7 +253,7 @@ def test_handle_schedule_invitation_sent():
     with patch(
         "domain_events.handler.send_email"
     ) as email_mock, respx.mock as req_mock:
-        req_mock.post(f"{settings.USERS_SERVICE}/internal-api").respond(
+        req_mock.post(f"{settings.USERS_SERVICE_URL}/internal-api").respond(
             json={
                 "data": {
                     "usersByIds": [
@@ -294,7 +294,7 @@ def test_handle_schedule_invitation_sent_reminder():
     with patch(
         "domain_events.handler.send_email"
     ) as email_mock, respx.mock as req_mock:
-        req_mock.post(f"{settings.USERS_SERVICE}/internal-api").respond(
+        req_mock.post(f"{settings.USERS_SERVICE_URL}/internal-api").respond(
             json={
                 "data": {
                     "usersByIds": [
@@ -334,7 +334,7 @@ def test_handle_submission_time_slot_changed():
     with patch(
         "domain_events.handler.send_email"
     ) as email_mock, respx.mock as req_mock:
-        req_mock.post(f"{settings.USERS_SERVICE}/internal-api").respond(
+        req_mock.post(f"{settings.USERS_SERVICE_URL}/internal-api").respond(
             json={
                 "data": {
                     "usersByIds": [
@@ -380,7 +380,7 @@ def test_handle_new_schedule_invitation_answer(settings):
     with patch(
         "domain_events.handler.send_email"
     ) as email_mock, respx.mock as req_mock:
-        req_mock.post(f"{settings.USERS_SERVICE}/internal-api").respond(
+        req_mock.post(f"{settings.USERS_SERVICE_URL}/internal-api").respond(
             json={
                 "data": {
                     "usersByIds": [
@@ -427,7 +427,7 @@ def test_handle_speaker_voucher_email_sent(settings):
     with patch(
         "domain_events.handler.send_email"
     ) as email_mock, respx.mock as req_mock:
-        req_mock.post(f"{settings.USERS_SERVICE}/internal-api").respond(
+        req_mock.post(f"{settings.USERS_SERVICE_URL}/internal-api").respond(
             json={
                 "data": {
                     "usersByIds": [
