@@ -62,7 +62,7 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         service:
           - name: gateway
@@ -73,6 +73,8 @@ jobs:
             dir: association-backend
           - name: pycon-backend
             dir: backend
+          - name: pretix
+            dir: pretix
 
     steps:
       - uses: actions/checkout@v2

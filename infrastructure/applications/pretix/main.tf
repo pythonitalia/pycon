@@ -56,15 +56,6 @@ resource "aws_eip" "ip" {
   }
 }
 
-data "aws_ecr_repository" "repo" {
-  name = "pythonit/pretix"
-}
-
-data "aws_ecr_image" "image" {
-  repository_name = data.aws_ecr_repository.repo.name
-  image_tag       = "latest"
-}
-
 data "aws_db_proxy" "proxy" {
   count = var.enable_proxy ? 1 : 0
   name  = "pythonit-${terraform.workspace}-database-proxy"
