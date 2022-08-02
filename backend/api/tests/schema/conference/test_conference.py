@@ -686,9 +686,13 @@ def test_can_see_submissions_if_they_have_sent_one(
 
 
 @mark.django_db
-def test_get_conference_voucher_with_invalid_code(graphql_client, conference, mocker):
-    mocker.patch("api.pretix.query.pretix.db.get_voucher", return_value=None)
-
+def test_get_conference_voucher_with_invalid_code(
+    graphql_client, conference, mocker, requests_mock
+):
+    requests_mock.get(
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/extended-vouchers/test/",
+        status_code=404,
+    )
     response = graphql_client.query(
         """query($code: String!, $voucherCode: String!) {
             conference(code: $code) {

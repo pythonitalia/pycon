@@ -594,3 +594,27 @@ def pretix_categories():
             },
         ],
     }
+
+
+@pytest.fixture
+def pretix_voucher_data():
+    return {
+        "id": 1,
+        "code": "TRYR6CWFKQHL2WGN",
+        "max_usages": 1,
+        "redeemed": 0,
+        "valid_until": "2022-08-10T00:00:00Z",
+        "block_quota": False,
+        "allow_ignore_quota": False,
+        "price_mode": "none",
+        "value": None,
+        "item": 2,
+        "variation": None,
+        "quota": None,
+        "tag": "",
+        "comment": "",
+        "subevent": None,
+        "show_hidden_items": True,
+        "seat": None,
+        "quota_items": None,
+    }

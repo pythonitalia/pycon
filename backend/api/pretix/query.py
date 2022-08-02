@@ -6,7 +6,6 @@ from dateutil.parser import parse
 from django.utils import timezone
 
 import pretix
-import pretix.db
 from api.pretix.constants import ASSOCIATION_CATEGORY_INTERNAL_NAME
 from conferences.models.conference import Conference
 
@@ -14,7 +13,7 @@ from .types import AttendeeTicket, PretixOrder, TicketItem, Voucher
 
 
 def get_voucher(conference: Conference, code: str) -> Optional[Voucher]:
-    return pretix.db.get_voucher(conference.pretix_event_id, code)
+    return pretix.get_voucher(conference, code)
 
 
 def get_order(conference: Conference, code: str) -> Optional[PretixOrder]:
