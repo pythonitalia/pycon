@@ -2,12 +2,14 @@ import dataclasses
 from datetime import datetime, timezone
 
 from pydantic import BaseModel, EmailStr, constr
+
 from users.domain.entities import User
 from users.domain.repository import AbstractUsersRepository
 from users.domain.services.exceptions import EmailAlreadyUsedError
 
 
 class RegisterInputModel(BaseModel):
+    fullname: constr(min_length=1)
     email: EmailStr
     password: constr(min_length=8)
 
@@ -21,6 +23,7 @@ async def register(
         raise EmailAlreadyUsedError()
 
     user = User(
+        fullname=input.fullname,
         email=input.email,
         password=input.password,
         date_joined=datetime.now(timezone.utc),

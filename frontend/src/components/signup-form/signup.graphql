@@ -9,9 +9,11 @@ mutation Signup($input: RegisterInput!) {
         name
       }
     }
+
     ... on EmailAlreadyUsed {
       message
     }
+
     ... on RegisterValidationError {
       errors {
         email {
@@ -19,6 +21,10 @@ mutation Signup($input: RegisterInput!) {
           type
         }
         password {
+          message
+          type
+        }
+        fullname {
           message
           type
         }

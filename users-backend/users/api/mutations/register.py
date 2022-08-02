@@ -13,7 +13,7 @@ from users.domain.services.exceptions import EmailAlreadyUsedError
 
 
 @strawberry.experimental.pydantic.input(
-    RegisterInputModel, fields=["email", "password"]
+    RegisterInputModel, fields=["email", "password", "fullname"]
 )
 class RegisterInput:
     pass
@@ -23,6 +23,7 @@ class RegisterInput:
 class RegisterErrors:
     email: PydanticError = None
     password: PydanticError = None
+    fullname: PydanticError = None
 
 
 RegisterValidationError = create_validation_error_type("Register", RegisterErrors)

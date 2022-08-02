@@ -18,6 +18,7 @@ import { InputWrapper } from "../input-wrapper";
 import { Link } from "../link";
 
 type SignupFormProps = {
+  fullname: string;
   email: string;
   password: string;
   password2: string;
@@ -57,44 +58,50 @@ export const SignupForm = () => {
     },
   });
 
-  const [formState, { email, password }] = useFormState<SignupFormProps>(
+  const [formState, { text, email, password }] = useFormState<SignupFormProps>(
     {},
     {
       withIds: true,
     },
   );
 
+  const passwordsAreNotMatching =
+    formState.touched.password &&
+    formState.touched.password2 &&
+    formState.values.password !== formState.values.password2;
+
   const onFormSubmit = useCallback(
     (e) => {
       e.preventDefault();
 
+      if (passwordsAreNotMatching) {
+        return;
+      }
+
       const email = formState.values.email;
       const password = formState.values.password;
+      const fullname = formState.values.fullname;
 
       signup({
         variables: {
           input: {
             email,
             password,
+            fullname,
           },
         },
       });
     },
-    [signup, formState],
+    [signup, formState, passwordsAreNotMatching],
   );
 
   const errorMessage = getErrorMessageIfAny(data?.register?.__typename);
 
-  const getFieldErrors = (field: "email" | "password") =>
+  const getFieldErrors = (field: "email" | "password" | "fullname") =>
     (data &&
       data.register.__typename === "RegisterValidationError" &&
       (data.register.errors[field] ?? []).map((e) => e.message)) ||
     [];
-
-  const isPasswordMismatching =
-    formState.touched.password &&
-    formState.touched.password2 &&
-    formState.values.password !== formState.values.password2;
 
   return (
     <Box
@@ -117,6 +124,19 @@ export const SignupForm = () => {
           <Heading mb={4} as="h2">
             <FormattedMessage id="signup.signupWithEmail" />
           </Heading>
+
+          <InputWrapper
+            errors={getFieldErrors("fullname")}
+            label={<FormattedMessage id="signup.fullname" />}
+          >
+            <Input
+              {...text("fullname")}
+              placeholder="Guido"
+              required={true}
+              type="text"
+              tabIndex={1}
+            />
+          </InputWrapper>
 
           <InputWrapper
             sx={{ mb: 0 }}
@@ -156,7 +176,7 @@ export const SignupForm = () => {
           </InputWrapper>
 
           <InputWrapper
-            errors={isPasswordMismatching ? [passwordMismatchMessage] : []}
+            errors={passwordsAreNotMatching ? [passwordMismatchMessage] : []}
             label={<FormattedMessage id="signup.password2" />}
           >
             <Input
