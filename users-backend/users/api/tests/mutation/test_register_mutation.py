@@ -1,7 +1,8 @@
+from ward import each, test
+
 from users.tests.api import graphql_client
 from users.tests.factories import user_factory
 from users.tests.session import db
-from ward import each, test
 
 
 @test("can register")
@@ -22,7 +23,13 @@ async def _(graphql_client=graphql_client, db=db):
     """
     response = await graphql_client.query(
         query,
-        variables={"input": {"email": "marco@provider.it", "password": "ciaomondo"}},
+        variables={
+            "input": {
+                "email": "marco@provider.it",
+                "password": "ciaomondo",
+                "fullname": "Name",
+            }
+        },
     )
 
     assert not response.errors, response.errors
@@ -30,7 +37,7 @@ async def _(graphql_client=graphql_client, db=db):
     assert response.data["register"]["__typename"] == "RegisterSuccess"
     assert response.data["register"]["user"]["id"] is not None
     assert response.data["register"]["user"]["email"] == "marco@provider.it"
-    assert response.data["register"]["user"]["fullname"] == ""
+    assert response.data["register"]["user"]["fullname"] == "Name"
 
 
 @test("cannot register if the email is already used by other users")
@@ -48,7 +55,13 @@ async def _(graphql_client=graphql_client, db=db, user_factory=user_factory):
     """
     response = await graphql_client.query(
         query,
-        variables={"input": {"email": "hah@pycon.it", "password": "verylongpassword"}},
+        variables={
+            "input": {
+                "email": "hah@pycon.it",
+                "password": "verylongpassword",
+                "fullname": "Name",
+            }
+        },
     )
 
     assert not response.errors, response.errors
@@ -76,7 +89,10 @@ async def _(graphql_client=graphql_client, password=each("", "short"), db=db):
     }
     """
     response = await graphql_client.query(
-        query, variables={"input": {"email": "hah@pycon.it", "password": password}}
+        query,
+        variables={
+            "input": {"email": "hah@pycon.it", "password": password, "fullname": "Name"}
+        },
     )
 
     assert not response.errors, response.errors
@@ -115,7 +131,10 @@ async def _(graphql_client=graphql_client, email=each("", "invalid.email"), db=d
     }
     """
     response = await graphql_client.query(
-        query, variables={"input": {"email": email, "password": "ciaomondo!"}}
+        query,
+        variables={
+            "input": {"email": email, "password": "ciaomondo!", "fullname": "Name"}
+        },
     )
 
     assert not response.errors, response.errors
