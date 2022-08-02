@@ -37,6 +37,7 @@ def notify_new_comment_on_submission(
     publish_message(
         "NewSubmissionComment",
         body={
+            "conference_id": comment.submission.conference_id,
             "comment_id": comment.id,
             "speaker_id": comment.submission.speaker_id,
             "submission_title": comment.submission.title,
@@ -59,6 +60,7 @@ def notify_new_submission(
     duration: int,
     topic: str,
     speaker_id: int,
+    conference_id: int,
 ):
     publish_message(
         "NewCFPSubmission",
@@ -70,6 +72,7 @@ def notify_new_submission(
             "topic": topic,
             "duration": str(duration),
             "speaker_id": speaker_id,
+            "conference_id": conference_id,
         },
         deduplication_id=str(submission_id),
     )

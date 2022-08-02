@@ -114,6 +114,15 @@ class ConferenceAdmin(admin.ModelAdmin):
             {"fields": ("pretix_speaker_voucher_quota_id",)},
         ),
         (
+            "Integrations",
+            {
+                "fields": (
+                    "slack_new_proposal_incoming_webhook_url",
+                    "slack_new_proposal_comment_incoming_webhook_url",
+                )
+            },
+        ),
+        (
             "Hotel",
             {
                 "fields": (
