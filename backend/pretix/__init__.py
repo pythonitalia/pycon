@@ -7,7 +7,7 @@ import requests
 import strawberry
 from django.conf import settings
 
-from api.pretix.types import UpdateAttendeeTicketInput
+from api.pretix.types import UpdateAttendeeTicketInput, Voucher
 from conferences.models.conference import Conference
 from hotels.models import HotelRoom
 from pretix.types import Category, Question, Quota
@@ -37,6 +37,43 @@ def pretix(
         params=qs or {},
         headers={"Authorization": f"Token {settings.PRETIX_API_TOKEN}"},
         **kwargs,
+    )
+
+
+def get_voucher(conference: Conference, code: str) -> Optional[Voucher]:
+    response = pretix(conference, f"extended-vouchers/{code}/")
+
+    if response.status_code == 404:
+        return None
+
+    response.raise_for_status()
+    data = response.json()
+
+    items = []
+    all_items = False
+
+    if data["item"]:
+        # Only the selected item is included in the voucher
+        items = [data["item"]]
+    elif data["quota"]:
+        # If a quota is specified only items in that quota are valid
+        items = data["quota_items"]
+    else:
+        # No item or quota found
+        # it means that this voucher code covers all items
+        all_items = True
+
+    return Voucher(
+        id=data["id"],
+        code=data["code"],
+        valid_until=data["valid_until"],
+        value=data["value"],
+        items=items,
+        all_items=all_items,
+        redeemed=data["redeemed"],
+        max_usages=data["max_usages"],
+        price_mode=data["price_mode"],
+        variation_id=data["variation"],
     )
 
 
