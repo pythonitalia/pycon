@@ -15,7 +15,7 @@ const {
   API_TOKEN,
   NEXT_PUBLIC_SOCIAL_CARD_SERVICE,
   NEXT_PUBLIC_VERCEL_URL,
-  GRAPHQL_GATEWAY_URL,
+  API_URL_SERVER,
 } = process.env;
 
 module.exports = withSourceMaps({
@@ -56,7 +56,7 @@ module.exports = withSourceMaps({
     return [
       {
         source: "/graphql",
-        destination: GRAPHQL_GATEWAY_URL,
+        destination: API_URL_SERVER,
       },
     ];
   },

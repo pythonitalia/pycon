@@ -1,4 +1,4 @@
-const { API_URL, API_URL_SERVER, STRIPE_KEY, GRAPHQL_GATEWAY_URL } =
+const { API_URL, API_URL_SERVER, STRIPE_KEY } =
   process.env;
 
 module.exports = {
@@ -24,7 +24,7 @@ module.exports = {
     return [
       {
         source: "/graphql",
-        destination: GRAPHQL_GATEWAY_URL,
+        destination: API_URL_SERVER,
       },
     ];
   },
