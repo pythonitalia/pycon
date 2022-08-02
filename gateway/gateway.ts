@@ -1,4 +1,8 @@
-import { ApolloGateway, RemoteGraphQLDataSource } from "@apollo/gateway";
+import {
+  ApolloGateway,
+  IntrospectAndCompose,
+  RemoteGraphQLDataSource,
+} from "@apollo/gateway";
 
 import { IS_DEV } from "./config";
 import { getServices } from "./services";
@@ -48,8 +52,10 @@ export const createGateway = () => {
   const options: any = {};
 
   if (IS_DEV) {
-    options.serviceList = getServices();
-    options.experimental_pollInterval = 5000;
+    options.supergraphSdl = new IntrospectAndCompose({
+      subgraphs: getServices(),
+      pollIntervalInMs: 5000,
+    });
   }
 
   return new ApolloGateway({
