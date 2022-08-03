@@ -20,10 +20,11 @@ export const InputWrapper: React.SFC<{
   errors,
   isRequired,
   children,
+  as,
   ...props
 }) => (
   <Box mb={4} {...props} className={className}>
-    <Text as="label">
+    <Text as={as}>
       <Text sx={{ mb: 1 }} variant="label">
         {label}
         {label && isRequired && "*"}

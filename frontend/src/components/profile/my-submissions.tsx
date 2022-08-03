@@ -21,7 +21,7 @@ export const MySubmissions: React.FC<Props> = ({ className }) => {
     },
   });
 
-  const topicHeader = useTranslatedMessage("cfp.topicLabel");
+  const topicHeader = useTranslatedMessage("cfp.trackLabel");
   const titleHeader = useTranslatedMessage("cfp.title");
   const formatHeader = useTranslatedMessage("cfp.format");
   const viewSubmissionHeader = useTranslatedMessage("cfp.viewSubmission");

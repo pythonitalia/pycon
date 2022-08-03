@@ -13,7 +13,7 @@ import {
   writeMeSubmissionsQueryCache,
 } from "~/types";
 
-export const CfpSendSubmission: React.SFC = () => {
+export const CfpSendSubmission = () => {
   const code = process.env.conferenceCode;
   const router = useRouter();
 

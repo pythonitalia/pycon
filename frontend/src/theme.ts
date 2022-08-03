@@ -271,7 +271,6 @@ export const theme: Theme = {
     },
     labelDescription: {
       mb: 3,
-      maxWidth: 850,
       color: "text",
       fontWeight: "normal",
       fontSize: 2,
