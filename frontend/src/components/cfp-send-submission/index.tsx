@@ -14,7 +14,7 @@ import {
 } from "~/types";
 import { useCurrentLanguage } from "~/locale/context";
 
-export const CfpSendSubmission: React.SFC = () => {
+export const CfpSendSubmission = () => {
   const code = process.env.conferenceCode;
   const router = useRouter();
   const language = useCurrentLanguage();

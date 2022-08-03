@@ -1,9 +1,8 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
-import React from "react";
 import { FormattedMessage } from "react-intl";
-import { Box, Grid, jsx, Text } from "theme-ui";
+import { Box, Grid, jsx, Text, Heading } from "theme-ui";
 
 import { CFPIllustration } from "~/components/illustrations/cfp";
 import { Link } from "~/components/link";
@@ -29,9 +28,9 @@ export const Introduction = ({ deadline }: { deadline?: string }) => {
         }}
       >
         <Box>
-          <Text as="h1">
+          <Heading as="h1">
             <FormattedMessage id="cfp.introductionHeading" />
-          </Text>
+          </Heading>
           <Text
             as="p"
             sx={{
