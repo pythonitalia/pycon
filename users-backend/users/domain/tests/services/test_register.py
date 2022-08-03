@@ -1,11 +1,12 @@
 from datetime import datetime, timezone
 
 import pydantic
+from ward import raises, test
+
 from users.domain.entities import User
 from users.domain.services import RegisterInputModel, register
 from users.domain.services.exceptions import EmailAlreadyUsedError
 from users.domain.tests.fake_repository import FakeUsersRepository
-from ward import raises, test
 
 
 @test("can register")
@@ -13,13 +14,16 @@ async def _():
     repository = FakeUsersRepository(users=[])
 
     user = await register(
-        RegisterInputModel(email="marco@marco.it", password="hello_world"),
+        RegisterInputModel(
+            email="marco@marco.it", password="hello_world", fullname="name"
+        ),
         users_repository=repository,
     )
 
     assert repository.committed
     assert user.id is not None
     assert user.email == "marco@marco.it"
+    assert user.fullname == "name"
     assert user.check_password("hello_world")
 
 
@@ -31,7 +35,9 @@ async def _():
 
     with raises(EmailAlreadyUsedError):
         await register(
-            RegisterInputModel(email="marco@marco.it", password="hello_world"),
+            RegisterInputModel(
+                email="marco@marco.it", password="hello_world", fullname="name"
+            ),
             users_repository=repository,
         )
 
@@ -39,7 +45,7 @@ async def _():
 @test("password should be at least 8 chars")
 async def _():
     with raises(pydantic.ValidationError) as exc:
-        RegisterInputModel(email="hello@python.it", password="short")
+        RegisterInputModel(email="hello@python.it", password="short", fullname="name")
 
     errors = exc.raised.errors()
     assert len(errors) == 1
@@ -54,7 +60,7 @@ async def _():
 @test("cannot register with empty email")
 async def _():
     with raises(pydantic.ValidationError) as exc:
-        RegisterInputModel(email="", password="password")
+        RegisterInputModel(email="", password="password", fullname="name")
 
     errors = exc.raised.errors()
     assert len(errors) == 1
@@ -68,7 +74,7 @@ async def _():
 @test("cannot register with empty password")
 async def _():
     with raises(pydantic.ValidationError) as exc:
-        RegisterInputModel(email="my@email.it", password="")
+        RegisterInputModel(email="my@email.it", password="", fullname="name")
 
     errors = exc.raised.errors()
     assert len(errors) == 1
