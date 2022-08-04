@@ -35,11 +35,11 @@ import { MultiLingualInput } from "../multilingual-input";
 
 export type CfpFormFields = {
   type: string;
-  title: { it: string; en: string };
-  elevatorPitch: { it: string; en: string };
+  title: { it?: string; en?: string };
+  elevatorPitch: { it?: string; en?: string };
   length: string;
   audienceLevel: string;
-  abstract: { it: string; en: string };
+  abstract: { it?: string; en?: string };
   notes: string;
   topic: string;
   languages: string[];
@@ -102,17 +102,14 @@ const filterOutInactiveLanguages = (
   value: MultiLingualInputType,
   languages: string[],
 ): MultiLingualInputType => {
-  return Object.entries(value).reduce(
-    (newDict, [key, value]) => {
-      if (!languages.includes(key)) {
-        return newDict;
-      }
-
-      newDict[key] = value;
+  return Object.entries(value).reduce((newDict, [key, value]) => {
+    if (!languages.includes(key)) {
       return newDict;
-    },
-    {},
-  );
+    }
+
+    newDict[key] = value;
+    return newDict;
+  }, {});
 };
 
 export const CfpForm = ({
