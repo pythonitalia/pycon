@@ -6,6 +6,7 @@ from strawberry import ID
 from strawberry.types import Info
 
 from api.permissions import IsAuthenticated
+from api.types import BaseErrorType, MultiLingualInput
 from conferences.models.conference import Conference
 from domain_events.publisher import notify_new_submission
 from i18n.strings import LazyI18nString
@@ -60,36 +61,6 @@ class SendSubmissionComment(FormMutation):
         permission_classes = (IsAuthenticated, CanSendComment)
 
 
-@strawberry.input
-class MultiLingualInput:
-    en: str
-    it: str
-
-    def to_dict(self) -> dict:
-        return {"en": self.en, "it": self.it}
-
-
-class BaseErrorType:
-    _has_errors: strawberry.Private[bool] = False
-
-    def add_error(self, field: str, message: str):
-        self._has_errors = True
-
-        existing_errors = getattr(self, field, [])
-        existing_errors.append(message)
-        setattr(self, field, existing_errors)
-
-    @property
-    def has_errors(self) -> bool:
-        return self._has_errors
-
-    @classmethod
-    def with_error(cls, field: str, message: str):
-        instance = cls()
-        setattr(instance, field, [message])
-        return instance
-
-
 @strawberry.type
 class SendSubmissionErrors(BaseErrorType):
     instance: list[str] = strawberry.field(default_factory=list)
@@ -133,6 +104,7 @@ class BaseSubmissionInput:
             "abstract",
             "elevator_pitch",
         )
+
         max_lengths = {"title": 100, "elevator_pitch": 300, "abstract": 5000}
         to_text = {"it": "Italian", "en": "English"}
 
@@ -219,7 +191,7 @@ class SubmissionsMutations:
         instance = SubmissionModel.objects.get_by_hashid(input.instance)
         if not instance.can_edit(info.context.request):
             return SendSubmissionErrors.with_error(
-                "instance", "You cannot edit this submission"
+                "non_field_errors", "You cannot edit this submission"
             )
 
         conference = instance.conference
