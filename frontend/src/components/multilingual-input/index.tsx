@@ -10,6 +10,7 @@ import { EnglishIcon } from "../icons/english";
 import { ItalianIcon } from "../icons/italian";
 
 type Props = {
+  children: React.ReactElement;
   languages: string[];
   value: { [string: string]: string };
   onChange: (event: any) => void;
@@ -21,7 +22,7 @@ export const MultiLingualInput = ({
   value,
   onChange,
   ...props
-}: React.PropsWithChildren<Props>) => {
+}: Props) => {
   const languages = unsortedLanguages.sort((a) => (a === "en" ? -1 : 1));
   const [currentLanguage, setCurrentLanguage] = useState(languages[0]);
   const isDisabled = typeof currentLanguage === "undefined";
@@ -96,7 +97,6 @@ export const MultiLingualInput = ({
           position: "relative",
         }}
       >
-        {/* @ts-ignore */}
         {React.cloneElement(children, {
           value: languageValue,
           disabled: isDisabled,
