@@ -214,6 +214,10 @@ class SubmissionsMutations:
         instance.audience_level_id = input.audience_level
         instance.speaker_level = input.speaker_level
         instance.previous_talk_video = input.previous_talk_video
+
+        instance.languages.set(languages)
+        instance.tags.set(input.tags)
+
         instance.save()
 
         instance._type_definition = Submission._type_definition
