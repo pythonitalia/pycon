@@ -21,6 +21,7 @@ import {
 } from "theme-ui";
 
 import {
+  MultiLingualInput as MultiLingualInputType,
   SendSubmissionMutation,
   UpdateSubmissionMutation,
   useCfpFormQuery,
@@ -49,13 +50,16 @@ export type CfpFormFields = {
 
 export type SubmissionStructure = {
   type: { id: string };
-  title: { it: string; en: string };
-  elevatorPitch: { it: string; en: string };
+  title: string;
+  elevatorPitch: string;
+  abstract: string;
+  multilingualTitle: { it: string; en: string };
+  multilingualElevatorPitch: { it: string; en: string };
+  multilingualAbstract: { it: string; en: string };
   topic: { id: string };
   duration: { id: string };
   audienceLevel: { id: string };
   languages: { code: string }[];
-  abstract: { it: string; en: string };
   notes: string;
   previousTalkVideo: string;
   speakerLevel: string;
@@ -93,6 +97,11 @@ const SPEAKER_LEVEL_OPTIONS = [
     messageId: "cfp.speakerLevel.experienced",
   },
 ];
+
+const cleanupGQLKeys = (value: MultiLingualInputType) => ({
+  it: value.it,
+  en: value.en,
+});
 
 export const CfpForm = ({
   onSubmit,
@@ -181,8 +190,14 @@ export const CfpForm = ({
   useEffect(() => {
     if (!conferenceLoading && submission) {
       formState.setField("type", submission!.type.id);
-      formState.setField("title", submission!.title);
-      formState.setField("elevatorPitch", submission!.elevatorPitch);
+      formState.setField(
+        "title",
+        cleanupGQLKeys(submission!.multilingualTitle),
+      );
+      formState.setField(
+        "elevatorPitch",
+        cleanupGQLKeys(submission!.multilingualElevatorPitch),
+      );
       formState.setField("topic", submission!.topic.id);
       formState.setField("length", submission!.duration.id);
       formState.setField("audienceLevel", submission!.audienceLevel.id);
@@ -190,7 +205,10 @@ export const CfpForm = ({
         "languages",
         submission!.languages.map((l) => l.code),
       );
-      formState.setField("abstract", submission!.abstract);
+      formState.setField(
+        "abstract",
+        cleanupGQLKeys(submission!.multilingualAbstract),
+      );
       formState.setField("notes", submission!.notes);
       formState.setField(
         "tags",
@@ -214,8 +232,7 @@ export const CfpForm = ({
   }
 
   const hasValidationErrors =
-    submissionData?.mutationOp.__typename === "SendSubmissionErrors" ||
-    submissionData?.mutationOp.__typename === "UpdateSubmissionErrors";
+    submissionData?.mutationOp.__typename === "SendSubmissionErrors";
 
   /* todo refactor to avoid multiple __typename? */
   const getErrors = (
@@ -234,8 +251,7 @@ export const CfpForm = ({
       | "validationPreviousTalkVideo"
       | "nonFieldErrors",
   ): string[] =>
-    ((submissionData?.mutationOp.__typename === "SendSubmissionErrors" ||
-      submissionData?.mutationOp.__typename === "UpdateSubmissionErrors") &&
+    (submissionData?.mutationOp.__typename === "SendSubmissionErrors" &&
       submissionData!.mutationOp[key]) ||
     [];
 

@@ -1,3 +1,6 @@
+import math
+from typing import Optional
+
 import strawberry
 from strawberry import ID
 from strawberry.types import Info
@@ -5,8 +8,10 @@ from strawberry.types import Info
 from api.permissions import IsAuthenticated
 from conferences.models.conference import Conference
 from domain_events.publisher import notify_new_submission
+from i18n.strings import LazyI18nString
 from languages.models import Language
 from strawberry_forms.mutations import FormMutation
+from submissions.models import Submission as SubmissionModel
 
 from .forms import SendSubmissionCommentForm, SendSubmissionForm, UpdateSubmissionForm
 from .permissions import CanSendComment
@@ -60,9 +65,100 @@ class MultiLingualInput:
     en: str
     it: str
 
+    def to_dict(self) -> dict:
+        return {"en": self.en, "it": self.it}
+
+
+class BaseErrorType:
+    _has_errors: strawberry.Private[bool] = False
+
+    def add_error(self, field: str, message: str):
+        self._has_errors = True
+
+        existing_errors = getattr(self, field, [])
+        existing_errors.append(message)
+        setattr(self, field, existing_errors)
+
+    @property
+    def has_errors(self) -> bool:
+        return self._has_errors
+
+    @classmethod
+    def with_error(cls, field: str, message: str):
+        instance = cls()
+        setattr(instance, field, [message])
+        return instance
+
+
+@strawberry.type
+class SendSubmissionErrors(BaseErrorType):
+    instance: list[str] = strawberry.field(default_factory=list)
+    title: list[str] = strawberry.field(default_factory=list)
+    abstract: list[str] = strawberry.field(default_factory=list)
+    topic: list[str] = strawberry.field(default_factory=list)
+    languages: list[str] = strawberry.field(default_factory=list)
+    conference: list[str] = strawberry.field(default_factory=list)
+    type: list[str] = strawberry.field(default_factory=list)
+    duration: list[str] = strawberry.field(default_factory=list)
+    elevator_pitch: list[str] = strawberry.field(default_factory=list)
+    notes: list[str] = strawberry.field(default_factory=list)
+    audience_level: list[str] = strawberry.field(default_factory=list)
+    tags: list[str] = strawberry.field(default_factory=list)
+    speaker_level: list[str] = strawberry.field(default_factory=list)
+    previous_talk_video: list[str] = strawberry.field(default_factory=list)
+    non_field_errors: list[str] = strawberry.field(default_factory=list)
+
+
+class BaseSubmissionInput:
+    def validate(self, conference: Optional[Conference], languages: list[str]):
+        errors = SendSubmissionErrors()
+
+        if not conference:
+            errors.add_error("conference", "Invalid conference")
+            return errors
+
+        if not self.tags:
+            errors.add_error("tags", "You need to add at least one tag")
+
+        if not self.speaker_level:
+            errors.add_error(
+                "speaker_level", "You need to specify what is your speaker experience"
+            )
+
+        if not languages:
+            errors.add_error("languages", "You need to add at least one language")
+
+        fields = (
+            "title",
+            "abstract",
+            "elevator_pitch",
+        )
+        max_lengths = {"title": 100, "elevator_pitch": 300, "abstract": 5000}
+        to_text = {"it": "Italian", "en": "English"}
+
+        for language in ("it", "en"):
+            for field in fields:
+                value = getattr(getattr(self, field), language)
+                max_length = max_lengths.get(field, math.inf)
+
+                if language not in languages:
+                    continue
+
+                if not value:
+                    errors.add_error(field, f"{to_text[language]}: Cannot be empty")
+                    continue
+
+                if len(value) > max_length:
+                    errors.add_error(
+                        field,
+                        f"{to_text[language]}: Cannot be more than {max_length} chars",
+                    )
+
+        return errors
+
 
 @strawberry.input
-class SendSubmissionInput:
+class SendSubmissionInput(BaseSubmissionInput):
     conference: ID
     title: MultiLingualInput
     abstract: MultiLingualInput
@@ -73,27 +169,26 @@ class SendSubmissionInput:
     elevator_pitch: MultiLingualInput
     notes: str
     audience_level: ID
-    tags: list[ID]
     speaker_level: str
     previous_talk_video: str
+    tags: list[ID] = strawberry.field(default_factory=list)
 
 
-@strawberry.type
-class SendSubmissionErrors:
-    title: list[str]
-    abstract: list[str]
-    topic: list[str]
-    languages: list[str]
-    conference: list[str]
-    type: list[str]
-    duration: list[str]
-    elevatorPitch: list[str]
-    notes: list[str]
-    audienceLevel: list[str]
-    tags: list[str]
-    speakerLevel: list[str]
-    previousTalkVideo: list[str]
-    nonFieldErrors: list[str]
+@strawberry.input
+class UpdateSubmissionInput(BaseSubmissionInput):
+    instance: ID
+    title: MultiLingualInput
+    abstract: MultiLingualInput
+    topic: ID
+    languages: list[ID]
+    type: ID
+    duration: ID
+    elevator_pitch: MultiLingualInput
+    notes: str
+    audience_level: ID
+    speaker_level: str
+    previous_talk_video: str
+    tags: list[ID] = strawberry.field(default_factory=list)
 
 
 SendSubmissionOutput = strawberry.union(
@@ -104,11 +199,53 @@ SendSubmissionOutput = strawberry.union(
     ),
 )
 
+UpdateSubmissionOutput = strawberry.union(
+    "UpdateSubmissionOutput",
+    (
+        Submission,
+        SendSubmissionErrors,
+    ),
+)
+
 
 @strawberry.type
 class SubmissionsMutations:
-    update_submission = UpdateSubmission.Mutation
     send_submission_comment = SendSubmissionComment.Mutation
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    def update_submission(
+        self, info: Info, input: UpdateSubmissionInput
+    ) -> UpdateSubmissionOutput:
+        instance = SubmissionModel.objects.get_by_hashid(input.instance)
+        if not instance.can_edit(info.context.request):
+            return SendSubmissionErrors.with_error(
+                "instance", "You cannot edit this submission"
+            )
+
+        conference = instance.conference
+        languages = Language.objects.filter(code__in=input.languages).all()
+
+        errors = input.validate(
+            conference=conference, languages=languages.values_list("code", flat=True)
+        )
+
+        if errors.has_errors:
+            return errors
+
+        instance.title = LazyI18nString(input.title.to_dict())
+        instance.abstract = LazyI18nString(input.abstract.to_dict())
+        instance.topic_id = input.topic
+        instance.type_id = input.type
+        instance.duration_id = input.duration
+        instance.elevator_pitch = LazyI18nString(input.elevator_pitch.to_dict())
+        instance.notes = input.notes
+        instance.audience_level_id = input.audience_level
+        instance.speaker_level = input.speaker_level
+        instance.previous_talk_video = input.previous_talk_video
+        instance.save()
+
+        instance._type_definition = Submission._type_definition
+        return instance
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     def send_submission(
@@ -117,26 +254,31 @@ class SubmissionsMutations:
         request = info.context.request
 
         conference = Conference.objects.filter(code=input.conference).first()
-        languages = Language.objects.filter(code__in=input.languages).values_list(
-            "id", flat=True
+        languages = Language.objects.filter(code__in=input.languages).all()
+
+        errors = input.validate(
+            conference=conference, languages=languages.values_list("code", flat=True)
         )
 
-        instance = Submission.objects.create(
+        if errors.has_errors:
+            return errors
+
+        instance = SubmissionModel.objects.create(
             speaker_id=request.user.id,
             conference=conference,
-            title=input.title,
-            abstract=input.abstract,
-            topic=input.topic,
-            languages=languages,
-            type=input.type,
-            duration=input.duration,
-            elevator_pitch=input.elevator_pitch,
+            title=LazyI18nString(input.title.to_dict()),
+            abstract=LazyI18nString(input.abstract.to_dict()),
+            topic_id=input.topic,
+            type_id=input.type,
+            duration_id=input.duration,
+            elevator_pitch=LazyI18nString(input.elevator_pitch.to_dict()),
             notes=input.notes,
-            audience_level=input.audience_level,
-            tags=input.tags,
+            audience_level_id=input.audience_level,
             speaker_level=input.speaker_level,
             previous_talk_video=input.previous_talk_video,
         )
+        instance.languages.set(languages)
+        instance.tags.set(input.tags)
 
         notify_new_submission(
             submission_id=instance.id,
@@ -150,4 +292,6 @@ class SubmissionsMutations:
             conference_id=instance.conference_id,
         )
 
+        # hack because we return django models
+        instance._type_definition = Submission._type_definition
         return instance

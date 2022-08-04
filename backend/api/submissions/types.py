@@ -8,6 +8,7 @@ from strawberry.types import Info
 
 from api.languages.types import Language
 from api.voting.types import VoteType
+from i18n.strings import LazyI18nString
 from voting.models import Vote
 
 from .permissions import CanSeeSubmissionPrivateFields, CanSeeSubmissionRestrictedFields
@@ -70,26 +71,23 @@ class SubmissionSpeaker:
 
 @strawberry.type
 class MultiLingualString:
-    @strawberry.field
-    def it(self) -> str:
-        # return self.localize("it")
-        return self.data.get("it", "")
+    it: str
+    en: str
 
-    @strawberry.field
-    def en(self) -> str:
-        # return self.localize("en")
-        return self.data.get("en", "")
+    @classmethod
+    def create(cls, string: LazyI18nString):
+        return cls(
+            en=string.data.get("en", ""),
+            it=string.data.get("it", ""),
+        )
 
 
 @strawberry.type
 class Submission:
     conference: LazyType["Conference", "api.conferences.types"]
     title: str
-    multilingual_title: MultiLingualString
     slug: str
     status: str
-    multilingual_elevator_pitch: Optional[MultiLingualString] = restricted_field()
-    multilingual_abstract: Optional[MultiLingualString] = restricted_field()
     speaker_level: Optional[str] = private_field()
     previous_talk_video: Optional[str] = private_field()
     topic: Optional[LazyType["Topic", "api.conferences.types"]] = restricted_field()
@@ -102,16 +100,28 @@ class Submission:
     ] = restricted_field()
     notes: Optional[str] = private_field()
 
+    @restricted_field()
+    def multilingual_elevator_pitch(self) -> Optional[MultiLingualString]:
+        return MultiLingualString.create(self.elevator_pitch)
+
+    @restricted_field()
+    def multilingual_abstract(self) -> Optional[MultiLingualString]:
+        return MultiLingualString.create(self.abstract)
+
+    @restricted_field()
+    def multilingual_title(self) -> Optional[MultiLingualString]:
+        return MultiLingualString.create(self.title)
+
     @strawberry.field
     def title(self, language: str) -> str:
         return self.title.localize(language)
 
     @restricted_field()
-    def elevator_pitch(self, language: str) -> str:
+    def elevator_pitch(self, language: str) -> Optional[str]:
         return self.elevator_pitch.localize(language)
 
     @restricted_field()
-    def abstract(self, language: str) -> str:
+    def abstract(self, language: str) -> Optional[str]:
         return self.abstract.localize(language)
 
     @strawberry.field
