@@ -98,10 +98,19 @@ const SPEAKER_LEVEL_OPTIONS = [
   },
 ];
 
-const cleanupGQLKeys = (value: MultiLingualInputType) => ({
-  it: value.it,
-  en: value.en,
-});
+const filterOutInactiveLanguages = (
+  value: MultiLingualInputType,
+  languages: string[],
+) => {
+  return Object.entries(value).reduce((newDict, [key, value]) => {
+    if (!languages.includes(key)) {
+      return newDict;
+    }
+
+    newDict[key] = value;
+    return newDict;
+  }, {});
+};
 
 export const CfpForm = ({
   onSubmit,
@@ -147,13 +156,22 @@ export const CfpForm = ({
     e.preventDefault();
 
     onSubmit({
-      title: formState.values.title,
-      abstract: formState.values.abstract,
+      title: filterOutInactiveLanguages(
+        formState.values.title,
+        formState.values.languages,
+      ),
+      abstract: filterOutInactiveLanguages(
+        formState.values.abstract,
+        formState.values.languages,
+      ),
       topic: formState.values.topic,
       languages: formState.values.languages,
       type: formState.values.type,
       length: formState.values.length,
-      elevatorPitch: formState.values.elevatorPitch,
+      elevatorPitch: filterOutInactiveLanguages(
+        formState.values.elevatorPitch,
+        formState.values.languages,
+      ),
       notes: formState.values.notes,
       audienceLevel: formState.values.audienceLevel,
       tags: formState.values.tags,
@@ -190,13 +208,10 @@ export const CfpForm = ({
   useEffect(() => {
     if (!conferenceLoading && submission) {
       formState.setField("type", submission!.type.id);
-      formState.setField(
-        "title",
-        cleanupGQLKeys(submission!.multilingualTitle),
-      );
+      formState.setField("title", submission!.multilingualTitle);
       formState.setField(
         "elevatorPitch",
-        cleanupGQLKeys(submission!.multilingualElevatorPitch),
+        submission!.multilingualElevatorPitch,
       );
       formState.setField("topic", submission!.topic.id);
       formState.setField("length", submission!.duration.id);
@@ -205,10 +220,7 @@ export const CfpForm = ({
         "languages",
         submission!.languages.map((l) => l.code),
       );
-      formState.setField(
-        "abstract",
-        cleanupGQLKeys(submission!.multilingualAbstract),
-      );
+      formState.setField("abstract", submission!.multilingualAbstract);
       formState.setField("notes", submission!.notes);
       formState.setField(
         "tags",

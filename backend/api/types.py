@@ -29,8 +29,8 @@ class BaseErrorType:
 
 @strawberry.input
 class MultiLingualInput:
-    en: str
-    it: str
+    en: str = ""
+    it: str = ""
 
     def to_dict(self) -> dict:
         return {"en": self.en, "it": self.it}
