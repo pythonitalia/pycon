@@ -29,18 +29,20 @@ import {
   useTalkQuery,
   useWorkshopBookingStateQuery,
 } from "~/types";
+import { useCurrentLanguage } from "~/locale/context";
 
 export const TalkPage = () => {
   const router = useRouter();
   const slug = router.query.slug as string;
   const day = router.query.day as string;
   const [isLoggedIn] = useLoginState();
-
+  const language = useCurrentLanguage();
   const { data } = useTalkQuery({
     returnPartialData: true,
     variables: {
       code: process.env.conferenceCode,
       slug,
+      language,
     },
   });
 
@@ -278,12 +280,14 @@ export const TalkPage = () => {
 export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
   const slug = params.slug as string;
   const client = getApolloClient();
+  const language = useCurrentLanguage();
 
   await Promise.all([
     prefetchSharedQueries(client, locale),
     queryTalk(client, {
       code: process.env.conferenceCode,
       slug,
+      language,
     }),
   ]);
 

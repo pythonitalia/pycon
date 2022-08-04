@@ -12,7 +12,7 @@ query MyProfile($conference: String!, $language: String!) {
 
     submissions(conference: $conference) {
       id
-      title
+      title(language: $language)
       slug
     }
 

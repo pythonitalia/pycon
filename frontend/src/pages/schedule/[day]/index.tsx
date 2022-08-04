@@ -49,6 +49,7 @@ const Meta: React.FC<{
 export const ScheduleDayPage: React.FC = () => {
   const [loggedIn, _] = useLoginState();
   const code = process.env.conferenceCode;
+  const language = useCurrentLanguage();
 
   const router = useRouter();
   const day = router.query.day as string;
@@ -69,6 +70,7 @@ export const ScheduleDayPage: React.FC = () => {
     variables: {
       code,
       fetchSubmissions: shouldShowAdmin,
+      language,
     },
   });
 
@@ -151,6 +153,7 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
     querySchedule(client, {
       code: process.env.conferenceCode,
       fetchSubmissions: false,
+      language: locale,
     }),
   ]);
 

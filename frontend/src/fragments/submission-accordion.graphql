@@ -1,8 +1,7 @@
 fragment submissionAccordion on Submission {
   id
-  title
-
-  elevatorPitch
+  title(language: $language)
+  elevatorPitch(language: $language)
 
   topic {
     id

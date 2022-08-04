@@ -11,7 +11,6 @@ import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Button } from "~/components/button/button";
 import { formatDay } from "~/components/day-selector/format-day";
 import { Link } from "~/components/link";
-import { MetaTags } from "~/components/meta-tags";
 import { getItemUrl } from "~/components/schedule-view/events";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
@@ -29,6 +28,7 @@ const EasyViewSchedule = () => {
     variables: {
       code,
       fetchSubmissions: false,
+      language,
     },
   });
 
@@ -247,6 +247,7 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
     querySchedule(client, {
       code: process.env.conferenceCode,
       fetchSubmissions: false,
+      language: locale,
     }),
   ]);
 

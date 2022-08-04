@@ -22,6 +22,7 @@ import {
 } from "~/types";
 
 import ErrorPage from "../_error";
+import { useCurrentLanguage } from "~/locale/context";
 
 const COLORS = [
   {
@@ -39,6 +40,7 @@ type Filters = {
 };
 export const RankingPage = () => {
   const conferenceCode = process.env.conferenceCode;
+  const language = useCurrentLanguage();
 
   const {
     data: {
@@ -55,6 +57,7 @@ export const RankingPage = () => {
     variables: {
       conference: conferenceCode,
       topic: filters.values.topic,
+      language,
     },
   });
 

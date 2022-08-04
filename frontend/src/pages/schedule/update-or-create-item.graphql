@@ -1,6 +1,9 @@
 #import "./fragments/schedule-slot.graphql"
 
-mutation UpdateOrCreateSlotItem($input: UpdateOrCreateSlotItemInput!) {
+mutation UpdateOrCreateSlotItem(
+  $input: UpdateOrCreateSlotItemInput!
+  $language: String!
+) {
   updateOrCreateSlotItem(input: $input) {
     ... on UpdateOrCreateSlotItemResult {
       updatedSlots {

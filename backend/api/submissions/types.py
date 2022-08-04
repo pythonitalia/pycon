@@ -69,13 +69,27 @@ class SubmissionSpeaker:
 
 
 @strawberry.type
+class MultiLingualString:
+    @strawberry.field
+    def it(self) -> str:
+        # return self.localize("it")
+        return self.data.get("it", "")
+
+    @strawberry.field
+    def en(self) -> str:
+        # return self.localize("en")
+        return self.data.get("en", "")
+
+
+@strawberry.type
 class Submission:
     conference: LazyType["Conference", "api.conferences.types"]
     title: str
+    multilingual_title: MultiLingualString
     slug: str
     status: str
-    elevator_pitch: Optional[str] = restricted_field()
-    abstract: Optional[str] = restricted_field()
+    multilingual_elevator_pitch: Optional[MultiLingualString] = restricted_field()
+    multilingual_abstract: Optional[MultiLingualString] = restricted_field()
     speaker_level: Optional[str] = private_field()
     previous_talk_video: Optional[str] = private_field()
     topic: Optional[LazyType["Topic", "api.conferences.types"]] = restricted_field()
@@ -87,6 +101,18 @@ class Submission:
         LazyType["AudienceLevel", "api.conferences.types"]
     ] = restricted_field()
     notes: Optional[str] = private_field()
+
+    @strawberry.field
+    def title(self, language: str) -> str:
+        return self.title.localize(language)
+
+    @restricted_field()
+    def elevator_pitch(self, language: str) -> str:
+        return self.elevator_pitch.localize(language)
+
+    @restricted_field()
+    def abstract(self, language: str) -> str:
+        return self.abstract.localize(language)
 
     @strawberry.field
     def speaker(self, info) -> Optional[SubmissionSpeaker]:

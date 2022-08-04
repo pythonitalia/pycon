@@ -137,6 +137,7 @@ export const VotingPage = () => {
     variables: {
       conference: process.env.conferenceCode,
       loadMore: false,
+      language,
     },
     errorPolicy: "all",
     skip: !loggedIn,

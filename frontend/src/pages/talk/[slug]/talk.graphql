@@ -1,4 +1,4 @@
-query Talk($slug: String!, $code: String!) {
+query Talk($slug: String!, $code: String!, $language: String!) {
   conference(code: $code) {
     id
     talk(slug: $slug) {
@@ -18,8 +18,8 @@ query Talk($slug: String!, $code: String!) {
 
       submission {
         id
-        abstract
-        elevatorPitch
+        abstract(language: $language)
+        elevatorPitch(language: $language)
 
         duration {
           id

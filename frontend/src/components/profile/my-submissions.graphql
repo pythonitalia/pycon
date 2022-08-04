@@ -1,9 +1,9 @@
-query MySubmissions($conference: String!) {
+query MySubmissions($conference: String!, $language: String!) {
   me {
     id
     submissions(conference: $conference) {
       id
-      title
+      title(language: $language)
       topic {
         id
         name

@@ -8,6 +8,7 @@ import { Alert } from "~/components/alert";
 import { Link } from "~/components/link";
 import { Table } from "~/components/table";
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
+import { useCurrentLanguage } from "~/locale/context";
 import { useMySubmissionsQuery } from "~/types";
 
 type Props = {
@@ -15,9 +16,11 @@ type Props = {
 };
 
 export const MySubmissions: React.FC<Props> = ({ className }) => {
+  const language = useCurrentLanguage();
   const { loading, error, data } = useMySubmissionsQuery({
     variables: {
       conference: process.env.conferenceCode,
+      language,
     },
   });
 
