@@ -254,8 +254,8 @@ class SubmissionsMutations:
 
         notify_new_submission(
             submission_id=instance.id,
-            title=instance.title,
-            elevator_pitch=instance.elevator_pitch,
+            title=instance.title.localize("en"),
+            elevator_pitch=instance.elevator_pitch.localize("en"),
             submission_type=instance.type.name,
             admin_url=request.build_absolute_uri(instance.get_admin_url()),
             duration=instance.duration.duration,
