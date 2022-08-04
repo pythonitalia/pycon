@@ -101,15 +101,18 @@ const SPEAKER_LEVEL_OPTIONS = [
 const filterOutInactiveLanguages = (
   value: MultiLingualInputType,
   languages: string[],
-) => {
-  return Object.entries(value).reduce((newDict, [key, value]) => {
-    if (!languages.includes(key)) {
-      return newDict;
-    }
+): MultiLingualInputType => {
+  return Object.entries(value).reduce(
+    (newDict, [key, value]) => {
+      if (!languages.includes(key)) {
+        return newDict;
+      }
 
-    newDict[key] = value;
-    return newDict;
-  }, {});
+      newDict[key] = value;
+      return newDict;
+    },
+    {},
+  );
 };
 
 export const CfpForm = ({
