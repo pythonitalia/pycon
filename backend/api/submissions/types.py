@@ -100,35 +100,49 @@ class Submission:
     ] = restricted_field()
     notes: Optional[str] = private_field()
 
-    @restricted_field()
-    def multilingual_elevator_pitch(self) -> Optional[MultiLingualString]:
+    @strawberry.field
+    def multilingual_elevator_pitch(self, info: Info) -> Optional[MultiLingualString]:
+        if not CanSeeSubmissionRestrictedFields().has_permission(self, info):
+            return None
         return MultiLingualString.create(self.elevator_pitch)
 
-    @restricted_field()
-    def multilingual_abstract(self) -> Optional[MultiLingualString]:
+    @strawberry.field
+    def multilingual_abstract(self, info: Info) -> Optional[MultiLingualString]:
+        if not CanSeeSubmissionRestrictedFields().has_permission(self, info):
+            return None
+
         return MultiLingualString.create(self.abstract)
 
-    @restricted_field()
-    def multilingual_title(self) -> Optional[MultiLingualString]:
+    @strawberry.field
+    def multilingual_title(self, info: Info) -> Optional[MultiLingualString]:
+        if not CanSeeSubmissionRestrictedFields().has_permission(self, info):
+            return None
+
         return MultiLingualString.create(self.title)
 
     @strawberry.field
     def title(self, language: str) -> str:
         return self.title.localize(language)
 
-    @restricted_field()
-    def elevator_pitch(self, language: str) -> Optional[str]:
+    @strawberry.field()
+    def elevator_pitch(self, language: str, info: Info) -> Optional[str]:
+        if not CanSeeSubmissionRestrictedFields().has_permission(self, info):
+            return None
+
         return self.elevator_pitch.localize(language)
 
-    @restricted_field()
-    def abstract(self, language: str) -> Optional[str]:
+    @strawberry.field()
+    def abstract(self, language: str, info: Info) -> Optional[str]:
+        if not CanSeeSubmissionRestrictedFields().has_permission(self, info):
+            return None
+
         return self.abstract.localize(language)
 
     @strawberry.field
-    def speaker(self, info) -> Optional[SubmissionSpeaker]:
-        if CanSeeSubmissionRestrictedFields().has_permission(self, info):
-            return SubmissionSpeaker(id=self.speaker_id)
-        return None
+    def speaker(self, info: Info) -> Optional[SubmissionSpeaker]:
+        if not CanSeeSubmissionRestrictedFields().has_permission(self, info):
+            return None
+        return SubmissionSpeaker(id=self.speaker_id)
 
     @strawberry.field
     def id(self, info) -> strawberry.ID:

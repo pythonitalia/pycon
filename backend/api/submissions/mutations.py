@@ -81,7 +81,7 @@ class SendSubmissionErrors(BaseErrorType):
 
 
 class BaseSubmissionInput:
-    def validate(self, conference: Optional[Conference], languages: list[str]):
+    def validate(self, conference: Optional[Conference]):
         errors = SendSubmissionErrors()
 
         if not conference:
@@ -95,8 +95,10 @@ class BaseSubmissionInput:
             errors.add_error(
                 "speaker_level", "You need to specify what is your speaker experience"
             )
+        elif self.speaker_level not in SubmissionModel.SPEAKER_LEVELS:
+            errors.add_error("speaker_level", "Select a valid choice")
 
-        if not languages:
+        if not self.languages:
             errors.add_error("languages", "You need to add at least one language")
 
         fields = (
@@ -108,13 +110,16 @@ class BaseSubmissionInput:
         max_lengths = {"title": 100, "elevator_pitch": 300, "abstract": 5000}
         to_text = {"it": "Italian", "en": "English"}
 
-        for language in ("it", "en"):
+        allowed_languages = conference.languages.values_list("code", flat=True)
+
+        for language in self.languages:
+            if language not in allowed_languages:
+                errors.add_error("languages", f"Language ({language}) is not allowed")
+                continue
+
             for field in fields:
                 value = getattr(getattr(self, field), language)
                 max_length = max_lengths.get(field, math.inf)
-
-                if language not in languages:
-                    continue
 
                 if not value:
                     errors.add_error(field, f"{to_text[language]}: Cannot be empty")
@@ -125,6 +130,27 @@ class BaseSubmissionInput:
                         field,
                         f"{to_text[language]}: Cannot be more than {max_length} chars",
                     )
+
+        duration = conference.durations.filter(id=self.duration).first()
+
+        if not conference.submission_types.filter(id=self.type).exists():
+            errors.add_error("type", "Not allowed submission type")
+
+        if not conference.topics.filter(id=self.topic).exists():
+            errors.add_error("topic", "Not a valid topic")
+
+        if not duration:
+            errors.add_error(
+                "duration",
+                "Select a valid choice. That choice is not one of the available choices.",
+            )
+        elif not duration.allowed_submission_types.filter(id=self.type).exists():
+            errors.add_error(
+                "duration", "Duration is not an allowed for the submission type"
+            )
+
+        if not conference.audience_levels.filter(id=self.audience_level).exists():
+            errors.add_error("audience_level", "Not a valid audience level")
 
         return errors
 
@@ -194,12 +220,7 @@ class SubmissionsMutations:
                 "non_field_errors", "You cannot edit this submission"
             )
 
-        conference = instance.conference
-        languages = Language.objects.filter(code__in=input.languages).all()
-
-        errors = input.validate(
-            conference=conference, languages=languages.values_list("code", flat=True)
-        )
+        errors = input.validate(conference=instance.conference)
 
         if errors.has_errors:
             return errors
@@ -215,7 +236,9 @@ class SubmissionsMutations:
         instance.speaker_level = input.speaker_level
         instance.previous_talk_video = input.previous_talk_video
 
+        languages = Language.objects.filter(code__in=input.languages).all()
         instance.languages.set(languages)
+
         instance.tags.set(input.tags)
 
         instance.save()
@@ -230,11 +253,11 @@ class SubmissionsMutations:
         request = info.context.request
 
         conference = Conference.objects.filter(code=input.conference).first()
-        languages = Language.objects.filter(code__in=input.languages).all()
 
-        errors = input.validate(
-            conference=conference, languages=languages.values_list("code", flat=True)
-        )
+        errors = input.validate(conference=conference)
+
+        if not conference.is_cfp_open:
+            errors.add_error("non_field_errors", "The call for paper is not open!")
 
         if errors.has_errors:
             return errors
@@ -253,6 +276,9 @@ class SubmissionsMutations:
             speaker_level=input.speaker_level,
             previous_talk_video=input.previous_talk_video,
         )
+
+        languages = Language.objects.filter(code__in=input.languages).all()
+
         instance.languages.set(languages)
         instance.tags.set(input.tags)
 

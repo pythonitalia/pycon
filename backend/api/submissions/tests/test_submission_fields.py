@@ -7,11 +7,11 @@ pytestmark = pytest.mark.django_db
 QUERY = """
     query SubmissionQuery($id: ID!) {
         submission(id: $id) {
-            abstract
+            abstract(language: "en")
             audienceLevel {
                 name
             }
-            elevatorPitch
+            elevatorPitch(language: "en")
             id
             type {
                 name
@@ -19,7 +19,7 @@ QUERY = """
             topic {
                 name
             }
-            title
+            title(language: "en")
             tags {
                 name
             }
@@ -74,7 +74,7 @@ def test_voting_open_and_user_cannot_vote(
     data = _query(graphql_client, submission)
 
     # ✔️ public
-    assert data["submission"]["title"] == submission.title
+    assert data["submission"]["title"] == submission.title.localize("en")
     assert data["submission"]["slug"] == submission.slug
 
     # ❌ restricted
@@ -107,12 +107,14 @@ def test_voting_open_and_user_can_vote(
     data = _query(graphql_client, submission)
 
     # ✔️ public
-    assert data["submission"]["title"] == submission.title
+    assert data["submission"]["title"] == submission.title.localize("en")
     assert data["submission"]["slug"] == submission.slug
 
     # ✔️ restricted
-    assert data["submission"]["elevatorPitch"] == submission.elevator_pitch
-    assert data["submission"]["abstract"] == submission.abstract
+    assert data["submission"]["elevatorPitch"] == submission.elevator_pitch.localize(
+        "en"
+    )
+    assert data["submission"]["abstract"] == submission.abstract.localize("en")
     assert data["submission"]["topic"]["name"] == submission.topic.name
     assert data["submission"]["type"]["name"] == submission.type.name
     assert data["submission"]["duration"]["name"] == submission.duration.name
@@ -143,7 +145,7 @@ def test_voring_closed_and_user_is_authenticated(
     data = _query(graphql_client, submission)
 
     # ✔️ public
-    assert data["submission"]["title"] == submission.title
+    assert data["submission"]["title"] == submission.title.localize("en")
     assert data["submission"]["slug"] == submission.slug
 
     # ❌ restricted
@@ -170,7 +172,7 @@ def test_voring_closed_and_user_is_not_authenticated(
     data = _query(graphql_client, submission)
 
     # ✔️ public
-    assert data["submission"]["title"] == submission.title
+    assert data["submission"]["title"] == submission.title.localize("en")
     assert data["submission"]["slug"] == submission.slug
 
     # ❌ restricted
@@ -202,12 +204,14 @@ def test_accepted_submission_user_can_see_public_and_restricted_fields(
     data = _query(graphql_client, submission)
 
     # ✔️ public
-    assert data["submission"]["title"] == submission.title
+    assert data["submission"]["title"] == submission.title.localize("en")
     assert data["submission"]["slug"] == submission.slug
 
     # ✔️ restricted
-    assert data["submission"]["elevatorPitch"] == submission.elevator_pitch
-    assert data["submission"]["abstract"] == submission.abstract
+    assert data["submission"]["elevatorPitch"] == submission.elevator_pitch.localize(
+        "en"
+    )
+    assert data["submission"]["abstract"] == submission.abstract.localize("en")
     assert data["submission"]["topic"]["name"] == submission.topic.name
     assert data["submission"]["type"]["name"] == submission.type.name
     assert data["submission"]["duration"]["name"] == submission.duration.name
@@ -236,12 +240,14 @@ def test_admin_user_can_see_everything(
     data = _query(graphql_client, submission)
 
     # ✔️ public
-    assert data["submission"]["title"] == submission.title
+    assert data["submission"]["title"] == submission.title.localize("en")
     assert data["submission"]["slug"] == submission.slug
 
     # ✔️ restricted
-    assert data["submission"]["elevatorPitch"] == submission.elevator_pitch
-    assert data["submission"]["abstract"] == submission.abstract
+    assert data["submission"]["elevatorPitch"] == submission.elevator_pitch.localize(
+        "en"
+    )
+    assert data["submission"]["abstract"] == submission.abstract.localize("en")
     assert data["submission"]["topic"]["name"] == submission.topic.name
     assert data["submission"]["type"]["name"] == submission.type.name
     assert data["submission"]["duration"]["name"] == submission.duration.name
@@ -268,12 +274,14 @@ def test_submission_author_can_see_everything(graphql_client, submission_factory
     data = _query(graphql_client, submission)
 
     # ✔️ public
-    assert data["submission"]["title"] == submission.title
+    assert data["submission"]["title"] == submission.title.localize("en")
     assert data["submission"]["slug"] == submission.slug
 
     # ✔️ restricted
-    assert data["submission"]["elevatorPitch"] == submission.elevator_pitch
-    assert data["submission"]["abstract"] == submission.abstract
+    assert data["submission"]["elevatorPitch"] == submission.elevator_pitch.localize(
+        "en"
+    )
+    assert data["submission"]["abstract"] == submission.abstract.localize("en")
     assert data["submission"]["topic"]["name"] == submission.topic.name
     assert data["submission"]["type"]["name"] == submission.type.name
     assert data["submission"]["duration"]["name"] == submission.duration.name
@@ -310,12 +318,14 @@ def test_ranked_submission_user_can_see_public_and_restricted_fields(
     data = _query(graphql_client, submission)
 
     # ✔️ public
-    assert data["submission"]["title"] == submission.title
+    assert data["submission"]["title"] == submission.title.localize("en")
     assert data["submission"]["slug"] == submission.slug
 
     # ✔️ restricted
-    assert data["submission"]["elevatorPitch"] == submission.elevator_pitch
-    assert data["submission"]["abstract"] == submission.abstract
+    assert data["submission"]["elevatorPitch"] == submission.elevator_pitch.localize(
+        "en"
+    )
+    assert data["submission"]["abstract"] == submission.abstract.localize("en")
     assert data["submission"]["topic"]["name"] == submission.topic.name
     assert data["submission"]["type"]["name"] == submission.type.name
     assert data["submission"]["duration"]["name"] == submission.duration.name
@@ -347,7 +357,7 @@ def test_ranking_is_not_public_cannot_see_restricted_and_private_fields(
     data = _query(graphql_client, submission)
 
     # ✔️ public
-    assert data["submission"]["title"] == submission.title
+    assert data["submission"]["title"] == submission.title.localize("en")
     assert data["submission"]["slug"] == submission.slug
 
     # ❌ restricted
@@ -378,7 +388,7 @@ def test_ranking_does_not_exists_cannot_see_restricted_and_private_fields(
     data = _query(graphql_client, submission)
 
     # ✔️ public
-    assert data["submission"]["title"] == submission.title
+    assert data["submission"]["title"] == submission.title.localize("en")
     assert data["submission"]["slug"] == submission.slug
 
     # ❌ restricted

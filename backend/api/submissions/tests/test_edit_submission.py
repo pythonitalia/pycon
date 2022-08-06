@@ -24,10 +24,10 @@ def _update_submission(
 
             ... on Submission {
                 id
-                title
+                title(language: "en")
                 notes
-                abstract
-                elevatorPitch
+                abstract(language: "en")
+                elevatorPitch(language: "en")
 
                 topic {
                     name
@@ -67,7 +67,7 @@ def _update_submission(
                 previousTalkVideo
             }
 
-            ... on UpdateSubmissionErrors {
+            ... on SendSubmissionErrors {
                 nonFieldErrors: nonFieldErrors
                 validationNotes: notes
                 validationTopic: topic
@@ -85,9 +85,9 @@ def _update_submission(
         variables={
             "input": {
                 "instance": submission.hashid,
-                "title": "new title to use",
-                "elevatorPitch": "This is an elevator pitch",
-                "abstract": "abstract here",
+                "title": {"en": "new title to use"},
+                "elevatorPitch": {"en": "This is an elevator pitch"},
+                "abstract": {"en": "abstract here"},
                 "topic": new_topic.id,
                 "audienceLevel": new_audience.id,
                 "type": new_type.id,
@@ -217,12 +217,10 @@ def test_cannot_update_submission_with_lang_outside_allowed_values(
         new_languages=["it"],
     )
 
-    assert (
-        response["data"]["updateSubmission"]["__typename"] == "UpdateSubmissionErrors"
-    )
+    assert response["data"]["updateSubmission"]["__typename"] == "SendSubmissionErrors"
 
     assert response["data"]["updateSubmission"]["validationLanguages"] == [
-        "Italian (it) is not an allowed language"
+        "Language (it) is not allowed"
     ]
 
 
@@ -266,10 +264,12 @@ def test_can_edit_submission_outside_cfp(
         new_tag=new_tag,
         new_duration=new_duration,
         new_type=new_type,
-        new_languages=["it"],
+        new_languages=["en"],
     )
 
     assert response["data"]["updateSubmission"]["__typename"] == "Submission"
+    submission = Submission.objects.get(id=submission.id)
+    assert list(submission.languages.values_list("code", flat=True)) == ["en"]
 
 
 @mark.django_db
@@ -314,9 +314,7 @@ def test_cannot_edit_submission_if_not_the_owner(
         new_languages=["en"],
     )
 
-    assert (
-        response["data"]["updateSubmission"]["__typename"] == "UpdateSubmissionErrors"
-    )
+    assert response["data"]["updateSubmission"]["__typename"] == "SendSubmissionErrors"
 
     assert response["data"]["updateSubmission"]["nonFieldErrors"] == [
         "You cannot edit this submission"
