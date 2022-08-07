@@ -24,6 +24,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='submission',
             name='title',
-            field=i18n.fields.I18nCharField(max_length=9000, verbose_name='title'),
+            field=i18n.fields.I18nCharField(verbose_name='title'),
         ),
     ]
