@@ -83,7 +83,7 @@ def handler(event, context):
 
             if command.get("action") == "migrate":
                 result = subprocess.check_output(
-                    "python -m alembic upgrade head",
+                    "/home/app/.venv/bin/alembic upgrade head",
                     shell=True,
                     stderr=subprocess.STDOUT,
                 )

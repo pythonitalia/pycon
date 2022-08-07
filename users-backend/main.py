@@ -11,7 +11,6 @@ from starlette.applications import Starlette
 from starlette.middleware import Middleware
 from starlette.middleware.sessions import SessionMiddleware
 from starlette.routing import Route
-
 from users.api.views import GraphQL
 from users.db import get_engine, get_session
 from users.domain.repository import UsersRepository
@@ -80,7 +79,7 @@ def handler(event, context):
 
             if command.get("action") == "migrate":
                 result = subprocess.check_output(
-                    "python -m alembic upgrade head",
+                    "/home/app/.venv/bin/alembic upgrade head",
                     shell=True,
                     stderr=subprocess.STDOUT,
                 )
