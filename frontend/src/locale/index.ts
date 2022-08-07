@@ -167,7 +167,7 @@ export const messages = {
     "cfp.minutes": "minutes",
     "cfp.languagesLabel": "Languages",
     "cfp.languagesDescription":
-      "You can submit your proposal in both English and Italian.",
+      "You can submit a proposal in multiple languages if you want. Voters will see the language that fits their preferences. Don't duplicate your proposals per language or they might be cancelled.",
     "cfp.viewSubmission": "Open submission",
     "cfp.tagsLabel": "Tags",
     "cfp.tagsDescription":
@@ -720,7 +720,7 @@ export const messages = {
     "cfp.topicDescription": "Di cosa tratta questa proposta?",
     "cfp.languagesLabel": "Lingua",
     "cfp.languagesDescription":
-      "Puoi proporre la tua proposta sia in italiano che inglese",
+      "Puoi inviare la tua proposta in più lingue se lo desideri. I votatori vedranno la lingua che si adatta alle loro preferenze. Non duplicare le tue proposte per lingua o potrebbero essere annullate.",
     "cfp.tagsLabel": "Tags",
     "cfp.tagsDescription":
       "Tagga la tua proposta per facilitare la ricerca agli organizzatori dell'evento. Ad esempio 'Django, GraphQL, open-source'",

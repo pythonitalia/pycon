@@ -274,6 +274,7 @@ export const CfpForm = ({
       </Heading>
       <form onSubmit={submitSubmission} sx={{ mb: 4 }}>
         <InputWrapper
+          isRequired={true}
           label={<FormattedMessage id="cfp.choosetype" />}
           description={<FormattedMessage id="cfp.choosetypeDescription" />}
         >
@@ -296,6 +297,7 @@ export const CfpForm = ({
 
         <InputWrapper
           as="div"
+          isRequired={true}
           label={<FormattedMessage id="cfp.languagesLabel" />}
           description={<FormattedMessage id="cfp.languagesDescription" />}
           errors={getErrors("validationLanguages")}
@@ -319,6 +321,7 @@ export const CfpForm = ({
 
         <InputWrapper
           sx={{ mb: 5 }}
+          isRequired={true}
           label={<FormattedMessage id="cfp.title" />}
           errors={getErrors("validationTitle")}
         >
@@ -339,6 +342,7 @@ export const CfpForm = ({
         >
           <Box>
             <InputWrapper
+              isRequired={true}
               label={<FormattedMessage id="cfp.elevatorPitchLabel" />}
               description={
                 <FormattedMessage id="cfp.elevatorPitchDescription" />
@@ -362,6 +366,7 @@ export const CfpForm = ({
           </Box>
           <Box>
             <InputWrapper
+              isRequired={true}
               label={<FormattedMessage id="cfp.trackLabel" />}
               description={<FormattedMessage id="cfp.topicDescription" />}
               errors={getErrors("validationTopic")}
@@ -383,6 +388,7 @@ export const CfpForm = ({
             </InputWrapper>
 
             <InputWrapper
+              isRequired={true}
               label={<FormattedMessage id="cfp.lengthLabel" />}
               description={<FormattedMessage id="cfp.lengthDescription" />}
               errors={getErrors("validationDuration")}
@@ -404,6 +410,7 @@ export const CfpForm = ({
             </InputWrapper>
 
             <InputWrapper
+              isRequired={true}
               label={<FormattedMessage id="cfp.audienceLevelLabel" />}
               description={
                 <FormattedMessage id="cfp.audienceLevelDescription" />
@@ -432,6 +439,7 @@ export const CfpForm = ({
           sx={{
             mb: 5,
           }}
+          isRequired={true}
           label={<FormattedMessage id="cfp.abstractLabel" />}
           description={<FormattedMessage id="cfp.abstractDescription" />}
           errors={getErrors("validationAbstract")}
@@ -466,6 +474,7 @@ export const CfpForm = ({
         </InputWrapper>
 
         <InputWrapper
+          isRequired={true}
           label={<FormattedMessage id="cfp.tagsLabel" />}
           description={<FormattedMessage id="cfp.tagsDescription" />}
           errors={getErrors("validationTags")}
@@ -490,6 +499,7 @@ export const CfpForm = ({
         </Text>
 
         <InputWrapper
+          isRequired={true}
           label={<FormattedMessage id="cfp.speakerLevel" />}
           description={<FormattedMessage id="cfp.speakerLevelDescription" />}
           errors={getErrors("validationSpeakerLevel")}
