@@ -77,7 +77,8 @@ def _update_submission(
             }
 
             ... on SendSubmissionErrors {
-                nonFieldErrors: nonFieldErrors
+                nonFieldErrors
+                validationTitle: title
                 validationNotes: notes
                 validationTopic: topic
                 validationAbstract: abstract
