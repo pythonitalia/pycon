@@ -458,11 +458,11 @@ def test_edit_submission_multi_lingual_fields_required(
 
     submission.refresh_from_db()
 
-    assert response["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
-    assert response["data"]["sendSubmission"]["validationAbstract"] == [
+    assert response["data"]["updateSubmission"]["__typename"] == "SendSubmissionErrors"
+    assert response["data"]["updateSubmission"]["validationAbstract"] == [
         "Italian: Cannot be empty"
     ]
-    assert response["data"]["sendSubmission"]["validationTitle"] == [
+    assert response["data"]["updateSubmission"]["validationTitle"] == [
         "Italian: Cannot be empty"
     ]
 
