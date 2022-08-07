@@ -32,5 +32,17 @@ class MultiLingualInput:
     en: str = ""
     it: str = ""
 
+    def clean(self, languages: list[str]) -> "MultiLingualInput":
+        # A clean multi-lingual input is one
+        # where only the allowed languages have a value.
+        # This means that we won't store old data the user didn't want to save
+        new_input = MultiLingualInput()
+        for lang in ("it", "en"):
+            if lang in languages:
+                value = getattr(self, lang)
+                setattr(new_input, lang, value)
+
+        return new_input
+
     def to_dict(self) -> dict:
         return {"en": self.en, "it": self.it}

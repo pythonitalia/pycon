@@ -71,6 +71,11 @@ class SendSubmissionErrors(BaseErrorType):
 
 
 class BaseSubmissionInput:
+    def clean(self):
+        self.title = self.title.clean(self.languages)
+        self.elevator_pitch = self.elevator_pitch.clean(self.languages)
+        self.abstract = self.abstract.clean(self.languages)
+
     def validate(self, conference: Optional[Conference]):
         errors = SendSubmissionErrors()
 
@@ -215,6 +220,8 @@ class SubmissionsMutations:
         if errors.has_errors:
             return errors
 
+        input.clean()
+
         instance.title = LazyI18nString(input.title.to_dict())
         instance.abstract = LazyI18nString(input.abstract.to_dict())
         instance.topic_id = input.topic
@@ -251,6 +258,8 @@ class SubmissionsMutations:
 
         if errors.has_errors:
             return errors
+
+        input.clean()
 
         instance = SubmissionModel.objects.create(
             speaker_id=request.user.id,

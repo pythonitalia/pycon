@@ -230,6 +230,125 @@ def test_submit_talk(graphql_client, user, conference_factory):
 
     conference = conference_factory(
         topics=("my-topic",),
+        languages=("en",),
+        submission_types=("talk",),
+        active_cfp=True,
+        durations=("50",),
+        audience_levels=("Beginner",),
+    )
+
+    resp, variables = _submit_talk(
+        graphql_client,
+        conference,
+        title={
+            "en": "English",
+            "it": "old old",
+        },
+    )
+
+    assert resp["data"]["sendSubmission"]["__typename"] == "Submission"
+
+    assert resp["data"]["sendSubmission"]["title"] == "English"
+    assert resp["data"]["sendSubmission"]["abstract"] == variables["abstract"]["en"]
+
+    talk = Submission.objects.get_by_hashid(resp["data"]["sendSubmission"]["id"])
+
+    assert talk.title.localize("en") == "English"
+    assert talk.abstract.localize("en") == variables["abstract"]["en"]
+
+    assert talk.title.data.get("it") is None
+    assert talk.abstract.data.get("it") is None
+
+    assert len(talk.languages.all()) == 1
+    assert len(talk.languages.filter(code="en")) == 1
+    assert talk.topic.name == "my-topic"
+    assert talk.conference == conference
+    assert talk.speaker_id == user.id
+    assert talk.audience_level.name == "Beginner"
+
+
+@mark.django_db
+def test_submit_talk_with_missing_data_of_other_language_fails(
+    graphql_client, user, conference_factory
+):
+    graphql_client.force_login(user)
+
+    conference = conference_factory(
+        topics=("my-topic",),
+        languages=("en", "it"),
+        submission_types=("talk",),
+        active_cfp=True,
+        durations=("50",),
+        audience_levels=("Beginner",),
+    )
+
+    resp, _ = _submit_talk(
+        graphql_client,
+        conference,
+        title={
+            "en": "English",
+            "it": "",
+        },
+        abstract={"en": "abstract", "it": ""},
+    )
+
+    assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
+    assert resp["data"]["sendSubmission"]["validationAbstract"] == [
+        "Italian: Cannot be empty"
+    ]
+    assert resp["data"]["sendSubmission"]["validationTitle"] == [
+        "Italian: Cannot be empty"
+    ]
+
+
+@mark.django_db
+def test_submit_talk_with_missing_data_fails(graphql_client, user, conference_factory):
+    graphql_client.force_login(user)
+
+    conference = conference_factory(
+        topics=("my-topic",),
+        languages=("en", "it"),
+        submission_types=("talk",),
+        active_cfp=True,
+        durations=("50",),
+        audience_levels=("Beginner",),
+    )
+
+    resp, _ = _submit_talk(
+        graphql_client,
+        conference,
+        title={
+            "en": "",
+            "it": "",
+        },
+        abstract={"en": "", "it": ""},
+    )
+
+    assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
+
+    assert (
+        "Italian: Cannot be empty"
+        in resp["data"]["sendSubmission"]["validationAbstract"]
+    )
+    assert (
+        "English: Cannot be empty"
+        in resp["data"]["sendSubmission"]["validationAbstract"]
+    )
+
+    assert (
+        "Italian: Cannot be empty" in resp["data"]["sendSubmission"]["validationTitle"]
+    )
+    assert (
+        "English: Cannot be empty" in resp["data"]["sendSubmission"]["validationTitle"]
+    )
+
+
+@mark.django_db
+def test_submit_talk_with_multiple_languages(graphql_client, user, conference_factory):
+    graphql_client.force_login(user)
+
+    conference = conference_factory(
+        topics=("my-topic",),
         languages=("it", "en"),
         submission_types=("talk",),
         active_cfp=True,
@@ -237,17 +356,27 @@ def test_submit_talk(graphql_client, user, conference_factory):
         audience_levels=("Beginner",),
     )
 
-    resp, variables = _submit_talk(graphql_client, conference)
+    resp, variables = _submit_talk(
+        graphql_client,
+        conference,
+        title={
+            "en": "English",
+            "it": "Italian",
+        },
+    )
 
     assert resp["data"]["sendSubmission"]["__typename"] == "Submission"
 
-    assert resp["data"]["sendSubmission"]["title"] == variables["title"]["en"]
+    assert resp["data"]["sendSubmission"]["title"] == "English"
     assert resp["data"]["sendSubmission"]["abstract"] == variables["abstract"]["en"]
 
     talk = Submission.objects.get_by_hashid(resp["data"]["sendSubmission"]["id"])
 
-    assert talk.title.localize("en") == variables["title"]["en"]
+    assert talk.title.localize("en") == "English"
     assert talk.abstract.localize("en") == variables["abstract"]["en"]
+
+    assert talk.title.localize("it") == "Italian"
+    assert talk.abstract.localize("it") == variables["abstract"]["it"]
 
     assert len(talk.languages.all()) == 2
     assert len(talk.languages.filter(code="it")) == 1
@@ -797,3 +926,38 @@ def test_speaker_level_only_allows_the_predefined_levels(
     assert resp["data"]["sendSubmission"]["validationPreviousSpeakerLevel"] == [
         "Select a valid choice"
     ]
+
+
+@mark.django_db
+def test_submit_talk_with_too_long_title_fails(
+    graphql_client, user, conference_factory
+):
+    graphql_client.force_login(user)
+
+    conference = conference_factory(
+        topics=("my-topic",),
+        languages=("en", "it"),
+        submission_types=("talk",),
+        active_cfp=True,
+        durations=("50",),
+        audience_levels=("Beginner",),
+    )
+
+    resp, _ = _submit_talk(
+        graphql_client,
+        conference,
+        title={
+            "en": "very long title very long title very long title very long title very long title very long title very long",
+            "it": "",
+        },
+    )
+
+    assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
+
+    assert (
+        "Italian: Cannot be empty" in resp["data"]["sendSubmission"]["validationTitle"]
+    )
+    assert (
+        "English: Cannot be more than 100 chars"
+        in resp["data"]["sendSubmission"]["validationTitle"]
+    )
