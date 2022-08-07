@@ -14,7 +14,7 @@ from languages.models import Language
 from strawberry_forms.mutations import FormMutation
 from submissions.models import Submission as SubmissionModel
 
-from .forms import SendSubmissionCommentForm, SendSubmissionForm, UpdateSubmissionForm
+from .forms import SendSubmissionCommentForm
 from .permissions import CanSendComment
 from .types import Submission, SubmissionComment, SubmissionCommentAuthor
 
@@ -29,16 +29,6 @@ class SubmissionMutation:
     class Meta:
         output_types = (Submission,)
         permission_classes = (IsAuthenticated,)
-
-
-class SendSubmission(FormMutation, SubmissionMutation):
-    class Meta(SubmissionMutation.Meta):
-        form_class = SendSubmissionForm
-
-
-class UpdateSubmission(FormMutation, SubmissionMutation):
-    class Meta(SubmissionMutation.Meta):
-        form_class = UpdateSubmissionForm
 
 
 class SendSubmissionComment(FormMutation):
