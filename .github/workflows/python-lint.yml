@@ -58,3 +58,4 @@ jobs:
           STRIPE_SUBSCRIPTION_PRICE_ID: 'secret_price_id'
           STRIPE_WEBHOOK_SIGNATURE_SECRET: 'secret_webhook'
           ASSOCIATION_FRONTEND_URL: "https://associazione.python.it"
+          PYTHONFAULTHANDLER: "true"
