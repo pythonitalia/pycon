@@ -13,7 +13,9 @@ const SharedLanguageContext = React.createContext(undefined);
 
 export const SharedLanguageProvider = ({
   children,
-}: React.PropsWithChildren<void>) => {
+}: {
+  children: React.ReactNode;
+}) => {
   const [currentLanguage, setCurrentLanguage] = useState(undefined);
   return (
     <SharedLanguageContext.Provider
