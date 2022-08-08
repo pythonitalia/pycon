@@ -8,11 +8,11 @@ authors = ["Python Italia"]
 python = "^3.9"
 starlette = "^0.14.1"
 uvicorn = "^0.13.3"
-strawberry-graphql = "0.124.0"
-SQLAlchemy = "1.4.39"
+strawberry-graphql = "^0.90"
+SQLAlchemy = "1.4.2"
 alembic = "^1.5.2"
 psycopg2-binary = "^2.8.6"
-asyncpg = "0.26.0"
+asyncpg = "^0.21.0"
 PyJWT = "2.0.1"
 pydantic = "^1.7.3"
 email-validator = "^1.1.2"
@@ -29,7 +29,7 @@ awslambdaric = {version = "^2.0.4", optional = true}
 
 [tool.poetry.dev-dependencies]
 pdbpp = "^0.10.2"
-ward = "0.66.1b0"
+ward = "^0.65.0b0"
 requests = "^2.25.1"
 taskipy = "^1.6.0"
 factory-boy = "^3.2.0"
@@ -42,7 +42,7 @@ lambda = ["awslambdaric"]
 
 [tool.taskipy.tasks]
 server = "uvicorn main:wrapped_app --port 8050 --reload"
-test = "RUNNING_TESTS=1 python scripts/prepare_db.py && RUNNING_TESTS=1 ward"
+test = "RUNNING_TESTS=1 python scripts/prepare_db.py && RUNNING_TESTS=1 coverage run -m ward"
 "test:coverage" = "task test || coverage xml -i && coverage xml -i"
 migrate = "alembic upgrade head"
 makemigrations = "alembic revision --autogenerate -m"
