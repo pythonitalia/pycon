@@ -96,6 +96,14 @@ python-versions = ">=3.6"
 simplejson = "3.17.2"
 
 [[package]]
+name = "backports.cached-property"
+version = "1.0.2"
+description = "cached_property() - computed once per instance, cached as attribute"
+category = "main"
+optional = false
+python-versions = ">=3.6.0"
+
+[[package]]
 name = "boto3"
 version = "1.24.47"
 description = "The AWS SDK for Python"
@@ -126,14 +134,6 @@ urllib3 = ">=1.25.4,<1.27"
 
 [package.extras]
 crt = ["awscrt (==0.13.8)"]
-
-[[package]]
-name = "cached-property"
-version = "1.5.2"
-description = "A decorator for caching properties in classes."
-category = "main"
-optional = false
-python-versions = "*"
 
 [[package]]
 name = "certifi"
@@ -334,7 +334,7 @@ pyrepl = ">=0.8.2"
 
 [[package]]
 name = "graphql-core"
-version = "3.1.5"
+version = "3.2.0"
 description = "GraphQL implementation for Python, a port of GraphQL.js, the JavaScript reference implementation for GraphQL."
 category = "main"
 optional = false
@@ -701,17 +701,6 @@ botocore = ">=1.12.36,<2.0a.0"
 crt = ["botocore[crt] (>=1.20.29,<2.0a.0)"]
 
 [[package]]
-name = "sentinel"
-version = "0.3.0"
-description = "Create sentinel objects, akin to None, NotImplemented, Ellipsis"
-category = "main"
-optional = false
-python-versions = ">=3.6,<4.0"
-
-[package.extras]
-varname = ["varname (>=0.1)"]
-
-[[package]]
 name = "sentry-sdk"
 version = "1.1.0"
 description = "Python client for Sentry (https://sentry.io)"
@@ -813,27 +802,26 @@ full = ["aiofiles", "graphene", "itsdangerous", "jinja2", "python-multipart", "p
 
 [[package]]
 name = "strawberry-graphql"
-version = "0.90.0"
+version = "0.124.0"
 description = "A library for creating GraphQL APIs"
 category = "main"
 optional = false
 python-versions = ">=3.7,<4.0"
 
 [package.dependencies]
-cached-property = ">=1.5.2,<2.0.0"
+"backports.cached-property" = ">=1.0.1,<2.0.0"
 click = ">=7.0,<9.0"
-graphql-core = ">=3.1.0,<3.2.0"
+graphql-core = ">=3.2.0,<3.3.0"
 pygments = ">=2.3,<3.0"
 python-dateutil = ">=2.7.0,<3.0.0"
 python-multipart = ">=0.0.5,<0.0.6"
-sentinel = ">=0.3.0,<0.4.0"
 typing_extensions = ">=3.7.4,<5.0.0"
 
 [package.extras]
-asgi = ["starlette (>=0.13.6,<0.17.0)"]
-debug-server = ["starlette (>=0.13.6,<0.17.0)", "uvicorn (>=0.11.6,<0.16.0)"]
-django = ["django (>=2,<4)", "asgiref (>=3.2,<4.0)"]
-flask = ["flask (>=1.1,<2.0)"]
+asgi = ["starlette (>=0.13.6)"]
+debug-server = ["starlette (>=0.13.6)", "uvicorn (>=0.11.6,<0.19.0)"]
+django = ["Django (>=3.2)", "asgiref (>=3.2,<4.0)"]
+flask = ["flask (>=1.1)"]
 opentelemetry = ["opentelemetry-api (<2)", "opentelemetry-sdk (<2)"]
 chalice = ["chalice (>=1.22,<2.0)"]
 pydantic = ["pydantic (<2)"]
@@ -949,7 +937,7 @@ lambda = ["awslambdaric"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "337fde848391c50f084b31f102ecc31d8f9d97e5c190eca9dd6c296bcf45989e"
+content-hash = "b1df908ef1d202b9c22d5e4e338a77efda8dd3694902c25fbe7afa5feeba33ab"
 
 [metadata.files]
 alembic = []
@@ -959,12 +947,9 @@ asgi-lifespan = []
 asyncpg = []
 authlib = []
 awslambdaric = []
+"backports.cached-property" = []
 boto3 = []
 botocore = []
-cached-property = [
-    {file = "cached-property-1.5.2.tar.gz", hash = "sha256:9fa5755838eecbb2d234c3aa390bd80fbd3ac6b6869109bfc1b499f7bd89a130"},
-    {file = "cached_property-1.5.2-py2.py3-none-any.whl", hash = "sha256:df4f613cf7ad9a588cc381aaf4a512d26265ecebd5eb9e1ba12f1319eb85a6a0"},
-]
 certifi = [
     {file = "certifi-2022.6.15-py3-none-any.whl", hash = "sha256:fe86415d55e84719d75f8b69414f6438ac3547d2078ab91b67e779ef69378412"},
     {file = "certifi-2022.6.15.tar.gz", hash = "sha256:84c85a9078b11105f04f3036a9482ae10e4621616db313fe045dd24743a0820d"},
@@ -1172,10 +1157,6 @@ rfc3986 = [
 ]
 rich = []
 s3transfer = []
-sentinel = [
-    {file = "sentinel-0.3.0-py3-none-any.whl", hash = "sha256:bd8710dd26752039c668604f6be2aaf741b56f7811c5924a4dcdfd74359244f3"},
-    {file = "sentinel-0.3.0.tar.gz", hash = "sha256:f28143aa4716dbc8f6193f5682176a3c33cd26aaae05d9ecf66c186a9887cc2d"},
-]
 sentry-sdk = [
     {file = "sentry-sdk-1.1.0.tar.gz", hash = "sha256:c1227d38dca315ba35182373f129c3e2722e8ed999e52584e6aca7d287870739"},
     {file = "sentry_sdk-1.1.0-py2.py3-none-any.whl", hash = "sha256:c7d380a21281e15be3d9f67a3c4fbb4f800c481d88ff8d8931f39486dd7b4ada"},
