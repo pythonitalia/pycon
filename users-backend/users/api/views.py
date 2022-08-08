@@ -28,6 +28,7 @@ class CustomHTTPHandler(HTTPHandler):
             execute=self.execute,
             process_result=self.process_result,
             root_value=root_value,
+            graphiql=True,
             context=context,
         )
 
