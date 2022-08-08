@@ -20,5 +20,4 @@ schema = strawberry.federation.Schema(
         SubmissionCommentAuthor,
     ],
     extensions=[SentryExtension],
-    enable_federation_2=True,
 )
