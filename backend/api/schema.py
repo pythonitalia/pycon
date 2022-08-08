@@ -52,4 +52,6 @@ class Mutation(
     pass
 
 
-schema = strawberry.federation.Schema(query=Query, mutation=Mutation, types=[User])
+schema = strawberry.federation.Schema(
+    query=Query, mutation=Mutation, types=[User], enable_federation_2=True
+)

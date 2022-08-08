@@ -1,6 +1,5 @@
 import strawberry
 from pythonit_toolkit.api.extensions import SentryExtension
-
 from users.api.types import (
     BlogPostAuthor,
     ScheduleItemUser,
@@ -21,4 +20,5 @@ schema = strawberry.federation.Schema(
         SubmissionCommentAuthor,
     ],
     extensions=[SentryExtension],
+    enable_federation_2=True,
 )
