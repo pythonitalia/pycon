@@ -1,17 +1,17 @@
 from typing import List
 
 import strawberry
+from conferences.models import Conference
+from submissions.models import Submission as SubmissionModel
 
 from api.pretix.query import get_user_orders, get_user_tickets
 from api.pretix.types import AttendeeTicket, PretixOrder
 from api.submissions.types import Submission
-from conferences.models import Conference
-from submissions.models import Submission as SubmissionModel
 
 
-@strawberry.federation.type(keys=["id"], extend=True)
+@strawberry.federation.type(keys=["id"])
 class User:
-    id: strawberry.ID = strawberry.federation.field(external=True)
+    id: strawberry.ID
     email: str = strawberry.federation.field(external=True)
     isStaff: bool = strawberry.federation.field(external=True)
 

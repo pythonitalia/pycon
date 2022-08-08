@@ -4,7 +4,6 @@ from datetime import date
 from typing import Optional
 
 import strawberry
-
 from users.api.context import Info
 from users.domain import entities
 
@@ -48,9 +47,9 @@ class OperationSuccess:
     ok: bool
 
 
-@strawberry.federation.type(keys=["id"], extend=True)
+@strawberry.federation.type(keys=["id"])
 class ScheduleItemUser:
-    id: strawberry.ID = strawberry.federation.field(external=True)
+    id: strawberry.ID
     full_name: str
 
     @classmethod
@@ -67,9 +66,9 @@ class ScheduleItemUser:
         )
 
 
-@strawberry.federation.type(keys=["id"], extend=True)
+@strawberry.federation.type(keys=["id"])
 class SubmissionSpeaker:
-    id: strawberry.ID = strawberry.federation.field(external=True)
+    id: strawberry.ID
     full_name: str
     gender: str
 
@@ -88,9 +87,9 @@ class SubmissionSpeaker:
         )
 
 
-@strawberry.federation.type(keys=["id"], extend=True)
+@strawberry.federation.type(keys=["id"])
 class BlogPostAuthor:
-    id: strawberry.ID = strawberry.federation.field(external=True)
+    id: strawberry.ID
     full_name: str
 
     @classmethod
@@ -107,9 +106,9 @@ class BlogPostAuthor:
         )
 
 
-@strawberry.federation.type(keys=["id"], extend=True)
+@strawberry.federation.type(keys=["id"])
 class SubmissionCommentAuthor:
-    id: strawberry.ID = strawberry.federation.field(external=True)
+    id: strawberry.ID
     is_speaker: bool = strawberry.federation.field(external=True)
     name: str
 

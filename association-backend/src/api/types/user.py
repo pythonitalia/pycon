@@ -3,9 +3,9 @@ import strawberry
 from src.association_membership.domain.repository import AssociationMembershipRepository
 
 
-@strawberry.federation.type(keys=["id"], extend=True)
+@strawberry.federation.type(keys=["id"])
 class User:
-    id: strawberry.ID = strawberry.federation.field(external=True)
+    id: strawberry.ID
     is_python_italia_member: bool
 
     @classmethod
