@@ -2,12 +2,30 @@
 
 /** @jsx jsx */
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { FormattedMessage } from "react-intl";
 
 import { jsx, Box, Flex } from "theme-ui";
 import { EnglishIcon } from "../icons/english";
 import { ItalianIcon } from "../icons/italian";
+
+const SharedLanguageContext = React.createContext(undefined);
+
+export const SharedLanguageProvider = ({
+  children,
+}: React.PropsWithChildren<void>) => {
+  const [currentLanguage, setCurrentLanguage] = useState(undefined);
+  return (
+    <SharedLanguageContext.Provider
+      value={{
+        currentLanguage,
+        setCurrentLanguage,
+      }}
+    >
+      {children}
+    </SharedLanguageContext.Provider>
+  );
+};
 
 type Props = {
   children: React.ReactElement;
@@ -24,7 +42,9 @@ export const MultiLingualInput = ({
   ...props
 }: Props) => {
   const languages = unsortedLanguages.sort((a) => (a === "en" ? -1 : 1));
-  const [currentLanguage, setCurrentLanguage] = useState(languages[0]);
+  const { currentLanguage, setCurrentLanguage } = useContext(
+    SharedLanguageContext,
+  );
   const isDisabled = typeof currentLanguage === "undefined";
 
   useEffect(() => {

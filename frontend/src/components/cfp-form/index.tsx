@@ -31,7 +31,7 @@ import { Alert } from "../alert";
 import { Button } from "../button/button";
 import { TagLine } from "../input-tag";
 import { InputWrapper } from "../input-wrapper";
-import { MultiLingualInput } from "../multilingual-input";
+import { MultiLingualInput, SharedLanguageProvider } from "../multilingual-input";
 
 export type CfpFormFields = {
   type: string;
