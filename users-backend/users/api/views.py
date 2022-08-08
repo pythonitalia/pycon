@@ -17,13 +17,9 @@ class CustomHTTPHandler(HTTPHandler):
         request = Request(scope=scope, receive=receive)
         root_value = await self.get_root_value(request)
 
-        sub_response = Response(
-            content=None,
-            status_code=None,  # type: ignore
-            headers=None,
-            media_type=None,
-            background=None,
-        )
+        sub_response = Response()
+        sub_response.status_code = None  # type: ignore
+        del sub_response.headers["content-length"]
 
         context = await self.get_context(request=request, response=sub_response)
 
@@ -31,7 +27,6 @@ class CustomHTTPHandler(HTTPHandler):
             request=request,
             execute=self.execute,
             process_result=self.process_result,
-            graphiql=self.graphiql,
             root_value=root_value,
             context=context,
         )
