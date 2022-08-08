@@ -1,7 +1,7 @@
 import logging
 from unittest.mock import patch
 
-from ward import fixture
+from ward import Scope, fixture
 
 from users.db import get_engine, get_session
 from users.domain.entities import mapper_registry
@@ -9,6 +9,14 @@ from users.domain.entities import mapper_registry
 logger = logging.getLogger(__name__)
 engine = get_engine(echo=False)
 test_session = get_session(engine)
+cached_second_session = None
+
+
+@fixture(scope=Scope.GLOBAL)
+async def cleanup_connections():
+    await test_session.close_all()
+    if cached_second_session:
+        await cached_second_session.close_all()
 
 
 @fixture
@@ -27,4 +35,7 @@ async def db():
 
 @fixture
 async def second_session():
-    return get_session(engine)
+    global cached_second_session
+    if not cached_second_session:
+        cached_second_session = get_session(engine)
+    return cached_second_session
