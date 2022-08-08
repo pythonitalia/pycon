@@ -12,7 +12,7 @@ test_session = get_session(engine)
 cached_second_session = None
 
 
-@fixture(scope=Scope.GLOBAL)
+@fixture(scope=Scope.Global)
 async def cleanup_connections():
     await test_session.close_all()
     if cached_second_session:
