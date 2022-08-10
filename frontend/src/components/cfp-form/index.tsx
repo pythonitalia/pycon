@@ -31,7 +31,10 @@ import { Alert } from "../alert";
 import { Button } from "../button/button";
 import { TagLine } from "../input-tag";
 import { InputWrapper } from "../input-wrapper";
-import { MultiLingualInput, SharedLanguageProvider } from "../multilingual-input";
+import {
+  MultiLingualInput,
+  SharedLanguageProvider,
+} from "../multilingual-input";
 
 export type CfpFormFields = {
   type: string;
@@ -354,6 +357,7 @@ export const CfpForm = ({
                 languages={formState.values.languages}
               >
                 <Textarea
+                  required={true}
                   sx={{
                     resize: "vertical",
                     minHeight: 340,
@@ -449,6 +453,7 @@ export const CfpForm = ({
             languages={formState.values.languages}
           >
             <Textarea
+              required={true}
               sx={{
                 resize: "vertical",
                 minHeight: 200,
@@ -468,6 +473,7 @@ export const CfpForm = ({
               resize: "vertical",
               minHeight: 150,
             }}
+            required={true}
             {...textarea("notes")}
             rows={4}
           />
