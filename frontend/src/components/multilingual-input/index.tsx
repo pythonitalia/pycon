@@ -63,7 +63,6 @@ export const MultiLingualInput = ({
             <Flex
               sx={{
                 alignItems: "center",
-                cursor: "pointer",
                 mr: 2,
                 pb: 2,
               }}
