@@ -473,7 +473,6 @@ export const CfpForm = ({
               resize: "vertical",
               minHeight: 150,
             }}
-            required={true}
             {...textarea("notes")}
             rows={4}
           />
