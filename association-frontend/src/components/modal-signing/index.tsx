@@ -18,13 +18,14 @@ type ModalSigningProps = {
 type SigningForm = {
   email: string;
   password: string;
+  fullname: string;
 };
 
 export const ModalSigning: React.FC<ModalSigningProps> = ({
   showModal,
   closeModalHandler,
 }) => {
-  const [formState, { email, password }] = useFormState<SigningForm>();
+  const [formState, { text, email, password }] = useFormState<SigningForm>();
   // login or signup
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [loginData, login] = useLoginMutation();
@@ -49,6 +50,7 @@ export const ModalSigning: React.FC<ModalSigningProps> = ({
       input: {
         email: formState.values.email,
         password: formState.values.password,
+        fullname: formState.values.fullname,
       },
     });
 
@@ -84,7 +86,6 @@ export const ModalSigning: React.FC<ModalSigningProps> = ({
       .map((field) => {
         if (errors[field]) {
           return errors[field].map((error) => {
-            console.log(field, error.type);
             switch (true) {
               case error.type === "value_error.any_str.min_length" &&
                 field === "password":
@@ -134,6 +135,17 @@ export const ModalSigning: React.FC<ModalSigningProps> = ({
             {...password("password")}
           />
         </div>
+
+        {!isLoggingIn && (
+          <div className="flex flex-col mt-5">
+            <Input
+              placeholder={"Full Name"}
+              type={"text"}
+              required
+              {...text("fullname")}
+            />
+          </div>
+        )}
 
         {isRunningMutation && <Alert variant={Variant.INFO}>Caricamento</Alert>}
         {operationFailed && mutationResultTypename && (
