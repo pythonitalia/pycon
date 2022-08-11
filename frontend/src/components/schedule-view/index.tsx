@@ -16,6 +16,7 @@ import {
 import { Button } from "../button/button";
 import { Schedule } from "./schedule";
 import { ItemsPanel } from "./staff/items-panel";
+import { useCurrentLanguage } from "~/locale/context";
 
 const LoadingOverlay = () => (
   <Flex
@@ -47,6 +48,7 @@ export const ScheduleView: React.SFC<{
   schedule: ScheduleQuery;
   changeDay: (day: string) => void;
 }> = ({ day: currentDay, shouldShowAdmin, schedule, changeDay }) => {
+  const language = useCurrentLanguage();
   const code = process.env.conferenceCode;
   const {
     query: { photo },
@@ -54,7 +56,7 @@ export const ScheduleView: React.SFC<{
   const isInPhotoMode = photo == "1";
 
   const [addSlot, { loading: addingSlot }] = useAddScheduleSlotMutation({
-    variables: { code, day: currentDay, duration: 60 },
+    variables: { code, day: currentDay, duration: 60, language },
   });
 
   const [addOrCreateScheduleItem, { loading: updatingSchedule }] =
@@ -69,6 +71,7 @@ export const ScheduleView: React.SFC<{
             rooms: itemRooms,
             title,
           },
+          language,
         },
       }),
     [],
@@ -83,6 +86,7 @@ export const ScheduleView: React.SFC<{
             submissionId,
             rooms: itemRooms,
           },
+          language,
         },
       }),
     [],
@@ -97,6 +101,7 @@ export const ScheduleView: React.SFC<{
             keynoteId,
             rooms: itemRooms,
           },
+          language,
         },
       }),
     [],
@@ -111,6 +116,7 @@ export const ScheduleView: React.SFC<{
             itemId,
             rooms: itemRooms,
           },
+          language,
         },
       }),
     [],
@@ -123,6 +129,7 @@ export const ScheduleView: React.SFC<{
           code,
           day: currentDay,
           duration,
+          language,
         },
       }),
     [code, currentDay],

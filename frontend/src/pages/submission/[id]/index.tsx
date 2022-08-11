@@ -21,6 +21,7 @@ import {
   useIsVotingClosedQuery,
   useSubmissionQuery,
 } from "~/types";
+import { useCurrentLanguage } from "~/locale/context";
 
 const NotLoggedIn: React.SFC<{
   title?: string;
@@ -91,6 +92,7 @@ const Content = ({
 
 export const SubmissionPage = () => {
   const router = useRouter();
+  const language = useCurrentLanguage();
 
   const id = router.query.id as string;
 
@@ -98,6 +100,7 @@ export const SubmissionPage = () => {
     errorPolicy: "all",
     variables: {
       id,
+      language,
     },
     skip: typeof window === "undefined",
   });

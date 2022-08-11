@@ -4,6 +4,7 @@ query VotingSubmissions(
   $conference: String!
   $after: String
   $loadMore: Boolean!
+  $language: String!
 ) {
   conference(code: $conference) @skip(if: $loadMore) {
     id

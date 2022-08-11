@@ -12,10 +12,12 @@ import {
   useSendSubmissionMutation,
   writeMeSubmissionsQueryCache,
 } from "~/types";
+import { useCurrentLanguage } from "~/locale/context";
 
-export const CfpSendSubmission: React.SFC = () => {
+export const CfpSendSubmission = () => {
   const code = process.env.conferenceCode;
   const router = useRouter();
+  const language = useCurrentLanguage();
 
   const [sendSubmission, { loading, error, data }] = useSendSubmissionMutation({
     update(cache, { data: updateData }) {
@@ -23,6 +25,7 @@ export const CfpSendSubmission: React.SFC = () => {
         cache,
         variables: {
           conference: code,
+          language,
         },
       });
 
@@ -34,6 +37,7 @@ export const CfpSendSubmission: React.SFC = () => {
         cache,
         variables: {
           conference: code,
+          language,
         },
         data: {
           me: {
@@ -67,6 +71,7 @@ export const CfpSendSubmission: React.SFC = () => {
           speakerLevel: input.speakerLevel,
           previousTalkVideo: input.previousTalkVideo,
         },
+        language,
       },
     });
 

@@ -5,6 +5,8 @@ from submissions.tests.factories import SubmissionFactory
 
 
 def _submit_talk(client, conference, **kwargs):
+    tag, _ = SubmissionTag.objects.get_or_create(name="tag")
+
     talk = SubmissionFactory.build(
         type=SubmissionType.objects.get_or_create(name="talk")[0]
     )
@@ -12,9 +14,18 @@ def _submit_talk(client, conference, **kwargs):
     languages = [language.code for language in conference.languages.all()]
 
     defaults = {
-        "title": talk.title,
-        "abstract": talk.abstract,
-        "elevator_pitch": talk.elevator_pitch,
+        "title": {
+            "en": talk.title.data.get("en", ""),
+            "it": talk.title.data.get("it", ""),
+        },
+        "abstract": {
+            "en": talk.abstract.data.get("en", ""),
+            "it": talk.abstract.data.get("it", ""),
+        },
+        "elevator_pitch": {
+            "en": talk.elevator_pitch.data.get("en", ""),
+            "it": talk.elevator_pitch.data.get("it", ""),
+        },
         "notes": talk.notes,
         "languages": languages,
         "conference": conference.code,
@@ -24,29 +35,41 @@ def _submit_talk(client, conference, **kwargs):
         "audience_level": conference.audience_levels.first().id,
         "speaker_level": talk.speaker_level,
         "previous_talk_video": talk.previous_talk_video,
+        "tags": [tag.id],
     }
 
-    variables = {**defaults, **kwargs}
+    variables = {
+        **defaults,
+        **kwargs,
+    }
+    override_conference = kwargs.pop("override_conference", None)
+    if override_conference:
+        variables["conference"] = override_conference
+
     return (
         client.query(
             """mutation(
                 $conference: ID!,
                 $topic: ID!,
-                $title: String!,
-                $abstract: String!,
+                $title: MultiLingualInput!,
+                $elevator_pitch: MultiLingualInput!,
+                $abstract: MultiLingualInput!,
+                $notes: String!,
                 $languages: [ID!]!,
                 $type: ID!,
                 $duration: ID!,
                 $audience_level: ID!,
                 $tags: [ID!],
                 $speaker_level: String!
-                $previous_talk_video: String
+                $previous_talk_video: String!
             ) {
                 sendSubmission(input: {
                     title: $title,
                     abstract: $abstract,
                     languages: $languages,
                     conference: $conference,
+                    elevatorPitch: $elevator_pitch,
+                    notes: $notes,
                     topic: $topic,
                     type: $type,
                     duration: $duration,,
@@ -59,9 +82,9 @@ def _submit_talk(client, conference, **kwargs):
 
                     ... on Submission {
                         id
-                        title
-                        abstract
-                        elevatorPitch
+                        title(language: "en")
+                        abstract(language: "en")
+                        elevatorPitch(language: "en")
                         audienceLevel {
                             name
                         }
@@ -98,16 +121,28 @@ def _submit_talk(client, conference, **kwargs):
 
 
 def _submit_tutorial(client, conference, **kwargs):
+    tag, _ = SubmissionTag.objects.get_or_create(name="tag")
+
     talk = SubmissionFactory.create(
         type=SubmissionType.objects.get_or_create(name="tutorial")[0]
     )
+    talk.tags.add(tag)
 
     languages = [language.code for language in conference.languages.all()]
 
     defaults = {
-        "title": talk.title,
-        "abstract": talk.abstract,
-        "elevator_pitch": talk.elevator_pitch,
+        "title": {
+            "en": talk.title.data.get("en", ""),
+            "it": talk.title.data.get("it", ""),
+        },
+        "abstract": {
+            "en": talk.abstract.data.get("en", ""),
+            "it": talk.abstract.data.get("it", ""),
+        },
+        "elevator_pitch": {
+            "en": talk.elevator_pitch.data.get("en", ""),
+            "it": talk.elevator_pitch.data.get("it", ""),
+        },
         "notes": talk.notes,
         "languages": languages,
         "conference": conference.code,
@@ -115,7 +150,7 @@ def _submit_tutorial(client, conference, **kwargs):
         "type": talk.type.id,
         "duration": conference.durations.first().id,
         "audience_level": conference.audience_levels.first().id,
-        "tags": [tag.name for tag in talk.tags.all()],
+        "tags": [tag.id for tag in talk.tags.all()],
         "speaker_level": talk.speaker_level,
         "previous_talk_video": talk.previous_talk_video,
     }
@@ -127,17 +162,17 @@ def _submit_tutorial(client, conference, **kwargs):
             """mutation(
                 $conference: ID!,
                 $topic: ID!,
-                $title: String!,
-                $abstract: String!,
+                $title: MultiLingualInput!,
+                $elevator_pitch: MultiLingualInput!,
+                $abstract: MultiLingualInput!,
+                $notes: String!,
                 $languages: [ID!]!,
                 $type: ID!,
                 $duration: ID!,
                 $audience_level: ID!,
                 $tags: [ID!],
-                $speaker_level: String!,
-                $elevator_pitch: String,
-                $notes: String,
-                $previous_talk_video: String
+                $speaker_level: String!
+                $previous_talk_video: String!
             ) {
                 sendSubmission(input: {
                     title: $title,
@@ -158,9 +193,9 @@ def _submit_tutorial(client, conference, **kwargs):
 
                     ... on Submission {
                         id
-                        title
-                        abstract
-                        elevatorPitch
+                        title(language: "en")
+                        abstract(language: "en")
+                        elevatorPitch(language: "en")
                         audienceLevel {
                             name
                         }
@@ -202,6 +237,125 @@ def test_submit_talk(graphql_client, user, conference_factory):
 
     conference = conference_factory(
         topics=("my-topic",),
+        languages=("en",),
+        submission_types=("talk",),
+        active_cfp=True,
+        durations=("50",),
+        audience_levels=("Beginner",),
+    )
+
+    resp, variables = _submit_talk(
+        graphql_client,
+        conference,
+        title={
+            "en": "English",
+            "it": "old old",
+        },
+    )
+
+    assert resp["data"]["sendSubmission"]["__typename"] == "Submission"
+
+    assert resp["data"]["sendSubmission"]["title"] == "English"
+    assert resp["data"]["sendSubmission"]["abstract"] == variables["abstract"]["en"]
+
+    talk = Submission.objects.get_by_hashid(resp["data"]["sendSubmission"]["id"])
+
+    assert talk.title.localize("en") == "English"
+    assert talk.abstract.localize("en") == variables["abstract"]["en"]
+
+    assert talk.title.data.get("it") is None
+    assert talk.abstract.data.get("it") is None
+
+    assert len(talk.languages.all()) == 1
+    assert len(talk.languages.filter(code="en")) == 1
+    assert talk.topic.name == "my-topic"
+    assert talk.conference == conference
+    assert talk.speaker_id == user.id
+    assert talk.audience_level.name == "Beginner"
+
+
+@mark.django_db
+def test_submit_talk_with_missing_data_of_other_language_fails(
+    graphql_client, user, conference_factory
+):
+    graphql_client.force_login(user)
+
+    conference = conference_factory(
+        topics=("my-topic",),
+        languages=("en", "it"),
+        submission_types=("talk",),
+        active_cfp=True,
+        durations=("50",),
+        audience_levels=("Beginner",),
+    )
+
+    resp, _ = _submit_talk(
+        graphql_client,
+        conference,
+        title={
+            "en": "English",
+            "it": "",
+        },
+        abstract={"en": "abstract", "it": ""},
+    )
+
+    assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
+    assert resp["data"]["sendSubmission"]["validationAbstract"] == [
+        "Italian: Cannot be empty"
+    ]
+    assert resp["data"]["sendSubmission"]["validationTitle"] == [
+        "Italian: Cannot be empty"
+    ]
+
+
+@mark.django_db
+def test_submit_talk_with_missing_data_fails(graphql_client, user, conference_factory):
+    graphql_client.force_login(user)
+
+    conference = conference_factory(
+        topics=("my-topic",),
+        languages=("en", "it"),
+        submission_types=("talk",),
+        active_cfp=True,
+        durations=("50",),
+        audience_levels=("Beginner",),
+    )
+
+    resp, _ = _submit_talk(
+        graphql_client,
+        conference,
+        title={
+            "en": "",
+            "it": "",
+        },
+        abstract={"en": "", "it": ""},
+    )
+
+    assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
+
+    assert (
+        "Italian: Cannot be empty"
+        in resp["data"]["sendSubmission"]["validationAbstract"]
+    )
+    assert (
+        "English: Cannot be empty"
+        in resp["data"]["sendSubmission"]["validationAbstract"]
+    )
+
+    assert (
+        "Italian: Cannot be empty" in resp["data"]["sendSubmission"]["validationTitle"]
+    )
+    assert (
+        "English: Cannot be empty" in resp["data"]["sendSubmission"]["validationTitle"]
+    )
+
+
+@mark.django_db
+def test_submit_talk_with_multiple_languages(graphql_client, user, conference_factory):
+    graphql_client.force_login(user)
+
+    conference = conference_factory(
+        topics=("my-topic",),
         languages=("it", "en"),
         submission_types=("talk",),
         active_cfp=True,
@@ -209,17 +363,27 @@ def test_submit_talk(graphql_client, user, conference_factory):
         audience_levels=("Beginner",),
     )
 
-    resp, variables = _submit_talk(graphql_client, conference)
+    resp, variables = _submit_talk(
+        graphql_client,
+        conference,
+        title={
+            "en": "English",
+            "it": "Italian",
+        },
+    )
 
     assert resp["data"]["sendSubmission"]["__typename"] == "Submission"
 
-    assert resp["data"]["sendSubmission"]["title"] == variables["title"]
-    assert resp["data"]["sendSubmission"]["abstract"] == variables["abstract"]
+    assert resp["data"]["sendSubmission"]["title"] == "English"
+    assert resp["data"]["sendSubmission"]["abstract"] == variables["abstract"]["en"]
 
     talk = Submission.objects.get_by_hashid(resp["data"]["sendSubmission"]["id"])
 
-    assert talk.title == variables["title"]
-    assert talk.abstract == variables["abstract"]
+    assert talk.title.localize("en") == "English"
+    assert talk.abstract.localize("en") == variables["abstract"]["en"]
+
+    assert talk.title.localize("it") == "Italian"
+    assert talk.abstract.localize("it") == variables["abstract"]["it"]
 
     assert len(talk.languages.all()) == 2
     assert len(talk.languages.filter(code="it")) == 1
@@ -249,7 +413,7 @@ def test_submit_talk_with_not_valid_conf_language(
 
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
     assert resp["data"]["sendSubmission"]["validationLanguages"] == [
-        "English (en) is not an allowed language"
+        "Language (en) is not allowed"
     ]
 
 
@@ -303,8 +467,7 @@ def test_cannot_use_duration_if_submission_type_is_not_allowed(
 
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
     assert resp["data"]["sendSubmission"]["validationDuration"] == [
-        f"Duration {str(duration2)} is not an allowed "
-        f"for the submission type {str(talk_type)}"
+        "Duration is not an allowed for the submission type"
     ]
 
 
@@ -331,7 +494,7 @@ def test_submit_talk_with_duration_id_of_another_conf(
 
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
     assert resp["data"]["sendSubmission"]["validationDuration"] == [
-        f"{str(another_conf_duration)} is not an allowed duration type"
+        "Select a valid choice. That choice is not one of the available choices."
     ]
 
 
@@ -354,9 +517,7 @@ def test_submit_talk_with_not_valid_conf_topic(
     resp, _ = _submit_talk(graphql_client, conference, topic=topic.id)
 
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
-    assert resp["data"]["sendSubmission"]["validationTopic"] == [
-        "random topic is not a valid topic"
-    ]
+    assert resp["data"]["sendSubmission"]["validationTopic"] == ["Not a valid topic"]
 
 
 @mark.django_db
@@ -378,7 +539,7 @@ def test_submit_talk_with_not_valid_allowed_submission_type_in_the_conference(
 
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
     assert resp["data"]["sendSubmission"]["validationType"] == [
-        "talk is not an allowed submission type"
+        "Not allowed submission type"
     ]
 
 
@@ -401,7 +562,7 @@ def test_submit_talk_with_not_valid_submission_type_id(
 
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
     assert resp["data"]["sendSubmission"]["validationType"] == [
-        "Select a valid choice. That choice is not one of the available choices."
+        "Not allowed submission type"
     ]
 
 
@@ -424,7 +585,7 @@ def test_submit_talk_with_not_valid_language_code(
 
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
     assert resp["data"]["sendSubmission"]["validationLanguages"] == [
-        "Select a valid choice. fit is not one of the available choices."
+        "Language (fit) is not allowed"
     ]
 
 
@@ -442,12 +603,12 @@ def test_submit_talk_with_not_valid_audience_level(
         active_cfp=True,
         audience_levels=("Beginner",),
     )
-    resp, _ = _submit_talk(graphql_client, conference, audience_level="Beginners")
+    resp, _ = _submit_talk(graphql_client, conference, audience_level=50)
 
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
     # assert resp["data"]["sendSubmission"]["submission"] is None
     assert resp["data"]["sendSubmission"]["validationAudienceLevel"] == [
-        "Select a valid choice. That choice is not one of the available choices."
+        "Not a valid audience level"
     ]
     # assert resp["data"]["sendSubmission"]["errors"][0]["field"] == "audience_level"
 
@@ -471,7 +632,7 @@ def test_submit_talk_with_not_valid_conf_audience_level(
 
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
     assert resp["data"]["sendSubmission"]["validationAudienceLevel"] == [
-        "Intermidiate is not an allowed audience level"
+        "Not a valid audience level"
     ]
 
 
@@ -543,14 +704,14 @@ def test_same_user_can_propose_multiple_talks_to_the_same_conference(
 
     conference = conference_factory(
         topics=("friends",),
-        languages=("it",),
+        languages=("en",),
         active_cfp=True,
         submission_types=("talk",),
         durations=("50",),
         audience_levels=("Beginner",),
     )
 
-    resp, _ = _submit_talk(graphql_client, conference, title="My first talk")
+    resp, _ = _submit_talk(graphql_client, conference, title={"en": "My first talk"})
 
     assert resp["data"]["sendSubmission"]["title"] == "My first talk"
 
@@ -559,7 +720,7 @@ def test_same_user_can_propose_multiple_talks_to_the_same_conference(
         == 1
     )
 
-    resp, _ = _submit_talk(graphql_client, conference, title="Another talk")
+    resp, _ = _submit_talk(graphql_client, conference, title={"en": "Another talk"})
 
     assert resp["data"]["sendSubmission"]["title"] == "Another talk"
 
@@ -575,14 +736,16 @@ def test_submit_tutorial(graphql_client, user, conference_factory):
 
     conference = conference_factory(
         topics=("friends",),
-        languages=("it",),
+        languages=("en",),
         active_cfp=True,
         submission_types=("talk", "tutorial"),
         durations=("50",),
         audience_levels=("Beginner",),
     )
 
-    resp, _ = _submit_tutorial(graphql_client, conference, title="My first tutorial")
+    resp, _ = _submit_tutorial(
+        graphql_client, conference, title={"en": "My first tutorial"}
+    )
 
     assert resp["data"]["sendSubmission"]["__typename"] == "Submission"
     assert resp["data"]["sendSubmission"]["title"] == "My first tutorial"
@@ -601,14 +764,16 @@ def test_submit_tutorial_and_talk_to_the_same_conference(
 
     conference = conference_factory(
         topics=("friends",),
-        languages=("it",),
+        languages=("en",),
         active_cfp=True,
         submission_types=("talk", "tutorial"),
         durations=("50",),
         audience_levels=("Beginner",),
     )
 
-    resp, _ = _submit_tutorial(graphql_client, conference, title="My first tutorial")
+    resp, _ = _submit_tutorial(
+        graphql_client, conference, title={"en": "My first tutorial"}
+    )
 
     assert resp["data"]["sendSubmission"]["title"] == "My first tutorial"
 
@@ -617,7 +782,7 @@ def test_submit_tutorial_and_talk_to_the_same_conference(
         == 1
     )
 
-    resp, _ = _submit_talk(graphql_client, conference, title="My first talk")
+    resp, _ = _submit_talk(graphql_client, conference, title={"en": "My first talk"})
 
     assert resp["data"]["sendSubmission"]["title"] == "My first talk"
 
@@ -628,24 +793,21 @@ def test_submit_tutorial_and_talk_to_the_same_conference(
 
 
 @mark.django_db
-def test_elevation_pitch_and_notes_are_not_required(
-    graphql_client, user, conference_factory
-):
+def test_notes_are_not_required(graphql_client, user, conference_factory):
     graphql_client.force_login(user)
 
     conference = conference_factory(
         topics=("friends",),
-        languages=("it",),
+        languages=("en",),
         active_cfp=True,
         submission_types=("talk", "tutorial"),
         durations=("50",),
         audience_levels=("Beginner",),
     )
 
-    resp, _ = _submit_tutorial(graphql_client, conference, elevator_pitch="", notes="")
+    resp, _ = _submit_tutorial(graphql_client, conference, notes="")
 
     assert resp["data"]["sendSubmission"]["__typename"] == "Submission"
-    assert resp["data"]["sendSubmission"]["elevatorPitch"] == ""
     assert resp["data"]["sendSubmission"]["notes"] == ""
 
     assert (
@@ -662,7 +824,7 @@ def test_same_user_can_submit_talks_to_different_conferences(
 
     conference1 = conference_factory(
         topics=("friends",),
-        languages=("it",),
+        languages=("en",),
         active_cfp=True,
         submission_types=("talk",),
         durations=("50",),
@@ -671,14 +833,14 @@ def test_same_user_can_submit_talks_to_different_conferences(
 
     conference2 = conference_factory(
         topics=("another-stuff",),
-        languages=("it", "en"),
+        languages=("en",),
         active_cfp=True,
         submission_types=("talk",),
         durations=("50",),
         audience_levels=("Beginner",),
     )
 
-    resp, _ = _submit_talk(graphql_client, conference1, title="My first talk")
+    resp, _ = _submit_talk(graphql_client, conference1, title={"en": "My first talk"})
 
     assert resp["data"]["sendSubmission"]["title"] == "My first talk"
 
@@ -691,7 +853,7 @@ def test_same_user_can_submit_talks_to_different_conferences(
         == 0
     )
 
-    resp, _ = _submit_talk(graphql_client, conference2, title="Another talk")
+    resp, _ = _submit_talk(graphql_client, conference2, title={"en": "Another talk"})
 
     assert resp["data"]["sendSubmission"]["title"] == "Another talk"
 
@@ -748,7 +910,7 @@ def test_speaker_level_is_required(graphql_client, user, conference_factory):
     resp, _ = _submit_tutorial(graphql_client, conference, speaker_level="")
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
     assert resp["data"]["sendSubmission"]["validationPreviousSpeakerLevel"] == [
-        "This field is required."
+        "You need to specify what is your speaker experience"
     ]
 
 
@@ -769,88 +931,92 @@ def test_speaker_level_only_allows_the_predefined_levels(
     resp, _ = _submit_tutorial(graphql_client, conference, speaker_level="just_started")
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
     assert resp["data"]["sendSubmission"]["validationPreviousSpeakerLevel"] == [
-        "Select a valid choice. just_started is not one of the available choices."
+        "Select a valid choice"
     ]
 
 
-def test_not_sending_everything(
-    graphql_client, user, conference_factory, submission_factory
+@mark.django_db
+def test_submit_talk_with_too_long_title_fails(
+    graphql_client, user, conference_factory
 ):
     graphql_client.force_login(user)
 
     conference = conference_factory(
-        topics=("friends",),
-        languages=("it",),
+        topics=("my-topic",),
+        languages=("en", "it"),
+        submission_types=("talk",),
         active_cfp=True,
-        submission_types=("talk", "tutorial"),
         durations=("50",),
         audience_levels=("Beginner",),
     )
 
-    talk = submission_factory.create(
-        type=SubmissionType.objects.get_or_create(name="tutorial")[0]
+    resp, _ = _submit_talk(
+        graphql_client,
+        conference,
+        title={
+            "en": "very long title very long title very long title very long title very long title very long title very long",
+            "it": "",
+        },
     )
 
-    languages = [language.code for language in conference.languages.all()]
+    assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
 
-    variables = {
-        "title": talk.title,
-        "abstract": talk.abstract,
-        "notes": talk.notes,
-        "languages": languages,
-        "conference": conference.code,
-        "topic": conference.topics.first().id,
-        "type": talk.type.id,
-        "duration": conference.durations.first().id,
-        "audience_level": conference.audience_levels.first().id,
-        "tags": [tag.name for tag in talk.tags.all()],
-        "speaker_level": talk.speaker_level,
-        "previous_talk_video": talk.previous_talk_video,
-    }
-
-    response = graphql_client.query(
-        """mutation(
-            $conference: ID!,
-            $topic: ID!,
-            $title: String!,
-            $abstract: String!,
-            $languages: [ID!]!,
-            $type: ID!,
-            $duration: ID!,
-            $audience_level: ID!,
-            $tags: [ID!],
-            $speaker_level: String!,
-            $elevator_pitch: String,
-            $notes: String,
-            $previous_talk_video: String
-        ) {
-            sendSubmission(input: {
-                title: $title,
-                abstract: $abstract,
-                languages: $languages,
-                conference: $conference,
-                topic: $topic,
-                type: $type,
-                duration: $duration,
-                audienceLevel: $audience_level,
-                tags: $tags,
-                notes: $notes,
-                elevatorPitch: $elevator_pitch,
-                speakerLevel: $speaker_level,
-                previousTalkVideo: $previous_talk_video
-            }) {
-                __typename
-
-                ... on Submission {
-                    elevatorPitch
-                }
-            }
-        }""",
-        variables=variables,
+    assert (
+        "Italian: Cannot be empty" in resp["data"]["sendSubmission"]["validationTitle"]
+    )
+    assert (
+        "English: Cannot be more than 100 chars"
+        in resp["data"]["sendSubmission"]["validationTitle"]
     )
 
-    assert not response.get("errors")
 
-    assert response["data"] == {
-        "sendSubmission": {"__typename": "Submission", "elevatorPitch": ""}
-    }
+@mark.django_db
+def test_submit_talk_with_no_languages_and_no_tags_is_not_allowed(
+    graphql_client, user, conference_factory
+):
+    graphql_client.force_login(user)
+
+    conference = conference_factory(
+        topics=("my-topic",),
+        languages=("en", "it"),
+        submission_types=("talk",),
+        active_cfp=True,
+        durations=("50",),
+        audience_levels=("Beginner",),
+    )
+
+    resp, _ = _submit_talk(graphql_client, conference, languages=[], tags=[])
+
+    assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
+
+    assert (
+        "You need to add at least one language"
+        in resp["data"]["sendSubmission"]["validationLanguages"]
+    )
+
+    assert (
+        "You need to add at least one tag"
+        in resp["data"]["sendSubmission"]["validationTags"]
+    )
+
+
+@mark.django_db
+def test_submit_talk_with_no_conference(graphql_client, user, conference_factory):
+    graphql_client.force_login(user)
+
+    conference = conference_factory(
+        topics=("my-topic",),
+        languages=("en", "it"),
+        submission_types=("talk",),
+        active_cfp=True,
+        durations=("50",),
+        audience_levels=("Beginner",),
+    )
+
+    resp, _ = _submit_talk(graphql_client, conference, override_conference="abc-abc")
+
+    assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
+
+    assert (
+        "Invalid conference" in resp["data"]["sendSubmission"]["validationConference"]
+    )

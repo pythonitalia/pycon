@@ -9,7 +9,7 @@ from voting.models.ranking import RankRequest
 class CanSeeSubmissionRestrictedFields(BasePermission):
     message = "You can't see details for this submission"
 
-    def has_permission(self, source, info):
+    def has_permission(self, source, info, **kwargs):
         if HasTokenPermission().has_permission(source, info):
             return True
 

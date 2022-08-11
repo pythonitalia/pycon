@@ -21,6 +21,7 @@ import {
 } from "theme-ui";
 
 import {
+  MultiLingualInput as MultiLingualInputType,
   SendSubmissionMutation,
   UpdateSubmissionMutation,
   useCfpFormQuery,
@@ -30,14 +31,15 @@ import { Alert } from "../alert";
 import { Button } from "../button/button";
 import { TagLine } from "../input-tag";
 import { InputWrapper } from "../input-wrapper";
+import { MultiLingualInput } from "../multilingual-input";
 
 export type CfpFormFields = {
   type: string;
-  title: string;
-  elevatorPitch: string;
+  title: { it?: string; en?: string };
+  elevatorPitch: { it?: string; en?: string };
   length: string;
   audienceLevel: string;
-  abstract: string;
+  abstract: { it?: string; en?: string };
   notes: string;
   topic: string;
   languages: string[];
@@ -50,11 +52,14 @@ export type SubmissionStructure = {
   type: { id: string };
   title: string;
   elevatorPitch: string;
+  abstract: string;
+  multilingualTitle: { it: string; en: string };
+  multilingualElevatorPitch: { it: string; en: string };
+  multilingualAbstract: { it: string; en: string };
   topic: { id: string };
   duration: { id: string };
   audienceLevel: { id: string };
   languages: { code: string }[];
-  abstract: string;
   notes: string;
   previousTalkVideo: string;
   speakerLevel: string;
@@ -93,17 +98,45 @@ const SPEAKER_LEVEL_OPTIONS = [
   },
 ];
 
-export const CfpForm: React.SFC<Props> = ({
+const filterOutInactiveLanguages = (
+  value: MultiLingualInputType,
+  languages: string[],
+): MultiLingualInputType => {
+  return Object.entries(value).reduce((newDict, [key, value]) => {
+    if (!languages.includes(key)) {
+      return newDict;
+    }
+
+    newDict[key] = value;
+    return newDict;
+  }, {});
+};
+
+export const CfpForm = ({
   onSubmit,
   conferenceCode,
   submission,
   loading: submissionLoading,
   error: submissionError,
   data: submissionData,
-}) => {
-  const [formState, { text, textarea, radio, select, checkbox }] =
+}: Props) => {
+  const [formState, { text, textarea, radio, select, checkbox, raw }] =
     useFormState<CfpFormFields>(
-      {},
+      {
+        title: {
+          en: "",
+          it: "",
+        },
+        abstract: {
+          en: "",
+          it: "",
+        },
+        elevatorPitch: {
+          en: "",
+          it: "",
+        },
+        languages: [],
+      },
       {
         withIds: true,
       },
@@ -123,13 +156,22 @@ export const CfpForm: React.SFC<Props> = ({
     e.preventDefault();
 
     onSubmit({
-      title: formState.values.title,
-      abstract: formState.values.abstract,
+      title: filterOutInactiveLanguages(
+        formState.values.title,
+        formState.values.languages,
+      ),
+      abstract: filterOutInactiveLanguages(
+        formState.values.abstract,
+        formState.values.languages,
+      ),
       topic: formState.values.topic,
       languages: formState.values.languages,
       type: formState.values.type,
       length: formState.values.length,
-      elevatorPitch: formState.values.elevatorPitch,
+      elevatorPitch: filterOutInactiveLanguages(
+        formState.values.elevatorPitch,
+        formState.values.languages,
+      ),
       notes: formState.values.notes,
       audienceLevel: formState.values.audienceLevel,
       tags: formState.values.tags,
@@ -166,8 +208,11 @@ export const CfpForm: React.SFC<Props> = ({
   useEffect(() => {
     if (!conferenceLoading && submission) {
       formState.setField("type", submission!.type.id);
-      formState.setField("title", submission!.title);
-      formState.setField("elevatorPitch", submission!.elevatorPitch);
+      formState.setField("title", submission!.multilingualTitle);
+      formState.setField(
+        "elevatorPitch",
+        submission!.multilingualElevatorPitch,
+      );
       formState.setField("topic", submission!.topic.id);
       formState.setField("length", submission!.duration.id);
       formState.setField("audienceLevel", submission!.audienceLevel.id);
@@ -175,7 +220,7 @@ export const CfpForm: React.SFC<Props> = ({
         "languages",
         submission!.languages.map((l) => l.code),
       );
-      formState.setField("abstract", submission!.abstract);
+      formState.setField("abstract", submission!.multilingualAbstract);
       formState.setField("notes", submission!.notes);
       formState.setField(
         "tags",
@@ -199,8 +244,7 @@ export const CfpForm: React.SFC<Props> = ({
   }
 
   const hasValidationErrors =
-    submissionData?.mutationOp.__typename === "SendSubmissionErrors" ||
-    submissionData?.mutationOp.__typename === "UpdateSubmissionErrors";
+    submissionData?.mutationOp.__typename === "SendSubmissionErrors";
 
   /* todo refactor to avoid multiple __typename? */
   const getErrors = (
@@ -219,8 +263,7 @@ export const CfpForm: React.SFC<Props> = ({
       | "validationPreviousTalkVideo"
       | "nonFieldErrors",
   ): string[] =>
-    ((submissionData?.mutationOp.__typename === "SendSubmissionErrors" ||
-      submissionData?.mutationOp.__typename === "UpdateSubmissionErrors") &&
+    (submissionData?.mutationOp.__typename === "SendSubmissionErrors" &&
       submissionData!.mutationOp[key]) ||
     [];
 
@@ -230,32 +273,64 @@ export const CfpForm: React.SFC<Props> = ({
         <FormattedMessage id="cfp.youridea" />
       </Heading>
       <form onSubmit={submitSubmission} sx={{ mb: 4 }}>
-        <Label mb={3} htmlFor="type">
-          <FormattedMessage id="cfp.choosetype" />
-        </Label>
+        <InputWrapper
+          isRequired={true}
+          label={<FormattedMessage id="cfp.choosetype" />}
+          description={<FormattedMessage id="cfp.choosetypeDescription" />}
+        >
+          <Flex>
+            {conferenceData!.conference.submissionTypes.map((type) => (
+              <Label
+                key={type.id}
+                sx={{
+                  width: "auto",
+                  mr: 3,
+                  fontWeight: "bold",
+                }}
+              >
+                <Radio {...radio("type", type.id)} required={true} />{" "}
+                {type.name}
+              </Label>
+            ))}
+          </Flex>
+        </InputWrapper>
 
-        <Flex mb={5}>
-          {conferenceData!.conference.submissionTypes.map((type) => (
-            <Label
-              key={type.id}
-              sx={{
-                width: "auto",
-                marginRight: 3,
-                color: "green",
-                fontWeight: "bold",
-              }}
-            >
-              <Radio {...radio("type", type.id)} required={true} /> {type.name}
-            </Label>
-          ))}
-        </Flex>
+        <InputWrapper
+          as="div"
+          isRequired={true}
+          label={<FormattedMessage id="cfp.languagesLabel" />}
+          description={<FormattedMessage id="cfp.languagesDescription" />}
+          errors={getErrors("validationLanguages")}
+        >
+          <Flex>
+            {conferenceData!.conference.languages.map((language) => (
+              <Label
+                sx={{
+                  width: "auto",
+                  mr: 3,
+                  fontWeight: "bold",
+                }}
+                key={language.code}
+              >
+                <Checkbox {...checkbox("languages", language.code)} />
+                {language.name}
+              </Label>
+            ))}
+          </Flex>
+        </InputWrapper>
 
         <InputWrapper
           sx={{ mb: 5 }}
+          isRequired={true}
           label={<FormattedMessage id="cfp.title" />}
           errors={getErrors("validationTitle")}
         >
-          <Input {...text("title")} required={true} />
+          <MultiLingualInput
+            {...raw("title")}
+            languages={formState.values.languages}
+          >
+            <Input required={true} />
+          </MultiLingualInput>
         </InputWrapper>
 
         <Grid
@@ -267,31 +342,38 @@ export const CfpForm: React.SFC<Props> = ({
         >
           <Box>
             <InputWrapper
+              isRequired={true}
               label={<FormattedMessage id="cfp.elevatorPitchLabel" />}
               description={
                 <FormattedMessage id="cfp.elevatorPitchDescription" />
               }
               errors={getErrors("validationElevatorPitch")}
             >
-              <Textarea
-                sx={{
-                  resize: "vertical",
-                  minHeight: 340,
-                }}
-                {...textarea("elevatorPitch")}
-                maxLength={300}
-                rows={6}
-              />
+              <MultiLingualInput
+                {...raw("elevatorPitch")}
+                languages={formState.values.languages}
+              >
+                <Textarea
+                  required={true}
+                  sx={{
+                    resize: "vertical",
+                    minHeight: 340,
+                  }}
+                  maxLength={300}
+                  rows={6}
+                />
+              </MultiLingualInput>
             </InputWrapper>
           </Box>
           <Box>
             <InputWrapper
-              label={<FormattedMessage id="cfp.topicLabel" />}
+              isRequired={true}
+              label={<FormattedMessage id="cfp.trackLabel" />}
               description={<FormattedMessage id="cfp.topicDescription" />}
               errors={getErrors("validationTopic")}
             >
               <Select {...select("topic")} required={true}>
-                <FormattedMessage id="cfp.selectTopic">
+                <FormattedMessage id="cfp.selectTrack">
                   {(txt) => (
                     <option value="" disabled={true}>
                       {txt}
@@ -307,6 +389,7 @@ export const CfpForm: React.SFC<Props> = ({
             </InputWrapper>
 
             <InputWrapper
+              isRequired={true}
               label={<FormattedMessage id="cfp.lengthLabel" />}
               description={<FormattedMessage id="cfp.lengthDescription" />}
               errors={getErrors("validationDuration")}
@@ -328,6 +411,7 @@ export const CfpForm: React.SFC<Props> = ({
             </InputWrapper>
 
             <InputWrapper
+              isRequired={true}
               label={<FormattedMessage id="cfp.audienceLevelLabel" />}
               description={
                 <FormattedMessage id="cfp.audienceLevelDescription" />
@@ -356,39 +440,24 @@ export const CfpForm: React.SFC<Props> = ({
           sx={{
             mb: 5,
           }}
-          label={<FormattedMessage id="cfp.languagesLabel" />}
-          description={<FormattedMessage id="cfp.languagesDescription" />}
-          errors={getErrors("validationLanguages")}
-        >
-          {conferenceData!.conference.languages.map((language) => (
-            <Label
-              key={language.code}
-              sx={{
-                mt: 3,
-              }}
-            >
-              <Checkbox {...checkbox("languages", language.code)} />
-              {language.name}
-            </Label>
-          ))}
-        </InputWrapper>
-
-        <InputWrapper
-          sx={{
-            mb: 5,
-          }}
+          isRequired={true}
           label={<FormattedMessage id="cfp.abstractLabel" />}
           description={<FormattedMessage id="cfp.abstractDescription" />}
           errors={getErrors("validationAbstract")}
         >
-          <Textarea
-            sx={{
-              resize: "vertical",
-              minHeight: 200,
-            }}
-            {...textarea("abstract")}
-            rows={6}
-          />
+          <MultiLingualInput
+            {...raw("abstract")}
+            languages={formState.values.languages}
+          >
+            <Textarea
+              required={true}
+              sx={{
+                resize: "vertical",
+                minHeight: 200,
+              }}
+              rows={6}
+            />
+          </MultiLingualInput>
         </InputWrapper>
 
         <InputWrapper
@@ -407,6 +476,7 @@ export const CfpForm: React.SFC<Props> = ({
         </InputWrapper>
 
         <InputWrapper
+          isRequired={true}
           label={<FormattedMessage id="cfp.tagsLabel" />}
           description={<FormattedMessage id="cfp.tagsDescription" />}
           errors={getErrors("validationTags")}
@@ -431,6 +501,7 @@ export const CfpForm: React.SFC<Props> = ({
         </Text>
 
         <InputWrapper
+          isRequired={true}
           label={<FormattedMessage id="cfp.speakerLevel" />}
           description={<FormattedMessage id="cfp.speakerLevelDescription" />}
           errors={getErrors("validationSpeakerLevel")}

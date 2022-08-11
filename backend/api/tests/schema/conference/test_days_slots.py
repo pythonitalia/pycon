@@ -1,8 +1,9 @@
 from datetime import date, datetime, time
 
 import pytz
-from api.helpers.ids import encode_hashid
 from pytest import mark
+
+from api.helpers.ids import encode_hashid
 
 
 @mark.django_db
@@ -131,7 +132,7 @@ def test_add_custom_item_from_submission(
 
     assert "errors" not in resp
     assert resp["data"]["updateOrCreateSlotItem"]["updatedSlots"][0]["items"] == [
-        {"title": submission.title, "type": "submission"}
+        {"title": submission.title.localize("en"), "type": "submission"}
     ]
 
 

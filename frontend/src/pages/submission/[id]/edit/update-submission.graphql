@@ -1,18 +1,30 @@
-mutation UpdateSubmission($input: UpdateSubmissionInput!) {
+mutation UpdateSubmission($input: UpdateSubmissionInput!, $language: String!) {
   mutationOp: updateSubmission(input: $input) {
     __typename
 
     ... on Submission {
       id
-      title
+      title(language: $language)
+      abstract(language: $language)
+      elevatorPitch(language: $language)
+      multilingualTitle {
+        it
+        en
+      }
+      multilingualAbstract {
+        it
+        en
+      }
+      multilingualElevatorPitch {
+        it
+        en
+      }
 
       type {
         id
         name
       }
 
-      abstract
-      elevatorPitch
       notes
       speakerLevel
       previousTalkVideo
@@ -40,7 +52,7 @@ mutation UpdateSubmission($input: UpdateSubmissionInput!) {
       }
     }
 
-    ... on UpdateSubmissionErrors {
+    ... on SendSubmissionErrors {
       validationTitle: title
       validationAbstract: abstract
       validationTopic: topic

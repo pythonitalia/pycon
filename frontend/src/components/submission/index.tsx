@@ -42,7 +42,7 @@ export const Submission: React.SFC<Props> = ({ submission }) => (
             }}
           >
             <Text sx={{ fontWeight: "bold" }}>
-              <FormattedMessage id="cfp.topicLabel" />
+              <FormattedMessage id="cfp.trackLabel" />
             </Text>
 
             <Text sx={{ mb: 3 }}>{submission.topic!.name}</Text>

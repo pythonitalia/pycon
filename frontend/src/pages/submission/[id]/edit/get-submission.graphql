@@ -1,13 +1,25 @@
-query GetSubmission($id: ID!) {
+query GetSubmission($id: ID!, $language: String!) {
   submission(id: $id) {
     id
-    title
+    title(language: $language)
+    abstract(language: $language)
+    elevatorPitch(language: $language)
+    multilingualTitle {
+      it
+      en
+    }
+    multilingualAbstract {
+      it
+      en
+    }
+    multilingualElevatorPitch {
+      it
+      en
+    }
     type {
       id
       name
     }
-    abstract
-    elevatorPitch
     notes
     canEdit
     speakerLevel

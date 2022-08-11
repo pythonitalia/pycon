@@ -83,7 +83,7 @@ export const TalkInfo = ({ talk }: Props) => {
         )}
 
         {talk.topic ? (
-          <InfoLine label={<FormattedMessage id="cfp.topicLabel" />}>
+          <InfoLine label={<FormattedMessage id="cfp.trackLabel" />}>
             {talk.topic}
           </InfoLine>
         ) : null}

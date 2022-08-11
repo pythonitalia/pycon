@@ -1,10 +1,10 @@
-query MeSubmissions($conference: String!) {
+query MeSubmissions($conference: String!, $language: String!) {
   me {
     id
 
     submissions(conference: $conference) {
       id
-      title
+      title(language: $language)
     }
   }
 }

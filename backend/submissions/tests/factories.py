@@ -11,6 +11,7 @@ from conferences.tests.factories import (
     DurationFactory,
     TopicFactory,
 )
+from i18n.tests.factories import LanguageFactory
 from languages.models import Language
 from submissions.models import (
     Submission,
@@ -45,9 +46,9 @@ class SubmissionFactory(DjangoModelFactory):
 
     conference = factory.SubFactory(ConferenceFactory)
 
-    title = factory.Faker("sentence")
-    abstract = factory.Faker("text")
-    elevator_pitch = factory.Faker("text")
+    title = LanguageFactory("sentence")
+    abstract = LanguageFactory("text")
+    elevator_pitch = LanguageFactory("text")
     notes = factory.Faker("text")
     type = factory.SubFactory(SubmissionTypeFactory)
     duration = factory.SubFactory(DurationFactory)

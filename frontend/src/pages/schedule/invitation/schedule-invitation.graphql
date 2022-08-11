@@ -1,11 +1,11 @@
-query GetScheduleInvitation($submissionId: ID!) {
+query GetScheduleInvitation($submissionId: ID!, $language: String!) {
   scheduleInvitation(submissionId: $submissionId) {
     id
     option
     notes
     submission {
       id
-      title
+      title(language: $language)
     }
     dates {
       id

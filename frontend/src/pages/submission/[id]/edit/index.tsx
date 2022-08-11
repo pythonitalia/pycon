@@ -21,11 +21,13 @@ import {
   useGetSubmissionQuery,
   useUpdateSubmissionMutation,
 } from "~/types";
+import { useCurrentLanguage } from "~/locale/context";
 
 export const EditSubmissionPage = () => {
   const code = process.env.conferenceCode;
   const router = useRouter();
   const id = router.query.id as string;
+  const language = useCurrentLanguage();
 
   const [
     updateSubmission,
@@ -40,7 +42,7 @@ export const EditSubmissionPage = () => {
     loading: submissionLoading,
     error: submissionError,
     data: submissionData,
-  } = useGetSubmissionQuery({ variables: { id } });
+  } = useGetSubmissionQuery({ variables: { id, language } });
 
   const onSubmit = async (input: CfpFormFields) => {
     const response = await updateSubmission({
@@ -60,6 +62,7 @@ export const EditSubmissionPage = () => {
           speakerLevel: input.speakerLevel,
           previousTalkVideo: input.previousTalkVideo,
         },
+        language,
       },
     });
 

@@ -61,6 +61,7 @@ const Invitation = () => {
   const { loading, data } = useGetScheduleInvitationQuery({
     variables: {
       submissionId,
+      language,
     },
   });
   const [

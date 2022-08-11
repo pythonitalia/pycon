@@ -248,10 +248,10 @@ class ScheduleItem(TimeStampedModel):
 
     def save(self, **kwargs):
         if self.submission_id and not self.title:
-            self.title = self.submission.title
+            self.title = self.submission.title.localize("en")
 
         if self.keynote_id and not self.title:
-            self.title = self.keynote.title.localize("em")
+            self.title = self.keynote.title.localize("en")
 
         if not self.slug:
             unique_slugify(self, self.title)

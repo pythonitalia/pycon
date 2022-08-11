@@ -143,6 +143,7 @@ export const messages = {
       "You have until {deadline} to submit a proposal!",
     "cfp.youridea": "Your idea",
     "cfp.choosetype": "Choose a format",
+    "cfp.choosetypeDescription": "What kind of proposal are you sending?",
     "cfp.format": "Format",
     "cfp.talk": "Talk",
     "cfp.tutorial": "Tutorial",
@@ -159,14 +160,14 @@ export const messages = {
       "This description will be seen by reviewers and the audience, if selected. You should make the description as compelling and exciting as possible - remember, you’re selling the idea to the organisers as well as appealing to attendees",
     "cfp.notesLabel": "Notes",
     "cfp.notesDescription":
-      "Notes will only be seen by reviewers. This is where you should explain things such as technical requirements and why you’re the best person for this idea.",
-    "cfp.topicLabel": "Topic",
+      "Notes will only be seen by reviewers. This is where you should explain things such as technical requirements. Feel free to add them in Italian or English.",
+    "cfp.trackLabel": "Track",
     "cfp.topicDescription": "What this proposal is about?",
     "cfp.submit": "Submit",
     "cfp.minutes": "minutes",
     "cfp.languagesLabel": "Languages",
     "cfp.languagesDescription":
-      "You can submit your talk in both English and Italian",
+      "You can submit a proposal in multiple languages if you want. Voters will see the language that fits their preferences. Don't duplicate your proposals per language or they might be cancelled.",
     "cfp.viewSubmission": "Open submission",
     "cfp.tagsLabel": "Tags",
     "cfp.tagsDescription":
@@ -174,7 +175,7 @@ export const messages = {
     "cfp.submissionSent": "Proposal sent!",
     "cfp.tryAgain": "Something went wrong: {error}",
     "cfp.selectDuration": "Select a duration",
-    "cfp.selectTopic": "Select a topic",
+    "cfp.selectTrack": "Select a track",
     "cfp.selectAudience": "Select an audience",
     "cfp.selectSpeakerLevel": "Select a level of experience",
     "cfp.cannotEdit": "You cannot edit this submission",
@@ -556,6 +557,9 @@ export const messages = {
       "{value, plural, one {minute} other {minutes}}",
     "react-intl-formatted-duration.secondsUnit":
       "{value, plural, one {second} other {seconds}}",
+
+    "multilingualinput.language.it": "Italian",
+    "multilingualinput.language.en": "English",
   },
   it: {
     titleTemplate: "%s | PyCon Italia",
@@ -686,6 +690,7 @@ export const messages = {
     "cfp.pageTitle": "Invia una proposta",
     "cfp.youridea": "La tua idea",
     "cfp.choosetype": "Scegli una categoria",
+    "cfp.choosetypeDescription": "Che tipo di proposta stai inviando?",
     "cfp.format": "Categoria",
     "cfp.viewSubmission": "Apri proposta",
     "cfp.talk": "Talk",
@@ -701,8 +706,8 @@ export const messages = {
     "cfp.elevatorPitchLabel": "Elevator pitch",
     "cfp.elevatorPitchDescription":
       "Hai 300 caratteri per vendere la tua idea. Ricordati di renderlo il più interessante possibile",
-    "cfp.lengthLabel": "Lunghezza",
-    "cfp.lengthDescription": "La lunghezza del talk o workshop",
+    "cfp.lengthLabel": "Durata",
+    "cfp.lengthDescription": "La durata del talk o workshop",
     "cfp.audienceLevelLabel": "Livello audience",
     "cfp.audienceLevelDescription": "Che genere di audience ti aspetti?",
     "cfp.abstractLabel": "Descrizione",
@@ -710,12 +715,12 @@ export const messages = {
       "Questa descrizione verrà visualizzata sia gli organizzatori che e ai partecipanti, se selezionata. Dovesti rendere la descrizione il più completa ed interessante possibile - ricordati, stai vendendo la tua idea sia agli organizzatori che ai partecipanti",
     "cfp.notesLabel": "Note",
     "cfp.notesDescription":
-      "Le note saranno visualizzate solo dallo staff. È qui che dovresti indicare cose come i requisiti tecnici e/o perché sei la persona migliore per questa idea.",
-    "cfp.topicLabel": "Argomento",
+      "Le note saranno visualizzate solo dallo staff. È qui che dovresti indicare cose come i requisiti tecnici necessari per l'intervento.",
+    "cfp.trackLabel": "Traccia",
     "cfp.topicDescription": "Di cosa tratta questa proposta?",
     "cfp.languagesLabel": "Lingua",
     "cfp.languagesDescription":
-      "Puoi proporre il tuo talk sia in italiano che inglese",
+      "Puoi inviare la tua proposta in più lingue se lo desideri. I votatori vedranno la lingua che si adatta alle loro preferenze. Non duplicare le tue proposte per lingua o potrebbero essere annullate.",
     "cfp.tagsLabel": "Tags",
     "cfp.tagsDescription":
       "Tagga la tua proposta per facilitare la ricerca agli organizzatori dell'evento. Ad esempio 'Django, GraphQL, open-source'",
@@ -724,7 +729,7 @@ export const messages = {
     "cfp.tryAgain": "Si è verificato un errore: {error}",
     "cfp.minutes": "minuti",
     "cfp.selectDuration": "Seleziona una durata",
-    "cfp.selectTopic": "Seleziona un argomento",
+    "cfp.selectTrack": "Seleziona una traccia",
     "cfp.selectAudience": "Seleziona livello",
     "cfp.selectSpeakerLevel": "Seleziona un livello di esperienza",
     "cfp.loading": "Caricamento",
@@ -1126,6 +1131,9 @@ export const messages = {
       "{value, plural, one {minuto} other {minuti}}",
     "react-intl-formatted-duration.secondsUnit":
       "{value, plural, one {secondo} other {secondi}}",
+
+    "multilingualinput.language.it": "Italiano",
+    "multilingualinput.language.en": "Inglese",
   },
 };
 

@@ -7,6 +7,7 @@ from model_utils import Choices
 from model_utils.models import TimeStampedModel
 
 from api.helpers.ids import encode_hashid
+from i18n.fields import I18nCharField, I18nTextField
 
 from .managers import SubmissionManager
 
@@ -34,11 +35,9 @@ class Submission(TimeStampedModel):
         related_name="submissions",
     )
 
-    title = models.CharField(_("title"), max_length=100)
-    abstract = models.TextField(_("abstract"), max_length=5000)
-    elevator_pitch = models.TextField(
-        _("elevator pitch"), max_length=300, default="", blank=True
-    )
+    title = I18nCharField(_("title"))
+    abstract = I18nTextField(_("abstract"))
+    elevator_pitch = I18nTextField(_("elevator pitch"), default="", blank=True)
     slug = models.SlugField(_("slug"), max_length=200)
     notes = models.TextField(_("notes"), default="", blank=True)
 
@@ -158,7 +157,7 @@ class Submission(TimeStampedModel):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.title)
+            self.slug = slugify(self.title.localize("en"))
 
         return super().save(*args, **kwargs)
 

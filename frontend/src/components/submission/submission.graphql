@@ -1,9 +1,9 @@
-query Submission($id: ID!) {
+query Submission($id: ID!, $language: String!) {
   submission(id: $id) {
     id
-    title
-    abstract
-    elevatorPitch
+    title(language: $language)
+    abstract(language: $language)
+    elevatorPitch(language: $language)
     notes
     canEdit
     topic {

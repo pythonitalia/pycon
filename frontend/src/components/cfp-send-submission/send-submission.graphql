@@ -1,10 +1,10 @@
-mutation SendSubmission($input: SendSubmissionInput!) {
+mutation SendSubmission($input: SendSubmissionInput!, $language: String!) {
   mutationOp: sendSubmission(input: $input) {
     __typename
 
     ... on Submission {
       id
-      title
+      title(language: $language)
     }
 
     ... on SendSubmissionErrors {
