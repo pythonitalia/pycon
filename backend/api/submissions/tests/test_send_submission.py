@@ -961,3 +961,33 @@ def test_submit_talk_with_too_long_title_fails(
         "English: Cannot be more than 100 chars"
         in resp["data"]["sendSubmission"]["validationTitle"]
     )
+
+
+@mark.django_db
+def test_submit_talk_with_no_languages_and_no_tags_is_not_allowed(
+    graphql_client, user, conference_factory
+):
+    graphql_client.force_login(user)
+
+    conference = conference_factory(
+        topics=("my-topic",),
+        languages=("en", "it"),
+        submission_types=("talk",),
+        active_cfp=True,
+        durations=("50",),
+        audience_levels=("Beginner",),
+    )
+
+    resp, _ = _submit_talk(graphql_client, conference, languages=[], tags=[])
+
+    assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
+
+    assert (
+        "You need to add at least one language"
+        in resp["data"]["sendSubmission"]["validationLanguages"]
+    )
+
+    assert (
+        "You need to add at least one tag"
+        in resp["data"]["sendSubmission"]["validationTags"]
+    )
