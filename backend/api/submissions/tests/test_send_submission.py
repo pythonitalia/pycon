@@ -991,3 +991,25 @@ def test_submit_talk_with_no_languages_and_no_tags_is_not_allowed(
         "You need to add at least one tag"
         in resp["data"]["sendSubmission"]["validationTags"]
     )
+
+
+@mark.django_db
+def test_submit_talk_with_no_conference(graphql_client, user, conference_factory):
+    graphql_client.force_login(user)
+
+    conference = conference_factory(
+        topics=("my-topic",),
+        languages=("en", "it"),
+        submission_types=("talk",),
+        active_cfp=True,
+        durations=("50",),
+        audience_levels=("Beginner",),
+    )
+
+    resp, _ = _submit_talk(graphql_client, conference, conference="abc-abc")
+
+    assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
+
+    assert (
+        "Invalid conference" in resp["data"]["sendSubmission"]["validationConference"]
+    )
