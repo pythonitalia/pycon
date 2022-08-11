@@ -34,6 +34,7 @@ type Props = {
   languages: string[];
   value: { [string: string]: string };
   onChange: (event: any) => void;
+  name: string;
 };
 
 export const MultiLingualInput = ({
@@ -41,6 +42,7 @@ export const MultiLingualInput = ({
   languages: unsortedLanguages,
   value,
   onChange,
+  name: originalName,
   ...props
 }: Props) => {
   let languages;
@@ -58,13 +60,17 @@ export const MultiLingualInput = ({
     >
       {languages.map((language) => {
         const isInvalid = language === "invalid";
+        const name = `${originalName}-${language}`;
         return (
           <Box>
             <Flex
+              as="label"
+              for={name}
               sx={{
                 alignItems: "center",
                 mr: 2,
                 pb: 2,
+                userSelect: "none",
               }}
             >
               {language === "it" && (
@@ -101,6 +107,8 @@ export const MultiLingualInput = ({
             {React.cloneElement(children, {
               value: isInvalid ? "" : value[language],
               disabled: isInvalid,
+              id: name,
+              name,
               sx: {
                 cursor: isInvalid ? "not-allowed" : "",
               },
