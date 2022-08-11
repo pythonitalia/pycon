@@ -247,9 +247,7 @@ class SubmissionsMutations:
         conference = Conference.objects.filter(code=input.conference).first()
 
         if not conference:
-            return SendSubmissionErrors.with_error(
-                "conference", "You cannot edit this submission"
-            )
+            return SendSubmissionErrors.with_error("conference", "Invalid conference")
 
         errors = input.validate(conference=conference)
 
