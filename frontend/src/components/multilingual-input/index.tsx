@@ -5,7 +5,7 @@
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
-import { jsx, Box, Flex, Grid } from "theme-ui";
+import { jsx, Box, Label, Grid } from "theme-ui";
 import { EnglishIcon } from "../icons/english";
 import { ItalianIcon } from "../icons/italian";
 
@@ -43,10 +43,10 @@ export const MultiLingualInput = ({
         const name = `${originalName}-${language}`;
         return (
           <Box>
-            <Flex
-              as="label"
+            <Label
               for={name}
               sx={{
+                display: "flex",
                 alignItems: "center",
                 mr: 2,
                 pb: 2,
@@ -82,7 +82,7 @@ export const MultiLingualInput = ({
                   />
                 </Box>
               )}
-            </Flex>
+            </Label>
 
             {React.cloneElement(children, {
               value: isInvalid ? "" : value[language],
