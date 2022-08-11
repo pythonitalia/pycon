@@ -160,7 +160,7 @@ export const messages = {
       "This description will be seen by reviewers and the audience, if selected. You should make the description as compelling and exciting as possible - remember, you’re selling the idea to the organisers as well as appealing to attendees",
     "cfp.notesLabel": "Notes",
     "cfp.notesDescription":
-      "Notes will only be seen by reviewers. This is where you should explain things such as technical requirements and why you’re the best person for this idea. Feel free to add them in Italian or English.",
+      "Notes will only be seen by reviewers. This is where you should explain things such as technical requirements. Feel free to add them in Italian or English.",
     "cfp.trackLabel": "Track",
     "cfp.topicDescription": "What this proposal is about?",
     "cfp.submit": "Submit",
@@ -706,8 +706,8 @@ export const messages = {
     "cfp.elevatorPitchLabel": "Elevator pitch",
     "cfp.elevatorPitchDescription":
       "Hai 300 caratteri per vendere la tua idea. Ricordati di renderlo il più interessante possibile",
-    "cfp.lengthLabel": "Lunghezza",
-    "cfp.lengthDescription": "La lunghezza del talk o workshop",
+    "cfp.lengthLabel": "Durata",
+    "cfp.lengthDescription": "La durata del talk o workshop",
     "cfp.audienceLevelLabel": "Livello audience",
     "cfp.audienceLevelDescription": "Che genere di audience ti aspetti?",
     "cfp.abstractLabel": "Descrizione",
@@ -715,7 +715,7 @@ export const messages = {
       "Questa descrizione verrà visualizzata sia gli organizzatori che e ai partecipanti, se selezionata. Dovesti rendere la descrizione il più completa ed interessante possibile - ricordati, stai vendendo la tua idea sia agli organizzatori che ai partecipanti",
     "cfp.notesLabel": "Note",
     "cfp.notesDescription":
-      "Le note saranno visualizzate solo dallo staff. È qui che dovresti indicare cose come i requisiti tecnici e/o perché sei la persona migliore per questa idea.",
+      "Le note saranno visualizzate solo dallo staff. È qui che dovresti indicare cose come i requisiti tecnici necessari per l'intervento.",
     "cfp.trackLabel": "Traccia",
     "cfp.topicDescription": "Di cosa tratta questa proposta?",
     "cfp.languagesLabel": "Lingua",
