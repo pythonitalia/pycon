@@ -2,32 +2,12 @@
 
 /** @jsx jsx */
 
-import React, { useState } from "react";
+import React from "react";
 import { FormattedMessage } from "react-intl";
 
 import { jsx, Box, Flex, Grid } from "theme-ui";
 import { EnglishIcon } from "../icons/english";
 import { ItalianIcon } from "../icons/italian";
-
-const SharedLanguageContext = React.createContext(undefined);
-
-export const SharedLanguageProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
-  const [currentLanguage, setCurrentLanguage] = useState(undefined);
-  return (
-    <SharedLanguageContext.Provider
-      value={{
-        currentLanguage,
-        setCurrentLanguage,
-      }}
-    >
-      {children}
-    </SharedLanguageContext.Provider>
-  );
-};
 
 type Props = {
   children: React.ReactElement;

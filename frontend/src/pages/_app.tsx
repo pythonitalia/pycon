@@ -18,7 +18,6 @@ import { updateOlarkFields } from "~/helpers/olark";
 import messages from "~/locale";
 import { LocaleProvider, useCurrentLanguage } from "~/locale/context";
 import { theme } from "~/theme";
-import { SharedLanguageProvider } from "~/components/multilingual-input";
 
 const intlCache = createIntlCache();
 
@@ -78,31 +77,29 @@ window.dispatchEvent(olarkLoadedEvent);
 
       <ApolloProvider client={apolloClient}>
         <RawIntlProvider value={intl}>
-          <SharedLanguageProvider>
-            <LocaleProvider lang={locale}>
-              <GlobalStyles />
-              {isSocial(router.pathname) ? (
-                <Component {...pageProps} />
-              ) : (
-                <Flex
-                  sx={{
-                    flexDirection: "column",
-                    minHeight: "100vh",
-                  }}
-                >
-                  <Header />
+          <LocaleProvider lang={locale}>
+            <GlobalStyles />
+            {isSocial(router.pathname) ? (
+              <Component {...pageProps} />
+            ) : (
+              <Flex
+                sx={{
+                  flexDirection: "column",
+                  minHeight: "100vh",
+                }}
+              >
+                <Header />
 
-                  <Box>
-                    <ErrorBoundary>
-                      <Component {...pageProps} err={err} />
-                    </ErrorBoundary>
-                  </Box>
+                <Box>
+                  <ErrorBoundary>
+                    <Component {...pageProps} err={err} />
+                  </ErrorBoundary>
+                </Box>
 
-                  <Footer />
-                </Flex>
-              )}
-            </LocaleProvider>
-          </SharedLanguageProvider>
+                <Footer />
+              </Flex>
+            )}
+          </LocaleProvider>
         </RawIntlProvider>
       </ApolloProvider>
     </ThemeProvider>
