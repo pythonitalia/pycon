@@ -1,5 +1,4 @@
 import math
-from typing import Optional
 
 import strawberry
 from strawberry import ID
@@ -76,12 +75,8 @@ class BaseSubmissionInput:
         self.elevator_pitch = self.elevator_pitch.clean(self.languages)
         self.abstract = self.abstract.clean(self.languages)
 
-    def validate(self, conference: Optional[Conference]):
+    def validate(self, conference: Conference):
         errors = SendSubmissionErrors()
-
-        if not conference:
-            errors.add_error("conference", "Invalid conference")
-            return errors
 
         if not self.tags:
             errors.add_error("tags", "You need to add at least one tag")
@@ -250,6 +245,11 @@ class SubmissionsMutations:
         request = info.context.request
 
         conference = Conference.objects.filter(code=input.conference).first()
+
+        if not conference:
+            return SendSubmissionErrors.with_error(
+                "conference", "You cannot edit this submission"
+            )
 
         errors = input.validate(conference=conference)
 
