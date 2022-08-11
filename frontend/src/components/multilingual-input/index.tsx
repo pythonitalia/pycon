@@ -44,7 +44,7 @@ export const MultiLingualInput = ({
         return (
           <Box>
             <Label
-              for={name}
+              htmlFor={name}
               sx={{
                 display: "flex",
                 alignItems: "center",
