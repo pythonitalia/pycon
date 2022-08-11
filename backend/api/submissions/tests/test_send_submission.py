@@ -38,7 +38,14 @@ def _submit_talk(client, conference, **kwargs):
         "tags": [tag.id],
     }
 
-    variables = {**defaults, **kwargs}
+    variables = {
+        **defaults,
+        **kwargs,
+    }
+    override_conference = kwargs.pop("override_conference", None)
+    if override_conference:
+        variables["conference"] = override_conference
+
     return (
         client.query(
             """mutation(
@@ -1006,7 +1013,7 @@ def test_submit_talk_with_no_conference(graphql_client, user, conference_factory
         audience_levels=("Beginner",),
     )
 
-    resp, _ = _submit_talk(graphql_client, conference, conference="abc-abc")
+    resp, _ = _submit_talk(graphql_client, conference, override_conference="abc-abc")
 
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
 
