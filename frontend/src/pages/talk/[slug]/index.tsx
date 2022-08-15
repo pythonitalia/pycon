@@ -280,14 +280,13 @@ export const TalkPage = () => {
 export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
   const slug = params.slug as string;
   const client = getApolloClient();
-  const language = useCurrentLanguage();
 
   await Promise.all([
     prefetchSharedQueries(client, locale),
     queryTalk(client, {
       code: process.env.conferenceCode,
       slug,
-      language,
+      language: locale,
     }),
   ]);
 
