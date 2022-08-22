@@ -560,6 +560,8 @@ export const messages = {
 
     "multilingualinput.language.it": "Italian",
     "multilingualinput.language.en": "English",
+
+    "textarea.charsCount": "{length}/{maxLength}",
   },
   it: {
     titleTemplate: "%s | PyCon Italia",
@@ -1134,6 +1136,8 @@ export const messages = {
 
     "multilingualinput.language.it": "Italiano",
     "multilingualinput.language.en": "Inglese",
+
+    "textarea.charsCount": "{length}/{maxLength}",
   },
 };
 

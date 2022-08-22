@@ -39,7 +39,7 @@ class Submission(TimeStampedModel):
     abstract = I18nTextField(_("abstract"))
     elevator_pitch = I18nTextField(_("elevator pitch"), default="", blank=True)
     slug = models.SlugField(_("slug"), max_length=200)
-    notes = models.TextField(_("notes"), default="", blank=True)
+    notes = models.TextField(_("notes"), default="", blank=True, max_length=1000)
 
     speaker_level = models.CharField(
         _("speaker level"), choices=SPEAKER_LEVELS, max_length=20

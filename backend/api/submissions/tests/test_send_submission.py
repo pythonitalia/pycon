@@ -954,7 +954,7 @@ def test_submit_talk_with_too_long_title_fails(
         graphql_client,
         conference,
         title={
-            "en": "very long title very long title very long title very long title very long title very long title very long",
+            "en": "very long title" * 50,
             "it": "",
         },
     )
@@ -1019,4 +1019,33 @@ def test_submit_talk_with_no_conference(graphql_client, user, conference_factory
 
     assert (
         "Invalid conference" in resp["data"]["sendSubmission"]["validationConference"]
+    )
+
+
+@mark.django_db
+def test_submit_talk_with_too_long_notes_fails(
+    graphql_client, user, conference_factory
+):
+    graphql_client.force_login(user)
+
+    conference = conference_factory(
+        topics=("my-topic",),
+        languages=("en", "it"),
+        submission_types=("talk",),
+        active_cfp=True,
+        durations=("50",),
+        audience_levels=("Beginner",),
+    )
+
+    resp, _ = _submit_talk(
+        graphql_client,
+        conference,
+        notes="abc" * 2000,
+    )
+
+    assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
+
+    assert (
+        "Cannot be more than 1000 chars"
+        in resp["data"]["sendSubmission"]["validationNotes"]
     )

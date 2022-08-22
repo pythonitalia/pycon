@@ -121,6 +121,12 @@ class BaseSubmissionInput:
                         f"{to_text[language]}: Cannot be more than {max_length} chars",
                     )
 
+        if len(self.notes) > 1000:
+            errors.add_error(
+                "notes",
+                "Cannot be more than 1000 chars",
+            )
+
         duration = conference.durations.filter(id=self.duration).first()
 
         if not conference.submission_types.filter(id=self.type).exists():
