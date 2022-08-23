@@ -157,10 +157,10 @@ export const messages = {
     "cfp.audienceLevelDescription": "Who is the best target audience for this?",
     "cfp.abstractLabel": "Abstract",
     "cfp.abstractDescription":
-      "This description will be seen by reviewers and the audience, if selected. You should make the description as compelling and exciting as possible - remember, you’re selling the idea to the organisers as well as appealing to attendees",
+      "This description will be seen by reviewers and the audience. You should make the description as compelling and exciting as possible - remember, you’re selling the idea to the organisers as well as appealing to attendees",
     "cfp.notesLabel": "Notes",
     "cfp.notesDescription":
-      "Notes will only be seen by reviewers. This is where you should explain things such as technical requirements. Feel free to add them in Italian or English.",
+      "Notes will only be seen by organizers. This is where you should explain things such as technical requirements. Feel free to add them in Italian or English.",
     "cfp.trackLabel": "Track",
     "cfp.topicDescription": "What this proposal is about?",
     "cfp.submit": "Submit",
@@ -171,7 +171,7 @@ export const messages = {
     "cfp.viewSubmission": "Open submission",
     "cfp.tagsLabel": "Tags",
     "cfp.tagsDescription":
-      "Tag your proposal to make it easier for event organizers to be able to find. Examples are 'Django, GraphQL, open-source'",
+      "Tag your proposal to make it easier to find. Examples are 'Django, GraphQL, open-source'",
     "cfp.submissionSent": "Proposal sent!",
     "cfp.tryAgain": "Something went wrong: {error}",
     "cfp.selectDuration": "Select a duration",
@@ -714,10 +714,10 @@ export const messages = {
     "cfp.audienceLevelDescription": "Che genere di audience ti aspetti?",
     "cfp.abstractLabel": "Descrizione",
     "cfp.abstractDescription":
-      "Questa descrizione verrà visualizzata sia gli organizzatori che e ai partecipanti, se selezionata. Dovesti rendere la descrizione il più completa ed interessante possibile - ricordati, stai vendendo la tua idea sia agli organizzatori che ai partecipanti",
+      "Questa descrizione verrà mostrata sia ad organizzatori e partecipanti. Dovesti rendere la descrizione il più completa ed interessante possibile - ricordati, stai vendendo la tua idea sia agli organizzatori che ai partecipanti",
     "cfp.notesLabel": "Note",
     "cfp.notesDescription":
-      "Le note saranno visualizzate solo dallo staff. È qui che dovresti indicare cose come i requisiti tecnici necessari per l'intervento.",
+      "Le note sono visibili solo agli organizzatori. È qui che dovresti indicare cose come i requisiti tecnici necessari per l'intervento.",
     "cfp.trackLabel": "Traccia",
     "cfp.topicDescription": "Di cosa tratta questa proposta?",
     "cfp.languagesLabel": "Lingua",
@@ -725,7 +725,7 @@ export const messages = {
       "Puoi inviare la tua proposta in più lingue se lo desideri. I votatori vedranno la lingua che si adatta alle loro preferenze. Non duplicare le tue proposte per lingua o potrebbero essere annullate.",
     "cfp.tagsLabel": "Tags",
     "cfp.tagsDescription":
-      "Tagga la tua proposta per facilitare la ricerca agli organizzatori dell'evento. Ad esempio 'Django, GraphQL, open-source'",
+      "Tagga la tua proposta per facilitare la ricerca. Ad esempio 'Django, GraphQL, open-source'",
     "cfp.submissionSent": "Proposal inviata!",
     "cfp.submit": "Invia",
     "cfp.tryAgain": "Si è verificato un errore: {error}",
