@@ -104,6 +104,7 @@ def _submit_talk(client, conference, **kwargs):
                         validationTitle: title
                         validationAbstract: abstract
                         validationLanguages: languages
+                        validationNotes: notes
                         validationType: type
                         validationDuration: duration
                         validationAudienceLevel: audienceLevel
