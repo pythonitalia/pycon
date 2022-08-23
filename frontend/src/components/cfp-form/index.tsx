@@ -10,13 +10,11 @@ import {
   Checkbox,
   Flex,
   Grid,
-  Input,
   jsx,
   Label,
   Radio,
   Select,
   Text,
-  Textarea,
   Heading,
 } from "theme-ui";
 
@@ -32,6 +30,7 @@ import { Button } from "../button/button";
 import { TagLine } from "../input-tag";
 import { InputWrapper } from "../input-wrapper";
 import { MultiLingualInput } from "../multilingual-input";
+import { Input, Textarea } from "../inputs";
 
 export type CfpFormFields = {
   type: string;
@@ -329,7 +328,7 @@ export const CfpForm = ({
             {...raw("title")}
             languages={formState.values.languages}
           >
-            <Input required={true} />
+            <Input required={true} maxLength={100} />
           </MultiLingualInput>
         </InputWrapper>
 
@@ -455,6 +454,7 @@ export const CfpForm = ({
                 resize: "vertical",
                 minHeight: 200,
               }}
+              maxLength={5000}
               rows={6}
             />
           </MultiLingualInput>
@@ -471,6 +471,7 @@ export const CfpForm = ({
               minHeight: 150,
             }}
             {...textarea("notes")}
+            maxLength={1000}
             rows={4}
           />
         </InputWrapper>
@@ -526,7 +527,11 @@ export const CfpForm = ({
           }
           errors={getErrors("validationPreviousTalkVideo")}
         >
-          <Input {...text("previousTalkVideo")} required={false} />
+          <Input
+            {...text("previousTalkVideo")}
+            required={false}
+            maxLength={2048}
+          />
         </InputWrapper>
 
         {getErrors("nonFieldErrors").map((error) => (
