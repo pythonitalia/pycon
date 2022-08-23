@@ -527,7 +527,11 @@ export const CfpForm = ({
           }
           errors={getErrors("validationPreviousTalkVideo")}
         >
-          <Input {...text("previousTalkVideo")} required={false} />
+          <Input
+            {...text("previousTalkVideo")}
+            required={false}
+            maxLength={2048}
+          />
         </InputWrapper>
 
         {getErrors("nonFieldErrors").map((error) => (
