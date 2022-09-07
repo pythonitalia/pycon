@@ -15,7 +15,7 @@ import { HomepageHero } from "~/components/homepage-hero";
 import { KeynotersSection } from "~/components/keynoters-section";
 import { Link } from "~/components/link";
 import { MapWithLink } from "~/components/map-with-link";
-import { Marquee } from "~/components/marquee";
+
 import { MetaTags } from "~/components/meta-tags";
 import { NewsletterSection } from "~/components/newsletter";
 import { SponsorsSection } from "~/components/sponsors-section";
@@ -28,6 +28,7 @@ import {
   queryMapWithLink,
   useIndexPageQuery,
 } from "~/types";
+import { Marquee } from "@python-italia/pycon-styleguide";
 
 export const HomePage = () => {
   const language = useCurrentLanguage();
@@ -51,8 +52,14 @@ export const HomePage = () => {
       </FormattedMessage>
       <HomepageHero hideBuyTickets={isInArchiveMode} />
 
-      <Marquee message={conference.marquee!} />
-
+      <Box
+        sx={{
+          borderTop: "primary",
+          borderBottom: "primary",
+        }}
+      >
+        <Marquee separator="/">{conference.marquee}</Marquee>
+      </Box>
       <Grid
         sx={{
           py: 5,
