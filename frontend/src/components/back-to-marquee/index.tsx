@@ -40,7 +40,11 @@ export const BackToMarquee = ({ goBack, backTo, href }: Props) => {
           onClick={goBack}
         >
           <FormattedMessage id={messageId}>
-            {(message) => <Marquee separator=">">{message.join("")}</Marquee>}
+            {(message) => (
+              <Marquee speed="slow" separator=">">
+                {message.join("")}
+              </Marquee>
+            )}
           </FormattedMessage>
         </Link>
       </Box>

@@ -58,7 +58,9 @@ export const HomePage = () => {
           borderBottom: "primary",
         }}
       >
-        <Marquee separator="/">{conference.marquee}</Marquee>
+        <Marquee speed="slow" separator="/">
+          {conference.marquee}
+        </Marquee>
       </Box>
       <Grid
         sx={{

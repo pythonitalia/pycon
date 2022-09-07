@@ -26,7 +26,7 @@ specifiers:
   '@mdx-js/loader': ^1.6.19
   '@next/mdx': ^10.0.0
   '@python-italia/eslint-config': ^1.0.13
-  '@python-italia/pycon-styleguide': 0.1.53
+  '@python-italia/pycon-styleguide': 0.1.54
   '@sentry/browser': ^6.13.3
   '@sentry/node': ^5.29.2
   '@sentry/tracing': ^6.13.3
@@ -91,7 +91,7 @@ dependencies:
   '@graphql-codegen/typescript-react-apollo': 3.3.2_ubrtutz2urcxyhwqr2zvlqjzha
   '@mdx-js/loader': 1.6.22_react@17.0.2
   '@next/mdx': 10.2.3_@mdx-js+loader@1.6.22
-  '@python-italia/pycon-styleguide': 0.1.53_sfoxds7t5ydpegc3knd667wn6m
+  '@python-italia/pycon-styleguide': 0.1.54_sfoxds7t5ydpegc3knd667wn6m
   '@sentry/browser': 6.19.7
   '@sentry/node': 5.30.0
   '@sentry/tracing': 6.19.7
@@ -1080,7 +1080,7 @@ packages:
     resolution: {integrity: sha512-I8j/x8kHUrbYRTUxXrrMbfCa7jxkE7tZre39x3kjr9hvI82cK1FfqLygotcWN5kdPGWcLdWMHpSBavse5tWw3w==}
     engines: {node: '>=6.9.0'}
     dependencies:
-      '@babel/code-frame': 7.16.7
+      '@babel/code-frame': 7.18.6
       '@babel/parser': 7.18.11
       '@babel/types': 7.18.4
     dev: true
@@ -2358,8 +2358,8 @@ packages:
       - supports-color
     dev: true
 
-  /@python-italia/pycon-styleguide/0.1.53_sfoxds7t5ydpegc3knd667wn6m:
-    resolution: {integrity: sha512-vUETzNk3WYyLdU+sqvGcJrmsCKXoGD7l/EU4ayqIJ4vsGJpF75JTasptUoQgWqmiqVry08Yn+1Cga7rWPgUqVA==}
+  /@python-italia/pycon-styleguide/0.1.54_sfoxds7t5ydpegc3knd667wn6m:
+    resolution: {integrity: sha512-7L6ENIF78+LwFNGPgoK0TKI52xjWkGs+fAEKKeg6bmLWIt1LJJ5m1krbQvwzRIcBrOIPbbKqhHdvyw74gSNRDA==}
     peerDependencies:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
@@ -2652,7 +2652,7 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       '@babel/code-frame': 7.18.6
-      '@babel/runtime': 7.18.3
+      '@babel/runtime': 7.18.9
       '@types/aria-query': 4.2.2
       aria-query: 4.2.2
       chalk: 4.1.2
@@ -3513,7 +3513,7 @@ packages:
   /babel-plugin-macros/2.8.0:
     resolution: {integrity: sha512-SEP5kJpfGYqYKpBrj5XU3ahw5p5GOHJ0U5ssOSQ/WBVdwkD2Dzlce95exQTs3jOVWPPKLBN2rlEWkCK7dSmLvg==}
     dependencies:
-      '@babel/runtime': 7.18.3
+      '@babel/runtime': 7.18.9
       cosmiconfig: 6.0.0
       resolve: 1.22.1
     dev: false
@@ -4291,7 +4291,7 @@ packages:
   /dom-helpers/5.2.1:
     resolution: {integrity: sha512-nRCa7CK3VTrM2NmGkIy4cbK7IZlgBE/PYMn55rrXefr5xXDP0LdtfPnblFDoVdcAfslJ7or6iqAUnx0CCGIWQA==}
     dependencies:
-      '@babel/runtime': 7.18.3
+      '@babel/runtime': 7.18.9
       csstype: 3.1.0
     dev: false
 
