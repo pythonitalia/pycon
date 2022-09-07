@@ -1,13 +1,24 @@
 import React from "react";
+import clsx from "clsx";
 
 type Props = {
   children: React.ReactNode;
+  speed?: "slow" | "medium";
   separator?: string | React.ReactNode;
 };
 
-export const Marquee = ({ children, separator = "/" }: Props) => (
+export const Marquee = ({
+  children,
+  speed = "medium",
+  separator = "/",
+}: Props) => (
   <div className="overflow-hidden w-full">
-    <div className="motion-safe:animate-marquee p-8 text-3xl whitespace-nowrap">
+    <div
+      className={clsx("p-8 text-3xl whitespace-nowrap", {
+        "motion-safe:animate-marquee-slow": speed === "slow",
+        "motion-safe:animate-marquee-medium": speed === "medium",
+      })}
+    >
       <div className="inline-block whitespace-nowrap">{children}</div>
 
       {new Array(20).fill(null).map((_, index) => (

@@ -40,7 +40,8 @@ module.exports = {
     },
     extend: {
       animation: {
-        marquee: "marquee 20s linear infinite",
+        "marquee-slow": "marquee 60s linear infinite",
+        "marquee-medium": "marquee 20s linear infinite",
       },
       keyframes: {
         marquee: {
