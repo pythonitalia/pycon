@@ -6,7 +6,7 @@ import { FormattedMessage } from "react-intl";
 import { Box, jsx } from "theme-ui";
 
 import { Link } from "../link";
-import { Marquee } from "../marquee";
+import { Marquee } from "@python-italia/pycon-styleguide";
 
 type Props = {
   goBack: () => void;
@@ -26,18 +26,28 @@ export const BackToMarquee = ({ goBack, backTo, href }: Props) => {
           pt: 4,
         }}
       />
-      <Link
-        path={href}
+      <Box
         sx={{
-          color: "black",
-          cursor: "pointer",
+          borderTop: "primary",
         }}
-        onClick={goBack}
       >
-        <FormattedMessage id={messageId}>
-          {(message) => <Marquee separator=" > " message={message.join("")} />}
-        </FormattedMessage>
-      </Link>
+        <Link
+          path={href}
+          sx={{
+            color: "black",
+            cursor: "pointer",
+          }}
+          onClick={goBack}
+        >
+          <FormattedMessage id={messageId}>
+            {(message) => (
+              <Marquee speed="slow" separator=">">
+                {message.join("")}
+              </Marquee>
+            )}
+          </FormattedMessage>
+        </Link>
+      </Box>
     </Fragment>
   );
 };
