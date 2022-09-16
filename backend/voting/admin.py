@@ -205,8 +205,6 @@ class RankSubmissionAdmin(ExportMixin, AdminUsersMixin):
             ),
         )
 
-    view_submission.allow_tags = True
-
 
 @admin.register(RankRequest)
 class RankRequestAdmin(admin.ModelAdmin):
@@ -222,8 +220,6 @@ class RankRequestAdmin(admin.ModelAdmin):
             f'rank_request_id__id__exact={obj.id}">Open</a>&nbsp;',
             url=reverse("admin:voting_ranksubmission_changelist"),
         )
-
-    view_rank.allow_tags = True
 
 
 @admin.register(RankStat)
