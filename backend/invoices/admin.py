@@ -20,6 +20,9 @@ from .models import Address, Invoice, Item, Sender
 from .utils import xml_to_string, zip_files
 
 
+@admin.action(
+    description=_("Export as xml"),
+)
 def invoice_export_to_xml(modeladmin, request, queryset):
     if len(queryset) == 1:
         model = queryset[0]
@@ -39,7 +42,6 @@ def invoice_export_to_xml(modeladmin, request, queryset):
     return response
 
 
-invoice_export_to_xml.short_description = _("Export as xml")  # type: ignore
 
 
 class MissingFiscalCodeError(Exception):

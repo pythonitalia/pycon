@@ -30,7 +30,9 @@ class PostAdmin(AdminUsersMixin):
     list_display = ("title", "published", "author_display_name")
     user_fk = "author_id"
 
+    @admin.display(
+        description="Author",
+    )
     def author_display_name(self, obj):
         return self.get_user_display_name(obj.author_id)
 
-    author_display_name.short_description = "Author"

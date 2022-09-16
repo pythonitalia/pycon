@@ -118,16 +118,18 @@ class SubmissionAdmin(AdminUsersMixin, SearchUsersMixin):
             extra_context=extra_context,
         )
 
+    @admin.display(
+        description="Speaker",
+    )
     def speaker_display_name(self, obj):
         return self.get_user_display_name(obj.speaker_id)
-
-    speaker_display_name.short_description = "Speaker"
 
     def inline_tags(self, obj):
         return ", ".join([tag.name for tag in obj.tags.all()])
 
-    speaker_display_name.short_description = "Tags"
-
+    @admin.display(
+        description="Open",
+    )
     def open_submission(self, obj):  # pragma: no cover
         return mark_safe(
             f"""
@@ -136,7 +138,6 @@ class SubmissionAdmin(AdminUsersMixin, SearchUsersMixin):
             """
         )
 
-    open_submission.short_description = "Open"
     open_submission.allow_tags = True
 
     def get_queryset(self, request):

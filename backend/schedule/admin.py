@@ -519,6 +519,9 @@ class ScheduleItemInvitationAdmin(ExportMixin, AdminUsersMixin):
     def speaker_display_name(self, obj):
         return self.get_user_display_name(obj.submission.speaker_id)
 
+    @admin.display(
+        boolean=True,
+    )
     def speaker_has_ticket(self, obj) -> bool:
         user = self.get_user_data(obj.submission.speaker_id)
 
@@ -531,7 +534,6 @@ class ScheduleItemInvitationAdmin(ExportMixin, AdminUsersMixin):
             event_slug=obj.conference.pretix_event_id,
         )
 
-    speaker_has_ticket.boolean = True
 
     def open_schedule_item(self, obj) -> str:
         url = reverse("admin:schedule_scheduleitem_change", args=[obj.id])
