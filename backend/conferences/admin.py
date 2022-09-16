@@ -325,7 +325,6 @@ class SpeakerVoucherAdmin(AdminUsersMixin):
     def created_on_pretix(self, obj):
         return obj.pretix_voucher_id is not None
 
-
     def get_changeform_initial_data(self, request):
         return {"voucher_code": SpeakerVoucher.generate_code()}
 

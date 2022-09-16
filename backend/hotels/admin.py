@@ -71,7 +71,6 @@ class HotelRoomReservationAdmin(AdminUsersMixin):
         id = user_data["id"]
         return f"{display_name} ({email}) #{id}"
 
-
     def order_status(self, obj):
         if obj.order_code not in self._reservation_status:
             return _("Unknown")

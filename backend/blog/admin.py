@@ -35,4 +35,3 @@ class PostAdmin(AdminUsersMixin):
     )
     def author_display_name(self, obj):
         return self.get_user_display_name(obj.author_id)
-

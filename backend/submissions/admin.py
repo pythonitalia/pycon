@@ -124,6 +124,9 @@ class SubmissionAdmin(AdminUsersMixin, SearchUsersMixin):
     def speaker_display_name(self, obj):
         return self.get_user_display_name(obj.speaker_id)
 
+    @admin.display(
+        description="Tags",
+    )
     def inline_tags(self, obj):
         return ", ".join([tag.name for tag in obj.tags.all()])
 

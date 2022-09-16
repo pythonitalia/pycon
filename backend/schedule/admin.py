@@ -534,7 +534,6 @@ class ScheduleItemInvitationAdmin(ExportMixin, AdminUsersMixin):
             event_slug=obj.conference.pretix_event_id,
         )
 
-
     def open_schedule_item(self, obj) -> str:
         url = reverse("admin:schedule_scheduleitem_change", args=[obj.id])
         return mark_safe(f'<a class="button" target="_blank" href="{url}">Schedule</a>')

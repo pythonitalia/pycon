@@ -42,8 +42,6 @@ def invoice_export_to_xml(modeladmin, request, queryset):
     return response
 
 
-
-
 class MissingFiscalCodeError(Exception):
     pass
 

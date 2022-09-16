@@ -66,7 +66,6 @@ class VoteAdmin(ExportMixin, AdminUsersMixin):
     def user_display_name(self, obj):
         return self.get_user_display_name(obj.user_id)
 
-
     class Media:
         js = ["admin/js/jquery.init.js"]
 
@@ -193,7 +192,6 @@ class RankSubmissionAdmin(ExportMixin, AdminUsersMixin):
 
         speaker_gender = self.get_user_data(obj.submission.speaker_id)["gender"]
         return emoji[speaker_gender]
-
 
     @admin.display(
         description="View",

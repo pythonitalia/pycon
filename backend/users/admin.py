@@ -96,5 +96,3 @@ class PyConUserAdmin(UserAdmin):
             ),
         ]
         return my_urls + urls
-
-
