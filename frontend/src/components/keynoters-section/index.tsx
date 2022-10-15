@@ -26,6 +26,10 @@ export const KeynotersSection = () => {
     conference: { keynotes },
   } = data;
 
+  if (keynotes.length === 0) {
+    return null;
+  }
+
   return (
     <Carousel title="Keynoters">
       {keynotes.map((keynote, index) => (

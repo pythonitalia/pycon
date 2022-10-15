@@ -184,7 +184,7 @@ export const Header = () => {
                   display: ["none", "flex"],
                 }}
               />
-              <ScheduleLink />
+              {/*<ScheduleLink />*/}
               {!isInArchiveMode && <ProfileLink />}
             </Box>
 
@@ -273,9 +273,9 @@ export const Header = () => {
                       sx={{
                         color: "white",
                       }}
-                      path="mailto:info@pycon.it"
+                      path="mailto:help@pycon.it"
                     >
-                      info@pycon.it
+                      help@pycon.it
                     </Link>
                   </Box>
                 </dl>
