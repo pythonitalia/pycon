@@ -53,5 +53,3 @@ module "database" {
   source       = "./database"
   enable_proxy = local.enable_proxy
 }
-
-# test change
