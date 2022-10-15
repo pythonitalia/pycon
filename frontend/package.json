@@ -33,7 +33,7 @@
     "@graphql-codegen/typescript-react-apollo": "^3.3.2",
     "@mdx-js/loader": "^1.6.19",
     "@next/mdx": "^10.0.0",
-    "@python-italia/pycon-styleguide": "0.1.54",
+    "@python-italia/pycon-styleguide": "0.1.55-rc8b073bcf63b920b3d5df6f2e77258fe9388daf20",
     "@sentry/browser": "^6.13.3",
     "@sentry/node": "^5.29.2",
     "@sentry/tracing": "^6.13.3",

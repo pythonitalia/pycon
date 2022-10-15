@@ -1,6 +1,7 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
+import { Header as StyleguideHeader } from "@python-italia/pycon-styleguide";
 import { Fragment, useEffect, useRef } from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, Flex, Grid, Heading, jsx, ThemeUIStyleObject } from "theme-ui";
@@ -124,6 +125,16 @@ export const Header = () => {
   const conferenceMenu =
     language === "it" ? conferenceMenuIt : conferenceMenuEn;
   const programMenu = language === "it" ? programMenuIt : programMenuEn;
+  return (
+    <StyleguideHeader
+      logo={Logo}
+      backgroundColor="transparent"
+      links={[
+        ...conferenceMenu.links.map((link) => ({ ...link, side: "left" })),
+        ...programMenu.links.map((link) => ({ ...link, side: "right" })),
+      ]}
+    />
+  );
 
   return (
     <Fragment>
@@ -131,17 +142,13 @@ export const Header = () => {
         ref={headerRef}
         sx={
           {
-            /* temp hack :) */
-            top: open ? 0 : 3,
-            pt: open ? 3 : 0,
+            top: 0,
+            pt: 3,
             left: 0,
             width: "100%",
-            height: open ? "100%" : "",
             zIndex: "header",
-            position: open ? "fixed" : "relative",
-            borderBottom: open ? "primary" : "",
+            position: "relative",
             backgroundColor: open ? "orange" : "",
-            overflowY: open ? "scroll" : "initial",
             "@media print": {
               display: "none",
             },
@@ -158,14 +165,7 @@ export const Header = () => {
             alignItems: "flex-start",
           }}
         >
-          <Link path="/">
-            <Logo
-              sx={{
-                width: ["166px", null, "250px"],
-                height: "auto",
-              }}
-            />
-          </Link>
+          <Link path="/"></Link>
 
           <Flex
             sx={{
@@ -188,24 +188,21 @@ export const Header = () => {
               {!isInArchiveMode && <ProfileLink />}
             </Box>
 
-            <Button
+            <MenuButton
               sx={{
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
 
-                px: 3,
+                px: 2,
                 py: 2,
 
                 cursor: "pointer",
               }}
               onClick={toggleOpen}
               variant="white"
-            >
-              <SnakeBurger />
-              {open ? "Close" : "Menu"}
-            </Button>
+            />
           </Flex>
         </Flex>
 
@@ -213,6 +210,10 @@ export const Header = () => {
           <Box
             sx={{
               borderTop: "primary",
+              position: "absolute",
+              width: "100%",
+              backgroundColor: "orange",
+              borderBottom: "primary",
             }}
           >
             <Grid
