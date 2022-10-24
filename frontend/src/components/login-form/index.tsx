@@ -26,13 +26,18 @@ type FormProps = {
   next?: string;
 };
 
+const cleanRedirectUrl = (url: string) =>
+  url.startsWith("/") ? url : "/profile";
+
 export const LoginForm: React.SFC<FormProps> = ({ next, ...props }) => {
   const router = useRouter();
   const [loggedIn, setLoggedIn] = useLoginState();
 
   const { messages, clearMessages } = useMessages();
 
-  const nextUrl = (router.query.next as string) || next || `/profile`;
+  const nextUrl = cleanRedirectUrl(
+    (router.query.next as string) || next || `/profile`,
+  );
 
   const onLoginCompleted = (data: LoginMutation) => {
     if (data && data.login.__typename === "LoginSuccess") {
