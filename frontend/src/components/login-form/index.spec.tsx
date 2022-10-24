@@ -108,7 +108,7 @@ describe("Login form", () => {
     test("should redirect to next url if passed via code", async () => {
       render(
         <MockedProvider mocks={VALID_LOGIN_MOCKS}>
-          <LoginForm next="https://pycon.it" />
+          <LoginForm next="/test" />
         </MockedProvider>,
       );
 
@@ -125,10 +125,54 @@ describe("Login form", () => {
         return wait(1);
       });
 
-      expect(MockedRouterPush).toHaveBeenCalledWith("https://pycon.it");
+      expect(MockedRouterPush).toHaveBeenCalledWith("/test");
     });
 
-    test("should redirect to next url if present in url", async () => {
+    test("should redirect to next param", async () => {
+      MockedUseRouter.mockImplementation(() => ({
+        query: {
+          next: "/test",
+        },
+
+        route: "",
+        pathname: "",
+        asPath: "",
+        isLocaleDomain: false,
+        basePath: "",
+        push: jest.fn(),
+        replace: jest.fn(),
+        prefetch: jest.fn(),
+        reload: jest.fn(),
+        back: jest.fn(),
+        beforePopState: jest.fn(),
+        events: {
+          on: jest.fn(),
+          off: jest.fn(),
+          emit: jest.fn(),
+        },
+        isFallback: false,
+        isPreview: false,
+        isReady: false,
+      }));
+
+      render(
+        <MockedProvider mocks={VALID_LOGIN_MOCKS}>
+          <LoginForm />
+        </MockedProvider>,
+      );
+
+      userEvent.type(screen.getByTestId("email-input"), "email@email.it");
+      userEvent.type(screen.getByTestId("password-input"), "password");
+
+      await act(() => {
+        userEvent.click(screen.getByRole("button", { name: "Login 👉" }));
+        return wait(1);
+      });
+
+      expect(MockedRouterPush).toHaveBeenCalledWith("/test");
+    });
+
+    test("should redirect only to relative urls in next param", async () => {
       MockedUseRouter.mockImplementation(() => ({
         query: {
           next: "http://next-url.pycon.it",
@@ -169,7 +213,7 @@ describe("Login form", () => {
         return wait(1);
       });
 
-      expect(MockedRouterPush).toHaveBeenCalledWith("http://next-url.pycon.it");
+      expect(MockedRouterPush).toHaveBeenCalledWith("/profile");
     });
   });
 
