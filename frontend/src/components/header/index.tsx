@@ -131,9 +131,10 @@ export const Header = () => {
         ref={headerRef}
         sx={
           {
-            top: 0,
+            /* temp hack :) */
+            top: open ? 0 : 3,
+            pt: open ? 3 : 0,
             left: 0,
-            pt: 3,
             width: "100%",
             height: open ? "100%" : "",
             zIndex: "header",
