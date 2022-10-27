@@ -71,13 +71,14 @@ export const MyTickets = ({ tickets = [] }: Props) => {
       if (
         result.updateAttendeeTicket.__typename === "UpdateAttendeeTicketErrors"
       ) {
-        selectedProducts[result.updateAttendeeTicket.id][0].errors =
-          Object.fromEntries(
-            result.updateAttendeeTicket.errors.map((error) => [
-              snakeToCamel(error.field),
-              error.message,
-            ]),
-          );
+        selectedProducts[
+          result.updateAttendeeTicket.id
+        ][0].errors = Object.fromEntries(
+          result.updateAttendeeTicket.errors.map((error) => [
+            snakeToCamel(error.field),
+            error.message,
+          ]),
+        );
 
         setSelectedProducts({ ...selectedProducts });
       }
@@ -96,6 +97,8 @@ export const MyTickets = ({ tickets = [] }: Props) => {
     update(cache, { data }) {
       if (data.updateAttendeeTicket.__typename === "TicketReassigned") {
         setCurrentTicketId(null);
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        /* @ts-ignore:next-line */
         const { me } = cache.readQuery({
           query: MyProfileDocument,
           variables: {

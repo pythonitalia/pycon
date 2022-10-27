@@ -3,6 +3,7 @@
 /** @jsx jsx */
 import { ApolloProvider } from "@apollo/client";
 import "@python-italia/pycon-styleguide/style";
+import { Analytics } from "@vercel/analytics/react";
 import { useEffect } from "react";
 import { createIntl, createIntlCache, RawIntlProvider } from "react-intl";
 import { Box, Flex, jsx, ThemeProvider } from "theme-ui";
@@ -52,6 +53,7 @@ const MyApp = (props) => {
 
   return (
     <ThemeProvider theme={theme}>
+      <Analytics />
       {enableOlark && (
         <Script
           strategy="lazyOnload"

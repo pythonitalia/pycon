@@ -39,6 +39,7 @@
     "@sentry/webpack-plugin": "^1.14.0",
     "@theme-ui/match-media": "^0.3.1",
     "@types/styled-system": "^5.1.10",
+    "@vercel/analytics": "^0.1.2",
     "@zeit/next-source-maps": "^0.0.3",
     "concurrently": "^5.2.0",
     "deepmerge": "^4.2.2",
