@@ -37,7 +37,7 @@ const LanguagePicker = ({
         path={route}
         params={query}
         locale="en"
-        sx={{ height: 40, display: "inline-block" }}
+        sx={{ height: 40, mr: 2, display: "inline-block" }}
       >
         <EnglishIcon active={language === "en"} sx={{ width: 40, mr: 2 }} />
       </Link>

@@ -161,7 +161,7 @@ const KeynotePage = () => {
               }}
             >
               <Box>
-                <Text sx={{ fontWeight: "bold" }}>
+                <Text sx={{ fontWeight: "bold", display: "block" }}>
                   <FormattedMessage id="keynote.speakers" />
                 </Text>
 
@@ -169,7 +169,7 @@ const KeynotePage = () => {
               </Box>
 
               <Box>
-                <Text sx={{ fontWeight: "bold" }}>
+                <Text sx={{ fontWeight: "bold", display: "block" }}>
                   <FormattedMessage id="keynote.language" />
                 </Text>
 
@@ -180,7 +180,7 @@ const KeynotePage = () => {
 
               {topic && (
                 <Box>
-                  <Text sx={{ fontWeight: "bold" }}>
+                  <Text sx={{ fontWeight: "bold", display: "block" }}>
                     <FormattedMessage id="keynote.topic" />
                   </Text>
 

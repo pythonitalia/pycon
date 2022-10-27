@@ -248,13 +248,13 @@ export const ScheduleEntry: React.SFC<{
           }}
         >
           <Box sx={{ mr: "auto" }}>
-            <Text sx={{ fontWeight: "bold" }}>
+            <Text sx={{ fontWeight: "bold", display: "block" }}>
               {item.speakers.map((s) => s.fullName).join(" & ")}
             </Text>
             {audienceLevel && <Text>{audienceLevel}</Text>}
             {item.type === "keynote" && <Text>Keynote</Text>}
             {item.hasLimitedCapacity && item.hasSpacesLeft && (
-              <Text sx={{ color: "black" }}>
+              <Text sx={{ color: "black", display: "block" }}>
                 <FormattedMessage
                   id="talk.spacesLeft"
                   values={{
@@ -268,7 +268,7 @@ export const ScheduleEntry: React.SFC<{
               </Text>
             )}
             {item.hasLimitedCapacity && !item.hasSpacesLeft && (
-              <Text sx={{ color: "black" }}>
+              <Text sx={{ color: "black", display: "block" }}>
                 <FormattedMessage id="talk.eventIsFull" />
               </Text>
             )}
