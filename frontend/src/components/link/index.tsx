@@ -71,13 +71,12 @@ type LinkProps = {
   params?: ParsedUrlQuery;
   external?: boolean;
   rel?: string;
-  noHover?: boolean;
   as?: any;
   onClick?: (event) => void;
   sx?: ThemeUIStyleObject;
 };
 
-export const Link: React.FC<LinkProps> = ({
+export const Link = ({
   children,
   path,
   backgroundColor,
@@ -87,7 +86,7 @@ export const Link: React.FC<LinkProps> = ({
   params = null,
   locale,
   ...additionalProps
-}) => {
+}: React.PropsWithChildren<LinkProps>) => {
   const language = useCurrentLanguage();
   const normalizedLocale = locale || language;
   const isExternal = external || isExternalLink({ path, target });

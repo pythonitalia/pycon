@@ -76,7 +76,7 @@ const ScheduleLink = () => {
     <Link
       variant="button"
       path="/schedule"
-      sx={{ mr: 2, background: "orange" }}
+      sx={{ mr: 2, background: "yellow" }}
     >
       <FormattedMessage id="header.schedule" />
     </Link>

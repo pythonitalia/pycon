@@ -34,7 +34,7 @@ export const KeynotersSection = () => {
           name={keynote.speakers[0].name}
           subtitle={keynote.title}
           portraitUrl={keynote.speakers[0].photo}
-          linkWrapper={<Link noHover path={`/keynotes/${keynote.slug}/`} />}
+          linkWrapper={<Link path={`/keynotes/${keynote.slug}/`} />}
         />
       ))}
     </Carousel>

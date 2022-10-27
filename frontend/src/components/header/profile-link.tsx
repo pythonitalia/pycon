@@ -23,10 +23,15 @@ export const ProfileLink = () => {
     <Link
       path={!firstRender && loggedIn ? "/profile" : "/login"}
       variant="arrow-button"
-      sx={{ mr: 4, display: ["none", "block"] }}
+      sx={{
+        mr: 4,
+        display: ["none", "block"],
+        maxWidth: "138px",
+        width: "100%",
+      }}
     >
       {!firstRender && loggedIn && <FormattedMessage id="header.profile" />}
-      {firstRender || (!loggedIn && <FormattedMessage id="header.login" />)}
+      {(firstRender || !loggedIn) && <FormattedMessage id="header.login" />}
     </Link>
   );
 };
