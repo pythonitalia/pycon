@@ -1,21 +1,21 @@
-import type { NextFetchEvent, NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
 import { DEFAULT_LOCALE, VALID_LOCALES } from "~/locale/languages";
 
 const PUBLIC_FILE = /\.(.*)$/;
 
-export function middleware(req: NextRequest, _ev: NextFetchEvent) {
+export function middleware(req: NextRequest) {
   const shouldHandleLocale =
     !PUBLIC_FILE.test(req.nextUrl.pathname) &&
     !req.nextUrl.pathname.includes("/api/") &&
     !req.nextUrl.pathname.includes("/admin") &&
     !req.nextUrl.pathname.includes("/graphql") &&
     req.nextUrl.locale === "default";
-  const locale = getLocale(req.cookies.pyconLocale);
+  const locale = getLocale(req.cookies.get("pyconLocale"));
 
   if (!shouldHandleLocale) {
-    return undefined;
+    return NextResponse.next();
   }
 
   const url = req.nextUrl.clone();
