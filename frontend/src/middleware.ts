@@ -31,3 +31,7 @@ const getLocale = (cookie: string): string => {
 
   return DEFAULT_LOCALE;
 };
+
+export const config = {
+  matcher: "/:path*",
+};
