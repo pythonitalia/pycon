@@ -3,7 +3,7 @@
 /** @jsx jsx */
 import { Fragment, useEffect, useRef } from "react";
 import { FormattedMessage } from "react-intl";
-import { Box, Flex, Grid, Heading, jsx } from "theme-ui";
+import { Box, Flex, Grid, Heading, jsx, ThemeUIStyleObject } from "theme-ui";
 import useOnClickOutside from "use-onclickoutside";
 
 import { useRouter } from "next/router";
@@ -22,7 +22,13 @@ import { SocialLinks } from "../social-links";
 import { ProfileLink } from "./profile-link";
 import { SnakeBurger } from "./snake-burger";
 
-const LanguagePicker = ({ language, ...props }: { language: string }) => {
+const LanguagePicker = ({
+  language,
+  ...props
+}: {
+  language: string;
+  sx?: ThemeUIStyleObject;
+}) => {
   const { route, query } = useRouter();
 
   return (

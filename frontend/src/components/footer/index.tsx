@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
-import { Box, Grid, jsx, Flex } from "theme-ui";
+import { Box, Grid, jsx, Flex, ThemeUIStyleObject } from "theme-ui";
 
 import { useRouter } from "next/router";
 
@@ -11,7 +11,12 @@ import { LogoBlack } from "../icons/logo-black";
 import { Link } from "../link";
 import { SocialLinks } from "../social-links";
 
-const MenuItems: React.SFC = ({ children, ...props }) => (
+const MenuItems = ({
+  children,
+  ...props
+}: React.PropsWithChildren<{
+  sx?: ThemeUIStyleObject;
+}>) => (
   <Box
     as="ul"
     sx={{

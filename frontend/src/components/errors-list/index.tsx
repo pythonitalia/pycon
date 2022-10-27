@@ -2,12 +2,12 @@
 
 /** @jsx jsx */
 import React from "react";
-import { Box, jsx } from "theme-ui";
+import { Box, jsx, ThemeUIStyleObject } from "theme-ui";
 
-export const ErrorsList: React.SFC<{ errors?: string[] }> = ({
-  errors,
-  ...props
-}) => {
+export const ErrorsList: React.SFC<{
+  errors?: string[];
+  sx?: ThemeUIStyleObject;
+}> = ({ errors, ...props }) => {
   if (!errors) {
     return null;
   }

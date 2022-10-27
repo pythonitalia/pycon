@@ -3,7 +3,7 @@
 /** @jsx jsx */
 import React, { useRef } from "react";
 import useSyncScroll from "react-use-sync-scroll";
-import { Box, jsx } from "theme-ui";
+import { Box, jsx, ThemeUIStyleObject } from "theme-ui";
 
 import { useRouter } from "next/router";
 
@@ -129,6 +129,7 @@ const GridContainer = React.forwardRef<
     totalRows: number;
     isInPhotoMode: boolean;
     children: React.ReactNode;
+    sx?: ThemeUIStyleObject;
   }
 >(({ totalColumns, totalRows, children, isInPhotoMode, ...props }, ref) => (
   <Box

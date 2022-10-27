@@ -1,6 +1,8 @@
 import React from "react";
 
-export const LogoBlack: React.FC = (props) => (
+type Props = { sx?: any };
+
+export const LogoBlack = (props: Props) => (
   <svg {...props} viewBox="0 0 1932 450" fill="none">
     <rect width="1932" height="450" fill="white" />
     <g clipPath="url(#clip0_2905:3)">

@@ -24,12 +24,13 @@ type LoginFormFields = {
 
 type FormProps = {
   next?: string;
+  sx?: any;
 };
 
 const cleanRedirectUrl = (url: string) =>
   url.startsWith("/") ? url : "/profile";
 
-export const LoginForm: React.SFC<FormProps> = ({ next, ...props }) => {
+export const LoginForm = ({ next, ...props }: FormProps) => {
   const router = useRouter();
   const [loggedIn, setLoggedIn] = useLoginState();
 

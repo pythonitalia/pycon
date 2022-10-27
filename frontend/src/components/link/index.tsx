@@ -3,7 +3,13 @@
 /** @jsx jsx */
 import { ParsedUrlQuery } from "querystring";
 import React from "react";
-import { Box, Flex, jsx, Link as ThemeLink } from "theme-ui";
+import {
+  Box,
+  Flex,
+  jsx,
+  Link as ThemeLink,
+  ThemeUIStyleObject,
+} from "theme-ui";
 
 import { useCurrentLanguage } from "~/locale/context";
 
@@ -68,6 +74,7 @@ type LinkProps = {
   noHover?: boolean;
   as?: any;
   onClick?: (event) => void;
+  sx?: ThemeUIStyleObject;
 };
 
 export const Link: React.FC<LinkProps> = ({

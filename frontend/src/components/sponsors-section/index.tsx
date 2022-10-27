@@ -12,12 +12,10 @@ type Props = {
     sponsors: Sponsor[];
     highlightColor?: string | null;
   }[];
+  sx?: any;
 };
 
-export const SponsorsSection: React.SFC<Props> = ({
-  sponsorsByLevel,
-  ...props
-}) => (
+export const SponsorsSection = ({ sponsorsByLevel, ...props }: Props) => (
   <Box {...props}>
     {sponsorsByLevel.map(({ level, sponsors, highlightColor }) => (
       <Box key={level}>
