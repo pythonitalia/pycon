@@ -24,7 +24,7 @@ export const ProfileLink = () => {
       path={!firstRender && loggedIn ? "/profile" : "/login"}
       variant="arrow-button"
       sx={{
-        mr: 4,
+        mr: 2,
         display: ["none", "block"],
         maxWidth: "138px",
         width: "100%",

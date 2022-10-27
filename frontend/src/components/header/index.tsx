@@ -76,7 +76,7 @@ const ScheduleLink = () => {
     <Link
       variant="button"
       path="/schedule"
-      sx={{ mr: 2, background: "yellow" }}
+      sx={{ mr: 2, background: "yellow", flexShrink: 0 }}
     >
       <FormattedMessage id="header.schedule" />
     </Link>
@@ -181,7 +181,7 @@ export const Header = () => {
               <LanguagePicker
                 language={language}
                 sx={{
-                  display: ["none", "block"],
+                  display: ["none", "flex"],
                 }}
               />
               <ScheduleLink />
