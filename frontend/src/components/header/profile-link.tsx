@@ -11,7 +11,7 @@ import { Link } from "../link";
 
 export const ProfileLink = () => {
   const [loggedIn] = useLoginState();
-  const [firstRender, setFirstRender] = useState(false);
+  const [firstRender, setFirstRender] = useState(true);
 
   useEffect(() => {
     if (firstRender) {
