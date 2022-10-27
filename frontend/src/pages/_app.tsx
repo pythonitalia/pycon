@@ -53,7 +53,6 @@ const MyApp = (props) => {
 
   return (
     <ThemeProvider theme={theme}>
-      <Analytics />
       {enableOlark && (
         <Script
           strategy="lazyOnload"
@@ -95,6 +94,7 @@ window.dispatchEvent(olarkLoadedEvent);
                 <Box>
                   <ErrorBoundary>
                     <Component {...pageProps} err={err} />
+                    <Analytics />
                   </ErrorBoundary>
                 </Box>
 
