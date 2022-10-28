@@ -76,7 +76,7 @@ export const ProductRow = ({
             {ticket.name}
           </Text>
 
-          <Text>
+          <Text as="div">
             <FormattedMessage
               id={hotel ? "order.hotelPrice" : "order.price"}
               values={{
