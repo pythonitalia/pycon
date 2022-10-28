@@ -4,7 +4,7 @@
 import { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
-import { Box, Grid, Input, jsx, Heading } from "theme-ui";
+import { Box, Grid, Input, jsx, Heading, ThemeUIStyleObject } from "theme-ui";
 
 import Router, { useRouter } from "next/router";
 
@@ -24,7 +24,7 @@ type LoginFormFields = {
 
 type FormProps = {
   next?: string;
-  sx?: any;
+  sx?: ThemeUIStyleObject;
 };
 
 const cleanRedirectUrl = (url: string) =>
