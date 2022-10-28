@@ -46,7 +46,7 @@ export const Logout = () => {
           <FormattedMessage id="profile.logout" />
         </Heading>
 
-        <Text mb={4}>
+        <Text mb={4} sx={{ display: "block" }}>
           <FormattedMessage id="profile.seeYourSoon" />
         </Text>
 

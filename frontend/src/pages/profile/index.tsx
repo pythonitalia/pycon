@@ -27,11 +27,7 @@ export const MyProfilePage = () => {
   const [loggedIn, setLoginState] = useLoginState();
   const language = useCurrentLanguage();
 
-  const {
-    loading,
-    error,
-    data: profileData,
-  } = useMyProfileQuery({
+  const { loading, error, data: profileData } = useMyProfileQuery({
     skip: !loggedIn,
     variables: {
       conference: process.env.conferenceCode,
@@ -65,7 +61,7 @@ export const MyProfilePage = () => {
   }, []);
 
   if (loading) {
-    return <PageLoading titleId="profile.title" />;
+    return null;
   }
 
   if (error) {
