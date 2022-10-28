@@ -186,7 +186,7 @@ export const EditProfilePage: React.FC = () => {
     [update, formState],
   );
 
-  if (loading) {
+  if (loading || !loggedIn) {
     return null;
   }
 
