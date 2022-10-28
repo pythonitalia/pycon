@@ -4,6 +4,7 @@ query GetSubmission($id: ID!, $language: String!) {
     title(language: $language)
     abstract(language: $language)
     elevatorPitch(language: $language)
+    shortSocialSummary
     multilingualTitle {
       it
       en

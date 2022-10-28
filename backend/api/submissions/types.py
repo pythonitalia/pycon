@@ -90,6 +90,7 @@ class Submission:
     status: str
     speaker_level: Optional[str] = private_field()
     previous_talk_video: Optional[str] = private_field()
+    short_social_summary: Optional[str] = private_field()
     topic: Optional[LazyType["Topic", "api.conferences.types"]] = restricted_field()
     type: Optional[SubmissionType] = restricted_field()
     duration: Optional[

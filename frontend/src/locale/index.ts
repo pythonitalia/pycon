@@ -171,7 +171,7 @@ export const messages = {
     "cfp.viewSubmission": "Open submission",
     "cfp.tagsLabel": "Tags",
     "cfp.tagsDescription":
-      "Tag your proposal to make it easier to find. Examples are 'Django, GraphQL, open-source'",
+      "Tag your proposal to make it easier to find. Examples are 'Django, GraphQL, open-source'.",
     "cfp.submissionSent": "Proposal sent!",
     "cfp.tryAgain": "Something went wrong: {error}",
     "cfp.selectDuration": "Select a duration",
@@ -193,6 +193,9 @@ export const messages = {
     "cfp.aboutYou": "About you",
     "cfp.aboutYouDescription":
       "This section will help us to know more about you and your experience as speaker. While the previous talk is optional, if you can, try to find one of your previous talk as this will help us during the talk selection",
+    "cfp.shortSocialSummaryLabel": "Short social summary",
+    "cfp.shortSocialSummaryDescription":
+      "Optionally, you can leave a short summary that we could use to promote your proposal on our socials, if accepted.",
     "header.coronaVirus":
       "🚨 Update regarding COVID-19 - Conference cancelled 😢",
     "header.profile": "Profile",
@@ -725,7 +728,7 @@ export const messages = {
       "Puoi inviare la tua proposta in più lingue se lo desideri. I votatori vedranno la lingua che si adatta alle loro preferenze. Non duplicare le tue proposte per lingua o potrebbero essere annullate.",
     "cfp.tagsLabel": "Tags",
     "cfp.tagsDescription":
-      "Tagga la tua proposta per facilitare la ricerca. Ad esempio 'Django, GraphQL, open-source'",
+      "Tagga la tua proposta per facilitare la ricerca. Ad esempio 'Django, GraphQL, open-source'.",
     "cfp.submissionSent": "Proposal inviata!",
     "cfp.submit": "Invia",
     "cfp.tryAgain": "Si è verificato un errore: {error}",
@@ -749,6 +752,9 @@ export const messages = {
     "cfp.aboutYou": "Su di te",
     "cfp.aboutYouDescription":
       "Questa sezione ci aiuterà a conoscerti meglio come speaker, ti consigliano di compilare tutte le informazioni cosi da aiutarci durante la selezione",
+    "cfp.shortSocialSummaryLabel": "Riassunto per social",
+    "cfp.shortSocialSummaryDescription":
+      "Qui puoi lasciare un piccolo riassunto che potremmo utilizzare per promuovere la tua proposta sui nostri social, se accettata.",
     "header.coronaVirus": "🚨 Aggiornamento COVID-19 - Conferenza annullata 😢",
     "header.profile": "Profilo",
     "header.login": "Login",

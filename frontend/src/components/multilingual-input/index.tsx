@@ -1,11 +1,10 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
-
 import React from "react";
 import { FormattedMessage } from "react-intl";
-
 import { jsx, Box, Label, Grid } from "theme-ui";
+
 import { EnglishIcon } from "../icons/english";
 import { ItalianIcon } from "../icons/italian";
 
@@ -89,9 +88,7 @@ export const MultiLingualInput = ({
               disabled: isInvalid,
               id: name,
               name,
-              sx: {
-                cursor: isInvalid ? "not-allowed" : "",
-              },
+              cursor: isInvalid ? "not-allowed" : "",
               onChange: (e: { target: { value: any } }) => {
                 onChange({
                   ...value,

@@ -41,19 +41,19 @@ export const Submission: React.SFC<Props> = ({ submission }) => (
               mb: 4,
             }}
           >
-            <Text sx={{ fontWeight: "bold" }}>
+            <Text sx={{ fontWeight: "bold", display: "block" }}>
               <FormattedMessage id="cfp.trackLabel" />
             </Text>
 
             <Text sx={{ mb: 3 }}>{submission.topic!.name}</Text>
 
-            <Text sx={{ fontWeight: "bold" }}>
+            <Text sx={{ fontWeight: "bold", display: "block" }}>
               <FormattedMessage id="cfp.audienceLevelLabel" />
             </Text>
 
             <Text sx={{ mb: 3 }}>{submission.audienceLevel!.name}</Text>
 
-            <Text sx={{ fontWeight: "bold" }}>
+            <Text sx={{ fontWeight: "bold", display: "block" }}>
               <FormattedMessage id="cfp.languagesLabel" />
             </Text>
 
@@ -61,7 +61,7 @@ export const Submission: React.SFC<Props> = ({ submission }) => (
               {submission.languages!.map((lang) => lang.name).join(", ")}
             </Text>
 
-            <Text sx={{ fontWeight: "bold" }}>
+            <Text sx={{ fontWeight: "bold", display: "block" }}>
               <FormattedMessage id="cfp.lengthLabel" />
             </Text>
 
