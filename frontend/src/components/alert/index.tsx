@@ -3,9 +3,14 @@ import { Box } from "theme-ui";
 
 type Props = {
   variant: "alert" | "success" | "info";
+  sx?: any;
 };
 
-export const Alert: React.SFC<Props> = ({ variant, children, ...props }) => {
+export const Alert = ({
+  variant,
+  children,
+  ...props
+}: React.PropsWithChildren<Props>) => {
   let backgroundColor;
 
   switch (variant) {

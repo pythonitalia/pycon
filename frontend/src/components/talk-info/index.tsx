@@ -30,9 +30,15 @@ const InfoLine = ({
 }) => {
   return (
     <Box sx={{ mb: 2 }}>
-      <Text sx={{ fontWeight: "bold" }}>{label}</Text>
+      <Text sx={{ fontWeight: "bold", display: "block" }}>{label}</Text>
 
-      <Text>{children}</Text>
+      <Text
+        sx={{
+          display: "block",
+        }}
+      >
+        {children}
+      </Text>
     </Box>
   );
 };

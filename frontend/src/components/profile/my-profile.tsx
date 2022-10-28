@@ -97,7 +97,15 @@ export const MyProfile: React.FC<{ profile: MyProfileQuery }> = ({
                   as="li"
                   sx={{ mt: 0, mb: 0 }}
                   key={label}
-                  label={<FormattedMessage id={label} />}
+                  label={
+                    <Text
+                      sx={{
+                        display: "block",
+                      }}
+                    >
+                      <FormattedMessage id={label} />
+                    </Text>
+                  }
                 >
                   <Text
                     as="span"
@@ -115,7 +123,15 @@ export const MyProfile: React.FC<{ profile: MyProfileQuery }> = ({
             sx={{
               mb: 4,
             }}
-            label={<FormattedMessage id="profile.openToNewsletter" />}
+            label={
+              <Text
+                sx={{
+                  display: "block",
+                }}
+              >
+                <FormattedMessage id="profile.openToNewsletter" />
+              </Text>
+            }
           >
             {me.openToNewsletter ? (
               <FormattedMessage id="global.yes" />
@@ -126,7 +142,15 @@ export const MyProfile: React.FC<{ profile: MyProfileQuery }> = ({
 
           <InputWrapper
             sx={{ mb: 0 }}
-            label={<FormattedMessage id="profile.openToRecruiting" />}
+            label={
+              <Text
+                sx={{
+                  display: "block",
+                }}
+              >
+                <FormattedMessage id="profile.openToRecruiting" />
+              </Text>
+            }
           >
             {me.openToRecruiting ? (
               <FormattedMessage id="global.yes" />

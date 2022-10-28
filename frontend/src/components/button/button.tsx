@@ -12,14 +12,15 @@ type ButtonProps = {
   type?: "button" | "reset" | "submit";
   variant?: string;
   onClick?: () => void;
+  sx?: any;
 };
 
-export const Button: React.SFC<ButtonProps> = ({
+export const Button = ({
   disabled,
   loading,
   children,
   ...props
-}) => {
+}: React.PropsWithChildren<ButtonProps>) => {
   return (
     <ThemeButton disabled={disabled || loading} {...props}>
       {loading ? (

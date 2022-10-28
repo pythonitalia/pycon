@@ -6,9 +6,12 @@ import { Box, Flex, jsx } from "theme-ui";
 
 import { ArrowIcon } from "../icons/arrow";
 
-export const YouTubeLite: React.SFC<{ videoId: string }> = ({
+export const YouTubeLite = ({
   videoId,
   ...props
+}: {
+  videoId: string;
+  sx?: any;
 }) => {
   videoId = encodeURIComponent(videoId);
   const posterUrl = `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`;

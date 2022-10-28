@@ -1,6 +1,5 @@
 require("dotenv").config();
 const path = require("path");
-const withSourceMaps = require("@zeit/next-source-maps");
 const SentryWebpackPlugin = require("@sentry/webpack-plugin");
 
 const {
@@ -18,7 +17,7 @@ const {
   API_URL_SERVER,
 } = process.env;
 
-module.exports = withSourceMaps({
+module.exports = {
   i18n: {
     locales: ["default", "en", "it"],
     defaultLocale: "default",
@@ -108,4 +107,4 @@ module.exports = withSourceMaps({
 
     return config;
   },
-});
+};

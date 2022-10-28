@@ -4,7 +4,7 @@
 import { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
-import { Box, Grid, Input, jsx, Heading } from "theme-ui";
+import { Box, Grid, Input, jsx, Heading, ThemeUIStyleObject } from "theme-ui";
 
 import Router, { useRouter } from "next/router";
 
@@ -24,12 +24,13 @@ type LoginFormFields = {
 
 type FormProps = {
   next?: string;
+  sx?: ThemeUIStyleObject;
 };
 
 const cleanRedirectUrl = (url: string) =>
   url.startsWith("/") ? url : "/profile";
 
-export const LoginForm: React.SFC<FormProps> = ({ next, ...props }) => {
+export const LoginForm = ({ next, ...props }: FormProps) => {
   const router = useRouter();
   const [loggedIn, setLoggedIn] = useLoginState();
 

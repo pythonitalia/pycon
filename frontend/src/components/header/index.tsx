@@ -3,7 +3,7 @@
 /** @jsx jsx */
 import { Fragment, useEffect, useRef } from "react";
 import { FormattedMessage } from "react-intl";
-import { Box, Flex, Grid, Heading, jsx } from "theme-ui";
+import { Box, Flex, Grid, Heading, jsx, ThemeUIStyleObject } from "theme-ui";
 import useOnClickOutside from "use-onclickoutside";
 
 import { useRouter } from "next/router";
@@ -22,7 +22,13 @@ import { SocialLinks } from "../social-links";
 import { ProfileLink } from "./profile-link";
 import { SnakeBurger } from "./snake-burger";
 
-const LanguagePicker = ({ language, ...props }: { language: string }) => {
+const LanguagePicker = ({
+  language,
+  ...props
+}: {
+  language: string;
+  sx?: ThemeUIStyleObject;
+}) => {
   const { route, query } = useRouter();
 
   return (
@@ -31,7 +37,7 @@ const LanguagePicker = ({ language, ...props }: { language: string }) => {
         path={route}
         params={query}
         locale="en"
-        sx={{ height: 40, display: "inline-block" }}
+        sx={{ height: 40, mr: 2, display: "inline-block" }}
       >
         <EnglishIcon active={language === "en"} sx={{ width: 40, mr: 2 }} />
       </Link>
@@ -70,7 +76,7 @@ const ScheduleLink = () => {
     <Link
       variant="button"
       path="/schedule"
-      sx={{ mr: 2, background: "orange" }}
+      sx={{ mr: 2, background: "yellow", flexShrink: 0 }}
     >
       <FormattedMessage id="header.schedule" />
     </Link>
@@ -125,9 +131,10 @@ export const Header = () => {
         ref={headerRef}
         sx={
           {
-            top: 0,
+            /* temp hack :) */
+            top: open ? 0 : 3,
+            pt: open ? 3 : 0,
             left: 0,
-            pt: 3,
             width: "100%",
             height: open ? "100%" : "",
             zIndex: "header",
@@ -174,7 +181,7 @@ export const Header = () => {
               <LanguagePicker
                 language={language}
                 sx={{
-                  display: ["none", "block"],
+                  display: ["none", "flex"],
                 }}
               />
               <ScheduleLink />

@@ -250,6 +250,7 @@ export const theme: Theme = {
     prefooter: {
       fontWeight: "bold",
       color: "violet",
+      display: "block",
     },
     heading: {
       fontSize: 5,

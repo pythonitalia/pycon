@@ -3,7 +3,7 @@
 /** @jsx jsx */
 import React from "react";
 import { FormattedMessage } from "react-intl";
-import { Box, Flex, jsx, Text } from "theme-ui";
+import { Box, Flex, jsx, Text, ThemeUIStyleObject } from "theme-ui";
 
 import { EnglishIcon } from "~/components/icons/english";
 import { ItalianIcon } from "~/components/icons/italian";
@@ -31,6 +31,7 @@ const BaseDraggable: React.SFC<{
   type: string;
   metadata?: any;
   adminMode?: boolean;
+  sx?: ThemeUIStyleObject;
 }> = ({ adminMode, type, children, metadata, ...props }) => {
   const [_, drag] = useDragOrDummy({
     adminMode,
@@ -56,12 +57,11 @@ const BaseDraggable: React.SFC<{
   );
 };
 
-export const BaseEvent: React.SFC<{ type: string; metadata: any }> = ({
-  type,
-  children,
-  metadata,
-  ...props
-}) => (
+export const BaseEvent: React.SFC<{
+  type: string;
+  metadata: any;
+  sx?: ThemeUIStyleObject;
+}> = ({ type, children, metadata, ...props }) => (
   <BaseDraggable
     type={type}
     adminMode={true}
@@ -84,6 +84,7 @@ export const Submission = ({
   ...props
 }: {
   submission: SubmissionType;
+  sx?: any;
 }) => {
   const itemType = getType(submission);
 
@@ -166,6 +167,7 @@ export const ScheduleEntry: React.SFC<{
   slot: Slot;
   rooms: Room[];
   day: string;
+  sx?: any;
 }> = ({ item, adminMode, slot, rooms, day, ...props }) => {
   const type = getType(item.submission);
 
@@ -246,13 +248,13 @@ export const ScheduleEntry: React.SFC<{
           }}
         >
           <Box sx={{ mr: "auto" }}>
-            <Text sx={{ fontWeight: "bold" }}>
+            <Text sx={{ fontWeight: "bold", display: "block" }}>
               {item.speakers.map((s) => s.fullName).join(" & ")}
             </Text>
             {audienceLevel && <Text>{audienceLevel}</Text>}
             {item.type === "keynote" && <Text>Keynote</Text>}
             {item.hasLimitedCapacity && item.hasSpacesLeft && (
-              <Text sx={{ color: "black" }}>
+              <Text sx={{ color: "black", display: "block" }}>
                 <FormattedMessage
                   id="talk.spacesLeft"
                   values={{
@@ -266,7 +268,7 @@ export const ScheduleEntry: React.SFC<{
               </Text>
             )}
             {item.hasLimitedCapacity && !item.hasSpacesLeft && (
-              <Text sx={{ color: "black" }}>
+              <Text sx={{ color: "black", display: "block" }}>
                 <FormattedMessage id="talk.eventIsFull" />
               </Text>
             )}

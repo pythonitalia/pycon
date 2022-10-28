@@ -65,7 +65,7 @@ export const MyProfilePage = () => {
   }, []);
 
   if (loading) {
-    return <PageLoading titleId="profile.title" />;
+    return null;
   }
 
   if (error) {

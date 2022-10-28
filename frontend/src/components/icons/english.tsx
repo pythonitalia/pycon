@@ -1,8 +1,11 @@
 import React from "react";
 
-export const EnglishIcon: React.SFC<{ active?: boolean }> = ({
+export const EnglishIcon = ({
   active = false,
   ...props
+}: {
+  active?: boolean;
+  sx?: any;
 }) => (
   <svg viewBox="0 0 50 50" fill="none" {...props}>
     <path

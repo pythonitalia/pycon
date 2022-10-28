@@ -34,13 +34,14 @@ export const Table = <T,>({
     {headers.map((header, index) => (
       <Box
         key={index}
-        as="th"
+        as="div"
         sx={{
           display: ["none", "inline-block"],
           color: "orange",
           textTransform: "uppercase",
           textAlign: "left",
           pb: 3,
+          fontWeight: "bold",
         }}
       >
         {header}

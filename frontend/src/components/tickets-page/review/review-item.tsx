@@ -10,6 +10,7 @@ export const ReviewItem = ({
 }: {
   label: string | React.ReactElement;
   value?: string | React.ReactElement;
+  sx?: any;
 }) => (
   <Fragment>
     <Text

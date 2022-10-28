@@ -52,7 +52,13 @@ const NewsletterForm = () => {
 
     return (
       <Box>
-        <Text variant="prefooter" mb={3}>
+        <Text
+          variant="prefooter"
+          mb={3}
+          sx={{
+            display: "block",
+          }}
+        >
           <FormattedMessage id="newsletter.text" />
         </Text>
 

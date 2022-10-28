@@ -3,7 +3,13 @@
 /** @jsx jsx */
 import { ParsedUrlQuery } from "querystring";
 import React from "react";
-import { Box, Flex, jsx, Link as ThemeLink } from "theme-ui";
+import {
+  Box,
+  Flex,
+  jsx,
+  Link as ThemeLink,
+  ThemeUIStyleObject,
+} from "theme-ui";
 
 import { useCurrentLanguage } from "~/locale/context";
 
@@ -65,12 +71,12 @@ type LinkProps = {
   params?: ParsedUrlQuery;
   external?: boolean;
   rel?: string;
-  noHover?: boolean;
   as?: any;
   onClick?: (event) => void;
+  sx?: ThemeUIStyleObject;
 };
 
-export const Link: React.FC<LinkProps> = ({
+export const Link = ({
   children,
   path,
   backgroundColor,
@@ -80,7 +86,7 @@ export const Link: React.FC<LinkProps> = ({
   params = null,
   locale,
   ...additionalProps
-}) => {
+}: React.PropsWithChildren<LinkProps>) => {
   const language = useCurrentLanguage();
   const normalizedLocale = locale || language;
   const isExternal = external || isExternalLink({ path, target });
