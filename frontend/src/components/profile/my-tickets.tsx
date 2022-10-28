@@ -71,14 +71,13 @@ export const MyTickets = ({ tickets = [] }: Props) => {
       if (
         result.updateAttendeeTicket.__typename === "UpdateAttendeeTicketErrors"
       ) {
-        selectedProducts[
-          result.updateAttendeeTicket.id
-        ][0].errors = Object.fromEntries(
-          result.updateAttendeeTicket.errors.map((error) => [
-            snakeToCamel(error.field),
-            error.message,
-          ]),
-        );
+        selectedProducts[result.updateAttendeeTicket.id][0].errors =
+          Object.fromEntries(
+            result.updateAttendeeTicket.errors.map((error) => [
+              snakeToCamel(error.field),
+              error.message,
+            ]),
+          );
 
         setSelectedProducts({ ...selectedProducts });
       }
