@@ -35,6 +35,7 @@ def _submit_talk(client, conference, **kwargs):
         "audience_level": conference.audience_levels.first().id,
         "speaker_level": talk.speaker_level,
         "previous_talk_video": talk.previous_talk_video,
+        "short_social_summary": "",
         "tags": [tag.id],
     }
 
@@ -62,6 +63,7 @@ def _submit_talk(client, conference, **kwargs):
                 $tags: [ID!],
                 $speaker_level: String!
                 $previous_talk_video: String!
+                $short_social_summary: String!
             ) {
                 sendSubmission(input: {
                     title: $title,
@@ -77,6 +79,7 @@ def _submit_talk(client, conference, **kwargs):
                     tags: $tags
                     speakerLevel: $speaker_level
                     previousTalkVideo: $previous_talk_video
+                    shortSocialSummary: $short_social_summary
                 }) {
                     __typename
 
@@ -85,6 +88,7 @@ def _submit_talk(client, conference, **kwargs):
                         title(language: "en")
                         abstract(language: "en")
                         elevatorPitch(language: "en")
+                        shortSocialSummary
                         audienceLevel {
                             name
                         }
@@ -111,6 +115,7 @@ def _submit_talk(client, conference, **kwargs):
                         validationTags: tags
                         validationPreviousTalkVideo: previousTalkVideo
                         validationPreviousSpeakerLevel: speakerLevel
+                        validationShortSocialSummary: shortSocialSummary
                         nonFieldErrors
                     }
                 }
@@ -154,6 +159,7 @@ def _submit_tutorial(client, conference, **kwargs):
         "tags": [tag.id for tag in talk.tags.all()],
         "speaker_level": talk.speaker_level,
         "previous_talk_video": talk.previous_talk_video,
+        "short_social_summary": talk.short_social_summary,
     }
 
     variables = {**defaults, **kwargs}
@@ -174,6 +180,7 @@ def _submit_tutorial(client, conference, **kwargs):
                 $tags: [ID!],
                 $speaker_level: String!
                 $previous_talk_video: String!
+                $short_social_summary: String!
             ) {
                 sendSubmission(input: {
                     title: $title,
@@ -189,6 +196,7 @@ def _submit_tutorial(client, conference, **kwargs):
                     elevatorPitch: $elevator_pitch,
                     speakerLevel: $speaker_level,
                     previousTalkVideo: $previous_talk_video
+                    shortSocialSummary: $short_social_summary
                 }) {
                     __typename
 
@@ -197,6 +205,7 @@ def _submit_tutorial(client, conference, **kwargs):
                         title(language: "en")
                         abstract(language: "en")
                         elevatorPitch(language: "en")
+                        shortSocialSummary
                         audienceLevel {
                             name
                         }
@@ -222,6 +231,7 @@ def _submit_tutorial(client, conference, **kwargs):
                         validationTags: tags
                         validationPreviousTalkVideo: previousTalkVideo
                         validationPreviousSpeakerLevel: speakerLevel
+                        validationShortSocialSummary: shortSocialSummary
                         nonFieldErrors
                     }
                 }
@@ -252,12 +262,14 @@ def test_submit_talk(graphql_client, user, conference_factory):
             "en": "English",
             "it": "old old",
         },
+        short_social_summary="summary",
     )
 
     assert resp["data"]["sendSubmission"]["__typename"] == "Submission"
 
     assert resp["data"]["sendSubmission"]["title"] == "English"
     assert resp["data"]["sendSubmission"]["abstract"] == variables["abstract"]["en"]
+    assert resp["data"]["sendSubmission"]["shortSocialSummary"] == "summary"
 
     talk = Submission.objects.get_by_hashid(resp["data"]["sendSubmission"]["id"])
 
@@ -273,6 +285,7 @@ def test_submit_talk(graphql_client, user, conference_factory):
     assert talk.conference == conference
     assert talk.speaker_id == user.id
     assert talk.audience_level.name == "Beginner"
+    assert talk.short_social_summary == "summary"
 
 
 @mark.django_db
@@ -1049,4 +1062,33 @@ def test_submit_talk_with_too_long_notes_fails(
     assert (
         "Cannot be more than 1000 chars"
         in resp["data"]["sendSubmission"]["validationNotes"]
+    )
+
+
+@mark.django_db
+def test_submit_talk_with_too_long_summary_fails(
+    graphql_client, user, conference_factory
+):
+    graphql_client.force_login(user)
+
+    conference = conference_factory(
+        topics=("my-topic",),
+        languages=("en", "it"),
+        submission_types=("talk",),
+        active_cfp=True,
+        durations=("50",),
+        audience_levels=("Beginner",),
+    )
+
+    resp, _ = _submit_talk(
+        graphql_client,
+        conference,
+        short_social_summary="summary" * 2000,
+    )
+
+    assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
+
+    assert (
+        "Cannot be more than 128 chars"
+        in resp["data"]["sendSubmission"]["validationShortSocialSummary"]
     )

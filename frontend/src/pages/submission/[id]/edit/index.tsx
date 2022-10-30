@@ -15,13 +15,13 @@ import {
   SubmissionStructure,
 } from "~/components/cfp-form";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
+import { useCurrentLanguage } from "~/locale/context";
 import {
   queryCfpForm,
   queryTags,
   useGetSubmissionQuery,
   useUpdateSubmissionMutation,
 } from "~/types";
-import { useCurrentLanguage } from "~/locale/context";
 
 export const EditSubmissionPage = () => {
   const code = process.env.conferenceCode;
@@ -61,6 +61,7 @@ export const EditSubmissionPage = () => {
           tags: input.tags,
           speakerLevel: input.speakerLevel,
           previousTalkVideo: input.previousTalkVideo,
+          shortSocialSummary: input.shortSocialSummary,
         },
         language,
       },

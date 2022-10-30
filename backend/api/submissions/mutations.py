@@ -66,6 +66,7 @@ class SendSubmissionErrors(BaseErrorType):
     tags: list[str] = strawberry.field(default_factory=list)
     speaker_level: list[str] = strawberry.field(default_factory=list)
     previous_talk_video: list[str] = strawberry.field(default_factory=list)
+    short_social_summary: list[str] = strawberry.field(default_factory=list)
     non_field_errors: list[str] = strawberry.field(default_factory=list)
 
 
@@ -127,6 +128,12 @@ class BaseSubmissionInput:
                 "Cannot be more than 1000 chars",
             )
 
+        if len(self.short_social_summary) > 128:
+            errors.add_error(
+                "short_social_summary",
+                "Cannot be more than 128 chars",
+            )
+
         duration = conference.durations.filter(id=self.duration).first()
 
         if not conference.submission_types.filter(id=self.type).exists():
@@ -165,6 +172,7 @@ class SendSubmissionInput(BaseSubmissionInput):
     audience_level: ID
     speaker_level: str
     previous_talk_video: str
+    short_social_summary: str
     tags: list[ID] = strawberry.field(default_factory=list)
 
 
@@ -182,6 +190,7 @@ class UpdateSubmissionInput(BaseSubmissionInput):
     audience_level: ID
     speaker_level: str
     previous_talk_video: str
+    short_social_summary: str
     tags: list[ID] = strawberry.field(default_factory=list)
 
 
@@ -233,6 +242,7 @@ class SubmissionsMutations:
         instance.audience_level_id = input.audience_level
         instance.speaker_level = input.speaker_level
         instance.previous_talk_video = input.previous_talk_video
+        instance.short_social_summary = input.short_social_summary
 
         languages = Language.objects.filter(code__in=input.languages).all()
         instance.languages.set(languages)
@@ -278,6 +288,7 @@ class SubmissionsMutations:
             audience_level_id=input.audience_level,
             speaker_level=input.speaker_level,
             previous_talk_video=input.previous_talk_video,
+            short_social_summary=input.short_social_summary,
         )
 
         languages = Language.objects.filter(code__in=input.languages).all()

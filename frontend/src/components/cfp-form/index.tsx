@@ -29,8 +29,8 @@ import { Alert } from "../alert";
 import { Button } from "../button/button";
 import { TagLine } from "../input-tag";
 import { InputWrapper } from "../input-wrapper";
-import { MultiLingualInput } from "../multilingual-input";
 import { Input, Textarea } from "../inputs";
+import { MultiLingualInput } from "../multilingual-input";
 
 export type CfpFormFields = {
   type: string;
@@ -45,6 +45,7 @@ export type CfpFormFields = {
   tags: string[];
   speakerLevel: string;
   previousTalkVideo: string;
+  shortSocialSummary: string;
 };
 
 export type SubmissionStructure = {
@@ -63,6 +64,7 @@ export type SubmissionStructure = {
   previousTalkVideo: string;
   speakerLevel: string;
   tags: { id: string }[];
+  shortSocialSummary: string;
 };
 
 type Props = {
@@ -119,27 +121,29 @@ export const CfpForm = ({
   error: submissionError,
   data: submissionData,
 }: Props) => {
-  const [formState, { text, textarea, radio, select, checkbox, raw }] =
-    useFormState<CfpFormFields>(
-      {
-        title: {
-          en: "",
-          it: "",
-        },
-        abstract: {
-          en: "",
-          it: "",
-        },
-        elevatorPitch: {
-          en: "",
-          it: "",
-        },
-        languages: [],
+  const [
+    formState,
+    { text, textarea, radio, select, checkbox, raw },
+  ] = useFormState<CfpFormFields>(
+    {
+      title: {
+        en: "",
+        it: "",
       },
-      {
-        withIds: true,
+      abstract: {
+        en: "",
+        it: "",
       },
-    );
+      elevatorPitch: {
+        en: "",
+        it: "",
+      },
+      languages: [],
+    },
+    {
+      withIds: true,
+    },
+  );
 
   const {
     loading: conferenceLoading,
@@ -176,6 +180,7 @@ export const CfpForm = ({
       tags: formState.values.tags,
       speakerLevel: formState.values.speakerLevel,
       previousTalkVideo: formState.values.previousTalkVideo,
+      shortSocialSummary: formState.values.shortSocialSummary,
     });
   };
 
@@ -227,6 +232,7 @@ export const CfpForm = ({
       );
       formState.setField("speakerLevel", submission!.speakerLevel);
       formState.setField("previousTalkVideo", submission!.previousTalkVideo);
+      formState.setField("shortSocialSummary", submission!.shortSocialSummary);
     }
   }, [conferenceLoading]);
 
@@ -260,6 +266,7 @@ export const CfpForm = ({
       | "validationTags"
       | "validationSpeakerLevel"
       | "validationPreviousTalkVideo"
+      | "validationShortSocialSummary"
       | "nonFieldErrors",
   ): string[] =>
     (submissionData?.mutationOp.__typename === "SendSubmissionErrors" &&
@@ -319,7 +326,6 @@ export const CfpForm = ({
         </InputWrapper>
 
         <InputWrapper
-          sx={{ mb: 5 }}
           isRequired={true}
           label={<FormattedMessage id="cfp.title" />}
           errors={getErrors("validationTitle")}
@@ -335,7 +341,6 @@ export const CfpForm = ({
         <Grid
           gap={5}
           sx={{
-            mb: 5,
             gridTemplateColumns: [null, "1fr 1fr"],
           }}
         >
@@ -352,15 +357,7 @@ export const CfpForm = ({
                 {...raw("elevatorPitch")}
                 languages={formState.values.languages}
               >
-                <Textarea
-                  required={true}
-                  sx={{
-                    resize: "vertical",
-                    minHeight: 340,
-                  }}
-                  maxLength={300}
-                  rows={6}
-                />
+                <Textarea required={true} maxLength={300} rows={6} />
               </MultiLingualInput>
             </InputWrapper>
           </Box>
@@ -436,9 +433,6 @@ export const CfpForm = ({
         </Grid>
 
         <InputWrapper
-          sx={{
-            mb: 5,
-          }}
           isRequired={true}
           label={<FormattedMessage id="cfp.abstractLabel" />}
           description={<FormattedMessage id="cfp.abstractDescription" />}
@@ -448,15 +442,7 @@ export const CfpForm = ({
             {...raw("abstract")}
             languages={formState.values.languages}
           >
-            <Textarea
-              required={true}
-              sx={{
-                resize: "vertical",
-                minHeight: 200,
-              }}
-              maxLength={5000}
-              rows={6}
-            />
+            <Textarea required={true} maxLength={5000} rows={6} />
           </MultiLingualInput>
         </InputWrapper>
 
@@ -465,15 +451,7 @@ export const CfpForm = ({
           description={<FormattedMessage id="cfp.notesDescription" />}
           errors={getErrors("validationNotes")}
         >
-          <Textarea
-            sx={{
-              resize: "vertical",
-              minHeight: 150,
-            }}
-            {...textarea("notes")}
-            maxLength={1000}
-            rows={4}
-          />
+          <Textarea {...textarea("notes")} maxLength={1000} rows={4} />
         </InputWrapper>
 
         <InputWrapper
@@ -490,6 +468,22 @@ export const CfpForm = ({
                 tags.map((t) => t.value),
               );
             }}
+          />
+        </InputWrapper>
+
+        <InputWrapper
+          isRequired={false}
+          label={<FormattedMessage id="cfp.shortSocialSummaryLabel" />}
+          description={
+            <FormattedMessage id="cfp.shortSocialSummaryDescription" />
+          }
+          errors={getErrors("validationShortSocialSummary")}
+        >
+          <Textarea
+            {...textarea("shortSocialSummary")}
+            required={false}
+            maxLength={128}
+            rows={2}
           />
         </InputWrapper>
 

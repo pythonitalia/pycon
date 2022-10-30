@@ -19,11 +19,13 @@ def _update_submission(
     new_abstract=None,
     new_previous_talk_video="",
     new_speaker_level=Submission.SPEAKER_LEVELS.new,
-    new_languages=["en"]
+    new_languages=["en"],
+    new_short_social_summary=""
 ):
     new_title = new_title or {"en": "new title to use"}
     new_elevator_pitch = new_elevator_pitch or {"en": "This is an elevator pitch"}
     new_abstract = new_abstract or {"en": "abstract here"}
+    short_social_summary = new_short_social_summary or ""
 
     return graphql_client.query(
         """
@@ -37,6 +39,7 @@ def _update_submission(
                 notes
                 abstract(language: "en")
                 elevatorPitch(language: "en")
+                shortSocialSummary
 
                 topic {
                     name
@@ -107,6 +110,7 @@ def _update_submission(
                 "duration": new_duration.id,
                 "speakerLevel": new_speaker_level,
                 "previousTalkVideo": new_previous_talk_video,
+                "shortSocialSummary": short_social_summary,
             }
         },
     )
@@ -155,6 +159,7 @@ def test_update_submission(
         new_type=new_type,
         new_speaker_level=Submission.SPEAKER_LEVELS.experienced,
         new_previous_talk_video="https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        new_short_social_summary="test",
     )
 
     submission.refresh_from_db()
@@ -180,6 +185,7 @@ def test_update_submission(
         "duration": {"id": str(new_duration.id), "name": new_duration.name},
         "speakerLevel": "experienced",
         "previousTalkVideo": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        "shortSocialSummary": "test",
     } == response["data"]["updateSubmission"]
 
 

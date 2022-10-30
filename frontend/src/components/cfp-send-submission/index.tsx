@@ -6,13 +6,13 @@ import { jsx } from "theme-ui";
 import { useRouter } from "next/router";
 
 import { CfpForm, CfpFormFields } from "~/components/cfp-form";
+import { useCurrentLanguage } from "~/locale/context";
 import {
   readMeSubmissionsQueryCache,
   SendSubmissionMutation,
   useSendSubmissionMutation,
   writeMeSubmissionsQueryCache,
 } from "~/types";
-import { useCurrentLanguage } from "~/locale/context";
 
 export const CfpSendSubmission = () => {
   const code = process.env.conferenceCode;
@@ -70,6 +70,7 @@ export const CfpSendSubmission = () => {
           tags: input.tags,
           speakerLevel: input.speakerLevel,
           previousTalkVideo: input.previousTalkVideo,
+          shortSocialSummary: input.shortSocialSummary,
         },
         language,
       },
