@@ -20,7 +20,7 @@ mutation SendSubmission($input: SendSubmissionInput!, $language: String!) {
       validationTags: tags
       validationPreviousTalkVideo: previousTalkVideo
       validationSpeakerLevel: speakerLevel
-      validationshortSocialSummary: shortSocialSummary
+      validationShortSocialSummary: shortSocialSummary
       nonFieldErrors
     }
   }
