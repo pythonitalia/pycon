@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
-import React, { Fragment } from "react";
+import { Fragment } from "react";
 import { Box, Grid, jsx } from "theme-ui";
 
 type Props<T> = {

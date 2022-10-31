@@ -22,6 +22,7 @@ import { Table } from "~/components/table";
 import { YouTubeLite } from "~/components/youtube-lite";
 import { formatDeadlineDate } from "~/helpers/deadlines";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
+import { getTranslatedMessage } from "~/helpers/use-translated-message";
 import { useCurrentLanguage } from "~/locale/context";
 import {
   IndexPageQuery,
@@ -148,7 +149,11 @@ export const HomePage = () => {
 
             <Table
               colorful
-              headers={["Coming up", "Begins", "Ends"]}
+              headers={[
+                getTranslatedMessage("whatsnext.comingUp", language),
+                getTranslatedMessage("whatsnext.beings", language),
+                getTranslatedMessage("whatsnext.ends", language),
+              ]}
               data={comingUpDeadlines}
               keyGetter={(item) => item.id}
               rowGetter={(item) => [

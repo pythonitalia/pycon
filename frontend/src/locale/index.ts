@@ -491,6 +491,10 @@ export const messages = {
     "jobboard.company": "Company",
     "jobboard.role": "Role",
 
+    "whatsnext.comingUp": "Coming up",
+    "whatsnext.beings": "Begins",
+    "whatsnext.ends": "Ends",
+
     "ticketsTable.name": "Name",
     "ticketsTable.price": "Price",
     "ticketsTable.from": "From",
@@ -788,6 +792,10 @@ export const messages = {
 
     "addHotelRoom.checkin": "Check-in",
     "addHotelRoom.checkout": "Check-out",
+
+    "whatsnext.comingUp": "Evento",
+    "whatsnext.beings": "Inizio",
+    "whatsnext.ends": "Fine",
 
     "order.nextStep": "Continua",
     "order.creatingOrder": "Creazione ordine in corso 🕐",
