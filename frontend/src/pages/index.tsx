@@ -1,12 +1,12 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
+import { Marquee } from "@python-italia/pycon-styleguide";
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, Grid, Heading, jsx, Text, Flex } from "theme-ui";
 
 import { GetStaticProps } from "next";
-import { useRouter } from "next/router";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { GridSlider } from "~/components/grid-slider";
@@ -15,20 +15,39 @@ import { HomepageHero } from "~/components/homepage-hero";
 import { KeynotersSection } from "~/components/keynoters-section";
 import { Link } from "~/components/link";
 import { MapWithLink } from "~/components/map-with-link";
-
 import { MetaTags } from "~/components/meta-tags";
 import { NewsletterSection } from "~/components/newsletter";
 import { SponsorsSection } from "~/components/sponsors-section";
+import { Table } from "~/components/table";
 import { YouTubeLite } from "~/components/youtube-lite";
+import { formatDeadlineDate } from "~/helpers/deadlines";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
 import {
+  IndexPageQuery,
   queryIndexPage,
   queryKeynotesSection,
   queryMapWithLink,
   useIndexPageQuery,
 } from "~/types";
-import { Marquee } from "@python-italia/pycon-styleguide";
+
+const getDeadlinesTableData = (conference: IndexPageQuery["conference"]) => {
+  const deadlines: IndexPageQuery["conference"]["cfpDeadline"][] = [];
+
+  if (conference.cfpDeadline) {
+    deadlines.push(conference.cfpDeadline);
+  }
+
+  if (conference.grantsDeadline) {
+    deadlines.push(conference.grantsDeadline);
+  }
+
+  if (conference.votingDeadline) {
+    deadlines.push(conference.votingDeadline);
+  }
+
+  return deadlines;
+};
 
 export const HomePage = () => {
   const language = useCurrentLanguage();
@@ -40,17 +59,15 @@ export const HomePage = () => {
       language,
     },
   });
-  const {
-    query: { archive },
-  } = useRouter();
-  const isInArchiveMode = archive == "1";
+
+  const comingUpDeadlines = getDeadlinesTableData(conference);
 
   return (
     <Fragment>
       <FormattedMessage id="home.title">
         {(text) => <MetaTags title={text} />}
       </FormattedMessage>
-      <HomepageHero hideBuyTickets={isInArchiveMode} />
+      <HomepageHero hideBuyTickets={true} />
 
       <Box
         sx={{
@@ -128,6 +145,18 @@ export const HomePage = () => {
             <Text as="p" sx={{ mb: 4 }}>
               {conference.homepageSection1Text}
             </Text>
+
+            <Table
+              colorful
+              headers={["Coming up", "Begins", "Ends"]}
+              data={comingUpDeadlines}
+              keyGetter={(item) => item.id}
+              rowGetter={(item) => [
+                item.name,
+                formatDeadlineDate(item.start, language),
+                formatDeadlineDate(item.end, language),
+              ]}
+            />
 
             {conference.homepageSection1CTALink && (
               <Link

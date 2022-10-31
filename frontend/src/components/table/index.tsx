@@ -6,10 +6,21 @@ import { Box, Grid, jsx } from "theme-ui";
 
 type Props<T> = {
   headers: string[];
-  mobileHeaders: string[];
+  mobileHeaders?: string[];
   data: T[];
   rowGetter: (item: T) => any[];
   keyGetter: (item: T) => string;
+  colorful?: boolean;
+};
+
+const COLORS = ["violet", "keppel", "orange"];
+
+const getHeaderColor = (index: number, colorful: boolean) => {
+  if (!colorful) {
+    return "orange";
+  }
+
+  return COLORS[index % COLORS.length];
 };
 
 export const Table = <T,>({
@@ -18,6 +29,7 @@ export const Table = <T,>({
   rowGetter,
   keyGetter,
   mobileHeaders,
+  colorful = false,
 }: Props<T>) => (
   <Grid
     gap={0}
@@ -37,7 +49,7 @@ export const Table = <T,>({
         as="div"
         sx={{
           display: ["none", "inline-block"],
-          color: "orange",
+          color: getHeaderColor(index, colorful),
           textTransform: "uppercase",
           textAlign: "left",
           pb: 3,
@@ -53,7 +65,7 @@ export const Table = <T,>({
       return (
         <Fragment key={index}>
           {row.map((content, index) => {
-            const mobileHeader = mobileHeaders[index];
+            const mobileHeader = (mobileHeaders ?? headers)[index];
             return (
               <Box
                 key={keyGetter(content)}
