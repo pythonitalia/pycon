@@ -20,7 +20,7 @@ import { NewsletterSection } from "~/components/newsletter";
 import { SponsorsSection } from "~/components/sponsors-section";
 import { Table } from "~/components/table";
 import { YouTubeLite } from "~/components/youtube-lite";
-import { formatDeadlineDate } from "~/helpers/deadlines";
+import { formatDeadlineDateTime } from "~/helpers/deadlines";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { getTranslatedMessage } from "~/helpers/use-translated-message";
 import { useCurrentLanguage } from "~/locale/context";
@@ -158,8 +158,8 @@ export const HomePage = () => {
               keyGetter={(item) => item.id}
               rowGetter={(item) => [
                 item.name,
-                formatDeadlineDate(item.start, language),
-                formatDeadlineDate(item.end, language),
+                formatDeadlineDateTime(item.start, language),
+                formatDeadlineDateTime(item.end, language),
               ]}
             />
 
