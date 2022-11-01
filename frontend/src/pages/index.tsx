@@ -167,6 +167,9 @@ export const HomePage = () => {
               <Link
                 path={conference.homepageSection1CTALink}
                 variant="arrow-button"
+                sx={{
+                  mt: 4,
+                }}
               >
                 {conference.homepageSection1CTAText}
               </Link>

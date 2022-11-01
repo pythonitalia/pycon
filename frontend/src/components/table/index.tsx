@@ -71,7 +71,8 @@ export const Table = <T,>({
                 key={keyGetter(content)}
                 sx={{
                   display: "flex",
-                  alignItems: "center",
+                  alignItems: "flex-start",
+                  flexDirection: "column",
                   borderTop: [null, "primary"],
                   py: [0, 3],
                   pr: [0, 3],
@@ -84,7 +85,7 @@ export const Table = <T,>({
                         textAlign: "left",
                         fontWeight: "bold",
                         mr: 2,
-                        display: ["inline-block", "none"],
+                        display: ["block", "none"],
                       }
                     : {},
                 }}
