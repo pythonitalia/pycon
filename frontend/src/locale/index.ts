@@ -2,7 +2,7 @@ export const messages = {
   en: {
     titleTemplate: "%s | PyCon Italia",
     description:
-      "Join PyCon Italia from the 2nd to the 5th of June 2022 in Florence, Italy!",
+      "Join PyCon Italia from the 25th to the 28th of May 2023 in Florence, Italy!",
     "global.accordion.close": "Close",
     "global.accordion.readMore": "Read more",
     "global.here": "here",
@@ -230,9 +230,7 @@ export const messages = {
     "tickets.pageTitle": "Buy your ticket for PyCon Italia",
     "tickets.loading": "Please wait 🕐",
     "tickets.heading": "Get some tickets",
-    "tickets.covid19explanation": `We want to thank everyone who purchased a Late ticket early!{br}
-    We will stop selling the Regular tickets on April 3rd!{br}
-    Information on refunds and COVID-19 are available on our page {linkcovid}.{br}`,
+    "tickets.explanation": `{br}`,
 
     "addHotelRoom.checkin": "Check-in",
     "addHotelRoom.checkout": "Check-out",
@@ -493,6 +491,10 @@ export const messages = {
     "jobboard.company": "Company",
     "jobboard.role": "Role",
 
+    "whatsnext.comingUp": "Coming up",
+    "whatsnext.beings": "Begins",
+    "whatsnext.ends": "Ends",
+
     "ticketsTable.name": "Name",
     "ticketsTable.price": "Price",
     "ticketsTable.from": "From",
@@ -568,7 +570,8 @@ export const messages = {
   },
   it: {
     titleTemplate: "%s | PyCon Italia",
-    description: "Partecipa a PyCon Italia! Dal 2 al 5 Giugno 2022 a Firenze!",
+    description:
+      "Partecipa a PyCon Italia! Dal 25 al 28 Maggio 2023 a Firenze!",
     "global.accordion.close": "Chiudi",
     "global.accordion.readMore": "Apri",
     "global.here": "qui",
@@ -786,12 +789,14 @@ export const messages = {
     "tickets.pageTitle": "Compra il tuo biglietto per PyCon Italia",
     "tickets.loading": "Caricamento in corso 🕐",
     "tickets.heading": "Acquista biglietti",
-    "tickets.covid19explanation": `Vogliamo ringraziare tutti coloro che hanno acquistato un biglietto Late in anticipo!{br}
-    I biglietti Regular non saranno più in vendita dal 3 Aprile!{br}
-    Informazioni su rimborsi e COVID-19 disponibili sulla nostra pagina {linkcovid}.`,
+    "tickets.explanation": `{br}`,
 
     "addHotelRoom.checkin": "Check-in",
     "addHotelRoom.checkout": "Check-out",
+
+    "whatsnext.comingUp": "Evento",
+    "whatsnext.beings": "Inizio",
+    "whatsnext.ends": "Fine",
 
     "order.nextStep": "Continua",
     "order.creatingOrder": "Creazione ordine in corso 🕐",

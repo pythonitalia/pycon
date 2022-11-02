@@ -136,19 +136,9 @@ export const TicketsSection = ({
         >
           <span>
             <FormattedMessage
-              id="tickets.covid19explanation"
+              id="tickets.explanation"
               values={{
                 br: <br />,
-                linkcovid: (
-                  <Link
-                    sx={{
-                      textDecoration: "underline",
-                    }}
-                    path="/covid-19"
-                  >
-                    COVID-19
-                  </Link>
-                ),
               }}
             />
           </span>

@@ -3,7 +3,7 @@
 /** @jsx jsx */
 import React from "react";
 import { FormattedMessage } from "react-intl";
-import { Box, Grid, jsx, Text } from "theme-ui";
+import { Box, Grid, Heading, jsx, Text } from "theme-ui";
 
 import { CFPIllustration } from "~/components/illustrations/cfp";
 import { Link } from "~/components/link";
@@ -29,9 +29,9 @@ export const Introduction = ({ end }: { end: string | null }) => {
         }}
       >
         <Box>
-          <Text as="h1">
+          <Heading as="h1">
             <FormattedMessage id="grants.introductionHeading" />
-          </Text>
+          </Heading>
           <Text
             as="p"
             sx={{
