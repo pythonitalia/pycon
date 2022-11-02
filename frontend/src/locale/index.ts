@@ -2,7 +2,7 @@ export const messages = {
   en: {
     titleTemplate: "%s | PyCon Italia",
     description:
-      "Join PyCon Italia from the 2nd to the 5th of June 2022 in Florence, Italy!",
+      "Join PyCon Italia from the 25th to the 28th of May 2023 in Florence, Italy!",
     "global.accordion.close": "Close",
     "global.accordion.readMore": "Read more",
     "global.here": "here",
@@ -570,7 +570,8 @@ export const messages = {
   },
   it: {
     titleTemplate: "%s | PyCon Italia",
-    description: "Partecipa a PyCon Italia! Dal 2 al 5 Giugno 2022 a Firenze!",
+    description:
+      "Partecipa a PyCon Italia! Dal 25 al 28 Maggio 2023 a Firenze!",
     "global.accordion.close": "Chiudi",
     "global.accordion.readMore": "Apri",
     "global.here": "qui",
