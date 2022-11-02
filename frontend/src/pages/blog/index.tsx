@@ -49,9 +49,9 @@ export const BlogPage = () => {
               </Link>
             </Heading>
 
-            <Text sx={{ mb: 2 }}>{post.excerpt}</Text>
+            <Text as="p" sx={{ mb: 2 }}>{post.excerpt}</Text>
 
-            <Link path="/blog/[slug]" params={{ slug: post.slug }}>
+            <Link path="/blog/[slug]" params={{ slug: post.slug }} sx={{ display: 'block' }}>
               <FormattedMessage id="blog.readMore" />
             </Link>
           </Box>
