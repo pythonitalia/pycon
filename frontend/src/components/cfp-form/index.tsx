@@ -121,29 +121,27 @@ export const CfpForm = ({
   error: submissionError,
   data: submissionData,
 }: Props) => {
-  const [
-    formState,
-    { text, textarea, radio, select, checkbox, raw },
-  ] = useFormState<CfpFormFields>(
-    {
-      title: {
-        en: "",
-        it: "",
+  const [formState, { text, textarea, radio, select, checkbox, raw }] =
+    useFormState<CfpFormFields>(
+      {
+        title: {
+          en: "",
+          it: "",
+        },
+        abstract: {
+          en: "",
+          it: "",
+        },
+        elevatorPitch: {
+          en: "",
+          it: "",
+        },
+        languages: [],
       },
-      abstract: {
-        en: "",
-        it: "",
+      {
+        withIds: true,
       },
-      elevatorPitch: {
-        en: "",
-        it: "",
-      },
-      languages: [],
-    },
-    {
-      withIds: true,
-    },
-  );
+    );
 
   const {
     loading: conferenceLoading,
