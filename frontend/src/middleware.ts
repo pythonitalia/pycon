@@ -12,7 +12,11 @@ export function middleware(req: NextRequest) {
     !req.nextUrl.pathname.includes("/admin") &&
     !req.nextUrl.pathname.includes("/graphql") &&
     req.nextUrl.locale === "default";
-  const locale = getLocale(req.cookies.get("pyconLocale"));
+  const locale = getLocale(
+    req.cookies.has("pyconLocale")
+      ? req.cookies.get("pyconLocale")!.value
+      : null,
+  );
 
   if (!shouldHandleLocale) {
     return NextResponse.next();
