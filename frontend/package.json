@@ -36,7 +36,7 @@
     "@python-italia/pycon-styleguide": "0.1.54",
     "@sentry/browser": "^6.13.3",
     "@sentry/node": "^5.29.2",
-    "@sentry/tracing": "^6.13.3",
+    "@sentry/tracing": "^7.17.4",
     "@sentry/webpack-plugin": "^1.14.0",
     "@theme-ui/core": "^0.15.3",
     "@theme-ui/css": "^0.15.3",
