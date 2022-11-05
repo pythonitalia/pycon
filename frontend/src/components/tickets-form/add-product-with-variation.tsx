@@ -9,10 +9,13 @@ import { TicketItem } from "~/types";
 
 import { Button } from "../button/button";
 
-export const AddProductWithVariation: React.SFC<{
+export const AddProductWithVariation = ({
+  ticket,
+  addVariation,
+}: {
   ticket: TicketItem;
   addVariation: (variationId: string) => void;
-}> = ({ ticket, addVariation }) => {
+}) => {
   const [currentVariation, setCurrentVariation] = useState("");
 
   return (

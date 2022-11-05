@@ -7,15 +7,7 @@ import { Box, jsx } from "theme-ui";
 import { ItemTypes } from "./types";
 import { useDropOrDummy } from "./use-drop-or-dummy";
 
-export const Placeholder: React.SFC<{
-  adminMode: boolean;
-  columnStart: number;
-  rowStart: number;
-  rowEnd: number;
-  duration: number;
-  roomType: string;
-  onDrop: (item: any) => void;
-}> = ({
+export const Placeholder = ({
   adminMode,
   columnStart,
   rowStart,
@@ -23,6 +15,14 @@ export const Placeholder: React.SFC<{
   duration,
   roomType,
   onDrop,
+}: {
+  adminMode: boolean;
+  columnStart: number;
+  rowStart: number;
+  rowEnd: number;
+  duration: number;
+  roomType: string;
+  onDrop: (item: any) => void;
 }) => {
   const accept = [`TALK_${duration}`, ItemTypes.TALK, ItemTypes.CUSTOM];
 

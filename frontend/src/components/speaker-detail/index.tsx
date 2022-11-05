@@ -6,10 +6,13 @@ import { Box, Grid, jsx } from "theme-ui";
 
 import { AvatarPlaceholder } from "~/components/icons/avatar-placeholder";
 
-const SpeakerInfoRow: React.SFC<{
+const SpeakerInfoRow = ({
+  title,
+  value,
+}: {
   title: string | React.ReactElement;
   value: string;
-}> = ({ title, value }) => (
+}) => (
   <Fragment>
     <dt
       sx={{ color: "violet", textTransform: "uppercase", fontWeight: "bold" }}
@@ -29,8 +32,10 @@ const SpeakerInfoRow: React.SFC<{
   </Fragment>
 );
 
-export const SpeakerDetail: React.SFC<{ speaker: { fullName: string } }> = ({
+export const SpeakerDetail = ({
   speaker,
+}: {
+  speaker: { fullName: string };
 }) => {
   const Avatar = AvatarPlaceholder; // TODO: check speaker image
 

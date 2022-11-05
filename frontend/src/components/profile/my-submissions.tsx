@@ -15,7 +15,7 @@ type Props = {
   className?: string;
 };
 
-export const MySubmissions: React.FC<Props> = ({ className }) => {
+export const MySubmissions = ({ className }: Props) => {
   const language = useCurrentLanguage();
   const { loading, error, data } = useMySubmissionsQuery({
     variables: {
@@ -24,7 +24,6 @@ export const MySubmissions: React.FC<Props> = ({ className }) => {
     },
   });
 
-  const topicHeader = useTranslatedMessage("cfp.trackLabel");
   const titleHeader = useTranslatedMessage("cfp.title");
   const formatHeader = useTranslatedMessage("cfp.format");
   const viewSubmissionHeader = useTranslatedMessage("cfp.viewSubmission");
@@ -54,13 +53,12 @@ export const MySubmissions: React.FC<Props> = ({ className }) => {
 
         {data && (
           <Table
-            headers={[titleHeader, topicHeader, formatHeader, ""]}
-            mobileHeaders={[titleHeader, topicHeader, formatHeader, ""]}
+            headers={[titleHeader, formatHeader, ""]}
+            mobileHeaders={[titleHeader, formatHeader, ""]}
             data={data!.me.submissions}
             keyGetter={(item) => item.id}
             rowGetter={(item) => [
               item.title,
-              item.topic.name,
               item.type.name,
               <Link
                 key="openSubmission"

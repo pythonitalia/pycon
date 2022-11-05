@@ -11,12 +11,7 @@ type Props = {
   className?: string;
 };
 
-export const Tag: React.SFC<Props> = ({
-  tag,
-  onClick,
-  className,
-  variant = "tag",
-}) => (
+export const Tag = ({ tag, onClick, className, variant = "tag" }: Props) => (
   <Badge className={className} variant={variant} onClick={onClick}>
     {tag.name}
   </Badge>

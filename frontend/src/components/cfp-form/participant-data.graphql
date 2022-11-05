@@ -1,0 +1,18 @@
+query ParticipantData($conference: String!) {
+  me {
+    id
+    participant(conference: $conference) {
+      id
+      photo
+      bio
+      website
+      speakerLevel
+      previousTalkVideo
+      twitterHandle
+      instagramHandle
+      linkedinUrl
+      facebookUrl
+      mastodonHandle
+    }
+  }
+}

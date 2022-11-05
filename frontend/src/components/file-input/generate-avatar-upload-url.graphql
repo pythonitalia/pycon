@@ -1,0 +1,6 @@
+mutation GenerateParticipantAvatarUploadUrl {
+  generateParticipantAvatarUploadUrl {
+    uploadUrl
+    fileUrl
+  }
+}

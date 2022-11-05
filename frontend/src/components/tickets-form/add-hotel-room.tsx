@@ -21,19 +21,17 @@ type Form = {
   checkout: string;
 };
 
-export const AddHotelRoom: React.SFC<Props> = ({
+export const AddHotelRoom = ({
   conferenceEnd,
   conferenceStart,
   addRoom,
-}) => {
-  const momentConferenceStart = useMemo(
-    () => moment.utc(conferenceStart),
-    [conferenceStart],
-  );
-  const momentConferenceEnd = useMemo(
-    () => moment.utc(conferenceEnd),
-    [conferenceEnd],
-  );
+}: Props) => {
+  const momentConferenceStart = useMemo(() => moment.utc(conferenceStart), [
+    conferenceStart,
+  ]);
+  const momentConferenceEnd = useMemo(() => moment.utc(conferenceEnd), [
+    conferenceEnd,
+  ]);
 
   const [formState, { select }] = useFormState<Form>();
 

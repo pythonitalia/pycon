@@ -189,13 +189,35 @@ export const messages = {
       "Your estimate level of experience as speaker. This will not be publicly visible.",
     "cfp.previousTalkVideo": "Previous talk",
     "cfp.previousTalkVideoDescription":
-      "Link to a previous talk you delivered. This is of great help for the program committee and will not be publicly visible.",
+      "Link to a previous talk you delivered. This is not required, but it is of great help for the program committee and will not be publicly visible.",
     "cfp.aboutYou": "About you",
     "cfp.aboutYouDescription":
-      "This section will help us to know more about you and your experience as speaker. While the previous talk is optional, if you can, try to find one of your previous talk as this will help us during the talk selection",
+      "This section is all about you. This section is shared between all your proposals.",
     "cfp.shortSocialSummaryLabel": "Short social summary",
     "cfp.shortSocialSummaryDescription":
       "Optionally, you can leave a short summary that we could use to promote your proposal on our socials, if accepted.",
+    "cfp.speakerBioLabel": "Bio",
+    "cfp.speakerBioDescription":
+      "Tell everyone something about yourself! This is public.",
+    "cfp.speakerPhotoLabel": "Photo",
+    "cfp.speakerPhotoDescription":
+      "This photo will appear on your proposal page and might be shared on our socials. Max 1MB.",
+    "cfp.speakerWebsiteLabel": "Website",
+    "cfp.speakerWebsiteDescription":
+      "If you have your own website or socials, you can leave the link here. This is public.",
+    "cfp.socialsLabel": "Socials",
+    "cfp.speakerTwitterHandleDescription":
+      "Leave your social contacts here and we will tag you if we announce your proposal on our socials!{br}{br}Twitter Handle",
+    "cfp.speakerInstagramHandleDescription": "Instagram Handle",
+    "cfp.speakerLinkedinUrlDescription": "Linkedin Profile URL",
+    "cfp.speakerFacebookUrlDescription": "Facebook Profile URL",
+    "cfp.speakerMastodonHandleDescription": "Mastodon Handle",
+    "fileInput.fileSize": "Maximum allowed size is 1MB",
+    "fileInput.uploadFailed": "Something went wrong while trying to upload",
+    "fileInput.uploading": "Uploading...",
+    "cfp.grantsLabel": "Do you need a grant?",
+    "cfp.grantsCheckbox":
+      "If financial support is needed for attending the conference, send the grant request now! You won't be able to request a grant after your proposal is accepted.",
     "header.coronaVirus":
       "🚨 Update regarding COVID-19 - Conference cancelled 😢",
     "header.profile": "Profile",
@@ -754,7 +776,7 @@ export const messages = {
       "Link ad un talk che hai fatto in passato. Sarà di grande aiuto durante la review del programma e non visible pubblicamente",
     "cfp.aboutYou": "Su di te",
     "cfp.aboutYouDescription":
-      "Questa sezione ci aiuterà a conoscerti meglio come speaker, ti consigliano di compilare tutte le informazioni cosi da aiutarci durante la selezione",
+      "Questa sezione ci aiuterà a conoscerti meglio come speaker, ed è condivista con tutte le tue proposte",
     "cfp.shortSocialSummaryLabel": "Riassunto per social",
     "cfp.shortSocialSummaryDescription":
       "Qui puoi lasciare un piccolo riassunto che potremmo utilizzare per promuovere la tua proposta sui nostri social, se accettata.",
@@ -1149,6 +1171,29 @@ export const messages = {
     "multilingualinput.language.en": "Inglese",
 
     "textarea.charsCount": "{length}/{maxLength}",
+
+    "cfp.speakerBioLabel": "Biografia",
+    "cfp.speakerBioDescription":
+      "Una piccola descrizione su di te, visibile sulla pagina della tua proposal",
+    "cfp.speakerPhotoLabel": "Foto",
+    "cfp.speakerPhotoDescription":
+      "Questa foto sarà mostrata nella pagina della tua proposal e condivisa sui nostri social. Massimo 1MB.",
+    "cfp.speakerWebsiteLabel": "Sito web",
+    "cfp.speakerWebsiteDescription":
+      "Se hai un sito web personale puoi inserire l'indirizzo qui. Sarà pubblicato sulla pagina della tua proposal",
+    "cfp.socialsLabel": "Socials",
+    "cfp.speakerTwitterHandleDescription":
+      "Lascia qui i tuoi contatti e li useremo per taggarti sui social quando annunceremo la tua proposal!{br}{br}Twitter Handle",
+    "fileInput.fileSize": "Dimensione massima 1MB",
+    "fileInput.uploadFailed": "Qualcosa è andato storto!",
+    "cfp.grantsLabel": "Hai bisogno di un grant?",
+    "cfp.speakerInstagramHandleDescription": "Instagram Handle",
+    "cfp.speakerLinkedinUrlDescription": "Profilo Linkedin URL",
+    "cfp.speakerFacebookUrlDescription": "Profilo Facebook URL",
+    "cfp.speakerMastodonHandleDescription": "Mastodon Handle",
+    "cfp.grantsCheckbox":
+      "Se supporto finanziario da parte di PyCon Italia è necessario per partecipare, assicurati di inviare la tua richiesta ora! Non potrai inviare una richiesta una volta passata la deadline.",
+    "fileInput.uploading": "Caricamento in corso...",
   },
 };
 

@@ -5,11 +5,15 @@ import { Flex, Input, jsx } from "theme-ui";
 
 import { Button } from "../button/button";
 
-export const AddRemoveProduct: React.SFC<{
+export const AddRemoveProduct = ({
+  quantity,
+  increase,
+  decrease,
+}: {
   quantity: number;
   decrease: () => void;
   increase: () => void;
-}> = ({ quantity, increase, decrease }) => (
+}) => (
   <Flex sx={{ justifyContent: "space-between" }}>
     <Button onClick={decrease} variant="minus">
       -

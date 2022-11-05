@@ -15,12 +15,7 @@ type Props = {
   className?: string;
 };
 
-export const TagsFilter: React.SFC<Props> = ({
-  tags,
-  onChange,
-  value,
-  className,
-}) => {
+export const TagsFilter = ({ tags, onChange, value, className }: Props) => {
   const containerRef = useRef(null);
   const [open, setOpen] = useState(false);
   const toggleExtendedView = useCallback(() => {

@@ -26,7 +26,7 @@ const formateDate = (datetime: string, language: Language) => {
   return formatter.format(d);
 };
 
-export const Article: React.FC<ArticleProps> = (props) => {
+export const Article = (props: React.PropsWithChildren<ArticleProps>) => {
   const language = useCurrentLanguage();
 
   return (

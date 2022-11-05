@@ -33,6 +33,7 @@ def test_handle_new_cfp_submission(conference_factory):
         "duration": "50",
         "speaker_id": 10,
         "conference_id": conference.id,
+        "tags": "a,b",
     }
 
     with patch("domain_events.handler.slack") as slack_mock, respx.mock as req_mock:

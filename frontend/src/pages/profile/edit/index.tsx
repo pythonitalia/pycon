@@ -43,10 +43,13 @@ type MeUserFields = {
   openToNewsletter: boolean;
 };
 
-const SectionWrapper: React.FC<{
+const SectionWrapper = ({
+  titleId,
+  children,
+}: {
   titleId?: string;
   children: React.ReactNode;
-}> = ({ titleId, children }) => (
+}) => (
   <Card>
     <Box mb={5}>
       {titleId && (
@@ -93,22 +96,19 @@ const onMyProfileFetched = (data, formState) => {
 const toTileCase = (word: string) =>
   word.charAt(0).toUpperCase() + word.slice(1);
 
-export const EditProfilePage: React.FC = () => {
+export const EditProfilePage = () => {
   const router = useRouter();
   const [loggedIn] = useLoginState();
-  const [formState, { text, select, checkbox, raw }] =
-    useFormState<MeUserFields>(
-      {},
-      {
-        withIds: true,
-      },
-    );
+  const [formState, { text, select, checkbox, raw }] = useFormState<
+    MeUserFields
+  >(
+    {},
+    {
+      withIds: true,
+    },
+  );
 
-  const {
-    data: profileData,
-    loading,
-    error,
-  } = useMyEditProfileQuery({
+  const { data: profileData, loading, error } = useMyEditProfileQuery({
     skip: !loggedIn,
     onCompleted: (data) => onMyProfileFetched(data, formState),
   });
@@ -141,14 +141,16 @@ export const EditProfilePage: React.FC = () => {
     return validationError;
   };
 
-  const [update, { loading: updateProfileLoading, data: updateProfileData }] =
-    useUpdateProfileMutation({
-      onCompleted: (data) => {
-        if (data?.updateProfile?.__typename === "User") {
-          router.push("/profile");
-        }
-      },
-    });
+  const [
+    update,
+    { loading: updateProfileLoading, data: updateProfileData },
+  ] = useUpdateProfileMutation({
+    onCompleted: (data) => {
+      if (data?.updateProfile?.__typename === "User") {
+        router.push("/profile");
+      }
+    },
+  });
 
   useEffect(() => {
     if (profileData && !loading) {

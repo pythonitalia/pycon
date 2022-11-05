@@ -32,11 +32,7 @@ export const VOTE_VALUES = [
   },
 ];
 
-export const VoteSelector: React.SFC<Props> = ({
-  className,
-  onVote,
-  value,
-}) => (
+export const VoteSelector = ({ className, onVote, value }: Props) => (
   <Box
     sx={{
       userSelect: "none",

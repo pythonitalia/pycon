@@ -36,7 +36,7 @@ type Props = {
   }) => React.ReactElement;
 };
 
-export const TicketsPageWrapper: React.FC<Props> = ({ children }) => {
+export const TicketsPageWrapper = ({ children }: Props) => {
   const code = process.env.conferenceCode;
   const language = useCurrentLanguage();
   const [isLoggedIn] = useLoginState();

@@ -21,10 +21,7 @@ type Props = {
   };
 };
 
-export const TicketsRecap: React.SFC<Props> = ({
-  selectedProducts,
-  productsById,
-}) => {
+export const TicketsRecap = ({ selectedProducts, productsById }: Props) => {
   const lang = useCurrentLanguage();
   const moneyFormatter = new Intl.NumberFormat(lang, {
     style: "currency",

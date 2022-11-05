@@ -10,7 +10,6 @@ mutation SendSubmission($input: SendSubmissionInput!, $language: String!) {
     ... on SendSubmissionErrors {
       validationTitle: title
       validationAbstract: abstract
-      validationTopic: topic
       validationLanguages: languages
       validationType: type
       validationDuration: duration
@@ -21,6 +20,13 @@ mutation SendSubmission($input: SendSubmissionInput!, $language: String!) {
       validationPreviousTalkVideo: previousTalkVideo
       validationSpeakerLevel: speakerLevel
       validationShortSocialSummary: shortSocialSummary
+      validationSpeakerBio: speakerBio
+      validationSpeakerWebsite: speakerWebsite
+      validationSpeakerPhoto: speakerPhoto
+      validationSpeakerTwitterHandle: speakerTwitterHandle
+      validationSpeakerInstagramHandle: speakerInstagramHandle
+      validationSpeakerLinkedinUrl: speakerLinkedinUrl
+      validationSpeakerFacebookUrl: speakerFacebookUrl
       nonFieldErrors
     }
   }

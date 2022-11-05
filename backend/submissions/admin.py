@@ -3,6 +3,7 @@ from django.contrib import admin
 from django.utils.html import mark_safe
 from django.utils.translation import gettext_lazy as _
 
+from participants.models import Participant
 from users.autocomplete import UsersBackendAutocomplete
 from users.mixins import AdminUsersMixin, SearchUsersMixin
 
@@ -87,7 +88,6 @@ class SubmissionAdmin(AdminUsersMixin, SearchUsersMixin):
             },
         ),
         (_("Details"), {"fields": ("elevator_pitch", "abstract", "notes", "tags")}),
-        (_("Speaker"), {"fields": ("speaker_level", "previous_talk_video")}),
     )
     list_filter = ("conference", "type", "topic", "status")
     search_fields = (
@@ -101,6 +101,22 @@ class SubmissionAdmin(AdminUsersMixin, SearchUsersMixin):
     filter_horizontal = ("tags",)
     inlines = [SubmissionCommentInline]
     user_fk = "speaker_id"
+
+    def change_view(self, request, object_id, form_url="", extra_context=None):
+        extra_context = extra_context or {}
+        submission = self.model.objects.get(id=object_id)
+        owner_id = submission.speaker_id
+        extra_context["participant"] = Participant.objects.filter(
+            user_id=owner_id,
+            conference_id=submission.conference_id,
+        ).first()
+
+        return super().change_view(
+            request,
+            object_id,
+            form_url,
+            extra_context=extra_context,
+        )
 
     def speaker_display_name(self, obj):
         return self.get_user_display_name(obj.speaker_id)

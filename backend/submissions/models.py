@@ -54,7 +54,11 @@ class Submission(TimeStampedModel):
     speaker_id = models.IntegerField(verbose_name=_("speaker"))
 
     topic = models.ForeignKey(
-        "conferences.Topic", verbose_name=_("topic"), on_delete=models.PROTECT
+        "conferences.Topic",
+        verbose_name=_("topic"),
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
     )
 
     languages = models.ManyToManyField(

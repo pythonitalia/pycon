@@ -19,10 +19,10 @@ type Props = {
   };
 };
 
-export const HotelRoomsRecap: React.SFC<Props> = ({
+export const HotelRoomsRecap = ({
   selectedHotelRooms,
   hotelRoomsById,
-}) => {
+}: Props) => {
   const lang = useCurrentLanguage();
   const dateFormatter = new Intl.DateTimeFormat(lang, {
     month: "long",

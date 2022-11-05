@@ -8,11 +8,11 @@ type ModalProps = {
   onClose: () => void;
 };
 
-export const Modal: React.FC<ModalProps> = ({
+export const Modal = ({
   show = false,
   onClose,
   ...props
-}) => {
+}: React.PropsWithChildren<ModalProps>) => {
   useEffect(() => {
     if (show) {
       document.body.style.overflow = "hidden";

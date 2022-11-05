@@ -2,6 +2,7 @@ import strawberry
 
 from api.users.types import User
 
+from .blob.schema import BlobMutation
 from .blog.schema import BlogQuery
 from .checklist.query import ChecklistQuery
 from .conferences.schema import ConferenceQuery
@@ -48,6 +49,7 @@ class Mutation(
     ScheduleMutations,
     AttendeeTicketMutation,
     VolunteersNotificationsMutation,
+    BlobMutation,
 ):
     pass
 

@@ -17,7 +17,7 @@ type ItemProps = {
   sponsor: Sponsor;
 };
 
-const SponsorItem: React.FC<ItemProps> = ({ sponsor, color }) => (
+const SponsorItem = ({ sponsor, color }: ItemProps) => (
   <Box
     sx={{
       backgroundColor: color,
@@ -73,7 +73,7 @@ const SponsorItem: React.FC<ItemProps> = ({ sponsor, color }) => (
   </Box>
 );
 
-export const SponsorsGrid: React.FC<Props> = ({ sponsors, color }) => {
+export const SponsorsGrid = ({ sponsors, color }: Props) => {
   const columns = useSSRResponsiveValue([1, 3]);
   const missing =
     sponsors.length % columns === 0 ? 0 : columns - (sponsors.length % columns);

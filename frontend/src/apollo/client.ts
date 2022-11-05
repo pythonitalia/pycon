@@ -4,7 +4,6 @@ import { ApolloClient, Operation } from "@apollo/client/core";
 import { onError } from "@apollo/client/link/error";
 import merge from "deepmerge";
 import { DefinitionNode, GraphQLError } from "graphql";
-import fetch from "isomorphic-fetch";
 import isEqual from "lodash/isEqual";
 
 import { setLoginState } from "../components/profile/hooks";

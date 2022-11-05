@@ -1,86 +1,78 @@
+import pytest
 from pytest import mark
 
+from participants.models import Participant
 from submissions.models import Submission, SubmissionTag, SubmissionType
 from submissions.tests.factories import SubmissionFactory
 
 
 def _submit_talk(client, conference, **kwargs):
-    tag, _ = SubmissionTag.objects.get_or_create(name="tag")
-
     talk = SubmissionFactory.build(
         type=SubmissionType.objects.get_or_create(name="talk")[0]
     )
 
+    return _submit_proposal(client, conference, submission=talk, **kwargs)
+
+
+def _submit_tutorial(client, conference, **kwargs):
+    workshop = SubmissionFactory.create(
+        type=SubmissionType.objects.get_or_create(name="tutorial")[0]
+    )
+
+    return _submit_proposal(client, conference, submission=workshop, **kwargs)
+
+
+def _submit_proposal(client, conference, submission, **kwargs):
     languages = [language.code for language in conference.languages.all()]
+    tag, _ = SubmissionTag.objects.get_or_create(name="tag")
 
     defaults = {
         "title": {
-            "en": talk.title.data.get("en", ""),
-            "it": talk.title.data.get("it", ""),
+            "en": submission.title.data.get("en", ""),
+            "it": submission.title.data.get("it", ""),
         },
         "abstract": {
-            "en": talk.abstract.data.get("en", ""),
-            "it": talk.abstract.data.get("it", ""),
+            "en": submission.abstract.data.get("en", ""),
+            "it": submission.abstract.data.get("it", ""),
         },
-        "elevator_pitch": {
-            "en": talk.elevator_pitch.data.get("en", ""),
-            "it": talk.elevator_pitch.data.get("it", ""),
+        "elevatorPitch": {
+            "en": submission.elevator_pitch.data.get("en", ""),
+            "it": submission.elevator_pitch.data.get("it", ""),
         },
-        "notes": talk.notes,
+        "notes": submission.notes,
         "languages": languages,
         "conference": conference.code,
         "topic": conference.topics.first().id,
-        "type": talk.type.id,
+        "type": submission.type.id,
         "duration": conference.durations.first().id,
-        "audience_level": conference.audience_levels.first().id,
-        "speaker_level": talk.speaker_level,
-        "previous_talk_video": talk.previous_talk_video,
-        "short_social_summary": "",
+        "audienceLevel": conference.audience_levels.first().id,
+        "speakerLevel": submission.speaker_level,
+        "previousTalkVideo": submission.previous_talk_video,
+        "shortSocialSummary": "",
+        "speakerBio": "bio",
+        "speakerPhoto": "https://pytest-fakestorageaccount.blob.core.windows.net/participants-avatars/fake.jpg",
+        "speakerWebsite": "http://website.it",
+        "speakerTwitterHandle": "handle",
+        "speakerInstagramHandle": "handleinsta",
+        "speakerLinkedinUrl": "https://linkedin.com/fake-link",
+        "speakerFacebookUrl": "https://facebook.com/fake-link",
+        "speakerMastodonHandle": "fake@mastodon.social",
         "tags": [tag.id],
     }
+
+    override_conference = kwargs.pop("override_conference", None)
 
     variables = {
         **defaults,
         **kwargs,
     }
-    override_conference = kwargs.pop("override_conference", None)
     if override_conference:
         variables["conference"] = override_conference
 
     return (
         client.query(
-            """mutation(
-                $conference: ID!,
-                $topic: ID!,
-                $title: MultiLingualInput!,
-                $elevator_pitch: MultiLingualInput!,
-                $abstract: MultiLingualInput!,
-                $notes: String!,
-                $languages: [ID!]!,
-                $type: ID!,
-                $duration: ID!,
-                $audience_level: ID!,
-                $tags: [ID!],
-                $speaker_level: String!
-                $previous_talk_video: String!
-                $short_social_summary: String!
-            ) {
-                sendSubmission(input: {
-                    title: $title,
-                    abstract: $abstract,
-                    languages: $languages,
-                    conference: $conference,
-                    elevatorPitch: $elevator_pitch,
-                    notes: $notes,
-                    topic: $topic,
-                    type: $type,
-                    duration: $duration,,
-                    audienceLevel: $audience_level
-                    tags: $tags
-                    speakerLevel: $speaker_level
-                    previousTalkVideo: $previous_talk_video
-                    shortSocialSummary: $short_social_summary
-                }) {
+            """mutation($input: SendSubmissionInput!) {
+                sendSubmission(input: $input) {
                     __typename
 
                     ... on Submission {
@@ -116,127 +108,19 @@ def _submit_talk(client, conference, **kwargs):
                         validationPreviousTalkVideo: previousTalkVideo
                         validationPreviousSpeakerLevel: speakerLevel
                         validationShortSocialSummary: shortSocialSummary
+                        validationSpeakerBio: speakerBio
+                        validationSpeakerPhoto: speakerPhoto
+                        validationSpeakerWebsite: speakerWebsite
+                        validationSpeakerTwitterHandle: speakerTwitterHandle
+                        validationSpeakerInstagramHandle: speakerInstagramHandle
+                        validationSpeakerLinkedinUrl: speakerLinkedinUrl
+                        validationSpeakerFacebookUrl: speakerFacebookUrl
+                        validationSpeakerMastodonHandle: speakerMastodonHandle
                         nonFieldErrors
                     }
                 }
             }""",
-            variables=variables,
-        ),
-        variables,
-    )
-
-
-def _submit_tutorial(client, conference, **kwargs):
-    tag, _ = SubmissionTag.objects.get_or_create(name="tag")
-
-    talk = SubmissionFactory.create(
-        type=SubmissionType.objects.get_or_create(name="tutorial")[0]
-    )
-    talk.tags.add(tag)
-
-    languages = [language.code for language in conference.languages.all()]
-
-    defaults = {
-        "title": {
-            "en": talk.title.data.get("en", ""),
-            "it": talk.title.data.get("it", ""),
-        },
-        "abstract": {
-            "en": talk.abstract.data.get("en", ""),
-            "it": talk.abstract.data.get("it", ""),
-        },
-        "elevator_pitch": {
-            "en": talk.elevator_pitch.data.get("en", ""),
-            "it": talk.elevator_pitch.data.get("it", ""),
-        },
-        "notes": talk.notes,
-        "languages": languages,
-        "conference": conference.code,
-        "topic": conference.topics.first().id,
-        "type": talk.type.id,
-        "duration": conference.durations.first().id,
-        "audience_level": conference.audience_levels.first().id,
-        "tags": [tag.id for tag in talk.tags.all()],
-        "speaker_level": talk.speaker_level,
-        "previous_talk_video": talk.previous_talk_video,
-        "short_social_summary": talk.short_social_summary,
-    }
-
-    variables = {**defaults, **kwargs}
-
-    return (
-        client.query(
-            """mutation(
-                $conference: ID!,
-                $topic: ID!,
-                $title: MultiLingualInput!,
-                $elevator_pitch: MultiLingualInput!,
-                $abstract: MultiLingualInput!,
-                $notes: String!,
-                $languages: [ID!]!,
-                $type: ID!,
-                $duration: ID!,
-                $audience_level: ID!,
-                $tags: [ID!],
-                $speaker_level: String!
-                $previous_talk_video: String!
-                $short_social_summary: String!
-            ) {
-                sendSubmission(input: {
-                    title: $title,
-                    abstract: $abstract,
-                    languages: $languages,
-                    conference: $conference,
-                    topic: $topic,
-                    type: $type,
-                    duration: $duration,
-                    audienceLevel: $audience_level,
-                    tags: $tags,
-                    notes: $notes,
-                    elevatorPitch: $elevator_pitch,
-                    speakerLevel: $speaker_level,
-                    previousTalkVideo: $previous_talk_video
-                    shortSocialSummary: $short_social_summary
-                }) {
-                    __typename
-
-                    ... on Submission {
-                        id
-                        title(language: "en")
-                        abstract(language: "en")
-                        elevatorPitch(language: "en")
-                        shortSocialSummary
-                        audienceLevel {
-                            name
-                        }
-                        languages {
-                            code
-                            name
-                        }
-                        notes
-                        tags {
-                            name
-                        }
-                    }
-
-                    ... on SendSubmissionErrors {
-                        validationConference: conference
-                        validationTopic: topic
-                        validationTitle: title
-                        validationAbstract: abstract
-                        validationLanguages: languages
-                        validationType: type
-                        validationDuration: duration
-                        validationAudienceLevel: audienceLevel
-                        validationTags: tags
-                        validationPreviousTalkVideo: previousTalkVideo
-                        validationPreviousSpeakerLevel: speakerLevel
-                        validationShortSocialSummary: shortSocialSummary
-                        nonFieldErrors
-                    }
-                }
-            }""",
-            variables=variables,
+            variables={"input": variables},
         ),
         variables,
     )
@@ -255,6 +139,8 @@ def test_submit_talk(graphql_client, user, conference_factory):
         audience_levels=("Beginner",),
     )
 
+    speaker_photo = "https://pytest-fakestorageaccount.blob.core.windows.net/participants-avatars/my-photo.jpg"
+
     resp, variables = _submit_talk(
         graphql_client,
         conference,
@@ -262,7 +148,9 @@ def test_submit_talk(graphql_client, user, conference_factory):
             "en": "English",
             "it": "old old",
         },
-        short_social_summary="summary",
+        shortSocialSummary="summary",
+        speakerBio="my bio",
+        speakerPhoto=speaker_photo,
     )
 
     assert resp["data"]["sendSubmission"]["__typename"] == "Submission"
@@ -286,6 +174,200 @@ def test_submit_talk(graphql_client, user, conference_factory):
     assert talk.speaker_id == user.id
     assert talk.audience_level.name == "Beginner"
     assert talk.short_social_summary == "summary"
+
+    participant = Participant.objects.get(conference=conference, user_id=user.id)
+    assert participant.bio == "my bio"
+    assert participant.photo == speaker_photo
+
+
+@mark.django_db
+def test_submit_talk_with_photo_to_upload(
+    graphql_client, user, conference_factory, mocker
+):
+    mock_confirm_upload = mocker.patch(
+        "api.submissions.mutations.confirm_blob_upload_usage",
+        return_value="https://pytest-fakestorageaccount.blob.core.windows.net/participants-avatars/my-photo.jpg",
+    )
+    graphql_client.force_login(user)
+
+    conference = conference_factory(
+        topics=("my-topic",),
+        languages=("en",),
+        submission_types=("talk",),
+        active_cfp=True,
+        durations=("50",),
+        audience_levels=("Beginner",),
+    )
+
+    speaker_photo = "https://pytest-fakestorageaccount.blob.core.windows.net/temporary-uploads/participants-avatars/my-photo.jpg"
+
+    resp, variables = _submit_talk(
+        graphql_client,
+        conference,
+        title={
+            "en": "English",
+            "it": "old old",
+        },
+        shortSocialSummary="summary",
+        speakerBio="my bio",
+        speakerPhoto=speaker_photo,
+    )
+
+    assert resp["data"]["sendSubmission"]["__typename"] == "Submission"
+
+    mock_confirm_upload.assert_called()
+
+    participant = Participant.objects.get(conference=conference, user_id=user.id)
+    assert (
+        participant.photo
+        == "https://pytest-fakestorageaccount.blob.core.windows.net/participants-avatars/my-photo.jpg"
+    )
+
+
+@mark.django_db
+def test_submit_talk_without_photo_fails(
+    graphql_client, user, conference_factory, mocker
+):
+    graphql_client.force_login(user)
+
+    conference = conference_factory(
+        topics=("my-topic",),
+        languages=("en",),
+        submission_types=("talk",),
+        active_cfp=True,
+        durations=("50",),
+        audience_levels=("Beginner",),
+    )
+
+    resp, variables = _submit_talk(
+        graphql_client,
+        conference,
+        title={
+            "en": "English",
+            "it": "old old",
+        },
+        shortSocialSummary="summary",
+        speakerBio="my bio",
+        speakerPhoto="",
+    )
+
+    assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
+    assert resp["data"]["sendSubmission"]["validationSpeakerPhoto"] == [
+        "This is required"
+    ]
+
+
+@pytest.mark.parametrize(
+    "speaker_photo",
+    [
+        "https://pytest-fakestorageaccount.blob.core.windows.net/another-container/my-photo.jpg",
+        "https://anotheraccount.blob.core.windows.net/participants-avatars/my-photo.jpg",
+        "https://someotherwebsite.it/photo.jpeg",
+    ],
+)
+@mark.django_db
+def test_submit_talk_with_invalid_speaker_photo(
+    graphql_client, user, conference_factory, speaker_photo, settings
+):
+    settings.AZURE_STORAGE_ACCOUNT_NAME = "pytest-fakestorageaccount"
+
+    graphql_client.force_login(user)
+    valid_speaker_photo = "https://pytest-fakestorageaccount.blob.core.windows.net/participants-avatars/my-photo.jpg"
+
+    conference = conference_factory(
+        topics=("my-topic",),
+        languages=("en",),
+        submission_types=("talk",),
+        active_cfp=True,
+        durations=("50",),
+        audience_levels=("Beginner",),
+    )
+
+    participant = Participant.objects.create(
+        conference=conference,
+        user_id=user.id,
+        bio="old bio",
+        photo=valid_speaker_photo,
+    )
+
+    resp, variables = _submit_talk(
+        graphql_client,
+        conference,
+        title={
+            "en": "English",
+            "it": "old old",
+        },
+        shortSocialSummary="summary",
+        speakerBio="my bio",
+        speakerPhoto=speaker_photo,
+    )
+
+    assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
+    assert resp["data"]["sendSubmission"]["validationSpeakerPhoto"] == [
+        "Invalid speaker photo"
+    ]
+
+    participant.refresh_from_db()
+    assert participant.photo == valid_speaker_photo
+
+
+@mark.django_db
+def test_submit_talk_with_existing_participant(
+    graphql_client, user, conference_factory
+):
+    graphql_client.force_login(user)
+    conference = conference_factory(
+        topics=("my-topic",),
+        languages=("en",),
+        submission_types=("talk",),
+        active_cfp=True,
+        durations=("50",),
+        audience_levels=("Beginner",),
+    )
+
+    participant = Participant.objects.create(
+        conference=conference, user_id=user.id, bio="old bio"
+    )
+
+    speaker_photo = "https://pytest-fakestorageaccount.blob.core.windows.net/participants-avatars/my-photo.jpg"
+
+    resp, variables = _submit_talk(
+        graphql_client,
+        conference,
+        title={
+            "en": "English",
+            "it": "old old",
+        },
+        shortSocialSummary="summary",
+        speakerBio="my bio",
+        speakerPhoto=speaker_photo,
+    )
+
+    assert resp["data"]["sendSubmission"]["__typename"] == "Submission"
+
+    assert resp["data"]["sendSubmission"]["title"] == "English"
+    assert resp["data"]["sendSubmission"]["abstract"] == variables["abstract"]["en"]
+    assert resp["data"]["sendSubmission"]["shortSocialSummary"] == "summary"
+
+    talk = Submission.objects.get_by_hashid(resp["data"]["sendSubmission"]["id"])
+
+    assert talk.title.localize("en") == "English"
+    assert talk.abstract.localize("en") == variables["abstract"]["en"]
+
+    assert talk.title.data.get("it") is None
+    assert talk.abstract.data.get("it") is None
+
+    assert len(talk.languages.all()) == 1
+    assert len(talk.languages.filter(code="en")) == 1
+    assert talk.topic.name == "my-topic"
+    assert talk.conference == conference
+    assert talk.speaker_id == user.id
+    assert talk.audience_level.name == "Beginner"
+    assert talk.short_social_summary == "summary"
+
+    participant.refresh_from_db()
+    assert participant.bio == "my bio"
+    assert participant.photo == speaker_photo
 
 
 @mark.django_db
@@ -617,7 +699,7 @@ def test_submit_talk_with_not_valid_audience_level(
         active_cfp=True,
         audience_levels=("Beginner",),
     )
-    resp, _ = _submit_talk(graphql_client, conference, audience_level=50)
+    resp, _ = _submit_talk(graphql_client, conference, audienceLevel=50)
 
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
     # assert resp["data"]["sendSubmission"]["submission"] is None
@@ -642,7 +724,7 @@ def test_submit_talk_with_not_valid_conf_audience_level(
         active_cfp=True,
         audience_levels=("Beginner",),
     )
-    resp, _ = _submit_talk(graphql_client, conference, audience_level=audience_level.id)
+    resp, _ = _submit_talk(graphql_client, conference, audienceLevel=audience_level.id)
 
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
     assert resp["data"]["sendSubmission"]["validationAudienceLevel"] == [
@@ -921,7 +1003,7 @@ def test_speaker_level_is_required(graphql_client, user, conference_factory):
         audience_levels=("Beginner",),
     )
 
-    resp, _ = _submit_tutorial(graphql_client, conference, speaker_level="")
+    resp, _ = _submit_tutorial(graphql_client, conference, speakerLevel="")
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
     assert resp["data"]["sendSubmission"]["validationPreviousSpeakerLevel"] == [
         "You need to specify what is your speaker experience"
@@ -942,7 +1024,7 @@ def test_speaker_level_only_allows_the_predefined_levels(
         audience_levels=("Beginner",),
     )
 
-    resp, _ = _submit_tutorial(graphql_client, conference, speaker_level="just_started")
+    resp, _ = _submit_tutorial(graphql_client, conference, speakerLevel="just_started")
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
     assert resp["data"]["sendSubmission"]["validationPreviousSpeakerLevel"] == [
         "Select a valid choice"
@@ -1083,7 +1165,7 @@ def test_submit_talk_with_too_long_summary_fails(
     resp, _ = _submit_talk(
         graphql_client,
         conference,
-        short_social_summary="summary" * 2000,
+        shortSocialSummary="summary" * 2000,
     )
 
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"

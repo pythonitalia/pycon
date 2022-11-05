@@ -67,6 +67,14 @@ mutation UpdateSubmission($input: UpdateSubmissionInput!, $language: String!) {
       validationPreviousTalkVideo: previousTalkVideo
       validationSpeakerLevel: speakerLevel
       validationShortSocialSummary: shortSocialSummary
+      validationSpeakerBio: speakerBio
+      validationSpeakerWebsite: speakerWebsite
+      validationSpeakerPhoto: speakerPhoto
+      validationSpeakerTwitterHandle: speakerTwitterHandle
+      validationSpeakerInstagramHandle: speakerInstagramHandle
+      validationSpeakerLinkedinUrl: speakerLinkedinUrl
+      validationSpeakerFacebookUrl: speakerFacebookUrl
+      validationSpeakerMastodonHandle: speakerMastodonHandle
       nonFieldErrors
     }
   }

@@ -13,13 +13,17 @@ type SelectedProduct = {
   variation?: string;
 };
 
-export const ProductSelectedVariationsList: React.SFC<{
+export const ProductSelectedVariationsList = ({
+  product,
+  selectedProducts,
+  removeProduct,
+}: {
   product: TicketItem;
   selectedProducts: {
     [id: string]: SelectedProduct[];
   };
   removeProduct: (id: string, variation: string) => void;
-}> = ({ product, selectedProducts, removeProduct }) => {
+}) => {
   const productsToShow = Object.values(selectedProducts).filter(
     (p) => p.length > 0 && p[0].variation,
   );

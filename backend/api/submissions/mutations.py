@@ -1,21 +1,32 @@
 import math
+import re
+from typing import Optional
 
 import strawberry
+from django.conf import settings
 from strawberry import ID
 from strawberry.types import Info
 
+from api.helpers.ids import encode_hashid
 from api.permissions import IsAuthenticated
 from api.types import BaseErrorType, MultiLingualInput
+from blob.confirmation import confirm_blob_upload_usage
+from blob.enum import BlobContainer
+from blob.url_parsing import verify_azure_storage_url
 from conferences.models.conference import Conference
 from domain_events.publisher import notify_new_submission
 from i18n.strings import LazyI18nString
 from languages.models import Language
+from participants.models import Participant
 from strawberry_forms.mutations import FormMutation
 from submissions.models import Submission as SubmissionModel
 
 from .forms import SendSubmissionCommentForm
 from .permissions import CanSendComment
 from .types import Submission, SubmissionComment, SubmissionCommentAuthor
+
+FACEBOOK_LINK_MATCH = re.compile(r"^http(s)?:\/\/(www\.)?facebook\.com\/")
+LINKEDIN_LINK_MATCH = re.compile(r"^http(s)?:\/\/(www\.)?linkedin\.com\/")
 
 
 class SubmissionMutation:
@@ -64,9 +75,19 @@ class SendSubmissionErrors(BaseErrorType):
     notes: list[str] = strawberry.field(default_factory=list)
     audience_level: list[str] = strawberry.field(default_factory=list)
     tags: list[str] = strawberry.field(default_factory=list)
+    short_social_summary: list[str] = strawberry.field(default_factory=list)
+
+    speaker_bio: list[str] = strawberry.field(default_factory=list)
+    speaker_photo: list[str] = strawberry.field(default_factory=list)
+    speaker_website: list[str] = strawberry.field(default_factory=list)
     speaker_level: list[str] = strawberry.field(default_factory=list)
     previous_talk_video: list[str] = strawberry.field(default_factory=list)
-    short_social_summary: list[str] = strawberry.field(default_factory=list)
+    speaker_twitter_handle: list[str] = strawberry.field(default_factory=list)
+    speaker_instagram_handle: list[str] = strawberry.field(default_factory=list)
+    speaker_linkedin_url: list[str] = strawberry.field(default_factory=list)
+    speaker_facebook_url: list[str] = strawberry.field(default_factory=list)
+    speaker_mastodon_handle: list[str] = strawberry.field(default_factory=list)
+
     non_field_errors: list[str] = strawberry.field(default_factory=list)
 
 
@@ -75,6 +96,43 @@ class BaseSubmissionInput:
         self.title = self.title.clean(self.languages)
         self.elevator_pitch = self.elevator_pitch.clean(self.languages)
         self.abstract = self.abstract.clean(self.languages)
+
+    def multi_lingual_validation(
+        self, errors: SendSubmissionErrors, conference: Conference
+    ):
+        multi_lingual_fields = (
+            "title",
+            "abstract",
+            "elevator_pitch",
+        )
+
+        multi_lingual_max_lengths = {
+            "title": 100,
+            "elevator_pitch": 300,
+            "abstract": 5000,
+        }
+        to_text = {"it": "Italian", "en": "English"}
+
+        allowed_languages = conference.languages.values_list("code", flat=True)
+
+        for language in self.languages:
+            if language not in allowed_languages:
+                errors.add_error("languages", f"Language ({language}) is not allowed")
+                continue
+
+            for field in multi_lingual_fields:
+                value = getattr(getattr(self, field), language)
+                max_length = multi_lingual_max_lengths.get(field, math.inf)
+
+                if not value:
+                    errors.add_error(field, f"{to_text[language]}: Cannot be empty")
+                    continue
+
+                if len(value) > max_length:
+                    errors.add_error(
+                        field,
+                        f"{to_text[language]}: Cannot be more than {max_length} chars",
+                    )
 
     def validate(self, conference: Conference):
         errors = SendSubmissionErrors()
@@ -92,54 +150,35 @@ class BaseSubmissionInput:
         if not self.languages:
             errors.add_error("languages", "You need to add at least one language")
 
-        fields = (
-            "title",
-            "abstract",
-            "elevator_pitch",
-        )
+        self.multi_lingual_validation(errors, conference)
 
-        max_lengths = {"title": 100, "elevator_pitch": 300, "abstract": 5000}
-        to_text = {"it": "Italian", "en": "English"}
+        max_lengths = {
+            "speaker_bio": 500,
+            "notes": 1000,
+            "short_social_summary": 128,
+            "previous_talk_video": 2048,
+            "speaker_website": 2048,
+            "speaker_twitter_handle": 15,
+            "speaker_instagram_handle": 30,
+            "speaker_mastodon_handle": 2048,
+            "speaker_linkedin_url": 2048,
+            "speaker_facebook_url": 2048,
+        }
 
-        allowed_languages = conference.languages.values_list("code", flat=True)
-
-        for language in self.languages:
-            if language not in allowed_languages:
-                errors.add_error("languages", f"Language ({language}) is not allowed")
-                continue
-
-            for field in fields:
-                value = getattr(getattr(self, field), language)
-                max_length = max_lengths.get(field, math.inf)
-
-                if not value:
-                    errors.add_error(field, f"{to_text[language]}: Cannot be empty")
-                    continue
-
-                if len(value) > max_length:
-                    errors.add_error(
-                        field,
-                        f"{to_text[language]}: Cannot be more than {max_length} chars",
-                    )
-
-        if len(self.notes) > 1000:
-            errors.add_error(
-                "notes",
-                "Cannot be more than 1000 chars",
-            )
-
-        if len(self.short_social_summary) > 128:
-            errors.add_error(
-                "short_social_summary",
-                "Cannot be more than 128 chars",
-            )
+        for field_name, max_length in max_lengths.items():
+            field = getattr(self, field_name)
+            if len(field) > max_length:
+                errors.add_error(
+                    field_name,
+                    f"Cannot be more than {max_length} chars",
+                )
 
         duration = conference.durations.filter(id=self.duration).first()
 
         if not conference.submission_types.filter(id=self.type).exists():
             errors.add_error("type", "Not allowed submission type")
 
-        if not conference.topics.filter(id=self.topic).exists():
+        if self.topic and not conference.topics.filter(id=self.topic).exists():
             errors.add_error("topic", "Not a valid topic")
 
         if not duration:
@@ -155,6 +194,31 @@ class BaseSubmissionInput:
         if not conference.audience_levels.filter(id=self.audience_level).exists():
             errors.add_error("audience_level", "Not a valid audience level")
 
+        if not self.speaker_photo:
+            errors.add_error("speaker_photo", "This is required")
+        elif not verify_azure_storage_url(
+            url=self.speaker_photo,
+            allowed_containers=[
+                BlobContainer.TEMPORARY_UPLOADS,
+                BlobContainer.PARTICIPANTS_AVATARS,
+            ],
+        ):
+            errors.add_error("speaker_photo", "Invalid speaker photo")
+
+        if self.speaker_linkedin_url and not LINKEDIN_LINK_MATCH.match(
+            self.speaker_linkedin_url
+        ):
+            errors.add_error(
+                "speaker_linkedin_url", "Linkedin URL should be a linkedin.com link"
+            )
+
+        if self.speaker_facebook_url and not FACEBOOK_LINK_MATCH.match(
+            self.speaker_facebook_url
+        ):
+            errors.add_error(
+                "speaker_facebook_url", "Facebook URL should be a facebook.com link"
+            )
+
         return errors
 
 
@@ -163,16 +227,26 @@ class SendSubmissionInput(BaseSubmissionInput):
     conference: ID
     title: MultiLingualInput
     abstract: MultiLingualInput
-    topic: ID
     languages: list[ID]
     type: ID
     duration: ID
     elevator_pitch: MultiLingualInput
     notes: str
     audience_level: ID
+    short_social_summary: str
+
+    speaker_bio: str
+    speaker_photo: str
+    speaker_website: str
     speaker_level: str
     previous_talk_video: str
-    short_social_summary: str
+    speaker_twitter_handle: str
+    speaker_instagram_handle: str
+    speaker_linkedin_url: str
+    speaker_facebook_url: str
+    speaker_mastodon_handle: str
+
+    topic: Optional[ID] = strawberry.field(default=None)
     tags: list[ID] = strawberry.field(default_factory=list)
 
 
@@ -181,16 +255,26 @@ class UpdateSubmissionInput(BaseSubmissionInput):
     instance: ID
     title: MultiLingualInput
     abstract: MultiLingualInput
-    topic: ID
     languages: list[ID]
     type: ID
     duration: ID
     elevator_pitch: MultiLingualInput
     notes: str
     audience_level: ID
+    short_social_summary: str
+
+    speaker_bio: str
+    speaker_photo: str
+    speaker_website: str
     speaker_level: str
     previous_talk_video: str
-    short_social_summary: str
+    speaker_twitter_handle: str
+    speaker_instagram_handle: str
+    speaker_linkedin_url: str
+    speaker_facebook_url: str
+    speaker_mastodon_handle: str
+
+    topic: Optional[ID] = strawberry.field(default=None)
     tags: list[ID] = strawberry.field(default_factory=list)
 
 
@@ -219,13 +303,17 @@ class SubmissionsMutations:
     def update_submission(
         self, info: Info, input: UpdateSubmissionInput
     ) -> UpdateSubmissionOutput:
+        request = info.context.request
+
         instance = SubmissionModel.objects.get_by_hashid(input.instance)
         if not instance.can_edit(info.context.request):
             return SendSubmissionErrors.with_error(
                 "non_field_errors", "You cannot edit this submission"
             )
 
-        errors = input.validate(conference=instance.conference)
+        conference = instance.conference
+
+        errors = input.validate(conference=conference)
 
         if errors.has_errors:
             return errors
@@ -243,13 +331,40 @@ class SubmissionsMutations:
         instance.speaker_level = input.speaker_level
         instance.previous_talk_video = input.previous_talk_video
         instance.short_social_summary = input.short_social_summary
-
         languages = Language.objects.filter(code__in=input.languages).all()
         instance.languages.set(languages)
 
         instance.tags.set(input.tags)
 
         instance.save()
+
+        speaker_photo = input.speaker_photo
+        if verify_azure_storage_url(
+            url=speaker_photo, allowed_containers=[BlobContainer.TEMPORARY_UPLOADS]
+        ):
+            speaker_photo = confirm_blob_upload_usage(
+                speaker_photo,
+                blob_name=_participant_avatar_blob_name(
+                    conference=conference, user_id=request.user.id
+                ),
+            )
+
+        Participant.objects.update_or_create(
+            user_id=request.user.id,
+            conference=conference,
+            defaults={
+                "bio": input.speaker_bio,
+                "photo": speaker_photo,
+                "website": input.speaker_website,
+                "speaker_level": input.speaker_level,
+                "previous_talk_video": input.previous_talk_video,
+                "twitter_handle": input.speaker_twitter_handle,
+                "instagram_handle": input.speaker_instagram_handle,
+                "linkedin_url": input.speaker_linkedin_url,
+                "facebook_url": input.speaker_facebook_url,
+                "mastodon_handle": input.speaker_mastodon_handle,
+            },
+        )
 
         instance._type_definition = Submission._type_definition
         return instance
@@ -286,15 +401,41 @@ class SubmissionsMutations:
             elevator_pitch=LazyI18nString(input.elevator_pitch.to_dict()),
             notes=input.notes,
             audience_level_id=input.audience_level,
-            speaker_level=input.speaker_level,
-            previous_talk_video=input.previous_talk_video,
             short_social_summary=input.short_social_summary,
         )
+
+        speaker_photo = input.speaker_photo
+        if verify_azure_storage_url(
+            url=speaker_photo, allowed_containers=[BlobContainer.TEMPORARY_UPLOADS]
+        ):
+            speaker_photo = confirm_blob_upload_usage(
+                speaker_photo,
+                blob_name=_participant_avatar_blob_name(
+                    conference=conference, user_id=request.user.id
+                ),
+            )
 
         languages = Language.objects.filter(code__in=input.languages).all()
 
         instance.languages.set(languages)
         instance.tags.set(input.tags)
+
+        Participant.objects.update_or_create(
+            user_id=request.user.id,
+            conference=conference,
+            defaults={
+                "bio": input.speaker_bio,
+                "photo": speaker_photo,
+                "website": input.speaker_website,
+                "speaker_level": input.speaker_level,
+                "previous_talk_video": input.previous_talk_video,
+                "twitter_handle": input.speaker_twitter_handle,
+                "instagram_handle": input.speaker_instagram_handle,
+                "linkedin_url": input.speaker_linkedin_url,
+                "facebook_url": input.speaker_facebook_url,
+                "mastodon_handle": input.speaker_mastodon_handle,
+            },
+        )
 
         notify_new_submission(
             submission_id=instance.id,
@@ -303,11 +444,17 @@ class SubmissionsMutations:
             submission_type=instance.type.name,
             admin_url=request.build_absolute_uri(instance.get_admin_url()),
             duration=instance.duration.duration,
-            topic=instance.topic.name,
+            topic=instance.topic.name if instance.topic_id else "",
             speaker_id=instance.speaker_id,
             conference_id=instance.conference_id,
+            tags=",".join(instance.tags.values_list("name", flat=True)),
         )
 
         # hack because we return django models
         instance._type_definition = Submission._type_definition
         return instance
+
+
+def _participant_avatar_blob_name(conference: Conference, user_id: int) -> str:
+    hashed_id = encode_hashid(user_id, salt=settings.USER_ID_HASH_SALT, min_length=6)
+    return f"{conference.code}/{hashed_id}.jpg"

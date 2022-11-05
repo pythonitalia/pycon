@@ -27,12 +27,19 @@ const getType = (submission?: SubmissionType | null) =>
     ? ItemTypes.TRAINING
     : ItemTypes.TALK;
 
-const BaseDraggable: React.SFC<{
+const BaseDraggable = ({
+  adminMode,
+  type,
+  children,
+  metadata,
+  ...props
+}: {
   type: string;
   metadata?: any;
   adminMode?: boolean;
   sx?: ThemeUIStyleObject;
-}> = ({ adminMode, type, children, metadata, ...props }) => {
+  children: any;
+}) => {
   const [_, drag] = useDragOrDummy({
     adminMode,
     item: {
@@ -57,11 +64,17 @@ const BaseDraggable: React.SFC<{
   );
 };
 
-export const BaseEvent: React.SFC<{
+export const BaseEvent = ({
+  type,
+  children,
+  metadata,
+  ...props
+}: {
   type: string;
   metadata: any;
   sx?: ThemeUIStyleObject;
-}> = ({ type, children, metadata, ...props }) => (
+  children: any;
+}) => (
   <BaseDraggable
     type={type}
     adminMode={true}
@@ -161,14 +174,21 @@ export const Keynote = ({ keynote, ...props }) => (
   </BaseEvent>
 );
 
-export const ScheduleEntry: React.SFC<{
+export const ScheduleEntry = ({
+  item,
+  adminMode,
+  slot,
+  rooms,
+  day,
+  ...props
+}: {
   adminMode: boolean;
   item: Item;
   slot: Slot;
   rooms: Room[];
   day: string;
   sx?: any;
-}> = ({ item, adminMode, slot, rooms, day, ...props }) => {
+}) => {
   const type = getType(item.submission);
 
   const backgroundColor = getColorForItem(item);

@@ -29,11 +29,7 @@ type QueryStatus = {
   data: GetVoucherQuery;
 };
 
-export const Voucher: React.SFC<Props> = ({
-  applyVoucher,
-  removeVoucher,
-  state,
-}) => {
+export const Voucher = ({ applyVoucher, removeVoucher, state }: Props) => {
   const conferenceCode = process.env.conferenceCode;
   const apolloClient = useApolloClient();
 

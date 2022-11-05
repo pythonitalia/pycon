@@ -24,14 +24,14 @@ type Props = {
   removeVoucher: () => void;
 };
 
-export const ReviewOrder: React.SFC<Props> = ({
+export const ReviewOrder = ({
   state,
   tickets,
   hotelRooms,
   email,
   applyVoucher,
   removeVoucher,
-}) => {
+}: Props) => {
   const { invoiceInformation, selectedProducts, selectedHotelRooms } = state!;
 
   const productsById = Object.fromEntries(
