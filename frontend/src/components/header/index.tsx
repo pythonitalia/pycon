@@ -273,9 +273,9 @@ export const Header = () => {
                       sx={{
                         color: "white",
                       }}
-                      path="mailto:help@pycon.it"
+                      path="mailto:info@pycon.it"
                     >
-                      help@pycon.it
+                      info@pycon.it
                     </Link>
                   </Box>
                 </dl>
