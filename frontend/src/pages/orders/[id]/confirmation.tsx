@@ -82,8 +82,8 @@ const OrderPending = ({ url, code }: { url: string; code: string }) => (
             </Text>
           ),
           email: (
-            <a target="_blank" href="mailto:info@pycon.it">
-              info@pycon.it
+            <a target="_blank" href="mailto:help@pycon.it">
+              help@pycon.it
             </a>
           ),
         }}
