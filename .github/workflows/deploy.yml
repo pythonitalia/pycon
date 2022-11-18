@@ -101,13 +101,12 @@ jobs:
         id: image
         run: |
           set +e
-          echo '::set-output name=image_exists::0'
-          # aws ecr describe-images --repository-name=pythonit/${{ matrix.service.name }} --image-ids=imageTag=${{ steps.git.outputs.githash }}
-          # if [[ $? == 0 ]]; then
-          #   echo '::set-output name=image_exists::1'
-          # else
-          #   echo '::set-output name=image_exists::0'
-          # fi
+          aws ecr describe-images --repository-name=pythonit/${{ matrix.service.name }} --image-ids=imageTag=${{ steps.git.outputs.githash }}
+          if [[ $? == 0 ]]; then
+            echo '::set-output name=image_exists::1'
+          else
+            echo '::set-output name=image_exists::0'
+          fi
       - name: Set up QEMU dependency
         if: ${{ steps.image.outputs.image_exists == 0 }}
         uses: docker/setup-qemu-action@v2
