@@ -96,12 +96,13 @@ jobs:
         id: image
         run: |
           set +e
-          aws ecr describe-images --repository-name=pythonit/${{ matrix.service.name }} --image-ids=imageTag=${{ steps.git.outputs.githash }}
-          if [[ $? == 0 ]]; then
-            echo '::set-output name=image_exists::1'
-          else
-            echo '::set-output name=image_exists::0'
-          fi
+          echo '::set-output name=image_exists::0'
+          # aws ecr describe-images --repository-name=pythonit/${{ matrix.service.name }} --image-ids=imageTag=${{ steps.git.outputs.githash }}
+          # if [[ $? == 0 ]]; then
+          #   echo '::set-output name=image_exists::1'
+          # else
+          #   echo '::set-output name=image_exists::0'
+          # fi
       - name: Set up QEMU dependency
         if: ${{ steps.image.outputs.image_exists == 0 }}
         uses: docker/setup-qemu-action@v2
@@ -126,7 +127,9 @@ jobs:
           file: ./${{ matrix.service.dir }}/Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
           push: true
-          tags: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/${{ matrix.service.name }}:${{ steps.git.outputs.githash }}
+          tags: |
+            ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/${{ matrix.service.name }}:${{ steps.git.outputs.githash }}
+            pythonitalia/${{ matrix.service.name }}:${{ steps.git.outputs.githash }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
 
