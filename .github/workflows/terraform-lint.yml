@@ -3,6 +3,8 @@ on:
     paths:
       - "infrastructure/applications/**/*"
       - "infrastructure/applications/*"
+      - "infrastructure/azure-applications/*"
+      - "infrastructure/azure-applications/**/*"
 
 name: Terraform Lint
 
@@ -10,6 +12,22 @@ env:
   TF_WORKSPACE: "production"
 
 jobs:
+  tfsec:
+    name: TFSec
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@master
+      - name: tfsec
+        uses: aquasecurity/tfsec-pr-commenter-action@v1.2.0
+        with:
+          github_token: ${{ github.token }}
+
   lint:
     runs-on: ubuntu-latest
 
@@ -22,6 +40,7 @@ jobs:
           TF_IN_AUTOMATION: 1
 
   plan:
+    name: Plan [AWS]
     runs-on: ubuntu-latest
     defaults:
       run:
