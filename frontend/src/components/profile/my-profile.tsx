@@ -9,9 +9,7 @@ import { Link } from "~/components/link";
 import { useCountries } from "~/helpers/use-countries";
 import { MyProfileQuery } from "~/types";
 
-export const MyProfile: React.FC<{ profile: MyProfileQuery }> = ({
-  profile: { me },
-}) => {
+export const MyProfile = ({ profile: { me } }: { profile: MyProfileQuery }) => {
   const countries = useCountries();
   const profileView = [
     {

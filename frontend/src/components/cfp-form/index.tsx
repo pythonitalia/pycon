@@ -23,10 +23,12 @@ import {
   SendSubmissionMutation,
   UpdateSubmissionMutation,
   useCfpFormQuery,
+  useParticipantDataQuery,
 } from "~/types";
 
 import { Alert } from "../alert";
 import { Button } from "../button/button";
+import { FileInput } from "../file-input";
 import { TagLine } from "../input-tag";
 import { InputWrapper } from "../input-wrapper";
 import { Input, Textarea } from "../inputs";
@@ -40,12 +42,19 @@ export type CfpFormFields = {
   audienceLevel: string;
   abstract: { it?: string; en?: string };
   notes: string;
-  topic: string;
   languages: string[];
   tags: string[];
   speakerLevel: string;
   previousTalkVideo: string;
   shortSocialSummary: string;
+  speakerBio: string;
+  speakerPhoto: any;
+  speakerWebsite: string;
+  speakerTwitterHandle: string;
+  speakerInstagramHandle: string;
+  speakerLinkedinUrl: string;
+  speakerFacebookUrl: string;
+  speakerMastodonHandle: string;
 };
 
 export type SubmissionStructure = {
@@ -56,7 +65,6 @@ export type SubmissionStructure = {
   multilingualTitle: { it: string; en: string };
   multilingualElevatorPitch: { it: string; en: string };
   multilingualAbstract: { it: string; en: string };
-  topic: { id: string };
   duration: { id: string };
   audienceLevel: { id: string };
   languages: { code: string }[];
@@ -121,33 +129,44 @@ export const CfpForm = ({
   error: submissionError,
   data: submissionData,
 }: Props) => {
-  const [formState, { text, textarea, radio, select, checkbox, raw }] =
-    useFormState<CfpFormFields>(
-      {
-        title: {
-          en: "",
-          it: "",
-        },
-        abstract: {
-          en: "",
-          it: "",
-        },
-        elevatorPitch: {
-          en: "",
-          it: "",
-        },
-        languages: [],
+  const [
+    formState,
+    { text, textarea, radio, select, checkbox, url, raw },
+  ] = useFormState<CfpFormFields>(
+    {
+      title: {
+        en: "",
+        it: "",
       },
-      {
-        withIds: true,
+      abstract: {
+        en: "",
+        it: "",
       },
-    );
+      elevatorPitch: {
+        en: "",
+        it: "",
+      },
+      languages: [],
+    },
+    {
+      withIds: true,
+    },
+  );
 
   const {
     loading: conferenceLoading,
     error: conferenceError,
     data: conferenceData,
   } = useCfpFormQuery({
+    variables: {
+      conference: conferenceCode,
+    },
+  });
+
+  const {
+    loading: participantDataLoading,
+    data: participantData,
+  } = useParticipantDataQuery({
     variables: {
       conference: conferenceCode,
     },
@@ -165,7 +184,6 @@ export const CfpForm = ({
         formState.values.abstract,
         formState.values.languages,
       ),
-      topic: formState.values.topic,
       languages: formState.values.languages,
       type: formState.values.type,
       length: formState.values.length,
@@ -179,6 +197,14 @@ export const CfpForm = ({
       speakerLevel: formState.values.speakerLevel,
       previousTalkVideo: formState.values.previousTalkVideo,
       shortSocialSummary: formState.values.shortSocialSummary,
+      speakerWebsite: formState.values.speakerWebsite,
+      speakerBio: formState.values.speakerBio,
+      speakerTwitterHandle: formState.values.speakerTwitterHandle,
+      speakerInstagramHandle: formState.values.speakerInstagramHandle,
+      speakerLinkedinUrl: formState.values.speakerLinkedinUrl,
+      speakerFacebookUrl: formState.values.speakerFacebookUrl,
+      speakerMastodonHandle: formState.values.speakerMastodonHandle,
+      speakerPhoto: formState.values.speakerPhoto.split(/[?#]/)[0],
     });
   };
 
@@ -215,7 +241,6 @@ export const CfpForm = ({
         "elevatorPitch",
         submission!.multilingualElevatorPitch,
       );
-      formState.setField("topic", submission!.topic.id);
       formState.setField("length", submission!.duration.id);
       formState.setField("audienceLevel", submission!.audienceLevel.id);
       formState.setField(
@@ -228,11 +253,48 @@ export const CfpForm = ({
         "tags",
         submission!.tags.map((t) => t.id),
       );
-      formState.setField("speakerLevel", submission!.speakerLevel);
-      formState.setField("previousTalkVideo", submission!.previousTalkVideo);
       formState.setField("shortSocialSummary", submission!.shortSocialSummary);
     }
   }, [conferenceLoading]);
+
+  useEffect(() => {
+    if (!participantDataLoading && participantData.me.participant) {
+      formState.setField("speakerBio", participantData.me.participant.bio);
+      formState.setField("speakerPhoto", participantData.me.participant.photo);
+      formState.setField(
+        "speakerLevel",
+        participantData.me.participant.speakerLevel,
+      );
+      formState.setField(
+        "previousTalkVideo",
+        participantData.me.participant.previousTalkVideo,
+      );
+      formState.setField(
+        "speakerWebsite",
+        participantData.me.participant.website,
+      );
+      formState.setField(
+        "speakerTwitterHandle",
+        participantData.me.participant.twitterHandle,
+      );
+      formState.setField(
+        "speakerInstagramHandle",
+        participantData.me.participant.instagramHandle,
+      );
+      formState.setField(
+        "speakerLinkedinUrl",
+        participantData.me.participant.linkedinUrl,
+      );
+      formState.setField(
+        "speakerFacebookUrl",
+        participantData.me.participant.facebookUrl,
+      );
+      formState.setField(
+        "speakerMastodonHandle",
+        participantData.me.participant.mastodonHandle,
+      );
+    }
+  }, [participantDataLoading]);
 
   if (conferenceLoading) {
     return (
@@ -254,7 +316,6 @@ export const CfpForm = ({
     key:
       | "validationTitle"
       | "validationAbstract"
-      | "validationTopic"
       | "validationLanguages"
       | "validationType"
       | "validationDuration"
@@ -265,6 +326,14 @@ export const CfpForm = ({
       | "validationSpeakerLevel"
       | "validationPreviousTalkVideo"
       | "validationShortSocialSummary"
+      | "validationSpeakerBio"
+      | "validationSpeakerWebsite"
+      | "validationSpeakerPhoto"
+      | "validationSpeakerTwitterHandle"
+      | "validationSpeakerInstagramHandle"
+      | "validationSpeakerLinkedinUrl"
+      | "validationSpeakerFacebookUrl"
+      | "validationSpeakerMastodonHandle"
       | "nonFieldErrors",
   ): string[] =>
     (submissionData?.mutationOp.__typename === "SendSubmissionErrors" &&
@@ -360,28 +429,6 @@ export const CfpForm = ({
             </InputWrapper>
           </Box>
           <Box>
-            <InputWrapper
-              isRequired={true}
-              label={<FormattedMessage id="cfp.trackLabel" />}
-              description={<FormattedMessage id="cfp.topicDescription" />}
-              errors={getErrors("validationTopic")}
-            >
-              <Select {...select("topic")} required={true}>
-                <FormattedMessage id="cfp.selectTrack">
-                  {(txt) => (
-                    <option value="" disabled={true}>
-                      {txt}
-                    </option>
-                  )}
-                </FormattedMessage>
-                {conferenceData!.conference.topics.map((d) => (
-                  <option key={d.id} value={d.id}>
-                    {d.name}
-                  </option>
-                ))}
-              </Select>
-            </InputWrapper>
-
             <InputWrapper
               isRequired={true}
               label={<FormattedMessage id="cfp.lengthLabel" />}
@@ -493,6 +540,119 @@ export const CfpForm = ({
           <FormattedMessage id="cfp.aboutYouDescription" />
         </Text>
 
+        {participantDataLoading && (
+          <Alert variant="info">
+            <FormattedMessage id="global.loading" />
+          </Alert>
+        )}
+
+        <InputWrapper
+          isRequired={true}
+          label={<FormattedMessage id="cfp.speakerPhotoLabel" />}
+          description={<FormattedMessage id="cfp.speakerPhotoDescription" />}
+          errors={getErrors("validationSpeakerPhoto")}
+        >
+          <FileInput {...raw("speakerPhoto")} />
+        </InputWrapper>
+
+        <InputWrapper
+          isRequired={true}
+          label={<FormattedMessage id="cfp.speakerBioLabel" />}
+          description={<FormattedMessage id="cfp.speakerBioDescription" />}
+          errors={getErrors("validationSpeakerBio")}
+        >
+          <Textarea
+            {...textarea("speakerBio")}
+            required={true}
+            maxLength={500}
+            rows={4}
+          />
+        </InputWrapper>
+
+        <InputWrapper
+          label={<FormattedMessage id="cfp.speakerWebsiteLabel" />}
+          description={<FormattedMessage id="cfp.speakerWebsiteDescription" />}
+          errors={getErrors("validationSpeakerWebsite")}
+        >
+          <Input {...url("speakerWebsite")} required={false} maxLength={2048} />
+        </InputWrapper>
+
+        <InputWrapper
+          label={<FormattedMessage id="cfp.socialsLabel" />}
+          description={
+            <FormattedMessage
+              id="cfp.speakerTwitterHandleDescription"
+              values={{
+                br: <br />,
+              }}
+            />
+          }
+          errors={getErrors("validationSpeakerTwitterHandle")}
+        >
+          <Input
+            {...text("speakerTwitterHandle")}
+            required={false}
+            maxLength={15}
+          />
+        </InputWrapper>
+
+        <InputWrapper
+          description={
+            <FormattedMessage
+              id="cfp.speakerMastodonHandleDescription"
+              values={{
+                br: <br />,
+              }}
+            />
+          }
+          errors={getErrors("validationSpeakerMastodonHandle")}
+        >
+          <Input
+            {...text("speakerMastodonHandle")}
+            required={false}
+            maxLength={2048}
+          />
+        </InputWrapper>
+
+        <InputWrapper
+          description={
+            <FormattedMessage id="cfp.speakerInstagramHandleDescription" />
+          }
+          errors={getErrors("validationSpeakerInstagramHandle")}
+        >
+          <Input
+            {...text("speakerInstagramHandle")}
+            required={false}
+            maxLength={30}
+          />
+        </InputWrapper>
+
+        <InputWrapper
+          description={
+            <FormattedMessage id="cfp.speakerLinkedinUrlDescription" />
+          }
+          errors={getErrors("validationSpeakerLinkedinUrl")}
+        >
+          <Input
+            {...url("speakerLinkedinUrl")}
+            required={false}
+            maxLength={2048}
+          />
+        </InputWrapper>
+
+        <InputWrapper
+          description={
+            <FormattedMessage id="cfp.speakerFacebookUrlDescription" />
+          }
+          errors={getErrors("validationSpeakerFacebookUrl")}
+        >
+          <Input
+            {...url("speakerFacebookUrl")}
+            required={false}
+            maxLength={2048}
+          />
+        </InputWrapper>
+
         <InputWrapper
           isRequired={true}
           label={<FormattedMessage id="cfp.speakerLevel" />}
@@ -520,7 +680,7 @@ export const CfpForm = ({
           errors={getErrors("validationPreviousTalkVideo")}
         >
           <Input
-            {...text("previousTalkVideo")}
+            {...url("previousTalkVideo")}
             required={false}
             maxLength={2048}
           />
@@ -560,6 +720,10 @@ export const CfpForm = ({
           </Alert>
         )}
 
+        <InputWrapper
+          label={<FormattedMessage id="cfp.grantsLabel" />}
+          description={<FormattedMessage id="cfp.grantsCheckbox" />}
+        />
         <Button loading={submissionLoading}>
           <FormattedMessage id="cfp.submit" />
         </Button>

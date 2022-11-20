@@ -11,14 +11,19 @@ import { formatDay } from "./format-day";
 
 // TODO: beginners day could be an attribute on the backend
 
-export const DaySelector: React.FC<{
+export const DaySelector = ({
+  currentDay,
+  days,
+  timezone,
+  changeDay,
+}: {
   currentDay: string | null;
   timezone: string;
   days: {
     day: string;
   }[];
   changeDay: (day: string) => void;
-}> = ({ currentDay, days, timezone, changeDay }) => {
+}) => {
   const language = useCurrentLanguage();
 
   return (

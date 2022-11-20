@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     "import_export",
     "volunteers_notifications.apps.VolunteersNotificationsConfig",
     "checklist.apps.ChecklistConfig",
+    "participants.apps.ParticipantsConfig",
 ]
 
 MIDDLEWARE = [
@@ -210,3 +211,8 @@ VOLUNTEERS_PUSH_NOTIFICATIONS_IOS_ARN = env(
 VOLUNTEERS_PUSH_NOTIFICATIONS_ANDROID_ARN = env(
     "VOLUNTEERS_PUSH_NOTIFICATIONS_ANDROID_ARN", default=""
 ).strip()
+
+AZURE_STORAGE_ACCOUNT_NAME = env("AZURE_STORAGE_ACCOUNT_NAME", default="")
+AZURE_STORAGE_ACCOUNT_KEY = env("AZURE_STORAGE_ACCOUNT_KEY", default="")
+
+USER_ID_HASH_SALT = env("USER_ID_HASH_SALT", default="")

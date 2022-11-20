@@ -5,7 +5,7 @@ import React, { CSSProperties } from "react";
 import { default as ReactSelect, Props } from "react-select";
 import { jsx } from "theme-ui";
 
-export const Select: React.SFC<Props> = (props) => (
+export const Select = (props: Props) => (
   <ReactSelect
     styles={{
       control: (base: CSSProperties) => ({

@@ -13,7 +13,7 @@ import { CardType, getSize, getTitleFontSize } from "~/helpers/social-card";
 import { useCurrentLanguage } from "~/locale/context";
 import { queryBlogSocialCard, useBlogSocialCardQuery } from "~/types";
 
-export const SocialCard: React.FC = () => {
+export const SocialCard = () => {
   const router = useRouter();
   const cardType = (router.query["card-type"] as CardType) || "social";
   const slug = router.query.slug as string;

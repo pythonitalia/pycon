@@ -25,12 +25,12 @@ type Props = {
   };
 };
 
-export const CompleteOrder: React.SFC<Props> = ({
+export const CompleteOrder = ({
   email,
   state,
   productsById,
   hotelRoomsById,
-}) => {
+}: Props) => {
   const lang = useCurrentLanguage();
   const totalAmount = calculateTotalAmount(state, productsById, hotelRoomsById);
   const moneyFormatter = new Intl.NumberFormat(lang, {

@@ -18,10 +18,7 @@ type ItemsPanelProp = {
   keynotes: KeynoteType[];
 };
 
-export const ItemsPanel: React.SFC<ItemsPanelProp> = ({
-  submissions,
-  keynotes,
-}) => {
+export const ItemsPanel = ({ submissions, keynotes }: ItemsPanelProp) => {
   const [query, setQuery] = useState("");
 
   // TODO: https://fusejs.io/

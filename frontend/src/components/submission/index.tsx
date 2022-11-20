@@ -16,7 +16,7 @@ type Props = {
   submission: SubmissionQuery["submission"];
 };
 
-export const Submission: React.SFC<Props> = ({ submission }) => (
+export const Submission = ({ submission }: Props) => (
   <Fragment>
     <MetaTags title={submission.title} />
 
@@ -41,11 +41,15 @@ export const Submission: React.SFC<Props> = ({ submission }) => (
               mb: 4,
             }}
           >
-            <Text sx={{ fontWeight: "bold", display: "block" }}>
-              <FormattedMessage id="cfp.trackLabel" />
-            </Text>
+            {submission.topic && (
+              <>
+                <Text sx={{ fontWeight: "bold", display: "block" }}>
+                  <FormattedMessage id="cfp.trackLabel" />
+                </Text>
 
-            <Text sx={{ mb: 3 }}>{submission.topic!.name}</Text>
+                <Text sx={{ mb: 3 }}>{submission.topic.name}</Text>
+              </>
+            )}
 
             <Text sx={{ fontWeight: "bold", display: "block" }}>
               <FormattedMessage id="cfp.audienceLevelLabel" />

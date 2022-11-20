@@ -87,6 +87,9 @@ module "lambda" {
     MAILCHIMP_SECRET_KEY                      = module.common_secrets.value.mailchimp_secret_key
     MAILCHIMP_DC                              = module.common_secrets.value.mailchimp_dc
     MAILCHIMP_LIST_ID                         = module.common_secrets.value.mailchimp_list_id
+    USER_ID_HASH_SALT                         = module.secrets.value.userid_hash_salt
+    AZURE_STORAGE_ACCOUNT_NAME                = module.secrets.value.azure_storage_account_name
+    AZURE_STORAGE_ACCOUNT_KEY                 = module.secrets.value.azure_storage_account_key
   }
 }
 

@@ -12,12 +12,12 @@ type Props = {
   useDefaultSocialCard?: boolean;
 };
 
-export const MetaTags: React.SFC<Props> = ({
+export const MetaTags = ({
   title,
   description,
   useDefaultSocialCard = true,
   children,
-}) => {
+}: React.PropsWithChildren<Props>) => {
   const language = useCurrentLanguage();
   const { asPath } = useRouter();
   const socialCard = useDefaultSocialCard

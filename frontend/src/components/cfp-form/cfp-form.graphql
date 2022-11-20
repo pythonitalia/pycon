@@ -22,11 +22,6 @@ query CfpForm($conference: String!) {
       name
     }
 
-    topics {
-      id
-      name
-    }
-
     languages {
       code
       id

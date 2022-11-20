@@ -22,10 +22,7 @@ type Props = {
   comments: CommentProps[] | null;
 };
 
-export const SubmissionComments: React.SFC<Props> = ({
-  submissionId,
-  comments,
-}) => (
+export const SubmissionComments = ({ submissionId, comments }: Props) => (
   <Box
     sx={{
       maxWidth: 600,
@@ -50,7 +47,7 @@ export const SubmissionComments: React.SFC<Props> = ({
   </Box>
 );
 
-const Comment: React.SFC<CommentProps> = ({ author, text, created }) => {
+const Comment = ({ author, text, created }: CommentProps) => {
   const language = useCurrentLanguage();
   const date = new Date(created);
   const formatter = new Intl.DateTimeFormat(language, {

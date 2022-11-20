@@ -3,10 +3,14 @@
 /** @jsx jsx */
 import { jsx } from "theme-ui";
 
-export const SocialCircle: React.SFC<{ color: string; variant?: string }> = ({
+export const SocialCircle = ({
   children,
   color,
   variant,
+}: {
+  color: string;
+  variant?: string;
+  children: any;
 }) => (
   <li
     sx={{

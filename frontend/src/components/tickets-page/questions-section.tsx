@@ -32,7 +32,7 @@ type Props = {
   showHeading?: boolean;
 };
 
-export const QuestionsSection: React.SFC<Props> = ({
+export const QuestionsSection = ({
   tickets,
   selectedProducts,
   onNextStep,
@@ -41,7 +41,7 @@ export const QuestionsSection: React.SFC<Props> = ({
   nextStepMessageId = "order.nextStep",
   showHeading = true,
   nextStepLoading = false,
-}) => {
+}: Props) => {
   const productsById = Object.fromEntries(
     tickets.map((product) => [product.id, product]),
   );

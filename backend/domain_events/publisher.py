@@ -61,6 +61,7 @@ def notify_new_submission(
     topic: str,
     speaker_id: int,
     conference_id: int,
+    tags: str,
 ):
     publish_message(
         "NewCFPSubmission",
@@ -73,6 +74,7 @@ def notify_new_submission(
             "duration": str(duration),
             "speaker_id": speaker_id,
             "conference_id": conference_id,
+            "tags": tags,
         },
         deduplication_id=str(submission_id),
     )

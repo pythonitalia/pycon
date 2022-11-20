@@ -4,10 +4,13 @@
 import React from "react";
 import { Box, jsx, ThemeUIStyleObject } from "theme-ui";
 
-export const ErrorsList: React.SFC<{
+export const ErrorsList = ({
+  errors,
+  ...props
+}: {
   errors?: string[];
   sx?: ThemeUIStyleObject;
-}> = ({ errors, ...props }) => {
+}) => {
   if (!errors) {
     return null;
   }

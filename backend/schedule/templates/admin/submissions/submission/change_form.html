@@ -1,0 +1,61 @@
+{% extends "admin/change_form.html" %}
+{% load i18n %}
+
+{% block after_field_sets %}
+{% if participant %}
+<fieldset class="module aligned ">
+  <h2>Proposal Owner Participant</h2>
+
+  <div class="form-row">
+    <a target="_blank" rel="noopener noreferrer"
+      href="{% url 'admin:participants_participant_change' participant.id %}">
+      <img src="/django-static/admin/img/icon-changelink.svg" />
+      Edit this
+    </a>
+  </div>
+
+  <div class="form-row">
+    <label>Avatar</label>
+    <img src="{{participant.photo}}" style="object-fit: contain;" width="200" height="200" />
+  </div>
+
+  <div class="form-row">
+    <label>Bio</label>
+    <p>{{participant.bio}}</p>
+  </div>
+
+  <div class="form-row">
+    <label>Website</label>
+    <a target="_blank" rel="noopener noreferrer" href="{{participant.website}}">{{participant.website}}</a>
+  </div>
+
+  <div class="form-row">
+    <label>Twitter Handle</label>
+    <a target="_blank" rel="noopener noreferrer"
+      href="https://twitter.com/{{participant.twitter_handle}}">@{{participant.twitter_handle}}</a>
+  </div>
+
+  <div class="form-row">
+    <label>Instagram Handle</label>
+    <a target="_blank" rel="noopener noreferrer"
+      href="https://instagram.com/{{participant.instagram_handle}}">@{{participant.instagram_handle}}</a>
+  </div>
+
+  <div class="form-row">
+    <label>Mastodon Handle</label>
+    <p>{{participant.mastodon_handle}}</p>
+  </div>
+
+  <div class="form-row">
+    <label>Linkedin URL</label>
+    <a target="_blank" rel="noopener noreferrer" href="{{participant.linkedin_url}}">{{participant.linkedin_url}}</a>
+  </div>
+
+  <div class="form-row">
+    <label>Facebook URL</label>
+    <a target="_blank" rel="noopener noreferrer" href="{{participant.facebook_url}}">{{participant.facebook_url}}</a>
+  </div>
+
+</fieldset>
+{% endif %}
+{% endblock %}

@@ -15,17 +15,15 @@ import { MetaTags } from "~/components/meta-tags";
 import { useLoginState } from "~/components/profile/hooks";
 import { Submission } from "~/components/submission";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
+import { useCurrentLanguage } from "~/locale/context";
 import {
   queryIsVotingClosed,
   SubmissionQuery,
   useIsVotingClosedQuery,
   useSubmissionQuery,
 } from "~/types";
-import { useCurrentLanguage } from "~/locale/context";
 
-const NotLoggedIn: React.SFC<{
-  title?: string;
-}> = ({ title }) => (
+const NotLoggedIn = ({ title }: { title?: string }) => (
   <Container>
     {title ? (
       <MetaTags title={title} />

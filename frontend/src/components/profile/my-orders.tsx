@@ -16,7 +16,7 @@ type Props = {
   }[];
 };
 
-export const MyOrders: React.FC<Props> = ({ orders }) => {
+export const MyOrders = ({ orders }: Props) => {
   const orderIdHeader = useTranslatedMessage("profile.orderId");
   const statusHeader = useTranslatedMessage("profile.status");
   const priceHeader = useTranslatedMessage("profile.price");

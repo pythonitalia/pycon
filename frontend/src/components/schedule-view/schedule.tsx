@@ -153,7 +153,16 @@ const GridContainer = React.forwardRef<
   </Box>
 ));
 
-export const Schedule: React.SFC<{
+export const Schedule = ({
+  adminMode,
+  slots,
+  rooms,
+  addCustomScheduleItem,
+  addSubmissionToSchedule,
+  addKeynoteToSchedule,
+  moveItem,
+  currentDay,
+}: {
   slots: Slot[];
   rooms: Room[];
   adminMode: boolean;
@@ -174,15 +183,6 @@ export const Schedule: React.SFC<{
     keynoteId: string,
   ) => void;
   currentDay: string;
-}> = ({
-  adminMode,
-  slots,
-  rooms,
-  addCustomScheduleItem,
-  addSubmissionToSchedule,
-  addKeynoteToSchedule,
-  moveItem,
-  currentDay,
 }) => {
   const rowOffset = 6;
   const totalRows = slots.reduce((count, slot) => count + getSlotSize(slot), 0);

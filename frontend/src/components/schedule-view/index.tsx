@@ -7,6 +7,7 @@ import { Box, Flex, Heading, jsx } from "theme-ui";
 import { useRouter } from "next/router";
 
 import { DaySelector } from "~/components/day-selector";
+import { useCurrentLanguage } from "~/locale/context";
 import {
   ScheduleQuery,
   useAddScheduleSlotMutation,
@@ -16,7 +17,6 @@ import {
 import { Button } from "../button/button";
 import { Schedule } from "./schedule";
 import { ItemsPanel } from "./staff/items-panel";
-import { useCurrentLanguage } from "~/locale/context";
 
 const LoadingOverlay = () => (
   <Flex
@@ -42,12 +42,17 @@ const LoadingOverlay = () => (
   </Flex>
 );
 
-export const ScheduleView: React.SFC<{
+export const ScheduleView = ({
+  day: currentDay,
+  shouldShowAdmin,
+  schedule,
+  changeDay,
+}: {
   shouldShowAdmin: boolean;
   day?: string;
   schedule: ScheduleQuery;
   changeDay: (day: string) => void;
-}> = ({ day: currentDay, shouldShowAdmin, schedule, changeDay }) => {
+}) => {
   const language = useCurrentLanguage();
   const code = process.env.conferenceCode;
   const {
@@ -59,8 +64,10 @@ export const ScheduleView: React.SFC<{
     variables: { code, day: currentDay, duration: 60, language },
   });
 
-  const [addOrCreateScheduleItem, { loading: updatingSchedule }] =
-    useUpdateOrCreateSlotItemMutation();
+  const [
+    addOrCreateScheduleItem,
+    { loading: updatingSchedule },
+  ] = useUpdateOrCreateSlotItemMutation();
 
   const addCustomScheduleItem = useCallback(
     (slotId: string, itemRooms: string[], title = "Custom") =>

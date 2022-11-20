@@ -16,3 +16,6 @@ MAILCHIMP_DC = "us5"
 MAILCHIMP_LIST_ID = "12345678ab"
 
 PRETIX_API = "http://pretix-api:9000/"
+
+AZURE_STORAGE_ACCOUNT_NAME = "pytest-fakestorageaccount"
+AZURE_STORAGE_ACCOUNT_KEY = "fake-key"

@@ -13,7 +13,7 @@ type TagLineProps = {
   onTagChange?: (tags: { value: string }[]) => void;
 };
 
-export const TagLine: React.SFC<TagLineProps> = ({ tags, onTagChange }) => {
+export const TagLine = ({ tags, onTagChange }: TagLineProps) => {
   const onChange = useCallback((newTags) => {
     if (onTagChange) {
       onTagChange(newTags || []);

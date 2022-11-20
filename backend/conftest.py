@@ -17,6 +17,7 @@ from languages.models import Language
 from languages.tests.factories import *  # noqa
 from newsletters.tests.factories import *  # noqa
 from pages.tests.factories import *  # noqa
+from participants.tests.factories import *  # noqa
 from pretix.tests.fixtures import *  # noqa
 from schedule.tests.factories import *  # noqa
 from sponsors.tests.factories import *  # noqa

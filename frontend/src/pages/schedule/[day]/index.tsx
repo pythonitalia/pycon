@@ -33,11 +33,15 @@ export const getDayUrl = (day: string, language: Language | null = null) => {
   return `/schedule/${day}`;
 };
 
-const Meta: React.FC<{
+const Meta = ({
+  day,
+  language,
+  timezone,
+}: {
   day: string;
   language: Language;
   timezone?: string;
-}> = ({ day, language, timezone }) => (
+}) => (
   <FormattedMessage
     id="schedule.pageTitle"
     values={{ day: formatDay(day, language, timezone) }}
@@ -46,7 +50,7 @@ const Meta: React.FC<{
   </FormattedMessage>
 );
 
-export const ScheduleDayPage: React.FC = () => {
+export const ScheduleDayPage = () => {
   const [loggedIn, _] = useLoginState();
   const code = process.env.conferenceCode;
   const language = useCurrentLanguage();
@@ -107,13 +111,13 @@ type PageContentProps = {
   changeDay: (day: string) => void;
 };
 
-const PageContent: React.FC<PageContentProps> = ({
+const PageContent = ({
   loading,
   shouldShowAdmin,
   data,
   day,
   changeDay,
-}) => {
+}: PageContentProps) => {
   const language = useCurrentLanguage();
 
   return (
