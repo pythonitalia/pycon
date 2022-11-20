@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
-import React, { Fragment, useCallback } from "react";
+import React, { Fragment, useCallback, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import {
@@ -16,6 +16,7 @@ import {
   Textarea,
 } from "theme-ui";
 
+import { useCurrentUser } from "~/helpers/use-current-user";
 import { useSendGrantRequestMutation } from "~/types";
 
 import { Alert } from "../alert";
@@ -48,6 +49,8 @@ export type GrantFormFields = {
 type Props = { conference: string };
 
 export const GrantForm = ({ conference }: Props) => {
+  const { user } = useCurrentUser({});
+  console.log(user);
   const [
     formState,
     { text, number: numberInput, textarea, select, checkbox },
@@ -57,6 +60,17 @@ export const GrantForm = ({ conference }: Props) => {
       withIds: true,
     },
   );
+
+  useEffect(() => {
+    formState.setField("name", user?.name);
+    formState.setField("gender", user?.gender);
+    if (user?.dateBirth) {
+      formState.setField(
+        "age",
+        new Date().getFullYear() - new Date(user.dateBirth).getFullYear(),
+      );
+    }
+  }, [user]);
 
   const [submitGrant, { loading, data }] = useSendGrantRequestMutation();
 
@@ -141,7 +155,7 @@ export const GrantForm = ({ conference }: Props) => {
           }
           errors={getErrors("name")}
         >
-          <Input {...text("name")} required={true} />
+          <Input value={user?.name} {...text("name")} required={true} />
         </InputWrapper>
 
         <InputWrapper

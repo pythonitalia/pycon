@@ -4,6 +4,7 @@ import type { NextRequest } from "next/server";
 import { DEFAULT_LOCALE, VALID_LOCALES } from "~/locale/languages";
 
 const PUBLIC_FILE = /\.(.*)$/;
+const LOGIN_REDIRECT_URL = ["/cfp", "/grants"];
 
 const handleLocale = (req: NextRequest) => {
   const locale = getLocale(
@@ -32,9 +33,9 @@ export function middleware(req: NextRequest) {
     return handleLocale(req);
   }
 
-  if (req.nextUrl.pathname === "/cfp" && !isLoggedIn) {
+  if (LOGIN_REDIRECT_URL.includes(req.nextUrl.pathname) && !isLoggedIn) {
     const url = req.nextUrl.clone();
-    url.search = "?next=/cfp";
+    url.search = `?next=${req.nextUrl.pathname}`;
     url.pathname = `/login`;
     return NextResponse.redirect(url);
   }
