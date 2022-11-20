@@ -3,7 +3,7 @@ from import_export.admin import ExportMixin
 from import_export.fields import Field
 
 from submissions.models import Submission
-from users.mixins import ResourceUsersByEmailsMixin
+from users.mixins import AdminUsersMixin, ResourceUsersByEmailsMixin, SearchUsersMixin
 
 from .models import Grant
 
@@ -86,10 +86,10 @@ class GrantResource(ResourceUsersByEmailsMixin):
 
 
 @admin.register(Grant)
-class GrantAdmin(ExportMixin, admin.ModelAdmin):
+class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
     resource_class = GrantResource
     list_display = (
-        "email",
+        "user_display_name",
         "full_name",
         "conference",
         "travelling_from",
@@ -119,3 +119,11 @@ class GrantAdmin(ExportMixin, admin.ModelAdmin):
         "why",
         "notes",
     )
+    user_fk = "user_id"
+
+    def user_display_name(self, obj):
+        if obj.user_id:
+            return self.get_user_display_name(obj.user_id)
+        return obj.email
+
+    user_display_name.short_description = "User"

@@ -23,13 +23,17 @@ class GrantForm(ContextAwareModelForm):
         if not conference.is_grants_open:
             raise exceptions.ValidationError(_("The grants form is now closed!"))
 
+    def save(self, commit=True):
+        self.instance.user_id = self.context.request.user.id
+
+        return super().save(commit=commit)
+
     class Meta:
         model = Grant
         fields = (
             "name",
             "full_name",
             "conference",
-            "email",
             "age",
             "gender",
             "occupation",

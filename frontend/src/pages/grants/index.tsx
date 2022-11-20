@@ -8,9 +8,12 @@ import { Box, jsx, Text } from "theme-ui";
 import { GetStaticProps } from "next";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
+import { Alert } from "~/components/alert";
 import { GrantForm } from "~/components/grant-form";
 import { Introduction } from "~/components/grants-introduction";
+import { LoginForm } from "~/components/login-form";
 import { MetaTags } from "~/components/meta-tags";
+import { useLoginState } from "~/components/profile/hooks";
 import { formatDeadlineDateTime } from "~/helpers/deadlines";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
@@ -54,7 +57,9 @@ const GrantsClosed = () => {
 };
 
 export const GrantsPage = () => {
+  const [isLoggedIn, _] = useLoginState();
   const code = process.env.conferenceCode;
+
   const {
     data: {
       conference: { deadline },
@@ -87,13 +92,31 @@ export const GrantsPage = () => {
           my: 5,
         }}
       >
-        {status === DeadlineStatus.HappeningNow && (
-          <GrantForm conference={code} />
+        {isLoggedIn ? (
+          <>
+            {" "}
+            {status === DeadlineStatus.HappeningNow && (
+              <GrantForm conference={code} />
+            )}
+            {status === DeadlineStatus.InTheFuture && (
+              <GrantsComingSoon start={start} />
+            )}
+            {status === DeadlineStatus.InThePast && <GrantsClosed />}
+          </>
+        ) : (
+          <>
+            <Alert variant="info" sx={{ mt: 4 }}>
+              <FormattedMessage id="grants.form.needToBeLoggedIn" />
+            </Alert>
+
+            <LoginForm
+              sx={{ mt: 4 }}
+              next={
+                typeof window !== "undefined" ? window.location?.pathname : null
+              }
+            />
+          </>
         )}
-        {status === DeadlineStatus.InTheFuture && (
-          <GrantsComingSoon start={start} />
-        )}
-        {status === DeadlineStatus.InThePast && <GrantsClosed />}
       </Box>
     </React.Fragment>
   );

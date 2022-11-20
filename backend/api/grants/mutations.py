@@ -1,5 +1,6 @@
 import strawberry
 
+from api.permissions import IsAuthenticated
 from strawberry_forms.mutations import FormMutation
 
 from .forms import GrantForm
@@ -14,6 +15,7 @@ class SendGrantRequest(FormMutation):
 
     class Meta:
         output_types = (GrantRequest,)
+        permission_classes = (IsAuthenticated,)
         form_class = GrantForm
 
 

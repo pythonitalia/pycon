@@ -32,7 +32,6 @@ import {
 export type GrantFormFields = {
   name: string;
   fullName: string;
-  email: string;
   age: number;
   gender: string;
   occupation: string;
@@ -51,7 +50,7 @@ type Props = { conference: string };
 export const GrantForm = ({ conference }: Props) => {
   const [
     formState,
-    { text, number: numberInput, email, textarea, select, checkbox },
+    { text, number: numberInput, textarea, select, checkbox },
   ] = useFormState<GrantFormFields>(
     {},
     {
@@ -79,7 +78,6 @@ export const GrantForm = ({ conference }: Props) => {
             needsFundsForTravel: formState.values.needsFundsForTravel,
             why: formState.values.why,
             travellingFrom: formState.values.travellingFrom,
-            email: formState.values.email,
             occupation: formState.values.occupation,
             pythonUsage: formState.values.pythonUsage,
           },
@@ -144,17 +142,6 @@ export const GrantForm = ({ conference }: Props) => {
           errors={getErrors("name")}
         >
           <Input {...text("name")} required={true} />
-        </InputWrapper>
-
-        <InputWrapper
-          isRequired={true}
-          label={<FormattedMessage id="grants.form.fields.email" />}
-          description={
-            <FormattedMessage id="grants.form.fields.email.description" />
-          }
-          errors={getErrors("email")}
-        >
-          <Input {...email("email")} required={true} />
         </InputWrapper>
 
         <InputWrapper

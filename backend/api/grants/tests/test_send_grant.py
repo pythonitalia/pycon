@@ -1,5 +1,7 @@
 import pytest
 
+pytestmark = pytest.mark.django_db
+
 
 def _send_grant(client, grant_factory, conference, **kwargs):
     grant = grant_factory.build(conference=conference)
@@ -14,7 +16,6 @@ def _send_grant(client, grant_factory, conference, **kwargs):
 
                 ... on SendGrantRequestErrors {
                     validationConference: conference
-                    validationEmail: email
                     validationName: name
                     validationFullName: fullName
                     validationGender: gender
@@ -40,7 +41,6 @@ def _send_grant(client, grant_factory, conference, **kwargs):
             "name": grant.name,
             "fullName": grant.full_name,
             "conference": grant.conference.code,
-            "email": grant.email,
             "age": grant.age,
             "gender": grant.gender,
             "occupation": grant.occupation,
@@ -61,7 +61,6 @@ def _send_grant(client, grant_factory, conference, **kwargs):
     return response
 
 
-@pytest.mark.django_db
 def test_send_grant(graphql_client, user, conference_factory, grant_factory):
     graphql_client.force_login(user)
     conference = conference_factory(active_grants=True)
@@ -71,7 +70,6 @@ def test_send_grant(graphql_client, user, conference_factory, grant_factory):
     assert response["data"]["sendGrantRequest"]["id"]
 
 
-@pytest.mark.django_db
 def test_cannot_send_a_grant_if_grants_are_closed(
     graphql_client, user, conference_factory, grant_factory
 ):
@@ -86,7 +84,6 @@ def test_cannot_send_a_grant_if_grants_are_closed(
     ]
 
 
-@pytest.mark.django_db
 def test_cannot_send_a_grant_if_grants_deadline_do_not_exists(
     graphql_client, user, conference, grant_factory
 ):
@@ -99,3 +96,11 @@ def test_cannot_send_a_grant_if_grants_deadline_do_not_exists(
     assert response["data"]["sendGrantRequest"]["nonFieldErrors"] == [
         "The grants form is now closed!"
     ]
+
+
+def test_cannot_send_a_grant_as_unlogged_user(
+    graphql_client, conference, grant_factory
+):
+    resp = _send_grant(graphql_client, grant_factory, conference)
+
+    assert resp["errors"][0]["message"] == "User not logged in"
