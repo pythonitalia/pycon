@@ -1,8 +1,9 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from helpers.constants import GENDERS
 from model_utils import Choices
 from model_utils.models import TimeStampedModel
+
+from helpers.constants import GENDERS
 
 OCCUPATIONS = Choices(
     ("developer", _("Developer")),
@@ -32,6 +33,7 @@ class Grant(TimeStampedModel):
         verbose_name=_("conference"),
         related_name="grants",
     )
+    user_id = models.IntegerField(verbose_name=_("user"), null=True)
     email = models.EmailField(_("email address"))
     age = models.PositiveSmallIntegerField(_("age"))
     gender = models.CharField(_("gender"), choices=GENDERS, max_length=10, blank=True)
@@ -48,6 +50,3 @@ class Grant(TimeStampedModel):
     why = models.TextField(_("Why are you asking for a grant?"))
     notes = models.TextField(_("Notes"), blank=True)
     travelling_from = models.CharField(_("Travelling from"), max_length=200)
-
-    class Meta:
-        unique_together = ["email", "conference"]
