@@ -104,3 +104,12 @@ def test_cannot_send_a_grant_as_unlogged_user(
     resp = _send_grant(graphql_client, grant_factory, conference)
 
     assert resp["errors"][0]["message"] == "User not logged in"
+
+
+def test_cannot_send_two_grants(graphql_client, user, grant_factory, conference):
+    graphql_client.force_login(user)
+    _send_grant(graphql_client, grant_factory, conference)
+
+    response = _send_grant(graphql_client, grant_factory, conference)
+
+    assert response["errors"][0]["message"] == "Grant already submitted!"
