@@ -50,7 +50,6 @@ type Props = { conference: string };
 
 export const GrantForm = ({ conference }: Props) => {
   const { user } = useCurrentUser({});
-  console.log(user);
   const [
     formState,
     { text, number: numberInput, textarea, select, checkbox },
@@ -62,6 +61,7 @@ export const GrantForm = ({ conference }: Props) => {
   );
 
   useEffect(() => {
+    formState.setField("fullName", user?.fullName);
     formState.setField("name", user?.name);
     formState.setField("gender", user?.gender);
     if (user?.dateBirth) {
