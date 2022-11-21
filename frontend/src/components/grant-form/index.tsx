@@ -155,7 +155,7 @@ export const GrantForm = ({ conference }: Props) => {
           }
           errors={getErrors("name")}
         >
-          <Input value={user?.name} {...text("name")} required={true} />
+          <Input {...text("name")} required={true} />
         </InputWrapper>
 
         <InputWrapper

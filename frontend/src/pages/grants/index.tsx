@@ -92,31 +92,13 @@ export const GrantsPage = () => {
           my: 5,
         }}
       >
-        {isLoggedIn ? (
-          <>
-            {" "}
-            {status === DeadlineStatus.HappeningNow && (
-              <GrantForm conference={code} />
-            )}
-            {status === DeadlineStatus.InTheFuture && (
-              <GrantsComingSoon start={start} />
-            )}
-            {status === DeadlineStatus.InThePast && <GrantsClosed />}
-          </>
-        ) : (
-          <>
-            <Alert variant="info" sx={{ mt: 4 }}>
-              <FormattedMessage id="grants.form.needToBeLoggedIn" />
-            </Alert>
-
-            <LoginForm
-              sx={{ mt: 4 }}
-              next={
-                typeof window !== "undefined" ? window.location?.pathname : null
-              }
-            />
-          </>
+        {status === DeadlineStatus.HappeningNow && (
+          <GrantForm conference={code} />
         )}
+        {status === DeadlineStatus.InTheFuture && (
+          <GrantsComingSoon start={start} />
+        )}
+        {status === DeadlineStatus.InThePast && <GrantsClosed />}
       </Box>
     </React.Fragment>
   );

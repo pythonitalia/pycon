@@ -23,11 +23,8 @@ class GrantForm(ContextAwareModelForm):
         if not conference.is_grants_open:
             raise exceptions.ValidationError(_("The grants form is now closed!"))
 
-        try:
-            Grant.objects.get(user_id=self.context.request.user.id)
+        if Grant.objects.filter(user_id=self.context.request.user.id).exists():
             raise exceptions.ValidationError(_("Grant already submitted!"))
-        except Grant.DoesNotExist:
-            pass
 
     def save(self, commit=True):
         self.instance.user_id = self.context.request.user.id
