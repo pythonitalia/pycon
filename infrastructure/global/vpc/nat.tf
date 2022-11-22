@@ -58,6 +58,14 @@ resource "aws_security_group" "nat" {
     cidr_blocks = [aws_vpc.default.cidr_block]
   }
 
+  ingress {
+    description = "Postgres traffic"
+    from_port   = 5432
+    to_port     = 5432
+    protocol    = "tcp"
+    cidr_blocks = [aws_vpc.default.cidr_block]
+  }
+
   egress {
     from_port   = 80
     to_port     = 80
@@ -68,6 +76,13 @@ resource "aws_security_group" "nat" {
   egress {
     from_port   = 443
     to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 5432
+    to_port     = 5432
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
