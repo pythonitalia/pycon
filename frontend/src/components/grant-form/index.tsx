@@ -10,6 +10,7 @@ import {
   Flex,
   Heading,
   Input,
+  Label,
   jsx,
   Select,
   Text,
@@ -191,8 +192,10 @@ export const GrantForm = ({ conference }: Props) => {
           }
         >
           <Flex>
-            <Checkbox {...checkbox("needsFundsForTravel")} />
-            <FormattedMessage id="grants.form.fields.needsFundsForTravel.label" />
+            <Label>
+              <Checkbox {...checkbox("needsFundsForTravel")} />
+              <FormattedMessage id="grants.form.fields.needsFundsForTravel.label" />
+            </Label>
           </Flex>
         </InputWrapper>
 
