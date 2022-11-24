@@ -335,6 +335,10 @@ export const messages = {
     "grants.closed":
       "The grants form is now closed! If you sent a request, you will be contacted by us in the next few weeks with our decision.",
 
+    "grants.alreadySubmitted":
+      "You already submitted a Grant! Cick {linkGrant} to edit it.",
+    "grants.alreadySubmitted.linkGrant.text": "here",
+
     "grants.form.needToBeLoggedIn":
       "Login or create an account to send a grant",
     "grants.form.title": "Request a grant",
@@ -903,6 +907,10 @@ export const messages = {
     "grants.comingSoon": "Il form per i grant apre il {start}!",
     "grants.closed":
       "Il form per richiede grant è chiuso! Se hai inviato una richiesta sarai contattato nelle prossime settimane con l'esito.",
+
+    "grants.alreadySubmitted":
+      "Hai gia' richiesto un grant! Clicca {linkGrant} per editarlo.",
+    "grants.alreadySubmitted.linkGrant.text": "qui",
 
     "grants.form.needToBeLoggedIn":
       "Devi effettuare l'accesso per chiedere un grant",

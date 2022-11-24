@@ -8,7 +8,7 @@ import { Box, jsx, Text } from "theme-ui";
 import { GetStaticProps } from "next";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
-import { GrantForm } from "~/components/grant-form";
+import { MyGrantOrForm } from "~/components/grant-form";
 import { Introduction } from "~/components/grants-introduction";
 import { MetaTags } from "~/components/meta-tags";
 import { formatDeadlineDateTime } from "~/helpers/deadlines";
@@ -89,7 +89,7 @@ export const GrantsPage = () => {
         }}
       >
         {status === DeadlineStatus.HappeningNow && (
-          <GrantForm conference={code} />
+          <MyGrantOrForm conference={code} />
         )}
         {status === DeadlineStatus.InTheFuture && (
           <GrantsComingSoon start={start} />

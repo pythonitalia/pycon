@@ -17,8 +17,10 @@ import {
   Textarea,
 } from "theme-ui";
 
+import { MyGrant } from "~/components/profile/my-grant";
 import { useCurrentUser } from "~/helpers/use-current-user";
 import { useSendGrantRequestMutation } from "~/types";
+import { useMyGrantQuery } from "~/types";
 
 import { Alert } from "../alert";
 import { Button } from "../button/button";
@@ -48,6 +50,17 @@ export type GrantFormFields = {
 };
 
 type Props = { conference: string };
+
+export const MyGrantOrForm = ({ conference }: Props) => {
+  const code = process.env.conferenceCode;
+  const { loading, error, data } = useMyGrantQuery({
+    variables: {
+      conference: code,
+    },
+  });
+
+  return <>{data?.me?.grant ? <MyGrant /> : <GrantForm conference={code} />}</>;
+};
 
 export const GrantForm = ({ conference }: Props) => {
   const { user, loading: loadingUser } = useCurrentUser({});

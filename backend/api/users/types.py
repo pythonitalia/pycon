@@ -1,12 +1,15 @@
 from typing import List, Optional
 
 import strawberry
+from strawberry.types import Info
 
+from api.grants.types import GrantRequest
 from api.participants.types import Participant
 from api.pretix.query import get_user_orders, get_user_tickets
 from api.pretix.types import AttendeeTicket, PretixOrder
 from api.submissions.types import Submission
 from conferences.models import Conference
+from grants.models import Grant as GrantModel
 from participants.models import Participant as ParticipantModel
 from submissions.models import Submission as SubmissionModel
 
@@ -22,6 +25,13 @@ class User:
         cls, id: strawberry.ID, email: str = "", isStaff: bool = False
     ):
         return cls(id=id, email=email, isStaff=isStaff)
+
+    @strawberry.field
+    def grant(self, info: Info, conference: str) -> Optional[GrantRequest]:
+        grant = GrantModel.objects.filter(
+            user_id=self.id, conference__code=conference
+        ).first()
+        return GrantRequest.from_model(grant) if grant else None
 
     @strawberry.field
     def participant(self, info, conference: str) -> Optional[Participant]:

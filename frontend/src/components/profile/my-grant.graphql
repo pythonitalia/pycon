@@ -1,0 +1,9 @@
+query MyGrant($conference: String!) {
+  me {
+    id
+
+    grant(conference: $conference) {
+      id
+    }
+  }
+}
