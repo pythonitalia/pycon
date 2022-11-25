@@ -1,0 +1,28 @@
+variable "service_name" {
+  type = string
+}
+
+variable "resource_group_id" {
+  type = string
+}
+
+variable "env_vars" {
+  type = list(object({
+    name   = string
+    value  = string
+    secret = bool
+  }))
+}
+
+variable "workspace" {
+  type = string
+}
+
+variable "local_path" {
+  type    = string
+  default = null
+}
+
+variable "githash" {
+  type = string
+}

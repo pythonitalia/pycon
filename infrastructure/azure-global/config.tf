@@ -1,4 +1,15 @@
 terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "=3.34.0"
+    }
+    azapi = {
+      source  = "azure/azapi"
+      version = "~>0.4.0"
+    }
+  }
+
   cloud {
     organization = "python-italia"
 
@@ -8,15 +19,8 @@ terraform {
   }
 }
 
-terraform {
-  required_providers {
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = "=3.31.0"
-    }
-  }
-}
-
 provider "azurerm" {
   features {}
 }
+
+provider "azapi" {}
