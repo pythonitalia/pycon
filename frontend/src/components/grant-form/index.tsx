@@ -50,7 +50,7 @@ export type GrantFormFields = {
 type Props = { conference: string };
 
 export const GrantForm = ({ conference }: Props) => {
-  const { user } = useCurrentUser({});
+  const { user, loading: loadingUser } = useCurrentUser({});
   const [
     formState,
     { text, number: numberInput, textarea, select, checkbox },
@@ -62,14 +62,16 @@ export const GrantForm = ({ conference }: Props) => {
   );
 
   useEffect(() => {
-    formState.setField("fullName", user?.fullName);
-    formState.setField("name", user?.name);
-    formState.setField("gender", user?.gender);
-    if (user?.dateBirth) {
-      formState.setField(
-        "age",
-        new Date().getFullYear() - new Date(user.dateBirth).getFullYear(),
-      );
+    if (user) {
+      formState.setField("fullName", user.fullName);
+      formState.setField("name", user.name);
+      formState.setField("gender", user.gender);
+      if (user.dateBirth) {
+        formState.setField(
+          "age",
+          new Date().getFullYear() - new Date(user.dateBirth).getFullYear(),
+        );
+      }
     }
   }, [user]);
 
@@ -127,11 +129,15 @@ export const GrantForm = ({ conference }: Props) => {
     );
   }
 
+  if (loadingUser) {
+    return null;
+  }
+
   return (
     <Fragment>
-      <Text mb={4} as="h1">
+      <Heading mb={4} as="h1">
         <FormattedMessage id="grants.form.title" />
-      </Text>
+      </Heading>
       <Box as="form" onSubmit={onSubmit}>
         <Heading sx={{ mb: 3 }}>
           <FormattedMessage id="grants.form.aboutYou" />
@@ -191,12 +197,10 @@ export const GrantForm = ({ conference }: Props) => {
             <FormattedMessage id="grants.form.fields.needsFundsForTravel" />
           }
         >
-          <Flex>
-            <Label>
-              <Checkbox {...checkbox("needsFundsForTravel")} />
-              <FormattedMessage id="grants.form.fields.needsFundsForTravel.label" />
-            </Label>
-          </Flex>
+          <Label>
+            <Checkbox {...checkbox("needsFundsForTravel")} />
+            <FormattedMessage id="grants.form.fields.needsFundsForTravel.label" />
+          </Label>
         </InputWrapper>
 
         <InputWrapper
