@@ -130,7 +130,11 @@ export const GrantForm = ({ conference }: Props) => {
   }
 
   if (loadingUser) {
-    return null;
+    return (
+      <Alert variant="info">
+        <FormattedMessage id="global.loading" />
+      </Alert>
+    );
   }
 
   return (
