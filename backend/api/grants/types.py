@@ -4,7 +4,7 @@ from grants.models import Grant
 
 
 @strawberry.type
-class GrantRequest:
+class Grant:
     id: strawberry.ID
 
     @classmethod

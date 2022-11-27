@@ -40,3 +40,17 @@ repos:
             files: '^.*\.(py|mjml|js|jsx|tf|tfvars|conf)$'
           - id: check-merge-conflict
           - id: detect-private-key
+    - repo: 'https://github.com/myint/autoflake'
+      rev: v1.4
+      hooks:
+        - id: autoflake
+          args:
+            - '--in-place'
+            - '--remove-all-unused-imports'
+            - '--ignore-init-module-imports'
+          name: autoflake
+          entry: autoflake
+          language: python
+          types:
+            - python
+          require_serial: true

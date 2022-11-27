@@ -3,7 +3,7 @@ from typing import List, Optional
 import strawberry
 from strawberry.types import Info
 
-from api.grants.types import GrantRequest
+from api.grants.types import Grant
 from api.participants.types import Participant
 from api.pretix.query import get_user_orders, get_user_tickets
 from api.pretix.types import AttendeeTicket, PretixOrder
@@ -27,11 +27,11 @@ class User:
         return cls(id=id, email=email, isStaff=isStaff)
 
     @strawberry.field
-    def grant(self, info: Info, conference: str) -> Optional[GrantRequest]:
+    def grant(self, info: Info, conference: str) -> Optional[Grant]:
         grant = GrantModel.objects.filter(
             user_id=self.id, conference__code=conference
         ).first()
-        return GrantRequest.from_model(grant) if grant else None
+        return Grant.from_model(grant) if grant else None
 
     @strawberry.field
     def participant(self, info, conference: str) -> Optional[Participant]:

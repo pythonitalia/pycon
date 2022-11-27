@@ -4,6 +4,7 @@ from model_utils import Choices
 from model_utils.models import TimeStampedModel
 
 from helpers.constants import GENDERS
+from users.models import User
 
 OCCUPATIONS = Choices(
     ("developer", _("Developer")),
@@ -50,3 +51,6 @@ class Grant(TimeStampedModel):
     why = models.TextField(_("Why are you asking for a grant?"))
     notes = models.TextField(_("Notes"), blank=True)
     travelling_from = models.CharField(_("Travelling from"), max_length=200)
+
+    def can_edit(self, user: User):
+        return self.user_id == user.id
