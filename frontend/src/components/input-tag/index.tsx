@@ -54,6 +54,7 @@ export const TagLine = ({ tags, onTagChange }: TagLineProps) => {
       value={value}
       onChange={onChange}
       isMulti={true}
+      isOptionDisabled={() => value.length >= 5}
       name="tags"
       options={submissionTags}
     />
