@@ -4,10 +4,10 @@ module.exports = {
   darkMode: false,
   theme: {
     fontFamily: {
-      sans: ["aktiv-grotesk-extended", "ui-sans", "system-ui"],
-      mono: ["Source Code Pro", "Menlo", "Consolas", "Monaco", "monospace"],
-      display: ["aktiv-grotesk-extended"],
-      body: ["aktiv-grotesk-extended"],
+      sans: ["GeneralSans-Variable", "ui-sans", "system-ui"],
+      mono: ["JetBrainsMono", "Source Code Pro", "Menlo", "Consolas", "Monaco", "monospace"],
+      display: ["GeneralSans-Variable"],
+      body: ["GeneralSans-Variable"],
     },
     fontSize: {
       "2xs": ".5rem",

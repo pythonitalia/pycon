@@ -14,11 +14,10 @@ export const Paragraph = ({
   <p
     className={clsx("mb-8", {
       "font-bold": bold,
-      "text-blue": color === "aquamarine",
-      "text-orange": color === "casablanca",
-      "text-black": color === "black",
+      "text-blue": color === "blue",
       "text-orange": color === "orange",
-      "text-green": color === "casablanca",
+      "text-black": color === "black",
+      "text-green": color === "green",
       "text-pink": color === "pink",
       "text-purple": color === "purple",
       "text-white": color === "white",

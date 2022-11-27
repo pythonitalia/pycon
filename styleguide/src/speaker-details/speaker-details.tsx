@@ -31,7 +31,7 @@ export const SpeakerDetails = ({
   occupation,
   bio,
   twitter,
-  color = "aquamarine",
+  color = "blue",
 }: Props) => (
   <div className="md:flex w-full flex-row">
     <div className="w-full border-4 md:w-1/4 self-start">
@@ -40,10 +40,9 @@ export const SpeakerDetails = ({
         portraitUrl={portraitUrl}
         subtitle={subtitle}
         className={clsx({
-          "bg-blue": color === "aquamarine",
-          "bg-orange": color === "casablanca",
+          "bg-blue": color === "blue",
           "bg-orange": color === "orange",
-          "bg-green": color === "casablanca",
+          "bg-green": color === "green",
           "bg-pink": color === "pink",
           "bg-purple": color === "purple",
         })}

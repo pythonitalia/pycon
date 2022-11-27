@@ -19,7 +19,7 @@ export const SplitSection = ({
   illustrationFirst = false,
   hideIllustrationOnMobile = false,
   illustration: Illustration = SnakeCouple,
-  highlightColor = "keppel",
+  highlightColor = "orange",
 }: Props) => {
   let top = (
     <div className="p-8 md:p-16 md:w-1/2">
@@ -39,10 +39,9 @@ export const SplitSection = ({
         <div className="relative aspect-w-1 aspect-h-1">
           <div
             className={clsx("absolute w-full h-full bg-green top-10 left-20", {
-              "bg-blue": highlightColor === "aquamarine",
-              "bg-orange": highlightColor === "casablanca",
+              "bg-blue": highlightColor === "blue",
               "bg-orange": highlightColor === "orange",
-              "bg-green": highlightColor === "casablanca",
+              "bg-green": highlightColor === "green",
               "bg-pink": highlightColor === "pink",
               "bg-purple": highlightColor === "purple",
               "bg-black": highlightColor === "black",

@@ -111,6 +111,6 @@ jobs:
             Pre-release **${{ steps.release.outputs.version }}** [${{ steps.metadata.outputs.commit }}] has been released on NPM! :rocket:
             You can try it by doing:
             ```shell
-            npm install @python-italia/pycon-styleguide@${{ steps.release.outputs.version }}
+            pnpm add @python-italia/pycon-styleguide@${{ steps.release.outputs.version }}
             ```
           edit-mode: replace

@@ -12,7 +12,13 @@ const assetFileNames = (assetInfo) =>
 
 const plugins = [
   commonjs(),
-  styles({ mode: "extract", config: { path: "./postcss.config.js" } }),
+  styles({
+    url: {
+      hash: "[name]-[hash][extname]",
+    },
+    mode: "extract",
+    config: { path: "./postcss.config.js" },
+  }),
   terser({
     output: {
       comments: false,
