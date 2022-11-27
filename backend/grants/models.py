@@ -52,5 +52,8 @@ class Grant(TimeStampedModel):
     notes = models.TextField(_("Notes"), blank=True)
     travelling_from = models.CharField(_("Travelling from"), max_length=200)
 
+    def __str__(self):
+        return f"{self.full_name}"
+
     def can_edit(self, user: User):
         return self.user_id == user.id
