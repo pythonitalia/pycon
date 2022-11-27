@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
-import React, { Fragment, useCallback } from "react";
+import React, { Fragment, useCallback, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import {
@@ -10,12 +10,14 @@ import {
   Flex,
   Heading,
   Input,
+  Label,
   jsx,
   Select,
   Text,
   Textarea,
 } from "theme-ui";
 
+import { useCurrentUser } from "~/helpers/use-current-user";
 import { useSendGrantRequestMutation } from "~/types";
 
 import { Alert } from "../alert";
@@ -32,7 +34,6 @@ import {
 export type GrantFormFields = {
   name: string;
   fullName: string;
-  email: string;
   age: number;
   gender: string;
   occupation: string;
@@ -49,15 +50,30 @@ export type GrantFormFields = {
 type Props = { conference: string };
 
 export const GrantForm = ({ conference }: Props) => {
+  const { user, loading: loadingUser } = useCurrentUser({});
   const [
     formState,
-    { text, number: numberInput, email, textarea, select, checkbox },
+    { text, number: numberInput, textarea, select, checkbox },
   ] = useFormState<GrantFormFields>(
     {},
     {
       withIds: true,
     },
   );
+
+  useEffect(() => {
+    if (user) {
+      formState.setField("fullName", user.fullName);
+      formState.setField("name", user.name);
+      formState.setField("gender", user.gender);
+      if (user.dateBirth) {
+        formState.setField(
+          "age",
+          new Date().getFullYear() - new Date(user.dateBirth).getFullYear(),
+        );
+      }
+    }
+  }, [user]);
 
   const [submitGrant, { loading, data }] = useSendGrantRequestMutation();
 
@@ -79,7 +95,6 @@ export const GrantForm = ({ conference }: Props) => {
             needsFundsForTravel: formState.values.needsFundsForTravel,
             why: formState.values.why,
             travellingFrom: formState.values.travellingFrom,
-            email: formState.values.email,
             occupation: formState.values.occupation,
             pythonUsage: formState.values.pythonUsage,
           },
@@ -114,11 +129,19 @@ export const GrantForm = ({ conference }: Props) => {
     );
   }
 
+  if (loadingUser) {
+    return (
+      <Alert variant="info">
+        <FormattedMessage id="global.loading" />
+      </Alert>
+    );
+  }
+
   return (
     <Fragment>
-      <Text mb={4} as="h1">
+      <Heading mb={4} as="h1">
         <FormattedMessage id="grants.form.title" />
-      </Text>
+      </Heading>
       <Box as="form" onSubmit={onSubmit}>
         <Heading sx={{ mb: 3 }}>
           <FormattedMessage id="grants.form.aboutYou" />
@@ -144,17 +167,6 @@ export const GrantForm = ({ conference }: Props) => {
           errors={getErrors("name")}
         >
           <Input {...text("name")} required={true} />
-        </InputWrapper>
-
-        <InputWrapper
-          isRequired={true}
-          label={<FormattedMessage id="grants.form.fields.email" />}
-          description={
-            <FormattedMessage id="grants.form.fields.email.description" />
-          }
-          errors={getErrors("email")}
-        >
-          <Input {...email("email")} required={true} />
         </InputWrapper>
 
         <InputWrapper
@@ -189,10 +201,10 @@ export const GrantForm = ({ conference }: Props) => {
             <FormattedMessage id="grants.form.fields.needsFundsForTravel" />
           }
         >
-          <Flex>
+          <Label>
             <Checkbox {...checkbox("needsFundsForTravel")} />
             <FormattedMessage id="grants.form.fields.needsFundsForTravel.label" />
-          </Flex>
+          </Label>
         </InputWrapper>
 
         <InputWrapper

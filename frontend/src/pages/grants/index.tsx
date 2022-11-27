@@ -55,6 +55,7 @@ const GrantsClosed = () => {
 
 export const GrantsPage = () => {
   const code = process.env.conferenceCode;
+
   const {
     data: {
       conference: { deadline },
