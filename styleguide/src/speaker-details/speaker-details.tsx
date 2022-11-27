@@ -40,10 +40,10 @@ export const SpeakerDetails = ({
         portraitUrl={portraitUrl}
         subtitle={subtitle}
         className={clsx({
-          "bg-aquamarine": color === "aquamarine",
-          "bg-casablanca": color === "casablanca",
+          "bg-blue": color === "aquamarine",
+          "bg-orange": color === "casablanca",
           "bg-orange": color === "orange",
-          "bg-keppel": color === "casablanca",
+          "bg-green": color === "casablanca",
           "bg-pink": color === "pink",
           "bg-purple": color === "purple",
         })}

@@ -14,7 +14,7 @@ export const Footer = () => (
         <li>
           <SocialLink
             href="https://twitter.com/pyconit"
-            className="bg-keppel"
+            className="bg-green"
             icon={TwitterIcon}
           >
             Twitter

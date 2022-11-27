@@ -33,15 +33,15 @@ export const ScheduleItem = ({
   className?: string;
 }) => {
   const background = {
-    LIVE_CODING: "bg-keppel",
-    PERFORMANCE: "bg-cornflower-blue",
+    LIVE_CODING: "bg-green",
+    PERFORMANCE: "bg-blue",
     INTERMISSION: "bg-white",
-    LIGHTNING_TALK: "bg-casablanca",
+    LIGHTNING_TALK: "bg-orange",
     QUIZ: "bg-purple",
     INTERVIEW: "bg-pink",
-    CLOSING: "bg-cornflower-blue",
+    CLOSING: "bg-blue",
     DIVERSITY_SUCCESS_STORY: "bg-orange",
-    AMA: "bg-keppel",
+    AMA: "bg-green",
   }[event.type];
 
   if (event.status == "TBC") {
@@ -49,7 +49,7 @@ export const ScheduleItem = ({
       <div
         key={event.start}
         className={clsx(
-          "flex flex-col p-4 font-bold text-white bg-aquamarine",
+          "flex flex-col p-4 font-bold text-white bg-blue",
           className
         )}
         {...props}

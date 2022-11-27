@@ -17,10 +17,10 @@ export const Button = ({
     className={clsx(
       "flex items-center justify-items-center border-black border-2 p-3",
       {
-        "bg-aquamarine": color === "aquamarine",
-        "bg-casablanca": color === "casablanca",
+        "bg-blue": color === "aquamarine",
+        "bg-orange": color === "casablanca",
         "bg-orange": color === "orange",
-        "bg-keppel": color === "casablanca",
+        "bg-green": color === "casablanca",
         "bg-pink": color === "pink",
         "bg-purple": color === "purple",
         "bg-white": color === "white",

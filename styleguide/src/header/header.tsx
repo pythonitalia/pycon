@@ -54,7 +54,7 @@ const Menu = ({ links }: { links: Link[] }) => {
           <li>
             <SocialLink
               href="https://twitter.com/pyconit"
-              className="bg-keppel border-black border-4 fill-current text-black"
+              className="bg-green border-black border-4 fill-current text-black"
               icon={TwitterIcon}
             >
               Twitter
@@ -83,7 +83,6 @@ const Menu = ({ links }: { links: Link[] }) => {
     </div>
   );
 };
-
 
 export const Header = ({
   links = [],

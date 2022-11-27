@@ -10,7 +10,7 @@ p a {
 .dotted-underline {
   text-decoration: underline;
   text-decoration-style: dotted;
-  text-decoration-color: theme("colors.purple");
+  text-decoration-color: theme("colors.purple.light");
   text-underline-offset: 2px;
   text-decoration-thickness: 1px;
 }
@@ -18,7 +18,7 @@ p a {
 .wavy-underline {
   text-decoration: underline;
   text-decoration-style: wavy;
-  text-decoration-color: theme("colors.aquamarine");
+  text-decoration-color: theme("colors.blue.light");
 }
 
 .carousel-container {

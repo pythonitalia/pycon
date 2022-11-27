@@ -38,11 +38,11 @@ export const SplitSection = ({
       <div className="max-w-xs">
         <div className="relative aspect-w-1 aspect-h-1">
           <div
-            className={clsx("absolute w-full h-full bg-keppel top-10 left-20", {
-              "bg-aquamarine": highlightColor === "aquamarine",
-              "bg-casablanca": highlightColor === "casablanca",
+            className={clsx("absolute w-full h-full bg-green top-10 left-20", {
+              "bg-blue": highlightColor === "aquamarine",
+              "bg-orange": highlightColor === "casablanca",
               "bg-orange": highlightColor === "orange",
-              "bg-keppel": highlightColor === "casablanca",
+              "bg-green": highlightColor === "casablanca",
               "bg-pink": highlightColor === "pink",
               "bg-purple": highlightColor === "purple",
               "bg-black": highlightColor === "black",
@@ -60,9 +60,14 @@ export const SplitSection = ({
 
   return (
     <div>
-      <div className={clsx("max-w-7xl mx-auto md:flex md:grid-cols-2 md:divide-y-0 md:divide-x-4", {
-        "divide-y-4": !hideIllustrationOnMobile
-      })}>
+      <div
+        className={clsx(
+          "max-w-7xl mx-auto md:flex md:grid-cols-2 md:divide-y-0 md:divide-x-4",
+          {
+            "divide-y-4": !hideIllustrationOnMobile,
+          }
+        )}
+      >
         {top}
         {bottom}
       </div>

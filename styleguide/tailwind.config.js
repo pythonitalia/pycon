@@ -26,17 +26,98 @@ module.exports = {
     colors: {
       transparent: "transparent",
       current: "currentColor",
-      white: "white",
-      black: "black",
-      orange: "#F17A5D",
-      keppel: "#34B4A1",
-      casablanca: "#F8B03D",
-      aquamarine: "#79CDE0",
-      "cornflower-blue": "#6A80EF",
-      pink: "#DD9BC7",
-      purple: "#9473B0",
-      green: "#34B4A1",
-      grey: "#c6c6c6",
+
+      purple: {
+        light: '#835DB5',
+        dark: '#AB79EB',
+        DEFAULT: '#835DB5',
+      },
+      orange: {
+        light: '#D27B55',
+        dark: '#F88F62',
+        DEFAULT: '#D27B55',
+      },
+      blue: {
+        light: '#538AD4',
+        dark: '#62A2F8',
+        DEFAULT: '#538AD4',
+      },
+      green: {
+        light: '#469F81',
+        dark: '#57BF9C',
+        DEFAULT: '#469F81',
+      },
+      yellow: {
+        light: '#E4A239',
+        dark: '#F8B03D',
+        DEFAULT: '#E4A239',
+      },
+
+      pink: {
+        light: '#D15591',
+        dark: '#F862AA',
+        DEFAULT: '#D15591',
+      },
+
+      red: {
+        light: '#D75353',
+        dark: '#F86262',
+        DEFAULT: '#D75353',
+      },
+
+      black: {
+        light: '#0E1116',
+        DEFAULT: '#0E1116',
+      },
+
+      cream: {
+        light: '#FAF5F3',
+        DEFAULT: '#FAF5F3',
+      },
+
+      white: {
+        light: '#FFFFFF',
+        DEFAULT: '#FFFFFF',
+      },
+
+      grey: {
+        50: {
+          light: '#1A1D22',
+          DEFAULT: '#1A1D22',
+        },
+        100: {
+          light: '#26292D',
+          DEFAULT: '#26292D',
+        },
+        300: {
+          light: '#56585C',
+          DEFAULT: '#56585C',
+        },
+        500: {
+          light: '#87888B',
+          DEFAULT: '#87888B',
+        },
+        700: {
+          light: '#B7B8B9',
+          DEFAULT: '#B7B8B9',
+        },
+        900: {
+          light: '#E7E7E8',
+          DEFAULT: '#E7E7E8',
+        },
+      },
+
+    //   white: "white",
+    //   black: "black",
+    //   orange: "#F17A5D",
+    //   keppel: "#34B4A1",
+    //   casablanca: "#F8B03D",
+    //   aquamarine: "#79CDE0",
+    //   "cornflower-blue": "#6A80EF",
+    //   pink: "#DD9BC7",
+    //   purple: "#9473B0",
+    //   green: "#34B4A1",
+    //   grey: "#c6c6c6",
     },
     extend: {
       animation: {

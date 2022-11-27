@@ -1,9 +1,11 @@
 export type Color =
-  | "white"
-  | "black"
+  | "purple"
   | "orange"
-  | "keppel"
-  | "casablanca"
-  | "aquamarine"
+  | "blue"
+  | "green"
+  | "yellow"
   | "pink"
-  | "purple";
+  | "red"
+  | "black"
+  | "cream"
+  | "white";
