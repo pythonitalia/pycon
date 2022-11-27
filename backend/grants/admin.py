@@ -1,8 +1,10 @@
+from django import forms
 from django.contrib import admin
 from import_export.admin import ExportMixin
 from import_export.fields import Field
 
 from submissions.models import Submission
+from users.autocomplete import UsersBackendAutocomplete
 from users.mixins import AdminUsersMixin, ResourceUsersByEmailsMixin, SearchUsersMixin
 
 from .models import Grant
@@ -85,9 +87,37 @@ class GrantResource(ResourceUsersByEmailsMixin):
         export_order = EXPORT_GRANTS_FIELDS
 
 
+class GrantAdminForm(forms.ModelForm):
+    class Meta:
+        model = Grant
+        widgets = {
+            "user_id": UsersBackendAutocomplete(admin.site),
+        }
+        fields = (
+            "id",
+            "name",
+            "full_name",
+            "conference",
+            "user_id",
+            "email",
+            "age",
+            "gender",
+            "occupation",
+            "grant_type",
+            "python_usage",
+            "been_to_other_events",
+            "interested_in_volunteering",
+            "needs_funds_for_travel",
+            "why",
+            "notes",
+            "travelling_from",
+        )
+
+
 @admin.register(Grant)
 class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
     resource_class = GrantResource
+    form = GrantAdminForm
     list_display = (
         "user_display_name",
         "full_name",
@@ -104,7 +134,7 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
         "why",
         "notes",
     )
-
+    readonly_fields = ("email",)
     list_filter = (
         "conference",
         "occupation",
@@ -127,3 +157,6 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
         return obj.email
 
     user_display_name.short_description = "User"
+
+    class Media:
+        js = ["admin/js/jquery.init.js"]
