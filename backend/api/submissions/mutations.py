@@ -139,6 +139,8 @@ class BaseSubmissionInput:
 
         if not self.tags:
             errors.add_error("tags", "You need to add at least one tag")
+        elif len(self.tags) > 5:
+            errors.add_error("tags", "You can only add up to 5 tags")
 
         if not self.speaker_level:
             errors.add_error(

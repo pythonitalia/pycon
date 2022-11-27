@@ -171,7 +171,7 @@ export const messages = {
     "cfp.viewSubmission": "Open submission",
     "cfp.tagsLabel": "Tags",
     "cfp.tagsDescription":
-      "Tag your proposal to make it easier to find. Examples are 'Django, GraphQL, open-source'.",
+      "Use up to 5 tags to describe what your proposal is about. Examples are 'Django, GraphQL'.",
     "cfp.submissionSent": "Proposal sent!",
     "cfp.tryAgain": "Something went wrong: {error}",
     "cfp.selectDuration": "Select a duration",
@@ -755,7 +755,7 @@ export const messages = {
       "Puoi inviare la tua proposta in più lingue se lo desideri. I votatori vedranno la lingua che si adatta alle loro preferenze. Non duplicare le tue proposte per lingua o potrebbero essere annullate.",
     "cfp.tagsLabel": "Tags",
     "cfp.tagsDescription":
-      "Tagga la tua proposta per facilitare la ricerca. Ad esempio 'Django, GraphQL, open-source'.",
+      "Utilizza fino a 5 tag per descrivere l'argomento della tua proposta. Esempi sono 'Django, GraphQL'.",
     "cfp.submissionSent": "Proposal inviata!",
     "cfp.submit": "Invia",
     "cfp.tryAgain": "Si è verificato un errore: {error}",
