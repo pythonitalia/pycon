@@ -7,6 +7,7 @@ import Facebook from "../icons/social/facebook";
 import Instagram from "../icons/social/instagram";
 import Linkedin from "../icons/social/linkedin";
 import Twitter from "../icons/social/twitter";
+import Mastodon from "../icons/social/mastodon";
 import { SocialCircle } from "./social-circle";
 
 type SocialLinksProps = {
@@ -27,6 +28,15 @@ export const SocialLinks = (props: SocialLinksProps) => (
     }}
     {...props}
   >
+    <SocialCircle variant={props.variant} color="#2867B2">
+      <a
+        target="_blank"
+        rel="me noreferrer noopener"
+        href="https://social.python.it/@pycon"
+      >
+        <Mastodon />
+      </a>
+    </SocialCircle>
     <SocialCircle variant={props.variant} color="#1D9BF0">
       <a
         target="_blank"

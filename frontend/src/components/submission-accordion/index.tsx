@@ -115,28 +115,26 @@ export const SubmissionAccordion = ({
     setOpen(!open);
   }, [open]);
 
-  const [
-    sendVote,
-    { loading, error, data: submissionData },
-  ] = useSendVoteMutation({
-    update(cache, { data }) {
-      if (error || data?.sendVote.__typename === "SendVoteErrors") {
-        return;
-      }
+  const [sendVote, { loading, error, data: submissionData }] =
+    useSendVoteMutation({
+      update(cache, { data }) {
+        if (error || data?.sendVote.__typename === "SendVoteErrors") {
+          return;
+        }
 
-      cache.modify({
-        id: cache.identify({
-          id,
-          __typename: "Submission",
-        }),
-        fields: {
-          myVote() {
-            return data!.sendVote;
+        cache.modify({
+          id: cache.identify({
+            id,
+            __typename: "Submission",
+          }),
+          fields: {
+            myVote() {
+              return data!.sendVote;
+            },
           },
-        },
-      });
-    },
-  });
+        });
+      },
+    });
 
   const onSubmitVote = useCallback(
     (value) => {

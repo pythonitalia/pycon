@@ -51,15 +51,13 @@ type Props = { conference: string };
 
 export const GrantForm = ({ conference }: Props) => {
   const { user, loading: loadingUser } = useCurrentUser({});
-  const [
-    formState,
-    { text, number: numberInput, textarea, select, checkbox },
-  ] = useFormState<GrantFormFields>(
-    {},
-    {
-      withIds: true,
-    },
-  );
+  const [formState, { text, number: numberInput, textarea, select, checkbox }] =
+    useFormState<GrantFormFields>(
+      {},
+      {
+        withIds: true,
+      },
+    );
 
   useEffect(() => {
     if (user) {
