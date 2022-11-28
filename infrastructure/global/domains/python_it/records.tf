@@ -237,3 +237,48 @@ resource "aws_route53_record" "socialcards" {
   records = ["cname.vercel-dns.com"]
   ttl     = "3600"
 }
+
+# social.python.it
+# mailgun
+
+resource "aws_route53_record" "mailgun_social_txt" {
+  zone_id = aws_route53_zone.pythonit.id
+  name    = "social.python.it"
+  type    = "TXT"
+  records = ["v=spf1 include:mailgun.org ~all"]
+  ttl     = "3600"
+}
+
+resource "aws_route53_record" "mailgun_social_mta_txt" {
+  zone_id = aws_route53_zone.pythonit.id
+  name    = "mta._domainkey.social.python.it"
+  type    = "TXT"
+  records = ["k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDPMH32TC7vXwGqHf42aDvar8rM0+iLYYJSnj3U+ugwzXCCdhrcnaydwpayJ/nI1uVZNPKGIZPIdIoSKVAsbu9lGFv7X/JeTTdik1H7ZnAJ4GZpYl5ogPvMy6vXD7h4UHKsxpmkppmKm3LadcCyu3UUrwrDKaK/KFLNVuLTKWPc9wIDAQAB"]
+  ttl     = "3600"
+}
+
+resource "aws_route53_record" "social_python_it_mx" {
+  zone_id = aws_route53_zone.pythonit.id
+  name    = "social.python.it"
+  type    = "MX"
+  records = ["10 mxa.eu.mailgun.org", "10 mxb.eu.mailgun.org"]
+  ttl     = "172800"
+}
+
+resource "aws_route53_record" "email_social_python_it_cname" {
+  zone_id = aws_route53_zone.pythonit.id
+  name    = "email.social.python.it"
+  type    = "CNAME"
+  records = ["eu.mailgun.org"]
+  ttl     = "3600"
+}
+
+# fly.io
+
+resource "aws_route53_record" "social_python_it_cname" {
+  zone_id = aws_route53_zone.pythonit.id
+  name    = "social.python.it"
+  type    = "CNAME"
+  records = ["social-python-it.fly.dev"]
+  ttl     = "3600"
+}
