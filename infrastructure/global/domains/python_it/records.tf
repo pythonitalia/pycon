@@ -275,10 +275,10 @@ resource "aws_route53_record" "email_social_python_it_cname" {
 
 # fly.io
 
-resource "aws_route53_record" "social_python_it_cname" {
+resource "aws_route53_record" "social_python_it_fly" {
   zone_id = aws_route53_zone.pythonit.id
   name    = "social.python.it"
-  type    = "CNAME"
-  records = ["social-python-it.fly.dev"]
+  type    = "A"
+  records = ["149.248.213.46"]
   ttl     = "3600"
 }
