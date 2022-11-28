@@ -1,18 +1,17 @@
-mutation SendGrantRequest($input: SendGrantRequestInput!) {
-  sendGrantRequest(input: $input) {
+mutation SendGrant($input: SendGrantInput!) {
+  sendGrant(input: $input) {
     __typename
 
-    ... on GrantRequest {
+    ... on Grant {
       id
     }
 
-    ... on SendGrantRequestErrors {
+    ... on GrantErrors {
       validationConference: conference
       validationName: name
       validationFullName: fullName
       validationGender: gender
       validationGrantType: grantType
-      validationOccupation: occupation
       validationOccupation: occupation
       validationAge: age
       validationPythonUsage: pythonUsage

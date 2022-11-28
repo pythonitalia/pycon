@@ -21,7 +21,6 @@ def _send_grant(client, grant_factory, conference, **kwargs):
                     validationGender: gender
                     validationGrantType: grantType
                     validationOccupation: occupation
-                    validationOccupation: occupation
                     validationAge: age
                     validationPythonUsage: pythonUsage
                     validationBeenToOtherEvents: beenToOtherEvents
