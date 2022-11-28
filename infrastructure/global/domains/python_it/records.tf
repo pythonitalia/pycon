@@ -282,3 +282,11 @@ resource "aws_route53_record" "social_python_it_fly" {
   records = ["149.248.213.46"]
   ttl     = "3600"
 }
+
+resource "aws_route53_record" "social_python_it_fly_challange" {
+  zone_id = aws_route53_zone.pythonit.id
+  name    = "_acme-challenge.social.python.it"
+  type    = "CNAME"
+  records = ["social.python.it.y3xewx.flydns.net."]
+  ttl     = "3600"
+}
