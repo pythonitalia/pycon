@@ -26,12 +26,14 @@ export const AddHotelRoom = ({
   conferenceStart,
   addRoom,
 }: Props) => {
-  const momentConferenceStart = useMemo(() => moment.utc(conferenceStart), [
-    conferenceStart,
-  ]);
-  const momentConferenceEnd = useMemo(() => moment.utc(conferenceEnd), [
-    conferenceEnd,
-  ]);
+  const momentConferenceStart = useMemo(
+    () => moment.utc(conferenceStart),
+    [conferenceStart],
+  );
+  const momentConferenceEnd = useMemo(
+    () => moment.utc(conferenceEnd),
+    [conferenceEnd],
+  );
 
   const [formState, { select }] = useFormState<Form>();
 

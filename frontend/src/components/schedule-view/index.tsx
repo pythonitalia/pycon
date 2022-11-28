@@ -64,10 +64,8 @@ export const ScheduleView = ({
     variables: { code, day: currentDay, duration: 60, language },
   });
 
-  const [
-    addOrCreateScheduleItem,
-    { loading: updatingSchedule },
-  ] = useUpdateOrCreateSlotItemMutation();
+  const [addOrCreateScheduleItem, { loading: updatingSchedule }] =
+    useUpdateOrCreateSlotItemMutation();
 
   const addCustomScheduleItem = useCallback(
     (slotId: string, itemRooms: string[], title = "Custom") =>
