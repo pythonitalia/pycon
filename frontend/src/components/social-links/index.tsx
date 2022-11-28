@@ -28,6 +28,15 @@ export const SocialLinks = (props: SocialLinksProps) => (
     }}
     {...props}
   >
+    <SocialCircle variant={props.variant} color="#2867B2">
+      <a
+        target="_blank"
+        rel="me noreferrer noopener"
+        href="https://social.python.it/@pycon"
+      >
+        <Mastodon />
+      </a>
+    </SocialCircle>
     <SocialCircle variant={props.variant} color="#1D9BF0">
       <a
         target="_blank"
@@ -62,15 +71,6 @@ export const SocialLinks = (props: SocialLinksProps) => (
         href="https://www.linkedin.com/company/pycon-italia/"
       >
         <Linkedin />
-      </a>
-    </SocialCircle>
-    <SocialCircle variant={props.variant} color="#2867B2">
-      <a
-        target="_blank"
-        rel="me noreferrer noopener"
-        href="https://social.python.it/@pycon"
-      >
-        <Mastodon />
       </a>
     </SocialCircle>
   </Flex>
