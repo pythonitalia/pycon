@@ -14,7 +14,7 @@ export const Standard = ({ items }) => (
         name={`Speaker ${index + 1}`}
         subtitle="Python Italia"
         portraitUrl={`https://source.unsplash.com/800x800/?face&${index}`}
-        className="bg-orange"
+        className="bg-coral"
       />
     ))}
   </Carousel>

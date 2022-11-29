@@ -41,7 +41,7 @@ export const SpeakerDetails = ({
         subtitle={subtitle}
         className={clsx({
           "bg-blue": color === "blue",
-          "bg-orange": color === "orange",
+          "bg-coral": color === "coral",
           "bg-green": color === "green",
           "bg-pink": color === "pink",
           "bg-purple": color === "purple",

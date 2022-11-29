@@ -34,7 +34,7 @@ const RightArrow = ({ className }: { className?: string }) => (
   </svg>
 );
 
-const COLORS: Color[] = ["orange", "green", "blue", "yellow", "purple"];
+const COLORS: Color[] = ["coral", "green", "blue", "yellow", "purple"];
 
 const ArrowButton = ({
   onClick,

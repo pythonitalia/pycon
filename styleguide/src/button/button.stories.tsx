@@ -15,7 +15,7 @@ export const Story = () => (
       </Button>
     </div>
     <div>
-      <Button onClick={() => {}} color="aquamarine">
+      <Button onClick={() => {}} color="blue">
         🐦 Login with Twitter
       </Button>
     </div>
@@ -37,7 +37,7 @@ export const WithIcon = () => (
       <Button
         icon={<TwitterIcon fill="white" />}
         onClick={() => {}}
-        color="aquamarine"
+        color="blue"
       >
         Login with Twitter
       </Button>

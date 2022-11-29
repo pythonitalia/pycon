@@ -36,11 +36,11 @@ export const ScheduleItem = ({
     LIVE_CODING: "bg-green",
     PERFORMANCE: "bg-blue",
     INTERMISSION: "bg-white",
-    LIGHTNING_TALK: "bg-orange",
+    LIGHTNING_TALK: "bg-coral",
     QUIZ: "bg-purple",
     INTERVIEW: "bg-pink",
     CLOSING: "bg-blue",
-    DIVERSITY_SUCCESS_STORY: "bg-orange",
+    DIVERSITY_SUCCESS_STORY: "bg-coral",
     AMA: "bg-green",
   }[event.type];
 

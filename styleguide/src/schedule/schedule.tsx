@@ -164,7 +164,7 @@ export const Schedule = ({ program }: Props) => {
 
   return (
     <div>
-      <header className="bg-orange py-8 border-black border-b-4">
+      <header className="bg-coral py-8 border-black border-b-4">
         <div className="max-w-7xl m-auto px-8">
           <Title marginBottom={false}>Schedule</Title>
         </div>

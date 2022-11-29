@@ -15,7 +15,7 @@ export const Paragraph = ({
     className={clsx("mb-8", {
       "font-bold": bold,
       "text-blue": color === "blue",
-      "text-orange": color === "orange",
+      "text-coral": color === "coral",
       "text-black": color === "black",
       "text-green": color === "green",
       "text-pink": color === "pink",

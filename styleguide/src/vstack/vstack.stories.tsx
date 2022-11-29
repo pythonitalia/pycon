@@ -27,7 +27,7 @@ export const Primary = (props) => (
       Button
     </Button>
 
-    <Button onClick={() => {}} color="aquamarine">
+    <Button onClick={() => {}} color="blue">
       Button
     </Button>
   </VStack>

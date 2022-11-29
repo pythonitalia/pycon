@@ -27,97 +27,71 @@ module.exports = {
       transparent: "transparent",
       current: "currentColor",
 
-      purple: {
-        light: '#835DB5',
-        dark: '#AB79EB',
-        DEFAULT: '#835DB5',
+      // primary
+      coral: {
+        light: '#F17A5D',
+        DEFAULT: '#F17A5D',
       },
-      orange: {
-        light: '#D27B55',
-        dark: '#F88F62',
-        DEFAULT: '#D27B55',
+      caramel: {
+        light: '#EAD6CE',
+        DEFAULT: '#EAD6CE',
       },
-      blue: {
-        light: '#538AD4',
-        dark: '#62A2F8',
-        DEFAULT: '#538AD4',
+      cream: {
+        light: '#FCE8DE',
+        DEFAULT: '#FCE8DE',
+      },
+
+      // accent
+      yellow: {
+        light: '#F8B03D',
+        DEFAULT: '#F8B03D',
       },
       green: {
-        light: '#469F81',
-        dark: '#57BF9C',
-        DEFAULT: '#469F81',
+        light: '#34B4A1',
+        DEFAULT: '#34B4A1',
       },
-      yellow: {
-        light: '#E4A239',
-        dark: '#F8B03D',
-        DEFAULT: '#E4A239',
+      purple: {
+        light: '#9473B0',
+        DEFAULT: '#9473B0',
       },
-
       pink: {
-        light: '#D15591',
-        dark: '#F862AA',
-        DEFAULT: '#D15591',
+        light: '#DD9BC7',
+        DEFAULT: '#DD9BC7',
       },
-
+      blue: {
+        light: '#79CDE0',
+        DEFAULT: '#79CDE0',
+      },
+      // status
       red: {
         light: '#D75353',
-        dark: '#F86262',
         DEFAULT: '#D75353',
       },
-
-      black: {
-        light: '#0E1116',
-        DEFAULT: '#0E1116',
+      success: {
+        light: '#33BC8B',
+        DEFAULT: '#33BC8B',
+      },
+      warning: {
+        light: '#F8B03D',
+        DEFAULT: '#F8B03D',
+      },
+      neutral: {
+        light: '#538AD4',
+        DEFAULT: '#538AD4',
       },
 
-      cream: {
-        light: '#FAF5F3',
-        DEFAULT: '#FAF5F3',
-      },
-
-      white: {
-        light: '#FFFFFF',
-        DEFAULT: '#FFFFFF',
-      },
-
+      // grey scale
+      black: '#0E1116',
+      white: '#FFFFFF',
       grey: {
-        50: {
-          light: '#1A1D22',
-          DEFAULT: '#1A1D22',
-        },
-        100: {
-          light: '#26292D',
-          DEFAULT: '#26292D',
-        },
-        300: {
-          light: '#56585C',
-          DEFAULT: '#56585C',
-        },
-        500: {
-          light: '#87888B',
-          DEFAULT: '#87888B',
-        },
-        700: {
-          light: '#B7B8B9',
-          DEFAULT: '#B7B8B9',
-        },
-        900: {
-          light: '#E7E7E8',
-          DEFAULT: '#E7E7E8',
-        },
+        900: '#1A1C21',
+        700: '#494A4D',
+        500: '#848384',
+        250: '#BFBCBC',
+        100: '#E2DEDD',
+        50: '#EEEAE8',
       },
-
-    //   white: "white",
-    //   black: "black",
-    //   orange: "#F17A5D",
-    //   keppel: "#34B4A1",
-    //   casablanca: "#F8B03D",
-    //   aquamarine: "#79CDE0",
-    //   "cornflower-blue": "#6A80EF",
-    //   pink: "#DD9BC7",
-    //   purple: "#9473B0",
-    //   green: "#34B4A1",
-    //   grey: "#c6c6c6",
+      milk: '#A7A7A7',
     },
     extend: {
       animation: {

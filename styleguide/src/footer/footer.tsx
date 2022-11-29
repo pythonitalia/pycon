@@ -32,7 +32,7 @@ export const Footer = () => (
         <li>
           <SocialLink
             href="https://www.instagram.com/python.it/"
-            className="bg-orange"
+            className="bg-coral"
             icon={InstagramIcon}
           >
             Instagram

@@ -72,7 +72,7 @@ const Menu = ({ links }: { links: Link[] }) => {
           <li>
             <SocialLink
               href="https://www.instagram.com/python.it/"
-              className="bg-orange border-black border-4 fill-current text-black"
+              className="bg-coral border-black border-4 fill-current text-black"
               icon={InstagramIcon}
             >
               Instagram
@@ -97,7 +97,7 @@ export const Header = ({
     <div
       className={clsx({
         [`bg-${backgroundColor}`]: !menuOpen,
-        "bg-orange": menuOpen,
+        "bg-coral": menuOpen,
       })}
     >
       <header className="p-8 flex justify-between max-w-7xl mx-auto">
@@ -109,7 +109,7 @@ export const Header = ({
       </header>
 
       {menuOpen ? (
-        <div className="bg-orange border-t-4 border-b-4 border-black absolute z-20 w-full">
+        <div className="bg-coral border-t-4 border-b-4 border-black absolute z-20 w-full">
           <Menu links={links} />
         </div>
       ) : null}

@@ -18,7 +18,7 @@ export const Button = ({
       "flex items-center justify-items-center border-black border-2 p-3",
       {
         "bg-blue": color === "blue",
-        "bg-orange": color === "orange",
+        "bg-coral": color === "coral",
         "bg-green": color === "green",
         "bg-pink": color === "pink",
         "bg-purple": color === "purple",
