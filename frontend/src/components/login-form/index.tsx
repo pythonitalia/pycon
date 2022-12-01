@@ -60,12 +60,12 @@ export const LoginForm = ({ next, ...props }: FormProps) => {
   );
 
   useEffect(() => {
-    if (loggedIn) {
+    if (router.isReady && loggedIn) {
       Router.push(nextUrl);
     }
 
     clearMessages();
-  }, []);
+  }, [router.isReady]);
 
   const getFieldErrors = (field: "email" | "password") =>
     (loginData &&
