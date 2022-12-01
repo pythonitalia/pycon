@@ -37,7 +37,7 @@ class GrantForm(ContextAwareModelForm):
             "name",
             "full_name",
             "conference",
-            "age",
+            "age_group",
             "gender",
             "occupation",
             "grant_type",

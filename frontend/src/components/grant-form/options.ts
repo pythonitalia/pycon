@@ -105,3 +105,51 @@ export const INTERESTED_IN_VOLUNTEERING_OPTIONS = [
     messageId: "grants.form.fields.interestedInVolunteering.values.absolutely",
   },
 ];
+
+export const AGE_GROUPS_OPTIONS = [
+  {
+    value: "",
+    disabled: true,
+    messageId: "grants.form.fields.ageGroup.values.selectOption",
+  },
+  {
+    value: "range_less_than_10",
+    disabled: false,
+    messageId: "grants.form.fields.ageGroup.values.range_less_than_10",
+  },
+  {
+    value: "range_11_18",
+    disabled: false,
+    messageId: "grants.form.fields.ageGroup.values.range_11_18",
+  },
+  {
+    value: "range_19_24",
+    disabled: false,
+    messageId: "grants.form.fields.ageGroup.values.range_19_24",
+  },
+  {
+    value: "range_25_34",
+    disabled: false,
+    messageId: "grants.form.fields.ageGroup.values.range_25_34",
+  },
+  {
+    value: "RANGE_35_44",
+    disabled: false,
+    messageId: "grants.form.fields.ageGroup.values.range_35_44",
+  },
+  {
+    value: "range_45_54",
+    disabled: false,
+    messageId: "grants.form.fields.ageGroup.values.range_45_54",
+  },
+  {
+    value: "range_55_64",
+    disabled: false,
+    messageId: "grants.form.fields.ageGroup.values.range_55_64",
+  },
+  {
+    value: "range_more_than_65",
+    disabled: false,
+    messageId: "grants.form.fields.ageGroup.values.range_more_than_65",
+  },
+];

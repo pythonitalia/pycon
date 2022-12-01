@@ -14,7 +14,7 @@ mutation SendGrantRequest($input: SendGrantRequestInput!) {
       validationGrantType: grantType
       validationOccupation: occupation
       validationOccupation: occupation
-      validationAge: age
+      validationAgeGroup: ageGroup
       validationPythonUsage: pythonUsage
       validationBeenToOtherEvents: beenToOtherEvents
       validationInterestedInVolunteering: interestedInVolunteering

@@ -29,12 +29,13 @@ import {
   GRANT_TYPE_OPTIONS,
   INTERESTED_IN_VOLUNTEERING_OPTIONS,
   OCCUPATION_OPTIONS,
+  AGE_GROUPS_OPTIONS,
 } from "./options";
 
 export type GrantFormFields = {
   name: string;
   fullName: string;
-  age: number;
+  ageGroup: string;
   gender: string;
   occupation: string;
   grantType: string;
@@ -66,12 +67,12 @@ export const GrantForm = ({ conference }: Props) => {
       formState.setField("fullName", user.fullName);
       formState.setField("name", user.name);
       formState.setField("gender", user.gender);
-      if (user.dateBirth) {
-        formState.setField(
-          "age",
-          new Date().getFullYear() - new Date(user.dateBirth).getFullYear(),
-        );
-      }
+      // if (user.dateBirth) {
+      //   formState.setField(
+      //     "age",
+      //     new Date().getFullYear() - new Date(user.dateBirth).getFullYear(),
+      //   );
+      // }
     }
   }, [user]);
 
@@ -84,7 +85,7 @@ export const GrantForm = ({ conference }: Props) => {
         variables: {
           input: {
             conference,
-            age: +formState.values.age,
+            ageGroup: formState.values.ageGroup,
             fullName: formState.values.fullName,
             name: formState.values.name,
             gender: formState.values.gender,
@@ -287,17 +288,27 @@ export const GrantForm = ({ conference }: Props) => {
           </Text>
 
           <InputWrapper
-            label={<FormattedMessage id="grants.form.fields.age" />}
-            errors={getErrors("age")}
+            label={<FormattedMessage id="grants.form.fields.ageGroup" />}
+            errors={getErrors("ageGroup")}
           >
-            <Input {...numberInput("age")} />
+            <Select {...select("ageGroup")} required={true}>
+              {AGE_GROUPS_OPTIONS.map(({ value, disabled, messageId }) => (
+                <FormattedMessage id={messageId} key={messageId}>
+                  {(msg) => (
+                    <option disabled={disabled} value={value}>
+                      {msg}
+                    </option>
+                  )}
+                </FormattedMessage>
+              ))}
+            </Select>
           </InputWrapper>
 
           <InputWrapper
             errors={getErrors("gender")}
             label={<FormattedMessage id="grants.form.fields.gender" />}
           >
-            <Select {...select("gender")}>
+            <Select>
               {GENDER_OPTIONS.map(({ value, disabled, messageId }) => (
                 <FormattedMessage id={messageId} key={messageId}>
                   {(msg) => (
