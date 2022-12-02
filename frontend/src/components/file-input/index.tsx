@@ -19,8 +19,9 @@ export const FileInput = ({ onChange: baseOnChange, name, onBlur, value }) => {
   const canvas = useRef<HTMLCanvasElement>();
   const language = useCurrentLanguage();
 
-  const [generateParticipantAvatarUploadUrl] =
-    useGenerateParticipantAvatarUploadUrlMutation();
+  const [
+    generateParticipantAvatarUploadUrl,
+  ] = useGenerateParticipantAvatarUploadUrlMutation();
 
   const [filePreview, setFilePreview] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -126,6 +127,9 @@ export const FileInput = ({ onChange: baseOnChange, name, onBlur, value }) => {
         onBlur={onBlur}
         type="file"
         accept="image/png,image/jpg,image/jpeg,image/webp"
+        sx={{
+          width: "100%",
+        }}
       />
 
       <canvas
