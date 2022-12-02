@@ -15,7 +15,7 @@ export const HomepageHero = ({ hideBuyTickets = false }: Props) => (
   <Box
     sx={{
       position: "relative",
-      mt: -130,
+      mt: -157,
     }}
   >
     <Box
