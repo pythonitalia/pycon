@@ -1,46 +1,49 @@
 import React from "react";
-import { GithubIcon } from "../icons/github";
-import { TwitterIcon } from "../icons/twitter";
 import { Button } from "./button";
 
 export default {
   title: "Button",
 };
 
-export const Story = () => (
+export const Story = ({ text, size, disabled, role }) => (
   <>
-    <div className="mb-4">
-      <Button onClick={() => {}} color="black">
-        🐙 Login with GitHub
-      </Button>
-    </div>
-    <div>
-      <Button onClick={() => {}} color="blue">
-        🐦 Login with Twitter
-      </Button>
-    </div>
+    <Button onClick={() => {}} disabled={disabled} role={role}>
+      {text}
+    </Button>
   </>
 );
 
-export const WithIcon = () => (
-  <>
-    <div className="mb-4">
-      <Button
-        icon={<GithubIcon fill="white" />}
-        onClick={() => {}}
-        color="black"
-      >
-        Login with GitHub
+Story.argTypes = {
+  text: {
+    defaultValue: "Button",
+    control: {
+      type: "text",
+    },
+  },
+  disabled: {
+    defaultValue: false,
+    control: {
+      type: "boolean",
+    },
+  },
+  role: {
+    defaultValue: "primary",
+    control: {
+      type: "select",
+      options: ["primary", "secondary"],
+    },
+  },
+};
+
+export const AllButtons = () => {
+  return (
+    <>
+      <Button onClick={() => {}} disabled={false} role="primary">
+        Primary
       </Button>
-    </div>
-    <div>
-      <Button
-        icon={<TwitterIcon fill="white" />}
-        onClick={() => {}}
-        color="blue"
-      >
-        Login with Twitter
+      <Button onClick={() => {}} disabled={false} role="secondary">
+        Secondary
       </Button>
-    </div>
-  </>
-);
+    </>
+  );
+};

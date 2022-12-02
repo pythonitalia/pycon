@@ -1,35 +1,40 @@
 import clsx from "clsx";
 import React, { ReactNode } from "react";
 import { Color } from "../types";
+import { Text } from "../text";
 
 export const Button = ({
   children,
   onClick,
+  role = "primary",
   icon = null,
   color = "white",
+  disabled = false,
 }: {
   color?: Color;
   icon?: ReactNode;
   children: ReactNode;
+  disabled?: boolean;
+  role?: "primary" | "secondary";
   onClick: () => void;
 }) => (
   <button
+    disabled={disabled}
     className={clsx(
-      "flex items-center justify-items-center border-black border-2 p-3",
+      "flex items-center justify-items-center uppercase border-black border-3 py-5 px-8 sm:py-6 sm:px-12",
       {
-        "bg-blue": color === "blue",
-        "bg-coral": color === "coral",
-        "bg-green": color === "green",
-        "bg-pink": color === "pink",
-        "bg-purple": color === "purple",
-        "bg-white": color === "white",
-        "bg-black": color === "black",
-        "text-white": color === "black",
+        "opacity-30": disabled,
+        // primary
+        "hover:bg-green": !disabled && role === "primary",
+        // secondary
+        "bg-cream": role === "secondary",
       }
     )}
     onClick={onClick}
   >
     {icon && <span className="mr-2">{icon}</span>}
-    {children}
+    <Text weight="strong" size="label">
+      {children}
+    </Text>
   </button>
 );

@@ -15,6 +15,12 @@ module.exports = {
       display: ["GeneralSans-Variable"],
       body: ["GeneralSans-Variable"],
     },
+    borderWidth: {
+      DEFAULT: '3px',
+      0: 0,
+      3: '3px',
+      4: '4px',
+    },
     lineHeight: {
       1: '1rem', // 16px
       2: '1.25rem', // 20px
