@@ -1,6 +1,6 @@
 import React from "react";
 import { Paragraph } from "../paragraph/paragraph";
-import { Title } from "../title";
+import { Heading } from "../heading";
 import { Wrapper } from "./wrapper";
 
 export default {
@@ -9,7 +9,7 @@ export default {
 
 export const Primary = () => (
   <Wrapper>
-    <Title>Title inside a wrapper</Title>
+    <Heading>Title inside a wrapper</Heading>
 
     <Paragraph>
       Lorem ipsum dolor sit, amet consectetur adipisicing elit. Doloribus vero

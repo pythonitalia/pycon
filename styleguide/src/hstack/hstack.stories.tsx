@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "../button/button";
-import { Title } from "../title";
+import { Heading } from "../heading";
 import { HStack } from "./hstack";
 
 export default {
@@ -21,11 +21,11 @@ export default {
 
 export const Primary = (props) => (
   <HStack {...props}>
-    <Title>
+    <Heading>
       Long Title <br />
       With multiple <br />
       Lines in it
-    </Title>
+    </Heading>
 
     <Button onClick={() => {}} color="pink">
       Button

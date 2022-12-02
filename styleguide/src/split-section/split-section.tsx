@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import React from "react";
 import { SnakeCouple } from "../illustrations";
-import { Title } from "../title";
+import { Heading } from "../heading";
 import { Color } from "../types";
 
 type Props = {
@@ -23,7 +23,7 @@ export const SplitSection = ({
 }: Props) => {
   let top = (
     <div className="p-8 md:p-16 md:w-1/2">
-      <Title>{title}</Title>
+      <Heading>{title}</Heading>
 
       {children}
     </div>

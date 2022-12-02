@@ -4,7 +4,7 @@ import differenceInMinutes from "date-fns/fp/differenceInMinutes";
 import parseISO from "date-fns/parseISO";
 import React, { Fragment, useState } from "react";
 import { LocalTime } from "../local-time/local-time";
-import { Title } from "../title";
+import { Heading } from "../heading";
 import { ScheduleItem } from "./schedule-item";
 import { Event, ScheduleProgram, ScheduleDay } from "./types";
 
@@ -166,7 +166,7 @@ export const Schedule = ({ program }: Props) => {
     <div>
       <header className="bg-coral py-8 border-black border-b-4">
         <div className="max-w-7xl m-auto px-8">
-          <Title marginBottom={false}>Schedule</Title>
+          <Heading>Schedule</Heading>
         </div>
       </header>
 

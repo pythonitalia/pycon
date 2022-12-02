@@ -14,7 +14,7 @@ export const Marquee = ({
 }: Props) => (
   <div className="overflow-hidden w-full">
     <div
-      className={clsx("p-8 text-3xl whitespace-nowrap", {
+      className={clsx("p-8 text-lg whitespace-nowrap", {
         "motion-safe:animate-marquee-slow": speed === "slow",
         "motion-safe:animate-marquee-medium": speed === "medium",
       })}

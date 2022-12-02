@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "../button/button";
-import { Title } from "../title";
+import { Heading } from "../heading";
 import { VStack } from "./vstack";
 
 export default {
@@ -21,7 +21,7 @@ export default {
 
 export const Primary = (props) => (
   <VStack {...props}>
-    <Title>Long title to show aligns</Title>
+    <Heading>Long title to show aligns</Heading>
 
     <Button onClick={() => {}} color="pink">
       Button

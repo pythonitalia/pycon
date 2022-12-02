@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import React, { useEffect, useState } from "react";
-import { Title } from "../title";
+import { Heading } from "../heading";
 import { Color } from "../types";
 
 type Props = {
@@ -92,7 +92,7 @@ export const Carousel = ({ title, children }: Props) => {
     <div>
       <div className="border-y-4 border-black">
         <div className="flex px-8 py-8 mx-auto max-w-7xl">
-          <Title marginBottom={false}>{title}</Title>
+          <Heading size={2}>{title}</Heading>
 
           <div className="flex ml-auto 2xl:hidden">
             <button

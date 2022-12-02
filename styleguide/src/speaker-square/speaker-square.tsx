@@ -1,5 +1,7 @@
 import clsx from "clsx";
 import React from "react";
+import { Text } from "../text";
+import { Heading } from "../heading";
 
 export const SpeakerSquare = ({
   name,
@@ -35,8 +37,12 @@ export const SpeakerSquare = ({
             )}
           />
           <div className="p-8 text-white font-medium flex justify-end flex-col">
-            <p className="uppercase text-2xl">{name}</p>
-            {subtitle ? <p className="text-lg">{subtitle}</p> : null}
+            <Heading size={6}>{name}</Heading>
+            {subtitle ? (
+              <Text as="p" size={3}>
+                {subtitle}
+              </Text>
+            ) : null}
           </div>
         </React.Fragment>
       )}

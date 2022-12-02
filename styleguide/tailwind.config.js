@@ -3,25 +3,47 @@ module.exports = {
   mode: "jit",
   darkMode: false,
   theme: {
+    screens: {
+      sm: '599px',
+      md: '1239px',
+      lg: '1439px',
+      xl: '1919px',
+    },
     fontFamily: {
       sans: ["GeneralSans-Variable", "ui-sans", "system-ui"],
       mono: ["JetBrainsMono", "Source Code Pro", "Menlo", "Consolas", "Monaco", "monospace"],
       display: ["GeneralSans-Variable"],
       body: ["GeneralSans-Variable"],
     },
+    lineHeight: {
+      1: '1rem', // 16px
+      2: '1.25rem', // 20px
+      3: '1.375rem', // 22px
+      4: '1.5rem', // 24px
+      5: '1.625rem', // 26px
+      6: '1.75rem', // 28px
+      7: '1.875rem', // 30px
+      8: '2rem', // 32px
+      9: '2.25rem', // 36px
+      10: '2.5rem', // 40px
+      11: '3rem', // 48px
+      12: '3.5rem', // 56px
+      13: '4rem', // 64px
+      14: '5rem', // 80px
+      15: '6.375rem', // 102px
+    },
     fontSize: {
-      "2xs": ".5rem",
-      xs: ".75rem",
-      sm: ".875rem",
-      base: "1rem",
-      lg: "1.125rem",
-      xl: "1.25rem",
-      "2xl": "1.5rem",
-      "3xl": "1.875rem",
-      "4xl": "2.25rem",
-      "5xl": "3rem",
-      "6xl": "4rem",
-      "7xl": "5rem",
+      sm: '0.875rem', // 14px
+      base: '1rem', // 16px
+      md: '1.25rem', // 20px
+      "2md": '1.5rem', // 24px
+      "3md": '1.75rem', // 28px
+      lg: '1.875rem', // 30px
+      "2lg": '2.25rem', // 36px
+      xl: '2.5rem', // 40px
+      "2xl": '3.5rem', // 56px
+      "3xl": '5rem', // 80px
+      '4xl': '7.5rem', // 120px
     },
     colors: {
       transparent: "transparent",
@@ -82,7 +104,7 @@ module.exports = {
 
       // grey scale
       black: '#0E1116',
-      white: '#FFFFFF',
+      white: '#A7A7A7',
       grey: {
         900: '#1A1C21',
         700: '#494A4D',
@@ -115,7 +137,7 @@ module.exports = {
       },
       padding: {
         xl: '32rem',
-       }
+      }
     },
   },
   variants: {

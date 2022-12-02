@@ -1,5 +1,5 @@
 export { Header } from "./header/header";
-export { Title } from "./title/title";
+export { Heading } from "./heading/heading";
 export { SpeakerSquare } from "./speaker-square/speaker-square";
 export { SpeakerDetails } from "./speaker-details/speaker-details";
 export { Page } from "./page/page";
@@ -20,3 +20,4 @@ export { HStack } from "./hstack/hstack";
 export { Spacer } from "./spacer/spacer";
 export { IntermissionText } from "./livestream-itermission-text";
 export { EmbeddedTwitch } from "./embedded-video";
+export { Text } from "./text";
