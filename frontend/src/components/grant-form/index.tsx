@@ -7,7 +7,6 @@ import { useFormState } from "react-use-form-state";
 import {
   Box,
   Checkbox,
-  Flex,
   Heading,
   Input,
   Label,
@@ -52,10 +51,9 @@ type Props = { conference: string };
 
 export const GrantForm = ({ conference }: Props) => {
   const { user, loading: loadingUser } = useCurrentUser({});
-  const [
-    formState,
-    { text, number: numberInput, textarea, select, checkbox },
-  ] = useFormState<GrantFormFields>(
+  const [formState, { text, textarea, select, checkbox }] = useFormState<
+    GrantFormFields
+  >(
     {},
     {
       withIds: true,
