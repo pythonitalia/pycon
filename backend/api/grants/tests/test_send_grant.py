@@ -22,7 +22,7 @@ def _send_grant(client, grant_factory, conference, **kwargs):
                     validationGrantType: grantType
                     validationOccupation: occupation
                     validationOccupation: occupation
-                    validationAge: age
+                    validationAgeGroup: ageGroup
                     validationPythonUsage: pythonUsage
                     validationBeenToOtherEvents: beenToOtherEvents
                     validationInterestedInVolunteering: interestedInVolunteering
@@ -41,7 +41,7 @@ def _send_grant(client, grant_factory, conference, **kwargs):
             "name": grant.name,
             "fullName": grant.full_name,
             "conference": grant.conference.code,
-            "age": grant.age,
+            "ageGroup": grant.age_group,
             "gender": grant.gender,
             "occupation": grant.occupation,
             "grantType": grant.grant_type,
