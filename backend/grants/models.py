@@ -48,7 +48,6 @@ class Grant(TimeStampedModel):
     age_group = models.CharField(
         _("Age group"), max_length=20, choices=AgeGroup.choices, null=True
     )
-    age = models.PositiveSmallIntegerField(_("age"), null=True)  # TODO: remove
     gender = models.CharField(_("gender"), choices=GENDERS, max_length=10, blank=True)
     occupation = models.CharField(_("occupation"), choices=OCCUPATIONS, max_length=10)
     grant_type = models.CharField(_("grant type"), choices=GRANT_TYPES, max_length=10)
