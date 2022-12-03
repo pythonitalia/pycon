@@ -276,74 +276,64 @@ export const GrantForm = ({ conference }: Props) => {
           <Textarea {...textarea("why")} required={true} />
         </InputWrapper>
 
-        <Box>
-          <Heading sx={{ mb: 2 }}>
-            <FormattedMessage id="grants.form.optionalInformation" />
-          </Heading>
+        <InputWrapper
+          label={<FormattedMessage id="grants.form.fields.ageGroup" />}
+          errors={getErrors("ageGroup")}
+        >
+          <Select {...select("ageGroup")} required={true}>
+            {AGE_GROUPS_OPTIONS.map(({ value, disabled, messageId }) => (
+              <FormattedMessage id={messageId} key={messageId}>
+                {(msg) => (
+                  <option disabled={disabled} value={value}>
+                    {msg}
+                  </option>
+                )}
+              </FormattedMessage>
+            ))}
+          </Select>
+        </InputWrapper>
 
-          <Text sx={{ mb: 3 }}>
-            <FormattedMessage id="grants.form.optionalInformation.description" />
-          </Text>
+        <InputWrapper
+          errors={getErrors("gender")}
+          label={<FormattedMessage id="grants.form.fields.gender" />}
+        >
+          <Select>
+            {GENDER_OPTIONS.map(({ value, disabled, messageId }) => (
+              <FormattedMessage id={messageId} key={messageId}>
+                {(msg) => (
+                  <option disabled={disabled} value={value}>
+                    {msg}
+                  </option>
+                )}
+              </FormattedMessage>
+            ))}
+          </Select>
+        </InputWrapper>
 
-          <InputWrapper
-            label={<FormattedMessage id="grants.form.fields.ageGroup" />}
-            errors={getErrors("ageGroup")}
-          >
-            <Select {...select("ageGroup")} required={true}>
-              {AGE_GROUPS_OPTIONS.map(({ value, disabled, messageId }) => (
-                <FormattedMessage id={messageId} key={messageId}>
-                  {(msg) => (
-                    <option disabled={disabled} value={value}>
-                      {msg}
-                    </option>
-                  )}
-                </FormattedMessage>
-              ))}
-            </Select>
-          </InputWrapper>
-
-          <InputWrapper
-            errors={getErrors("gender")}
-            label={<FormattedMessage id="grants.form.fields.gender" />}
-          >
-            <Select>
-              {GENDER_OPTIONS.map(({ value, disabled, messageId }) => (
-                <FormattedMessage id={messageId} key={messageId}>
-                  {(msg) => (
-                    <option disabled={disabled} value={value}>
-                      {msg}
-                    </option>
-                  )}
-                </FormattedMessage>
-              ))}
-            </Select>
-          </InputWrapper>
-
-          <InputWrapper
-            label={<FormattedMessage id="grants.form.fields.notes" />}
-            errors={getErrors("notes")}
-          >
-            <Textarea {...textarea("notes")} />
-          </InputWrapper>
-        </Box>
-
-        <ErrorsList sx={{ mb: 3 }} errors={getErrors("nonFieldErrors")} />
-
-        {loading && (
-          <Alert
-            sx={{
-              mb: 3,
-            }}
-            variant="info"
-          >
-            <FormattedMessage id="grants.form.sendingRequest" />
-          </Alert>
-        )}
-
-        <Button loading={loading}>
-          <FormattedMessage id="grants.form.submit" />
-        </Button>
+        <InputWrapper
+          label={<FormattedMessage id="grants.form.fields.notes" />}
+          errors={getErrors("notes")}
+        >
+          <Textarea {...textarea("notes")} />
+        </InputWrapper>
       </Box>
+
+      <ErrorsList sx={{ mb: 3 }} errors={getErrors("nonFieldErrors")} />
+
+      {loading && (
+        <Alert
+          sx={{
+            mb: 3,
+          }}
+          variant="info"
+        >
+          <FormattedMessage id="grants.form.sendingRequest" />
+        </Alert>
+      )}
+
+      <Button loading={loading}>
+        <FormattedMessage id="grants.form.submit" />
+      </Button>
     </Fragment>
   );
 };
