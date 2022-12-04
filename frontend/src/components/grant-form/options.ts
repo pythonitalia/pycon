@@ -116,40 +116,48 @@ export const AGE_GROUPS_OPTIONS = [
     value: "range_less_than_10",
     disabled: false,
     messageId: "grants.form.fields.ageGroup.values.range_less_than_10",
+    isAgeInRange: (age: number) => age <= 10,
   },
   {
     value: "range_11_18",
     disabled: false,
     messageId: "grants.form.fields.ageGroup.values.range_11_18",
+    isAgeInRange: (age: number) => 11 <= age && age <= 18,
   },
   {
     value: "range_19_24",
     disabled: false,
     messageId: "grants.form.fields.ageGroup.values.range_19_24",
+    isAgeInRange: (age: number) => 19 <= age && age <= 24,
   },
   {
     value: "range_25_34",
     disabled: false,
     messageId: "grants.form.fields.ageGroup.values.range_25_34",
+    isAgeInRange: (age: number) => 25 <= age && age <= 34,
   },
   {
     value: "RANGE_35_44",
     disabled: false,
     messageId: "grants.form.fields.ageGroup.values.range_35_44",
+    isAgeInRange: (age: number) => 35 <= age && age <= 44,
   },
   {
     value: "range_45_54",
     disabled: false,
     messageId: "grants.form.fields.ageGroup.values.range_45_54",
+    isAgeInRange: (age: number) => 45 <= age && age <= 54,
   },
   {
     value: "range_55_64",
     disabled: false,
     messageId: "grants.form.fields.ageGroup.values.range_55_64",
+    isAgeInRange: (age: number) => 55 <= age && age <= 64,
   },
   {
     value: "range_more_than_65",
     disabled: false,
     messageId: "grants.form.fields.ageGroup.values.range_more_than_65",
+    isAgeInRange: (age: number) => age >= 65,
   },
 ];

@@ -65,12 +65,16 @@ export const GrantForm = ({ conference }: Props) => {
       formState.setField("fullName", user.fullName);
       formState.setField("name", user.name);
       formState.setField("gender", user.gender);
-      // if (user.dateBirth) {
-      //   formState.setField(
-      //     "age",
-      //     new Date().getFullYear() - new Date(user.dateBirth).getFullYear(),
-      //   );
-      // }
+      if (user.dateBirth) {
+        const age =
+          new Date().getFullYear() - new Date(user.dateBirth).getFullYear();
+        formState.setField(
+          "ageGroup",
+          AGE_GROUPS_OPTIONS.find(
+            (option) => option.isAgeInRange && option.isAgeInRange(age),
+          ).value,
+        );
+      }
     }
   }, [user]);
 
