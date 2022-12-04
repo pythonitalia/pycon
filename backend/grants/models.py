@@ -46,7 +46,7 @@ class Grant(TimeStampedModel):
     user_id = models.IntegerField(verbose_name=_("user"), null=True)
     email = models.EmailField(_("email address"))
     age_group = models.CharField(
-        _("Age group"), max_length=20, choices=AgeGroup.choices, null=True
+        _("Age group"), max_length=20, choices=AgeGroup.choices, blank=True
     )
     age = models.PositiveSmallIntegerField(_("age"), null=True)  # TODO: remove
     gender = models.CharField(_("gender"), choices=GENDERS, max_length=10, blank=True)
