@@ -301,7 +301,7 @@ export const GrantForm = ({ conference }: Props) => {
           errors={getErrors("gender")}
           label={<FormattedMessage id="grants.form.fields.gender" />}
         >
-          <Select>
+          <Select {...select("gender")}>
             {GENDER_OPTIONS.map(({ value, disabled, messageId }) => (
               <FormattedMessage id={messageId} key={messageId}>
                 {(msg) => (
