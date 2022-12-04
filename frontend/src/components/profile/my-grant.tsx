@@ -45,7 +45,7 @@ export const MyGrant = ({ className }: Props) => {
               values={{
                 linkGrant: (
                   <Link
-                    path={`/grant/${data.me.grant.id}`}
+                    path={`/grants/edit`}
                     sx={{
                       textDecoration: "underline",
                     }}

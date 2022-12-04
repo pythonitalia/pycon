@@ -19,7 +19,7 @@ import {
 
 import { MyGrant } from "~/components/profile/my-grant";
 import { useCurrentUser } from "~/helpers/use-current-user";
-import { useSendGrantRequestMutation } from "~/types";
+import { useSendGrantMutation } from "~/types";
 import { useMyGrantQuery } from "~/types";
 
 import { Alert } from "../alert";
@@ -49,9 +49,7 @@ export type GrantFormFields = {
   travellingFrom: string;
 };
 
-type Props = { conference: string };
-
-export const MyGrantOrForm = ({ conference }: Props) => {
+export const MyGrantOrForm = () => {
   const code = process.env.conferenceCode;
   const { loading, error, data } = useMyGrantQuery({
     variables: {
@@ -59,10 +57,16 @@ export const MyGrantOrForm = ({ conference }: Props) => {
     },
   });
 
+  if (error) {
+    return <Alert variant="alert">{error.message}</Alert>;
+  }
+
   return <>{data?.me?.grant ? <MyGrant /> : <GrantForm conference={code} />}</>;
 };
 
-export const GrantForm = ({ conference }: Props) => {
+type GrantFormProps = { conference: string };
+
+export const GrantForm = ({ conference }: GrantFormProps) => {
   const { user, loading: loadingUser } = useCurrentUser({});
   const [
     formState,
@@ -88,7 +92,7 @@ export const GrantForm = ({ conference }: Props) => {
     }
   }, [user]);
 
-  const [submitGrant, { loading, data }] = useSendGrantRequestMutation();
+  const [submitGrant, { loading, data }] = useSendGrantMutation();
 
   const onSubmit = useCallback(
     (e) => {
@@ -120,7 +124,7 @@ export const GrantForm = ({ conference }: Props) => {
   const getErrors = (
     key: keyof GrantFormFields | "nonFieldErrors",
   ): string[] => {
-    if (data?.sendGrantRequest.__typename === "SendGrantRequestErrors") {
+    if (data?.sendGrant.__typename === "GrantErrors") {
       let errorKey: string = key;
 
       if (key !== "nonFieldErrors") {
@@ -128,13 +132,13 @@ export const GrantForm = ({ conference }: Props) => {
         errorKey = `validation${capitalized}`;
       }
 
-      return (data.sendGrantRequest as any)[errorKey];
+      return (data.sendGrant as any)[errorKey];
     }
 
     return [];
   };
 
-  if (!loading && data?.sendGrantRequest.__typename === "GrantRequest") {
+  if (!loading && data?.sendGrant.__typename === "Grant") {
     return (
       <Text>
         <FormattedMessage id="grants.form.sent" />

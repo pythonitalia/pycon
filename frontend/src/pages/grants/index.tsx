@@ -6,6 +6,7 @@ import { FormattedMessage } from "react-intl";
 import { Box, jsx, Text } from "theme-ui";
 
 import { GetStaticProps } from "next";
+import { useRouter } from "next/router";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { MyGrantOrForm } from "~/components/grant-form";
@@ -88,9 +89,7 @@ export const GrantsPage = () => {
           my: 5,
         }}
       >
-        {status === DeadlineStatus.HappeningNow && (
-          <MyGrantOrForm conference={code} />
-        )}
+        {status === DeadlineStatus.HappeningNow && <MyGrantOrForm />}
         {status === DeadlineStatus.InTheFuture && (
           <GrantsComingSoon start={start} />
         )}
