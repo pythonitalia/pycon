@@ -146,23 +146,6 @@ export const GrantForm = ({ conference }: Props) => {
         <FormattedMessage id="grants.form.title" />
       </Heading>
       <Box as="form" onSubmit={onSubmit}>
-        <ErrorsList sx={{ mb: 3 }} errors={getErrors("nonFieldErrors")} />
-
-        {loading && (
-          <Alert
-            sx={{
-              mb: 3,
-            }}
-            variant="info"
-          >
-            <FormattedMessage id="grants.form.sendingRequest" />
-          </Alert>
-        )}
-
-        <Button loading={loading}>
-          <FormattedMessage id="grants.form.submit" />
-        </Button>
-
         <Heading sx={{ mb: 3 }}>
           <FormattedMessage id="grants.form.aboutYou" />
         </Heading>
