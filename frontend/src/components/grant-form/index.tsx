@@ -280,6 +280,24 @@ export const GrantForm = ({ conference }: Props) => {
           <Textarea {...textarea("why")} required={true} />
         </InputWrapper>
 
+        <InputWrapper
+          isRequired={true}
+          label={<FormattedMessage id="grants.form.fields.ageGroup" />}
+          errors={getErrors("ageGroup")}
+        >
+          <Select {...select("ageGroup")} required={true}>
+            {AGE_GROUPS_OPTIONS.map(({ value, disabled, messageId }) => (
+              <FormattedMessage id={messageId} key={messageId}>
+                {(msg) => (
+                  <option disabled={disabled} value={value}>
+                    {msg}
+                  </option>
+                )}
+              </FormattedMessage>
+            ))}
+          </Select>
+        </InputWrapper>
+
         <Box>
           <Heading sx={{ mb: 2 }}>
             <FormattedMessage id="grants.form.optionalInformation" />
@@ -288,22 +306,6 @@ export const GrantForm = ({ conference }: Props) => {
           <Text sx={{ mb: 3 }}>
             <FormattedMessage id="grants.form.optionalInformation.description" />
           </Text>
-          <InputWrapper
-            label={<FormattedMessage id="grants.form.fields.ageGroup" />}
-            errors={getErrors("ageGroup")}
-          >
-            <Select {...select("ageGroup")}>
-              {AGE_GROUPS_OPTIONS.map(({ value, disabled, messageId }) => (
-                <FormattedMessage id={messageId} key={messageId}>
-                  {(msg) => (
-                    <option disabled={disabled} value={value}>
-                      {msg}
-                    </option>
-                  )}
-                </FormattedMessage>
-              ))}
-            </Select>
-          </InputWrapper>
 
           <InputWrapper
             errors={getErrors("gender")}
