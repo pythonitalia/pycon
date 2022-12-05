@@ -17,7 +17,7 @@ class GrantFactory(DjangoModelFactory):
     conference = factory.SubFactory(ConferenceFactory)
     email = factory.Faker("email")
     user_id = factory.Faker("pyint")
-    age = factory.Faker("pyint")
+    age_group = factory.fuzzy.FuzzyChoice(Grant.AgeGroup)
     gender = factory.fuzzy.FuzzyChoice([gender[0] for gender in GENDERS])
     occupation = factory.fuzzy.FuzzyChoice(
         [occupation[0] for occupation in OCCUPATIONS]
