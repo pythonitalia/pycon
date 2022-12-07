@@ -1,69 +1,13 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
-import { Box, Grid, jsx, Flex, ThemeUIStyleObject } from "theme-ui";
-
-import { useRouter } from "next/router";
-
-import { useFooterQuery } from "~/types";
+import { Box, Grid, jsx, Flex } from "theme-ui";
 
 import { LogoBlack } from "../icons/logo-black";
 import { Link } from "../link";
 import { SocialLinks } from "../social-links";
 
-const MenuItems = ({
-  children,
-  ...props
-}: React.PropsWithChildren<{
-  sx?: ThemeUIStyleObject;
-}>) => (
-  <Box
-    as="ul"
-    sx={{
-      color: "white",
-      listStyle: "none",
-
-      a: {
-        color: "white",
-        textDecoration: "none",
-      },
-    }}
-    {...props}
-  >
-    {children}
-  </Box>
-);
-
 export const Footer = () => {
-  const { data } = useFooterQuery({
-    variables: {
-      code: process.env.conferenceCode,
-    },
-  });
-  const {
-    query: { photo },
-  } = useRouter();
-  const isInPhotoMode = photo == "1";
-
-  if (!data || isInPhotoMode) {
-    return null;
-  }
-
-  const {
-    conference: { menu },
-  } = data;
-
-  const links = menu ? menu.links : [];
-
-  let firstGroup = links;
-  let secondGroup: { title: string; href: string }[] = [];
-
-  if (links.length > 4) {
-    const halfLinks = Math.round(links.length / 2);
-    firstGroup = links.slice(0, halfLinks);
-    secondGroup = links.slice(halfLinks);
-  }
-
   return (
     <Box
       sx={
@@ -83,7 +27,7 @@ export const Footer = () => {
         sx={{
           maxWidth: "container",
           mx: "auto",
-          gridTemplateColumns: [null, null, "5fr 1fr 2fr 2fr 3fr"],
+          gridTemplateColumns: [null, null, "1fr 1fr"],
         }}
       >
         <Link path="/">
@@ -97,30 +41,10 @@ export const Footer = () => {
           />
         </Link>
 
-        <MenuItems
-          sx={{
-            gridColumnStart: [null, null, 3],
-          }}
-        >
-          {firstGroup.map((link, i) => (
-            <li key={i}>
-              <Link path={link.href}>{link.title}</Link>
-            </li>
-          ))}
-        </MenuItems>
-
-        <MenuItems>
-          {secondGroup.map((link, i) => (
-            <li key={i}>
-              <Link path={link.href}>{link.title}</Link>
-            </li>
-          ))}
-        </MenuItems>
-
         <Flex
           sx={{
             flexDirection: "column",
-            alignItems: "center",
+            alignItems: ["center", "center", "flex-end"],
           }}
         >
           <SocialLinks sx={{ justifyContent: ["center", null, "flex-end"] }} />
