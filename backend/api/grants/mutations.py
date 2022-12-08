@@ -17,7 +17,7 @@ class GrantErrors(BaseErrorType):
     name: list[str] = strawberry.field(default_factory=list)
     full_name: list[str] = strawberry.field(default_factory=list)
     conference: list[str] = strawberry.field(default_factory=list)
-    age: list[str] = strawberry.field(default_factory=list)
+    age_group: list[str] = strawberry.field(default_factory=list)
     gender: list[str] = strawberry.field(default_factory=list)
     occupation: list[str] = strawberry.field(default_factory=list)
     grant_type: list[str] = strawberry.field(default_factory=list)
@@ -80,7 +80,7 @@ class SendGrantInput(BaseGrantInput):
     name: str
     full_name: str
     conference: strawberry.ID
-    age: int
+    age_group: str
     gender: str
     occupation: str
     grant_type: str
@@ -107,7 +107,7 @@ class UpdateGrantInput(BaseGrantInput):
     name: str
     full_name: str
     conference: strawberry.ID
-    age: int
+    age_group: str
     gender: str
     occupation: str
     grant_type: str

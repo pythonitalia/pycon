@@ -4,20 +4,19 @@ query MyGrant($conference: String!) {
 
     grant(conference: $conference) {
       id
-      age
-      beenToOtherEvents
-      email
       fullName
+      name
       gender
       grantType
-      interestedInVolunteering
-      name
-      why
-      travellingFrom
-      pythonUsage
       occupation
-      notes
+      ageGroup
+      pythonUsage
+      beenToOtherEvents
+      interestedInVolunteering
       needsFundsForTravel
+      why
+      notes
+      travellingFrom
     }
   }
 }

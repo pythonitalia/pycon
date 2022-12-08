@@ -4,6 +4,8 @@ import strawberry
 
 from grants.models import Grant as GrantModel
 
+AgeGroup = strawberry.enum(GrantModel.AgeGroup)
+
 
 @strawberry.type
 class Grant:
@@ -11,7 +13,7 @@ class Grant:
     name: str
     full_name: str
     email: str
-    age: int
+    age_group: AgeGroup
     gender: str
     occupation: str
     grant_type: str
@@ -30,7 +32,7 @@ class Grant:
             name=grant.name,
             full_name=grant.full_name,
             email=grant.email,
-            age=grant.age,
+            age_group=AgeGroup(grant.age_group),
             gender=grant.gender,
             occupation=grant.occupation,
             grant_type=grant.grant_type,

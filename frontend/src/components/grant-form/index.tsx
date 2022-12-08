@@ -1,6 +1,7 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
+import { ApolloError } from "@apollo/client";
 import React, { Fragment, useCallback, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
@@ -16,11 +17,17 @@ import {
   Textarea,
 } from "theme-ui";
 
+import { Link } from "~/components/link";
 import { MyGrant } from "~/components/profile/my-grant";
 import { useCurrentUser } from "~/helpers/use-current-user";
-import { useSendGrantMutation } from "~/types";
+import { Grant, UpdateGrantInput, useSendGrantMutation } from "~/types";
 import { useMyGrantQuery } from "~/types";
 
+import {
+  SendGrantInput,
+  SendGrantMutation,
+  UpdateGrantMutation,
+} from "../../types";
 import { Alert } from "../alert";
 import { Button } from "../button/button";
 import { ErrorsList } from "../errors-list";
@@ -51,22 +58,68 @@ export type GrantFormFields = {
 
 export const MyGrantOrForm = () => {
   const code = process.env.conferenceCode;
-  const { loading, error, data } = useMyGrantQuery({
+
+  const { error, data } = useMyGrantQuery({
     variables: {
       conference: code,
     },
   });
+  const grant = data && data?.me?.grant;
+
+  const [
+    submitGrant,
+    { loading, error: grantError, data: grantData },
+  ] = useSendGrantMutation();
+
+  const onSubmit = async (input: SendGrantInput) => {
+    submitGrant({
+      variables: {
+        input,
+      },
+    });
+  };
 
   if (error) {
     return <Alert variant="alert">{error.message}</Alert>;
   }
 
-  return <>{data?.me?.grant ? <MyGrant /> : <GrantForm conference={code} />}</>;
+  if (grant) {
+    return <MyGrant />;
+  }
+
+  return (
+    <>
+      <Heading mb={4} as="h1">
+        <FormattedMessage id="grants.form.title" />
+      </Heading>
+      <GrantForm
+        conference={code}
+        onSubmit={onSubmit}
+        error={grantError}
+        data={data}
+        loading={loading}
+      />
+    </>
+  );
 };
 
-type GrantFormProps = { conference: string };
+type GrantFormProps = {
+  conference: string;
+  grant?: Grant | null;
+  onSubmit: (input: SendGrantInput | UpdateGrantInput) => void;
+  loading: boolean;
+  error: ApolloError | null;
+  data: SendGrantMutation | UpdateGrantMutation;
+};
 
-export const GrantForm = ({ conference }: GrantFormProps) => {
+export const GrantForm = ({
+  conference,
+  grant,
+  onSubmit,
+  loading: grantLoading,
+  error: grantError,
+  data: grantData,
+}: GrantFormProps) => {
   const { user, loading: loadingUser } = useCurrentUser({});
   const [formState, { text, textarea, select, checkbox }] = useFormState<
     GrantFormFields
@@ -78,7 +131,8 @@ export const GrantForm = ({ conference }: GrantFormProps) => {
   );
 
   useEffect(() => {
-    if (user) {
+    // to not override if we are editing the grant
+    if (user && !grant) {
       formState.setField("fullName", user.fullName);
       formState.setField("name", user.name);
       formState.setField("gender", user.gender);
@@ -95,30 +149,46 @@ export const GrantForm = ({ conference }: GrantFormProps) => {
     }
   }, [user]);
 
-  const [submitGrant, { loading, data }] = useSendGrantMutation();
+  useEffect(() => {
+    if (grant) {
+      console.log(grant);
+      formState.setField("fullName", grant.fullName);
+      formState.setField("name", grant.name);
+      formState.setField("gender", grant.gender);
+      formState.setField("grantType", grant.grantType);
+      formState.setField("occupation", grant.occupation);
+      formState.setField("ageGroup", grant.ageGroup.toLowerCase());
+      formState.setField("pythonUsage", grant.pythonUsage);
+      formState.setField("beenToOtherEvents", grant.beenToOtherEvents);
+      formState.setField(
+        "interestedInVolunteering",
+        grant.interestedInVolunteering,
+      );
+      formState.setField("needsFundsForTravel", grant.needsFundsForTravel);
+      formState.setField("why", grant.why);
+      formState.setField("notes", grant.notes);
+      formState.setField("travellingFrom", grant.travellingFrom);
+    }
+  }, [grant]);
 
-  const onSubmit = useCallback(
-    (e) => {
+  const handleOnSubmit = useCallback(
+    async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      submitGrant({
-        variables: {
-          input: {
-            conference,
-            ageGroup: formState.values.ageGroup,
-            fullName: formState.values.fullName,
-            name: formState.values.name,
-            gender: formState.values.gender,
-            beenToOtherEvents: formState.values.beenToOtherEvents,
-            interestedInVolunteering: formState.values.interestedInVolunteering,
-            notes: formState.values.notes,
-            grantType: formState.values.grantType,
-            needsFundsForTravel: formState.values.needsFundsForTravel,
-            why: formState.values.why,
-            travellingFrom: formState.values.travellingFrom,
-            occupation: formState.values.occupation,
-            pythonUsage: formState.values.pythonUsage,
-          },
-        },
+      onSubmit({
+        conference,
+        ageGroup: formState.values.ageGroup.toLowerCase(),
+        fullName: formState.values.fullName,
+        name: formState.values.name,
+        gender: formState.values.gender,
+        beenToOtherEvents: formState.values.beenToOtherEvents,
+        interestedInVolunteering: formState.values.interestedInVolunteering,
+        notes: formState.values.notes,
+        grantType: formState.values.grantType,
+        needsFundsForTravel: formState.values.needsFundsForTravel,
+        why: formState.values.why,
+        travellingFrom: formState.values.travellingFrom,
+        occupation: formState.values.occupation,
+        pythonUsage: formState.values.pythonUsage,
       });
     },
     [formState.values],
@@ -127,7 +197,7 @@ export const GrantForm = ({ conference }: GrantFormProps) => {
   const getErrors = (
     key: keyof GrantFormFields | "nonFieldErrors",
   ): string[] => {
-    if (data?.sendGrant.__typename === "GrantErrors") {
+    if (grantData?.mutationOp.__typename === "GrantErrors") {
       let errorKey: string = key;
 
       if (key !== "nonFieldErrors") {
@@ -135,16 +205,30 @@ export const GrantForm = ({ conference }: GrantFormProps) => {
         errorKey = `validation${capitalized}`;
       }
 
-      return (data.sendGrant as any)[errorKey];
+      return (grantData.mutationOp as any)[errorKey];
     }
 
     return [];
   };
 
-  if (!loading && data?.sendGrant.__typename === "Grant") {
+  if (!grantLoading && grantData?.mutationOp.__typename === "Grant") {
     return (
       <Text>
-        <FormattedMessage id="grants.form.sent" />
+        <FormattedMessage
+          id="grants.form.sent"
+          values={{
+            linkGrant: (
+              <Link
+                path={`/grants/edit`}
+                sx={{
+                  textDecoration: "underline",
+                }}
+              >
+                <FormattedMessage id="grants.form.sent.linkGrant.text" />
+              </Link>
+            ),
+          }}
+        />
       </Text>
     );
   }
@@ -159,10 +243,7 @@ export const GrantForm = ({ conference }: GrantFormProps) => {
 
   return (
     <Fragment>
-      <Heading mb={4} as="h1">
-        <FormattedMessage id="grants.form.title" />
-      </Heading>
-      <Box as="form" onSubmit={onSubmit}>
+      <form onSubmit={handleOnSubmit}>
         <Heading sx={{ mb: 3 }}>
           <FormattedMessage id="grants.form.aboutYou" />
         </Heading>
@@ -351,7 +432,7 @@ export const GrantForm = ({ conference }: GrantFormProps) => {
 
         <ErrorsList sx={{ mb: 3 }} errors={getErrors("nonFieldErrors")} />
 
-        {loading && (
+        {grantLoading && (
           <Alert
             sx={{
               mb: 3,
@@ -362,10 +443,10 @@ export const GrantForm = ({ conference }: GrantFormProps) => {
           </Alert>
         )}
 
-        <Button loading={loading}>
+        <Button loading={grantLoading}>
           <FormattedMessage id="grants.form.submit" />
         </Button>
-      </Box>
+      </form>
     </Fragment>
   );
 };

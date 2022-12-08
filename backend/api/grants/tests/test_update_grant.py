@@ -55,7 +55,7 @@ def _update_grant(graphql_client, grant, **kwargs):
                 validationGrantType: grantType
                 validationOccupation: occupation
                 validationOccupation: occupation
-                validationAge: age
+                validationAgeGroup: ageGroup
                 validationPythonUsage: pythonUsage
                 validationBeenToOtherEvents: beenToOtherEvents
                 validationInterestedInVolunteering: interestedInVolunteering
@@ -91,7 +91,7 @@ def test_update_grant(graphql_client, user, conference_factory, grant_factory):
         grant,
         name="Marcotte",
         fullName="Marcotte B. A.",
-        age=3,
+        age_group="range_25_34",
         gender="male",
         occupation="student",
         grantType="diversity",

@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
-import { Container, Text } from "theme-ui";
+import { Box, Container, Heading, Text } from "theme-ui";
 
 import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
@@ -13,12 +13,14 @@ import { MetaTags } from "~/components/meta-tags";
 import { useLoginState } from "~/components/profile/hooks";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
-import { useMyGrantQuery } from "~/types";
+import { Grant, useMyGrantQuery } from "~/types";
+
+import { useUpdateGrantMutation, UpdateGrantInput } from "../../../types";
 
 const GrantPage = (): JSX.Element => {
   const code = process.env.conferenceCode;
 
-  const { loading, data } = useMyGrantQuery({
+  const { error, loading, data } = useMyGrantQuery({
     errorPolicy: "all",
     variables: {
       conference: code,
@@ -26,18 +28,49 @@ const GrantPage = (): JSX.Element => {
     skip: typeof window === "undefined",
   });
 
-  if (!loading) {
-    return (
-      <Text>
-        <FormattedMessage id="grants.form.sent" />
-      </Text>
-    );
+  const grant = data && data?.me?.grant;
+  const [
+    updateGrant,
+    { loading: updateLoading, error: updateError, data: updateData },
+  ] = useUpdateGrantMutation();
+
+  const onSubmit = async (input: UpdateGrantInput) => {
+    updateGrant({
+      variables: {
+        input: {
+          instance: grant.id,
+          ...input,
+        },
+      },
+    });
+  };
+
+  if (loading) {
+    return null;
   }
 
   return (
     <>
-      {" "}
-      <GrantForm conference={code} />
+      <Box
+        sx={{
+          maxWidth: "container",
+          mx: "auto",
+          px: 3,
+          my: 5,
+        }}
+      >
+        <Heading mb={4} as="h1">
+          <FormattedMessage id="grants.form.edit.title" />
+        </Heading>
+        <GrantForm
+          conference={code}
+          grant={grant}
+          onSubmit={onSubmit}
+          loading={updateLoading}
+          error={updateError}
+          data={updateData}
+        />
+      </Box>
     </>
   );
 };
@@ -51,11 +84,5 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
     props: {},
   });
 };
-
-export const getStaticPaths: GetStaticPaths = async () =>
-  Promise.resolve({
-    paths: [],
-    fallback: "blocking",
-  });
 
 export default GrantPage;

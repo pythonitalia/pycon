@@ -1,5 +1,5 @@
 mutation SendGrant($input: SendGrantInput!) {
-  sendGrant(input: $input) {
+  mutationOp: sendGrant(input: $input) {
     __typename
 
     ... on Grant {

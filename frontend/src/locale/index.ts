@@ -337,14 +337,14 @@ export const messages = {
 
     "grants.alreadySubmitted":
       "You already submitted a Grant! Cick {linkGrant} to edit it.",
-    "grants.alreadySubmitted.linkGrant.text": "here",
 
     "grants.form.needToBeLoggedIn":
       "Login or create an account to send a grant",
     "grants.form.title": "Request a grant",
     "grants.form.sendingRequest": "Sending grant request",
     "grants.form.sent":
-      "Grant request sent! We will send you an email as soon as we have updates!",
+      "Grant request sent! We will send you an email as soon as we have updates! Cick {linkGrant} to edit it.",
+    "grants.form.sent.linkGrant.text": "here",
     "grants.form.aboutYou": "About you",
     "grants.form.optionalInformation": "Optional information",
     "grants.form.optionalInformation.description":
@@ -408,6 +408,8 @@ export const messages = {
       "Tick here if you need financial aid for travelling to PyCon Italia",
 
     "grants.form.submit": "Submit",
+
+    "grants.form.edit.title": "Edit your Grant",
 
     "orderReview.heading": "Review your order",
     "orderReview.invoiceInformation": "Invoice information",
@@ -928,7 +930,8 @@ export const messages = {
     "grants.form.title": "Chiedi un grant",
     "grants.form.sendingRequest": "Invio richiesta in corso",
     "grants.form.sent":
-      "Richiesta inviata! Ti contatteremo via email appena ci saranno novità!",
+      "Richiesta inviata! Ti contatteremo via email appena ci saranno novità! Clicca {linkGrant} per editarlo.",
+    "grants.form.sent.linkGrant.text": "qui",
     "grants.form.aboutYou": "Su di te",
     "grants.form.optionalInformation": "Informazioni opzionali",
     "grants.form.optionalInformation.description":
@@ -990,6 +993,8 @@ export const messages = {
     "grants.form.fields.needsFundsForTravel.label":
       "Fai click qui se hai bisogno di supporto finanziario per il viaggio",
     "grants.form.submit": "Invia",
+
+    "grants.form.edit.title": "Modifica il tuo Grant",
 
     "orderReview.heading": "Recap ordine",
     "orderReview.invoiceInformation": "Informazioni fatturazione",
