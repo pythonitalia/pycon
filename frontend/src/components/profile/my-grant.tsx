@@ -13,6 +13,7 @@ type Props = {
 };
 
 export const MyGrant = ({ className }: Props) => {
+  const code = process.env.conferenceCode;
   const { loading, error, data } = useMyGrantQuery({
     errorPolicy: "all",
     variables: {
@@ -41,7 +42,7 @@ export const MyGrant = ({ className }: Props) => {
         {error && <Alert variant="alert">{error.message}</Alert>}
 
         {data && (
-          <Alert varinat="alert">
+          <Alert variant="alert">
             <FormattedMessage
               id="grants.alreadySubmitted"
               values={{

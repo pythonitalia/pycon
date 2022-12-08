@@ -12,7 +12,6 @@ class Grant:
     id: strawberry.ID
     name: str
     full_name: str
-    email: str
     age_group: AgeGroup
     gender: str
     occupation: str
@@ -31,7 +30,6 @@ class Grant:
             id=grant.id,
             name=grant.name,
             full_name=grant.full_name,
-            email=grant.email,
             age_group=AgeGroup(grant.age_group),
             gender=grant.gender,
             occupation=grant.occupation,
