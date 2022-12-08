@@ -5,6 +5,9 @@ import React from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, Heading, jsx } from "theme-ui";
 
+import { GetStaticProps } from "next";
+
+import { addApolloState, getApolloClient } from "~/apollo/client";
 import { CompleteOrder } from "~/components/tickets-page/review/complete-order";
 import { HotelRoomsRecap } from "~/components/tickets-page/review/hotel-rooms-recap";
 import { InvoiceInformation } from "~/components/tickets-page/review/invoice-information";
@@ -13,6 +16,7 @@ import { Voucher } from "~/components/tickets-page/review/voucher";
 import { HotelRoom, OrderState } from "~/components/tickets-page/types";
 import { useCart } from "~/components/tickets-page/use-cart";
 import { TicketsPageWrapper } from "~/components/tickets-page/wrapper";
+import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { TicketItem } from "~/types";
 
 type Props = {
@@ -102,6 +106,16 @@ export const TicketsReviewOrderPage = () => {
       )}
     </TicketsPageWrapper>
   );
+};
+
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
+  const client = getApolloClient();
+
+  await Promise.all([prefetchSharedQueries(client, locale)]);
+
+  return addApolloState(client, {
+    props: {},
+  });
 };
 
 export default TicketsReviewOrderPage;

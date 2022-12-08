@@ -134,7 +134,7 @@ export const Link = ({
   return <ForwardedLink />;
 };
 
-const createHref = ({ path, params, locale, external }) => {
+export const createHref = ({ path, params, locale, external }) => {
   if (external) {
     return path;
   }

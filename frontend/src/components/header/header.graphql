@@ -3,8 +3,8 @@ query Header($code: String!) {
     id
     conferenceMenuEn: menu(identifier: "conference-nav") {
       links {
-        title(language: "en")
-        href(language: "en")
+        text: title(language: "en")
+        link: href(language: "en")
 
         page {
           slug(language: "en")
@@ -13,8 +13,8 @@ query Header($code: String!) {
     }
     programMenuEn: menu(identifier: "program-nav") {
       links {
-        title(language: "en")
-        href(language: "en")
+        text: title(language: "en")
+        link: href(language: "en")
 
         page {
           slug(language: "en")
@@ -24,8 +24,8 @@ query Header($code: String!) {
 
     conferenceMenuIt: menu(identifier: "conference-nav") {
       links {
-        title(language: "it")
-        href(language: "it")
+        text: title(language: "it")
+        link: href(language: "it")
 
         page {
           slug(language: "it")
@@ -34,8 +34,8 @@ query Header($code: String!) {
     }
     programMenuIt: menu(identifier: "program-nav") {
       links {
-        title(language: "it")
-        href(language: "it")
+        text: title(language: "it")
+        link: href(language: "it")
 
         page {
           slug(language: "it")
