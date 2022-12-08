@@ -1,5 +1,6 @@
 import pytest
 
+from api.grants.types import Grant
 from api.users.types import User
 
 pytestmark = pytest.mark.django_db
@@ -13,5 +14,5 @@ def test_query_grant(graphql_client, user, conference, grant_factory):
     user = User.resolve_reference(user.id, user.email)
     grant = user.grant(info=None, conference=conference.code)
 
-    assert len(grant) == 1
+    assert isinstance(grant, Grant)
     assert grant.id == grant.id

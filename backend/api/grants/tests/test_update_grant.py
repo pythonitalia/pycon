@@ -1,42 +1,9 @@
-from typing import Any, List, Optional
-
 import pytest
 
 pytestmark = pytest.mark.django_db
 
 
-def snake_to_camel(value: str) -> str:
-    return "".join(
-        [
-            word.capitalize() if index != 0 else word
-            for index, word in enumerate(value.split("_"))
-        ]
-    )
-
-
-def dict_to_camel(dict_: dict[str, Any]) -> dict[str, Any]:
-    new = {}
-    for k, v in dict_.items():
-        if isinstance(k, dict):
-            v = dict_to_camel(v)
-        if isinstance(v, list):
-            v = [dict_to_camel(item) if isinstance(item, dict) else item for item in v]
-
-        new[snake_to_camel(k)] = v
-    return new
-
-
-def to_camel_dict(obj, exclude: Optional[List] = None) -> dict[str, Any]:
-    if not exclude:
-        exclude = []
-
-    exclude.extend(["_state", "created", "modified", "to_camel_dict"])
-
-    return dict_to_camel({k: v for k, v in obj.__dict__.items() if k not in exclude})
-
-
 def _update_grant(graphql_client, grant, **kwargs):
-    defaults = to_camel_dict(grant, exclude=["id", "user_id", "email", "conference_id"])
 
     query = """
     mutation updateGrant($input: UpdateGrantInput!){
@@ -51,6 +18,7 @@ def _update_grant(graphql_client, grant, **kwargs):
                 validationConference: conference
                 validationName: name
                 validationFullName: fullName
+                validationAgeGroup: ageGroup
                 validationGender: gender
                 validationGrantType: grantType
                 validationOccupation: occupation
@@ -68,6 +36,23 @@ def _update_grant(graphql_client, grant, **kwargs):
         }
     }
     """
+
+    defaults = {
+        "name": grant.name,
+        "fullName": grant.full_name,
+        "conference": grant.conference.code,
+        "ageGroup": grant.age_group,
+        "gender": grant.gender,
+        "occupation": grant.occupation,
+        "grantType": grant.grant_type,
+        "pythonUsage": grant.python_usage,
+        "beenToOtherEvents": grant.been_to_other_events,
+        "interestedInVolunteering": grant.interested_in_volunteering,
+        "needsFundsForTravel": grant.needs_funds_for_travel,
+        "why": grant.why,
+        "notes": grant.notes,
+        "travellingFrom": grant.travelling_from,
+    }
 
     variables = {
         **defaults,
@@ -91,7 +76,7 @@ def test_update_grant(graphql_client, user, conference_factory, grant_factory):
         grant,
         name="Marcotte",
         fullName="Marcotte B. A.",
-        age_group="range_25_34",
+        ageGroup="range_25_34",
         gender="male",
         occupation="student",
         grantType="diversity",
