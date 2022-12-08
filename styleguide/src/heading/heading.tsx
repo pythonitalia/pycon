@@ -17,22 +17,28 @@ const SIZE_TO_COMPONENT: { [size in Size]: React.ElementType } = {
 export const Heading = ({
   children,
   size = 1,
+  color = "default",
 }: {
   children: ReactNode;
   size?: Size;
+  color?: "default" | "none";
 }) => {
   const Component = SIZE_TO_COMPONENT[size];
   return (
     <Component
-      className={clsx("text-black font-semibold", {
-        "text-2xl leading-12 sm:text-4xl sm:leading-15": size === "display1",
-        "text-2lg leading-9 sm:text-3xl sm:leading-14": size === "display2",
-        "text-2lg leading-10 sm:text-2xl sm:leading-13": size === 1,
-        "text-3md leading-8 sm:text-xl sm:leading-11": size === 2,
-        "text-2md leading-5 sm:text-lg sm:leading-8": size === 3,
-        "text-md  leading-3 sm:text-2md sm:leading-6": size === 4,
-        "text-base leading-2 sm:text-md sm:leading-4": size === 5,
-        "text-sm leading-1 sm:text-base sm:leading-2": size === 6,
+      className={clsx("font-sans", {
+        "font-bold text-2xl leading-12 lg:text-4xl lg:leading-15":
+          size === "display1",
+        "font-bold text-2lg leading-9 lg:text-3xl lg:leading-14":
+          size === "display2",
+        "font-semibold text-2lg leading-10 lg:text-2xl lg:leading-13":
+          size === 1,
+        "font-semibold text-3md leading-8 lg:text-xl lg:leading-11": size === 2,
+        "font-semibold text-2md leading-5 lg:text-lg lg:leading-8": size === 3,
+        "font-semibold text-md  leading-3 lg:text-2md lg:leading-6": size === 4,
+        "font-semibold text-base leading-2 lg:text-md lg:leading-4": size === 5,
+        "font-semibold text-sm leading-1 lg:text-base lg:leading-2": size === 6,
+        "text-black": color === "default",
       })}
     >
       {children}

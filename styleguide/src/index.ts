@@ -1,4 +1,4 @@
-export { Header } from "./header/header";
+export { NavBar } from "./navbar/navbar";
 export { Heading } from "./heading/heading";
 export { SpeakerSquare } from "./speaker-square/speaker-square";
 export { SpeakerDetails } from "./speaker-details/speaker-details";

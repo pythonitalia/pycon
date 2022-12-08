@@ -1,5 +1,5 @@
 import React from "react";
-import { Header } from "../header/header";
+import { NavBar } from "../navbar/navbar";
 import { SplitSection } from "../split-section/split-section";
 import { Marquee } from "../marquee/marquee";
 import { Page } from "./page";
@@ -14,10 +14,12 @@ export default {
 export const Standard = () => (
   <div>
     <Page>
-      <Header />
+      <NavBar />
       <Marquee>Style guides rock 🚀</Marquee>
-      <EmbeddedTwitch channel={"landonorris"} backgroundColor={"casablanca"}></EmbeddedTwitch>
-
+      <EmbeddedTwitch
+        channel={"landonorris"}
+        backgroundColor={"casablanca"}
+      ></EmbeddedTwitch>
 
       <SplitSection title="The speakers">
         <p className="mb-8 font-bold text-purple-600">

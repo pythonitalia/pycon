@@ -21,7 +21,7 @@ export const Button = ({
   <button
     disabled={disabled}
     className={clsx(
-      "flex items-center justify-items-center uppercase border-black border-3 py-5 px-8 sm:py-6 sm:px-12",
+      "flex items-center justify-items-center uppercase border-black border-3 py-5 px-8 lg:py-6 lg:px-12",
       {
         "opacity-30": disabled,
         // primary
@@ -33,7 +33,7 @@ export const Button = ({
     onClick={onClick}
   >
     {icon && <span className="mr-2">{icon}</span>}
-    <Text weight="strong" size="label">
+    <Text weight="strong" size="label1">
       {children}
     </Text>
   </button>

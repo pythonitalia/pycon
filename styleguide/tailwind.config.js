@@ -4,16 +4,19 @@ module.exports = {
   darkMode: false,
   theme: {
     screens: {
-      sm: '599px',
-      md: '1239px',
-      lg: '1439px',
-      xl: '1919px',
+      md: '599px',
+      lg: '1023px',
+      xl: '1440px',
     },
     fontFamily: {
       sans: ["GeneralSans-Variable", "ui-sans", "system-ui"],
       mono: ["JetBrainsMono", "Source Code Pro", "Menlo", "Consolas", "Monaco", "monospace"],
       display: ["GeneralSans-Variable"],
       body: ["GeneralSans-Variable"],
+    },
+    maxWidth: {
+      container: '1280px',
+      full: '100%',
     },
     borderWidth: {
       DEFAULT: '3px',
@@ -22,6 +25,7 @@ module.exports = {
       4: '4px',
     },
     lineHeight: {
+      0.5: '0.875rem', // 14px
       1: '1rem', // 16px
       2: '1.25rem', // 20px
       3: '1.375rem', // 22px
@@ -150,7 +154,6 @@ module.exports = {
     extend: {},
   },
   plugins: [
-    require("@tailwindcss/aspect-ratio"),
     require("tailwindcss-blend-mode")(),
   ],
 };
