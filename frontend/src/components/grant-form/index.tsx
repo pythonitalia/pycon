@@ -17,6 +17,9 @@ import {
   Textarea,
 } from "theme-ui";
 
+import { Alert } from "~/components/alert";
+import { Button } from "~/components/button/button";
+import { InputWrapper } from "~/components/input-wrapper";
 import { Link } from "~/components/link";
 import { MyGrant } from "~/components/profile/my-grant";
 import { useCurrentUser } from "~/helpers/use-current-user";
@@ -30,10 +33,7 @@ import {
   UpdateGrantMutation,
 } from "~/types";
 
-import { Alert } from "../alert";
-import { Button } from "../button/button";
 import { ErrorsList } from "../errors-list";
-import { InputWrapper } from "../input-wrapper";
 import {
   GENDER_OPTIONS,
   GRANT_TYPE_OPTIONS,
