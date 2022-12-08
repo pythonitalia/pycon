@@ -209,7 +209,7 @@ class Day:
 
     @classmethod
     def from_db(cls, instance):
-        obj = cls(instance.day)
+        obj = cls(day=instance.day)
         obj.slots = instance.slots
         return obj
 
