@@ -70,7 +70,10 @@ export const MyGrantOrForm = () => {
   });
   const grant = data && data?.me?.grant;
 
-  const [submitGrant, { loading, error: grantError }] = useSendGrantMutation();
+  const [
+    submitGrant,
+    { loading, error: grantError, data: grantData },
+  ] = useSendGrantMutation();
 
   const onSubmit = async (input: SendGrantInput) => {
     submitGrant({
@@ -97,7 +100,7 @@ export const MyGrantOrForm = () => {
         conference={code}
         onSubmit={onSubmit}
         error={grantError}
-        data={data}
+        data={grantData}
         loading={loading}
       />
     </>
