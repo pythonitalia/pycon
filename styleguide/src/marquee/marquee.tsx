@@ -1,9 +1,11 @@
 import React from "react";
 import clsx from "clsx";
 
+type Speed = "slow" | "medium";
+
 type Props = {
   children: React.ReactNode;
-  speed?: "slow" | "medium";
+  speed?: Speed;
   separator?: string | React.ReactNode;
 };
 
