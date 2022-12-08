@@ -25,13 +25,11 @@ import {
   UpdateGrantInput,
   useSendGrantMutation,
   useMyGrantQuery,
-} from "~/types";
-
-import {
   SendGrantInput,
   SendGrantMutation,
   UpdateGrantMutation,
-} from "../../types";
+} from "~/types";
+
 import { Alert } from "../alert";
 import { Button } from "../button/button";
 import { ErrorsList } from "../errors-list";
