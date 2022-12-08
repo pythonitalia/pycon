@@ -13,7 +13,7 @@ mutation SendGrant($input: SendGrantInput!) {
       validationGender: gender
       validationGrantType: grantType
       validationOccupation: occupation
-      validationAge: age
+      validationAgeGroup: ageGroup
       validationPythonUsage: pythonUsage
       validationBeenToOtherEvents: beenToOtherEvents
       validationInterestedInVolunteering: interestedInVolunteering

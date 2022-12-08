@@ -26,6 +26,16 @@ INTERESTED_IN_VOLUNTEERING = Choices(
 
 
 class Grant(TimeStampedModel):
+    class AgeGroup(models.TextChoices):
+        RANGE_LESS_THAN_10 = "range_less_than_10", _("10 years old or under")
+        RANGE_11_18 = "range_11_18", _("11 - 18 years old")
+        RANGE_19_24 = "range_19_24", _("19 - 24 years old")
+        RANGE_25_34 = "range_25_34", _("25 - 34 years old")
+        RANGE_35_44 = "range_35_44", _("35 - 44 years old")
+        RANGE_45_54 = "range_45_54", _("45 - 54 years old")
+        RANGE_55_64 = "range_55_64", _("55 - 64 years old")
+        RANGE_MORE_THAN_65 = "range_more_than_65", _("65 years or older")
+
     name = models.CharField(_("name"), max_length=300)
     full_name = models.CharField(_("full name"), max_length=300)
     conference = models.ForeignKey(
@@ -36,7 +46,10 @@ class Grant(TimeStampedModel):
     )
     user_id = models.IntegerField(verbose_name=_("user"), null=True)
     email = models.EmailField(_("email address"))
-    age = models.PositiveSmallIntegerField(_("age"))
+    age_group = models.CharField(
+        _("Age group"), max_length=20, choices=AgeGroup.choices, blank=True
+    )
+    age = models.PositiveSmallIntegerField(_("age"), null=True)  # TODO: remove
     gender = models.CharField(_("gender"), choices=GENDERS, max_length=10, blank=True)
     occupation = models.CharField(_("occupation"), choices=OCCUPATIONS, max_length=10)
     grant_type = models.CharField(_("grant type"), choices=GRANT_TYPES, max_length=10)

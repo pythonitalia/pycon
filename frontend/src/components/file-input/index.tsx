@@ -127,6 +127,9 @@ export const FileInput = ({ onChange: baseOnChange, name, onBlur, value }) => {
         onBlur={onBlur}
         type="file"
         accept="image/png,image/jpg,image/jpeg,image/webp"
+        sx={{
+          width: "100%",
+        }}
       />
 
       <canvas

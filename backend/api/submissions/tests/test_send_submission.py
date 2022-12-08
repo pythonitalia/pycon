@@ -1174,3 +1174,63 @@ def test_submit_talk_with_too_long_summary_fails(
         "Cannot be more than 128 chars"
         in resp["data"]["sendSubmission"]["validationShortSocialSummary"]
     )
+
+
+@mark.django_db
+def test_submit_talk_only_allows_5_tags(graphql_client, user, conference_factory):
+    graphql_client.force_login(user)
+
+    conference = conference_factory(
+        topics=("my-topic",),
+        languages=("en", "it"),
+        submission_types=("talk",),
+        active_cfp=True,
+        durations=("50",),
+        audience_levels=("Beginner",),
+    )
+
+    tag1, _ = SubmissionTag.objects.get_or_create(name="tag1")
+    tag2, _ = SubmissionTag.objects.get_or_create(name="tag2")
+    tag3, _ = SubmissionTag.objects.get_or_create(name="tag3")
+    tag4, _ = SubmissionTag.objects.get_or_create(name="tag4")
+    tag5, _ = SubmissionTag.objects.get_or_create(name="tag5")
+    tag6, _ = SubmissionTag.objects.get_or_create(name="tag6")
+
+    resp, _ = _submit_talk(
+        graphql_client,
+        conference,
+        shortSocialSummary="summary",
+        tags=[tag1.id, tag2.id, tag3.id, tag4.id, tag5.id, tag6.id],
+    )
+
+    assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
+
+    assert (
+        "You can only add up to 5 tags"
+        in resp["data"]["sendSubmission"]["validationTags"]
+    )
+
+
+@mark.django_db
+def test_submit_talk_with_no_tags_fails(graphql_client, user, conference_factory):
+    graphql_client.force_login(user)
+
+    conference = conference_factory(
+        topics=("my-topic",),
+        languages=("en", "it"),
+        submission_types=("talk",),
+        active_cfp=True,
+        durations=("50",),
+        audience_levels=("Beginner",),
+    )
+
+    resp, _ = _submit_talk(
+        graphql_client, conference, shortSocialSummary="summary", tags=[]
+    )
+
+    assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
+
+    assert (
+        "You need to add at least one tag"
+        in resp["data"]["sendSubmission"]["validationTags"]
+    )

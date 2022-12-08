@@ -1,6 +1,6 @@
 import { ApolloClient } from "@apollo/client/core";
 
-import { queryFooter, queryHeader } from "~/types";
+import { queryHeader } from "~/types";
 
 export const prefetchSharedQueries = async (
   client: ApolloClient<any>,
@@ -10,9 +10,5 @@ export const prefetchSharedQueries = async (
     code: process.env.conferenceCode,
   });
 
-  const footer = queryFooter(client, {
-    code: process.env.conferenceCode,
-  });
-
-  return Promise.all([header, footer]);
+  return Promise.all([header]);
 };

@@ -1,15 +1,9 @@
-import pytest
 from pytest import mark
 
 from participants.models import Participant
 from submissions.models import Submission
 
 pytestmark = mark.django_db
-
-
-@pytest.fixture(autouse=True)
-def change_azure_account_to_test_name(settings):
-    settings.AZURE_STORAGE_ACCOUNT_NAME = "pytest-fakestorageaccount"
 
 
 def _update_submission(

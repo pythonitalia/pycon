@@ -21,19 +21,17 @@ export const CreateOrderButtons = ({ state, email }: Props) => {
   const code = process.env.conferenceCode;
   const language = useCurrentLanguage();
 
-  const [
-    createOrder,
-    { data: orderData, loading: creatingOrder },
-  ] = useCreateOrderMutation({
-    onCompleted(result) {
-      if (result.createOrder.__typename !== "CreateOrderResult") {
-        return;
-      }
+  const [createOrder, { data: orderData, loading: creatingOrder }] =
+    useCreateOrderMutation({
+      onCompleted(result) {
+        if (result.createOrder.__typename !== "CreateOrderResult") {
+          return;
+        }
 
-      window.localStorage.removeItem("tickets-cart-v3");
-      window.location.href = result.createOrder.paymentUrl;
-    },
-  });
+        window.localStorage.removeItem("tickets-cart-v3");
+        window.location.href = result.createOrder.paymentUrl;
+      },
+    });
 
   const createOrderCallback = useCallback(
     (paymentProvider) => {

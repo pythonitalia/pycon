@@ -7,7 +7,6 @@ import { useFormState } from "react-use-form-state";
 import {
   Box,
   Checkbox,
-  Flex,
   Heading,
   Input,
   Label,
@@ -31,12 +30,13 @@ import {
   GRANT_TYPE_OPTIONS,
   INTERESTED_IN_VOLUNTEERING_OPTIONS,
   OCCUPATION_OPTIONS,
+  AGE_GROUPS_OPTIONS,
 } from "./options";
 
 export type GrantFormFields = {
   name: string;
   fullName: string;
-  age: number;
+  ageGroup: string;
   gender: string;
   occupation: string;
   grantType: string;
@@ -68,10 +68,9 @@ type GrantFormProps = { conference: string };
 
 export const GrantForm = ({ conference }: GrantFormProps) => {
   const { user, loading: loadingUser } = useCurrentUser({});
-  const [
-    formState,
-    { text, number: numberInput, textarea, select, checkbox },
-  ] = useFormState<GrantFormFields>(
+  const [formState, { text, textarea, select, checkbox }] = useFormState<
+    GrantFormFields
+  >(
     {},
     {
       withIds: true,
@@ -84,9 +83,13 @@ export const GrantForm = ({ conference }: GrantFormProps) => {
       formState.setField("name", user.name);
       formState.setField("gender", user.gender);
       if (user.dateBirth) {
+        const age =
+          new Date().getFullYear() - new Date(user.dateBirth).getFullYear();
         formState.setField(
-          "age",
-          new Date().getFullYear() - new Date(user.dateBirth).getFullYear(),
+          "ageGroup",
+          AGE_GROUPS_OPTIONS.find(
+            (option) => option.isAgeInRange && option.isAgeInRange(age),
+          ).value,
         );
       }
     }
@@ -101,7 +104,7 @@ export const GrantForm = ({ conference }: GrantFormProps) => {
         variables: {
           input: {
             conference,
-            age: +formState.values.age,
+            ageGroup: formState.values.ageGroup,
             fullName: formState.values.fullName,
             name: formState.values.name,
             gender: formState.values.gender,
@@ -294,6 +297,24 @@ export const GrantForm = ({ conference }: GrantFormProps) => {
           <Textarea {...textarea("why")} required={true} />
         </InputWrapper>
 
+        <InputWrapper
+          isRequired={true}
+          label={<FormattedMessage id="grants.form.fields.ageGroup" />}
+          errors={getErrors("ageGroup")}
+        >
+          <Select {...select("ageGroup")} required={true}>
+            {AGE_GROUPS_OPTIONS.map(({ value, disabled, messageId }) => (
+              <FormattedMessage id={messageId} key={messageId}>
+                {(msg) => (
+                  <option disabled={disabled} value={value}>
+                    {msg}
+                  </option>
+                )}
+              </FormattedMessage>
+            ))}
+          </Select>
+        </InputWrapper>
+
         <Box>
           <Heading sx={{ mb: 2 }}>
             <FormattedMessage id="grants.form.optionalInformation" />
@@ -302,13 +323,6 @@ export const GrantForm = ({ conference }: GrantFormProps) => {
           <Text sx={{ mb: 3 }}>
             <FormattedMessage id="grants.form.optionalInformation.description" />
           </Text>
-
-          <InputWrapper
-            label={<FormattedMessage id="grants.form.fields.age" />}
-            errors={getErrors("age")}
-          >
-            <Input {...numberInput("age")} />
-          </InputWrapper>
 
           <InputWrapper
             errors={getErrors("gender")}
