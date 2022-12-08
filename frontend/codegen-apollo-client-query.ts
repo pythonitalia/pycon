@@ -2,6 +2,7 @@
 module.exports = {
   plugin: (schema, documents, config) => {
     let definitionsCode = [];
+    console.warn("Hello Vercel. API_URL_SERVER: ", process.env.API_URL_SERVER);
 
     for (const doc of documents) {
       definitionsCode = definitionsCode.concat(
