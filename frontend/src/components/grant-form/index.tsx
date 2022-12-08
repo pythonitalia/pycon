@@ -20,8 +20,12 @@ import {
 import { Link } from "~/components/link";
 import { MyGrant } from "~/components/profile/my-grant";
 import { useCurrentUser } from "~/helpers/use-current-user";
-import { Grant, UpdateGrantInput, useSendGrantMutation } from "~/types";
-import { useMyGrantQuery } from "~/types";
+import {
+  Grant,
+  UpdateGrantInput,
+  useSendGrantMutation,
+  useMyGrantQuery,
+} from "~/types";
 
 import {
   SendGrantInput,
@@ -60,16 +64,15 @@ export const MyGrantOrForm = () => {
   const code = process.env.conferenceCode;
 
   const { error, data } = useMyGrantQuery({
+    errorPolicy: "all",
     variables: {
       conference: code,
     },
+    skip: typeof window === "undefined",
   });
   const grant = data && data?.me?.grant;
 
-  const [
-    submitGrant,
-    { loading, error: grantError, data: grantData },
-  ] = useSendGrantMutation();
+  const [submitGrant, { loading, error: grantError }] = useSendGrantMutation();
 
   const onSubmit = async (input: SendGrantInput) => {
     submitGrant({
@@ -431,6 +434,15 @@ export const GrantForm = ({
         </Box>
 
         <ErrorsList sx={{ mb: 3 }} errors={getErrors("nonFieldErrors")} />
+
+        {grantError && (
+          <Alert sx={{ mb: 4 }} variant="alert">
+            <FormattedMessage
+              id="global.tryAgain"
+              values={{ error: grantError.message }}
+            />
+          </Alert>
+        )}
 
         {grantLoading && (
           <Alert

@@ -13,6 +13,7 @@ export const messages = {
     "global.loadMore": "Load more",
     "global.button.loading": "Loading {emoji}",
     "global.somethingWentWrong": "Something went wrong, please try again",
+    "global.tryAgain": "Something went wrong: {error}",
 
     "home.title": "Home",
     "home.deadline.begins": "Begins",
@@ -173,7 +174,6 @@ export const messages = {
     "cfp.tagsDescription":
       "Use up to 5 tags to describe what your proposal is about. Examples are 'Django, GraphQL'.",
     "cfp.submissionSent": "Proposal sent!",
-    "cfp.tryAgain": "Something went wrong: {error}",
     "cfp.selectDuration": "Select a duration",
     "cfp.selectTrack": "Select a track",
     "cfp.selectAudience": "Select an audience",
@@ -623,6 +623,8 @@ export const messages = {
     "global.button.loading": "Invio {emoji}",
     "global.somethingWentWrong": "Qualcosa è andato male, prova di nuovo",
     "global.loadMore": "Carica altri",
+    "global.tryAgain": "Si è verificato un errore: {error}",
+
     "home.title": "Home",
     "home.deadline.begins": "Inizio",
     "home.deadline.deadline": "Fine",
@@ -775,7 +777,6 @@ export const messages = {
       "Utilizza fino a 5 tag per descrivere l'argomento della tua proposta. Esempi sono 'Django, GraphQL'.",
     "cfp.submissionSent": "Proposal inviata!",
     "cfp.submit": "Invia",
-    "cfp.tryAgain": "Si è verificato un errore: {error}",
     "cfp.minutes": "minuti",
     "cfp.selectDuration": "Seleziona una durata",
     "cfp.selectTrack": "Seleziona una traccia",

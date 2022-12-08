@@ -1,26 +1,19 @@
-import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
-import { Box, Container, Heading, Text } from "theme-ui";
+import { Box, Heading } from "theme-ui";
 
-import { GetStaticPaths, GetStaticProps } from "next";
-import { useRouter } from "next/router";
+import { GetStaticProps } from "next";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
-import { Alert } from "~/components/alert";
 import { GrantForm } from "~/components/grant-form";
-import { LoginForm } from "~/components/login-form";
-import { MetaTags } from "~/components/meta-tags";
-import { useLoginState } from "~/components/profile/hooks";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
-import { useCurrentLanguage } from "~/locale/context";
-import { Grant, useMyGrantQuery } from "~/types";
+import { useMyGrantQuery } from "~/types";
 
 import { useUpdateGrantMutation, UpdateGrantInput } from "../../../types";
 
 const GrantPage = (): JSX.Element => {
   const code = process.env.conferenceCode;
 
-  const { error, loading, data } = useMyGrantQuery({
+  const { loading, data } = useMyGrantQuery({
     errorPolicy: "all",
     variables: {
       conference: code,
@@ -50,28 +43,26 @@ const GrantPage = (): JSX.Element => {
   }
 
   return (
-    <>
-      <Box
-        sx={{
-          maxWidth: "container",
-          mx: "auto",
-          px: 3,
-          my: 5,
-        }}
-      >
-        <Heading mb={4} as="h1">
-          <FormattedMessage id="grants.form.edit.title" />
-        </Heading>
-        <GrantForm
-          conference={code}
-          grant={grant}
-          onSubmit={onSubmit}
-          loading={updateLoading}
-          error={updateError}
-          data={updateData}
-        />
-      </Box>
-    </>
+    <Box
+      sx={{
+        maxWidth: "container",
+        mx: "auto",
+        px: 3,
+        my: 5,
+      }}
+    >
+      <Heading mb={4} as="h1">
+        <FormattedMessage id="grants.form.edit.title" />
+      </Heading>
+      <GrantForm
+        conference={code}
+        grant={grant}
+        onSubmit={onSubmit}
+        loading={updateLoading}
+        error={updateError}
+        data={updateData}
+      />
+    </Box>
   );
 };
 

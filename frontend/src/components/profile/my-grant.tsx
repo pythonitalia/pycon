@@ -14,9 +14,11 @@ type Props = {
 
 export const MyGrant = ({ className }: Props) => {
   const { loading, error, data } = useMyGrantQuery({
+    errorPolicy: "all",
     variables: {
-      conference: process.env.conferenceCode,
+      conference: code,
     },
+    skip: typeof window === "undefined",
   });
 
   if (loading) {
