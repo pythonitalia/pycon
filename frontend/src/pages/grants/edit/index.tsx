@@ -6,9 +6,11 @@ import { GetStaticProps } from "next";
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { GrantForm } from "~/components/grant-form";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
-import { useMyGrantQuery } from "~/types";
-
-import { useUpdateGrantMutation, UpdateGrantInput } from "../../../types";
+import {
+  useMyGrantQuery,
+  useUpdateGrantMutation,
+  UpdateGrantInput,
+} from "~/types";
 
 const GrantPage = (): JSX.Element => {
   const code = process.env.conferenceCode;
