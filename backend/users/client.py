@@ -61,17 +61,3 @@ def get_user_data_by_query(query: str):
     users_data = client_execute(SEARCH_USERS, {"query": query}).data
 
     return [user["id"] for user in users_data["searchUsers"]]
-
-
-def get_users_data_by_emails(emails: list[str]) -> dict[str, dict[str, Any]]:
-    client = ServiceClient(
-        url=f"{settings.USERS_SERVICE_URL}/internal-api",
-        service_name="users-backend",
-        caller="pycon-backend",
-        jwt_secret=settings.SERVICE_TO_SERVICE_SECRET,
-    )
-    client_execute = async_to_sync(client.execute)
-    users_data = client_execute(GET_USERS_BY_EMAILS, {"emails": emails}).data
-    users_by_email = {user["email"]: user for user in users_data["usersByEmails"]}
-
-    return users_by_email
