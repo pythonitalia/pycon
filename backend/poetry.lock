@@ -1514,7 +1514,7 @@ full = ["aiofiles", "graphene", "itsdangerous", "jinja2", "python-multipart", "p
 
 [[package]]
 name = "strawberry-graphql"
-version = "0.147.0"
+version = "0.149.1"
 description = "A library for creating GraphQL APIs"
 category = "main"
 optional = false
@@ -1712,7 +1712,7 @@ lambda = ["awslambdaric"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "ecea303700172194f59bd67bddbcbe634c23541e2deb169514c84ffdc916740a"
+content-hash = "2a5491984b4aa5ef3d84a756c01318ec61b4c352c5b211b87ebd4f4406f0c47c"
 
 [metadata.files]
 aniso8601 = [
@@ -2745,8 +2745,8 @@ starlette = [
     {file = "starlette-0.14.2.tar.gz", hash = "sha256:7d49f4a27f8742262ef1470608c59ddbc66baf37c148e938c7038e6bc7a998aa"},
 ]
 strawberry-graphql = [
-    {file = "strawberry_graphql-0.147.0-py3-none-any.whl", hash = "sha256:fae82f1c0ed157e6a7f36e7ea5a71f650d2b89cb737fcc44a6a95a7aad720537"},
-    {file = "strawberry_graphql-0.147.0.tar.gz", hash = "sha256:ca262565cdfc9b65f98eabac6d2a8d7c69a66eff9ef2aa469b65772d5d7c03df"},
+    {file = "strawberry_graphql-0.149.1-py3-none-any.whl", hash = "sha256:54f64170c0729802d192be733133c2b35d4d8781212877b9e3398aba41c78baf"},
+    {file = "strawberry_graphql-0.149.1.tar.gz", hash = "sha256:92ef1bb6e9e2dc4a84562dba7910fe6300a695a758682846292a50273b1a3e6a"},
 ]
 tablib = [
     {file = "tablib-3.2.1-py3-none-any.whl", hash = "sha256:870d7e688f738531a14937a055e8bba404fbc388e77d4d500b2c904075d1019c"},
