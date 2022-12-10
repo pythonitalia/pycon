@@ -22,7 +22,7 @@ export default class MyDocument extends Document<{
             src="https://plausible.io/js/plausible.js"
           />
         </Head>
-        <body>
+        <body className="bg-milk">
           <InitializeColorMode />
           <Main />
           <NextScript />

@@ -189,10 +189,12 @@ services:
       dockerfile: ../Dockerfile.node.local
     networks: [pycon_net]
     entrypoint: ""
-    command: sh -c "touch /.ready &&
+    command: sh -c "pnpm install &&
+      touch /.ready &&
       pnpm dev"
     volumes:
       - ./gateway/:/home/node/app
+      - /home/node/app/.pnpm-store/
       - /home/node/app/node_modules/
     environment:
       <<: *enviroment_defaults
@@ -224,9 +226,10 @@ services:
     networks: [pycon_net]
     entrypoint: ""
     working_dir: /home/node/app
-    command: sh -c "pnpm codegen && pnpm run dev"
+    command: sh -c "pnpm install && pnpm codegen && pnpm run dev"
     volumes:
       - ./frontend/:/home/node/app
+      - /home/node/app/.pnpm-store/
       - /home/node/app/node_modules/
       - /home/node/app/.next
     environment:
@@ -246,9 +249,10 @@ services:
     networks: [pycon_net]
     entrypoint: ""
     working_dir: /home/node/app
-    command: sh -c "pnpm codegen && pnpm run dev"
+    command: sh -c "pnpm install && pnpm codegen && pnpm run dev"
     volumes:
       - ./association-frontend/:/home/node/app
+      - /home/node/app/.pnpm-store/
       - /home/node/app/node_modules/
       - /home/node/app/.next
     environment:

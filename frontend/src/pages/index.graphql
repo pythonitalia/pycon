@@ -35,6 +35,27 @@ query IndexPage($code: String!, $language: String!) {
       language: $language
     )
 
+    homepageCountdownSectionTitle: copy(
+      key: "homepage-countdownsection-title"
+      language: $language
+    )
+    homepageCountdownSectionSubtitle: copy(
+      key: "homepage-countdownsection-subtitle"
+      language: $language
+    )
+    homepageCountdownSectionText: copy(
+      key: "homepage-countdownsection-text"
+      language: $language
+    )
+    homepageCountdownSectionCTALink: copy(
+      key: "homepage-countdownsection-cta-link"
+      language: $language
+    )
+    homepageCountdownSectionCTAText: copy(
+      key: "homepage-countdownsection-cta-text"
+      language: $language
+    )
+
     gettingThereText: copy(key: "getting-there-text", language: $language)
 
     isRunning

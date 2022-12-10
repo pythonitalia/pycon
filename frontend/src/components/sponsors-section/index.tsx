@@ -1,7 +1,8 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
-import { Box, Heading, jsx } from "theme-ui";
+import { Heading, Spacer } from "@python-italia/pycon-styleguide";
+import { jsx } from "theme-ui";
 
 import { SponsorsGrid } from "./sponsors-grid";
 import { Sponsor } from "./types";
@@ -16,41 +17,14 @@ type Props = {
 };
 
 export const SponsorsSection = ({ sponsorsByLevel, ...props }: Props) => (
-  <Box {...props}>
-    {sponsorsByLevel.map(({ level, sponsors, highlightColor }) => (
-      <Box key={level}>
-        <Heading
-          sx={{
-            maxWidth: "container",
-            mx: "auto",
-            my: 3,
-          }}
-        >
-          <Box
-            as="span"
-            sx={{
-              transform: "rotate(90deg)",
-              transformOrigin: "0 0",
-              top: 5,
-              py: 2,
-              px: 3,
-              left: -20,
-            }}
-            css={`
-              @media (min-width: 1310px) {
-                position: static;
-                display: inline-block;
-                padding: 0;
-                transform: none;
-              }
-            `}
-          >
-            {level}
-          </Box>
-        </Heading>
-
+  <div {...props}>
+    {sponsorsByLevel.map(({ level, sponsors, highlightColor }, index) => (
+      <div key={level}>
+        <Heading size={2}>{level}</Heading>
+        <Spacer size="xs" />
         <SponsorsGrid color={highlightColor} sponsors={sponsors} />
-      </Box>
+        {index !== sponsorsByLevel.length - 1 && <Spacer size="large" />}
+      </div>
     ))}
-  </Box>
+  </div>
 );

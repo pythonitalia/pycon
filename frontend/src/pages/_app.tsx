@@ -2,6 +2,7 @@
 
 /** @jsx jsx */
 import { ApolloProvider } from "@apollo/client";
+import { getMessagesForLocale } from "@python-italia/pycon-styleguide";
 import "@python-italia/pycon-styleguide/style";
 import { Analytics } from "@vercel/analytics/react";
 import { useEffect } from "react";
@@ -32,7 +33,10 @@ const MyApp = (props) => {
   const intl = createIntl(
     {
       locale,
-      messages: messages[locale],
+      messages: {
+        ...messages[locale],
+        ...getMessagesForLocale(locale),
+      },
     },
     intlCache,
   );

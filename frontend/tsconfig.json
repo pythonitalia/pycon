@@ -16,7 +16,13 @@
     "jsx": "preserve",
     "baseUrl": ".",
     "paths": {
-      "~/*": ["./src/*"]
+      "~/*": ["./src/*"],
+      "@python-italia/pycon-styleguide/icons": [
+        "./node_modules/@python-italia/pycon-styleguide/dist/icons"
+      ],
+      "@python-italia/pycon-styleguide/illustrations": [
+        "./node_modules/@python-italia/pycon-styleguide/dist/illustrations"
+      ]
     },
     "incremental": true
   },

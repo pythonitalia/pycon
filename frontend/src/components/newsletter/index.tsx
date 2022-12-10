@@ -1,14 +1,14 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
+import { Button, Spacer, Text } from "@python-italia/pycon-styleguide";
 import React, { useCallback, useState } from "react";
 import { FormattedMessage } from "react-intl";
-import { Box, Heading, Input, jsx, Text } from "theme-ui";
+import { Box, Input, jsx } from "theme-ui";
 
 import { Alert } from "~/components/alert";
 import { NewsletterSubscriptionResult, useSubscribeMutation } from "~/types";
 
-import { Button } from "../button/button";
 import { ErrorsList } from "../errors-list";
 
 const NewsletterForm = () => {
@@ -52,17 +52,13 @@ const NewsletterForm = () => {
 
     return (
       <Box>
-        <Text
-          variant="prefooter"
-          mb={3}
-          sx={{
-            display: "block",
-          }}
-        >
+        <Text size={2}>
           <FormattedMessage id="newsletter.text" />
         </Text>
 
-        <Text sx={{ color: "green", fontWeight: "bold" }}>
+        <Spacer size="medium" />
+
+        <Text size={2}>
           <FormattedMessage
             id={success ? "newsletter.success" : "newsletter.confirmViaEmail"}
           />
@@ -74,9 +70,10 @@ const NewsletterForm = () => {
   return (
     <Box as="form" onSubmit={onSubmit}>
       <Box>
-        <Text variant="prefooter" mb={3}>
+        <Text size={2}>
           <FormattedMessage id="newsletter.text" />
         </Text>
+        <Spacer size="medium" />
         <Input
           sx={{
             listStyle: "none",
@@ -90,9 +87,10 @@ const NewsletterForm = () => {
           required={true}
           type="email"
         />
+
         <ErrorsList sx={{ mb: 4 }} errors={getErrors("validationEmail")} />
 
-        <Button type="submit" disabled={!canSubmit} loading={loading}>
+        <Button role="secondary" disabled={!canSubmit}>
           <FormattedMessage id="newsletter.button" />
         </Button>
 
@@ -106,11 +104,4 @@ const NewsletterForm = () => {
   );
 };
 
-export const NewsletterSection = () => (
-  <Box>
-    <Heading sx={{ fontSize: 5, mb: 4 }}>
-      <FormattedMessage id="newsletter.header" />
-    </Heading>
-    <NewsletterForm />
-  </Box>
-);
+export const NewsletterSection = () => <NewsletterForm />;

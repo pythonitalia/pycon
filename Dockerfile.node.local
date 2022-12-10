@@ -10,8 +10,8 @@ RUN npm install -g pnpm; \
     export PATH="$PNPM_HOME:$PATH"; \
     pnpm bin -g
 
-COPY package.json pnpm-lock.yaml ./
-RUN pnpm install
+# COPY package.json pnpm-lock.yaml ./
+# RUN pnpm install
 
 COPY . .
 
