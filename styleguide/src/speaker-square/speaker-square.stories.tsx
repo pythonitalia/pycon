@@ -15,6 +15,7 @@ const Template = (args: any) => (
 
 export const Primary = Template.bind({});
 
+// @ts-ignore
 Primary.args = {
   name: "Patrick",
   subtitle: "Python Italia",

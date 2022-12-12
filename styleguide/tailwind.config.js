@@ -14,10 +14,7 @@ module.exports = {
       display: ["GeneralSans-Variable"],
       body: ["GeneralSans-Variable"],
     },
-    maxWidth: {
-      container: '1280px',
-      full: '100%',
-    },
+
     borderWidth: {
       DEFAULT: '3px',
       0: 0,
@@ -147,7 +144,28 @@ module.exports = {
       },
       padding: {
         xl: '32rem',
-      }
+      },
+      height: {
+        separator: '3px',
+
+        128: '28.875rem', // 462px
+        256: '36.875rem', // 590px
+      },
+      width: {
+        "full-outside-container": 'calc(100% + var(--screen-side-width))'
+      },
+      margin: {
+        "-full-outside-container": 'calc((100% + var(--screen-side-width)) * -1)'
+      },
+      maxWidth: {
+        // 1280 + the padding of the container
+        container: `${1280 + 16 * 2}px`,
+        full: '100%',
+      },
+      gridTemplateColumns: {
+        'inverted-split-content-larger-content': 'max-content 1fr',
+        'split-content-larger-content': '1fr max-content',
+      },
     },
   },
   variants: {

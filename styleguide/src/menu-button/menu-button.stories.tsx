@@ -5,4 +5,4 @@ export default {
   title: "Menu Button",
 };
 
-export const Story = () => <MenuButton />;
+export const Story = () => <MenuButton onClick={() => {}} />;

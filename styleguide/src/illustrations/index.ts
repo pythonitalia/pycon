@@ -1,2 +1,11 @@
 export { SnakeCouple } from "./snake-couple";
 export { SnakeDNA } from "./snake-dna";
+export { Snake1 } from "./snake-1";
+export { Snake2 } from "./snake-2";
+export { SnakeTail } from "./snake-tail";
+export { Snake4 } from "./snake-4";
+export { Snake5 } from "./snake-5";
+export { TripleSnakes } from "./triple-snakes";
+export { Cathedral } from "./cathedral";
+export { Florence } from "./florence";
+export { SnakeHead } from "./snake-head";

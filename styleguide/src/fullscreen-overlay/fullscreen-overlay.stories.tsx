@@ -19,7 +19,10 @@ export const Primary = ({ contents }) => {
   return (
     <FullscreenOverlay>
       {contents === "ticket with holder" && (
-        <TicketWithHolder ticketSize="medium" />
+        <TicketWithHolder
+          ticket={{ name: "Marco Acierno", username: "@marcoacierno" }}
+          ticketSize="medium"
+        />
       )}
       {contents === "simple text" && <span>your text here</span>}
     </FullscreenOverlay>

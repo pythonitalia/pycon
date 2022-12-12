@@ -3,11 +3,20 @@ import React from "react";
 
 type Props = React.PropsWithChildren<{
   className?: string;
+  size?: "base";
 }>;
 
-export const Container = ({ children, className }: Props) => {
+export const Container = ({ children, className, size = "base" }: Props) => {
   return (
-    <div className={clsx("px-4 max-w-container mx-auto w-full", className)}>
+    <div
+      className={clsx(
+        "px-4 mx-auto w-full",
+        {
+          "max-w-container": size === "base",
+        },
+        className
+      )}
+    >
       {children}
     </div>
   );

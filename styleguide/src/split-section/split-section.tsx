@@ -1,75 +1,136 @@
 import clsx from "clsx";
-import React from "react";
-import { SnakeCouple } from "../illustrations";
+import React, { useEffect, useRef } from "react";
 import { Heading } from "../heading";
-import { Color } from "../types";
+import { Separator } from "../separator";
+import { Container } from "../container";
+import { Spacer } from "../spacer/spacer";
 
-type Props = {
+type Props = React.PropsWithChildren<{
   title: string;
-  children: React.ReactNode;
-  illustration?: (props: any) => React.ReactElement;
-  illustrationFirst?: boolean;
-  hideIllustrationOnMobile?: boolean;
-  highlightColor?: Color;
-};
+  sideContent: React.ReactNode;
+  sideContentBackground?: string;
+  sideContentType?: "illustration" | "other";
+  invert?: boolean;
+  hideSideContentOnMobile?: boolean;
+  spacing?: "even" | "larger-content";
+}>;
 
 export const SplitSection = ({
   title,
   children,
-  illustrationFirst = false,
-  hideIllustrationOnMobile = false,
-  illustration: Illustration = SnakeCouple,
-  highlightColor = "coral",
+  sideContent,
+  sideContentBackground,
+  sideContentType = "illustration",
+  spacing = "even",
+  hideSideContentOnMobile = false,
+  invert = false,
 }: Props) => {
-  let top = (
-    <div className="p-8 md:p-16 md:w-1/2">
-      <Heading>{title}</Heading>
+  const illustrationRef = useRef<any>();
+  const isIllustration = sideContentType === "illustration";
+  const isOtherContent = sideContentType === "other";
 
-      {children}
-    </div>
-  );
-  let bottom = (
-    <div
-      className={clsx("p-8 md:p-16 relative overflow-hidden md:w-1/2", {
-        hidden: hideIllustrationOnMobile,
-        "md:block": hideIllustrationOnMobile,
-      })}
-    >
-      <div className="max-w-xs">
-        <div className="relative aspect-w-1 aspect-h-1">
-          <div
-            className={clsx("absolute w-full h-full bg-green top-10 left-20", {
-              "bg-blue": highlightColor === "blue",
-              "bg-coral": highlightColor === "coral",
-              "bg-green": highlightColor === "green",
-              "bg-pink": highlightColor === "pink",
-              "bg-purple": highlightColor === "purple",
-              "bg-black": highlightColor === "black",
-            })}
-          ></div>
-          <Illustration className="w-full" />
-        </div>
-      </div>
-    </div>
-  );
+  useEffect(() => {
+    // Fixes a bug in safari where the svg height is not displayed correctly
+    // setting intrinsic as height and then removing it fixes the issue
+    if (!illustrationRef.current) {
+      return;
+    }
 
-  if (illustrationFirst) {
-    [bottom, top] = [top, bottom];
-  }
+    const svgElement = illustrationRef.current.firstElementChild as SVGElement;
+
+    svgElement.style.height = "intrinsic";
+    requestAnimationFrame(() => {
+      svgElement.style.height = "";
+    });
+  }, []);
 
   return (
     <div>
-      <div
-        className={clsx(
-          "max-w-7xl mx-auto md:flex md:grid-cols-2 md:divide-y-0 md:divide-x-4",
-          {
-            "divide-y-4": !hideIllustrationOnMobile,
-          }
-        )}
+      <Container
+        className={clsx("grid", {
+          "grid-cols-1 lg:grid-cols-2": spacing === "even",
+          "grid-cols-1 lg:gap-24": spacing === "larger-content",
+          "lg:grid-cols-split-content-larger-content":
+            spacing === "larger-content" && !invert,
+          "lg:grid-cols-inverted-split-content-larger-content":
+            spacing === "larger-content" && invert,
+        })}
       >
-        {top}
-        {bottom}
-      </div>
+        {/* content */}
+        <div
+          className={clsx("h-full", {
+            "order-2 lg:order-1": !invert,
+            "order-2 lg:order-2": invert,
+          })}
+        >
+          <Separator
+            escapeContainer
+            hidden={hideSideContentOnMobile}
+            mobileOnly={true}
+          />
+          <div
+            className={clsx(
+              "h-full py-8 lg:py-20 flex justify-center items-start flex-col",
+              {
+                "lg:pr-10": !invert,
+                "lg:pl-10": invert,
+              }
+            )}
+          >
+            <Heading size="display2">{title}</Heading>
+            <Spacer size="medium" />
+            {children}
+          </div>
+        </div>
+
+        {/* side content */}
+        {isOtherContent && (
+          <div
+            className={clsx("h-full flex overflow-hidden py-8 lg:py-20", {
+              "order-1 lg:order-2": !invert,
+              "order-1 lg:order-1": invert,
+
+              "hidden lg:flex": hideSideContentOnMobile,
+            })}
+            style={{
+              backgroundColor: sideContentBackground,
+            }}
+          >
+            {sideContent}
+          </div>
+        )}
+
+        {isIllustration && (
+          <div
+            className={clsx("h-full flex overflow-hidden", {
+              "order-1 lg:order-2": !invert,
+              "order-1 lg:order-1": invert,
+
+              " w-screen lg:w-full-outside-container -ml-4 lg:ml-0 lg:border-l-3":
+                !invert,
+              "w-screen -ml-4 lg:-ml-full-outside-container lg:w-auto lg:border-r-3":
+                invert,
+
+              "items-center justify-center lg:items-end": isIllustration,
+
+              "hidden lg:flex": hideSideContentOnMobile,
+            })}
+            style={{
+              backgroundColor: sideContentBackground,
+            }}
+          >
+            <div
+              className={clsx("h-80 lg:h-128 shrink-0 flex items-end", {
+                "lg:mr-auto lg:ml-4": !invert,
+                "lg:ml-auto lg:mr-4": invert,
+              })}
+              ref={illustrationRef}
+            >
+              {sideContent}
+            </div>
+          </div>
+        )}
+      </Container>
     </div>
   );
 };

@@ -21,6 +21,7 @@ export const ICALLink = ({
   };
 
   return (
+    // @ts-ignore
     <ICalendarLink event={event}>
       <span title="Download ical">📆</span>
     </ICalendarLink>

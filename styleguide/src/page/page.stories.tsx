@@ -1,11 +1,15 @@
 import React from "react";
-import { NavBar } from "../navbar/navbar";
 import { SplitSection } from "../split-section/split-section";
-import { Marquee } from "../marquee/marquee";
-import { Page } from "./page";
-import { Carousel } from "../carousel/carousel";
-import { SpeakerSquare } from "../speaker-square/speaker-square";
-import { EmbeddedTwitch } from "../embedded-video";
+import { Logo } from "../logo/logo";
+import { NavBar } from "../navbar/navbar";
+import { Cathedral, Snake5 } from "../illustrations";
+import { Text } from "../text";
+import { Spacer } from "../spacer";
+import { Button } from "../button";
+import { SectionsWrapper } from "../sections-wrapper";
+import { Heading } from "../heading";
+import { SnakeCountdown } from "../snake-countdown";
+import { Section } from "../section";
 
 export default {
   title: "Page examples",
@@ -13,61 +17,130 @@ export default {
 
 export const Standard = () => (
   <div>
-    <Page>
-      <NavBar />
-      <Marquee>Style guides rock 🚀</Marquee>
-      <EmbeddedTwitch
-        channel={"landonorris"}
-        backgroundColor={"casablanca"}
-      ></EmbeddedTwitch>
-
-      <SplitSection title="The speakers">
-        <p className="mb-8 font-bold text-purple-600">
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-        </p>
-        <p>
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eius
-          delectus velit temporibus facilis quis dolore sit fugit vel labore, ut
-          odit perspiciatis id, vitae maiores? Sequi cupiditate soluta officia
-          voluptatem?
-        </p>
+    <NavBar
+      actions={[
+        {
+          text: "Buy Tickets",
+          icon: "tickets",
+          link: "/tickets",
+        },
+        {
+          text: "Dashboard",
+          icon: "user",
+        },
+      ]}
+      mainLinks={[
+        {
+          text: "Live",
+          link: "/live",
+        },
+        {
+          text: "Agenda",
+          link: "/schedule",
+        },
+        {
+          text: "Speakers",
+          link: "/speakers",
+        },
+        {
+          text: "Where",
+          link: "/where",
+        },
+        {
+          text: "Keynotes",
+          link: "/keynotes",
+        },
+        {
+          text: "Tickets",
+          link: "/tickets",
+        },
+      ]}
+      secondaryLinks={new Array(15)
+        .fill({
+          text: "Beginners Day",
+          link: "/beginners-day",
+        })
+        .map((l, index) => ({
+          ...l,
+          text: `${l.text} ${index}`,
+        }))}
+      logo={Logo}
+      mobileLogo={Logo}
+      bottomBarLink={{
+        link: "/it",
+        text: "Switch to Italian",
+      }}
+    />
+    <SectionsWrapper>
+      <Section>
+        <Heading size="display1">
+          Welcome to the Python Italia Conference
+        </Heading>
+      </Section>
+      <SplitSection
+        sideContent={<Cathedral />}
+        sideContentBackground={Cathedral.backgroundColor}
+        title="Buy a ticket"
+      >
+        <Text size={1}>We have tickets</Text>
+        <Spacer size="large" />
+        <Button onClick={() => {}} role="primary">
+          Buy ticket
+        </Button>
       </SplitSection>
-      <Carousel title="The speakers">
-        <SpeakerSquare
-          name="Patrick"
-          subtitle="Python Italia"
-          portraitUrl="https://source.unsplash.com/900x900/?face&1"
-          className="bg-red-400"
+      <SplitSection
+        sideContent={
+          <SnakeCountdown
+            snakeLookingAt="right"
+            deadline={new Date(2023, 2, 10, 10, 0, 0)}
+          />
+        }
+        invert
+        sideContentType="other"
+        hideSideContentOnMobile
+        spacing="larger-content"
+        title="Call for proposals [inverted]"
+      >
+        <Spacer size="medium" />
+        <Heading size={2}>PyCon Italia is looking for you!</Heading>
+        <Spacer size="medium" />
+        <SnakeCountdown
+          deadline={new Date(2023, 2, 10, 10, 0, 0)}
+          className="lg:hidden"
         />
-
-        <SpeakerSquare
-          name="Patrick"
-          subtitle="Python Italia"
-          portraitUrl="https://source.unsplash.com/900x900/?face&2"
-          className="bg-blue-400"
-        />
-
-        <SpeakerSquare
-          name="Patrick"
-          subtitle="Python Italia"
-          portraitUrl="https://source.unsplash.com/900x900/?face&3"
-          className="bg-purple-400"
-        />
-
-        <SpeakerSquare
-          name="Patrick"
-          subtitle="Python Italia"
-          portraitUrl="https://source.unsplash.com/900x900/?face&4"
-          className="bg-yellow-400"
-        />
-
-        <SpeakerSquare
-          name="Patrick"
-          subtitle="Python Italia"
-          portraitUrl="https://source.unsplash.com/900x900/?face&5"
-          className="bg-red-400"
-        />
-      </Carousel>
-    </Page>
+        <Spacer size="medium" />
+        <Text size={1}>
+          PyCon Italia is seeking speakers of all experience levels and
+          backgrounds to contribute to our conference program! If you use Python
+          professionally, as a hobbyist or are just excited about Python or
+          programming and open source communities, we would love to hear from
+          you.
+        </Text>
+        <Spacer size="large" />
+        <Button onClick={() => {}} role="primary">
+          Buy ticket
+        </Button>
+      </SplitSection>
+      <SplitSection
+        sideContent={<Snake5 />}
+        sideContentBackground={Snake5.backgroundColor}
+        title="Spacing tests"
+      >
+        <Spacer size="medium" />
+        <Heading size={2}>PyCon Italia is looking for you!</Heading>
+        <Spacer size="medium" />
+        <Text size={1}>
+          PyCon Italia is seeking speakers of all experience levels and
+          backgrounds to contribute to our conference program! If you use Python
+          professionally, as a hobbyist or are just excited about Python or
+          programming and open source communities, we would love to hear from
+          you.
+        </Text>
+        <Spacer size="large" />
+        <Button onClick={() => {}} role="secondary">
+          Submit now
+        </Button>
+      </SplitSection>
+    </SectionsWrapper>
   </div>
 );

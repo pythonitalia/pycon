@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --screen-sides-width: max(calc(100vw - 1280px), 32px);
+  --screen-side-width: calc(var(--screen-sides-width) / 2);
+}
+
 p a {
   font-weight: bold;
   text-decoration: underline;
@@ -88,4 +93,3 @@ p a {
     transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     transform: translateZ(0);
 }
-
