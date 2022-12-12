@@ -129,27 +129,29 @@ export const CfpForm = ({
   error: submissionError,
   data: submissionData,
 }: Props) => {
-  const [formState, { text, textarea, radio, select, checkbox, url, raw }] =
-    useFormState<CfpFormFields>(
-      {
-        title: {
-          en: "",
-          it: "",
-        },
-        abstract: {
-          en: "",
-          it: "",
-        },
-        elevatorPitch: {
-          en: "",
-          it: "",
-        },
-        languages: [],
+  const [
+    formState,
+    { text, textarea, radio, select, checkbox, url, raw },
+  ] = useFormState<CfpFormFields>(
+    {
+      title: {
+        en: "",
+        it: "",
       },
-      {
-        withIds: true,
+      abstract: {
+        en: "",
+        it: "",
       },
-    );
+      elevatorPitch: {
+        en: "",
+        it: "",
+      },
+      languages: [],
+    },
+    {
+      withIds: true,
+    },
+  );
 
   const {
     loading: conferenceLoading,
@@ -161,12 +163,14 @@ export const CfpForm = ({
     },
   });
 
-  const { loading: participantDataLoading, data: participantData } =
-    useParticipantDataQuery({
-      variables: {
-        conference: conferenceCode,
-      },
-    });
+  const {
+    loading: participantDataLoading,
+    data: participantData,
+  } = useParticipantDataQuery({
+    variables: {
+      conference: conferenceCode,
+    },
+  });
 
   const submitSubmission = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -691,7 +695,7 @@ export const CfpForm = ({
         {submissionError && (
           <Alert sx={{ mb: 4 }} variant="alert">
             <FormattedMessage
-              id="cfp.tryAgain"
+              id="global.tryAgain"
               values={{ error: submissionError.message }}
             />
           </Alert>

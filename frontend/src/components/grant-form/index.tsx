@@ -1,6 +1,7 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
+import { ApolloError } from "@apollo/client";
 import React, { Fragment, useCallback, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
@@ -16,13 +17,23 @@ import {
   Textarea,
 } from "theme-ui";
 
+import { Alert } from "~/components/alert";
+import { Button } from "~/components/button/button";
+import { InputWrapper } from "~/components/input-wrapper";
+import { Link } from "~/components/link";
+import { MyGrant } from "~/components/profile/my-grant";
 import { useCurrentUser } from "~/helpers/use-current-user";
-import { useSendGrantRequestMutation } from "~/types";
+import {
+  Grant,
+  UpdateGrantInput,
+  useSendGrantMutation,
+  useMyGrantQuery,
+  SendGrantInput,
+  SendGrantMutation,
+  UpdateGrantMutation,
+} from "~/types";
 
-import { Alert } from "../alert";
-import { Button } from "../button/button";
 import { ErrorsList } from "../errors-list";
-import { InputWrapper } from "../input-wrapper";
 import {
   GENDER_OPTIONS,
   GRANT_TYPE_OPTIONS,
@@ -47,9 +58,72 @@ export type GrantFormFields = {
   travellingFrom: string;
 };
 
-type Props = { conference: string };
+export const MyGrantOrForm = () => {
+  const code = process.env.conferenceCode;
 
-export const GrantForm = ({ conference }: Props) => {
+  const { error, data } = useMyGrantQuery({
+    errorPolicy: "all",
+    variables: {
+      conference: code,
+    },
+    skip: typeof window === "undefined",
+  });
+  const grant = data && data?.me?.grant;
+
+  const [
+    submitGrant,
+    { loading, error: grantError, data: grantData },
+  ] = useSendGrantMutation();
+
+  const onSubmit = async (input: SendGrantInput) => {
+    submitGrant({
+      variables: {
+        input,
+      },
+    });
+  };
+
+  if (error) {
+    return <Alert variant="alert">{error.message}</Alert>;
+  }
+
+  if (grant) {
+    return <MyGrant />;
+  }
+
+  return (
+    <>
+      <Heading mb={4} as="h1">
+        <FormattedMessage id="grants.form.title" />
+      </Heading>
+      <GrantForm
+        conference={code}
+        onSubmit={onSubmit}
+        error={grantError}
+        data={grantData}
+        loading={loading}
+      />
+    </>
+  );
+};
+
+type GrantFormProps = {
+  conference: string;
+  grant?: Grant | null;
+  onSubmit: (input: SendGrantInput | UpdateGrantInput) => void;
+  loading: boolean;
+  error: ApolloError | null;
+  data: SendGrantMutation | UpdateGrantMutation;
+};
+
+export const GrantForm = ({
+  conference,
+  grant,
+  onSubmit,
+  loading: grantLoading,
+  error: grantError,
+  data: grantData,
+}: GrantFormProps) => {
   const { user, loading: loadingUser } = useCurrentUser({});
   const [formState, { text, textarea, select, checkbox }] = useFormState<
     GrantFormFields
@@ -61,7 +135,8 @@ export const GrantForm = ({ conference }: Props) => {
   );
 
   useEffect(() => {
-    if (user) {
+    // to not override if we are editing the grant
+    if (user && !grant) {
       formState.setField("fullName", user.fullName);
       formState.setField("name", user.name);
       formState.setField("gender", user.gender);
@@ -78,30 +153,46 @@ export const GrantForm = ({ conference }: Props) => {
     }
   }, [user]);
 
-  const [submitGrant, { loading, data }] = useSendGrantRequestMutation();
+  useEffect(() => {
+    if (grant) {
+      console.log(grant);
+      formState.setField("fullName", grant.fullName);
+      formState.setField("name", grant.name);
+      formState.setField("gender", grant.gender);
+      formState.setField("grantType", grant.grantType);
+      formState.setField("occupation", grant.occupation);
+      formState.setField("ageGroup", grant.ageGroup.toLowerCase());
+      formState.setField("pythonUsage", grant.pythonUsage);
+      formState.setField("beenToOtherEvents", grant.beenToOtherEvents);
+      formState.setField(
+        "interestedInVolunteering",
+        grant.interestedInVolunteering,
+      );
+      formState.setField("needsFundsForTravel", grant.needsFundsForTravel);
+      formState.setField("why", grant.why);
+      formState.setField("notes", grant.notes);
+      formState.setField("travellingFrom", grant.travellingFrom);
+    }
+  }, [grant]);
 
-  const onSubmit = useCallback(
-    (e) => {
+  const handleOnSubmit = useCallback(
+    async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      submitGrant({
-        variables: {
-          input: {
-            conference,
-            ageGroup: formState.values.ageGroup,
-            fullName: formState.values.fullName,
-            name: formState.values.name,
-            gender: formState.values.gender,
-            beenToOtherEvents: formState.values.beenToOtherEvents,
-            interestedInVolunteering: formState.values.interestedInVolunteering,
-            notes: formState.values.notes,
-            grantType: formState.values.grantType,
-            needsFundsForTravel: formState.values.needsFundsForTravel,
-            why: formState.values.why,
-            travellingFrom: formState.values.travellingFrom,
-            occupation: formState.values.occupation,
-            pythonUsage: formState.values.pythonUsage,
-          },
-        },
+      onSubmit({
+        conference,
+        ageGroup: formState.values.ageGroup.toLowerCase(),
+        fullName: formState.values.fullName,
+        name: formState.values.name,
+        gender: formState.values.gender,
+        beenToOtherEvents: formState.values.beenToOtherEvents,
+        interestedInVolunteering: formState.values.interestedInVolunteering,
+        notes: formState.values.notes,
+        grantType: formState.values.grantType,
+        needsFundsForTravel: formState.values.needsFundsForTravel,
+        why: formState.values.why,
+        travellingFrom: formState.values.travellingFrom,
+        occupation: formState.values.occupation,
+        pythonUsage: formState.values.pythonUsage,
       });
     },
     [formState.values],
@@ -110,7 +201,7 @@ export const GrantForm = ({ conference }: Props) => {
   const getErrors = (
     key: keyof GrantFormFields | "nonFieldErrors",
   ): string[] => {
-    if (data?.sendGrantRequest.__typename === "SendGrantRequestErrors") {
+    if (grantData?.mutationOp.__typename === "GrantErrors") {
       let errorKey: string = key;
 
       if (key !== "nonFieldErrors") {
@@ -118,16 +209,30 @@ export const GrantForm = ({ conference }: Props) => {
         errorKey = `validation${capitalized}`;
       }
 
-      return (data.sendGrantRequest as any)[errorKey];
+      return (grantData.mutationOp as any)[errorKey];
     }
 
     return [];
   };
 
-  if (!loading && data?.sendGrantRequest.__typename === "GrantRequest") {
+  if (!grantLoading && grantData?.mutationOp.__typename === "Grant") {
     return (
       <Text>
-        <FormattedMessage id="grants.form.sent" />
+        <FormattedMessage
+          id="grants.form.sent"
+          values={{
+            linkGrant: (
+              <Link
+                path={`/grants/edit`}
+                sx={{
+                  textDecoration: "underline",
+                }}
+              >
+                <FormattedMessage id="grants.form.sent.linkGrant.text" />
+              </Link>
+            ),
+          }}
+        />
       </Text>
     );
   }
@@ -142,10 +247,7 @@ export const GrantForm = ({ conference }: Props) => {
 
   return (
     <Fragment>
-      <Heading mb={4} as="h1">
-        <FormattedMessage id="grants.form.title" />
-      </Heading>
-      <Box as="form" onSubmit={onSubmit}>
+      <form onSubmit={handleOnSubmit}>
         <Heading sx={{ mb: 3 }}>
           <FormattedMessage id="grants.form.aboutYou" />
         </Heading>
@@ -334,7 +436,16 @@ export const GrantForm = ({ conference }: Props) => {
 
         <ErrorsList sx={{ mb: 3 }} errors={getErrors("nonFieldErrors")} />
 
-        {loading && (
+        {grantError && (
+          <Alert sx={{ mb: 4 }} variant="alert">
+            <FormattedMessage
+              id="global.tryAgain"
+              values={{ error: grantError.message }}
+            />
+          </Alert>
+        )}
+
+        {grantLoading && (
           <Alert
             sx={{
               mb: 3,
@@ -345,10 +456,10 @@ export const GrantForm = ({ conference }: Props) => {
           </Alert>
         )}
 
-        <Button loading={loading}>
+        <Button loading={grantLoading}>
           <FormattedMessage id="grants.form.submit" />
         </Button>
-      </Box>
+      </form>
     </Fragment>
   );
 };

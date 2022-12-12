@@ -1,0 +1,22 @@
+query MyGrant($conference: String!) {
+  me {
+    id
+
+    grant(conference: $conference) {
+      id
+      fullName
+      name
+      gender
+      grantType
+      occupation
+      ageGroup
+      pythonUsage
+      beenToOtherEvents
+      interestedInVolunteering
+      needsFundsForTravel
+      why
+      notes
+      travellingFrom
+    }
+  }
+}

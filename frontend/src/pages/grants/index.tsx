@@ -6,9 +6,10 @@ import { FormattedMessage } from "react-intl";
 import { Box, jsx, Text } from "theme-ui";
 
 import { GetStaticProps } from "next";
+import { useRouter } from "next/router";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
-import { GrantForm } from "~/components/grant-form";
+import { MyGrantOrForm } from "~/components/grant-form";
 import { Introduction } from "~/components/grants-introduction";
 import { MetaTags } from "~/components/meta-tags";
 import { formatDeadlineDateTime } from "~/helpers/deadlines";
@@ -88,9 +89,7 @@ export const GrantsPage = () => {
           my: 5,
         }}
       >
-        {status === DeadlineStatus.HappeningNow && (
-          <GrantForm conference={code} />
-        )}
+        {status === DeadlineStatus.HappeningNow && <MyGrantOrForm />}
         {status === DeadlineStatus.InTheFuture && (
           <GrantsComingSoon start={start} />
         )}

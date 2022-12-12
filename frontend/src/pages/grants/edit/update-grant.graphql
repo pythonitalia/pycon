@@ -1,9 +1,21 @@
-mutation SendGrant($input: SendGrantInput!) {
-  mutationOp: sendGrant(input: $input) {
+mutation UpdateGrant($input: UpdateGrantInput!) {
+  mutationOp: updateGrant(input: $input) {
     __typename
 
     ... on Grant {
       id
+      name
+      fullName
+      gender
+      grantType
+      occupation
+      ageGroup
+      pythonUsage
+      beenToOtherEvents
+      interestedInVolunteering
+      needsFundsForTravel
+      notes
+      travellingFrom
     }
 
     ... on GrantErrors {

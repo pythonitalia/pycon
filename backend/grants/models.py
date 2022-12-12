@@ -4,6 +4,7 @@ from model_utils import Choices
 from model_utils.models import TimeStampedModel
 
 from helpers.constants import GENDERS
+from users.models import User
 
 OCCUPATIONS = Choices(
     ("developer", _("Developer")),
@@ -66,3 +67,6 @@ class Grant(TimeStampedModel):
 
     def __str__(self):
         return f"{self.full_name}"
+
+    def can_edit(self, user: User):
+        return self.user_id == user.id

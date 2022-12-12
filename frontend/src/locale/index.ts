@@ -13,6 +13,7 @@ export const messages = {
     "global.loadMore": "Load more",
     "global.button.loading": "Loading {emoji}",
     "global.somethingWentWrong": "Something went wrong, please try again",
+    "global.tryAgain": "Something went wrong: {error}",
 
     "home.title": "Home",
     "home.deadline.begins": "Begins",
@@ -173,7 +174,6 @@ export const messages = {
     "cfp.tagsDescription":
       "Use up to 5 tags to describe what your proposal is about. Examples are 'Django, GraphQL'.",
     "cfp.submissionSent": "Proposal sent!",
-    "cfp.tryAgain": "Something went wrong: {error}",
     "cfp.selectDuration": "Select a duration",
     "cfp.selectTrack": "Select a track",
     "cfp.selectAudience": "Select an audience",
@@ -337,12 +337,16 @@ export const messages = {
     "grants.closed":
       "The grants form is now closed! If you sent a request, you will be contacted by us in the next few weeks with our decision.",
 
+    "grants.alreadySubmitted":
+      "You already submitted a Grant! Cick {linkGrant} to edit it.",
+
     "grants.form.needToBeLoggedIn":
       "Login or create an account to send a grant",
     "grants.form.title": "Request a grant",
     "grants.form.sendingRequest": "Sending grant request",
     "grants.form.sent":
-      "Grant request sent! We will send you an email as soon as we have updates!",
+      "Grant request sent! We will send you an email as soon as we have updates! Cick {linkGrant} to edit it.",
+    "grants.form.sent.linkGrant.text": "here",
     "grants.form.aboutYou": "About you",
     "grants.form.optionalInformation": "Optional information",
     "grants.form.optionalInformation.description":
@@ -406,6 +410,8 @@ export const messages = {
       "Tick here if you need financial aid for travelling to PyCon Italia",
 
     "grants.form.submit": "Submit",
+
+    "grants.form.edit.title": "Edit your Grant",
 
     "orderReview.heading": "Review your order",
     "orderReview.invoiceInformation": "Invoice information",
@@ -619,6 +625,8 @@ export const messages = {
     "global.button.loading": "Invio {emoji}",
     "global.somethingWentWrong": "Qualcosa è andato male, prova di nuovo",
     "global.loadMore": "Carica altri",
+    "global.tryAgain": "Si è verificato un errore: {error}",
+
     "home.title": "Home",
     "home.deadline.begins": "Inizio",
     "home.deadline.deadline": "Fine",
@@ -771,7 +779,6 @@ export const messages = {
       "Utilizza fino a 5 tag per descrivere l'argomento della tua proposta. Esempi sono 'Django, GraphQL'.",
     "cfp.submissionSent": "Proposal inviata!",
     "cfp.submit": "Invia",
-    "cfp.tryAgain": "Si è verificato un errore: {error}",
     "cfp.minutes": "minuti",
     "cfp.selectDuration": "Seleziona una durata",
     "cfp.selectTrack": "Seleziona una traccia",
@@ -919,12 +926,17 @@ export const messages = {
     "grants.closed":
       "Il form per richiede grant è chiuso! Se hai inviato una richiesta sarai contattato nelle prossime settimane con l'esito.",
 
+    "grants.alreadySubmitted":
+      "Hai gia' richiesto un grant! Clicca {linkGrant} per editarlo.",
+    "grants.alreadySubmitted.linkGrant.text": "qui",
+
     "grants.form.needToBeLoggedIn":
       "Devi effettuare l'accesso per chiedere un grant",
     "grants.form.title": "Chiedi un grant",
     "grants.form.sendingRequest": "Invio richiesta in corso",
     "grants.form.sent":
-      "Richiesta inviata! Ti contatteremo via email appena ci saranno novità!",
+      "Richiesta inviata! Ti contatteremo via email appena ci saranno novità! Clicca {linkGrant} per editarlo.",
+    "grants.form.sent.linkGrant.text": "qui",
     "grants.form.aboutYou": "Su di te",
     "grants.form.optionalInformation": "Informazioni opzionali",
     "grants.form.optionalInformation.description":
@@ -986,6 +998,8 @@ export const messages = {
     "grants.form.fields.needsFundsForTravel.label":
       "Fai click qui se hai bisogno di supporto finanziario per il viaggio",
     "grants.form.submit": "Invia",
+
+    "grants.form.edit.title": "Modifica il tuo Grant",
 
     "orderReview.heading": "Recap ordine",
     "orderReview.invoiceInformation": "Informazioni fatturazione",

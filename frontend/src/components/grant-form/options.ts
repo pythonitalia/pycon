@@ -137,7 +137,7 @@ export const AGE_GROUPS_OPTIONS = [
     isAgeInRange: (age: number) => 25 <= age && age <= 34,
   },
   {
-    value: "RANGE_35_44",
+    value: "range_35_44",
     disabled: false,
     messageId: "grants.form.fields.ageGroup.values.range_35_44",
     isAgeInRange: (age: number) => 35 <= age && age <= 44,

@@ -6,7 +6,7 @@ from .blob.schema import BlobMutation
 from .blog.schema import BlogQuery
 from .checklist.query import ChecklistQuery
 from .conferences.schema import ConferenceQuery
-from .grants.mutations import GrantsMutations
+from .grants.mutations import GrantMutation
 from .job_board.schema import JobBoardQuery
 from .newsletters.schema import NewsletterMutations
 from .orders.mutations import OrdersMutations
@@ -44,7 +44,7 @@ class Mutation(
     SubmissionsMutations,
     VotesMutations,
     OrdersMutations,
-    GrantsMutations,
+    GrantMutation,
     NewsletterMutations,
     ScheduleMutations,
     AttendeeTicketMutation,
