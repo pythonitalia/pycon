@@ -9,6 +9,8 @@ on:
     paths:
       - "src/**/*"
       - "package.json"
+      - ".github/workflows/deploy.yml"
+      - "tsconfig.json"
   workflow_dispatch:
     inputs:
       comment-id:
