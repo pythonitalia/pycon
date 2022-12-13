@@ -7,7 +7,7 @@
     "jsx": "react",
     "lib": ["dom", "es5", "ES2019"],
     "module": "esNext",
-    "moduleResolution": "node",
+    "moduleResolution": "NodeNext",
     "noImplicitAny": false,
     "noImplicitReturns": true,
     "noUnusedLocals": true,
