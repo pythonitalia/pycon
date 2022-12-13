@@ -24,7 +24,7 @@ export const Text = React.forwardRef<any, Props>(
     return (
       <As
         className={clsx(
-          "font-sans",
+          "font-sans whitespace-pre-wrap",
           {
             "text-md leading-7 lg:text-2md lg:leading-8": size === 1,
             "text-md leading-7": size === 2,
