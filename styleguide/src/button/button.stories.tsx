@@ -47,3 +47,7 @@ export const AllButtons = () => {
     </>
   );
 };
+
+export const AsLink = () => {
+  return <Button linkTo="/test">Link Body</Button>;
+};
