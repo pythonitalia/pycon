@@ -70,10 +70,8 @@ export const MyGrantOrForm = () => {
   });
   const grant = data && data?.me?.grant;
 
-  const [
-    submitGrant,
-    { loading, error: grantError, data: grantData },
-  ] = useSendGrantMutation();
+  const [submitGrant, { loading, error: grantError, data: grantData }] =
+    useSendGrantMutation();
 
   const onSubmit = async (input: SendGrantInput) => {
     submitGrant({
@@ -125,14 +123,13 @@ export const GrantForm = ({
   data: grantData,
 }: GrantFormProps) => {
   const { user, loading: loadingUser } = useCurrentUser({});
-  const [formState, { text, textarea, select, checkbox }] = useFormState<
-    GrantFormFields
-  >(
-    {},
-    {
-      withIds: true,
-    },
-  );
+  const [formState, { text, textarea, select, checkbox }] =
+    useFormState<GrantFormFields>(
+      {},
+      {
+        withIds: true,
+      },
+    );
 
   useEffect(() => {
     // to not override if we are editing the grant

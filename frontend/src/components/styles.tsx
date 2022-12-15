@@ -23,10 +23,9 @@ export const GlobalStyles = (): React.ReactElement => (
         .article h6, \
         .article p, \
         .article ol, \
-        .article ul":
-        {
-          marginBottom: "1em",
-        },
+        .article ul": {
+        marginBottom: "1em",
+      },
       ".article ol, .article ul, .article li": {
         paddingLeft: "1em",
         listStyleType: "disc",
