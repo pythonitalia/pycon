@@ -19,9 +19,8 @@ export const FileInput = ({ onChange: baseOnChange, name, onBlur, value }) => {
   const canvas = useRef<HTMLCanvasElement>();
   const language = useCurrentLanguage();
 
-  const [
-    generateParticipantAvatarUploadUrl,
-  ] = useGenerateParticipantAvatarUploadUrlMutation();
+  const [generateParticipantAvatarUploadUrl] =
+    useGenerateParticipantAvatarUploadUrlMutation();
 
   const [filePreview, setFilePreview] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
