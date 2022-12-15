@@ -6,7 +6,7 @@ import { Container } from "../container";
 import { Spacer } from "../spacer/spacer";
 
 type Props = React.PropsWithChildren<{
-  title: string;
+  title: string | React.ReactNode;
   sideContent: React.ReactNode;
   sideContentBackground?: string;
   sideContentType?: "illustration" | "other";
@@ -45,7 +45,7 @@ export const SplitSection = ({
   }, []);
 
   return (
-    <div>
+    <div className="overflow-clip">
       <Container
         className={clsx("grid", {
           "grid-cols-1 lg:grid-cols-2": spacing === "even",

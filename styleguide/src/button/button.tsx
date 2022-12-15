@@ -8,37 +8,52 @@ export const Button = ({
   onClick,
   role = "primary",
   icon = null,
+  size = "default",
+  fullWidth = false,
   color = "white",
   disabled = false,
   linkTo = undefined,
 }: {
   color?: Color;
   icon?: ReactNode;
+  size?: "default" | "small";
   children: ReactNode;
   disabled?: boolean;
   role?: "primary" | "secondary";
   onClick?: () => void;
   linkTo?: string;
+  fullWidth?: boolean;
 }) => {
   const Wrapper = linkTo ? "a" : "button";
   return (
     <Wrapper
       disabled={disabled}
       className={clsx(
-        "inline-flex items-center justify-center md:justify-start uppercase border-black border-3 py-5 px-8 w-full md:w-auto lg:py-6 lg:px-12 cursor-pointer",
+        "inline-flex items-center uppercase select-none border-black border cursor-pointer transition-colors",
         {
           "opacity-30": disabled,
           // primary
           "hover:bg-green": !disabled,
           // secondary
+          "bg-milk": role === "primary",
           "bg-cream": role === "secondary",
+
+          "py-5 px-8": size === "small",
+          "py-5 px-8 lg:py-6 lg:px-12": size === "default",
+
+          "justify-center md:justify-start w-full md:w-auto": !fullWidth,
+          "justify-center w-full": fullWidth,
         }
       )}
       href={linkTo}
       onClick={onClick}
     >
       {icon && <span className="mr-2">{icon}</span>}
-      <Text weight="strong" size="label1">
+      <Text
+        noWrap
+        weight="strong"
+        size={size === "small" ? "label2" : "label1"}
+      >
         {children}
       </Text>
     </Wrapper>

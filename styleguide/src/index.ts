@@ -27,3 +27,6 @@ export { SnakeCountdown } from "./snake-countdown";
 export { Section } from "./section";
 export { SectionsWrapper } from "./sections-wrapper";
 export { getMessagesForLocale } from "./lang";
+export { MultiplePartsCard, CardPart } from "./multiple-parts-card";
+export { SliderGridSection } from "./slider-grid-section";
+export { Separator } from "./separator";

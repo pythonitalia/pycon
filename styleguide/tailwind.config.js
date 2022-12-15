@@ -111,7 +111,7 @@ module.exports = {
 
       // grey scale
       black: '#0E1116',
-      white: '#A7A7A7',
+      white: '#FAF5F3',
       grey: {
         900: '#1A1C21',
         700: '#494A4D',
@@ -120,7 +120,7 @@ module.exports = {
         100: '#E2DEDD',
         50: '#EEEAE8',
       },
-      milk: '#A7A7A7',
+      milk: '#FAF5F3',
     },
     extend: {
       animation: {
@@ -152,7 +152,8 @@ module.exports = {
         256: '36.875rem', // 590px
       },
       width: {
-        "full-outside-container": 'calc(100% + var(--screen-side-width))'
+        "full-outside-container": 'calc(100% + var(--screen-side-width))',
+        "scroller-item": 'calc(100% - 5rem)',
       },
       margin: {
         "-full-outside-container": 'calc((100% + var(--screen-side-width)) * -1)'

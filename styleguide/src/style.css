@@ -85,11 +85,30 @@ p a {
 }
 
 .navbar-actionitem {
-    transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 0.2s;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-property: width, background-color;
     transform: translateZ(0);
 }
 
 .navbar-actionitem-text {
     transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     transform: translateZ(0);
+}
+
+.grid-section--item {
+    @apply opacity-30;
+}
+
+.grid-section--item a.inline-flex {
+    @apply opacity-0 -z-1;
+    transition-property: opacity, color, background-color;
+}
+
+.grid-section--current-item {
+    @apply opacity-100;
+}
+
+.grid-section--current-item a.inline-flex {
+    @apply opacity-100 z-0;
 }

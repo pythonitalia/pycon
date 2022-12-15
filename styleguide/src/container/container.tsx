@@ -4,15 +4,22 @@ import React from "react";
 type Props = React.PropsWithChildren<{
   className?: string;
   size?: "base";
+  noPadding?: boolean;
 }>;
 
-export const Container = ({ children, className, size = "base" }: Props) => {
+export const Container = ({
+  noPadding = false,
+  children,
+  className,
+  size = "base",
+}: Props) => {
   return (
     <div
       className={clsx(
-        "px-4 mx-auto w-full",
+        "mx-auto w-full",
         {
           "max-w-container": size === "base",
+          "px-4": !noPadding,
         },
         className
       )}

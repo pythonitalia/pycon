@@ -6,10 +6,12 @@ type Props = React.PropsWithChildren<{}>;
 
 export const Section = ({ children }: Props) => {
   return (
-    <Container>
-      <Spacer size="xl" />
-      {children}
-      <Spacer size="xl" />
-    </Container>
+    <div>
+      <Container>
+        <Spacer size="xl" />
+        {children}
+        <Spacer size="xl" />
+      </Container>
+    </div>
   );
 };

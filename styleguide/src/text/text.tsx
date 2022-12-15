@@ -7,6 +7,8 @@ type Props = React.PropsWithChildren<{
   as?: "span" | "p";
   className?: string;
   color?: "default" | "none";
+  noWrap?: boolean;
+  uppercase?: boolean;
 }>;
 
 export const Text = React.forwardRef<any, Props>(
@@ -18,13 +20,15 @@ export const Text = React.forwardRef<any, Props>(
       weight = "regular",
       className = "",
       color = "default",
+      noWrap = false,
+      uppercase = false,
     },
     ref
   ) => {
     return (
       <As
         className={clsx(
-          "font-sans whitespace-pre-wrap",
+          "font-sans",
           {
             "text-md leading-7 lg:text-2md lg:leading-8": size === 1,
             "text-md leading-7": size === 2,
@@ -36,6 +40,9 @@ export const Text = React.forwardRef<any, Props>(
             "font-medium": weight === "regular",
             "font-semibold": weight === "strong",
             "text-black": color === "default",
+            "whitespace-nowrap": noWrap,
+            "whitespace-pre-wrap": !noWrap,
+            uppercase: uppercase,
           },
           className
         )}
