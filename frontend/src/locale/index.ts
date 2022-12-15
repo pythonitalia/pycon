@@ -94,7 +94,7 @@ export const messages = {
       "Check your emails for the link to reset your password! 🥳",
     "newsletter.header": "Keep up to date",
     "newsletter.text":
-      "Stay in the loop, sign up for email updates about events, news and offer!",
+      "Stay in the loop, sign up for email updates about events, news and offers!",
     "newsletter.button": "Signup 👉",
     "newsletter.success": "Thanks for subscribing! 🎉",
     "newsletter.confirmViaEmail":
@@ -610,6 +610,26 @@ export const messages = {
     "multilingualinput.language.en": "English",
 
     "textarea.charsCount": "{length}/{maxLength}",
+
+    "ticketsOverview.buyTicketsSection": "Buy tickets",
+    "ticketsOverview.ticket.student.title": "Student",
+    "ticketsOverview.ticket.student.description":
+      "Student and would love to learn more about Python? Nothing beats attending PyCon Italia at a reduced price!",
+    "ticketsOverview.flatPrice": "Flat price",
+
+    "ticketsOverview.ticket.personal.title": "Personal",
+    "ticketsOverview.ticket.personal.description":
+      "Don't miss out on 100+ sessions of talks and workshops!",
+
+    "ticketsOverview.ticket.business.title": "Business",
+    "ticketsOverview.ticket.business.description":
+      "Help your employees upskill, and learn more about Python and its applications in the workplace!",
+    "ticketsOverview.buyTickets.cta": "Buy tickets",
+
+    "home.grants.title": "Grants",
+    "home.grants.description":
+      "Thanks to our sponsors we have a limited number of grants available for anyone who would love to attend our conference but can't afford it!",
+    "home.grants.cta": "Apply",
   },
   it: {
     titleTemplate: "%s | PyCon Italia",
@@ -1236,6 +1256,26 @@ export const messages = {
     "cfp.grantsCheckbox":
       "Se supporto finanziario da parte di PyCon Italia è necessario per partecipare, assicurati di inviare la tua richiesta ora! Non potrai inviare una richiesta una volta passata la deadline.",
     "fileInput.uploading": "Caricamento in corso...",
+
+    "ticketsOverview.buyTicketsSection": "Compra i biglietti",
+    "ticketsOverview.ticket.student.title": "Studenti",
+    "ticketsOverview.ticket.student.description":
+      "Ti piacerebbe imparare Python? Non c'è niente di meglio che partecipare a PyCon Italia a un prezzo ridotto!",
+    "ticketsOverview.flatPrice": "Prezzo fisso",
+
+    "ticketsOverview.ticket.personal.title": "Personale",
+    "ticketsOverview.ticket.personal.description":
+      "Non perderti più di 100 sessioni di interventi e tutorial!",
+
+    "ticketsOverview.ticket.business.title": "Business",
+    "ticketsOverview.ticket.business.description":
+      "Aiuta i tuoi dipendenti a migliorare le proprie competenze e scopri di più su Python e le sue applicazioni sul posto di lavoro!",
+    "ticketsOverview.buyTickets.cta": "Biglietti",
+
+    "home.grants.title": "Grants",
+    "home.grants.description":
+      "Grazie ai nostri sponsors siamo lieti di mettere a disposizione di chi ne avesse bisogno un programma di supporto per chi vorrebbe essere presente a PyCon Italia ma per motivi economici non potrebbe riuscirci",
+    "home.grants.cta": "Invia richiesta",
   },
 };
 

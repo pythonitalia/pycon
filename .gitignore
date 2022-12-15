@@ -115,3 +115,4 @@ secrets.auto.tfvars
 
 **/coverage/**
 
+**/.pnpm-store/**

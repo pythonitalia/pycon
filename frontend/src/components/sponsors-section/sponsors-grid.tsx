@@ -74,7 +74,7 @@ const SponsorItem = ({ sponsor, color }: ItemProps) => (
 );
 
 export const SponsorsGrid = ({ sponsors, color }: Props) => {
-  const columns = useSSRResponsiveValue([1, 3]);
+  const columns = useSSRResponsiveValue([1, 2, 3]);
   const missing =
     sponsors.length % columns === 0 ? 0 : columns - (sponsors.length % columns);
 
@@ -82,11 +82,9 @@ export const SponsorsGrid = ({ sponsors, color }: Props) => {
 
   return (
     <Grid
-      columns={[1, 3]}
+      columns={[1, 2, 3]}
       gap={1}
       sx={{
-        maxWidth: "container",
-        mx: "auto",
         border: "primary",
         background: "black",
       }}
