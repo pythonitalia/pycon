@@ -29,12 +29,8 @@ import { HomepageHero } from "~/components/homepage-hero";
 import { MetaTags } from "~/components/meta-tags";
 import { NewsletterSection } from "~/components/newsletter";
 import { SponsorsSection } from "~/components/sponsors-section";
-import { Table } from "~/components/table";
 import { TicketsOverviewSection } from "~/components/tickets-overview-section/index";
-import { YouTubeLite } from "~/components/youtube-lite";
-import { formatDeadlineDateTime } from "~/helpers/deadlines";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
-import { getTranslatedMessage } from "~/helpers/use-translated-message";
 import { useCurrentLanguage } from "~/locale/context";
 import {
   IndexPageQuery,
