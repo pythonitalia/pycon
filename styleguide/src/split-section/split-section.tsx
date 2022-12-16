@@ -102,19 +102,20 @@ export const SplitSection = ({
 
         {isIllustration && (
           <div
-            className={clsx("h-full flex overflow-hidden", {
-              "order-1 lg:order-2": !invert,
-              "order-1 lg:order-1": invert,
+            className={clsx(
+              "h-full flex overflow-hidden items-center justify-center lg:items-end",
+              {
+                "order-1 lg:order-2": !invert,
+                "order-1 lg:order-1": invert,
 
-              " w-screen lg:w-full-outside-container -ml-4 lg:ml-0 lg:border-l-3":
-                !invert,
-              "w-screen -ml-4 lg:-ml-full-outside-container lg:w-auto lg:border-r-3":
-                invert,
+                "w-screen lg:w-full-outside-container -ml-4 lg:ml-0 lg:border-l-3":
+                  !invert,
+                "w-screen -ml-4 lg:-mr-[3px] lg:-ml-full-outside-container lg:w-auto lg:border-r-3":
+                  invert,
 
-              "items-center justify-center lg:items-end": isIllustration,
-
-              "hidden lg:flex": hideSideContentOnMobile,
-            })}
+                "hidden lg:flex": hideSideContentOnMobile,
+              }
+            )}
             style={{
               backgroundColor: sideContentBackground,
             }}
