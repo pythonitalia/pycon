@@ -95,7 +95,14 @@ class RankRequest(models.Model):
 
         submissions = Submission.objects.filter(
             conference=conference, status=Submission.STATUS.proposed
-        ).order_by("topic_id")
+        )
+
+        tags_id = list(
+            Submission.objects.filter(conference=conference)
+            .values_list("tags", flat=True)
+            .distinct()
+        )
+
         votes = Vote.objects.filter(submission__conference=conference)
 
         users_weight = RankRequest.get_users_weights(votes)

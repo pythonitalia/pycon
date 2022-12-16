@@ -135,6 +135,7 @@ class RankSubmissionAdmin(ExportMixin, AdminUsersMixin):
         "duration",
         "title",
         "type",
+        "tags",
         "topic",
         "level",
         "language",
@@ -188,6 +189,10 @@ class RankSubmissionAdmin(ExportMixin, AdminUsersMixin):
 
         speaker_gender = self.get_user_data(obj.submission.speaker_id)["gender"]
         return emoji[speaker_gender]
+
+    def tags(self, obj):
+        tags = [tag.name for tag in obj.submission.tags.all()]
+        return " ".join(tags)
 
     gender.short_description = "Gender"
 
