@@ -6,7 +6,7 @@ import { Cathedral, Snake5 } from "../illustrations";
 import { Text } from "../text";
 import { Spacer } from "../spacer";
 import { Button } from "../button";
-import { SectionsWrapper } from "../sections-wrapper";
+import { Page } from "./page";
 import { Heading } from "../heading";
 import { SnakeCountdown } from "../snake-countdown";
 import { Section } from "../section";
@@ -73,7 +73,7 @@ export const Standard = () => (
         text: "Switch to Italian",
       }}
     />
-    <SectionsWrapper>
+    <Page>
       <Section>
         <Heading size="display1">
           Welcome to the Python Italia Conference
@@ -196,6 +196,6 @@ export const Standard = () => (
           Submit now
         </Button>
       </SplitSection>
-    </SectionsWrapper>
+    </Page>
   </div>
 );

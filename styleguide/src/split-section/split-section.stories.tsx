@@ -5,7 +5,7 @@ import { Text } from "../text";
 import { Spacer } from "../spacer";
 import { Button } from "../button";
 import { Florence2 } from "../illustrations/florence2";
-import { SectionsWrapper } from "../sections-wrapper";
+import { Page } from "../page/index";
 import { Heading } from "../heading";
 import { SnakeCountdown } from "../snake-countdown";
 
@@ -100,7 +100,7 @@ export const WithOtherSideContent = ({ ...props }) => (
 
 export const MultipleSections = ({ ...props }) => (
   <div className="py-4">
-    <SectionsWrapper>
+    <Page>
       <SplitSection
         sideContent={<Florence2 />}
         sideContentBackground={Florence2.backgroundColor}
@@ -212,7 +212,7 @@ export const MultipleSections = ({ ...props }) => (
           Submit now
         </Button>
       </SplitSection>
-    </SectionsWrapper>
+    </Page>
   </div>
 );
 
