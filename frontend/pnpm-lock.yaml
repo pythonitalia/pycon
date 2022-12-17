@@ -18,7 +18,7 @@ specifiers:
   '@mdx-js/loader': ^1.6.19
   '@next/mdx': ^10.0.0
   '@python-italia/eslint-config': ^1.0.13
-  '@python-italia/pycon-styleguide': 0.1.68
+  '@python-italia/pycon-styleguide': 0.1.69
   '@sentry/browser': ^6.13.3
   '@sentry/node': ^5.29.2
   '@sentry/tracing': ^6.13.3
@@ -88,7 +88,7 @@ dependencies:
   '@graphql-codegen/typescript-react-apollo': 3.3.5_sy4knu3obj4ys7pjcqbyfxmqle
   '@mdx-js/loader': 1.6.22_react@18.2.0
   '@next/mdx': 10.2.3_@mdx-js+loader@1.6.22
-  '@python-italia/pycon-styleguide': 0.1.68_o4scbtliisanygemawej7x2d6i
+  '@python-italia/pycon-styleguide': 0.1.69_o4scbtliisanygemawej7x2d6i
   '@sentry/browser': 6.19.7
   '@sentry/node': 5.30.0
   '@sentry/tracing': 6.19.7
@@ -2417,8 +2417,8 @@ packages:
       - supports-color
     dev: true
 
-  /@python-italia/pycon-styleguide/0.1.68_o4scbtliisanygemawej7x2d6i:
-    resolution: {integrity: sha512-3JPZe9UfQGUO7WHUddaTwqVbr0e/wu8ljWjVqo2kGw22iC4rAGoly9/Otuj84VGpTUfowA6QSIVmLl3rjCIKrA==}
+  /@python-italia/pycon-styleguide/0.1.69_o4scbtliisanygemawej7x2d6i:
+    resolution: {integrity: sha512-sYMu5/YCqFPNdmffgIa7c35Vl1zhXJRNJoen7DfBLEvZUQKxVWhRxBQ7EtCrSCMWdbkDKU5EeLh7JA/wnMx+tA==}
     peerDependencies:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
