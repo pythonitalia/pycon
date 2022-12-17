@@ -30,3 +30,4 @@ export { getMessagesForLocale } from "./lang";
 export { MultiplePartsCard, CardPart } from "./multiple-parts-card";
 export { SliderGridSection } from "./slider-grid-section";
 export { Separator } from "./separator";
+export { Footer } from "./footer";

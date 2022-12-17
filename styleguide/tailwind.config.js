@@ -156,6 +156,7 @@ module.exports = {
         "scroller-item": 'calc(100% - 5rem)',
       },
       margin: {
+        15: '3.75rem', // 60px
         "-full-outside-container": 'calc((100% + var(--screen-side-width)) * -1)'
       },
       maxWidth: {
