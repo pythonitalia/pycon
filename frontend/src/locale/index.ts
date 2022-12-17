@@ -161,7 +161,7 @@ export const messages = {
       "This description will be seen by reviewers and the audience. You should make the description as compelling and exciting as possible - remember, you’re selling the idea to the organisers as well as appealing to attendees",
     "cfp.notesLabel": "Notes",
     "cfp.notesDescription":
-      "Notes will only be seen by organizers. This is where you should explain things such as technical requirements. Feel free to add them in Italian or English.",
+      "Notes will only be seen by organizers. Do you want to a have co-speaker for your talk? Make sure you include their email and name in here and that they have an account.",
     "cfp.trackLabel": "Track",
     "cfp.topicDescription": "What this proposal is about?",
     "cfp.submit": "Submit",
@@ -788,7 +788,7 @@ export const messages = {
       "Questa descrizione verrà mostrata sia ad organizzatori e partecipanti. Dovesti rendere la descrizione il più completa ed interessante possibile - ricordati, stai vendendo la tua idea sia agli organizzatori che ai partecipanti",
     "cfp.notesLabel": "Note",
     "cfp.notesDescription":
-      "Le note sono visibili solo agli organizzatori. È qui che dovresti indicare cose come i requisiti tecnici necessari per l'intervento.",
+      "Le note sono visibili solo agli organizzatori. Vuoi presentare il tuo intervento insieme ad speaker? Assicurati di includere il loro nome ed email qui, e che abbiamo un account sul sito. Co-speakers ricevono 25% di sconto.",
     "cfp.trackLabel": "Traccia",
     "cfp.topicDescription": "Di cosa tratta questa proposta?",
     "cfp.languagesLabel": "Lingua",
