@@ -72,14 +72,14 @@ export const Footer = ({ logo: Logo, socials, bottomLinks = [] }: Props) => (
             ))}
           </ul>
           <div className="flex flex-col lg:flex-row lg:items-center gap-4">
-            <a target="_blank" href="https://rollstudio.co.uk/">
+            <Link target="_blank" href="https://rollstudio.co.uk/">
               <Text size="label4" uppercase weight="strong" color="none">
                 <FormattedMessage
                   id="footer.designedBy"
                   defaultMessage="Designed by ROLL Studio"
                 />
               </Text>
-            </a>
+            </Link>
             <a
               target="_blank"
               href="https://vercel.com/?utm_source=python-italia&utm_campaign=oss"
