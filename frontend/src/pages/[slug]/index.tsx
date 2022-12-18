@@ -1,8 +1,9 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
+import { Section, Page as BasePage } from "@python-italia/pycon-styleguide";
 import { Fragment } from "react";
-import { Box, jsx } from "theme-ui";
+import { jsx } from "theme-ui";
 
 import { GetStaticPaths, GetStaticProps } from "next";
 import Error from "next/error";
@@ -48,9 +49,11 @@ export const Page = () => {
     <Fragment>
       <MetaTags title={page.title} />
 
-      <Box sx={{ mx: "auto", px: 3, maxWidth: "container" }}>
-        <Article title={page.title}>{compile(page.content).tree}</Article>
-      </Box>
+      <BasePage endSeparator={false}>
+        <Section>
+          <Article title={page.title}>{compile(page.content).tree}</Article>
+        </Section>
+      </BasePage>
     </Fragment>
   );
 };

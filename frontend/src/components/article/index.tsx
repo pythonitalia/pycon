@@ -38,7 +38,7 @@ export const Article = (props: React.PropsWithChildren<ArticleProps>) => {
         </Text>
       )}
 
-      <Box sx={{ mt: 4, mb: 5 }} className={`article ${props.className}`}>
+      <Box sx={{ mt: 4 }} className={`article ${props.className}`}>
         {props.children}
       </Box>
     </Fragment>

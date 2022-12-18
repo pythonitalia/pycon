@@ -5,7 +5,7 @@ import {
   Text,
   Heading,
   SplitSection,
-  SectionsWrapper,
+  Page,
   Marquee,
   Spacer,
   Button,
@@ -82,7 +82,7 @@ export const HomePage = () => {
       <Marquee speed="slow" separator="/">
         {conference.marquee}
       </Marquee>
-      <SectionsWrapper>
+      <Page>
         <Section>
           <Heading size="display1">{conference.introTitle}</Heading>
         </Section>
@@ -152,7 +152,7 @@ export const HomePage = () => {
         >
           <NewsletterSection />
         </SplitSection>
-      </SectionsWrapper>
+      </Page>
     </Fragment>
   );
 };
