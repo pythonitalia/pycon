@@ -32,3 +32,4 @@ export { SliderGridSection } from "./slider-grid-section";
 export { Separator } from "./separator";
 export { Footer } from "./footer";
 export { Container } from "./container";
+export { GridSection } from "./grid-section";
