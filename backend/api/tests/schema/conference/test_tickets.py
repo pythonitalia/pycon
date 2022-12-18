@@ -23,6 +23,7 @@ def test_returns_tickets(graphql_client, conference, mocker):
             available_until=None,
             questions=[],
             quantity_left=0,
+            sold_out=False,
         )
     ]
 
@@ -62,6 +63,7 @@ def test_is_business(graphql_client, conference, mocker):
             available_from=None,
             available_until=None,
             questions=[],
+            sold_out=False,
             quantity_left=0,
         ),
         TicketItem(
@@ -79,6 +81,7 @@ def test_is_business(graphql_client, conference, mocker):
             available_from=None,
             available_until=None,
             quantity_left=0,
+            sold_out=False,
             questions=[],
         ),
     ]

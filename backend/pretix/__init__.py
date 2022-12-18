@@ -9,7 +9,7 @@ from django.conf import settings
 
 from api.pretix.types import UpdateAttendeeTicketInput, Voucher
 from conferences.models.conference import Conference
-from hotels.models import HotelRoom
+from hotels.models import BedLayout, HotelRoom
 from pretix.types import Category, Question, Quota
 
 from .exceptions import PretixError
@@ -202,6 +202,7 @@ class CreateOrderTicket:
 @strawberry.input
 class CreateOrderHotelRoom:
     room_id: str
+    bed_layout_id: str
     checkin: date
     checkout: date
 
@@ -296,11 +297,17 @@ def create_hotel_positions(
     hotel_rooms: List[CreateOrderHotelRoom], locale: str, conference: Conference
 ):
     rooms: List[HotelRoom] = list(HotelRoom.objects.filter(conference=conference).all())
+    bed_layouts: List[BedLayout] = list(BedLayout.objects.all())
 
     positions = []
 
     for order_room in hotel_rooms:
         room = [room for room in rooms if str(room.pk) == order_room.room_id][0]
+        bed_layout = next(
+            layout
+            for layout in bed_layouts
+            if str(layout.id) == order_room.bed_layout_id
+        )
 
         num_nights = (order_room.checkout - order_room.checkin).days
         total_price = num_nights * room.price
@@ -325,6 +332,12 @@ def create_hotel_positions(
                     {
                         "question": conference.pretix_hotel_checkout_question_id,
                         "answer": order_room.checkout.strftime("%Y-%m-%d"),
+                        "options": [],
+                        "option_identifier": [],
+                    },
+                    {
+                        "question": conference.pretix_hotel_bed_layout_question_id,
+                        "answer": bed_layout.name.localize(locale),
                         "options": [],
                         "option_identifier": [],
                     },

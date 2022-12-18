@@ -1,8 +1,34 @@
-import moment from "moment";
-import { useCallback, useEffect, useReducer } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useReducer,
+} from "react";
 
 import { reducer } from "./reducer";
 import { InvoiceInformationState, OrderState, Voucher } from "./types";
+
+type CartContextType = {
+  state: OrderState;
+  addProduct: (id: string, variation?: string) => void;
+  removeProduct: (id: string, variation?: string) => void;
+  addHotelRoom: (
+    id: string,
+    checkin: string,
+    checkout: string,
+    beds: string,
+  ) => void;
+  removeHotelRoom: (id: string, index: number) => void;
+  updateIsBusiness: (isBusiness: boolean) => void;
+  applyVoucher: (voucher: Voucher) => void;
+  removeVoucher: () => void;
+  updateQuestionAnswer: ({ id, index, question, answer }) => void;
+  updateTicketInfo: ({ id, index, key, value }) => void;
+  updateInformation: (invoiceInformation: InvoiceInformationState) => void;
+};
+
+export const CartContext = createContext<CartContextType>(null);
 
 const cartReplacer = (key: string, value: any) => {
   if (key === "voucher" || key === "voucherUsed") {
@@ -18,6 +44,10 @@ const cartReplacer = (key: string, value: any) => {
 };
 
 export const useCart = () => {
+  return useContext(CartContext);
+};
+
+export const createCartContext = () => {
   const emptyInitialCartReducer = {
     selectedProducts: {},
     invoiceInformation: {
@@ -40,20 +70,8 @@ export const useCart = () => {
 
   if (typeof window !== "undefined") {
     storedCart = JSON.parse(
-      window.localStorage.getItem("tickets-cart-v3")!,
+      window.sessionStorage.getItem("tickets-cart-v4")!,
     ) as OrderState | null;
-
-    if (storedCart) {
-      /* restore the check-in and check-out as moment dates and not strings */
-      Object.values(storedCart.selectedHotelRooms).forEach(
-        (reservations: any) => {
-          reservations.forEach((reservation) => {
-            reservation.checkin = moment.utc(reservation.checkin);
-            reservation.checkout = moment.utc(reservation.checkout);
-          });
-        },
-      );
-    }
   }
 
   const [state, dispatcher] = useReducer(
@@ -62,8 +80,8 @@ export const useCart = () => {
   );
 
   useEffect(() => {
-    window.localStorage.setItem(
-      "tickets-cart-v3",
+    window.sessionStorage.setItem(
+      "tickets-cart-v4",
       JSON.stringify(state, cartReplacer),
     );
   }, [state]);
@@ -115,12 +133,13 @@ export const useCart = () => {
     [],
   );
 
-  const addHotelRoom = useCallback((id, checkin, checkout) => {
+  const addHotelRoom = useCallback((id, checkin, checkout, beds) => {
     dispatcher({
       type: "addHotelRoom",
       id,
       checkin,
       checkout,
+      beds,
     });
   }, []);
 

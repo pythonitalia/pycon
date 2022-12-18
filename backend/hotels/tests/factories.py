@@ -4,7 +4,7 @@ from factory.django import DjangoModelFactory
 from pytest_factoryboy import register
 
 from conferences.tests.factories import ConferenceFactory
-from hotels.models import HotelRoom, HotelRoomReservation
+from hotels.models import BedLayout, HotelRoom, HotelRoomReservation
 from i18n.tests.factories import LanguageFactory
 
 
@@ -32,3 +32,11 @@ class HotelRoomReservationFactory(DjangoModelFactory):
 
     class Meta:
         model = HotelRoomReservation
+
+
+@register
+class BedLayoutFactory(DjangoModelFactory):
+    name = LanguageFactory("name")
+
+    class Meta:
+        model = BedLayout

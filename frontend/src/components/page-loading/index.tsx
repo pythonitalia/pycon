@@ -1,17 +1,19 @@
-/** @jsxRuntime classic */
-
-/** @jsx jsx */
+import { Page, Heading, Section } from "@python-italia/pycon-styleguide";
+import React from "react";
 import { FormattedMessage } from "react-intl";
-import { Box, Heading, jsx } from "theme-ui";
 
 import { MetaTags } from "../meta-tags";
 
 export const PageLoading = ({ titleId }: { titleId: string }) => (
-  <Box sx={{ mx: "auto", px: 3, maxWidth: "container" }}>
-    <FormattedMessage id={titleId}>
-      {(text) => <MetaTags title={text} />}
-    </FormattedMessage>
+  <Page>
+    <Section>
+      <FormattedMessage id={titleId}>
+        {(text) => <MetaTags title={text} />}
+      </FormattedMessage>
 
-    <Heading sx={{ fontSize: 4 }}>Loading ⌛</Heading>
-  </Box>
+      <Heading>
+        <FormattedMessage id="tickets.loading" />
+      </Heading>
+    </Section>
+  </Page>
 );

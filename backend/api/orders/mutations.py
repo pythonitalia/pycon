@@ -1,3 +1,4 @@
+import re
 import typing
 from urllib.parse import urljoin
 
@@ -8,8 +9,18 @@ from django.utils.translation import gettext_lazy as _
 from api.permissions import IsAuthenticated
 from conferences.models.conference import Conference
 from hotels.models import HotelRoom, HotelRoomReservation
-from pretix import CreateOrderHotelRoom, CreateOrderInput, Order, create_order
+from pretix import (
+    CreateOrderHotelRoom,
+    CreateOrderInput,
+    InvoiceInformation,
+    Order,
+    create_order,
+)
 from pretix.exceptions import PretixError
+
+FISCAL_CODE_REGEX = re.compile(
+    r"^[A-Za-z]{6}[0-9]{2}[A-Za-z]{1}[0-9]{2}[A-Za-z]{1}[0-9]{3}[A-Za-z]{1}$"
+)
 
 
 @strawberry.type
@@ -35,6 +46,13 @@ class OrdersMutations:
 
         if validation_error:
             return validation_error
+
+        invoice_validation_error = validate_order_invoice_information(
+            invoice_information=input.invoice_information
+        )
+
+        if invoice_validation_error:
+            return invoice_validation_error
 
         try:
             pretix_order = create_order(conference_obj, input)
@@ -96,6 +114,9 @@ def validate_hotel_rooms(hotel_rooms: typing.List[CreateOrderHotelRoom], *, conf
         ):
             return Error(message=_("Invaild check-out date"))
 
+        if not room.available_bed_layouts.filter(id=order_room.bed_layout_id).exists():
+            return Error(message=_("Invaild bed layout"))
+
 
 def create_hotel_reservations(
     pretix_order: Order, hotel_rooms: typing.List[CreateOrderHotelRoom], user_id: int
@@ -107,4 +128,36 @@ def create_hotel_reservations(
             checkin=room.checkin,
             checkout=room.checkout,
             user_id=user_id,
+            bed_layout_id=room.bed_layout_id,
         )
+
+
+def validate_order_invoice_information(
+    *, invoice_information: InvoiceInformation
+) -> typing.Optional[Error]:
+    required_fields = [
+        "name",
+        "street",
+        "zipcode",
+        "city",
+        "country",
+    ]
+
+    if invoice_information.is_business:
+        required_fields += ["vat_id", "company"]
+
+    if not invoice_information.is_business and invoice_information.country == "IT":
+        required_fields += ["fiscal_code"]
+
+    for required_field in required_fields:
+        value = getattr(invoice_information, required_field)
+
+        if not value:
+            return Error(message=_("%(field)s is required") % {"field": required_field})
+
+    if (
+        not invoice_information.is_business
+        and invoice_information.country == "IT"
+        and not FISCAL_CODE_REGEX.match(invoice_information.fiscal_code)
+    ):
+        return Error(message=_("Invalid fiscal code"))

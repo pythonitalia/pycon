@@ -130,6 +130,7 @@ class ConferenceAdmin(admin.ModelAdmin):
                     "pretix_hotel_room_type_question_id",
                     "pretix_hotel_checkin_question_id",
                     "pretix_hotel_checkout_question_id",
+                    "pretix_hotel_bed_layout_question_id",
                 )
             },
         ),
