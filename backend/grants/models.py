@@ -1,40 +1,38 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from model_utils import Choices
 from model_utils.models import TimeStampedModel
 
 from helpers.constants import GENDERS
 from users.models import User
 
-OCCUPATIONS = Choices(
-    ("developer", _("Developer")),
-    ("student", _("Student")),
-    ("researcher", _("Researcher")),
-    ("unemployed", _("Unemployed")),
-    ("other", _("Other")),
-)
-
-GRANT_TYPES = Choices(
-    ("diversity", _("Diversity")),
-    ("unemployed", _("Unemployed")),
-    ("speaker", _("Speaker")),
-)
-
-INTERESTED_IN_VOLUNTEERING = Choices(
-    ("no", _("No")), ("yes", _("Yes")), ("absolutely", _("My soul is yours to take!"))
-)
-
 
 class Grant(TimeStampedModel):
     class AgeGroup(models.TextChoices):
-        RANGE_LESS_THAN_10 = "range_less_than_10", _("10 years old or under")
-        RANGE_11_18 = "range_11_18", _("11 - 18 years old")
-        RANGE_19_24 = "range_19_24", _("19 - 24 years old")
-        RANGE_25_34 = "range_25_34", _("25 - 34 years old")
-        RANGE_35_44 = "range_35_44", _("35 - 44 years old")
-        RANGE_45_54 = "range_45_54", _("45 - 54 years old")
-        RANGE_55_64 = "range_55_64", _("55 - 64 years old")
-        RANGE_MORE_THAN_65 = "range_more_than_65", _("65 years or older")
+        range_less_than_10 = "range_less_than_10", _("10 years old or under")
+        range_11_18 = "range_11_18", _("11 - 18 years old")
+        range_19_24 = "range_19_24", _("19 - 24 years old")
+        range_25_34 = "range_25_34", _("25 - 34 years old")
+        range_35_44 = "range_35_44", _("35 - 44 years old")
+        range_45_54 = "range_45_54", _("45 - 54 years old")
+        range_55_64 = "range_55_64", _("55 - 64 years old")
+        range_more_than_65 = "range_more_than_65", _("65 years or older")
+
+    class Occupation(models.TextChoices):
+        developer = "developer", _("Developer")
+        student = "student", _("Student")
+        researcher = "researcher", _("Researcher")
+        unemployed = "unemployed", _("Unemployed")
+        other = "other", _("Other")
+
+    class GrantType(models.TextChoices):
+        diversity = "diversity", _("Diversity")
+        unemployed = "unemployed", _("Unemployed")
+        speaker = "speaker", _("Speaker")
+
+    class InterestedInVolunteering(models.TextChoices):
+        no = "no", _("No")
+        yes = "yes", _("Yes")
+        absolutely = "absolutely", _("My soul is yours to take!")
 
     name = models.CharField(_("name"), max_length=300)
     full_name = models.CharField(_("full name"), max_length=300)
@@ -51,13 +49,17 @@ class Grant(TimeStampedModel):
     )
     age = models.PositiveSmallIntegerField(_("age"), null=True)  # TODO: remove
     gender = models.CharField(_("gender"), choices=GENDERS, max_length=10, blank=True)
-    occupation = models.CharField(_("occupation"), choices=OCCUPATIONS, max_length=10)
-    grant_type = models.CharField(_("grant type"), choices=GRANT_TYPES, max_length=10)
+    occupation = models.CharField(
+        _("occupation"), choices=Occupation.choices, max_length=10
+    )
+    grant_type = models.CharField(
+        _("grant type"), choices=GrantType.choices, max_length=10
+    )
     python_usage = models.TextField(_("How do they use python"))
     been_to_other_events = models.TextField(_("Have they been to other events?"))
     interested_in_volunteering = models.CharField(
         _("interested in volunteering"),
-        choices=INTERESTED_IN_VOLUNTEERING,
+        choices=InterestedInVolunteering.choices,
         max_length=10,
     )
     needs_funds_for_travel = models.BooleanField(_("Needs funds for travel"))
