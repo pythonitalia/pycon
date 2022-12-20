@@ -1,5 +1,6 @@
-from i18n.strings import LazyI18nString
 from pytest import mark
+
+from i18n.strings import LazyI18nString
 
 
 @mark.django_db
@@ -29,12 +30,13 @@ def test_get_conference_copy(conference_factory, generic_copy_factory, graphql_c
         """
         query($code: String!, $key: String!) {
             conference(code: $code) {
+                code
                 copy(key: $key)
             }
         }
         """,
         variables={"code": conference_b.code, "key": "intro"},
     )
-
+    print(resp)
     assert "errors" not in resp
     assert resp["data"]["conference"]["copy"] is None
