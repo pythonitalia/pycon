@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "../button/button";
-import { Heading } from "../heading";
-import { VStack } from "./vstack";
+import { Heading } from "../heading/index";
+import { VStack } from "./vertical-stack";
 
 export default {
   title: "Vertical Stack",

@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "../button/button";
 import { Heading } from "../heading";
-import { HStack } from "./hstack";
+import { HorizontalStack } from "./horizontal-stack";
 
 export default {
   title: "Horizontal Stack",
@@ -20,7 +20,7 @@ export default {
 };
 
 export const Primary = (props) => (
-  <HStack {...props}>
+  <HorizontalStack {...props}>
     <Heading>
       Long Title <br />
       With multiple <br />
@@ -42,5 +42,5 @@ export const Primary = (props) => (
     <Button onClick={() => {}} color="blue">
       Button
     </Button>
-  </HStack>
+  </HorizontalStack>
 );

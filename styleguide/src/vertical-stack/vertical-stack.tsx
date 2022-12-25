@@ -6,9 +6,9 @@ type Props = {
   align?: "left" | "center" | "right";
 };
 
-export const HStack = ({ children, align }: Props) => (
+export const VerticalStack = ({ children, align }: Props) => (
   <div
-    className={clsx("flex flex-row", {
+    className={clsx("flex flex-col", {
       "items-start justify-content-start": align == "left",
       "items-center justify-content-center": align == "center",
       "items-end justify-content-end": align == "right",
