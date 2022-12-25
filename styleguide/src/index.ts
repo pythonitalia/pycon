@@ -41,3 +41,4 @@ export { Container } from "./container";
 export { GridSection } from "./grid-section";
 export { BottomBar } from "./bottom-bar";
 export { Grid } from "./grid";
+export { Tag } from "./tag";
