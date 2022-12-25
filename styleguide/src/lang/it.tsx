@@ -5,4 +5,7 @@ export const messages = {
 
   "footer.stayTuned": "Rimani aggiornato",
   "footer.designedBy": "Design di ROLL Studio",
+
+  "multiple-parts-card.openLabel": "Apri",
+  "multiple-parts-card.closeLabel": "Chiudi",
 };

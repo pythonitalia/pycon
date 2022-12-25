@@ -1,5 +1,6 @@
 import React from "react";
 import { Button } from "./button";
+import { BasicButton } from "./basic-button";
 
 export default {
   title: "Button",
@@ -50,4 +51,12 @@ export const AllButtons = () => {
 
 export const AsLink = () => {
   return <Button linkTo="/test">Link Body</Button>;
+};
+
+export const BasicButtonStory = () => {
+  return (
+    <div className="p-6">
+      <BasicButton>Simple button</BasicButton>
+    </div>
+  );
 };

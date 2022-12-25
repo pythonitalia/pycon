@@ -6,9 +6,27 @@ type Props = React.PropsWithChildren<{
   weight?: "regular" | "strong";
   as?: "span" | "p";
   className?: string;
-  color?: "default" | "none";
+  color?:
+    | "none"
+    | "default"
+    | "coral"
+    | "caramel"
+    | "cream"
+    | "yellow"
+    | "green"
+    | "purple"
+    | "pink"
+    | "blue"
+    | "red"
+    | "success"
+    | "warning"
+    | "neutral"
+    | "black"
+    | "white"
+    | "milk";
   noWrap?: boolean;
   uppercase?: boolean;
+  decoration?: "none" | "underline" | "line-through";
 }>;
 
 export const Text = React.forwardRef<any, Props>(
@@ -22,6 +40,7 @@ export const Text = React.forwardRef<any, Props>(
       color = "default",
       noWrap = false,
       uppercase = false,
+      decoration = "none",
     },
     ref
   ) => {
@@ -37,12 +56,33 @@ export const Text = React.forwardRef<any, Props>(
             "20px text-md leading-2": size === "label2",
             "16px text-base leading-1": size === "label3",
             "14px text-sm leading-0.5 ": size === "label4",
+
             "font-medium": weight === "regular",
             "font-semibold": weight === "strong",
-            "text-black": color === "default",
+
+            underline: decoration === "underline",
+            "line-through": decoration === "line-through",
+
             "whitespace-nowrap": noWrap,
             "whitespace-pre-wrap": !noWrap,
+
             uppercase: uppercase,
+
+            "text-black": color === "default",
+            "text-coral": color === "coral",
+            "text-caramel": color === "caramel",
+            "text-cream": color === "cream",
+            "text-yellow": color === "yellow",
+            "text-green": color === "green",
+            "text-purple": color === "purple",
+            "text-pink": color === "pink",
+            "text-blue": color === "blue",
+            "text-red": color === "red",
+            "text-success": color === "success",
+            "text-warning": color === "warning",
+            "text-neutral": color === "neutral",
+            "text-white": color === "white",
+            "text-milk": color === "milk",
           },
           className
         )}

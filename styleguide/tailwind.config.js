@@ -156,6 +156,7 @@ module.exports = {
         "scroller-item": 'calc(100% - 5rem)',
       },
       margin: {
+        0.6: '0.188rem', // 3px
         15: '3.75rem', // 60px
         "-full-outside-container": 'calc((100% + var(--screen-side-width)) * -1)'
       },
@@ -167,6 +168,10 @@ module.exports = {
       gridTemplateColumns: {
         'inverted-split-content-larger-content': 'max-content 1fr',
         'split-content-larger-content': '1fr max-content',
+        'cardpart-increments': '1fr 231px',
+        'cardpart-options': '0.5fr 1fr',
+        'cardpart-options-inputs': '1fr 1fr 1fr 0.3fr',
+        'bottombar': '1fr auto',
       },
     },
   },

@@ -15,7 +15,7 @@ export { Paragraph } from "./paragraph/paragraph";
 export { LocalTime } from "./local-time/local-time";
 export { Ticket, TicketHolder, Lanyard, TicketWithHolder } from "./ticket";
 export { FullscreenOverlay } from "./fullscreen-overlay";
-export { Button } from "./button/button";
+export { Button, BasicButton } from "./button";
 export { VStack } from "./vstack/vstack";
 export { HStack } from "./hstack/hstack";
 export { Spacer } from "./spacer/spacer";
@@ -27,9 +27,17 @@ export { SnakeCountdown } from "./snake-countdown";
 export { Section } from "./section";
 export { Page } from "./page";
 export { getMessagesForLocale } from "./lang";
-export { MultiplePartsCard, CardPart } from "./multiple-parts-card";
+export {
+  MultiplePartsCard,
+  CardPart,
+  CardPartIncrements,
+  CardPartOptions,
+  CardPartAddRemove,
+} from "./multiple-parts-card";
 export { SliderGridSection } from "./slider-grid-section";
 export { Separator } from "./separator";
 export { Footer } from "./footer";
 export { Container } from "./container";
 export { GridSection } from "./grid-section";
+export { BottomBar } from "./bottom-bar";
+export { Grid } from "./grid";
