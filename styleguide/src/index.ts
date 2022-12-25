@@ -33,6 +33,7 @@ export {
   CardPartIncrements,
   CardPartOptions,
   CardPartAddRemove,
+  CardPartTwoSides,
 } from "./multiple-parts-card";
 export { SliderGridSection } from "./slider-grid-section";
 export { Separator } from "./separator";

@@ -8,6 +8,8 @@ import { Heading } from "../heading";
 import { CardPartOptions } from "./card-part-options";
 import { differenceInCalendarDays } from "date-fns";
 import { CardPartAddRemove } from "./card-part-addremove";
+import { Tag } from "../tag";
+import { CardPartTwoSides } from "./card-part-two-sides";
 
 export default {
   title: "Multiple Parts Card",
@@ -148,14 +150,13 @@ export const WithIncrementExample = () => {
 };
 
 export const MultiPartCardWithOptions = () => {
-  const [temporaryRoom, setTemporaryRoom] = useState({});
-  const [storedRooms, setStoredRooms] = useState([]);
+  const [temporaryRoom, setTemporaryRoom] = useState<any>({});
+  const [storedRooms, setStoredRooms] = useState<any[]>([]);
 
   const nightsBetween = differenceInCalendarDays(
     new Date(temporaryRoom.checkout),
     new Date(temporaryRoom.checkin)
   );
-  console.log("nightsBetween", nightsBetween);
 
   return (
     <div className="p-6">
@@ -396,4 +397,24 @@ CardPartExpandable.argTypes = {
       type: "boolean",
     },
   },
+};
+
+export const CardPartTwoSidesExample = () => {
+  return (
+    <div className="p-6">
+      <MultiplePartsCard>
+        <CardPart title="Example with tag" contentAlign="left" />
+        <CardPartTwoSides rightSide={<Tag color="red">Sold-out</Tag>}>
+          <Heading size={2}>£400</Heading>
+        </CardPartTwoSides>
+      </MultiplePartsCard>
+      <Spacer size="small" />
+      <MultiplePartsCard>
+        <CardPart title="Different color & length" contentAlign="left" />
+        <CardPartTwoSides rightSide={<Tag color="success">Buy me now!</Tag>}>
+          <Heading size={2}>$250</Heading>
+        </CardPartTwoSides>
+      </MultiplePartsCard>
+    </div>
+  );
 };
