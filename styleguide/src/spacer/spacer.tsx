@@ -27,6 +27,7 @@ export const Spacer = ({
 
         // horizontal spacers
         "w-12": size == "large" && orientation === "horizontal",
+        "w-2": size == "xs" && orientation === "horizontal",
 
         block: !showOnlyOn && orientation === "vertical",
         "inline-block": !showOnlyOn && orientation === "horizontal",
