@@ -13,7 +13,7 @@ export const Tag = ({ children, size = "big", color }: Props) => {
   return (
     <div
       className={clsx(
-        "flex items-center justify-center border border-black py-2 px-4 select-none",
+        "inline-flex items-center justify-center border border-black py-2 px-4 select-none",
         {
           "bg-coral text-black": color === "coral",
           "bg-caramel text-black": color === "caramel",
