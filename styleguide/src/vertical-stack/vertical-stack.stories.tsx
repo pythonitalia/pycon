@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "../button/button";
 import { Heading } from "../heading/index";
-import { VStack } from "./vertical-stack";
+import { VerticalStack } from "./vertical-stack";
 
 export default {
   title: "Vertical Stack",
@@ -20,7 +20,7 @@ export default {
 };
 
 export const Primary = (props) => (
-  <VStack {...props}>
+  <VerticalStack {...props}>
     <Heading>Long title to show aligns</Heading>
 
     <Button onClick={() => {}} color="pink">
@@ -30,5 +30,5 @@ export const Primary = (props) => (
     <Button onClick={() => {}} color="blue">
       Button
     </Button>
-  </VStack>
+  </VerticalStack>
 );
