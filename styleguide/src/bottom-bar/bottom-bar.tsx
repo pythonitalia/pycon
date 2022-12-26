@@ -10,7 +10,7 @@ type Props = {
 
 export const BottomBar = ({ children, action }: Props) => {
   return (
-    <div className="sticky bottom-0 bg-milk">
+    <div className="sticky -bottom-[3px] bg-milk">
       <Container>
         <Spacer size="2md" />
         <div className="grid items-center lg:grid-cols-bottombar lg:gap-16">
