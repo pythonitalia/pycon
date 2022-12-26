@@ -53,10 +53,19 @@ export const AsLink = () => {
   return <Button linkTo="/test">Link Body</Button>;
 };
 
-export const BasicButtonStory = () => {
+export const BasicButtonStory = ({ disabled }) => {
   return (
     <div className="p-6">
-      <BasicButton>Simple button</BasicButton>
+      <BasicButton disabled={disabled}>Simple button</BasicButton>
     </div>
   );
+};
+
+BasicButtonStory.argTypes = {
+  disabled: {
+    defaultValue: false,
+    control: {
+      type: "boolean",
+    },
+  },
 };
