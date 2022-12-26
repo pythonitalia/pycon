@@ -418,3 +418,35 @@ export const CardPartTwoSidesExample = () => {
     </div>
   );
 };
+
+export const CardWithInputsInItAndFocus = () => {
+  return (
+    <div className="p-6">
+      <input type="text" placeholder="Outside input" />
+
+      <MultiplePartsCard
+        openByDefault={false}
+        clickablePart="heading"
+        expandTarget="content"
+      >
+        <CardPart
+          iconBackground="blue"
+          title="Membership"
+          icon="star"
+          contentAlign="left"
+          id="heading"
+          openLabel="Discover more"
+        />
+        <CardPart id="content" contentAlign="left" noBg>
+          <Text size={2}>
+            <input type="text" placeholder="Enter your name" />
+            <input type="email" placeholder="Enter your email" />
+          </Text>
+        </CardPart>
+        <CardPart title="€ 100" titleSize="large">
+          <Text size={2}>flat price</Text>
+        </CardPart>
+      </MultiplePartsCard>
+    </div>
+  );
+};

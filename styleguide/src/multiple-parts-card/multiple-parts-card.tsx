@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Spacer } from "../spacer";
 import { Button } from "../button";
 import { MultiPartsCardContext } from "./context";
@@ -13,6 +13,7 @@ type Props = {
   expand?: string;
   children: React.ReactNode;
   clickablePart?: string;
+  openOnFocus?: boolean;
   expandTarget?: string;
   openByDefault?: boolean;
 };
@@ -23,6 +24,7 @@ export const MultiplePartsCard = ({
   expandTarget,
   cta,
   openByDefault = true,
+  openOnFocus = true,
 }: Props) => {
   const isMatchingId = (id?: string, target?: string) => {
     if (!target || !id) {
@@ -32,6 +34,16 @@ export const MultiplePartsCard = ({
     return target === id;
   };
   const [open, toggleOpen] = useState(openByDefault);
+
+  const onFocus = useCallback(() => {
+    if (!clickablePart || !expandTarget) {
+      return;
+    }
+
+    if (openOnFocus) {
+      toggleOpen(true);
+    }
+  }, [openOnFocus, clickablePart, expandTarget]);
 
   return (
     <MultiPartsCardContext.Provider
@@ -44,7 +56,7 @@ export const MultiplePartsCard = ({
         isTargetPart: (id) => isMatchingId(id, expandTarget),
       }}
     >
-      <div className="flex flex-col h-full">
+      <div onFocus={onFocus} className="flex flex-col h-full">
         <div className="text-center border bg-cream border-black divide-y-3 h-full flex flex-col justify-between">
           {children}
         </div>
