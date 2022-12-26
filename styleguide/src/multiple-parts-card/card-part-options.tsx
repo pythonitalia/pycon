@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import React from "react";
 import { MinusIcon } from "../icons/minus";
 import { PlusIcon } from "../icons/plus";
@@ -37,7 +38,9 @@ export const CardPartOptions = ({
             <SimpleSelect
               disabled={action === "remove"}
               onChange={(e) => onChange?.(select.id, e)}
-              className="pl-4 pr-9 py-7 lg:pl-5 lg:pr-14"
+              className={clsx("pl-4 py-7 lg:pl-5 ", {
+                "pr-9 lg:pr-14": action === "add",
+              })}
               value={select.value}
               options={select.options}
               placeholder={select.placeholder}
