@@ -20,7 +20,9 @@ export const Button = ({
   children: ReactNode;
   disabled?: boolean;
   role?: "primary" | "secondary";
-  onClick?: () => void;
+  onClick?: (
+    e: React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLAnchorElement>
+  ) => void;
   linkTo?: string;
   fullWidth?: boolean;
 }) => {
