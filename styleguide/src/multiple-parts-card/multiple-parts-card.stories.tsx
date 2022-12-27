@@ -296,6 +296,65 @@ export const MultiPartCardWithOptions = () => {
   );
 };
 
+export const MultiPartCardWithVariableOptions = ({ numOfSelects }) => {
+  const [temporaryRoom, setTemporaryRoom] = useState<any>({});
+  const createObject = (index: number) => ({
+    id: `obj-${index}`,
+    options: [
+      { label: "2022-10-10", value: "2022-10-10" },
+      { label: "2022-10-11", value: "2022-10-11" },
+      { label: "2022-10-12", value: "2022-10-12" },
+    ],
+    placeholder: `Object ${index}`,
+    value: temporaryRoom[`obj-${index}`],
+  });
+
+  return (
+    <div className="p-6">
+      <MultiplePartsCard>
+        <CardPart
+          iconBackground="green"
+          title="Double Room"
+          icon="hotel"
+          contentAlign="left"
+        />
+        <CardPart contentAlign="left" noBg>
+          <Text size={2}>
+            Lorem Ipsum is simply dummy text of the printing and typesetting
+          </Text>
+        </CardPart>
+
+        <CardPartOptions
+          onConfirm={() => {
+            setTemporaryRoom({});
+          }}
+          action="add"
+          onChange={(id, e) => {
+            setTemporaryRoom((room) => ({
+              ...room,
+              [id]: e.target.value,
+            }));
+          }}
+          selects={new Array(numOfSelects)
+            .fill(0)
+            .map((_, index) => createObject(index))}
+        >
+          <Heading size={2}>Test Test Test</Heading>
+        </CardPartOptions>
+      </MultiplePartsCard>
+    </div>
+  );
+};
+
+MultiPartCardWithVariableOptions.argTypes = {
+  numOfSelects: {
+    defaultValue: 3,
+    control: {
+      type: "number",
+    },
+  },
+};
+
 export const AddRemoveCardPart = () => {
   const [added, setAdded] = useState(false);
   return (

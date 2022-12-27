@@ -30,9 +30,9 @@ export const CardPartOptions = ({
   action,
 }: Props) => {
   return (
-    <div className="bg-cream grid lg:grid-cols-cardpart-options">
+    <div className="bg-cream flex flex-col justify-start lg:flex-row lg:justify-between">
       <SideText>{children}</SideText>
-      <div className="grid lg:grid-cols-cardpart-options-inputs">
+      <div className="grid lg:flex lg:justify-end">
         {selects?.map((select) => (
           <Action key={select.id} breakpoint="lg" noPadding noBorderMobile>
             <SimpleSelect

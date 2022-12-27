@@ -9,7 +9,10 @@ type Props = {
 export const SideText = ({ children, className }: Props) => {
   return (
     <div
-      className={clsx("px-4 py-3.5 lg:px-6 flex items-center gap-3", className)}
+      className={clsx(
+        "px-4 py-3.5 lg:px-6 flex items-center text-left gap-3",
+        className
+      )}
     >
       {children}
     </div>
