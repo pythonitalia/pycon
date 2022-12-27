@@ -9,6 +9,8 @@ type Props = {
 export const CardPartTwoSides = ({ children, rightSide }: Props) => (
   <div className="bg-cream grid md:grid-cols-cardpart-increments">
     <SideText>{children}</SideText>
-    <div className="flex items-center justify-center">{rightSide}</div>
+    <SideText className="flex items-center md:justify-center">
+      {rightSide}
+    </SideText>
   </div>
 );
