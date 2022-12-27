@@ -186,7 +186,7 @@ export const MultiPartCardWithOptions = () => {
                 newRooms.splice(index, 1);
                 setStoredRooms(newRooms);
               }}
-              selects={[
+              options={[
                 {
                   id: "checkin",
                   options: [
@@ -301,7 +301,7 @@ export const MultiPartCardWithVariableOptions = ({ numOfSelects }) => {
   const createObject = (index: number) => ({
     id: `obj-${index}`,
     options: [
-      { label: "2022-10-10", value: "2022-10-10" },
+      { label: "1x Matrimoniale 2x Singoli", value: "2022-10-10" },
       { label: "2022-10-11", value: "2022-10-11" },
       { label: "2022-10-12", value: "2022-10-12" },
     ],
@@ -328,7 +328,7 @@ export const MultiPartCardWithVariableOptions = ({ numOfSelects }) => {
           onConfirm={() => {
             setTemporaryRoom({});
           }}
-          action="add"
+          action="remove"
           onChange={(id, e) => {
             setTemporaryRoom((room) => ({
               ...room,
@@ -336,6 +336,24 @@ export const MultiPartCardWithVariableOptions = ({ numOfSelects }) => {
             }));
           }}
           selects={new Array(numOfSelects)
+            .fill(0)
+            .map((_, index) => createObject(index))}
+        >
+          <Heading size={2}>Test Test Test</Heading>
+        </CardPartOptions>
+
+        <CardPartOptions
+          onConfirm={() => {
+            setTemporaryRoom({});
+          }}
+          action="add"
+          onChange={(id, e) => {
+            setTemporaryRoom((room) => ({
+              ...room,
+              [id]: e.target.value,
+            }));
+          }}
+          options={new Array(numOfSelects)
             .fill(0)
             .map((_, index) => createObject(index))}
         >

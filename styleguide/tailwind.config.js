@@ -169,6 +169,7 @@ module.exports = {
         'inverted-split-content-larger-content': 'max-content 1fr',
         'split-content-larger-content': '1fr max-content',
         'cardpart-increments': '1fr 231px',
+        'cardpart-options': 'repeat(var(--num-of-options), 1fr) auto',
         'bottombar': '1fr auto',
       },
     },

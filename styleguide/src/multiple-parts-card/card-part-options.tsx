@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React from "react";
+import React, { CSSProperties } from "react";
 import { MinusIcon } from "../icons/minus";
 import { PlusIcon } from "../icons/plus";
 import { Option, SimpleSelect } from "../simple-select/simple-select";
@@ -14,7 +14,7 @@ type SelectProps = {
 };
 
 type Props = React.PropsWithChildren<{
-  selects: SelectProps[];
+  options: SelectProps[];
   onConfirm?: () => void;
   onRemove?: () => void;
   onChange?: (id: string, e: any) => void;
@@ -23,7 +23,7 @@ type Props = React.PropsWithChildren<{
 
 export const CardPartOptions = ({
   children,
-  selects,
+  options,
   onChange,
   onConfirm,
   onRemove,
@@ -32,15 +32,20 @@ export const CardPartOptions = ({
   return (
     <div className="bg-cream flex flex-col justify-start lg:flex-row lg:justify-between">
       <SideText>{children}</SideText>
-      <div className="grid lg:flex lg:justify-end">
-        {selects?.map((select) => (
+      <div
+        className="grid lg:grid-cols-cardpart-options"
+        style={
+          {
+            "--num-of-options": options.length,
+          } as CSSProperties
+        }
+      >
+        {options?.map((select) => (
           <Action key={select.id} breakpoint="lg" noPadding noBorderMobile>
             <SimpleSelect
               disabled={action === "remove"}
               onChange={(e) => onChange?.(select.id, e)}
-              className={clsx("pl-4 py-7 lg:pl-5 ", {
-                "pr-9 lg:pr-14": action === "add",
-              })}
+              className={clsx("pl-4 pr-9 lg:pr-14 py-7 lg:pl-5")}
               value={select.value}
               options={select.options}
               placeholder={select.placeholder}
