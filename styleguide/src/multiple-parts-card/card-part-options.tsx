@@ -30,10 +30,10 @@ export const CardPartOptions = ({
   action,
 }: Props) => {
   return (
-    <div className="bg-cream flex flex-col justify-start lg:flex-row lg:justify-between">
+    <div className="bg-cream grid lg:grid-cols-cardpart-options">
       <SideText>{children}</SideText>
       <div
-        className="grid lg:grid-cols-cardpart-options"
+        className="grid lg:grid-cols-cardpart-options-options"
         style={
           {
             "--num-of-options": options.length,
@@ -45,7 +45,9 @@ export const CardPartOptions = ({
             <SimpleSelect
               disabled={action === "remove"}
               onChange={(e) => onChange?.(select.id, e)}
-              className={clsx("pl-4 pr-9 lg:pr-14 py-7 lg:pl-5")}
+              className={clsx("pl-4 py-7 lg:pl-5", {
+                "pr-9 lg:pr-14": action === "add",
+              })}
               value={select.value}
               options={select.options}
               placeholder={select.placeholder}

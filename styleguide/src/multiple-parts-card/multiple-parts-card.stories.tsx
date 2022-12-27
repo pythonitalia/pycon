@@ -252,7 +252,7 @@ export const MultiPartCardWithOptions = () => {
               }));
             }
           }}
-          selects={[
+          options={[
             {
               id: "checkin",
               options: [
@@ -298,12 +298,17 @@ export const MultiPartCardWithOptions = () => {
 
 export const MultiPartCardWithVariableOptions = ({ numOfSelects }) => {
   const [temporaryRoom, setTemporaryRoom] = useState<any>({});
-  const createObject = (index: number) => ({
+  const createObject = (index: number, longItem: boolean = false) => ({
     id: `obj-${index}`,
     options: [
-      { label: "1x Matrimoniale 2x Singoli", value: "2022-10-10" },
-      { label: "2022-10-11", value: "2022-10-11" },
-      { label: "2022-10-12", value: "2022-10-12" },
+      longItem
+        ? { label: "1x Matrimoniale 2x Singoli", value: "2022-10-10" }
+        : {
+            label: "10 Giugno",
+            value: "2022-10-10",
+          },
+      { label: "11 Giugno", value: "2022-10-11" },
+      { label: "12 Giugno", value: "2022-10-12" },
     ],
     placeholder: `Object ${index}`,
     value: temporaryRoom[`obj-${index}`],
@@ -335,11 +340,11 @@ export const MultiPartCardWithVariableOptions = ({ numOfSelects }) => {
               [id]: e.target.value,
             }));
           }}
-          selects={new Array(numOfSelects)
+          options={new Array(numOfSelects)
             .fill(0)
-            .map((_, index) => createObject(index))}
+            .map((_, index) => createObject(index, index === 2))}
         >
-          <Heading size={2}>Test Test Test</Heading>
+          <Heading size={2}>£350 3 x nights</Heading>
         </CardPartOptions>
 
         <CardPartOptions
@@ -355,7 +360,7 @@ export const MultiPartCardWithVariableOptions = ({ numOfSelects }) => {
           }}
           options={new Array(numOfSelects)
             .fill(0)
-            .map((_, index) => createObject(index))}
+            .map((_, index) => createObject(index, index === 2))}
         >
           <Heading size={2}>Test Test Test</Heading>
         </CardPartOptions>
