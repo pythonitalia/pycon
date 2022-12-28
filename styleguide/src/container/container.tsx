@@ -1,9 +1,11 @@
 import clsx from "clsx";
 import React from "react";
 
+export type ContainerSize = "base" | "medium";
+
 type Props = React.PropsWithChildren<{
   className?: string;
-  size?: "base";
+  size?: ContainerSize;
   noPadding?: boolean;
 }>;
 
@@ -19,6 +21,7 @@ export const Container = ({
         "mx-auto w-full",
         {
           "max-w-container": size === "base",
+          "max-w-container-medium": size === "medium",
           "px-4": !noPadding,
         },
         className

@@ -161,8 +161,9 @@ module.exports = {
         "-full-outside-container": 'calc((100% + var(--screen-side-width)) * -1)'
       },
       maxWidth: {
-        // 1280 + the padding of the container
+        // + the padding of the container
         container: `${1280 + 16 * 2}px`,
+        'container-medium': `${950 + 16 * 2}px`,
         full: '100%',
       },
       gridTemplateColumns: {
