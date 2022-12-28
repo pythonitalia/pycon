@@ -131,6 +131,7 @@ class RankSubmissionAdmin(ExportMixin, AdminUsersMixin):
     user_fk = "submission__speaker_id"
     list_display = (
         "rank",
+        "tag",
         "score",
         "duration",
         "title",
@@ -144,13 +145,14 @@ class RankSubmissionAdmin(ExportMixin, AdminUsersMixin):
         "view_submission",
     )
     ordering = (
-        "submission__topic_id",
+        "submission__tags",
         "rank",
         "-score",
     )
     list_filter = (
         "rank_request_id",
         "submission__type",
+        "tag",
         "submission__topic",
         "submission__duration",
     )
