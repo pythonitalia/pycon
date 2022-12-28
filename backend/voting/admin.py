@@ -145,7 +145,7 @@ class RankSubmissionAdmin(ExportMixin, AdminUsersMixin):
         "view_submission",
     )
     ordering = (
-        "submission__tags",
+        "tag",
         "rank",
         "-score",
     )
