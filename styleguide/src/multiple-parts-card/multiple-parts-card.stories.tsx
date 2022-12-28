@@ -160,16 +160,22 @@ export const MultiPartCardWithOptions = () => {
 
   return (
     <div className="p-6">
-      <MultiplePartsCard>
+      <MultiplePartsCard
+        openByDefault={false}
+        clickablePart="heading"
+        expandTarget="content"
+      >
         <CardPart
           iconBackground="green"
           title="Double Room"
           icon="hotel"
           contentAlign="left"
+          id="heading"
         />
-        <CardPart contentAlign="left" noBg>
+        <CardPart id="content" contentAlign="left" noBg>
           <Text size={2}>
             Lorem Ipsum is simply dummy text of the printing and typesetting
+            <input type="text" placeholder="test" />
           </Text>
         </CardPart>
 

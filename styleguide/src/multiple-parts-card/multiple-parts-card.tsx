@@ -35,15 +35,22 @@ export const MultiplePartsCard = ({
   };
   const [open, toggleOpen] = useState(openByDefault);
 
-  const onFocus = useCallback(() => {
-    if (!clickablePart || !expandTarget) {
-      return;
-    }
+  const onFocus = useCallback(
+    (e: React.FocusEvent<HTMLDivElement>) => {
+      if (!clickablePart || !expandTarget) {
+        return;
+      }
 
-    if (openOnFocus) {
-      toggleOpen(true);
-    }
-  }, [openOnFocus, clickablePart, expandTarget]);
+      if (!e.target.closest(`[data-expand-own-id="${expandTarget}"]`)) {
+        return;
+      }
+
+      if (openOnFocus) {
+        toggleOpen(true);
+      }
+    },
+    [openOnFocus, clickablePart, expandTarget]
+  );
 
   return (
     <MultiPartsCardContext.Provider

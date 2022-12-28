@@ -63,6 +63,7 @@ export const CardPart = ({
         "cursor-pointer": isClickToExpandElement,
       })}
       onClick={onToggleExpand}
+      data-expand-own-id={id}
     >
       <div
         className={clsx("flex", {
