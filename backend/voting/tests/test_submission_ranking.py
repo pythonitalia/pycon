@@ -43,20 +43,25 @@ def mock_users():
 
 
 @pytest.fixture
-def _voting_fixture(conference_factory, user_factory, submission_factory, vote_factory):
+def _voting_fixture(
+    conference_factory,
+    user_factory,
+    submission_factory,
+    submission_tag_factory,
+    vote_factory,
+):
     conference = conference_factory(
-        topics=["Pizza", "Sushi"],
         submission_types=["Talk", "Workshop"],
         audience_levels=("adult", "senior"),
         languages=["en", "it"],
     )
-    sushi = conference.topics.get(name="Sushi")
-    pizza = conference.topics.get(name="Pizza")
+    sushi = submission_tag_factory(name="Sushi")
+    pizza = submission_tag_factory(name="Pizza")
     submissions = []
     submissions.append(
         submission_factory(
             conference=conference,
-            topic=sushi,
+            tags=["sushi"],
             speaker_id=1,
             languages=["en"],
             custom_submission_type="Talk",
@@ -66,7 +71,7 @@ def _voting_fixture(conference_factory, user_factory, submission_factory, vote_f
     submissions.append(
         submission_factory(
             conference=conference,
-            topic=sushi,
+            tags=["sushi"],
             speaker_id=2,
             languages=["en", "it"],
             custom_submission_type="Workshop",
@@ -76,7 +81,7 @@ def _voting_fixture(conference_factory, user_factory, submission_factory, vote_f
     submissions.append(
         submission_factory(
             conference=conference,
-            topic=sushi,
+            tags=["sushi"],
             speaker_id=3,
             languages=["en"],
             custom_submission_type="Workshop",
@@ -86,7 +91,7 @@ def _voting_fixture(conference_factory, user_factory, submission_factory, vote_f
     submissions.append(
         submission_factory(
             conference=conference,
-            topic=sushi,
+            tags=["sushi"],
             speaker_id=4,
             languages=["it"],
             custom_submission_type="Talk",
@@ -96,7 +101,7 @@ def _voting_fixture(conference_factory, user_factory, submission_factory, vote_f
     submissions.append(
         submission_factory(
             conference=conference,
-            topic=pizza,
+            tags=["pizza"],
             speaker_id=1,
             languages=["en", "it"],
             custom_submission_type="Workshop",
@@ -106,7 +111,7 @@ def _voting_fixture(conference_factory, user_factory, submission_factory, vote_f
     submissions.append(
         submission_factory(
             conference=conference,
-            topic=pizza,
+            tags=["pizza"],
             speaker_id=2,
             languages=[
                 "it",
@@ -118,7 +123,7 @@ def _voting_fixture(conference_factory, user_factory, submission_factory, vote_f
     submissions.append(
         submission_factory(
             conference=conference,
-            topic=pizza,
+            tags=["pizza"],
             speaker_id=5,
             languages=[
                 "en",
@@ -153,37 +158,37 @@ def _voting_fixture(conference_factory, user_factory, submission_factory, vote_f
     ranked_submissions = [
         {
             "submission_id": submissions[3].id,
-            "submission__topic_id": submissions[3].topic.id,
+            "submission__tag_id": submissions[3].topic.id,
             "score": 4.0,
         },
         {
             "submission_id": submissions[6].id,
-            "submission__topic_id": submissions[6].topic.id,
+            "submission__tag_id": submissions[6].topic.id,
             "score": 1.0,
         },
         {
             "submission_id": submissions[2].id,
-            "submission__topic_id": submissions[2].topic.id,
+            "submission__tag_id": submissions[2].topic.id,
             "score": 3.0,
         },
         {
             "submission_id": submissions[5].id,
-            "submission__topic_id": submissions[5].topic.id,
+            "submission__tag_id": submissions[5].topic.id,
             "score": 4.0,
         },
         {
             "submission_id": submissions[4].id,
-            "submission__topic_id": submissions[4].topic.id,
+            "submission__tag_id": submissions[4].topic.id,
             "score": 0,
         },
         {
             "submission_id": submissions[1].id,
-            "submission__topic_id": submissions[1].topic.id,
+            "submission__tag_id": submissions[1].topic.id,
             "score": 2.0,
         },
         {
             "submission_id": submissions[0].id,
-            "submission__topic_id": submissions[0].topic.id,
+            "submission__tag_id": submissions[0].topic.id,
             "score": 1.0,
         },
     ]

@@ -1,5 +1,3 @@
-import itertools
-
 from django.db import models
 from django.db.models import Count
 from django.db.models.functions import Sqrt
@@ -106,17 +104,12 @@ class RankRequest(models.Model):
         votes = Vote.objects.filter(submission__conference=conference)
 
         users_weight = RankRequest.get_users_weights(votes)
-
-        # group by topic to generate the relative ranking
-        def group_by(submission: Submission):
-            return submission.topic_id
-
         rankings = []
-        for topic_id, grouped_submissions in itertools.groupby(
-            submissions, key=group_by
-        ):
-            topic_ranking = []
-            for submission in grouped_submissions:
+        for tag_id in tags_id:
+            tag_submissions = submissions.filter(tags__id=tag_id)
+
+            tag_ranking = []
+            for submission in tag_submissions:
                 submission_votes = votes.filter(submission=submission)
 
                 if submission_votes:
@@ -124,8 +117,8 @@ class RankRequest(models.Model):
                     for vote in submission_votes:
                         vote_info[vote.id] = {
                             "normalised_vote": vote.value
-                            * users_weight[(vote.user_id, topic_id)],
-                            "scale_factor": users_weight[(vote.user_id, topic_id)],
+                            * users_weight[(vote.user_id, tag_id)],
+                            "scale_factor": users_weight[(vote.user_id, tag_id)],
                         }
                     score = sum(
                         [v["normalised_vote"] for v in vote_info.values()]
@@ -134,24 +127,24 @@ class RankRequest(models.Model):
                     score = 0
                 rank = {
                     "submission_id": submission.id,
-                    "submission__topic_id": submission.topic_id,
+                    "submission__tag_id": tag_id,
                     "score": score,
                 }
-                topic_ranking.append(rank)
-                topic_ranking = sorted(
-                    topic_ranking, key=lambda k: k["score"], reverse=True
+                tag_ranking.append(rank)
+                tag_ranking = sorted(
+                    tag_ranking, key=lambda k: k["score"], reverse=True
                 )
 
-            rankings.append(topic_ranking)
+            rankings.append(tag_ranking)
         return rankings
 
     @staticmethod
     def get_users_weights(votes):
-        queryset = votes.values("submission__topic_id", "user_id").annotate(
-            weight=Sqrt(Count("submission__topic_id"))
+        queryset = votes.values("submission__tags", "user_id").annotate(
+            weight=Sqrt(Count("submission__tags"))
         )
         return {
-            (weight["user_id"], weight["submission__topic_id"]): weight["weight"]
+            (weight["user_id"], weight["submission__tags"]): weight["weight"]
             for weight in queryset
         }
 
