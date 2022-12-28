@@ -41,8 +41,6 @@ export const CardPart = ({
   const isClickToExpandElement = isClickablePart(id);
   const canBeOpened = isTargetPart(id);
 
-  const isOpen = canBeOpened ? open : false;
-
   const onToggleExpand = () => {
     if (isClickToExpandElement) {
       toggleOpen?.((expanded) => !expanded);
@@ -59,8 +57,8 @@ export const CardPart = ({
         "text-left": contentAlign === "left",
         "text-center": contentAlign === "center",
 
-        "py-4 lg:py-6": !canBeOpened || isOpen,
-        "h-0 py-0 -mb-0.6": canBeOpened && !isOpen,
+        "py-4 lg:py-6": !canBeOpened || open,
+        "h-0 py-0 -mb-0.6": canBeOpened && !open,
 
         "cursor-pointer": isClickToExpandElement,
       })}

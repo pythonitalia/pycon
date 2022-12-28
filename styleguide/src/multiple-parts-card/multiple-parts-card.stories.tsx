@@ -406,7 +406,7 @@ export const AddRemoveCardPart = () => {
   );
 };
 
-export const CardPartExpandable = ({ expanded }) => {
+export const CardPartExpandable = () => {
   return (
     <div className="p-6">
       <MultiplePartsCard
@@ -416,7 +416,7 @@ export const CardPartExpandable = ({ expanded }) => {
       >
         <CardPart
           iconBackground="blue"
-          title="Membership"
+          title="Membership [closed by default]"
           icon="star"
           contentAlign="left"
           id="heading"
@@ -446,7 +446,7 @@ export const CardPartExpandable = ({ expanded }) => {
       >
         <CardPart
           iconBackground="blue"
-          title="Membership"
+          title="Membership [open by default]"
           icon="star"
           contentAlign="left"
           id="heading"
@@ -470,15 +470,6 @@ export const CardPartExpandable = ({ expanded }) => {
       </MultiplePartsCard>
     </div>
   );
-};
-
-CardPartExpandable.argTypes = {
-  expanded: {
-    defaultValue: false,
-    control: {
-      type: "boolean",
-    },
-  },
 };
 
 export const CardPartTwoSidesExample = () => {
