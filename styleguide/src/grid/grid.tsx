@@ -5,12 +5,14 @@ type Props = {
   cols: number;
   children: React.ReactNode;
   alignItems?: "start" | "center" | "end";
+  gap?: "none" | "medium";
+  divide?: boolean;
 };
 
-export const Grid = ({ cols, children, alignItems }: Props) => {
+export const Grid = ({ cols, children, alignItems, gap, divide }: Props) => {
   return (
     <div
-      className={clsx("grid gap-6", {
+      className={clsx("grid", {
         "lg:grid-cols-1": cols === 1,
         "lg:grid-cols-2": cols === 2,
         "lg:grid-cols-3": cols === 3,
@@ -27,6 +29,10 @@ export const Grid = ({ cols, children, alignItems }: Props) => {
         "lg:items-start": alignItems === "start",
         "lg:items-center": alignItems === "center",
         "lg:items-end": alignItems === "end",
+
+        "gap-2 lg:gap-6": gap === "medium",
+
+        "divide-y-3 lg:divide-x-3": divide,
       })}
     >
       {children}
