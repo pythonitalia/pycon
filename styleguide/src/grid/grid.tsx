@@ -32,7 +32,7 @@ export const Grid = ({ cols, children, alignItems, gap, divide }: Props) => {
 
         "gap-2 lg:gap-6": gap === "medium",
 
-        "divide-y-3 lg:divide-x-3": divide,
+        "divide-y-3 lg:divide-y-0 lg:divide-x-3": divide,
       })}
     >
       {children}
