@@ -44,7 +44,7 @@ class Rank(TypedDict):
 
 class RankRequest(models.Model):
 
-    conference = models.OneToOneField(
+    conference = models.ForeignKey(
         "conferences.Conference", on_delete=models.CASCADE, verbose_name=_("conference")
     )
 
