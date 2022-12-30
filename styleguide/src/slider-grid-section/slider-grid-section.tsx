@@ -56,7 +56,7 @@ export const SliderGridSection = ({
   }, []);
 
   const countChildren = React.Children.count(children);
-  const useSnakeBackground = background === "snake" && countChildren > 2;
+  const useSnakeBackground = background === "snake";
 
   return (
     <div>
@@ -89,9 +89,11 @@ export const SliderGridSection = ({
               ref={(el) => (listItemsRef.current[index] = el)}
               className="md:opacity-100 z-10 transition-opacity snap-center shrink-0 w-scroller-item pl-2 pr-2 first:pl-4 last:pr-4 md:w-auto relative"
             >
-              {useSnakeBackground && index !== countChildren - 1 && (
-                <SnakeBody className="absolute w-52 lg:w-96 left-1/2 -z-1 top-[10%] hidden md:block" />
-              )}
+              {useSnakeBackground &&
+                index !== countChildren - 1 &&
+                index % cols !== cols - 1 && (
+                  <SnakeBody className="absolute w-52 lg:w-96 left-1/2 translate-x-5 -z-1 top-[10%] hidden md:block" />
+                )}
               {child}
             </div>
           ))}

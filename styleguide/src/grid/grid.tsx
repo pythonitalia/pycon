@@ -9,7 +9,13 @@ type Props = {
   divide?: boolean;
 };
 
-export const Grid = ({ cols, children, alignItems, gap, divide }: Props) => {
+export const Grid = ({
+  cols,
+  children,
+  alignItems,
+  gap = "medium",
+  divide = false,
+}: Props) => {
   return (
     <div
       className={clsx("grid", {

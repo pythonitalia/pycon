@@ -3,24 +3,26 @@ import { CardPart, MultiplePartsCard } from "../multiple-parts-card";
 import { GridSection } from "./grid-section";
 import { Text } from "../text";
 
-export const Primary = ({ items = 2, cols = 2 }) => {
+export const Primary = ({ showSnake, items = 2, cols = 2 }) => {
   return (
-    <GridSection title="Buy tickets" cols={cols}>
-      {Array(items)
-        .fill(null, 0)
-        .map((_, i) => (
-          <MultiplePartsCard
-            cta={{
-              label: "Buy tickets",
-              link: "/tickets/business/",
-            }}
-          >
-            <CardPart title="Student">
-              <Text size={2}>Body</Text>
-            </CardPart>
-          </MultiplePartsCard>
-        ))}
-    </GridSection>
+    <div className="py-12">
+      <GridSection showSnake={showSnake} title="Buy tickets" cols={cols}>
+        {Array(items)
+          .fill(null, 0)
+          .map((_, i) => (
+            <MultiplePartsCard
+              cta={{
+                label: "Buy tickets",
+                link: "/tickets/business/",
+              }}
+            >
+              <CardPart title="Student">
+                <Text size={2}>Body</Text>
+              </CardPart>
+            </MultiplePartsCard>
+          ))}
+      </GridSection>
+    </div>
   );
 };
 
@@ -37,6 +39,12 @@ export default {
       defaultValue: 2,
       control: {
         type: "number",
+      },
+    },
+    showSnake: {
+      defaultValue: false,
+      control: {
+        type: "boolean",
       },
     },
   },
