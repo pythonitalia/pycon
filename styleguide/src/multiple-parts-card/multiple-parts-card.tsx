@@ -72,7 +72,7 @@ export const MultiplePartsCard = ({
           <>
             <Spacer size="xs" />
 
-            <Button size="small" fullWidth linkTo={cta.link}>
+            <Button size="small" fullWidth href={cta.link}>
               {cta.label}
             </Button>
           </>

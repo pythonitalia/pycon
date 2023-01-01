@@ -5,17 +5,35 @@ import { Text } from "../text";
 type Props = {
   children: React.ReactNode;
   disabled?: boolean;
-  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  onClick?: (
+    e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>
+  ) => void;
+  href?: string;
+  target?: string;
+  rel?: string;
 };
 
-export const BasicButton = ({ children, disabled, onClick }: Props) => {
+export const BasicButton = ({
+  children,
+  disabled,
+  onClick,
+  href,
+  target,
+  rel,
+}: Props) => {
+  const Component = href ? "a" : "button";
   return (
-    <button
-      className={clsx("text-black transition-all underline-offset-8", {
-        "cursor-not-allowed opacity-30": disabled,
-        "hover:text-green": !disabled,
-      })}
+    <Component
+      className={clsx(
+        "text-black transition-all underline-offset-8 cursor-pointer",
+        {
+          "cursor-not-allowed opacity-30": disabled,
+          "hover:text-green": !disabled,
+        }
+      )}
       onClick={onClick}
+      target={target}
+      rel={rel}
     >
       <Text
         color="none"
@@ -26,6 +44,6 @@ export const BasicButton = ({ children, disabled, onClick }: Props) => {
       >
         {children}
       </Text>
-    </button>
+    </Component>
   );
 };

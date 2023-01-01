@@ -1,6 +1,7 @@
 import React from "react";
 import { Button } from "./button";
 import { BasicButton } from "./basic-button";
+import { Spacer } from "../spacer";
 
 export default {
   title: "Button",
@@ -42,6 +43,7 @@ export const AllButtons = () => {
       <Button onClick={() => {}} disabled={false} role="primary">
         Primary
       </Button>
+      <Spacer size="large" />
       <Button onClick={() => {}} disabled={false} role="secondary">
         Secondary
       </Button>
@@ -50,13 +52,17 @@ export const AllButtons = () => {
 };
 
 export const AsLink = () => {
-  return <Button linkTo="/test">Link Body</Button>;
+  return <Button href="/test">Link Body</Button>;
 };
 
 export const BasicButtonStory = ({ disabled }) => {
   return (
     <div className="p-6">
       <BasicButton disabled={disabled}>Simple button</BasicButton>
+      <Spacer size="large" />
+      <BasicButton href="/test" disabled={disabled}>
+        Simple button as Link
+      </BasicButton>
     </div>
   );
 };

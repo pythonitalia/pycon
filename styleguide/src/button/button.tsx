@@ -12,7 +12,7 @@ export const Button = ({
   fullWidth = false,
   color = "white",
   disabled = false,
-  linkTo = undefined,
+  href = undefined,
 }: {
   color?: Color;
   icon?: ReactNode;
@@ -23,10 +23,10 @@ export const Button = ({
   onClick?: (
     e: React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLAnchorElement>
   ) => void;
-  linkTo?: string;
+  href?: string;
   fullWidth?: boolean;
 }) => {
-  const Wrapper = linkTo ? "a" : "button";
+  const Wrapper = href ? "a" : "button";
   return (
     <Wrapper
       disabled={disabled}
@@ -47,7 +47,7 @@ export const Button = ({
           "justify-center w-full": fullWidth,
         }
       )}
-      href={linkTo}
+      href={href}
       onClick={onClick}
     >
       {icon && <span className="mr-2">{icon}</span>}
