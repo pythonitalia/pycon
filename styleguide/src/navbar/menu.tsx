@@ -29,7 +29,7 @@ export const Menu = ({
               <ul className="grid grid-cols-1 gap-4 lg:gap-6" key={index}>
                 {split.map(({ text, link }) => (
                   <li key={`${text}${link}`}>
-                    <Link href={link}>
+                    <Link hoverColor="cream" href={link}>
                       <Heading color="none" size="display2">
                         {text}
                       </Heading>
@@ -49,7 +49,7 @@ export const Menu = ({
               <ul key={index} className="grid grid-cols-1 gap-4 content-start">
                 {secondaryLinks.map(({ link, text }) => (
                   <li key={`${text}${link}`}>
-                    <Link href={link}>
+                    <Link hoverColor="cream" href={link}>
                       <Heading color="none" size={4}>
                         {text}
                       </Heading>
@@ -64,7 +64,7 @@ export const Menu = ({
         <>
           <Separator />
           <Container className="py-4 lg:py-10 uppercase">
-            <Link href={bottomBarLink.link}>
+            <Link hoverColor="cream" href={bottomBarLink.link}>
               <Text size="label3" color="none" weight="strong">
                 {bottomBarLink.text}
               </Text>

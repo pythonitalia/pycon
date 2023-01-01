@@ -64,7 +64,7 @@ export const Footer = ({ logo: Logo, socials, bottomLinks = [] }: Props) => (
             <ul className="flex flex-col lg:flex-row gap-4">
               {bottomLinks.map((link) => (
                 <li key={link.link}>
-                  <Link href={link.link}>
+                  <Link hoverColor="cream" href={link.link}>
                     <Text size="label3" weight="strong" color="none">
                       {link.text}
                     </Text>
@@ -73,7 +73,11 @@ export const Footer = ({ logo: Logo, socials, bottomLinks = [] }: Props) => (
               ))}
             </ul>
             <div className="flex flex-col lg:flex-row lg:items-center gap-4">
-              <Link target="_blank" href="https://rollstudio.co.uk/">
+              <Link
+                hoverColor="cream"
+                target="_blank"
+                href="https://rollstudio.co.uk/"
+              >
                 <Text size="label4" uppercase weight="strong" color="none">
                   <FormattedMessage
                     id="footer.designedBy"
