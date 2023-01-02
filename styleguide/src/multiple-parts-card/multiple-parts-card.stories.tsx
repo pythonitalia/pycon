@@ -218,6 +218,7 @@ export const MultiPartCardWithOptions = () => {
                   options: [
                     { value: "double", label: "Double Bed" },
                     { value: "single", label: "2x Single Beds" },
+                    { value: "another", label: "Very long single beds" },
                   ],
                   placeholder: "Bed layout",
                   value: room.beds,
@@ -284,6 +285,7 @@ export const MultiPartCardWithOptions = () => {
               options: [
                 { value: "double", label: "Double + Single" },
                 { value: "single", label: "3x Single Beds" },
+                { value: "another", label: "Very long single beds" },
               ],
               placeholder: "Bed layout",
               value: temporaryRoom.beds,

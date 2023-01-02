@@ -31,7 +31,7 @@ export const SimpleSelect = ({
         onChange={onChange}
         className={clsx(
           "w-full h-full bg-transparent uppercase font-sans font-bold text-base leading-1 appearance-none",
-          "pr-5",
+          "pr-5 overflow-hidden whitespace-nowrap text-ellipsis",
           {
             "text-grey-250": value === "",
           },
