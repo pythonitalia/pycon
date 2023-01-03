@@ -1,6 +1,7 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
+import { Text } from "@python-italia/pycon-styleguide";
 import { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
@@ -45,7 +46,7 @@ export const LoginForm = ({ next, ...props }: FormProps) => {
       setLoggedIn(true);
       clearMessages();
 
-      Router.push(nextUrl);
+      Router.replace(nextUrl);
     }
   };
 
@@ -61,7 +62,7 @@ export const LoginForm = ({ next, ...props }: FormProps) => {
 
   useEffect(() => {
     if (router.isReady && loggedIn) {
-      Router.push(nextUrl);
+      Router.replace(nextUrl);
     }
 
     clearMessages();
@@ -115,12 +116,24 @@ export const LoginForm = ({ next, ...props }: FormProps) => {
             login({ variables: { input: formState.values } });
           }}
         >
-          <Heading mb={4} as="h2">
+          <Heading as="h2">
             <FormattedMessage id="login.loginWithEmail" />
           </Heading>
 
+          <Text size={1}>
+            {nextUrl === "/tickets/checkout" && (
+              <FormattedMessage id="login.redirectFromTicketsCheckout" />
+            )}
+            {nextUrl === "/cfp" && (
+              <FormattedMessage id="login.redirectFromCFP" />
+            )}
+            {nextUrl === "/grants" && (
+              <FormattedMessage id="login.redirectFromGrants" />
+            )}
+          </Text>
+
           <InputWrapper
-            sx={{ mb: 0 }}
+            sx={{ mt: 4, mb: 0 }}
             errors={getFieldErrors("email")}
             label={<FormattedMessage id="login.email" />}
           >

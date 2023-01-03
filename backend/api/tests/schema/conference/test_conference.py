@@ -461,7 +461,19 @@ def test_get_conference_submission_types(
 
 
 @mark.django_db
-def test_get_conference_hotel_rooms(graphql_client, conference_factory, hotel_room):
+def test_get_conference_hotel_rooms(
+    graphql_client, conference_factory, bed_layout_factory, hotel_room
+):
+    hotel_room.conference = conference_factory(
+        start=timezone.datetime(2019, 1, 1, tzinfo=timezone.utc),
+        end=timezone.datetime(2019, 1, 5, tzinfo=timezone.utc),
+    )
+
+    bed_layout = bed_layout_factory()
+    hotel_room.available_bed_layouts.add(bed_layout)
+
+    hotel_room.save()
+
     resp = graphql_client.query(
         """
         query($code: String!) {
@@ -471,6 +483,12 @@ def test_get_conference_hotel_rooms(graphql_client, conference_factory, hotel_ro
                     name(language: "it")
                     description(language: "it")
                     price
+                    availableBedLayouts {
+                        id
+                        name(language: "en")
+                    }
+                    checkInDates
+                    checkOutDates
                 }
             }
         }
@@ -485,6 +503,11 @@ def test_get_conference_hotel_rooms(graphql_client, conference_factory, hotel_ro
             "name": hotel_room.name.localize("it"),
             "description": hotel_room.description.localize("it"),
             "price": f"{hotel_room.price:0.2f}",
+            "checkInDates": ["2019-01-01", "2019-01-02", "2019-01-03", "2019-01-04"],
+            "checkOutDates": ["2019-01-02", "2019-01-03", "2019-01-04", "2019-01-05"],
+            "availableBedLayouts": [
+                {"name": bed_layout.name.localize("en"), "id": str(bed_layout.id)},
+            ],
         }
     ]
 

@@ -115,7 +115,7 @@ export const HomePage = () => {
           <Text size={1}>{conference.homepageCountdownSectionText}</Text>
           <Spacer size="large" />
           <Button
-            linkTo={conference.homepageCountdownSectionCTALink}
+            href={conference.homepageCountdownSectionCTALink}
             role="secondary"
           >
             {conference.homepageCountdownSectionCTAText}
@@ -132,7 +132,7 @@ export const HomePage = () => {
             <FormattedMessage id="home.grants.description" />
           </Text>
           <Spacer size="large" />
-          <Button linkTo="/grants-info" role="secondary">
+          <Button href="/grants-info" role="secondary">
             <FormattedMessage id="home.grants.cta" />
           </Button>
         </SplitSection>

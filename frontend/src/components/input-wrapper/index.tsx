@@ -18,7 +18,7 @@ export const InputWrapper = ({
 }: React.PropsWithChildren<{
   label?: React.ReactElement | string;
   description?: React.ReactElement;
-  errors?: string[];
+  errors?: (string | React.ReactNode)[];
   className?: string;
   isRequired?: boolean;
   as?: any;

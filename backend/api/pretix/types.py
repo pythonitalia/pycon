@@ -53,15 +53,30 @@ class ProductVariation:
     description: str
     active: bool
     default_price: str
+    quantity_left: Optional[int]
+    sold_out: Optional[bool]
 
     @classmethod
-    def from_data(cls, data: ProductVariationDict, language: str) -> ProductVariation:
+    def from_data(
+        cls,
+        data: ProductVariationDict,
+        language: str,
+        quotas: Optional[Dict[str, QuotaDict]],
+        parent_item_id: int,
+    ) -> ProductVariation:
+        quantity_left = TicketItem._get_quantity_left(
+            data, quotas, parent_item_id=parent_item_id
+        )
+        sold_out = quantity_left <= 0 if quantity_left is not None else False
+
         return cls(
             id=data["id"],
             value=_get_by_language(data, "value", language),
             description=_get_by_language(data, "description", language),
             active=data["active"],
             default_price=data["default_price"],
+            sold_out=sold_out,
+            quantity_left=None,
         )
 
 
@@ -157,6 +172,7 @@ class TicketItem:
     available_until: Optional[str]
     questions: Optional[List[Question]]
     quantity_left: Optional[int]
+    sold_out: Optional[bool]
 
     @strawberry.field
     def type(self) -> Optional[TicketType]:
@@ -168,12 +184,6 @@ class TicketItem:
 
         return TicketType.STANDARD
 
-    @strawberry.field
-    def sold_out(self) -> Optional[bool]:
-        if self.quantity_left is None:
-            return False
-        return self.quantity_left <= 0
-
     @classmethod
     def from_data(
         cls,
@@ -184,6 +194,18 @@ class TicketItem:
         quotas: Optional[Dict[str, QuotaDict]] = None,
     ):
         category = _get_category_for_ticket(data, categories)
+        show_quantity_left = data.get("show_quota_left", False)
+
+        if data["has_variations"]:
+            # if the product has variations
+            # each variation has it is own quantity and sold out state
+            # so the parent product doesn't matter
+            quantity_left = None
+            sold_out = False
+        else:
+            quantity_left = cls._get_quantity_left(data, quotas)
+            sold_out = quantity_left <= 0 if quantity_left is not None else False
+
         return cls(
             id=data["id"],
             language=language,
@@ -198,7 +220,9 @@ class TicketItem:
             category=_get_by_language(category, "name", language),
             category_internal_name=category.get("internal_name", None),
             variations=[
-                ProductVariation.from_data(variation, language)
+                ProductVariation.from_data(
+                    variation, language, quotas, parent_item_id=data["id"]
+                )
                 for variation in data.get("variations", [])
             ],
             questions=[
@@ -206,14 +230,16 @@ class TicketItem:
                 for question in questions
                 if data["id"] in question["items"]
             ],
-            quantity_left=cls._get_quantity_left(data, quotas),
+            sold_out=sold_out,
+            quantity_left=quantity_left if show_quantity_left else None,
         )
 
     @staticmethod
-    def _get_quantity_left(data, quotas: Optional[Dict[str, QuotaDict]]):
-        if not bool(data["show_quota_left"]):
-            return None
-
+    def _get_quantity_left(
+        data,
+        quotas: Optional[Dict[str, QuotaDict]],
+        parent_item_id: Optional[int] = None,
+    ):
         # For user's tickets we don't need quantity left
         if not quotas:
             return None
@@ -221,11 +247,19 @@ class TicketItem:
         # tickets can be in multiple quotas, in that case the one that has the least amount of tickets
         # should become the source of truth for availability. See:
         # https://docs.pretix.eu/en/latest/development/concepts.html#quotas
-        return min(
-            quota["available_number"]
-            for quota in quotas.values()
-            if int(data["id"]) in quota["items"]
-        )
+        if parent_item_id:
+            return min(
+                quota["available_number"]
+                for quota in quotas.values()
+                if int(parent_item_id) in quota["items"]
+                and int(data["id"]) in quota["variations"]
+            )
+        else:
+            return min(
+                quota["available_number"]
+                for quota in quotas.values()
+                if int(data["id"]) in quota["items"]
+            )
 
 
 @strawberry.type

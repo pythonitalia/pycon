@@ -5,6 +5,16 @@ from django.utils.translation import gettext_lazy as _
 from i18n.fields import I18nCharField, I18nTextField
 
 
+class BedLayout(models.Model):
+    name = I18nCharField(_("name"), max_length=200)
+
+    def __str__(self) -> str:
+        if isinstance(self.name, str):
+            return self.name
+
+        return self.name.localize("en")
+
+
 class HotelRoom(models.Model):
     conference = models.ForeignKey(
         "conferences.Conference",
@@ -18,6 +28,10 @@ class HotelRoom(models.Model):
 
     total_capacity = models.PositiveIntegerField(_("total capacity"))
     price = models.DecimalField(_("price"), max_digits=7, decimal_places=2)
+
+    available_bed_layouts = models.ManyToManyField(
+        BedLayout,
+    )
 
     @cached_property
     def capacity_left(self):
@@ -56,6 +70,12 @@ class HotelRoomReservation(models.Model):
 
     checkin = models.DateField(_("checkin"))
     checkout = models.DateField(_("checkout"))
+    bed_layout = models.ForeignKey(
+        BedLayout,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+    )
 
     def __str__(self):
         return f"{self.order_code} ({self.checkin} -> {self.checkout})"

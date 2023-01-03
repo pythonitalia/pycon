@@ -63,3 +63,24 @@ export const calculateTotalAmount = (
 
   return ticketsPrice + hotelRoomsPrice;
 };
+
+export const calculateSavedAmount = (
+  state: OrderState,
+  productsById: Record<number, TicketItem>,
+): number => {
+  const ticketsPrice = Object.values(state.selectedProducts)
+    .flat()
+    .filter((ticketInfo) => !!ticketInfo.voucher)
+    .reduce(
+      (sum, ticketInfo) =>
+        sum +
+        (calculateProductPrice(productsById[ticketInfo.id]) -
+          calculateProductPrice(
+            productsById[ticketInfo.id],
+            ticketInfo.voucher,
+          )),
+      0,
+    );
+
+  return ticketsPrice;
+};

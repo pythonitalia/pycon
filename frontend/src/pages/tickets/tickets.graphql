@@ -3,6 +3,7 @@ query Tickets($conference: String!, $language: String!) {
     id
     start
     end
+    timeZone: timezone
     pretixEventUrl
 
     tickets(language: $language) {
@@ -13,6 +14,7 @@ query Tickets($conference: String!, $language: String!) {
       defaultPrice
       availableUntil
       quantityLeft
+      soldOut
       type
       category
       taxRate
@@ -22,6 +24,7 @@ query Tickets($conference: String!, $language: String!) {
         id
         defaultPrice
         value
+        soldOut
       }
 
       questions {
@@ -42,6 +45,12 @@ query Tickets($conference: String!, $language: String!) {
       price
       isSoldOut
       capacityLeft
+      availableBedLayouts {
+        id
+        name(language: $language)
+      }
+      checkInDates
+      checkOutDates
     }
   }
 }

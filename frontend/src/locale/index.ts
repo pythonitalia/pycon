@@ -256,6 +256,62 @@ export const messages = {
     "tickets.heading": "Get some tickets",
     "tickets.explanation": `{br}`,
 
+    "tickets.buyTickets": "Buy Tickets",
+    "tickets.hotelRow.totalPrice": "{value}",
+    "tickets.hotelRow.pricePerNight":
+      "{nights, plural, =0 {/night} =1 {{price} x # night} other {{price} x # nights}}",
+
+    "tickets.checkout.orderCreationFailed":
+      "Something went wrong!{br}Make sure you provided all the information{br}or contact us at help@pycon.it",
+
+    "login.redirectFromTicketsCheckout":
+      "Login or create an account to complete your purchase",
+    "login.redirectFromCFP": "Login or create an account to submit a proposal",
+    "login.redirectFromGrants": "Login or create an account to request a grant",
+
+    "tickets.checkout.voucher.placeholder": "Enter your voucher code",
+    "tickets.checkout.recap.price": "{price} (incl. {taxRate}% VAT)",
+    "tickets.checkout.recap.hotelRoomsPrice": "{price} (incl. 0% VAT)",
+
+    "tickets.productsList.soldOut": "Sold-out",
+
+    "tickets.personal.title": "Personal ticket",
+    "tickets.personal.description":
+      "If you are a student, unemployed or employed, buying the ticket with your own money, not paid by your company, university or similar.",
+    "tickets.buyTicketsCta": "Buy tickets",
+
+    "tickets.productsList.joinPythonItalia": "Join Python Italia",
+    "tickets.productsList.hotelRoomsTitle": "Where to stay",
+    "tickets.productsList.openDescription": "Discover more",
+
+    "tickets.productsList.hotelRow.bedLayout": "Bed layout",
+
+    "tickets.productsList.hotelRow.checkout": "Check-out",
+    "tickets.productsList.hotelRow.checkin": "Check-in",
+
+    "tickets.productsList.tshirtTitle": "T-shirt",
+
+    "tickets.checkout.answerCardAdmissionTitle": "{attendeeName}'s ticket",
+    "tickets.checkout.openAnswerCard": "Attendee Info",
+    "tickets.checkout.billing": "Billing",
+    "tickets.checkout.voucher": "Voucher",
+    "tickets.checkout.recap": "Recap",
+    "tickets.checkout.voucher.notFound": "Not found",
+
+    "tickets.checkout.payWithCard": "Pay with card",
+    "tickets.checkout.payWithBankTransfer": "Pay with bank transfer",
+    "tickets.checkout.savedAmount": "You saved {amount}",
+
+    "tickets.checkout.voucher.fetching": "Fetching voucher...",
+    "tickets.checkout.voucher.noProductsAffected": "No products affected",
+
+    "tickets.checkout.title": "Checkout",
+    "tickets.title": "Buy Tickets",
+
+    "tickets.business.title": "Business ticket",
+    "tickets.business.description":
+      "If your company, university or similar is paying for your ticket, or you need an invoice.",
+
     "addHotelRoom.checkin": "Check-in",
     "addHotelRoom.checkout": "Check-out",
 
@@ -281,20 +337,20 @@ export const messages = {
       "You need to select at least one ticket, a t-shirt or a hotel room before continuing",
     "order.hotelRoomCartInfo":
       "{roomName} with check-in the {checkin} and check-out the {checkout}",
-    "orderConfirmation.heading": "Order confirmation!",
-    "orderConfirmation.heading.canceled": "Order canceled!",
-    "orderConfirmation.heading.pending": "Order pending!",
+    "orderConfirmation.heading": "Order paid",
+    "orderConfirmation.heading.canceled": "Order canceled",
+    "orderConfirmation.heading.pending": "Order pending",
     "orderConfirmation.successMessage":
       "Thanks for the order! You should receive an email confirmation soon!",
     "orderConfirmation.pendingMessage":
-      "Your order is still pending and not paid! If you paid by card, click the link below and try again",
-    "orderConfirmation.bankMessage": `If you paid via bank transfer, contact us at {email} with your order code {code}
-      once the transfer is done and we will confirm it once we receive the transfer.`,
-    "orderConfirmation.manage": "Click here to manage the order.",
-    "orderConfirmation.pendingManage":
-      "Click here to try again or change your payment method.",
-    "orderConfirmation.tryAgain":
-      "Try again creating a new order going back to our {link} page",
+      "Your order is still pending and not paid!",
+    "orderConfirmation.cardMessage":
+      "If you paid by card, click the button below and try again",
+    "orderConfirmation.bankMessage": `If you paid via bank transfer, contact us at {email} with your order code {code} once the transfer is done so we can confirm it when we receive the transfer.`,
+    "orderConfirmation.manage": "Click here to manage the order",
+    "orderConfirmation.home": "Homepage",
+    "orderConfirmation.pendingManage": "Try another card or retry",
+    "orderConfirmation.tryAgain": "Try again creating a new order",
     "orderConfirmation.tickets": "Tickets",
     "order.soldout": "Sold out",
     "order.price": "Price: {price} EUR.",
@@ -630,6 +686,22 @@ export const messages = {
     "home.grants.description":
       "Thanks to our sponsors we have a limited number of grants available for anyone who would love to attend our conference but can't afford it!",
     "home.grants.cta": "Apply",
+    "tickets.checkoutBar.cta": "Checkout",
+
+    "tickets.buyTicketsSubtitle": "Early-bird tickets available!",
+
+    "tickets.landing.title": "What can you buy?",
+    "tickets.landing.ticketsCopy": `Tickets to join the conference! PyCon Italia is a fun 4 days event, where every year we are joined by more than 600 people, have more than 110+ sessions (talks and workshops) and social events where you can meet new people and have fun in the beautiful Florence.
+The sooner you buy your ticket, the more you save!`,
+    "tickets.landing.hotelCopy": `Take the stress out of your trip and book your hotel room with us! You can stay in the same hotel as the conference, the Grand Hotel Mediterraneo!
+We have a limited number of discounted rooms, so make sure you grab yours quickly!
+`,
+
+    "tickets.landing.membership.cta": "Join us!",
+
+    "tickets.landing.ticketsTitle": "Tickets",
+    "tickets.landing.hotelTitle": "Hotel",
+    "tickets.landing.membershipTitle": "Membership",
   },
   it: {
     titleTemplate: "%s | PyCon Italia",
@@ -875,20 +947,20 @@ export const messages = {
     "order.userAlreadyMember": "Sei già iscritto! Grazie!",
     "order.addMembership": "Aggiungi iscrizione",
     "order.removeMembership": "Rimuovi iscrizione",
-    "orderConfirmation.manage": "Fai click qui per gestire il tuo ordine.",
+    "orderConfirmation.manage": "Fai click qui per gestire il tuo ordine",
+    "orderConfirmation.home": "Homepage",
     "orderConfirmation.heading": "Ordine confermato",
     "orderConfirmation.heading.canceled": "Ordine cancellato!",
     "orderConfirmation.heading.pending": "Ordine non processato!",
     "orderConfirmation.successMessage":
       "Grazie per l'ordine, riceverai una email di conferma a breve.",
-    "orderConfirmation.pendingManage":
-      "Clicca qui per riprovare o cambiare metodo di pagamento",
+    "orderConfirmation.pendingManage": "Cambia carta o riprova",
     "orderConfirmation.pendingMessage":
-      "Il tuo ordine è ancora pending e non confermato! Se hai pagato con card, clicca il link sotto per riprovare",
-    "orderConfirmation.bankMessage": `Se hai pagato con bonifico bancario, contattaci a {email} con il tuo codice {code}
-      appena il bonifico è stato eseguito e confermeremo l'ordine il prima possibile.`,
-    "orderConfirmation.tryAgain":
-      "Prova a creare un nuovo ordine nella pagina {link}",
+      "Il tuo ordine è ancora pending e non confermato!",
+    "orderConfirmation.cardMessage":
+      "Se hai pagato con carta, clicca il pulsante per riprovare",
+    "orderConfirmation.bankMessage": `Se hai pagato con bonifico bancario, contattaci a {email} con il tuo codice {code} appena il bonifico è stato eseguito e confermeremo l'ordine il prima possibile.`,
+    "orderConfirmation.tryAgain": "Prova a creare un nuovo ordine",
     "orderConfirmation.tickets": "Biglietti",
     "order.soldout": "Sold out",
     "order.price": "Prezzo: {price} EUR",
@@ -1276,6 +1348,73 @@ export const messages = {
     "home.grants.description":
       "Grazie ai nostri sponsors siamo lieti di mettere a disposizione di chi ne avesse bisogno un programma di supporto per chi vorrebbe essere presente a PyCon Italia ma per motivi economici non potrebbe riuscirci",
     "home.grants.cta": "Invia richiesta",
+
+    "login.redirectFromTicketsCheckout":
+      "Accedi o crea un account per completare l'acquisto",
+    "login.redirectFromCFP":
+      "Accedi o crea un account per inviare una proposal",
+    "login.redirectFromGrants":
+      "Accedi o crea un account per richiedere un grant",
+
+    "tickets.checkout.voucher.placeholder": "Codice sconto",
+    "tickets.checkout.recap.price": "{price} (incl. {taxRate}% IVA)",
+    "tickets.checkout.recap.hotelRoomsPrice": "{price} (incl. 0% IVA)",
+
+    "tickets.productsList.soldOut": "Sold-out",
+    "tickets.checkout.payWithCard": "Paga con carta",
+    "tickets.checkout.payWithBankTransfer": "Paga con bonifico",
+    "tickets.checkout.savedAmount": "Hai risparmiato {amount}",
+
+    "tickets.checkout.voucher.fetching": "Verifica codice sconto...",
+    "tickets.checkout.voucher.noProductsAffected": "Nessun prodotto scontato",
+    "tickets.checkout.voucher": "Codice sconto",
+    "tickets.checkout.recap": "Riepilogo",
+    "tickets.checkout.title": "Checkout",
+    "tickets.title": "Biglietti",
+
+    "tickets.productsList.joinPythonItalia": "Diventa membro",
+    "tickets.productsList.hotelRoomsTitle": "Stanze d'albergo",
+    "tickets.productsList.openDescription": "Scopri di più",
+
+    "tickets.productsList.hotelRow.checkout": "Check-out",
+    "tickets.productsList.hotelRow.checkin": "Check-in",
+
+    "tickets.productsList.hotelRow.bedLayout": "Letti",
+    "tickets.hotelRow.totalPrice": "{value}",
+    "tickets.hotelRow.pricePerNight":
+      "{nights, plural, =0 {/notte} =1 {{price} x # notte} other {{price} x # notti}}",
+    "tickets.productsList.tshirtTitle": "T-shirt",
+
+    "tickets.personal.title": "Biglietti Personali",
+    "tickets.personal.description":
+      "Se sei uno studente, disoccupato o meno, acquistando il biglietto con i propri soldi, non pagato dalla tua azienda, università o simili.",
+    "tickets.buyTicketsCta": "Compra biglietti",
+
+    "tickets.business.title": "Biglietti Business",
+    "tickets.business.description":
+      "Se la tua azienda, università o simili sta pagando il tuo biglietto o hai bisogno di una fattura.",
+    "tickets.buyTickets": "Biglietti",
+
+    "tickets.checkout.billing": "Informazioni",
+    "tickets.checkout.orderCreationFailed":
+      "Qualcosa è andato storto!{br}Assicurati di aver compilato il form{br}o contattaci a help@pycon.it",
+    "tickets.checkout.voucher.notFound": "Codice sconto non trovato",
+    "tickets.checkoutBar.cta": "Checkout",
+    "tickets.checkout.openAnswerCard": "Dettagli Partecipante",
+    "tickets.checkout.answerCardAdmissionTitle": "Biglietto di {attendeeName}",
+
+    "tickets.buyTicketsSubtitle": "Biglietti early bird disponibili!",
+
+    "tickets.landing.title": "Cosa puoi comprare?",
+    "tickets.landing.ticketsCopy": `Biglietti per partecipare alla conferenza! PyCon Italia é un evento di 4 giorni dove ogni anno più di 600 persone si riuniscono per partecipare a più di 110+ sessioni (talks e workshops) ed eventi sociali dove puoi fare nuove amicizie e goderti la bellissima Firenze.
+Affrettati a comprare il biglietto!`,
+    "tickets.landing.hotelCopy": `Organizza il tuo viaggio con tranquillità e soggiorna al Grand Hotel Mediterraneo! Abbiamo un numero limitato di stanze scontate al Grand Hotel Mediterraneo, dove la conferenza avviene!`,
+
+    "tickets.landing.membership.cta": "Diventa membro!",
+
+    "tickets.landing.ticketsTitle": "Biglietti",
+    "tickets.landing.hotelTitle": "Hotel",
+    "tickets.landing.membershipTitle": "Associazione",
   },
 };
 
