@@ -33,7 +33,8 @@ export const AvailableProductsLandingSection = ({
     (ticket) => ticket.admission && ticket.type === TicketType.Business,
   );
   const personalTicket = tickets.find(
-    (ticket) => ticket.admission && ticket.category !== "Tickets Student",
+    (ticket) =>
+      ticket.admission && ticket.categoryInternalName === "StudentTickets",
   );
   const membership = tickets.find(
     (ticket) => !ticket.admission && ticket.type === TicketType.Association,
