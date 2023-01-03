@@ -34,7 +34,7 @@ export const AvailableProductsLandingSection = ({
   );
   const personalTicket = tickets.find(
     (ticket) =>
-      ticket.admission && ticket.categoryInternalName !== "StudentTickets",
+      ticket.admission && ticket.categoryInternalName === "Personal Tickets",
   );
   const membership = tickets.find(
     (ticket) => !ticket.admission && ticket.type === TicketType.Association,
