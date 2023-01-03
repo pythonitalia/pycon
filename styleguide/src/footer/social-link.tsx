@@ -18,7 +18,7 @@ export type SocialLinkProps = {
 };
 
 export const SocialLink = ({ link, icon }: SocialLinkProps) => (
-  <Link target="_blank" href={link} rel="me">
+  <Link hoverColor="cream" target="_blank" href={link} rel="me">
     {icon === "twitter" && <TwitterIcon />}
     {icon === "facebook" && <FacebookIcon />}
     {icon === "instagram" && <InstagramIcon />}
