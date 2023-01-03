@@ -10,21 +10,45 @@ type Props = {
   title?: React.ReactNode | string | null;
   description?: string;
   useDefaultSocialCard?: boolean;
+  useNewSocialCard?: boolean;
+};
+
+const getSocialCardURL = (
+  asPath: string,
+  useDefaultSocialCard: boolean,
+  useNewSocialCard: boolean,
+  locale: string,
+) => {
+  if (useDefaultSocialCard) {
+    return `${process.env.NEXT_PUBLIC_SOCIAL_CARD_SERVICE}?url=${process.env.NEXT_PUBLIC_SITE_URL}en/social`;
+  }
+
+  if (useNewSocialCard) {
+    return `${process.env.NEXT_PUBLIC_SITE_URL}api/${locale}/${asPath.substring(
+      1,
+    )}/social-card`;
+  }
+
+  return `${process.env.NEXT_PUBLIC_SOCIAL_CARD_SERVICE}?url=${
+    process.env.NEXT_PUBLIC_SITE_URL
+  }${asPath.substr(1)}/social`;
 };
 
 export const MetaTags = ({
   title,
   description,
   useDefaultSocialCard = true,
+  useNewSocialCard = false,
   children,
 }: React.PropsWithChildren<Props>) => {
   const language = useCurrentLanguage();
-  const { asPath } = useRouter();
-  const socialCard = useDefaultSocialCard
-    ? `${process.env.NEXT_PUBLIC_SOCIAL_CARD_SERVICE}?url=${process.env.NEXT_PUBLIC_SITE_URL}en/social`
-    : `${process.env.NEXT_PUBLIC_SOCIAL_CARD_SERVICE}?url=${
-        process.env.NEXT_PUBLIC_SITE_URL
-      }${asPath.substr(1)}/social`;
+  const { asPath, locale } = useRouter();
+  const socialCard = getSocialCardURL(
+    asPath,
+    useDefaultSocialCard,
+    useNewSocialCard,
+    locale,
+  );
 
   const titleTemplate = messages[language].titleTemplate;
 

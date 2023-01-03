@@ -52,12 +52,11 @@ export const AvailableProductsLandingSection = ({
 
       {areTicketsAvailable && (
         <MultiplePartsCard>
-          <CardPart
-            icon="ticket"
-            iconBackground="pink"
-            title={<FormattedMessage id="tickets.landing.ticketsTitle" />}
-            contentAlign="left"
-          />
+          <CardPart icon="ticket" iconBackground="pink" contentAlign="left">
+            <Heading size={2}>
+              <FormattedMessage id="tickets.landing.ticketsTitle" />
+            </Heading>
+          </CardPart>
           <CardPart contentAlign="left" noBg>
             <Text size={2}>
               <FormattedMessage id="tickets.landing.ticketsCopy" />
@@ -84,12 +83,11 @@ export const AvailableProductsLandingSection = ({
         <>
           <Spacer size="small" />
           <MultiplePartsCard>
-            <CardPart
-              icon="hotel"
-              iconBackground="green"
-              title={<FormattedMessage id="tickets.landing.hotelTitle" />}
-              contentAlign="left"
-            />
+            <CardPart icon="hotel" iconBackground="green" contentAlign="left">
+              <Heading size={2}>
+                <FormattedMessage id="tickets.landing.hotelTitle" />
+              </Heading>
+            </CardPart>
             <CardPart contentAlign="left" noBg>
               <Text size={2}>
                 <FormattedMessage id="tickets.landing.hotelCopy" />
@@ -113,12 +111,11 @@ export const AvailableProductsLandingSection = ({
 
       <Spacer size="small" />
       <MultiplePartsCard>
-        <CardPart
-          icon="star"
-          iconBackground="blue"
-          title={<FormattedMessage id="tickets.landing.membershipTitle" />}
-          contentAlign="left"
-        />
+        <CardPart icon="star" iconBackground="blue" contentAlign="left">
+          <Heading size={2}>
+            <FormattedMessage id="tickets.landing.membershipTitle" />
+          </Heading>
+        </CardPart>
         <CardPart contentAlign="left" noBg>
           <Text size={2}>{compile(membership.description).tree}</Text>
         </CardPart>

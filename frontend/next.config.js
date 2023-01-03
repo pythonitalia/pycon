@@ -1,4 +1,5 @@
 require("dotenv").config();
+const webpack = require("webpack");
 const path = require("path");
 const SentryWebpackPlugin = require("@sentry/webpack-plugin");
 
@@ -87,6 +88,12 @@ module.exports = {
     if (!options.isServer) {
       config.resolve.alias["@sentry/node"] = "@sentry/browser";
     }
+
+    config.plugins.push(
+      new webpack.DefinePlugin({
+        __DEV__: process.env.NODE_ENV !== "production",
+      }),
+    );
 
     if (
       SENTRY_ORG &&

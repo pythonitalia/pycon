@@ -4,5 +4,9 @@ query BlogIndex($language: String!) {
     slug
     title(language: $language)
     excerpt(language: $language)
+    author {
+      fullName
+    }
+    published
   }
 }

@@ -2,6 +2,7 @@ import {
   Grid,
   CardPart,
   MultiplePartsCard,
+  Heading,
 } from "@python-italia/pycon-styleguide";
 import { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
@@ -46,11 +47,11 @@ export const BillingCard = () => {
         clickablePart="heading"
         expandTarget="content"
       >
-        <CardPart
-          title={<FormattedMessage id="tickets.checkout.billing" />}
-          contentAlign="left"
-          id="heading"
-        />
+        <CardPart contentAlign="left" id="heading">
+          <Heading size={2}>
+            <FormattedMessage id="tickets.checkout.billing" />
+          </Heading>
+        </CardPart>
         <CardPart noBg contentAlign="left" id="content">
           <Grid cols={3}>
             {isBusiness && (
