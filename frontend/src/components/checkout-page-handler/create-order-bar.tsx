@@ -110,9 +110,7 @@ export const CreateOrderBar = ({
   });
 
   const onCreateOrder = (
-    event:
-      | React.MouseEvent<HTMLButtonElement>
-      | React.MouseEvent<HTMLAnchorElement>,
+    event: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>,
     method: string,
   ) => {
     const form = event.currentTarget.closest("form");
