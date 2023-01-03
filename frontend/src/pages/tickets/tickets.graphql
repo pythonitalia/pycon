@@ -17,6 +17,7 @@ query Tickets($conference: String!, $language: String!) {
       soldOut
       type
       category
+      categoryInternalName
       taxRate
       admission
 
