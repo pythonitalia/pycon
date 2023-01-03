@@ -21,6 +21,7 @@ type CardPartProps = React.PropsWithChildren<{
   id?: string;
   openLabel?: string | React.ReactNode;
   closeLabel?: string | React.ReactNode;
+  fullHeight?: boolean;
 }>;
 
 export const CardPart = ({
@@ -34,6 +35,7 @@ export const CardPart = ({
   id,
   openLabel,
   closeLabel,
+  fullHeight = false,
 }: CardPartProps) => {
   const { isClickablePart, isTargetPart, open, toggleOpen } =
     useMultiPartsCardContext();
@@ -49,7 +51,7 @@ export const CardPart = ({
 
   return (
     <div
-      className={clsx("overflow-hidden transition-all px-4 lg:px-6", {
+      className={clsx("overflow-hidden transition-all px-4 lg:px-6 shrink-0", {
         "bg-milk": noBg,
         "bg-cream": !noBg,
 
@@ -61,6 +63,8 @@ export const CardPart = ({
         "h-0 py-0 -mb-0.6": canBeOpened && !open,
 
         "cursor-pointer": isClickToExpandElement,
+
+        "h-full": fullHeight,
       })}
       onClick={onToggleExpand}
       data-expand-own-id={id}
