@@ -12,6 +12,7 @@ import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Alert } from "~/components/alert";
 import { MetaTags } from "~/components/meta-tags";
 import { PageLoading } from "~/components/page-loading";
+import { ProfilePageHandler } from "~/components/profile-page-handler";
 import { useLoginState } from "~/components/profile/hooks";
 import { Logout } from "~/components/profile/logout";
 import { MyOrders } from "~/components/profile/my-orders";
@@ -63,6 +64,8 @@ export const MyProfilePage = () => {
       Router.push("/login", loginUrl);
     }
   }, []);
+
+  return <ProfilePageHandler />;
 
   if (loading) {
     return null;
