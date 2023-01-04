@@ -20,8 +20,17 @@ export const messages = {
     "schedule.mySchedule": "See My Schedule",
     "schedule.fullSchedule": "See Full Schedule",
     "schedule.live": "Live",
+    "profile.tickets.tagline": "Tagline",
+    "profile.tickets.noAnswer": "No answer",
+
+    "profile.welcome": "Ciao {name}!",
+    "profile.myProfile": "My Profile",
+    "profile.logout": "Logout",
 
     "scheduleView.allRooms": "All rooms",
+
+    "profile.editProfile.generalInformation": "General Information",
+    "profile.editProfile.emailPreferences": "Email Preferences",
 
     "scheduleEventDetail.eventTime": "{start} - {end}",
     "scheduleEventDetail.sidebar.spacesLeft": "Seats left",
@@ -38,8 +47,9 @@ export const messages = {
     "home.findRoute": "Find a route",
     "home.conferenceHighlights": "Conference highlight",
     "home.latestNews": "Latest news",
-    "buttons.save": "Save 💾",
+    "buttons.save": "Save",
     "profile.title": "Your Profile",
+    "profile.myProposals": "My Proposals",
     "profile.country": "Country",
     "profile.notSet": "Not set",
     "profile.dateBirth": "Birth date",
@@ -62,6 +72,7 @@ export const messages = {
     "profile.status": "Status",
     "profile.price": "Price",
     "profile.manageOrder": "Manage order",
+    "profile.tickets.attendeeName": "Attendee name",
     "profile.myTickets": "My Tickets",
     "profile.myTickets.notickets": `
       No tickets were found assigned to your email: {email}.
@@ -90,7 +101,6 @@ export const messages = {
     "profile.manageTicket": "Manage ticket",
     "profile.edit.personalHeader": "Personal data",
     "profile.edit.privacyHeader": "Privacy settings",
-    "profile.logout": "Logout",
     "profile.seeYourSoon": "See you soon 👋",
     "manageTicket.heading": "Manage {ticketName}",
     "manageTicket.notAnswered": "Not answered",
@@ -709,6 +719,7 @@ reflects what everyone wants to see!`,
     "talk.language.it": "Italian",
     "talk.language.en": "English",
     "talk.duration": "Duration",
+    "profile.tickets.save": "Save",
     "react-intl-formatted-duration.longFormatting": "{minutes} {seconds}",
     "react-intl-formatted-duration.duration": "{value} {unit}",
     "react-intl-formatted-duration.timerFormatting": "{minutes}:{seconds}",
@@ -791,7 +802,7 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "home.findRoute": "Raggiungici",
     "home.conferenceHighlights": "Eventi sociali",
     "home.latestNews": "Ultime notizie",
-    "buttons.save": "Salva 💾",
+    "buttons.save": "Salva",
     "profile.title": "Il tuo profilo",
     "profile.notSet": "Non impostato",
     "profile.country": "Nazionalità",
@@ -1542,6 +1553,19 @@ Affrettati a comprare il biglietto!`,
     "schedule.live": "Live",
     "schedule.invitation.notes.placeholder": "Scrivi qui...",
     "schedule.workshop.limitedSeats": "Spazi limitati! Prenota il tuo posto.",
+
+    "profile.welcome": "Ciao {name}!",
+    "profile.myProfile": "Il mio profilo",
+    "profile.myProposals": "Le mie proposals",
+
+    "profile.editProfile.generalInformation": "Informazioni generali",
+    "profile.editProfile.emailPreferences": "Preferenze Email",
+    "profile.tickets.attendeeName": "Nome partecipante",
+    "profile.tickets.tagline": "Tagline",
+
+    "profile.tickets.save": "Salva",
+
+    "profile.tickets.noAnswer": "Nessuna risposta",
   },
 };
 

@@ -1,0 +1,7 @@
+query MyProfile($conference: String!, $language: String!) {
+  me {
+    id
+    name
+    fullName
+  }
+}

@@ -1,18 +1,23 @@
-import { useEffect } from "react";
-import { Box } from "theme-ui";
-
-import { Button } from "~/components/button/button";
+import { Heading } from "@python-italia/pycon-styleguide";
+import { CloseIcon } from "@python-italia/pycon-styleguide/icons";
+import clsx from "clsx";
+import React, { useEffect } from "react";
 
 type ModalProps = {
+  title: string | React.ReactNode;
   show: boolean;
   onClose: () => void;
+  children: React.ReactNode;
+  actions: React.ReactNode;
 };
 
 export const Modal = ({
+  title,
   show = false,
   onClose,
-  ...props
-}: React.PropsWithChildren<ModalProps>) => {
+  children,
+  actions,
+}: ModalProps) => {
   useEffect(() => {
     if (show) {
       document.body.style.overflow = "hidden";
@@ -23,75 +28,31 @@ export const Modal = ({
   }, [show]);
 
   return (
-    <Box
-      sx={
+    <div
+      className={clsx(
+        "fixed overflow-y-auto inset-0 z-[2050] flex items-center justify-center",
         {
-          position: "fixed",
-          overflowY: "auto",
-          zIndex: "20",
-          inset: 0,
-          display: show ? "block" : "none",
-        } as any
-      }
+          block: show,
+          hidden: !show,
+        },
+      )}
       role="dialog"
     >
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          height: "100%",
-          justifyContent: "center",
-          paddingX: 4,
-        }}
-      >
-        <Box
-          sx={{
-            position: "fixed",
-            inset: 0,
-            transition: "opacity 150ms cubic-bezier(0.4, 0, 0.2, 1)",
-            bg: "gray",
-            opacity: 0.75,
-          }}
-          onClick={onClose}
-        />
-
-        <Box
-          sx={{
-            position: "relative",
-            width: "100%",
-            maxWidth: "container",
-            marginX: "auto",
-            maxHeight: "container",
-            backgroundColor: "white",
-            border: "primary",
-            zIndex: "50",
-            boxShadow:
-              "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)",
-          }}
-        >
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "right",
-              justifyContent: "right",
-              maxWidth: "container",
-              textAlign: "right",
-              m: -1,
-            }}
-          >
-            <Button
-              variant="plus"
-              sx={{
-                cursor: "pointer",
-              }}
-              onClick={onClose}
-            >
-              x
-            </Button>
-          </Box>
-          <Box sx={{ padding: 3 }}>{props.children}</Box>
-        </Box>
-      </Box>
-    </Box>
+      <div className="fixed inset-0 bg-caramel/90" onClick={onClose}></div>
+      <div className="px-4 z-10 w-full max-w-3xl">
+        <div className="border border-black divide-y">
+          <div className="bg-coral px-6 py-8 flex justify-between">
+            <Heading size={3}>{title}</Heading>
+            <div onClick={onClose} className="cursor-pointer">
+              <CloseIcon />
+            </div>
+          </div>
+          <div className="bg-milk px-6 py-8 max-h-[400px] overflow-x-scroll">
+            {children}
+          </div>
+          {actions && <div className="bg-milk px-6 py-4">{actions}</div>}
+        </div>
+      </div>
+    </div>
   );
 };

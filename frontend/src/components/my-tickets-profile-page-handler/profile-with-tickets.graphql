@@ -1,27 +1,8 @@
-query MyProfile($conference: String!, $language: String!) {
+query MyProfileWithTickets($conference: String!, $language: String!) {
   me {
     id
     name
     fullName
-    email
-    gender
-    dateBirth
-    country
-    openToRecruiting
-    openToNewsletter
-
-    submissions(conference: $conference) {
-      id
-      title(language: $language)
-      slug
-    }
-
-    orders(conference: $conference) {
-      code
-      status
-      url
-      total
-    }
 
     tickets(conference: $conference, language: $language) {
       id

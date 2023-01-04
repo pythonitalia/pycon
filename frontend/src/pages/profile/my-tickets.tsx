@@ -2,7 +2,7 @@ import { GetServerSideProps } from "next";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
-import { queryCountries, queryMyProfile } from "~/types";
+import { queryCountries, queryMyProfileWithTickets } from "~/types";
 
 export const getServerSideProps: GetServerSideProps = async ({
   req,
@@ -23,7 +23,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   await Promise.all([
     prefetchSharedQueries(client, locale),
     queryCountries(client),
-    queryMyProfile(client, {
+    queryMyProfileWithTickets(client, {
       conference: process.env.conferenceCode,
       language: locale,
     }),
@@ -38,4 +38,4 @@ export const getServerSideProps: GetServerSideProps = async ({
   );
 };
 
-export { ProfilePageHandler as default } from "~/components/profile-page-handler";
+export { MyTicketsProfilePageHandler as default } from "~/components/my-tickets-profile-page-handler";

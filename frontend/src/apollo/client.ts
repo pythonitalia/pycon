@@ -21,8 +21,12 @@ export const getQueryType = (operation: Operation): string | undefined => {
 
 let cachedClient: ApolloClient<any> | null = null;
 
-export const getApolloClient = (initialState = null) => {
-  const client = cachedClient ?? createClient();
+export const getApolloClient = (initialState = null, serverCookies = null) => {
+  const client =
+    cachedClient ??
+    createClient({
+      serverCookies,
+    });
 
   if (initialState) {
     const existingCache = client.extract();
@@ -55,8 +59,13 @@ export function addApolloState(client, pageProps, revalidate = 60 * 3) {
     pageProps.props[APOLLO_STATE_PROP_NAME] = client.cache.extract();
   }
 
-  return {
+  const returnValue = {
     ...pageProps,
-    revalidate,
   };
+
+  if (revalidate !== null) {
+    returnValue.revalidate = revalidate;
+  }
+
+  return returnValue;
 }
