@@ -26,7 +26,10 @@ export const Menu = ({
           {mainLinksSplit
             .filter((split) => split.length > 0)
             .map((split, index) => (
-              <ul className="grid grid-cols-1 gap-4 lg:gap-6" key={index}>
+              <ul
+                className="grid grid-cols-1 content-start gap-4 lg:gap-6"
+                key={index}
+              >
                 {split.map(({ text, link }) => (
                   <li key={`${text}${link}`}>
                     <Link hoverColor="cream" href={link}>
