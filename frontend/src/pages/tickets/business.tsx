@@ -39,9 +39,13 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
     }),
   ]);
 
-  return addApolloState(client, {
-    props: {},
-  });
+  return addApolloState(
+    client,
+    {
+      props: {},
+    },
+    30,
+  );
 };
 
 export default BusinessTicketsPage;
