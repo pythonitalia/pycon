@@ -537,3 +537,21 @@ export const CardWithInputsInItAndFocus = () => {
     </div>
   );
 };
+
+export const CardPartWithRightSideIcon = () => {
+  return (
+    <div className="p-6">
+      <MultiplePartsCard>
+        <CardPart
+          rightSideIcon="arrow"
+          rightSideIconBackground="none"
+          rightSideIconSize="small"
+          contentAlign="left"
+          openLabel="Discover more"
+        >
+          <Text size="label3">text here</Text>
+        </CardPart>
+      </MultiplePartsCard>
+    </div>
+  );
+};

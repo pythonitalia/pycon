@@ -8,15 +8,21 @@ import { StarIcon } from "../icons/star";
 import { ArrowDownIcon } from "../icons/arrow-down";
 import { useMultiPartsCardContext } from "./context";
 import { FormattedMessage } from "react-intl";
+import ArrowIcon from "../icons/arrow";
 
-type Icon = "ticket" | "tshirt" | "hotel" | "star";
-type IconBackground = "green" | "pink" | "blue" | "yellow";
+type Icon = "ticket" | "tshirt" | "hotel" | "star" | "arrow";
+type IconBackground = "green" | "pink" | "blue" | "yellow" | "none";
+type IconSize = "small" | "large";
 
 type CardPartProps = React.PropsWithChildren<{
   noBg?: boolean;
   contentAlign?: "right" | "left" | "center";
   icon?: Icon;
   iconBackground?: IconBackground;
+  iconSize?: IconSize;
+  rightSideIcon?: Icon;
+  rightSideIconBackground?: IconBackground;
+  rightSideIconSize?: IconSize;
   id?: string;
   openLabel?: string | React.ReactNode;
   closeLabel?: string | React.ReactNode;
@@ -30,6 +36,10 @@ export const CardPart = ({
   contentAlign = "center",
   icon,
   iconBackground,
+  iconSize = "large",
+  rightSideIcon,
+  rightSideIconBackground,
+  rightSideIconSize = "large",
   id,
   openLabel,
   closeLabel,
@@ -48,7 +58,7 @@ export const CardPart = ({
     }
   };
 
-  const hasIcon = !!icon;
+  const hasIcon = !!icon || !!rightSideIcon;
 
   return (
     <div
@@ -77,10 +87,18 @@ export const CardPart = ({
           "flex-row": hasIcon,
         })}
       >
-        {icon && <Icon iconBackground={iconBackground} icon={icon} />}
+        {icon && (
+          <Icon
+            size={iconSize}
+            side="left"
+            iconBackground={iconBackground}
+            icon={icon}
+          />
+        )}
         <div
           className={clsx({
             "pl-4 ml-4 lg:ml-6 lg:pl-6": !!icon,
+            "flex justify-center items-center": !!rightSideIcon,
             "flex justify-between items-center w-full": isClickToExpandElement,
           })}
         >
@@ -119,6 +137,14 @@ export const CardPart = ({
             </div>
           )}
         </div>
+        {rightSideIcon && (
+          <Icon
+            size={rightSideIconSize}
+            side="right"
+            iconBackground={rightSideIconBackground}
+            icon={rightSideIcon}
+          />
+        )}
       </div>
     </div>
   );
@@ -127,9 +153,13 @@ export const CardPart = ({
 const Icon = ({
   icon,
   iconBackground,
+  side,
+  size,
 }: {
-  icon: CardPartProps["icon"];
-  iconBackground: CardPartProps["iconBackground"];
+  icon: Icon;
+  iconBackground?: IconBackground;
+  side: "left" | "right";
+  size: IconSize;
 }) => {
   let Component;
   switch (icon) {
@@ -145,21 +175,32 @@ const Icon = ({
     case "star":
       Component = StarIcon;
       break;
+    case "arrow":
+      Component = ArrowIcon;
+      break;
   }
 
   return (
     <div
-      className={clsx(
-        "inline-flex items-center justify-center p-4 -m-4 lg:p-6 lg:-m-6 border-r",
-        {
-          "bg-green": iconBackground === "green",
-          "bg-pink": iconBackground === "pink",
-          "bg-blue": iconBackground === "blue",
-          "bg-yellow": iconBackground === "yellow",
-        }
-      )}
+      className={clsx("inline-flex items-center justify-center", {
+        "border-r -m-4 lg:-m-6": side === "left",
+        "ml-auto border-l -mr-4 lg:-mr-6 -my-4 lg:-my-6": side === "right",
+
+        "p-4 lg:p-6": size === "large",
+        "p-4": size === "small",
+
+        "bg-green": iconBackground === "green",
+        "bg-pink": iconBackground === "pink",
+        "bg-blue": iconBackground === "blue",
+        "bg-yellow": iconBackground === "yellow",
+      })}
     >
-      <div className="w-8 h-8 lg:w-12 lg:h-12">
+      <div
+        className={clsx({
+          "w-8 h-8 lg:w-12 lg:h-12": size === "large",
+          "w-8 h-8": size === "small",
+        })}
+      >
         <Component className="w-full h-full" />
       </div>
     </div>
