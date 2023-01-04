@@ -3,6 +3,7 @@ import {
   CardPart,
   MultiplePartsCard,
   Spacer,
+  Heading,
 } from "@python-italia/pycon-styleguide";
 import { useMachine } from "@xstate/react";
 import { useEffect } from "react";
@@ -57,10 +58,11 @@ export const VoucherCard = () => {
 
   return (
     <MultiplePartsCard>
-      <CardPart
-        title={<FormattedMessage id="tickets.checkout.voucher" />}
-        contentAlign="left"
-      />
+      <CardPart contentAlign="left">
+        <Heading size={2}>
+          <FormattedMessage id="tickets.checkout.voucher" />
+        </Heading>
+      </CardPart>
       <CardPart noBg contentAlign="left" id="content">
         <InputWrapper
           sx={{ mb: 0 }}

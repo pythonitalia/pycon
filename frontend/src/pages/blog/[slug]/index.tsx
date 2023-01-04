@@ -1,9 +1,13 @@
-/** @jsxRuntime classic */
-
-/** @jsx jsx */
+import {
+  Heading,
+  Page,
+  Section,
+  Spacer,
+  Text,
+} from "@python-italia/pycon-styleguide";
+import { parseISO } from "date-fns";
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
-import { Box, Flex, Grid, jsx, Text } from "theme-ui";
 
 import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
@@ -22,6 +26,11 @@ export const BlogArticlePage = () => {
   const language = useCurrentLanguage();
   const router = useRouter();
   const slug = router.query.slug as string;
+  const dateFormatter = new Intl.DateTimeFormat(language, {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  });
 
   const { data, loading } = usePostQuery({
     variables: {
@@ -37,64 +46,32 @@ export const BlogArticlePage = () => {
   const post = data.blogPost;
 
   return (
-    <Fragment>
+    <Page endSeparator={false}>
       <MetaTags
         title={post.title}
         description={post.excerpt || post.title}
         useDefaultSocialCard={false}
+        useNewSocialCard={true}
       />
 
-      <Grid
-        gap={5}
-        sx={{
-          mx: "auto",
-          px: 3,
-          py: 5,
-          maxWidth: "container",
-          gridTemplateColumns: [null, null, "2fr 1fr"],
-        }}
-      >
-        <Box>
-          <Article published={post.published} title={post.title}>
-            {compile(post.content).tree}
-          </Article>
-        </Box>
-
-        <Box>
-          <Flex
-            sx={{
-              position: "relative",
-              justifyContent: "flex-end",
-              alignItems: "flex-start",
+      <Section>
+        <Text size={2}>
+          <FormattedMessage
+            id="blog.publishedOn"
+            values={{
+              date: dateFormatter.format(parseISO(post.published)),
+              author: post.author.fullName,
             }}
-          >
-            <BlogPostIllustration
-              sx={{
-                width: "80%",
-              }}
-            />
+          />
+        </Text>
+        <Spacer size="medium" />
+        <Heading size={1}>{post.title}</Heading>
+      </Section>
 
-            <Box
-              sx={{
-                border: "primary",
-                p: 4,
-                backgroundColor: "cinderella",
-                width: "80%",
-                position: "absolute",
-                left: 0,
-                top: "70%",
-              }}
-            >
-              <Text sx={{ fontWeight: "bold", display: "block" }}>
-                <FormattedMessage id="blog.author" />
-              </Text>
-
-              <Text>{post.author.fullName}</Text>
-            </Box>
-          </Flex>
-        </Box>
-      </Grid>
-    </Fragment>
+      <Section containerSize="medium">
+        <Text size={2}>{compile(post.content).tree}</Text>
+      </Section>
+    </Page>
   );
 };
 

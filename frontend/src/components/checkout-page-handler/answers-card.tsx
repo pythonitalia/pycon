@@ -1,4 +1,8 @@
-import { MultiplePartsCard, CardPart } from "@python-italia/pycon-styleguide";
+import {
+  MultiplePartsCard,
+  CardPart,
+  Heading,
+} from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
 
 import { TicketItem } from "~/types";
@@ -41,12 +45,13 @@ export const AnswersCard = ({
     >
       <CardPart
         iconBackground="pink"
-        title={cardTitle}
         icon="ticket"
         contentAlign="left"
         id="heading"
         openLabel={<FormattedMessage id="tickets.checkout.openAnswerCard" />}
-      />
+      >
+        <Heading size={2}>{cardTitle}</Heading>
+      </CardPart>
       <CardPart id="content" contentAlign="left" noBg>
         <ProductQuestionnaire
           index={index}

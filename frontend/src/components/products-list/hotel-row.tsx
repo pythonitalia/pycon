@@ -84,14 +84,15 @@ export const HotelRow = ({ hotelRoom, openByDefault }: Props) => {
     >
       <CardPart
         iconBackground="green"
-        title={hotelRoom.name}
         icon="hotel"
         contentAlign="left"
         id="heading"
         openLabel={
           <FormattedMessage id="tickets.productsList.openDescription" />
         }
-      />
+      >
+        <Heading size={2}>{hotelRoom.name}</Heading>
+      </CardPart>
       {hotelRoom.description && (
         <CardPart id="content" contentAlign="left" noBg>
           <TagsCollection>

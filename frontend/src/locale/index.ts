@@ -702,6 +702,7 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "tickets.landing.ticketsTitle": "Tickets",
     "tickets.landing.hotelTitle": "Hotel",
     "tickets.landing.membershipTitle": "Membership",
+    "blog.publishedOn": "{date} - {author}",
   },
   it: {
     titleTemplate: "%s | PyCon Italia",
@@ -1415,6 +1416,7 @@ Affrettati a comprare il biglietto!`,
     "tickets.landing.ticketsTitle": "Biglietti",
     "tickets.landing.hotelTitle": "Hotel",
     "tickets.landing.membershipTitle": "Associazione",
+    "blog.publishedOn": "{date} - {author}",
   },
 };
 

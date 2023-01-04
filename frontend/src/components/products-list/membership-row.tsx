@@ -40,14 +40,15 @@ export const MembershipRow = ({ me, membership }: Props) => {
     >
       <CardPart
         iconBackground="blue"
-        title={membership.name}
         icon="star"
         contentAlign="left"
         id="heading"
         openLabel={
           <FormattedMessage id="tickets.productsList.openDescription" />
         }
-      />
+      >
+        <Heading size={2}>{membership.name}</Heading>
+      </CardPart>
       {membership.description && (
         <CardPart id="content" contentAlign="left" noBg>
           <Text size={2}>{compile(membership.description).tree}</Text>

@@ -51,14 +51,15 @@ export const TicketRow = ({
     >
       <CardPart
         iconBackground={iconBackground}
-        title={ticket.name}
         icon={icon}
         contentAlign="left"
         id="heading"
         openLabel={
           <FormattedMessage id="tickets.productsList.openDescription" />
         }
-      />
+      >
+        <Heading size={2}>{ticket.name}</Heading>
+      </CardPart>
 
       {ticket.description && (
         <CardPart contentAlign="left" noBg id="content">

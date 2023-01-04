@@ -39,9 +39,11 @@ export const TicketsPage = () => {
                 link: "/tickets/personal/",
               }}
             >
-              <CardPart
-                title={<FormattedMessage id="tickets.personal.title" />}
-              >
+              <CardPart>
+                <Heading size={2}>
+                  <FormattedMessage id="tickets.personal.title" />
+                </Heading>
+                <Spacer size="xs" />
                 <Text size={2}>
                   <FormattedMessage id="tickets.personal.description" />
                 </Text>
@@ -53,9 +55,11 @@ export const TicketsPage = () => {
                 link: "/tickets/business/",
               }}
             >
-              <CardPart
-                title={<FormattedMessage id="tickets.business.title" />}
-              >
+              <CardPart>
+                <Heading size={2}>
+                  <FormattedMessage id="tickets.business.title" />
+                </Heading>
+                <Spacer size="xs" />
                 <Text size={2}>
                   <FormattedMessage id="tickets.business.description" />
                 </Text>

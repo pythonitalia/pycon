@@ -2,6 +2,7 @@ import {
   Text,
   CardPart,
   MultiplePartsCard,
+  Heading,
 } from "@python-italia/pycon-styleguide";
 import React from "react";
 import { FormattedMessage } from "react-intl";
@@ -29,11 +30,11 @@ export const RecapCard = ({ productsById, hotelRoomsById }: Props) => {
         clickablePart="heading"
         expandTarget="content"
       >
-        <CardPart
-          title={<FormattedMessage id="tickets.checkout.recap" />}
-          contentAlign="left"
-          id="heading"
-        />
+        <CardPart contentAlign="left" id="heading">
+          <Heading size={2}>
+            <FormattedMessage id="tickets.checkout.recap" />
+          </Heading>
+        </CardPart>
         <CardPart noBg contentAlign="left" id="content">
           {Object.values(selectedProducts)
             .flatMap((nestedProducts) => nestedProducts.flat())
