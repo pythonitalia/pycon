@@ -58,7 +58,7 @@ const handler = async (req: NextRequest) => {
           flexDirection: "column",
           paddingLeft: "64px",
           paddingRight: "64px",
-          fontFamily: '"GeneralSans-Variable"',
+          fontFamily: '"GeneralSans"',
         }}
       >
         <div
