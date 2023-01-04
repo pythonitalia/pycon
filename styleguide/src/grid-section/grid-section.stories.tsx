@@ -2,6 +2,8 @@ import React from "react";
 import { CardPart, MultiplePartsCard } from "../multiple-parts-card";
 import { GridSection } from "./grid-section";
 import { Text } from "../text";
+import { Heading } from "../heading";
+import { Spacer } from "../spacer";
 
 export const Primary = ({ showSnake, items = 2, cols = 2 }) => {
   return (
@@ -16,7 +18,9 @@ export const Primary = ({ showSnake, items = 2, cols = 2 }) => {
                 link: "/tickets/business/",
               }}
             >
-              <CardPart title="Student">
+              <CardPart>
+                <Heading size={2}>Student</Heading>
+                <Spacer size="xs" />
                 <Text size={2}>Body</Text>
               </CardPart>
             </MultiplePartsCard>

@@ -23,13 +23,17 @@ export const Primary = () => (
         label: "Buy tickets",
       }}
     >
-      <CardPart title="Student">
+      <CardPart>
+        <Heading size={2}>Student</Heading>
+        <Spacer size="xs" />
         <Text size={2}>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit.
         </Text>
       </CardPart>
 
-      <CardPart title="€ 100" titleSize="large">
+      <CardPart>
+        <Heading size={1}>€ 100</Heading>
+        <Spacer size="xs" />
         <Text size={2}>flat price</Text>
       </CardPart>
     </MultiplePartsCard>
@@ -44,7 +48,9 @@ export const CardWithContentAndOnePart = () => (
         label: "Request info",
       }}
     >
-      <CardPart title="General info" titleSize="small" />
+      <CardPart>
+        <Heading size={3}>General info</Heading>
+      </CardPart>
       <CardPart contentAlign="left" noBg>
         <Text size={2}>
           We are here to help you! Let us know how we can do it
@@ -57,12 +63,9 @@ export const CardWithContentAndOnePart = () => (
 export const CardForProductItemIcons = () => (
   <div className="p-6">
     <MultiplePartsCard>
-      <CardPart
-        iconBackground="pink"
-        title="Student"
-        icon="ticket"
-        contentAlign="left"
-      />
+      <CardPart iconBackground="pink" icon="ticket" contentAlign="left">
+        <Heading size={2}>Student</Heading>
+      </CardPart>
       <CardPart contentAlign="left" noBg>
         <Text size={2}>
           Lorem Ipsum is simply dummy text of the printing and typesetting
@@ -73,12 +76,9 @@ export const CardForProductItemIcons = () => (
     <Spacer size="large" />
 
     <MultiplePartsCard>
-      <CardPart
-        iconBackground="blue"
-        title="Membership"
-        icon="star"
-        contentAlign="left"
-      />
+      <CardPart iconBackground="blue" icon="star" contentAlign="left">
+        <Heading size={2}>Membership</Heading>
+      </CardPart>
       <CardPart contentAlign="left" noBg>
         <Text size={2}>
           Lorem Ipsum is simply dummy text of the printing and typesetting
@@ -97,12 +97,9 @@ export const WithIncrementExample = () => {
   return (
     <div className="p-6">
       <MultiplePartsCard>
-        <CardPart
-          iconBackground="yellow"
-          title="T-Shirt"
-          icon="tshirt"
-          contentAlign="left"
-        />
+        <CardPart iconBackground="yellow" icon="tshirt" contentAlign="left">
+          <Heading size={2}>T-Shirt</Heading>
+        </CardPart>
         <CardPart contentAlign="left" noBg>
           <Text size={2}>
             Lorem Ipsum is simply dummy text of the printing and typesetting
@@ -167,11 +164,12 @@ export const MultiPartCardWithOptions = () => {
       >
         <CardPart
           iconBackground="green"
-          title="Double Room"
           icon="hotel"
           contentAlign="left"
           id="heading"
-        />
+        >
+          <Heading size={2}>Double Room</Heading>
+        </CardPart>
         <CardPart id="content" contentAlign="left" noBg>
           <Text size={2}>
             Lorem Ipsum is simply dummy text of the printing and typesetting
@@ -325,12 +323,9 @@ export const MultiPartCardWithVariableOptions = ({ numOfSelects }) => {
   return (
     <div className="p-6">
       <MultiplePartsCard>
-        <CardPart
-          iconBackground="green"
-          title="Double Room"
-          icon="hotel"
-          contentAlign="left"
-        />
+        <CardPart iconBackground="green" icon="hotel" contentAlign="left">
+          <Heading size={2}>Double Room</Heading>
+        </CardPart>
         <CardPart contentAlign="left" noBg>
           <Text size={2}>
             Lorem Ipsum is simply dummy text of the printing and typesetting
@@ -391,12 +386,10 @@ export const AddRemoveCardPart = () => {
   return (
     <div className="p-6">
       <MultiplePartsCard>
-        <CardPart
-          iconBackground="blue"
-          title="Membership"
-          icon="star"
-          contentAlign="left"
-        />
+        <CardPart iconBackground="blue" icon="star" contentAlign="left">
+          <Heading size={2}>Membership</Heading>
+        </CardPart>
+
         <CardPart contentAlign="left" noBg>
           <Text size={2}>
             Lorem Ipsum is simply dummy text of the printing and typesetting
@@ -424,12 +417,13 @@ export const CardPartExpandable = () => {
       >
         <CardPart
           iconBackground="blue"
-          title="Membership [closed by default]"
           icon="star"
           contentAlign="left"
           id="heading"
           openLabel="Discover more"
-        />
+        >
+          <Heading size={2}>Membership [closed by default]</Heading>
+        </CardPart>
         <CardPart id="content" contentAlign="left" noBg>
           <Text size={2}>
             Lorem Ipsum is simply dummy text of the printing and typesetting
@@ -442,7 +436,9 @@ export const CardPartExpandable = () => {
             Lorem Ipsum is simply dummy text of the printing and typesetting
           </Text>
         </CardPart>
-        <CardPart title="€ 100" titleSize="large">
+        <CardPart>
+          <Heading size={1}>€ 100</Heading>
+          <Spacer size="xs" />
           <Text size={2}>flat price</Text>
         </CardPart>
       </MultiplePartsCard>
@@ -454,12 +450,13 @@ export const CardPartExpandable = () => {
       >
         <CardPart
           iconBackground="blue"
-          title="Membership [open by default]"
           icon="star"
           contentAlign="left"
           id="heading"
           openLabel="Discover more"
-        />
+        >
+          <Heading size={2}>Membership [open by default]</Heading>
+        </CardPart>
         <CardPart id="content" contentAlign="left" noBg>
           <Text size={2}>
             Lorem Ipsum is simply dummy text of the printing and typesetting
@@ -472,7 +469,9 @@ export const CardPartExpandable = () => {
             Lorem Ipsum is simply dummy text of the printing and typesetting
           </Text>
         </CardPart>
-        <CardPart title="€ 100" titleSize="large">
+        <CardPart>
+          <Heading size={1}>€ 100</Heading>
+          <Spacer size="xs" />
           <Text size={2}>flat price</Text>
         </CardPart>
       </MultiplePartsCard>
@@ -484,14 +483,18 @@ export const CardPartTwoSidesExample = () => {
   return (
     <div className="p-6">
       <MultiplePartsCard>
-        <CardPart title="Example with tag" contentAlign="left" />
+        <CardPart contentAlign="left">
+          <Heading size={2}>Example with tag</Heading>
+        </CardPart>
         <CardPartTwoSides rightSide={<Tag color="red">Sold-out</Tag>}>
           <Heading size={2}>£400</Heading>
         </CardPartTwoSides>
       </MultiplePartsCard>
       <Spacer size="small" />
       <MultiplePartsCard>
-        <CardPart title="Different color & length" contentAlign="left" />
+        <CardPart contentAlign="left">
+          <Heading size={2}>Different color & length</Heading>
+        </CardPart>
         <CardPartTwoSides rightSide={<Tag color="success">Buy me now!</Tag>}>
           <Heading size={2}>$250</Heading>
         </CardPartTwoSides>
@@ -512,19 +515,22 @@ export const CardWithInputsInItAndFocus = () => {
       >
         <CardPart
           iconBackground="blue"
-          title="Membership"
           icon="star"
           contentAlign="left"
           id="heading"
           openLabel="Discover more"
-        />
+        >
+          <Heading size={2}>Membership</Heading>
+        </CardPart>
         <CardPart id="content" contentAlign="left" noBg>
           <Text size={2}>
             <input type="text" placeholder="Enter your name" />
             <input type="email" placeholder="Enter your email" />
           </Text>
         </CardPart>
-        <CardPart title="€ 100" titleSize="large">
+        <CardPart>
+          <Heading size={1}>€ 100</Heading>
+          <Spacer size="xs" />
           <Text size={2}>flat price</Text>
         </CardPart>
       </MultiplePartsCard>

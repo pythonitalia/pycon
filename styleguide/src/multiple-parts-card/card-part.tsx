@@ -1,6 +1,4 @@
 import React from "react";
-import { Heading } from "../heading";
-import { Spacer } from "../spacer";
 import { Text } from "../text";
 import clsx from "clsx";
 import { TicketsIcon } from "../icons/tickets";
@@ -11,13 +9,14 @@ import { ArrowDownIcon } from "../icons/arrow-down";
 import { useMultiPartsCardContext } from "./context";
 import { FormattedMessage } from "react-intl";
 
+type Icon = "ticket" | "tshirt" | "hotel" | "star";
+type IconBackground = "green" | "pink" | "blue" | "yellow";
+
 type CardPartProps = React.PropsWithChildren<{
-  title?: string | React.ReactNode;
-  titleSize?: "default" | "small" | "large";
   noBg?: boolean;
   contentAlign?: "right" | "left" | "center";
-  icon?: "ticket" | "tshirt" | "hotel" | "star";
-  iconBackground?: "green" | "pink" | "blue" | "yellow";
+  icon?: Icon;
+  iconBackground?: IconBackground;
   id?: string;
   openLabel?: string | React.ReactNode;
   closeLabel?: string | React.ReactNode;
@@ -26,9 +25,7 @@ type CardPartProps = React.PropsWithChildren<{
 }>;
 
 export const CardPart = ({
-  title,
   children,
-  titleSize = "default",
   noBg = false,
   contentAlign = "center",
   icon,
@@ -50,6 +47,8 @@ export const CardPart = ({
       toggleOpen?.((expanded) => !expanded);
     }
   };
+
+  const hasIcon = !!icon;
 
   return (
     <div
@@ -74,60 +73,53 @@ export const CardPart = ({
     >
       <div
         className={clsx("flex", {
-          "flex-col": !icon,
-          "flex-row": icon,
+          "flex-col": !hasIcon,
+          "flex-row": hasIcon,
         })}
       >
         {icon && <Icon iconBackground={iconBackground} icon={icon} />}
-        {title && (
-          <Heading
-            className={clsx({
-              "pl-4 ml-4 lg:ml-6 lg:pl-6": !!icon,
-              "flex justify-between items-center w-full":
-                isClickToExpandElement,
-            })}
-            size={getTitleSize(titleSize)}
-          >
-            {title}
-            {isClickToExpandElement && (
-              <div className="flex items-center justify-center gap-4 select-none">
-                {!open && (
-                  <Text className="hidden md:block" uppercase size="label3">
-                    {openLabel || (
-                      <FormattedMessage
-                        defaultMessage="Open"
-                        id="multiple-parts-card.openLabel"
-                      />
-                    )}
-                  </Text>
-                )}
+        <div
+          className={clsx({
+            "pl-4 ml-4 lg:ml-6 lg:pl-6": !!icon,
+            "flex justify-between items-center w-full": isClickToExpandElement,
+          })}
+        >
+          {children}
 
-                {open && (
-                  <Text className="hidden md:block" uppercase size="label3">
-                    {closeLabel || (
-                      <FormattedMessage
-                        defaultMessage="Close"
-                        id="multiple-parts-card.closeLabel"
-                      />
-                    )}
-                  </Text>
-                )}
+          {isClickToExpandElement && (
+            <div className="flex items-center justify-center gap-4 select-none">
+              {!open && (
+                <Text className="hidden md:block" uppercase size="label3">
+                  {openLabel || (
+                    <FormattedMessage
+                      defaultMessage="Open"
+                      id="multiple-parts-card.openLabel"
+                    />
+                  )}
+                </Text>
+              )}
 
-                <ArrowDownIcon
-                  className={clsx("transition-transform", {
-                    "rotate-0": !open,
-                    "rotate-180": open,
-                  })}
-                />
-              </div>
-            )}
-          </Heading>
-        )}
+              {open && (
+                <Text className="hidden md:block" uppercase size="label3">
+                  {closeLabel || (
+                    <FormattedMessage
+                      defaultMessage="Close"
+                      id="multiple-parts-card.closeLabel"
+                    />
+                  )}
+                </Text>
+              )}
+
+              <ArrowDownIcon
+                className={clsx("transition-transform", {
+                  "rotate-0": !open,
+                  "rotate-180": open,
+                })}
+              />
+            </div>
+          )}
+        </div>
       </div>
-
-      {title && children && <Spacer size="xs" />}
-
-      {children}
     </div>
   );
 };
@@ -172,16 +164,4 @@ const Icon = ({
       </div>
     </div>
   );
-};
-
-const getTitleSize = (value: CardPartProps["titleSize"]) => {
-  switch (value) {
-    case "small":
-      return 3;
-    case "large":
-      return 1;
-    case "default":
-    default:
-      return 2;
-  }
 };
