@@ -3,6 +3,7 @@ export const messages = {
     titleTemplate: "%s | PyCon Italia",
     description:
       "Join PyCon Italia from the 25th to the 28th of May 2023 in Florence, Italy!",
+    "input.placeholder": "Type here...",
     "global.accordion.close": "Close",
     "global.accordion.readMore": "Read more",
     "global.here": "here",
@@ -405,6 +406,9 @@ export const messages = {
       "Grant request sent! We will send you an email as soon as we have updates! Cick {linkGrant} to edit it.",
     "grants.form.sent.linkGrant.text": "here",
     "grants.form.aboutYou": "About you",
+    "grants.form.yourGrant": "Your grant",
+    "grants.form.youAndPython": "You and Python",
+
     "grants.form.optionalInformation": "Optional information",
     "grants.form.optionalInformation.description":
       "Providing this information will help us making sure that the event is as inclusive as possible.",
@@ -444,7 +448,8 @@ export const messages = {
     "grants.form.fields.grantType.values.unemployed": "Unemployed",
     "grants.form.fields.grantType.values.speaker": "Speaker",
     "grants.form.fields.interestedInVolunteering":
-      "Would you like to help PyCon Italia for this and/or the upcoming event?",
+      "Would you like to help PyCon Italia for this and/or upcoming events?",
+    "grants.form.validationErrors": "The form submitted is not valid",
     "grants.form.fields.interestedInVolunteering.description":
       "We are always looking for some help during the event. It is also a fun way to make new friends!",
     "grants.form.fields.interestedInVolunteering.values.selectOption":
@@ -464,7 +469,10 @@ export const messages = {
     "grants.form.fields.needsFundsForTravel":
       "Do you need financial aid for travelling to PyCon Italia?",
     "grants.form.fields.needsFundsForTravel.label":
-      "Tick here if you need financial aid for travelling to PyCon Italia",
+      "We don’t have many funds but we will try to help as many people as we can, ask for this help only if absolutely needed!",
+
+    "grants.form.fields.needsFundsForTravel.no": "No",
+    "grants.form.fields.needsFundsForTravel.yes": "Yes",
 
     "grants.form.submit": "Submit",
 
@@ -1090,7 +1098,7 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "grants.form.fields.needsFundsForTravel":
       "Hai bisogno di aiuti finanziari per venire a Pycon Italia?",
     "grants.form.fields.needsFundsForTravel.label":
-      "Fai click qui se hai bisogno di supporto finanziario per il viaggio",
+      "I fondi a nostra disposizione sono limitati, ma faremo il possibile per aiutare tutti i richiedenti. Richiedi questo aiuto solo se ti è strettamente necessario!",
     "grants.form.submit": "Invia",
 
     "grants.form.edit.title": "Modifica il tuo Grant",
@@ -1422,6 +1430,14 @@ Affrettati a comprare il biglietto!`,
     "tickets.landing.hotelTitle": "Hotel",
     "tickets.landing.membershipTitle": "Associazione",
     "blog.publishedOn": "{date} - {author}",
+
+    "grants.form.fields.needsFundsForTravel.no": "No",
+    "grants.form.fields.needsFundsForTravel.yes": "Si",
+    "grants.form.yourGrant": "Grant",
+    "grants.form.youAndPython": "Tu e Python",
+    "grants.form.validationErrors": "Il form inviato non è valido",
+
+    "input.placeholder": "Scrivi qui...",
   },
 };
 

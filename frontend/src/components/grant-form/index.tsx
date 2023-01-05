@@ -2,27 +2,32 @@
 
 /** @jsx jsx */
 import { ApolloError } from "@apollo/client";
-import React, { Fragment, useCallback, useEffect } from "react";
+import {
+  InputWrapper,
+  Input,
+  Heading,
+  Text,
+  MultiplePartsCard,
+  Grid,
+  CardPart,
+  Select,
+  Textarea,
+  Section,
+  Spacer,
+  Button,
+  HorizontalStack,
+  Link,
+} from "@python-italia/pycon-styleguide";
+import React, { useCallback, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
-import {
-  Box,
-  Checkbox,
-  Heading,
-  Input,
-  Label,
-  jsx,
-  Select,
-  Text,
-  Textarea,
-} from "theme-ui";
+import { jsx } from "theme-ui";
 
 import { Alert } from "~/components/alert";
-import { Button } from "~/components/button/button";
-import { InputWrapper } from "~/components/input-wrapper";
-import { Link } from "~/components/link";
 import { MyGrant } from "~/components/profile/my-grant";
 import { useCurrentUser } from "~/helpers/use-current-user";
+import { useTranslatedMessage } from "~/helpers/use-translated-message";
+import { useCurrentLanguage } from "~/locale/context";
 import {
   Grant,
   UpdateGrantInput,
@@ -34,6 +39,7 @@ import {
 } from "~/types";
 
 import { ErrorsList } from "../errors-list";
+import { createHref } from "../link";
 import {
   GENDER_OPTIONS,
   GRANT_TYPE_OPTIONS,
@@ -52,7 +58,7 @@ export type GrantFormFields = {
   pythonUsage: string;
   beenToOtherEvents: string;
   interestedInVolunteering: string;
-  needsFundsForTravel: boolean;
+  needsFundsForTravel: string;
   why: string;
   notes: string;
   travellingFrom: string;
@@ -91,16 +97,20 @@ export const MyGrantOrForm = () => {
 
   return (
     <>
-      <Heading mb={4} as="h1">
-        <FormattedMessage id="grants.form.title" />
-      </Heading>
-      <GrantForm
-        conference={code}
-        onSubmit={onSubmit}
-        error={grantError}
-        data={grantData}
-        loading={loading}
-      />
+      <Section>
+        <Heading size="display2">
+          <FormattedMessage id="grants.form.title" />
+        </Heading>
+      </Section>
+      <Section>
+        <GrantForm
+          conference={code}
+          onSubmit={onSubmit}
+          error={grantError}
+          data={grantData}
+          loading={loading}
+        />
+      </Section>
     </>
   );
 };
@@ -122,14 +132,17 @@ export const GrantForm = ({
   error: grantError,
   data: grantData,
 }: GrantFormProps) => {
+  const language = useCurrentLanguage();
+  const inputPlaceholderText = useTranslatedMessage("input.placeholder");
   const { user, loading: loadingUser } = useCurrentUser({});
-  const [formState, { text, textarea, select, checkbox }] =
-    useFormState<GrantFormFields>(
-      {},
-      {
-        withIds: true,
-      },
-    );
+  const [formState, { text, textarea, select }] = useFormState<GrantFormFields>(
+    {
+      needsFundsForTravel: "false",
+    },
+    {
+      withIds: true,
+    },
+  );
 
   useEffect(() => {
     // to not override if we are editing the grant
@@ -152,7 +165,6 @@ export const GrantForm = ({
 
   useEffect(() => {
     if (grant) {
-      console.log(grant);
       formState.setField("fullName", grant.fullName);
       formState.setField("name", grant.name);
       formState.setField("gender", grant.gender);
@@ -165,7 +177,10 @@ export const GrantForm = ({
         "interestedInVolunteering",
         grant.interestedInVolunteering,
       );
-      formState.setField("needsFundsForTravel", grant.needsFundsForTravel);
+      formState.setField(
+        "needsFundsForTravel",
+        grant.needsFundsForTravel.toString(),
+      );
       formState.setField("why", grant.why);
       formState.setField("notes", grant.notes);
       formState.setField("travellingFrom", grant.travellingFrom);
@@ -185,7 +200,7 @@ export const GrantForm = ({
         interestedInVolunteering: formState.values.interestedInVolunteering,
         notes: formState.values.notes,
         grantType: formState.values.grantType,
-        needsFundsForTravel: formState.values.needsFundsForTravel,
+        needsFundsForTravel: formState.values.needsFundsForTravel === "true",
         why: formState.values.why,
         travellingFrom: formState.values.travellingFrom,
         occupation: formState.values.occupation,
@@ -220,12 +235,16 @@ export const GrantForm = ({
           values={{
             linkGrant: (
               <Link
-                path={`/grants/edit`}
-                sx={{
-                  textDecoration: "underline",
-                }}
+                href={createHref({ path: `/grants/edit`, locale: language })}
               >
-                <FormattedMessage id="grants.form.sent.linkGrant.text" />
+                <Text
+                  color="none"
+                  decoration="underline"
+                  size="inherit"
+                  weight="strong"
+                >
+                  <FormattedMessage id="grants.form.sent.linkGrant.text" />
+                </Text>
               </Link>
             ),
           }}
@@ -242,221 +261,302 @@ export const GrantForm = ({
     );
   }
 
+  const hasValidationErrors =
+    grantData?.mutationOp.__typename === "GrantErrors";
+  const nonFieldErrors = getErrors("nonFieldErrors");
+
   return (
-    <Fragment>
-      <form onSubmit={handleOnSubmit}>
-        <Heading sx={{ mb: 3 }}>
-          <FormattedMessage id="grants.form.aboutYou" />
-        </Heading>
+    <form onSubmit={handleOnSubmit}>
+      <MultiplePartsCard>
+        <CardPart contentAlign="left">
+          <Heading size={3}>
+            <FormattedMessage id="grants.form.aboutYou" />
+          </Heading>
+        </CardPart>
+        <CardPart noBg contentAlign="left">
+          <Grid cols={1}>
+            <InputWrapper
+              required={true}
+              title={<FormattedMessage id="grants.form.fields.fullName" />}
+              description={
+                <FormattedMessage id="grants.form.fields.fullName.description" />
+              }
+            >
+              <Input
+                errors={getErrors("fullName")}
+                {...text("fullName")}
+                required={true}
+                placeholder={inputPlaceholderText}
+              />
+            </InputWrapper>
 
-        <InputWrapper
-          isRequired={true}
-          label={<FormattedMessage id="grants.form.fields.fullName" />}
-          description={
-            <FormattedMessage id="grants.form.fields.fullName.description" />
-          }
-          errors={getErrors("fullName")}
-        >
-          <Input {...text("fullName")} required={true} />
-        </InputWrapper>
+            <InputWrapper
+              required={true}
+              title={<FormattedMessage id="grants.form.fields.name" />}
+              description={
+                <FormattedMessage id="grants.form.fields.name.description" />
+              }
+            >
+              <Input
+                {...text("name")}
+                errors={getErrors("name")}
+                placeholder={inputPlaceholderText}
+                required={true}
+              />
+            </InputWrapper>
+            <InputWrapper
+              required={true}
+              title={<FormattedMessage id="grants.form.fields.ageGroup" />}
+            >
+              <Select
+                {...select("ageGroup")}
+                required={true}
+                errors={getErrors("ageGroup")}
+              >
+                {AGE_GROUPS_OPTIONS.map(({ value, disabled, messageId }) => (
+                  <FormattedMessage id={messageId} key={messageId}>
+                    {(msg) => (
+                      <option disabled={disabled} value={value}>
+                        {msg}
+                      </option>
+                    )}
+                  </FormattedMessage>
+                ))}
+              </Select>
+            </InputWrapper>
 
-        <InputWrapper
-          isRequired={true}
-          label={<FormattedMessage id="grants.form.fields.name" />}
-          description={
-            <FormattedMessage id="grants.form.fields.name.description" />
-          }
-          errors={getErrors("name")}
-        >
-          <Input {...text("name")} required={true} />
-        </InputWrapper>
+            <InputWrapper
+              required={true}
+              title={<FormattedMessage id="grants.form.fields.occupation" />}
+            >
+              <Select
+                {...select("occupation")}
+                required={true}
+                errors={getErrors("occupation")}
+              >
+                {OCCUPATION_OPTIONS.map(({ value, disabled, messageId }) => (
+                  <FormattedMessage id={messageId} key={messageId}>
+                    {(msg) => (
+                      <option disabled={disabled} value={value}>
+                        {msg}
+                      </option>
+                    )}
+                  </FormattedMessage>
+                ))}
+              </Select>
+            </InputWrapper>
+          </Grid>
+        </CardPart>
+      </MultiplePartsCard>
+      <Spacer size="medium" />
 
-        <InputWrapper
-          isRequired={true}
-          errors={getErrors("grantType")}
-          label={<FormattedMessage id="grants.form.fields.grantType" />}
-        >
-          <Select {...select("grantType")} required={true}>
-            {GRANT_TYPE_OPTIONS.map(({ value, disabled, messageId }) => (
-              <FormattedMessage id={messageId} key={messageId}>
-                {(msg) => (
-                  <option disabled={disabled} value={value}>
-                    {msg}
-                  </option>
-                )}
-              </FormattedMessage>
-            ))}
-          </Select>
-        </InputWrapper>
+      <MultiplePartsCard>
+        <CardPart contentAlign="left">
+          <Heading size={3}>
+            <FormattedMessage id="grants.form.yourGrant" />
+          </Heading>
+        </CardPart>
+        <CardPart contentAlign="left" noBg>
+          <Grid cols={1}>
+            <InputWrapper
+              required={true}
+              title={<FormattedMessage id="grants.form.fields.grantType" />}
+            >
+              <Select
+                {...select("grantType")}
+                required={true}
+                errors={getErrors("grantType")}
+              >
+                {GRANT_TYPE_OPTIONS.map(({ value, disabled, messageId }) => (
+                  <FormattedMessage id={messageId} key={messageId}>
+                    {(msg) => (
+                      <option disabled={disabled} value={value}>
+                        {msg}
+                      </option>
+                    )}
+                  </FormattedMessage>
+                ))}
+              </Select>
+            </InputWrapper>
 
-        <InputWrapper
-          isRequired={true}
-          label={<FormattedMessage id="grants.form.fields.travellingFrom" />}
-          errors={getErrors("travellingFrom")}
-        >
-          <Input {...text("travellingFrom")} required={true} />
-        </InputWrapper>
+            <InputWrapper
+              required={true}
+              title={
+                <FormattedMessage id="grants.form.fields.travellingFrom" />
+              }
+            >
+              <Input
+                {...text("travellingFrom")}
+                errors={getErrors("travellingFrom")}
+                required={true}
+                placeholder={inputPlaceholderText}
+              />
+            </InputWrapper>
 
-        <InputWrapper
-          errors={getErrors("needsFundsForTravel")}
-          label={
-            <FormattedMessage id="grants.form.fields.needsFundsForTravel" />
-          }
-        >
-          <Label>
-            <Checkbox {...checkbox("needsFundsForTravel")} />
-            <FormattedMessage id="grants.form.fields.needsFundsForTravel.label" />
-          </Label>
-        </InputWrapper>
-
-        <InputWrapper
-          isRequired={true}
-          errors={getErrors("occupation")}
-          label={<FormattedMessage id="grants.form.fields.occupation" />}
-        >
-          <Select {...select("occupation")} required={true}>
-            {OCCUPATION_OPTIONS.map(({ value, disabled, messageId }) => (
-              <FormattedMessage id={messageId} key={messageId}>
-                {(msg) => (
-                  <option disabled={disabled} value={value}>
-                    {msg}
-                  </option>
-                )}
-              </FormattedMessage>
-            ))}
-          </Select>
-        </InputWrapper>
-
-        <InputWrapper
-          isRequired={true}
-          errors={getErrors("interestedInVolunteering")}
-          label={
-            <FormattedMessage id="grants.form.fields.interestedInVolunteering" />
-          }
-          description={
-            <FormattedMessage id="grants.form.fields.interestedInVolunteering.description" />
-          }
-        >
-          <Select {...select("interestedInVolunteering")} required={true}>
-            {INTERESTED_IN_VOLUNTEERING_OPTIONS.map(
-              ({ value, disabled, messageId }) => (
-                <FormattedMessage id={messageId} key={messageId}>
-                  {(msg) => (
-                    <option disabled={disabled} value={value}>
-                      {msg}
-                    </option>
-                  )}
+            <InputWrapper
+              title={
+                <FormattedMessage id="grants.form.fields.needsFundsForTravel" />
+              }
+              description={
+                <FormattedMessage id="grants.form.fields.needsFundsForTravel.label" />
+              }
+            >
+              <Select {...select("needsFundsForTravel")}>
+                <FormattedMessage id="grants.form.fields.needsFundsForTravel.no">
+                  {(msg) => <option value="false">{msg}</option>}
                 </FormattedMessage>
-              ),
-            )}
-          </Select>
-        </InputWrapper>
+                <FormattedMessage id="grants.form.fields.needsFundsForTravel.yes">
+                  {(msg) => <option value="true">{msg}</option>}
+                </FormattedMessage>
+              </Select>
+            </InputWrapper>
 
-        <InputWrapper
-          isRequired={true}
-          label={<FormattedMessage id="grants.form.fields.pythonUsage" />}
-          description={
-            <FormattedMessage id="grants.form.fields.pythonUsage.description" />
-          }
-          errors={getErrors("pythonUsage")}
-        >
-          <Textarea {...textarea("pythonUsage")} required={true} />
-        </InputWrapper>
+            <InputWrapper
+              required={true}
+              title={<FormattedMessage id="grants.form.fields.why" />}
+            >
+              <Textarea
+                {...textarea("why")}
+                rows={2}
+                required={true}
+                placeholder={inputPlaceholderText}
+                errors={getErrors("why")}
+              />
+            </InputWrapper>
 
-        <InputWrapper
-          isRequired={true}
-          label={<FormattedMessage id="grants.form.fields.beenToOtherEvents" />}
-          errors={getErrors("beenToOtherEvents")}
-        >
-          <Textarea {...textarea("beenToOtherEvents")} required={true} />
-        </InputWrapper>
-
-        <InputWrapper
-          isRequired={true}
-          label={<FormattedMessage id="grants.form.fields.why" />}
-          errors={getErrors("why")}
-        >
-          <Textarea {...textarea("why")} required={true} />
-        </InputWrapper>
-
-        <InputWrapper
-          isRequired={true}
-          label={<FormattedMessage id="grants.form.fields.ageGroup" />}
-          errors={getErrors("ageGroup")}
-        >
-          <Select {...select("ageGroup")} required={true}>
-            {AGE_GROUPS_OPTIONS.map(({ value, disabled, messageId }) => (
-              <FormattedMessage id={messageId} key={messageId}>
-                {(msg) => (
-                  <option disabled={disabled} value={value}>
-                    {msg}
-                  </option>
+            <InputWrapper
+              required={true}
+              title={
+                <FormattedMessage id="grants.form.fields.interestedInVolunteering" />
+              }
+              description={
+                <FormattedMessage id="grants.form.fields.interestedInVolunteering.description" />
+              }
+            >
+              <Select
+                {...select("interestedInVolunteering")}
+                required={true}
+                errors={getErrors("interestedInVolunteering")}
+              >
+                {INTERESTED_IN_VOLUNTEERING_OPTIONS.map(
+                  ({ value, disabled, messageId }) => (
+                    <FormattedMessage id={messageId} key={messageId}>
+                      {(msg) => (
+                        <option disabled={disabled} value={value}>
+                          {msg}
+                        </option>
+                      )}
+                    </FormattedMessage>
+                  ),
                 )}
-              </FormattedMessage>
-            ))}
-          </Select>
-        </InputWrapper>
+              </Select>
+            </InputWrapper>
+          </Grid>
+        </CardPart>
+      </MultiplePartsCard>
+      <Spacer size="medium" />
 
-        <Box>
-          <Heading sx={{ mb: 2 }}>
+      <MultiplePartsCard>
+        <CardPart contentAlign="left">
+          <Heading size={3}>
+            <FormattedMessage id="grants.form.youAndPython" />
+          </Heading>
+        </CardPart>
+        <CardPart contentAlign="left" noBg>
+          <Grid cols={1}>
+            <InputWrapper
+              required={true}
+              title={<FormattedMessage id="grants.form.fields.pythonUsage" />}
+              description={
+                <FormattedMessage id="grants.form.fields.pythonUsage.description" />
+              }
+            >
+              <Textarea
+                {...textarea("pythonUsage")}
+                rows={2}
+                required={true}
+                placeholder={inputPlaceholderText}
+                errors={getErrors("pythonUsage")}
+              />
+            </InputWrapper>
+            <InputWrapper
+              required={true}
+              title={
+                <FormattedMessage id="grants.form.fields.beenToOtherEvents" />
+              }
+            >
+              <Textarea
+                {...textarea("beenToOtherEvents")}
+                rows={2}
+                required={true}
+                errors={getErrors("beenToOtherEvents")}
+                placeholder={inputPlaceholderText}
+              />
+            </InputWrapper>
+          </Grid>
+        </CardPart>
+      </MultiplePartsCard>
+      <Spacer size="medium" />
+      <MultiplePartsCard>
+        <CardPart contentAlign="left">
+          <Heading size={3}>
             <FormattedMessage id="grants.form.optionalInformation" />
           </Heading>
+        </CardPart>
+        <CardPart noBg contentAlign="left">
+          <Grid cols={1}>
+            <InputWrapper
+              title={<FormattedMessage id="grants.form.fields.gender" />}
+            >
+              <Select {...select("gender")} errors={getErrors("gender")}>
+                {GENDER_OPTIONS.map(({ value, disabled, messageId }) => (
+                  <FormattedMessage id={messageId} key={messageId}>
+                    {(msg) => (
+                      <option disabled={disabled} value={value}>
+                        {msg}
+                      </option>
+                    )}
+                  </FormattedMessage>
+                ))}
+              </Select>
+            </InputWrapper>
 
-          <Text sx={{ mb: 3 }}>
-            <FormattedMessage id="grants.form.optionalInformation.description" />
-          </Text>
+            <InputWrapper
+              title={<FormattedMessage id="grants.form.fields.notes" />}
+            >
+              <Textarea
+                {...textarea("notes")}
+                errors={getErrors("notes")}
+                placeholder={inputPlaceholderText}
+              />
+            </InputWrapper>
+          </Grid>
+        </CardPart>
+      </MultiplePartsCard>
+      <Spacer size="large" />
 
-          <InputWrapper
-            errors={getErrors("gender")}
-            label={<FormattedMessage id="grants.form.fields.gender" />}
-          >
-            <Select {...select("gender")}>
-              {GENDER_OPTIONS.map(({ value, disabled, messageId }) => (
-                <FormattedMessage id={messageId} key={messageId}>
-                  {(msg) => (
-                    <option disabled={disabled} value={value}>
-                      {msg}
-                    </option>
-                  )}
-                </FormattedMessage>
-              ))}
-            </Select>
-          </InputWrapper>
-
-          <InputWrapper
-            label={<FormattedMessage id="grants.form.fields.notes" />}
-            errors={getErrors("notes")}
-          >
-            <Textarea {...textarea("notes")} />
-          </InputWrapper>
-        </Box>
-
-        <ErrorsList sx={{ mb: 3 }} errors={getErrors("nonFieldErrors")} />
-
-        {grantError && (
-          <Alert sx={{ mb: 4 }} variant="alert">
-            <FormattedMessage
-              id="global.tryAgain"
-              values={{ error: grantError.message }}
-            />
-          </Alert>
-        )}
-
-        {grantLoading && (
-          <Alert
-            sx={{
-              mb: 3,
-            }}
-            variant="info"
-          >
-            <FormattedMessage id="grants.form.sendingRequest" />
-          </Alert>
-        )}
-
-        <Button loading={grantLoading}>
+      <HorizontalStack
+        wrap="wrap"
+        alignItems="center"
+        gap="medium"
+        justifyContent="space-between"
+      >
+        <div>
+          <ErrorsList
+            sx={{ mb: 3 }}
+            errors={[
+              ...nonFieldErrors,
+              ...(grantError ? [grantError.message] : []),
+              ...(nonFieldErrors.length === 0 && hasValidationErrors
+                ? [<FormattedMessage id="grants.form.validationErrors" />]
+                : []),
+            ]}
+          />
+        </div>
+        <Button role="secondary" disabled={grantLoading}>
           <FormattedMessage id="grants.form.submit" />
         </Button>
-      </form>
-    </Fragment>
+      </HorizontalStack>
+    </form>
   );
 };
