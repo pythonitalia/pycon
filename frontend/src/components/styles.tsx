@@ -52,6 +52,9 @@ export const GlobalStyles = (): React.ReactElement => (
       ".article h6": {
         fontSize: "0.8rem",
       },
+      ".article img": {
+        width: "500px",
+      },
     })}
   />
 );
