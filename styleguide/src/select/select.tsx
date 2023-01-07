@@ -19,8 +19,8 @@ export const Select = ({ errors, children, ...props }: Props) => {
         <select
           {...props}
           className={clsx(
-            "w-full font-sans text-md bg-transparent placeholder:text-grey-250 placeholder:font-sans border-b py-2 transition-colors",
-            "appearance-none outline-none focus:border-green font-medium leading-2",
+            "w-full font-sans text-md bg-transparent placeholder:text-grey-250 placeholder:font-sans border-b pb-2 transition-colors",
+            "appearance-none outline-none focus:border-green font-medium leading-3",
             {
               "border-red": hasError,
               "border-black": !hasError,
