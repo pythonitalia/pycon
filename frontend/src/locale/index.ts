@@ -217,7 +217,8 @@ export const messages = {
     "fileInput.uploading": "Uploading...",
     "cfp.grantsLabel": "Do you need a grant?",
     "cfp.grantsCheckbox":
-      "If financial support is needed for attending the conference, send the grant request now! You won't be able to request a grant after your proposal is accepted.",
+      "If financial support is needed for attending the conference, {grantsCta}! We won't accept grant requests after the grants deadline. Make sure you submit your proposal as well.",
+    "cfp.grantsCta": "click here to open a separate page to submit the request",
     "header.coronaVirus":
       "🚨 Update regarding COVID-19 - Conference cancelled 😢",
     "header.dashboard": "Dashboard",
@@ -1327,7 +1328,11 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "cfp.speakerFacebookUrlDescription": "Profilo Facebook URL",
     "cfp.speakerMastodonHandleDescription": "Mastodon Handle",
     "cfp.grantsCheckbox":
-      "Se supporto finanziario da parte di PyCon Italia è necessario per partecipare, assicurati di inviare la tua richiesta ora! Non potrai inviare una richiesta una volta passata la deadline.",
+      "Se supporto finanziario da parte di PyCon Italia è necessario per partecipare, {grantsCta}! Non accetteremo richieste di grant dopo la scadenza della deadline per i grant. Assicurati di inviare la tua proposal.",
+
+    "cfp.grantsCta":
+      "clicca qui per aprire una pagina separata per inviarci una richiesta di grant",
+
     "fileInput.uploading": "Caricamento in corso...",
 
     "ticketsOverview.buyTicketsSection": "Compra i biglietti",

@@ -2,6 +2,7 @@
 
 /** @jsx jsx */
 import { ApolloError } from "@apollo/client";
+import { Link } from "@python-italia/pycon-styleguide";
 import React, { Fragment, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
@@ -18,6 +19,7 @@ import {
   Heading,
 } from "theme-ui";
 
+import { useCurrentLanguage } from "~/locale/context";
 import {
   MultiLingualInput as MultiLingualInputType,
   SendSubmissionMutation,
@@ -32,6 +34,7 @@ import { FileInput } from "../file-input";
 import { TagLine } from "../input-tag";
 import { InputWrapper } from "../input-wrapper";
 import { Input, Textarea } from "../inputs";
+import { createHref } from "../link";
 import { MultiLingualInput } from "../multilingual-input";
 
 export type CfpFormFields = {
@@ -129,6 +132,7 @@ export const CfpForm = ({
   error: submissionError,
   data: submissionData,
 }: Props) => {
+  const language = useCurrentLanguage();
   const [formState, { text, textarea, radio, select, checkbox, url, raw }] =
     useFormState<CfpFormFields>(
       {
@@ -718,7 +722,24 @@ export const CfpForm = ({
 
         <InputWrapper
           label={<FormattedMessage id="cfp.grantsLabel" />}
-          description={<FormattedMessage id="cfp.grantsCheckbox" />}
+          description={
+            <FormattedMessage
+              id="cfp.grantsCheckbox"
+              values={{
+                grantsCta: (
+                  <Link
+                    href={createHref({
+                      path: "/grants-info",
+                      locale: language,
+                    })}
+                    target="_blank"
+                  >
+                    <FormattedMessage id="cfp.grantsCta" />
+                  </Link>
+                ),
+              }}
+            />
+          }
         />
         <Button loading={submissionLoading}>
           <FormattedMessage id="cfp.submit" />
