@@ -4,7 +4,7 @@ import React from "react";
 type Breakpoint = "mobile" | "tablet" | "desktop";
 
 type Props = {
-  size: "xs" | "small" | "medium" | "2md" | "large" | "xl";
+  size: "thin" | "xs" | "small" | "medium" | "2md" | "large" | "xl";
   showOnlyOn?: Breakpoint;
   orientation?: "horizontal" | "vertical";
 };
@@ -18,8 +18,9 @@ export const Spacer = ({
     <span
       className={clsx({
         // vertical spacers
+        "h-[2px]": size === "thin" && orientation === "vertical",
         "h-2": size === "xs" && orientation === "vertical",
-        "h-4": size === "small" && orientation === "vertical",
+        "h-2 lg:h-4": size === "small" && orientation === "vertical",
         "h-6": size === "medium" && orientation === "vertical",
         "h-5 lg:h-8": size === "2md" && orientation === "vertical",
         "h-8 lg:h-12": size === "large" && orientation === "vertical",

@@ -3,20 +3,42 @@ import React, { ReactNode } from "react";
 
 type Props = {
   children: ReactNode;
-  align?: "left" | "center" | "right";
-  gap?: "none" | "xs" | "small";
+  alignItems?: "start" | "center" | "end";
+  justifyContent?:
+    | "start"
+    | "center"
+    | "end"
+    | "space-between"
+    | "space-around";
+  wrap?: "wrap" | "nowrap" | "wrap-reverse";
+  gap?: "none" | "medium";
 };
 
-export const HorizontalStack = ({ children, gap = "none", align }: Props) => (
+export const HorizontalStack = ({
+  children,
+  gap = "none",
+  alignItems,
+  justifyContent,
+  wrap,
+}: Props) => (
   <div
     className={clsx("flex flex-row", {
-      "items-start justify-content-start": align === "left",
-      "items-center justify-content-center": align === "center",
-      "items-end justify-content-end": align === "right",
+      "items-start": alignItems === "start",
+      "items-center": alignItems === "center",
+      "items-end": alignItems === "end",
+
+      "justify-start": justifyContent === "start",
+      "justify-center": justifyContent === "center",
+      "justify-end": justifyContent === "end",
+      "justify-between": justifyContent === "space-between",
+      "justify-around": justifyContent === "space-around",
+
+      "flex-wrap": wrap === "wrap",
+      "flex-nowrap": wrap === "nowrap",
+      "flex-wrap-reverse": wrap === "wrap-reverse",
 
       "gap-0": gap === "none",
-      "gap-1": gap === "xs",
-      "gap-2": gap === "small",
+      "gap-2 lg:gap-6": gap === "medium",
     })}
   >
     {children}

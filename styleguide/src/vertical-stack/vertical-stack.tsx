@@ -3,15 +3,42 @@ import React, { ReactNode } from "react";
 
 type Props = {
   children: ReactNode;
-  align?: "left" | "center" | "right";
+  alignItems?: "start" | "center" | "end";
+  justifyContent?:
+    | "start"
+    | "center"
+    | "end"
+    | "space-between"
+    | "space-around";
+  wrap?: "wrap" | "nowrap" | "wrap-reverse";
+  gap?: "none" | "medium";
 };
 
-export const VerticalStack = ({ children, align }: Props) => (
+export const VerticalStack = ({
+  children,
+  alignItems,
+  justifyContent,
+  wrap,
+  gap,
+}: Props) => (
   <div
     className={clsx("flex flex-col", {
-      "items-start justify-content-start": align == "left",
-      "items-center justify-content-center": align == "center",
-      "items-end justify-content-end": align == "right",
+      "items-start": alignItems === "start",
+      "items-center": alignItems === "center",
+      "items-end": alignItems === "end",
+
+      "justify-start": justifyContent === "start",
+      "justify-center": justifyContent === "center",
+      "justify-end": justifyContent === "end",
+      "justify-between": justifyContent === "space-between",
+      "justify-around": justifyContent === "space-around",
+
+      "flex-wrap": wrap === "wrap",
+      "flex-nowrap": wrap === "nowrap",
+      "flex-wrap-reverse": wrap === "wrap-reverse",
+
+      "gap-0": gap === "none",
+      "gap-2 lg:gap-6": gap === "medium",
     })}
   >
     {children}
