@@ -17,7 +17,7 @@ export const Input = ({ errors, ...props }: Props) => {
         {...props}
         className={clsx(
           "w-full font-sans text-md bg-transparent placeholder:text-grey-250 placeholder:font-sans border-b border-black py-2 transition-colors",
-          "outline-none focus:border-green",
+          "outline-none focus:border-green font-medium",
           {
             "border-red": hasError,
             "border-black": !hasError,
