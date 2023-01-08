@@ -539,7 +539,7 @@ export const GrantForm = ({
         wrap="wrap"
         alignItems="center"
         gap="medium"
-        justifyContent="space-between"
+        justifyContent="spaceBetween"
       >
         <div>
           <ErrorsList

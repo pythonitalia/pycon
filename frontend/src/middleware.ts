@@ -27,6 +27,7 @@ export function middleware(req: NextRequest) {
     !req.nextUrl.pathname.includes("/api/") &&
     !req.nextUrl.pathname.includes("/admin") &&
     !req.nextUrl.pathname.includes("/graphql") &&
+    !req.nextUrl.pathname.includes("/_next/image") &&
     req.nextUrl.locale === "default";
 
   if (shouldHandleLocale) {
