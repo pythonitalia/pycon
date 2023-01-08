@@ -1,19 +1,16 @@
-/** @jsxRuntime classic */
-
-/** @jsx jsx */
+import { Text, Section, Link, Heading } from "@python-italia/pycon-styleguide";
+import React from "react";
 import { FormattedMessage } from "react-intl";
-import { Box, jsx } from "theme-ui";
 
 import { Alert } from "~/components/alert";
-import { Link } from "~/components/link";
+import { useCurrentLanguage } from "~/locale/context";
 import { useMyGrantQuery } from "~/types";
 
-type Props = {
-  className?: string;
-};
+import { createHref } from "../link";
 
-export const MyGrant = ({ className }: Props) => {
+export const MyGrant = () => {
   const code = process.env.conferenceCode;
+  const language = useCurrentLanguage();
   const { loading, error, data } = useMyGrantQuery({
     errorPolicy: "all",
     variables: {
@@ -31,36 +28,37 @@ export const MyGrant = ({ className }: Props) => {
   }
 
   return (
-    <Box className={className}>
-      <Box
-        sx={{
-          maxWidth: "container",
-          mx: "auto",
-          my: 5,
-        }}
-      >
+    <>
+      <Section>
+        <Heading size="display2">
+          <FormattedMessage id="grants.form.title" />
+        </Heading>
+      </Section>
+      <Section>
         {error && <Alert variant="alert">{error.message}</Alert>}
 
         {data && (
-          <Alert variant="alert">
+          <Text>
             <FormattedMessage
               id="grants.alreadySubmitted"
               values={{
                 linkGrant: (
                   <Link
-                    path={`/grants/edit`}
-                    sx={{
-                      textDecoration: "underline",
-                    }}
+                    href={createHref({
+                      path: `/grants/edit`,
+                      locale: language,
+                    })}
                   >
-                    <FormattedMessage id="grants.alreadySubmitted.linkGrant.text" />
+                    <Text color="none" weight="strong" decoration="underline">
+                      <FormattedMessage id="grants.form.sent.linkGrant.text" />
+                    </Text>
                   </Link>
                 ),
               }}
             />
-          </Alert>
+          </Text>
         )}
-      </Box>
-    </Box>
+      </Section>
+    </>
   );
 };

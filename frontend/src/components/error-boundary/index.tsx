@@ -1,11 +1,12 @@
-/** @jsxRuntime classic */
-
-/** @jsx jsx */
-import * as Sentry from "@sentry/node";
-import { Component } from "react";
-import { Box, Heading, jsx, Text } from "theme-ui";
-
-import { Link } from "../link";
+import {
+  Heading,
+  Link,
+  Page,
+  Section,
+  Text,
+} from "@python-italia/pycon-styleguide";
+import * as Sentry from "@sentry/nextjs";
+import React, { Component } from "react";
 
 type Props = {
   children: React.ReactNode;
@@ -40,45 +41,52 @@ export class ErrorBoundary extends Component<
   render() {
     if (this.state.errorInfo) {
       return (
-        <Box sx={{ mt: 4, mx: "auto", maxWidth: "container", px: 3, pb: 6 }}>
-          <Heading as="h2" sx={{ mb: 2 }}>
-            Something went wrong.
-          </Heading>
+        <Page endSeparator={false}>
+          <Section>
+            <Heading size={2}>Something went wrong.</Heading>
 
-          <Text sx={{ mb: 3 }}>
-            If a refresh doesn't work, please report this to{" "}
-            <Link path="https://github.com/pythonitalia/pycon">
-              our repo on github.
-            </Link>
-          </Text>
+            <Text>
+              If a refresh doesn't work, please report this to{" "}
+              <Link
+                target="_blank"
+                href="https://github.com/pythonitalia/pycon"
+              >
+                <Text
+                  size="inherit"
+                  color="none"
+                  decoration="underline"
+                  weight="strong"
+                >
+                  our repo on github.
+                </Text>
+              </Link>
+            </Text>
 
-          <Box
-            as="video"
-            sx={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              height: "100vh",
-              width: "100vw",
-              zIndex: -1,
-              pointerEvents: "none",
-              objectFit: "cover",
-              opacity: 0.5,
-            }}
-            {...{
-              muted: true,
-              lopp: true,
-              autoPlay: true,
-              src: "/videos/sad.mp4",
-            }}
-          />
+            <video
+              muted
+              loop
+              autoPlay
+              src="/videos/sad.mp4"
+              style={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                height: "100vh",
+                width: "100vw",
+                zIndex: 0,
+                pointerEvents: "none",
+                objectFit: "cover",
+                opacity: 0.5,
+              }}
+            />
 
-          <details style={{ whiteSpace: "pre-wrap" }}>
-            {this.state.error && this.state.error.toString()}
-            <br />
-            {this.state.errorInfo.componentStack}
-          </details>
-        </Box>
+            <details style={{ whiteSpace: "pre-wrap" }}>
+              {this.state.error && this.state.error.toString()}
+              <br />
+              {this.state.errorInfo.componentStack}
+            </details>
+          </Section>
+        </Page>
       );
     }
 

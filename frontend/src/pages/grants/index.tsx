@@ -1,16 +1,11 @@
-/** @jsxRuntime classic */
-
-/** @jsx jsx */
+import { Page, Text } from "@python-italia/pycon-styleguide";
 import React from "react";
 import { FormattedMessage } from "react-intl";
-import { Box, jsx, Text } from "theme-ui";
 
 import { GetStaticProps } from "next";
-import { useRouter } from "next/router";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { MyGrantOrForm } from "~/components/grant-form";
-import { Introduction } from "~/components/grants-introduction";
 import { MetaTags } from "~/components/meta-tags";
 import { formatDeadlineDateTime } from "~/helpers/deadlines";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
@@ -27,30 +22,30 @@ const GrantsComingSoon = ({ start }: { start: string }) => {
   const language = useCurrentLanguage();
 
   return (
-    <Box>
+    <div>
       <Text>
         <FormattedMessage
           id="grants.comingSoon"
           values={{
             start: (
-              <Text as="span" sx={{ fontWeight: "bold" }}>
+              <Text weight="strong">
                 {formatDeadlineDateTime(start, language)}
               </Text>
             ),
           }}
         />
       </Text>
-    </Box>
+    </div>
   );
 };
 
 const GrantsClosed = () => {
   return (
-    <Box>
+    <div>
       <Text>
         <FormattedMessage id="grants.closed" />
       </Text>
-    </Box>
+    </div>
   );
 };
 
@@ -71,31 +66,20 @@ export const GrantsPage = () => {
     return <ErrorPage statusCode={404} />;
   }
 
-  const { status, start, end } = deadline;
+  const { status, start } = deadline;
 
   return (
-    <React.Fragment>
+    <Page endSeparator={false}>
       <FormattedMessage id="grants.pageTitle">
         {(text) => <MetaTags title={text} />}
       </FormattedMessage>
 
-      <Introduction end={status === DeadlineStatus.HappeningNow ? end : null} />
-
-      <Box
-        sx={{
-          maxWidth: "container",
-          mx: "auto",
-          px: 3,
-          my: 5,
-        }}
-      >
-        {status === DeadlineStatus.HappeningNow && <MyGrantOrForm />}
-        {status === DeadlineStatus.InTheFuture && (
-          <GrantsComingSoon start={start} />
-        )}
-        {status === DeadlineStatus.InThePast && <GrantsClosed />}
-      </Box>
-    </React.Fragment>
+      {status === DeadlineStatus.HappeningNow && <MyGrantOrForm />}
+      {status === DeadlineStatus.InTheFuture && (
+        <GrantsComingSoon start={start} />
+      )}
+      {status === DeadlineStatus.InThePast && <GrantsClosed />}
+    </Page>
   );
 };
 
