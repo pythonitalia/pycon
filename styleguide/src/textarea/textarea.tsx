@@ -16,7 +16,7 @@ export const Textarea = ({ errors, ...props }: Props) => {
         {...props}
         className={clsx(
           "w-full font-sans text-md bg-transparent placeholder:text-grey-250 placeholder:font-sans border-b pb-2 transition-colors",
-          "outline-none focus:border-green font-medium leading-3",
+          "outline-none focus:border-purple font-medium leading-3",
           {
             "border-red": hasError,
             "border-black": !hasError,
