@@ -10,10 +10,10 @@ from .types import JobListing as JobListingType
 @strawberry.type
 class JobBoardQuery:
     @strawberry.field
-    def job_listings(self) -> List[JobListingType]:
+    def job_listings(self, conference: str) -> List[JobListingType]:
         return [
             JobListingType.from_django_model(listing)
-            for listing in JobListing.objects.all()
+            for listing in JobListing.objects.filter(conference__code=conference).all()
         ]
 
     @strawberry.field
