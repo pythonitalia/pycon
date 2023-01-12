@@ -29,7 +29,7 @@ export const TicketsOverviewSection = () => {
   // and what not
 
   return (
-    <Section noContainer>
+    <Section noContainer spacingSize="3xl">
       <SliderGrid
         background="snake"
         title={<FormattedMessage id="ticketsOverview.buyTicketsSection" />}

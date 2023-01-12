@@ -1,6 +1,8 @@
 import { Footer as FooterStyleguide } from "@python-italia/pycon-styleguide";
 import React from "react";
 
+import { useRouter } from "next/router";
+
 import { useCurrentLanguage } from "~/locale/context";
 import { useFooterQuery } from "~/types";
 
@@ -16,6 +18,7 @@ export const Footer = () => {
       code: process.env.conferenceCode,
     },
   });
+  const { pathname } = useRouter();
 
   const language = useCurrentLanguage();
   const menu = language === "en" ? footerEn : footerIt;
@@ -24,15 +27,29 @@ export const Footer = () => {
     <FooterStyleguide
       logo={FooterLogo}
       bottomLinks={menu.links}
+      noTopSpace={pathname === "/"}
       socials={[
-        { icon: "twitter", link: "https://twitter.com/pyconit" },
-        { icon: "facebook", link: "https://www.facebook.com/pythonitalia" },
-        { icon: "instagram", link: "https://www.instagram.com/python.it" },
+        { icon: "twitter", link: "https://twitter.com/pyconit", rel: "me" },
+        {
+          icon: "facebook",
+          link: "https://www.facebook.com/pythonitalia",
+          rel: "me",
+        },
+        {
+          icon: "instagram",
+          link: "https://www.instagram.com/python.it",
+          rel: "me",
+        },
         {
           icon: "linkedin",
           link: "https://www.linkedin.com/company/pycon-italia",
+          rel: "me",
         },
-        { icon: "mastodon", link: "https://social.python.it/@pycon" },
+        {
+          icon: "mastodon",
+          link: "https://social.python.it/@pycon",
+          rel: "me",
+        },
       ]}
     />
   );

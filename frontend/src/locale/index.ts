@@ -20,6 +20,8 @@ export const messages = {
     "scheduleEventDetail.sidebar.spacesLeft": "Seats left",
     "scheduleEvent.soldout": "Sold-out",
 
+    "homepage.followUs": "Follow us on",
+
     "home.title": "Home",
     "home.deadline.begins": "Begins",
     "home.deadline.deadline": "Deadline",
@@ -1477,6 +1479,7 @@ Affrettati a comprare il biglietto!`,
     "voting.minutes": "{type} ({duration} minuti)",
     "voting.pagination":
       "Pagina {currentPage} di {totalPages} ({totalItems, plural, one {1 item} other {{totalItems} items}})",
+    "homepage.followUs": "Seguici su",
   },
 };
 
