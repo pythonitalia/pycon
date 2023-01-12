@@ -598,6 +598,7 @@ export const messages = {
     "jobboard.applyNow": "Apply now",
     "jobboard.company": "Company",
     "jobboard.role": "Role",
+    "jobboard.discoverMore": "Discover More",
 
     "whatsnext.comingUp": "Coming up",
     "whatsnext.beings": "Begins",
@@ -1237,6 +1238,7 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "jobboard.applyNow": "Candidati",
     "jobboard.company": "Azienda",
     "jobboard.role": "Ruolo",
+    "jobboard.discoverMore": "Scopri di più",
 
     "error404.message":
       "Non siamo riusciti a trovare la pagina che stai cercando :(",

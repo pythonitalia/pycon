@@ -1,67 +1,9 @@
-/** @jsxRuntime classic */
-
-/** @jsx jsx */
-import { Fragment } from "react";
-import { FormattedMessage } from "react-intl";
-import { Box, Heading, jsx } from "theme-ui";
-
 import { GetStaticProps } from "next";
 
 import { getApolloClient, addApolloState } from "~/apollo/client";
-import { JobListingAccordion } from "~/components/job-listing-accordion";
-import { MetaTags } from "~/components/meta-tags";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
-import { useCurrentLanguage } from "~/locale/context";
-import { queryAllJobListings, useAllJobListingsQuery } from "~/types";
 
-const COLORS = ["blue", "orange", "violet", "keppel"];
-
-const JobsBoardPage = () => {
-  const language = useCurrentLanguage();
-  const {
-    data: { jobListings },
-  } = useAllJobListingsQuery({
-    variables: {
-      language,
-      conference: process.env.conferenceCode,
-    },
-  });
-
-  return (
-    <Fragment>
-      <FormattedMessage id="jobboard.title">
-        {(text) => <MetaTags title={text} />}
-      </FormattedMessage>
-      <Box
-        sx={{
-          borderTop: "primary",
-        }}
-      />
-
-      <Box
-        sx={{
-          mx: "auto",
-          px: 3,
-          py: 5,
-          maxWidth: "container",
-        }}
-      >
-        <Heading as="h1">
-          <FormattedMessage id="jobboard.title" />
-        </Heading>
-      </Box>
-
-      <Box as="ul">
-        {jobListings.map((job, index) => (
-          <JobListingAccordion
-            backgroundColor={COLORS[index % COLORS.length]}
-            job={job}
-          />
-        ))}
-      </Box>
-    </Fragment>
-  );
-};
+import { queryAllJobListings } from "~/types";
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
   const client = getApolloClient();
@@ -79,4 +21,4 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
   });
 };
 
-export default JobsBoardPage;
+export { JobPageHandler as default } from "~/components/job-page-handler";
