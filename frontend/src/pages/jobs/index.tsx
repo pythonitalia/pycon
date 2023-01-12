@@ -23,6 +23,7 @@ const JobsBoardPage = () => {
   } = useAllJobListingsQuery({
     variables: {
       language,
+      conference: process.env.conferenceCode,
     },
   });
 
@@ -69,6 +70,7 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
     prefetchSharedQueries(client, locale),
     queryAllJobListings(client, {
       language: locale,
+      conference: process.env.conferenceCode,
     }),
   ]);
 

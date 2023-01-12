@@ -33,6 +33,13 @@ class JobListing(TimeStampedModel, OrderedModel):
     )
     description = I18nTextField(_("description"), blank=True)
     apply_url = models.TextField(_("URL where you can apply"), blank=True)
+    conference = models.ForeignKey(
+        "conferences.Conference",
+        on_delete=models.CASCADE,
+        verbose_name=_("conference"),
+        related_name="job_listings",
+        null=True,
+    )
 
     objects = JobListingManager()
 

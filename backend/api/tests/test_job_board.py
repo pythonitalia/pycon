@@ -1,17 +1,14 @@
-from datetime import timedelta
-
-from django.utils import timezone
 from pytest import mark
 
 from helpers.tests import get_image_url_from_request
 from i18n.strings import LazyI18nString
 
 
-def _query_job_board(client):
+def _query_job_board(client, conference):
     return client.query(
         """
-        query {
-            jobListings {
+        query($conference: String!) {
+            jobListings(conference: $conference) {
                 id
                 title
                 slug
@@ -21,17 +18,19 @@ def _query_job_board(client):
                 applyUrl
             }
         }
-    """
+    """,
+        variables={"conference": conference},
     )
 
 
 @mark.django_db
-def test_query_job_board(rf, graphql_client, job_listing_factory):
+def test_query_job_board(rf, graphql_client, job_listing_factory, conference_factory):
     listing = job_listing_factory()
+    job_listing_factory(conference=conference_factory())
 
     request = rf.get("/")
 
-    resp = _query_job_board(graphql_client)
+    resp = _query_job_board(graphql_client, conference=listing.conference.code)
 
     assert len(resp["data"]["jobListings"]) == 1
 
@@ -48,7 +47,6 @@ def test_query_job_board(rf, graphql_client, job_listing_factory):
 
 @mark.django_db
 def test_query_single_job_listing(rf, graphql_client, job_listing_factory):
-    request = rf.get("/")
     listing = job_listing_factory(
         slug=LazyI18nString({"en": "demo", "it": "esempio"}),
         company_logo=None,
