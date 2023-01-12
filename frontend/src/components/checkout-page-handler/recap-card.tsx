@@ -83,13 +83,17 @@ const RecapHotelItem = ({
   const bedLayout = hotelRoom.availableBedLayouts.find(
     (h) => h.id === selectedHotelRoomInfo.beds,
   );
+
   return (
     <div>
       <Text size="label2">
         <FormattedMessage
           id="tickets.checkout.recap.hotelRoomsPrice"
           values={{
-            price: moneyFormatter.format(parseFloat(hotelRoom.price)),
+            price: moneyFormatter.format(
+              parseFloat(hotelRoom.price) * selectedHotelRoomInfo.numNights,
+            ),
+            perNight: moneyFormatter.format(parseFloat(hotelRoom.price)),
             taxRate: 0,
           }}
         />

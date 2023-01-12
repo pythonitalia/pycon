@@ -273,7 +273,8 @@ export const messages = {
 
     "tickets.checkout.voucher.placeholder": "Enter your voucher code",
     "tickets.checkout.recap.price": "{price} (incl. {taxRate}% VAT)",
-    "tickets.checkout.recap.hotelRoomsPrice": "{price} (incl. 0% VAT)",
+    "tickets.checkout.recap.hotelRoomsPrice":
+      "{price} ({perNight}/night) (incl. 0% VAT)",
 
     "tickets.productsList.soldOut": "Sold-out",
 
@@ -1374,7 +1375,8 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
 
     "tickets.checkout.voucher.placeholder": "Codice sconto",
     "tickets.checkout.recap.price": "{price} (incl. {taxRate}% IVA)",
-    "tickets.checkout.recap.hotelRoomsPrice": "{price} (incl. 0% IVA)",
+    "tickets.checkout.recap.hotelRoomsPrice":
+      "{price} ({perNight}/notte) (incl. 0% IVA)",
 
     "tickets.productsList.soldOut": "Sold-out",
     "tickets.checkout.payWithCard": "Paga con carta",
