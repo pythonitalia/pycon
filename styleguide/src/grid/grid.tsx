@@ -1,11 +1,13 @@
 import clsx from "clsx";
 import React from "react";
 
+export type GridCols = number;
+
 type Props = {
-  cols: number;
+  cols: GridCols;
   children: React.ReactNode;
   alignItems?: "start" | "center" | "end";
-  gap?: "none" | "medium";
+  gap?: "none" | "small" | "medium";
   divide?: boolean;
 };
 
@@ -36,6 +38,7 @@ export const Grid = ({
         "lg:items-center": alignItems === "center",
         "lg:items-end": alignItems === "end",
 
+        "gap-2 lg:gap-4": gap === "small",
         "gap-2 lg:gap-6": gap === "medium",
 
         // weird bug in tailwind where divide-y-0 doesn't work

@@ -1,7 +1,9 @@
 import React from "react";
 import { Heading } from "../heading";
+import { Container } from "../container";
 import { Text } from "../text";
 import { Grid } from "./grid";
+import { GridColumn } from "./grid-column";
 
 export default {
   title: "Grid",
@@ -27,6 +29,33 @@ export const Primary = ({ cols }) => {
         <div className="bg-yellow">6</div>
       </Grid>
     </div>
+  );
+};
+
+export const SpanColumns = () => {
+  return (
+    <Container>
+      <Grid cols={12}>
+        <GridColumn colSpan={4} rowSpan={2}>
+          <div className="bg-purple h-full">1</div>
+        </GridColumn>
+        <GridColumn colSpan={8}>
+          <div className="bg-green">2</div>
+        </GridColumn>
+        <GridColumn colSpan={1}>
+          <div className="bg-yellow">3</div>
+        </GridColumn>
+        <GridColumn colSpan={1}>
+          <div className="bg-pink">4</div>
+        </GridColumn>
+        <GridColumn colSpan={1}>
+          <div className="bg-red">5</div>
+        </GridColumn>
+        <GridColumn colSpan={1}>
+          <div className="bg-blue">6</div>
+        </GridColumn>
+      </Grid>
+    </Container>
   );
 };
 

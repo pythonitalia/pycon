@@ -7,6 +7,8 @@ type Props = React.PropsWithChildren<{
   rel?: string;
   target?: string;
   hoverColor?: Color;
+  noHover?: boolean;
+  onClick?: (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
 }>;
 
 export const Link = ({
@@ -15,25 +17,39 @@ export const Link = ({
   rel,
   target,
   hoverColor = "green",
+  noHover = false,
+  onClick,
 }: Props) => {
   return (
     <a
-      className={clsx("text-black hover:fill-current transition-colors", {
-        "hover:text-coral": hoverColor === "coral",
-        "hover:text-caramel": hoverColor === "caramel",
-        "hover:text-cream": hoverColor === "cream",
-        "hover:text-yellow": hoverColor === "yellow",
-        "hover:text-green": hoverColor === "green",
-        "hover:text-purple": hoverColor === "purple",
-        "hover:text-pink": hoverColor === "pink",
-        "hover:text-blue": hoverColor === "blue",
-        "hover:text-red": hoverColor === "red",
-        "hover:text-success": hoverColor === "success",
-        "hover:text-warning": hoverColor === "warning",
-        "hover:text-neutral": hoverColor === "neutral",
-        "hover:text-black": hoverColor === "black",
-        "hover:text-white": hoverColor === "white",
-        "hover:text-milk": hoverColor === "milk",
+      onClick={onClick}
+      className={clsx("text-black transition-colors", {
+        "hover:fill-current hover:text-coral":
+          hoverColor === "coral" && !noHover,
+        "hover:fill-current hover:text-caramel":
+          hoverColor === "caramel" && !noHover,
+        "hover:fill-current hover:text-cream":
+          hoverColor === "cream" && !noHover,
+        "hover:fill-current hover:text-yellow":
+          hoverColor === "yellow" && !noHover,
+        "hover:fill-current hover:text-green":
+          hoverColor === "green" && !noHover,
+        "hover:fill-current hover:text-purple":
+          hoverColor === "purple" && !noHover,
+        "hover:fill-current hover:text-pink": hoverColor === "pink" && !noHover,
+        "hover:fill-current hover:text-blue": hoverColor === "blue" && !noHover,
+        "hover:fill-current hover:text-red": hoverColor === "red" && !noHover,
+        "hover:fill-current hover:text-success":
+          hoverColor === "success" && !noHover,
+        "hover:fill-current hover:text-warning":
+          hoverColor === "warning" && !noHover,
+        "hover:fill-current hover:text-neutral":
+          hoverColor === "neutral" && !noHover,
+        "hover:fill-current hover:text-black":
+          hoverColor === "black" && !noHover,
+        "hover:fill-current hover:text-white":
+          hoverColor === "white" && !noHover,
+        "hover:fill-current hover:text-milk": hoverColor === "milk" && !noHover,
       })}
       href={href}
       rel={rel}

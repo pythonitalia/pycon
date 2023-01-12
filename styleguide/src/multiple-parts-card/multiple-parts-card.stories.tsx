@@ -538,20 +538,59 @@ export const CardWithInputsInItAndFocus = () => {
   );
 };
 
-export const CardPartWithRightSideIcon = () => {
+export const CardPartIconsWithIcons = ({ size }) => {
   return (
     <div className="p-6">
       <MultiplePartsCard>
         <CardPart
+          size={size}
           rightSideIcon="arrow"
           rightSideIconBackground="none"
           rightSideIconSize="small"
           contentAlign="left"
           openLabel="Discover more"
         >
-          <Text size="label3">text here</Text>
+          <Text size="label3">Icon on the right only</Text>
+        </CardPart>
+      </MultiplePartsCard>
+      <Spacer size="large" />
+      <MultiplePartsCard>
+        <CardPart
+          size={size}
+          icon="arrow"
+          iconBackground="none"
+          iconSize="small"
+          contentAlign="left"
+          openLabel="Discover more"
+        >
+          <Text size="label3">Icon on the left only</Text>
+        </CardPart>
+      </MultiplePartsCard>
+      <Spacer size="large" />
+      <MultiplePartsCard>
+        <CardPart
+          size={size}
+          icon="arrow"
+          iconBackground="none"
+          iconSize="small"
+          rightSideIcon="arrow"
+          rightSideIconBackground="none"
+          rightSideIconSize="small"
+          contentAlign="left"
+          openLabel="Discover more"
+        >
+          <Text size="label3">Icon on both sides</Text>
         </CardPart>
       </MultiplePartsCard>
     </div>
   );
+};
+
+CardPartIconsWithIcons.argTypes = {
+  size: {
+    control: {
+      type: "select",
+      options: ["small", "large"],
+    },
+  },
 };

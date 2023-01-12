@@ -14,9 +14,11 @@ type Icon = "ticket" | "tshirt" | "hotel" | "star" | "arrow";
 type IconBackground = "green" | "pink" | "blue" | "yellow" | "none";
 type IconSize = "small" | "large";
 
-type CardPartProps = React.PropsWithChildren<{
+type CardPartProps = {
+  children: React.ReactNode;
   noBg?: boolean;
   contentAlign?: "right" | "left" | "center";
+  size?: "small" | "large";
   icon?: Icon;
   iconBackground?: IconBackground;
   iconSize?: IconSize;
@@ -28,12 +30,13 @@ type CardPartProps = React.PropsWithChildren<{
   closeLabel?: string | React.ReactNode;
   fullHeight?: boolean;
   shrink?: boolean;
-}>;
+};
 
 export const CardPart = ({
   children,
   noBg = false,
   contentAlign = "center",
+  size = "large",
   icon,
   iconBackground,
   iconSize = "large",
@@ -62,7 +65,7 @@ export const CardPart = ({
 
   return (
     <div
-      className={clsx("overflow-hidden transition-all px-4 lg:px-6", {
+      className={clsx("overflow-hidden transition-all", {
         "bg-milk": noBg,
         "bg-cream": !noBg,
 
@@ -70,7 +73,12 @@ export const CardPart = ({
         "text-left": contentAlign === "left",
         "text-center": contentAlign === "center",
 
-        "py-4 lg:py-6": !canBeOpened || open,
+        "py-4 lg:py-6": (!canBeOpened || open) && size === "large",
+        "py-4": (!canBeOpened || open) && size === "small",
+
+        "px-4 lg:px-6": size === "large",
+        "px-4": size === "small",
+
         "h-0 py-0 -mb-0.6": canBeOpened && !open,
 
         "cursor-pointer": isClickToExpandElement,
@@ -89,6 +97,7 @@ export const CardPart = ({
       >
         {icon && (
           <Icon
+            containerSize={size}
             size={iconSize}
             side="left"
             iconBackground={iconBackground}
@@ -139,6 +148,7 @@ export const CardPart = ({
         </div>
         {rightSideIcon && (
           <Icon
+            containerSize={size}
             size={rightSideIconSize}
             side="right"
             iconBackground={rightSideIconBackground}
@@ -155,11 +165,13 @@ const Icon = ({
   iconBackground,
   side,
   size,
+  containerSize,
 }: {
   icon: Icon;
   iconBackground?: IconBackground;
   side: "left" | "right";
   size: IconSize;
+  containerSize: "small" | "large";
 }) => {
   let Component;
   switch (icon) {
@@ -183,8 +195,15 @@ const Icon = ({
   return (
     <div
       className={clsx("inline-flex items-center justify-center", {
-        "border-r -m-4 lg:-m-6": side === "left",
-        "ml-auto border-l -mr-4 lg:-mr-6 -my-4 lg:-my-6": side === "right",
+        "border-r": side === "left",
+        "ml-auto border-l": side === "right",
+
+        "-m-4 lg:-m-6": side === "left" && containerSize === "large",
+        "-m-4": side === "left" && containerSize === "small",
+
+        "-mr-4 lg:-mr-6 -my-4 lg:-my-6":
+          side === "right" && containerSize === "large",
+        "-mr-4 -my-4": side === "right" && containerSize === "small",
 
         "p-4 lg:p-6": size === "large",
         "p-4": size === "small",
