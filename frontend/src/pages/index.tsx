@@ -10,7 +10,7 @@ import {
   Spacer,
   Button,
   Section,
-  SnakeCountdown,
+  Countdown,
   Separator,
 } from "@python-italia/pycon-styleguide";
 import {
@@ -91,7 +91,8 @@ export const HomePage = () => {
 
         <SplitSection
           sideContent={
-            <SnakeCountdown
+            <Countdown
+              showSnake
               snakeLookingAt="right"
               deadline={parseISO(conference.cfpDeadline.end)}
             />
@@ -107,7 +108,8 @@ export const HomePage = () => {
             {conference.homepageCountdownSectionSubtitle}
           </Heading>
           <Spacer size="medium" />
-          <SnakeCountdown
+          <Countdown
+            showSnake
             deadline={parseISO(conference.cfpDeadline.end)}
             className="lg:hidden"
           />

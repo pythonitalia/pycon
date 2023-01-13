@@ -1,10 +1,11 @@
 import {
   CardPart,
-  SliderGridSection,
+  SliderGrid,
   MultiplePartsCard,
   Text,
   Heading,
   Spacer,
+  Section,
 } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
 
@@ -28,70 +29,72 @@ export const TicketsOverviewSection = () => {
   // and what not
 
   return (
-    <SliderGridSection
-      background="snake"
-      title={<FormattedMessage id="ticketsOverview.buyTicketsSection" />}
-      cols={3}
-    >
-      <MultiplePartsCard cta={cta}>
-        <CardPart>
-          <Heading size={2}>
-            <FormattedMessage id="ticketsOverview.ticket.student.title" />
-          </Heading>
-          <Spacer size="xs" />
-          <Text size={2}>
-            <FormattedMessage id="ticketsOverview.ticket.student.description" />
-          </Text>
-        </CardPart>
+    <Section noContainer>
+      <SliderGrid
+        background="snake"
+        title={<FormattedMessage id="ticketsOverview.buyTicketsSection" />}
+        cols={3}
+      >
+        <MultiplePartsCard cta={cta}>
+          <CardPart>
+            <Heading size={2}>
+              <FormattedMessage id="ticketsOverview.ticket.student.title" />
+            </Heading>
+            <Spacer size="xs" />
+            <Text size={2}>
+              <FormattedMessage id="ticketsOverview.ticket.student.description" />
+            </Text>
+          </CardPart>
 
-        <CardPart>
-          <Heading size={1}>{moneyFormatter.format(60)}</Heading>
-          <Spacer size="xs" />
-          <Text uppercase size={2}>
-            <FormattedMessage id="ticketsOverview.flatPrice" />
-          </Text>
-        </CardPart>
-      </MultiplePartsCard>
+          <CardPart>
+            <Heading size={1}>{moneyFormatter.format(60)}</Heading>
+            <Spacer size="xs" />
+            <Text uppercase size={2}>
+              <FormattedMessage id="ticketsOverview.flatPrice" />
+            </Text>
+          </CardPart>
+        </MultiplePartsCard>
 
-      <MultiplePartsCard cta={cta}>
-        <CardPart>
-          <Heading size={2}>
-            <FormattedMessage id="ticketsOverview.ticket.personal.title" />
-          </Heading>
-          <Spacer size="xs" />
-          <Text size={2}>
-            <FormattedMessage id="ticketsOverview.ticket.personal.description" />
-          </Text>
-        </CardPart>
+        <MultiplePartsCard cta={cta}>
+          <CardPart>
+            <Heading size={2}>
+              <FormattedMessage id="ticketsOverview.ticket.personal.title" />
+            </Heading>
+            <Spacer size="xs" />
+            <Text size={2}>
+              <FormattedMessage id="ticketsOverview.ticket.personal.description" />
+            </Text>
+          </CardPart>
 
-        <CardPart>
-          <Heading size={1}>{moneyFormatter.format(120)}</Heading>
-          <Spacer size="xs" />
-          <Text uppercase size={2}>
-            Early bird
-          </Text>
-        </CardPart>
-      </MultiplePartsCard>
+          <CardPart>
+            <Heading size={1}>{moneyFormatter.format(120)}</Heading>
+            <Spacer size="xs" />
+            <Text uppercase size={2}>
+              Early bird
+            </Text>
+          </CardPart>
+        </MultiplePartsCard>
 
-      <MultiplePartsCard cta={cta}>
-        <CardPart>
-          <Heading size={2}>
-            <FormattedMessage id="ticketsOverview.ticket.business.title" />
-          </Heading>
-          <Spacer size="xs" />
-          <Text size={2}>
-            <FormattedMessage id="ticketsOverview.ticket.business.description" />
-          </Text>
-        </CardPart>
+        <MultiplePartsCard cta={cta}>
+          <CardPart>
+            <Heading size={2}>
+              <FormattedMessage id="ticketsOverview.ticket.business.title" />
+            </Heading>
+            <Spacer size="xs" />
+            <Text size={2}>
+              <FormattedMessage id="ticketsOverview.ticket.business.description" />
+            </Text>
+          </CardPart>
 
-        <CardPart>
-          <Heading size={1}>{moneyFormatter.format(180)}</Heading>
-          <Spacer size="xs" />
-          <Text uppercase size={2}>
-            Early bird
-          </Text>
-        </CardPart>
-      </MultiplePartsCard>
-    </SliderGridSection>
+          <CardPart>
+            <Heading size={1}>{moneyFormatter.format(180)}</Heading>
+            <Spacer size="xs" />
+            <Text uppercase size={2}>
+              Early bird
+            </Text>
+          </CardPart>
+        </MultiplePartsCard>
+      </SliderGrid>
+    </Section>
   );
 };

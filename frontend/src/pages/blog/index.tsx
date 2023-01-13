@@ -3,13 +3,12 @@ import {
   Text,
   Page,
   Section,
-  GridSection,
   MultiplePartsCard,
   CardPart,
   Link,
+  Grid,
 } from "@python-italia/pycon-styleguide";
 import { parseISO } from "date-fns";
-import { lang } from "moment";
 import { FormattedMessage } from "react-intl";
 
 import { GetStaticProps } from "next";
@@ -46,68 +45,37 @@ export const BlogPage = () => {
       <Section>
         <Heading size="display1">Blog</Heading>
       </Section>
-      <GridSection cols={3}>
-        {posts.map((post) => (
-          <Link
-            hoverColor="black"
-            href={createHref({ path: `/blog/${post.slug}`, locale: language })}
-          >
-            <MultiplePartsCard>
-              <CardPart
-                rightSideIcon="arrow"
-                rightSideIconSize="small"
-                shrink={false}
-                contentAlign="left"
-              >
-                <Text uppercase size="label3" weight="strong">
-                  {dateFormatter.format(parseISO(post.published))}
-                </Text>
-              </CardPart>
-              <CardPart fullHeight noBg contentAlign="left">
-                <Heading size={4}>{post.title}</Heading>
-              </CardPart>
-            </MultiplePartsCard>
-          </Link>
-        ))}
-      </GridSection>
+      <Section>
+        <Grid cols={3}>
+          {posts.map((post) => (
+            <Link
+              hoverColor="black"
+              href={createHref({
+                path: `/blog/${post.slug}`,
+                locale: language,
+              })}
+            >
+              <MultiplePartsCard>
+                <CardPart
+                  rightSideIcon="arrow"
+                  rightSideIconSize="small"
+                  shrink={false}
+                  contentAlign="left"
+                >
+                  <Text uppercase size="label3" weight="strong">
+                    {dateFormatter.format(parseISO(post.published))}
+                  </Text>
+                </CardPart>
+                <CardPart fullHeight noBg contentAlign="left">
+                  <Heading size={4}>{post.title}</Heading>
+                </CardPart>
+              </MultiplePartsCard>
+            </Link>
+          ))}
+        </Grid>
+      </Section>
     </Page>
   );
-
-  // return (
-  //   <Fragment>
-  //     <FormattedMessage id="blog.title">
-  //       {(text) => <MetaTags title={text} />}
-  //     </FormattedMessage>
-
-  //     <Box sx={{ mx: "auto", px: 3, py: 5, maxWidth: "container" }}>
-  //       {posts.map((post) => (
-  //         <Box as="article" key={post.slug} sx={{ mb: 4, maxWidth: "600px" }}>
-  //           <Heading sx={{ mb: 2 }}>
-  //             <Link
-  //               variant="heading"
-  //               path={`/blog/[slug]`}
-  //               params={{ slug: post.slug }}
-  //             >
-  //               {post.title}
-  //             </Link>
-  //           </Heading>
-
-  //           <Text as="p" sx={{ mb: 2 }}>
-  //             {post.excerpt}
-  //           </Text>
-
-  //           <Link
-  //             path="/blog/[slug]"
-  //             params={{ slug: post.slug }}
-  //             sx={{ display: "block" }}
-  //           >
-  //             <FormattedMessage id="blog.readMore" />
-  //           </Link>
-  //         </Box>
-  //       ))}
-  //     </Box>
-  //   </Fragment>
-  // );
 };
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
