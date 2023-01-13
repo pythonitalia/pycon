@@ -1,5 +1,4 @@
 import {
-  GridSection,
   GridColumn,
   Heading,
   Section,
@@ -8,6 +7,7 @@ import {
   Spacer,
   Button,
   LayoutContent,
+  Grid,
 } from "@python-italia/pycon-styleguide";
 import React from "react";
 import { FormattedMessage } from "react-intl";
@@ -40,41 +40,47 @@ export const JobBoardLayout = ({
         </Heading>
       </Section>
 
-      <GridSection cols={12}>
-        <GridColumn colSpan={4}>
-          <LayoutContent
-            showFrom={onMobileShowOnly === "jobListing" ? "desktop" : "mobile"}
-            as="ul"
-            fullScreenHeight
-            overflow="scroll"
-          >
-            {jobListings.map((job, index) => (
-              <JobListingAccordion key={index} job={job} />
-            ))}
-          </LayoutContent>
-        </GridColumn>
-        <GridColumn colSpan={8}>
-          <LayoutContent
-            showFrom={onMobileShowOnly === "jobListings" ? "desktop" : "mobile"}
-            fullScreenHeight
-            overflow="scroll"
-          >
-            <Heading size={2}>{jobListing.title}</Heading>
-            <Spacer size="small" />
-            <Text size={2} color="grey-500">
-              {jobListing.company}
-            </Text>
-            <Spacer size="large" />
-            <div>{compile(jobListing.description).tree}</div>
-            <Spacer size="xl" />
-            {jobListing.applyUrl && (
-              <Button href={jobListing.applyUrl} role="secondary">
-                <FormattedMessage id="jobboard.applyNow" />
-              </Button>
-            )}
-          </LayoutContent>
-        </GridColumn>
-      </GridSection>
+      <Section>
+        <Grid cols={12}>
+          <GridColumn colSpan={4}>
+            <LayoutContent
+              showFrom={
+                onMobileShowOnly === "jobListing" ? "desktop" : "mobile"
+              }
+              as="ul"
+              fullScreenHeight
+              overflow="scroll"
+            >
+              {jobListings.map((job, index) => (
+                <JobListingAccordion key={index} job={job} />
+              ))}
+            </LayoutContent>
+          </GridColumn>
+          <GridColumn colSpan={8}>
+            <LayoutContent
+              showFrom={
+                onMobileShowOnly === "jobListings" ? "desktop" : "mobile"
+              }
+              fullScreenHeight
+              overflow="scroll"
+            >
+              <Heading size={2}>{jobListing.title}</Heading>
+              <Spacer size="small" />
+              <Text size={2} color="grey-500">
+                {jobListing.company}
+              </Text>
+              <Spacer size="large" />
+              <div>{compile(jobListing.description).tree}</div>
+              <Spacer size="xl" />
+              {jobListing.applyUrl && (
+                <Button href={jobListing.applyUrl} role="secondary">
+                  <FormattedMessage id="jobboard.applyNow" />
+                </Button>
+              )}
+            </LayoutContent>
+          </GridColumn>
+        </Grid>
+      </Section>
     </Page>
   );
 };
