@@ -10,16 +10,22 @@ import {
 } from "date-fns";
 import { isBefore } from "date-fns";
 import { FormattedMessage } from "react-intl";
+import { Color } from "../types";
+import { getBackgroundClasses } from "../colors-utils";
 
 type Props = {
   className?: string;
   deadline: Date;
+  showSnake?: boolean;
   snakeLookingAt?: "left" | "right";
+  background?: Color;
 };
 
-export const SnakeCountdown = ({
+export const Countdown = ({
   className,
   deadline,
+  background = "green",
+  showSnake = false,
   snakeLookingAt = "left",
 }: Props) => {
   const { days, hours, minutes } = timeLeftUntil(deadline);
@@ -30,7 +36,7 @@ export const SnakeCountdown = ({
             value: hours,
             label: (
               <FormattedMessage
-                id="snakeCountdown.hours"
+                id="countdown.hours"
                 defaultMessage="{value, plural, one {hour} other {hours}}"
                 values={{
                   value: hours,
@@ -42,7 +48,7 @@ export const SnakeCountdown = ({
             value: minutes,
             label: (
               <FormattedMessage
-                id="snakeCountdown.minutes"
+                id="countdown.minutes"
                 defaultMessage="{value, plural, one {minute} other {minutes}}"
                 values={{
                   value: minutes,
@@ -56,7 +62,7 @@ export const SnakeCountdown = ({
             value: days,
             label: (
               <FormattedMessage
-                id="snakeCountdown.days"
+                id="countdown.days"
                 defaultMessage="{value, plural, one {day} other {days}}"
                 values={{
                   value: days,
@@ -68,7 +74,7 @@ export const SnakeCountdown = ({
             value: hours,
             label: (
               <FormattedMessage
-                id="snakeCountdown.hours"
+                id="countdown.hours"
                 defaultMessage="{value, plural, one {hour} other {hours}}"
                 values={{
                   value: hours,
@@ -82,23 +88,31 @@ export const SnakeCountdown = ({
 
   return (
     <div className={clsx("max-w-[350px] lg:max-w-[400px]", className)}>
-      <SnakeHead
-        className={clsx(snakeBaseClasses, {
-          "ml-auto mr-4": snakeLookingAt === "left",
-          "scale-x-[-1] ml-4": snakeLookingAt === "right",
+      {showSnake && (
+        <SnakeHead
+          className={clsx(snakeBaseClasses, {
+            "ml-auto mr-4": snakeLookingAt === "left",
+            "scale-x-[-1] ml-4": snakeLookingAt === "right",
+          })}
+        />
+      )}
+      <div
+        className={clsx("grid grid-cols-2 border-3 border-black divide-x-3", {
+          ...getBackgroundClasses(background),
         })}
-      />
-      <div className="grid grid-cols-2 bg-green border-3 border-black divide-x-3">
+      >
         {boxes.map(({ value, label }, i) => (
           <CountdownBox key={i} value={value} label={label} />
         ))}
       </div>
-      <SnakeTail
-        className={clsx(snakeBaseClasses, {
-          "ml-4": snakeLookingAt === "left",
-          "scale-x-[-1] ml-auto mr-4": snakeLookingAt === "right",
-        })}
-      />
+      {showSnake && (
+        <SnakeTail
+          className={clsx(snakeBaseClasses, {
+            "ml-4": snakeLookingAt === "left",
+            "scale-x-[-1] ml-auto mr-4": snakeLookingAt === "right",
+          })}
+        />
+      )}
     </div>
   );
 };

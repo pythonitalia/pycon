@@ -1,6 +1,6 @@
 import React from "react";
 import { MultiplePartsCard, CardPart } from "../multiple-parts-card";
-import { SliderGridSection } from "./slider-grid-section";
+import { SliderGrid } from "./slider-grid";
 import { Text } from "../text";
 import { Heading } from "../heading";
 import { Spacer } from "../spacer";
@@ -8,7 +8,7 @@ import { Spacer } from "../spacer";
 export const Default = () => {
   return (
     <div className="py-12">
-      <SliderGridSection background="snake" title="Buy your tickets!" cols={3}>
+      <SliderGrid background="snake" title="Buy your tickets!" cols={3}>
         <MultiplePartsCard
           cta={{
             link: "/test",
@@ -71,7 +71,7 @@ export const Default = () => {
             <Text size={2}>Early bird</Text>
           </CardPart>
         </MultiplePartsCard>
-      </SliderGridSection>
+      </SliderGrid>
     </div>
   );
 };
@@ -79,11 +79,7 @@ export const Default = () => {
 export const DynamicCards = ({ cols, items }) => {
   return (
     <div className="py-12">
-      <SliderGridSection
-        background="snake"
-        title="Buy your tickets!"
-        cols={cols}
-      >
+      <SliderGrid background="snake" title="Buy your tickets!" cols={cols}>
         {Array(items)
           .fill(0)
           .map((_, index) => (
@@ -109,7 +105,7 @@ export const DynamicCards = ({ cols, items }) => {
               </CardPart>
             </MultiplePartsCard>
           ))}
-      </SliderGridSection>
+      </SliderGrid>
     </div>
   );
 };

@@ -8,9 +8,9 @@ import { Spacer } from "../spacer";
 import { Button } from "../button";
 import { Page } from "./page";
 import { Heading } from "../heading";
-import { SnakeCountdown } from "../snake-countdown";
+import { Countdown } from "../countdown";
 import { Section } from "../section";
-import { SliderGridSection } from "../slider-grid-section";
+import { SliderGrid } from "../slider-grid";
 import { MultiplePartsCard, CardPart } from "../multiple-parts-card";
 
 export default {
@@ -79,7 +79,7 @@ export const Standard = () => (
           Welcome to the Python Italia Conference
         </Heading>
       </Section>
-      <SliderGridSection background="snake" title="Buy your tickets!" cols={3}>
+      <SliderGrid background="snake" title="Buy your tickets!" cols={3}>
         <MultiplePartsCard
           cta={{
             link: "/test",
@@ -142,7 +142,7 @@ export const Standard = () => (
             <Text size={2}>Early bird</Text>
           </CardPart>
         </MultiplePartsCard>
-      </SliderGridSection>
+      </SliderGrid>
 
       <SplitSection
         sideContent={<Cathedral />}
@@ -157,7 +157,7 @@ export const Standard = () => (
       </SplitSection>
       <SplitSection
         sideContent={
-          <SnakeCountdown
+          <Countdown
             snakeLookingAt="right"
             deadline={new Date(2023, 2, 10, 10, 0, 0)}
           />
@@ -171,7 +171,7 @@ export const Standard = () => (
         <Spacer size="medium" />
         <Heading size={2}>PyCon Italia is looking for you!</Heading>
         <Spacer size="medium" />
-        <SnakeCountdown
+        <Countdown
           deadline={new Date(2023, 2, 10, 10, 0, 0)}
           className="lg:hidden"
         />

@@ -1,5 +1,7 @@
 import clsx from "clsx";
 import React, { ReactNode } from "react";
+import { getTextColorClasses } from "../colors-utils";
+import { Color } from "../types";
 
 type Size = "display1" | "display2" | 1 | 2 | 3 | 4 | 5 | 6;
 
@@ -17,13 +19,15 @@ const SIZE_TO_COMPONENT: { [size in Size]: React.ElementType } = {
 export const Heading = ({
   children,
   size = 1,
-  color = "default",
+  color = "black",
+  align,
   className,
   uppercase = false,
 }: {
   children: ReactNode;
   size?: Size;
-  color?: "default" | "none";
+  color?: Color | "none";
+  align?: "left" | "center" | "right";
   className?: string;
   uppercase?: boolean;
 }) => {
@@ -49,8 +53,14 @@ export const Heading = ({
             size === 5,
           "font-semibold text-sm leading-1 lg:text-base lg:leading-2":
             size === 6,
-          "text-black": color === "default",
+
           uppercase: uppercase,
+
+          "text-left": align === "left",
+          "text-center": align === "center",
+          "text-right": align === "right",
+
+          ...getTextColorClasses(color),
         },
         className
       )}

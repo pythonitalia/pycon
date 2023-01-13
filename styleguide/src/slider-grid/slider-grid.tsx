@@ -13,7 +13,7 @@ type Props = React.PropsWithChildren<{
   background?: "snake" | "none";
 }>;
 
-export const SliderGridSection = ({
+export const SliderGrid = ({
   children,
   cols,
   title,
@@ -60,7 +60,6 @@ export const SliderGridSection = ({
 
   return (
     <div>
-      <Spacer size="xl" />
       <Container>
         <Heading size="display2">{title}</Heading>
       </Container>
@@ -68,7 +67,7 @@ export const SliderGridSection = ({
 
       <Container noPadding>
         {useSnakeBackground && (
-          <SnakeHead className="relative -rotate-90 md:rotate-0 ml-auto w-32 lg:w-52 md:mr-12 -mt-40 lg:-mt-64 hidden md:block" />
+          <SnakeHead className="relative -rotate-90 md:rotate-0 ml-auto w-32 lg:w-52 md:mr-12 -mt-20 lg:-mt-36 hidden md:block" />
         )}
 
         <div
@@ -103,7 +102,6 @@ export const SliderGridSection = ({
           <SnakeTail className="w-32 lg:w-52 md:ml-12 -mt-20 relative block -rotate-90 md:rotate-0" />
         )}
       </Container>
-      <Spacer size="xl" />
     </div>
   );
 };

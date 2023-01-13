@@ -23,7 +23,7 @@ export { IntermissionText } from "./livestream-itermission-text";
 export { EmbeddedTwitch } from "./embedded-video";
 export { Text } from "./text";
 export { Link } from "./link";
-export { SnakeCountdown } from "./snake-countdown";
+export { Countdown } from "./countdown";
 export { Section } from "./section";
 export { Page } from "./page";
 export { getMessagesForLocale } from "./lang";
@@ -35,11 +35,10 @@ export {
   CardPartAddRemove,
   CardPartTwoSides,
 } from "./multiple-parts-card";
-export { SliderGridSection } from "./slider-grid-section";
+export { SliderGrid } from "./slider-grid";
 export { Separator } from "./separator";
 export { Footer } from "./footer";
 export { Container } from "./container";
-export { GridSection } from "./grid-section";
 export { BottomBar } from "./bottom-bar";
 export { Grid, GridColumn } from "./grid";
 export { Tag } from "./tag";

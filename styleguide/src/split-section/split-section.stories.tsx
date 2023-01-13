@@ -7,7 +7,7 @@ import { Button } from "../button";
 import { Florence2 } from "../illustrations/florence2";
 import { Page } from "../page/index";
 import { Heading } from "../heading";
-import { SnakeCountdown } from "../snake-countdown";
+import { Countdown } from "../countdown";
 
 export const Standard = ({ ...props }) => (
   <div className="py-4">
@@ -33,7 +33,7 @@ export const WithOtherSideContent = ({ ...props }) => (
   <div className="py-4">
     <SplitSection
       sideContent={
-        <SnakeCountdown
+        <Countdown
           snakeLookingAt="right"
           deadline={new Date(2023, 2, 10, 10, 0, 0)}
         />
@@ -47,7 +47,7 @@ export const WithOtherSideContent = ({ ...props }) => (
       <Spacer size="medium" />
       <Heading size={2}>PyCon Italia is looking for you!</Heading>
       <Spacer size="medium" />
-      <SnakeCountdown
+      <Countdown
         deadline={new Date(2023, 2, 10, 10, 0, 0)}
         className="lg:hidden"
       />
@@ -66,7 +66,7 @@ export const WithOtherSideContent = ({ ...props }) => (
 
     <SplitSection
       sideContent={
-        <SnakeCountdown
+        <Countdown
           snakeLookingAt="right"
           deadline={new Date(2023, 2, 10, 10, 0, 0)}
         />
@@ -79,7 +79,7 @@ export const WithOtherSideContent = ({ ...props }) => (
       <Spacer size="medium" />
       <Heading size={2}>PyCon Italia is looking for you!</Heading>
       <Spacer size="medium" />
-      <SnakeCountdown
+      <Countdown
         deadline={new Date(2023, 2, 10, 10, 0, 0)}
         className="lg:hidden"
       />
@@ -128,7 +128,7 @@ export const MultipleSections = ({ ...props }) => (
       </SplitSection>
       <SplitSection
         sideContent={
-          <SnakeCountdown
+          <Countdown
             snakeLookingAt="right"
             deadline={new Date(2023, 2, 10, 10, 0, 0)}
           />
@@ -142,7 +142,7 @@ export const MultipleSections = ({ ...props }) => (
         <Spacer size="medium" />
         <Heading size={2}>PyCon Italia is looking for you!</Heading>
         <Spacer size="medium" />
-        <SnakeCountdown
+        <Countdown
           deadline={new Date(2023, 2, 10, 10, 0, 0)}
           className="lg:hidden"
         />

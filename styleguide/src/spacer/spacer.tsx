@@ -4,7 +4,7 @@ import React from "react";
 type Breakpoint = "mobile" | "tablet" | "desktop";
 
 type Props = {
-  size: "thin" | "xs" | "small" | "medium" | "2md" | "large" | "xl";
+  size: "thin" | "xs" | "small" | "medium" | "2md" | "large" | "xl" | "xxl";
   showOnlyOn?: Breakpoint;
   orientation?: "horizontal" | "vertical";
 };
@@ -25,6 +25,7 @@ export const Spacer = ({
         "h-5 lg:h-8": size === "2md" && orientation === "vertical",
         "h-8 lg:h-12": size === "large" && orientation === "vertical",
         "h-12 lg:h-16": size === "xl" && orientation === "vertical",
+        "h-16 lg:h-32": size === "xxl" && orientation === "vertical",
 
         // horizontal spacers
         "w-12": size == "large" && orientation === "horizontal",

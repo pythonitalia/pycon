@@ -9,16 +9,27 @@ import { SocialLink, SocialLinkProps } from "./social-link";
 import { Link as LinkType } from "../navbar/types";
 import { Link } from "../link";
 import { Text } from "../text";
+import clsx from "clsx";
 
 type Props = {
   logo: React.ElementType;
   socials: SocialLinkProps[];
   bottomLinks?: LinkType[];
+  noTopSpace?: boolean;
 };
 
-export const Footer = ({ logo: Logo, socials, bottomLinks = [] }: Props) => (
+export const Footer = ({
+  noTopSpace,
+  logo: Logo,
+  socials,
+  bottomLinks = [],
+}: Props) => (
   <div className="mt-auto">
-    <footer className="overflow-x-clip mt-20 lg:mt-32">
+    <footer
+      className={clsx("overflow-x-clip", {
+        "mt-20 lg:mt-32": !noTopSpace,
+      })}
+    >
       <div className="bg-caramel">
         <Separator />
         <Container>
