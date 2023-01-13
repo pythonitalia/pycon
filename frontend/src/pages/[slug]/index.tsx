@@ -1,9 +1,5 @@
-/** @jsxRuntime classic */
-
-/** @jsx jsx */
 import { Section, Page as BasePage } from "@python-italia/pycon-styleguide";
-import { Fragment } from "react";
-import { jsx } from "theme-ui";
+import React, { Fragment } from "react";
 
 import { GetStaticPaths, GetStaticProps } from "next";
 import Error from "next/error";
