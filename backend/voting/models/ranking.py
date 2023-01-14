@@ -45,7 +45,7 @@ class Rank(TypedDict):
 class RankRequest(models.Model):
 
     conference = models.ForeignKey(
-        "conferences.Conference", on_delete=models.CASCADE, verbose_name=_("conference")
+        "conferences.Conference", on_delete=models.CASCADE, verbose_name=_("conference"),
     )
 
     created = AutoCreatedField(_("created"))
