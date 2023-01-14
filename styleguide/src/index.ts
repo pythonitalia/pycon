@@ -2,8 +2,7 @@ import "./style.css";
 
 export { NavBar } from "./navbar/navbar";
 export { Heading } from "./heading/heading";
-export { SpeakerSquare } from "./speaker-square/speaker-square";
-export { SpeakerDetails } from "./speaker-details/speaker-details";
+export { SpeakerCard } from "./speaker-card";
 export { Marquee } from "./marquee/marquee";
 export { Carousel } from "./carousel/carousel";
 export { SplitSection } from "./split-section/split-section";

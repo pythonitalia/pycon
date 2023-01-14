@@ -5,6 +5,7 @@ export type GridCols = number;
 
 type Props = {
   cols: GridCols;
+  mdCols?: GridCols;
   children: React.ReactNode;
   alignItems?: "start" | "center" | "end";
   gap?: "none" | "small" | "medium";
@@ -13,6 +14,7 @@ type Props = {
 
 export const Grid = ({
   cols,
+  mdCols,
   children,
   alignItems,
   gap = "medium",
@@ -33,6 +35,19 @@ export const Grid = ({
         "lg:grid-cols-10": cols === 10,
         "lg:grid-cols-11": cols === 11,
         "lg:grid-cols-12": cols === 12,
+
+        "md:grid-cols-1": mdCols === 1,
+        "md:grid-cols-2": mdCols === 2,
+        "md:grid-cols-3": mdCols === 3,
+        "md:grid-cols-4": mdCols === 4,
+        "md:grid-cols-5": mdCols === 5,
+        "md:grid-cols-6": mdCols === 6,
+        "md:grid-cols-7": mdCols === 7,
+        "md:grid-cols-8": mdCols === 8,
+        "md:grid-cols-9": mdCols === 9,
+        "md:grid-cols-10": mdCols === 10,
+        "md:grid-cols-11": mdCols === 11,
+        "md:grid-cols-12": mdCols === 12,
 
         "lg:items-start": alignItems === "start",
         "lg:items-center": alignItems === "center",

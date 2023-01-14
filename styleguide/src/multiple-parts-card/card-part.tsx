@@ -18,7 +18,7 @@ type CardPartProps = {
   children: React.ReactNode;
   noBg?: boolean;
   contentAlign?: "right" | "left" | "center";
-  size?: "small" | "large";
+  size?: "none" | "small" | "large";
   icon?: Icon;
   iconBackground?: IconBackground;
   iconSize?: IconSize;
@@ -171,7 +171,7 @@ const Icon = ({
   iconBackground?: IconBackground;
   side: "left" | "right";
   size: IconSize;
-  containerSize: "small" | "large";
+  containerSize: "none" | "small" | "large";
 }) => {
   let Component;
   switch (icon) {

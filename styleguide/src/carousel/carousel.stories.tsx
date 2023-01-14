@@ -1,5 +1,5 @@
 import React from "react";
-import { SpeakerSquare } from "../speaker-square/speaker-square";
+import { SpeakerCard } from "../speaker-card/speaker-card";
 import { Carousel } from "./carousel";
 
 export default {
@@ -9,7 +9,7 @@ export default {
 export const Standard = ({ items }) => (
   <Carousel title="The speakers">
     {new Array(items).fill(null).map((_, index) => (
-      <SpeakerSquare
+      <SpeakerCard
         key={index}
         name={`Speaker ${index + 1}`}
         subtitle="Python Italia"
