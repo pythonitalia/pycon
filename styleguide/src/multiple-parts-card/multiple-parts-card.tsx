@@ -63,8 +63,8 @@ export const MultiplePartsCard = ({
         isTargetPart: (id) => isMatchingId(id, expandTarget),
       }}
     >
-      <div onFocus={onFocus} className="flex flex-col h-full">
-        <div className="text-center border bg-cream border-black divide-y-3 h-full flex flex-col justify-between">
+      <div onFocus={onFocus} className="flex flex-col h-full multiparts-card-wrapper">
+        <div className="flex flex-col justify-between h-full text-center border border-black multiparts-card-content bg-cream divide-y-3">
           {children}
         </div>
 

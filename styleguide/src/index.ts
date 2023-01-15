@@ -34,6 +34,7 @@ export {
   CardPartAddRemove,
   CardPartTwoSides,
 } from "./multiple-parts-card";
+export { MultiplePartsCardCollection } from "./multiple-parts-card-collection";
 export { SliderGrid } from "./slider-grid";
 export { Separator } from "./separator";
 export { Footer } from "./footer";

@@ -112,3 +112,7 @@ p a {
 .grid-section--current-item a.inline-flex {
     @apply opacity-100 z-0;
 }
+
+.multiple-parts-card-collection .multiparts-card-wrapper + .multiparts-card-wrapper .multiparts-card-content  {
+  border-top-width: 0px; 
+}
