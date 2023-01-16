@@ -67,10 +67,10 @@ export const TicketsOverviewSection = () => {
           </CardPart>
 
           <CardPart>
-            <Heading size={1}>{moneyFormatter.format(120)}</Heading>
+            <Heading size={1}>{moneyFormatter.format(150)}</Heading>
             <Spacer size="xs" />
             <Text uppercase size={2}>
-              Early bird
+              <FormattedMessage id="ticketsOverview.ticket.personal.fareType" />
             </Text>
           </CardPart>
         </MultiplePartsCard>
@@ -87,10 +87,10 @@ export const TicketsOverviewSection = () => {
           </CardPart>
 
           <CardPart>
-            <Heading size={1}>{moneyFormatter.format(180)}</Heading>
+            <Heading size={1}>{moneyFormatter.format(230)}</Heading>
             <Spacer size="xs" />
             <Text uppercase size={2}>
-              Early bird
+              <FormattedMessage id="ticketsOverview.ticket.personal.fareType" />
             </Text>
           </CardPart>
         </MultiplePartsCard>
