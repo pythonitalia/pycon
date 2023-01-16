@@ -163,7 +163,11 @@ module.exports = {
       maxWidth: {
         // + the padding of the container
         container: `${1280 + 16 * 2}px`,
-        'container-medium': `${950 + 16 * 2}px`,
+
+        'container-small': `${600 + 16 * 2}px`,
+        'container-medium': `${810 + 16 * 2}px`,
+        'container-2md': `${950 + 16 * 2}px`,
+
         full: '100%',
       },
       gridTemplateColumns: {

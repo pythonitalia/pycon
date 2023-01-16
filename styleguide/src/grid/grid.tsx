@@ -22,7 +22,7 @@ export const Grid = ({
 }: Props) => {
   return (
     <div
-      className={clsx("grid", {
+      className={clsx("grid md:auto-rows-fr grid-cols-[100%]", {
         "lg:grid-cols-1": cols === 1,
         "lg:grid-cols-2": cols === 2,
         "lg:grid-cols-3": cols === 3,

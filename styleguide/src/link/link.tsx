@@ -8,6 +8,7 @@ type Props = React.PropsWithChildren<{
   target?: string;
   hoverColor?: Color;
   noHover?: boolean;
+  noLayout?: boolean;
   onClick?: (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
 }>;
 
@@ -18,6 +19,7 @@ export const Link = ({
   target,
   hoverColor = "green",
   noHover = false,
+  noLayout = false,
   onClick,
 }: Props) => {
   return (
@@ -50,6 +52,8 @@ export const Link = ({
         "hover:fill-current hover:text-white":
           hoverColor === "white" && !noHover,
         "hover:fill-current hover:text-milk": hoverColor === "milk" && !noHover,
+
+        contents: noLayout,
       })}
       href={href}
       rel={rel}

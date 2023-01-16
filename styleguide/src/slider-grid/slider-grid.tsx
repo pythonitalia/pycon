@@ -59,7 +59,7 @@ export const SliderGrid = ({
   const useSnakeBackground = background === "snake";
 
   return (
-    <div>
+    <div className="slider-grid">
       <Container>
         <Heading size="display2">{title}</Heading>
       </Container>
@@ -73,7 +73,7 @@ export const SliderGrid = ({
         <div
           ref={scrollerRef}
           className={clsx(
-            `snap-x snap-mandatory overflow-x-auto flex md:grid md:gap-0 lg:gap-6`,
+            `snap-x snap-mandatory overflow-x-auto flex md:grid md:gap-0 lg:gap-6 auto-rows-fr`,
             {
               "md:grid-cols-1": cols === 1,
               "md:grid-cols-2": cols === 2,
