@@ -140,6 +140,9 @@ class SubmissionAdmin(AdminUsersMixin, SearchUsersMixin):
     open_submission.short_description = "Open"
     open_submission.allow_tags = True
 
+    def get_queryset(self, request):
+        return super().get_queryset(request).prefetch_related("tags")
+
     class Media:
         js = ["admin/js/jquery.init.js"]
 
