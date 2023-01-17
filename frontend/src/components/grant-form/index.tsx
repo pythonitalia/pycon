@@ -273,7 +273,7 @@ export const GrantForm = ({
             <FormattedMessage id="grants.form.aboutYou" />
           </Heading>
         </CardPart>
-        <CardPart noBg contentAlign="left">
+        <CardPart background="milk" contentAlign="left">
           <Grid cols={1}>
             <InputWrapper
               required={true}
@@ -356,7 +356,7 @@ export const GrantForm = ({
             <FormattedMessage id="grants.form.yourGrant" />
           </Heading>
         </CardPart>
-        <CardPart contentAlign="left" noBg>
+        <CardPart contentAlign="left" background="milk">
           <Grid cols={1}>
             <InputWrapper
               required={true}
@@ -462,7 +462,7 @@ export const GrantForm = ({
             <FormattedMessage id="grants.form.youAndPython" />
           </Heading>
         </CardPart>
-        <CardPart contentAlign="left" noBg>
+        <CardPart contentAlign="left" background="milk">
           <Grid cols={1}>
             <InputWrapper
               required={true}
@@ -503,7 +503,7 @@ export const GrantForm = ({
             <FormattedMessage id="grants.form.optionalInformation" />
           </Heading>
         </CardPart>
-        <CardPart noBg contentAlign="left">
+        <CardPart background="milk" contentAlign="left">
           <Grid cols={1}>
             <InputWrapper
               title={<FormattedMessage id="grants.form.fields.gender" />}

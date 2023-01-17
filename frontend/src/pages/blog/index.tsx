@@ -67,7 +67,7 @@ export const BlogPage = () => {
                     {dateFormatter.format(parseISO(post.published))}
                   </Text>
                 </CardPart>
-                <CardPart fullHeight noBg contentAlign="left">
+                <CardPart fullHeight background="milk" contentAlign="left">
                   <Heading size={4}>{post.title}</Heading>
                 </CardPart>
               </MultiplePartsCard>

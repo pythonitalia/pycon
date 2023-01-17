@@ -94,7 +94,7 @@ export const HotelRow = ({ hotelRoom, openByDefault }: Props) => {
         <Heading size={2}>{hotelRoom.name}</Heading>
       </CardPart>
       {hotelRoom.description && (
-        <CardPart id="content" contentAlign="left" noBg>
+        <CardPart id="content" contentAlign="left" background="milk">
           <TagsCollection>
             {hotelRoom.capacityLeft > 0 ? (
               <Tag color="yellow">

@@ -62,7 +62,7 @@ export const TicketRow = ({
       </CardPart>
 
       {ticket.description && (
-        <CardPart contentAlign="left" noBg id="content">
+        <CardPart contentAlign="left" background="milk" id="content">
           <TagsCollection>
             {ticket.availableUntil && (
               <Tag color="success">
