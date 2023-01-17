@@ -29,6 +29,7 @@ export const KeynotesListPageHandler = () => {
       language,
     },
   });
+
   return (
     <Page endSeparator={false}>
       <MetaTags title="Keynotes" />
@@ -45,7 +46,7 @@ export const KeynotesListPageHandler = () => {
         </Container>
       </Section>
       <Section>
-        <Grid cols={3} mdCols={2}>
+        <Grid cols={3} mdCols={2} equalHeight>
           {keynotes.map((keynote) => (
             <Link
               noLayout
