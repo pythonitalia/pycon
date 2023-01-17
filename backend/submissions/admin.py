@@ -60,7 +60,7 @@ class SubmissionAdmin(AdminUsersMixin, SearchUsersMixin):
         "status",
         "conference",
         "open_submission",
-        "topic",
+        "inline_tags",
         "duration",
         "audience_level",
         "created",
@@ -80,22 +80,23 @@ class SubmissionAdmin(AdminUsersMixin, SearchUsersMixin):
                     "modified",
                     "type",
                     "duration",
-                    "topic",
+                    "tags",
                     "conference",
                     "audience_level",
                     "languages",
                 )
             },
         ),
-        (_("Details"), {"fields": ("elevator_pitch", "abstract", "notes", "tags")}),
+        (_("Details"), {"fields": ("elevator_pitch", "abstract", "notes")}),
     )
-    list_filter = ("conference", "type", "topic", "status")
+    list_filter = ("conference", "type", "tags", "status")
     search_fields = (
         "title",
         "elevator_pitch",
         "abstract",
         "notes",
         "previous_talk_video",
+        "tags",
     )
     prepopulated_fields = {"slug": ("title",)}
     filter_horizontal = ("tags",)
@@ -122,6 +123,11 @@ class SubmissionAdmin(AdminUsersMixin, SearchUsersMixin):
         return self.get_user_display_name(obj.speaker_id)
 
     speaker_display_name.short_description = "Speaker"
+
+    def inline_tags(self, obj):
+        return ", ".join([tag.name for tag in obj.tags.all()])
+
+    speaker_display_name.short_description = "Tags"
 
     def open_submission(self, obj):  # pragma: no cover
         return mark_safe(
