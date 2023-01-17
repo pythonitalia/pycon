@@ -92,12 +92,12 @@ export const VotingCard = ({
         contentAlign="left"
         id="heading"
         icon="star"
-        noBg
+        background="white"
         openLabel={<FormattedMessage id="global.accordion.readMore" />}
       >
         <Heading size={3}>{title}</Heading>
       </CardPart>
-      <CardPart id="content" contentAlign="left" noBg>
+      <CardPart id="content" contentAlign="left" background="blue">
         <InputNumber
           values={[
             {
@@ -138,10 +138,10 @@ export const VotingCard = ({
             )}
         </Text>
       </CardPart>
-      <CardPart id="content" contentAlign="left" noBg size="none">
+      <CardPart id="content" contentAlign="left" background="white" size="none">
         <Grid cols={12} gap="none" divide={true}>
           <GridColumn colSpan={8}>
-            <CardPart contentAlign="left" noBg>
+            <CardPart contentAlign="left" background="white">
               <Text weight="strong" uppercase as="p" size={3}>
                 <FormattedMessage id="voting.elevatorPitch" />
               </Text>
@@ -154,7 +154,7 @@ export const VotingCard = ({
             </CardPart>
           </GridColumn>
           <GridColumn colSpan={3}>
-            <CardPart contentAlign="left" noBg>
+            <CardPart contentAlign="left" background="white">
               <Text weight="strong" uppercase as="p" size={3}>
                 <FormattedMessage id="voting.tags" />
               </Text>
@@ -168,9 +168,9 @@ export const VotingCard = ({
         </Grid>
       </CardPart>
 
-      <CardPart id="content" contentAlign="left" noBg size="none">
+      <CardPart id="content" contentAlign="left" background="white" size="none">
         <Grid cols={3} gap="none" divide={true}>
-          <CardPart contentAlign="left" noBg>
+          <CardPart contentAlign="left" background="white">
             <Text weight="strong" uppercase as="p" size={3}>
               <FormattedMessage id="voting.length" />
             </Text>
@@ -187,7 +187,7 @@ export const VotingCard = ({
               </FormattedMessage>
             </Text>
           </CardPart>
-          <CardPart contentAlign="left" noBg>
+          <CardPart contentAlign="left" background="white">
             <Text weight="strong" uppercase as="p" size={3}>
               <FormattedMessage id="voting.audienceLevel" />
             </Text>
@@ -200,7 +200,7 @@ export const VotingCard = ({
 
           <CardPart
             contentAlign="left"
-            noBg
+            background="white"
             rightSideIcon="arrow"
             rightSideIconBackground="none"
           >
