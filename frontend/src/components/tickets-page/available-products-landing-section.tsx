@@ -44,7 +44,7 @@ export const AvailableProductsLandingSection = ({
   const areTicketsAvailable = businessTicket && personalTicket;
 
   return (
-    <Section containerSize="medium">
+    <Section containerSize="2md">
       <Heading size={1}>
         <FormattedMessage id="tickets.landing.title" />
       </Heading>

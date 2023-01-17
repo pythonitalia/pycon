@@ -8,8 +8,12 @@ type ArticleProps = {
 export const Article = (props: React.PropsWithChildren<ArticleProps>) => {
   return (
     <Fragment>
-      {props.title && <Heading size={1}>{props.title}</Heading>}
-      <Spacer size="medium" />
+      {props.title && (
+        <>
+          <Heading size={1}>{props.title}</Heading>
+          <Spacer size="medium" />
+        </>
+      )}
       <div className="article">{props.children}</div>
     </Fragment>
   );

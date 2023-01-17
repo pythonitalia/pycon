@@ -42,13 +42,14 @@ export const BlogPage = () => {
         {(text) => <MetaTags title={text} />}
       </FormattedMessage>
 
-      <Section>
+      <Section illustration="snakeHead">
         <Heading size="display1">Blog</Heading>
       </Section>
       <Section>
         <Grid cols={3}>
           {posts.map((post) => (
             <Link
+              noLayout
               hoverColor="black"
               href={createHref({
                 path: `/blog/${post.slug}`,
