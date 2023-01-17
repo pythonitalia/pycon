@@ -5,7 +5,7 @@ from typing import List, Optional
 import strawberry
 from django.conf import settings
 from django.utils import timezone, translation
-from strawberry import ID, Private
+from strawberry import ID
 
 from api.cms.types import FAQ, Menu
 from api.events.types import Event
@@ -13,7 +13,7 @@ from api.hotels.types import HotelRoom
 from api.languages.types import Language
 from api.pretix.query import get_conference_tickets, get_voucher
 from api.pretix.types import TicketItem, Voucher
-from api.schedule.types import DayRoom, ScheduleItem
+from api.schedule.types import DayRoom, ScheduleItem, ScheduleItemUser
 from api.sponsors.types import SponsorsByLevel
 from api.submissions.types import Submission, SubmissionType
 from api.voting.types import RankRequest
@@ -48,66 +48,15 @@ class Topic:
 
 
 @strawberry.type
-class KeynoteSpeaker:
-    id: ID
-    name: str
-    bio: str = strawberry.field(resolver=make_localized_resolver("bio"))
-    pronouns: str = strawberry.field(resolver=make_localized_resolver("pronouns"))
-    twitter_handle: str
-    instagram_handle: str
-    website: str
-    highlight_color: str
-    _photo_url: Private[str]
-
-    def __init__(
-        self,
-        id: ID,
-        name: str,
-        bio: str,
-        pronouns: str,
-        twitter_handle: str,
-        instagram_handle: str,
-        website: str,
-        highlight_color: str,
-        _photo_url: str,
-    ):
-        self.id = id
-        self.name = name
-        self.bio = bio
-        self.pronouns = pronouns
-        self.twitter_handle = twitter_handle
-        self.instagram_handle = instagram_handle
-        self.website = website
-        self.highlight_color = highlight_color
-        self._photo_url = _photo_url
-
-    @strawberry.field
-    def photo(self, info) -> str:
-        return info.context.request.build_absolute_uri(self._photo_url)
-
-    @classmethod
-    def from_django_model(cls, instance):
-        return cls(
-            id=instance.id,
-            name=instance.name,
-            _photo_url=instance.photo.url,
-            bio=instance.bio,
-            pronouns=instance.pronouns,
-            highlight_color=instance.highlight_color,
-            twitter_handle=instance.twitter_handle,
-            instagram_handle=instance.instagram_handle,
-            website=instance.website,
-        )
-
-
-@strawberry.type
 class Keynote:
     id: ID
     title: str = strawberry.field(resolver=make_localized_resolver("title"))
     description: str = strawberry.field(resolver=make_localized_resolver("description"))
     slug: str = strawberry.field(resolver=make_localized_resolver("slug"))
     topic: Optional[Topic]
-    speakers: List[KeynoteSpeaker]
+    speakers: List[ScheduleItemUser]
+    start: Optional[datetime]
+    end: Optional[datetime]
 
     def __init__(
         self,
@@ -116,7 +65,9 @@ class Keynote:
         description: str,
         slug: str,
         topic: Optional[Topic],
-        speakers: List[KeynoteSpeaker],
+        speakers: List[ScheduleItemUser],
+        start: Optional[datetime],
+        end: Optional[datetime],
     ):
         self.id = id
         self.title = title
@@ -124,9 +75,12 @@ class Keynote:
         self.slug = slug
         self.topic = topic
         self.speakers = speakers
+        self.start = start
+        self.end = end
 
     @classmethod
     def from_django_model(cls, instance):
+        schedule_item = instance.schedule_item
         return cls(
             id=instance.id,
             title=instance.title,
@@ -134,9 +88,13 @@ class Keynote:
             slug=instance.slug,
             topic=Topic.from_django_model(instance.topic) if instance.topic else None,
             speakers=[
-                KeynoteSpeaker.from_django_model(speaker)
+                ScheduleItemUser(
+                    id=speaker.user_id, conference_code=instance.conference.code
+                )
                 for speaker in instance.speakers.all()
             ],
+            start=schedule_item.start if schedule_item else None,
+            end=schedule_item.end if schedule_item else None,
         )
 
 

@@ -26,13 +26,15 @@ export const ErrorsList = ({
       }}
       {...props}
     >
-      {errors.map((error, index) => (
-        <Box as="li" key={index} sx={{ pl: 0 }}>
-          <Text size="label3" color="red">
-            {error}
-          </Text>
-        </Box>
-      ))}
+      {errors
+        .filter((error) => !!error)
+        .map((error, index) => (
+          <Box as="li" key={index} sx={{ pl: 0 }}>
+            <Text size="label3" color="red">
+              {error}
+            </Text>
+          </Box>
+        ))}
     </Box>
   );
 };

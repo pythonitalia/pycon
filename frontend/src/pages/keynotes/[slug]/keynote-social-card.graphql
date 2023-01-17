@@ -10,7 +10,7 @@ query KeynoteSocialCard(
       title(language: $language)
       speakers {
         id
-        name
+        fullName
       }
     }
   }

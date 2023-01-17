@@ -51,6 +51,10 @@ class Keynote(OrderedModel, TimeStampedModel):
     objects = KeynoteManager()
     all_objects = models.Manager()
 
+    @property
+    def schedule_item(self):
+        return self.conference.schedule_items.filter(keynote_id=self.id).first()
+
     def __str__(self) -> str:
         return f"{self.title} at {self.conference.code}"
 
@@ -67,13 +71,14 @@ class KeynoteSpeaker(TimeStampedModel, OrderedModel):
         related_name="speakers",
         null=False,
     )
+    user_id = models.IntegerField(verbose_name=_("user"), null=True)
 
     name = models.CharField(
         _("fullname"),
         max_length=512,
-        blank=False,
+        blank=True,
     )
-    photo = models.ImageField(_("photo"), null=False, blank=False, upload_to="keynotes")
+    photo = models.ImageField(_("photo"), null=True, blank=False, upload_to="keynotes")
     bio = I18nTextField(
         _("bio"),
         blank=False,

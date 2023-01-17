@@ -55,7 +55,7 @@ export const SocialCard = () => {
               mb: 3,
             }}
           >
-            {keynote.speakers.map((speaker) => speaker.name).join(" & ")}
+            {keynote.speakers.map((speaker) => speaker.fullName).join(" & ")}
           </Text>
 
           <Heading
