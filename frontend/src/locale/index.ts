@@ -556,8 +556,8 @@ export const messages = {
 
     "voting.heading": "Community voting",
     "voting.introduction": `This is your opportunity to have a say on what you want to see at
-      PyCon Italia! Voting will help us creating a program that better
-      reflects what everyone wants to see!`,
+PyCon Italia! Voting will help us creating a program that better
+reflects what everyone wants to see!`,
     "voting.introductionDeadline": "You have until {deadline} to vote!",
     "voting.seoTitle": "Voting",
     "voting.topic": "Topic",
@@ -1185,7 +1185,7 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
 
     "voting.heading": "Votazione comunitaria",
     "voting.introduction": `Questa è la tua opportunità per aiutarci a dare forma al programma di PyCon Italia.
-      Il tuo voto ci aiuterà a creare un programma che più rispecchia ciò che la community vuole vedere.`,
+Il tuo voto ci aiuterà a creare un programma che più rispecchia ciò che la community vuole vedere.`,
     "voting.introductionDeadline": "Hai tempo fino al {deadline} per votare!",
     "voting.seoTitle": "Votazione",
     "voting.topic": "Argomento",
