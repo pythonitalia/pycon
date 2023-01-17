@@ -11,11 +11,13 @@ import {
   Link,
   BasicButton,
   Spacer,
+  CardPart,
+  MultiplePartsCard,
 } from "@python-italia/pycon-styleguide";
 import { useEffect, useCallback, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
-import { Flex, Box, jsx, Select } from "theme-ui";
+import { jsx, Select } from "theme-ui";
 
 import { GetStaticProps } from "next";
 import { useRouter } from "next/router";
@@ -24,10 +26,7 @@ import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Alert } from "~/components/alert";
 import { AnimatedEmoji } from "~/components/animated-emoji";
 import { Button } from "~/components/button/button";
-import { LoginForm } from "~/components/login-form";
 import { MetaTags } from "~/components/meta-tags";
-import { useLoginState } from "~/components/profile/hooks";
-import { SubmissionAccordion } from "~/components/submission-accordion";
 import { TagsFilter } from "~/components/tags-filter";
 import { VotingCard } from "~/components/voting-card";
 import { formatDeadlineDateTime } from "~/helpers/deadlines";
@@ -39,22 +38,10 @@ import { useVotingSubmissionsQuery } from "~/types";
 type VoteTypes = "all" | "votedOnly" | "notVoted";
 
 type Filters = {
-  topic: string;
   language: string;
   vote: VoteTypes;
   tags: string[];
 };
-
-const COLORS = [
-  {
-    background: "blue",
-    heading: "white",
-  },
-  {
-    background: "lightBlue",
-    heading: "black",
-  },
-];
 
 const getAsArray = (value: string | string[]): string[] => {
   if (!value) {
@@ -65,7 +52,6 @@ const getAsArray = (value: string | string[]): string[] => {
 };
 
 export const VotingPage = () => {
-  const [loggedIn] = useLoginState();
   const [votedSubmissions, setVotedSubmissions] = useState(new Set());
   const router = useRouter();
   const language = useCurrentLanguage();
@@ -102,15 +88,10 @@ export const VotingPage = () => {
 
     filters.setField("vote", (router.query.vote as VoteTypes) ?? "all");
     filters.setField("language", (router.query.language as string) ?? "");
-    filters.setField("topic", (router.query.topic as string) ?? "");
     filters.setField("tags", getAsArray(router.query.tags));
   }, [router.isReady]);
 
   const filterVisibleSubmissions = (submission) => {
-    if (filters.values.topic && submission.topic?.id !== filters.values.topic) {
-      return false;
-    }
-
     if (
       filters.values.language &&
       submission.languages?.findIndex(
@@ -151,7 +132,6 @@ export const VotingPage = () => {
       language,
     },
     errorPolicy: "all",
-    skip: !loggedIn,
   });
 
   const onVote = useCallback(
@@ -192,7 +172,7 @@ export const VotingPage = () => {
 
   const isVotingClosed = data && !data?.conference?.isVotingOpen;
   const userCannotVote =
-    loggedIn && (loading || (cannotVoteErrors ?? false) || (error ?? false));
+    loading || (cannotVoteErrors ?? false) || (error ?? false);
   const showFilters = !isVotingClosed && !userCannotVote;
   const votingDeadline = data?.conference?.isVotingOpen
     ? data?.conference.votingDeadline?.end
@@ -205,104 +185,73 @@ export const VotingPage = () => {
       </FormattedMessage>
 
       <Section>
-        <Grid
-          gap={4}
-          sx={{
-            gridTemplateColumns: [null, "1fr 1fr"],
-          }}
-        >
-          <Box>
-            <Heading size="display1">
-              <FormattedMessage id="voting.heading" />
-            </Heading>
-            <Spacer size="large" />
+        <Heading size="display1">
+          <FormattedMessage id="voting.heading" />
+        </Heading>
+        <Spacer size="large" />
 
-            <Text as="p" size={2}>
-              <FormattedMessage id="voting.introduction" />
-            </Text>
-            {votingDeadline && (
-              <Text as="p" size={2}>
-                <FormattedMessage
-                  id="voting.introductionDeadline"
-                  values={{
-                    deadline: (
-                      <Text size={2} weight="strong">
-                        {formatDeadlineDateTime(votingDeadline, language)}
-                      </Text>
-                    ),
-                  }}
-                />
-              </Text>
-            )}
-            <Spacer size="small" />
-            <BasicButton href="/voting-info">
-              <FormattedMessage id="global.learnMore" />
-            </BasicButton>
-          </Box>
+        <Text as="p" size={2}>
+          <FormattedMessage id="voting.introduction" />
+        </Text>
+        {votingDeadline && (
+          <Text as="p" size={2}>
+            <FormattedMessage
+              id="voting.introductionDeadline"
+              values={{
+                deadline: (
+                  <Text size={2} weight="strong">
+                    {formatDeadlineDateTime(votingDeadline, language)}
+                  </Text>
+                ),
+              }}
+            />
+          </Text>
+        )}
+        <Spacer size="small" />
+        <BasicButton href="/voting-info">
+          <FormattedMessage id="global.learnMore" />
+        </BasicButton>
+        <Spacer size="large" />
 
-          {false && (
-            <Grid
+        {showFilters && (
+          <Grid cols={2}>
+            <Select
+              {...select("language")}
               sx={{
-                gridTemplateColumns: [null, null, "1fr 1fr"],
-                gridTemplateRows: ["repeat(4, 46px)", null, "repeat(2, 46px)"],
-                mb: 4,
+                background: "violet",
+                borderRadius: 0,
               }}
             >
-              <Select
-                {...select("topic")}
-                sx={{
-                  background: "orange",
-                  borderRadius: 0,
-                }}
-              >
-                <FormattedMessage id="voting.allTopics">
-                  {(text) => <option value="">{text}</option>}
-                </FormattedMessage>
-                {data?.conference.topics.map((topic) => (
-                  <option key={topic.id} value={topic.id}>
-                    {topic.name}
-                  </option>
-                ))}
-              </Select>
+              <FormattedMessage id="voting.allLanguages">
+                {(text) => <option value="">{text}</option>}
+              </FormattedMessage>
+              {data?.conference.languages.map((language) => (
+                <option key={language.id} value={language.code}>
+                  {language.name}
+                </option>
+              ))}
+            </Select>
 
-              <Select
-                {...select("language")}
-                sx={{
-                  background: "violet",
-                  borderRadius: 0,
-                }}
-              >
-                <FormattedMessage id="voting.allLanguages">
-                  {(text) => <option value="">{text}</option>}
-                </FormattedMessage>
-                {data?.conference.languages.map((language) => (
-                  <option key={language.id} value={language.code}>
-                    {language.name}
-                  </option>
-                ))}
-              </Select>
+            <Select
+              {...select("vote")}
+              sx={{
+                borderRadius: 0,
+              }}
+            >
+              <FormattedMessage id="voting.allSubmissions">
+                {(text) => <option value="all">{text}</option>}
+              </FormattedMessage>
+              <FormattedMessage id="voting.notVoted">
+                {(text) => <option value="notVoted">{text}</option>}
+              </FormattedMessage>
+              <FormattedMessage id="voting.votedOnly">
+                {(text) => <option value="votedOnly">{text}</option>}
+              </FormattedMessage>
+            </Select>
 
-              <Select
-                {...select("vote")}
-                sx={{
-                  borderRadius: 0,
-                }}
-              >
-                <FormattedMessage id="voting.allSubmissions">
-                  {(text) => <option value="all">{text}</option>}
-                </FormattedMessage>
-                <FormattedMessage id="voting.notVoted">
-                  {(text) => <option value="notVoted">{text}</option>}
-                </FormattedMessage>
-                <FormattedMessage id="voting.votedOnly">
-                  {(text) => <option value="votedOnly">{text}</option>}
-                </FormattedMessage>
-              </Select>
-
-              <TagsFilter {...raw("tags")} tags={data?.submissionTags ?? []} />
-            </Grid>
-          )}
-        </Grid>
+            <TagsFilter {...raw("tags")} tags={data?.submissionTags ?? []} />
+          </Grid>
+        )}
       </Section>
 
       {userCannotVote && (
@@ -312,30 +261,29 @@ export const VotingPage = () => {
           )}
 
           {cannotVoteErrors && error && (
-            <Box sx={{ pt: 4 }}>
+            <>
               <Heading>
                 <FormattedMessage id="voting.errors.cannotVote.heading" />
               </Heading>
 
-              <Text my={4}>
+              <Text>
                 <FormattedMessage
                   id="voting.errors.cannotVote.body"
                   values={{
                     linkVotingInfo: (
-                      <Link path="/voting-info">
+                      <Link href="/voting-info">
                         <FormattedMessage id="voting.errors.cannotVote.linkVotingInfo.text" />
                       </Link>
                     ),
                     linkTicket: (
-                      <Link path="/tickets">
-                        {" "}
+                      <Link href="/tickets">
                         <FormattedMessage id="voting.errors.cannotVote.linkTicket.text" />
                       </Link>
                     ),
                   }}
                 />
               </Text>
-            </Box>
+            </>
           )}
           {loading && (
             <Alert variant="info">
@@ -346,94 +294,54 @@ export const VotingPage = () => {
       )}
 
       {isVotingClosed && (
-        <Box sx={{ borderTop: "primary" }}>
-          <Grid
-            sx={{
-              maxWidth: "container",
-              mx: "auto",
-              mt: 3,
-              px: 3,
-              mb: [5, 5, 0],
-              gridTemplateColumns: ["1fr", "0.5fr"],
-            }}
-          >
-            <Heading sx={{ mb: 3 }}>
-              <FormattedMessage id="voting.closed.heading" />
-            </Heading>
-            <Text>
-              <FormattedMessage
-                id="voting.closed.body"
-                values={{
-                  twitter: (
-                    <a
-                      target="_blank"
-                      href="https://twitter.com/pyconit"
-                      rel="noreferrer"
-                    >
-                      Twitter
-                    </a>
-                  ),
-                }}
-              />
-            </Text>
-          </Grid>
-        </Box>
+        <Section>
+          <Heading sx={{ mb: 3 }}>
+            <FormattedMessage id="voting.closed.heading" />
+          </Heading>
+          <Text>
+            <FormattedMessage
+              id="voting.closed.body"
+              values={{
+                twitter: (
+                  <a
+                    target="_blank"
+                    href="https://twitter.com/pyconit"
+                    rel="noreferrer"
+                  >
+                    Twitter
+                  </a>
+                ),
+              }}
+            />
+          </Text>
+        </Section>
       )}
 
-      {!loggedIn && (
-        <Box sx={{ borderTop: "primary", mb: 5 }}>
-          <Box
-            sx={{
-              maxWidth: "container",
-              mx: "auto",
-              mt: 3,
-              px: [3, 3, 3, 0],
-            }}
-          >
-            <Alert variant="info">
-              <FormattedMessage id="voting.needToBeLoggedIn" />
-            </Alert>
-          </Box>
-          <LoginForm
-            next={
-              typeof window !== "undefined" ? window.location?.pathname : null
-            }
-          />
-        </Box>
-      )}
-
-      {loggedIn && !isVotingClosed && data?.submissions && (
+      {!isVotingClosed && data?.submissions && (
         <Section>
           <MultiplePartsCardCollection>
+            <MultiplePartsCard>
+              <CardPart contentAlign="left">
+                <Heading size={2}>
+                  <FormattedMessage id="voting.proposals" />
+                </Heading>
+              </CardPart>
+            </MultiplePartsCard>
             {data.submissions
-              // .filter(filterVisibleSubmissions)
-              .map((submission, index) => (
-                <VotingCard submission={submission} />
-
-                // <SubmissionAccordion
-                //   backgroundColor={COLORS[index % COLORS.length].background}
-                //   headingColor={COLORS[index % COLORS.length].heading}
-                //   vote={submission.myVote}
-                //   key={submission.id}
-                //   submission={submission}
-                //   onVote={onVote}
-                // />
+              .filter(filterVisibleSubmissions)
+              .map((submission) => (
+                <VotingCard
+                  key={submission.id}
+                  submission={submission}
+                  onVote={onVote}
+                />
               ))}
           </MultiplePartsCardCollection>
         </Section>
       )}
 
-      {loggedIn && !isVotingClosed && data?.submissions && (
-        <Flex
-          sx={{
-            maxWidth: "container",
-            mx: "auto",
-            my: 5,
-            px: [3, 3, 3, 0],
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
+      {!isVotingClosed && data?.submissions && (
+        <Section>
           {isFetchingMore && (
             <FormattedMessage
               id="global.button.loading"
@@ -448,7 +356,7 @@ export const VotingPage = () => {
               <FormattedMessage id="global.loadMore" />
             </Button>
           )}
-        </Flex>
+        </Section>
       )}
     </Page>
   );

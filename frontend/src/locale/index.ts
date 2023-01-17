@@ -555,6 +555,7 @@ export const messages = {
     "ranking.stats.topic": "{value} proposals for the track {name}",
 
     "voting.heading": "Community voting",
+    "voting.proposals": "Proposals",
     "voting.introduction": `This is your opportunity to have a say on what you want to see at
 PyCon Italia! Voting will help us creating a program that better
 reflects what everyone wants to see!`,
@@ -1184,6 +1185,7 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "voteSelector.mustSee": "Devo vederlo",
 
     "voting.heading": "Votazione comunitaria",
+    "voting.proposals": "Proposte",
     "voting.introduction": `Questa è la tua opportunità per aiutarci a dare forma al programma di PyCon Italia.
 Il tuo voto ci aiuterà a creare un programma che più rispecchia ciò che la community vuole vedere.`,
     "voting.introductionDeadline": "Hai tempo fino al {deadline} per votare!",

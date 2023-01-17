@@ -4,7 +4,7 @@ import type { NextRequest } from "next/server";
 import { DEFAULT_LOCALE, VALID_LOCALES } from "~/locale/languages";
 
 const PUBLIC_FILE = /\.(.*)$/;
-const LOGIN_REDIRECT_URL = ["/cfp", "/grants"];
+const LOGIN_REDIRECT_URL = ["/cfp", "/grants", "/voting"];
 
 const handleLocale = (req: NextRequest) => {
   const locale = getLocale(
