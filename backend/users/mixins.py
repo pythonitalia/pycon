@@ -4,11 +4,7 @@ from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 from import_export.resources import ModelResource
 
-from users.client import (
-    get_user_data_by_query,
-    get_users_data_by_emails,
-    get_users_data_by_ids,
-)
+from users.client import get_user_data_by_query, get_users_data_by_ids
 
 
 class UserMixin:
@@ -59,16 +55,6 @@ class SearchUsersMixin(admin.ModelAdmin):
 class ResourceUsersMixin(ModelResource, UserMixin):
     def before_export(self, queryset, *args, **kwargs):
         self.get_users_by_ids(queryset)
-        return queryset
-
-
-class ResourceUsersByEmailsMixin(ModelResource, UserMixin):
-    search_field = None
-    _PREFETCHED_USERS_BY_EMAIL = {}
-
-    def before_export(self, queryset, *args, **kwargs):
-        emails = queryset.values_list(self.search_field, flat=True)
-        self._PREFETCHED_USERS_BY_EMAIL = get_users_data_by_emails(list(emails))
         return queryset
 
 
