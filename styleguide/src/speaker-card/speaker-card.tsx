@@ -23,7 +23,7 @@ export const SpeakerCard = ({ portraitUrl, talkTitle, speakerName }: Props) => {
       <CardPart fullHeight contentAlign="left">
         <Heading size={4}>{talkTitle}</Heading>
       </CardPart>
-      <CardPart shrink={false} noBg contentAlign="left">
+      <CardPart shrink={false} background="milk" contentAlign="left">
         <Heading size={6}>{speakerName}</Heading>
       </CardPart>
     </MultiplePartsCard>

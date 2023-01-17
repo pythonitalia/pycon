@@ -9,6 +9,8 @@ import { ArrowDownIcon } from "../icons/arrow-down";
 import { useMultiPartsCardContext } from "./context";
 import { FormattedMessage } from "react-intl";
 import ArrowIcon from "../icons/arrow";
+import { Color } from "../types";
+import { getBackgroundClasses } from "../colors-utils";
 
 type Icon = "ticket" | "tshirt" | "hotel" | "star" | "arrow";
 type IconBackground = "green" | "pink" | "blue" | "yellow" | "none";
@@ -16,7 +18,7 @@ type IconSize = "small" | "large";
 
 type CardPartProps = {
   children: React.ReactNode;
-  noBg?: boolean;
+  background?: Color;
   contentAlign?: "right" | "left" | "center";
   size?: "none" | "small" | "large";
   icon?: Icon;
@@ -34,7 +36,7 @@ type CardPartProps = {
 
 export const CardPart = ({
   children,
-  noBg = false,
+  background = "cream",
   contentAlign = "center",
   size = "large",
   icon,
@@ -66,8 +68,7 @@ export const CardPart = ({
   return (
     <div
       className={clsx("overflow-hidden transition-all", {
-        "bg-milk": noBg,
-        "bg-cream": !noBg,
+        ...getBackgroundClasses(background),
 
         "text-right": contentAlign === "right",
         "text-left": contentAlign === "left",

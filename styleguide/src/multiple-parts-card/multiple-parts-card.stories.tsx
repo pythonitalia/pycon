@@ -36,6 +36,14 @@ export const Primary = () => (
         <Spacer size="xs" />
         <Text size={2}>flat price</Text>
       </CardPart>
+
+      <CardPart background="red">
+        <Text size={2}>red bg</Text>
+      </CardPart>
+
+      <CardPart background="blue">
+        <Text size={2}>blue bg</Text>
+      </CardPart>
     </MultiplePartsCard>
   </div>
 );
@@ -51,7 +59,7 @@ export const CardWithContentAndOnePart = () => (
       <CardPart>
         <Heading size={3}>General info</Heading>
       </CardPart>
-      <CardPart contentAlign="left" noBg>
+      <CardPart contentAlign="left" background="milk">
         <Text size={2}>
           We are here to help you! Let us know how we can do it
         </Text>
@@ -66,7 +74,7 @@ export const CardForProductItemIcons = () => (
       <CardPart iconBackground="pink" icon="ticket" contentAlign="left">
         <Heading size={2}>Student</Heading>
       </CardPart>
-      <CardPart contentAlign="left" noBg>
+      <CardPart contentAlign="left" background="milk">
         <Text size={2}>
           Lorem Ipsum is simply dummy text of the printing and typesetting
         </Text>
@@ -79,7 +87,7 @@ export const CardForProductItemIcons = () => (
       <CardPart iconBackground="blue" icon="star" contentAlign="left">
         <Heading size={2}>Membership</Heading>
       </CardPart>
-      <CardPart contentAlign="left" noBg>
+      <CardPart contentAlign="left" background="milk">
         <Text size={2}>
           Lorem Ipsum is simply dummy text of the printing and typesetting
         </Text>
@@ -100,7 +108,7 @@ export const WithIncrementExample = () => {
         <CardPart iconBackground="yellow" icon="tshirt" contentAlign="left">
           <Heading size={2}>T-Shirt</Heading>
         </CardPart>
-        <CardPart contentAlign="left" noBg>
+        <CardPart contentAlign="left" background="milk">
           <Text size={2}>
             Lorem Ipsum is simply dummy text of the printing and typesetting
           </Text>
@@ -170,7 +178,7 @@ export const MultiPartCardWithOptions = () => {
         >
           <Heading size={2}>Double Room</Heading>
         </CardPart>
-        <CardPart id="content" contentAlign="left" noBg>
+        <CardPart id="content" contentAlign="left" background="milk">
           <Text size={2}>
             Lorem Ipsum is simply dummy text of the printing and typesetting
             <input type="text" placeholder="test" />
@@ -326,7 +334,7 @@ export const MultiPartCardWithVariableOptions = ({ numOfSelects }) => {
         <CardPart iconBackground="green" icon="hotel" contentAlign="left">
           <Heading size={2}>Double Room</Heading>
         </CardPart>
-        <CardPart contentAlign="left" noBg>
+        <CardPart contentAlign="left" background="milk">
           <Text size={2}>
             Lorem Ipsum is simply dummy text of the printing and typesetting
           </Text>
@@ -390,7 +398,7 @@ export const AddRemoveCardPart = () => {
           <Heading size={2}>Membership</Heading>
         </CardPart>
 
-        <CardPart contentAlign="left" noBg>
+        <CardPart contentAlign="left" background="milk">
           <Text size={2}>
             Lorem Ipsum is simply dummy text of the printing and typesetting
           </Text>
@@ -424,7 +432,7 @@ export const CardPartExpandable = () => {
         >
           <Heading size={2}>Membership [closed by default]</Heading>
         </CardPart>
-        <CardPart id="content" contentAlign="left" noBg>
+        <CardPart id="content" contentAlign="left" background="milk">
           <Text size={2}>
             Lorem Ipsum is simply dummy text of the printing and typesetting
             Lorem Ipsum is simply dummy text of the printing and typesetting
@@ -457,7 +465,7 @@ export const CardPartExpandable = () => {
         >
           <Heading size={2}>Membership [open by default]</Heading>
         </CardPart>
-        <CardPart id="content" contentAlign="left" noBg>
+        <CardPart id="content" contentAlign="left" background="milk">
           <Text size={2}>
             Lorem Ipsum is simply dummy text of the printing and typesetting
             Lorem Ipsum is simply dummy text of the printing and typesetting
@@ -522,7 +530,7 @@ export const CardWithInputsInItAndFocus = () => {
         >
           <Heading size={2}>Membership</Heading>
         </CardPart>
-        <CardPart id="content" contentAlign="left" noBg>
+        <CardPart id="content" contentAlign="left" background="milk">
           <Text size={2}>
             <input type="text" placeholder="Enter your name" />
             <input type="email" placeholder="Enter your email" />
