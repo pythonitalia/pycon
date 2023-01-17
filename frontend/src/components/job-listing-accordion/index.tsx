@@ -53,7 +53,7 @@ export const JobListingAccordion = ({ job }: { job: JobListing }) => {
               <Heading size={5}>{job.title}</Heading>
             </HorizontalStack>
           </CardPart>
-          <CardPart size="small" contentAlign="left" noBg>
+          <CardPart size="small" contentAlign="left" background="milk">
             <Text size={2}>{job.company}</Text>
           </CardPart>
           <CardPart
@@ -61,7 +61,7 @@ export const JobListingAccordion = ({ job }: { job: JobListing }) => {
             rightSideIconSize="small"
             size="small"
             contentAlign="left"
-            noBg
+            background="milk"
           >
             <Text weight="strong" uppercase size="label4">
               <FormattedMessage id="jobboard.discoverMore" />

@@ -24,7 +24,6 @@ export const compile = marksy({
     h1({ children }) {
       return (
         <>
-          <Spacer size="small" />
           <Heading size={1}>{children}</Heading>
           <Spacer size="small" />
         </>
@@ -68,9 +67,27 @@ export const compile = marksy({
     },
     p({ children }) {
       return (
-        <Text as="p" size={2}>
+        <>
+          <Text as="p" size={2}>
+            {children}
+          </Text>
+        </>
+      );
+    },
+    span({ children }) {
+      return (
+        <Text as="span" size={2}>
           {children}
         </Text>
+      );
+    },
+    ul({ children }) {
+      return (
+        <>
+          <Spacer size="small" />
+          <ul>{children}</ul>
+          <Spacer size="small" />
+        </>
       );
     },
     li({ children }) {
@@ -78,6 +95,27 @@ export const compile = marksy({
         <li>
           <Text size={2}>{children}</Text>
         </li>
+      );
+    },
+    img({ src, alt }) {
+      return (
+        <>
+          <img
+            src={src}
+            alt={alt}
+            style={{
+              maxWidth: "300px",
+            }}
+          />
+          <Spacer size="small" />
+        </>
+      );
+    },
+    strong({ children }) {
+      return (
+        <Text as="span" size="inherit" weight="strong">
+          {children}
+        </Text>
       );
     },
   },

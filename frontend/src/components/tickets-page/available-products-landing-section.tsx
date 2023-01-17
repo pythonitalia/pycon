@@ -44,7 +44,7 @@ export const AvailableProductsLandingSection = ({
   const areTicketsAvailable = businessTicket && personalTicket;
 
   return (
-    <Section containerSize="medium">
+    <Section containerSize="2md">
       <Heading size={1}>
         <FormattedMessage id="tickets.landing.title" />
       </Heading>
@@ -57,7 +57,7 @@ export const AvailableProductsLandingSection = ({
               <FormattedMessage id="tickets.landing.ticketsTitle" />
             </Heading>
           </CardPart>
-          <CardPart contentAlign="left" noBg>
+          <CardPart contentAlign="left" background="milk">
             <Text size={2}>
               <FormattedMessage id="tickets.landing.ticketsCopy" />
             </Text>
@@ -88,7 +88,7 @@ export const AvailableProductsLandingSection = ({
                 <FormattedMessage id="tickets.landing.hotelTitle" />
               </Heading>
             </CardPart>
-            <CardPart contentAlign="left" noBg>
+            <CardPart contentAlign="left" background="milk">
               <Text size={2}>
                 <FormattedMessage id="tickets.landing.hotelCopy" />
               </Text>
@@ -116,7 +116,7 @@ export const AvailableProductsLandingSection = ({
             <FormattedMessage id="tickets.landing.membershipTitle" />
           </Heading>
         </CardPart>
-        <CardPart contentAlign="left" noBg>
+        <CardPart contentAlign="left" background="milk">
           <Text size={2}>{compile(membership.description).tree}</Text>
         </CardPart>
         <CardPart contentAlign="left">

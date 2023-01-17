@@ -52,7 +52,7 @@ export const AnswersCard = ({
       >
         <Heading size={2}>{cardTitle}</Heading>
       </CardPart>
-      <CardPart id="content" contentAlign="left" noBg>
+      <CardPart id="content" contentAlign="left" background="milk">
         <ProductQuestionnaire
           index={index}
           productUserInformation={productUserInformation}

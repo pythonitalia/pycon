@@ -52,7 +52,7 @@ export const BillingCard = () => {
             <FormattedMessage id="tickets.checkout.billing" />
           </Heading>
         </CardPart>
-        <CardPart noBg contentAlign="left" id="content">
+        <CardPart background="milk" contentAlign="left" id="content">
           <Grid cols={3}>
             {isBusiness && (
               <InputWrapper

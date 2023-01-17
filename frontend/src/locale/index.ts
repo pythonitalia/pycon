@@ -329,6 +329,8 @@ export const messages = {
     "keynote.language": "Language",
     "keynote.englishLanguage": "English",
 
+    "ticketsOverview.ticket.personal.fareType": "Regular",
+
     "order.nextStep": "Next step",
     "order.creatingOrder": "Creating order 🕐",
     "order.payWithCard": "Pay with card",
@@ -700,7 +702,7 @@ reflects what everyone wants to see!`,
     "home.grants.cta": "Apply",
     "tickets.checkoutBar.cta": "Checkout",
 
-    "tickets.buyTicketsSubtitle": "Early-bird tickets available!",
+    "tickets.buyTicketsSubtitle": "Regular tickets are available!",
 
     "tickets.landing.title": "What can you buy?",
     "tickets.landing.ticketsCopy": `Tickets to join the conference! PyCon Italia is a fun 4 days event, where every year we are joined by more than 600 people, have more than 110+ sessions (talks and workshops) and social events where you can meet new people and have fun in the beautiful Florence.
@@ -1423,7 +1425,7 @@ Il tuo voto ci aiuterà a creare un programma che più rispecchia ciò che la co
     "tickets.checkout.openAnswerCard": "Dettagli Partecipante",
     "tickets.checkout.answerCardAdmissionTitle": "Biglietto di {attendeeName}",
 
-    "tickets.buyTicketsSubtitle": "Biglietti early bird disponibili!",
+    "tickets.buyTicketsSubtitle": "Biglietti regular disponibili!",
 
     "tickets.landing.title": "Cosa puoi comprare?",
     "tickets.landing.ticketsCopy": `Biglietti per partecipare alla conferenza! PyCon Italia é un evento di 4 giorni dove ogni anno più di 600 persone si riuniscono per partecipare a più di 110+ sessioni (talks e workshops) ed eventi sociali dove puoi fare nuove amicizie e goderti la bellissima Firenze.
@@ -1444,6 +1446,8 @@ Affrettati a comprare il biglietto!`,
     "grants.form.validationErrors": "Il form inviato non è valido",
 
     "input.placeholder": "Scrivi qui...",
+
+    "ticketsOverview.ticket.personal.fareType": "Regular",
   },
 };
 

@@ -36,7 +36,7 @@ export const TicketsPage = () => {
           </Container>
           <Section>
             <SnakeHead className="relative ml-auto w-32 lg:w-52 mr-6 md:mr-12 -mt-36 md:-mt-24 lg:-mt-44 hidden md:block" />
-            <Grid cols={2}>
+            <Grid cols={2} equalHeight>
               <MultiplePartsCard
                 cta={{
                   label: <FormattedMessage id="tickets.buyTicketsCta" />,

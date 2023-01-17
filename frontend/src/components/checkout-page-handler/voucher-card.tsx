@@ -63,7 +63,7 @@ export const VoucherCard = () => {
           <FormattedMessage id="tickets.checkout.voucher" />
         </Heading>
       </CardPart>
-      <CardPart noBg contentAlign="left" id="content">
+      <CardPart background="milk" contentAlign="left" id="content">
         <InputWrapper
           sx={{ mb: 0 }}
           isRequired

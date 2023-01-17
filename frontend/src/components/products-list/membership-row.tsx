@@ -50,7 +50,7 @@ export const MembershipRow = ({ me, membership }: Props) => {
         <Heading size={2}>{membership.name}</Heading>
       </CardPart>
       {membership.description && (
-        <CardPart id="content" contentAlign="left" noBg>
+        <CardPart id="content" contentAlign="left" background="milk">
           <Text size={2}>{compile(membership.description).tree}</Text>
         </CardPart>
       )}

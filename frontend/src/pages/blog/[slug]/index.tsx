@@ -1,4 +1,5 @@
 import {
+  Container,
   Heading,
   Page,
   Section,
@@ -6,7 +7,6 @@ import {
   Text,
 } from "@python-italia/pycon-styleguide";
 import { parseISO } from "date-fns";
-import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 
 import { GetStaticPaths, GetStaticProps } from "next";
@@ -14,7 +14,6 @@ import { useRouter } from "next/router";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Article } from "~/components/article";
-import { BlogPostIllustration } from "~/components/illustrations/blog-post";
 import { MetaTags } from "~/components/meta-tags";
 import { PageLoading } from "~/components/page-loading";
 import { compile } from "~/helpers/markdown";
@@ -54,7 +53,7 @@ export const BlogArticlePage = () => {
         useNewSocialCard={true}
       />
 
-      <Section>
+      <Section illustration="snakeHead">
         <Text size={2}>
           <FormattedMessage
             id="blog.publishedOn"
@@ -68,8 +67,10 @@ export const BlogArticlePage = () => {
         <Heading size={1}>{post.title}</Heading>
       </Section>
 
-      <Section containerSize="medium">
-        <Text size={2}>{compile(post.content).tree}</Text>
+      <Section illustration="snakeTail">
+        <Container noPadding center={false} size="medium">
+          <Article>{compile(post.content).tree}</Article>
+        </Container>
       </Section>
     </Page>
   );
