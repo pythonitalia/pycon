@@ -10,6 +10,7 @@ type Props = {
   alignItems?: "start" | "center" | "end";
   gap?: "none" | "small" | "medium";
   divide?: boolean;
+  equalHeight?: boolean;
 };
 
 export const Grid = ({
@@ -19,10 +20,11 @@ export const Grid = ({
   alignItems,
   gap = "medium",
   divide = false,
+  equalHeight = false,
 }: Props) => {
   return (
     <div
-      className={clsx("grid md:auto-rows-fr grid-cols-[100%]", {
+      className={clsx("grid grid-cols-[100%]", {
         "lg:grid-cols-1": cols === 1,
         "lg:grid-cols-2": cols === 2,
         "lg:grid-cols-3": cols === 3,
@@ -55,6 +57,8 @@ export const Grid = ({
 
         "gap-2 lg:gap-4": gap === "small",
         "gap-2 lg:gap-6": gap === "medium",
+
+        "md:auto-rows-fr": equalHeight,
 
         // weird bug in tailwind where divide-y-0 doesn't work
         "divide-y lg:divide-y-[0px] lg:divide-x": divide,
