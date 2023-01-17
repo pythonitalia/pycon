@@ -50,6 +50,10 @@ export const VotingCard = ({
           },
         });
       },
+
+      onError(err) {
+        console.log(err.message);
+      },
     });
 
   const onSubmitVote = useCallback(
@@ -121,9 +125,8 @@ export const VotingCard = ({
           onClick={onSubmitVote}
         />
 
-        <Text>
-          {loading && <FormattedMessage id="voting.sendingVote" />}
-          {error && error}
+        <Text size={3} color="error">
+          {error && error.message}
           {submissionData &&
             submissionData.sendVote.__typename === "SendVoteErrors" && (
               <>
@@ -131,10 +134,6 @@ export const VotingCard = ({
                 {submissionData.sendVote.validationSubmission}{" "}
                 {submissionData.sendVote.validationValue}
               </>
-            )}
-          {submissionData &&
-            submissionData.sendVote.__typename === "VoteType" && (
-              <FormattedMessage id="voting.voteSent" />
             )}
         </Text>
       </CardPart>
