@@ -1,6 +1,7 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
+import { Page } from "@python-italia/pycon-styleguide";
 import { Fragment, useCallback } from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, Flex, Grid, Heading, jsx, Text } from "theme-ui";
@@ -17,10 +18,12 @@ import { Link } from "~/components/link";
 import { MetaTags } from "~/components/meta-tags";
 import { PageLoading } from "~/components/page-loading";
 import { useLoginState } from "~/components/profile/hooks";
+import { ScheduleEventDetail } from "~/components/schedule-event-detail";
 import { SpeakerDetail } from "~/components/speaker-detail";
 import { TalkInfo } from "~/components/talk-info";
 import { compile } from "~/helpers/markdown";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
+import { useCurrentLanguage } from "~/locale/context";
 import {
   queryAllTalks,
   queryTalk,
@@ -29,7 +32,6 @@ import {
   useTalkQuery,
   useWorkshopBookingStateQuery,
 } from "~/types";
-import { useCurrentLanguage } from "~/locale/context";
 
 export const TalkPage = () => {
   const router = useRouter();
@@ -96,6 +98,13 @@ export const TalkPage = () => {
   };
 
   const bookingState: any = bookingStateData?.conference?.talk ?? {};
+
+  return (
+    <Page endSeparator={false}>
+      <MetaTags title={talk.title} useDefaultSocialCard={false} />
+      <ScheduleEventDetail type="talk" eventTitle={talk.title} />
+    </Page>
+  );
 
   return (
     <Fragment>
