@@ -8,7 +8,7 @@ import { StarIcon } from "../icons/star";
 import { ArrowDownIcon } from "../icons/arrow-down";
 import { useMultiPartsCardContext } from "./context";
 import { FormattedMessage } from "react-intl";
-import ArrowIcon from "../icons/arrow";
+import { ArrowIcon } from "../icons/arrow";
 import { Color } from "../types";
 import { getBackgroundClasses } from "../colors-utils";
 
