@@ -95,7 +95,6 @@ export const VotingCard = ({
       <CardPart
         contentAlign="left"
         id="heading"
-        icon="star"
         background="white"
         openLabel={<FormattedMessage id="global.accordion.readMore" />}
       >
@@ -167,51 +166,66 @@ export const VotingCard = ({
         </Grid>
       </CardPart>
 
-      <CardPart id="content" contentAlign="left" background="white" size="none">
-        <Grid cols={3} gap="none" divide={true}>
-          <CardPart contentAlign="left" background="white">
-            <Text weight="strong" uppercase as="p" size={3}>
-              <FormattedMessage id="voting.length" />
-            </Text>
+      <CardPart
+        id="content"
+        contentAlign="left"
+        background="white"
+        size="none"
+        link=""
+      >
+        <Grid cols={12} gap="none" divide={true}>
+          <GridColumn colSpan={2}>
+            <CardPart contentAlign="left" background="white">
+              <Text weight="strong" uppercase as="p" size={3}>
+                <FormattedMessage id="voting.length" />
+              </Text>
 
-            <Spacer size="small" />
+              <Spacer size="small" />
 
-            <Text as="p" weight="strong" size={3}>
-              <FormattedMessage id="voting.minutes">
-                {(text) => (
-                  <>
-                    {duration.duration} {text}
-                  </>
-                )}
-              </FormattedMessage>
-            </Text>
-          </CardPart>
-          <CardPart contentAlign="left" background="white">
-            <Text weight="strong" uppercase as="p" size={3}>
-              <FormattedMessage id="voting.audienceLevel" />
-            </Text>
-            <Spacer size="small" />
+              <Text as="p" weight="strong" size={3}>
+                <FormattedMessage id="voting.minutes">
+                  {(text) => (
+                    <>
+                      {duration.duration} {text}
+                    </>
+                  )}
+                </FormattedMessage>
+              </Text>
+            </CardPart>
+          </GridColumn>{" "}
+          <GridColumn colSpan={2}>
+            <CardPart contentAlign="left" background="white">
+              <Text weight="strong" uppercase as="p" size={3}>
+                <FormattedMessage id="voting.audienceLevel" />
+              </Text>
+              <Spacer size="small" />
 
-            <Text weight="strong" as="p" size={3}>
-              {audienceLevel.name}
-            </Text>
-          </CardPart>
+              <Text weight="strong" as="p" size={3}>
+                {audienceLevel.name}
+              </Text>
+            </CardPart>
+          </GridColumn>
+          <GridColumn colSpan={2}>
+            <CardPart contentAlign="left" background="white">
+              <Text weight="strong" uppercase as="p" size={3}>
+                <FormattedMessage id="voting.languages" />
+              </Text>
+              <Spacer size="small" />
 
-          <CardPart
-            contentAlign="left"
-            background="white"
-            rightSideIcon="arrow"
-            rightSideIconBackground="none"
-          >
-            <Text weight="strong" uppercase as="p" size={3}>
-              <FormattedMessage id="voting.languages" />
-            </Text>
-            <Spacer size="small" />
-
-            <Text weight="strong" as="p" size={3}>
-              {languages.map((language) => language.name).join(", ")}
-            </Text>
-          </CardPart>
+              <Text weight="strong" as="p" size={3}>
+                {languages.map((language) => language.name).join(", ")}
+              </Text>
+            </CardPart>
+          </GridColumn>
+          <GridColumn colSpan={6}>
+            <div className="">
+              <CardPart
+                contentAlign="left"
+                background="white"
+                rightSideIcon="arrow"
+              ></CardPart>
+            </div>
+          </GridColumn>
         </Grid>
       </CardPart>
     </MultiplePartsCard>
