@@ -46,8 +46,6 @@ django-import-export = "^2.7.1"
 awslambdaric = {version = "^2.0.4", optional = true}
 azure-identity = "^1.12.0"
 azure-storage-blob = "^12.14.1"
-numpy = "^1.24.1"
-matplotlib = "^3.6.3"
 
 [tool.poetry.dev-dependencies]
 pylint = "=2.6.0"
