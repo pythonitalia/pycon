@@ -68,7 +68,7 @@ export const compile = marksy({
     p({ children }) {
       return (
         <>
-          <Text as="p" size={2}>
+          <Text as="p" size="inherit" color="none">
             {children}
           </Text>
         </>
@@ -76,7 +76,7 @@ export const compile = marksy({
     },
     span({ children }) {
       return (
-        <Text as="span" size={2}>
+        <Text as="span" size="inherit" color="none">
           {children}
         </Text>
       );

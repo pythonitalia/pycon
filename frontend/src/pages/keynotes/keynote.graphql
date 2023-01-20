@@ -6,20 +6,25 @@ query Keynote($conference: String!, $slug: String!, $language: String!) {
       title(language: $language)
       description(language: $language)
       slug(language: $language)
+      start
+      end
       topic {
         id
         name
       }
       speakers {
         id
-        name
-        bio(language: $language)
-        pronouns(language: $language)
-        twitterHandle
-        instagramHandle
-        website
-        photo
-        highlightColor
+        fullName
+        participant {
+          id
+          photo
+          bio
+          twitterHandle
+          instagramHandle
+          linkedinUrl
+          facebookUrl
+          mastodonHandle
+        }
       }
     }
   }

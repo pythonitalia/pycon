@@ -1,5 +1,9 @@
+from typing import Optional
+
 import strawberry
 from strawberry import ID
+
+from api.submissions.permissions import CanSeeSubmissionPrivateFields
 
 
 @strawberry.type
@@ -7,14 +11,30 @@ class Participant:
     id: ID
     bio: str
     website: str
-    speaker_level: str
     photo: str
-    previous_talk_video: str
     twitter_handle: str
     instagram_handle: str
     linkedin_url: str
     facebook_url: str
     mastodon_handle: str
+
+    _speaker_level: strawberry.Private[str]
+    _previous_talk_video: strawberry.Private[str]
+    speaker_id: strawberry.Private[int]
+
+    @strawberry.field
+    def speaker_level(self, info) -> Optional[str]:
+        if not CanSeeSubmissionPrivateFields().has_permission(self, info):
+            return None
+
+        return self._speaker_level
+
+    @strawberry.field
+    def previous_talk_video(self, info) -> Optional[str]:
+        if not CanSeeSubmissionPrivateFields().has_permission(self, info):
+            return None
+
+        return self._previous_talk_video
 
     @classmethod
     def from_model(cls, instance):
@@ -23,8 +43,9 @@ class Participant:
             photo=instance.photo,
             bio=instance.bio,
             website=instance.website,
-            speaker_level=instance.speaker_level,
-            previous_talk_video=instance.previous_talk_video,
+            speaker_id=instance.user_id,
+            _speaker_level=instance.speaker_level,
+            _previous_talk_video=instance.previous_talk_video,
             twitter_handle=instance.twitter_handle,
             instagram_handle=instance.instagram_handle,
             linkedin_url=instance.linkedin_url,

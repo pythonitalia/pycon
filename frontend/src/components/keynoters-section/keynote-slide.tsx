@@ -4,12 +4,11 @@
 import { Box, Flex, Heading, jsx, Text } from "theme-ui";
 
 import { Link } from "~/components/link";
-import { KeynoteSpeaker } from "~/types";
 
 type Props = {
   title: string;
   slug: string | null;
-  speakers: KeynoteSpeaker[];
+  speakers: any[];
   standalone?: boolean;
 };
 
@@ -96,7 +95,7 @@ export const KeynoteSlide = ({
           }}
         >
           <Heading variant="caps" as="h3">
-            {speakers.map((speaker) => speaker.name).join(" & ")}
+            {speakers.map((speaker) => speaker.fullName).join(" & ")}
           </Heading>
           {title && <Text>{title}</Text>}
         </Flex>

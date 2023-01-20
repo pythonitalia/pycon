@@ -16,18 +16,11 @@ export type Submission = {
   speaker?: { fullName: string } | null;
 };
 
-type KeynoteSpeaker = {
-  id: string;
-  name: string;
-  photo: string;
-  highlightColor: string;
-};
-
 export type Keynote = {
   id: string;
   title: string;
   slug: string;
-  speakers: KeynoteSpeaker[];
+  speakers: ({ fullName: string } | null)[];
 };
 
 export type Item = {

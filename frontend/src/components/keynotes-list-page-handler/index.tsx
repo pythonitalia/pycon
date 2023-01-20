@@ -58,9 +58,9 @@ export const KeynotesListPageHandler = () => {
             >
               <SpeakerCard
                 talkTitle={keynote.title}
-                portraitUrl={keynote.speakers[0].photo}
+                portraitUrl={keynote.speakers[0].participant.photo}
                 speakerName={keynote.speakers
-                  .map((speaker) => speaker.name)
+                  .map((speaker) => speaker.fullName)
                   .join(", ")}
               />
             </Link>

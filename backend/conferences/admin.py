@@ -168,19 +168,25 @@ class DeadlineAdmin(admin.ModelAdmin):
     )
 
 
+class KeynoteSpeakerForm(forms.ModelForm):
+    class Meta:
+        model = KeynoteSpeaker
+        fields = (
+            "keynote",
+            "user_id",
+        )
+        widgets = {
+            "user_id": UsersBackendAutocomplete(admin.site),
+        }
+
+
 class KeynoteSpeakerInline(OrderedStackedInline):
     model = KeynoteSpeaker
+    form = KeynoteSpeakerForm
     extra = 1
     fields = (
         "keynote",
-        "name",
-        "photo",
-        "bio",
-        "pronouns",
-        "highlight_color",
-        "twitter_handle",
-        "instagram_handle",
-        "website",
+        "user_id",
         "order",
         "move_up_down_links",
     )
