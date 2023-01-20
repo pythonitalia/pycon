@@ -41,9 +41,7 @@ def test_get_talk_by_slug(conference_factory, schedule_item_factory, graphql_cli
                     title
                     slug
                     speakers {
-                        ... on ScheduleItemUser {
-                            id
-                        }
+                        id
                     }
                 }
             }

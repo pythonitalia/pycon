@@ -39,16 +39,8 @@ fragment ScheduleSlotFragment on ScheduleSlot {
     }
 
     speakers {
-      __typename
-
-      ... on ScheduleItemUser {
-        id
-        fullName
-      }
-
-      ... on ScheduleItemNamedUser {
-        fullName
-      }
+      id
+      fullName
     }
 
     rooms {

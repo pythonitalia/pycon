@@ -67,9 +67,11 @@ async def _(
 ):
     internalapi_graphql_client.force_service_login(issuer="pycon-backend")
 
-    await user_factory(email="testuser@user.it", fullname="Name", is_staff=False)
-    await user_factory(email="testuser2@user.it", fullname="Another", is_staff=False)
-    await user_factory(email="testuser3@user.it", fullname="Name", is_staff=False)
+    await user_factory(id=1, email="testuser@user.it", fullname="Name", is_staff=False)
+    await user_factory(
+        id=2, email="testuser2@user.it", fullname="Another", is_staff=False
+    )
+    await user_factory(id=3, email="testuser3@user.it", fullname="Name", is_staff=False)
 
     query = """query($ids: [ID!]!) {
         usersByIds(ids: $ids) {

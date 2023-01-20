@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import datetime, timedelta
 from typing import Optional
 
 from django.core import exceptions
@@ -110,6 +111,7 @@ class ScheduleItem(TimeStampedModel):
         ("talk", _("Talk")),
         ("training", _("Training")),
         ("keynote", _("Keynote")),
+        ("panel", _("Panel")),
         ("custom", _("Custom")),
     )
 
@@ -216,17 +218,14 @@ class ScheduleItem(TimeStampedModel):
 
     @cached_property
     def speakers(self):
-        speakers = [
-            SpeakerEntity(id=speaker.user_id)
-            for speaker in self.additional_speakers.all()
-        ]
+        speakers = [speaker.user_id for speaker in self.additional_speakers.all()]
 
         if self.submission_id:
-            speakers.append(SpeakerEntity(id=self.submission.speaker_id))
+            speakers.append(self.submission.speaker_id)
 
         if self.keynote_id:
             for speaker_keynote in self.keynote.speakers.all():
-                speakers.append(SpeakerEntity(full_name=speaker_keynote.name))
+                speakers.append(speaker_keynote.user_id)
 
         return speakers
 
@@ -261,6 +260,20 @@ class ScheduleItem(TimeStampedModel):
             kwargs["update_fields"].append("title")
 
         super().save(**kwargs)
+
+    @property
+    def start(self):
+        hour_slot = self.slot.hour
+        day = self.slot.day.day
+        return datetime.combine(day, hour_slot)
+
+    @property
+    def end(self):
+        hour_slot = self.slot.hour
+        day = self.slot.day.day
+        start = datetime.combine(day, hour_slot)
+        duration = self.duration or self.slot.duration
+        return start + timedelta(minutes=duration)
 
     def get_invitation_admin_url(self):
         return reverse(

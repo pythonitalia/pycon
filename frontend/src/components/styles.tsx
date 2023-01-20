@@ -19,6 +19,9 @@ export const GlobalStyles = (): React.ReactElement => (
       ".article a": {
         color: "inherit",
       },
+      ".article p, span": {
+        fontSize: "1.25rem",
+      },
       ".article li p": {
         display: "inline-block",
       },

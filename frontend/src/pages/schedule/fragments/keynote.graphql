@@ -4,8 +4,6 @@ fragment KeynoteFragment on Keynote {
   slug(language: "en")
   speakers {
     id
-    name
-    photo
-    highlightColor
+    fullName
   }
 }

@@ -16,6 +16,10 @@ export const messages = {
     "global.somethingWentWrong": "Something went wrong, please try again",
     "global.tryAgain": "Something went wrong: {error}",
 
+    "scheduleEventDetail.eventTime": "{start} - {end}",
+    "scheduleEventDetail.sidebar.spacesLeft": "Seats left",
+    "scheduleEvent.soldout": "Sold-out",
+
     "home.title": "Home",
     "home.deadline.begins": "Begins",
     "home.deadline.deadline": "Deadline",
@@ -565,6 +569,7 @@ export const messages = {
     "voting.topic": "Topic",
     "voting.tags": "Tags",
     "voting.audienceLevel": "Audience level",
+    "talk.audienceLevel": "Audience level",
     "voting.length": "Length",
     "voting.languages": "Languages",
     "voting.minutes": "minutes",
@@ -596,6 +601,10 @@ export const messages = {
     "unsubscribe.succeed.title": "Thank you",
     "unsubscribe.succeed.message":
       "You have been successfully unsubscribed from this newsletter.",
+
+    "scheduleEventDetail.elevatorPitch": "Elevator pitch",
+    "scheduleEventDetail.abstract": "Abstract",
+    "scheduleEventDetail.tags": "Tags",
 
     "jobboard.title": "Jobs board",
     "jobboard.applyNow": "Apply now",
@@ -1193,6 +1202,7 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "voting.topic": "Argomento",
     "voting.tags": "Tags",
     "voting.audienceLevel": "Livello audience",
+    "talk.audienceLevel": "Livello audience",
     "voting.length": "Durata",
     "voting.languages": "Lingue",
     "voting.minutes": "minuti",
@@ -1385,6 +1395,8 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "tickets.checkout.payWithBankTransfer": "Paga con bonifico",
     "tickets.checkout.savedAmount": "Hai risparmiato {amount}",
 
+    "scheduleEvent.soldout": "Sold-out",
+
     "tickets.checkout.voucher.fetching": "Verifica codice sconto...",
     "tickets.checkout.voucher.noProductsAffected": "Nessun prodotto scontato",
     "tickets.checkout.voucher": "Codice sconto",
@@ -1446,6 +1458,12 @@ Affrettati a comprare il biglietto!`,
     "input.placeholder": "Scrivi qui...",
 
     "ticketsOverview.ticket.personal.fareType": "Regular",
+
+    "scheduleEventDetail.elevatorPitch": "Elevator pitch",
+    "scheduleEventDetail.abstract": "Descrizione",
+    "scheduleEventDetail.tags": "Tags",
+
+    "scheduleEventDetail.eventTime": "{start} - {end}",
   },
 };
 
