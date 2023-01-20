@@ -7,7 +7,9 @@ import {
   Text,
   GridColumn,
   InputNumber,
+  Link,
 } from "@python-italia/pycon-styleguide";
+import { ArrowIcon } from "@python-italia/pycon-styleguide/icons";
 import React, { useCallback } from "react";
 import { FormattedMessage } from "react-intl";
 
@@ -98,7 +100,7 @@ export const VotingCard = ({
         background="white"
         openLabel={<FormattedMessage id="global.accordion.readMore" />}
       >
-        <Heading size={3}>{title}</Heading>
+        <Heading size={4}>{title}</Heading>
       </CardPart>
       <CardPart id="content" contentAlign="left" background="blue">
         <InputNumber
@@ -140,25 +142,25 @@ export const VotingCard = ({
         <Grid cols={12} gap="none" divide={true}>
           <GridColumn colSpan={8}>
             <CardPart contentAlign="left" background="white">
-              <Text weight="strong" uppercase as="p" size={3}>
+              <Text uppercase weight="strong" size="label3">
                 <FormattedMessage id="voting.elevatorPitch" />
               </Text>
 
               <Spacer size="small" />
 
-              <Text as="p" size={3}>
+              <Text as="p" size={2}>
                 {elevatorPitch}
               </Text>
             </CardPart>
           </GridColumn>
           <GridColumn colSpan={3}>
             <CardPart contentAlign="left" background="white">
-              <Text weight="strong" uppercase as="p" size={3}>
+              <Text uppercase weight="strong" size="label3">
                 <FormattedMessage id="voting.tags" />
               </Text>
               <Spacer size="small" />
 
-              <Text weight="strong" as="p" size={3}>
+              <Text weight="strong" as="p" size={2}>
                 {tags.map((tag) => tag.name).join(", ")}
               </Text>
             </CardPart>
@@ -166,23 +168,17 @@ export const VotingCard = ({
         </Grid>
       </CardPart>
 
-      <CardPart
-        id="content"
-        contentAlign="left"
-        background="white"
-        size="none"
-        link=""
-      >
-        <Grid cols={12} gap="none" divide={true}>
+      <CardPart id="content" contentAlign="left" background="white" size="none">
+        <Grid cols={12} gap="none" divide={true} equalHeight>
           <GridColumn colSpan={2}>
             <CardPart contentAlign="left" background="white">
-              <Text weight="strong" uppercase as="p" size={3}>
+              <Text uppercase weight="strong" size="label3">
                 <FormattedMessage id="voting.length" />
               </Text>
 
               <Spacer size="small" />
 
-              <Text as="p" weight="strong" size={3}>
+              <Text as="p" weight="strong" size={2}>
                 <FormattedMessage id="voting.minutes">
                   {(text) => (
                     <>
@@ -195,35 +191,40 @@ export const VotingCard = ({
           </GridColumn>{" "}
           <GridColumn colSpan={2}>
             <CardPart contentAlign="left" background="white">
-              <Text weight="strong" uppercase as="p" size={3}>
+              <Text uppercase weight="strong" size="label3">
                 <FormattedMessage id="voting.audienceLevel" />
               </Text>
               <Spacer size="small" />
 
-              <Text weight="strong" as="p" size={3}>
+              <Text weight="strong" as="p" size={2}>
                 {audienceLevel.name}
               </Text>
             </CardPart>
           </GridColumn>
           <GridColumn colSpan={2}>
             <CardPart contentAlign="left" background="white">
-              <Text weight="strong" uppercase as="p" size={3}>
+              <Text uppercase weight="strong" size="label3">
                 <FormattedMessage id="voting.languages" />
               </Text>
               <Spacer size="small" />
 
-              <Text weight="strong" as="p" size={3}>
+              <Text weight="strong" as="p" size={2}>
                 {languages.map((language) => language.name).join(", ")}
               </Text>
             </CardPart>
           </GridColumn>
           <GridColumn colSpan={6}>
-            <div className="">
-              <CardPart
-                contentAlign="left"
-                background="white"
-                rightSideIcon="arrow"
-              ></CardPart>
+            <div className="h-full flex items-center justify-end ">
+              <Link href={`/submission/${id}`}>
+                <CardPart contentAlign="left" background="white">
+                  <div className="flex items-center justify-end">
+                    <Text size={3} uppercase>
+                      <FormattedMessage id="global.accordion.readMore" />
+                    </Text>
+                    <ArrowIcon />
+                  </div>
+                </CardPart>
+              </Link>
             </div>
           </GridColumn>
         </Grid>
