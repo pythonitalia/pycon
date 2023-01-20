@@ -136,6 +136,7 @@ jobs:
             pythonitalia/${{ matrix.service.name }}:${{ steps.git.outputs.githash }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
+          platforms: linux/x86_64
 
   build-emails:
     runs-on: ubuntu-latest
