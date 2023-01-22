@@ -287,10 +287,13 @@ export const VotingPage = () => {
                 </Text>
               </>
             )}
+
             {loading && (
-              <Alert variant="info">
-                <FormattedMessage id="voting.loading" />
-              </Alert>
+              <HorizontalStack alignItems="center" justifyContent="center">
+                <Text as="p" size={2}>
+                  <FormattedMessage id="voting.loading" />
+                </Text>
+              </HorizontalStack>
             )}
           </>
         )}
@@ -342,26 +345,24 @@ export const VotingPage = () => {
           </>
         )}
         <Spacer size="xl" />
-        {!isVotingClosed && data?.submissions && (
-          <>
-            {isFetchingMore && (
-              <FormattedMessage
-                id="global.button.loading"
-                values={{
-                  emoji: <AnimatedEmoji play={true} />,
-                }}
-              />
-            )}
 
-            {hasMore && !loading && !isFetchingMore && (
-              <HorizontalStack alignItems="center" justifyContent="center">
+        <HorizontalStack alignItems="center" justifyContent="center">
+          {!isVotingClosed && data?.submissions && (
+            <>
+              {isFetchingMore && (
+                <Text as="p" size={2}>
+                  <FormattedMessage id="voting.loading" />
+                </Text>
+              )}
+
+              {hasMore && !loading && !isFetchingMore && (
                 <Button onClick={forceLoadMore} role="secondary" size="small">
                   <FormattedMessage id="global.loadMore" />
                 </Button>
-              </HorizontalStack>
-            )}
-          </>
-        )}
+              )}
+            </>
+          )}
+        </HorizontalStack>
       </Section>
     </Page>
   );
