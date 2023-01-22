@@ -13,8 +13,10 @@ import {
   Spacer,
   CardPart,
   MultiplePartsCard,
+  Button,
+  HorizontalStack,
 } from "@python-italia/pycon-styleguide";
-import { useEffect, useCallback, useState } from "react";
+import React, { useEffect, useCallback, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import { jsx, Select } from "theme-ui";
@@ -25,7 +27,6 @@ import { useRouter } from "next/router";
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Alert } from "~/components/alert";
 import { AnimatedEmoji } from "~/components/animated-emoji";
-import { Button } from "~/components/button/button";
 import { MetaTags } from "~/components/meta-tags";
 import { TagsFilter } from "~/components/tags-filter";
 import { VotingCard } from "~/components/voting-card";
@@ -254,110 +255,114 @@ export const VotingPage = () => {
         )}
       </Section>
 
-      {userCannotVote && (
-        <Section>
-          {!cannotVoteErrors && error && (
-            <Alert variant="alert">{error.message}</Alert>
-          )}
+      <Section>
+        {userCannotVote && (
+          <>
+            {!cannotVoteErrors && error && (
+              <Alert variant="alert">{error.message}</Alert>
+            )}
 
-          {cannotVoteErrors && error && (
-            <>
-              <Heading>
-                <FormattedMessage id="voting.errors.cannotVote.heading" />
-              </Heading>
-
-              <Text>
-                <FormattedMessage
-                  id="voting.errors.cannotVote.body"
-                  values={{
-                    linkVotingInfo: (
-                      <Link href="/voting-info">
-                        <FormattedMessage id="voting.errors.cannotVote.linkVotingInfo.text" />
-                      </Link>
-                    ),
-                    linkTicket: (
-                      <Link href="/tickets">
-                        <FormattedMessage id="voting.errors.cannotVote.linkTicket.text" />
-                      </Link>
-                    ),
-                  }}
-                />
-              </Text>
-            </>
-          )}
-          {loading && (
-            <Alert variant="info">
-              <FormattedMessage id="voting.loading" />
-            </Alert>
-          )}
-        </Section>
-      )}
-
-      {isVotingClosed && (
-        <Section>
-          <Heading sx={{ mb: 3 }}>
-            <FormattedMessage id="voting.closed.heading" />
-          </Heading>
-          <Text>
-            <FormattedMessage
-              id="voting.closed.body"
-              values={{
-                twitter: (
-                  <a
-                    target="_blank"
-                    href="https://twitter.com/pyconit"
-                    rel="noreferrer"
-                  >
-                    Twitter
-                  </a>
-                ),
-              }}
-            />
-          </Text>
-        </Section>
-      )}
-
-      {!isVotingClosed && data?.submissions && (
-        <Section>
-          <MultiplePartsCardCollection>
-            <MultiplePartsCard>
-              <CardPart contentAlign="left">
-                <Heading size={2}>
-                  <FormattedMessage id="voting.proposals" />
+            {cannotVoteErrors && error && (
+              <>
+                <Heading>
+                  <FormattedMessage id="voting.errors.cannotVote.heading" />
                 </Heading>
-              </CardPart>
-            </MultiplePartsCard>
-            {data.submissions
-              .filter(filterVisibleSubmissions)
-              .map((submission) => (
-                <VotingCard
-                  key={submission.id}
-                  submission={submission}
-                  onVote={onVote}
-                />
-              ))}
-          </MultiplePartsCardCollection>
-        </Section>
-      )}
 
-      {!isVotingClosed && data?.submissions && (
-        <Section>
-          {isFetchingMore && (
-            <FormattedMessage
-              id="global.button.loading"
-              values={{
-                emoji: <AnimatedEmoji play={true} />,
-              }}
-            />
-          )}
+                <Text>
+                  <FormattedMessage
+                    id="voting.errors.cannotVote.body"
+                    values={{
+                      linkVotingInfo: (
+                        <Link href="/voting-info">
+                          <FormattedMessage id="voting.errors.cannotVote.linkVotingInfo.text" />
+                        </Link>
+                      ),
+                      linkTicket: (
+                        <Link href="/tickets">
+                          <FormattedMessage id="voting.errors.cannotVote.linkTicket.text" />
+                        </Link>
+                      ),
+                    }}
+                  />
+                </Text>
+              </>
+            )}
+            {loading && (
+              <Alert variant="info">
+                <FormattedMessage id="voting.loading" />
+              </Alert>
+            )}
+          </>
+        )}
 
-          {hasMore && !loading && !isFetchingMore && (
-            <Button onClick={forceLoadMore}>
-              <FormattedMessage id="global.loadMore" />
-            </Button>
-          )}
-        </Section>
-      )}
+        {isVotingClosed && (
+          <>
+            <Heading sx={{ mb: 3 }}>
+              <FormattedMessage id="voting.closed.heading" />
+            </Heading>
+            <Text>
+              <FormattedMessage
+                id="voting.closed.body"
+                values={{
+                  twitter: (
+                    <a
+                      target="_blank"
+                      href="https://twitter.com/pyconit"
+                      rel="noreferrer"
+                    >
+                      Twitter
+                    </a>
+                  ),
+                }}
+              />
+            </Text>
+          </>
+        )}
+
+        {!isVotingClosed && data?.submissions && (
+          <>
+            <MultiplePartsCardCollection>
+              <MultiplePartsCard>
+                <CardPart contentAlign="left">
+                  <Heading size={2}>
+                    <FormattedMessage id="voting.proposals" />
+                  </Heading>
+                </CardPart>
+              </MultiplePartsCard>
+              {data.submissions
+                .filter(filterVisibleSubmissions)
+                .map((submission) => (
+                  <VotingCard
+                    key={submission.id}
+                    submission={submission}
+                    onVote={onVote}
+                  />
+                ))}
+            </MultiplePartsCardCollection>
+          </>
+        )}
+        <Spacer size="xl" />
+        {!isVotingClosed && data?.submissions && (
+          <>
+            {isFetchingMore && (
+              <FormattedMessage
+                id="global.button.loading"
+                values={{
+                  emoji: <AnimatedEmoji play={true} />,
+                }}
+              />
+            )}
+
+            {hasMore && !loading && !isFetchingMore && (
+              <HorizontalStack alignItems="center" justifyContent="center">
+                <Button onClick={forceLoadMore} role="secondary" size="small">
+                  <FormattedMessage id="global.loadMore" />
+                </Button>
+              </HorizontalStack>
+            )}
+          </>
+        )}
+      </Section>
     </Page>
   );
 };

@@ -99,6 +99,7 @@ export const VotingCard = ({
         id="heading"
         background="white"
         openLabel={<FormattedMessage id="global.accordion.readMore" />}
+        hoverColor="cream"
       >
         <Heading size={4}>{title}</Heading>
       </CardPart>
