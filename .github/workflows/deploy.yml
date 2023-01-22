@@ -125,17 +125,19 @@ jobs:
           key: ${{ runner.os }}-buildx-${{ matrix.service.name }}
       - name: Build and push
         if: ${{ steps.image.outputs.image_exists == 0 }}
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3.3.0
         with:
           context: ./${{ matrix.service.dir }}
           file: ./${{ matrix.service.dir }}/Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
+          provenance: false
           push: true
           tags: |
             ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/${{ matrix.service.name }}:${{ steps.git.outputs.githash }}
             pythonitalia/${{ matrix.service.name }}:${{ steps.git.outputs.githash }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
+          platforms: linux/amd64
 
   build-emails:
     runs-on: ubuntu-latest
