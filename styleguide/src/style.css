@@ -120,3 +120,15 @@ p a {
 .slider-grid .multiparts-card-wrapper {
   height: 100%;
 }
+
+.input-number:hover .input-number-label {
+  display: block;
+}
+
+.input-number-wrapper:hover.has-value .active-element {
+  display: block;
+}
+
+.input-number-wrapper:hover .input-number:not(:hover) .active-element {
+  display: none;
+}

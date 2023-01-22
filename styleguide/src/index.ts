@@ -45,6 +45,7 @@ export { Tag } from "./tag";
 export { TagsCollection } from "./tags-collection";
 export { Input } from "./input";
 export { InputWrapper } from "./input-wrapper";
+export { InputNumber } from "./input-number";
 export { Select } from "./select";
 export { Textarea } from "./textarea";
 export { LayoutContent } from "./layout-content";
