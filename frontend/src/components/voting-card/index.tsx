@@ -123,7 +123,7 @@ export const VotingCard = ({
               label: <FormattedMessage id="voteSelector.mustSee" />,
             },
           ]}
-          value={submission?.myVote.value}
+          value={submission?.myVote?.value}
           onClick={onSubmitVote}
         />
 
