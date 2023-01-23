@@ -49,3 +49,4 @@ export { InputNumber } from "./input-number";
 export { Select } from "./select";
 export { Textarea } from "./textarea";
 export { LayoutContent } from "./layout-content";
+export { SocialLinks } from "./social-links";

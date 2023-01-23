@@ -5,11 +5,12 @@ import { SnakeTail } from "../illustrations/snake-tail";
 import { Heading } from "../heading";
 import { Separator } from "../separator";
 import { FormattedMessage } from "react-intl";
-import { SocialLink, SocialLinkProps } from "./social-link";
+import { SocialLinkProps } from "../social-links/social-link";
 import { Link as LinkType } from "../navbar/types";
 import { Link } from "../link";
 import { Text } from "../text";
 import clsx from "clsx";
+import { SocialLinks } from "../social-links/social-links";
 
 type Props = {
   logo: React.ElementType;
@@ -55,16 +56,7 @@ export const Footer = ({
                 defaultMessage="Stay tuned!"
               />
             </Heading>
-            <ul className="flex gap-9">
-              {socials.map((social) => (
-                <li
-                  key={social.icon}
-                  className="w-7 h-7 flex items-center justify-center"
-                >
-                  <SocialLink {...social} />
-                </li>
-              ))}
-            </ul>
+            <SocialLinks socials={socials} />
           </div>
         </Container>
         <Separator />

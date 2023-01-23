@@ -1,15 +1,18 @@
 import clsx from "clsx";
 import React from "react";
+import { getTextColorClasses } from "../colors-utils";
 import { Color } from "../types";
 
 type Props = React.PropsWithChildren<{
   href: string;
   rel?: string;
+  color?: Color;
   target?: string;
   hoverColor?: Color;
   noHover?: boolean;
   noLayout?: boolean;
   onClick?: (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
+  className?: string;
 }>;
 
 export const Link = ({
@@ -17,44 +20,41 @@ export const Link = ({
   children,
   rel,
   target,
+  color = "black",
   hoverColor = "green",
   noHover = false,
   noLayout = false,
   onClick,
+  className,
 }: Props) => {
   return (
     <a
       onClick={onClick}
-      className={clsx("text-black transition-colors", {
-        "hover:fill-current hover:text-coral":
-          hoverColor === "coral" && !noHover,
-        "hover:fill-current hover:text-caramel":
-          hoverColor === "caramel" && !noHover,
-        "hover:fill-current hover:text-cream":
-          hoverColor === "cream" && !noHover,
-        "hover:fill-current hover:text-yellow":
-          hoverColor === "yellow" && !noHover,
-        "hover:fill-current hover:text-green":
-          hoverColor === "green" && !noHover,
-        "hover:fill-current hover:text-purple":
-          hoverColor === "purple" && !noHover,
-        "hover:fill-current hover:text-pink": hoverColor === "pink" && !noHover,
-        "hover:fill-current hover:text-blue": hoverColor === "blue" && !noHover,
-        "hover:fill-current hover:text-red": hoverColor === "red" && !noHover,
-        "hover:fill-current hover:text-success":
-          hoverColor === "success" && !noHover,
-        "hover:fill-current hover:text-warning":
-          hoverColor === "warning" && !noHover,
-        "hover:fill-current hover:text-neutral":
-          hoverColor === "neutral" && !noHover,
-        "hover:fill-current hover:text-black":
-          hoverColor === "black" && !noHover,
-        "hover:fill-current hover:text-white":
-          hoverColor === "white" && !noHover,
-        "hover:fill-current hover:text-milk": hoverColor === "milk" && !noHover,
+      className={clsx(
+        "transition-colors fill-current",
+        {
+          ...getTextColorClasses(color),
 
-        contents: noLayout,
-      })}
+          "hover:text-coral": hoverColor === "coral" && !noHover,
+          "hover:text-caramel": hoverColor === "caramel" && !noHover,
+          "hover:text-cream": hoverColor === "cream" && !noHover,
+          "hover:text-yellow": hoverColor === "yellow" && !noHover,
+          "hover:text-green": hoverColor === "green" && !noHover,
+          "hover:text-purple": hoverColor === "purple" && !noHover,
+          "hover:text-pink": hoverColor === "pink" && !noHover,
+          "hover:text-blue": hoverColor === "blue" && !noHover,
+          "hover:text-red": hoverColor === "red" && !noHover,
+          "hover:text-success": hoverColor === "success" && !noHover,
+          "hover:text-warning": hoverColor === "warning" && !noHover,
+          "hover:text-neutral": hoverColor === "neutral" && !noHover,
+          "hover:text-black": hoverColor === "black" && !noHover,
+          "hover:text-white": hoverColor === "white" && !noHover,
+          "hover:text-milk": hoverColor === "milk" && !noHover,
+
+          contents: noLayout,
+        },
+        className
+      )}
       href={href}
       rel={rel}
       target={target}
