@@ -5,8 +5,10 @@ import strawberry
 from api.helpers.ids import decode_hashid
 from api.permissions import CanSeeSubmissions, IsAuthenticated
 from conferences.models import Conference as ConferenceModel
-from submissions.models import Submission as SubmissionModel
-from submissions.models import SubmissionTag as SubmissionTagModel
+from submissions.models import (
+    Submission as SubmissionModel,
+    SubmissionTag as SubmissionTagModel,
+)
 
 from .types import Submission, SubmissionTag
 
@@ -46,3 +48,18 @@ class SubmissionsQuery:
     @strawberry.field
     def submission_tags(self, info) -> typing.List[SubmissionTag]:
         return SubmissionTagModel.objects.order_by("name").all()
+
+    @strawberry.field
+    def voting_tags(
+        self, info, conference: strawberry.ID
+    ) -> typing.List[SubmissionTag]:
+        used_tags = (
+            SubmissionModel.objects.filter(
+                conference__code=conference,
+            )
+            .values_list("tags__id", flat=True)
+            .distinct()
+        )
+        return (
+            SubmissionTagModel.objects.filter(id__in=used_tags).order_by("name").all()
+        )
