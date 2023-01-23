@@ -123,7 +123,7 @@ export const MyTickets = ({ tickets = [] }: Props) => {
       }
     },
     onError(err) {
-      console.log(err);
+      console.log(err.message);
     },
   });
 
