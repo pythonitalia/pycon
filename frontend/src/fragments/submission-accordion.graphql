@@ -3,6 +3,10 @@ fragment submissionAccordion on Submission {
   title(language: $language)
   elevatorPitch(language: $language)
 
+  type {
+    name
+  }
+
   topic {
     id
     name

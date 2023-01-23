@@ -174,12 +174,13 @@ export const VotingCard = ({
           <GridColumn colSpan={2}>
             <CardPart contentAlign="left" background="white">
               <Text uppercase weight="strong" size="label3">
-                <FormattedMessage id="voting.length" />
+                <FormattedMessage id="voting.submissionType" />
               </Text>
 
               <Spacer size="small" />
 
               <Text as="p" weight="strong" size={2}>
+                {submission.type.name} (
                 <FormattedMessage id="voting.minutes">
                   {(text) => (
                     <>
@@ -187,9 +188,11 @@ export const VotingCard = ({
                     </>
                   )}
                 </FormattedMessage>
+                )
               </Text>
             </CardPart>
-          </GridColumn>{" "}
+          </GridColumn>
+
           <GridColumn colSpan={2}>
             <CardPart contentAlign="left" background="white">
               <Text uppercase weight="strong" size="label3">
