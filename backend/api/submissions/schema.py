@@ -27,9 +27,15 @@ class SubmissionsQuery:
         self,
         info,
         code: str,
+        language: typing.Optional[str] = None,
+        voted: typing.Optional[bool] = None,
+        tags: typing.Optional[list[str]] = None,
+        type: typing.Optional[str] = None,
+        audience_level: typing.Optional[str] = None,
         after: typing.Optional[str] = None,
         limit: typing.Optional[int] = 50,
     ) -> typing.Optional[typing.List[Submission]]:
+        request = info.context.request
         conference = ConferenceModel.objects.filter(code=code).first()
 
         if not conference or not CanSeeSubmissions().has_permission(conference, info):
@@ -49,6 +55,28 @@ class SubmissionsQuery:
             .order_by("id")
             .filter(status=SubmissionModel.STATUS.proposed)
         )
+
+        if language:
+            qs = qs.filter(languages__code=language)
+
+        if tags:
+            qs = qs.filter(tags__name__in=tags)
+
+        if voted:
+            qs = qs.filter(votes__user_id=request.user.id)
+        elif voted is not None:
+            qs = qs.exclude(
+                id__in=[s.id for s in qs.filter(votes__user_id=request.user.id)]
+            )
+
+        if type:
+            qs = qs.filter(type__name=type)
+
+        if audience_level:
+            qs = qs.filter(audience_level__name=audience_level)
+
+        qs = qs.distinct()
+
         if after:
             decoded_id = decode_hashid(after)
             qs = qs.filter(
