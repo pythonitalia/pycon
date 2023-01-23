@@ -1,6 +1,6 @@
 {
   "name": "@python-italia/pycon-styleguide",
-  "version": "0.1.121",
+  "version": "0.1.122",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
