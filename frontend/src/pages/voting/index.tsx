@@ -26,7 +26,6 @@ import { useRouter } from "next/router";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Alert } from "~/components/alert";
-import { AnimatedEmoji } from "~/components/animated-emoji";
 import { MetaTags } from "~/components/meta-tags";
 import { TagsFilter } from "~/components/tags-filter";
 import { VotingCard } from "~/components/voting-card";
@@ -92,7 +91,13 @@ export const VotingPage = () => {
     filters.setField("tags", getAsArray(router.query.tags));
   }, [router.isReady]);
 
+  const duplicateSubmissionsHotfix = new Set();
+
   const filterVisibleSubmissions = (submission) => {
+    if (duplicateSubmissionsHotfix.has(submission.id)) {
+      return false;
+    }
+
     if (
       filters.values.language &&
       submission.languages?.findIndex(
@@ -123,6 +128,7 @@ export const VotingPage = () => {
       return false;
     }
 
+    duplicateSubmissionsHotfix.add(submission.id);
     return true;
   };
 
