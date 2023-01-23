@@ -31,6 +31,7 @@ export const BasicButton = ({
           "hover:text-green": !disabled,
         }
       )}
+      href={href}
       onClick={onClick}
       target={target}
       rel={rel}
