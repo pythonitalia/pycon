@@ -180,15 +180,13 @@ export const VotingCard = ({
               <Spacer size="small" />
 
               <Text as="p" weight="strong" size={2}>
-                {submission.type.name} (
-                <FormattedMessage id="voting.minutes">
-                  {(text) => (
-                    <>
-                      {duration.duration} {text}
-                    </>
-                  )}
-                </FormattedMessage>
-                )
+                <FormattedMessage
+                  values={{
+                    duration: duration.duration,
+                    type: submission.type.name,
+                  }}
+                  id="voting.minutes"
+                />
               </Text>
             </CardPart>
           </GridColumn>
