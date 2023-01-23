@@ -256,7 +256,7 @@ export const VotingPage = () => {
               </FormattedMessage>
             </Select>
 
-            <TagsFilter {...raw("tags")} tags={data?.submissionTags ?? []} />
+            <TagsFilter {...raw("tags")} tags={data?.votingTags ?? []} />
           </Grid>
         )}
       </Section>

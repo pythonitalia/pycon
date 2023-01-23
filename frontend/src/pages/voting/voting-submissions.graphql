@@ -30,7 +30,7 @@ query VotingSubmissions(
     ...submissionAccordion
   }
 
-  submissionTags @skip(if: $loadMore) {
+  votingTags(conference: $conference) @skip(if: $loadMore) {
     id
     name
   }
