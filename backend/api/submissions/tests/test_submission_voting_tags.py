@@ -28,7 +28,7 @@ def test_returns_voting_tags(
     submission.tags.add(tag_1.id)
 
     resp = graphql_client.query(
-        """query($conference: ID!) {
+        """query($conference: String!) {
             votingTags(conference: $conference) {
                 id
             }

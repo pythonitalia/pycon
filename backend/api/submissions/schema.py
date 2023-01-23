@@ -50,9 +50,7 @@ class SubmissionsQuery:
         return SubmissionTagModel.objects.order_by("name").all()
 
     @strawberry.field
-    def voting_tags(
-        self, info, conference: strawberry.ID
-    ) -> typing.List[SubmissionTag]:
+    def voting_tags(self, info, conference: str) -> typing.List[SubmissionTag]:
         used_tags = (
             SubmissionModel.objects.filter(
                 conference__code=conference,
