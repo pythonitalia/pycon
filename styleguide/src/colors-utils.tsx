@@ -28,6 +28,35 @@ export const getBackgroundClasses = (background: Color | "none") => {
   };
 };
 
+export const getHoverBackgroundColor = (background?: Color | "none") => {
+  return {
+    "hover:bg-coral": background === "coral",
+    "hover:bg-caramel": background === "caramel",
+    "hover:bg-cream": background === "cream",
+    "hover:bg-yellow": background === "yellow",
+    "hover:bg-green": background === "green",
+    "hover:bg-purple": background === "purple",
+    "hover:bg-pink": background === "pink",
+    "hover:bg-blue": background === "blue",
+    "hover:bg-red": background === "red",
+    "hover:bg-success": background === "success",
+    "hover:bg-warning": background === "warning",
+    "hover:bg-neutral": background === "neutral",
+    "hover:bg-error": background === "error",
+    "hover:bg-black": background === "black",
+    "hover:bg-grey": background === "grey",
+    "hover:bg-grey-900": background === "grey-900",
+    "hover:bg-grey-700": background === "grey-700",
+    "hover:bg-grey-500": background === "grey-500",
+    "hover:bg-grey-250": background === "grey-250",
+    "hover:bg-grey-100": background === "grey-100",
+    "hover:bg-grey-50": background === "grey-50",
+    "hover:bg-white": background === "white",
+    "hover:bg-milk": background === "milk",
+  };
+};
+
+
 export const getTextColorClasses = (color: Color | "none" | "default") => {
   return {
     "text-black": color === "default" || color === "black",

@@ -602,3 +602,18 @@ CardPartIconsWithIcons.argTypes = {
     },
   },
 };
+
+export const CarPartWithHoveColor = () => (
+  <div>
+    <MultiplePartsCard>
+      <CardPart contentAlign="left" id="heading" hoverColor="green">
+        <Heading size={2}>Student</Heading>
+      </CardPart>
+    </MultiplePartsCard>
+    <MultiplePartsCard>
+      <CardPart contentAlign="left" id="heading" hoverColor="green">
+        <Heading size={2}>Student</Heading>
+      </CardPart>
+    </MultiplePartsCard>
+  </div>
+);
