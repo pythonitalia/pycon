@@ -69,9 +69,6 @@ export const HomePage = () => {
     },
   });
 
-  const comingUpDeadlines = getDeadlinesTableData(conference);
-  console.log("conference.cfpDeadline", conference.cfpDeadline.end);
-
   return (
     <Fragment>
       <FormattedMessage id="home.title">
@@ -94,7 +91,7 @@ export const HomePage = () => {
             <Countdown
               showSnake
               snakeLookingAt="right"
-              deadline={parseISO(conference.cfpDeadline.end)}
+              deadline={parseISO(conference.votingDeadline.end)}
             />
           }
           invert
@@ -110,7 +107,7 @@ export const HomePage = () => {
           <Spacer size="medium" />
           <Countdown
             showSnake
-            deadline={parseISO(conference.cfpDeadline.end)}
+            deadline={parseISO(conference.votingDeadline.end)}
             className="lg:hidden"
           />
           <Spacer size="medium" />
