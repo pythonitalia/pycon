@@ -37,7 +37,6 @@ export const TagsFilter = ({ tags, onChange, value, className }: Props) => {
           sx={{
             pointerEvents: "none",
             borderRadius: 0,
-            backgroundColor: "keppel",
           }}
         >
           <FormattedMessage

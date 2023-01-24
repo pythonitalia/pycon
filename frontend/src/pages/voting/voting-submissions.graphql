@@ -5,6 +5,10 @@ query VotingSubmissions(
   $after: String
   $loadMore: Boolean!
   $language: String!
+  $voted: Boolean
+  $tags: [String!]
+  $type: String
+  $audienceLevel: String
 ) {
   conference(code: $conference) @skip(if: $loadMore) {
     id
@@ -24,9 +28,27 @@ query VotingSubmissions(
       name
       code
     }
+
+    audienceLevels {
+      id
+      name
+    }
+
+    submissionTypes {
+      id
+      name
+    }
   }
 
-  submissions(code: $conference, after: $after) {
+  submissions(
+    code: $conference
+    after: $after
+    language: $language
+    voted: $voted
+    tags: $tags
+    type: $type
+    audienceLevel: $audienceLevel
+  ) {
     ...submissionAccordion
   }
 

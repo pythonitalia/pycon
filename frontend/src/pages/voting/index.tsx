@@ -33,14 +33,17 @@ import { formatDeadlineDateTime } from "~/helpers/deadlines";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useInfiniteFetchScroll } from "~/helpers/use-infinite-fetch-scroll";
 import { useCurrentLanguage } from "~/locale/context";
-import { useVotingSubmissionsQuery } from "~/types";
-
-type VoteTypes = "all" | "votedOnly" | "notVoted";
+import {
+  VotingSubmissionsQueryVariables,
+  useVotingSubmissionsQuery,
+} from "~/types";
 
 type Filters = {
   language: string;
-  vote: VoteTypes;
+  vote: string;
   tags: string[];
+  type: string;
+  audienceLevel: string;
 };
 
 const getAsArray = (value: string | string[]): string[] => {
@@ -51,8 +54,25 @@ const getAsArray = (value: string | string[]): string[] => {
   return Array.isArray(value) ? value : [value];
 };
 
+const toBoolean = (value: string): boolean | null => {
+  if (value) {
+    switch (value) {
+      case "false":
+        return false;
+
+      case "true":
+        return true;
+
+      case "undefined":
+        return null;
+
+      case "null":
+        return null;
+    }
+  }
+};
+
 export const VotingPage = () => {
-  const [votedSubmissions, setVotedSubmissions] = useState(new Set());
   const router = useRouter();
   const language = useCurrentLanguage();
 
@@ -60,8 +80,6 @@ export const VotingPage = () => {
     {},
     {
       onChange(e, stateValues, nextStateValues) {
-        setVotedSubmissions(new Set());
-
         const qs = new URLSearchParams();
         const keys = Object.keys(nextStateValues) as (keyof Filters)[];
 
@@ -71,12 +89,22 @@ export const VotingPage = () => {
           if (Array.isArray(value)) {
             value.forEach((item) => qs.append(key, item));
           } else if (value) {
-            qs.append(key, value);
+            qs.append(key, value.toString());
           }
         });
 
         const currentPath = router.pathname;
         router.replace("/voting", `${currentPath}?${qs.toString()}`);
+
+        refetch({
+          conference: process.env.conferenceCode,
+          loadMore: false,
+          language: nextStateValues.language,
+          voted: toBoolean(nextStateValues.vote),
+          tags: nextStateValues.tags,
+          type: nextStateValues.type,
+          audienceLevel: nextStateValues.audienceLevel,
+        });
       },
     },
   );
@@ -85,67 +113,30 @@ export const VotingPage = () => {
     if (!router.isReady) {
       return;
     }
-
-    filters.setField("vote", (router.query.vote as VoteTypes) ?? "all");
+    console.log("Set filters: ", toBoolean(router.query.vote as string));
+    filters.setField("vote", router.query.vote as string);
     filters.setField("language", (router.query.language as string) ?? "");
     filters.setField("tags", getAsArray(router.query.tags));
+    filters.setField("type", (router.query.type as string) ?? "");
+    filters.setField(
+      "audienceLevel",
+      (router.query.audienceLevel as string) ?? "",
+    );
   }, [router.isReady]);
 
-  const duplicateSubmissionsHotfix = new Set();
-
-  const filterVisibleSubmissions = (submission) => {
-    if (duplicateSubmissionsHotfix.has(submission.id)) {
-      return false;
-    }
-
-    if (
-      filters.values.language &&
-      submission.languages?.findIndex(
-        (language) => language.code === filters.values.language,
-      ) === -1
-    ) {
-      return false;
-    }
-
-    if (
-      filters.values.tags.length > 0 &&
-      submission.tags?.every((st) => filters.values.tags.indexOf(st.id) === -1)
-    ) {
-      return false;
-    }
-
-    const voteStatusFilter = filters.values.vote;
-
-    if (
-      voteStatusFilter === "notVoted" &&
-      submission.myVote !== null &&
-      !votedSubmissions.has(submission.id)
-    ) {
-      return false;
-    }
-
-    if (voteStatusFilter === "votedOnly" && submission.myVote === null) {
-      return false;
-    }
-
-    duplicateSubmissionsHotfix.add(submission.id);
-    return true;
-  };
-
-  const { loading, error, data, fetchMore } = useVotingSubmissionsQuery({
-    variables: {
-      conference: process.env.conferenceCode,
-      loadMore: false,
-      language,
-    },
-    errorPolicy: "all",
-  });
-
-  const onVote = useCallback(
-    (submission) =>
-      setVotedSubmissions((submissions) => submissions.add(submission.id)),
-    [],
-  );
+  const { loading, error, data, refetch, fetchMore } =
+    useVotingSubmissionsQuery({
+      variables: {
+        conference: process.env.conferenceCode,
+        loadMore: false,
+        language: filters.values.language,
+        voted: toBoolean(filters.values.vote),
+        tags: filters.values.tags,
+        type: filters.values.type,
+        audienceLevel: filters.values.audienceLevel,
+      },
+      errorPolicy: "all",
+    });
 
   const { isFetchingMore, hasMore, forceLoadMore } = useInfiniteFetchScroll({
     fetchMore,
@@ -161,11 +152,11 @@ export const VotingPage = () => {
         return null;
       }
 
-      if (newData.submissions.filter(filterVisibleSubmissions).length === 0) {
-        return newData.submissions.length > 0
-          ? newData.submissions[newData.submissions.length - 1].id
-          : null;
-      }
+      // if (newData.submissions.filter(filterVisibleSubmissions).length === 0) {
+      //   return newData.submissions.length > 0
+      //     ? newData.submissions[newData.submissions.length - 1].id
+      //     : null;
+      // }
 
       return null;
     },
@@ -222,13 +213,7 @@ export const VotingPage = () => {
 
         {showFilters && (
           <Grid cols={2}>
-            <Select
-              {...select("language")}
-              sx={{
-                background: "violet",
-                borderRadius: 0,
-              }}
-            >
+            <Select {...select("language")}>
               <FormattedMessage id="voting.allLanguages">
                 {(text) => <option value="">{text}</option>}
               </FormattedMessage>
@@ -239,24 +224,49 @@ export const VotingPage = () => {
               ))}
             </Select>
 
-            <Select
-              {...select("vote")}
-              sx={{
-                borderRadius: 0,
-              }}
-            >
+            <Select {...select("vote")}>
               <FormattedMessage id="voting.allSubmissions">
-                {(text) => <option value="all">{text}</option>}
+                {(text) => <option value={null}>{text}</option>}
               </FormattedMessage>
               <FormattedMessage id="voting.notVoted">
-                {(text) => <option value="notVoted">{text}</option>}
+                {(text) => <option value="false">{text}</option>}
               </FormattedMessage>
               <FormattedMessage id="voting.votedOnly">
-                {(text) => <option value="votedOnly">{text}</option>}
+                {(text) => <option value="true">{text}</option>}
               </FormattedMessage>
             </Select>
 
             <TagsFilter {...raw("tags")} tags={data?.votingTags ?? []} />
+
+            <Select {...select("audienceLevel")}>
+              <FormattedMessage id="cfp.selectAudience">
+                {(txt) => (
+                  <option value="" disabled={true}>
+                    {txt}
+                  </option>
+                )}
+              </FormattedMessage>
+              {data?.conference.audienceLevels.map((a) => (
+                <option key={a.id} value={a.id}>
+                  {a.name}
+                </option>
+              ))}
+            </Select>
+
+            <Select {...select("type")}>
+              <FormattedMessage id="cfp.choosetype">
+                {(txt) => (
+                  <option value="" disabled={true}>
+                    {txt}
+                  </option>
+                )}
+              </FormattedMessage>
+              {data?.conference.submissionTypes.map((a) => (
+                <option key={a.id} value={a.id}>
+                  {a.name}
+                </option>
+              ))}
+            </Select>
           </Grid>
         )}
       </Section>
@@ -338,15 +348,9 @@ export const VotingPage = () => {
                   </Heading>
                 </CardPart>
               </MultiplePartsCard>
-              {data.submissions
-                .filter(filterVisibleSubmissions)
-                .map((submission) => (
-                  <VotingCard
-                    key={submission.id}
-                    submission={submission}
-                    onVote={onVote}
-                  />
-                ))}
+              {data.submissions.map((submission) => (
+                <VotingCard key={submission.id} submission={submission} />
+              ))}
             </MultiplePartsCardCollection>
           </>
         )}
