@@ -36,7 +36,9 @@ class SubmissionsQuery:
         limit: typing.Optional[int] = 50,
     ) -> typing.Optional[typing.List[Submission]]:
         request = info.context.request
-        conference = ConferenceModel.objects.filter(code=code).first()
+        conference = (
+            ConferenceModel.objects.filter(code=code).first()
+        )
 
         if not conference or not CanSeeSubmissions().has_permission(conference, info):
             raise PermissionError("You need to have a ticket to see submissions")
@@ -60,7 +62,7 @@ class SubmissionsQuery:
             qs = qs.filter(languages__code=language)
 
         if tags:
-            qs = qs.filter(tags__name__in=tags)
+            qs = qs.filter(tags__id__in=tags)
 
         if voted:
             qs = qs.filter(votes__user_id=request.user.id)
@@ -70,10 +72,10 @@ class SubmissionsQuery:
             )
 
         if type:
-            qs = qs.filter(type__name=type)
+            qs = qs.filter(type__id=type)
 
         if audience_level:
-            qs = qs.filter(audience_level__name=audience_level)
+            qs = qs.filter(audience_level__id=audience_level)
 
         qs = qs.distinct()
 

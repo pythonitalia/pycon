@@ -149,7 +149,10 @@ def test_filter_submissions_by_tags(
 
     resp = graphql_client.query(
         query,
-        variables={"code": submission.conference.code, "tags": ["lion", "cat"]},
+        variables={
+            "code": submission.conference.code,
+            "tags": [str(submission.tags.first().id), str(submission_3.tags.last().id)],
+        },
     )
 
     assert not resp.get("errors")
@@ -228,7 +231,7 @@ def test_filter_by_type(
 
     resp = graphql_client.query(
         query,
-        variables={"code": conference.code, "type": "talk"},
+        variables={"code": conference.code, "type": str(submission.type.id)},
     )
 
     assert not resp.get("errors")
@@ -256,7 +259,10 @@ def test_filter_by_audience_level(
 
     resp = graphql_client.query(
         query,
-        variables={"code": conference.code, "audienceLevel": "adult"},
+        variables={
+            "code": conference.code,
+            "audienceLevel": str(submission.audience_level.id),
+        },
     )
 
     assert not resp.get("errors")
