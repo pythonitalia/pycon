@@ -35,8 +35,17 @@ class SubmissionsQuery:
         if not conference or not CanSeeSubmissions().has_permission(conference, info):
             raise PermissionError("You need to have a ticket to see submissions")
 
-        qs = conference.submissions.order_by("id").filter(
-            status=SubmissionModel.STATUS.proposed
+        qs = (
+            conference.submissions.prefetch_related(
+                "type",
+                "duration",
+                "schedule_items",
+                "languages",
+                "audience_level",
+                "tags",
+            )
+            .order_by("id")
+            .filter(status=SubmissionModel.STATUS.proposed)
         )
         if after:
             decoded_id = decode_hashid(after)
