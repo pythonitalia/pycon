@@ -35,6 +35,8 @@ class SubmissionsQuery:
         if not conference or not CanSeeSubmissions().has_permission(conference, info):
             raise PermissionError("You need to have a ticket to see submissions")
 
+        info.context._user_can_vote = True
+
         qs = (
             conference.submissions.prefetch_related(
                 "type",

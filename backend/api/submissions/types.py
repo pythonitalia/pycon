@@ -141,7 +141,9 @@ class Submission:
 
     @strawberry.field
     def speaker(self, info: Info) -> Optional[SubmissionSpeaker]:
-        if not CanSeeSubmissionRestrictedFields().has_permission(self, info):
+        if not CanSeeSubmissionRestrictedFields().has_permission(
+            self, info, is_speaker_data=True
+        ):
             return None
         return SubmissionSpeaker(id=self.speaker_id)
 
