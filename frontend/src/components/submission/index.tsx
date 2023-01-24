@@ -41,16 +41,6 @@ export const Submission = ({ submission }: Props) => (
               mb: 4,
             }}
           >
-            {submission.topic && (
-              <>
-                <Text sx={{ fontWeight: "bold", display: "block" }}>
-                  <FormattedMessage id="cfp.trackLabel" />
-                </Text>
-
-                <Text sx={{ mb: 3 }}>{submission.topic.name}</Text>
-              </>
-            )}
-
             <Text sx={{ fontWeight: "bold", display: "block" }}>
               <FormattedMessage id="cfp.audienceLevelLabel" />
             </Text>

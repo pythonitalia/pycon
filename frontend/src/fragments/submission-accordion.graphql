@@ -7,11 +7,6 @@ fragment submissionAccordion on Submission {
     name
   }
 
-  topic {
-    id
-    name
-  }
-
   tags {
     name
     id
