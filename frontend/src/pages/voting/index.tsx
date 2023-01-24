@@ -110,7 +110,7 @@ export const VotingPage = () => {
     if (!router.isReady) {
       return;
     }
-    console.log("Set filters: ", toBoolean(router.query.vote as string));
+
     filters.setField("vote", router.query.vote as string);
     filters.setField("language", (router.query.language as string) ?? "");
     filters.setField("tags", getAsArray(router.query.tags));
