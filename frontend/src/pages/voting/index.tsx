@@ -236,7 +236,7 @@ export const VotingPage = () => {
             <TagsFilter {...raw("tags")} tags={data?.votingTags ?? []} />
 
             <Select {...select("audienceLevel")}>
-              <FormattedMessage id="cfp.selectAudience">
+              <FormattedMessage id="voting.allAudienceLevels">
                 {(txt) => (
                   <option value="" disabled={true}>
                     {txt}
@@ -251,7 +251,7 @@ export const VotingPage = () => {
             </Select>
 
             <Select {...select("type")}>
-              <FormattedMessage id="cfp.choosetype">
+              <FormattedMessage id="voting.allSubmissionTypes">
                 {(txt) => (
                   <option value="" disabled={true}>
                     {txt}
