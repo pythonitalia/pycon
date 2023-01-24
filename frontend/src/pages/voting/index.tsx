@@ -86,7 +86,7 @@ export const VotingPage = () => {
           if (Array.isArray(value)) {
             value.forEach((item) => qs.append(key, item));
           } else if (value) {
-            qs.append(key, value.toString());
+            qs.append(key, value);
           }
         });
 
@@ -148,12 +148,6 @@ export const VotingPage = () => {
       if (!newData || newData.submissions === null) {
         return null;
       }
-
-      // if (newData.submissions.filter(filterVisibleSubmissions).length === 0) {
-      //   return newData.submissions.length > 0
-      //     ? newData.submissions[newData.submissions.length - 1].id
-      //     : null;
-      // }
 
       return null;
     },
