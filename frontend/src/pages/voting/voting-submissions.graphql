@@ -48,6 +48,7 @@ query VotingSubmissions(
     tags: $tags
     type: $type
     audienceLevel: $audienceLevel
+    limit: 10
   ) {
     ...submissionAccordion
   }
