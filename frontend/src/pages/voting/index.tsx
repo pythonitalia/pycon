@@ -16,7 +16,7 @@ import {
   Button,
   HorizontalStack,
 } from "@python-italia/pycon-styleguide";
-import React, { useEffect, useCallback, useState } from "react";
+import React, { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import { jsx, Select } from "theme-ui";
@@ -33,10 +33,7 @@ import { formatDeadlineDateTime } from "~/helpers/deadlines";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useInfiniteFetchScroll } from "~/helpers/use-infinite-fetch-scroll";
 import { useCurrentLanguage } from "~/locale/context";
-import {
-  VotingSubmissionsQueryVariables,
-  useVotingSubmissionsQuery,
-} from "~/types";
+import { useVotingSubmissionsQuery } from "~/types";
 
 type Filters = {
   language: string;
