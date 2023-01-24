@@ -26,7 +26,7 @@ query VotingSubmissions(
     }
   }
 
-  submissions(code: $conference, after: $after, limit: 10) {
+  submissions(code: $conference, after: $after, limit: 50) {
     ...submissionAccordion
   }
 
