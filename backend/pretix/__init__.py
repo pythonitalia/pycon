@@ -398,8 +398,19 @@ def create_order(conference: Conference, order_data: CreateOrderInput) -> Order:
 
 
 def user_has_admission_ticket(
-    *, email: str, event_organizer: str, event_slug: str
+    *,
+    email: str,
+    event_organizer: str,
+    event_slug: str,
+    additional_events: Optional[List[dict]] = None,
 ) -> bool:
+    additional_events = additional_events or []
+    events = [
+        {
+            "organizer_slug": event_organizer,
+            "event_slug": event_slug,
+        }
+    ] + additional_events
     response = pretix(
         conference=Conference(
             pretix_organizer_id=event_organizer, pretix_event_id=event_slug
@@ -408,13 +419,7 @@ def user_has_admission_ticket(
         method="post",
         json={
             "attendee_email": email,
-            # TODO: In the future this method should be changed to send multiple events
-            "events": [
-                {
-                    "organizer_slug": event_organizer,
-                    "event_slug": event_slug,
-                }
-            ],
+            "events": events,
         },
     )
 
