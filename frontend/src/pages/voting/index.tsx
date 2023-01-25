@@ -108,10 +108,15 @@ export const VotingPage = () => {
   const [filters, { select, raw }] = useFormState<Filters>(
     {
       tags: [],
+      language: "",
     },
     {
       onChange(e, stateValues, nextStateValues) {
-        onUpdateFilters(nextStateValues);
+        filters.setField("page", 1);
+        onUpdateFilters({
+          ...nextStateValues,
+          page: 1,
+        });
       },
     },
   );
@@ -170,7 +175,7 @@ export const VotingPage = () => {
   const isVotingClosed =
     votingMetadata && !votingMetadata?.conference?.isVotingOpen;
   const userCannotVote =
-    loading || (cannotVoteErrors ?? false) || (error ?? false);
+    loading || (cannotVoteErrors ?? false) || (!!error ?? false);
   const votingDeadline = votingMetadata?.conference?.isVotingOpen
     ? votingMetadata?.conference.votingDeadline?.end
     : undefined;
@@ -211,7 +216,7 @@ export const VotingPage = () => {
         <Spacer size="large" />
 
         <Grid cols={2}>
-          <Select {...select("language")}>
+          <Select {...select("language")} disabled={userCannotVote}>
             <FormattedMessage id="voting.allLanguages">
               {(text) => <option value="">{text}</option>}
             </FormattedMessage>
@@ -222,7 +227,7 @@ export const VotingPage = () => {
             ))}
           </Select>
 
-          <Select {...select("vote")}>
+          <Select {...select("vote")} disabled={userCannotVote}>
             <FormattedMessage id="voting.allSubmissions">
               {(text) => <option value={null}>{text}</option>}
             </FormattedMessage>
@@ -237,9 +242,10 @@ export const VotingPage = () => {
           <TagsFilter
             {...raw("tags")}
             tags={votingMetadata?.votingTags ?? []}
+            disabled={userCannotVote}
           />
 
-          <Select {...select("audienceLevel")}>
+          <Select {...select("audienceLevel")} disabled={userCannotVote}>
             <FormattedMessage id="voting.allAudienceLevels">
               {(txt) => <option value="">{txt}</option>}
             </FormattedMessage>
@@ -250,7 +256,7 @@ export const VotingPage = () => {
             ))}
           </Select>
 
-          <Select {...select("type")}>
+          <Select {...select("type")} disabled={userCannotVote}>
             <FormattedMessage id="voting.allSubmissionTypes">
               {(txt) => <option value="">{txt}</option>}
             </FormattedMessage>
