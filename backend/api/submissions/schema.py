@@ -1,3 +1,4 @@
+import random
 import typing
 
 import strawberry
@@ -54,7 +55,14 @@ class SubmissionsQuery:
             qs = qs.filter(
                 id__gt=decoded_id,
             )
-        return qs[:limit]
+
+        # Randomize the order of the submissions
+        pastaporto = info.context.request.pastaporto
+        user_info = pastaporto.user_info
+
+        submissions = list(qs[:limit])
+        random.Random(user_info.id).shuffle(submissions)
+        return submissions
 
     @strawberry.field
     def submission_tags(self, info) -> typing.List[SubmissionTag]:
