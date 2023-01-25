@@ -47,6 +47,14 @@ export const AllButtons = () => {
       <Button onClick={() => {}} disabled={false} role="secondary">
         Secondary
       </Button>
+      <Button
+        background="red"
+        onClick={() => {}}
+        disabled={false}
+        role="secondary"
+      >
+        Secondary [custom bg]
+      </Button>
     </>
   );
 };

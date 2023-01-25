@@ -2,6 +2,7 @@ import clsx from "clsx";
 import React, { ReactNode } from "react";
 import { Color } from "../types";
 import { Text } from "../text";
+import { getBackgroundClasses } from "../colors-utils";
 
 export const Button = ({
   children,
@@ -10,11 +11,11 @@ export const Button = ({
   icon = null,
   size = "default",
   fullWidth = false,
-  color = "white",
+  background,
   disabled = false,
   href = undefined,
 }: {
-  color?: Color;
+  background?: Color | "none";
   icon?: ReactNode;
   size?: "default" | "small";
   children: ReactNode;
@@ -37,8 +38,9 @@ export const Button = ({
           // primary
           "hover:bg-green": !disabled,
           // secondary
-          "bg-milk": role === "primary",
-          "bg-cream": role === "secondary",
+          "bg-milk": role === "primary" && !background,
+          "bg-cream": role === "secondary" && !background,
+          ...(background ? getBackgroundClasses(background) : {}),
 
           "py-5 px-8": size === "small",
           "py-5 px-8 lg:py-6 lg:px-12": size === "default",
