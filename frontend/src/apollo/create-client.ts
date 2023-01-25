@@ -60,20 +60,6 @@ export const createClient = () => {
     cache: new InMemoryCache({
       possibleTypes: introspectionQueryResultData.possibleTypes,
       typePolicies: {
-        Query: {
-          fields: {
-            submissions: {
-              keyArgs: ["code"],
-              merge(existing = [], incoming) {
-                if (incoming === null) {
-                  return null;
-                }
-
-                return [...existing, ...incoming];
-              },
-            },
-          },
-        },
         Day: {
           keyFields: ["day"],
         },

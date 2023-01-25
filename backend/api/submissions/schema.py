@@ -1,8 +1,8 @@
+import math
 import typing
 
 import strawberry
 
-from api.helpers.ids import decode_hashid
 from api.permissions import CanSeeSubmissions, IsAuthenticated
 from conferences.models import Conference as ConferenceModel
 from submissions.models import (
@@ -10,7 +10,7 @@ from submissions.models import (
     SubmissionTag as SubmissionTagModel,
 )
 
-from .types import Submission, SubmissionTag
+from .types import Submission, SubmissionsPagination, SubmissionTag
 
 
 @strawberry.type
@@ -32,9 +32,9 @@ class SubmissionsQuery:
         tags: typing.Optional[list[str]] = None,
         type: typing.Optional[str] = None,
         audience_level: typing.Optional[str] = None,
-        after: typing.Optional[str] = None,
-        limit: typing.Optional[int] = 50,
-    ) -> typing.Optional[typing.List[Submission]]:
+        page: typing.Optional[int] = 1,
+        page_size: typing.Optional[int] = 50,
+    ) -> typing.Optional[SubmissionsPagination]:
         request = info.context.request
         conference = ConferenceModel.objects.filter(code=code).first()
 
@@ -77,12 +77,12 @@ class SubmissionsQuery:
 
         qs = qs.distinct()
 
-        if after:
-            decoded_id = decode_hashid(after)
-            qs = qs.filter(
-                id__gt=decoded_id,
-            )
-        return qs[:limit]
+        total_items = qs.count()
+        return SubmissionsPagination(
+            total_pages=math.ceil(total_items / page_size),
+            total_items=total_items,
+            submissions=qs[(page - 1) * page_size : page * page_size],
+        )
 
     @strawberry.field
     def submission_tags(self, info) -> typing.List[SubmissionTag]:

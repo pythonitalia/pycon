@@ -1,0 +1,36 @@
+query VotingMetadata($conference: String!) {
+  conference(code: $conference) {
+    id
+    isVotingOpen
+    votingDeadline: deadline(type: "voting") {
+      id
+      end
+    }
+
+    topics {
+      id
+      name
+    }
+
+    languages {
+      id
+      name
+      code
+    }
+
+    audienceLevels {
+      id
+      name
+    }
+
+    submissionTypes {
+      id
+      name
+    }
+  }
+
+  votingTags(conference: $conference) {
+    id
+    name
+  }
+}
