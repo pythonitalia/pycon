@@ -10,6 +10,7 @@ class CanSeeSubmissionRestrictedFields(BasePermission):
     message = "You can't see details for this submission"
 
     def has_permission(self, source, info, **kwargs):
+        is_speaker_data = kwargs.pop("is_speaker_data", False)
         if HasTokenPermission().has_permission(source, info):
             return True
 
@@ -36,6 +37,12 @@ class CanSeeSubmissionRestrictedFields(BasePermission):
 
         if conference.is_voting_closed:
             return False
+
+        if is_speaker_data:
+            return False
+
+        if info.context._user_can_vote is not None:
+            return info.context._user_can_vote
 
         return pastaporto_user_info_can_vote(pastaporto, conference)
 

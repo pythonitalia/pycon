@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Optional
 
 from django.http.request import HttpRequest
 
@@ -8,6 +8,7 @@ from django.http.request import HttpRequest
 class Context:
     request: HttpRequest
     response: Any
+    _user_can_vote: Optional[bool] = None
 
 
 @dataclass

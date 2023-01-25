@@ -36,14 +36,12 @@ class SubmissionsQuery:
         limit: typing.Optional[int] = 50,
     ) -> typing.Optional[typing.List[Submission]]:
         request = info.context.request
-        conference = (
-            ConferenceModel.objects.filter(code=code)
-            .prefetch_related("submissions", "submissions__tags")
-            .first()
-        )
+        conference = ConferenceModel.objects.filter(code=code).first()
 
         if not conference or not CanSeeSubmissions().has_permission(conference, info):
             raise PermissionError("You need to have a ticket to see submissions")
+
+        info.context._user_can_vote = True
 
         qs = (
             conference.submissions.prefetch_related(
