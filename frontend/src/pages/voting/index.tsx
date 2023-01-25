@@ -115,6 +115,7 @@ export const VotingPage = () => {
       },
     },
   );
+  const currentPage = parseInt(filters.values.page);
 
   useEffect(() => {
     if (!router.isReady) {
@@ -141,7 +142,7 @@ export const VotingPage = () => {
   const { loading, error, data, refetch } = useVotingSubmissionsQuery({
     variables: {
       conference: process.env.conferenceCode,
-      page: parseInt(filters.values.page),
+      page: currentPage,
       language: filters.values.language,
       voted: toBoolean(filters.values.vote),
       tags: filters.values.tags,
@@ -352,7 +353,7 @@ export const VotingPage = () => {
             <FormattedMessage
               id="voting.pagination"
               values={{
-                currentPage: filters.values.page,
+                currentPage: currentPage,
                 totalPages: data?.submissions?.totalPages,
               }}
             />
@@ -372,6 +373,7 @@ export const VotingPage = () => {
                 .map((_, i) => (
                   <Button
                     key={i}
+                    background={currentPage === i + 1 ? "green" : undefined}
                     onClick={(_) => {
                       navigateToPage(i + 1);
                     }}
