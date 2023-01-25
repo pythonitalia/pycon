@@ -76,7 +76,7 @@ class SubmissionsQuery:
             qs = qs.filter(audience_level__id=audience_level)
 
         qs = qs.distinct()
-
+        total_items = qs.count()
         return SubmissionsPagination(
             total_pages=math.ceil(total_items / page_size),
             submissions=qs[(page - 1) * page_size : page * page_size],
