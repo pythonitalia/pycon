@@ -36,6 +36,15 @@ class SubmissionsQuery:
         page: typing.Optional[int] = 1,
         page_size: typing.Optional[int] = 50,
     ) -> typing.Optional[Paginated[Submission]]:
+        if page_size > 150:
+            raise ValueError("Page size cannot be greater than 150")
+
+        if page_size < 1:
+            raise ValueError("Page size must be greater than 0")
+
+        if page < 1:
+            raise ValueError("Page must be greater than 0")
+
         request = info.context.request
         conference = ConferenceModel.objects.filter(code=code).first()
 
