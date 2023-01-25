@@ -231,11 +231,7 @@ export const VotingPage = () => {
 
             <Select {...select("audienceLevel")}>
               <FormattedMessage id="voting.allAudienceLevels">
-                {(txt) => (
-                  <option value="" disabled={true}>
-                    {txt}
-                  </option>
-                )}
+                {(txt) => <option value="">{txt}</option>}
               </FormattedMessage>
               {data?.conference.audienceLevels.map((a) => (
                 <option key={a.id} value={a.id}>
@@ -246,11 +242,7 @@ export const VotingPage = () => {
 
             <Select {...select("type")}>
               <FormattedMessage id="voting.allSubmissionTypes">
-                {(txt) => (
-                  <option value="" disabled={true}>
-                    {txt}
-                  </option>
-                )}
+                {(txt) => <option value="">{txt}</option>}
               </FormattedMessage>
               {data?.conference.submissionTypes.map((a) => (
                 <option key={a.id} value={a.id}>
