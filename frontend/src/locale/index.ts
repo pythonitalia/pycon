@@ -588,6 +588,8 @@ reflects what everyone wants to see!`,
     "voting.allTopics": "All topics",
     "voting.allLanguages": "All languages",
     "voting.allSubmissions": "Voted & Not voted",
+    "voting.allSubmissionTypes": "All Categories",
+    "voting.allAudienceLevels": "All Audience Levels",
     "voting.notVoted": "Not voted",
     "voting.votedOnly": "Voted only",
     "voting.tagsFilter":
@@ -727,6 +729,9 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "tickets.landing.hotelTitle": "Hotel",
     "tickets.landing.membershipTitle": "Membership",
     "blog.publishedOn": "{date} - {author}",
+
+    "voting.pagination":
+      "Page {currentPage} of {totalPages} ({totalItems, plural, one {1 item} other {{totalItems} items}})",
   },
   it: {
     titleTemplate: "%s | PyCon Italia",
@@ -1221,6 +1226,8 @@ Il tuo voto ci aiuterà a creare un programma che più rispecchia ciò che la co
     "voting.fullDetails": "Continua a leggere",
     "voting.allTopics": "Tutti gli argomenti",
     "voting.allLanguages": "Tutte le lingue",
+    "voting.allSubmissionTypes": "Tutte le categorie",
+    "voting.allAudienceLevels": "Tutti i livelli",
     "voting.allSubmissions": "Votate & Non votate",
     "voting.notVoted": "Non votate",
     "voting.votedOnly": "Votate",
@@ -1468,6 +1475,8 @@ Affrettati a comprare il biglietto!`,
 
     "scheduleEventDetail.eventTime": "{start} - {end}",
     "voting.minutes": "{type} ({duration} minuti)",
+    "voting.pagination":
+      "Pagina {currentPage} di {totalPages} ({totalItems, plural, one {1 item} other {{totalItems} items}})",
   },
 };
 

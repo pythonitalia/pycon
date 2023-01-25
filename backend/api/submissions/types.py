@@ -201,3 +201,9 @@ class Submission:
         if CanSeeSubmissionRestrictedFields().has_permission(self, info):
             return self.tags.all()
         return None
+
+
+@strawberry.type
+class SubmissionsPagination:
+    submissions: List[Submission]
+    total_pages: int

@@ -16,7 +16,7 @@ import {
   Button,
   HorizontalStack,
 } from "@python-italia/pycon-styleguide";
-import React, { useEffect, useCallback, useState } from "react";
+import React, { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import { jsx, Select } from "theme-ui";
@@ -31,16 +31,20 @@ import { TagsFilter } from "~/components/tags-filter";
 import { VotingCard } from "~/components/voting-card";
 import { formatDeadlineDateTime } from "~/helpers/deadlines";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
-import { useInfiniteFetchScroll } from "~/helpers/use-infinite-fetch-scroll";
 import { useCurrentLanguage } from "~/locale/context";
-import { useVotingSubmissionsQuery } from "~/types";
-
-type VoteTypes = "all" | "votedOnly" | "notVoted";
+import {
+  queryVotingMetadata,
+  useVotingMetadataQuery,
+  useVotingSubmissionsQuery,
+} from "~/types";
 
 type Filters = {
   language: string;
-  vote: VoteTypes;
+  vote: string;
   tags: string[];
+  type: string;
+  audienceLevel: string;
+  page: number;
 };
 
 const getAsArray = (value: string | string[]): string[] => {
@@ -51,125 +55,116 @@ const getAsArray = (value: string | string[]): string[] => {
   return Array.isArray(value) ? value : [value];
 };
 
+const toBoolean = (value: string): boolean | null => {
+  if (value) {
+    switch (value) {
+      case "false":
+        return false;
+
+      case "true":
+        return true;
+
+      case "undefined":
+        return null;
+
+      case "null":
+        return null;
+    }
+  }
+};
+
 export const VotingPage = () => {
-  const [votedSubmissions, setVotedSubmissions] = useState(new Set());
   const router = useRouter();
   const language = useCurrentLanguage();
 
+  const onUpdateFilters = (nextStateValues) => {
+    const qs = new URLSearchParams();
+    const keys = Object.keys(nextStateValues) as (keyof Filters)[];
+
+    keys.forEach((key) => {
+      const value = nextStateValues[key];
+
+      if (Array.isArray(value)) {
+        value.forEach((item) => qs.append(key, item));
+      } else if (value) {
+        qs.append(key, value);
+      }
+    });
+
+    const currentPath = router.pathname;
+    router.replace("/voting", `${currentPath}?${qs.toString()}`);
+
+    refetch({
+      conference: process.env.conferenceCode,
+      page: parseInt(nextStateValues.page),
+      language: nextStateValues.language,
+      voted: toBoolean(nextStateValues.vote),
+      tags: nextStateValues.tags,
+      type: nextStateValues.type,
+      audienceLevel: nextStateValues.audienceLevel,
+    });
+  };
+
   const [filters, { select, raw }] = useFormState<Filters>(
-    {},
+    {
+      tags: [],
+      language: "",
+    },
     {
       onChange(e, stateValues, nextStateValues) {
-        setVotedSubmissions(new Set());
-
-        const qs = new URLSearchParams();
-        const keys = Object.keys(nextStateValues) as (keyof Filters)[];
-
-        keys.forEach((key) => {
-          const value = nextStateValues[key];
-
-          if (Array.isArray(value)) {
-            value.forEach((item) => qs.append(key, item));
-          } else if (value) {
-            qs.append(key, value);
-          }
+        filters.setField("page", 1);
+        onUpdateFilters({
+          ...nextStateValues,
+          page: 1,
         });
-
-        const currentPath = router.pathname;
-        router.replace("/voting", `${currentPath}?${qs.toString()}`);
       },
     },
   );
+  const currentPage = parseInt(filters.values.page);
 
   useEffect(() => {
     if (!router.isReady) {
       return;
     }
 
-    filters.setField("vote", (router.query.vote as VoteTypes) ?? "all");
+    filters.setField("vote", router.query.vote as string);
     filters.setField("language", (router.query.language as string) ?? "");
     filters.setField("tags", getAsArray(router.query.tags));
+    filters.setField("type", (router.query.type as string) ?? "");
+    filters.setField("page", parseInt(router.query.page as string) || 1);
+    filters.setField(
+      "audienceLevel",
+      (router.query.audienceLevel as string) ?? "",
+    );
   }, [router.isReady]);
 
-  const duplicateSubmissionsHotfix = new Set();
-
-  const filterVisibleSubmissions = (submission) => {
-    if (duplicateSubmissionsHotfix.has(submission.id)) {
-      return false;
-    }
-
-    if (
-      filters.values.language &&
-      submission.languages?.findIndex(
-        (language) => language.code === filters.values.language,
-      ) === -1
-    ) {
-      return false;
-    }
-
-    if (
-      filters.values.tags.length > 0 &&
-      submission.tags?.every((st) => filters.values.tags.indexOf(st.id) === -1)
-    ) {
-      return false;
-    }
-
-    const voteStatusFilter = filters.values.vote;
-
-    if (
-      voteStatusFilter === "notVoted" &&
-      submission.myVote !== null &&
-      !votedSubmissions.has(submission.id)
-    ) {
-      return false;
-    }
-
-    if (voteStatusFilter === "votedOnly" && submission.myVote === null) {
-      return false;
-    }
-
-    duplicateSubmissionsHotfix.add(submission.id);
-    return true;
-  };
-
-  const { loading, error, data, fetchMore } = useVotingSubmissionsQuery({
+  const { data: votingMetadata } = useVotingMetadataQuery({
     variables: {
       conference: process.env.conferenceCode,
-      loadMore: false,
-      language,
     },
+  });
+
+  const { loading, error, data, refetch } = useVotingSubmissionsQuery({
+    variables: {
+      conference: process.env.conferenceCode,
+      page: currentPage,
+      language: filters.values.language,
+      voted: toBoolean(filters.values.vote),
+      tags: filters.values.tags,
+      type: filters.values.type,
+      audienceLevel: filters.values.audienceLevel,
+    },
+    skip: !router.isReady || isNaN(currentPage),
     errorPolicy: "all",
   });
 
-  const onVote = useCallback(
-    (submission) =>
-      setVotedSubmissions((submissions) => submissions.add(submission.id)),
-    [],
-  );
-
-  const { isFetchingMore, hasMore, forceLoadMore } = useInfiniteFetchScroll({
-    fetchMore,
-    after:
-      data && data.submissions && data.submissions.length > 0
-        ? (data.submissions[data.submissions.length - 1]?.id as any)
-        : undefined,
-    hasMoreResultsCallback(newData) {
-      return newData && newData.submissions && newData.submissions.length > 0;
-    },
-    shouldFetchAgain(newData) {
-      if (!newData || newData.submissions === null) {
-        return null;
-      }
-
-      if (newData.submissions.filter(filterVisibleSubmissions).length === 0) {
-        return newData.submissions.length > 0
-          ? newData.submissions[newData.submissions.length - 1].id
-          : null;
-      }
-
-      return null;
-    },
-  });
+  const navigateToPage = (page: number) => {
+    filters.setField("page", page);
+    onUpdateFilters({
+      ...filters.values,
+      page: page,
+    });
+  };
 
   const cannotVoteErrors =
     error &&
@@ -177,12 +172,12 @@ export const VotingPage = () => {
       (e) => e.message === "You need to have a ticket to see submissions",
     ) !== -1;
 
-  const isVotingClosed = data && !data?.conference?.isVotingOpen;
+  const isVotingClosed =
+    votingMetadata && !votingMetadata?.conference?.isVotingOpen;
   const userCannotVote =
-    loading || (cannotVoteErrors ?? false) || (error ?? false);
-  const showFilters = !isVotingClosed && !userCannotVote;
-  const votingDeadline = data?.conference?.isVotingOpen
-    ? data?.conference.votingDeadline?.end
+    loading || (cannotVoteErrors ?? false) || (!!error ?? false);
+  const votingDeadline = votingMetadata?.conference?.isVotingOpen
+    ? votingMetadata?.conference.votingDeadline?.end
     : undefined;
 
   return (
@@ -200,7 +195,7 @@ export const VotingPage = () => {
         <Text as="p" size={2}>
           <FormattedMessage id="voting.introduction" />
         </Text>
-        {votingDeadline && (
+        {votingDeadline && router.isReady && (
           <Text as="p" size={2}>
             <FormattedMessage
               id="voting.introductionDeadline"
@@ -220,45 +215,58 @@ export const VotingPage = () => {
         </BasicButton>
         <Spacer size="large" />
 
-        {showFilters && (
-          <Grid cols={2}>
-            <Select
-              {...select("language")}
-              sx={{
-                background: "violet",
-                borderRadius: 0,
-              }}
-            >
-              <FormattedMessage id="voting.allLanguages">
-                {(text) => <option value="">{text}</option>}
-              </FormattedMessage>
-              {data?.conference.languages.map((language) => (
-                <option key={language.id} value={language.code}>
-                  {language.name}
-                </option>
-              ))}
-            </Select>
+        <Grid cols={2}>
+          <Select {...select("language")} disabled={userCannotVote}>
+            <FormattedMessage id="voting.allLanguages">
+              {(text) => <option value="">{text}</option>}
+            </FormattedMessage>
+            {votingMetadata?.conference.languages.map((language) => (
+              <option key={language.id} value={language.code}>
+                {language.name}
+              </option>
+            ))}
+          </Select>
 
-            <Select
-              {...select("vote")}
-              sx={{
-                borderRadius: 0,
-              }}
-            >
-              <FormattedMessage id="voting.allSubmissions">
-                {(text) => <option value="all">{text}</option>}
-              </FormattedMessage>
-              <FormattedMessage id="voting.notVoted">
-                {(text) => <option value="notVoted">{text}</option>}
-              </FormattedMessage>
-              <FormattedMessage id="voting.votedOnly">
-                {(text) => <option value="votedOnly">{text}</option>}
-              </FormattedMessage>
-            </Select>
+          <Select {...select("vote")} disabled={userCannotVote}>
+            <FormattedMessage id="voting.allSubmissions">
+              {(text) => <option value={null}>{text}</option>}
+            </FormattedMessage>
+            <FormattedMessage id="voting.notVoted">
+              {(text) => <option value="false">{text}</option>}
+            </FormattedMessage>
+            <FormattedMessage id="voting.votedOnly">
+              {(text) => <option value="true">{text}</option>}
+            </FormattedMessage>
+          </Select>
 
-            <TagsFilter {...raw("tags")} tags={data?.votingTags ?? []} />
-          </Grid>
-        )}
+          <TagsFilter
+            {...raw("tags")}
+            tags={votingMetadata?.votingTags ?? []}
+            disabled={userCannotVote}
+          />
+
+          <Select {...select("audienceLevel")} disabled={userCannotVote}>
+            <FormattedMessage id="voting.allAudienceLevels">
+              {(txt) => <option value="">{txt}</option>}
+            </FormattedMessage>
+            {votingMetadata?.conference.audienceLevels.map((a) => (
+              <option key={a.id} value={a.id}>
+                {a.name}
+              </option>
+            ))}
+          </Select>
+
+          <Select {...select("type")} disabled={userCannotVote}>
+            <FormattedMessage id="voting.allSubmissionTypes">
+              {(txt) => <option value="">{txt}</option>}
+            </FormattedMessage>
+            {votingMetadata?.conference.submissionTypes.map((a) => (
+              <option key={a.id} value={a.id}>
+                {a.name}
+              </option>
+            ))}
+          </Select>
+        </Grid>
       </Section>
 
       <Section>
@@ -338,34 +346,50 @@ export const VotingPage = () => {
                   </Heading>
                 </CardPart>
               </MultiplePartsCard>
-              {data.submissions
-                .filter(filterVisibleSubmissions)
-                .map((submission) => (
-                  <VotingCard
-                    key={submission.id}
-                    submission={submission}
-                    onVote={onVote}
-                  />
-                ))}
+              {data.submissions.items.map((submission) => (
+                <VotingCard key={submission.id} submission={submission} />
+              ))}
             </MultiplePartsCardCollection>
           </>
         )}
         <Spacer size="xl" />
 
-        <HorizontalStack alignItems="center" justifyContent="center">
+        {data?.submissions?.pageInfo.totalPages && (
+          <Text as="p" size="label1" align="center">
+            <FormattedMessage
+              id="voting.pagination"
+              values={{
+                currentPage: currentPage,
+                totalPages: data?.submissions?.pageInfo.totalPages,
+                totalItems: data?.submissions?.pageInfo.totalItems,
+              }}
+            />
+          </Text>
+        )}
+        <Spacer size="small" />
+
+        <HorizontalStack
+          gap="small"
+          alignItems="center"
+          justifyContent="center"
+        >
           {!isVotingClosed && data?.submissions && (
             <>
-              {isFetchingMore && (
-                <Text as="p" size={2}>
-                  <FormattedMessage id="voting.loading" />
-                </Text>
-              )}
-
-              {hasMore && !loading && !isFetchingMore && (
-                <Button onClick={forceLoadMore} role="secondary" size="small">
-                  <FormattedMessage id="global.loadMore" />
-                </Button>
-              )}
+              {Array(data.submissions.pageInfo.totalPages)
+                .fill(null)
+                .map((_, i) => (
+                  <Button
+                    key={i}
+                    background={currentPage === i + 1 ? "green" : undefined}
+                    onClick={(_) => {
+                      navigateToPage(i + 1);
+                    }}
+                    size="small"
+                    role="secondary"
+                  >
+                    {i + 1}
+                  </Button>
+                ))}
             </>
           )}
         </HorizontalStack>
@@ -377,7 +401,12 @@ export const VotingPage = () => {
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
   const client = getApolloClient();
 
-  await prefetchSharedQueries(client, locale);
+  await Promise.all([
+    prefetchSharedQueries(client, locale),
+    queryVotingMetadata(client, {
+      conference: process.env.conferenceCode,
+    }),
+  ]);
 
   return addApolloState(client, {
     props: {},

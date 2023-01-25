@@ -13,15 +13,17 @@ import { ArrowIcon } from "@python-italia/pycon-styleguide/icons";
 import React, { useCallback } from "react";
 import { FormattedMessage } from "react-intl";
 
-import { SubmissionAccordionFragment, useSendVoteMutation } from "~/types";
+import {
+  SubmissionAccordionFragment,
+  SendVoteMutation,
+  useSendVoteMutation,
+} from "~/types";
 
 type Props = {
   submission: SubmissionAccordionFragment;
-  onVote?: (submission: SubmissionAccordionFragment) => void;
 };
 
 export const VotingCard = ({
-  onVote,
   submission,
   submission: {
     id,
@@ -65,8 +67,6 @@ export const VotingCard = ({
       }
 
       const prevVote = submission.myVote ?? { id: `${Math.random()}` };
-
-      onVote(submission);
 
       sendVote({
         variables: {

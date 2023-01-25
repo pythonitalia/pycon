@@ -1,9 +1,10 @@
+import random
 import typing
 
 import strawberry
 
-from api.helpers.ids import decode_hashid
 from api.permissions import CanSeeSubmissions, IsAuthenticated
+from api.types import Paginated
 from conferences.models import Conference as ConferenceModel
 from submissions.models import (
     Submission as SubmissionModel,
@@ -27,9 +28,15 @@ class SubmissionsQuery:
         self,
         info,
         code: str,
-        after: typing.Optional[str] = None,
-        limit: typing.Optional[int] = 50,
-    ) -> typing.Optional[typing.List[Submission]]:
+        language: typing.Optional[str] = None,
+        voted: typing.Optional[bool] = None,
+        tags: typing.Optional[list[str]] = None,
+        type: typing.Optional[str] = None,
+        audience_level: typing.Optional[str] = None,
+        page: typing.Optional[int] = 1,
+        page_size: typing.Optional[int] = 50,
+    ) -> typing.Optional[Paginated[Submission]]:
+        request = info.context.request
         conference = ConferenceModel.objects.filter(code=code).first()
 
         if not conference or not CanSeeSubmissions().has_permission(conference, info):
@@ -49,12 +56,41 @@ class SubmissionsQuery:
             .order_by("id")
             .filter(status=SubmissionModel.STATUS.proposed)
         )
-        if after:
-            decoded_id = decode_hashid(after)
-            qs = qs.filter(
-                id__gt=decoded_id,
+
+        if language:
+            qs = qs.filter(languages__code=language)
+
+        if tags:
+            qs = qs.filter(tags__id__in=tags)
+
+        if voted:
+            qs = qs.filter(votes__user_id=request.user.id)
+        elif voted is not None:
+            qs = qs.exclude(
+                id__in=[s.id for s in qs.filter(votes__user_id=request.user.id)]
             )
-        return qs[:limit]
+
+        if type:
+            qs = qs.filter(type__id=type)
+
+        if audience_level:
+            qs = qs.filter(audience_level__id=audience_level)
+
+        qs = qs.distinct()
+        total_items = qs.count()
+
+        # Randomize the order of the submissions
+        pastaporto = info.context.request.pastaporto
+        user_info = pastaporto.user_info
+
+        submissions = list(qs[(page - 1) * page_size : page * page_size])
+        random.Random(user_info.id).shuffle(submissions)
+        return Paginated.paginate_list(
+            items=submissions,
+            page_size=page_size,
+            total_items=total_items,
+            page=page,
+        )
 
     @strawberry.field
     def submission_tags(self, info) -> typing.List[SubmissionTag]:
