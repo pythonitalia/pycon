@@ -154,7 +154,7 @@ export const VotingPage = () => {
       type: filters.values.type,
       audienceLevel: filters.values.audienceLevel,
     },
-    skip: !router.isReady || filters.values.page === null,
+    skip: !router.isReady || isNaN(currentPage),
     errorPolicy: "all",
   });
 
