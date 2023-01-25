@@ -21,7 +21,7 @@ def test_returns_submissions_paginated(graphql_client, user, submission_factory)
     submission_2 = submission_factory(id=2, conference=submission.conference)
 
     query = """query Submissions($code: String!, $page: Int) {
-        submissions(code: $code, pageSize: 1, page: $page) {
+        submissions(code: $code, page: $page, pageSize: 1) {
             pageInfo {
                 totalPages
                 totalItems
@@ -40,11 +40,86 @@ def test_returns_submissions_paginated(graphql_client, user, submission_factory)
     assert resp["data"]["submissions"]["items"] == [{"id": submission.hashid}]
     assert resp["data"]["submissions"]["pageInfo"] == {"totalPages": 2, "totalItems": 2}
 
-    resp = graphql_client.query(
+    resp_2 = graphql_client.query(
         query,
         variables={"code": submission.conference.code, "page": 2},
     )
-    assert resp["data"]["submissions"]["items"] == [{"id": submission_2.hashid}]
+    assert resp_2["data"]["submissions"]["items"] == [{"id": submission_2.hashid}]
+
+
+def test_page_size_cannot_be_less_than_1(graphql_client, user, submission_factory):
+    graphql_client.force_login(user)
+
+    submission = submission_factory(id=1, speaker_id=user.id)
+
+    query = """query Submissions($code: String!) {
+        submissions(code: $code, pageSize: -1) {
+            pageInfo {
+                totalPages
+                totalItems
+            }
+            items {
+                id
+            }
+        }
+    }"""
+    resp = graphql_client.query(
+        query,
+        variables={"code": submission.conference.code},
+    )
+
+    assert resp["errors"][0]["message"] == "Page size must be greater than 0"
+    assert resp["data"]["submissions"] is None
+
+
+def test_max_allowed_page_size(graphql_client, user, submission_factory):
+    graphql_client.force_login(user)
+
+    submission = submission_factory(id=1, speaker_id=user.id)
+
+    query = """query Submissions($code: String!) {
+        submissions(code: $code, pageSize: 3000) {
+            pageInfo {
+                totalPages
+                totalItems
+            }
+            items {
+                id
+            }
+        }
+    }"""
+    resp = graphql_client.query(
+        query,
+        variables={"code": submission.conference.code},
+    )
+
+    assert resp["errors"][0]["message"] == "Page size cannot be greater than 150"
+    assert resp["data"]["submissions"] is None
+
+
+def test_min_allowed_page(graphql_client, user, submission_factory):
+    graphql_client.force_login(user)
+
+    submission = submission_factory(id=1, speaker_id=user.id)
+
+    query = """query Submissions($code: String!, $page: Int) {
+        submissions(code: $code, page: $page) {
+            pageInfo {
+                totalPages
+                totalItems
+            }
+            items {
+                id
+            }
+        }
+    }"""
+    resp = graphql_client.query(
+        query,
+        variables={"code": submission.conference.code, "page": -1},
+    )
+
+    assert resp["errors"][0]["message"] == "Page must be greater than 0"
+    assert resp["data"]["submissions"] is None
 
 
 def test_filter_submissions_by_language(
