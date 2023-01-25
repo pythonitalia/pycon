@@ -20,7 +20,6 @@ query VotingSubmissions(
     pageSize: 100
   ) {
     totalPages
-    totalItems
 
     submissions {
       ...submissionAccordion

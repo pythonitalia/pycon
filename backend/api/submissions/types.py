@@ -207,4 +207,3 @@ class Submission:
 class SubmissionsPagination:
     submissions: List[Submission]
     total_pages: int
-    total_items: int
