@@ -36,6 +36,7 @@ def test_authenticate():
     assert logged_user.email == "marco@test.it"
     assert logged_user.full_name == "Test user"
     assert logged_user.is_staff
+    assert not logged_user.is_superuser
 
 
 def test_authenticate_when_wrong_username_or_password():
