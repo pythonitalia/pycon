@@ -154,7 +154,7 @@ export const VotingPage = () => {
       type: filters.values.type,
       audienceLevel: filters.values.audienceLevel,
     },
-    skip: !router.isReady && !filters.values.page,
+    skip: !router.isReady || filters.values.page === null,
     errorPolicy: "all",
   });
 
@@ -346,7 +346,7 @@ export const VotingPage = () => {
                   </Heading>
                 </CardPart>
               </MultiplePartsCard>
-              {data.submissions.submissions.map((submission) => (
+              {data.submissions.items.map((submission) => (
                 <VotingCard key={submission.id} submission={submission} />
               ))}
             </MultiplePartsCardCollection>
@@ -354,13 +354,14 @@ export const VotingPage = () => {
         )}
         <Spacer size="xl" />
 
-        {data?.submissions?.totalPages && (
+        {data?.submissions?.pageInfo.totalPages && (
           <Text as="p" size="label1" align="center">
             <FormattedMessage
               id="voting.pagination"
               values={{
                 currentPage: currentPage,
-                totalPages: data?.submissions?.totalPages,
+                totalPages: data?.submissions?.pageInfo.totalPages,
+                totalItems: data?.submissions?.pageInfo.totalItems,
               }}
             />
           </Text>
@@ -374,7 +375,7 @@ export const VotingPage = () => {
         >
           {!isVotingClosed && data?.submissions && (
             <>
-              {Array(data.submissions.totalPages)
+              {Array(data.submissions.pageInfo.totalPages)
                 .fill(null)
                 .map((_, i) => (
                   <Button

@@ -19,9 +19,12 @@ query VotingSubmissions(
     page: $page
     pageSize: 100
   ) {
-    totalPages
+    pageInfo {
+      totalPages
+      totalItems
+    }
 
-    submissions {
+    items {
       ...submissionAccordion
     }
   }

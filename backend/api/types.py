@@ -1,3 +1,6 @@
+import math
+from typing import Generic, List, TypeVar
+
 import strawberry
 
 
@@ -46,3 +49,32 @@ class MultiLingualInput:
 
     def to_dict(self) -> dict:
         return {"en": self.en, "it": self.it}
+
+
+ItemType = TypeVar("ItemType")
+
+
+@strawberry.type
+class PageInfo:
+    total_pages: int
+    total_items: int
+    page_size: int
+
+
+@strawberry.type
+class Paginated(Generic[ItemType]):
+    page_info: PageInfo
+    items: List[ItemType]
+
+    @classmethod
+    def paginate_list(
+        cls, *, items: List[ItemType], page_size: int, total_items: int, page: int
+    ) -> "Paginated[ItemType]":
+        return Paginated(
+            page_info=PageInfo(
+                total_pages=math.ceil(total_items / page_size),
+                page_size=page_size,
+                total_items=total_items,
+            ),
+            items=items,
+        )

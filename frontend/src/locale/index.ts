@@ -730,7 +730,8 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "tickets.landing.membershipTitle": "Membership",
     "blog.publishedOn": "{date} - {author}",
 
-    "voting.pagination": "Page {currentPage} of {totalPages}",
+    "voting.pagination":
+      "Page {currentPage} of {totalPages} ({totalItems, plural, one {1 item} other {{totalItems} items}})",
   },
   it: {
     titleTemplate: "%s | PyCon Italia",
@@ -1474,7 +1475,8 @@ Affrettati a comprare il biglietto!`,
 
     "scheduleEventDetail.eventTime": "{start} - {end}",
     "voting.minutes": "{type} ({duration} minuti)",
-    "voting.pagination": "Pagina {currentPage} di {totalPages}",
+    "voting.pagination":
+      "Pagina {currentPage} di {totalPages} ({totalItems, plural, one {1 item} other {{totalItems} items}})",
   },
 };
 

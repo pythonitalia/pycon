@@ -1,16 +1,17 @@
-import math
+import random
 import typing
 
 import strawberry
 
 from api.permissions import CanSeeSubmissions, IsAuthenticated
+from api.types import Paginated
 from conferences.models import Conference as ConferenceModel
 from submissions.models import (
     Submission as SubmissionModel,
     SubmissionTag as SubmissionTagModel,
 )
 
-from .types import Submission, SubmissionsPagination, SubmissionTag
+from .types import Submission, SubmissionTag
 
 
 @strawberry.type
@@ -34,7 +35,7 @@ class SubmissionsQuery:
         audience_level: typing.Optional[str] = None,
         page: typing.Optional[int] = 1,
         page_size: typing.Optional[int] = 50,
-    ) -> typing.Optional[SubmissionsPagination]:
+    ) -> typing.Optional[Paginated[Submission]]:
         request = info.context.request
         conference = ConferenceModel.objects.filter(code=code).first()
 
@@ -77,9 +78,18 @@ class SubmissionsQuery:
 
         qs = qs.distinct()
         total_items = qs.count()
-        return SubmissionsPagination(
-            total_pages=math.ceil(total_items / page_size),
-            submissions=qs[(page - 1) * page_size : page * page_size],
+
+        # Randomize the order of the submissions
+        pastaporto = info.context.request.pastaporto
+        user_info = pastaporto.user_info
+
+        submissions = list(qs[(page - 1) * page_size : page * page_size])
+        random.Random(user_info.id).shuffle(submissions)
+        return Paginated.paginate_list(
+            items=submissions,
+            page_size=page_size,
+            total_items=total_items,
+            page=page,
         )
 
     @strawberry.field
