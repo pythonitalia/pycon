@@ -51,6 +51,7 @@ module.exports = {
       "2xl": '3.5rem', // 56px
       "3xl": '5rem', // 80px
       '4xl': '7.5rem', // 120px
+      '4xl-fluid': 'clamp(2.9rem, 12vw, 7.5rem)', // 120px
     },
     colors: {
       transparent: "transparent",

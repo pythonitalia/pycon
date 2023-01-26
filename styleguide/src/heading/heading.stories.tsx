@@ -8,6 +8,9 @@ export default {
 export const Primary = () => (
   <>
     <Heading size="display1">Display 1 🐎</Heading>
+    <Heading size="display1" fluid>
+      Display 1 [fluid] 🐎
+    </Heading>
     <Heading size="display2">Display 2 🐈</Heading>
     <Heading size={1}>Heading 1 🦙</Heading>
     <Heading size={2}>Heading 2 🐠</Heading>

@@ -50,3 +50,4 @@ export { Select } from "./select";
 export { Textarea } from "./textarea";
 export { LayoutContent } from "./layout-content";
 export { SocialLinks } from "./social-links";
+export { ScrollDownArrowBar } from "./scrolldown-arrow-bar";

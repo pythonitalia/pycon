@@ -9,3 +9,4 @@ export { TripleSnakes } from "./triple-snakes";
 export { Cathedral } from "./cathedral";
 export { Florence } from "./florence";
 export { SnakeHead } from "./snake-head";
+export { SnakeLongNeck } from "./snake-long-neck";

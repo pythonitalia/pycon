@@ -16,21 +16,25 @@ const SIZE_TO_COMPONENT: { [size in Size]: React.ElementType } = {
   6: "h6",
 };
 
+type Props = {
+  children: ReactNode;
+  size?: Size;
+  color?: Color | "none";
+  fluid?: boolean;
+  align?: "left" | "center" | "right";
+  className?: string;
+  uppercase?: boolean;
+};
+
 export const Heading = ({
   children,
   size = 1,
   color = "black",
   align,
   className,
+  fluid = false,
   uppercase = false,
-}: {
-  children: ReactNode;
-  size?: Size;
-  color?: Color | "none";
-  align?: "left" | "center" | "right";
-  className?: string;
-  uppercase?: boolean;
-}) => {
+}: Props) => {
   const Component = SIZE_TO_COMPONENT[size];
   return (
     <Component
@@ -38,7 +42,10 @@ export const Heading = ({
         "font-sans",
         {
           "font-bold text-2xl leading-12 lg:text-4xl lg:leading-15":
-            size === "display1",
+            size === "display1" && !fluid,
+          "font-bold leading-12 text-4xl-fluid lg:leading-15":
+            size === "display1" && fluid,
+
           "font-bold text-2lg leading-9 lg:text-3xl lg:leading-14":
             size === "display2",
           "font-semibold text-2lg leading-10 lg:text-2xl lg:leading-13":

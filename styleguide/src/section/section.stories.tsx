@@ -37,14 +37,35 @@ export const SectionInsidePage = ({
         containerSize={containerSize}
         background={background}
       >
-        <Heading size="display1">Section 2!</Heading>
+        <Heading size="display1">Section Head!</Heading>
       </Section>
       <Section
         illustration="snakeTail"
         containerSize={containerSize}
         background={background}
       >
-        <Heading size="display1">Section 3!</Heading>
+        <Heading size="display1">Section Tail!</Heading>
+        <Text>
+          Induco eligo, cogito sit et officia adipisici canvallis quis commodi
+          neque culpa, in neque quis trivia insula canvallis dulcis amet gratia
+          abundantia legio caelum galea cogito legis impera, legis ventum gratia
+          trivia bene sit legis, abundantia bene bene negotium sum medius neque
+          amet in oblivio modestus bene lege minim, virtus legio impera
+          abundantia sit dulcis in medius eligo. Induco eligo, cogito sit et
+          officia adipisici canvallis quis commodi neque culpa, in neque quis
+          trivia insula canvallis dulcis amet gratia abundantia legio caelum
+          galea cogito legis impera, legis ventum gratia trivia bene sit legis,
+          abundantia bene bene negotium sum medius neque amet in oblivio
+          modestus bene lege minim, virtus legio impera abundantia sit dulcis in
+          medius eligo.
+        </Text>
+      </Section>
+      <Section
+        illustration="snakeLongNeck"
+        containerSize={containerSize}
+        background={background}
+      >
+        <Heading size="display1">Long neck illustration</Heading>
         <Text>
           Induco eligo, cogito sit et officia adipisici canvallis quis commodi
           neque culpa, in neque quis trivia insula canvallis dulcis amet gratia

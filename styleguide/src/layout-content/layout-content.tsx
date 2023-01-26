@@ -1,5 +1,7 @@
 import clsx from "clsx";
 import React from "react";
+import { getBackgroundClasses } from "../colors-utils";
+import { Color } from "../types";
 
 type Props = {
   children: React.ReactNode;
@@ -8,6 +10,7 @@ type Props = {
   }>;
   position?: "absolute" | "relative" | "fixed" | "static" | "sticky";
   bottom?: number;
+  background?: Color | "none";
   zIndex?: 0 | 1 | 10;
   style?: React.CSSProperties;
   fullScreenHeight?: boolean;
@@ -24,11 +27,14 @@ export const LayoutContent = ({
   position,
   style,
   zIndex,
+  background = "none",
   as: Component = "div",
 }: Props) => {
   return (
     <Component
       className={clsx({
+        ...getBackgroundClasses(background),
+
         "hidden lg:block": showFrom === "desktop",
         "hidden md:block": showFrom === "tablet",
 

@@ -8,12 +8,13 @@ import { SnakeTail } from "../illustrations/snake-tail";
 import { Grid, GridColumn } from "../grid";
 import { Spacer } from "../spacer";
 import { Color } from "../types";
+import { SnakeLongNeck } from "../illustrations/snake-long-neck";
 
 type Props = {
   children: React.ReactNode;
   noContainer?: boolean;
   containerSize?: ContainerSize;
-  illustration?: "snakeHead" | "snakeTail";
+  illustration?: "snakeHead" | "snakeLongNeck" | "snakeTail";
   background?: Color | "none";
   spacingSize?: "xl" | "2xl" | "3xl";
 };
@@ -63,6 +64,16 @@ export const Section = ({
             >
               <SnakeHead className="hidden w-full lg:block" />
               <SnakeTail className="ml-auto w-16 lg:w-full rotate-180 lg:hidden" />
+            </GridColumn>
+          )}
+
+          {illustration === "snakeLongNeck" && (
+            <GridColumn
+              colSpan={2}
+              mdColSpan={2}
+              className="mt-auto hidden md:block"
+            >
+              <SnakeLongNeck className="hidden w-full lg:block" />
             </GridColumn>
           )}
         </Grid>

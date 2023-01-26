@@ -1,13 +1,19 @@
 import React from "react";
 import { Separator } from "../separator";
 
-type Props = React.PropsWithChildren<{
+type Props = {
+  children: React.ReactNode;
+  startSeparator?: boolean;
   endSeparator?: boolean;
-}>;
+};
 
-export const Page = ({ children, endSeparator = true }: Props) => (
+export const Page = ({
+  children,
+  startSeparator = true,
+  endSeparator = true,
+}: Props) => (
   <div>
-    <Separator />
+    {startSeparator && <Separator />}
     <div className="divide-y-3">{children}</div>
     {endSeparator && <Separator />}
   </div>
