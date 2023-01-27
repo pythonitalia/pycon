@@ -487,6 +487,10 @@ export const messages = {
 
     "grants.form.edit.title": "Edit your Grant",
 
+    "homepage.sponsorsSectionText":
+      "PyCon Italia can be your platform to gain brand recognition, take leads and recruit from an audience of highly skilled professionals!",
+    "homepage.sponsorsSectionCTAText": "Become a sponsor",
+
     "orderReview.heading": "Review your order",
     "orderReview.invoiceInformation": "Invoice information",
     "orderReview.isBusiness": "Is a business?",
@@ -1480,6 +1484,10 @@ Affrettati a comprare il biglietto!`,
     "voting.pagination":
       "Pagina {currentPage} di {totalPages} ({totalItems, plural, one {1 item} other {{totalItems} items}})",
     "homepage.followUs": "Seguici su",
+
+    "homepage.sponsorsSectionText":
+      "PyCon Italia può essere la tua piattaforma per guadgnare riconoscibilità del tuo brand, acquisire nuovi clienti ed opportunità ed assumere personale da una platea di professionisti altamente qualificati!",
+    "homepage.sponsorsSectionCTAText": "Diventa sponsor",
   },
 };
 
