@@ -4,7 +4,7 @@ export const ScrollDownArrowBar = () => {
   return (
     <div className="relative overflow-x-clip">
       <LineArrow />
-      <div className="bg-coral absolute top-[39.7px] w-full h-[60px]"></div>
+      <div className="bg-coral absolute top-[39px] w-full h-[60px]"></div>
     </div>
   );
 };
