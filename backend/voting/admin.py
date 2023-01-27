@@ -133,9 +133,9 @@ class RankSubmissionAdmin(ExportMixin, AdminUsersMixin):
         "rank",
         "tag",
         "score",
-        "duration",
         "title",
         "type",
+        "duration",
         "tags",
         "topic",
         "level",
@@ -164,7 +164,7 @@ class RankSubmissionAdmin(ExportMixin, AdminUsersMixin):
         return obj.submission.type
 
     def topic(self, obj):
-        return obj.submission.topic.name
+        return obj.submission.topic.name if obj.submission.topic else ""
 
     def level(self, obj):
         return obj.submission.audience_level.name
@@ -194,7 +194,7 @@ class RankSubmissionAdmin(ExportMixin, AdminUsersMixin):
 
     def tags(self, obj):
         tags = [tag.name for tag in obj.submission.tags.all()]
-        return " ".join(tags)
+        return ", ".join(tags)
 
     gender.short_description = "Gender"
 
