@@ -35,7 +35,7 @@ export const RecapCard = ({ productsById, hotelRoomsById }: Props) => {
             <FormattedMessage id="tickets.checkout.recap" />
           </Heading>
         </CardPart>
-        <CardPart noBg contentAlign="left" id="content">
+        <CardPart background="milk" contentAlign="left" id="content">
           {Object.values(selectedProducts)
             .flatMap((nestedProducts) => nestedProducts.flat())
             .map((selectedProduct, index) => {

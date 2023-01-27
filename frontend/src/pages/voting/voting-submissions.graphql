@@ -2,36 +2,30 @@
 
 query VotingSubmissions(
   $conference: String!
-  $after: String
-  $loadMore: Boolean!
   $language: String!
+  $voted: Boolean
+  $tags: [String!]
+  $type: String
+  $audienceLevel: String
+  $page: Int
 ) {
-  conference(code: $conference) @skip(if: $loadMore) {
-    id
-    isVotingOpen
-    votingDeadline: deadline(type: "voting") {
-      id
-      end
+  submissions(
+    code: $conference
+    language: $language
+    voted: $voted
+    tags: $tags
+    type: $type
+    audienceLevel: $audienceLevel
+    page: $page
+    pageSize: 100
+  ) {
+    pageInfo {
+      totalPages
+      totalItems
     }
 
-    topics {
-      id
-      name
+    items {
+      ...submissionAccordion
     }
-
-    languages {
-      id
-      name
-      code
-    }
-  }
-
-  submissions(code: $conference, after: $after) {
-    ...submissionAccordion
-  }
-
-  submissionTags @skip(if: $loadMore) {
-    id
-    name
   }
 }

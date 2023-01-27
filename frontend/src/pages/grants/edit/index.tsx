@@ -45,7 +45,7 @@ const GrantPage = (): JSX.Element => {
   }
 
   return (
-    <Page>
+    <Page endSeparator={false}>
       <Section>
         <Heading size="display2">
           <FormattedMessage id="grants.form.edit.title" />

@@ -16,6 +16,12 @@ export const messages = {
     "global.somethingWentWrong": "Something went wrong, please try again",
     "global.tryAgain": "Something went wrong: {error}",
 
+    "scheduleEventDetail.eventTime": "{start} - {end}",
+    "scheduleEventDetail.sidebar.spacesLeft": "Seats left",
+    "scheduleEvent.soldout": "Sold-out",
+
+    "homepage.followUs": "Follow us on",
+
     "home.title": "Home",
     "home.deadline.begins": "Begins",
     "home.deadline.deadline": "Deadline",
@@ -329,6 +335,8 @@ export const messages = {
     "keynote.language": "Language",
     "keynote.englishLanguage": "English",
 
+    "ticketsOverview.ticket.personal.fareType": "Regular",
+
     "order.nextStep": "Next step",
     "order.creatingOrder": "Creating order 🕐",
     "order.payWithCard": "Pay with card",
@@ -555,17 +563,20 @@ export const messages = {
     "ranking.stats.topic": "{value} proposals for the track {name}",
 
     "voting.heading": "Community voting",
+    "voting.proposals": "Proposals",
     "voting.introduction": `This is your opportunity to have a say on what you want to see at
-      PyCon Italia! Voting will help us creating a program that better
-      reflects what everyone wants to see!`,
+PyCon Italia! Voting will help us creating a program that better
+reflects what everyone wants to see!`,
     "voting.introductionDeadline": "You have until {deadline} to vote!",
     "voting.seoTitle": "Voting",
     "voting.topic": "Topic",
     "voting.tags": "Tags",
     "voting.audienceLevel": "Audience level",
+    "talk.audienceLevel": "Audience level",
     "voting.length": "Length",
     "voting.languages": "Languages",
-    "voting.minutes": "minutes",
+    "voting.minutes": "{type} ({duration} minutes)",
+    "voting.submissionType": "Category",
     "voting.sendingVote": "Sending vote",
     "voting.voteSent": "Vote sent!",
     "voting.needToBeLoggedIn": "Login or create an account to vote",
@@ -579,6 +590,8 @@ export const messages = {
     "voting.allTopics": "All topics",
     "voting.allLanguages": "All languages",
     "voting.allSubmissions": "Voted & Not voted",
+    "voting.allSubmissionTypes": "All Categories",
+    "voting.allAudienceLevels": "All Audience Levels",
     "voting.notVoted": "Not voted",
     "voting.votedOnly": "Voted only",
     "voting.tagsFilter":
@@ -594,6 +607,10 @@ export const messages = {
     "unsubscribe.succeed.title": "Thank you",
     "unsubscribe.succeed.message":
       "You have been successfully unsubscribed from this newsletter.",
+
+    "scheduleEventDetail.elevatorPitch": "Elevator pitch",
+    "scheduleEventDetail.abstract": "Abstract",
+    "scheduleEventDetail.tags": "Tags",
 
     "jobboard.title": "Jobs board",
     "jobboard.applyNow": "Apply now",
@@ -699,7 +716,7 @@ export const messages = {
     "home.grants.cta": "Apply",
     "tickets.checkoutBar.cta": "Checkout",
 
-    "tickets.buyTicketsSubtitle": "Early-bird tickets available!",
+    "tickets.buyTicketsSubtitle": "Regular tickets are available!",
 
     "tickets.landing.title": "What can you buy?",
     "tickets.landing.ticketsCopy": `Tickets to join the conference! PyCon Italia is a fun 4 days event, where every year we are joined by more than 600 people, have more than 110+ sessions (talks and workshops) and social events where you can meet new people and have fun in the beautiful Florence.
@@ -714,6 +731,9 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "tickets.landing.hotelTitle": "Hotel",
     "tickets.landing.membershipTitle": "Membership",
     "blog.publishedOn": "{date} - {author}",
+
+    "voting.pagination":
+      "Page {currentPage} of {totalPages} ({totalItems, plural, one {1 item} other {{totalItems} items}})",
   },
   it: {
     titleTemplate: "%s | PyCon Italia",
@@ -1184,16 +1204,18 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "voteSelector.mustSee": "Devo vederlo",
 
     "voting.heading": "Votazione comunitaria",
+    "voting.proposals": "Proposte",
     "voting.introduction": `Questa è la tua opportunità per aiutarci a dare forma al programma di PyCon Italia.
-      Il tuo voto ci aiuterà a creare un programma che più rispecchia ciò che la community vuole vedere.`,
+Il tuo voto ci aiuterà a creare un programma che più rispecchia ciò che la community vuole vedere.`,
     "voting.introductionDeadline": "Hai tempo fino al {deadline} per votare!",
     "voting.seoTitle": "Votazione",
     "voting.topic": "Argomento",
     "voting.tags": "Tags",
     "voting.audienceLevel": "Livello audience",
+    "talk.audienceLevel": "Livello audience",
     "voting.length": "Durata",
     "voting.languages": "Lingue",
-    "voting.minutes": "minuti",
+    "voting.submissionType": "Categoria",
     "voting.saving": "Attendi",
     "voting.sendingVote": "Invio in corso",
     "voting.voteSent": "Voto inviato!",
@@ -1206,6 +1228,8 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "voting.fullDetails": "Continua a leggere",
     "voting.allTopics": "Tutti gli argomenti",
     "voting.allLanguages": "Tutte le lingue",
+    "voting.allSubmissionTypes": "Tutte le categorie",
+    "voting.allAudienceLevels": "Tutti i livelli",
     "voting.allSubmissions": "Votate & Non votate",
     "voting.notVoted": "Non votate",
     "voting.votedOnly": "Votate",
@@ -1383,6 +1407,8 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "tickets.checkout.payWithBankTransfer": "Paga con bonifico",
     "tickets.checkout.savedAmount": "Hai risparmiato {amount}",
 
+    "scheduleEvent.soldout": "Sold-out",
+
     "tickets.checkout.voucher.fetching": "Verifica codice sconto...",
     "tickets.checkout.voucher.noProductsAffected": "Nessun prodotto scontato",
     "tickets.checkout.voucher": "Codice sconto",
@@ -1421,7 +1447,7 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "tickets.checkout.openAnswerCard": "Dettagli Partecipante",
     "tickets.checkout.answerCardAdmissionTitle": "Biglietto di {attendeeName}",
 
-    "tickets.buyTicketsSubtitle": "Biglietti early bird disponibili!",
+    "tickets.buyTicketsSubtitle": "Biglietti regular disponibili!",
 
     "tickets.landing.title": "Cosa puoi comprare?",
     "tickets.landing.ticketsCopy": `Biglietti per partecipare alla conferenza! PyCon Italia é un evento di 4 giorni dove ogni anno più di 600 persone si riuniscono per partecipare a più di 110+ sessioni (talks e workshops) ed eventi sociali dove puoi fare nuove amicizie e goderti la bellissima Firenze.
@@ -1442,6 +1468,18 @@ Affrettati a comprare il biglietto!`,
     "grants.form.validationErrors": "Il form inviato non è valido",
 
     "input.placeholder": "Scrivi qui...",
+
+    "ticketsOverview.ticket.personal.fareType": "Regular",
+
+    "scheduleEventDetail.elevatorPitch": "Elevator pitch",
+    "scheduleEventDetail.abstract": "Descrizione",
+    "scheduleEventDetail.tags": "Tags",
+
+    "scheduleEventDetail.eventTime": "{start} - {end}",
+    "voting.minutes": "{type} ({duration} minuti)",
+    "voting.pagination":
+      "Pagina {currentPage} di {totalPages} ({totalItems, plural, one {1 item} other {{totalItems} items}})",
+    "homepage.followUs": "Seguici su",
   },
 };
 

@@ -13,6 +13,7 @@ query IndexPage($code: String!, $language: String!) {
     marquee: copy(key: "marquee", language: $language)
     introTitle: copy(key: "intro-title-1", language: $language)
     introText: copy(key: "intro-text-1", language: $language)
+    introPretitle: copy(key: "intro-pretitle-1", language: $language)
 
     homepageSection1Title: copy(
       key: "homepage-section1-title"

@@ -13,13 +13,20 @@ type Props = {
   onChange: (value: string[]) => void;
   value: string[];
   className?: string;
+  disabled?: boolean;
 };
 
-export const TagsFilter = ({ tags, onChange, value, className }: Props) => {
+export const TagsFilter = ({
+  tags,
+  onChange,
+  value,
+  className,
+  disabled = false,
+}: Props) => {
   const containerRef = useRef(null);
   const [open, setOpen] = useState(false);
   const toggleExtendedView = useCallback(() => {
-    if (tags.length === 0) {
+    if (tags.length === 0 || disabled) {
       return false;
     }
 
@@ -33,11 +40,11 @@ export const TagsFilter = ({ tags, onChange, value, className }: Props) => {
     <Box ref={containerRef} className={className}>
       <Box onClick={toggleExtendedView}>
         <Select
+          disabled={disabled}
           defaultValue="none"
           sx={{
             pointerEvents: "none",
             borderRadius: 0,
-            backgroundColor: "keppel",
           }}
         >
           <FormattedMessage

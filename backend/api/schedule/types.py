@@ -1,12 +1,14 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 from enum import Enum
-from typing import TYPE_CHECKING, List, Optional, Union
+from typing import TYPE_CHECKING, List, Optional
 
 import strawberry
 from strawberry import LazyType
 
 from api.languages.types import Language
+from api.participants.types import Participant
 from api.submissions.types import Submission
+from participants.models import Participant as ParticipantModel
 from schedule.models import ScheduleItem as ScheduleItemModel
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -33,11 +35,19 @@ class DayRoom:
 @strawberry.federation.type(keys=["id"])
 class ScheduleItemUser:
     id: strawberry.ID
+    conference_code: strawberry.Private[str]
 
+    @strawberry.field
+    def participant(self) -> Optional[Participant]:
+        participant = ParticipantModel.objects.filter(
+            user_id=self.id,
+            conference__code=self.conference_code,
+        ).first()
 
-@strawberry.type
-class ScheduleItemNamedUser:
-    full_name: str
+        if not participant:
+            return None
+
+        return Participant.from_model(participant)
 
 
 @strawberry.type
@@ -80,13 +90,13 @@ class ScheduleItem:
         return self.attendees.filter(user_id=user_id).exists()
 
     @strawberry.field
-    def speakers(self) -> List[Union[ScheduleItemUser, ScheduleItemNamedUser]]:
+    def speakers(self) -> List[ScheduleItemUser]:
         speakers = []
+
         for speaker in self.speakers:
-            if not speaker.id:
-                speakers.append(ScheduleItemNamedUser(full_name=speaker.full_name))
-            else:
-                speakers.append(ScheduleItemUser(id=speaker.id))
+            speakers.append(
+                ScheduleItemUser(id=speaker, conference_code=self.conference.code)
+            )
 
         return speakers
 
@@ -127,12 +137,8 @@ class ScheduleInvitationDate:
 
     @classmethod
     def from_django(cls, schedule_item):
-        hour_slot = schedule_item.slot.hour
-        day = schedule_item.slot.day.day
-        start = datetime.combine(day, hour_slot)
-        duration = schedule_item.duration or schedule_item.slot.duration
         return cls(
-            id=schedule_item.id, start=start, end=start + timedelta(minutes=duration)
+            id=schedule_item.id, start=schedule_item.start, end=schedule_item.end
         )
 
 

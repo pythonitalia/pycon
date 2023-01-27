@@ -16,6 +16,7 @@ import { JobListingAccordion } from "~/components/job-listing-accordion";
 import { compile } from "~/helpers/markdown";
 import { AllJobListingsQueryResult } from "~/types";
 
+import { Article } from "../article";
 import { MetaTags } from "../meta-tags";
 
 type Props = {
@@ -70,7 +71,7 @@ export const JobBoardLayout = ({
                 {jobListing.company}
               </Text>
               <Spacer size="large" />
-              <div>{compile(jobListing.description).tree}</div>
+              <Article>{compile(jobListing.description).tree}</Article>
               <Spacer size="xl" />
               {jobListing.applyUrl && (
                 <Button href={jobListing.applyUrl} role="secondary">

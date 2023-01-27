@@ -4,6 +4,7 @@ query Talk($slug: String!, $code: String!, $language: String!) {
     talk(slug: $slug) {
       id
       title
+      type
       image
       highlightColor
       description
@@ -11,6 +12,9 @@ query Talk($slug: String!, $code: String!, $language: String!) {
       spacesLeft
       hasSpacesLeft
       slidoUrl
+
+      start
+      end
 
       language {
         code
@@ -34,16 +38,25 @@ query Talk($slug: String!, $code: String!, $language: String!) {
         topic {
           name
         }
+
+        tags {
+          name
+          id
+        }
       }
 
       speakers {
-        ... on ScheduleItemUser {
+        id
+        fullName
+        participant {
           id
-          fullName
-        }
-
-        ... on ScheduleItemNamedUser {
-          fullName
+          photo
+          bio
+          twitterHandle
+          instagramHandle
+          linkedinUrl
+          facebookUrl
+          mastodonHandle
         }
       }
     }

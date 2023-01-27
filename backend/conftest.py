@@ -28,7 +28,7 @@ from voting.tests.fixtures import *  # noqa
 
 @pytest.fixture()
 def user(db):
-    return SimulatedUser(id=Faker().pyint(), email="simulated@user.it", is_staff=False)
+    return SimulatedUser(id=10, email="simulated@user.it", is_staff=False)
 
 
 @pytest.fixture()
