@@ -17,7 +17,7 @@ class Participant(models.Model):
     user_id = models.IntegerField(verbose_name=_("user_id"))
 
     photo = models.TextField(_("photo"))
-    bio = models.TextField(max_length=500)
+    bio = models.TextField(max_length=1000)
     website = models.URLField(max_length=2048, blank=True)
     twitter_handle = models.CharField(max_length=15, blank=True)
     instagram_handle = models.CharField(max_length=30, blank=True)
