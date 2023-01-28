@@ -93,17 +93,11 @@ class GrantResource(ResourceUsersByIdsMixin):
 
     def before_export(self, queryset: QuerySet, *args, **kwargs):
         super().before_export(queryset, *args, **kwargs)
-        # I need the conference from the filters to get only the submissions of the
-        # selected conference
-        # https://stackoverflow.com/a/55161957/4329653
-        where = queryset.query.has_filters().children[0]
-        # https://docs.djangoproject.com/en/4.1/ref/models/lookups/
-        # rhs = right-hand-side of the lookup
-        conference_id = where.children[0].rhs
+        conference = queryset.first().conference
 
         submissions = Submission.objects.prefetch_related("tags", "rankings").filter(
             speaker_id__in=self._PREFETCHED_USERS_BY_ID.keys(),
-            conference_id=conference_id,
+            conference=conference,
         )
 
         self.USERS_SUBMISSIONS = {}
