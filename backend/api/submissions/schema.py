@@ -10,6 +10,7 @@ from submissions.models import (
     Submission as SubmissionModel,
     SubmissionTag as SubmissionTagModel,
 )
+from voting.models.vote import Vote
 
 from .types import Submission, SubmissionTag
 
@@ -64,6 +65,10 @@ class SubmissionsQuery:
             )
             .order_by("id")
             .filter(status=SubmissionModel.STATUS.proposed)
+        )
+
+        info.context.my_votes = Vote.objects.filter(
+            user_id=request.user.id, submission__conference=conference
         )
 
         if language:
