@@ -80,7 +80,7 @@ export const HomePagePageHandler = ({ cycle }: Props) => {
 
         <Section spacingSize="3xl" containerSize="medium" background="yellow">
           <VerticalStack alignItems="center">
-            <Heading size="display2">
+            <Heading size="display2" align="center">
               {conference.homepageCountdownSectionTitle}
             </Heading>
             <Spacer size="large" />
