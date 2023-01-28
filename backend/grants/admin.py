@@ -2,6 +2,7 @@ from typing import Dict, List, Optional
 
 from django import forms
 from django.contrib import admin
+from django.db.models.query import QuerySet
 from import_export.admin import ExportMixin
 from import_export.fields import Field
 
@@ -60,7 +61,15 @@ class GrantResource(ResourceUsersByIdsMixin):
             return
 
         return "\n".join(
-            [", ".join([t.name for t in s.tags.all()]) for s in submissions]
+            [
+                ", ".join(
+                    [
+                        f"{r.tag.name}: {r.rank} / {r.total_submissions_per_tag}"
+                        for r in s.rankings.all()
+                    ]
+                )
+                for s in submissions
+            ]
         )
 
     def dehydrate_submission_pycon_link(self, obj):
@@ -82,10 +91,13 @@ class GrantResource(ResourceUsersByIdsMixin):
             ]
         )
 
-    def before_export(self, queryset, *args, **kwargs):
+    def before_export(self, queryset: QuerySet, *args, **kwargs):
         super().before_export(queryset, *args, **kwargs)
-        submissions = Submission.objects.prefetch_related("tags").filter(
-            speaker_id__in=self._PREFETCHED_USERS_BY_ID.keys()
+        conference_id = queryset.values_list("conference_id").first()
+
+        submissions = Submission.objects.prefetch_related("tags", "rankings").filter(
+            speaker_id__in=self._PREFETCHED_USERS_BY_ID.keys(),
+            conference_id=conference_id,
         )
 
         self.USERS_SUBMISSIONS = {}

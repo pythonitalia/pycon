@@ -71,12 +71,11 @@ class VoteAdmin(ExportMixin, AdminUsersMixin):
 
 
 EXPORT_RANK_SUBMISSION_FIELDS = (
+    "tag__name",
     "rank",
     "score",
-    "submission__topic__name",
     "submission__id",
     "submission__hashid",
-    "submission__title",
     "submission__audience_level__name",
     "submission__type__name",
     "submission__duration__name",
@@ -94,6 +93,7 @@ class RankSubmissionResource(ResourceUsersMixin):
     conference_filter_by = "rank_request__conference"
     user_fk = "submission__speaker_id"
     submission__hashid = Field()
+    submission__title = Field()
     submission__language = Field()
     gender = Field()
     full_name = Field()
@@ -105,8 +105,11 @@ class RankSubmissionResource(ResourceUsersMixin):
     def dehydrate_submission__hashid(self, obj):
         return obj.submission.hashid
 
+    def dehydrate_submission__title(self, obj):
+        return obj.submission.title.localize("en")
+
     def dehydrate_submission__language(self, obj):
-        return [lang.code for lang in obj.submission.languages.all()]
+        return ", ".join([lang.code for lang in obj.submission.languages.all()])
 
     def dehydrate_gender(self, obj):
         return self.get_user_data(obj.submission.speaker_id)["gender"]
@@ -115,7 +118,7 @@ class RankSubmissionResource(ResourceUsersMixin):
         return self.get_user_display_name(obj.submission.speaker_id)
 
     def dehydrate_tags(self, obj):
-        return [t.name for t in obj.submission.tags.all()]
+        return "\n".join([t.name for t in obj.submission.tags.all()])
 
     def dehydrate_vote_count(self, obj):
         return Vote.objects.filter(submission=obj.submission).count()
@@ -131,11 +134,13 @@ class RankSubmissionAdmin(ExportMixin, AdminUsersMixin):
     resource_class = RankSubmissionResource
     user_fk = "submission__speaker_id"
     list_display = (
-        "rank",
+        "tag",
+        "position",
         "score",
-        "duration",
         "title",
         "type",
+        "duration",
+        "tags",
         "topic",
         "level",
         "language",
@@ -144,13 +149,14 @@ class RankSubmissionAdmin(ExportMixin, AdminUsersMixin):
         "view_submission",
     )
     ordering = (
-        "submission__topic_id",
+        "tag",
         "rank",
         "-score",
     )
     list_filter = (
         "rank_request_id",
         "submission__type",
+        "tag",
         "submission__topic",
         "submission__duration",
     )
@@ -162,7 +168,7 @@ class RankSubmissionAdmin(ExportMixin, AdminUsersMixin):
         return obj.submission.type
 
     def topic(self, obj):
-        return obj.submission.topic.name
+        return obj.submission.topic.name if obj.submission.topic else ""
 
     def level(self, obj):
         return obj.submission.audience_level.name
@@ -192,6 +198,16 @@ class RankSubmissionAdmin(ExportMixin, AdminUsersMixin):
 
         speaker_gender = self.get_user_data(obj.submission.speaker_id)["gender"]
         return emoji[speaker_gender]
+
+    def tags(self, obj):
+        tags = [tag.name for tag in obj.submission.tags.all()]
+        return ", ".join(tags)
+
+    @admin.display(
+        description="Rank",
+    )
+    def position(self, obj):
+        return f"{obj.rank} / {obj.total_submissions_per_tag}"
 
     @admin.display(
         description="View",
