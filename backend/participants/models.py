@@ -31,3 +31,6 @@ class Participant(models.Model):
     previous_talk_video = models.URLField(
         _("previous talk video"), blank=True, max_length=2049
     )
+
+    class Meta:
+        unique_together = ("conference", "user_id")
