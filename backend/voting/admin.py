@@ -60,10 +60,11 @@ class VoteAdmin(ExportMixin, AdminUsersMixin):
 
     user_fk = "user_id"
 
+    @admin.display(
+        description="User",
+    )
     def user_display_name(self, obj):
         return self.get_user_display_name(obj.user_id)
-
-    user_display_name.short_description = "User"
 
     class Media:
         js = ["admin/js/jquery.init.js"]
@@ -183,6 +184,9 @@ class RankSubmissionAdmin(ExportMixin, AdminUsersMixin):
     def speaker(self, obj):
         return self.get_user_display_name(obj.submission.speaker_id)
 
+    @admin.display(
+        description="Gender",
+    )
     def gender(self, obj):
         emoji = {
             "": "",
@@ -195,17 +199,19 @@ class RankSubmissionAdmin(ExportMixin, AdminUsersMixin):
         speaker_gender = self.get_user_data(obj.submission.speaker_id)["gender"]
         return emoji[speaker_gender]
 
-    gender.short_description = "Gender"
-
     def tags(self, obj):
         tags = [tag.name for tag in obj.submission.tags.all()]
         return ", ".join(tags)
 
+    @admin.display(
+        description="Rank",
+    )
     def position(self, obj):
         return f"{obj.rank} / {obj.total_submissions_per_tag}"
 
-    position.short_description = "Rank"
-
+    @admin.display(
+        description="View",
+    )
     def view_submission(self, obj):  # pragma: no cover
         return format_html(
             '<a class="button" href="{url}">Open</a>&nbsp;',
@@ -215,14 +221,14 @@ class RankSubmissionAdmin(ExportMixin, AdminUsersMixin):
             ),
         )
 
-    view_submission.short_description = "View"
-    view_submission.allow_tags = True
-
 
 @admin.register(RankRequest)
 class RankRequestAdmin(admin.ModelAdmin):
     list_display = ("conference", "created", "is_public", "view_rank")
 
+    @admin.display(
+        description="View",
+    )
     def view_rank(self, obj):
         return format_html(
             '<a class="button" '
@@ -230,9 +236,6 @@ class RankRequestAdmin(admin.ModelAdmin):
             f'rank_request_id__id__exact={obj.id}">Open</a>&nbsp;',
             url=reverse("admin:voting_ranksubmission_changelist"),
         )
-
-    view_rank.short_description = "View"
-    view_rank.allow_tags = True
 
 
 @admin.register(RankStat)

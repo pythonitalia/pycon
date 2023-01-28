@@ -82,10 +82,12 @@ class KeynoteSpeaker(TimeStampedModel, OrderedModel):
     bio = I18nTextField(
         _("bio"),
         blank=False,
+        null=True,
     )
     pronouns = I18nCharField(
         _("pronouns"),
         max_length=512,
+        null=True,
     )
     highlight_color = models.CharField(
         choices=COLORS, max_length=15, blank=True, verbose_name=_("highlight color")

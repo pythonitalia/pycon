@@ -564,7 +564,7 @@ export const CfpForm = ({
           <Textarea
             {...textarea("speakerBio")}
             required={true}
-            maxLength={500}
+            maxLength={1000}
             rows={4}
           />
         </InputWrapper>

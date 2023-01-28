@@ -5,7 +5,7 @@ from typing import Dict, Iterable, Optional, Union
 
 from django.conf import settings
 from django.utils import translation
-from django.utils.translation import override, ugettext
+from django.utils.translation import override, gettext
 
 
 class LazyI18nString:
@@ -116,13 +116,13 @@ class LazyI18nString:
 
         def __getitem__(self, item):
             with override(item):
-                return str(ugettext(self.lazygettext))
+                return str(gettext(self.lazygettext))
 
         def __contains__(self, item):
             return True
 
         def __str__(self):
-            return str(ugettext(self.lazygettext))
+            return str(gettext(self.lazygettext))
 
         def __repr__(self):  # NOQA
             return "<LazyGettextProxy: %s>" % repr(self.lazygettext)

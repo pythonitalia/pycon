@@ -61,14 +61,15 @@ class HotelRoomReservationAdmin(AdminUsersMixin):
     def user_display_name(self, obj):
         return self.get_user_display_name(obj.user_id)
 
+    @admin.display(
+        description="User",
+    )
     def user_info(self, obj):
         user_data = self.get_user_data(obj.user_id)
         display_name = user_data["displayName"]
         email = user_data["email"]
         id = user_data["id"]
         return f"{display_name} ({email}) #{id}"
-
-    user_info.short_description = "User"
 
     def order_status(self, obj):
         if obj.order_code not in self._reservation_status:

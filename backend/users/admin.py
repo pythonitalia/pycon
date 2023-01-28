@@ -31,6 +31,7 @@ class PyConUserChangeForm(UserChangeForm):
         fields = "__all__"
 
 
+@admin.register(User)
 class PyConUserAdmin(UserAdmin):
     # The forms to add and change user instances
 
@@ -95,6 +96,3 @@ class PyConUserAdmin(UserAdmin):
             ),
         ]
         return my_urls + urls
-
-
-admin.site.register(User, PyConUserAdmin)

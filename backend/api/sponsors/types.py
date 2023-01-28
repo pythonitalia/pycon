@@ -35,4 +35,6 @@ class SponsorsByLevel:
     @classmethod
     def from_model(cls, level: SponsorLevelModel) -> SponsorsByLevel:
         sponsors = [sponsor for sponsor in level.sponsors.all()]
-        return cls(level=level.name, sponsors=sponsors, highlight_color=level.highlight_color)
+        return cls(
+            level=level.name, sponsors=sponsors, highlight_color=level.highlight_color
+        )
