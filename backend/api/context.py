@@ -10,7 +10,6 @@ class Context:
     request: HttpRequest
     response: Any
     _user_can_vote: Optional[bool] = None
-    my_votes: Optional[QuerySet] = None
 
 
 @dataclass
