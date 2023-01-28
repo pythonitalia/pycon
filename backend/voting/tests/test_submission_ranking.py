@@ -6,9 +6,7 @@ pytestmark = pytest.mark.django_db
 
 
 def test_tag_count_should_remain_the_same(
-    submission_factory,
-    submission_tag_factory,
-    conference,
+    submission_factory, submission_tag_factory, conference, mock_users_by_ids
 ):
     pizza = submission_tag_factory(name="Pizza")
     sushi = submission_tag_factory(name="Sushi")

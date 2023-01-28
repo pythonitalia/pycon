@@ -2,6 +2,7 @@ import dataclasses
 import json
 
 import pytest
+import respx
 from asgiref.sync import async_to_sync
 from django.conf import settings
 from pythonit_toolkit.api.graphql_test_client import GraphQLClient, SimulatedUser
@@ -52,3 +53,26 @@ def admin_graphql_client(async_client):
     )
     graphql_client.force_login(SimulatedUser(id=1, email="test@user.it", is_staff=True))
     return graphql_client
+
+
+@pytest.fixture
+def mock_users_by_ids(mocker):
+
+    with respx.mock as mock:
+        mock.post(f"{settings.USERS_SERVICE_URL}/internal-api").respond(
+            json={
+                "data": {
+                    "usersByIds": [
+                        {
+                            "id": 10,
+                            "fullname": "Marco Acierno",
+                            "name": "Marco",
+                            "username": "marco",
+                            "gender": "male",
+                        }
+                    ]
+                }
+            }
+        )
+
+        yield
