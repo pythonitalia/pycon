@@ -319,10 +319,11 @@ class SpeakerVoucherAdmin(AdminUsersMixin):
         send_voucher_via_email,
     ]
 
+    @admin.display(
+        boolean=True,
+    )
     def created_on_pretix(self, obj):
         return obj.pretix_voucher_id is not None
-
-    created_on_pretix.boolean = True
 
     def get_changeform_initial_data(self, request):
         return {"voucher_code": SpeakerVoucher.generate_code()}

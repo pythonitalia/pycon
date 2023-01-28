@@ -208,7 +208,7 @@ async def pretix_event_order_paid(payload):
     period_end = payment_date + relativedelta(years=+1)
 
     # We assume our currency is EUR that has 2 decimal places and works in cents
-    total = int(membership_price * 10 ** 2)
+    total = int(membership_price * 10**2)
     logger.info(
         "Adding new pretix payment to user_id=%s "
         "for period_start=%s to period_end=%s for order_code=%s organizer=%s event=%s",
