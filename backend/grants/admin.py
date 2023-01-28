@@ -31,12 +31,16 @@ EXPORT_GRANTS_FIELDS = (
 
 class GrantResource(ResourceUsersByIdsMixin):
     search_field = "user_id"
+    age_group = Field()
     has_sent_submission = Field()
     submission_title = Field()
     submission_tags = Field()
     submission_admin_link = Field()
     submission_pycon_link = Field()
     USERS_SUBMISSIONS: Dict[int, List[Submission]] = {}
+
+    def dehydrate_age_group(self, obj: Grant):
+        return Grant.AgeGroup(obj.age_group).label
 
     def dehydrate_has_sent_submission(self, obj: Grant) -> str:
         return "TRUE" if obj.user_id in self.USERS_SUBMISSIONS else "FALSE"
