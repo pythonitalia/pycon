@@ -185,18 +185,8 @@ class Submission:
         if not request.pastaporto.is_authenticated:
             return None
 
-        if info.context.my_votes:
-            try:
-                return info.context.my_votes.get(submission=self)
-            except Vote.DoesNotExist:
-                pass
-
-        info.context.my_votes = Vote.objects.filter(
-            user_id=request.user.id, submission__conference=self.conference
-        )
-
         try:
-            return info.context.my_votes.get(submission=self)
+            return self.votes.get(user_id=request.user.id)
         except Vote.DoesNotExist:
             return None
 
