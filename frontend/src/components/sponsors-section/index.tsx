@@ -1,30 +1,31 @@
-/** @jsxRuntime classic */
+import { SponsorsGrid } from "@python-italia/pycon-styleguide";
+import React from "react";
 
-/** @jsx jsx */
-import { Heading, Spacer } from "@python-italia/pycon-styleguide";
-import { jsx } from "theme-ui";
-
-import { SponsorsGrid } from "./sponsors-grid";
-import { Sponsor } from "./types";
+import { IndexPageQueryResult } from "~/types";
 
 type Props = {
-  sponsorsByLevel: {
-    level: string;
-    sponsors: Sponsor[];
-    highlightColor?: string | null;
-  }[];
+  sponsorsByLevel: IndexPageQueryResult["data"]["conference"]["sponsorsByLevel"];
   sx?: any;
 };
 
-export const SponsorsSection = ({ sponsorsByLevel, ...props }: Props) => (
-  <div {...props}>
-    {sponsorsByLevel.map(({ level, sponsors, highlightColor }, index) => (
-      <div key={level}>
-        <Heading size={2}>{level}</Heading>
-        <Spacer size="xs" />
-        <SponsorsGrid color={highlightColor} sponsors={sponsors} />
-        {index !== sponsorsByLevel.length - 1 && <Spacer size="large" />}
-      </div>
-    ))}
-  </div>
+export const SponsorsSection = ({ sponsorsByLevel }: Props) => (
+  <SponsorsGrid
+    tiers={sponsorsByLevel.map((tier) => ({
+      ...tier,
+      cols: getSponsorsPerRow(tier.name),
+    }))}
+  />
 );
+
+const getSponsorsPerRow = (level: string) => {
+  switch (level) {
+    case "Keystone":
+    case "Gold":
+    case "Silver":
+      return 2;
+    case "Partners":
+      return 4;
+    default:
+      return 3;
+  }
+};

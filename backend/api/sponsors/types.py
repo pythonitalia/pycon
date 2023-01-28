@@ -14,14 +14,13 @@ class Sponsor:
     name: str
 
     @strawberry.field
-    def link(self, info) -> typing.Optional[str]:
-        if self.link != "":
-            return self.link
+    def link(self, info) -> str:
+        return self.link
 
     @strawberry.field
-    def image(self, info) -> typing.Optional[str]:
+    def image(self, info) -> str:
         if not self.image:
-            return None
+            return ""
 
         return info.context.request.build_absolute_uri(self.image.url)
 

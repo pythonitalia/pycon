@@ -9,6 +9,7 @@ from ordered_model.admin import (
     OrderedInlineModelAdminMixin,
     OrderedModelAdmin,
     OrderedStackedInline,
+    OrderedTabularInline,
 )
 
 from conferences.models import SpeakerVoucher
@@ -78,8 +79,15 @@ class DurationInline(admin.StackedInline):
     filter_horizontal = ("allowed_submission_types",)
 
 
-class SponsorLevelInline(admin.TabularInline):
+class SponsorLevelInline(OrderedTabularInline):
     model = SponsorLevel
+    fields = ("name", "conference", "sponsors", "order", "move_up_down_links")
+    readonly_fields = (
+        "order",
+        "move_up_down_links",
+    )
+    ordering = ("order",)
+    extra = 1
 
 
 class IncludedEventInline(admin.TabularInline):
@@ -87,7 +95,7 @@ class IncludedEventInline(admin.TabularInline):
 
 
 @admin.register(Conference)
-class ConferenceAdmin(admin.ModelAdmin):
+class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
     readonly_fields = ("created", "modified")
     filter_horizontal = ("topics", "languages", "audience_levels", "submission_types")
     fieldsets = (

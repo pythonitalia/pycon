@@ -102,13 +102,12 @@ query IndexPage($code: String!, $language: String!) {
     }
 
     sponsorsByLevel {
-      level
-      highlightColor
+      name: level
       sponsors {
         id
         name
-        link
-        image
+        url: link
+        logo: image
       }
     }
   }

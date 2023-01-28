@@ -10,6 +10,8 @@ import {
   SocialLinks,
   Separator,
   LayoutContent,
+  Grid,
+  GridColumn,
 } from "@python-italia/pycon-styleguide";
 import { parseISO } from "date-fns";
 import React, { Fragment } from "react";
@@ -103,11 +105,35 @@ export const HomePagePageHandler = ({ cycle }: Props) => {
         </Section>
 
         {conference.sponsorsByLevel.length > 0 && (
-          <Section spacingSize="3xl">
-            <Heading size="display2">Sponsors</Heading>
-            <Spacer size="large" />
-            <SponsorsSection sponsorsByLevel={conference.sponsorsByLevel} />
-          </Section>
+          <LayoutContent position="relative">
+            <Section spacingSize="3xl">
+              <Grid cols={12} mdCols={12}>
+                <GridColumn colSpan={5} mdColSpan={5}>
+                  <LayoutContent position="sticky" style={{ top: 10 }}>
+                    <Heading size="display2">Sponsors</Heading>
+                    <Spacer size="large" />
+                    <Text size={1} color="grey-900">
+                      <FormattedMessage id="homepage.sponsorsSectionText" />
+                    </Text>
+                    <Spacer size="large" />
+                    <Button href="/sponsor" size="small" role="secondary">
+                      <FormattedMessage id="homepage.sponsorsSectionCTAText" />
+                    </Button>
+                  </LayoutContent>
+                </GridColumn>
+                <GridColumn
+                  mdColStart={7}
+                  colStart={7}
+                  colSpan={6}
+                  mdColSpan={6}
+                >
+                  <SponsorsSection
+                    sponsorsByLevel={conference.sponsorsByLevel}
+                  />
+                </GridColumn>
+              </Grid>
+            </Section>
+          </LayoutContent>
         )}
 
         <div
