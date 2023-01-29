@@ -31,6 +31,7 @@ import {
   useIndexPageQuery,
 } from "~/types";
 
+import { KeynotersSection } from "../keynoters-section";
 import { Hills } from "./hills";
 
 type Props = {
@@ -77,6 +78,8 @@ export const HomePagePageHandler = ({ cycle }: Props) => {
         </Section>
 
         <TicketsOverviewSection />
+
+        <KeynotersSection />
 
         <Section spacingSize="3xl" containerSize="medium" background="yellow">
           <VerticalStack alignItems="center">

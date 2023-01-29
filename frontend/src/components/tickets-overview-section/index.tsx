@@ -34,6 +34,7 @@ export const TicketsOverviewSection = () => {
         background="snake"
         title={<FormattedMessage id="ticketsOverview.buyTicketsSection" />}
         cols={3}
+        wrap="nowrap"
       >
         <MultiplePartsCard cta={cta}>
           <CardPart>
