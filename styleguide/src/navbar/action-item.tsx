@@ -101,10 +101,11 @@ export const ActionItem = ({
   return (
     <Component
       className={clsx(
-        `bg-cream hover:bg-green h-full p-3 lg:p-5 border-3 border-black flex items-center uppercase cursor-pointer overflow-hidden`,
+        `bg-cream h-full p-3 lg:p-5 border-3 border-black flex items-center uppercase cursor-pointer overflow-hidden`,
         className,
         "navbar-actionitem",
         {
+          "hover:bg-green": icon !== "close",
           "hover:bg-coral": icon === "close",
         }
       )}
