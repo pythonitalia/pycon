@@ -186,10 +186,9 @@ class Submission:
             return None
 
         if info.context.my_votes:
-            try:
-                return info.context.my_votes.get(submission=self)
-            except Vote.DoesNotExist:
-                pass
+            vote = info.context.my_votes.get(self.id)
+            if vote:
+                return vote
 
         try:
             return self.votes.get(user_id=request.user.id)

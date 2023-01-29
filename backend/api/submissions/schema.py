@@ -67,9 +67,12 @@ class SubmissionsQuery:
             .filter(status=SubmissionModel.STATUS.proposed)
         )
 
-        info.context.my_votes = Vote.objects.filter(
-            user_id=request.user.id, submission__conference=conference
-        )
+        info.context.my_votes = {
+            vote.submission_id: vote
+            for vote in Vote.objects.filter(
+                user_id=request.user.id, submission__conference=conference
+            )
+        }
 
         if language:
             qs = qs.filter(languages__code=language)
