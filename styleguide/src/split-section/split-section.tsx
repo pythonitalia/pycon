@@ -5,7 +5,8 @@ import { Separator } from "../separator";
 import { Container } from "../container";
 import { Spacer } from "../spacer/spacer";
 
-type Props = React.PropsWithChildren<{
+type Props = {
+  children: React.ReactNode;
   title: string | React.ReactNode;
   sideContent: React.ReactNode;
   sideContentBackground?: string;
@@ -13,7 +14,7 @@ type Props = React.PropsWithChildren<{
   invert?: boolean;
   hideSideContentOnMobile?: boolean;
   spacing?: "even" | "larger-content";
-}>;
+};
 
 export const SplitSection = ({
   title,

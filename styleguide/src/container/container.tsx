@@ -3,12 +3,13 @@ import React from "react";
 
 export type ContainerSize = "base" | "small" | "medium" | "2md";
 
-type Props = React.PropsWithChildren<{
+type Props = {
+  children: React.ReactNode;
   className?: string;
   size?: ContainerSize;
   noPadding?: boolean;
   center?: boolean;
-}>;
+};
 
 export const Container = ({
   noPadding = false,

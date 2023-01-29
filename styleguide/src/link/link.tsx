@@ -3,7 +3,8 @@ import React from "react";
 import { getTextColorClasses } from "../colors-utils";
 import { Color } from "../types";
 
-type Props = React.PropsWithChildren<{
+type Props = {
+  children: React.ReactNode;
   href: string;
   rel?: string;
   color?: Color;
@@ -13,7 +14,7 @@ type Props = React.PropsWithChildren<{
   noLayout?: boolean;
   onClick?: (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
   className?: string;
-}>;
+};
 
 export const Link = ({
   href,

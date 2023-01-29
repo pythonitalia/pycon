@@ -3,7 +3,8 @@ import React from "react";
 import { getTextColorClasses } from "../colors-utils";
 import { Color } from "../types";
 
-type Props = React.PropsWithChildren<{
+type Props = {
+  children: React.ReactNode;
   size?: 1 | 2 | 3 | "label1" | "label2" | "label3" | "label4" | "inherit";
   weight?: "regular" | "strong";
   align?: "left" | "center" | "right";
@@ -13,7 +14,7 @@ type Props = React.PropsWithChildren<{
   noWrap?: boolean;
   uppercase?: boolean;
   decoration?: "none" | "underline" | "line-through";
-}>;
+};
 
 export const Text = React.forwardRef<any, Props>(
   (

@@ -5,11 +5,12 @@ import { PlusIcon } from "../icons/plus";
 import { SideText } from "./sidetext";
 import { Action } from "./action";
 
-type Props = React.PropsWithChildren<{
+type Props = {
+  children: React.ReactNode;
   value: number;
   onIncrement: () => void;
   onDecrement: () => void;
-}>;
+};
 
 export const CardPartIncrements = ({
   value,

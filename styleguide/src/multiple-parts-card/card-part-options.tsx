@@ -13,13 +13,14 @@ type SelectProps = {
   placeholder?: string | React.ReactNode;
 };
 
-type Props = React.PropsWithChildren<{
+type Props = {
+  children: React.ReactNode;
   options: SelectProps[];
   onConfirm?: () => void;
   onRemove?: () => void;
   onChange?: (id: string, e: any) => void;
   action: "add" | "remove";
-}>;
+};
 
 export const CardPartOptions = ({
   children,
