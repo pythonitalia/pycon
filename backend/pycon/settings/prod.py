@@ -2,7 +2,7 @@ import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
 from .base import *  # noqa
-from .base import DATABASES, ENV, MIDDLEWARE, env
+from .base import DATABASES, ENVIRONMENT, MIDDLEWARE, env
 
 SECRET_KEY = env("SECRET_KEY")
 
@@ -17,7 +17,7 @@ if SENTRY_DSN:
         integrations=[DjangoIntegration()],
         traces_sample_rate=0.2,
         send_default_pii=True,
-        environment=ENV,
+        environment=ENVIRONMENT,
     )
 
 DEFAULT_FILE_STORAGE = env(
