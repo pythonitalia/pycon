@@ -185,10 +185,8 @@ class Submission:
         if not request.pastaporto.is_authenticated:
             return None
 
-        if info.context.my_votes:
-            vote = info.context.my_votes.get(self.id)
-            if vote:
-                return vote
+        if info.context._my_votes is not None:
+            return info.context._my_votes.get(self.id)
 
         try:
             return self.votes.get(user_id=request.user.id)

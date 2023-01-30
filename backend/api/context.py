@@ -11,7 +11,7 @@ class Context:
     request: HttpRequest
     response: Any
     _user_can_vote: Optional[bool] = None
-    my_votes: Optional[Dict[int, Vote]] = None
+    _my_votes: Optional[Dict[int, Vote]] = None
 
 
 @dataclass

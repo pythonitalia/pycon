@@ -67,13 +67,6 @@ class SubmissionsQuery:
             .filter(status=SubmissionModel.STATUS.proposed)
         )
 
-        info.context.my_votes = {
-            vote.submission_id: vote
-            for vote in Vote.objects.filter(
-                user_id=request.user.id, submission__conference=conference
-            )
-        }
-
         if language:
             qs = qs.filter(languages__code=language)
 
@@ -102,6 +95,14 @@ class SubmissionsQuery:
 
         submissions = list(qs[(page - 1) * page_size : page * page_size])
         random.Random(user_info.id).shuffle(submissions)
+
+        info.context._my_votes = {
+            vote.submission_id: vote
+            for vote in Vote.objects.filter(
+                user_id=request.user.id, submission__in=submissions
+            )
+        }
+
         return Paginated.paginate_list(
             items=submissions,
             page_size=page_size,
