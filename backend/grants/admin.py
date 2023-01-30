@@ -38,6 +38,7 @@ class GrantResource(ResourceUsersByIdsMixin):
     submission_tags = Field()
     submission_admin_link = Field()
     submission_pycon_link = Field()
+    grant_admin_link = Field()
     USERS_SUBMISSIONS: Dict[int, List[Submission]] = {}
 
     def dehydrate_age_group(self, obj: Grant):
@@ -94,6 +95,9 @@ class GrantResource(ResourceUsersByIdsMixin):
                 for s in submissions
             ]
         )
+
+    def dehydrate_grant_admin_link(self, obj: Grant):
+        return f"https://admin.pycon.it/admin/grants/grant/?q={'+'.join(obj.full_name.split(' '))}"
 
     def before_export(self, queryset: QuerySet, *args, **kwargs):
         super().before_export(queryset, *args, **kwargs)
