@@ -1,3 +1,4 @@
+import respx
 from pytest import mark
 
 
@@ -45,6 +46,11 @@ def test_cannot_get_my_vote_without_ticket(
         json={"user_has_admission_ticket": False},
     )
 
+    with respx.mock as mock:
+        mock.post(f"{settings.ASSOCIATION_BACKEND_SERVICE}/internal-api").respond(
+            json={"data": {"userIdIsMember": False}}
+        )
+
     graphql_client.force_login(user)
     response = graphql_client.query(
         """query MyVote($conference: String!) {
@@ -77,6 +83,10 @@ def test_cannot_get_my_vote_unlogged(
         f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket/",
         json={"user_has_admission_ticket": False},
     )
+    with respx.mock as mock:
+        mock.post(f"{settings.ASSOCIATION_BACKEND_SERVICE}/internal-api").respond(
+            json={"data": {"userIdIsMember": False}}
+        )
 
     response = graphql_client.query(
         """query MyVote($conference: String!) {
@@ -107,6 +117,11 @@ def test_get_my_vote_when_the_user_never_voted(
         f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket/",
         json={"user_has_admission_ticket": True},
     )
+
+    with respx.mock as mock:
+        mock.post(f"{settings.ASSOCIATION_BACKEND_SERVICE}/internal-api").respond(
+            json={"data": {"userIdIsMember": False}}
+        )
 
     graphql_client.force_login(user)
 
