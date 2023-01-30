@@ -8,6 +8,15 @@ query KeynotesSection($code: String!, $language: String!) {
       speakers {
         id
         fullName
+        participant {
+          id
+          photo
+          twitterHandle
+          instagramHandle
+          linkedinUrl
+          facebookUrl
+          mastodonHandle
+        }
       }
     }
   }
