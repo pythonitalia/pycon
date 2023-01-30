@@ -103,7 +103,9 @@ class GrantResource(ResourceUsersByIdsMixin):
         super().before_export(queryset, *args, **kwargs)
         conference_id = queryset.values_list("conference_id").first()
 
-        submissions = Submission.objects.prefetch_related("tags", "rankings").filter(
+        submissions = Submission.objects.prefetch_related(
+            "rankings__tag", "rankings__submission"
+        ).filter(
             speaker_id__in=self._PREFETCHED_USERS_BY_ID.keys(),
             conference_id=conference_id,
         )
