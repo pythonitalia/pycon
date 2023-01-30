@@ -32,7 +32,7 @@ RUN tar -czvf /libs.tar.gz /usr/lib/x86_64-linux-gnu/libpq* \
     /usr/lib/x86_64-linux-gnu/libwebp* \
     /usr/lib/x86_64-linux-gnu/libtiff*
 
-RUN pip3 install poetry==1.2.1
+RUN pip3 install poetry==1.3.2
 
 COPY poetry.lock ${FUNCTION_DIR}
 COPY pyproject.toml ${FUNCTION_DIR}
