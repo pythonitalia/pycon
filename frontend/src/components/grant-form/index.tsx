@@ -29,13 +29,17 @@ import { useCurrentUser } from "~/helpers/use-current-user";
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
 import { useCurrentLanguage } from "~/locale/context";
 import {
+  AgeGroup,
   Grant,
+  GrantType,
   UpdateGrantInput,
   useSendGrantMutation,
   useMyGrantQuery,
   SendGrantInput,
   SendGrantMutation,
   UpdateGrantMutation,
+  InterestedInVolunteering,
+  Occupation,
 } from "~/types";
 
 import { ErrorsList } from "../errors-list";
@@ -51,13 +55,13 @@ import {
 export type GrantFormFields = {
   name: string;
   fullName: string;
-  ageGroup: string;
+  ageGroup: AgeGroup;
   gender: string;
-  occupation: string;
-  grantType: string;
+  occupation: Occupation;
+  grantType: GrantType;
   pythonUsage: string;
   beenToOtherEvents: string;
-  interestedInVolunteering: string;
+  interestedInVolunteering: InterestedInVolunteering;
   needsFundsForTravel: string;
   why: string;
   notes: string;
@@ -170,7 +174,7 @@ export const GrantForm = ({
       formState.setField("gender", grant.gender);
       formState.setField("grantType", grant.grantType);
       formState.setField("occupation", grant.occupation);
-      formState.setField("ageGroup", grant.ageGroup.toLowerCase());
+      formState.setField("ageGroup", grant.ageGroup);
       formState.setField("pythonUsage", grant.pythonUsage);
       formState.setField("beenToOtherEvents", grant.beenToOtherEvents);
       formState.setField(
@@ -192,7 +196,7 @@ export const GrantForm = ({
       e.preventDefault();
       onSubmit({
         conference,
-        ageGroup: formState.values.ageGroup.toLowerCase(),
+        ageGroup: formState.values.ageGroup,
         fullName: formState.values.fullName,
         name: formState.values.name,
         gender: formState.values.gender,
