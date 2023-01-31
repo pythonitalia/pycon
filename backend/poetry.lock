@@ -694,24 +694,6 @@ argon2 = ["argon2-cffi (>=19.1.0)"]
 bcrypt = ["bcrypt"]
 
 [[package]]
-name = "django-admin-views"
-version = "1.0.3"
-description = "django-admin-views is a simple way to add custom admin views and direct URLs to the Django admin"
-category = "main"
-optional = false
-python-versions = ">=3.9"
-files = [
-    {file = "django-admin-views-1.0.3.tar.gz", hash = "sha256:52a8a67b25c3b246dcef75175e354afb8555212c94776a87aaaae042e0db4e60"},
-    {file = "django_admin_views-1.0.3-py3-none-any.whl", hash = "sha256:84b36b62fc56c9f5e9b256320bc7bddcafc92d0616001aab67648243c3a6df26"},
-]
-
-[package.dependencies]
-django = ">=3.2"
-
-[package.extras]
-dev = ["black", "bumpver", "isort"]
-
-[[package]]
 name = "django-autocomplete-light"
 version = "3.9.4"
 description = "Fresh autocompletes for Django"
@@ -2912,4 +2894,4 @@ lambda = ["awslambdaric"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "b07d8846d4606c32055378ffa89839ae0254607c164308c4ad7d2d479cc0fe8c"
+content-hash = "3ef1c9ea12a58f967b4a46a6fa915785f4a720b48d0715fd456d03429f1dc40f"
