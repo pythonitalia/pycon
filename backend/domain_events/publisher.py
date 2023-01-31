@@ -6,6 +6,8 @@ from uuid import uuid4
 import boto3
 from django.conf import settings
 
+from grants.models import Grant
+
 
 def publish_message(type: str, body: dict, *, deduplication_id: str):
     if not settings.SQS_QUEUE_URL:
@@ -191,4 +193,33 @@ def send_volunteers_push_notification(notification_id: int, volunteers_device_id
             "volunteers_device_id": volunteers_device_id,
         },
         deduplication_id=f"{notification_id}-{volunteers_device_id}",
+    )
+
+
+def send_grant_reply_approved_email(grant: Grant, is_reminder: bool = False):
+    event_name = "GrantReplyReminderSent" if is_reminder else "GrantReplySent"
+
+    publish_message(
+        event_name,
+        body={
+            "grant_id": grant.id,
+            "is_reminder": is_reminder,
+        },
+        deduplication_id=str(grant.id),
+    )
+
+
+def send_grant_reply_waiting_list_email(grant: Grant):
+    publish_message(
+        "GrantReplyWaitingListSent",
+        body={"grant_id": grant.id},
+        deduplication_id=str(grant.id),
+    )
+
+
+def send_grant_reply_rejected_email(grant: Grant):
+    publish_message(
+        "GrantReplyRejectedSent",
+        body={"grant_id": grant.id},
+        deduplication_id=str(grant.id),
     )

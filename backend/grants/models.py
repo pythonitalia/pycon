@@ -7,6 +7,19 @@ from users.models import User
 
 
 class Grant(TimeStampedModel):
+    class Status(models.TextChoices):
+        pending = "pending", _("Pending")
+        rejected = "rejected", _("Rejected")
+        approved = "approved", _("Approved")
+        waiting_list = "waiting_list", _("Waiting List")
+        waiting_list_maybe = "waiting_list_maybe", _("Waiting List, Maybe")
+        waiting_for_confirmation = "waiting_for_confirmation", _(
+            "Waiting for confirmation"
+        )
+        refused = "refused", _("Refused")
+        confirmed = "confirmed", _("Confirmed")
+        maybe = "maybe", _("Maybe")
+
     class AgeGroup(models.TextChoices):
         range_less_than_10 = "range_less_than_10", _("10 years old or under")
         range_11_18 = "range_11_18", _("11 - 18 years old")
@@ -43,6 +56,9 @@ class Grant(TimeStampedModel):
         related_name="grants",
     )
     user_id = models.IntegerField(verbose_name=_("user"), null=True)
+    status = models.CharField(
+        _("status"), choices=Status.choices, max_length=30, default=Status.pending
+    )
     email = models.EmailField(_("email address"))
     age_group = models.CharField(
         _("Age group"), max_length=20, choices=AgeGroup.choices, blank=True
@@ -66,6 +82,10 @@ class Grant(TimeStampedModel):
     why = models.TextField(_("Why are you asking for a grant?"))
     notes = models.TextField(_("Notes"), blank=True)
     travelling_from = models.CharField(_("Travelling from"), max_length=200)
+
+    applicant_reply_sent_at = models.DateTimeField(
+        _("applicant reply sent at"), null=True, blank=True
+    )
 
     def __str__(self):
         return f"{self.full_name}"
