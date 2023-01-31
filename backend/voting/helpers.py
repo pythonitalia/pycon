@@ -26,22 +26,22 @@ def pastaporto_user_info_can_vote(pastaporto: Pastaporto, conference: Conference
     ).exists():
         return True
 
-    # User has admission ticket for the current conference
+    additional_events = [
+        {
+            "organizer_slug": included_voting_event.pretix_organizer_id,
+            "event_slug": included_voting_event.pretix_event_id,
+        }
+        for included_voting_event in conference.included_voting_events.all()
+    ]
+
+    # User has admission ticket for the current conference or for an included voting event
     if user_has_admission_ticket(
         email=user_info.email,
         event_organizer=conference.pretix_organizer_id,
         event_slug=conference.pretix_event_id,
+        additional_events=additional_events,
     ):
         return True
-
-    # User has a ticket for another event in pretix
-    for included_voting_event in conference.included_voting_events.all():
-        if user_has_admission_ticket(
-            email=user_info.email,
-            event_organizer=included_voting_event.pretix_organizer_id,
-            event_slug=included_voting_event.pretix_event_id,
-        ):
-            return True
 
     # User is a member of Python Italia
     if user_is_python_italia_member(user_info.id):

@@ -1,4 +1,4 @@
-import itertools
+from typing import Any, Dict, List, Tuple, TypedDict
 
 from django.db import models
 from django.db.models import Count
@@ -6,6 +6,7 @@ from django.db.models.functions import Sqrt
 from django.utils.translation import gettext_lazy as _
 from model_utils.fields import AutoCreatedField
 
+from conferences.models import Conference
 from helpers.constants import GENDERS
 from submissions.models import Submission
 from users.client import get_users_data_by_ids
@@ -35,6 +36,11 @@ class RankStat(models.Model):
         return f"{self.type} ({self.name}) at <{self.rank_request.conference.code}> | {self.value}"
 
 
+class Rank(TypedDict):
+    submission_id: int
+    score: float
+
+
 class RankRequest(models.Model):
 
     conference = models.OneToOneField(
@@ -56,12 +62,13 @@ class RankRequest(models.Model):
         # do not recreate ranking
         if self.rank_submissions.exists():
             return
-        ranked_submissions_by_topic = self.build_ranking(self.conference)
 
-        self.save_rank_submissions(ranked_submissions_by_topic)
+        ranked_submissions_by_tags = self.build_ranking(self.conference)
+
+        self.save_rank_submissions(ranked_submissions_by_tags)
         self.build_stats()
 
-    def build_ranking(self, conference):
+    def build_ranking(self, conference: Conference):
         """Builds the ranking
 
         P. S. maybe we should make some *Strategy* in order to have all
@@ -80,7 +87,7 @@ class RankRequest(models.Model):
         return RankRequest.users_most_voted_based(conference)
 
     @staticmethod
-    def users_most_voted_based(conference):
+    def users_most_voted_based(conference) -> List[Tuple[Dict[str, Any], List[Rank]]]:
         """Builds the ranking based on the votes each user has gived
         This algorithm rewards users who have given more votes. If a user
         votes many submissions, it means that he cares about his choices so
@@ -93,23 +100,25 @@ class RankRequest(models.Model):
 
         from voting.models import Vote
 
-        submissions = Submission.objects.filter(
+        submissions = Submission.objects.prefetch_related("tags").filter(
             conference=conference, status=Submission.STATUS.proposed
-        ).order_by("topic_id")
+        )
+
+        tags = (
+            submissions.values("tags__id", "tags__name")
+            .annotate(total=Count("tags"))
+            .order_by("-total", "tags__name")
+        )
+
         votes = Vote.objects.filter(submission__conference=conference)
 
         users_weight = RankRequest.get_users_weights(votes)
-
-        # group by topic to generate the relative ranking
-        def group_by(submission: Submission):
-            return submission.topic_id
-
         rankings = []
-        for topic_id, grouped_submissions in itertools.groupby(
-            submissions, key=group_by
-        ):
-            topic_ranking = []
-            for submission in grouped_submissions:
+        for tag in tags:
+            tag_submissions = submissions.filter(tags__id=tag["tags__id"])
+
+            tag_ranking: List[Rank] = []
+            for submission in tag_submissions:
                 submission_votes = votes.filter(submission=submission)
 
                 if submission_votes:
@@ -117,49 +126,55 @@ class RankRequest(models.Model):
                     for vote in submission_votes:
                         vote_info[vote.id] = {
                             "normalised_vote": vote.value
-                            * users_weight[(vote.user_id, topic_id)],
-                            "scale_factor": users_weight[(vote.user_id, topic_id)],
+                            * users_weight[(vote.user_id, tag["tags__id"])],
+                            "scale_factor": users_weight[
+                                (vote.user_id, tag["tags__id"])
+                            ],
                         }
                     score = sum(
                         [v["normalised_vote"] for v in vote_info.values()]
                     ) / sum([v["scale_factor"] for v in vote_info.values()])
                 else:
                     score = 0
-                rank = {
+
+                rank: Rank = {
                     "submission_id": submission.id,
-                    "submission__topic_id": submission.topic_id,
                     "score": score,
                 }
-                topic_ranking.append(rank)
-                topic_ranking = sorted(
-                    topic_ranking, key=lambda k: k["score"], reverse=True
+                tag_ranking.append(rank)
+                tag_ranking = sorted(
+                    tag_ranking, key=lambda k: k["score"], reverse=True
                 )
 
-            rankings.append(topic_ranking)
+            rankings.append((tag, tag_ranking))
         return rankings
 
     @staticmethod
     def get_users_weights(votes):
-        queryset = votes.values("submission__topic_id", "user_id").annotate(
-            weight=Sqrt(Count("submission__topic_id"))
+        queryset = votes.values("submission__tags", "user_id").annotate(
+            weight=Sqrt(Count("submission__tags"))
         )
         return {
-            (weight["user_id"], weight["submission__topic_id"]): weight["weight"]
+            (weight["user_id"], weight["submission__tags"]): weight["weight"]
             for weight in queryset
         }
 
-    def save_rank_submissions(self, ranked_submissions_by_topic):
+    def save_rank_submissions(
+        self, ranked_submissions_by_tag: List[Tuple[Dict[str, Any], List[Rank]]]
+    ):
         """Save the list of ranked submissions calculating the rank position
         from the score
         """
 
-        for submissions in ranked_submissions_by_topic:
+        for tag, submissions in ranked_submissions_by_tag:
             for index, rank in enumerate(submissions):
                 RankSubmission.objects.create(
                     rank_request=self,
                     submission=Submission.objects.get(pk=rank["submission_id"]),
                     rank=index + 1,
                     score=rank["score"],
+                    total_submissions_per_tag=tag["total"],
+                    tag_id=tag["tags__id"],
                 )
 
     def build_stats(self):
@@ -261,8 +276,22 @@ class RankSubmission(models.Model):
         related_name="rank_submissions",
     )
 
+    tag = models.ForeignKey(
+        "submissions.SubmissionTag",
+        on_delete=models.CASCADE,
+        verbose_name=_("tag"),
+        null=True,
+    )
+
+    total_submissions_per_tag = models.PositiveSmallIntegerField(
+        _("Total Submissions Per Tag"),
+    )
+
     submission = models.ForeignKey(
-        "submissions.Submission", on_delete=models.CASCADE, verbose_name=_("submission")
+        "submissions.Submission",
+        on_delete=models.CASCADE,
+        verbose_name=_("submission"),
+        related_name="rankings",
     )
 
     rank = models.PositiveIntegerField(_("rank"))

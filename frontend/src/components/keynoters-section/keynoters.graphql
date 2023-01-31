@@ -7,9 +7,16 @@ query KeynotesSection($code: String!, $language: String!) {
       slug(language: $language)
       speakers {
         id
-        name
-        photo
-        highlightColor
+        fullName
+        participant {
+          id
+          photo
+          twitterHandle
+          instagramHandle
+          linkedinUrl
+          facebookUrl
+          mastodonHandle
+        }
       }
     }
   }

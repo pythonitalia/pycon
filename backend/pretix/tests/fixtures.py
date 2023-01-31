@@ -82,7 +82,7 @@ def pretix_questions():
 @pytest.fixture
 def pretix_quotas():
     return {
-        "count": 1,
+        "count": 2,
         "next": None,
         "previous": None,
         "results": [
@@ -96,7 +96,18 @@ def pretix_quotas():
                 "subevent": None,
                 "close_when_sold_out": False,
                 "closed": False,
-            }
+            },
+            {
+                "id": 2,
+                "name": "T-shirt Quota",
+                "size": 200,
+                "available_number": 150,
+                "items": [2],
+                "variations": [1, 2],
+                "subevent": None,
+                "close_when_sold_out": False,
+                "closed": False,
+            },
         ],
     }
 
@@ -502,7 +513,7 @@ def pretix_items():
                 "min_per_order": None,
                 "max_per_order": None,
                 "checkin_attention": False,
-                "has_variations": False,
+                "has_variations": True,
                 "variations": [
                     {
                         "active": True,

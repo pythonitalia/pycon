@@ -14,6 +14,11 @@ repos:
         - <<: *python_settings
           id: isort
           name: isort (python)
+    - repo: https://github.com/adamchainz/django-upgrade
+      rev: '1.10.0'
+      hooks:
+      - id: django-upgrade
+        args: [--target-version, "3.2"]
     - repo: https://github.com/python/black
       rev: 22.6.0
       hooks:

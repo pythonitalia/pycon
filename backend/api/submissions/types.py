@@ -141,7 +141,9 @@ class Submission:
 
     @strawberry.field
     def speaker(self, info: Info) -> Optional[SubmissionSpeaker]:
-        if not CanSeeSubmissionRestrictedFields().has_permission(self, info):
+        if not CanSeeSubmissionRestrictedFields().has_permission(
+            self, info, is_speaker_data=True
+        ):
             return None
         return SubmissionSpeaker(id=self.speaker_id)
 
@@ -183,6 +185,9 @@ class Submission:
         if not request.pastaporto.is_authenticated:
             return None
 
+        if info.context._my_votes is not None:
+            return info.context._my_votes.get(self.id)
+
         try:
             return self.votes.get(user_id=request.user.id)
         except Vote.DoesNotExist:
@@ -199,3 +204,9 @@ class Submission:
         if CanSeeSubmissionRestrictedFields().has_permission(self, info):
             return self.tags.all()
         return None
+
+
+@strawberry.type
+class SubmissionsPagination:
+    submissions: List[Submission]
+    total_pages: int

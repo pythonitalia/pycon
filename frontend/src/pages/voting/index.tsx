@@ -1,49 +1,51 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
-import { useEffect, useCallback, useState } from "react";
+import {
+  MultiplePartsCardCollection,
+  Heading,
+  Section,
+  Grid,
+  Text,
+  Page,
+  Link,
+  BasicButton,
+  Spacer,
+  CardPart,
+  MultiplePartsCard,
+  Button,
+  HorizontalStack,
+} from "@python-italia/pycon-styleguide";
+import React, { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
-import { Flex, Box, Grid, Heading, jsx, Select, Text } from "theme-ui";
+import { jsx, Select } from "theme-ui";
 
 import { GetStaticProps } from "next";
 import { useRouter } from "next/router";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Alert } from "~/components/alert";
-import { AnimatedEmoji } from "~/components/animated-emoji";
-import { Button } from "~/components/button/button";
-import { Link } from "~/components/link";
-import { LoginForm } from "~/components/login-form";
 import { MetaTags } from "~/components/meta-tags";
-import { useLoginState } from "~/components/profile/hooks";
-import { SubmissionAccordion } from "~/components/submission-accordion";
 import { TagsFilter } from "~/components/tags-filter";
+import { VotingCard } from "~/components/voting-card";
 import { formatDeadlineDateTime } from "~/helpers/deadlines";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
-import { useInfiniteFetchScroll } from "~/helpers/use-infinite-fetch-scroll";
 import { useCurrentLanguage } from "~/locale/context";
-import { useVotingSubmissionsQuery } from "~/types";
-
-type VoteTypes = "all" | "votedOnly" | "notVoted";
+import {
+  queryVotingMetadata,
+  useVotingMetadataQuery,
+  useVotingSubmissionsQuery,
+} from "~/types";
 
 type Filters = {
-  topic: string;
   language: string;
-  vote: VoteTypes;
+  vote: string;
   tags: string[];
+  type: string;
+  audienceLevel: string;
+  page: number;
 };
-
-const COLORS = [
-  {
-    background: "blue",
-    heading: "white",
-  },
-  {
-    background: "lightBlue",
-    heading: "black",
-  },
-];
 
 const getAsArray = (value: string | string[]): string[] => {
   if (!value) {
@@ -53,125 +55,116 @@ const getAsArray = (value: string | string[]): string[] => {
   return Array.isArray(value) ? value : [value];
 };
 
+const toBoolean = (value: string): boolean | null => {
+  if (value) {
+    switch (value) {
+      case "false":
+        return false;
+
+      case "true":
+        return true;
+
+      case "undefined":
+        return null;
+
+      case "null":
+        return null;
+    }
+  }
+};
+
 export const VotingPage = () => {
-  const [loggedIn] = useLoginState();
-  const [votedSubmissions, setVotedSubmissions] = useState(new Set());
   const router = useRouter();
   const language = useCurrentLanguage();
 
+  const onUpdateFilters = (nextStateValues) => {
+    const qs = new URLSearchParams();
+    const keys = Object.keys(nextStateValues) as (keyof Filters)[];
+
+    keys.forEach((key) => {
+      const value = nextStateValues[key];
+
+      if (Array.isArray(value)) {
+        value.forEach((item) => qs.append(key, item));
+      } else if (value) {
+        qs.append(key, value);
+      }
+    });
+
+    const currentPath = router.pathname;
+    router.replace("/voting", `${currentPath}?${qs.toString()}`);
+
+    refetch({
+      conference: process.env.conferenceCode,
+      page: parseInt(nextStateValues.page),
+      language: nextStateValues.language,
+      voted: toBoolean(nextStateValues.vote),
+      tags: nextStateValues.tags,
+      type: nextStateValues.type,
+      audienceLevel: nextStateValues.audienceLevel,
+    });
+  };
+
   const [filters, { select, raw }] = useFormState<Filters>(
-    {},
+    {
+      tags: [],
+      language: "",
+    },
     {
       onChange(e, stateValues, nextStateValues) {
-        setVotedSubmissions(new Set());
-
-        const qs = new URLSearchParams();
-        const keys = Object.keys(nextStateValues) as (keyof Filters)[];
-
-        keys.forEach((key) => {
-          const value = nextStateValues[key];
-
-          if (Array.isArray(value)) {
-            value.forEach((item) => qs.append(key, item));
-          } else if (value) {
-            qs.append(key, value);
-          }
+        filters.setField("page", 1);
+        onUpdateFilters({
+          ...nextStateValues,
+          page: 1,
         });
-
-        const currentPath = router.pathname;
-        router.replace("/voting", `${currentPath}?${qs.toString()}`);
       },
     },
   );
+  const currentPage = parseInt(filters.values.page);
 
   useEffect(() => {
     if (!router.isReady) {
       return;
     }
 
-    filters.setField("vote", (router.query.vote as VoteTypes) ?? "all");
+    filters.setField("vote", router.query.vote as string);
     filters.setField("language", (router.query.language as string) ?? "");
-    filters.setField("topic", (router.query.topic as string) ?? "");
     filters.setField("tags", getAsArray(router.query.tags));
+    filters.setField("type", (router.query.type as string) ?? "");
+    filters.setField("page", parseInt(router.query.page as string) || 1);
+    filters.setField(
+      "audienceLevel",
+      (router.query.audienceLevel as string) ?? "",
+    );
   }, [router.isReady]);
 
-  const filterVisibleSubmissions = (submission) => {
-    if (filters.values.topic && submission.topic?.id !== filters.values.topic) {
-      return false;
-    }
-
-    if (
-      filters.values.language &&
-      submission.languages?.findIndex(
-        (language) => language.code === filters.values.language,
-      ) === -1
-    ) {
-      return false;
-    }
-
-    if (
-      filters.values.tags.length > 0 &&
-      submission.tags?.every((st) => filters.values.tags.indexOf(st.id) === -1)
-    ) {
-      return false;
-    }
-
-    const voteStatusFilter = filters.values.vote;
-
-    if (
-      voteStatusFilter === "notVoted" &&
-      submission.myVote !== null &&
-      !votedSubmissions.has(submission.id)
-    ) {
-      return false;
-    }
-
-    if (voteStatusFilter === "votedOnly" && submission.myVote === null) {
-      return false;
-    }
-
-    return true;
-  };
-
-  const { loading, error, data, fetchMore } = useVotingSubmissionsQuery({
+  const { data: votingMetadata } = useVotingMetadataQuery({
     variables: {
       conference: process.env.conferenceCode,
-      loadMore: false,
-      language,
     },
+  });
+
+  const { loading, error, data, refetch } = useVotingSubmissionsQuery({
+    variables: {
+      conference: process.env.conferenceCode,
+      page: currentPage,
+      language: filters.values.language,
+      voted: toBoolean(filters.values.vote),
+      tags: filters.values.tags,
+      type: filters.values.type,
+      audienceLevel: filters.values.audienceLevel,
+    },
+    skip: !router.isReady || isNaN(currentPage),
     errorPolicy: "all",
-    skip: !loggedIn,
   });
 
-  const onVote = useCallback(
-    (submission) =>
-      setVotedSubmissions((submissions) => submissions.add(submission.id)),
-    [],
-  );
-
-  const { isFetchingMore, hasMore, forceLoadMore } = useInfiniteFetchScroll({
-    fetchMore,
-    after:
-      data && data.submissions && data.submissions.length > 0
-        ? (data.submissions[data.submissions.length - 1]?.id as any)
-        : undefined,
-    hasMoreResultsCallback(newData) {
-      return newData && newData.submissions && newData.submissions.length > 0;
-    },
-    shouldFetchAgain(newData) {
-      if (!newData || newData.submissions === null) {
-        return null;
-      }
-
-      if (newData.submissions.filter(filterVisibleSubmissions).length === 0) {
-        return newData.submissions.length > 0
-          ? newData.submissions[newData.submissions.length - 1].id
-          : null;
-      }
-
-      return null;
-    },
-  });
+  const navigateToPage = (page: number) => {
+    filters.setField("page", page);
+    onUpdateFilters({
+      ...filters.values,
+      page: page,
+    });
+  };
 
   const cannotVoteErrors =
     error &&
@@ -179,200 +172,148 @@ export const VotingPage = () => {
       (e) => e.message === "You need to have a ticket to see submissions",
     ) !== -1;
 
-  const isVotingClosed = data && !data?.conference?.isVotingOpen;
+  const isVotingClosed =
+    votingMetadata && !votingMetadata?.conference?.isVotingOpen;
   const userCannotVote =
-    loggedIn && (loading || (cannotVoteErrors ?? false) || (error ?? false));
-  const showFilters = !isVotingClosed && !userCannotVote;
-  const votingDeadline = data?.conference?.isVotingOpen
-    ? data?.conference.votingDeadline?.end
+    loading || (cannotVoteErrors ?? false) || (!!error ?? false);
+  const votingDeadline = votingMetadata?.conference?.isVotingOpen
+    ? votingMetadata?.conference.votingDeadline?.end
     : undefined;
 
   return (
-    <Box>
+    <Page endSeparator={false}>
       <FormattedMessage id="voting.seoTitle">
         {(title) => <MetaTags title={title} />}
       </FormattedMessage>
 
-      <Box>
-        <Box
-          sx={{
-            maxWidth: "container",
-            mx: "auto",
-            px: 3,
-          }}
-        >
-          <Grid
-            gap={4}
-            sx={{
-              gridTemplateColumns: [null, "1fr 1fr"],
-            }}
-          >
-            <Box>
-              <Heading>
-                <FormattedMessage id="voting.heading" />
-              </Heading>
+      <Section>
+        <Heading size="display1">
+          <FormattedMessage id="voting.heading" />
+        </Heading>
+        <Spacer size="large" />
 
-              <Text mt={4}>
-                <FormattedMessage id="voting.introduction" />
-              </Text>
-              {votingDeadline && (
-                <Text
-                  sx={{
-                    fontSize: 2,
-                  }}
-                  as="p"
-                >
-                  <FormattedMessage
-                    id="voting.introductionDeadline"
-                    values={{
-                      deadline: (
-                        <Text as="span" sx={{ fontWeight: "bold" }}>
-                          {formatDeadlineDateTime(votingDeadline, language)}
-                        </Text>
-                      ),
-                    }}
-                  />
-                </Text>
-              )}
-              <Link path="/voting-info" variant="arrow-button" sx={{ my: 4 }}>
-                <FormattedMessage id="global.learnMore" />
-              </Link>
-            </Box>
+        <Text as="p" size={2}>
+          <FormattedMessage id="voting.introduction" />
+        </Text>
+        {votingDeadline && router.isReady && (
+          <Text as="p" size={2}>
+            <FormattedMessage
+              id="voting.introductionDeadline"
+              values={{
+                deadline: (
+                  <Text size={2} weight="strong">
+                    {formatDeadlineDateTime(votingDeadline, language)}
+                  </Text>
+                ),
+              }}
+            />
+          </Text>
+        )}
+        <Spacer size="small" />
+        <BasicButton href="/voting-info">
+          <FormattedMessage id="global.learnMore" />
+        </BasicButton>
+        <Spacer size="large" />
 
-            {showFilters && (
-              <Grid
-                sx={{
-                  gridTemplateColumns: [null, null, "1fr 1fr"],
-                  gridTemplateRows: [
-                    "repeat(4, 46px)",
-                    null,
-                    "repeat(2, 46px)",
-                  ],
-                  mb: 4,
-                }}
-              >
-                <Select
-                  {...select("topic")}
-                  sx={{
-                    background: "orange",
-                    borderRadius: 0,
-                  }}
-                >
-                  <FormattedMessage id="voting.allTopics">
-                    {(text) => <option value="">{text}</option>}
-                  </FormattedMessage>
-                  {data?.conference.topics.map((topic) => (
-                    <option key={topic.id} value={topic.id}>
-                      {topic.name}
-                    </option>
-                  ))}
-                </Select>
+        <Grid cols={2}>
+          <Select {...select("language")} disabled={userCannotVote}>
+            <FormattedMessage id="voting.allLanguages">
+              {(text) => <option value="">{text}</option>}
+            </FormattedMessage>
+            {votingMetadata?.conference.languages.map((language) => (
+              <option key={language.id} value={language.code}>
+                {language.name}
+              </option>
+            ))}
+          </Select>
 
-                <Select
-                  {...select("language")}
-                  sx={{
-                    background: "violet",
-                    borderRadius: 0,
-                  }}
-                >
-                  <FormattedMessage id="voting.allLanguages">
-                    {(text) => <option value="">{text}</option>}
-                  </FormattedMessage>
-                  {data?.conference.languages.map((language) => (
-                    <option key={language.id} value={language.code}>
-                      {language.name}
-                    </option>
-                  ))}
-                </Select>
+          <Select {...select("vote")} disabled={userCannotVote}>
+            <FormattedMessage id="voting.allSubmissions">
+              {(text) => <option value={null}>{text}</option>}
+            </FormattedMessage>
+            <FormattedMessage id="voting.notVoted">
+              {(text) => <option value="false">{text}</option>}
+            </FormattedMessage>
+            <FormattedMessage id="voting.votedOnly">
+              {(text) => <option value="true">{text}</option>}
+            </FormattedMessage>
+          </Select>
 
-                <Select
-                  {...select("vote")}
-                  sx={{
-                    borderRadius: 0,
-                  }}
-                >
-                  <FormattedMessage id="voting.allSubmissions">
-                    {(text) => <option value="all">{text}</option>}
-                  </FormattedMessage>
-                  <FormattedMessage id="voting.notVoted">
-                    {(text) => <option value="notVoted">{text}</option>}
-                  </FormattedMessage>
-                  <FormattedMessage id="voting.votedOnly">
-                    {(text) => <option value="votedOnly">{text}</option>}
-                  </FormattedMessage>
-                </Select>
+          <TagsFilter
+            {...raw("tags")}
+            tags={votingMetadata?.votingTags ?? []}
+            disabled={userCannotVote}
+          />
 
-                <TagsFilter
-                  {...raw("tags")}
-                  tags={data?.submissionTags ?? []}
-                />
-              </Grid>
-            )}
-          </Grid>
-        </Box>
-      </Box>
+          <Select {...select("audienceLevel")} disabled={userCannotVote}>
+            <FormattedMessage id="voting.allAudienceLevels">
+              {(txt) => <option value="">{txt}</option>}
+            </FormattedMessage>
+            {votingMetadata?.conference.audienceLevels.map((a) => (
+              <option key={a.id} value={a.id}>
+                {a.name}
+              </option>
+            ))}
+          </Select>
 
-      {userCannotVote && (
-        <Box>
-          <Box
-            sx={{
-              maxWidth: "container",
-              mx: "auto",
-              px: 3,
-              py: 0,
-            }}
-          >
+          <Select {...select("type")} disabled={userCannotVote}>
+            <FormattedMessage id="voting.allSubmissionTypes">
+              {(txt) => <option value="">{txt}</option>}
+            </FormattedMessage>
+            {votingMetadata?.conference.submissionTypes.map((a) => (
+              <option key={a.id} value={a.id}>
+                {a.name}
+              </option>
+            ))}
+          </Select>
+        </Grid>
+      </Section>
+
+      <Section>
+        {userCannotVote && (
+          <>
             {!cannotVoteErrors && error && (
               <Alert variant="alert">{error.message}</Alert>
             )}
 
             {cannotVoteErrors && error && (
-              <Box sx={{ pt: 4 }}>
+              <>
                 <Heading>
                   <FormattedMessage id="voting.errors.cannotVote.heading" />
                 </Heading>
 
-                <Text my={4}>
+                <Text>
                   <FormattedMessage
                     id="voting.errors.cannotVote.body"
                     values={{
                       linkVotingInfo: (
-                        <Link path="/voting-info">
+                        <Link href="/voting-info">
                           <FormattedMessage id="voting.errors.cannotVote.linkVotingInfo.text" />
                         </Link>
                       ),
                       linkTicket: (
-                        <Link path="/tickets">
-                          {" "}
+                        <Link href="/tickets">
                           <FormattedMessage id="voting.errors.cannotVote.linkTicket.text" />
                         </Link>
                       ),
                     }}
                   />
                 </Text>
-              </Box>
+              </>
             )}
-            {loading && (
-              <Alert variant="info">
-                <FormattedMessage id="voting.loading" />
-              </Alert>
-            )}
-          </Box>
-        </Box>
-      )}
 
-      {isVotingClosed && (
-        <Box sx={{ borderTop: "primary" }}>
-          <Grid
-            sx={{
-              maxWidth: "container",
-              mx: "auto",
-              mt: 3,
-              px: 3,
-              mb: [5, 5, 0],
-              gridTemplateColumns: ["1fr", "0.5fr"],
-            }}
-          >
+            {loading && (
+              <HorizontalStack alignItems="center" justifyContent="center">
+                <Text as="p" size={2}>
+                  <FormattedMessage id="voting.loading" />
+                </Text>
+              </HorizontalStack>
+            )}
+          </>
+        )}
+
+        {isVotingClosed && (
+          <>
             <Heading sx={{ mb: 3 }}>
               <FormattedMessage id="voting.closed.heading" />
             </Heading>
@@ -392,89 +333,80 @@ export const VotingPage = () => {
                 }}
               />
             </Text>
-          </Grid>
-        </Box>
-      )}
+          </>
+        )}
 
-      {!loggedIn && (
-        <Box sx={{ borderTop: "primary", mb: 5 }}>
-          <Box
-            sx={{
-              maxWidth: "container",
-              mx: "auto",
-              mt: 3,
-              px: [3, 3, 3, 0],
-            }}
-          >
-            <Alert variant="info">
-              <FormattedMessage id="voting.needToBeLoggedIn" />
-            </Alert>
-          </Box>
-          <LoginForm
-            next={
-              typeof window !== "undefined" ? window.location?.pathname : null
-            }
-          />
-        </Box>
-      )}
+        {!isVotingClosed && data?.submissions && (
+          <>
+            <MultiplePartsCardCollection>
+              <MultiplePartsCard>
+                <CardPart contentAlign="left">
+                  <Heading size={2}>
+                    <FormattedMessage id="voting.proposals" />
+                  </Heading>
+                </CardPart>
+              </MultiplePartsCard>
+              {data.submissions.items.map((submission) => (
+                <VotingCard key={submission.id} submission={submission} />
+              ))}
+            </MultiplePartsCardCollection>
+          </>
+        )}
+        <Spacer size="xl" />
 
-      {loggedIn && !isVotingClosed && data?.submissions && (
-        <Box
-          as="ul"
-          sx={{
-            listStyle: "none",
-          }}
-        >
-          {data.submissions
-            .filter(filterVisibleSubmissions)
-            .map((submission, index) => (
-              <SubmissionAccordion
-                backgroundColor={COLORS[index % COLORS.length].background}
-                headingColor={COLORS[index % COLORS.length].heading}
-                vote={submission.myVote}
-                key={submission.id}
-                submission={submission}
-                onVote={onVote}
-              />
-            ))}
-        </Box>
-      )}
-
-      {loggedIn && !isVotingClosed && data?.submissions && (
-        <Flex
-          sx={{
-            maxWidth: "container",
-            mx: "auto",
-            my: 5,
-            px: [3, 3, 3, 0],
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          {isFetchingMore && (
+        {data?.submissions?.pageInfo.totalPages && (
+          <Text as="p" size="label1" align="center">
             <FormattedMessage
-              id="global.button.loading"
+              id="voting.pagination"
               values={{
-                emoji: <AnimatedEmoji play={true} />,
+                currentPage: currentPage,
+                totalPages: data?.submissions?.pageInfo.totalPages,
+                totalItems: data?.submissions?.pageInfo.totalItems,
               }}
             />
-          )}
+          </Text>
+        )}
+        <Spacer size="small" />
 
-          {hasMore && !loading && !isFetchingMore && (
-            <Button onClick={forceLoadMore}>
-              <FormattedMessage id="global.loadMore" />
-            </Button>
+        <HorizontalStack
+          gap="small"
+          alignItems="center"
+          justifyContent="center"
+        >
+          {!isVotingClosed && data?.submissions && (
+            <>
+              {Array(data.submissions.pageInfo.totalPages)
+                .fill(null)
+                .map((_, i) => (
+                  <Button
+                    key={i}
+                    background={currentPage === i + 1 ? "green" : undefined}
+                    onClick={(_) => {
+                      navigateToPage(i + 1);
+                    }}
+                    size="small"
+                    role="secondary"
+                  >
+                    {i + 1}
+                  </Button>
+                ))}
+            </>
           )}
-        </Flex>
-      )}
-    </Box>
+        </HorizontalStack>
+      </Section>
+    </Page>
   );
 };
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
   const client = getApolloClient();
 
-  await prefetchSharedQueries(client, locale);
+  await Promise.all([
+    prefetchSharedQueries(client, locale),
+    queryVotingMetadata(client, {
+      conference: process.env.conferenceCode,
+    }),
+  ]);
 
   return addApolloState(client, {
     props: {},

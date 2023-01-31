@@ -1,61 +1,82 @@
-/** @jsxRuntime classic */
-
-/** @jsx jsx */
-import { jsx } from "theme-ui";
+import {
+  CardPart,
+  MultiplePartsCard,
+  Text,
+  Heading,
+  Container,
+  Spacer,
+  Grid,
+  Section,
+} from "@python-italia/pycon-styleguide";
+import { SnakeHead } from "@python-italia/pycon-styleguide/illustrations";
+import { FormattedMessage } from "react-intl";
 
 import { GetStaticProps } from "next";
-import { useRouter } from "next/router";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
-import { useLoginState } from "~/components/profile/hooks";
-import { TicketsSection } from "~/components/tickets-page/tickets-section";
-import { useCart } from "~/components/tickets-page/use-cart";
+import { AvailableProductsLandingSection } from "~/components/tickets-page/available-products-landing-section";
 import { TicketsPageWrapper } from "~/components/tickets-page/wrapper";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { queryTickets } from "~/types";
 
 export const TicketsPage = () => {
-  const [isLoggedIn] = useLoginState();
-
-  const router = useRouter();
-
-  const {
-    state,
-    addHotelRoom,
-    addProduct,
-    removeProduct,
-    removeHotelRoom,
-    updateIsBusiness,
-  } = useCart();
-
   return (
     <TicketsPageWrapper>
-      {({ tickets, hotelRooms, conference, me }) => (
-        <TicketsSection
-          state={state}
-          conferenceStart={conference.start}
-          conferenceEnd={conference.end}
-          hotelRooms={hotelRooms}
-          selectedHotelRooms={state.selectedHotelRooms}
-          tickets={tickets}
-          selectedProducts={state.selectedProducts}
-          addProduct={addProduct}
-          removeProduct={removeProduct}
-          addHotelRoom={addHotelRoom}
-          removeHotelRoom={removeHotelRoom}
-          invoiceInformation={state.invoiceInformation}
-          onUpdateIsBusiness={updateIsBusiness}
-          me={me}
-          onNextStep={() => {
-            const nextUrl = `/tickets/information/`;
+      {({ hotelRooms, tickets }) => (
+        <div>
+          <Container>
+            <Spacer size="xl" />
+            <Heading size="display1">
+              <FormattedMessage id="tickets.buyTickets" />
+            </Heading>
+            <Spacer size="large" />
+            <Heading size={1}>
+              <FormattedMessage id="tickets.buyTicketsSubtitle" />
+            </Heading>
+          </Container>
+          <Section>
+            <SnakeHead className="relative ml-auto w-32 lg:w-52 mr-6 md:mr-12 -mt-36 md:-mt-24 lg:-mt-44 hidden md:block" />
+            <Grid cols={2} equalHeight>
+              <MultiplePartsCard
+                cta={{
+                  label: <FormattedMessage id="tickets.buyTicketsCta" />,
+                  link: "/tickets/personal/",
+                }}
+              >
+                <CardPart>
+                  <Heading size={2}>
+                    <FormattedMessage id="tickets.personal.title" />
+                  </Heading>
+                  <Spacer size="xs" />
+                  <Text size={2}>
+                    <FormattedMessage id="tickets.personal.description" />
+                  </Text>
+                </CardPart>
+              </MultiplePartsCard>
 
-            if (isLoggedIn) {
-              router.push("/tickets/information/", nextUrl);
-            } else {
-              router.push(`/login?next=${nextUrl}`);
-            }
-          }}
-        />
+              <MultiplePartsCard
+                cta={{
+                  label: <FormattedMessage id="tickets.buyTicketsCta" />,
+                  link: "/tickets/business/",
+                }}
+              >
+                <CardPart>
+                  <Heading size={2}>
+                    <FormattedMessage id="tickets.business.title" />
+                  </Heading>
+                  <Spacer size="xs" />
+                  <Text size={2}>
+                    <FormattedMessage id="tickets.business.description" />
+                  </Text>
+                </CardPart>
+              </MultiplePartsCard>
+            </Grid>
+          </Section>
+          <AvailableProductsLandingSection
+            tickets={tickets}
+            hotelRooms={hotelRooms}
+          />
+        </div>
       )}
     </TicketsPageWrapper>
   );

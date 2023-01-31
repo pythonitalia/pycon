@@ -1,69 +1,81 @@
-/** @jsxRuntime classic */
-
-/** @jsx jsx */
-import { Fragment } from "react";
+import {
+  Heading,
+  Text,
+  Page,
+  Section,
+  MultiplePartsCard,
+  CardPart,
+  Link,
+  Grid,
+} from "@python-italia/pycon-styleguide";
+import { parseISO } from "date-fns";
 import { FormattedMessage } from "react-intl";
-import { Box, Heading, jsx, Text } from "theme-ui";
 
 import { GetStaticProps } from "next";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
-import { Link } from "~/components/link";
+import { createHref } from "~/components/link";
 import { MetaTags } from "~/components/meta-tags";
-import { PageLoading } from "~/components/page-loading";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
 import { queryBlogIndex, useBlogIndexQuery } from "~/types";
 
 export const BlogPage = () => {
   const language = useCurrentLanguage();
+  const dateFormatter = new Intl.DateTimeFormat(language, {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  });
 
-  const { data, loading } = useBlogIndexQuery({
+  const { data } = useBlogIndexQuery({
     variables: {
       language,
     },
   });
 
-  if (loading) {
-    return <PageLoading titleId="blog.title" />;
-  }
-
   const posts = data.blogPosts;
 
   return (
-    <Fragment>
+    <Page endSeparator={false}>
       <FormattedMessage id="blog.title">
         {(text) => <MetaTags title={text} />}
       </FormattedMessage>
 
-      <Box sx={{ mx: "auto", px: 3, py: 5, maxWidth: "container" }}>
-        {posts.map((post) => (
-          <Box as="article" key={post.slug} sx={{ mb: 4, maxWidth: "600px" }}>
-            <Heading sx={{ mb: 2 }}>
-              <Link
-                variant="heading"
-                path={`/blog/[slug]`}
-                params={{ slug: post.slug }}
-              >
-                {post.title}
-              </Link>
-            </Heading>
-
-            <Text as="p" sx={{ mb: 2 }}>
-              {post.excerpt}
-            </Text>
-
+      <Section illustration="snakeHead">
+        <Heading size="display1">Blog</Heading>
+      </Section>
+      <Section>
+        <Grid cols={3}>
+          {posts.map((post) => (
             <Link
-              path="/blog/[slug]"
-              params={{ slug: post.slug }}
-              sx={{ display: "block" }}
+              noLayout
+              hoverColor="black"
+              href={createHref({
+                path: `/blog/${post.slug}`,
+                locale: language,
+              })}
             >
-              <FormattedMessage id="blog.readMore" />
+              <MultiplePartsCard>
+                <CardPart
+                  rightSideIcon="arrow"
+                  rightSideIconSize="small"
+                  shrink={false}
+                  contentAlign="left"
+                >
+                  <Text uppercase size="label3" weight="strong">
+                    {dateFormatter.format(parseISO(post.published))}
+                  </Text>
+                </CardPart>
+                <CardPart fullHeight background="milk" contentAlign="left">
+                  <Heading size={4}>{post.title}</Heading>
+                </CardPart>
+              </MultiplePartsCard>
             </Link>
-          </Box>
-        ))}
-      </Box>
-    </Fragment>
+          ))}
+        </Grid>
+      </Section>
+    </Page>
   );
 };
 

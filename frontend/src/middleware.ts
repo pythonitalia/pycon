@@ -4,7 +4,7 @@ import type { NextRequest } from "next/server";
 import { DEFAULT_LOCALE, VALID_LOCALES } from "~/locale/languages";
 
 const PUBLIC_FILE = /\.(.*)$/;
-const LOGIN_REDIRECT_URL = ["/cfp", "/grants"];
+const LOGIN_REDIRECT_URL = ["/cfp", "/grants", "/voting"];
 
 const handleLocale = (req: NextRequest) => {
   const locale = getLocale(
@@ -27,6 +27,7 @@ export function middleware(req: NextRequest) {
     !req.nextUrl.pathname.includes("/api/") &&
     !req.nextUrl.pathname.includes("/admin") &&
     !req.nextUrl.pathname.includes("/graphql") &&
+    !req.nextUrl.pathname.includes("/_next/image") &&
     req.nextUrl.locale === "default";
 
   if (shouldHandleLocale) {

@@ -37,7 +37,7 @@ export const Header = () => {
           ? getTranslatedMessage("header.dashboard", language)
           : getTranslatedMessage("header.login", language),
       icon: "user",
-      link: loggedIn ? "/profile" : "/login",
+      link: router.isReady && loggedIn ? "/profile" : "/login",
     },
   ];
 

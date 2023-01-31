@@ -1,3 +1,5 @@
+import { differenceInCalendarDays, parseISO } from "date-fns";
+
 import {
   OrderAction,
   OrderState,
@@ -67,7 +69,11 @@ const updateHotelRoomReducer = (
         id,
         checkin: action.checkin,
         checkout: action.checkout,
-        numNights: action.checkout.diff(action.checkin, "days"),
+        beds: action.beds,
+        numNights: differenceInCalendarDays(
+          parseISO(action.checkout),
+          parseISO(action.checkin),
+        ),
       });
       break;
     case "removeHotelRoom":
@@ -122,7 +128,7 @@ const applyVoucher = (state: OrderState, voucher: Voucher): OrderState => {
       hasBeenUsed = true;
 
       // We cannot calculate the new price here.
-      // we only say "here you voucher, use it when you can calculate the price"
+      // we only say "here your voucher, use it when you can calculate the price"
       return {
         ...product,
         voucher,

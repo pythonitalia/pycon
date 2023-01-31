@@ -60,7 +60,7 @@ class SubmissionAdmin(AdminUsersMixin, SearchUsersMixin):
         "status",
         "conference",
         "open_submission",
-        "topic",
+        "inline_tags",
         "duration",
         "audience_level",
         "created",
@@ -80,16 +80,16 @@ class SubmissionAdmin(AdminUsersMixin, SearchUsersMixin):
                     "modified",
                     "type",
                     "duration",
-                    "topic",
+                    "tags",
                     "conference",
                     "audience_level",
                     "languages",
                 )
             },
         ),
-        (_("Details"), {"fields": ("elevator_pitch", "abstract", "notes", "tags")}),
+        (_("Details"), {"fields": ("elevator_pitch", "abstract", "notes")}),
     )
-    list_filter = ("conference", "type", "topic", "status")
+    list_filter = ("conference", "type", "tags", "status")
     search_fields = (
         "title",
         "elevator_pitch",
@@ -118,11 +118,21 @@ class SubmissionAdmin(AdminUsersMixin, SearchUsersMixin):
             extra_context=extra_context,
         )
 
+    @admin.display(
+        description="Speaker",
+    )
     def speaker_display_name(self, obj):
         return self.get_user_display_name(obj.speaker_id)
 
-    speaker_display_name.short_description = "Speaker"
+    @admin.display(
+        description="Tags",
+    )
+    def inline_tags(self, obj):
+        return ", ".join([tag.name for tag in obj.tags.all()])
 
+    @admin.display(
+        description="Open",
+    )
     def open_submission(self, obj):  # pragma: no cover
         return mark_safe(
             f"""
@@ -131,8 +141,8 @@ class SubmissionAdmin(AdminUsersMixin, SearchUsersMixin):
             """
         )
 
-    open_submission.short_description = "Open"
-    open_submission.allow_tags = True
+    def get_queryset(self, request):
+        return super().get_queryset(request).prefetch_related("tags")
 
     class Media:
         js = ["admin/js/jquery.init.js"]

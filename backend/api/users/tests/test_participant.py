@@ -29,8 +29,8 @@ def test_user_participant(user, participant_factory):
     )
     assert participant_type.website == "https://google.it"
     assert participant_type.twitter_handle == "marco"
-    assert participant_type.speaker_level == "intermediate"
-    assert participant_type.previous_talk_video == ""
+    assert participant_type._speaker_level == "intermediate"
+    assert participant_type._previous_talk_video == ""
 
 
 def test_user_participant_when_it_doesnt_exist(user, conference_factory):

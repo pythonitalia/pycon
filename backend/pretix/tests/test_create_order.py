@@ -31,8 +31,12 @@ def invoice_information():
 
 @override_settings(PRETIX_API="https://pretix/api/")
 @pytest.mark.django_db
-def test_creates_order(conference, hotel_room, requests_mock, invoice_information):
+def test_creates_order(
+    conference, hotel_room, requests_mock, invoice_information, bed_layout_factory
+):
+    bed_layout = bed_layout_factory()
     hotel_room.conference = conference
+    hotel_room.available_bed_layouts.add(bed_layout)
     hotel_room.save()
 
     requests_mock.post(
@@ -63,6 +67,7 @@ def test_creates_order(conference, hotel_room, requests_mock, invoice_informatio
                 room_id=str(hotel_room.id),
                 checkin=timezone.datetime(2020, 1, 1).date(),
                 checkout=timezone.datetime(2020, 1, 3).date(),
+                bed_layout_id=str(bed_layout.id),
             )
         ],
         tickets=[
@@ -174,20 +179,26 @@ def test_raises_value_error_if_answer_value_is_wrong(
 
 
 @pytest.mark.django_db
-def test_create_hotel_positions(requests_mock, hotel_room_factory, invoice_information):
+def test_create_hotel_positions(
+    requests_mock, hotel_room_factory, invoice_information, bed_layout_factory
+):
     room = hotel_room_factory(
         conference__pretix_hotel_ticket_id=1,
         conference__pretix_hotel_room_type_question_id=2,
         conference__pretix_hotel_checkin_question_id=3,
         conference__pretix_hotel_checkout_question_id=4,
+        conference__pretix_hotel_bed_layout_question_id=5,
         price=100,
     )
+    bed_layout = bed_layout_factory()
+    room.available_bed_layouts.add(bed_layout)
 
     rooms = [
         CreateOrderHotelRoom(
             room_id=str(room.id),
             checkin=timezone.datetime(2020, 1, 1).date(),
             checkout=timezone.datetime(2020, 1, 3).date(),
+            bed_layout_id=str(bed_layout.id),
         )
     ]
 
@@ -213,6 +224,12 @@ def test_create_hotel_positions(requests_mock, hotel_room_factory, invoice_infor
                 {
                     "question": 4,
                     "answer": "2020-01-03",
+                    "options": [],
+                    "option_identifier": [],
+                },
+                {
+                    "question": 5,
+                    "answer": bed_layout.name.localize("en"),
                     "options": [],
                     "option_identifier": [],
                 },

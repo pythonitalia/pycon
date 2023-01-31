@@ -1,0 +1,64 @@
+query Talk($slug: String!, $code: String!, $language: String!) {
+  conference(code: $code) {
+    id
+    talk(slug: $slug) {
+      id
+      title
+      type
+      image
+      highlightColor
+      description
+      hasLimitedCapacity
+      spacesLeft
+      hasSpacesLeft
+      slidoUrl
+
+      start
+      end
+
+      language {
+        code
+      }
+
+      submission {
+        id
+        abstract(language: $language)
+        elevatorPitch(language: $language)
+
+        duration {
+          id
+          duration
+        }
+
+        audienceLevel {
+          id
+          name
+        }
+
+        topic {
+          name
+        }
+
+        tags {
+          name
+          id
+        }
+      }
+
+      speakers {
+        id
+        fullName
+        participant {
+          id
+          photo
+          bio
+          twitterHandle
+          instagramHandle
+          linkedinUrl
+          facebookUrl
+          mastodonHandle
+        }
+      }
+    }
+  }
+}

@@ -14,14 +14,13 @@ class Sponsor:
     name: str
 
     @strawberry.field
-    def link(self, info) -> typing.Optional[str]:
-        if self.link != "":
-            return self.link
+    def link(self, info) -> str:
+        return self.link
 
     @strawberry.field
-    def image(self, info) -> typing.Optional[str]:
+    def image(self, info) -> str:
         if not self.image:
-            return None
+            return ""
 
         return info.context.request.build_absolute_uri(self.image.url)
 
@@ -35,4 +34,6 @@ class SponsorsByLevel:
     @classmethod
     def from_model(cls, level: SponsorLevelModel) -> SponsorsByLevel:
         sponsors = [sponsor for sponsor in level.sponsors.all()]
-        return cls(level=level.name, sponsors=sponsors, highlight_color=level.highlight_color)
+        return cls(
+            level=level.name, sponsors=sponsors, highlight_color=level.highlight_color
+        )

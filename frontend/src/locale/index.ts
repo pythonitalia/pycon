@@ -3,6 +3,7 @@ export const messages = {
     titleTemplate: "%s | PyCon Italia",
     description:
       "Join PyCon Italia from the 25th to the 28th of May 2023 in Florence, Italy!",
+    "input.placeholder": "Type here...",
     "global.accordion.close": "Close",
     "global.accordion.readMore": "Read more",
     "global.here": "here",
@@ -14,6 +15,12 @@ export const messages = {
     "global.button.loading": "Loading {emoji}",
     "global.somethingWentWrong": "Something went wrong, please try again",
     "global.tryAgain": "Something went wrong: {error}",
+
+    "scheduleEventDetail.eventTime": "{start} - {end}",
+    "scheduleEventDetail.sidebar.spacesLeft": "Seats left",
+    "scheduleEvent.soldout": "Sold-out",
+
+    "homepage.followUs": "Follow us on",
 
     "home.title": "Home",
     "home.deadline.begins": "Begins",
@@ -217,7 +224,8 @@ export const messages = {
     "fileInput.uploading": "Uploading...",
     "cfp.grantsLabel": "Do you need a grant?",
     "cfp.grantsCheckbox":
-      "If financial support is needed for attending the conference, send the grant request now! You won't be able to request a grant after your proposal is accepted.",
+      "If financial support is needed for attending the conference, {grantsCta}! We won't accept grant requests after the grants deadline. Make sure you submit your proposal as well.",
+    "cfp.grantsCta": "click here to open a separate page to submit the request",
     "header.coronaVirus":
       "🚨 Update regarding COVID-19 - Conference cancelled 😢",
     "header.dashboard": "Dashboard",
@@ -256,6 +264,63 @@ export const messages = {
     "tickets.heading": "Get some tickets",
     "tickets.explanation": `{br}`,
 
+    "tickets.buyTickets": "Buy Tickets",
+    "tickets.hotelRow.totalPrice": "{value}",
+    "tickets.hotelRow.pricePerNight":
+      "{nights, plural, =0 {/night} =1 {{price} x # night} other {{price} x # nights}}",
+
+    "tickets.checkout.orderCreationFailed":
+      "Something went wrong!{br}Make sure you provided all the information{br}or contact us at help@pycon.it",
+
+    "login.redirectFromTicketsCheckout":
+      "Login or create an account to complete your purchase",
+    "login.redirectFromCFP": "Login or create an account to submit a proposal",
+    "login.redirectFromGrants": "Login or create an account to request a grant",
+
+    "tickets.checkout.voucher.placeholder": "Enter your voucher code",
+    "tickets.checkout.recap.price": "{price} (incl. {taxRate}% VAT)",
+    "tickets.checkout.recap.hotelRoomsPrice":
+      "{price} ({perNight}/night) (incl. 0% VAT)",
+
+    "tickets.productsList.soldOut": "Sold-out",
+
+    "tickets.personal.title": "Personal ticket",
+    "tickets.personal.description":
+      "If you are a student, unemployed or employed, buying the ticket with your own money, not paid by your company, university or similar.",
+    "tickets.buyTicketsCta": "Buy tickets",
+
+    "tickets.productsList.joinPythonItalia": "Join Python Italia",
+    "tickets.productsList.hotelRoomsTitle": "Where to stay",
+    "tickets.productsList.openDescription": "Discover more",
+
+    "tickets.productsList.hotelRow.bedLayout": "Bed layout",
+
+    "tickets.productsList.hotelRow.checkout": "Check-out",
+    "tickets.productsList.hotelRow.checkin": "Check-in",
+
+    "tickets.productsList.tshirtTitle": "T-shirt",
+
+    "tickets.checkout.answerCardAdmissionTitle": "{attendeeName}'s ticket",
+    "tickets.checkout.openAnswerCard": "Attendee Info",
+    "tickets.checkout.billing": "Billing",
+    "tickets.checkout.voucher": "Voucher",
+    "tickets.checkout.recap": "Recap",
+    "tickets.checkout.voucher.notFound": "Not found",
+
+    "tickets.checkout.payWithCard": "Pay with card",
+    "tickets.checkout.payWithBankTransfer": "Pay with bank transfer",
+    "tickets.checkout.savedAmount": "You saved {amount}",
+
+    "tickets.checkout.voucher.fetching": "Fetching voucher...",
+    "tickets.checkout.voucher.noProductsAffected": "No products affected",
+
+    "tickets.checkout.title": "Checkout",
+    "tickets.title": "Buy Tickets",
+
+    "tickets.business.title": "Business ticket",
+    "tickets.business.description":
+      "If your company, university or similar is paying for your ticket, or you need an invoice.",
+
     "addHotelRoom.checkin": "Check-in",
     "addHotelRoom.checkout": "Check-out",
 
@@ -270,6 +335,8 @@ export const messages = {
     "keynote.language": "Language",
     "keynote.englishLanguage": "English",
 
+    "ticketsOverview.ticket.personal.fareType": "Regular",
+
     "order.nextStep": "Next step",
     "order.creatingOrder": "Creating order 🕐",
     "order.payWithCard": "Pay with card",
@@ -281,20 +348,20 @@ export const messages = {
       "You need to select at least one ticket, a t-shirt or a hotel room before continuing",
     "order.hotelRoomCartInfo":
       "{roomName} with check-in the {checkin} and check-out the {checkout}",
-    "orderConfirmation.heading": "Order confirmation!",
-    "orderConfirmation.heading.canceled": "Order canceled!",
-    "orderConfirmation.heading.pending": "Order pending!",
+    "orderConfirmation.heading": "Order paid",
+    "orderConfirmation.heading.canceled": "Order canceled",
+    "orderConfirmation.heading.pending": "Order pending",
     "orderConfirmation.successMessage":
       "Thanks for the order! You should receive an email confirmation soon!",
     "orderConfirmation.pendingMessage":
-      "Your order is still pending and not paid! If you paid by card, click the link below and try again",
-    "orderConfirmation.bankMessage": `If you paid via bank transfer, contact us at {email} with your order code {code}
-      once the transfer is done and we will confirm it once we receive the transfer.`,
-    "orderConfirmation.manage": "Click here to manage the order.",
-    "orderConfirmation.pendingManage":
-      "Click here to try again or change your payment method.",
-    "orderConfirmation.tryAgain":
-      "Try again creating a new order going back to our {link} page",
+      "Your order is still pending and not paid!",
+    "orderConfirmation.cardMessage":
+      "If you paid by card, click the button below and try again",
+    "orderConfirmation.bankMessage": `If you paid via bank transfer, contact us at {email} with your order code {code} once the transfer is done so we can confirm it when we receive the transfer.`,
+    "orderConfirmation.manage": "Click here to manage the order",
+    "orderConfirmation.home": "Homepage",
+    "orderConfirmation.pendingManage": "Try another card or retry",
+    "orderConfirmation.tryAgain": "Try again creating a new order",
     "orderConfirmation.tickets": "Tickets",
     "order.soldout": "Sold out",
     "order.price": "Price: {price} EUR.",
@@ -348,6 +415,9 @@ export const messages = {
       "Grant request sent! We will send you an email as soon as we have updates! Cick {linkGrant} to edit it.",
     "grants.form.sent.linkGrant.text": "here",
     "grants.form.aboutYou": "About you",
+    "grants.form.yourGrant": "Your grant",
+    "grants.form.youAndPython": "You and Python",
+
     "grants.form.optionalInformation": "Optional information",
     "grants.form.optionalInformation.description":
       "Providing this information will help us making sure that the event is as inclusive as possible.",
@@ -387,7 +457,8 @@ export const messages = {
     "grants.form.fields.grantType.values.unemployed": "Unemployed",
     "grants.form.fields.grantType.values.speaker": "Speaker",
     "grants.form.fields.interestedInVolunteering":
-      "Would you like to help PyCon Italia for this and/or the upcoming event?",
+      "Would you like to help PyCon Italia for this and/or upcoming events?",
+    "grants.form.validationErrors": "The form submitted is not valid",
     "grants.form.fields.interestedInVolunteering.description":
       "We are always looking for some help during the event. It is also a fun way to make new friends!",
     "grants.form.fields.interestedInVolunteering.values.selectOption":
@@ -407,11 +478,18 @@ export const messages = {
     "grants.form.fields.needsFundsForTravel":
       "Do you need financial aid for travelling to PyCon Italia?",
     "grants.form.fields.needsFundsForTravel.label":
-      "Tick here if you need financial aid for travelling to PyCon Italia",
+      "We don’t have many funds but we will try to help as many people as we can, ask for this help only if absolutely needed!",
+
+    "grants.form.fields.needsFundsForTravel.no": "No",
+    "grants.form.fields.needsFundsForTravel.yes": "Yes",
 
     "grants.form.submit": "Submit",
 
     "grants.form.edit.title": "Edit your Grant",
+
+    "homepage.sponsorsSectionText":
+      "PyCon Italia can be your platform to gain brand recognition, take leads and recruit from an audience of highly skilled professionals!",
+    "homepage.sponsorsSectionCTAText": "Become a sponsor",
 
     "orderReview.heading": "Review your order",
     "orderReview.invoiceInformation": "Invoice information",
@@ -489,17 +567,20 @@ export const messages = {
     "ranking.stats.topic": "{value} proposals for the track {name}",
 
     "voting.heading": "Community voting",
+    "voting.proposals": "Proposals",
     "voting.introduction": `This is your opportunity to have a say on what you want to see at
-      PyCon Italia! Voting will help us creating a program that better
-      reflects what everyone wants to see!`,
+PyCon Italia! Voting will help us creating a program that better
+reflects what everyone wants to see!`,
     "voting.introductionDeadline": "You have until {deadline} to vote!",
     "voting.seoTitle": "Voting",
     "voting.topic": "Topic",
     "voting.tags": "Tags",
     "voting.audienceLevel": "Audience level",
+    "talk.audienceLevel": "Audience level",
     "voting.length": "Length",
     "voting.languages": "Languages",
-    "voting.minutes": "minutes",
+    "voting.minutes": "{type} ({duration} minutes)",
+    "voting.submissionType": "Category",
     "voting.sendingVote": "Sending vote",
     "voting.voteSent": "Vote sent!",
     "voting.needToBeLoggedIn": "Login or create an account to vote",
@@ -513,6 +594,8 @@ export const messages = {
     "voting.allTopics": "All topics",
     "voting.allLanguages": "All languages",
     "voting.allSubmissions": "Voted & Not voted",
+    "voting.allSubmissionTypes": "All Categories",
+    "voting.allAudienceLevels": "All Audience Levels",
     "voting.notVoted": "Not voted",
     "voting.votedOnly": "Voted only",
     "voting.tagsFilter":
@@ -529,10 +612,15 @@ export const messages = {
     "unsubscribe.succeed.message":
       "You have been successfully unsubscribed from this newsletter.",
 
+    "scheduleEventDetail.elevatorPitch": "Elevator pitch",
+    "scheduleEventDetail.abstract": "Abstract",
+    "scheduleEventDetail.tags": "Tags",
+
     "jobboard.title": "Jobs board",
     "jobboard.applyNow": "Apply now",
     "jobboard.company": "Company",
     "jobboard.role": "Role",
+    "jobboard.discoverMore": "Discover More",
 
     "whatsnext.comingUp": "Coming up",
     "whatsnext.beings": "Begins",
@@ -630,6 +718,26 @@ export const messages = {
     "home.grants.description":
       "Thanks to our sponsors we have a limited number of grants available for anyone who would love to attend our conference but can't afford it!",
     "home.grants.cta": "Apply",
+    "tickets.checkoutBar.cta": "Checkout",
+
+    "tickets.buyTicketsSubtitle": "Regular tickets are available!",
+
+    "tickets.landing.title": "What can you buy?",
+    "tickets.landing.ticketsCopy": `Tickets to join the conference! PyCon Italia is a fun 4 days event, where every year we are joined by more than 600 people, have more than 110+ sessions (talks and workshops) and social events where you can meet new people and have fun in the beautiful Florence.
+The sooner you buy your ticket, the more you save!`,
+    "tickets.landing.hotelCopy": `Take the stress out of your trip and book your hotel room with us! You can stay in the same hotel as the conference, the Grand Hotel Mediterraneo!
+We have a limited number of discounted rooms, so make sure you grab yours quickly!
+`,
+
+    "tickets.landing.membership.cta": "Join us!",
+
+    "tickets.landing.ticketsTitle": "Tickets",
+    "tickets.landing.hotelTitle": "Hotel",
+    "tickets.landing.membershipTitle": "Membership",
+    "blog.publishedOn": "{date} - {author}",
+
+    "voting.pagination":
+      "Page {currentPage} of {totalPages} ({totalItems, plural, one {1 item} other {{totalItems} items}})",
   },
   it: {
     titleTemplate: "%s | PyCon Italia",
@@ -875,20 +983,20 @@ export const messages = {
     "order.userAlreadyMember": "Sei già iscritto! Grazie!",
     "order.addMembership": "Aggiungi iscrizione",
     "order.removeMembership": "Rimuovi iscrizione",
-    "orderConfirmation.manage": "Fai click qui per gestire il tuo ordine.",
+    "orderConfirmation.manage": "Fai click qui per gestire il tuo ordine",
+    "orderConfirmation.home": "Homepage",
     "orderConfirmation.heading": "Ordine confermato",
     "orderConfirmation.heading.canceled": "Ordine cancellato!",
     "orderConfirmation.heading.pending": "Ordine non processato!",
     "orderConfirmation.successMessage":
       "Grazie per l'ordine, riceverai una email di conferma a breve.",
-    "orderConfirmation.pendingManage":
-      "Clicca qui per riprovare o cambiare metodo di pagamento",
+    "orderConfirmation.pendingManage": "Cambia carta o riprova",
     "orderConfirmation.pendingMessage":
-      "Il tuo ordine è ancora pending e non confermato! Se hai pagato con card, clicca il link sotto per riprovare",
-    "orderConfirmation.bankMessage": `Se hai pagato con bonifico bancario, contattaci a {email} con il tuo codice {code}
-      appena il bonifico è stato eseguito e confermeremo l'ordine il prima possibile.`,
-    "orderConfirmation.tryAgain":
-      "Prova a creare un nuovo ordine nella pagina {link}",
+      "Il tuo ordine è ancora pending e non confermato!",
+    "orderConfirmation.cardMessage":
+      "Se hai pagato con carta, clicca il pulsante per riprovare",
+    "orderConfirmation.bankMessage": `Se hai pagato con bonifico bancario, contattaci a {email} con il tuo codice {code} appena il bonifico è stato eseguito e confermeremo l'ordine il prima possibile.`,
+    "orderConfirmation.tryAgain": "Prova a creare un nuovo ordine",
     "orderConfirmation.tickets": "Biglietti",
     "order.soldout": "Sold out",
     "order.price": "Prezzo: {price} EUR",
@@ -1016,7 +1124,7 @@ export const messages = {
     "grants.form.fields.needsFundsForTravel":
       "Hai bisogno di aiuti finanziari per venire a Pycon Italia?",
     "grants.form.fields.needsFundsForTravel.label":
-      "Fai click qui se hai bisogno di supporto finanziario per il viaggio",
+      "I fondi a nostra disposizione sono limitati, ma faremo il possibile per aiutare tutti i richiedenti. Richiedi questo aiuto solo se ti è strettamente necessario!",
     "grants.form.submit": "Invia",
 
     "grants.form.edit.title": "Modifica il tuo Grant",
@@ -1100,16 +1208,18 @@ export const messages = {
     "voteSelector.mustSee": "Devo vederlo",
 
     "voting.heading": "Votazione comunitaria",
+    "voting.proposals": "Proposte",
     "voting.introduction": `Questa è la tua opportunità per aiutarci a dare forma al programma di PyCon Italia.
-      Il tuo voto ci aiuterà a creare un programma che più rispecchia ciò che la community vuole vedere.`,
+Il tuo voto ci aiuterà a creare un programma che più rispecchia ciò che la community vuole vedere.`,
     "voting.introductionDeadline": "Hai tempo fino al {deadline} per votare!",
     "voting.seoTitle": "Votazione",
     "voting.topic": "Argomento",
     "voting.tags": "Tags",
     "voting.audienceLevel": "Livello audience",
+    "talk.audienceLevel": "Livello audience",
     "voting.length": "Durata",
     "voting.languages": "Lingue",
-    "voting.minutes": "minuti",
+    "voting.submissionType": "Categoria",
     "voting.saving": "Attendi",
     "voting.sendingVote": "Invio in corso",
     "voting.voteSent": "Voto inviato!",
@@ -1122,6 +1232,8 @@ export const messages = {
     "voting.fullDetails": "Continua a leggere",
     "voting.allTopics": "Tutti gli argomenti",
     "voting.allLanguages": "Tutte le lingue",
+    "voting.allSubmissionTypes": "Tutte le categorie",
+    "voting.allAudienceLevels": "Tutti i livelli",
     "voting.allSubmissions": "Votate & Non votate",
     "voting.notVoted": "Non votate",
     "voting.votedOnly": "Votate",
@@ -1155,6 +1267,7 @@ export const messages = {
     "jobboard.applyNow": "Candidati",
     "jobboard.company": "Azienda",
     "jobboard.role": "Ruolo",
+    "jobboard.discoverMore": "Scopri di più",
 
     "error404.message":
       "Non siamo riusciti a trovare la pagina che stai cercando :(",
@@ -1254,7 +1367,11 @@ export const messages = {
     "cfp.speakerFacebookUrlDescription": "Profilo Facebook URL",
     "cfp.speakerMastodonHandleDescription": "Mastodon Handle",
     "cfp.grantsCheckbox":
-      "Se supporto finanziario da parte di PyCon Italia è necessario per partecipare, assicurati di inviare la tua richiesta ora! Non potrai inviare una richiesta una volta passata la deadline.",
+      "Se supporto finanziario da parte di PyCon Italia è necessario per partecipare, {grantsCta}! Non accetteremo richieste di grant dopo la scadenza della deadline per i grant. Assicurati di inviare la tua proposal.",
+
+    "cfp.grantsCta":
+      "clicca qui per aprire una pagina separata per inviarci una richiesta di grant",
+
     "fileInput.uploading": "Caricamento in corso...",
 
     "ticketsOverview.buyTicketsSection": "Compra i biglietti",
@@ -1276,6 +1393,101 @@ export const messages = {
     "home.grants.description":
       "Grazie ai nostri sponsors siamo lieti di mettere a disposizione di chi ne avesse bisogno un programma di supporto per chi vorrebbe essere presente a PyCon Italia ma per motivi economici non potrebbe riuscirci",
     "home.grants.cta": "Invia richiesta",
+
+    "login.redirectFromTicketsCheckout":
+      "Accedi o crea un account per completare l'acquisto",
+    "login.redirectFromCFP":
+      "Accedi o crea un account per inviare una proposal",
+    "login.redirectFromGrants":
+      "Accedi o crea un account per richiedere un grant",
+
+    "tickets.checkout.voucher.placeholder": "Codice sconto",
+    "tickets.checkout.recap.price": "{price} (incl. {taxRate}% IVA)",
+    "tickets.checkout.recap.hotelRoomsPrice":
+      "{price} ({perNight}/notte) (incl. 0% IVA)",
+
+    "tickets.productsList.soldOut": "Sold-out",
+    "tickets.checkout.payWithCard": "Paga con carta",
+    "tickets.checkout.payWithBankTransfer": "Paga con bonifico",
+    "tickets.checkout.savedAmount": "Hai risparmiato {amount}",
+
+    "scheduleEvent.soldout": "Sold-out",
+
+    "tickets.checkout.voucher.fetching": "Verifica codice sconto...",
+    "tickets.checkout.voucher.noProductsAffected": "Nessun prodotto scontato",
+    "tickets.checkout.voucher": "Codice sconto",
+    "tickets.checkout.recap": "Riepilogo",
+    "tickets.checkout.title": "Checkout",
+    "tickets.title": "Biglietti",
+
+    "tickets.productsList.joinPythonItalia": "Diventa membro",
+    "tickets.productsList.hotelRoomsTitle": "Stanze d'albergo",
+    "tickets.productsList.openDescription": "Scopri di più",
+
+    "tickets.productsList.hotelRow.checkout": "Check-out",
+    "tickets.productsList.hotelRow.checkin": "Check-in",
+
+    "tickets.productsList.hotelRow.bedLayout": "Letti",
+    "tickets.hotelRow.totalPrice": "{value}",
+    "tickets.hotelRow.pricePerNight":
+      "{nights, plural, =0 {/notte} =1 {{price} x # notte} other {{price} x # notti}}",
+    "tickets.productsList.tshirtTitle": "T-shirt",
+
+    "tickets.personal.title": "Biglietti Personali",
+    "tickets.personal.description":
+      "Se sei uno studente, disoccupato o meno, acquistando il biglietto con i propri soldi, non pagato dalla tua azienda, università o simili.",
+    "tickets.buyTicketsCta": "Compra biglietti",
+
+    "tickets.business.title": "Biglietti Business",
+    "tickets.business.description":
+      "Se la tua azienda, università o simili sta pagando il tuo biglietto o hai bisogno di una fattura.",
+    "tickets.buyTickets": "Biglietti",
+
+    "tickets.checkout.billing": "Informazioni",
+    "tickets.checkout.orderCreationFailed":
+      "Qualcosa è andato storto!{br}Assicurati di aver compilato il form{br}o contattaci a help@pycon.it",
+    "tickets.checkout.voucher.notFound": "Codice sconto non trovato",
+    "tickets.checkoutBar.cta": "Checkout",
+    "tickets.checkout.openAnswerCard": "Dettagli Partecipante",
+    "tickets.checkout.answerCardAdmissionTitle": "Biglietto di {attendeeName}",
+
+    "tickets.buyTicketsSubtitle": "Biglietti regular disponibili!",
+
+    "tickets.landing.title": "Cosa puoi comprare?",
+    "tickets.landing.ticketsCopy": `Biglietti per partecipare alla conferenza! PyCon Italia é un evento di 4 giorni dove ogni anno più di 600 persone si riuniscono per partecipare a più di 110+ sessioni (talks e workshops) ed eventi sociali dove puoi fare nuove amicizie e goderti la bellissima Firenze.
+Affrettati a comprare il biglietto!`,
+    "tickets.landing.hotelCopy": `Organizza il tuo viaggio con tranquillità e soggiorna al Grand Hotel Mediterraneo! Abbiamo un numero limitato di stanze scontate al Grand Hotel Mediterraneo, dove la conferenza avviene!`,
+
+    "tickets.landing.membership.cta": "Diventa membro!",
+
+    "tickets.landing.ticketsTitle": "Biglietti",
+    "tickets.landing.hotelTitle": "Hotel",
+    "tickets.landing.membershipTitle": "Associazione",
+    "blog.publishedOn": "{date} - {author}",
+
+    "grants.form.fields.needsFundsForTravel.no": "No",
+    "grants.form.fields.needsFundsForTravel.yes": "Si",
+    "grants.form.yourGrant": "Grant",
+    "grants.form.youAndPython": "Tu e Python",
+    "grants.form.validationErrors": "Il form inviato non è valido",
+
+    "input.placeholder": "Scrivi qui...",
+
+    "ticketsOverview.ticket.personal.fareType": "Regular",
+
+    "scheduleEventDetail.elevatorPitch": "Elevator pitch",
+    "scheduleEventDetail.abstract": "Descrizione",
+    "scheduleEventDetail.tags": "Tags",
+
+    "scheduleEventDetail.eventTime": "{start} - {end}",
+    "voting.minutes": "{type} ({duration} minuti)",
+    "voting.pagination":
+      "Pagina {currentPage} di {totalPages} ({totalItems, plural, one {1 item} other {{totalItems} items}})",
+    "homepage.followUs": "Seguici su",
+
+    "homepage.sponsorsSectionText":
+      "PyCon Italia può essere la tua piattaforma per guadgnare riconoscibilità del tuo brand, acquisire nuovi clienti ed opportunità ed assumere personale da una platea di professionisti altamente qualificati!",
+    "homepage.sponsorsSectionCTAText": "Diventa sponsor",
   },
 };
 

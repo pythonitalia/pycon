@@ -9,6 +9,7 @@ from ordered_model.admin import (
     OrderedInlineModelAdminMixin,
     OrderedModelAdmin,
     OrderedStackedInline,
+    OrderedTabularInline,
 )
 
 from conferences.models import SpeakerVoucher
@@ -78,8 +79,15 @@ class DurationInline(admin.StackedInline):
     filter_horizontal = ("allowed_submission_types",)
 
 
-class SponsorLevelInline(admin.TabularInline):
+class SponsorLevelInline(OrderedTabularInline):
     model = SponsorLevel
+    fields = ("name", "conference", "sponsors", "order", "move_up_down_links")
+    readonly_fields = (
+        "order",
+        "move_up_down_links",
+    )
+    ordering = ("order",)
+    extra = 1
 
 
 class IncludedEventInline(admin.TabularInline):
@@ -87,7 +95,7 @@ class IncludedEventInline(admin.TabularInline):
 
 
 @admin.register(Conference)
-class ConferenceAdmin(admin.ModelAdmin):
+class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
     readonly_fields = ("created", "modified")
     filter_horizontal = ("topics", "languages", "audience_levels", "submission_types")
     fieldsets = (
@@ -130,6 +138,7 @@ class ConferenceAdmin(admin.ModelAdmin):
                     "pretix_hotel_room_type_question_id",
                     "pretix_hotel_checkin_question_id",
                     "pretix_hotel_checkout_question_id",
+                    "pretix_hotel_bed_layout_question_id",
                 )
             },
         ),
@@ -167,19 +176,25 @@ class DeadlineAdmin(admin.ModelAdmin):
     )
 
 
+class KeynoteSpeakerForm(forms.ModelForm):
+    class Meta:
+        model = KeynoteSpeaker
+        fields = (
+            "keynote",
+            "user_id",
+        )
+        widgets = {
+            "user_id": UsersBackendAutocomplete(admin.site),
+        }
+
+
 class KeynoteSpeakerInline(OrderedStackedInline):
     model = KeynoteSpeaker
+    form = KeynoteSpeakerForm
     extra = 1
     fields = (
         "keynote",
-        "name",
-        "photo",
-        "bio",
-        "pronouns",
-        "highlight_color",
-        "twitter_handle",
-        "instagram_handle",
-        "website",
+        "user_id",
         "order",
         "move_up_down_links",
     )
@@ -312,10 +327,11 @@ class SpeakerVoucherAdmin(AdminUsersMixin):
         send_voucher_via_email,
     ]
 
+    @admin.display(
+        boolean=True,
+    )
     def created_on_pretix(self, obj):
         return obj.pretix_voucher_id is not None
-
-    created_on_pretix.boolean = True
 
     def get_changeform_initial_data(self, request):
         return {"voucher_code": SpeakerVoucher.generate_code()}

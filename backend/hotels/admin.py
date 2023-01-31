@@ -7,7 +7,12 @@ from pretix.utils import order_status_to_text
 from users.autocomplete import UsersBackendAutocomplete
 from users.mixins import AdminUsersMixin
 
-from .models import HotelRoom, HotelRoomReservation
+from .models import BedLayout, HotelRoom, HotelRoomReservation
+
+
+@admin.register(BedLayout)
+class BedLayoutAdmin(admin.ModelAdmin):
+    list_display = ("name",)
 
 
 @admin.register(HotelRoom)
@@ -38,7 +43,14 @@ class HotelRoomReservationAdmin(AdminUsersMixin):
     )
     list_filter = ("room__conference", "room")
     user_fk = "user_id"
-    readonly_fields = ("user_info", "checkin", "checkout", "order_code", "room")
+    readonly_fields = (
+        "user_info",
+        "checkin",
+        "checkout",
+        "order_code",
+        "room",
+        "bed_layout",
+    )
 
     def has_add_permission(self, *args, **kwargs) -> bool:
         return False
@@ -49,14 +61,15 @@ class HotelRoomReservationAdmin(AdminUsersMixin):
     def user_display_name(self, obj):
         return self.get_user_display_name(obj.user_id)
 
+    @admin.display(
+        description="User",
+    )
     def user_info(self, obj):
         user_data = self.get_user_data(obj.user_id)
         display_name = user_data["displayName"]
         email = user_data["email"]
         id = user_data["id"]
         return f"{display_name} ({email}) #{id}"
-
-    user_info.short_description = "User"
 
     def order_status(self, obj):
         if obj.order_code not in self._reservation_status:

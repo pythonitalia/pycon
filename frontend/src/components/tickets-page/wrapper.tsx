@@ -1,9 +1,6 @@
-/** @jsxRuntime classic */
-
-/** @jsx jsx */
+import { Page, Section } from "@python-italia/pycon-styleguide";
 import React, { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
-import { Box, jsx, Text } from "theme-ui";
 
 import { useRouter } from "next/router";
 
@@ -20,12 +17,8 @@ import {
   TicketItem,
 } from "~/types";
 
-import { useCart } from "./use-cart";
-import {
-  hasAnsweredTicketsQuestions,
-  hasOrderInformation,
-  hasSelectedAtLeastOneProduct,
-} from "./utils";
+import { CartContext, createCartContext } from "./use-cart";
+import { hasSelectedAtLeastOneProduct } from "./utils";
 
 type Props = {
   children: (props: {
@@ -56,7 +49,8 @@ export const TicketsPageWrapper = ({ children }: Props) => {
   const conference = data?.conference;
   const router = useRouter();
 
-  const { state, removeProduct } = useCart();
+  const cartContext = createCartContext();
+  const state = cartContext.state;
 
   useEffect(() => {
     let ticketsHaveBeenUpdated = false;
@@ -76,7 +70,7 @@ export const TicketsPageWrapper = ({ children }: Props) => {
           continue;
         }
 
-        removeProduct(product.id);
+        cartContext.removeProduct(product.id);
         ticketsHaveBeenUpdated = true;
       }
 
@@ -88,20 +82,17 @@ export const TicketsPageWrapper = ({ children }: Props) => {
   }, [me]);
 
   useEffect(() => {
-    const isHome = location.pathname.endsWith("tickets/");
+    const isHome =
+      location.pathname.endsWith("tickets") ||
+      location.pathname.endsWith("tickets/personal") ||
+      location.pathname.endsWith("tickets/business");
 
     if (isHome) {
       return;
     }
 
-    const isReview = location.pathname.endsWith("review/");
-
-    if (!isReview) {
-      return;
-    }
-
     if (!isLoggedIn) {
-      router.replace("/login");
+      router.replace("/login?next=/tickets/checkout");
       return;
     }
 
@@ -109,64 +100,36 @@ export const TicketsPageWrapper = ({ children }: Props) => {
       router.replace("/tickets");
       return;
     }
-
-    if (!hasOrderInformation(state)) {
-      router.replace("/information");
-      return;
-    }
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    if (tickets.length > 0 && !hasAnsweredTicketsQuestions(state, tickets)) {
-      router.replace("/questions");
-      return;
-    }
   }, [typeof location === "undefined" ? null : location.pathname, tickets]);
 
   if (error) {
     return (
-      <Box
-        sx={{
-          maxWidth: "container",
-          mx: "auto",
-          px: 3,
-        }}
-      >
-        <Alert variant="alert">{error.message}</Alert>
-      </Box>
+      <Page>
+        <Section>
+          <Alert variant="alert">{error.message}</Alert>
+        </Section>
+      </Page>
     );
   }
 
   return (
-    <Box mb={5}>
+    <CartContext.Provider value={cartContext}>
       <FormattedMessage id="tickets.pageTitle">
         {(text) => <MetaTags title={text} />}
       </FormattedMessage>
 
-      <Box
-        sx={{
-          borderTop: "primary",
-          pt: 5,
-        }}
-      >
+      <Page endSeparator={false}>
         {loading && (
-          <Box
-            sx={{
-              maxWidth: "container",
-              mx: "auto",
-              px: 3,
-            }}
-          >
-            <Text>
-              <FormattedMessage id="tickets.loading" />
-            </Text>
-          </Box>
+          <Section>
+            <FormattedMessage id="tickets.loading" />
+          </Section>
         )}
 
         {!loading &&
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           children({ tickets, hotelRooms, conference, me })}
-      </Box>
-    </Box>
+      </Page>
+    </CartContext.Provider>
   );
 };

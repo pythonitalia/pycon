@@ -1,5 +1,5 @@
+import { Heading, Page, Section } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
-import { Box, Heading } from "theme-ui";
 
 import { GetStaticProps } from "next";
 
@@ -45,26 +45,23 @@ const GrantPage = (): JSX.Element => {
   }
 
   return (
-    <Box
-      sx={{
-        maxWidth: "container",
-        mx: "auto",
-        px: 3,
-        my: 5,
-      }}
-    >
-      <Heading mb={4} as="h1">
-        <FormattedMessage id="grants.form.edit.title" />
-      </Heading>
-      <GrantForm
-        conference={code}
-        grant={grant}
-        onSubmit={onSubmit}
-        loading={updateLoading}
-        error={updateError}
-        data={updateData}
-      />
-    </Box>
+    <Page endSeparator={false}>
+      <Section>
+        <Heading size="display2">
+          <FormattedMessage id="grants.form.edit.title" />
+        </Heading>
+      </Section>
+      <Section>
+        <GrantForm
+          conference={code}
+          grant={grant}
+          onSubmit={onSubmit}
+          loading={updateLoading}
+          error={updateError}
+          data={updateData}
+        />
+      </Section>
+    </Page>
   );
 };
 

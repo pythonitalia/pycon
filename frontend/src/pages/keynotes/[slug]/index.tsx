@@ -1,6 +1,7 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
+import { Page } from "@python-italia/pycon-styleguide";
 import React, { Fragment, useCallback } from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, Grid, Flex, jsx, Text } from "theme-ui";
@@ -15,6 +16,7 @@ import { BlogPostIllustration } from "~/components/illustrations/blog-post";
 import { KeynoteSlide } from "~/components/keynoters-section/keynote-slide";
 import { Link } from "~/components/link";
 import { MetaTags } from "~/components/meta-tags";
+import { ScheduleEventDetail } from "~/components/schedule-event-detail";
 import { compile } from "~/helpers/markdown";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
@@ -70,13 +72,12 @@ const KeynoteInfoLine = ({ property, value, to }: KeynoteInfoLineProps) => (
 const KeynotePage = () => {
   const language = useCurrentLanguage();
   const {
-    query: { slug, day },
-    push,
+    query: { slug },
   } = useRouter();
   const {
     data: {
       conference: {
-        keynote: { title, description, topic, speakers },
+        keynote: { title, description, speakers, start, end },
       },
     },
   } = useKeynoteQuery({
@@ -87,18 +88,10 @@ const KeynotePage = () => {
     },
   });
 
-  const goBack = useCallback(() => {
-    if (day) {
-      push(`/schedule/${day}`);
-    } else {
-      push("/keynotes");
-    }
-  }, [day]);
-
-  const speakersName = speakers.map((speaker) => speaker.name).join(" & ");
+  const speakersName = speakers.map((speaker) => speaker.fullName).join(" & ");
 
   return (
-    <Fragment>
+    <Page endSeparator={false}>
       <FormattedMessage
         id="keynote.socialDescription"
         values={{
@@ -113,143 +106,27 @@ const KeynotePage = () => {
           />
         )}
       </FormattedMessage>
-      <Box
-        sx={{
-          borderTop: "primary",
-        }}
+
+      <ScheduleEventDetail
+        type="keynote"
+        eventTitle={title}
+        abstract={description}
+        language="en"
+        startTime={start}
+        endTime={end}
+        bookable={false}
+        speakers={speakers.map((speaker) => ({
+          name: speaker.fullName,
+          photo: speaker.participant.photo,
+          bio: speaker.participant.bio,
+          twitterHandle: speaker.participant.twitterHandle,
+          instagramHandle: speaker.participant.instagramHandle,
+          linkedinUrl: speaker.participant.linkedinUrl,
+          facebookUrl: speaker.participant.facebookUrl,
+          mastodonHandle: speaker.participant.mastodonHandle,
+        }))}
       />
-
-      <Grid
-        gap={[0, null, 5]}
-        sx={{
-          mx: "auto",
-          px: 3,
-          py: 5,
-          maxWidth: "container",
-          gridTemplateColumns: [null, null, "1.5fr 1fr"],
-        }}
-      >
-        <Box>
-          <Article title={title}>
-            <Box>{compile(description).tree}</Box>
-          </Article>
-        </Box>
-        <Box sx={{ mb: 5 }}>
-          <Flex
-            sx={{
-              position: "relative",
-              justifyContent: "flex-end",
-              alignItems: "flex-start",
-            }}
-          >
-            <BlogPostIllustration
-              sx={{
-                width: "80%",
-              }}
-            />
-
-            <Grid
-              gap={2}
-              sx={{
-                border: "primary",
-                p: 4,
-                backgroundColor: "cinderella",
-                width: "80%",
-                position: "absolute",
-                left: 0,
-                top: topic ? "60%" : "70%",
-              }}
-            >
-              <Box>
-                <Text sx={{ fontWeight: "bold", display: "block" }}>
-                  <FormattedMessage id="keynote.speakers" />
-                </Text>
-
-                <Text>{speakersName}</Text>
-              </Box>
-
-              <Box>
-                <Text sx={{ fontWeight: "bold", display: "block" }}>
-                  <FormattedMessage id="keynote.language" />
-                </Text>
-
-                <Text>
-                  <FormattedMessage id="keynote.englishLanguage" />
-                </Text>
-              </Box>
-
-              {topic && (
-                <Box>
-                  <Text sx={{ fontWeight: "bold", display: "block" }}>
-                    <FormattedMessage id="keynote.topic" />
-                  </Text>
-
-                  <Text>{topic.name}</Text>
-                </Box>
-              )}
-            </Grid>
-          </Flex>
-        </Box>
-      </Grid>
-
-      <Box
-        sx={{
-          borderTop: "primary",
-          pb: 4,
-        }}
-      />
-
-      {speakers.map((speaker) => (
-        <Grid
-          gap={[3, 5]}
-          sx={{
-            mx: "auto",
-            px: 3,
-            py: 4,
-            maxWidth: "container",
-            gridTemplateColumns: [null, null, "0.5fr 1fr"],
-          }}
-        >
-          <KeynoteSlide title="" standalone slug={null} speakers={[speaker]} />
-
-          <Box>
-            {speaker.website && (
-              <KeynoteInfoLine
-                property={<FormattedMessage id="keynote.website" />}
-                value={speaker.website}
-                to={speaker.website}
-              />
-            )}
-            {speaker.twitterHandle && (
-              <KeynoteInfoLine
-                property={<FormattedMessage id="keynote.twitter" />}
-                value={`@${speaker.twitterHandle}`}
-                to={`https://twitter.com/${speaker.twitterHandle}`}
-              />
-            )}
-            {speaker.instagramHandle && (
-              <KeynoteInfoLine
-                property={<FormattedMessage id="keynote.instagram" />}
-                value={`@${speaker.instagramHandle}`}
-                to={`https://instagram.com/${speaker.instagramHandle}`}
-              />
-            )}
-            {speaker.pronouns && (
-              <KeynoteInfoLine
-                property={<FormattedMessage id="keynote.pronouns" />}
-                value={speaker.pronouns}
-              />
-            )}
-            {speaker.bio && <Text>{compile(speaker.bio).tree}</Text>}
-          </Box>
-        </Grid>
-      ))}
-      <BackToMarquee
-        href={day ? `/schedule/${day}` : `/keynotes/`}
-        backTo={day ? "schedule" : "keynotes"}
-        goBack={goBack}
-      />
-    </Fragment>
+    </Page>
   );
 };
 

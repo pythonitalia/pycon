@@ -1,18 +1,20 @@
+from typing import Dict, List, Optional
+
 from django import forms
 from django.contrib import admin
+from django.db.models.query import QuerySet
 from import_export.admin import ExportMixin
 from import_export.fields import Field
 
 from submissions.models import Submission
 from users.autocomplete import UsersBackendAutocomplete
-from users.mixins import AdminUsersMixin, ResourceUsersByEmailsMixin, SearchUsersMixin
+from users.mixins import AdminUsersMixin, ResourceUsersByIdsMixin, SearchUsersMixin
 
 from .models import Grant
 
 EXPORT_GRANTS_FIELDS = (
     "name",
     "full_name",
-    "email",
     "gender",
     "occupation",
     "grant_type",
@@ -28,25 +30,55 @@ EXPORT_GRANTS_FIELDS = (
 )
 
 
-class GrantResource(ResourceUsersByEmailsMixin):
-    search_field = "email"
+class GrantResource(ResourceUsersByIdsMixin):
+    search_field = "user_id"
+    age_group = Field()
     has_sent_submission = Field()
     submission_title = Field()
+    submission_tags = Field()
     submission_admin_link = Field()
     submission_pycon_link = Field()
-    USERS_SUBMISSIONS = {}
+    grant_admin_link = Field()
+    USERS_SUBMISSIONS: Dict[int, List[Submission]] = {}
 
-    def dehydrate_has_sent_submission(self, obj):
-        return "yes" if obj.email in self.USERS_SUBMISSIONS else "no"
+    def dehydrate_age_group(self, obj: Grant):
+        return Grant.AgeGroup(obj.age_group).label
 
-    def dehydrate_submission_title(self, obj):
-        submissions = self.USERS_SUBMISSIONS.get(obj.email)
+    def dehydrate_has_sent_submission(self, obj: Grant) -> str:
+        return "TRUE" if obj.user_id in self.USERS_SUBMISSIONS else "FALSE"
+
+    def _get_submissions(self, obj: Grant) -> Optional[List[Submission]]:
+        if not obj.user_id:
+            return
+
+        return self.USERS_SUBMISSIONS.get(obj.user_id)
+
+    def dehydrate_submission_title(self, obj: Grant):
+        submissions = self._get_submissions(obj)
         if not submissions:
             return
-        return "\n".join([s.title for s in submissions])
+
+        return "\n".join([s.title.localize("en") for s in submissions])
+
+    def dehydrate_submission_tags(self, obj: Grant):
+        submissions = self._get_submissions(obj)
+        if not submissions:
+            return
+
+        return "\n".join(
+            [
+                ", ".join(
+                    [
+                        f"{r.tag.name}: {r.rank} / {r.total_submissions_per_tag}"
+                        for r in s.rankings.all()
+                    ]
+                )
+                for s in submissions
+            ]
+        )
 
     def dehydrate_submission_pycon_link(self, obj):
-        submissions = self.USERS_SUBMISSIONS.get(obj.email)
+        submissions = self.USERS_SUBMISSIONS.get(obj.user_id)
         if not submissions:
             return
         return "\n".join(
@@ -54,7 +86,7 @@ class GrantResource(ResourceUsersByEmailsMixin):
         )
 
     def dehydrate_submission_admin_link(self, obj):
-        submissions = self.USERS_SUBMISSIONS.get(obj.email)
+        submissions = self.USERS_SUBMISSIONS.get(obj.user_id)
         if not submissions:
             return
         return "\n".join(
@@ -64,19 +96,24 @@ class GrantResource(ResourceUsersByEmailsMixin):
             ]
         )
 
-    def before_export(self, queryset, *args, **kwargs):
+    def dehydrate_grant_admin_link(self, obj: Grant):
+        return f"https://admin.pycon.it/admin/grants/grant/?q={'+'.join(obj.full_name.split(' '))}"
+
+    def before_export(self, queryset: QuerySet, *args, **kwargs):
         super().before_export(queryset, *args, **kwargs)
-        users_ids = {
-            u["id"]: u["email"] for u in self._PREFETCHED_USERS_BY_EMAIL.values()
-        }
-        submissions = Submission.objects.filter(speaker_id__in=users_ids.keys())
+        conference_id = queryset.values_list("conference_id").first()
+
+        submissions = Submission.objects.prefetch_related(
+            "rankings__tag", "rankings__submission"
+        ).filter(
+            speaker_id__in=self._PREFETCHED_USERS_BY_ID.keys(),
+            conference_id=conference_id,
+        )
 
         self.USERS_SUBMISSIONS = {}
         for submission in submissions:
-            user_email = users_ids[str(submission.speaker_id)]
-            self.USERS_SUBMISSIONS.setdefault(user_email, [])
-
-            self.USERS_SUBMISSIONS[user_email].append(submission)
+            self.USERS_SUBMISSIONS.setdefault(submission.speaker_id, [])
+            self.USERS_SUBMISSIONS[submission.speaker_id].append(submission)
 
         return queryset
 

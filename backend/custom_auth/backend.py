@@ -55,7 +55,7 @@ class UsersAuthBackend(BaseBackend):
                 full_name=user_data["fullname"],
                 is_active=True,
                 is_staff=True,
-                is_superuser=True,
+                is_superuser=False,
             )
         return django_user
 

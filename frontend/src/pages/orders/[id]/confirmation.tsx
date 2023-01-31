@@ -1,16 +1,21 @@
-/** @jsxRuntime classic */
-
-/** @jsx jsx */
+import {
+  Heading,
+  Page,
+  Section,
+  Text,
+  Button,
+  Spacer,
+  BasicButton,
+  Link,
+} from "@python-italia/pycon-styleguide";
 import React from "react";
 import { FormattedMessage } from "react-intl";
-import { Box, Heading, jsx, Text } from "theme-ui";
 
 import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Alert } from "~/components/alert";
-import { Link } from "~/components/link";
 import { PageLoading } from "~/components/page-loading";
 import { useLoginState } from "~/components/profile/hooks";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
@@ -18,73 +23,68 @@ import { useOrderQuery } from "~/types";
 
 const OrderCanceled = () => (
   <React.Fragment>
-    <Heading sx={{ mb: 3 }}>
+    <Heading size={1}>
       <FormattedMessage id="orderConfirmation.heading.canceled" />
     </Heading>
-    <Text>
-      <FormattedMessage
-        id="orderConfirmation.tryAgain"
-        values={{
-          link: (
-            <Link path="/tickets">
-              <FormattedMessage id="orderConfirmation.tickets" />
-            </Link>
-          ),
-        }}
-      />
+    <Spacer size="xs" />
+    <Text as="p">
+      <FormattedMessage id="orderConfirmation.tryAgain" />
     </Text>
+    <Spacer size="medium" />
+    <Button href="/tickets">
+      <FormattedMessage id="orderConfirmation.tickets" />
+    </Button>
   </React.Fragment>
 );
 
 const OrderSucceeded = ({ url }: { url: string }) => (
   <React.Fragment>
-    <Heading sx={{ mb: 3 }}>
+    <Heading size={1}>
       <FormattedMessage id="orderConfirmation.heading" />
     </Heading>
-    <Text>
+    <Spacer size="xs" />
+    <Text as="p">
       <FormattedMessage id="orderConfirmation.successMessage" />
     </Text>
-    <a href={url} target="_blank" rel="noopener noreferrer">
+    <Spacer size="xs" />
+    <Button href="/">
+      <FormattedMessage id="orderConfirmation.home" />
+    </Button>
+    <Spacer size="medium" />
+    <BasicButton href={url}>
       <FormattedMessage id="orderConfirmation.manage" />
-    </a>
+    </BasicButton>
   </React.Fragment>
 );
 
 const OrderPending = ({ url, code }: { url: string; code: string }) => (
   <React.Fragment>
-    <Heading sx={{ mb: 3 }}>
+    <Heading size={1}>
       <FormattedMessage id="orderConfirmation.heading.pending" />
     </Heading>
-    <Text>
+    <Spacer size="xs" />
+    <Text as="p">
       <FormattedMessage id="orderConfirmation.pendingMessage" />
     </Text>
-    <Text>
-      <a href={url} target="_blank" rel="noopener noreferrer">
-        <FormattedMessage id="orderConfirmation.pendingManage" />
-      </a>
+    <Spacer size="medium" />
+    <Text as="p">
+      <FormattedMessage id="orderConfirmation.cardMessage" />
     </Text>
-    <Text
-      sx={{
-        mt: 2,
-      }}
-    >
+    <Spacer size="xs" />
+    <Button href={url}>
+      <FormattedMessage id="orderConfirmation.pendingManage" />
+    </Button>
+    <Spacer size="medium" />
+
+    <Text as="p">
       <FormattedMessage
         id="orderConfirmation.bankMessage"
         values={{
-          code: (
-            <Text
-              as="span"
-              sx={{
-                fontWeight: "bold",
-              }}
-            >
-              {code}
-            </Text>
-          ),
+          code: <Text weight="strong">{code}</Text>,
           email: (
-            <a target="_blank" href="mailto:help@pycon.it">
+            <Link target="_blank" href="mailto:help@pycon.it">
               help@pycon.it
-            </a>
+            </Link>
           ),
         }}
       />
@@ -105,15 +105,11 @@ export const OrderConfirmationPage = () => {
 
   if (error) {
     return (
-      <Box
-        sx={{
-          maxWidth: "container",
-          mx: "auto",
-          px: 3,
-        }}
-      >
-        <Alert variant="alert">{error.message}</Alert>
-      </Box>
+      <Page>
+        <Section>
+          <Alert variant="alert">{error.message}</Alert>
+        </Section>
+      </Page>
     );
   }
 
@@ -122,14 +118,18 @@ export const OrderConfirmationPage = () => {
   }
 
   return (
-    <Box sx={{ maxWidth: "container", px: 3, mx: "auto" }}>
-      {(data.order.status === "CANCELED" ||
-        data.order.status === "EXPIRED") && <OrderCanceled />}
-      {data.order.status === "PAID" && <OrderSucceeded url={data.order.url} />}
-      {data.order.status === "PENDING" && (
-        <OrderPending code={code} url={data.order.url} />
-      )}
-    </Box>
+    <Page>
+      <Section>
+        {(data.order.status === "CANCELED" ||
+          data.order.status === "EXPIRED") && <OrderCanceled />}
+        {data.order.status === "PAID" && (
+          <OrderSucceeded url={data.order.url} />
+        )}
+        {data.order.status === "PENDING" && (
+          <OrderPending code={code} url={data.order.url} />
+        )}
+      </Section>
+    </Page>
   );
 };
 

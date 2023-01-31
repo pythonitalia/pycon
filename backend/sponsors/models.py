@@ -39,6 +39,7 @@ class SponsorLevel(OrderedModel):
         related_name="levels",
     )
     objects = SponsorLevelManager()
+    order_with_respect_to = "conference"
 
     def __str__(self):
         return self.name

@@ -1,10 +1,6 @@
-/** @jsxRuntime classic */
-
-/** @jsx jsx */
-import { Button, Spacer, Text } from "@python-italia/pycon-styleguide";
+import { Button, Spacer, Text, Input } from "@python-italia/pycon-styleguide";
 import React, { useCallback, useState } from "react";
 import { FormattedMessage } from "react-intl";
-import { Box, Input, jsx } from "theme-ui";
 
 import { Alert } from "~/components/alert";
 import { NewsletterSubscriptionResult, useSubscribeMutation } from "~/types";
@@ -51,7 +47,7 @@ const NewsletterForm = () => {
       subscribeToNewsletter.status == NewsletterSubscriptionResult.Subscribed;
 
     return (
-      <Box>
+      <div>
         <Text size={2}>
           <FormattedMessage id="newsletter.text" />
         </Text>
@@ -63,22 +59,19 @@ const NewsletterForm = () => {
             id={success ? "newsletter.success" : "newsletter.confirmViaEmail"}
           />
         </Text>
-      </Box>
+      </div>
     );
   }
 
   return (
-    <Box as="form" onSubmit={onSubmit}>
-      <Box>
+    <form onSubmit={onSubmit}>
+      <div>
         <Text size={2}>
           <FormattedMessage id="newsletter.text" />
         </Text>
         <Spacer size="medium" />
+
         <Input
-          sx={{
-            listStyle: "none",
-            mb: 3,
-          }}
           placeholder="guido@python.org"
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             setEmail(e.target.value)
@@ -99,8 +92,8 @@ const NewsletterForm = () => {
             <FormattedMessage id="newsletter.error" />
           </Alert>
         )}
-      </Box>
-    </Box>
+      </div>
+    </form>
   );
 };
 

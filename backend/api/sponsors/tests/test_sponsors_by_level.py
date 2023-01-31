@@ -50,12 +50,12 @@ def test_query_sponsors(rf, graphql_client, sponsor_factory, sponsor_level_facto
         "sponsors": [
             {
                 "name": patrick.name,
-                "image": None,
+                "image": "",
                 "link": patrick.link,
             },
             {
                 "name": "marco",
-                "image": None,
+                "image": "",
                 "link": "https://marco.pizza",
             },
         ],

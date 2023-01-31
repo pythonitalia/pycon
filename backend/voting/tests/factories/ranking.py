@@ -6,7 +6,7 @@ from factory import post_generation
 from pytest_factoryboy import register
 
 from conferences.tests.factories import ConferenceFactory
-from submissions.tests.factories import SubmissionFactory
+from submissions.tests.factories import SubmissionFactory, SubmissionTagFactory
 from voting.models import RankRequest, RankSubmission
 
 
@@ -46,7 +46,8 @@ class RankSubmissionFactory(factory.django.DjangoModelFactory):
 
     rank_request = factory.SubFactory(RankRequestFactory)
     submission = factory.SubFactory(SubmissionFactory)
-
+    tag = factory.SubFactory(SubmissionTagFactory)
+    total_submissions_per_tag = 0
     rank = factory.Sequence(lambda n: n + 1)
     score = factory.Sequence(lambda n: (n + 1) * random.randint(n, 100))
 

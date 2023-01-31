@@ -54,8 +54,9 @@ export type SelectedHotelRooms = {
 
 export type HotelRoomState = {
   id: string;
-  checkin: moment.Moment;
-  checkout: moment.Moment;
+  checkin: string;
+  checkout: string;
+  beds: string;
   numNights: number;
 };
 
@@ -75,8 +76,9 @@ export type UpdateHotelRoomAction =
   | {
       type: "addHotelRoom";
       id: string;
-      checkin: moment.Moment;
-      checkout: moment.Moment;
+      checkin: string;
+      checkout: string;
+      beds: string;
     }
   | { type: "removeHotelRoom"; id: string; index: number };
 

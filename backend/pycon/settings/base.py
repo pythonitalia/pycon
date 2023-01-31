@@ -130,7 +130,6 @@ TIME_ZONE = "UTC"
 
 USE_I18N = True
 
-USE_L10N = True
 
 USE_TZ = True
 
@@ -164,7 +163,7 @@ if PRETIX_API:
 
 SIMULATE_PRETIX_DB = True
 
-ENV = env("ENV", default="local")
+ENVIRONMENT = env("ENV", default="local")
 
 LOGGING = {
     "version": 1,
@@ -201,7 +200,6 @@ PYTHONIT_EMAIL_BACKEND = env(
     default="pythonit_toolkit.emails.backends.local.LocalEmailBackend",
 )
 DEFAULT_EMAIL_FROM = env("DEFAULT_EMAIL_FROM", default="noreply@pycon.it")
-ENVIRONMENT = env("ENV", default="local")
 
 SPEAKERS_EMAIL_ADDRESS = env("SPEAKERS_EMAIL_ADDRESS", default="")
 

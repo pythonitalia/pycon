@@ -1,5 +1,5 @@
-query AllJobListings($language: String!) {
-  jobListings {
+query AllJobListings($language: String!, $conference: String!) {
+  jobListings(conference: $conference) {
     id
     slug(language: $language)
     title(language: $language)

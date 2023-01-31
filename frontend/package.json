@@ -17,7 +17,7 @@
     "test": "jest src/"
   },
   "dependencies": {
-    "@apollo/client": "^3.5.5",
+    "@apollo/client": "^3.7.3",
     "@babel/plugin-transform-react-jsx": "^7.12.1",
     "@babel/plugin-transform-react-pure-annotations": "^7.12.1",
     "@emotion/babel-plugin-jsx-pragmatic": "^0.1.5",
@@ -33,8 +33,9 @@
     "@graphql-codegen/typescript-react-apollo": "^3.3.2",
     "@mdx-js/loader": "^1.6.19",
     "@next/mdx": "^10.0.0",
-    "@python-italia/pycon-styleguide": "0.1.70",
+    "@python-italia/pycon-styleguide": "0.1.132",
     "@sentry/browser": "^6.13.3",
+    "@sentry/nextjs": "^7.29.0",
     "@sentry/node": "^5.29.2",
     "@sentry/tracing": "^6.13.3",
     "@sentry/webpack-plugin": "^1.14.0",
@@ -43,6 +44,8 @@
     "@theme-ui/match-media": "^0.15.3",
     "@types/styled-system": "^5.1.10",
     "@vercel/analytics": "^0.1.2",
+    "@vercel/og": "^0.0.21",
+    "@xstate/react": "^3.0.1",
     "concurrently": "^5.2.0",
     "date-fns": "^2.29.3",
     "deepmerge": "^4.2.2",
@@ -53,7 +56,7 @@
     "lodash": "^4.17.21",
     "marksy": "^8.0.0",
     "moment": "^2.29.1",
-    "next": "13.0.5",
+    "next": "13.1.1",
     "next-cookies": "^2.0.3",
     "react": "^18.2.0",
     "react-dnd": "^11.1.3",
@@ -70,6 +73,7 @@
     "theme-ui": "0.15.3",
     "use-local-storage-state": "^6.0.0",
     "use-onclickoutside": "^0.4.0",
+    "xstate": "^4.35.1",
     "yup": "^0.29.3"
   },
   "devDependencies": {
@@ -84,6 +88,7 @@
     "@types/react": "^17.0.33",
     "@types/react-dom": "^16.9.9",
     "@types/testing-library__jest-dom": "^5.14.1",
+    "@xstate/inspect": "^0.7.0",
     "jest": "^27.0.6",
     "prettier": "^2.8.1",
     "ts-jest": "^27.0.4",

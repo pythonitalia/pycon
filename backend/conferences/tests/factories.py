@@ -208,10 +208,9 @@ class KeynoteFactory(DjangoModelFactory):
 @register
 class KeynoteSpeakerFactory(DjangoModelFactory):
     keynote = factory.SubFactory(KeynoteFactory)
-    name = factory.Faker("name")
-    bio = LanguageFactory("word")
-    pronouns = LanguageFactory("word")
-    photo = factory.django.ImageField()
+    user_id = factory.Faker("pyint", min_value=1)
+    bio = "{}"
+    pronouns = "{}"
 
     class Meta:
         model = KeynoteSpeaker

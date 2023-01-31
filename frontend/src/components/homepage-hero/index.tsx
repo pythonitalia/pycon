@@ -1,68 +1,40 @@
-/** @jsxRuntime classic */
+import {
+  LayoutContent,
+  ScrollDownArrowBar,
+} from "@python-italia/pycon-styleguide";
+import React from "react";
 
-/** @jsx jsx */
-import { Box, jsx } from "theme-ui";
-
-import { Link } from "../link";
-import { BuyTicketsCTA } from "./buy-tickets-cta";
 import { Landscape } from "./landscape";
+import { LandscapeNight } from "./landscape-night";
 
 type Props = {
-  hideBuyTickets?: boolean;
+  cycle: "day" | "night";
 };
 
-export const HomepageHero = ({ hideBuyTickets = false }: Props) => (
-  <Box
-    sx={{
-      position: "relative",
-      mt: -158,
-    }}
-  >
-    <Box
-      sx={{
-        display: "inline-block",
-        paddingBottom: ["70vh", "calc(100vh - 125px)"],
+export const HomepageHero = ({ cycle }: Props) => {
+  const Illustration = cycle === "day" ? Landscape : LandscapeNight;
+  return (
+    <div
+      style={{
+        marginTop: -158,
+        position: "relative",
       }}
-    />
-
-    <Landscape
-      sx={{
-        position: "absolute",
-        left: 0,
-        top: 0,
-        height: "100%",
-        width: "100%",
-      }}
-    />
-
-    {!hideBuyTickets && (
-      <Box
-        sx={{
-          position: "absolute",
-          bottom: -50,
+    >
+      <Illustration
+        style={{
           left: 0,
-          zIndex: 1,
+          top: 0,
+          height: "100vh",
           width: "100%",
         }}
+      />
+
+      <LayoutContent
+        showFrom="desktop"
+        style={{ position: "absolute", bottom: "-1px", width: "100%" }}
       >
-        <Box
-          sx={{
-            px: 3,
-            maxWidth: "container",
-            width: "100%",
-            mx: "auto",
-          }}
-        >
-          <Link path="/tickets">
-            <BuyTicketsCTA
-              sx={{
-                width: 122,
-                height: 122,
-              }}
-            />
-          </Link>
-        </Box>
-      </Box>
-    )}
-  </Box>
-);
+        <ScrollDownArrowBar />
+      </LayoutContent>
+    </div>
+  );
+};

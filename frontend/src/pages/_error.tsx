@@ -3,10 +3,12 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
+import * as Sentry from "@sentry/nextjs";
 import { FormattedMessage } from "react-intl";
 import { Box, Heading, jsx, Text } from "theme-ui";
 
 import { GetStaticProps } from "next";
+import NextErrorComponent from "next/error";
 
 import { getApolloClient, addApolloState } from "~/apollo/client";
 import { Link } from "~/components/link";
@@ -55,6 +57,15 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
   return addApolloState(client, {
     props: {},
   });
+};
+
+export const getInitialProps = async (contextData) => {
+  // In case this is running in a serverless function, await this in order to give Sentry
+  // time to send the error before the lambda exits
+  await Sentry.captureUnderscoreErrorException(contextData);
+
+  // This will contain the status code of the response
+  return NextErrorComponent.getInitialProps(contextData);
 };
 
 export default ErrorPage;

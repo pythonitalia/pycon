@@ -120,7 +120,11 @@ export const Submission = ({
 };
 
 export const getItemUrl = (item: Item) => {
-  if (item.type === "training" || item.type === "talk") {
+  if (
+    item.type === "training" ||
+    item.type === "talk" ||
+    item.type === "panel"
+  ) {
     return `/talk/[slug]`;
   }
 
