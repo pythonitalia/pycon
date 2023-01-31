@@ -7,7 +7,6 @@ SITE_NAME = "PyCon Italia"
 
 admin.site.site_header = SITE_NAME
 admin.site.site_title = SITE_NAME
-admin.site.enable_nav_sidebar = True
 
 
 class CustomIndexLinks(admin.ModelAdmin):
