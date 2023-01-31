@@ -18,7 +18,7 @@ repos:
       rev: '1.10.0'
       hooks:
       - id: django-upgrade
-        args: [--target-version, "3.2"]
+        args: [--target-version, "4.1"]
     - repo: https://github.com/python/black
       rev: 22.6.0
       hooks:
