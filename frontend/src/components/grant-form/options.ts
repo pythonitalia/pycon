@@ -1,3 +1,10 @@
+import {
+  AgeGroup,
+  InterestedInVolunteering,
+  GrantType,
+  Occupation,
+} from "~/types";
+
 export const GENDER_OPTIONS = [
   {
     value: "",
@@ -28,79 +35,79 @@ export const GENDER_OPTIONS = [
 
 export const OCCUPATION_OPTIONS = [
   {
-    value: "",
+    value: null,
     disabled: true,
     messageId: "grants.form.fields.occupation.values.selectOption",
   },
   {
     disabled: false,
-    value: "developer",
+    value: Occupation.Developer,
     messageId: "grants.form.fields.occupation.values.developer",
   },
   {
     disabled: false,
-    value: "student",
+    value: Occupation.Student,
     messageId: "grants.form.fields.occupation.values.student",
   },
   {
     disabled: false,
-    value: "researcher",
+    value: Occupation.Researcher,
     messageId: "grants.form.fields.occupation.values.researcher",
   },
   {
     disabled: false,
-    value: "unemployed",
+    value: Occupation.Unemployed,
     messageId: "grants.form.fields.occupation.values.unemployed",
   },
   {
     disabled: false,
-    value: "other",
+    value: Occupation.Other,
     messageId: "grants.form.fields.occupation.values.other",
   },
 ];
 
 export const GRANT_TYPE_OPTIONS = [
   {
-    value: "",
+    value: null,
     disabled: true,
     messageId: "grants.form.fields.grantType.values.selectOption",
   },
   {
     disabled: false,
-    value: "diversity",
+    value: GrantType.Diversity,
     messageId: "grants.form.fields.grantType.values.diversity",
   },
   {
     disabled: false,
-    value: "unemployed",
+    value: GrantType.Unemployed,
     messageId: "grants.form.fields.grantType.values.unemployed",
   },
   {
     disabled: false,
-    value: "speaker",
+    value: GrantType.Speaker,
     messageId: "grants.form.fields.grantType.values.speaker",
   },
 ];
 
 export const INTERESTED_IN_VOLUNTEERING_OPTIONS = [
   {
-    value: "",
+    value: null,
     disabled: true,
     messageId:
       "grants.form.fields.interestedInVolunteering.values.selectOption",
   },
   {
-    value: "no",
+    value: InterestedInVolunteering.No,
     disabled: false,
     messageId: "grants.form.fields.interestedInVolunteering.values.no",
   },
   {
-    value: "yes",
+    value: InterestedInVolunteering.Yes,
     disabled: false,
     messageId: "grants.form.fields.interestedInVolunteering.values.yes",
   },
   {
-    value: "absolutely",
+    value: InterestedInVolunteering.Absolutely,
     disabled: false,
     messageId: "grants.form.fields.interestedInVolunteering.values.absolutely",
   },
@@ -108,54 +115,54 @@ export const INTERESTED_IN_VOLUNTEERING_OPTIONS = [
 
 export const AGE_GROUPS_OPTIONS = [
   {
-    value: "",
+    value: null,
     disabled: true,
     messageId: "grants.form.fields.ageGroup.values.selectOption",
   },
   {
-    value: "range_less_than_10",
+    value: AgeGroup.RangeLessThan_10,
     disabled: false,
     messageId: "grants.form.fields.ageGroup.values.range_less_than_10",
     isAgeInRange: (age: number) => age <= 10,
   },
   {
-    value: "range_11_18",
+    value: AgeGroup.Range_11_18,
     disabled: false,
     messageId: "grants.form.fields.ageGroup.values.range_11_18",
     isAgeInRange: (age: number) => 11 <= age && age <= 18,
   },
   {
-    value: "range_19_24",
+    value: AgeGroup.Range_19_24,
     disabled: false,
     messageId: "grants.form.fields.ageGroup.values.range_19_24",
     isAgeInRange: (age: number) => 19 <= age && age <= 24,
   },
   {
-    value: "range_25_34",
+    value: AgeGroup.Range_25_34,
     disabled: false,
     messageId: "grants.form.fields.ageGroup.values.range_25_34",
     isAgeInRange: (age: number) => 25 <= age && age <= 34,
   },
   {
-    value: "range_35_44",
+    value: AgeGroup.Range_35_44,
     disabled: false,
     messageId: "grants.form.fields.ageGroup.values.range_35_44",
     isAgeInRange: (age: number) => 35 <= age && age <= 44,
   },
   {
-    value: "range_45_54",
+    value: AgeGroup.Range_45_54,
     disabled: false,
     messageId: "grants.form.fields.ageGroup.values.range_45_54",
     isAgeInRange: (age: number) => 45 <= age && age <= 54,
   },
   {
-    value: "range_55_64",
+    value: AgeGroup.Range_55_64,
     disabled: false,
     messageId: "grants.form.fields.ageGroup.values.range_55_64",
     isAgeInRange: (age: number) => 55 <= age && age <= 64,
   },
   {
-    value: "range_more_than_65",
+    value: AgeGroup.RangeMoreThan_65,
     disabled: false,
     messageId: "grants.form.fields.ageGroup.values.range_more_than_65",
     isAgeInRange: (age: number) => age >= 65,
