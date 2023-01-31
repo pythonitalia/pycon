@@ -1,5 +1,4 @@
 from django import template
-from django.conf import settings
 from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import format_html_join
@@ -13,7 +12,6 @@ register = template.Library()
 @register.simple_tag
 def admin_custom_index_links(app):
     outputs = []
-    STATIC_URL = settings.STATIC_URL
 
     for model, admin_instance in admin.site._registry.items():
         app_name = app.get("app_label", app["name"].lower())
@@ -25,7 +23,6 @@ def admin_custom_index_links(app):
                 admin_url = reverse(f"admin:custom_index_link_{custom_index_link[1]}")
                 outputs.append(
                     (
-                        "%sadmin_views/icons/view.png" % STATIC_URL,
                         admin_url,
                         custom_index_link[0],
                     )
@@ -36,7 +33,6 @@ def admin_custom_index_links(app):
             "",
             """<tr>
                 <th scope="row">
-                    <img src="{}" alt="" />
                     <a href="{}">{}</a>
                 </th>
                 <td>&nbsp;</td>
