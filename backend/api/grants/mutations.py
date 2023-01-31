@@ -3,7 +3,13 @@ from dataclasses import asdict
 import strawberry
 from strawberry.types import Info
 
-from api.grants.types import Grant
+from api.grants.types import (
+    AgeGroup,
+    Grant,
+    GrantType,
+    InterestedInVolunteering,
+    Occupation,
+)
 from api.permissions import IsAuthenticated
 from api.types import BaseErrorType
 from conferences.models.conference import Conference
@@ -80,13 +86,13 @@ class SendGrantInput(BaseGrantInput):
     name: str
     full_name: str
     conference: strawberry.ID
-    age_group: str
+    age_group: AgeGroup
     gender: str
-    occupation: str
-    grant_type: str
+    occupation: Occupation
+    grant_type: GrantType
     python_usage: str
     been_to_other_events: str
-    interested_in_volunteering: str
+    interested_in_volunteering: InterestedInVolunteering
     needs_funds_for_travel: bool
     why: str
     notes: str
@@ -107,13 +113,13 @@ class UpdateGrantInput(BaseGrantInput):
     name: str
     full_name: str
     conference: strawberry.ID
-    age_group: str
+    age_group: AgeGroup
     gender: str
-    occupation: str
-    grant_type: str
+    occupation: Occupation
+    grant_type: GrantType
     python_usage: str
     been_to_other_events: str
-    interested_in_volunteering: str
+    interested_in_volunteering: InterestedInVolunteering
     needs_funds_for_travel: bool
     why: str
     notes: str

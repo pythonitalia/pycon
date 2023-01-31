@@ -1,5 +1,6 @@
-from i18n.strings import LazyI18nString
 from pytest import mark
+
+from i18n.strings import LazyI18nString
 
 
 @mark.django_db
