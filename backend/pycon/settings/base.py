@@ -27,7 +27,6 @@ INSTALLED_APPS = [
     "dal_select2",
     "dal_admin_filters",
     "whitenoise.runserver_nostatic",
-    "admin_views",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -82,7 +81,6 @@ ROOT_URLCONF = "pycon.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [

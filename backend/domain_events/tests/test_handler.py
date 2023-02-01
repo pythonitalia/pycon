@@ -6,6 +6,7 @@ from django.conf import settings
 from pythonit_toolkit.emails.templates import EmailTemplate
 
 from domain_events.handler import (
+    handle_grant_reply_sent,
     handle_new_cfp_submission,
     handle_new_schedule_invitation_answer,
     handle_new_submission_comment,
@@ -468,4 +469,43 @@ def test_handle_speaker_voucher_email_sent(settings):
         subject="[PyCon Italia 2022] Your Speaker Voucher Code",
         variables={"firstname": "Marco Acierno", "voucherCode": "ABC123"},
         reply_to=["speakers@placeholder.com"],
+    )
+
+
+@pytest.mark.django_db
+def test_handle_grant_reply_sent(grant, mock_users_by_ids):
+    data = {
+        "grant_id": grant.id,
+        "is_reminder": False,
+    }
+
+    with patch(
+        "domain_events.handler.send_email"
+    ) as email_mock, respx.mock as req_mock:
+        # req_mock.post(f"{settings.USERS_SERVICE_URL}/internal-api").respond(
+        #     json={
+        #         "data": {
+        #             "usersByIds": [
+        #                 {
+        #                     "id": 10,
+        #                     "fullname": "Marco Acierno",
+        #                     "name": "Marco",
+        #                     "username": "marco",
+        #                     "email": "marco@placeholder.it",
+        #                 },
+        #             ]
+        #         }
+        #     }
+        # )
+
+        handle_grant_reply_sent(data)
+
+    email_mock.assert_called_once_with(
+        template=EmailTemplate.GRANT_APPROVED,
+        to="marco@placeholder.it",
+        subject="[PyCon Italia 2022] Your submission was accepted!",
+        variables={
+            "firstname": "Marco Acierno",
+            "replyLink": "https://url",
+        },
     )

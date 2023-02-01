@@ -53,10 +53,10 @@ DATABASES["pretix"] = {**DATABASES["default"], "NAME": "pretix"}
 # TODO: Make this setting dynamic
 CSRF_TRUSTED_ORIGINS = [
     # Staging domain
-    "pastaporto-admin.pycon.it",
+    "https://pastaporto-admin.pycon.it",
     # Production domain
-    "admin.pycon.it",
-    "pycon.it",
+    "https://admin.pycon.it",
+    "https://pycon.it",
 ]
 
 PASTAPORTO_SECRET = env("PASTAPORTO_SECRET")

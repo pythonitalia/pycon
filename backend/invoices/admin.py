@@ -1,13 +1,14 @@
 from datetime import date, timedelta
 from decimal import Decimal
 
-from admin_views.admin import AdminViews
-from conferences.models import Conference
 from django.contrib import admin, messages
 from django.db import transaction
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.utils.translation import gettext_lazy as _
+
+from conferences.models import Conference
+from custom_admin.admin import CustomIndexLinks
 from pretix import get_invoices, get_orders
 
 from .constants import (
@@ -168,7 +169,7 @@ class InvoiceItemInline(admin.StackedInline):
 
 
 @admin.register(Invoice)
-class InvoiceAdmin(AdminViews):
+class InvoiceAdmin(CustomIndexLinks):
     actions = [invoice_export_to_xml]
     exclude = ("items",)
     inlines = [InvoiceItemInline]
@@ -180,7 +181,7 @@ class InvoiceAdmin(AdminViews):
         "recipient_tax_code",
         "recipient_code",
     )
-    admin_views = (("Sync invoices from pretix", "sync_invoices_from_pretix"),)
+    index_links = (("Sync invoices from pretix", "sync_invoices_from_pretix"),)
 
     def sync_invoices_from_pretix(self, request, **kwargs):
         orders = get_orders(Conference.objects.get(code="pycon2023"))
