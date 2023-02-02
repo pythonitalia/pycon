@@ -9,10 +9,12 @@ from api.grants.types import (
     GrantType,
     InterestedInVolunteering,
     Occupation,
+    Status,
 )
 from api.permissions import IsAuthenticated
 from api.types import BaseErrorType
 from conferences.models.conference import Conference
+from domain_events.publisher import notify_new_grant_reply, send_grant_need_info_email
 from grants.models import Grant as GrantModel
 from users.models import User
 
@@ -143,6 +145,23 @@ UpdateGrantResult = strawberry.union(
 )
 
 
+@strawberry.input
+class SendGrantReplyInput:
+    instance: strawberry.ID
+    status: Status
+    message: str
+
+
+@strawberry.type
+class SendGrantReplyError:
+    message: str
+
+
+SendGrantReplyResult = strawberry.union(
+    "SendGrantReplyResult", (Grant, SendGrantReplyError)
+)
+
+
 @strawberry.type
 class GrantMutation:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -188,3 +207,23 @@ class GrantMutation:
 
         instance._type_definition = Grant._type_definition
         return instance
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    def send_grant_reply(
+        self, info: Info, input: SendGrantReplyInput
+    ) -> SendGrantReplyResult:
+        request = info.context.request
+
+        grant = GrantModel.objects.get(id=input.instance)
+        if not grant.can_edit(request.user):
+            return SendGrantReplyError(message="You cannot reply to this grant")
+
+        grant.status = input.status
+        grant.applicant_message = input.message
+        grant.save()
+
+        notify_new_grant_reply(grant, request)
+        if grant.status == GrantModel.Status.needs_info:
+            send_grant_need_info_email(grant)
+
+        return Grant.from_model(grant)

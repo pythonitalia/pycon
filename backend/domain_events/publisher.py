@@ -6,6 +6,8 @@ from uuid import uuid4
 import boto3
 from django.conf import settings
 
+from grants.models import Grant
+
 
 def publish_message(type: str, body: dict, *, deduplication_id: str):
     if not settings.SQS_QUEUE_URL:
@@ -191,4 +193,59 @@ def send_volunteers_push_notification(notification_id: int, volunteers_device_id
             "volunteers_device_id": volunteers_device_id,
         },
         deduplication_id=f"{notification_id}-{volunteers_device_id}",
+    )
+
+
+def send_grant_reply_email(grant: Grant, is_reminder: bool = False):
+    if grant.status in (
+        Grant.Status.approved,
+        Grant.Status.waiting_for_confirmation,
+    ):
+        event_name = (
+            "GrantReplyApprovedReminderSent"
+            if is_reminder
+            else "GrantReplyApprovedSent"
+        )
+
+        return publish_message(
+            event_name,
+            body={
+                "grant_id": grant.id,
+                "is_reminder": is_reminder,
+            },
+            deduplication_id=str(grant.id),
+        )
+
+    if grant.status == Grant.Status.waiting_list and not grant.applicant_reply_sent_at:
+        return publish_message(
+            "GrantReplyWaitingListSent",
+            body={"grant_id": grant.id},
+            deduplication_id=str(grant.id),
+        )
+
+    if grant.status == Grant.Status.rejected and not grant.applicant_reply_sent_at:
+        return publish_message(
+            "GrantReplyRejectedSent",
+            body={"grant_id": grant.id},
+            deduplication_id=str(grant.id),
+        )
+
+
+def notify_new_grant_reply(grant: Grant, request):
+    admin_url = request.build_absolute_uri(grant.get_admin_url())
+
+    return publish_message(
+        "NewGrantReply",
+        body={"grant_id": grant.id, "admin_url": admin_url},
+        deduplication_id=str(grant.id),
+    )
+
+
+def send_grant_need_info_email(grant: Grant):
+    publish_message(
+        "GrantNeedMoreInfoEmailSent",
+        body={
+            "grant_id": grant.id,
+        },
+        deduplication_id=str(grant.id),
     )

@@ -1872,22 +1872,22 @@ plugins = ["importlib-metadata"]
 
 [[package]]
 name = "pyjwt"
-version = "2.0.1"
+version = "2.4.0"
 description = "JSON Web Token implementation in Python"
 category = "main"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "PyJWT-2.0.1-py3-none-any.whl", hash = "sha256:b70b15f89dc69b993d8a8d32c299032d5355c82f9b5b7e851d1a6d706dffe847"},
-    {file = "PyJWT-2.0.1.tar.gz", hash = "sha256:a5c70a06e1f33d81ef25eecd50d50bd30e34de1ca8b2b9fa3fe0daaabcf69bf7"},
+    {file = "PyJWT-2.4.0-py3-none-any.whl", hash = "sha256:72d1d253f32dbd4f5c88eaf1fdc62f3a19f676ccbadb9dbc5d07e951b2b26daf"},
+    {file = "PyJWT-2.4.0.tar.gz", hash = "sha256:d42908208c699b3b973cbeb01a969ba6a96c821eefb1c5bfe4c390c01d67abba"},
 ]
 
 [package.dependencies]
-cryptography = {version = ">=3.3.1,<4.0.0", optional = true, markers = "extra == \"crypto\""}
+cryptography = {version = ">=3.3.1", optional = true, markers = "extra == \"crypto\""}
 
 [package.extras]
-crypto = ["cryptography (>=3.3.1,<4.0.0)"]
-dev = ["coverage[toml] (==5.0.4)", "cryptography (>=3.3.1,<4.0.0)", "mypy", "pre-commit", "pytest (>=6.0.0,<7.0.0)", "sphinx", "sphinx-rtd-theme", "zope.interface"]
+crypto = ["cryptography (>=3.3.1)"]
+dev = ["coverage[toml] (==5.0.4)", "cryptography (>=3.3.1)", "mypy", "pre-commit", "pytest (>=6.0.0,<7.0.0)", "sphinx", "sphinx-rtd-theme", "zope.interface"]
 docs = ["sphinx", "sphinx-rtd-theme", "zope.interface"]
 tests = ["coverage[toml] (==5.0.4)", "pytest (>=6.0.0,<7.0.0)"]
 
@@ -2150,21 +2150,21 @@ six = ">=1.5"
 
 [[package]]
 name = "pythonit-toolkit"
-version = "0.1.81"
+version = "0.1.83.dev1675447107"
 description = ""
 category = "main"
 optional = false
 python-versions = ">=3.9,<4.0"
 files = [
-    {file = "pythonit-toolkit-0.1.81.tar.gz", hash = "sha256:ec92af55989f40cacc664aae8fbe05c31a5f295ac13abdff3503cd8ad83fc22a"},
-    {file = "pythonit_toolkit-0.1.81-py3-none-any.whl", hash = "sha256:8b5b5aba6bb63dcd7eba523bc31de8b2e4a04dfadfa0a6e753d2f616d640f0b3"},
+    {file = "pythonit_toolkit-0.1.83.dev1675447107-py3-none-any.whl", hash = "sha256:a2da8f0f8e997778ad95eaad765fa6200fbae8e159f4ba26138ab53a54bfc1eb"},
+    {file = "pythonit_toolkit-0.1.83.dev1675447107.tar.gz", hash = "sha256:dc2d1801a02b83dc39302ea81d8c32ff6d44acf3789eac92c3010aa82399e34c"},
 ]
 
 [package.dependencies]
 boto3 = ">=1.17.39,<2.0.0"
 httpx = ">=0.20.0,<0.21.0"
 pydantic = "*"
-PyJWT = "2.0.1"
+PyJWT = "2.4.0"
 sentry-sdk = ">=1.1.0,<2.0.0"
 starlette = ">=0.14.2,<0.15.0"
 strawberry-graphql = "*"
@@ -2894,4 +2894,4 @@ lambda = ["awslambdaric"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "693d37ff1c8cbae68013a267753051dff7face1664eca805d3177136dcd1c832"
+content-hash = "2639de7be29766731192c20393421c7b13875dfcd2a516ffbf6888465616fc0a"

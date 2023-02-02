@@ -4,6 +4,7 @@ import strawberry
 
 from grants.models import Grant as GrantModel
 
+Status = strawberry.enum(GrantModel.Status)
 AgeGroup = strawberry.enum(GrantModel.AgeGroup)
 Occupation = strawberry.enum(GrantModel.Occupation)
 GrantType = strawberry.enum(GrantModel.GrantType)
@@ -13,6 +14,7 @@ InterestedInVolunteering = strawberry.enum(GrantModel.InterestedInVolunteering)
 @strawberry.type
 class Grant:
     id: strawberry.ID
+    status: Status
     name: str
     full_name: str
     age_group: AgeGroup
@@ -31,6 +33,7 @@ class Grant:
     def from_model(cls, grant: GrantModel) -> Grant:
         return cls(
             id=grant.id,
+            status=Status(grant.status),
             name=grant.name,
             full_name=grant.full_name,
             age_group=AgeGroup(grant.age_group),

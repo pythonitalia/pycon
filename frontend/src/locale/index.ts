@@ -487,6 +487,14 @@ export const messages = {
 
     "grants.form.edit.title": "Edit your Grant",
 
+    "grants.reply.title": "Manage your grant Grant",
+    "grants.reply.titleApproved":
+      "Congratulations! Your Grant has been approved! Confirm your presence!",
+    "grants.reply.CONFIRM": "Confrim",
+    "grants.reply.REFUSE": "Refuse",
+    "grants.reply.NEEDS_INFO": "Needs to ask for information",
+    "grants.reply.submitReply": "Submit answer",
+
     "homepage.sponsorsSectionText":
       "PyCon Italia can be your platform to gain brand recognition, take leads and recruit from an audience of highly skilled professionals!",
     "homepage.sponsorsSectionCTAText": "Become a sponsor",
@@ -1126,8 +1134,15 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "grants.form.fields.needsFundsForTravel.label":
       "I fondi a nostra disposizione sono limitati, ma faremo il possibile per aiutare tutti i richiedenti. Richiedi questo aiuto solo se ti è strettamente necessario!",
     "grants.form.submit": "Invia",
-
     "grants.form.edit.title": "Modifica il tuo Grant",
+
+    "grants.reply.title": "Gestisci il tuo Grant",
+    "grants.reply.titleApproved":
+      "Congratulazioni! Il tuo Grant e' stato approvato! Conferma la tua presenza!",
+    "grants.reply.CONFIRM": "Conferma",
+    "grants.reply.REFUSE": "Rifiuta",
+    "grants.reply.NEEDS_INFO": "Devo chiedere informazioni",
+    "grants.reply.submitReply": "Invia risposta",
 
     "orderReview.heading": "Recap ordine",
     "orderReview.invoiceInformation": "Informazioni fatturazione",

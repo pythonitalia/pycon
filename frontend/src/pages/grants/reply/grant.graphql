@@ -1,0 +1,10 @@
+query Grant($conference: String!) {
+  me {
+    id
+
+    grant(conference: $conference) {
+      id
+      status
+    }
+  }
+}

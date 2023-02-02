@@ -3,9 +3,13 @@ from unittest.mock import call, patch
 import pytest
 import respx
 from django.conf import settings
+from django.utils import timezone
 from pythonit_toolkit.emails.templates import EmailTemplate
 
 from domain_events.handler import (
+    handle_grant_reply_approved_sent,
+    handle_grant_reply_rejected_sent,
+    handle_grant_reply_waiting_list_sent,
     handle_new_cfp_submission,
     handle_new_schedule_invitation_answer,
     handle_new_submission_comment,
@@ -15,6 +19,7 @@ from domain_events.handler import (
     handle_speaker_voucher_email_sent,
     handle_submission_time_slot_changed,
 )
+from grants.models import Grant
 
 
 @pytest.mark.django_db
@@ -468,4 +473,138 @@ def test_handle_speaker_voucher_email_sent(settings):
         subject="[PyCon Italia 2022] Your Speaker Voucher Code",
         variables={"firstname": "Marco Acierno", "voucherCode": "ABC123"},
         reply_to=["speakers@placeholder.com"],
+    )
+
+
+@pytest.mark.django_db
+def test_handle_grant_approved_ticket_only_reply_sent(grant_factory, mock_users_by_ids):
+    grant = grant_factory(
+        approved_type=Grant.ApprovedType.ticket_only,
+        applicant_reply_deadline=timezone.make_aware(timezone.datetime(2023, 1, 1)),
+        approved_amount=680,
+    )
+
+    data = {
+        "grant_id": grant.id,
+        "is_reminder": False,
+    }
+
+    with patch("domain_events.handler.send_email") as email_mock:
+        handle_grant_reply_approved_sent(data)
+
+    email_mock.assert_called_once_with(
+        template=EmailTemplate.GRANT_APPROVED_TICKET_ONLY,
+        to="marco@placeholder.it",
+        subject="[PyCon Italia 2023] Your Python Italia Grant Award!",
+        variables={
+            "firstname": "Marco Acierno",
+            "startDate": f"{grant.conference.start:%w %B}",
+            "endDate": f"{grant.conference.end:%w %B}",
+            "amount": f"{grant.approved_amount}",
+            "deadlineDateTime": f"{grant.applicant_reply_deadline:%w %B %Y %H:%M:%S}",
+            "deadlineDate": f"{grant.applicant_reply_deadline:%w %B %Y}",
+            "replyLink": "http://localhost:3000/grants/reply/",
+        },
+    )
+
+
+@pytest.mark.django_db
+def test_handle_grant_approved_ticket_travel_accommodation_reply_sent(
+    grant_factory, mock_users_by_ids
+):
+    grant = grant_factory(
+        approved_type=Grant.ApprovedType.ticket_travel_accommodation,
+        applicant_reply_deadline=timezone.make_aware(timezone.datetime(2023, 1, 1)),
+        approved_amount=680,
+    )
+    data = {
+        "grant_id": grant.id,
+        "is_reminder": False,
+    }
+
+    with patch("domain_events.handler.send_email") as email_mock:
+        handle_grant_reply_approved_sent(data)
+
+    email_mock.assert_called_once_with(
+        template=EmailTemplate.GRANT_APPROVED_TICKET_TRAVEL_ACCOMMODATION,
+        to="marco@placeholder.it",
+        subject="[PyCon Italia 2023] Your Python Italia Grant Award!",
+        variables={
+            "firstname": "Marco Acierno",
+            "startDate": f"{grant.conference.start:%w %B}",
+            "endDate": f"{grant.conference.end:%w %B}",
+            "amount": f"{grant.approved_amount}",
+            "deadlineDateTime": f"{grant.applicant_reply_deadline:%w %B %Y %H:%M:%S}",
+            "deadlineDate": f"{grant.applicant_reply_deadline:%w %B %Y}",
+            "replyLink": "http://localhost:3000/grants/reply/",
+        },
+    )
+
+
+@pytest.mark.django_db
+def test_handle_grant_reply_sent_reminder(grant_factory, mock_users_by_ids):
+    grant = grant_factory(
+        approved_type=Grant.ApprovedType.ticket_only,
+        applicant_reply_deadline=timezone.make_aware(timezone.datetime(2023, 1, 1)),
+        approved_amount=680,
+    )
+    data = {
+        "grant_id": grant.id,
+        "is_reminder": True,
+    }
+
+    with patch("domain_events.handler.send_email") as email_mock:
+        handle_grant_reply_approved_sent(data)
+
+    email_mock.assert_called_once_with(
+        template=EmailTemplate.GRANT_APPROVED_TICKET_ONLY,
+        to="marco@placeholder.it",
+        subject="[PyCon Italia 2023] Reminder: Your Python Italia Grant Award!",
+        variables={
+            "firstname": "Marco Acierno",
+            "startDate": f"{grant.conference.start:%w %B}",
+            "endDate": f"{grant.conference.end:%w %B}",
+            "amount": f"{grant.approved_amount}",
+            "deadlineDateTime": f"{grant.applicant_reply_deadline:%w %B %Y %H:%M:%S}",
+            "deadlineDate": f"{grant.applicant_reply_deadline:%w %B %Y}",
+            "replyLink": "http://localhost:3000/grants/reply/",
+        },
+    )
+
+
+@pytest.mark.django_db
+def test_handle_grant_reply_waiting_list_sent(grant, mock_users_by_ids):
+    data = {
+        "grant_id": grant.id,
+    }
+
+    with patch("domain_events.handler.send_email") as email_mock:
+        handle_grant_reply_waiting_list_sent(data)
+
+    email_mock.assert_called_once_with(
+        template=EmailTemplate.GRANT_WAITING_LIST,
+        to="marco@placeholder.it",
+        subject="[PyCon Italia 2023] Financial Aid Update",
+        variables={
+            "firstname": "Marco Acierno",
+        },
+    )
+
+
+@pytest.mark.django_db
+def test_handle_grant_reply_rejected_sent(grant, mock_users_by_ids):
+    data = {
+        "grant_id": grant.id,
+    }
+
+    with patch("domain_events.handler.send_email") as email_mock:
+        handle_grant_reply_rejected_sent(data)
+
+    email_mock.assert_called_once_with(
+        template=EmailTemplate.GRANT_REJECTED,
+        to="marco@placeholder.it",
+        subject="[PyCon Italia 2023] Financial Aid Update",
+        variables={
+            "firstname": "Marco Acierno",
+        },
     )

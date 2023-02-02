@@ -1,11 +1,14 @@
 from typing import Dict, List, Optional
 
 from django import forms
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.db.models.query import QuerySet
 from import_export.admin import ExportMixin
 from import_export.fields import Field
 
+from domain_events.publisher import (
+    send_grant_reply_email
+)
 from submissions.models import Submission
 from users.autocomplete import UsersBackendAutocomplete
 from users.mixins import AdminUsersMixin, ResourceUsersByIdsMixin, SearchUsersMixin
@@ -123,6 +126,38 @@ class GrantResource(ResourceUsersByIdsMixin):
         export_order = EXPORT_GRANTS_FIELDS
 
 
+@admin.action(description="Send reply emails")
+def send_reply_email(modeladmin, request, queryset):
+    queryset = queryset.filter(
+        status__in=(
+            Grant.Status.approved,
+            Grant.Status.waiting_list,
+            Grant.Status.waiting_list_maybe,
+            Grant.Status.rejected,
+            Grant.Status.waiting_for_confirmation,
+        ),
+    )
+
+    for grant in queryset:
+        send_grant_reply_email(grant=grant)
+
+    messages.add_message(request, messages.INFO, "Reply sent")
+
+
+@admin.action(description="Send reminder to waiting confirmation grants")
+def send_grant_reminder_to_waiting(modeladmin, request, queryset):
+    queryset = queryset.filter(
+        status__in=(
+            Grant.Status.waiting_for_confirmation,
+        ),
+    )
+
+    for grant in queryset:
+        send_grant_reply_email(grant=grant, is_reminder=True)
+
+    messages.add_message(request, messages.INFO, "Grants reminder sent")
+
+
 class GrantAdminForm(forms.ModelForm):
     class Meta:
         model = Grant
@@ -132,6 +167,11 @@ class GrantAdminForm(forms.ModelForm):
         fields = (
             "id",
             "name",
+            "status",
+            "approved_type",
+            "approved_amount",
+            "applicant_reply_sent_at",
+            "applicant_reply_deadline",
             "full_name",
             "conference",
             "user_id",
@@ -156,19 +196,12 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
     form = GrantAdminForm
     list_display = (
         "user_display_name",
-        "full_name",
         "conference",
-        "travelling_from",
-        "age_group",
-        "gender",
-        "occupation",
-        "grant_type",
-        "python_usage",
-        "been_to_other_events",
-        "interested_in_volunteering",
-        "needs_funds_for_travel",
-        "why",
-        "notes",
+        "status",
+        "approved_type",
+        "approved_amount",
+        "applicant_reply_sent_at",
+        "applicant_reply_deadline",
     )
     readonly_fields = ("email",)
     list_filter = (
@@ -187,12 +220,16 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
     )
     user_fk = "user_id"
 
+    actions = [send_reply_email, send_grant_reminder_to_waiting]
+
+    @admin.display(
+        description="User",
+    )
     def user_display_name(self, obj):
         if obj.user_id:
             return self.get_user_display_name(obj.user_id)
         return obj.email
 
-    user_display_name.short_description = "User"
 
     class Media:
         js = ["admin/js/jquery.init.js"]

@@ -73,6 +73,12 @@ class Conference(GeoLocalizedModel, TimeFramedModel, TimeStampedModel):
         blank=True,
         default="",
     )
+    slack_new_grant_reply_incoming_incoming_webhook_url = models.URLField(
+        _("New grant reply Slack incoming webhook for notification"),
+        max_length=1024,
+        blank=True,
+        default="",
+    )
 
     @property
     def is_cfp_open(self):

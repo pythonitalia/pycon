@@ -1,0 +1,105 @@
+---
+title: "[PyCon Italia 2022] Financial Aid Update!"
+---
+
+<extends src="src/layouts/base.html">
+  <block name="template">
+    <table class="w-full font-sans">
+      <tr>
+        <td align="center" class="bg-gray-100">
+          <table class="w-600 sm:w-full">
+            <tr>
+              <component src="src/components/head-pycon.html" />
+            </tr>
+            <tr>
+              <td align="center" class="sm:px-24">
+                <table class="w-full">
+                  <tr>
+                    <td
+                      class="bg-white text-gray-800 text-base text-left p-48 sm:px-24 leading-24"
+                    >
+                      <p class="m-0 mb-16">👋 @{{firstname}}!</p>
+                      <p class="m-0 mb-16">
+                        Good news! Your grant request for PyCon Italia @{{year}}
+                        has been accepted! 🎉
+                      </p>
+                      <p class="m-0 mb-16">
+                        This means that you have been granted the conference
+                        ticket (includes AM and PM coffee breaks and Lunch for
+                        every conference day) and a bed in a shared room
+                        (available from @{{startDate}} to @{{endDate}}).
+                      </p>
+                      <p class="m-0 mb-16">
+                        Since we had many grant requests, we are not able to
+                        refund your travel expenses. 😞
+                      </p>
+                      <p class="m-0 mb-24">
+                        To confirm your grant, please click on the link below
+                        within the next 14 days (deadline
+                        @{{deadlineDateTime}}). If for some reason you no longer
+                        need the grant, or you have any questions or need more
+                        information please let us know by clicking the link
+                        below.
+                      </p>
+
+                      <div
+                        class="leading-full items-center justify-center flex mb-24"
+                      >
+                        <a
+                          href="@{{replyLink}}"
+                          target="_blank"
+                          class="inline-block py-16 px-24 select-none text-base font-semibold text-center no-underline text-white bg-primary hover:bg-darker"
+                        >
+                          <!--[if mso
+                            ]><i
+                              style="
+                                letter-spacing: 24px;
+                                mso-font-width: -100%;
+                                mso-text-raise: 30px;
+                              "
+                              >&#8202;</i
+                            ><!
+                          [endif]-->
+                          <span style="mso-text-raise: 16px"
+                            >Manage your Grant</span
+                          >
+                          <!--[if mso
+                            ]><i
+                              style="
+                                letter-spacing: 24px;
+                                mso-font-width: -100%;
+                              "
+                              >&#8202;</i
+                            ><!
+                          [endif]-->
+                        </a>
+                      </div>
+                      <p class="m-0 mb-16">
+                        If we don't get news from you before @{{deadlineDate}}
+                        we will allocate your grant to another person.
+                      </p>
+                      <p class="m-0 mb-16">
+                        If you need an invitation letter for a VISA requirement
+                        please, click on the link above and write with your
+                        personal details (complete name/surname, birthdate,
+                        nationality, passport number) and we'll send you the
+                        invitation letter within 4 days.
+                      </p>
+                      <p class="m-0 mb-24">We can't wait to see you at the conference!</p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="h-48"></td>
+                  </tr>
+                  <tr>
+                    <component src="src/components/footer.html" />
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </block>
+</extends>

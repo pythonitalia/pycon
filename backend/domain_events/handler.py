@@ -1,14 +1,17 @@
 import json
 import logging
+from urllib.parse import urljoin
 
 import boto3
 from asgiref.sync import async_to_sync
 from django.conf import settings
+from django.utils import timezone
 from pythonit_toolkit.emails.templates import EmailTemplate
 from pythonit_toolkit.emails.utils import mark_safe
 from pythonit_toolkit.service_client import ServiceClient
 
 from domain_events.publisher import publish_message
+from grants.models import Grant
 from integrations import slack
 from notifications.emails import send_email
 
@@ -38,6 +41,130 @@ def execute_service_client_query(query, variables):
 def get_name(user_data, fallback: str = "<no name specified>"):
     return (
         user_data["fullname"] or user_data["name"] or user_data["username"] or fallback
+    )
+
+
+def handle_grant_reply_approved_sent(data):
+    is_reminder = data["is_reminder"]
+    grant = Grant.objects.get(id=data["grant_id"])
+    reply_url = urljoin(settings.FRONTEND_URL, "/grants/reply/")
+
+    subject = (
+        "Reminder: Your Python Italia Grant Award!"
+        if is_reminder
+        else "Your Python Italia Grant Award!"
+    )
+
+    template = None
+    if grant.approved_type == Grant.ApprovedType.ticket_only:
+        template = EmailTemplate.GRANT_APPROVED_TICKET_ONLY
+    elif grant.approved_type == Grant.ApprovedType.ticket_travel_accommodation:
+        template = EmailTemplate.GRANT_APPROVED_TICKET_TRAVEL_ACCOMMODATION
+    else:
+        raise ValueError("Grant Approved type must be not null.")
+
+    _grant_send_email(
+        template=template,
+        subject=subject,
+        grant=grant,
+        replyLink=reply_url,
+        amount=f"{grant.approved_amount:.0f}",
+        startDate=f"{grant.conference.start:%w %B}",
+        endDate=f"{grant.conference.end:%w %B}",
+        deadlineDateTime=f"{grant.applicant_reply_deadline:%w %B %Y %H:%M:%S}",
+        deadlineDate=f"{grant.applicant_reply_deadline:%w %B %Y}",
+    )
+
+
+def handle_grant_reply_waiting_list_sent(data):
+    grant = Grant.objects.get(id=data["grant_id"])
+
+    subject = "Financial Aid Update"
+
+    _grant_send_email(
+        template=EmailTemplate.GRANT_WAITING_LIST, subject=subject, grant=grant
+    )
+
+
+def handle_grant_reply_rejected_sent(data):
+    grant = Grant.objects.get(id=data["grant_id"])
+
+    subject = "Financial Aid Update"
+
+    _grant_send_email(
+        template=EmailTemplate.GRANT_REJECTED, subject=subject, grant=grant
+    )
+
+
+def _grant_send_email(template: EmailTemplate, subject: str, grant: Grant, **kwargs):
+    users_result = execute_service_client_query(
+        USERS_NAMES_FROM_IDS, {"ids": [grant.user_id]}
+    )
+
+    user_data = users_result.data["usersByIds"][0]
+
+    subject_prefix = f"[PyCon Italia {grant.conference.start:%Y}]"
+
+    send_email(
+        template=template,
+        to=user_data["email"],
+        subject=f"{subject_prefix} {subject}",
+        variables={"firstname": get_name(user_data, "there"), **kwargs},
+    )
+
+    grant.status = Grant.Status.waiting_for_confirmation
+    grant.applicant_reply_sent_at = timezone.now()
+    grant.save()
+
+
+def handle_new_grant_reply(data):
+    grant = Grant.objects.get(id=data["grant_id"])
+    admin_url = data["admin_url"]
+
+    slack.send_message(
+        [
+            {
+                "type": "section",
+                "text": {
+                    "text": f"{grant.full_name} {Grant.Status(grant.status).label} the grant",
+                    "type": "mrkdwn",
+                },
+            }
+        ],
+        [
+            {
+                "blocks": [
+                    {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": f"*<{admin_url}|Open admin>*",
+                        },
+                    },
+                ],
+            },
+        ],
+        token=grant.conference.slack_new_grant_reply_incoming_incoming_webhook_url,
+    )
+
+
+def handle_grant_need_more_info_email_sent(data):
+    grant = Grant.objects.get(id=data["grant_id"])
+    users_result = execute_service_client_query(
+        USERS_NAMES_FROM_IDS, {"ids": [grant.user_id]}
+    )
+    user_data = users_result.data["usersByIds"][0]
+
+    send_email(
+        template=EmailTemplate.GRANT_REPLY_APPLICANT_NEED_MORE_INFO,
+        from_=user_data["email"],
+        to="finaid@pycon.it",
+        subject=f"[PyCon Italia {grant.conference.start:%Y}] {grant.name} needs more info about the Grant",
+        variables={
+            "message": grant.applicant_message,
+            "fullName": get_name(user_data, "there"),
+            "name": user_data.get("name"),
+        },
     )
 
 
@@ -397,6 +524,12 @@ def handle_volunteers_push_notification_sent(data):
 
 
 HANDLERS = {
+    "GrantReplySent": handle_grant_reply_approved_sent,
+    "GrantReplyReminderSent": handle_grant_reply_approved_sent,
+    "GrantReplyWaitingListSent": handle_grant_reply_waiting_list_sent,
+    "GrantReplyRejectedSent": handle_grant_reply_rejected_sent,
+    "NewGrantReply": handle_new_grant_reply,
+    "GrantNeedMoreInfoEmailSent": handle_grant_need_more_info_email_sent,
     "NewSubmissionComment/SlackNotification": handle_send_slack_notification_for_new_submission_comment,
     "NewSubmissionComment/EmailNotification": handle_send_email_notification_for_new_submission_comment,
     "NewSubmissionComment": handle_new_submission_comment,
