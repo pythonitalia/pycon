@@ -26,7 +26,12 @@ class Submission(TimeStampedModel):
         ("experienced", _("Experienced")),
     )
 
-    STATUS = Choices(("proposed", _("Proposed")), ("cancelled", _("Cancelled")))
+    STATUS = Choices(
+        ("proposed", _("Proposed")),
+        ("accepted", _("Accepted")),
+        ("rejected", _("Rejected")),
+        ("cancelled", _("Cancelled")),
+    )
 
     conference = models.ForeignKey(
         "conferences.Conference",
@@ -82,6 +87,9 @@ class Submission(TimeStampedModel):
     tags = models.ManyToManyField("submissions.SubmissionTag", verbose_name=_("tags"))
     status = models.CharField(
         _("status"), choices=STATUS, max_length=20, default=STATUS.proposed
+    )
+    pending_status = models.CharField(
+        _("pending status"), choices=STATUS, max_length=20, default="", blank=True
     )
 
     objects = SubmissionManager()

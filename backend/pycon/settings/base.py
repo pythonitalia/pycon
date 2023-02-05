@@ -60,6 +60,8 @@ INSTALLED_APPS = [
     "volunteers_notifications.apps.VolunteersNotificationsConfig",
     "checklist.apps.ChecklistConfig",
     "participants.apps.ParticipantsConfig",
+    "reviews.apps.ReviewsConfig",
+    "markdownify.apps.MarkdownifyConfig",
 ]
 
 MIDDLEWARE = [
