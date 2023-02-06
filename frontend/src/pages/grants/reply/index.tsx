@@ -108,8 +108,6 @@ const GrantReply = () => {
           </Heading>
         </div>
 
-        <Text></Text>
-
         <Flex
           as="form"
           sx={{
