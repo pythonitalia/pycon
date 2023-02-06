@@ -67,14 +67,14 @@ class Grant(TimeStampedModel):
         _("status"), choices=Status.choices, max_length=30, default=Status.pending
     )
     approved_type = models.CharField(
-        _("grant_approved_type"),
+        verbose_name=_("approved type"),
         choices=ApprovedType.choices,
         max_length=30,
         blank=True,
         null=True,
     )
     approved_amount = models.DecimalField(
-        _("grant_approved_amount"), null=True, max_digits=6, decimal_places=2
+        verbose_name=_("approved amount"), null=True, max_digits=6, decimal_places=2
     )
     email = models.EmailField(_("email address"))
     age_group = models.CharField(

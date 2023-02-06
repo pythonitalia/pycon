@@ -28,12 +28,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='grant',
             name='approved_amount',
-            field=models.DecimalField(decimal_places=2, max_digits=6, null=True, verbose_name='grant_approved_amount'),
+            field=models.DecimalField(decimal_places=2, max_digits=6, null=True, verbose_name='approved amount'),
         ),
         migrations.AddField(
             model_name='grant',
             name='approved_type',
-            field=models.CharField(blank=True, choices=[('ticket_only', 'Ticket Only'), ('ticket_travel', 'Ticket + Travel'), ('ticket_accommodation', 'Ticket + Accommodation'), ('Ticket', 'Ticket + Travel + Accommodation')], max_length=30, null=True, verbose_name='grant_approved_type'),
+            field=models.CharField(blank=True, choices=[('ticket_only', 'Ticket Only'), ('ticket_travel', 'Ticket + Travel'), ('ticket_accommodation', 'Ticket + Accommodation'), ('Ticket', 'Ticket + Travel + Accommodation')], max_length=30, null=True, verbose_name='approved type'),
         ),
         migrations.AddField(
             model_name='grant',
