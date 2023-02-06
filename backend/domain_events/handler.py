@@ -1,5 +1,6 @@
 import json
 import logging
+from typing import TYPE_CHECKING
 from urllib.parse import urljoin
 
 import boto3
@@ -11,9 +12,11 @@ from pythonit_toolkit.emails.utils import mark_safe
 from pythonit_toolkit.service_client import ServiceClient
 
 from domain_events.publisher import publish_message
-from grants.models import Grant
 from integrations import slack
 from notifications.emails import send_email
+
+if TYPE_CHECKING:
+    from grants.models import Grant
 
 logger = logging.getLogger(__name__)
 
@@ -45,6 +48,8 @@ def get_name(user_data, fallback: str = "<no name specified>"):
 
 
 def handle_grant_reply_approved_sent(data):
+    from grants.models import Grant
+
     is_reminder = data["is_reminder"]
     grant = Grant.objects.get(id=data["grant_id"])
     reply_url = urljoin(settings.FRONTEND_URL, "/grants/reply/")
@@ -77,6 +82,8 @@ def handle_grant_reply_approved_sent(data):
 
 
 def handle_grant_reply_waiting_list_sent(data):
+    from grants.models import Grant
+
     grant = Grant.objects.get(id=data["grant_id"])
 
     subject = "Financial Aid Update"
@@ -87,6 +94,8 @@ def handle_grant_reply_waiting_list_sent(data):
 
 
 def handle_grant_reply_rejected_sent(data):
+    from grants.models import Grant
+
     grant = Grant.objects.get(id=data["grant_id"])
 
     subject = "Financial Aid Update"
@@ -97,6 +106,8 @@ def handle_grant_reply_rejected_sent(data):
 
 
 def _grant_send_email(template: EmailTemplate, subject: str, grant: Grant, **kwargs):
+    from grants.models import Grant
+
     users_result = execute_service_client_query(
         USERS_NAMES_FROM_IDS, {"ids": [grant.user_id]}
     )
@@ -118,6 +129,8 @@ def _grant_send_email(template: EmailTemplate, subject: str, grant: Grant, **kwa
 
 
 def handle_new_grant_reply(data):
+    from grants.models import Grant
+
     grant = Grant.objects.get(id=data["grant_id"])
     admin_url = data["admin_url"]
 
@@ -149,6 +162,8 @@ def handle_new_grant_reply(data):
 
 
 def handle_grant_need_more_info_email_sent(data):
+    from grants.models import Grant
+
     grant = Grant.objects.get(id=data["grant_id"])
     users_result = execute_service_client_query(
         USERS_NAMES_FROM_IDS, {"ids": [grant.user_id]}
