@@ -87,7 +87,18 @@ class SubmissionAdmin(AdminUsersMixin, SearchUsersMixin):
                 )
             },
         ),
-        (_("Details"), {"fields": ("elevator_pitch", "abstract", "notes")}),
+        (
+            _("Details"),
+            {
+                "fields": (
+                    "elevator_pitch",
+                    "abstract",
+                    "notes",
+                    "speaker_level",
+                    "previous_talk_video",
+                )
+            },
+        ),
     )
     list_filter = ("conference", "type", "tags", "status")
     search_fields = (
