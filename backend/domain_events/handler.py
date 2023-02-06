@@ -65,6 +65,7 @@ def handle_grant_reply_approved_sent(data):
         raise ValueError("Grant Approved type must be not null.")
 
     logger.info("Sending Grant email reply APPROVED for grant %s", grant.id)
+
     _grant_send_email(
         template=template,
         subject=subject,
@@ -76,6 +77,10 @@ def handle_grant_reply_approved_sent(data):
         deadlineDateTime=f"{grant.applicant_reply_deadline:%w %B %Y %H:%M:%S}",
         deadlineDate=f"{grant.applicant_reply_deadline:%w %B %Y}",
     )
+
+    grant.status = Grant.Status.waiting_for_confirmation
+    grant.applicant_reply_sent_at = timezone.now()
+    grant.save()
 
 
 def handle_grant_reply_waiting_list_sent(data):
@@ -115,9 +120,6 @@ def _grant_send_email(template: EmailTemplate, subject: str, grant: Grant, **kwa
             variables={"firstname": get_name(user_data, "there"), **kwargs},
         )
 
-        grant.status = Grant.Status.waiting_for_confirmation
-        grant.applicant_reply_sent_at = timezone.now()
-        grant.save()
     except Exception as e:
         logger.error(
             "Sending Grant email reply WENT WRONG for grant\n%s", e, exc_info=True
