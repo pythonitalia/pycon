@@ -56,10 +56,10 @@ def handle_grant_reply_approved_sent(data):
     template = None
     variables = {
         "replyLink": reply_url,
-        "startDate": f"{grant.conference.start:%w %B}",
-        "endDate": f"{grant.conference.end:%w %B}",
-        "deadlineDateTime": f"{grant.applicant_reply_deadline:%w %B %Y %H:%M:%S}",
-        "deadlineDate": f"{grant.applicant_reply_deadline:%w %B %Y}",
+        "startDate": f"{grant.conference.start:%-d %B}",
+        "endDate": f"{grant.conference.end:%-d %B}",
+        "deadlineDateTime": f"{grant.applicant_reply_deadline:%-d %B %Y %H:%M %Z}",
+        "deadlineDate": f"{grant.applicant_reply_deadline:%-d %B %Y}",
     }
     if grant.approved_type == Grant.ApprovedType.ticket_only:
         template = EmailTemplate.GRANT_APPROVED_TICKET_ONLY
@@ -134,6 +134,7 @@ def _grant_send_email(template: EmailTemplate, subject: str, grant: Grant, **kwa
                 "conferenceName": conference_name,
                 **kwargs,
             },
+            reply_to=["grants@pycon.it"],
         )
 
         grant.applicant_reply_sent_at = timezone.now()
@@ -187,7 +188,7 @@ def handle_grant_need_more_info_email_sent(data):
     send_email(
         template=EmailTemplate.GRANT_REPLY_APPLICANT_NEED_MORE_INFO,
         from_=user_data["email"],
-        to="finaid@pycon.it",
+        to="grants@pycon.it",
         subject=f"[PyCon Italia {grant.conference.start:%Y}] {grant.name} needs more info about the Grant",
         variables={
             "message": grant.applicant_message,
