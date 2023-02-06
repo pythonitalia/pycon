@@ -143,7 +143,6 @@ const GrantReply = () => {
 
           {formState.values.option === GrantStatus.NeedsInfo && (
             <Label>
-              <Text as="p"></Text>
               <Textarea {...text("message")} rows={5} />
             </Label>
           )}
