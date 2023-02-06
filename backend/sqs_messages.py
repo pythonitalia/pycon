@@ -10,7 +10,6 @@ logger = getLogger(__name__)
 
 
 def process_sqs_messages(event):
-
     for record in event["Records"]:
         if record["eventSource"] != "aws:sqs":
             logger.info(

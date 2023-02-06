@@ -1,6 +1,7 @@
-from typing import Any
+from typing import Any, Type
 
 from django.contrib import admin
+from django.contrib.admin.views.main import ChangeList
 from django.utils.translation import gettext_lazy as _
 from import_export.resources import ModelResource
 
@@ -12,12 +13,13 @@ class UserMixin:
     _PREFETCHED_USERS_BY_ID = {}
 
     def get_users_by_ids(self, queryset):
-        users_ids = queryset.filter(
-            **{
-                f"{self.user_fk}__isnull": False,
-            }
-        ).values_list(self.user_fk, flat=True)
-        self._PREFETCHED_USERS_BY_ID = get_users_data_by_ids(list(users_ids))
+        # todo use := once we are on a newer python version
+        users_ids = [
+            getattr(obj, self.user_fk, None)
+            for obj in queryset
+            if getattr(obj, self.user_fk, None)
+        ]
+        self._PREFETCHED_USERS_BY_ID = get_users_data_by_ids(users_ids)
         return queryset
 
     def get_user_display_name(self, obj_id: Any) -> str:
@@ -32,11 +34,15 @@ class UserMixin:
         return self._PREFETCHED_USERS_BY_ID.get(str(obj_id), None)
 
 
+class AdminUsersChangeList(ChangeList):
+    def get_results(self, request) -> None:
+        super().get_results(request)
+        self.model_admin.get_users_by_ids(self.result_list)
+
+
 class AdminUsersMixin(admin.ModelAdmin, UserMixin):
-    def get_queryset(self, request):
-        queryset = super().get_queryset(request)
-        self.get_users_by_ids(queryset)
-        return queryset
+    def get_changelist(self, request, **kwargs: Any) -> Type[ChangeList]:
+        return AdminUsersChangeList
 
 
 class SearchUsersMixin(admin.ModelAdmin):

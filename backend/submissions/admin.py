@@ -2,12 +2,65 @@ from django import forms
 from django.contrib import admin
 from django.utils.html import mark_safe
 from django.utils.translation import gettext_lazy as _
+from import_export.admin import ExportMixin
+from import_export.fields import Field
 
 from participants.models import Participant
 from users.autocomplete import UsersBackendAutocomplete
-from users.mixins import AdminUsersMixin, SearchUsersMixin
+from users.mixins import AdminUsersMixin, ResourceUsersByIdsMixin, SearchUsersMixin
 
 from .models import Submission, SubmissionComment, SubmissionTag, SubmissionType
+
+EXPORT_SUBMISSION_FIELDS = (
+    "id",
+    "languages",
+    "title_en",
+    "title_it",
+    "status",
+    "tags",
+    "audience_level",
+    "type",
+)
+
+
+class SubmissionResource(ResourceUsersByIdsMixin):
+    search_field = "speaker_id"
+    title_en = Field()
+    title_it = Field()
+    speaker_name = Field()
+    speaker_email = Field()
+
+    def dehydrate_title_en(self, obj: Submission):
+        en = obj.title.data.get("en")
+        return en if en else ""
+
+    def dehydrate_title_it(self, obj: Submission):
+        it = obj.title.data.get("it")
+        return it if it else ""
+
+    def dehydrate_tags(self, obj: Submission):
+        return ", ".join([tag.name for tag in obj.tags.all()])
+
+    def dehydrate_audience_level(self, obj: Submission):
+        return obj.audience_level.name
+
+    def dehydrate_type(self, obj: Submission):
+        return obj.type.name
+
+    def dehydrate_languages(self, obj: Submission):
+        return ", ".join([lang.name for lang in obj.languages.all()])
+
+    def dehydrate_speaker_name(self, obj: Submission):
+        return self.get_user_display_name(obj.speaker_id)
+
+    def dehydrate_speaker_email(self, obj: Submission):
+        user_data = self.get_user_data(obj.speaker_id)
+        return user_data["email"]
+
+    class Meta:
+        model = Submission
+        fields = EXPORT_SUBMISSION_FIELDS
+        export_order = EXPORT_SUBMISSION_FIELDS
 
 
 class SubmissionCommentInlineForm(forms.ModelForm):
@@ -51,7 +104,8 @@ class SubmissionAdminForm(forms.ModelForm):
 
 
 @admin.register(Submission)
-class SubmissionAdmin(AdminUsersMixin, SearchUsersMixin):
+class SubmissionAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
+    resource_class = SubmissionResource
     form = SubmissionAdminForm
     list_display = (
         "title",
@@ -89,7 +143,7 @@ class SubmissionAdmin(AdminUsersMixin, SearchUsersMixin):
         ),
         (_("Details"), {"fields": ("elevator_pitch", "abstract", "notes")}),
     )
-    list_filter = ("conference", "type", "tags", "status")
+    list_filter = ("conference", "status", "pending_status", "type", "tags")
     search_fields = (
         "title",
         "elevator_pitch",

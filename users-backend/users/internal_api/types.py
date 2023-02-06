@@ -17,6 +17,7 @@ class User:
     is_staff: bool
     jwt_auth_id: int
     gender: str
+    country: str
 
     @strawberry.field
     def display_name(self) -> str:
@@ -35,6 +36,7 @@ class User:
             username=user.username,
             name=user.name,
             gender=user.gender,
+            country=user.country,
         )
 
 
