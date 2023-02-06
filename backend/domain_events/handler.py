@@ -54,26 +54,24 @@ def handle_grant_reply_approved_sent(data):
     )
 
     template = None
+    variables = {
+        "replyLink": reply_url,
+        "startDate": f"{grant.conference.start:%w %B}",
+        "endDate": f"{grant.conference.end:%w %B}",
+        "deadlineDateTime": f"{grant.applicant_reply_deadline:%w %B %Y %H:%M:%S}",
+        "deadlineDate": f"{grant.applicant_reply_deadline:%w %B %Y}",
+    }
     if grant.approved_type == Grant.ApprovedType.ticket_only:
         template = EmailTemplate.GRANT_APPROVED_TICKET_ONLY
     elif grant.approved_type == Grant.ApprovedType.ticket_travel_accommodation:
         template = EmailTemplate.GRANT_APPROVED_TICKET_TRAVEL_ACCOMMODATION
+        variables["amount"] = f"{grant.approved_amount:.0f}"
     else:
         raise ValueError("Grant Approved type must be not null.")
 
     logger.info("Sending Grant email reply APPROVED for grant %s", grant.id)
 
-    _grant_send_email(
-        template=template,
-        subject=subject,
-        grant=grant,
-        replyLink=reply_url,
-        amount=f"{grant.approved_amount:.0f}",
-        startDate=f"{grant.conference.start:%w %B}",
-        endDate=f"{grant.conference.end:%w %B}",
-        deadlineDateTime=f"{grant.applicant_reply_deadline:%w %B %Y %H:%M:%S}",
-        deadlineDate=f"{grant.applicant_reply_deadline:%w %B %Y}",
-    )
+    _grant_send_email(template=template, subject=subject, grant=grant, **variables)
 
     grant.status = Grant.Status.waiting_for_confirmation
     grant.save()
@@ -81,12 +79,16 @@ def handle_grant_reply_approved_sent(data):
 
 def handle_grant_reply_waiting_list_sent(data):
     grant = Grant.objects.get(id=data["grant_id"])
+    reply_url = urljoin(settings.FRONTEND_URL, "/grants/reply/")
     logger.info("Sending Grant email reply WAITING LIST for grant %s", grant.id)
 
     subject = "Financial Aid Update"
 
     _grant_send_email(
-        template=EmailTemplate.GRANT_WAITING_LIST, subject=subject, grant=grant
+        template=EmailTemplate.GRANT_WAITING_LIST,
+        subject=subject,
+        grant=grant,
+        replyLink=reply_url,
     )
 
 
@@ -97,7 +99,9 @@ def handle_grant_reply_rejected_sent(data):
     subject = "Financial Aid Update"
 
     _grant_send_email(
-        template=EmailTemplate.GRANT_REJECTED, subject=subject, grant=grant
+        template=EmailTemplate.GRANT_REJECTED,
+        subject=subject,
+        grant=grant,
     )
 
     logger.info("REJECTED email SENT for grant %s", grant.id)
@@ -119,6 +123,7 @@ def _grant_send_email(template: EmailTemplate, subject: str, grant: Grant, **kwa
             user_data["email"],
             f"{subject_prefix} {subject}",
         )
+        logger.info(kwargs)
 
         send_email(
             template=template,
