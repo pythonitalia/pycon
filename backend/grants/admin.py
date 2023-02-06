@@ -166,7 +166,10 @@ def send_reply_emails(modeladmin, request, queryset):
                 )
                 return
 
-            grant.applicant_reply_deadline = timezone.now().date() + timedelta(days=14)
+            now = timezone.now()
+            grant.applicant_reply_deadline = timezone.datetime(
+                now.year, now.month, now.day, 23, 59, 59
+            ) + timedelta(days=14)
             grant.save()
             send_grant_reply_approved_email(grant)
 
