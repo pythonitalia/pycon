@@ -93,7 +93,7 @@ const GrantReply = () => {
   useEffect(() => {
     if (!loading && grant) {
       formState.setField("option", grant.status);
-      formState.setField("message", grant.applicantMessage);
+      formState.setField("message", grant.applicantMessage || "");
     }
   }, [loading]);
 
