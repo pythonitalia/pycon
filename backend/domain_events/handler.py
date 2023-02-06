@@ -535,7 +535,7 @@ def handle_volunteers_push_notification_sent(data):
 
 
 HANDLERS = {
-    "GrantReplySent": handle_grant_reply_approved_sent,
+    "GrantReplyApprovedSent": handle_grant_reply_approved_sent,
     "GrantReplyReminderSent": handle_grant_reply_approved_sent,
     "GrantReplyWaitingListSent": handle_grant_reply_waiting_list_sent,
     "GrantReplyRejectedSent": handle_grant_reply_rejected_sent,
