@@ -73,7 +73,7 @@ module "lambda" {
     SPEAKERS_EMAIL_ADDRESS                    = module.secrets.value.speakers_email_address
     EMAIL_BACKEND                             = "django_ses.SESBackend"
     PYTHONIT_EMAIL_BACKEND                    = "pythonit_toolkit.emails.backends.ses.SESEmailBackend"
-    FRONTEND_URL                              = "https://pycon-git-grants-reply-email-system-python-italia.vercel.app/"
+    FRONTEND_URL                              = "https://pycon.it"
     PRETIX_API                                = "https://tickets.pycon.it/api/v1/"
     AWS_S3_CUSTOM_DOMAIN                      = local.cdn_url
     PRETIX_API_TOKEN                          = module.common_secrets.value.pretix_api_token
