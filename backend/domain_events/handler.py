@@ -102,6 +102,8 @@ def handle_grant_reply_rejected_sent(data):
         template=EmailTemplate.GRANT_REJECTED, subject=subject, grant=grant
     )
 
+    logger.info("REJECTED email SENT for grant %s", grant.id)
+
 
 def _grant_send_email(template: EmailTemplate, subject: str, grant: Grant, **kwargs):
     try:
@@ -112,6 +114,12 @@ def _grant_send_email(template: EmailTemplate, subject: str, grant: Grant, **kwa
         user_data = users_result.data["usersByIds"][0]
 
         subject_prefix = f"[{grant.conference.name.localize('en')}]"
+
+        logger.info(
+            "Sending Grant email reply for grant %s to: %s",
+            grant.id,
+            user_data["email"],
+        )
 
         send_email(
             template=template,

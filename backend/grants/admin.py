@@ -129,8 +129,8 @@ class GrantResource(ResourceUsersByIdsMixin):
         export_order = EXPORT_GRANTS_FIELDS
 
 
-@admin.action(description="Send reply emails")
-def send_reply_email(modeladmin, request, queryset):
+@admin.action(description="Send Approved/Waiting List/Rejected reply emails")
+def send_reply_emails(modeladmin, request, queryset):
     queryset = queryset.filter(
         status__in=(
             Grant.Status.approved,
@@ -295,7 +295,7 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
     )
     user_fk = "user_id"
 
-    actions = [send_reply_email, send_grant_reminder_to_waiting_for_confirmation]
+    actions = [send_reply_emails, send_grant_reminder_to_waiting_for_confirmation]
 
     @admin.display(
         description="User",
