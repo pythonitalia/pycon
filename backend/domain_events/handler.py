@@ -78,7 +78,6 @@ def handle_grant_reply_approved_sent(data):
     )
 
     grant.status = Grant.Status.waiting_for_confirmation
-    grant.applicant_reply_sent_at = timezone.now()
     grant.save()
 
 
@@ -92,9 +91,6 @@ def handle_grant_reply_waiting_list_sent(data):
         template=EmailTemplate.GRANT_WAITING_LIST, subject=subject, grant=grant
     )
 
-    grant.applicant_reply_sent_at = timezone.now()
-    grant.save()
-
 
 def handle_grant_reply_rejected_sent(data):
     grant = Grant.objects.get(id=data["grant_id"])
@@ -105,9 +101,6 @@ def handle_grant_reply_rejected_sent(data):
     _grant_send_email(
         template=EmailTemplate.GRANT_REJECTED, subject=subject, grant=grant
     )
-
-    grant.applicant_reply_sent_at = timezone.now()
-    grant.save()
 
 
 def _grant_send_email(template: EmailTemplate, subject: str, grant: Grant, **kwargs):
@@ -127,6 +120,8 @@ def _grant_send_email(template: EmailTemplate, subject: str, grant: Grant, **kwa
             variables={"firstname": get_name(user_data, "there"), **kwargs},
         )
 
+        grant.applicant_reply_sent_at = timezone.now()
+        grant.save()
     except Exception as e:
         logger.error(
             "Sending Grant email reply WENT WRONG for grant\n%s", e, exc_info=True
