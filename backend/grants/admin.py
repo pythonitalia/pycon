@@ -226,7 +226,7 @@ def send_grant_reminder_to_waiting_for_confirmation(modeladmin, request, queryse
 
         send_grant_reply_approved_email(grant, is_reminder=True)
 
-    messages.add_message(request, messages.INFO, "Grants reminder sent")
+        messages.info(request, f"Grant reminder sent to {grant.name}")
 
 
 class GrantAdminForm(forms.ModelForm):
