@@ -116,9 +116,10 @@ def _grant_send_email(template: EmailTemplate, subject: str, grant: Grant, **kwa
         subject_prefix = f"[{grant.conference.name.localize('en')}]"
 
         logger.info(
-            "Sending Grant email reply for grant %s to: %s",
+            "Sending Grant email reply for grant %s to: %s. Subject: %s",
             grant.id,
             user_data["email"],
+            f"{subject_prefix} {subject}",
         )
 
         send_email(
