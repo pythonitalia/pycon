@@ -602,8 +602,21 @@ def test_handle_grant_reply_sent_reminder(
 
 
 @pytest.mark.django_db
-def test_handle_grant_reply_waiting_list_sent(grant, mock_users_by_ids, settings):
+def test_handle_grant_reply_waiting_list_sent(
+    deadline_factory, conference, grant_factory, mock_users_by_ids, settings
+):
     settings.FRONTEND_URL = "https://pycon.it"
+
+    deadline_factory(
+        start=datetime(2023, 3, 1, 23, 59, tzinfo=timezone.utc),
+        conference=conference,
+        type="custom",
+        name={
+            "en": "Update Grants in Waiting List",
+            "it": "Update Grants in Waiting List",
+        },
+    )
+    grant = grant_factory(conference=conference)
 
     data = {
         "grant_id": grant.id,
@@ -620,6 +633,7 @@ def test_handle_grant_reply_waiting_list_sent(grant, mock_users_by_ids, settings
             "firstname": "Marco Acierno",
             "conferenceName": grant.conference.name.localize("en"),
             "replyLink": "https://pycon.it/grants/reply/",
+            "grantsUpdateDeadline": "1 March 2023",
         },
         reply_to=["grants@pycon.it"],
     )

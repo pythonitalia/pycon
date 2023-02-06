@@ -78,23 +78,27 @@ def handle_grant_reply_approved_sent(data):
 
 
 def handle_grant_reply_waiting_list_sent(data):
+    logger.info("Sending Grant email reply WAITING LIST for grant %s", data["grant_id"])
     grant = Grant.objects.get(id=data["grant_id"])
     reply_url = urljoin(settings.FRONTEND_URL, "/grants/reply/")
-    logger.info("Sending Grant email reply WAITING LIST for grant %s", grant.id)
 
     subject = "Financial Aid Update"
+    deadline = grant.conference.deadlines.filter(
+        type="custom", name__contains={"en": "Update Grants in Waiting List"}
+    ).first()
 
     _grant_send_email(
         template=EmailTemplate.GRANT_WAITING_LIST,
         subject=subject,
         grant=grant,
         replyLink=reply_url,
+        grantsUpdateDeadline=f"{deadline.start:%-d %B %Y}",
     )
 
 
 def handle_grant_reply_rejected_sent(data):
+    logger.info("Sending Grant email reply REJECTED for grant %s", data["grant_id"])
     grant = Grant.objects.get(id=data["grant_id"])
-    logger.info("Sending Grant email reply REJECTED for grant %s", grant.id)
 
     subject = "Financial Aid Update"
 
