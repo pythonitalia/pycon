@@ -528,7 +528,7 @@ def test_handle_grant_approved_ticket_travel_accommodation_reply_sent(
     email_mock.assert_called_once_with(
         template=EmailTemplate.GRANT_APPROVED_TICKET_TRAVEL_ACCOMMODATION,
         to="marco@placeholder.it",
-        subject=f"[{grant.conference.name}] Your Python Italia Grant Award!",
+        subject=f"[{grant.conference.name}] Financial Aid Update",
         variables={
             "firstname": "Marco Acierno",
             "startDate": f"{grant.conference.start:%w %B}",
@@ -559,7 +559,7 @@ def test_handle_grant_reply_sent_reminder(grant_factory, mock_users_by_ids):
     email_mock.assert_called_once_with(
         template=EmailTemplate.GRANT_APPROVED_TICKET_ONLY,
         to="marco@placeholder.it",
-        subject=f"[{grant.conference.name}] Reminder: Your Python Italia Grant Award!",
+        subject=f"[{grant.conference.name}] Reminder: Financial Aid Update",
         variables={
             "firstname": "Marco Acierno",
             "startDate": f"{grant.conference.start:%w %B}",

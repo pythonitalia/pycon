@@ -50,9 +50,7 @@ def handle_grant_reply_approved_sent(data):
     reply_url = urljoin(settings.FRONTEND_URL, "/grants/reply/")
 
     subject = (
-        "Reminder: Your Python Italia Grant Award!"
-        if is_reminder
-        else "Your Python Italia Grant Award!"
+        "Reminder: Financial Aid Update" if is_reminder else "Financial Aid Update"
     )
 
     template = None
@@ -112,8 +110,8 @@ def _grant_send_email(template: EmailTemplate, subject: str, grant: Grant, **kwa
         )
 
         user_data = users_result.data["usersByIds"][0]
-
-        subject_prefix = f"[{grant.conference.name.localize('en')}]"
+        conference_name = grant.conference.name.localize("en")
+        subject_prefix = f"[{conference_name}]"
 
         logger.info(
             "Sending Grant email reply for grant %s to: %s. Subject: %s",
@@ -126,7 +124,11 @@ def _grant_send_email(template: EmailTemplate, subject: str, grant: Grant, **kwa
             template=template,
             to=user_data["email"],
             subject=f"{subject_prefix} {subject}",
-            variables={"firstname": get_name(user_data, "there"), **kwargs},
+            variables={
+                "firstname": get_name(user_data, "there"),
+                "conferenceName": conference_name,
+                **kwargs,
+            },
         )
 
         grant.applicant_reply_sent_at = timezone.now()

@@ -228,7 +228,7 @@ def send_grant_reply_waiting_list_email(grant: Grant):
 
 
 def send_grant_reply_rejected_email(grant: Grant):
-    logger.info("Sending reply REJECTED email for GRANT %s", grant.id)
+    logger.info("Publishing GrantReplyRejectedSent for GRANT %s", grant.id)
 
     return publish_message(
         "GrantReplyRejectedSent",
