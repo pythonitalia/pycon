@@ -1,5 +1,6 @@
 import json
 from hashlib import md5
+from logging import getLogger
 from urllib.parse import urljoin
 from uuid import uuid4
 
@@ -7,6 +8,8 @@ import boto3
 from django.conf import settings
 
 from grants.models import Grant
+
+logger = getLogger(__name__)
 
 
 def publish_message(type: str, body: dict, *, deduplication_id: str):
@@ -197,6 +200,7 @@ def send_volunteers_push_notification(notification_id: int, volunteers_device_id
 
 
 def send_grant_reply_email(grant: Grant, is_reminder: bool = False):
+    logger.info("Sending reply email for GRANT %s", grant.id)
     if grant.status in (
         Grant.Status.approved,
         Grant.Status.waiting_for_confirmation,
@@ -207,6 +211,9 @@ def send_grant_reply_email(grant: Grant, is_reminder: bool = False):
             else "GrantReplyApprovedSent"
         )
 
+        logger.info(
+            "Sending APPROVED reply email for GRANT %s (publish message)", grant.id
+        )
         return publish_message(
             event_name,
             body={

@@ -1,6 +1,5 @@
 import json
 import logging
-from typing import TYPE_CHECKING
 from urllib.parse import urljoin
 
 import boto3
@@ -12,11 +11,9 @@ from pythonit_toolkit.emails.utils import mark_safe
 from pythonit_toolkit.service_client import ServiceClient
 
 from domain_events.publisher import publish_message
+from grants.models import Grant
 from integrations import slack
 from notifications.emails import send_email
-
-if TYPE_CHECKING:
-    from grants.models import Grant
 
 logger = logging.getLogger(__name__)
 
@@ -48,7 +45,6 @@ def get_name(user_data, fallback: str = "<no name specified>"):
 
 
 def handle_grant_reply_approved_sent(data):
-    from grants.models import Grant
 
     is_reminder = data["is_reminder"]
     grant = Grant.objects.get(id=data["grant_id"])
@@ -68,6 +64,7 @@ def handle_grant_reply_approved_sent(data):
     else:
         raise ValueError("Grant Approved type must be not null.")
 
+    logger.info("Sending Grant email reply APPROVED for grant %s", grant.id)
     _grant_send_email(
         template=template,
         subject=subject,
@@ -82,8 +79,6 @@ def handle_grant_reply_approved_sent(data):
 
 
 def handle_grant_reply_waiting_list_sent(data):
-    from grants.models import Grant
-
     grant = Grant.objects.get(id=data["grant_id"])
 
     subject = "Financial Aid Update"
@@ -94,8 +89,6 @@ def handle_grant_reply_waiting_list_sent(data):
 
 
 def handle_grant_reply_rejected_sent(data):
-    from grants.models import Grant
-
     grant = Grant.objects.get(id=data["grant_id"])
 
     subject = "Financial Aid Update"
@@ -106,31 +99,32 @@ def handle_grant_reply_rejected_sent(data):
 
 
 def _grant_send_email(template: EmailTemplate, subject: str, grant: Grant, **kwargs):
-    from grants.models import Grant
+    try:
+        users_result = execute_service_client_query(
+            USERS_NAMES_FROM_IDS, {"ids": [grant.user_id]}
+        )
 
-    users_result = execute_service_client_query(
-        USERS_NAMES_FROM_IDS, {"ids": [grant.user_id]}
-    )
+        user_data = users_result.data["usersByIds"][0]
 
-    user_data = users_result.data["usersByIds"][0]
+        subject_prefix = f"[PyCon Italia {grant.conference.start:%Y}]"
 
-    subject_prefix = f"[PyCon Italia {grant.conference.start:%Y}]"
+        send_email(
+            template=template,
+            to=user_data["email"],
+            subject=f"{subject_prefix} {subject}",
+            variables={"firstname": get_name(user_data, "there"), **kwargs},
+        )
 
-    send_email(
-        template=template,
-        to=user_data["email"],
-        subject=f"{subject_prefix} {subject}",
-        variables={"firstname": get_name(user_data, "there"), **kwargs},
-    )
-
-    grant.status = Grant.Status.waiting_for_confirmation
-    grant.applicant_reply_sent_at = timezone.now()
-    grant.save()
+        grant.status = Grant.Status.waiting_for_confirmation
+        grant.applicant_reply_sent_at = timezone.now()
+        grant.save()
+    except Exception as e:
+        logger.error(
+            "Sending Grant email reply WENT WRONG for grant\n%s", e, exc_info=True
+        )
 
 
 def handle_new_grant_reply(data):
-    from grants.models import Grant
-
     grant = Grant.objects.get(id=data["grant_id"])
     admin_url = data["admin_url"]
 
