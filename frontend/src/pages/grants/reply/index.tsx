@@ -78,13 +78,16 @@ const GrantReply = () => {
   useEffect(() => {
     if (!loading && grant) {
       formState.setField("option", grant.status);
+      formState.setField("message", grant.applicantMessage);
     }
   }, [loading]);
 
   if (loading) {
     return <PageLoading titleId="global.loading" />;
   }
-  console.log({ error, data });
+
+  const hasSentAnswer =
+    grant?.status !== GrantStatus.WaitingForConfirmation ?? false;
 
   if (error) {
     return (
@@ -100,7 +103,6 @@ const GrantReply = () => {
     return <Error statusCode={404} />;
   }
 
-  console.log(formState);
   return (
     <Page>
       <Section>
@@ -134,6 +136,22 @@ const GrantReply = () => {
             </Text>
           )}
         </div>
+        <div className="mb-8">
+          {hasSentAnswer && (
+            <Text>
+              <FormattedMessage
+                id="grants.reply.currentReply"
+                values={{
+                  reply: (
+                    <Text weight="strong">
+                      <FormattedMessage id={`grants.reply.${grant?.status}`} />
+                    </Text>
+                  ),
+                }}
+              />
+            </Text>
+          )}
+        </div>
 
         <Flex
           as="form"
@@ -148,7 +166,7 @@ const GrantReply = () => {
             <Label>
               <Radio {...radio("option", GrantStatus.Confirmed)} />
               <Text as="span">
-                <FormattedMessage id="grants.reply.CONFIRM" />
+                <FormattedMessage id="grants.reply.confirmed" />
               </Text>
             </Label>
           )}
@@ -156,14 +174,14 @@ const GrantReply = () => {
           <Label>
             <Radio {...radio("option", GrantStatus.Refused)} />
             <Text as="span">
-              <FormattedMessage id="grants.reply.REFUSE" />
+              <FormattedMessage id="grants.reply.refused" />
             </Text>
           </Label>
 
           <Label>
             <Radio {...radio("option", GrantStatus.NeedsInfo)} />
             <Text as="span">
-              <FormattedMessage id="grants.reply.NEEDS_INFO" />
+              <FormattedMessage id="grants.reply.needs_info" />
             </Text>
           </Label>
 
@@ -177,6 +195,16 @@ const GrantReply = () => {
         <Button onClick={submitReply} disabled={!formState.values.option}>
           <FormattedMessage id="grants.reply.submitReply" />
         </Button>
+        {isSubmitting && (
+          <Alert variant="info">
+            <FormattedMessage id="grants.reply.sendingReply" />
+          </Alert>
+        )}
+        {!isSubmitting && replyData?.sendGrantReply.__typename === "Grant" && (
+          <Alert variant="success">
+            <FormattedMessage id="grants.reply.replySentWithSuccess" />
+          </Alert>
+        )}
       </Section>
     </Page>
   );

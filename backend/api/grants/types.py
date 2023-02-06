@@ -32,6 +32,7 @@ class Grant:
     notes: str
     travelling_from: str
     applicant_reply_deadline: Optional[datetime]
+    applicant_message: Optional[str]
 
     @classmethod
     def from_model(cls, grant: GrantModel) -> Grant:
@@ -54,4 +55,5 @@ class Grant:
             notes=grant.notes,
             travelling_from=grant.travelling_from,
             applicant_reply_deadline=grant.applicant_reply_deadline,
+            applicant_message=grant.applicant_message,
         )
