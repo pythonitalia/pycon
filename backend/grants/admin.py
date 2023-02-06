@@ -179,12 +179,28 @@ def send_reply_email(modeladmin, request, queryset):
             grant.status == Grant.Status.waiting_list
             and not grant.applicant_reply_sent_at
         ):
+            if grant.applicant_reply_sent_at is not None:
+                messages.add_message(
+                    request,
+                    messages.WARNING,
+                    f"Grant for {grant.name} email was already sent! Skipping.",
+                )
+                return
+
             send_grant_reply_waiting_list_email(grant)
             messages.add_message(
                 request, messages.INFO, f"Sent Waiting List reply to {grant.name}"
             )
 
         if grant.status == Grant.Status.rejected and not grant.applicant_reply_sent_at:
+            if grant.applicant_reply_sent_at is not None:
+                messages.add_message(
+                    request,
+                    messages.WARNING,
+                    f"Grant for {grant.name} email was already sent! Skipping.",
+                )
+                return
+
             send_grant_reply_rejected_email(grant)
             messages.add_message(
                 request, messages.INFO, f"Sent Rejected reply to {grant.name}"
