@@ -213,11 +213,14 @@ def send_grant_reminder_to_waiting_for_confirmation(modeladmin, request, queryse
             )
             return
 
-        if not grant.grant_type == Grant.ApprovedType.ticket_only:
+        if (
+            grant.grant_type != Grant.ApprovedType.ticket_only
+            and grant.approved_amount is None
+        ):
             messages.add_message(
                 request,
                 messages.ERROR,
-                f"Grant for {grant.name} is missing 'Grant Approved Ammount'!",
+                f"Grant for {grant.name} is missing 'Grant Approved Amount'!",
             )
             return
 
