@@ -218,6 +218,10 @@ class GrantMutation:
         if not grant.can_edit(request.user):
             return SendGrantReplyError(message="You cannot reply to this grant")
 
+        # Can't modify the status if the grant is still pending or was alredy rejected
+        if grant.status in (GrantModel.Status.pending, GrantModel.Status.rejected):
+            return SendGrantReplyError(message="You cannot reply to this grant")
+
         grant.status = input.status
         grant.applicant_message = input.message
         grant.save()

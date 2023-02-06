@@ -36,6 +36,17 @@ const APPROVED_STATUSES = [
   GrantStatus.Confirmed,
 ];
 
+// only if the grant is in those of these statuses the User can see the page.
+const ALLOWED_STATUSES = [
+  GrantStatus.Approved,
+  GrantStatus.WaitingForConfirmation,
+  GrantStatus.Confirmed,
+  GrantStatus.Refused,
+  GrantStatus.WaitingList,
+  GrantStatus.WaitingListMaybe,
+  GrantStatus.NeedsInfo,
+];
+
 const GrantReply = () => {
   const language = useCurrentLanguage();
   const code = process.env.conferenceCode;
@@ -99,7 +110,10 @@ const GrantReply = () => {
     );
   }
 
-  if (!error && data!.me!.grant === null) {
+  if (
+    !error &&
+    (data!.me!.grant === null || !ALLOWED_STATUSES.includes(grant.status))
+  ) {
     return <Error statusCode={404} />;
   }
 
