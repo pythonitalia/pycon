@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+from datetime import datetime
+from typing import Optional
+
 import strawberry
 
 from grants.models import Grant as GrantModel
@@ -28,6 +31,7 @@ class Grant:
     why: str
     notes: str
     travelling_from: str
+    applicant_reply_deadline: Optional[datetime]
 
     @classmethod
     def from_model(cls, grant: GrantModel) -> Grant:
@@ -49,4 +53,5 @@ class Grant:
             why=grant.why,
             notes=grant.notes,
             travelling_from=grant.travelling_from,
+            applicant_reply_deadline=grant.applicant_reply_deadline,
         )

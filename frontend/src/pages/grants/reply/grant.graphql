@@ -5,6 +5,7 @@ query Grant($conference: String!) {
     grant(conference: $conference) {
       id
       status
+      applicantReplyDeadline
     }
   }
 }

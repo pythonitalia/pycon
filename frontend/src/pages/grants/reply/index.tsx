@@ -16,7 +16,9 @@ import Error from "next/error";
 import { getApolloClient, addApolloState } from "~/apollo/client";
 import { Alert } from "~/components/alert";
 import { PageLoading } from "~/components/page-loading";
+import { formatDeadlineDateTime } from "~/helpers/deadlines";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
+import { useCurrentLanguage } from "~/locale/context";
 import {
   useGrantQuery,
   Status as GrantStatus,
@@ -28,7 +30,14 @@ type GrantReplyFrom = {
   message: string;
 };
 
+const APPROVED_STATUSES = [
+  GrantStatus.Approved,
+  GrantStatus.WaitingForConfirmation,
+  GrantStatus.Confirmed,
+];
+
 const GrantReply = () => {
+  const language = useCurrentLanguage();
   const code = process.env.conferenceCode;
 
   const [formState, { radio, text }] = useFormState<GrantReplyFrom>({
@@ -99,13 +108,31 @@ const GrantReply = () => {
           <Heading>
             <FormattedMessage
               id={
-                grant?.status === GrantStatus.Approved ||
-                grant?.status === GrantStatus.Confirmed
+                APPROVED_STATUSES.includes(grant?.status)
                   ? "grants.reply.titleApproved"
                   : "grants.reply.title"
               }
             />
           </Heading>
+        </div>
+        <div className="mb-8">
+          {APPROVED_STATUSES.includes(grant?.status) && (
+            <Text>
+              <FormattedMessage
+                id="grants.reply.descriptionApproved"
+                values={{
+                  replyDeadline: (
+                    <Text size={2} weight="strong">
+                      {formatDeadlineDateTime(
+                        grant?.applicantReplyDeadline,
+                        language,
+                      )}
+                    </Text>
+                  ),
+                }}
+              />
+            </Text>
+          )}
         </div>
 
         <Flex
@@ -117,15 +144,14 @@ const GrantReply = () => {
             mb: 4,
           }}
         >
-          {grant?.status === GrantStatus.Approved ||
-            (grant?.status === GrantStatus.Confirmed && (
-              <Label>
-                <Radio {...radio("option", GrantStatus.Confirmed)} />
-                <Text as="span">
-                  <FormattedMessage id="grants.reply.CONFIRM" />
-                </Text>
-              </Label>
-            ))}
+          {APPROVED_STATUSES.includes(grant?.status) && (
+            <Label>
+              <Radio {...radio("option", GrantStatus.Confirmed)} />
+              <Text as="span">
+                <FormattedMessage id="grants.reply.CONFIRM" />
+              </Text>
+            </Label>
+          )}
 
           <Label>
             <Radio {...radio("option", GrantStatus.Refused)} />

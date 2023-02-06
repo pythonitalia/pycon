@@ -489,7 +489,10 @@ export const messages = {
 
     "grants.reply.title": "Manage your grant Grant",
     "grants.reply.titleApproved":
-      "Congratulations! Your Grant has been approved! Confirm your presence!",
+      "Congratulations! Your Grant has been approved!",
+    "grants.reply.descriptionApproved": `Please, confirm your presence before {replyDeadline}!
+If we don't get news from you before {replyDeadline} we will allocate your grant to another person. `,
+
     "grants.reply.CONFIRM": "Confrim",
     "grants.reply.REFUSE": "Refuse",
     "grants.reply.NEEDS_INFO": "Needs to ask for information",
@@ -1138,7 +1141,9 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
 
     "grants.reply.title": "Gestisci il tuo Grant",
     "grants.reply.titleApproved":
-      "Congratulazioni! Il tuo Grant e' stato approvato! Conferma la tua presenza!",
+      "Congratulazioni! Il tuo Grant e' stato approvato! ",
+    "grants.reply.descriptionApproved": `Perfavore, conferma la tua presenza entro il {replyDeadline}!
+Se non riceveremo una conferma da te prima del {replyDeadlilne}, assegneremo il tuo grant ad un'altra persona.`,
     "grants.reply.CONFIRM": "Conferma",
     "grants.reply.REFUSE": "Rifiuta",
     "grants.reply.NEEDS_INFO": "Devo chiedere informazioni",
