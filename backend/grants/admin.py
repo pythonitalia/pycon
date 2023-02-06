@@ -157,7 +157,7 @@ def send_reply_emails(modeladmin, request, queryset):
                 return
 
             if (
-                not grant.grant_type == Grant.ApprovedType.ticket_only
+                grant.grant_type != Grant.ApprovedType.ticket_only
                 and grant.approved_amount is None
             ):
                 messages.error(
@@ -285,8 +285,11 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
         "notes",
     )
     user_fk = "user_id"
-
-    actions = [send_reply_emails, send_grant_reminder_to_waiting_for_confirmation]
+    actions = [
+        send_reply_emails,
+        send_grant_reminder_to_waiting_for_confirmation,
+        "delete_selected",
+    ]
 
     @admin.display(
         description="User",
