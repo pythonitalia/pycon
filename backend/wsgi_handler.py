@@ -14,9 +14,11 @@ import sys
 import traceback
 from logging import getLogger
 
+from django.apps import apps
+from django.conf import settings
+
 # imports serverless_wsgi from the root
 import serverless_wsgi
-from sqs_messages import process_sqs_messages
 
 logging.getLogger().setLevel(logging.INFO)
 logger = getLogger(__name__)
@@ -43,6 +45,9 @@ def import_app(config):
 def handler(event, context):
     if "Records" in event:
         logger.info("Received Records from lambda")
+        apps.populate(settings.INSTALLED_APPS)
+        from sqs_messages import process_sqs_messages
+
         process_sqs_messages(event)
         return
 
