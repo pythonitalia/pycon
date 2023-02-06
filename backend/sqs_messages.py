@@ -2,7 +2,6 @@ import json
 from logging import getLogger
 
 import boto3
-from django.apps import apps
 from django.conf import settings
 
 from domain_events.handler import HANDLERS
@@ -11,8 +10,6 @@ logger = getLogger(__name__)
 
 
 def process_sqs_messages(event):
-    apps.populate(settings.INSTALLED_APPS)
-
     for record in event["Records"]:
         if record["eventSource"] != "aws:sqs":
             logger.info(
