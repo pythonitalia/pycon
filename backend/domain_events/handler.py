@@ -84,6 +84,7 @@ def handle_grant_reply_approved_sent(data):
 
 def handle_grant_reply_waiting_list_sent(data):
     grant = Grant.objects.get(id=data["grant_id"])
+    logger.info("Sending Grant email reply WAITING LIST for grant %s", grant.id)
 
     subject = "Financial Aid Update"
 
@@ -97,6 +98,7 @@ def handle_grant_reply_waiting_list_sent(data):
 
 def handle_grant_reply_rejected_sent(data):
     grant = Grant.objects.get(id=data["grant_id"])
+    logger.info("Sending Grant email reply REJECTED for grant %s", grant.id)
 
     subject = "Financial Aid Update"
 
