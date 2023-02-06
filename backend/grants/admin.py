@@ -259,6 +259,7 @@ class GrantAdminForm(forms.ModelForm):
             "why",
             "notes",
             "travelling_from",
+            "applicant_message",
         )
 
 
