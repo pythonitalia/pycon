@@ -1,9 +1,10 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 from typing import Dict, List, Optional
 
 from django import forms
 from django.contrib import admin, messages
 from django.db.models.query import QuerySet
+from django.utils import timezone
 from import_export.admin import ExportMixin
 from import_export.fields import Field
 
@@ -149,9 +150,8 @@ def send_reply_emails(modeladmin, request, queryset):
     for grant in queryset:
         if grant.status in (Grant.Status.approved,):
             if grant.approved_type is None:
-                messages.add_message(
+                messages.error(
                     request,
-                    messages.ERROR,
                     f"Grant for {grant.name} is missing 'Grant Approved Type'!",
                 )
                 return
@@ -160,51 +160,42 @@ def send_reply_emails(modeladmin, request, queryset):
                 not grant.grant_type == Grant.ApprovedType.ticket_only
                 and grant.approved_amount is None
             ):
-                messages.add_message(
+                messages.error(
                     request,
-                    messages.ERROR,
-                    f"Grant for {grant.name} is missing 'Grant Approved Amount'!",
+                    f"Grant for {grant.name} is missing 'Approved Amount'!",
                 )
                 return
 
-            grant.applicant_reply_deadline = datetime.now().date() + timedelta(days=14)
+            grant.applicant_reply_deadline = timezone.now().date() + timedelta(days=14)
             grant.save()
             send_grant_reply_approved_email(grant)
 
-            messages.add_message(
-                request, messages.INFO, f"Sent approved reply to {grant.name}"
-            )
+            messages.info(request, f"Sent Approved reply email to {grant.name}")
 
         if (
             grant.status == Grant.Status.waiting_list
-            and not grant.applicant_reply_sent_at
+            or grant.status == Grant.Status.waiting_list_maybe
         ):
             if grant.applicant_reply_sent_at is not None:
-                messages.add_message(
+                messages.warning(
                     request,
-                    messages.WARNING,
-                    f"Grant for {grant.name} email was already sent! Skipping.",
+                    f"Reply email for {grant.name} was already sent! Skipping.",
                 )
                 return
 
             send_grant_reply_waiting_list_email(grant)
-            messages.add_message(
-                request, messages.INFO, f"Sent Waiting List reply to {grant.name}"
-            )
+            messages.info(request, f"Sent Waiting List reply email to {grant.name}")
 
-        if grant.status == Grant.Status.rejected and not grant.applicant_reply_sent_at:
+        if grant.status == Grant.Status.rejected:
             if grant.applicant_reply_sent_at is not None:
-                messages.add_message(
+                messages.warning(
                     request,
-                    messages.WARNING,
-                    f"Grant for {grant.name} email was already sent! Skipping.",
+                    f"Reply email for {grant.name} was already sent! Skipping.",
                 )
                 return
 
             send_grant_reply_rejected_email(grant)
-            messages.add_message(
-                request, messages.INFO, f"Sent Rejected reply to {grant.name}"
-            )
+            messages.info(request, f"Sent Rejected reply email to {grant.name}")
 
 
 @admin.action(description="Send reminder to waiting confirmation grants")
