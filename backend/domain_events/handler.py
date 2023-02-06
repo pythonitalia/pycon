@@ -45,7 +45,6 @@ def get_name(user_data, fallback: str = "<no name specified>"):
 
 
 def handle_grant_reply_approved_sent(data):
-
     is_reminder = data["is_reminder"]
     grant = Grant.objects.get(id=data["grant_id"])
     reply_url = urljoin(settings.FRONTEND_URL, "/grants/reply/")
@@ -111,7 +110,7 @@ def _grant_send_email(template: EmailTemplate, subject: str, grant: Grant, **kwa
 
         user_data = users_result.data["usersByIds"][0]
 
-        subject_prefix = f"[PyCon Italia {grant.conference.start:%Y}]"
+        subject_prefix = f"[{grant.conference.name.localize('en')}]"
 
         send_email(
             template=template,

@@ -6,7 +6,9 @@ import pytest
 from domain_events.publisher import (
     notify_new_submission,
     publish_message,
-    send_grant_reply_email,
+    send_grant_reply_approved_email,
+    send_grant_reply_rejected_email,
+    send_grant_reply_waiting_list_email,
     send_schedule_invitation_email,
     send_speaker_voucher_email,
 )
@@ -134,7 +136,7 @@ def test_send_speaker_voucher_email(speaker_voucher_factory):
 def test_send_grant_reply_approved_email(grant_factory):
     grant = grant_factory(status=Grant.Status.approved)
     with patch("domain_events.publisher.publish_message") as mock_publish:
-        send_grant_reply_email(grant)
+        send_grant_reply_approved_email(grant)
 
     mock_publish.assert_called_once_with(
         "GrantReplyApprovedSent",
@@ -150,7 +152,7 @@ def test_send_grant_reply_approved_email(grant_factory):
 def test_send_grant_reply_approved_email_reminder(grant_factory):
     grant = grant_factory(status=Grant.Status.approved)
     with patch("domain_events.publisher.publish_message") as mock_publish:
-        send_grant_reply_email(grant, is_reminder=True)
+        send_grant_reply_approved_email(grant, is_reminder=True)
 
     mock_publish.assert_called_once_with(
         "GrantReplyApprovedReminderSent",
@@ -166,7 +168,7 @@ def test_send_grant_reply_approved_email_reminder(grant_factory):
 def test_send_grant_reply_waiting_list_email(grant_factory):
     grant = grant_factory(status=Grant.Status.waiting_list)
     with patch("domain_events.publisher.publish_message") as mock_publish:
-        send_grant_reply_email(grant)
+        send_grant_reply_waiting_list_email(grant)
 
     mock_publish.assert_called_once_with(
         "GrantReplyWaitingListSent",
@@ -181,7 +183,7 @@ def test_send_grant_reply_waiting_list_email(grant_factory):
 def test_send_grant_reply_rejected_email(grant_factory):
     grant = grant_factory(status=Grant.Status.rejected)
     with patch("domain_events.publisher.publish_message") as mock_publish:
-        send_grant_reply_email(grant)
+        send_grant_reply_rejected_email(grant)
 
     mock_publish.assert_called_once_with(
         "GrantReplyRejectedSent",

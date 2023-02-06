@@ -199,43 +199,42 @@ def send_volunteers_push_notification(notification_id: int, volunteers_device_id
     )
 
 
-def send_grant_reply_email(grant: Grant, is_reminder: bool = False):
-    logger.info("Sending reply email for GRANT %s", grant.id)
-    if grant.status in (
-        Grant.Status.approved,
-        Grant.Status.waiting_for_confirmation,
-    ):
-        event_name = (
-            "GrantReplyApprovedReminderSent"
-            if is_reminder
-            else "GrantReplyApprovedSent"
-        )
+def send_grant_reply_approved_email(grant: Grant, is_reminder: bool = False):
+    logger.info("Sending reply APPROVED email for GRANT %s", grant.id)
 
-        logger.info(
-            "Sending APPROVED reply email for GRANT %s (publish message)", grant.id
-        )
-        return publish_message(
-            event_name,
-            body={
-                "grant_id": grant.id,
-                "is_reminder": is_reminder,
-            },
-            deduplication_id=str(grant.id),
-        )
+    event_name = (
+        "GrantReplyApprovedReminderSent" if is_reminder else "GrantReplyApprovedSent"
+    )
 
-    if grant.status == Grant.Status.waiting_list and not grant.applicant_reply_sent_at:
-        return publish_message(
-            "GrantReplyWaitingListSent",
-            body={"grant_id": grant.id},
-            deduplication_id=str(grant.id),
-        )
+    logger.info("Sending APPROVED reply email for GRANT %s (publish message)", grant.id)
+    return publish_message(
+        event_name,
+        body={
+            "grant_id": grant.id,
+            "is_reminder": is_reminder,
+        },
+        deduplication_id=str(grant.id),
+    )
 
-    if grant.status == Grant.Status.rejected and not grant.applicant_reply_sent_at:
-        return publish_message(
-            "GrantReplyRejectedSent",
-            body={"grant_id": grant.id},
-            deduplication_id=str(grant.id),
-        )
+
+def send_grant_reply_waiting_list_email(grant: Grant):
+    logger.info("Sending reply WAITING_LIST email for GRANT %s", grant.id)
+
+    return publish_message(
+        "GrantReplyWaitingListSent",
+        body={"grant_id": grant.id},
+        deduplication_id=str(grant.id),
+    )
+
+
+def send_grant_reply_rejected_email(grant: Grant):
+    logger.info("Sending reply REJECTED email for GRANT %s", grant.id)
+
+    return publish_message(
+        "GrantReplyRejectedSent",
+        body={"grant_id": grant.id},
+        deduplication_id=str(grant.id),
+    )
 
 
 def notify_new_grant_reply(grant: Grant, request):

@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from typing import Dict, List, Optional
 
 from django import forms
@@ -7,7 +8,9 @@ from import_export.admin import ExportMixin
 from import_export.fields import Field
 
 from domain_events.publisher import (
-    send_grant_reply_email
+    send_grant_reply_approved_email,
+    send_grant_reply_rejected_email,
+    send_grant_reply_waiting_list_email,
 )
 from submissions.models import Submission
 from users.autocomplete import UsersBackendAutocomplete
@@ -134,26 +137,84 @@ def send_reply_email(modeladmin, request, queryset):
             Grant.Status.waiting_list,
             Grant.Status.waiting_list_maybe,
             Grant.Status.rejected,
-            Grant.Status.waiting_for_confirmation,
         ),
     )
 
-    for grant in queryset:
-        send_grant_reply_email(grant=grant)
+    if not queryset:
+        messages.add_message(
+            request, messages.WARNING, "No grants found in the selection"
+        )
+        return
 
-    messages.add_message(request, messages.INFO, "Reply sent")
+    for grant in queryset:
+        if grant.status in (Grant.Status.approved,):
+            if grant.approved_type is None:
+                messages.add_message(
+                    request,
+                    messages.ERROR,
+                    f"Grant for {grant.name} is missing 'Grant Approved Type'!",
+                )
+                return
+
+            if (
+                not grant.grant_type == Grant.ApprovedType.ticket_only
+                and grant.approved_amount is None
+            ):
+                messages.add_message(
+                    request,
+                    messages.ERROR,
+                    f"Grant for {grant.name} is missing 'Grant Approved Amount'!",
+                )
+                return
+
+            grant.applicant_reply_deadline = datetime.now().date() + timedelta(days=14)
+            grant.save()
+            send_grant_reply_approved_email(grant)
+
+            messages.add_message(
+                request, messages.INFO, f"Sent approved reply to {grant.name}"
+            )
+
+        if (
+            grant.status == Grant.Status.waiting_list
+            and not grant.applicant_reply_sent_at
+        ):
+            send_grant_reply_waiting_list_email(grant)
+            messages.add_message(
+                request, messages.INFO, f"Sent Waiting List reply to {grant.name}"
+            )
+
+        if grant.status == Grant.Status.rejected and not grant.applicant_reply_sent_at:
+            send_grant_reply_rejected_email(grant)
+            messages.add_message(
+                request, messages.INFO, f"Sent Rejected reply to {grant.name}"
+            )
 
 
 @admin.action(description="Send reminder to waiting confirmation grants")
-def send_grant_reminder_to_waiting(modeladmin, request, queryset):
+def send_grant_reminder_to_waiting_for_confirmation(modeladmin, request, queryset):
     queryset = queryset.filter(
-        status__in=(
-            Grant.Status.waiting_for_confirmation,
-        ),
+        status__in=(Grant.Status.waiting_for_confirmation,),
     )
 
     for grant in queryset:
-        send_grant_reply_email(grant=grant, is_reminder=True)
+        if not grant.grant_type:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                f"Grant for {grant.name} is missing 'Grant Approved Type'!",
+            )
+            return
+
+        if not grant.grant_type == Grant.ApprovedType.ticket_only:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                f"Grant for {grant.name} is missing 'Grant Approved Ammount'!",
+            )
+            return
+
+        send_grant_reply_approved_email(grant, is_reminder=True)
 
     messages.add_message(request, messages.INFO, "Grants reminder sent")
 
@@ -170,8 +231,6 @@ class GrantAdminForm(forms.ModelForm):
             "status",
             "approved_type",
             "approved_amount",
-            "applicant_reply_sent_at",
-            "applicant_reply_deadline",
             "full_name",
             "conference",
             "user_id",
@@ -220,7 +279,7 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
     )
     user_fk = "user_id"
 
-    actions = [send_reply_email, send_grant_reminder_to_waiting]
+    actions = [send_reply_email, send_grant_reminder_to_waiting_for_confirmation]
 
     @admin.display(
         description="User",
@@ -229,7 +288,6 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
         if obj.user_id:
             return self.get_user_display_name(obj.user_id)
         return obj.email
-
 
     class Media:
         js = ["admin/js/jquery.init.js"]

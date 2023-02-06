@@ -495,7 +495,7 @@ def test_handle_grant_approved_ticket_only_reply_sent(grant_factory, mock_users_
     email_mock.assert_called_once_with(
         template=EmailTemplate.GRANT_APPROVED_TICKET_ONLY,
         to="marco@placeholder.it",
-        subject="[PyCon Italia 2023] Your Python Italia Grant Award!",
+        subject=f"[{grant.conference.name}] Your Python Italia Grant Award!",
         variables={
             "firstname": "Marco Acierno",
             "startDate": f"{grant.conference.start:%w %B}",
@@ -528,7 +528,7 @@ def test_handle_grant_approved_ticket_travel_accommodation_reply_sent(
     email_mock.assert_called_once_with(
         template=EmailTemplate.GRANT_APPROVED_TICKET_TRAVEL_ACCOMMODATION,
         to="marco@placeholder.it",
-        subject="[PyCon Italia 2023] Your Python Italia Grant Award!",
+        subject=f"[{grant.conference.name}] Your Python Italia Grant Award!",
         variables={
             "firstname": "Marco Acierno",
             "startDate": f"{grant.conference.start:%w %B}",
@@ -559,7 +559,7 @@ def test_handle_grant_reply_sent_reminder(grant_factory, mock_users_by_ids):
     email_mock.assert_called_once_with(
         template=EmailTemplate.GRANT_APPROVED_TICKET_ONLY,
         to="marco@placeholder.it",
-        subject="[PyCon Italia 2023] Reminder: Your Python Italia Grant Award!",
+        subject=f"[{grant.conference.name}] Reminder: Your Python Italia Grant Award!",
         variables={
             "firstname": "Marco Acierno",
             "startDate": f"{grant.conference.start:%w %B}",
@@ -584,7 +584,7 @@ def test_handle_grant_reply_waiting_list_sent(grant, mock_users_by_ids):
     email_mock.assert_called_once_with(
         template=EmailTemplate.GRANT_WAITING_LIST,
         to="marco@placeholder.it",
-        subject="[PyCon Italia 2023] Financial Aid Update",
+        subject=f"[{grant.conference.name}] Financial Aid Update",
         variables={
             "firstname": "Marco Acierno",
         },
@@ -603,7 +603,7 @@ def test_handle_grant_reply_rejected_sent(grant, mock_users_by_ids):
     email_mock.assert_called_once_with(
         template=EmailTemplate.GRANT_REJECTED,
         to="marco@placeholder.it",
-        subject="[PyCon Italia 2023] Financial Aid Update",
+        subject=f"[{grant.conference.name}] Financial Aid Update",
         variables={
             "firstname": "Marco Acierno",
         },

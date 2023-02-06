@@ -51,7 +51,7 @@ class Grant(TimeStampedModel):
     class ApprovedType(models.TextChoices):
         ticket_only = "ticket_only", _("Ticket Only")
         ticket_travel = "ticket_travel", _("Ticket + Travel")
-        ticket_accommodation = "ticket_accommodation", _("Ticket Authorization")
+        ticket_accommodation = "ticket_accommodation", _("Ticket + Accommodation")
         ticket_travel_accommodation = "Ticket", _("Ticket + Travel + Accommodation")
 
     name = models.CharField(_("name"), max_length=300)
