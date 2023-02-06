@@ -31,19 +31,23 @@ type GrantReplyFrom = {
 };
 
 const APPROVED_STATUSES = [
-  GrantStatus.Approved,
   GrantStatus.WaitingForConfirmation,
   GrantStatus.Confirmed,
 ];
 
 // only if the grant is in those of these statuses the User can see the page.
 const ALLOWED_STATUSES = [
-  GrantStatus.Approved,
   GrantStatus.WaitingForConfirmation,
   GrantStatus.Confirmed,
   GrantStatus.Refused,
   GrantStatus.WaitingList,
   GrantStatus.WaitingListMaybe,
+  GrantStatus.NeedsInfo,
+];
+
+const ANSWERS_STATUSES = [
+  GrantStatus.Confirmed,
+  GrantStatus.Refused,
   GrantStatus.NeedsInfo,
 ];
 
@@ -97,8 +101,7 @@ const GrantReply = () => {
     return <PageLoading titleId="global.loading" />;
   }
 
-  const hasSentAnswer =
-    grant?.status !== GrantStatus.WaitingForConfirmation ?? false;
+  const hasSentAnswer = ANSWERS_STATUSES.includes(grant?.status) ?? false;
 
   if (error) {
     return (
