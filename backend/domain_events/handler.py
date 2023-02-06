@@ -63,13 +63,15 @@ def handle_grant_reply_approved_sent(data):
     }
     if grant.approved_type == Grant.ApprovedType.ticket_only:
         template = EmailTemplate.GRANT_APPROVED_TICKET_ONLY
+    elif grant.approved_type == Grant.ApprovedType.ticket_accommodation:
+        template = EmailTemplate.GRANT_APPROVED_TICKET_ACCOMMODATION
     elif grant.approved_type == Grant.ApprovedType.ticket_travel_accommodation:
         template = EmailTemplate.GRANT_APPROVED_TICKET_TRAVEL_ACCOMMODATION
         variables["amount"] = f"{grant.approved_amount:.0f}"
     else:
         raise ValueError("Grant Approved type must be not null.")
 
-    _grant_send_email(template=template, subject=subject, grant=grant, **variables)
+    _send_grant_email(template=template, subject=subject, grant=grant, **variables)
 
     grant.status = Grant.Status.waiting_for_confirmation
     grant.save()
@@ -84,7 +86,7 @@ def handle_grant_reply_waiting_list_sent(data):
         type="custom", name__contains={"en": "Update Grants in Waiting List"}
     ).first()
 
-    _grant_send_email(
+    _send_grant_email(
         template=EmailTemplate.GRANT_WAITING_LIST,
         subject=subject,
         grant=grant,
@@ -98,14 +100,14 @@ def handle_grant_reply_rejected_sent(data):
 
     subject = "Financial Aid Update"
 
-    _grant_send_email(
+    _send_grant_email(
         template=EmailTemplate.GRANT_REJECTED,
         subject=subject,
         grant=grant,
     )
 
 
-def _grant_send_email(template: EmailTemplate, subject: str, grant: Grant, **kwargs):
+def _send_grant_email(template: EmailTemplate, subject: str, grant: Grant, **kwargs):
     try:
         users_result = execute_service_client_query(
             USERS_NAMES_FROM_IDS, {"ids": [grant.user_id]}
