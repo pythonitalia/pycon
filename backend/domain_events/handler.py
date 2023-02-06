@@ -45,6 +45,7 @@ def get_name(user_data, fallback: str = "<no name specified>"):
 
 
 def handle_grant_reply_approved_sent(data):
+    logger.info("Sending Reply APPROVED email for Grant %s", data["grant_id"])
     is_reminder = data["is_reminder"]
     grant = Grant.objects.get(id=data["grant_id"])
     reply_url = urljoin(settings.FRONTEND_URL, "/grants/reply/")
@@ -65,19 +66,24 @@ def handle_grant_reply_approved_sent(data):
         template = EmailTemplate.GRANT_APPROVED_TICKET_ONLY
     elif grant.approved_type == Grant.ApprovedType.ticket_accommodation:
         template = EmailTemplate.GRANT_APPROVED_TICKET_ACCOMMODATION
+    elif grant.approved_type == Grant.ApprovedType.ticket_travel:
+        template = EmailTemplate.GRANT_APPROVED_TICKET_TRAVEL
     elif grant.approved_type == Grant.ApprovedType.ticket_travel_accommodation:
         template = EmailTemplate.GRANT_APPROVED_TICKET_TRAVEL_ACCOMMODATION
         variables["amount"] = f"{grant.approved_amount:.0f}"
     else:
-        raise ValueError("Grant Approved type must be not null.")
+        raise ValueError(f"Grant Approved type `{grant.approved_type}` not valid.")
 
     _send_grant_email(template=template, subject=subject, grant=grant, **variables)
 
     grant.status = Grant.Status.waiting_for_confirmation
     grant.save()
 
+    logger.info("Email sent for Grant %s", grant.id)
+
 
 def handle_grant_reply_waiting_list_sent(data):
+    logger.info("Sending Reply WAITING LIST email for Grant %s", data["grant_id"])
     grant = Grant.objects.get(id=data["grant_id"])
     reply_url = urljoin(settings.FRONTEND_URL, "/grants/reply/")
 
@@ -94,8 +100,11 @@ def handle_grant_reply_waiting_list_sent(data):
         grantsUpdateDeadline=f"{deadline.start:%-d %B %Y}",
     )
 
+    logger.info("Email sent for Grant %s", grant.id)
+
 
 def handle_grant_reply_rejected_sent(data):
+    logger.info("Sending Reply REJECTED email for Grant %s", data["grant_id"])
     grant = Grant.objects.get(id=data["grant_id"])
 
     subject = "Financial Aid Update"
@@ -105,6 +114,8 @@ def handle_grant_reply_rejected_sent(data):
         subject=subject,
         grant=grant,
     )
+
+    logger.info("Email sent for Grant %s", grant.id)
 
 
 def _send_grant_email(template: EmailTemplate, subject: str, grant: Grant, **kwargs):
@@ -133,7 +144,10 @@ def _send_grant_email(template: EmailTemplate, subject: str, grant: Grant, **kwa
         grant.save()
     except Exception as e:
         logger.error(
-            "Sending Grant email reply WENT WRONG for grant\n%s", e, exc_info=True
+            "Something went wrong while sending email Reply for Grant %s:\n%s",
+            grant.id,
+            e,
+            exc_info=True,
         )
 
 
