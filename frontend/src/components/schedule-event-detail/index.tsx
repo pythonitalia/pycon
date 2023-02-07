@@ -7,13 +7,13 @@ import {
   Tag,
   Text,
 } from "@python-italia/pycon-styleguide";
-import { Color } from "@python-italia/pycon-styleguide/dist/types";
 import { parseISO } from "date-fns";
 import { FormattedMessage } from "react-intl";
 
 import { compile } from "~/helpers/markdown";
 import { useCurrentLanguage } from "~/locale/context";
 
+import { EventTag } from "./event-tag";
 import { Sidebar } from "./sidebar";
 import { Speaker, SpeakerSection } from "./speaker-section";
 
@@ -51,7 +51,6 @@ export const ScheduleEventDetail = ({
   spacesLeft,
 }: Props) => {
   const lang = useCurrentLanguage();
-  const tagColor = getTagColor(type);
   const parsedStartTime = parseISO(startTime);
   const parsedEndTime = parseISO(endTime);
   const dateFormatter = new Intl.DateTimeFormat(lang, {
@@ -68,13 +67,7 @@ export const ScheduleEventDetail = ({
   return (
     <>
       <Section illustration="snakeHead">
-        <Tag color={tagColor}>
-          {type === "talk" && "Talk 🎤"}
-          {type === "workshop" && "Workshop 💻"}
-          {type === "keynote" && "Keynote 🖌️"}
-          {type === "lightning-talks" && "Lightning Talks 🏎️"}
-          {type === "panel" && "Panel 👥"}
-        </Tag>
+        <EventTag type={type} />
         <Spacer size="2md" />
         <Heading size={1}>{eventTitle}</Heading>
         {startTime && (
@@ -166,18 +159,3 @@ const Title = ({ children }: { children: React.ReactNode }) => (
     {children}
   </Text>
 );
-
-const getTagColor = (type: Props["type"]): Color => {
-  switch (type) {
-    case "talk":
-      return "green";
-    case "workshop":
-      return "purple";
-    case "keynote":
-      return "yellow";
-    case "lightning-talks":
-      return "caramel";
-    case "panel":
-      return "blue";
-  }
-};

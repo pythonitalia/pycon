@@ -3,7 +3,7 @@
 /** @jsx jsx */
 import { ApolloProvider } from "@apollo/client";
 import { getMessagesForLocale } from "@python-italia/pycon-styleguide";
-import "@python-italia/pycon-styleguide/style";
+import "@python-italia/pycon-styleguide/custom-style";
 import { Analytics } from "@vercel/analytics/react";
 import { useEffect } from "react";
 import { createIntl, createIntlCache, RawIntlProvider } from "react-intl";
@@ -20,6 +20,8 @@ import { updateOlarkFields } from "~/helpers/olark";
 import messages from "~/locale";
 import { LocaleProvider, useCurrentLanguage } from "~/locale/context";
 import { theme } from "~/theme";
+
+import "../global.css";
 
 const intlCache = createIntlCache();
 

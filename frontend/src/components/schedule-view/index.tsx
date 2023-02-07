@@ -1,12 +1,17 @@
-/** @jsxRuntime classic */
-
-/** @jsx jsx */
-import React, { Fragment, useCallback } from "react";
-import { Box, Flex, Heading, jsx } from "theme-ui";
+import {
+  Section,
+  Heading,
+  Spacer,
+  DaysSelector,
+  Button,
+  Text,
+  BasicButton,
+} from "@python-italia/pycon-styleguide";
+import React, { Fragment, useCallback, useState } from "react";
+import { FormattedMessage } from "react-intl";
 
 import { useRouter } from "next/router";
 
-import { DaySelector } from "~/components/day-selector";
 import { useCurrentLanguage } from "~/locale/context";
 import {
   ScheduleQuery,
@@ -14,32 +19,15 @@ import {
   useUpdateOrCreateSlotItemMutation,
 } from "~/types";
 
-import { Button } from "../button/button";
 import { Schedule } from "./schedule";
 import { ItemsPanel } from "./staff/items-panel";
 
+export type ViewMode = "full" | "personal";
+
 const LoadingOverlay = () => (
-  <Flex
-    sx={
-      {
-        position: "fixed",
-        left: 0,
-        right: 0,
-        bottom: 0,
-        top: 0,
-        background: "rgba(0, 0, 0, 0.3)",
-        zIndex: "scheduleLoading",
-        alignItems: "center",
-        justifyContent: "center",
-      } as any
-    }
-  >
-    <Box
-      sx={{ backgroundColor: "white", border: "primary", p: 4, fontSize: 3 }}
-    >
-      Updating schedule, please wait...
-    </Box>
-  </Flex>
+  <div className="flex fixed inset-0 bg-black/30 z-10 items-center justify-center">
+    <div className="bg-white border p-4">Updating schedule, please wait...</div>
+  </div>
 );
 
 export const ScheduleView = ({
@@ -59,6 +47,7 @@ export const ScheduleView = ({
     query: { photo },
   } = useRouter();
   const isInPhotoMode = photo == "1";
+  const [viewMode, setViewMode] = useState<ViewMode>("full");
 
   const [addSlot, { loading: addingSlot }] = useAddScheduleSlotMutation({
     variables: { code, day: currentDay, duration: 60, language },
@@ -66,6 +55,10 @@ export const ScheduleView = ({
 
   const [addOrCreateScheduleItem, { loading: updatingSchedule }] =
     useUpdateOrCreateSlotItemMutation();
+
+  const toggleScheduleView = useCallback(() => {
+    setViewMode((current) => (current === "full" ? "personal" : "full"));
+  }, []);
 
   const addCustomScheduleItem = useCallback(
     (slotId: string, itemRooms: string[], title = "Custom") =>
@@ -149,49 +142,52 @@ export const ScheduleView = ({
         <ItemsPanel keynotes={keynotes ?? []} submissions={submissions ?? []} />
       )}
       {(addingSlot || updatingSchedule) && <LoadingOverlay />}
-      <Box
-        sx={{ flex: 1, width: shouldShowAdmin ? "calc(100% - 300px)" : "100%" }}
-      >
-        {!isInPhotoMode && (
-          <Box sx={{ backgroundColor: "orange", borderTop: "primary" }}>
-            <Box
-              sx={{
-                display: ["block", null, "flex"],
-                py: 4,
-                px: 3,
-                maxWidth: "largeContainer",
-                mx: "auto",
-              }}
-            >
-              <Heading sx={{ fontSize: 6 }}>Schedule</Heading>
+      {!isInPhotoMode && (
+        <>
+          <Section illustration="snakeHead">
+            <Heading size="display1">Schedule</Heading>
+          </Section>
+        </>
+      )}
 
-              <Box sx={{ ml: "auto" }}>
-                <DaySelector
-                  days={days}
-                  currentDay={currentDay}
-                  timezone={schedule.conference.timezone}
-                  changeDay={changeDay}
-                />
-              </Box>
-            </Box>
-          </Box>
-        )}
+      <Section noContainer>
+        <DaysSelector
+          days={days.map((d) => ({
+            date: d.day,
+            selected: d.day === currentDay,
+          }))}
+          onClick={changeDay}
+          language={language}
+        >
+          <BasicButton onClick={toggleScheduleView}>
+            {viewMode === "full" && (
+              <FormattedMessage id="schedule.mySchedule" />
+            )}
+            {viewMode === "personal" && (
+              <FormattedMessage id="schedule.fullSchedule" />
+            )}
+          </BasicButton>
+        </DaysSelector>
+        <Spacer size="large" />
 
         {day && (
-          <Schedule
-            slots={day.slots}
-            rooms={day.rooms}
-            adminMode={shouldShowAdmin}
-            addCustomScheduleItem={addCustomScheduleItem}
-            addSubmissionToSchedule={addSubmissionToSchedule}
-            addKeynoteToSchedule={addKeynoteToSchedule}
-            moveItem={moveItem}
-            currentDay={currentDay}
-          />
+          <div>
+            <Schedule
+              viewMode={viewMode}
+              slots={day.slots}
+              rooms={day.rooms}
+              adminMode={shouldShowAdmin}
+              addCustomScheduleItem={addCustomScheduleItem}
+              addSubmissionToSchedule={addSubmissionToSchedule}
+              addKeynoteToSchedule={addKeynoteToSchedule}
+              moveItem={moveItem}
+              currentDay={currentDay}
+            />
+          </div>
         )}
 
         {shouldShowAdmin && (
-          <Box sx={{ my: 4, ml: 100 }}>
+          <div className="my-4 ml-24">
             {schedule.conference.durations.map((duration) => {
               if (
                 duration.allowedSubmissionTypes.find(
@@ -203,7 +199,6 @@ export const ScheduleView = ({
 
               return (
                 <Button
-                  sx={{ mr: 3 }}
                   key={duration.duration}
                   onClick={() => addScheduleSlot(duration.duration)}
                 >
@@ -211,9 +206,9 @@ export const ScheduleView = ({
                 </Button>
               );
             })}
-          </Box>
+          </div>
         )}
-      </Box>
+      </Section>
     </Fragment>
   );
 };

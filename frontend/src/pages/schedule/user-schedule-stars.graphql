@@ -1,0 +1,5 @@
+query UserStarredScheduleItems($code: String!) {
+  me {
+    starredScheduleItems(conference: $code)
+  }
+}

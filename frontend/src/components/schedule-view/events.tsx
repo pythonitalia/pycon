@@ -1,18 +1,39 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
-import React from "react";
-import { FormattedMessage } from "react-intl";
-import { Box, Flex, jsx, Text, ThemeUIStyleObject } from "theme-ui";
-
-import { EnglishIcon } from "~/components/icons/english";
-import { ItalianIcon } from "~/components/icons/italian";
-import { Link } from "~/components/link";
 import {
-  getColorForItem,
-  getColorForSubmission,
-} from "~/helpers/get-color-for-submission";
+  Heading,
+  Separator,
+  ScheduleItemCard,
+  Spacer,
+  VerticalStack,
+  Text,
+  Link,
+  AvatarGroup,
+  Avatar,
+  HorizontalStack,
+  LayoutContent,
+} from "@python-italia/pycon-styleguide";
+import { Color } from "@python-italia/pycon-styleguide/dist/types";
+import { HeartIcon } from "@python-italia/pycon-styleguide/icons";
+import React from "react";
+import { jsx, ThemeUIStyleObject } from "theme-ui";
 
+import { useRouter } from "next/router";
+
+import { getColorForSubmission } from "~/helpers/get-color-for-submission";
+import { useTranslatedMessage } from "~/helpers/use-translated-message";
+import { useCurrentLanguage } from "~/locale/context";
+import {
+  readUserStarredScheduleItemsQueryCache,
+  writeUserStarredScheduleItemsQueryCache,
+  useStarScheduleItemMutation,
+  useUnstarScheduleItemMutation,
+} from "~/types";
+
+import { createHref } from "../link";
+import { useLoginState } from "../profile/hooks";
+import { EventTag } from "../schedule-event-detail/event-tag";
 import {
   Item,
   ItemTypes,
@@ -39,6 +60,7 @@ const BaseDraggable = ({
   adminMode?: boolean;
   sx?: ThemeUIStyleObject;
   children: any;
+  className?: string;
 }) => {
   const [_, drag] = useDragOrDummy({
     adminMode,
@@ -52,15 +74,15 @@ const BaseDraggable = ({
   });
 
   return (
-    <Box
+    <div
       ref={adminMode ? drag : null}
-      sx={{
+      style={{
         cursor: adminMode ? "move" : "",
       }}
       {...props}
     >
       {children}
-    </Box>
+    </div>
   );
 };
 
@@ -125,7 +147,7 @@ export const getItemUrl = (item: Item) => {
     item.type === "talk" ||
     item.type === "panel"
   ) {
-    return `/talk/[slug]`;
+    return `/event/[slug]`;
   }
 
   if (item.type === "keynote") {
@@ -184,6 +206,7 @@ export const ScheduleEntry = ({
   slot,
   rooms,
   day,
+  starred,
   ...props
 }: {
   adminMode: boolean;
@@ -191,20 +214,85 @@ export const ScheduleEntry = ({
   slot: Slot;
   rooms: Room[];
   day: string;
+  style?: CSSStyleDeclaration;
   sx?: any;
+  starred: boolean;
 }) => {
+  const router = useRouter();
+  const [isLoggedIn] = useLoginState();
   const type = getType(item.submission);
+  const language = useCurrentLanguage();
+  const [starScheduleItem] = useStarScheduleItemMutation({
+    variables: {
+      id: item.id,
+    },
+    optimisticResponse: {
+      starScheduleItem: null,
+    },
+    update(cache) {
+      const { me } = readUserStarredScheduleItemsQueryCache({
+        cache,
+        variables: {
+          code: process.env.conferenceCode,
+        },
+      });
+      writeUserStarredScheduleItemsQueryCache({
+        cache,
+        variables: {
+          code: process.env.conferenceCode,
+        },
+        data: {
+          me: {
+            ...me,
+            starredScheduleItems: [...me.starredScheduleItems, item.id],
+          },
+        },
+      });
+    },
+  });
+  const [unstarScheduleItem] = useUnstarScheduleItemMutation({
+    variables: {
+      id: item.id,
+    },
+    optimisticResponse: {
+      unstarScheduleItem: null,
+    },
+    update(cache) {
+      const { me } = readUserStarredScheduleItemsQueryCache({
+        cache,
+        variables: {
+          code: process.env.conferenceCode,
+        },
+      });
+      writeUserStarredScheduleItemsQueryCache({
+        cache,
+        variables: {
+          code: process.env.conferenceCode,
+        },
+        data: {
+          me: {
+            ...me,
+            starredScheduleItems: me.starredScheduleItems.filter(
+              (s) => s !== item.id,
+            ),
+          },
+        },
+      });
+    },
+  });
 
-  const backgroundColor = getColorForItem(item);
+  const toggleEventFavorite = () => {
+    if (!isLoggedIn) {
+      router.push(`/login?next=/schedule/${day}`);
+      return;
+    }
 
-  const itemDuration = item.submission
-    ? item.submission.duration!.duration
-    : slot.duration;
-
-  const marker =
-    adminMode && itemDuration !== slot.duration ? `*${itemDuration}` : null;
-
-  const LanguageIcon = item.language.code === "en" ? EnglishIcon : ItalianIcon;
+    if (!starred) {
+      starScheduleItem();
+    } else {
+      unstarScheduleItem();
+    }
+  };
 
   const audienceLevel = item.submission
     ? item.submission.audienceLevel!.name
@@ -213,103 +301,142 @@ export const ScheduleEntry = ({
     : null;
 
   const itemUrl = getItemUrl(item);
-  const WrapperComponent = itemUrl ? Link : Box;
+  const wrapperProps: { hoverColor: Color; href: string } | undefined = itemUrl
+    ? {
+        hoverColor: "coral",
+        href: createHref({
+          path: itemUrl,
+          locale: language,
+          params: {
+            slug: item.slug,
+          },
+        }),
+      }
+    : undefined;
+
+  const WrapperComponent = itemUrl ? Link : "div";
+  const languageText = useTranslatedMessage(
+    item.language.code === "en" ? `talk.language.en` : `talk.language.it`,
+  );
+  const isCustomItem = item.type === "custom";
+  const speakersNames = item.speakers.map((s) => s.fullName).join(", ");
+  const allRoomsText = useTranslatedMessage("scheduleView.allRooms");
+
+  const roomText =
+    item.rooms.length === rooms.length ||
+    item.rooms.length ===
+      rooms.filter((room) => room.type !== "training").length
+      ? allRoomsText
+      : item.rooms.map((room) => room.name).join(", ");
 
   return (
     <BaseDraggable
       adminMode={adminMode}
       type={type}
       metadata={{ itemId: item.id }}
-      sx={{
-        zIndex: ["scheduleDraggable"],
-        backgroundColor,
-        position: "relative",
-        px: [20, 2],
-        py: [3, 2],
-        fontSize: 1,
-      }}
+      className="relative z-20 border-r border-l md:border-0"
       {...props}
     >
-      <WrapperComponent
-        path={itemUrl}
-        params={{ slug: item.slug, day }}
-        sx={{
-          color: "inherit",
-          textDecoration: "none",
-          maxHeight: [null, 135],
-          height: "100%",
-          display: "flex",
-          flexDirection: "column",
-        }}
+      <ScheduleItemCard
+        size={slot.type === "FREE_TIME" ? "small" : "large"}
+        background={getItemBg(item.type)}
       >
-        <Text>
-          {item.type !== "custom" ? (
-            <Text
-              sx={{
-                fontWeight: "bold",
-                display: ["block", "none"],
-                mb: 2,
-              }}
-            >
-              {item.rooms.map((room) => room.name).join(", ")}
-            </Text>
-          ) : null}
-
-          {item.title}
-
-          {marker && (
-            <Text as="span" sx={{ fontWeight: "bold" }}>
-              {" "}
-              {marker}
-            </Text>
+        <VerticalStack fullHeight justifyContent="spaceBetween">
+          {!isCustomItem && (
+            <LayoutContent showUntil="tablet">
+              <HorizontalStack
+                wrap="wrap"
+                gap="medium"
+                justifyContent="spaceBetween"
+              >
+                {speakersNames.length > 0 && (
+                  <Heading size={6}>{speakersNames}</Heading>
+                )}
+                <Text size="label4" color="grey-700">
+                  {[roomText, audienceLevel, languageText]
+                    .filter((v) => v)
+                    .join(", ")}
+                </Text>
+              </HorizontalStack>
+              <Spacer size="small" />
+            </LayoutContent>
           )}
-        </Text>
 
-        <Flex
-          sx={{
-            color: !audienceLevel ? "black" : "white",
-            mt: ["20px", "auto"],
-          }}
-        >
-          <Box sx={{ mr: "auto" }}>
-            <Text sx={{ fontWeight: "bold", display: "block" }}>
-              {item.speakers.map((s) => s.fullName).join(" & ")}
-            </Text>
-            {audienceLevel && <Text>{audienceLevel}</Text>}
-            {item.type === "keynote" && <Text>Keynote</Text>}
-            {item.hasLimitedCapacity && item.hasSpacesLeft && (
-              <Text sx={{ color: "black", display: "block" }}>
-                <FormattedMessage
-                  id="talk.spacesLeft"
-                  values={{
-                    spacesLeft: (
-                      <Text as="span" sx={{ fontWeight: "bold" }}>
-                        {item.spacesLeft}
-                      </Text>
-                    ),
-                  }}
-                />
-              </Text>
+          <div className="flex flex-col-reverse items-start md:flex-col gap-6 md:gap-2">
+            {!isCustomItem && (
+              <HorizontalStack
+                fullWidth
+                alignItems="center"
+                justifyContent="spaceBetween"
+                gap="small"
+                wrap="wrap"
+              >
+                <EventTag type={item.type} />
+                <HeartIcon filled={starred} onClick={toggleEventFavorite} />
+              </HorizontalStack>
             )}
-            {item.hasLimitedCapacity && !item.hasSpacesLeft && (
-              <Text sx={{ color: "black", display: "block" }}>
-                <FormattedMessage id="talk.eventIsFull" />
-              </Text>
-            )}
-          </Box>
+            <WrapperComponent {...wrapperProps}>
+              <Heading color="none" size={4}>
+                {item.title}
+              </Heading>
+            </WrapperComponent>
+          </div>
 
-          {(item.type === "training" ||
-            item.type === "keynote" ||
-            item.type === "talk") && (
-            <LanguageIcon
-              sx={{
-                width: 30,
-                flexShrink: 0,
-              }}
-            />
+          {!isCustomItem && (
+            <LayoutContent showFrom="tablet">
+              <Text size="label3" color="grey-500">
+                {[audienceLevel, languageText].filter((v) => v).join(", ")}
+              </Text>
+              {item.speakers.length > 0 && (
+                <>
+                  <Spacer size="small" />
+                  <Separator />
+                  <Spacer size="small" />
+                  <HorizontalStack
+                    alignItems="center"
+                    justifyContent="spaceBetween"
+                  >
+                    <Heading size={5}>{speakersNames}</Heading>
+                    <AvatarGroup>
+                      {item.speakers.map((speaker) => (
+                        <Avatar
+                          image={speaker.participant?.photo}
+                          letter={speaker.fullName}
+                          letterBackgroundColor={getAvatarBackgroundColor(
+                            parseInt(item.id, 10),
+                          )}
+                        />
+                      ))}
+                    </AvatarGroup>
+                  </HorizontalStack>
+                </>
+              )}
+            </LayoutContent>
           )}
-        </Flex>
-      </WrapperComponent>
+        </VerticalStack>
+      </ScheduleItemCard>
     </BaseDraggable>
   );
+};
+
+const getItemBg = (type: string) => {
+  if (type === "custom") {
+    return "milk";
+  }
+
+  return "cream";
+};
+
+const BACKGROUND_COLORS: Color[] = [
+  "coral",
+  "caramel",
+  "yellow",
+  "green",
+  "blue",
+  "purple",
+  "pink",
+  "red",
+];
+const getAvatarBackgroundColor = (index: number): Color => {
+  return BACKGROUND_COLORS[Math.floor(index % BACKGROUND_COLORS.length)];
 };

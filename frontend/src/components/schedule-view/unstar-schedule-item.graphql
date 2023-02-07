@@ -1,0 +1,3 @@
+mutation UnstarScheduleItem($id: ID!) {
+  unstarScheduleItem(id: $id)
+}

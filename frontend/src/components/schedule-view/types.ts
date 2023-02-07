@@ -23,6 +23,10 @@ export type Keynote = {
   speakers: ({ fullName: string } | null)[];
 };
 
+type Participant = {
+  photo: string;
+};
+
 export type Item = {
   id: string;
   title: string;
@@ -34,7 +38,7 @@ export type Item = {
   submission?: Submission | null;
   keynote?: Keynote | null;
   audienceLevel?: { name: string } | null;
-  speakers: { fullName: string }[];
+  speakers: { fullName: string; participant?: Participant }[];
   hasLimitedCapacity: boolean;
   userHasSpot: boolean;
   hasSpacesLeft: boolean;
@@ -45,6 +49,7 @@ export type Slot = {
   id: string;
   duration: number;
   hour: string;
+  endHour: string;
   type: "DEFAULT" | "FREE_TIME";
   items: Item[];
 };

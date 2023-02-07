@@ -17,7 +17,13 @@ from conferences.models import Conference
 from domain_events.publisher import send_new_schedule_invitation_answer
 from languages.models import Language
 from pretix import user_has_admission_ticket
-from schedule.models import Day as DayModel, ScheduleItem, ScheduleItemAttendee, Slot
+from schedule.models import (
+    Day as DayModel,
+    ScheduleItem,
+    ScheduleItemAttendee,
+    ScheduleItemStar,
+    Slot,
+)
 from submissions.models import Submission
 
 from ..permissions import IsAuthenticated, IsStaffPermission
@@ -117,6 +123,23 @@ CancelBookingScheduleItemResult = strawberry.union(
 
 @strawberry.type
 class ScheduleMutations:
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    def star_schedule_item(self, info, id: ID) -> None:
+        user_id = info.context.request.user.id
+
+        ScheduleItemStar.objects.update_or_create(
+            user_id=user_id,
+            schedule_item_id=id,
+        )
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    def unstar_schedule_item(self, info, id: ID) -> None:
+        user_id = info.context.request.user.id
+        ScheduleItemStar.objects.filter(
+            user_id=user_id,
+            schedule_item_id=id,
+        ).delete()
+
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     def book_schedule_item(self, info, id: ID) -> BookScheduleItemResult:
         schedule_item = ScheduleItem.objects.get(id=id)

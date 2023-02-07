@@ -1,8 +1,4 @@
-/** @jsxRuntime classic */
-
-/** @jsx jsx */
 import React from "react";
-import { Box, jsx } from "theme-ui";
 
 import { ItemTypes } from "./types";
 import { useDropOrDummy } from "./use-drop-or-dummy";
@@ -45,23 +41,21 @@ export const Placeholder = ({
     }),
   });
 
-  const backgroundColor = isOver ? "green" : canDrop ? "orange" : "white";
+  const backgroundColor = isOver ? "green" : canDrop ? "orange" : "#FAF5F3";
 
   return (
-    <Box
+    <div
       ref={adminMode ? drop : null}
-      sx={{
+      className="hidden md:block p-2"
+      style={{
         gridColumnStart: columnStart,
         gridColumnEnd: columnStart + 1,
         gridRowStart: rowStart,
         gridRowEnd: rowEnd,
         backgroundColor,
-        p: 2,
-        fontSize: 1,
-        display: ["none", "block"],
       }}
     >
       {adminMode && `Placeholder ${duration}`}
-    </Box>
+    </div>
   );
 };

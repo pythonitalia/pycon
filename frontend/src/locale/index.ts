@@ -15,6 +15,13 @@ export const messages = {
     "global.button.loading": "Loading {emoji}",
     "global.somethingWentWrong": "Something went wrong, please try again",
     "global.tryAgain": "Something went wrong: {error}",
+    "schedule.time": "{start} - {end}",
+    "schedule.timeNoEnd": "{start}",
+    "schedule.mySchedule": "See My Schedule",
+    "schedule.fullSchedule": "See Full Schedule",
+    "schedule.live": "Live",
+
+    "scheduleView.allRooms": "All rooms",
 
     "scheduleEventDetail.eventTime": "{start} - {end}",
     "scheduleEventDetail.sidebar.spacesLeft": "Seats left",
@@ -276,6 +283,8 @@ export const messages = {
       "Login or create an account to complete your purchase",
     "login.redirectFromCFP": "Login or create an account to submit a proposal",
     "login.redirectFromGrants": "Login or create an account to request a grant",
+    "login.redirectFromSchedule":
+      "Login or create an account to save your favorite talks!",
 
     "tickets.checkout.voucher.placeholder": "Enter your voucher code",
     "tickets.checkout.recap.price": "{price} (incl. {taxRate}% VAT)",
@@ -1430,6 +1439,8 @@ Il tuo voto ci aiuterà a creare un programma che più rispecchia ciò che la co
       "Accedi o crea un account per inviare una proposal",
     "login.redirectFromGrants":
       "Accedi o crea un account per richiedere un grant",
+    "login.redirectFromSchedule":
+      "Accedi o crea un account per salvare i tuoi talk preferiti!",
 
     "tickets.checkout.voucher.placeholder": "Codice sconto",
     "tickets.checkout.recap.price": "{price} (incl. {taxRate}% IVA)",
@@ -1518,6 +1529,13 @@ Affrettati a comprare il biglietto!`,
     "homepage.sponsorsSectionText":
       "PyCon Italia può essere la tua piattaforma per guadgnare riconoscibilità del tuo brand, acquisire nuovi clienti ed opportunità ed assumere personale da una platea di professionisti altamente qualificati!",
     "homepage.sponsorsSectionCTAText": "Diventa sponsor",
+
+    "scheduleView.allRooms": "Tutte le stanze",
+    "schedule.time": "{start} - {end}",
+    "schedule.timeNoEnd": "{start}",
+    "schedule.mySchedule": "Il mio programma",
+    "schedule.fullSchedule": "Programma completo",
+    "schedule.live": "Live",
   },
 };
 

@@ -12,6 +12,7 @@ generates:
           definitions:
             - VotingSubmissions
             - MeSubmissions
+            - UserStarredScheduleItems
       - codegen-apollo-client-query.ts
     config:
       withHooks: true

@@ -4,6 +4,7 @@
 fragment ScheduleSlotFragment on ScheduleSlot {
   id
   hour
+  endHour
   duration
   type
 
@@ -41,6 +42,10 @@ fragment ScheduleSlotFragment on ScheduleSlot {
     speakers {
       id
       fullName
+      participant {
+        id
+        photo
+      }
     }
 
     rooms {

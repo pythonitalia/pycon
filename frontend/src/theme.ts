@@ -43,8 +43,8 @@ export const theme: Theme = {
     keppel: "#34B4A1",
   },
   borders: {
-    primary: "4px solid #000000",
-    socialCard: "14px solid #000000",
+    primary: "3px solid #0E1116",
+    socialCard: "14px solid #0E1116",
   },
   forms: {
     input: {
@@ -374,7 +374,8 @@ export const theme: Theme = {
     header: 11,
     scheduleItemPanel: 19,
     scheduleLoading: 20,
-    scheduleHeader: 10,
+    scheduleHeader: 13,
+    scheduleTimes: 11,
     scheduleDraggable: 9,
     footer: 0,
   },
