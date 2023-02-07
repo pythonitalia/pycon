@@ -173,7 +173,7 @@
   </div>
   <div class="review-row">
     <label>Requested a grant?</label>
-    {% if has_requested_grant %}
+    {% if grant %}
     <div>
       <a target="_blank" href="{{grant_link}}">Yes, open grant</a>
     </div>
@@ -183,7 +183,14 @@
     </div>
     {% endif %}
   </div>
-
+  {% if grant %}
+  <div class="review-row">
+    <label>Grant status</label>    
+    <div>
+      {{grant.status}}
+    </div>
+  </div>
+  {% endif %}
 </fieldset>
 <fieldset class="module aligned">
   <h2>Your vote</h2>
