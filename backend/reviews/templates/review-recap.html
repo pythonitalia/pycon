@@ -179,9 +179,9 @@
                 <td class="results-title">
                   <a
                     target="_blank"
-                    href="{% url 'admin:submissions_submission_change' item.id %}"
-                    ><strong>{{item.title}}</strong></a
-                  >
+                    href="{% url 'admin:submissions_submission_change' item.id %}">
+                    <strong>{{item.title}}</strong>
+                  </a>
 
                   <ul>
                     {% for reviewer in item.userreview_set.all %}

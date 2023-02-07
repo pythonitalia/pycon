@@ -52,6 +52,15 @@
   .score-label {
     margin-bottom: 10px;
   }
+
+  .tags-to-exclude {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .tags-to-exclude label {
+    font-size: 17px;
+  }
 </style>
 <h1>{{proposal.title | localize:"en"}}</h1>
 <fieldset class="module aligned">
@@ -103,8 +112,33 @@
     <div>{{proposal.notes}}</div>
   </div>
   <div class="review-row">
-    <label>Tags</label>
-    <div>{{proposal.tags.all|join:", "}}</div>
+    <label>Community Voting</label>
+    <div>
+      <ul>
+        {% for ranking in proposal.rankings.all %}
+        <li>
+          {{ ranking.tag.name }}: {{ ranking.rank }}/{{ ranking.total_submissions_per_tag }}
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="review-row">
+    <label>Voted by</label>
+    <div>
+      <ul>
+        {% for reviewer in item.userreview_set.all %}
+        <li>
+          <strong>{{reviewer.user.full_name}}</strong> voted
+          {{reviewer.score.label}}
+          ({{reviewer.score.numeric_value}})<br />
+          {{reviewer.comment}}
+        </li>
+        {% empty %}
+        <li>No reviews yet</li>
+        {% endfor %}
+      </ul>
+    </div>
   </div>
 </fieldset>
 <fieldset class="module aligned">
@@ -116,6 +150,20 @@
   <div class="review-row">
     <label>Country</label>
     <div>{{speaker.country | countryname}}</div>
+  </div>
+  <div class="review-row">
+    <label>Speaker Experience</label>
+    <div>{{participant.speaker_level}}</div>
+  </div>
+  <div class="review-row">
+    <label>Previous Talk Video</label>
+    <div>
+      {% if participant.previous_talk_video %}
+        <a target="_blank" rel="noreferrer noopener" href="{{participant.previous_talk_video}}">
+          {{participant.previous_talk_video}}
+        </a>
+      {% endif%}
+    </div>
   </div>
   <div class="review-row">
     <label>Requested a grant?</label>
@@ -158,6 +206,25 @@
       <input value="Vote and go to the next" type="submit" name="_next" />
       <input value="Skip for now" type="submit" name="_skip" />
     </div>
+
+    <br />
+    <div class="">
+      Exclude proposals with those tags:
+      <ul class="tags-to-exclude">
+        {% for tag in tags_to_filter %}
+          <li>
+            <label>
+              {% with tag_id=tag.id|stringformat:"i" %}
+                <input {% if tag_id in tags_already_excluded %} checked {% endif %} type="checkbox" value="{{tag.id}}" name="exclude" />
+                {{tag.name}}
+              {% endwith %}
+            </label>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <input type="hidden" name="seen" value="{% for id in seen %}{{id}},{% endfor %}" />
   </form>
 </fieldset>
 {% endblock %}
