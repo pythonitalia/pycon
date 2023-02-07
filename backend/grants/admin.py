@@ -282,12 +282,15 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
         "travel_amount",
         "accommodation_amount",
         "total_amount",
+        "country_type",
         "applicant_reply_sent_at",
         "applicant_reply_deadline",
     )
     readonly_fields = ("email",)
     list_filter = (
         "conference",
+        "status",
+        "country_type",
         "occupation",
         "grant_type",
         "interested_in_volunteering",
