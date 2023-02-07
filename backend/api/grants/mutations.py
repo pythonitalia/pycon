@@ -231,14 +231,14 @@ class GrantMutation:
                 message=f"The status `{input.status}` is not valid for this grant"
             )
 
-        if not GrantModel.Status.needs_info:
+        if input.status != GrantModel.Status.needs_info:
             grant.status = input.status
+        else:
+            send_grant_need_info_email(grant)
 
         grant.applicant_message = input.message
         grant.save()
 
         notify_new_grant_reply(grant, request)
-        if grant.status == GrantModel.Status.needs_info:
-            send_grant_need_info_email(grant)
 
         return Grant.from_model(grant)

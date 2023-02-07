@@ -163,12 +163,18 @@ def handle_new_grant_reply(data):
     grant = Grant.objects.get(id=data["grant_id"])
     admin_url = data["admin_url"]
 
+    actions = []
+    if grant.applicant_message:
+        actions.append("sent a message")
+    if grant.status in (Grant.Status.confirmed, Grant.Status.refused):
+        actions.append(f"{Grant.Status(grant.status).label} the grant")
+
     slack.send_message(
         [
             {
                 "type": "section",
                 "text": {
-                    "text": f"{grant.full_name} {Grant.Status(grant.status).label} the grant",
+                    "text": f"{grant.full_name} {' and '.join(actions)}",
                     "type": "mrkdwn",
                 },
             }
