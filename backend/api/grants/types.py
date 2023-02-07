@@ -20,7 +20,7 @@ class Grant:
     status: Status
     name: str
     full_name: str
-    age_group: AgeGroup
+    age_group: Optional[AgeGroup]
     gender: str
     occupation: Occupation
     grant_type: GrantType
@@ -41,7 +41,7 @@ class Grant:
             status=Status(grant.status),
             name=grant.name,
             full_name=grant.full_name,
-            age_group=AgeGroup(grant.age_group),
+            age_group=AgeGroup(grant.age_group) if grant.age_group else None,
             gender=grant.gender,
             occupation=Occupation(grant.occupation),
             grant_type=GrantType(grant.grant_type),
