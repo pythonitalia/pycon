@@ -127,7 +127,7 @@
     <label>Voted by</label>
     <div>
       <ul>
-        {% for reviewer in item.userreview_set.all %}
+        {% for reviewer in proposal.userreview_set.all %}
         <li>
           <strong>{{reviewer.user.full_name}}</strong> voted
           {{reviewer.score.label}}
@@ -138,6 +138,12 @@
         <li>No reviews yet</li>
         {% endfor %}
       </ul>
+    </div>
+  </div>
+  <div class="review-row">
+    <label>Open submission</label>
+    <div>
+      <a target="_blank" href="{% url 'admin:submissions_submission_change' object_id=proposal.id %}">Open Submission</a>
     </div>
   </div>
 </fieldset>
