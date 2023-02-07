@@ -3,7 +3,6 @@ from typing import List, Optional
 from django import forms
 from django.contrib import admin, messages
 from django.db.models import F, OuterRef, Subquery
-from django.db.models.aggregates import Aggregate
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import path, reverse
@@ -11,6 +10,7 @@ from django.utils.safestring import mark_safe
 
 from grants.models import Grant
 from participants.models import Participant
+from reviews.aggregates import Median
 from reviews.models import AvailableScoreOption, ReviewSession, UserReview
 from submissions.models import Submission, SubmissionTag
 from users.client import get_users_full_data
@@ -162,13 +162,8 @@ class ReviewSessionAdmin(admin.ModelAdmin):
                         review_session_id=review_session_id,
                         proposal_id=OuterRef("id"),
                     )
-                    .annotate(
-                        median=Aggregate(
-                            F("score__numeric_value"),
-                            function="percentile_cont",
-                            template="%(function)s(0.5) WITHIN GROUP (ORDER BY %(expressions)s)",
-                        ),
-                    )
+                    .values("proposal_id")
+                    .annotate(median=Median("score__numeric_value"))
                     .values("median")
                 )
             )
