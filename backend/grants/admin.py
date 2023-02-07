@@ -322,9 +322,9 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
         # If the status, country_type or approved_type changes and the grant is approved
         # we need to recalculate the totals
         if form.cleaned_data["status"] == Grant.Status.approved and (
-            form.cleaned_data["status"] != form.initial["status"]
-            or form.cleaned_data["country_type"] != form.initial["country_type"]
-            or form.cleaned_data["approved_type"] != form.initial["approved_type"]
+            form.cleaned_data["status"] != form.initial.get("status")
+            or form.cleaned_data["country_type"] != form.initial.get("country_type")
+            or form.cleaned_data["approved_type"] != form.initial.get("approved_type")
         ):
             conference = form.cleaned_data["conference"]
             form.instance.ticket_amount = conference.grants_default_ticket_amount
