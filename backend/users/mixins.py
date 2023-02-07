@@ -8,17 +8,26 @@ from import_export.resources import ModelResource
 from users.client import get_user_data_by_query, get_users_data_by_ids
 
 
+def getattr_nested(obj, lookup):
+    all_attrs = lookup.split("__")
+    current_value = obj
+    for attr in all_attrs:
+        current_value = getattr(current_value, attr)
+    return current_value
+
+
 class UserMixin:
     user_fk = None
     _PREFETCHED_USERS_BY_ID = {}
 
     def get_users_by_ids(self, queryset):
         # todo use := once we are on a newer python version
-        users_ids = [
-            getattr(obj, self.user_fk, None)
-            for obj in queryset
-            if getattr(obj, self.user_fk, None)
-        ]
+        users_ids = []
+        for obj in queryset:
+            value = getattr_nested(obj, self.user_fk)
+            if value:
+                users_ids.append(value)
+
         self._PREFETCHED_USERS_BY_ID = get_users_data_by_ids(users_ids)
         return queryset
 
