@@ -231,7 +231,9 @@ class GrantMutation:
                 message=f"The status `{input.status}` is not valid for this grant"
             )
 
-        grant.status = input.status
+        if not GrantModel.Status.needs_info:
+            grant.status = input.status
+
         grant.applicant_message = input.message
         grant.save()
 
