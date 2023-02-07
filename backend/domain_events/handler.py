@@ -1,5 +1,6 @@
 import json
 import logging
+from datetime import timedelta
 from urllib.parse import urljoin
 
 import boto3
@@ -58,10 +59,18 @@ def handle_grant_reply_approved_sent(data):
     variables = {
         "replyLink": reply_url,
         "startDate": f"{grant.conference.start:%-d %B}",
-        "endDate": f"{grant.conference.end:%-d %B}",
+        "endDate": f"{grant.conference.end+timedelta(days=1):%-d %B}",
         "deadlineDateTime": f"{grant.applicant_reply_deadline:%-d %B %Y %H:%M %Z}",
         "deadlineDate": f"{grant.applicant_reply_deadline:%-d %B %Y}",
     }
+    logger.info(
+        "Grant %s, conference %s, start %s, end %s",
+        grant.id,
+        grant.conference,
+        f"{grant.conference.start:%Y-%m-%d %H:%M:%S}",
+        f"{grant.conference.end:%Y-%m-%d %H:%M:}",
+    )
+    logger.info("Grant %s, variables: %s", grant.id, str(variables))
     if grant.approved_type == Grant.ApprovedType.ticket_only:
         template = EmailTemplate.GRANT_APPROVED_TICKET_ONLY
     elif grant.approved_type == Grant.ApprovedType.ticket_accommodation:
