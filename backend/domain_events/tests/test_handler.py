@@ -533,7 +533,7 @@ def test_handle_grant_approved_ticket_travel_accommodation_reply_sent(
         conference=conference,
         approved_type=Grant.ApprovedType.ticket_travel_accommodation,
         applicant_reply_deadline=datetime(2023, 2, 1, 23, 59, tzinfo=timezone.utc),
-        total_amount=680,
+        travel_amount=680,
     )
     data = {
         "grant_id": grant.id,

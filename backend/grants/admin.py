@@ -282,12 +282,15 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
         "travel_amount",
         "accommodation_amount",
         "total_amount",
+        "country_type",
         "applicant_reply_sent_at",
         "applicant_reply_deadline",
     )
     readonly_fields = ("email",)
     list_filter = (
         "conference",
+        "status",
+        "country_type",
         "occupation",
         "grant_type",
         "interested_in_volunteering",
@@ -316,9 +319,12 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
         return obj.email
 
     def save_form(self, request, form, change):
-        if (
-            form.cleaned_data["status"] == Grant.Status.approved
-            and form.cleaned_data["status"] != form.initial["status"]
+        # If the status, country_type or approved_type changes and the grant is approved
+        # we need to recalculate the totals
+        if form.cleaned_data["status"] == Grant.Status.approved and (
+            form.cleaned_data["status"] != form.initial["status"]
+            or form.cleaned_data["country_type"] != form.initial["country_type"]
+            or form.cleaned_data["approved_type"] != form.initial["approved_type"]
         ):
             conference = form.cleaned_data["conference"]
             form.instance.ticket_amount = conference.grants_default_ticket_amount
