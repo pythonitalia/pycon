@@ -252,7 +252,7 @@ class ReviewSessionAdmin(admin.ModelAdmin):
                     language for language in languages if language.code == "en"
                 ),
                 speaker=speaker,
-                has_requested_grant=grant is not None,
+                grant=grant,
                 grant_link=grant_link,
                 participant=Participant.objects.filter(
                     user_id=proposal.speaker_id,
