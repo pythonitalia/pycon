@@ -243,7 +243,7 @@ def notify_new_grant_reply(grant: Grant, request):
     return publish_message(
         "NewGrantReply",
         body={"grant_id": grant.id, "admin_url": admin_url},
-        deduplication_id=str(grant.id),
+        deduplication_id=str(uuid4()),
     )
 
 
