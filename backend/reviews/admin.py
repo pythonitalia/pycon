@@ -29,7 +29,7 @@ def get_all_tags():
 class SubmitVoteForm(forms.Form):
     score = forms.ModelChoiceField(queryset=AvailableScoreOption.objects.all())
     comment = forms.CharField(required=False)
-    exclude = forms.MultipleChoiceField(choices=get_all_tags)
+    exclude = forms.MultipleChoiceField(choices=get_all_tags, required=False)
     seen = forms.CharField()
     _next = forms.CharField(required=False)
     _skip = forms.CharField(required=False)
