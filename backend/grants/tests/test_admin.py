@@ -29,7 +29,7 @@ def test_send_reply_emails_approved_missing_amount(rf, grant_factory, mocker):
     grant = grant_factory(
         status=Grant.Status.approved,
         approved_type=Grant.ApprovedType.ticket_accommodation,
-        approved_amount=None,
+        total_amount=None,
     )
     request = rf.get("/")
 
@@ -48,7 +48,7 @@ def test_send_reply_emails_approved_set_deadline_in_fourteen_days(
     grant = grant_factory(
         status=Grant.Status.approved,
         approved_type=Grant.ApprovedType.ticket_accommodation,
-        approved_amount=800,
+        total_amount=800,
     )
     request = rf.get("/")
 

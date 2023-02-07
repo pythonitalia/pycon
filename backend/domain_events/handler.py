@@ -63,23 +63,29 @@ def handle_grant_reply_approved_sent(data):
         "deadlineDateTime": f"{grant.applicant_reply_deadline:%-d %B %Y %H:%M %Z}",
         "deadlineDate": f"{grant.applicant_reply_deadline:%-d %B %Y}",
     }
-    logger.info(
-        "Grant %s, conference %s, start %s, end %s",
-        grant.id,
-        grant.conference,
-        f"{grant.conference.start:%Y-%m-%d %H:%M:%S}",
-        f"{grant.conference.end:%Y-%m-%d %H:%M:}",
-    )
-    logger.info("Grant %s, variables: %s", grant.id, str(variables))
     if grant.approved_type == Grant.ApprovedType.ticket_only:
         template = EmailTemplate.GRANT_APPROVED_TICKET_ONLY
+
     elif grant.approved_type == Grant.ApprovedType.ticket_accommodation:
+
+        if grant.travel_amount == 0:
+            raise ValueError(
+                "Grant travel amount is set to Zero, can't send the email!"
+            )
+
         template = EmailTemplate.GRANT_APPROVED_TICKET_ACCOMMODATION
     elif grant.approved_type == Grant.ApprovedType.ticket_travel:
         template = EmailTemplate.GRANT_APPROVED_TICKET_TRAVEL
+
     elif grant.approved_type == Grant.ApprovedType.ticket_travel_accommodation:
+
+        if grant.travel_amount == 0:
+            raise ValueError(
+                "Grant travel amount is set to Zero, can't send the email!"
+            )
+
         template = EmailTemplate.GRANT_APPROVED_TICKET_TRAVEL_ACCOMMODATION
-        variables["amount"] = f"{grant.approved_amount:.0f}"
+        variables["amount"] = f"{grant.travel_amount:.0f}"
     else:
         raise ValueError(f"Grant Approved type `{grant.approved_type}` not valid.")
 

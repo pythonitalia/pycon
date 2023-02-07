@@ -8,6 +8,11 @@ from users.models import User
 
 
 class Grant(TimeStampedModel):
+    class CountryType(models.TextChoices):
+        italy = "italy", _("Italy")
+        europe = "europe", _("Europe")
+        extra_eu = "extra_eu", _("Extra EU")
+
     class Status(models.TextChoices):
         pending = "pending", _("Pending")
         rejected = "rejected", _("Rejected")
@@ -73,8 +78,33 @@ class Grant(TimeStampedModel):
         blank=True,
         null=True,
     )
-    approved_amount = models.DecimalField(
-        verbose_name=_("approved amount"), null=True, max_digits=6, decimal_places=2
+    ticket_amount = models.DecimalField(
+        verbose_name=_("ticket amount"),
+        null=True,
+        max_digits=6,
+        decimal_places=2,
+        default=0,
+    )
+    accommodation_amount = models.DecimalField(
+        verbose_name=_("accommodation amount"),
+        null=True,
+        max_digits=6,
+        decimal_places=2,
+        default=0,
+    )
+    travel_amount = models.DecimalField(
+        verbose_name=_("travel amount"),
+        null=True,
+        max_digits=6,
+        decimal_places=2,
+        default=0,
+    )
+    total_amount = models.DecimalField(
+        verbose_name=_("total amount"),
+        null=True,
+        max_digits=6,
+        decimal_places=2,
+        default=0,
     )
     email = models.EmailField(_("email address"))
     age_group = models.CharField(
@@ -99,7 +129,13 @@ class Grant(TimeStampedModel):
     why = models.TextField(_("Why are you asking for a grant?"))
     notes = models.TextField(_("Notes"), blank=True)
     travelling_from = models.CharField(_("Travelling from"), max_length=200)
-
+    country_type = models.CharField(
+        _("Country type"),
+        max_length=10,
+        choices=CountryType.choices,
+        null=True,
+        blank=True,
+    )
     applicant_reply_sent_at = models.DateTimeField(
         _("applicant reply sent at"), null=True, blank=True
     )

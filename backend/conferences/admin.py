@@ -155,6 +155,18 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
                 )
             },
         ),
+        (
+            "Grants",
+            {
+                "fields": (
+                    "grants_default_ticket_amount",
+                    "grants_default_accommodation_amount",
+                    "grants_default_travel_from_italy_amount",
+                    "grants_default_travel_from_europe_amount",
+                    "grants_default_travel_from_extra_eu_amount",
+                )
+            },
+        ),
     )
     inlines = [DeadlineInline, DurationInline, SponsorLevelInline, IncludedEventInline]
 

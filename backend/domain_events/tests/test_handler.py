@@ -491,7 +491,7 @@ def test_handle_grant_approved_ticket_only_reply_sent(
         conference=conference,
         approved_type=Grant.ApprovedType.ticket_only,
         applicant_reply_deadline=datetime(2023, 2, 1, 23, 59, tzinfo=timezone.utc),
-        approved_amount=680,
+        total_amount=680,
     )
 
     data = {
@@ -533,7 +533,7 @@ def test_handle_grant_approved_ticket_travel_accommodation_reply_sent(
         conference=conference,
         approved_type=Grant.ApprovedType.ticket_travel_accommodation,
         applicant_reply_deadline=datetime(2023, 2, 1, 23, 59, tzinfo=timezone.utc),
-        approved_amount=680,
+        total_amount=680,
     )
     data = {
         "grant_id": grant.id,
@@ -574,7 +574,7 @@ def test_handle_grant_reply_sent_reminder(
         conference=conference,
         approved_type=Grant.ApprovedType.ticket_only,
         applicant_reply_deadline=datetime(2023, 2, 1, 23, 59, tzinfo=timezone.utc),
-        approved_amount=680,
+        total_amount=680,
     )
     data = {
         "grant_id": grant.id,

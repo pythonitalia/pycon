@@ -156,9 +156,10 @@ def send_reply_emails(modeladmin, request, queryset):
                 )
                 return
 
-            if (
-                grant.grant_type != Grant.ApprovedType.ticket_only
-                and grant.approved_amount is None
+            if grant.grant_type != Grant.ApprovedType.ticket_only and (
+                grant.total_amount is None
+                or grant.accommodation_amount is None
+                or grant.total_amount is None
             ):
                 messages.error(
                     request,
@@ -216,9 +217,10 @@ def send_grant_reminder_to_waiting_for_confirmation(modeladmin, request, queryse
             )
             return
 
-        if (
-            grant.grant_type != Grant.ApprovedType.ticket_only
-            and grant.approved_amount is None
+        if grant.grant_type != Grant.ApprovedType.ticket_only and (
+            grant.total_amount is None
+            or grant.accommodation_amount is None
+            or grant.total_amount is None
         ):
             messages.add_message(
                 request,
@@ -243,7 +245,10 @@ class GrantAdminForm(forms.ModelForm):
             "name",
             "status",
             "approved_type",
-            "approved_amount",
+            "ticket_amount",
+            "travel_amount",
+            "accommodation_amount",
+            "total_amount",
             "full_name",
             "conference",
             "user_id",
@@ -259,6 +264,7 @@ class GrantAdminForm(forms.ModelForm):
             "why",
             "notes",
             "travelling_from",
+            "country_type",
             "applicant_message",
         )
 
@@ -272,7 +278,10 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
         "conference",
         "status",
         "approved_type",
-        "approved_amount",
+        "ticket_amount",
+        "travel_amount",
+        "accommodation_amount",
+        "total_amount",
         "applicant_reply_sent_at",
         "applicant_reply_deadline",
     )
@@ -305,6 +314,40 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
         if obj.user_id:
             return self.get_user_display_name(obj.user_id)
         return obj.email
+
+    def save_form(self, request, form, change):
+        if (
+            form.cleaned_data["status"] == Grant.Status.approved
+            and form.cleaned_data["status"] != form.initial["status"]
+        ):
+            conference = form.cleaned_data["conference"]
+            form.instance.ticket_amount = conference.grants_default_ticket_amount
+            form.instance.accommodation_amount = (
+                conference.grants_default_accommodation_amount
+            )
+
+            if form.cleaned_data["country_type"] == Grant.CountryType.italy:
+                form.instance.travel_amount = (
+                    conference.grants_default_travel_from_italy_amount
+                )
+            elif form.cleaned_data["country_type"] == Grant.CountryType.europe:
+                form.instance.travel_amount = (
+                    conference.grants_default_travel_from_europe_amount
+                )
+            elif form.cleaned_data["country_type"] == Grant.CountryType.extra_eu:
+                form.instance.travel_amount = (
+                    conference.grants_default_travel_from_extra_eu_amount
+                )
+
+            form.instance.total_amount = (
+                form.instance.ticket_amount
+                + form.instance.accommodation_amount
+                + form.instance.travel_amount
+            )
+
+        return_value = super().save_form(request, form, change)
+
+        return return_value
 
     class Media:
         js = ["admin/js/jquery.init.js"]
