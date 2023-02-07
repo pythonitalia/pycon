@@ -67,18 +67,11 @@ def handle_grant_reply_approved_sent(data):
         template = EmailTemplate.GRANT_APPROVED_TICKET_ONLY
 
     elif grant.approved_type == Grant.ApprovedType.ticket_accommodation:
-
-        if grant.travel_amount == 0:
-            raise ValueError(
-                "Grant travel amount is set to Zero, can't send the email!"
-            )
-
         template = EmailTemplate.GRANT_APPROVED_TICKET_ACCOMMODATION
     elif grant.approved_type == Grant.ApprovedType.ticket_travel:
         template = EmailTemplate.GRANT_APPROVED_TICKET_TRAVEL
 
     elif grant.approved_type == Grant.ApprovedType.ticket_travel_accommodation:
-
         if grant.travel_amount == 0:
             raise ValueError(
                 "Grant travel amount is set to Zero, can't send the email!"

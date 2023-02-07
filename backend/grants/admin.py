@@ -322,9 +322,14 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
         ):
             conference = form.cleaned_data["conference"]
             form.instance.ticket_amount = conference.grants_default_ticket_amount
-            form.instance.accommodation_amount = (
-                conference.grants_default_accommodation_amount
-            )
+
+            if form.cleaned_data["approved_type"] not in (
+                Grant.ApprovedType.ticket_only,
+                Grant.ApprovedType.ticket_travel,
+            ):
+                form.instance.accommodation_amount = (
+                    conference.grants_default_accommodation_amount
+                )
 
             if form.cleaned_data["country_type"] == Grant.CountryType.italy:
                 form.instance.travel_amount = (

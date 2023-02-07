@@ -213,7 +213,7 @@ def send_grant_reply_approved_email(grant: Grant, is_reminder: bool = False):
             "grant_id": grant.id,
             "is_reminder": is_reminder,
         },
-        deduplication_id=str(grant.id),
+        deduplication_id=str(uuid4()),
     )
 
 
