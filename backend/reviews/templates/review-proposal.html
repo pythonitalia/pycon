@@ -62,6 +62,23 @@
     font-size: 17px;
   }
 </style>
+<script type="text/javascript">
+window.addEventListener('load', function() {
+  const selectAllTags = document.querySelector('#select-all-tags');
+  const deselectAllTags = document.querySelector('#deselect-all-tags');
+  const tags = document.querySelectorAll('.tags-to-exclude input[type="checkbox"]');
+
+  selectAllTags.addEventListener('click', function (e) { 
+    e.preventDefault();
+    tags.forEach(tag => tag.checked = true);
+  });
+
+  deselectAllTags.addEventListener('click', function (e) { 
+    e.preventDefault();
+    tags.forEach(tag => tag.checked = false);
+  });
+});
+</script>
 <h1>{{proposal.title | localize:"en"}}</h1>
 <fieldset class="module aligned">
   <h2>Submission</h2>
@@ -235,6 +252,8 @@
           </li>
         {% endfor %}
       </ul>
+      <button id="select-all-tags">Select all</button>
+      <button id="deselect-all-tags">De-select all</button>
     </div>
 
     <input type="hidden" name="seen" value="{% for id in seen %}{{id}},{% endfor %}" />

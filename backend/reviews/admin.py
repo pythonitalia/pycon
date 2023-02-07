@@ -35,6 +35,27 @@ class SubmitVoteForm(forms.Form):
     _skip = forms.CharField(required=False)
 
 
+@admin.register(UserReview)
+class UserReviewAdmin(admin.ModelAdmin):
+    list_display = ("edit_vote", "proposal", "score", "review_session")
+    list_filter = ("review_session",)
+    list_display_links = ()
+
+    def edit_vote(self, obj):
+        url = reverse(
+            "admin:reviews-vote-proposal",
+            kwargs={
+                "review_session_id": obj.review_session_id,
+                "review_item_id": obj.proposal_id,
+            },
+        )
+        return mark_safe(f'<a href="{url}">Edit your vote</a>')
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.filter(user_id=request.user.id)
+
+
 @admin.register(ReviewSession)
 class ReviewSessionAdmin(admin.ModelAdmin):
     inlines = [

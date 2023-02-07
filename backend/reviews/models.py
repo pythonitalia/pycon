@@ -17,6 +17,9 @@ class ReviewSession(TimeStampedModel):
     )
     conference = models.ForeignKey(Conference, on_delete=models.CASCADE)
 
+    def __str__(self) -> str:
+        return f"{self.conference.name} - {self.session_type}"
+
     @property
     def is_proposals_review(self):
         return self.session_type == self.SessionType.PROPOSALS
@@ -31,6 +34,9 @@ class AvailableScoreOption(TimeStampedModel, OrderedModel):
 
     numeric_value = models.IntegerField()
     label = models.CharField(max_length=100)
+
+    def __str__(self) -> str:
+        return f"{self.numeric_value} - {self.label}"
 
     class Meta:
         unique_together = ("review_session", "numeric_value")
