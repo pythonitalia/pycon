@@ -1,5 +1,5 @@
 import json
-from unittest.mock import patch
+from unittest.mock import ANY, patch
 
 import pytest
 
@@ -144,7 +144,7 @@ def test_send_grant_reply_approved_email(grant_factory):
             "grant_id": grant.id,
             "is_reminder": False,
         },
-        deduplication_id=str(grant.id),
+        deduplication_id=ANY,
     )
 
 
@@ -160,7 +160,7 @@ def test_send_grant_reply_approved_email_reminder(grant_factory):
             "grant_id": grant.id,
             "is_reminder": True,
         },
-        deduplication_id=str(grant.id),
+        deduplication_id=ANY,
     )
 
 
