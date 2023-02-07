@@ -1,11 +1,18 @@
+from datetime import timedelta
 from typing import Dict, List, Optional
 
 from django import forms
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.db.models.query import QuerySet
+from django.utils import timezone
 from import_export.admin import ExportMixin
 from import_export.fields import Field
 
+from domain_events.publisher import (
+    send_grant_reply_approved_email,
+    send_grant_reply_rejected_email,
+    send_grant_reply_waiting_list_email,
+)
 from submissions.models import Submission
 from users.autocomplete import UsersBackendAutocomplete
 from users.mixins import AdminUsersMixin, ResourceUsersByIdsMixin, SearchUsersMixin
@@ -123,6 +130,110 @@ class GrantResource(ResourceUsersByIdsMixin):
         export_order = EXPORT_GRANTS_FIELDS
 
 
+@admin.action(description="Send Approved/Waiting List/Rejected reply emails")
+def send_reply_emails(modeladmin, request, queryset):
+    queryset = queryset.filter(
+        status__in=(
+            Grant.Status.approved,
+            Grant.Status.waiting_list,
+            Grant.Status.waiting_list_maybe,
+            Grant.Status.rejected,
+        ),
+    )
+
+    if not queryset:
+        messages.add_message(
+            request, messages.WARNING, "No grants found in the selection"
+        )
+        return
+
+    for grant in queryset:
+        if grant.status in (Grant.Status.approved,):
+            if grant.approved_type is None:
+                messages.error(
+                    request,
+                    f"Grant for {grant.name} is missing 'Grant Approved Type'!",
+                )
+                return
+
+            if grant.grant_type != Grant.ApprovedType.ticket_only and (
+                grant.total_amount is None
+                or grant.accommodation_amount is None
+                or grant.total_amount is None
+            ):
+                messages.error(
+                    request,
+                    f"Grant for {grant.name} is missing 'Approved Amount'!",
+                )
+                return
+
+            now = timezone.now()
+            grant.applicant_reply_deadline = timezone.datetime(
+                now.year, now.month, now.day, 23, 59, 59
+            ) + timedelta(days=14)
+            grant.save()
+            send_grant_reply_approved_email(grant)
+
+            messages.info(request, f"Sent Approved reply email to {grant.name}")
+
+        if (
+            grant.status == Grant.Status.waiting_list
+            or grant.status == Grant.Status.waiting_list_maybe
+        ):
+            if grant.applicant_reply_sent_at is not None:
+                messages.warning(
+                    request,
+                    f"Reply email for {grant.name} was already sent! Skipping.",
+                )
+                return
+
+            send_grant_reply_waiting_list_email(grant)
+            messages.info(request, f"Sent Waiting List reply email to {grant.name}")
+
+        if grant.status == Grant.Status.rejected:
+            if grant.applicant_reply_sent_at is not None:
+                messages.warning(
+                    request,
+                    f"Reply email for {grant.name} was already sent! Skipping.",
+                )
+                return
+
+            send_grant_reply_rejected_email(grant)
+            messages.info(request, f"Sent Rejected reply email to {grant.name}")
+
+
+@admin.action(description="Send reminder to waiting confirmation grants")
+def send_grant_reminder_to_waiting_for_confirmation(modeladmin, request, queryset):
+    queryset = queryset.filter(
+        status__in=(Grant.Status.waiting_for_confirmation,),
+    )
+
+    for grant in queryset:
+        if not grant.grant_type:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                f"Grant for {grant.name} is missing 'Grant Approved Type'!",
+            )
+            return
+
+        if grant.grant_type != Grant.ApprovedType.ticket_only and (
+            grant.total_amount is None
+            or grant.accommodation_amount is None
+            or grant.total_amount is None
+        ):
+            messages.add_message(
+                request,
+                messages.ERROR,
+                f"Grant for {grant.name} is missing 'Grant Approved Amount'!",
+            )
+            return
+
+        send_grant_reply_approved_email(grant, is_reminder=True)
+
+        messages.info(request, f"Grant reminder sent to {grant.name}")
+
+
 class GrantAdminForm(forms.ModelForm):
     class Meta:
         model = Grant
@@ -132,6 +243,12 @@ class GrantAdminForm(forms.ModelForm):
         fields = (
             "id",
             "name",
+            "status",
+            "approved_type",
+            "ticket_amount",
+            "travel_amount",
+            "accommodation_amount",
+            "total_amount",
             "full_name",
             "conference",
             "user_id",
@@ -147,6 +264,8 @@ class GrantAdminForm(forms.ModelForm):
             "why",
             "notes",
             "travelling_from",
+            "country_type",
+            "applicant_message",
         )
 
 
@@ -156,19 +275,15 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
     form = GrantAdminForm
     list_display = (
         "user_display_name",
-        "full_name",
         "conference",
-        "travelling_from",
-        "age_group",
-        "gender",
-        "occupation",
-        "grant_type",
-        "python_usage",
-        "been_to_other_events",
-        "interested_in_volunteering",
-        "needs_funds_for_travel",
-        "why",
-        "notes",
+        "status",
+        "approved_type",
+        "ticket_amount",
+        "travel_amount",
+        "accommodation_amount",
+        "total_amount",
+        "applicant_reply_sent_at",
+        "applicant_reply_deadline",
     )
     readonly_fields = ("email",)
     list_filter = (
@@ -186,13 +301,58 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
         "notes",
     )
     user_fk = "user_id"
+    actions = [
+        send_reply_emails,
+        send_grant_reminder_to_waiting_for_confirmation,
+        "delete_selected",
+    ]
 
+    @admin.display(
+        description="User",
+    )
     def user_display_name(self, obj):
         if obj.user_id:
             return self.get_user_display_name(obj.user_id)
         return obj.email
 
-    user_display_name.short_description = "User"
+    def save_form(self, request, form, change):
+        if (
+            form.cleaned_data["status"] == Grant.Status.approved
+            and form.cleaned_data["status"] != form.initial["status"]
+        ):
+            conference = form.cleaned_data["conference"]
+            form.instance.ticket_amount = conference.grants_default_ticket_amount
+
+            if form.cleaned_data["approved_type"] not in (
+                Grant.ApprovedType.ticket_only,
+                Grant.ApprovedType.ticket_travel,
+            ):
+                form.instance.accommodation_amount = (
+                    conference.grants_default_accommodation_amount
+                )
+
+            if form.cleaned_data["country_type"] == Grant.CountryType.italy:
+                form.instance.travel_amount = (
+                    conference.grants_default_travel_from_italy_amount
+                )
+            elif form.cleaned_data["country_type"] == Grant.CountryType.europe:
+                form.instance.travel_amount = (
+                    conference.grants_default_travel_from_europe_amount
+                )
+            elif form.cleaned_data["country_type"] == Grant.CountryType.extra_eu:
+                form.instance.travel_amount = (
+                    conference.grants_default_travel_from_extra_eu_amount
+                )
+
+            form.instance.total_amount = (
+                form.instance.ticket_amount
+                + form.instance.accommodation_amount
+                + form.instance.travel_amount
+            )
+
+        return_value = super().save_form(request, form, change)
+
+        return return_value
 
     class Media:
         js = ["admin/js/jquery.init.js"]

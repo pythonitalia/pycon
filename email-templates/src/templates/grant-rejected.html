@@ -1,0 +1,63 @@
+---
+title: "[PyCon Italia 2022] Your grant was approved!"
+---
+
+<extends src="src/layouts/base.html">
+  <block name="template">
+    <table class="w-full font-sans">
+      <tr>
+        <td align="center" class="bg-gray-100">
+          <table class="w-600 sm:w-full">
+            <tr>
+              <component src="src/components/head-pycon.html" />
+            </tr>
+            <tr>
+              <td align="center" class="sm:px-24">
+                <table class="w-full">
+                  <tr>
+                    <td
+                      class="bg-white text-gray-800 text-base text-left p-48 sm:px-24 leading-24"
+                    >
+                      <p class="m-0 mb-16">👋 @{{firstname}}!</p>
+                      <p class="m-0 mb-16">
+                        We hope this email finds you well. We are writing to
+                        update you on your application for Financial Aid to
+                        attend @{{conferenceName}}. The number of requests to
+                        the PyCon Italia Financial Aid program was overwhelming
+                        this year, and we received more applications than we can
+                        accommodate in the program.
+                      </p>
+                      <p class="m-0 mb-16">
+                        For this reason, we regret to inform you that your
+                        request for Financial Aid has not been approved.
+                      </p>
+                      <p class="m-0 mb-16">
+                        We understand that attending PyCon Italia is an
+                        important opportunity for you, and we are truly sorry
+                        for the disappointment this may cause.
+                      </p>
+
+                      <p class="m-0 mb-16">
+                        We hope to add more resources to our Financial Aid Program and be able to support you next year, as
+                        we would be honored to have you join us in the future.
+                      </p>
+                      <p class="m-0 mb-0">
+                        Thank you for your understanding and please let us know if you have any questions by reaching out to <a href="mailto:grants@pycon.it">grants@pycon.it</a>.
+                      </p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="h-48"></td>
+                  </tr>
+                  <tr>
+                    <component src="src/components/footer.html" />
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </block>
+</extends>

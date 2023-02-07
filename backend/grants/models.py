@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from model_utils.models import TimeStampedModel
 
@@ -7,6 +8,24 @@ from users.models import User
 
 
 class Grant(TimeStampedModel):
+    class CountryType(models.TextChoices):
+        italy = "italy", _("Italy")
+        europe = "europe", _("Europe")
+        extra_eu = "extra_eu", _("Extra EU")
+
+    class Status(models.TextChoices):
+        pending = "pending", _("Pending")
+        rejected = "rejected", _("Rejected")
+        approved = "approved", _("Approved")
+        waiting_list = "waiting_list", _("Waiting List")
+        waiting_list_maybe = "waiting_list_maybe", _("Waiting List, Maybe")
+        waiting_for_confirmation = "waiting_for_confirmation", _(
+            "Waiting for confirmation"
+        )
+        refused = "refused", _("Refused")
+        confirmed = "confirmed", _("Confirmed")
+        needs_info = "needs_info", _("Needs Info")
+
     class AgeGroup(models.TextChoices):
         range_less_than_10 = "range_less_than_10", _("10 years old or under")
         range_11_18 = "range_11_18", _("11 - 18 years old")
@@ -34,6 +53,12 @@ class Grant(TimeStampedModel):
         yes = "yes", _("Yes")
         absolutely = "absolutely", _("My soul is yours to take!")
 
+    class ApprovedType(models.TextChoices):
+        ticket_only = "ticket_only", _("Ticket Only")
+        ticket_travel = "ticket_travel", _("Ticket + Travel")
+        ticket_accommodation = "ticket_accommodation", _("Ticket + Accommodation")
+        ticket_travel_accommodation = "Ticket", _("Ticket + Travel + Accommodation")
+
     name = models.CharField(_("name"), max_length=300)
     full_name = models.CharField(_("full name"), max_length=300)
     conference = models.ForeignKey(
@@ -43,6 +68,44 @@ class Grant(TimeStampedModel):
         related_name="grants",
     )
     user_id = models.IntegerField(verbose_name=_("user"), null=True)
+    status = models.CharField(
+        _("status"), choices=Status.choices, max_length=30, default=Status.pending
+    )
+    approved_type = models.CharField(
+        verbose_name=_("approved type"),
+        choices=ApprovedType.choices,
+        max_length=30,
+        blank=True,
+        null=True,
+    )
+    ticket_amount = models.DecimalField(
+        verbose_name=_("ticket amount"),
+        null=True,
+        max_digits=6,
+        decimal_places=2,
+        default=0,
+    )
+    accommodation_amount = models.DecimalField(
+        verbose_name=_("accommodation amount"),
+        null=True,
+        max_digits=6,
+        decimal_places=2,
+        default=0,
+    )
+    travel_amount = models.DecimalField(
+        verbose_name=_("travel amount"),
+        null=True,
+        max_digits=6,
+        decimal_places=2,
+        default=0,
+    )
+    total_amount = models.DecimalField(
+        verbose_name=_("total amount"),
+        null=True,
+        max_digits=6,
+        decimal_places=2,
+        default=0,
+    )
     email = models.EmailField(_("email address"))
     age_group = models.CharField(
         _("Age group"), max_length=20, choices=AgeGroup.choices, blank=True
@@ -66,9 +129,29 @@ class Grant(TimeStampedModel):
     why = models.TextField(_("Why are you asking for a grant?"))
     notes = models.TextField(_("Notes"), blank=True)
     travelling_from = models.CharField(_("Travelling from"), max_length=200)
+    country_type = models.CharField(
+        _("Country type"),
+        max_length=10,
+        choices=CountryType.choices,
+        null=True,
+        blank=True,
+    )
+    applicant_reply_sent_at = models.DateTimeField(
+        _("applicant reply sent at"), null=True, blank=True
+    )
+    applicant_reply_deadline = models.DateTimeField(
+        _("applicant reply deadline"), null=True, blank=True
+    )
+    applicant_message = models.TextField(_("applicant message"), null=True, blank=True)
 
     def __str__(self):
         return f"{self.full_name}"
 
     def can_edit(self, user: User):
         return self.user_id == user.id
+
+    def get_admin_url(self):
+        return reverse(
+            "admin:%s_%s_change" % (self._meta.app_label, self._meta.model_name),
+            args=(self.pk,),
+        )

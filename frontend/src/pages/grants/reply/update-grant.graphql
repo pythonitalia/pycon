@@ -1,0 +1,11 @@
+mutation SendGrantReply($input: SendGrantReplyInput!) {
+  sendGrantReply(input: $input) {
+    ... on SendGrantReplyError {
+      message
+    }
+    ... on Grant {
+      id
+      status
+    }
+  }
+}

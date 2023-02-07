@@ -69,6 +69,7 @@ def mock_users_by_ids(mocker):
                             "name": "Marco",
                             "username": "marco",
                             "gender": "male",
+                            "email": "marco@placeholder.it",
                         }
                     ]
                 }

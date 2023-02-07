@@ -73,6 +73,48 @@ class Conference(GeoLocalizedModel, TimeFramedModel, TimeStampedModel):
         blank=True,
         default="",
     )
+    slack_new_grant_reply_incoming_incoming_webhook_url = models.URLField(
+        _("New grant reply Slack incoming webhook for notification"),
+        max_length=1024,
+        blank=True,
+        default="",
+    )
+
+    grants_default_ticket_amount = models.DecimalField(
+        verbose_name=_("grants default ticket amount"),
+        null=True,
+        max_digits=6,
+        decimal_places=2,
+        default=0,
+    )
+    grants_default_accommodation_amount = models.DecimalField(
+        verbose_name=_("grants default accommodation amount"),
+        null=True,
+        max_digits=6,
+        decimal_places=2,
+        default=0,
+    )
+    grants_default_travel_from_italy_amount = models.DecimalField(
+        verbose_name=_("grants default travel from Italy amount"),
+        null=True,
+        max_digits=6,
+        decimal_places=2,
+        default=0,
+    )
+    grants_default_travel_from_europe_amount = models.DecimalField(
+        verbose_name=_("grants default travel from Europe amount"),
+        null=True,
+        max_digits=6,
+        decimal_places=2,
+        default=0,
+    )
+    grants_default_travel_from_extra_eu_amount = models.DecimalField(
+        verbose_name=_("grants default travel from Extra EU amount"),
+        null=True,
+        max_digits=6,
+        decimal_places=2,
+        default=0,
+    )
 
     @property
     def is_cfp_open(self):

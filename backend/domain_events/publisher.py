@@ -1,10 +1,15 @@
 import json
 from hashlib import md5
+from logging import getLogger
 from urllib.parse import urljoin
 from uuid import uuid4
 
 import boto3
 from django.conf import settings
+
+from grants.models import Grant
+
+logger = getLogger(__name__)
 
 
 def publish_message(type: str, body: dict, *, deduplication_id: str):
@@ -191,4 +196,62 @@ def send_volunteers_push_notification(notification_id: int, volunteers_device_id
             "volunteers_device_id": volunteers_device_id,
         },
         deduplication_id=f"{notification_id}-{volunteers_device_id}",
+    )
+
+
+def send_grant_reply_approved_email(grant: Grant, is_reminder: bool = False):
+    logger.info("Sending reply APPROVED email for GRANT %s", grant.id)
+
+    event_name = (
+        "GrantReplyApprovedReminderSent" if is_reminder else "GrantReplyApprovedSent"
+    )
+
+    logger.info("Sending APPROVED reply email for GRANT %s (publish message)", grant.id)
+    return publish_message(
+        event_name,
+        body={
+            "grant_id": grant.id,
+            "is_reminder": is_reminder,
+        },
+        deduplication_id=str(uuid4()),
+    )
+
+
+def send_grant_reply_waiting_list_email(grant: Grant):
+    logger.info("Sending reply WAITING_LIST email for GRANT %s", grant.id)
+
+    return publish_message(
+        "GrantReplyWaitingListSent",
+        body={"grant_id": grant.id},
+        deduplication_id=str(grant.id),
+    )
+
+
+def send_grant_reply_rejected_email(grant: Grant):
+    logger.info("Publishing GrantReplyRejectedSent for GRANT %s", grant.id)
+
+    return publish_message(
+        "GrantReplyRejectedSent",
+        body={"grant_id": grant.id},
+        deduplication_id=str(grant.id),
+    )
+
+
+def notify_new_grant_reply(grant: Grant, request):
+    admin_url = request.build_absolute_uri(grant.get_admin_url())
+
+    return publish_message(
+        "NewGrantReply",
+        body={"grant_id": grant.id, "admin_url": admin_url},
+        deduplication_id=str(uuid4()),
+    )
+
+
+def send_grant_need_info_email(grant: Grant):
+    publish_message(
+        "GrantNeedMoreInfoEmailSent",
+        body={
+            "grant_id": grant.id,
+        },
+        deduplication_id=str(grant.id),
     )

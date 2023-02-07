@@ -4,6 +4,7 @@ query MyGrant($conference: String!) {
 
     grant(conference: $conference) {
       id
+      status
       fullName
       name
       gender

@@ -487,6 +487,20 @@ export const messages = {
 
     "grants.form.edit.title": "Edit your Grant",
 
+    "grants.reply.title": "Manage your grant Grant",
+    "grants.reply.titleApproved":
+      "Congratulations! Your Grant has been approved!",
+    "grants.reply.descriptionApproved": `Please, confirm your presence before {replyDeadline}!
+If we don't get news from you before {replyDeadline} we will allocate your grant to another person. `,
+    "grants.reply.confirmed": "Confrim",
+    "grants.reply.refused": "Refuse",
+    "grants.reply.needs_info": "Needs to ask for information",
+    "grants.reply.submitReply": "Submit answer",
+    "grants.reply.sendingReply": "Sending your answer!",
+    "grants.reply.replySentWithSuccess":
+      "Thank you! Your reply has been correctly saved",
+    "grants.reply.currentReply": "Your current answer is: {reply}",
+
     "homepage.sponsorsSectionText":
       "PyCon Italia can be your platform to gain brand recognition, take leads and recruit from an audience of highly skilled professionals!",
     "homepage.sponsorsSectionCTAText": "Become a sponsor",
@@ -1126,8 +1140,21 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "grants.form.fields.needsFundsForTravel.label":
       "I fondi a nostra disposizione sono limitati, ma faremo il possibile per aiutare tutti i richiedenti. Richiedi questo aiuto solo se ti è strettamente necessario!",
     "grants.form.submit": "Invia",
-
     "grants.form.edit.title": "Modifica il tuo Grant",
+
+    "grants.reply.title": "Gestisci il tuo Grant",
+    "grants.reply.titleApproved":
+      "Congratulazioni! Il tuo Grant e' stato approvato! ",
+    "grants.reply.descriptionApproved": `Perfavore, conferma la tua presenza entro il {replyDeadline}!
+Se non riceveremo una conferma da te prima del {replyDeadlilne}, assegneremo il tuo grant ad un'altra persona.`,
+    "grants.reply.confirmed": "Conferma",
+    "grants.reply.refused": "Rifiuta",
+    "grants.reply.needs_info": "Devo chiedere informazioni",
+    "grants.reply.submitReply": "Invia risposta",
+    "schedule.invitation.sendingReply": "Caricamento in corso",
+    "schedule.invitation.replySentWithSuccess":
+      "Grazie! La tua risposta è stata salvata",
+    "schedule.invitation.currentReply": "Risposta attuale: {answer}",
 
     "orderReview.heading": "Recap ordine",
     "orderReview.invoiceInformation": "Informazioni fatturazione",

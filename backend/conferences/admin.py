@@ -127,6 +127,7 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
                 "fields": (
                     "slack_new_proposal_incoming_webhook_url",
                     "slack_new_proposal_comment_incoming_webhook_url",
+                    "slack_new_grant_reply_incoming_incoming_webhook_url",
                 )
             },
         ),
@@ -151,6 +152,18 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
                     "topics",
                     "audience_levels",
                     "languages",
+                )
+            },
+        ),
+        (
+            "Grants",
+            {
+                "fields": (
+                    "grants_default_ticket_amount",
+                    "grants_default_accommodation_amount",
+                    "grants_default_travel_from_italy_amount",
+                    "grants_default_travel_from_europe_amount",
+                    "grants_default_travel_from_extra_eu_amount",
                 )
             },
         ),
