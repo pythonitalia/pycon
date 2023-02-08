@@ -135,7 +135,7 @@ def test_handle_new_submission_comment_email_action():
             call(
                 template=EmailTemplate.NEW_COMMENT_ON_SUBMISSION,
                 to="speaker@email.it",
-                subject="[PyCon Italia 2022] New comment on Submission Test submission",
+                subject="[PyCon Italia 2023] New comment on Submission Test submission",
                 variables={
                     "submissionTitle": "Test submission",
                     "userName": "Speaker Name",
@@ -198,7 +198,7 @@ def test_handle_new_submission_comment_email_action_with_multiple_people():
             call(
                 template=EmailTemplate.NEW_COMMENT_ON_SUBMISSION,
                 to="speaker@email.it",
-                subject="[PyCon Italia 2022] New comment on Submission Test submission",
+                subject="[PyCon Italia 2023] New comment on Submission Test submission",
                 variables={
                     "submissionTitle": "Test submission",
                     "userName": "Speaker Name",
@@ -208,7 +208,7 @@ def test_handle_new_submission_comment_email_action_with_multiple_people():
             call(
                 template=EmailTemplate.NEW_COMMENT_ON_SUBMISSION,
                 to="ester@email.it",
-                subject="[PyCon Italia 2022] New comment on Submission Test submission",
+                subject="[PyCon Italia 2023] New comment on Submission Test submission",
                 variables={
                     "submissionTitle": "Test submission",
                     "userName": "Ester Beltrami",
@@ -297,7 +297,7 @@ def test_handle_schedule_invitation_sent():
     email_mock.assert_called_once_with(
         template=EmailTemplate.SUBMISSION_ACCEPTED,
         to="marco@placeholder.it",
-        subject="[PyCon Italia 2022] Your submission was accepted!",
+        subject="[PyCon Italia 2023] Your submission was accepted!",
         variables={
             "submissionTitle": "Title title",
             "firstname": "Marco Acierno",
@@ -338,7 +338,7 @@ def test_handle_schedule_invitation_sent_reminder():
     email_mock.assert_called_once_with(
         template=EmailTemplate.SUBMISSION_ACCEPTED,
         to="marco@placeholder.it",
-        subject="[PyCon Italia 2022] Reminder: Your submission was accepted, confirm your presence",
+        subject="[PyCon Italia 2023] Reminder: Your submission was accepted, confirm your presence",
         variables={
             "submissionTitle": "Title title",
             "firstname": "Marco Acierno",
@@ -378,7 +378,7 @@ def test_handle_submission_time_slot_changed():
     email_mock.assert_called_once_with(
         template=EmailTemplate.SUBMISSION_SCHEDULE_TIME_CHANGED,
         to="marco@placeholder.it",
-        subject="[PyCon Italia 2022] Your Submission time slot has been changed!",
+        subject="[PyCon Italia 2023] Your Submission time slot has been changed!",
         variables={
             "submissionTitle": "Title title",
             "firstname": "Marco Acierno",
@@ -424,7 +424,7 @@ def test_handle_new_schedule_invitation_answer(settings):
     email_mock.assert_called_once_with(
         template=EmailTemplate.NEW_SCHEDULE_INVITATION_ANSWER,
         to="speakers@placeholder.com",
-        subject="[PyCon Italia 2022] Schedule Invitation Answer: Title title",
+        subject="[PyCon Italia 2023] Schedule Invitation Answer: Title title",
         variables={
             "submissionTitle": "Title title",
             "speakerName": "Marco Acierno",
@@ -471,7 +471,7 @@ def test_handle_speaker_voucher_email_sent(settings):
     email_mock.assert_called_once_with(
         template=EmailTemplate.SPEAKER_VOUCHER_CODE,
         to="marco@placeholder.it",
-        subject="[PyCon Italia 2022] Your Speaker Voucher Code",
+        subject="[PyCon Italia 2023] Your Speaker Voucher Code",
         variables={"firstname": "Marco Acierno", "voucherCode": "ABC123"},
         reply_to=["speakers@placeholder.com"],
     )

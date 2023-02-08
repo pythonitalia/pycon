@@ -232,7 +232,7 @@ def handle_send_email_notification_for_new_submission_comment(data):
         send_email(
             template=EmailTemplate.NEW_COMMENT_ON_SUBMISSION,
             to=commenter_data["email"],
-            subject=f"[PyCon Italia 2022] New comment on Submission {submission_title}",
+            subject=f"[PyCon Italia 2023] New comment on Submission {submission_title}",
             variables={
                 "submissionTitle": submission_title,
                 "userName": get_name(commenter_data, "there"),
@@ -371,9 +371,9 @@ def handle_schedule_invitation_sent(data):
     )
     speaker_data = users_result.data["usersByIds"][0]
     subject = (
-        "[PyCon Italia 2022] Reminder: Your submission was accepted, confirm your presence"
+        "[PyCon Italia 2023] Reminder: Your submission was accepted, confirm your presence"
         if is_reminder
-        else "[PyCon Italia 2022] Your submission was accepted!"
+        else "[PyCon Italia 2023] Your submission was accepted!"
     )
 
     send_email(
@@ -401,7 +401,7 @@ def handle_submission_time_slot_changed(data):
     send_email(
         template=EmailTemplate.SUBMISSION_SCHEDULE_TIME_CHANGED,
         to=speaker_data["email"],
-        subject="[PyCon Italia 2022] Your Submission time slot has been changed!",
+        subject="[PyCon Italia 2023] Your Submission time slot has been changed!",
         variables={
             "submissionTitle": submission_title,
             "firstname": get_name(speaker_data, "there"),
@@ -427,7 +427,7 @@ def handle_new_schedule_invitation_answer(data):
     send_email(
         template=EmailTemplate.NEW_SCHEDULE_INVITATION_ANSWER,
         to=settings.SPEAKERS_EMAIL_ADDRESS,
-        subject=f"[PyCon Italia 2022] Schedule Invitation Answer: {submission_title}",
+        subject=f"[PyCon Italia 2023] Schedule Invitation Answer: {submission_title}",
         variables={
             "submissionTitle": submission_title,
             "speakerName": get_name(speaker_data),
@@ -456,7 +456,7 @@ def handle_speaker_voucher_email_sent(data):
     send_email(
         template=EmailTemplate.SPEAKER_VOUCHER_CODE,
         to=speaker_data["email"],
-        subject="[PyCon Italia 2022] Your Speaker Voucher Code",
+        subject="[PyCon Italia 2023] Your Speaker Voucher Code",
         variables={
             "firstname": get_name(speaker_data, "there"),
             "voucherCode": voucher_code,
@@ -480,7 +480,7 @@ def handle_speaker_communication_sent(data):
     send_email(
         template=EmailTemplate.SPEAKER_COMMUNICATION,
         to=speaker_data["email"],
-        subject=f"[PyCon Italia 2022] {subject}",
+        subject=f"[PyCon Italia 2023] {subject}",
         variables={
             "firstname": get_name(speaker_data, "there"),
             "body": mark_safe(body.replace("\n", "<br />")),
