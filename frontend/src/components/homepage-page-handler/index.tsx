@@ -90,20 +90,6 @@ export const HomePagePageHandler = ({ cycle }: Props) => {
             <Text align="center" size={1}>
               {conference.homepageCountdownSectionText}
             </Text>
-            <Spacer size="large" />
-
-            <Countdown
-              background="cream"
-              deadline={parseISO(conference.votingDeadline.end)}
-            />
-            <Spacer size="xl" />
-
-            <Button
-              href={conference.homepageCountdownSectionCTALink}
-              role="primary"
-            >
-              {conference.homepageCountdownSectionCTAText}
-            </Button>
           </VerticalStack>
         </Section>
 
