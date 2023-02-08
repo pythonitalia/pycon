@@ -1,7 +1,7 @@
-{% extends "admin/base_site.html" %} 
-{% load i18n %} 
-{% load markdownify %} 
-{% load localize countryname get_item %} 
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+{% load markdownify %}
+{% load localize countryname get_item %}
 {% block content %}
 
 <style>
@@ -86,7 +86,6 @@
 
   window.addEventListener("load", () => {
     getRefs();
-
     updateBottomBarUI();
 
     submissions.forEach((submissionData) => {
@@ -96,6 +95,9 @@
       );
       const rejectInput = document.getElementById(
         `decision-${submissionId}-reject`,
+      );
+      const unsetInput = document.getElementById(
+        `decision-${submissionId}-unset`,
       );
 
       acceptInput.addEventListener("change", () => {
@@ -107,6 +109,12 @@
       rejectInput.addEventListener("change", () => {
         console.log("Submission", submissionId, "rejected");
         submissionData.status = "rejected";
+        updateBottomBarUI();
+      });
+
+      unsetInput.addEventListener("change", () => {
+        unsetInput.checked = false;
+        submissionData.status = "unknown";
         updateBottomBarUI();
       });
     });
@@ -182,7 +190,6 @@
                     href="{% url 'admin:submissions_submission_change' item.id %}">
                     <strong>{{item.title}}</strong>
                   </a>
-
                   <ul>
                     {% for reviewer in item.userreview_set.all %}
                     <li>
@@ -194,15 +201,24 @@
                     {% empty %}
                     <li>No reviews yet</li>
                     {% endfor %}
+                    <li>
+                      <a style="font-weight: bold" target="_blank" href="{% url 'admin:reviews-vote-proposal' review_session_id=review_session_id review_item_id=item.id %}">
+                        Vote this proposal
+                      </a>
+                    </li>
                   </ul>
 
                   <hr />
                   <div>
-                    <p>Speaker name: {{ speakers|get_item:item.speaker_id|get_item:'fullname' }}</ps>
-                    <p>Speaker country: {{ speakers|get_item:item.speaker_id|get_item:'country'|countryname }}</p>
-                    {% if item.speaker_id in grants %}
-                      <p>💰 Requested a grant</p>
-                    {% endif %}
+                    {% with speaker_id=item.speaker_id|stringformat:"i" %}
+                      <p>Speaker name: {{ speakers|get_item:speaker_id|get_item:'fullname' }}</ps>
+                      <p>Speaker country: {{ speakers|get_item:speaker_id|get_item:'country'|countryname }}</p>
+                      {% if speaker_id in grants %}
+                        {% with grant=grants|get_item:speaker_id %}
+                          <p>💰 Requested a grant ({{ grant.status }})</p>
+                        {% endwith %}
+                      {% endif %}
+                    {% endwith %}
                   </div>
                 </td>
 
@@ -240,6 +256,14 @@
                       value="reject"
                       id="decision-{{item.id}}-reject"/>
                       Reject
+                  </label>
+                  <label
+                    ><input
+                      type="radio"
+                      name="decision-{{item.id}}"
+                      value="unset"
+                      id="decision-{{item.id}}-unset"/>
+                      Unset
                   </label>
                 </td>
               </tr>
