@@ -232,7 +232,7 @@ window.addEventListener('load', function() {
 
     <div class="comments-wrapper">
       <label class="comments-wrapper-label">Leave a comment?</label>
-      <textarea rows="5" name="comment">{{user_review.comment}}</textarea>
+      <textarea rows="5" name="comment">{% if existing_comment %}{{existing_comment}}{% else %}{{user_review.comment}}{% endif %}</textarea>
     </div>
 
     <div class="actions">

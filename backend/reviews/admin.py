@@ -1,3 +1,4 @@
+import urllib.parse
 from typing import List, Optional
 
 from django import forms
@@ -238,6 +239,7 @@ class ReviewSessionAdmin(admin.ModelAdmin):
                 reverse("admin:grants_grant_change", args=(grant.id,)) if grant else ""
             )
 
+            existing_comment = request.GET.get("comment", "")
             tags_already_excluded = request.GET.get("exclude", "").split(",")
 
             used_tags = (
@@ -278,6 +280,7 @@ class ReviewSessionAdmin(admin.ModelAdmin):
                 tags_to_filter=tags_to_filter,
                 tags_already_excluded=tags_already_excluded,
                 seen=request.GET.get("seen", "").split(","),
+                existing_comment=existing_comment,
             )
             return TemplateResponse(request, "review-proposal.html", context)
         elif request.method == "POST":
@@ -303,6 +306,7 @@ class ReviewSessionAdmin(admin.ModelAdmin):
             elif form.cleaned_data.get("_next"):
                 if not form.is_valid():
                     messages.error(request, "Invalid vote")
+                    comment = urllib.parse.quote(form.cleaned_data["comment"])
                     return redirect(
                         reverse(
                             "admin:reviews-vote-proposal",
@@ -311,6 +315,7 @@ class ReviewSessionAdmin(admin.ModelAdmin):
                                 "review_item_id": review_item_id,
                             },
                         )
+                        + f"?exclude={','.join(exclude)}&seen={','.join(seen)}&comment={comment}"
                     )
 
                 # User is saving their vote
