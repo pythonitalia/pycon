@@ -211,6 +211,16 @@ window.addEventListener('load', function() {
     </div>
   </div>
   {% endif %}
+  <div class="review-row">
+    <label>Bio</label>
+    <div>{{participant.bio}}</div>
+  </div>
+  <div class="review-row">
+    <label>Participant Info</label>
+    <div>
+      <a href="{% url 'admin:participants_participant_change' participant.id %}" target="_blank">Open Participant</a>
+    </div>
+  </div>
 </fieldset>
 <fieldset class="module aligned">
   <h2>Your vote</h2>
