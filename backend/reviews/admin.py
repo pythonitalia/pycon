@@ -3,7 +3,7 @@ from typing import List, Optional
 
 from django import forms
 from django.contrib import admin, messages
-from django.db.models import F, OuterRef, Subquery
+from django.db.models import F, OuterRef, Subquery, Sum
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import path, reverse
@@ -11,7 +11,6 @@ from django.utils.safestring import mark_safe
 
 from grants.models import Grant
 from participants.models import Participant
-from reviews.aggregates import Median
 from reviews.models import AvailableScoreOption, ReviewSession, UserReview
 from submissions.models import Submission, SubmissionTag
 from users.client import get_users_full_data
@@ -178,18 +177,18 @@ class ReviewSessionAdmin(admin.ModelAdmin):
 
         items = (
             review_session.conference.submissions.annotate(
-                median=Subquery(
+                score=Subquery(
                     UserReview.objects.select_related("score")
                     .filter(
                         review_session_id=review_session_id,
                         proposal_id=OuterRef("id"),
                     )
                     .values("proposal_id")
-                    .annotate(median=Median("score__numeric_value"))
-                    .values("median")
+                    .annotate(score=Sum("score__numeric_value"))
+                    .values("score")
                 )
             )
-            .order_by(F("median").desc(nulls_last=True))
+            .order_by(F("score").desc(nulls_last=True))
             .prefetch_related("userreview_set")
             .all()
         )
