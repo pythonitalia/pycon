@@ -10,4 +10,4 @@ def get_item(dict: Optional[dict[str, Any]], key: str):
     if not dict:
         return ""
 
-    return dict.get(str(key), "")
+    return dict.get(key, "")

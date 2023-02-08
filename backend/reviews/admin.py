@@ -194,7 +194,7 @@ class ReviewSessionAdmin(admin.ModelAdmin):
         )
         speakers_ids = items.values_list("speaker_id", flat=True)
         grants = {
-            grant.user_id: grant
+            str(grant.user_id): grant
             for grant in Grant.objects.filter(
                 conference=review_session.conference, user_id__in=speakers_ids
             ).all()
@@ -205,6 +205,7 @@ class ReviewSessionAdmin(admin.ModelAdmin):
             items=items,
             grants=grants,
             speakers=speakers_data,
+            review_session_id=review_session_id,
         )
         return TemplateResponse(request, "review-recap.html", context)
 
