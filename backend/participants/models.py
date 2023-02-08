@@ -32,5 +32,8 @@ class Participant(models.Model):
         _("previous talk video"), blank=True, max_length=2049
     )
 
+    def __str__(self) -> str:
+        return f"Participant {self.user_id} for {self.conference}"
+
     class Meta:
         unique_together = ("conference", "user_id")
