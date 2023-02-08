@@ -69,14 +69,17 @@ const GrantReply = () => {
   const [
     sendGrantReply,
     { loading: isSubmitting, error: replyError, data: replyData },
-  ] = useSendGrantReplyMutation({});
+  ] = useSendGrantReplyMutation({
+    onError(err) {
+      console.error(err.message);
+    },
+  });
 
   const grant = data && data?.me?.grant;
 
   const submitReply = useCallback(
     (e) => {
       e.preventDefault();
-      console.log("grant.id:", grant);
       sendGrantReply({
         variables: {
           input: {
@@ -102,6 +105,9 @@ const GrantReply = () => {
   }
 
   const hasSentAnswer = ANSWERS_STATUSES.includes(grant?.status) ?? false;
+  const answerHasChanged =
+    grant?.status !== formState.values.option ||
+    grant?.applicantMessage !== formState.values.message;
 
   if (error) {
     return (
@@ -209,7 +215,12 @@ const GrantReply = () => {
           )}
         </Flex>
 
-        <Button onClick={submitReply} disabled={!formState.values.option}>
+        <Button
+          onClick={submitReply}
+          disabled={
+            !formState.values.option || !answerHasChanged || isSubmitting
+          }
+        >
           <FormattedMessage id="grants.reply.submitReply" />
         </Button>
         {isSubmitting && (
@@ -220,6 +231,14 @@ const GrantReply = () => {
         {!isSubmitting && replyData?.sendGrantReply.__typename === "Grant" && (
           <Alert variant="success">
             <FormattedMessage id="grants.reply.replySentWithSuccess" />
+          </Alert>
+        )}
+        {(replyError ||
+          replyData?.sendGrantReply.__typename === "SendGrantReplyError") && (
+          <Alert variant="alert">
+            <Text>
+              {replyError.message || replyData?.sendGrantReply.__typename}
+            </Text>
           </Alert>
         )}
       </Section>

@@ -1,3 +1,4 @@
+from logging import getLogger
 from typing import List, Optional
 
 import strawberry
@@ -12,6 +13,8 @@ from conferences.models import Conference
 from grants.models import Grant as GrantModel
 from participants.models import Participant as ParticipantModel
 from submissions.models import Submission as SubmissionModel
+
+logger = getLogger(__name__)
 
 
 @strawberry.federation.type(keys=["id"], extend=True)
@@ -31,6 +34,9 @@ class User:
         grant = GrantModel.objects.filter(
             user_id=self.id, conference__code=conference
         ).first()
+        logger.info(
+            "Grant: user_id: %s, conference: %s, grant: %s", self.id, conference, grant
+        )
         return Grant.from_model(grant) if grant else None
 
     @strawberry.field
