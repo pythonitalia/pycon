@@ -247,11 +247,12 @@ def notify_new_grant_reply(grant: Grant, request):
     )
 
 
-def send_grant_need_info_email(grant: Grant):
+def send_message_to_plain(grant: Grant, message: str):
     publish_message(
-        "GrantNeedMoreInfoEmailSent",
+        "NewPlainChatSent",
         body={
-            "grant_id": grant.id,
+            "user_id": grant.user_id,
+            "message": message,
         },
-        deduplication_id=str(grant.id),
+        deduplication_id=str(uuid4()),
     )

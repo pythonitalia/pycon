@@ -1,4 +1,8 @@
+from __future__ import annotations
+
 from dataclasses import asdict
+from enum import Enum
+from typing import Optional
 
 import strawberry
 from strawberry.types import Info
@@ -9,12 +13,11 @@ from api.grants.types import (
     GrantType,
     InterestedInVolunteering,
     Occupation,
-    Status,
 )
 from api.permissions import IsAuthenticated
 from api.types import BaseErrorType
 from conferences.models.conference import Conference
-from domain_events.publisher import notify_new_grant_reply, send_grant_need_info_email
+from domain_events.publisher import notify_new_grant_reply, send_message_to_plain
 from grants.models import Grant as GrantModel
 from users.models import User
 
@@ -145,10 +148,20 @@ UpdateGrantResult = strawberry.union(
 )
 
 
+@strawberry.enum
+class StatusOption(Enum):
+    confirmed = "confirmed"
+    refused = "refused"
+    need_info = "need_info"
+
+    def to_grant_status(self) -> GrantModel.Status:
+        return GrantModel.Status(self.name)
+
+
 @strawberry.input
 class SendGrantReplyInput:
     instance: strawberry.ID
-    status: Status
+    status: Optional[StatusOption]
     message: str
 
 
@@ -222,23 +235,17 @@ class GrantMutation:
         if grant.status in (GrantModel.Status.pending, GrantModel.Status.rejected):
             return SendGrantReplyError(message="You cannot reply to this grant")
 
-        if input.status not in (
-            GrantModel.Status.confirmed,
-            GrantModel.Status.refused,
-            GrantModel.Status.needs_info,
-        ):
-            return SendGrantReplyError(
-                message=f"The status `{input.status}` is not valid for this grant"
-            )
-
-        if input.status != GrantModel.Status.needs_info:
-            grant.status = input.status
-        else:
-            send_grant_need_info_email(grant)
+        # do not update to need_info, otherwise we will lose the orignal status:
+        # Approved, WaitingList
+        if input.status != StatusOption.need_info:
+            grant.status = input.status.to_grant_status()
 
         grant.applicant_message = input.message
         grant.save()
 
         notify_new_grant_reply(grant, request)
+
+        if grant.applicant_message:
+            send_message_to_plain(grant, input.message)
 
         return Grant.from_model(grant)
