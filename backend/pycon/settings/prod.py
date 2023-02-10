@@ -1,24 +1,11 @@
-import sentry_sdk
-from sentry_sdk.integrations.django import DjangoIntegration
-
 from .base import *  # noqa
-from .base import DATABASES, ENVIRONMENT, MIDDLEWARE, env
+from .base import DATABASES, MIDDLEWARE, env
 
 SECRET_KEY = env("SECRET_KEY")
 
 # if FRONTEND_URL == "http://testfrontend.it/":
 #     raise ImproperlyConfigured("Please configure FRONTEND_URL for production")
-
 SENTRY_DSN = env("SENTRY_DSN", default="")
-
-if SENTRY_DSN:
-    sentry_sdk.init(
-        dsn=SENTRY_DSN,
-        integrations=[DjangoIntegration()],
-        traces_sample_rate=0.2,
-        send_default_pii=True,
-        environment=ENVIRONMENT,
-    )
 
 DEFAULT_FILE_STORAGE = env(
     "DEFAULT_FILE_STORAGE", default="storages.backends.s3boto3.S3Boto3Storage"

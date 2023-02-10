@@ -81,7 +81,7 @@ def create_customer(user_data: UserData) -> str:
         document,
         variables={
             "input": {
-                "identifier": {"externalId": user_data["id"]},
+                "identifier": {"emailAddress": user_data["email"]},
                 "onCreate": {
                     "externalId": user_data["id"],
                     "fullName": get_name(user_data),
