@@ -1,55 +1,11 @@
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
-from django.core import exceptions
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from pycountry import countries
 
 from helpers.constants import GENDERS
-from submissions.models import Submission
 
 from .managers import UserManager
-
-COUNTRIES = [{"code": country.alpha_2, "name": country.name} for country in countries]
-EU_COUNTRIES = (
-    "AT",
-    "BE",
-    "BG",
-    "CY",
-    "CZ",
-    "DK",
-    "EE",
-    "FI",
-    "FR",
-    "DE",
-    "GR",
-    "HU",
-    "HR",
-    "IE",
-    "IT",
-    "LV",
-    "LT",
-    "LU",
-    "MT",
-    "NL",
-    "PL",
-    "PT",
-    "RO",
-    "SK",
-    "SI",
-    "ES",
-    "SE",
-    "GB",
-)
-
-
-def get_countries(code=""):
-    if code:
-        country = [country for country in COUNTRIES if country["code"] == code]
-        if country:
-            return country[0]
-        raise exceptions.ObjectDoesNotExist(f"'{code}' is not a valid country.")
-    return COUNTRIES
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -62,10 +18,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     date_birth = models.DateField(_("date of birth"), null=True)
     open_to_recruiting = models.BooleanField(_("open to recruiting"), default=False)
     open_to_newsletter = models.BooleanField(_("open to newsletter"), default=False)
-
-    country = models.CharField(
-        choices=COUNTRIES, max_length=50, verbose_name=_("country"), blank=True
-    )
 
     date_joined = models.DateTimeField(_("date joined"), auto_now_add=True)
     is_active = models.BooleanField(_("active"), default=True)
@@ -81,18 +33,3 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def get_short_name(self):
         return self.email
-
-    def is_eu(self):
-        if self.country in EU_COUNTRIES:
-            return True
-        return False
-
-    def is_italian(self):
-        if self.country == "IT":
-            return True
-        return False
-
-    @property
-    def submissions(self):
-        # TODO: Temp method to make the migration easier
-        return Submission.objects.filter(speaker_id=self.id)

@@ -17,7 +17,7 @@ from submissions.models import Submission
 from users.autocomplete import UsersBackendAutocomplete
 from users.mixins import AdminUsersMixin, ResourceUsersByIdsMixin, SearchUsersMixin
 
-from .models import Grant
+from .models import Grant, GrantRecap
 
 EXPORT_GRANTS_FIELDS = (
     "name",
@@ -263,6 +263,7 @@ class GrantAdminForm(forms.ModelForm):
             "why",
             "notes",
             "travelling_from",
+            "traveling_from",
             "country_type",
             "applicant_message",
             "applicant_reply_sent_at",
@@ -411,3 +412,17 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
 
     class Media:
         js = ["admin/js/jquery.init.js"]
+
+
+@admin.register(GrantRecap)
+class GrantsRecap(admin.ModelAdmin):
+
+    list_filter = ("conference",)
+
+    def has_change_permission(self, *args, **kwargs) -> bool:
+        return False
+
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+
+        return queryset

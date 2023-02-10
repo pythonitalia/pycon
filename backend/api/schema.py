@@ -7,6 +7,7 @@ from .blob.schema import BlobMutation
 from .blog.schema import BlogQuery
 from .checklist.query import ChecklistQuery
 from .conferences.schema import ConferenceQuery
+from .countries.schema import CountryQuery
 from .grants.mutations import GrantMutation
 from .job_board.schema import JobBoardQuery
 from .newsletters.schema import NewsletterMutations
@@ -18,7 +19,6 @@ from .schedule.mutations import ScheduleMutations
 from .schedule.schema import ScheduleQuery
 from .submissions.mutations import SubmissionsMutations
 from .submissions.schema import SubmissionsQuery
-from .users.schema import CountryQuery
 from .volunteers_notifications.mutations import VolunteersNotificationsMutation
 from .volunteers_notifications.query import VolunteersNotificationsQuery
 from .voting.mutations import VotesMutations
