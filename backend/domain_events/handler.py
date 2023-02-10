@@ -205,8 +205,8 @@ def handle_new_plain_chat_sent(data):
     )
 
     user_data = users_result.data["usersByIds"][0]
-
-    plain.send_message(user_data, message=message)
+    name = get_name(user_data, "Financial Aid Appicant")
+    plain.send_message(user_data, title=f"{name} has some questions:", message=message)
 
 
 def handle_new_submission_comment(data):
