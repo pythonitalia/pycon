@@ -35,16 +35,21 @@ def _raise_mutation_error(data, key: str):
 
 
 def _execute(query, variables):
-    response = requests.post(
-        settings.PLAIN_API,
-        json={"query": query, "variables": variables},
-        headers={"Authorization": f"Bearer {settings.PLAIN_API_TOKEN}"},
-    )
+    try:
+        response = requests.post(
+            settings.PLAIN_API,
+            json={"query": query, "variables": variables},
+            headers={"Authorization": f"Bearer {settings.PLAIN_API_TOKEN}"},
+        )
 
-    response.raise_for_status()
-    data = response.json()
+        response.raise_for_status()
 
-    return data["data"]
+        data = response.json()
+
+        return data["data"]
+    except requests.exceptions.HTTPError as e:
+        data = e.response.json()
+        raise PlainError(data["errors"][0]["message"]) from e
 
 
 def create_customer(user_data: UserData) -> str:
@@ -79,15 +84,15 @@ def create_customer(user_data: UserData) -> str:
                     "fullName": get_name(user_data),
                     "email": {
                         "email": user_data["email"],
-                        "isVerified": "true",
+                        "isVerified": True,
                     },
                 },
                 "onUpdate": {
-                    "externalId": user_data["id"],
-                    "fullName": get_name(user_data),
+                    "externalId": {"value": user_data["id"]},
+                    "fullName": {"value": get_name(user_data)},
                     "email": {
                         "email": user_data["email"],
-                        "isVerified": "true",
+                        "isVerified": True,
                     },
                 },
             }
