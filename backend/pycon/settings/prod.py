@@ -5,6 +5,7 @@ SECRET_KEY = env("SECRET_KEY")
 
 # if FRONTEND_URL == "http://testfrontend.it/":
 #     raise ImproperlyConfigured("Please configure FRONTEND_URL for production")
+SENTRY_DSN = env("SENTRY_DSN", default="")
 
 DEFAULT_FILE_STORAGE = env(
     "DEFAULT_FILE_STORAGE", default="storages.backends.s3boto3.S3Boto3Storage"
