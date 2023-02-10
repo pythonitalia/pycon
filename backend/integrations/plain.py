@@ -1,7 +1,10 @@
+import logging
 from typing import TypedDict
 
 import requests
 from django.conf import settings
+
+logger = logging.getLogger(__name__)
 
 
 class UserData(TypedDict):
@@ -101,6 +104,7 @@ def create_customer(user_data: UserData) -> str:
 
     _raise_mutation_error(response, "upsertCustomer")
 
+    logger.info("Created new customer for %s on Plain", get_name(user_data))
     return response["upsertCustomer"]["customer"]["id"]
 
 
@@ -131,6 +135,10 @@ def change_customer_status(customer_id: str):
         ):
             return
         raise PlainError(response["changeCustomerStatus"]["error"]["message"])
+
+    logger.info(
+        "Customer set to ACTIVE on Plain",
+    )
 
 
 def _send_chat(customer_id: str, title: str, message: str):
@@ -167,6 +175,8 @@ def _send_chat(customer_id: str, title: str, message: str):
     )
 
     _raise_mutation_error(response, "upsertCustomTimelineEntry")
+
+    logger.info("Custom timeline entry added on Plain with title '%s'", title)
 
 
 def send_message(user_data: UserData, title: str, message: str):
