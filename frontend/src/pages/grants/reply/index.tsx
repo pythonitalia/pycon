@@ -3,6 +3,7 @@ import {
   Heading,
   Page,
   Section,
+  Spacer,
   Text,
 } from "@python-italia/pycon-styleguide";
 import React, { useCallback, useEffect } from "react";
@@ -21,12 +22,13 @@ import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
 import {
   useGrantQuery,
+  StatusOption,
   Status as GrantStatus,
   useSendGrantReplyMutation,
 } from "~/types";
 
 type GrantReplyFrom = {
-  option: GrantStatus;
+  option: StatusOption | null;
   message: string;
 };
 
@@ -42,14 +44,18 @@ const ALLOWED_STATUSES = [
   GrantStatus.Refused,
   GrantStatus.WaitingList,
   GrantStatus.WaitingListMaybe,
-  GrantStatus.NeedsInfo,
 ];
 
-const ANSWERS_STATUSES = [
-  GrantStatus.Confirmed,
-  GrantStatus.Refused,
-  GrantStatus.NeedsInfo,
-];
+const ANSWERS_STATUSES = [GrantStatus.Confirmed, GrantStatus.Refused];
+
+const toStatusOption = (status: GrantStatus) => {
+  switch (status) {
+    case GrantStatus.Confirmed:
+      return StatusOption.Confirmed;
+    case GrantStatus.Refused:
+      return StatusOption.Refused;
+  }
+};
 
 const GrantReply = () => {
   const language = useCurrentLanguage();
@@ -95,7 +101,7 @@ const GrantReply = () => {
 
   useEffect(() => {
     if (!loading && grant) {
-      formState.setField("option", grant.status);
+      formState.setField("option", toStatusOption(grant?.status));
       formState.setField("message", grant.applicantMessage || "");
     }
   }, [loading]);
@@ -103,10 +109,11 @@ const GrantReply = () => {
   if (loading) {
     return <PageLoading titleId="global.loading" />;
   }
-
+  console.log(formState.values, grant.status);
   const hasSentAnswer = ANSWERS_STATUSES.includes(grant?.status) ?? false;
+
   const answerHasChanged =
-    grant?.status !== formState.values.option ||
+    toStatusOption(grant?.status) !== formState.values.option ||
     grant?.applicantMessage !== formState.values.message;
 
   if (error) {
@@ -187,7 +194,7 @@ const GrantReply = () => {
         >
           {APPROVED_STATUSES.includes(grant?.status) && (
             <Label>
-              <Radio {...radio("option", GrantStatus.Confirmed)} />
+              <Radio {...radio("option", StatusOption.Confirmed)} />
               <Text as="span">
                 <FormattedMessage id="grants.reply.confirmed" />
               </Text>
@@ -200,19 +207,16 @@ const GrantReply = () => {
               <FormattedMessage id="grants.reply.refused" />
             </Text>
           </Label>
+          <Spacer size="medium" />
+
+          <Text size={2}>
+            <FormattedMessage id="grants.reply.messageDescription" />
+          </Text>
+          <Spacer size="small" />
 
           <Label>
-            <Radio {...radio("option", GrantStatus.NeedsInfo)} />
-            <Text as="span">
-              <FormattedMessage id="grants.reply.needs_info" />
-            </Text>
+            <Textarea {...text("message")} rows={5} />
           </Label>
-
-          {formState.values.option === GrantStatus.NeedsInfo && (
-            <Label>
-              <Textarea {...text("message")} rows={5} />
-            </Label>
-          )}
         </Flex>
 
         <Button

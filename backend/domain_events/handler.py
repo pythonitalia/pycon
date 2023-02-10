@@ -13,7 +13,7 @@ from pythonit_toolkit.service_client import ServiceClient
 
 from domain_events.publisher import publish_message
 from grants.models import Grant
-from integrations import slack
+from integrations import plain, slack
 from notifications.emails import send_email
 
 logger = logging.getLogger(__name__)
@@ -194,6 +194,19 @@ def handle_new_grant_reply(data):
         ],
         token=grant.conference.slack_new_grant_reply_incoming_incoming_webhook_url,
     )
+
+
+def handle_new_plain_chat_sent(data):
+    user_id = data["user_id"]
+    message = data["message"]
+
+    users_result = execute_service_client_query(
+        USERS_NAMES_FROM_IDS, {"ids": [user_id]}
+    )
+
+    user_data = users_result.data["usersByIds"][0]
+    name = get_name(user_data, "Financial Aid Appicant")
+    plain.send_message(user_data, title=f"{name} has some questions:", message=message)
 
 
 def handle_new_submission_comment(data):
@@ -557,6 +570,7 @@ HANDLERS = {
     "GrantReplyWaitingListSent": handle_grant_reply_waiting_list_sent,
     "GrantReplyRejectedSent": handle_grant_reply_rejected_sent,
     "NewGrantReply": handle_new_grant_reply,
+    "NewPlainChatSent": handle_new_plain_chat_sent,
     "NewSubmissionComment/SlackNotification": handle_send_slack_notification_for_new_submission_comment,
     "NewSubmissionComment/EmailNotification": handle_send_email_notification_for_new_submission_comment,
     "NewSubmissionComment": handle_new_submission_comment,

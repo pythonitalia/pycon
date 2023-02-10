@@ -494,13 +494,13 @@ export const messages = {
 If we don't get news from you before {replyDeadline} we will allocate your grant to another person. `,
     "grants.reply.confirmed": "Confrim",
     "grants.reply.refused": "Refuse",
-    "grants.reply.needs_info": "Needs to ask for information",
     "grants.reply.submitReply": "Submit answer",
     "grants.reply.sendingReply": "Sending your answer!",
     "grants.reply.replySentWithSuccess":
       "Thank you! Your reply has been correctly saved",
     "grants.reply.currentReply": "Your current answer is: {reply}",
-
+    "grants.reply.messageDescription": `If you have questions, or if you need an invitation letter for a VISA requirement please, write below your personal details
+(complete name/surname, birthdate, nationality, passport number) and we'll send you the invitation letter within 4 days.`,
     "homepage.sponsorsSectionText":
       "PyCon Italia can be your platform to gain brand recognition, take leads and recruit from an audience of highly skilled professionals!",
     "homepage.sponsorsSectionCTAText": "Become a sponsor",
@@ -1149,8 +1149,11 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
 Se non riceveremo una conferma da te prima del {replyDeadlilne}, assegneremo il tuo grant ad un'altra persona.`,
     "grants.reply.confirmed": "Conferma",
     "grants.reply.refused": "Rifiuta",
-    "grants.reply.needs_info": "Devo chiedere informazioni",
     "grants.reply.submitReply": "Invia risposta",
+    "grants.reply.currentReply": "Risposta attuale: {reply}",
+    "grants.reply.messageDescription": `Se hai domande, o se hai bisogno di una lettera di invito per un obbligo di visto per favore, scrivi sotto i tuoi dati personali
+(nome/cognome completo, data di nascita, nazionalità, numero di passaporto) e ti invieremo la lettera di invito entro 4 giorni.`,
+
     "schedule.invitation.sendingReply": "Caricamento in corso",
     "schedule.invitation.replySentWithSuccess":
       "Grazie! La tua risposta è stata salvata",

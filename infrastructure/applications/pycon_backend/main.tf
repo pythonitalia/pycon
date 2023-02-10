@@ -90,6 +90,8 @@ module "lambda" {
     USER_ID_HASH_SALT                         = module.secrets.value.userid_hash_salt
     AZURE_STORAGE_ACCOUNT_NAME                = module.secrets.value.azure_storage_account_name
     AZURE_STORAGE_ACCOUNT_KEY                 = module.secrets.value.azure_storage_account_key
+    PLAIN_API                                 = "https://core-api.uk.plain.com/graphql/v1"
+    PLAIN_API_TOKEN                           = module.secrets.value.plain_api_token
   }
 }
 
