@@ -12,6 +12,7 @@ from domain_events.publisher import (
     send_grant_reply_approved_email,
     send_grant_reply_rejected_email,
     send_grant_reply_waiting_list_email,
+    send_message_to_plain,
 )
 from submissions.models import Submission
 from users.autocomplete import UsersBackendAutocomplete
@@ -234,6 +235,17 @@ def send_grant_reminder_to_waiting_for_confirmation(modeladmin, request, queryse
         messages.info(request, f"Grant reminder sent to {grant.name}")
 
 
+@admin.action(description="Send messages to Plain")
+def send_messages_to_plain(modeladmin, request, queryset):
+    for grant in queryset:
+        if grant.applicant_message:
+            send_message_to_plain(grant, grant.applicant_message)
+            messages.info(
+                request,
+                f"Message from {grant.name} sent to Plain",
+            )
+
+
 class GrantAdminForm(forms.ModelForm):
     class Meta:
         model = Grant
@@ -305,6 +317,7 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
     )
     user_fk = "user_id"
     actions = [
+        send_messages_to_plain,
         send_reply_emails,
         send_grant_reminder_to_waiting_for_confirmation,
         "delete_selected",
