@@ -109,13 +109,6 @@ def change_customer_status(customer_id: str):
 
             error {
                 message
-                type
-                code
-                fields {
-                    field
-                    message
-                    type
-                }
             }
         }
     }
@@ -126,7 +119,13 @@ def change_customer_status(customer_id: str):
         variables={"input": {"status": "ACTIVE", "customerId": customer_id}},
     )
 
-    _raise_mutation_error(response, "changeCustomerStatus")
+    if response["changeCustomerStatus"]["error"]:
+        if (
+            response["changeCustomerStatus"]["error"]["message"]
+            == "Customer already is status: ACTIVE"
+        ):
+            return
+        raise PlainError(response["changeCustomerStatus"]["error"]["message"])
 
 
 def _send_chat(customer_id: str, title: str, message: str):
