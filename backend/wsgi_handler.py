@@ -14,14 +14,32 @@ import sys
 import traceback
 from logging import getLogger
 
+import sentry_sdk
 from django.apps import apps
 from django.conf import settings
+from sentry_sdk.integrations.aws_lambda import AwsLambdaIntegration
+from sentry_sdk.integrations.django import DjangoIntegration
 
 # imports serverless_wsgi from the root
 import serverless_wsgi
 
 logging.getLogger().setLevel(logging.INFO)
 logger = getLogger(__name__)
+
+
+SENTRY_DSN = settings.SENTRY_DSN
+
+if SENTRY_DSN:
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        integrations=[
+            DjangoIntegration(),
+            AwsLambdaIntegration(),
+        ],
+        traces_sample_rate=0.2,
+        send_default_pii=True,
+        environment=settings.ENVIRONMENT,
+    )
 
 
 def import_app(config):
