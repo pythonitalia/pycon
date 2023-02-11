@@ -3,7 +3,7 @@ from typing import List, Optional
 
 from django import forms
 from django.contrib import admin, messages
-from django.db.models import F, OuterRef, Subquery, Sum
+from django.db.models import Count, F, OuterRef, Subquery, Sum
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import path, reverse
@@ -391,10 +391,13 @@ def get_next_to_review_item_id(
         already_reviewed_ids = already_reviewed.values_list("proposal_id", flat=True)
         allowed_tags = SubmissionTag.objects.exclude(id__in=exclude)
         unvoted_item = (
-            review_session.conference.submissions.exclude(
+            review_session.conference.submissions.annotate(
+                votes_received=Count("userreview")
+            )
+            .exclude(
                 id__in=list(already_reviewed_ids) + [skip_item] + seen,
             )
-            .order_by("?")
+            .order_by("votes_received", "?")
             .filter(tags__in=allowed_tags)
             .first()
         )
