@@ -252,7 +252,6 @@ class GrantAdminForm(forms.ModelForm):
             "full_name",
             "conference",
             "user_id",
-            "email",
             "age_group",
             "gender",
             "occupation",
@@ -288,10 +287,7 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
         "applicant_reply_sent_at",
         "applicant_reply_deadline",
     )
-    readonly_fields = (
-        "email",
-        "applicant_reply_sent_at",
-    )
+    readonly_fields = ("applicant_reply_sent_at",)
     list_filter = (
         "conference",
         "status",
