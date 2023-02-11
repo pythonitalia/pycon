@@ -19,9 +19,11 @@ from newsletters.tests.factories import *  # noqa
 from pages.tests.factories import *  # noqa
 from participants.tests.factories import *  # noqa
 from pretix.tests.fixtures import *  # noqa
+from reviews.tests.factories import *  # noqa
 from schedule.tests.factories import *  # noqa
 from sponsors.tests.factories import *  # noqa
 from submissions.tests.factories import *  # noqa
+from users.tests.factories import *  # noqa
 from voting.tests.factories import *  # noqa
 from voting.tests.fixtures import *  # noqa
 
