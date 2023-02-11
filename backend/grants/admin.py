@@ -12,7 +12,6 @@ from domain_events.publisher import (
     send_grant_reply_approved_email,
     send_grant_reply_rejected_email,
     send_grant_reply_waiting_list_email,
-    send_message_to_plain,
 )
 from submissions.models import Submission
 from users.autocomplete import UsersBackendAutocomplete
@@ -235,17 +234,6 @@ def send_grant_reminder_to_waiting_for_confirmation(modeladmin, request, queryse
         messages.info(request, f"Grant reminder sent to {grant.name}")
 
 
-@admin.action(description="Send messages to Plain")
-def send_messages_to_plain(modeladmin, request, queryset):
-    for grant in queryset:
-        if grant.applicant_message:
-            send_message_to_plain(grant, grant.applicant_message)
-            messages.info(
-                request,
-                f"Message from {grant.name} sent to Plain",
-            )
-
-
 class GrantAdminForm(forms.ModelForm):
     class Meta:
         model = Grant
@@ -264,7 +252,6 @@ class GrantAdminForm(forms.ModelForm):
             "full_name",
             "conference",
             "user_id",
-            "email",
             "age_group",
             "gender",
             "occupation",
@@ -278,6 +265,8 @@ class GrantAdminForm(forms.ModelForm):
             "travelling_from",
             "country_type",
             "applicant_message",
+            "applicant_reply_sent_at",
+            "applicant_reply_deadline",
         )
 
 
@@ -298,7 +287,7 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
         "applicant_reply_sent_at",
         "applicant_reply_deadline",
     )
-    readonly_fields = ("email",)
+    readonly_fields = ("applicant_reply_sent_at",)
     list_filter = (
         "conference",
         "status",
@@ -317,11 +306,58 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
     )
     user_fk = "user_id"
     actions = [
-        send_messages_to_plain,
         send_reply_emails,
         send_grant_reminder_to_waiting_for_confirmation,
         "delete_selected",
     ]
+
+    fieldsets = (
+        (
+            "Manage the Grant",
+            {
+                "fields": (
+                    "status",
+                    "approved_type",
+                    "country_type",
+                    "ticket_amount",
+                    "travel_amount",
+                    "accommodation_amount",
+                    "total_amount",
+                    "applicant_message",
+                    "applicant_reply_sent_at",
+                    "applicant_reply_deadline",
+                )
+            },
+        ),
+        (
+            "About the Applicant",
+            {
+                "fields": (
+                    "name",
+                    "full_name",
+                    "conference",
+                    "user_id",
+                    "age_group",
+                    "occupation",
+                )
+            },
+        ),
+        (
+            "The Grant",
+            {
+                "fields": (
+                    "grant_type",
+                    "travelling_from",
+                    "needs_funds_for_travel",
+                    "why",
+                    "python_usage",
+                    "been_to_other_events",
+                    "interested_in_volunteering",
+                    "notes",
+                )
+            },
+        ),
+    )
 
     @admin.display(
         description="User",
