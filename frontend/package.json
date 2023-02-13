@@ -37,7 +37,7 @@
     "@sentry/browser": "^6.13.3",
     "@sentry/nextjs": "^7.29.0",
     "@sentry/node": "^5.29.2",
-    "@sentry/tracing": "^6.13.3",
+    "@sentry/tracing": "^7.37.1",
     "@sentry/webpack-plugin": "^1.14.0",
     "@theme-ui/core": "^0.15.3",
     "@theme-ui/css": "^0.15.3",
