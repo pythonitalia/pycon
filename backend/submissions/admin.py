@@ -13,13 +13,23 @@ from .models import Submission, SubmissionComment, SubmissionTag, SubmissionType
 
 EXPORT_SUBMISSION_FIELDS = (
     "id",
+    "status",
+    "pending_status",
     "languages",
     "title_en",
     "title_it",
-    "status",
+    "elevator_pitch_it",
+    "elevator_pitch_en",
+    "abstract_it",
+    "abstract_en",
+    "notes",
     "tags",
     "audience_level",
     "type",
+    "speaker_name",
+    "speaker_email",
+    "speaker_country",
+    "speaker_gender",
 )
 
 
@@ -27,8 +37,14 @@ class SubmissionResource(ResourceUsersByIdsMixin):
     search_field = "speaker_id"
     title_en = Field()
     title_it = Field()
+    elevator_pitch_en = Field()
+    elevator_pitch_it = Field()
+    abstract_en = Field()
+    abstract_it = Field()
     speaker_name = Field()
     speaker_email = Field()
+    speaker_country = Field()
+    speaker_gender = Field()
 
     def dehydrate_title_en(self, obj: Submission):
         en = obj.title.data.get("en")
@@ -36,6 +52,22 @@ class SubmissionResource(ResourceUsersByIdsMixin):
 
     def dehydrate_title_it(self, obj: Submission):
         it = obj.title.data.get("it")
+        return it if it else ""
+
+    def dehydrate_elevator_pitch_en(self, obj: Submission):
+        en = obj.elevator_pitch.data.get("en")
+        return en if en else ""
+
+    def dehydrate_elevator_pitch_it(self, obj: Submission):
+        it = obj.elevator_pitch.data.get("it")
+        return it if it else ""
+
+    def dehydrate_abstract_en(self, obj: Submission):
+        en = obj.abstract.data.get("en")
+        return en if en else ""
+
+    def dehydrate_abstract_it(self, obj: Submission):
+        it = obj.abstract.data.get("it")
         return it if it else ""
 
     def dehydrate_tags(self, obj: Submission):
@@ -56,6 +88,14 @@ class SubmissionResource(ResourceUsersByIdsMixin):
     def dehydrate_speaker_email(self, obj: Submission):
         user_data = self.get_user_data(obj.speaker_id)
         return user_data["email"]
+
+    def dehydrate_speaker_country(self, obj: Submission):
+        user_data = self.get_user_data(obj.speaker_id)
+        return user_data["country"]
+
+    def dehydrate_speaker_gender(self, obj: Submission):
+        user_data = self.get_user_data(obj.speaker_id)
+        return user_data["gender"]
 
     class Meta:
         model = Submission

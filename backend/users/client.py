@@ -11,6 +11,7 @@ GET_USERS_BY_IDS = """query GetUsersByIds($ids: [ID!]!) {
         fullname
         name
         displayName
+        country
         isActive
         isStaff
         gender
