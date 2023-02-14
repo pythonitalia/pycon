@@ -131,6 +131,7 @@ class ReviewSessionAdmin(admin.ModelAdmin):
 
     def review_recap_view(self, request, review_session_id):
         review_session = ReviewSession.objects.get(id=review_session_id)
+        conference = review_session.conference
 
         if request.method == "POST":
             data = request.POST
@@ -143,9 +144,7 @@ class ReviewSessionAdmin(admin.ModelAdmin):
             }
 
             proposals = list(
-                review_session.conference.submissions.filter(
-                    id__in=decisions.keys()
-                ).all()
+                conference.submissions.filter(id__in=decisions.keys()).all()
             )
 
             field = "status" if mark_as_confirmed else "pending_status"
@@ -189,14 +188,14 @@ class ReviewSessionAdmin(admin.ModelAdmin):
                 )
             )
             .order_by(F("score").desc(nulls_last=True))
-            .prefetch_related("userreview_set")
+            .prefetch_related("userreview_set", "audience_level")
             .all()
         )
         speakers_ids = items.values_list("speaker_id", flat=True)
         grants = {
             str(grant.user_id): grant
             for grant in Grant.objects.filter(
-                conference=review_session.conference, user_id__in=speakers_ids
+                conference=conference, user_id__in=speakers_ids
             ).all()
         }
         speakers_data = get_users_full_data(list(speakers_ids))
@@ -206,6 +205,7 @@ class ReviewSessionAdmin(admin.ModelAdmin):
             grants=grants,
             speakers=speakers_data,
             review_session_id=review_session_id,
+            audience_levels=conference.audience_levels.all(),
         )
         return TemplateResponse(request, "review-recap.html", context)
 
