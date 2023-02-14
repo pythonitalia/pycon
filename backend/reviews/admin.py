@@ -188,7 +188,7 @@ class ReviewSessionAdmin(admin.ModelAdmin):
                 )
             )
             .order_by(F("score").desc(nulls_last=True))
-            .prefetch_related("userreview_set", "audience_level")
+            .prefetch_related("userreview_set", "audience_level", "languages")
             .all()
         )
         speakers_ids = items.values_list("speaker_id", flat=True)
