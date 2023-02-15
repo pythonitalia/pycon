@@ -7,7 +7,7 @@ license = "MIT"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-Django = "4.1.6"
+Django = "4.1.7"
 django-environ = "=0.8.1"
 django-model-utils = "=4.1.1"
 pytz = "=2019.3"
