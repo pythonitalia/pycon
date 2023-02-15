@@ -141,32 +141,29 @@
       });
     });
 
-    const proposalsWithFilter = document.querySelectorAll("[data-filter='proposals-with'");
-    proposalsWithFilter.forEach(
-      filter => {
-        filter.addEventListener('click', e => {
-          e.preventDefault();
-          const filterValue = parseInt(e.target.dataset.filterValue, 10);
+    const filterWithReviewsSelect = document.querySelector('#filter-with-n-reviews');
+    filterWithReviewsSelect.addEventListener('change', e => {
+      e.preventDefault();
 
-          document.querySelectorAll('.proposal-item').forEach(
-            proposalItem => {
-              if (e.target.dataset.filterValue === 'all') {
-                proposalItem.classList.remove('hidden')
-                return;
-              }
+      const filterValue = parseInt(e.target.value, 10);
 
-              const numOfVotes = parseInt(proposalItem.dataset.numOfVotes, 10);
-              if (numOfVotes >= filterValue) {
-                proposalItem.classList.remove('hidden')
-              } else {
-                proposalItem.classList.add('hidden')
-              }
-            }
-          )
+      document.querySelectorAll('.proposal-item').forEach(
+        proposalItem => {
+          if (e.target.value === 'all') {
+            proposalItem.classList.remove('hidden')
+            return;
+          }
 
-        })
-      }
-    )
+          const numOfVotes = parseInt(proposalItem.dataset.numOfVotes, 10);
+          if (numOfVotes === filterValue) {
+            proposalItem.classList.remove('hidden')
+          } else {
+            proposalItem.classList.add('hidden')
+          }
+        }
+      )
+
+    })
   });
 
   const updateBottomBarUI = () => {
@@ -208,19 +205,14 @@
     <div class="module filtered">
       <h2>Filters</h2>
       <div class="opt-filter">
-        <h3>Show proposals with at least N reviews:</h3>
-        <div class="opt-filter-values">
-          <a class="opt-filter-value" href="#" data-filter="proposals-with" data-filter-value="all">
-            All
-          </a>
+        <h3>Show proposals with N reviews:</h3>
+        <select name="filter-with-n-reviews" id="filter-with-n-reviews">
+          <option value="all">All</option>
           {% for i in '0123456789'|make_list %}
-          <a class="opt-filter-value" href="#" data-filter="proposals-with" data-filter-value="{{ forloop.counter }}">
-            {{ forloop.counter }}
-          </a>
+            <option value="{{ forloop.counter }}">{{ forloop.counter }}</option>
           {% endfor %}
-        </div>
+        </select>
       </div>
-
     </div>
     <div class="module filtered" id="changelist">
       <div class="changelist-form-container">
