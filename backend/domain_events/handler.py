@@ -11,7 +11,6 @@ from pythonit_toolkit.emails.templates import EmailTemplate
 from pythonit_toolkit.emails.utils import mark_safe
 from pythonit_toolkit.service_client import ServiceClient
 
-from domain_events.publisher import publish_message
 from grants.models import Grant
 from integrations import plain, slack
 from notifications.emails import send_email
@@ -209,120 +208,6 @@ def handle_new_plain_chat_sent(data):
     plain.send_message(user_data, title=f"{name} has some questions:", message=message)
 
 
-def handle_new_submission_comment(data):
-    publish_message(
-        "NewSubmissionComment/SlackNotification",
-        body=data,
-        deduplication_id=str(data["comment_id"]),
-    )
-
-    publish_message(
-        "NewSubmissionComment/EmailNotification",
-        body=data,
-        deduplication_id=str(data["comment_id"]),
-    )
-
-
-def handle_send_email_notification_for_new_submission_comment(data):
-    submission_title = data["submission_title"]
-    author_id = data["author_id"]
-    all_commenters_ids = data["all_commenters_ids"]
-    submission_url = data["submission_url"]
-
-    users_result = execute_service_client_query(
-        USERS_NAMES_FROM_IDS, {"ids": all_commenters_ids}
-    )
-    users_by_id = {int(user["id"]): user for user in users_result.data["usersByIds"]}
-
-    # Notify everyone who commented on the submission
-    # but not the person posting the comment
-    commenters_to_notify = [
-        commenter for commenter in all_commenters_ids if commenter != author_id
-    ]
-
-    for commenter_id in commenters_to_notify:
-        commenter_data = users_by_id[commenter_id]
-        send_email(
-            template=EmailTemplate.NEW_COMMENT_ON_SUBMISSION,
-            to=commenter_data["email"],
-            subject=f"[PyCon Italia 2023] New comment on Submission {submission_title}",
-            variables={
-                "submissionTitle": submission_title,
-                "userName": get_name(commenter_data, "there"),
-                "submissionlink": submission_url,
-            },
-        )
-
-
-def handle_send_slack_notification_for_new_submission_comment(data):
-    from conferences.models import Conference
-
-    conference = Conference.objects.get(id=data["conference_id"])
-
-    speaker_id = data["speaker_id"]
-    submission_title = data["submission_title"]
-    author_id = data["author_id"]
-    admin_url = data["admin_url"]
-    submission_url = data["submission_url"]
-    comment = data["comment"]
-
-    users_result = execute_service_client_query(
-        USERS_NAMES_FROM_IDS, {"ids": [speaker_id, author_id]}
-    )
-    users_by_id = {int(user["id"]): user for user in users_result.data["usersByIds"]}
-
-    speaker_name = get_name(users_by_id[speaker_id])
-    comment_author_name = get_name(users_by_id[author_id])
-
-    slack.send_message(
-        [
-            {
-                "type": "section",
-                "text": {
-                    "text": f"New comment on proposal {submission_title}",
-                    "type": "mrkdwn",
-                },
-            }
-        ],
-        [
-            {
-                "blocks": [
-                    {
-                        "type": "section",
-                        "text": {
-                            "type": "mrkdwn",
-                            "text": f"*<{admin_url}|Open admin>* | *<{submission_url}|Open site>*",
-                        },
-                    },
-                    {
-                        "type": "section",
-                        "text": {"type": "mrkdwn", "text": "*Comment*"},
-                    },
-                    {
-                        "type": "section",
-                        "text": {"type": "plain_text", "text": comment, "emoji": False},
-                    },
-                    {
-                        "type": "section",
-                        "fields": [
-                            {"type": "mrkdwn", "text": "*Submission Author*"},
-                            {"type": "mrkdwn", "text": "*Comment Author*"},
-                            {"type": "plain_text", "text": speaker_name},
-                            {"type": "plain_text", "text": comment_author_name},
-                            {"type": "mrkdwn", "text": "*Is Submission Author*"},
-                            {
-                                "type": "plain_text",
-                                "text": "Yes" if speaker_id == author_id else "No",
-                            },
-                        ],
-                    },
-                ],
-            },
-        ],
-        token=conference.slack_new_proposal_comment_incoming_webhook_url,
-    )
-
-
 def handle_new_cfp_submission(data):
     from conferences.models import Conference
 
@@ -383,10 +268,11 @@ def handle_schedule_invitation_sent(data):
         USERS_NAMES_FROM_IDS, {"ids": [speaker_id]}
     )
     speaker_data = users_result.data["usersByIds"][0]
+    prefix = "[PyCon Italia 2023]"
     subject = (
-        "[PyCon Italia 2023] Reminder: Your submission was accepted, confirm your presence"
+        f"{prefix} Reminder: Your submission was accepted, confirm your presence"
         if is_reminder
-        else "[PyCon Italia 2023] Your submission was accepted!"
+        else f"{prefix} Your submission was accepted!"
     )
 
     send_email(
@@ -571,9 +457,6 @@ HANDLERS = {
     "GrantReplyRejectedSent": handle_grant_reply_rejected_sent,
     "NewGrantReply": handle_new_grant_reply,
     "NewPlainChatSent": handle_new_plain_chat_sent,
-    "NewSubmissionComment/SlackNotification": handle_send_slack_notification_for_new_submission_comment,
-    "NewSubmissionComment/EmailNotification": handle_send_email_notification_for_new_submission_comment,
-    "NewSubmissionComment": handle_new_submission_comment,
     "NewCFPSubmission": handle_new_cfp_submission,
     "ScheduleInvitationSent": handle_schedule_invitation_sent,
     "ScheduleInvitationReminderSent": handle_schedule_invitation_sent,
