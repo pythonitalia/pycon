@@ -52,12 +52,6 @@ class SubmissionTag:
 
 
 @strawberry.federation.type(keys=["id"])
-class SubmissionCommentAuthor:
-    id: strawberry.ID
-    is_speaker: bool
-
-
-@strawberry.federation.type(keys=["id"])
 class SubmissionSpeaker:
     id: strawberry.ID
 

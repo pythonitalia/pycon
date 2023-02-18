@@ -18,12 +18,9 @@ from domain_events.publisher import notify_new_submission
 from i18n.strings import LazyI18nString
 from languages.models import Language
 from participants.models import Participant
-from strawberry_forms.mutations import FormMutation
 from submissions.models import Submission as SubmissionModel
 
-from .forms import SendSubmissionCommentForm
-from .permissions import CanSendComment
-from .types import Submission, SubmissionComment, SubmissionCommentAuthor
+from .types import Submission
 
 FACEBOOK_LINK_MATCH = re.compile(r"^http(s)?:\/\/(www\.)?facebook\.com\/")
 LINKEDIN_LINK_MATCH = re.compile(r"^http(s)?:\/\/(www\.)?linkedin\.com\/")
@@ -39,26 +36,6 @@ class SubmissionMutation:
     class Meta:
         output_types = (Submission,)
         permission_classes = (IsAuthenticated,)
-
-
-class SendSubmissionComment(FormMutation):
-    @classmethod
-    def transform(cls, result):
-        return SubmissionComment(
-            id=result.id,
-            text=result.text,
-            submission=result.submission,
-            author=SubmissionCommentAuthor(
-                id=result.author_id,
-                is_speaker=result.author_id == result.submission.speaker_id,
-            ),
-            created=result.created,
-        )
-
-    class Meta(SubmissionMutation.Meta):
-        form_class = SendSubmissionCommentForm
-        output_types = (SubmissionComment,)
-        permission_classes = (IsAuthenticated, CanSendComment)
 
 
 @strawberry.type
@@ -186,7 +163,10 @@ class BaseSubmissionInput:
         if not duration:
             errors.add_error(
                 "duration",
-                "Select a valid choice. That choice is not one of the available choices.",
+                (
+                    "Select a valid choice. "
+                    "That choice is not one of the available choices."
+                ),
             )
         elif not duration.allowed_submission_types.filter(id=self.type).exists():
             errors.add_error(
@@ -299,8 +279,6 @@ UpdateSubmissionOutput = strawberry.union(
 
 @strawberry.type
 class SubmissionsMutations:
-    send_submission_comment = SendSubmissionComment.Mutation
-
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     def update_submission(
         self, info: Info, input: UpdateSubmissionInput
