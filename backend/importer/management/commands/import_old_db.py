@@ -134,12 +134,12 @@ class Command(BaseCommand):
     def import_users(self, overwrite=False):
         if overwrite:
             self.stdout.write(
-                self.style.ERROR(f"Users import does not support overwriting.")
+                self.style.ERROR("Users import does not support overwriting.")
             )
 
         from users.models import User
 
-        self.stdout.write(f"Importing users...")
+        self.stdout.write("Importing users...")
 
         old_users = list(
             self.c.execute(
@@ -211,7 +211,7 @@ class Command(BaseCommand):
 
     def create_submission_types(self, overwrite=False):
         if overwrite:
-            self.stdout.write(f"Overwrite has no effect on submission type")
+            self.stdout.write("Overwrite has no effect on submission type")
         created_count = skipped_count = 0
         for submission_type in TALK_TYPES.values():
             _, created = SubmissionType.objects.get_or_create(name=submission_type)
@@ -228,7 +228,7 @@ class Command(BaseCommand):
 
     def create_topics(self, overwrite=False):
         if overwrite:
-            self.stdout.write(f"Overwrite has no effect on topics")
+            self.stdout.write("Overwrite has no effect on topics")
         created_count = skipped_count = 0
         for topic in list(self.c.execute("SELECT title FROM conference_track")):
             _, created = Topic.objects.get_or_create(name=topic["title"])
@@ -246,7 +246,7 @@ class Command(BaseCommand):
     def import_conferences(self, overwrite=False):
         from conferences.models import Conference, Deadline
 
-        self.stdout.write(f"Importing conferences...")
+        self.stdout.write("Importing conferences...")
 
         languages = create_languages()
         audience_levels = create_audience_levels()
@@ -343,9 +343,9 @@ class Command(BaseCommand):
 
     def import_submissions(self, overwrite=False):
         if overwrite:
-            self.stdout.write(f"Overwrite is the default for submissions")
+            self.stdout.write("Overwrite is the default for submissions")
 
-        self.stdout.write(f"Importing submissions...")
+        self.stdout.write("Importing submissions...")
 
         conferences = {conf.code: conf.id for conf in Conference.objects.all()}
         languages = {lang.code: lang.id for lang in Language.objects.all()}
@@ -444,9 +444,9 @@ class Command(BaseCommand):
 
     def import_schedule_items(self, overwrite=False):
         if overwrite:
-            self.stdout.write(f"Overwrite is the default for schedule items")
+            self.stdout.write("Overwrite is the default for schedule items")
 
-        self.stdout.write(f"Importing schedule items...")
+        self.stdout.write("Importing schedule items...")
 
         conferences = {conf.code: conf.id for conf in Conference.objects.all()}
         rooms = {room.name: room.id for room in Room.objects.all()}
@@ -569,9 +569,9 @@ class Command(BaseCommand):
 
     def import_tickets(self, overwrite):
         if overwrite:
-            self.stdout.write(f"Overwrite is the default for tickets")
+            self.stdout.write("Overwrite is the default for tickets")
 
-        self.stdout.write(f"Importing tickets...")
+        self.stdout.write("Importing tickets...")
 
         conferences = {conf.code: conf.id for conf in Conference.objects.all()}
         users_by_email = {user.email: user.id for user in User.objects.all()}
@@ -699,9 +699,9 @@ class Command(BaseCommand):
 
     def import_rooms(self, overwrite=False):
         if overwrite:
-            self.stdout.write(f"Overwrite has no effect on rooms")
+            self.stdout.write("Overwrite has no effect on rooms")
 
-        self.stdout.write(f"Importing rooms...")
+        self.stdout.write("Importing rooms...")
 
         conferences = {conf.code: conf.id for conf in Conference.objects.all()}
 

@@ -14,6 +14,7 @@ import { MetaTags } from "~/components/meta-tags";
 import { PageLoading } from "~/components/page-loading";
 import { SubmissionAccordion } from "~/components/submission-accordion";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
+import { useCurrentLanguage } from "~/locale/context";
 import {
   useRankingQuery,
   useTopicsQuery,
@@ -22,7 +23,6 @@ import {
 } from "~/types";
 
 import ErrorPage from "../_error";
-import { useCurrentLanguage } from "~/locale/context";
 
 const COLORS = [
   {

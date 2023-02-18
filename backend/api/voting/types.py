@@ -2,10 +2,14 @@ from __future__ import annotations
 
 from decimal import Decimal
 from enum import Enum
-from typing import List, Optional
+from typing import List
 
 import strawberry
-from strawberry import LazyType
+
+from typing import TYPE_CHECKING, Annotated
+
+if TYPE_CHECKING:
+    from api.submissions.types import Submission
 
 
 @strawberry.enum
@@ -28,7 +32,7 @@ class VoteValues(Enum):
 class VoteType:
     id: strawberry.ID
     value: int
-    submission: LazyType["Submission", "api.submissions.types"]
+    submission: Annotated["Submission", strawberry.lazy("api.submissions.types")]
 
 
 @strawberry.type
@@ -48,6 +52,6 @@ class RankRequest:
 
 @strawberry.type
 class RankSubmission:
-    submission: LazyType["Submission", "api.submissions.types"]
+    submission: Annotated["Submission", strawberry.lazy("api.submissions.types")]
     rank: int
     score: Decimal

@@ -1,6 +1,6 @@
 module.exports = {
   content: ["./src/**/*.tsx"],
-  darkMode: 'media',
+  darkMode: "media",
   theme: {
     fontFamily: {
       sans: ["Montserrat", "sans-serif"],

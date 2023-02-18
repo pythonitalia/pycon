@@ -73,3 +73,10 @@ lambda = ["awslambdaric"]
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"
+
+[tool.ruff]
+line-length = 88
+exclude = [
+    "migrations"
+]
+target-version = "py39"

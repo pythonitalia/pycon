@@ -1,5 +1,6 @@
-import { ApolloServer } from "apollo-server-lambda";
 import * as ServerlessSentry from "@sentry/serverless";
+import { ApolloServer } from "apollo-server-lambda";
+
 import "./init";
 
 import { createContext } from "./context";
