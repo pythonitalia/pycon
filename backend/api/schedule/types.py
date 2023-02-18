@@ -12,8 +12,7 @@ from schedule.models import ScheduleItem as ScheduleItemModel
 from typing import Annotated
 
 if TYPE_CHECKING:  # pragma: no cover
-    import api  # noqa
-    from api.conferences.types import AudienceLevel, Conference, Keynote  # noqa
+    from api.conferences.types import AudienceLevel, Conference, Keynote
 
 
 @strawberry.type

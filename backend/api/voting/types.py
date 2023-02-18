@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from decimal import Decimal
 from enum import Enum
 from typing import List
@@ -44,14 +42,14 @@ class RankStat:
 
 
 @strawberry.type
-class RankRequest:
-    is_public: bool
-    ranked_submissions: List[RankSubmission]
-    stats: List[RankStat]
-
-
-@strawberry.type
 class RankSubmission:
     submission: Annotated["Submission", strawberry.lazy("api.submissions.types")]
     rank: int
     score: Decimal
+
+
+@strawberry.type
+class RankRequest:
+    is_public: bool
+    ranked_submissions: List[RankSubmission]
+    stats: List[RankStat]
