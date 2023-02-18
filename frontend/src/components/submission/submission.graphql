@@ -27,13 +27,5 @@ query Submission($id: ID!, $language: String!) {
       id
       name
     }
-    comments {
-      id
-      text
-      created
-      author {
-        name
-      }
-    }
   }
 }

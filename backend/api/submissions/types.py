@@ -1,8 +1,6 @@
-from datetime import datetime
 from typing import List, Optional
 
 import strawberry
-from strawberry import LazyType
 from strawberry.field import StrawberryField
 from strawberry.types import Info
 
@@ -12,6 +10,10 @@ from i18n.strings import LazyI18nString
 from voting.models import Vote
 
 from .permissions import CanSeeSubmissionPrivateFields, CanSeeSubmissionRestrictedFields
+from typing import TYPE_CHECKING, Annotated
+
+if TYPE_CHECKING:
+    from api.conferences.types import Conference, Topic, Duration, AudienceLevel
 
 
 def restricted_field() -> StrawberryField:
@@ -50,21 +52,6 @@ class SubmissionTag:
 
 
 @strawberry.federation.type(keys=["id"])
-class SubmissionCommentAuthor:
-    id: strawberry.ID
-    is_speaker: bool
-
-
-@strawberry.type
-class SubmissionComment:
-    id: strawberry.ID
-    text: str
-    created: datetime
-    author: SubmissionCommentAuthor
-    submission: LazyType["Submission", "api.submissions.types"]
-
-
-@strawberry.federation.type(keys=["id"])
 class SubmissionSpeaker:
     id: strawberry.ID
 
@@ -84,20 +71,22 @@ class MultiLingualString:
 
 @strawberry.type
 class Submission:
-    conference: LazyType["Conference", "api.conferences.types"]
+    conference: Annotated["Conference", strawberry.lazy("api.conferences.types")]
     title: str
     slug: str
     status: str
     speaker_level: Optional[str] = private_field()
     previous_talk_video: Optional[str] = private_field()
     short_social_summary: Optional[str] = private_field()
-    topic: Optional[LazyType["Topic", "api.conferences.types"]] = restricted_field()
+    topic: Optional[
+        Annotated["Topic", strawberry.lazy("api.conferences.types")]
+    ] = restricted_field()
     type: Optional[SubmissionType] = restricted_field()
     duration: Optional[
-        LazyType["Duration", "api.conferences.types"]
+        Annotated["Duration", strawberry.lazy("api.conferences.types")]
     ] = restricted_field()
     audience_level: Optional[
-        LazyType["AudienceLevel", "api.conferences.types"]
+        Annotated["AudienceLevel", strawberry.lazy("api.conferences.types")]
     ] = restricted_field()
     notes: Optional[str] = private_field()
 
@@ -154,29 +143,6 @@ class Submission:
     @strawberry.field
     def can_edit(self, info) -> bool:
         return self.can_edit(info.context.request)
-
-    @strawberry.field(permission_classes=[CanSeeSubmissionRestrictedFields])
-    def comments(self, info) -> List[SubmissionComment]:
-        comments = (
-            self.comments.all()
-            .order_by("created")
-            .values("id", "text", "created", "author_id", "submission__speaker_id")
-        )
-
-        return [
-            SubmissionComment(
-                id=comment["id"],
-                text=comment["text"],
-                created=comment["created"],
-                submission=self,
-                author=SubmissionCommentAuthor(
-                    id=comment["author_id"],
-                    is_speaker=comment["author_id"]
-                    == comment["submission__speaker_id"],
-                ),
-            )
-            for comment in comments
-        ]
 
     @strawberry.field
     def my_vote(self, info) -> Optional[VoteType]:

@@ -1,7 +1,6 @@
 from strawberry.permission import BasePermission
 
 from api.permissions import HasTokenPermission
-from submissions.models import Submission
 from voting.helpers import pastaporto_user_info_can_vote
 from voting.models.ranking import RankRequest
 
@@ -59,28 +58,6 @@ class CanSeeSubmissionPrivateFields(BasePermission):
         return (
             pastaporto.user_info.is_staff
             or source.speaker_id == pastaporto.user_info.id
-        )
-
-
-class CanSendComment(BasePermission):
-    message = "You can't send a comment"
-
-    def has_permission(self, source, info):
-        pastaporto = info.context.request.pastaporto
-        user_info = pastaporto.user_info
-
-        if user_info.is_staff:
-            return True
-
-        input = info.context.input
-        submission = Submission.objects.get_by_hashid(input.submission)
-
-        if submission.speaker_id == user_info.id:
-            return True
-
-        return pastaporto_user_info_can_vote(
-            pastaporto,
-            submission.conference,
         )
 
 

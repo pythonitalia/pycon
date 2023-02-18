@@ -1,12 +1,12 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
+import { Marquee } from "@python-italia/pycon-styleguide";
 import React, { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, jsx } from "theme-ui";
 
 import { Link } from "../link";
-import { Marquee } from "@python-italia/pycon-styleguide";
 
 type Props = {
   goBack: () => void;

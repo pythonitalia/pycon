@@ -3,7 +3,6 @@
 from django.db import migrations, models
 import django.db.models.deletion
 import django.utils.timezone
-import model_utils.fields
 
 
 class Migration(migrations.Migration):

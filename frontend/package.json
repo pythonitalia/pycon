@@ -90,7 +90,7 @@
     "@types/testing-library__jest-dom": "^5.14.1",
     "@xstate/inspect": "^0.7.0",
     "jest": "^27.0.6",
-    "prettier": "^2.8.1",
+    "prettier": "^2.8.4",
     "ts-jest": "^27.0.4",
     "typescript": "^4.9.4"
   }

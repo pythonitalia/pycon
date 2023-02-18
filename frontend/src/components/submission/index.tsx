@@ -7,7 +7,6 @@ import { Box, Flex, Grid, Heading, jsx, Text } from "theme-ui";
 
 import { Link } from "~/components/link";
 import { MetaTags } from "~/components/meta-tags";
-import { SubmissionComments } from "~/components/submission-comments/comments";
 import { Tag } from "~/components/tag";
 import { compile } from "~/helpers/markdown";
 import { SubmissionQuery } from "~/types";
@@ -127,10 +126,6 @@ export const Submission = ({ submission }: Props) => (
           </Flex>
         </Box>
       </Grid>
-      <SubmissionComments
-        submissionId={submission.id}
-        comments={submission.comments}
-      />
     </Box>
   </Fragment>
 );

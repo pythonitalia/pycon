@@ -2,7 +2,6 @@ import { GetStaticProps } from "next";
 
 import { getApolloClient, addApolloState } from "~/apollo/client";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
-
 import { queryAllJobListings } from "~/types";
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
