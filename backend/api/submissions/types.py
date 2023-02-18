@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import List, Optional
 
 import strawberry
@@ -151,29 +150,6 @@ class Submission:
     def can_edit(self, info) -> bool:
         return self.can_edit(info.context.request)
 
-    @strawberry.field(permission_classes=[CanSeeSubmissionRestrictedFields])
-    def comments(self, info) -> List[Annotated["SubmissionComment", "."]]:
-        comments = (
-            self.comments.all()
-            .order_by("created")
-            .values("id", "text", "created", "author_id", "submission__speaker_id")
-        )
-
-        return [
-            SubmissionComment(
-                id=comment["id"],
-                text=comment["text"],
-                created=comment["created"],
-                submission=self,
-                author=SubmissionCommentAuthor(
-                    id=comment["author_id"],
-                    is_speaker=comment["author_id"]
-                    == comment["submission__speaker_id"],
-                ),
-            )
-            for comment in comments
-        ]
-
     @strawberry.field
     def my_vote(self, info) -> Optional[VoteType]:
         request = info.context.request
@@ -206,12 +182,3 @@ class Submission:
 class SubmissionsPagination:
     submissions: List[Submission]
     total_pages: int
-
-
-@strawberry.type
-class SubmissionComment:
-    id: strawberry.ID
-    text: str
-    created: datetime
-    author: SubmissionCommentAuthor
-    submission: Submission
