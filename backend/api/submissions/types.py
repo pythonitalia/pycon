@@ -152,7 +152,7 @@ class Submission:
         return self.can_edit(info.context.request)
 
     @strawberry.field(permission_classes=[CanSeeSubmissionRestrictedFields])
-    def comments(self, info) -> List["SubmissionComment"]:
+    def comments(self, info) -> List[Annotated["SubmissionComment", "."]]:
         comments = (
             self.comments.all()
             .order_by("created")
@@ -214,4 +214,4 @@ class SubmissionComment:
     text: str
     created: datetime
     author: SubmissionCommentAuthor
-    submission: Annotated["Submission", strawberry.lazy("api.submissions.types")]
+    submission: Submission
