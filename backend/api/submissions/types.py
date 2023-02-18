@@ -58,15 +58,6 @@ class SubmissionCommentAuthor:
     is_speaker: bool
 
 
-@strawberry.type
-class SubmissionComment:
-    id: strawberry.ID
-    text: str
-    created: datetime
-    author: SubmissionCommentAuthor
-    submission: Annotated["Submission", strawberry.lazy("api.submissions.types")]
-
-
 @strawberry.federation.type(keys=["id"])
 class SubmissionSpeaker:
     id: strawberry.ID
@@ -161,7 +152,7 @@ class Submission:
         return self.can_edit(info.context.request)
 
     @strawberry.field(permission_classes=[CanSeeSubmissionRestrictedFields])
-    def comments(self, info) -> List[SubmissionComment]:
+    def comments(self, info) -> List["SubmissionComment"]:
         comments = (
             self.comments.all()
             .order_by("created")
@@ -215,3 +206,12 @@ class Submission:
 class SubmissionsPagination:
     submissions: List[Submission]
     total_pages: int
+
+
+@strawberry.type
+class SubmissionComment:
+    id: strawberry.ID
+    text: str
+    created: datetime
+    author: SubmissionCommentAuthor
+    submission: Annotated["Submission", strawberry.lazy("api.submissions.types")]
