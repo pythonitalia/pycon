@@ -4,7 +4,6 @@ from pythonit_toolkit.api.extensions import SentryExtension
 from users.api.types import (
     BlogPostAuthor,
     ScheduleItemUser,
-    SubmissionCommentAuthor,
     SubmissionSpeaker,
 )
 
@@ -18,7 +17,6 @@ schema = strawberry.federation.Schema(
         ScheduleItemUser,
         SubmissionSpeaker,
         BlogPostAuthor,
-        SubmissionCommentAuthor,
     ],
     extensions=[SentryExtension],
 )

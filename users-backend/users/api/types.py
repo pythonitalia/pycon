@@ -105,29 +105,3 @@ class BlogPostAuthor:
             id=id,
             full_name=user.fullname,
         )
-
-
-@strawberry.federation.type(keys=["id"], extend=True)
-class SubmissionCommentAuthor:
-    id: strawberry.ID = strawberry.federation.field(external=True)
-    is_speaker: bool = strawberry.federation.field(external=True)
-    name: str
-
-    @classmethod
-    async def resolve_reference(cls, id: str, isSpeaker: bool = True):
-        return cls(id=id, is_speaker=isSpeaker)
-
-    @strawberry.federation.field(requires=["isSpeaker"])
-    async def name(self, info: Info):
-        name = "Speaker"
-
-        if not self.is_speaker:
-            user = await info.context.users_dataloader.load(int(self.id))
-
-            # TODO improve error
-            if not user:
-                raise ValueError("No user found")
-
-            name = user.name or user.fullname or "No name"
-
-        return name
