@@ -22,7 +22,7 @@ from conferences.models.deadline import DeadlineStatus
 from schedule.models import ScheduleItem as ScheduleItemModel
 from submissions.models import Submission as SubmissionModel
 from voting.models import RankRequest as RankRequestModel
-
+from schedule.models import Day as DayModel
 from ..helpers.i18n import make_localized_resolver
 from ..helpers.maps import Map, resolve_map
 from ..permissions import CanSeeSubmissions, IsStaffPermission
@@ -79,14 +79,15 @@ class Keynote:
         self.end = end
 
     @classmethod
-    def from_django_model(cls, instance):
-        schedule_item = instance.schedule_item
+    def from_django_model(cls, instance, schedule_item):
         return cls(
             id=instance.id,
             title=instance.title,
             description=instance.description,
             slug=instance.slug,
-            topic=Topic.from_django_model(instance.topic) if instance.topic else None,
+            topic=Topic.from_django_model(instance.topic)
+            if instance.topic_id
+            else None,
             speakers=[
                 ScheduleItemUser(
                     id=speaker.user_id, conference_code=instance.conference.code
@@ -119,9 +120,10 @@ class ScheduleSlot:
         ).time()
 
     @strawberry.field
-    def items(self, info) -> List[ScheduleItem]:
-        return (
-            ScheduleItemModel.objects.filter(slot__id=self.id)
+    async def items(self, info) -> List[ScheduleItem]:
+        return [
+            item
+            async for item in ScheduleItemModel.objects.filter(slot__id=self.id)
             .select_related(
                 "language",
                 "audience_level",
@@ -131,8 +133,11 @@ class ScheduleSlot:
                 "submission__audience_level",
                 "submission__type",
             )
-            .prefetch_related("additional_speakers", "rooms")
-        )
+            .prefetch_related(
+                "additional_speakers", "rooms", "attendees", "conference", "keynote"
+            )
+            .all()
+        ]
 
 
 @strawberry.type
@@ -140,24 +145,26 @@ class Day:
     day: date
 
     @strawberry.field
-    def slots(self, info, room: Optional[strawberry.ID] = None) -> List[ScheduleSlot]:
+    async def slots(
+        self, info, room: Optional[strawberry.ID] = None
+    ) -> List[ScheduleSlot]:
         if room:
-            return list(self.slots.filter(items__rooms__id=room))
-        return list(self.slots.all())
+            return [slot async for slot in self.slots.filter(items__rooms__id=room)]
+        return [slot async for slot in self.slots.all()]
 
     @strawberry.field
-    def running_events(self, info) -> List[ScheduleItem]:
-        current_slot = self.slots.filter(
+    async def running_events(self, info) -> List[ScheduleItem]:
+        current_slot = await self.slots.filter(
             hour__lte=timezone.now().astimezone(self.conference.timezone)
-        ).last()
+        ).alast()
 
         if not current_slot:
             return []
 
-        return [item for item in current_slot.items.all()]
+        return [item async for item in current_slot.items.all()]
 
     @strawberry.field
-    def rooms(self) -> List[DayRoom]:
+    async def rooms(self) -> List[DayRoom]:
         data = self.added_rooms.values(
             "room__id", "streaming_url", "slido_url", "room__type", "room__name"
         )
@@ -169,7 +176,7 @@ class Day:
                 streaming_url=room["streaming_url"],
                 slido_url=room["slido_url"],
             )
-            for room in data
+            async for room in data
         ]
 
     @classmethod
@@ -211,12 +218,12 @@ class Conference:
         )
 
     @strawberry.field
-    def hotel_rooms(self, info) -> List[HotelRoom]:
-        return self.hotel_rooms.all()
+    async def hotel_rooms(self, info) -> List[HotelRoom]:
+        return [hotel_room async for hotel_room in self.hotel_rooms.all()]
 
     @strawberry.field
-    def deadlines(self, info) -> List["Deadline"]:
-        return self.deadlines.order_by("start").all()
+    async def deadlines(self, info) -> List["Deadline"]:
+        return [deadline async for deadline in self.deadlines.order_by("start").all()]
 
     @strawberry.field(name="isCFPOpen")
     def is_cfp_open(self, info) -> bool:
@@ -231,86 +238,104 @@ class Conference:
         return self.is_voting_closed
 
     @strawberry.field
-    def deadline(self, info, type: str) -> Optional["Deadline"]:
-        return self.deadlines.filter(type=type).first()
+    async def deadline(self, info, type: str) -> Optional["Deadline"]:
+        return await self.deadlines.filter(type=type).afirst()
 
     @strawberry.field
-    def audience_levels(self, info) -> List[AudienceLevel]:
-        return self.audience_levels.all()
+    async def audience_levels(self, info) -> List[AudienceLevel]:
+        return [audience_level async for audience_level in self.audience_levels.all()]
 
     @strawberry.field
-    def topics(self, info) -> List[Topic]:
-        return self.topics.all()
+    async def topics(self, info) -> List[Topic]:
+        return [topic async for topic in self.topics.all()]
 
     @strawberry.field
-    def languages(self, info) -> List[Language]:
-        return self.languages.all()
+    async def languages(self, info) -> List[Language]:
+        return [language async for language in self.languages.all()]
 
     @strawberry.field
-    def durations(self, info) -> List["Duration"]:
-        return self.durations.all()
+    async def durations(self, info) -> List["Duration"]:
+        return [duration async for duration in self.durations.all()]
 
     @strawberry.field
-    def submission_types(self, info) -> List[SubmissionType]:
-        return self.submission_types.all()
+    async def submission_types(self, info) -> List[SubmissionType]:
+        return [
+            submission_type async for submission_type in self.submission_types.all()
+        ]
 
     @strawberry.field(permission_classes=[CanSeeSubmissions])
-    def submissions(self, info) -> Optional[List[Submission]]:
-        return self.submissions.filter(
-            status__in=(
-                SubmissionModel.STATUS.proposed,
-                SubmissionModel.STATUS.accepted,
-            )
-        ).select_related("audience_level", "duration", "type", "topic")
+    async def submissions(self, info) -> Optional[List[Submission]]:
+        return [
+            submission
+            for submission in self.submissions.filter(
+                status__in=(
+                    SubmissionModel.STATUS.proposed,
+                    SubmissionModel.STATUS.accepted,
+                )
+            ).select_related("audience_level", "duration", "type", "topic")
+        ]
 
     @strawberry.field
-    def events(self, info) -> List[Event]:
-        return self.events.all()
+    async def events(self, info) -> List[Event]:
+        return [event async for event in self.events.all()]
 
     @strawberry.field
-    def faqs(self, info) -> List[FAQ]:
-        return self.faqs.all()
+    async def faqs(self, info) -> List[FAQ]:
+        return [faq async for faq in self.faqs.all()]
 
     @strawberry.field
-    def sponsors_by_level(self, info) -> List[SponsorsByLevel]:
+    async def sponsors_by_level(self, info) -> List[SponsorsByLevel]:
         levels = self.sponsor_levels.all().order_by("order")
 
-        return [SponsorsByLevel.from_model(level) for level in levels]
+        return [SponsorsByLevel.from_model(level) async for level in levels]
 
     @strawberry.field
-    def copy(self, info, key: str, language: Optional[str] = None) -> Optional[str]:
-        copy = GenericCopy.objects.filter(conference=self, key=key).first()
+    async def copy(
+        self, info, key: str, language: Optional[str] = None
+    ) -> Optional[str]:
+        copy = await GenericCopy.objects.filter(conference=self, key=key).afirst()
 
         language = language or translation.get_language() or settings.LANGUAGE_CODE
 
         return copy.content.localize(language) if copy else None
 
     @strawberry.field
-    def menu(self, info, identifier: str) -> Optional[Menu]:
+    async def menu(self, info, identifier: str) -> Optional[Menu]:
         return (
-            self.menus.filter(identifier=identifier).prefetch_related("links").first()
+            self.menus.filter(identifier=identifier).prefetch_related("links").afirst()
         )
 
     @strawberry.field
-    def keynotes(self, info) -> List[Keynote]:
-        return [Keynote.from_django_model(keynote) for keynote in self.keynotes.all()]
+    async def keynotes(self, info) -> List[Keynote]:
+        return [
+            Keynote.from_django_model(keynote) async for keynote in self.keynotes.all()
+        ]
 
     @strawberry.field
-    def keynote(self, info, slug: str) -> Optional[Keynote]:
-        keynote = self.keynotes.by_slug(slug).first()
+    async def keynote(self, info, slug: str) -> Optional[Keynote]:
+        keynote = await self.keynotes.by_slug(slug).afirst()
         return Keynote.from_django_model(keynote) if keynote else None
 
     @strawberry.field
-    def talks(self, info) -> List[ScheduleItem]:
-        return self.schedule_items.filter(type=ScheduleItemModel.TYPES.submission).all()
+    async def talks(self, info) -> List[ScheduleItem]:
+        return [
+            schedule_item
+            async for schedule_item in self.schedule_items.filter(
+                type=ScheduleItemModel.TYPES.submission
+            ).all()
+        ]
 
     @strawberry.field
-    def talk(self, info, slug: str) -> Optional[ScheduleItem]:
-        return self.schedule_items.filter(slug=slug).first()
+    async def talk(self, info, slug: str) -> Optional[ScheduleItem]:
+        return await self.schedule_items.filter(slug=slug).afirst()
 
     @strawberry.field
-    def ranking(self, info, topic: strawberry.ID) -> Optional[RankRequest]:
-        rank_request = RankRequestModel.objects.filter(conference=self).first()
+    async def ranking(self, info, topic: strawberry.ID) -> Optional[RankRequest]:
+        rank_request = (
+            await RankRequestModel.objects.select_related()
+            .filter(conference=self)
+            .afirst()
+        )
         if not rank_request:
             return None
 
@@ -319,9 +344,11 @@ class Conference:
         ):
             return None
 
-        submissions = rank_request.rank_submissions.filter(
-            submission__topic__id=topic
-        ).order_by("rank")
+        submissions = (
+            await rank_request.rank_submissions.filter(submission__topic__id=topic)
+            .order_by("rank")
+            .all()
+        )
         return RankRequest(
             is_public=rank_request.is_public,
             ranked_submissions=submissions,
@@ -329,8 +356,13 @@ class Conference:
         )
 
     @strawberry.field
-    def days(self, info) -> List[Day]:
-        return self.days.order_by("day").prefetch_related("slots", "slots__items").all()
+    async def days(self) -> List[Day]:
+        return [
+            day
+            async for day in DayModel.objects.filter(conference_id=self.id)
+            .order_by("day")
+            .prefetch_related("slots", "slots__items", "conference")
+        ]
 
     @strawberry.field
     def is_running(self, info) -> bool:
@@ -362,5 +394,8 @@ class Duration:
     notes: str
 
     @strawberry.field
-    def allowed_submission_types(self, info) -> List[SubmissionType]:
-        return self.allowed_submission_types.all()
+    async def allowed_submission_types(self, info) -> List[SubmissionType]:
+        return [
+            submission_type
+            async for submission_type in self.allowed_submission_types.all()
+        ]

@@ -51,9 +51,9 @@ class Keynote(OrderedModel, TimeStampedModel):
     objects = KeynoteManager()
     all_objects = models.Manager()
 
-    @property
-    def schedule_item(self):
-        return self.conference.schedule_items.filter(keynote_id=self.id).first()
+    # @property
+    # def schedule_item(self):
+    #     return self.conference.schedule_items.filter(keynote_id=self.id).first()
 
     def __str__(self) -> str:
         return f"{self.title} at {self.conference.code}"

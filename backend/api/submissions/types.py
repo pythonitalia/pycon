@@ -93,10 +93,10 @@ class Submission:
     notes: Optional[str] = private_field()
 
     @strawberry.field
-    def schedule_items(
+    async def schedule_items(
         self, info: Info
     ) -> List[Annotated["ScheduleItem", strawberry.lazy("api.schedule.types")]]:
-        return self.schedule_items.all()
+        return [schedule_item async for schedule_item in self.schedule_items.all()]
 
     @strawberry.field
     def multilingual_elevator_pitch(self, info: Info) -> Optional[MultiLingualString]:
@@ -153,30 +153,30 @@ class Submission:
         return self.can_edit(info.context.request)
 
     @strawberry.field
-    def my_vote(self, info) -> Optional[VoteType]:
+    async def my_vote(self, info) -> Optional[VoteType]:
         request = info.context.request
 
         if not request.pastaporto.is_authenticated:
             return None
 
         if info.context._my_votes is not None:
-            return info.context._my_votes.get(self.id)
+            return await info.context._my_votes.aget(self.id)
 
         try:
-            return self.votes.get(user_id=request.user.id)
+            return await self.votes.aget(user_id=request.user.id)
         except Vote.DoesNotExist:
             return None
 
     @strawberry.field
-    def languages(self, info) -> Optional[List[Language]]:
+    async def languages(self, info) -> Optional[List[Language]]:
         if CanSeeSubmissionRestrictedFields().has_permission(self, info):
-            return self.languages.all()
+            return [language async for language in self.languages.all()]
         return None
 
     @strawberry.field
-    def tags(self, info) -> Optional[List[SubmissionTag]]:
+    async def tags(self, info) -> Optional[List[SubmissionTag]]:
         if CanSeeSubmissionRestrictedFields().has_permission(self, info):
-            return self.tags.all()
+            return [tag async for tag in self.tags.all()]
         return None
 
 

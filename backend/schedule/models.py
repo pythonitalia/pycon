@@ -87,7 +87,8 @@ class Slot(models.Model):
     TYPES = Choices(
         # Type of slot where something is happening in the conference
         ("default", _("Default")),
-        # Free time, that can used to change rooms or represent time between social events
+        # Free time, that can used to change rooms
+        # or represent time between social events
         ("free_time", _("Free Time")),
     )
 
@@ -217,14 +218,14 @@ class ScheduleItem(TimeStampedModel):
     slido_url = models.URLField(_("Sli.do URL"), blank=True, default="")
 
     @cached_property
-    def speakers(self):
-        speakers = [speaker.user_id for speaker in self.additional_speakers.all()]
+    async def speakers(self):
+        speakers = [speaker.user_id async for speaker in self.additional_speakers.all()]
 
         if self.submission_id:
             speakers.append(self.submission.speaker_id)
 
         if self.keynote_id:
-            for speaker_keynote in self.keynote.speakers.all():
+            async for speaker_keynote in self.keynote.speakers.all():
                 speakers.append(speaker_keynote.user_id)
 
         return speakers

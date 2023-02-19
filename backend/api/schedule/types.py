@@ -9,6 +9,7 @@ from api.participants.types import Participant
 from api.submissions.types import Submission
 from participants.models import Participant as ParticipantModel
 from schedule.models import ScheduleItem as ScheduleItemModel
+from conferences.models import Keynote as KeynoteModel
 from typing import Annotated
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -69,33 +70,35 @@ class ScheduleItem:
     ]
 
     @strawberry.field
-    def has_limited_capacity(self) -> bool:
+    async def has_limited_capacity(self) -> bool:
         return self.attendees_total_capacity is not None
 
     @strawberry.field
-    def has_spaces_left(self) -> bool:
+    async def has_spaces_left(self) -> bool:
         if self.attendees_total_capacity is None:
             return True
 
-        return self.attendees_total_capacity - self.attendees.count() > 0
+        return self.attendees_total_capacity - await self.attendees.acount() > 0
 
     @strawberry.field
-    def spaces_left(self) -> int:
+    async def spaces_left(self) -> int:
         if self.attendees_total_capacity is None:
             return 0
 
-        return self.attendees_total_capacity - self.attendees.count()
+        return self.attendees_total_capacity - await self.attendees.acount()
 
     @strawberry.field
-    def user_has_spot(self, info) -> bool:
+    async def user_has_spot(self, info) -> bool:
         user_id = info.context.request.user.id
-        return self.attendees.filter(user_id=user_id).exists()
+        return await self.attendees.filter(user_id=user_id).aexists()
 
     @strawberry.field
-    def speakers(self) -> List[ScheduleItemUser]:
+    async def speakers(self) -> List[ScheduleItemUser]:
         speakers = []
 
-        for speaker in self.speakers:
+        all_speakers = await self.speakers
+
+        for speaker in all_speakers:
             speakers.append(
                 ScheduleItemUser(id=speaker, conference_code=self.conference.code)
             )
@@ -103,7 +106,7 @@ class ScheduleItem:
         return speakers
 
     @strawberry.field
-    def keynote(
+    async def keynote(
         self,
     ) -> Optional[Annotated["Keynote", strawberry.lazy("api.conferences.types")]]:
         from api.conferences.types import Keynote
@@ -111,11 +114,17 @@ class ScheduleItem:
         if not self.keynote_id:
             return None
 
-        return Keynote.from_django_model(self.keynote)
+        keynote = await KeynoteModel.objects.prefetch_related(
+            "speakers", "conference"
+        ).aget(id=self.keynote_id)
+        schedule_item = await ScheduleItemModel.objects.select_related(
+            "slot", "slot__day"
+        ).aget(keynote_id=self.keynote_id)
+        return Keynote.from_django_model(keynote, schedule_item)
 
     @strawberry.field
-    def rooms(self, info) -> List[Room]:
-        return self.rooms.all()
+    async def rooms(self, info) -> List[Room]:
+        return [room async for room in self.rooms.all()]
 
     @strawberry.field
     def image(self, info) -> Optional[str]:
@@ -125,12 +134,14 @@ class ScheduleItem:
         return info.context.request.build_absolute_uri(self.image.url)
 
     @strawberry.field
-    def slido_url(self, info) -> str:
+    async def slido_url(self, info) -> str:
         if self.slido_url:
             return self.slido_url
 
         # For multi-room items we use the first room slido url
-        return self.slot.day.added_rooms.get(room_id=self.rooms.first().id).slido_url
+        room = await self.rooms.afirst()
+        first_room = await self.slot.day.added_rooms.aget(room_id=room)
+        return first_room.slido_url
 
 
 @strawberry.type

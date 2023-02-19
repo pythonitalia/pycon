@@ -68,4 +68,4 @@ RUN USERS_SERVICE=empty \
     ${FUNCTION_DIR}/.venv/bin/python manage.py collectstatic --noinput
 
 ENTRYPOINT ["/home/app/.venv/bin/python", "-m", "awslambdaric"]
-CMD [ "wsgi_handler.handler" ]
+CMD [ "asgi_handler.handler" ]

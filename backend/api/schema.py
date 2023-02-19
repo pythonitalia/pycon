@@ -37,6 +37,10 @@ class Query(
     VolunteersNotificationsQuery,
     ChecklistQuery,
 ):
+    @strawberry.field
+    async def test(self) -> bool:
+        return False
+
     pass
 
 
