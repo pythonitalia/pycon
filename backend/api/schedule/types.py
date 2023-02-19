@@ -63,7 +63,9 @@ class ScheduleItem:
     duration: Optional[int]
     highlight_color: Optional[str]
     language: Language
-    audience_level: Annotated["AudienceLevel", strawberry.lazy("api.conferences.types")]
+    audience_level: Optional[
+        Annotated["AudienceLevel", strawberry.lazy("api.conferences.types")]
+    ]
 
     @strawberry.field
     def has_limited_capacity(self) -> bool:
