@@ -22,6 +22,7 @@ export const TicketsOverviewSection = () => {
     style: "currency",
     currency: "EUR",
     maximumFractionDigits: 0,
+    minimumFractionDigits: 0,
   });
 
   // TODO: We should implement a specific API in our BE to return the various tiers
