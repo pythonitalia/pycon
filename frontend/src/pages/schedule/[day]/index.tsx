@@ -1,6 +1,7 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
+import { Page } from "@python-italia/pycon-styleguide";
 import React, { useState } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
@@ -121,7 +122,7 @@ const PageContent = ({
   const language = useCurrentLanguage();
 
   return (
-    <React.Fragment>
+    <Page endSeparator={false}>
       <Meta
         day={day}
         language={language}
@@ -145,7 +146,7 @@ const PageContent = ({
           changeDay={changeDay}
         />
       )}
-    </React.Fragment>
+    </Page>
   );
 };
 

@@ -130,6 +130,9 @@ export const LoginForm = ({ next, ...props }: FormProps) => {
             {nextUrl === "/grants" && (
               <FormattedMessage id="login.redirectFromGrants" />
             )}
+            {nextUrl.startsWith("/schedule") && (
+              <FormattedMessage id="login.redirectFromSchedule" />
+            )}
           </Text>
 
           <InputWrapper

@@ -332,3 +332,19 @@ class ScheduleItemInvitation(ScheduleItem):
         proxy = True
         verbose_name = _("Schedule invitation")
         verbose_name_plural = _("Schedule invitations")
+
+
+class ScheduleItemStar(TimeStampedModel):
+    user_id = models.IntegerField(verbose_name=_("user"), db_index=True)
+    schedule_item = models.ForeignKey(
+        ScheduleItem,
+        on_delete=models.CASCADE,
+        verbose_name=_("schedule item"),
+        related_name="stars",
+    )
+
+    class Meta:
+        unique_together = (
+            "user_id",
+            "schedule_item",
+        )

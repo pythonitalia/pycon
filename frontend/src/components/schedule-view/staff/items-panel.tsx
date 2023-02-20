@@ -23,7 +23,7 @@ export const ItemsPanel = ({ submissions, keynotes }: ItemsPanelProp) => {
 
   // TODO: https://fusejs.io/
   const filteredSubmissions = submissions.filter((submission) =>
-    submission.title.toLowerCase().includes(query),
+    submission.title.toLowerCase().includes(query.toLowerCase()),
   );
 
   return (

@@ -1,4 +1,4 @@
-from datetime import date, datetime, time
+from datetime import date, datetime, time, timedelta
 from enum import Enum
 from typing import List, Optional
 
@@ -110,6 +110,13 @@ class ScheduleSlot:
     duration: int
     type: ScheduleSlotType
     id: strawberry.ID
+
+    @strawberry.field
+    def end_hour(self, info) -> time:
+        return (
+            datetime.combine(datetime.today(), self.hour)
+            + timedelta(minutes=self.duration)
+        ).time()
 
     @strawberry.field
     def items(self, info) -> List[ScheduleItem]:
