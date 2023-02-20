@@ -1,5 +1,8 @@
-import "./style.css";
+// styles
+import "./base.css";
+import "./custom.css";
 
+// components
 export { NavBar } from "./navbar/navbar";
 export { Heading } from "./heading/heading";
 export { SpeakerCard } from "./speaker-card";
@@ -52,3 +55,10 @@ export { LayoutContent } from "./layout-content";
 export { SocialLinks } from "./social-links";
 export { ScrollDownArrowBar } from "./scrolldown-arrow-bar";
 export { SponsorsGrid } from "./sponsors-grid";
+export { ScheduleItemCard } from "./schedule/schedule-item-card";
+export { DaysSelector } from "./days-selector";
+export { Avatar } from "./avatar";
+export { AvatarGroup } from "./avatar-group";
+
+// tailwind config
+export { default as tailwindConfig } from "../tailwind.config";

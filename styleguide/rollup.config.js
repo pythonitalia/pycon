@@ -5,10 +5,17 @@ import pkg from "./package.json";
 import ts from "typescript";
 import styles from "rollup-plugin-styles";
 
-const assetFileNames = (assetInfo) =>
-  assetInfo.name === "index.css"
-    ? "index.css"
-    : "assets/[name]-[hash][extname]";
+const assetFileNames = (assetInfo) => {
+  if (assetInfo.name === "index.css") {
+    return "index.css"
+  }
+
+  if (assetInfo.name === "custom.css") {
+    return "custom-style.css";
+  }
+
+  return "assets/[name]-[hash][extname]";
+}
 
 const plugins = [
   commonjs(),
@@ -32,6 +39,26 @@ const external = [
 ];
 
 export default [
+  {
+    input: './src/custom.css',
+    output: [
+        {
+          file: `dist/custom.js`,
+          format: 'es',
+          sourcemap: false,
+          assetFileNames,
+        }
+    ],
+    plugins: [
+      styles({
+        url: {
+          hash: "[name]-[hash][extname]",
+        },
+        mode: "extract",
+        config: { path: "./postcss.config.js" },
+      }),
+    ],
+  },
   {
     input: "./src/index.ts",
     external,

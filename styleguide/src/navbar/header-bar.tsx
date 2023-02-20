@@ -20,7 +20,7 @@ export const HeaderBar = ({
 }: HeaderBarProps) => {
   return (
     <Container
-      className={clsx("z-50 relative", {
+      className={clsx("z-[1050] relative", {
         invisible: hidden,
       })}
     >

@@ -43,7 +43,7 @@ export const NavBar = ({
     <>
       <HeaderBar actions={actions} mobileLogo={mobileLogo} logo={logo} />
       {isOpen && (
-        <div className="bg-purple absolute top-0 left-0 w-full h-fit z-40">
+        <div className="bg-purple absolute top-0 left-0 w-full h-fit z-[1000]">
           <HeaderBar
             actions={actions}
             mobileLogo={mobileLogo}

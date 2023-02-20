@@ -1,7 +1,5 @@
 module.exports = {
-  purge: ["./src/**/*.{js,jsx,ts,tsx,vue}"],
-  mode: "jit",
-  darkMode: false,
+  content: ["./src/**/*.{js,jsx,ts,tsx,vue}"],
   theme: {
     screens: {
       md: '599px',
@@ -18,6 +16,7 @@ module.exports = {
     borderWidth: {
       DEFAULT: '3px',
       0: 0,
+      1: '1px',
       3: '3px',
       4: '4px',
     },
@@ -155,6 +154,7 @@ module.exports = {
       width: {
         "full-outside-container": 'calc(100% + var(--screen-side-width))',
         "scroller-item": 'calc(100% - 5rem)',
+        separator: '3px',
       },
       margin: {
         0.6: '0.188rem', // 3px
@@ -180,9 +180,6 @@ module.exports = {
         'bottombar': '1fr auto',
       },
     },
-  },
-  variants: {
-    extend: {},
   },
   plugins: [
     require("tailwindcss-blend-mode")(),
