@@ -7,7 +7,7 @@ ARG FUNCTION_DIR
 RUN mkdir -p ${FUNCTION_DIR}
 WORKDIR ${FUNCTION_DIR}
 
-RUN apt-get update -y && apt-get install -y gcc
+RUN apt-get update -y && apt-get install -y gcc libpq-dev
 
 ENV LIBRARY_PATH=/lib:/usr/lib
 
