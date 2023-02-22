@@ -667,16 +667,18 @@ reflects what everyone wants to see!`,
       "Congratulations! Your submission {submissionTitle} was accepted!",
     "schedule.invitation.program": "It is currently scheduled for:",
     "schedule.invitation.date": "{start} to {end}",
+    "schedule.invitation.notes.placeholder": "Insert your reasons here",
     "schedule.invitation.confirmPresence":
-      "Please confirm your presence and that the time works for you, if it doesn't or you can't attend anymore, please let us know as soon as possible.",
-    "schedule.invitation.presence.CONFIRM": "I am happy with the time slot.",
+      "Please confirm your presence as soon as possible. Request a new time slot ONLY if there is no way you can make the original time slot work.",
+    "schedule.invitation.presence.CONFIRM":
+      "The time slot works for me / I can make it work.",
     "schedule.invitation.presence.MAYBE":
       "I can make this time slot work if it is not possible to change",
     "schedule.invitation.presence.REJECT": "The time slot does not work for me",
     "schedule.invitation.presence.CANT_ATTEND":
       "I can't attend the conference anymore",
     "schedule.invitation.presence.notes":
-      "Please provide more information to help us find a better time",
+      "Explain here why you the time slot doesn't work for you. We might not be able to accommodate you and might have to remove your proposal from the schedule.",
     "schedule.invitation.submitAnswer": "Submit answer",
     "schedule.invitation.wait": "Please wait",
     "schedule.invitation.sendingAnswer": "Sending your answer!",
@@ -1317,7 +1319,7 @@ Il tuo voto ci aiuterà a creare un programma che più rispecchia ciò che la co
     "schedule.invitation.program": "Il tuo intervento è previsto il:",
     "schedule.invitation.date": "{start} a {end}",
     "schedule.invitation.confirmPresence":
-      "Per favore conferma la tua presenza e se lo slot assegnato va bene",
+      "Per favore conferma la tua presenza il prima possibile. Richiedi un nuovo slot orario soltanto se per te è impossibile tenere l'orario proposto.",
     "schedule.invitation.presence.CONFIRM": "Lo slot orario va bene per me",
     "schedule.invitation.presence.MAYBE":
       "Lo slot orario va bene ma preferirei un altro",
@@ -1325,7 +1327,7 @@ Il tuo voto ci aiuterà a creare un programma che più rispecchia ciò che la co
     "schedule.invitation.presence.CANT_ATTEND":
       "Non possono più partecipare a PyCon",
     "schedule.invitation.presence.notes":
-      "Per favore dacci più informazioni per trovare un orario che funzioni",
+      "Spiega qui i motivi per cui lo slot originale non va bene per te. Non possiamo accettare tutte le richieste e potremmo essere costretti a rimuovere il tuo intervento dallo schedule",
     "schedule.invitation.submitAnswer": "Invia risposta",
     "schedule.invitation.wait": "Caricamento in corso",
     "schedule.invitation.sendingAnswer": "Caricamento in corso",
@@ -1536,6 +1538,7 @@ Affrettati a comprare il biglietto!`,
     "schedule.mySchedule": "Il mio programma",
     "schedule.fullSchedule": "Programma completo",
     "schedule.live": "Live",
+    "schedule.invitation.notes.placeholder": "Scrivi qui...",
   },
 };
 

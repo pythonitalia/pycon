@@ -1,20 +1,19 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
+import {
+  Page,
+  Section,
+  Heading,
+  Text,
+  Spacer,
+  Textarea,
+  Button,
+} from "@python-italia/pycon-styleguide";
 import React, { useCallback, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
-import {
-  Flex,
-  Box,
-  jsx,
-  Heading,
-  Text,
-  Button,
-  Textarea,
-  Label,
-  Radio,
-} from "theme-ui";
+import { Flex, Box, jsx, Label, Radio } from "theme-ui";
 
 import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
@@ -22,6 +21,7 @@ import { useRouter } from "next/router";
 import { getApolloClient, addApolloState } from "~/apollo/client";
 import { Alert } from "~/components/alert";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
+import { useTranslatedMessage } from "~/helpers/use-translated-message";
 import { useCurrentLanguage } from "~/locale/context";
 import { Language } from "~/locale/languages";
 import {
@@ -135,10 +135,14 @@ const Invitation = () => {
     end: formatDateTime(date.end, language),
   }));
 
+  const notesPlaceholder = useTranslatedMessage(
+    "schedule.invitation.notes.placeholder",
+  );
+
   return (
-    <Box sx={{ borderTop: "primary" }}>
-      <Box sx={{ maxWidth: "largeContainer", p: 3, mx: "auto" }}>
-        <Heading>
+    <Page endSeparator={false}>
+      <Section>
+        <Heading size={1}>
           <FormattedMessage
             id="schedule.invitation.congratulations"
             values={{
@@ -146,11 +150,8 @@ const Invitation = () => {
             }}
           />
         </Heading>
-        <Text
-          sx={{
-            mt: 2,
-          }}
-        >
+        <Spacer size="medium" />
+        <Text>
           <FormattedMessage id="schedule.invitation.program" />
         </Text>
         <ul
@@ -172,11 +173,8 @@ const Invitation = () => {
             </li>
           ))}
         </ul>
-        <Text
-          sx={{
-            mt: 2,
-          }}
-        >
+        <Spacer size="medium" />
+        <Text>
           <FormattedMessage id="schedule.invitation.confirmPresence" />
         </Text>
         {hasSentAnswer && (
@@ -221,13 +219,6 @@ const Invitation = () => {
           </Label>
 
           <Label>
-            <Radio {...radio("option", ScheduleInvitationOption.Maybe)} />
-            <Text as="span">
-              <FormattedMessage id="schedule.invitation.presence.MAYBE" />
-            </Text>
-          </Label>
-
-          <Label>
             <Radio {...radio("option", ScheduleInvitationOption.Reject)} />
             <Text as="span">
               <FormattedMessage id="schedule.invitation.presence.REJECT" />
@@ -250,19 +241,19 @@ const Invitation = () => {
               <Text as="p">
                 <FormattedMessage id="schedule.invitation.presence.notes" />
               </Text>
-
-              <Textarea {...text("notes")} />
+              <Spacer size="small" />
+              <Textarea
+                {...text("notes")}
+                placeholder={notesPlaceholder}
+                rows={4}
+              />
             </Label>
           )}
 
-          <Button
-            sx={{
-              display: "block",
-            }}
-            onClick={submitAnswer}
-          >
+          <Button role="secondary" onClick={submitAnswer}>
             <FormattedMessage id="schedule.invitation.submitAnswer" />
           </Button>
+
           {isSubmitting && (
             <Alert variant="info">
               <FormattedMessage id="schedule.invitation.sendingAnswer" />
@@ -283,8 +274,8 @@ const Invitation = () => {
               </Alert>
             )}
         </Flex>
-      </Box>
-    </Box>
+      </Section>
+    </Page>
   );
 };
 
