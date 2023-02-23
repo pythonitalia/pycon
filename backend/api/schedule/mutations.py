@@ -57,7 +57,7 @@ class UpdateOrCreateSlotItemInput:
             return ScheduleItem.TYPES.keynote
 
         if self.submission_id:
-            return ScheduleItem.TYPES.submission
+            return ScheduleItem.TYPES.talk
 
         return ScheduleItem.TYPES.custom
 
@@ -297,9 +297,13 @@ class ScheduleMutations:
             language_code = "en"
 
             if submission_id:
+                submission = Submission.objects.filter(id=submission_id)
+                submission_type_name = submission.only("type__name").first().type.name
+                if submission_type_name.lower() == "workshop":
+                    data["type"] = ScheduleItem.TYPES.training
+
                 language_code = (
-                    Submission.objects.filter(id=submission_id)
-                    .values_list("languages__code", flat=True)
+                    submission.values_list("languages__code", flat=True)
                     .order_by("languages__code")
                     .first()
                 )
