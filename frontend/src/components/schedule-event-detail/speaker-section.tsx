@@ -39,7 +39,7 @@ export const SpeakerSection = ({ speaker }: { speaker: Speaker }) => (
           <VerticalStack>
             <img
               alt="speaker photo"
-              className="aspect-square border-black border z-10"
+              className="aspect-square border-black border z-10 object-cover"
               src={speaker.photo}
             />
             <LayoutContent
