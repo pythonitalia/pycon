@@ -34,7 +34,7 @@ export const ItemsPanel = ({ submissions, keynotes }: ItemsPanelProp) => {
           bottom: 0,
           top: 0,
           right: 0,
-          zIndex: "scheduleItemPanel",
+          zIndex: 90000,
           width: 300,
           p: 4,
           borderLeft: "primary",
