@@ -127,7 +127,7 @@ def _send_invitations(
         status=ScheduleItem.STATUS.waiting_confirmation,
         submission__isnull=False,
         type__in=[
-            ScheduleItem.TYPES.submission,
+            ScheduleItem.TYPES.talk,
             ScheduleItem.TYPES.training,
         ],
     )
