@@ -87,6 +87,7 @@ def notify_new_submission(
 
 def send_schedule_invitation_email(schedule_item, is_reminder: bool = False):
     submission = schedule_item.submission
+    language_code = schedule_item.language.code
     invitation_url = urljoin(
         settings.FRONTEND_URL, f"/schedule/invitation/{submission.hashid}"
     )
@@ -98,7 +99,7 @@ def send_schedule_invitation_email(schedule_item, is_reminder: bool = False):
         event_name,
         body={
             "speaker_id": submission.speaker_id,
-            "submission_title": submission.title,
+            "submission_title": submission.title.localize(language_code),
             "invitation_url": invitation_url,
             "is_reminder": is_reminder,
         },
