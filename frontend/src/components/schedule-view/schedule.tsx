@@ -218,7 +218,7 @@ export const Schedule = ({
       const roomIds = rooms
         .filter((room) => room.type !== "training")
         .map((room) => room.id);
-      addCustomScheduleItem(slot.id, roomIds, "Room Change");
+      addCustomScheduleItem(slot.id, roomIds, "Room Change / Cambio stanza");
     } else {
       const roomIds = item.event.allTracks
         ? rooms.map((room) => room.id)
