@@ -111,6 +111,8 @@ def send_new_schedule_invitation_answer(schedule_item, request):
     invitation_admin_url = request.build_absolute_uri(
         schedule_item.get_invitation_admin_url()
     )
+    language_code = schedule_item.language.code
+
     schedule_item_admin_url = request.build_absolute_uri(schedule_item.get_admin_url())
     submission = schedule_item.submission
 
@@ -118,7 +120,7 @@ def send_new_schedule_invitation_answer(schedule_item, request):
         "NewScheduleInvitationAnswer",
         body={
             "speaker_id": submission.speaker_id,
-            "submission_title": submission.title,
+            "submission_title": submission.title.localize(language_code),
             "answer": _schedule_item_status_to_message(schedule_item.status),
             "speaker_notes": schedule_item.speaker_invitation_notes,
             "time_slot": str(schedule_item.slot),
