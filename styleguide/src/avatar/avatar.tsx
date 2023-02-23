@@ -22,7 +22,7 @@ export const Avatar = ({
       {image && (
         <img
           loading="lazy"
-          className="w-full h-full rounded-full border-1"
+          className="w-full h-full rounded-full border-1 object-cover"
           src={image}
           alt={alt}
         />
