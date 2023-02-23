@@ -40,7 +40,7 @@ const convertHoursToMinutes = (value: string) => {
   return hour * 60 + minutes;
 };
 
-const getRowEndForTraining = ({
+const getRowEnd = ({
   item,
   rowOffset,
   slot,
@@ -52,9 +52,8 @@ const getRowEndForTraining = ({
   slots: Slot[];
 }) => {
   const start = convertHoursToMinutes(slot.hour);
-  const duration = item.submission
-    ? item.submission.duration!.duration
-    : item.duration || 0;
+  const duration =
+    item.duration || slot.duration || item.submission?.duration?.duration;
 
   const end = start + duration;
 
@@ -80,7 +79,6 @@ const getEntryPosition = ({
   slots,
   rowOffset,
   rowStart,
-  rowEnd,
 }: {
   rowOffset: number;
   item: Item;
@@ -88,7 +86,6 @@ const getEntryPosition = ({
   slots: Slot[];
   rooms: Room[];
   rowStart: number;
-  rowEnd: number;
 }) => {
   // find all the indexes for the rooms of this item, then
   // sort them and use the first one for the index of the item
@@ -100,10 +97,7 @@ const getEntryPosition = ({
     .sort();
 
   const index = roomIndexes[0];
-
-  if (isTraining(item)) {
-    rowEnd = rowStart + getRowEndForTraining({ item, rowOffset, slot, slots });
-  }
+  const rowEnd = rowStart + getRowEnd({ item, rowOffset, slot, slots });
 
   return {
     gridColumnStart: index + 2,
@@ -452,7 +446,6 @@ export const Schedule = ({
                               slots,
                               rowOffset,
                               rowStart,
-                              rowEnd,
                             }),
                           } as any
                         }
