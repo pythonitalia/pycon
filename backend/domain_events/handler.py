@@ -310,11 +310,10 @@ def handle_submission_time_slot_changed(data):
 
 
 def handle_new_schedule_invitation_answer(data):
-    from conferences.models import Conference
     from schedule.models import ScheduleItem
 
-    conference = Conference.objects.get(id=data["conference_id"])
     schedule_item = ScheduleItem.objects.get(id=data["schedule_item_id"])
+    conference = schedule_item.conference
     speaker_id = schedule_item.submission.speaker_id
 
     user_result = execute_service_client_query(
