@@ -663,6 +663,8 @@ reflects what everyone wants to see!`,
     "error404.goToHomepage": "Go to the homepage",
     "error404.message": "We couldn't find the page you are looking for :(",
 
+    "schedule.workshop.limitedSeats": "Limited space available! Book now.",
+
     "schedule.invitation.congratulations":
       "Congratulations! Your submission {submissionTitle} was accepted!",
     "schedule.invitation.program": "It is currently scheduled for:",
@@ -1539,6 +1541,7 @@ Affrettati a comprare il biglietto!`,
     "schedule.fullSchedule": "Programma completo",
     "schedule.live": "Live",
     "schedule.invitation.notes.placeholder": "Scrivi qui...",
+    "schedule.workshop.limitedSeats": "Spazi limitati! Prenota il tuo posto.",
   },
 };
 

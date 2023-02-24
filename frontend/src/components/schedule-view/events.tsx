@@ -6,7 +6,6 @@ import {
   Separator,
   ScheduleItemCard,
   Spacer,
-  VerticalStack,
   Text,
   Link,
   AvatarGroup,
@@ -17,6 +16,7 @@ import {
 import { Color } from "@python-italia/pycon-styleguide/dist/types";
 import { HeartIcon } from "@python-italia/pycon-styleguide/icons";
 import React from "react";
+import { FormattedMessage } from "react-intl";
 import { jsx, ThemeUIStyleObject } from "theme-ui";
 
 import { useRouter } from "next/router";
@@ -341,7 +341,7 @@ export const ScheduleEntry = ({
         size={slot.type === "FREE_TIME" ? "small" : "large"}
         background={getItemBg(item.type)}
       >
-        <VerticalStack fullHeight justifyContent="spaceBetween">
+        <div className="flex flex-col md:max-h-[352px] md:h-full justify-between">
           {!isCustomItem && (
             <LayoutContent showUntil="tablet">
               <HorizontalStack
@@ -384,9 +384,17 @@ export const ScheduleEntry = ({
 
           {!isCustomItem && (
             <LayoutContent showFrom="tablet">
-              <Text size="label3" color="grey-500">
-                {[audienceLevel, languageText].filter((v) => v).join(", ")}
-              </Text>
+              <div>
+                {item.hasLimitedCapacity && (
+                  <Text as="p" size="label3" color="grey-700">
+                    <FormattedMessage id="schedule.workshop.limitedSeats" />
+                  </Text>
+                )}
+
+                <Text size="label3" color="grey-500">
+                  {[audienceLevel, languageText].filter((v) => v).join(", ")}
+                </Text>
+              </div>
               {item.speakers.length > 0 && (
                 <>
                   <Spacer size="small" />
@@ -413,7 +421,7 @@ export const ScheduleEntry = ({
               )}
             </LayoutContent>
           )}
-        </VerticalStack>
+        </div>
       </ScheduleItemCard>
     </BaseDraggable>
   );
