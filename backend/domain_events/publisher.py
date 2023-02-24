@@ -137,7 +137,7 @@ def send_new_submission_time_slot(schedule_item):
         "SubmissionTimeSlotChanged",
         body={
             "speaker_id": submission.speaker_id,
-            "submission_title": submission.title,
+            "submission_title": submission.title.localize(schedule_item.language.code),
             "invitation_url": invitation_url,
         },
         deduplication_id=str(schedule_item.id),
