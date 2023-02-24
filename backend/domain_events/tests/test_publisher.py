@@ -80,8 +80,12 @@ def test_send_schedule_invitation_email_reminder(
         "ScheduleInvitationReminderSent",
         body={
             "speaker_id": schedule_item.submission.speaker_id,
-            "submission_title": schedule_item.submission.title,
-            "invitation_url": f"https://pycon.it/schedule/invitation/{schedule_item.submission.hashid}",
+            "submission_title": schedule_item.submission.title.localize(
+                schedule_item.language.code
+            ),
+            "invitation_url": (
+                f"https://pycon.it/schedule/invitation/{schedule_item.submission.hashid}",
+            ),
             "is_reminder": True,
         },
         deduplication_id=str(schedule_item.id),
@@ -103,8 +107,12 @@ def test_send_schedule_invitation_email(
         "ScheduleInvitationSent",
         body={
             "speaker_id": schedule_item.submission.speaker_id,
-            "submission_title": schedule_item.submission.title,
-            "invitation_url": f"https://pycon.it/schedule/invitation/{schedule_item.submission.hashid}",
+            "submission_title": schedule_item.submission.title.localize(
+                schedule_item.language.code
+            ),
+            "invitation_url": (
+                f"https://pycon.it/schedule/invitation/{schedule_item.submission.hashid}",
+            ),
             "is_reminder": False,
         },
         deduplication_id=str(schedule_item.id),

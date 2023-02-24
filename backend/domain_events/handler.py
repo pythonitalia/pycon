@@ -310,36 +310,68 @@ def handle_submission_time_slot_changed(data):
 
 
 def handle_new_schedule_invitation_answer(data):
-    speaker_id = data["speaker_id"]
-    submission_title = data["submission_title"]
-    answer = data["answer"]
-    speaker_notes = data["speaker_notes"]
-    time_slot = data["time_slot"]
+    from schedule.models import ScheduleItem
+
+    schedule_item = ScheduleItem.objects.get(id=data["schedule_item_id"])
+    conference = schedule_item.conference
+    speaker_id = schedule_item.submission.speaker_id
+
+    user_result = execute_service_client_query(
+        USERS_NAMES_FROM_IDS, {"ids": [speaker_id]}
+    )
+    user_data = user_result.data["usersByIds"][0]
+    user_name = get_name(user_data)
+
     invitation_admin_url = data["invitation_admin_url"]
     schedule_item_admin_url = data["schedule_item_admin_url"]
 
-    users_result = execute_service_client_query(
-        USERS_NAMES_FROM_IDS, {"ids": [speaker_id]}
-    )
-    speaker_data = users_result.data["usersByIds"][0]
+    speaker_notes = schedule_item.speaker_invitation_notes
 
-    send_email(
-        template=EmailTemplate.NEW_SCHEDULE_INVITATION_ANSWER,
-        to=settings.SPEAKERS_EMAIL_ADDRESS,
-        subject=f"[PyCon Italia 2023] Schedule Invitation Answer: {submission_title}",
-        variables={
-            "submissionTitle": submission_title,
-            "speakerName": get_name(speaker_data),
-            "speakerEmail": speaker_data["email"],
-            "timeSlot": time_slot,
-            "answer": answer,
-            "notes": speaker_notes,
-            "invitationAdminUrl": invitation_admin_url,
-            "scheduleItemAdminUrl": schedule_item_admin_url,
-        },
-        reply_to=[
-            speaker_data["email"],
+    slack.send_message(
+        [
+            {
+                "type": "section",
+                "text": {
+                    "text": f"{schedule_item.title} - {user_name} answer:",
+                    "type": "mrkdwn",
+                },
+            },
+            {
+                "type": "section",
+                "text": {
+                    "text": _schedule_item_status_to_message(schedule_item.status),
+                    "type": "mrkdwn",
+                },
+            },
+            {
+                "type": "section",
+                "text": {
+                    "text": f"*Speaker notes*\n{speaker_notes}",
+                    "type": "mrkdwn",
+                },
+            },
         ],
+        [
+            {
+                "blocks": [
+                    {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": f"*<{invitation_admin_url}|Open invitation>*",
+                        },
+                    },
+                    {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": f"*<{schedule_item_admin_url}|Open schedule item>*",
+                        },
+                    },
+                ],
+            },
+        ],
+        token=conference.slack_speaker_invitation_answer_incoming_webhook_url,
     )
 
 
@@ -448,6 +480,24 @@ def handle_volunteers_push_notification_sent(data):
             exc_info=e,
         )
         raise
+
+
+def _schedule_item_status_to_message(status: str):
+    from schedule.models import ScheduleItem
+
+    if status == ScheduleItem.STATUS.confirmed:
+        return "I am happy with the time slot."
+
+    if status == ScheduleItem.STATUS.maybe:
+        return "I can make this time slot work if it is not possible to change"
+
+    if status == ScheduleItem.STATUS.rejected:
+        return "The time slot does not work for me"
+
+    if status == ScheduleItem.STATUS.cant_attend:
+        return "I can't attend the conference anymore"
+
+    return "Undefined"
 
 
 HANDLERS = {

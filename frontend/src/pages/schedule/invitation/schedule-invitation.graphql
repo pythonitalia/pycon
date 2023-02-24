@@ -3,6 +3,7 @@ query GetScheduleInvitation($submissionId: ID!, $language: String!) {
     id
     option
     notes
+    title
     submission {
       id
       title(language: $language)

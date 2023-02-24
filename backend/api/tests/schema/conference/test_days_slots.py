@@ -119,8 +119,7 @@ def test_add_custom_item_from_submission(
                 }
             }
         }
-                    }
-        """,
+    }""",
         variables={
             "input": {
                 "slotId": slot.id,
@@ -132,7 +131,7 @@ def test_add_custom_item_from_submission(
 
     assert "errors" not in resp
     assert resp["data"]["updateOrCreateSlotItem"]["updatedSlots"][0]["items"] == [
-        {"title": submission.title.localize("en"), "type": "submission"}
+        {"title": submission.title.localize("en"), "type": "talk"}
     ]
 
 

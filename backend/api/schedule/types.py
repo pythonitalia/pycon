@@ -179,6 +179,7 @@ class ScheduleInvitation:
     id: strawberry.ID
     option: ScheduleInvitationOption
     notes: str
+    title: str
     submission: Submission
     dates: List[ScheduleInvitationDate]
 
@@ -186,6 +187,7 @@ class ScheduleInvitation:
     def from_django_model(cls, instance):
         return cls(
             id=instance.submission.hashid,
+            title=instance.title,
             option=ScheduleInvitationOption.from_schedule_item_status(instance.status),
             notes=instance.speaker_invitation_notes,
             submission=instance.submission,
