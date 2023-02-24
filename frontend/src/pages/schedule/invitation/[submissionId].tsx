@@ -146,7 +146,7 @@ const Invitation = () => {
           <FormattedMessage
             id="schedule.invitation.congratulations"
             values={{
-              submissionTitle: invitation.submission.title,
+              submissionTitle: invitation.title,
             }}
           />
         </Heading>
