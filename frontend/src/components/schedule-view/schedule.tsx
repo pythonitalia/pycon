@@ -116,10 +116,19 @@ const GridContainer = React.forwardRef<
     children: React.ReactNode;
     sx?: ThemeUIStyleObject;
     className?: string;
+    totalRooms: number;
   }
 >(
   (
-    { totalColumns, totalRows, children, isInPhotoMode, className, ...props },
+    {
+      totalColumns,
+      totalRows,
+      children,
+      isInPhotoMode,
+      className,
+      totalRooms,
+      ...props
+    },
     ref,
   ) => (
     <div
@@ -128,7 +137,13 @@ const GridContainer = React.forwardRef<
       {...props}
     >
       <div
-        className="bg-milk md:bg-black px-4 md:px-0 md:min-w-[2860px] block md:grid gap-[3px] py-[3px]"
+        className={clsx(
+          "bg-milk md:bg-black px-4 md:px-0 block md:grid gap-[3px] py-[3px]",
+          {
+            "md:min-w-[2860px]": totalRooms > 2,
+            "md:min-w-[100vw]": totalRooms <= 2,
+          },
+        )}
         style={{
           gridTemplateColumns: `128px repeat(${totalColumns}, 1fr)`,
           gridTemplateRows: `repeat(${totalRows - 1}, 10px)`,
@@ -267,6 +282,8 @@ export const Schedule = ({
 
   let rowStartPos = 1;
 
+  const totalRooms = rooms.length;
+
   return (
     <React.Fragment>
       <GridContainer
@@ -274,6 +291,7 @@ export const Schedule = ({
         totalRows={rowOffset}
         totalColumns={totalColumns}
         ref={headerRef}
+        totalRooms={totalRooms}
         className="hidden md:grid sticky top-0 overflow-x-hidden -mb-[3px] no-scrollbar z-50"
       >
         <div
@@ -325,6 +343,7 @@ export const Schedule = ({
         ref={scheduleRef}
         totalRows={totalRows}
         totalColumns={totalColumns}
+        totalRooms={totalRooms}
       >
         {slots
           .filter(
