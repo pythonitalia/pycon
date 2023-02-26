@@ -22,6 +22,8 @@ export const messages = {
     "schedule.live": "Live",
     "profile.tickets.tagline": "Tagline",
     "profile.tickets.noAnswer": "No answer",
+    "profile.tickets.cancel": "Cancel",
+    "profile.ticketsEdit.modalTitle": "Customize your ticket",
 
     "profile.welcome": "Ciao {name}!",
     "profile.myProfile": "My Profile",
@@ -1566,6 +1568,8 @@ Affrettati a comprare il biglietto!`,
     "profile.tickets.save": "Salva",
 
     "profile.tickets.noAnswer": "Nessuna risposta",
+    "profile.tickets.cancel": "Chiudi",
+    "profile.ticketsEdit.modalTitle": "Personalizza biglietto",
   },
 };
 

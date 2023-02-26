@@ -100,7 +100,9 @@ export const TicketCard = ({ ticket }: Props) => {
         show={showModal}
         actions={
           <div className="flex justify-end items-center">
-            <BasicButton onClick={(_) => openModal(false)}>Cancel</BasicButton>
+            <BasicButton onClick={(_) => openModal(false)}>
+              <FormattedMessage id="profile.tickets.cancel" />
+            </BasicButton>
             <Spacer orientation="horizontal" size="large" />
             <Button size="small">
               <FormattedMessage id="profile.tickets.save" />
@@ -135,7 +137,7 @@ export const TicketCard = ({ ticket }: Props) => {
 
 type ItemProps = {
   label: React.ReactNode;
-  value: string;
+  value: string | React.ReactNode;
 };
 const Item = ({ label, value }: ItemProps) => {
   return (
