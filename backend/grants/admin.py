@@ -422,6 +422,22 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
 @admin.register(GrantRecap)
 class GrantsRecap(admin.ModelAdmin):
     list_filter = ("conference",)
+    qs = None
+
+    def has_change_permission(self, *args, **kwargs) -> bool:
+        return False
+
+    def get_queryset(self, request):
+        if self.qs:
+            return self.qs
+
+        self.qs = super().get_queryset(request)
+        filters = dict(request.GET.items())
+
+        if filters:
+            self.qs = self.qs.filter(**filters)
+
+        return self.qs
 
     def changelist_view(self, request, extra_context=None):
         qs = self.get_queryset(request).order_by("traveling_from")
