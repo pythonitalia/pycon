@@ -1,4 +1,6 @@
+from collections import Counter
 from datetime import timedelta
+from itertools import groupby
 from typing import Dict, List, Optional
 
 from django import forms
@@ -8,6 +10,7 @@ from django.utils import timezone
 from import_export.admin import ExportMixin
 from import_export.fields import Field
 
+from countries import countries
 from domain_events.publisher import (
     send_grant_reply_approved_email,
     send_grant_reply_rejected_email,
@@ -32,6 +35,7 @@ EXPORT_GRANTS_FIELDS = (
     "why",
     "notes",
     "travelling_from",
+    "traveling_from",
     "conference__code",
     "created",
 )
@@ -348,8 +352,9 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
             {
                 "fields": (
                     "grant_type",
-                    "travelling_from",
                     "needs_funds_for_travel",
+                    "travelling_from",
+                    "traveling_from",
                     "why",
                     "python_usage",
                     "been_to_other_events",
@@ -416,13 +421,56 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
 
 @admin.register(GrantRecap)
 class GrantsRecap(admin.ModelAdmin):
-
     list_filter = ("conference",)
 
-    def has_change_permission(self, *args, **kwargs) -> bool:
-        return False
+    def changelist_view(self, request, extra_context=None):
+        qs = self.get_queryset(request).order_by("traveling_from")
 
-    def get_queryset(self, request):
-        queryset = super().get_queryset(request)
+        results = []
+        for country_code, group in groupby(list(qs), key=lambda k: k.traveling_from):
+            country = countries.get(code=country_code)
+            if not country:
+                continue
+            grants = list(group)
+            counter = Counter([g.status for g in grants])
+            results.append(
+                {
+                    "continent": country.continent.name,
+                    "country": country.name,
+                    "total": int(sum([g.total_amount for g in grants])),
+                    "count": len(grants),
+                    "pending": counter.get(Grant.Status.pending, 0),
+                    "rejected": counter.get(Grant.Status.rejected, 0),
+                    "approved": counter.get(Grant.Status.approved, 0),
+                    "waiting_list": counter.get(Grant.Status.waiting_list, 0)
+                    + counter.get(Grant.Status.waiting_list_maybe, 0),
+                    "waiting_for_confirmation": counter.get(
+                        Grant.Status.waiting_for_confirmation, 0
+                    ),
+                    "refused": counter.get(Grant.Status.refused, 0),
+                    "confirmed": counter.get(Grant.Status.confirmed, 0),
+                }
+            )
 
-        return queryset
+        results = sorted(results, key=lambda k: k["count"], reverse=True)
+        results = sorted(results, key=lambda k: (k["continent"],))
+
+        counter = Counter([g.status for g in qs])
+        footer = {
+            "title": "Total",
+            "count": len(qs),
+            "total": int(sum([g.total_amount for g in qs])),
+            "pending": counter.get(Grant.Status.pending, 0),
+            "rejected": counter.get(Grant.Status.rejected, 0),
+            "approved": counter.get(Grant.Status.approved, 0),
+            "waiting_list": counter.get(Grant.Status.waiting_list, 0)
+            + counter.get(Grant.Status.waiting_list_maybe, 0),
+            "waiting_for_confirmation": counter.get(
+                Grant.Status.waiting_for_confirmation, 0
+            ),
+            "refused": counter.get(Grant.Status.refused, 0),
+            "confirmed": counter.get(Grant.Status.confirmed, 0),
+        }
+
+        extra_context = {"results": results, "footer": footer}
+        return super().changelist_view(request, extra_context=extra_context)
