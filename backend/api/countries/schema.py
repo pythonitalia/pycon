@@ -15,5 +15,7 @@ class CountryQuery:
     @strawberry.field
     def country(self, info, code: str = "") -> Country:
         country = countries.get(code=code)
-        assert country
+        if not country:
+            raise ValueError(f"'{code}' is not a valid country.")
+
         return Country(code=country.code, name=country.name)
