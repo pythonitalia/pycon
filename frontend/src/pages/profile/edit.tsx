@@ -23,10 +23,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   await Promise.all([
     prefetchSharedQueries(client, locale),
     queryCountries(client),
-    queryMyProfile(client, {
-      conference: process.env.conferenceCode,
-      language: locale,
-    }),
+    queryMyProfile(client),
   ]);
 
   return addApolloState(
