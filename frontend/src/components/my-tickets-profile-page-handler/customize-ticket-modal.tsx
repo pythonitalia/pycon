@@ -52,11 +52,10 @@ export const CustomizeTicketModal = ({
       onClose={() => openModal(false)}
       show={open}
       actions={
-        <div className="flex justify-end items-center">
+        <div className="flex flex-col md:flex-row gap-6 justify-end items-center">
           <BasicButton onClick={() => openModal(false)}>
             <FormattedMessage id="profile.tickets.cancel" />
           </BasicButton>
-          <Spacer orientation="horizontal" size="large" />
           <Button
             disabled={updatingTicket}
             size="small"
