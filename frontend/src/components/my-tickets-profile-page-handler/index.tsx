@@ -5,13 +5,14 @@ import { FormattedMessage } from "react-intl";
 import { useCurrentLanguage } from "~/locale/context";
 import { useMyProfileWithTicketsQuery } from "~/types";
 
+import { NoTickets } from "./no-tickets";
 import { TicketCard } from "./ticket-card";
 
 export const MyTicketsProfilePageHandler = () => {
   const language = useCurrentLanguage();
   const {
     data: {
-      me: { tickets },
+      me: { tickets, email },
     },
   } = useMyProfileWithTicketsQuery({
     variables: {
@@ -20,8 +21,6 @@ export const MyTicketsProfilePageHandler = () => {
     },
   });
 
-  console.log("tickets", tickets);
-
   return (
     <Page endSeparator={false}>
       <Section background="pink">
@@ -29,13 +28,20 @@ export const MyTicketsProfilePageHandler = () => {
           <FormattedMessage id="profile.myTickets" />
         </Heading>
       </Section>
-      <Section>
-        <Grid cols={3} equalHeight>
-          {tickets.map((ticket) => (
-            <TicketCard key={ticket.id} ticket={ticket} />
-          ))}
-        </Grid>
-      </Section>
+      {tickets.length > 0 && (
+        <Section>
+          <Grid cols={3} equalHeight>
+            {tickets.map((ticket) => (
+              <TicketCard key={ticket.id} ticket={ticket} />
+            ))}
+          </Grid>
+        </Section>
+      )}
+      {tickets.length === 0 && (
+        <Section>
+          <NoTickets email={email} />
+        </Section>
+      )}
     </Page>
   );
 };

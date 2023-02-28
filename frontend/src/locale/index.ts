@@ -30,7 +30,14 @@ export const messages = {
     "profile.myProfile": "My Profile",
     "profile.logout": "Logout",
 
+    "profile.myTickets.noTicketsHeading":
+      "You don't have any tickets yet. But this is easy to solve!",
+    "profile.myTickets.noTicketsBody":
+      "Someone else purchased the ticket for you? Ask them to assign the ticket to your email ({email}) so you can customize it, book workshops and more!",
+    "profile.myTickets.buyTickets": "Buy Ticket",
     "scheduleView.allRooms": "All rooms",
+    "profile.editProfile.emailInfo":
+      "Your email is: {email}. Do you want to change your email? Contact us at {contact}",
 
     "profile.ticketsEdit.reassignTicket": "Re-assign ticket",
     "profile.ticketsEdit.reassignTicketHeading":
@@ -1584,6 +1591,14 @@ Affrettati a comprare il biglietto!`,
     "profile.ticketsEdit.reassignTicketDescription":
       "Dovranno creare un account per poter accedere al loro biglietto.",
     "orderQuestions.emailsDontMatch": "Assicurati siano la stessa email",
+
+    "profile.myTickets.noTicketsHeading": "Non hai comprato nessun biglietto!",
+    "profile.myTickets.noTicketsBody":
+      "Il tuo biglietto è stato comprato da un'altra persona? Chiedigli di assegnarlo alla tua email ({email}) per poterlo vedere qui, personalizzarlo e prenotare workshops!",
+    "profile.myTickets.buyTickets": "Compra biglietto",
+
+    "profile.editProfile.emailInfo":
+      "La tua email è: {email}. Vuoi cambiarla? Contattaci a {contact}",
   },
 };
 

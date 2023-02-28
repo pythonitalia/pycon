@@ -23,8 +23,8 @@ import { useLoginState } from "../profile/hooks";
 type Action = {
   link: string;
   label: React.ReactNode;
-  icon: Icon;
-  iconBackground: Color;
+  icon?: Icon;
+  iconBackground?: Color;
   rightSideIconBackground?: Color;
   rightSideIcon?: Icon;
 };
@@ -33,12 +33,7 @@ export const ProfilePageHandler = () => {
   const [loggedIn, setLoginState] = useLoginState();
   const language = useCurrentLanguage();
 
-  const { error, data: profileData } = useMyProfileQuery({
-    variables: {
-      conference: process.env.conferenceCode,
-      language: language,
-    },
-  });
+  const { error, data: profileData } = useMyProfileQuery();
 
   useEffect(() => {
     const loginUrl = `/login`;

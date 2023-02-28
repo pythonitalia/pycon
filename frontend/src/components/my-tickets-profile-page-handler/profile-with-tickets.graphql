@@ -3,6 +3,7 @@ query MyProfileWithTickets($conference: String!, $language: String!) {
     id
     name
     fullName
+    email
 
     tickets(conference: $conference, language: $language) {
       id

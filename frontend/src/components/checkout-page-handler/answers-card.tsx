@@ -45,7 +45,7 @@ export const AnswersCard = ({
     >
       <CardPart
         iconBackground="pink"
-        icon="ticket"
+        icon="tickets"
         contentAlign="left"
         id="heading"
         openLabel={<FormattedMessage id="tickets.checkout.openAnswerCard" />}

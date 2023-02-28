@@ -17,11 +17,12 @@ import {
   HorizontalStack,
   Spacer,
   Checkbox,
+  GridColumn,
 } from "@python-italia/pycon-styleguide";
 import React, { useCallback, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
-import { jsx, Label } from "theme-ui";
+import { jsx } from "theme-ui";
 import * as yup from "yup";
 
 import { useRouter } from "next/router";
@@ -326,6 +327,37 @@ export const EditProfilePageHandler = () => {
                     ))}
                   </Select>
                 </InputWrapper>
+
+                <GridColumn colSpan={3}>
+                  <Text size={2}>
+                    <FormattedMessage
+                      id="profile.editProfile.emailInfo"
+                      values={{
+                        email: (
+                          <Text size={2} weight="strong">
+                            {profileData?.me?.email}
+                          </Text>
+                        ),
+                        contact: (
+                          <Link
+                            target="_blank"
+                            rel="noreferrer noopener"
+                            href="mailto:help@pycon.it"
+                          >
+                            <Text
+                              decoration="underline"
+                              size={2}
+                              weight="strong"
+                              color="none"
+                            >
+                              help@pycon.it
+                            </Text>
+                          </Link>
+                        ),
+                      }}
+                    />
+                  </Text>
+                </GridColumn>
               </Grid>
             </CardPart>
           </MultiplePartsCard>

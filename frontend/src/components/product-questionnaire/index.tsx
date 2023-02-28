@@ -18,6 +18,7 @@ type Props = {
   productUserInformation: ProductState;
   updateTicketInfo: ({ id, index, key, value }) => void;
   updateQuestionAnswer: ({ id, index, question, answer }) => void;
+  hideAttendeeEmail?: boolean;
 };
 
 export const ProductQuestionnaire = ({
@@ -26,6 +27,7 @@ export const ProductQuestionnaire = ({
   index,
   updateTicketInfo,
   updateQuestionAnswer,
+  hideAttendeeEmail = false,
 }: Props) => {
   const answers = productUserInformation.answers;
 
@@ -57,7 +59,7 @@ export const ProductQuestionnaire = ({
         </InputWrapper>
       )}
 
-      {product.admission && (
+      {product.admission && !hideAttendeeEmail && (
         <InputWrapper
           key="attendeeEmail"
           required={true}

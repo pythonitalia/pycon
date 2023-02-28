@@ -48,7 +48,7 @@ export const ProductsList = ({
           <Fragment key={ticket.id}>
             <TicketRow
               openByDefault={index === 0}
-              icon="ticket"
+              icon="tickets"
               iconBackground="pink"
               ticket={ticket}
             />

@@ -196,18 +196,18 @@ export const TicketCard = ({ ticket }: Props) => {
           </Grid>
         </CardPart>
         <CardPart size="none" contentAlign="left">
-          <div className="grid grid-cols-3 md:grid-cols-4 divide-x">
-            <div className="p-5 flex items-center justify-center">
-              <GearIcon
-                className="cursor-pointer w-10 h-10 shrink-0"
-                onClick={() => openEditTicketModal(true)}
-              />
+          <div className="flex divide-x">
+            <div
+              className="p-5 flex flex-col items-center justify-center cursor-pointer"
+              onClick={() => openEditTicketModal(true)}
+            >
+              <GearIcon className="w-10 h-10 shrink-0" />
             </div>
-            <div className="p-5 flex items-center justify-center">
-              <TicketsIcon
-                className="cursor-pointer w-10 h-10 shrink-0"
-                onClick={() => openReassignTicketModal(true)}
-              />
+            <div
+              onClick={() => openReassignTicketModal(true)}
+              className="p-5 flex items-center justify-center cursor-pointer"
+            >
+              <TicketsIcon className="w-10 h-10 shrink-0" />
             </div>
           </div>
         </CardPart>

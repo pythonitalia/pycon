@@ -70,6 +70,7 @@ export const CustomizeTicketModal = ({
       <ProductQuestionnaire
         product={ticket.item}
         index={0}
+        hideAttendeeEmail={true}
         productUserInformation={{
           ...formState.values,
           errors,
