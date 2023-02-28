@@ -84,7 +84,10 @@ export const createClient = ({ serverCookies = null } = {}) => {
           keyFields: ["level"],
         },
         TicketItem: {
-          keyFields: ["id", "language"],
+          keyFields: false,
+        },
+        Question: {
+          keyFields: false,
         },
       },
     }),

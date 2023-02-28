@@ -8,7 +8,7 @@ type ModalProps = {
   show: boolean;
   onClose: () => void;
   children: React.ReactNode;
-  actions: React.ReactNode;
+  actions?: React.ReactNode;
 };
 
 export const Modal = ({
@@ -47,10 +47,12 @@ export const Modal = ({
               <CloseIcon />
             </div>
           </div>
-          <div className="bg-milk px-6 py-8 max-h-[400px] overflow-x-scroll">
+          <div className="bg-milk px-4 md:px-6 py-8 max-h-[400px] overflow-x-scroll">
             {children}
           </div>
-          {actions && <div className="bg-milk px-6 py-4">{actions}</div>}
+          {actions && (
+            <div className="bg-milk px-4 md:px-6 py-4">{actions}</div>
+          )}
         </div>
       </div>
     </div>

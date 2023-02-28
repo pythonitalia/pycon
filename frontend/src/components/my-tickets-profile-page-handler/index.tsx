@@ -20,6 +20,8 @@ export const MyTicketsProfilePageHandler = () => {
     },
   });
 
+  console.log("tickets", tickets);
+
   return (
     <Page endSeparator={false}>
       <Section background="pink">

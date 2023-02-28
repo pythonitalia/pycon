@@ -1,52 +1,162 @@
 import {
-  BasicButton,
-  Button,
   CardPart,
   Grid,
   GridColumn,
   Heading,
   MultiplePartsCard,
-  Spacer,
   Text,
 } from "@python-italia/pycon-styleguide";
-import { GearIcon } from "@python-italia/pycon-styleguide/icons";
+import { GearIcon, TicketsIcon } from "@python-italia/pycon-styleguide/icons";
 import React, { useState } from "react";
 import { FormattedMessage } from "react-intl";
 
 import { useCurrentLanguage } from "~/locale/context";
-import { MyProfileWithTicketsQuery, useUpdateTicketMutation } from "~/types";
+import {
+  MyProfileWithTicketsDocument,
+  MyProfileWithTicketsQuery,
+  useUpdateTicketMutation,
+} from "~/types";
 
-import { Modal } from "../modal";
-import { ProductQuestionnaire } from "../product-questionnaire";
-import { ProductState } from "../tickets-page/types";
+import { CustomizeTicketModal } from "./customize-ticket-modal";
+import { ReassignTicketModal } from "./reassign-ticket-modal";
 
 type Props = {
   ticket: MyProfileWithTicketsQuery["me"]["tickets"][0];
 };
 
+const snakeToCamel = (str: string) => {
+  return str.replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase());
+};
+
 export const TicketCard = ({ ticket }: Props) => {
-  const [showModal, openModal] = useState(false);
+  const [showEditTicketModal, openEditTicketModal] = useState(false);
+  const [showReassignTicketModal, openReassignTicketModal] = useState(false);
   const language = useCurrentLanguage();
 
   const [productUserInformation, setProductUserInformation] = useState({
     id: ticket.id,
     attendeeName: ticket.name,
     attendeeEmail: ticket.email,
+    errors: {},
     answers: ticket.item.questions.reduce((acc, question) => {
-      acc[question.id] = question.answer?.answer;
+      acc[question.id] =
+        question.options.length > 0
+          ? question.options[0].id
+          : question.answer?.answer;
       return acc;
     }, {}),
   });
+  const [errors, setErrors] = useState({});
 
   const [
     updateTicket,
     { data: updatedData, loading: updatingTicket, error: updatedError },
-  ] = useUpdateTicketMutation();
+  ] = useUpdateTicketMutation({
+    onCompleted(result) {
+      if (
+        result.updateAttendeeTicket.__typename === "UpdateAttendeeTicketErrors"
+      ) {
+        setErrors(
+          Object.fromEntries(
+            result.updateAttendeeTicket.errors.map((error) => [
+              snakeToCamel(error.field),
+              error.message,
+            ]),
+          ),
+        );
+        return;
+      }
+    },
+
+    update(cache, { data }) {
+      if (data.updateAttendeeTicket.__typename === "TicketReassigned") {
+        const { me } = cache.readQuery<MyProfileWithTicketsQuery>({
+          query: MyProfileWithTicketsDocument,
+          variables: {
+            conference: process.env.conferenceCode,
+            language: language,
+          },
+        });
+        cache.writeQuery({
+          query: MyProfileWithTicketsDocument,
+          data: {
+            me: {
+              ...me,
+              tickets: me.tickets.filter(
+                (ticket) => ticket.id !== data.updateAttendeeTicket.id,
+              ),
+            },
+          },
+          variables: {
+            conference: process.env.conferenceCode,
+            language: language,
+          },
+        });
+      }
+    },
+  });
+
+  const saveTicketChanges = (updatedProductUserInformation: any) => {
+    console.log("updatedProductUserInformation", updatedProductUserInformation);
+    setProductUserInformation(updatedProductUserInformation);
+    callUpdateUserTicket(updatedProductUserInformation);
+  };
+
+  const onReassignTicket = (newEmail: string) => {
+    const updatedProductUserInformation = {
+      ...productUserInformation,
+      attendeeEmail: newEmail,
+      errors: {},
+    };
+    setProductUserInformation(updatedProductUserInformation);
+    callUpdateUserTicket(updatedProductUserInformation);
+  };
+
+  const callUpdateUserTicket = (updatedProductUserInformation) => {
+    const answers = ticket.item.questions
+      .map((question) => {
+        let answer;
+        let option = null;
+
+        if (question.options.length > 0) {
+          option = question.options.filter(
+            (option) =>
+              option.id == updatedProductUserInformation.answers[question.id],
+          )[0];
+          answer = option.name;
+        } else {
+          answer = updatedProductUserInformation.answers[question.id] || "";
+        }
+
+        const data = {
+          answer,
+          question: question.id,
+        };
+
+        if (option) {
+          data["options"] = [option.id];
+        }
+        return data;
+      })
+      .filter((item) => item.answer !== "");
+
+    updateTicket({
+      variables: {
+        conference: process.env.conferenceCode,
+        language: language,
+        input: {
+          id: updatedProductUserInformation.id,
+          name: updatedProductUserInformation.attendeeName,
+          email: updatedProductUserInformation.attendeeEmail,
+          answers,
+        },
+      },
+    });
+  };
 
   const taglineQuestion = ticket.item.questions.find(
     (question) => question.name.toLowerCase() === "tagline",
   );
-  console.log("!!", productUserInformation);
 
   return (
     <>
@@ -55,7 +165,7 @@ export const TicketCard = ({ ticket }: Props) => {
           <Heading size={3}>{ticket.item.name}</Heading>
         </CardPart>
         <CardPart contentAlign="left" background="milk">
-          <Grid cols={2}>
+          <Grid cols={2} mdCols={2}>
             <Item
               label={<FormattedMessage id="profile.tickets.attendeeName" />}
               value={ticket.name}
@@ -85,52 +195,38 @@ export const TicketCard = ({ ticket }: Props) => {
             </GridColumn>
           </Grid>
         </CardPart>
-        <CardPart contentAlign="left">
-          <Grid divide cols={4}>
-            <GearIcon
-              className="cursor-pointer"
-              onClick={() => openModal(true)}
-            />
-          </Grid>
+        <CardPart size="none" contentAlign="left">
+          <div className="grid grid-cols-3 md:grid-cols-4 divide-x">
+            <div className="p-5 flex items-center justify-center">
+              <GearIcon
+                className="cursor-pointer w-10 h-10 shrink-0"
+                onClick={() => openEditTicketModal(true)}
+              />
+            </div>
+            <div className="p-5 flex items-center justify-center">
+              <TicketsIcon
+                className="cursor-pointer w-10 h-10 shrink-0"
+                onClick={() => openReassignTicketModal(true)}
+              />
+            </div>
+          </div>
         </CardPart>
       </MultiplePartsCard>
-      <Modal
-        title="Customize your ticket"
-        onClose={() => openModal(false)}
-        show={showModal}
-        actions={
-          <div className="flex justify-end items-center">
-            <BasicButton onClick={(_) => openModal(false)}>
-              <FormattedMessage id="profile.tickets.cancel" />
-            </BasicButton>
-            <Spacer orientation="horizontal" size="large" />
-            <Button size="small">
-              <FormattedMessage id="profile.tickets.save" />
-            </Button>
-          </div>
-        }
-      >
-        <ProductQuestionnaire
-          product={ticket.item}
-          index={0}
-          productUserInformation={productUserInformation}
-          updateTicketInfo={({ key, value }) => {
-            setProductUserInformation({
-              ...productUserInformation,
-              [key]: value,
-            });
-          }}
-          updateQuestionAnswer={({ id, index, question, answer }) => {
-            setProductUserInformation({
-              ...productUserInformation,
-              answers: {
-                ...productUserInformation.answers,
-                [question]: answer,
-              },
-            });
-          }}
-        />
-      </Modal>
+      <CustomizeTicketModal
+        ticket={ticket}
+        saveChanges={saveTicketChanges}
+        productUserInformation={productUserInformation}
+        updatingTicket={updatingTicket}
+        open={showEditTicketModal}
+        openModal={openEditTicketModal}
+        errors={errors}
+      />
+      <ReassignTicketModal
+        open={showReassignTicketModal}
+        openModal={openReassignTicketModal}
+        onReassignTicket={onReassignTicket}
+        currentEmail={productUserInformation.attendeeEmail}
+      />
     </>
   );
 };

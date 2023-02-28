@@ -9,6 +9,7 @@ export const messages = {
     "global.here": "here",
     "global.yes": "Yes",
     "global.no": "No",
+    "orderQuestions.emailsDontMatch": "Emails do not match",
     "global.learnMore": "Learn more",
     "global.loading": "Loading",
     "global.loadMore": "Load more",
@@ -31,6 +32,11 @@ export const messages = {
 
     "scheduleView.allRooms": "All rooms",
 
+    "profile.ticketsEdit.reassignTicket": "Re-assign ticket",
+    "profile.ticketsEdit.reassignTicketHeading":
+      "Purchased this ticket for someone else? Assign it to them here!",
+    "profile.ticketsEdit.reassignTicketDescription":
+      "If they don't have an account yet, they will need to create one to see and customize their ticket.",
     "profile.editProfile.generalInformation": "General Information",
     "profile.editProfile.emailPreferences": "Email Preferences",
 
@@ -412,6 +418,7 @@ export const messages = {
     "orderQuestions.heading": "Order questions",
     "orderQuestions.attendeeName": "Attendee name",
     "orderQuestions.attendeeEmail": "Attendee email",
+    "orderQuestions.repeatAttendeeEmail": "Confirm Attendee email",
 
     "grants.pageTitle": "Grants",
     "grants.introductionHeading": "Grants",
@@ -1081,6 +1088,7 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "orderQuestions.heading": "Domande aggiuntive",
     "orderQuestions.attendeeName": "Nome partecipante",
     "orderQuestions.attendeeEmail": "Email partecipante",
+    "orderQuestions.repeatAttendeeEmail": "Conferma Email partecipante",
 
     "grants.pageTitle": "Grants",
     "grants.introductionHeading": "Grants",
@@ -1570,6 +1578,12 @@ Affrettati a comprare il biglietto!`,
     "profile.tickets.noAnswer": "Nessuna risposta",
     "profile.tickets.cancel": "Chiudi",
     "profile.ticketsEdit.modalTitle": "Personalizza biglietto",
+    "profile.ticketsEdit.reassignTicket": "Assegna biglietto",
+    "profile.ticketsEdit.reassignTicketHeading":
+      "Comprato questo ticket per un'altra persona? Assegna il biglietto a loro!",
+    "profile.ticketsEdit.reassignTicketDescription":
+      "Dovranno creare un account per poter accedere al loro biglietto.",
+    "orderQuestions.emailsDontMatch": "Assicurati siano la stessa email",
   },
 };
 
