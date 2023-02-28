@@ -80,7 +80,6 @@ const toTileCase = (word: string) =>
 
 export const EditProfilePageHandler = () => {
   const router = useRouter();
-  const [loggedIn] = useLoginState();
   const [formState, { text, select, checkbox, raw }] =
     useFormState<MeUserFields>(
       {},
@@ -94,7 +93,6 @@ export const EditProfilePageHandler = () => {
     loading,
     error,
   } = useMyEditProfileQuery({
-    skip: !loggedIn,
     onCompleted: (data) => onMyProfileFetched(data, formState),
   });
 
@@ -171,10 +169,6 @@ export const EditProfilePageHandler = () => {
     },
     [update, formState],
   );
-
-  if (loading || !loggedIn) {
-    return null;
-  }
 
   return (
     <Page endSeparator={false}>

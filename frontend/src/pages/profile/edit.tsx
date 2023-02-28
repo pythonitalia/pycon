@@ -2,7 +2,7 @@ import { GetServerSideProps } from "next";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
-import { queryCountries, queryMyProfile } from "~/types";
+import { queryCountries, queryMyEditProfile } from "~/types";
 
 export const getServerSideProps: GetServerSideProps = async ({
   locale,
@@ -23,7 +23,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   await Promise.all([
     prefetchSharedQueries(client, locale),
     queryCountries(client),
-    queryMyProfile(client),
+    queryMyEditProfile(client),
   ]);
 
   return addApolloState(
