@@ -8,6 +8,7 @@ import {
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
+import { useTranslatedMessage } from "~/helpers/use-translated-message";
 import { TicketItem } from "~/types";
 
 import { ProductState } from "../tickets-page/types";
@@ -30,6 +31,7 @@ export const ProductQuestionnaire = ({
   hideAttendeeEmail = false,
 }: Props) => {
   const answers = productUserInformation.answers;
+  const inputPlaceholder = useTranslatedMessage("input.placeholder");
 
   return (
     <Grid cols={3} alignItems="end">
@@ -49,6 +51,7 @@ export const ProductQuestionnaire = ({
                 value: e.target.value,
               })
             }
+            placeholder={inputPlaceholder}
             value={productUserInformation.attendeeName}
             errors={
               productUserInformation?.errors && [
@@ -68,6 +71,7 @@ export const ProductQuestionnaire = ({
           <Input
             required={true}
             type="email"
+            placeholder={inputPlaceholder}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               updateTicketInfo({
                 id: productUserInformation.id,
@@ -95,6 +99,7 @@ export const ProductQuestionnaire = ({
           {question.options.length === 0 ? (
             <Input
               required={question.required}
+              placeholder={inputPlaceholder}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 updateQuestionAnswer({
                   id: productUserInformation.id,

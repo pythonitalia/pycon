@@ -176,7 +176,7 @@ export const EditProfilePageHandler = () => {
         {(text) => <MetaTags title={text} />}
       </FormattedMessage>
 
-      <Section background="pink">
+      <Section background="blue">
         <Heading size="display2">
           <FormattedMessage id="profile.myProfile" />
         </Heading>
