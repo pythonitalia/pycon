@@ -343,6 +343,7 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
                     "conference",
                     "user_id",
                     "age_group",
+                    "gender",
                     "occupation",
                 )
             },
