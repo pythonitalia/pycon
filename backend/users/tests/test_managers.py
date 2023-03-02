@@ -31,14 +31,12 @@ def test_create_user_with_extra_fields():
         full_name="John Lennon",
         gender="male",
         date_birth=datetime.datetime.strptime("09/10/1940", "%d/%m/%Y"),
-        country="GB",
     )
 
     assert user.name == "John"
     assert user.full_name == "John Lennon"
     assert user.gender == "male"
     assert user.date_birth == datetime.datetime.strptime("09/10/1940", "%d/%m/%Y")
-    assert user.country == "GB"
 
 
 @pytest.mark.django_db

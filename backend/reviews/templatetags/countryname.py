@@ -1,5 +1,6 @@
 from django import template
-from pycountry import countries
+
+from countries import countries
 
 register = template.Library()
 

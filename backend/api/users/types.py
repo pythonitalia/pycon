@@ -74,9 +74,3 @@ class User:
     @strawberry.federation.field(requires=["isStaff"])
     def can_edit_schedule(self) -> bool:
         return self.isStaff
-
-
-@strawberry.type
-class Country:
-    code: str
-    name: str

@@ -3,16 +3,12 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from model_utils.models import TimeStampedModel
 
+from countries import countries
 from helpers.constants import GENDERS
 from users.models import User
 
 
 class Grant(TimeStampedModel):
-    class CountryType(models.TextChoices):
-        italy = "italy", _("Italy")
-        europe = "europe", _("Europe")
-        extra_eu = "extra_eu", _("Extra EU")
-
     class Status(models.TextChoices):
         pending = "pending", _("Pending")
         rejected = "rejected", _("Rejected")
@@ -24,7 +20,11 @@ class Grant(TimeStampedModel):
         )
         refused = "refused", _("Refused")
         confirmed = "confirmed", _("Confirmed")
-        needs_info = "needs_info", _("Needs Info")
+
+    class CountryType(models.TextChoices):
+        italy = "italy", _("Italy")
+        europe = "europe", _("Europe")
+        extra_eu = "extra_eu", _("Extra EU")
 
     class AgeGroup(models.TextChoices):
         range_less_than_10 = "range_less_than_10", _("10 years old or under")
@@ -110,7 +110,6 @@ class Grant(TimeStampedModel):
     age_group = models.CharField(
         _("Age group"), max_length=20, choices=AgeGroup.choices, blank=True
     )
-    age = models.PositiveSmallIntegerField(_("age"), null=True)  # TODO: remove
     gender = models.CharField(_("gender"), choices=GENDERS, max_length=10, blank=True)
     occupation = models.CharField(
         _("occupation"), choices=Occupation.choices, max_length=10
@@ -129,6 +128,13 @@ class Grant(TimeStampedModel):
     why = models.TextField(_("Why are you asking for a grant?"))
     notes = models.TextField(_("Notes"), blank=True)
     travelling_from = models.CharField(_("Travelling from"), max_length=200)
+    traveling_from = models.CharField(
+        _("Traveling from"),
+        max_length=100,
+        blank=True,
+        null=True,
+        choices=[(country.code, country.name) for country in countries],
+    )
     country_type = models.CharField(
         _("Country type"),
         max_length=10,
@@ -147,6 +153,19 @@ class Grant(TimeStampedModel):
     def __str__(self):
         return f"{self.full_name}"
 
+    def save(self, *args, **kwargs):
+        if self.traveling_from:
+            country = countries.get(code=self.traveling_from)
+            assert country
+            if country.code == "IT":
+                self.country_type = Grant.CountryType.italy
+            elif country.continent == "EU":
+                self.country_type = Grant.CountryType.europe
+            else:
+                self.country_type = Grant.CountryType.extra_eu
+
+        super().save(*args, **kwargs)
+
     def can_edit(self, user: User):
         return self.user_id == user.id
 
@@ -155,3 +174,10 @@ class Grant(TimeStampedModel):
             "admin:%s_%s_change" % (self._meta.app_label, self._meta.model_name),
             args=(self.pk,),
         )
+
+
+class GrantRecap(Grant):
+    class Meta:
+        proxy = True
+        verbose_name = _("Grant recap")
+        verbose_name_plural = _("Grants recap")
