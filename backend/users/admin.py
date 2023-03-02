@@ -52,7 +52,6 @@ class PyConUserAdmin(UserAdmin):
                 )
             },
         ),
-        (_("Address"), {"fields": ("country",)}),
         (
             _("Permissions"),
             {

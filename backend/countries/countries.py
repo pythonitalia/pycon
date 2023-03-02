@@ -80,12 +80,5 @@ class Countries(Base):
     def __init__(self):
         self.items = [Country.from_dict(country) for country in COUNTRIES]
 
-    def filter(self, **kwargs):
-        return iter(
-            c
-            for c in self.items
-            if any(getattr(c, k, None) == v for k, v in kwargs.items())
-        )
-
 
 countries = Countries()

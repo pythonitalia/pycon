@@ -49,9 +49,3 @@ def test_get_continent_by_multiple_arguments():
 
 def test_continent_not_found():
     assert continents.get(name="Narnia") is None
-
-
-def test_filter_countries_by_continent():
-    european_countries = countries.filter(continent="EU")
-
-    assert len(list(european_countries)) == 52
