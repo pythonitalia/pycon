@@ -18,12 +18,12 @@ export const NoTickets = ({ email }: Props) => {
   return (
     <Container size="small" center={false} noPadding>
       <Heading size={2}>
-        <FormattedMessage id="profile.myTickets.noTicketsHeading" />
+        <FormattedMessage id="profile.myTickets.noTickets.heading" />
       </Heading>
       <Spacer size="medium" />
       <Text size={2}>
         <FormattedMessage
-          id="profile.myTickets.noTicketsBody"
+          id="profile.myTickets.noTickets.body"
           values={{
             email,
           }}

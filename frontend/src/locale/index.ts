@@ -42,11 +42,23 @@ export const messages = {
     "profile.myProposals.status.speakerRejected": "Rejected",
     "profile.myProposals.status.speakerCantAttend": "Can't attend",
     "profile.myProposals.status.maybe": "Rejected",
+    "profile.myProposals.noProposals.heading":
+      "You don't have any proposals yet.",
+    "profile.myProposals.noProposals.body.canSubmit":
+      "Our call for proposal is currently open! Submit your proposal today!",
+    "profile.myProposals.noProposals.submitProposal": "Call for proposals",
 
-    "profile.myTickets.noTicketsHeading":
+    "profile.myProposals.noProposals.body.closed":
+      "Unfortunately our call for proposals is now closed! But you can still join us! Get your ticket!",
+
+    "profile.myProposals.noProposals.body.openingSoon":
+      "Our Call For Proposals will open soon! Check our information page to know more!",
+
+    "profile.myTickets.noTickets.heading":
       "You don't have any tickets yet. But this is easy to solve!",
-    "profile.myTickets.noTicketsBody":
+    "profile.myTickets.noTickets.body":
       "Someone else purchased the ticket for you? Ask them to assign the ticket to your email ({email}) so you can customize it, book workshops and more!",
+
     "profile.myTickets.buyTickets": "Buy Ticket",
     "scheduleView.allRooms": "All rooms",
     "profile.editProfile.emailInfo":
@@ -1605,8 +1617,8 @@ Affrettati a comprare il biglietto!`,
       "Dovranno creare un account per poter accedere al loro biglietto.",
     "orderQuestions.emailsDontMatch": "Assicurati siano la stessa email",
 
-    "profile.myTickets.noTicketsHeading": "Non hai comprato nessun biglietto!",
-    "profile.myTickets.noTicketsBody":
+    "profile.myTickets.noTickets.heading": "Non hai comprato nessun biglietto!",
+    "profile.myTickets.noTickets.body":
       "Il tuo biglietto è stato comprato da un'altra persona? Chiedigli di assegnarlo alla tua email ({email}) per poterlo vedere qui, personalizzarlo e prenotare workshops!",
     "profile.myTickets.buyTickets": "Compra biglietto",
 
@@ -1626,6 +1638,18 @@ Affrettati a comprare il biglietto!`,
     "profile.myProposals.notScheduled": "Non selezionata",
     "profile.myProposals.viewInvitation": "Invito",
     "profile.myProposals.edit": "Modifica",
+
+    "profile.myProposals.noProposals.heading":
+      "Non hai inviato nessuna proposal",
+    "profile.myProposals.noProposals.body.canSubmit":
+      "La nostra call for proposals è aperta! Invia la tua proposta oggi!",
+    "profile.myProposals.noProposals.submitProposal": "Call for proposals",
+
+    "profile.myProposals.noProposals.body.closed":
+      "Sfortunatamente la nostra Call for proposals è chiusa, ma puoi comunque unirti a noi comprando un biglietto!",
+
+    "profile.myProposals.noProposals.body.openingSoon":
+      "La nostra call for proposal aprirà presto! Dai uno sguardo alla pagina CFP per saperne di più!",
   },
 };
 
