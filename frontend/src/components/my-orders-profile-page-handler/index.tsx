@@ -21,7 +21,7 @@ export const MyOrdersProfilePageHandler = () => {
   return (
     <Page endSeparator={false}>
       <Section background="purple">
-        <Heading size={1}>
+        <Heading size="display2">
           <FormattedMessage id="profile.myOrders" />
         </Heading>
       </Section>

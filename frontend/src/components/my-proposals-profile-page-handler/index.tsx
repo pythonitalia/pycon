@@ -25,7 +25,7 @@ export const MyProposalsProfilePageHandler = () => {
   return (
     <Page endSeparator={false}>
       <Section background="green">
-        <Heading size={1}>
+        <Heading size="display2">
           <FormattedMessage id="profile.myProposals" />
         </Heading>
       </Section>
