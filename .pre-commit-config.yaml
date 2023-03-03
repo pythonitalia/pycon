@@ -11,9 +11,9 @@ repos:
     - repo: https://github.com/python/black
       rev: 22.6.0
       hooks:
-          - <<: *python_settings
-            id: black
-            language_version: python3.9
+        - <<: *python_settings
+          id: black
+          language_version: python3.9
     - repo: https://github.com/charliermarsh/ruff-pre-commit
       rev: 'v0.0.247'
       hooks:
