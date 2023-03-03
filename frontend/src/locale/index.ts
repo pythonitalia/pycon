@@ -32,7 +32,7 @@ export const messages = {
 
     "profile.welcome": "Ciao {name}!",
     "profile.myProfile": "My Profile",
-    "profile.logout": "Logout",
+    "profile.logout": "Sign Out",
     "profile.logout.title": "Logout",
     "profile.logout.body": "{name}, are you sure you want to logout?",
 

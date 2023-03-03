@@ -170,7 +170,7 @@ export const ProfilePageHandler = () => {
             </BasicButton>
             <Button
               disabled={isLoggingOut}
-              role="secondary"
+              role="alert"
               onClick={onLogout}
               size="small"
             >
