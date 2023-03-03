@@ -2,6 +2,7 @@ from datetime import datetime
 from unittest.mock import patch
 
 import pytest
+from schedule.models import ScheduleItem
 import respx
 from django.conf import settings
 from django.utils import timezone
@@ -192,7 +193,9 @@ def test_handle_new_schedule_invitation_answer(
     settings, schedule_item_factory, submission_factory
 ):
     settings.SPEAKERS_EMAIL_ADDRESS = "speakers@placeholder.com"
-    schedule_item = schedule_item_factory(submission=submission_factory())
+    schedule_item = schedule_item_factory(
+        type=ScheduleItem.TYPES.talk, submission=submission_factory(speaker_id=10)
+    )
 
     data = {
         "speaker_id": 10,
