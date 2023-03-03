@@ -1,0 +1,11 @@
+query MyProfileWithOrders($conference: String!) {
+  me {
+    id
+    orders(conference: $conference) {
+      code
+      status
+      url
+      total
+    }
+  }
+}

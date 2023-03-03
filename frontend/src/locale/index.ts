@@ -34,6 +34,18 @@ export const messages = {
     "profile.myProfile": "My Profile",
     "profile.logout": "Logout",
 
+    "profile.myOrders.orderStatus.pending": "Pending",
+    "profile.myOrders.orderStatus.paid": "Paid",
+    "profile.myOrders.orderStatus.canceled": "Canceled",
+    "profile.myOrders.orderStatus.expired": "Expired",
+
+    "profile.myProposals.noOrders.heading":
+      "You don't have any orders yet. But this is easy to solve!",
+    "profile.myProposals.noOrders.body":
+      "Buy your ticket, t-shirt, hotel room and more on our tickets page and join us!",
+
+    "profile.myOrders.open": "Open",
+
     "profile.myProposals.status.proposed": "Proposed",
     "profile.myProposals.status.accepted": "Accepted",
     "profile.myProposals.status.canceled": "Canceled",
@@ -1650,6 +1662,16 @@ Affrettati a comprare il biglietto!`,
 
     "profile.myProposals.noProposals.body.openingSoon":
       "La nostra call for proposal aprirà presto! Dai uno sguardo alla pagina CFP per saperne di più!",
+
+    "profile.myOrders.orderStatus.pending": "Pending",
+    "profile.myOrders.orderStatus.paid": "Pagato",
+    "profile.myOrders.orderStatus.canceled": "Cancellato",
+    "profile.myOrders.orderStatus.expired": "Scaduto",
+    "profile.myOrders.open": "Apri",
+
+    "profile.myProposals.noOrders.heading": "Non hai nessun ordine",
+    "profile.myProposals.noOrders.body":
+      "Compra il tuo biglietto, t-shirt, stanza di hotel e tanto altro sulla nostra pagina biglietti ed unisciti a noi!",
   },
 };
 

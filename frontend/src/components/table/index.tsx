@@ -1,4 +1,4 @@
-import { Grid, Text } from "@python-italia/pycon-styleguide";
+import { Grid } from "@python-italia/pycon-styleguide";
 import clsx from "clsx";
 import { Fragment } from "react";
 

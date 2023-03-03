@@ -84,6 +84,15 @@ export const ProfilePageHandler = () => {
       iconBackground: "green",
     },
     {
+      link: createHref({
+        path: "/profile/my-orders",
+        locale: language,
+      }),
+      label: <FormattedMessage id="profile.myOrders" />,
+      icon: "circle",
+      iconBackground: "purple",
+    },
+    {
       link: "",
       label: <FormattedMessage id="profile.logout" />,
       rightSideIcon: "sign-out",
