@@ -48,10 +48,7 @@ export const TicketCard = ({ ticket }: Props) => {
   });
   const [errors, setErrors] = useState({});
 
-  const [
-    updateTicket,
-    { data: updatedData, loading: updatingTicket, error: updatedError },
-  ] = useUpdateTicketMutation({
+  const [updateTicket, { loading: updatingTicket }] = useUpdateTicketMutation({
     onCompleted(result) {
       if (
         result.updateAttendeeTicket.__typename === "UpdateAttendeeTicketErrors"
@@ -97,16 +94,16 @@ export const TicketCard = ({ ticket }: Props) => {
   });
 
   const saveTicketChanges = (updatedProductUserInformation: any) => {
-    console.log("updatedProductUserInformation", updatedProductUserInformation);
+    setErrors({});
     setProductUserInformation(updatedProductUserInformation);
     callUpdateUserTicket(updatedProductUserInformation);
   };
 
   const onReassignTicket = (newEmail: string) => {
+    setErrors({});
     const updatedProductUserInformation = {
       ...productUserInformation,
       attendeeEmail: newEmail,
-      errors: {},
     };
     setProductUserInformation(updatedProductUserInformation);
     callUpdateUserTicket(updatedProductUserInformation);
