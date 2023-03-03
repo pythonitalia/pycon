@@ -1,4 +1,6 @@
 import {
+  BasicButton,
+  Button,
   CardPart,
   Grid,
   Heading,
@@ -9,19 +11,22 @@ import {
 } from "@python-italia/pycon-styleguide";
 import { Icon } from "@python-italia/pycon-styleguide/dist/icons/types";
 import { Color } from "@python-italia/pycon-styleguide/dist/types";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
 
 import Router from "next/router";
 
 import { useCurrentLanguage } from "~/locale/context";
-import { useMyProfileQuery } from "~/types";
+import { useLogoutMutation, useMyProfileQuery } from "~/types";
 
 import { createHref } from "../link";
+import { Modal } from "../modal";
 import { useLoginState } from "../profile/hooks";
 
 type Action = {
-  link: string;
+  id: string;
+  link?: string;
+  onClick?: () => void;
   label: React.ReactNode;
   icon?: Icon;
   iconBackground?: Color;
@@ -30,6 +35,8 @@ type Action = {
 };
 
 export const ProfilePageHandler = () => {
+  const [showLogoutModal, openLogoutModal] = useState(false);
+  const [logout, { loading: isLoggingOut }] = useLogoutMutation();
   const [loggedIn, setLoginState] = useLoginState();
   const language = useCurrentLanguage();
 
@@ -55,8 +62,15 @@ export const ProfilePageHandler = () => {
 
   const { name } = profileData.me;
 
+  const onLogout = async () => {
+    await logout();
+    setLoginState(false);
+    window.location.href = `/${language}`;
+  };
+
   const availableActions: Action[] = [
     {
+      id: "profile",
       link: createHref({
         path: "/profile/edit",
         locale: language,
@@ -66,6 +80,7 @@ export const ProfilePageHandler = () => {
       iconBackground: "blue",
     },
     {
+      id: "tickets",
       link: createHref({
         path: "/profile/my-tickets",
         locale: language,
@@ -75,6 +90,7 @@ export const ProfilePageHandler = () => {
       iconBackground: "pink",
     },
     {
+      id: "proposals",
       link: createHref({
         path: "/profile/my-proposals",
         locale: language,
@@ -84,6 +100,7 @@ export const ProfilePageHandler = () => {
       iconBackground: "green",
     },
     {
+      id: "orders",
       link: createHref({
         path: "/profile/my-orders",
         locale: language,
@@ -93,7 +110,9 @@ export const ProfilePageHandler = () => {
       iconBackground: "purple",
     },
     {
-      link: "",
+      id: "logout",
+      link: undefined,
+      onClick: () => openLogoutModal(true),
       label: <FormattedMessage id="profile.logout" />,
       rightSideIcon: "sign-out",
       rightSideIconBackground: "milk",
@@ -115,7 +134,13 @@ export const ProfilePageHandler = () => {
       <Section>
         <Grid cols={2}>
           {availableActions.map((action) => (
-            <Link key={action.link} hoverColor="black" href={action.link}>
+            <Link
+              key={action.id}
+              hoverColor="black"
+              href={action.link}
+              onClick={action.onClick}
+              className="cursor-pointer"
+            >
               <MultiplePartsCard>
                 <CardPart
                   background={action.rightSideIconBackground ?? "cream"}
@@ -133,6 +158,36 @@ export const ProfilePageHandler = () => {
           ))}
         </Grid>
       </Section>
+
+      <Modal
+        title={<FormattedMessage id="profile.logout.title" />}
+        onClose={() => openLogoutModal(false)}
+        show={showLogoutModal}
+        actions={
+          <div className="flex flex-col md:flex-row gap-6 justify-end items-center">
+            <BasicButton onClick={() => openLogoutModal(false)}>
+              <FormattedMessage id="profile.tickets.cancel" />
+            </BasicButton>
+            <Button
+              disabled={isLoggingOut}
+              role="secondary"
+              onClick={onLogout}
+              size="small"
+            >
+              <FormattedMessage id="profile.logout" />
+            </Button>
+          </div>
+        }
+      >
+        <Heading size={4}>
+          <FormattedMessage
+            id="profile.logout.body"
+            values={{
+              name,
+            }}
+          />
+        </Heading>
+      </Modal>
     </Page>
   );
 };

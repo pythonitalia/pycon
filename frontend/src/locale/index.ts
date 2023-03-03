@@ -33,6 +33,8 @@ export const messages = {
     "profile.welcome": "Ciao {name}!",
     "profile.myProfile": "My Profile",
     "profile.logout": "Logout",
+    "profile.logout.title": "Logout",
+    "profile.logout.body": "{name}, are you sure you want to logout?",
 
     "profile.myOrders.orderStatus.pending": "Pending",
     "profile.myOrders.orderStatus.paid": "Paid",
@@ -1672,6 +1674,8 @@ Affrettati a comprare il biglietto!`,
     "profile.myProposals.noOrders.heading": "Non hai nessun ordine",
     "profile.myProposals.noOrders.body":
       "Compra il tuo biglietto, t-shirt, stanza di hotel e tanto altro sulla nostra pagina biglietti ed unisciti a noi!",
+    "profile.logout.title": "Logout",
+    "profile.logout.body": "{name}, vuoi sloggarti?",
   },
 };
 
