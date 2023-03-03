@@ -5,6 +5,7 @@ import {
   Spacer,
   VerticalStack,
   Button,
+  Tag,
 } from "@python-italia/pycon-styleguide";
 import { parseISO } from "date-fns";
 import { FormattedMessage } from "react-intl";
