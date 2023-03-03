@@ -84,7 +84,7 @@ def test_send_schedule_invitation_email_reminder(
                 schedule_item.language.code
             ),
             "invitation_url": (
-                f"https://pycon.it/schedule/invitation/{schedule_item.submission.hashid}",
+                f"https://pycon.it/schedule/invitation/{schedule_item.submission.hashid}"
             ),
             "is_reminder": True,
         },
@@ -111,7 +111,7 @@ def test_send_schedule_invitation_email(
                 schedule_item.language.code
             ),
             "invitation_url": (
-                f"https://pycon.it/schedule/invitation/{schedule_item.submission.hashid}",
+                f"https://pycon.it/schedule/invitation/{schedule_item.submission.hashid}"
             ),
             "is_reminder": False,
         },

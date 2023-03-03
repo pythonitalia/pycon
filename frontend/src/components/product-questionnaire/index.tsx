@@ -1,12 +1,15 @@
-import { Grid } from "@python-italia/pycon-styleguide";
+import {
+  Grid,
+  Input,
+  InputWrapper,
+  Select,
+} from "@python-italia/pycon-styleguide";
 import React from "react";
 import { FormattedMessage } from "react-intl";
-import { Select } from "theme-ui";
 
+import { useTranslatedMessage } from "~/helpers/use-translated-message";
 import { TicketItem } from "~/types";
 
-import { InputWrapper } from "../input-wrapper";
-import { Input } from "../inputs";
 import { ProductState } from "../tickets-page/types";
 
 type Props = {
@@ -15,6 +18,7 @@ type Props = {
   productUserInformation: ProductState;
   updateTicketInfo: ({ id, index, key, value }) => void;
   updateQuestionAnswer: ({ id, index, question, answer }) => void;
+  hideAttendeeEmail?: boolean;
 };
 
 export const ProductQuestionnaire = ({
@@ -23,22 +27,18 @@ export const ProductQuestionnaire = ({
   index,
   updateTicketInfo,
   updateQuestionAnswer,
+  hideAttendeeEmail = false,
 }: Props) => {
   const answers = productUserInformation.answers;
+  const inputPlaceholder = useTranslatedMessage("input.placeholder");
 
   return (
     <Grid cols={3} alignItems="end">
       {product.admission && (
         <InputWrapper
-          sx={{ mb: 0 }}
           key="attendeeName"
-          isRequired={true}
-          label={<FormattedMessage id="orderQuestions.attendeeName" />}
-          errors={
-            productUserInformation?.errors && [
-              productUserInformation?.errors?.attendeeName,
-            ]
-          }
+          required={true}
+          title={<FormattedMessage id="orderQuestions.attendeeName" />}
         >
           <Input
             required={true}
@@ -50,26 +50,27 @@ export const ProductQuestionnaire = ({
                 value: e.target.value,
               })
             }
+            placeholder={inputPlaceholder}
             value={productUserInformation.attendeeName}
+            errors={
+              productUserInformation?.errors && [
+                productUserInformation?.errors?.attendeeName,
+              ]
+            }
           />
         </InputWrapper>
       )}
 
-      {product.admission && (
+      {product.admission && !hideAttendeeEmail && (
         <InputWrapper
-          sx={{ mb: 0 }}
           key="attendeeEmail"
-          isRequired={true}
-          label={<FormattedMessage id="orderQuestions.attendeeEmail" />}
-          errors={
-            productUserInformation?.errors && [
-              productUserInformation?.errors?.attendeeEmail,
-            ]
-          }
+          required={true}
+          title={<FormattedMessage id="orderQuestions.attendeeEmail" />}
         >
           <Input
             required={true}
             type="email"
+            placeholder={inputPlaceholder}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               updateTicketInfo({
                 id: productUserInformation.id,
@@ -79,6 +80,11 @@ export const ProductQuestionnaire = ({
               })
             }
             value={productUserInformation.attendeeEmail}
+            errors={
+              productUserInformation?.errors && [
+                productUserInformation?.errors?.attendeeEmail,
+              ]
+            }
           />
         </InputWrapper>
       )}
@@ -86,18 +92,13 @@ export const ProductQuestionnaire = ({
       {product.questions.map((question) => (
         <InputWrapper
           key={question.id}
-          sx={{ mb: 0 }}
-          isRequired={question.required}
-          label={question.name}
-          errors={
-            productUserInformation?.errors && [
-              productUserInformation?.errors[question.id],
-            ]
-          }
+          required={question.required}
+          title={question.name}
         >
           {question.options.length === 0 ? (
             <Input
               required={question.required}
+              placeholder={inputPlaceholder}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 updateQuestionAnswer({
                   id: productUserInformation.id,
@@ -107,6 +108,11 @@ export const ProductQuestionnaire = ({
                 })
               }
               value={answers[question.id]}
+              errors={
+                productUserInformation?.errors && [
+                  productUserInformation?.errors[question.id],
+                ]
+              }
             />
           ) : (
             <Select

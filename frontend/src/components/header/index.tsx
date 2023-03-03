@@ -2,6 +2,8 @@
 
 /** @jsx jsx */
 import { NavBar } from "@python-italia/pycon-styleguide";
+import { Action } from "@python-italia/pycon-styleguide/dist/navbar/types";
+import { useEffect, useState } from "react";
 import { jsx } from "theme-ui";
 
 import { useRouter } from "next/router";
@@ -15,9 +17,9 @@ import { createHref } from "../link";
 import { Logo, MobileLogo } from "../logo";
 
 export const Header = () => {
+  const [isReady, setIsReady] = useState(false);
   const [loggedIn] = useLoginState();
   const language = useCurrentLanguage();
-  const router = useRouter();
   const { data } = useHeaderQuery({
     variables: {
       code: process.env.conferenceCode!,
@@ -25,7 +27,7 @@ export const Header = () => {
   });
   const { route, query } = useRouter();
 
-  const actions = [
+  const actions: Action[] = [
     {
       text: getTranslatedMessage("header.tickets", language),
       icon: "tickets",
@@ -33,13 +35,17 @@ export const Header = () => {
     },
     {
       text:
-        router.isReady && loggedIn
+        isReady && loggedIn
           ? getTranslatedMessage("header.dashboard", language)
           : getTranslatedMessage("header.login", language),
       icon: "user",
-      link: router.isReady && loggedIn ? "/profile" : "/login",
+      link: isReady && loggedIn ? "/profile" : "/login",
     },
   ];
+
+  useEffect(() => {
+    setIsReady(true);
+  }, []);
 
   const {
     conference: {

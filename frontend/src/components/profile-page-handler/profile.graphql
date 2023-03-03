@@ -1,0 +1,7 @@
+query MyProfile {
+  me {
+    id
+    name
+    fullName
+  }
+}

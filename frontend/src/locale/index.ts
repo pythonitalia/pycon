@@ -9,6 +9,7 @@ export const messages = {
     "global.here": "here",
     "global.yes": "Yes",
     "global.no": "No",
+    "orderQuestions.emailsDontMatch": "Emails do not match",
     "global.learnMore": "Learn more",
     "global.loading": "Loading",
     "global.loadMore": "Load more",
@@ -20,8 +21,72 @@ export const messages = {
     "schedule.mySchedule": "See My Schedule",
     "schedule.fullSchedule": "See Full Schedule",
     "schedule.live": "Live",
+    "profile.tickets.tagline": "Tagline",
+    "profile.tickets.noAnswer": "No answer",
+    "profile.tickets.cancel": "Cancel",
+    "profile.ticketsEdit.modalTitle": "Customize your ticket",
+    "profile.myProposals.date": "{day} {start} - {end}",
+    "profile.myProposals.notScheduled": "Not added to the schedule",
+    "profile.myProposals.viewInvitation": "Invitation",
+    "profile.myProposals.edit": "Edit",
 
+    "profile.welcome": "Ciao {name}!",
+    "profile.myProfile": "My Profile",
+    "profile.logout": "Sign Out",
+    "profile.logout.title": "Sign Out",
+    "profile.logout.body": "{name}, are you sure you want to sign out?",
+
+    "profile.myOrders.orderStatus.pending": "Pending",
+    "profile.myOrders.orderStatus.paid": "Paid",
+    "profile.myOrders.orderStatus.canceled": "Canceled",
+    "profile.myOrders.orderStatus.expired": "Expired",
+
+    "profile.myProposals.noOrders.heading":
+      "You don't have any orders yet. But this is easy to solve!",
+    "profile.myProposals.noOrders.body":
+      "Buy your ticket, t-shirt, hotel room and more on our tickets page and join us!",
+
+    "input.selectCountryPlaceholder": "Select country...",
+
+    "profile.myOrders.open": "Open",
+
+    "profile.myProposals.status.proposed": "Proposed",
+    "profile.myProposals.status.accepted": "Accepted",
+    "profile.myProposals.status.canceled": "Canceled",
+    "profile.myProposals.status.waiting": "To confirm",
+    "profile.myProposals.status.confirmed": "Confirmed",
+    "profile.myProposals.status.speakerRejected": "Rejected",
+    "profile.myProposals.status.speakerCantAttend": "Can't attend",
+    "profile.myProposals.status.maybe": "Rejected",
+    "profile.myProposals.noProposals.heading":
+      "You don't have any proposals yet.",
+    "profile.myProposals.noProposals.body.canSubmit":
+      "Our call for proposal is currently open! Submit your proposal today!",
+    "profile.myProposals.noProposals.submitProposal": "Call for proposals",
+
+    "profile.myProposals.noProposals.body.closed":
+      "Unfortunately our call for proposals is now closed! But you can still join us! Get your ticket!",
+
+    "profile.myProposals.noProposals.body.openingSoon":
+      "Our Call For Proposals will open soon! Check our information page to know more!",
+
+    "profile.myTickets.noTickets.heading":
+      "You don't have any tickets yet. But this is easy to solve!",
+    "profile.myTickets.noTickets.body":
+      "Someone else purchased the ticket for you? Ask them to assign the ticket to your email ({email}) so you can customize it, book workshops and more!",
+
+    "profile.myTickets.buyTickets": "Buy Ticket",
     "scheduleView.allRooms": "All rooms",
+    "profile.editProfile.emailInfo":
+      "Your email is: {email}. Do you want to change your email? Contact us at {contact}",
+
+    "profile.ticketsEdit.reassignTicket": "Re-assign ticket",
+    "profile.ticketsEdit.reassignTicketHeading":
+      "Purchased this ticket for someone else? Assign it to them here!",
+    "profile.ticketsEdit.reassignTicketDescription":
+      "If they don't have an account yet, they will need to create one to see and customize their ticket.",
+    "profile.editProfile.generalInformation": "General Information",
+    "profile.editProfile.emailPreferences": "Email Preferences",
 
     "scheduleEventDetail.eventTime": "{start} - {end}",
     "scheduleEventDetail.sidebar.spacesLeft": "Seats left",
@@ -38,8 +103,9 @@ export const messages = {
     "home.findRoute": "Find a route",
     "home.conferenceHighlights": "Conference highlight",
     "home.latestNews": "Latest news",
-    "buttons.save": "Save 💾",
+    "buttons.save": "Save",
     "profile.title": "Your Profile",
+    "profile.myProposals": "My Proposals",
     "profile.country": "Country",
     "profile.notSet": "Not set",
     "profile.dateBirth": "Birth date",
@@ -62,6 +128,7 @@ export const messages = {
     "profile.status": "Status",
     "profile.price": "Price",
     "profile.manageOrder": "Manage order",
+    "profile.tickets.attendeeName": "Attendee name",
     "profile.myTickets": "My Tickets",
     "profile.myTickets.notickets": `
       No tickets were found assigned to your email: {email}.
@@ -90,7 +157,6 @@ export const messages = {
     "profile.manageTicket": "Manage ticket",
     "profile.edit.personalHeader": "Personal data",
     "profile.edit.privacyHeader": "Privacy settings",
-    "profile.logout": "Logout",
     "profile.seeYourSoon": "See you soon 👋",
     "manageTicket.heading": "Manage {ticketName}",
     "manageTicket.notAnswered": "Not answered",
@@ -400,6 +466,7 @@ export const messages = {
     "orderQuestions.heading": "Order questions",
     "orderQuestions.attendeeName": "Attendee name",
     "orderQuestions.attendeeEmail": "Attendee email",
+    "orderQuestions.repeatAttendeeEmail": "Confirm Attendee email",
 
     "grants.pageTitle": "Grants",
     "grants.introductionHeading": "Grants",
@@ -709,6 +776,7 @@ reflects what everyone wants to see!`,
     "talk.language.it": "Italian",
     "talk.language.en": "English",
     "talk.duration": "Duration",
+    "profile.tickets.save": "Save",
     "react-intl-formatted-duration.longFormatting": "{minutes} {seconds}",
     "react-intl-formatted-duration.duration": "{value} {unit}",
     "react-intl-formatted-duration.timerFormatting": "{minutes}:{seconds}",
@@ -791,7 +859,7 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "home.findRoute": "Raggiungici",
     "home.conferenceHighlights": "Eventi sociali",
     "home.latestNews": "Ultime notizie",
-    "buttons.save": "Salva 💾",
+    "buttons.save": "Salva",
     "profile.title": "Il tuo profilo",
     "profile.notSet": "Non impostato",
     "profile.country": "Nazionalità",
@@ -1068,6 +1136,7 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "orderQuestions.heading": "Domande aggiuntive",
     "orderQuestions.attendeeName": "Nome partecipante",
     "orderQuestions.attendeeEmail": "Email partecipante",
+    "orderQuestions.repeatAttendeeEmail": "Conferma Email partecipante",
 
     "grants.pageTitle": "Grants",
     "grants.introductionHeading": "Grants",
@@ -1542,6 +1611,74 @@ Affrettati a comprare il biglietto!`,
     "schedule.live": "Live",
     "schedule.invitation.notes.placeholder": "Scrivi qui...",
     "schedule.workshop.limitedSeats": "Spazi limitati! Prenota il tuo posto.",
+
+    "profile.welcome": "Ciao {name}!",
+    "profile.myProfile": "Il mio profilo",
+    "profile.myProposals": "Le mie proposte",
+
+    "profile.editProfile.generalInformation": "Informazioni generali",
+    "profile.editProfile.emailPreferences": "Preferenze Email",
+    "profile.tickets.attendeeName": "Nome partecipante",
+    "profile.tickets.tagline": "Tagline",
+
+    "profile.tickets.save": "Salva",
+
+    "profile.tickets.noAnswer": "Nessuna risposta",
+    "profile.tickets.cancel": "Chiudi",
+    "profile.ticketsEdit.modalTitle": "Personalizza biglietto",
+    "profile.ticketsEdit.reassignTicket": "Assegna biglietto",
+    "profile.ticketsEdit.reassignTicketHeading":
+      "Comprato questo ticket per un'altra persona? Assegna il biglietto a loro!",
+    "profile.ticketsEdit.reassignTicketDescription":
+      "Dovranno creare un account per poter accedere al loro biglietto.",
+    "orderQuestions.emailsDontMatch": "Assicurati siano la stessa email",
+
+    "profile.myTickets.noTickets.heading": "Non hai comprato nessun biglietto!",
+    "profile.myTickets.noTickets.body":
+      "Il tuo biglietto è stato comprato da un'altra persona? Chiedigli di assegnarlo alla tua email ({email}) per poterlo vedere qui, personalizzarlo e prenotare workshops!",
+    "profile.myTickets.buyTickets": "Compra biglietto",
+
+    "profile.editProfile.emailInfo":
+      "La tua email è: {email}. Vuoi cambiarla? Contattaci a {contact}",
+
+    "profile.myProposals.status.proposed": "Proposta",
+    "profile.myProposals.status.accepted": "Accettata",
+    "profile.myProposals.status.canceled": "Cancellata",
+    "profile.myProposals.status.waiting": "Da confermare",
+    "profile.myProposals.status.confirmed": "Confermato",
+    "profile.myProposals.status.speakerRejected": "Rifiutato",
+    "profile.myProposals.status.speakerCantAttend": "Cancellato",
+    "profile.myProposals.status.maybe": "Rifiutato",
+
+    "profile.myProposals.date": "{day} {start} - {end}",
+    "profile.myProposals.notScheduled": "Non selezionata",
+    "profile.myProposals.viewInvitation": "Invito",
+    "profile.myProposals.edit": "Modifica",
+
+    "profile.myProposals.noProposals.heading":
+      "Non hai inviato nessuna proposal",
+    "profile.myProposals.noProposals.body.canSubmit":
+      "La nostra call for proposals è aperta! Invia la tua proposta oggi!",
+    "profile.myProposals.noProposals.submitProposal": "Call for proposals",
+
+    "profile.myProposals.noProposals.body.closed":
+      "Sfortunatamente la nostra Call for proposals è chiusa, ma puoi comunque unirti a noi comprando un biglietto!",
+
+    "profile.myProposals.noProposals.body.openingSoon":
+      "La nostra call for proposal aprirà presto! Dai uno sguardo alla pagina CFP per saperne di più!",
+
+    "profile.myOrders.orderStatus.pending": "Pending",
+    "profile.myOrders.orderStatus.paid": "Pagato",
+    "profile.myOrders.orderStatus.canceled": "Cancellato",
+    "profile.myOrders.orderStatus.expired": "Scaduto",
+    "profile.myOrders.open": "Apri",
+
+    "profile.myProposals.noOrders.heading": "Non hai nessun ordine",
+    "profile.myProposals.noOrders.body":
+      "Compra il tuo biglietto, t-shirt, stanza di hotel e tanto altro sulla nostra pagina biglietti ed unisciti a noi!",
+    "profile.logout.title": "Logout",
+    "profile.logout.body": "{name}, vuoi sloggarti?",
+    "input.selectCountryPlaceholder": "Seleziona...",
   },
 };
 

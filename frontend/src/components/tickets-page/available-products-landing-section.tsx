@@ -52,7 +52,7 @@ export const AvailableProductsLandingSection = ({
 
       {areTicketsAvailable && (
         <MultiplePartsCard>
-          <CardPart icon="ticket" iconBackground="pink" contentAlign="left">
+          <CardPart icon="tickets" iconBackground="pink" contentAlign="left">
             <Heading size={2}>
               <FormattedMessage id="tickets.landing.ticketsTitle" />
             </Heading>

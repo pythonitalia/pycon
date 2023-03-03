@@ -4,6 +4,8 @@ import {
   MultiplePartsCard,
   Spacer,
   Heading,
+  Input,
+  InputWrapper,
 } from "@python-italia/pycon-styleguide";
 import { useMachine } from "@xstate/react";
 import { useEffect } from "react";
@@ -12,8 +14,6 @@ import { InputElement, useFormState } from "react-use-form-state";
 
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
 
-import { InputWrapper } from "../input-wrapper";
-import { Input } from "../inputs";
 import { useCart } from "../tickets-page/use-cart";
 import { voucherMachine } from "./voucher-machine";
 
@@ -56,6 +56,10 @@ export const VoucherCard = () => {
     "tickets.checkout.voucher.placeholder",
   );
 
+  const voucherNotFound = useTranslatedMessage(
+    "tickets.checkout.voucher.notFound",
+  );
+
   return (
     <MultiplePartsCard>
       <CardPart contentAlign="left">
@@ -64,15 +68,7 @@ export const VoucherCard = () => {
         </Heading>
       </CardPart>
       <CardPart background="milk" contentAlign="left" id="content">
-        <InputWrapper
-          sx={{ mb: 0 }}
-          isRequired
-          errors={
-            state.matches("notFound")
-              ? [<FormattedMessage id="tickets.checkout.voucher.notFound" />]
-              : []
-          }
-        >
+        <InputWrapper required>
           <Input
             {...text({
               name: "code",
@@ -84,22 +80,17 @@ export const VoucherCard = () => {
               },
             })}
             placeholder={voucherPlaceholder}
+            errors={state.matches("notFound") ? [voucherNotFound] : []}
           />
           {state.matches("fetching") && (
-            <>
-              <Spacer size="xs" />
-              <Text size="label3">
-                <FormattedMessage id="tickets.checkout.voucher.fetching" />
-              </Text>
-            </>
+            <Text size="label4">
+              <FormattedMessage id="tickets.checkout.voucher.fetching" />
+            </Text>
           )}
           {voucherCode && !voucherUsed && (
-            <>
-              <Spacer size="xs" />
-              <Text size="label3">
-                <FormattedMessage id="tickets.checkout.voucher.noProductsAffected" />
-              </Text>
-            </>
+            <Text size="label4">
+              <FormattedMessage id="tickets.checkout.voucher.noProductsAffected" />
+            </Text>
           )}
         </InputWrapper>
       </CardPart>

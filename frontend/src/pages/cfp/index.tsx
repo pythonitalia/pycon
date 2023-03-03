@@ -15,7 +15,6 @@ import { Link } from "~/components/link";
 import { LoginForm } from "~/components/login-form";
 import { MetaTags } from "~/components/meta-tags";
 import { useLoginState } from "~/components/profile/hooks";
-import { MySubmissions } from "~/components/profile/my-submissions";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import {
   queryCfpForm,
@@ -28,7 +27,6 @@ const CfpSectionOrClosedMessage = ({ open }: { open: boolean }) => {
   if (open) {
     return (
       <Fragment>
-        <MySubmissions sx={{ mb: 4 }} />
         <CfpSendSubmission />
       </Fragment>
     );

@@ -7,7 +7,7 @@ from strawberry.types import Info
 from api.grants.types import Grant
 from api.participants.types import Participant
 from api.pretix.query import get_user_orders, get_user_tickets
-from api.pretix.types import AttendeeTicket, PretixOrder
+from api.pretix.types import AttendeeTicket, PretixOrder, PretixOrderStatus
 from api.submissions.types import Submission
 from conferences.models import Conference
 from grants.models import Grant as GrantModel
@@ -16,6 +16,12 @@ from schedule.models import ScheduleItemStar as ScheduleItemStarModel
 from submissions.models import Submission as SubmissionModel
 
 logger = getLogger(__name__)
+PRETIX_ORDERS_STATUS_ORDER = [
+    PretixOrderStatus.PAID,
+    PretixOrderStatus.PENDING,
+    PretixOrderStatus.CANCELED,
+    PretixOrderStatus.EXPIRED,
+]
 
 
 @strawberry.federation.type(keys=["id"], extend=True)
@@ -58,7 +64,10 @@ class User:
     @strawberry.federation.field(requires=["email"])
     def orders(self, info, conference: str) -> List[PretixOrder]:
         conference = Conference.objects.get(code=conference)
-        return get_user_orders(conference, self.email)
+        return sorted(
+            get_user_orders(conference, self.email),
+            key=lambda order: PRETIX_ORDERS_STATUS_ORDER.index(order.status),
+        )
 
     @strawberry.federation.field(requires=["email"])
     def tickets(self, info, conference: str, language: str) -> List[AttendeeTicket]:

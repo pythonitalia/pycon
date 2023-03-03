@@ -56,6 +56,7 @@ class ScheduleItem:
     title: str
     start: datetime
     end: datetime
+    status: str
     submission: Optional[Submission]
     slug: str
     description: str

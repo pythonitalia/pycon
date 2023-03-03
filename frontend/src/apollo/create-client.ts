@@ -42,21 +42,38 @@ const errorLink = onError(({ graphQLErrors, networkError, operation }) => {
   }
 });
 
-const httpLink = new HttpLink({
-  uri:
-    typeof window === "undefined"
-      ? process.env.API_URL_SERVER
-      : process.env.API_URL,
-  fetch,
-  credentials: "include",
-});
+const createHttpLink = (serverCookies: Record<string, string>) => {
+  const isServer = typeof window === "undefined";
+  const cookieHeader = isServer
+    ? {
+        cookie:
+          serverCookies !== null
+            ? Object.entries(serverCookies)
+                .map(([key, value]) => `${key}=${value}`)
+                .join("; ")
+            : "",
+      }
+    : {};
 
-const link = ApolloLink.from([errorLink, httpLink]);
+  return new HttpLink({
+    uri: isServer ? process.env.API_URL_SERVER : process.env.API_URL,
+    fetch: (input, init) => {
+      return fetch(input, {
+        ...init,
+        headers: {
+          ...init?.headers,
+          ...cookieHeader,
+        },
+      });
+    },
+    credentials: "include",
+  });
+};
 
-export const createClient = () => {
+export const createClient = ({ serverCookies = null } = {}) => {
   return new ApolloClient({
     ssrMode: typeof window === "undefined",
-    link,
+    link: ApolloLink.from([errorLink, createHttpLink(serverCookies)]),
     cache: new InMemoryCache({
       possibleTypes: introspectionQueryResultData.possibleTypes,
       typePolicies: {
@@ -67,7 +84,10 @@ export const createClient = () => {
           keyFields: ["level"],
         },
         TicketItem: {
-          keyFields: ["id", "language"],
+          keyFields: false,
+        },
+        Question: {
+          keyFields: false,
         },
       },
     }),

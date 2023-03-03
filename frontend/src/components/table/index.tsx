@@ -1,97 +1,37 @@
-/** @jsxRuntime classic */
-
-/** @jsx jsx */
+import { Grid } from "@python-italia/pycon-styleguide";
+import clsx from "clsx";
 import { Fragment } from "react";
-import { Box, Grid, jsx } from "theme-ui";
 
 type Props<T> = {
-  headers: string[];
-  mobileHeaders?: string[];
+  cols: number;
   data: T[];
   rowGetter: (item: T) => any[];
   keyGetter: (item: T) => string;
-  colorful?: boolean;
 };
 
-const COLORS = ["violet", "keppel", "orange"];
-
-const getHeaderColor = (index: number, colorful: boolean) => {
-  if (!colorful) {
-    return "orange";
-  }
-
-  return COLORS[index % COLORS.length];
-};
-
-export const Table = <T,>({
-  headers,
-  data,
-  rowGetter,
-  keyGetter,
-  mobileHeaders,
-  colorful = false,
-}: Props<T>) => (
-  <Grid
-    gap={0}
-    sx={{
-      width: "100%",
-      fontSize: 2,
-      rowGap: [1, 0],
-      gridTemplateColumns: [
-        "repeat(1, minmax(0, 1fr))",
-        `repeat(${headers.length}, minmax(0, 1fr))`,
-      ],
-    }}
-  >
-    {headers.map((header, index) => (
-      <Box
-        key={index}
-        as="div"
-        sx={{
-          display: ["none", "inline-block"],
-          color: getHeaderColor(index, colorful),
-          textTransform: "uppercase",
-          textAlign: "left",
-          pb: 3,
-          fontWeight: "bold",
-        }}
-      >
-        {header}
-      </Box>
-    ))}
-    {data.map((item, index) => {
+export const Table = <T,>({ data, rowGetter, keyGetter, cols }: Props<T>) => (
+  <Grid cols={cols} gap="none">
+    {data.map((item, dataIndex) => {
       const row = rowGetter(item);
 
       return (
-        <Fragment key={index}>
-          {row.map((content, index) => {
-            const mobileHeader = (mobileHeaders ?? headers)[index];
+        <Fragment key={dataIndex}>
+          {row.map((content, itemIndex) => {
             return (
-              <Box
+              <div
                 key={keyGetter(content)}
-                sx={{
-                  display: "flex",
-                  alignItems: "flex-start",
-                  flexDirection: "column",
-                  borderTop: [null, "primary"],
-                  py: [0, 3],
-                  pr: [0, 3],
-                  wordBreak: "break-word",
-                  "&:before": mobileHeader
-                    ? {
-                        content: `'${mobileHeader}:'`,
-                        color: "orange",
-                        textTransform: "uppercase",
-                        textAlign: "left",
-                        fontWeight: "bold",
-                        mr: 2,
-                        display: ["block", "none"],
-                      }
-                    : {},
-                }}
+                className={clsx(
+                  "border-t border-r flex items-center p-4 lg:py-5 lg:px-6",
+                  {
+                    "border-l mt-2 lg:mt-0": itemIndex === 0,
+                    "border-l lg:border-l-0": itemIndex !== 0,
+                    "border-b lg:border-b-0": itemIndex === row.length - 1,
+                    "lg:border-b last:border-b": dataIndex === data.length - 1,
+                  },
+                )}
               >
                 {content}
-              </Box>
+              </div>
             );
           })}
         </Fragment>

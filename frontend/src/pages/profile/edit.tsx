@@ -2,11 +2,11 @@ import { GetServerSideProps } from "next";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
-import { queryCountries, queryMyProfile } from "~/types";
+import { queryCountries, queryMyEditProfile } from "~/types";
 
 export const getServerSideProps: GetServerSideProps = async ({
-  req,
   locale,
+  req,
 }) => {
   const identityToken = req.cookies["identity_v2"];
   if (!identityToken) {
@@ -24,7 +24,7 @@ export const getServerSideProps: GetServerSideProps = async ({
     await Promise.all([
       prefetchSharedQueries(client, locale),
       queryCountries(client),
-      queryMyProfile(client),
+      queryMyEditProfile(client),
     ]);
   } catch (e) {
     return {
@@ -44,4 +44,4 @@ export const getServerSideProps: GetServerSideProps = async ({
   );
 };
 
-export { ProfilePageHandler as default } from "~/components/profile-page-handler";
+export { EditProfilePageHandler as default } from "../../components/edit-profile-page-handler";
