@@ -34,7 +34,7 @@ export const messages = {
     "profile.myProfile": "My Profile",
     "profile.logout": "Sign Out",
     "profile.logout.title": "Logout",
-    "profile.logout.body": "{name}, are you sure you want to logout?",
+    "profile.logout.body": "{name}, are you sure you want to sign out?",
 
     "profile.myOrders.orderStatus.pending": "Pending",
     "profile.myOrders.orderStatus.paid": "Paid",
