@@ -1,0 +1,25 @@
+query MyProfileWithSubmissions($conference: String!, $language: String!) {
+  me {
+    id
+    name
+    fullName
+    email
+
+    submissions(conference: $conference) {
+      id
+      title(language: $language)
+      status
+
+      scheduleItems {
+        id
+        start
+        end
+        status
+      }
+      type {
+        id
+        name
+      }
+    }
+  }
+}

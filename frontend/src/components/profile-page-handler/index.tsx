@@ -74,15 +74,15 @@ export const ProfilePageHandler = () => {
       icon: "tickets",
       iconBackground: "pink",
     },
-    // {
-    //   link: createHref({
-    //     path: "/profile/my-proposals",
-    //     locale: language,
-    //   }),
-    //   label: <FormattedMessage id="profile.myProposals" />,
-    //   icon: "tickets",
-    //   iconBackground: "pink",
-    // },
+    {
+      link: createHref({
+        path: "/profile/my-proposals",
+        locale: language,
+      }),
+      label: <FormattedMessage id="profile.myProposals" />,
+      icon: "email",
+      iconBackground: "green",
+    },
     {
       link: "",
       label: <FormattedMessage id="profile.logout" />,

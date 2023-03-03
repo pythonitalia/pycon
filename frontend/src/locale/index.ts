@@ -25,10 +25,23 @@ export const messages = {
     "profile.tickets.noAnswer": "No answer",
     "profile.tickets.cancel": "Cancel",
     "profile.ticketsEdit.modalTitle": "Customize your ticket",
+    "profile.myProposals.date": "{day} {start} - {end}",
+    "profile.myProposals.notScheduled": "Not added to the schedule",
+    "profile.myProposals.viewInvitation": "Invitation",
+    "profile.myProposals.edit": "Edit",
 
     "profile.welcome": "Ciao {name}!",
     "profile.myProfile": "My Profile",
     "profile.logout": "Logout",
+
+    "profile.myProposals.status.proposed": "Proposed",
+    "profile.myProposals.status.accepted": "Accepted",
+    "profile.myProposals.status.canceled": "Canceled",
+    "profile.myProposals.status.waiting": "To confirm",
+    "profile.myProposals.status.confirmed": "Confirmed",
+    "profile.myProposals.status.speakerRejected": "Rejected",
+    "profile.myProposals.status.speakerCantAttend": "Can't attend",
+    "profile.myProposals.status.maybe": "Rejected",
 
     "profile.myTickets.noTicketsHeading":
       "You don't have any tickets yet. But this is easy to solve!",
@@ -1573,7 +1586,7 @@ Affrettati a comprare il biglietto!`,
 
     "profile.welcome": "Ciao {name}!",
     "profile.myProfile": "Il mio profilo",
-    "profile.myProposals": "Le mie proposals",
+    "profile.myProposals": "Le mie proposte",
 
     "profile.editProfile.generalInformation": "Informazioni generali",
     "profile.editProfile.emailPreferences": "Preferenze Email",
@@ -1599,6 +1612,20 @@ Affrettati a comprare il biglietto!`,
 
     "profile.editProfile.emailInfo":
       "La tua email è: {email}. Vuoi cambiarla? Contattaci a {contact}",
+
+    "profile.myProposals.status.proposed": "Proposta",
+    "profile.myProposals.status.accepted": "Accettata",
+    "profile.myProposals.status.canceled": "Cancellata",
+    "profile.myProposals.status.waiting": "Da confermare",
+    "profile.myProposals.status.confirmed": "Confermato",
+    "profile.myProposals.status.speakerRejected": "Rifiutato",
+    "profile.myProposals.status.speakerCantAttend": "Cancellato",
+    "profile.myProposals.status.maybe": "Rifiutato",
+
+    "profile.myProposals.date": "{day} {start} - {end}",
+    "profile.myProposals.notScheduled": "Non selezionata",
+    "profile.myProposals.viewInvitation": "Invito",
+    "profile.myProposals.edit": "Modifica",
   },
 };
 

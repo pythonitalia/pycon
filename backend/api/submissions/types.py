@@ -7,6 +7,7 @@ from strawberry.types import Info
 from api.languages.types import Language
 from api.voting.types import VoteType
 from i18n.strings import LazyI18nString
+
 from voting.models import Vote
 
 from .permissions import CanSeeSubmissionPrivateFields, CanSeeSubmissionRestrictedFields
@@ -14,6 +15,7 @@ from typing import TYPE_CHECKING, Annotated
 
 if TYPE_CHECKING:
     from api.conferences.types import Conference, Topic, Duration, AudienceLevel
+    from api.schedule.types import ScheduleItem
 
 
 def restricted_field() -> StrawberryField:
@@ -89,6 +91,12 @@ class Submission:
         Annotated["AudienceLevel", strawberry.lazy("api.conferences.types")]
     ] = restricted_field()
     notes: Optional[str] = private_field()
+
+    @strawberry.field
+    def schedule_items(
+        self, info: Info
+    ) -> List[Annotated["ScheduleItem", strawberry.lazy("api.schedule.types")]]:
+        return self.schedule_items.all()
 
     @strawberry.field
     def multilingual_elevator_pitch(self, info: Info) -> Optional[MultiLingualString]:
