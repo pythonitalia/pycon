@@ -20,11 +20,20 @@ export const getServerSideProps: GetServerSideProps = async ({
 
   const client = getApolloClient(null, req.cookies);
 
-  await Promise.all([
-    prefetchSharedQueries(client, locale),
-    queryCountries(client),
-    queryMyProfile(client),
-  ]);
+  try {
+    await Promise.all([
+      prefetchSharedQueries(client, locale),
+      queryCountries(client),
+      queryMyProfile(client),
+    ]);
+  } catch (e) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
 
   return addApolloState(
     client,

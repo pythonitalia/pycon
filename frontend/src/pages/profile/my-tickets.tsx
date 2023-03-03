@@ -20,14 +20,23 @@ export const getServerSideProps: GetServerSideProps = async ({
 
   const client = getApolloClient(null, req.cookies);
 
-  await Promise.all([
-    prefetchSharedQueries(client, locale),
-    queryCountries(client),
-    queryMyProfileWithTickets(client, {
-      conference: process.env.conferenceCode,
-      language: locale,
-    }),
-  ]);
+  try {
+    await Promise.all([
+      prefetchSharedQueries(client, locale),
+      queryCountries(client),
+      queryMyProfileWithTickets(client, {
+        conference: process.env.conferenceCode,
+        language: locale,
+      }),
+    ]);
+  } catch (e) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
 
   return addApolloState(
     client,
