@@ -3,17 +3,18 @@ import {
   CardPart,
   MultiplePartsCard,
   Heading,
+  InputWrapper,
+  Input,
+  Textarea,
+  Select,
 } from "@python-italia/pycon-styleguide";
 import { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
-import { Select } from "theme-ui";
 
 import { useCountries } from "~/helpers/use-countries";
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
 
-import { InputWrapper } from "../input-wrapper";
-import { Input, Textarea } from "../inputs";
 import { InvoiceInformationState } from "../tickets-page/types";
 import { useCart } from "../tickets-page/use-cart";
 
@@ -38,6 +39,8 @@ export const BillingCard = () => {
   const isItalian = formState.values.country === "IT";
   const shouldAskForFiscalCode = !isBusiness && isItalian;
 
+  const inputPlaceholder = useTranslatedMessage("input.placeholder");
+
   useEffect(() => updateInformation(formState.values), [formState.values]);
 
   return (
@@ -56,57 +59,82 @@ export const BillingCard = () => {
           <Grid cols={3}>
             {isBusiness && (
               <InputWrapper
-                sx={{ mb: 0 }}
-                isRequired={true}
-                label={<FormattedMessage id="orderInformation.companyName" />}
+                required={true}
+                title={<FormattedMessage id="orderInformation.companyName" />}
               >
-                <Input {...text("companyName")} required={isBusiness} />
+                <Input
+                  {...text("companyName")}
+                  required={isBusiness}
+                  placeholder={inputPlaceholder}
+                />
               </InputWrapper>
             )}
             <InputWrapper
-              sx={{ mb: 0 }}
-              isRequired={true}
-              label={<FormattedMessage id="orderInformation.name" />}
+              required={true}
+              title={<FormattedMessage id="orderInformation.name" />}
             >
-              <Input {...text("name")} required={true} />
+              <Input
+                {...text("name")}
+                required={true}
+                placeholder={inputPlaceholder}
+              />
             </InputWrapper>
             {isBusiness && (
               <InputWrapper
-                sx={{ mb: 0 }}
-                isRequired={true}
-                label={<FormattedMessage id="orderInformation.vatId" />}
+                required={true}
+                title={<FormattedMessage id="orderInformation.vatId" />}
               >
-                <Input {...text("vatId")} required={true} />
+                <Input
+                  {...text("vatId")}
+                  required={true}
+                  placeholder={inputPlaceholder}
+                />
               </InputWrapper>
             )}
             <InputWrapper
-              sx={{ mb: 0 }}
-              isRequired={true}
-              label={<FormattedMessage id="orderInformation.zipCode" />}
+              required={true}
+              title={<FormattedMessage id="orderInformation.zipCode" />}
             >
-              <Input {...text("zipCode")} required={true} />
+              <Input
+                {...text("zipCode")}
+                required={true}
+                placeholder={inputPlaceholder}
+              />
             </InputWrapper>
 
             <InputWrapper
-              sx={{ mb: 0 }}
-              isRequired={true}
-              label={<FormattedMessage id="orderInformation.city" />}
+              required={true}
+              title={<FormattedMessage id="orderInformation.city" />}
             >
-              <Input {...text("city")} required={true} />
+              <Input
+                {...text("city")}
+                required={true}
+                placeholder={inputPlaceholder}
+              />
             </InputWrapper>
             <InputWrapper
-              sx={{ mb: 0 }}
-              isRequired={true}
-              label={<FormattedMessage id="orderInformation.address" />}
+              required={true}
+              title={<FormattedMessage id="orderInformation.address" />}
             >
-              <Textarea rows={3} {...textarea("address")} required={true} />
+              <Textarea
+                rows={3}
+                {...textarea("address")}
+                required={true}
+                placeholder={inputPlaceholder}
+              />
             </InputWrapper>
             <InputWrapper
-              sx={{ mb: 0 }}
-              isRequired={true}
-              label={<FormattedMessage id="orderInformation.country" />}
+              required={true}
+              title={<FormattedMessage id="orderInformation.country" />}
             >
               <Select {...select("country")} required={true}>
+                <FormattedMessage id="input.selectCountryPlaceholder">
+                  {(msg) => (
+                    <option value="" disabled>
+                      {msg}
+                    </option>
+                  )}
+                </FormattedMessage>
                 {countries.map((c) => (
                   <option key={c.value} value={c.value}>
                     {c.label}
@@ -117,14 +145,8 @@ export const BillingCard = () => {
 
             {shouldAskForFiscalCode && (
               <InputWrapper
-                sx={{ mb: 0 }}
-                errors={
-                  formState.errors.fiscalCode
-                    ? [formState.errors.fiscalCode]
-                    : null
-                }
-                isRequired={true}
-                label={<FormattedMessage id="orderInformation.fiscalCode" />}
+                required={true}
+                title={<FormattedMessage id="orderInformation.fiscalCode" />}
               >
                 <Input
                   {...text({
@@ -139,6 +161,11 @@ export const BillingCard = () => {
                     validateOnBlur: true,
                   })}
                   required={true}
+                  errors={
+                    formState.errors.fiscalCode
+                      ? [formState.errors.fiscalCode]
+                      : null
+                  }
                 />
               </InputWrapper>
             )}

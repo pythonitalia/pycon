@@ -46,6 +46,8 @@ export const messages = {
     "profile.myProposals.noOrders.body":
       "Buy your ticket, t-shirt, hotel room and more on our tickets page and join us!",
 
+    "input.selectCountryPlaceholder": "Select country...",
+
     "profile.myOrders.open": "Open",
 
     "profile.myProposals.status.proposed": "Proposed",
@@ -1676,6 +1678,7 @@ Affrettati a comprare il biglietto!`,
       "Compra il tuo biglietto, t-shirt, stanza di hotel e tanto altro sulla nostra pagina biglietti ed unisciti a noi!",
     "profile.logout.title": "Logout",
     "profile.logout.body": "{name}, vuoi sloggarti?",
+    "input.selectCountryPlaceholder": "Seleziona...",
   },
 };
 
