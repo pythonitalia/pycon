@@ -1,5 +1,7 @@
+import { Icon } from "../icons/types";
+
 export type Action = {
-  icon: string;
+  icon: Icon;
   text?: string;
   link?: string;
   onClick?: () => void;

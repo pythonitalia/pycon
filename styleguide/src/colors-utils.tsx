@@ -1,6 +1,6 @@
 import { Color } from "./types";
 
-export const getBackgroundClasses = (background: Color | "none") => {
+export const getBackgroundClasses = (background: Color) => {
   return {
     "bg-coral": background === "coral",
     "bg-caramel": background === "caramel",
@@ -55,7 +55,6 @@ export const getHoverBackgroundColor = (background?: Color | "none") => {
     "hover:bg-milk": background === "milk",
   };
 };
-
 
 export const getTextColorClasses = (color: Color | "none" | "default") => {
   return {

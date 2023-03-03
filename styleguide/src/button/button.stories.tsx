@@ -55,6 +55,10 @@ export const AllButtons = () => {
       >
         Secondary [custom bg]
       </Button>
+      <Spacer size="large" />
+      <Button onClick={() => {}} disabled={false} role="alert">
+        Alert
+      </Button>
     </>
   );
 };

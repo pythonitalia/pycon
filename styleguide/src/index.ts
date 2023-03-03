@@ -59,6 +59,7 @@ export { ScheduleItemCard } from "./schedule/schedule-item-card";
 export { DaysSelector } from "./days-selector";
 export { Avatar } from "./avatar";
 export { AvatarGroup } from "./avatar-group";
+export { Checkbox } from "./checkbox";
 
 // tailwind config
 export { default as tailwindConfig } from "../tailwind.config";

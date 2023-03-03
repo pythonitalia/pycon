@@ -21,4 +21,5 @@ export type Color =
   | "grey-100"
   | "grey-50"
   | "white"
-  | "milk";
+  | "milk"
+  | "none";

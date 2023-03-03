@@ -1,11 +1,8 @@
 import clsx from "clsx";
 import React, { useState, useRef, useEffect } from "react";
-import { UserIcon } from "../icons/user";
-import { MenuIcon } from "../icons/menu";
-import { CloseIcon } from "../icons/close";
-import { TicketsIcon } from "../icons/tickets";
 import { Text } from "../text";
 import { Action } from "./types";
+import { getIcon } from "../icons/icons";
 
 type ActionProps = Action & {
   className?: string;
@@ -28,6 +25,9 @@ export const ActionItem = ({
   const textElement = useRef<HTMLDivElement>();
 
   const calculateWidths = () => {
+    if (!rootElement.current) {
+      return;
+    }
     // get the dimensions of the action with and without text
     // this is needed to animate the width of the action
     // when hovering
@@ -42,6 +42,10 @@ export const ActionItem = ({
     textElement.current!.classList.remove("absolute");
 
     requestAnimationFrame(() => {
+      if (!rootElement.current) {
+        return;
+      }
+
       // reducing a bit to compensate for the padding and make it look better
       const withText = rootElement.current!.getBoundingClientRect().width - 26;
 
@@ -98,6 +102,8 @@ export const ActionItem = ({
     setIsHovering(false);
   };
 
+  const IconComponent = getIcon(icon);
+
   return (
     <Component
       className={clsx(
@@ -121,10 +127,7 @@ export const ActionItem = ({
       ref={rootElement}
     >
       <div className="w-8 h-8">
-        {icon === "tickets" && <TicketsIcon full />}
-        {icon === "user" && <UserIcon full />}
-        {icon === "menu" && <MenuIcon full />}
-        {icon === "close" && <CloseIcon full />}
+        <IconComponent full />
       </div>
 
       {/* margin left of this element is basically: size of the icon (32px, w-8) + actual margin we want */}

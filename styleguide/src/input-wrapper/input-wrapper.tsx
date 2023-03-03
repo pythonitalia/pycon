@@ -16,7 +16,7 @@ export const InputWrapper = ({
   required,
 }: Props) => {
   return (
-    <div>
+    <label className="block">
       {title && (
         <>
           <Text weight="strong" uppercase color="grey-900" size="label3">
@@ -35,6 +35,6 @@ export const InputWrapper = ({
         </>
       )}
       {children}
-    </div>
+    </label>
   );
 };

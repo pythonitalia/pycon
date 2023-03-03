@@ -1,19 +1,14 @@
 import React from "react";
 import { Text } from "../text";
 import clsx from "clsx";
-import { TicketsIcon } from "../icons/tickets";
-import { TShirtIcon } from "../icons/tshirt";
-import { HotelIcon } from "../icons/hotel";
-import { StarIcon } from "../icons/star";
 import { ArrowDownIcon } from "../icons/arrow-down";
 import { useMultiPartsCardContext } from "./context";
 import { FormattedMessage } from "react-intl";
-import { ArrowIcon } from "../icons/arrow";
 import { Color } from "../types";
 import { getBackgroundClasses, getHoverBackgroundColor } from "../colors-utils";
+import { Icon } from "../icons/types";
+import { getIcon } from "../icons/icons";
 
-type Icon = "ticket" | "tshirt" | "hotel" | "star" | "arrow";
-type IconBackground = "green" | "pink" | "blue" | "yellow" | "none";
 type IconSize = "small" | "large";
 
 type CardPartProps = {
@@ -23,10 +18,10 @@ type CardPartProps = {
   contentAlign?: "right" | "left" | "center";
   size?: "none" | "small" | "large";
   icon?: Icon;
-  iconBackground?: IconBackground;
+  iconBackground?: Color;
   iconSize?: IconSize;
   rightSideIcon?: Icon;
-  rightSideIconBackground?: IconBackground;
+  rightSideIconBackground?: Color;
   rightSideIconSize?: IconSize;
   id?: string;
   openLabel?: string | React.ReactNode;
@@ -100,7 +95,7 @@ export const CardPart = ({
         })}
       >
         {icon && (
-          <Icon
+          <SideIcon
             containerSize={size}
             size={iconSize}
             side="left"
@@ -151,7 +146,7 @@ export const CardPart = ({
           )}
         </div>
         {rightSideIcon && (
-          <Icon
+          <SideIcon
             containerSize={size}
             size={rightSideIconSize}
             side="right"
@@ -164,37 +159,20 @@ export const CardPart = ({
   );
 };
 
-const Icon = ({
+const SideIcon = ({
   icon,
-  iconBackground,
+  iconBackground = "none",
   side,
   size,
   containerSize,
 }: {
   icon: Icon;
-  iconBackground?: IconBackground;
+  iconBackground?: Color;
   side: "left" | "right";
   size: IconSize;
   containerSize: "none" | "small" | "large";
 }) => {
-  let Component;
-  switch (icon) {
-    case "ticket":
-      Component = TicketsIcon;
-      break;
-    case "tshirt":
-      Component = TShirtIcon;
-      break;
-    case "hotel":
-      Component = HotelIcon;
-      break;
-    case "star":
-      Component = StarIcon;
-      break;
-    case "arrow":
-      Component = ArrowIcon;
-      break;
-  }
+  const Component = getIcon(icon);
 
   return (
     <div
@@ -212,10 +190,7 @@ const Icon = ({
         "p-4 lg:p-6": size === "large",
         "p-4": size === "small",
 
-        "bg-green": iconBackground === "green",
-        "bg-pink": iconBackground === "pink",
-        "bg-blue": iconBackground === "blue",
-        "bg-yellow": iconBackground === "yellow",
+        ...getBackgroundClasses(iconBackground),
       })}
     >
       <div

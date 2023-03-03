@@ -71,7 +71,7 @@ export const CardWithContentAndOnePart = () => (
 export const CardForProductItemIcons = () => (
   <div className="p-6">
     <MultiplePartsCard>
-      <CardPart iconBackground="pink" icon="ticket" contentAlign="left">
+      <CardPart iconBackground="pink" icon="tickets" contentAlign="left">
         <Heading size={2}>Student</Heading>
       </CardPart>
       <CardPart contentAlign="left" background="milk">
