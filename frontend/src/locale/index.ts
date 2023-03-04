@@ -93,6 +93,9 @@ export const messages = {
     "scheduleEvent.soldout": "Sold-out",
 
     "homepage.followUs": "Follow us on",
+    "profile.myOrders.title": "My Orders",
+    "profile.myProposals.title": "My Proposals",
+    "profile.myTickets.title": "My Tickets",
 
     "home.title": "Home",
     "home.deadline.begins": "Begins",
@@ -153,6 +156,7 @@ export const messages = {
       "I want to receive E-mail for main communications",
     "profile.openToRecruiting":
       "I want to receive a few selected job offers through PyCon Italia",
+    "profile.dashboard.title": "Dashboard",
     "profile.edit.title": "Edit profile",
     "profile.manageTicket": "Manage ticket",
     "profile.edit.personalHeader": "Personal data",
@@ -1679,6 +1683,11 @@ Affrettati a comprare il biglietto!`,
     "profile.logout.title": "Logout",
     "profile.logout.body": "{name}, vuoi sloggarti?",
     "input.selectCountryPlaceholder": "Seleziona...",
+
+    "profile.dashboard.title": "Dashboard",
+    "profile.myOrders.title": "I miei ordini",
+    "profile.myProposals.title": "Le mie proposte",
+    "profile.myTickets.title": "I miei biglietti",
   },
 };
 

@@ -28,7 +28,6 @@ import * as yup from "yup";
 import { useRouter } from "next/router";
 
 import { MetaTags } from "~/components/meta-tags";
-import { useLoginState } from "~/components/profile/hooks";
 import { useCountries } from "~/helpers/use-countries";
 import { useMyEditProfileQuery, useUpdateProfileMutation } from "~/types";
 

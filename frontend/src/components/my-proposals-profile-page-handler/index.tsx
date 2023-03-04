@@ -4,6 +4,7 @@ import { FormattedMessage } from "react-intl";
 import { useCurrentLanguage } from "~/locale/context";
 import { useMyProfileWithSubmissionsQuery } from "~/types";
 
+import { MetaTags } from "../meta-tags";
 import { MyProposalsTable } from "./my-proposals-table";
 import { NoProposals } from "./no-proposals";
 
@@ -24,6 +25,10 @@ export const MyProposalsProfilePageHandler = () => {
 
   return (
     <Page endSeparator={false}>
+      <FormattedMessage id="profile.myProposals.title">
+        {(text) => <MetaTags title={text} />}
+      </FormattedMessage>
+
       <Section background="green">
         <Heading size="display2">
           <FormattedMessage id="profile.myProposals" />

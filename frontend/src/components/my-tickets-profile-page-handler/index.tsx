@@ -5,6 +5,7 @@ import { FormattedMessage } from "react-intl";
 import { useCurrentLanguage } from "~/locale/context";
 import { useMyProfileWithTicketsQuery } from "~/types";
 
+import { MetaTags } from "../meta-tags";
 import { NoTickets } from "./no-tickets";
 import { TicketCard } from "./ticket-card";
 
@@ -23,6 +24,10 @@ export const MyTicketsProfilePageHandler = () => {
 
   return (
     <Page endSeparator={false}>
+      <FormattedMessage id="profile.myTickets.title">
+        {(text) => <MetaTags title={text} />}
+      </FormattedMessage>
+
       <Section background="pink">
         <Heading size="display2">
           <FormattedMessage id="profile.myTickets" />

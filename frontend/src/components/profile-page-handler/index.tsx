@@ -20,6 +20,7 @@ import { useCurrentLanguage } from "~/locale/context";
 import { useLogoutMutation, useMyProfileQuery } from "~/types";
 
 import { createHref } from "../link";
+import { MetaTags } from "../meta-tags";
 import { Modal } from "../modal";
 import { useLoginState } from "../profile/hooks";
 
@@ -121,6 +122,9 @@ export const ProfilePageHandler = () => {
 
   return (
     <Page endSeparator={false}>
+      <FormattedMessage id="profile.dashboard.title">
+        {(text) => <MetaTags title={text} />}
+      </FormattedMessage>
       <Section background="coral">
         <Heading size="display2">
           <FormattedMessage
