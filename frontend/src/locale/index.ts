@@ -29,6 +29,7 @@ export const messages = {
     "profile.myProposals.notScheduled": "Not added to the schedule",
     "profile.myProposals.viewInvitation": "Invitation",
     "profile.myProposals.edit": "Edit",
+    "schedule.entry.endsAt": "Ends at {time}",
 
     "profile.welcome": "Ciao {name}!",
     "profile.myProfile": "My Profile",
@@ -1683,6 +1684,7 @@ Affrettati a comprare il biglietto!`,
     "profile.logout.title": "Logout",
     "profile.logout.body": "{name}, vuoi sloggarti?",
     "input.selectCountryPlaceholder": "Seleziona...",
+    "schedule.entry.endsAt": "Finisce alle {time}",
 
     "profile.dashboard.title": "Dashboard",
     "profile.myOrders.title": "I miei ordini",

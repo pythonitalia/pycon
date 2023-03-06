@@ -17,9 +17,8 @@ import { useUserStarredScheduleItemsQuery } from "~/types";
 import { ViewMode } from ".";
 import { useLoginState } from "../profile/hooks";
 import { ScheduleEntry } from "./events";
-import { isTraining } from "./is-training";
 import { Placeholder } from "./placeholder";
-import { Item, ItemTypes, Room, Slot } from "./types";
+import { Item, Room, Slot } from "./types";
 
 const getSlotSize = (slot: Slot) => {
   if (slot.type === "FREE_TIME") {
