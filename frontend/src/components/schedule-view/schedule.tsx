@@ -59,15 +59,15 @@ const getRowEnd = ({
   const currentSlotIndex = slots.findIndex((s) => s.id === slot.id);
 
   let endingSlotIndex = slots.findIndex(
-    (s) => convertHoursToMinutes(s.hour) + s.duration >= end,
+    (s) => convertHoursToMinutes(s.hour) + s.duration > end,
   );
 
   if (endingSlotIndex === -1) {
-    endingSlotIndex = slots.length - 1;
+    endingSlotIndex = slots.length;
   }
 
   return slots
-    .slice(currentSlotIndex, endingSlotIndex + 1)
+    .slice(currentSlotIndex, endingSlotIndex)
     .reduce((acc, s) => acc + getSlotSize(s), 0);
 };
 
