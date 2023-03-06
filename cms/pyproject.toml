@@ -1,0 +1,18 @@
+[tool]
+[tool.pdm]
+
+[project]
+name = ""
+version = ""
+description = ""
+authors = [
+    {name = "Marco Acierno", email = "marcoaciernoemail@gmail.com"},
+]
+dependencies = [
+    "wagtail>=4.2",
+    "Django>=4.1.7",
+    "wagtail-localize>=1.5",
+    "strawberry-graphql>=0.159.0",
+]
+requires-python = ">=3.11"
+license = {text = "MIT"}
