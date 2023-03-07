@@ -27,6 +27,10 @@ export const Primary = () => {
             icon: "linkedin",
             link: "https://www.linkedin.com/company/pycon-italia",
           },
+          {
+            icon: "web",
+            link: "https://pycon.it",
+          },
         ]}
       />
       <Spacer size="medium" />
@@ -51,6 +55,10 @@ export const Primary = () => {
             {
               icon: "linkedin",
               link: "https://www.linkedin.com/company/pycon-italia",
+            },
+            {
+              icon: "web",
+              link: "https://pycon.it",
             },
           ]}
         />
