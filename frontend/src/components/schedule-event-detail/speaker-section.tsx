@@ -111,7 +111,7 @@ export const SpeakerSection = ({ speaker }: { speaker: Speaker }) => (
       <GridColumn colSpan={8} mdColSpan={8}>
         <Heading size="display2">{speaker.name}</Heading>
         <Spacer size="2md" />
-        <Text size={2}>{compile(speaker.bio).tree}</Text>
+        {speaker.bio && <Text size={2}>{compile(speaker.bio).tree}</Text>}
       </GridColumn>
     </Grid>
   </>
