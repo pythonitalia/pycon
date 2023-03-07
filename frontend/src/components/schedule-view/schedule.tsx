@@ -17,9 +17,8 @@ import { useUserStarredScheduleItemsQuery } from "~/types";
 import { ViewMode } from ".";
 import { useLoginState } from "../profile/hooks";
 import { ScheduleEntry } from "./events";
-import { isTraining } from "./is-training";
 import { Placeholder } from "./placeholder";
-import { Item, ItemTypes, Room, Slot } from "./types";
+import { Item, Room, Slot } from "./types";
 
 const getSlotSize = (slot: Slot) => {
   if (slot.type === "FREE_TIME") {
@@ -60,15 +59,15 @@ const getRowEnd = ({
   const currentSlotIndex = slots.findIndex((s) => s.id === slot.id);
 
   let endingSlotIndex = slots.findIndex(
-    (s) => convertHoursToMinutes(s.hour) + s.duration >= end,
+    (s) => convertHoursToMinutes(s.hour) + s.duration > end,
   );
 
   if (endingSlotIndex === -1) {
-    endingSlotIndex = slots.length - 1;
+    endingSlotIndex = slots.length;
   }
 
   return slots
-    .slice(currentSlotIndex, endingSlotIndex + 1)
+    .slice(currentSlotIndex, endingSlotIndex)
     .reduce((acc, s) => acc + getSlotSize(s), 0);
 };
 

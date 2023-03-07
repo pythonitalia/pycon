@@ -162,9 +162,13 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
     }),
   ]);
 
-  return addApolloState(client, {
-    props: {},
-  });
+  return addApolloState(
+    client,
+    {
+      props: {},
+    },
+    60,
+  );
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {

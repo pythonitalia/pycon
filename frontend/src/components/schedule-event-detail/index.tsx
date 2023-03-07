@@ -4,7 +4,6 @@ import {
   Heading,
   Section,
   Spacer,
-  Tag,
   Text,
 } from "@python-italia/pycon-styleguide";
 import { parseISO } from "date-fns";

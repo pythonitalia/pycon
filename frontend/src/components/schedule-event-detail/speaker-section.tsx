@@ -15,9 +15,12 @@ import {
   MastodonIcon,
   LinkedinIcon,
   FacebookIcon,
+  WebIcon,
 } from "@python-italia/pycon-styleguide/icons";
 import { SnakeTail } from "@python-italia/pycon-styleguide/illustrations";
 import React from "react";
+
+import { compile } from "~/helpers/markdown";
 
 export type Speaker = {
   name: string;
@@ -29,6 +32,7 @@ export type Speaker = {
   mastodonHandle?: string;
   linkedinUrl?: string;
   facebookUrl?: string;
+  website?: string;
 };
 
 export const SpeakerSection = ({ speaker }: { speaker: Speaker }) => (
@@ -94,6 +98,12 @@ export const SpeakerSection = ({ speaker }: { speaker: Speaker }) => (
                   <FacebookIcon className="w-6 h-6" />
                 </Link>
               )}
+
+              {speaker.website && (
+                <Link target="_blank" href={speaker.website}>
+                  <WebIcon className="w-6 h-6" />
+                </Link>
+              )}
             </HorizontalStack>
           </VerticalStack>
         </LayoutContent>
@@ -101,7 +111,7 @@ export const SpeakerSection = ({ speaker }: { speaker: Speaker }) => (
       <GridColumn colSpan={8} mdColSpan={8}>
         <Heading size="display2">{speaker.name}</Heading>
         <Spacer size="2md" />
-        <Text size={2}>{speaker.bio}</Text>
+        <Text size={2}>{compile(speaker.bio).tree}</Text>
       </GridColumn>
     </Grid>
   </>

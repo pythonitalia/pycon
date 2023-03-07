@@ -15,6 +15,7 @@ import {
 } from "@python-italia/pycon-styleguide";
 import { Color } from "@python-italia/pycon-styleguide/dist/types";
 import { HeartIcon } from "@python-italia/pycon-styleguide/icons";
+import { addMinutes, parseISO } from "date-fns";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 import { jsx, ThemeUIStyleObject } from "theme-ui";
@@ -329,6 +330,14 @@ export const ScheduleEntry = ({
       ? allRoomsText
       : item.rooms.map((room) => room.name).join(", ");
 
+  const startHour = parseISO(`${day}T${slot.hour}`);
+
+  const hourFormatter = new Intl.DateTimeFormat(language, {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+
   return (
     <BaseDraggable
       adminMode={adminMode}
@@ -379,6 +388,25 @@ export const ScheduleEntry = ({
               <Heading color="none" size={4}>
                 {item.title}
               </Heading>
+              {item.duration && (
+                <>
+                  <Spacer size="thin" />
+                  <Text size="label3" color="grey-700">
+                    <FormattedMessage
+                      id="schedule.entry.endsAt"
+                      values={{
+                        time: (
+                          <Text weight="strong" size="label3">
+                            {hourFormatter.format(
+                              addMinutes(startHour, item.duration),
+                            )}
+                          </Text>
+                        ),
+                      }}
+                    />
+                  </Text>
+                </>
+              )}
             </WrapperComponent>
           </div>
 
