@@ -2,7 +2,7 @@ import logging
 from datetime import date
 from typing import Any, Dict, List, Optional
 from urllib.parse import urljoin
-
+from django.utils.dateparse import parse_datetime
 import requests
 import strawberry
 from django.conf import settings
@@ -66,7 +66,9 @@ def get_voucher(conference: Conference, code: str) -> Optional[Voucher]:
     return Voucher(
         id=data["id"],
         code=data["code"],
-        valid_until=data["valid_until"],
+        valid_until=parse_datetime(data["valid_until"])
+        if data["valid_until"]
+        else None,
         value=data["value"],
         items=items,
         all_items=all_items,

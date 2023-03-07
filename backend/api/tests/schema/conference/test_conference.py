@@ -731,6 +731,92 @@ def test_get_conference_voucher_with_invalid_code(
 
 
 @mark.django_db
+def test_get_conference_voucher_with_valid_until(
+    graphql_client, conference, mocker, requests_mock, settings
+):
+    requests_mock.get(
+        f"{settings.PRETIX_API}organizers/base-pretix-organizer-id/events/base-pretix-event-id/extended-vouchers/test/",
+        status_code=200,
+        json={
+            "id": 1,
+            "code": "test",
+            "valid_until": "2023-05-27T22:00:00Z",
+            "value": 10,
+            "item": 1,
+            "variation": None,
+            "redeemed": 0,
+            "price_mode": "set",
+            "max_usages": 3,
+        },
+    )
+    response = graphql_client.query(
+        """query($code: String!, $voucherCode: String!) {
+            conference(code: $code) {
+                voucher(code: $voucherCode) {
+                    id
+                    validUntil
+                }
+            }
+        }""",
+        variables={"code": conference.code, "voucherCode": "test"},
+    )
+
+    assert not response.get("errors")
+    assert response["data"]["conference"]["voucher"] == {
+        "id": "1",
+        "validUntil": "2023-05-27T22:00:00+00:00",
+    }
+
+
+@mark.django_db
+def test_get_conference_voucher(
+    graphql_client, conference, mocker, requests_mock, settings
+):
+    requests_mock.get(
+        f"{settings.PRETIX_API}organizers/base-pretix-organizer-id/events/base-pretix-event-id/extended-vouchers/test/",
+        status_code=200,
+        json={
+            "id": 1,
+            "code": "test",
+            "valid_until": None,
+            "value": 10,
+            "item": 1,
+            "variation": None,
+            "redeemed": 0,
+            "price_mode": "set",
+            "max_usages": 3,
+        },
+    )
+    response = graphql_client.query(
+        """query($code: String!, $voucherCode: String!) {
+            conference(code: $code) {
+                voucher(code: $voucherCode) {
+                    id
+                    validUntil
+                    value
+                    items
+                    allItems
+                    redeemed
+                    maxUsages
+                }
+            }
+        }""",
+        variables={"code": conference.code, "voucherCode": "test"},
+    )
+
+    assert not response.get("errors")
+    assert response["data"]["conference"]["voucher"] == {
+        "id": "1",
+        "validUntil": None,
+        "value": "10",
+        "items": ["1"],
+        "allItems": False,
+        "redeemed": 0,
+        "maxUsages": 3,
+    }
+
+
+@mark.django_db
 def test_filter_submission_by_status(
     graphql_client, submission_factory, conference, user, requests_mock, settings
 ):
