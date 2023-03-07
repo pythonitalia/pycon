@@ -59,6 +59,7 @@ export const TalkPage = () => {
           linkedinUrl: speaker.participant?.linkedinUrl,
           facebookUrl: speaker.participant?.facebookUrl,
           mastodonHandle: speaker.participant?.mastodonHandle,
+          website: speaker.participant?.website,
         }))}
         bookable={talk.hasLimitedCapacity}
         spacesLeft={talk.spacesLeft}
