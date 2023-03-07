@@ -20,6 +20,8 @@ import {
 import { SnakeTail } from "@python-italia/pycon-styleguide/illustrations";
 import React from "react";
 
+import { compile } from "~/helpers/markdown";
+
 export type Speaker = {
   name: string;
   bio: string;
@@ -109,7 +111,7 @@ export const SpeakerSection = ({ speaker }: { speaker: Speaker }) => (
       <GridColumn colSpan={8} mdColSpan={8}>
         <Heading size="display2">{speaker.name}</Heading>
         <Spacer size="2md" />
-        <Text size={2}>{speaker.bio}</Text>
+        <Text size={2}>{compile(speaker.bio).tree}</Text>
       </GridColumn>
     </Grid>
   </>
