@@ -15,6 +15,7 @@ import {
   MastodonIcon,
   LinkedinIcon,
   FacebookIcon,
+  WebIcon,
 } from "@python-italia/pycon-styleguide/icons";
 import { SnakeTail } from "@python-italia/pycon-styleguide/illustrations";
 import React from "react";
@@ -29,6 +30,7 @@ export type Speaker = {
   mastodonHandle?: string;
   linkedinUrl?: string;
   facebookUrl?: string;
+  website?: string;
 };
 
 export const SpeakerSection = ({ speaker }: { speaker: Speaker }) => (
@@ -92,6 +94,12 @@ export const SpeakerSection = ({ speaker }: { speaker: Speaker }) => (
               {speaker.facebookUrl && (
                 <Link target="_blank" href={speaker.facebookUrl}>
                   <FacebookIcon className="w-6 h-6" />
+                </Link>
+              )}
+
+              {speaker.website && (
+                <Link target="_blank" href={speaker.website}>
+                  <WebIcon className="w-6 h-6" />
                 </Link>
               )}
             </HorizontalStack>

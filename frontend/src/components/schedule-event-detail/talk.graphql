@@ -57,6 +57,7 @@ query Talk($slug: String!, $code: String!, $language: String!) {
           linkedinUrl
           facebookUrl
           mastodonHandle
+          website
         }
       }
     }
