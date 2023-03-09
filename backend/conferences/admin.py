@@ -3,7 +3,6 @@ from django.contrib import admin, messages
 from django.core import exceptions
 from django.forms import BaseInlineFormSet
 from django.forms.models import ModelForm
-from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from ordered_model.admin import (
     OrderedInlineModelAdminMixin,
@@ -17,7 +16,7 @@ from domain_events.publisher import send_speaker_voucher_email
 from pretix import create_voucher
 from sponsors.models import SponsorLevel
 from users.autocomplete import UsersBackendAutocomplete
-from users.mixins import AdminUsersMixin
+from users.mixins import AdminUsersMixin, SearchUsersMixin
 from voting.models import IncludedEvent
 
 from .models import (
@@ -264,11 +263,9 @@ def send_voucher_via_email(modeladmin, request, queryset):
     count = 0
     for speaker_voucher in queryset.filter(pretix_voucher_id__isnull=False):
         send_speaker_voucher_email(speaker_voucher)
-        speaker_voucher.voucher_email_sent_at = timezone.now()
-        speaker_voucher.save()
         count = count + 1
 
-    messages.success(request, f"{count} Voucher emails sent!")
+    messages.success(request, f"{count} Voucher emails scheduled!")
 
 
 @admin.action(description="Create speaker vouchers on Pretix")
@@ -293,13 +290,23 @@ def create_speaker_vouchers_on_pretix(modeladmin, request, queryset):
     count = 0
 
     for speaker_voucher in queryset.filter(pretix_voucher_id__isnull=True):
+        if speaker_voucher.voucher_type == SpeakerVoucher.VoucherType.SPEAKER:
+            price_mode = "set"
+            value = "0.00"
+        elif speaker_voucher.voucher_type == SpeakerVoucher.VoucherType.CO_SPEAKER:
+            price_mode = "percent"
+            value = "25.00"
+
         pretix_voucher = create_voucher(
             conference=speaker_voucher.conference,
             code=speaker_voucher.voucher_code,
             comment=f"Voucher for user_id={speaker_voucher.user_id}",
             tag="speakers",
             quota_id=speaker_voucher.conference.pretix_speaker_voucher_quota_id,
+            price_mode=price_mode,
+            value=value,
         )
+
         pretix_voucher_id = pretix_voucher["id"]
         speaker_voucher.pretix_voucher_id = pretix_voucher_id
         speaker_voucher.save()
@@ -317,6 +324,7 @@ class SpeakerVoucherForm(forms.ModelForm):
         fields = [
             "conference",
             "user_id",
+            "voucher_type",
             "voucher_code",
             "pretix_voucher_id",
             "voucher_email_sent_at",
@@ -324,12 +332,18 @@ class SpeakerVoucherForm(forms.ModelForm):
 
 
 @admin.register(SpeakerVoucher)
-class SpeakerVoucherAdmin(AdminUsersMixin):
+class SpeakerVoucherAdmin(AdminUsersMixin, SearchUsersMixin):
     form = SpeakerVoucherForm
-    list_filter = ("conference", ("pretix_voucher_id", admin.EmptyFieldListFilter))
+    search_fields = ("voucher_code",)
+    list_filter = (
+        "conference",
+        "voucher_type",
+        ("pretix_voucher_id", admin.EmptyFieldListFilter),
+    )
     list_display = (
         "conference",
         "user_display_name",
+        "voucher_type",
         "voucher_code",
         "created_on_pretix",
         "voucher_email_sent_at",

@@ -44,7 +44,7 @@ def mark_speakers_to_receive_vouchers(modeladmin, request, queryset):
     queryset = queryset.filter(
         submission__isnull=False,
         type__in=[
-            ScheduleItem.TYPES.submission,
+            ScheduleItem.TYPES.talk,
             ScheduleItem.TYPES.training,
         ],
     )
@@ -57,40 +57,48 @@ def mark_speakers_to_receive_vouchers(modeladmin, request, queryset):
         messages.error(request, "Please select only one conference")
         return
 
-    conference = queryset.only("conference_id").first().conference
-
     excluded_speakers = (
         queryset.filter(exclude_from_voucher_generation=True)
         .values_list("submission__speaker_id", flat=True)
         .distinct()
     )
 
-    existing_vouchers_users = SpeakerVoucher.objects.filter(
-        conference_id=conference.id,
-    ).values_list("user_id", flat=True)
-
     created_codes = 0
 
-    for schedule_item in (
-        queryset.exclude(submission__speaker_id__in=existing_vouchers_users)
-        .exclude(submission__speaker_id__in=excluded_speakers)
-        .order_by("submission__speaker_id")
-    ):
-        if SpeakerVoucher.objects.filter(
-            conference_id=schedule_item.conference_id,
-            user_id=schedule_item.submission.speaker_id,
-        ).exists():
-            continue
+    for schedule_item in queryset.exclude(
+        submission__speaker_id__in=excluded_speakers
+    ).order_by("submission__speaker_id"):
+        if not voucher_exists(
+            schedule_item.conference_id, schedule_item.submission.speaker_id
+        ):
+            SpeakerVoucher.objects.create(
+                conference_id=schedule_item.conference_id,
+                user_id=schedule_item.submission.speaker_id,
+                voucher_code=SpeakerVoucher.generate_code(),
+                voucher_type=SpeakerVoucher.VoucherType.SPEAKER,
+            )
+            created_codes = created_codes + 1
 
-        SpeakerVoucher.objects.create(
-            conference_id=schedule_item.conference_id,
-            user_id=schedule_item.submission.speaker_id,
-            voucher_code=SpeakerVoucher.generate_code(),
-        )
-
-        created_codes = created_codes + 1
+        first_co_speaker = schedule_item.additional_speakers.order_by("id").first()
+        if first_co_speaker and not voucher_exists(
+            schedule_item.conference_id, first_co_speaker.user_id
+        ):
+            SpeakerVoucher.objects.create(
+                conference_id=schedule_item.conference_id,
+                user_id=first_co_speaker.user_id,
+                voucher_code=SpeakerVoucher.generate_code(),
+                voucher_type=SpeakerVoucher.VoucherType.CO_SPEAKER,
+            )
+            created_codes = created_codes + 1
 
     messages.info(request, f"Created {created_codes} new vouchers")
+
+
+def voucher_exists(conference_id, speaker_id) -> bool:
+    return SpeakerVoucher.objects.filter(
+        conference_id=conference_id,
+        user_id=speaker_id,
+    ).exists()
 
 
 @admin.action(description="Send schedule invitation to all (waiting confirmation)")
