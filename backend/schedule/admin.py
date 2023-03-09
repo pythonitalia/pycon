@@ -1,3 +1,4 @@
+from typing import Set
 from django import forms
 from django.contrib import admin, messages
 from django.db.models import Q
@@ -63,14 +64,20 @@ def mark_speakers_to_receive_vouchers(modeladmin, request, queryset):
         .distinct()
     )
 
+    conference = queryset.only("conference_id").first().conference
+
+    existing_vouchers = set(
+        SpeakerVoucher.objects.filter(
+            conference_id=conference.id,
+        ).values_list("user_id", flat=True)
+    )
+
     created_codes = 0
 
     for schedule_item in queryset.exclude(
         submission__speaker_id__in=excluded_speakers
     ).order_by("submission__speaker_id"):
-        if not voucher_exists(
-            schedule_item.conference_id, schedule_item.submission.speaker_id
-        ):
+        if not voucher_exists(existing_vouchers, schedule_item.submission.speaker_id):
             SpeakerVoucher.objects.create(
                 conference_id=schedule_item.conference_id,
                 user_id=schedule_item.submission.speaker_id,
@@ -81,7 +88,7 @@ def mark_speakers_to_receive_vouchers(modeladmin, request, queryset):
 
         first_co_speaker = schedule_item.additional_speakers.order_by("id").first()
         if first_co_speaker and not voucher_exists(
-            schedule_item.conference_id, first_co_speaker.user_id
+            existing_vouchers, first_co_speaker.user_id
         ):
             SpeakerVoucher.objects.create(
                 conference_id=schedule_item.conference_id,
@@ -94,11 +101,8 @@ def mark_speakers_to_receive_vouchers(modeladmin, request, queryset):
     messages.info(request, f"Created {created_codes} new vouchers")
 
 
-def voucher_exists(conference_id, speaker_id) -> bool:
-    return SpeakerVoucher.objects.filter(
-        conference_id=conference_id,
-        user_id=speaker_id,
-    ).exists()
+def voucher_exists(existing_vouchers: Set[int], speaker_id: int) -> bool:
+    return speaker_id in existing_vouchers
 
 
 @admin.action(description="Send schedule invitation to all (waiting confirmation)")
