@@ -25,12 +25,12 @@ def test_mark_speakers_to_receive_vouchers(
 
     conference = conference_factory(pretix_speaker_voucher_quota_id=123)
     schedule_item_factory(
-        type=ScheduleItem.TYPES.submission,
+        type=ScheduleItem.TYPES.talk,
         conference=conference,
         submission=submission_factory(conference=conference, speaker_id=500),
     )
     schedule_item_factory(
-        type=ScheduleItem.TYPES.submission,
+        type=ScheduleItem.TYPES.talk,
         conference=conference,
         submission=submission_factory(conference=conference, speaker_id=600),
     )
@@ -54,6 +54,46 @@ def test_mark_speakers_to_receive_vouchers(
     assert speaker_voucher_2.pretix_voucher_id is None
 
 
+def test_mark_speakers_to_receive_vouchers_includes_co_speakers(
+    rf, schedule_item_factory, conference_factory, submission_factory, mocker
+):
+    mocker.patch(
+        "conferences.models.speaker_voucher.get_random_string", side_effect=["1", "2"]
+    )
+    mocker.patch("schedule.admin.messages")
+
+    conference = conference_factory(pretix_speaker_voucher_quota_id=123)
+    schedule_item_1 = schedule_item_factory(
+        type=ScheduleItem.TYPES.talk,
+        conference=conference,
+        submission=submission_factory(conference=conference, speaker_id=500),
+        additional_speakers=2,
+    )
+    additional_speaker = (
+        schedule_item_1.additional_speakers.order_by("id").first().user_id
+    )
+
+    mark_speakers_to_receive_vouchers(
+        None,
+        request=rf.get("/"),
+        queryset=ScheduleItem.objects.filter(conference=conference),
+    )
+
+    assert SpeakerVoucher.objects.count() == 2
+
+    speaker_voucher_1 = SpeakerVoucher.objects.get(user_id=500)
+    assert speaker_voucher_1.voucher_code == "SPEAKER-1"
+    assert speaker_voucher_1.conference_id == conference.id
+    assert speaker_voucher_1.pretix_voucher_id is None
+    assert speaker_voucher_1.voucher_type == SpeakerVoucher.VoucherType.SPEAKER
+
+    speaker_voucher_2 = SpeakerVoucher.objects.get(user_id=additional_speaker)
+    assert speaker_voucher_2.voucher_code == "SPEAKER-2"
+    assert speaker_voucher_2.conference_id == conference.id
+    assert speaker_voucher_2.pretix_voucher_id is None
+    assert speaker_voucher_2.voucher_type == SpeakerVoucher.VoucherType.CO_SPEAKER
+
+
 def test_mark_speakers_to_receive_vouchers_doesnt_work_with_multiple_conferences(
     rf, schedule_item_factory, conference_factory, submission_factory, mocker
 ):
@@ -66,12 +106,12 @@ def test_mark_speakers_to_receive_vouchers_doesnt_work_with_multiple_conferences
     conference_2 = conference_factory(pretix_speaker_voucher_quota_id=123)
 
     schedule_item_factory(
-        type=ScheduleItem.TYPES.submission,
+        type=ScheduleItem.TYPES.talk,
         conference=conference,
         submission=submission_factory(conference=conference, speaker_id=500),
     )
     schedule_item_factory(
-        type=ScheduleItem.TYPES.submission,
+        type=ScheduleItem.TYPES.talk,
         conference=conference_2,
         submission=submission_factory(conference=conference_2, speaker_id=600),
     )
@@ -106,12 +146,12 @@ def test_mark_speakers_to_receive_vouchers_only_created_once(
 
     conference = conference_factory(pretix_speaker_voucher_quota_id=123)
     schedule_item_factory(
-        type=ScheduleItem.TYPES.submission,
+        type=ScheduleItem.TYPES.talk,
         conference=conference,
         submission=submission_factory(conference=conference, speaker_id=500),
     )
     schedule_item_factory(
-        type=ScheduleItem.TYPES.submission,
+        type=ScheduleItem.TYPES.talk,
         conference=conference,
         submission=submission_factory(conference=conference, speaker_id=600),
     )
@@ -153,12 +193,12 @@ def test_mark_speakers_to_receive_vouchers_ignores_excluded_speakers(
 
     conference = conference_factory(pretix_speaker_voucher_quota_id=123)
     schedule_item_factory(
-        type=ScheduleItem.TYPES.submission,
+        type=ScheduleItem.TYPES.talk,
         conference=conference,
         submission=submission_factory(conference=conference, speaker_id=500),
     )
     schedule_item_factory(
-        type=ScheduleItem.TYPES.submission,
+        type=ScheduleItem.TYPES.talk,
         conference=conference,
         submission=submission_factory(conference=conference, speaker_id=600),
         exclude_from_voucher_generation=True,
@@ -178,7 +218,7 @@ def test_mark_speakers_to_receive_vouchers_ignores_excluded_speakers(
     assert speaker_voucher_1.pretix_voucher_id is None
 
 
-def test_mark_speakers_to_receive_vouchers_ignores_excluded_speakers_even_when_has_multiple_items(
+def test_mark_speakers_to_receive_vouchers_ignores_excluded_speakers_multiple_items(
     rf, schedule_item_factory, conference_factory, submission_factory, mocker
 ):
     mocker.patch(
@@ -188,17 +228,17 @@ def test_mark_speakers_to_receive_vouchers_ignores_excluded_speakers_even_when_h
 
     conference = conference_factory(pretix_speaker_voucher_quota_id=123)
     schedule_item_factory(
-        type=ScheduleItem.TYPES.submission,
+        type=ScheduleItem.TYPES.talk,
         conference=conference,
         submission=submission_factory(conference=conference, speaker_id=500),
     )
     schedule_item_factory(
-        type=ScheduleItem.TYPES.submission,
+        type=ScheduleItem.TYPES.talk,
         conference=conference,
         submission=submission_factory(conference=conference, speaker_id=600),
     )
     schedule_item_factory(
-        type=ScheduleItem.TYPES.submission,
+        type=ScheduleItem.TYPES.talk,
         conference=conference,
         # Same speaker as 2, so 2 user_id 600 is excluded
         submission=submission_factory(conference=conference, speaker_id=600),
@@ -226,14 +266,14 @@ def test_send_schedule_invitation_to_all(
     mocker.patch("schedule.admin.messages")
     conference = conference_factory()
     schedule_item_1 = schedule_item_factory(
-        type=ScheduleItem.TYPES.submission,
+        type=ScheduleItem.TYPES.talk,
         conference=conference,
         status=ScheduleItem.STATUS.waiting_confirmation,
         submission=submission_factory(conference=conference),
         speaker_invitation_sent_at=None,
     )
     schedule_item_2 = schedule_item_factory(
-        type=ScheduleItem.TYPES.submission,
+        type=ScheduleItem.TYPES.talk,
         conference=conference,
         status=ScheduleItem.STATUS.waiting_confirmation,
         submission=submission_factory(conference=conference),
@@ -275,14 +315,14 @@ def test_send_schedule_invitation_to_uninvited(
     mocker.patch("schedule.admin.messages")
     conference = conference_factory()
     schedule_item_1 = schedule_item_factory(
-        type=ScheduleItem.TYPES.submission,
+        type=ScheduleItem.TYPES.talk,
         conference=conference,
         status=ScheduleItem.STATUS.waiting_confirmation,
         submission=submission_factory(conference=conference),
         speaker_invitation_sent_at=None,
     )
     schedule_item_factory(
-        type=ScheduleItem.TYPES.submission,
+        type=ScheduleItem.TYPES.talk,
         conference=conference,
         status=ScheduleItem.STATUS.waiting_confirmation,
         submission=submission_factory(conference=conference),
@@ -308,14 +348,14 @@ def test_send_schedule_invitation_reminder_to_waiting(
     mocker.patch("schedule.admin.messages")
     conference = conference_factory()
     schedule_item_1 = schedule_item_factory(
-        type=ScheduleItem.TYPES.submission,
+        type=ScheduleItem.TYPES.talk,
         conference=conference,
         status=ScheduleItem.STATUS.waiting_confirmation,
         submission=submission_factory(conference=conference),
         speaker_invitation_sent_at=timezone.now(),
     )
     schedule_item_2 = schedule_item_factory(
-        type=ScheduleItem.TYPES.submission,
+        type=ScheduleItem.TYPES.talk,
         conference=conference,
         status=ScheduleItem.STATUS.waiting_confirmation,
         submission=submission_factory(conference=conference),
@@ -344,14 +384,14 @@ def test_send_schedule_invitation_reminder_to_all_waiting(
     mocker.patch("schedule.admin.messages")
     conference = conference_factory()
     schedule_item_1 = schedule_item_factory(
-        type=ScheduleItem.TYPES.submission,
+        type=ScheduleItem.TYPES.talk,
         conference=conference,
         status=ScheduleItem.STATUS.waiting_confirmation,
         submission=submission_factory(conference=conference),
         speaker_invitation_sent_at=timezone.now(),
     )
     schedule_item_2 = schedule_item_factory(
-        type=ScheduleItem.TYPES.submission,
+        type=ScheduleItem.TYPES.talk,
         conference=conference,
         status=ScheduleItem.STATUS.waiting_confirmation,
         submission=submission_factory(conference=conference),
