@@ -24,6 +24,7 @@ const getSponsorsPerRow = (level: string) => {
     case "Silver":
       return 2;
     case "Partners":
+    case "Partner":
       return 4;
     default:
       return 3;
