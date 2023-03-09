@@ -25,7 +25,7 @@ from domain_events.publisher import (
 from pretix import user_has_admission_ticket
 from schedule.forms import EmailSpeakersForm
 from users.autocomplete import UsersBackendAutocomplete
-from users.mixins import AdminUsersMixin, ResourceUsersByIdsMixin
+from users.mixins import AdminUsersMixin, ResourceUsersByIdsMixin, SearchUsersMixin
 
 from .models import (
     Day,
@@ -240,7 +240,7 @@ class ScheduleItemAdminForm(forms.ModelForm):
 
 
 @admin.register(ScheduleItem)
-class ScheduleItemAdmin(admin.ModelAdmin):
+class ScheduleItemAdmin(SearchUsersMixin):
     list_display = (
         "title",
         "conference",
@@ -296,6 +296,8 @@ class ScheduleItemAdmin(admin.ModelAdmin):
     autocomplete_fields = ("submission",)
     prepopulated_fields = {"slug": ("title",)}
     filter_horizontal = ("rooms",)
+    search_fields = ("title",)
+    user_fk = "submission__speaker_id"
     inlines = [
         ScheduleItemAdditionalSpeakerInline,
         ScheduleItemAttendeeInline,
