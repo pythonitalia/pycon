@@ -220,6 +220,7 @@ class KeynoteSpeakerFactory(DjangoModelFactory):
 class SpeakerVoucherFactory(DjangoModelFactory):
     user_id = factory.Faker("pyint", min_value=1)
     conference = factory.SubFactory(ConferenceFactory)
+    voucher_type = SpeakerVoucher.VoucherType.SPEAKER
 
     class Meta:
         model = SpeakerVoucher
