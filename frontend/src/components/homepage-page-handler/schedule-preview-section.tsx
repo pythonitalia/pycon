@@ -60,19 +60,19 @@ export const SchedulePreviewSection = ({ days }: Props) => {
           <Button
             role="secondary"
             href={createHref({
-              path: "/tickets",
-              locale: language,
-            })}
-          >
-            <FormattedMessage id="tickets.buyTickets" />
-          </Button>
-          <BasicButton
-            href={createHref({
               path: "/schedule",
               locale: language,
             })}
           >
             <FormattedMessage id="homepage.schedulePreviewSection.goToSchedule" />
+          </Button>
+          <BasicButton
+            href={createHref({
+              path: "/tickets",
+              locale: language,
+            })}
+          >
+            <FormattedMessage id="tickets.buyTickets" />
           </BasicButton>
         </div>
       </Container>

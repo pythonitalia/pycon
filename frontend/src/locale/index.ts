@@ -344,7 +344,7 @@ export const messages = {
     "tickets.heading": "Get some tickets",
     "tickets.explanation": `{br}`,
 
-    "homepage.schedulePreviewSection.goToSchedule": "See the full schedule",
+    "homepage.schedulePreviewSection.goToSchedule": "Go to schedule",
 
     "tickets.buyTickets": "Buy Tickets",
     "tickets.hotelRow.totalPrice": "{value}",
@@ -1700,7 +1700,7 @@ Affrettati a comprare il biglietto!`,
     "profile.myTickets.title": "I miei biglietti",
 
     "homepage.eventPreviewCard.time": "{start} - {end}",
-    "homepage.schedulePreviewSection.goToSchedule": "Apri programma completo",
+    "homepage.schedulePreviewSection.goToSchedule": "Apri Programma",
     "homepage.sponsors": "Sponsors",
   },
 };
