@@ -117,26 +117,31 @@ const ScheduleEventPreviewCard = ({
       </div>
       <Spacer size="small" />
       <MultiplePartsCard>
-        <CardPart
-          shrink={false}
-          contentAlign="left"
-          background="milk"
-          size="none"
-        >
-          <div className="flex divide-x">
-            {photo && (
-              <img
-                src={photo}
-                alt="Speaker photo"
-                loading="lazy"
-                className="w-20 aspect-square object-cover"
-              />
-            )}
-            <Heading className="flex p-5 items-center justify-center" size={6}>
-              {event.speakers.map((speaker) => speaker.fullName).join(", ")}
-            </Heading>
-          </div>
-        </CardPart>
+        {event.speakers.length > 0 && (
+          <CardPart
+            shrink={false}
+            contentAlign="left"
+            background="milk"
+            size="none"
+          >
+            <div className="flex divide-x">
+              {photo && (
+                <img
+                  src={photo}
+                  alt="Speaker photo"
+                  loading="lazy"
+                  className="w-20 aspect-square object-cover"
+                />
+              )}
+              <Heading
+                className="flex p-5 items-center justify-center"
+                size={6}
+              >
+                {event.speakers.map((speaker) => speaker.fullName).join(", ")}
+              </Heading>
+            </div>
+          </CardPart>
+        )}
         <CardPart fullHeight contentAlign="left" background="cream">
           <Link
             href={createHref({
