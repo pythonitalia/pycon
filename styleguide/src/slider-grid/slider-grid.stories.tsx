@@ -10,7 +10,7 @@ import { Link } from "../link";
 export const Default = () => {
   return (
     <div className="py-12">
-      <SliderGrid background="snake" title="Buy your tickets!" cols={3}>
+      <SliderGrid background="snake" cols={3}>
         <MultiplePartsCard
           cta={{
             link: "/test",
@@ -79,7 +79,7 @@ export const Default = () => {
 export const DynamicCards = ({ cols, items }) => {
   return (
     <div className="py-12">
-      <SliderGrid background="snake" title="Buy your tickets!" cols={cols}>
+      <SliderGrid background="snake" cols={cols}>
         {Array(items)
           .fill(0)
           .map((_, index) => (

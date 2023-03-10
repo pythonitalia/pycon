@@ -79,7 +79,7 @@ export const Standard = () => (
           Welcome to the Python Italia Conference
         </Heading>
       </Section>
-      <SliderGrid background="snake" title="Buy your tickets!" cols={3}>
+      <SliderGrid background="snake" cols={3}>
         <MultiplePartsCard
           cta={{
             link: "/test",

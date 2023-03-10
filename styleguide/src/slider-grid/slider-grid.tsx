@@ -11,7 +11,6 @@ type Props = {
   children: React.ReactNode;
   cols: number;
   mdCols?: number;
-  title?: string | React.ReactNode;
   background?: "snake" | "none";
   justifyContent?: "center";
   wrap?: "wrap" | "nowrap";
@@ -21,7 +20,6 @@ export const SliderGrid = ({
   children,
   cols,
   mdCols = cols,
-  title,
   wrap = "wrap",
   justifyContent,
   background = "none",
@@ -67,15 +65,6 @@ export const SliderGrid = ({
 
   return (
     <div className="slider-grid">
-      {title && (
-        <>
-          <Container>
-            <Heading size="display2">{title}</Heading>
-          </Container>
-          <Spacer size="xl" />
-        </>
-      )}
-
       <Container noPadding>
         {useSnakeBackground && (
           <SnakeHead className="relative -rotate-90 md:rotate-0 ml-auto w-32 lg:w-52 md:mr-12 -mt-20 lg:-mt-36 hidden md:block" />
