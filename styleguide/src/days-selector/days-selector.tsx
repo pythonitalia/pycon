@@ -15,9 +15,16 @@ type Props = {
   language: string;
   onClick?: (date: string) => void;
   children?: React.ReactNode;
+  center?: boolean;
 };
 
-export const DaysSelector = ({ days, language, onClick, children }: Props) => {
+export const DaysSelector = ({
+  days,
+  language,
+  onClick,
+  children,
+  center = false,
+}: Props) => {
   const numberAndDayFormatter = new Intl.DateTimeFormat(language, {
     day: "numeric",
     month: "long",
@@ -29,7 +36,14 @@ export const DaysSelector = ({ days, language, onClick, children }: Props) => {
   return (
     <Container noPadding>
       <div className="flex flex-col lg:flex-row lg:items-center justify-between">
-        <div className="flex overflow-scroll snap-x snap-mandatory overflow-x-auto w-full">
+        <div
+          className={clsx(
+            "flex overflow-scroll snap-x snap-mandatory overflow-x-auto w-full",
+            {
+              "lg:items-center lg:justify-center": center,
+            }
+          )}
+        >
           {days.map(({ date, selected }) => {
             const parsedDate = new Date(date);
             return (
@@ -62,7 +76,9 @@ export const DaysSelector = ({ days, language, onClick, children }: Props) => {
             );
           })}
         </div>
-        <div className="shrink-0 my-3 pl-4 md:pr-4">{children}</div>
+        {children && (
+          <div className="shrink-0 my-3 pl-4 md:pr-4">{children}</div>
+        )}
       </div>
     </Container>
   );
