@@ -73,10 +73,11 @@ class ScheduleItemFactory(DjangoModelFactory):
                 self.rooms.add(room)
 
     @factory.post_generation
-    def additional_speakers(self, create, extracted, size=0, **kwargs):
+    def additional_speakers(self, create, extracted=0, **kwargs):
         if not create:
             return
 
+        size = extracted or 0
         self.additional_speakers.set(
             ScheduleItemAdditionalSpeakerFactory.simple_generate_batch(
                 create, size, **kwargs

@@ -1,3 +1,5 @@
+from django.db.models import Prefetch
+from typing import Dict
 from django import forms
 from django.contrib import admin, messages
 from django.db.models import Q
@@ -25,7 +27,7 @@ from domain_events.publisher import (
 from pretix import user_has_admission_ticket
 from schedule.forms import EmailSpeakersForm
 from users.autocomplete import UsersBackendAutocomplete
-from users.mixins import AdminUsersMixin, ResourceUsersByIdsMixin
+from users.mixins import AdminUsersMixin, ResourceUsersByIdsMixin, SearchUsersMixin
 
 from .models import (
     Day,
@@ -42,9 +44,8 @@ from .models import (
 @admin.action(description="Mark Speakers to receive Vouchers")
 def mark_speakers_to_receive_vouchers(modeladmin, request, queryset):
     queryset = queryset.filter(
-        submission__isnull=False,
         type__in=[
-            ScheduleItem.TYPES.submission,
+            ScheduleItem.TYPES.talk,
             ScheduleItem.TYPES.training,
         ],
     )
@@ -57,40 +58,84 @@ def mark_speakers_to_receive_vouchers(modeladmin, request, queryset):
         messages.error(request, "Please select only one conference")
         return
 
-    conference = queryset.only("conference_id").first().conference
-
     excluded_speakers = (
         queryset.filter(exclude_from_voucher_generation=True)
         .values_list("submission__speaker_id", flat=True)
         .distinct()
     )
 
-    existing_vouchers_users = SpeakerVoucher.objects.filter(
-        conference_id=conference.id,
-    ).values_list("user_id", flat=True)
+    conference = queryset.only("conference_id").first().conference
+
+    existing_vouchers: dict[int, SpeakerVoucher.VoucherType] = {
+        user_id: voucher_type
+        for user_id, voucher_type in SpeakerVoucher.objects.filter(
+            conference_id=conference.id,
+        ).values_list("user_id", "voucher_type")
+    }
+    vouchers_to_create: dict[int, SpeakerVoucher.VoucherType] = {}
 
     created_codes = 0
 
     for schedule_item in (
-        queryset.exclude(submission__speaker_id__in=existing_vouchers_users)
-        .exclude(submission__speaker_id__in=excluded_speakers)
+        queryset.exclude(submission__speaker_id__in=excluded_speakers)
+        .prefetch_related(
+            Prefetch(
+                "additional_speakers",
+                queryset=ScheduleItemAdditionalSpeaker.objects.order_by("id"),
+                to_attr="additional_speakers_sorted",
+            )
+        )
         .order_by("submission__speaker_id")
     ):
-        if SpeakerVoucher.objects.filter(
-            conference_id=schedule_item.conference_id,
-            user_id=schedule_item.submission.speaker_id,
-        ).exists():
-            continue
+        has_main_speaker = bool(schedule_item.submission_id)
 
-        SpeakerVoucher.objects.create(
-            conference_id=schedule_item.conference_id,
-            user_id=schedule_item.submission.speaker_id,
-            voucher_code=SpeakerVoucher.generate_code(),
+        if has_main_speaker:
+            speaker_id = schedule_item.submission.speaker_id
+
+            if not voucher_exists(existing_vouchers, speaker_id):
+                # Create the voucher, if the speaker is already in the list,
+                # we upgrade the voucher type to speaker
+                vouchers_to_create[speaker_id] = SpeakerVoucher.VoucherType.SPEAKER
+                created_codes = created_codes + 1
+
+        first_co_speaker = (
+            schedule_item.additional_speakers_sorted[0]
+            if schedule_item.additional_speakers_sorted
+            else None
+        )
+        if first_co_speaker and not voucher_exists(
+            existing_vouchers, first_co_speaker.user_id
+        ):
+            voucher_type = (
+                SpeakerVoucher.VoucherType.CO_SPEAKER
+                if has_main_speaker
+                else SpeakerVoucher.VoucherType.SPEAKER
+            )
+            vouchers_to_create[first_co_speaker.user_id] = voucher_type
+
+            created_codes = created_codes + 1
+
+    vouchers_objects = []
+    for user_id, voucher_type in vouchers_to_create.items():
+        vouchers_objects.append(
+            SpeakerVoucher(
+                conference_id=conference.id,
+                user_id=user_id,
+                voucher_code=SpeakerVoucher.generate_code(),
+                voucher_type=voucher_type,
+            )
         )
 
-        created_codes = created_codes + 1
+    SpeakerVoucher.objects.bulk_create(vouchers_objects)
 
     messages.info(request, f"Created {created_codes} new vouchers")
+
+
+def voucher_exists(
+    existing_vouchers: Dict[int, SpeakerVoucher.VoucherType],
+    speaker_id: int,
+) -> bool:
+    return speaker_id in existing_vouchers
 
 
 @admin.action(description="Send schedule invitation to all (waiting confirmation)")
@@ -232,7 +277,7 @@ class ScheduleItemAdminForm(forms.ModelForm):
 
 
 @admin.register(ScheduleItem)
-class ScheduleItemAdmin(admin.ModelAdmin):
+class ScheduleItemAdmin(SearchUsersMixin):
     list_display = (
         "title",
         "conference",
@@ -288,6 +333,8 @@ class ScheduleItemAdmin(admin.ModelAdmin):
     autocomplete_fields = ("submission",)
     prepopulated_fields = {"slug": ("title",)}
     filter_horizontal = ("rooms",)
+    search_fields = ("title",)
+    user_fk = "submission__speaker_id"
     inlines = [
         ScheduleItemAdditionalSpeakerInline,
         ScheduleItemAttendeeInline,

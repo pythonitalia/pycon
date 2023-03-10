@@ -80,7 +80,13 @@ def get_voucher(conference: Conference, code: str) -> Optional[Voucher]:
 
 
 def create_voucher(
-    conference: Conference, code: str, comment: str, tag: str, quota_id: int
+    conference: Conference,
+    code: str,
+    comment: str,
+    tag: str,
+    quota_id: int,
+    price_mode: str,
+    value: str,
 ):
     payload = {
         "code": code,
@@ -90,8 +96,8 @@ def create_voucher(
         "valid_until": None,
         "block_quota": False,
         "allow_ignore_quota": False,
-        "price_mode": "set",
-        "value": "0.00",
+        "price_mode": price_mode,
+        "value": value,
         "item": None,
         "variation": None,
         "quota": quota_id,

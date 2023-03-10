@@ -3,7 +3,6 @@ from unittest.mock import call
 import time_machine
 from django.core import exceptions
 from django.forms.fields import BooleanField
-from django.utils import timezone
 from pytest import fixture, mark, raises
 
 from conferences.admin import (
@@ -185,12 +184,12 @@ def test_send_voucher_via_email(
 
     conference = conference_factory(pretix_speaker_voucher_quota_id=123)
     schedule_item_factory(
-        type=ScheduleItem.TYPES.submission,
+        type=ScheduleItem.TYPES.talk,
         conference=conference,
         submission=submission_factory(conference=conference, speaker_id=500),
     )
     schedule_item_factory(
-        type=ScheduleItem.TYPES.submission,
+        type=ScheduleItem.TYPES.talk,
         conference=conference,
         submission=submission_factory(conference=conference, speaker_id=600),
     )
@@ -217,12 +216,6 @@ def test_send_voucher_via_email(
         ]
     )
 
-    speaker_voucher_1.refresh_from_db()
-    speaker_voucher_2.refresh_from_db()
-
-    assert speaker_voucher_1.voucher_email_sent_at == timezone.now()
-    assert speaker_voucher_2.voucher_email_sent_at == timezone.now()
-
 
 @time_machine.travel("2020-10-10 10:00:00", tick=False)
 def test_send_voucher_via_email_requires_filtering_by_conference(
@@ -240,22 +233,22 @@ def test_send_voucher_via_email_requires_filtering_by_conference(
     conference_2 = conference_factory(pretix_speaker_voucher_quota_id=123)
 
     schedule_item_factory(
-        type=ScheduleItem.TYPES.submission,
+        type=ScheduleItem.TYPES.talk,
         conference=conference,
         submission=submission_factory(conference=conference, speaker_id=500),
     )
     schedule_item_factory(
-        type=ScheduleItem.TYPES.submission,
+        type=ScheduleItem.TYPES.talk,
         conference=conference_2,
         submission=submission_factory(conference=conference_2, speaker_id=600),
     )
 
-    speaker_voucher_1 = speaker_voucher_factory(
+    speaker_voucher_factory(
         conference=conference,
         user_id=500,
         pretix_voucher_id=1,
     )
-    speaker_voucher_2 = speaker_voucher_factory(
+    speaker_voucher_factory(
         conference=conference_2,
         user_id=600,
         pretix_voucher_id=2,
@@ -275,12 +268,6 @@ def test_send_voucher_via_email_requires_filtering_by_conference(
     )
     mock_send_email.assert_not_called()
 
-    speaker_voucher_1.refresh_from_db()
-    speaker_voucher_2.refresh_from_db()
-
-    assert speaker_voucher_1.voucher_email_sent_at is None
-    assert speaker_voucher_2.voucher_email_sent_at is None
-
 
 def test_create_speaker_vouchers_on_pretix(
     rf, conference_factory, mocker, speaker_voucher_factory
@@ -290,6 +277,7 @@ def test_create_speaker_vouchers_on_pretix(
         side_effect=[
             {"id": 1},
             {"id": 2},
+            {"id": 3},
         ],
     )
     mocker.patch("conferences.admin.messages")
@@ -310,6 +298,14 @@ def test_create_speaker_vouchers_on_pretix(
         pretix_voucher_id=None,
     )
 
+    voucher_3 = speaker_voucher_factory(
+        conference=conference,
+        user_id=700,
+        voucher_code="SPEAKER-999",
+        pretix_voucher_id=None,
+        voucher_type=SpeakerVoucher.VoucherType.CO_SPEAKER,
+    )
+
     create_speaker_vouchers_on_pretix(
         None,
         request=rf.get("/"),
@@ -324,6 +320,8 @@ def test_create_speaker_vouchers_on_pretix(
                 comment="Voucher for user_id=500",
                 tag="speakers",
                 quota_id=123,
+                price_mode="set",
+                value="0.00",
             ),
             call(
                 conference=conference,
@@ -331,15 +329,28 @@ def test_create_speaker_vouchers_on_pretix(
                 comment="Voucher for user_id=600",
                 tag="speakers",
                 quota_id=123,
+                price_mode="set",
+                value="0.00",
+            ),
+            call(
+                conference=conference,
+                code="SPEAKER-999",
+                comment="Voucher for user_id=700",
+                tag="speakers",
+                quota_id=123,
+                price_mode="percent",
+                value="25.00",
             ),
         ],
     )
 
     voucher_1.refresh_from_db()
     voucher_2.refresh_from_db()
+    voucher_3.refresh_from_db()
 
     assert voucher_1.pretix_voucher_id == 1
     assert voucher_2.pretix_voucher_id == 2
+    assert voucher_3.pretix_voucher_id == 3
 
 
 def test_create_speaker_vouchers_on_pretix_only_for_missing_ones(
@@ -381,6 +392,8 @@ def test_create_speaker_vouchers_on_pretix_only_for_missing_ones(
         comment="Voucher for user_id=500",
         tag="speakers",
         quota_id=123,
+        price_mode="set",
+        value="0.00",
     )
 
     voucher_1.refresh_from_db()

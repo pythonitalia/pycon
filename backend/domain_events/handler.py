@@ -376,8 +376,12 @@ def handle_new_schedule_invitation_answer(data):
 
 
 def handle_speaker_voucher_email_sent(data):
-    speaker_id = data["speaker_id"]
-    voucher_code = data["voucher_code"]
+    from conferences.models import SpeakerVoucher
+
+    speaker_voucher = SpeakerVoucher.objects.get(id=data["speaker_voucher_id"])
+
+    speaker_id = speaker_voucher.user_id
+    voucher_code = speaker_voucher.voucher_code
 
     users_result = execute_service_client_query(
         USERS_NAMES_FROM_IDS, {"ids": [speaker_id]}
@@ -391,11 +395,16 @@ def handle_speaker_voucher_email_sent(data):
         variables={
             "firstname": get_name(speaker_data, "there"),
             "voucherCode": voucher_code,
+            "is_speaker_voucher": speaker_voucher.voucher_type
+            == SpeakerVoucher.VoucherType.SPEAKER,
         },
         reply_to=[
             settings.SPEAKERS_EMAIL_ADDRESS,
         ],
     )
+
+    speaker_voucher.voucher_email_sent_at = timezone.now()
+    speaker_voucher.save()
 
 
 def handle_speaker_communication_sent(data):
