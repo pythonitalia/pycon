@@ -59,7 +59,7 @@ export const HomePagePageHandler = ({ cycle }: Props) => {
 
         <TicketsOverviewSection />
 
-        <InformationSection conference={conference} />
+        {/* <InformationSection conference={conference} /> */}
 
         <SponsorsSection sponsorsByLevel={conference.sponsorsByLevel} />
 
