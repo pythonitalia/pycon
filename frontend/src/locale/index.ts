@@ -31,6 +31,8 @@ export const messages = {
     "profile.myProposals.edit": "Edit",
     "schedule.entry.endsAt": "Ends at {time}",
 
+    "homepage.eventPreviewCard.time": "{start} - {end}",
+
     "profile.welcome": "Ciao {name}!",
     "profile.myProfile": "My Profile",
     "profile.logout": "Sign Out",
@@ -341,6 +343,8 @@ export const messages = {
     "tickets.loading": "Please wait 🕐",
     "tickets.heading": "Get some tickets",
     "tickets.explanation": `{br}`,
+
+    "homepage.schedulePreviewSection.goToSchedule": "See the full schedule",
 
     "tickets.buyTickets": "Buy Tickets",
     "tickets.hotelRow.totalPrice": "{value}",
@@ -1693,6 +1697,9 @@ Affrettati a comprare il biglietto!`,
     "profile.myOrders.title": "I miei ordini",
     "profile.myProposals.title": "Le mie proposte",
     "profile.myTickets.title": "I miei biglietti",
+
+    "homepage.eventPreviewCard.time": "{start} - {end}",
+    "homepage.schedulePreviewSection.goToSchedule": "Apri programma completo",
   },
 };
 

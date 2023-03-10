@@ -22,6 +22,7 @@ import { KeynotersSection } from "../keynoters-section";
 import { FollowUsSection } from "./follow-us-section";
 import { InformationSection } from "./information-section";
 import { IntroSection } from "./intro-section";
+import { SchedulePreviewSection } from "./schedule-preview-section";
 import { SponsorsSection } from "./sponsors-section";
 
 type Props = {
@@ -51,6 +52,8 @@ export const HomePagePageHandler = ({ cycle }: Props) => {
 
       <Page startSeparator={false}>
         <IntroSection conference={conference} />
+
+        <SchedulePreviewSection days={conference.days} />
 
         <TicketsOverviewSection />
 

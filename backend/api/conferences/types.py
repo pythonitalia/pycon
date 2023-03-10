@@ -140,6 +140,20 @@ class Day:
     day: date
 
     @strawberry.field
+    def random_events(self, limit: int = 4) -> List[ScheduleItem]:
+        if limit > 10:
+            raise ValueError("Limit cannot be greater than 10")
+
+        return ScheduleItemModel.objects.filter(
+            slot__day=self,
+            type__in=[
+                ScheduleItemModel.TYPES.talk,
+                ScheduleItemModel.TYPES.training,
+                ScheduleItemModel.TYPES.panel,
+            ],
+        ).order_by("?")[:limit]
+
+    @strawberry.field
     def slots(self, info, room: Optional[strawberry.ID] = None) -> List[ScheduleSlot]:
         if room:
             return list(self.slots.filter(items__rooms__id=room))
