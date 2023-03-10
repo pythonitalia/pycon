@@ -32,7 +32,7 @@ export const SchedulePreviewSection = ({ days }: Props) => {
     <Section noContainer>
       <Container>
         <Heading align="center" size="display2">
-          Schedule
+          <FormattedMessage id="header.schedule" />
         </Heading>
       </Container>
       <Spacer size="2xl" />

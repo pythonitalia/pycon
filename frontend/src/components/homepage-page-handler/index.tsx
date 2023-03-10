@@ -55,9 +55,9 @@ export const HomePagePageHandler = ({ cycle }: Props) => {
 
         <SchedulePreviewSection days={conference.days} />
 
-        <TicketsOverviewSection />
-
         <KeynotersSection />
+
+        <TicketsOverviewSection />
 
         <InformationSection conference={conference} />
 
