@@ -92,19 +92,11 @@ def mark_speakers_to_receive_vouchers(modeladmin, request, queryset):
         if has_main_speaker:
             speaker_id = schedule_item.submission.speaker_id
 
-            if not voucher_exists(existing_vouchers, vouchers_to_create, speaker_id):
+            if not voucher_exists(existing_vouchers, speaker_id):
+                # Create the voucher, if the speaker is already in the list,
+                # we upgrade the voucher type to speaker
                 vouchers_to_create[speaker_id] = SpeakerVoucher.VoucherType.SPEAKER
                 created_codes = created_codes + 1
-            elif (
-                vouchers_to_create.get(speaker_id)
-                == SpeakerVoucher.VoucherType.CO_SPEAKER
-            ):
-                # voucher will be created now but we need to update
-                # it to be a main speaker
-                # e.g we first saw this person as a co-speaker in another talk
-                # but they are the main speaker in this talk
-                # so they need a full ticket voucher
-                vouchers_to_create[speaker_id] = SpeakerVoucher.VoucherType.SPEAKER
 
         first_co_speaker = (
             schedule_item.additional_speakers_sorted[0]
@@ -112,7 +104,7 @@ def mark_speakers_to_receive_vouchers(modeladmin, request, queryset):
             else None
         )
         if first_co_speaker and not voucher_exists(
-            existing_vouchers, vouchers_to_create, first_co_speaker.user_id
+            existing_vouchers, first_co_speaker.user_id
         ):
             voucher_type = (
                 SpeakerVoucher.VoucherType.CO_SPEAKER
@@ -141,10 +133,9 @@ def mark_speakers_to_receive_vouchers(modeladmin, request, queryset):
 
 def voucher_exists(
     existing_vouchers: Dict[int, SpeakerVoucher.VoucherType],
-    vouchers_to_create: Dict[int, SpeakerVoucher.VoucherType],
     speaker_id: int,
 ) -> bool:
-    return speaker_id in existing_vouchers or speaker_id in vouchers_to_create
+    return speaker_id in existing_vouchers
 
 
 @admin.action(description="Send schedule invitation to all (waiting confirmation)")
