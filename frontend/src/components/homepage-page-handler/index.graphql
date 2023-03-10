@@ -110,5 +110,39 @@ query IndexPage($code: String!, $language: String!) {
         logo: image
       }
     }
+
+    days {
+      day
+      randomEvents {
+        id
+        title
+        slug
+        start
+        end
+        submission {
+          id
+          audienceLevel {
+            id
+            name
+          }
+        }
+        audienceLevel {
+          id
+          name
+        }
+        language {
+          id
+          name
+        }
+        speakers {
+          id
+          fullName
+          participant {
+            id
+            photo
+          }
+        }
+      }
+    }
   }
 }

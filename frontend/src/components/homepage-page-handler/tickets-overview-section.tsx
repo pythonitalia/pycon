@@ -6,6 +6,7 @@ import {
   Heading,
   Spacer,
   Section,
+  Container,
 } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
 
@@ -31,12 +32,13 @@ export const TicketsOverviewSection = () => {
 
   return (
     <Section noContainer spacingSize="3xl">
-      <SliderGrid
-        background="snake"
-        title={<FormattedMessage id="ticketsOverview.buyTicketsSection" />}
-        cols={3}
-        wrap="nowrap"
-      >
+      <Container>
+        <Heading size="display2" className="text-center md:text-left">
+          <FormattedMessage id="ticketsOverview.buyTicketsSection" />
+        </Heading>
+      </Container>
+      <Spacer size="xl" />
+      <SliderGrid background="snake" cols={3} wrap="nowrap">
         <MultiplePartsCard cta={cta}>
           <CardPart>
             <Heading size={2}>

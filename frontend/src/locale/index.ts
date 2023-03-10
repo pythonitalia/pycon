@@ -30,6 +30,8 @@ export const messages = {
     "profile.myProposals.viewInvitation": "Invitation",
     "profile.myProposals.edit": "Edit",
     "schedule.entry.endsAt": "Ends at {time}",
+    "homepage.sponsors": "Sponsors",
+    "homepage.eventPreviewCard.time": "{start} - {end}",
 
     "profile.welcome": "Ciao {name}!",
     "profile.myProfile": "My Profile",
@@ -341,6 +343,8 @@ export const messages = {
     "tickets.loading": "Please wait 🕐",
     "tickets.heading": "Get some tickets",
     "tickets.explanation": `{br}`,
+
+    "homepage.schedulePreviewSection.goToSchedule": "Go to schedule",
 
     "tickets.buyTickets": "Buy Tickets",
     "tickets.hotelRow.totalPrice": "{value}",
@@ -1041,6 +1045,7 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "header.enquiries": "Informazioni",
     "header.schedule": "Programma",
     "header.switchLanguage": "Change language to English",
+
     "resetPassword.newPassword": "Nuova Password",
     "resetPassword.confirmPassword": "Conferma password",
     "resetPassword.changePassword": "Cambia password",
@@ -1693,6 +1698,10 @@ Affrettati a comprare il biglietto!`,
     "profile.myOrders.title": "I miei ordini",
     "profile.myProposals.title": "Le mie proposte",
     "profile.myTickets.title": "I miei biglietti",
+
+    "homepage.eventPreviewCard.time": "{start} - {end}",
+    "homepage.schedulePreviewSection.goToSchedule": "Apri Programma",
+    "homepage.sponsors": "Sponsors",
   },
 };
 
