@@ -1,11 +1,9 @@
 import clsx from "clsx";
 import React, { useEffect, useRef } from "react";
 import { Container } from "../container";
-import { Heading } from "../heading";
 import { SnakeBody } from "../illustrations/snake-body";
 import { SnakeHead } from "../illustrations/snake-head";
 import { SnakeTail } from "../illustrations/snake-tail";
-import { Spacer } from "../spacer";
 
 type Props = {
   children: React.ReactNode;
@@ -28,7 +26,7 @@ export const SliderGrid = ({
   const listItemsRef = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
-    if (!scrollerRef) {
+    if (!scrollerRef.current) {
       return;
     }
 
@@ -58,7 +56,7 @@ export const SliderGrid = ({
     return () => {
       observer.disconnect();
     };
-  }, []);
+  }, [scrollerRef.current, children]);
 
   const countChildren = React.Children.count(children);
   const useSnakeBackground = background === "snake";
