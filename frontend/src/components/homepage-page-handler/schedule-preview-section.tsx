@@ -49,7 +49,7 @@ export const SchedulePreviewSection = ({ days }: Props) => {
         }}
       />
       <Spacer size="xl" />
-      <SliderGrid mdCols={2} cols={4}>
+      <SliderGrid mdCols={2} cols={4} justifyContent="center">
         {selectedDay.randomEvents.map((event) => (
           <ScheduleEventPreviewCard key={event.id} event={event} />
         ))}

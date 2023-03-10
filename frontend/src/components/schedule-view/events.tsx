@@ -328,7 +328,7 @@ export const ScheduleEntry = ({
     item.rooms.length ===
       rooms.filter((room) => room.type !== "training").length
       ? allRoomsText
-      : item.rooms.map((room) => room.name).join(", ");
+      : `Room ${item.rooms.map((room) => room.name).join(", Room ")}`;
 
   const startHour = parseISO(`${day}T${slot.hour}`);
 
@@ -361,7 +361,7 @@ export const ScheduleEntry = ({
                 {speakersNames.length > 0 && (
                   <Heading size={6}>{speakersNames}</Heading>
                 )}
-                <Text size="label4" color="grey-700">
+                <Text size="label4">
                   {[roomText, audienceLevel, languageText]
                     .filter((v) => v)
                     .join(", ")}
