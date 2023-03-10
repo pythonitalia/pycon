@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='speakervoucher',
             name='voucher_type',
-            field=models.CharField(choices=[('speaker', 'Speaker'), ('so_speaker', 'Co-Speaker')], default='speaker', max_length=20),
+            field=models.CharField(choices=[('speaker', 'Speaker'), ('co_speaker', 'Co-Speaker')], default='speaker', max_length=20),
             preserve_default=False,
         ),
     ]

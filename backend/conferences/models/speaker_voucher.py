@@ -9,7 +9,7 @@ from conferences.models import Conference
 class SpeakerVoucher(TimeStampedModel):
     class VoucherType(models.TextChoices):
         SPEAKER = "speaker", _("Speaker")
-        CO_SPEAKER = "so_speaker", _("Co-Speaker")
+        CO_SPEAKER = "co_speaker", _("Co-Speaker")
 
     conference = models.ForeignKey(
         Conference,
