@@ -736,6 +736,7 @@ reflects what everyone wants to see!`,
     "error404.message": "We couldn't find the page you are looking for :(",
 
     "schedule.workshop.limitedSeats": "Limited space available! Book now.",
+    "schedule.workshop.soldout": "No more seats available",
 
     "schedule.invitation.congratulations":
       "Congratulations! Your submission {submissionTitle} was accepted!",
@@ -1616,6 +1617,7 @@ Affrettati a comprare il biglietto!`,
     "schedule.live": "Live",
     "schedule.invitation.notes.placeholder": "Scrivi qui...",
     "schedule.workshop.limitedSeats": "Spazi limitati! Prenota il tuo posto.",
+    "schedule.workshop.soldout": "Workshop pieno!",
 
     "profile.welcome": "Ciao {name}!",
     "profile.myProfile": "Il mio profilo",

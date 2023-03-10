@@ -373,17 +373,33 @@ export const ScheduleEntry = ({
 
           <div className="flex flex-col-reverse items-start md:flex-col gap-6 md:gap-2">
             {!isCustomItem && (
-              <HorizontalStack
-                fullWidth
-                alignItems="center"
-                justifyContent="spaceBetween"
-                gap="small"
-                wrap="wrap"
-              >
-                <EventTag type={item.type} />
-                <HeartIcon filled={starred} onClick={toggleEventFavorite} />
-              </HorizontalStack>
+              <div className="w-full">
+                {item.hasLimitedCapacity && (
+                  <LayoutContent showUntil="tablet">
+                    <Text as="p" size="label3" color="grey-700">
+                      {item.spacesLeft > 0 && (
+                        <FormattedMessage id="schedule.workshop.limitedSeats" />
+                      )}
+                      {item.spacesLeft <= 0 && (
+                        <FormattedMessage id="schedule.workshop.soldout" />
+                      )}
+                    </Text>
+                    <Spacer size="small" />
+                  </LayoutContent>
+                )}
+                <HorizontalStack
+                  fullWidth
+                  alignItems="center"
+                  justifyContent="spaceBetween"
+                  gap="small"
+                  wrap="wrap"
+                >
+                  <EventTag type={item.type} />
+                  <HeartIcon filled={starred} onClick={toggleEventFavorite} />
+                </HorizontalStack>
+              </div>
             )}
+
             <WrapperComponent {...wrapperProps}>
               <Heading color="none" size={4}>
                 {item.title}
@@ -415,7 +431,12 @@ export const ScheduleEntry = ({
               <div>
                 {item.hasLimitedCapacity && (
                   <Text as="p" size="label3" color="grey-700">
-                    <FormattedMessage id="schedule.workshop.limitedSeats" />
+                    {item.spacesLeft > 0 && (
+                      <FormattedMessage id="schedule.workshop.limitedSeats" />
+                    )}
+                    {item.spacesLeft <= 0 && (
+                      <FormattedMessage id="schedule.workshop.soldout" />
+                    )}
                   </Text>
                 )}
 
