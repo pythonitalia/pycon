@@ -452,6 +452,7 @@ export const ScheduleEntry = ({
                   <HorizontalStack
                     alignItems="center"
                     justifyContent="spaceBetween"
+                    gap="small"
                   >
                     <Heading size={5}>{speakersNames}</Heading>
                     <AvatarGroup>
