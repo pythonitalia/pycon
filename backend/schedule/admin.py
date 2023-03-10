@@ -96,12 +96,21 @@ def mark_speakers_to_receive_vouchers(modeladmin, request, queryset):
                 vouchers_to_create[speaker_id] = SpeakerVoucher.VoucherType.SPEAKER
                 created_codes = created_codes + 1
             elif (
-                vouchers_to_create[speaker_id] == SpeakerVoucher.VoucherType.CO_SPEAKER
+                vouchers_to_create.get(speaker_id)
+                == SpeakerVoucher.VoucherType.CO_SPEAKER
             ):
-                # voucher exists, but we need to update it to be a main speaker
+                # voucher will be created now but we need to update
+                # it to be a main speaker
+                # e.g we first saw this person as a co-speaker in another talk
+                # but they are the main speaker in this talk
+                # so they need a full ticket voucher
                 vouchers_to_create[speaker_id] = SpeakerVoucher.VoucherType.SPEAKER
 
-        first_co_speaker = schedule_item.additional_speakers_sorted[0]
+        first_co_speaker = (
+            schedule_item.additional_speakers_sorted[0]
+            if schedule_item.additional_speakers_sorted
+            else None
+        )
         if first_co_speaker and not voucher_exists(
             existing_vouchers, vouchers_to_create, first_co_speaker.user_id
         ):
