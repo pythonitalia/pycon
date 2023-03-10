@@ -1081,7 +1081,8 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
       "Scegli un biglietto, una maglietta o una stanza di hotel prima di continuare",
     "order.hotelRoomCartInfo":
       "{roomName} con check-in il {checkin} e check-out {checkout}",
-    "order.userAlreadyMember": "Sei già iscritto! Grazie!",
+    "order.userAlreadyMember":
+      "Fai già parte della nostra associazione. Grazie!",
     "order.addMembership": "Aggiungi iscrizione",
     "order.removeMembership": "Rimuovi iscrizione",
     "orderConfirmation.manage": "Fai click qui per gestire il tuo ordine",
@@ -1504,7 +1505,7 @@ Il tuo voto ci aiuterà a creare un programma che più rispecchia ciò che la co
 
     "ticketsOverview.ticket.business.title": "Business",
     "ticketsOverview.ticket.business.description":
-      "Aiuta i tuoi dipendenti a migliorare le proprie competenze e scopri di più su Python e le sue applicazioni sul posto di lavoro!",
+      "Aiuta il tuo team a migliorare le proprie competenze e scopri di più su Python e come integrarlo nei tuoi progetti!",
     "ticketsOverview.buyTickets.cta": "Biglietti",
 
     "home.grants.title": "Grants",
@@ -1606,7 +1607,7 @@ Affrettati a comprare il biglietto!`,
     "homepage.followUs": "Seguici su",
 
     "homepage.sponsorsSectionText":
-      "PyCon Italia può essere la tua piattaforma per guadgnare riconoscibilità del tuo brand, acquisire nuovi clienti ed opportunità ed assumere personale da una platea di professionisti altamente qualificati!",
+      "PyCon Italia può essere la tua piattaforma per guadagnare riconoscibilità del tuo brand, acquisire nuovi clienti ed opportunità ed assumere personale da una platea di persone altamente qualificate!",
     "homepage.sponsorsSectionCTAText": "Diventa sponsor",
 
     "scheduleView.allRooms": "Tutte le stanze",
