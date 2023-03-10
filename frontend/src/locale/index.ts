@@ -30,7 +30,7 @@ export const messages = {
     "profile.myProposals.viewInvitation": "Invitation",
     "profile.myProposals.edit": "Edit",
     "schedule.entry.endsAt": "Ends at {time}",
-
+    "homepage.sponsors": "Sponsors",
     "homepage.eventPreviewCard.time": "{start} - {end}",
 
     "profile.welcome": "Ciao {name}!",
@@ -1045,6 +1045,7 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "header.enquiries": "Informazioni",
     "header.schedule": "Programma",
     "header.switchLanguage": "Change language to English",
+
     "resetPassword.newPassword": "Nuova Password",
     "resetPassword.confirmPassword": "Conferma password",
     "resetPassword.changePassword": "Cambia password",
@@ -1700,6 +1701,7 @@ Affrettati a comprare il biglietto!`,
 
     "homepage.eventPreviewCard.time": "{start} - {end}",
     "homepage.schedulePreviewSection.goToSchedule": "Apri programma completo",
+    "homepage.sponsors": "Sponsors",
   },
 };
 

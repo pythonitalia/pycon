@@ -49,6 +49,7 @@ export const KeynotersSection = () => {
       <SliderGrid mdCols={2} cols={3} justifyContent="center" wrap="wrap">
         {keynotes.map((keynote) => (
           <Link
+            key={keynote.id}
             noHover
             href={createHref({
               path: `/keynotes/${keynote.slug}`,

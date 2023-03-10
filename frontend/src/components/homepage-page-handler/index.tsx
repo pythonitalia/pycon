@@ -1,11 +1,5 @@
 import {
-  Text,
-  Heading,
   Page,
-  Spacer,
-  Button,
-  Section,
-  VerticalStack,
   Separator,
   LayoutContent,
 } from "@python-italia/pycon-styleguide";
@@ -14,16 +8,15 @@ import { FormattedMessage } from "react-intl";
 
 import { HomepageHero } from "~/components/homepage-hero";
 import { MetaTags } from "~/components/meta-tags";
-import { TicketsOverviewSection } from "~/components/tickets-overview-section/index";
 import { useCurrentLanguage } from "~/locale/context";
 import { useIndexPageQuery } from "~/types";
 
 import { KeynotersSection } from "../keynoters-section";
 import { FollowUsSection } from "./follow-us-section";
-import { InformationSection } from "./information-section";
 import { IntroSection } from "./intro-section";
 import { SchedulePreviewSection } from "./schedule-preview-section";
 import { SponsorsSection } from "./sponsors-section";
+import { TicketsOverviewSection } from "./tickets-overview-section";
 
 type Props = {
   cycle: "day" | "night";

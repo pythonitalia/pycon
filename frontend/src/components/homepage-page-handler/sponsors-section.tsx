@@ -28,17 +28,25 @@ export const SponsorsSection = ({ sponsorsByLevel }: Props) => {
       <Section spacingSize="3xl">
         <Grid cols={12} mdCols={12}>
           <GridColumn colSpan={5} mdColSpan={5}>
-            <LayoutContent position="sticky" style={{ top: 10 }}>
-              <Heading size="display2">Sponsors</Heading>
+            <div className="sticky top-[10px]">
+              <Heading size="display2" className="text-center md:text-left">
+                <FormattedMessage id="homepage.sponsors" />
+              </Heading>
               <Spacer size="large" />
-              <Text size={1} color="grey-900">
+              <Text
+                as="p"
+                size={1}
+                color="grey-900"
+                className="text-center md:text-left"
+              >
                 <FormattedMessage id="homepage.sponsorsSectionText" />
               </Text>
               <Spacer size="large" />
               <Button href="/sponsor" size="small" role="secondary">
                 <FormattedMessage id="homepage.sponsorsSectionCTAText" />
               </Button>
-            </LayoutContent>
+              <Spacer size="large" />
+            </div>
           </GridColumn>
           <GridColumn mdColStart={7} colStart={7} colSpan={6} mdColSpan={6}>
             <SponsorsGrid
