@@ -84,7 +84,7 @@ export const SliderGrid = ({
         <div
           ref={scrollerRef}
           className={clsx(
-            `snap-x snap-mandatory overflow-x-auto flex md:-mt-2 lg:-mt-3`,
+            `snap-x snap-mandatory overflow-x-auto flex md:-mt-2 lg:-mt-4 md:px-2 lg:px-0`,
             {
               "md:justify-center": justifyContent === "center",
 
@@ -100,7 +100,7 @@ export const SliderGrid = ({
               className={clsx(
                 "md:opacity-100 z-10 transition-opacity snap-center shrink-0",
                 "w-scroller-item md:w-auto relative",
-                "pl-2 pr-2 md:min-w-0 md:p-2 lg:p-3",
+                "pl-2 pr-2 md:min-w-0 md:p-2 lg:p-4",
                 {
                   "lg:basis-[calc((100%/1))]": cols === 1,
                   "lg:basis-[calc((100%/2))]": cols === 2,
