@@ -14,12 +14,15 @@ import { FormattedMessage } from "react-intl";
 import { GetStaticProps } from "next";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
+import { createHref } from "~/components/link";
 import { AvailableProductsLandingSection } from "~/components/tickets-page/available-products-landing-section";
 import { TicketsPageWrapper } from "~/components/tickets-page/wrapper";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
+import { useCurrentLanguage } from "~/locale/context";
 import { queryTickets } from "~/types";
 
 export const TicketsPage = () => {
+  const language = useCurrentLanguage();
   return (
     <TicketsPageWrapper>
       {({ hotelRooms, tickets }) => (
@@ -40,7 +43,10 @@ export const TicketsPage = () => {
               <MultiplePartsCard
                 cta={{
                   label: <FormattedMessage id="tickets.buyTicketsCta" />,
-                  link: "/tickets/personal/",
+                  link: createHref({
+                    path: "/tickets/personal/",
+                    locale: language,
+                  }),
                 }}
               >
                 <CardPart>
@@ -57,7 +63,10 @@ export const TicketsPage = () => {
               <MultiplePartsCard
                 cta={{
                   label: <FormattedMessage id="tickets.buyTicketsCta" />,
-                  link: "/tickets/business/",
+                  link: createHref({
+                    path: "/tickets/business/",
+                    locale: language,
+                  }),
                 }}
               >
                 <CardPart>

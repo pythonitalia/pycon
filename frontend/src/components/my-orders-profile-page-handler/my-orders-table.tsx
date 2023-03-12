@@ -1,7 +1,7 @@
 import { Button, Tag, Text } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
 
-import { useCurrentLanguage } from "~/locale/context";
+import { useMoneyFormatter } from "~/helpers/formatters";
 import { MyProfileWithOrdersQuery } from "~/types";
 
 import { Table } from "../table";
@@ -10,11 +10,7 @@ type Props = {
   orders: MyProfileWithOrdersQuery["me"]["orders"];
 };
 export const MyOrdersTable = ({ orders }: Props) => {
-  const language = useCurrentLanguage();
-  const moneyFormatter = new Intl.NumberFormat(language, {
-    style: "currency",
-    currency: "EUR",
-  });
+  const moneyFormatter = useMoneyFormatter();
 
   return (
     <Table

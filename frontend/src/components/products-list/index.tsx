@@ -12,6 +12,7 @@ import {
 
 import { HotelRow } from "./hotel-row";
 import { MembershipRow } from "./membership-row";
+import { SocialEventRow } from "./socialevent-row";
 import { TicketRow } from "./ticket-row";
 
 type Props = {
@@ -39,6 +40,9 @@ export const ProductsList = ({
   const tshirt = products.filter((product) => product.category === "Gadget")[0];
   const sortedHotelRooms = [...hotelRooms].sort(
     (a, b) => Number(a.price) - Number(b.price),
+  );
+  const socialEvents = products.filter(
+    (product) => product.type === TicketType.SocialEvent,
   );
 
   return (
@@ -71,6 +75,17 @@ export const ProductsList = ({
             <Spacer size="xs" />
           </>
         )}
+
+        <GroupHeading>
+          <FormattedMessage id="tickets.productsList.socialEventsTitle" />
+        </GroupHeading>
+
+        {socialEvents.map((socialEvent, index) => (
+          <Fragment key={socialEvent.id}>
+            <SocialEventRow ticket={socialEvent} openByDefault={index === 0} />
+            <Spacer size="xs" />
+          </Fragment>
+        ))}
 
         <GroupHeading>
           <FormattedMessage id="tickets.productsList.hotelRoomsTitle" />

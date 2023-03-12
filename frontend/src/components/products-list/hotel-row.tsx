@@ -13,7 +13,7 @@ import { differenceInCalendarDays, format, isAfter, parseISO } from "date-fns";
 import { useState } from "react";
 import { FormattedMessage } from "react-intl";
 
-import { useCurrentLanguage } from "~/locale/context";
+import { useMoneyFormatter } from "~/helpers/formatters";
 import { HotelRoom } from "~/types";
 
 import { HotelRoomState } from "../tickets-page/types";
@@ -172,11 +172,7 @@ const AddViewHotelRoomRow = ({
   const nightsBetween =
     differenceInCalendarDays(hotelCheckoutParsed, hotelCheckinParsed) || 0;
 
-  const language = useCurrentLanguage();
-  const moneyFormatter = new Intl.NumberFormat(language, {
-    style: "currency",
-    currency: "EUR",
-  });
+  const moneyFormatter = useMoneyFormatter();
 
   const leftSide = (
     <>
