@@ -6,7 +6,10 @@ from typing import Dict, List, Optional
 
 import strawberry
 
-from api.pretix.constants import ASSOCIATION_CATEGORY_INTERNAL_NAME
+from api.pretix.constants import (
+    ASSOCIATION_CATEGORY_INTERNAL_NAME,
+    SOCIAL_EVENTS_CATEGORY_INTERNAL_NAME,
+)
 from pretix.types import (
     Answer as AnswerDict,
     Category as CategoryDict,
@@ -142,6 +145,7 @@ class TicketType(Enum):
     BUSINESS = "business"
     ASSOCIATION = "association"
     HOTEL = "hotel"
+    SOCIAL_EVENT = "social-event"
 
 
 def _get_category_for_ticket(item, categories):
@@ -181,6 +185,9 @@ class TicketItem:
 
         if self.category_internal_name == ASSOCIATION_CATEGORY_INTERNAL_NAME:
             return TicketType.ASSOCIATION
+
+        if self.category_internal_name == SOCIAL_EVENTS_CATEGORY_INTERNAL_NAME:
+            return TicketType.SOCIAL_EVENT
 
         return TicketType.STANDARD
 
@@ -244,7 +251,8 @@ class TicketItem:
         if not quotas:
             return None
 
-        # tickets can be in multiple quotas, in that case the one that has the least amount of tickets
+        # tickets can be in multiple quotas, in that case the one
+        # that has the least amount of tickets
         # should become the source of truth for availability. See:
         # https://docs.pretix.eu/en/latest/development/concepts.html#quotas
         if parent_item_id:

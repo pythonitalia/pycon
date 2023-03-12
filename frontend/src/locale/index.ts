@@ -33,6 +33,8 @@ export const messages = {
     "homepage.sponsors": "Sponsors",
     "homepage.eventPreviewCard.time": "{start} - {end}",
 
+    "tickets.productsList.socialEventsTitle": "Social Events",
+
     "profile.welcome": "Ciao {name}!",
     "profile.myProfile": "My Profile",
     "profile.logout": "Sign Out",
@@ -1702,6 +1704,8 @@ Affrettati a comprare il biglietto!`,
     "homepage.eventPreviewCard.time": "{start} - {end}",
     "homepage.schedulePreviewSection.goToSchedule": "Apri Programma",
     "homepage.sponsors": "Sponsors",
+
+    "tickets.productsList.socialEventsTitle": "Eventi sociali",
   },
 };
 

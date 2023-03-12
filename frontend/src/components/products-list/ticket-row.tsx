@@ -121,7 +121,7 @@ export const TicketRow = ({
   );
 };
 
-const AddRemoveRow = ({
+export const AddRemoveRow = ({
   onIncrement,
   onDecrement,
   price,
