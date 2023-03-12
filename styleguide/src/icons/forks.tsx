@@ -3,7 +3,7 @@ import * as React from "react";
 export const ForksIcon = (props: React.SVGProps<SVGSVGElement>) => {
   return (
     <svg width={48} height={48} viewBox="0 0 48 48" fill="none" {...props}>
-      <path fill="#F8B03D" d="M0 0h48v48H0z" />
+      <path d="M0 0h48v48H0z" />
       <path
         d="M32.542 44.728h5.613V3c-4.406 1.147-11.651 11-8.152 28"
         stroke="#0E1116"
