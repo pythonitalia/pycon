@@ -1,7 +1,7 @@
 import { Heading, Button, BottomBar } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
 
-import { useCurrentLanguage } from "~/locale/context";
+import { useMoneyFormatter } from "~/helpers/formatters";
 import { HotelRoom, TicketItem } from "~/types";
 
 import { calculateTotalAmount } from "./review/prices";
@@ -15,7 +15,6 @@ type Props = {
 
 export const CheckoutBar = ({ products, hotelRooms, onCheckout }: Props) => {
   const { state } = useCart();
-  const language = useCurrentLanguage();
 
   const productsById = Object.fromEntries(
     products!.map((product) => [product.id, product]),
@@ -31,10 +30,7 @@ export const CheckoutBar = ({ products, hotelRooms, onCheckout }: Props) => {
     return null;
   }
 
-  const moneyFormatter = new Intl.NumberFormat(language, {
-    style: "currency",
-    currency: "EUR",
-  });
+  const moneyFormatter = useMoneyFormatter();
 
   return (
     <BottomBar

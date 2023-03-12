@@ -44,7 +44,6 @@ export const ProductsList = ({
   const socialEvents = products.filter(
     (product) => product.type === TicketType.SocialEvent,
   );
-  console.log("socialEvents", socialEvents);
 
   return (
     <div>

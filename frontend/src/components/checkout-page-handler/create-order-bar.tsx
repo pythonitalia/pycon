@@ -10,6 +10,7 @@ import { useMachine } from "@xstate/react";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
+import { useMoneyFormatter } from "~/helpers/formatters";
 import { useCurrentLanguage } from "~/locale/context";
 import { HotelRoom, TicketItem, useCreateOrderMutation } from "~/types";
 
@@ -104,10 +105,7 @@ export const CreateOrderBar = ({
     },
   });
 
-  const moneyFormatter = new Intl.NumberFormat(language, {
-    style: "currency",
-    currency: "EUR",
-  });
+  const moneyFormatter = useMoneyFormatter();
 
   const onCreateOrder = (
     event: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>,

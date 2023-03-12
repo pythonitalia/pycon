@@ -835,11 +835,14 @@ The sooner you buy your ticket, the more you save!`,
     "tickets.landing.hotelCopy": `Take the stress out of your trip and book your hotel room with us! You can stay in the same hotel as the conference, the Grand Hotel Mediterraneo!
 We have a limited number of discounted rooms, so make sure you grab yours quickly!
 `,
+    "tickets.landing.socialEvents.copy":
+      "PyCon Italia is more than just a conference! PyDrinks and PyDinner are our two main social events, join us to meet new people from the Python community!",
 
     "tickets.landing.membership.cta": "Join us!",
 
     "tickets.landing.ticketsTitle": "Tickets",
     "tickets.landing.hotelTitle": "Hotel",
+    "tickets.landing.socialEvents.title": "Social Events & more",
     "tickets.landing.membershipTitle": "Membership",
     "blog.publishedOn": "{date} - {author}",
 
@@ -1706,6 +1709,10 @@ Affrettati a comprare il biglietto!`,
     "homepage.sponsors": "Sponsors",
 
     "tickets.productsList.socialEventsTitle": "Eventi sociali",
+    "tickets.landing.socialEvents.copy":
+      "PyCon Italia è molto di più di una semplice conferenza! PyDrinks e PyDinner sono i nostri due eventi social principali, dove puoi socializzare e conoscere nuove persone!",
+
+    "tickets.landing.socialEvents.title": "Eventi sociali",
   },
 };
 

@@ -7,8 +7,8 @@ import {
 } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
 
+import { useMoneyFormatter } from "~/helpers/formatters";
 import { compile } from "~/helpers/markdown";
-import { useCurrentLanguage } from "~/locale/context";
 import { CurrentUserQueryResult, TicketItem } from "~/types";
 
 import { useCart } from "../tickets-page/use-cart";
@@ -26,11 +26,7 @@ export const MembershipRow = ({ me, membership }: Props) => {
     removeProduct,
   } = useCart();
   const added = selectedProducts[membership.id]?.length > 0;
-  const language = useCurrentLanguage();
-  const moneyFormatter = new Intl.NumberFormat(language, {
-    style: "currency",
-    currency: "EUR",
-  });
+  const moneyFormatter = useMoneyFormatter();
 
   return (
     <MultiplePartsCard

@@ -34,7 +34,6 @@ export const SocialEventRow = ({ ticket, openByDefault }: Props) => {
     year: "numeric",
   });
   const icon = getIconForTicket(ticket);
-  console.log("icon", icon);
 
   return (
     <MultiplePartsCard

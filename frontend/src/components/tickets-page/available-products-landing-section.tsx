@@ -10,6 +10,7 @@ import {
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
+import { useMoneyFormatter } from "~/helpers/formatters";
 import { compile } from "~/helpers/markdown";
 import { useCurrentLanguage } from "~/locale/context";
 import { TicketsQueryResult, TicketType, TicketItem } from "~/types";
@@ -23,11 +24,7 @@ export const AvailableProductsLandingSection = ({
   hotelRooms,
   tickets,
 }: Props) => {
-  const language = useCurrentLanguage();
-  const moneyFormatter = new Intl.NumberFormat(language, {
-    style: "currency",
-    currency: "EUR",
-  });
+  const moneyFormatter = useMoneyFormatter();
 
   const businessTicket = tickets.find(
     (ticket) => ticket.admission && ticket.type === TicketType.Business,
@@ -38,6 +35,10 @@ export const AvailableProductsLandingSection = ({
   );
   const membership = tickets.find(
     (ticket) => !ticket.admission && ticket.type === TicketType.Association,
+  );
+
+  const socialEvents = tickets.filter(
+    (product) => product.type === TicketType.SocialEvent,
   );
 
   const someHotelRoomsAreAvailable = hotelRooms.some((room) => !room.isSoldOut);
@@ -77,6 +78,34 @@ export const AvailableProductsLandingSection = ({
             </CardPart>
           </Grid>
         </MultiplePartsCard>
+      )}
+
+      {socialEvents.length > 0 && (
+        <>
+          <Spacer size="small" />
+          <MultiplePartsCard>
+            <CardPart icon="drink" iconBackground="coral" contentAlign="left">
+              <Heading size={2}>
+                <FormattedMessage id="tickets.landing.socialEvents.title" />
+              </Heading>
+            </CardPart>
+            <CardPart contentAlign="left" background="milk">
+              <Text size={2}>
+                <FormattedMessage id="tickets.landing.socialEvents.copy" />
+              </Text>
+            </CardPart>
+            <Grid cols={3} gap="none" divide={true}>
+              {socialEvents.map((ticket) => (
+                <CardPart key={ticket.id} contentAlign="left">
+                  <Text size="label3">{ticket.name}</Text>
+                  <Heading size={2}>
+                    {moneyFormatter.format(Number(ticket.defaultPrice))}
+                  </Heading>
+                </CardPart>
+              ))}
+            </Grid>
+          </MultiplePartsCard>
+        </>
       )}
 
       {someHotelRoomsAreAvailable && (
