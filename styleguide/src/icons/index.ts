@@ -21,3 +21,5 @@ export { SignOutIcon } from "./signout";
 export { GearIcon } from "./gear";
 export { CircleIcon } from "./circle";
 export { WebIcon } from "./web";
+export { ForksIcon } from "./forks";
+export { DrinkIcon } from "./drink";

@@ -22,4 +22,6 @@ export type Icon =
   | "sign-out"
   | "email"
   | "circle"
-  | "web";
+  | "web"
+  | "drink"
+  | "forks";
