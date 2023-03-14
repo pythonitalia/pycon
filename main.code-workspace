@@ -5,6 +5,10 @@
       "path": "gateway"
     },
     {
+        "name": "🐤 Wagtail",
+        "path": "cms",
+    }
+    {
       "name": "🐍 PyCon Backend",
       "path": "backend"
     },

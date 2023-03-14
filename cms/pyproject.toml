@@ -1,5 +1,14 @@
 [tool]
 [tool.pdm]
+[tool.pdm.dev-dependencies]
+dev = [
+    "wagtail-factories>=4.0.0",
+    "pytest>=7.2.2",
+    "factory-boy>=3.2.1",
+    "pytest-factoryboy>=2.5.1",
+    "pytest-django>=4.5.2",
+    "pytest-cov>=4.0.0",
+]
 
 [project]
 name = ""
@@ -12,7 +21,12 @@ dependencies = [
     "wagtail>=4.2",
     "Django>=4.1.7",
     "wagtail-localize>=1.5",
-    "strawberry-graphql>=0.159.0",
+    "strawberry-graphql>=0.103.0",
+    "strawberry-wagtail>=0.1.0",
 ]
 requires-python = ">=3.11"
 license = {text = "MIT"}
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE="cms.settings.dev"
+addopts = "--failed-first -vv -s -l --cov-report term-missing --cov=."
