@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
-import { FormattedMessage, FormattedPlural } from "react-intl";
+import { FormattedMessage } from "react-intl";
 import FormattedDuration from "react-intl-formatted-duration";
 import { Box, Flex, jsx, Text } from "theme-ui";
 

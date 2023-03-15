@@ -125,6 +125,7 @@ export const RequestResetPasswordPageHandler = () => {
                 placeholder="grace.hopper@pycon.it"
                 data-testid="email-input"
                 required={true}
+                errors={[error?.message]}
               />
             </InputWrapper>
           </div>

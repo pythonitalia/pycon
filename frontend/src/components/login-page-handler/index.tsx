@@ -13,12 +13,10 @@ import {
 import React, { useEffect, useRef } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
-import { ThemeUIStyleObject } from "theme-ui";
 
 import { useRouter } from "next/router";
 
 import { MetaTags } from "~/components/meta-tags";
-import { useMessages } from "~/helpers/use-messages";
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
 import { useCurrentLanguage } from "~/locale/context";
 import { LoginMutation, useLoginMutation } from "~/types";
@@ -32,11 +30,6 @@ type LoginFormFields = {
   password: string;
 };
 
-type FormProps = {
-  next?: string;
-  sx?: ThemeUIStyleObject;
-};
-
 const cleanRedirectUrl = (url: string) =>
   url.startsWith("/") ? url : "/profile";
 
@@ -44,7 +37,6 @@ export const LoginPageHandler = () => {
   const router = useRouter();
   const language = useCurrentLanguage();
   const [loggedIn, setLoggedIn] = useLoginState();
-  const { messages, clearMessages } = useMessages();
   const formRef = useRef<HTMLFormElement>();
 
   const nextUrl = cleanRedirectUrl((router.query.next as string) || `/profile`);
@@ -52,7 +44,6 @@ export const LoginPageHandler = () => {
   const onLoginCompleted = (data: LoginMutation) => {
     if (data && data.login.__typename === "LoginSuccess") {
       setLoggedIn(true);
-      clearMessages();
 
       router.replace(nextUrl);
     }
@@ -73,8 +64,6 @@ export const LoginPageHandler = () => {
     if (router.isReady && loggedIn) {
       router.replace(nextUrl);
     }
-
-    clearMessages();
   }, [router.isReady]);
 
   const onLogin = (e: React.FormEvent) => {

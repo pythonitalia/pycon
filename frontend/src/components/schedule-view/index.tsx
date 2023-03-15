@@ -4,7 +4,6 @@ import {
   Spacer,
   DaysSelector,
   Button,
-  Text,
   BasicButton,
 } from "@python-italia/pycon-styleguide";
 import React, { Fragment, useCallback, useState } from "react";

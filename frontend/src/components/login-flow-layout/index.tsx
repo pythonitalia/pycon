@@ -14,6 +14,7 @@ type Props = {
   bottomSection?: React.ReactNode;
   illustration?: "pencil" | "email" | "none";
 };
+
 export const LoginFlowLayout = ({
   children,
   bottomSection,
