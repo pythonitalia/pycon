@@ -92,12 +92,13 @@ export const SocialEventRow = ({ ticket, openByDefault }: Props) => {
 };
 
 const getIconForTicket = (ticket: TicketItem): Icon => {
-  switch (ticket.name) {
-    case "PyDrinks":
-      return "drink";
-    case "PyDinner":
-      return "forks";
-    default:
-      return "star";
+  if (ticket.name.startsWith("PyDinner")) {
+    return "forks";
   }
+
+  if (ticket.name.startsWith("PyDrinks")) {
+    return "drink";
+  }
+
+  return "star";
 };
