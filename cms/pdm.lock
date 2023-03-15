@@ -366,26 +366,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "strawberry-graphql-django"
-version = "0.2.5"
-requires_python = ">=3.7,<4.0"
-summary = "Strawberry GraphQL Django extension"
-dependencies = [
-    "Django>=3.0",
-    "strawberry-graphql>=0.69.0",
-]
-
-[[package]]
-name = "strawberry-wagtail"
-version = "0.1.0"
-requires_python = ">=3.7,<4.0"
-summary = ""
-dependencies = [
-    "strawberry-graphql-django<0.3.0,>=0.2.5",
-    "strawberry-graphql<0.104.0,>=0.103.1",
-]
-
-[[package]]
 name = "telepath"
 version = "0.3"
 requires_python = ">=3.5"
@@ -468,7 +448,7 @@ summary = "A Python image library that sits on top of Pillow, Wand and OpenCV"
 
 [metadata]
 lock_version = "4.1"
-content_hash = "sha256:077866084bb4483659ae7f0d628590095b9e1b9803fbdacd8a3dbc394be83641"
+content_hash = "sha256:ca3cd46f24c24cfd376e8ba278982a40d01b35878567b50c4c69ed553fa38cb3"
 
 [metadata.files]
 "anyascii 0.3.1" = [
@@ -846,14 +826,6 @@ content_hash = "sha256:077866084bb4483659ae7f0d628590095b9e1b9803fbdacd8a3dbc394
 "strawberry-graphql 0.103.9" = [
     {url = "https://files.pythonhosted.org/packages/01/2c/9c9f0c09981b69fe12c3f5b0726fe0b516d29f3dcfd6f535ba48e929946c/strawberry_graphql-0.103.9-py3-none-any.whl", hash = "sha256:336f59dad07d9026e475014eddcca6c5b2dd72e964c7ba5f6099ffcfcaf7dc2a"},
     {url = "https://files.pythonhosted.org/packages/7d/82/a5fc40dd81edc5fab2cccfc842ff306d9f1643ef7347c486708921ed66a9/strawberry-graphql-0.103.9.tar.gz", hash = "sha256:a2917ee82925d807cb182e51a2cfcb8ee8ce9febe7ed0a0c5c156d8b8ccbe3a9"},
-]
-"strawberry-graphql-django 0.2.5" = [
-    {url = "https://files.pythonhosted.org/packages/63/88/f88579ed9d06b1a244dfd6735756999036a092efd4e1ed042a4f9274279c/strawberry-graphql-django-0.2.5.tar.gz", hash = "sha256:483d97c24ce440a1e3cb92ec3e1fdc0cf534d9afa79600396b0a27a5d9d97793"},
-    {url = "https://files.pythonhosted.org/packages/e3/f2/9351834d4cf66c6b61f54f638ea69dc3fe6c6ff2eb75a889140e878393e9/strawberry_graphql_django-0.2.5-py3-none-any.whl", hash = "sha256:dee8011bf074c618b7ddab0a92d0832b0ceea2dcb69ee422003a98e4a28c14d6"},
-]
-"strawberry-wagtail 0.1.0" = [
-    {url = "https://files.pythonhosted.org/packages/cb/04/8dbb054111784775eb501f73c514631b8ba8c0450328539e0a64312e2efc/strawberry-wagtail-0.1.0.tar.gz", hash = "sha256:31be476d16b5520bfe497f3e1a92584e7311bb29aec7f86a21c20f4239d8da82"},
-    {url = "https://files.pythonhosted.org/packages/fe/40/7477c609217f680bd1bbe78b713fff6680cfac9f67d63a7f576e56efdb85/strawberry_wagtail-0.1.0-py3-none-any.whl", hash = "sha256:1f8a420d4015f154cab485607f0f4443d63155604695e26b40d293ddcde8fb30"},
 ]
 "telepath 0.3" = [
     {url = "https://files.pythonhosted.org/packages/0a/eb/ec216110ddfe742c931d9fe84047a89add72c2aa913db31f0348bb16c2de/telepath-0.3-py35-none-any.whl", hash = "sha256:fbdbc6bdd9a4a5c2b230caae242fa6ba4994c9dbcfd780df9be63f2966feb034"},

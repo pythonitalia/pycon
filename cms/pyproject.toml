@@ -22,7 +22,6 @@ dependencies = [
     "Django>=4.1.7",
     "wagtail-localize>=1.5",
     "strawberry-graphql>=0.103.0",
-    "strawberry-wagtail>=0.1.0",
 ]
 requires-python = ">=3.11"
 license = {text = "MIT"}
