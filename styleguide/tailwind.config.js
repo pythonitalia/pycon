@@ -148,6 +148,7 @@ module.exports = {
       height: {
         separator: '3px',
 
+        7.5: '1.875rem', // 30px
         128: '28.875rem', // 462px
         256: '36.875rem', // 590px
       },
@@ -155,6 +156,9 @@ module.exports = {
         "full-outside-container": 'calc(100% + var(--screen-side-width))',
         "scroller-item": 'calc(100% - 5rem)',
         separator: '3px',
+
+        7.5: '1.875rem', // 30px
+        14.8: '3.75rem' // 60px
       },
       margin: {
         0.6: '0.188rem', // 3px
@@ -172,8 +176,6 @@ module.exports = {
         full: '100%',
       },
       gridTemplateColumns: {
-        'inverted-split-content-larger-content': 'max-content 1fr',
-        'split-content-larger-content': '1fr max-content',
         'cardpart-increments': '1fr 231px',
         'cardpart-options': '0.5fr 1fr',
         'cardpart-options-options': 'repeat(var(--num-of-options), 1fr) auto',

@@ -1,5 +1,11 @@
 import React from "react";
-import { Cathedral, Snake4, Snake5, Snake1 } from "../illustrations";
+import {
+  Cathedral,
+  Snake4,
+  Snake5,
+  Snake1,
+  SnakePencil,
+} from "../illustrations";
 import { SplitSection } from "./split-section";
 import { Text } from "../text";
 import { Spacer } from "../spacer";
@@ -14,9 +20,33 @@ export const Standard = ({ ...props }) => (
     <SplitSection
       sideContent={<Florence2 />}
       sideContentBackground={Florence2.backgroundColor}
-      title="Become a sponsor"
       {...props}
     >
+      <Heading size="display2">Become a sponsor</Heading>
+      <Spacer size="medium" />
+      <Text size={1}>
+        Sponsoring PyConIT guarantees you strongly targeted visibility towards
+        senior developers and software engineers.
+      </Text>
+      <Spacer size="large" />
+      <Button onClick={() => {}} role="secondary">
+        Become a sponsor
+      </Button>
+    </SplitSection>
+  </div>
+);
+
+export const WithCustomIllustration = () => (
+  <div className="py-4">
+    <SplitSection
+      sideContent={<SnakePencil />}
+      sideContentType="other"
+      sideContentPadding={false}
+      contentSpacing="medium"
+      hideSideContentOnMobile={true}
+    >
+      <Heading size="display2">Become a sponsor</Heading>
+      <Spacer size="medium" />
       <Text size={1}>
         Sponsoring PyConIT guarantees you strongly targeted visibility towards
         senior developers and software engineers.
@@ -41,9 +71,9 @@ export const WithOtherSideContent = ({ ...props }) => (
       invert
       sideContentType="other"
       hideSideContentOnMobile
-      spacing="larger-content"
-      title="Call for proposals [inverted]"
+      contentSpacing="2md"
     >
+      <Heading size="display2">Call for proposals [inverted]</Heading>
       <Spacer size="medium" />
       <Heading size={2}>PyCon Italia is looking for you!</Heading>
       <Spacer size="medium" />
@@ -73,9 +103,9 @@ export const WithOtherSideContent = ({ ...props }) => (
       }
       sideContentType="other"
       hideSideContentOnMobile
-      spacing="larger-content"
-      title="Not inverted"
+      contentSpacing="2md"
     >
+      <Heading size="display2">Not inverted</Heading>
       <Spacer size="medium" />
       <Heading size={2}>PyCon Italia is looking for you!</Heading>
       <Spacer size="medium" />
@@ -104,8 +134,9 @@ export const MultipleSections = ({ ...props }) => (
       <SplitSection
         sideContent={<Florence2 />}
         sideContentBackground={Florence2.backgroundColor}
-        title="Become a sponsor"
       >
+        <Heading size="display2">Become a sponsor</Heading>
+        <Spacer size="medium" />
         <Text size={1}>
           Sponsoring PyConIT guarantees you strongly targeted visibility towards
           senior developers and software engineers.
@@ -118,8 +149,9 @@ export const MultipleSections = ({ ...props }) => (
       <SplitSection
         sideContent={<Cathedral />}
         sideContentBackground={Cathedral.backgroundColor}
-        title="Buy a ticket"
       >
+        <Heading size="display2">Buy a ticket</Heading>
+        <Spacer size="medium" />
         <Text size={1}>We have tickets</Text>
         <Spacer size="large" />
         <Button onClick={() => {}} role="primary">
@@ -136,9 +168,10 @@ export const MultipleSections = ({ ...props }) => (
         invert
         sideContentType="other"
         hideSideContentOnMobile
-        spacing="larger-content"
-        title="Call for proposals"
+        contentSpacing="2md"
       >
+        <Heading size="display2">Call for proposals</Heading>
+        <Spacer size="medium" />
         <Spacer size="medium" />
         <Heading size={2}>PyCon Italia is looking for you!</Heading>
         <Spacer size="medium" />
@@ -163,8 +196,9 @@ export const MultipleSections = ({ ...props }) => (
         invert
         sideContent={<Snake4 />}
         sideContentBackground={Snake4.backgroundColor}
-        title="Keynoters here"
       >
+        <Heading size="display2">Keynoters here</Heading>
+        <Spacer size="medium" />
         <Text size={1}>Some more text</Text>
         <Spacer size="large" />
         <Button onClick={() => {}} role="primary">
@@ -174,8 +208,9 @@ export const MultipleSections = ({ ...props }) => (
       <SplitSection
         sideContent={<Snake5 />}
         sideContentBackground={Snake5.backgroundColor}
-        title="Spacing tests"
       >
+        <Heading size="display2">Spacing tests</Heading>
+        <Spacer size="medium" />
         <Spacer size="medium" />
         <Heading size={2}>PyCon Italia is looking for you!</Heading>
         <Spacer size="medium" />
@@ -195,8 +230,10 @@ export const MultipleSections = ({ ...props }) => (
         invert
         sideContent={<Snake1 />}
         sideContentBackground={Snake1.backgroundColor}
-        title="Inverted Spacing tests"
       >
+        <Heading size="display2">Inverted spacing tests</Heading>
+        <Spacer size="medium" />
+
         <Spacer size="medium" />
         <Heading size={2}>PyCon Italia is looking for you!</Heading>
         <Spacer size="medium" />

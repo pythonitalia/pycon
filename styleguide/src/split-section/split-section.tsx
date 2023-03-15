@@ -1,30 +1,32 @@
 import clsx from "clsx";
 import React, { useEffect, useRef } from "react";
-import { Heading } from "../heading";
 import { Separator } from "../separator";
 import { Container } from "../container";
-import { Spacer } from "../spacer/spacer";
 
 type Props = {
   children: React.ReactNode;
-  title: string | React.ReactNode;
   sideContent: React.ReactNode;
   sideContentBackground?: string;
   sideContentType?: "illustration" | "other";
   invert?: boolean;
   hideSideContentOnMobile?: boolean;
-  spacing?: "even" | "larger-content";
+  sideContentPadding?: boolean;
+  sideContentClassName?: string;
+  className?: string;
+  contentSpacing?: "even" | "medium" | "2md";
 };
 
 export const SplitSection = ({
-  title,
   children,
   sideContent,
   sideContentBackground,
   sideContentType = "illustration",
-  spacing = "even",
+  contentSpacing = "even",
   hideSideContentOnMobile = false,
+  sideContentPadding = true,
   invert = false,
+  className,
+  sideContentClassName,
 }: Props) => {
   const illustrationRef = useRef<any>();
   const isIllustration = sideContentType === "illustration";
@@ -48,14 +50,26 @@ export const SplitSection = ({
   return (
     <div className="overflow-clip">
       <Container
-        className={clsx("grid", {
-          "grid-cols-1 lg:grid-cols-2": spacing === "even",
-          "grid-cols-1 lg:gap-24": spacing === "larger-content",
-          "lg:grid-cols-split-content-larger-content":
-            spacing === "larger-content" && !invert,
-          "lg:grid-cols-inverted-split-content-larger-content":
-            spacing === "larger-content" && invert,
-        })}
+        className={clsx(
+          "grid",
+          {
+            "grid-cols-1 lg:grid-cols-2 lg:gap-10": contentSpacing === "even",
+
+            "grid-cols-1 lg:gap-24":
+              contentSpacing === "medium" || contentSpacing === "2md",
+
+            "lg:grid-cols-[650px_max-content]":
+              contentSpacing === "medium" && !invert,
+            "lg:grid-cols-[max-content_650px]":
+              contentSpacing === "medium" && invert,
+
+            "lg:grid-cols-[1fr_max-content]":
+              contentSpacing === "2md" && !invert,
+            "lg:grid-cols-[max-content_1fr]":
+              contentSpacing === "2md" && invert,
+          },
+          className
+        )}
       >
         {/* content */}
         <div
@@ -70,16 +84,10 @@ export const SplitSection = ({
             mobileOnly={true}
           />
           <div
-            className={clsx(
-              "h-full py-8 lg:py-20 flex justify-center items-start flex-col",
-              {
-                "lg:pr-10": !invert,
-                "lg:pl-10": invert,
-              }
-            )}
+            className={clsx("h-full flex justify-center items-start flex-col", {
+              "py-8 lg:py-20": sideContentPadding,
+            })}
           >
-            <Heading size="display2">{title}</Heading>
-            <Spacer size="medium" />
             {children}
           </div>
         </div>
@@ -87,12 +95,18 @@ export const SplitSection = ({
         {/* side content */}
         {isOtherContent && (
           <div
-            className={clsx("h-full flex overflow-hidden py-8 lg:py-20", {
-              "order-1 lg:order-2": !invert,
-              "order-1 lg:order-1": invert,
+            className={clsx(
+              "h-full flex overflow-hidden",
+              {
+                "order-1 lg:order-2": !invert,
+                "order-1 lg:order-1": invert,
 
-              "hidden lg:flex": hideSideContentOnMobile,
-            })}
+                "hidden lg:flex": hideSideContentOnMobile,
+
+                "py-8 lg:py-20": sideContentPadding,
+              },
+              sideContentClassName
+            )}
             style={{
               backgroundColor: sideContentBackground,
             }}

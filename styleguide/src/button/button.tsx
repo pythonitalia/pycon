@@ -14,6 +14,7 @@ export const Button = ({
   background,
   disabled = false,
   href = undefined,
+  ...props
 }: {
   background?: Color | "none";
   icon?: ReactNode;
@@ -30,6 +31,7 @@ export const Button = ({
   const Wrapper = href ? "a" : "button";
   return (
     <Wrapper
+      {...props}
       disabled={disabled}
       className={clsx(
         "inline-flex items-center uppercase select-none border-black border cursor-pointer transition-colors",

@@ -25,7 +25,7 @@ export const BasicButton = ({
   return (
     <Component
       className={clsx(
-        "text-black transition-all underline-offset-8 cursor-pointer",
+        "text-black transition-all underline-offset-8 cursor-pointer pb-1",
         {
           "cursor-not-allowed opacity-30": disabled,
           "hover:text-green": !disabled,

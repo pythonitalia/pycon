@@ -11,6 +11,7 @@ type Props = {
   gap?: "none" | "small" | "medium";
   divide?: boolean;
   equalHeight?: boolean;
+  fullWidth?: boolean;
 };
 
 export const Grid = ({
@@ -21,6 +22,7 @@ export const Grid = ({
   gap = "medium",
   divide = false,
   equalHeight = false,
+  fullWidth = false,
 }: Props) => {
   return (
     <div
@@ -62,6 +64,8 @@ export const Grid = ({
 
         // weird bug in tailwind where divide-y-0 doesn't work
         "divide-y lg:divide-y-[0px] lg:divide-x": divide,
+
+        "w-full": fullWidth,
       })}
     >
       {children}
