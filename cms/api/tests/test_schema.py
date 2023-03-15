@@ -19,8 +19,8 @@ def test_page(graphql_client, generic_page_factory, locale, image_file, site_fac
     page.copy_for_translation(locale=locale("it"))
     image = page.body[-1].value
     query = """
-    query Page ($code: String!, $language: String!, $slug: String!) {
-        page(code: $code, language: $language, slug: $slug){
+    query Page ($hostname: String!, $language: String!, $slug: String!) {
+        page(hostname: $hostname, language: $language, slug: $slug){
             ...on GenericPage {
                 body {
                     ...on TextSection {
@@ -44,7 +44,7 @@ def test_page(graphql_client, generic_page_factory, locale, image_file, site_fac
     """
 
     response = graphql_client.query(
-        query, variables={"code": "pycon", "slug": "bubble-tea", "language": "en"}
+        query, variables={"hostname": "pycon", "slug": "bubble-tea", "language": "en"}
     )
 
     assert response.data == {
@@ -69,8 +69,8 @@ def test_page(graphql_client, generic_page_factory, locale, image_file, site_fac
 def test_page_not_found(graphql_client, site_factory):
     site_factory(hostname="not-found")
     query = """
-    query Page ($code: String!, $language: String!, $slug: String!) {
-        page(code: $code, language: $language, slug: $slug){
+    query Page ($hostname: String!, $language: String!, $slug: String!) {
+        page(hostname: $hostname, language: $language, slug: $slug){
             ...on GenericPage {
                 body {
                     ...on TextSection {
@@ -83,15 +83,15 @@ def test_page_not_found(graphql_client, site_factory):
     """
 
     response = graphql_client.query(
-        query, variables={"code": "not-found", "slug": "hot-tea", "language": "en"}
+        query, variables={"hostname": "not-found", "slug": "hot-tea", "language": "en"}
     )
     assert response.data == {"page": None}
 
 
 def test_page_site_not_found(graphql_client):
     query = """
-    query Page ($code: String!, $language: String!, $slug: String!) {
-        page(code: $code, language: $language, slug: $slug){
+    query Page ($hostname: String!, $language: String!, $slug: String!) {
+        page(hostname: $hostname, language: $language, slug: $slug){
             ...on SiteNotFoundError {
                 message
             }
@@ -100,7 +100,7 @@ def test_page_site_not_found(graphql_client):
     """
 
     response = graphql_client.query(
-        query, variables={"code": "not-found", "slug": "hot-tea", "language": "en"}
+        query, variables={"hostname": "not-found", "slug": "hot-tea", "language": "en"}
     )
     assert response.data == {"page": {"message": "Site `not-found` not found"}}
 
@@ -122,8 +122,8 @@ def test_pages(graphql_client, site_factory, generic_page_factory, locale):
     site_factory(hostname="pycon", root_page=parent)
 
     query = """
-    query Page ($code: String!, $language: String!) {
-        pages(code: $code, language: $language){
+    query Page ($hostname: String!, $language: String!) {
+        pages(hostname: $hostname, language: $language){
             body {
                 ...on TextSection {
                     title
@@ -134,7 +134,7 @@ def test_pages(graphql_client, site_factory, generic_page_factory, locale):
     """
 
     response = graphql_client.query(
-        query, variables={"code": "pycon", "language": "en"}
+        query, variables={"hostname": "pycon", "language": "en"}
     )
 
     assert response.data == {
@@ -148,8 +148,8 @@ def test_pages(graphql_client, site_factory, generic_page_factory, locale):
 
 def test_pages_site_not_found(graphql_client):
     query = """
-    query Page ($code: String!, $language: String!) {
-        pages(code: $code, language: $language){
+    query Page ($hostname: String!, $language: String!) {
+        pages(hostname: $hostname, language: $language){
             body {
                 ...on TextSection {
                     title
@@ -160,7 +160,7 @@ def test_pages_site_not_found(graphql_client):
     """
 
     response = graphql_client.query(
-        query, variables={"code": "not-found", "slug": "hot-tea", "language": "en"}
+        query, variables={"hostname": "not-found", "slug": "hot-tea", "language": "en"}
     )
 
     assert response.data == {"pages": []}
@@ -189,8 +189,8 @@ def test_page_filter_by_site_and_language(
     page_2.copy_for_translation(locale=locale("it"))
 
     query = """
-     query Page ($code: String!, $language: String!, $slug: String!) {
-        page(code: $code, language: $language, slug: $slug){
+     query Page ($hostname: String!, $language: String!, $slug: String!) {
+        page(hostname: $hostname, language: $language, slug: $slug){
             ...on GenericPage {
                 body {
                     ...on TextSection {
@@ -203,7 +203,7 @@ def test_page_filter_by_site_and_language(
     """
 
     response = graphql_client.query(
-        query, variables={"code": "site2", "slug": "chocolate", "language": "en"}
+        query, variables={"hostname": "site2", "slug": "chocolate", "language": "en"}
     )
 
     assert response.data == {
