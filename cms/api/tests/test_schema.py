@@ -114,7 +114,7 @@ def test_pages(graphql_client, site_factory, generic_page_factory, locale):
         body__0__text_section__title__value="I've Got a Lovely Bunch of Coconuts",
     )
     generic_page_factory(
-        slug="choccolate",
+        slug="chocolate",
         locale=locale("en"),
         parent=parent,
         body__0__text_section__title__value="There they are, all standing in a row",
@@ -164,3 +164,48 @@ def test_pages_site_not_found(graphql_client):
     )
 
     assert response.data == {"pages": []}
+
+
+def test_page_filter_by_site_and_language(
+    graphql_client, site_factory, generic_page_factory, locale
+):
+    root_site_1 = generic_page_factory()
+    root_site_2 = generic_page_factory()
+    page_1 = generic_page_factory(
+        slug="bubble-tea",
+        locale=locale("en"),
+        parent=root_site_1,
+        body__0__text_section__title__value="I've Got a Lovely Bunch of Coconuts",
+    )
+    page_2 = generic_page_factory(
+        slug="chocolate",
+        locale=locale("en"),
+        parent=root_site_2,
+        body__0__text_section__title__value="There they are, all standing in a row",
+    )
+    site_factory(hostname="site1", root_page=root_site_1)
+    site_factory(hostname="site2", root_page=root_site_2)
+    page_1.copy_for_translation(locale=locale("it"))
+    page_2.copy_for_translation(locale=locale("it"))
+
+    query = """
+     query Page ($code: String!, $language: String!, $slug: String!) {
+        page(code: $code, language: $language, slug: $slug){
+            ...on GenericPage {
+                body {
+                    ...on TextSection {
+                        title
+                    }
+                }
+            }
+        }
+    }
+    """
+
+    response = graphql_client.query(
+        query, variables={"code": "site2", "slug": "chocolate", "language": "en"}
+    )
+
+    assert response.data == {
+        "page": {"body": [{"title": "There they are, all standing in a row"}]}
+    }
