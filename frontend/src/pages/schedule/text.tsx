@@ -1,14 +1,16 @@
-/** @jsxRuntime classic */
-
-/** @jsx jsx */
+import {
+  Button,
+  Page,
+  Section,
+  Text,
+  Heading,
+} from "@python-italia/pycon-styleguide";
 import React from "react";
 import { FormattedMessage } from "react-intl";
-import { Text, Heading, Box, jsx } from "theme-ui";
 
 import { GetStaticProps } from "next";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
-import { Button } from "~/components/button/button";
 import { formatDay } from "~/components/day-selector/format-day";
 import { Link } from "~/components/link";
 import { getItemUrl } from "~/components/schedule-view/events";
@@ -40,17 +42,9 @@ const EasyViewSchedule = () => {
   sortedDays.sort((day1, day2) => (day1.day > day2.day ? 1 : 0));
 
   return (
-    <Box sx={{ borderTop: "primary" }}>
-      <Box sx={{ maxWidth: "largeContainer", p: 3, mx: "auto", fontSize: 2 }}>
-        <Button
-          onClick={openPrint}
-          sx={{
-            mb: 3,
-            "@media print": {
-              display: "none",
-            },
-          }}
-        >
+    <Page>
+      <Section>
+        <Button onClick={openPrint}>
           <FormattedMessage
             defaultMessage="Save as pdf / print"
             id="scheduleEasy.saveAsPdf"
@@ -59,12 +53,8 @@ const EasyViewSchedule = () => {
 
         {sortedDays.map((day) => {
           return (
-            <div
-              sx={{
-                mb: 3,
-              }}
-            >
-              <Heading>
+            <div className="mb-3">
+              <Heading size={2}>
                 <FormattedMessage
                   defaultMessage="Day: {day}"
                   id="scheduleEasy.day"
@@ -75,27 +65,18 @@ const EasyViewSchedule = () => {
               </Heading>
               {day.slots.map((slot) => {
                 return (
-                  <ul
-                    sx={{
-                      my: 3,
-                      listStyleType: "none",
-                    }}
-                  >
+                  <ul className="my-3 list-none">
                     <li>
-                      <Text sx={{ fontWeight: "bold" }}>{slot.hour}</Text>
+                      <Text weight="strong">{slot.hour}</Text>
                     </li>
                     <li>
-                      <ul
-                        sx={{
-                          listStyleType: "none",
-                        }}
-                      >
+                      <ul className="list-none">
                         {slot.items.map((item) => {
                           const itemUrl = getItemUrl(item);
                           return (
-                            <li sx={{ mt: 3 }}>
+                            <li className="mt-3">
                               <div>
-                                <Text as="span" sx={{ fontWeight: "bold" }}>
+                                <Text as="span" weight="strong">
                                   <FormattedMessage
                                     defaultMessage="Title"
                                     id="scheduleEasy.title"
@@ -104,7 +85,7 @@ const EasyViewSchedule = () => {
                                 : {item.title}
                               </div>
                               <div>
-                                <Text as="span" sx={{ fontWeight: "bold" }}>
+                                <Text as="span" weight="strong">
                                   <FormattedMessage
                                     defaultMessage="When"
                                     id="scheduleEasy.when"
@@ -113,7 +94,7 @@ const EasyViewSchedule = () => {
                                 : {day.day} {slot.hour}
                               </div>
                               <div>
-                                <Text as="span" sx={{ fontWeight: "bold" }}>
+                                <Text as="span" weight="strong">
                                   <FormattedMessage
                                     defaultMessage="Duration"
                                     id="scheduleEasy.duration"
@@ -130,7 +111,7 @@ const EasyViewSchedule = () => {
                               </div>
                               {item.type !== "custom" && (
                                 <div>
-                                  <Text as="span" sx={{ fontWeight: "bold" }}>
+                                  <Text as="span" weight="strong">
                                     <FormattedMessage
                                       defaultMessage="Type"
                                       id="scheduleEasy.type"
@@ -153,7 +134,7 @@ const EasyViewSchedule = () => {
                               )}
                               {item.speakers.length > 0 && (
                                 <div>
-                                  <Text as="span" sx={{ fontWeight: "bold" }}>
+                                  <Text as="span" weight="strong">
                                     <FormattedMessage
                                       defaultMessage="Speaker(s)"
                                       id="scheduleEasy.speakers"
@@ -166,7 +147,7 @@ const EasyViewSchedule = () => {
                                 </div>
                               )}
                               <div>
-                                <Text as="span" sx={{ fontWeight: "bold" }}>
+                                <Text as="span" weight="strong">
                                   <FormattedMessage
                                     defaultMessage="Room(s)"
                                     id="scheduleEasy.rooms"
@@ -177,7 +158,7 @@ const EasyViewSchedule = () => {
                               </div>
                               {item.language && (
                                 <div>
-                                  <Text as="span" sx={{ fontWeight: "bold" }}>
+                                  <Text as="span" weight="strong">
                                     <FormattedMessage
                                       defaultMessage="Language"
                                       id="scheduleEasy.language"
@@ -189,7 +170,7 @@ const EasyViewSchedule = () => {
                               )}
                               {item.hasLimitedCapacity && (
                                 <div>
-                                  <Text as="span" sx={{ fontWeight: "bold" }}>
+                                  <Text as="span" weight="strong">
                                     <FormattedMessage
                                       defaultMessage="🚨 Requires booking"
                                       id="scheduleEasy.requiresBooking"
@@ -207,7 +188,7 @@ const EasyViewSchedule = () => {
                               )}
                               {itemUrl && (
                                 <div>
-                                  <Text as="span" sx={{ fontWeight: "bold" }}>
+                                  <Text as="span" weight="strong">
                                     <FormattedMessage
                                       defaultMessage="Link"
                                       id="scheduleEasy.link"
@@ -218,7 +199,7 @@ const EasyViewSchedule = () => {
                                     path={itemUrl}
                                     params={{ slug: item.slug, day: day.day }}
                                   >
-                                    https://pycon.it/talk/{item.slug}?day=
+                                    https://pycon.it/event/{item.slug}?day=
                                     {day.day}
                                   </Link>
                                 </div>
@@ -234,8 +215,8 @@ const EasyViewSchedule = () => {
             </div>
           );
         })}
-      </Box>
-    </Box>
+      </Section>
+    </Page>
   );
 };
 
