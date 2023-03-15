@@ -1,4 +1,4 @@
-import { GetStaticPaths, GetStaticProps } from "next";
+import { GetStaticProps } from "next";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
@@ -13,10 +13,4 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
   });
 };
 
-export const getStaticPaths: GetStaticPaths = async () =>
-  Promise.resolve({
-    paths: [],
-    fallback: "blocking",
-  });
-
-export { ResetPasswordPageHandler as default } from "~/components/reset-password-page-handler";
+export { ResetPasswordSuccessPageHandler as default } from "~/components/reset-password-success-page-handler";

@@ -18,7 +18,7 @@ specifiers:
   '@mdx-js/loader': ^1.6.19
   '@next/mdx': ^10.0.0
   '@python-italia/eslint-config': ^1.0.13
-  '@python-italia/pycon-styleguide': 0.1.141
+  '@python-italia/pycon-styleguide': 0.1.144
   '@sentry/nextjs': ^7.38.0
   '@testing-library/dom': ^8.1.0
   '@testing-library/jest-dom': ^5.14.1
@@ -43,6 +43,7 @@ specifiers:
   concurrently: ^5.2.0
   date-fns: ^2.29.3
   deepmerge: ^4.2.2
+  dotenv: ^16.0.3
   eslint-config-next: ^13.0.5
   graphql: ^16.5.0
   graphql-tag: ^2.12.6
@@ -93,7 +94,7 @@ dependencies:
   '@graphql-codegen/typescript-react-apollo': 3.3.5_sy4knu3obj4ys7pjcqbyfxmqle
   '@mdx-js/loader': 1.6.22_react@18.2.0
   '@next/mdx': 10.2.3_@mdx-js+loader@1.6.22
-  '@python-italia/pycon-styleguide': 0.1.141_o4scbtliisanygemawej7x2d6i
+  '@python-italia/pycon-styleguide': 0.1.144_o4scbtliisanygemawej7x2d6i
   '@sentry/nextjs': 7.38.0_next@13.1.6+react@18.2.0
   '@theme-ui/core': 0.15.3_hp5f5nkljdiwilp4rgxyefcplu
   '@theme-ui/css': 0.15.3_@emotion+react@11.10.5
@@ -106,6 +107,7 @@ dependencies:
   concurrently: 5.3.0
   date-fns: 2.29.3
   deepmerge: 4.2.2
+  dotenv: 16.0.3
   eslint-config-next: 13.0.5_typescript@4.9.4
   graphql: 16.6.0
   graphql-tag: 2.12.6_graphql@16.6.0
@@ -2431,8 +2433,8 @@ packages:
       - supports-color
     dev: true
 
-  /@python-italia/pycon-styleguide/0.1.141_o4scbtliisanygemawej7x2d6i:
-    resolution: {integrity: sha512-VSO0y0eHFCKCAyhqOnniAxzg1phU5tiEdTIsnR0jyoT+cEvn7ufC5esVB2vxl7CmCdAUy/9GmwT8CkcmVjQaPg==}
+  /@python-italia/pycon-styleguide/0.1.144_o4scbtliisanygemawej7x2d6i:
+    resolution: {integrity: sha512-szgCVW4CkG7N7xyip23RLuJxy+UbMu16Y8F0Bum3iABzCxfiOFDV6tK+i6/8PSZH3Us6F7gFkGccb0aWX39SqQ==}
     peerDependencies:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'

@@ -10,7 +10,6 @@ import { useRouter } from "next/router";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Alert } from "~/components/alert";
-import { LoginForm } from "~/components/login-form";
 import { MetaTags } from "~/components/meta-tags";
 import { useLoginState } from "~/components/profile/hooks";
 import { Submission } from "~/components/submission";
@@ -36,8 +35,6 @@ const NotLoggedIn = ({ title }: { title?: string }) => (
     <Alert variant="info">
       You need to logged in and have a ticket to see this submission
     </Alert>
-
-    <LoginForm />
   </Container>
 );
 

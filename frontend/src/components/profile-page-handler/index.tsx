@@ -61,7 +61,7 @@ export const ProfilePageHandler = () => {
     }
   }, []);
 
-  const { name } = profileData.me;
+  const { name, fullName } = profileData.me;
 
   const onLogout = async () => {
     await logout();
@@ -130,7 +130,7 @@ export const ProfilePageHandler = () => {
           <FormattedMessage
             id="profile.welcome"
             values={{
-              name,
+              name: name || fullName,
             }}
           />
         </Heading>
@@ -187,7 +187,7 @@ export const ProfilePageHandler = () => {
           <FormattedMessage
             id="profile.logout.body"
             values={{
-              name,
+              name: name || fullName,
             }}
           />
         </Heading>
