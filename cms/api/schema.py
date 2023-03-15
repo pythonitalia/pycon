@@ -16,7 +16,7 @@ class Query:
         self,
         code: str,
         slug: str,
-        locale: str | None,
+        language: str,
     ) -> GenericPage | SiteNotFoundError | None:
 
         if not (site := Site.objects.filter(hostname=code).first()):
@@ -24,7 +24,7 @@ class Query:
 
         page = (
             GenericPageModel.objects.in_site(site)
-            .filter(locale__language_code=locale, slug=slug)
+            .filter(locale__language_code=language, slug=slug)
             .first()
         )
 
@@ -32,6 +32,18 @@ class Query:
             return None
 
         return GenericPage.from_model(page)
+
+    @strawberry.field
+    def pages(self, code: str, language: str) -> list[GenericPage]:
+        if not (site := Site.objects.filter(hostname=code).first()):
+            return []
+
+        return [
+            GenericPage.from_model(page)
+            for page in GenericPageModel.objects.in_site(site).filter(
+                locale__language_code=language
+            )
+        ]
 
 
 schema = strawberry.Schema(query=Query)
