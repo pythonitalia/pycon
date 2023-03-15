@@ -13,7 +13,7 @@ type Props = {
   sideContentPadding?: boolean;
   sideContentClassName?: string;
   className?: string;
-  contentSpacing?: "even" | "medium" | "2md";
+  contentSpacing?: "even" | "medium";
 };
 
 export const SplitSection = ({
@@ -55,18 +55,12 @@ export const SplitSection = ({
           {
             "grid-cols-1 lg:grid-cols-2 lg:gap-10": contentSpacing === "even",
 
-            "grid-cols-1 lg:gap-24":
-              contentSpacing === "medium" || contentSpacing === "2md",
-
-            "lg:grid-cols-[650px_max-content]":
-              contentSpacing === "medium" && !invert,
-            "lg:grid-cols-[max-content_650px]":
-              contentSpacing === "medium" && invert,
+            "grid-cols-1 lg:gap-24": contentSpacing === "medium",
 
             "lg:grid-cols-[1fr_max-content]":
-              contentSpacing === "2md" && !invert,
+              contentSpacing === "medium" && !invert,
             "lg:grid-cols-[max-content_1fr]":
-              contentSpacing === "2md" && invert,
+              contentSpacing === "medium" && invert,
           },
           className
         )}

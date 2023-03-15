@@ -71,7 +71,7 @@ export const WithOtherSideContent = ({ ...props }) => (
       invert
       sideContentType="other"
       hideSideContentOnMobile
-      contentSpacing="2md"
+      contentSpacing="medium"
     >
       <Heading size="display2">Call for proposals [inverted]</Heading>
       <Spacer size="medium" />
@@ -103,7 +103,7 @@ export const WithOtherSideContent = ({ ...props }) => (
       }
       sideContentType="other"
       hideSideContentOnMobile
-      contentSpacing="2md"
+      contentSpacing="medium"
     >
       <Heading size="display2">Not inverted</Heading>
       <Spacer size="medium" />
@@ -168,7 +168,7 @@ export const MultipleSections = ({ ...props }) => (
         invert
         sideContentType="other"
         hideSideContentOnMobile
-        contentSpacing="2md"
+        contentSpacing="medium"
       >
         <Heading size="display2">Call for proposals</Heading>
         <Spacer size="medium" />
