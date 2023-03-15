@@ -4,7 +4,7 @@ import pytest
 pytestmark = pytest.mark.django_db
 
 
-def test_page(graphql_client, generic_page_factory, locale, image_file):
+def test_page(graphql_client, generic_page_factory, locale, image_file, site_factory):
     parent = generic_page_factory()
     page = generic_page_factory(
         slug="bubble-tea",
@@ -15,32 +15,36 @@ def test_page(graphql_client, generic_page_factory, locale, image_file):
         body__2__image__image__title="Zazu",
         body__2__image__image__file=next(image_file()),
     )
+    site_factory(hostname="pycon", root_page=page)
     page.copy_for_translation(locale=locale("it"))
     image = page.body[-1].value
     query = """
-    query Page ($locale: String!, $slug: String!) {
-        page(locale: $locale, slug: $slug){
-            body {
-                ...on TextSection {
-                    title
-                }
-                ...on Map {
-                    latitude
-                    longitude
-                }
-                ...on Image {
-                    title
-                    width
-                    height
-                    url
+    query Page ($code: String!, $locale: String!, $slug: String!) {
+        page(code: $code, locale: $locale, slug: $slug){
+            ...on GenericPage {
+                body {
+                    ...on TextSection {
+                        title
+                    }
+                    ...on Map {
+                        latitude
+                        longitude
+                    }
+                    ...on Image {
+                        title
+                        width
+                        height
+                        url
+                    }
                 }
             }
+
         }
     }
     """
 
     response = graphql_client.query(
-        query, variables={"slug": "bubble-tea", "locale": "en"}
+        query, variables={"code": "pycon", "slug": "bubble-tea", "locale": "en"}
     )
 
     assert response.data == {
@@ -62,13 +66,16 @@ def test_page(graphql_client, generic_page_factory, locale, image_file):
     }
 
 
-def test_page_not_found(graphql_client):
+def test_page_not_found(graphql_client, site_factory):
+    site_factory(hostname="not-found")
     query = """
-    query Page ($locale: String!, $slug: String!) {
-        page(locale: $locale, slug: $slug){
-            body {
-                ...on TextSection {
-                    title
+    query Page ($code: String!, $locale: String!, $slug: String!) {
+        page(code: $code, locale: $locale, slug: $slug){
+            ...on GenericPage {
+                body {
+                    ...on TextSection {
+                        title
+                    }
                 }
             }
         }
@@ -76,6 +83,23 @@ def test_page_not_found(graphql_client):
     """
 
     response = graphql_client.query(
-        query, variables={"slug": "hot-tea", "locale": "en"}
+        query, variables={"code": "not-found", "slug": "hot-tea", "locale": "en"}
     )
     assert response.data == {"page": None}
+
+
+def test_site_not_found(graphql_client):
+    query = """
+    query Page ($code: String!, $locale: String!, $slug: String!) {
+        page(code: $code, locale: $locale, slug: $slug){
+            ...on SiteNotFoundError {
+                message
+            }
+        }
+    }
+    """
+
+    response = graphql_client.query(
+        query, variables={"code": "not-found", "slug": "hot-tea", "locale": "en"}
+    )
+    assert response.data == {"page": {"message": "Site `not-found` not found"}}

@@ -1,6 +1,12 @@
 from page.models import GenericPage as GenericPageModel
 import strawberry
 from api.types import GenericPage
+from wagtail.models import Site
+
+
+@strawberry.type
+class SiteNotFoundError:
+    message: str
 
 
 @strawberry.type
@@ -8,12 +14,19 @@ class Query:
     @strawberry.field
     def page(
         self,
+        code: str,
         slug: str,
-        locale: str | None = "en",
-    ) -> GenericPage | None:
-        page = GenericPageModel.objects.filter(
-            locale__language_code=locale, slug=slug
-        ).first()
+        locale: str | None,
+    ) -> GenericPage | SiteNotFoundError | None:
+
+        if not (site := Site.objects.filter(hostname=code).first()):
+            return SiteNotFoundError(message=f"Site `{code}` not found")
+
+        page = (
+            GenericPageModel.objects.in_site(site)
+            .filter(locale__language_code=locale, slug=slug)
+            .first()
+        )
 
         if not page:
             return None

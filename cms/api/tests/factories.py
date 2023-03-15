@@ -7,11 +7,16 @@ from wagtail_factories import (
     StructBlockFactory,
     PageFactory,
     StreamFieldFactory,
+    SiteFactory,
 )
 import factory
 from decimal import Decimal
 from pytest_factoryboy import register
 from wagtail.rich_text import RichText
+
+
+register(SiteFactory)
+register(PageFactory)
 
 
 @register
