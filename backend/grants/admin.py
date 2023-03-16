@@ -15,6 +15,7 @@ from domain_events.publisher import (
     send_grant_reply_approved_email,
     send_grant_reply_rejected_email,
     send_grant_reply_waiting_list_email,
+    send_grant_reply_waiting_list_update_email
 )
 from submissions.models import Submission
 from users.autocomplete import UsersBackendAutocomplete
@@ -238,6 +239,27 @@ def send_grant_reminder_to_waiting_for_confirmation(modeladmin, request, queryse
         messages.info(request, f"Grant reminder sent to {grant.name}")
 
 
+@admin.action(description="Send Waiting List update email")
+def send_reply_email_waiting_list_update(modeladmin, request, queryset):
+    queryset = queryset.filter(
+        status__in=(
+            Grant.Status.waiting_list,
+            Grant.Status.waiting_list_maybe,
+        ),
+    )
+
+    for grant in queryset:
+        if grant.applicant_reply_sent_at is not None:
+            messages.warning(
+                request,
+                f"Reply email for {grant.name} was already sent! Skipping.",
+            )
+            return
+
+        send_grant_reply_waiting_list_update_email(grant)
+        messages.info(request, f"Sent Waiting List update reply email to {grant.name}")
+
+
 class GrantAdminForm(forms.ModelForm):
     class Meta:
         model = Grant
@@ -292,7 +314,6 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
         "applicant_reply_sent_at",
         "applicant_reply_deadline",
     )
-    readonly_fields = ("applicant_reply_sent_at",)
     list_filter = (
         "conference",
         "status",
