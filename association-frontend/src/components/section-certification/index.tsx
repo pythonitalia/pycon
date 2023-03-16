@@ -26,21 +26,11 @@ export const SectionCertification = () => {
             className="underline text-xl"
             rel="noopener"
             target="_blank"
-            href="https://www.centrocasnati.it/index.php/sections/liceo-game-development/"
+            href="https://example.com"
           >
-            Liceo Game Developement - Casnati - Como
+            Nome instituto qui
           </a>
-        </li>
-        <li>
-          <a
-            className="underline text-xl"
-            rel="noopener"
-            target="_blank"
-            href="https://www.itsrizzoli.it/"
-          >
-            ITS Angelo Rizzoli - Milano
-          </a>
-        </li>
+        </li>``
       </ul>
       <p className="mx-auto mb-4 text-xl text-black">
         L'attestato consente all'Ente di definire il proprio programma di studi
