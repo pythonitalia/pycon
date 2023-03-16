@@ -38,7 +38,7 @@ jsonschema = "^3.2.0"
 mypy_extensions = "^0.4.3"
 strawberry-graphql = "0.156.0.dev.1676734704"
 Werkzeug = "^1.0.1"
-pythonit-toolkit = "0.1.85-dev.1678992554"
+pythonit-toolkit = "0.1.85"
 django-import-export = "^2.7.1"
 awslambdaric = {version = "^2.0.4", optional = true}
 azure-identity = "^1.12.0"
