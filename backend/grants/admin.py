@@ -186,24 +186,10 @@ def send_reply_emails(modeladmin, request, queryset):
             grant.status == Grant.Status.waiting_list
             or grant.status == Grant.Status.waiting_list_maybe
         ):
-            if grant.applicant_reply_sent_at is not None:
-                messages.warning(
-                    request,
-                    f"Reply email for {grant.name} was already sent! Skipping.",
-                )
-                return
-
             send_grant_reply_waiting_list_email(grant)
             messages.info(request, f"Sent Waiting List reply email to {grant.name}")
 
         if grant.status == Grant.Status.rejected:
-            if grant.applicant_reply_sent_at is not None:
-                messages.warning(
-                    request,
-                    f"Reply email for {grant.name} was already sent! Skipping.",
-                )
-                return
-
             send_grant_reply_rejected_email(grant)
             messages.info(request, f"Sent Rejected reply email to {grant.name}")
 
@@ -250,13 +236,6 @@ def send_reply_email_waiting_list_update(modeladmin, request, queryset):
     )
 
     for grant in queryset:
-        if grant.applicant_reply_sent_at is not None:
-            messages.warning(
-                request,
-                f"Reply email for {grant.name} was already sent! Skipping.",
-            )
-            return
-
         send_grant_reply_waiting_list_update_email(grant)
         messages.info(request, f"Sent Waiting List update reply email to {grant.name}")
 
@@ -424,16 +403,14 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
 
         qs = super().get_queryset(request)
         if not self.speaker_ids:
-            # returns a list...
             conference_id = qs.values_list("conference_id").first()
-            self.speaker_ids = [
-                i["submission__speaker_id"]
-                for i in ScheduleItem.objects.filter(
-                    conference__id__in=conference_id
-                ).values("submission__speaker_id")
-                if i["submission__speaker_id"]
-            ]
-
+            self.speaker_ids = list(
+                ScheduleItem.objects.filter(
+                    conference__id__in=conference_id,
+                    submission__speaker_id__isnull=False,
+                ).values_list("submission__speaker_id", flat=True)
+            )
+            print(self.speaker_ids)
         return qs
 
     def save_form(self, request, form, change):
