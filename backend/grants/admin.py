@@ -109,7 +109,7 @@ class GrantResource(ResourceUsersByIdsMixin):
         )
 
     def dehydrate_grant_admin_link(self, obj: Grant):
-        return f"https://admin.pycon.it/admin/grants/grant/?q={'+'.join(obj.full_name.split(' '))}"
+        return f"https://admin.pycon.it/admin/grants/grant/?q={'+'.join(obj.full_name.split(' '))}"  # noqa: E501
 
     def before_export(self, queryset: QuerySet, *args, **kwargs):
         super().before_export(queryset, *args, **kwargs)
@@ -334,6 +334,7 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
     actions = [
         send_reply_emails,
         send_grant_reminder_to_waiting_for_confirmation,
+        send_reply_email_waiting_list_update,
         "delete_selected",
     ]
 
