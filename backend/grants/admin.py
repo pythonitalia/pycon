@@ -404,13 +404,10 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
         qs = super().get_queryset(request)
         if not self.speaker_ids:
             conference_id = qs.values_list("conference_id").first()
-            self.speaker_ids = list(
-                ScheduleItem.objects.filter(
-                    conference__id__in=conference_id,
-                    submission__speaker_id__isnull=False,
-                ).values_list("submission__speaker_id", flat=True)
-            )
-            print(self.speaker_ids)
+            self.speaker_ids = ScheduleItem.objects.filter(
+                conference__id__in=conference_id,
+                submission__speaker_id__isnull=False,
+            ).values_list("submission__speaker_id", flat=True)
         return qs
 
     def save_form(self, request, form, change):
