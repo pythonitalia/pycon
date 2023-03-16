@@ -24,7 +24,7 @@ module "ca_app" {
     { name = "GOOGLE_AUTH_CLIENT_SECRET", value = "empty", secret = false },
     { name = "DATABASE_URL", value = local.database_url, secret = true },
     { name = "EMAIL_BACKEND", value = "pythonit_toolkit.emails.backends.ses.SESEmailBackend", secret = false },
-    { name = "SENTRY_DSN", value = "empty", secret = false },
+    { name = "SENTRY_DSN", value = "https://caf549e5f57d486aa04491dd75f8bcd0@o296856.ingest.sentry.io/5778704", secret = false },
 
     { name = "PASTAPORTO_SECRET", value = data.azurerm_key_vault_secret.pastaporto_secret.value, secret = true },
     { name = "IDENTITY_SECRET", value = data.azurerm_key_vault_secret.identity_secret.value, secret = true },

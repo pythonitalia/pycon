@@ -17,6 +17,7 @@ from users.domain.repository import UsersRepository
 from users.internal_api.views import GraphQL as InternalGraphQL
 from users.settings import DEBUG, ENVIRONMENT, PASTAPORTO_SECRET, SECRET_KEY, SENTRY_DSN
 from users.social_auth.views import google_login, google_login_auth
+from starlette.responses import JSONResponse
 
 if SENTRY_DSN:
     configure_sentry(dsn=str(SENTRY_DSN), env=ENVIRONMENT)
@@ -25,6 +26,7 @@ logging.basicConfig(level=logging.INFO)
 logging.getLogger("sqlalchemy.engine.Engine").disabled = True
 
 routes = [
+    Route("/ready", lambda _: JSONResponse({"ok": True})),
     Route("/graphql", GraphQL()),
     Route("/internal-api", InternalGraphQL()),
     Route("/login/google", google_login),

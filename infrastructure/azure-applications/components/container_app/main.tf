@@ -29,7 +29,7 @@ resource "azurerm_container_app" "ca_app" {
 
   ingress {
     external_enabled = true
-    target_port      = 8080
+    target_port      = 8000
     traffic_weight {
       latest_revision = true
       percentage      = 100
@@ -61,8 +61,8 @@ resource "azurerm_container_app" "ca_app" {
         transport        = "HTTP"
         path             = "/graphql"
         port             = 8000
-        initial_delay    = 7
-        interval_seconds = 3
+        interval_seconds = 10
+        initial_delay    = 3
       }
 
       startup_probe {
@@ -70,6 +70,7 @@ resource "azurerm_container_app" "ca_app" {
         path             = "/graphql"
         port             = 8000
         interval_seconds = 3
+        timeout          = 1
       }
 
       readiness_probe {
