@@ -478,7 +478,6 @@ class GrantsRecap(admin.ModelAdmin):
                     "country": country.name,
                     "total": int(sum([g.total_amount for g in grants])),
                     "count": len(grants),
-                    "pending": counter.get(Grant.Status.pending, 0),
                     "rejected": counter.get(Grant.Status.rejected, 0),
                     "approved": counter.get(Grant.Status.approved, 0),
                     "waiting_list": counter.get(Grant.Status.waiting_list, 0)
@@ -498,7 +497,6 @@ class GrantsRecap(admin.ModelAdmin):
             "title": "Total",
             "count": len(qs),
             "total": int(sum([g.total_amount for g in qs])),
-            "pending": counter.get(Grant.Status.pending, 0),
             "rejected": counter.get(Grant.Status.rejected, 0),
             "approved": counter.get(Grant.Status.approved, 0),
             "waiting_list": counter.get(Grant.Status.waiting_list, 0)
