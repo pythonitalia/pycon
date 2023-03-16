@@ -303,6 +303,7 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
     form = GrantAdminForm
     list_display = (
         "user_display_name",
+        "country",
         "conference",
         "status",
         "approved_type",
@@ -396,6 +397,17 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
         if obj.user_id:
             return self.get_user_display_name(obj.user_id)
         return obj.email
+
+    @admin.display(
+        description="C",
+    )
+    def country(self, obj):
+        if obj.traveling_from:
+            country = countries.get(code=obj.traveling_from)
+            if country:
+                return country.emoji
+
+        return ""
 
     def save_form(self, request, form, change):
         # If the status, country_type or approved_type changes and the grant is approved
