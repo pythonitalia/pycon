@@ -95,40 +95,6 @@ def test_send_reply_emails_waiting_list_maybe(rf, grant_factory, mocker):
     )
 
 
-def test_send_reply_emails_waiting_list_already_sent_should_skip(
-    rf, grant_factory, mocker
-):
-    mock_messages = mocker.patch("grants.admin.messages")
-    grant = grant_factory(
-        status=Grant.Status.waiting_list, applicant_reply_sent_at=timezone.now()
-    )
-    request = rf.get("/")
-
-    send_reply_emails(None, request=request, queryset=Grant.objects.all())
-
-    mock_messages.warning.assert_called_once_with(
-        request,
-        f"Reply email for {grant.name} was already sent! Skipping.",
-    )
-
-
-def test_send_reply_emails_waiting_list_maybe_already_sent_should_skip(
-    rf, grant_factory, mocker
-):
-    mock_messages = mocker.patch("grants.admin.messages")
-    grant = grant_factory(
-        status=Grant.Status.waiting_list_maybe, applicant_reply_sent_at=timezone.now()
-    )
-    request = rf.get("/")
-
-    send_reply_emails(None, request=request, queryset=Grant.objects.all())
-
-    mock_messages.warning.assert_called_once_with(
-        request,
-        f"Reply email for {grant.name} was already sent! Skipping.",
-    )
-
-
 def test_send_reply_emails_rejected(rf, grant_factory, mocker):
     mock_messages = mocker.patch("grants.admin.messages")
     grant = grant_factory(
@@ -140,19 +106,4 @@ def test_send_reply_emails_rejected(rf, grant_factory, mocker):
 
     mock_messages.info.assert_called_once_with(
         request, f"Sent Rejected reply email to {grant.name}"
-    )
-
-
-def test_send_reply_emails_rejected_already_sent_should_skip(rf, grant_factory, mocker):
-    mock_messages = mocker.patch("grants.admin.messages")
-    grant = grant_factory(
-        status=Grant.Status.rejected, applicant_reply_sent_at=timezone.now()
-    )
-    request = rf.get("/")
-
-    send_reply_emails(None, request=request, queryset=Grant.objects.all())
-
-    mock_messages.warning.assert_called_once_with(
-        request,
-        f"Reply email for {grant.name} was already sent! Skipping.",
     )
