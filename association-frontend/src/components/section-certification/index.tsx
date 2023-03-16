@@ -26,19 +26,9 @@ export const SectionCertification = () => {
             className="underline text-xl"
             rel="noopener"
             target="_blank"
-            href="https://www.centrocasnati.it/index.php/sections/liceo-game-development/"
+            href="https://example.com"
           >
-            Liceo Game Developement - Casnati - Como
-          </a>
-        </li>
-        <li>
-          <a
-            className="underline text-xl"
-            rel="noopener"
-            target="_blank"
-            href="https://www.itsrizzoli.it/"
-          >
-            ITS Angelo Rizzoli - Milano
+            Nome instituto qui
           </a>
         </li>
       </ul>
