@@ -15,7 +15,7 @@ from domain_events.publisher import (
     send_grant_reply_approved_email,
     send_grant_reply_rejected_email,
     send_grant_reply_waiting_list_email,
-    send_grant_reply_waiting_list_update_email
+    send_grant_reply_waiting_list_update_email,
 )
 from submissions.models import Submission
 from users.autocomplete import UsersBackendAutocomplete
