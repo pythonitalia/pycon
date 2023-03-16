@@ -12,7 +12,6 @@ import { Alert } from "~/components/alert";
 import { Introduction } from "~/components/cfp-introduction";
 import { CfpSendSubmission } from "~/components/cfp-send-submission";
 import { Link } from "~/components/link";
-import { LoginForm } from "~/components/login-form";
 import { MetaTags } from "~/components/meta-tags";
 import { useLoginState } from "~/components/profile/hooks";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
@@ -87,15 +86,6 @@ export const CFPPage = () => {
               <Alert variant="info" sx={{ mt: 4 }}>
                 <FormattedMessage id="cfp.needToBeLoggedIn" />
               </Alert>
-
-              <LoginForm
-                sx={{ mt: 4 }}
-                next={
-                  typeof window !== "undefined"
-                    ? window.location?.pathname
-                    : null
-                }
-              />
             </Fragment>
           )}
         </Container>

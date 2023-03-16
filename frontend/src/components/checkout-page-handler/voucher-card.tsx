@@ -2,7 +2,6 @@ import {
   Text,
   CardPart,
   MultiplePartsCard,
-  Spacer,
   Heading,
   Input,
   InputWrapper,

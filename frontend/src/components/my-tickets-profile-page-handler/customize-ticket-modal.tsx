@@ -1,4 +1,4 @@
-import { BasicButton, Spacer, Button } from "@python-italia/pycon-styleguide";
+import { BasicButton, Button } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 

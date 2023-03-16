@@ -30,6 +30,15 @@ export const messages = {
     "profile.myProposals.viewInvitation": "Invitation",
     "profile.myProposals.edit": "Edit",
     "schedule.entry.endsAt": "Ends at {time}",
+    "homepage.sponsors": "Sponsors",
+    "homepage.eventPreviewCard.time": "{start} - {end}",
+
+    "tickets.productsList.socialEventsTitle": "Social Events",
+    "login.dontHaveAccount.create": "Sign up!",
+    "signup.acceptPrivacyPolicy": "I accept the {privacyPolicyLink}",
+    "signup.privacyPolicy": "privacy policy",
+
+    "signup.existingAccount": "Email already used",
 
     "profile.welcome": "Ciao {name}!",
     "profile.myProfile": "My Profile",
@@ -170,8 +179,8 @@ export const messages = {
     "login.title": "Login",
     "login.email": "Email",
     "login.password": "Password",
-    "login.loginButton": "Login 👉",
-    "login.recoverPassword": "Password forgotten? Click here to reset it!",
+    "login.loginButton": "Login",
+    "login.recoverPassword": "Password forgotten?",
     "login.typeEmailToRecoverPassword":
       "Password forgotten? Type your email and click here!",
     "login.waitWhileSendingResetPasswordRequest": "Sending password reset",
@@ -191,14 +200,15 @@ export const messages = {
     "signup.password2": "Confirm Password",
     "signup.passwordMismatch":
       'Make sure "Password" and "Confirm Password" match!',
-    "signup.signupButton": "Signup 👉",
+    "signup.signupButton": "Signup",
     "signup.fullname": "Fullname",
     "deadlines.start": "Start",
     "deadlines.end": "End",
+    "login.wrongCredentials": "Wrong email/password",
     "submission.loading": "Loading",
     "submission.notFound": "Not found",
     "submission.socialCard.prefix": "I submitted:",
-    "submission.socialCard.suffix": "to PyCon Italia 2022 🙌",
+    "submission.socialCard.suffix": "to PyCon Italia 2023 🙌",
     "submission.comments": "Comments",
     "submission.noComments": "No comments yet",
     "submission.sendComment": "Send",
@@ -317,21 +327,39 @@ export const messages = {
     "header.switchLanguage": "Cambia lingua a Italiano",
     "resetPassword.newPassword": "New Password",
     "resetPassword.confirmPassword": "Confirm password",
-    "resetPassword.changePassword": "Change password",
+    "resetPassword.changePassword": "Change",
+    "resetPassword.changeYourPassword.body":
+      "Create a new password you never used on another website, and make sure it is safe by using at least 8 characters!",
     "resetPassword.youCanNowLogin":
       "Password changed! You can now login using your new password",
+    "requestResetPassword.backToLogin": "Back to {loginLink}",
+    "requestResetPassword.backToLogin.login": "login",
+    "requestResetPasswordSuccess.title": "Request received",
+    "requestResetPasswordSuccess.subheading": "We have sent you an email.",
     "resetPassword.changeYourPassword": "Change your password",
+    "resetPassword.confirmNewPassword": "Confirm new password",
     "requestResetPassword.passwordForgotten": "Password forgotten?",
     "requestResetPassword.email": "Email",
+    "requestResetPassword.title": "Request new password",
+    "requestResetPassword.button": "Send",
+    "requestResetPasswordSuccess.heading": "Well done!",
+    "requestResetPasswordSuccess.body":
+      "If you don't see the email immediately wait for a few minutes and check your spam folder. If after a few minutes you still can't find it, try requesting a new email.",
+    "resetPasswordSuccess.title": "Password changed",
+    "resetPasswordSuccess.heading": "Password changed",
+    "resetPasswordSuccess.subheading":
+      "Your new password has been successfully changed",
+    "resetPasswordSuccess.body": "You can now login using your new password",
     "login.loading": "Please wait",
-    "login.loginWithEmail": "Use your email/password...",
+    "login.loginWithEmail": "Welcome back!",
     "login.loginWithSocial": "... or your social account",
     "login.useGoogle": "Sign in with Google",
-    "login.dontHaveAccount": "Don't have an account? Click to create one",
+    "login.dontHaveAccount": "Don't have an account? {createLink}",
     "signup.signupWithEmail": "Create account",
     "signup.signupWithSocial": "... or your social account",
     "signup.useGoogle": "Sign up with Google",
-    "signup.alreadyHaveAccount": "Already have an account?",
+    "signup.alreadyHaveAccount": "Already have an account? {loginLink}",
+    "signup.alreadyHaveAccount.login": "Login",
     "blog.title": "Blog",
     "blog.readMore": "Read more",
     "blog.author": "Author",
@@ -341,6 +369,8 @@ export const messages = {
     "tickets.loading": "Please wait 🕐",
     "tickets.heading": "Get some tickets",
     "tickets.explanation": `{br}`,
+
+    "homepage.schedulePreviewSection.goToSchedule": "Go to schedule",
 
     "tickets.buyTickets": "Buy Tickets",
     "tickets.hotelRow.totalPrice": "{value}",
@@ -736,6 +766,7 @@ reflects what everyone wants to see!`,
     "error404.message": "We couldn't find the page you are looking for :(",
 
     "schedule.workshop.limitedSeats": "Limited space available! Book now.",
+    "schedule.workshop.soldout": "No more seats available",
 
     "schedule.invitation.congratulations":
       "Congratulations! Your submission {submissionTitle} was accepted!",
@@ -828,11 +859,14 @@ The sooner you buy your ticket, the more you save!`,
     "tickets.landing.hotelCopy": `Take the stress out of your trip and book your hotel room with us! You can stay in the same hotel as the conference, the Grand Hotel Mediterraneo!
 We have a limited number of discounted rooms, so make sure you grab yours quickly!
 `,
+    "tickets.landing.socialEvents.copy":
+      "PyCon Italia is more than just a conference! PyDrinks and PyDinner are our two main social events, join us to meet new people from the Python community!",
 
     "tickets.landing.membership.cta": "Join us!",
 
     "tickets.landing.ticketsTitle": "Tickets",
     "tickets.landing.hotelTitle": "Hotel",
+    "tickets.landing.socialEvents.title": "Social Events & more",
     "tickets.landing.membershipTitle": "Membership",
     "blog.publishedOn": "{date} - {author}",
 
@@ -925,8 +959,8 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "manageTicket.goBack": "Oppure torna indietro",
     "login.email": "Email",
     "login.password": "Password",
-    "login.loginButton": "Accedi 👉",
-    "login.recoverPassword": "Password dimenticata? Click qui per cambiarla!",
+    "login.loginButton": "Accedi",
+    "login.recoverPassword": "Password dimenticata?",
     "login.waitWhileSendingResetPasswordRequest":
       "Invio richiesta reset in corso",
     "login.checkYourEmails":
@@ -946,7 +980,7 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "signup.password": "Password",
     "signup.password2": "Conferma Password",
     "signup.passwordMismatch": "Assicurati che le password coincidono",
-    "signup.signupButton": "Registrati 👉",
+    "signup.signupButton": "Registrati",
     "signup.fullname": "Nome completo",
     "deadlines.start": "Inizio",
     "deadlines.end": "Fine",
@@ -1040,22 +1074,24 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "header.enquiries": "Informazioni",
     "header.schedule": "Programma",
     "header.switchLanguage": "Change language to English",
+
     "resetPassword.newPassword": "Nuova Password",
     "resetPassword.confirmPassword": "Conferma password",
-    "resetPassword.changePassword": "Cambia password",
+    "resetPassword.changePassword": "Conferma",
     "resetPassword.changeYourPassword": "Cambia la tua password",
     "resetPassword.youCanNowLogin": "Password cambiata! Puoi ora loggarti",
     "requestResetPassword.passwordForgotten": "Password dimenticata?",
     "requestResetPassword.email": "Email",
     "login.loading": "Caricamento",
-    "login.loginWithEmail": "Usa la tua email...",
+    "login.loginWithEmail": "Bentornato!",
     "login.loginWithSocial": "... o i tuoi account social",
-    "login.dontHaveAccount": "Non hai un account?",
+    "login.dontHaveAccount": "Non hai un account? {createLink}",
+    "login.dontHaveAccount.create": "Registrati!",
     "login.useGoogle": "Accedi con Gogle",
     "signup.signupWithEmail": "Crea un account",
     "signup.signupWithSocial": "... o con i tuoi account social",
     "signup.useGoogle": "Registrati con Google",
-    "signup.alreadyHaveAccount": "Hai già un account?",
+    "signup.alreadyHaveAccount": "Hai già un account? {loginLink}",
     "blog.title": "Blog",
     "blog.readMore": "Continua a leggere",
     "blog.author": "Autore",
@@ -1064,6 +1100,9 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "tickets.loading": "Caricamento in corso 🕐",
     "tickets.heading": "Acquista biglietti",
     "tickets.explanation": `{br}`,
+
+    "signup.acceptPrivacyPolicy": "Accetto la {privacyPolicyLink}",
+    "signup.privacyPolicy": "privacy policy",
 
     "addHotelRoom.checkin": "Check-in",
     "addHotelRoom.checkout": "Check-out",
@@ -1080,7 +1119,8 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
       "Scegli un biglietto, una maglietta o una stanza di hotel prima di continuare",
     "order.hotelRoomCartInfo":
       "{roomName} con check-in il {checkin} e check-out {checkout}",
-    "order.userAlreadyMember": "Sei già iscritto! Grazie!",
+    "order.userAlreadyMember":
+      "Fai già parte della nostra associazione. Grazie!",
     "order.addMembership": "Aggiungi iscrizione",
     "order.removeMembership": "Rimuovi iscrizione",
     "orderConfirmation.manage": "Fai click qui per gestire il tuo ordine",
@@ -1503,7 +1543,7 @@ Il tuo voto ci aiuterà a creare un programma che più rispecchia ciò che la co
 
     "ticketsOverview.ticket.business.title": "Business",
     "ticketsOverview.ticket.business.description":
-      "Aiuta i tuoi dipendenti a migliorare le proprie competenze e scopri di più su Python e le sue applicazioni sul posto di lavoro!",
+      "Aiuta il tuo team a migliorare le proprie competenze e scopri di più su Python e come integrarlo nei tuoi progetti!",
     "ticketsOverview.buyTickets.cta": "Biglietti",
 
     "home.grants.title": "Grants",
@@ -1605,7 +1645,7 @@ Affrettati a comprare il biglietto!`,
     "homepage.followUs": "Seguici su",
 
     "homepage.sponsorsSectionText":
-      "PyCon Italia può essere la tua piattaforma per guadgnare riconoscibilità del tuo brand, acquisire nuovi clienti ed opportunità ed assumere personale da una platea di professionisti altamente qualificati!",
+      "PyCon Italia può essere la tua piattaforma per guadagnare riconoscibilità del tuo brand, acquisire nuovi clienti ed opportunità ed assumere personale da una platea di persone altamente qualificate!",
     "homepage.sponsorsSectionCTAText": "Diventa sponsor",
 
     "scheduleView.allRooms": "Tutte le stanze",
@@ -1616,6 +1656,7 @@ Affrettati a comprare il biglietto!`,
     "schedule.live": "Live",
     "schedule.invitation.notes.placeholder": "Scrivi qui...",
     "schedule.workshop.limitedSeats": "Spazi limitati! Prenota il tuo posto.",
+    "schedule.workshop.soldout": "Workshop pieno!",
 
     "profile.welcome": "Ciao {name}!",
     "profile.myProfile": "Il mio profilo",
@@ -1690,6 +1731,38 @@ Affrettati a comprare il biglietto!`,
     "profile.myOrders.title": "I miei ordini",
     "profile.myProposals.title": "Le mie proposte",
     "profile.myTickets.title": "I miei biglietti",
+
+    "homepage.eventPreviewCard.time": "{start} - {end}",
+    "homepage.schedulePreviewSection.goToSchedule": "Apri Programma",
+    "homepage.sponsors": "Sponsors",
+
+    "tickets.productsList.socialEventsTitle": "Eventi sociali",
+    "tickets.landing.socialEvents.copy":
+      "PyCon Italia è molto di più di una semplice conferenza! PyDrinks e PyDinner sono i nostri due eventi social principali, dove puoi socializzare e conoscere nuove persone!",
+
+    "tickets.landing.socialEvents.title": "Eventi sociali",
+    "signup.alreadyHaveAccount.login": "Accedi",
+    "signup.existingAccount": "Email già registrata",
+    "login.wrongCredentials": "Email/password sbagliata",
+
+    "requestResetPassword.backToLogin": "Torna al {loginLink}",
+    "requestResetPassword.backToLogin.login": "Login",
+    "requestResetPassword.title": "Recupera password",
+    "requestResetPassword.button": "Invia",
+    "requestResetPasswordSuccess.title": "Richiesta ricevuta",
+    "requestResetPasswordSuccess.heading": "Richiesta ricevuta",
+    "requestResetPasswordSuccess.subheading": "Controlla le tue emails",
+    "requestResetPasswordSuccess.body":
+      "Se non vedi una email da noi prova ad aspettare un paio di minuti e controlla la tua cartella spam. Se non trovi nessuna email dopo 5 minuti, prova a richiedere una nuova email.",
+    "resetPassword.confirmNewPassword": "Conferma password",
+    "resetPassword.changeYourPassword.body":
+      "Usa una password che non hai mai usato su nessun sito web, ed assicurati che sia sicura creando una password di almeno 8 caratteri!",
+    "resetPasswordSuccess.title": "Password cambiata",
+    "resetPasswordSuccess.heading": "Password cambiata!",
+    "resetPasswordSuccess.subheading":
+      "La tua password è stata cambiata con successo!",
+    "resetPasswordSuccess.body":
+      "Torna alla pagina di login per accedere con la tua nuova password.",
   },
 };
 

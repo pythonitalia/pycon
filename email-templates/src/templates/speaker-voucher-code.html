@@ -1,5 +1,5 @@
 ---
-title: "[PyCon Italia 2022] Here your Speaker Voucher Code!"
+title: "[PyCon Italia 2023] Here your Speaker Voucher Code!"
 preheader: "Yay! Here you can find your Speaker Voucher Code"
 ---
 
@@ -26,7 +26,12 @@ preheader: "Yay! Here you can find your Speaker Voucher Code"
                       <p class="m-0 mb-8">
                         Congratulations again on your submission! We are super
                         happy to have you! 🙌 <br />
+                        <!-- prettier-ignore -->
+                        @{{#if is_speaker_voucher}}
                         As a Speaker, your ticket is on us!
+                        @{{else}}
+                        As a Co-Speaker, we will give you a 25% discount!
+                        @{{/if}}
                       </p>
                       <p class="m-0 mb-8">To redeem it:</p>
                       <ul class="m-0 mb-24 pl-2 list-decimal list-inside">
@@ -41,12 +46,12 @@ preheader: "Yay! Here you can find your Speaker Voucher Code"
                         </li>
                         <li>Go ahead and fill in your personal information.</li>
                         <li>
-                          In the review step, insert the following voucher code:
+                          Insert the following voucher code:
                           <!-- prettier-ignore -->
                           <div class="my-5 p-10 text-center text-white bg-darker">@{{voucherCode}}</div>
                         </li>
                         <li>
-                          Press "Pay with card" or "Pay with Bank Transfer" and
+                          Pay either with credit card or bank transfer and
                           you're done!
                         </li>
                       </ul>
@@ -105,7 +110,12 @@ preheader: "Yay! Here you can find your Speaker Voucher Code"
                         Congratulazioni per l'accettazione del tuo intervento!
                         Siamo super contenti di averti alla conferenza! 🙌
                         <br />
+                        <!-- prettier-ignore -->
+                        @{{#if is_speaker_voucher}}
                         Da speaker, il tuo biglietto è offerto da noi!
+                        @{{else}}
+                        Da co-speaker, ti offriamo uno sconto del 25%!
+                        @{{/if}}
                       </p>
                       <p class="m-0 mb-8">Come comprarlo:</p>
                       <ul class="m-0 mb-24 pl-2 list-decimal list-inside">
@@ -123,8 +133,7 @@ preheader: "Yay! Here you can find your Speaker Voucher Code"
                           Prosegui inserendo le tue informazioni personali.
                         </li>
                         <li>
-                          Nella pagina "Recap ordine" inserisci il seguente
-                          codice sconto:
+                          Inserisci il seguente codice sconto:
                           <!-- prettier-ignore -->
                           <div class="my-5 p-10 text-center text-white bg-darker">@{{voucherCode}}</div>
                         </li>

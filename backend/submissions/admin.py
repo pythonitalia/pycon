@@ -140,6 +140,7 @@ class SubmissionAdminForm(forms.ModelForm):
             "tags",
             "speaker_level",
             "previous_talk_video",
+            "short_social_summary",
         ]
 
 
@@ -182,6 +183,7 @@ class SubmissionAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
             },
         ),
         (_("Details"), {"fields": ("elevator_pitch", "abstract", "notes")}),
+        (_("Social"), {"fields": ("short_social_summary",)}),
     )
     list_filter = ("conference", "status", "pending_status", "type", "tags")
     search_fields = (

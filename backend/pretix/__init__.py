@@ -2,7 +2,7 @@ import logging
 from datetime import date
 from typing import Any, Dict, List, Optional
 from urllib.parse import urljoin
-
+from django.utils.dateparse import parse_datetime
 import requests
 import strawberry
 from django.conf import settings
@@ -66,7 +66,9 @@ def get_voucher(conference: Conference, code: str) -> Optional[Voucher]:
     return Voucher(
         id=data["id"],
         code=data["code"],
-        valid_until=data["valid_until"],
+        valid_until=parse_datetime(data["valid_until"])
+        if data["valid_until"]
+        else None,
         value=data["value"],
         items=items,
         all_items=all_items,
@@ -78,7 +80,13 @@ def get_voucher(conference: Conference, code: str) -> Optional[Voucher]:
 
 
 def create_voucher(
-    conference: Conference, code: str, comment: str, tag: str, quota_id: int
+    conference: Conference,
+    code: str,
+    comment: str,
+    tag: str,
+    quota_id: int,
+    price_mode: str,
+    value: str,
 ):
     payload = {
         "code": code,
@@ -88,8 +96,8 @@ def create_voucher(
         "valid_until": None,
         "block_quota": False,
         "allow_ignore_quota": False,
-        "price_mode": "set",
-        "value": "0.00",
+        "price_mode": price_mode,
+        "value": value,
         "item": None,
         "variation": None,
         "quota": quota_id,

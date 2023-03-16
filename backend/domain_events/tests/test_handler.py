@@ -2,6 +2,8 @@ from datetime import datetime
 from unittest.mock import patch
 
 import pytest
+import time_machine
+from conferences.models.speaker_voucher import SpeakerVoucher
 from schedule.models import ScheduleItem
 import respx
 from django.conf import settings
@@ -227,12 +229,16 @@ def test_handle_new_schedule_invitation_answer(
     slack_mock.send_message.assert_called_once()
 
 
-def test_handle_speaker_voucher_email_sent(settings):
+def test_handle_speaker_voucher_email_sent(settings, speaker_voucher_factory):
     settings.SPEAKERS_EMAIL_ADDRESS = "speakers@placeholder.com"
+    speaker_voucher = speaker_voucher_factory(
+        user_id=10,
+        voucher_type=SpeakerVoucher.VoucherType.SPEAKER,
+        voucher_code="ABC123",
+    )
 
     data = {
-        "speaker_id": 10,
-        "voucher_code": "ABC123",
+        "speaker_voucher_id": speaker_voucher.id,
     }
 
     with patch(
@@ -260,7 +266,63 @@ def test_handle_speaker_voucher_email_sent(settings):
         template=EmailTemplate.SPEAKER_VOUCHER_CODE,
         to="marco@placeholder.it",
         subject="[PyCon Italia 2023] Your Speaker Voucher Code",
-        variables={"firstname": "Marco Acierno", "voucherCode": "ABC123"},
+        variables={
+            "firstname": "Marco Acierno",
+            "voucherCode": "ABC123",
+            "is_speaker_voucher": True,
+        },
+        reply_to=["speakers@placeholder.com"],
+    )
+
+
+def test_handle_speaker_voucher_email_sent_cospeaker(settings, speaker_voucher_factory):
+    settings.SPEAKERS_EMAIL_ADDRESS = "speakers@placeholder.com"
+    speaker_voucher = speaker_voucher_factory(
+        user_id=10,
+        voucher_type=SpeakerVoucher.VoucherType.CO_SPEAKER,
+        voucher_code="ABC123",
+    )
+
+    data = {
+        "speaker_voucher_id": speaker_voucher.id,
+    }
+
+    with patch(
+        "domain_events.handler.send_email"
+    ) as email_mock, respx.mock as req_mock, time_machine.travel(
+        "2020-10-10 10:00:00Z", tick=False
+    ):
+        req_mock.post(f"{settings.USERS_SERVICE_URL}/internal-api").respond(
+            json={
+                "data": {
+                    "usersByIds": [
+                        {
+                            "id": 10,
+                            "fullname": "Marco Acierno",
+                            "name": "Marco",
+                            "username": "marco",
+                            "email": "marco@placeholder.it",
+                        },
+                    ]
+                }
+            }
+        )
+
+        handle_speaker_voucher_email_sent(data)
+        speaker_voucher.refresh_from_db()
+        assert speaker_voucher.voucher_email_sent_at == datetime(
+            2020, 10, 10, 10, 0, 0, tzinfo=timezone.utc
+        )
+
+    email_mock.assert_called_once_with(
+        template=EmailTemplate.SPEAKER_VOUCHER_CODE,
+        to="marco@placeholder.it",
+        subject="[PyCon Italia 2023] Your Speaker Voucher Code",
+        variables={
+            "firstname": "Marco Acierno",
+            "voucherCode": "ABC123",
+            "is_speaker_voucher": False,
+        },
         reply_to=["speakers@placeholder.com"],
     )
 

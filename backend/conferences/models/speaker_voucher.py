@@ -7,6 +7,10 @@ from conferences.models import Conference
 
 
 class SpeakerVoucher(TimeStampedModel):
+    class VoucherType(models.TextChoices):
+        SPEAKER = "speaker", _("Speaker")
+        CO_SPEAKER = "co_speaker", _("Co-Speaker")
+
     conference = models.ForeignKey(
         Conference,
         on_delete=models.PROTECT,
@@ -14,6 +18,10 @@ class SpeakerVoucher(TimeStampedModel):
         related_name="+",
     )
     user_id = models.IntegerField(verbose_name=_("user"))
+    voucher_type = models.CharField(
+        max_length=20,
+        choices=VoucherType.choices,
+    )
 
     voucher_code = models.TextField(
         help_text=_(

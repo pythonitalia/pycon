@@ -133,10 +133,9 @@ def test_send_speaker_voucher_email(speaker_voucher_factory):
     mock_publish.assert_called_once_with(
         "SpeakerVoucherEmailSent",
         body={
-            "speaker_id": 123,
-            "voucher_code": "ABC123",
+            "speaker_voucher_id": speaker_voucher.id,
         },
-        deduplication_id=str(speaker_voucher.id),
+        deduplication_id=ANY,
     )
 
 

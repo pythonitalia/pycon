@@ -11,6 +11,7 @@ import {
 } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
 
+import { useMoneyFormatter } from "~/helpers/formatters";
 import { compile } from "~/helpers/markdown";
 import { useCurrentLanguage } from "~/locale/context";
 import { TicketItem } from "~/types";
@@ -121,7 +122,7 @@ export const TicketRow = ({
   );
 };
 
-const AddRemoveRow = ({
+export const AddRemoveRow = ({
   onIncrement,
   onDecrement,
   price,
@@ -136,11 +137,7 @@ const AddRemoveRow = ({
   label?: string;
   soldOut: boolean;
 }) => {
-  const language = useCurrentLanguage();
-  const moneyFormatter = new Intl.NumberFormat(language, {
-    style: "currency",
-    currency: "EUR",
-  });
+  const moneyFormatter = useMoneyFormatter();
 
   const leftSide = (
     <>
