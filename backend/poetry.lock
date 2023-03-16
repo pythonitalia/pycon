@@ -2293,14 +2293,14 @@ six = ">=1.5"
 
 [[package]]
 name = "pythonit-toolkit"
-version = "0.1.84"
+version = "0.1.85"
 description = ""
 category = "main"
 optional = false
 python-versions = ">=3.9,<4.0"
 files = [
-    {file = "pythonit_toolkit-0.1.84-py3-none-any.whl", hash = "sha256:86aa58dd85340be96242d744c6ea1248334462cbe9b80a5bc5842b68ae8127f0"},
-    {file = "pythonit_toolkit-0.1.84.tar.gz", hash = "sha256:a67c92ca51e065d604476e553b99bdf46da7673759e6b34064473c0779ce2f47"},
+    {file = "pythonit_toolkit-0.1.85-py3-none-any.whl", hash = "sha256:b78e3735492d53a87288fab49539359b820eadb0c4823eb1e39d345aa5fdbfc8"},
+    {file = "pythonit_toolkit-0.1.85.tar.gz", hash = "sha256:3acb3e0531c8dcb8d2dca55b3eeeefe7c42f59a0a34d12d1ae6a8a01d3acfe5b"},
 ]
 
 [package.dependencies]
@@ -3119,4 +3119,4 @@ lambda = ["awslambdaric"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "424d3a7943d243335a0f01a736d096dbbd161b580f063adad9698469de49d3a4"
+content-hash = "688f0ffa29c7eca0d273367582ea5048dbb0ae61ed3725c52e1e3845abb152dd"

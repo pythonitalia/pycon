@@ -207,6 +207,15 @@ def send_grant_reply_waiting_list_email(grant: Grant):
     )
 
 
+def send_grant_reply_waiting_list_update_email(grant: Grant):
+    logger.info("Sending UPDATE reply WAITING_LIST email for GRANT %s", grant.id)
+    return publish_message(
+        "GrantReplyWaitingListUpdateSent",
+        body={"grant_id": grant.id},
+        deduplication_id=str(grant.id),
+    )
+
+
 def send_grant_reply_rejected_email(grant: Grant):
     logger.info("Publishing GrantReplyRejectedSent for GRANT %s", grant.id)
 

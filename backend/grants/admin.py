@@ -15,7 +15,9 @@ from domain_events.publisher import (
     send_grant_reply_approved_email,
     send_grant_reply_rejected_email,
     send_grant_reply_waiting_list_email,
+    send_grant_reply_waiting_list_update_email,
 )
+from schedule.models import ScheduleItem
 from submissions.models import Submission
 from users.autocomplete import UsersBackendAutocomplete
 from users.mixins import AdminUsersMixin, ResourceUsersByIdsMixin, SearchUsersMixin
@@ -108,7 +110,7 @@ class GrantResource(ResourceUsersByIdsMixin):
         )
 
     def dehydrate_grant_admin_link(self, obj: Grant):
-        return f"https://admin.pycon.it/admin/grants/grant/?q={'+'.join(obj.full_name.split(' '))}"
+        return f"https://admin.pycon.it/admin/grants/grant/?q={'+'.join(obj.full_name.split(' '))}"  # noqa: E501
 
     def before_export(self, queryset: QuerySet, *args, **kwargs):
         super().before_export(queryset, *args, **kwargs)
@@ -184,24 +186,10 @@ def send_reply_emails(modeladmin, request, queryset):
             grant.status == Grant.Status.waiting_list
             or grant.status == Grant.Status.waiting_list_maybe
         ):
-            if grant.applicant_reply_sent_at is not None:
-                messages.warning(
-                    request,
-                    f"Reply email for {grant.name} was already sent! Skipping.",
-                )
-                return
-
             send_grant_reply_waiting_list_email(grant)
             messages.info(request, f"Sent Waiting List reply email to {grant.name}")
 
         if grant.status == Grant.Status.rejected:
-            if grant.applicant_reply_sent_at is not None:
-                messages.warning(
-                    request,
-                    f"Reply email for {grant.name} was already sent! Skipping.",
-                )
-                return
-
             send_grant_reply_rejected_email(grant)
             messages.info(request, f"Sent Rejected reply email to {grant.name}")
 
@@ -236,6 +224,20 @@ def send_grant_reminder_to_waiting_for_confirmation(modeladmin, request, queryse
         send_grant_reply_approved_email(grant, is_reminder=True)
 
         messages.info(request, f"Grant reminder sent to {grant.name}")
+
+
+@admin.action(description="Send Waiting List update email")
+def send_reply_email_waiting_list_update(modeladmin, request, queryset):
+    queryset = queryset.filter(
+        status__in=(
+            Grant.Status.waiting_list,
+            Grant.Status.waiting_list_maybe,
+        ),
+    )
+
+    for grant in queryset:
+        send_grant_reply_waiting_list_update_email(grant)
+        messages.info(request, f"Sent Waiting List update reply email to {grant.name}")
 
 
 class GrantAdminForm(forms.ModelForm):
@@ -277,10 +279,13 @@ class GrantAdminForm(forms.ModelForm):
 
 @admin.register(Grant)
 class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
+    speaker_ids = []
     resource_class = GrantResource
     form = GrantAdminForm
     list_display = (
         "user_display_name",
+        "country",
+        "is_speaker",
         "conference",
         "status",
         "approved_type",
@@ -292,7 +297,6 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
         "applicant_reply_sent_at",
         "applicant_reply_deadline",
     )
-    readonly_fields = ("applicant_reply_sent_at",)
     list_filter = (
         "conference",
         "status",
@@ -300,6 +304,7 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
         "occupation",
         "grant_type",
         "interested_in_volunteering",
+        "traveling_from",
     )
     search_fields = (
         "email",
@@ -313,6 +318,7 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
     actions = [
         send_reply_emails,
         send_grant_reminder_to_waiting_for_confirmation,
+        send_reply_email_waiting_list_update,
         "delete_selected",
     ]
 
@@ -373,6 +379,36 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
         if obj.user_id:
             return self.get_user_display_name(obj.user_id)
         return obj.email
+
+    @admin.display(
+        description="C",
+    )
+    def country(self, obj):
+        if obj.traveling_from:
+            country = countries.get(code=obj.traveling_from)
+            if country:
+                return country.emoji
+
+        return ""
+
+    @admin.display(
+        description="S",
+    )
+    def is_speaker(self, obj):
+        if obj.user_id in self.speaker_ids:
+            return "🗣️"
+        return ""
+
+    def get_queryset(self, request):
+
+        qs = super().get_queryset(request)
+        if not self.speaker_ids:
+            conference_id = qs.values_list("conference_id").first()
+            self.speaker_ids = ScheduleItem.objects.filter(
+                conference__id__in=conference_id,
+                submission__speaker_id__isnull=False,
+            ).values_list("submission__speaker_id", flat=True)
+        return qs
 
     def save_form(self, request, form, change):
         # If the status, country_type or approved_type changes and the grant is approved
@@ -456,7 +492,6 @@ class GrantsRecap(admin.ModelAdmin):
                     "country": country.name,
                     "total": int(sum([g.total_amount for g in grants])),
                     "count": len(grants),
-                    "pending": counter.get(Grant.Status.pending, 0),
                     "rejected": counter.get(Grant.Status.rejected, 0),
                     "approved": counter.get(Grant.Status.approved, 0),
                     "waiting_list": counter.get(Grant.Status.waiting_list, 0)
@@ -475,8 +510,20 @@ class GrantsRecap(admin.ModelAdmin):
         footer = {
             "title": "Total",
             "count": len(qs),
-            "total": int(sum([g.total_amount for g in qs])),
-            "pending": counter.get(Grant.Status.pending, 0),
+            "total": int(
+                sum(
+                    [
+                        g.total_amount
+                        for g in qs
+                        if g.status
+                        in (
+                            Grant.Status.confirmed,
+                            Grant.Status.approved,
+                            Grant.Status.waiting_for_confirmation,
+                        )
+                    ]
+                )
+            ),
             "rejected": counter.get(Grant.Status.rejected, 0),
             "approved": counter.get(Grant.Status.approved, 0),
             "waiting_list": counter.get(Grant.Status.waiting_list, 0)

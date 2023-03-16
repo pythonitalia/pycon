@@ -67,6 +67,7 @@ class Country:
     code: str
     name: str
     continent: Continent
+    emoji: str
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> Country:

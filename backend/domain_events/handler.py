@@ -91,6 +91,21 @@ def handle_grant_reply_approved_sent(data):
 
 def handle_grant_reply_waiting_list_sent(data):
     logger.info("Sending Reply WAITING LIST email for Grant %s", data["grant_id"])
+
+    _send_grant_waiting_list_email(data, template=EmailTemplate.GRANT_WAITING_LIST)
+
+
+def handle_grant_reply_waiting_list_update_sent(data):
+    logger.info(
+        "Sending Reply WAITING LIST UPDATE email for Grant %s", data["grant_id"]
+    )
+
+    _send_grant_waiting_list_email(
+        data, template=EmailTemplate.GRANT_WAITING_LIST_UPDATE
+    )
+
+
+def _send_grant_waiting_list_email(data, template):
     grant = Grant.objects.get(id=data["grant_id"])
     reply_url = urljoin(settings.FRONTEND_URL, "/grants/reply/")
 
@@ -100,7 +115,7 @@ def handle_grant_reply_waiting_list_sent(data):
     ).first()
 
     _send_grant_email(
-        template=EmailTemplate.GRANT_WAITING_LIST,
+        template=template,
         subject=subject,
         grant=grant,
         replyLink=reply_url,
@@ -513,6 +528,7 @@ HANDLERS = {
     "GrantReplyApprovedSent": handle_grant_reply_approved_sent,
     "GrantReplyApprovedReminderSent": handle_grant_reply_approved_sent,
     "GrantReplyWaitingListSent": handle_grant_reply_waiting_list_sent,
+    "GrantReplyWaitingListUpdateSent": handle_grant_reply_waiting_list_update_sent,
     "GrantReplyRejectedSent": handle_grant_reply_rejected_sent,
     "NewGrantReply": handle_new_grant_reply,
     "NewPlainChatSent": handle_new_plain_chat_sent,
