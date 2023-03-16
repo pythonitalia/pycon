@@ -400,12 +400,11 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
         return ""
 
     def get_queryset(self, request):
-
         qs = super().get_queryset(request)
         if not self.speaker_ids:
-            conference_id = qs.values_list("conference_id").first()
+            conference_id = request.GET.get("conference__id__exact")
             self.speaker_ids = ScheduleItem.objects.filter(
-                conference__id__in=conference_id,
+                conference__id=conference_id,
                 submission__speaker_id__isnull=False,
             ).values_list("submission__speaker_id", flat=True)
         return qs
