@@ -509,7 +509,20 @@ class GrantsRecap(admin.ModelAdmin):
         footer = {
             "title": "Total",
             "count": len(qs),
-            "total": int(sum([g.total_amount for g in qs])),
+            "total": int(
+                sum(
+                    [
+                        g.total_amount
+                        for g in qs
+                        if g.status
+                        in (
+                            Grant.Status.confirmed,
+                            Grant.Status.approved,
+                            Grant.Status.waiting_for_confirmation,
+                        )
+                    ]
+                )
+            ),
             "rejected": counter.get(Grant.Status.rejected, 0),
             "approved": counter.get(Grant.Status.approved, 0),
             "waiting_list": counter.get(Grant.Status.waiting_list, 0)
