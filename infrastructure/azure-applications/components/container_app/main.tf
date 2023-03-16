@@ -8,87 +8,76 @@ locals {
   ]
 }
 
-data "azapi_resource" "ca_env" {
-  name      = "pythonit-${var.workspace}-ca-env"
-  parent_id = var.resource_group_id
-  type      = "Microsoft.App/managedEnvironments@2022-03-01"
-
-  response_export_values = [
-    "id",
-  ]
+data "azurerm_container_app_environment" "env" {
+  name                = var.environment_name
+  resource_group_name = var.resource_group_name
 }
 
-resource "azapi_resource" "ca_app" {
-  type      = "Microsoft.App/containerApps@2022-03-01"
-  parent_id = var.resource_group_id
-  location  = "westeurope"
-  name      = "pythonit-${var.workspace}-${var.service_name}"
+resource "azurerm_container_app" "ca_app" {
+  name                         = "pythonit-${var.workspace}-${var.service_name}"
+  container_app_environment_id = data.azurerm_container_app_environment.env.id
+  resource_group_name          = var.resource_group_name
+  revision_mode                = "Single"
 
-  body = jsonencode({
-    properties = {
-      managedEnvironmentId = data.azapi_resource.ca_env.id
-      configuration = {
-        ingress = {
-          external   = true
-          targetPort = 8000
+  dynamic "secret" {
+    for_each = local.secret_env_vars
+    content {
+      name  = secret.value.name
+      value = secret.value.value
+    }
+  }
+
+  ingress {
+    external_enabled = true
+    target_port      = 8080
+    traffic_weight {
+      latest_revision = true
+      percentage      = 100
+    }
+  }
+
+  template {
+    min_replicas = 0
+    max_replicas = 1
+
+    container {
+      name    = "main"
+      image   = "ghcr.io/pythonitalia/pycon/${var.service_name}:${var.githash}"
+      command = ["/home/app/.venv/bin/python", "-m", "gunicorn", "-w", "3", "--worker-class", "uvicorn.workers.UvicornWorker", "main:wrapped_app", "--bind", "0.0.0.0:8000"]
+      cpu     = 0.5
+      memory  = "1Gi"
+
+      dynamic "env" {
+        for_each = var.env_vars
+
+        content {
+          name        = env.value.name
+          value       = env.value.value
+          secret_name = env.value.secret ? lower(replace(env.value.name, "_", "-")) : null
         }
-        secrets = local.secret_env_vars
       }
-      template = {
-        containers = [
-          {
-            name    = "main"
-            image   = "ghcr.io/pythonitalia/pycon/${var.service_name}:${var.githash}"
-            command = ["/home/app/.venv/bin/python", "-m", "gunicorn", "-w", "3", "--worker-class", "uvicorn.workers.UvicornWorker", "main:wrapped_app", "--bind", "0.0.0.0:8000"]
 
-            resources = {
-              cpu    = 1
-              memory = "2Gi"
-            }
+      liveness_probe {
+        transport        = "HTTP"
+        path             = "/graphql"
+        port             = 8000
+        initial_delay    = 7
+        interval_seconds = 3
+      }
 
-            probes = [
-              {
-                type = "Liveness"
-                httpGet = {
-                  path = "/graphql"
-                  port = 8000
-                }
-                initialDelaySeconds = 7
-                periodSeconds       = 3
-              },
-              {
-                type = "Startup"
-                httpGet = {
-                  path = "/graphql"
-                  port = 8000
-                }
-                initialDelaySeconds = 3
-                periodSeconds       = 3
-              },
-              {
-                type = "Readiness"
-                tcpSocket = {
-                  port = 8000
-                }
-                initialDelaySeconds = 10
-                periodSeconds       = 3
-              }
-            ]
+      startup_probe {
+        transport        = "HTTP"
+        path             = "/graphql"
+        port             = 8000
+        interval_seconds = 3
+      }
 
-            env = [
-              for env_var in var.env_vars : {
-                name      = env_var.name,
-                value     = env_var.value
-                secretRef = env_var.secret ? lower(replace(env_var.name, "_", "-")) : null
-              }
-            ]
-          }
-        ]
-        scale = {
-          minReplicas = 0
-          maxReplicas = 1
-        }
+      readiness_probe {
+        transport        = "HTTP"
+        path             = "/graphql"
+        port             = 8000
+        interval_seconds = 3
       }
     }
-  })
+  }
 }

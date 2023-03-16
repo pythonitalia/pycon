@@ -1,12 +1,12 @@
 data "azurerm_virtual_network" "vnet" {
-  name                = "pythonit-westeurope-vnet"
-  resource_group_name = "pythonit-global"
+  name                = "pythonit-westeurope-${var.workspace}-vnet"
+  resource_group_name = var.resource_group_name
 }
 
 data "azurerm_subnet" "db_subnet" {
   name                 = "db-subnet"
   virtual_network_name = data.azurerm_virtual_network.vnet.name
-  resource_group_name  = "pythonit-global"
+  resource_group_name  = var.resource_group_name
 }
 
 resource "azurerm_private_dns_zone" "dns" {

@@ -8,22 +8,23 @@ data "azurerm_postgresql_flexible_server" "db" {
 }
 
 module "ca_app" {
-  source            = "../components/container_app"
-  service_name      = "users-backend"
-  resource_group_id = data.azurerm_resource_group.pythonitalia.id
-  workspace         = var.workspace
-  githash           = var.githash
+  source              = "../components/container_app"
+  service_name        = "users-backend"
+  resource_group_name = var.resource_group_name
+  workspace           = var.workspace
+  githash             = var.githash
+  environment_name    = "pythonit-${var.workspace}-env"
   env_vars = [
     {
       name  = "DEBUG"
       value = "true", secret = false
     },
     { name = "SECRET_KEY", value = data.azurerm_key_vault_secret.secret_key.value, secret = true },
-    { name = "GOOGLE_AUTH_CLIENT_ID", value = "", secret = false },
-    { name = "GOOGLE_AUTH_CLIENT_SECRET", value = "", secret = false },
+    { name = "GOOGLE_AUTH_CLIENT_ID", value = "empty", secret = false },
+    { name = "GOOGLE_AUTH_CLIENT_SECRET", value = "empty", secret = false },
     { name = "DATABASE_URL", value = local.database_url, secret = true },
     { name = "EMAIL_BACKEND", value = "pythonit_toolkit.emails.backends.ses.SESEmailBackend", secret = false },
-    { name = "SENTRY_DSN", value = "", secret = false },
+    { name = "SENTRY_DSN", value = "empty", secret = false },
 
     { name = "PASTAPORTO_SECRET", value = data.azurerm_key_vault_secret.pastaporto_secret.value, secret = true },
     { name = "IDENTITY_SECRET", value = data.azurerm_key_vault_secret.identity_secret.value, secret = true },
