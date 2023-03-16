@@ -503,7 +503,7 @@ class GrantsRecap(admin.ModelAdmin):
                 }
             )
 
-        results = sorted(results, key=lambda k: (-k["count"], k["continent"]))
+        results = sorted(results, key=lambda k: (k["continent"], k["country"]))
 
         counter = Counter([g.status for g in qs])
         footer = {
