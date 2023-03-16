@@ -17,6 +17,7 @@ from domain_events.publisher import (
     send_grant_reply_waiting_list_email,
     send_grant_reply_waiting_list_update_email,
 )
+from schedule.models import ScheduleItem
 from submissions.models import Submission
 from users.autocomplete import UsersBackendAutocomplete
 from users.mixins import AdminUsersMixin, ResourceUsersByIdsMixin, SearchUsersMixin
@@ -299,11 +300,13 @@ class GrantAdminForm(forms.ModelForm):
 
 @admin.register(Grant)
 class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
+    speaker_ids = []
     resource_class = GrantResource
     form = GrantAdminForm
     list_display = (
         "user_display_name",
         "country",
+        "is_speaker",
         "conference",
         "status",
         "approved_type",
@@ -408,6 +411,30 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
                 return country.emoji
 
         return ""
+
+    @admin.display(
+        description="S",
+    )
+    def is_speaker(self, obj):
+        if obj.user_id in self.speaker_ids:
+            return "🗣️"
+        return ""
+
+    def get_queryset(self, request):
+
+        qs = super().get_queryset(request)
+        if not self.speaker_ids:
+            # returns a list...
+            conference_id = qs.values_list("conference_id").first()
+            self.speaker_ids = [
+                i["submission__speaker_id"]
+                for i in ScheduleItem.objects.filter(
+                    conference__id__in=conference_id
+                ).values("submission__speaker_id")
+                if i["submission__speaker_id"]
+            ]
+
+        return qs
 
     def save_form(self, request, form, change):
         # If the status, country_type or approved_type changes and the grant is approved
