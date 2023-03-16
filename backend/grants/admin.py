@@ -321,6 +321,7 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
         "occupation",
         "grant_type",
         "interested_in_volunteering",
+        "traveling_from",
     )
     search_fields = (
         "email",
