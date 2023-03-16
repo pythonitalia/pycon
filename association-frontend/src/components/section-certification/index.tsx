@@ -30,7 +30,7 @@ export const SectionCertification = () => {
           >
             Nome instituto qui
           </a>
-        </li>``
+        </li>
       </ul>
       <p className="mx-auto mb-4 text-xl text-black">
         L'attestato consente all'Ente di definire il proprio programma di studi
