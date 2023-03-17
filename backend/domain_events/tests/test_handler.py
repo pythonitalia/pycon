@@ -514,7 +514,6 @@ def test_handle_grant_reply_rejected_sent(grant, mock_users_by_ids):
 def test_handle_grant_voucher_email_sent(settings, grant_factory):
     grant = grant_factory(
         user_id=10,
-        voucher_type=SpeakerVoucher.VoucherType.SPEAKER,
         voucher_code="ABC123",
     )
 
