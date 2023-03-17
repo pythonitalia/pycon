@@ -545,7 +545,7 @@ def test_handle_grant_voucher_email_sent(settings, grant_factory):
     email_mock.assert_called_once_with(
         template=EmailTemplate.GRANT_VOUCHER_CODE,
         to="marco@placeholder.it",
-        subject="[PyCon Italia 2023] Your Grant Voucher Code",
+        subject=f"[{grant.conference.name}] Your Grant Voucher Code",
         variables={
             "firstname": "Marco Acierno",
             "voucherCode": "ABC123",
