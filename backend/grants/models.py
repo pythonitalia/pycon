@@ -149,6 +149,16 @@ class Grant(TimeStampedModel):
         _("applicant reply deadline"), null=True, blank=True
     )
     applicant_message = models.TextField(_("applicant message"), null=True, blank=True)
+    voucher_code = models.TextField(
+        help_text=_("Voucher code generated for this grant."),
+        blank=True,
+        null=True,
+    )
+    pretix_voucher_id = models.IntegerField(
+        help_text=_("ID of the voucher in the Pretix database"),
+        blank=True,
+        null=True,
+    )
 
     def __str__(self):
         return f"{self.full_name}"
