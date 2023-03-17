@@ -159,6 +159,9 @@ class Grant(TimeStampedModel):
         blank=True,
         null=True,
     )
+    voucher_email_sent_at = models.DateTimeField(
+        help_text=_("When the email was last sent"), blank=True, null=True
+    )
 
     def __str__(self):
         return f"{self.full_name}"

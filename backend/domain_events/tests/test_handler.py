@@ -19,6 +19,7 @@ from domain_events.handler import (
     handle_schedule_invitation_sent,
     handle_speaker_voucher_email_sent,
     handle_submission_time_slot_changed,
+    handle_grant_voucher_email_sent,
 )
 from grants.models import Grant
 
@@ -505,6 +506,50 @@ def test_handle_grant_reply_rejected_sent(grant, mock_users_by_ids):
         variables={
             "firstname": "Marco Acierno",
             "conferenceName": grant.conference.name.localize("en"),
+        },
+        reply_to=["grants@pycon.it"],
+    )
+
+
+def test_handle_grant_voucher_email_sent(settings, grant_factory):
+    grant = grant_factory(
+        user_id=10,
+        voucher_type=SpeakerVoucher.VoucherType.SPEAKER,
+        voucher_code="ABC123",
+    )
+
+    data = {
+        "grant_id": grant.id,
+    }
+
+    with patch(
+        "domain_events.handler.send_email"
+    ) as email_mock, respx.mock as req_mock:
+        req_mock.post(f"{settings.USERS_SERVICE_URL}/internal-api").respond(
+            json={
+                "data": {
+                    "usersByIds": [
+                        {
+                            "id": 10,
+                            "fullname": "Marco Acierno",
+                            "name": "Marco",
+                            "username": "marco",
+                            "email": "marco@placeholder.it",
+                        },
+                    ]
+                }
+            }
+        )
+
+        handle_grant_voucher_email_sent(data)
+
+    email_mock.assert_called_once_with(
+        template=EmailTemplate.GRANT_VOUCHER_CODE,
+        to="marco@placeholder.it",
+        subject="[PyCon Italia 2023] Your Grant Voucher Code",
+        variables={
+            "firstname": "Marco Acierno",
+            "voucherCode": "ABC123",
         },
         reply_to=["grants@pycon.it"],
     )

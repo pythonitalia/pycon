@@ -17,6 +17,7 @@ from domain_events.publisher import (
     send_grant_reply_rejected_email,
     send_grant_reply_waiting_list_email,
     send_grant_reply_waiting_list_update_email,
+    send_grant_voucher_email,
 )
 from pretix import create_voucher
 from schedule.models import ScheduleItem
@@ -242,6 +243,24 @@ def send_reply_email_waiting_list_update(modeladmin, request, queryset):
         messages.info(request, f"Sent Waiting List update reply email to {grant.name}")
 
 
+@admin.action(description="Send voucher via email")
+def send_voucher_via_email(modeladmin, request, queryset):
+    is_filtered_by_conference = (
+        queryset.values_list("conference_id").distinct().count() == 1
+    )
+
+    if not is_filtered_by_conference:
+        messages.error(request, "Please select only one conference")
+        return
+
+    count = 0
+    for grant in queryset.filter(pretix_voucher_id__isnull=False):
+        send_grant_voucher_email(grant)
+        count = count + 1
+
+    messages.success(request, f"{count} Voucher emails scheduled!")
+
+
 def _generate_voucher_code() -> str:
     charset = list("ABCDEFGHKLMNPQRSTUVWXYZ23456789")
     random_string = get_random_string(length=20, allowed_chars=charset)
@@ -353,6 +372,8 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
         "country_type",
         "applicant_reply_sent_at",
         "applicant_reply_deadline",
+        "voucher_code",
+        "voucher_email_sent_at",
     )
     list_filter = (
         "conference",
@@ -376,6 +397,8 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
         send_reply_emails,
         send_grant_reminder_to_waiting_for_confirmation,
         send_reply_email_waiting_list_update,
+        create_grant_vouchers_on_pretix,
+        send_voucher_via_email,
         "delete_selected",
     ]
 
@@ -394,6 +417,9 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
                     "applicant_message",
                     "applicant_reply_sent_at",
                     "applicant_reply_deadline",
+                    "pretix_voucher_id",
+                    "voucher_code",
+                    "voucher_email_sent_at",
                 )
             },
         ),

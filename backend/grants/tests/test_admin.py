@@ -1,10 +1,15 @@
 from datetime import timedelta
 from unittest.mock import call
 
+import time_machine
 import pytest
 from django.utils import timezone
 
-from grants.admin import create_grant_vouchers_on_pretix, send_reply_emails
+from grants.admin import (
+    create_grant_vouchers_on_pretix,
+    send_reply_emails,
+    send_voucher_via_email,
+)
 from grants.models import Grant
 
 pytestmark = pytest.mark.django_db
@@ -110,12 +115,70 @@ def test_send_reply_emails_rejected(rf, grant_factory, mocker):
     )
 
 
-def test_send_voucher_via_email():
-    pass
+@time_machine.travel("2020-10-10 10:00:00", tick=False)
+def test_send_voucher_via_email(
+    rf,
+    grant_factory,
+    conference_factory,
+    mocker,
+):
+
+    mocker.patch("grants.admin.messages")
+    mock_send_email = mocker.patch("grants.admin.send_grant_voucher_email")
+
+    conference = conference_factory(pretix_speaker_voucher_quota_id=123)
+
+    grant = grant_factory(
+        user_id=200,
+        status=Grant.Status.confirmed,
+        conference=conference,
+        pretix_voucher_id=2345,
+        voucher_code="GRANT-532VCT",
+    )
+
+    send_voucher_via_email(
+        None, rf.get("/"), queryset=Grant.objects.filter(conference=conference)
+    )
+
+    mock_send_email.assert_has_calls(
+        [
+            call(grant),
+        ]
+    )
 
 
-def test_send_voucher_via_email_requires_filtering_by_conference():
-    pass
+def test_send_voucher_via_email_requires_filtering_by_conference(
+    rf,
+    grant_factory,
+    conference_factory,
+    mocker,
+):
+    conference = conference_factory(pretix_speaker_voucher_quota_id=1234)
+    conference_2 = conference_factory(pretix_speaker_voucher_quota_id=1234)
+    mock_messages = mocker.patch("grants.admin.messages")
+    mock_send_email = mocker.patch("grants.admin.send_grant_voucher_email")
+    grant_factory(
+        user_id=100,
+        status=Grant.Status.confirmed,
+        conference=conference,
+    )
+    grant_factory(
+        user_id=200,
+        status=Grant.Status.confirmed,
+        conference=conference_2,
+    )
+    request = rf.get("/")
+
+    send_voucher_via_email(
+        None,
+        request=request,
+        queryset=Grant.objects.filter(conference__in=[conference, conference_2]),
+    )
+
+    mock_messages.error.assert_called_once_with(
+        request, "Please select only one conference"
+    )
+    mock_send_email.assert_not_called()
 
 
 def test_create_grant_vouchers_on_pretix(rf, conference_factory, grant_factory, mocker):
