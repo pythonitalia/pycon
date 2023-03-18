@@ -25,3 +25,10 @@ resource "azurerm_postgresql_flexible_server_database" "pretix" {
   collation = "en_US.utf8"
   charset   = "utf8"
 }
+
+resource "azurerm_postgresql_flexible_server_database" "cms" {
+  name      = "cms"
+  server_id = azurerm_postgresql_flexible_server.database.id
+  collation = "en_US.utf8"
+  charset   = "utf8"
+}

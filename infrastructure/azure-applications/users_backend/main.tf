@@ -14,6 +14,8 @@ module "ca_app" {
   workspace           = var.workspace
   githash             = var.githash
   environment_name    = "pythonit-${var.workspace}-env"
+  command             = ["/home/app/.venv/bin/python", "-m", "gunicorn", "main:wrapped_app"]
+  port = 8000
   env_vars = [
     {
       name  = "DEBUG"

@@ -29,7 +29,8 @@ resource "azurerm_container_app" "ca_app" {
 
   ingress {
     external_enabled = true
-    target_port      = 8000
+    target_port      = var.port
+
     traffic_weight {
       latest_revision = true
       percentage      = 100
@@ -37,15 +38,15 @@ resource "azurerm_container_app" "ca_app" {
   }
 
   template {
-    min_replicas = 0
+    min_replicas = var.workspace == "production" ? 1 : 0
     max_replicas = 1
 
     container {
       name    = "main"
       image   = "ghcr.io/pythonitalia/pycon/${var.service_name}:${var.githash}"
-      command = ["/home/app/.venv/bin/python", "-m", "gunicorn", "-w", "3", "--worker-class", "uvicorn.workers.UvicornWorker", "main:wrapped_app", "--bind", "0.0.0.0:8000"]
-      cpu     = 0.5
-      memory  = "1Gi"
+      command = var.command
+      cpu     = 1
+      memory  = "2Gi"
 
       dynamic "env" {
         for_each = var.env_vars
@@ -60,24 +61,24 @@ resource "azurerm_container_app" "ca_app" {
       liveness_probe {
         transport        = "HTTP"
         path             = "/graphql"
-        port             = 8000
-        interval_seconds = 10
+        port             = var.port
+        interval_seconds = 1
         initial_delay    = 3
       }
 
       startup_probe {
         transport        = "HTTP"
         path             = "/graphql"
-        port             = 8000
-        interval_seconds = 3
-        timeout          = 1
+        port             = var.port
+        interval_seconds = 1
       }
 
       readiness_probe {
-        transport        = "HTTP"
-        path             = "/graphql"
-        port             = 8000
-        interval_seconds = 3
+        transport               = "HTTP"
+        path                    = "/graphql"
+        port                    = var.port
+        interval_seconds        = 1
+        success_count_threshold = 1
       }
     }
   }

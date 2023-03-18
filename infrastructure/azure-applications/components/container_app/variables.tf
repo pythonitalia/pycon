@@ -30,3 +30,11 @@ variable "local_path" {
 variable "githash" {
   type = string
 }
+
+variable "command" {
+  type = list(string)
+}
+
+variable "port" {
+  type = number
+}
