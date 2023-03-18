@@ -261,10 +261,10 @@ def send_voucher_via_email(modeladmin, request, queryset):
     messages.success(request, f"{count} Voucher emails scheduled!")
 
 
-def _generate_voucher_code() -> str:
+def _generate_voucher_code(prefix: str) -> str:
     charset = list("ABCDEFGHKLMNPQRSTUVWXYZ23456789")
     random_string = get_random_string(length=20, allowed_chars=charset)
-    return f"GRANT-{random_string}"
+    return f"{prefix}-{random_string}"
 
 
 @admin.action(description="Create grant vouchers on Pretix")
