@@ -23,9 +23,6 @@ RUN apt-get update --yes --quiet && apt-get install --yes --quiet --no-install-r
     libwebp-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Install the application server.
-RUN pip install "gunicorn==20.0.4"
-
 # install PDM
 RUN pip install -U pip setuptools wheel
 RUN pip install pdm
@@ -51,6 +48,6 @@ COPY --chown=wagtail:wagtail . .
 USER wagtail
 
 # Collect static files.
-RUN pdm run python manage.py collectstatic --noinput --clear
+RUN DJANGO_SETTINGS_MODULE=cms.settings.dev pdm run python manage.py collectstatic --noinput --clear
 
 CMD pdm run gunicorn cms.wsgi:application

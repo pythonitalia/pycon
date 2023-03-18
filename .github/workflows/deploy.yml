@@ -78,6 +78,8 @@ jobs:
             dir: backend
           - name: pretix
             dir: pretix
+          - name: cms
+            dir: cms
 
     steps:
       - uses: actions/checkout@v2

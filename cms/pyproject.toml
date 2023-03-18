@@ -24,6 +24,8 @@ dependencies = [
     "strawberry-graphql>=0.103.0",
     "django-environ>=0.10.0",
     "django-storages[azure]>=1.13.2",
+    "gunicorn>=20.1.0",
+    "psycopg2>=2.9.5",
 ]
 requires-python = ">=3.11"
 license = {text = "MIT"}

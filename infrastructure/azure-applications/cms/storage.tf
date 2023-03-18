@@ -1,5 +1,5 @@
 resource "azurerm_storage_account" "storage" {
-  name                     = "${var.workspace}cms"
+  name                     = "${var.workspace}pythonitcms"
   resource_group_name      = var.resource_group_name
   location                 = var.resource_group_location
   account_tier             = "Standard"
