@@ -296,7 +296,7 @@ def create_grant_vouchers_on_pretix(modeladmin, request, queryset):
             )
             continue
 
-        voucher_code = _generate_voucher_code()
+        voucher_code = _generate_voucher_code("GRANT")
         pretix_voucher = create_voucher(
             conference=grant.conference,
             code=voucher_code,
