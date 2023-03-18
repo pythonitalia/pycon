@@ -79,3 +79,5 @@ if RUNNING_TESTS:
     DATABASE_URL = str(test_db_url)
     PASSWORD_HASHERS = ["users.starlette_password.plain_hasher.PlainPasswordHasher"]
     SERVICE_TO_SERVICE_SECRET = "test-service-to-service"
+
+DB_SSL_MODE = config("DB_SSL_MODE", default="prefer")

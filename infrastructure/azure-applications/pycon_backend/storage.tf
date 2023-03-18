@@ -1,7 +1,7 @@
 resource "azurerm_storage_account" "storage" {
   name                     = "${var.workspace}pyconbackend"
-  resource_group_name      = data.azurerm_resource_group.pythonitalia.name
-  location                 = data.azurerm_resource_group.pythonitalia.location
+  resource_group_name      = var.resource_group_name
+  location                 = var.resource_group_location
   account_tier             = "Standard"
   account_replication_type = "ZRS"
   min_tls_version          = "TLS1_2"
