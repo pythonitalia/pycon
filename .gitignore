@@ -119,3 +119,5 @@ secrets.auto.tfvars
 
 cms/static/
 cms/media/
+.venv
+.pdm.toml

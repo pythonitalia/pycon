@@ -22,6 +22,8 @@ dependencies = [
     "Django>=4.1.7",
     "wagtail-localize>=1.5",
     "strawberry-graphql>=0.103.0",
+    "django-environ>=0.10.0",
+    "django-storages[azure]>=1.13.2",
 ]
 requires-python = ">=3.11"
 license = {text = "MIT"}
