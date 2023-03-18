@@ -9,6 +9,7 @@ from django.db.models.query import QuerySet
 from django.utils import timezone
 from import_export.admin import ExportMixin
 from import_export.fields import Field
+from django.utils.crypto import get_random_string
 
 from countries import countries
 from domain_events.publisher import (
@@ -16,7 +17,9 @@ from domain_events.publisher import (
     send_grant_reply_rejected_email,
     send_grant_reply_waiting_list_email,
     send_grant_reply_waiting_list_update_email,
+    send_grant_voucher_email,
 )
+from pretix import create_voucher
 from schedule.models import ScheduleItem
 from submissions.models import Submission
 from users.autocomplete import UsersBackendAutocomplete
@@ -240,6 +243,79 @@ def send_reply_email_waiting_list_update(modeladmin, request, queryset):
         messages.info(request, f"Sent Waiting List update reply email to {grant.name}")
 
 
+@admin.action(description="Send voucher via email")
+def send_voucher_via_email(modeladmin, request, queryset):
+    is_filtered_by_conference = (
+        queryset.values_list("conference_id").distinct().count() == 1
+    )
+
+    if not is_filtered_by_conference:
+        messages.error(request, "Please select only one conference")
+        return
+
+    count = 0
+    for grant in queryset.filter(pretix_voucher_id__isnull=False):
+        send_grant_voucher_email(grant)
+        count = count + 1
+
+    messages.success(request, f"{count} Voucher emails scheduled!")
+
+
+def _generate_voucher_code(prefix: str) -> str:
+    charset = list("ABCDEFGHKLMNPQRSTUVWXYZ23456789")
+    random_string = get_random_string(length=20, allowed_chars=charset)
+    return f"{prefix}-{random_string}"
+
+
+@admin.action(description="Create grant vouchers on Pretix")
+def create_grant_vouchers_on_pretix(modeladmin, request, queryset):
+    is_filtered_by_conference = (
+        queryset.values_list("conference_id").distinct().count() == 1
+    )
+
+    if not is_filtered_by_conference:
+        messages.error(request, "Please select only one conference")
+        return
+
+    conference = queryset.only("conference_id").first().conference
+
+    if not conference.pretix_speaker_voucher_quota_id:
+        messages.error(
+            request,
+            "Please configure the grant voucher quota ID in the conference settings",
+        )
+        return
+
+    count = 0
+    for grant in queryset.filter(pretix_voucher_id__isnull=True):
+        if grant.status != Grant.Status.confirmed:
+            messages.error(
+                request,
+                f"Grant for {grant.name} is not confirmed, "
+                "we can't generate voucher for it.",
+            )
+            continue
+
+        voucher_code = _generate_voucher_code("GRANT")
+        pretix_voucher = create_voucher(
+            conference=grant.conference,
+            code=voucher_code,
+            comment=f"Voucher for user_id={grant.user_id}",
+            tag="grants",
+            quota_id=grant.conference.pretix_speaker_voucher_quota_id,
+            price_mode="set",
+            value="0.00",
+        )
+
+        pretix_voucher_id = pretix_voucher["id"]
+        grant.pretix_voucher_id = pretix_voucher_id
+        grant.voucher_code = voucher_code
+        grant.save()
+        count += 1
+
+    messages.success(request, f"{count} Vouchers created on Pretix!")
+
+
 class GrantAdminForm(forms.ModelForm):
     class Meta:
         model = Grant
@@ -296,6 +372,8 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
         "country_type",
         "applicant_reply_sent_at",
         "applicant_reply_deadline",
+        "voucher_code",
+        "voucher_email_sent_at",
     )
     list_filter = (
         "conference",
@@ -319,6 +397,8 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
         send_reply_emails,
         send_grant_reminder_to_waiting_for_confirmation,
         send_reply_email_waiting_list_update,
+        create_grant_vouchers_on_pretix,
+        send_voucher_via_email,
         "delete_selected",
     ]
 
@@ -337,6 +417,9 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
                     "applicant_message",
                     "applicant_reply_sent_at",
                     "applicant_reply_deadline",
+                    "pretix_voucher_id",
+                    "voucher_code",
+                    "voucher_email_sent_at",
                 )
             },
         ),

@@ -245,3 +245,13 @@ def send_message_to_plain(grant: Grant, message: str):
         },
         deduplication_id=str(uuid4()),
     )
+
+
+def send_grant_voucher_email(grant: Grant):
+    publish_message(
+        "GrantVoucherEmailSent",
+        body={
+            "grant_id": grant.id,
+        },
+        deduplication_id=str(uuid4()),
+    )

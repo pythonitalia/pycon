@@ -270,7 +270,7 @@ services:
     build:
       context: ./email-templates
       dockerfile: ../Dockerfile.node.local
-    command: sh -c "pnpm run dev"
+    command: sh -c "pnpm install && pnpm run dev"
     ports:
       - 3500:3500
       - 3501:3501

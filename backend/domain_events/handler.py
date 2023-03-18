@@ -210,6 +210,36 @@ def handle_new_grant_reply(data):
     )
 
 
+def handle_grant_voucher_email_sent(data):
+    grant = Grant.objects.get(id=data["grant_id"])
+
+    user_id = grant.user_id
+    voucher_code = grant.voucher_code
+
+    users_result = execute_service_client_query(
+        USERS_NAMES_FROM_IDS, {"ids": [user_id]}
+    )
+    grant_data = users_result.data["usersByIds"][0]
+    conference_name = grant.conference.name.localize("en")
+    subject_prefix = f"[{conference_name}]"
+
+    send_email(
+        template=EmailTemplate.GRANT_VOUCHER_CODE,
+        to=grant_data["email"],
+        subject=f"{subject_prefix} Your Grant Voucher Code",
+        variables={
+            "firstname": get_name(grant_data, "there"),
+            "voucherCode": voucher_code,
+        },
+        reply_to=[
+            "grants@pycon.it",
+        ],
+    )
+
+    grant.voucher_email_sent_at = timezone.now()
+    grant.save()
+
+
 def handle_new_plain_chat_sent(data):
     user_id = data["user_id"]
     message = data["message"]
@@ -530,6 +560,7 @@ HANDLERS = {
     "GrantReplyWaitingListSent": handle_grant_reply_waiting_list_sent,
     "GrantReplyWaitingListUpdateSent": handle_grant_reply_waiting_list_update_sent,
     "GrantReplyRejectedSent": handle_grant_reply_rejected_sent,
+    "GrantVoucherEmailSent": handle_grant_voucher_email_sent,
     "NewGrantReply": handle_new_grant_reply,
     "NewPlainChatSent": handle_new_plain_chat_sent,
     "NewCFPSubmission": handle_new_cfp_submission,

@@ -9,6 +9,7 @@ from domain_events.publisher import (
     send_grant_reply_approved_email,
     send_grant_reply_rejected_email,
     send_grant_reply_waiting_list_email,
+    send_grant_voucher_email,
     send_schedule_invitation_email,
     send_speaker_voucher_email,
 )
@@ -198,4 +199,24 @@ def test_send_grant_reply_rejected_email(grant_factory):
             "grant_id": grant.id,
         },
         deduplication_id=str(grant.id),
+    )
+
+
+@pytest.mark.django_db
+def test_send_grant_voucher_email(grant_factory):
+    grant = grant_factory(
+        user_id=123,
+        voucher_code="ABC123",
+        pretix_voucher_id=2,
+    )
+
+    with patch("domain_events.publisher.publish_message") as mock_publish:
+        send_grant_voucher_email(grant)
+
+    mock_publish.assert_called_once_with(
+        "GrantVoucherEmailSent",
+        body={
+            "grant_id": grant.id,
+        },
+        deduplication_id=ANY,
     )
