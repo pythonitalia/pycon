@@ -1,0 +1,19 @@
+ARG FUNCTION_DIR="/home/app/"
+
+FROM python:3.11
+
+ARG FUNCTION_DIR
+
+RUN mkdir -p ${FUNCTION_DIR}
+WORKDIR ${FUNCTION_DIR}
+
+RUN pip3 install pdm
+
+COPY pdm.lock ${FUNCTION_DIR}
+COPY pyproject.toml ${FUNCTION_DIR}
+
+RUN mkdir -p ${FUNCTION_DIR}/assets
+
+RUN pdm install
+
+COPY . ${FUNCTION_DIR}

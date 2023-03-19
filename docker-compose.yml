@@ -183,6 +183,55 @@ services:
       interval: 5s
       timeout: 5s
 
+  cms:
+    build:
+      context: ./cms
+      dockerfile: ../Dockerfile.python311.local
+    networks: [pycon_net]
+    command: sh -c "pdm run migrate &&
+      touch /.ready &&
+      pdm run python manage.py runserver 0.0.0.0:8070"
+    depends_on:
+      cms-db:
+        condition: service_healthy
+    environment:
+      <<: *enviroment_defaults
+      DATABASE_URL: postgresql://cms:cms@cms-db/cms
+      DJANGO_SETTINGS_MODULE: cms.settings.dev
+    volumes:
+      - ./cms:/home/app/
+      - /home/app/.venv
+    tty: true
+    stdin_open: true
+    ports:
+      - 8070:8070
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'test -f /.ready',
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+  cms-db:
+    image: postgres:14.5
+    networks: [pycon_net]
+    ports:
+      - "15504:5432"
+    volumes:
+      - cms-db-data:/var/lib/postgresql/data
+      - ./db-superuser.sql:/docker-entrypoint-initdb.d/db-superuser.sql
+    environment:
+      POSTGRES_USER: cms
+      POSTGRES_PASSWORD: cms
+      POSTGRES_DB: cms
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cms"]
+      interval: 5s
+      timeout: 5s
+
   gateway:
     build:
       context: ./gateway
@@ -286,3 +335,4 @@ volumes:
   pycon-backend-db-data:
   users-backend-db-data:
   association-backend-db-data:
+  cms-db-data:

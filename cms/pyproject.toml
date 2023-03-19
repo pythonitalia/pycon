@@ -1,5 +1,7 @@
 [tool]
 [tool.pdm]
+[tool.pdm.scripts]
+migrate = "python manage.py migrate"
 [tool.pdm.dev-dependencies]
 dev = [
     "wagtail-factories>=4.0.0",

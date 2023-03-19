@@ -23,6 +23,7 @@ module "app" {
   healthcheck_path    = "/graphql/"
   port                = 8000
   env_vars = [
+    { name = "DEBUG", value = "true", secret = false },
     { name = "SECRET_KEY", value = random_password.secret_key.result, secret = false },
     { name = "DATABASE_URL", value = local.database_url, secret = true },
   ]
