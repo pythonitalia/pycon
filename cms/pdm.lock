@@ -685,6 +685,12 @@ version = "0.5.1"
 summary = "Character encoding aliases for legacy web content"
 
 [[package]]
+name = "whitenoise"
+version = "6.4.0"
+requires_python = ">=3.7"
+summary = "Radically simplified static file serving for WSGI applications"
+
+[[package]]
 name = "willow"
 version = "1.4.1"
 requires_python = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*"
@@ -692,7 +698,7 @@ summary = "A Python image library that sits on top of Pillow, Wand and OpenCV"
 
 [metadata]
 lock_version = "4.1"
-content_hash = "sha256:f51b5ebe01bb175297294f47cdf927ddb4f1b9dd800eb7ce6bdb347341696513"
+content_hash = "sha256:1ccb7cd24a0d0c88fd6f8a2af701aad539fa9fccaf0db6e7a42f964fe8bc9ecc"
 
 [metadata.files]
 "anyascii 0.3.1" = [
@@ -1334,6 +1340,10 @@ content_hash = "sha256:f51b5ebe01bb175297294f47cdf927ddb4f1b9dd800eb7ce6bdb34734
 "webencodings 0.5.1" = [
     {url = "https://files.pythonhosted.org/packages/0b/02/ae6ceac1baeda530866a85075641cec12989bd8d31af6d5ab4a3e8c92f47/webencodings-0.5.1.tar.gz", hash = "sha256:b36a1c245f2d304965eb4e0a82848379241dc04b865afcc4aab16748587e1923"},
     {url = "https://files.pythonhosted.org/packages/f4/24/2a3e3df732393fed8b3ebf2ec078f05546de641fe1b667ee316ec1dcf3b7/webencodings-0.5.1-py2.py3-none-any.whl", hash = "sha256:a0af1213f3c2226497a97e2b3aa01a7e4bee4f403f95be16fc9acd2947514a78"},
+]
+"whitenoise 6.4.0" = [
+    {url = "https://files.pythonhosted.org/packages/4d/25/03924d8387e91b44e88abfa16e8d0d197b04dbf7cce2e53b9ecccc5792bf/whitenoise-6.4.0-py3-none-any.whl", hash = "sha256:599dc6ca57e48929dfeffb2e8e187879bfe2aed0d49ca419577005b7f2cc930b"},
+    {url = "https://files.pythonhosted.org/packages/77/76/3e0c97bf1b842c738d46049be09f2a1f0d7267b0fc9739968529e3c58a6c/whitenoise-6.4.0.tar.gz", hash = "sha256:a02d6660ad161ff17e3042653c8e3f5ecbb2a2481a006bde125b9efb9a30113a"},
 ]
 "willow 1.4.1" = [
     {url = "https://files.pythonhosted.org/packages/b5/bb/e654a03c8224b06f9e12381cd0c67028f460e625df55711f7ded30afcaf1/Willow-1.4.1-py2.py3-none-any.whl", hash = "sha256:fc4042696d090e75aef922fa1ed26d483c764f005b36cf523cf7c34e69d5dd7a"},
