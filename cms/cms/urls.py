@@ -8,21 +8,18 @@ from wagtail.documents import urls as wagtaildocs_urls
 
 from api.schema import schema
 from api.views import GraphQLView
-from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.conf.urls.static import static
+from django.contrib.staticfiles.views import serve
 
 urlpatterns = [
     path("django-admin/", admin.site.urls),
     path("admin/", include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),
     path("graphql/", GraphQLView.as_view(schema=schema)),
+    path("static/", static(settings.STATIC_URL, view=serve)),
 ]
 
-# Serve static and media files from development server
-urlpatterns += staticfiles_urlpatterns()
-
 if settings.DEBUG:
-    from django.conf.urls.static import static
-
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns = urlpatterns + [
