@@ -1,0 +1,29 @@
+query WagtailPage($hostname: String!, $slug: String!, $language: String!) {
+  cmsPage(hostname: $hostname, slug: $slug, language: $language) {
+    ... on GenericPage {
+      body {
+        ... on TextSection {
+          body
+          illustration
+          subtitle
+          title
+        }
+        ... on CMSMap {
+          latitude
+          longitude
+        }
+        ... on TextSectionWithAccordion {
+          title
+          subtitle
+          body
+          illustration
+          accordions {
+            title
+            body
+            isOpen
+          }
+        }
+      }
+    }
+  }
+}

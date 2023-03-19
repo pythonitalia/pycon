@@ -7,6 +7,7 @@ from page.models import GenericPage as GenericPageModel
 
 @strawberry.type
 class TextSection:
+    id: strawberry.ID
     title: str
     subtitle: str
     body: str
@@ -15,12 +16,42 @@ class TextSection:
     @classmethod
     def from_block(cls, block) -> Self:
         return cls(
+            id=block.id,
             title=block.value["title"],
             subtitle=block.value["subtitle"],
             body=block.value["body"],
             illustration=block.value["illustration"],
         )
 
+@strawberry.type
+class Accordion:
+    title: str
+    body: str
+    is_open: bool
+
+    @classmethod
+    def from_block(cls, block) -> Self:
+        return cls(
+            title=block["title"],
+            body=block["body"],
+            is_open=block["is_open"],
+        )
+
+@strawberry.type
+class TextSectionWithAccordion(TextSection):
+    accordions: list[Accordion]
+
+    @classmethod
+    def from_block(cls, block) -> Self:
+        return cls(
+            id=block.id,
+            title=block.value["title"],
+            subtitle=block.value["subtitle"],
+            body=block.value["body"],
+            illustration=block.value["illustration"],
+            accordions=[Accordion.from_block(accordion)
+                        for accordion in block.value["accordions"]]
+        )
 
 @strawberry.type
 class CMSMap:
@@ -37,12 +68,13 @@ class CMSMap:
 
 Block = strawberry.union(
     "Block",
-    (TextSection, CMSMap),
+    (TextSection, TextSectionWithAccordion, CMSMap),
 )
 
 
 @strawberry.type
 class GenericPage:
+    id: strawberry.ID
     body: list[Block]
 
     @classmethod
@@ -53,7 +85,9 @@ class GenericPage:
             match block.block_type:
                 case "text_section":
                     blocks.append(TextSection.from_block(block))
+                case "text_section_with_accordion":
+                    blocks.append(TextSectionWithAccordion.from_block(block))
                 case "map":
                     blocks.append(CMSMap.from_block(block))
 
-        return cls(body=blocks)
+        return cls(id=obj.id, body=blocks)
