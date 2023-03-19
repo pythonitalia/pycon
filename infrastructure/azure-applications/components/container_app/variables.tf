@@ -32,9 +32,15 @@ variable "githash" {
 }
 
 variable "command" {
-  type = list(string)
+  type    = list(string)
+  default = null
 }
 
 variable "port" {
   type = number
+}
+
+variable "healthcheck_path" {
+  type    = string
+  default = "/graphql"
 }

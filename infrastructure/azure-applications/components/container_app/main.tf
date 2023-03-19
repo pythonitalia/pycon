@@ -58,28 +58,28 @@ resource "azurerm_container_app" "ca_app" {
         }
       }
 
-      liveness_probe {
-        transport        = "HTTP"
-        path             = "/graphql"
-        port             = var.port
-        interval_seconds = 1
-        initial_delay    = 3
-      }
+      # liveness_probe {
+      #   transport        = "HTTP"
+      #   path             = var.healthcheck_path
+      #   port             = var.port
+      #   interval_seconds = 1
+      #   initial_delay    = 3
+      # }
 
-      startup_probe {
-        transport        = "HTTP"
-        path             = "/graphql"
-        port             = var.port
-        interval_seconds = 1
-      }
+      # startup_probe {
+      #   transport        = "HTTP"
+      #   path             = var.healthcheck_path
+      #   port             = var.port
+      #   interval_seconds = 1
+      # }
 
-      readiness_probe {
-        transport               = "HTTP"
-        path                    = "/graphql"
-        port                    = var.port
-        interval_seconds        = 1
-        success_count_threshold = 1
-      }
+      # readiness_probe {
+      #   transport               = "HTTP"
+      #   path                    = var.healthcheck_path
+      #   port                    = var.port
+      #   interval_seconds        = 1
+      #   success_count_threshold = 1
+      # }
     }
   }
 }

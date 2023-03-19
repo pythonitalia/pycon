@@ -116,3 +116,8 @@ secrets.auto.tfvars
 **/coverage/**
 
 **/.pnpm-store/**
+
+cms/static/
+cms/media/
+.venv
+.pdm.toml

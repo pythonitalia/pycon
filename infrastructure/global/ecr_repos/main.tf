@@ -4,7 +4,8 @@ locals {
     "users-backend",
     "gateway",
     "association-backend",
-    "pretix"
+    "pretix",
+    "cms"
   ]
 }
 
