@@ -123,6 +123,11 @@ STATIC_URL = "/static/"
 MEDIA_ROOT = root("media")
 MEDIA_URL = "/media/"
 
+USERS_SERVICE_URL = env("USERS_SERVICE")
+SERVICE_TO_SERVICE_SECRET = env("SERVICE_TO_SERVICE_SECRET")
+
+AUTHENTICATION_BACKENDS = ("custom_auth.backend.UsersAuthBackend",)
+
 # Wagtail settings
 
 WAGTAIL_SITE_NAME = "cms"

@@ -1,5 +1,6 @@
 locals {
-  database_url = "psql://${data.azurerm_key_vault_secret.db_username.value}:${data.azurerm_key_vault_secret.db_password.value}@${data.azurerm_postgresql_flexible_server.db.fqdn}:5432/cms?sslmode=require"
+  database_url      = "psql://${data.azurerm_key_vault_secret.db_username.value}:${data.azurerm_key_vault_secret.db_password.value}@${data.azurerm_postgresql_flexible_server.db.fqdn}:5432/cms?sslmode=require"
+  users_backend_url = var.is_prod ? "https://users-api.python.it" : "https://pastaporto-users-api.python.it"
 }
 
 resource "random_password" "secret_key" {
@@ -26,5 +27,7 @@ module "app" {
     { name = "DEBUG", value = "true", secret = false },
     { name = "SECRET_KEY", value = random_password.secret_key.result, secret = false },
     { name = "DATABASE_URL", value = local.database_url, secret = true },
+    { name = "USERS_SERVICE", value = local.users_backend_url, secret = false },
+    { name = "SERVICE_TO_SERVICE_SECRET", value = data.azurerm_key_vault_secret.service_to_service_secret.value, secret = true },
   ]
 }

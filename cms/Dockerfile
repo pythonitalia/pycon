@@ -48,6 +48,6 @@ COPY --chown=wagtail:wagtail . .
 USER wagtail
 
 # Collect static files.
-RUN DJANGO_SETTINGS_MODULE=cms.settings.dev pdm run python manage.py collectstatic --noinput --clear
+RUN DJANGO_SETTINGS_MODULE=cms.settings.dev USERS_SERVICE=local SERVICE_TO_SERVICE_SECRET=secret pdm run python manage.py collectstatic --noinput --clear
 
 CMD pdm run gunicorn cms.wsgi:application
