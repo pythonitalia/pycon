@@ -13,7 +13,7 @@ class SiteNotFoundError:
 @strawberry.type
 class Query:
     @strawberry.field
-    def page(
+    def cms_page(
         self,
         hostname: str,
         slug: str,
@@ -35,7 +35,7 @@ class Query:
         return GenericPage.from_model(page)
 
     @strawberry.field
-    def pages(self, hostname: str, language: str) -> list[GenericPage]:
+    def cms_pages(self, hostname: str, language: str) -> list[GenericPage]:
         if not (site := Site.objects.filter(hostname=hostname).first()):
             return []
 
@@ -47,4 +47,4 @@ class Query:
         ]
 
 
-schema = strawberry.Schema(query=Query)
+schema = strawberry.federation.Schema(query=Query)

@@ -1,4 +1,4 @@
-from __future__ import annotations
+from typing import Self
 import strawberry
 
 from decimal import Decimal
@@ -13,7 +13,7 @@ class TextSection:
     illustration: str
 
     @classmethod
-    def from_block(cls, block) -> TextSection:
+    def from_block(cls, block) -> Self:
         return cls(
             title=block.value["title"],
             subtitle=block.value["subtitle"],
@@ -23,38 +23,21 @@ class TextSection:
 
 
 @strawberry.type
-class Map:
+class CMSMap:
     latitude: Decimal
     longitude: Decimal
 
     @classmethod
-    def from_block(cls, block) -> Map:
+    def from_block(cls, block) -> Self:
         return cls(
             latitude=block.value["latitude"],
             longitude=block.value["longitude"],
         )
 
 
-@strawberry.type
-class Image:
-    title: str
-    width: int
-    height: int
-    url: str
-
-    @classmethod
-    def from_block(cls, block) -> Image:
-        return cls(
-            title=block.value.title,
-            width=block.value.width,
-            height=block.value.height,
-            url=block.value.file.url,
-        )
-
-
 Block = strawberry.union(
     "Block",
-    (TextSection, Map, Image),
+    (TextSection, CMSMap),
 )
 
 
@@ -63,7 +46,7 @@ class GenericPage:
     body: list[Block]
 
     @classmethod
-    def from_model(cls, obj: GenericPageModel) -> GenericPage:
+    def from_model(cls, obj: GenericPageModel) -> Self:
         blocks = []
 
         for block in obj.body:
@@ -71,8 +54,6 @@ class GenericPage:
                 case "text_section":
                     blocks.append(TextSection.from_block(block))
                 case "map":
-                    blocks.append(Map.from_block(block))
-                case "image":
-                    blocks.append(Image.from_block(block))
+                    blocks.append(CMSMap.from_block(block))
 
         return cls(body=blocks)
