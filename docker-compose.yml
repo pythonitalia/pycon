@@ -199,6 +199,7 @@ services:
       <<: *enviroment_defaults
       DATABASE_URL: postgresql://cms:cms@cms-db/cms
       DJANGO_SETTINGS_MODULE: cms.settings.dev
+      MAPBOX_PUBLIC_API_KEY: ${MAPBOX_PUBLIC_API_KEY}
     volumes:
       - ./cms:/home/app/
       - /home/app/.venv

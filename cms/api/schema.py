@@ -23,16 +23,17 @@ class Query:
         if not (site := Site.objects.filter(hostname=hostname).first()):
             return SiteNotFoundError(message=f"Site `{hostname}` not found")
 
-        page = (
-            GenericPageModel.objects.in_site(site)
-            .filter(locale__language_code=language, slug=slug)
-            .first()
-        )
+        page = GenericPageModel.objects.in_site(site).filter(slug=slug).first()
 
         if not page:
             return None
 
-        return GenericPage.from_model(page)
+        translated_page = (
+            page.get_translations(inclusive=True)
+            .filter(locale__language_code=language)
+            .first()
+        )
+        return GenericPage.from_model(translated_page)
 
     @strawberry.field
     def cms_pages(self, hostname: str, language: str) -> list[GenericPage]:

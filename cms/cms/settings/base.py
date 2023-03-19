@@ -152,6 +152,8 @@ WAGTAIL_CONTENT_LANGUAGES = LANGUAGES = [
     ("it", "Italian"),
 ]
 
+MAPBOX_PUBLIC_API_KEY = env("MAPBOX_PUBLIC_API_KEY", default="")
+
 SENTRY_DSN = env("SENTRY_DSN", default="")
 ENVIRONMENT = env("ENVIRONMENT", default="local")
 
