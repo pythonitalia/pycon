@@ -17,7 +17,7 @@ name = ""
 version = ""
 description = ""
 authors = [
-    {name = "Marco Acierno", email = "marcoaciernoemail@gmail.com"},
+    {name = "Python Italia", email = "help@pycon.it"},
 ]
 dependencies = [
     "wagtail>=4.2",
