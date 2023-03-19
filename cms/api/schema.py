@@ -1,4 +1,5 @@
 from page.models import GenericPage as GenericPageModel
+
 import strawberry
 from api.types import GenericPage
 from wagtail.models import Site
