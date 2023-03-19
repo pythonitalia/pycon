@@ -1570,6 +1570,7 @@ Il tuo voto ci aiuterà a creare un programma che più rispecchia ciò che la co
     "tickets.checkout.payWithBankTransfer": "Paga con bonifico",
     "tickets.checkout.savedAmount": "Hai risparmiato {amount}",
 
+    "scheduleEventDetail.sidebar.spacesLeft": "Posti liberi",
     "scheduleEvent.soldout": "Sold-out",
 
     "tickets.checkout.voucher.fetching": "Verifica codice sconto...",
