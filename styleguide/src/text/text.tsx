@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import React from "react";
-import { getTextColorClasses } from "../colors-utils";
+import { getStyleClassesTextColor } from "../colors-utils";
 import { Color } from "../types";
 
 type Props = {
@@ -14,6 +14,28 @@ type Props = {
   noWrap?: boolean;
   uppercase?: boolean;
   decoration?: "none" | "underline" | "line-through";
+};
+
+export const getStyleClassesForTextSize = (size: Props["size"]) => {
+  switch (size) {
+    case 1:
+      return "text-md leading-7 lg:text-2md lg:leading-8";
+    case 2:
+      return "text-md leading-7";
+    case 3:
+      return "text-base leading-4";
+    case "label1":
+      return "text-2md leading-4";
+    case "label2":
+      return "text-md leading-2";
+    case "label3":
+      return "text-base leading-1";
+    case "label4":
+      return "text-sm leading-0.5";
+    case "inherit":
+    default:
+      return "";
+  }
 };
 
 export const Text = React.forwardRef<any, Props>(
@@ -37,14 +59,6 @@ export const Text = React.forwardRef<any, Props>(
         className={clsx(
           "font-sans break-words",
           {
-            "text-md leading-7 lg:text-2md lg:leading-8": size === 1,
-            "text-md leading-7": size === 2,
-            "text-base leading-4": size === 3,
-            "24px text-2md leading-4": size === "label1",
-            "20px text-md leading-2": size === "label2",
-            "16px text-base leading-1": size === "label3",
-            "14px text-sm leading-0.5 ": size === "label4",
-
             "font-medium": weight === "regular",
             "font-semibold": weight === "strong",
 
@@ -59,9 +73,9 @@ export const Text = React.forwardRef<any, Props>(
             "text-left": align === "left",
             "text-center": align === "center",
             "text-right": align === "right",
-
-            ...getTextColorClasses(color),
           },
+          getStyleClassesForTextSize(size),
+          getStyleClassesTextColor(color),
           className
         )}
         ref={ref}

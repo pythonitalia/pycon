@@ -7,6 +7,7 @@ specifiers:
   '@storybook/addon-essentials': ^6.4.20
   '@storybook/addon-postcss': ^2.0.0
   '@storybook/react': ^6.4.20
+  '@tailwindcss/typography': ^0.5.9
   '@testing-library/jest-dom': ^5.16.4
   '@testing-library/react': ^12.1.4
   '@types/bluebird': '*'
@@ -22,7 +23,7 @@ specifiers:
   identity-obj-proxy: ^3.0.0
   jest: ^27.5.1
   postcss: ^8.4.12
-  prettier: ^2.8.0
+  prettier: ^2.8.5
   prop-types: ^15.5.4
   react: ^18.0.0
   react-dom: ^18.0.0
@@ -55,6 +56,7 @@ devDependencies:
   '@storybook/addon-essentials': 6.4.20_z2bfhpjfbc7ntnsmmyxw35chl4
   '@storybook/addon-postcss': 2.0.0_webpack@4.46.0
   '@storybook/react': 6.4.20_oewcmeocbjyzbozeuyin7eyzxu
+  '@tailwindcss/typography': 0.5.9_tailwindcss@3.2.6
   '@testing-library/jest-dom': 5.16.4
   '@testing-library/react': 12.1.4_zpnidt7m3osuk7shl3s4oenomq
   '@types/bluebird': 3.5.36
@@ -68,7 +70,7 @@ devDependencies:
   identity-obj-proxy: 3.0.0
   jest: 27.5.1
   postcss: 8.4.12
-  prettier: 2.8.0
+  prettier: 2.8.5
   prop-types: 15.8.1
   react: 18.0.0
   react-dom: 18.0.0_react@18.0.0
@@ -3523,6 +3525,18 @@ packages:
       store2: 2.13.2
     transitivePeerDependencies:
       - '@types/react'
+    dev: true
+
+  /@tailwindcss/typography/0.5.9_tailwindcss@3.2.6:
+    resolution: {integrity: sha512-t8Sg3DyynFysV9f4JDOVISGsjazNb48AeIYQwcL+Bsq5uf4RYL75C1giZ43KISjeDGBaTN3Kxh7Xj/vRSMJUUg==}
+    peerDependencies:
+      tailwindcss: '>=3.0.0 || insiders'
+    dependencies:
+      lodash.castarray: 4.4.0
+      lodash.isplainobject: 4.0.6
+      lodash.merge: 4.6.2
+      postcss-selector-parser: 6.0.10
+      tailwindcss: 3.2.6
     dev: true
 
   /@testing-library/dom/8.11.3:
@@ -8834,12 +8848,24 @@ packages:
       p-locate: 5.0.0
     dev: true
 
+  /lodash.castarray/4.4.0:
+    resolution: {integrity: sha512-aVx8ztPv7/2ULbArGJ2Y42bG1mEQ5mGjpdvrbJcJFU3TbYybe+QlLS4pst9zV52ymy2in1KpFPiZnAOATxD4+Q==}
+    dev: true
+
   /lodash.debounce/4.0.8:
     resolution: {integrity: sha1-gteb/zCmfEAF/9XiUVMArZyk168=}
     dev: true
 
+  /lodash.isplainobject/4.0.6:
+    resolution: {integrity: sha512-oSXzaWypCMHkPC3NvBEaPHf0KsA5mvPrOPgQWDsbg8n7orZ290M0BmC/jgRZ4vcJ6DTAhjrsSYgdsW/F+MFOBA==}
+    dev: true
+
   /lodash.memoize/4.1.2:
     resolution: {integrity: sha1-vMbEmkKihA7Zl/Mj6tpezRguC/4=}
+    dev: true
+
+  /lodash.merge/4.6.2:
+    resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
     dev: true
 
   /lodash.uniq/4.5.0:
@@ -10362,6 +10388,14 @@ packages:
       postcss-value-parser: 4.2.0
     dev: true
 
+  /postcss-selector-parser/6.0.10:
+    resolution: {integrity: sha512-IQ7TZdoaqbT+LCpShg46jnZVlhWD2w6iQYAcYXfHARZ7X1t/UGhhceQDs5X0cGqKvYlHNOuv7Oa1xmb0oQuA3w==}
+    engines: {node: '>=4'}
+    dependencies:
+      cssesc: 3.0.0
+      util-deprecate: 1.0.2
+    dev: true
+
   /postcss-selector-parser/6.0.11:
     resolution: {integrity: sha512-zbARubNdogI9j7WY4nQJBiNqQf3sLS3wCP4WfOidu+p28LofJqDH1tcXypGrcmMHhDk2t9wGhCsYe/+szLTy1g==}
     engines: {node: '>=4'}
@@ -10441,8 +10475,8 @@ packages:
     hasBin: true
     dev: true
 
-  /prettier/2.8.0:
-    resolution: {integrity: sha512-9Lmg8hTFZKG0Asr/kW9Bp8tJjRVluO8EJQVfY2T7FMw9T5jy4I/Uvx0Rca/XWf50QQ1/SS48+6IJWnrb+2yemA==}
+  /prettier/2.8.5:
+    resolution: {integrity: sha512-3gzuxrHbKUePRBB4ZeU08VNkUcqEHaUaouNt0m7LGP4Hti/NuB07C7PPTM/LkWqXoJYJn2McEo5+kxPNrtQkLQ==}
     engines: {node: '>=10.13.0'}
     hasBin: true
     dev: true

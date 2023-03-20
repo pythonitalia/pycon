@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import React from "react";
-import { getTextColorClasses } from "../colors-utils";
+import { getStyleClassesTextColor } from "../colors-utils";
 import { Color } from "../types";
 
 type Props = {
@@ -33,9 +33,8 @@ export const Link = ({
       onClick={onClick}
       className={clsx(
         "transition-colors fill-current",
+        getStyleClassesTextColor(color),
         {
-          ...getTextColorClasses(color),
-
           "hover:text-coral": hoverColor === "coral" && !noHover,
           "hover:text-caramel": hoverColor === "caramel" && !noHover,
           "hover:text-cream": hoverColor === "cream" && !noHover,

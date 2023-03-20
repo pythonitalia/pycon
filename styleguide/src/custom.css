@@ -128,3 +128,8 @@ p a {
 .input-number-wrapper:hover .input-number:not(:hover) .active-element {
   display: none;
 }
+
+/* typography custom styles */
+.prose b {
+  font-weight: 600;
+}

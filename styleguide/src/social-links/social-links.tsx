@@ -8,7 +8,11 @@ type Props = {
   hoverColor?: Color;
 };
 
-export const SocialLinks = ({ socials, color = "black", hoverColor = 'cream' }: Props) => {
+export const SocialLinks = ({
+  socials,
+  color = "black",
+  hoverColor = "cream",
+}: Props) => {
   return (
     <ul className="flex gap-9">
       {socials.map((social) => (

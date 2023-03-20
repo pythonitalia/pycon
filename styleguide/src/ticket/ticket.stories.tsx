@@ -9,7 +9,7 @@ export default {
       control: {
         type: "text",
       },
-    }, 
+    },
     company: {
       defaultValue: "Made.com",
       control: {

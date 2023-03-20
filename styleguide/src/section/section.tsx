@@ -29,7 +29,7 @@ export const Section = ({
 }: Props) => {
   const Wrapper = noContainer ? "div" : Container;
   const wrapperProps = noContainer ? {} : { size: containerSize };
-  const hasIllustration = typeof illustration !== "undefined";
+  const hasIllustration = !!illustration;
 
   const contentCols = hasIllustration ? 10 : 12;
   return (

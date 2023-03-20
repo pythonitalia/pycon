@@ -1,1 +1,1 @@
-export { EmbeddedTwitch } from "./embedded-twitch"
+export { EmbeddedTwitch } from "./embedded-twitch";

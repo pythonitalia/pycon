@@ -56,28 +56,53 @@ export const getHoverBackgroundColor = (background?: Color | "none") => {
   };
 };
 
-export const getTextColorClasses = (color: Color | "none" | "default") => {
-  return {
-    "text-black": color === "default" || color === "black",
-    "text-coral": color === "coral",
-    "text-caramel": color === "caramel",
-    "text-cream": color === "cream",
-    "text-yellow": color === "yellow",
-    "text-green": color === "green",
-    "text-purple": color === "purple",
-    "text-pink": color === "pink",
-    "text-blue": color === "blue",
-    "text-red": color === "red" || color === "error",
-    "text-success": color === "success",
-    "text-warning": color === "warning",
-    "text-neutral": color === "neutral",
-    "text-white": color === "white",
-    "text-milk": color === "milk",
-    "text-grey-900": color === "grey-900",
-    "text-grey-700": color === "grey-700",
-    "text-grey-500": color === "grey-500",
-    "text-grey-250": color === "grey-250",
-    "text-grey-100": color === "grey-100",
-    "text-grey-50": color === "grey-50",
-  };
+export const getStyleClassesTextColor = (color: Color | "none" | "default") => {
+  switch (color) {
+    case "default":
+    case "black":
+      return "text-black";
+    case "coral":
+      return "text-coral";
+    case "caramel":
+      return "text-caramel";
+    case "cream":
+      return "text-cream";
+    case "yellow":
+      return "text-yellow";
+    case "green":
+      return "text-green";
+    case "purple":
+      return "text-purple";
+    case "pink":
+      return "text-pink";
+    case "blue":
+      return "text-blue";
+    case "red":
+    case "error":
+      return "text-red";
+    case "success":
+      return "text-success";
+    case "warning":
+      return "text-warning";
+    case "neutral":
+      return "text-neutral";
+    case "white":
+      return "text-white";
+    case "milk":
+      return "text-milk";
+    case "grey-900":
+      return "text-grey-900";
+    case "grey-700":
+      return "text-grey-700";
+    case "grey-500":
+      return "text-grey-500";
+    case "grey-250":
+      return "text-grey-250";
+    case "grey-100":
+      return "text-grey-100";
+    case "grey-50":
+      return "text-grey-50";
+    default:
+      return "";
+  }
 };

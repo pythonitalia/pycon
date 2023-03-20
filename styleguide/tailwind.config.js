@@ -1,4 +1,4 @@
-module.exports = {
+module.exports= {
   content: ["./src/**/*.{js,jsx,ts,tsx,vue}"],
   theme: {
     screens: {
@@ -6,6 +6,7 @@ module.exports = {
       lg: '1023px',
       xl: '1440px',
     },
+
     fontFamily: {
       sans: ["GeneralSans-Variable", "ui-sans", "system-ui"],
       mono: ["JetBrainsMono", "Source Code Pro", "Menlo", "Consolas", "Monaco", "monospace"],
@@ -91,6 +92,7 @@ module.exports = {
         light: '#79CDE0',
         DEFAULT: '#79CDE0',
       },
+      fake: "#C51D34",
       // status
       red: {
         light: '#D75353',
@@ -185,5 +187,6 @@ module.exports = {
   },
   plugins: [
     require("tailwindcss-blend-mode")(),
+    require('@tailwindcss/typography'),
   ],
 };

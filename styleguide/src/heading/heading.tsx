@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import React, { ReactNode } from "react";
-import { getTextColorClasses } from "../colors-utils";
+import { getStyleClassesTextColor } from "../colors-utils";
 import { Color } from "../types";
 
 type Size = "display1" | "display2" | 1 | 2 | 3 | 4 | 5 | 6;
@@ -26,6 +26,25 @@ type Props = {
   uppercase?: boolean;
 };
 
+export const getStyleClassesForHeading = (size: Size) => {
+  switch (size) {
+    case 1:
+      return "font-semibold text-2lg leading-10 lg:text-2xl lg:leading-13";
+    case 2:
+      return "font-semibold text-3md leading-8 lg:text-xl lg:leading-11";
+    case 3:
+      return "font-semibold text-2md leading-5 lg:text-lg lg:leading-8";
+    case 4:
+      return "font-semibold text-md leading-3 lg:text-2md lg:leading-6";
+    case 5:
+      return "font-semibold text-base leading-2 lg:text-md lg:leading-4";
+    case 6:
+      return "font-semibold text-sm leading-1 lg:text-base lg:leading-2";
+    default:
+      return "";
+  }
+};
+
 export const Heading = ({
   children,
   size = 1,
@@ -48,27 +67,15 @@ export const Heading = ({
 
           "font-bold text-2lg leading-9 lg:text-3xl lg:leading-14":
             size === "display2",
-          "font-semibold text-2lg leading-10 lg:text-2xl lg:leading-13":
-            size === 1,
-          "font-semibold text-3md leading-8 lg:text-xl lg:leading-11":
-            size === 2,
-          "font-semibold text-2md leading-5 lg:text-lg lg:leading-8":
-            size === 3,
-          "font-semibold text-md  leading-3 lg:text-2md lg:leading-6":
-            size === 4,
-          "font-semibold text-base leading-2 lg:text-md lg:leading-4":
-            size === 5,
-          "font-semibold text-sm leading-1 lg:text-base lg:leading-2":
-            size === 6,
 
           uppercase: uppercase,
 
           "text-left": align === "left",
           "text-center": align === "center",
           "text-right": align === "right",
-
-          ...getTextColorClasses(color),
         },
+        getStyleClassesForHeading(size),
+        getStyleClassesTextColor(color),
         className
       )}
     >
