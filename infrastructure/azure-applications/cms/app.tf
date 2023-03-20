@@ -25,6 +25,8 @@ module "app" {
   port                = 8000
   env_vars = [
     { name = "DEBUG", value = "false", secret = false },
+    { name = "ENVIRONMENT", value = var.workspace, secret = false },
+    { name = "SENTRY_DSN", value = data.azurerm_key_vault_secret.sentry_dsn.value, secret = true },
     { name = "SECRET_KEY", value = random_password.secret_key.result, secret = true },
     { name = "DATABASE_URL", value = local.database_url, secret = true },
     { name = "USERS_SERVICE", value = local.users_backend_url, secret = false },

@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 import environ
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
 root = environ.Path(__file__) - 3
 env = environ.Env(
@@ -149,3 +151,15 @@ WAGTAIL_CONTENT_LANGUAGES = LANGUAGES = [
     ("en", "English"),
     ("it", "Italian"),
 ]
+
+SENTRY_DSN = env("SENTRY_DSN", default="")
+ENVIRONMENT = env("ENVIRONMENT", default="local")
+
+if SENTRY_DSN:
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        integrations=[
+            DjangoIntegration(),
+        ],
+        environment=ENVIRONMENT,
+    )
