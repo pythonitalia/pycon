@@ -1,6 +1,6 @@
 import * as React from "react";
 
-export const SnakeWithBaloon = (props: React.SVGProps<SVGSVGElement>) => {
+export const SnakeWithBalloon = (props: React.SVGProps<SVGSVGElement>) => {
   return (
     <svg width={520} height={368} viewBox="0 0 520 368" fill="none" {...props}>
       <g clipPath="url(#prefix__clip0_1092_52551)">

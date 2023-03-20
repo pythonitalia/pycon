@@ -8,13 +8,43 @@ import { SnakeTail } from "../illustrations/snake-tail";
 import { Grid, GridColumn } from "../grid";
 import { Spacer } from "../spacer";
 import { Color } from "../types";
-import { SnakeLongNeck } from "../illustrations/snake-long-neck";
+import { Illustration } from "../illustrations/types";
+import { getIllustration } from "../illustrations/illustrations";
+
+const SideIllustration = ({
+  illustration,
+  cols,
+  mdCols,
+}: {
+  illustration?: Illustration;
+  cols: number;
+  mdCols: number;
+}) => {
+  if (!illustration) {
+    return null;
+  }
+
+  const Component = getIllustration(illustration);
+
+  if (Component) {
+    return (
+      <GridColumn
+        colSpan={cols}
+        mdColSpan={mdCols}
+        className="mt-auto hidden md:block"
+      >
+        <Component className="hidden w-full lg:block items-center" />
+      </GridColumn>
+    );
+  }
+  return null;
+};
 
 type Props = {
   children: React.ReactNode;
   noContainer?: boolean;
   containerSize?: ContainerSize;
-  illustration?: "snakeHead" | "snakeLongNeck" | "snakeTail";
+  illustration?: Illustration;
   background?: Color | "none";
   spacingSize?: "xl" | "2xl" | "3xl";
 };
@@ -31,7 +61,9 @@ export const Section = ({
   const wrapperProps = noContainer ? {} : { size: containerSize };
   const hasIllustration = !!illustration;
 
-  const contentCols = hasIllustration ? 10 : 12;
+  const contentCols = hasIllustration ? 7 : 12;
+  const illustrationCols = illustration === "snakeLongNeck" ? 2 : 5;
+
   return (
     <div
       className={clsx({
@@ -56,7 +88,7 @@ export const Section = ({
             <Spacer size={spacingSize} />
           </GridColumn>
 
-          {illustration === "snakeHead" && (
+          {illustration === "snakeHead" ? (
             <GridColumn
               colSpan={2}
               mdColSpan={2}
@@ -65,16 +97,12 @@ export const Section = ({
               <SnakeHead className="hidden w-full lg:block" />
               <SnakeTail className="ml-auto w-16 lg:w-full rotate-180 lg:hidden" />
             </GridColumn>
-          )}
-
-          {illustration === "snakeLongNeck" && (
-            <GridColumn
-              colSpan={2}
-              mdColSpan={2}
-              className="mt-auto hidden md:block"
-            >
-              <SnakeLongNeck className="hidden w-full lg:block" />
-            </GridColumn>
+          ) : (
+            <SideIllustration
+              cols={illustrationCols}
+              mdCols={illustrationCols}
+              illustration={illustration}
+            />
           )}
         </Grid>
       </Wrapper>

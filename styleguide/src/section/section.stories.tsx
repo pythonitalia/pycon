@@ -5,6 +5,7 @@ import { Page } from "../page";
 import { Text } from "../text";
 import { Color } from "../types";
 import { Section } from "./section";
+import { Spacer } from "../spacer";
 
 export const Standard = ({
   containerSize = "base",
@@ -60,25 +61,148 @@ export const SectionInsidePage = ({
           medius eligo.
         </Text>
       </Section>
+
       <Section
         illustration="snakeLongNeck"
         containerSize={containerSize}
         background={background}
       >
         <Heading size="display1">Long neck illustration</Heading>
+       
+        <Spacer size="medium" />
         <Text>
           Induco eligo, cogito sit et officia adipisici canvallis quis commodi
           neque culpa, in neque quis trivia insula canvallis dulcis amet gratia
           abundantia legio caelum galea cogito legis impera, legis ventum gratia
           trivia bene sit legis, abundantia bene bene negotium sum medius neque
           amet in oblivio modestus bene lege minim, virtus legio impera
-          abundantia sit dulcis in medius eligo. Induco eligo, cogito sit et
-          officia adipisici canvallis quis commodi neque culpa, in neque quis
-          trivia insula canvallis dulcis amet gratia abundantia legio caelum
-          galea cogito legis impera, legis ventum gratia trivia bene sit legis,
-          abundantia bene bene negotium sum medius neque amet in oblivio
-          modestus bene lege minim, virtus legio impera abundantia sit dulcis in
-          medius eligo.
+          abundantia sit dulcis in medius eligo.{" "}
+        </Text>
+      </Section>
+
+      <Section
+        illustration="handWithSnakeInside"
+        containerSize={containerSize}
+        background={background}
+      >
+        <Heading size="display1">Long neck illustration</Heading>
+        
+        <Spacer size="medium" />
+        <Text>
+          Induco eligo, cogito sit et officia adipisici canvallis quis commodi
+          neque culpa, in neque quis trivia insula canvallis dulcis amet gratia
+          abundantia legio caelum galea cogito legis impera, legis ventum gratia
+          trivia bene sit legis, abundantia bene bene negotium sum medius neque
+          amet in oblivio modestus bene lege minim, virtus legio impera
+          abundantia sit dulcis in medius eligo.{" "}
+        </Text>
+      </Section>
+
+      <Section
+        illustration="snakeWithBalloon"
+        containerSize={containerSize}
+        background={background}
+      >
+        <Heading size="display1">Long neck illustration</Heading>
+       
+        <Spacer size="medium" />
+        <Text>
+          Induco eligo, cogito sit et officia adipisici canvallis quis commodi
+          neque culpa, in neque quis trivia insula canvallis dulcis amet gratia
+          abundantia legio caelum galea cogito legis impera, legis ventum gratia
+          trivia bene sit legis, abundantia bene bene negotium sum medius neque
+          amet in oblivio modestus bene lege minim, virtus legio impera
+          abundantia sit dulcis in medius eligo.{" "}
+        </Text>
+      </Section>
+
+      <Section
+        illustration="snakeWithContacts"
+        containerSize={containerSize}
+        background={background}
+      >
+        <Heading size="display1">Long neck illustration</Heading>
+       
+        <Spacer size="medium" />
+        <Text>
+          Induco eligo, cogito sit et officia adipisici canvallis quis commodi
+          neque culpa, in neque quis trivia insula canvallis dulcis amet gratia
+          abundantia legio caelum galea cogito legis impera, legis ventum gratia
+          trivia bene sit legis, abundantia bene bene negotium sum medius neque
+          amet in oblivio modestus bene lege minim, virtus legio impera
+          abundantia sit dulcis in medius eligo.{" "}
+        </Text>
+      </Section>
+
+      <Section
+        illustration="snakesWithBanner"
+        containerSize={containerSize}
+        background={background}
+      >
+        <Heading size="display1">Long neck illustration</Heading>
+       
+        <Spacer size="medium" />
+        <Text>
+          Induco eligo, cogito sit et officia adipisici canvallis quis commodi
+          neque culpa, in neque quis trivia insula canvallis dulcis amet gratia
+          abundantia legio caelum galea cogito legis impera, legis ventum gratia
+          trivia bene sit legis, abundantia bene bene negotium sum medius neque
+          amet in oblivio modestus bene lege minim, virtus legio impera
+          abundantia sit dulcis in medius eligo.{" "}
+        </Text>
+      </Section>
+
+      <Section
+        illustration="snakesWithCocktail"
+        containerSize={containerSize}
+        background={background}
+      >
+        <Heading size="display1">Long neck illustration</Heading>
+       
+        <Spacer size="medium" />
+        <Text>
+          Induco eligo, cogito sit et officia adipisici canvallis quis commodi
+          neque culpa, in neque quis trivia insula canvallis dulcis amet gratia
+          abundantia legio caelum galea cogito legis impera, legis ventum gratia
+          trivia bene sit legis, abundantia bene bene negotium sum medius neque
+          amet in oblivio modestus bene lege minim, virtus legio impera
+          abundantia sit dulcis in medius eligo.{" "}
+        </Text>
+      </Section>
+
+      <Section
+        illustration="snakesWithDirections"
+        containerSize={containerSize}
+        background={background}
+      >
+        <Heading size="display1">Long neck illustration</Heading>
+
+        <Spacer size="medium" />
+        <Text>
+          Induco eligo, cogito sit et officia adipisici canvallis quis commodi
+          neque culpa, in neque quis trivia insula canvallis dulcis amet gratia
+          abundantia legio caelum galea cogito legis impera, legis ventum gratia
+          trivia bene sit legis, abundantia bene bene negotium sum medius neque
+          amet in oblivio modestus bene lege minim, virtus legio impera
+          abundantia sit dulcis in medius eligo.{" "}
+        </Text>
+      </Section>
+
+      <Section
+        illustration="snakesWithOutlines"
+        containerSize={containerSize}
+        background={background}
+      >
+        <Heading size="display1">Long neck illustration</Heading>
+        
+        <Spacer size="medium" />
+        <Text>
+          Induco eligo, cogito sit et officia adipisici canvallis quis commodi
+          neque culpa, in neque quis trivia insula canvallis dulcis amet gratia
+          abundantia legio caelum galea cogito legis impera, legis ventum gratia
+          trivia bene sit legis, abundantia bene bene negotium sum medius neque
+          amet in oblivio modestus bene lege minim, virtus legio impera
+          abundantia sit dulcis in medius eligo.{" "}
         </Text>
       </Section>
     </Page>
