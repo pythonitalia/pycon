@@ -30,7 +30,7 @@ gunicorn = "^20.1.0"
 
 [tool.poetry.dev-dependencies]
 pdbpp = "^0.10.2"
-ward = "^0.65.0b0"
+ward = "0.67.2b0"
 requests = "^2.25.1"
 taskipy = "^1.6.0"
 factory-boy = "^3.2.0"
