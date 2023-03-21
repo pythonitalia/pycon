@@ -3,13 +3,14 @@ import React from "react";
 import { getBackgroundClasses } from "../colors-utils";
 import { Container } from "../container";
 import { ContainerSize } from "../container/container";
-import { SnakeHead } from "../illustrations/snake-head";
 import { SnakeTail } from "../illustrations/snake-tail";
 import { Grid, GridColumn } from "../grid";
 import { Spacer } from "../spacer";
 import { Color } from "../types";
 import { Illustration } from "../illustrations/types";
 import { getIllustration } from "../illustrations/illustrations";
+
+const NO_MOBILE_ILLUSTRATIONS: Illustration[] = ["snakeLongNeck", "snakeHead"];
 
 const SideIllustration = ({
   illustration,
@@ -26,18 +27,21 @@ const SideIllustration = ({
 
   const Component = getIllustration(illustration);
 
-  if (Component) {
-    return (
-      <GridColumn
-        colSpan={cols}
-        mdColSpan={mdCols}
-        className="mt-auto hidden md:block"
-      >
-        <Component className="hidden w-full lg:block items-center" />
-      </GridColumn>
-    );
+  if (!Component) {
+    return null;
   }
-  return null;
+
+  return (
+    <GridColumn colSpan={cols} mdColSpan={mdCols} className="mt-auto block">
+      <Component
+        className={clsx("w-full h-full block mx-auto md:mr-0 max-h-[340px]", {
+          "hidden md:block": NO_MOBILE_ILLUSTRATIONS.includes(illustration),
+          "max-w-md": illustration !== "snakeHead",
+          "max-w-[90px] lg:max-w-[190px]": illustration === "snakeHead",
+        })}
+      />
+    </GridColumn>
+  );
 };
 
 type Props = {
@@ -47,6 +51,18 @@ type Props = {
   illustration?: Illustration;
   background?: Color | "none";
   spacingSize?: "xl" | "2xl" | "3xl";
+};
+
+const getCols = (illustration?: Illustration) => {
+  if (!illustration) {
+    return [12, 0];
+  }
+
+  if (illustration === "snakeLongNeck") {
+    return [10, 2];
+  }
+
+  return [7, 5];
 };
 
 export const Section = ({
@@ -59,19 +75,13 @@ export const Section = ({
 }: Props) => {
   const Wrapper = noContainer ? "div" : Container;
   const wrapperProps = noContainer ? {} : { size: containerSize };
-  const hasIllustration = !!illustration;
 
-  const contentCols = hasIllustration ? 7 : 12;
-  const illustrationCols = illustration === "snakeLongNeck" ? 2 : 5;
+  const [contentCols, illustrationCols] = getCols(illustration);
 
   return (
     <div
       className={clsx({
         ...getBackgroundClasses(background),
-
-        /* this is an hack until we add tailwind to pycon :) */
-        "relative ml-auto w-32 lg:w-52 mr-6 md:mr-12 -mt-36 md:-mt-24 lg:-mt-44 hidden md:block":
-          false,
       })}
     >
       <Wrapper className="relative" {...wrapperProps}>
@@ -88,16 +98,7 @@ export const Section = ({
             <Spacer size={spacingSize} />
           </GridColumn>
 
-          {illustration === "snakeHead" ? (
-            <GridColumn
-              colSpan={2}
-              mdColSpan={2}
-              className="mt-auto hidden md:block"
-            >
-              <SnakeHead className="hidden w-full lg:block" />
-              <SnakeTail className="ml-auto w-16 lg:w-full rotate-180 lg:hidden" />
-            </GridColumn>
-          ) : (
+          {illustration !== "snakeTail" && (
             <SideIllustration
               cols={illustrationCols}
               mdCols={illustrationCols}
