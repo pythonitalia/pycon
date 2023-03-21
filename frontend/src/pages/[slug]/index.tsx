@@ -7,19 +7,19 @@ import { useRouter } from "next/router";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Article } from "~/components/article";
+import { BlocksRenderer } from "~/components/blocks-renderer";
 import { MetaTags } from "~/components/meta-tags";
-import { PageLoading } from "~/components/page-loading";
 import { compile } from "~/helpers/markdown";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
-import { queryAllPages, queryPage, usePageQuery } from "~/types";
+import { GenericPage, queryAllPages, queryPage, usePageQuery } from "~/types";
 
 export const Page = () => {
   const router = useRouter();
   const slug = router.query.slug as string;
   const language = useCurrentLanguage();
 
-  const { data, loading } = usePageQuery({
+  const { data, error } = usePageQuery({
     variables: {
       code: process.env.conferenceCode,
       language,
@@ -27,17 +27,14 @@ export const Page = () => {
     },
   });
 
-  if (loading) {
-    return <PageLoading titleId="global.loading" />;
-  }
-
   if (!data) {
     return <Error statusCode={404} />;
   }
 
-  const { page } = data;
+  const { page, cmsPage } = data;
+  console.log(cmsPage);
 
-  if (!page) {
+  if (!page && (!cmsPage || cmsPage.__typename !== "GenericPage")) {
     return <Error statusCode={404} />;
   }
 
@@ -46,9 +43,12 @@ export const Page = () => {
       <MetaTags title={page.title} />
 
       <BasePage endSeparator={false}>
-        <Section>
-          <Article title={page.title}>{compile(page.content).tree}</Article>
-        </Section>
+        {cmsPage && <BlocksRenderer blocks={(cmsPage as GenericPage).body} />}
+        {!cmsPage && (
+          <Section>
+            <Article title={page.title}>{compile(page.content).tree}</Article>
+          </Section>
+        )}
       </BasePage>
     </Fragment>
   );

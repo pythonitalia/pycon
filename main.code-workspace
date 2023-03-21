@@ -47,6 +47,10 @@
     {
       "name": "👀 eslint config",
       "path": "eslint-config-pythonit"
+    },
+    {
+      "name": "💅 pycon-styleguide",
+      "path": "../pycon-styleguide/"
     }
   ],
   "settings": {},

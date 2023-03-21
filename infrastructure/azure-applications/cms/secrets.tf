@@ -17,3 +17,8 @@ data "azurerm_key_vault_secret" "sentry_dsn" {
   name         = "sentry-dsn"
   key_vault_id = azurerm_key_vault.vault.id
 }
+
+data "azurerm_key_vault_secret" "mapbox_public_api_key" {
+  name         = "mapbox-public-api-key"
+  key_vault_id = azurerm_key_vault.vault.id
+}

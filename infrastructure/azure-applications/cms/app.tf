@@ -30,6 +30,7 @@ module "app" {
     { name = "SECRET_KEY", value = random_password.secret_key.result, secret = true },
     { name = "DATABASE_URL", value = local.database_url, secret = true },
     { name = "USERS_SERVICE", value = local.users_backend_url, secret = false },
+    { name = "MAPBOX_PUBLIC_API_KEY", value = data.azurerm_key_vault_secret.mapbox_public_api_key.value, secret = false },
     { name = "SERVICE_TO_SERVICE_SECRET", value = data.azurerm_key_vault_secret.service_to_service_secret.value, secret = true },
   ]
 }
