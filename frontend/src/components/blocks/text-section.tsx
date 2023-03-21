@@ -21,7 +21,7 @@ export const TextSection = ({
   cta,
 }: TextSectionType) => {
   return (
-    <Section spacingSize="xl" illustration={illustration || undefined}>
+    <Section spacingSize="xl" illustration={(illustration as any) || undefined}>
       <Container noPadding center={false} size="small">
         {title && (
           <Heading size={isMainTitle ? "display1" : "display2"}>
