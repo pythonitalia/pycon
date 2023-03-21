@@ -54,6 +54,7 @@ class UsersAuthBackend(BaseBackend):
         except user_model.DoesNotExist:
             django_user = user_model.objects.create(
                 email=user_data["email"],
+                username=user_data["email"],
                 first_name=user_data["fullname"],
                 is_active=True,
                 is_staff=True,
