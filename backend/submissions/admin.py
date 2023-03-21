@@ -1,11 +1,12 @@
 from django import forms
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.utils.html import mark_safe
 from django.utils.translation import gettext_lazy as _
 from import_export.admin import ExportMixin
 from import_export.fields import Field
 
 from participants.models import Participant
+from domain_events.publisher import send_proposal_rejected_email
 from users.autocomplete import UsersBackendAutocomplete
 from users.mixins import AdminUsersMixin, ResourceUsersByIdsMixin, SearchUsersMixin
 
@@ -144,6 +145,34 @@ class SubmissionAdminForm(forms.ModelForm):
         ]
 
 
+@admin.action(description="Move to waiting list")
+def move_to_waiting_list(modeladmin, request, queryset):
+    update_count = queryset.update(status=Submission.STATUS.waiting_list)
+    messages.add_message(
+        request, messages.INFO, f"Moved {update_count} proposals to the waiting list"
+    )
+
+
+@admin.action(description="Move to rejected")
+def move_to_rejected(modeladmin, request, queryset):
+    update_count = queryset.update(status=Submission.STATUS.rejected)
+    messages.add_message(
+        request, messages.INFO, f"Moved {update_count} proposals to rejected"
+    )
+
+
+@admin.action(description="Send proposal rejected email")
+def send_proposal_rejected_email_action(modeladmin, request, queryset):
+    for proposal in queryset:
+        send_proposal_rejected_email(proposal)
+
+    messages.add_message(
+        request,
+        messages.INFO,
+        f"Scheduled rejection emails to {queryset.count()} proposals",
+    )
+
+
 @admin.register(Submission)
 class SubmissionAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
     resource_class = SubmissionResource
@@ -197,6 +226,11 @@ class SubmissionAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
     filter_horizontal = ("tags",)
     inlines = [SubmissionCommentInline]
     user_fk = "speaker_id"
+    actions = [
+        move_to_waiting_list,
+        move_to_rejected,
+        send_proposal_rejected_email_action,
+    ]
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
         extra_context = extra_context or {}

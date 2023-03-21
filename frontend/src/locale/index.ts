@@ -68,6 +68,7 @@ export const messages = {
     "profile.myProposals.status.speakerRejected": "Rejected",
     "profile.myProposals.status.speakerCantAttend": "Can't attend",
     "profile.myProposals.status.maybe": "Rejected",
+    "profile.myProposals.status.waiting_list": "Waiting list",
     "profile.myProposals.noProposals.heading":
       "You don't have any proposals yet.",
     "profile.myProposals.noProposals.body.canSubmit":
@@ -1696,6 +1697,7 @@ Affrettati a comprare il biglietto!`,
     "profile.myProposals.status.speakerRejected": "Rifiutato",
     "profile.myProposals.status.speakerCantAttend": "Cancellato",
     "profile.myProposals.status.maybe": "Rifiutato",
+    "profile.myProposals.status.waiting_list": "Lista d'attesa",
 
     "profile.myProposals.date": "{day} {start} - {end}",
     "profile.myProposals.notScheduled": "Non selezionata",

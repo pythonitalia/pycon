@@ -29,6 +29,7 @@ class Submission(TimeStampedModel):
     STATUS = Choices(
         ("proposed", _("Proposed")),
         ("accepted", _("Accepted")),
+        ("waiting_list", _("Waiting list")),
         ("rejected", _("Rejected")),
         ("cancelled", _("Cancelled")),
     )

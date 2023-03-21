@@ -1,0 +1,59 @@
+---
+title: "[PyCon Italia 2023] Update about your proposal"
+preheader: "Update about your proposal"
+---
+
+<extends src="src/layouts/base.html">
+  <block name="template">
+    <table class="w-full font-sans">
+      <tr>
+        <td align="center" class="bg-gray-100">
+          <table class="w-600 sm:w-full">
+            <tr>
+              <component src="src/components/head-pycon.html" />
+            </tr>
+            <tr>
+              <td align="center" class="sm:px-24">
+                <table class="w-full">
+                  <tr>
+                    <td
+                      class="bg-white text-gray-800 text-base text-left p-48 sm:px-24 leading-24"
+                    >
+                      <p class="m-0 mb-16">👋 @{{firstname}}!</p>
+                      <p class="m-0 mb-16">
+                        Thank you for your submission to @{{conferenceName}}. We
+                        greatly appreciate your patience while preparing this
+                        year's program.
+                      </p>
+                      <p class="m-0 mb-16">
+                        Unfortunately, your submission @{{submissionTitle}}
+                        (@{{submissionType}}), has not been accepted.
+                      </p>
+                      <p class="m-0 mb-16">
+                        We have been overwhelmed by the number of amazing
+                        proposals we received this year and this decision wasn't
+                        easy for us!<br />
+                        Don't let this rejection stop you from submitting
+                        proposals in the future, as we would love to have you in
+                        the future.
+                      </p>
+                      <p class="m-0">
+                        We hope you will join us at the conference regardless!
+                      </p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="h-48"></td>
+                  </tr>
+                  <tr>
+                    <component src="src/components/footer.html" />
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </block>
+</extends>

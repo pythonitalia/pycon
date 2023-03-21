@@ -8,6 +8,7 @@ import boto3
 from django.conf import settings
 
 from grants.models import Grant
+from submissions.models import Submission
 
 logger = getLogger(__name__)
 
@@ -252,6 +253,16 @@ def send_grant_voucher_email(grant: Grant):
         "GrantVoucherEmailSent",
         body={
             "grant_id": grant.id,
+        },
+        deduplication_id=str(uuid4()),
+    )
+
+
+def send_proposal_rejected_email(proposal: Submission):
+    publish_message(
+        "ProposalRejectedSent",
+        body={
+            "proposal_id": proposal.id,
         },
         deduplication_id=str(uuid4()),
     )
