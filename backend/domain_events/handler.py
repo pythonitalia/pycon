@@ -554,6 +554,33 @@ def _schedule_item_status_to_message(status: str):
     return "Undefined"
 
 
+def handle_proposal_rejected_sent(data):
+    from submissions.models import Submission
+
+    submission = Submission.objects.get(id=data["proposal_id"])
+    user_id = submission.speaker_id
+
+    users_result = execute_service_client_query(
+        USERS_NAMES_FROM_IDS, {"ids": [user_id]}
+    )
+    speaker_data = users_result.data["usersByIds"][0]
+
+    language_code = submission.languages.first().code
+    conference_name = submission.conference.name.localize(language_code)
+
+    send_email(
+        template=EmailTemplate.SUBMISSION_REJECTED,
+        to=speaker_data["email"],
+        subject=f"[{conference_name}] Update about your proposal",
+        variables={
+            "firstname": get_name(speaker_data, "there"),
+            "conferenceName": conference_name,
+            "submissionTitle": submission.title.localize(language_code),
+            "submissionType": submission.type.name,
+        },
+    )
+
+
 HANDLERS = {
     "GrantReplyApprovedSent": handle_grant_reply_approved_sent,
     "GrantReplyApprovedReminderSent": handle_grant_reply_approved_sent,
@@ -571,4 +598,5 @@ HANDLERS = {
     "SpeakerVoucherEmailSent": handle_speaker_voucher_email_sent,
     "SpeakerCommunicationSent": handle_speaker_communication_sent,
     "VolunteersPushNotificationSent": handle_volunteers_push_notification_sent,
+    "ProposalRejectedSent": handle_proposal_rejected_sent,
 }

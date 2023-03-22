@@ -120,6 +120,7 @@ const StatusTag = ({
   status:
     | string
     | "waiting_confirmation"
+    | "waiting_list"
     | "proposed"
     | "accepted"
     | "confirmed"
@@ -169,6 +170,12 @@ const StatusTag = ({
       return (
         <Tag color="green">
           <FormattedMessage id="profile.myProposals.status.accepted" />
+        </Tag>
+      );
+    case "waiting_list":
+      return (
+        <Tag color="blue">
+          <FormattedMessage id="profile.myProposals.status.waiting_list" />
         </Tag>
       );
     case "cancelled":
