@@ -385,6 +385,9 @@ class ScheduleItemAdmin(SearchUsersMixin):
             conference = form.cleaned_data["conference"]
             subject = form.cleaned_data["subject"]
             body = form.cleaned_data["body"]
+            only_speakers_without_ticket = form.cleaned_data[
+                "only_speakers_without_ticket"
+            ]
 
             schedule_items = conference.schedule_items.filter(
                 Q(submission__isnull=False) | Q(additional_speakers__isnull=False)
@@ -400,6 +403,8 @@ class ScheduleItemAdmin(SearchUsersMixin):
                         user_id=schedule_item.submission.speaker_id,
                         subject=subject,
                         body=body,
+                        only_speakers_without_ticket=only_speakers_without_ticket,
+                        conference=conference,
                     )
                     notified_ids.add(schedule_item.submission.speaker_id)
 
@@ -410,7 +415,11 @@ class ScheduleItemAdmin(SearchUsersMixin):
                     notified_ids.add(additional_speaker.user_id)
 
                     send_speaker_communication_email(
-                        user_id=additional_speaker.user_id, subject=subject, body=body
+                        user_id=additional_speaker.user_id,
+                        subject=subject,
+                        body=body,
+                        only_speakers_without_ticket=only_speakers_without_ticket,
+                        conference=conference,
                     )
 
             messages.success(request, f"Scheduled {len(notified_ids)} emails.")
