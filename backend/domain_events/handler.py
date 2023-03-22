@@ -2,6 +2,7 @@ import json
 import logging
 from datetime import timedelta
 from urllib.parse import urljoin
+from pretix import user_has_admission_ticket
 
 import boto3
 from asgiref.sync import async_to_sync
@@ -453,19 +454,32 @@ def handle_speaker_voucher_email_sent(data):
 
 
 def handle_speaker_communication_sent(data):
+    from conferences.models import Conference
+
     user_id = data["user_id"]
     subject = data["subject"]
     body = data["body"]
+    only_speakers_without_ticket = data["only_speakers_without_ticket"]
+
+    conference_id = data["conference_id"]
+    conference = Conference.objects.get(id=conference_id)
 
     users_result = execute_service_client_query(
         USERS_NAMES_FROM_IDS, {"ids": [user_id]}
     )
     speaker_data = users_result.data["usersByIds"][0]
 
+    if only_speakers_without_ticket and user_has_admission_ticket(
+        email=speaker_data["email"],
+        event_organizer=conference.pretix_organizer_id,
+        event_slug=conference.pretix_event_id,
+    ):
+        return
+
     send_email(
         template=EmailTemplate.SPEAKER_COMMUNICATION,
         to=speaker_data["email"],
-        subject=f"[PyCon Italia 2023] {subject}",
+        subject=f"[{conference.name.localize('en')}] {subject}",
         variables={
             "firstname": get_name(speaker_data, "there"),
             "body": mark_safe(body.replace("\n", "<br />")),

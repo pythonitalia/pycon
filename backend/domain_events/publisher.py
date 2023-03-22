@@ -6,7 +6,7 @@ from uuid import uuid4
 
 import boto3
 from django.conf import settings
-
+from conferences.models import Conference
 from grants.models import Grant
 from submissions.models import Submission
 
@@ -155,7 +155,13 @@ def send_speaker_voucher_email(speaker_voucher):
     )
 
 
-def send_speaker_communication_email(user_id: int, subject: str, body: str):
+def send_speaker_communication_email(
+    user_id: int,
+    subject: str,
+    body: str,
+    only_speakers_without_ticket: bool,
+    conference: Conference,
+):
     deduplication_id = str(md5(f"{user_id}-{subject}".encode("utf-8")).hexdigest())
 
     publish_message(
@@ -164,6 +170,8 @@ def send_speaker_communication_email(user_id: int, subject: str, body: str):
             "user_id": user_id,
             "subject": subject,
             "body": body,
+            "only_speakers_without_ticket": only_speakers_without_ticket,
+            "conference_id": conference.id,
         },
         deduplication_id=deduplication_id,
     )

@@ -17,6 +17,7 @@ from domain_events.handler import (
     handle_new_cfp_submission,
     handle_new_schedule_invitation_answer,
     handle_schedule_invitation_sent,
+    handle_speaker_communication_sent,
     handle_speaker_voucher_email_sent,
     handle_submission_time_slot_changed,
     handle_grant_voucher_email_sent,
@@ -551,4 +552,109 @@ def test_handle_grant_voucher_email_sent(settings, grant_factory):
             "voucherCode": "ABC123",
         },
         reply_to=["grants@pycon.it"],
+    )
+
+
+@pytest.mark.parametrize("has_ticket", [True, False])
+def test_handle_speaker_communication_sent_to_speakers_without_ticket(
+    settings, requests_mock, conference_factory, has_ticket
+):
+    settings.SPEAKERS_EMAIL_ADDRESS = "reply"
+    conference = conference_factory()
+    data = {
+        "user_id": 1,
+        "subject": "test subject",
+        "body": "test body",
+        "only_speakers_without_ticket": True,
+        "conference_id": conference.id,
+    }
+    requests_mock.post(
+        f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket/",
+        json={"user_has_admission_ticket": has_ticket},
+    )
+
+    with patch(
+        "domain_events.handler.send_email"
+    ) as email_mock, respx.mock as req_mock:
+        req_mock.post(f"{settings.USERS_SERVICE_URL}/internal-api").respond(
+            json={
+                "data": {
+                    "usersByIds": [
+                        {
+                            "id": 1,
+                            "fullname": "Marco Acierno",
+                            "email": "marco@placeholder.it",
+                            "name": "Marco",
+                            "username": "marco",
+                        }
+                    ]
+                }
+            }
+        )
+
+        handle_speaker_communication_sent(data)
+
+    if not has_ticket:
+        email_mock.assert_called_once_with(
+            template=EmailTemplate.SPEAKER_COMMUNICATION,
+            to="marco@placeholder.it",
+            subject=f"[{conference.name.localize('en')}] test subject",
+            variables={
+                "firstname": "Marco Acierno",
+                "body": "test body",
+            },
+            reply_to=[settings.SPEAKERS_EMAIL_ADDRESS],
+        )
+    else:
+        email_mock.assert_not_called()
+
+
+@pytest.mark.parametrize("has_ticket", [True, False])
+def test_handle_speaker_communication_sent_to_everyone(
+    settings, requests_mock, conference_factory, has_ticket
+):
+    settings.SPEAKERS_EMAIL_ADDRESS = "reply"
+    conference = conference_factory()
+    data = {
+        "user_id": 1,
+        "subject": "test subject",
+        "body": "test body",
+        "only_speakers_without_ticket": False,
+        "conference_id": conference.id,
+    }
+    requests_mock.post(
+        f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket/",
+        json={"user_has_admission_ticket": has_ticket},
+    )
+
+    with patch(
+        "domain_events.handler.send_email"
+    ) as email_mock, respx.mock as req_mock:
+        req_mock.post(f"{settings.USERS_SERVICE_URL}/internal-api").respond(
+            json={
+                "data": {
+                    "usersByIds": [
+                        {
+                            "id": 1,
+                            "fullname": "Marco Acierno",
+                            "email": "marco@placeholder.it",
+                            "name": "Marco",
+                            "username": "marco",
+                        }
+                    ]
+                }
+            }
+        )
+
+        handle_speaker_communication_sent(data)
+
+    email_mock.assert_called_once_with(
+        template=EmailTemplate.SPEAKER_COMMUNICATION,
+        to="marco@placeholder.it",
+        subject=f"[{conference.name.localize('en')}] test subject",
+        variables={
+            "firstname": "Marco Acierno",
+            "body": "test body",
+        },
+        reply_to=[settings.SPEAKERS_EMAIL_ADDRESS],
     )
