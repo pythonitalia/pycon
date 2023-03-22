@@ -62,6 +62,10 @@ const getCols = (illustration?: Illustration) => {
     return [10, 2];
   }
 
+  if (illustration === "snakeTail") {
+    return [9, 0];
+  }
+
   return [7, 5];
 };
 
@@ -88,7 +92,7 @@ export const Section = ({
         <Grid cols={12} mdCols={12}>
           {illustration === "snakeTail" && (
             <GridColumn className="hidden md:block" colSpan={2} mdColSpan={2}>
-              <SnakeTail className="w-16 lg:w-auto" />
+              <SnakeTail className="w-16 lg:w-[140px]" />
             </GridColumn>
           )}
 
