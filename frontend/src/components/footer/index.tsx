@@ -9,15 +9,19 @@ import { useFooterQuery } from "~/types";
 import { FooterLogo } from "../icons/footer-logo";
 
 export const Footer = () => {
-  const {
-    data: {
-      conference: { footerEn, footerIt },
-    },
-  } = useFooterQuery({
+  const { data } = useFooterQuery({
     variables: {
       code: process.env.conferenceCode,
     },
   });
+
+  if (!data) {
+    return null;
+  }
+
+  const {
+    conference: { footerEn, footerIt },
+  } = data;
   const { pathname } = useRouter();
 
   const language = useCurrentLanguage();
