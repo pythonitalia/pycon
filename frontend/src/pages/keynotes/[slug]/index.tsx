@@ -1,73 +1,16 @@
-/** @jsxRuntime classic */
-
-/** @jsx jsx */
 import { Page } from "@python-italia/pycon-styleguide";
-import React, { Fragment, useCallback } from "react";
+import React from "react";
 import { FormattedMessage } from "react-intl";
-import { Box, Grid, Flex, jsx, Text } from "theme-ui";
 
 import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
-import { Article } from "~/components/article";
-import { BackToMarquee } from "~/components/back-to-marquee";
-import { BlogPostIllustration } from "~/components/illustrations/blog-post";
-import { KeynoteSlide } from "~/components/keynoters-section/keynote-slide";
-import { Link } from "~/components/link";
 import { MetaTags } from "~/components/meta-tags";
 import { ScheduleEventDetail } from "~/components/schedule-event-detail";
-import { compile } from "~/helpers/markdown";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
 import { queryAllKeynotes, queryKeynote, useKeynoteQuery } from "~/types";
-
-type KeynoteInfoLineProps = {
-  property: string | React.ReactNode;
-  value: string;
-  to?: string;
-};
-
-const KeynoteInfoLine = ({ property, value, to }: KeynoteInfoLineProps) => (
-  <Grid
-    gap={0}
-    sx={{
-      gridTemplateColumns: [null, "0.3fr 1fr"],
-      borderBottom: "2px solid",
-      borderColor: "violet",
-      mb: 3,
-      pb: [3, 2],
-    }}
-  >
-    <Text
-      sx={{
-        textTransform: "uppercase",
-        fontWeight: "bold",
-        color: "violet",
-        userSelect: "none",
-      }}
-    >
-      {property}:
-    </Text>
-    <Text>
-      {to ? (
-        <Link
-          sx={{
-            color: "black",
-          }}
-          external
-          path={to}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {value}
-        </Link>
-      ) : (
-        value
-      )}
-    </Text>
-  </Grid>
-);
 
 const KeynotePage = () => {
   const language = useCurrentLanguage();
@@ -134,7 +77,7 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
   const slug = params.slug as string;
   const client = getApolloClient();
 
-  await Promise.all([
+  const [_, keynote] = await Promise.all([
     prefetchSharedQueries(client, locale),
     queryKeynote(client, {
       conference: process.env.conferenceCode,
@@ -142,6 +85,12 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
       language: locale,
     }),
   ]);
+
+  if (!keynote.data || !keynote.data.conference.keynote) {
+    return {
+      notFound: true,
+    };
+  }
 
   return addApolloState(client, {
     props: {},

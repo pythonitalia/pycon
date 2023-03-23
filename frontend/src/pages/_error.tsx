@@ -22,7 +22,7 @@ const ErrorPage = ({ statusCode }) => (
 
     {statusCode === 404 && (
       <Text>
-        <FormattedMessage id="error404.message" />
+        <FormattedMessage id="404.message" />
         <Link path="/" sx={{ display: "block", mt: 2 }}>
           <FormattedMessage id="error404.goToHomepage" />
         </Link>

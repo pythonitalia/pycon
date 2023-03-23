@@ -2,7 +2,6 @@ import { Section, Page as BasePage } from "@python-italia/pycon-styleguide";
 import React, { Fragment } from "react";
 
 import { GetStaticPaths, GetStaticProps } from "next";
-import Error from "next/error";
 import { useRouter } from "next/router";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
@@ -12,14 +11,25 @@ import { MetaTags } from "~/components/meta-tags";
 import { compile } from "~/helpers/markdown";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
-import { GenericPage, queryAllPages, queryPage, usePageQuery } from "~/types";
+import {
+  GenericPage,
+  PageQuery,
+  queryAllPages,
+  queryPage,
+  usePageQuery,
+} from "~/types";
+
+const isPageFound = (data: PageQuery) => {
+  const { page, cmsPage } = data;
+  return page || (cmsPage && cmsPage.__typename === "GenericPage");
+};
 
 export const Page = () => {
   const router = useRouter();
   const slug = router.query.slug as string;
   const language = useCurrentLanguage();
 
-  const { data, error } = usePageQuery({
+  const { data } = usePageQuery({
     variables: {
       code: process.env.conferenceCode,
       language,
@@ -27,16 +37,7 @@ export const Page = () => {
     },
   });
 
-  if (!data) {
-    return <Error statusCode={404} />;
-  }
-
   const { page, cmsPage } = data;
-  console.log(cmsPage);
-
-  if (!page && (!cmsPage || cmsPage.__typename !== "GenericPage")) {
-    return <Error statusCode={404} />;
-  }
 
   return (
     <Fragment>
@@ -59,7 +60,7 @@ export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
   const slug = params.slug as string;
   const client = getApolloClient();
 
-  await Promise.all([
+  const [_, pageQuery] = await Promise.all([
     prefetchSharedQueries(client, language),
     queryPage(client, {
       code: process.env.conferenceCode,
@@ -67,6 +68,12 @@ export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
       slug,
     }),
   ]);
+
+  if (!isPageFound(pageQuery.data)) {
+    return {
+      notFound: true,
+    };
+  }
 
   return addApolloState(client, {
     props: {},

@@ -47,6 +47,10 @@ export const Header = () => {
     setIsReady(true);
   }, []);
 
+  if (!data) {
+    return null;
+  }
+
   const {
     conference: {
       conferenceMenuEn,

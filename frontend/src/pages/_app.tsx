@@ -95,16 +95,16 @@ window.dispatchEvent(olarkLoadedEvent);
                   minHeight: "100vh",
                 }}
               >
-                <Header />
+                <ErrorBoundary>
+                  <Header />
 
-                <Box>
-                  <ErrorBoundary>
+                  <Box>
                     <Component {...pageProps} err={err} />
                     <Analytics />
-                  </ErrorBoundary>
-                </Box>
+                  </Box>
 
-                <Footer />
+                  <Footer />
+                </ErrorBoundary>
               </Flex>
             )}
           </LocaleProvider>

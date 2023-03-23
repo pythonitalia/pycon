@@ -15,7 +15,6 @@ import { useRouter } from "next/router";
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Article } from "~/components/article";
 import { MetaTags } from "~/components/meta-tags";
-import { PageLoading } from "~/components/page-loading";
 import { compile } from "~/helpers/markdown";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
@@ -31,16 +30,12 @@ export const BlogArticlePage = () => {
     year: "numeric",
   });
 
-  const { data, loading } = usePostQuery({
+  const { data } = usePostQuery({
     variables: {
       language,
       slug,
     },
   });
-
-  if (loading) {
-    return <PageLoading titleId="global.loading" />;
-  }
 
   const post = data.blogPost;
 
@@ -80,13 +75,19 @@ export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
   const slug = params.slug as string;
   const client = getApolloClient();
 
-  await Promise.all([
+  const [_, post] = await Promise.all([
     prefetchSharedQueries(client, locale),
     queryPost(client, {
       slug,
       language: locale,
     }),
   ]);
+
+  if (!post.data || !post.data.blogPost) {
+    return {
+      notFound: true,
+    };
+  }
 
   return addApolloState(client, {
     props: {},

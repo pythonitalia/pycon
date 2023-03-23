@@ -5,7 +5,6 @@ import { useRouter } from "next/router";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { MetaTags } from "~/components/meta-tags";
-import { PageLoading } from "~/components/page-loading";
 import { ScheduleEventDetail } from "~/components/schedule-event-detail";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
@@ -23,10 +22,6 @@ export const TalkPage = () => {
       language,
     },
   });
-
-  if (!data) {
-    return <PageLoading titleId="global.loading" />;
-  }
 
   const { talk } = data.conference;
 
@@ -72,7 +67,7 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
   const slug = params.slug as string;
   const client = getApolloClient();
 
-  await Promise.all([
+  const [_, event] = await Promise.all([
     prefetchSharedQueries(client, locale),
     queryTalk(client, {
       code: process.env.conferenceCode,
@@ -80,6 +75,12 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
       language: locale,
     }),
   ]);
+
+  if (!event.data || !event.data.conference.talk) {
+    return {
+      notFound: true,
+    };
+  }
 
   return addApolloState(client, {
     props: {},

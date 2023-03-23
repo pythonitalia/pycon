@@ -40,6 +40,9 @@ export const messages = {
 
     "signup.existingAccount": "Email already used",
 
+    "404.message": "Sorry, this page does not exist.",
+    "404.title": "Page not found",
+
     "profile.welcome": "Ciao {name}!",
     "profile.myProfile": "My Profile",
     "profile.logout": "Sign Out",
@@ -763,8 +766,7 @@ reflects what everyone wants to see!`,
     "schedule.loading": "Loading...",
     "schedule.backToSchedule": "Back to schedule",
 
-    "error404.goToHomepage": "Go to the homepage",
-    "error404.message": "We couldn't find the page you are looking for :(",
+    "404.goToHomepage": "Back to homepage",
 
     "schedule.workshop.limitedSeats": "Limited space available! Book now.",
     "schedule.workshop.soldout": "No more seats available",
@@ -1427,9 +1429,7 @@ Il tuo voto ci aiuterà a creare un programma che più rispecchia ciò che la co
     "jobboard.role": "Ruolo",
     "jobboard.discoverMore": "Scopri di più",
 
-    "error404.message":
-      "Non siamo riusciti a trovare la pagina che stai cercando :(",
-    "error404.goToHomepage": "Vai alla homepage",
+    "404.goToHomepage": "Homepage",
 
     "schedule.invitation.congratulations":
       "Congratulazioni! La tua submission {submissionTitle} è stata accettata!",
@@ -1698,6 +1698,8 @@ Affrettati a comprare il biglietto!`,
     "profile.myProposals.status.speakerCantAttend": "Cancellato",
     "profile.myProposals.status.maybe": "Rifiutato",
     "profile.myProposals.status.waiting_list": "Lista d'attesa",
+
+    "404.message": "La pagina che stavi cercando non esiste",
 
     "profile.myProposals.date": "{day} {start} - {end}",
     "profile.myProposals.notScheduled": "Non selezionata",
