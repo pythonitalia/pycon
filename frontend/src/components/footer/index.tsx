@@ -14,6 +14,9 @@ export const Footer = () => {
       code: process.env.conferenceCode,
     },
   });
+  const { pathname } = useRouter();
+
+  const language = useCurrentLanguage();
 
   if (!data) {
     return null;
@@ -22,9 +25,7 @@ export const Footer = () => {
   const {
     conference: { footerEn, footerIt },
   } = data;
-  const { pathname } = useRouter();
 
-  const language = useCurrentLanguage();
   const menu = language === "en" ? footerEn : footerIt;
 
   return (
