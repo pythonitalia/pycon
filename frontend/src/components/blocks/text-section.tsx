@@ -23,7 +23,7 @@ export const TextSection = ({
   const onlyAccordions = !title && !subtitle && !body && !cta;
   return (
     <Section spacingSize="xl" illustration={(illustration as any) || undefined}>
-      <Container noPadding center={false} size="small">
+      <Container noPadding center={false} size="medium">
         {title && (
           <>
             <Heading size={isMainTitle ? "display1" : "display2"}>
