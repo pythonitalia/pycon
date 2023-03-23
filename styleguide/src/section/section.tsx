@@ -63,7 +63,7 @@ const getCols = (illustration?: Illustration) => {
   }
 
   if (illustration === "snakeTail") {
-    return [9, 0];
+    return [8, 0];
   }
 
   return [7, 5];
