@@ -27,6 +27,7 @@ const NotFoundPage = () => {
       </Head>
       <Section>
         <Container
+          noPadding
           size="medium"
           className="text-center flex flex-col items-center"
         >

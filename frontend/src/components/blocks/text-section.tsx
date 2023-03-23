@@ -20,30 +20,33 @@ export const TextSection = ({
   accordions,
   cta,
 }: TextSectionType) => {
+  const onlyAccordions = !title && !subtitle && !body && !cta;
   return (
     <Section spacingSize="xl" illustration={(illustration as any) || undefined}>
       <Container noPadding center={false} size="small">
         {title && (
-          <Heading size={isMainTitle ? "display1" : "display2"}>
-            {title}
-          </Heading>
+          <>
+            <Heading size={isMainTitle ? "display1" : "display2"}>
+              {title}
+            </Heading>
+            {(subtitle || body || cta) && <Spacer size="xl" />}
+          </>
         )}
 
         {subtitle && (
           <>
-            <Spacer size="xl" />
             <Heading size={2}>{subtitle}</Heading>
+            {(body || cta) && <Spacer size="medium" />}
           </>
         )}
         {body && (
           <>
-            <Spacer size="medium" />
             <DynamicHTMLText text={body} />
+            {cta && <Spacer size="large" />}
           </>
         )}
         {cta && (
           <>
-            <Spacer size="large" />
             <Button href={cta.link} role="secondary">
               {cta.label}
             </Button>
@@ -53,7 +56,7 @@ export const TextSection = ({
       <Container noPadding size="2md">
         {accordions.length > 0 && (
           <>
-            <Spacer size="xl" />
+            {!onlyAccordions && <Spacer size="xl" />}
             {accordions?.map((accordion, index) => (
               <>
                 <MultiplePartsCard
