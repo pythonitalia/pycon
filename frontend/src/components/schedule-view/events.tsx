@@ -324,6 +324,7 @@ export const ScheduleEntry = ({
   const allRoomsText = useTranslatedMessage("scheduleView.allRooms");
 
   const roomText =
+    item.type === "keynote" ||
     item.rooms.length === rooms.length ||
     item.rooms.length ===
       rooms.filter((room) => room.type !== "training").length
