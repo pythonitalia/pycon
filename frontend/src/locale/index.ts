@@ -128,7 +128,7 @@ export const messages = {
     "profile.dateBirth": "Birth date",
     "profile.email": "Email",
     "profile.name": "Name",
-    "profile.fullName": "Fullname",
+    "profile.fullName": "Full name",
     "profile.gender": "Gender",
     "profile.gender.selectGender": "Select a gender",
     "profile.gender.female": "Female",
@@ -205,7 +205,7 @@ export const messages = {
     "signup.passwordMismatch":
       'Make sure "Password" and "Confirm Password" match!',
     "signup.signupButton": "Signup",
-    "signup.fullname": "Fullname",
+    "signup.fullname": "Full name",
     "deadlines.start": "Start",
     "deadlines.end": "End",
     "login.wrongCredentials": "Wrong email/password",
