@@ -32,7 +32,8 @@ export const DynamicHTMLText = ({ text, baseTextSize = 1 }: Props) => {
         // lists
         "prose-li:marker:text-black prose-li:marker:m-0",
         "prose-ul:list-outside prose-ul:pl-5 prose-li:p-0",
-        "prose-ol:list-outside prose-ol:pl-5 last:prose-li:mb-0"
+        "prose-ol:list-outside prose-ol:pl-5",
+        "first:prose-li:mt-0 last:prose-li:mb-0"
       )}
       dangerouslySetInnerHTML={{
         __html: text,
