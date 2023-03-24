@@ -10,6 +10,7 @@ dev = [
     "pytest-factoryboy>=2.5.1",
     "pytest-django>=4.5.2",
     "pytest-cov>=4.0.0",
+    "respx>=0.18.2",
 ]
 
 [project]
@@ -31,6 +32,7 @@ dependencies = [
     "pythonit-toolkit>=0.1.85",
     "whitenoise>=6.4.0",
     "sentry-sdk[django]>=1.17.0",
+    "respx>=0.18.2",
 ]
 requires-python = ">=3.11"
 license = {text = "MIT"}

@@ -5,7 +5,7 @@ import page.blocks
 import wagtail.blocks
 import wagtail.fields
 import wagtail.images.blocks
-
+import base.blocks
 
 class Migration(migrations.Migration):
 
@@ -17,6 +17,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='genericpage',
             name='body',
-            field=wagtail.fields.StreamField([('text_section', wagtail.blocks.StructBlock([('title', wagtail.blocks.CharBlock(required=False)), ('is_main_title', wagtail.blocks.BooleanBlock(default=False, required=False)), ('subtitle', wagtail.blocks.CharBlock(required=False)), ('body', wagtail.blocks.RichTextBlock(required=False)), ('illustration', wagtail.blocks.ChoiceBlock(choices=[('snakeTail', 'Snake Tail'), ('snakeHead', 'Snake Head'), ('snakesWithSigns', 'Snakes with Signs')], icon='image', required=False)), ('accordions', wagtail.blocks.ListBlock(page.blocks.Accordion)), ('cta', wagtail.blocks.StructBlock([('text', wagtail.blocks.CharBlock(required=False)), ('link', wagtail.blocks.CharBlock(required=False))]))])), ('map', wagtail.blocks.StructBlock([('longitude', wagtail.blocks.DecimalBlock(decimal_places=6, max_digits=9)), ('latitude', wagtail.blocks.DecimalBlock(decimal_places=6, max_digits=9)), ('zoom', wagtail.blocks.IntegerBlock(default=15)), ('link', wagtail.blocks.URLBlock())])), ('image', wagtail.images.blocks.ImageChooserBlock()), ('slider_cards_section', wagtail.blocks.StructBlock([('cards', wagtail.blocks.ListBlock(page.blocks.SimpleTextCard))]))], use_json_field=True),
+            field=wagtail.fields.StreamField([('text_section', wagtail.blocks.StructBlock([('title', wagtail.blocks.CharBlock(required=False)), ('is_main_title', wagtail.blocks.BooleanBlock(default=False, required=False)), ('subtitle', wagtail.blocks.CharBlock(required=False)), ('body', wagtail.blocks.RichTextBlock(required=False)), ('illustration', wagtail.blocks.ChoiceBlock(choices=[('snakeTail', 'Snake Tail'), ('snakeHead', 'Snake Head'), ('snakesWithSigns', 'Snakes with Signs')], icon='image', required=False)), ('accordions', wagtail.blocks.ListBlock(base.blocks.accordion.Accordion)), ('cta', wagtail.blocks.StructBlock([('text', wagtail.blocks.CharBlock(required=False)), ('link', wagtail.blocks.CharBlock(required=False))]))])), ('map', wagtail.blocks.StructBlock([('longitude', wagtail.blocks.DecimalBlock(decimal_places=6, max_digits=9)), ('latitude', wagtail.blocks.DecimalBlock(decimal_places=6, max_digits=9)), ('zoom', wagtail.blocks.IntegerBlock(default=15)), ('link', wagtail.blocks.URLBlock())])), ('image', wagtail.images.blocks.ImageChooserBlock()), ('slider_cards_section', wagtail.blocks.StructBlock([('cards', wagtail.blocks.ListBlock(page.blocks.slider_cards_section.SimpleTextCard))]))], use_json_field=True),
         ),
     ]

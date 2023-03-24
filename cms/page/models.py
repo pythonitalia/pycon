@@ -3,7 +3,16 @@ from wagtail.admin.panels import FieldPanel
 
 from wagtail.fields import StreamField
 
-from page.blocks import BodyBlock
+from page.blocks.text_section import TextSection
+from page.blocks.slider_cards_section import SliderCardsSection
+from base.blocks.map import Map
+from wagtail import blocks
+
+
+class BodyBlock(blocks.StreamBlock):
+    text_section = TextSection()
+    map = Map()
+    slider_cards_section = SliderCardsSection()
 
 
 class GenericPage(Page):

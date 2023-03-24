@@ -526,6 +526,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "respx"
+version = "0.18.2"
+requires_python = ">=3.6"
+summary = "A utility for mocking out the Python HTTPX and HTTP Core libraries."
+dependencies = [
+    "httpx>=0.20.0",
+]
+
+[[package]]
 name = "rfc3986"
 version = "1.5.0"
 summary = "Validating URI References per RFC 3986"
@@ -708,7 +717,7 @@ summary = "A Python image library that sits on top of Pillow, Wand and OpenCV"
 
 [metadata]
 lock_version = "4.1"
-content_hash = "sha256:d17a820778d79c25a567c85759e0cbda397836e3e61c8a7e242ecc4ac89bb7d4"
+content_hash = "sha256:f424fe725bac88674e3b71ec534630b49a05c90e38356ce1d98994e7e1ff527d"
 
 [metadata.files]
 "anyascii 0.3.1" = [
@@ -1278,6 +1287,10 @@ content_hash = "sha256:d17a820778d79c25a567c85759e0cbda397836e3e61c8a7e242ecc4ac
 "requests 2.28.2" = [
     {url = "https://files.pythonhosted.org/packages/9d/ee/391076f5937f0a8cdf5e53b701ffc91753e87b07d66bae4a09aa671897bf/requests-2.28.2.tar.gz", hash = "sha256:98b1b2782e3c6c4904938b84c0eb932721069dfdb9134313beff7c83c2df24bf"},
     {url = "https://files.pythonhosted.org/packages/d2/f4/274d1dbe96b41cf4e0efb70cbced278ffd61b5c7bb70338b62af94ccb25b/requests-2.28.2-py3-none-any.whl", hash = "sha256:64299f4909223da747622c030b781c0d7811e359c37124b4bd368fb8c6518baa"},
+]
+"respx 0.18.2" = [
+    {url = "https://files.pythonhosted.org/packages/07/8e/fdaa5905dcb791925a0557cc34ca84bfbcf85167442e52982527fa6d765f/respx-0.18.2.tar.gz", hash = "sha256:d39ff874f514dc4293b2e1f7c5e6c8c2ad871ee02ef49b3f57535257008495d8"},
+    {url = "https://files.pythonhosted.org/packages/da/8b/a4eb75587b8511b28307e7cf9325bf68b5c3d9c8219909d61ff7b713ba34/respx-0.18.2-py2.py3-none-any.whl", hash = "sha256:09fb4fc49f3900fb124d13b188c90355a45efde29fd18c5e2f513804cf7f84c6"},
 ]
 "rfc3986 1.5.0" = [
     {url = "https://files.pythonhosted.org/packages/79/30/5b1b6c28c105629cc12b33bdcbb0b11b5bb1880c6cfbd955f9e792921aa8/rfc3986-1.5.0.tar.gz", hash = "sha256:270aaf10d87d0d4e095063c65bf3ddbc6ee3d0b226328ce21e036f946e421835"},

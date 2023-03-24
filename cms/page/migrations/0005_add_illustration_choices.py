@@ -2,6 +2,8 @@
 
 from django.db import migrations
 import page.blocks
+import base
+import base.blocks.accordion
 import wagtail.blocks
 import wagtail.fields
 import wagtail.images.blocks
@@ -85,7 +87,7 @@ class Migration(migrations.Migration):
                                 ),
                                 (
                                     "accordions",
-                                    wagtail.blocks.ListBlock(page.blocks.Accordion),
+                                    wagtail.blocks.ListBlock(base.blocks.accordion.Accordion),
                                 ),
                                 (
                                     "cta",
@@ -138,7 +140,7 @@ class Migration(migrations.Migration):
                                 (
                                     "cards",
                                     wagtail.blocks.ListBlock(
-                                        page.blocks.SimpleTextCard
+                                        page.blocks.slider_cards_section.SimpleTextCard
                                     ),
                                 )
                             ]
