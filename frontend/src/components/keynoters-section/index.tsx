@@ -39,7 +39,7 @@ export const KeynotersSection = () => {
   }
 
   return (
-    <Section noContainer spacingSize="3xl" background="caramel">
+    <Section noContainer spacingSize="3xl" background="yellow">
       <Container>
         <Heading size="display2" align="center">
           Keynotes
