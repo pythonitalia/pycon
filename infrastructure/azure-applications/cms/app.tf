@@ -32,5 +32,8 @@ module "app" {
     { name = "USERS_SERVICE", value = local.users_backend_url, secret = false },
     { name = "MAPBOX_PUBLIC_API_KEY", value = data.azurerm_key_vault_secret.mapbox_public_api_key.value, secret = false },
     { name = "SERVICE_TO_SERVICE_SECRET", value = data.azurerm_key_vault_secret.service_to_service_secret.value, secret = true },
+    { name = "AZURE_ACCOUNT_NAME", value = azurerm_storage_account.storage.name, secret = false },
+    { name = "AZURE_ACCOUNT_KEY", value = azurerm_storage_account.storage.primary_access_key, secret = true },
+    { name = "AZURE_CONTAINER", value = azurerm_storage_container.media.name, secret = false },
   ]
 }
