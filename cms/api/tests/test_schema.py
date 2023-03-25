@@ -4,7 +4,7 @@ import pytest
 pytestmark = pytest.mark.django_db
 
 
-def test_page(graphql_client, generic_page_factory, locale, image_file, site_factory):
+def test_page(graphql_client, generic_page_factory, locale, site_factory):
     parent = generic_page_factory()
     page = generic_page_factory(
         slug="bubble-tea",
@@ -12,33 +12,23 @@ def test_page(graphql_client, generic_page_factory, locale, image_file, site_fac
         parent=parent,
         body__0__text_section__title__value="I've Got a Lovely Bunch of Coconuts",
         body__1__map__longitude=Decimal(3.14),
-        body__2__image__image__title="Zazu",
-        body__2__image__image__file=next(image_file()),
     )
     site_factory(hostname="pycon", root_page=parent)
     page.copy_for_translation(locale=locale("it"))
-    image = page.body[-1].value
     query = """
     query Page ($hostname: String!, $language: String!, $slug: String!) {
-        page(hostname: $hostname, language: $language, slug: $slug){
+        cmsPage(hostname: $hostname, language: $language, slug: $slug){
             ...on GenericPage {
                 body {
                     ...on TextSection {
                         title
                     }
-                    ...on Map {
+                    ...on CMSMap {
                         latitude
                         longitude
                     }
-                    ...on Image {
-                        title
-                        width
-                        height
-                        url
-                    }
                 }
             }
-
         }
     }
     """
@@ -48,18 +38,12 @@ def test_page(graphql_client, generic_page_factory, locale, image_file, site_fac
     )
 
     assert response.data == {
-        "page": {
+        "cmsPage": {
             "body": [
                 {"title": "I've Got a Lovely Bunch of " "Coconuts"},
                 {
                     "latitude": "43.766199999999997771737980656325817108154296875",  # noqa: E501
                     "longitude": "3.140000000000000124344978758017532527446746826171875",  # noqa: E501
-                },
-                {
-                    "height": 480,
-                    "title": "Zazu",
-                    "url": image.file.url,
-                    "width": 640,
                 },
             ]
         }
@@ -70,7 +54,7 @@ def test_page_not_found(graphql_client, site_factory):
     site_factory(hostname="not-found")
     query = """
     query Page ($hostname: String!, $language: String!, $slug: String!) {
-        page(hostname: $hostname, language: $language, slug: $slug){
+        cmsPage(hostname: $hostname, language: $language, slug: $slug){
             ...on GenericPage {
                 body {
                     ...on TextSection {
@@ -85,13 +69,13 @@ def test_page_not_found(graphql_client, site_factory):
     response = graphql_client.query(
         query, variables={"hostname": "not-found", "slug": "hot-tea", "language": "en"}
     )
-    assert response.data == {"page": None}
+    assert response.data == {"cmsPage": None}
 
 
 def test_page_site_not_found(graphql_client):
     query = """
     query Page ($hostname: String!, $language: String!, $slug: String!) {
-        page(hostname: $hostname, language: $language, slug: $slug){
+        cmsPage(hostname: $hostname, language: $language, slug: $slug){
             ...on SiteNotFoundError {
                 message
             }
@@ -102,7 +86,7 @@ def test_page_site_not_found(graphql_client):
     response = graphql_client.query(
         query, variables={"hostname": "not-found", "slug": "hot-tea", "language": "en"}
     )
-    assert response.data == {"page": {"message": "Site `not-found` not found"}}
+    assert response.data == {"cmsPage": {"message": "Site `not-found` not found"}}
 
 
 def test_pages(graphql_client, site_factory, generic_page_factory, locale):
@@ -123,7 +107,7 @@ def test_pages(graphql_client, site_factory, generic_page_factory, locale):
 
     query = """
     query Page ($hostname: String!, $language: String!) {
-        pages(hostname: $hostname, language: $language){
+        cmsPages(hostname: $hostname, language: $language){
             body {
                 ...on TextSection {
                     title
@@ -138,7 +122,7 @@ def test_pages(graphql_client, site_factory, generic_page_factory, locale):
     )
 
     assert response.data == {
-        "pages": [
+        "cmsPages": [
             {"body": []},
             {"body": [{"title": "I've Got a Lovely Bunch of Coconuts"}]},
             {"body": [{"title": "There they are, all standing in a row"}]},
@@ -149,7 +133,7 @@ def test_pages(graphql_client, site_factory, generic_page_factory, locale):
 def test_pages_site_not_found(graphql_client):
     query = """
     query Page ($hostname: String!, $language: String!) {
-        pages(hostname: $hostname, language: $language){
+        cmsPages(hostname: $hostname, language: $language){
             body {
                 ...on TextSection {
                     title
@@ -163,7 +147,7 @@ def test_pages_site_not_found(graphql_client):
         query, variables={"hostname": "not-found", "slug": "hot-tea", "language": "en"}
     )
 
-    assert response.data == {"pages": []}
+    assert response.data == {"cmsPages": []}
 
 
 def test_page_filter_by_site_and_language(
@@ -190,7 +174,7 @@ def test_page_filter_by_site_and_language(
 
     query = """
      query Page ($hostname: String!, $language: String!, $slug: String!) {
-        page(hostname: $hostname, language: $language, slug: $slug){
+        cmsPage(hostname: $hostname, language: $language, slug: $slug){
             ...on GenericPage {
                 body {
                     ...on TextSection {
@@ -207,5 +191,5 @@ def test_page_filter_by_site_and_language(
     )
 
     assert response.data == {
-        "page": {"body": [{"title": "There they are, all standing in a row"}]}
+        "cmsPage": {"body": [{"title": "There they are, all standing in a row"}]}
     }

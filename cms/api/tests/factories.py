@@ -1,9 +1,11 @@
 from page.models import GenericPage
-from page.blocks import TextSection, Map, BodyBlock
+from page.blocks.text_section import TextSection
+from page.blocks.slider_cards_section import SimpleTextCard, SliderCardsSection
+from page.models import BodyBlock
+from base.blocks.map import Map
 from wagtail_factories import (
     CharBlockFactory,
     StreamBlockFactory,
-    ImageChooserBlockFactory,
     StructBlockFactory,
     PageFactory,
     StreamFieldFactory,
@@ -45,10 +47,30 @@ class TextSectionFactory(StructBlockFactory):
 
 
 @register
+class SimpleTextCardFactory(StructBlockFactory):
+    title = factory.SubFactory(CharBlockFactory)
+    body = factory.LazyAttribute(lambda o: RichText(f"<h2>{o.h2}</h2>" f"<p>{o.p}</p>"))
+
+    class Meta:
+        model = SimpleTextCard
+
+    class Params:
+        h2 = factory.Faker("text", max_nb_chars=20)
+        p = factory.Faker("text", max_nb_chars=300)
+
+
+@register
+class SliderCardsSectionFactory(StreamBlockFactory):
+    cards = factory.SubFactory(SimpleTextCardFactory)
+
+    class Meta:
+        model = SliderCardsSection
+
+
+@register
 class BodyBlockFactory(StreamBlockFactory):
     text_section = factory.SubFactory(TextSectionFactory)
     map = factory.SubFactory(MapFactory)
-    image = factory.SubFactory(ImageChooserBlockFactory)
 
     class Meta:
         model = BodyBlock
