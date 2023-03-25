@@ -14,3 +14,10 @@ CSRF_TRUSTED_ORIGINS = [
     "https://pythonit-staging-cms.politesky-d9883aec.westeurope.azurecontainerapps.io",
     "https://pythonit-production-cms.blueisland-671ab1bc.westeurope.azurecontainerapps.io",
 ]
+
+DEFAULT_FILE_STORAGE = "storages.backends.azure_storage.AzureStorage"
+
+AZURE_ACCOUNT_NAME = env("AZURE_ACCOUNT_NAME")
+AZURE_ACCOUNT_KEY = env("AZURE_ACCOUNT_KEY")
+AZURE_CONTAINER = env("AZURE_CONTAINER")
+AZURE_URL_EXPIRATION_SECS = 10 * 60
