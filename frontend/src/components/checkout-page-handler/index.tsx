@@ -1,4 +1,4 @@
-import { Section, Spacer } from "@python-italia/pycon-styleguide";
+import { Heading, Section, Spacer } from "@python-italia/pycon-styleguide";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
@@ -8,7 +8,6 @@ import {
   TicketsQueryResult,
 } from "~/types";
 
-import { TicketsHeading } from "../tickets-heading";
 import { BillingCard } from "./billing-card";
 import { CreateOrderBar } from "./create-order-bar";
 import { ProductsQuestions } from "./products-questions";
@@ -37,9 +36,11 @@ export const CheckoutPageHandler = ({
 
   return (
     <form onSubmit={(e) => e.preventDefault()} className="divide-y-3">
-      <TicketsHeading>
-        <FormattedMessage id="tickets.checkout.title" />
-      </TicketsHeading>
+      <Section spacingSize="xl" illustration="snakeTailUp">
+        <Heading size="display2">
+          <FormattedMessage id="tickets.checkout.title" />
+        </Heading>
+      </Section>
       <Section>
         <ProductsQuestions productsById={productsById} />
         <BillingCard />

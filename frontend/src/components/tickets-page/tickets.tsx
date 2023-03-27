@@ -1,3 +1,4 @@
+import { Heading, Section } from "@python-italia/pycon-styleguide";
 import React, { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 
@@ -11,7 +12,6 @@ import {
 
 import { ProductsList } from "../products-list";
 import { useLoginState } from "../profile/hooks";
-import { TicketsHeading } from "../tickets-heading";
 import { CheckoutBar } from "./checkout-bar";
 import { useCart } from "./use-cart";
 
@@ -56,9 +56,11 @@ export const Tickets = ({
 
   return (
     <>
-      <TicketsHeading>
-        <FormattedMessage id="tickets.title" />
-      </TicketsHeading>
+      <Section spacingSize="xl" illustration="snakeTailUp">
+        <Heading size="display2">
+          <FormattedMessage id="tickets.title" />
+        </Heading>
+      </Section>
       <ProductsList
         products={products}
         hotelRooms={hotelRooms}

@@ -193,7 +193,7 @@ export const messages = {
     "newsletter.header": "Keep up to date",
     "newsletter.text":
       "Stay in the loop, sign up for email updates about events, news and offers!",
-    "newsletter.button": "Signup 👉",
+    "newsletter.button": "Signup",
     "newsletter.success": "Thanks for subscribing! 🎉",
     "newsletter.confirmViaEmail":
       "Thanks for subscribing! 🎉 Check your emails to confirm your subscription!",
@@ -224,6 +224,9 @@ export const messages = {
     "voteSelector.maybe": "Maybe",
     "voteSelector.wantToSee": "Want to see",
     "voteSelector.mustSee": "Must see",
+
+    "footer.stayTuned": "Stay tuned!",
+    "footer.subscribeToNewsletter": "Join our newsletter",
 
     "cfp.needToBeLoggedIn": "You need to be logged in to send a proposal",
     "cfp.closed.title": "Call for proposal is now closed!",
@@ -973,7 +976,7 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "newsletter.header": "Tieniti aggiornato",
     "newsletter.text":
       "Rimani aggiornato, iscriviti per ricevere aggiornamenti via email su eventi, novità e offerte!",
-    "newsletter.button": "Iscriviti 👉",
+    "newsletter.button": "Iscriviti",
     "newsletter.success": "Grazie per esserti iscritto! 🎉",
     "newsletter.confirmViaEmail":
       "Grazie per esserti iscritto! 🎉 Controlla le tue email per confermare l'iscrizione!",
@@ -1768,6 +1771,9 @@ Affrettati a comprare il biglietto!`,
       "La tua password è stata cambiata con successo!",
     "resetPasswordSuccess.body":
       "Torna alla pagina di login per accedere con la tua nuova password.",
+
+    "footer.stayTuned": "Resta aggiornato!",
+    "footer.subscribeToNewsletter": "Iscriviti alla newsletter",
   },
 };
 

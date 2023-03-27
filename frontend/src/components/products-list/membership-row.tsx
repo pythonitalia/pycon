@@ -45,6 +45,7 @@ export const MembershipRow = ({ me, membership }: Props) => {
       >
         <Heading size={2}>{membership.name}</Heading>
       </CardPart>
+
       {membership.description && (
         <CardPart id="content" contentAlign="left" background="milk">
           <Text size={2}>{compile(membership.description).tree}</Text>
@@ -64,7 +65,7 @@ export const MembershipRow = ({ me, membership }: Props) => {
       )}
 
       {isPythonItaliaMember && (
-        <CardPart contentAlign="left">
+        <CardPart contentAlign="left" background="milk">
           <Text size={2}>
             <FormattedMessage id="order.userAlreadyMember" />
           </Text>

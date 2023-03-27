@@ -18,7 +18,7 @@ specifiers:
   '@mdx-js/loader': ^1.6.19
   '@next/mdx': ^10.0.0
   '@python-italia/eslint-config': ^1.0.13
-  '@python-italia/pycon-styleguide': 0.1.151
+  '@python-italia/pycon-styleguide': 0.1.152
   '@sentry/nextjs': ^7.38.0
   '@tailwindcss/typography': ^0.5.9
   '@testing-library/dom': ^8.1.0
@@ -95,7 +95,7 @@ dependencies:
   '@graphql-codegen/typescript-react-apollo': 3.3.5_sy4knu3obj4ys7pjcqbyfxmqle
   '@mdx-js/loader': 1.6.22_react@18.2.0
   '@next/mdx': 10.2.3_@mdx-js+loader@1.6.22
-  '@python-italia/pycon-styleguide': 0.1.151_o4scbtliisanygemawej7x2d6i
+  '@python-italia/pycon-styleguide': 0.1.152_o4scbtliisanygemawej7x2d6i
   '@sentry/nextjs': 7.38.0_next@13.1.6+react@18.2.0
   '@theme-ui/core': 0.15.3_hp5f5nkljdiwilp4rgxyefcplu
   '@theme-ui/css': 0.15.3_@emotion+react@11.10.5
@@ -2435,8 +2435,8 @@ packages:
       - supports-color
     dev: true
 
-  /@python-italia/pycon-styleguide/0.1.151_o4scbtliisanygemawej7x2d6i:
-    resolution: {integrity: sha512-+WdEjpoSBKLaqcU3L+yugQW/4eBCO8BqpjXDz4YlslQkRzPfyroi7kudxTM7Xo2rB4uQ2A9ceZXNIy9BmkJRAg==}
+  /@python-italia/pycon-styleguide/0.1.152_o4scbtliisanygemawej7x2d6i:
+    resolution: {integrity: sha512-sN7xBBsFg8WpDfmU9AOJs54D8LhYrsJDtLFCGCAG8B9SHEJ2hjn08aZDxi1u5Vpp4uWGAPHPHavNV0myVmCHbQ==}
     peerDependencies:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'

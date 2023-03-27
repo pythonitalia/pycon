@@ -1,13 +1,21 @@
-import { Button, Spacer, Text, Input } from "@python-italia/pycon-styleguide";
-import React, { useCallback, useState } from "react";
+import {
+  Button,
+  Spacer,
+  Text,
+  Input,
+  InputWrapper,
+  BasicButton,
+} from "@python-italia/pycon-styleguide";
+import React, { useCallback, useRef, useState } from "react";
 import { FormattedMessage } from "react-intl";
 
-import { Alert } from "~/components/alert";
+import { useTranslatedMessage } from "~/helpers/use-translated-message";
 import { NewsletterSubscriptionResult, useSubscribeMutation } from "~/types";
 
-import { ErrorsList } from "../errors-list";
+import { Modal } from "../modal";
 
-const NewsletterForm = () => {
+export const NewsletterModal = ({ openModal, show }) => {
+  const formRef = useRef<HTMLFormElement>();
   const [email, setEmail] = useState("");
   const [subscribe, { loading, error, data }] = useSubscribeMutation();
   const subscribeToNewsletter = data?.subscribeToNewsletter;
@@ -26,7 +34,11 @@ const NewsletterForm = () => {
     async (e) => {
       e.preventDefault();
 
-      if (loading || hasCompletedSubscription) {
+      if (
+        loading ||
+        hasCompletedSubscription ||
+        !formRef.current.reportValidity()
+      ) {
         return;
       }
 
@@ -39,62 +51,61 @@ const NewsletterForm = () => {
     [email, hasCompletedSubscription, loading],
   );
 
+  const errorMessage = useTranslatedMessage("newsletter.error");
+
   const getErrors = (key: "validationEmail" | "nonFieldErrors") =>
     (hasFormErrors && data.subscribeToNewsletter[key]) || [];
 
-  if (hasCompletedSubscription && !isUnableToSubscribe) {
-    const success =
-      subscribeToNewsletter.status == NewsletterSubscriptionResult.Subscribed;
-
-    return (
-      <div>
-        <Text size={2}>
-          <FormattedMessage id="newsletter.text" />
-        </Text>
-
-        <Spacer size="medium" />
-
-        <Text size={2}>
-          <FormattedMessage
-            id={success ? "newsletter.success" : "newsletter.confirmViaEmail"}
-          />
-        </Text>
-      </div>
-    );
-  }
+  const success =
+    hasCompletedSubscription &&
+    subscribeToNewsletter.status == NewsletterSubscriptionResult.Subscribed;
 
   return (
-    <form onSubmit={onSubmit}>
-      <div>
+    <Modal
+      title={<FormattedMessage id="footer.stayTuned" />}
+      onClose={() => openModal(false)}
+      show={show}
+      actions={
+        <div className="flex flex-col md:flex-row gap-6 justify-end items-center">
+          <BasicButton onClick={() => openModal(false)}>
+            <FormattedMessage id="profile.tickets.cancel" />
+          </BasicButton>
+          <Button role="secondary" onClick={onSubmit} disabled={!canSubmit}>
+            <FormattedMessage id="newsletter.button" />
+          </Button>
+        </div>
+      }
+    >
+      <form onSubmit={onSubmit} ref={formRef}>
         <Text size={2}>
           <FormattedMessage id="newsletter.text" />
         </Text>
-        <Spacer size="medium" />
+        <Spacer size="small" />
 
-        <Input
-          placeholder="guido@python.org"
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setEmail(e.target.value)
-          }
-          value={email}
-          required={true}
-          type="email"
-        />
+        <InputWrapper title={<FormattedMessage id="signup.email" />}>
+          <Input
+            placeholder="guido@python.org"
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setEmail(e.target.value)
+            }
+            value={email}
+            required={true}
+            type="email"
+            errors={[
+              ...getErrors("validationEmail"),
+              error || isUnableToSubscribe ? errorMessage : "",
+            ]}
+          />
+        </InputWrapper>
 
-        <ErrorsList sx={{ mb: 4 }} errors={getErrors("validationEmail")} />
-
-        <Button role="secondary" disabled={!canSubmit}>
-          <FormattedMessage id="newsletter.button" />
-        </Button>
-
-        {(error || isUnableToSubscribe) && (
-          <Alert variant="alert">
-            <FormattedMessage id="newsletter.error" />
-          </Alert>
+        {hasCompletedSubscription && !isUnableToSubscribe && (
+          <Text size={2}>
+            <FormattedMessage
+              id={success ? "newsletter.success" : "newsletter.confirmViaEmail"}
+            />
+          </Text>
         )}
-      </div>
-    </form>
+      </form>
+    </Modal>
   );
 };
-
-export const NewsletterSection = () => <NewsletterForm />;

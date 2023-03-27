@@ -140,26 +140,42 @@ export const AddRemoveRow = ({
   const moneyFormatter = useMoneyFormatter();
 
   const leftSide = (
-    <>
-      {label && <Text size="label1">{label}</Text>}
-      <Heading size={2}>
+    <div className="h-full flex flex-col-reverse md:flex-row items-start justify-center md:justify-start md:items-end md:gap-6">
+      <Heading size={2} className="flex items-end gap-2">
         {moneyFormatter.format(price * (quantity || 1))}
+
+        {quantity > 0 && (
+          <Text size="label4" weight="strong" className="md:hidden">
+            {moneyFormatter.format(price)} x{quantity}
+          </Text>
+        )}
       </Heading>
+      {label && (
+        <Text size="label3" color="grey-500" weight="strong" uppercase>
+          {label}
+        </Text>
+      )}
       {quantity > 0 && (
-        <Text size="label3">
+        <Text
+          size="label3"
+          weight="strong"
+          className="-order-[1] md:order-3 hidden md:block"
+        >
           {moneyFormatter.format(price)} x{quantity}
         </Text>
       )}
-    </>
+    </div>
   );
 
   if (soldOut) {
     return (
       <CardPartTwoSides
         rightSide={
-          <Tag color="red">
-            <FormattedMessage id="tickets.productsList.soldOut" />
-          </Tag>
+          <div className="w-full flex md:items-center md:justify-center">
+            <Tag color="red">
+              <FormattedMessage id="tickets.productsList.soldOut" />
+            </Tag>
+          </div>
         }
       >
         {leftSide}

@@ -21,7 +21,7 @@ export const KeynotesListPageHandler = () => {
   const language = useCurrentLanguage();
   const {
     data: {
-      conference: { title, subtitle, description, keynotes },
+      conference: { title, subtitle, keynotes },
     },
   } = useKeynotesPageQuery({
     variables: {
@@ -34,18 +34,13 @@ export const KeynotesListPageHandler = () => {
     <Page endSeparator={false}>
       <MetaTags title="Keynotes" />
       <Section illustration="snakeHead">
-        <Container noPadding center={false} size="small">
-          <Heading size="display1">{title}</Heading>
-          <Spacer size="medium" />
-          <Text weight="strong" as="p" size={1}>
-            {subtitle}
-          </Text>
-          <Text as="p" size={2} color="grey-900">
-            {description}
-          </Text>
-        </Container>
+        <Heading size="display1">{title}</Heading>
       </Section>
-      <Section>
+      <Section spacingSize="xl">
+        <Container size="medium" center={false} noPadding>
+          <Heading size={1}>{subtitle}</Heading>
+        </Container>
+        <Spacer size="large" />
         <Grid cols={3} mdCols={2} equalHeight>
           {keynotes.map((keynote) => (
             <Link
