@@ -44,3 +44,8 @@ variable "healthcheck_path" {
   type    = string
   default = "/graphql"
 }
+
+variable "domain" {
+  type    = string
+  default = null
+}

@@ -289,7 +289,7 @@ jobs:
           - name: pycon-backend
             url: https://${{ fromJSON('["pastaporto-", ""]')[github.ref == 'refs/heads/main'] }}admin.pycon.it/graphql
           - name: cms
-            url: https://${{ fromJSON('["pythonit-staging-cms.politesky-d9883aec", "pythonit-production-cms.blueisland-671ab1bc"]')[github.ref == 'refs/heads/main'] }}.westeurope.azurecontainerapps.io/graphql/
+            url: https://${{ fromJSON('["staging-", ""]')[github.ref == 'refs/heads/main'] }}cms.python.it/graphql/
 
     steps:
       - uses: actions/checkout@v2

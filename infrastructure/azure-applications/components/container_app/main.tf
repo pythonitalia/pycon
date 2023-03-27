@@ -6,11 +6,17 @@ locals {
     }
     if env_var.secret
   ]
+  sld_tld = join(".", slice(split(".", var.domain), 1, 3))
 }
 
 data "azurerm_container_app_environment" "env" {
   name                = var.environment_name
   resource_group_name = var.resource_group_name
+}
+
+data "azurerm_container_app_environment_certificate" "certificate" {
+  name                         = replace(local.sld_tld, ".", "")
+  container_app_environment_id = data.azurerm_container_app_environment.env.id
 }
 
 resource "azurerm_container_app" "ca_app" {
@@ -30,6 +36,15 @@ resource "azurerm_container_app" "ca_app" {
   ingress {
     external_enabled = true
     target_port      = var.port
+
+    dynamic "custom_domain" {
+      for_each = var.domain != null ? [1] : []
+
+      content {
+        name           = var.domain
+        certificate_id = data.azurerm_container_app_environment_certificate.certificate.id
+      }
+    }
 
     traffic_weight {
       latest_revision = true
@@ -82,4 +97,28 @@ resource "azurerm_container_app" "ca_app" {
       # }
     }
   }
+}
+
+data "aws_route53_zone" "zone" {
+  name = local.sld_tld
+}
+
+resource "aws_route53_record" "txt_verification" {
+  count = var.domain != null ? 1 : 0
+
+  zone_id = data.aws_route53_zone.zone.zone_id
+  name    = "asuid.${var.domain}"
+  type    = "TXT"
+  ttl     = "30"
+  records = [azurerm_container_app.ca_app.custom_domain_verification_id]
+}
+
+resource "aws_route53_record" "domain" {
+  count = var.domain != null ? 1 : 0
+
+  zone_id = data.aws_route53_zone.zone.zone_id
+  name    = var.domain
+  type    = "A"
+  ttl     = "30"
+  records = [data.azurerm_container_app_environment.env.static_ip_address]
 }
