@@ -46,65 +46,66 @@ export const ProductsList = ({
   );
 
   return (
-    <div>
-      <Section>
-        {tickets.map((ticket, index) => (
-          <Fragment key={ticket.id}>
-            <TicketRow
-              openByDefault={index === 0}
-              icon="tickets"
-              iconBackground="pink"
-              ticket={ticket}
-            />
-            <Spacer size="xs" />
-          </Fragment>
-        ))}
+    <Section>
+      {tickets.map((ticket, index) => (
+        <Fragment key={ticket.id}>
+          <TicketRow
+            openByDefault={index === 0}
+            icon="tickets"
+            iconBackground="pink"
+            ticket={ticket}
+          />
+          <Spacer size="small" />
+        </Fragment>
+      ))}
 
-        <GroupHeading>
-          <FormattedMessage id="tickets.productsList.tshirtTitle" />
-        </GroupHeading>
+      {tshirt && (
+        <>
+          <GroupHeading>
+            <FormattedMessage id="tickets.productsList.tshirtTitle" />
+          </GroupHeading>
+          <TicketRow
+            key={tshirt.id}
+            icon="tshirt"
+            iconBackground="yellow"
+            ticket={tshirt}
+          />
+          <Spacer size="small" />
+        </>
+      )}
 
-        {tshirt && (
-          <>
-            <TicketRow
-              key={tshirt.id}
-              icon="tshirt"
-              iconBackground="yellow"
-              ticket={tshirt}
-            />
-            <Spacer size="xs" />
-          </>
-        )}
-
+      {socialEvents.length > 0 && (
         <GroupHeading>
           <FormattedMessage id="tickets.productsList.socialEventsTitle" />
         </GroupHeading>
+      )}
 
-        {socialEvents.map((socialEvent, index) => (
-          <Fragment key={socialEvent.id}>
-            <SocialEventRow ticket={socialEvent} openByDefault={index === 0} />
-            <Spacer size="xs" />
-          </Fragment>
-        ))}
+      {socialEvents.map((socialEvent, index) => (
+        <Fragment key={socialEvent.id}>
+          <SocialEventRow ticket={socialEvent} openByDefault={index === 0} />
+          <Spacer size="small" />
+        </Fragment>
+      ))}
 
+      {sortedHotelRooms.length > 0 && (
         <GroupHeading>
           <FormattedMessage id="tickets.productsList.hotelRoomsTitle" />
         </GroupHeading>
+      )}
 
-        {sortedHotelRooms.map((hotelRoom, index) => (
-          <Fragment key={hotelRoom.id}>
-            <HotelRow openByDefault={index === 0} hotelRoom={hotelRoom} />
-            <Spacer size="xs" />
-          </Fragment>
-        ))}
+      {sortedHotelRooms.map((hotelRoom, index) => (
+        <Fragment key={hotelRoom.id}>
+          <HotelRow openByDefault={index === 0} hotelRoom={hotelRoom} />
+          <Spacer size="small" />
+        </Fragment>
+      ))}
 
-        <GroupHeading>
-          <FormattedMessage id="tickets.productsList.joinPythonItalia" />
-        </GroupHeading>
+      <GroupHeading>
+        <FormattedMessage id="tickets.productsList.joinPythonItalia" />
+      </GroupHeading>
 
-        <MembershipRow membership={membership} me={me} />
-      </Section>
-    </div>
+      <MembershipRow membership={membership} me={me} />
+    </Section>
   );
 };
 

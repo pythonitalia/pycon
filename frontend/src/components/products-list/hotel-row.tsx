@@ -175,7 +175,7 @@ const AddViewHotelRoomRow = ({
   const moneyFormatter = useMoneyFormatter();
 
   const leftSide = (
-    <>
+    <div className="h-full flex items-center lg:items-end gap-2">
       <Heading size={2}>
         <FormattedMessage
           id="tickets.hotelRow.totalPrice"
@@ -186,7 +186,7 @@ const AddViewHotelRoomRow = ({
           }}
         />
       </Heading>
-      <Text uppercase size="label3">
+      <Text uppercase size="label3" weight="strong">
         <FormattedMessage
           id="tickets.hotelRow.pricePerNight"
           values={{
@@ -195,16 +195,18 @@ const AddViewHotelRoomRow = ({
           }}
         />
       </Text>
-    </>
+    </div>
   );
 
   if (soldOut) {
     return (
       <CardPartTwoSides
         rightSide={
-          <Tag color="red">
-            <FormattedMessage id="tickets.productsList.soldOut" />
-          </Tag>
+          <div className="w-full flex md:items-center md:justify-center">
+            <Tag color="red">
+              <FormattedMessage id="tickets.productsList.soldOut" />
+            </Tag>
+          </div>
         }
       >
         {leftSide}
