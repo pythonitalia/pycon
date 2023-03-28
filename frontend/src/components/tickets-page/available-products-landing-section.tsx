@@ -94,16 +94,6 @@ export const AvailableProductsLandingSection = ({
                 <FormattedMessage id="tickets.landing.socialEvents.copy" />
               </Text>
             </CardPart>
-            <Grid cols={3} gap="none" divide={true}>
-              {socialEvents.map((ticket) => (
-                <CardPart key={ticket.id} contentAlign="left">
-                  <Text size="label3">{ticket.name}</Text>
-                  <Heading size={2}>
-                    {moneyFormatter.format(Number(ticket.defaultPrice))}
-                  </Heading>
-                </CardPart>
-              ))}
-            </Grid>
           </MultiplePartsCard>
         </>
       )}
