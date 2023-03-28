@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     "participants.apps.ParticipantsConfig",
     "reviews.apps.ReviewsConfig",
     "markdownify.apps.MarkdownifyConfig",
+    "imagekit",
 ]
 
 MIDDLEWARE = [
@@ -217,3 +218,5 @@ USER_ID_HASH_SALT = env("USER_ID_HASH_SALT", default="")
 
 PLAIN_API = env("PLAIN_API", default="")
 PLAIN_API_TOKEN = env("PLAIN_API_TOKEN", default="")
+
+IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY = "imagekit.cachefiles.strategies.Optimistic"
