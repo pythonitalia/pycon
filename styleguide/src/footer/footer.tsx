@@ -2,7 +2,6 @@ import React from "react";
 import { Container } from "../container";
 import { SnakeHead } from "../illustrations/snake-head";
 import { SnakeTail } from "../illustrations/snake-tail";
-import { Heading } from "../heading";
 import { Separator } from "../separator";
 import { FormattedMessage } from "react-intl";
 import { SocialLinkProps } from "../social-links/social-link";
@@ -16,6 +15,7 @@ type Props = {
   logo: React.ElementType;
   socials: SocialLinkProps[];
   bottomLinks?: LinkType[];
+  socialsBarLeft?: React.ReactNode;
   noTopSpace?: boolean;
 };
 
@@ -24,10 +24,11 @@ export const Footer = ({
   logo: Logo,
   socials,
   bottomLinks = [],
+  socialsBarLeft,
 }: Props) => (
   <div className="mt-auto">
     <footer
-      className={clsx("overflow-x-clip", {
+      className={clsx("overflow-x-clip bg-green", {
         "mt-20 lg:mt-32": !noTopSpace,
       })}
     >
@@ -47,21 +48,24 @@ export const Footer = ({
         </Container>
         <Separator />
       </div>
-      <div className="bg-green">
+      <div>
         <Container>
           <div className="py-8 lg:py-10 flex flex-col gap-4 md:gap-0 md:items-center md:flex-row md:justify-between">
-            <Heading size={2}>
-              <FormattedMessage
-                id="footer.stayTuned"
-                defaultMessage="Stay tuned!"
-              />
-            </Heading>
+            {socialsBarLeft}
+            <SocialLinks className="hidden md:flex" socials={socials} />
+          </div>
+        </Container>
+        <Separator />
+      </div>
+      <div className="md:hidden">
+        <Container>
+          <div className="py-8 lg:py-10 relative flex items-center justify-between">
             <SocialLinks socials={socials} />
           </div>
         </Container>
         <Separator />
       </div>
-      <div className="bg-green">
+      <div>
         <Container>
           <div className="py-6 lg:py-8 flex flex-col gap-4 md:gap-0 md:flex-row justify-between md:items-center">
             <ul className="flex flex-col lg:flex-row gap-4">
@@ -88,15 +92,30 @@ export const Footer = ({
                   />
                 </Text>
               </Link>
-              <a
+              <Link
+                hoverColor="cream"
+                target="_blank"
+                href="https://github.com/pythonitalia/pycon"
+              >
+                <Text size="label4" uppercase weight="strong" color="none">
+                  <FormattedMessage
+                    id="footer.builtBy"
+                    defaultMessage="Built by Python Italia"
+                  />
+                </Text>
+              </Link>
+              <Link
+                hoverColor="cream"
                 target="_blank"
                 href="https://vercel.com/?utm_source=python-italia&utm_campaign=oss"
               >
-                <img
-                  src="https://www.datocms-assets.com/31049/1618983297-powered-by-vercel.svg"
-                  alt="Powered by Vercel Logo"
-                />
-              </a>
+                <Text size="label4" uppercase weight="strong" color="none">
+                  <FormattedMessage
+                    id="footer.poweredBy"
+                    defaultMessage="Powered by Vercel"
+                  />
+                </Text>
+              </Link>
             </div>
           </div>
         </Container>

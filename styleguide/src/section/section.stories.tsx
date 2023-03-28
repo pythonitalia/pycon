@@ -68,7 +68,7 @@ export const SectionInsidePage = ({
         background={background}
       >
         <Heading size="display1">Long neck illustration</Heading>
-       
+
         <Spacer size="medium" />
         <Text>
           Induco eligo, cogito sit et officia adipisici canvallis quis commodi
@@ -86,7 +86,7 @@ export const SectionInsidePage = ({
         background={background}
       >
         <Heading size="display1">Long neck illustration</Heading>
-        
+
         <Spacer size="medium" />
         <Text>
           Induco eligo, cogito sit et officia adipisici canvallis quis commodi
@@ -104,7 +104,7 @@ export const SectionInsidePage = ({
         background={background}
       >
         <Heading size="display1">Long neck illustration</Heading>
-       
+
         <Spacer size="medium" />
         <Text>
           Induco eligo, cogito sit et officia adipisici canvallis quis commodi
@@ -122,7 +122,7 @@ export const SectionInsidePage = ({
         background={background}
       >
         <Heading size="display1">Long neck illustration</Heading>
-       
+
         <Spacer size="medium" />
         <Text>
           Induco eligo, cogito sit et officia adipisici canvallis quis commodi
@@ -140,7 +140,7 @@ export const SectionInsidePage = ({
         background={background}
       >
         <Heading size="display1">Long neck illustration</Heading>
-       
+
         <Spacer size="medium" />
         <Text>
           Induco eligo, cogito sit et officia adipisici canvallis quis commodi
@@ -158,7 +158,7 @@ export const SectionInsidePage = ({
         background={background}
       >
         <Heading size="display1">Long neck illustration</Heading>
-       
+
         <Spacer size="medium" />
         <Text>
           Induco eligo, cogito sit et officia adipisici canvallis quis commodi
@@ -194,7 +194,7 @@ export const SectionInsidePage = ({
         background={background}
       >
         <Heading size="display1">Long neck illustration</Heading>
-        
+
         <Spacer size="medium" />
         <Text>
           Induco eligo, cogito sit et officia adipisici canvallis quis commodi
@@ -204,6 +204,15 @@ export const SectionInsidePage = ({
           amet in oblivio modestus bene lege minim, virtus legio impera
           abundantia sit dulcis in medius eligo.{" "}
         </Text>
+      </Section>
+
+      <Section
+        illustration="snakeTailUp"
+        containerSize={containerSize}
+        background={background}
+        spacingSize="xl"
+      >
+        <Heading size="display1">Short</Heading>
       </Section>
     </Page>
   );

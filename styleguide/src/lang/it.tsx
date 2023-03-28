@@ -3,8 +3,9 @@ export const messages = {
   "countdown.hours": "{value, plural, one {ora} other {ore}}",
   "countdown.minutes": "{value, plural, one {minuto} other {minuti}}",
 
-  "footer.stayTuned": "Rimani aggiornato",
   "footer.designedBy": "Design di ROLL Studio",
+  "footer.builtBy": "Sviluppato da Python Italia",
+  "footer.poweredBy": "Hostato su Vercel",
 
   "multiple-parts-card.openLabel": "Apri",
   "multiple-parts-card.closeLabel": "Chiudi",

@@ -18,9 +18,9 @@ export const CardPartAddRemove = ({
   onRemove,
 }: Props) => {
   return (
-    <div className="bg-cream grid md:grid-cols-bottombar">
+    <div className="bg-milk grid grid-cols-bottombar">
       <SideText>{children}</SideText>
-      <div className="grid">
+      <div className="grid border-l">
         {action === "add" && (
           <Action button onClick={onAdd}>
             <PlusIcon />

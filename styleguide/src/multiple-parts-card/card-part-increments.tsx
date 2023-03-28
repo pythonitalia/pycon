@@ -19,14 +19,14 @@ export const CardPartIncrements = ({
   onDecrement,
 }: Props) => {
   return (
-    <div className="bg-cream grid md:grid-cols-cardpart-increments">
+    <div className="bg-milk grid grid-cols-2 md:grid-cols-cardpart-increments divide-x">
       <SideText>{children}</SideText>
-      <div className="grid grid-cols-3">
-        <Action button onClick={onDecrement}>
-          <MinusIcon />
-        </Action>
+      <div className="grid grid-cols-3 divide-x">
         <Action>
           <Heading size={2}>{String(value).padStart(2, "0")}</Heading>
+        </Action>
+        <Action button onClick={onDecrement}>
+          <MinusIcon />
         </Action>
         <Action button onClick={onIncrement}>
           <PlusIcon />

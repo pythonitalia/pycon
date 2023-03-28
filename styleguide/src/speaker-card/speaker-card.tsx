@@ -16,7 +16,7 @@ export const SpeakerCard = ({ portraitUrl, talkTitle, speakerName }: Props) => {
           style={{
             objectFit: "cover",
           }}
-          className="w-full aspect-square"
+          className="w-full aspect-[1/0.74]"
           src={portraitUrl}
         />
       </CardPart>

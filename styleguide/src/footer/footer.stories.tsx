@@ -1,4 +1,5 @@
 import React from "react";
+import { Heading } from "../heading";
 import { Logo } from "../logo/logo";
 import { Footer } from "./footer";
 
@@ -9,6 +10,7 @@ export default {
 export const Standard = () => (
   <div className="pt-24">
     <Footer
+      socialsBarLeft={<Heading size={2}>Abc</Heading>}
       logo={Logo}
       socials={[
         { link: "#", icon: "twitter" },

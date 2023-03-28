@@ -12,6 +12,18 @@ import { getIllustration } from "../illustrations/illustrations";
 
 const NO_MOBILE_ILLUSTRATIONS: Illustration[] = ["snakeLongNeck", "snakeHead"];
 
+const getClasses = (illustration: Illustration) => {
+  if (illustration === "snakeHead") {
+    return "max-w-[90px] lg:max-w-[190px]";
+  }
+
+  if (illustration === "snakeTailUp") {
+    return "max-h-[140px] lg:max-h-[340px] max-w-[70px] lg:max-w-[140px]";
+  }
+
+  return "max-w-md max-h-[340px]";
+};
+
 const SideIllustration = ({
   illustration,
   cols,
@@ -31,14 +43,18 @@ const SideIllustration = ({
     return null;
   }
 
+  const classes = getClasses(illustration);
+
   return (
     <GridColumn colSpan={cols} mdColSpan={mdCols} className="mt-auto block">
       <Component
-        className={clsx("w-full h-full block mx-auto md:mr-0 max-h-[340px]", {
-          "hidden md:block": NO_MOBILE_ILLUSTRATIONS.includes(illustration),
-          "max-w-md": illustration !== "snakeHead",
-          "max-w-[90px] lg:max-w-[190px]": illustration === "snakeHead",
-        })}
+        className={clsx(
+          "w-full h-full block mx-auto md:mr-0",
+          {
+            "hidden md:block": NO_MOBILE_ILLUSTRATIONS.includes(illustration),
+          },
+          classes
+        )}
       />
     </GridColumn>
   );
@@ -89,7 +105,14 @@ export const Section = ({
       })}
     >
       <Wrapper className="relative" {...wrapperProps}>
-        <Grid cols={12} mdCols={12}>
+        <Grid
+          cols={12}
+          mdCols={12}
+          smCols={illustration === "snakeTailUp" ? 0 : 1}
+          className={clsx({
+            "grid-cols-[1fr_70px]": illustration === "snakeTailUp",
+          })}
+        >
           {illustration === "snakeTail" && (
             <GridColumn className="hidden md:block" colSpan={2} mdColSpan={2}>
               <SnakeTail className="w-16 lg:w-[140px]" />

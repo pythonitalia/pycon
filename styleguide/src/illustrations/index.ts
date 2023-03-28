@@ -1,4 +1,3 @@
-
 export { Cathedral } from "./cathedral";
 export { Florence } from "./florence";
 export { Florence2 } from "./florence2";
@@ -24,3 +23,4 @@ export { SnakesWithCocktail } from "./snakes-with-cocktail";
 export { SnakesWithDirections } from "./snakes-with-directions";
 export { SnakesWithOutlines } from "./snakes-with-outlines";
 export { TripleSnakes } from "./triple-snakes";
+export { SnakeTailUp } from "./snake-tail-up";

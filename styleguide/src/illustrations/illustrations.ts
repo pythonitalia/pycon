@@ -16,6 +16,7 @@ import { SnakeLetter } from "./snake-letter";
 import { SnakeLongNeck } from "./snake-long-neck";
 import { SnakePencil } from "./snake-pencil";
 import { SnakeTail } from "./snake-tail";
+import { SnakeTailUp } from "./snake-tail-up";
 import { SnakeWithBalloon } from "./snake-with-balloon";
 import { SnakeWithContacts } from "./snake-with-contacts";
 import { SnakesWithBanner } from "./snakes-with-banner";
@@ -77,6 +78,8 @@ export const getIllustration = (name: Illustration | undefined) => {
       return SnakesWithOutlines;
     case "tripleSnakes":
       return TripleSnakes;
+    case "snakeTailUp":
+      return SnakeTailUp;
   }
   return null;
 };

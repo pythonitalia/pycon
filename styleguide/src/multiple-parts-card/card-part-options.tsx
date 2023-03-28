@@ -31,10 +31,10 @@ export const CardPartOptions = ({
   action,
 }: Props) => {
   return (
-    <div className="bg-cream grid lg:grid-cols-cardpart-options">
-      <SideText>{children}</SideText>
+    <div className="bg-milk grid lg:grid-cols-cardpart-options divide-y lg:divide-y-[0px] lg:divide-x">
+      <SideText className="hidden lg:flex">{children}</SideText>
       <div
-        className="grid lg:grid-cols-cardpart-options-options"
+        className="grid lg:grid-cols-cardpart-options-options !border-t-0 divide-y lg:divide-y-[0px] lg:divide-x"
         style={
           {
             "--num-of-options": options.length,
@@ -42,7 +42,7 @@ export const CardPartOptions = ({
         }
       >
         {options?.map((select) => (
-          <Action key={select.id} breakpoint="lg" noPadding noBorderMobile>
+          <Action key={select.id} noPadding>
             <SimpleSelect
               disabled={action === "remove"}
               onChange={(e) => onChange?.(select.id, e)}
@@ -56,16 +56,20 @@ export const CardPartOptions = ({
           </Action>
         ))}
 
-        {action === "add" && (
-          <Action onClick={onConfirm} breakpoint="lg" button noBorderMobile>
-            <PlusIcon />
-          </Action>
-        )}
-        {action === "remove" && (
-          <Action negative onClick={onRemove} breakpoint="lg" button>
-            <MinusIcon />
-          </Action>
-        )}
+        <div className="grid grid-cols-[1fr_auto] divide-x lg:divide-x-[0px]">
+          <SideText className="lg:hidden">{children}</SideText>
+
+          {action === "add" && (
+            <Action onClick={onConfirm} button>
+              <PlusIcon />
+            </Action>
+          )}
+          {action === "remove" && (
+            <Action negative onClick={onRemove} button>
+              <MinusIcon />
+            </Action>
+          )}
+        </div>
       </div>
     </div>
   );

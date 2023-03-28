@@ -38,7 +38,7 @@ export const DaysSelector = ({
       <div className="flex flex-col lg:flex-row lg:items-center justify-between">
         <div
           className={clsx(
-            "flex overflow-scroll snap-x snap-mandatory overflow-x-auto w-full",
+            "flex overflow-scroll overflow-y-hidden snap-x snap-mandatory overflow-x-auto w-full",
             {
               "lg:items-center lg:justify-center": center,
             }

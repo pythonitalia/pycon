@@ -115,7 +115,11 @@ export const CardPart = ({
           {isClickToExpandElement && (
             <div className="flex items-center justify-center gap-4 select-none">
               {!open && (
-                <Text className="hidden md:block" uppercase size="label3">
+                <Text
+                  className="hidden md:block shrink-0"
+                  uppercase
+                  size="label3"
+                >
                   {openLabel || (
                     <FormattedMessage
                       defaultMessage="Open"
@@ -126,7 +130,11 @@ export const CardPart = ({
               )}
 
               {open && (
-                <Text className="hidden md:block" uppercase size="label3">
+                <Text
+                  className="hidden md:block shrink-0"
+                  uppercase
+                  size="label3"
+                >
                   {closeLabel || (
                     <FormattedMessage
                       defaultMessage="Close"
@@ -137,7 +145,7 @@ export const CardPart = ({
               )}
 
               <ArrowDownIcon
-                className={clsx("transition-transform", {
+                className={clsx("transition-transform shrink-0", {
                   "rotate-0": !open,
                   "rotate-180": open,
                 })}

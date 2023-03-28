@@ -118,17 +118,25 @@ export const WithIncrementExample = () => {
           onDecrement={() => setCounter1((value) => value - 1)}
           value={counter1}
         >
-          <Text size="label1">Small</Text>
-          <Heading size={2}>€ 40</Heading>
-          {counter1 > 0 && <Text size="label3">€ 20 x2</Text>}
+          <div className="flex flex-col-reverse md:flex-row justify-center md:justify-start text-left md:gap-6">
+            <Heading size={2}>€ 40</Heading>
+
+            <Text size="label4" uppercase color="grey-500" weight="strong">
+              Small
+            </Text>
+            {counter1 > 0 && <Text size="label3">€ 20 x2</Text>}
+          </div>
         </CardPartIncrements>
         <CardPartIncrements
           onIncrement={() => setCounter2((value) => value + 1)}
           onDecrement={() => setCounter2((value) => value - 1)}
           value={counter2}
         >
-          <Text size="label1">Medium</Text>
           <Heading size={2}>€ 40</Heading>
+
+          <Text size="label4" uppercase color="grey-500" weight="strong">
+            Medium
+          </Text>
           {counter2 > 0 && <Text size="label3">€ 20 x2</Text>}
         </CardPartIncrements>
         <CardPartIncrements
@@ -136,8 +144,10 @@ export const WithIncrementExample = () => {
           onDecrement={() => setCounter3((value) => value - 1)}
           value={counter3}
         >
-          <Text size="label1">Large</Text>
           <Heading size={2}>€ 40</Heading>
+          <Text size="label4" uppercase color="grey-500" weight="strong">
+            Large
+          </Text>
           {counter3 > 0 && <Text size="label3">€ 20 x2</Text>}
         </CardPartIncrements>
         <CardPartIncrements
@@ -145,8 +155,10 @@ export const WithIncrementExample = () => {
           onDecrement={() => setCounter4((value) => value - 1)}
           value={counter4}
         >
-          <Text size="label1">Extra Large</Text>
           <Heading size={2}>€ 40</Heading>
+          <Text size="label4" uppercase color="grey-500" weight="strong">
+            Extra Large
+          </Text>
           {counter4 > 0 && <Text size="label3">€ 20 x2</Text>}
         </CardPartIncrements>
       </MultiplePartsCard>
@@ -231,12 +243,14 @@ export const MultiPartCardWithOptions = () => {
                 },
               ]}
             >
-              <Heading size={2}>
-                € {nightsBetween ? 40 * nightsBetween : 40}
-              </Heading>
-              <Text uppercase size="label3">
-                {nightsBetween ? `€ 40/night` : `/night`}
-              </Text>
+              <div>
+                <Heading size={2}>
+                  € {nightsBetween ? 40 * nightsBetween : 40}
+                </Heading>
+                <Text uppercase size="label3">
+                  {nightsBetween ? `€ 40/night` : `/night`}
+                </Text>
+              </div>
             </CardPartOptions>
           );
         })}
@@ -298,12 +312,14 @@ export const MultiPartCardWithOptions = () => {
             },
           ]}
         >
-          <Heading size={2}>
-            € {nightsBetween ? 40 * nightsBetween : 40}
-          </Heading>
-          <Text uppercase size="label3">
-            {nightsBetween ? `€ 40/night` : `/night`}
-          </Text>
+          <div className="flex items-end">
+            <Heading size={2}>
+              € {nightsBetween ? 40 * nightsBetween : 40}
+            </Heading>
+            <Text uppercase size="label3">
+              {nightsBetween ? `€ 40/night` : `/night`}
+            </Text>
+          </div>
         </CardPartOptions>
       </MultiplePartsCard>
     </div>
