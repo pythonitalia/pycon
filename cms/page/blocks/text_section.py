@@ -8,6 +8,11 @@ class TextSection(blocks.StructBlock):
     is_main_title = blocks.BooleanBlock(required=False, default=False)
     subtitle = blocks.CharBlock(required=False)
     body = blocks.RichTextBlock(required=False)
+    body_text_size = blocks.ChoiceBlock(
+        required=False,
+        default="text-1",
+        choices=[("text-1", "Text-1"), ("text-2", "Text-2")],
+    )
     illustration = blocks.ChoiceBlock(
         required=False,
         choices=[

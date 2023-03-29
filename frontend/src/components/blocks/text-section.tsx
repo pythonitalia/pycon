@@ -9,13 +9,14 @@ import {
   Button,
 } from "@python-italia/pycon-styleguide";
 
-import { TextSection as TextSectionType } from "~/types";
+import { BodyTextSize, TextSection as TextSectionType } from "~/types";
 
 export const TextSection = ({
   title,
   isMainTitle,
   subtitle,
   body,
+  bodyTextSize,
   illustration,
   accordions,
   cta,
@@ -41,7 +42,10 @@ export const TextSection = ({
         )}
         {body && (
           <>
-            <DynamicHTMLText text={body} />
+            <DynamicHTMLText
+              text={body}
+              baseTextSize={bodyTextSize === BodyTextSize.Text_1 ? 1 : 2}
+            />
             {cta && <Spacer size="large" />}
           </>
         )}

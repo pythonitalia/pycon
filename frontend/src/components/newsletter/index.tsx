@@ -66,7 +66,7 @@ export const NewsletterModal = ({ openModal, show }) => {
       onClose={() => openModal(false)}
       show={show}
       actions={
-        <div className="flex flex-col md:flex-row gap-6 justify-end items-center">
+        <div className="flex flex-col-reverse md:flex-row gap-6 justify-end items-center">
           <BasicButton onClick={() => openModal(false)}>
             <FormattedMessage id="profile.tickets.cancel" />
           </BasicButton>

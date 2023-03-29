@@ -83,15 +83,7 @@ export const ResetPasswordPageHandler = () => {
       </FormattedMessage>
 
       <form onSubmit={onSubmit} className="w-full" ref={formRef}>
-        <LoginFlowLayout
-          bottomSection={
-            <div className="flex items-center justify-end w-full">
-              <Button role="secondary" disabled={loading} onClick={onSubmit}>
-                <FormattedMessage id="resetPassword.changePassword" />
-              </Button>
-            </div>
-          }
-        >
+        <LoginFlowLayout illustration="none">
           <Heading size="display2">
             <FormattedMessage id="resetPassword.changeYourPassword" />
           </Heading>
@@ -135,6 +127,12 @@ export const ResetPasswordPageHandler = () => {
                 />
               </InputWrapper>
             </Grid>
+            <Spacer size="large" />
+            <div className="flex justify-end">
+              <Button role="secondary" disabled={loading} onClick={onSubmit}>
+                <FormattedMessage id="resetPassword.changePassword" />
+              </Button>
+            </div>
           </div>
         </LoginFlowLayout>
       </form>

@@ -13,6 +13,7 @@ query Page($code: String!, $slug: String!, $language: String!) {
         ... on TextSection {
           id
           body
+          bodyTextSize
           illustration
           subtitle
           title
