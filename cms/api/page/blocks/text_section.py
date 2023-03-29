@@ -1,8 +1,15 @@
+from enum import Enum
 from typing import Self
 import strawberry
 
 from api.base.blocks.accordion import Accordion
 from api.base.blocks.cta import CTA
+
+
+@strawberry.enum
+class BodyTextSize(Enum):
+    TEXT_1 = "text-1"
+    TEXT_2 = "text-2"
 
 
 @strawberry.type
@@ -12,6 +19,7 @@ class TextSection:
     is_main_title: bool
     subtitle: str
     body: str
+    body_text_size: BodyTextSize
     illustration: str
     accordions: list[Accordion]
     cta: CTA | None
@@ -25,6 +33,7 @@ class TextSection:
             is_main_title=block.value["is_main_title"],
             subtitle=block.value["subtitle"],
             body=block.value["body"],
+            body_text_size=BodyTextSize(block.value["body_text_size"]),
             illustration=block.value["illustration"],
             accordions=[
                 Accordion.from_block(accordion)

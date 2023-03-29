@@ -7,6 +7,7 @@ import {
   Spacer,
   InputWrapper,
   Input,
+  Grid,
 } from "@python-italia/pycon-styleguide";
 import { useCallback, useRef } from "react";
 import { FormattedMessage } from "react-intl";
@@ -115,7 +116,7 @@ export const RequestResetPasswordPageHandler = () => {
             <FormattedMessage id="requestResetPassword.passwordForgotten" />
           </Heading>
           <Spacer size="large" />
-          <div className="w-full">
+          <Grid cols={2}>
             <InputWrapper
               required
               title={<FormattedMessage id="requestResetPassword.email" />}
@@ -128,7 +129,7 @@ export const RequestResetPasswordPageHandler = () => {
                 errors={[error?.message]}
               />
             </InputWrapper>
-          </div>
+          </Grid>
         </LoginFlowLayout>
       </form>
     </Page>

@@ -41,19 +41,24 @@ export const SpeakerSection = ({ speaker }: { speaker: Speaker }) => (
       <GridColumn colSpan={4} mdColSpan={4}>
         <LayoutContent position="relative">
           <VerticalStack>
-            <img
-              alt="speaker photo"
-              className="aspect-square border-black border z-10 object-cover"
-              src={speaker.photo}
-            />
-            <LayoutContent
-              zIndex={1}
-              style={{ bottom: "-60px", left: "20px" }}
-              showFrom="desktop"
-              position="absolute"
-            >
-              <SnakeTail className="w-24" />
-            </LayoutContent>
+            {speaker.photo && (
+              <>
+                <img
+                  alt="speaker photo"
+                  className="aspect-square border-black border z-10 object-cover"
+                  src={speaker.photo}
+                />
+                <LayoutContent
+                  zIndex={1}
+                  style={{ bottom: "-60px", left: "20px" }}
+                  showFrom="desktop"
+                  position="absolute"
+                >
+                  <SnakeTail className="w-24" />
+                </LayoutContent>
+              </>
+            )}
+
             <Spacer size="2md" />
             <HorizontalStack
               alignItems="center"
