@@ -59,7 +59,7 @@ pytest-factoryboy = "=2.0.3"
 factory-boy = "=3.1.0"
 mypy = "^0.812"
 pdbpp = "^0.10.2"
-flake8 = "^3.7"
+flake8 = "^4.0"
 black = {version = "^21.12b0",allow-prereleases = true}
 requests-mock = "^1.7"
 pytest-mock = "^3.4"
