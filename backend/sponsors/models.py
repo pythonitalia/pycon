@@ -6,12 +6,20 @@ from ordered_model.models import OrderedModel
 from pycon.constants import COLORS
 
 from .managers import SponsorLevelManager, SponsorManager
+from imagekit.models import ImageSpecField
+from imagekit.processors import ResizeToFit
 
 
 class Sponsor(TimeStampedModel, OrderedModel):
     name = models.CharField(_("name"), max_length=200)
     link = models.URLField(_("link"), blank=True)
     image = models.ImageField(_("image"), null=True, blank=True, upload_to="sponsors")
+    image_optimized = ImageSpecField(
+        source="image",
+        processors=[ResizeToFit(800, 400)],
+        format="PNG",
+        options={"quality": 60},
+    )
 
     objects = SponsorManager()
 

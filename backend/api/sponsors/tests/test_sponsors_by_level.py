@@ -1,3 +1,4 @@
+from unittest.mock import ANY
 from pytest import mark
 
 
@@ -19,13 +20,8 @@ def _query_sponsors(client, conference_code):
     )
 
 
-def _get_image_url(request, image):
-    return request.build_absolute_uri(image.url)
-
-
 @mark.django_db
 def test_query_sponsors(rf, graphql_client, sponsor_factory, sponsor_level_factory):
-    request = rf.get("/")
     patrick = sponsor_factory(
         name="patrick",
         link="https://patrick.wtf",
@@ -65,8 +61,11 @@ def test_query_sponsors(rf, graphql_client, sponsor_factory, sponsor_level_facto
         "sponsors": [
             {
                 "name": "ester",
-                "image": _get_image_url(request, ester.image),
+                "image": ANY,
                 "link": "https://ester.cool",
             }
         ],
     }
+    assert resp["data"]["conference"]["sponsorsByLevel"][1]["sponsors"][0][
+        "image"
+    ].startswith("http://testserver/media/CACHE")

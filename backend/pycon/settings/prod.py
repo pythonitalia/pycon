@@ -8,7 +8,7 @@ SECRET_KEY = env("SECRET_KEY")
 SENTRY_DSN = env("SENTRY_DSN", default="")
 
 DEFAULT_FILE_STORAGE = env(
-    "DEFAULT_FILE_STORAGE", default="storages.backends.s3boto3.S3Boto3Storage"
+    "DEFAULT_FILE_STORAGE", default="pycon.storages.CustomS3Boto3Storage"
 )
 
 AWS_STORAGE_BUCKET_NAME = env("AWS_MEDIA_BUCKET", default=None)

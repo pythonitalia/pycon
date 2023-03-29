@@ -69,8 +69,11 @@ data "aws_iam_policy_document" "lambda_role" {
       "s3:PutObjectAcl",
       "s3:GetObject",
       "s3:GetObjectVersion",
+      "s3:HeadObject",
+      "s3:ListBucket",
     ]
     resources = [
+      "arn:aws:s3:::*-pycon-backend-media",
       "arn:aws:s3:::*-pycon-backend-media/*"
     ]
     effect = "Allow"

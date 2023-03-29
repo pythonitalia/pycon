@@ -22,7 +22,10 @@ class Sponsor:
         if not self.image:
             return ""
 
-        return info.context.request.build_absolute_uri(self.image.url)
+        # try:
+        return info.context.request.build_absolute_uri(self.image_optimized.url)
+        # except Exception as e:
+        # return info.context.request.build_absolute_uri(self.image.url)
 
 
 @strawberry.type
