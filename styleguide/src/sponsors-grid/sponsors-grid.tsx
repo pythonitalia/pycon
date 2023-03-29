@@ -61,7 +61,7 @@ const SponsorItem = ({ sponsor, cols }: { sponsor: Sponsor; cols: number }) => {
       target="_blank"
       rel="noopener noreferrer"
     >
-      <div className="grayscale hover:grayscale-0 transition-all">
+      <div>
         <div className="pb-[50%] lg:pb-[60%]"></div>
 
         <div className={clsx("absolute", inset)}>
