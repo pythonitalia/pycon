@@ -5,8 +5,8 @@ export const Landscape = (props: any) => (
     width="1440"
     height="847"
     viewBox="0 0 1440 847"
-    {...props}
     preserveAspectRatio="xMidYMid slice"
+    {...props}
   >
     <g clip-path="url(#clip0_1426_26749)">
       <rect width="1440" height="847" fill="#6A80EF" />
@@ -344,7 +344,6 @@ export const Landscape = (props: any) => (
         fill="#FCE8DE"
         stroke="#0E1116"
         strokeWidth="4"
-        fill="transparent"
         strokeMiterlimit="10"
       />
       <path
