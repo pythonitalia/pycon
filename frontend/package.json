@@ -43,7 +43,7 @@
     "@vercel/og": "^0.0.21",
     "@xstate/react": "^3.0.1",
     "clsx": "^1.2.1",
-    "concurrently": "^5.2.0",
+    "concurrently": "^8.0.1",
     "date-fns": "^2.29.3",
     "deepmerge": "^4.2.2",
     "dotenv": "^16.0.3",
