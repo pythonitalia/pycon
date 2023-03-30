@@ -132,7 +132,7 @@ class BaseSubmissionInput:
         self.multi_lingual_validation(errors, conference)
 
         max_lengths = {
-            "speaker_bio": 1000,
+            "speaker_bio": 2048,
             "notes": 1000,
             "short_social_summary": 128,
             "previous_talk_video": 2048,
