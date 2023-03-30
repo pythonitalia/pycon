@@ -10,6 +10,7 @@ export const messages = {
     "global.yes": "Yes",
     "global.no": "No",
     "orderQuestions.emailsDontMatch": "Emails do not match",
+    "specialGuest.title": "Join us for a special Q&A!",
     "global.learnMore": "Learn more",
     "global.loading": "Loading",
     "global.loadMore": "Load more",
@@ -754,6 +755,8 @@ reflects what everyone wants to see!`,
     "jobboard.company": "Company",
     "jobboard.role": "Role",
     "jobboard.discoverMore": "Discover More",
+
+    "specialGuest.date": "Friday – 26 May 2023",
 
     "whatsnext.comingUp": "Coming up",
     "whatsnext.beings": "Begins",
@@ -1757,6 +1760,7 @@ Affrettati a comprare il biglietto!`,
     "requestResetPassword.backToLogin": "Torna al {loginLink}",
     "requestResetPassword.backToLogin.login": "Login",
     "resetPassword.title": "Recupera password",
+    "specialGuest.title": "Unisciti a noi per un Q&A speciale!",
     "requestResetPassword.title": "Recupera password",
     "requestResetPassword.button": "Invia",
     "requestResetPasswordSuccess.title": "Richiesta ricevuta",
@@ -1776,6 +1780,7 @@ Affrettati a comprare il biglietto!`,
 
     "footer.stayTuned": "Resta aggiornato!",
     "footer.subscribeToNewsletter": "Iscriviti alla newsletter",
+    "specialGuest.date": "Venerdì – 26 Maggio 2023",
   },
 };
 
