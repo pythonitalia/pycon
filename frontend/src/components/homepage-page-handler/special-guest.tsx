@@ -29,13 +29,14 @@ export const SpecialGuest = () => {
         height: bg.height,
       }}
     >
+      <div
+        style={{
+          backgroundImage: `url("${bg.src}")`,
+          height: bg.height,
+        }}
+        className="w-full absolute top-0 z-1 pointer-events-none bg-repeat"
+      />
       <Section spacingSize="3xl">
-        <div
-          style={{
-            backgroundImage: `url("${bg.src}")`,
-          }}
-          className="h-screen w-full absolute top-0 z-1 pointer-events-none"
-        />
         <Grid cols={12}>
           <GridColumn colSpan={7}>
             <Heading size="display2" color="milk">
