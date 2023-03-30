@@ -9,6 +9,11 @@ export const messages = {
     "global.here": "here",
     "global.yes": "Yes",
     "global.no": "No",
+
+    "global.italian": "Italian",
+    "global.english": "English",
+    "global.all": "All",
+
     "orderQuestions.emailsDontMatch": "Emails do not match",
     "specialGuest.title": "Join us for a special Q&A!",
     "global.learnMore": "Learn more",
@@ -882,6 +887,11 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
 
     "voting.pagination":
       "Page {currentPage} of {totalPages} ({totalItems, plural, one {1 item} other {{totalItems} items}})",
+
+    "scheduleView.filter.search": "Search",
+    "scheduleView.filter.byAudience": "By Audience",
+    "scheduleView.filter.byLanguage": "By Language",
+    "scheduleView.filter.byType": "By Type",
   },
   it: {
     titleTemplate: "%s | PyCon Italia",
@@ -1781,6 +1791,15 @@ Affrettati a comprare il biglietto!`,
     "footer.stayTuned": "Resta aggiornato!",
     "footer.subscribeToNewsletter": "Iscriviti alla newsletter",
     "specialGuest.date": "Venerdì – 26 Maggio 2023",
+
+    "scheduleView.filter.search": "Ricerca",
+    "scheduleView.filter.byAudience": "Per Audience",
+    "scheduleView.filter.byLanguage": "Per Lingua",
+    "scheduleView.filter.byType": "Per Tipologia",
+
+    "global.italian": "Italiano",
+    "global.english": "Inglese",
+    "global.all": "Tutti",
   },
 };
 

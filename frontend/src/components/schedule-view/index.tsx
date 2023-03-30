@@ -5,6 +5,8 @@ import {
   DaysSelector,
   Button,
   BasicButton,
+  FilterBar,
+  Text,
 } from "@python-italia/pycon-styleguide";
 import React, { Fragment, useCallback, useState } from "react";
 import { FormattedMessage } from "react-intl";
@@ -134,6 +136,75 @@ export const ScheduleView = ({
 
   const { days, submissions, keynotes } = schedule.conference!;
   const day = days.find((d) => d.day === currentDay);
+  const [currentFilters, setCurrentFilters] = useState({});
+  const applyFilters = (newFilters: Record<string, string[]>) => {
+    setCurrentFilters(newFilters);
+  };
+  const filters = [
+    {
+      id: "search",
+      label: <FormattedMessage id="scheduleView.filter.search" />,
+      search: true,
+    },
+    {
+      id: "audienceLevel",
+      label: <FormattedMessage id="scheduleView.filter.byAudience" />,
+      options: [
+        {
+          label: <FormattedMessage id="global.all" />,
+          value: "",
+        },
+        ...schedule.conference.audienceLevels.map((level) => ({
+          label: level.name,
+          value: level.id,
+        })),
+      ],
+    },
+    {
+      id: "language",
+      label: <FormattedMessage id="scheduleView.filter.byLanguage" />,
+      options: [
+        {
+          label: <FormattedMessage id="global.all" />,
+          value: "",
+        },
+        {
+          label: <FormattedMessage id="global.english" />,
+          value: "en",
+        },
+        {
+          label: <FormattedMessage id="global.italian" />,
+          value: "it",
+        },
+      ],
+    },
+    {
+      id: "type",
+      label: <FormattedMessage id="scheduleView.filter.byType" />,
+      options: [
+        {
+          label: <FormattedMessage id="global.all" />,
+          value: "",
+        },
+        {
+          label: "Talk",
+          value: "talk",
+        },
+        {
+          label: "Workshop",
+          value: "training",
+        },
+        {
+          label: "Keynote",
+          value: "keynote",
+        },
+        {
+          label: "Panel",
+          value: "panel",
+        },
+      ],
+    },
+  ];
 
   return (
     <Fragment>
@@ -158,14 +229,30 @@ export const ScheduleView = ({
           onClick={changeDay}
           language={language}
         >
-          <BasicButton onClick={toggleScheduleView}>
-            {viewMode === "full" && (
-              <FormattedMessage id="schedule.mySchedule" />
-            )}
-            {viewMode === "personal" && (
-              <FormattedMessage id="schedule.fullSchedule" />
-            )}
-          </BasicButton>
+          <div className="shrink-0 my-3 pl-4 md:pr-4 flex md:items-center md:justify-end">
+            <span
+              onClick={toggleScheduleView}
+              className="cursor-pointer select-none"
+            >
+              <Text size="label3" uppercase weight="strong">
+                {viewMode === "full" && (
+                  <FormattedMessage id="schedule.mySchedule" />
+                )}
+                {viewMode === "personal" && (
+                  <FormattedMessage id="schedule.fullSchedule" />
+                )}
+              </Text>
+            </span>
+            <div className="hidden md:block">
+              <Spacer size="large" orientation="horizontal" />
+            </div>
+            <FilterBar
+              placement="left"
+              onApply={applyFilters}
+              appliedFilters={currentFilters}
+              filters={filters}
+            />
+          </div>
         </DaysSelector>
         <Spacer size="large" />
 
@@ -181,6 +268,7 @@ export const ScheduleView = ({
               addKeynoteToSchedule={addKeynoteToSchedule}
               moveItem={moveItem}
               currentDay={currentDay}
+              currentFilters={currentFilters}
             />
           </div>
         )}

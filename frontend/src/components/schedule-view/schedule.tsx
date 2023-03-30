@@ -164,6 +164,7 @@ export const Schedule = ({
   moveItem,
   currentDay,
   viewMode,
+  currentFilters,
 }: {
   slots: Slot[];
   rooms: Room[];
@@ -186,6 +187,7 @@ export const Schedule = ({
     keynoteId: string,
   ) => void;
   currentDay: string;
+  currentFilters: Record<string, string[]>;
 }) => {
   const [loggedIn] = useLoginState();
   const [liveSlot, setLiveSlot] = useState<string | undefined>(
@@ -282,6 +284,63 @@ export const Schedule = ({
   let rowStartPos = 1;
 
   const totalRooms = rooms.length;
+
+  const isItemVisible = (item: Item) => {
+    if (item.type === "custom") {
+      // always show custom items
+      return true;
+    }
+
+    // if the user is viewing the personal schedule, if the item is not starred
+    // we do not care about it
+    if (viewMode === "personal" && !starredScheduleItems.includes(item.id)) {
+      return false;
+    }
+
+    if (
+      currentFilters.language?.length &&
+      !currentFilters.language.includes(item.language.code)
+    ) {
+      return false;
+    }
+
+    if (
+      currentFilters.type?.length &&
+      !currentFilters.type.includes(item.type)
+    ) {
+      return false;
+    }
+
+    if (
+      currentFilters.audienceLevel?.length &&
+      !currentFilters.audienceLevel.includes(
+        item.submission?.audienceLevel?.id ?? item.audienceLevel?.id,
+      )
+    ) {
+      return false;
+    }
+
+    if (currentFilters.search?.length) {
+      const query = currentFilters.search[0].toLowerCase().split(" ");
+      const title = item.title.toLowerCase();
+      const speakersNames = item.speakers
+        .reduce((acc, speaker) => `${acc} ${speaker.fullName}`, "")
+        .toLowerCase();
+
+      if (
+        !query.some(
+          (word) => title.includes(word) || speakersNames.includes(word),
+        ) &&
+        !item.submission?.tags?.some((tag) =>
+          query.some((word) => tag.name.toLowerCase().includes(word)),
+        )
+      ) {
+        return false;
+      }
+    }
+
+    return true;
+  };
 
   return (
     <React.Fragment>
@@ -433,42 +492,31 @@ export const Schedule = ({
                     />
                   ))}
 
-                  {slot.items
-                    .filter((item) => {
-                      if (
-                        viewMode === "personal" &&
-                        item.type !== "custom" &&
-                        !starredScheduleItems.includes(item.id)
-                      ) {
-                        return false;
+                  {slot.items.map((item) => (
+                    <ScheduleEntry
+                      key={item.id}
+                      item={item}
+                      slot={slot}
+                      rooms={rooms}
+                      adminMode={adminMode}
+                      day={currentDay}
+                      starred={starredScheduleItems.includes(item.id)}
+                      filteredOut={!isItemVisible(item)}
+                      style={
+                        {
+                          position: "relative",
+                          ...getEntryPosition({
+                            item,
+                            rooms,
+                            slot,
+                            slots,
+                            rowOffset,
+                            rowStart,
+                          }),
+                        } as any
                       }
-
-                      return true;
-                    })
-                    .map((item) => (
-                      <ScheduleEntry
-                        key={item.id}
-                        item={item}
-                        slot={slot}
-                        rooms={rooms}
-                        adminMode={adminMode}
-                        day={currentDay}
-                        starred={starredScheduleItems.includes(item.id)}
-                        style={
-                          {
-                            position: "relative",
-                            ...getEntryPosition({
-                              item,
-                              rooms,
-                              slot,
-                              slots,
-                              rowOffset,
-                              rowStart,
-                            }),
-                          } as any
-                        }
-                      />
-                    ))}
+                    />
+                  ))}
 
                   <div className="md:hidden"></div>
                 </div>
