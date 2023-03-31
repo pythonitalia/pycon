@@ -230,19 +230,21 @@ export const ScheduleView = ({
           language={language}
         >
           <div className="shrink-0 my-3 pl-4 md:pr-4 flex md:items-center md:justify-end">
-            <span
+            <Text
+              select="none"
               onClick={toggleScheduleView}
-              className="cursor-pointer select-none"
+              size="label3"
+              uppercase
+              weight="strong"
+              hoverColor="green"
             >
-              <Text size="label3" uppercase weight="strong">
-                {viewMode === "full" && (
-                  <FormattedMessage id="schedule.mySchedule" />
-                )}
-                {viewMode === "personal" && (
-                  <FormattedMessage id="schedule.fullSchedule" />
-                )}
-              </Text>
-            </span>
+              {viewMode === "full" && (
+                <FormattedMessage id="schedule.mySchedule" />
+              )}
+              {viewMode === "personal" && (
+                <FormattedMessage id="schedule.fullSchedule" />
+              )}
+            </Text>
             <div className="hidden md:block">
               <Spacer size="large" orientation="horizontal" />
             </div>
