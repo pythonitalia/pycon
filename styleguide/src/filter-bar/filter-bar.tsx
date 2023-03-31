@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { Heading } from "../heading/index";
 import { BasicButton, Button } from "../button/index";
 import { Text } from "../text/index";
@@ -147,7 +147,13 @@ export const FilterBar = ({
             className="bg-milk md:bg-transparent py-8 md:py-0 flex items-center justify-center border-t md:border-t-0 cursor-pointer"
             onClick={toggleFilterBar}
           >
-            <Text size="label3" uppercase weight="strong">
+            <Text
+              select="none"
+              hoverColor="green"
+              size="label3"
+              uppercase
+              weight="strong"
+            >
               <FormattedMessage id="filter.filter" defaultMessage="Filter" />
             </Text>
             {countFilters > 0 && (
@@ -179,7 +185,7 @@ export const FilterBar = ({
           >
             <div className="max-h-[310px] overflow-scroll">
               {filters.map((filter) => (
-                <>
+                <Fragment key={filter.id}>
                   <div className="bg-cream p-4 border-t border-b sticky top-0">
                     <Heading size={6}>{filter.label}</Heading>
                   </div>
@@ -212,6 +218,7 @@ export const FilterBar = ({
                         }
                       )}
                       onClick={() => changeFilter(filter.id, option.value)}
+                      key={option.value}
                     >
                       <Text size={3}>{option.label}</Text>
                       {changedFilters[filter.id]?.includes(option.value) && (
@@ -219,7 +226,7 @@ export const FilterBar = ({
                       )}
                     </div>
                   ))}
-                </>
+                </Fragment>
               ))}
             </div>
             <div className="border-t px-5 py-3 flex justify-between">

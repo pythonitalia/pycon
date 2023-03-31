@@ -106,3 +106,55 @@ export const getStyleClassesTextColor = (color: Color | "none" | "default") => {
       return "";
   }
 };
+export const getStyleClassesHoverTextColor = (
+  color: Color | "none" | "default"
+) => {
+  switch (color) {
+    case "default":
+    case "black":
+      return "hover:text-black";
+    case "coral":
+      return "hover:text-coral";
+    case "caramel":
+      return "hover:text-caramel";
+    case "cream":
+      return "hover:text-cream";
+    case "yellow":
+      return "hover:text-yellow";
+    case "green":
+      return "hover:text-green";
+    case "purple":
+      return "hover:text-purple";
+    case "pink":
+      return "hover:text-pink";
+    case "blue":
+      return "hover:text-blue";
+    case "red":
+    case "error":
+      return "hover:text-red";
+    case "success":
+      return "hover:text-success";
+    case "warning":
+      return "hover:text-warning";
+    case "neutral":
+      return "hover:text-neutral";
+    case "white":
+      return "hover:text-white";
+    case "milk":
+      return "hover:text-milk";
+    case "grey-900":
+      return "hover:text-grey-900";
+    case "grey-700":
+      return "hover:text-grey-700";
+    case "grey-500":
+      return "hover:text-grey-500";
+    case "grey-250":
+      return "hover:text-grey-250";
+    case "grey-100":
+      return "hover:text-grey-100";
+    case "grey-50":
+      return "hover:text-grey-50";
+    default:
+      return "";
+  }
+};

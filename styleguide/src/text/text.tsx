@@ -1,6 +1,9 @@
 import clsx from "clsx";
 import React from "react";
-import { getStyleClassesTextColor } from "../colors-utils";
+import {
+  getStyleClassesHoverTextColor,
+  getStyleClassesTextColor,
+} from "../colors-utils";
 import { Color } from "../types";
 
 type Props = {
@@ -11,9 +14,12 @@ type Props = {
   as?: "span" | "p";
   className?: string;
   color?: Color | "none" | "default";
+  hoverColor?: Color | "none" | "default";
   noWrap?: boolean;
   uppercase?: boolean;
   decoration?: "none" | "underline" | "line-through";
+  onClick?: () => void;
+  select?: "none" | "auto";
 };
 
 export const getStyleClassesForTextSize = (size: Props["size"]) => {
@@ -47,17 +53,20 @@ export const Text = React.forwardRef<any, Props>(
       weight = "regular",
       className = "",
       color = "default",
+      hoverColor = "none",
       noWrap = false,
       uppercase = false,
       decoration = "none",
       align,
+      onClick,
+      select = "auto",
     },
     ref
   ) => {
     return (
       <As
         className={clsx(
-          "font-sans break-words",
+          "font-sans break-words transition-colors",
           {
             "font-medium": weight === "regular",
             "font-semibold": weight === "strong",
@@ -73,12 +82,19 @@ export const Text = React.forwardRef<any, Props>(
             "text-left": align === "left",
             "text-center": align === "center",
             "text-right": align === "right",
+
+            "cursor-pointer": !!onClick,
+
+            "select-none": select === "none",
+            "select-auto": select === "auto",
           },
           getStyleClassesForTextSize(size),
           getStyleClassesTextColor(color),
+          getStyleClassesHoverTextColor(hoverColor),
           className
         )}
         ref={ref}
+        onClick={onClick}
       >
         {children}
       </As>
