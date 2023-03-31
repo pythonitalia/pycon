@@ -9,4 +9,9 @@ export const messages = {
 
   "multiple-parts-card.openLabel": "Apri",
   "multiple-parts-card.closeLabel": "Chiudi",
+
+  "filters.reset": "Cancella",
+  "filters.apply": "Applica",
+  "filter.filter": "Filtra",
+  "filter.searchPlaceholder": "speaker, titolo, tags",
 };

@@ -4,9 +4,10 @@ import { InputBar } from "./input-bar";
 
 type Props = React.InputHTMLAttributes<HTMLInputElement> & {
   errors?: (string | React.ReactNode)[];
+  showErrorBar?: boolean;
 };
 
-export const Input = ({ errors, ...props }: Props) => {
+export const Input = ({ errors, showErrorBar = true, ...props }: Props) => {
   const { value, maxLength } = props;
   const errorsOrEmpty = (errors ?? []).filter((e) => !!e);
   const hasError = errorsOrEmpty.length > 0;
@@ -21,10 +22,13 @@ export const Input = ({ errors, ...props }: Props) => {
           {
             "border-red": hasError,
             "border-black": !hasError,
-          }
+          },
+          props.className
         )}
       />
-      <InputBar errors={errorsOrEmpty} value={value} maxLength={maxLength} />
+      {showErrorBar && (
+        <InputBar errors={errorsOrEmpty} value={value} maxLength={maxLength} />
+      )}
     </div>
   );
 };

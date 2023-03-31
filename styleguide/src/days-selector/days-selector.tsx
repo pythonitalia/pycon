@@ -76,9 +76,7 @@ export const DaysSelector = ({
             );
           })}
         </div>
-        {children && (
-          <div className="shrink-0 my-3 pl-4 md:pr-4">{children}</div>
-        )}
+        {children}
       </div>
     </Container>
   );
