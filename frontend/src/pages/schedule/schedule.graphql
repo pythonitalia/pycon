@@ -30,6 +30,11 @@ query Schedule(
       ...KeynoteFragment
     }
 
+    audienceLevels {
+      id
+      name
+    }
+
     durations {
       id
       duration

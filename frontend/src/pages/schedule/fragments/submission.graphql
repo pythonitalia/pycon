@@ -21,4 +21,9 @@ fragment SubmissionFragment on Submission {
     id
     name
   }
+
+  tags {
+    id
+    name
+  }
 }

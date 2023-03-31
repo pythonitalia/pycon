@@ -12,8 +12,9 @@ export type Submission = {
   title: string;
   type?: { name: string } | null;
   duration?: { duration: number } | null;
-  audienceLevel?: { name: string } | null;
+  audienceLevel?: { name: string; id: string } | null;
   speaker?: { fullName: string } | null;
+  tags?: { name: string }[] | null;
 };
 
 export type Keynote = {
@@ -37,7 +38,7 @@ export type Item = {
   duration?: number | null;
   submission?: Submission | null;
   keynote?: Keynote | null;
-  audienceLevel?: { name: string } | null;
+  audienceLevel?: { name: string; id: string } | null;
   speakers: { fullName: string; participant?: Participant }[];
   hasLimitedCapacity: boolean;
   userHasSpot: boolean;

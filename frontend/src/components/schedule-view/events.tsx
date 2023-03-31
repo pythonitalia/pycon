@@ -15,6 +15,7 @@ import {
 } from "@python-italia/pycon-styleguide";
 import { Color } from "@python-italia/pycon-styleguide/dist/types";
 import { HeartIcon } from "@python-italia/pycon-styleguide/icons";
+import clsx from "clsx";
 import { addMinutes, parseISO } from "date-fns";
 import React from "react";
 import { FormattedMessage } from "react-intl";
@@ -208,6 +209,7 @@ export const ScheduleEntry = ({
   rooms,
   day,
   starred,
+  filteredOut,
   ...props
 }: {
   adminMode: boolean;
@@ -218,6 +220,7 @@ export const ScheduleEntry = ({
   style?: CSSStyleDeclaration;
   sx?: any;
   starred: boolean;
+  filteredOut: boolean;
 }) => {
   const router = useRouter();
   const [isLoggedIn] = useLoginState();
@@ -344,14 +347,21 @@ export const ScheduleEntry = ({
       adminMode={adminMode}
       type={type}
       metadata={{ itemId: item.id }}
-      className="relative z-20 border-r border-l md:border-0"
+      className={clsx("relative z-20 border-r border-l md:border-0")}
       {...props}
     >
       <ScheduleItemCard
         size={slot.type === "FREE_TIME" ? "small" : "large"}
         background={getItemBg(item.type)}
       >
-        <div className="flex flex-col md:max-h-[352px] md:h-full justify-between">
+        <div
+          className={clsx(
+            "flex flex-col md:max-h-[352px] md:h-full justify-between",
+            {
+              "opacity-20": filteredOut,
+            },
+          )}
+        >
           {!isCustomItem && (
             <LayoutContent showUntil="tablet">
               <HorizontalStack
