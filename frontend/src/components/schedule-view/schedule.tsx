@@ -4,18 +4,14 @@
 import { Separator, Spacer, Text } from "@python-italia/pycon-styleguide";
 import { ArrowIcon, LiveIcon } from "@python-italia/pycon-styleguide/icons";
 import clsx from "clsx";
-import { isAfter, isBefore, parseISO } from "date-fns";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { FormattedMessage } from "react-intl";
 import useSyncScroll from "react-use-sync-scroll";
 import { jsx, ThemeUIStyleObject } from "theme-ui";
 
 import { useRouter } from "next/router";
 
-import { useUserStarredScheduleItemsQuery } from "~/types";
-
-import { ViewMode } from ".";
-import { useLoginState } from "../profile/hooks";
+import { isItemVisible } from ".";
 import { ScheduleEntry } from "./events";
 import { Placeholder } from "./placeholder";
 import { Item, Room, Slot } from "./types";
@@ -163,8 +159,10 @@ export const Schedule = ({
   addKeynoteToSchedule,
   moveItem,
   currentDay,
-  viewMode,
   currentFilters,
+  starredScheduleItems,
+  toggleEventFavorite,
+  liveSlot,
 }: {
   slots: Slot[];
   rooms: Room[];
@@ -174,7 +172,6 @@ export const Schedule = ({
     rooms: string[],
     title?: string,
   ) => void;
-  viewMode: ViewMode;
   moveItem: (slotId: string, rooms: string[], itemId: string) => void;
   addSubmissionToSchedule: (
     slotId: string,
@@ -186,21 +183,12 @@ export const Schedule = ({
     rooms: string[],
     keynoteId: string,
   ) => void;
-  currentDay: string;
   currentFilters: Record<string, string[]>;
+  toggleEventFavorite: (item: Item) => void;
+  currentDay: string;
+  starredScheduleItems: string[];
+  liveSlot: Slot | null;
 }) => {
-  const [loggedIn] = useLoginState();
-  const [liveSlot, setLiveSlot] = useState<string | undefined>(
-    findLiveSlot({ currentDay, slots })?.id,
-  );
-  const { data: { me: { starredScheduleItems = [] } = {} } = {} } =
-    useUserStarredScheduleItemsQuery({
-      skip: !loggedIn,
-      variables: {
-        code: process.env.conferenceCode,
-      },
-    });
-
   const rowOffset = 6;
   const totalRows = slots.reduce((count, slot) => count + getSlotSize(slot), 0);
   const totalColumns = rooms.length;
@@ -260,23 +248,6 @@ export const Schedule = ({
     });
   }, [currentDay]);
 
-  useEffect(() => {
-    const listener = () => {
-      if (!document.hidden) {
-        const liveSlot = findLiveSlot({ currentDay, slots });
-
-        if (liveSlot) {
-          setLiveSlot(liveSlot.id);
-        }
-      }
-    };
-    document.addEventListener("visibilitychange", listener);
-
-    return () => {
-      document.removeEventListener("visibilitychange", listener);
-    };
-  }, []);
-
   const refsRef = useRef([headerRef, scheduleRef]);
 
   useSyncScroll(refsRef, { vertical: false, horizontal: true });
@@ -284,63 +255,6 @@ export const Schedule = ({
   let rowStartPos = 1;
 
   const totalRooms = rooms.length;
-
-  const isItemVisible = (item: Item) => {
-    if (item.type === "custom") {
-      // always show custom items
-      return true;
-    }
-
-    // if the user is viewing the personal schedule, if the item is not starred
-    // we do not care about it
-    if (viewMode === "personal" && !starredScheduleItems.includes(item.id)) {
-      return false;
-    }
-
-    if (
-      currentFilters.language?.length &&
-      !currentFilters.language.includes(item.language.code)
-    ) {
-      return false;
-    }
-
-    if (
-      currentFilters.type?.length &&
-      !currentFilters.type.includes(item.type)
-    ) {
-      return false;
-    }
-
-    if (
-      currentFilters.audienceLevel?.length &&
-      !currentFilters.audienceLevel.includes(
-        item.submission?.audienceLevel?.id ?? item.audienceLevel?.id,
-      )
-    ) {
-      return false;
-    }
-
-    if (currentFilters.search?.length) {
-      const query = currentFilters.search[0].toLowerCase().split(" ");
-      const title = item.title.toLowerCase();
-      const speakersNames = item.speakers
-        .reduce((acc, speaker) => `${acc} ${speaker.fullName}`, "")
-        .toLowerCase();
-
-      if (
-        !query.some(
-          (word) => title.includes(word) || speakersNames.includes(word),
-        ) &&
-        !item.submission?.tags?.some((tag) =>
-          query.some((word) => tag.name.toLowerCase().includes(word)),
-        )
-      ) {
-        return false;
-      }
-    }
-
-    return true;
-  };
 
   return (
     <React.Fragment>
@@ -412,7 +326,7 @@ export const Schedule = ({
           .map((slot, index) => {
             const rowStart = rowStartPos;
             const rowEnd = rowStartPos + getSlotSize(slot);
-            const isLive = slot.id === liveSlot;
+            const isLive = slot.id === liveSlot?.id;
             const freeTimeSlot = slot.type === "FREE_TIME";
 
             rowStartPos = rowEnd;
@@ -468,7 +382,7 @@ export const Schedule = ({
                           start: formatHour(slot.hour),
                         }}
                       />
-                      {slot.id === liveSlot && (
+                      {isLive && (
                         <>
                           {!freeTimeSlot && <Spacer size="xs" />}
                           <Text as="p" uppercase size="label3" weight="strong">
@@ -492,31 +406,37 @@ export const Schedule = ({
                     />
                   ))}
 
-                  {slot.items.map((item) => (
-                    <ScheduleEntry
-                      key={item.id}
-                      item={item}
-                      slot={slot}
-                      rooms={rooms}
-                      adminMode={adminMode}
-                      day={currentDay}
-                      starred={starredScheduleItems.includes(item.id)}
-                      filteredOut={!isItemVisible(item)}
-                      style={
-                        {
-                          position: "relative",
-                          ...getEntryPosition({
-                            item,
-                            rooms,
-                            slot,
-                            slots,
-                            rowOffset,
-                            rowStart,
-                          }),
-                        } as any
-                      }
-                    />
-                  ))}
+                  {slot.items.map((item) => {
+                    const starred = starredScheduleItems.includes(item.id);
+                    return (
+                      <ScheduleEntry
+                        key={item.id}
+                        item={item}
+                        slot={slot}
+                        rooms={rooms}
+                        adminMode={adminMode}
+                        day={currentDay}
+                        starred={starred}
+                        filteredOut={
+                          !isItemVisible(item, currentFilters, starred)
+                        }
+                        toggleEventFavorite={toggleEventFavorite}
+                        style={
+                          {
+                            position: "relative",
+                            ...getEntryPosition({
+                              item,
+                              rooms,
+                              slot,
+                              slots,
+                              rowOffset,
+                              rowStart,
+                            }),
+                          } as any
+                        }
+                      />
+                    );
+                  })}
 
                   <div className="md:hidden"></div>
                 </div>
@@ -544,20 +464,4 @@ const ArrowControl = ({ reverse, onClick }: ArrowControlProps) => {
       <ArrowIcon />
     </div>
   );
-};
-
-const findLiveSlot = ({
-  currentDay,
-  slots,
-}: {
-  currentDay: string;
-  slots: Slot[];
-}): Slot | undefined => {
-  const now = new Date();
-  return slots.find((slot) => {
-    const startHour = parseISO(`${currentDay}T${slot.hour}`);
-    const endHour = parseISO(`${currentDay}T${slot.endHour}`);
-
-    return isAfter(now, startHour) && isBefore(now, endHour);
-  });
 };

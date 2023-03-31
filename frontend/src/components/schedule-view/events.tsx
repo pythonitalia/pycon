@@ -210,6 +210,7 @@ export const ScheduleEntry = ({
   day,
   starred,
   filteredOut,
+  toggleEventFavorite,
   ...props
 }: {
   adminMode: boolean;
@@ -221,82 +222,10 @@ export const ScheduleEntry = ({
   sx?: any;
   starred: boolean;
   filteredOut: boolean;
+  toggleEventFavorite: (item: Item) => void;
 }) => {
-  const router = useRouter();
-  const [isLoggedIn] = useLoginState();
   const type = getType(item.submission);
   const language = useCurrentLanguage();
-  const [starScheduleItem] = useStarScheduleItemMutation({
-    variables: {
-      id: item.id,
-    },
-    optimisticResponse: {
-      starScheduleItem: null,
-    },
-    update(cache) {
-      const { me } = readUserStarredScheduleItemsQueryCache({
-        cache,
-        variables: {
-          code: process.env.conferenceCode,
-        },
-      });
-      writeUserStarredScheduleItemsQueryCache({
-        cache,
-        variables: {
-          code: process.env.conferenceCode,
-        },
-        data: {
-          me: {
-            ...me,
-            starredScheduleItems: [...me.starredScheduleItems, item.id],
-          },
-        },
-      });
-    },
-  });
-  const [unstarScheduleItem] = useUnstarScheduleItemMutation({
-    variables: {
-      id: item.id,
-    },
-    optimisticResponse: {
-      unstarScheduleItem: null,
-    },
-    update(cache) {
-      const { me } = readUserStarredScheduleItemsQueryCache({
-        cache,
-        variables: {
-          code: process.env.conferenceCode,
-        },
-      });
-      writeUserStarredScheduleItemsQueryCache({
-        cache,
-        variables: {
-          code: process.env.conferenceCode,
-        },
-        data: {
-          me: {
-            ...me,
-            starredScheduleItems: me.starredScheduleItems.filter(
-              (s) => s !== item.id,
-            ),
-          },
-        },
-      });
-    },
-  });
-
-  const toggleEventFavorite = () => {
-    if (!isLoggedIn) {
-      router.push(`/login?next=/schedule/${day}`);
-      return;
-    }
-
-    if (!starred) {
-      starScheduleItem();
-    } else {
-      unstarScheduleItem();
-    }
-  };
 
   const audienceLevel = item.submission
     ? item.submission.audienceLevel!.name
@@ -356,7 +285,7 @@ export const ScheduleEntry = ({
       >
         <div
           className={clsx(
-            "flex flex-col md:max-h-[352px] md:h-full justify-between",
+            "flex flex-col md:max-h-[352px] md:h-full justify-between transition-opacity",
             {
               "opacity-20": filteredOut,
             },
@@ -406,7 +335,10 @@ export const ScheduleEntry = ({
                   wrap="wrap"
                 >
                   <EventTag type={item.type} />
-                  <HeartIcon filled={starred} onClick={toggleEventFavorite} />
+                  <HeartIcon
+                    filled={starred}
+                    onClick={(_) => toggleEventFavorite(item)}
+                  />
                 </HorizontalStack>
               </div>
             )}
@@ -488,7 +420,7 @@ export const ScheduleEntry = ({
   );
 };
 
-const getItemBg = (type: string) => {
+export const getItemBg = (type: string) => {
   if (type === "custom") {
     return "milk";
   }

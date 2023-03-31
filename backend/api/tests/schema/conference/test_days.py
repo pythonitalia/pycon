@@ -187,6 +187,46 @@ def test_get_days_items(
 
 
 @mark.django_db
+def test_days_item_sorted(
+    conference_factory, day_factory, slot_factory, graphql_client, schedule_item_factory
+):
+    conference = conference_factory(
+        start=datetime(2020, 4, 2, tzinfo=pytz.UTC),
+        end=datetime(2020, 4, 2, tzinfo=pytz.UTC),
+    )
+    day = day_factory(conference=conference, day=date(2020, 4, 2))
+
+    slot = slot_factory(day=day, hour=time(8, 45), duration=60)
+    slot_2 = slot_factory(day=day, hour=time(9, 45), duration=60)
+    schedule_item_factory(slot=slot, type="custom")
+    schedule_item_factory(slot=slot_2, image=None, type="talk")
+
+    resp = graphql_client.query(
+        """
+        query($code: String!) {
+            conference(code: $code) {
+                days {
+                    day
+                    slots {
+                        items {
+                            type
+                        }
+                    }
+                }
+            }
+        }
+        """,
+        variables={"code": conference.code},
+    )
+
+    assert "errors" not in resp
+    slots = resp["data"]["conference"]["days"][0]["slots"]
+
+    assert slots[0]["items"][0]["type"] == "custom"
+    assert slots[1]["items"][0]["type"] == "talk"
+
+
+@mark.django_db
 def test_filter_days_by_room(
     conference_factory,
     day_factory,

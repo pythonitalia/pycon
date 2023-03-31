@@ -6,7 +6,7 @@ import strawberry
 from django.conf import settings
 from django.utils import timezone, translation
 from strawberry import ID
-
+from django.db.models import Case, When, Value, IntegerField
 from api.cms.types import FAQ, Menu
 from api.events.types import Event
 from api.hotels.types import HotelRoom
@@ -121,7 +121,16 @@ class ScheduleSlot:
     @strawberry.field
     def items(self, info) -> List[ScheduleItem]:
         return (
-            ScheduleItemModel.objects.filter(slot__id=self.id)
+            ScheduleItemModel.objects.annotate(
+                order=Case(
+                    When(type="custom", then=Value(1)),
+                    When(type="talk", then=Value(2)),
+                    When(type="panel", then=Value(3)),
+                    default=Value(4),
+                    output_field=IntegerField(),
+                )
+            )
+            .filter(slot__id=self.id)
             .select_related(
                 "language",
                 "audience_level",
@@ -132,6 +141,7 @@ class ScheduleSlot:
                 "submission__type",
             )
             .prefetch_related("additional_speakers", "rooms")
+            .order_by("order")
         )
 
 
