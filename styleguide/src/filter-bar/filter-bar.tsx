@@ -41,6 +41,10 @@ export const FilterBar = ({
   const [isDirty, setIsDirty] = useState(false);
 
   useEffect(() => {
+    setChangedFilters(appliedFilters);
+  }, [appliedFilters]);
+
+  useEffect(() => {
     const classes = ["overflow-hidden", "md:overflow-scroll"];
 
     if (isOpen) {
