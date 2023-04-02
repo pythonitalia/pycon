@@ -14,6 +14,9 @@ export const messages = {
     "global.english": "English",
     "global.all": "All",
 
+    "schedule.listView": "List View",
+    "schedule.gridView": "Grid View",
+
     "orderQuestions.emailsDontMatch": "Emails do not match",
     "specialGuest.title": "Join us for a special Q&A!",
     "global.learnMore": "Learn more",
@@ -24,6 +27,7 @@ export const messages = {
     "global.tryAgain": "Something went wrong: {error}",
     "schedule.time": "{start} - {end}",
     "schedule.timeNoEnd": "{start}",
+    "schedule.room": "Room",
     "schedule.mySchedule": "See My Schedule",
     "schedule.fullSchedule": "See Full Schedule",
     "schedule.live": "Live",
@@ -892,6 +896,10 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "scheduleView.filter.byAudience": "By Audience",
     "scheduleView.filter.byLanguage": "By Language",
     "scheduleView.filter.byType": "By Type",
+    "scheduleView.filter.byStarred": "By Starred",
+
+    "scheduleView.filter.starred": "Starred",
+    "scheduleView.filter.notStarred": "Not Starred",
   },
   it: {
     titleTemplate: "%s | PyCon Italia",
@@ -1796,10 +1804,19 @@ Affrettati a comprare il biglietto!`,
     "scheduleView.filter.byAudience": "Per Audience",
     "scheduleView.filter.byLanguage": "Per Lingua",
     "scheduleView.filter.byType": "Per Tipologia",
+    "scheduleView.filter.byStarred": "Per preferiti",
+
+    "scheduleView.filter.starred": "Salvato",
+    "scheduleView.filter.notStarred": "Non salvato",
 
     "global.italian": "Italiano",
     "global.english": "Inglese",
     "global.all": "Tutti",
+
+    "schedule.room": "Stanza",
+
+    "schedule.listView": "Vista lista",
+    "schedule.gridView": "Vista griglia",
   },
 };
 

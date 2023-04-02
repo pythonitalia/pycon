@@ -2,6 +2,7 @@
 
 /** @jsx jsx */
 import { Page } from "@python-italia/pycon-styleguide";
+import { stringify } from "querystring";
 import React, { useState } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
@@ -66,7 +67,8 @@ export const ScheduleDayPage = () => {
 
   const changeDay = (day: string) => {
     setCurrentDay(day);
-    router.push("/schedule/[day]", getDayUrl(day), {
+    const url = getDayUrl(day);
+    router.push(`${url}?${stringify(router.query)}`, undefined, {
       shallow: true,
     });
   };
