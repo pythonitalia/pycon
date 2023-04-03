@@ -50,6 +50,12 @@ export const ScheduleList = ({
 
           return slot.items.map((item) => {
             const starred = starredScheduleItems.includes(item.id);
+            const filteredOut = !isItemVisible(item, currentFilters, starred);
+
+            if (filteredOut) {
+              return null;
+            }
+
             return (
               <ScheduleItem
                 item={item}
@@ -59,7 +65,6 @@ export const ScheduleList = ({
                 startHour={startHour}
                 starred={starred}
                 toggleEventFavorite={toggleEventFavorite}
-                filteredOut={!isItemVisible(item, currentFilters, starred)}
                 rooms={rooms}
               />
             );
@@ -79,7 +84,6 @@ const ScheduleItem = ({
   rooms,
   toggleEventFavorite,
   currentDay,
-  filteredOut,
 }: {
   item: Item;
   slot: Slot;
@@ -89,7 +93,6 @@ const ScheduleItem = ({
   rooms: Room[];
   toggleEventFavorite: (item: Item) => void;
   currentDay: string;
-  filteredOut: boolean;
 }) => {
   const language = useCurrentLanguage();
   const italianLanguageText = useTranslatedMessage(`talk.language.it`);
@@ -176,11 +179,7 @@ const ScheduleItem = ({
         )}
       </div>
       <ScheduleItemCard background={getItemBg(item.type)} size="large">
-        <div
-          className={clsx("flex justify-between transition-opacity", {
-            "opacity-20": filteredOut,
-          })}
-        >
+        <div className="flex justify-between transition-opacity">
           <div>
             {item.type !== "custom" && (
               <>
