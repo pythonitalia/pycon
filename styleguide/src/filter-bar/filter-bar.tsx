@@ -108,6 +108,7 @@ export const FilterBar = ({
       setIsDirty(false);
       setChangedFilters({});
       onApply({});
+      setIsOpen(false);
     }
   };
 
