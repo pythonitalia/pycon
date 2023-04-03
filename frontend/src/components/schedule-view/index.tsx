@@ -254,6 +254,10 @@ export const ScheduleView = ({
     [code, currentDay],
   );
 
+  if (!schedule) {
+    return null;
+  }
+
   const { days, submissions, keynotes } = schedule.conference!;
   const day = days.find((d) => d.day === currentDay);
   const [currentFilters, setCurrentFilters] = useState({});
@@ -377,9 +381,6 @@ export const ScheduleView = ({
       new URLSearchParams(),
     );
     params.append("view", viewMode);
-    if (router.query.admin) {
-      params.append("admin", router.query.admin ? "1" : "0");
-    }
 
     const currentUrl = getDayUrl(currentDay, language);
     router.replace(`${currentUrl}?${params.toString()}`, undefined, {

@@ -61,9 +61,12 @@ export const ScheduleDayPage = () => {
   const day = router.query.day as string;
   const [currentDay, setCurrentDay] = useState(day);
 
-  const shouldFetchCurrentUser = loggedIn && router.query.admin !== undefined;
-  const { user } = useCurrentUser({ skip: !shouldFetchCurrentUser });
-  const shouldShowAdmin = user ? user.canEditSchedule : false;
+  const { user } = useCurrentUser({ skip: !loggedIn });
+  const shouldShowAdmin =
+    user && typeof window !== "undefined"
+      ? user.canEditSchedule &&
+        window.sessionStorage.getItem("show_admin") === "1"
+      : false;
 
   const changeDay = (day: string) => {
     setCurrentDay(day);
