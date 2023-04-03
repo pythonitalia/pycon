@@ -150,7 +150,11 @@ AUTH_USER_MODEL = "users.User"
 
 AUTHENTICATION_BACKENDS = ("custom_auth.backend.UsersAuthBackend",)
 
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 MAPBOX_PUBLIC_API_KEY = env("MAPBOX_PUBLIC_API_KEY", default="")
 
 SERIALIZATION_MODULES = {"json": "i18n.serializers"}
