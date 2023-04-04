@@ -2,7 +2,7 @@ from typing import Self
 import strawberry
 
 
-@strawberry.type
+@strawberry.type(name="CTA")
 class CTA:
     label: str
     link: str

@@ -1,3 +1,9 @@
+from page.blocks.sponsors_section import SponsorsSection
+from home.blocks.home_intro_section import HomeIntroSection
+from page.blocks.keynoters_section import KeynotersSection
+from page.blocks.schedule_preview_section import SchedulePreviewSection
+from page.blocks.socials_section import SocialsSection
+from page.blocks.special_guest_section import SpecialGuestSection
 from wagtail.models import Page
 from wagtail.admin.panels import FieldPanel
 
@@ -13,6 +19,13 @@ class BodyBlock(blocks.StreamBlock):
     text_section = TextSection()
     map = Map()
     slider_cards_section = SliderCardsSection()
+    sponsors_section = SponsorsSection()
+
+    home_intro_section = HomeIntroSection()
+    keynoters_section = KeynotersSection()
+    schedule_preview_section = SchedulePreviewSection()
+    socials_section = SocialsSection()
+    special_guest_section = SpecialGuestSection()
 
 
 class GenericPage(Page):
