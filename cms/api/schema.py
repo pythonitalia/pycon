@@ -19,7 +19,6 @@ class Query:
         slug: str,
         language: str,
     ) -> GenericPage | SiteNotFoundError | None:
-
         if not (site := Site.objects.filter(hostname=hostname).first()):
             return SiteNotFoundError(message=f"Site `{hostname}` not found")
 

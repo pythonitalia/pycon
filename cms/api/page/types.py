@@ -16,6 +16,7 @@ Block = strawberry.union(
 @strawberry.type
 class GenericPage:
     id: strawberry.ID
+    title: str
     body: list[Block]
 
     @classmethod
@@ -31,4 +32,4 @@ class GenericPage:
                 case "slider_cards_section":
                     blocks.append(SliderCardsSection.from_block(block))
 
-        return cls(id=obj.id, body=blocks)
+        return cls(id=obj.id, title=obj.title, body=blocks)
