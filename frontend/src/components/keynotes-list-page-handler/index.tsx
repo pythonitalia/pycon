@@ -4,12 +4,14 @@ import {
   Page,
   Section,
   Spacer,
-  Text,
   SpeakerCard,
   Link,
   Container,
+  Button,
+  VerticalStack,
 } from "@python-italia/pycon-styleguide";
 import React from "react";
+import { FormattedMessage } from "react-intl";
 
 import { useCurrentLanguage } from "~/locale/context";
 import { useKeynotesPageQuery } from "~/types";
@@ -61,6 +63,18 @@ export const KeynotesListPageHandler = () => {
             </Link>
           ))}
         </Grid>
+        <Spacer size="large" />
+        <VerticalStack alignItems="center">
+          <Button
+            role="secondary"
+            href={createHref({
+              path: "/schedule",
+              locale: language,
+            })}
+          >
+            <FormattedMessage id="homepage.schedulePreviewSection.goToSchedule" />
+          </Button>
+        </VerticalStack>
       </Section>
     </Page>
   );
