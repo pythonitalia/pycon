@@ -6,17 +6,20 @@ import {
   Spacer,
   SocialLinks,
 } from "@python-italia/pycon-styleguide";
-import { FormattedMessage } from "react-intl";
 
 import { Hills } from "./hills";
 
-export const FollowUsSection = () => {
+type Props = {
+  label: string;
+  hashtag: string;
+};
+export const SocialsSection = ({ hashtag, label }: Props) => {
   return (
     <div className="bg-[#151C28] -mb-[3px]">
       <Section spacingSize="3xl">
         <VerticalStack alignItems="center">
           <Text weight="strong" uppercase color="milk" size="label2">
-            <FormattedMessage id="homepage.followUs" />
+            {label}
           </Text>
           <Spacer size="medium" />
 
@@ -54,7 +57,7 @@ export const FollowUsSection = () => {
           <Spacer size="xl" />
 
           <Heading align="center" color="white" size="display1" fluid>
-            #PyConIT2023
+            #{hashtag}
           </Heading>
         </VerticalStack>
       </Section>

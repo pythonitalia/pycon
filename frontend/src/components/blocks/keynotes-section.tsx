@@ -13,11 +13,15 @@ import React from "react";
 import { FormattedMessage } from "react-intl";
 
 import { useCurrentLanguage } from "~/locale/context";
-import { useKeynotesSectionQuery } from "~/types";
+import { Cta, useKeynotesSectionQuery } from "~/types";
 
 import { createHref } from "../link";
 
-export const KeynotersSection = () => {
+type Props = {
+  title: string;
+  cta: Cta | null;
+};
+export const KeynotersSection = ({ title, cta }: Props) => {
   const language = useCurrentLanguage();
   const { data } = useKeynotesSectionQuery({
     variables: {
@@ -42,7 +46,7 @@ export const KeynotersSection = () => {
     <Section noContainer spacingSize="3xl" background="yellow">
       <Container>
         <Heading size="display2" align="center">
-          Keynotes
+          {title}
         </Heading>
         <Spacer size="2xl" />
       </Container>
@@ -65,19 +69,21 @@ export const KeynotersSection = () => {
         ))}
       </SliderGrid>
 
-      <Container>
-        <Spacer size="2xl" />
-        <VerticalStack alignItems="center">
-          <Button
-            href={createHref({
-              path: "/tickets",
-              locale: language,
-            })}
-          >
-            <FormattedMessage id="ticketsOverview.buyTicketsSection" />
-          </Button>
-        </VerticalStack>
-      </Container>
+      {cta && (
+        <Container>
+          <Spacer size="2xl" />
+          <VerticalStack alignItems="center">
+            <Button
+              href={createHref({
+                path: cta.link,
+                locale: language,
+              })}
+            >
+              {cta.label}
+            </Button>
+          </VerticalStack>
+        </Container>
+      )}
     </Section>
   );
 };

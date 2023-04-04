@@ -1,3 +1,5 @@
+#import "../../fragments/blocks.graphql"
+
 query Page($code: String!, $slug: String!, $language: String!) {
   page(code: $code, slug: $slug) {
     id
@@ -10,44 +12,7 @@ query Page($code: String!, $slug: String!, $language: String!) {
     ... on GenericPage {
       id
       body {
-        ... on TextSection {
-          id
-          body
-          bodyTextSize
-          illustration
-          subtitle
-          title
-          isMainTitle
-          accordions {
-            title
-            body
-            isOpen
-          }
-          cta {
-            label
-            link
-          }
-        }
-
-        ... on CMSMap {
-          id
-          latitude
-          longitude
-          link
-          image
-        }
-
-        ... on SliderCardsSection {
-          id
-          cards {
-            title
-            body
-            cta {
-              label
-              link
-            }
-          }
-        }
+        ...Blocks
       }
     }
   }

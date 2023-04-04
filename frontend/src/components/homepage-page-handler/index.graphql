@@ -1,4 +1,16 @@
+#import "../../fragments/blocks.graphql"
+
 query IndexPage($code: String!, $language: String!) {
+  cmsPage(hostname: $code, slug: "homepage", language: $language) {
+    ... on GenericPage {
+      id
+      title
+      body {
+        ...Blocks
+      }
+    }
+  }
+
   blogPosts {
     id
     slug
