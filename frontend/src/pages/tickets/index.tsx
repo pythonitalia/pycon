@@ -29,13 +29,15 @@ export const TicketsPage = () => {
         <div>
           <Container>
             <Spacer size="xl" />
-            <Heading size="display1">
-              <FormattedMessage id="tickets.buyTickets" />
-            </Heading>
-            <Spacer size="large" />
-            <Heading size={1}>
-              <FormattedMessage id="tickets.buyTicketsSubtitle" />
-            </Heading>
+            <Container size="medium" center={false} noPadding>
+              <Heading size="display1">
+                <FormattedMessage id="tickets.buyTickets" />
+              </Heading>
+              <Spacer size="large" />
+              <Heading size={1}>
+                <FormattedMessage id="tickets.buyTicketsSubtitle" />
+              </Heading>
+            </Container>
           </Container>
           <Section>
             <SnakeHead className="relative ml-auto w-32 lg:w-52 mr-6 md:mr-12 -mt-36 md:-mt-24 lg:-mt-44 hidden md:block" />

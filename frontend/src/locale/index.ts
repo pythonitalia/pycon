@@ -412,9 +412,9 @@ export const messages = {
 
     "tickets.productsList.soldOut": "Sold-out",
 
-    "tickets.personal.title": "Personal ticket",
+    "tickets.personal.title": "Personal",
     "tickets.personal.description":
-      "If you are a student, unemployed or employed, buying the ticket with your own money, not paid by your company, university or similar.",
+      "If you are a student, employed or unemployed, paying with your own money, not paid by your company, university or similar.",
     "tickets.buyTicketsCta": "Buy tickets",
 
     "tickets.productsList.joinPythonItalia": "Join Python Italia",
@@ -445,9 +445,9 @@ export const messages = {
     "tickets.checkout.title": "Checkout",
     "tickets.title": "Buy Tickets",
 
-    "tickets.business.title": "Business ticket",
+    "tickets.business.title": "Business",
     "tickets.business.description":
-      "If your company, university or similar is paying for your ticket, or you need an invoice.",
+      "If your company, university or similar is paying for you, or you need an invoice.",
 
     "addHotelRoom.checkin": "Check-in",
     "addHotelRoom.checkout": "Check-out",
@@ -870,7 +870,7 @@ reflects what everyone wants to see!`,
     "home.grants.cta": "Apply",
     "tickets.checkoutBar.cta": "Checkout",
 
-    "tickets.buyTicketsSubtitle": "Regular tickets are available!",
+    "tickets.buyTicketsSubtitle": "Conference ticket, social events and more!",
 
     "tickets.landing.title": "What can you buy?",
     "tickets.landing.ticketsCopy": `Tickets to join the conference! PyCon Italia is a fun 4 days event, where every year we are joined by more than 600 people, have more than 110+ sessions (talks and workshops) and social events where you can meet new people and have fun in the beautiful Florence.
@@ -1619,15 +1619,15 @@ Il tuo voto ci aiuterà a creare un programma che più rispecchia ciò che la co
       "{nights, plural, =0 {/notte} =1 {{price} x # notte} other {{price} x # notti}}",
     "tickets.productsList.tshirtTitle": "T-shirt",
 
-    "tickets.personal.title": "Biglietti Personali",
+    "tickets.personal.title": "Personale",
     "tickets.personal.description":
-      "Se sei uno studente, disoccupato o meno, acquistando il biglietto con i propri soldi, non pagato dalla tua azienda, università o simili.",
+      "Acquista il tuo biglietto per la conferenza o per i nostri eventi sociali. Utilizza questa sezione se intendi procedere all'acquisto senza necessità di fattura.",
     "tickets.buyTicketsCta": "Compra biglietti",
 
-    "tickets.business.title": "Biglietti Business",
+    "tickets.business.title": "Business",
     "tickets.business.description":
-      "Se la tua azienda, università o simili sta pagando il tuo biglietto o hai bisogno di una fattura.",
-    "tickets.buyTickets": "Biglietti",
+      "Se intendi acquistare qualsiasi biglietto (conferenza, eventi sociali) e necessiti di fattura accedi a questa sezione per le tariffe dedicate alle Aziende/Liberi Professionisti.",
+    "tickets.buyTickets": "Acquista Biglietti",
 
     "tickets.checkout.billing": "Informazioni",
     "tickets.checkout.orderCreationFailed":
@@ -1637,7 +1637,8 @@ Il tuo voto ci aiuterà a creare un programma che più rispecchia ciò che la co
     "tickets.checkout.openAnswerCard": "Dettagli Partecipante",
     "tickets.checkout.answerCardAdmissionTitle": "Biglietto di {attendeeName}",
 
-    "tickets.buyTicketsSubtitle": "Biglietti regular disponibili!",
+    "tickets.buyTicketsSubtitle":
+      "Acquista il tuo biglietto per la conferenza, eventi sociali etc..",
 
     "tickets.landing.title": "Cosa puoi comprare?",
     "tickets.landing.ticketsCopy": `Biglietti per partecipare alla conferenza! PyCon Italia é un evento di 4 giorni dove ogni anno più di 600 persone si riuniscono per partecipare a più di 110+ sessioni (talks e workshops) ed eventi sociali dove puoi fare nuove amicizie e goderti la bellissima Firenze.
