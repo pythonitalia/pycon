@@ -7,6 +7,7 @@ import {
   Spacer,
   DynamicHTMLText,
 } from "@python-italia/pycon-styleguide";
+import { Illustration } from "@python-italia/pycon-styleguide/dist/illustrations/types";
 import { Color } from "@python-italia/pycon-styleguide/dist/types";
 import { getIllustration } from "@python-italia/pycon-styleguide/illustrations";
 
@@ -36,7 +37,7 @@ export const InformationSection = ({
       code: process.env.conferenceCode,
     },
   });
-  const IllustrationComponent = getIllustration(illustration);
+  const IllustrationComponent = getIllustration(illustration as Illustration);
   const deadlineDatetime =
     countdownToDeadline && Object.hasOwn(data.conference, countdownToDeadline)
       ? new Date(data.conference[countdownToDeadline].start)
