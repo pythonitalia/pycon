@@ -1,7 +1,9 @@
 import React from "react";
+
 import { Map } from "~/components/blocks/map";
 import { TextSection } from "~/components/blocks/text-section";
 import { Block } from "~/types";
+
 import { SliderCardsSection } from "../blocks/slider-cards-section";
 
 type Registry = {

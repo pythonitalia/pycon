@@ -10,6 +10,7 @@ def test_page(graphql_client, generic_page_factory, locale, site_factory):
         slug="bubble-tea",
         locale=locale("en"),
         parent=parent,
+        title="Bubble",
         body__0__text_section__title__value="I've Got a Lovely Bunch of Coconuts",
         body__1__map__longitude=Decimal(3.14),
     )
@@ -19,6 +20,7 @@ def test_page(graphql_client, generic_page_factory, locale, site_factory):
     query Page ($hostname: String!, $language: String!, $slug: String!) {
         cmsPage(hostname: $hostname, language: $language, slug: $slug){
             ...on GenericPage {
+                title
                 body {
                     ...on TextSection {
                         title
@@ -39,13 +41,14 @@ def test_page(graphql_client, generic_page_factory, locale, site_factory):
 
     assert response.data == {
         "cmsPage": {
+            "title": "Bubble",
             "body": [
                 {"title": "I've Got a Lovely Bunch of " "Coconuts"},
                 {
                     "latitude": "43.766199999999997771737980656325817108154296875",  # noqa: E501
                     "longitude": "3.140000000000000124344978758017532527446746826171875",  # noqa: E501
                 },
-            ]
+            ],
         }
     }
 
