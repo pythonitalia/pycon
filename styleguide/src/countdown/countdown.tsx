@@ -87,7 +87,7 @@ export const Countdown = ({
   const snakeBaseClasses = "w-24 lg:h-60 lg:w-52";
 
   return (
-    <div className={clsx("max-w-[350px] lg:max-w-[400px]", className)}>
+    <div className={clsx("max-w-[350px] lg:max-w-[410px]", className)}>
       {showSnake && (
         <SnakeHead
           className={clsx(snakeBaseClasses, {
@@ -125,7 +125,7 @@ const CountdownBox = ({
   label: React.ReactNode;
 }) => {
   return (
-    <div className="p-9 flex items-center justify-center flex-col gap-2 uppercase">
+    <div className="py-9 px-14 flex items-center justify-center flex-col gap-2 uppercase">
       <Heading size="display2">{String(value).padStart(2, "0")}</Heading>
       <Text size="label2" weight="strong">
         {label}
