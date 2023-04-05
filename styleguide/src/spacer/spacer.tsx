@@ -5,6 +5,7 @@ type Breakpoint = "mobile" | "tablet" | "desktop";
 
 type Props = {
   size:
+    | "none"
     | "thin"
     | "xs"
     | "small"
@@ -23,6 +24,10 @@ export const Spacer = ({
   orientation = "vertical",
   showOnlyOn,
 }: Props) => {
+  if (size === "none") {
+    return null;
+  }
+
   return (
     <span
       className={clsx({
